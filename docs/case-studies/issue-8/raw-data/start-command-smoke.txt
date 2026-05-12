@@ -1,0 +1,14 @@
+│ session   fec86e43-c654-451b-b016-eacb700a94e2
+│ start     2026-05-12 19:29:08.400
+│
+$ echo start-command-ok
+
+start-command-ok
+
+✓
+│ finish    2026-05-12 19:29:08.441
+│ duration  0.041s
+│ exit      0
+│
+│ log       /tmp/start-command/logs/direct/fec86e43-c654-451b-b016-eacb700a94e2.log
+│ session   fec86e43-c654-451b-b016-eacb700a94e2

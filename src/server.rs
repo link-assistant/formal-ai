@@ -8,6 +8,7 @@ use crate::engine::DEFAULT_MODEL;
 use crate::protocol::{
     create_chat_completion, create_response, ChatCompletionRequest, ResponsesRequest,
 };
+use crate::telegram::handle_telegram_webhook;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ApiHttpResponse {
@@ -54,6 +55,11 @@ pub fn handle_api_request(method: &str, path: &str, body: &str) -> ApiHttpRespon
         ("POST", "/v1/responses") => match serde_json::from_str::<ResponsesRequest>(body) {
             Ok(request) => json_response(200, &create_response(&request)),
             Err(error) => error_response(400, &format!("invalid responses request: {error}")),
+        },
+        ("POST", "/telegram/webhook") => match handle_telegram_webhook(body) {
+            Ok(Some(reply)) => json_response(200, &reply),
+            Ok(None) => json_response(200, &json!({ "ok": true })),
+            Err(error) => error_response(400, &error.to_string()),
         },
         _ => error_response(404, "route not found"),
     }

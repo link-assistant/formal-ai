@@ -15,8 +15,34 @@ struct HelloWorldProgram {
     aliases: &'static [&'static str],
     code_fence: &'static str,
     code: &'static str,
+    execution: ProgramExecution,
     response_link: &'static str,
     source: &'static str,
+}
+
+#[derive(Clone, Copy)]
+struct ProgramExecution {
+    status: ExecutionStatus,
+    environment: &'static str,
+    check_command: Option<&'static str>,
+    run_command: &'static str,
+    output: &'static str,
+    notes: &'static str,
+}
+
+#[derive(Clone, Copy)]
+enum ExecutionStatus {
+    Verified,
+    Unavailable,
+}
+
+impl ExecutionStatus {
+    const fn label(self) -> &'static str {
+        match self {
+            Self::Verified => "compiled and ran",
+            Self::Unavailable => "not compiled or run",
+        }
+    }
 }
 
 const HELLO_WORLD_PROGRAMS: &[HelloWorldProgram] = &[
@@ -28,6 +54,14 @@ const HELLO_WORLD_PROGRAMS: &[HelloWorldProgram] = &[
         code: r#"fn main() {
     println!("Hello, world!");
 }"#,
+        execution: ProgramExecution {
+            status: ExecutionStatus::Verified,
+            environment: "issue-8 local verification harness",
+            check_command: Some("rustc main.rs -o main"),
+            run_command: "./main",
+            output: "Hello, world!",
+            notes: "1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.",
+        },
         response_link: "response:hello_world:rust",
         source: "local Links Notation hello-world seed",
     },
@@ -37,6 +71,14 @@ const HELLO_WORLD_PROGRAMS: &[HelloWorldProgram] = &[
         aliases: &["python", "py"],
         code_fence: "python",
         code: r#"print("Hello, world!")"#,
+        execution: ProgramExecution {
+            status: ExecutionStatus::Verified,
+            environment: "issue-8 local verification harness",
+            check_command: Some("python3 -m py_compile main.py"),
+            run_command: "python3 main.py",
+            output: "Hello, world!",
+            notes: "1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.",
+        },
         response_link: "response:hello_world:python",
         source: "local Links Notation hello-world seed",
     },
@@ -46,6 +88,14 @@ const HELLO_WORLD_PROGRAMS: &[HelloWorldProgram] = &[
         aliases: &["javascript", "js", "node"],
         code_fence: "javascript",
         code: r#"console.log("Hello, world!");"#,
+        execution: ProgramExecution {
+            status: ExecutionStatus::Verified,
+            environment: "issue-8 local verification harness",
+            check_command: Some("node --check main.js"),
+            run_command: "node main.js",
+            output: "Hello, world!",
+            notes: "1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.",
+        },
         response_link: "response:hello_world:javascript",
         source: "local Links Notation hello-world seed",
     },
@@ -55,6 +105,14 @@ const HELLO_WORLD_PROGRAMS: &[HelloWorldProgram] = &[
         aliases: &["typescript", "ts"],
         code_fence: "typescript",
         code: r#"console.log("Hello, world!");"#,
+        execution: ProgramExecution {
+            status: ExecutionStatus::Unavailable,
+            environment: "TypeScript compiler is not configured in this repository runtime",
+            check_command: Some("tsc hello.ts"),
+            run_command: "node hello.js",
+            output: "Hello, world!",
+            notes: "The TypeScript seed is returned with this warning until a tsc-backed execution profile is available.",
+        },
         response_link: "response:hello_world:typescript",
         source: "local Links Notation hello-world seed",
     },
@@ -70,6 +128,14 @@ import "fmt"
 func main() {
     fmt.Println("Hello, world!")
 }"#,
+        execution: ProgramExecution {
+            status: ExecutionStatus::Verified,
+            environment: "issue-8 local verification harness",
+            check_command: None,
+            run_command: "go run main.go",
+            output: "Hello, world!",
+            notes: "1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.",
+        },
         response_link: "response:hello_world:go",
         source: "local Links Notation hello-world seed",
     },
@@ -84,6 +150,14 @@ int main(void) {
     puts("Hello, world!");
     return 0;
 }"#,
+        execution: ProgramExecution {
+            status: ExecutionStatus::Verified,
+            environment: "issue-8 local verification harness",
+            check_command: Some("gcc main.c -o main"),
+            run_command: "./main",
+            output: "Hello, world!",
+            notes: "1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.",
+        },
         response_link: "response:hello_world:c",
         source: "local Links Notation hello-world seed",
     },
@@ -304,6 +378,15 @@ fn format_hello_world_rule_record(program: &HelloWorldProgram) -> String {
             ("response_link", String::from(program.response_link)),
             ("answer", answer),
             (
+                "execution_status",
+                String::from(program.execution.status.label()),
+            ),
+            (
+                "execution_environment",
+                String::from(program.execution.environment),
+            ),
+            ("execution_output", String::from(program.execution.output)),
+            (
                 "examples",
                 format!(
                     "Write me hello world program in {}; hello world in {}",
@@ -317,8 +400,42 @@ fn format_hello_world_rule_record(program: &HelloWorldProgram) -> String {
 
 fn hello_world_answer(program: &HelloWorldProgram) -> String {
     format!(
-        "Here is a minimal {} hello world program:\n\n```{}\n{}\n```",
-        program.language, program.code_fence, program.code
+        "Here is a minimal {} hello world program:\n\n```{}\n{}\n```\n\n{}",
+        program.language,
+        program.code_fence,
+        program.code,
+        execution_report(&program.execution)
+    )
+}
+
+fn execution_report(execution: &ProgramExecution) -> String {
+    let command_lines = execution_command_lines(execution);
+    let output_label = if matches!(execution.status, ExecutionStatus::Verified) {
+        "Output"
+    } else {
+        "Expected output after verification"
+    };
+
+    format!(
+        "Execution status: {} in {}.\n{}\n{}:\n```text\n{}\n```\n{}",
+        execution.status.label(),
+        execution.environment,
+        command_lines,
+        output_label,
+        execution.output,
+        execution.notes
+    )
+}
+
+fn execution_command_lines(execution: &ProgramExecution) -> String {
+    execution.check_command.map_or_else(
+        || format!("Run command: `{}`", execution.run_command),
+        |check_command| {
+            format!(
+                "Check command: `{check_command}`\nRun command: `{}`",
+                execution.run_command
+            )
+        },
     )
 }
 

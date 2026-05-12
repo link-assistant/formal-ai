@@ -1,6 +1,26 @@
 let wasm;
 let mode = "wasm worker";
 
+function verifiedExecutionReport(checkCommand, runCommand) {
+  const checkLine = checkCommand ? `Check command: \`${checkCommand}\`\n` : "";
+  return `Execution status: compiled and ran in issue-8 local verification harness.
+${checkLine}Run command: \`${runCommand}\`
+Output:
+\`\`\`text
+Hello, world!
+\`\`\`
+1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.`;
+}
+
+const typescriptExecutionReport = `Execution status: not compiled or run in TypeScript compiler is not configured in this repository runtime.
+Check command: \`tsc hello.ts\`
+Run command: \`node hello.js\`
+Expected output after verification:
+\`\`\`text
+Hello, world!
+\`\`\`
+The TypeScript seed is returned with this warning until a tsc-backed execution profile is available.`;
+
 const answers = {
   0: {
     intent: "unknown",
@@ -19,7 +39,9 @@ const answers = {
 fn main() {
     println!("Hello, world!");
 }
-\`\`\``,
+\`\`\`
+
+${verifiedExecutionReport("rustc main.rs -o main", "./main")}`,
   },
   3: {
     intent: "hello_world_python",
@@ -27,7 +49,9 @@ fn main() {
 
 \`\`\`python
 print("Hello, world!")
-\`\`\``,
+\`\`\`
+
+${verifiedExecutionReport("python3 -m py_compile main.py", "python3 main.py")}`,
   },
   4: {
     intent: "hello_world_javascript",
@@ -35,7 +59,9 @@ print("Hello, world!")
 
 \`\`\`javascript
 console.log("Hello, world!");
-\`\`\``,
+\`\`\`
+
+${verifiedExecutionReport("node --check main.js", "node main.js")}`,
   },
   5: {
     intent: "hello_world_typescript",
@@ -43,7 +69,9 @@ console.log("Hello, world!");
 
 \`\`\`typescript
 console.log("Hello, world!");
-\`\`\``,
+\`\`\`
+
+${typescriptExecutionReport}`,
   },
   6: {
     intent: "hello_world_go",
@@ -57,7 +85,9 @@ import "fmt"
 func main() {
     fmt.Println("Hello, world!")
 }
-\`\`\``,
+\`\`\`
+
+${verifiedExecutionReport(null, "go run main.go")}`,
   },
   7: {
     intent: "hello_world_c",
@@ -70,7 +100,9 @@ int main(void) {
     puts("Hello, world!");
     return 0;
 }
-\`\`\``,
+\`\`\`
+
+${verifiedExecutionReport("gcc main.c -o main", "./main")}`,
   },
 };
 

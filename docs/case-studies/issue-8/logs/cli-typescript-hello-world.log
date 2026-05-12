@@ -1,0 +1,21 @@
+{
+  "id": "chatcmpl_eea6d00d93631c02",
+  "object": "chat.completion",
+  "created": 0,
+  "model": "formal-symbolic-poc",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "Here is a minimal TypeScript hello world program:\n\n```typescript\nconsole.log(\"Hello, world!\");\n```\n\nExecution status: not compiled or run in TypeScript compiler is not configured in this repository runtime.\nCheck command: `tsc hello.ts`\nRun command: `node hello.js`\nExpected output after verification:\n```text\nHello, world!\n```\nThe TypeScript seed is returned with this warning until a tsc-backed execution profile is available."
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 5,
+    "completion_tokens": 59,
+    "total_tokens": 64
+  }
+}
