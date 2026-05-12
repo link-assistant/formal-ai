@@ -1,0 +1,1 @@
+rd_("ci64csum000Ahexample_sum_package_name")
