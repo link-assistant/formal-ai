@@ -14,7 +14,9 @@
 body {
   margin: 0;
   min-width: 320px;
+  height: 100vh;
   min-height: 100vh;
+  overflow: hidden;
 }
 
 button,
@@ -27,7 +29,8 @@ button {
 }
 
 .app {
-  min-height: 100vh;
+  height: 100vh;
+  min-height: 0;
   display: grid;
   grid-template-rows: auto 1fr;
 }
@@ -82,7 +85,14 @@ button {
   font-size: 14px;
 }
 
+.demo-status {
+  color: #40515f;
+  font-size: 14px;
+  font-weight: 700;
+}
+
 .mode-toggle,
+.diagnostics-toggle,
 .preview-toggle,
 .send-button,
 .prompt-list button {
@@ -94,12 +104,14 @@ button {
 }
 
 .mode-toggle,
+.diagnostics-toggle,
 .preview-toggle {
   min-height: 38px;
   padding: 0 12px;
 }
 
 .mode-toggle[aria-pressed="true"],
+.diagnostics-toggle[aria-pressed="true"],
 .preview-toggle[aria-pressed="true"],
 .send-button {
   border-color: #175f4f;
@@ -111,12 +123,14 @@ button {
   min-height: 0;
   display: grid;
   grid-template-columns: minmax(220px, 300px) minmax(0, 1fr);
+  overflow: hidden;
 }
 
 .context-panel {
   display: grid;
   align-content: start;
   gap: 14px;
+  overflow: auto;
   padding: 18px;
   border-right: 1px solid #d6dde1;
   background: #f7f8fa;
@@ -303,6 +317,30 @@ button {
   font-weight: 700;
 }
 
+.thinking-steps {
+  margin-top: 10px;
+  border-top: 1px solid #dce4e7;
+  padding-top: 10px;
+  color: #4b5e6b;
+  font-size: 12px;
+}
+
+.thinking-steps strong {
+  display: block;
+  margin-bottom: 6px;
+  color: #40515f;
+  text-transform: uppercase;
+}
+
+.thinking-steps ol {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.thinking-steps li + li {
+  margin-top: 4px;
+}
+
 .pending .message-body {
   width: 116px;
 }
@@ -378,18 +416,35 @@ textarea:disabled {
 @media (max-width: 820px) {
   .topbar {
     min-height: 58px;
-    padding: 0 14px;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    padding: 10px 14px;
   }
 
   .status {
     display: none;
   }
 
+  .topbar-actions {
+    flex: 1 1 220px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+
+  .demo-status {
+    flex-basis: 100%;
+    font-size: 12px;
+    text-align: right;
+  }
+
   .workspace {
     grid-template-columns: 1fr;
+    grid-template-rows: auto minmax(0, 1fr);
   }
 
   .context-panel {
+    max-height: 260px;
     border-right: 0;
     border-bottom: 1px solid #d6dde1;
   }
@@ -435,5 +490,12 @@ textarea:disabled {
 
   .mode-toggle {
     min-width: 84px;
+  }
+
+  .diagnostics-toggle {
+    max-width: 118px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 }

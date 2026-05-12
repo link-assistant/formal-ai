@@ -18,18 +18,30 @@ This document turns issue [#1](https://github.com/link-assistant/formal-ai/issue
 | R12 | Provide a CLI. | Implemented by the `formal-ai` binary. |
 | R13 | Provide an API server from the CLI. | Implemented by `formal-ai serve`. |
 | R14 | Provide a Docker-ready microservice. | Implemented with the root `Dockerfile`. |
-| R15 | Provide a GitHub Pages React demo chat page. | Implemented in `docs/demo` with markdown messages, markdown input preview, quick prompts, trace metadata, and randomized demo dialogs inspired by `link-assistant/react-chat-ui`. |
+| R15 | Provide a GitHub Pages React demo chat page. | Implemented in `docs/demo` with markdown messages, markdown input preview, quick prompts, diagnostics-gated trace metadata, and randomized demo dialogs inspired by `link-assistant/react-chat-ui`. |
 | R16 | Use a Rust WebAssembly worker for the demo. | Implemented by `docs/demo/formal_ai_worker.wasm`, built from `docs/demo/wasm-worker/src/lib.rs`, now covering multiple hello-world languages. |
 | R17 | Provide a desktop application path similar to `vk-bot-desktop`. | Documented as a future wrapper around the same HTTP/library boundary; not expanded into a native app in this prototype PR. |
 | R18 | Use formal reasoning / theorem proving components where appropriate. | Documented as a later integration point for `relative-meta-logic`. |
 | R19 | Store issue research under `docs/case-studies/issue-1`. | Implemented with raw GitHub data and a case-study README. |
 | R20 | Add tests for minimum API/CLI/UI interactions. | Implemented for library, protocol, server handler, CLI, and manually verified UI. |
-| R21 | Use the richest relevant chat UI patterns from `link-assistant/react-chat-ui`, including markdown messages and markdown input. | Implemented in the static React demo with markdown rendering, sanitized markdown preview, quick prompt controls, metadata, and evidence chips. |
-| R22 | Make the demo dialog start with `Hi` or `Hello` from the user. | Implemented: the default transcript starts with user `Hi`, and randomized demo mode starts each cycle with a user greeting. |
-| R23 | Add randomized demo dialog mode that cycles every 10-20 seconds and asks for different programming languages. | Implemented with a top-level demo toggle and randomized Rust, Python, JavaScript, TypeScript, Go, and C prompts. |
+| R21 | Use the richest relevant chat UI patterns from `link-assistant/react-chat-ui`, including markdown messages and markdown input. | Implemented in the static React demo with markdown rendering, sanitized markdown preview, quick prompt controls, and diagnostics-gated metadata/evidence chips. |
+| R22 | Make the demo dialog start with `Hi` or `Hello` from the user. | Implemented: randomized demo mode starts each cycle with a user greeting. |
+| R23 | Add randomized demo dialog mode that cycles every 10-20 seconds and asks for different programming languages. | Implemented with a top-level demo toggle, default-on randomized mode, a live next-dialog countdown, and randomized Rust, Python, JavaScript, TypeScript, Go, and C prompts. |
 | R24 | Add Rust-script dataset download/conversion scripts and save datasets as Links Notation under `data/`. | Implemented by `scripts/download-datasets.rs`, which writes source indexes, greetings, hello-world seeds, and demo-dialog seeds as `.lino`. |
 | R25 | Ensure no `.lino` file exceeds 1500 lines. | Implemented by extending `scripts/check-file-size.rs` and adding unit coverage that parses and bounds every checked-in `.lino` file. |
 
 ## Current Scope Boundary
 
 This PR is a proof of concept, not a full universal problem solver. The implemented core proves that the repository can expose OpenAI-shaped interfaces while returning symbolic, inspectable, Links Notation-backed answers and reviewable seed datasets. Full imports of very large corpora such as Wikipedia, Wikidata, Rosetta Code, Wikifunctions, and hive-mind history should run as chunked follow-up dataset jobs behind the same `.lino` format and 1500-line file limit.
+
+## Issue #6 UI Follow-Up Requirements
+
+Issue [#6](https://github.com/link-assistant/formal-ai/issues/6) adds these UI requirements to the demo surface:
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R26 | Start the browser demo in interactive demo mode by default. | Implemented by initializing demo mode to `true`. |
+| R27 | Update the next-dialog timer every second. | Implemented with `demoCountdown` state updated by a one-second interval. |
+| R28 | Hide diagnostics unless diagnostics mode is enabled. | Implemented with a default-off diagnostics toggle gating trace, intent, evidence, worker status, and thinking steps. |
+| R29 | Keep the default chat transcript focused on user-visible messages. | Implemented by hiding diagnostic chips and evidence in normal mode. |
+| R30 | Preserve issue data and analysis under `docs/case-studies/issue-6`. | Implemented with raw GitHub data, the issue screenshot, online research, requirement extraction, and solution notes. |
