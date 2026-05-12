@@ -1,7 +1,15 @@
-use example_sum_package_name::sum;
+use formal_ai::{create_chat_completion, ChatCompletionRequest, ChatMessage, MessageContent};
 
 fn main() {
-    println!("2 + 3 = {}", sum(2, 3));
-    println!("-5 + 10 = {}", sum(-5, 10));
-    println!("1000 + 2000 = {}", sum(1000, 2000));
+    let request = ChatCompletionRequest {
+        model: None,
+        messages: vec![ChatMessage {
+            role: String::from("user"),
+            content: MessageContent::Text(String::from("Write me hello world program in Rust")),
+        }],
+        stream: false,
+    };
+    let completion = create_chat_completion(&request);
+
+    println!("{}", completion.choices[0].message.content.plain_text());
 }
