@@ -6,10 +6,11 @@ This guide covers common CI/CD issues and their solutions for Rust projects usin
 
 1. [Release Jobs Skipped](#release-jobs-skipped)
 2. [Version Already Released (False Positive)](#version-already-released-false-positive)
-3. [Crates.io Publishing Fails](#cratesio-publishing-fails)
-4. [Docker Hub Publishing Fails](#docker-hub-publishing-fails)
-5. [Secret Configuration Issues](#secret-configuration-issues)
-6. [Multi-Language Repository Issues](#multi-language-repository-issues)
+3. [GitHub Pages Deploy Succeeds but Site Is Not Updated](#github-pages-deploy-succeeds-but-site-is-not-updated)
+4. [Crates.io Publishing Fails](#cratesio-publishing-fails)
+5. [Docker Hub Publishing Fails](#docker-hub-publishing-fails)
+6. [Secret Configuration Issues](#secret-configuration-issues)
+7. [Multi-Language Repository Issues](#multi-language-repository-issues)
 
 ---
 
@@ -75,6 +76,53 @@ curl -s "https://crates.io/api/v1/crates/YOUR_CRATE_NAME" | jq
 
 ### Reference
 - [browser-commander Issue #29](https://github.com/link-foundation/browser-commander/issues/29)
+
+---
+
+## GitHub Pages Deploy Succeeds but Site Is Not Updated
+
+### Symptom
+The Pages deploy job reports success, but the live site still serves old content or a 404. E2E tests against the live Pages URL fail even though the deploy step passed.
+
+### Root Cause
+The repository Pages source and the workflow deploy method are mismatched. If repository settings use GitHub Actions as the Pages source, pushing files to a `gh-pages` branch only proves that Git accepted the push. It does not prove that GitHub Pages created and served a workflow deployment.
+
+### Solution
+For repositories configured with Pages source `GitHub Actions`, deploy a Pages artifact:
+
+```yaml
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+environment:
+  name: github-pages
+  url: ${{ steps.deployment.outputs.page_url }}
+
+steps:
+  - uses: actions/configure-pages@v6
+  - uses: actions/upload-pages-artifact@v5
+    with:
+      path: docs/demo
+  - id: deployment
+    uses: actions/deploy-pages@v5
+```
+
+When follow-up e2e tests verify the deployed site, pass `steps.deployment.outputs.page_url` through a job output instead of hard-coding the Pages URL.
+
+### Verification
+Check the repository Pages source:
+
+```bash
+gh api repos/OWNER/REPO/pages --jq '{build_type,html_url,source}'
+```
+
+If `build_type` is `workflow`, prefer the Pages artifact deployment path above.
+
+### Reference
+- [GitHub Pages custom workflows](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages)
+- [Issue 4 case study](../case-studies/issue-4/README.md)
 
 ---
 
