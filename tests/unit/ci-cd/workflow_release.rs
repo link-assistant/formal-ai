@@ -48,16 +48,16 @@ fn workflow_job_names(workflow: &str) -> Vec<&str> {
 }
 
 #[test]
-fn documentation_deploy_is_independent_from_release_publication() {
+fn demo_deploy_is_independent_from_release_publication() {
     let workflow = release_workflow();
-    let deploy_docs = job_block(&workflow, "deploy-docs");
+    let deploy_demo = job_block(&workflow, "deploy-demo");
 
-    assert!(deploy_docs.contains("needs: [build]"));
-    assert!(deploy_docs.contains("needs.build.result == 'success'"));
-    assert!(deploy_docs.contains("github.ref == 'refs/heads/main'"));
-    assert!(!deploy_docs.contains("needs: [auto-release, manual-release]"));
-    assert!(!deploy_docs.contains("needs.auto-release.result"));
-    assert!(!deploy_docs.contains("needs.manual-release.result"));
+    assert!(deploy_demo.contains("needs: [build]"));
+    assert!(deploy_demo.contains("needs.build.result == 'success'"));
+    assert!(deploy_demo.contains("github.ref == 'refs/heads/main'"));
+    assert!(!deploy_demo.contains("needs: [auto-release, manual-release]"));
+    assert!(!deploy_demo.contains("needs.auto-release.result"));
+    assert!(!deploy_demo.contains("needs.manual-release.result"));
 }
 
 #[test]
@@ -74,7 +74,9 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         ("auto-release", 30),
         ("manual-release", 30),
         ("changelog-pr", 10),
-        ("deploy-docs", 15),
+        ("test-e2e-local", 15),
+        ("deploy-demo", 15),
+        ("test-e2e-pages", 15),
     ];
 
     let actual_jobs = workflow_job_names(&workflow);

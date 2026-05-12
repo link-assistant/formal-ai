@@ -1,0 +1,13 @@
+{
+  "name": "formal-ai-e2e",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test:local": "playwright test --config=playwright.local.config.js",
+    "test:pages": "playwright test --config=playwright.pages.config.js"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.0",
+    "serve": "^14.2.0"
+  }
+}
