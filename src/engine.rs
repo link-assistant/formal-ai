@@ -4,9 +4,16 @@ use serde::{Deserialize, Serialize};
 pub const DEFAULT_MODEL: &str = "formal-symbolic-poc";
 
 const GREETING_ANSWER: &str = "Hi, how may I help you?";
+const IDENTITY_ANSWER: &str = "I am formal-ai, a deterministic symbolic AI proof of concept that answers from local Links Notation rules and OpenAI-compatible API shapes. I do not perform neural inference in this demo.";
 const UNKNOWN_ANSWER: &str = "I do not have a learned symbolic rule for that prompt yet. Add a Links Notation fact or rule, then run the request again.";
 
 const GREETING_EXAMPLES: &[&str] = &["Hi", "Hello", "Hey"];
+const IDENTITY_EXAMPLES: &[&str] = &[
+    "Who are you?",
+    "What are you?",
+    "Tell me about yourself",
+    "What is formal-ai?",
+];
 const UNKNOWN_EXAMPLES: &[&str] = &["Any prompt without a matching symbolic rule"];
 
 struct HelloWorldProgram {
@@ -147,7 +154,7 @@ pub fn knowledge_links_notation() -> String {
                         "untyped indented Links Notation via lino-objects-codec format helpers",
                     ),
                 ),
-                ("rule_count", (HELLO_WORLD_PROGRAMS.len() + 2).to_string()),
+                ("rule_count", (HELLO_WORLD_PROGRAMS.len() + 3).to_string()),
             ],
         ),
         format_lino_record(
@@ -157,6 +164,16 @@ pub fn knowledge_links_notation() -> String {
                 ("response_link", String::from("response:greeting")),
                 ("answer", String::from(GREETING_ANSWER)),
                 ("examples", GREETING_EXAMPLES.join(", ")),
+                ("source", String::from("local symbolic seed set")),
+            ],
+        ),
+        format_lino_record(
+            "rule_identity",
+            &[
+                ("intent", String::from("identity")),
+                ("response_link", String::from("response:identity")),
+                ("answer", String::from(IDENTITY_ANSWER)),
+                ("examples", IDENTITY_EXAMPLES.join(", ")),
                 ("source", String::from("local symbolic seed set")),
             ],
         ),
@@ -199,6 +216,7 @@ pub fn stable_id(prefix: &str, text: &str) -> String {
 
 enum SelectedRule {
     Greeting,
+    Identity,
     HelloWorld(&'static HelloWorldProgram),
     Unknown,
 }
@@ -207,6 +225,7 @@ impl SelectedRule {
     fn intent(&self) -> String {
         match self {
             Self::Greeting => String::from("greeting"),
+            Self::Identity => String::from("identity"),
             Self::HelloWorld(program) => format!("hello_world_{}", program.slug),
             Self::Unknown => String::from("unknown"),
         }
@@ -215,6 +234,7 @@ impl SelectedRule {
     const fn response_link(&self) -> &'static str {
         match self {
             Self::Greeting => "response:greeting",
+            Self::Identity => "response:identity",
             Self::HelloWorld(program) => program.response_link,
             Self::Unknown => "response:unknown",
         }
@@ -223,6 +243,7 @@ impl SelectedRule {
     fn answer(&self) -> String {
         match self {
             Self::Greeting => String::from(GREETING_ANSWER),
+            Self::Identity => String::from(IDENTITY_ANSWER),
             Self::HelloWorld(program) => hello_world_answer(program),
             Self::Unknown => String::from(UNKNOWN_ANSWER),
         }
@@ -232,6 +253,8 @@ impl SelectedRule {
 fn select_rule(normalized_prompt: &str) -> SelectedRule {
     if is_greeting(normalized_prompt) {
         SelectedRule::Greeting
+    } else if is_identity_question(normalized_prompt) {
+        SelectedRule::Identity
     } else if let Some(program) = hello_world_program(normalized_prompt) {
         SelectedRule::HelloWorld(program)
     } else {
@@ -241,6 +264,28 @@ fn select_rule(normalized_prompt: &str) -> SelectedRule {
 
 fn is_greeting(normalized_prompt: &str) -> bool {
     matches!(normalized_prompt, "hi" | "hello" | "hey")
+}
+
+fn is_identity_question(normalized_prompt: &str) -> bool {
+    matches!(
+        normalized_prompt,
+        "who are you"
+            | "what are you"
+            | "who is formal ai"
+            | "what is formal ai"
+            | "who is formalai"
+            | "what is formalai"
+            | "tell me about yourself"
+            | "introduce yourself"
+    ) || (contains_token(normalized_prompt, "who") && contains_token(normalized_prompt, "you"))
+        || (contains_token(normalized_prompt, "what") && contains_token(normalized_prompt, "you"))
+        || ((contains_token(normalized_prompt, "who") || contains_token(normalized_prompt, "what"))
+            && contains_token(normalized_prompt, "formal")
+            && contains_token(normalized_prompt, "ai"))
+        || (contains_token(normalized_prompt, "tell")
+            && contains_token(normalized_prompt, "yourself"))
+        || (contains_token(normalized_prompt, "introduce")
+            && contains_token(normalized_prompt, "yourself"))
 }
 
 fn hello_world_program(normalized_prompt: &str) -> Option<&'static HelloWorldProgram> {

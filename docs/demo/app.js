@@ -7,8 +7,14 @@ const {
   useState,
 } = React;
 
+const APP_VERSION =
+  document.querySelector('meta[name="formal-ai-version"]')?.content || "0.16.0";
+const ISSUE_REPOSITORY = "link-assistant/formal-ai";
+const ISSUE_LABELS = "bug";
 const UNKNOWN_ANSWER =
   "I do not have a learned symbolic rule for that prompt yet. Add a Links Notation fact or rule, then run the request again.";
+const IDENTITY_ANSWER =
+  "I am formal-ai, a deterministic symbolic AI proof of concept that answers from local Links Notation rules and OpenAI-compatible API shapes. I do not perform neural inference in this demo.";
 
 const QUICK_PROMPTS = [
   "Hi",
@@ -107,12 +113,45 @@ function markdownHtml(value) {
   return { __html: escapeHtml(text).replaceAll("\n", "<br>") };
 }
 
+function normalizePrompt(prompt) {
+  return prompt.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+}
+
+function isIdentityPrompt(normalized) {
+  const tokens = normalized ? normalized.split(/\s+/) : [];
+  const has = (token) => tokens.includes(token);
+  return (
+    [
+      "who are you",
+      "what are you",
+      "who is formal ai",
+      "what is formal ai",
+      "who is formalai",
+      "what is formalai",
+      "tell me about yourself",
+      "introduce yourself",
+    ].includes(normalized) ||
+    (has("who") && has("you")) ||
+    (has("what") && has("you")) ||
+    ((has("who") || has("what")) && has("formal") && has("ai")) ||
+    (has("tell") && has("yourself")) ||
+    (has("introduce") && has("yourself"))
+  );
+}
+
 function localFallbackAnswer(prompt) {
-  const normalized = prompt.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+  const normalized = normalizePrompt(prompt);
   if (["hi", "hello", "hey"].includes(normalized)) {
     return {
       intent: "greeting",
       content: "Hi, how may I help you?",
+    };
+  }
+
+  if (isIdentityPrompt(normalized)) {
+    return {
+      intent: "identity",
+      content: IDENTITY_ANSWER,
     };
   }
 
@@ -137,9 +176,126 @@ function createDemoTurns() {
   ];
 }
 
-function Message({ message, diagnosticsMode }) {
+function appendCodeBlock(lines, value) {
+  const text = String(value ?? "");
+  const fence = text.includes("```") ? "````" : "```";
+  lines.push(fence);
+  lines.push(text);
+  lines.push(fence);
+}
+
+function shortText(value, limit = 70) {
+  const normalized = String(value ?? "").replace(/\s+/g, " ").trim();
+  if (normalized.length <= limit) {
+    return normalized;
+  }
+
+  return `${normalized.slice(0, limit - 3)}...`;
+}
+
+function promptBeforeMessage(messages, focusMessage) {
+  let prompt = "";
+  for (const message of messages) {
+    if (message.role === "user") {
+      prompt = message.content;
+    }
+    if (focusMessage && message.id === focusMessage.id) {
+      break;
+    }
+  }
+  return prompt;
+}
+
+function createIssueTitle(messages, focusMessage) {
+  const prompt = promptBeforeMessage(messages, focusMessage);
+  if (focusMessage?.intent === "unknown" && prompt) {
+    return `Unknown prompt: ${shortText(prompt, 80)}`;
+  }
+  if (prompt) {
+    return `Issue with dialog: ${shortText(prompt, 80)}`;
+  }
+  return "formal-ai demo issue report";
+}
+
+function createIssueReportBody({
+  messages,
+  focusMessage,
+  workerState,
+  demoMode,
+  demoStatus,
+  diagnosticsMode,
+}) {
+  const lines = [
+    "## Environment",
+    "",
+    `- **Version**: ${APP_VERSION}`,
+    `- **URL**: ${window.location.href}`,
+    `- **User Agent**: ${navigator.userAgent}`,
+    `- **Worker**: ${workerState}`,
+    `- **Mode**: ${demoMode ? "demo" : "manual"}`,
+    `- **Status**: ${demoStatus}`,
+    `- **Diagnostics**: ${diagnosticsMode ? "on" : "off"}`,
+    `- **Timestamp**: ${new Date().toISOString()}`,
+    "",
+    "## Dialog",
+    "",
+  ];
+
+  if (messages.length === 0) {
+    lines.push("No messages have been sent yet.");
+  } else {
+    messages.forEach((message, index) => {
+      const reported = focusMessage?.id === message.id ? " (reported message)" : "";
+      lines.push(`### ${index + 1}. ${message.author}${reported}`);
+      lines.push("");
+      lines.push(`- **Role**: ${message.role}`);
+      lines.push(`- **Time**: ${message.sentAt}`);
+      if (message.intent) {
+        lines.push(`- **Intent**: intent: ${message.intent}`);
+      }
+      if (message.demoLabel) {
+        lines.push(`- **Demo label**: ${message.demoLabel}`);
+      }
+      lines.push("");
+      appendCodeBlock(lines, message.content);
+      lines.push("");
+    });
+  }
+
+  const prompt = promptBeforeMessage(messages, focusMessage);
+  lines.push("");
+  lines.push("## Reproduction Steps");
+  lines.push("");
+  lines.push(`1. Open ${window.location.href}`);
+  if (prompt) {
+    lines.push(`2. Send the prompt "${shortText(prompt, 120)}"`);
+    lines.push("3. Click the report link on the dialog message");
+  } else {
+    lines.push("2. Use the demo until the issue occurs");
+    lines.push("3. Click Report issue");
+  }
+  lines.push("");
+  lines.push("## Description");
+  lines.push("");
+  lines.push("<!-- Please describe what looked wrong or incomplete. -->");
+  lines.push("");
+
+  return lines.join("\n");
+}
+
+function createIssueUrl(context) {
+  const params = new URLSearchParams({
+    title: createIssueTitle(context.messages, context.focusMessage),
+    body: createIssueReportBody(context),
+    labels: ISSUE_LABELS,
+  });
+  return `https://github.com/${ISSUE_REPOSITORY}/issues/new?${params.toString()}`;
+}
+
+function Message({ message, diagnosticsMode, reportIssueUrl }) {
   const evidence = diagnosticsMode ? (message.evidence ?? []) : [];
   const thinkingSteps = diagnosticsMode ? (message.thinkingSteps ?? []) : [];
+  const reportLabel = message.intent === "unknown" ? "Report missing rule" : "Report issue";
 
   return h(
     "article",
@@ -180,6 +336,21 @@ function Message({ message, diagnosticsMode }) {
             ),
           )
         : null,
+      reportIssueUrl
+        ? h(
+            "div",
+            { className: "message-actions" },
+            h(
+              "a",
+              {
+                href: reportIssueUrl,
+                target: "_blank",
+                rel: "noopener noreferrer",
+              },
+              reportLabel,
+            ),
+          )
+        : null,
     ),
   );
 }
@@ -196,7 +367,6 @@ function App() {
   const [demoPhase, setDemoPhase] = useState("manual");
   const [demoCountdown, setDemoCountdown] = useState(null);
   const [diagnosticsMode, setDiagnosticsMode] = useState(false);
-  const [previewInput, setPreviewInput] = useState(false);
 
   useEffect(() => {
     const worker = new Worker("formal_ai_worker.js");
@@ -357,6 +527,14 @@ function App() {
       ? `Next dialog in ${demoCountdown}s`
       : "Demo playing"
     : "Manual mode";
+  const reportContext = {
+    messages,
+    workerState,
+    demoMode,
+    demoStatus,
+    diagnosticsMode,
+  };
+  const currentReportUrl = createIssueUrl(reportContext);
 
   return h(
     "main",
@@ -370,6 +548,16 @@ function App() {
         { className: "topbar-actions" },
         h("span", { className: "demo-status", "data-testid": "demo-status", role: "status" }, demoStatus),
         diagnosticsMode ? h("span", { className: "status" }, workerState) : null,
+        h(
+          "a",
+          {
+            className: "report-button",
+            href: currentReportUrl,
+            target: "_blank",
+            rel: "noopener noreferrer",
+          },
+          "Report issue",
+        ),
         h(
           "button",
           {
@@ -436,7 +624,15 @@ function App() {
           "section",
           { className: "messages", "aria-live": "polite", "data-testid": "message-list" },
           messages.map((message) =>
-            h(Message, { key: message.id, message, diagnosticsMode }),
+            h(Message, {
+              key: message.id,
+              message,
+              diagnosticsMode,
+              reportIssueUrl:
+                message.role === "assistant"
+                  ? createIssueUrl({ ...reportContext, focusMessage: message })
+                  : null,
+            }),
           ),
           pending
             ? h(
@@ -459,20 +655,6 @@ function App() {
           },
           h(
             "div",
-            { className: "composer-toolbar" },
-            h(
-              "button",
-              {
-                type: "button",
-                className: "preview-toggle",
-                "aria-pressed": previewInput,
-                onClick: () => setPreviewInput((value) => !value),
-              },
-              previewInput ? "Write" : "Preview",
-            ),
-          ),
-          h(
-            "div",
             { className: "composer-grid" },
             h("textarea", {
               value: prompt,
@@ -483,12 +665,6 @@ function App() {
               disabled: demoMode,
               "data-testid": "chat-composer-input",
             }),
-            previewInput
-              ? h("div", {
-                  className: "composer-preview markdown-body",
-                  dangerouslySetInnerHTML: markdownHtml(prompt || " "),
-                })
-              : null,
             h(
               "button",
               {
