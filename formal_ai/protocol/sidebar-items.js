@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["MessageContent"],"fn":["create_chat_completion","create_response"],"struct":["ChatChoice","ChatCompletion","ChatCompletionRequest","ChatMessage","MessageContentPart","ResponseObject","ResponseOutputContent","ResponseOutputMessage","ResponseUsage","ResponsesRequest","TokenUsage"]};

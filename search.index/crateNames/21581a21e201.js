@@ -1,1 +1,0 @@
-rd_("Ahexample_sum_package_name")
