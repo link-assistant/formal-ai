@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["DEFAULT_MODEL"],"fn":["estimate_tokens","knowledge_links_notation","stable_id"],"struct":["FormalAiEngine","SymbolicAnswer"]};
