@@ -1,6 +1,6 @@
 [package]
 name = "example-sum-package-name"
-version = "0.11.0"
+version = "0.12.0"
 edition = "2021"
 description = "A Rust package template for AI-driven development"
 readme = "README.md"
