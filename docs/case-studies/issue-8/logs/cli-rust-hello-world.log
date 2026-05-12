@@ -1,0 +1,21 @@
+{
+  "id": "chatcmpl_f0c8ccc64e37919d",
+  "object": "chat.completion",
+  "created": 0,
+  "model": "formal-symbolic-poc",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "Here is a minimal Rust hello world program:\n\n```rust\nfn main() {\n    println!(\"Hello, world!\");\n}\n```\n\nExecution status: compiled and ran in issue-8 local verification harness.\nCheck command: `rustc main.rs -o main`\nRun command: `./main`\nOutput:\n```text\nHello, world!\n```\n1 iteration completed under the 1 minute execution budget; no timeout reduction was needed."
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 7,
+    "completion_tokens": 54,
+    "total_tokens": 61
+  }
+}

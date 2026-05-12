@@ -1,0 +1,16 @@
+│ session   4bde8bf6-d13f-4216-bedc-529226b6452e
+│ start     2026-05-12 19:28:58.069
+│
+$ --help
+
+/bin/sh: 0: Illegal option --
+
+✗
+│ finish    2026-05-12 19:28:58.109
+│ duration  0.040s
+│ exit      2
+│
+│ log       /tmp/start-command/logs/direct/4bde8bf6-d13f-4216-bedc-529226b6452e.log
+│ session   4bde8bf6-d13f-4216-bedc-529226b6452e
+
+Repository not detected - automatic issue creation skipped

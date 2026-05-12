@@ -1,0 +1,19 @@
+│ session   c3ec6fa0-9441-4ae0-9385-45c9c2aea405
+│ start     2026-05-12 19:32:40.550
+│
+$ bash experiments/verify-hello-world-examples.sh
+
+rust: verified output "Hello, world!"
+python: verified output "Hello, world!"
+javascript: verified output "Hello, world!"
+typescript: unavailable (tsc is not installed in this runtime)
+go: verified output "Hello, world!"
+c: verified output "Hello, world!"
+
+✓
+│ finish    2026-05-12 19:32:41.461
+│ duration  0.911s
+│ exit      0
+│
+│ log       /tmp/start-command/logs/direct/c3ec6fa0-9441-4ae0-9385-45c9c2aea405.log
+│ session   c3ec6fa0-9441-4ae0-9385-45c9c2aea405

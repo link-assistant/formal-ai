@@ -1,0 +1,27 @@
+
+> formal-ai-e2e@1.0.0 test:local
+> playwright test --config=playwright.local.config.js
+
+[2m[WebServer] [22m(node:1309452) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 16 tests using 1 worker
+
+  ✓   1 [chromium] › tests/demo.spec.js:18:3 › formal-ai demo UI › page title is formal-ai (545ms)
+  ✓   2 [chromium] › tests/demo.spec.js:22:3 › formal-ai demo UI › brand header is visible (395ms)
+  ✓   3 [chromium] › tests/demo.spec.js:27:3 › formal-ai demo UI › demo mode starts automatically and exposes a live countdown (6.4s)
+  ✓   4 [chromium] › tests/demo.spec.js:45:3 › formal-ai demo UI › automatic demo renders a chat exchange (1.7s)
+  ✓   5 [chromium] › tests/demo.spec.js:58:3 › formal-ai demo UI › quick prompts sidebar is visible with expected prompts (379ms)
+  ✓   6 [chromium] › tests/demo.spec.js:67:3 › formal-ai demo UI › chat input and send button are present (432ms)
+  ✓   7 [chromium] › tests/demo.spec.js:78:3 › formal-ai demo UI › send button is disabled when input is empty (388ms)
+  ✓   8 [chromium] › tests/demo.spec.js:85:3 › formal-ai demo UI › clicking a quick prompt populates the input (433ms)
+  ✓   9 [chromium] › tests/demo.spec.js:94:3 › formal-ai demo UI › sending a greeting produces an assistant reply (589ms)
+  ✓  10 [chromium] › tests/demo.spec.js:114:3 › formal-ai demo UI › sending a hello world request produces a code block (465ms)
+  ✓  11 [chromium] › tests/demo.spec.js:135:3 › formal-ai demo UI › pressing Enter submits the message (593ms)
+  ✓  12 [chromium] › tests/demo.spec.js:149:3 › formal-ai demo UI › demo mode toggle button is present (403ms)
+  ✓  13 [chromium] › tests/demo.spec.js:158:3 › formal-ai demo UI › toggling demo mode disables the input (435ms)
+  ✓  14 [chromium] › tests/demo.spec.js:168:3 › formal-ai demo UI › diagnostics are hidden by default (402ms)
+  ✓  15 [chromium] › tests/demo.spec.js:175:3 › formal-ai demo UI › diagnostics toggle shows trace, intent, evidence, and thinking steps (1.7s)
+  ✓  16 [chromium] › tests/demo.spec.js:196:3 › formal-ai demo UI › preview toggle switches between write and preview mode (522ms)
+
+  16 passed (17.8s)

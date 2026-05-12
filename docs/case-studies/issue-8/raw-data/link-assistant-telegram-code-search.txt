@@ -1,0 +1,46 @@
+link-assistant/hive-mind:src/telegram-markdown.lib.mjs: * Telegram markdown escaping utilities
+link-assistant/hive-mind:src/telegram-markdown.lib.mjs: * @module telegram-markdown.lib
+link-assistant/hive-mind:src/telegram-markdown.lib.mjs: * Escape special characters for Telegram's basic Markdown parser.
+link-assistant/hive-mind:src/telegram-safe-reply.lib.mjs: console.error(`[telegram-bot] ${scope}: formatted Telegram message failed: ${message}`);
+link-assistant/hive-mind:src/telegram-safe-reply.lib.mjs: function wrapTelegramMethod(telegram, methodName, textIndex, optionsIndex, defaults = {}) {
+link-assistant/hive-mind:src/telegram-safe-reply.lib.mjs: const original = telegram?.[methodName];
+link-assistant/master-plan:README.md: - **[telegram-bot](https://github.com/deep-assistant/telegram-bot/blob/main/ARCHITECTURE.md)** - Dual-language Telegram bot (Python/JavaScript)
+link-assistant/master-plan:README.md: - **[GPTutor](https://github.com/deep-assistant/GPTutor/blob/main/ARCHITECTURE.md)** - Multi-platform educational AI (VK/Telegram mini apps)
+link-assistant/master-plan:README.md: - **Link:** [#52](https://github.com/deep-assistant/telegram-bot/issues/52)
+link-assistant/api-tester:README.md: Get your API key from the Telegram bot: https://t.me/DeepGPTBot
+link-assistant/meta-expression:docs/case-studies/issue-25/data/hive-mind-file-tree.txt: experiments/test-telegram-bot-error-handling.mjs
+link-assistant/meta-expression:docs/case-studies/issue-25/data/hive-mind-file-tree.txt: experiments/test-telegram-bot-hero-configuration.mjs
+link-assistant/meta-expression:docs/case-studies/issue-25/data/hive-mind-file-tree.txt: experiments/test-telegram-bot-with-configuration.mjs
+link-assistant/meta-expression:docs/case-studies/issue-25/data/hive-mind-file-tree.txt: experiments/test-telegram-em-dash.mjs
+link-assistant/meta-expression:docs/case-studies/issue-25/data/hive-mind-file-tree.txt: experiments/test-telegram-forward-reply-filter.mjs
+link-assistant/hive-mind:src/telegram-subscribers.lib.mjs: * Telegram /subscribe and /unsubscribe command implementation (experimental).
+link-assistant/hive-mind:src/telegram-subscribers.lib.mjs: * chats. They store the Telegram user ID (not the chat ID) so a single
+link-assistant/calculator:docs/case-studies/issue-140/cbr-xml-api.html: <a class="networks-circle_item _tg" href="https://t.me/centralbank_russia" title="Telegram"></a>
+link-assistant/calculator:docs/case-studies/issue-140/cbr-xml-api.html: <a class="networks-circle_item _tg" href="https://t.me/centralbank_russia" title="Telegram"></a>
+link-assistant/support-bot:README.md: Telegram bot that collects user feedback, and creates issues based on it.
+link-assistant/hive-mind:src/telegram-ui-messages.lib.mjs: export function buildTelegramInfoBlock({ locale = null, requester = '', urlKind = 'url', url = '', optionsRaw = '', lockedOptions = '' } = {}) {
+link-assistant/hive-mind:src/telegram-ui-messages.lib.mjs: const labelKey = urlKind === 'issue' ? 'telegram.info_issue_label' : urlKind === 'pullRequest' ? 'telegram.info_pull_request_label' : 'telegram.info_url_label';
+link-assistant/hive-mind:src/telegram-ui-messages.lib.mjs: let infoBlock = `${tr('telegram.info_requested_by_label', {}, locale)}: ${requester}\n${tr(labelKey, {}, locale)}: ${url}`;
+link-assistant/hive-mind:src/telegram-ui-messages.lib.mjs: addLine(message, 'telegram.help_hive_enabled', {}, locale);
+link-assistant/hive-mind:src/telegram-ui-messages.lib.mjs: addLine(message, 'telegram.help_hive_usage', {}, locale);
+link-assistant/hive-mind:src/telegram-ui-messages.lib.mjs: addLine(message, 'telegram.help_hive_example', {}, locale);
+link-assistant/calculator:docs/case-studies/issue-138/cbr-daily-2026-04-11.html: <a class="networks-circle_item _tg" href="https://t.me/centralbank_russia" title="Telegram"></a>
+link-assistant/calculator:docs/case-studies/issue-138/cbr-daily-2026-04-11.html: <a class="networks-circle_item _tg" href="https://t.me/centralbank_russia" title="Telegram"></a></div>
+link-assistant/meta-expression:docs/case-studies/issue-1/data/repositories/meta-theory-0.0.2-article.md: To get updates, we recommend subscribing to the [Deep.Foundation blog](https://habr.com/ru/companies/deepfoundation) here or checking out our [work on GitHub](https://github.com/deep-foundation) now, or directly contacting us at [our Telegram public chat](https://t.me/unilinkness) (especially if you’re afraid of getting downvoted in the comments).
+link-assistant/meta-expression:docs/case-studies/issue-1/data/repositories/meta-theory-0.0.2-article.md: We welcome any feedback you may have, whether on Habr, GitHub, or Telegram. You can also participate in the development of the theory or help accelerate its progress by engaging with us in any way.
+link-assistant/hive-mind:src/telegram-top-command.lib.mjs: * Telegram /top command implementation
+link-assistant/hive-mind:src/telegram-top-command.lib.mjs: * This module provides the /top command functionality for the Telegram bot,
+link-assistant/api-tester:examples/python/README.md: Get your API key from the Telegram bot: https://t.me/DeepGPTBot
+link-assistant/hive-mind:src/telegram-log-command.lib.mjs: * Telegram /log command implementation
+link-assistant/hive-mind:src/telegram-log-command.lib.mjs: // Telegram bots may upload documents up to 50 MB via sendDocument.
+link-assistant/hive-mind:src/telegram-log-command.lib.mjs: // https://core.telegram.org/bots/api#senddocument
+link-assistant/api-tester:examples/javascript/README.md: Get your API key from the Telegram bot: https://t.me/DeepGPTBot
+link-assistant/hive-mind:src/telegram-isolation.lib.mjs: * Per-command isolation support for Telegram bot commands.
+link-assistant/hive-mind:src/telegram-isolation.lib.mjs: console.error(`[telegram-bot] Failed to import isolation-runner: ${e.message}`);
+link-assistant/calculator:docs/case-studies/issue-104/README.md: 2. **Toncoin (cryptocurrency):** TON is the native cryptocurrency of The Open Network (TON), a decentralized layer-1 blockchain originally developed by Telegram founders. As of March 2026, TON trades at ~$1.26 with a market cap of ~$3.1B.
+link-assistant/hive-mind:src/telegram-task-command.lib.mjs: import { escapeMarkdown } from './telegram-markdown.lib.mjs';
+link-assistant/hive-mind:src/telegram-task-command.lib.mjs: import { extractIsolationFromArgs, isValidPerCommandIsolation } from './telegram-isolation.lib.mjs';
+link-assistant/hive-mind:src/telegram-task-command.lib.mjs: import { moveArgumentToFront, parseCommandArgs } from './telegram-solve-command.lib.mjs';
+link-assistant/hive-mind:docs/case-studies/issue-1618/raw-data/github-code-search-telegram-solve-aliases.txt: link-assistant/hive-mind:src/telegram-bot.mjs: bot.command([/^solve$/i, /^do$/i, /^continue$/i], handleSolveCommand); // /do and /continue are aliases (issue #525)
+link-assistant/hive-mind:src/telegram-solve-command.lib.mjs: * Shared parsing helpers for Telegram solve commands.
+link-assistant/hive-mind:src/telegram-solve-command.lib.mjs: * full Telegram bot entry point.

@@ -45,6 +45,11 @@ fn rust_hello_world_prompt_returns_code_block() {
     assert!(response.answer.contains("```rust"));
     assert!(response.answer.contains("fn main()"));
     assert!(response.answer.contains("println!(\"Hello, world!\");"));
+    assert!(response
+        .answer
+        .contains("Execution status: compiled and ran"));
+    assert!(response.answer.contains("Output:"));
+    assert!(response.answer.contains("```text\nHello, world!\n```"));
 }
 
 #[test]
@@ -152,4 +157,57 @@ fn server_handler_supports_chat_completions_route() {
         json["choices"][0]["message"]["content"],
         "Hi, how may I help you?"
     );
+}
+
+#[test]
+fn telegram_webhook_supports_private_messages() {
+    let body = serde_json::json!({
+        "update_id": 1000,
+        "message": {
+            "message_id": 7,
+            "date": 1,
+            "chat": {"id": 42, "type": "private"},
+            "text": "Hi"
+        }
+    })
+    .to_string();
+
+    let response = handle_api_request("POST", "/telegram/webhook", &body);
+
+    assert_eq!(response.status_code, 200);
+    let json: serde_json::Value =
+        serde_json::from_str(&response.body).expect("response should be JSON");
+    assert_eq!(json["method"], "sendMessage");
+    assert_eq!(json["chat_id"], 42);
+    assert_eq!(json["parse_mode"], "HTML");
+    assert_eq!(json["text"], "Hi, how may I help you?");
+}
+
+#[test]
+fn telegram_webhook_supports_public_chat_code_replies() {
+    let body = serde_json::json!({
+        "update_id": 1001,
+        "message": {
+            "message_id": 8,
+            "date": 1,
+            "chat": {"id": -100_123, "type": "supergroup", "title": "formal-ai"},
+            "text": "Write me hello world program in Rust"
+        }
+    })
+    .to_string();
+
+    let response = handle_api_request("POST", "/telegram/webhook", &body);
+
+    assert_eq!(response.status_code, 200);
+    let json: serde_json::Value =
+        serde_json::from_str(&response.body).expect("response should be JSON");
+    assert_eq!(json["method"], "sendMessage");
+    assert_eq!(json["chat_id"], -100_123);
+    assert_eq!(json["parse_mode"], "HTML");
+    let text = json["text"]
+        .as_str()
+        .expect("telegram reply text should be a string");
+    assert!(text.contains("<pre><code class=\"language-rust\">"));
+    assert!(text.contains("Execution status: compiled and ran"));
+    assert!(text.contains("Hello, world!"));
 }
