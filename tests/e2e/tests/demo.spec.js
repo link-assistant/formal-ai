@@ -111,6 +111,95 @@ test.describe('formal-ai demo UI', () => {
     await expect(lastMsg).toContainText('Hi');
   });
 
+  test('known assistant dialogs include a prefilled issue report link', async ({ page }) => {
+    await switchToManualMode(page);
+
+    const input = page.locator('[data-testid="chat-composer-input"]');
+    await input.fill('Hello');
+
+    const messages = page.locator('[data-testid="chat-message"]');
+    const initialCount = await messages.count();
+
+    await page.locator('[data-testid="chat-composer-submit"]').click();
+    await expect(messages).toHaveCount(initialCount + 2, { timeout: 15_000 });
+
+    const lastMsg = messages.last();
+    await expect(lastMsg).toHaveClass(/assistant/);
+
+    const reportLink = lastMsg.locator('.message-actions a');
+    await expect(reportLink).toHaveText('Report issue');
+
+    const href = await reportLink.getAttribute('href');
+    expect(href).toBeTruthy();
+
+    const url = new URL(href || '');
+    const body = url.searchParams.get('body') || '';
+
+    expect(`${url.origin}${url.pathname}`).toBe(
+      'https://github.com/link-assistant/formal-ai/issues/new',
+    );
+    expect(url.searchParams.get('labels')).toBe('bug');
+    expect(body).toContain('## Environment');
+    expect(body).toContain('## Dialog');
+    expect(body).toContain('Hello');
+    expect(body).toContain('Hi, how may I help you?');
+  });
+
+  test('asking who are you produces an identity response', async ({ page }) => {
+    await switchToManualMode(page);
+
+    const input = page.locator('[data-testid="chat-composer-input"]');
+    await input.fill('Who are you?');
+
+    const messages = page.locator('[data-testid="chat-message"]');
+    const initialCount = await messages.count();
+
+    await page.locator('[data-testid="chat-composer-submit"]').click();
+    await expect(messages).toHaveCount(initialCount + 2, { timeout: 15_000 });
+
+    const lastMsg = messages.last();
+    await expect(lastMsg).toHaveClass(/assistant/);
+    await expect(lastMsg).toContainText('formal-ai');
+    await expect(lastMsg).not.toContainText('learned symbolic rule for that prompt yet');
+  });
+
+  test('unknown prompts include a prefilled missing-rule issue link', async ({ page }) => {
+    await switchToManualMode(page);
+
+    const prompt = 'What is the capital of France?';
+    const input = page.locator('[data-testid="chat-composer-input"]');
+    await input.fill(prompt);
+
+    const messages = page.locator('[data-testid="chat-message"]');
+    const initialCount = await messages.count();
+
+    await page.locator('[data-testid="chat-composer-submit"]').click();
+    await expect(messages).toHaveCount(initialCount + 2, { timeout: 15_000 });
+
+    const lastMsg = messages.last();
+    await expect(lastMsg).toHaveClass(/assistant/);
+    await expect(lastMsg).toContainText('learned symbolic rule for that prompt yet');
+
+    const reportLink = lastMsg.locator('.message-actions a');
+    await expect(reportLink).toHaveText('Report missing rule');
+
+    const href = await reportLink.getAttribute('href');
+    expect(href).toBeTruthy();
+
+    const url = new URL(href || '');
+    const body = url.searchParams.get('body') || '';
+
+    expect(url.searchParams.get('title')).toContain('Unknown prompt');
+    expect(url.searchParams.get('labels')).toBe('bug');
+    expect(body).toContain('## Environment');
+    expect(body).toContain('**Version**');
+    expect(body).toContain('**User Agent**');
+    expect(body).toContain('## Dialog');
+    expect(body).toContain(prompt);
+    expect(body).toContain('intent: unknown');
+    expect(body).toContain('## Reproduction Steps');
+  });
+
   test('sending a hello world request produces a code block', async ({ page }) => {
     await switchToManualMode(page);
 
@@ -192,15 +281,10 @@ test.describe('formal-ai demo UI', () => {
     await expect(assistantMessage.locator('.thinking-steps')).toContainText('Select symbolic intent');
   });
 
-  test('preview toggle switches between write and preview mode', async ({ page }) => {
-    const previewToggle = page.locator('.preview-toggle');
-    await expect(previewToggle).toBeVisible();
-    await expect(previewToggle).toContainText('Preview');
+  test('composer does not expose an unused preview control', async ({ page }) => {
+    await switchToManualMode(page);
 
-    await previewToggle.click();
-    await expect(previewToggle).toContainText('Write');
-
-    await previewToggle.click();
-    await expect(previewToggle).toContainText('Preview');
+    await expect(page.locator('.preview-toggle')).toHaveCount(0);
+    await expect(page.locator('.composer-preview')).toHaveCount(0);
   });
 });

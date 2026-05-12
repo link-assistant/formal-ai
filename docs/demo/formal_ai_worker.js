@@ -72,6 +72,11 @@ int main(void) {
 }
 \`\`\``,
   },
+  8: {
+    intent: "identity",
+    content:
+      "I am formal-ai, a deterministic symbolic AI proof of concept that answers from local Links Notation rules and OpenAI-compatible API shapes. I do not perform neural inference in this demo.",
+  },
 };
 
 async function init() {
@@ -101,9 +106,29 @@ function classifyWithWasm(prompt) {
 
 function classifyWithFallback(prompt) {
   const normalized = prompt.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
-  const tokens = normalized.split(/\s+/);
+  const tokens = normalized ? normalized.split(/\s+/) : [];
+  const has = (token) => tokens.includes(token);
   if (["hi", "hello", "hey"].includes(normalized)) {
     return 1;
+  }
+  if (
+    [
+      "who are you",
+      "what are you",
+      "who is formal ai",
+      "what is formal ai",
+      "who is formalai",
+      "what is formalai",
+      "tell me about yourself",
+      "introduce yourself",
+    ].includes(normalized) ||
+    (has("who") && has("you")) ||
+    (has("what") && has("you")) ||
+    ((has("who") || has("what")) && has("formal") && has("ai")) ||
+    (has("tell") && has("yourself")) ||
+    (has("introduce") && has("yourself"))
+  ) {
+    return 8;
   }
   if (!(tokens.includes("hello") && tokens.includes("world"))) {
     return 0;
