@@ -85,16 +85,6 @@ function createMessage(role, content, extra = {}) {
   };
 }
 
-function initialMessages() {
-  return [
-    createMessage("user", "Hi", { intent: "greeting" }),
-    createMessage("assistant", "Hi, how may I help you?", {
-      intent: "greeting",
-      evidence: ["response:greeting", "intent:greeting"],
-    }),
-  ];
-}
-
 function escapeHtml(value) {
   return value
     .replaceAll("&", "&amp;")
@@ -137,20 +127,19 @@ function createDemoTurns() {
   const language = randomItem(DEMO_LANGUAGES);
   return [
     {
-      kind: "greeting",
       text: greeting,
       label: "Greeting",
     },
     {
-      kind: "hello-world",
       text: randomItem(language.prompts),
       label: language.language,
     },
   ];
 }
 
-function Message({ message }) {
-  const evidence = message.evidence ?? [];
+function Message({ message, diagnosticsMode }) {
+  const evidence = diagnosticsMode ? (message.evidence ?? []) : [];
+  const thinkingSteps = diagnosticsMode ? (message.thinkingSteps ?? []) : [];
 
   return h(
     "article",
@@ -164,7 +153,9 @@ function Message({ message }) {
         { className: "message-meta" },
         h("strong", null, message.author),
         h("time", null, message.sentAt),
-        message.intent ? h("span", { className: "intent" }, message.intent) : null,
+        diagnosticsMode && message.intent
+          ? h("span", { className: "intent" }, `intent:${message.intent}`)
+          : null,
       ),
       h("div", {
         className: "markdown-body",
@@ -177,6 +168,18 @@ function Message({ message }) {
             evidence.map((item) => h("span", { key: item }, item)),
           )
         : null,
+      thinkingSteps.length
+        ? h(
+            "div",
+            { className: "thinking-steps" },
+            h("strong", null, "Thinking"),
+            h(
+              "ol",
+              null,
+              thinkingSteps.map((item) => h("li", { key: item }, item)),
+            ),
+          )
+        : null,
     ),
   );
 }
@@ -185,12 +188,14 @@ function App() {
   const workerRef = useRef(null);
   const pendingResponses = useRef(new Map());
   const transcriptEndRef = useRef(null);
-  const [messages, setMessages] = useState(initialMessages);
+  const [messages, setMessages] = useState([]);
   const [prompt, setPrompt] = useState("");
   const [pending, setPending] = useState(false);
   const [workerState, setWorkerState] = useState("wasm worker");
-  const [demoMode, setDemoMode] = useState(false);
-  const [demoState, setDemoState] = useState("manual");
+  const [demoMode, setDemoMode] = useState(true);
+  const [demoPhase, setDemoPhase] = useState("manual");
+  const [demoCountdown, setDemoCountdown] = useState(null);
+  const [diagnosticsMode, setDiagnosticsMode] = useState(false);
   const [previewInput, setPreviewInput] = useState(false);
 
   useEffect(() => {
@@ -236,12 +241,19 @@ function App() {
   }, []);
 
   const appendAssistantMessage = useCallback((answer) => {
+    const source = workerRef.current ? "worker" : "fallback";
     const evidence = answer.intent
-      ? [`intent:${answer.intent}`, `source:${workerRef.current ? "worker" : "fallback"}`]
+      ? [`intent:${answer.intent}`, `source:${source}`]
       : [];
+    const thinkingSteps = [
+      "Normalize prompt text",
+      `Select symbolic intent ${answer.intent || "unknown"}`,
+      `Render deterministic answer from ${source}`,
+    ];
     const message = createMessage("assistant", answer.content, {
       intent: answer.intent,
       evidence,
+      thinkingSteps,
     });
     setMessages((current) => [...current, message]);
   }, []);
@@ -278,25 +290,27 @@ function App() {
 
   useEffect(() => {
     if (!demoMode) {
-      setDemoState("manual");
+      setDemoPhase("manual");
+      setDemoCountdown(null);
       return undefined;
     }
 
     let cancelled = false;
-    let cycleTimer = 0;
+    let countdownTimer = 0;
 
     async function runCycle() {
       const turns = createDemoTurns();
       setMessages([]);
       setPending(true);
-      setDemoState("playing");
+      setDemoPhase("playing");
+      setDemoCountdown(null);
 
       for (const turn of turns) {
         if (cancelled) {
           return;
         }
 
-        appendUserMessage(turn.text, { intent: turn.kind, demoLabel: turn.label });
+        appendUserMessage(turn.text, { demoLabel: turn.label });
         await wait(randomInt(700, 1300));
         const answer = await requestAnswer(turn.text);
         if (cancelled) {
@@ -308,15 +322,27 @@ function App() {
 
       setPending(false);
       const waitSeconds = randomInt(10, 20);
-      setDemoState(`next dialog in ${waitSeconds}s`);
-      cycleTimer = window.setTimeout(runCycle, waitSeconds * 1000);
+      let remainingSeconds = waitSeconds;
+      setDemoPhase("waiting");
+      setDemoCountdown(remainingSeconds);
+      countdownTimer = window.setInterval(() => {
+        remainingSeconds -= 1;
+        if (remainingSeconds <= 0) {
+          window.clearInterval(countdownTimer);
+          if (!cancelled) {
+            runCycle();
+          }
+          return;
+        }
+        setDemoCountdown(remainingSeconds);
+      }, 1000);
     }
 
     runCycle();
 
     return () => {
       cancelled = true;
-      window.clearTimeout(cycleTimer);
+      window.clearInterval(countdownTimer);
       setPending(false);
     };
   }, [appendAssistantMessage, appendUserMessage, demoMode, requestAnswer]);
@@ -325,6 +351,12 @@ function App() {
     () => [...messages].reverse().find((message) => message.role === "assistant"),
     [messages],
   );
+
+  const demoStatus = demoMode
+    ? demoPhase === "waiting" && demoCountdown !== null
+      ? `Next dialog in ${demoCountdown}s`
+      : "Demo playing"
+    : "Manual mode";
 
   return h(
     "main",
@@ -336,7 +368,18 @@ function App() {
       h(
         "div",
         { className: "topbar-actions" },
-        h("span", { className: "status" }, workerState),
+        h("span", { className: "demo-status", "data-testid": "demo-status", role: "status" }, demoStatus),
+        diagnosticsMode ? h("span", { className: "status" }, workerState) : null,
+        h(
+          "button",
+          {
+            type: "button",
+            className: "diagnostics-toggle",
+            "aria-pressed": diagnosticsMode,
+            onClick: () => setDiagnosticsMode((value) => !value),
+          },
+          diagnosticsMode ? "Diagnostics on" : "Diagnostics",
+        ),
         h(
           "button",
           {
@@ -374,15 +417,17 @@ function App() {
             ),
           ),
         ),
-        h("h2", null, "Trace"),
-        h(
-          "dl",
-          { className: "trace-list" },
-          h("div", null, h("dt", null, "Model"), h("dd", null, "formal-symbolic-poc")),
-          h("div", null, h("dt", null, "Mode"), h("dd", null, demoMode ? demoState : "manual")),
-          h("div", null, h("dt", null, "Intent"), h("dd", null, lastAssistant?.intent ?? "none")),
-          h("div", null, h("dt", null, "Data"), h("dd", null, "data/source-index.lino")),
-        ),
+        diagnosticsMode ? h("h2", null, "Trace") : null,
+        diagnosticsMode
+          ? h(
+              "dl",
+              { className: "trace-list" },
+              h("div", null, h("dt", null, "Model"), h("dd", null, "formal-symbolic-poc")),
+              h("div", null, h("dt", null, "Mode"), h("dd", null, demoStatus)),
+              h("div", null, h("dt", null, "Intent"), h("dd", null, lastAssistant?.intent ?? "none")),
+              h("div", null, h("dt", null, "Data"), h("dd", null, "data/source-index.lino")),
+            )
+          : null,
       ),
       h(
         "section",
@@ -390,7 +435,9 @@ function App() {
         h(
           "section",
           { className: "messages", "aria-live": "polite", "data-testid": "message-list" },
-          messages.map((message) => h(Message, { key: message.id, message })),
+          messages.map((message) =>
+            h(Message, { key: message.id, message, diagnosticsMode }),
+          ),
           pending
             ? h(
                 "article",
