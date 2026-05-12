@@ -1,0 +1,183 @@
+source_issue_1
+  title "formal-ai issue 1"
+  kind "requirements"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1"
+  download "gh issue view https://github.com/link-assistant/formal-ai/issues/1 --json number,title,body,comments"
+  license "repository-local issue text"
+  conversion "store requirement statements and PR feedback as Links Notation records"
+
+source_openai_chat_completions
+  title "OpenAI Chat Completions API shape"
+  kind "api-reference"
+  source_url "https://platform.openai.com/docs/api-reference/chat/create"
+  download "official documentation page"
+  license "reference only; do not vendor documentation text"
+  conversion "convert field names and compatibility notes into schema records"
+
+source_openai_responses
+  title "OpenAI Responses API shape"
+  kind "api-reference"
+  source_url "https://platform.openai.com/docs/api-reference/responses/create"
+  download "official documentation page"
+  license "reference only; do not vendor documentation text"
+  conversion "convert field names and compatibility notes into schema records"
+
+source_agent
+  title "link-assistant agent"
+  kind "agent-integration"
+  source_url "https://github.com/link-assistant/agent"
+  download "gh repo view link-assistant/agent --json name,description,licenseInfo,url"
+  license "own project; verify repository license before copying source text"
+  conversion "index integration expectations and HTTP client assumptions"
+
+source_wikidata
+  title "Wikidata entity dumps"
+  kind "knowledge-graph"
+  source_url "https://www.wikidata.org/wiki/Wikidata:Database_download"
+  download "https://dumps.wikimedia.org/wikidatawiki/entities/latest-all.json.bz2"
+  license "external data; preserve attribution and license metadata"
+  conversion "stream entities into chunked entity records with stable Wikidata IDs"
+
+source_wikipedia
+  title "Wikipedia dumps"
+  kind "corpus"
+  source_url "https://www.wikipedia.org/"
+  download "https://dumps.wikimedia.org/enwiki/latest/"
+  license "external data; preserve attribution and license metadata"
+  conversion "chunk pages into document, paragraph, sentence, and phrase links"
+
+source_rosetta_code
+  title "Rosetta Code tasks"
+  kind "code-corpus"
+  source_url "https://rosettacode.org/wiki/Rosetta_Code"
+  download "https://rosettacode.org/wiki/Hello_world/Text"
+  license "external data; transform and retain source/license fields"
+  conversion "convert task, language, solution, and test intent records"
+
+source_wikifunctions
+  title "Wikifunctions"
+  kind "function-corpus"
+  source_url "https://www.wikifunctions.org/wiki/Wikifunctions:Main_Page"
+  download "https://www.wikifunctions.org/wiki/Special:AllPages"
+  license "external data; preserve attribution and license metadata"
+  conversion "convert functions, implementations, tests, and natural-language labels"
+
+source_hello_world_collection
+  title "Hello World Collection"
+  kind "hello-world-corpus"
+  source_url "http://helloworldcollection.de"
+  download "http://helloworldcollection.de"
+  license "external data; use transformed Links Notation records, not verbatim pages"
+  conversion "seed language aliases and self-authored hello-world templates"
+
+source_hive_mind_issues
+  title "link-assistant hive-mind issues"
+  kind "task-corpus"
+  source_url "https://github.com/link-assistant/hive-mind/issues"
+  download "gh api repos/link-assistant/hive-mind/issues --paginate"
+  license "own project issue data"
+  conversion "convert task descriptions and labels into problem-solving traces"
+
+source_hive_mind_pulls
+  title "link-assistant hive-mind pull requests"
+  kind "review-corpus"
+  source_url "https://github.com/link-assistant/hive-mind/pulls"
+  download "gh api repos/link-assistant/hive-mind/pulls --paginate"
+  license "own project PR data"
+  conversion "convert diffs, comments, logs, and outcomes into reasoning traces"
+
+source_calculator
+  title "link-assistant calculator"
+  kind "related-project"
+  source_url "https://github.com/link-assistant/calculator"
+  download "gh repo view link-assistant/calculator --json name,description,licenseInfo,url"
+  license "own project; verify repository license before copying source text"
+  conversion "index symbolic arithmetic patterns and tests"
+
+source_human_language
+  title "link-assistant human-language"
+  kind "related-project"
+  source_url "https://github.com/link-assistant/human-language"
+  download "gh repo view link-assistant/human-language --json name,description,licenseInfo,url"
+  license "own project; verify repository license before copying source text"
+  conversion "index language parsing concepts and examples"
+
+source_meta_expression
+  title "link-assistant meta-expression"
+  kind "related-project"
+  source_url "https://github.com/link-assistant/meta-expression"
+  download "gh repo view link-assistant/meta-expression --json name,description,licenseInfo,url"
+  license "own project; verify repository license before copying source text"
+  conversion "index expression representation and transformation ideas"
+
+source_relative_meta_logic
+  title "relative-meta-logic"
+  kind "prover"
+  source_url "https://github.com/link-foundation/relative-meta-logic"
+  download "gh repo view link-foundation/relative-meta-logic --json name,description,licenseInfo,url"
+  license "related project; verify repository license before copying source text"
+  conversion "index formal statement and prover integration boundaries"
+
+source_command_stream
+  title "command-stream"
+  kind "dependency"
+  source_url "https://github.com/link-foundation/command-stream"
+  download "gh repo view link-foundation/command-stream --json name,description,licenseInfo,url"
+  license "related project; verify repository license before copying source text"
+  conversion "index command protocol concepts for agent tool use"
+
+source_link_cli
+  title "link-cli"
+  kind "dependency"
+  source_url "https://github.com/link-foundation/link-cli"
+  download "gh repo view link-foundation/link-cli --json name,description,licenseInfo,url"
+  license "related project; verify repository license before copying source text"
+  conversion "index import/export CLI expectations for link stores"
+
+source_lino_objects_codec
+  title "lino-objects-codec"
+  kind "dependency"
+  source_url "https://github.com/link-foundation/lino-objects-codec"
+  download "https://crates.io/api/v1/crates/lino-objects-codec"
+  license "dependency metadata only"
+  conversion "use indented untyped formatting helpers for reviewable records"
+
+source_links_notation
+  title "links-notation"
+  kind "dependency"
+  source_url "https://github.com/link-foundation/links-notation"
+  download "https://crates.io/api/v1/crates/links-notation"
+  license "dependency metadata only"
+  conversion "parse and validate Links Notation records"
+
+source_doublets_rs
+  title "doublets-rs"
+  kind "dependency"
+  source_url "https://github.com/linksplatform/doublets-rs"
+  download "gh repo view linksplatform/doublets-rs --json name,description,licenseInfo,url"
+  license "related project; verify repository license before copying source text"
+  conversion "index doublet storage concepts for later native stores"
+
+source_doublets_web
+  title "doublets-web"
+  kind "dependency"
+  source_url "https://github.com/linksplatform/doublets-web"
+  download "gh repo view linksplatform/doublets-web --json name,description,licenseInfo,url"
+  license "related project; verify repository license before copying source text"
+  conversion "index browser-side doublet storage concepts"
+
+source_react_chat_ui
+  title "link-assistant react-chat-ui"
+  kind "ui-reference"
+  source_url "https://github.com/link-assistant/react-chat-ui"
+  download "gh repo view link-assistant/react-chat-ui --json name,description,licenseInfo,url"
+  license "own Unlicense project"
+  conversion "reuse markdown message and markdown composer UX ideas"
+
+source_vk_bot_desktop
+  title "vk-bot-desktop"
+  kind "desktop-reference"
+  source_url "https://github.com/konard/vk-bot-desktop"
+  download "gh repo view konard/vk-bot-desktop --json name,description,licenseInfo,url"
+  license "related project; verify repository license before copying source text"
+  conversion "index desktop wrapper requirements for a later shell"

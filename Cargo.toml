@@ -1,27 +1,30 @@
 [package]
-name = "example-sum-package-name"
+name = "formal-ai"
 version = "0.12.0"
 edition = "2021"
-description = "A Rust package template for AI-driven development"
+description = "Formal symbolic AI proof of concept with OpenAI-compatible APIs"
 readme = "README.md"
 license = "Unlicense"
-keywords = ["template", "rust", "ai-driven"]
-categories = ["development-tools"]
-repository = "https://github.com/link-foundation/rust-ai-driven-development-pipeline-template"
-documentation = "https://github.com/link-foundation/rust-ai-driven-development-pipeline-template"
+keywords = ["formal-ai", "symbolic-ai", "openai", "links"]
+categories = ["command-line-utilities", "web-programming::http-server"]
+repository = "https://github.com/link-assistant/formal-ai"
+documentation = "https://github.com/link-assistant/formal-ai"
 rust-version = "1.70"
 
 [lib]
-name = "example_sum_package_name"
+name = "formal_ai"
 path = "src/lib.rs"
 
 [[bin]]
-name = "example-sum-package-name"
+name = "formal-ai"
 path = "src/main.rs"
 
 [dependencies]
-lino-arguments = "0.3"
 clap = { version = "4.4", features = ["derive", "env"] }
+lino-arguments = "0.3"
+lino-objects-codec = "0.2.1"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
 
 [dev-dependencies]
 regex = "1"
