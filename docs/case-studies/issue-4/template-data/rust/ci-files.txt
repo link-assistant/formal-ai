@@ -1,0 +1,17 @@
+bump-version.rs
+check-changelog-fragment.rs
+check-file-size.rs
+check-release-needed.rs
+check-version-modification.rs
+collect-changelog.rs
+create-changelog-fragment.rs
+create-github-release.rs
+detect-code-changes.rs
+get-bump-type.rs
+get-version.rs
+git-config.rs
+publish-crate.rs
+rust-paths.rs
+version-and-commit.rs
+wait-for-crate.rs
+workflows/release.yml

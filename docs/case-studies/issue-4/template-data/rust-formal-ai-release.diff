@@ -1,0 +1,124 @@
+--- docs/case-studies/issue-4/template-data/rust/github/workflows/release.yml	2026-05-12 16:38:47.723958694 +0000
++++ .github/workflows/release.yml	2026-05-12 16:33:03.293231230 +0000
+@@ -622,12 +622,55 @@
+             2. Merge this PR to main
+             3. The automated release workflow will publish to crates.io and create a GitHub release
+
+-  # === DEPLOY DOCUMENTATION ===
+-  # Deploy Rust API documentation to GitHub Pages after a successful package build.
+-  # Keep this independent from package/GitHub release publication so the website
+-  # still updates when the release path fails.
+-  deploy-docs:
+-    name: Deploy Rust Documentation
++  # === E2E TESTS (LOCAL) ===
++  # Serve docs/demo with a local HTTP server and run Playwright tests against it.
++  # Runs on every PR so regressions are caught before merge.
++  test-e2e-local:
++    name: E2E Tests (local demo)
++    runs-on: ubuntu-latest
++    timeout-minutes: 15
++    needs: [detect-changes]
++    if: |
++      always() && !cancelled() && (
++        github.event_name == 'push' ||
++        github.event_name == 'workflow_dispatch' ||
++        needs.detect-changes.outputs.any-code-changed == 'true'
++      )
++    steps:
++      - uses: actions/checkout@v6
++
++      - name: Setup Node.js
++        uses: actions/setup-node@v4
++        with:
++          node-version: '20'
++
++      - name: Install Playwright and dependencies
++        run: |
++          cd tests/e2e
++          npm ci
++
++      - name: Install Playwright browsers
++        run: |
++          cd tests/e2e
++          npx playwright install --with-deps chromium
++
++      - name: Run local e2e tests
++        run: |
++          cd tests/e2e
++          npx playwright test --config=playwright.local.config.js
++
++      - name: Upload Playwright report on failure
++        if: failure()
++        uses: actions/upload-artifact@v4
++        with:
++          name: playwright-report-local
++          path: tests/e2e/playwright-report/
++          retention-days: 7
++
++  # === DEPLOY DEMO ===
++  # Deploy the React chat demo from docs/demo/ to GitHub Pages after a successful build.
++  deploy-demo:
++    name: Deploy Demo to GitHub Pages
+     needs: [build]
+     if: |
+       !cancelled() &&
+@@ -644,14 +687,52 @@
+         with:
+           ref: main
+
+-      - name: Setup Rust
+-        uses: dtolnay/rust-toolchain@stable
+-
+-      - name: Build documentation
+-        run: cargo doc --no-deps --all-features
+-
+       - name: Deploy to GitHub Pages
+         uses: peaceiris/actions-gh-pages@v4
+         with:
+           github_token: ${{ secrets.GITHUB_TOKEN }}
+-          publish_dir: target/doc
++          publish_dir: docs/demo
++
++  # === E2E TESTS (GITHUB PAGES) ===
++  # Run Playwright tests against the live GitHub Pages URL after deployment.
++  test-e2e-pages:
++    name: E2E Tests (GitHub Pages)
++    needs: [deploy-demo]
++    if: |
++      !cancelled() &&
++      needs.deploy-demo.result == 'success'
++    runs-on: ubuntu-latest
++    timeout-minutes: 15
++    steps:
++      - uses: actions/checkout@v6
++
++      - name: Setup Node.js
++        uses: actions/setup-node@v4
++        with:
++          node-version: '20'
++
++      - name: Install Playwright and dependencies
++        run: |
++          cd tests/e2e
++          npm ci
++
++      - name: Install Playwright browsers
++        run: |
++          cd tests/e2e
++          npx playwright install --with-deps chromium
++
++      - name: Wait for GitHub Pages to update
++        run: sleep 30
++
++      - name: Run GitHub Pages e2e tests
++        run: |
++          cd tests/e2e
++          PAGES_URL=https://link-assistant.github.io/formal-ai npx playwright test --config=playwright.pages.config.js
++
++      - name: Upload Playwright report on failure
++        if: failure()
++        uses: actions/upload-artifact@v4
++        with:
++          name: playwright-report-pages
++          path: tests/e2e/playwright-report/
++          retention-days: 7

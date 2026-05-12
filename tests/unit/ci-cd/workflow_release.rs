@@ -61,6 +61,36 @@ fn demo_deploy_is_independent_from_release_publication() {
 }
 
 #[test]
+fn demo_deploy_uses_github_pages_workflow_artifact() {
+    let workflow = release_workflow();
+    let deploy_demo = job_block(&workflow, "deploy-demo");
+
+    assert!(deploy_demo.contains("pages: write"));
+    assert!(deploy_demo.contains("id-token: write"));
+    assert!(deploy_demo.contains("environment:\n      name: github-pages"));
+    assert!(deploy_demo.contains("url: ${{ steps.deployment.outputs.page_url }}"));
+    assert!(deploy_demo.contains("actions/configure-pages@v6"));
+    assert!(deploy_demo.contains("actions/upload-pages-artifact@v5"));
+    assert!(deploy_demo.contains("path: docs/demo"));
+    assert!(deploy_demo.contains("id: deployment"));
+    assert!(deploy_demo.contains("actions/deploy-pages@v5"));
+    assert!(!deploy_demo.contains("peaceiris/actions-gh-pages"));
+    assert!(!deploy_demo.contains("publish_dir: docs/demo"));
+    assert!(!deploy_demo.contains("publish_branch: gh-pages"));
+}
+
+#[test]
+fn pages_e2e_uses_deployment_output_url() {
+    let workflow = release_workflow();
+    let deploy_demo = job_block(&workflow, "deploy-demo");
+    let pages_e2e = job_block(&workflow, "test-e2e-pages");
+
+    assert!(deploy_demo.contains("page_url: ${{ steps.deployment.outputs.page_url }}"));
+    assert!(pages_e2e.contains("needs.deploy-demo.outputs.page_url"));
+    assert!(!pages_e2e.contains("PAGES_URL=https://link-assistant.github.io/formal-ai"));
+}
+
+#[test]
 fn release_workflow_jobs_have_explicit_timeouts() {
     let workflow = release_workflow();
     let expected_timeouts = [
