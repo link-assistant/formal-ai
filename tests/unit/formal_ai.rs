@@ -2,7 +2,7 @@ use formal_ai::{
     create_chat_completion, create_response, handle_api_request, knowledge_links_notation,
     ChatCompletionRequest, ChatMessage, FormalAiEngine, MessageContent, ResponsesRequest,
 };
-use lino_objects_codec::decode;
+use lino_objects_codec::format::parse_indented;
 
 #[test]
 fn greeting_prompt_returns_symbolic_greeting() {
@@ -24,6 +24,31 @@ fn rust_hello_world_prompt_returns_code_block() {
     assert!(response.answer.contains("```rust"));
     assert!(response.answer.contains("fn main()"));
     assert!(response.answer.contains("println!(\"Hello, world!\");"));
+}
+
+#[test]
+fn hello_world_prompt_supports_multiple_programming_languages() {
+    let cases = [
+        (
+            "Write hello world in Python",
+            "hello_world_python",
+            "```python",
+        ),
+        (
+            "Create a hello world example in JavaScript",
+            "hello_world_javascript",
+            "```javascript",
+        ),
+        ("hello world in Go", "hello_world_go", "```go"),
+    ];
+
+    for (prompt, intent, code_fence) in cases {
+        let response = FormalAiEngine.answer(prompt);
+
+        assert_eq!(response.intent, intent);
+        assert!(response.answer.contains(code_fence));
+        assert!(response.answer.contains("Hello, world!"));
+    }
 }
 
 #[test]
@@ -70,23 +95,22 @@ fn responses_api_shape_contains_output_text() {
 #[test]
 fn knowledge_export_is_valid_links_notation() {
     let notation = knowledge_links_notation();
-    let decoded = decode(&notation).expect("knowledge export should decode");
+    let records = notation.split("\n\n").collect::<Vec<_>>();
+    let (id, root) = parse_indented(records[0]).expect("root record should parse");
 
+    assert_eq!(id, "formal_ai_knowledge");
     assert_eq!(
-        decoded
-            .get("model")
-            .and_then(lino_objects_codec::LinoValue::as_str),
+        root.get("model").map(String::as_str),
         Some("formal-symbolic-poc")
     );
-    let rules = decoded
-        .get("rules")
-        .and_then(lino_objects_codec::LinoValue::as_array)
-        .expect("knowledge export should contain rules");
-    assert!(rules.iter().any(|rule| {
-        rule.get("intent")
-            .and_then(lino_objects_codec::LinoValue::as_str)
-            == Some("hello_world_rust")
+    assert!(records.iter().any(|record| {
+        let Ok((_id, parsed)) = parse_indented(record) else {
+            return false;
+        };
+
+        parsed.get("intent").map(String::as_str) == Some("hello_world_rust")
     }));
+    assert!(!notation.contains("(str "));
 }
 
 #[test]

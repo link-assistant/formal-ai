@@ -2,6 +2,11 @@
 
 const GREETING: u32 = 1;
 const RUST_HELLO_WORLD: u32 = 2;
+const PYTHON_HELLO_WORLD: u32 = 3;
+const JAVASCRIPT_HELLO_WORLD: u32 = 4;
+const TYPESCRIPT_HELLO_WORLD: u32 = 5;
+const GO_HELLO_WORLD: u32 = 6;
+const C_HELLO_WORLD: u32 = 7;
 const UNKNOWN: u32 = 0;
 const INPUT_CAPACITY: usize = 4096;
 
@@ -20,11 +25,29 @@ pub extern "C" fn classify(length: usize) -> u32 {
 
     if is_exact_greeting(input) {
         GREETING
-    } else if contains_word(input, b"rust")
-        && contains_word(input, b"hello")
-        && contains_word(input, b"world")
-    {
+    } else if contains_word(input, b"hello") && contains_word(input, b"world") {
+        classify_hello_world_language(input)
+    } else {
+        UNKNOWN
+    }
+}
+
+fn classify_hello_world_language(input: &[u8]) -> u32 {
+    if contains_word(input, b"rust") || contains_word(input, b"rs") {
         RUST_HELLO_WORLD
+    } else if contains_word(input, b"python") || contains_word(input, b"py") {
+        PYTHON_HELLO_WORLD
+    } else if contains_word(input, b"javascript")
+        || contains_word(input, b"js")
+        || contains_word(input, b"node")
+    {
+        JAVASCRIPT_HELLO_WORLD
+    } else if contains_word(input, b"typescript") || contains_word(input, b"ts") {
+        TYPESCRIPT_HELLO_WORLD
+    } else if contains_word(input, b"go") || contains_word(input, b"golang") {
+        GO_HELLO_WORLD
+    } else if contains_word(input, b"c") {
+        C_HELLO_WORLD
     } else {
         UNKNOWN
     }

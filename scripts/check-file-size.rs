@@ -15,10 +15,29 @@ use std::path::Path;
 use std::process::exit;
 use walkdir::WalkDir;
 
-const MAX_LINES: usize = 1000;
-const WARN_LINES: usize = 900;
-const FILE_EXTENSIONS: &[&str] = &[".rs"];
+const FILE_LIMITS: &[FileLimit] = &[
+    FileLimit {
+        extension: "rs",
+        max_lines: 1_000,
+        warn_lines: 900,
+        label: "Rust",
+    },
+    FileLimit {
+        extension: "lino",
+        max_lines: 1_500,
+        warn_lines: 1_400,
+        label: "Links Notation",
+    },
+];
 const EXCLUDE_PATTERNS: &[&str] = &["target", ".git", "node_modules"];
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+struct FileLimit {
+    extension: &'static str,
+    max_lines: usize,
+    warn_lines: usize,
+    label: &'static str,
+}
 
 fn should_exclude(path: &Path) -> bool {
     let path_str = path.to_string_lossy();
@@ -27,14 +46,10 @@ fn should_exclude(path: &Path) -> bool {
         .any(|pattern| path_str.contains(pattern))
 }
 
-fn has_valid_extension(path: &Path) -> bool {
-    let Some(ext) = path.extension().and_then(|ext| ext.to_str()) else {
-        return false;
-    };
+fn file_limit(path: &Path) -> Option<&'static FileLimit> {
+    let ext = path.extension().and_then(|ext| ext.to_str())?;
 
-    FILE_EXTENSIONS
-        .iter()
-        .any(|valid_ext| valid_ext.strip_prefix('.') == Some(ext))
+    FILE_LIMITS.iter().find(|limit| limit.extension == ext)
 }
 
 fn count_lines(path: &Path) -> Result<usize, std::io::Error> {
@@ -46,6 +61,9 @@ fn count_lines(path: &Path) -> Result<usize, std::io::Error> {
 struct Finding {
     file: String,
     lines: usize,
+    max_lines: usize,
+    warn_lines: usize,
+    label: &'static str,
 }
 
 #[derive(Debug, PartialEq, Eq)]
@@ -61,10 +79,10 @@ enum LineStatus {
     Violation,
 }
 
-const fn classify_line_count(line_count: usize) -> LineStatus {
-    if line_count > MAX_LINES {
+const fn classify_line_count(line_count: usize, limit: &FileLimit) -> LineStatus {
+    if line_count > limit.max_lines {
         LineStatus::Violation
-    } else if line_count > WARN_LINES {
+    } else if line_count > limit.warn_lines {
         LineStatus::Warning
     } else {
         LineStatus::WithinLimit
@@ -98,18 +116,21 @@ fn check_directory(cwd: &Path) -> CheckResult {
             continue;
         }
 
-        if !has_valid_extension(path) {
+        let Some(limit) = file_limit(path) else {
             continue;
-        }
+        };
 
         match count_lines(path) {
             Ok(line_count) => {
                 let finding = Finding {
                     file: relative_path(path, cwd),
                     lines: line_count,
+                    max_lines: limit.max_lines,
+                    warn_lines: limit.warn_lines,
+                    label: limit.label,
                 };
 
-                match classify_line_count(line_count) {
+                match classify_line_count(line_count, limit) {
                     LineStatus::Violation => result.violations.push(finding),
                     LineStatus::Warning => result.warnings.push(finding),
                     LineStatus::WithinLimit => {}
@@ -142,8 +163,8 @@ fn escape_annotation_message(value: &str) -> String {
 
 fn warning_annotation(finding: &Finding) -> String {
     let message = format!(
-        "File has {} lines (approaching limit of {MAX_LINES}). Consider extracting code to keep at or below {WARN_LINES} lines and prevent concurrent PR merge limit violations.",
-        finding.lines
+        "{} file has {} lines (approaching limit of {}). Consider extracting content to keep at or below {} lines and prevent review and merge conflicts.",
+        finding.label, finding.lines, finding.max_lines, finding.warn_lines
     );
 
     format!(
@@ -163,15 +184,13 @@ fn print_warnings(warnings: &[Finding]) {
         let annotation = warning_annotation(warning);
         println!("{annotation}");
         println!(
-            "WARNING: {} has {} lines (approaching limit of {MAX_LINES}, warning threshold: {WARN_LINES})",
-            warning.file, warning.lines
+            "WARNING: {} has {} lines (approaching {} limit of {}, warning threshold: {})",
+            warning.file, warning.lines, warning.label, warning.max_lines, warning.warn_lines
         );
     }
 
     println!();
-    println!(
-        "The following files are approaching the {MAX_LINES} line limit (>{WARN_LINES} lines):"
-    );
+    println!("The following files are approaching their configured line limits:");
     for warning in warnings {
         println!("  {}", warning.file);
     }
@@ -187,18 +206,16 @@ fn print_violations(violations: &[Finding]) {
     println!("Found files exceeding the line limit:\n");
     for violation in violations {
         println!(
-            "  {}: {} lines (exceeds {MAX_LINES})",
-            violation.file, violation.lines
+            "  {}: {} lines (exceeds {} limit of {})",
+            violation.file, violation.lines, violation.label, violation.max_lines
         );
     }
-    println!("\nPlease refactor these files to be under {MAX_LINES} lines\n");
+    println!("\nPlease refactor or split these files to stay under their limits\n");
 }
 
 #[cfg(not(test))]
 fn main() {
-    println!(
-        "\nChecking Rust files for maximum {MAX_LINES} lines (warning above {WARN_LINES})...\n"
-    );
+    println!("\nChecking configured file line limits for Rust and Links Notation files...\n");
 
     let cwd = std::env::current_dir().expect("Failed to get current directory");
     let result = check_directory(&cwd);
@@ -206,7 +223,7 @@ fn main() {
     print_warnings(&result.warnings);
 
     if result.violations.is_empty() {
-        println!("All files are within the line limit\n");
+        println!("All checked files are within their line limits\n");
         exit(0);
     } else {
         print_violations(&result.violations);
@@ -232,6 +249,14 @@ mod tests {
     }
 
     fn write_rust_file_with_lines(path: &Path, line_count: usize) {
+        write_file_with_lines(path, line_count);
+    }
+
+    fn write_lino_file_with_lines(path: &Path, line_count: usize) {
+        write_file_with_lines(path, line_count);
+    }
+
+    fn write_file_with_lines(path: &Path, line_count: usize) {
         let mut content = String::new();
         for line in 1..=line_count {
             writeln!(&mut content, "// line {line}").unwrap();
@@ -241,14 +266,28 @@ mod tests {
 
     #[test]
     fn classifies_warning_band_without_blocking() {
-        assert_eq!(classify_line_count(WARN_LINES), LineStatus::WithinLimit);
-        assert_eq!(classify_line_count(WARN_LINES + 1), LineStatus::Warning);
-        assert_eq!(classify_line_count(MAX_LINES), LineStatus::Warning);
+        let rust_limit = &FILE_LIMITS[0];
+        assert_eq!(
+            classify_line_count(rust_limit.warn_lines, rust_limit),
+            LineStatus::WithinLimit
+        );
+        assert_eq!(
+            classify_line_count(rust_limit.warn_lines + 1, rust_limit),
+            LineStatus::Warning
+        );
+        assert_eq!(
+            classify_line_count(rust_limit.max_lines, rust_limit),
+            LineStatus::Warning
+        );
     }
 
     #[test]
     fn classifies_hard_limit_violations() {
-        assert_eq!(classify_line_count(MAX_LINES + 1), LineStatus::Violation);
+        let rust_limit = &FILE_LIMITS[0];
+        assert_eq!(
+            classify_line_count(rust_limit.max_lines + 1, rust_limit),
+            LineStatus::Violation
+        );
     }
 
     #[test]
@@ -256,9 +295,10 @@ mod tests {
         let repo = temp_dir("thresholds");
         let src_dir = repo.join("src");
         fs::create_dir_all(&src_dir).unwrap();
-        write_rust_file_with_lines(&src_dir.join("near_limit.rs"), WARN_LINES + 1);
-        write_rust_file_with_lines(&src_dir.join("over_limit.rs"), MAX_LINES + 1);
-        write_rust_file_with_lines(&src_dir.join("small.rs"), WARN_LINES);
+        let rust_limit = FILE_LIMITS[0];
+        write_rust_file_with_lines(&src_dir.join("near_limit.rs"), rust_limit.warn_lines + 1);
+        write_rust_file_with_lines(&src_dir.join("over_limit.rs"), rust_limit.max_lines + 1);
+        write_rust_file_with_lines(&src_dir.join("small.rs"), rust_limit.warn_lines);
 
         let result = check_directory(&repo);
 
@@ -266,28 +306,60 @@ mod tests {
             result.warnings,
             vec![Finding {
                 file: "src/near_limit.rs".to_string(),
-                lines: WARN_LINES + 1,
+                lines: rust_limit.warn_lines + 1,
+                max_lines: rust_limit.max_lines,
+                warn_lines: rust_limit.warn_lines,
+                label: rust_limit.label,
             }]
         );
         assert_eq!(
             result.violations,
             vec![Finding {
                 file: "src/over_limit.rs".to_string(),
-                lines: MAX_LINES + 1,
+                lines: rust_limit.max_lines + 1,
+                max_lines: rust_limit.max_lines,
+                warn_lines: rust_limit.warn_lines,
+                label: rust_limit.label,
+            }]
+        );
+    }
+
+    #[test]
+    fn check_directory_enforces_lino_limit() {
+        let repo = temp_dir("lino-thresholds");
+        let data_dir = repo.join("data");
+        fs::create_dir_all(&data_dir).unwrap();
+        let lino_limit = FILE_LIMITS[1];
+        write_lino_file_with_lines(&data_dir.join("oversized.lino"), lino_limit.max_lines + 1);
+
+        let result = check_directory(&repo);
+
+        assert_eq!(
+            result.violations,
+            vec![Finding {
+                file: "data/oversized.lino".to_string(),
+                lines: lino_limit.max_lines + 1,
+                max_lines: lino_limit.max_lines,
+                warn_lines: lino_limit.warn_lines,
+                label: lino_limit.label,
             }]
         );
     }
 
     #[test]
     fn warning_annotation_uses_github_actions_format() {
+        let rust_limit = FILE_LIMITS[0];
         let finding = Finding {
             file: "src/near_limit.rs".to_string(),
-            lines: WARN_LINES + 1,
+            lines: rust_limit.warn_lines + 1,
+            max_lines: rust_limit.max_lines,
+            warn_lines: rust_limit.warn_lines,
+            label: rust_limit.label,
         };
 
         assert_eq!(
             warning_annotation(&finding),
-            "::warning file=src/near_limit.rs::File has 901 lines (approaching limit of 1000). Consider extracting code to keep at or below 900 lines and prevent concurrent PR merge limit violations."
+            "::warning file=src/near_limit.rs::Rust file has 901 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts."
         );
     }
 }

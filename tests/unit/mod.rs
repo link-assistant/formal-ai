@@ -1,3 +1,4 @@
+mod data_files;
 mod formal_ai;
 
 #[path = "ci-cd/mod.rs"]

@@ -1,0 +1,41 @@
+dialog_rust
+  greeting "Hi"
+  request "Write me hello world program in Rust"
+  language "Rust"
+  expected_intent "hello_world_rust"
+  cycle_wait_seconds "10-20"
+
+dialog_python
+  greeting "Hello"
+  request "Create a hello world example in Python"
+  language "Python"
+  expected_intent "hello_world_python"
+  cycle_wait_seconds "10-20"
+
+dialog_javascript
+  greeting "Hi"
+  request "Write hello world in JavaScript"
+  language "JavaScript"
+  expected_intent "hello_world_javascript"
+  cycle_wait_seconds "10-20"
+
+dialog_go
+  greeting "Hello"
+  request "Show hello world in Go"
+  language "Go"
+  expected_intent "hello_world_go"
+  cycle_wait_seconds "10-20"
+
+dialog_typescript
+  greeting "Hi"
+  request "Write hello world in TypeScript"
+  language "TypeScript"
+  expected_intent "hello_world_typescript"
+  cycle_wait_seconds "10-20"
+
+dialog_c
+  greeting "Hello"
+  request "Show hello world in C"
+  language "C"
+  expected_intent "hello_world_c"
+  cycle_wait_seconds "10-20"

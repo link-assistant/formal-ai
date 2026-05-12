@@ -2,15 +2,76 @@ let wasm;
 let mode = "wasm worker";
 
 const answers = {
-  1: "Hi, how may I help you?",
-  2: `Here is a minimal Rust hello world program:
+  0: {
+    intent: "unknown",
+    content:
+      "I do not have a learned symbolic rule for that prompt yet. Add a Links Notation fact or rule, then run the request again.",
+  },
+  1: {
+    intent: "greeting",
+    content: "Hi, how may I help you?",
+  },
+  2: {
+    intent: "hello_world_rust",
+    content: `Here is a minimal Rust hello world program:
 
 \`\`\`rust
 fn main() {
     println!("Hello, world!");
 }
 \`\`\``,
-  0: "I do not have a learned symbolic rule for that prompt yet. Add a Links Notation fact or rule, then run the request again.",
+  },
+  3: {
+    intent: "hello_world_python",
+    content: `Here is a minimal Python hello world program:
+
+\`\`\`python
+print("Hello, world!")
+\`\`\``,
+  },
+  4: {
+    intent: "hello_world_javascript",
+    content: `Here is a minimal JavaScript hello world program:
+
+\`\`\`javascript
+console.log("Hello, world!");
+\`\`\``,
+  },
+  5: {
+    intent: "hello_world_typescript",
+    content: `Here is a minimal TypeScript hello world program:
+
+\`\`\`typescript
+console.log("Hello, world!");
+\`\`\``,
+  },
+  6: {
+    intent: "hello_world_go",
+    content: `Here is a minimal Go hello world program:
+
+\`\`\`go
+package main
+
+import "fmt"
+
+func main() {
+    fmt.Println("Hello, world!")
+}
+\`\`\``,
+  },
+  7: {
+    intent: "hello_world_c",
+    content: `Here is a minimal C hello world program:
+
+\`\`\`c
+#include <stdio.h>
+
+int main(void) {
+    puts("Hello, world!");
+    return 0;
+}
+\`\`\``,
+  },
 };
 
 async function init() {
@@ -44,9 +105,17 @@ function classifyWithFallback(prompt) {
   if (["hi", "hello", "hey"].includes(normalized)) {
     return 1;
   }
-  if (tokens.includes("rust") && tokens.includes("hello") && tokens.includes("world")) {
-    return 2;
+  if (!(tokens.includes("hello") && tokens.includes("world"))) {
+    return 0;
   }
+
+  if (tokens.includes("rust") || tokens.includes("rs")) return 2;
+  if (tokens.includes("python") || tokens.includes("py")) return 3;
+  if (tokens.includes("javascript") || tokens.includes("js") || tokens.includes("node")) return 4;
+  if (tokens.includes("typescript") || tokens.includes("ts")) return 5;
+  if (tokens.includes("go") || tokens.includes("golang")) return 6;
+  if (tokens.includes("c")) return 7;
+
   return 0;
 }
 
@@ -54,7 +123,13 @@ self.onmessage = async (event) => {
   await init();
   const prompt = event.data.prompt || "";
   const code = wasm ? classifyWithWasm(prompt) : classifyWithFallback(prompt);
-  postMessage({ kind: "message", content: answers[code] || answers[0] });
+  const answer = answers[code] || answers[0];
+  postMessage({
+    kind: "message",
+    requestId: event.data.requestId,
+    intent: answer.intent,
+    content: answer.content,
+  });
 };
 
 init();
