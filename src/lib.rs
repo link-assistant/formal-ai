@@ -2,6 +2,7 @@ pub mod engine;
 pub mod protocol;
 pub mod server;
 pub mod telegram;
+pub mod telegram_runtime;
 
 pub use engine::{knowledge_links_notation, FormalAiEngine, SymbolicAnswer, DEFAULT_MODEL};
 pub use protocol::{
@@ -11,6 +12,11 @@ pub use protocol::{
 };
 pub use server::{handle_api_request, serve, ApiHttpResponse};
 pub use telegram::{
-    handle_telegram_webhook, telegram_html_from_markdown, TelegramReplyParameters,
-    TelegramWebhookError, TelegramWebhookReply,
+    handle_telegram_webhook, parse_get_updates_response, telegram_html_from_markdown,
+    ParsedUpdatesBatch, TelegramPollingConfig, TelegramPollingError, TelegramPollingReply,
+    TelegramReplyParameters, TelegramWebhookError, TelegramWebhookReply,
+};
+pub use telegram_runtime::{
+    run_telegram_polling, run_telegram_polling_with_transport, run_telegram_webhook_server,
+    CurlTelegramTransport, TelegramPollingRuntimeError, TelegramTransport,
 };
