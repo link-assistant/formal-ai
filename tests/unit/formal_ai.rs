@@ -17,6 +17,27 @@ fn greeting_prompt_returns_symbolic_greeting() {
 }
 
 #[test]
+fn identity_questions_return_standard_self_description() {
+    let cases = [
+        "Who are you?",
+        "what are you",
+        "Tell me about yourself",
+        "What is formal-ai?",
+    ];
+
+    for prompt in cases {
+        let response = FormalAiEngine.answer(prompt);
+
+        assert_eq!(response.intent, "identity");
+        assert!(response.answer.contains("formal-ai"));
+        assert!(response
+            .evidence_links
+            .iter()
+            .any(|link| link == "response:identity"));
+    }
+}
+
+#[test]
 fn rust_hello_world_prompt_returns_code_block() {
     let response = FormalAiEngine.answer("Write me hello world program in Rust");
 

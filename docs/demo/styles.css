@@ -20,7 +20,8 @@ body {
 }
 
 button,
-textarea {
+textarea,
+.report-button {
   font: inherit;
 }
 
@@ -93,7 +94,7 @@ button {
 
 .mode-toggle,
 .diagnostics-toggle,
-.preview-toggle,
+.report-button,
 .send-button,
 .prompt-list button {
   border: 1px solid #b9c6ca;
@@ -105,14 +106,19 @@ button {
 
 .mode-toggle,
 .diagnostics-toggle,
-.preview-toggle {
+.report-button {
   min-height: 38px;
   padding: 0 12px;
 }
 
+.report-button {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+}
+
 .mode-toggle[aria-pressed="true"],
 .diagnostics-toggle[aria-pressed="true"],
-.preview-toggle[aria-pressed="true"],
 .send-button {
   border-color: #175f4f;
   background: #175f4f;
@@ -341,6 +347,23 @@ button {
   margin-top: 4px;
 }
 
+.message-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.message-actions a {
+  color: #175f4f;
+  text-decoration: none;
+}
+
+.message-actions a:hover {
+  text-decoration: underline;
+}
+
 .pending .message-body {
   width: 116px;
 }
@@ -353,13 +376,6 @@ button {
   border-top: 1px solid #d6dde1;
   padding: 14px clamp(14px, 4vw, 48px) 18px;
   background: #f7f8fa;
-}
-
-.composer-toolbar {
-  width: min(860px, 100%);
-  margin: 0 auto 10px;
-  display: flex;
-  justify-content: flex-end;
 }
 
 .composer-grid {
@@ -391,14 +407,6 @@ textarea:focus {
 textarea:disabled {
   color: #667684;
   background: #edf1f3;
-}
-
-.composer-preview {
-  min-height: 76px;
-  border: 1px solid #d6dde1;
-  border-radius: 8px;
-  padding: 12px 13px;
-  background: #ffffff;
 }
 
 .send-button {
@@ -492,7 +500,8 @@ textarea:disabled {
     min-width: 84px;
   }
 
-  .diagnostics-toggle {
+  .diagnostics-toggle,
+  .report-button {
     max-width: 118px;
     overflow: hidden;
     text-overflow: ellipsis;

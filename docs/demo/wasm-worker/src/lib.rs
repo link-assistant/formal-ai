@@ -7,6 +7,7 @@ const JAVASCRIPT_HELLO_WORLD: u32 = 4;
 const TYPESCRIPT_HELLO_WORLD: u32 = 5;
 const GO_HELLO_WORLD: u32 = 6;
 const C_HELLO_WORLD: u32 = 7;
+const IDENTITY: u32 = 8;
 const UNKNOWN: u32 = 0;
 const INPUT_CAPACITY: usize = 4096;
 
@@ -25,6 +26,8 @@ pub extern "C" fn classify(length: usize) -> u32 {
 
     if is_exact_greeting(input) {
         GREETING
+    } else if is_identity_question(input) {
+        IDENTITY
     } else if contains_word(input, b"hello") && contains_word(input, b"world") {
         classify_hello_world_language(input)
     } else {
@@ -56,6 +59,16 @@ fn classify_hello_world_language(input: &[u8]) -> u32 {
 fn is_exact_greeting(input: &[u8]) -> bool {
     let trimmed = trim_ascii(input);
     ascii_eq(trimmed, b"hi") || ascii_eq(trimmed, b"hello") || ascii_eq(trimmed, b"hey")
+}
+
+fn is_identity_question(input: &[u8]) -> bool {
+    (contains_word(input, b"who") && contains_word(input, b"you"))
+        || (contains_word(input, b"what") && contains_word(input, b"you"))
+        || ((contains_word(input, b"who") || contains_word(input, b"what"))
+            && contains_word(input, b"formal")
+            && contains_word(input, b"ai"))
+        || (contains_word(input, b"tell") && contains_word(input, b"yourself"))
+        || (contains_word(input, b"introduce") && contains_word(input, b"yourself"))
 }
 
 fn contains_word(input: &[u8], word: &[u8]) -> bool {
