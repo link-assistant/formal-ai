@@ -12,6 +12,8 @@ The current prototype is intentionally small. It proves the surface area request
 - Docker-ready microservice
 - GitHub Pages markdown chat demo backed by a Rust-generated WebAssembly worker
 
+Project direction is tracked in [VISION.md](VISION.md), [GOALS.md](GOALS.md), and [NON-GOALS.md](NON-GOALS.md). The issue #12 synthesis is in [docs/case-studies/issue-12/README.md](docs/case-studies/issue-12/README.md).
+
 ## Quick Start
 
 ```bash

@@ -69,3 +69,40 @@ Issue [#8](https://github.com/link-assistant/formal-ai/issues/8) adds a Telegram
 | R45 | Use `lino-arguments` with clap-style configuration for all CLIs. | Implemented through `lino_arguments::Parser` derive and `lino_arguments::init()` in `main`, so flags read from CLI, environment variables, and `.lenv`/`.env` files consistently. |
 | R46 | Make the Telegram polling loop testable without a network. | Implemented through the `TelegramTransport` trait and a `ScriptedTransport` test double covering offset advancement and invalid-payload recovery. |
 | R47 | Log polling lifecycle events for operators. | Implemented through `eprintln!` lines that announce loop start, transport failures, invalid payloads, successful sends, send failures, and loop stop. |
+
+## Issue #10 Demo Feedback and Identity Requirements
+
+Issue [#10](https://github.com/link-assistant/formal-ai/issues/10) adds feedback, issue reporting, and identity-answer requirements to the demo.
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R48 | Remove the unused Preview button near Send. | Implemented by removing preview mode controls and rendering from the demo. |
+| R49 | Include a prefilled GitHub issue link in unknown-intent responses. | Implemented with browser-native issue URL generation. |
+| R50 | Include dialog history and environment metadata in generated issue reports. | Implemented for message-level and header-level report links. |
+| R51 | Allow issue reporting from any dialog, not only unknown prompts. | Implemented by rendering report actions for assistant messages and the current transcript. |
+| R52 | Answer "Who are you?" and close identity-question variations. | Implemented through the Rust engine, WebAssembly worker, JavaScript fallback, and tests. |
+| R53 | Keep identity knowledge reviewable as Links Notation. | Implemented in `data/seed/identity.lino`. |
+| R54 | Preserve issue #10 raw evidence and analysis under `docs/case-studies/issue-10`. | Implemented with issue, PR, screenshot, reference, and case-study data. |
+
+## Issue #12 Holistic Vision Requirements
+
+Issue [#12](https://github.com/link-assistant/formal-ai/issues/12) collects the prior requirement threads and defines the long-term associative architecture direction.
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R55 | Collect requirements from issue #1, issue #4, issue #6, issue #8, issue #10, and related PR comments. | Implemented in `docs/case-studies/issue-12/README.md` with fresh raw data in `docs/case-studies/issue-12/raw-data`. |
+| R56 | Craft a holistic `VISION.md`. | Implemented at the repository root. |
+| R57 | Craft `GOALS.md` and `NON-GOALS.md`. | Implemented at the repository root. |
+| R58 | Prefer the smallest useful seed dataset and construct missing knowledge dynamically. | Documented as a project goal and vision principle. |
+| R59 | Treat the associative network as the assistant's live state. | Documented in `VISION.md` and the issue #12 case study. |
+| R60 | Use Link Foundation doublet links and the `Type -> SubType`, `SubType -> SubType`, `SubType -> Value` dynamic type model. | Documented as the long-term storage and type-system direction. |
+| R61 | Preserve add-only history for changes and derive current state from logged events. | Documented in `VISION.md`, `GOALS.md`, and `NON-GOALS.md`. |
+| R62 | Make every step, command, decision, source access, and answer traceable. | Documented as transparent reasoning and future trace-link work. |
+| R63 | Keep chat as the default interface while offering link-network visualization on demand. | Documented as product direction. |
+| R64 | Separate bounded chat mode from explicit agent mode with isolated execution. | Documented in vision, goals, and non-goals. |
+| R65 | Reuse Deep.Foundation ideas for associative packages, handlers, permissions, and trigger-style computation in a local Rust/browser architecture. | Documented with current source research and marked as future implementation work. |
+| R66 | Develop a universal problem-solving loop based on decomposition, failing tests, implementation, execution, learning, and documentation. | Documented as the target reasoning loop. |
+| R67 | Search external sources when local links are insufficient and cache accesses with provenance and refresh policy. | Documented as a reasoning goal. |
+| R68 | Translate between natural languages, programming languages, and Links Notation as an intermediate language of meaning. | Documented in `VISION.md`. |
+| R69 | Maintain concept uniqueness by splitting overloaded names into distinct meanings when evidence requires it. | Documented in `VISION.md`. |
+| R70 | Keep the issue #12 documentation set protected by automated coverage. | Implemented in `tests/unit/docs_requirements.rs`. |
