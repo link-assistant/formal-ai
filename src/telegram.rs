@@ -73,11 +73,62 @@ struct TelegramMessage {
     text: Option<String>,
     #[serde(default)]
     caption: Option<String>,
+    #[serde(default)]
+    entities: Vec<TelegramEntity>,
+    #[serde(default)]
+    reply_to_message: Option<Box<Self>>,
+    #[serde(default)]
+    from: Option<TelegramUser>,
 }
 
 #[derive(Debug, Deserialize)]
 struct TelegramChat {
     id: i64,
+    #[serde(default, rename = "type")]
+    kind: Option<String>,
+    #[serde(default)]
+    title: Option<String>,
+}
+
+#[derive(Debug, Deserialize)]
+struct TelegramEntity {
+    #[serde(rename = "type")]
+    kind: String,
+}
+
+#[derive(Debug, Deserialize)]
+struct TelegramUser {
+    #[serde(default)]
+    is_bot: bool,
+}
+
+fn message_is_in_public_chat(chat: &TelegramChat) -> bool {
+    matches!(
+        chat.kind.as_deref(),
+        Some("group" | "supergroup" | "channel")
+    )
+}
+
+fn message_addresses_bot(message: &TelegramMessage) -> bool {
+    if message
+        .entities
+        .iter()
+        .any(|entity| entity.kind == "mention" || entity.kind == "bot_command")
+    {
+        return true;
+    }
+    if let Some(reply) = &message.reply_to_message {
+        if reply.from.as_ref().is_some_and(|user| user.is_bot) {
+            return true;
+        }
+    }
+    if let Some(title) = &message.chat.title {
+        let lower = title.to_lowercase();
+        if lower.contains("formal") || lower.contains("formal_ai") || lower.contains("formal-ai") {
+            return true;
+        }
+    }
+    false
 }
 
 pub fn handle_telegram_webhook(
@@ -89,24 +140,41 @@ pub fn handle_telegram_webhook(
         return Ok(None);
     };
 
+    if message_is_in_public_chat(&message.chat) && !message_addresses_bot(&message) {
+        return Ok(None);
+    }
+
     Ok(Some(reply_for_message(&message)))
 }
 
 fn reply_for_message(message: &TelegramMessage) -> TelegramWebhookReply {
-    let reply_text = message
+    let (reply_text, trace_id) = message
         .text
         .as_deref()
         .or(message.caption.as_deref())
         .filter(|text| !text.trim().is_empty())
         .map_or_else(
-            || String::from(TEXT_ONLY_MESSAGE),
-            |prompt| FormalAiEngine.answer(prompt.trim()).answer,
+            || (String::from(TEXT_ONLY_MESSAGE), None),
+            |prompt| {
+                let symbolic = FormalAiEngine.answer(prompt.trim());
+                let trace = symbolic
+                    .evidence_links
+                    .iter()
+                    .find_map(|link| link.strip_prefix("trace:").map(str::to_owned));
+                (symbolic.answer, trace)
+            },
         );
+
+    let mut text = telegram_html_from_markdown(&reply_text);
+    if let Some(trace) = trace_id {
+        text.push_str("\n\n/trace ");
+        text.push_str(&trace);
+    }
 
     TelegramWebhookReply {
         method: "sendMessage",
         chat_id: message.chat.id,
-        text: telegram_html_from_markdown(&reply_text),
+        text,
         parse_mode: "HTML",
         reply_parameters: TelegramReplyParameters {
             message_id: message.message_id,
@@ -432,7 +500,8 @@ mod tests {
         assert_eq!(batch.next_offset, Some(10));
         assert_eq!(batch.replies.len(), 2);
         assert_eq!(batch.replies[0].chat_id, 42);
-        assert_eq!(batch.replies[0].text, "Hi, how may I help you?");
+        assert!(batch.replies[0].text.starts_with("Hi, how may I help you?"));
+        assert!(batch.replies[0].text.contains("/trace "));
         assert_eq!(batch.replies[1].chat_id, -100);
         assert!(batch.replies[1].text.contains("language-rust"));
         let json: serde_json::Value =

@@ -180,7 +180,9 @@ fn telegram_webhook_supports_private_messages() {
     assert_eq!(json["method"], "sendMessage");
     assert_eq!(json["chat_id"], 42);
     assert_eq!(json["parse_mode"], "HTML");
-    assert_eq!(json["text"], "Hi, how may I help you?");
+    let text = json["text"].as_str().expect("text should be a string");
+    assert!(text.starts_with("Hi, how may I help you?"));
+    assert!(text.contains("/trace "));
 }
 
 #[test]

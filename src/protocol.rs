@@ -93,6 +93,8 @@ pub struct ResponseObject {
     pub model: String,
     pub output: Vec<ResponseOutputMessage>,
     pub usage: ResponseUsage,
+    #[serde(default)]
+    pub evidence_links: Vec<String>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -181,16 +183,35 @@ pub fn create_response(request: &ResponsesRequest) -> ResponseObject {
             output_tokens,
             total_tokens: input_tokens.saturating_add(output_tokens),
         },
+        evidence_links: symbolic_answer.evidence_links,
     }
 }
 
 fn chat_prompt(messages: &[ChatMessage]) -> String {
-    messages
+    let latest_user = messages
         .iter()
         .rev()
         .find(|message| message.role.eq_ignore_ascii_case("user"))
-        .or_else(|| messages.last())
-        .map_or_else(String::new, |message| message.content.plain_text())
+        .map(|message| message.content.plain_text())
+        .unwrap_or_default();
+
+    if messages.len() <= 1 {
+        return latest_user;
+    }
+
+    let history = messages
+        .iter()
+        .filter(|message| message.role.eq_ignore_ascii_case("user"))
+        .map(|message| message.content.plain_text())
+        .filter(|text| !text.trim().is_empty())
+        .collect::<Vec<_>>()
+        .join("\n");
+
+    if history.trim() == latest_user.trim() {
+        latest_user
+    } else {
+        history
+    }
 }
 
 fn response_prompt(request: &ResponsesRequest) -> String {
