@@ -288,7 +288,9 @@ mod tests {
         let parsed: serde_json::Value = serde_json::from_str(body).expect("body should be JSON");
         assert_eq!(parsed["chat_id"], 99);
         assert_eq!(parsed["parse_mode"], "HTML");
-        assert_eq!(parsed["text"], "Hi, how may I help you?");
+        let text = parsed["text"].as_str().expect("text should be a string");
+        assert!(text.starts_with("Hi, how may I help you?"));
+        assert!(text.contains("/trace "));
     }
 
     #[test]

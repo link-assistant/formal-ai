@@ -31,7 +31,9 @@ fn private_chat_messages_get_answered() {
     assert_eq!(json["method"], "sendMessage");
     assert_eq!(json["chat_id"], 42);
     assert_eq!(json["parse_mode"], "HTML");
-    assert_eq!(json["text"], "Hi, how may I help you?");
+    let text = json["text"].as_str().unwrap();
+    assert!(text.starts_with("Hi, how may I help you?"));
+    assert!(text.contains("/trace "));
 }
 
 #[test]
@@ -110,7 +112,6 @@ fn telegram_webhook_rejects_invalid_payload_gracefully() {
 // ---------------------------------------------------------------------------
 
 #[test]
-#[ignore = "MVP-target: public chats should stay silent unless the bot is addressed by name or @mention"]
 fn public_chat_silent_when_not_addressed() {
     let response = handle_api_request(
         "POST",
@@ -134,7 +135,6 @@ fn public_chat_silent_when_not_addressed() {
 }
 
 #[test]
-#[ignore = "MVP-target: public chats should answer when the bot is @mentioned by username"]
 fn public_chat_answers_when_mentioned() {
     let json = webhook(&serde_json::json!({
         "update_id": 11,
@@ -150,7 +150,6 @@ fn public_chat_answers_when_mentioned() {
 }
 
 #[test]
-#[ignore = "MVP-target: replies to bot messages in public chats should count as addressed"]
 fn replies_to_bot_in_public_chat_are_answered() {
     let json = webhook(&serde_json::json!({
         "update_id": 12,
@@ -172,7 +171,6 @@ fn replies_to_bot_in_public_chat_are_answered() {
 }
 
 #[test]
-#[ignore = "MVP-target: Telegram code blocks must escape HTML entities so they render verbatim"]
 fn telegram_code_replies_escape_html_entities() {
     let json = webhook(&serde_json::json!({
         "update_id": 13,
@@ -192,7 +190,6 @@ fn telegram_code_replies_escape_html_entities() {
 }
 
 #[test]
-#[ignore = "MVP-target: long Telegram replies should be split below 4096 characters per message"]
 fn telegram_long_replies_are_chunked() {
     let json = webhook(&serde_json::json!({
         "update_id": 14,
