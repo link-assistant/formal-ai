@@ -52,6 +52,49 @@ The assistant should use a universal problem-solving loop:
 
 This loop can be implemented first as ordinary Rust logic, then increasingly represented as link substitutions, triggers, and reusable associative packages.
 
+## Universal Problem-Solving Algorithm
+
+The reasoning loop above is the outer skeleton. The inner mechanics should be a single universal algorithm that does not assume prior knowledge of the task and works in the same shape for greetings, code generation, translation, source-checking, agent actions, or any future request:
+
+1. **Impulse**: append the raw user message as an `impulse` event in the append-only log.
+2. **Formalization**: turn the impulse into a `requirement` record. The algorithm decides — controlled by a configurable knob — whether to guess the formalization from context or to ask the user the smallest possible clarifying question.
+3. **Context and domain data**: derive the language, surface, mode flags (chat vs agent, diagnostic on/off), and the domain (greeting, code, translation, math, agent action) from the formalized requirement.
+4. **History lookup**: check whether the same or a similar requirement has been solved before; if so, reuse the prior solution and record a `cache_hit` link.
+5. **Decomposition**: when the requirement is composite (multiple clauses, "and", "with tests", "with benchmarks"), split it into sub-impulses and recursively formalize each one until every sub-requirement is small enough to be solved directly.
+6. **TDD-style test generation**: derive at least one executable check or assertion that any candidate solution must pass.
+7. **Solution synthesis**: build candidate solutions by (a) reusing known parts, (b) reasoning from rules, (c) random or evolutionary search where the structure allows, picking the strategy by compute budget.
+8. **Combination**: combine the partial solutions back into a full solution that addresses the original requirement.
+9. **Verification**: run the candidate against the generated tests; on failure, surface the failure as a `trace:execution_failure` link instead of silently retrying.
+10. **Simplification**: apply transformation rules that preserve meaning to shorten the answer and the reasoning trace. Pick the smallest sufficient form.
+11. **Documentation and presentation**: produce the user-facing reply, the Links Notation trace, and the visible evidence links. If the user asks for execution, run the code in the appropriate isolation level.
+
+Every step writes its own event to the append-only log so the user can ask the chat why the assistant did what it did and get a traceable answer from the recorded experience.
+
+## Configurable Solver Knobs
+
+The universal algorithm should be controlled by a small, explicit, persistable `SolverConfig` so the same engine can be tuned per surface or per user:
+
+- `guess_probability` — how often the algorithm guesses a formalization vs. asking a clarifying question (`0.0` = always ask, `1.0` = always guess).
+- `context_sensitivity` — how aggressively the algorithm uses surrounding context (previous messages, recent events) when formalizing.
+- `questioning_rigor` — how strict the clarifying questions are (`0.0` = accept almost anything, `1.0` = ask until the requirement is fully formal).
+- `max_decomposition_depth` — how deep the recursive decomposition is allowed to go.
+- `agent_mode` — whether agent mode is opted in. Off by default.
+- `diagnostic_mode` — whether diagnostic links are echoed in the user-facing reply.
+- `offline` — whether external lookups are allowed (also honored from the `FORMAL_AI_OFFLINE` environment variable).
+- `cache_ttl_seconds` — TTL for cached external sources (default ≈ two months).
+
+These knobs are deterministic: the same prompt with the same config produces the same answer. "Random guessing" is seeded from the impulse content hash so reproducibility is preserved.
+
+## Append-Only Event Log
+
+Every action the algorithm takes is appended to an in-process event log before the answer is built. Each event carries a kind (`impulse`, `language_detected`, `local_search`, `external_search`, `sub_impulse`, `candidate`, `validation`, `policy`, `agent_action`, `cache_hit`, `source`, `trace`, `error`) and is identified by a content-addressed id. The event log is the system of record; the answer and the evidence links are projections of it. The user can chat over this log:
+
+- "Why did you answer that?" returns a meta-explanation built from the most recent trace.
+- "What do you know about X?" returns the links involving X.
+- "List the facts I have contributed" filters by user.
+- "Forget X" is refused unless the explicit retraction protocol is used, because the log is append-only.
+- "Export the network" returns the Links Notation snapshot of the seed dataset plus the visible event log.
+
 ## Computation Model
 
 Formal AI should use trigger-style computation over links. A trigger can react to insertion, update, deletion, or a matched pattern in the network. Substitution rules should be first-class knowledge and should be able to express reads, writes, transformations, and simplification passes. These rules may be implemented as Rust code, as external handlers, or as link-native template substitutions.

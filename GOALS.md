@@ -32,6 +32,44 @@ This project should build a practical, inspectable symbolic assistant before it 
 - Translate between natural languages, programming languages, and Links Notation as a language of meaning.
 - Reduce contradictions by splitting overloaded names into distinct meanings when needed.
 
+## Universal Solver Goals
+
+- Run the same universal problem-solving algorithm for every request: greetings, identity questions, code generation, translation, source checking, math, and agent actions. The shape of the loop should not branch by domain.
+- Treat formalization, decomposition, candidate generation, validation, and simplification as first-class steps that always run, even when the answer is trivially known.
+- Generate at least one executable test or constraint check per requirement before committing to an answer, following test-driven development.
+- Reuse known parts of prior solutions before generating new ones; record reuse as `cache_hit:` evidence with a link back to the prior trace.
+- When no reusable part exists, combine reasoning, random search, and evolutionary search according to the available compute budget instead of giving up.
+- After verification, apply meaning-preserving transformation rules to shorten the answer and pick the smallest sufficient form.
+- Surface execution failures as `trace:execution_failure` links instead of retrying silently.
+
+## Configurable Solver Goals
+
+- Expose every solver behavior through a small `SolverConfig` so the same engine can be tuned per surface or per user.
+- Make formalization preference configurable: how often to guess the formalization vs. ask the smallest clarifying question.
+- Make context sensitivity configurable: how aggressively earlier messages and recent events influence the current formalization.
+- Make questioning rigor configurable: how strict clarifying questions are before accepting a requirement as formal.
+- Make decomposition depth configurable so the loop does not spin forever on unsolvable problems.
+- Make agent mode opt-in by configuration, off by default, and only active in environments that declare isolation.
+- Make diagnostic visibility, offline mode, and source cache TTL configurable from environment variables and CLI flags.
+- Keep the algorithm deterministic for a given config: "random guessing" must be seeded from the impulse content hash so the same prompt produces the same answer.
+
+## Append-Only Event Log Goals
+
+- Record every step of the universal solver as an append-only event in the in-process log before the answer is built.
+- Tag each event with a stable, content-addressed id so users can reference and inspect it from chat.
+- Treat the user-facing answer as a projection of the event log, not the system of record.
+- Let users chat over the log: "why did you answer that?", "what do you know about X?", "list facts I have contributed", and "export the network" should all be answerable from the log.
+- Refuse "forget X" requests by default; require an explicit retraction protocol that itself appends a `retraction` event.
+- Tolerate concurrent reasoning steps by guaranteeing that the projected prefix never shrinks.
+
+## Chat-Over-Experience Goals
+
+- Make the recorded experience the assistant's memory: any link in the network should be addressable from chat by id or natural-language description.
+- Allow users to query reasoning by step: "what was step 4 of your last answer?" must return the corresponding event.
+- Allow users to query reasoning by domain: "show me every external source you fetched today" must filter the event log.
+- Allow users to contribute facts that become first-class events with the user as the source, attributable for later review.
+- Keep diagnostic output off by default; require an explicit opt-in flag or message prefix before flooding the chat with internal links.
+
 ## Documentation Goals
 
 - Keep issue requirements in `docs/REQUIREMENTS.md`.
@@ -47,3 +85,6 @@ This project should build a practical, inspectable symbolic assistant before it 
 - Prototype a local link-store-backed reasoning loop that can read and write the same knowledge used by CLI, API, web, and Telegram surfaces.
 - Add a network visualization mode that starts from the links most relevant to the current dialog.
 - Keep every new behavior covered by focused unit, integration, or e2e tests before expanding scope.
+- Implement the universal solver and append-only event log inside the existing Rust engine so every chat answer surfaces the full evidence-link namespace expected by the MVP test suite.
+- Promote knobs from `SolverConfig` to environment variables and CLI flags so the same engine can be operated in chat, agent, and offline modes without code changes.
+- Cover each step of the universal solver with explicit unit tests, including the failing MVP-target tests under `tests/unit/mvp/`, and graduate them out of `#[ignore]` as the implementation lands.

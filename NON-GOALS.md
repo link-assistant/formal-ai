@@ -12,6 +12,23 @@ These boundaries keep the project aligned with the symbolic, link-native directi
 - Silent execution failures should not be hidden from users.
 - Browser-only mode should not claim host-level execution capabilities.
 
+## Universal Solver Non-Goals
+
+- The universal solver should not skip steps for "easy" prompts to look fast; every prompt walks the same loop so the trace is comparable across requests.
+- Faking the evidence trail is not acceptable. Each `impulse:`, `search:local`, `search:external`, `sub_impulse:`, `candidate:`, `validation:`, `trace:`, `cache_hit:`, `source:`, `policy:`, `agent_mode:`, and `error:` link must correspond to a real recorded event.
+- Memoizing answers from a static table is not a substitute for re-running formalization, decomposition, and validation; cache hits must be recorded explicitly and link to the prior trace.
+- Hiding decomposition behind an opaque rule is not acceptable; every sub-impulse must be a first-class event the user can inspect.
+- The append-only log must not be rewritten or pruned silently. Retractions append new events that supersede earlier ones.
+- Bypassing `SolverConfig` for hard-coded behavior is not acceptable; new knobs are added to the config first, then consumed by the engine.
+- Randomized candidate generation must not become a hidden source of non-determinism; the same prompt with the same config must produce the same answer.
+
+## Append-Only Event Log Non-Goals
+
+- The event log is not a debug-only stream. It is the system of record, and the user-facing answer is a projection of it.
+- The event log is not a place for unbounded growth: events are content-addressed, deduplicated, and bounded by `max_decomposition_depth` and the source-cache TTL.
+- The event log should not leak secrets. Bearer tokens, API keys, and personal data must be redacted before they reach a link.
+- Reading the event log should not require a separate database; it must remain inspectable from CLI, HTTP, and chat surfaces.
+
 ## Data Non-Goals
 
 - A large preloaded database is not the first objective.
