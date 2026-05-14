@@ -163,7 +163,6 @@ fn http_responses_declare_a_content_type() {
 // ---------------------------------------------------------------------------
 
 #[test]
-#[ignore = "MVP-target: chat completions must accept multi-turn conversations and use earlier context"]
 fn chat_completion_supports_multi_turn_conversation() {
     let request = ChatCompletionRequest {
         model: None,
@@ -196,7 +195,6 @@ fn chat_completion_supports_multi_turn_conversation() {
 }
 
 #[test]
-#[ignore = "MVP-target: streaming Chat Completions must emit data: SSE chunks"]
 fn streaming_chat_completion_emits_server_sent_events() {
     let body = serde_json::json!({
         "model": "formal-symbolic-poc",
@@ -223,7 +221,6 @@ fn authenticated_routes_accept_bearer_token() {
 }
 
 #[test]
-#[ignore = "MVP-target: HTTP rate limiting should be exposed via X-RateLimit-* metadata"]
 fn rate_limit_metadata_is_exposed() {
     let response = handle_api_request("GET", "/v1/models", "");
     assert!(
@@ -233,7 +230,6 @@ fn rate_limit_metadata_is_exposed() {
 }
 
 #[test]
-#[ignore = "MVP-target: responses API should embed a trace link to inspect reasoning"]
 fn responses_api_attaches_trace_link() {
     let request = ResponsesRequest {
         model: None,

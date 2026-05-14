@@ -26,7 +26,6 @@ fn answers_already_carry_links_notation_for_visualization() {
 // ---------------------------------------------------------------------------
 
 #[test]
-#[ignore = "MVP-target: /v1/graph endpoint must serve a graph of nodes and edges for visualization"]
 fn graph_endpoint_returns_nodes_and_edges() {
     let response = handle_api_request("GET", "/v1/graph", "");
     assert_eq!(response.status_code, 200);
@@ -36,7 +35,6 @@ fn graph_endpoint_returns_nodes_and_edges() {
 }
 
 #[test]
-#[ignore = "MVP-target: graph nodes must carry an id, label and links-notation pointer"]
 fn graph_nodes_carry_minimum_metadata() {
     let response = handle_api_request("GET", "/v1/graph", "");
     let json: serde_json::Value = serde_json::from_str(&response.body).unwrap();
@@ -47,7 +45,6 @@ fn graph_nodes_carry_minimum_metadata() {
 }
 
 #[test]
-#[ignore = "MVP-target: graph edges should describe doublet links from-id to-id with a role"]
 fn graph_edges_describe_doublet_links() {
     let response = handle_api_request("GET", "/v1/graph", "");
     let json: serde_json::Value = serde_json::from_str(&response.body).unwrap();
@@ -58,14 +55,12 @@ fn graph_edges_describe_doublet_links() {
 }
 
 #[test]
-#[ignore = "MVP-target: graph endpoint must support filtering by trace id"]
 fn graph_endpoint_filters_by_trace_id() {
     let response = handle_api_request("GET", "/v1/graph?trace=answer_greeting_hi", "");
     assert_eq!(response.status_code, 200);
 }
 
 #[test]
-#[ignore = "MVP-target: graph endpoint must return 404 for unknown trace ids"]
 fn graph_endpoint_returns_404_for_unknown_trace() {
     let response = handle_api_request("GET", "/v1/graph?trace=does_not_exist", "");
     assert_eq!(response.status_code, 404);
@@ -82,7 +77,6 @@ fn web_demo_chat_works_even_when_graph_is_disabled() {
 }
 
 #[test]
-#[ignore = "MVP-target: graph endpoint should expose a DOT export for offline rendering"]
 fn graph_endpoint_supports_dot_export() {
     let response = handle_api_request("GET", "/v1/graph?format=dot", "");
     assert_eq!(response.status_code, 200);
