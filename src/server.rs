@@ -4,7 +4,7 @@ use std::net::{TcpListener, TcpStream};
 use serde::Serialize;
 use serde_json::json;
 
-use crate::engine::DEFAULT_MODEL;
+use crate::engine::{is_known_trace_id, knowledge_graph, knowledge_graph_dot, DEFAULT_MODEL};
 use crate::protocol::{
     create_chat_completion, create_response, ChatCompletionRequest, ResponsesRequest,
 };
@@ -20,6 +20,7 @@ pub struct ApiHttpResponse {
 #[must_use]
 pub fn handle_api_request(method: &str, path: &str, body: &str) -> ApiHttpResponse {
     let normalized_path = path.split('?').next().unwrap_or(path);
+    let query = path.split_once('?').map_or("", |(_, q)| q);
 
     match (method, normalized_path) {
         ("OPTIONS", _) => ApiHttpResponse {
@@ -43,12 +44,23 @@ pub fn handle_api_request(method: &str, path: &str, body: &str) -> ApiHttpRespon
                     "object": "model",
                     "created": 0,
                     "owned_by": "link-assistant"
-                }]
+                }],
+                "rate_limit": {
+                    "requests_per_minute": 60,
+                    "tokens_per_minute": 60_000
+                }
             }),
         ),
+        ("GET", "/v1/graph") => handle_graph_request(query),
         ("POST", "/v1/chat/completions") => {
             match serde_json::from_str::<ChatCompletionRequest>(body) {
-                Ok(request) => json_response(200, &create_chat_completion(&request)),
+                Ok(request) => {
+                    if request.stream {
+                        sse_response(&create_chat_completion(&request))
+                    } else {
+                        json_response(200, &create_chat_completion(&request))
+                    }
+                }
                 Err(error) => error_response(400, &format!("invalid chat request: {error}")),
             }
         }
@@ -58,10 +70,54 @@ pub fn handle_api_request(method: &str, path: &str, body: &str) -> ApiHttpRespon
         },
         ("POST", "/telegram/webhook") => match handle_telegram_webhook(body) {
             Ok(Some(reply)) => json_response(200, &reply),
-            Ok(None) => json_response(200, &json!({ "ok": true })),
+            Ok(None) => ApiHttpResponse {
+                status_code: 200,
+                content_type: "application/json",
+                body: String::new(),
+            },
             Err(error) => error_response(400, &error.to_string()),
         },
         _ => error_response(404, "route not found"),
+    }
+}
+
+fn handle_graph_request(query: &str) -> ApiHttpResponse {
+    let mut trace: Option<&str> = None;
+    let mut format: Option<&str> = None;
+    for pair in query.split('&').filter(|part| !part.is_empty()) {
+        if let Some((key, value)) = pair.split_once('=') {
+            match key {
+                "trace" => trace = Some(value),
+                "format" => format = Some(value),
+                _ => {}
+            }
+        }
+    }
+
+    if let Some(trace_id) = trace {
+        if !is_known_trace_id(trace_id) {
+            return error_response(404, "unknown trace id");
+        }
+    }
+
+    if format == Some("dot") {
+        return ApiHttpResponse {
+            status_code: 200,
+            content_type: "text/plain",
+            body: knowledge_graph_dot(),
+        };
+    }
+
+    json_response(200, &knowledge_graph())
+}
+
+fn sse_response<T: Serialize>(value: &T) -> ApiHttpResponse {
+    let payload = serde_json::to_string(value).unwrap_or_default();
+    let body = format!("data: {payload}\n\ndata: [DONE]\n\n");
+    ApiHttpResponse {
+        status_code: 200,
+        content_type: "text/event-stream",
+        body,
     }
 }
 
