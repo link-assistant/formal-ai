@@ -28,7 +28,7 @@ fn concept_prefixes() -> &'static [(String, String)] {
             .filter(|p| p.intent == "concept_lookup" && p.kind == "prefix")
             .map(|p| (p.text.to_lowercase(), p.language))
             .collect::<Vec<_>>();
-        prefixes.sort_by(|a, b| b.0.len().cmp(&a.0.len()));
+        prefixes.sort_by_key(|p| std::cmp::Reverse(p.0.len()));
         prefixes
     })
     .as_slice()
@@ -42,7 +42,7 @@ fn concept_suffixes() -> &'static [String] {
             .filter(|p| p.intent == "concept_lookup" && p.kind == "suffix")
             .map(|p| p.text)
             .collect::<Vec<_>>();
-        suffixes.sort_by(|a, b| b.len().cmp(&a.len()));
+        suffixes.sort_by_key(|s| std::cmp::Reverse(s.len()));
         suffixes
     })
     .as_slice()

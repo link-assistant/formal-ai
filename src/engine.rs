@@ -101,7 +101,7 @@ fn chinese_unknown_answer() -> &'static str {
     cached_response(&CELL, "unknown", "zh", FALLBACK_UNKNOWN_ANSWER)
 }
 
-fn unknown_language_fallback_answer() -> &'static str {
+const fn unknown_language_fallback_answer() -> &'static str {
     FALLBACK_UNKNOWN_LANGUAGE_ANSWER
 }
 

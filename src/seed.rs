@@ -25,6 +25,7 @@ use std::collections::BTreeMap;
 
 /// Embedded copy of every Links Notation seed file. Returned in declaration
 /// order so callers can render the merged bundle deterministically.
+#[must_use]
 pub fn seed_files() -> Vec<(&'static str, &'static str)> {
     vec![
         ("data/seed/agent-info.lino", AGENT_INFO_LINO),
@@ -47,18 +48,23 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
     ]
 }
 
-/// Merge every embedded seed file into a single Links Notation document with
-/// the `formal_ai_seed_bundle` header. The output is exactly what the browser
-/// `Download bundle` action produces minus the user-specific event log: it
-/// represents the AI's static knowledge surface, fully portable in one file.
+/// Merge every embedded seed file into a single Links Notation document.
+///
+/// The output uses the `formal_ai_seed_bundle` header and is exactly what the
+/// browser `Download bundle` action produces minus the user-specific event
+/// log: it represents the AI's static knowledge surface, fully portable in
+/// one file.
+#[must_use]
 pub fn merged_bundle() -> String {
     bundle_from_files(&seed_files())
 }
 
-/// Render an arbitrary list of `(file_name, contents)` pairs as a single
-/// `formal_ai_seed_bundle` document. Used by [`merged_bundle`] for the
-/// compile-time seed and by tooling that needs to bundle a custom seed
-/// (for example a user-edited overlay).
+/// Render an arbitrary list of `(file_name, contents)` pairs as a bundle.
+///
+/// The output uses the `formal_ai_seed_bundle` header. Used by
+/// [`merged_bundle`] for the compile-time seed and by tooling that needs to
+/// bundle a custom seed (for example a user-edited overlay).
+#[must_use]
 pub fn bundle_from_files(files: &[(&str, &str)]) -> String {
     let mut out = String::new();
     out.push_str("formal_ai_seed_bundle\n");
@@ -78,17 +84,19 @@ pub fn bundle_from_files(files: &[(&str, &str)]) -> String {
     out
 }
 
-/// Parse a bundle produced by [`merged_bundle`] back into a list of
-/// `(file_name, contents)` pairs. The inverse of [`bundle_from_files`] —
-/// callers can round-trip the universal seed through a single `.lino`
-/// document for import/export, while still recovering the per-category
-/// split files that drive the rest of the loader.
+/// Parse a bundle produced by [`merged_bundle`] back into split file pairs.
+///
+/// The result is a list of `(file_name, contents)` pairs. The inverse of
+/// [`bundle_from_files`] — callers can round-trip the universal seed through
+/// a single `.lino` document for import/export, while still recovering the
+/// per-category split files that drive the rest of the loader.
 ///
 /// The parser is lenient: a missing or differently-named header is ignored;
 /// any top-level `file "name"` child is treated as a section. Sections with
 /// no body produce an empty contents string. Indentation inside a section
 /// is reproduced verbatim (with the two-space bundle prefix stripped) so
 /// the round-trip preserves shape.
+#[must_use]
 pub fn parse_bundle(text: &str) -> Vec<(String, String)> {
     let mut sections: Vec<(String, String)> = Vec::new();
     let mut current_name: Option<String> = None;
@@ -126,11 +134,9 @@ pub fn parse_bundle(text: &str) -> Vec<(String, String)> {
         }
         // Section body: strip the four-space bundle prefix.
         if current_name.is_some() {
-            let stripped = if let Some(rest) = line.strip_prefix("    ") {
-                rest
-            } else {
-                line.trim_start()
-            };
+            let stripped = line
+                .strip_prefix("    ")
+                .unwrap_or_else(|| line.trim_start());
             current_body.push_str(stripped);
             current_body.push('\n');
         }
@@ -151,6 +157,7 @@ pub struct ResponseRecord {
 }
 
 /// Parse `multilingual-responses.lino` into structured records.
+#[must_use]
 pub fn multilingual_responses() -> Vec<ResponseRecord> {
     let tree = parse_lino(MULTILINGUAL_RESPONSES_LINO);
     let mut out = Vec::new();
@@ -175,6 +182,7 @@ pub fn multilingual_responses() -> Vec<ResponseRecord> {
 
 /// Look up a localized response by intent and language, returning `None` if
 /// the seed has no matching record.
+#[must_use]
 pub fn response_for(intent: &str, language: &str) -> Option<String> {
     for record in multilingual_responses() {
         if record.intent == intent && record.language == language {
@@ -185,6 +193,7 @@ pub fn response_for(intent: &str, language: &str) -> Option<String> {
 }
 
 /// Generic key/value config from `agent-info.lino`.
+#[must_use]
 pub fn agent_info() -> BTreeMap<String, String> {
     let tree = parse_lino(AGENT_INFO_LINO);
     let mut out = BTreeMap::new();
@@ -210,6 +219,7 @@ pub struct LanguageRule {
     pub end: u32,
 }
 
+#[must_use]
 pub fn language_rules() -> Vec<LanguageRule> {
     let tree = parse_lino(LANGUAGE_DETECTION_LINO);
     let mut out = Vec::new();
@@ -253,6 +263,7 @@ pub struct ConceptRecord {
     pub source_kind: String,
 }
 
+#[must_use]
 pub fn concepts() -> Vec<ConceptRecord> {
     let tree = parse_lino(CONCEPTS_LINO);
     let mut out = Vec::new();
@@ -321,6 +332,7 @@ pub struct IntentRouting {
     pub trace_prefixes: Vec<String>,
 }
 
+#[must_use]
 pub fn intent_routing() -> IntentRouting {
     let tree = parse_lino(INTENT_ROUTING_LINO);
     let mut routing = IntentRouting::default();
@@ -368,6 +380,7 @@ pub fn intent_routing() -> IntentRouting {
     routing
 }
 
+#[must_use]
 pub fn prompt_patterns() -> Vec<PromptPattern> {
     let tree = parse_lino(PROMPT_PATTERNS_LINO);
     let mut out = Vec::new();
@@ -410,7 +423,7 @@ pub const DEMO_DIALOGS_LINO: &str = include_str!("../data/seed/demo-dialogs.lino
 pub struct LinoNode {
     pub name: String,
     pub id: String,
-    pub children: Vec<LinoNode>,
+    pub children: Vec<Self>,
 }
 
 impl LinoNode {
@@ -427,16 +440,21 @@ impl LinoNode {
 fn parse_lino(text: &str) -> LinoNode {
     let mut root = LinoNode::default();
     // Stack entries are `(indent, path)`; `path` is the sequence of child
-    // indices from `root`. Root has an empty path and indent -1.
-    let mut stack: Vec<(i32, Vec<usize>)> = vec![(-1, Vec::new())];
+    // indices from `root`. Root has no indent (None) and an empty path.
+    let mut stack: Vec<(Option<usize>, Vec<usize>)> = vec![(None, Vec::new())];
     for line in text.lines() {
         if line.trim().is_empty() {
             continue;
         }
-        let indent = line.chars().take_while(|c| *c == ' ').count() as i32;
-        let content = &line[indent as usize..];
+        let indent = line.chars().take_while(|c| *c == ' ').count();
+        let content = &line[indent..];
         let node = parse_lino_line(content);
-        while stack.len() > 1 && stack.last().map(|s| s.0).unwrap_or(-1) >= indent {
+        while stack.len() > 1
+            && stack
+                .last()
+                .and_then(|s| s.0)
+                .is_some_and(|top| top >= indent)
+        {
             stack.pop();
         }
         let parent_path = stack.last().map(|s| s.1.clone()).unwrap_or_default();
@@ -445,7 +463,7 @@ fn parse_lino(text: &str) -> LinoNode {
         let new_index = parent.children.len() - 1;
         let mut new_path = parent_path;
         new_path.push(new_index);
-        stack.push((indent, new_path));
+        stack.push((Some(indent), new_path));
     }
     root
 }
@@ -496,12 +514,11 @@ fn unescape_value(raw: &str) -> String {
             match iter.next() {
                 Some('n') => out.push('\n'),
                 Some('"') => out.push('"'),
-                Some('\\') => out.push('\\'),
+                Some('\\') | None => out.push('\\'),
                 Some(other) => {
                     out.push('\\');
                     out.push(other);
                 }
-                None => out.push('\\'),
             }
         } else {
             out.push(c);
@@ -516,14 +533,13 @@ fn escape_value(raw: &str) -> String {
 
 fn parse_codepoint(value: &str) -> u32 {
     let trimmed = value.trim();
-    if let Some(stripped) = trimmed
+    trimmed
         .strip_prefix("0x")
         .or_else(|| trimmed.strip_prefix("0X"))
-    {
-        u32::from_str_radix(stripped, 16).unwrap_or(0)
-    } else {
-        trimmed.parse::<u32>().unwrap_or(0)
-    }
+        .map_or_else(
+            || trimmed.parse::<u32>().unwrap_or(0),
+            |stripped| u32::from_str_radix(stripped, 16).unwrap_or(0),
+        )
 }
 
 #[cfg(test)]
