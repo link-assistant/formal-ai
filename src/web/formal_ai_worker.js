@@ -55,6 +55,7 @@ let MULTILINGUAL_ANSWERS = {
   unknown: { en: FALLBACK_UNKNOWN_ANSWER },
 };
 let CONCEPTS = [];
+let CONCEPT_CONTEXTS = [];
 let TOOLS = [];
 let SEED_RAW = {};
 let AGENT_INFO = {};
@@ -166,21 +167,139 @@ function normalizeConceptTerm(value) {
   return lower.trim().replace(/[?.!,;:]+$/g, "").trim();
 }
 
-function lookupConcept(term) {
-  const normalized = normalizeConceptTerm(term);
-  if (!normalized) {
-    return null;
+function recordMatchesTerm(record, normalized) {
+  return (
+    normalizeConceptTerm(record.term) === normalized ||
+    normalizeConceptTerm(record.slug) === normalized ||
+    (Array.isArray(record.aliases) &&
+      record.aliases.some(
+        (alias) => normalizeConceptTerm(alias) === normalized,
+      ))
+  );
+}
+
+function contextRecordMatches(contextRecord, contextNormalized) {
+  if (!contextRecord) return false;
+  if (
+    Array.isArray(contextRecord.aliases) &&
+    contextRecord.aliases.some(
+      (alias) => normalizeConceptTerm(alias) === contextNormalized,
+    )
+  ) {
+    return true;
   }
   return (
-    CONCEPTS.find(
-      (record) =>
-        normalizeConceptTerm(record.term) === normalized ||
-        normalizeConceptTerm(record.slug) === normalized ||
-        record.aliases.some(
-          (alias) => normalizeConceptTerm(alias) === normalized,
-        ),
-    ) || null
+    Array.isArray(contextRecord.labels) &&
+    contextRecord.labels.some(
+      (label) => normalizeConceptTerm(label.text) === contextNormalized,
+    )
   );
+}
+
+function resolveContextRecord(contextNormalized) {
+  if (!contextNormalized) return null;
+  for (const record of CONCEPT_CONTEXTS) {
+    if (contextRecordMatches(record, contextNormalized)) return record;
+  }
+  return null;
+}
+
+function recordHasContext(record, contextNormalized) {
+  if (
+    Array.isArray(record.contexts) &&
+    record.contexts.some(
+      (candidate) => normalizeConceptTerm(candidate) === contextNormalized,
+    )
+  ) {
+    return true;
+  }
+  // Registry fallback: resolve the user-supplied context through the
+  // concept-contexts registry and see whether the resolved record's slug is
+  // referenced by the concept's `contextLinks` list. Matches the Rust
+  // ranker (src/concepts.rs::record_has_context).
+  const contextRecord = resolveContextRecord(contextNormalized);
+  if (contextRecord && Array.isArray(record.contextLinks)) {
+    return record.contextLinks.some(
+      (slug) => String(slug).trim() === contextRecord.slug,
+    );
+  }
+  return false;
+}
+
+function localizedConceptFor(record, language) {
+  if (!record || !Array.isArray(record.localized)) return null;
+  return (
+    record.localized.find((loc) => loc && loc.language === language) ||
+    record.localized.find((loc) => loc && loc.language === "en") ||
+    null
+  );
+}
+
+function contextLabelFor(contextRecord, language) {
+  if (!contextRecord || !Array.isArray(contextRecord.labels)) {
+    return null;
+  }
+  const exact = contextRecord.labels.find(
+    (label) => label && label.language === language,
+  );
+  if (exact && exact.text) return exact.text;
+  const english = contextRecord.labels.find(
+    (label) => label && label.language === "en",
+  );
+  if (english && english.text) return english.text;
+  return contextRecord.slug || null;
+}
+
+function rankConceptForPair(termRaw, contextRaw) {
+  const normalized = normalizeConceptTerm(termRaw);
+  if (!normalized) return null;
+  const contextNormalized = contextRaw ? normalizeConceptTerm(contextRaw) : "";
+
+  const termMatches = CONCEPTS.filter((record) =>
+    recordMatchesTerm(record, normalized),
+  );
+  if (termMatches.length === 0) return null;
+
+  if (contextNormalized) {
+    const ctxHit = termMatches.find((record) =>
+      recordHasContext(record, contextNormalized),
+    );
+    if (ctxHit) {
+      return {
+        record: ctxHit,
+        contextMatch: true,
+        context: contextNormalized,
+      };
+    }
+  }
+
+  // No context match: prefer records with no contexts declared.
+  termMatches.sort((a, b) => {
+    const ac = (Array.isArray(a.contexts) && a.contexts.length > 0) ? 1 : 0;
+    const bc = (Array.isArray(b.contexts) && b.contexts.length > 0) ? 1 : 0;
+    return ac - bc;
+  });
+  return {
+    record: termMatches[0],
+    contextMatch: false,
+    context: contextNormalized || null,
+  };
+}
+
+function lookupConceptQuery(query) {
+  if (!query) return null;
+  const direct = rankConceptForPair(query.term, query.context);
+  if (direct) return direct;
+  if (query.context) {
+    const reversed = rankConceptForPair(query.context, query.term);
+    if (reversed) return reversed;
+  }
+  return null;
+}
+
+function lookupConcept(term) {
+  const hit = lookupConceptQuery({ term: term, context: null });
+  return hit ? hit.record : null;
 }
 
 // Default concept-lookup patterns when seed/prompt-patterns.lino is missing.
@@ -235,10 +354,27 @@ function conceptPatternsByKind(kind) {
   // Sort longest-first so more specific patterns win.
   matches.sort((a, b) => b.length - a.length);
   if (matches.length > 0) return matches;
-  return kind === "suffix" ? DEFAULT_CONCEPT_SUFFIXES : DEFAULT_CONCEPT_PREFIXES;
+  if (kind === "suffix") return DEFAULT_CONCEPT_SUFFIXES;
+  if (kind === "prefix") return DEFAULT_CONCEPT_PREFIXES;
+  return [];
 }
 
-function extractConceptTerm(prompt) {
+function splitTermAndContext(body) {
+  const delimiters = conceptPatternsByKind("context_delimiter");
+  for (const delimiter of delimiters) {
+    const idx = body.indexOf(delimiter);
+    if (idx >= 0) {
+      const term = body.slice(0, idx).trim();
+      const context = body.slice(idx + delimiter.length).trim();
+      if (term && context) {
+        return { term: term, context: context };
+      }
+    }
+  }
+  return { term: body, context: null };
+}
+
+function extractConceptQuery(prompt) {
   const trimmedRaw = String(prompt || "")
     .trim()
     .replace(/[?。.!!,,;:]+$/g, "")
@@ -267,10 +403,16 @@ function extractConceptTerm(prompt) {
   return finalizeConceptBody(body);
 }
 
-// Render a percent-encoded URL in its readable IRI form for display, while
-// leaving the original encoded form available as the href. `decodeURI` keeps
-// reserved URI delimiters (`; / ? : @ & = + $ , #`) intact, so query strings
-// are preserved; malformed escapes fall back to the original string.
+function extractConceptTerm(prompt) {
+  const query = extractConceptQuery(prompt);
+  return query ? query.term : null;
+}
+
+// Issue #21: render a percent-encoded URL in its readable IRI form for
+// display, while leaving the original encoded form available as the href.
+// `decodeURI` keeps reserved URI delimiters (`; / ? : @ & = + $ , #`) intact,
+// so query strings are preserved; malformed escapes fall back to the original
+// string.
 function humanizeUrl(url) {
   if (typeof url !== "string" || url.length === 0) return url;
   if (!url.includes("%")) return url;
@@ -279,6 +421,13 @@ function humanizeUrl(url) {
   } catch (_error) {
     return url;
   }
+}
+
+// Render a source URL as a Markdown link [human](encoded) when humanization
+// changes anything, or the bare URL otherwise.
+function renderSourceLink(source) {
+  const human = humanizeUrl(source);
+  return human === source ? source : `[${human}](${source})`;
 }
 
 function finalizeConceptBody(body) {
@@ -294,7 +443,8 @@ function finalizeConceptBody(body) {
       break;
     }
   }
-  return trimmed || null;
+  if (!trimmed) return null;
+  return splitTermAndContext(trimmed);
 }
 
 function tokenizeArithmetic(input) {
@@ -676,24 +826,97 @@ function tryArithmetic(prompt) {
   }
 }
 
+function renderConceptInContext(language, context, record) {
+  const contextNormalized = normalizeConceptTerm(context);
+  const contextRecord = resolveContextRecord(contextNormalized);
+  const contextLabel =
+    (contextRecord && contextLabelFor(contextRecord, language)) || context;
+  const sameAsLabel =
+    String(contextLabel).trim().toLowerCase() ===
+    String(context).trim().toLowerCase();
+  const intentVariant = sameAsLabel
+    ? "concept_lookup_in_context_no_alias"
+    : "concept_lookup_in_context";
+  const variantTable = MULTILINGUAL_ANSWERS[intentVariant] || {};
+  const baseTable = MULTILINGUAL_ANSWERS.concept_lookup_in_context || {};
+  const template =
+    variantTable[language] ||
+    variantTable.en ||
+    baseTable[language] ||
+    baseTable.en ||
+    "In the context of {context} ({context_label}), {term} ({category}) means: {summary}\n\nSource: {source} ({source_kind}).";
+  const localized = localizedConceptFor(record, language);
+  const term = (localized && localized.term) || record.term;
+  const summary = (localized && localized.summary) || record.summary;
+  const source = (localized && localized.source) || record.source;
+  const sourceKind =
+    (localized && localized.sourceKind) || record.sourceKind;
+  const sourceMarkup = renderSourceLink(source);
+  return template
+    .replace(/\{context_label\}/g, contextLabel)
+    .replace(/\{context\}/g, context)
+    .replace(/\{term\}/g, term)
+    .replace(/\{category\}/g, record.category)
+    .replace(/\{summary\}/g, summary)
+    .replace(/\{source\}/g, sourceMarkup)
+    .replace(/\{source_kind\}/g, sourceKind);
+}
+
+function renderConceptPlain(language, record) {
+  const localized = localizedConceptFor(record, language);
+  const term = (localized && localized.term) || record.term;
+  const summary = (localized && localized.summary) || record.summary;
+  const source = (localized && localized.source) || record.source;
+  const sourceKind =
+    (localized && localized.sourceKind) || record.sourceKind;
+  const sourceMarkup = renderSourceLink(source);
+  return `${term} (${record.category}): ${summary}\n\nSource: ${sourceMarkup} (${sourceKind}).`;
+}
+
 function tryConceptLookup(prompt) {
-  const term = extractConceptTerm(prompt);
-  if (!term) return null;
-  const record = lookupConcept(term);
-  if (!record) return null;
-  const humanSource = humanizeUrl(record.source);
-  const sourceMarkup =
-    humanSource === record.source
-      ? record.source
-      : `[${humanSource}](${record.source})`;
-  const body =
-    `${record.term} (${record.category}): ${record.summary}\n\n` +
-    `Source: ${sourceMarkup} (${record.sourceKind}).`;
+  const query = extractConceptQuery(prompt);
+  if (!query) return null;
+  const evidence = [`concept_lookup:request:${query.term}`];
+  if (query.context) {
+    evidence.push(`concept_lookup:context:${query.context}`);
+  }
+  const lookup = lookupConceptQuery(query);
+  if (!lookup) {
+    // Surface the miss in evidence so the demo's trace panel can show why
+    // the handler declined the prompt. Returning null lets later handlers
+    // (Wikipedia lookup, fallback) still get a chance.
+    return null;
+  }
+  const record = lookup.record;
+  const language = detectLanguage(prompt);
+  const localized = localizedConceptFor(record, language);
+  const effectiveSource = (localized && localized.source) || record.source;
+  // Issue #21: emit the percent-decoded IRI form for the trace panel.
+  const humanSource = humanizeUrl(effectiveSource);
+  evidence.push(`concept_lookup:hit:${record.slug}`);
+  evidence.push(`source:${humanSource}`);
+  if (record.wikidata) {
+    evidence.push(`wikidata:${record.wikidata}`);
+  }
+  if (lookup.contextMatch && lookup.context) {
+    evidence.push(`concept_lookup:context-match:${lookup.context}`);
+    const body = renderConceptInContext(language, lookup.context, record);
+    return {
+      intent: "concept_lookup_in_context",
+      content: body,
+      confidence: 0.9,
+      evidence,
+    };
+  }
+  if (lookup.context) {
+    evidence.push(`concept_lookup:context-mismatch:${lookup.context}`);
+  }
+  const body = renderConceptPlain(language, record);
   return {
     intent: "concept_lookup",
     content: body,
     confidence: 0.9,
-    evidence: [`concept_lookup:${record.slug}`, `source:${humanSource}`],
+    evidence,
   };
 }
 
@@ -762,12 +985,14 @@ async function fetchWikipediaSummary(term, language) {
 }
 
 async function tryWikipediaLookup(prompt, language) {
-  const term = extractConceptTerm(prompt);
-  if (!term) return null;
+  const query = extractConceptQuery(prompt);
+  if (!query) return null;
   // Avoid hitting the network for terms that already resolved in CONCEPTS;
-  // that path is handled by `tryConceptLookup`.
-  if (lookupConcept(term)) return null;
-  const summary = await fetchWikipediaSummary(term, language);
+  // that path is handled by `tryConceptLookup`. We try the full
+  // `(term, context)` query first so that "what is iir in ml" doesn't waste
+  // a network call when a context-aware record exists.
+  if (lookupConceptQuery(query)) return null;
+  const summary = await fetchWikipediaSummary(query.term, language);
   if (!summary) return null;
   const humanUrl = humanizeUrl(summary.url);
   const body =
@@ -1018,7 +1243,10 @@ async function solve(prompt, history) {
           outputs: { intent: hit.intent, confidence: hit.confidence },
         });
       }
-      if (hit.intent === "concept_lookup") {
+      if (
+        hit.intent === "concept_lookup" ||
+        hit.intent === "concept_lookup_in_context"
+      ) {
         toolCalls.push({
           tool: "concept_lookup",
           inputs: { prompt },
@@ -1095,6 +1323,12 @@ async function loadSeed() {
     if (Array.isArray(seed && seed.concepts) && seed.concepts.length > 0) {
       CONCEPTS = seed.concepts;
     }
+    if (
+      Array.isArray(seed && seed.conceptContexts) &&
+      seed.conceptContexts.length > 0
+    ) {
+      CONCEPT_CONTEXTS = seed.conceptContexts;
+    }
     if (Array.isArray(seed && seed.tools) && seed.tools.length > 0) {
       TOOLS = seed.tools;
     }
@@ -1154,6 +1388,7 @@ async function init() {
     seed: {
       responseIntents: Object.keys(MULTILINGUAL_ANSWERS),
       conceptCount: CONCEPTS.length,
+      conceptContextCount: CONCEPT_CONTEXTS.length,
       toolCount: TOOLS.length,
       files: Object.keys(SEED_RAW),
     },
@@ -1170,6 +1405,7 @@ self.onmessage = async (event) => {
       raw: SEED_RAW,
       responses: MULTILINGUAL_ANSWERS,
       concepts: CONCEPTS,
+      conceptContexts: CONCEPT_CONTEXTS,
       tools: TOOLS,
       agentInfo: AGENT_INFO,
       languageRules: LANGUAGE_RULES,

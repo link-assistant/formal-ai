@@ -153,6 +153,217 @@ fn chinese_concept_question_returns_concept_lookup_intent() {
     );
 }
 
+// Issue #20: "что такое X в Y" — (concept, context) disambiguation across
+// English, Russian, Hindi, and Chinese, matching every typical phrasing.
+// The reporter's exact prompt is in the Russian test.
+// ---------------------------------------------------------------------------
+
+#[test]
+fn russian_iir_in_ml_returns_context_aware_concept_lookup() {
+    let response = answer("что такое iir в ml");
+    assert_eq!(
+        response.intent, "concept_lookup_in_context",
+        "Russian (concept,context) prompt should map to concept_lookup_in_context, got: {}",
+        response.intent
+    );
+    let lower = response.answer.to_lowercase();
+    assert!(
+        lower.contains("iir") && lower.contains("ml"),
+        "Russian (concept,context) answer should reference both halves, got: {}",
+        response.answer
+    );
+}
+
+#[test]
+fn english_what_is_iir_in_ml_returns_context_aware_concept_lookup() {
+    let response = answer("what is IIR in ML?");
+    assert_eq!(response.intent, "concept_lookup_in_context");
+    let lower = response.answer.to_lowercase();
+    assert!(lower.contains("iir"));
+    assert!(lower.contains("ml") || lower.contains("machine learning"));
+}
+
+#[test]
+fn hindi_iir_in_ml_returns_context_aware_concept_lookup() {
+    // Hindi places the context before the concept ("ML में IIR क्या है?").
+    let response = answer("ML में IIR क्या है?");
+    assert_eq!(
+        response.intent, "concept_lookup_in_context",
+        "Hindi context-first prompt should map to concept_lookup_in_context, got: {}",
+        response.intent
+    );
+}
+
+#[test]
+fn chinese_iir_in_ml_returns_context_aware_concept_lookup() {
+    // Chinese also places the context before the concept ("ML 中的 IIR 是什么?").
+    let response = answer("ML中的IIR是什么?");
+    assert_eq!(
+        response.intent, "concept_lookup_in_context",
+        "Chinese context-first prompt should map to concept_lookup_in_context, got: {}",
+        response.intent
+    );
+}
+
+#[test]
+fn bare_iir_without_context_still_resolves() {
+    // Without a context clause the solver should still find the term and
+    // return the plain concept_lookup intent (not the in-context variant).
+    let response = answer("what is IIR?");
+    assert_eq!(
+        response.intent, "concept_lookup",
+        "Bare term should map to plain concept_lookup, got: {}",
+        response.intent
+    );
+}
+
+#[test]
+fn concept_lookup_evidence_records_context_match_event() {
+    // Verbose/debug trail: an in-context hit must leave a
+    // `concept_lookup:context-match:*` evidence link so we can root-cause
+    // future regressions from the trace alone (maintainer requirement #5).
+    let response = answer("что такое iir в ml");
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("concept_lookup:context-match")),
+        "expected a concept_lookup:context-match evidence link, got: {:?}",
+        response.evidence_links,
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("concept_lookup:request")),
+        "expected a concept_lookup:request evidence link, got: {:?}",
+        response.evidence_links,
+    );
+}
+
+// ---------------------------------------------------------------------------
+// Issue #20 (maintainer follow-up): native-language body and full disambiguated
+// context name. The maintainer asked for:
+//   - В контексте «ml» (Машинное обучение) IIR ... [R8]
+//   - Russian term: "Фильтр с бесконечной импульсной характеристикой ... или
+//     IIR-фильтр" [R9]
+//   - Russian summary verbatim from ru.wikipedia.org [R10]
+//   - Prefer the user's prevailing language [R11]
+// ---------------------------------------------------------------------------
+
+#[test]
+fn russian_iir_in_ml_body_uses_native_term_and_context_label() {
+    // R8 + R9 + R11: when the prevailing language is Russian, the body must
+    // (a) name the resolved context in Russian ("Машинное обучение") and
+    // (b) use the Russian term ("Фильтр с бесконечной импульсной...").
+    let response = answer("что такое iir в ml");
+    let answer_text = &response.answer;
+    assert!(
+        answer_text.contains("«ml»"),
+        "Russian answer should quote the user's literal context phrase, got: {answer_text}"
+    );
+    assert!(
+        answer_text.contains("Машинное обучение"),
+        "Russian answer should append the registry label «Машинное обучение», got: {answer_text}"
+    );
+    assert!(
+        answer_text.contains("Фильтр с бесконечной импульсной характеристикой"),
+        "Russian answer should use the native term, got: {answer_text}"
+    );
+    assert!(
+        answer_text.contains("IIR-фильтр"),
+        "Russian answer should reference the Russian-language alias \"IIR-фильтр\", got: {answer_text}"
+    );
+}
+
+#[test]
+fn russian_iir_in_ml_source_points_at_russian_wikipedia() {
+    // R10: the cited source must be the Russian Wikipedia article body the
+    // maintainer linked, not the English fallback.
+    let response = answer("что такое iir в ml");
+    assert!(
+        response.answer.contains("ru.wikipedia.org"),
+        "Russian answer should cite ru.wikipedia.org, got: {}",
+        response.answer
+    );
+}
+
+#[test]
+fn russian_iir_when_context_is_typed_natively_drops_redundant_parens() {
+    // R8 corollary: if the user types the localized label themselves, the
+    // response should not duplicate it as `«Машинное обучение» (Машинное
+    // обучение)`. The `concept_lookup_in_context_no_alias` template handles
+    // this without committing to per-language Rust code.
+    let response = answer("что такое iir в машинное обучение");
+    assert_eq!(response.intent, "concept_lookup_in_context");
+    let answer_text = &response.answer;
+    assert!(
+        answer_text.contains("Машинное обучение"),
+        "answer should mention the localized context label, got: {answer_text}"
+    );
+    assert!(
+        !answer_text.contains("«машинное обучение» (Машинное обучение)"),
+        "no_alias template should not render «label» (label) duplication, got: {answer_text}"
+    );
+}
+
+#[test]
+fn english_iir_in_ml_body_uses_english_native_term() {
+    // R11: prevailing-language routing for English. The localized "en" block
+    // expands "IIR" to "infinite impulse response (IIR)" for the long form.
+    let response = answer("what is IIR in ML?");
+    let lower = response.answer.to_lowercase();
+    assert!(
+        lower.contains("infinite impulse response"),
+        "English answer should expand the acronym, got: {}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains("machine learning"),
+        "English answer should mention the resolved context label, got: {}",
+        response.answer
+    );
+}
+
+#[test]
+fn chinese_iir_in_ml_body_uses_chinese_context_label() {
+    // R8 in Chinese: the resolved label «机器学习» (machine learning) must
+    // appear in the response body.
+    let response = answer("ML中的IIR是什么?");
+    assert!(
+        response.answer.contains("机器学习"),
+        "Chinese answer should append the localized context label, got: {}",
+        response.answer
+    );
+}
+
+#[test]
+fn hindi_iir_in_ml_body_uses_hindi_context_label() {
+    // R8 in Hindi: the resolved label «मशीन लर्निंग» must appear.
+    let response = answer("ML में IIR क्या है?");
+    assert!(
+        response.answer.contains("मशीन लर्निंग"),
+        "Hindi answer should append the localized context label, got: {}",
+        response.answer
+    );
+}
+
+#[test]
+fn russian_iir_evidence_includes_wikidata_anchor() {
+    // R13: the link network must carry the Wikidata Q-ID anchor so callers
+    // can use it as a cross-language join key (this is how human-language and
+    // meta-expression translate across the four target languages).
+    let response = answer("что такое iir в ml");
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link.contains("Q740073") || link.contains("wikidata")),
+        "expected a wikidata-anchored evidence link for cross-language joins, got: {:?}",
+        response.evidence_links,
+    );
+}
+
 // ---------------------------------------------------------------------------
 // Issue #21: URLs with non-ASCII characters must be displayed in human-readable
 // IRI form across every surface, while remaining functional (the encoded URI

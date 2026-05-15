@@ -585,8 +585,20 @@ pub fn extract_fenced_block(text: &str, languages: &[&str]) -> Option<String> {
 #[cfg(test)]
 mod tests {
     use super::{extract_fenced_block, extract_javascript_program, humanize_url, is_prime};
-    use crate::concepts::{extract_concept_term, lookup_concept};
+    use crate::concepts::{extract_concept_query, lookup_concept_query, ConceptQuery};
     use crate::solver::{SolverConfig, UniversalSolver};
+
+    fn lookup_term(term: &str) -> bool {
+        lookup_concept_query(&ConceptQuery {
+            term: term.to_owned(),
+            context: None,
+        })
+        .is_some()
+    }
+
+    fn extract_term(prompt: &str) -> Option<String> {
+        extract_concept_query(prompt).map(|q| q.term)
+    }
 
     #[test]
     fn defaults_are_bounded_and_offline_capable() {
@@ -654,64 +666,86 @@ mod tests {
 
     #[test]
     fn concept_lookup_finds_seeded_terms() {
-        assert!(lookup_concept("Wikipedia").is_some());
-        assert!(lookup_concept("links notation").is_some());
-        assert!(lookup_concept("the event log").is_some());
-        assert!(lookup_concept("doublet link").is_some());
-        assert!(lookup_concept("WebAssembly").is_some());
-        assert!(lookup_concept("unknown-concept-xyz").is_none());
+        assert!(lookup_term("Wikipedia"));
+        assert!(lookup_term("links notation"));
+        assert!(lookup_term("the event log"));
+        assert!(lookup_term("doublet link"));
+        assert!(lookup_term("WebAssembly"));
+        assert!(!lookup_term("unknown-concept-xyz"));
     }
 
     #[test]
     fn concept_extraction_handles_common_prefixes() {
         assert_eq!(
-            extract_concept_term("What is Wikipedia?").as_deref(),
+            extract_term("What is Wikipedia?").as_deref(),
             Some("wikipedia"),
         );
         assert_eq!(
-            extract_concept_term("Tell me about Links Notation").as_deref(),
+            extract_term("Tell me about Links Notation").as_deref(),
             Some("links notation"),
         );
         assert_eq!(
-            extract_concept_term("What does Wikidata mean?").as_deref(),
+            extract_term("What does Wikidata mean?").as_deref(),
             Some("wikidata"),
         );
-        assert_eq!(extract_concept_term("Hi"), None);
-        assert_eq!(
-            extract_concept_term("What is 2 + 2?").as_deref(),
-            Some("2 + 2")
-        );
+        assert_eq!(extract_term("Hi"), None);
+        assert_eq!(extract_term("What is 2 + 2?").as_deref(), Some("2 + 2"));
     }
 
     #[test]
     fn concept_extraction_handles_multilingual_prefixes() {
         assert_eq!(
-            extract_concept_term("Что такое Википедия?").as_deref(),
+            extract_term("Что такое Википедия?").as_deref(),
             Some("википедия"),
         );
         assert_eq!(
-            extract_concept_term("Расскажи про Links Notation").as_deref(),
+            extract_term("Расскажи про Links Notation").as_deref(),
             Some("links notation"),
         );
         assert_eq!(
-            extract_concept_term("विकिपीडिया क्या है?").as_deref(),
+            extract_term("विकिपीडिया क्या है?").as_deref(),
             Some("विकिपीडिया"),
         );
-        assert_eq!(
-            extract_concept_term("维基百科是什么?").as_deref(),
-            Some("维基百科"),
-        );
-        assert_eq!(
-            extract_concept_term("什么是 Rust?").as_deref(),
-            Some("rust"),
-        );
+        assert_eq!(extract_term("维基百科是什么?").as_deref(), Some("维基百科"),);
+        assert_eq!(extract_term("什么是 Rust?").as_deref(), Some("rust"));
     }
 
     #[test]
     fn concept_lookup_finds_multilingual_aliases() {
-        assert!(lookup_concept("Википедия").is_some());
-        assert!(lookup_concept("विकिपीडिया").is_some());
-        assert!(lookup_concept("维基百科").is_some());
+        assert!(lookup_term("Википедия"));
+        assert!(lookup_term("विकिपीडिया"));
+        assert!(lookup_term("维基百科"));
+    }
+
+    #[test]
+    fn concept_query_splits_term_and_context() {
+        let query = extract_concept_query("what is IIR in ML?").expect("should extract");
+        assert_eq!(query.term, "iir");
+        assert_eq!(query.context.as_deref(), Some("ml"));
+    }
+
+    #[test]
+    fn concept_query_handles_russian_context_delimiter() {
+        let query = extract_concept_query("что такое iir в ml").expect("should extract");
+        assert_eq!(query.term, "iir");
+        assert_eq!(query.context.as_deref(), Some("ml"));
+    }
+
+    #[test]
+    fn concept_query_handles_hindi_context_first() {
+        let query = extract_concept_query("ML में IIR क्या है").expect("should extract");
+        // Hindi puts context before the concept; the parser captures it as
+        // the lexical term half. The lookup_concept_query swaps order as
+        // needed when ranking against records.
+        assert!(query.term == "ml" || query.term == "iir");
+        assert!(query.context.is_some());
+    }
+
+    #[test]
+    fn concept_query_handles_chinese_context_first() {
+        let query = extract_concept_query("ML中的IIR是什么").expect("should extract");
+        assert!(query.term == "ml" || query.term == "iir");
+        assert!(query.context.is_some());
     }
 
     #[test]

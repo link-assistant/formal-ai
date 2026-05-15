@@ -8,16 +8,41 @@
 //! Prompt-question prefixes/suffixes (e.g. "what is", "что такое",
 //! "X क्या है", "X 是什么") come from `data/seed/prompt-patterns.lino`
 //! so the routing rules can be edited without touching this code.
+//!
+//! Per-language context delimiters (e.g. " in ", " в ", " में ", "中") are
+//! loaded from the same file under the `context_delimiter` pattern kind.
+//! They let a query like "what is IIR in ML" split into a concept term
+//! (`iir`) and a context term (`ml`); the ranker then prefers a record whose
+//! `contexts` list contains the parsed context.
 
 use std::sync::OnceLock;
 
 use crate::seed;
 
-pub use crate::seed::ConceptRecord;
+pub use crate::seed::{ConceptRecord, ContextRecord};
 
 fn concepts() -> &'static [ConceptRecord] {
     static CELL: OnceLock<Vec<ConceptRecord>> = OnceLock::new();
     CELL.get_or_init(seed::concepts).as_slice()
+}
+
+fn concept_contexts() -> &'static [ContextRecord] {
+    static CELL: OnceLock<Vec<ContextRecord>> = OnceLock::new();
+    CELL.get_or_init(seed::concept_contexts).as_slice()
+}
+
+/// Resolve a free-form context phrase (e.g. "ml", "машинное обучение") to a
+/// registered [`ContextRecord`] via alias or localized-label match. Returns
+/// `None` when no registry record claims the phrase.
+#[must_use]
+pub fn resolve_context_label(raw_context: &str) -> Option<&'static ContextRecord> {
+    let normalized = normalize_concept_term(raw_context);
+    if normalized.is_empty() {
+        return None;
+    }
+    concept_contexts()
+        .iter()
+        .find(|record| record.matches(&normalized))
 }
 
 fn concept_prefixes() -> &'static [(String, String)] {
@@ -48,13 +73,40 @@ fn concept_suffixes() -> &'static [String] {
     .as_slice()
 }
 
-/// Extract the concept term from a "what is X" style prompt. Returns `None`
-/// when the prompt does not look like a definition request, which lets the
-/// solver fall through to other handlers (greeting, arithmetic, etc.).
+fn concept_context_delimiters() -> &'static [String] {
+    static CELL: OnceLock<Vec<String>> = OnceLock::new();
+    CELL.get_or_init(|| {
+        let mut delimiters = seed::prompt_patterns()
+            .into_iter()
+            .filter(|p| p.intent == "concept_lookup" && p.kind == "context_delimiter")
+            .map(|p| p.text)
+            .collect::<Vec<_>>();
+        delimiters.sort_by_key(|d| std::cmp::Reverse(d.len()));
+        delimiters
+    })
+    .as_slice()
+}
+
+/// Outcome of parsing a "what is X" style prompt.
+///
+/// `term` is the concept candidate; `context`, when present, is the
+/// disambiguating context phrase the user appended via a language-specific
+/// delimiter (" in ", " в ", " में ", "中", ...). Both strings are
+/// lowercased and trimmed.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ConceptQuery {
+    pub term: String,
+    pub context: Option<String>,
+}
+
+/// Extract a `(concept, optional context)` pair from a "what is X" style
+/// prompt. Returns `None` when the prompt does not look like a definition
+/// request, which lets the solver fall through to other handlers (greeting,
+/// arithmetic, etc.).
 ///
 /// Patterns come from `data/seed/prompt-patterns.lino` (English, Russian,
-/// Hindi, Chinese prefixes and suffixes).
-pub fn extract_concept_term(prompt: &str) -> Option<String> {
+/// Hindi, Chinese prefixes, suffixes, and context delimiters).
+pub fn extract_concept_query(prompt: &str) -> Option<ConceptQuery> {
     let trimmed = prompt.trim();
     let trimmed = trimmed
         .trim_end_matches(['?', '。', '.', '!', '!', ',', ',', ';', ':'])
@@ -64,7 +116,7 @@ pub fn extract_concept_term(prompt: &str) -> Option<String> {
     }
 
     if let Some(body) = strip_suffix_pattern(trimmed) {
-        return finalize_concept_body(&body);
+        return finalize_concept_query(&body);
     }
 
     let lower = trimmed.to_lowercase();
@@ -77,10 +129,10 @@ pub fn extract_concept_term(prompt: &str) -> Option<String> {
         }
     }
     let body = body?;
-    finalize_concept_body(body)
+    finalize_concept_query(body)
 }
 
-fn finalize_concept_body(body: &str) -> Option<String> {
+fn finalize_concept_query(body: &str) -> Option<ConceptQuery> {
     let body = body
         .trim()
         .trim_end_matches(['?', '。', '.', '!', '!', ',', ',', ';', ':'])
@@ -97,7 +149,30 @@ fn finalize_concept_body(body: &str) -> Option<String> {
     if trimmed_body.is_empty() {
         return None;
     }
-    Some(trimmed_body.to_owned())
+    let (term, context) = split_term_and_context(trimmed_body);
+    if term.is_empty() {
+        return None;
+    }
+    Some(ConceptQuery {
+        term,
+        context: context.filter(|c| !c.is_empty()),
+    })
+}
+
+/// Split a question body on the first matching context delimiter. The
+/// delimiters come from `data/seed/prompt-patterns.lino` so adding a new
+/// language requires no Rust changes.
+fn split_term_and_context(body: &str) -> (String, Option<String>) {
+    for delimiter in concept_context_delimiters() {
+        if let Some(idx) = body.find(delimiter.as_str()) {
+            let term = body[..idx].trim().to_owned();
+            let context = body[idx + delimiter.len()..].trim().to_owned();
+            if !term.is_empty() && !context.is_empty() {
+                return (term, Some(context));
+            }
+        }
+    }
+    (body.to_owned(), None)
 }
 
 fn strip_suffix_pattern(input: &str) -> Option<String> {
@@ -109,25 +184,123 @@ fn strip_suffix_pattern(input: &str) -> Option<String> {
     None
 }
 
-/// Look up a concept by term, alias, or slug. Comparison is case-insensitive
-/// and ignores leading articles ("the", "a", "an").
+/// Result of a concept-lookup ranking pass.
+///
+/// `context_match` is `true` when the user supplied a context phrase and a
+/// record in the seed listed it under `contexts`. Callers (the solver handler)
+/// use this flag to choose between the plain and the in-context response
+/// template.
+#[derive(Debug, Clone)]
+pub struct ConceptLookup {
+    pub record: &'static ConceptRecord,
+    pub context_match: bool,
+    pub context: Option<String>,
+}
+
+/// Look up a concept by term, alias, or slug, with optional context-aware
+/// disambiguation. Comparison is case-insensitive and ignores leading
+/// articles ("the", "a", "an").
+///
+/// Some languages place the context phrase *before* the concept (Hindi
+/// "ML में IIR क्या है"; Chinese "ML 中的 IIR 是什么"); others place it
+/// *after* (English "what is IIR in ML"; Russian "что такое IIR в ML").
+/// The ranker tries the supplied `(term, context)` ordering first and, if
+/// the term half does not match any record, retries with the halves swapped.
+/// This keeps the parser delimiter-driven without committing to a per-language
+/// word-order rule, matching schema:disambiguatingDescription semantics.
 #[must_use]
-pub fn lookup_concept(term: &str) -> Option<&'static ConceptRecord> {
+pub fn lookup_concept_query(query: &ConceptQuery) -> Option<ConceptLookup> {
+    if let Some(lookup) = rank_for_pair(&query.term, query.context.as_deref()) {
+        return Some(lookup);
+    }
+    // Reversed ordering (context-first languages).
+    if let Some(context) = query.context.as_deref() {
+        if let Some(lookup) = rank_for_pair(context, Some(&query.term)) {
+            return Some(lookup);
+        }
+    }
+    None
+}
+
+fn rank_for_pair(term: &str, context: Option<&str>) -> Option<ConceptLookup> {
     let normalized = normalize_concept_term(term);
     if normalized.is_empty() {
         return None;
     }
-    concepts().iter().find(|record| {
-        if normalize_concept_term(&record.term) == normalized
-            || normalize_concept_term(&record.slug) == normalized
-        {
-            return true;
-        }
-        record
-            .aliases
+    let context_normalized = context
+        .map(normalize_concept_term)
+        .filter(|c| !c.is_empty());
+
+    let mut term_matches: Vec<&'static ConceptRecord> = concepts()
+        .iter()
+        .filter(|record| record_matches_term(record, &normalized))
+        .collect();
+    if term_matches.is_empty() {
+        return None;
+    }
+
+    if let Some(ctx) = context_normalized.as_deref() {
+        if let Some(record) = term_matches
             .iter()
-            .any(|alias| normalize_concept_term(alias) == normalized)
+            .copied()
+            .find(|record| record_has_context(record, ctx))
+        {
+            return Some(ConceptLookup {
+                record,
+                context_match: true,
+                context: Some(ctx.to_owned()),
+            });
+        }
+    }
+
+    // No context match: prefer a record that declares no contexts (which is
+    // the safest fallback when the user did supply a context but it didn't
+    // match anything), then any remaining term-match. The ordering here is
+    // stable so the lookup is deterministic across runs.
+    term_matches.sort_by_key(|record| u8::from(!record.contexts.is_empty()));
+    let record = term_matches.into_iter().next()?;
+    Some(ConceptLookup {
+        record,
+        context_match: false,
+        context: context_normalized,
     })
+}
+
+fn record_matches_term(record: &ConceptRecord, normalized: &str) -> bool {
+    if normalize_concept_term(&record.term) == normalized
+        || normalize_concept_term(&record.slug) == normalized
+    {
+        return true;
+    }
+    record
+        .aliases
+        .iter()
+        .any(|alias| normalize_concept_term(alias) == normalized)
+}
+
+fn record_has_context(record: &ConceptRecord, context_normalized: &str) -> bool {
+    if record
+        .contexts
+        .iter()
+        .any(|candidate| normalize_concept_term(candidate) == context_normalized)
+    {
+        return true;
+    }
+    // Fallback: resolve the user-supplied context through the registry and
+    // see whether the resolved record's slug is referenced by the concept's
+    // `context_links` list. This lets a concept declare contexts purely via
+    // Q-ID-anchored references in concept-contexts.lino without restating
+    // every alias inline.
+    if let Some(context_record) = concept_contexts()
+        .iter()
+        .find(|c| c.matches(context_normalized))
+    {
+        return record
+            .context_links
+            .iter()
+            .any(|slug| slug.trim() == context_record.slug);
+    }
+    false
 }
 
 fn normalize_concept_term(value: &str) -> String {

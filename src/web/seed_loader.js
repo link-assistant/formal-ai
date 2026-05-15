@@ -22,6 +22,7 @@
     "seed/agent-info.lino",
     "seed/multilingual-responses.lino",
     "seed/concepts.lino",
+    "seed/concept-contexts.lino",
     "seed/tools.lino",
     "seed/language-detection.lino",
     "seed/prompt-patterns.lino",
@@ -171,13 +172,25 @@
 
   function extractConcepts(root) {
     if (!root || !Array.isArray(root.children)) return [];
-    var nodes = root.name === "" || !root.name ? root.children : [root].concat(root.children || []);
     // Concept files are flat — each top-level child is one record.
     var concepts = [];
     var iterate = function (item) {
       if (!item || !item.name) return;
       if (!item.name.startsWith("concept_")) return;
       var aliases = findChildValue(item, "aliases");
+      var contexts = findChildValue(item, "contexts");
+      var contextLinks = findChildValue(item, "context_links");
+      var localized = findChildren(item, "localized").map(function (loc) {
+        var locAliases = findChildValue(loc, "aliases");
+        return {
+          language: loc.id,
+          term: findChildValue(loc, "term"),
+          aliases: locAliases ? locAliases.split("|").map(trim).filter(Boolean) : [],
+          summary: findChildValue(loc, "summary"),
+          source: findChildValue(loc, "source"),
+          sourceKind: findChildValue(loc, "source_kind"),
+        };
+      });
       concepts.push({
         slug: item.name,
         term: findChildValue(item, "term"),
@@ -185,7 +198,13 @@
         summary: findChildValue(item, "summary"),
         source: findChildValue(item, "source"),
         sourceKind: findChildValue(item, "source_kind") || "project-docs",
+        wikidata: findChildValue(item, "wikidata"),
         aliases: aliases ? aliases.split("|").map(trim).filter(Boolean) : [],
+        contexts: contexts ? contexts.split("|").map(trim).filter(Boolean) : [],
+        contextLinks: contextLinks
+          ? contextLinks.split("|").map(trim).filter(Boolean)
+          : [],
+        localized: localized,
       });
     };
     if (root.name && root.name.startsWith("concept_")) {
@@ -194,6 +213,37 @@
       root.children.forEach(iterate);
     }
     return concepts;
+  }
+
+  // Extract disambiguating context records (`concept-contexts.lino`).
+  // Each context is anchored by a Wikidata Q-ID and carries per-language
+  // localized labels plus a `|`-separated alias list (free-text phrases the
+  // user might type in the four supported languages).
+  function extractConceptContexts(root) {
+    if (!root || !Array.isArray(root.children)) return [];
+    var out = [];
+    var visit = function (parent) {
+      var entries = findChildren(parent, "context");
+      for (var i = 0; i < entries.length; i += 1) {
+        var entry = entries[i];
+        if (!entry.id) continue;
+        var aliases = findChildValue(entry, "aliases");
+        var labels = findChildren(entry, "label").map(function (label) {
+          return { language: label.id, text: findChildValue(label, "text") };
+        });
+        out.push({
+          slug: entry.id,
+          wikidata: findChildValue(entry, "wikidata"),
+          aliases: aliases ? aliases.split("|").map(trim).filter(Boolean) : [],
+          labels: labels,
+        });
+      }
+    };
+    visit(root);
+    for (var i = 0; i < root.children.length; i += 1) {
+      visit(root.children[i]);
+    }
+    return out;
   }
 
   function extractTools(node) {
@@ -481,6 +531,7 @@
     var seed = {
       responses: {},
       concepts: [],
+      conceptContexts: [],
       tools: [],
       agentInfo: {},
       languageRules: [],
@@ -498,6 +549,10 @@
         seed.responses = mergeResponses(
           seed.responses,
           extractMultilingualResponses(root),
+        );
+      } else if (item.file.indexOf("concept-contexts") !== -1) {
+        seed.conceptContexts = seed.conceptContexts.concat(
+          extractConceptContexts(root),
         );
       } else if (item.file.indexOf("concepts") !== -1) {
         seed.concepts = seed.concepts.concat(extractConcepts(root));
@@ -528,6 +583,7 @@
     extractLanguageRules: extractLanguageRules,
     extractPromptPatterns: extractPromptPatterns,
     extractConcepts: extractConcepts,
+    extractConceptContexts: extractConceptContexts,
     extractTools: extractTools,
     extractIntentRouting: extractIntentRouting,
     extractEnvironmentDirectory: extractEnvironmentDirectory,
