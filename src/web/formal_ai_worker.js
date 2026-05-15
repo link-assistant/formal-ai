@@ -1118,6 +1118,16 @@ function wikipediaTermVariants(term) {
   push(capitalizeWords(trimmed));
   push(capitalizeWords(trimmed.toLowerCase()));
   push(trimmed.toLowerCase());
+  // Biography titles on Wikipedia (notably ru.wikipedia.org) use the
+  // "Surname, Given names" form: querying "Илон Маск" 404s, but "Маск, Илон"
+  // resolves. For two-word terms try the swap in both original and
+  // capitalized casing so other language hosts can match too.
+  const words = trimmed.split(/\s+/).filter(Boolean);
+  if (words.length === 2) {
+    const swapped = `${words[1]}, ${words[0]}`;
+    push(swapped);
+    push(capitalizeWords(swapped.toLowerCase()));
+  }
   return variants;
 }
 

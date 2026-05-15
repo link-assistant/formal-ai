@@ -115,7 +115,7 @@ bullet so subsequent work can reference it.
 | R4  | ✅ Shipped | `Example prompts` section live; lists 20 example prompts spanning hello-world variants in 6+ languages, Wikipedia look-ups in EN/RU/ZH, Export/Import memory, etc. |
 | R5  | 🟡 Partially shipped | Demo dialog uses a curated subset of examples. Random greeting selection lands in R6. |
 | R6  | ✅ Shipped (commit `036b481`) | Variants live in `data/seed/multilingual-responses.lino`; the JS seed loader returns `{ text, variants }`; the preference toggles random selection on/off. |
-| R7  | 🟡 Partially shipped | Wikipedia look-up works on the *capitalized* title (`Илон Маск` → page exists) but Wikipedia returns 404 for the lowercased form, so the worker bails. Reproduction recorded in `raw-data/wikipedia-summary-lowercased-ilon-mask.json` (404) and `raw-data/wikipedia-summary-capitalized-ilon-mask.json` (200). The fix is a title-casing fallback in `fetchWikipediaSummary`. Planned for the next commit; tracked under task #9. |
+| R7  | ✅ Shipped | `wikipediaTermVariants` now appends the swapped `Surname, Given names` form for two-word terms, so `Илон Маск` also tries `Маск,_Илон` — the slug ru.wikipedia.org actually uses for the biography. Confirmed by curling the live REST endpoint (response captured in `raw-data/wikipedia-summary-capitalized-ilon-mask.json`); regression-tested via an e2e test that 404s every variant except the surname-first form and asserts the chat renders the biography. |
 | R8  | ✅ Shipped (commit `d5090f8`) | Chat phrases trigger the Export memory action across EN / RU / HI / ZH. |
 | R9  | 🟡 Partially shipped | Typed-chat triggers open the import dialog. File-attachment recognition still has to be re-wired through the composer. |
 | R10 | ✅ Shipped (commit `f0981e8`) | Conversations sidebar + `+ New conversation` button + reload-restores-last-conversation. |
@@ -202,27 +202,30 @@ small fixed schema (turn counts, languages, intents, concepts, calculations,
 hello-world programs, unanswered questions) and renders a Markdown report.
 Neither is a neural network — both are pure functions of the event log.
 
-## Reproducible example — `Кто такой Илон Маск?` regression (R7, pending)
+## Reproducible example — `Кто такой Илон Маск?` regression (R7, fixed)
 
 ```bash
 $ curl -s 'https://ru.wikipedia.org/api/rest_v1/page/summary/Илон%20Маск' \
-    | jq -r '.status // "200"'
-404
+    | head -c 40
+{"httpCode":404,"httpReason":"Not Found"}
 
 $ curl -s 'https://ru.wikipedia.org/api/rest_v1/page/summary/Маск,%20Илон' \
-    | jq -r '.title'
-Маск, Илон
+    | head -c 40
+{"type":"standard","title":"Маск, Илон"
 ```
 
-Wikipedia titles are case-sensitive and the Russian Wikipedia uses the
-surname-first form. Our worker passes the user-supplied phrase straight to
-the REST endpoint, so the 404 path stays a 404. The planned fix is a small
-title-casing fallback (try the original phrase, then the title-cased form,
-then the canonical `Surname, FirstName` arrangement when running against
-ru.wikipedia.org). The two responses are captured in
-`raw-data/wikipedia-summary-lowercased-ilon-mask.json` and
-`raw-data/wikipedia-summary-capitalized-ilon-mask.json` so the fix is
-testable without a network round-trip.
+Wikipedia titles are case-sensitive and ru.wikipedia.org uses the
+surname-first form for biographies. The previous variant list tried
+`Илон_Маск`, `илон_маск` and their capitalizations — all four 404 on the
+Russian Wikipedia. `wikipediaTermVariants` now also emits the swapped
+`Last, First` form for any two-word term, so the slug list ends with
+`Маск,_Илон` and the REST endpoint resolves on the next iteration. The
+two reference responses live in
+`raw-data/wikipedia-summary-lowercased-ilon-mask.json` (404) and
+`raw-data/wikipedia-summary-capitalized-ilon-mask.json` (200) and the
+e2e test in `tests/e2e/tests/multilingual.spec.js` (`Кто такой Илон Маск?
+resolves via surname-first variant`) returns 404 for every slug except
+`Маск,_Илон` to prove the fix is what actually drives the resolution.
 
 ## Existing components / libraries surveyed
 

@@ -168,6 +168,49 @@ test.describe('Wikipedia REST fallback', () => {
     await expect(anchor).toHaveText(humanUrl);
   });
 
+  // Issue #27: ru.wikipedia.org biographies use the "Surname, Given names"
+  // form, so `Илон_Маск` 404s while `Маск,_Илон` resolves. The worker must
+  // try the swapped variant for two-word terms.
+  test('Кто такой Илон Маск? resolves via surname-first variant', async ({ page }) => {
+    const requestedSlugs = [];
+    await page.route('**/api/rest_v1/page/summary/**', async (route) => {
+      const url = route.request().url();
+      const slug = decodeURIComponent(url.split('/').pop());
+      requestedSlugs.push(slug);
+      if (slug === 'Маск,_Илон') {
+        const json = {
+          title: 'Маск, Илон',
+          extract:
+            'И́лон Рив Маск — американский и южноафриканский предприниматель, инженер и миллиардер.',
+          type: 'standard',
+          content_urls: {
+            desktop: {
+              page:
+                'https://ru.wikipedia.org/wiki/%D0%9C%D0%B0%D1%81%D0%BA%2C_%D0%98%D0%BB%D0%BE%D0%BD',
+            },
+          },
+        };
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify(json),
+        });
+        return;
+      }
+      await route.fulfill({
+        status: 404,
+        contentType: 'application/json',
+        body: JSON.stringify({ httpCode: 404, httpReason: 'Not Found' }),
+      });
+    });
+
+    const last = await sendPrompt(page, 'Кто такой Илон Маск?');
+    await expect(last).toHaveClass(/assistant/);
+    await expect(last).toContainText('Маск, Илон');
+    await expect(last).toContainText('предприниматель');
+    expect(requestedSlugs).toContain('Маск,_Илон');
+  });
+
 });
 
 test.describe('memory export/import', () => {

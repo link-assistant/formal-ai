@@ -13,6 +13,9 @@ bump: minor
 - `docs/case-studies/issue-27/` — raw issue + PR snapshots used as input to the case study.
 - `docs/screenshots/desktop-topbar.png`, `docs/screenshots/mobile-topbar-closed.png`, `docs/screenshots/mobile-drawer-open.png` — visual regression baselines for the new responsive topbar.
 
+### Fixed
+- **Issue #27 — `Кто такой Илон Маск?` Wikipedia lookup.** Russian Wikipedia biographies use the `Surname, Given names` slug form (e.g. ru.wikipedia.org redirects `Илон_Маск` to `Маск,_Илон` and the REST summary endpoint 404s on the former). `wikipediaTermVariants` now appends the swapped two-word form so the lookup hits the canonical biography slug. Covered by a new e2e test that returns 404 for every variant except `Маск,_Илон` and asserts the chat renders the biography.
+
 ### Changed
 - Replaced the `Download bundle` button with an alias of `Export memory` so the action stays available under both names while collapsing the duplicate toolbar entry, per the issue body.
 - `tests/e2e/tests/demo.spec.js`: the `quick prompts sidebar` test now selects `Rust` by label instead of by absolute index because the example-prompts list now leads with multilingual greetings; the `unknown prompts …` test now uses a nonsense prompt that cannot resolve so the unknown-intent path is actually exercised.
