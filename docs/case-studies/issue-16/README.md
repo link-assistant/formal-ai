@@ -146,7 +146,7 @@ log, and let any interface export the full agent state as a single
 Links Notation file for issue reports.
 
 These additions are mapped as requirements R97-R100 in
-[`../../REQUIREMENTS.md`](../../REQUIREMENTS.md). The implementation
+[`../../../REQUIREMENTS.md`](../../../REQUIREMENTS.md). The implementation
 artefacts are:
 
 - **Seed-first runtime tables.** `data/seed/multilingual-responses.lino`,
@@ -182,3 +182,51 @@ artefacts are:
   asks the reporter to drag the bundle into the issue, so the
   maintainer can fully reconstruct the agent's state from a single
   attachment.
+
+## Follow-Up: Universal Seed and Single-File Round-Trip (PR #17 reopen)
+
+The PR was reopened a second time with [comment 4458370500](https://github.com/link-assistant/formal-ai/pull/17#issuecomment-4458370500),
+which asked for four additional invariants:
+
+1. `data/seed/` must be the canonical knowledge surface for **every**
+   user-facing interface (Rust library, CLI, HTTP server, Telegram bot,
+   browser demo) — not just the web demo.
+2. `REQUIREMENTS.md` should live next to `VISION.md` in the repository
+   root so the architecture story and the requirement matrix are
+   reviewed together.
+3. More behavior should be lifted out of code constants into `.lino`
+   data so the agent stays reconfigurable end-to-end.
+4. The merged bundle must be a true single-file import/export: one
+   `formal_ai_seed_bundle` document must round-trip back to the same
+   per-category split files that drive the rest of the loader.
+
+These are tracked as requirements R101-R104 in
+[`../../../REQUIREMENTS.md`](../../../REQUIREMENTS.md). The
+implementation artefacts are:
+
+- **Universal seed loader (`src/seed.rs`).** Every `data/seed/*.lino`
+  file is `include_str!`-embedded into the binary, so the Rust solver,
+  the `formal-ai` CLI, the `serve` HTTP route, and the `telegram`
+  webhook all read from the same data the browser fetches from
+  `src/web/seed/`. `scripts/sync-seed.sh` keeps the web mirror in sync.
+- **REQUIREMENTS / VISION colocated.** `REQUIREMENTS.md` is now in the
+  repository root next to `VISION.md`; cross-references and case
+  studies were updated to point at the new path.
+- **Intent routing as data.** Greeting / identity / hello-world /
+  concept-lookup / unknown intents now live in
+  `data/seed/intent-routing.lino` with four explicit match semantics:
+  `keyword` (exact prompt), `phrase` (exact multi-word prompt),
+  `token` (substring), and `combo` (all tokens present). The Rust
+  matcher in `engine::matches_intent_route` and the browser worker's
+  `matchesIntentRoute` consume the same schema. Regression-guarded by
+  `solver_helpers::hello_world_request_is_not_routed_to_greeting` —
+  before the split, the prompt "Write me hello world program in Rust"
+  matched the greeting keyword "hello" via substring and got routed to
+  the greeting reply.
+- **Single-file bundle round-trip.** `seed::merged_bundle()` already
+  emitted one `formal_ai_seed_bundle` document; the new
+  `seed::parse_bundle()` and `seed::bundle_from_files()` make the
+  round-trip symmetric, with mirrors `FormalAiSeed.parseBundle` and
+  `FormalAiSeed.loadFromBundle` in `src/web/seed_loader.js`. Covered
+  by `seed::tests::bundle_round_trips_through_parse_bundle` and
+  `seed::tests::parse_bundle_recovers_intent_routing_via_inner_parser`.

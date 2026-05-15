@@ -227,7 +227,7 @@ Per requirement, in implementation order:
    universal_solver` against any prompt.
 10. **R92 — Case study.** This file plus the raw-data snapshots.
 11. **Docs and roll-up.** Update `README.md`, `GOALS.md`, `NON-GOALS.md`,
-    `VISION.md`, `docs/REQUIREMENTS.md`, and add a changelog fragment.
+    `VISION.md`, `REQUIREMENTS.md`, and add a changelog fragment.
 
 ## Existing Components Used
 
