@@ -70,6 +70,34 @@ const PREFERENCE_DEFAULTS = {
   diagnosticsMode: false,
 };
 
+const MEMORY_EXPORT_FILENAME = "formal-ai-memory.lino";
+
+function recordMemoryEvent(payload) {
+  if (typeof window === "undefined" || !window.FormalAiMemory) {
+    return Promise.resolve(null);
+  }
+  try {
+    return window.FormalAiMemory.appendEvent(payload).catch(() => null);
+  } catch (_error) {
+    return Promise.resolve(null);
+  }
+}
+
+function downloadTextFile(filename, text) {
+  if (typeof window === "undefined" || typeof document === "undefined") {
+    return;
+  }
+  const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
+
 function loadPreferences() {
   if (typeof window === "undefined" || !window.FormalAiPreferences) {
     return { ...PREFERENCE_DEFAULTS };
@@ -386,10 +414,12 @@ function App() {
   const workerRef = useRef(null);
   const pendingResponses = useRef(new Map());
   const transcriptEndRef = useRef(null);
+  const importInputRef = useRef(null);
   const [messages, setMessages] = useState([]);
   const [prompt, setPrompt] = useState("");
   const [pending, setPending] = useState(false);
   const [workerState, setWorkerState] = useState("wasm worker");
+  const [memoryStatus, setMemoryStatus] = useState("");
   const initialPreferences = useRef(loadPreferences());
   const [demoMode, setDemoMode] = useState(initialPreferences.current.demoMode);
   const [demoPhase, setDemoPhase] = useState("manual");
@@ -397,6 +427,43 @@ function App() {
   const [diagnosticsMode, setDiagnosticsMode] = useState(
     initialPreferences.current.diagnosticsMode,
   );
+
+  const handleExportMemory = useCallback(async () => {
+    if (typeof window === "undefined" || !window.FormalAiMemory) {
+      setMemoryStatus("Memory unavailable");
+      return;
+    }
+    try {
+      const events = await window.FormalAiMemory.listEvents();
+      const text = window.FormalAiMemory.exportLinksNotation(events);
+      downloadTextFile(MEMORY_EXPORT_FILENAME, text);
+      setMemoryStatus(`Exported ${events.length} events`);
+    } catch (_error) {
+      setMemoryStatus("Export failed");
+    }
+  }, []);
+
+  const handleImportMemory = useCallback(async (event) => {
+    const file = event.target.files && event.target.files[0];
+    event.target.value = "";
+    if (!file || typeof window === "undefined" || !window.FormalAiMemory) {
+      return;
+    }
+    try {
+      const text = await file.text();
+      const parsed = window.FormalAiMemory.parseLinksNotation(text);
+      const inserted = await window.FormalAiMemory.importEvents(parsed);
+      setMemoryStatus(`Imported ${inserted} events`);
+    } catch (_error) {
+      setMemoryStatus("Import failed");
+    }
+  }, []);
+
+  const triggerImportMemory = useCallback(() => {
+    if (importInputRef.current) {
+      importInputRef.current.click();
+    }
+  }, []);
 
   useEffect(() => {
     persistPreferences({ demoMode, diagnosticsMode });
@@ -442,6 +509,12 @@ function App() {
   const appendUserMessage = useCallback((text, extra = {}) => {
     const message = createMessage("user", text, extra);
     setMessages((current) => [...current, message]);
+    recordMemoryEvent({
+      role: "user",
+      content: text,
+      sentAt: new Date().toISOString(),
+      demoLabel: extra.demoLabel,
+    });
   }, []);
 
   const appendAssistantMessage = useCallback((answer) => {
@@ -461,6 +534,13 @@ function App() {
       thinkingSteps,
     });
     setMessages((current) => [...current, message]);
+    recordMemoryEvent({
+      role: "assistant",
+      content: answer.content,
+      intent: answer.intent,
+      evidence,
+      sentAt: new Date().toISOString(),
+    });
   }, []);
 
   const conversationHistory = useCallback(
@@ -603,6 +683,45 @@ function App() {
           },
           "Report issue",
         ),
+        h(
+          "button",
+          {
+            type: "button",
+            className: "memory-button",
+            "data-testid": "memory-export",
+            onClick: handleExportMemory,
+          },
+          "Export memory",
+        ),
+        h(
+          "button",
+          {
+            type: "button",
+            className: "memory-button",
+            "data-testid": "memory-import",
+            onClick: triggerImportMemory,
+          },
+          "Import memory",
+        ),
+        h("input", {
+          ref: importInputRef,
+          type: "file",
+          accept: ".lino,text/plain",
+          style: { display: "none" },
+          "data-testid": "memory-import-input",
+          onChange: handleImportMemory,
+        }),
+        memoryStatus
+          ? h(
+              "span",
+              {
+                className: "memory-status",
+                role: "status",
+                "data-testid": "memory-status",
+              },
+              memoryStatus,
+            )
+          : null,
         h(
           "button",
           {

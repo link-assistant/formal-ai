@@ -95,6 +95,7 @@ button {
 .mode-toggle,
 .diagnostics-toggle,
 .report-button,
+.memory-button,
 .send-button,
 .prompt-list button {
   border: 1px solid #b9c6ca;
@@ -106,9 +107,16 @@ button {
 
 .mode-toggle,
 .diagnostics-toggle,
-.report-button {
+.report-button,
+.memory-button {
   min-height: 38px;
   padding: 0 12px;
+}
+
+.memory-status {
+  font-size: 13px;
+  color: #40515f;
+  align-self: center;
 }
 
 .report-button {

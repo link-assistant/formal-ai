@@ -15,6 +15,42 @@ const IDENTITY_ANSWER =
 const UNKNOWN_ANSWER =
   "I do not have a learned symbolic rule for that prompt yet. Add a Links Notation fact or rule, then run the request again.";
 
+const MULTILINGUAL_ANSWERS = {
+  greeting: {
+    ru: "Здравствуйте! Чем могу помочь?",
+    hi: "नमस्ते! मैं आपकी क्या मदद कर सकता हूँ?",
+    zh: "你好!请问有什么可以帮您的?",
+  },
+  identity: {
+    ru:
+      "Я formal-ai — детерминированный символьный AI proof of concept, который отвечает на основе локальных правил Links Notation и совместимых OpenAI-форматов. В этой демонстрации я не выполняю нейросетевой инференс.",
+    hi:
+      "मैं formal-ai हूँ — एक नियतात्मक प्रतीकात्मक AI proof of concept, जो स्थानीय Links Notation नियमों और OpenAI-संगत API आकारों से उत्तर देता है। इस डेमो में मैं कोई न्यूरल इन्फेरेन्स नहीं करता।",
+    zh:
+      "我是 formal-ai —— 一个确定性的符号化 AI 概念验证项目,根据本地的 Links Notation 规则和兼容 OpenAI 的 API 形式作答。本演示不进行任何神经网络推理。",
+  },
+  unknown: {
+    ru:
+      "Я пока не знаю символьного правила для этого запроса. Добавьте факт или правило в Links Notation и повторите запрос.",
+    hi:
+      "मेरे पास इस संकेत के लिए अभी कोई सीखा हुआ प्रतीकात्मक नियम नहीं है। Links Notation में एक तथ्य या नियम जोड़ें और फिर अनुरोध दोबारा भेजें।",
+    zh:
+      "我目前还没有针对该提示的符号规则。请用 Links Notation 添加事实或规则,然后再次发送请求。",
+  },
+};
+
+function detectLanguage(prompt) {
+  const text = String(prompt || "");
+  for (const ch of text) {
+    const code = ch.codePointAt(0);
+    if (code >= 0x0400 && code <= 0x04ff) return "ru";
+    if (code >= 0x0900 && code <= 0x097f) return "hi";
+    if (code >= 0x4e00 && code <= 0x9fff) return "zh";
+  }
+  if (/[a-zA-Z]/.test(text)) return "en";
+  return "en";
+}
+
 const CONCEPTS = [
   {
     slug: "concept_universal_solver",
@@ -59,7 +95,15 @@ const CONCEPTS = [
   {
     slug: "concept_wikipedia",
     term: "Wikipedia",
-    aliases: ["wikipedia", "the wikipedia", "en.wikipedia"],
+    aliases: [
+      "wikipedia",
+      "the wikipedia",
+      "en.wikipedia",
+      "википедия",
+      "विकिपीडिया",
+      "维基百科",
+      "維基百科",
+    ],
     category: "encyclopedia",
     summary:
       "Wikipedia is a free, multilingual online encyclopedia written and maintained by a community of volunteer contributors through a model of open collaboration.",
@@ -69,7 +113,14 @@ const CONCEPTS = [
   {
     slug: "concept_wikidata",
     term: "Wikidata",
-    aliases: ["wikidata", "the wikidata knowledge graph"],
+    aliases: [
+      "wikidata",
+      "the wikidata knowledge graph",
+      "викидата",
+      "विकिडेटा",
+      "维基数据",
+      "維基數據",
+    ],
     category: "structured-knowledge",
     summary:
       "Wikidata is a collaboratively edited multilingual knowledge graph hosted by the Wikimedia Foundation. It stores structured data items that power Wikipedia infoboxes and external knowledge applications.",
@@ -79,7 +130,14 @@ const CONCEPTS = [
   {
     slug: "concept_wiktionary",
     term: "Wiktionary",
-    aliases: ["wiktionary", "the wiktionary dictionary"],
+    aliases: [
+      "wiktionary",
+      "the wiktionary dictionary",
+      "викисловарь",
+      "विक्षनरी",
+      "维基词典",
+      "維基辭典",
+    ],
     category: "dictionary",
     summary:
       "Wiktionary is a multilingual, web-based free-content dictionary, available in many languages and including thesaurus, rhymes, translations, audio pronunciations, etymologies, and definitions.",
@@ -104,6 +162,13 @@ const CONCEPTS = [
       "rust programming language",
       "the rust language",
       "rust-lang",
+      "раст",
+      "язык раст",
+      "रस्ट",
+      "रस्ट प्रोग्रामिंग",
+      "rust 语言",
+      "rust语言",
+      "rust 程序设计语言",
     ],
     category: "programming-language",
     summary:
@@ -146,7 +211,30 @@ function lookupConcept(term) {
 }
 
 function extractConceptTerm(prompt) {
-  const trimmed = String(prompt || "").trim().toLowerCase();
+  const trimmedRaw = String(prompt || "")
+    .trim()
+    .replace(/[?。.!!,,;:]+$/g, "")
+    .trim();
+  if (!trimmedRaw) return null;
+
+  const hindiSuffixes = [" क्या है", " क्या होता है", " कौन है", " कौन हैं"];
+  for (const suffix of hindiSuffixes) {
+    if (trimmedRaw.endsWith(suffix)) {
+      return finalizeConceptBody(
+        trimmedRaw.slice(0, -suffix.length).trim(),
+      );
+    }
+  }
+  const chineseSuffixes = ["是什么", "是甚麼", "是谁", "是誰"];
+  for (const suffix of chineseSuffixes) {
+    if (trimmedRaw.endsWith(suffix)) {
+      return finalizeConceptBody(
+        trimmedRaw.slice(0, -suffix.length).trim(),
+      );
+    }
+  }
+
+  const lower = trimmedRaw.toLowerCase();
   const prefixes = [
     "what is a ",
     "what is an ",
@@ -164,28 +252,46 @@ function extractConceptTerm(prompt) {
     "describe ",
     "who is ",
     "who was ",
+    "что такое ",
+    "что это ",
+    "кто такой ",
+    "кто такая ",
+    "кто это ",
+    "расскажи о ",
+    "расскажи про ",
+    "опиши ",
+    "объясни ",
+    "什么是",
+    "甚麼是",
+    "请解释",
+    "请说说",
+    "介绍一下",
   ];
   let body = null;
   for (const prefix of prefixes) {
-    if (trimmed.startsWith(prefix)) {
-      body = trimmed.slice(prefix.length);
+    if (lower.startsWith(prefix)) {
+      body = trimmedRaw.slice(prefix.length);
       break;
     }
   }
-  if (!body) {
-    return null;
-  }
-  body = body.replace(/[?.!,;:]+$/g, "").trim();
-  if (!body) {
-    return null;
-  }
+  if (!body) return null;
+  return finalizeConceptBody(body);
+}
+
+function finalizeConceptBody(body) {
+  let trimmed = String(body || "")
+    .trim()
+    .replace(/[?。.!!,,;:]+$/g, "")
+    .trim()
+    .toLowerCase();
+  if (!trimmed) return null;
   for (const suffix of [" mean", " stand for"]) {
-    if (body.endsWith(suffix)) {
-      body = body.slice(0, -suffix.length).trim();
+    if (trimmed.endsWith(suffix)) {
+      trimmed = trimmed.slice(0, -suffix.length).trim();
       break;
     }
   }
-  return body || null;
+  return trimmed || null;
 }
 
 function tokenizeArithmetic(input) {
@@ -416,10 +522,10 @@ function extractJavaScriptProgram(prompt) {
   return quoted ? quoted[1] : null;
 }
 
-function isIdentityPrompt(normalized) {
+function isIdentityPrompt(normalized, rawPrompt) {
   const tokens = normalized ? normalized.split(/\s+/) : [];
   const has = (token) => tokens.includes(token);
-  return (
+  const englishMatch =
     [
       "who are you",
       "what are you",
@@ -434,12 +540,34 @@ function isIdentityPrompt(normalized) {
     (has("what") && has("you")) ||
     ((has("who") || has("what")) && has("formal") && has("ai")) ||
     (has("tell") && has("yourself")) ||
-    (has("introduce") && has("yourself"))
-  );
+    (has("introduce") && has("yourself"));
+  if (englishMatch) return true;
+  const raw = String(rawPrompt || "")
+    .toLowerCase()
+    .replace(/[?。.!!,,;:]+$/g, "")
+    .trim();
+  return [
+    "кто ты",
+    "что ты",
+    "तुम कौन हो",
+    "你是谁",
+    "你是誰",
+  ].includes(raw);
 }
 
-function isGreetingPrompt(normalized) {
-  return ["hi", "hello", "hey"].includes(normalized);
+function isGreetingPrompt(normalized, rawPrompt) {
+  if (["hi", "hello", "hey"].includes(normalized)) return true;
+  const raw = String(rawPrompt || "")
+    .toLowerCase()
+    .replace(/[?。.!!,,;:]+$/g, "")
+    .trim();
+  return [
+    "привет",
+    "здравствуйте",
+    "नमस्ते",
+    "你好",
+    "您好",
+  ].includes(raw);
 }
 
 function extractName(text) {
@@ -544,6 +672,91 @@ function tryConceptLookup(prompt) {
     evidence: [
       `concept_lookup:${record.slug}`,
       `source:${record.source}`,
+    ],
+  };
+}
+
+// Wikipedia REST summary endpoint per language. Browser-friendly: CORS is
+// enabled by Wikimedia for these summary endpoints, so the worker can fetch
+// without a proxy from GitHub Pages.
+const WIKIPEDIA_HOSTS = {
+  en: "https://en.wikipedia.org/api/rest_v1/page/summary",
+  ru: "https://ru.wikipedia.org/api/rest_v1/page/summary",
+  hi: "https://hi.wikipedia.org/api/rest_v1/page/summary",
+  zh: "https://zh.wikipedia.org/api/rest_v1/page/summary",
+};
+
+function wikipediaHostsFor(language) {
+  // Try the detected language first, then fall back to English so a Russian
+  // query for an English-only article still returns a definition.
+  const ordered = [language, "en"].filter(
+    (value, index, array) => value && array.indexOf(value) === index,
+  );
+  return ordered.map((lang) => ({
+    language: lang,
+    url: WIKIPEDIA_HOSTS[lang] || WIKIPEDIA_HOSTS.en,
+  }));
+}
+
+async function fetchWikipediaSummary(term, language) {
+  if (typeof fetch !== "function") return null;
+  const hosts = wikipediaHostsFor(language);
+  for (const host of hosts) {
+    const slug = term
+      .trim()
+      .replace(/\s+/g, "_")
+      .replace(/_+/g, "_");
+    const url = `${host.url}/${encodeURIComponent(slug)}`;
+    try {
+      const response = await fetch(url, {
+        headers: {
+          accept: "application/json",
+          "api-user-agent":
+            "formal-ai-demo (https://github.com/link-assistant/formal-ai)",
+        },
+      });
+      if (!response || !response.ok) continue;
+      const data = await response.json();
+      if (!data || typeof data !== "object") continue;
+      if (data.type === "disambiguation") continue;
+      const extract = String(data.extract || "").trim();
+      if (!extract) continue;
+      const title = String(data.title || term);
+      const pageUrl =
+        (data.content_urls &&
+          data.content_urls.desktop &&
+          data.content_urls.desktop.page) ||
+        url;
+      return {
+        title,
+        extract,
+        url: pageUrl,
+        language: host.language,
+      };
+    } catch (_error) {
+      // Swallow network/parse errors and continue to the next host.
+    }
+  }
+  return null;
+}
+
+async function tryWikipediaLookup(prompt, language) {
+  const term = extractConceptTerm(prompt);
+  if (!term) return null;
+  // Avoid hitting the network for terms that already resolved in CONCEPTS;
+  // that path is handled by `tryConceptLookup`.
+  if (lookupConcept(term)) return null;
+  const summary = await fetchWikipediaSummary(term, language);
+  if (!summary) return null;
+  const body = `${summary.title}: ${summary.extract}\n\nSource: ${summary.url} (wikipedia).`;
+  return {
+    intent: "wikipedia_lookup",
+    content: body,
+    confidence: 0.85,
+    evidence: [
+      `wikipedia_lookup:${summary.title}`,
+      `source:${summary.url}`,
+      `language:${summary.language}`,
     ],
   };
 }
@@ -729,38 +942,43 @@ function tryHistorical(prompt, history) {
   return null;
 }
 
-function solve(prompt, history) {
+async function solve(prompt, history) {
   const events = [`impulse:${prompt}`];
   const normalized = normalizePrompt(prompt);
   events.push(`formalization:${normalized || "(empty)"}`);
+  const language = detectLanguage(prompt);
+  events.push(`language:${language}`);
 
-  if (isGreetingPrompt(normalized)) {
+  if (isGreetingPrompt(normalized, prompt)) {
     events.push("rule:greeting");
+    const content =
+      MULTILINGUAL_ANSWERS.greeting[language] || "Hi, how may I help you?";
     return finalize(events, {
       intent: "greeting",
-      content: "Hi, how may I help you?",
+      content,
       confidence: 1.0,
-      evidence: ["rule:greeting"],
+      evidence: ["rule:greeting", `language:${language}`],
     });
   }
-  if (isIdentityPrompt(normalized)) {
+  if (isIdentityPrompt(normalized, prompt)) {
     events.push("rule:identity");
+    const content = MULTILINGUAL_ANSWERS.identity[language] || IDENTITY_ANSWER;
     return finalize(events, {
       intent: "identity",
-      content: IDENTITY_ANSWER,
+      content,
       confidence: 1.0,
-      evidence: ["rule:identity"],
+      evidence: ["rule:identity", `language:${language}`],
     });
   }
 
-  const handlers = [
+  const syncHandlers = [
     () => tryHistorical(prompt, history),
     () => tryArithmetic(prompt),
     () => tryJavaScriptExecution(prompt),
     () => tryConceptLookup(prompt),
     () => tryHelloWorld(prompt),
   ];
-  for (const handler of handlers) {
+  for (const handler of syncHandlers) {
     const hit = handler();
     if (hit) {
       events.push(`handler:${hit.intent}`);
@@ -768,12 +986,20 @@ function solve(prompt, history) {
     }
   }
 
+  const wiki = await tryWikipediaLookup(prompt, language);
+  if (wiki) {
+    events.push(`handler:${wiki.intent}`);
+    return finalize(events, wiki);
+  }
+
   events.push("fallback:unknown");
+  const unknownContent =
+    MULTILINGUAL_ANSWERS.unknown[language] || UNKNOWN_ANSWER;
   return finalize(events, {
     intent: "unknown",
-    content: UNKNOWN_ANSWER,
+    content: unknownContent,
     confidence: 0.1,
-    evidence: ["fallback:unknown"],
+    evidence: ["fallback:unknown", `language:${language}`],
   });
 }
 
@@ -806,7 +1032,7 @@ self.onmessage = async (event) => {
   await init();
   const prompt = event.data.prompt || "";
   const history = Array.isArray(event.data.history) ? event.data.history : [];
-  const answer = solve(prompt, history);
+  const answer = await solve(prompt, history);
   postMessage({
     kind: "message",
     requestId: event.data.requestId,
