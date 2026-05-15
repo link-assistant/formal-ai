@@ -249,6 +249,20 @@ function extractConceptTerm(prompt) {
   return finalizeConceptBody(body);
 }
 
+// Render a percent-encoded URL in its readable IRI form for display, while
+// leaving the original encoded form available as the href. `decodeURI` keeps
+// reserved URI delimiters (`; / ? : @ & = + $ , #`) intact, so query strings
+// are preserved; malformed escapes fall back to the original string.
+function humanizeUrl(url) {
+  if (typeof url !== "string" || url.length === 0) return url;
+  if (!url.includes("%")) return url;
+  try {
+    return decodeURI(url);
+  } catch (_error) {
+    return url;
+  }
+}
+
 function finalizeConceptBody(body) {
   let trimmed = String(body || "")
     .trim()
@@ -649,15 +663,19 @@ function tryConceptLookup(prompt) {
   if (!term) return null;
   const record = lookupConcept(term);
   if (!record) return null;
-  const body = `${record.term} (${record.category}): ${record.summary}\n\nSource: ${record.source} (${record.sourceKind}).`;
+  const humanSource = humanizeUrl(record.source);
+  const sourceMarkup =
+    humanSource === record.source
+      ? record.source
+      : `[${humanSource}](${record.source})`;
+  const body =
+    `${record.term} (${record.category}): ${record.summary}\n\n` +
+    `Source: ${sourceMarkup} (${record.sourceKind}).`;
   return {
     intent: "concept_lookup",
     content: body,
     confidence: 0.9,
-    evidence: [
-      `concept_lookup:${record.slug}`,
-      `source:${record.source}`,
-    ],
+    evidence: [`concept_lookup:${record.slug}`, `source:${humanSource}`],
   };
 }
 
@@ -733,14 +751,17 @@ async function tryWikipediaLookup(prompt, language) {
   if (lookupConcept(term)) return null;
   const summary = await fetchWikipediaSummary(term, language);
   if (!summary) return null;
-  const body = `${summary.title}: ${summary.extract}\n\nSource: ${summary.url} (wikipedia).`;
+  const humanUrl = humanizeUrl(summary.url);
+  const body =
+    `${summary.title}: ${summary.extract}\n\n` +
+    `Source: [${humanUrl}](${summary.url}) (wikipedia).`;
   return {
     intent: "wikipedia_lookup",
     content: body,
     confidence: 0.85,
     evidence: [
       `wikipedia_lookup:${summary.title}`,
-      `source:${summary.url}`,
+      `source:${humanUrl}`,
       `language:${summary.language}`,
     ],
   };

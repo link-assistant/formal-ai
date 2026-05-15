@@ -18,7 +18,7 @@ use crate::event_log::EventLog;
 use crate::solver_helpers::{
     build_sorting_algorithm_answer, detect_algorithm_language, detect_program_languages,
     detect_source_language, detect_target_language, extract_backticked, extract_concept_from_query,
-    extract_introduced_name, extract_javascript_program, extract_quoted_phrase,
+    extract_introduced_name, extract_javascript_program, extract_quoted_phrase, humanize_url,
     infer_program_languages_from_code, infer_source_from_prompt, last_user_turn,
     normalize_code_meaning, normalize_meaning, recall_name_from_history, translate_program,
     translate_surface,
@@ -163,13 +163,22 @@ pub fn try_concept_lookup(prompt: &str, log: &mut EventLog) -> Option<SymbolicAn
     log.append("concept_lookup:request", term.clone());
     let record: &'static ConceptRecord = lookup_concept(&term)?;
     log.append("concept_lookup:hit", record.slug.clone());
-    log.append("source", record.source.clone());
+    // Issue #21: render percent-encoded URLs as readable IRIs while keeping
+    // the canonical encoded form as the link target. Evidence keys use the
+    // humanized form so diagnostic-mode chips stay readable too.
+    let human_source = humanize_url(&record.source);
+    log.append("source", human_source.clone());
+    let source_markup = if human_source == record.source {
+        record.source.clone()
+    } else {
+        format!("[{human_source}]({encoded})", encoded = record.source)
+    };
     let body = format!(
         "{term} ({category}): {summary}\n\nSource: {source} ({source_kind}).",
         term = record.term,
         category = record.category,
         summary = record.summary,
-        source = record.source,
+        source = source_markup,
         source_kind = record.source_kind,
     );
     Some(finalize_simple(

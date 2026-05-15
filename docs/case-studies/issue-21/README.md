@@ -1,240 +1,132 @@
-# Case Study: Issue #21 - Integrate Best Practices to Prevent Repeating CI/CD Issues
+# Case Study: Issue #21 — Support multilingual (Unicode/IRI) URLs in all places
+
+- Repository: `link-assistant/formal-ai`
+- Issue: <https://github.com/link-assistant/formal-ai/issues/21>
+- Pull Request: <https://github.com/link-assistant/formal-ai/pull/23>
+- Branch: `issue-21-0c5ffd5a0979`
 
 ## Summary
 
-This case study analyzes a series of CI/CD failures in the `browser-commander` repository (issues #27, #29, #31, #33) and identifies best practices that should be integrated into the `rust-ai-driven-development-pipeline-template` to prevent similar issues from occurring in derived repositories.
+When the demo answers a non-English prompt by looking it up on Wikipedia, the
+URL it shows is percent-encoded (`%D0%98%D0%B7%D1%83%D0%BC%D1%80%D1%83%D0%B4`)
+instead of the readable Cyrillic form (`Изумруд`). The reporter asked that
+links to Unicode pages — e.g. `https://ru.wikipedia.org/wiki/Изумруд` — be
+"properly supported, so the display URL is always easy to read by the user".
 
-## Timeline of Events
+This case study reconstructs the failure, identifies the root cause across
+every surface, surveys prior art, and proposes the fix that this pull request
+implements.
 
-| Date | Issue/PR | Problem | Resolution |
-|------|----------|---------|------------|
-| 2026-01-16 17:09 | Issue #27 | Rust release jobs skipped on workflow_dispatch | Added `always() && !cancelled()` to job conditions |
-| 2026-01-17 09:45 | Issue #29 | False positive version check (git tags vs crates.io) | Changed to check crates.io API instead of git tags |
-| 2026-01-18 01:16 | Issue #31 | Missing `cargo publish` step in workflow | Added `publish-crate.mjs` script and workflow step |
-| 2026-01-18 17:53 | Issue #33 | Secret name mismatch (CARGO_REGISTRY_TOKEN vs CARGO_TOKEN) | Map org secret to standard env var |
+![Reported screenshot — percent-encoded Wikipedia URL](screenshots/before.png)
 
-### Detailed Sequence
+## Timeline / sequence of events
 
-#### Issue #27: Release Jobs Skipped (2026-01-16)
+| When | Surface | Event |
+|------|---------|-------|
+| 2026-05-15 — issue reported | Web demo | User asks "Что такое изумруд?". The worker looks the term up via the Wikipedia REST summary API and shows the page URL it received. The URL appears as `https://ru.wikipedia.org/wiki/%D0%98%D0%B7%D1%83%D0%BC%D1%80%D1%83%D0%B4` (unreadable). |
+| 2026-05-15 — reproduction | All surfaces | The same `wikipedia_lookup` evidence link is emitted as the percent-encoded URL by the Rust solver (`src/solver_helpers.rs`) and the JS worker (`src/web/formal_ai_worker.js`), so the same problem surfaces in the CLI, HTTP API, library, Telegram, and the GitHub Pages demo. |
+| 2026-05-15 — investigation | — | Querying the Wikipedia REST API (`/api/rest_v1/page/summary/<title>`) directly confirms the response body contains `content_urls.desktop.page = "https://ru.wikipedia.org/wiki/%D0%98%D0%B7%D1%83%D0%BC%D1%80%D1%83%D0%B4"`. The URL is encoded at the source. |
+| 2026-05-15 — root cause | Worker + solver | The demo pastes that URL verbatim into the assistant message and the evidence list, instead of decoding the percent-encoded path component before display. |
+| 2026-05-15 — fix | This PR | Add a helper that produces a "humanized" form of any URL (percent-decoded path / fragment) and render Wikipedia source links as Markdown so the *display text* is readable Unicode while the underlying *href* remains the canonical encoded URL that always resolves. |
 
-**Root Cause:** When `detect-changes` job is skipped (on `workflow_dispatch`), all dependent jobs are also skipped by default unless they use `always()` in their condition.
+## Requirements extracted from the issue
 
-**Chain Reaction:**
-1. On `workflow_dispatch`, `detect-changes` is skipped (by design)
-2. Without `always()`, `lint` job is automatically skipped when its dependency is skipped
-3. `build` depends on `lint`, so it's also skipped
-4. `manual-release` depends on `build`, so it's also skipped
+1. **R1.** Links containing Unicode characters (Cyrillic, Devanagari, CJK, …) must be displayed in a human-readable form across every formal-ai surface (chat UI, evidence list, CLI/API answers, Telegram bot).
+2. **R2.** The fix must be cross-language: it should apply to *all* Unicode languages, not only Russian.
+3. **R3.** Links must remain functional — clicking the displayed URL must navigate to the same page.
+4. **R4.** When data is not enough to find the root cause, debug output / verbose mode should be added. (For this issue we *did* have enough data: the screenshot plus the live Wikipedia API response let us reproduce deterministically.)
+5. **R5.** If the issue touches other repositories, file actionable, reproducible issues there. (For this issue the upstream Wikipedia REST API simply returns percent-encoded URLs, which is by spec; no upstream report is warranted. See "Upstream considerations" below.)
+6. **R6.** Compile artefacts of the investigation into `docs/case-studies/issue-21/` for future reference.
 
-**Fix:** Add `always() && !cancelled()` to all dependent job conditions:
-```yaml
-if: |
-  always() && !cancelled() && (
-    github.event_name == 'push' ||
-    github.event_name == 'workflow_dispatch' ||
-    ...
-  )
+## Root cause analysis
+
+### Standards background — URI vs IRI
+
+- An **URI** (RFC 3986) is ASCII-only. Non-ASCII octets in the path/query/fragment must be percent-encoded.
+- An **IRI** (RFC 3987) is the Unicode-aware superset of URI; an IRI can be mapped to a URI by percent-encoding each non-ASCII octet of its UTF-8 byte form.
+- Modern browsers display the *IRI form* in their address bars (this is the "easy to read" form the issue describes) but they send the *URI form* over the wire.
+
+### Where the regression originates
+
+`fetchWikipediaSummary` in `src/web/formal_ai_worker.js` reads `data.content_urls.desktop.page` from the Wikipedia REST response and stores it on the summary object as `summary.url`. The page URL returned by Wikipedia is **always** percent-encoded (the REST API serves canonical URI form). The worker then assembles the assistant message body as:
+
+```js
+const body = `${summary.title}: ${summary.extract}\n\nSource: ${summary.url} (wikipedia).`;
 ```
 
-#### Issue #29: False Positive Version Check (2026-01-17)
+…and the evidence list as `source:${summary.url}`. Both strings flow into the chat through `markdownHtml(value)` (`marked` + `DOMPurify`), which auto-links anything that looks like a URL and renders the visible text as-is. So the user sees the URL exactly as it came from Wikipedia — percent-encoded.
 
-**Root Cause:** The workflow checked if a git tag exists to determine if a version was "already released":
+The Rust crate does not (yet) embed a live Wikipedia fetcher — the CLI, HTTP server, and Telegram bot all serve answers from the offline `concepts.lino` corpus via `try_concept_lookup` (`src/solver_handlers.rs`). Today every `record.source` in the corpus happens to be ASCII (`https://en.wikipedia.org/wiki/Wikipedia`, …), so the bug does not visibly surface on the Rust path, but the same percent-encoded URL would render unreadably if a multilingual source were added. We therefore add a `humanize_url` helper to `src/solver_helpers.rs` and route every `record.source` through it inside `try_concept_lookup`, so the Rust solver is permanently aligned with the JS worker and any future live fetcher inherits the fix for free.
+
+### Why a naive `decodeURI(url)` is risky
+
+`decodeURIComponent` decodes reserved characters too (it would turn `?` into a literal `?` and break query strings if applied to the full URL). `decodeURI`, by contrast, leaves reserved characters alone — so `decodeURI('https://x/?a%3Db')` keeps `a%3Db`, which is correct. We still want to use `decodeURI` *only* and never `decodeURIComponent` on the full URL. We also guard against malformed escape sequences (`%ZZ`) by falling back to the original URL when decoding throws.
+
+## Reproducible example
+
+Before the fix:
+
 ```bash
-if git rev-parse "v$CURRENT_VERSION" >/dev/null 2>&1; then
-    echo "... already released"
-fi
+$ curl -s 'https://ru.wikipedia.org/api/rest_v1/page/summary/%D0%98%D0%B7%D1%83%D0%BC%D1%80%D1%83%D0%B4' \
+    | jq -r '.content_urls.desktop.page'
+https://ru.wikipedia.org/wiki/%D0%98%D0%B7%D1%83%D0%BC%D1%80%D1%83%D0%B4
 ```
 
-This caused false positives because git tags can exist without the package being published to crates.io.
+The demo, the Telegram bot, the HTTP API, and the CLI all surface that string verbatim — which is the regression.
 
-**Evidence:**
-- `browser-commander` had 10 GitHub releases (v0.1.1 through v0.5.4)
-- But **NONE** of them existed on crates.io
-- The workflow incorrectly marked versions as "already released"
+After the fix:
 
-**Fix:** Check crates.io API directly:
-```bash
-CRATES_IO_RESPONSE=$(curl -s "https://crates.io/api/v1/crates/${CRATE_NAME}/${CURRENT_VERSION}")
-if echo "$CRATES_IO_RESPONSE" | grep -q '"version"'; then
-    VERSION_ON_CRATES_IO=true
-fi
-```
+- Display: `https://ru.wikipedia.org/wiki/Изумруд`
+- Href: `https://ru.wikipedia.org/wiki/%D0%98%D0%B7%D1%83%D0%BC%D1%80%D1%83%D0%B4` (unchanged; still resolves)
+- Evidence entry: `source:https://ru.wikipedia.org/wiki/Изумруд` (humanized)
 
-#### Issue #31: Missing Cargo Publish Step (2026-01-18 01:16)
+## Proposed solution (implemented in this PR)
 
-**Root Cause:** The workflow correctly detected that versions weren't published to crates.io, but lacked the actual `cargo publish` step.
+1. **Shared helper.** Add a single `humanize_url` / `humanizeUrl` helper that:
+   - Decodes percent-encoded UTF-8 sequences in the path and fragment.
+   - Leaves reserved URI delimiters alone (`?`, `&`, `=`, `#`, `/`).
+   - Returns the original URL unchanged if decoding fails (malformed escape, non-string input).
+2. **Markdown emission.** Update `tryWikipediaLookup` and `tryConceptLookup` (worker) plus `try_concept_lookup` (Rust solver) to emit a Markdown link of the form `[<human>](<encoded>)` whenever the source URL differs from its humanized form, so:
+   - Markdown renderers (`marked` + `DOMPurify` on the web) display the human-readable form while the `href` stays the canonical encoded URL.
+   - Plain-text consumers (CLI, Telegram, HTTP API) still see a readable URL because Markdown link text is the visible string; the Telegram HTML renderer (`telegram_html_from_markdown`) preserves the same display text.
+3. **Evidence list.** Use the humanized URL inside `source:` / `wikipedia_lookup:` evidence strings so diagnostic-mode chips are also readable.
+4. **Tests.**
+   - JS: a worker unit test feeds a percent-encoded URL through `humanizeUrl` and asserts the chat body contains the readable form.
+   - Rust: a unit test exercises the helper directly across Cyrillic, Devanagari, CJK, and edge cases (malformed escapes, mixed encoded/decoded input, query strings preserved).
 
-The workflow only:
-1. Built the release binary (`cargo build --release`)
-2. Created a GitHub release
+## Existing components / libraries surveyed
 
-**Missing step:** Actual `cargo publish` to publish to crates.io.
+We deliberately avoided adding a runtime dependency because the fix is a handful of lines and the project policy forbids `unsafe_code` and prefers small dependencies.
 
-**Fix:** Add `publish-crate.mjs` script and workflow step:
-```yaml
-- name: Publish to Crates.io
-  if: steps.check.outputs.should_release == 'true'
-  env:
-    CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_TOKEN }}
-  run: node scripts/publish-crate.mjs
-```
+| Option | Trade-off | Decision |
+|--------|-----------|----------|
+| `percent-encoding` crate (Rust) | Mature, but only does encoding/decoding of byte slices; we'd still write the path-walking logic ourselves. | Skip — the std-only helper is ~15 LOC. |
+| `url` crate (Rust) | Full URL parser; would let us call `Url::parse(...).path()` and decode each segment. Adds a transitive dependency on `idna`, `form_urlencoded`, etc. | Skip for this fix; revisit if we need full URL normalization (IDNA hostnames, etc). |
+| `iri-string` crate | IRI/URI conversion. Heavier and overkill for display-only conversion. | Skip. |
+| Browser built-in `decodeURI` | Stdlib, designed exactly for this. | **Use.** |
+| Custom percent-decoder (Rust) | std-only, deterministic, handles malformed input gracefully. | **Use.** |
 
-#### Issue #33: Secret Name Mismatch (2026-01-18 17:53)
+## Upstream considerations (Requirement R5)
 
-**Root Cause:** The workflow referenced `secrets.CARGO_REGISTRY_TOKEN` but the organization secret was named `CARGO_TOKEN`.
+- **Wikipedia REST API** — returns percent-encoded URIs by RFC 3986. This is correct behaviour (servers serve URIs, not IRIs). No upstream issue is warranted; display-side humanization is the consumer's responsibility.
+- **`marked` / `DOMPurify`** — both libraries already render Unicode characters correctly when given a markdown link with explicit display text. No upstream report needed.
 
-**CI Log Evidence:**
-```
-CARGO_REGISTRY_TOKEN:
-##[warning]Neither CARGO_REGISTRY_TOKEN nor CARGO_TOKEN is set
-error: please provide a non-empty token
-```
+## Lessons learned / best practices
 
-**Fix:** Map the organization secret to the expected environment variable:
-```yaml
-env:
-  CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_TOKEN }}
-```
-
-## Root Causes Summary
-
-### 1. GitHub Actions Job Dependency Behavior
-
-**Problem:** When a job is skipped, all dependent jobs are also skipped unless they use `always()`.
-
-**Best Practice:** Always use `always() && !cancelled()` in job conditions when depending on jobs that may be skipped:
-```yaml
-if: always() && !cancelled() && needs.build.result == 'success'
-```
-
-### 2. Version Check Logic
-
-**Problem:** Checking git tags is not sufficient to determine if a version is published.
-
-**Best Practice:** Check the actual package registry (crates.io for Rust, npm for JS, PyPI for Python):
-```javascript
-// Example: Check crates.io API
-const response = await fetch(`https://crates.io/api/v1/crates/${crateName}/${version}`);
-const isPublished = response.ok && (await response.json()).version;
-```
-
-### 3. Missing Publication Steps
-
-**Problem:** Building and creating GitHub releases doesn't mean the package is published to the registry.
-
-**Best Practice:** Always include the publication step:
-- Rust: `cargo publish`
-- JavaScript: `npm publish`
-- Python: `twine upload`
-
-### 4. Environment Variable Naming Conventions
-
-**Problem:** Different naming conventions between organization secrets and what tools expect.
-
-**Best Practice:** Document and standardize secret names. Use mapping when necessary:
-```yaml
-env:
-  CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN || secrets.CARGO_TOKEN }}
-```
-
-## Template vs Browser-Commander Comparison
-
-### Files Present in Template but Missing in Browser-Commander
-
-| Template File | Purpose | Browser-Commander Status |
-|---------------|---------|-------------------------|
-| `scripts/check-release-needed.mjs` | Checks crates.io for version status | Present (in rust/scripts/) |
-| `scripts/git-config.mjs` | Configures git for automated commits | Missing (uses inline script) |
-| `scripts/check-changelog-fragment.mjs` | Validates changelog fragments | Missing (uses inline script) |
-| `scripts/check-version-modification.mjs` | Prevents manual version changes | Missing |
-| `scripts/create-changelog-fragment.mjs` | Creates changelog fragment from workflow | Missing |
-| `.pre-commit-config.yaml` | Pre-commit hooks | Missing |
-| `CONTRIBUTING.md` | Contributing guidelines | Missing |
-| `changelog.d/README.md` | Changelog fragment documentation | Present |
-
-### Workflow Differences
-
-| Feature | Template | Browser-Commander |
-|---------|----------|-------------------|
-| Secret handling | `CARGO_REGISTRY_TOKEN \|\| CARGO_TOKEN` | `CARGO_TOKEN` mapped to `CARGO_REGISTRY_TOKEN` |
-| Version check | External script with crates.io check | Inline script with crates.io check |
-| Git config | External script | Inline commands |
-| Changelog check | External script | Inline script |
-| Version modification check | Present | Missing |
-| Release modes | instant + changelog-pr | Single mode |
-
-## Recommendations for Template Improvements
-
-### 1. Robust Secret Handling (Priority: High)
-
-Add fallback support for multiple secret naming conventions:
-```yaml
-env:
-  CARGO_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN || secrets.CARGO_TOKEN }}
-```
-
-This is already implemented in the template.
-
-### 2. Comprehensive Documentation (Priority: High)
-
-Add a "CI/CD Troubleshooting Guide" in the template that covers:
-- Common failure modes (jobs skipped, secret issues, version check failures)
-- How to verify crates.io publication status
-- How to manually trigger releases
-- Secret setup requirements
-
-### 3. Multi-Language Repository Support (Priority: Medium)
-
-The `rust-paths.mjs` module in browser-commander provides excellent support for both:
-- Single-language repos (Cargo.toml at root)
-- Multi-language repos (rust/Cargo.toml)
-
-This should be incorporated into the template.
-
-### 4. Enhanced Error Reporting (Priority: Medium)
-
-The `publish-crate.mjs` script should:
-- Fail explicitly when authentication fails
-- Provide clear error messages about which secret is expected
-- Log the masked token presence for debugging
-
-### 5. Job Result Verification (Priority: High)
-
-All release jobs should verify that upstream jobs succeeded:
-```yaml
-if: |
-  always() && !cancelled() &&
-  needs.lint.result == 'success' &&
-  needs.test.result == 'success' &&
-  needs.build.result == 'success'
-```
-
-## Files in This Case Study
-
-- `README.md` - This analysis document
-- `browser-commander-issue-27.md` - Case study from issue #27 (jobs skipped)
-- `browser-commander-issue-29.md` - Case study from issue #29 (false positive version check)
-- `browser-commander-issue-31.md` - Case study from issue #31 (missing publish step)
-- `browser-commander-issue-33.md` - Case study from issue #33 (secret name mismatch)
-- `browser-commander-rust.yml` - Browser-commander's Rust CI/CD workflow (reference)
+- Treat URLs as having two faces: the *canonical URI* (for hrefs, evidence keys, hashing, cache keys) and the *human-readable IRI* (for display). Never substitute one for the other silently.
+- Wrap URLs in Markdown links with an explicit display text whenever the underlying URL may contain percent-encoded UTF-8 — relying on auto-linking lets the raw form leak into the UI.
+- Test multilingual fixtures (`Изумруд`, `नमस्ते`, `你好`) rather than only ASCII, so regressions are caught.
 
 ## References
 
-- Issue #21: https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/21
-- Browser-Commander PRs: #28, #30, #32, #34
-- GitHub Actions Runner Issue #491: https://github.com/actions/runner/issues/491
-- Cargo Registry Documentation: https://doc.rust-lang.org/cargo/reference/registries.html
-- Template Repository: https://github.com/link-foundation/rust-ai-driven-development-pipeline-template
+- RFC 3986 — Uniform Resource Identifier (URI): Generic Syntax
+- RFC 3987 — Internationalized Resource Identifiers (IRIs)
+- Wikipedia REST API: `/api/rest_v1/page/summary/{title}`
+- WHATWG URL Standard: <https://url.spec.whatwg.org/>
+- MDN `decodeURI`: <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/decodeURI>
 
-## Lessons Learned
+## Files in this case study
 
-1. **Test the complete pipeline end-to-end** - Don't just test individual steps; verify that packages actually appear on the registry.
-
-2. **Document secret naming conventions** - Clearly document which secrets are needed and their exact names.
-
-3. **Use defensive coding in workflows** - Always handle the case where dependencies are skipped using `always() && !cancelled()`.
-
-4. **Check the source of truth** - For package publication, check the actual registry (crates.io), not proxies like git tags.
-
-5. **Provide clear error messages** - When authentication fails, make it obvious which secret is missing or misconfigured.
-
-6. **Keep templates synchronized** - Regularly audit derived repositories against the template to catch missing features or fixes.
+- `README.md` — this document
+- `raw-data/issue-21.json` — captured snapshot of the GitHub issue (via `gh issue view ... --json`)
+- `screenshots/before.png` — the reported screenshot (percent-encoded URL)

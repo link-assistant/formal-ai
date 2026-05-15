@@ -3,7 +3,7 @@
 //! `VISION.md` asks for chat in English, Russian, Hindi, Chinese, and later
 //! other languages. These tests pin down the user-visible expectations.
 
-use formal_ai::{FormalAiEngine, SymbolicAnswer};
+use formal_ai::{humanize_url, FormalAiEngine, SymbolicAnswer};
 
 fn answer(prompt: &str) -> SymbolicAnswer {
     FormalAiEngine.answer(prompt)
@@ -151,4 +151,67 @@ fn chinese_concept_question_returns_concept_lookup_intent() {
         "Chinese concept lookup should map to concept_lookup intent, got: {}",
         response.intent
     );
+}
+
+// ---------------------------------------------------------------------------
+// Issue #21: URLs with non-ASCII characters must be displayed in human-readable
+// IRI form across every surface, while remaining functional (the encoded URI
+// must still resolve when clicked). These tests pin down the helper that every
+// formal-ai surface uses to render Wikipedia and concept-lookup sources.
+// ---------------------------------------------------------------------------
+
+#[test]
+fn humanize_url_renders_cyrillic_wikipedia_link_readably() {
+    // The exact URL pattern from issue #21.
+    let encoded = "https://ru.wikipedia.org/wiki/%D0%98%D0%B7%D1%83%D0%BC%D1%80%D1%83%D0%B4";
+    assert_eq!(
+        humanize_url(encoded),
+        "https://ru.wikipedia.org/wiki/Изумруд",
+        "Cyrillic Wikipedia URL must display as readable IRI",
+    );
+}
+
+#[test]
+fn humanize_url_handles_every_supported_language() {
+    let cases = [
+        (
+            "https://hi.wikipedia.org/wiki/%E0%A4%A8%E0%A4%AE%E0%A4%B8%E0%A5%8D%E0%A4%A4%E0%A5%87",
+            "https://hi.wikipedia.org/wiki/नमस्ते",
+        ),
+        (
+            "https://zh.wikipedia.org/wiki/%E4%BD%A0%E5%A5%BD",
+            "https://zh.wikipedia.org/wiki/你好",
+        ),
+        (
+            "https://ja.wikipedia.org/wiki/%E3%81%93%E3%82%93%E3%81%AB%E3%81%A1%E3%81%AF",
+            "https://ja.wikipedia.org/wiki/こんにちは",
+        ),
+        (
+            "https://ar.wikipedia.org/wiki/%D9%85%D8%B1%D8%AD%D8%A8%D8%A7",
+            "https://ar.wikipedia.org/wiki/مرحبا",
+        ),
+    ];
+    for (encoded, expected) in cases {
+        assert_eq!(
+            humanize_url(encoded),
+            expected,
+            "humanize_url failed for {encoded}",
+        );
+    }
+}
+
+#[test]
+fn humanize_url_preserves_functional_link_target() {
+    // The encoded form must round-trip cleanly: encode(humanize(x)) ≈ x for
+    // every URL we ship. We approximate the cycle by asserting that the
+    // humanized form, when fed through Rust's standard percent-encoding via
+    // the path crate (or by ensuring it contains the original Unicode chars),
+    // does not lose information.
+    let encoded = "https://ru.wikipedia.org/wiki/%D0%98%D0%B7%D1%83%D0%BC%D1%80%D1%83%D0%B4";
+    let humanized = humanize_url(encoded);
+    assert!(humanized.contains("Изумруд"));
+    assert!(humanized.starts_with("https://ru.wikipedia.org/wiki/"));
+    // ASCII URLs must round-trip untouched.
+    let ascii = "https://en.wikipedia.org/wiki/Albert_Einstein";
+    assert_eq!(humanize_url(ascii), ascii);
 }
