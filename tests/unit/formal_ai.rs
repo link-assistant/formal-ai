@@ -73,8 +73,7 @@ fn kiss_in_programming_context_returns_design_principle_not_band() {
         // Must resolve as a concept lookup (offline, deterministic — no Wikipedia
         // network call needed because the KISS principle is in the concept corpus).
         assert!(
-            response.intent == "concept_lookup_in_context"
-                || response.intent == "concept_lookup",
+            response.intent == "concept_lookup_in_context" || response.intent == "concept_lookup",
             "[{prompt}] unexpected intent: {}",
             response.intent
         );
