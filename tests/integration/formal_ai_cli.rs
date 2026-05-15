@@ -1,14 +1,22 @@
 use std::io::Write;
 use std::process::{Command, Stdio};
+use std::sync::atomic::{AtomicU64, Ordering};
+
+static TMPDIR_SEQ: AtomicU64 = AtomicU64::new(0);
 
 fn tmpdir() -> std::path::PathBuf {
+    // Compose a per-process, per-thread, per-call unique path. macOS clocks
+    // can return the same nanos value for two near-simultaneous calls, so
+    // we cannot rely on SystemTime alone for uniqueness across parallel
+    // tests; the atomic counter guarantees no two callers in the same
+    // process ever pick the same directory.
+    let seq = TMPDIR_SEQ.fetch_add(1, Ordering::SeqCst);
+    let thread_id = format!("{:?}", std::thread::current().id())
+        .replace(|c: char| !c.is_ascii_alphanumeric(), "");
     let dir = std::env::temp_dir().join(format!(
-        "formal-ai-cli-{}-{}",
+        "formal-ai-cli-{}-{}-{seq}",
         std::process::id(),
-        std::time::SystemTime::now()
-            .duration_since(std::time::UNIX_EPOCH)
-            .map(|d| d.as_nanos())
-            .unwrap_or_default()
+        thread_id,
     ));
     std::fs::create_dir_all(&dir).expect("create tmp dir");
     dir
