@@ -45,9 +45,8 @@ const HINDI_UNKNOWN_ANSWER: &str = concat!(
     "मेरे पास इस संकेत के लिए अभी कोई सीखा हुआ प्रतीकात्मक नियम नहीं है। ",
     "Links Notation में एक तथ्य या नियम जोड़ें और फिर अनुरोध दोबारा भेजें।"
 );
-const CHINESE_UNKNOWN_ANSWER: &str = concat!(
-    "我目前还没有针对该提示的符号规则。请用 Links Notation 添加事实或规则,然后再次发送请求。"
-);
+const CHINESE_UNKNOWN_ANSWER: &str =
+    "我目前还没有针对该提示的符号规则。请用 Links Notation 添加事实或规则,然后再次发送请求。";
 const UNKNOWN_LANGUAGE_FALLBACK_ANSWER: &str = concat!(
     "I detected an unsupported language. Falling back to English: I cannot ",
     "answer that from local Links Notation rules yet. Please add a fact or ",
