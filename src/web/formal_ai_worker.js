@@ -5,113 +5,133 @@
 // all produce the same answers for the same prompts. The answer the user
 // sees is always a projection of an append-only event log — there is no
 // hardcoded prompt→answer table.
+//
+// All multilingual phrases, concept summaries, and the tool registry are
+// loaded from `seed/*.lino` files at startup via `seed_loader.js`. Editing a
+// `.lino` file is enough to retune the agent — no JavaScript change required.
+
+try {
+  importScripts("seed_loader.js");
+} catch (_error) {
+  // Seed loader is optional: tests that mock the worker may exclude it.
+}
 
 let wasm;
 let mode = "wasm worker";
 
-const IDENTITY_ANSWER =
+// Hard-coded fallbacks. These are only used if `seed/*.lino` fails to load,
+// e.g. when the worker runs from a `file://` URL. The shipped GitHub Pages
+// build always fetches the seed successfully.
+const FALLBACK_IDENTITY_ANSWER =
   "I am formal-ai, a deterministic symbolic AI proof of concept that answers from local Links Notation rules and OpenAI-compatible API shapes. I do not perform neural inference in this demo.";
 
-const UNKNOWN_ANSWER =
+const FALLBACK_GREETING_ANSWER = "Hi, how may I help you?";
+
+const FALLBACK_UNKNOWN_ANSWER =
   "I do not have a learned symbolic rule for that prompt yet. Add a Links Notation fact or rule, then run the request again.";
 
-const CONCEPTS = [
-  {
-    slug: "concept_universal_solver",
-    term: "universal solver",
-    aliases: ["the universal solver", "universal problem solver"],
-    category: "algorithm",
-    summary:
-      "The universal solver is formal-ai's deterministic 11-step loop: impulse, formalization, context, history, decomposition, TDD, synthesis, combination, verification, simplification, documentation. Every interface routes through the same loop.",
-    source: "docs/case-studies/issue-12/README.md",
-    sourceKind: "project-docs",
-  },
-  {
-    slug: "concept_event_log",
-    term: "event log",
-    aliases: ["the event log", "eventlog", "append-only log"],
-    category: "data-structure",
-    summary:
-      "The event log is formal-ai's append-only system of record. Every step in the universal solver loop appends an Event with a stable content-addressed id; the user-facing answer is, by construction, a projection of this log.",
-    source: "docs/NON-GOALS.md",
-    sourceKind: "project-docs",
-  },
-  {
-    slug: "concept_links_notation",
-    term: "Links Notation",
-    aliases: ["links notation", "lino", "the links notation format"],
-    category: "data-format",
-    summary:
-      "Links Notation is an indentation-based, untyped serialization format used by the Deep Theory project to represent links and link networks as portable text.",
-    source: "https://github.com/linksplatform/Documentation",
-    sourceKind: "project-docs",
-  },
-  {
-    slug: "concept_doublet",
-    term: "doublet",
-    aliases: ["doublet link", "a doublet", "two-link"],
-    category: "data-structure",
-    summary:
-      "A doublet is a link with exactly two endpoints. In Deep Theory it is the canonical reduction target for higher-arity links because every higher arity can be encoded as a chain of doublets.",
-    source: "docs/VISION.md",
-    sourceKind: "project-docs",
-  },
-  {
-    slug: "concept_wikipedia",
-    term: "Wikipedia",
-    aliases: ["wikipedia", "the wikipedia", "en.wikipedia"],
-    category: "encyclopedia",
-    summary:
-      "Wikipedia is a free, multilingual online encyclopedia written and maintained by a community of volunteer contributors through a model of open collaboration.",
-    source: "https://en.wikipedia.org/wiki/Wikipedia",
-    sourceKind: "wikipedia",
-  },
-  {
-    slug: "concept_wikidata",
-    term: "Wikidata",
-    aliases: ["wikidata", "the wikidata knowledge graph"],
-    category: "structured-knowledge",
-    summary:
-      "Wikidata is a collaboratively edited multilingual knowledge graph hosted by the Wikimedia Foundation. It stores structured data items that power Wikipedia infoboxes and external knowledge applications.",
-    source: "https://en.wikipedia.org/wiki/Wikidata",
-    sourceKind: "wikipedia",
-  },
-  {
-    slug: "concept_wiktionary",
-    term: "Wiktionary",
-    aliases: ["wiktionary", "the wiktionary dictionary"],
-    category: "dictionary",
-    summary:
-      "Wiktionary is a multilingual, web-based free-content dictionary, available in many languages and including thesaurus, rhymes, translations, audio pronunciations, etymologies, and definitions.",
-    source: "https://en.wikipedia.org/wiki/Wiktionary",
-    sourceKind: "wikipedia",
-  },
-  {
-    slug: "concept_webassembly",
-    term: "WebAssembly",
-    aliases: ["webassembly", "wasm", "the wasm runtime"],
-    category: "runtime",
-    summary:
-      "WebAssembly (Wasm) is a binary instruction format for a stack-based virtual machine. It is designed as a portable compilation target for programming languages, enabling deployment on the web for client and server applications.",
-    source: "https://en.wikipedia.org/wiki/WebAssembly",
-    sourceKind: "wikipedia",
-  },
-  {
-    slug: "concept_rust",
-    term: "Rust",
-    aliases: [
-      "rust",
-      "rust programming language",
-      "the rust language",
-      "rust-lang",
-    ],
-    category: "programming-language",
-    summary:
-      "Rust is a multi-paradigm, general-purpose programming language that emphasises performance, type safety, and concurrency. It enforces memory safety without using a garbage collector.",
-    source: "https://en.wikipedia.org/wiki/Rust_(programming_language)",
-    sourceKind: "wikipedia",
-  },
+// Mutable runtime tables — populated from seed at init().
+let MULTILINGUAL_ANSWERS = {
+  greeting: { en: FALLBACK_GREETING_ANSWER },
+  identity: { en: FALLBACK_IDENTITY_ANSWER },
+  unknown: { en: FALLBACK_UNKNOWN_ANSWER },
+};
+let CONCEPTS = [];
+let TOOLS = [];
+let SEED_RAW = {};
+let AGENT_INFO = {};
+let LANGUAGE_RULES = [
+  { language: "ru", start: 0x0400, end: 0x04ff },
+  { language: "hi", start: 0x0900, end: 0x097f },
+  { language: "zh", start: 0x4e00, end: 0x9fff },
 ];
+let PROMPT_PATTERNS = [];
+// Intent routing rules loaded from `seed/intent-routing.lino` at init time.
+// `intents` mirror `seed::IntentRoute` from the Rust crate, so the browser
+// and the Rust solver behave identically when classifying prompts. The
+// fallback below mirrors the contents of `data/seed/intent-routing.lino`
+// so the worker remains functional even when the `.lino` fetch fails (for
+// example when the demo is opened from `file://`).
+let INTENT_ROUTING = {
+  intents: [
+    {
+      id: "intent_greeting",
+      slug: "greeting",
+      responseLink: "response:greeting",
+      keywords: ["hi", "hello", "hey", "привет", "здравствуйте", "नमस्ते", "你好", "您好"],
+      phrases: [],
+      tokens: ["greet"],
+      combos: [],
+    },
+    {
+      id: "intent_identity",
+      slug: "identity",
+      responseLink: "response:identity",
+      keywords: [],
+      phrases: [
+        "who are you",
+        "what are you",
+        "who is formal ai",
+        "what is formal ai",
+        "who is formalai",
+        "what is formalai",
+        "tell me about yourself",
+        "introduce yourself",
+        "кто ты",
+        "что ты",
+        "तुम कौन हो",
+        "你是谁",
+        "你是誰",
+      ],
+      tokens: [],
+      combos: [
+        ["who", "you"],
+        ["what", "you"],
+        ["tell", "yourself"],
+        ["introduce", "yourself"],
+        ["кто", "ты"],
+        ["что", "ты"],
+        ["who", "formal", "ai"],
+        ["what", "formal", "ai"],
+      ],
+    },
+  ],
+  articlePrefixes: ["the ", "a ", "an "],
+  tracePrefixes: ["answer_", "trace_"],
+};
+
+function answerFor(intent, language) {
+  const table = MULTILINGUAL_ANSWERS[intent] || {};
+  return (
+    table[language] ||
+    table.en ||
+    (intent === "greeting"
+      ? FALLBACK_GREETING_ANSWER
+      : intent === "identity"
+      ? FALLBACK_IDENTITY_ANSWER
+      : FALLBACK_UNKNOWN_ANSWER)
+  );
+}
+
+function detectLanguage(prompt) {
+  const text = String(prompt || "");
+  for (const ch of text) {
+    const code = ch.codePointAt(0);
+    for (const rule of LANGUAGE_RULES) {
+      if (
+        rule.language !== "en" &&
+        code >= rule.start &&
+        code <= rule.end
+      ) {
+        return rule.language;
+      }
+    }
+  }
+  if (/[a-zA-Z]/.test(text)) return "en";
+  return AGENT_INFO.default_language || "en";
+}
+
+// CONCEPTS is populated from `seed/concepts.lino` at init() time.
 
 function normalizePrompt(prompt) {
   return prompt.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
@@ -145,47 +165,104 @@ function lookupConcept(term) {
   );
 }
 
+// Default concept-lookup patterns when seed/prompt-patterns.lino is missing.
+// Sorted longest-first so "what is a " beats "what is " when both match.
+const DEFAULT_CONCEPT_SUFFIXES = [
+  " क्या होता है",
+  " क्या है",
+  " कौन हैं",
+  " कौन है",
+  "是甚麼",
+  "是什么",
+  "是誰",
+  "是谁",
+];
+const DEFAULT_CONCEPT_PREFIXES = [
+  "what is a ",
+  "what is an ",
+  "what is the ",
+  "what is ",
+  "what's a ",
+  "what's an ",
+  "what's the ",
+  "what's ",
+  "what does ",
+  "tell me about ",
+  "tell me what ",
+  "define ",
+  "explain ",
+  "describe ",
+  "who is ",
+  "who was ",
+  "что такое ",
+  "что это ",
+  "кто такой ",
+  "кто такая ",
+  "кто это ",
+  "расскажи о ",
+  "расскажи про ",
+  "опиши ",
+  "объясни ",
+  "什么是",
+  "甚麼是",
+  "请解释",
+  "请说说",
+  "介绍一下",
+];
+
+function conceptPatternsByKind(kind) {
+  const matches = PROMPT_PATTERNS.filter(
+    (p) => p && p.intent === "concept_lookup" && p.kind === kind && p.text,
+  ).map((p) => p.text);
+  // Sort longest-first so more specific patterns win.
+  matches.sort((a, b) => b.length - a.length);
+  if (matches.length > 0) return matches;
+  return kind === "suffix" ? DEFAULT_CONCEPT_SUFFIXES : DEFAULT_CONCEPT_PREFIXES;
+}
+
 function extractConceptTerm(prompt) {
-  const trimmed = String(prompt || "").trim().toLowerCase();
-  const prefixes = [
-    "what is a ",
-    "what is an ",
-    "what is the ",
-    "what is ",
-    "what's a ",
-    "what's an ",
-    "what's the ",
-    "what's ",
-    "what does ",
-    "tell me about ",
-    "tell me what ",
-    "define ",
-    "explain ",
-    "describe ",
-    "who is ",
-    "who was ",
-  ];
+  const trimmedRaw = String(prompt || "")
+    .trim()
+    .replace(/[?。.!!,,;:]+$/g, "")
+    .trim();
+  if (!trimmedRaw) return null;
+
+  const suffixes = conceptPatternsByKind("suffix");
+  for (const suffix of suffixes) {
+    if (trimmedRaw.endsWith(suffix)) {
+      return finalizeConceptBody(
+        trimmedRaw.slice(0, -suffix.length).trim(),
+      );
+    }
+  }
+
+  const lower = trimmedRaw.toLowerCase();
+  const prefixes = conceptPatternsByKind("prefix");
   let body = null;
   for (const prefix of prefixes) {
-    if (trimmed.startsWith(prefix)) {
-      body = trimmed.slice(prefix.length);
+    if (lower.startsWith(prefix)) {
+      body = trimmedRaw.slice(prefix.length);
       break;
     }
   }
-  if (!body) {
-    return null;
-  }
-  body = body.replace(/[?.!,;:]+$/g, "").trim();
-  if (!body) {
-    return null;
-  }
+  if (!body) return null;
+  return finalizeConceptBody(body);
+}
+
+function finalizeConceptBody(body) {
+  let trimmed = String(body || "")
+    .trim()
+    .replace(/[?。.!!,,;:]+$/g, "")
+    .trim()
+    .toLowerCase();
+  if (!trimmed) return null;
   for (const suffix of [" mean", " stand for"]) {
-    if (body.endsWith(suffix)) {
-      body = body.slice(0, -suffix.length).trim();
+    if (trimmed.endsWith(suffix)) {
+      trimmed = trimmed.slice(0, -suffix.length).trim();
       break;
     }
   }
-  return body || null;
+  return trimmed || null;
 }
 
 function tokenizeArithmetic(input) {
@@ -416,30 +493,66 @@ function extractJavaScriptProgram(prompt) {
   return quoted ? quoted[1] : null;
 }
 
-function isIdentityPrompt(normalized) {
-  const tokens = normalized ? normalized.split(/\s+/) : [];
-  const has = (token) => tokens.includes(token);
-  return (
-    [
-      "who are you",
-      "what are you",
-      "who is formal ai",
-      "what is formal ai",
-      "who is formalai",
-      "what is formalai",
-      "tell me about yourself",
-      "introduce yourself",
-    ].includes(normalized) ||
-    (has("who") && has("you")) ||
-    (has("what") && has("you")) ||
-    ((has("who") || has("what")) && has("formal") && has("ai")) ||
-    (has("tell") && has("yourself")) ||
-    (has("introduce") && has("yourself"))
-  );
+// Look up an intent route by id (e.g. "intent_greeting"). Returns `null`
+// when the routing table is empty (no `.lino` seed) so callers can decide
+// whether to fall back to legacy hardcoded matching.
+function findIntentRoute(id) {
+  if (!INTENT_ROUTING || !Array.isArray(INTENT_ROUTING.intents)) return null;
+  for (const route of INTENT_ROUTING.intents) {
+    if (route && route.id === id) return route;
+  }
+  return null;
 }
 
-function isGreetingPrompt(normalized) {
-  return ["hi", "hello", "hey"].includes(normalized);
+function tokensOf(normalized) {
+  return normalized ? normalized.split(/\s+/).filter(Boolean) : [];
+}
+
+function tokenContains(normalized, expected) {
+  return tokensOf(normalized).includes(String(expected || ""));
+}
+
+// Match a normalized prompt against an intent route using the same
+// semantics as `src/engine.rs::matches_intent_route`:
+//   - `keywords` / `phrases`: exact whole-prompt match
+//   - `tokens`: any whitespace-separated token equals the value
+//   - `combos`: every combo entry must appear as a token
+function matchesIntentRoute(normalized, rawPrompt, id) {
+  const route = findIntentRoute(id);
+  if (!route) return false;
+  const raw = String(rawPrompt || "")
+    .toLowerCase()
+    .replace(/[?。.!!,,;:]+$/g, "")
+    .trim();
+  if (route.keywords && route.keywords.some((kw) => kw === normalized || kw === raw)) {
+    return true;
+  }
+  if (route.phrases && route.phrases.some((ph) => ph === normalized || ph === raw)) {
+    return true;
+  }
+  if (route.tokens && route.tokens.some((tok) => tokenContains(normalized, tok))) {
+    return true;
+  }
+  if (
+    route.combos &&
+    route.combos.some(
+      (combo) =>
+        Array.isArray(combo) &&
+        combo.length > 0 &&
+        combo.every((tok) => tokenContains(normalized, tok)),
+    )
+  ) {
+    return true;
+  }
+  return false;
+}
+
+function isIdentityPrompt(normalized, rawPrompt) {
+  return matchesIntentRoute(normalized, rawPrompt, "intent_identity");
+}
+
+function isGreetingPrompt(normalized, rawPrompt) {
+  return matchesIntentRoute(normalized, rawPrompt, "intent_greeting");
 }
 
 function extractName(text) {
@@ -544,6 +657,91 @@ function tryConceptLookup(prompt) {
     evidence: [
       `concept_lookup:${record.slug}`,
       `source:${record.source}`,
+    ],
+  };
+}
+
+// Wikipedia REST summary endpoint per language. Browser-friendly: CORS is
+// enabled by Wikimedia for these summary endpoints, so the worker can fetch
+// without a proxy from GitHub Pages.
+const WIKIPEDIA_HOSTS = {
+  en: "https://en.wikipedia.org/api/rest_v1/page/summary",
+  ru: "https://ru.wikipedia.org/api/rest_v1/page/summary",
+  hi: "https://hi.wikipedia.org/api/rest_v1/page/summary",
+  zh: "https://zh.wikipedia.org/api/rest_v1/page/summary",
+};
+
+function wikipediaHostsFor(language) {
+  // Try the detected language first, then fall back to English so a Russian
+  // query for an English-only article still returns a definition.
+  const ordered = [language, "en"].filter(
+    (value, index, array) => value && array.indexOf(value) === index,
+  );
+  return ordered.map((lang) => ({
+    language: lang,
+    url: WIKIPEDIA_HOSTS[lang] || WIKIPEDIA_HOSTS.en,
+  }));
+}
+
+async function fetchWikipediaSummary(term, language) {
+  if (typeof fetch !== "function") return null;
+  const hosts = wikipediaHostsFor(language);
+  for (const host of hosts) {
+    const slug = term
+      .trim()
+      .replace(/\s+/g, "_")
+      .replace(/_+/g, "_");
+    const url = `${host.url}/${encodeURIComponent(slug)}`;
+    try {
+      const response = await fetch(url, {
+        headers: {
+          accept: "application/json",
+          "api-user-agent":
+            "formal-ai-demo (https://github.com/link-assistant/formal-ai)",
+        },
+      });
+      if (!response || !response.ok) continue;
+      const data = await response.json();
+      if (!data || typeof data !== "object") continue;
+      if (data.type === "disambiguation") continue;
+      const extract = String(data.extract || "").trim();
+      if (!extract) continue;
+      const title = String(data.title || term);
+      const pageUrl =
+        (data.content_urls &&
+          data.content_urls.desktop &&
+          data.content_urls.desktop.page) ||
+        url;
+      return {
+        title,
+        extract,
+        url: pageUrl,
+        language: host.language,
+      };
+    } catch (_error) {
+      // Swallow network/parse errors and continue to the next host.
+    }
+  }
+  return null;
+}
+
+async function tryWikipediaLookup(prompt, language) {
+  const term = extractConceptTerm(prompt);
+  if (!term) return null;
+  // Avoid hitting the network for terms that already resolved in CONCEPTS;
+  // that path is handled by `tryConceptLookup`.
+  if (lookupConcept(term)) return null;
+  const summary = await fetchWikipediaSummary(term, language);
+  if (!summary) return null;
+  const body = `${summary.title}: ${summary.extract}\n\nSource: ${summary.url} (wikipedia).`;
+  return {
+    intent: "wikipedia_lookup",
+    content: body,
+    confidence: 0.85,
+    evidence: [
+      `wikipedia_lookup:${summary.title}`,
+      `source:${summary.url}`,
+      `language:${summary.language}`,
     ],
   };
 }
@@ -729,55 +927,98 @@ function tryHistorical(prompt, history) {
   return null;
 }
 
-function solve(prompt, history) {
+async function solve(prompt, history) {
+  const steps = [];
+  const toolCalls = [];
   const events = [`impulse:${prompt}`];
+  steps.push({ step: "impulse", detail: prompt });
   const normalized = normalizePrompt(prompt);
   events.push(`formalization:${normalized || "(empty)"}`);
+  steps.push({ step: "formalize", detail: normalized || "(empty)" });
+  const language = detectLanguage(prompt);
+  events.push(`language:${language}`);
+  steps.push({ step: "detect_language", detail: language });
 
-  if (isGreetingPrompt(normalized)) {
+  if (isGreetingPrompt(normalized, prompt)) {
     events.push("rule:greeting");
-    return finalize(events, {
+    steps.push({ step: "match_rule", detail: "greeting" });
+    return finalize(events, steps, toolCalls, {
       intent: "greeting",
-      content: "Hi, how may I help you?",
+      content: answerFor("greeting", language),
       confidence: 1.0,
-      evidence: ["rule:greeting"],
+      evidence: ["rule:greeting", `language:${language}`],
     });
   }
-  if (isIdentityPrompt(normalized)) {
+  if (isIdentityPrompt(normalized, prompt)) {
     events.push("rule:identity");
-    return finalize(events, {
+    steps.push({ step: "match_rule", detail: "identity" });
+    return finalize(events, steps, toolCalls, {
       intent: "identity",
-      content: IDENTITY_ANSWER,
+      content: answerFor("identity", language),
       confidence: 1.0,
-      evidence: ["rule:identity"],
+      evidence: ["rule:identity", `language:${language}`],
     });
   }
 
-  const handlers = [
-    () => tryHistorical(prompt, history),
-    () => tryArithmetic(prompt),
-    () => tryJavaScriptExecution(prompt),
-    () => tryConceptLookup(prompt),
-    () => tryHelloWorld(prompt),
+  const syncHandlers = [
+    { name: "tryHistorical", run: () => tryHistorical(prompt, history) },
+    { name: "tryArithmetic", run: () => tryArithmetic(prompt) },
+    { name: "tryJavaScriptExecution", run: () => tryJavaScriptExecution(prompt) },
+    { name: "tryConceptLookup", run: () => tryConceptLookup(prompt) },
+    { name: "tryHelloWorld", run: () => tryHelloWorld(prompt) },
   ];
-  for (const handler of handlers) {
-    const hit = handler();
+  for (const handler of syncHandlers) {
+    const hit = handler.run();
     if (hit) {
       events.push(`handler:${hit.intent}`);
-      return finalize(events, hit);
+      steps.push({ step: "dispatch_handler", detail: handler.name });
+      if (hit.intent === "javascript_execution" || hit.intent === "javascript_execution_error") {
+        toolCalls.push({
+          tool: "eval_js",
+          inputs: { prompt },
+          outputs: { intent: hit.intent, confidence: hit.confidence },
+        });
+      }
+      if (hit.intent === "concept_lookup") {
+        toolCalls.push({
+          tool: "concept_lookup",
+          inputs: { prompt },
+          outputs: { intent: hit.intent, confidence: hit.confidence },
+        });
+      }
+      return finalize(events, steps, toolCalls, hit);
     }
   }
 
+  steps.push({ step: "invoke_tool", detail: "wikipedia_lookup" });
+  const wiki = await tryWikipediaLookup(prompt, language);
+  if (wiki) {
+    events.push(`handler:${wiki.intent}`);
+    steps.push({ step: "dispatch_handler", detail: "tryWikipediaLookup" });
+    toolCalls.push({
+      tool: "wikipedia_lookup",
+      inputs: { prompt, language },
+      outputs: { intent: wiki.intent, confidence: wiki.confidence },
+    });
+    return finalize(events, steps, toolCalls, wiki);
+  }
+  toolCalls.push({
+    tool: "wikipedia_lookup",
+    inputs: { prompt, language },
+    outputs: { intent: "no_match" },
+  });
+
   events.push("fallback:unknown");
-  return finalize(events, {
+  steps.push({ step: "fallback", detail: "unknown" });
+  return finalize(events, steps, toolCalls, {
     intent: "unknown",
-    content: UNKNOWN_ANSWER,
+    content: answerFor("unknown", language),
     confidence: 0.1,
-    evidence: ["fallback:unknown"],
+    evidence: ["fallback:unknown", `language:${language}`],
   });
 }
 
-function finalize(events, answer) {
+function finalize(events, steps, toolCalls, answer) {
   const evidence = Array.isArray(answer.evidence) ? answer.evidence : [];
   const trace = events.map((event) => `trace:${event}`);
   return {
@@ -785,11 +1026,80 @@ function finalize(events, answer) {
     content: answer.content,
     confidence: answer.confidence,
     evidence: [...evidence, ...trace],
+    steps,
+    toolCalls,
   };
+}
+
+let seedLoaded = false;
+
+async function loadSeed() {
+  if (seedLoaded) return;
+  seedLoaded = true;
+  if (typeof self.FormalAiSeed !== "object" || self.FormalAiSeed === null) {
+    return;
+  }
+  try {
+    const seed = await self.FormalAiSeed.loadAll();
+    SEED_RAW = (seed && seed.raw) || {};
+    if (seed && seed.responses) {
+      const merged = {
+        greeting: Object.assign({}, MULTILINGUAL_ANSWERS.greeting, seed.responses.greeting || {}),
+        identity: Object.assign({}, MULTILINGUAL_ANSWERS.identity, seed.responses.identity || {}),
+        unknown: Object.assign({}, MULTILINGUAL_ANSWERS.unknown, seed.responses.unknown || {}),
+      };
+      Object.keys(seed.responses).forEach((key) => {
+        if (!merged[key]) merged[key] = seed.responses[key];
+      });
+      MULTILINGUAL_ANSWERS = merged;
+    }
+    if (Array.isArray(seed && seed.concepts) && seed.concepts.length > 0) {
+      CONCEPTS = seed.concepts;
+    }
+    if (Array.isArray(seed && seed.tools) && seed.tools.length > 0) {
+      TOOLS = seed.tools;
+    }
+    if (seed && seed.agentInfo && typeof seed.agentInfo === "object") {
+      AGENT_INFO = Object.assign({}, AGENT_INFO, seed.agentInfo);
+    }
+    if (Array.isArray(seed && seed.languageRules) && seed.languageRules.length > 0) {
+      LANGUAGE_RULES = seed.languageRules
+        .filter((rule) => rule && rule.language && rule.start && rule.end)
+        .map((rule) => ({
+          language: rule.language,
+          start: Number(rule.start),
+          end: Number(rule.end),
+        }));
+    }
+    if (Array.isArray(seed && seed.promptPatterns) && seed.promptPatterns.length > 0) {
+      PROMPT_PATTERNS = seed.promptPatterns;
+    }
+    if (
+      seed &&
+      seed.intentRouting &&
+      Array.isArray(seed.intentRouting.intents) &&
+      seed.intentRouting.intents.length > 0
+    ) {
+      INTENT_ROUTING = {
+        intents: seed.intentRouting.intents,
+        articlePrefixes:
+          seed.intentRouting.articlePrefixes && seed.intentRouting.articlePrefixes.length
+            ? seed.intentRouting.articlePrefixes
+            : INTENT_ROUTING.articlePrefixes,
+        tracePrefixes:
+          seed.intentRouting.tracePrefixes && seed.intentRouting.tracePrefixes.length
+            ? seed.intentRouting.tracePrefixes
+            : INTENT_ROUTING.tracePrefixes,
+      };
+    }
+  } catch (_error) {
+    // Keep fallback tables on error.
+  }
 }
 
 async function init() {
   if (wasm !== undefined) return;
+  await loadSeed();
   try {
     const source = await fetch("formal_ai_worker.wasm");
     const bytes = await source.arrayBuffer();
@@ -799,21 +1109,47 @@ async function init() {
     wasm = null;
     mode = "js fallback";
   }
-  postMessage({ kind: "ready", mode });
+  postMessage({
+    kind: "ready",
+    mode,
+    seed: {
+      responseIntents: Object.keys(MULTILINGUAL_ANSWERS),
+      conceptCount: CONCEPTS.length,
+      toolCount: TOOLS.length,
+      files: Object.keys(SEED_RAW),
+    },
+  });
 }
 
 self.onmessage = async (event) => {
   await init();
-  const prompt = event.data.prompt || "";
-  const history = Array.isArray(event.data.history) ? event.data.history : [];
-  const answer = solve(prompt, history);
+  const data = event.data || {};
+  if (data.kind === "seed_dump") {
+    postMessage({
+      kind: "seed_dump",
+      requestId: data.requestId,
+      raw: SEED_RAW,
+      responses: MULTILINGUAL_ANSWERS,
+      concepts: CONCEPTS,
+      tools: TOOLS,
+      agentInfo: AGENT_INFO,
+      languageRules: LANGUAGE_RULES,
+      promptPatterns: PROMPT_PATTERNS,
+    });
+    return;
+  }
+  const prompt = data.prompt || "";
+  const history = Array.isArray(data.history) ? data.history : [];
+  const answer = await solve(prompt, history);
   postMessage({
     kind: "message",
-    requestId: event.data.requestId,
+    requestId: data.requestId,
     intent: answer.intent,
     content: answer.content,
     confidence: answer.confidence,
     evidence: answer.evidence,
+    steps: answer.steps,
+    toolCalls: answer.toolCalls,
   });
 };
 

@@ -25,7 +25,6 @@ fn english_greeting_is_handled_today() {
 // ---------------------------------------------------------------------------
 
 #[test]
-#[ignore = "MVP-target: Russian greetings should be recognized"]
 fn russian_greeting_returns_greeting_intent() {
     let response = answer("Привет");
     assert_eq!(response.intent, "greeting");
@@ -39,7 +38,6 @@ fn russian_greeting_returns_greeting_intent() {
 }
 
 #[test]
-#[ignore = "MVP-target: Russian greetings should reply in Russian by default"]
 fn russian_greeting_reply_is_in_russian() {
     let response = answer("Привет");
     assert!(
@@ -50,7 +48,6 @@ fn russian_greeting_reply_is_in_russian() {
 }
 
 #[test]
-#[ignore = "MVP-target: Hindi greetings should be recognized"]
 fn hindi_greeting_returns_greeting_intent() {
     let response = answer("नमस्ते");
     assert_eq!(response.intent, "greeting");
@@ -61,7 +58,6 @@ fn hindi_greeting_returns_greeting_intent() {
 }
 
 #[test]
-#[ignore = "MVP-target: Chinese greetings should be recognized"]
 fn chinese_greeting_returns_greeting_intent() {
     let response = answer("你好");
     assert_eq!(response.intent, "greeting");
@@ -72,28 +68,24 @@ fn chinese_greeting_returns_greeting_intent() {
 }
 
 #[test]
-#[ignore = "MVP-target: identity questions in Russian should map to identity intent"]
 fn russian_identity_question_returns_identity_intent() {
     let response = answer("Кто ты?");
     assert_eq!(response.intent, "identity");
 }
 
 #[test]
-#[ignore = "MVP-target: identity questions in Hindi should map to identity intent"]
 fn hindi_identity_question_returns_identity_intent() {
     let response = answer("तुम कौन हो?");
     assert_eq!(response.intent, "identity");
 }
 
 #[test]
-#[ignore = "MVP-target: identity questions in Chinese should map to identity intent"]
 fn chinese_identity_question_returns_identity_intent() {
     let response = answer("你是谁?");
     assert_eq!(response.intent, "identity");
 }
 
 #[test]
-#[ignore = "MVP-target: the engine should declare detected language as a link for every answer"]
 fn every_multilingual_answer_declares_detected_language_link() {
     for prompt in ["Hi", "Привет", "你好", "नमस्ते"] {
         let response = answer(prompt);
@@ -108,7 +100,6 @@ fn every_multilingual_answer_declares_detected_language_link() {
 }
 
 #[test]
-#[ignore = "MVP-target: unknown-language prompts should fall back to English while logging the unknown language link"]
 fn unknown_language_prompts_fall_back_to_english_with_unknown_language_link() {
     let response = answer("لطفاً سلام بگو");
     assert!(
@@ -119,4 +110,45 @@ fn unknown_language_prompts_fall_back_to_english_with_unknown_language_link() {
         "answers in unsupported languages should record an unknown-language link"
     );
     assert!(response.answer.contains("English"));
+}
+
+// ---------------------------------------------------------------------------
+// Issue #16: "What is X?" style prompts must work in Russian, Hindi, Chinese.
+// ---------------------------------------------------------------------------
+
+#[test]
+fn russian_concept_question_returns_concept_lookup_intent() {
+    let response = answer("Что такое Википедия?");
+    assert!(
+        response.intent.starts_with("concept_lookup"),
+        "Russian concept lookup should map to concept_lookup intent, got: {}",
+        response.intent
+    );
+    assert!(
+        response.answer.to_lowercase().contains("wikipedia")
+            || response.answer.to_lowercase().contains("encyclopedia")
+            || response.answer.to_lowercase().contains("википед"),
+        "Russian Wikipedia answer should reference the concept, got: {}",
+        response.answer
+    );
+}
+
+#[test]
+fn hindi_concept_question_returns_concept_lookup_intent() {
+    let response = answer("विकिपीडिया क्या है?");
+    assert!(
+        response.intent.starts_with("concept_lookup"),
+        "Hindi concept lookup should map to concept_lookup intent, got: {}",
+        response.intent
+    );
+}
+
+#[test]
+fn chinese_concept_question_returns_concept_lookup_intent() {
+    let response = answer("维基百科是什么?");
+    assert!(
+        response.intent.starts_with("concept_lookup"),
+        "Chinese concept lookup should map to concept_lookup intent, got: {}",
+        response.intent
+    );
 }

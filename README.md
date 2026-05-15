@@ -50,7 +50,7 @@ docker build -t formal-ai .
 docker run --rm -p 8080:8080 formal-ai
 ```
 
-The static demo lives in `docs/demo/index.html`. Serve it from a local web server or GitHub Pages so the WebAssembly worker can be fetched by the browser. The demo starts with a user greeting, renders markdown in messages, previews markdown input, and includes a randomized dialog mode for hello-world prompts across several programming languages.
+The static demo lives in `src/web/index.html`. Serve it from a local web server or GitHub Pages so the WebAssembly worker can be fetched by the browser. The demo starts with a user greeting, renders markdown in messages, previews markdown input, and includes a randomized dialog mode for hello-world prompts across several programming languages.
 
 ## Telegram Bot
 
@@ -139,4 +139,4 @@ cargo test --doc --verbose
 rust-script scripts/check-file-size.rs
 ```
 
-See [docs/REQUIREMENTS.md](docs/REQUIREMENTS.md) for the issue #1 requirement matrix and [docs/case-studies/issue-1/README.md](docs/case-studies/issue-1/README.md) for the collected research and implementation plan.
+See [REQUIREMENTS.md](REQUIREMENTS.md) for the cumulative requirement matrix (now alongside [VISION.md](VISION.md)) and [docs/case-studies/issue-1/README.md](docs/case-studies/issue-1/README.md) for the collected research and implementation plan.

@@ -1,4 +1,5 @@
 use std::error::Error;
+use std::path::PathBuf;
 use std::sync::atomic::AtomicBool;
 use std::sync::Arc;
 
@@ -6,9 +7,11 @@ use clap::{Subcommand, ValueEnum};
 use lino_arguments::Parser;
 
 use formal_ai::{
-    create_chat_completion, create_response, knowledge_links_notation, run_telegram_polling,
-    run_telegram_webhook_server, ChatCompletionRequest, ChatMessage, FormalAiEngine,
-    MessageContent, ResponsesRequest, TelegramPollingConfig, DEFAULT_MODEL,
+    create_chat_completion, create_response, environment_records, export_memory_bundle,
+    extract_memory_from_bundle, knowledge_links_notation, merged_bundle, parse_bundle,
+    run_telegram_polling, run_telegram_webhook_server, seed_files, ChatCompletionRequest,
+    ChatMessage, FormalAiEngine, MemoryStore, MessageContent, ResponsesRequest,
+    TelegramPollingConfig, DEFAULT_MODEL,
 };
 
 #[derive(Parser, Debug)]
@@ -35,6 +38,23 @@ enum Command {
         #[arg(long, env = "FORMAL_AI_PORT", default_value_t = 8080)]
         port: u16,
     },
+    /// Export or import the agent's append-only memory log as a portable
+    /// `demo_memory` Links Notation file. Round-trips with the browser demo.
+    Memory {
+        #[command(subcommand)]
+        action: MemoryAction,
+    },
+    /// Export or import the full self-contained `formal_ai_bundle` (seed +
+    /// memory). The same file format the browser's "Download bundle" button
+    /// produces.
+    Bundle {
+        #[command(subcommand)]
+        action: BundleAction,
+    },
+    /// Print the environment directory baked into the seed so users can see
+    /// every interface the agent supports and how to migrate memory between
+    /// them.
+    Environments,
     /// Run the Telegram bot client (long polling by default; webhook server is opt-in).
     Telegram {
         #[arg(
@@ -76,6 +96,81 @@ enum Command {
         /// Webhook listening port (only used when --mode=webhook).
         #[arg(long, env = "FORMAL_AI_PORT", default_value_t = 8080)]
         port: u16,
+    },
+}
+
+#[derive(Debug, Subcommand)]
+enum MemoryAction {
+    /// Write the memory log to a `.lino` file (or stdout if `--path -` is
+    /// given). Defaults to reading and writing the same file so repeated
+    /// exports stay idempotent; pass `--from <src>` for a one-shot copy or
+    /// to stream a stored log to stdout (`--path -`).
+    Export {
+        /// Destination file. Use `-` to write to stdout. Defaults to
+        /// `formal-ai-memory.lino` in the current directory.
+        #[arg(
+            long,
+            env = "FORMAL_AI_MEMORY_PATH",
+            default_value = "formal-ai-memory.lino"
+        )]
+        path: PathBuf,
+
+        /// Source file to read the log from. Defaults to `--path` when
+        /// `--path` is a real file, and to `FORMAL_AI_MEMORY_PATH` /
+        /// `formal-ai-memory.lino` when `--path -` is used.
+        #[arg(long)]
+        from: Option<PathBuf>,
+    },
+    /// Read a `demo_memory` Links Notation file and append its events to the
+    /// destination memory log.
+    Import {
+        /// Source file. Use `-` to read from stdin.
+        #[arg(long)]
+        path: PathBuf,
+
+        /// Destination memory log file to append to. Created if missing.
+        #[arg(
+            long,
+            env = "FORMAL_AI_MEMORY_PATH",
+            default_value = "formal-ai-memory.lino"
+        )]
+        into: PathBuf,
+    },
+    /// Print every recorded event in human-readable form.
+    Show {
+        #[arg(
+            long,
+            env = "FORMAL_AI_MEMORY_PATH",
+            default_value = "formal-ai-memory.lino"
+        )]
+        path: PathBuf,
+    },
+}
+
+#[derive(Debug, Subcommand)]
+enum BundleAction {
+    /// Build a `formal_ai_bundle` containing the embedded seed and the
+    /// current memory log, and write it to `--path` (or stdout for `-`).
+    Export {
+        #[arg(long, default_value = "formal-ai-bundle.lino")]
+        path: PathBuf,
+
+        /// Existing memory log to embed in the bundle. Optional.
+        #[arg(long, env = "FORMAL_AI_MEMORY_PATH")]
+        memory: Option<PathBuf>,
+    },
+    /// Read a `formal_ai_bundle` and append its memory section to the local
+    /// memory log. The seed section is informational.
+    Import {
+        #[arg(long)]
+        path: PathBuf,
+
+        #[arg(
+            long,
+            env = "FORMAL_AI_MEMORY_PATH",
+            default_value = "formal-ai-memory.lino"
+        )]
+        into: PathBuf,
     },
 }
 
@@ -122,6 +217,9 @@ fn main() -> Result<(), Box<dyn Error>> {
     match command {
         Command::Chat { prompt, format } => run_chat(&prompt, format)?,
         Command::Dataset => println!("{}", knowledge_links_notation()),
+        Command::Memory { action } => run_memory(action)?,
+        Command::Bundle { action } => run_bundle(action)?,
+        Command::Environments => run_environments(),
         Command::Serve { host, port } => run_telegram_webhook_server(&format!("{host}:{port}"))?,
         Command::Telegram {
             mode,
@@ -193,6 +291,140 @@ fn run_chat(prompt: &str, format: OutputFormat) -> Result<(), Box<dyn Error>> {
     }
 
     Ok(())
+}
+
+fn run_memory(action: MemoryAction) -> Result<(), Box<dyn Error>> {
+    match action {
+        MemoryAction::Export { path, from } => {
+            let source = match from {
+                Some(explicit) => explicit,
+                None if path.as_os_str() == "-" => std::env::var_os("FORMAL_AI_MEMORY_PATH")
+                    .map_or_else(|| PathBuf::from("formal-ai-memory.lino"), PathBuf::from),
+                None => path.clone(),
+            };
+            let store = load_memory_or_empty(&source)?;
+            let text = store.export_links_notation();
+            if path.as_os_str() == "-" {
+                print!("{text}");
+            } else {
+                std::fs::write(&path, text)?;
+                eprintln!("Wrote {} events to {}", store.len(), path.display());
+            }
+        }
+        MemoryAction::Import { path, into } => {
+            let inbound = read_input(&path)?;
+            let mut store = load_memory_or_empty(&into)?;
+            let parsed_count = if let Some(events) = extract_memory_from_bundle(&inbound) {
+                store.import(&events);
+                events.len()
+            } else {
+                store.import_links_notation(&inbound)
+            };
+            store.save_to_file(&into)?;
+            eprintln!(
+                "Imported {parsed_count} event(s) into {}; total now {}.",
+                into.display(),
+                store.len()
+            );
+        }
+        MemoryAction::Show { path } => {
+            let store = load_memory_or_empty(&path)?;
+            if store.is_empty() {
+                println!("(no events recorded at {})", path.display());
+                return Ok(());
+            }
+            for (index, event) in store.events().iter().enumerate() {
+                let role = event.role.as_deref().unwrap_or("?");
+                let intent = event.intent.as_deref().unwrap_or("");
+                let content = event.content.as_deref().unwrap_or("");
+                let stamp = event.sent_at.as_deref().unwrap_or("");
+                println!("{index:>3}. [{role}] {intent:<12} {stamp}  {content}");
+            }
+        }
+    }
+    Ok(())
+}
+
+fn run_bundle(action: BundleAction) -> Result<(), Box<dyn Error>> {
+    match action {
+        BundleAction::Export { path, memory } => {
+            let store = match memory {
+                Some(memory_path) => load_memory_or_empty(&memory_path)?,
+                None => MemoryStore::new(),
+            };
+            let bundle = if store.is_empty() {
+                merged_bundle()
+            } else {
+                export_memory_bundle(&seed_files(), store.events())
+            };
+            if path.as_os_str() == "-" {
+                print!("{bundle}");
+            } else {
+                std::fs::write(&path, bundle)?;
+                eprintln!(
+                    "Wrote bundle with {} seed file(s) and {} event(s) to {}",
+                    seed_files().len(),
+                    store.len(),
+                    path.display()
+                );
+            }
+        }
+        BundleAction::Import { path, into } => {
+            let text = read_input(&path)?;
+            let events = extract_memory_from_bundle(&text).ok_or_else(|| {
+                format!(
+                    "{} does not appear to be a formal_ai_bundle Links Notation document",
+                    path.display()
+                )
+            })?;
+            let parsed_seed = parse_bundle(&text);
+            let mut store = load_memory_or_empty(&into)?;
+            store.import(&events);
+            store.save_to_file(&into)?;
+            eprintln!(
+                "Imported {} event(s) and saw {} seed file(s); memory now has {} event(s) at {}.",
+                events.len(),
+                parsed_seed.len(),
+                store.len(),
+                into.display(),
+            );
+        }
+    }
+    Ok(())
+}
+
+fn run_environments() {
+    for record in environment_records() {
+        println!("# {}", record.id);
+        println!("  label: {}", record.label);
+        println!("  runtime: {}", record.runtime);
+        println!("  seed_path: {}", record.seed_path);
+        println!("  memory_store: {}", record.memory_store);
+        println!("  memory_export: {}", record.memory_export_command);
+        println!("  bundle_export: {}", record.bundle_export_command);
+        println!("  bundle_import: {}", record.bundle_import_command);
+        if !record.tools.is_empty() {
+            println!("  tools: {}", record.tools.join(", "));
+        }
+        println!();
+    }
+}
+
+fn load_memory_or_empty(path: &std::path::Path) -> Result<MemoryStore, Box<dyn Error>> {
+    if path.as_os_str() == "-" {
+        return Ok(MemoryStore::new());
+    }
+    Ok(MemoryStore::load_from_file(path)?)
+}
+
+fn read_input(path: &std::path::Path) -> Result<String, Box<dyn Error>> {
+    if path.as_os_str() == "-" {
+        use std::io::Read;
+        let mut buf = String::new();
+        std::io::stdin().read_to_string(&mut buf)?;
+        return Ok(buf);
+    }
+    Ok(std::fs::read_to_string(path)?)
 }
 
 fn run_telegram(args: TelegramRunArgs) -> Result<(), Box<dyn Error>> {

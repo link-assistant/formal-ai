@@ -1,6 +1,6 @@
 //! Telegram chat-surface tests.
 //!
-//! `docs/REQUIREMENTS.md` (R31-R38, R55-R70) and `VISION.md` describe
+//! `REQUIREMENTS.md` (R31-R38, R55-R70) and `VISION.md` describe
 //! Telegram as one of the supported entry points. Private chats answer
 //! everything; public chats answer only when explicitly addressed; code is
 //! formatted as HTML `<pre><code>` blocks for Telegram's renderer.

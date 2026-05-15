@@ -11,8 +11,8 @@ use crate::arithmetic::{
 };
 use crate::concepts::{extract_concept_term, lookup_concept, ConceptRecord};
 use crate::engine::{
-    answer_links_notation, knowledge_links_notation, stable_id, ExecutionStatus, SymbolicAnswer,
-    UNKNOWN_ANSWER,
+    answer_links_notation, knowledge_links_notation, stable_id, unknown_answer, ExecutionStatus,
+    SymbolicAnswer,
 };
 use crate::event_log::EventLog;
 use crate::solver_helpers::{
@@ -162,8 +162,8 @@ pub fn try_concept_lookup(prompt: &str, log: &mut EventLog) -> Option<SymbolicAn
     let term = extract_concept_term(prompt)?;
     log.append("concept_lookup:request", term.clone());
     let record: &'static ConceptRecord = lookup_concept(&term)?;
-    log.append("concept_lookup:hit", record.slug.to_owned());
-    log.append("source", record.source.to_owned());
+    log.append("concept_lookup:hit", record.slug.clone());
+    log.append("source", record.source.clone());
     let body = format!(
         "{term} ({category}): {summary}\n\nSource: {source} ({source_kind}).",
         term = record.term,
@@ -513,7 +513,7 @@ pub fn try_ill_formed(
         return None;
     }
     log.append("error", "unbalanced links notation".to_owned());
-    let body = String::from(UNKNOWN_ANSWER);
+    let body = String::from(unknown_answer());
     Some(finalize_simple(
         prompt,
         log,

@@ -70,6 +70,35 @@ const PREFERENCE_DEFAULTS = {
   diagnosticsMode: false,
 };
 
+const MEMORY_EXPORT_FILENAME = "formal-ai-memory.lino";
+const BUNDLE_EXPORT_FILENAME = "formal-ai-bundle.lino";
+
+function recordMemoryEvent(payload) {
+  if (typeof window === "undefined" || !window.FormalAiMemory) {
+    return Promise.resolve(null);
+  }
+  try {
+    return window.FormalAiMemory.appendEvent(payload).catch(() => null);
+  } catch (_error) {
+    return Promise.resolve(null);
+  }
+}
+
+function downloadTextFile(filename, text) {
+  if (typeof window === "undefined" || typeof document === "undefined") {
+    return;
+  }
+  const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
+
 function loadPreferences() {
   if (typeof window === "undefined" || !window.FormalAiPreferences) {
     return { ...PREFERENCE_DEFAULTS };
@@ -306,6 +335,12 @@ function createIssueReportBody({
   lines.push("");
   lines.push("<!-- Please describe what looked wrong or incomplete. -->");
   lines.push("");
+  lines.push("## Attach full state (recommended)");
+  lines.push("");
+  lines.push(
+    "Click **Download bundle** in the top bar to save `formal-ai-bundle.lino`, then drag it into this issue. The bundle contains the entire seed (rules, concepts, tools, multilingual responses) plus the append-only memory log of this session — every user turn, assistant reply, reasoning step, and tool invocation — so the maintainer can fully reconstruct the agent's state.",
+  );
+  lines.push("");
 
   return lines.join("\n");
 }
@@ -386,10 +421,18 @@ function App() {
   const workerRef = useRef(null);
   const pendingResponses = useRef(new Map());
   const transcriptEndRef = useRef(null);
+  const importInputRef = useRef(null);
   const [messages, setMessages] = useState([]);
   const [prompt, setPrompt] = useState("");
   const [pending, setPending] = useState(false);
   const [workerState, setWorkerState] = useState("wasm worker");
+  const [memoryStatus, setMemoryStatus] = useState("");
+  const [seed, setSeed] = useState({
+    raw: {},
+    tools: [],
+    concepts: [],
+    responses: {},
+  });
   const initialPreferences = useRef(loadPreferences());
   const [demoMode, setDemoMode] = useState(initialPreferences.current.demoMode);
   const [demoPhase, setDemoPhase] = useState("manual");
@@ -397,6 +440,80 @@ function App() {
   const [diagnosticsMode, setDiagnosticsMode] = useState(
     initialPreferences.current.diagnosticsMode,
   );
+
+  useEffect(() => {
+    if (typeof window === "undefined" || !window.FormalAiSeed) return;
+    let cancelled = false;
+    window.FormalAiSeed.loadAll().then((loaded) => {
+      if (cancelled) return;
+      setSeed(loaded);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const handleExportMemory = useCallback(async () => {
+    if (typeof window === "undefined" || !window.FormalAiMemory) {
+      setMemoryStatus("Memory unavailable");
+      return;
+    }
+    try {
+      const events = await window.FormalAiMemory.listEvents();
+      const text = window.FormalAiMemory.exportLinksNotation(events);
+      downloadTextFile(MEMORY_EXPORT_FILENAME, text);
+      setMemoryStatus(`Exported ${events.length} events`);
+    } catch (_error) {
+      setMemoryStatus("Export failed");
+    }
+  }, []);
+
+  const handleExportBundle = useCallback(async () => {
+    if (typeof window === "undefined" || !window.FormalAiMemory) {
+      setMemoryStatus("Memory unavailable");
+      return;
+    }
+    try {
+      const events = await window.FormalAiMemory.listEvents();
+      const text = window.FormalAiMemory.exportBundle({
+        seed,
+        events,
+        info: {
+          version: APP_VERSION,
+          url: window.location.href,
+          userAgent: navigator.userAgent,
+          workerState,
+          mode: demoMode ? "demo" : "manual",
+        },
+      });
+      downloadTextFile(BUNDLE_EXPORT_FILENAME, text);
+      setMemoryStatus(`Bundled ${events.length} events + seed`);
+    } catch (_error) {
+      setMemoryStatus("Bundle export failed");
+    }
+  }, [seed, workerState, demoMode]);
+
+  const handleImportMemory = useCallback(async (event) => {
+    const file = event.target.files && event.target.files[0];
+    event.target.value = "";
+    if (!file || typeof window === "undefined" || !window.FormalAiMemory) {
+      return;
+    }
+    try {
+      const text = await file.text();
+      const parsed = window.FormalAiMemory.parseLinksNotation(text);
+      const inserted = await window.FormalAiMemory.importEvents(parsed);
+      setMemoryStatus(`Imported ${inserted} events`);
+    } catch (_error) {
+      setMemoryStatus("Import failed");
+    }
+  }, []);
+
+  const triggerImportMemory = useCallback(() => {
+    if (importInputRef.current) {
+      importInputRef.current.click();
+    }
+  }, []);
 
   useEffect(() => {
     persistPreferences({ demoMode, diagnosticsMode });
@@ -442,6 +559,13 @@ function App() {
   const appendUserMessage = useCallback((text, extra = {}) => {
     const message = createMessage("user", text, extra);
     setMessages((current) => [...current, message]);
+    recordMemoryEvent({
+      kind: "message",
+      role: "user",
+      content: text,
+      sentAt: new Date().toISOString(),
+      demoLabel: extra.demoLabel,
+    });
   }, []);
 
   const appendAssistantMessage = useCallback((answer) => {
@@ -450,17 +574,52 @@ function App() {
     const evidence = answer.intent
       ? [`intent:${answer.intent}`, `source:${source}`, ...solverEvidence]
       : solverEvidence;
-    const thinkingSteps = [
-      "Normalize prompt text",
-      `Select symbolic intent ${answer.intent || "unknown"}`,
-      `Render deterministic answer from ${source}`,
-    ];
+    const thinkingSteps = Array.isArray(answer.steps) && answer.steps.length > 0
+      ? answer.steps.map((entry) => `${entry.step}: ${entry.detail}`)
+      : [
+          "Normalize prompt text",
+          `Select symbolic intent ${answer.intent || "unknown"}`,
+          `Render deterministic answer from ${source}`,
+        ];
     const message = createMessage("assistant", answer.content, {
       intent: answer.intent,
       evidence,
       thinkingSteps,
     });
     setMessages((current) => [...current, message]);
+    const sentAt = new Date().toISOString();
+    if (Array.isArray(answer.steps)) {
+      answer.steps.forEach((entry) => {
+        recordMemoryEvent({
+          kind: "reasoning",
+          role: "assistant",
+          content: `${entry.step}: ${entry.detail}`,
+          intent: answer.intent,
+          sentAt,
+        });
+      });
+    }
+    if (Array.isArray(answer.toolCalls)) {
+      answer.toolCalls.forEach((call) => {
+        recordMemoryEvent({
+          kind: "tool_call",
+          role: "assistant",
+          tool: call.tool,
+          inputs: call.inputs,
+          outputs: call.outputs,
+          content: `tool:${call.tool}`,
+          sentAt,
+        });
+      });
+    }
+    recordMemoryEvent({
+      kind: "message",
+      role: "assistant",
+      content: answer.content,
+      intent: answer.intent,
+      evidence,
+      sentAt,
+    });
   }, []);
 
   const conversationHistory = useCallback(
@@ -597,12 +756,66 @@ function App() {
           "a",
           {
             className: "report-button",
+            "data-testid": "report-issue",
             href: currentReportUrl,
             target: "_blank",
             rel: "noopener noreferrer",
+            title:
+              "Open a pre-filled GitHub issue with the current session transcript. Attach formal-ai-bundle.lino (Download bundle) for full reproducibility.",
           },
           "Report issue",
         ),
+        h(
+          "button",
+          {
+            type: "button",
+            className: "memory-button",
+            "data-testid": "memory-export",
+            onClick: handleExportMemory,
+          },
+          "Export memory",
+        ),
+        h(
+          "button",
+          {
+            type: "button",
+            className: "memory-button",
+            "data-testid": "memory-import",
+            onClick: triggerImportMemory,
+          },
+          "Import memory",
+        ),
+        h(
+          "button",
+          {
+            type: "button",
+            className: "memory-button",
+            "data-testid": "memory-bundle",
+            onClick: handleExportBundle,
+            title:
+              "Download a single .lino file containing the seed, the memory log, and environment metadata. Attach it to issue reports for full reproducibility.",
+          },
+          "Download bundle",
+        ),
+        h("input", {
+          ref: importInputRef,
+          type: "file",
+          accept: ".lino,text/plain",
+          style: { display: "none" },
+          "data-testid": "memory-import-input",
+          onChange: handleImportMemory,
+        }),
+        memoryStatus
+          ? h(
+              "span",
+              {
+                className: "memory-status",
+                role: "status",
+                "data-testid": "memory-status",
+              },
+              memoryStatus,
+            )
+          : null,
         h(
           "button",
           {
@@ -650,6 +863,42 @@ function App() {
             ),
           ),
         ),
+        seed.tools && seed.tools.length > 0
+          ? h(
+              "div",
+              { className: "tool-registry", "data-testid": "tool-registry" },
+              h("h2", null, "Tools"),
+              h(
+                "ul",
+                { className: "tool-list" },
+                seed.tools.map((tool) =>
+                  h(
+                    "li",
+                    {
+                      key: tool.id,
+                      className: `tool tool-mode-${tool.mode || "thinking"}`,
+                      "data-testid": "tool-entry",
+                      "data-tool-id": tool.id,
+                      "data-tool-mode": tool.mode || "thinking",
+                    },
+                    h(
+                      "div",
+                      { className: "tool-head" },
+                      h("strong", null, tool.name || tool.id),
+                      h(
+                        "span",
+                        { className: "tool-mode" },
+                        tool.mode === "agent" ? "agent" : "thinking",
+                      ),
+                    ),
+                    tool.description
+                      ? h("p", { className: "tool-desc" }, tool.description)
+                      : null,
+                  ),
+                ),
+              ),
+            )
+          : null,
         diagnosticsMode ? h("h2", null, "Trace") : null,
         diagnosticsMode
           ? h(
@@ -659,6 +908,28 @@ function App() {
               h("div", null, h("dt", null, "Mode"), h("dd", null, demoStatus)),
               h("div", null, h("dt", null, "Intent"), h("dd", null, lastAssistant?.intent ?? "none")),
               h("div", null, h("dt", null, "Data"), h("dd", null, "data/source-index.lino")),
+              h(
+                "div",
+                null,
+                h("dt", null, "Seed files"),
+                h(
+                  "dd",
+                  null,
+                  Object.keys(seed.raw || {}).join(", ") || "(loading)",
+                ),
+              ),
+              h(
+                "div",
+                null,
+                h("dt", null, "Tools loaded"),
+                h("dd", null, String((seed.tools || []).length)),
+              ),
+              h(
+                "div",
+                null,
+                h("dt", null, "Concepts loaded"),
+                h("dd", null, String((seed.concepts || []).length)),
+              ),
             )
           : null,
       ),

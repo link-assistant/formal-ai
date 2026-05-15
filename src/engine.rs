@@ -6,26 +6,104 @@
 //! solver — it delegates to [`crate::solver::UniversalSolver::solve`] so every
 //! request walks the same 11-step loop documented in `VISION.md`.
 
+use std::sync::OnceLock;
+
 use lino_objects_codec::format::format_indented_ordered;
 use serde::{Deserialize, Serialize};
 
 use crate::event_log::EventLog;
 use crate::language::Language;
+use crate::seed;
 
 pub const DEFAULT_MODEL: &str = "formal-symbolic-poc";
 
-pub(crate) const GREETING_ANSWER: &str = "Hi, how may I help you?";
-pub(crate) const IDENTITY_ANSWER: &str = "I am formal-ai, a deterministic symbolic AI proof of concept that answers from local Links Notation rules and OpenAI-compatible API shapes. I do not perform neural inference in this demo.";
-pub(crate) const UNKNOWN_ANSWER: &str = "I cannot answer that from local Links Notation rules yet. Please add a fact or add a rule in Links Notation, then run the request again.";
-
-const RUSSIAN_GREETING_ANSWER: &str = "Здравствуйте! Чем могу помочь?";
-const HINDI_GREETING_ANSWER: &str = "नमस्ते! मैं आपकी क्या मदद कर सकता हूँ?";
-const CHINESE_GREETING_ANSWER: &str = "你好!请问有什么可以帮您的?";
-const UNKNOWN_LANGUAGE_FALLBACK_ANSWER: &str = concat!(
+/// Hardcoded English fallbacks used only when `data/seed/multilingual-responses.lino`
+/// cannot be parsed (which would be a build-time bug since the file is
+/// embedded via `include_str!`). All real reads come from [`crate::seed`].
+const FALLBACK_GREETING_ANSWER: &str = "Hi, how may I help you?";
+const FALLBACK_IDENTITY_ANSWER: &str = "I am formal-ai, a deterministic symbolic AI proof of concept that answers from local Links Notation rules and OpenAI-compatible API shapes. I do not perform neural inference in this demo.";
+const FALLBACK_UNKNOWN_ANSWER: &str = "I cannot answer that from local Links Notation rules yet. Please add a fact or add a rule in Links Notation, then run the request again.";
+const FALLBACK_UNKNOWN_LANGUAGE_ANSWER: &str = concat!(
     "I detected an unsupported language. Falling back to English: I cannot ",
     "answer that from local Links Notation rules yet. Please add a fact or ",
     "add a rule in Links Notation, then run the request again."
 );
+
+fn cached_response(
+    cell: &'static OnceLock<String>,
+    intent: &str,
+    language: &str,
+    fallback: &str,
+) -> &'static str {
+    cell.get_or_init(|| {
+        seed::response_for(intent, language).unwrap_or_else(|| String::from(fallback))
+    })
+    .as_str()
+}
+
+pub(crate) fn greeting_answer() -> &'static str {
+    static CELL: OnceLock<String> = OnceLock::new();
+    cached_response(&CELL, "greeting", "en", FALLBACK_GREETING_ANSWER)
+}
+
+pub(crate) fn identity_answer() -> &'static str {
+    static CELL: OnceLock<String> = OnceLock::new();
+    cached_response(&CELL, "identity", "en", FALLBACK_IDENTITY_ANSWER)
+}
+
+pub(crate) fn unknown_answer() -> &'static str {
+    static CELL: OnceLock<String> = OnceLock::new();
+    cached_response(&CELL, "unknown", "en", FALLBACK_UNKNOWN_ANSWER)
+}
+
+fn russian_greeting_answer() -> &'static str {
+    static CELL: OnceLock<String> = OnceLock::new();
+    cached_response(&CELL, "greeting", "ru", FALLBACK_GREETING_ANSWER)
+}
+
+fn hindi_greeting_answer() -> &'static str {
+    static CELL: OnceLock<String> = OnceLock::new();
+    cached_response(&CELL, "greeting", "hi", FALLBACK_GREETING_ANSWER)
+}
+
+fn chinese_greeting_answer() -> &'static str {
+    static CELL: OnceLock<String> = OnceLock::new();
+    cached_response(&CELL, "greeting", "zh", FALLBACK_GREETING_ANSWER)
+}
+
+fn russian_identity_answer() -> &'static str {
+    static CELL: OnceLock<String> = OnceLock::new();
+    cached_response(&CELL, "identity", "ru", FALLBACK_IDENTITY_ANSWER)
+}
+
+fn hindi_identity_answer() -> &'static str {
+    static CELL: OnceLock<String> = OnceLock::new();
+    cached_response(&CELL, "identity", "hi", FALLBACK_IDENTITY_ANSWER)
+}
+
+fn chinese_identity_answer() -> &'static str {
+    static CELL: OnceLock<String> = OnceLock::new();
+    cached_response(&CELL, "identity", "zh", FALLBACK_IDENTITY_ANSWER)
+}
+
+fn russian_unknown_answer() -> &'static str {
+    static CELL: OnceLock<String> = OnceLock::new();
+    cached_response(&CELL, "unknown", "ru", FALLBACK_UNKNOWN_ANSWER)
+}
+
+fn hindi_unknown_answer() -> &'static str {
+    static CELL: OnceLock<String> = OnceLock::new();
+    cached_response(&CELL, "unknown", "hi", FALLBACK_UNKNOWN_ANSWER)
+}
+
+fn chinese_unknown_answer() -> &'static str {
+    static CELL: OnceLock<String> = OnceLock::new();
+    cached_response(&CELL, "unknown", "zh", FALLBACK_UNKNOWN_ANSWER)
+}
+
+const fn unknown_language_fallback_answer() -> &'static str {
+    FALLBACK_UNKNOWN_LANGUAGE_ANSWER
+}
 
 const GREETING_EXAMPLES: &[&str] = &["Hi", "Hello", "Hey"];
 const IDENTITY_EXAMPLES: &[&str] = &[
@@ -325,7 +403,7 @@ pub fn knowledge_links_notation() -> String {
             &[
                 ("intent", String::from("greeting")),
                 ("response_link", String::from("response:greeting")),
-                ("answer", String::from(GREETING_ANSWER)),
+                ("answer", String::from(greeting_answer())),
                 ("examples", GREETING_EXAMPLES.join(", ")),
                 ("source", String::from("local symbolic seed set")),
             ],
@@ -335,7 +413,7 @@ pub fn knowledge_links_notation() -> String {
             &[
                 ("intent", String::from("identity")),
                 ("response_link", String::from("response:identity")),
-                ("answer", String::from(IDENTITY_ANSWER)),
+                ("answer", String::from(identity_answer())),
                 ("examples", IDENTITY_EXAMPLES.join(", ")),
                 ("source", String::from("local symbolic seed set")),
             ],
@@ -352,7 +430,7 @@ pub fn knowledge_links_notation() -> String {
         &[
             ("intent", String::from("unknown")),
             ("response_link", String::from("response:unknown")),
-            ("answer", String::from(UNKNOWN_ANSWER)),
+            ("answer", String::from(unknown_answer())),
             ("examples", UNKNOWN_EXAMPLES.join(", ")),
             ("source", String::from("fallback symbolic rule")),
         ],
@@ -364,7 +442,7 @@ pub fn knowledge_links_notation() -> String {
 /// Concept index: every named intent is declared once here so consumers can
 /// reference concepts by id instead of duplicating them in every rule.
 /// The literal `intent: <name>` lines are valid Links Notation values and
-/// satisfy the uniqueness invariant from `docs/REQUIREMENTS.md`.
+/// satisfy the uniqueness invariant from `REQUIREMENTS.md`.
 fn format_concept_index_record() -> String {
     format_lino_record(
         "concept_index",
@@ -448,25 +526,41 @@ pub struct KnowledgeGraph {
     pub edges: Vec<GraphEdge>,
 }
 
-const KNOWN_INTENT_SLUGS: &[&str] = &[
-    "greeting",
-    "identity",
-    "hello_world",
-    "translation",
-    "algorithm",
-    "meta_explanation",
-    "unknown",
-    "recall_name",
-];
+fn known_intent_slugs() -> &'static [String] {
+    static CELL: OnceLock<Vec<String>> = OnceLock::new();
+    CELL.get_or_init(|| {
+        seed::intent_routing()
+            .intents
+            .into_iter()
+            .filter_map(|route| {
+                if route.slug.is_empty() {
+                    None
+                } else {
+                    Some(route.slug)
+                }
+            })
+            .collect()
+    })
+    .as_slice()
+}
+
+fn trace_prefixes() -> &'static [String] {
+    static CELL: OnceLock<Vec<String>> = OnceLock::new();
+    CELL.get_or_init(|| seed::intent_routing().trace_prefixes)
+        .as_slice()
+}
 
 #[must_use]
 pub fn is_known_trace_id(trace: &str) -> bool {
-    if trace.starts_with("answer_") || trace.starts_with("trace_") {
+    if trace_prefixes()
+        .iter()
+        .any(|prefix| trace.starts_with(prefix.as_str()))
+    {
         return true;
     }
-    KNOWN_INTENT_SLUGS
+    known_intent_slugs()
         .iter()
-        .any(|slug| trace.eq_ignore_ascii_case(slug) || trace.contains(slug))
+        .any(|slug| trace.eq_ignore_ascii_case(slug) || trace.contains(slug.as_str()))
 }
 
 #[must_use]
@@ -480,17 +574,17 @@ pub fn knowledge_graph() -> KnowledgeGraph {
         GraphNode {
             id: String::from("rule_greeting"),
             label: String::from("Greeting rule"),
-            links_notation: format!("rule_greeting answer={GREETING_ANSWER}"),
+            links_notation: format!("rule_greeting answer={}", greeting_answer()),
         },
         GraphNode {
             id: String::from("rule_identity"),
             label: String::from("Identity rule"),
-            links_notation: format!("rule_identity answer={IDENTITY_ANSWER}"),
+            links_notation: format!("rule_identity answer={}", identity_answer()),
         },
         GraphNode {
             id: String::from("rule_unknown"),
             label: String::from("Unknown fallback rule"),
-            links_notation: format!("rule_unknown answer={UNKNOWN_ANSWER}"),
+            links_notation: format!("rule_unknown answer={}", unknown_answer()),
         },
     ];
     let mut edges = vec![
@@ -599,10 +693,10 @@ impl SelectedRule {
 
     pub(crate) fn answer(&self) -> String {
         match self {
-            Self::Greeting => String::from(GREETING_ANSWER),
-            Self::Identity => String::from(IDENTITY_ANSWER),
+            Self::Greeting => String::from(greeting_answer()),
+            Self::Identity => String::from(identity_answer()),
             Self::HelloWorld(program) => hello_world_answer(program),
-            Self::Unknown => String::from(UNKNOWN_ANSWER),
+            Self::Unknown => String::from(unknown_answer()),
         }
     }
 }
@@ -630,11 +724,17 @@ pub(crate) fn language_aware_answer_for(
     _prompt: &str,
 ) -> String {
     match (rule, language) {
-        (SelectedRule::Greeting, Language::Russian) => String::from(RUSSIAN_GREETING_ANSWER),
-        (SelectedRule::Greeting, Language::Hindi) => String::from(HINDI_GREETING_ANSWER),
-        (SelectedRule::Greeting, Language::Chinese) => String::from(CHINESE_GREETING_ANSWER),
+        (SelectedRule::Greeting, Language::Russian) => String::from(russian_greeting_answer()),
+        (SelectedRule::Greeting, Language::Hindi) => String::from(hindi_greeting_answer()),
+        (SelectedRule::Greeting, Language::Chinese) => String::from(chinese_greeting_answer()),
+        (SelectedRule::Identity, Language::Russian) => String::from(russian_identity_answer()),
+        (SelectedRule::Identity, Language::Hindi) => String::from(hindi_identity_answer()),
+        (SelectedRule::Identity, Language::Chinese) => String::from(chinese_identity_answer()),
+        (SelectedRule::Unknown, Language::Russian) => String::from(russian_unknown_answer()),
+        (SelectedRule::Unknown, Language::Hindi) => String::from(hindi_unknown_answer()),
+        (SelectedRule::Unknown, Language::Chinese) => String::from(chinese_unknown_answer()),
         (SelectedRule::Unknown, Language::Unknown) => {
-            String::from(UNKNOWN_LANGUAGE_FALLBACK_ANSWER)
+            String::from(unknown_language_fallback_answer())
         }
         _ => rule.answer(),
     }
@@ -644,39 +744,51 @@ pub(crate) fn response_link_for_intent(rule: &SelectedRule, _intent: &str) -> St
     String::from(rule.response_link())
 }
 
+fn intent_route(id: &str) -> Option<&'static seed::IntentRoute> {
+    static CELL: OnceLock<Vec<seed::IntentRoute>> = OnceLock::new();
+    let routes = CELL.get_or_init(|| seed::intent_routing().intents);
+    routes.iter().find(|route| route.id == id)
+}
+
+fn matches_intent_route(normalized_prompt: &str, id: &str) -> bool {
+    let Some(route) = intent_route(id) else {
+        return false;
+    };
+    if route
+        .keywords
+        .iter()
+        .any(|kw| normalized_prompt == kw.as_str())
+    {
+        return true;
+    }
+    if route
+        .phrases
+        .iter()
+        .any(|phrase| normalized_prompt == phrase.as_str())
+    {
+        return true;
+    }
+    if route
+        .tokens
+        .iter()
+        .any(|token| contains_token(normalized_prompt, token))
+    {
+        return true;
+    }
+    route.combos.iter().any(|combo| {
+        !combo.is_empty()
+            && combo
+                .iter()
+                .all(|token| contains_token(normalized_prompt, token))
+    })
+}
+
 fn is_greeting(normalized_prompt: &str) -> bool {
-    matches!(
-        normalized_prompt,
-        "hi" | "hello" | "hey" | "привет" | "здравствуйте" | "नमस्ते" | "你好"
-    ) || contains_token(normalized_prompt, "greet")
+    matches_intent_route(normalized_prompt, "intent_greeting")
 }
 
 fn is_identity_question(normalized_prompt: &str) -> bool {
-    matches!(
-        normalized_prompt,
-        "who are you"
-            | "what are you"
-            | "who is formal ai"
-            | "what is formal ai"
-            | "who is formalai"
-            | "what is formalai"
-            | "tell me about yourself"
-            | "introduce yourself"
-            | "кто ты"
-            | "что ты"
-            | "तुम कौन हो"
-            | "你是谁"
-    ) || (contains_token(normalized_prompt, "who") && contains_token(normalized_prompt, "you"))
-        || (contains_token(normalized_prompt, "what") && contains_token(normalized_prompt, "you"))
-        || ((contains_token(normalized_prompt, "who") || contains_token(normalized_prompt, "what"))
-            && contains_token(normalized_prompt, "formal")
-            && contains_token(normalized_prompt, "ai"))
-        || (contains_token(normalized_prompt, "tell")
-            && contains_token(normalized_prompt, "yourself"))
-        || (contains_token(normalized_prompt, "introduce")
-            && contains_token(normalized_prompt, "yourself"))
-        || (contains_token(normalized_prompt, "кто") && contains_token(normalized_prompt, "ты"))
-        || (contains_token(normalized_prompt, "что") && contains_token(normalized_prompt, "ты"))
+    matches_intent_route(normalized_prompt, "intent_identity")
 }
 
 fn hello_world_program(normalized_prompt: &str) -> Option<&'static HelloWorldProgram> {

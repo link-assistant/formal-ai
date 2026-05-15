@@ -562,6 +562,31 @@ mod tests {
             .any(|link| link.starts_with("trace:")));
     }
 
+    // Regression guard for the keyword/token split in intent-routing.lino:
+    // before the fix, "hello" was a greeting keyword matched via `contains_token`,
+    // so any multi-word prompt that mentioned "hello" (like a hello-world request)
+    // got misrouted to greeting. After the fix, keywords must match the whole
+    // prompt exactly, and only the dedicated `token "greet"` uses contains.
+    #[test]
+    fn hello_world_request_is_not_routed_to_greeting() {
+        let response = UniversalSolver::default().solve("Write me hello world program in Rust");
+        assert_ne!(
+            response.intent, "greeting",
+            "answer was: {}",
+            response.answer
+        );
+        assert!(
+            response.intent.starts_with("hello_world"),
+            "expected hello_world intent, got {}",
+            response.intent
+        );
+        assert!(
+            response.answer.to_lowercase().contains("rust"),
+            "expected Rust hello world, got: {}",
+            response.answer
+        );
+    }
+
     #[test]
     fn prime_validation_picks_seventeen_in_range() {
         let response = UniversalSolver::default().solve("Pick a prime number between 14 and 18");
@@ -603,6 +628,37 @@ mod tests {
             extract_concept_term("What is 2 + 2?").as_deref(),
             Some("2 + 2")
         );
+    }
+
+    #[test]
+    fn concept_extraction_handles_multilingual_prefixes() {
+        assert_eq!(
+            extract_concept_term("Что такое Википедия?").as_deref(),
+            Some("википедия"),
+        );
+        assert_eq!(
+            extract_concept_term("Расскажи про Links Notation").as_deref(),
+            Some("links notation"),
+        );
+        assert_eq!(
+            extract_concept_term("विकिपीडिया क्या है?").as_deref(),
+            Some("विकिपीडिया"),
+        );
+        assert_eq!(
+            extract_concept_term("维基百科是什么?").as_deref(),
+            Some("维基百科"),
+        );
+        assert_eq!(
+            extract_concept_term("什么是 Rust?").as_deref(),
+            Some("rust"),
+        );
+    }
+
+    #[test]
+    fn concept_lookup_finds_multilingual_aliases() {
+        assert!(lookup_concept("Википедия").is_some());
+        assert!(lookup_concept("विकिपीडिया").is_some());
+        assert!(lookup_concept("维基百科").is_some());
     }
 
     #[test]

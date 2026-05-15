@@ -1,6 +1,6 @@
 //! `OpenAI`-compatible Chat Completions and Responses tests.
 //!
-//! `VISION.md` and `docs/REQUIREMENTS.md` (R39-R42, R55-R70) require that any
+//! `VISION.md` and `REQUIREMENTS.md` (R39-R42, R55-R70) require that any
 //! production-ready AI assistant talks the `OpenAI` Chat Completions and
 //! Responses dialects so that existing tooling can call `formal-ai` as a
 //! drop-in symbolic engine.

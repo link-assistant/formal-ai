@@ -104,7 +104,7 @@ steps:
   - uses: actions/configure-pages@v6
   - uses: actions/upload-pages-artifact@v5
     with:
-      path: docs/demo
+      path: src/web
   - id: deployment
     uses: actions/deploy-pages@v5
 ```

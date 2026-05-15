@@ -71,11 +71,11 @@ fn demo_deploy_uses_github_pages_workflow_artifact() {
     assert!(deploy_demo.contains("url: ${{ steps.deployment.outputs.page_url }}"));
     assert!(deploy_demo.contains("actions/configure-pages@v6"));
     assert!(deploy_demo.contains("actions/upload-pages-artifact@v5"));
-    assert!(deploy_demo.contains("path: docs/demo"));
+    assert!(deploy_demo.contains("path: src/web"));
     assert!(deploy_demo.contains("id: deployment"));
     assert!(deploy_demo.contains("actions/deploy-pages@v5"));
     assert!(!deploy_demo.contains("peaceiris/actions-gh-pages"));
-    assert!(!deploy_demo.contains("publish_dir: docs/demo"));
+    assert!(!deploy_demo.contains("publish_dir: src/web"));
     assert!(!deploy_demo.contains("publish_branch: gh-pages"));
 }
 

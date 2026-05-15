@@ -61,6 +61,55 @@ fn issue_12_vision_documents_are_present_and_traceable() {
     );
 }
 
+#[test]
+fn issue_16_followup_documents_capture_universal_seed_and_memory_migration() {
+    // Pin the documentation surface that frames R105-R108 so the
+    // requirement matrix, the architectural narrative, and the case study
+    // cannot silently drift apart.
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+
+    let requirements = read(root.join("REQUIREMENTS.md"));
+    assert_contains_all(
+        "REQUIREMENTS.md",
+        &requirements,
+        &[
+            "| R105 ",
+            "| R106 ",
+            "| R107 ",
+            "| R108 ",
+            "src/web/seed/",
+            "environments.lino",
+            "formal-ai memory",
+            "formal-ai bundle",
+            "formal_ai_bundle",
+        ],
+    );
+
+    let vision = read(root.join("VISION.md"));
+    assert_contains_all(
+        "VISION.md",
+        &vision,
+        &[
+            "Self-Aware Environments",
+            "Library-First Availability",
+            "environments.lino",
+        ],
+    );
+
+    let case_study = read(root.join("docs/case-studies/issue-16/README.md"));
+    assert_contains_all(
+        "docs/case-studies/issue-16/README.md",
+        &case_study,
+        &[
+            "Self-Aware Environments and Cross-Surface Memory Migration",
+            "environments.lino",
+            "formal-ai environments",
+            "demo_memory",
+            "formal_ai_bundle",
+        ],
+    );
+}
+
 fn read(path: impl AsRef<Path>) -> String {
     fs::read_to_string(path.as_ref())
         .unwrap_or_else(|error| panic!("{} should be readable: {error}", path.as_ref().display()))

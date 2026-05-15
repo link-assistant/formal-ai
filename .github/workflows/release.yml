@@ -623,7 +623,7 @@ jobs:
             3. The automated release workflow will publish to crates.io and create a GitHub release
 
   # === E2E TESTS (LOCAL) ===
-  # Serve docs/demo with a local HTTP server and run Playwright tests against it.
+  # Serve src/web with a local HTTP server and run Playwright tests against it.
   # Runs on every PR so regressions are caught before merge.
   test-e2e-local:
     name: E2E Tests (local demo)
@@ -656,6 +656,9 @@ jobs:
           cd tests/e2e
           npx playwright install --with-deps chromium
 
+      - name: Sync data/seed into src/web/seed (deployment mirror)
+        run: scripts/sync-seed.sh
+
       - name: Run local e2e tests
         run: |
           cd tests/e2e
@@ -670,7 +673,7 @@ jobs:
           retention-days: 7
 
   # === DEPLOY DEMO ===
-  # Deploy the React chat demo from docs/demo/ to GitHub Pages after a successful build.
+  # Deploy the React chat demo from src/web/ to GitHub Pages after a successful build.
   deploy-demo:
     name: Deploy Demo to GitHub Pages
     needs: [build]
@@ -699,10 +702,13 @@ jobs:
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v6
 
+      - name: Sync data/seed into src/web/seed (deployment mirror)
+        run: scripts/sync-seed.sh
+
       - name: Upload GitHub Pages artifact
         uses: actions/upload-pages-artifact@v5
         with:
-          path: docs/demo
+          path: src/web
 
       - name: Deploy Pages artifact
         id: deployment
