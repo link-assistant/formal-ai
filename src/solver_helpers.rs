@@ -504,6 +504,59 @@ pub fn extract_javascript_program(prompt: &str) -> Option<String> {
     extract_quoted_phrase(prompt)
 }
 
+/// Render a percent-encoded URL in its readable IRI form (RFC 3987).
+///
+/// Leaves reserved URI delimiters (`; / ? : @ & = + $ , #`) percent-encoded so
+/// query strings and fragments still resolve. Returns the input unchanged when
+/// the URL has no percent-escapes or when decoding would produce invalid
+/// UTF-8.
+///
+/// Mirrors the JavaScript `decodeURI` semantics used in
+/// `src/web/formal_ai_worker.js::humanizeUrl` so Wikipedia source links render
+/// identically across every formal-ai surface (issue #21).
+#[must_use]
+pub fn humanize_url(url: &str) -> String {
+    if !url.contains('%') {
+        return url.to_owned();
+    }
+    let bytes = url.as_bytes();
+    let mut out: Vec<u8> = Vec::with_capacity(bytes.len());
+    let mut i = 0usize;
+    while i < bytes.len() {
+        if bytes[i] == b'%' && i + 2 < bytes.len() {
+            if let (Some(hi), Some(lo)) = (hex_nibble(bytes[i + 1]), hex_nibble(bytes[i + 2])) {
+                let value = (hi << 4) | lo;
+                if is_reserved_uri_delimiter(value) {
+                    out.extend_from_slice(&bytes[i..=i + 2]);
+                } else {
+                    out.push(value);
+                }
+                i += 3;
+                continue;
+            }
+        }
+        out.push(bytes[i]);
+        i += 1;
+    }
+    String::from_utf8(out).unwrap_or_else(|_| url.to_owned())
+}
+
+const fn hex_nibble(byte: u8) -> Option<u8> {
+    match byte {
+        b'0'..=b'9' => Some(byte - b'0'),
+        b'a'..=b'f' => Some(byte - b'a' + 10),
+        b'A'..=b'F' => Some(byte - b'A' + 10),
+        _ => None,
+    }
+}
+
+const fn is_reserved_uri_delimiter(byte: u8) -> bool {
+    matches!(
+        byte,
+        b';' | b'/' | b'?' | b':' | b'@' | b'&' | b'=' | b'+' | b'$' | b',' | b'#'
+    )
+}
+
 /// Find a fenced code block whose info string matches one of the supplied
 /// languages (case-insensitive). Returns the block body with trailing newlines
 /// trimmed.
@@ -531,7 +584,7 @@ pub fn extract_fenced_block(text: &str, languages: &[&str]) -> Option<String> {
 
 #[cfg(test)]
 mod tests {
-    use super::{extract_fenced_block, extract_javascript_program, is_prime};
+    use super::{extract_fenced_block, extract_javascript_program, humanize_url, is_prime};
     use crate::concepts::{extract_concept_term, lookup_concept};
     use crate::solver::{SolverConfig, UniversalSolver};
 
@@ -715,5 +768,99 @@ mod tests {
         let config = SolverConfig::default();
         assert!(!config.offline);
         assert!(!config.agent_mode);
+    }
+
+    // ---------------------------------------------------------------------
+    // Issue #21: humanize_url renders percent-encoded URLs as readable IRIs
+    // across every language while preserving query strings and falling back
+    // gracefully on malformed input.
+    // ---------------------------------------------------------------------
+
+    #[test]
+    fn humanize_url_decodes_cyrillic_percent_escapes() {
+        let encoded = "https://ru.wikipedia.org/wiki/%D0%98%D0%B7%D1%83%D0%BC%D1%80%D1%83%D0%B4";
+        assert_eq!(
+            humanize_url(encoded),
+            "https://ru.wikipedia.org/wiki/Изумруд",
+        );
+    }
+
+    #[test]
+    fn humanize_url_decodes_devanagari_percent_escapes() {
+        let encoded =
+            "https://hi.wikipedia.org/wiki/%E0%A4%A8%E0%A4%AE%E0%A4%B8%E0%A5%8D%E0%A4%A4%E0%A5%87";
+        assert_eq!(humanize_url(encoded), "https://hi.wikipedia.org/wiki/नमस्ते");
+    }
+
+    #[test]
+    fn humanize_url_decodes_chinese_percent_escapes() {
+        let encoded = "https://zh.wikipedia.org/wiki/%E4%BD%A0%E5%A5%BD";
+        assert_eq!(humanize_url(encoded), "https://zh.wikipedia.org/wiki/你好");
+    }
+
+    #[test]
+    fn humanize_url_preserves_reserved_uri_delimiters() {
+        // `?`, `&`, `=`, `#`, `/`, `:` must remain percent-encoded so that
+        // structural meaning of the URI is not disturbed during display.
+        let encoded = "https://example.com/path?a%3Db%26c%3Dd#frag%2Fpart";
+        assert_eq!(humanize_url(encoded), encoded);
+    }
+
+    #[test]
+    fn humanize_url_preserves_query_string_values_around_decoded_path() {
+        // The path segment is decoded; the query stays encoded.
+        let encoded = "https://ru.wikipedia.org/wiki/%D0%98%D0%B7%D1%83%D0%BC%D1%80%D1%83%D0%B4?utm_source=demo&page=1";
+        assert_eq!(
+            humanize_url(encoded),
+            "https://ru.wikipedia.org/wiki/Изумруд?utm_source=demo&page=1",
+        );
+    }
+
+    #[test]
+    fn humanize_url_returns_original_when_no_percent_escapes_present() {
+        let url = "https://en.wikipedia.org/wiki/Albert_Einstein";
+        assert_eq!(humanize_url(url), url);
+    }
+
+    #[test]
+    fn humanize_url_passes_through_malformed_escapes() {
+        // `%ZZ` is not a valid escape — leave the bytes as-is rather than
+        // throwing. This matches the JS `decodeURI` fallback strategy
+        // (catch URIError → return original).
+        let url = "https://example.com/%ZZbroken";
+        assert_eq!(humanize_url(url), url);
+    }
+
+    #[test]
+    fn humanize_url_handles_truncated_trailing_percent() {
+        let url = "https://example.com/path%";
+        assert_eq!(humanize_url(url), url);
+    }
+
+    #[test]
+    fn humanize_url_accepts_lowercase_hex_digits() {
+        let encoded = "https://ru.wikipedia.org/wiki/%d0%98%d0%b7%d1%83%d0%bc%d1%80%d1%83%d0%b4";
+        assert_eq!(
+            humanize_url(encoded),
+            "https://ru.wikipedia.org/wiki/Изумруд",
+        );
+    }
+
+    #[test]
+    fn humanize_url_decodes_only_invalid_utf8_returns_original() {
+        // A lone continuation byte (0x80) is not valid UTF-8; fall back to
+        // the original URL rather than emitting broken text.
+        let url = "https://example.com/%80";
+        assert_eq!(humanize_url(url), url);
+    }
+
+    #[test]
+    fn humanize_url_decodes_mixed_already_decoded_and_encoded_path() {
+        let encoded = "https://ru.wikipedia.org/wiki/Изумруд_%28минерал%29";
+        // `(` is `%28` and not a reserved delimiter, so it decodes.
+        assert_eq!(
+            humanize_url(encoded),
+            "https://ru.wikipedia.org/wiki/Изумруд_(минерал)",
+        );
     }
 }
