@@ -569,9 +569,12 @@ mod tests {
     // prompt exactly, and only the dedicated `token "greet"` uses contains.
     #[test]
     fn hello_world_request_is_not_routed_to_greeting() {
-        let response =
-            UniversalSolver::default().solve("Write me hello world program in Rust");
-        assert_ne!(response.intent, "greeting", "answer was: {}", response.answer);
+        let response = UniversalSolver::default().solve("Write me hello world program in Rust");
+        assert_ne!(
+            response.intent, "greeting",
+            "answer was: {}",
+            response.answer
+        );
         assert!(
             response.intent.starts_with("hello_world"),
             "expected hello_world intent, got {}",

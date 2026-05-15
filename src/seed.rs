@@ -686,10 +686,8 @@ mod tests {
             // The bundle drops blank lines on emit; compare the non-empty
             // content lines instead of byte-for-byte to keep the test
             // resilient to that normalization.
-            let parsed_lines: Vec<&str> =
-                parsed_body.lines().filter(|l| !l.is_empty()).collect();
-            let orig_lines: Vec<&str> =
-                orig_body.lines().filter(|l| !l.is_empty()).collect();
+            let parsed_lines: Vec<&str> = parsed_body.lines().filter(|l| !l.is_empty()).collect();
+            let orig_lines: Vec<&str> = orig_body.lines().filter(|l| !l.is_empty()).collect();
             assert_eq!(
                 parsed_lines, orig_lines,
                 "section body for {orig_name} should round-trip",
@@ -714,11 +712,7 @@ mod tests {
             .iter()
             .find(|c| c.name == "intent_routing")
             .expect("parsed tree should start with intent_routing");
-        let intent_count = root
-            .children
-            .iter()
-            .filter(|c| c.name == "intent")
-            .count();
+        let intent_count = root.children.iter().filter(|c| c.name == "intent").count();
         assert!(
             intent_count >= 5,
             "expected at least 5 intent routes after round-trip, got {intent_count}",
