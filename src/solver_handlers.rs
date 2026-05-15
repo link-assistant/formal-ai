@@ -22,7 +22,7 @@ use crate::seed::response_for;
 use crate::solver_helpers::{
     build_sorting_algorithm_answer, detect_algorithm_language, detect_program_languages,
     detect_source_language, detect_target_language, extract_backticked, extract_concept_from_query,
-    extract_introduced_name, extract_javascript_program, extract_quoted_phrase,
+    extract_introduced_name, extract_javascript_program, extract_quoted_phrase, humanize_url,
     infer_program_languages_from_code, infer_source_from_prompt, last_user_turn,
     normalize_code_meaning, normalize_meaning, recall_name_from_history, translate_program,
     translate_surface,
@@ -180,7 +180,9 @@ pub fn try_concept_lookup(prompt: &str, log: &mut EventLog) -> Option<SymbolicAn
         .map(|loc| loc.source.as_str())
         .filter(|s| !s.is_empty())
         .unwrap_or(record.source.as_str());
-    log.append("source", source_for_log.to_owned());
+    // Issue #21: log the percent-decoded IRI form so diagnostic chips stay
+    // readable. Rendering uses humanize_url too (see render_concept_*).
+    log.append("source", humanize_url(source_for_log));
     if !record.wikidata.is_empty() {
         log.append("wikidata", record.wikidata.clone());
     }
@@ -232,10 +234,23 @@ fn render_concept_plain(language: &str, record: &ConceptRecord) -> String {
         .map(|loc| loc.source_kind.as_str())
         .filter(|s| !s.is_empty())
         .unwrap_or(record.source_kind.as_str());
+    let source_markup = render_source_link(source);
     format!(
-        "{term} ({category}): {summary}\n\nSource: {source} ({source_kind}).",
+        "{term} ({category}): {summary}\n\nSource: {source_markup} ({source_kind}).",
         category = record.category,
     )
+}
+
+/// Issue #21: render a URL as a readable IRI while keeping the canonical
+/// percent-encoded form as the link target. Returns the bare URL when the
+/// humanized and encoded forms match (no link wrapping needed).
+fn render_source_link(source: &str) -> String {
+    let human = humanize_url(source);
+    if human == source {
+        source.to_owned()
+    } else {
+        format!("[{human}]({source})")
+    }
 }
 
 /// Render a `concept_lookup_in_context` body, preferring the language-specific
@@ -290,13 +305,14 @@ fn render_concept_in_context(language: &str, context: &str, record: &ConceptReco
         .map(|loc| loc.source_kind.as_str())
         .filter(|s| !s.is_empty())
         .unwrap_or(record.source_kind.as_str());
+    let source_markup = render_source_link(source);
     template
         .replace("{context_label}", &context_label)
         .replace("{context}", context)
         .replace("{term}", term)
         .replace("{category}", &record.category)
         .replace("{summary}", summary)
-        .replace("{source}", source)
+        .replace("{source}", &source_markup)
         .replace("{source_kind}", source_kind)
 }
 

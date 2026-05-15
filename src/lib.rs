@@ -38,6 +38,7 @@ pub use server::{handle_api_request, serve, ApiHttpResponse};
 pub use solver::{
     solve, solve_with_history, ConversationRole, ConversationTurn, SolverConfig, UniversalSolver,
 };
+pub use solver_helpers::humanize_url;
 pub use telegram::{
     handle_telegram_webhook, parse_get_updates_response, telegram_html_from_markdown,
     ParsedUpdatesBatch, TelegramPollingConfig, TelegramPollingError, TelegramPollingReply,

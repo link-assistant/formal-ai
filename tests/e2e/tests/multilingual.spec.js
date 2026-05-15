@@ -97,6 +97,42 @@ test.describe('Wikipedia REST fallback', () => {
     await expect(last).toContainText('theoretical physicist');
     await expect(last).toContainText('en.wikipedia.org');
   });
+
+  // Issue #21: Wikipedia returns percent-encoded URLs for non-ASCII titles.
+  // The chat must display the readable Cyrillic form while the underlying
+  // link still points at the canonical (encoded) URL.
+  test('Russian Wikipedia summary displays decoded Cyrillic URL with encoded href', async ({ page }) => {
+    const encodedUrl =
+      'https://ru.wikipedia.org/wiki/%D0%98%D0%B7%D1%83%D0%BC%D1%80%D1%83%D0%B4';
+    const humanUrl = 'https://ru.wikipedia.org/wiki/Изумруд';
+    await page.route('**/api/rest_v1/page/summary/**', async (route) => {
+      const json = {
+        title: 'Изумруд',
+        extract: 'Изумруд — драгоценный камень берилловой группы.',
+        type: 'standard',
+        content_urls: { desktop: { page: encodedUrl } },
+      };
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(json),
+      });
+    });
+
+    const last = await sendPrompt(page, 'Что такое изумруд?');
+    await expect(last).toHaveClass(/assistant/);
+    // Display text is the readable IRI form.
+    await expect(last).toContainText(humanUrl);
+    // And the percent-encoded form must not leak into the visible message.
+    await expect(last).not.toContainText(
+      '%D0%98%D0%B7%D1%83%D0%BC%D1%80%D1%83%D0%B4',
+    );
+    // The anchor's href stays the canonical encoded URL so clicking it still resolves.
+    const anchor = last.locator(`a[href="${encodedUrl}"]`);
+    await expect(anchor).toHaveCount(1);
+    await expect(anchor).toHaveText(humanUrl);
+  });
+
 });
 
 test.describe('memory export/import', () => {

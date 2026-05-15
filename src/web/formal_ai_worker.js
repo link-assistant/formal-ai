@@ -408,6 +408,28 @@ function extractConceptTerm(prompt) {
   return query ? query.term : null;
 }
 
+// Issue #21: render a percent-encoded URL in its readable IRI form for
+// display, while leaving the original encoded form available as the href.
+// `decodeURI` keeps reserved URI delimiters (`; / ? : @ & = + $ , #`) intact,
+// so query strings are preserved; malformed escapes fall back to the original
+// string.
+function humanizeUrl(url) {
+  if (typeof url !== "string" || url.length === 0) return url;
+  if (!url.includes("%")) return url;
+  try {
+    return decodeURI(url);
+  } catch (_error) {
+    return url;
+  }
+}
+
+// Render a source URL as a Markdown link [human](encoded) when humanization
+// changes anything, or the bare URL otherwise.
+function renderSourceLink(source) {
+  const human = humanizeUrl(source);
+  return human === source ? source : `[${human}](${source})`;
+}
+
 function finalizeConceptBody(body) {
   let trimmed = String(body || "")
     .trim()
@@ -829,13 +851,14 @@ function renderConceptInContext(language, context, record) {
   const source = (localized && localized.source) || record.source;
   const sourceKind =
     (localized && localized.sourceKind) || record.sourceKind;
+  const sourceMarkup = renderSourceLink(source);
   return template
     .replace(/\{context_label\}/g, contextLabel)
     .replace(/\{context\}/g, context)
     .replace(/\{term\}/g, term)
     .replace(/\{category\}/g, record.category)
     .replace(/\{summary\}/g, summary)
-    .replace(/\{source\}/g, source)
+    .replace(/\{source\}/g, sourceMarkup)
     .replace(/\{source_kind\}/g, sourceKind);
 }
 
@@ -846,7 +869,8 @@ function renderConceptPlain(language, record) {
   const source = (localized && localized.source) || record.source;
   const sourceKind =
     (localized && localized.sourceKind) || record.sourceKind;
-  return `${term} (${record.category}): ${summary}\n\nSource: ${source} (${sourceKind}).`;
+  const sourceMarkup = renderSourceLink(source);
+  return `${term} (${record.category}): ${summary}\n\nSource: ${sourceMarkup} (${sourceKind}).`;
 }
 
 function tryConceptLookup(prompt) {
@@ -867,8 +891,10 @@ function tryConceptLookup(prompt) {
   const language = detectLanguage(prompt);
   const localized = localizedConceptFor(record, language);
   const effectiveSource = (localized && localized.source) || record.source;
+  // Issue #21: emit the percent-decoded IRI form for the trace panel.
+  const humanSource = humanizeUrl(effectiveSource);
   evidence.push(`concept_lookup:hit:${record.slug}`);
-  evidence.push(`source:${effectiveSource}`);
+  evidence.push(`source:${humanSource}`);
   if (record.wikidata) {
     evidence.push(`wikidata:${record.wikidata}`);
   }
@@ -968,14 +994,17 @@ async function tryWikipediaLookup(prompt, language) {
   if (lookupConceptQuery(query)) return null;
   const summary = await fetchWikipediaSummary(query.term, language);
   if (!summary) return null;
-  const body = `${summary.title}: ${summary.extract}\n\nSource: ${summary.url} (wikipedia).`;
+  const humanUrl = humanizeUrl(summary.url);
+  const body =
+    `${summary.title}: ${summary.extract}\n\n` +
+    `Source: [${humanUrl}](${summary.url}) (wikipedia).`;
   return {
     intent: "wikipedia_lookup",
     content: body,
     confidence: 0.85,
     evidence: [
       `wikipedia_lookup:${summary.title}`,
-      `source:${summary.url}`,
+      `source:${humanUrl}`,
       `language:${summary.language}`,
     ],
   };
