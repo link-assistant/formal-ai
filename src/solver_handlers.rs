@@ -723,11 +723,8 @@ pub fn try_how_it_works(
     if let Some(ref term) = subject {
         use crate::concepts::{extract_concept_query, lookup_concept_query};
         if let Some(query) = extract_concept_query(&format!("what is {term}")) {
-            if let Some(_) = lookup_concept_query(&query) {
-                log.append(
-                    "followup:subject",
-                    format!("inline:{term}"),
-                );
+            if lookup_concept_query(&query).is_some() {
+                log.append("followup:subject", format!("inline:{term}"));
                 // Delegate to try_concept_lookup by synthesising a standard prompt.
                 return try_concept_lookup(&format!("what is {term}"), log);
             }
@@ -735,14 +732,14 @@ pub fn try_how_it_works(
     }
 
     // No inline subject — look for the topic in the prior assistant reply.
-    if let Some(prior) = last_assistant_turn(log).map(|s| s.to_owned()) {
+    if let Some(prior) = last_assistant_turn(log).map(str::to_owned) {
         log.append("followup:prior_turn", "assistant".to_owned());
         // Extract the first capitalised noun phrase from the prior reply
         // (typically the term in "Term (category): …" format).
         if let Some(term) = extract_topic_from_prior_reply(&prior) {
             use crate::concepts::{extract_concept_query, lookup_concept_query};
             if let Some(query) = extract_concept_query(&format!("what is {term}")) {
-                if let Some(_) = lookup_concept_query(&query) {
+                if lookup_concept_query(&query).is_some() {
                     log.append("followup:subject", format!("prior_reply:{term}"));
                     return try_concept_lookup(&format!("what is {term}"), log);
                 }
@@ -788,10 +785,7 @@ pub fn try_how_it_works(
 fn extract_how_it_works_subject(normalized: &str) -> Option<String> {
     // "how does X work" / "how does X work?"
     if let Some(rest) = normalized.strip_prefix("how does ") {
-        let term = rest
-            .trim_end_matches('?')
-            .trim_end_matches(" work")
-            .trim();
+        let term = rest.trim_end_matches('?').trim_end_matches(" work").trim();
         if !term.is_empty() && term != "it" {
             return Some(term.to_owned());
         }
@@ -811,11 +805,13 @@ fn extract_topic_from_prior_reply(reply: &str) -> Option<String> {
         }
     }
     // Fallback: first capitalised word that is not a stop word.
-    let stop_words = ["I", "The", "A", "An", "In", "To", "For", "Of", "And", "Or", "Source"];
+    let stop_words = [
+        "I", "The", "A", "An", "In", "To", "For", "Of", "And", "Or", "Source",
+    ];
     for word in reply.split_whitespace() {
         let clean = word.trim_matches(|c: char| !c.is_alphanumeric());
         if clean.len() >= 2
-            && clean.chars().next().map_or(false, |c| c.is_uppercase())
+            && clean.chars().next().is_some_and(char::is_uppercase)
             && !stop_words.contains(&clean)
         {
             return Some(clean.to_lowercase());
