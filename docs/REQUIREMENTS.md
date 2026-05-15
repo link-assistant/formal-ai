@@ -135,3 +135,21 @@ conversation memory, and persists the demo's UI state in Links Notation.
 | R87 | Remember the conversation: recall the user's name, the previous question, and summarize prior turns through the solver, with prior turns recorded as `prior_turn:` events. | Implemented through `ConversationTurn`, `ConversationRole`, and `UniversalSolver::solve_with_history` in `src/solver.rs`; covered by `tests/unit/mvp/reasoning_paths.rs::solve_with_history_*`; the demo passes `history` to the worker. |
 | R88 | Declare JavaScript execution capability explicitly: the Rust solver explains it has no JS runtime, the browser demo actually runs the snippet in a Worker sandbox and reports stdout/return value/errors. | Implemented by `extract_javascript_program`/`extract_fenced_block` in `src/solver_helpers.rs`, `try_javascript_execution` in `src/solver.rs`, and the worker's `tryJavaScriptExecution` handler; covered by `tests/unit/mvp/reasoning_paths.rs::javascript_*`. |
 | R89 | Compile case-study evidence (issue body, comments, PR comments, online research, requirement-to-solution mapping) under `docs/case-studies/issue-14/`. | Implemented in `docs/case-studies/issue-14/README.md` with raw data in `docs/case-studies/issue-14/raw-data/`. |
+
+## Issue #16 Multilingual, Wikipedia, and Append-Only Memory Requirements
+
+Issue [#16](https://github.com/link-assistant/formal-ai/issues/16) extends the
+demo with multilingual greetings/identity/concept lookup, browser-side
+Wikipedia fallback for `What is X?` prompts, an append-only persisted memory
+log with export/import in Links Notation, and a relocation of the deployable
+artefact from `docs/demo/` to `src/web/`.
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R90 | Move the deployable demo from `docs/demo/` to `src/web/` so it sits next to the other library/CLI/web sources. | Implemented in commit `765b2ea`; the GitHub Pages deploy job in `.github/workflows/release.yml` now publishes from `src/web`. |
+| R91 | Support every existing prompt (greeting, identity, unknown fallback, `What is X?`) in Russian, Hindi, and Chinese, including Cyrillic, Devanagari, and CJK input. | Implemented in Rust by `src/language.rs` Unicode-block detector, the `language_aware_answer_for` arms of `src/engine.rs`, and the multilingual aliases in `src/concepts.rs`. Mirrored in `src/web/formal_ai_worker.js` (`detectLanguage`, `MULTILINGUAL_ANSWERS`, multilingual concept extraction). |
+| R92 | Answer `What is X?` from a live Wikipedia lookup that runs entirely in the browser, falling back to English when the detected language has no article. | Implemented in `src/web/formal_ai_worker.js` (`WIKIPEDIA_HOSTS`, `fetchWikipediaSummary`, `tryWikipediaLookup`); the synchronous offline `CONCEPTS` table still wins whenever it covers the term. |
+| R93 | Cover the multilingual surface and the Wikipedia fallback with Playwright e2e that runs locally for PRs and remotely against `https://link-assistant.github.io/formal-ai`. | Implemented in `tests/e2e/tests/multilingual.spec.js` and matched by both `tests/e2e/playwright.local.config.js` and `tests/e2e/playwright.pages.config.js`. |
+| R94 | Provide Export and Import buttons in the web UI that round-trip the full conversation memory as Links Notation, persisting short documents in `localStorage` and larger ones in IndexedDB. | Implemented by `src/web/memory.js` (IndexedDB store, `appendEvent`, `listEvents`, `importEvents`, `exportLinksNotation`, `parseLinksNotation`) and the `Export memory` / `Import memory` topbar buttons wired in `src/web/app.js`. |
+| R95 | Keep the persisted memory append-only by default: there must be no public delete, forget, or clear path, so "Forget X" can only succeed through an explicit retraction protocol. | Implemented by deliberately omitting any delete/forget/clear API from `src/web/memory.js`; asserted by `tests/e2e/tests/multilingual.spec.js` → "Memory module exposes no delete/forget operation". |
+| R96 | Compile case-study evidence (issue body, comments, PR comments, online research, requirement-to-solution mapping) under `docs/case-studies/issue-16/`. | Implemented in `docs/case-studies/issue-16/README.md` with raw data in `docs/case-studies/issue-16/raw-data/`. |
