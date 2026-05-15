@@ -98,8 +98,22 @@ fn try_summarize_conversation(
 ) -> Option<SymbolicAnswer> {
     let asks = normalized.contains("summarize the conversation")
         || normalized.contains("summarize our conversation")
+        || normalized.contains("summarize this conversation")
         || normalized.contains("summary of our chat")
-        || normalized.contains("what have we talked about");
+        || normalized.contains("what have we talked about")
+        || normalized == "summarize"
+        // Russian
+        || normalized.contains("о чём мы разговаривали")
+        || normalized.contains("о чем мы разговаривали")
+        || normalized.contains("о чём мы говорили")
+        || normalized.contains("о чем мы говорили")
+        || normalized.contains("резюме беседы")
+        || normalized.contains("резюме разговора")
+        || normalized.contains("резюмируй разговор")
+        || normalized.contains("резюмируй беседу")
+        || normalized == "резюме"
+        // Chinese
+        || normalized.contains("总结");
     if !asks {
         return None;
     }
