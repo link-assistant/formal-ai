@@ -3,6 +3,7 @@ pub(crate) mod concepts;
 pub mod engine;
 pub mod event_log;
 pub mod language;
+pub mod memory;
 pub mod protocol;
 pub mod seed;
 pub mod server;
@@ -15,10 +16,21 @@ pub mod telegram_runtime;
 pub use engine::{knowledge_links_notation, FormalAiEngine, SymbolicAnswer, DEFAULT_MODEL};
 pub use event_log::{Event, EventLog};
 pub use language::{detect as detect_language, Language};
+pub use memory::{
+    export_bundle as export_memory_bundle, export_links_notation as export_memory_links_notation,
+    extract_memory_from_bundle, parse_links_notation as parse_memory_links_notation, MemoryEvent,
+    MemoryStore,
+};
 pub use protocol::{
     create_chat_completion, create_response, ChatChoice, ChatCompletion, ChatCompletionRequest,
     ChatMessage, MessageContent, MessageContentPart, ResponseObject, ResponseOutputContent,
     ResponseOutputMessage, ResponseUsage, ResponsesRequest, TokenUsage,
+};
+pub use seed::{
+    agent_info, concepts as seed_concepts, environment_directory, environment_records,
+    intent_routing, language_rules, merged_bundle, multilingual_responses, parse_bundle,
+    prompt_patterns, response_for, seed_files, EnvironmentDirectory, EnvironmentRecord,
+    IntentRouting, MigrationFlow,
 };
 pub use server::{handle_api_request, serve, ApiHttpResponse};
 pub use solver::{

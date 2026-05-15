@@ -656,6 +656,9 @@ jobs:
           cd tests/e2e
           npx playwright install --with-deps chromium
 
+      - name: Sync data/seed into src/web/seed (deployment mirror)
+        run: scripts/sync-seed.sh
+
       - name: Run local e2e tests
         run: |
           cd tests/e2e
@@ -698,6 +701,9 @@ jobs:
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v6
+
+      - name: Sync data/seed into src/web/seed (deployment mirror)
+        run: scripts/sync-seed.sh
 
       - name: Upload GitHub Pages artifact
         uses: actions/upload-pages-artifact@v5

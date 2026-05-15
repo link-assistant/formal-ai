@@ -12,7 +12,10 @@ module.exports = defineConfig({
     trace: 'on-first-retry',
   },
   webServer: {
-    command: 'npx serve ../../src/web --listen 3456 --no-clipboard',
+    // The seed mirror under src/web/seed/ is generated from the canonical
+    // data/seed/ tree on every server start so we never serve stale data.
+    command:
+      '../../scripts/sync-seed.sh && npx serve ../../src/web --listen 3456 --no-clipboard',
     url: 'http://localhost:3456',
     reuseExistingServer: false,
     timeout: 15_000,

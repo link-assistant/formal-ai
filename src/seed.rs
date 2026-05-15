@@ -45,6 +45,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
             HELLO_WORLD_PROGRAMS_LINO,
         ),
         ("data/seed/demo-dialogs.lino", DEMO_DIALOGS_LINO),
+        ("data/seed/environments.lino", ENVIRONMENTS_LINO),
     ]
 }
 
@@ -91,16 +92,25 @@ pub fn bundle_from_files(files: &[(&str, &str)]) -> String {
 /// a single `.lino` document for import/export, while still recovering the
 /// per-category split files that drive the rest of the loader.
 ///
-/// The parser is lenient: a missing or differently-named header is ignored;
-/// any top-level `file "name"` child is treated as a section. Sections with
-/// no body produce an empty contents string. Indentation inside a section
-/// is reproduced verbatim (with the two-space bundle prefix stripped) so
-/// the round-trip preserves shape.
+/// The parser accepts both bundle dialects:
+///
+/// - flat `formal_ai_seed_bundle` — `file "name"` directly at indent 2,
+/// - nested `formal_ai_bundle` (the format the browser demo writes and the
+///   one [`memory::export_bundle`](crate::memory::export_bundle) produces)
+///   where `seed_files` wraps the file list, so each `file "name"` sits at
+///   indent 4 and the body at indent 6.
+///
+/// Sections with no body produce an empty contents string. Indentation
+/// inside a section is reproduced verbatim (with the leading bundle prefix
+/// stripped) so the round-trip preserves shape.
 #[must_use]
 pub fn parse_bundle(text: &str) -> Vec<(String, String)> {
     let mut sections: Vec<(String, String)> = Vec::new();
     let mut current_name: Option<String> = None;
     let mut current_body = String::new();
+    let mut file_indent: usize = 2;
+    let mut body_indent: usize = 4;
+    let mut inside_seed_files = false;
     for line in text.lines() {
         if line.is_empty() {
             if current_name.is_some() {
@@ -110,15 +120,38 @@ pub fn parse_bundle(text: &str) -> Vec<(String, String)> {
         }
         let indent = line.chars().take_while(|c| *c == ' ').count();
         let trimmed = &line[indent..];
-        // Top-level header (e.g. "formal_ai_seed_bundle") — start of document.
+        // Top-level header (e.g. `formal_ai_seed_bundle` or
+        // `formal_ai_bundle`). Start of document.
         if indent == 0 {
             if let Some(name) = current_name.take() {
                 sections.push((name, std::mem::take(&mut current_body)));
             }
+            inside_seed_files = false;
+            file_indent = 2;
+            body_indent = 4;
             continue;
         }
-        // Section header: `  file "data/seed/X.lino"`.
-        if indent == 2 && trimmed.starts_with("file ") {
+        // Wrapper section for the nested dialect: `  seed_files`.
+        if indent == 2 && trimmed == "seed_files" {
+            if let Some(name) = current_name.take() {
+                sections.push((name, std::mem::take(&mut current_body)));
+            }
+            inside_seed_files = true;
+            file_indent = 4;
+            body_indent = 6;
+            continue;
+        }
+        // Sibling section at the same indent as `seed_files` (e.g.
+        // `demo_memory`) ends the seed list in the nested dialect.
+        if inside_seed_files && indent == 2 {
+            if let Some(name) = current_name.take() {
+                sections.push((name, std::mem::take(&mut current_body)));
+            }
+            inside_seed_files = false;
+            continue;
+        }
+        // Section header: `file "name"` at the dialect's file_indent.
+        if indent == file_indent && trimmed.starts_with("file ") {
             if let Some(name) = current_name.take() {
                 sections.push((name, std::mem::take(&mut current_body)));
             }
@@ -132,10 +165,11 @@ pub fn parse_bundle(text: &str) -> Vec<(String, String)> {
             }
             continue;
         }
-        // Section body: strip the four-space bundle prefix.
+        // Section body: strip the body_indent prefix.
         if current_name.is_some() {
+            let prefix: String = " ".repeat(body_indent);
             let stripped = line
-                .strip_prefix("    ")
+                .strip_prefix(prefix.as_str())
                 .unwrap_or_else(|| line.trim_start());
             current_body.push_str(stripped);
             current_body.push('\n');
@@ -402,6 +436,102 @@ pub fn prompt_patterns() -> Vec<PromptPattern> {
     out
 }
 
+/// One self-describing entry from `environments.lino`.
+///
+/// The seed declares every supported surface (browser demo, Rust library,
+/// CLI, HTTP server, Telegram bot, Docker microservice) and how memory
+/// migrates between them. The AI itself can therefore answer "where can I
+/// run?" and "how do I move my memory from CLI to web?" from data rather
+/// than from hardcoded strings.
+#[derive(Debug, Clone, Default)]
+pub struct EnvironmentRecord {
+    pub id: String,
+    pub label: String,
+    pub runtime: String,
+    pub seed_path: String,
+    pub memory_store: String,
+    pub memory_export_command: String,
+    pub bundle_export_command: String,
+    pub bundle_import_command: String,
+    pub tools: Vec<String>,
+}
+
+#[derive(Debug, Clone, Default)]
+pub struct MigrationFlow {
+    pub id: String,
+    pub description: String,
+    pub file_format: String,
+}
+
+#[derive(Debug, Clone, Default)]
+pub struct EnvironmentDirectory {
+    pub environments: Vec<EnvironmentRecord>,
+    pub migration_description: String,
+    pub flows: Vec<MigrationFlow>,
+}
+
+#[must_use]
+pub fn environment_directory() -> EnvironmentDirectory {
+    let tree = parse_lino(ENVIRONMENTS_LINO);
+    let mut directory = EnvironmentDirectory::default();
+    for root in &tree.children {
+        match root.name.as_str() {
+            "environments" => {
+                for entry in root.children.iter().filter(|c| c.name == "environment") {
+                    let tools_raw = entry.find_child_value("tools").to_string();
+                    let tools = if tools_raw.is_empty() {
+                        Vec::new()
+                    } else {
+                        tools_raw
+                            .split('|')
+                            .map(str::trim)
+                            .filter(|s| !s.is_empty())
+                            .map(ToOwned::to_owned)
+                            .collect()
+                    };
+                    directory.environments.push(EnvironmentRecord {
+                        id: entry.id.clone(),
+                        label: entry.find_child_value("label").to_string(),
+                        runtime: entry.find_child_value("runtime").to_string(),
+                        seed_path: entry.find_child_value("seed_path").to_string(),
+                        memory_store: entry.find_child_value("memory_store").to_string(),
+                        memory_export_command: entry
+                            .find_child_value("memory_export_command")
+                            .to_string(),
+                        bundle_export_command: entry
+                            .find_child_value("bundle_export_command")
+                            .to_string(),
+                        bundle_import_command: entry
+                            .find_child_value("bundle_import_command")
+                            .to_string(),
+                        tools,
+                    });
+                }
+            }
+            "migration" => {
+                directory.migration_description = root.find_child_value("description").to_string();
+                for entry in root.children.iter().filter(|c| c.name == "flow") {
+                    directory.flows.push(MigrationFlow {
+                        id: entry.id.clone(),
+                        description: entry.find_child_value("description").to_string(),
+                        file_format: entry.find_child_value("file_format").to_string(),
+                    });
+                }
+            }
+            _ => {}
+        }
+    }
+    directory
+}
+
+/// Convenience accessor returning just the environment records (without the
+/// migration flow descriptions). Used by the CLI/HTTP `bundle` printers and
+/// by tests that pin self-awareness coverage.
+#[must_use]
+pub fn environment_records() -> Vec<EnvironmentRecord> {
+    environment_directory().environments
+}
+
 /// Raw embedded contents (used by `merged_bundle` and by tests).
 pub const AGENT_INFO_LINO: &str = include_str!("../data/seed/agent-info.lino");
 pub const MULTILINGUAL_RESPONSES_LINO: &str =
@@ -415,6 +545,7 @@ pub const GREETINGS_LINO: &str = include_str!("../data/seed/greetings.lino");
 pub const IDENTITY_LINO: &str = include_str!("../data/seed/identity.lino");
 pub const HELLO_WORLD_PROGRAMS_LINO: &str = include_str!("../data/seed/hello-world-programs.lino");
 pub const DEMO_DIALOGS_LINO: &str = include_str!("../data/seed/demo-dialogs.lino");
+pub const ENVIRONMENTS_LINO: &str = include_str!("../data/seed/environments.lino");
 
 /// Minimal Links Notation parser: shallow indented tree of `name "value"`
 /// lines. Two-space indentation, no comments, no escapes beyond `\"` and
@@ -707,6 +838,30 @@ mod tests {
             assert_eq!(
                 parsed_lines, orig_lines,
                 "section body for {orig_name} should round-trip",
+            );
+        }
+    }
+
+    #[test]
+    fn parse_bundle_accepts_nested_formal_ai_bundle_dialect() {
+        // The browser's `Download bundle` button (and `memory::export_bundle`
+        // on the Rust side) writes a `formal_ai_bundle` document where the
+        // per-file sections are nested under a `seed_files` wrapper. The
+        // parser must recover the same `(name, body)` pairs.
+        let files = seed_files();
+        let bundle = crate::memory::export_bundle(&files, &[]);
+        let sections = parse_bundle(&bundle);
+        assert!(
+            sections.len() >= files.len(),
+            "nested bundle parse should recover every seed file, got {} of {}",
+            sections.len(),
+            files.len(),
+        );
+        let names: Vec<&str> = sections.iter().map(|(n, _)| n.as_str()).collect();
+        for (name, _) in &files {
+            assert!(
+                names.contains(name),
+                "nested bundle parse missed section {name}",
             );
         }
     }

@@ -230,3 +230,85 @@ implementation artefacts are:
   `FormalAiSeed.loadFromBundle` in `src/web/seed_loader.js`. Covered
   by `seed::tests::bundle_round_trips_through_parse_bundle` and
   `seed::tests::parse_bundle_recovers_intent_routing_via_inner_parser`.
+
+## Follow-Up: Self-Aware Environments and Cross-Surface Memory Migration (PR #17 reopen 3)
+
+The PR was reopened a third time with [comment 4459020108](https://github.com/link-assistant/formal-ai/pull/17#issuecomment-4459020108).
+The maintainer asked for four further invariants on top of the
+universal-seed work above:
+
+1. `src/web/seed/*` must move fully under `./data/seed/*` — the seed
+   itself should be self-aware of every environment it supports, and
+   if `src/web/seed/*` is only a deployment artefact it must be
+   gitignored so contributors cannot accidentally diverge the browser
+   mirror from the canonical seed.
+2. The agent's append-only memory must migrate between every
+   surface — CLI ↔ browser ↔ HTTP ↔ Telegram — using the same
+   Links Notation files, not bespoke per-surface formats.
+3. Every capability exposed by the CLI/server must also be reachable
+   from the `formal_ai` library, so downstream embedders can build
+   their own surfaces against the same primitives.
+4. Continue keeping `VISION.md`, `REQUIREMENTS.md`, and the case study
+   in lockstep with the implementation.
+
+These are tracked as requirements R105–R108 in
+[`../../../REQUIREMENTS.md`](../../../REQUIREMENTS.md). The
+implementation artefacts are:
+
+- **`src/web/seed/` is a deploy artefact.** `.gitignore` now lists
+  `src/web/seed/` so the directory is regenerated from `data/seed/`
+  by `scripts/sync-seed.sh` rather than tracked. The local Playwright
+  config (`tests/e2e/playwright.local.config.js`) and the GitHub
+  Actions `test-e2e-local` + `deploy-demo` jobs each invoke the sync
+  before the web bundle is served or deployed, so there is no
+  "edit `src/web/seed/`" path that can drift away from canon.
+- **Seed declares every environment.** `data/seed/environments.lino`
+  enumerates the six environments the agent runs in (`browser`,
+  `rust_library`, `cli`, `http_server`, `telegram`,
+  `docker_microservice`) with each one's runtime, seed path, memory
+  store, export commands, and tool surface. The Rust accessors
+  `seed::environment_directory()` and `seed::environment_records()`
+  expose the same data to embedders; `FormalAiSeed.extractEnvironmentDirectory`
+  in `src/web/seed_loader.js` mirrors it on the browser. The CLI
+  surfaces it as `formal-ai environments`, and the `migration` block
+  in the file documents the four named cross-surface flows
+  (`browser_to_cli`, `cli_to_browser`, `browser_to_browser`,
+  `cli_to_cli`).
+- **Cross-surface memory migration.** `src/memory.rs` implements
+  `MemoryStore` (append-only), `export_links_notation`,
+  `parse_links_notation`, `export_bundle`, and
+  `extract_memory_from_bundle` over the same `demo_memory` schema
+  that `src/web/memory.js` already speaks. `src/main.rs` adds three
+  command groups — `formal-ai memory export|import|show`,
+  `formal-ai bundle export|import`, and `formal-ai environments` —
+  each of which accepts `--path <file>` or `-` for stdin/stdout so
+  the flows in `environments.lino` work without temp files.
+  `seed::parse_bundle` now tolerates both bundle dialects (the flat
+  `formal_ai_seed_bundle` emitted by the Rust solver and the nested
+  `formal_ai_bundle` emitted by the browser's `Download bundle`
+  button), so a bundle generated in any surface round-trips back into
+  any other surface.
+- **Library-first availability.** `src/lib.rs` re-exports
+  `MemoryStore`, `MemoryEvent`, `export_memory_links_notation`,
+  `parse_memory_links_notation`, `export_memory_bundle`,
+  `extract_memory_from_bundle`, `seed_files`, `merged_bundle`,
+  `parse_bundle`, `environment_directory`, `environment_records`,
+  `intent_routing`, `language_rules`, `multilingual_responses`,
+  `prompt_patterns`, `response_for`, `seed_concepts`, and
+  `agent_info` from the crate root. Every action the CLI binary or
+  HTTP server performs is one library call away, so a downstream
+  embedder can build a Tauri app, a VS Code extension, or another
+  bot transport without reimplementing the storage or the seed.
+
+Verification for this round:
+
+- `cargo fmt --check`, `cargo clippy --all-targets --all-features
+  -- -D warnings`, `cargo test --all-features` — all green.
+- Manual CLI smoke test:
+  `formal-ai memory import --path examples/memory-import.lino`,
+  `formal-ai memory show`,
+  `formal-ai bundle export --path examples/bundle.lino`,
+  `formal-ai bundle import --path examples/bundle.lino --into examples/restored-memory.lino`
+  round-trip a multilingual transcript without losing events.
+- `formal-ai environments` prints the six environments and the four
+  migration flows declared in `data/seed/environments.lino`.

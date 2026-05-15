@@ -30,6 +30,7 @@
     "seed/identity.lino",
     "seed/hello-world-programs.lino",
     "seed/demo-dialogs.lino",
+    "seed/environments.lino",
   ];
 
   function isWorker() {
@@ -224,6 +225,52 @@
     return parseInt(str, 10) || 0;
   }
 
+  // Extract the environment directory (`environments.lino`) so the demo can
+  // show every supported interface and how to migrate memory between them.
+  // Mirrors `src/seed.rs::environment_directory` so the two surfaces always
+  // agree on the schema.
+  function extractEnvironmentDirectory(root) {
+    var directory = {
+      environments: [],
+      migrationDescription: "",
+      flows: [],
+    };
+    if (!root || !Array.isArray(root.children)) return directory;
+    for (var i = 0; i < root.children.length; i += 1) {
+      var section = root.children[i];
+      if (!section || !section.name) continue;
+      if (section.name === "environments") {
+        var envEntries = findChildren(section, "environment");
+        for (var j = 0; j < envEntries.length; j += 1) {
+          var entry = envEntries[j];
+          directory.environments.push({
+            id: entry.id,
+            label: findChildValue(entry, "label"),
+            runtime: findChildValue(entry, "runtime"),
+            seedPath: findChildValue(entry, "seed_path"),
+            memoryStore: findChildValue(entry, "memory_store"),
+            memoryExport: findChildValue(entry, "memory_export_command"),
+            bundleExport: findChildValue(entry, "bundle_export_command"),
+            bundleImport: findChildValue(entry, "bundle_import_command"),
+            tools: splitList(findChildValue(entry, "tools")),
+          });
+        }
+      } else if (section.name === "migration") {
+        directory.migrationDescription = findChildValue(section, "description");
+        var flowEntries = findChildren(section, "flow");
+        for (var k = 0; k < flowEntries.length; k += 1) {
+          var flow = flowEntries[k];
+          directory.flows.push({
+            id: flow.id,
+            description: findChildValue(flow, "description"),
+            fileFormat: findChildValue(flow, "file_format"),
+          });
+        }
+      }
+    }
+    return directory;
+  }
+
   function extractPromptPatterns(node) {
     var patterns = [];
     if (!node) return patterns;
@@ -408,6 +455,7 @@
       languageRules: [],
       promptPatterns: [],
       intentRouting: { intents: [], articlePrefixes: [], tracePrefixes: [] },
+      environments: { environments: [], migrationDescription: "", flows: [] },
       raw: {},
     };
     for (var i = 0; i < results.length; i += 1) {
@@ -432,6 +480,8 @@
         seed.promptPatterns = seed.promptPatterns.concat(extractPromptPatterns(root));
       } else if (item.file.indexOf("intent-routing") !== -1) {
         seed.intentRouting = extractIntentRouting(root);
+      } else if (item.file.indexOf("environments") !== -1) {
+        seed.environments = extractEnvironmentDirectory(root);
       }
     }
     return seed;
@@ -449,6 +499,7 @@
     extractConcepts: extractConcepts,
     extractTools: extractTools,
     extractIntentRouting: extractIntentRouting,
+    extractEnvironmentDirectory: extractEnvironmentDirectory,
     DEFAULT_FILES: DEFAULT_FILES,
     isWorker: isWorker(),
   };

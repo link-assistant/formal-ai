@@ -1,6 +1,9 @@
 use formal_ai::{
-    create_chat_completion, create_response, handle_api_request, knowledge_links_notation,
-    ChatCompletionRequest, ChatMessage, FormalAiEngine, MessageContent, ResponsesRequest,
+    create_chat_completion, create_response, environment_directory, environment_records,
+    export_memory_bundle, export_memory_links_notation, extract_memory_from_bundle,
+    handle_api_request, knowledge_links_notation, merged_bundle, parse_bundle,
+    parse_memory_links_notation, seed_files, ChatCompletionRequest, ChatMessage, FormalAiEngine,
+    MemoryEvent, MemoryStore, MessageContent, ResponsesRequest,
 };
 use lino_objects_codec::format::parse_indented;
 
@@ -212,4 +215,125 @@ fn telegram_webhook_supports_public_chat_code_replies() {
     assert!(text.contains("<pre><code class=\"language-rust\">"));
     assert!(text.contains("Execution status: compiled and ran"));
     assert!(text.contains("Hello, world!"));
+}
+
+// --- Issue #16 follow-up: universal-seed and cross-surface memory tests ---
+
+#[test]
+fn environment_directory_declares_every_supported_surface() {
+    // R106: the seed itself must name every interface the agent supports.
+    let directory = environment_directory();
+    let ids: Vec<&str> = directory
+        .environments
+        .iter()
+        .map(|env| env.id.as_str())
+        .collect();
+    for expected in [
+        "browser",
+        "rust_library",
+        "cli",
+        "http_server",
+        "telegram",
+        "docker_microservice",
+    ] {
+        assert!(
+            ids.contains(&expected),
+            "environments.lino must declare a `{expected}` environment; got {ids:?}",
+        );
+    }
+    // Every environment must declare a non-empty memory store description
+    // so chat surfaces can explain where state lives.
+    for env in &directory.environments {
+        assert!(
+            !env.memory_store.is_empty(),
+            "environment {} should declare a memory_store",
+            env.id,
+        );
+        assert!(
+            !env.runtime.is_empty(),
+            "environment {} should declare a runtime",
+            env.id,
+        );
+    }
+    // The migration block must enumerate the documented cross-surface flows.
+    let flow_ids: Vec<&str> = directory.flows.iter().map(|f| f.id.as_str()).collect();
+    for expected in [
+        "browser_to_cli",
+        "cli_to_browser",
+        "browser_to_browser",
+        "cli_to_cli",
+    ] {
+        assert!(
+            flow_ids.contains(&expected),
+            "migration flow `{expected}` is missing; got {flow_ids:?}",
+        );
+    }
+}
+
+#[test]
+fn environment_records_match_directory() {
+    // R108: every CLI capability must also be reachable from the library.
+    // `environment_records` is the convenience accessor the CLI uses.
+    let records = environment_records();
+    let directory = environment_directory();
+    assert_eq!(records.len(), directory.environments.len());
+    for (record, env) in records.iter().zip(directory.environments.iter()) {
+        assert_eq!(record.id, env.id);
+        assert_eq!(record.label, env.label);
+        assert_eq!(record.tools, env.tools);
+    }
+}
+
+#[test]
+fn library_memory_round_trips_through_links_notation() {
+    // R107: events written on one surface must replay on another via the
+    // shared `demo_memory` wire format. The library accessors must be
+    // sufficient for that round-trip (no CLI/HTTP detour required).
+    let mut store = MemoryStore::new();
+    store.append(MemoryEvent::user("Привет"));
+    store.append(MemoryEvent::assistant("Hi, how may I help you?"));
+    let text = export_memory_links_notation(store.events());
+    assert!(text.starts_with("demo_memory\n"));
+    let parsed = parse_memory_links_notation(&text);
+    assert_eq!(parsed.len(), 2);
+    assert_eq!(parsed[0].content.as_deref(), Some("Привет"));
+    assert_eq!(parsed[1].role.as_deref(), Some("assistant"));
+}
+
+#[test]
+fn library_bundle_round_trips_seed_and_memory() {
+    // R107 + R108: build a bundle from the library, then recover the seed
+    // and memory sections — both must round-trip. This is the exact code
+    // path the CLI's `bundle export|import` and the browser's
+    // `Download bundle` button rely on.
+    let events = vec![
+        MemoryEvent::user("hello"),
+        MemoryEvent::assistant("hi back"),
+    ];
+    let bundle = export_memory_bundle(&seed_files(), &events);
+    let recovered_memory = extract_memory_from_bundle(&bundle).expect("recover memory");
+    assert_eq!(recovered_memory.len(), 2);
+    assert_eq!(recovered_memory[0].content.as_deref(), Some("hello"));
+    let recovered_seed = parse_bundle(&bundle);
+    let names: Vec<&str> = recovered_seed.iter().map(|(n, _)| n.as_str()).collect();
+    for (expected, _) in seed_files() {
+        assert!(
+            names.contains(&expected),
+            "bundle round-trip should recover seed file {expected}",
+        );
+    }
+}
+
+#[test]
+fn merged_bundle_and_parse_bundle_round_trip_split_files() {
+    // R104: the static seed bundle must round-trip through parse_bundle
+    // back to the same per-category split. This protects the
+    // single-file-import-on-any-surface invariant from R107.
+    let bundle = merged_bundle();
+    let parsed = parse_bundle(&bundle);
+    let files = seed_files();
+    assert_eq!(parsed.len(), files.len());
+    for ((parsed_name, _), (orig_name, _)) in parsed.iter().zip(files.iter()) {
+        assert_eq!(parsed_name, orig_name);
+    }
 }
