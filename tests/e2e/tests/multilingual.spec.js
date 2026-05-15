@@ -289,6 +289,43 @@ test.describe('memory export/import', () => {
     expect(status).not.toMatch(/bundled\s+\d+\s+events\s+\+\s+seed/i);
   });
 
+  test('Issue #27: typing "Export memory" triggers the export button', async ({ page }) => {
+    const input = page.locator('[data-testid="chat-composer-input"]');
+    await expect(input).toBeEnabled({ timeout: 5_000 });
+    await input.fill('Export memory');
+    const [download] = await Promise.all([
+      page.waitForEvent('download'),
+      page.locator('[data-testid="chat-composer-submit"]').click(),
+    ]);
+    expect(download.suggestedFilename()).toBe('formal-ai-memory.lino');
+    const messages = page.locator('[data-testid="chat-message"]');
+    await expect(messages.last()).toContainText('Triggered Export memory');
+  });
+
+  test('Issue #27: typing "Export your memory" also triggers the export button', async ({ page }) => {
+    const input = page.locator('[data-testid="chat-composer-input"]');
+    await expect(input).toBeEnabled({ timeout: 5_000 });
+    await input.fill('Export your memory');
+    const [download] = await Promise.all([
+      page.waitForEvent('download'),
+      page.locator('[data-testid="chat-composer-submit"]').click(),
+    ]);
+    expect(download.suggestedFilename()).toBe('formal-ai-memory.lino');
+  });
+
+  test('Issue #27: typing "Import memory" opens the file picker', async ({ page }) => {
+    const input = page.locator('[data-testid="chat-composer-input"]');
+    await expect(input).toBeEnabled({ timeout: 5_000 });
+    // We cannot programmatically observe a native file dialog opening, but we
+    // can confirm the assistant acknowledges the trigger and the file input
+    // remains in the DOM ready to accept a file.
+    await input.fill('Import memory');
+    await page.locator('[data-testid="chat-composer-submit"]').click();
+    const messages = page.locator('[data-testid="chat-message"]');
+    await expect(messages.last()).toContainText('Triggered Import memory');
+    await expect(page.locator('[data-testid="memory-import-input"]')).toHaveCount(1);
+  });
+
   test('Report issue link is present in the topbar and prefills full-memory + zip instructions (R112)', async ({ page }) => {
     const reportLink = page.locator('[data-testid="report-issue"]');
     await expect(reportLink).toBeVisible();

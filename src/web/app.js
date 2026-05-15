@@ -86,6 +86,65 @@ const DEMO_LANGUAGES = [
 
 const DEMO_GREETINGS = ["Hi", "Hello"];
 
+// Issue #27: typing "Export memory" / "Export your memory" (or a translation)
+// in the chat input should trigger the Export memory button so the deterministic
+// chat surface stays in sync with the toolbar. Same for Import memory. Each
+// phrase is normalised to lower-case ASCII spaces so punctuation and casing
+// differences do not break the trigger.
+const MEMORY_ACTION_PHRASES = {
+  export: [
+    "export memory",
+    "export your memory",
+    "export the memory",
+    "export full memory",
+    "экспорт памяти",
+    "экспортировать память",
+    "экспортируй память",
+    "экспортируй свою память",
+    "स्मृति निर्यात करें",
+    "अपनी स्मृति निर्यात करें",
+    "导出记忆",
+    "导出你的记忆",
+    "导出全部记忆",
+  ],
+  import: [
+    "import memory",
+    "import new memory",
+    "import your new memory",
+    "import your memory",
+    "импорт памяти",
+    "импортировать память",
+    "импортируй память",
+    "импортируй новую память",
+    "स्मृति आयात करें",
+    "नई स्मृति आयात करें",
+    "अपनी नई स्मृति आयात करें",
+    "导入记忆",
+    "导入新记忆",
+    "导入你的新记忆",
+  ],
+};
+
+function normalizeMemoryPrompt(text) {
+  return String(text || "")
+    .toLowerCase()
+    .replace(/[\s  -​]+/g, " ")
+    .replace(/[!?.,;:。!?,;:、]+$/g, "")
+    .trim();
+}
+
+function recognizeMemoryAction(text) {
+  const normalized = normalizeMemoryPrompt(text);
+  if (!normalized) return null;
+  if (MEMORY_ACTION_PHRASES.export.some((phrase) => normalized === phrase)) {
+    return "export";
+  }
+  if (MEMORY_ACTION_PHRASES.import.some((phrase) => normalized === phrase)) {
+    return "import";
+  }
+  return null;
+}
+
 const PREFERENCE_DEFAULTS = {
   demoMode: true,
   diagnosticsMode: false,
@@ -777,6 +836,52 @@ function App() {
     setPending(true);
     const history = conversationHistory();
     appendUserMessage(trimmed, extra);
+
+    // Issue #27: short-circuit memory-action phrases to the corresponding
+    // toolbar button before invoking the worker so the chat surface and the
+    // sidebar stay in lock-step.
+    const memoryAction = recognizeMemoryAction(trimmed);
+    if (memoryAction === "export") {
+      await handleExportMemory();
+      appendAssistantMessage({
+        intent: "memory_export",
+        content:
+          "Triggered Export memory. Your browser is downloading `formal-ai-memory.lino`.",
+        confidence: 1.0,
+        evidence: ["rule:memory_export"],
+        steps: [{ step: "trigger_button", detail: "memory-export" }],
+        toolCalls: [
+          {
+            tool: "export_memory",
+            inputs: { prompt: trimmed },
+            outputs: { intent: "memory_export" },
+          },
+        ],
+      });
+      setPending(false);
+      return;
+    }
+    if (memoryAction === "import") {
+      triggerImportMemory();
+      appendAssistantMessage({
+        intent: "memory_import",
+        content:
+          "Triggered Import memory. Pick a `.lino` file in the open dialog to restore the saved memory.",
+        confidence: 1.0,
+        evidence: ["rule:memory_import"],
+        steps: [{ step: "trigger_button", detail: "memory-import" }],
+        toolCalls: [
+          {
+            tool: "import_memory",
+            inputs: { prompt: trimmed },
+            outputs: { intent: "memory_import" },
+          },
+        ],
+      });
+      setPending(false);
+      return;
+    }
+
     const answer = await requestAnswer(trimmed, history);
     appendAssistantMessage(answer);
     setPending(false);
