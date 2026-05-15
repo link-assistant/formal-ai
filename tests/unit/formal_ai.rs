@@ -41,6 +41,43 @@ fn identity_questions_return_standard_self_description() {
 }
 
 #[test]
+fn how_you_work_prompts_return_meta_explanation() {
+    let cases = [
+        ("покажи как ты работаешь?", "ru"),
+        ("как ты работаешь?", "ru"),
+        ("how do you work?", "en"),
+        ("show me how you work", "en"),
+    ];
+
+    for (prompt, expected_language) in cases {
+        let response = FormalAiEngine.answer(prompt);
+
+        assert_eq!(
+            response.intent, "meta_explanation",
+            "prompt '{prompt}' should resolve to meta_explanation, got '{}'",
+            response.intent
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == "response:meta_explanation"),
+            "prompt '{prompt}' should include evidence link response:meta_explanation"
+        );
+        // Russian prompts must respond in Russian
+        if expected_language == "ru" {
+            assert!(
+                response.answer.contains("работаешь")
+                    || response.answer.contains("правил")
+                    || response.answer.contains("Notation"),
+                "Russian prompt '{prompt}' should get a Russian answer, got: {}",
+                response.answer
+            );
+        }
+    }
+}
+
+#[test]
 fn rust_hello_world_prompt_returns_code_block() {
     let response = FormalAiEngine.answer("Write me hello world program in Rust");
 
