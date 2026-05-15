@@ -124,10 +124,61 @@ section above.
   -- -D warnings`, `cargo test --all-features` (33 + 2 + 150 = 185 tests
   pass).
 - e2e: `cd tests/e2e && npx playwright test --config=playwright.local.config.js`
-  (29 tests pass, including 10 new ones covering multilingual prompts,
-  the Wikipedia REST fallback, and the export/import buttons).
+  (33 tests pass, including 14 new ones covering multilingual prompts,
+  the Wikipedia REST fallback, the export/import buttons, the
+  Download-bundle export, the Report-issue body referencing the bundle,
+  the seed-loaded tool registry, and reasoning/tool_call events
+  surfacing in the append-only log).
 - Manual: opened `http://localhost:3457` in headless Chromium and
   confirmed Russian/Hindi/Chinese greetings + identity, "Что такое
   Википедия?", and "What is Albert Einstein?" all answered as expected;
   Export memory downloads a `.lino` file with `demo_memory` header and
   Import memory inserts the new events while never deleting earlier ones.
+
+## Follow-Up: Data-Driven Configuration (PR #17 continuation)
+
+After the initial PR merged, the maintainer reopened the PR with a
+second pass of requirements: replace every hardcoded constant in the
+demo with seed data so the user can reconfigure the agent without
+rewriting code, surface the tool catalog the AI is allowed to call,
+record every reasoning step and tool invocation in the append-only
+log, and let any interface export the full agent state as a single
+Links Notation file for issue reports.
+
+These additions are mapped as requirements R97-R100 in
+[`../../REQUIREMENTS.md`](../../REQUIREMENTS.md). The implementation
+artefacts are:
+
+- **Seed-first runtime tables.** `data/seed/multilingual-responses.lino`,
+  `data/seed/concepts.lino` (with multilingual `aliases`), and
+  `data/seed/tools.lino` define the agent's responses, concept table,
+  and tool registry. Mirrored under `src/web/seed/` and merged at boot
+  by `src/web/seed_loader.js`. `src/web/formal_ai_worker.js` now
+  initialises mutable `MULTILINGUAL_ANSWERS`, `CONCEPTS`, and `TOOLS`
+  tables from the seed instead of carrying hardcoded literals.
+- **Tool registry UI.** `src/web/app.js` renders the loaded tools in
+  the context panel with a `thinking` vs `agent` mode badge (see
+  `[data-testid="tool-registry"]`). The catalog currently exposes
+  `http_fetch`, `web_search`, `wikipedia_lookup`, `eval_js`,
+  `read_local_file`, `append_memory`, and `export_memory`; the demo
+  worker dispatches `wikipedia_lookup`, `eval_js`, and
+  `concept_lookup` end-to-end today and records every invocation as a
+  `kind:"tool_call"` event so future surfaces can implement the rest
+  against the same data shape.
+- **Reasoning + tool-call events.** The solver's `solve()` returns a
+  structured `steps[]` array (`impulse`, `formalize`,
+  `detect_language`, `match_rule`/`dispatch_handler`/`invoke_tool`,
+  `fallback`) and a `toolCalls[]` array. `src/web/app.js`
+  appends each one to the append-only memory log alongside the user
+  and assistant turns; the schema in `src/web/memory.js` gains
+  optional `kind`, `tool`, `inputs`, and `outputs` fields without
+  breaking older logs.
+- **Bundle export.** `FormalAiMemory.exportBundle({seed, events, info})`
+  produces a single `formal_ai_bundle` Links Notation document
+  containing the agent's environment metadata, every seed file in
+  full, and the entire memory log. The `Download bundle` topbar
+  button writes it to disk as `formal-ai-bundle.lino`. The prefilled
+  "Report issue" body ends with an `Attach full state` section that
+  asks the reporter to drag the bundle into the issue, so the
+  maintainer can fully reconstruct the agent's state from a single
+  attachment.

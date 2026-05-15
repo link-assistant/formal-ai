@@ -121,8 +121,18 @@ For every uniquely defined concept, the system should converge on one meaning li
 
 Natural languages and programming languages should be translated through link-native meanings rather than through one-off text rewrites. Links Notation should act as an intermediate language of meaning for explanations, code generation, data imports, and cross-language translation.
 
+## Data Is The Interface
+
+The shell code should be about *interfacing* (rendering chat, dispatching tools, persisting events) and not about *logic*. The agent's identity, its multilingual responses, its concept table, and its registered tools should all live in seeded Links Notation files inside an associative store, so a user can fully reconfigure the agent — add a new language, retire an answer, register a new tool, change a rule — by editing data, not by rewriting code. The same principle applies to executable knowledge: precompiled handlers can be seeded, and dynamically-compiled Rust, JavaScript, and WebAssembly snippets can be linked into the store on demand, so the data graph itself defines what the agent can do.
+
+Concretely, the web demo loads `multilingual-responses.lino`, `concepts.lino`, and `tools.lino` at boot, merges them into mutable runtime tables, and exposes the registered tools (HTTP fetch, web search, Wikipedia lookup, JS execution, local file read, memory append, memory export) with a `mode` of `thinking` (read-only, allowed during reasoning) or `agent` (write/side-effecting, requires explicit opt-in). The same separation applies to every other surface — CLI, server, Telegram, library — and any environment-specific tool (axios, file I/O, bash, docker, container actions) is registered through the same data shape.
+
+## Single-File Reproducibility
+
+Every interface should offer a one-click way to capture the full agent state — the seed, the modified data, and the entire append-only memory log — as one Links Notation document. The web demo provides `Download bundle` which produces `formal-ai-bundle.lino` containing the metadata (version, URL, user agent, mode), every seed file in full, and every recorded event (message, reasoning step, tool call). The "Report issue" link points at the same bundle. Other surfaces should expose the equivalent action (CLI subcommand, Telegram command, HTTP endpoint) so a user can always say "here is everything my agent saw and did" in a single file.
+
 ## Current Direction
 
-The current repository is a proof of concept. It already has deterministic rules, Links Notation seed files, OpenAI-shaped API responses, a static web demo, Telegram support, execution metadata for simple code examples, and case-study documentation.
+The current repository is a proof of concept. It already has deterministic rules, Links Notation seed files, OpenAI-shaped API responses, a static web demo, Telegram support, execution metadata for simple code examples, and case-study documentation. The web demo now loads its multilingual responses, concepts, and tool registry from seeded `.lino` data instead of hardcoded constants; records every reasoning step and tool invocation in the append-only memory log; and exports a single bundle that reconstructs the agent end-to-end.
 
-The next step is to keep the implemented surfaces small while moving more of the assistant's behavior into explicit links: requirements, source facts, traces, prompts, handlers, permissions, tests, and reusable problem-solving procedures.
+The next step is to keep the implemented surfaces small while moving more of the assistant's behavior into explicit links: requirements, source facts, traces, prompts, handlers, permissions, tests, and reusable problem-solving procedures. The CLI, server, and Telegram bot should be brought up to the same data-driven shape as the web demo (seed loading, tool registry, bundle export, simplified issue reporting), and the long-term store should migrate from per-surface tables to a unified doublets-rs/doublets-web links store.
