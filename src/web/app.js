@@ -9,6 +9,8 @@ const {
 
 const APP_VERSION =
   document.querySelector('meta[name="formal-ai-version"]')?.content || "0.16.0";
+const ASSET_VERSION =
+  typeof window !== "undefined" ? window.FORMAL_AI_ASSET_VERSION || "" : "";
 const ISSUE_REPOSITORY = "link-assistant/formal-ai";
 const ISSUE_LABELS = "bug";
 const UNKNOWN_ANSWER =
@@ -72,6 +74,14 @@ const PREFERENCE_DEFAULTS = {
 
 const MEMORY_EXPORT_FILENAME = "formal-ai-memory.lino";
 const BUNDLE_EXPORT_FILENAME = "formal-ai-bundle.lino";
+
+function withAssetVersion(path) {
+  if (!ASSET_VERSION) {
+    return path;
+  }
+  const separator = path.includes("?") ? "&" : "?";
+  return `${path}${separator}v=${encodeURIComponent(ASSET_VERSION)}`;
+}
 
 function recordMemoryEvent(payload) {
   if (typeof window === "undefined" || !window.FormalAiMemory) {
@@ -565,7 +575,7 @@ function App() {
   }, [demoMode, diagnosticsMode]);
 
   useEffect(() => {
-    const worker = new Worker("formal_ai_worker.js");
+    const worker = new Worker(withAssetVersion("formal_ai_worker.js"));
     workerRef.current = worker;
     worker.onmessage = (event) => {
       if (event.data.kind === "ready") {

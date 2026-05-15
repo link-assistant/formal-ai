@@ -1,0 +1,7 @@
+Stamped GitHub Pages artifact with SHA local-smoke-sha
+ INFO  Accepting connections at http://localhost:4577
+ HTTP  5/15/2026 2:14:02 PM ::1 GET /?deployment_sha=local-smoke-sha&attempt=1&t=1778854442
+ HTTP  5/15/2026 2:14:02 PM ::1 Returned 200 in 18 ms
+ HTTP  5/15/2026 2:14:02 PM ::1 GET /deployment.json?deployment_sha=local-smoke-sha&attempt=1&t=1778854442
+ HTTP  5/15/2026 2:14:02 PM ::1 Returned 200 in 3 ms
+GitHub Pages is serving deployment local-smoke-sha

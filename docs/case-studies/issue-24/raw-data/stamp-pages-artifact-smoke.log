@@ -1,0 +1,14 @@
+Stamped GitHub Pages artifact with SHA 1234567890abcdef
+
+--- deployment.json ---
+{
+  "sha": "1234567890abcdef",
+  "asset_version": "1234567890abcdef",
+  "run_id": "42",
+  "run_attempt": "1"
+}
+
+--- index asset lines ---
+9:    <link rel="stylesheet" href="styles.css?v=1234567890abcdef" />
+18:      window.FORMAL_AI_ASSET_VERSION = "1234567890abcdef";
+23:    <script src="app.js?v=1234567890abcdef"></script>
