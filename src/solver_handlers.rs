@@ -9,12 +9,14 @@ use std::fmt::Write as _;
 use crate::arithmetic::{
     evaluate_arithmetic, extract_arithmetic_expression, format_arithmetic_result,
 };
-use crate::concepts::{extract_concept_term, lookup_concept, ConceptRecord};
+use crate::concepts::{extract_concept_query, lookup_concept_query, ConceptRecord};
 use crate::engine::{
     answer_links_notation, knowledge_links_notation, stable_id, unknown_answer, ExecutionStatus,
     SymbolicAnswer,
 };
 use crate::event_log::EventLog;
+use crate::language::detect as detect_language;
+use crate::seed::response_for;
 use crate::solver_helpers::{
     build_sorting_algorithm_answer, detect_algorithm_language, detect_program_languages,
     detect_source_language, detect_target_language, extract_backticked, extract_concept_from_query,
@@ -159,11 +161,35 @@ pub fn try_arithmetic(prompt: &str, log: &mut EventLog) -> Option<SymbolicAnswer
 }
 
 pub fn try_concept_lookup(prompt: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {
-    let term = extract_concept_term(prompt)?;
-    log.append("concept_lookup:request", term.clone());
-    let record: &'static ConceptRecord = lookup_concept(&term)?;
+    let query = extract_concept_query(prompt)?;
+    log.append("concept_lookup:request", query.term.clone());
+    if let Some(context) = query.context.as_deref() {
+        log.append("concept_lookup:context", context.to_owned());
+    }
+    let Some(lookup) = lookup_concept_query(&query) else {
+        log.append("concept_lookup:miss", query.term);
+        return None;
+    };
+    let record: &'static ConceptRecord = lookup.record;
     log.append("concept_lookup:hit", record.slug.clone());
     log.append("source", record.source.clone());
+    if lookup.context_match {
+        if let Some(context) = lookup.context.as_deref() {
+            log.append("concept_lookup:context-match", context.to_owned());
+            let language = detect_language(prompt).slug();
+            let body = render_concept_in_context(language, context, record);
+            return Some(finalize_simple(
+                prompt,
+                log,
+                "concept_lookup_in_context",
+                "response:concept_lookup_in_context",
+                &body,
+                0.9,
+            ));
+        }
+    } else if let Some(context) = lookup.context.as_deref() {
+        log.append("concept_lookup:context-mismatch", context.to_owned());
+    }
     let body = format!(
         "{term} ({category}): {summary}\n\nSource: {source} ({source_kind}).",
         term = record.term,
@@ -180,6 +206,29 @@ pub fn try_concept_lookup(prompt: &str, log: &mut EventLog) -> Option<SymbolicAn
         &body,
         0.9,
     ))
+}
+
+/// Render a `concept_lookup_in_context` body, preferring the language-specific
+/// template loaded from `data/seed/multilingual-responses.lino`. Falls back
+/// to the English template (and, if that is missing, a hardcoded one) so the
+/// solver still works when seed loading fails.
+#[allow(clippy::literal_string_with_formatting_args)]
+fn render_concept_in_context(language: &str, context: &str, record: &ConceptRecord) -> String {
+    let template = response_for("concept_lookup_in_context", language)
+        .or_else(|| response_for("concept_lookup_in_context", "en"))
+        .unwrap_or_else(|| {
+            String::from(
+                "In the context of {context}, {term} ({category}) means: {summary}\n\n\
+                 Source: {source} ({source_kind}).",
+            )
+        });
+    template
+        .replace("{context}", context)
+        .replace("{term}", &record.term)
+        .replace("{category}", &record.category)
+        .replace("{summary}", &record.summary)
+        .replace("{source}", &record.source)
+        .replace("{source_kind}", &record.source_kind)
 }
 
 pub fn try_javascript_execution(prompt: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {

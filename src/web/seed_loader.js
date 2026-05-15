@@ -147,6 +147,7 @@
       if (!item || !item.name) return;
       if (!item.name.startsWith("concept_")) return;
       var aliases = findChildValue(item, "aliases");
+      var contexts = findChildValue(item, "contexts");
       concepts.push({
         slug: item.name,
         term: findChildValue(item, "term"),
@@ -155,6 +156,7 @@
         source: findChildValue(item, "source"),
         sourceKind: findChildValue(item, "source_kind") || "project-docs",
         aliases: aliases ? aliases.split("|").map(trim).filter(Boolean) : [],
+        contexts: contexts ? contexts.split("|").map(trim).filter(Boolean) : [],
       });
     };
     if (root.name && root.name.startsWith("concept_")) {

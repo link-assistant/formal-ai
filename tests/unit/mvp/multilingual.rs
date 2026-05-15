@@ -152,3 +152,92 @@ fn chinese_concept_question_returns_concept_lookup_intent() {
         response.intent
     );
 }
+
+// ---------------------------------------------------------------------------
+// Issue #20: "что такое X в Y" — (concept, context) disambiguation across
+// English, Russian, Hindi, and Chinese, matching every typical phrasing.
+// The reporter's exact prompt is in the Russian test.
+// ---------------------------------------------------------------------------
+
+#[test]
+fn russian_iir_in_ml_returns_context_aware_concept_lookup() {
+    let response = answer("что такое iir в ml");
+    assert_eq!(
+        response.intent, "concept_lookup_in_context",
+        "Russian (concept,context) prompt should map to concept_lookup_in_context, got: {}",
+        response.intent
+    );
+    let lower = response.answer.to_lowercase();
+    assert!(
+        lower.contains("iir") && lower.contains("ml"),
+        "Russian (concept,context) answer should reference both halves, got: {}",
+        response.answer
+    );
+}
+
+#[test]
+fn english_what_is_iir_in_ml_returns_context_aware_concept_lookup() {
+    let response = answer("what is IIR in ML?");
+    assert_eq!(response.intent, "concept_lookup_in_context");
+    let lower = response.answer.to_lowercase();
+    assert!(lower.contains("iir"));
+    assert!(lower.contains("ml") || lower.contains("machine learning"));
+}
+
+#[test]
+fn hindi_iir_in_ml_returns_context_aware_concept_lookup() {
+    // Hindi places the context before the concept ("ML में IIR क्या है?").
+    let response = answer("ML में IIR क्या है?");
+    assert_eq!(
+        response.intent, "concept_lookup_in_context",
+        "Hindi context-first prompt should map to concept_lookup_in_context, got: {}",
+        response.intent
+    );
+}
+
+#[test]
+fn chinese_iir_in_ml_returns_context_aware_concept_lookup() {
+    // Chinese also places the context before the concept ("ML 中的 IIR 是什么?").
+    let response = answer("ML中的IIR是什么?");
+    assert_eq!(
+        response.intent, "concept_lookup_in_context",
+        "Chinese context-first prompt should map to concept_lookup_in_context, got: {}",
+        response.intent
+    );
+}
+
+#[test]
+fn bare_iir_without_context_still_resolves() {
+    // Without a context clause the solver should still find the term and
+    // return the plain concept_lookup intent (not the in-context variant).
+    let response = answer("what is IIR?");
+    assert_eq!(
+        response.intent, "concept_lookup",
+        "Bare term should map to plain concept_lookup, got: {}",
+        response.intent
+    );
+}
+
+#[test]
+fn concept_lookup_evidence_records_context_match_event() {
+    // Verbose/debug trail: an in-context hit must leave a
+    // `concept_lookup:context-match:*` evidence link so we can root-cause
+    // future regressions from the trace alone (maintainer requirement #5).
+    let response = answer("что такое iir в ml");
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("concept_lookup:context-match")),
+        "expected a concept_lookup:context-match evidence link, got: {:?}",
+        response.evidence_links,
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("concept_lookup:request")),
+        "expected a concept_lookup:request evidence link, got: {:?}",
+        response.evidence_links,
+    );
+}

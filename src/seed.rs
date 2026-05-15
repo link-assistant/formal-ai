@@ -286,12 +286,19 @@ pub struct PromptPattern {
 }
 
 /// A concept record from the offline knowledge base.
+///
+/// `contexts` is optional and lists `|`-separated context labels in any of the
+/// supported languages (e.g. "ml|machine learning|машинное обучение|机器学习").
+/// When a concept can be disambiguated by an in-question context delimiter
+/// (e.g. "what is IIR in ML"), the lookup ranker prefers the record whose
+/// `contexts` list contains the parsed context over context-less records.
 #[derive(Debug, Clone)]
 pub struct ConceptRecord {
     pub slug: String,
     pub term: String,
     pub category: String,
     pub aliases: Vec<String>,
+    pub contexts: Vec<String>,
     pub summary: String,
     pub source: String,
     pub source_kind: String,
@@ -321,6 +328,17 @@ pub fn concepts() -> Vec<ConceptRecord> {
                 .map(ToOwned::to_owned)
                 .collect()
         };
+        let contexts_raw = entry.find_child_value("contexts").to_string();
+        let contexts = if contexts_raw.is_empty() {
+            Vec::new()
+        } else {
+            contexts_raw
+                .split('|')
+                .map(str::trim)
+                .filter(|s| !s.is_empty())
+                .map(ToOwned::to_owned)
+                .collect()
+        };
         let summary = entry.find_child_value("summary").to_string();
         let term = entry.find_child_value("term").to_string();
         if term.is_empty() || summary.is_empty() {
@@ -331,6 +349,7 @@ pub fn concepts() -> Vec<ConceptRecord> {
             term,
             category: entry.find_child_value("category").to_string(),
             aliases,
+            contexts,
             summary,
             source: entry.find_child_value("source").to_string(),
             source_kind: entry.find_child_value("source_kind").to_string(),

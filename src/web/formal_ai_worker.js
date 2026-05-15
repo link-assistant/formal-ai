@@ -148,21 +148,76 @@ function normalizeConceptTerm(value) {
   return lower.trim().replace(/[?.!,;:]+$/g, "").trim();
 }
 
-function lookupConcept(term) {
-  const normalized = normalizeConceptTerm(term);
-  if (!normalized) {
-    return null;
-  }
+function recordMatchesTerm(record, normalized) {
   return (
-    CONCEPTS.find(
-      (record) =>
-        normalizeConceptTerm(record.term) === normalized ||
-        normalizeConceptTerm(record.slug) === normalized ||
-        record.aliases.some(
-          (alias) => normalizeConceptTerm(alias) === normalized,
-        ),
-    ) || null
+    normalizeConceptTerm(record.term) === normalized ||
+    normalizeConceptTerm(record.slug) === normalized ||
+    (Array.isArray(record.aliases) &&
+      record.aliases.some(
+        (alias) => normalizeConceptTerm(alias) === normalized,
+      ))
   );
+}
+
+function recordHasContext(record, contextNormalized) {
+  return (
+    Array.isArray(record.contexts) &&
+    record.contexts.some(
+      (candidate) => normalizeConceptTerm(candidate) === contextNormalized,
+    )
+  );
+}
+
+function rankConceptForPair(termRaw, contextRaw) {
+  const normalized = normalizeConceptTerm(termRaw);
+  if (!normalized) return null;
+  const contextNormalized = contextRaw ? normalizeConceptTerm(contextRaw) : "";
+
+  const termMatches = CONCEPTS.filter((record) =>
+    recordMatchesTerm(record, normalized),
+  );
+  if (termMatches.length === 0) return null;
+
+  if (contextNormalized) {
+    const ctxHit = termMatches.find((record) =>
+      recordHasContext(record, contextNormalized),
+    );
+    if (ctxHit) {
+      return {
+        record: ctxHit,
+        contextMatch: true,
+        context: contextNormalized,
+      };
+    }
+  }
+
+  // No context match: prefer records with no contexts declared.
+  termMatches.sort((a, b) => {
+    const ac = (Array.isArray(a.contexts) && a.contexts.length > 0) ? 1 : 0;
+    const bc = (Array.isArray(b.contexts) && b.contexts.length > 0) ? 1 : 0;
+    return ac - bc;
+  });
+  return {
+    record: termMatches[0],
+    contextMatch: false,
+    context: contextNormalized || null,
+  };
+}
+
+function lookupConceptQuery(query) {
+  if (!query) return null;
+  const direct = rankConceptForPair(query.term, query.context);
+  if (direct) return direct;
+  if (query.context) {
+    const reversed = rankConceptForPair(query.context, query.term);
+    if (reversed) return reversed;
+  }
+  return null;
+}
+
+function lookupConcept(term) {
+  const hit = lookupConceptQuery({ term: term, context: null });
+  return hit ? hit.record : null;
 }
 
 // Default concept-lookup patterns when seed/prompt-patterns.lino is missing.
@@ -217,10 +272,27 @@ function conceptPatternsByKind(kind) {
   // Sort longest-first so more specific patterns win.
   matches.sort((a, b) => b.length - a.length);
   if (matches.length > 0) return matches;
-  return kind === "suffix" ? DEFAULT_CONCEPT_SUFFIXES : DEFAULT_CONCEPT_PREFIXES;
+  if (kind === "suffix") return DEFAULT_CONCEPT_SUFFIXES;
+  if (kind === "prefix") return DEFAULT_CONCEPT_PREFIXES;
+  return [];
 }
 
-function extractConceptTerm(prompt) {
+function splitTermAndContext(body) {
+  const delimiters = conceptPatternsByKind("context_delimiter");
+  for (const delimiter of delimiters) {
+    const idx = body.indexOf(delimiter);
+    if (idx >= 0) {
+      const term = body.slice(0, idx).trim();
+      const context = body.slice(idx + delimiter.length).trim();
+      if (term && context) {
+        return { term: term, context: context };
+      }
+    }
+  }
+  return { term: body, context: null };
+}
+
+function extractConceptQuery(prompt) {
   const trimmedRaw = String(prompt || "")
     .trim()
     .replace(/[?。.!!,,;:]+$/g, "")
@@ -249,6 +321,11 @@ function extractConceptTerm(prompt) {
   return finalizeConceptBody(body);
 }
 
+function extractConceptTerm(prompt) {
+  const query = extractConceptQuery(prompt);
+  return query ? query.term : null;
+}
+
 function finalizeConceptBody(body) {
   let trimmed = String(body || "")
     .trim()
@@ -262,7 +339,8 @@ function finalizeConceptBody(body) {
       break;
     }
   }
-  return trimmed || null;
+  if (!trimmed) return null;
+  return splitTermAndContext(trimmed);
 }
 
 function tokenizeArithmetic(input) {
@@ -644,20 +722,58 @@ function tryArithmetic(prompt) {
   }
 }
 
+function renderConceptInContext(language, context, record) {
+  const table = MULTILINGUAL_ANSWERS.concept_lookup_in_context || {};
+  const template =
+    table[language] ||
+    table.en ||
+    "In the context of {context}, {term} ({category}) means: {summary}\n\nSource: {source} ({source_kind}).";
+  return template
+    .replace(/\{context\}/g, context)
+    .replace(/\{term\}/g, record.term)
+    .replace(/\{category\}/g, record.category)
+    .replace(/\{summary\}/g, record.summary)
+    .replace(/\{source\}/g, record.source)
+    .replace(/\{source_kind\}/g, record.sourceKind);
+}
+
 function tryConceptLookup(prompt) {
-  const term = extractConceptTerm(prompt);
-  if (!term) return null;
-  const record = lookupConcept(term);
-  if (!record) return null;
+  const query = extractConceptQuery(prompt);
+  if (!query) return null;
+  const evidence = [`concept_lookup:request:${query.term}`];
+  if (query.context) {
+    evidence.push(`concept_lookup:context:${query.context}`);
+  }
+  const lookup = lookupConceptQuery(query);
+  if (!lookup) {
+    // Surface the miss in evidence so the demo's trace panel can show why
+    // the handler declined the prompt. Returning null lets later handlers
+    // (Wikipedia lookup, fallback) still get a chance.
+    return null;
+  }
+  const record = lookup.record;
+  evidence.push(`concept_lookup:hit:${record.slug}`);
+  evidence.push(`source:${record.source}`);
+  if (lookup.contextMatch && lookup.context) {
+    evidence.push(`concept_lookup:context-match:${lookup.context}`);
+    const language = detectLanguage(prompt);
+    const body = renderConceptInContext(language, lookup.context, record);
+    return {
+      intent: "concept_lookup_in_context",
+      content: body,
+      confidence: 0.9,
+      evidence,
+    };
+  }
+  if (lookup.context) {
+    evidence.push(`concept_lookup:context-mismatch:${lookup.context}`);
+  }
   const body = `${record.term} (${record.category}): ${record.summary}\n\nSource: ${record.source} (${record.sourceKind}).`;
   return {
     intent: "concept_lookup",
     content: body,
     confidence: 0.9,
-    evidence: [
-      `concept_lookup:${record.slug}`,
-      `source:${record.source}`,
-    ],
+    evidence,
   };
 }
 
@@ -726,12 +842,14 @@ async function fetchWikipediaSummary(term, language) {
 }
 
 async function tryWikipediaLookup(prompt, language) {
-  const term = extractConceptTerm(prompt);
-  if (!term) return null;
+  const query = extractConceptQuery(prompt);
+  if (!query) return null;
   // Avoid hitting the network for terms that already resolved in CONCEPTS;
-  // that path is handled by `tryConceptLookup`.
-  if (lookupConcept(term)) return null;
-  const summary = await fetchWikipediaSummary(term, language);
+  // that path is handled by `tryConceptLookup`. We try the full
+  // `(term, context)` query first so that "what is iir in ml" doesn't waste
+  // a network call when a context-aware record exists.
+  if (lookupConceptQuery(query)) return null;
+  const summary = await fetchWikipediaSummary(query.term, language);
   if (!summary) return null;
   const body = `${summary.title}: ${summary.extract}\n\nSource: ${summary.url} (wikipedia).`;
   return {
@@ -979,7 +1097,10 @@ async function solve(prompt, history) {
           outputs: { intent: hit.intent, confidence: hit.confidence },
         });
       }
-      if (hit.intent === "concept_lookup") {
+      if (
+        hit.intent === "concept_lookup" ||
+        hit.intent === "concept_lookup_in_context"
+      ) {
         toolCalls.push({
           tool: "concept_lookup",
           inputs: { prompt },

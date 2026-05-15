@@ -78,3 +78,13 @@ concept_rust
   summary "Rust is a multi-paradigm, general-purpose programming language that emphasises performance, type safety, and concurrency. It enforces memory safety without using a garbage collector."
   source "https://en.wikipedia.org/wiki/Rust_(programming_language)"
   source_kind "wikipedia"
+
+concept_iir_signal_processing
+  term "IIR"
+  intent "concept_lookup"
+  category "signal-processing"
+  aliases "iir|iir filter|infinite impulse response|infinite-impulse-response|бесконечная импульсная характеристика|бих-фильтр|бих фильтр|आईआईआर|अनंत आवेग प्रतिक्रिया|无限脉冲响应|无限脉冲响应滤波器|無限脈衝響應"
+  contexts "ml|machine learning|machine-learning|dsp|digital signal processing|signal processing|signal-processing|filtering|filter|audio|deep learning|neural network|нейронная сеть|обработка сигналов|цифровая обработка сигналов|сигнал|фильтр|фильтрация|машинное обучение|глубокое обучение|न्यूरल नेटवर्क|मशीन लर्निंग|गहन शिक्षण|डीएसपी|संकेत प्रसंस्करण|信号处理|信号|滤波|滤波器|机器学习|深度学习|神经网络|數位訊號處理|訊號處理|機器學習|深度學習|神經網路"
+  summary "An infinite impulse response (IIR) filter is a recursive digital filter whose impulse response continues indefinitely because the current output depends on past outputs as well as past inputs. In signal processing and machine-learning audio/time-series pipelines, IIR filters realise low-pass, high-pass, band-pass, and band-stop responses with far fewer coefficients than the equivalent finite impulse response (FIR) filter, at the cost of nonlinear phase and the need to verify stability."
+  source "https://en.wikipedia.org/wiki/Infinite_impulse_response"
+  source_kind "wikipedia"
