@@ -733,9 +733,19 @@ function promptBeforeMessage(messages, focusMessage) {
   return prompt;
 }
 
+function lastUnknownAssistantMessage(messages) {
+  for (let i = messages.length - 1; i >= 0; i -= 1) {
+    if (messages[i].role === "assistant" && messages[i].intent === "unknown") {
+      return messages[i];
+    }
+  }
+  return null;
+}
+
 function createIssueTitle(messages, focusMessage) {
-  const prompt = promptBeforeMessage(messages, focusMessage);
-  if (focusMessage?.intent === "unknown" && prompt) {
+  const effectiveFocus = focusMessage ?? lastUnknownAssistantMessage(messages);
+  const prompt = promptBeforeMessage(messages, effectiveFocus);
+  if (effectiveFocus?.intent === "unknown" && prompt) {
     return `Unknown prompt: ${shortText(prompt, 80)}`;
   }
   if (prompt) {
@@ -752,6 +762,7 @@ function createIssueReportBody({
   demoStatus,
   diagnosticsMode,
 }) {
+  const effectiveFocus = focusMessage ?? lastUnknownAssistantMessage(messages);
   const lines = [
     "## Environment",
     "",
@@ -772,7 +783,7 @@ function createIssueReportBody({
     lines.push("No messages have been sent yet.");
   } else {
     messages.forEach((message, index) => {
-      const reported = focusMessage?.id === message.id ? " (reported message)" : "";
+      const reported = effectiveFocus?.id === message.id ? " (reported message)" : "";
       lines.push(`### ${index + 1}. ${message.author}${reported}`);
       lines.push("");
       lines.push(`- **Role**: ${message.role}`);
@@ -789,7 +800,7 @@ function createIssueReportBody({
     });
   }
 
-  const prompt = promptBeforeMessage(messages, focusMessage);
+  const prompt = promptBeforeMessage(messages, effectiveFocus);
   lines.push("");
   lines.push("## Reproduction Steps");
   lines.push("");

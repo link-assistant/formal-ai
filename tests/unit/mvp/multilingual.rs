@@ -426,3 +426,43 @@ fn humanize_url_preserves_functional_link_target() {
     let ascii = "https://en.wikipedia.org/wiki/Albert_Einstein";
     assert_eq!(humanize_url(ascii), ascii);
 }
+
+// ---------------------------------------------------------------------------
+// Issue #44: Russian prompts with no matching rule return unknown + Russian
+// reply.
+// ---------------------------------------------------------------------------
+
+#[test]
+fn russian_nonsensical_question_returns_unknown_intent() {
+    let response = answer("куда плешивый спрятал сахар?");
+    assert_eq!(response.intent, "unknown");
+}
+
+#[test]
+fn russian_mixed_units_question_returns_unknown_intent() {
+    let response = answer("Сколько метров в килобайте?");
+    assert_eq!(response.intent, "unknown");
+}
+
+#[test]
+fn russian_trick_riddle_returns_unknown_intent() {
+    let response = answer(
+        "Стоит четырёхэтажный дом, в каждом этаже по восьми окон, \
+         на крыше — два слуховых окна и две трубы, в каждом этаже \
+         по два квартиранта. А теперь скажите, господа, в каком году \
+         умерла у швейцара его бабушка?",
+    );
+    assert_eq!(response.intent, "unknown");
+}
+
+#[test]
+fn russian_unknown_reply_is_in_russian() {
+    let response = answer("куда плешивый спрятал сахар?");
+    assert_eq!(response.intent, "unknown");
+    assert!(
+        response.answer.contains("символьного правила")
+            || response.answer.contains("Links Notation"),
+        "Russian unknown reply should be in Russian or reference Links Notation, got: {}",
+        response.answer
+    );
+}
