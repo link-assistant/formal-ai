@@ -141,11 +141,12 @@ button {
 }
 
 .context-panel {
-  display: grid;
-  align-content: start;
-  gap: 14px;
-  overflow: auto;
-  padding: 18px;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  overflow: hidden;
+  padding: 0;
   border-right: 1px solid #d6dde1;
   background: #f7f8fa;
 }
@@ -155,6 +156,92 @@ button {
   color: #40515f;
   font-size: 13px;
   text-transform: uppercase;
+}
+
+/* Issue #27: each sidebar section is a flex column that shares space
+ * equally with its siblings and scrolls on its own. Collapsed sections drop
+ * out of the flex grow pool so the remaining sections expand to fill the
+ * panel — replicating VS Code's accordion behaviour. */
+.sidebar-section {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  border-bottom: 1px solid #d6dde1;
+}
+
+.sidebar-section.is-expanded {
+  flex: 1 1 0;
+}
+
+.sidebar-section.is-collapsed {
+  flex: 0 0 auto;
+}
+
+.sidebar-section-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 10px 18px;
+  border: 0;
+  background: #eef2f1;
+  color: #40515f;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+}
+
+.sidebar-section-header:hover {
+  background: #e3eae9;
+}
+
+.sidebar-section-header h2 {
+  margin: 0;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+}
+
+.sidebar-section-caret {
+  display: inline-block;
+  width: 10px;
+  font-size: 10px;
+  color: #5f6d78;
+}
+
+.sidebar-section-body {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+  min-height: 0;
+  overflow: auto;
+  padding: 10px 18px 14px;
+}
+
+.conversation-list {
+  display: grid;
+  gap: 6px;
+}
+
+.conversation-new {
+  min-height: 38px;
+  padding: 8px 10px;
+  border: 1px dashed #b9c6ca;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #175f4f;
+  font-weight: 700;
+  text-align: left;
+}
+
+.conversation-new:hover {
+  border-color: #175f4f;
+  background: #f1f6f4;
+}
+
+.conversation-empty {
+  margin: 0;
+  color: #5f6d78;
+  font-size: 12px;
 }
 
 .prompt-list {
@@ -496,9 +583,7 @@ textarea:disabled {
 }
 
 .tool-registry {
-  margin-top: 18px;
-  border-top: 1px solid rgba(127, 127, 127, 0.18);
-  padding-top: 14px;
+  margin-top: 0;
 }
 
 .tool-list {

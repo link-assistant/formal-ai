@@ -12,8 +12,25 @@ async function switchToManualMode(page) {
   });
 }
 
+// Issue #27: greeting randomisation defaults to ON in production. Tests pin
+// the canonical greeting text so they assert deterministic output; new tests
+// that actually exercise the randomisation flip the preference back on.
+async function disableGreetingVariations(page) {
+  await page.addInitScript(() => {
+    try {
+      window.localStorage.setItem(
+        'formal-ai.preferences.v1',
+        'demo_preferences\n  greetingVariations "off"',
+      );
+    } catch (_error) {
+      // localStorage may be unavailable; tests will tolerate variant text.
+    }
+  });
+}
+
 test.describe('formal-ai demo UI', () => {
   test.beforeEach(async ({ page }) => {
+    await disableGreetingVariations(page);
     await page.goto('./');
     // Wait for React to mount and the app shell to be visible
     await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });

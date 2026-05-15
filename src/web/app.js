@@ -18,12 +18,31 @@ const UNKNOWN_ANSWER =
 const IDENTITY_ANSWER =
   "I am formal-ai, a deterministic symbolic AI proof of concept that answers from local Links Notation rules and OpenAI-compatible API shapes. I do not perform neural inference in this demo.";
 
-const QUICK_PROMPTS = [
-  "Hi",
-  "Write me hello world program in Rust",
-  "Create a hello world example in Python",
-  "Write hello world in JavaScript",
-  "Show hello world in Go",
+// Issue #27: the sidebar advertises every prompt family that has a deterministic
+// symbolic rule or seed-backed answer in the engine. The list intentionally
+// mirrors the multilingual + hello-world end-to-end tests so any regression in
+// the seed surfaces immediately when a user clicks the prompt.
+const EXAMPLE_PROMPTS = [
+  { label: "Greeting (en)", text: "Hi" },
+  { label: "Greeting (ru)", text: "Привет" },
+  { label: "Greeting (hi)", text: "नमस्ते" },
+  { label: "Greeting (zh)", text: "你好" },
+  { label: "Identity (en)", text: "Who are you?" },
+  { label: "Identity (zh)", text: "你是谁?" },
+  { label: "Hello world (Rust)", text: "Write me hello world program in Rust" },
+  { label: "Hello world (Python)", text: "Create a hello world example in Python" },
+  { label: "Hello world (JavaScript)", text: "Write hello world in JavaScript" },
+  { label: "Hello world (TypeScript)", text: "Write hello world in TypeScript" },
+  { label: "Hello world (Go)", text: "Show hello world in Go" },
+  { label: "Hello world (C)", text: "Show hello world in C" },
+  { label: "Concept (en)", text: "What is Rust?" },
+  { label: "Concept (en/Wikipedia)", text: "Who is Donald Trump?" },
+  { label: "Concept (ru/Wikipedia)", text: "Кто такой Илон Маск?" },
+  { label: "Concept (ru)", text: "Что такое Википедия?" },
+  { label: "Concept (zh)", text: "维基百科是什么?" },
+  { label: "Concept in context", text: "What is IIR in machine learning?" },
+  { label: "Export memory", text: "Export memory" },
+  { label: "Import memory", text: "Import memory" },
 ];
 
 const DEMO_LANGUAGES = [
@@ -70,10 +89,19 @@ const DEMO_GREETINGS = ["Hi", "Hello"];
 const PREFERENCE_DEFAULTS = {
   demoMode: true,
   diagnosticsMode: false,
+  // Issue #27: each sidebar section is a VS Code-style collapsible region; the
+  // last expand/collapse state is persisted via FormalAiPreferences so opening
+  // the demo never reshuffles the user's layout.
+  sidebarPromptsCollapsed: false,
+  sidebarToolsCollapsed: false,
+  sidebarTraceCollapsed: false,
+  sidebarConversationsCollapsed: false,
+  // Issue #27: random greeting variations are opt-in but default to on so
+  // newcomers see the multilingual surface immediately.
+  greetingVariations: true,
 };
 
 const MEMORY_EXPORT_FILENAME = "formal-ai-memory.lino";
-const BUNDLE_EXPORT_FILENAME = "formal-ai-bundle.lino";
 
 function withAssetVersion(path) {
   if (!ASSET_VERSION) {
@@ -439,6 +467,40 @@ function Message({ message, diagnosticsMode, reportIssueUrl }) {
   );
 }
 
+// Issue #27: a VS Code-style collapsible sidebar section. When `collapsed` is
+// false the section participates in the equal-share flex layout and scrolls
+// independently; when true only the header remains visible.
+function CollapsibleSection({
+  title,
+  collapsed,
+  onToggle,
+  testId,
+  children,
+}) {
+  return h(
+    "section",
+    {
+      className: `sidebar-section ${collapsed ? "is-collapsed" : "is-expanded"}`,
+      "data-testid": testId,
+      "data-collapsed": collapsed ? "true" : "false",
+    },
+    h(
+      "button",
+      {
+        type: "button",
+        className: "sidebar-section-header",
+        "aria-expanded": collapsed ? "false" : "true",
+        onClick: onToggle,
+      },
+      h("span", { className: "sidebar-section-caret", "aria-hidden": "true" }, collapsed ? "▶" : "▼"),
+      h("h2", null, title),
+    ),
+    collapsed
+      ? null
+      : h("div", { className: "sidebar-section-body" }, children),
+  );
+}
+
 function App() {
   const workerRef = useRef(null);
   const pendingResponses = useRef(new Map());
@@ -462,6 +524,25 @@ function App() {
   const [diagnosticsMode, setDiagnosticsMode] = useState(
     initialPreferences.current.diagnosticsMode,
   );
+  // Issue #27: sidebar collapse/expand state per section.
+  const [sidebarPromptsCollapsed, setSidebarPromptsCollapsed] = useState(
+    initialPreferences.current.sidebarPromptsCollapsed,
+  );
+  const [sidebarToolsCollapsed, setSidebarToolsCollapsed] = useState(
+    initialPreferences.current.sidebarToolsCollapsed,
+  );
+  const [sidebarTraceCollapsed, setSidebarTraceCollapsed] = useState(
+    initialPreferences.current.sidebarTraceCollapsed,
+  );
+  const [sidebarConversationsCollapsed, setSidebarConversationsCollapsed] = useState(
+    initialPreferences.current.sidebarConversationsCollapsed,
+  );
+  const [greetingVariations, setGreetingVariations] = useState(
+    initialPreferences.current.greetingVariations,
+  );
+  // Issue #27: a mobile-friendly slide-out menu that hosts the entire sidebar
+  // plus the topbar action buttons. On wide screens the menu is hidden via CSS.
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     if (typeof window === "undefined" || !window.FormalAiSeed) return;
@@ -502,31 +583,6 @@ function App() {
       );
     } catch (_error) {
       setMemoryStatus("Export failed");
-    }
-  }, [seed, workerState, demoMode]);
-
-  const handleExportBundle = useCallback(async () => {
-    if (typeof window === "undefined" || !window.FormalAiMemory) {
-      setMemoryStatus("Memory unavailable");
-      return;
-    }
-    try {
-      const events = await window.FormalAiMemory.listEvents();
-      const text = window.FormalAiMemory.exportBundle({
-        seed,
-        events,
-        info: {
-          version: APP_VERSION,
-          url: window.location.href,
-          userAgent: navigator.userAgent,
-          workerState,
-          mode: demoMode ? "demo" : "manual",
-        },
-      });
-      downloadTextFile(BUNDLE_EXPORT_FILENAME, text);
-      setMemoryStatus(`Bundled ${events.length} events + seed`);
-    } catch (_error) {
-      setMemoryStatus("Bundle export failed");
     }
   }, [seed, workerState, demoMode]);
 
@@ -571,8 +627,24 @@ function App() {
   }, []);
 
   useEffect(() => {
-    persistPreferences({ demoMode, diagnosticsMode });
-  }, [demoMode, diagnosticsMode]);
+    persistPreferences({
+      demoMode,
+      diagnosticsMode,
+      sidebarPromptsCollapsed,
+      sidebarToolsCollapsed,
+      sidebarTraceCollapsed,
+      sidebarConversationsCollapsed,
+      greetingVariations,
+    });
+  }, [
+    demoMode,
+    diagnosticsMode,
+    sidebarPromptsCollapsed,
+    sidebarToolsCollapsed,
+    sidebarTraceCollapsed,
+    sidebarConversationsCollapsed,
+    greetingVariations,
+  ]);
 
   useEffect(() => {
     const worker = new Worker(withAssetVersion("formal_ai_worker.js"));
@@ -598,6 +670,11 @@ function App() {
     transcriptEndRef.current?.scrollIntoView({ block: "end" });
   }, [messages]);
 
+  const greetingVariationsRef = useRef(greetingVariations);
+  useEffect(() => {
+    greetingVariationsRef.current = greetingVariations;
+  }, [greetingVariations]);
+
   const requestAnswer = useCallback((text, history = []) => {
     const worker = workerRef.current;
     if (!worker) {
@@ -607,7 +684,12 @@ function App() {
     return new Promise((resolve) => {
       const requestId = `request-${Date.now()}-${Math.random().toString(16).slice(2)}`;
       pendingResponses.current.set(requestId, resolve);
-      worker.postMessage({ prompt: text, requestId, history });
+      worker.postMessage({
+        prompt: text,
+        requestId,
+        history,
+        prefs: { greetingVariations: greetingVariationsRef.current },
+      });
     });
   }, []);
 
@@ -844,18 +926,6 @@ function App() {
           },
           "Import memory",
         ),
-        h(
-          "button",
-          {
-            type: "button",
-            className: "memory-button",
-            "data-testid": "memory-bundle",
-            onClick: handleExportBundle,
-            title:
-              "Alias for Export memory kept for backwards compatibility. Saves formal-ai-bundle.lino — the same full bundle (seed + memory log + environment metadata) that Export memory now produces.",
-          },
-          "Download bundle",
-        ),
         h("input", {
           ref: importInputRef,
           type: "file",
@@ -902,94 +972,146 @@ function App() {
       { className: "workspace" },
       h(
         "aside",
-        { className: "context-panel" },
-        h("h2", null, "Prompts"),
-        h(
-          "div",
-          { className: "prompt-list" },
-          QUICK_PROMPTS.map((item) =>
+        {
+          className: `context-panel${mobileMenuOpen ? " is-mobile-open" : ""}`,
+          "data-testid": "context-panel",
+        },
+        h(CollapsibleSection, {
+          title: "Conversations",
+          testId: "sidebar-conversations",
+          collapsed: sidebarConversationsCollapsed,
+          onToggle: () => setSidebarConversationsCollapsed((value) => !value),
+          children: h(
+            "div",
+            { className: "conversation-list", "data-testid": "conversation-list" },
             h(
               "button",
               {
-                key: item,
                 type: "button",
+                className: "conversation-new",
+                "data-testid": "conversation-new",
                 onClick: () => {
+                  setMessages([]);
                   setDemoMode(false);
-                  setPrompt(item);
+                  setPrompt("");
                 },
               },
-              item,
+              "+ New conversation",
+            ),
+            h(
+              "p",
+              { className: "conversation-empty" },
+              messages.length === 0
+                ? "Start a new conversation."
+                : `Current conversation: ${messages.length} message(s)`,
             ),
           ),
-        ),
-        seed.tools && seed.tools.length > 0
-          ? h(
-              "div",
-              { className: "tool-registry", "data-testid": "tool-registry" },
-              h("h2", null, "Tools"),
+        }),
+        h(CollapsibleSection, {
+          title: "Example prompts",
+          testId: "sidebar-prompts",
+          collapsed: sidebarPromptsCollapsed,
+          onToggle: () => setSidebarPromptsCollapsed((value) => !value),
+          children: h(
+            "div",
+            { className: "prompt-list", "data-testid": "example-prompts" },
+            EXAMPLE_PROMPTS.map((entry) =>
               h(
-                "ul",
-                { className: "tool-list" },
-                seed.tools.map((tool) =>
-                  h(
-                    "li",
-                    {
-                      key: tool.id,
-                      className: `tool tool-mode-${tool.mode || "thinking"}`,
-                      "data-testid": "tool-entry",
-                      "data-tool-id": tool.id,
-                      "data-tool-mode": tool.mode || "thinking",
-                    },
+                "button",
+                {
+                  key: entry.text,
+                  type: "button",
+                  "data-prompt-label": entry.label,
+                  "data-prompt-text": entry.text,
+                  onClick: () => {
+                    setDemoMode(false);
+                    setPrompt(entry.text);
+                  },
+                  title: entry.label,
+                },
+                entry.text,
+              ),
+            ),
+          ),
+        }),
+        seed.tools && seed.tools.length > 0
+          ? h(CollapsibleSection, {
+              title: "Tools",
+              testId: "sidebar-tools",
+              collapsed: sidebarToolsCollapsed,
+              onToggle: () => setSidebarToolsCollapsed((value) => !value),
+              children: h(
+                "div",
+                { className: "tool-registry", "data-testid": "tool-registry" },
+                h(
+                  "ul",
+                  { className: "tool-list" },
+                  seed.tools.map((tool) =>
                     h(
-                      "div",
-                      { className: "tool-head" },
-                      h("strong", null, tool.name || tool.id),
+                      "li",
+                      {
+                        key: tool.id,
+                        className: `tool tool-mode-${tool.mode || "thinking"}`,
+                        "data-testid": "tool-entry",
+                        "data-tool-id": tool.id,
+                        "data-tool-mode": tool.mode || "thinking",
+                      },
                       h(
-                        "span",
-                        { className: "tool-mode" },
-                        tool.mode === "agent" ? "agent" : "thinking",
+                        "div",
+                        { className: "tool-head" },
+                        h("strong", null, tool.name || tool.id),
+                        h(
+                          "span",
+                          { className: "tool-mode" },
+                          tool.mode === "agent" ? "agent" : "thinking",
+                        ),
                       ),
+                      tool.description
+                        ? h("p", { className: "tool-desc" }, tool.description)
+                        : null,
                     ),
-                    tool.description
-                      ? h("p", { className: "tool-desc" }, tool.description)
-                      : null,
                   ),
                 ),
               ),
-            )
+            })
           : null,
-        diagnosticsMode ? h("h2", null, "Trace") : null,
         diagnosticsMode
-          ? h(
-              "dl",
-              { className: "trace-list" },
-              h("div", null, h("dt", null, "Model"), h("dd", null, "formal-symbolic-poc")),
-              h("div", null, h("dt", null, "Mode"), h("dd", null, demoStatus)),
-              h("div", null, h("dt", null, "Intent"), h("dd", null, lastAssistant?.intent ?? "none")),
-              h("div", null, h("dt", null, "Data"), h("dd", null, "data/source-index.lino")),
-              h(
-                "div",
-                null,
-                h("dt", null, "Seed files"),
+          ? h(CollapsibleSection, {
+              title: "Trace",
+              testId: "sidebar-trace",
+              collapsed: sidebarTraceCollapsed,
+              onToggle: () => setSidebarTraceCollapsed((value) => !value),
+              children: h(
+                "dl",
+                { className: "trace-list" },
+                h("div", null, h("dt", null, "Model"), h("dd", null, "formal-symbolic-poc")),
+                h("div", null, h("dt", null, "Mode"), h("dd", null, demoStatus)),
+                h("div", null, h("dt", null, "Intent"), h("dd", null, lastAssistant?.intent ?? "none")),
+                h("div", null, h("dt", null, "Data"), h("dd", null, "data/source-index.lino")),
                 h(
-                  "dd",
+                  "div",
                   null,
-                  Object.keys(seed.raw || {}).join(", ") || "(loading)",
+                  h("dt", null, "Seed files"),
+                  h(
+                    "dd",
+                    null,
+                    Object.keys(seed.raw || {}).join(", ") || "(loading)",
+                  ),
+                ),
+                h(
+                  "div",
+                  null,
+                  h("dt", null, "Tools loaded"),
+                  h("dd", null, String((seed.tools || []).length)),
+                ),
+                h(
+                  "div",
+                  null,
+                  h("dt", null, "Concepts loaded"),
+                  h("dd", null, String((seed.concepts || []).length)),
                 ),
               ),
-              h(
-                "div",
-                null,
-                h("dt", null, "Tools loaded"),
-                h("dd", null, String((seed.tools || []).length)),
-              ),
-              h(
-                "div",
-                null,
-                h("dt", null, "Concepts loaded"),
-                h("dd", null, String((seed.concepts || []).length)),
-              ),
-            )
+            })
           : null,
       ),
       h(

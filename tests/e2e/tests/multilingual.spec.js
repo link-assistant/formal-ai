@@ -15,6 +15,21 @@ async function switchToManualMode(page) {
   });
 }
 
+// Issue #27: greeting randomisation defaults to ON. Tests below pin the
+// canonical greeting text, so disable randomisation up-front for stability.
+async function disableGreetingVariations(page) {
+  await page.addInitScript(() => {
+    try {
+      window.localStorage.setItem(
+        'formal-ai.preferences.v1',
+        'demo_preferences\n  greetingVariations "off"',
+      );
+    } catch (_error) {
+      // localStorage may be unavailable; tests will tolerate variant text.
+    }
+  });
+}
+
 async function sendPrompt(page, text) {
   const input = page.locator('[data-testid="chat-composer-input"]');
   await expect(input).toBeEnabled({ timeout: 5_000 });
@@ -28,6 +43,7 @@ async function sendPrompt(page, text) {
 
 test.describe('multilingual chat surface', () => {
   test.beforeEach(async ({ page }) => {
+    await disableGreetingVariations(page);
     await page.goto('./');
     await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
     await switchToManualMode(page);
@@ -137,6 +153,7 @@ test.describe('Wikipedia REST fallback', () => {
 
 test.describe('memory export/import', () => {
   test.beforeEach(async ({ page }) => {
+    await disableGreetingVariations(page);
     await page.goto('./');
     await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
     await switchToManualMode(page);
@@ -253,25 +270,23 @@ test.describe('memory export/import', () => {
     expect(api).not.toContain('remove');
   });
 
-  test('Download bundle exports a formal_ai_bundle with seed and memory log', async ({ page }) => {
-    await sendPrompt(page, 'Hi');
+  test('Issue #27: Download bundle button is removed (duplicate of Export memory)', async ({ page }) => {
+    await expect(page.locator('[data-testid="memory-bundle"]')).toHaveCount(0);
+    // The underlying exportBundle helper must remain on the public API for
+    // Rust/CLI parity; only the redundant UI button is gone.
+    const api = await page.evaluate(() => Object.keys(window.FormalAiMemory || {}));
+    expect(api).toContain('exportBundle');
+  });
 
+  test('Issue #27: Export memory does not surface a "Bundled N events + seed" label', async ({ page }) => {
+    await sendPrompt(page, 'Hi');
     const [download] = await Promise.all([
       page.waitForEvent('download'),
-      page.locator('[data-testid="memory-bundle"]').click(),
+      page.locator('[data-testid="memory-export"]').click(),
     ]);
-
-    expect(download.suggestedFilename()).toBe('formal-ai-bundle.lino');
-
-    const path = await download.path();
-    expect(path).toBeTruthy();
-    const fs = require('node:fs');
-    const text = fs.readFileSync(path, 'utf8');
-    expect(text).toContain('formal_ai_bundle');
-    expect(text).toContain('exported_at');
-    expect(text).toContain('seed_files');
-    expect(text).toContain('demo_memory');
-    expect(text).toContain('role "user"');
+    expect(download.suggestedFilename()).toBe('formal-ai-memory.lino');
+    const status = await page.locator('[data-testid="memory-status"]').innerText();
+    expect(status).not.toMatch(/bundled\s+\d+\s+events\s+\+\s+seed/i);
   });
 
   test('Report issue link is present in the topbar and prefills full-memory + zip instructions (R112)', async ({ page }) => {
@@ -313,5 +328,46 @@ test.describe('memory export/import', () => {
     const kinds = new Set(events.map((event) => event.kind).filter(Boolean));
     expect(kinds.has('message')).toBe(true);
     expect(kinds.has('reasoning')).toBe(true);
+  });
+});
+
+test.describe('Issue #27: random greeting variations', () => {
+  test.beforeEach(async ({ page }) => {
+    // Default-on: do NOT call disableGreetingVariations — the seed-driven
+    // randomisation must be observable when the user accepts the defaults.
+    await page.goto('./');
+    await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
+    await switchToManualMode(page);
+  });
+
+  test('English greeting falls within the seeded variant list', async ({ page }) => {
+    const last = await sendPrompt(page, 'Hi');
+    const text = (await last.innerText()).trim();
+    const variants = [
+      'Hi, how may I help you?',
+      'Hello! How can I assist you today?',
+      'Hi there! What can I do for you?',
+      'Hey, how can I help?',
+      'Hello — what would you like to explore?',
+    ];
+    expect(variants.some((variant) => text.includes(variant))).toBe(true);
+  });
+
+  test('disabling variations pins the canonical English greeting', async ({ page, context }) => {
+    await context.addInitScript(() => {
+      try {
+        window.localStorage.setItem(
+          'formal-ai.preferences.v1',
+          'demo_preferences\n  greetingVariations "off"',
+        );
+      } catch (_error) {}
+    });
+    await page.goto('./');
+    await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
+    await switchToManualMode(page);
+    for (let attempt = 0; attempt < 3; attempt += 1) {
+      const last = await sendPrompt(page, 'Hi');
+      await expect(last).toContainText('Hi, how may I help you?');
+    }
   });
 });
