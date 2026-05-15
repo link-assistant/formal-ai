@@ -12,7 +12,7 @@ module.exports = defineConfig({
     trace: 'on-first-retry',
   },
   webServer: {
-    command: 'npx serve ../../docs/demo --listen 3456 --no-clipboard',
+    command: 'npx serve ../../src/web --listen 3456 --no-clipboard',
     url: 'http://localhost:3456',
     reuseExistingServer: false,
     timeout: 15_000,
