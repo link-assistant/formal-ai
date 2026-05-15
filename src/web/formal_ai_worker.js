@@ -832,15 +832,21 @@ function tryHistorical(prompt, history) {
 }
 
 async function solve(prompt, history) {
+  const steps = [];
+  const toolCalls = [];
   const events = [`impulse:${prompt}`];
+  steps.push({ step: "impulse", detail: prompt });
   const normalized = normalizePrompt(prompt);
   events.push(`formalization:${normalized || "(empty)"}`);
+  steps.push({ step: "formalize", detail: normalized || "(empty)" });
   const language = detectLanguage(prompt);
   events.push(`language:${language}`);
+  steps.push({ step: "detect_language", detail: language });
 
   if (isGreetingPrompt(normalized, prompt)) {
     events.push("rule:greeting");
-    return finalize(events, {
+    steps.push({ step: "match_rule", detail: "greeting" });
+    return finalize(events, steps, toolCalls, {
       intent: "greeting",
       content: answerFor("greeting", language),
       confidence: 1.0,
@@ -849,7 +855,8 @@ async function solve(prompt, history) {
   }
   if (isIdentityPrompt(normalized, prompt)) {
     events.push("rule:identity");
-    return finalize(events, {
+    steps.push({ step: "match_rule", detail: "identity" });
+    return finalize(events, steps, toolCalls, {
       intent: "identity",
       content: answerFor("identity", language),
       confidence: 1.0,
@@ -858,28 +865,56 @@ async function solve(prompt, history) {
   }
 
   const syncHandlers = [
-    () => tryHistorical(prompt, history),
-    () => tryArithmetic(prompt),
-    () => tryJavaScriptExecution(prompt),
-    () => tryConceptLookup(prompt),
-    () => tryHelloWorld(prompt),
+    { name: "tryHistorical", run: () => tryHistorical(prompt, history) },
+    { name: "tryArithmetic", run: () => tryArithmetic(prompt) },
+    { name: "tryJavaScriptExecution", run: () => tryJavaScriptExecution(prompt) },
+    { name: "tryConceptLookup", run: () => tryConceptLookup(prompt) },
+    { name: "tryHelloWorld", run: () => tryHelloWorld(prompt) },
   ];
   for (const handler of syncHandlers) {
-    const hit = handler();
+    const hit = handler.run();
     if (hit) {
       events.push(`handler:${hit.intent}`);
-      return finalize(events, hit);
+      steps.push({ step: "dispatch_handler", detail: handler.name });
+      if (hit.intent === "javascript_execution" || hit.intent === "javascript_execution_error") {
+        toolCalls.push({
+          tool: "eval_js",
+          inputs: { prompt },
+          outputs: { intent: hit.intent, confidence: hit.confidence },
+        });
+      }
+      if (hit.intent === "concept_lookup") {
+        toolCalls.push({
+          tool: "concept_lookup",
+          inputs: { prompt },
+          outputs: { intent: hit.intent, confidence: hit.confidence },
+        });
+      }
+      return finalize(events, steps, toolCalls, hit);
     }
   }
 
+  steps.push({ step: "invoke_tool", detail: "wikipedia_lookup" });
   const wiki = await tryWikipediaLookup(prompt, language);
   if (wiki) {
     events.push(`handler:${wiki.intent}`);
-    return finalize(events, wiki);
+    steps.push({ step: "dispatch_handler", detail: "tryWikipediaLookup" });
+    toolCalls.push({
+      tool: "wikipedia_lookup",
+      inputs: { prompt, language },
+      outputs: { intent: wiki.intent, confidence: wiki.confidence },
+    });
+    return finalize(events, steps, toolCalls, wiki);
   }
+  toolCalls.push({
+    tool: "wikipedia_lookup",
+    inputs: { prompt, language },
+    outputs: { intent: "no_match" },
+  });
 
   events.push("fallback:unknown");
-  return finalize(events, {
+  steps.push({ step: "fallback", detail: "unknown" });
+  return finalize(events, steps, toolCalls, {
     intent: "unknown",
     content: answerFor("unknown", language),
     confidence: 0.1,
@@ -887,7 +922,7 @@ async function solve(prompt, history) {
   });
 }
 
-function finalize(events, answer) {
+function finalize(events, steps, toolCalls, answer) {
   const evidence = Array.isArray(answer.evidence) ? answer.evidence : [];
   const trace = events.map((event) => `trace:${event}`);
   return {
@@ -895,6 +930,8 @@ function finalize(events, answer) {
     content: answer.content,
     confidence: answer.confidence,
     evidence: [...evidence, ...trace],
+    steps,
+    toolCalls,
   };
 }
 
@@ -979,6 +1016,8 @@ self.onmessage = async (event) => {
     content: answer.content,
     confidence: answer.confidence,
     evidence: answer.evidence,
+    steps: answer.steps,
+    toolCalls: answer.toolCalls,
   });
 };
 

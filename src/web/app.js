@@ -554,6 +554,7 @@ function App() {
     const message = createMessage("user", text, extra);
     setMessages((current) => [...current, message]);
     recordMemoryEvent({
+      kind: "message",
       role: "user",
       content: text,
       sentAt: new Date().toISOString(),
@@ -567,23 +568,51 @@ function App() {
     const evidence = answer.intent
       ? [`intent:${answer.intent}`, `source:${source}`, ...solverEvidence]
       : solverEvidence;
-    const thinkingSteps = [
-      "Normalize prompt text",
-      `Select symbolic intent ${answer.intent || "unknown"}`,
-      `Render deterministic answer from ${source}`,
-    ];
+    const thinkingSteps = Array.isArray(answer.steps) && answer.steps.length > 0
+      ? answer.steps.map((entry) => `${entry.step}: ${entry.detail}`)
+      : [
+          "Normalize prompt text",
+          `Select symbolic intent ${answer.intent || "unknown"}`,
+          `Render deterministic answer from ${source}`,
+        ];
     const message = createMessage("assistant", answer.content, {
       intent: answer.intent,
       evidence,
       thinkingSteps,
     });
     setMessages((current) => [...current, message]);
+    const sentAt = new Date().toISOString();
+    if (Array.isArray(answer.steps)) {
+      answer.steps.forEach((entry) => {
+        recordMemoryEvent({
+          kind: "reasoning",
+          role: "assistant",
+          content: `${entry.step}: ${entry.detail}`,
+          intent: answer.intent,
+          sentAt,
+        });
+      });
+    }
+    if (Array.isArray(answer.toolCalls)) {
+      answer.toolCalls.forEach((call) => {
+        recordMemoryEvent({
+          kind: "tool_call",
+          role: "assistant",
+          tool: call.tool,
+          inputs: call.inputs,
+          outputs: call.outputs,
+          content: `tool:${call.tool}`,
+          sentAt,
+        });
+      });
+    }
     recordMemoryEvent({
+      kind: "message",
       role: "assistant",
       content: answer.content,
       intent: answer.intent,
       evidence,
-      sentAt: new Date().toISOString(),
+      sentAt,
     });
   }, []);
 

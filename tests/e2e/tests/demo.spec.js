@@ -279,7 +279,7 @@ test.describe('formal-ai demo UI', () => {
     const assistantMessage = page.locator('[data-testid="chat-message"].assistant').first();
     await expect(assistantMessage.locator('.intent')).toContainText(/intent:/);
     await expect(assistantMessage.locator('.evidence-list')).toContainText(/source:/);
-    await expect(assistantMessage.locator('.thinking-steps')).toContainText('Select symbolic intent');
+    await expect(assistantMessage.locator('.thinking-steps')).toContainText(/match_rule|dispatch_handler|fallback/);
   });
 
   test('composer does not expose an unused preview control', async ({ page }) => {
