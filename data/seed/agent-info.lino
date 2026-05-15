@@ -1,6 +1,8 @@
 agent_info
   field "name"
     value "formal-ai"
+  field "version"
+    value "0.22.0"
   field "tagline"
     value "Deterministic symbolic AI proof of concept with OpenAI-compatible APIs"
   field "default_language"

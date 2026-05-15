@@ -7,11 +7,11 @@ use clap::{Subcommand, ValueEnum};
 use lino_arguments::Parser;
 
 use formal_ai::{
-    create_chat_completion, create_response, environment_records, export_memory_bundle,
-    extract_memory_from_bundle, knowledge_links_notation, merged_bundle, parse_bundle,
-    run_telegram_polling, run_telegram_webhook_server, seed_files, ChatCompletionRequest,
-    ChatMessage, FormalAiEngine, MemoryStore, MessageContent, ResponsesRequest,
-    TelegramPollingConfig, DEFAULT_MODEL,
+    agent_info, create_chat_completion, create_response, environment_records, export_memory_bundle,
+    export_memory_full, import_memory_full, knowledge_links_notation, merged_bundle, parse_bundle,
+    run_telegram_polling, run_telegram_webhook_server, seed_files, suggest_memory_migrations,
+    BundleInfo, ChatCompletionRequest, ChatMessage, FormalAiEngine, MemoryStore, MessageContent,
+    ResponsesRequest, TelegramPollingConfig, DEFAULT_MODEL,
 };
 
 #[derive(Parser, Debug)]
@@ -101,10 +101,10 @@ enum Command {
 
 #[derive(Debug, Subcommand)]
 enum MemoryAction {
-    /// Write the memory log to a `.lino` file (or stdout if `--path -` is
-    /// given). Defaults to reading and writing the same file so repeated
-    /// exports stay idempotent; pass `--from <src>` for a one-shot copy or
-    /// to stream a stored log to stdout (`--path -`).
+    /// Write the agent's full memory (seed + event log) to a `.lino` file —
+    /// the same self-contained `formal_ai_bundle` the browser's "Export
+    /// memory" button produces. Pass `--events-only` to fall back to the
+    /// legacy events-only `demo_memory` shape. `--path -` streams to stdout.
     Export {
         /// Destination file. Use `-` to write to stdout. Defaults to
         /// `formal-ai-memory.lino` in the current directory.
@@ -120,6 +120,11 @@ enum MemoryAction {
         /// `formal-ai-memory.lino` when `--path -` is used.
         #[arg(long)]
         from: Option<PathBuf>,
+
+        /// Emit only the `demo_memory` event log (no seed, no metadata).
+        /// Backwards-compatible with pre-0.22 exports.
+        #[arg(long, default_value_t = false)]
+        events_only: bool,
     },
     /// Read a `demo_memory` Links Notation file and append its events to the
     /// destination memory log.
@@ -295,7 +300,11 @@ fn run_chat(prompt: &str, format: OutputFormat) -> Result<(), Box<dyn Error>> {
 
 fn run_memory(action: MemoryAction) -> Result<(), Box<dyn Error>> {
     match action {
-        MemoryAction::Export { path, from } => {
+        MemoryAction::Export {
+            path,
+            from,
+            events_only,
+        } => {
             let source = match from {
                 Some(explicit) => explicit,
                 None if path.as_os_str() == "-" => std::env::var_os("FORMAL_AI_MEMORY_PATH")
@@ -303,29 +312,47 @@ fn run_memory(action: MemoryAction) -> Result<(), Box<dyn Error>> {
                 None => path.clone(),
             };
             let store = load_memory_or_empty(&source)?;
-            let text = store.export_links_notation();
+            let (text, summary) = if events_only {
+                let text = store.export_links_notation();
+                let summary = format!("Wrote {} events (events-only)", store.len());
+                (text, summary)
+            } else {
+                let seed = seed_files();
+                let info = BundleInfo {
+                    version: agent_info().get("version").cloned(),
+                    ..BundleInfo::default()
+                };
+                let text = export_memory_full(&seed, store.events(), &[], &info);
+                let summary = format!(
+                    "Wrote full memory: {} event(s) + {} seed file(s)",
+                    store.len(),
+                    seed.len(),
+                );
+                (text, summary)
+            };
             if path.as_os_str() == "-" {
                 print!("{text}");
             } else {
                 std::fs::write(&path, text)?;
-                eprintln!("Wrote {} events to {}", store.len(), path.display());
+                eprintln!("{summary} to {}", path.display());
             }
         }
         MemoryAction::Import { path, into } => {
             let inbound = read_input(&path)?;
+            let parsed = import_memory_full(&inbound);
+            let parsed_count = parsed.events.len();
             let mut store = load_memory_or_empty(&into)?;
-            let parsed_count = if let Some(events) = extract_memory_from_bundle(&inbound) {
-                store.import(&events);
-                events.len()
-            } else {
-                store.import_links_notation(&inbound)
-            };
+            store.import(&parsed.events);
             store.save_to_file(&into)?;
             eprintln!(
                 "Imported {parsed_count} event(s) into {}; total now {}.",
                 into.display(),
                 store.len()
             );
+            let suggestions = suggest_memory_migrations(&parsed, &agent_info());
+            for message in suggestions {
+                eprintln!("Migration: {message}");
+            }
         }
         MemoryAction::Show { path } => {
             let store = load_memory_or_empty(&path)?;
@@ -371,23 +398,29 @@ fn run_bundle(action: BundleAction) -> Result<(), Box<dyn Error>> {
         }
         BundleAction::Import { path, into } => {
             let text = read_input(&path)?;
-            let events = extract_memory_from_bundle(&text).ok_or_else(|| {
-                format!(
+            let parsed = import_memory_full(&text);
+            if parsed.events.is_empty() && parsed.seed_files.is_empty() {
+                return Err(format!(
                     "{} does not appear to be a formal_ai_bundle Links Notation document",
                     path.display()
                 )
-            })?;
+                .into());
+            }
             let parsed_seed = parse_bundle(&text);
             let mut store = load_memory_or_empty(&into)?;
-            store.import(&events);
+            store.import(&parsed.events);
             store.save_to_file(&into)?;
             eprintln!(
                 "Imported {} event(s) and saw {} seed file(s); memory now has {} event(s) at {}.",
-                events.len(),
+                parsed.events.len(),
                 parsed_seed.len(),
                 store.len(),
                 into.display(),
             );
+            let suggestions = suggest_memory_migrations(&parsed, &agent_info());
+            for message in suggestions {
+                eprintln!("Migration: {message}");
+            }
         }
     }
     Ok(())

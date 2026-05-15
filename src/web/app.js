@@ -335,10 +335,22 @@ function createIssueReportBody({
   lines.push("");
   lines.push("<!-- Please describe what looked wrong or incomplete. -->");
   lines.push("");
-  lines.push("## Attach full state (recommended)");
+  lines.push("## Attach full memory (recommended)");
   lines.push("");
   lines.push(
-    "Click **Download bundle** in the top bar to save `formal-ai-bundle.lino`, then drag it into this issue. The bundle contains the entire seed (rules, concepts, tools, multilingual responses) plus the append-only memory log of this session — every user turn, assistant reply, reasoning step, and tool invocation — so the maintainer can fully reconstruct the agent's state.",
+    "Click **Export memory** in the top bar to save `formal-ai-memory.lino`. The file is the **full memory** of the agent — the entire seed (rules, concepts, tools, multilingual responses), your UI preferences, environment metadata, and the complete append-only event log of this session (every user turn, assistant reply, reasoning step, tool invocation) — so the maintainer can reconstruct the exact session.",
+  );
+  lines.push("");
+  lines.push(
+    "**Wrap the export in a `.zip` before attaching.** GitHub's issue uploader does not currently accept `.lino` files (see [supported file types](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/attaching-files)). On any OS:",
+  );
+  lines.push("");
+  lines.push("- macOS: right-click → *Compress*.");
+  lines.push("- Windows: right-click → *Send to* → *Compressed (zipped) folder*.");
+  lines.push("- Linux: `zip formal-ai-memory.zip formal-ai-memory.lino`.");
+  lines.push("");
+  lines.push(
+    "**Redact sensitive content first.** The export contains everything you typed into the chat. Open `formal-ai-memory.lino` in any text editor and remove personal names, secrets, API keys, internal URLs, or any pasted code you are not comfortable publishing before zipping and attaching.",
   );
   lines.push("");
 
@@ -460,13 +472,28 @@ function App() {
     }
     try {
       const events = await window.FormalAiMemory.listEvents();
-      const text = window.FormalAiMemory.exportLinksNotation(events);
+      const preferences = loadPreferences();
+      const text = window.FormalAiMemory.exportFullMemory({
+        seed,
+        events,
+        preferences,
+        info: {
+          version: APP_VERSION,
+          url: window.location.href,
+          userAgent: navigator.userAgent,
+          workerState,
+          mode: demoMode ? "demo" : "manual",
+        },
+      });
       downloadTextFile(MEMORY_EXPORT_FILENAME, text);
-      setMemoryStatus(`Exported ${events.length} events`);
+      const seedFileCount = seed && seed.raw ? Object.keys(seed.raw).length : 0;
+      setMemoryStatus(
+        `Exported full memory: ${events.length} event(s) + ${seedFileCount} seed file(s)`,
+      );
     } catch (_error) {
       setMemoryStatus("Export failed");
     }
-  }, []);
+  }, [seed, workerState, demoMode]);
 
   const handleExportBundle = useCallback(async () => {
     if (typeof window === "undefined" || !window.FormalAiMemory) {
@@ -501,13 +528,31 @@ function App() {
     }
     try {
       const text = await file.text();
-      const parsed = window.FormalAiMemory.parseLinksNotation(text);
-      const inserted = await window.FormalAiMemory.importEvents(parsed);
-      setMemoryStatus(`Imported ${inserted} events`);
+      const imported = window.FormalAiMemory.importFullMemory(text);
+      const inserted = await window.FormalAiMemory.importEvents(imported.events);
+      const current = {
+        agentInfo: seed && seed.agentInfo ? seed.agentInfo : {},
+        info: { version: APP_VERSION },
+      };
+      const suggestions = window.FormalAiMemory.suggestMigrations({
+        imported,
+        current,
+      });
+      const headline =
+        imported.kind === "bundle"
+          ? `Imported ${inserted} event(s) from full bundle`
+          : `Imported ${inserted} events`;
+      if (suggestions.length > 0) {
+        setMemoryStatus(
+          `${headline}. Migration: ${suggestions.join(" / ")}`,
+        );
+      } else {
+        setMemoryStatus(headline);
+      }
     } catch (_error) {
       setMemoryStatus("Import failed");
     }
-  }, []);
+  }, [seed]);
 
   const triggerImportMemory = useCallback(() => {
     if (importInputRef.current) {
@@ -761,7 +806,7 @@ function App() {
             target: "_blank",
             rel: "noopener noreferrer",
             title:
-              "Open a pre-filled GitHub issue with the current session transcript. Attach formal-ai-bundle.lino (Download bundle) for full reproducibility.",
+              "Open a pre-filled GitHub issue with the current session transcript. Click Export memory to save the full agent state, redact sensitive content, wrap it in a .zip, and attach it (GitHub does not accept .lino directly yet).",
           },
           "Report issue",
         ),
@@ -772,6 +817,8 @@ function App() {
             className: "memory-button",
             "data-testid": "memory-export",
             onClick: handleExportMemory,
+            title:
+              "Save the full agent state to formal-ai-memory.lino: the entire seed, UI preferences, environment metadata, and the append-only event log. Wrap the file in a .zip before attaching it to a GitHub issue (the issue uploader does not accept .lino directly yet).",
           },
           "Export memory",
         ),
@@ -782,6 +829,8 @@ function App() {
             className: "memory-button",
             "data-testid": "memory-import",
             onClick: triggerImportMemory,
+            title:
+              "Load a previous export. Accepts both the new full-memory bundle and the legacy demo_memory event-only log. Migration hints are shown next to this bar.",
           },
           "Import memory",
         ),
@@ -793,7 +842,7 @@ function App() {
             "data-testid": "memory-bundle",
             onClick: handleExportBundle,
             title:
-              "Download a single .lino file containing the seed, the memory log, and environment metadata. Attach it to issue reports for full reproducibility.",
+              "Alias for Export memory kept for backwards compatibility. Saves formal-ai-bundle.lino — the same full bundle (seed + memory log + environment metadata) that Export memory now produces.",
           },
           "Download bundle",
         ),
