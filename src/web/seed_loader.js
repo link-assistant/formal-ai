@@ -321,43 +321,7 @@
           return { file: file, text: text };
         });
       }),
-    ).then(function (results) {
-      var seed = {
-        responses: {},
-        concepts: [],
-        tools: [],
-        agentInfo: {},
-        languageRules: [],
-        promptPatterns: [],
-        intentRouting: { intents: [], articlePrefixes: [], tracePrefixes: [] },
-        raw: {},
-      };
-      for (var i = 0; i < results.length; i += 1) {
-        var item = results[i];
-        seed.raw[item.file] = item.text;
-        if (!item.text) continue;
-        var root = parseLino(item.text);
-        if (item.file.indexOf("multilingual") !== -1) {
-          seed.responses = mergeResponses(
-            seed.responses,
-            extractMultilingualResponses(root),
-          );
-        } else if (item.file.indexOf("concepts") !== -1) {
-          seed.concepts = seed.concepts.concat(extractConcepts(root));
-        } else if (item.file.indexOf("tools") !== -1) {
-          seed.tools = seed.tools.concat(extractTools(root));
-        } else if (item.file.indexOf("agent-info") !== -1) {
-          Object.assign(seed.agentInfo, extractAgentInfo(root));
-        } else if (item.file.indexOf("language-detection") !== -1) {
-          seed.languageRules = seed.languageRules.concat(extractLanguageRules(root));
-        } else if (item.file.indexOf("prompt-patterns") !== -1) {
-          seed.promptPatterns = seed.promptPatterns.concat(extractPromptPatterns(root));
-        } else if (item.file.indexOf("intent-routing") !== -1) {
-          seed.intentRouting = extractIntentRouting(root);
-        }
-      }
-      return seed;
-    });
+    ).then(buildSeed);
   }
 
   function mergeResponses(a, b) {
@@ -370,9 +334,114 @@
     return out;
   }
 
+  // Parse a single merged bundle (the `formal_ai_seed_bundle` document
+  // produced by `seed::merged_bundle()` on the Rust side) back into a list
+  // of `{ file, text }` pairs. Indentation contract:
+  //   formal_ai_seed_bundle             (top-level, indent 0)
+  //     file "data/seed/X.lino"         (indent 2)
+  //       <line of X.lino>              (indent 4)
+  //       <line of X.lino>
+  //     file "data/seed/Y.lino"
+  //       ...
+  function parseBundle(text) {
+    var lines = String(text || "").split(/\r?\n/);
+    var sections = [];
+    var current = null;
+    for (var i = 0; i < lines.length; i += 1) {
+      var line = lines[i];
+      if (line === "") {
+        if (current) current.text += "\n";
+        continue;
+      }
+      var indentMatch = /^(\s*)/.exec(line);
+      var indent = indentMatch ? indentMatch[1].length : 0;
+      var trimmed = line.slice(indent);
+      if (indent === 0) {
+        // New top-level header — flush any open section.
+        if (current) sections.push(current);
+        current = null;
+        continue;
+      }
+      if (indent === 2 && trimmed.indexOf("file ") === 0) {
+        if (current) sections.push(current);
+        current = null;
+        var rest = trimmed.slice("file ".length).trim();
+        if (rest[0] === '"') {
+          var inner = rest.slice(1);
+          // Reuse the same closing-quote scan as `parseLinoLine`.
+          for (var j = 0; j < inner.length; j += 1) {
+            if (inner[j] === "\\") {
+              j += 1;
+              continue;
+            }
+            if (inner[j] === '"') {
+              current = { file: unescapeValue(inner.slice(0, j)), text: "" };
+              break;
+            }
+          }
+        }
+        continue;
+      }
+      if (current) {
+        var body = line.indexOf("    ") === 0 ? line.slice(4) : trimmed;
+        current.text += body + "\n";
+      }
+    }
+    if (current) sections.push(current);
+    return sections;
+  }
+
+  // Build a seed object from a pre-fetched merged bundle. Mirrors `loadAll`
+  // but skips the network step, so a worker booted offline (or one given a
+  // user-uploaded bundle) can hydrate without touching `fetch`.
+  function loadFromBundle(text) {
+    var sections = parseBundle(text);
+    return buildSeed(sections);
+  }
+
+  function buildSeed(results) {
+    var seed = {
+      responses: {},
+      concepts: [],
+      tools: [],
+      agentInfo: {},
+      languageRules: [],
+      promptPatterns: [],
+      intentRouting: { intents: [], articlePrefixes: [], tracePrefixes: [] },
+      raw: {},
+    };
+    for (var i = 0; i < results.length; i += 1) {
+      var item = results[i];
+      seed.raw[item.file] = item.text;
+      if (!item.text) continue;
+      var root = parseLino(item.text);
+      if (item.file.indexOf("multilingual") !== -1) {
+        seed.responses = mergeResponses(
+          seed.responses,
+          extractMultilingualResponses(root),
+        );
+      } else if (item.file.indexOf("concepts") !== -1) {
+        seed.concepts = seed.concepts.concat(extractConcepts(root));
+      } else if (item.file.indexOf("tools") !== -1) {
+        seed.tools = seed.tools.concat(extractTools(root));
+      } else if (item.file.indexOf("agent-info") !== -1) {
+        Object.assign(seed.agentInfo, extractAgentInfo(root));
+      } else if (item.file.indexOf("language-detection") !== -1) {
+        seed.languageRules = seed.languageRules.concat(extractLanguageRules(root));
+      } else if (item.file.indexOf("prompt-patterns") !== -1) {
+        seed.promptPatterns = seed.promptPatterns.concat(extractPromptPatterns(root));
+      } else if (item.file.indexOf("intent-routing") !== -1) {
+        seed.intentRouting = extractIntentRouting(root);
+      }
+    }
+    return seed;
+  }
+
   global.FormalAiSeed = {
     parse: parseLino,
     loadAll: loadAll,
+    loadFromBundle: loadFromBundle,
+    parseBundle: parseBundle,
     extractMultilingualResponses: extractMultilingualResponses,
     extractAgentInfo: extractAgentInfo,
     extractLanguageRules: extractLanguageRules,

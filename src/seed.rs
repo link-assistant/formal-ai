@@ -52,9 +52,17 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
 /// `Download bundle` action produces minus the user-specific event log: it
 /// represents the AI's static knowledge surface, fully portable in one file.
 pub fn merged_bundle() -> String {
+    bundle_from_files(&seed_files())
+}
+
+/// Render an arbitrary list of `(file_name, contents)` pairs as a single
+/// `formal_ai_seed_bundle` document. Used by [`merged_bundle`] for the
+/// compile-time seed and by tooling that needs to bundle a custom seed
+/// (for example a user-edited overlay).
+pub fn bundle_from_files(files: &[(&str, &str)]) -> String {
     let mut out = String::new();
     out.push_str("formal_ai_seed_bundle\n");
-    for (name, contents) in seed_files() {
+    for (name, contents) in files {
         out.push_str("  file \"");
         out.push_str(&escape_value(name));
         out.push_str("\"\n");
@@ -68,6 +76,69 @@ pub fn merged_bundle() -> String {
         }
     }
     out
+}
+
+/// Parse a bundle produced by [`merged_bundle`] back into a list of
+/// `(file_name, contents)` pairs. The inverse of [`bundle_from_files`] —
+/// callers can round-trip the universal seed through a single `.lino`
+/// document for import/export, while still recovering the per-category
+/// split files that drive the rest of the loader.
+///
+/// The parser is lenient: a missing or differently-named header is ignored;
+/// any top-level `file "name"` child is treated as a section. Sections with
+/// no body produce an empty contents string. Indentation inside a section
+/// is reproduced verbatim (with the two-space bundle prefix stripped) so
+/// the round-trip preserves shape.
+pub fn parse_bundle(text: &str) -> Vec<(String, String)> {
+    let mut sections: Vec<(String, String)> = Vec::new();
+    let mut current_name: Option<String> = None;
+    let mut current_body = String::new();
+    for line in text.lines() {
+        if line.is_empty() {
+            if current_name.is_some() {
+                current_body.push('\n');
+            }
+            continue;
+        }
+        let indent = line.chars().take_while(|c| *c == ' ').count();
+        let trimmed = &line[indent..];
+        // Top-level header (e.g. "formal_ai_seed_bundle") — start of document.
+        if indent == 0 {
+            if let Some(name) = current_name.take() {
+                sections.push((name, std::mem::take(&mut current_body)));
+            }
+            continue;
+        }
+        // Section header: `  file "data/seed/X.lino"`.
+        if indent == 2 && trimmed.starts_with("file ") {
+            if let Some(name) = current_name.take() {
+                sections.push((name, std::mem::take(&mut current_body)));
+            }
+            if let Some(rest) = trimmed.strip_prefix("file ") {
+                let rest = rest.trim();
+                if let Some(stripped) = rest.strip_prefix('"') {
+                    if let Some(close) = find_closing_quote(stripped) {
+                        current_name = Some(unescape_value(&stripped[..close]));
+                    }
+                }
+            }
+            continue;
+        }
+        // Section body: strip the four-space bundle prefix.
+        if current_name.is_some() {
+            let stripped = if let Some(rest) = line.strip_prefix("    ") {
+                rest
+            } else {
+                line.trim_start()
+            };
+            current_body.push_str(stripped);
+            current_body.push('\n');
+        }
+    }
+    if let Some(name) = current_name.take() {
+        sections.push((name, current_body));
+    }
+    sections
 }
 
 /// A single response variant for an intent in a particular language.
@@ -596,5 +667,61 @@ mod tests {
         let routing = intent_routing();
         assert!(routing.article_prefixes.iter().any(|a| a == "the "));
         assert!(routing.trace_prefixes.iter().any(|p| p == "trace_"));
+    }
+
+    #[test]
+    fn bundle_round_trips_through_parse_bundle() {
+        let bundle = merged_bundle();
+        let sections = parse_bundle(&bundle);
+        let files = seed_files();
+        assert_eq!(
+            sections.len(),
+            files.len(),
+            "parsed bundle should have one section per seed file",
+        );
+        for ((parsed_name, parsed_body), (orig_name, orig_body)) in
+            sections.iter().zip(files.iter())
+        {
+            assert_eq!(parsed_name, orig_name, "section names should round-trip");
+            // The bundle drops blank lines on emit; compare the non-empty
+            // content lines instead of byte-for-byte to keep the test
+            // resilient to that normalization.
+            let parsed_lines: Vec<&str> =
+                parsed_body.lines().filter(|l| !l.is_empty()).collect();
+            let orig_lines: Vec<&str> =
+                orig_body.lines().filter(|l| !l.is_empty()).collect();
+            assert_eq!(
+                parsed_lines, orig_lines,
+                "section body for {orig_name} should round-trip",
+            );
+        }
+    }
+
+    #[test]
+    fn parse_bundle_recovers_intent_routing_via_inner_parser() {
+        // End-to-end smoke test: bundle, parse, then feed one of the inner
+        // sections back through the per-file parser. This is the contract
+        // that makes single-file import meaningful.
+        let bundle = merged_bundle();
+        let sections = parse_bundle(&bundle);
+        let routing_section = sections
+            .iter()
+            .find(|(name, _)| name == "data/seed/intent-routing.lino")
+            .expect("bundle must contain intent-routing section");
+        let tree = parse_lino(&routing_section.1);
+        let root = tree
+            .children
+            .iter()
+            .find(|c| c.name == "intent_routing")
+            .expect("parsed tree should start with intent_routing");
+        let intent_count = root
+            .children
+            .iter()
+            .filter(|c| c.name == "intent")
+            .count();
+        assert!(
+            intent_count >= 5,
+            "expected at least 5 intent routes after round-trip, got {intent_count}",
+        );
     }
 }
