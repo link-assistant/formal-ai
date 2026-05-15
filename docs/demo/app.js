@@ -65,6 +65,33 @@ const DEMO_LANGUAGES = [
 
 const DEMO_GREETINGS = ["Hi", "Hello"];
 
+const PREFERENCE_DEFAULTS = {
+  demoMode: true,
+  diagnosticsMode: false,
+};
+
+function loadPreferences() {
+  if (typeof window === "undefined" || !window.FormalAiPreferences) {
+    return { ...PREFERENCE_DEFAULTS };
+  }
+  try {
+    return window.FormalAiPreferences.load(PREFERENCE_DEFAULTS);
+  } catch (_error) {
+    return { ...PREFERENCE_DEFAULTS };
+  }
+}
+
+function persistPreferences(values) {
+  if (typeof window === "undefined" || !window.FormalAiPreferences) {
+    return;
+  }
+  try {
+    window.FormalAiPreferences.save(values);
+  } catch (_error) {
+    // localStorage may be unavailable (private mode, sandboxed iframe); ignore.
+  }
+}
+
 function randomItem(items) {
   return items[Math.floor(Math.random() * items.length)];
 }
@@ -363,10 +390,17 @@ function App() {
   const [prompt, setPrompt] = useState("");
   const [pending, setPending] = useState(false);
   const [workerState, setWorkerState] = useState("wasm worker");
-  const [demoMode, setDemoMode] = useState(true);
+  const initialPreferences = useRef(loadPreferences());
+  const [demoMode, setDemoMode] = useState(initialPreferences.current.demoMode);
   const [demoPhase, setDemoPhase] = useState("manual");
   const [demoCountdown, setDemoCountdown] = useState(null);
-  const [diagnosticsMode, setDiagnosticsMode] = useState(false);
+  const [diagnosticsMode, setDiagnosticsMode] = useState(
+    initialPreferences.current.diagnosticsMode,
+  );
+
+  useEffect(() => {
+    persistPreferences({ demoMode, diagnosticsMode });
+  }, [demoMode, diagnosticsMode]);
 
   useEffect(() => {
     const worker = new Worker("formal_ai_worker.js");
@@ -392,7 +426,7 @@ function App() {
     transcriptEndRef.current?.scrollIntoView({ block: "end" });
   }, [messages]);
 
-  const requestAnswer = useCallback((text) => {
+  const requestAnswer = useCallback((text, history = []) => {
     const worker = workerRef.current;
     if (!worker) {
       return Promise.resolve(localFallbackAnswer(text));
@@ -401,7 +435,7 @@ function App() {
     return new Promise((resolve) => {
       const requestId = `request-${Date.now()}-${Math.random().toString(16).slice(2)}`;
       pendingResponses.current.set(requestId, resolve);
-      worker.postMessage({ prompt: text, requestId });
+      worker.postMessage({ prompt: text, requestId, history });
     });
   }, []);
 
@@ -412,9 +446,10 @@ function App() {
 
   const appendAssistantMessage = useCallback((answer) => {
     const source = workerRef.current ? "worker" : "fallback";
+    const solverEvidence = Array.isArray(answer.evidence) ? answer.evidence : [];
     const evidence = answer.intent
-      ? [`intent:${answer.intent}`, `source:${source}`]
-      : [];
+      ? [`intent:${answer.intent}`, `source:${source}`, ...solverEvidence]
+      : solverEvidence;
     const thinkingSteps = [
       "Normalize prompt text",
       `Select symbolic intent ${answer.intent || "unknown"}`,
@@ -428,6 +463,15 @@ function App() {
     setMessages((current) => [...current, message]);
   }, []);
 
+  const conversationHistory = useCallback(
+    () =>
+      messages.map((message) => ({
+        role: message.role,
+        content: message.content,
+      })),
+    [messages],
+  );
+
   async function sendText(text, extra = {}) {
     const trimmed = text.trim();
     if (!trimmed || pending) {
@@ -435,8 +479,9 @@ function App() {
     }
 
     setPending(true);
+    const history = conversationHistory();
     appendUserMessage(trimmed, extra);
-    const answer = await requestAnswer(trimmed);
+    const answer = await requestAnswer(trimmed, history);
     appendAssistantMessage(answer);
     setPending(false);
   }

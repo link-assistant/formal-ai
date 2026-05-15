@@ -34,6 +34,7 @@ mod multilingual;
 mod network_visualization;
 mod openai_compatibility;
 mod reasoning_loop;
+mod reasoning_paths;
 mod source_cache;
 mod telegram_surface;
 mod translation_via_links;

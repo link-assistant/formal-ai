@@ -3,6 +3,10 @@
 //! are pure: they do not access any solver state. Items are declared `pub`
 //! inside the `pub(crate)` module so the universal solver in `crate::solver`
 //! can call them directly without exposing them outside the crate.
+//!
+//! Arithmetic evaluation lives in [`crate::arithmetic`] and the offline
+//! concept knowledge base lives in [`crate::concepts`]; this module
+//! re-exports nothing — callers import those modules directly.
 
 use crate::engine::SelectedRule;
 use crate::event_log::EventLog;
@@ -181,6 +185,33 @@ pub fn extract_backticked(text: &str) -> Option<String> {
     let rest = &text[start + 1..];
     let end = rest.find('`')?;
     Some(rest[..end].to_owned())
+}
+
+/// Walk the event log for a user-introduced name. Looks in the current
+/// prompt first, then in each `prior_turn:user` event so name recall works
+/// across multi-turn conversations.
+pub fn recall_name_from_history(log: &EventLog, prompt: &str) -> Option<String> {
+    if let Some(name) = extract_introduced_name(prompt) {
+        return Some(name);
+    }
+    for event in log.events() {
+        if event.kind == "prior_turn:user" {
+            if let Some(name) = extract_introduced_name(&event.payload) {
+                return Some(name);
+            }
+        }
+    }
+    None
+}
+
+/// Return the last user turn recorded in the log, ignoring the current
+/// impulse. Used by "what did I just ask?" style recall handlers.
+pub fn last_user_turn(log: &EventLog) -> Option<&str> {
+    log.events()
+        .iter()
+        .rev()
+        .find(|event| event.kind == "prior_turn:user")
+        .map(|event| event.payload.as_str())
 }
 
 pub fn extract_introduced_name(prompt: &str) -> Option<String> {
@@ -447,9 +478,61 @@ pub fn build_sorting_algorithm_answer(lang: &str, with_tests: bool) -> String {
     }
 }
 
+/// Extract a JavaScript program from a prompt that asks the solver to run it.
+/// Looks for triple-backtick code fences first (with optional `js`/`javascript`
+/// language tag), then single-backtick spans, then `run "...";` quoted bodies.
+/// Returns `None` when the prompt does not appear to request JS execution.
+pub fn extract_javascript_program(prompt: &str) -> Option<String> {
+    let lower = prompt.to_lowercase();
+    let asks_to_run = lower.contains("run this javascript")
+        || lower.contains("run this js")
+        || lower.contains("execute this javascript")
+        || lower.contains("execute this js")
+        || lower.contains("run the following javascript")
+        || lower.contains("run the following js")
+        || lower.contains("evaluate this javascript")
+        || lower.contains("evaluate this js");
+    if !asks_to_run {
+        return None;
+    }
+    if let Some(body) = extract_fenced_block(prompt, &["javascript", "js"]) {
+        return Some(body);
+    }
+    if let Some(body) = extract_backticked(prompt) {
+        return Some(body);
+    }
+    extract_quoted_phrase(prompt)
+}
+
+/// Find a fenced code block whose info string matches one of the supplied
+/// languages (case-insensitive). Returns the block body with trailing newlines
+/// trimmed.
+pub fn extract_fenced_block(text: &str, languages: &[&str]) -> Option<String> {
+    let fence = "```";
+    let mut cursor = 0usize;
+    while let Some(open_offset) = text[cursor..].find(fence) {
+        let open = cursor + open_offset;
+        let info_start = open + fence.len();
+        let info_end = text[info_start..]
+            .find('\n')
+            .map_or(text.len(), |n| info_start + n);
+        let info = text[info_start..info_end].trim().to_lowercase();
+        let body_start = (info_end + 1).min(text.len());
+        let body_end_offset = text[body_start..].find(fence)?;
+        let body_end = body_start + body_end_offset;
+        let body = text[body_start..body_end].trim_end_matches('\n').to_owned();
+        if info.is_empty() || languages.iter().any(|lang| info == *lang) {
+            return Some(body);
+        }
+        cursor = body_end + fence.len();
+    }
+    None
+}
+
 #[cfg(test)]
 mod tests {
-    use super::is_prime;
+    use super::{extract_fenced_block, extract_javascript_program, is_prime};
+    use crate::concepts::{extract_concept_term, lookup_concept};
     use crate::solver::{SolverConfig, UniversalSolver};
 
     #[test]
@@ -489,5 +572,92 @@ mod tests {
     fn prime_check_recognizes_seventeen() {
         assert!(is_prime(17));
         assert!(!is_prime(15));
+    }
+
+    #[test]
+    fn concept_lookup_finds_seeded_terms() {
+        assert!(lookup_concept("Wikipedia").is_some());
+        assert!(lookup_concept("links notation").is_some());
+        assert!(lookup_concept("the event log").is_some());
+        assert!(lookup_concept("doublet link").is_some());
+        assert!(lookup_concept("WebAssembly").is_some());
+        assert!(lookup_concept("unknown-concept-xyz").is_none());
+    }
+
+    #[test]
+    fn concept_extraction_handles_common_prefixes() {
+        assert_eq!(
+            extract_concept_term("What is Wikipedia?").as_deref(),
+            Some("wikipedia"),
+        );
+        assert_eq!(
+            extract_concept_term("Tell me about Links Notation").as_deref(),
+            Some("links notation"),
+        );
+        assert_eq!(
+            extract_concept_term("What does Wikidata mean?").as_deref(),
+            Some("wikidata"),
+        );
+        assert_eq!(extract_concept_term("Hi"), None);
+        assert_eq!(
+            extract_concept_term("What is 2 + 2?").as_deref(),
+            Some("2 + 2")
+        );
+    }
+
+    #[test]
+    fn javascript_extraction_finds_fenced_program() {
+        let prompt = "Please run this javascript:\n```js\nconsole.log(1 + 2);\n```";
+        let body = extract_javascript_program(prompt).expect("should extract");
+        assert_eq!(body, "console.log(1 + 2);");
+    }
+
+    #[test]
+    fn javascript_extraction_requires_explicit_request() {
+        let prompt = "Here is some javascript:\n```js\nconsole.log(1);\n```";
+        assert_eq!(extract_javascript_program(prompt), None);
+    }
+
+    #[test]
+    fn fenced_block_picks_matching_language() {
+        let text = "intro\n```python\nprint(1)\n```\nthen\n```js\nconsole.log(2)\n```";
+        assert_eq!(
+            extract_fenced_block(text, &["js"]).as_deref(),
+            Some("console.log(2)"),
+        );
+    }
+
+    #[test]
+    fn universal_solver_answers_arithmetic_via_evaluator() {
+        let response = UniversalSolver::default().solve("What is 7 * (3 + 4)?");
+        assert_eq!(response.intent, "calculation");
+        assert!(response.answer.contains("49"));
+        assert!(response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("calculation")));
+    }
+
+    #[test]
+    fn universal_solver_recalls_introduced_name() {
+        use crate::solver::{ConversationTurn, UniversalSolver};
+        let history = [ConversationTurn::user("My name is Ada.")];
+        let response = UniversalSolver::default().solve_with_history("What is my name?", &history);
+        assert_eq!(response.intent, "recall_name");
+        assert!(response.answer.contains("Ada"));
+    }
+
+    #[test]
+    fn universal_solver_looks_up_concept() {
+        let response = UniversalSolver::default().solve("What is Wikipedia?");
+        assert_eq!(response.intent, "concept_lookup");
+        assert!(response.answer.to_lowercase().contains("wikipedia"));
+    }
+
+    #[test]
+    fn solver_config_default_is_offline_capable() {
+        let config = SolverConfig::default();
+        assert!(!config.offline);
+        assert!(!config.agent_mode);
     }
 }
