@@ -512,4 +512,3 @@ pub fn solve(prompt: &str) -> SymbolicAnswer {
 pub fn solve_with_history(prompt: &str, history: &[ConversationTurn]) -> SymbolicAnswer {
     UniversalSolver::default().solve_with_history(prompt, history)
 }
-

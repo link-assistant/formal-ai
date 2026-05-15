@@ -46,6 +46,59 @@ let LANGUAGE_RULES = [
   { language: "zh", start: 0x4e00, end: 0x9fff },
 ];
 let PROMPT_PATTERNS = [];
+// Intent routing rules loaded from `seed/intent-routing.lino` at init time.
+// `intents` mirror `seed::IntentRoute` from the Rust crate, so the browser
+// and the Rust solver behave identically when classifying prompts. The
+// fallback below mirrors the contents of `data/seed/intent-routing.lino`
+// so the worker remains functional even when the `.lino` fetch fails (for
+// example when the demo is opened from `file://`).
+let INTENT_ROUTING = {
+  intents: [
+    {
+      id: "intent_greeting",
+      slug: "greeting",
+      responseLink: "response:greeting",
+      keywords: ["hi", "hello", "hey", "привет", "здравствуйте", "नमस्ते", "你好", "您好"],
+      phrases: [],
+      tokens: ["greet"],
+      combos: [],
+    },
+    {
+      id: "intent_identity",
+      slug: "identity",
+      responseLink: "response:identity",
+      keywords: [],
+      phrases: [
+        "who are you",
+        "what are you",
+        "who is formal ai",
+        "what is formal ai",
+        "who is formalai",
+        "what is formalai",
+        "tell me about yourself",
+        "introduce yourself",
+        "кто ты",
+        "что ты",
+        "तुम कौन हो",
+        "你是谁",
+        "你是誰",
+      ],
+      tokens: [],
+      combos: [
+        ["who", "you"],
+        ["what", "you"],
+        ["tell", "yourself"],
+        ["introduce", "yourself"],
+        ["кто", "ты"],
+        ["что", "ты"],
+        ["who", "formal", "ai"],
+        ["what", "formal", "ai"],
+      ],
+    },
+  ],
+  articlePrefixes: ["the ", "a ", "an "],
+  tracePrefixes: ["answer_", "trace_"],
+};
 
 function answerFor(intent, language) {
   const table = MULTILINGUAL_ANSWERS[intent] || {};
@@ -440,52 +493,66 @@ function extractJavaScriptProgram(prompt) {
   return quoted ? quoted[1] : null;
 }
 
-function isIdentityPrompt(normalized, rawPrompt) {
-  const tokens = normalized ? normalized.split(/\s+/) : [];
-  const has = (token) => tokens.includes(token);
-  const englishMatch =
-    [
-      "who are you",
-      "what are you",
-      "who is formal ai",
-      "what is formal ai",
-      "who is formalai",
-      "what is formalai",
-      "tell me about yourself",
-      "introduce yourself",
-    ].includes(normalized) ||
-    (has("who") && has("you")) ||
-    (has("what") && has("you")) ||
-    ((has("who") || has("what")) && has("formal") && has("ai")) ||
-    (has("tell") && has("yourself")) ||
-    (has("introduce") && has("yourself"));
-  if (englishMatch) return true;
+// Look up an intent route by id (e.g. "intent_greeting"). Returns `null`
+// when the routing table is empty (no `.lino` seed) so callers can decide
+// whether to fall back to legacy hardcoded matching.
+function findIntentRoute(id) {
+  if (!INTENT_ROUTING || !Array.isArray(INTENT_ROUTING.intents)) return null;
+  for (const route of INTENT_ROUTING.intents) {
+    if (route && route.id === id) return route;
+  }
+  return null;
+}
+
+function tokensOf(normalized) {
+  return normalized ? normalized.split(/\s+/).filter(Boolean) : [];
+}
+
+function tokenContains(normalized, expected) {
+  return tokensOf(normalized).includes(String(expected || ""));
+}
+
+// Match a normalized prompt against an intent route using the same
+// semantics as `src/engine.rs::matches_intent_route`:
+//   - `keywords` / `phrases`: exact whole-prompt match
+//   - `tokens`: any whitespace-separated token equals the value
+//   - `combos`: every combo entry must appear as a token
+function matchesIntentRoute(normalized, rawPrompt, id) {
+  const route = findIntentRoute(id);
+  if (!route) return false;
   const raw = String(rawPrompt || "")
     .toLowerCase()
     .replace(/[?。.!!,,;:]+$/g, "")
     .trim();
-  return [
-    "кто ты",
-    "что ты",
-    "तुम कौन हो",
-    "你是谁",
-    "你是誰",
-  ].includes(raw);
+  if (route.keywords && route.keywords.some((kw) => kw === normalized || kw === raw)) {
+    return true;
+  }
+  if (route.phrases && route.phrases.some((ph) => ph === normalized || ph === raw)) {
+    return true;
+  }
+  if (route.tokens && route.tokens.some((tok) => tokenContains(normalized, tok))) {
+    return true;
+  }
+  if (
+    route.combos &&
+    route.combos.some(
+      (combo) =>
+        Array.isArray(combo) &&
+        combo.length > 0 &&
+        combo.every((tok) => tokenContains(normalized, tok)),
+    )
+  ) {
+    return true;
+  }
+  return false;
+}
+
+function isIdentityPrompt(normalized, rawPrompt) {
+  return matchesIntentRoute(normalized, rawPrompt, "intent_identity");
 }
 
 function isGreetingPrompt(normalized, rawPrompt) {
-  if (["hi", "hello", "hey"].includes(normalized)) return true;
-  const raw = String(rawPrompt || "")
-    .toLowerCase()
-    .replace(/[?。.!!,,;:]+$/g, "")
-    .trim();
-  return [
-    "привет",
-    "здравствуйте",
-    "नमस्ते",
-    "你好",
-    "您好",
-  ].includes(raw);
+  return matchesIntentRoute(normalized, rawPrompt, "intent_greeting");
 }
 
 function extractName(text) {
@@ -1006,6 +1073,24 @@ async function loadSeed() {
     }
     if (Array.isArray(seed && seed.promptPatterns) && seed.promptPatterns.length > 0) {
       PROMPT_PATTERNS = seed.promptPatterns;
+    }
+    if (
+      seed &&
+      seed.intentRouting &&
+      Array.isArray(seed.intentRouting.intents) &&
+      seed.intentRouting.intents.length > 0
+    ) {
+      INTENT_ROUTING = {
+        intents: seed.intentRouting.intents,
+        articlePrefixes:
+          seed.intentRouting.articlePrefixes && seed.intentRouting.articlePrefixes.length
+            ? seed.intentRouting.articlePrefixes
+            : INTENT_ROUTING.articlePrefixes,
+        tracePrefixes:
+          seed.intentRouting.tracePrefixes && seed.intentRouting.tracePrefixes.length
+            ? seed.intentRouting.tracePrefixes
+            : INTENT_ROUTING.tracePrefixes,
+      };
     }
   } catch (_error) {
     // Keep fallback tables on error.

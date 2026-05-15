@@ -34,11 +34,9 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ),
         ("data/seed/concepts.lino", CONCEPTS_LINO),
         ("data/seed/tools.lino", TOOLS_LINO),
-        (
-            "data/seed/language-detection.lino",
-            LANGUAGE_DETECTION_LINO,
-        ),
+        ("data/seed/language-detection.lino", LANGUAGE_DETECTION_LINO),
         ("data/seed/prompt-patterns.lino", PROMPT_PATTERNS_LINO),
+        ("data/seed/intent-routing.lino", INTENT_ROUTING_LINO),
         ("data/seed/greetings.lino", GREETINGS_LINO),
         ("data/seed/identity.lino", IDENTITY_LINO),
         (
@@ -172,6 +170,133 @@ pub struct PromptPattern {
     pub text: String,
 }
 
+/// A concept record from the offline knowledge base.
+#[derive(Debug, Clone)]
+pub struct ConceptRecord {
+    pub slug: String,
+    pub term: String,
+    pub category: String,
+    pub aliases: Vec<String>,
+    pub summary: String,
+    pub source: String,
+    pub source_kind: String,
+}
+
+pub fn concepts() -> Vec<ConceptRecord> {
+    let tree = parse_lino(CONCEPTS_LINO);
+    let mut out = Vec::new();
+    let entries: &[LinoNode] = if tree.name.is_empty() {
+        tree.children.as_slice()
+    } else {
+        std::slice::from_ref(&tree)
+    };
+    for entry in entries {
+        if !entry.name.starts_with("concept_") {
+            continue;
+        }
+        let aliases_raw = entry.find_child_value("aliases").to_string();
+        let aliases = if aliases_raw.is_empty() {
+            Vec::new()
+        } else {
+            aliases_raw
+                .split('|')
+                .map(str::trim)
+                .filter(|s| !s.is_empty())
+                .map(ToOwned::to_owned)
+                .collect()
+        };
+        let summary = entry.find_child_value("summary").to_string();
+        let term = entry.find_child_value("term").to_string();
+        if term.is_empty() || summary.is_empty() {
+            continue;
+        }
+        out.push(ConceptRecord {
+            slug: entry.name.clone(),
+            term,
+            category: entry.find_child_value("category").to_string(),
+            aliases,
+            summary,
+            source: entry.find_child_value("source").to_string(),
+            source_kind: entry.find_child_value("source_kind").to_string(),
+        });
+    }
+    out
+}
+
+/// Intent routing record from `data/seed/intent-routing.lino`.
+///
+/// Match semantics (mirrored in `src/web/formal_ai_worker.js`):
+/// - `keywords`: exact match of the entire normalized prompt
+/// - `phrases`: exact match of the entire normalized prompt (kept as a
+///   separate label so multi-word entries are easy to spot in `.lino`)
+/// - `tokens`: any single whitespace-separated token equals the value
+/// - `combos`: every token in the combo appears as a whitespace-separated
+///   token in the prompt (in any order)
+#[derive(Debug, Clone, Default)]
+pub struct IntentRoute {
+    pub id: String,
+    pub slug: String,
+    pub response_link: String,
+    pub keywords: Vec<String>,
+    pub phrases: Vec<String>,
+    pub tokens: Vec<String>,
+    pub combos: Vec<Vec<String>>,
+}
+
+#[derive(Debug, Clone, Default)]
+pub struct IntentRouting {
+    pub intents: Vec<IntentRoute>,
+    pub article_prefixes: Vec<String>,
+    pub trace_prefixes: Vec<String>,
+}
+
+pub fn intent_routing() -> IntentRouting {
+    let tree = parse_lino(INTENT_ROUTING_LINO);
+    let mut routing = IntentRouting::default();
+    if let Some(root) = tree.children.first() {
+        for child in &root.children {
+            match child.name.as_str() {
+                "intent" => {
+                    let mut keywords = Vec::new();
+                    let mut phrases = Vec::new();
+                    let mut tokens = Vec::new();
+                    let mut combos = Vec::new();
+                    for entry in &child.children {
+                        match entry.name.as_str() {
+                            "keyword" => keywords.push(entry.id.clone()),
+                            "phrase" => phrases.push(entry.id.clone()),
+                            "token" => tokens.push(entry.id.clone()),
+                            "combo" => combos.push(
+                                entry
+                                    .id
+                                    .split('+')
+                                    .map(str::trim)
+                                    .filter(|s| !s.is_empty())
+                                    .map(ToOwned::to_owned)
+                                    .collect(),
+                            ),
+                            _ => {}
+                        }
+                    }
+                    routing.intents.push(IntentRoute {
+                        id: child.id.clone(),
+                        slug: child.find_child_value("slug").to_string(),
+                        response_link: child.find_child_value("response_link").to_string(),
+                        keywords,
+                        phrases,
+                        tokens,
+                        combos,
+                    });
+                }
+                "article" => routing.article_prefixes.push(child.id.clone()),
+                "trace_prefix" => routing.trace_prefixes.push(child.id.clone()),
+                _ => {}
+            }
+        }
+    }
+    routing
+}
+
 pub fn prompt_patterns() -> Vec<PromptPattern> {
     let tree = parse_lino(PROMPT_PATTERNS_LINO);
     let mut out = Vec::new();
@@ -199,13 +324,12 @@ pub const MULTILINGUAL_RESPONSES_LINO: &str =
     include_str!("../data/seed/multilingual-responses.lino");
 pub const CONCEPTS_LINO: &str = include_str!("../data/seed/concepts.lino");
 pub const TOOLS_LINO: &str = include_str!("../data/seed/tools.lino");
-pub const LANGUAGE_DETECTION_LINO: &str =
-    include_str!("../data/seed/language-detection.lino");
+pub const LANGUAGE_DETECTION_LINO: &str = include_str!("../data/seed/language-detection.lino");
 pub const PROMPT_PATTERNS_LINO: &str = include_str!("../data/seed/prompt-patterns.lino");
+pub const INTENT_ROUTING_LINO: &str = include_str!("../data/seed/intent-routing.lino");
 pub const GREETINGS_LINO: &str = include_str!("../data/seed/greetings.lino");
 pub const IDENTITY_LINO: &str = include_str!("../data/seed/identity.lino");
-pub const HELLO_WORLD_PROGRAMS_LINO: &str =
-    include_str!("../data/seed/hello-world-programs.lino");
+pub const HELLO_WORLD_PROGRAMS_LINO: &str = include_str!("../data/seed/hello-world-programs.lino");
 pub const DEMO_DIALOGS_LINO: &str = include_str!("../data/seed/demo-dialogs.lino");
 
 /// Minimal Links Notation parser: shallow indented tree of `name "value"`
@@ -321,7 +445,10 @@ fn escape_value(raw: &str) -> String {
 
 fn parse_codepoint(value: &str) -> u32 {
     let trimmed = value.trim();
-    if let Some(stripped) = trimmed.strip_prefix("0x").or_else(|| trimmed.strip_prefix("0X")) {
+    if let Some(stripped) = trimmed
+        .strip_prefix("0x")
+        .or_else(|| trimmed.strip_prefix("0X"))
+    {
         u32::from_str_radix(stripped, 16).unwrap_or(0)
     } else {
         trimmed.parse::<u32>().unwrap_or(0)
@@ -411,5 +538,63 @@ mod tests {
         for (name, _) in seed_files() {
             assert!(bundle.contains(name), "bundle missing entry for {name}");
         }
+    }
+
+    #[test]
+    fn intent_routing_loads_greeting_identity_unknown() {
+        let routing = intent_routing();
+        let ids: std::collections::BTreeSet<String> =
+            routing.intents.iter().map(|r| r.id.clone()).collect();
+        for expected in [
+            "intent_greeting",
+            "intent_identity",
+            "intent_unknown",
+            "intent_hello_world",
+            "intent_concept_lookup",
+        ] {
+            assert!(ids.contains(expected), "missing intent {expected}");
+        }
+    }
+
+    #[test]
+    fn intent_routing_greeting_separates_keywords_from_tokens() {
+        let routing = intent_routing();
+        let greeting = routing
+            .intents
+            .iter()
+            .find(|r| r.id == "intent_greeting")
+            .expect("greeting route should exist");
+        assert!(greeting.keywords.iter().any(|k| k == "hello"));
+        assert!(
+            greeting.tokens.iter().any(|t| t == "greet"),
+            "the 'greet' fragment must be a token (substring match), not a keyword (exact match), \
+             so that prompts like 'Write me hello world program' don't get routed to greeting",
+        );
+        assert!(
+            !greeting.keywords.iter().any(|k| k == "greet"),
+            "regression guard: 'greet' must not be a keyword (exact-prompt match)",
+        );
+    }
+
+    #[test]
+    fn intent_routing_identity_combos_are_split_on_plus() {
+        let routing = intent_routing();
+        let identity = routing
+            .intents
+            .iter()
+            .find(|r| r.id == "intent_identity")
+            .expect("identity route should exist");
+        let combos: Vec<&Vec<String>> = identity.combos.iter().collect();
+        let who_you = combos
+            .iter()
+            .find(|c| c.len() == 2 && c[0] == "who" && c[1] == "you");
+        assert!(who_you.is_some(), "expected 'who+you' combo to be parsed");
+    }
+
+    #[test]
+    fn intent_routing_carries_article_and_trace_prefixes() {
+        let routing = intent_routing();
+        assert!(routing.article_prefixes.iter().any(|a| a == "the "));
+        assert!(routing.trace_prefixes.iter().any(|p| p == "trace_"));
     }
 }

@@ -25,6 +25,7 @@
     "seed/tools.lino",
     "seed/language-detection.lino",
     "seed/prompt-patterns.lino",
+    "seed/intent-routing.lino",
     "seed/greetings.lino",
     "seed/identity.lino",
     "seed/hello-world-programs.lino",
@@ -240,6 +241,54 @@
     return patterns;
   }
 
+  // Extract the intent routing table (`intent-routing.lino`) used by the
+  // worker to decide between greeting, identity, hello-world and unknown
+  // intents in a fully data-driven way. The schema is mirrored from
+  // `src/seed.rs::IntentRoute`.
+  function extractIntentRouting(node) {
+    var routing = {
+      intents: [],
+      articlePrefixes: [],
+      tracePrefixes: [],
+    };
+    if (!node || !Array.isArray(node.children)) return routing;
+    for (var i = 0; i < node.children.length; i += 1) {
+      var child = node.children[i];
+      if (!child || !child.name) continue;
+      if (child.name === "intent") {
+        var route = {
+          id: child.id,
+          slug: findChildValue(child, "slug"),
+          responseLink: findChildValue(child, "response_link"),
+          keywords: [],
+          phrases: [],
+          tokens: [],
+          combos: [],
+        };
+        for (var j = 0; j < child.children.length; j += 1) {
+          var entry = child.children[j];
+          if (entry.name === "keyword") route.keywords.push(entry.id);
+          else if (entry.name === "phrase") route.phrases.push(entry.id);
+          else if (entry.name === "token") route.tokens.push(entry.id);
+          else if (entry.name === "combo") {
+            route.combos.push(
+              String(entry.id || "")
+                .split("+")
+                .map(trim)
+                .filter(Boolean),
+            );
+          }
+        }
+        routing.intents.push(route);
+      } else if (child.name === "article") {
+        routing.articlePrefixes.push(child.id);
+      } else if (child.name === "trace_prefix") {
+        routing.tracePrefixes.push(child.id);
+      }
+    }
+    return routing;
+  }
+
   function splitList(value) {
     if (!value) return [];
     return String(value)
@@ -280,6 +329,7 @@
         agentInfo: {},
         languageRules: [],
         promptPatterns: [],
+        intentRouting: { intents: [], articlePrefixes: [], tracePrefixes: [] },
         raw: {},
       };
       for (var i = 0; i < results.length; i += 1) {
@@ -302,6 +352,8 @@
           seed.languageRules = seed.languageRules.concat(extractLanguageRules(root));
         } else if (item.file.indexOf("prompt-patterns") !== -1) {
           seed.promptPatterns = seed.promptPatterns.concat(extractPromptPatterns(root));
+        } else if (item.file.indexOf("intent-routing") !== -1) {
+          seed.intentRouting = extractIntentRouting(root);
         }
       }
       return seed;
@@ -327,6 +379,7 @@
     extractPromptPatterns: extractPromptPatterns,
     extractConcepts: extractConcepts,
     extractTools: extractTools,
+    extractIntentRouting: extractIntentRouting,
     DEFAULT_FILES: DEFAULT_FILES,
     isWorker: isWorker(),
   };

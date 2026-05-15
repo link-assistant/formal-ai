@@ -526,25 +526,41 @@ pub struct KnowledgeGraph {
     pub edges: Vec<GraphEdge>,
 }
 
-const KNOWN_INTENT_SLUGS: &[&str] = &[
-    "greeting",
-    "identity",
-    "hello_world",
-    "translation",
-    "algorithm",
-    "meta_explanation",
-    "unknown",
-    "recall_name",
-];
+fn known_intent_slugs() -> &'static [String] {
+    static CELL: OnceLock<Vec<String>> = OnceLock::new();
+    CELL.get_or_init(|| {
+        seed::intent_routing()
+            .intents
+            .into_iter()
+            .filter_map(|route| {
+                if route.slug.is_empty() {
+                    None
+                } else {
+                    Some(route.slug)
+                }
+            })
+            .collect()
+    })
+    .as_slice()
+}
+
+fn trace_prefixes() -> &'static [String] {
+    static CELL: OnceLock<Vec<String>> = OnceLock::new();
+    CELL.get_or_init(|| seed::intent_routing().trace_prefixes)
+        .as_slice()
+}
 
 #[must_use]
 pub fn is_known_trace_id(trace: &str) -> bool {
-    if trace.starts_with("answer_") || trace.starts_with("trace_") {
+    if trace_prefixes()
+        .iter()
+        .any(|prefix| trace.starts_with(prefix.as_str()))
+    {
         return true;
     }
-    KNOWN_INTENT_SLUGS
+    known_intent_slugs()
         .iter()
-        .any(|slug| trace.eq_ignore_ascii_case(slug) || trace.contains(slug))
+        .any(|slug| trace.eq_ignore_ascii_case(slug) || trace.contains(slug.as_str()))
 }
 
 #[must_use]
@@ -728,39 +744,51 @@ pub(crate) fn response_link_for_intent(rule: &SelectedRule, _intent: &str) -> St
     String::from(rule.response_link())
 }
 
+fn intent_route(id: &str) -> Option<&'static seed::IntentRoute> {
+    static CELL: OnceLock<Vec<seed::IntentRoute>> = OnceLock::new();
+    let routes = CELL.get_or_init(|| seed::intent_routing().intents);
+    routes.iter().find(|route| route.id == id)
+}
+
+fn matches_intent_route(normalized_prompt: &str, id: &str) -> bool {
+    let Some(route) = intent_route(id) else {
+        return false;
+    };
+    if route
+        .keywords
+        .iter()
+        .any(|kw| normalized_prompt == kw.as_str())
+    {
+        return true;
+    }
+    if route
+        .phrases
+        .iter()
+        .any(|phrase| normalized_prompt == phrase.as_str())
+    {
+        return true;
+    }
+    if route
+        .tokens
+        .iter()
+        .any(|token| contains_token(normalized_prompt, token))
+    {
+        return true;
+    }
+    route.combos.iter().any(|combo| {
+        !combo.is_empty()
+            && combo
+                .iter()
+                .all(|token| contains_token(normalized_prompt, token))
+    })
+}
+
 fn is_greeting(normalized_prompt: &str) -> bool {
-    matches!(
-        normalized_prompt,
-        "hi" | "hello" | "hey" | "привет" | "здравствуйте" | "नमस्ते" | "你好"
-    ) || contains_token(normalized_prompt, "greet")
+    matches_intent_route(normalized_prompt, "intent_greeting")
 }
 
 fn is_identity_question(normalized_prompt: &str) -> bool {
-    matches!(
-        normalized_prompt,
-        "who are you"
-            | "what are you"
-            | "who is formal ai"
-            | "what is formal ai"
-            | "who is formalai"
-            | "what is formalai"
-            | "tell me about yourself"
-            | "introduce yourself"
-            | "кто ты"
-            | "что ты"
-            | "तुम कौन हो"
-            | "你是谁"
-    ) || (contains_token(normalized_prompt, "who") && contains_token(normalized_prompt, "you"))
-        || (contains_token(normalized_prompt, "what") && contains_token(normalized_prompt, "you"))
-        || ((contains_token(normalized_prompt, "who") || contains_token(normalized_prompt, "what"))
-            && contains_token(normalized_prompt, "formal")
-            && contains_token(normalized_prompt, "ai"))
-        || (contains_token(normalized_prompt, "tell")
-            && contains_token(normalized_prompt, "yourself"))
-        || (contains_token(normalized_prompt, "introduce")
-            && contains_token(normalized_prompt, "yourself"))
-        || (contains_token(normalized_prompt, "кто") && contains_token(normalized_prompt, "ты"))
-        || (contains_token(normalized_prompt, "что") && contains_token(normalized_prompt, "ты"))
+    matches_intent_route(normalized_prompt, "intent_identity")
 }
 
 fn hello_world_program(normalized_prompt: &str) -> Option<&'static HelloWorldProgram> {

@@ -562,6 +562,28 @@ mod tests {
             .any(|link| link.starts_with("trace:")));
     }
 
+    // Regression guard for the keyword/token split in intent-routing.lino:
+    // before the fix, "hello" was a greeting keyword matched via `contains_token`,
+    // so any multi-word prompt that mentioned "hello" (like a hello-world request)
+    // got misrouted to greeting. After the fix, keywords must match the whole
+    // prompt exactly, and only the dedicated `token "greet"` uses contains.
+    #[test]
+    fn hello_world_request_is_not_routed_to_greeting() {
+        let response =
+            UniversalSolver::default().solve("Write me hello world program in Rust");
+        assert_ne!(response.intent, "greeting", "answer was: {}", response.answer);
+        assert!(
+            response.intent.starts_with("hello_world"),
+            "expected hello_world intent, got {}",
+            response.intent
+        );
+        assert!(
+            response.answer.to_lowercase().contains("rust"),
+            "expected Rust hello world, got: {}",
+            response.answer
+        );
+    }
+
     #[test]
     fn prime_validation_picks_seventeen_in_range() {
         let response = UniversalSolver::default().solve("Pick a prime number between 14 and 18");
