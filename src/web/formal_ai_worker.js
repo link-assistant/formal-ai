@@ -5,39 +5,53 @@
 // all produce the same answers for the same prompts. The answer the user
 // sees is always a projection of an append-only event log — there is no
 // hardcoded prompt→answer table.
+//
+// All multilingual phrases, concept summaries, and the tool registry are
+// loaded from `seed/*.lino` files at startup via `seed_loader.js`. Editing a
+// `.lino` file is enough to retune the agent — no JavaScript change required.
+
+try {
+  importScripts("seed_loader.js");
+} catch (_error) {
+  // Seed loader is optional: tests that mock the worker may exclude it.
+}
 
 let wasm;
 let mode = "wasm worker";
 
-const IDENTITY_ANSWER =
+// Hard-coded fallbacks. These are only used if `seed/*.lino` fails to load,
+// e.g. when the worker runs from a `file://` URL. The shipped GitHub Pages
+// build always fetches the seed successfully.
+const FALLBACK_IDENTITY_ANSWER =
   "I am formal-ai, a deterministic symbolic AI proof of concept that answers from local Links Notation rules and OpenAI-compatible API shapes. I do not perform neural inference in this demo.";
 
-const UNKNOWN_ANSWER =
+const FALLBACK_GREETING_ANSWER = "Hi, how may I help you?";
+
+const FALLBACK_UNKNOWN_ANSWER =
   "I do not have a learned symbolic rule for that prompt yet. Add a Links Notation fact or rule, then run the request again.";
 
-const MULTILINGUAL_ANSWERS = {
-  greeting: {
-    ru: "Здравствуйте! Чем могу помочь?",
-    hi: "नमस्ते! मैं आपकी क्या मदद कर सकता हूँ?",
-    zh: "你好!请问有什么可以帮您的?",
-  },
-  identity: {
-    ru:
-      "Я formal-ai — детерминированный символьный AI proof of concept, который отвечает на основе локальных правил Links Notation и совместимых OpenAI-форматов. В этой демонстрации я не выполняю нейросетевой инференс.",
-    hi:
-      "मैं formal-ai हूँ — एक नियतात्मक प्रतीकात्मक AI proof of concept, जो स्थानीय Links Notation नियमों और OpenAI-संगत API आकारों से उत्तर देता है। इस डेमो में मैं कोई न्यूरल इन्फेरेन्स नहीं करता।",
-    zh:
-      "我是 formal-ai —— 一个确定性的符号化 AI 概念验证项目,根据本地的 Links Notation 规则和兼容 OpenAI 的 API 形式作答。本演示不进行任何神经网络推理。",
-  },
-  unknown: {
-    ru:
-      "Я пока не знаю символьного правила для этого запроса. Добавьте факт или правило в Links Notation и повторите запрос.",
-    hi:
-      "मेरे पास इस संकेत के लिए अभी कोई सीखा हुआ प्रतीकात्मक नियम नहीं है। Links Notation में एक तथ्य या नियम जोड़ें और फिर अनुरोध दोबारा भेजें।",
-    zh:
-      "我目前还没有针对该提示的符号规则。请用 Links Notation 添加事实或规则,然后再次发送请求。",
-  },
+// Mutable runtime tables — populated from seed at init().
+let MULTILINGUAL_ANSWERS = {
+  greeting: { en: FALLBACK_GREETING_ANSWER },
+  identity: { en: FALLBACK_IDENTITY_ANSWER },
+  unknown: { en: FALLBACK_UNKNOWN_ANSWER },
 };
+let CONCEPTS = [];
+let TOOLS = [];
+let SEED_RAW = {};
+
+function answerFor(intent, language) {
+  const table = MULTILINGUAL_ANSWERS[intent] || {};
+  return (
+    table[language] ||
+    table.en ||
+    (intent === "greeting"
+      ? FALLBACK_GREETING_ANSWER
+      : intent === "identity"
+      ? FALLBACK_IDENTITY_ANSWER
+      : FALLBACK_UNKNOWN_ANSWER)
+  );
+}
 
 function detectLanguage(prompt) {
   const text = String(prompt || "");
@@ -51,132 +65,7 @@ function detectLanguage(prompt) {
   return "en";
 }
 
-const CONCEPTS = [
-  {
-    slug: "concept_universal_solver",
-    term: "universal solver",
-    aliases: ["the universal solver", "universal problem solver"],
-    category: "algorithm",
-    summary:
-      "The universal solver is formal-ai's deterministic 11-step loop: impulse, formalization, context, history, decomposition, TDD, synthesis, combination, verification, simplification, documentation. Every interface routes through the same loop.",
-    source: "docs/case-studies/issue-12/README.md",
-    sourceKind: "project-docs",
-  },
-  {
-    slug: "concept_event_log",
-    term: "event log",
-    aliases: ["the event log", "eventlog", "append-only log"],
-    category: "data-structure",
-    summary:
-      "The event log is formal-ai's append-only system of record. Every step in the universal solver loop appends an Event with a stable content-addressed id; the user-facing answer is, by construction, a projection of this log.",
-    source: "docs/NON-GOALS.md",
-    sourceKind: "project-docs",
-  },
-  {
-    slug: "concept_links_notation",
-    term: "Links Notation",
-    aliases: ["links notation", "lino", "the links notation format"],
-    category: "data-format",
-    summary:
-      "Links Notation is an indentation-based, untyped serialization format used by the Deep Theory project to represent links and link networks as portable text.",
-    source: "https://github.com/linksplatform/Documentation",
-    sourceKind: "project-docs",
-  },
-  {
-    slug: "concept_doublet",
-    term: "doublet",
-    aliases: ["doublet link", "a doublet", "two-link"],
-    category: "data-structure",
-    summary:
-      "A doublet is a link with exactly two endpoints. In Deep Theory it is the canonical reduction target for higher-arity links because every higher arity can be encoded as a chain of doublets.",
-    source: "docs/VISION.md",
-    sourceKind: "project-docs",
-  },
-  {
-    slug: "concept_wikipedia",
-    term: "Wikipedia",
-    aliases: [
-      "wikipedia",
-      "the wikipedia",
-      "en.wikipedia",
-      "википедия",
-      "विकिपीडिया",
-      "维基百科",
-      "維基百科",
-    ],
-    category: "encyclopedia",
-    summary:
-      "Wikipedia is a free, multilingual online encyclopedia written and maintained by a community of volunteer contributors through a model of open collaboration.",
-    source: "https://en.wikipedia.org/wiki/Wikipedia",
-    sourceKind: "wikipedia",
-  },
-  {
-    slug: "concept_wikidata",
-    term: "Wikidata",
-    aliases: [
-      "wikidata",
-      "the wikidata knowledge graph",
-      "викидата",
-      "विकिडेटा",
-      "维基数据",
-      "維基數據",
-    ],
-    category: "structured-knowledge",
-    summary:
-      "Wikidata is a collaboratively edited multilingual knowledge graph hosted by the Wikimedia Foundation. It stores structured data items that power Wikipedia infoboxes and external knowledge applications.",
-    source: "https://en.wikipedia.org/wiki/Wikidata",
-    sourceKind: "wikipedia",
-  },
-  {
-    slug: "concept_wiktionary",
-    term: "Wiktionary",
-    aliases: [
-      "wiktionary",
-      "the wiktionary dictionary",
-      "викисловарь",
-      "विक्षनरी",
-      "维基词典",
-      "維基辭典",
-    ],
-    category: "dictionary",
-    summary:
-      "Wiktionary is a multilingual, web-based free-content dictionary, available in many languages and including thesaurus, rhymes, translations, audio pronunciations, etymologies, and definitions.",
-    source: "https://en.wikipedia.org/wiki/Wiktionary",
-    sourceKind: "wikipedia",
-  },
-  {
-    slug: "concept_webassembly",
-    term: "WebAssembly",
-    aliases: ["webassembly", "wasm", "the wasm runtime"],
-    category: "runtime",
-    summary:
-      "WebAssembly (Wasm) is a binary instruction format for a stack-based virtual machine. It is designed as a portable compilation target for programming languages, enabling deployment on the web for client and server applications.",
-    source: "https://en.wikipedia.org/wiki/WebAssembly",
-    sourceKind: "wikipedia",
-  },
-  {
-    slug: "concept_rust",
-    term: "Rust",
-    aliases: [
-      "rust",
-      "rust programming language",
-      "the rust language",
-      "rust-lang",
-      "раст",
-      "язык раст",
-      "रस्ट",
-      "रस्ट प्रोग्रामिंग",
-      "rust 语言",
-      "rust语言",
-      "rust 程序设计语言",
-    ],
-    category: "programming-language",
-    summary:
-      "Rust is a multi-paradigm, general-purpose programming language that emphasises performance, type safety, and concurrency. It enforces memory safety without using a garbage collector.",
-    source: "https://en.wikipedia.org/wiki/Rust_(programming_language)",
-    sourceKind: "wikipedia",
-  },
-];
+// CONCEPTS is populated from `seed/concepts.lino` at init() time.
 
 function normalizePrompt(prompt) {
   return prompt.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
@@ -951,21 +840,18 @@ async function solve(prompt, history) {
 
   if (isGreetingPrompt(normalized, prompt)) {
     events.push("rule:greeting");
-    const content =
-      MULTILINGUAL_ANSWERS.greeting[language] || "Hi, how may I help you?";
     return finalize(events, {
       intent: "greeting",
-      content,
+      content: answerFor("greeting", language),
       confidence: 1.0,
       evidence: ["rule:greeting", `language:${language}`],
     });
   }
   if (isIdentityPrompt(normalized, prompt)) {
     events.push("rule:identity");
-    const content = MULTILINGUAL_ANSWERS.identity[language] || IDENTITY_ANSWER;
     return finalize(events, {
       intent: "identity",
-      content,
+      content: answerFor("identity", language),
       confidence: 1.0,
       evidence: ["rule:identity", `language:${language}`],
     });
@@ -993,11 +879,9 @@ async function solve(prompt, history) {
   }
 
   events.push("fallback:unknown");
-  const unknownContent =
-    MULTILINGUAL_ANSWERS.unknown[language] || UNKNOWN_ANSWER;
   return finalize(events, {
     intent: "unknown",
-    content: unknownContent,
+    content: answerFor("unknown", language),
     confidence: 0.1,
     evidence: ["fallback:unknown", `language:${language}`],
   });
@@ -1014,8 +898,42 @@ function finalize(events, answer) {
   };
 }
 
+let seedLoaded = false;
+
+async function loadSeed() {
+  if (seedLoaded) return;
+  seedLoaded = true;
+  if (typeof self.FormalAiSeed !== "object" || self.FormalAiSeed === null) {
+    return;
+  }
+  try {
+    const seed = await self.FormalAiSeed.loadAll();
+    SEED_RAW = (seed && seed.raw) || {};
+    if (seed && seed.responses) {
+      const merged = {
+        greeting: Object.assign({}, MULTILINGUAL_ANSWERS.greeting, seed.responses.greeting || {}),
+        identity: Object.assign({}, MULTILINGUAL_ANSWERS.identity, seed.responses.identity || {}),
+        unknown: Object.assign({}, MULTILINGUAL_ANSWERS.unknown, seed.responses.unknown || {}),
+      };
+      Object.keys(seed.responses).forEach((key) => {
+        if (!merged[key]) merged[key] = seed.responses[key];
+      });
+      MULTILINGUAL_ANSWERS = merged;
+    }
+    if (Array.isArray(seed && seed.concepts) && seed.concepts.length > 0) {
+      CONCEPTS = seed.concepts;
+    }
+    if (Array.isArray(seed && seed.tools) && seed.tools.length > 0) {
+      TOOLS = seed.tools;
+    }
+  } catch (_error) {
+    // Keep fallback tables on error.
+  }
+}
+
 async function init() {
   if (wasm !== undefined) return;
+  await loadSeed();
   try {
     const source = await fetch("formal_ai_worker.wasm");
     const bytes = await source.arrayBuffer();
@@ -1025,17 +943,38 @@ async function init() {
     wasm = null;
     mode = "js fallback";
   }
-  postMessage({ kind: "ready", mode });
+  postMessage({
+    kind: "ready",
+    mode,
+    seed: {
+      responseIntents: Object.keys(MULTILINGUAL_ANSWERS),
+      conceptCount: CONCEPTS.length,
+      toolCount: TOOLS.length,
+      files: Object.keys(SEED_RAW),
+    },
+  });
 }
 
 self.onmessage = async (event) => {
   await init();
-  const prompt = event.data.prompt || "";
-  const history = Array.isArray(event.data.history) ? event.data.history : [];
+  const data = event.data || {};
+  if (data.kind === "seed_dump") {
+    postMessage({
+      kind: "seed_dump",
+      requestId: data.requestId,
+      raw: SEED_RAW,
+      responses: MULTILINGUAL_ANSWERS,
+      concepts: CONCEPTS,
+      tools: TOOLS,
+    });
+    return;
+  }
+  const prompt = data.prompt || "";
+  const history = Array.isArray(data.history) ? data.history : [];
   const answer = await solve(prompt, history);
   postMessage({
     kind: "message",
-    requestId: event.data.requestId,
+    requestId: data.requestId,
     intent: answer.intent,
     content: answer.content,
     confidence: answer.confidence,

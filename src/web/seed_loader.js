@@ -1,0 +1,252 @@
+// Shared Links Notation seed loader for the demo.
+//
+// The browser demo loads its multilingual response phrases, concept summaries,
+// and tool registry from `src/web/seed/*.lino` instead of hardcoded JavaScript
+// constants. Every prompt-handling decision is therefore data-driven: a user
+// who wants to retune their own agent can edit a `.lino` file and ship it
+// alongside the static site without touching the worker code.
+//
+// The loader is intentionally minimal: indentation-based, untyped, and shared
+// between the main thread (`window.FormalAiSeed`) and the worker
+// (`self.FormalAiSeed`) without any bundler step.
+
+(function (global) {
+  "use strict";
+
+  var DEFAULT_FILES = [
+    "seed/multilingual-responses.lino",
+    "seed/concepts.lino",
+    "seed/tools.lino",
+  ];
+
+  function isWorker() {
+    return (
+      typeof global.WorkerGlobalScope !== "undefined" &&
+      global instanceof global.WorkerGlobalScope
+    );
+  }
+
+  function unescapeValue(value) {
+    return String(value || "")
+      .replace(/\\n/g, "\n")
+      .replace(/\\"/g, '"')
+      .replace(/\\\\/g, "\\");
+  }
+
+  // Parse an indented Links Notation document into a nested structure:
+  //
+  //   root_node
+  //     child "name"
+  //       key "value"
+  //
+  // -> { name: "root_node", children: [ { name: "child", id: "name",
+  //          children: [ { name: "key", id: "value", children: [] } ] } ] }
+  function parseLino(text) {
+    var lines = String(text || "").split(/\r?\n/);
+    var root = { name: "", id: "", value: "", children: [], indent: -1 };
+    var stack = [root];
+    for (var i = 0; i < lines.length; i += 1) {
+      var line = lines[i];
+      if (!line || /^\s*$/.test(line)) continue;
+      var indentMatch = /^(\s*)/.exec(line);
+      var indent = indentMatch ? indentMatch[1].length : 0;
+      var content = line.slice(indent);
+      // Walk back up to find the parent for this indent.
+      while (stack.length > 1 && stack[stack.length - 1].indent >= indent) {
+        stack.pop();
+      }
+      var parent = stack[stack.length - 1];
+      var node = parseLinoLine(content, indent);
+      parent.children.push(node);
+      stack.push(node);
+    }
+    return root.children.length === 1 ? root.children[0] : root;
+  }
+
+  function parseLinoLine(content, indent) {
+    var node = {
+      name: "",
+      id: "",
+      value: "",
+      children: [],
+      indent: indent,
+    };
+    var first = content.indexOf(' "');
+    if (first === -1) {
+      node.name = content.trim();
+      return node;
+    }
+    node.name = content.slice(0, first).trim();
+    var rest = content.slice(first + 1).trim();
+    if (rest.length === 0 || rest[0] !== '"') return node;
+    var closing = -1;
+    for (var i = 1; i < rest.length; i += 1) {
+      if (rest[i] === "\\") {
+        i += 1;
+        continue;
+      }
+      if (rest[i] === '"') {
+        closing = i;
+        break;
+      }
+    }
+    if (closing === -1) return node;
+    node.id = unescapeValue(rest.slice(1, closing));
+    node.value = node.id;
+    return node;
+  }
+
+  function findChildren(node, name) {
+    if (!node || !Array.isArray(node.children)) return [];
+    return node.children.filter(function (child) {
+      return child.name === name;
+    });
+  }
+
+  function findChildValue(node, name) {
+    var match = findChildren(node, name)[0];
+    return match ? match.id : "";
+  }
+
+  function extractMultilingualResponses(node) {
+    var responses = {};
+    if (!node) return responses;
+    var entries = findChildren(node, "response");
+    for (var i = 0; i < entries.length; i += 1) {
+      var entry = entries[i];
+      var intent = findChildValue(entry, "intent");
+      var language = findChildValue(entry, "language");
+      var text = findChildValue(entry, "text");
+      if (!intent || !language || !text) continue;
+      if (!responses[intent]) responses[intent] = {};
+      responses[intent][language] = text;
+    }
+    return responses;
+  }
+
+  function extractConcepts(root) {
+    if (!root || !Array.isArray(root.children)) return [];
+    var nodes = root.name === "" || !root.name ? root.children : [root].concat(root.children || []);
+    // Concept files are flat — each top-level child is one record.
+    var concepts = [];
+    var iterate = function (item) {
+      if (!item || !item.name) return;
+      if (!item.name.startsWith("concept_")) return;
+      var aliases = findChildValue(item, "aliases");
+      concepts.push({
+        slug: item.name,
+        term: findChildValue(item, "term"),
+        category: findChildValue(item, "category") || "concept",
+        summary: findChildValue(item, "summary"),
+        source: findChildValue(item, "source"),
+        sourceKind: findChildValue(item, "source_kind") || "project-docs",
+        aliases: aliases ? aliases.split("|").map(trim).filter(Boolean) : [],
+      });
+    };
+    if (root.name && root.name.startsWith("concept_")) {
+      iterate(root);
+    } else if (Array.isArray(root.children)) {
+      root.children.forEach(iterate);
+    }
+    return concepts;
+  }
+
+  function extractTools(node) {
+    var tools = [];
+    if (!node) return tools;
+    var entries = findChildren(node, "tool");
+    for (var i = 0; i < entries.length; i += 1) {
+      var entry = entries[i];
+      tools.push({
+        id: entry.id,
+        name: findChildValue(entry, "name"),
+        description: findChildValue(entry, "description"),
+        mode: findChildValue(entry, "mode") || "thinking",
+        inputs: splitList(findChildValue(entry, "inputs")),
+        outputs: splitList(findChildValue(entry, "outputs")),
+        isolation: findChildValue(entry, "isolation"),
+        sources: splitList(findChildValue(entry, "sources")),
+      });
+    }
+    return tools;
+  }
+
+  function splitList(value) {
+    if (!value) return [];
+    return String(value)
+      .split("|")
+      .map(trim)
+      .filter(Boolean);
+  }
+
+  function trim(value) {
+    return String(value || "").trim();
+  }
+
+  function fetchText(url) {
+    if (typeof global.fetch !== "function") {
+      return Promise.resolve("");
+    }
+    return global.fetch(url).then(function (response) {
+      if (!response || !response.ok) return "";
+      return response.text();
+    }, function () {
+      return "";
+    });
+  }
+
+  function loadAll(files) {
+    var target = Array.isArray(files) && files.length ? files : DEFAULT_FILES;
+    return Promise.all(
+      target.map(function (file) {
+        return fetchText(file).then(function (text) {
+          return { file: file, text: text };
+        });
+      }),
+    ).then(function (results) {
+      var seed = {
+        responses: {},
+        concepts: [],
+        tools: [],
+        raw: {},
+      };
+      for (var i = 0; i < results.length; i += 1) {
+        var item = results[i];
+        seed.raw[item.file] = item.text;
+        if (!item.text) continue;
+        var root = parseLino(item.text);
+        if (item.file.indexOf("multilingual") !== -1) {
+          seed.responses = mergeResponses(
+            seed.responses,
+            extractMultilingualResponses(root),
+          );
+        } else if (item.file.indexOf("concepts") !== -1) {
+          seed.concepts = seed.concepts.concat(extractConcepts(root));
+        } else if (item.file.indexOf("tools") !== -1) {
+          seed.tools = seed.tools.concat(extractTools(root));
+        }
+      }
+      return seed;
+    });
+  }
+
+  function mergeResponses(a, b) {
+    var out = {};
+    var keys = Object.keys(a).concat(Object.keys(b || {}));
+    for (var i = 0; i < keys.length; i += 1) {
+      var key = keys[i];
+      out[key] = Object.assign({}, a[key] || {}, (b || {})[key] || {});
+    }
+    return out;
+  }
+
+  global.FormalAiSeed = {
+    parse: parseLino,
+    loadAll: loadAll,
+    extractMultilingualResponses: extractMultilingualResponses,
+    extractConcepts: extractConcepts,
+    extractTools: extractTools,
+    DEFAULT_FILES: DEFAULT_FILES,
+    isWorker: isWorker(),
+  };
+})(typeof self !== "undefined" ? self : globalThis);
