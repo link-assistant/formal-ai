@@ -466,3 +466,49 @@ fn russian_unknown_reply_is_in_russian() {
         response.answer
     );
 }
+
+// ---------------------------------------------------------------------------
+// Issue #29: "не понял" and other clarification prompts should be handled
+// with a helpful clarification response, not the generic "unknown" fallback.
+// ---------------------------------------------------------------------------
+
+#[test]
+fn russian_did_not_understand_returns_clarification_intent() {
+    let response = answer("не понял");
+    assert_eq!(
+        response.intent, "clarification",
+        "\"не понял\" should map to clarification intent, got: {}",
+        response.intent
+    );
+}
+
+#[test]
+fn russian_clarification_reply_is_in_russian() {
+    let response = answer("не понял");
+    assert!(
+        !response.answer.contains("symbolic rule")
+            && !response.answer.contains("Links Notation fact"),
+        "clarification reply must not be the generic unknown-intent fallback, got: {}",
+        response.answer
+    );
+}
+
+#[test]
+fn english_did_not_understand_returns_clarification_intent() {
+    let response = answer("I don't understand");
+    assert_eq!(
+        response.intent, "clarification",
+        "\"I don't understand\" should map to clarification intent, got: {}",
+        response.intent
+    );
+}
+
+#[test]
+fn english_dont_understand_variant_returns_clarification_intent() {
+    let response = answer("I didn't understand");
+    assert_eq!(
+        response.intent, "clarification",
+        "\"I didn't understand\" should map to clarification intent, got: {}",
+        response.intent
+    );
+}
