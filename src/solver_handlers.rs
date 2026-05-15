@@ -647,6 +647,56 @@ pub fn try_source_conflict(
     ))
 }
 
+pub fn try_clarification(
+    prompt: &str,
+    normalized: &str,
+    log: &mut EventLog,
+) -> Option<SymbolicAnswer> {
+    let is_clarification = normalized == "не понял"
+        || normalized == "не понимаю"
+        || normalized == "не поняла"
+        || normalized == "не понятно"
+        || normalized == "непонятно"
+        || normalized.contains("i don't understand")
+        || normalized.contains("i dont understand")
+        || normalized.contains("i didn't understand")
+        || normalized.contains("i didnt understand")
+        || normalized.contains("don't understand")
+        || normalized.contains("dont understand")
+        || normalized.contains("didn't understand")
+        || normalized.contains("didnt understand")
+        || normalized.contains("what do you mean")
+        || normalized.contains("i'm confused")
+        || normalized.contains("im confused")
+        || normalized.contains("i am confused")
+        || normalized.contains("समझ नहीं आया")
+        || normalized.contains("समझ नहीं आई")
+        || normalized.contains("我不明白")
+        || normalized.contains("我不懂")
+        || normalized.contains("听不懂");
+    if !is_clarification {
+        return None;
+    }
+    let language = detect_language(prompt);
+    let body = response_for("clarification", language.slug())
+        .or_else(|| response_for("clarification", "en"))
+        .unwrap_or_else(|| {
+            String::from(
+                "I'm sorry for the confusion. I am formal-ai, a deterministic symbolic AI. \
+                 I can answer greetings, identity questions, concept lookups (\"what is X?\"), \
+                 arithmetic, and Hello World programs.",
+            )
+        });
+    Some(finalize_simple(
+        prompt,
+        log,
+        "clarification",
+        "response:clarification",
+        &body,
+        0.9,
+    ))
+}
+
 pub fn try_ill_formed(
     prompt: &str,
     normalized: &str,
