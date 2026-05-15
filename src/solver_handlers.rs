@@ -397,12 +397,14 @@ pub fn try_meta_explanation(
     } else {
         response_for("meta_explanation", language)
             .or_else(|| response_for("meta_explanation", "en"))
-            .unwrap_or_else(|| String::from(
+            .unwrap_or_else(|| {
+                String::from(
                 "I work by matching your prompt against deterministic Links Notation rules stored \
                  in memory. Each rule maps a recognized pattern to a fixed response. When no rule \
                  matches, I report intent: unknown. There is no neural inference — every answer is \
                  fully traceable to a symbolic rule.",
-            ))
+            )
+            })
     };
     Some(finalize_simple(
         prompt,
