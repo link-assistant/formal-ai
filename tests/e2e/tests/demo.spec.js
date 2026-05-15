@@ -82,7 +82,9 @@ test.describe('formal-ai demo UI', () => {
 
     const buttons = promptList.locator('button');
     await expect(buttons.first()).toContainText('Hi');
-    await expect(buttons.nth(1)).toContainText('Rust');
+    // Issue #27: the list now includes multilingual greetings before the Rust
+    // hello-world entry, so match by label instead of by absolute index.
+    await expect(promptList.locator('button[data-prompt-label*="Rust"]').first()).toBeVisible();
   });
 
   test('chat input and send button are present', async ({ page }) => {
@@ -187,7 +189,10 @@ test.describe('formal-ai demo UI', () => {
   test('unknown prompts include a prefilled missing-rule issue link', async ({ page }) => {
     await switchToManualMode(page);
 
-    const prompt = 'What is the capital of France?';
+    // Pick a phrase no Wikipedia article will match so the unknown-intent
+    // fallback path is exercised (the Wikipedia REST API answers many
+    // plausible-looking questions like "What is the capital of France?").
+    const prompt = 'Quxblort fnordwarble plimsy gabble what?';
     const input = page.locator('[data-testid="chat-composer-input"]');
     await input.fill(prompt);
 
