@@ -91,6 +91,122 @@ fn pages_e2e_uses_deployment_output_url() {
 }
 
 #[test]
+fn pages_deploy_is_pinned_and_live_e2e_waits_for_matching_deployment() {
+    let workflow = release_workflow();
+    let deploy_demo = job_block(&workflow, "deploy-demo");
+    let pages_e2e = job_block(&workflow, "test-e2e-pages");
+
+    assert!(
+        deploy_demo.contains("ref: ${{ github.sha }}"),
+        "Pages deployment should use the exact commit that passed CI"
+    );
+    assert!(
+        deploy_demo.contains("Stamp GitHub Pages artifact"),
+        "Pages deployment should stamp a per-commit asset marker before upload"
+    );
+    assert!(
+        deploy_demo.contains("scripts/stamp-pages-artifact.sh src/web \"${{ github.sha }}\""),
+        "Pages deployment should stamp src/web with the workflow commit SHA"
+    );
+    assert!(
+        pages_e2e.contains("scripts/wait-for-pages-deployment.sh"),
+        "live Pages e2e should poll for the deployed commit before Playwright starts"
+    );
+    assert!(
+        pages_e2e.contains("needs.deploy-demo.outputs.page_url"),
+        "live Pages e2e should probe the resolved Pages URL"
+    );
+    assert!(
+        pages_e2e.contains("\"${{ github.sha }}\""),
+        "live Pages e2e should wait for the current workflow commit"
+    );
+    assert!(
+        !pages_e2e.contains("run: sleep 30"),
+        "a fixed sleep can still test stale GitHub Pages assets"
+    );
+}
+
+#[test]
+fn static_demo_runtime_assets_are_cache_busted_by_deployment_version() {
+    let manifest_dir = env!("CARGO_MANIFEST_DIR");
+    let index_html = fs::read_to_string(format!("{manifest_dir}/src/web/index.html")).unwrap();
+    let app_js = fs::read_to_string(format!("{manifest_dir}/src/web/app.js")).unwrap();
+    let seed_loader_js =
+        fs::read_to_string(format!("{manifest_dir}/src/web/seed_loader.js")).unwrap();
+    let worker_js =
+        fs::read_to_string(format!("{manifest_dir}/src/web/formal_ai_worker.js")).unwrap();
+    let stamp_script =
+        fs::read_to_string(format!("{manifest_dir}/scripts/stamp-pages-artifact.sh")).unwrap();
+    let wait_script = fs::read_to_string(format!(
+        "{manifest_dir}/scripts/wait-for-pages-deployment.sh"
+    ))
+    .unwrap();
+
+    for asset in [
+        "styles.css?v=__FORMAL_AI_ASSET_VERSION__",
+        "seed_loader.js?v=__FORMAL_AI_ASSET_VERSION__",
+        "preferences.js?v=__FORMAL_AI_ASSET_VERSION__",
+        "memory.js?v=__FORMAL_AI_ASSET_VERSION__",
+        "app.js?v=__FORMAL_AI_ASSET_VERSION__",
+    ] {
+        assert!(
+            index_html.contains(asset),
+            "index.html should version local asset {asset}"
+        );
+    }
+    assert!(index_html.contains("window.FORMAL_AI_ASSET_VERSION"));
+    assert!(app_js.contains("withAssetVersion(\"formal_ai_worker.js\")"));
+    assert!(seed_loader_js.contains("fetchText(withAssetVersion(file))"));
+    assert!(worker_js.contains("importScripts(withAssetVersion(\"seed_loader.js\"))"));
+    assert!(worker_js.contains("fetch(withAssetVersion(\"formal_ai_worker.wasm\"))"));
+    assert!(stamp_script.contains("__FORMAL_AI_ASSET_VERSION__"));
+    assert!(stamp_script.contains("deployment.json"));
+    assert!(wait_script.contains("deployment.json"));
+    assert!(wait_script.contains("expected_sha"));
+}
+
+#[test]
+fn pages_e2e_navigation_preserves_repository_subpath() {
+    let manifest_dir = env!("CARGO_MANIFEST_DIR");
+    let pages_config = fs::read_to_string(format!(
+        "{manifest_dir}/tests/e2e/playwright.pages.config.js"
+    ))
+    .unwrap();
+    let demo_spec =
+        fs::read_to_string(format!("{manifest_dir}/tests/e2e/tests/demo.spec.js")).unwrap();
+    let multilingual_spec = fs::read_to_string(format!(
+        "{manifest_dir}/tests/e2e/tests/multilingual.spec.js"
+    ))
+    .unwrap();
+
+    assert!(
+        pages_config.contains("normalizeBaseUrl"),
+        "Pages e2e should normalize PAGES_URL with a trailing slash so ./ resolves inside /formal-ai/"
+    );
+    assert!(
+        pages_config.contains("https://link-assistant.github.io/formal-ai/"),
+        "default Pages URL should include the repository subpath and trailing slash"
+    );
+
+    for (path, spec) in [
+        ("tests/e2e/tests/demo.spec.js", demo_spec.as_str()),
+        (
+            "tests/e2e/tests/multilingual.spec.js",
+            multilingual_spec.as_str(),
+        ),
+    ] {
+        assert!(
+            !spec.contains("page.goto('/');"),
+            "{path} should not navigate to / because URL resolution drops the /formal-ai/ subpath"
+        );
+        assert!(
+            spec.contains("page.goto('./');"),
+            "{path} should navigate with ./ so Pages tests stay under the repository subpath"
+        );
+    }
+}
+
+#[test]
 fn release_workflow_jobs_have_explicit_timeouts() {
     let workflow = release_workflow();
     let expected_timeouts = [

@@ -1,0 +1,25 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.03s
+     Running unittests src/lib.rs (target/debug/deps/formal_ai-2c298919a1564bf4)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 61 filtered out; finished in 0.00s
+
+     Running unittests src/main.rs (target/debug/deps/formal_ai-2d792be6a987b5f0)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/integration/mod.rs (target/debug/deps/integration-3cbb78373e6d1139)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 7 filtered out; finished in 0.00s
+
+     Running tests/unit/mod.rs (target/debug/deps/unit-8ec478f7d7282a96)
+
+running 1 test
+test ci_cd::workflow_release::pages_e2e_navigation_preserves_repository_subpath ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 227 filtered out; finished in 0.00s

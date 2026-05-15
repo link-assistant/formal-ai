@@ -24,6 +24,11 @@
 //! `outputs` fields still parse as plain user/assistant turns, so the format
 //! is forward-compatible.
 //!
+//! Full-memory bundles (`formal_ai_bundle`) — seed files + UI preferences +
+//! environment metadata + the entire event log in a single document — live in
+//! the [`bundle`] submodule. They are the default shape every "export memory"
+//! surface now writes (see issue #18 / R109).
+//!
 //! See [`super::seed`] for the static knowledge surface that pairs with this
 //! dynamic memory log, and `VISION.md` (Single-File Reproducibility) for the
 //! reasoning behind the unified format.
@@ -32,8 +37,15 @@ use std::fs;
 use std::io;
 use std::path::Path;
 
-const ROOT_HEADER: &str = "demo_memory";
-const BUNDLE_HEADER: &str = "formal_ai_bundle";
+pub mod bundle;
+
+pub use bundle::{
+    export_bundle, export_full_memory, extract_memory_from_bundle, import_full_memory,
+    suggest_migrations, BundleInfo, ParsedBundle,
+};
+
+pub(crate) const ROOT_HEADER: &str = "demo_memory";
+pub(crate) const BUNDLE_HEADER: &str = "formal_ai_bundle";
 
 /// One recorded turn / step / tool invocation.
 ///
@@ -175,7 +187,7 @@ pub fn export_links_notation(events: &[MemoryEvent]) -> String {
     out
 }
 
-fn format_event_into(event: &MemoryEvent, out: &mut String) {
+pub(crate) fn format_event_into(event: &MemoryEvent, out: &mut String) {
     out.push_str("  event \"");
     out.push_str(&escape_value(&event.id));
     out.push_str("\"\n");
@@ -285,100 +297,7 @@ pub fn parse_links_notation(text: &str) -> Vec<MemoryEvent> {
     events
 }
 
-/// Build a single Links Notation bundle document.
-///
-/// Contains the static seed plus the dynamic memory log plus arbitrary
-/// environment metadata. Mirrors the browser's `FormalAiMemory.exportBundle`
-/// so a user can drop the same file into any interface.
-#[must_use]
-pub fn export_bundle(seed_files: &[(&str, &str)], events: &[MemoryEvent]) -> String {
-    let mut out = String::from(BUNDLE_HEADER);
-    out.push('\n');
-    out.push_str("  exported_at \"");
-    out.push_str(&escape_value(&isoformat_now()));
-    out.push_str("\"\n");
-    if !seed_files.is_empty() {
-        out.push_str("  seed_files\n");
-        for (name, contents) in seed_files {
-            out.push_str("    file \"");
-            out.push_str(&escape_value(name));
-            out.push_str("\"\n");
-            for line in contents.lines() {
-                if line.is_empty() {
-                    continue;
-                }
-                out.push_str("      ");
-                out.push_str(line);
-                out.push('\n');
-            }
-        }
-    }
-    out.push_str("  ");
-    out.push_str(ROOT_HEADER);
-    out.push('\n');
-    for event in events {
-        // Indent each event one level deeper than the standalone memory
-        // export so it nests inside the bundle.
-        let mut block = String::new();
-        format_event_into(event, &mut block);
-        for line in block.lines() {
-            if line.is_empty() {
-                continue;
-            }
-            out.push_str("  ");
-            out.push_str(line);
-            out.push('\n');
-        }
-    }
-    out
-}
-
-/// Recover the memory log section from a `formal_ai_bundle` document.
-///
-/// Returns `None` if the input is not a recognised bundle. Used by
-/// `formal-ai bundle import` so a user can drag the web demo's
-/// `formal-ai-bundle.lino` into the CLI and get back just the events.
-#[must_use]
-pub fn extract_memory_from_bundle(text: &str) -> Option<Vec<MemoryEvent>> {
-    if !text.trim_start().starts_with(BUNDLE_HEADER) {
-        return None;
-    }
-    let mut inner = String::new();
-    let mut inside = false;
-    for line in text.lines() {
-        let indent = line.chars().take_while(|c| *c == ' ').count();
-        let content = &line[indent..];
-        if !inside {
-            if indent == 2 && content == ROOT_HEADER {
-                inside = true;
-                inner.push_str(content);
-                inner.push('\n');
-            }
-            continue;
-        }
-        if indent <= 2 && !content.starts_with("event ") && !content.is_empty() {
-            // A sibling section at the same depth as the memory header ends
-            // the memory block.
-            if indent == 2 {
-                break;
-            }
-        }
-        if indent < 2 {
-            break;
-        }
-        // Strip two spaces of bundle indentation so the inner doc looks like
-        // a standalone `demo_memory` file the existing parser understands.
-        let stripped = line.strip_prefix("  ").unwrap_or(line);
-        inner.push_str(stripped);
-        inner.push('\n');
-    }
-    if !inside {
-        return None;
-    }
-    Some(parse_links_notation(&inner))
-}
-
-fn escape_value(value: &str) -> String {
+pub(crate) fn escape_value(value: &str) -> String {
     value.replace('\\', "\\\\").replace('"', "\\\"")
 }
 
@@ -397,7 +316,7 @@ fn unescape_value(value: &str) -> String {
     out
 }
 
-fn parse_quoted(rest: &str) -> Option<String> {
+pub(crate) fn parse_quoted(rest: &str) -> Option<String> {
     let trimmed = rest.trim_start();
     let bytes = trimmed.as_bytes();
     if bytes.first() != Some(&b'"') {
@@ -414,7 +333,7 @@ fn parse_quoted(rest: &str) -> Option<String> {
     None
 }
 
-fn split_first_token(content: &str) -> Option<(&str, &str)> {
+pub(crate) fn split_first_token(content: &str) -> Option<(&str, &str)> {
     let trimmed = content.trim_start();
     let mut split = trimmed.splitn(2, ' ');
     let head = split.next()?;
@@ -426,7 +345,7 @@ fn split_first_token(content: &str) -> Option<(&str, &str)> {
 // browser side records `new Date().toISOString()`; for the CLI we emit a
 // fixed-precision UTC string built from the system clock.
 #[allow(clippy::cast_possible_wrap)]
-fn isoformat_now() -> String {
+pub(crate) fn isoformat_now() -> String {
     use std::time::{SystemTime, UNIX_EPOCH};
     let now = SystemTime::now()
         .duration_since(UNIX_EPOCH)
@@ -472,10 +391,7 @@ const fn days_to_date(days: i64) -> (i32, u32, u32) {
 
 #[cfg(test)]
 mod tests {
-    use super::{
-        export_bundle, export_links_notation, extract_memory_from_bundle, parse_links_notation,
-        MemoryEvent, MemoryStore,
-    };
+    use super::{export_links_notation, parse_links_notation, MemoryEvent, MemoryStore};
 
     fn sample_events() -> Vec<MemoryEvent> {
         vec![
@@ -529,29 +445,6 @@ mod tests {
         // The struct deliberately exposes no removal API; this test pins the
         // API surface so future refactors cannot quietly add one.
         assert_append_only(&store);
-    }
-
-    #[test]
-    fn bundle_export_embeds_seed_and_memory() {
-        let seed_files: Vec<(&str, &str)> =
-            vec![("data/seed/example.lino", "example\n  key \"v\"")];
-        let events = sample_events();
-        let bundle = export_bundle(&seed_files, &events);
-        assert!(bundle.starts_with("formal_ai_bundle\n"));
-        assert!(bundle.contains("seed_files"));
-        assert!(bundle.contains("data/seed/example.lino"));
-        assert!(bundle.contains("demo_memory"));
-        assert!(bundle.contains("Hi, how may I help you?"));
-    }
-
-    #[test]
-    fn extract_memory_from_bundle_recovers_events() {
-        let seed_files: Vec<(&str, &str)> =
-            vec![("data/seed/example.lino", "example\n  key \"v\"")];
-        let events = sample_events();
-        let bundle = export_bundle(&seed_files, &events);
-        let recovered = extract_memory_from_bundle(&bundle).expect("recover");
-        assert_eq!(recovered, events);
     }
 
     #[test]

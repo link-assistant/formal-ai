@@ -10,8 +10,26 @@
 // loaded from `seed/*.lino` files at startup via `seed_loader.js`. Editing a
 // `.lino` file is enough to retune the agent — no JavaScript change required.
 
+function currentAssetVersion() {
+  try {
+    const search = self.location && self.location.search;
+    const match = search && /[?&]v=([^&]+)/.exec(search);
+    return match ? decodeURIComponent(match[1].replace(/\+/g, " ")) : "";
+  } catch (_error) {
+    return "";
+  }
+}
+
+function withAssetVersion(url) {
+  const version = currentAssetVersion();
+  if (!version) return url;
+  return `${url}${url.includes("?") ? "&" : "?"}v=${encodeURIComponent(
+    version,
+  )}`;
+}
+
 try {
-  importScripts("seed_loader.js");
+  importScripts(withAssetVersion("seed_loader.js"));
 } catch (_error) {
   // Seed loader is optional: tests that mock the worker may exclude it.
 }
@@ -1122,7 +1140,7 @@ async function init() {
   if (wasm !== undefined) return;
   await loadSeed();
   try {
-    const source = await fetch("formal_ai_worker.wasm");
+    const source = await fetch(withAssetVersion("formal_ai_worker.wasm"));
     const bytes = await source.arrayBuffer();
     const module = await WebAssembly.instantiate(bytes, {});
     wasm = module.instance.exports;

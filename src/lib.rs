@@ -17,9 +17,11 @@ pub use engine::{knowledge_links_notation, FormalAiEngine, SymbolicAnswer, DEFAU
 pub use event_log::{Event, EventLog};
 pub use language::{detect as detect_language, Language};
 pub use memory::{
-    export_bundle as export_memory_bundle, export_links_notation as export_memory_links_notation,
-    extract_memory_from_bundle, parse_links_notation as parse_memory_links_notation, MemoryEvent,
-    MemoryStore,
+    export_bundle as export_memory_bundle, export_full_memory as export_memory_full,
+    export_links_notation as export_memory_links_notation, extract_memory_from_bundle,
+    import_full_memory as import_memory_full, parse_links_notation as parse_memory_links_notation,
+    suggest_migrations as suggest_memory_migrations, BundleInfo, MemoryEvent, MemoryStore,
+    ParsedBundle,
 };
 pub use protocol::{
     create_chat_completion, create_response, ChatChoice, ChatCompletion, ChatCompletionRequest,

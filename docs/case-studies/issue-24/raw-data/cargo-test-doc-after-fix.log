@@ -1,0 +1,51 @@
+       Fresh unicode-ident v1.0.22
+       Fresh memchr v2.8.0
+       Fresh utf8parse v0.2.2
+       Fresh is_terminal_polyfill v1.70.2
+       Fresh proc-macro2 v1.0.103
+       Fresh anstyle-parse v0.2.7
+       Fresh colorchoice v1.0.5
+       Fresh anstyle-query v1.1.5
+       Fresh anstyle v1.0.14
+       Fresh quote v1.0.42
+       Fresh anstream v0.6.21
+       Fresh serde_core v1.0.228
+       Fresh dtor-proc-macro v0.0.5
+       Fresh clap_lex v1.1.0
+       Fresh syn v2.0.111
+       Fresh heck v0.5.0
+       Fresh strsim v0.11.1
+       Fresh dtor v0.0.6
+       Fresh thiserror-impl v1.0.69
+       Fresh clap_derive v4.5.55
+       Fresh clap_builder v4.5.60
+       Fresh serde_derive v1.0.228
+       Fresh nom v8.0.0
+       Fresh ctor-proc-macro v0.0.6
+       Fresh thiserror v1.0.69
+       Fresh zmij v1.0.21
+       Fresh links-notation v0.13.0
+       Fresh serde v1.0.228
+       Fresh ctor v0.4.3
+       Fresh clap v4.5.60
+       Fresh aho-corasick v1.1.4
+       Fresh lino-env v0.1.0
+       Fresh itoa v1.0.18
+       Fresh base64 v0.22.1
+       Fresh dotenvy v0.15.7
+       Fresh regex-syntax v0.8.10
+       Fresh same-file v1.0.6
+       Fresh regex-automata v0.4.14
+       Fresh lino-objects-codec v0.2.1
+       Fresh lino-arguments v0.3.0
+       Fresh serde_json v1.0.149
+       Fresh walkdir v2.5.0
+       Fresh regex v1.12.3
+       Fresh formal-ai v0.23.0 (/tmp/gh-issue-solver-1778856987392)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.04s
+   Doc-tests formal_ai
+     Running `/home/box/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustdoc --edition=2021 --crate-type lib --color auto --crate-name formal_ai --test src/lib.rs --test-run-directory /tmp/gh-issue-solver-1778856987392 '--warn=clippy::pedantic' '--warn=clippy::nursery' '--warn=clippy::all' --forbid=unsafe_code '--allow=clippy::too_many_lines' '--allow=clippy::module_name_repetitions' '--allow=clippy::missing_panics_doc' '--allow=clippy::missing_errors_doc' --extern clap=/tmp/gh-issue-solver-1778856987392/target/debug/deps/libclap-f38ebaf997ae2065.rlib --extern formal_ai=/tmp/gh-issue-solver-1778856987392/target/debug/deps/libformal_ai-c23074ed2839928e.rlib --extern lino_arguments=/tmp/gh-issue-solver-1778856987392/target/debug/deps/liblino_arguments-eea31ecb02aaf58c.rlib --extern lino_objects_codec=/tmp/gh-issue-solver-1778856987392/target/debug/deps/liblino_objects_codec-7040ab8451a55644.rlib --extern regex=/tmp/gh-issue-solver-1778856987392/target/debug/deps/libregex-be88561040ee64fd.rlib --extern serde=/tmp/gh-issue-solver-1778856987392/target/debug/deps/libserde-3aee14102a721195.rlib --extern serde_json=/tmp/gh-issue-solver-1778856987392/target/debug/deps/libserde_json-f0d4891802ba697c.rlib --extern walkdir=/tmp/gh-issue-solver-1778856987392/target/debug/deps/libwalkdir-f83c702250a7b97f.rlib -L dependency=/tmp/gh-issue-solver-1778856987392/target/debug/deps -C embed-bitcode=no --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' --error-format human`
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s

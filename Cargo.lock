@@ -152,7 +152,7 @@ checksum = "7454e41ff9012c00d53cf7f475c5e3afa3b91b7c90568495495e8d9bf47a1055"
 
 [[package]]
 name = "formal-ai"
-version = "0.21.0"
+version = "0.24.0"
 dependencies = [
  "clap",
  "lino-arguments",

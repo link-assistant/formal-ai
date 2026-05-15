@@ -131,8 +131,8 @@ fn cli_memory_export_import_show_round_trips_events() {
     assert!(stdout.contains("[assistant]"));
     assert!(stdout.contains("greeting"));
 
-    // Export from one path to another with --from. This is the
-    // copy/transform flow the cross-surface migration scenarios rely on.
+    // Default `memory export` now emits the full self-contained
+    // `formal_ai_bundle` (R109): seed + events + metadata in one file.
     let exported = dir.join("exported.lino");
     let export = Command::new(env!("CARGO_BIN_EXE_formal-ai"))
         .args([
@@ -147,8 +147,30 @@ fn cli_memory_export_import_show_round_trips_events() {
         .expect("memory export");
     assert!(export.status.success());
     let text = std::fs::read_to_string(&exported).expect("read exported");
-    assert!(text.starts_with("demo_memory\n"));
+    assert!(text.starts_with("formal_ai_bundle\n"));
+    assert!(text.contains("data/seed/agent-info.lino"));
+    assert!(text.contains("demo_memory"));
     assert!(text.contains("Привет"));
+
+    // `--events-only` preserves the legacy `demo_memory` shape so older
+    // scripts that pipe the export to a parser keep working.
+    let exported_legacy = dir.join("exported-legacy.lino");
+    let export_legacy = Command::new(env!("CARGO_BIN_EXE_formal-ai"))
+        .args([
+            "memory",
+            "export",
+            "--from",
+            into.to_str().unwrap(),
+            "--path",
+            exported_legacy.to_str().unwrap(),
+            "--events-only",
+        ])
+        .output()
+        .expect("memory export --events-only");
+    assert!(export_legacy.status.success());
+    let legacy = std::fs::read_to_string(&exported_legacy).expect("read legacy");
+    assert!(legacy.starts_with("demo_memory\n"));
+    assert!(legacy.contains("Привет"));
 
     let _ = std::fs::remove_dir_all(&dir);
 }
@@ -272,7 +294,11 @@ fn cli_memory_export_to_stdout_returns_links_notation() {
         .expect("export");
     assert!(output.status.success());
     let stdout = String::from_utf8_lossy(&output.stdout);
-    assert!(stdout.starts_with("demo_memory\n"));
+    // Default export is the full self-contained bundle (R109); `pipe me`
+    // remains embedded inside the nested `demo_memory` section so a pipe
+    // into `memory import --path -` still recovers it.
+    assert!(stdout.starts_with("formal_ai_bundle\n"));
+    assert!(stdout.contains("demo_memory"));
     assert!(stdout.contains("pipe me"));
 
     // Pipe the stdout back into `memory import --path -` and assert the

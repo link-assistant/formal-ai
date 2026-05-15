@@ -6,7 +6,7 @@
     <meta name="formal-ai-version" content="0.16.0" />
     <title>formal-ai</title>
     <link rel="icon" href="data:," />
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="styles.css?v=__FORMAL_AI_ASSET_VERSION__" />
   </head>
   <body>
     <div id="root"></div>
@@ -14,9 +14,12 @@
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js"></script>
-    <script src="seed_loader.js"></script>
-    <script src="preferences.js"></script>
-    <script src="memory.js"></script>
-    <script src="app.js"></script>
+    <script>
+      window.FORMAL_AI_ASSET_VERSION = "__FORMAL_AI_ASSET_VERSION__";
+    </script>
+    <script src="seed_loader.js?v=__FORMAL_AI_ASSET_VERSION__"></script>
+    <script src="preferences.js?v=__FORMAL_AI_ASSET_VERSION__"></script>
+    <script src="memory.js?v=__FORMAL_AI_ASSET_VERSION__"></script>
+    <script src="app.js?v=__FORMAL_AI_ASSET_VERSION__"></script>
   </body>
 </html>

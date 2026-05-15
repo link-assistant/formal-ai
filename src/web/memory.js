@@ -30,6 +30,7 @@
   var DB_VERSION = 1;
   var STORE_NAME = "events";
   var ROOT_HEADER = "demo_memory";
+  var BUNDLE_HEADER = "formal_ai_bundle";
   // Schema is intentionally additive. Older logs without "kind" still parse
   // as plain user/assistant turns. New "kind" values record reasoning steps,
   // tool invocations, decisions, and other internal events so the log is a
@@ -308,6 +309,7 @@
     var seed = settings.seed || {};
     var events = Array.isArray(settings.events) ? settings.events : [];
     var info = settings.info || {};
+    var preferences = settings.preferences || null;
     var lines = ["formal_ai_bundle"];
     lines.push('  exported_at "' + escapeValue(new Date().toISOString()) + '"');
     if (info.version) {
@@ -333,11 +335,228 @@
         lines.push(indentBlock(seed.raw[filename], "      "));
       });
     }
+    if (preferences && typeof preferences === "object") {
+      var prefKeys = Object.keys(preferences);
+      if (prefKeys.length > 0) {
+        lines.push("  preferences");
+        prefKeys.forEach(function (key) {
+          var raw = preferences[key];
+          if (raw === undefined || raw === null) return;
+          var value =
+            typeof raw === "boolean" ? (raw ? "on" : "off") : String(raw);
+          lines.push('    ' + key + ' "' + escapeValue(value) + '"');
+        });
+      }
+    }
     lines.push("  " + ROOT_HEADER);
     events.forEach(function (event) {
       lines.push("  " + formatEvent(event));
     });
     return lines.join("\n") + "\n";
+  }
+
+  // Default export entry point. Always emits the full self-contained
+  // `formal_ai_bundle` (seed + events + preferences + metadata) so a single
+  // file is enough for a maintainer to replay the agent's state. Older code
+  // paths and tests can still call `exportBundle`/`exportLinksNotation`
+  // directly — `exportFullMemory` is the new canonical name.
+  function exportFullMemory(options) {
+    return exportBundle(options || {});
+  }
+
+  // Parse either a `formal_ai_bundle` document (the new full-memory format)
+  // or the legacy `demo_memory` event log. Returns a small descriptor object
+  // describing what was found so the caller can act on the structure:
+  //
+  //   { kind: "bundle", events, seedFiles, preferences, info, agentInfo }
+  //   { kind: "memory", events, seedFiles: {}, preferences: null, info: {}, agentInfo: {} }
+  //
+  // `seedFiles` is a plain `{ filename: contents }` object; `info` carries
+  // the bundle metadata (`exported_at`, `version`, `url`, `user_agent`,
+  // `worker_state`, `mode`); `agentInfo` mirrors the `agent_info` map parsed
+  // out of `seed/agent-info.lino` when present (used by
+  // `suggestMigrations`).
+  function importFullMemory(text) {
+    var safe = typeof text === "string" ? text : "";
+    var firstLine = safe.split(/\r?\n/, 1)[0] || "";
+    if (firstLine.trim() === BUNDLE_HEADER) {
+      return parseBundleDocument(safe);
+    }
+    return {
+      kind: "memory",
+      events: parseLinksNotation(safe),
+      seedFiles: {},
+      preferences: null,
+      info: {},
+      agentInfo: {},
+    };
+  }
+
+  // Parser for the bundle document. Walks the indentation manually so it
+  // does not pull in `FormalAiSeed.parseBundle` (which only returns the seed
+  // files). The parser is forgiving: unknown sub-sections are skipped, and a
+  // truncated document still yields whatever events were recoverable.
+  function parseBundleDocument(text) {
+    var lines = text.split(/\r?\n/);
+    var info = {};
+    var seedFiles = {};
+    var preferences = null;
+    var agentInfo = {};
+    var memoryLines = [];
+    var section = null; // null | "seed_files" | "preferences" | "memory"
+    var currentSeedFile = null;
+    var index = 0;
+    while (index < lines.length) {
+      var line = lines[index];
+      index += 1;
+      if (!line) continue;
+      var indentMatch = /^( *)/.exec(line);
+      var indent = indentMatch ? indentMatch[1].length : 0;
+      var content = line.slice(indent);
+      if (indent === 0) {
+        section = null;
+        continue;
+      }
+      if (indent === 2) {
+        // Top-level subsection inside the bundle.
+        if (content === "seed_files") {
+          section = "seed_files";
+          currentSeedFile = null;
+          continue;
+        }
+        if (content === "preferences") {
+          section = "preferences";
+          preferences = {};
+          continue;
+        }
+        if (content === ROOT_HEADER) {
+          section = "memory";
+          memoryLines = [ROOT_HEADER];
+          continue;
+        }
+        var infoMatch = /^([a-zA-Z0-9_]+)\s+"((?:[^"\\]|\\.)*)"\s*$/.exec(content);
+        if (infoMatch) {
+          info[infoMatch[1]] = unescapeValue(infoMatch[2]);
+        }
+        section = null;
+        continue;
+      }
+      if (section === "seed_files") {
+        if (indent === 4) {
+          var fileMatch = /^file\s+"((?:[^"\\]|\\.)*)"\s*$/.exec(content);
+          if (fileMatch) {
+            currentSeedFile = unescapeValue(fileMatch[1]);
+            seedFiles[currentSeedFile] = "";
+          }
+          continue;
+        }
+        if (currentSeedFile && indent >= 6) {
+          // Body lines for the current seed file. Strip the 6-space prefix.
+          var body = line.length >= 6 ? line.slice(6) : "";
+          if (seedFiles[currentSeedFile].length > 0) {
+            seedFiles[currentSeedFile] += "\n";
+          }
+          seedFiles[currentSeedFile] += body;
+        }
+        continue;
+      }
+      if (section === "preferences") {
+        if (indent === 4) {
+          var prefMatch = /^([a-zA-Z0-9_]+)\s+"((?:[^"\\]|\\.)*)"\s*$/.exec(content);
+          if (prefMatch) {
+            var prefValue = unescapeValue(prefMatch[2]);
+            preferences[prefMatch[1]] =
+              prefValue === "on" ? true : prefValue === "off" ? false : prefValue;
+          }
+        }
+        continue;
+      }
+      if (section === "memory") {
+        // Strip the leading 2 spaces of bundle indentation so the captured
+        // block matches the standalone `demo_memory` shape parsed by
+        // `parseLinksNotation`.
+        var stripped = line.length >= 2 ? line.slice(2) : line;
+        memoryLines.push(stripped);
+        continue;
+      }
+    }
+    var events = memoryLines.length > 0
+      ? parseLinksNotation(memoryLines.join("\n"))
+      : [];
+    if (seedFiles["seed/agent-info.lino"]) {
+      agentInfo = parseAgentInfo(seedFiles["seed/agent-info.lino"]);
+    } else if (seedFiles["data/seed/agent-info.lino"]) {
+      // Tolerate the canonical path too — bundles produced by the CLI emit
+      // `data/seed/...` while the browser emits `seed/...`.
+      agentInfo = parseAgentInfo(seedFiles["data/seed/agent-info.lino"]);
+    }
+    return {
+      kind: "bundle",
+      events: events,
+      seedFiles: seedFiles,
+      preferences: preferences,
+      info: info,
+      agentInfo: agentInfo,
+    };
+  }
+
+  // Tiny parser for the `agent_info` block — extracts `field "<key>" \n
+  // value "<value>"` pairs so callers can look up the embedded seed
+  // version, supported languages, etc. without pulling in the larger seed
+  // loader.
+  function parseAgentInfo(text) {
+    var out = {};
+    var lines = String(text || "").split(/\r?\n/);
+    var currentField = null;
+    var fieldPattern = /^\s{2}field\s+"((?:[^"\\]|\\.)*)"\s*$/;
+    var valuePattern = /^\s{4}value\s+"((?:[^"\\]|\\.)*)"\s*$/;
+    for (var i = 0; i < lines.length; i += 1) {
+      var line = lines[i];
+      var fieldMatch = fieldPattern.exec(line);
+      if (fieldMatch) {
+        currentField = unescapeValue(fieldMatch[1]);
+        continue;
+      }
+      var valueMatch = valuePattern.exec(line);
+      if (valueMatch && currentField) {
+        out[currentField] = unescapeValue(valueMatch[1]);
+        currentField = null;
+      }
+    }
+    return out;
+  }
+
+  // Suggest known data migrations between an imported document and the
+  // currently running app. The first migration check covers the seed
+  // version baked into `agent-info.lino`. Returns an array of human-readable
+  // strings — empty when no migration is needed. The function is pure so
+  // tests can call it without a browser environment.
+  function suggestMigrations(options) {
+    var settings = options || {};
+    var imported = settings.imported || {};
+    var current = settings.current || {};
+    var suggestions = [];
+    var importedAgent = imported.agentInfo || {};
+    var currentAgent = current.agentInfo || {};
+    var importedVersion = importedAgent.version || (imported.info && imported.info.version);
+    var currentVersion = currentAgent.version || (current.info && current.info.version);
+    if (importedVersion && currentVersion && importedVersion !== currentVersion) {
+      suggestions.push(
+        "Seed version " + importedVersion + " → " + currentVersion +
+          ": review the new entries in data/seed/ (multilingual responses, concepts, tools) — your imported memory was authored against an older seed.",
+      );
+    } else if (importedVersion && !currentVersion) {
+      suggestions.push(
+        "Imported bundle was authored against seed version " + importedVersion +
+          " but the running app does not expose a seed version. Update the app to compare.",
+      );
+    }
+    if (imported.kind === "memory") {
+      suggestions.push(
+        "Imported file is a legacy demo_memory log (no seed). The events were imported, but the seed at the time of capture is unknown — export from this session to upgrade to a full bundle.",
+      );
+    }
+    return suggestions;
   }
 
   global.FormalAiMemory = {
@@ -346,10 +565,16 @@
     importEvents: importEvents,
     exportLinksNotation: exportLinksNotation,
     exportBundle: exportBundle,
+    exportFullMemory: exportFullMemory,
+    importFullMemory: importFullMemory,
+    suggestMigrations: suggestMigrations,
     parseLinksNotation: parseLinksNotation,
+    parseBundleDocument: parseBundleDocument,
+    parseAgentInfo: parseAgentInfo,
     formatEvent: formatEvent,
     DB_NAME: DB_NAME,
     STORE_NAME: STORE_NAME,
     ROOT: ROOT_HEADER,
+    BUNDLE_ROOT: BUNDLE_HEADER,
   };
 })(typeof window !== "undefined" ? window : globalThis);

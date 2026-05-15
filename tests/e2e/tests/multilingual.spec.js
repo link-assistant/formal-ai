@@ -6,6 +6,13 @@ async function switchToManualMode(page) {
   await expect(demoToggle).toContainText('Demo on');
   await demoToggle.click();
   await expect(demoToggle).toContainText('Demo');
+  await expect(page.locator('[data-testid="demo-status"]')).toHaveText('Manual mode');
+  await expect(page.locator('[data-testid="chat-composer-input"]')).toBeEnabled({
+    timeout: 5_000,
+  });
+  await expect(page.locator('[data-testid="tool-entry"]').first()).toBeVisible({
+    timeout: 10_000,
+  });
 }
 
 async function sendPrompt(page, text) {
@@ -21,7 +28,7 @@ async function sendPrompt(page, text) {
 
 test.describe('multilingual chat surface', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/');
+    await page.goto('./');
     await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
     await switchToManualMode(page);
   });
@@ -60,7 +67,7 @@ test.describe('multilingual chat surface', () => {
 
 test.describe('Wikipedia REST fallback', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/');
+    await page.goto('./');
     await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
     await switchToManualMode(page);
   });
@@ -130,7 +137,7 @@ test.describe('Wikipedia REST fallback', () => {
 
 test.describe('memory export/import', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/');
+    await page.goto('./');
     await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
     await switchToManualMode(page);
   });
@@ -140,7 +147,7 @@ test.describe('memory export/import', () => {
     await expect(page.locator('[data-testid="memory-import"]')).toBeVisible();
   });
 
-  test('Export memory downloads a Links Notation file', async ({ page }) => {
+  test('Export memory downloads a full formal_ai_bundle by default (R109)', async ({ page }) => {
     // Send one message so there is at least one event in the log.
     await sendPrompt(page, 'Hi');
 
@@ -155,11 +162,19 @@ test.describe('memory export/import', () => {
     expect(path).toBeTruthy();
     const fs = require('node:fs');
     const text = fs.readFileSync(path, 'utf8');
+    // R109: the default export is now the full self-contained bundle —
+    // seed files + UI preferences + environment metadata + the embedded
+    // demo_memory log. The user must not have to click a second button to
+    // get the full state.
+    expect(text.startsWith('formal_ai_bundle\n')).toBe(true);
+    expect(text).toContain('seed_files');
+    expect(text).toContain('seed/agent-info.lino');
+    expect(text).toContain('preferences');
     expect(text).toContain('demo_memory');
     expect(text).toContain('role "user"');
     expect(text).toContain('content "Hi"');
-    // Status indicator should reflect the export count.
-    await expect(page.locator('[data-testid="memory-status"]')).toContainText(/Exported \d+ events/);
+    // Status indicator should reflect the full-memory shape.
+    await expect(page.locator('[data-testid="memory-status"]')).toContainText(/Exported full memory:/);
   });
 
   test('Import memory accepts a Links Notation file', async ({ page }) => {
@@ -182,7 +197,41 @@ test.describe('memory export/import', () => {
       mimeType: 'text/plain',
       buffer: Buffer.from(lino, 'utf8'),
     });
+    // R110: legacy demo_memory imports must still succeed. R111: importing a
+    // legacy log surfaces a migration suggestion because no seed metadata is
+    // attached, so the status indicator reports "Migration: ..." alongside
+    // the import count.
     await expect(page.locator('[data-testid="memory-status"]')).toContainText('Imported 2 events');
+    await expect(page.locator('[data-testid="memory-status"]')).toContainText(/Migration:.*legacy demo_memory/);
+  });
+
+  test('Import memory accepts a formal_ai_bundle and reports seed migrations (R110, R111)', async ({ page }) => {
+    const importInput = page.locator('[data-testid="memory-import-input"]');
+    const bundle = [
+      'formal_ai_bundle',
+      '  exported_at "2026-05-15T12:00:00.000Z"',
+      '  version "0.0.1"',
+      '  seed_files',
+      '    file "seed/agent-info.lino"',
+      '      agent_info',
+      '        field "version"',
+      '          value "0.0.1"',
+      '  preferences',
+      '    demo_mode "off"',
+      '  demo_memory',
+      '    event "1"',
+      '      role "user"',
+      '      content "Imported via bundle"',
+      '      sentAt "2026-05-15T12:00:00.000Z"',
+      '',
+    ].join('\n');
+    await importInput.setInputFiles({
+      name: 'bundle.lino',
+      mimeType: 'text/plain',
+      buffer: Buffer.from(bundle, 'utf8'),
+    });
+    await expect(page.locator('[data-testid="memory-status"]')).toContainText('Imported 1 event(s) from full bundle');
+    await expect(page.locator('[data-testid="memory-status"]')).toContainText(/Migration: Seed version 0\.0\.1 →/);
   });
 
   test('Memory module exposes no delete/forget operation', async ({ page }) => {
@@ -192,6 +241,11 @@ test.describe('memory export/import', () => {
     expect(api).toContain('importEvents');
     expect(api).toContain('exportLinksNotation');
     expect(api).toContain('exportBundle');
+    // R109/R110/R111: full-memory export, header-agnostic import, and
+    // migration suggestions must all be reachable from the public API.
+    expect(api).toContain('exportFullMemory');
+    expect(api).toContain('importFullMemory');
+    expect(api).toContain('suggestMigrations');
     expect(api).not.toContain('delete');
     expect(api).not.toContain('deleteEvent');
     expect(api).not.toContain('forget');
@@ -220,7 +274,7 @@ test.describe('memory export/import', () => {
     expect(text).toContain('role "user"');
   });
 
-  test('Report issue link is present in the topbar and prefills bundle hint', async ({ page }) => {
+  test('Report issue link is present in the topbar and prefills full-memory + zip instructions (R112)', async ({ page }) => {
     const reportLink = page.locator('[data-testid="report-issue"]');
     await expect(reportLink).toBeVisible();
     const href = await reportLink.getAttribute('href');
@@ -228,8 +282,13 @@ test.describe('memory export/import', () => {
     const url = new URL(href);
     expect(url.origin + url.pathname).toBe('https://github.com/link-assistant/formal-ai/issues/new');
     const body = url.searchParams.get('body') || '';
-    expect(body).toContain('formal-ai-bundle.lino');
-    expect(body).toContain('Download bundle');
+    // R112: the prefilled body must tell the user to attach the full memory
+    // export, wrap it in a .zip (GitHub does not accept .lino), and redact
+    // sensitive content before attaching.
+    expect(body).toContain('formal-ai-memory.lino');
+    expect(body).toContain('Export memory');
+    expect(body).toMatch(/\.zip/);
+    expect(body).toMatch(/redact/i);
   });
 
   test('Tool registry surfaces seed-loaded tools with mode badges', async ({ page }) => {

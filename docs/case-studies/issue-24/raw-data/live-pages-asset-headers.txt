@@ -1,0 +1,170 @@
+===== styles.css =====
+HTTP/2 200 
+server: GitHub.com
+content-type: text/css; charset=utf-8
+last-modified: Fri, 15 May 2026 13:33:54 GMT
+access-control-allow-origin: *
+strict-transport-security: max-age=31556952
+etag: "6a0720c2-2155"
+expires: Fri, 15 May 2026 14:20:31 GMT
+cache-control: max-age=600
+x-proxy-cache: MISS
+x-github-request-id: A4D0:2FDED9:11DB00B:1215968:6A072957
+accept-ranges: bytes
+age: 0
+date: Fri, 15 May 2026 14:10:31 GMT
+via: 1.1 varnish
+x-served-by: cache-fra-etou8220167-FRA
+x-cache: MISS
+x-cache-hits: 0
+x-timer: S1778854231.260446,VS0,VE109
+vary: Accept-Encoding
+x-fastly-request-id: 8277b6e0ce07588ddbb66cd051911545a8d56fd6
+content-length: 8533
+
+===== seed_loader.js =====
+HTTP/2 200 
+server: GitHub.com
+content-type: application/javascript; charset=utf-8
+last-modified: Fri, 15 May 2026 13:33:54 GMT
+access-control-allow-origin: *
+strict-transport-security: max-age=31556952
+etag: "6a0720c2-436e"
+expires: Fri, 15 May 2026 14:08:30 GMT
+cache-control: max-age=600
+x-proxy-cache: MISS
+x-github-request-id: CF2E:1ABF0E:2D2218:2F5398:6A072686
+accept-ranges: bytes
+age: 0
+date: Fri, 15 May 2026 14:10:31 GMT
+via: 1.1 varnish
+x-served-by: cache-lon420115-LON
+x-cache: HIT
+x-cache-hits: 0
+x-timer: S1778854231.423508,VS0,VE104
+vary: Accept-Encoding
+x-fastly-request-id: 346c057bb09195af691285f5e840b287b6206084
+content-length: 17262
+
+===== preferences.js =====
+HTTP/2 200 
+server: GitHub.com
+content-type: application/javascript; charset=utf-8
+last-modified: Fri, 15 May 2026 13:33:54 GMT
+access-control-allow-origin: *
+strict-transport-security: max-age=31556952
+etag: "6a0720c2-d38"
+expires: Fri, 15 May 2026 14:20:31 GMT
+cache-control: max-age=600
+x-proxy-cache: MISS
+x-github-request-id: DF32:384C6C:127DEDA:12B89DA:6A072957
+accept-ranges: bytes
+age: 0
+date: Fri, 15 May 2026 14:10:31 GMT
+via: 1.1 varnish
+x-served-by: cache-fra-etou8220103-FRA
+x-cache: MISS
+x-cache-hits: 0
+x-timer: S1778854232.559919,VS0,VE126
+vary: Accept-Encoding
+x-fastly-request-id: d93bd62d7c73d741e97e1ab7655f3d8320e05123
+content-length: 3384
+
+===== memory.js =====
+HTTP/2 200 
+server: GitHub.com
+content-type: application/javascript; charset=utf-8
+last-modified: Fri, 15 May 2026 13:33:54 GMT
+access-control-allow-origin: *
+strict-transport-security: max-age=31556952
+etag: "6a0720c2-4f66"
+expires: Fri, 15 May 2026 14:20:31 GMT
+cache-control: max-age=600
+x-proxy-cache: MISS
+x-github-request-id: 1846:58B87:2DAD55:2FE567:6A072957
+accept-ranges: bytes
+age: 0
+date: Fri, 15 May 2026 14:10:31 GMT
+via: 1.1 varnish
+x-served-by: cache-lon4221-LON
+x-cache: MISS
+x-cache-hits: 0
+x-timer: S1778854232.738837,VS0,VE94
+vary: Accept-Encoding
+x-fastly-request-id: b2d558b4ce5937949bb1d3a429c84fe5345187c2
+content-length: 20326
+
+===== app.js =====
+HTTP/2 200 
+server: GitHub.com
+content-type: application/javascript; charset=utf-8
+last-modified: Fri, 15 May 2026 13:33:54 GMT
+access-control-allow-origin: *
+strict-transport-security: max-age=31556952
+etag: "6a0720c2-7acd"
+expires: Fri, 15 May 2026 14:08:14 GMT
+cache-control: max-age=600
+x-proxy-cache: MISS
+x-github-request-id: B060:47CCF:2D253A:2F5731:6A072675
+accept-ranges: bytes
+age: 0
+date: Fri, 15 May 2026 14:10:31 GMT
+via: 1.1 varnish
+x-served-by: cache-lon420116-LON
+x-cache: HIT
+x-cache-hits: 0
+x-timer: S1778854232.893906,VS0,VE93
+vary: Accept-Encoding
+x-fastly-request-id: a59217ff3d5e22ae6cf213491e50da2a0396b807
+content-length: 31437
+
+===== formal_ai_worker.js =====
+HTTP/2 200 
+server: GitHub.com
+content-type: application/javascript; charset=utf-8
+x-origin-cache: HIT
+last-modified: Fri, 15 May 2026 13:33:54 GMT
+access-control-allow-origin: *
+strict-transport-security: max-age=31556952
+etag: "6a0720c2-891c"
+expires: Fri, 15 May 2026 14:20:32 GMT
+cache-control: max-age=600
+x-proxy-cache: MISS
+x-github-request-id: B296:1FEA74:2D8204:2FBA8B:6A072957
+accept-ranges: bytes
+age: 0
+date: Fri, 15 May 2026 14:10:32 GMT
+via: 1.1 varnish
+x-served-by: cache-lon4224-LON
+x-cache: MISS
+x-cache-hits: 0
+x-timer: S1778854232.056758,VS0,VE94
+vary: Accept-Encoding
+x-fastly-request-id: e4bb02c7912e2ece380b04732c7613f122cee400
+content-length: 35100
+
+===== formal_ai_worker.wasm =====
+HTTP/2 200 
+server: GitHub.com
+content-type: application/wasm
+x-origin-cache: HIT
+last-modified: Fri, 15 May 2026 13:33:54 GMT
+access-control-allow-origin: *
+strict-transport-security: max-age=31556952
+etag: "6a0720c2-5f9"
+expires: Fri, 15 May 2026 14:08:40 GMT
+cache-control: max-age=600
+x-proxy-cache: MISS
+x-github-request-id: 1D7C:3A59E2:12468F6:12808F2:6A072690
+accept-ranges: bytes
+age: 0
+date: Fri, 15 May 2026 14:10:32 GMT
+via: 1.1 varnish
+x-served-by: cache-fra-eddf8230089-FRA
+x-cache: HIT
+x-cache-hits: 0
+x-timer: S1778854232.194686,VS0,VE99
+vary: Accept-Encoding
+x-fastly-request-id: 657e013badc0fbdd08287686489988b5520234a1
+content-length: 1529
+

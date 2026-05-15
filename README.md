@@ -52,6 +52,20 @@ docker run --rm -p 8080:8080 formal-ai
 
 The static demo lives in `src/web/index.html`. Serve it from a local web server or GitHub Pages so the WebAssembly worker can be fetched by the browser. The demo starts with a user greeting, renders markdown in messages, previews markdown input, and includes a randomized dialog mode for hello-world prompts across several programming languages.
 
+### Full-memory export and import
+
+Every interface produces the same self-contained Links Notation document by default. In the browser, the **Export memory** topbar button writes `formal-ai-memory.lino` as a complete `formal_ai_bundle` — the entire seed (rules, concepts, tools, multilingual responses), UI preferences, environment metadata, and the full append-only event log — so a single click is enough to reconstitute the session. **Import memory** auto-detects bundle vs legacy `demo_memory` files and surfaces migration suggestions when the imported seed version differs from the running app's. The CLI matches:
+
+```bash
+cargo run -- memory export --from memory.lino --path full.lino           # default: full bundle
+cargo run -- memory export --from memory.lino --path events.lino --events-only  # legacy demo_memory
+cargo run -- memory import --path full.lino --into memory.lino           # accepts either format
+cargo run -- bundle export --path bundle.lino --memory memory.lino
+cargo run -- bundle import --path bundle.lino --into memory.lino
+```
+
+The Rust library re-exports the same helpers — `export_memory_full`, `import_memory_full`, `suggest_memory_migrations`, `BundleInfo`, `ParsedBundle` — so embedders writing their own surface get the same defaults. The prefilled **Report issue** link tells users to wrap the export in a `.zip` (GitHub does not yet accept `.lino` attachments) and to redact sensitive content before attaching.
+
 ## Telegram Bot
 
 The `formal-ai telegram` subcommand defaults to long polling and keeps the webhook server available as an opt-in mode. The CLI is configured through [`lino-arguments`](https://github.com/link-foundation/lino-arguments) (a clap-compatible derive), so every flag also reads from the matching environment variable and from `.lenv`/`.env` files in the working directory.
