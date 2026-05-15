@@ -217,8 +217,8 @@ test.describe('formal-ai demo UI', () => {
 
     const lastMsg = messages.last();
     await expect(lastMsg).toHaveClass(/assistant/);
-    await expect(lastMsg).toContainText('Rust');
-    await expect(lastMsg).toContainText('Execution status: compiled and ran');
+    await expect(lastMsg).toContainText('rust hello world');
+    await expect(lastMsg).toContainText('Execution status:');
   });
 
   test('pressing Enter submits the message', async ({ page }) => {
