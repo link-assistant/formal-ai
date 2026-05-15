@@ -1,10 +1,15 @@
 // Shared Links Notation seed loader for the demo.
 //
 // The browser demo loads its multilingual response phrases, concept summaries,
-// and tool registry from `src/web/seed/*.lino` instead of hardcoded JavaScript
-// constants. Every prompt-handling decision is therefore data-driven: a user
-// who wants to retune their own agent can edit a `.lino` file and ship it
-// alongside the static site without touching the worker code.
+// tool registry, language-detection rules, prompt patterns, and agent metadata
+// from `src/web/seed/*.lino` instead of hardcoded JavaScript constants. Every
+// prompt-handling decision is therefore data-driven: a user who wants to
+// retune their own agent can edit a `.lino` file and ship it alongside the
+// static site without touching the worker code.
+//
+// `src/web/seed/` is a deploy artefact synchronised from `data/seed/` (the
+// canonical source shared with the Rust solver, CLI, Telegram bot, and HTTP
+// server). Run `scripts/sync-seed.sh` to refresh the copy.
 //
 // The loader is intentionally minimal: indentation-based, untyped, and shared
 // between the main thread (`window.FormalAiSeed`) and the worker
@@ -14,9 +19,16 @@
   "use strict";
 
   var DEFAULT_FILES = [
+    "seed/agent-info.lino",
     "seed/multilingual-responses.lino",
     "seed/concepts.lino",
     "seed/tools.lino",
+    "seed/language-detection.lino",
+    "seed/prompt-patterns.lino",
+    "seed/greetings.lino",
+    "seed/identity.lino",
+    "seed/hello-world-programs.lino",
+    "seed/demo-dialogs.lino",
   ];
 
   function isWorker() {
@@ -171,6 +183,63 @@
     return tools;
   }
 
+  function extractAgentInfo(node) {
+    var info = {};
+    if (!node) return info;
+    var entries = findChildren(node, "field");
+    for (var i = 0; i < entries.length; i += 1) {
+      var entry = entries[i];
+      var key = entry.id;
+      var value = findChildValue(entry, "value");
+      if (key) info[key] = value;
+    }
+    return info;
+  }
+
+  function extractLanguageRules(node) {
+    var rules = [];
+    if (!node) return rules;
+    var entries = findChildren(node, "rule");
+    for (var i = 0; i < entries.length; i += 1) {
+      var entry = entries[i];
+      rules.push({
+        id: entry.id,
+        language: findChildValue(entry, "language"),
+        label: findChildValue(entry, "label"),
+        start: parseCodepoint(findChildValue(entry, "start")),
+        end: parseCodepoint(findChildValue(entry, "end")),
+        note: findChildValue(entry, "note"),
+      });
+    }
+    return rules;
+  }
+
+  function parseCodepoint(value) {
+    if (!value) return 0;
+    var str = String(value).trim();
+    if (str.indexOf("0x") === 0 || str.indexOf("0X") === 0) {
+      return parseInt(str.slice(2), 16) || 0;
+    }
+    return parseInt(str, 10) || 0;
+  }
+
+  function extractPromptPatterns(node) {
+    var patterns = [];
+    if (!node) return patterns;
+    var entries = findChildren(node, "pattern");
+    for (var i = 0; i < entries.length; i += 1) {
+      var entry = entries[i];
+      patterns.push({
+        id: entry.id,
+        intent: findChildValue(entry, "intent"),
+        language: findChildValue(entry, "language") || "en",
+        kind: findChildValue(entry, "kind"),
+        text: findChildValue(entry, "text"),
+      });
+    }
+    return patterns;
+  }
+
   function splitList(value) {
     if (!value) return [];
     return String(value)
@@ -208,6 +277,9 @@
         responses: {},
         concepts: [],
         tools: [],
+        agentInfo: {},
+        languageRules: [],
+        promptPatterns: [],
         raw: {},
       };
       for (var i = 0; i < results.length; i += 1) {
@@ -224,6 +296,12 @@
           seed.concepts = seed.concepts.concat(extractConcepts(root));
         } else if (item.file.indexOf("tools") !== -1) {
           seed.tools = seed.tools.concat(extractTools(root));
+        } else if (item.file.indexOf("agent-info") !== -1) {
+          Object.assign(seed.agentInfo, extractAgentInfo(root));
+        } else if (item.file.indexOf("language-detection") !== -1) {
+          seed.languageRules = seed.languageRules.concat(extractLanguageRules(root));
+        } else if (item.file.indexOf("prompt-patterns") !== -1) {
+          seed.promptPatterns = seed.promptPatterns.concat(extractPromptPatterns(root));
         }
       }
       return seed;
@@ -244,6 +322,9 @@
     parse: parseLino,
     loadAll: loadAll,
     extractMultilingualResponses: extractMultilingualResponses,
+    extractAgentInfo: extractAgentInfo,
+    extractLanguageRules: extractLanguageRules,
+    extractPromptPatterns: extractPromptPatterns,
     extractConcepts: extractConcepts,
     extractTools: extractTools,
     DEFAULT_FILES: DEFAULT_FILES,

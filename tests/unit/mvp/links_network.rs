@@ -67,7 +67,7 @@ fn knowledge_export_uses_untyped_links_notation_only() {
 }
 
 // ---------------------------------------------------------------------------
-// MVP expectations: structural properties from VISION.md / docs/REQUIREMENTS.md.
+// MVP expectations: structural properties from VISION.md / REQUIREMENTS.md.
 // ---------------------------------------------------------------------------
 
 #[test]

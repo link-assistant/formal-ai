@@ -4,6 +4,7 @@ pub mod engine;
 pub mod event_log;
 pub mod language;
 pub mod protocol;
+pub mod seed;
 pub mod server;
 pub mod solver;
 pub(crate) mod solver_handlers;

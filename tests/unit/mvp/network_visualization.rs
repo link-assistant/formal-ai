@@ -1,6 +1,6 @@
 //! Network-visualization tests.
 //!
-//! `VISION.md` and `docs/REQUIREMENTS.md` call for an optional graph view of
+//! `VISION.md` and `REQUIREMENTS.md` call for an optional graph view of
 //! the link network displayed alongside the chat — so the user can see how a
 //! reply was derived. The visualization is *optional*: it must never be
 //! required for the chat surface to work.

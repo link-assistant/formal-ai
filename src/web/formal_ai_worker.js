@@ -39,6 +39,13 @@ let MULTILINGUAL_ANSWERS = {
 let CONCEPTS = [];
 let TOOLS = [];
 let SEED_RAW = {};
+let AGENT_INFO = {};
+let LANGUAGE_RULES = [
+  { language: "ru", start: 0x0400, end: 0x04ff },
+  { language: "hi", start: 0x0900, end: 0x097f },
+  { language: "zh", start: 0x4e00, end: 0x9fff },
+];
+let PROMPT_PATTERNS = [];
 
 function answerFor(intent, language) {
   const table = MULTILINGUAL_ANSWERS[intent] || {};
@@ -57,12 +64,18 @@ function detectLanguage(prompt) {
   const text = String(prompt || "");
   for (const ch of text) {
     const code = ch.codePointAt(0);
-    if (code >= 0x0400 && code <= 0x04ff) return "ru";
-    if (code >= 0x0900 && code <= 0x097f) return "hi";
-    if (code >= 0x4e00 && code <= 0x9fff) return "zh";
+    for (const rule of LANGUAGE_RULES) {
+      if (
+        rule.language !== "en" &&
+        code >= rule.start &&
+        code <= rule.end
+      ) {
+        return rule.language;
+      }
+    }
   }
   if (/[a-zA-Z]/.test(text)) return "en";
-  return "en";
+  return AGENT_INFO.default_language || "en";
 }
 
 // CONCEPTS is populated from `seed/concepts.lino` at init() time.
@@ -99,6 +112,61 @@ function lookupConcept(term) {
   );
 }
 
+// Default concept-lookup patterns when seed/prompt-patterns.lino is missing.
+// Sorted longest-first so "what is a " beats "what is " when both match.
+const DEFAULT_CONCEPT_SUFFIXES = [
+  " क्या होता है",
+  " क्या है",
+  " कौन हैं",
+  " कौन है",
+  "是甚麼",
+  "是什么",
+  "是誰",
+  "是谁",
+];
+const DEFAULT_CONCEPT_PREFIXES = [
+  "what is a ",
+  "what is an ",
+  "what is the ",
+  "what is ",
+  "what's a ",
+  "what's an ",
+  "what's the ",
+  "what's ",
+  "what does ",
+  "tell me about ",
+  "tell me what ",
+  "define ",
+  "explain ",
+  "describe ",
+  "who is ",
+  "who was ",
+  "что такое ",
+  "что это ",
+  "кто такой ",
+  "кто такая ",
+  "кто это ",
+  "расскажи о ",
+  "расскажи про ",
+  "опиши ",
+  "объясни ",
+  "什么是",
+  "甚麼是",
+  "请解释",
+  "请说说",
+  "介绍一下",
+];
+
+function conceptPatternsByKind(kind) {
+  const matches = PROMPT_PATTERNS.filter(
+    (p) => p && p.intent === "concept_lookup" && p.kind === kind && p.text,
+  ).map((p) => p.text);
+  // Sort longest-first so more specific patterns win.
+  matches.sort((a, b) => b.length - a.length);
+  if (matches.length > 0) return matches;
+  return kind === "suffix" ? DEFAULT_CONCEPT_SUFFIXES : DEFAULT_CONCEPT_PREFIXES;
+}
+
 function extractConceptTerm(prompt) {
   const trimmedRaw = String(prompt || "")
     .trim()
@@ -106,16 +174,8 @@ function extractConceptTerm(prompt) {
     .trim();
   if (!trimmedRaw) return null;
 
-  const hindiSuffixes = [" क्या है", " क्या होता है", " कौन है", " कौन हैं"];
-  for (const suffix of hindiSuffixes) {
-    if (trimmedRaw.endsWith(suffix)) {
-      return finalizeConceptBody(
-        trimmedRaw.slice(0, -suffix.length).trim(),
-      );
-    }
-  }
-  const chineseSuffixes = ["是什么", "是甚麼", "是谁", "是誰"];
-  for (const suffix of chineseSuffixes) {
+  const suffixes = conceptPatternsByKind("suffix");
+  for (const suffix of suffixes) {
     if (trimmedRaw.endsWith(suffix)) {
       return finalizeConceptBody(
         trimmedRaw.slice(0, -suffix.length).trim(),
@@ -124,38 +184,7 @@ function extractConceptTerm(prompt) {
   }
 
   const lower = trimmedRaw.toLowerCase();
-  const prefixes = [
-    "what is a ",
-    "what is an ",
-    "what is the ",
-    "what is ",
-    "what's a ",
-    "what's an ",
-    "what's the ",
-    "what's ",
-    "what does ",
-    "tell me about ",
-    "tell me what ",
-    "define ",
-    "explain ",
-    "describe ",
-    "who is ",
-    "who was ",
-    "что такое ",
-    "что это ",
-    "кто такой ",
-    "кто такая ",
-    "кто это ",
-    "расскажи о ",
-    "расскажи про ",
-    "опиши ",
-    "объясни ",
-    "什么是",
-    "甚麼是",
-    "请解释",
-    "请说说",
-    "介绍一下",
-  ];
+  const prefixes = conceptPatternsByKind("prefix");
   let body = null;
   for (const prefix of prefixes) {
     if (lower.startsWith(prefix)) {
@@ -963,6 +992,21 @@ async function loadSeed() {
     if (Array.isArray(seed && seed.tools) && seed.tools.length > 0) {
       TOOLS = seed.tools;
     }
+    if (seed && seed.agentInfo && typeof seed.agentInfo === "object") {
+      AGENT_INFO = Object.assign({}, AGENT_INFO, seed.agentInfo);
+    }
+    if (Array.isArray(seed && seed.languageRules) && seed.languageRules.length > 0) {
+      LANGUAGE_RULES = seed.languageRules
+        .filter((rule) => rule && rule.language && rule.start && rule.end)
+        .map((rule) => ({
+          language: rule.language,
+          start: Number(rule.start),
+          end: Number(rule.end),
+        }));
+    }
+    if (Array.isArray(seed && seed.promptPatterns) && seed.promptPatterns.length > 0) {
+      PROMPT_PATTERNS = seed.promptPatterns;
+    }
   } catch (_error) {
     // Keep fallback tables on error.
   }
@@ -1003,6 +1047,9 @@ self.onmessage = async (event) => {
       responses: MULTILINGUAL_ANSWERS,
       concepts: CONCEPTS,
       tools: TOOLS,
+      agentInfo: AGENT_INFO,
+      languageRules: LANGUAGE_RULES,
+      promptPatterns: PROMPT_PATTERNS,
     });
     return;
   }

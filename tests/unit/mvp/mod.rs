@@ -1,7 +1,7 @@
 //! MVP specification tests for the link-native symbolic assistant.
 //!
 //! Every test in this module pins down a single requirement from `VISION.md`,
-//! `GOALS.md`, `NON-GOALS.md`, or `docs/REQUIREMENTS.md`. Tests that describe
+//! `GOALS.md`, `NON-GOALS.md`, or `REQUIREMENTS.md`. Tests that describe
 //! the current behavior of the prototype are active. Tests that describe MVP
 //! behavior that has not been implemented yet are marked with `#[ignore]` and
 //! a `MVP-target:` reason, so they document the failing expectations without

@@ -1,7 +1,7 @@
 //! Universal problem-solving algorithm.
 //!
 //! Every prompt the assistant ever receives walks the same 11-step loop
-//! described in `VISION.md` and `docs/REQUIREMENTS.md`:
+//! described in `VISION.md` and `REQUIREMENTS.md`:
 //!
 //! 1. **Impulse** — append the raw user message to the event log.
 //! 2. **Formalization** — derive an intent (the smallest formal requirement).
@@ -26,7 +26,6 @@ use std::fmt::Write as _;
 use crate::engine::{
     answer_links_notation, language_aware_answer_for, language_aware_intent_for,
     response_link_for_intent, select_rule_for, stable_id, SelectedRule, SymbolicAnswer,
-    GREETING_ANSWER, IDENTITY_ANSWER, UNKNOWN_ANSWER,
 };
 use crate::event_log::EventLog;
 use crate::language::{detect as detect_language, Language};
@@ -514,5 +513,3 @@ pub fn solve_with_history(prompt: &str, history: &[ConversationTurn]) -> Symboli
     UniversalSolver::default().solve_with_history(prompt, history)
 }
 
-pub(crate) const _UNUSED_CONSTANTS: (&str, &str, &str) =
-    (GREETING_ANSWER, IDENTITY_ANSWER, UNKNOWN_ANSWER);

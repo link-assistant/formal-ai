@@ -139,4 +139,4 @@ cargo test --doc --verbose
 rust-script scripts/check-file-size.rs
 ```
 
-See [docs/REQUIREMENTS.md](docs/REQUIREMENTS.md) for the issue #1 requirement matrix and [docs/case-studies/issue-1/README.md](docs/case-studies/issue-1/README.md) for the collected research and implementation plan.
+See [REQUIREMENTS.md](REQUIREMENTS.md) for the cumulative requirement matrix (now alongside [VISION.md](VISION.md)) and [docs/case-studies/issue-1/README.md](docs/case-studies/issue-1/README.md) for the collected research and implementation plan.

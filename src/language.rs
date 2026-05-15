@@ -4,7 +4,7 @@
 //! evidence trail carries `language:en`, `language:ru`, `language:hi`,
 //! `language:zh`, or `language:unknown`. Detection is based on Unicode block
 //! ranges of the dominant script in the prompt — no neural inference and no
-//! external service. See `VISION.md` and `docs/REQUIREMENTS.md` for the rules.
+//! external service. See `VISION.md` and `REQUIREMENTS.md` for the rules.
 
 /// Detected language slug used inside `language:<slug>` evidence links.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

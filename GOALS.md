@@ -72,7 +72,7 @@ This project should build a practical, inspectable symbolic assistant before it 
 
 ## Documentation Goals
 
-- Keep issue requirements in `docs/REQUIREMENTS.md`.
+- Keep issue requirements in `REQUIREMENTS.md` (alongside `VISION.md`, `GOALS.md`, `NON-GOALS.md` at the repository root).
 - Keep deep issue analyses in `docs/case-studies/issue-{id}`.
 - Preserve raw GitHub data and relevant logs beside each case study.
 - Use case studies to explain root causes, alternatives, implementation choices, and follow-up boundaries.
