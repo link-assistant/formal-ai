@@ -1,0 +1,80 @@
+concept_wikipedia
+  term "Wikipedia"
+  intent "concept_lookup"
+  category "encyclopedia"
+  summary "Wikipedia is a free, multilingual online encyclopedia written and maintained by a community of volunteer contributors through a model of open collaboration."
+  source "https://en.wikipedia.org/wiki/Wikipedia"
+  source_kind "wikipedia"
+
+concept_wikidata
+  term "Wikidata"
+  intent "concept_lookup"
+  category "structured-knowledge"
+  summary "Wikidata is a collaboratively edited multilingual knowledge graph hosted by the Wikimedia Foundation. It stores structured data items that power Wikipedia infoboxes and external knowledge applications."
+  source "https://en.wikipedia.org/wiki/Wikidata"
+  source_kind "wikipedia"
+
+concept_wiktionary
+  term "Wiktionary"
+  intent "concept_lookup"
+  category "dictionary"
+  summary "Wiktionary is a multilingual, web-based free-content dictionary, available in many languages and including thesaurus, rhymes, translations, audio pronunciations, etymologies, and definitions."
+  source "https://en.wikipedia.org/wiki/Wiktionary"
+  source_kind "wikipedia"
+
+concept_links_notation
+  term "Links Notation"
+  intent "concept_lookup"
+  category "data-format"
+  summary "Links Notation is an indentation-based, untyped serialization format used by the Deep Theory project to represent links and link networks as portable text."
+  source "https://github.com/linksplatform/Documentation"
+  source_kind "project-docs"
+
+concept_doublet
+  term "doublet"
+  intent "concept_lookup"
+  category "data-structure"
+  summary "A doublet is a link with exactly two endpoints. In Deep Theory it is the canonical reduction target for higher-arity links because every higher arity can be encoded as a chain of doublets."
+  source "docs/VISION.md"
+  source_kind "project-docs"
+
+concept_doublet_link
+  term "doublet link"
+  intent "concept_lookup"
+  category "data-structure"
+  summary "A doublet link is a link with exactly two endpoints. See doublet."
+  source "docs/VISION.md"
+  source_kind "project-docs"
+
+concept_universal_solver
+  term "universal solver"
+  intent "concept_lookup"
+  category "algorithm"
+  summary "The universal solver is formal-ai's deterministic 11-step problem-solving loop: impulse, formalization, context, history, decomposition, TDD, synthesis, combination, verification, simplification, documentation. Every interface (library, CLI, HTTP, Telegram, web demo) routes through the same loop."
+  source "docs/case-studies/issue-12/README.md"
+  source_kind "project-docs"
+
+concept_event_log
+  term "event log"
+  intent "concept_lookup"
+  category "data-structure"
+  summary "The event log is formal-ai's append-only system of record. Every step in the universal solver loop appends an Event with a stable content-addressed id; the user-facing answer is, by construction, a projection of this log."
+  source "docs/NON-GOALS.md"
+  source_kind "project-docs"
+
+concept_webassembly
+  term "WebAssembly"
+  intent "concept_lookup"
+  category "runtime"
+  summary "WebAssembly (Wasm) is a binary instruction format for a stack-based virtual machine. It is designed as a portable compilation target for programming languages, enabling deployment on the web for client and server applications."
+  source "https://en.wikipedia.org/wiki/WebAssembly"
+  source_kind "wikipedia"
+
+concept_rust
+  term "Rust"
+  intent "concept_lookup"
+  category "programming-language"
+  summary "Rust is a multi-paradigm, general-purpose programming language that emphasises performance, type safety, and concurrency. It enforces memory safety without using a garbage collector."
+  source "https://en.wikipedia.org/wiki/Rust_(programming_language)"
+  source_kind "wikipedia"
+

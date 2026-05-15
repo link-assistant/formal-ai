@@ -1,9 +1,12 @@
+pub(crate) mod arithmetic;
+pub(crate) mod concepts;
 pub mod engine;
 pub mod event_log;
 pub mod language;
 pub mod protocol;
 pub mod server;
 pub mod solver;
+pub(crate) mod solver_handlers;
 pub(crate) mod solver_helpers;
 pub mod telegram;
 pub mod telegram_runtime;
@@ -17,7 +20,9 @@ pub use protocol::{
     ResponseOutputMessage, ResponseUsage, ResponsesRequest, TokenUsage,
 };
 pub use server::{handle_api_request, serve, ApiHttpResponse};
-pub use solver::{solve, SolverConfig, UniversalSolver};
+pub use solver::{
+    solve, solve_with_history, ConversationRole, ConversationTurn, SolverConfig, UniversalSolver,
+};
 pub use telegram::{
     handle_telegram_webhook, parse_get_updates_response, telegram_html_from_markdown,
     ParsedUpdatesBatch, TelegramPollingConfig, TelegramPollingError, TelegramPollingReply,
