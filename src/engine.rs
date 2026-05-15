@@ -154,7 +154,7 @@ const HELLO_WORLD_PROGRAMS: &[HelloWorldProgram] = &[
     HelloWorldProgram {
         slug: "rust",
         language: "Rust",
-        aliases: &["rust", "rs"],
+        aliases: &["rust", "rs", "раст", "расте"],
         code_fence: "rust",
         code: r#"fn main() {
     println!("Hello, world!");
@@ -173,7 +173,7 @@ const HELLO_WORLD_PROGRAMS: &[HelloWorldProgram] = &[
     HelloWorldProgram {
         slug: "python",
         language: "Python",
-        aliases: &["python", "py"],
+        aliases: &["python", "py", "питон", "питоне"],
         code_fence: "python",
         code: r#"print("Hello, world!")"#,
         execution: ProgramExecution {
@@ -190,7 +190,7 @@ const HELLO_WORLD_PROGRAMS: &[HelloWorldProgram] = &[
     HelloWorldProgram {
         slug: "javascript",
         language: "JavaScript",
-        aliases: &["javascript", "js", "node"],
+        aliases: &["javascript", "js", "node", "джаваскрипт"],
         code_fence: "javascript",
         code: r#"console.log("Hello, world!");"#,
         execution: ProgramExecution {
@@ -792,7 +792,11 @@ fn is_identity_question(normalized_prompt: &str) -> bool {
 }
 
 fn hello_world_program(normalized_prompt: &str) -> Option<&'static HelloWorldProgram> {
-    if !contains_token(normalized_prompt, "hello") || !contains_token(normalized_prompt, "world") {
+    let has_hello = contains_token(normalized_prompt, "hello")
+        || contains_token(normalized_prompt, "хелло");
+    let has_world = contains_token(normalized_prompt, "world")
+        || contains_token(normalized_prompt, "ворлд");
+    if !has_hello || !has_world {
         return None;
     }
 
