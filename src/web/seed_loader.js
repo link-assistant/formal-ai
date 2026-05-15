@@ -40,6 +40,37 @@
     );
   }
 
+  function assetVersion() {
+    if (typeof global.FORMAL_AI_ASSET_VERSION === "string") {
+      return global.FORMAL_AI_ASSET_VERSION;
+    }
+    try {
+      var search = global.location && global.location.search;
+      var match = search && /[?&]v=([^&]+)/.exec(search);
+      return match ? decodeURIComponent(match[1].replace(/\+/g, " ")) : "";
+    } catch (_error) {
+      return "";
+    }
+  }
+
+  function withAssetVersion(url) {
+    var version = assetVersion();
+    if (!version) return url;
+    if (
+      url.indexOf("://") !== -1 ||
+      url.indexOf("//") === 0 ||
+      url.indexOf("data:") === 0
+    ) {
+      return url;
+    }
+    return (
+      url +
+      (url.indexOf("?") === -1 ? "?" : "&") +
+      "v=" +
+      encodeURIComponent(version)
+    );
+  }
+
   function unescapeValue(value) {
     return String(value || "")
       .replace(/\\n/g, "\n")
@@ -366,7 +397,7 @@
     var target = Array.isArray(files) && files.length ? files : DEFAULT_FILES;
     return Promise.all(
       target.map(function (file) {
-        return fetchText(file).then(function (text) {
+        return fetchText(withAssetVersion(file)).then(function (text) {
           return { file: file, text: text };
         });
       }),

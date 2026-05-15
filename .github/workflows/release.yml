@@ -697,13 +697,16 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
-          ref: main
+          ref: ${{ github.sha }}
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v6
 
       - name: Sync data/seed into src/web/seed (deployment mirror)
         run: scripts/sync-seed.sh
+
+      - name: Stamp GitHub Pages artifact
+        run: scripts/stamp-pages-artifact.sh src/web "${{ github.sha }}"
 
       - name: Upload GitHub Pages artifact
         uses: actions/upload-pages-artifact@v5
@@ -744,8 +747,8 @@ jobs:
           cd tests/e2e
           npx playwright install --with-deps chromium
 
-      - name: Wait for GitHub Pages to update
-        run: sleep 30
+      - name: Wait for GitHub Pages deployment
+        run: scripts/wait-for-pages-deployment.sh "${{ needs.deploy-demo.outputs.page_url }}" "${{ github.sha }}"
 
       - name: Run GitHub Pages e2e tests
         run: |
