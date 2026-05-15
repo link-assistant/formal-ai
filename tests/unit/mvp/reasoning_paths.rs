@@ -271,3 +271,73 @@ fn every_specialized_handler_emits_a_trace_link() {
         );
     }
 }
+
+// ---------------------------------------------------------------------------
+// R89: incompatible-unit queries — explicit symbolic refusal (issue #43).
+//
+// "Сколько метров в килобайте?" mixes length (meters) with data-storage
+// (kilobytes). The solver must recognise the dimensional mismatch and emit
+// `intent:unit_incompatibility` with a clear explanation rather than falling
+// through to `intent:unknown`.
+// ---------------------------------------------------------------------------
+
+#[test]
+fn russian_meters_in_kilobyte_returns_unit_incompatibility() {
+    let response = answer("Сколько метров в килобайте?");
+    assert_eq!(
+        response.intent, "unit_incompatibility",
+        "mixing length and data-storage units must not fall through to unknown: {:?}",
+        response.answer,
+    );
+    assert!(
+        response.answer.contains("length") || response.answer.contains("длин"),
+        "answer should mention the length dimension: {}",
+        response.answer,
+    );
+    assert!(
+        response.answer.contains("data storage") || response.answer.contains("данн"),
+        "answer should mention the data storage dimension: {}",
+        response.answer,
+    );
+    assert!(
+        (response.confidence - 1.0).abs() < f32::EPSILON,
+        "incompatibility is a known fact, confidence must be 1.0",
+    );
+}
+
+#[test]
+fn english_meters_in_kilobyte_returns_unit_incompatibility() {
+    let response = answer("How many meters in a kilobyte?");
+    assert_eq!(response.intent, "unit_incompatibility");
+    assert!(response.answer.contains("length"));
+    assert!(response.answer.contains("data storage"));
+}
+
+#[test]
+fn incompatible_unit_answer_records_evidence_link() {
+    let response = answer("How many meters in a kilobyte?");
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("unit_incompatibility")),
+        "must emit a unit_incompatibility event: {:?}",
+        response.evidence_links,
+    );
+}
+
+#[test]
+fn compatible_unit_query_does_not_trigger_incompatibility_handler() {
+    // km to meters: both are length — must not fire the incompatibility handler.
+    let response = answer("What is 2 + 2?");
+    assert_ne!(
+        response.intent, "unit_incompatibility",
+        "arithmetic prompt must not trigger unit_incompatibility",
+    );
+}
+
+#[test]
+fn greeting_is_not_intercepted_by_incompatibility_handler() {
+    let response = answer("Hi");
+    assert_eq!(response.intent, "greeting");
+}
