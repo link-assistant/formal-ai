@@ -32,8 +32,8 @@ use crate::language::{detect as detect_language, Language};
 use crate::solver_handlers::{
     build_evidence_links, finalize_simple, try_algorithm, try_arithmetic, try_concept_lookup,
     try_conversation_memory, try_execution_failure, try_ill_formed, try_javascript_execution,
-    try_meta_explanation, try_network_query, try_shell_refusal, try_source_conflict,
-    try_source_refresh, try_translation,
+    try_kupi_slona, try_meta_explanation, try_network_query, try_shell_refusal,
+    try_source_conflict, try_source_refresh, try_translation,
 };
 use crate::solver_helpers::{
     confidence_for, is_agent_opt_in, is_agent_request, is_cache_flush_request,
@@ -321,6 +321,9 @@ impl UniversalSolver {
             return Some(answer);
         }
         if let Some(answer) = try_ill_formed(prompt, &normalized, log) {
+            return Some(answer);
+        }
+        if let Some(answer) = try_kupi_slona(prompt, &normalized, log) {
             return Some(answer);
         }
         if let Some(answer) = try_shell_refusal(prompt, &normalized, log) {

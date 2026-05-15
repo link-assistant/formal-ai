@@ -426,3 +426,51 @@ fn humanize_url_preserves_functional_link_target() {
     let ascii = "https://en.wikipedia.org/wiki/Albert_Einstein";
     assert_eq!(humanize_url(ascii), ascii);
 }
+
+// ---------------------------------------------------------------------------
+// Issue #41: "Купи слона" — well-known Russian circular-joke idiom.
+// The phrase should be recognized and answered with the traditional reply,
+// not fall through to the "unknown" catch-all intent.
+// ---------------------------------------------------------------------------
+
+#[test]
+fn kupi_slona_returns_dedicated_idiom_intent() {
+    // Issue #41 reporter's exact prompt.
+    let response = answer("Купи слона");
+    assert_ne!(
+        response.intent, "unknown",
+        "\"Купи слона\" must not fall through to unknown intent; got: {}",
+        response.intent
+    );
+    assert_eq!(
+        response.intent, "kupi_slona",
+        "\"Купи слона\" must map to the kupi_slona intent, got: {}",
+        response.intent
+    );
+}
+
+#[test]
+fn kupi_slona_answer_includes_traditional_reply() {
+    let response = answer("Купи слона");
+    let lower = response.answer.to_lowercase();
+    // The traditional comeback is "у всех есть слон, а у меня нет"
+    // (everyone has an elephant, but I don't) and similar variants.
+    assert!(
+        lower.contains("слон") || lower.contains("всех"),
+        "\"Купи слона\" answer should reference the elephant, got: {}",
+        response.answer
+    );
+}
+
+#[test]
+fn kupi_slona_answer_is_in_russian() {
+    let response = answer("Купи слона");
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link == "language:ru"),
+        "\"Купи слона\" should be tagged as Russian, got evidence links: {:?}",
+        response.evidence_links
+    );
+}
