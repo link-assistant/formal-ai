@@ -6,6 +6,13 @@ async function switchToManualMode(page) {
   await expect(demoToggle).toContainText('Demo on');
   await demoToggle.click();
   await expect(demoToggle).toContainText('Demo');
+  await expect(page.locator('[data-testid="demo-status"]')).toHaveText('Manual mode');
+  await expect(page.locator('[data-testid="chat-composer-input"]')).toBeEnabled({
+    timeout: 5_000,
+  });
+  await expect(page.locator('[data-testid="tool-entry"]').first()).toBeVisible({
+    timeout: 10_000,
+  });
 }
 
 async function sendPrompt(page, text) {
@@ -21,7 +28,7 @@ async function sendPrompt(page, text) {
 
 test.describe('multilingual chat surface', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/');
+    await page.goto('./');
     await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
     await switchToManualMode(page);
   });
@@ -60,7 +67,7 @@ test.describe('multilingual chat surface', () => {
 
 test.describe('Wikipedia REST fallback', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/');
+    await page.goto('./');
     await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
     await switchToManualMode(page);
   });
@@ -94,7 +101,7 @@ test.describe('Wikipedia REST fallback', () => {
 
 test.describe('memory export/import', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/');
+    await page.goto('./');
     await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
     await switchToManualMode(page);
   });

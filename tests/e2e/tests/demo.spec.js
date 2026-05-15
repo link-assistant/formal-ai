@@ -6,11 +6,15 @@ async function switchToManualMode(page) {
   await expect(demoToggle).toContainText('Demo on');
   await demoToggle.click();
   await expect(demoToggle).toContainText('Demo');
+  await expect(page.locator('[data-testid="demo-status"]')).toHaveText('Manual mode');
+  await expect(page.locator('[data-testid="chat-composer-input"]')).toBeEnabled({
+    timeout: 5_000,
+  });
 }
 
 test.describe('formal-ai demo UI', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/');
+    await page.goto('./');
     // Wait for React to mount and the app shell to be visible
     await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
   });

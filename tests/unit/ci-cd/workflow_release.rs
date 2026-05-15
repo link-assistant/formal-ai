@@ -166,6 +166,47 @@ fn static_demo_runtime_assets_are_cache_busted_by_deployment_version() {
 }
 
 #[test]
+fn pages_e2e_navigation_preserves_repository_subpath() {
+    let manifest_dir = env!("CARGO_MANIFEST_DIR");
+    let pages_config = fs::read_to_string(format!(
+        "{manifest_dir}/tests/e2e/playwright.pages.config.js"
+    ))
+    .unwrap();
+    let demo_spec =
+        fs::read_to_string(format!("{manifest_dir}/tests/e2e/tests/demo.spec.js")).unwrap();
+    let multilingual_spec = fs::read_to_string(format!(
+        "{manifest_dir}/tests/e2e/tests/multilingual.spec.js"
+    ))
+    .unwrap();
+
+    assert!(
+        pages_config.contains("normalizeBaseUrl"),
+        "Pages e2e should normalize PAGES_URL with a trailing slash so ./ resolves inside /formal-ai/"
+    );
+    assert!(
+        pages_config.contains("https://link-assistant.github.io/formal-ai/"),
+        "default Pages URL should include the repository subpath and trailing slash"
+    );
+
+    for (path, spec) in [
+        ("tests/e2e/tests/demo.spec.js", demo_spec.as_str()),
+        (
+            "tests/e2e/tests/multilingual.spec.js",
+            multilingual_spec.as_str(),
+        ),
+    ] {
+        assert!(
+            !spec.contains("page.goto('/');"),
+            "{path} should not navigate to / because URL resolution drops the /formal-ai/ subpath"
+        );
+        assert!(
+            spec.contains("page.goto('./');"),
+            "{path} should navigate with ./ so Pages tests stay under the repository subpath"
+        );
+    }
+}
+
+#[test]
 fn release_workflow_jobs_have_explicit_timeouts() {
     let workflow = release_workflow();
     let expected_timeouts = [
