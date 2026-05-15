@@ -152,6 +152,116 @@ Plan:
 
 - Land case study, seed updates, Rust schema extension, sync to `src/web/seed/`, and tests in PR #22.
 
+## Maintainer Follow-up (comment `4460251296`)
+
+After the first iteration landed, the maintainer left a single comment expanding
+the brief into six additional requirements. They are numbered R8–R13 below and
+addressed in the same PR per R14 ("single pull request, unlimited context").
+
+> 1. We should use **full name of the disambiguated context** `В контексте «ml» (Машинное обучение) IIR` and also `infinite impulse response (IIR)`, but also `Фильтр с бесконечной импульсной характеристикой (рекурсивный фильтр, БИХ-фильтр) или IIR-фильтр...` (from <https://ru.wikipedia.org/wiki/Фильтр_с_бесконечной_импульсной_характеристикой>).
+> 2. So we should **prefer the original user's language** — as 51% of text is in Russian, so the answer should also be in Russian. If a native-language Wikipedia version is missing, take English and translate to target language using **Q/P-id detection** (as in `link-assistant/human-language` and `link-assistant/meta-expression`), but make it best possible quality.
+> 3. Double check we have **tests that cover translations between English, Russian, Chinese, and Hindi**, using data from Wikipedia/Wikidata/Wiktionary.
+> 4. Prefer **logic recorded as links** (in our associative store), not hard-coded — flexible, modifiable, compilable to Rust/JS as per the vision. The outer code is for interfacing; as much as possible should live in the dynamic data store.
+> 5. Double check the vision is fully consistent with these comments and that everything is fully implemented per the requirements and vision.
+> 6. Plan and execute everything in a single pull request, unlimited time and context, until each requirement is fully addressed.
+
+### R8 — Full disambiguated context label `В контексте «ml» (Машинное обучение) IIR`
+
+Plan (seed-first):
+
+- New `data/seed/concept-contexts.lino` registry: one `ContextRecord` per context
+  (`context_machine_learning`, `context_signal_processing`,
+  `context_neural_network`, `context_programming`) anchored by Wikidata Q-IDs
+  (Q2539, Q1058710, Q192776, Q80006) with per-language `label "en|ru|hi|zh"`
+  blocks and multilingual `aliases` lists.
+- `ConceptRecord` gains a `context_links "context_machine_learning|…"` field so
+  the IIR record references the registry rather than restating every alias
+  inline.
+- Rust ranker (`record_has_context` in `src/concepts.rs`) and the JS worker
+  follow the registry first, falling back to the per-record `contexts` list for
+  backward compatibility.
+- Response template gains an explicit `{context_label}` placeholder so the body
+  reads `«ml» (Машинное обучение)` even when the user typed the latinised alias.
+- A second template variant — `response_concept_lookup_in_context_no_alias_*` —
+  fires when the user already typed the localised label, so the body becomes
+  `В контексте Машинное обучение IIR …` instead of the redundant
+  `«машинное обучение» (Машинное обучение)`.
+
+### R9 — Native-language term and aliases
+
+Plan:
+
+- `ConceptRecord` gains a per-language `localized "en|ru|hi|zh"` block carrying
+  `term`, `aliases`, `summary`, `source`, and `source_kind`.
+- The Russian block for IIR uses
+  `Фильтр с бесконечной импульсной характеристикой` as the term and
+  `рекурсивный фильтр|БИХ-фильтр|IIR-фильтр` as aliases (matching the lead
+  paragraph of the Russian Wikipedia article).
+- The English block expands the acronym to `infinite impulse response` for the
+  long form. Hindi and Chinese blocks carry their native terms.
+
+### R10 — Native-language definition body from native Wikipedia
+
+Plan:
+
+- The per-language `localized` block carries `summary` and `source` fields.
+- The Russian summary is the lead paragraph of
+  <https://ru.wikipedia.org/wiki/Фильтр_с_бесконечной_импульсной_характеристикой>
+  and the `source` field points at that URL.
+- Renderer prefers the localised summary/source over the record-level
+  English defaults whenever a block for the prevailing language exists.
+
+### R11 — Prefer the user's prevailing language
+
+Plan:
+
+- `detect_language(prompt)` (Rust) and `detectLanguage(prompt)` (JS) already
+  return the script-majority language from Unicode-script counts.
+- The renderer picks the localised block by detected language; when no block
+  exists it falls back to English while still emitting the `language:<slug>`
+  evidence link so the trace records what happened.
+
+### R12 — Translation coverage tests across English ↔ Russian ↔ Chinese ↔ Hindi
+
+Plan:
+
+- New Rust integration tests in `tests/unit/mvp/multilingual.rs`:
+  - `russian_iir_in_ml_body_uses_native_term_and_context_label` — pins `«ml»`,
+    `Машинное обучение`, `Фильтр с бесконечной импульсной характеристикой`,
+    and `IIR-фильтр`.
+  - `russian_iir_in_ml_source_points_at_russian_wikipedia` — asserts
+    `ru.wikipedia.org` in the rendered body.
+  - `russian_iir_when_context_is_typed_natively_drops_redundant_parens` —
+    pins the `_no_alias` template path.
+  - `english_iir_in_ml_body_uses_english_native_term` — asserts
+    `infinite impulse response` + `machine learning`.
+  - `chinese_iir_in_ml_body_uses_chinese_context_label` — asserts `机器学习`.
+  - `hindi_iir_in_ml_body_uses_hindi_context_label` — asserts `मशीन लर्निंग`.
+  - `russian_iir_evidence_includes_wikidata_anchor` — asserts `Q740073` or
+    `wikidata` in `evidence_links`.
+
+### R13 — Cross-language join key (Wikidata Q-IDs as links)
+
+Plan:
+
+- Every `ConceptRecord` and `ContextRecord` carries a `wikidata "Q…"` field.
+  The IIR record uses `Q740073`; the ML context record uses `Q2539`.
+- The handler logs a `wikidata` event when a concept is resolved, and
+  `build_evidence_links` maps that to a `wikidata:Q…` line in
+  `evidence_links`, mirroring how `link-assistant/human-language` and
+  `link-assistant/meta-expression` join across languages on the same anchor.
+- Because the join key is part of the public trace, downstream tooling can
+  translate between languages from the same `Q…` even without re-running the
+  solver.
+
+### R14 — Continue in PR #22 until every requirement is done
+
+Plan:
+
+- All changes for R8–R13 land in PR #22. The `changelog.d/` fragment is
+  amended in place; the version is bumped via the auto-bump CI workflow as
+  before.
+
 ## Existing Components / Libraries That Solve Similar Problems
 
 These were surveyed for design ideas before settling on the seed-data approach:

@@ -34,6 +34,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
             MULTILINGUAL_RESPONSES_LINO,
         ),
         ("data/seed/concepts.lino", CONCEPTS_LINO),
+        ("data/seed/concept-contexts.lino", CONCEPT_CONTEXTS_LINO),
         ("data/seed/tools.lino", TOOLS_LINO),
         ("data/seed/language-detection.lino", LANGUAGE_DETECTION_LINO),
         ("data/seed/prompt-patterns.lino", PROMPT_PATTERNS_LINO),
@@ -285,6 +286,21 @@ pub struct PromptPattern {
     pub text: String,
 }
 
+/// A language-specific variant of a concept (term, aliases, summary, source).
+///
+/// Used to deliver a localized definition to the user when their prevailing
+/// language matches one of the records nested under `localized "<lang>"` in
+/// `data/seed/concepts.lino`. Empty fields fall back to the parent concept.
+#[derive(Debug, Clone, Default)]
+pub struct LocalizedConcept {
+    pub language: String,
+    pub term: String,
+    pub aliases: Vec<String>,
+    pub summary: String,
+    pub source: String,
+    pub source_kind: String,
+}
+
 /// A concept record from the offline knowledge base.
 ///
 /// `contexts` is optional and lists `|`-separated context labels in any of the
@@ -292,6 +308,19 @@ pub struct PromptPattern {
 /// When a concept can be disambiguated by an in-question context delimiter
 /// (e.g. "what is IIR in ML"), the lookup ranker prefers the record whose
 /// `contexts` list contains the parsed context over context-less records.
+///
+/// `wikidata` (optional) anchors the concept to a Wikidata Q-ID so cross-
+/// language fall-back goes via the structured knowledge graph the same way
+/// the human-language / meta-expression repositories already model it.
+///
+/// `context_links` (optional) lists the slugs of `concept_contexts.lino`
+/// records that disambiguate this concept; the response handler can resolve
+/// the localized context label from there.
+///
+/// `localized` (optional) carries per-language overrides of `term`,
+/// `aliases`, `summary`, `source`, and `source_kind`. The solver picks the
+/// override matching the user's prevailing language and falls back to the
+/// outer (English) values when no override exists.
 #[derive(Debug, Clone)]
 pub struct ConceptRecord {
     pub slug: String,
@@ -299,9 +328,24 @@ pub struct ConceptRecord {
     pub category: String,
     pub aliases: Vec<String>,
     pub contexts: Vec<String>,
+    pub context_links: Vec<String>,
+    pub wikidata: String,
     pub summary: String,
     pub source: String,
     pub source_kind: String,
+    pub localized: Vec<LocalizedConcept>,
+}
+
+impl ConceptRecord {
+    /// Pick the localized variant matching `language`, falling back to the
+    /// English variant or to `None` if no overrides exist for this concept.
+    #[must_use]
+    pub fn localized_for(&self, language: &str) -> Option<&LocalizedConcept> {
+        self.localized
+            .iter()
+            .find(|loc| loc.language == language)
+            .or_else(|| self.localized.iter().find(|loc| loc.language == "en"))
+    }
 }
 
 #[must_use]
@@ -317,32 +361,28 @@ pub fn concepts() -> Vec<ConceptRecord> {
         if !entry.name.starts_with("concept_") {
             continue;
         }
-        let aliases_raw = entry.find_child_value("aliases").to_string();
-        let aliases = if aliases_raw.is_empty() {
-            Vec::new()
-        } else {
-            aliases_raw
-                .split('|')
-                .map(str::trim)
-                .filter(|s| !s.is_empty())
-                .map(ToOwned::to_owned)
-                .collect()
-        };
-        let contexts_raw = entry.find_child_value("contexts").to_string();
-        let contexts = if contexts_raw.is_empty() {
-            Vec::new()
-        } else {
-            contexts_raw
-                .split('|')
-                .map(str::trim)
-                .filter(|s| !s.is_empty())
-                .map(ToOwned::to_owned)
-                .collect()
-        };
+        let aliases = split_pipe_list(entry.find_child_value("aliases"));
+        let contexts = split_pipe_list(entry.find_child_value("contexts"));
+        let context_links = split_pipe_list(entry.find_child_value("context_links"));
         let summary = entry.find_child_value("summary").to_string();
         let term = entry.find_child_value("term").to_string();
         if term.is_empty() || summary.is_empty() {
             continue;
+        }
+        let mut localized = Vec::new();
+        for child in entry.children.iter().filter(|c| c.name == "localized") {
+            let lang = child.id.clone();
+            if lang.is_empty() {
+                continue;
+            }
+            localized.push(LocalizedConcept {
+                language: lang,
+                term: child.find_child_value("term").to_string(),
+                aliases: split_pipe_list(child.find_child_value("aliases")),
+                summary: child.find_child_value("summary").to_string(),
+                source: child.find_child_value("source").to_string(),
+                source_kind: child.find_child_value("source_kind").to_string(),
+            });
         }
         out.push(ConceptRecord {
             slug: entry.name.clone(),
@@ -350,12 +390,112 @@ pub fn concepts() -> Vec<ConceptRecord> {
             category: entry.find_child_value("category").to_string(),
             aliases,
             contexts,
+            context_links,
+            wikidata: entry.find_child_value("wikidata").to_string(),
             summary,
             source: entry.find_child_value("source").to_string(),
             source_kind: entry.find_child_value("source_kind").to_string(),
+            localized,
         });
     }
     out
+}
+
+/// A localized label for a disambiguating concept context.
+#[derive(Debug, Clone, Default)]
+pub struct LocalizedContextLabel {
+    pub language: String,
+    pub text: String,
+}
+
+/// A disambiguating concept context (e.g. "machine learning") with a Wikidata
+/// Q-ID anchor and per-language localized labels. Loaded from
+/// `data/seed/concept-contexts.lino`.
+#[derive(Debug, Clone, Default)]
+pub struct ContextRecord {
+    pub slug: String,
+    pub wikidata: String,
+    pub aliases: Vec<String>,
+    pub labels: Vec<LocalizedContextLabel>,
+}
+
+impl ContextRecord {
+    /// Pick the localized label matching `language`, falling back to the
+    /// English label or the slug.
+    #[must_use]
+    pub fn label_for(&self, language: &str) -> &str {
+        if let Some(label) = self.labels.iter().find(|l| l.language == language) {
+            return &label.text;
+        }
+        if let Some(label) = self.labels.iter().find(|l| l.language == "en") {
+            return &label.text;
+        }
+        &self.slug
+    }
+
+    /// Returns true when `value` (normalized lowercase) matches one of this
+    /// record's aliases or localized labels.
+    #[must_use]
+    pub fn matches(&self, value: &str) -> bool {
+        let needle = value.trim().to_lowercase();
+        if needle.is_empty() {
+            return false;
+        }
+        if self
+            .aliases
+            .iter()
+            .any(|alias| alias.trim().to_lowercase() == needle)
+        {
+            return true;
+        }
+        self.labels
+            .iter()
+            .any(|label| label.text.trim().to_lowercase() == needle)
+    }
+}
+
+#[must_use]
+pub fn concept_contexts() -> Vec<ContextRecord> {
+    let tree = parse_lino(CONCEPT_CONTEXTS_LINO);
+    let mut out = Vec::new();
+    if let Some(root) = tree.children.first() {
+        for entry in root.children.iter().filter(|c| c.name == "context") {
+            let slug = entry.id.clone();
+            if slug.is_empty() {
+                continue;
+            }
+            let aliases = split_pipe_list(entry.find_child_value("aliases"));
+            let mut labels = Vec::new();
+            for child in entry.children.iter().filter(|c| c.name == "label") {
+                let lang = child.id.clone();
+                if lang.is_empty() {
+                    continue;
+                }
+                labels.push(LocalizedContextLabel {
+                    language: lang,
+                    text: child.find_child_value("text").to_string(),
+                });
+            }
+            out.push(ContextRecord {
+                slug,
+                wikidata: entry.find_child_value("wikidata").to_string(),
+                aliases,
+                labels,
+            });
+        }
+    }
+    out
+}
+
+fn split_pipe_list(raw: &str) -> Vec<String> {
+    if raw.is_empty() {
+        return Vec::new();
+    }
+    raw.split('|')
+        .map(str::trim)
+        .filter(|s| !s.is_empty())
+        .map(ToOwned::to_owned)
+        .collect()
 }
 
 /// Intent routing record from `data/seed/intent-routing.lino`.
@@ -556,6 +696,7 @@ pub const AGENT_INFO_LINO: &str = include_str!("../data/seed/agent-info.lino");
 pub const MULTILINGUAL_RESPONSES_LINO: &str =
     include_str!("../data/seed/multilingual-responses.lino");
 pub const CONCEPTS_LINO: &str = include_str!("../data/seed/concepts.lino");
+pub const CONCEPT_CONTEXTS_LINO: &str = include_str!("../data/seed/concept-contexts.lino");
 pub const TOOLS_LINO: &str = include_str!("../data/seed/tools.lino");
 pub const LANGUAGE_DETECTION_LINO: &str = include_str!("../data/seed/language-detection.lino");
 pub const PROMPT_PATTERNS_LINO: &str = include_str!("../data/seed/prompt-patterns.lino");

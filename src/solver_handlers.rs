@@ -9,7 +9,9 @@ use std::fmt::Write as _;
 use crate::arithmetic::{
     evaluate_arithmetic, extract_arithmetic_expression, format_arithmetic_result,
 };
-use crate::concepts::{extract_concept_query, lookup_concept_query, ConceptRecord};
+use crate::concepts::{
+    extract_concept_query, lookup_concept_query, resolve_context_label, ConceptRecord,
+};
 use crate::engine::{
     answer_links_notation, knowledge_links_notation, stable_id, unknown_answer, ExecutionStatus,
     SymbolicAnswer,
@@ -172,11 +174,19 @@ pub fn try_concept_lookup(prompt: &str, log: &mut EventLog) -> Option<SymbolicAn
     };
     let record: &'static ConceptRecord = lookup.record;
     log.append("concept_lookup:hit", record.slug.clone());
-    log.append("source", record.source.clone());
+    let language = detect_language(prompt).slug();
+    let localized = record.localized_for(language);
+    let source_for_log = localized
+        .map(|loc| loc.source.as_str())
+        .filter(|s| !s.is_empty())
+        .unwrap_or(record.source.as_str());
+    log.append("source", source_for_log.to_owned());
+    if !record.wikidata.is_empty() {
+        log.append("wikidata", record.wikidata.clone());
+    }
     if lookup.context_match {
         if let Some(context) = lookup.context.as_deref() {
             log.append("concept_lookup:context-match", context.to_owned());
-            let language = detect_language(prompt).slug();
             let body = render_concept_in_context(language, context, record);
             return Some(finalize_simple(
                 prompt,
@@ -190,14 +200,7 @@ pub fn try_concept_lookup(prompt: &str, log: &mut EventLog) -> Option<SymbolicAn
     } else if let Some(context) = lookup.context.as_deref() {
         log.append("concept_lookup:context-mismatch", context.to_owned());
     }
-    let body = format!(
-        "{term} ({category}): {summary}\n\nSource: {source} ({source_kind}).",
-        term = record.term,
-        category = record.category,
-        summary = record.summary,
-        source = record.source,
-        source_kind = record.source_kind,
-    );
+    let body = render_concept_plain(language, record);
     Some(finalize_simple(
         prompt,
         log,
@@ -208,27 +211,93 @@ pub fn try_concept_lookup(prompt: &str, log: &mut EventLog) -> Option<SymbolicAn
     ))
 }
 
+/// Render a plain `concept_lookup` body using the localized variant when
+/// available (so `что такое IIR` in Russian returns the ru.wikipedia.org
+/// summary, not the English one).
+fn render_concept_plain(language: &str, record: &ConceptRecord) -> String {
+    let localized = record.localized_for(language);
+    let term = localized
+        .map(|loc| loc.term.as_str())
+        .filter(|s| !s.is_empty())
+        .unwrap_or(record.term.as_str());
+    let summary = localized
+        .map(|loc| loc.summary.as_str())
+        .filter(|s| !s.is_empty())
+        .unwrap_or(record.summary.as_str());
+    let source = localized
+        .map(|loc| loc.source.as_str())
+        .filter(|s| !s.is_empty())
+        .unwrap_or(record.source.as_str());
+    let source_kind = localized
+        .map(|loc| loc.source_kind.as_str())
+        .filter(|s| !s.is_empty())
+        .unwrap_or(record.source_kind.as_str());
+    format!(
+        "{term} ({category}): {summary}\n\nSource: {source} ({source_kind}).",
+        category = record.category,
+    )
+}
+
 /// Render a `concept_lookup_in_context` body, preferring the language-specific
 /// template loaded from `data/seed/multilingual-responses.lino`. Falls back
 /// to the English template (and, if that is missing, a hardcoded one) so the
 /// solver still works when seed loading fails.
+///
+/// Maintainer requirement R8 (issue #20): use the full disambiguated context
+/// name, e.g. `В контексте «ml» (Машинное обучение)`. The raw user-typed
+/// context is shown verbatim and the resolved registry label is appended in
+/// parentheses; when the two collide (user already typed the localized
+/// label) the `no_alias` template is used to avoid `«ml» (ml)`.
+///
+/// Maintainer requirement R9: the term and summary use the localized variant
+/// (e.g. `Фильтр с бесконечной импульсной характеристикой… или IIR-фильтр`)
+/// when the user's prevailing language has a `localized` block.
 #[allow(clippy::literal_string_with_formatting_args)]
 fn render_concept_in_context(language: &str, context: &str, record: &ConceptRecord) -> String {
-    let template = response_for("concept_lookup_in_context", language)
+    let context_record = resolve_context_label(context);
+    let context_label =
+        context_record.map_or_else(|| context.to_owned(), |c| c.label_for(language).to_owned());
+    let use_no_alias = context_label.trim().to_lowercase() == context.trim().to_lowercase();
+    let intent_variant = if use_no_alias {
+        "concept_lookup_in_context_no_alias"
+    } else {
+        "concept_lookup_in_context"
+    };
+    let template = response_for(intent_variant, language)
+        .or_else(|| response_for(intent_variant, "en"))
+        .or_else(|| response_for("concept_lookup_in_context", language))
         .or_else(|| response_for("concept_lookup_in_context", "en"))
         .unwrap_or_else(|| {
             String::from(
-                "In the context of {context}, {term} ({category}) means: {summary}\n\n\
-                 Source: {source} ({source_kind}).",
+                "In the context of {context} ({context_label}), {term} ({category}) means: \
+                 {summary}\n\nSource: {source} ({source_kind}).",
             )
         });
+    let localized = record.localized_for(language);
+    let term = localized
+        .map(|loc| loc.term.as_str())
+        .filter(|s| !s.is_empty())
+        .unwrap_or(record.term.as_str());
+    let summary = localized
+        .map(|loc| loc.summary.as_str())
+        .filter(|s| !s.is_empty())
+        .unwrap_or(record.summary.as_str());
+    let source = localized
+        .map(|loc| loc.source.as_str())
+        .filter(|s| !s.is_empty())
+        .unwrap_or(record.source.as_str());
+    let source_kind = localized
+        .map(|loc| loc.source_kind.as_str())
+        .filter(|s| !s.is_empty())
+        .unwrap_or(record.source_kind.as_str());
     template
+        .replace("{context_label}", &context_label)
         .replace("{context}", context)
-        .replace("{term}", &record.term)
+        .replace("{term}", term)
         .replace("{category}", &record.category)
-        .replace("{summary}", &record.summary)
-        .replace("{source}", &record.source)
-        .replace("{source_kind}", &record.source_kind)
+        .replace("{summary}", summary)
+        .replace("{source}", source)
+        .replace("{source_kind}", source_kind)
 }
 
 pub fn try_javascript_execution(prompt: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {
@@ -637,6 +706,7 @@ pub fn build_evidence_links(prompt: &str, log: &EventLog, response_link: &str) -
             "language_to" => format!("language_to:{}", event.payload),
             "meaning" => format!("meaning:{}", event.payload),
             "translation_gap" => format!("translation_gap:{}", event.payload),
+            "wikidata" => format!("wikidata:{}", event.payload),
             "search:local" => format!("search:local:{}", event.id),
             "search:external" => format!("search:external:{}", event.id),
             "source:http" => format!("source:http:{}", event.payload.replace(' ', ":")),

@@ -55,6 +55,7 @@ let MULTILINGUAL_ANSWERS = {
   unknown: { en: FALLBACK_UNKNOWN_ANSWER },
 };
 let CONCEPTS = [];
+let CONCEPT_CONTEXTS = [];
 let TOOLS = [];
 let SEED_RAW = {};
 let AGENT_INFO = {};
@@ -177,13 +178,76 @@ function recordMatchesTerm(record, normalized) {
   );
 }
 
-function recordHasContext(record, contextNormalized) {
+function contextRecordMatches(contextRecord, contextNormalized) {
+  if (!contextRecord) return false;
+  if (
+    Array.isArray(contextRecord.aliases) &&
+    contextRecord.aliases.some(
+      (alias) => normalizeConceptTerm(alias) === contextNormalized,
+    )
+  ) {
+    return true;
+  }
   return (
+    Array.isArray(contextRecord.labels) &&
+    contextRecord.labels.some(
+      (label) => normalizeConceptTerm(label.text) === contextNormalized,
+    )
+  );
+}
+
+function resolveContextRecord(contextNormalized) {
+  if (!contextNormalized) return null;
+  for (const record of CONCEPT_CONTEXTS) {
+    if (contextRecordMatches(record, contextNormalized)) return record;
+  }
+  return null;
+}
+
+function recordHasContext(record, contextNormalized) {
+  if (
     Array.isArray(record.contexts) &&
     record.contexts.some(
       (candidate) => normalizeConceptTerm(candidate) === contextNormalized,
     )
+  ) {
+    return true;
+  }
+  // Registry fallback: resolve the user-supplied context through the
+  // concept-contexts registry and see whether the resolved record's slug is
+  // referenced by the concept's `contextLinks` list. Matches the Rust
+  // ranker (src/concepts.rs::record_has_context).
+  const contextRecord = resolveContextRecord(contextNormalized);
+  if (contextRecord && Array.isArray(record.contextLinks)) {
+    return record.contextLinks.some(
+      (slug) => String(slug).trim() === contextRecord.slug,
+    );
+  }
+  return false;
+}
+
+function localizedConceptFor(record, language) {
+  if (!record || !Array.isArray(record.localized)) return null;
+  return (
+    record.localized.find((loc) => loc && loc.language === language) ||
+    record.localized.find((loc) => loc && loc.language === "en") ||
+    null
   );
+}
+
+function contextLabelFor(contextRecord, language) {
+  if (!contextRecord || !Array.isArray(contextRecord.labels)) {
+    return null;
+  }
+  const exact = contextRecord.labels.find(
+    (label) => label && label.language === language,
+  );
+  if (exact && exact.text) return exact.text;
+  const english = contextRecord.labels.find(
+    (label) => label && label.language === "en",
+  );
+  if (english && english.text) return english.text;
+  return contextRecord.slug || null;
 }
 
 function rankConceptForPair(termRaw, contextRaw) {
@@ -741,18 +805,48 @@ function tryArithmetic(prompt) {
 }
 
 function renderConceptInContext(language, context, record) {
-  const table = MULTILINGUAL_ANSWERS.concept_lookup_in_context || {};
+  const contextNormalized = normalizeConceptTerm(context);
+  const contextRecord = resolveContextRecord(contextNormalized);
+  const contextLabel =
+    (contextRecord && contextLabelFor(contextRecord, language)) || context;
+  const sameAsLabel =
+    String(contextLabel).trim().toLowerCase() ===
+    String(context).trim().toLowerCase();
+  const intentVariant = sameAsLabel
+    ? "concept_lookup_in_context_no_alias"
+    : "concept_lookup_in_context";
+  const variantTable = MULTILINGUAL_ANSWERS[intentVariant] || {};
+  const baseTable = MULTILINGUAL_ANSWERS.concept_lookup_in_context || {};
   const template =
-    table[language] ||
-    table.en ||
-    "In the context of {context}, {term} ({category}) means: {summary}\n\nSource: {source} ({source_kind}).";
+    variantTable[language] ||
+    variantTable.en ||
+    baseTable[language] ||
+    baseTable.en ||
+    "In the context of {context} ({context_label}), {term} ({category}) means: {summary}\n\nSource: {source} ({source_kind}).";
+  const localized = localizedConceptFor(record, language);
+  const term = (localized && localized.term) || record.term;
+  const summary = (localized && localized.summary) || record.summary;
+  const source = (localized && localized.source) || record.source;
+  const sourceKind =
+    (localized && localized.sourceKind) || record.sourceKind;
   return template
+    .replace(/\{context_label\}/g, contextLabel)
     .replace(/\{context\}/g, context)
-    .replace(/\{term\}/g, record.term)
+    .replace(/\{term\}/g, term)
     .replace(/\{category\}/g, record.category)
-    .replace(/\{summary\}/g, record.summary)
-    .replace(/\{source\}/g, record.source)
-    .replace(/\{source_kind\}/g, record.sourceKind);
+    .replace(/\{summary\}/g, summary)
+    .replace(/\{source\}/g, source)
+    .replace(/\{source_kind\}/g, sourceKind);
+}
+
+function renderConceptPlain(language, record) {
+  const localized = localizedConceptFor(record, language);
+  const term = (localized && localized.term) || record.term;
+  const summary = (localized && localized.summary) || record.summary;
+  const source = (localized && localized.source) || record.source;
+  const sourceKind =
+    (localized && localized.sourceKind) || record.sourceKind;
+  return `${term} (${record.category}): ${summary}\n\nSource: ${source} (${sourceKind}).`;
 }
 
 function tryConceptLookup(prompt) {
@@ -770,11 +864,16 @@ function tryConceptLookup(prompt) {
     return null;
   }
   const record = lookup.record;
+  const language = detectLanguage(prompt);
+  const localized = localizedConceptFor(record, language);
+  const effectiveSource = (localized && localized.source) || record.source;
   evidence.push(`concept_lookup:hit:${record.slug}`);
-  evidence.push(`source:${record.source}`);
+  evidence.push(`source:${effectiveSource}`);
+  if (record.wikidata) {
+    evidence.push(`wikidata:${record.wikidata}`);
+  }
   if (lookup.contextMatch && lookup.context) {
     evidence.push(`concept_lookup:context-match:${lookup.context}`);
-    const language = detectLanguage(prompt);
     const body = renderConceptInContext(language, lookup.context, record);
     return {
       intent: "concept_lookup_in_context",
@@ -786,7 +885,7 @@ function tryConceptLookup(prompt) {
   if (lookup.context) {
     evidence.push(`concept_lookup:context-mismatch:${lookup.context}`);
   }
-  const body = `${record.term} (${record.category}): ${record.summary}\n\nSource: ${record.source} (${record.sourceKind}).`;
+  const body = renderConceptPlain(language, record);
   return {
     intent: "concept_lookup",
     content: body,
@@ -1195,6 +1294,12 @@ async function loadSeed() {
     if (Array.isArray(seed && seed.concepts) && seed.concepts.length > 0) {
       CONCEPTS = seed.concepts;
     }
+    if (
+      Array.isArray(seed && seed.conceptContexts) &&
+      seed.conceptContexts.length > 0
+    ) {
+      CONCEPT_CONTEXTS = seed.conceptContexts;
+    }
     if (Array.isArray(seed && seed.tools) && seed.tools.length > 0) {
       TOOLS = seed.tools;
     }
@@ -1254,6 +1359,7 @@ async function init() {
     seed: {
       responseIntents: Object.keys(MULTILINGUAL_ANSWERS),
       conceptCount: CONCEPTS.length,
+      conceptContextCount: CONCEPT_CONTEXTS.length,
       toolCount: TOOLS.length,
       files: Object.keys(SEED_RAW),
     },
@@ -1270,6 +1376,7 @@ self.onmessage = async (event) => {
       raw: SEED_RAW,
       responses: MULTILINGUAL_ANSWERS,
       concepts: CONCEPTS,
+      conceptContexts: CONCEPT_CONTEXTS,
       tools: TOOLS,
       agentInfo: AGENT_INFO,
       languageRules: LANGUAGE_RULES,

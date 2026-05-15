@@ -19,11 +19,30 @@ use std::sync::OnceLock;
 
 use crate::seed;
 
-pub use crate::seed::ConceptRecord;
+pub use crate::seed::{ConceptRecord, ContextRecord};
 
 fn concepts() -> &'static [ConceptRecord] {
     static CELL: OnceLock<Vec<ConceptRecord>> = OnceLock::new();
     CELL.get_or_init(seed::concepts).as_slice()
+}
+
+fn concept_contexts() -> &'static [ContextRecord] {
+    static CELL: OnceLock<Vec<ContextRecord>> = OnceLock::new();
+    CELL.get_or_init(seed::concept_contexts).as_slice()
+}
+
+/// Resolve a free-form context phrase (e.g. "ml", "машинное обучение") to a
+/// registered [`ContextRecord`] via alias or localized-label match. Returns
+/// `None` when no registry record claims the phrase.
+#[must_use]
+pub fn resolve_context_label(raw_context: &str) -> Option<&'static ContextRecord> {
+    let normalized = normalize_concept_term(raw_context);
+    if normalized.is_empty() {
+        return None;
+    }
+    concept_contexts()
+        .iter()
+        .find(|record| record.matches(&normalized))
 }
 
 fn concept_prefixes() -> &'static [(String, String)] {
@@ -260,10 +279,28 @@ fn record_matches_term(record: &ConceptRecord, normalized: &str) -> bool {
 }
 
 fn record_has_context(record: &ConceptRecord, context_normalized: &str) -> bool {
-    record
+    if record
         .contexts
         .iter()
         .any(|candidate| normalize_concept_term(candidate) == context_normalized)
+    {
+        return true;
+    }
+    // Fallback: resolve the user-supplied context through the registry and
+    // see whether the resolved record's slug is referenced by the concept's
+    // `context_links` list. This lets a concept declare contexts purely via
+    // Q-ID-anchored references in concept-contexts.lino without restating
+    // every alias inline.
+    if let Some(context_record) = concept_contexts()
+        .iter()
+        .find(|c| c.matches(context_normalized))
+    {
+        return record
+            .context_links
+            .iter()
+            .any(|slug| slug.trim() == context_record.slug);
+    }
+    false
 }
 
 fn normalize_concept_term(value: &str) -> String {
