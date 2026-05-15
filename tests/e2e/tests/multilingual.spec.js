@@ -15,6 +15,40 @@ async function switchToManualMode(page) {
   });
 }
 
+// Issue #27: greeting randomisation defaults to ON. Tests below pin the
+// canonical greeting text, so disable randomisation up-front for stability.
+// The script merges into any existing preference snapshot so reload-survival
+// tests still see persisted state (e.g. the active conversation id) after the
+// init script re-runs.
+async function disableGreetingVariations(page) {
+  await page.addInitScript(() => {
+    try {
+      const KEY = 'formal-ai.preferences.v1';
+      const existing = window.localStorage.getItem(KEY) || '';
+      if (/greetingVariations\s+"/.test(existing)) {
+        // Replace whatever value is set with "off"
+        const next = existing.replace(
+          /greetingVariations\s+"[^"]*"/,
+          'greetingVariations "off"',
+        );
+        window.localStorage.setItem(KEY, next);
+      } else if (existing.startsWith('demo_preferences')) {
+        window.localStorage.setItem(
+          KEY,
+          `${existing}\n  greetingVariations "off"`,
+        );
+      } else {
+        window.localStorage.setItem(
+          KEY,
+          'demo_preferences\n  greetingVariations "off"',
+        );
+      }
+    } catch (_error) {
+      // localStorage may be unavailable; tests will tolerate variant text.
+    }
+  });
+}
+
 async function sendPrompt(page, text) {
   const input = page.locator('[data-testid="chat-composer-input"]');
   await expect(input).toBeEnabled({ timeout: 5_000 });
@@ -28,6 +62,7 @@ async function sendPrompt(page, text) {
 
 test.describe('multilingual chat surface', () => {
   test.beforeEach(async ({ page }) => {
+    await disableGreetingVariations(page);
     await page.goto('./');
     await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
     await switchToManualMode(page);
@@ -133,10 +168,54 @@ test.describe('Wikipedia REST fallback', () => {
     await expect(anchor).toHaveText(humanUrl);
   });
 
+  // Issue #27: ru.wikipedia.org biographies use the "Surname, Given names"
+  // form, so `Илон_Маск` 404s while `Маск,_Илон` resolves. The worker must
+  // try the swapped variant for two-word terms.
+  test('Кто такой Илон Маск? resolves via surname-first variant', async ({ page }) => {
+    const requestedSlugs = [];
+    await page.route('**/api/rest_v1/page/summary/**', async (route) => {
+      const url = route.request().url();
+      const slug = decodeURIComponent(url.split('/').pop());
+      requestedSlugs.push(slug);
+      if (slug === 'Маск,_Илон') {
+        const json = {
+          title: 'Маск, Илон',
+          extract:
+            'И́лон Рив Маск — американский и южноафриканский предприниматель, инженер и миллиардер.',
+          type: 'standard',
+          content_urls: {
+            desktop: {
+              page:
+                'https://ru.wikipedia.org/wiki/%D0%9C%D0%B0%D1%81%D0%BA%2C_%D0%98%D0%BB%D0%BE%D0%BD',
+            },
+          },
+        };
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify(json),
+        });
+        return;
+      }
+      await route.fulfill({
+        status: 404,
+        contentType: 'application/json',
+        body: JSON.stringify({ httpCode: 404, httpReason: 'Not Found' }),
+      });
+    });
+
+    const last = await sendPrompt(page, 'Кто такой Илон Маск?');
+    await expect(last).toHaveClass(/assistant/);
+    await expect(last).toContainText('Маск, Илон');
+    await expect(last).toContainText('предприниматель');
+    expect(requestedSlugs).toContain('Маск,_Илон');
+  });
+
 });
 
 test.describe('memory export/import', () => {
   test.beforeEach(async ({ page }) => {
+    await disableGreetingVariations(page);
     await page.goto('./');
     await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
     await switchToManualMode(page);
@@ -253,25 +332,60 @@ test.describe('memory export/import', () => {
     expect(api).not.toContain('remove');
   });
 
-  test('Download bundle exports a formal_ai_bundle with seed and memory log', async ({ page }) => {
-    await sendPrompt(page, 'Hi');
+  test('Issue #27: Download bundle button is removed (duplicate of Export memory)', async ({ page }) => {
+    await expect(page.locator('[data-testid="memory-bundle"]')).toHaveCount(0);
+    // The underlying exportBundle helper must remain on the public API for
+    // Rust/CLI parity; only the redundant UI button is gone.
+    const api = await page.evaluate(() => Object.keys(window.FormalAiMemory || {}));
+    expect(api).toContain('exportBundle');
+  });
 
+  test('Issue #27: Export memory does not surface a "Bundled N events + seed" label', async ({ page }) => {
+    await sendPrompt(page, 'Hi');
     const [download] = await Promise.all([
       page.waitForEvent('download'),
-      page.locator('[data-testid="memory-bundle"]').click(),
+      page.locator('[data-testid="memory-export"]').click(),
     ]);
+    expect(download.suggestedFilename()).toBe('formal-ai-memory.lino');
+    const status = await page.locator('[data-testid="memory-status"]').innerText();
+    expect(status).not.toMatch(/bundled\s+\d+\s+events\s+\+\s+seed/i);
+  });
 
-    expect(download.suggestedFilename()).toBe('formal-ai-bundle.lino');
+  test('Issue #27: typing "Export memory" triggers the export button', async ({ page }) => {
+    const input = page.locator('[data-testid="chat-composer-input"]');
+    await expect(input).toBeEnabled({ timeout: 5_000 });
+    await input.fill('Export memory');
+    const [download] = await Promise.all([
+      page.waitForEvent('download'),
+      page.locator('[data-testid="chat-composer-submit"]').click(),
+    ]);
+    expect(download.suggestedFilename()).toBe('formal-ai-memory.lino');
+    const messages = page.locator('[data-testid="chat-message"]');
+    await expect(messages.last()).toContainText('Triggered Export memory');
+  });
 
-    const path = await download.path();
-    expect(path).toBeTruthy();
-    const fs = require('node:fs');
-    const text = fs.readFileSync(path, 'utf8');
-    expect(text).toContain('formal_ai_bundle');
-    expect(text).toContain('exported_at');
-    expect(text).toContain('seed_files');
-    expect(text).toContain('demo_memory');
-    expect(text).toContain('role "user"');
+  test('Issue #27: typing "Export your memory" also triggers the export button', async ({ page }) => {
+    const input = page.locator('[data-testid="chat-composer-input"]');
+    await expect(input).toBeEnabled({ timeout: 5_000 });
+    await input.fill('Export your memory');
+    const [download] = await Promise.all([
+      page.waitForEvent('download'),
+      page.locator('[data-testid="chat-composer-submit"]').click(),
+    ]);
+    expect(download.suggestedFilename()).toBe('formal-ai-memory.lino');
+  });
+
+  test('Issue #27: typing "Import memory" opens the file picker', async ({ page }) => {
+    const input = page.locator('[data-testid="chat-composer-input"]');
+    await expect(input).toBeEnabled({ timeout: 5_000 });
+    // We cannot programmatically observe a native file dialog opening, but we
+    // can confirm the assistant acknowledges the trigger and the file input
+    // remains in the DOM ready to accept a file.
+    await input.fill('Import memory');
+    await page.locator('[data-testid="chat-composer-submit"]').click();
+    const messages = page.locator('[data-testid="chat-message"]');
+    await expect(messages.last()).toContainText('Triggered Import memory');
+    await expect(page.locator('[data-testid="memory-import-input"]')).toHaveCount(1);
   });
 
   test('Report issue link is present in the topbar and prefills full-memory + zip instructions (R112)', async ({ page }) => {
@@ -313,5 +427,443 @@ test.describe('memory export/import', () => {
     const kinds = new Set(events.map((event) => event.kind).filter(Boolean));
     expect(kinds.has('message')).toBe(true);
     expect(kinds.has('reasoning')).toBe(true);
+  });
+});
+
+test.describe('Issue #27: random greeting variations', () => {
+  test.beforeEach(async ({ page }) => {
+    // Default-on: do NOT call disableGreetingVariations — the seed-driven
+    // randomisation must be observable when the user accepts the defaults.
+    await page.goto('./');
+    await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
+    await switchToManualMode(page);
+  });
+
+  test('English greeting falls within the seeded variant list', async ({ page }) => {
+    const last = await sendPrompt(page, 'Hi');
+    const text = (await last.innerText()).trim();
+    const variants = [
+      'Hi, how may I help you?',
+      'Hello! How can I assist you today?',
+      'Hi there! What can I do for you?',
+      'Hey, how can I help?',
+      'Hello — what would you like to explore?',
+    ];
+    expect(variants.some((variant) => text.includes(variant))).toBe(true);
+  });
+
+  test('disabling variations pins the canonical English greeting', async ({ page, context }) => {
+    await context.addInitScript(() => {
+      try {
+        window.localStorage.setItem(
+          'formal-ai.preferences.v1',
+          'demo_preferences\n  greetingVariations "off"',
+        );
+      } catch (_error) {}
+    });
+    await page.goto('./');
+    await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
+    await switchToManualMode(page);
+    for (let attempt = 0; attempt < 3; attempt += 1) {
+      const last = await sendPrompt(page, 'Hi');
+      await expect(last).toContainText('Hi, how may I help you?');
+    }
+  });
+});
+
+test.describe('Issue #27: summarize skill', () => {
+  test.beforeEach(async ({ page }) => {
+    await disableGreetingVariations(page);
+    await page.goto('./');
+    await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
+    await switchToManualMode(page);
+  });
+
+  test('"summarize this conversation" returns a structured report', async ({ page }) => {
+    await sendPrompt(page, 'Hi');
+    await sendPrompt(page, 'What is 2 + 2?');
+    const last = await sendPrompt(page, 'Summarize this conversation');
+    await expect(last).toHaveClass(/assistant/);
+    await expect(last).toContainText('Conversation summary');
+    await expect(last).toContainText('user');
+    await expect(last).toContainText('assistant');
+    await expect(last).toContainText('greeting');
+    await expect(last).toContainText('calculation');
+    await expect(last).toContainText('2 + 2 = 4');
+  });
+
+  test('single-word "summarize" triggers the skill', async ({ page }) => {
+    await sendPrompt(page, 'Hi');
+    const last = await sendPrompt(page, 'Summarize');
+    await expect(last).toContainText('Conversation summary');
+  });
+
+  test('Russian "резюме беседы" triggers the skill', async ({ page }) => {
+    await sendPrompt(page, 'Привет');
+    const last = await sendPrompt(page, 'Резюме беседы');
+    await expect(last).toContainText('Conversation summary');
+  });
+
+  test('Chinese "总结" triggers the skill', async ({ page }) => {
+    await sendPrompt(page, '你好');
+    const last = await sendPrompt(page, '总结');
+    await expect(last).toContainText('Conversation summary');
+  });
+});
+
+test.describe('Issue #27: agent mode', () => {
+  test.beforeEach(async ({ page }) => {
+    await disableGreetingVariations(page);
+    await page.goto('./');
+    await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
+    await switchToManualMode(page);
+  });
+
+  test('Chat/Agent toggle is present and starts in Chat', async ({ page }) => {
+    const toggle = page.locator('[data-testid="agent-toggle"]');
+    await expect(toggle).toBeVisible();
+    // Issue #27: the topbar buttons render an emoji icon + label so the label
+    // can collapse on the mobile-icon-only breakpoint. Assert on the label span.
+    await expect(toggle.locator('.btn-label')).toHaveText('Chat');
+    await toggle.click();
+    await expect(toggle.locator('.btn-label')).toHaveText('Agent');
+  });
+
+  test('Agent mode decomposes a multi-step task and runs each step', async ({ page }) => {
+    await page.locator('[data-testid="agent-toggle"]').click();
+    const last = await sendPrompt(
+      page,
+      'Hi; then what is 2 + 2; then who are you',
+    );
+    await expect(last).toHaveClass(/assistant/);
+    await expect(last).toContainText('Agent plan (3 steps)');
+    await expect(last).toContainText('Step 1: Hi');
+    await expect(last).toContainText('Step 2: what is 2 + 2');
+    await expect(last).toContainText('Step 3: who are you');
+    // Step 1 greeting, step 2 calculation, step 3 identity.
+    await expect(last).toContainText('Hi, how may I help you?');
+    await expect(last).toContainText('2 + 2 = 4');
+    await expect(last).toContainText('formal-ai');
+  });
+
+  test('Agent mode preserves single-step prompts as plain Q&A', async ({ page }) => {
+    await page.locator('[data-testid="agent-toggle"]').click();
+    const last = await sendPrompt(page, 'Hi');
+    // No "; then …" — should run as a single step (chat-style answer).
+    await expect(last).toContainText('Hi, how may I help you?');
+    await expect(last).not.toContainText('Agent plan');
+  });
+});
+
+// Issue #27: phone-sized viewport asserts that the topbar collapses to
+// icon-only buttons, the sidebar hides behind a hamburger drawer, and the
+// chat surface keeps the full message viewport.
+test.describe('Issue #27: mobile layout', () => {
+  test.use({ viewport: { width: 390, height: 780 } });
+
+  test.beforeEach(async ({ page }) => {
+    await disableGreetingVariations(page);
+    await page.goto('./');
+    await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
+  });
+
+  test('topbar buttons collapse to emoji icons on mobile', async ({ page }) => {
+    const demoToggle = page.locator('.mode-toggle');
+    await expect(demoToggle).toBeVisible();
+    // The label span is hidden via CSS on the mobile breakpoint…
+    await expect(demoToggle.locator('.btn-label')).toBeHidden();
+    // …but the emoji icon stays visible so the action is still recognisable.
+    await expect(demoToggle.locator('.btn-icon')).toBeVisible();
+    // The aria-label still announces the action for screen readers.
+    await expect(demoToggle).toHaveAttribute('aria-label', /Demo/);
+  });
+
+  test('hamburger toggle opens the sidebar drawer and the backdrop closes it', async ({ page }) => {
+    const hamburger = page.locator('[data-testid="mobile-menu-toggle"]');
+    await expect(hamburger).toBeVisible();
+    const sidebar = page.locator('[data-testid="context-panel"]');
+
+    // Off-canvas: translated out of view so the chat fills the viewport.
+    const boxBefore = await sidebar.boundingBox();
+    expect(boxBefore).toBeTruthy();
+    expect(boxBefore && boxBefore.x).toBeLessThan(0);
+
+    await hamburger.click();
+    await expect(sidebar).toHaveClass(/is-mobile-open/);
+    // The drawer translates in over 200ms — wait for the transform to settle
+    // before sampling the bounding box.
+    await page.waitForTimeout(300);
+    const boxAfter = await sidebar.boundingBox();
+    expect(boxAfter).toBeTruthy();
+    expect(boxAfter && boxAfter.x).toBeGreaterThanOrEqual(0);
+
+    // Tapping the backdrop dismisses the drawer. The drawer overlays the
+    // left ~320px of the viewport with z-index above the backdrop, so click
+    // on the exposed right-hand strip where only the backdrop receives the tap.
+    const backdrop = page.locator('[data-testid="mobile-menu-backdrop"]');
+    await expect(backdrop).toBeVisible();
+    await backdrop.click({ position: { x: 360, y: 400 } });
+    await expect(sidebar).not.toHaveClass(/is-mobile-open/);
+  });
+
+  test('chat surface keeps the full viewport when the menu is closed', async ({ page }) => {
+    const sidebar = page.locator('[data-testid="context-panel"]');
+    const sidebarBox = await sidebar.boundingBox();
+    expect(sidebarBox && sidebarBox.x).toBeLessThan(0);
+
+    const composer = page.locator('[data-testid="chat-composer-input"]');
+    const composerBox = await composer.boundingBox();
+    expect(composerBox).toBeTruthy();
+    // Composer spans most of the viewport width — at 390px viewport with
+    // 12px+12px gutters it should leave only the gutters as horizontal slack.
+    expect(composerBox && composerBox.width).toBeGreaterThan(300);
+  });
+});
+
+test.describe('Issue #27: conversations sidebar', () => {
+  test.beforeEach(async ({ page }) => {
+    await disableGreetingVariations(page);
+    // Reset the IndexedDB event log so each test starts with no prior
+    // conversations. The init script runs before every navigation (including
+    // page.reload()), so we use a sessionStorage sentinel to delete only on
+    // the first navigation of the test and preserve the DB on subsequent
+    // reloads (otherwise the restore-after-reload test always sees an empty
+    // log).
+    await page.addInitScript(() => {
+      try {
+        if (typeof indexedDB === 'undefined') return;
+        if (window.sessionStorage.getItem('formal-ai-test-reset') === '1') {
+          return;
+        }
+        window.sessionStorage.setItem('formal-ai-test-reset', '1');
+        indexedDB.deleteDatabase('formal-ai-demo');
+      } catch (_error) {}
+    });
+    await page.goto('./');
+    await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
+    await switchToManualMode(page);
+    // Clear any demo dialog messages so each test starts with a fresh thread.
+    await page.locator('[data-testid="conversation-new"]').click();
+    await expect(page.locator('[data-testid="chat-message"]')).toHaveCount(0, {
+      timeout: 5_000,
+    });
+  });
+
+  test('sending a prompt adds an entry to the conversation list', async ({ page }) => {
+    const entries = page.locator('[data-testid="conversation-entries"] li');
+
+    await sendPrompt(page, 'Hello');
+
+    // The new conversation now shows up titled by its first user message.
+    await expect(entries.first()).toContainText('Hello', { timeout: 5_000 });
+  });
+
+  test('"+ New conversation" clears the transcript and starts a fresh thread', async ({ page }) => {
+    const messages = page.locator('[data-testid="chat-message"]');
+    await sendPrompt(page, 'Hello');
+    await expect(messages).toHaveCount(2);
+
+    await page.locator('[data-testid="conversation-new"]').click();
+    await expect(messages).toHaveCount(0);
+
+    await sendPrompt(page, 'Who are you?');
+
+    const entries = page.locator('[data-testid="conversation-entries"] li');
+    await expect(entries.first()).toContainText('Who are you', { timeout: 5_000 });
+    await expect(entries.nth(1)).toContainText('Hello');
+  });
+
+  test('the last conversation is restored after reloading the page', async ({ page }) => {
+    const messages = page.locator('[data-testid="chat-message"]');
+    await sendPrompt(page, 'Hello');
+    await expect(messages).toHaveCount(2);
+
+    await page.reload();
+    await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
+    // The transcript should be re-populated from IndexedDB; the active
+    // conversation is the one persisted in preferences.
+    const restored = page.locator('[data-testid="chat-message"]');
+    await expect(restored).toHaveCount(2, { timeout: 15_000 });
+    await expect(restored.first()).toContainText('Hello');
+  });
+});
+
+// Issue #27 R5: the demo cycle pulls turns from the same Example prompts
+// list that the sidebar shows, so users discover every feature in demo mode.
+test.describe('Issue #27: demo iterates Example prompts', () => {
+  test.beforeEach(async ({ page }) => {
+    await disableGreetingVariations(page);
+    await page.goto('./');
+    await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
+  });
+
+  test('demo messages carry a label that matches an Example prompts entry', async ({ page }) => {
+    // Collect labels from the sidebar (the visible Example prompts list).
+    const sidebarLabels = await page
+      .locator('.prompt-list button')
+      .evaluateAll((nodes) =>
+        nodes.map((n) => n.getAttribute('data-prompt-label')).filter(Boolean),
+      );
+    expect(sidebarLabels.length).toBeGreaterThan(0);
+
+    // Wait for the first demo user message to appear.
+    const userMessages = page.locator(
+      '[data-testid="chat-message"].user[data-demo-label]',
+    );
+    await expect(userMessages.first()).toBeVisible({ timeout: 15_000 });
+
+    const demoLabels = await userMessages.evaluateAll((nodes) =>
+      nodes.map((n) => n.getAttribute('data-demo-label')).filter(Boolean),
+    );
+    expect(demoLabels.length).toBeGreaterThan(0);
+    for (const label of demoLabels) {
+      expect(sidebarLabels).toContain(label);
+    }
+  });
+});
+
+// Issue #27 R3: sidebar sections behave like VS Code's accordion — expanded
+// sections flex to share the remaining height equally and each section body
+// scrolls independently.
+test.describe('Issue #27: sidebar accordion', () => {
+  test.beforeEach(async ({ page }) => {
+    await disableGreetingVariations(page);
+    await page.goto('./');
+    await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
+    await switchToManualMode(page);
+  });
+
+  test('expanded sidebar sections share the available height equally', async ({ page }) => {
+    const sections = page.locator(
+      '[data-testid="context-panel"] .sidebar-section.is-expanded',
+    );
+    const count = await sections.count();
+    expect(count).toBeGreaterThanOrEqual(2);
+    const heights = [];
+    for (let i = 0; i < count; i++) {
+      const box = await sections.nth(i).boundingBox();
+      expect(box).toBeTruthy();
+      heights.push(box.height);
+    }
+    const min = Math.min(...heights);
+    const max = Math.max(...heights);
+    // Equal-share flex: heights should differ by no more than 4px (header
+    // rounding tolerance).
+    expect(max - min).toBeLessThanOrEqual(4);
+  });
+
+  test('each section body scrolls independently when content overflows', async ({ page }) => {
+    const bodies = page.locator(
+      '[data-testid="context-panel"] .sidebar-section.is-expanded .sidebar-section-body',
+    );
+    const count = await bodies.count();
+    expect(count).toBeGreaterThanOrEqual(2);
+    for (let i = 0; i < count; i++) {
+      const overflow = await bodies.nth(i).evaluate(
+        (el) => getComputedStyle(el).overflowY,
+      );
+      // `auto` (scroll when needed) or `scroll` (always) both satisfy the
+      // independent-scroll requirement.
+      expect(['auto', 'scroll']).toContain(overflow);
+    }
+  });
+
+  test('collapsing a section gives its space to the remaining expanded sections', async ({ page }) => {
+    const allSections = page.locator(
+      '[data-testid="context-panel"] .sidebar-section',
+    );
+    const initialExpanded = await page
+      .locator('[data-testid="context-panel"] .sidebar-section.is-expanded')
+      .count();
+    if (initialExpanded < 2) test.skip();
+
+    const initialOther = await allSections
+      .nth(1)
+      .locator('.sidebar-section-body')
+      .boundingBox();
+
+    // Collapse the first section by clicking its header button.
+    await allSections.first().locator('.sidebar-section-header').click();
+    await expect(allSections.first()).toHaveAttribute('data-collapsed', 'true');
+
+    const grownOther = await allSections
+      .nth(1)
+      .locator('.sidebar-section-body')
+      .boundingBox();
+    expect(grownOther.height).toBeGreaterThan(initialOther.height);
+  });
+});
+
+// Issue #27 R11: natural-language cross-conversation recall. The user types
+// something like "when did I ask about Rust" / "find Donald Trump in another
+// conversation" and the assistant returns a Markdown report grouping matching
+// events by conversation.
+test.describe('Issue #27: cross-conversation recall', () => {
+  test.beforeEach(async ({ page }) => {
+    await disableGreetingVariations(page);
+    // Wipe IndexedDB so each test starts from an empty event log.
+    await page.addInitScript(() => {
+      try {
+        if (typeof indexedDB === 'undefined') return;
+        if (window.sessionStorage.getItem('formal-ai-recall-reset') === '1') return;
+        window.sessionStorage.setItem('formal-ai-recall-reset', '1');
+        indexedDB.deleteDatabase('formal-ai-demo');
+      } catch (_error) {}
+    });
+    await page.goto('./');
+    await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
+    await switchToManualMode(page);
+    await page.locator('[data-testid="conversation-new"]').click();
+    await expect(page.locator('[data-testid="chat-message"]')).toHaveCount(0, { timeout: 5_000 });
+  });
+
+  test('"When did I ask about X" lists matches grouped by conversation', async ({ page }) => {
+    // Conversation 1: ask about Rust.
+    await sendPrompt(page, 'What is Rust?');
+    // Switch to a fresh conversation.
+    await page.locator('[data-testid="conversation-new"]').click();
+    await expect(page.locator('[data-testid="chat-message"]')).toHaveCount(0, { timeout: 5_000 });
+    // Conversation 2: ask about Wikipedia.
+    await sendPrompt(page, 'What is Wikipedia?');
+    // Conversation 2 (continued): trigger recall.
+    const last = await sendPrompt(page, 'When did I ask about Rust?');
+    await expect(last).toHaveClass(/assistant/);
+    await expect(last).toContainText('mention');
+    await expect(last).toContainText('Rust');
+    // The matching conversation header should appear.
+    await expect(last).toContainText('What is Rust');
+  });
+
+  test('"find X in another conversation" excludes the current conversation', async ({ page }) => {
+    await sendPrompt(page, 'What is Rust?');
+    await page.locator('[data-testid="conversation-new"]').click();
+    await expect(page.locator('[data-testid="chat-message"]')).toHaveCount(0, { timeout: 5_000 });
+    // The current conversation also mentions Rust; "in another conversation"
+    // must filter it out and only surface the earlier one.
+    await sendPrompt(page, 'Tell me more about Rust');
+    const last = await sendPrompt(page, 'find Rust in another conversation');
+    await expect(last).toHaveClass(/assistant/);
+    const text = await last.innerText();
+    // The earlier conversation must be surfaced.
+    expect(text).toContain('What is Rust');
+    // …and the current conversation's "Tell me more" turn must NOT appear in
+    // the report (scope='other' filters out the active thread).
+    expect(text).not.toContain('Tell me more');
+  });
+
+  test('recall with no matches reports a clear "no mentions" message', async ({ page }) => {
+    await sendPrompt(page, 'Hi');
+    const last = await sendPrompt(page, 'When did I ask about Haskell?');
+    await expect(last).toHaveClass(/assistant/);
+    await expect(last).toContainText(/No mentions of "Haskell"/);
+  });
+
+  test('Russian phrasing "Когда я спрашивал про X" triggers the recall skill', async ({ page }) => {
+    await sendPrompt(page, 'Что такое Википедия?');
+    const last = await sendPrompt(page, 'Когда я спрашивал про Википедия?');
+    await expect(last).toHaveClass(/assistant/);
+    await expect(last).toContainText('Википедия');
+    // The earlier conversation header should be present.
+    await expect(last).toContainText('Что такое');
   });
 });

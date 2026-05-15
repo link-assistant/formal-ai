@@ -12,8 +12,25 @@ async function switchToManualMode(page) {
   });
 }
 
+// Issue #27: greeting randomisation defaults to ON in production. Tests pin
+// the canonical greeting text so they assert deterministic output; new tests
+// that actually exercise the randomisation flip the preference back on.
+async function disableGreetingVariations(page) {
+  await page.addInitScript(() => {
+    try {
+      window.localStorage.setItem(
+        'formal-ai.preferences.v1',
+        'demo_preferences\n  greetingVariations "off"',
+      );
+    } catch (_error) {
+      // localStorage may be unavailable; tests will tolerate variant text.
+    }
+  });
+}
+
 test.describe('formal-ai demo UI', () => {
   test.beforeEach(async ({ page }) => {
+    await disableGreetingVariations(page);
     await page.goto('./');
     // Wait for React to mount and the app shell to be visible
     await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
@@ -65,7 +82,9 @@ test.describe('formal-ai demo UI', () => {
 
     const buttons = promptList.locator('button');
     await expect(buttons.first()).toContainText('Hi');
-    await expect(buttons.nth(1)).toContainText('Rust');
+    // Issue #27: the list now includes multilingual greetings before the Rust
+    // hello-world entry, so match by label instead of by absolute index.
+    await expect(promptList.locator('button[data-prompt-label*="Rust"]').first()).toBeVisible();
   });
 
   test('chat input and send button are present', async ({ page }) => {
@@ -170,7 +189,10 @@ test.describe('formal-ai demo UI', () => {
   test('unknown prompts include a prefilled missing-rule issue link', async ({ page }) => {
     await switchToManualMode(page);
 
-    const prompt = 'What is the capital of France?';
+    // Pick a phrase no Wikipedia article will match so the unknown-intent
+    // fallback path is exercised (the Wikipedia REST API answers many
+    // plausible-looking questions like "What is the capital of France?").
+    const prompt = 'Quxblort fnordwarble plimsy gabble what?';
     const input = page.locator('[data-testid="chat-composer-input"]');
     await input.fill(prompt);
 

@@ -48,11 +48,21 @@ const FALLBACK_GREETING_ANSWER = "Hi, how may I help you?";
 const FALLBACK_UNKNOWN_ANSWER =
   "I do not have a learned symbolic rule for that prompt yet. Add a Links Notation fact or rule, then run the request again.";
 
-// Mutable runtime tables — populated from seed at init().
+// Mutable runtime tables — populated from seed at init(). Each entry is
+// `{ text, variants }` so the worker can return either the canonical phrase
+// (for deterministic tests and tool calls) or a random variant (for greeting
+// randomisation introduced in issue #27). Non-greeting intents currently ship
+// a single phrase, so `variants` is `[text]` and randomisation is a no-op.
 let MULTILINGUAL_ANSWERS = {
-  greeting: { en: FALLBACK_GREETING_ANSWER },
-  identity: { en: FALLBACK_IDENTITY_ANSWER },
-  unknown: { en: FALLBACK_UNKNOWN_ANSWER },
+  greeting: {
+    en: { text: FALLBACK_GREETING_ANSWER, variants: [FALLBACK_GREETING_ANSWER] },
+  },
+  identity: {
+    en: { text: FALLBACK_IDENTITY_ANSWER, variants: [FALLBACK_IDENTITY_ANSWER] },
+  },
+  unknown: {
+    en: { text: FALLBACK_UNKNOWN_ANSWER, variants: [FALLBACK_UNKNOWN_ANSWER] },
+  },
 };
 let CONCEPTS = [];
 let CONCEPT_CONTEXTS = [];
@@ -119,17 +129,40 @@ let INTENT_ROUTING = {
   tracePrefixes: ["answer_", "trace_"],
 };
 
-function answerFor(intent, language) {
+function fallbackEntry(intent) {
+  if (intent === "greeting") {
+    return { text: FALLBACK_GREETING_ANSWER, variants: [FALLBACK_GREETING_ANSWER] };
+  }
+  if (intent === "identity") {
+    return { text: FALLBACK_IDENTITY_ANSWER, variants: [FALLBACK_IDENTITY_ANSWER] };
+  }
+  return { text: FALLBACK_UNKNOWN_ANSWER, variants: [FALLBACK_UNKNOWN_ANSWER] };
+}
+
+function normalizeEntry(value, intent) {
+  if (value && typeof value === "object" && typeof value.text === "string") {
+    const variants =
+      Array.isArray(value.variants) && value.variants.length > 0
+        ? value.variants
+        : [value.text];
+    return { text: value.text, variants: variants };
+  }
+  if (typeof value === "string") {
+    return { text: value, variants: [value] };
+  }
+  return fallbackEntry(intent);
+}
+
+function answerFor(intent, language, options) {
+  const opts = options || {};
   const table = MULTILINGUAL_ANSWERS[intent] || {};
-  return (
-    table[language] ||
-    table.en ||
-    (intent === "greeting"
-      ? FALLBACK_GREETING_ANSWER
-      : intent === "identity"
-      ? FALLBACK_IDENTITY_ANSWER
-      : FALLBACK_UNKNOWN_ANSWER)
-  );
+  const raw = table[language] || table.en || fallbackEntry(intent);
+  const entry = normalizeEntry(raw, intent);
+  if (opts.randomize && Array.isArray(entry.variants) && entry.variants.length > 1) {
+    const idx = Math.floor(Math.random() * entry.variants.length);
+    return entry.variants[idx] || entry.text;
+  }
+  return entry.text;
 }
 
 function detectLanguage(prompt) {
@@ -359,19 +392,33 @@ function conceptPatternsByKind(kind) {
   return [];
 }
 
-function splitTermAndContext(body) {
+function splitTermAndContext(bodyOriginal, bodyLower) {
   const delimiters = conceptPatternsByKind("context_delimiter");
   for (const delimiter of delimiters) {
-    const idx = body.indexOf(delimiter);
+    const idx = bodyLower.indexOf(delimiter);
     if (idx >= 0) {
-      const term = body.slice(0, idx).trim();
-      const context = body.slice(idx + delimiter.length).trim();
+      const term = bodyLower.slice(0, idx).trim();
+      const context = bodyLower.slice(idx + delimiter.length).trim();
+      const termOriginal = bodyOriginal.slice(0, idx).trim();
+      const contextOriginal = bodyOriginal
+        .slice(idx + delimiter.length)
+        .trim();
       if (term && context) {
-        return { term: term, context: context };
+        return {
+          term: term,
+          context: context,
+          termOriginal: termOriginal || term,
+          contextOriginal: contextOriginal || context,
+        };
       }
     }
   }
-  return { term: body, context: null };
+  return {
+    term: bodyLower,
+    context: null,
+    termOriginal: bodyOriginal || bodyLower,
+    contextOriginal: null,
+  };
 }
 
 function extractConceptQuery(prompt) {
@@ -431,20 +478,26 @@ function renderSourceLink(source) {
 }
 
 function finalizeConceptBody(body) {
-  let trimmed = String(body || "")
+  let originalBase = String(body || "")
     .trim()
     .replace(/[?。.!!,,;:]+$/g, "")
-    .trim()
-    .toLowerCase();
-  if (!trimmed) return null;
+    .trim();
+  if (!originalBase) return null;
+  let original = originalBase;
+  let lower = original.toLowerCase();
+  // Strip trailing "mean"/"stand for" markers shared across English idioms.
+  // The lowercased view drives matching while the original-case view is kept
+  // so downstream Wikipedia URL lookups preserve Cyrillic capitalization
+  // (see docs/case-studies/issue-27/README.md).
   for (const suffix of [" mean", " stand for"]) {
-    if (trimmed.endsWith(suffix)) {
-      trimmed = trimmed.slice(0, -suffix.length).trim();
+    if (lower.endsWith(suffix)) {
+      original = original.slice(0, -suffix.length).trim();
+      lower = lower.slice(0, -suffix.length).trim();
       break;
     }
   }
-  if (!trimmed) return null;
-  return splitTermAndContext(trimmed);
+  if (!lower) return null;
+  return splitTermAndContext(original, lower);
 }
 
 function tokenizeArithmetic(input) {
@@ -789,17 +842,110 @@ function tryRecallLastQuestion(history) {
   return null;
 }
 
+// Issue #27: deterministic, logical summarisation — no neural net. We
+// project the conversation onto a small set of features (turn counts, intents,
+// concepts, languages, unanswered questions) and render them as a structured
+// Markdown report. Every value is derived directly from the append-only event
+// log so reruns on the same input produce byte-identical output.
 function trySummarizeConversation(history) {
   if (!Array.isArray(history) || history.length === 0) return null;
-  const bullets = history
-    .filter((turn) => turn && turn.content)
-    .map((turn) => `- ${turn.role}: ${turn.content}`);
-  if (bullets.length === 0) return null;
+  const turns = history.filter((turn) => turn && turn.content);
+  if (turns.length === 0) return null;
+
+  let userCount = 0;
+  let assistantCount = 0;
+  const intentCounts = new Map();
+  const languages = new Map();
+  const concepts = new Set();
+  const calculations = [];
+  const helloWorlds = new Set();
+  const unanswered = [];
+  let lastUser = null;
+
+  for (const turn of turns) {
+    const role = turn.role || "assistant";
+    const language = detectLanguage(turn.content);
+    languages.set(language, (languages.get(language) || 0) + 1);
+    if (role === "user") {
+      userCount += 1;
+      lastUser = turn.content;
+    } else {
+      assistantCount += 1;
+      if (lastUser) {
+        lastUser = null;
+      }
+      const intent = String(turn.intent || "unknown");
+      intentCounts.set(intent, (intentCounts.get(intent) || 0) + 1);
+      if (intent === "calculation" && typeof turn.content === "string") {
+        const match = turn.content.match(/^([^=]+=\s*[^\n]+)/);
+        if (match) calculations.push(match[1].trim());
+      }
+      if (intent.startsWith("hello_world_")) {
+        helloWorlds.add(intent.slice("hello_world_".length));
+      }
+      if (intent.startsWith("concept_lookup")) {
+        const evidence = Array.isArray(turn.evidence) ? turn.evidence : [];
+        for (const item of evidence) {
+          if (typeof item !== "string") continue;
+          const conceptMatch = item.match(/^concept_lookup:request:(.+)$/);
+          if (conceptMatch) concepts.add(conceptMatch[1]);
+        }
+      }
+    }
+  }
+  if (lastUser) {
+    unanswered.push(lastUser);
+  }
+
+  const lines = [];
+  lines.push("## Conversation summary");
+  lines.push("");
+  lines.push(
+    `- ${turns.length} turn(s): ${userCount} user, ${assistantCount} assistant`,
+  );
+  if (languages.size > 0) {
+    const list = Array.from(languages.entries())
+      .sort((a, b) => b[1] - a[1])
+      .map(([lang, count]) => `${lang} (${count})`)
+      .join(", ");
+    lines.push(`- Languages: ${list}`);
+  }
+  if (intentCounts.size > 0) {
+    const list = Array.from(intentCounts.entries())
+      .sort((a, b) => b[1] - a[1])
+      .map(([intent, count]) => `${intent} (${count})`)
+      .join(", ");
+    lines.push(`- Intents: ${list}`);
+  }
+  if (concepts.size > 0) {
+    lines.push(`- Concepts looked up: ${Array.from(concepts).join(", ")}`);
+  }
+  if (calculations.length > 0) {
+    lines.push(`- Calculations: ${calculations.join("; ")}`);
+  }
+  if (helloWorlds.size > 0) {
+    lines.push(
+      `- Hello-world programs generated for: ${Array.from(helloWorlds).join(", ")}`,
+    );
+  }
+  if (unanswered.length > 0) {
+    lines.push(`- Unanswered: ${unanswered.join(" | ")}`);
+  }
+
+  const evidence = [
+    "summarize_conversation",
+    `turns:${turns.length}`,
+    `users:${userCount}`,
+    `assistants:${assistantCount}`,
+  ];
+  if (intentCounts.size > 0) {
+    evidence.push(`intents:${Array.from(intentCounts.keys()).join("|")}`);
+  }
   return {
     intent: "summarize_conversation",
-    content: `Conversation so far:\n${bullets.join("\n")}`,
-    confidence: 0.85,
-    evidence: ["summarize_conversation", "prior_turn:user"],
+    content: lines.join("\n"),
+    confidence: 0.9,
+    evidence,
   };
 }
 
@@ -839,12 +985,15 @@ function renderConceptInContext(language, context, record) {
     : "concept_lookup_in_context";
   const variantTable = MULTILINGUAL_ANSWERS[intentVariant] || {};
   const baseTable = MULTILINGUAL_ANSWERS.concept_lookup_in_context || {};
-  const template =
+  const templateEntry =
     variantTable[language] ||
     variantTable.en ||
     baseTable[language] ||
     baseTable.en ||
-    "In the context of {context} ({context_label}), {term} ({category}) means: {summary}\n\nSource: {source} ({source_kind}).";
+    null;
+  const template = templateEntry
+    ? (typeof templateEntry === "string" ? templateEntry : templateEntry.text)
+    : "In the context of {context} ({context_label}), {term} ({category}) means: {summary}\n\nSource: {source} ({source_kind}).";
   const localized = localizedConceptFor(record, language);
   const term = (localized && localized.term) || record.term;
   const summary = (localized && localized.summary) || record.summary;
@@ -942,43 +1091,82 @@ function wikipediaHostsFor(language) {
   }));
 }
 
-async function fetchWikipediaSummary(term, language) {
-  if (typeof fetch !== "function") return null;
-  const hosts = wikipediaHostsFor(language);
-  for (const host of hosts) {
-    const slug = term
+function capitalizeWords(term) {
+  return term
+    .split(/(\s+)/)
+    .map((part) =>
+      /\S/.test(part) ? part.charAt(0).toUpperCase() + part.slice(1) : part,
+    )
+    .join("");
+}
+
+function wikipediaTermVariants(term) {
+  const seen = new Set();
+  const variants = [];
+  const push = (value) => {
+    if (!value) return;
+    const slug = String(value)
       .trim()
       .replace(/\s+/g, "_")
       .replace(/_+/g, "_");
-    const url = `${host.url}/${encodeURIComponent(slug)}`;
-    try {
-      const response = await fetch(url, {
-        headers: {
-          accept: "application/json",
-          "api-user-agent":
-            "formal-ai-demo (https://github.com/link-assistant/formal-ai)",
-        },
-      });
-      if (!response || !response.ok) continue;
-      const data = await response.json();
-      if (!data || typeof data !== "object") continue;
-      if (data.type === "disambiguation") continue;
-      const extract = String(data.extract || "").trim();
-      if (!extract) continue;
-      const title = String(data.title || term);
-      const pageUrl =
-        (data.content_urls &&
-          data.content_urls.desktop &&
-          data.content_urls.desktop.page) ||
-        url;
-      return {
-        title,
-        extract,
-        url: pageUrl,
-        language: host.language,
-      };
-    } catch (_error) {
-      // Swallow network/parse errors and continue to the next host.
+    if (!slug || seen.has(slug)) return;
+    seen.add(slug);
+    variants.push(slug);
+  };
+  const trimmed = String(term || "").trim();
+  push(trimmed);
+  push(capitalizeWords(trimmed));
+  push(capitalizeWords(trimmed.toLowerCase()));
+  push(trimmed.toLowerCase());
+  // Biography titles on Wikipedia (notably ru.wikipedia.org) use the
+  // "Surname, Given names" form: querying "Илон Маск" 404s, but "Маск, Илон"
+  // resolves. For two-word terms try the swap in both original and
+  // capitalized casing so other language hosts can match too.
+  const words = trimmed.split(/\s+/).filter(Boolean);
+  if (words.length === 2) {
+    const swapped = `${words[1]}, ${words[0]}`;
+    push(swapped);
+    push(capitalizeWords(swapped.toLowerCase()));
+  }
+  return variants;
+}
+
+async function fetchWikipediaSummary(term, language) {
+  if (typeof fetch !== "function") return null;
+  const hosts = wikipediaHostsFor(language);
+  const variants = wikipediaTermVariants(term);
+  for (const host of hosts) {
+    for (const slug of variants) {
+      const url = `${host.url}/${encodeURIComponent(slug)}`;
+      try {
+        const response = await fetch(url, {
+          headers: {
+            accept: "application/json",
+            "api-user-agent":
+              "formal-ai-demo (https://github.com/link-assistant/formal-ai)",
+          },
+        });
+        if (!response || !response.ok) continue;
+        const data = await response.json();
+        if (!data || typeof data !== "object") continue;
+        if (data.type === "disambiguation") continue;
+        const extract = String(data.extract || "").trim();
+        if (!extract) continue;
+        const title = String(data.title || term);
+        const pageUrl =
+          (data.content_urls &&
+            data.content_urls.desktop &&
+            data.content_urls.desktop.page) ||
+          url;
+        return {
+          title,
+          extract,
+          url: pageUrl,
+          language: host.language,
+        };
+      } catch (_error) {
+        // Swallow network/parse errors and continue to the next variant.
+      }
     }
   }
   return null;
@@ -992,7 +1180,11 @@ async function tryWikipediaLookup(prompt, language) {
   // `(term, context)` query first so that "what is iir in ml" doesn't waste
   // a network call when a context-aware record exists.
   if (lookupConceptQuery(query)) return null;
-  const summary = await fetchWikipediaSummary(query.term, language);
+  // Pass the original-case term to Wikipedia: non-Latin scripts (e.g. Cyrillic
+  // for "Илон Маск") require correct capitalization in the REST URL because
+  // ru.wikipedia.org does not redirect the all-lowercase slug.
+  const wikiTerm = query.termOriginal || query.term;
+  const summary = await fetchWikipediaSummary(wikiTerm, language);
   if (!summary) return null;
   const humanUrl = humanizeUrl(summary.url);
   const body =
@@ -1169,6 +1361,11 @@ function tryHelloWorld(prompt) {
 
 function tryHistorical(prompt, history) {
   const normalized = normalizePrompt(prompt);
+  // Issue #27: summarize triggers can be in non-Latin scripts that normalize
+  // to an empty string, so test before bailing.
+  if (isSummarizePrompt(prompt, normalized)) {
+    return trySummarizeConversation(history);
+  }
   if (!normalized) return null;
   if (normalized === "what is my name" || normalized === "what s my name") {
     const hit = tryRecallName(history);
@@ -1181,17 +1378,65 @@ function tryHistorical(prompt, history) {
   ) {
     return tryRecallLastQuestion(history);
   }
-  if (
-    normalized.startsWith("summarize the conversation") ||
-    normalized.startsWith("summarise the conversation") ||
-    normalized === "summarize so far"
-  ) {
-    return trySummarizeConversation(history);
-  }
   return null;
 }
 
-async function solve(prompt, history) {
+// Issue #27: trigger the summarize skill on a wide range of natural phrasings
+// (English/Russian/Hindi/Chinese), not just two literal sentences. We match on
+// the raw prompt for non-Latin scripts because normalizePrompt strips them.
+function isSummarizePrompt(prompt, normalized) {
+  const raw = String(prompt || "").trim().toLowerCase();
+  if (
+    normalized === "summarize" ||
+    normalized === "summarise" ||
+    normalized === "summarize chat" ||
+    normalized === "summarise chat" ||
+    normalized === "summarize so far" ||
+    normalized === "summarise so far" ||
+    normalized === "summary"
+  ) {
+    return true;
+  }
+  if (
+    normalized.startsWith("summarize the conversation") ||
+    normalized.startsWith("summarise the conversation") ||
+    normalized.startsWith("summarize this conversation") ||
+    normalized.startsWith("summarise this conversation") ||
+    normalized.startsWith("summarize our conversation") ||
+    normalized.startsWith("summarise our conversation") ||
+    normalized.startsWith("summarize the chat") ||
+    normalized.startsWith("summarise the chat") ||
+    normalized.startsWith("summarize this chat") ||
+    normalized.startsWith("summarise this chat") ||
+    normalized.startsWith("give me a summary") ||
+    normalized.startsWith("can you summarize") ||
+    normalized.startsWith("can you summarise") ||
+    normalized.startsWith("please summarize") ||
+    normalized.startsWith("please summarise")
+  ) {
+    return true;
+  }
+  // Russian: суммируй / резюмируй / подведи итог / краткое резюме
+  if (
+    /^(суммируй|резюмируй|подведи\s+итог|кратк(ое|ий)\s+резюме|сделай\s+резюме|резюме\s+(беседы|разговора|чата))/.test(
+      raw,
+    )
+  ) {
+    return true;
+  }
+  // Hindi: सारांश / सारांश दो / संक्षेप
+  if (/^(सारांश|संक्षेप|सार\s+दो|सारांश\s+दो)/.test(raw)) {
+    return true;
+  }
+  // Chinese (simplified + traditional): 总结 / 總結 / 概括
+  if (/^(总结|總結|概括|摘要)/.test(raw)) {
+    return true;
+  }
+  return false;
+}
+
+async function solve(prompt, history, prefs) {
+  const preferences = prefs || {};
   const steps = [];
   const toolCalls = [];
   const events = [`impulse:${prompt}`];
@@ -1206,11 +1451,16 @@ async function solve(prompt, history) {
   if (isGreetingPrompt(normalized, prompt)) {
     events.push("rule:greeting");
     steps.push({ step: "match_rule", detail: "greeting" });
+    const randomize = preferences.greetingVariations !== false;
     return finalize(events, steps, toolCalls, {
       intent: "greeting",
-      content: answerFor("greeting", language),
+      content: answerFor("greeting", language, { randomize: randomize }),
       confidence: 1.0,
-      evidence: ["rule:greeting", `language:${language}`],
+      evidence: [
+        "rule:greeting",
+        `language:${language}`,
+        `variation:${randomize ? "random" : "canonical"}`,
+      ],
     });
   }
   if (isIdentityPrompt(normalized, prompt)) {
@@ -1310,13 +1560,24 @@ async function loadSeed() {
     const seed = await self.FormalAiSeed.loadAll();
     SEED_RAW = (seed && seed.raw) || {};
     if (seed && seed.responses) {
-      const merged = {
-        greeting: Object.assign({}, MULTILINGUAL_ANSWERS.greeting, seed.responses.greeting || {}),
-        identity: Object.assign({}, MULTILINGUAL_ANSWERS.identity, seed.responses.identity || {}),
-        unknown: Object.assign({}, MULTILINGUAL_ANSWERS.unknown, seed.responses.unknown || {}),
-      };
-      Object.keys(seed.responses).forEach((key) => {
-        if (!merged[key]) merged[key] = seed.responses[key];
+      const merged = {};
+      const intents = new Set(
+        Object.keys(MULTILINGUAL_ANSWERS).concat(Object.keys(seed.responses)),
+      );
+      intents.forEach((intent) => {
+        const base = MULTILINGUAL_ANSWERS[intent] || {};
+        const next = seed.responses[intent] || {};
+        const byLanguage = {};
+        const langs = new Set(Object.keys(base).concat(Object.keys(next)));
+        langs.forEach((language) => {
+          const incoming = next[language];
+          if (incoming !== undefined) {
+            byLanguage[language] = normalizeEntry(incoming, intent);
+          } else {
+            byLanguage[language] = normalizeEntry(base[language], intent);
+          }
+        });
+        merged[intent] = byLanguage;
       });
       MULTILINGUAL_ANSWERS = merged;
     }
@@ -1415,7 +1676,8 @@ self.onmessage = async (event) => {
   }
   const prompt = data.prompt || "";
   const history = Array.isArray(data.history) ? data.history : [];
-  const answer = await solve(prompt, history);
+  const prefs = (data.prefs && typeof data.prefs === "object") ? data.prefs : {};
+  const answer = await solve(prompt, history, prefs);
   postMessage({
     kind: "message",
     requestId: data.requestId,
