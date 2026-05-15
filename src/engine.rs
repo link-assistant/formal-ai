@@ -792,10 +792,10 @@ fn is_identity_question(normalized_prompt: &str) -> bool {
 }
 
 fn hello_world_program(normalized_prompt: &str) -> Option<&'static HelloWorldProgram> {
-    let has_hello = contains_token(normalized_prompt, "hello")
-        || contains_token(normalized_prompt, "хелло");
-    let has_world = contains_token(normalized_prompt, "world")
-        || contains_token(normalized_prompt, "ворлд");
+    let has_hello =
+        contains_token(normalized_prompt, "hello") || contains_token(normalized_prompt, "хелло");
+    let has_world =
+        contains_token(normalized_prompt, "world") || contains_token(normalized_prompt, "ворлд");
     if !has_hello || !has_world {
         return None;
     }
