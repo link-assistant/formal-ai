@@ -71,6 +71,7 @@ const PREFERENCE_DEFAULTS = {
 };
 
 const MEMORY_EXPORT_FILENAME = "formal-ai-memory.lino";
+const BUNDLE_EXPORT_FILENAME = "formal-ai-bundle.lino";
 
 function recordMemoryEvent(payload) {
   if (typeof window === "undefined" || !window.FormalAiMemory) {
@@ -420,6 +421,12 @@ function App() {
   const [pending, setPending] = useState(false);
   const [workerState, setWorkerState] = useState("wasm worker");
   const [memoryStatus, setMemoryStatus] = useState("");
+  const [seed, setSeed] = useState({
+    raw: {},
+    tools: [],
+    concepts: [],
+    responses: {},
+  });
   const initialPreferences = useRef(loadPreferences());
   const [demoMode, setDemoMode] = useState(initialPreferences.current.demoMode);
   const [demoPhase, setDemoPhase] = useState("manual");
@@ -427,6 +434,18 @@ function App() {
   const [diagnosticsMode, setDiagnosticsMode] = useState(
     initialPreferences.current.diagnosticsMode,
   );
+
+  useEffect(() => {
+    if (typeof window === "undefined" || !window.FormalAiSeed) return;
+    let cancelled = false;
+    window.FormalAiSeed.loadAll().then((loaded) => {
+      if (cancelled) return;
+      setSeed(loaded);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const handleExportMemory = useCallback(async () => {
     if (typeof window === "undefined" || !window.FormalAiMemory) {
@@ -442,6 +461,31 @@ function App() {
       setMemoryStatus("Export failed");
     }
   }, []);
+
+  const handleExportBundle = useCallback(async () => {
+    if (typeof window === "undefined" || !window.FormalAiMemory) {
+      setMemoryStatus("Memory unavailable");
+      return;
+    }
+    try {
+      const events = await window.FormalAiMemory.listEvents();
+      const text = window.FormalAiMemory.exportBundle({
+        seed,
+        events,
+        info: {
+          version: APP_VERSION,
+          url: window.location.href,
+          userAgent: navigator.userAgent,
+          workerState,
+          mode: demoMode ? "demo" : "manual",
+        },
+      });
+      downloadTextFile(BUNDLE_EXPORT_FILENAME, text);
+      setMemoryStatus(`Bundled ${events.length} events + seed`);
+    } catch (_error) {
+      setMemoryStatus("Bundle export failed");
+    }
+  }, [seed, workerState, demoMode]);
 
   const handleImportMemory = useCallback(async (event) => {
     const file = event.target.files && event.target.files[0];
@@ -703,6 +747,18 @@ function App() {
           },
           "Import memory",
         ),
+        h(
+          "button",
+          {
+            type: "button",
+            className: "memory-button",
+            "data-testid": "memory-bundle",
+            onClick: handleExportBundle,
+            title:
+              "Download a single .lino file containing the seed, the memory log, and environment metadata. Attach it to issue reports for full reproducibility.",
+          },
+          "Download bundle",
+        ),
         h("input", {
           ref: importInputRef,
           type: "file",
@@ -769,6 +825,42 @@ function App() {
             ),
           ),
         ),
+        seed.tools && seed.tools.length > 0
+          ? h(
+              "div",
+              { className: "tool-registry", "data-testid": "tool-registry" },
+              h("h2", null, "Tools"),
+              h(
+                "ul",
+                { className: "tool-list" },
+                seed.tools.map((tool) =>
+                  h(
+                    "li",
+                    {
+                      key: tool.id,
+                      className: `tool tool-mode-${tool.mode || "thinking"}`,
+                      "data-testid": "tool-entry",
+                      "data-tool-id": tool.id,
+                      "data-tool-mode": tool.mode || "thinking",
+                    },
+                    h(
+                      "div",
+                      { className: "tool-head" },
+                      h("strong", null, tool.name || tool.id),
+                      h(
+                        "span",
+                        { className: "tool-mode" },
+                        tool.mode === "agent" ? "agent" : "thinking",
+                      ),
+                    ),
+                    tool.description
+                      ? h("p", { className: "tool-desc" }, tool.description)
+                      : null,
+                  ),
+                ),
+              ),
+            )
+          : null,
         diagnosticsMode ? h("h2", null, "Trace") : null,
         diagnosticsMode
           ? h(
@@ -778,6 +870,28 @@ function App() {
               h("div", null, h("dt", null, "Mode"), h("dd", null, demoStatus)),
               h("div", null, h("dt", null, "Intent"), h("dd", null, lastAssistant?.intent ?? "none")),
               h("div", null, h("dt", null, "Data"), h("dd", null, "data/source-index.lino")),
+              h(
+                "div",
+                null,
+                h("dt", null, "Seed files"),
+                h(
+                  "dd",
+                  null,
+                  Object.keys(seed.raw || {}).join(", ") || "(loading)",
+                ),
+              ),
+              h(
+                "div",
+                null,
+                h("dt", null, "Tools loaded"),
+                h("dd", null, String((seed.tools || []).length)),
+              ),
+              h(
+                "div",
+                null,
+                h("dt", null, "Concepts loaded"),
+                h("dd", null, String((seed.concepts || []).length)),
+              ),
             )
           : null,
       ),

@@ -30,9 +30,17 @@
   var DB_VERSION = 1;
   var STORE_NAME = "events";
   var ROOT_HEADER = "demo_memory";
+  // Schema is intentionally additive. Older logs without "kind" still parse
+  // as plain user/assistant turns. New "kind" values record reasoning steps,
+  // tool invocations, decisions, and other internal events so the log is a
+  // complete projection of what the agent did.
   var EXPORT_FIELDS = [
+    "kind",
     "role",
     "intent",
+    "tool",
+    "inputs",
+    "outputs",
     "content",
     "sentAt",
     "demoLabel",
@@ -185,7 +193,21 @@
       content: String(event.content || ""),
       sentAt: String(event.sentAt || new Date().toISOString()),
     };
+    if (event.kind) record.kind = String(event.kind);
     if (event.intent) record.intent = String(event.intent);
+    if (event.tool) record.tool = String(event.tool);
+    if (event.inputs !== undefined && event.inputs !== null) {
+      record.inputs =
+        typeof event.inputs === "string"
+          ? event.inputs
+          : JSON.stringify(event.inputs);
+    }
+    if (event.outputs !== undefined && event.outputs !== null) {
+      record.outputs =
+        typeof event.outputs === "string"
+          ? event.outputs
+          : JSON.stringify(event.outputs);
+    }
     if (event.demoLabel) record.demoLabel = String(event.demoLabel);
     if (Array.isArray(event.evidence)) record.evidence = event.evidence.slice();
     return withStore("readwrite", function (store, setResult) {
@@ -235,7 +257,21 @@
           content: String(raw.content || ""),
           sentAt: String(raw.sentAt || new Date().toISOString()),
         };
+        if (raw.kind) record.kind = String(raw.kind);
         if (raw.intent) record.intent = String(raw.intent);
+        if (raw.tool) record.tool = String(raw.tool);
+        if (raw.inputs !== undefined && raw.inputs !== null) {
+          record.inputs =
+            typeof raw.inputs === "string"
+              ? raw.inputs
+              : JSON.stringify(raw.inputs);
+        }
+        if (raw.outputs !== undefined && raw.outputs !== null) {
+          record.outputs =
+            typeof raw.outputs === "string"
+              ? raw.outputs
+              : JSON.stringify(raw.outputs);
+        }
         if (raw.demoLabel) record.demoLabel = String(raw.demoLabel);
         if (Array.isArray(raw.evidence)) record.evidence = raw.evidence.slice();
         var request = store.add(record);
@@ -254,11 +290,62 @@
     });
   }
 
+  function indentBlock(text, indent) {
+    var prefix = indent || "  ";
+    return String(text || "")
+      .split(/\r?\n/)
+      .filter(function (line) { return line.length > 0; })
+      .map(function (line) { return prefix + line; })
+      .join("\n");
+  }
+
+  // Combine app metadata + every seed file + the entire append-only event log
+  // into a single Links Notation document. The output is the canonical
+  // "report-ready" debug snapshot — paste it into a GitHub issue and the
+  // maintainer can reconstruct the agent's full state.
+  function exportBundle(options) {
+    var settings = options || {};
+    var seed = settings.seed || {};
+    var events = Array.isArray(settings.events) ? settings.events : [];
+    var info = settings.info || {};
+    var lines = ["formal_ai_bundle"];
+    lines.push('  exported_at "' + escapeValue(new Date().toISOString()) + '"');
+    if (info.version) {
+      lines.push('  version "' + escapeValue(info.version) + '"');
+    }
+    if (info.url) {
+      lines.push('  url "' + escapeValue(info.url) + '"');
+    }
+    if (info.userAgent) {
+      lines.push('  user_agent "' + escapeValue(info.userAgent) + '"');
+    }
+    if (info.workerState) {
+      lines.push('  worker_state "' + escapeValue(info.workerState) + '"');
+    }
+    if (info.mode) {
+      lines.push('  mode "' + escapeValue(info.mode) + '"');
+    }
+    var seedFiles = seed && seed.raw ? Object.keys(seed.raw) : [];
+    if (seedFiles.length > 0) {
+      lines.push("  seed_files");
+      seedFiles.forEach(function (filename) {
+        lines.push('    file "' + escapeValue(filename) + '"');
+        lines.push(indentBlock(seed.raw[filename], "      "));
+      });
+    }
+    lines.push("  " + ROOT_HEADER);
+    events.forEach(function (event) {
+      lines.push("  " + formatEvent(event));
+    });
+    return lines.join("\n") + "\n";
+  }
+
   global.FormalAiMemory = {
     appendEvent: appendEvent,
     listEvents: listEvents,
     importEvents: importEvents,
     exportLinksNotation: exportLinksNotation,
+    exportBundle: exportBundle,
     parseLinksNotation: parseLinksNotation,
     formatEvent: formatEvent,
     DB_NAME: DB_NAME,
