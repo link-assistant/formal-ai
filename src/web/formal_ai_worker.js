@@ -842,17 +842,110 @@ function tryRecallLastQuestion(history) {
   return null;
 }
 
+// Issue #27: deterministic, logical summarisation — no neural net. We
+// project the conversation onto a small set of features (turn counts, intents,
+// concepts, languages, unanswered questions) and render them as a structured
+// Markdown report. Every value is derived directly from the append-only event
+// log so reruns on the same input produce byte-identical output.
 function trySummarizeConversation(history) {
   if (!Array.isArray(history) || history.length === 0) return null;
-  const bullets = history
-    .filter((turn) => turn && turn.content)
-    .map((turn) => `- ${turn.role}: ${turn.content}`);
-  if (bullets.length === 0) return null;
+  const turns = history.filter((turn) => turn && turn.content);
+  if (turns.length === 0) return null;
+
+  let userCount = 0;
+  let assistantCount = 0;
+  const intentCounts = new Map();
+  const languages = new Map();
+  const concepts = new Set();
+  const calculations = [];
+  const helloWorlds = new Set();
+  const unanswered = [];
+  let lastUser = null;
+
+  for (const turn of turns) {
+    const role = turn.role || "assistant";
+    const language = detectLanguage(turn.content);
+    languages.set(language, (languages.get(language) || 0) + 1);
+    if (role === "user") {
+      userCount += 1;
+      lastUser = turn.content;
+    } else {
+      assistantCount += 1;
+      if (lastUser) {
+        lastUser = null;
+      }
+      const intent = String(turn.intent || "unknown");
+      intentCounts.set(intent, (intentCounts.get(intent) || 0) + 1);
+      if (intent === "calculation" && typeof turn.content === "string") {
+        const match = turn.content.match(/^([^=]+=\s*[^\n]+)/);
+        if (match) calculations.push(match[1].trim());
+      }
+      if (intent.startsWith("hello_world_")) {
+        helloWorlds.add(intent.slice("hello_world_".length));
+      }
+      if (intent.startsWith("concept_lookup")) {
+        const evidence = Array.isArray(turn.evidence) ? turn.evidence : [];
+        for (const item of evidence) {
+          if (typeof item !== "string") continue;
+          const conceptMatch = item.match(/^concept_lookup:request:(.+)$/);
+          if (conceptMatch) concepts.add(conceptMatch[1]);
+        }
+      }
+    }
+  }
+  if (lastUser) {
+    unanswered.push(lastUser);
+  }
+
+  const lines = [];
+  lines.push("## Conversation summary");
+  lines.push("");
+  lines.push(
+    `- ${turns.length} turn(s): ${userCount} user, ${assistantCount} assistant`,
+  );
+  if (languages.size > 0) {
+    const list = Array.from(languages.entries())
+      .sort((a, b) => b[1] - a[1])
+      .map(([lang, count]) => `${lang} (${count})`)
+      .join(", ");
+    lines.push(`- Languages: ${list}`);
+  }
+  if (intentCounts.size > 0) {
+    const list = Array.from(intentCounts.entries())
+      .sort((a, b) => b[1] - a[1])
+      .map(([intent, count]) => `${intent} (${count})`)
+      .join(", ");
+    lines.push(`- Intents: ${list}`);
+  }
+  if (concepts.size > 0) {
+    lines.push(`- Concepts looked up: ${Array.from(concepts).join(", ")}`);
+  }
+  if (calculations.length > 0) {
+    lines.push(`- Calculations: ${calculations.join("; ")}`);
+  }
+  if (helloWorlds.size > 0) {
+    lines.push(
+      `- Hello-world programs generated for: ${Array.from(helloWorlds).join(", ")}`,
+    );
+  }
+  if (unanswered.length > 0) {
+    lines.push(`- Unanswered: ${unanswered.join(" | ")}`);
+  }
+
+  const evidence = [
+    "summarize_conversation",
+    `turns:${turns.length}`,
+    `users:${userCount}`,
+    `assistants:${assistantCount}`,
+  ];
+  if (intentCounts.size > 0) {
+    evidence.push(`intents:${Array.from(intentCounts.keys()).join("|")}`);
+  }
   return {
     intent: "summarize_conversation",
-    content: `Conversation so far:\n${bullets.join("\n")}`,
-    confidence: 0.85,
-    evidence: ["summarize_conversation", "prior_turn:user"],
+    content: lines.join("\n"),
+    confidence: 0.9,
+    evidence,
   };
 }
 
@@ -1258,6 +1351,11 @@ function tryHelloWorld(prompt) {
 
 function tryHistorical(prompt, history) {
   const normalized = normalizePrompt(prompt);
+  // Issue #27: summarize triggers can be in non-Latin scripts that normalize
+  // to an empty string, so test before bailing.
+  if (isSummarizePrompt(prompt, normalized)) {
+    return trySummarizeConversation(history);
+  }
   if (!normalized) return null;
   if (normalized === "what is my name" || normalized === "what s my name") {
     const hit = tryRecallName(history);
@@ -1270,14 +1368,61 @@ function tryHistorical(prompt, history) {
   ) {
     return tryRecallLastQuestion(history);
   }
+  return null;
+}
+
+// Issue #27: trigger the summarize skill on a wide range of natural phrasings
+// (English/Russian/Hindi/Chinese), not just two literal sentences. We match on
+// the raw prompt for non-Latin scripts because normalizePrompt strips them.
+function isSummarizePrompt(prompt, normalized) {
+  const raw = String(prompt || "").trim().toLowerCase();
+  if (
+    normalized === "summarize" ||
+    normalized === "summarise" ||
+    normalized === "summarize chat" ||
+    normalized === "summarise chat" ||
+    normalized === "summarize so far" ||
+    normalized === "summarise so far" ||
+    normalized === "summary"
+  ) {
+    return true;
+  }
   if (
     normalized.startsWith("summarize the conversation") ||
     normalized.startsWith("summarise the conversation") ||
-    normalized === "summarize so far"
+    normalized.startsWith("summarize this conversation") ||
+    normalized.startsWith("summarise this conversation") ||
+    normalized.startsWith("summarize our conversation") ||
+    normalized.startsWith("summarise our conversation") ||
+    normalized.startsWith("summarize the chat") ||
+    normalized.startsWith("summarise the chat") ||
+    normalized.startsWith("summarize this chat") ||
+    normalized.startsWith("summarise this chat") ||
+    normalized.startsWith("give me a summary") ||
+    normalized.startsWith("can you summarize") ||
+    normalized.startsWith("can you summarise") ||
+    normalized.startsWith("please summarize") ||
+    normalized.startsWith("please summarise")
   ) {
-    return trySummarizeConversation(history);
+    return true;
   }
-  return null;
+  // Russian: суммируй / резюмируй / подведи итог / краткое резюме
+  if (
+    /^(суммируй|резюмируй|подведи\s+итог|кратк(ое|ий)\s+резюме|сделай\s+резюме|резюме\s+(беседы|разговора|чата))/.test(
+      raw,
+    )
+  ) {
+    return true;
+  }
+  // Hindi: सारांश / सारांश दो / संक्षेप
+  if (/^(सारांश|संक्षेप|सार\s+दो|सारांश\s+दो)/.test(raw)) {
+    return true;
+  }
+  // Chinese (simplified + traditional): 总结 / 總結 / 概括
+  if (/^(总结|總結|概括|摘要)/.test(raw)) {
+    return true;
+  }
+  return false;
 }
 
 async function solve(prompt, history, prefs) {

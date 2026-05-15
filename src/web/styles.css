@@ -94,6 +94,7 @@ button {
 
 .mode-toggle,
 .diagnostics-toggle,
+.agent-toggle,
 .report-button,
 .memory-button,
 .send-button,
@@ -107,6 +108,7 @@ button {
 
 .mode-toggle,
 .diagnostics-toggle,
+.agent-toggle,
 .report-button,
 .memory-button {
   min-height: 38px;
@@ -127,6 +129,7 @@ button {
 
 .mode-toggle[aria-pressed="true"],
 .diagnostics-toggle[aria-pressed="true"],
+.agent-toggle[aria-pressed="true"],
 .send-button {
   border-color: #175f4f;
   background: #175f4f;
@@ -694,6 +697,7 @@ textarea:disabled {
   }
 
   .diagnostics-toggle,
+  .agent-toggle,
   .report-button {
     max-width: 118px;
     overflow: hidden;

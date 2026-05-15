@@ -162,6 +162,12 @@ const PREFERENCE_DEFAULTS = {
   // demo restores its event log into the main transcript. Empty string means
   // "no conversation yet — start a fresh one on first user input".
   currentConversationId: "",
+  // Issue #27: Chat (single-turn Q&A) vs Agent (multi-step plan + execute) mode.
+  // Persisted so the user keeps their preferred operating surface across
+  // reloads. Agent mode in the browser sandbox decomposes the prompt into
+  // sequential sub-tasks and runs each through the existing solver; a future
+  // iteration will wire it to docker / WebVM execution.
+  agentMode: false,
 };
 
 const MEMORY_EXPORT_FILENAME = "formal-ai-memory.lino";
@@ -294,6 +300,49 @@ function groupConversations(events) {
     return 0;
   });
   return list;
+}
+
+// Issue #27: agent-mode task decomposition. Splits a multi-step prompt into
+// sequential sub-tasks on a small, deterministic set of separators that span
+// the languages the demo already supports. The split is intentionally
+// conservative — if no separator is present we return [trimmedPrompt] so a
+// single-step task still runs through the same code path.
+const AGENT_STEP_SEPARATORS = [
+  /\s*;\s+/,
+  /\s+then(?:\s*,)?\s+/i,
+  /\s*,\s+(?:and\s+then|then|next)\s+/i,
+  /\s*,\s+after\s+that\s+/i,
+  /\s+потом\s+/i,
+  /\s+затем\s+/i,
+  /\s+после\s+этого\s+/i,
+  /\s+然后\s*/,
+  /\s+接着\s*/,
+];
+
+// Issue #27: leading conjunctions ("then", "and then", "потом", "затем",
+// "next", "after that", "然后", "接着") are linkers between steps, not part of
+// the task itself. Strip them so each split segment is a clean instruction.
+const AGENT_LEADING_CONJUNCTIONS =
+  /^(?:and\s+then|then|next|after\s+that|потом|затем|после\s+этого|然后|接着)[\s,:]+/i;
+
+function decomposeAgentTask(text) {
+  const trimmed = String(text || "").trim();
+  if (!trimmed) return [];
+  let segments = [trimmed];
+  for (const sep of AGENT_STEP_SEPARATORS) {
+    const next = [];
+    for (const segment of segments) {
+      const parts = segment.split(sep);
+      for (const part of parts) {
+        const cleaned = part.trim();
+        if (cleaned) next.push(cleaned);
+      }
+    }
+    segments = next;
+  }
+  return segments.map((segment) =>
+    segment.replace(AGENT_LEADING_CONJUNCTIONS, "").trim(),
+  ).filter((segment) => segment.length > 0);
 }
 
 function messagesForConversation(events, conversationId) {
@@ -694,6 +743,11 @@ function App() {
   const [greetingVariations, setGreetingVariations] = useState(
     initialPreferences.current.greetingVariations,
   );
+  // Issue #27: agent mode runs the user's prompt as a multi-step plan instead
+  // of a single Q&A. Persisted across reloads via preferences.
+  const [agentMode, setAgentMode] = useState(
+    initialPreferences.current.agentMode,
+  );
   // Issue #27: a mobile-friendly slide-out menu that hosts the entire sidebar
   // plus the topbar action buttons. On wide screens the menu is hidden via CSS.
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -844,6 +898,7 @@ function App() {
       sidebarConversationsCollapsed,
       greetingVariations,
       currentConversationId,
+      agentMode,
     });
   }, [
     demoMode,
@@ -854,6 +909,7 @@ function App() {
     sidebarConversationsCollapsed,
     greetingVariations,
     currentConversationId,
+    agentMode,
   ]);
 
   useEffect(() => {
@@ -884,6 +940,11 @@ function App() {
   useEffect(() => {
     greetingVariationsRef.current = greetingVariations;
   }, [greetingVariations]);
+
+  const agentModeRef = useRef(agentMode);
+  useEffect(() => {
+    agentModeRef.current = agentMode;
+  }, [agentMode]);
 
   const requestAnswer = useCallback((text, history = []) => {
     const worker = workerRef.current;
@@ -1009,8 +1070,68 @@ function App() {
       messages.map((message) => ({
         role: message.role,
         content: message.content,
+        intent: message.intent,
+        evidence: message.evidence,
       })),
     [messages],
+  );
+
+  // Issue #27: agent mode — run a decomposed task plan and merge the per-step
+  // results into a single assistant message. Each step calls the same solver
+  // the chat path uses, so deterministic intents (greeting, identity,
+  // arithmetic, concept lookup, etc.) behave identically; the difference is
+  // surface presentation, not solver semantics.
+  const runAgentPlan = useCallback(
+    async (steps, history) => {
+      const lines = [];
+      lines.push(`## Agent plan (${steps.length} steps)`);
+      steps.forEach((step, index) => {
+        lines.push(`${index + 1}. ${step}`);
+      });
+      lines.push("");
+      const aggregatedSteps = [];
+      const aggregatedToolCalls = [];
+      const aggregatedEvidence = [];
+      const workingHistory = Array.isArray(history) ? history.slice() : [];
+      for (let index = 0; index < steps.length; index += 1) {
+        const step = steps[index];
+        aggregatedSteps.push({
+          step: "agent_plan",
+          detail: `${index + 1}/${steps.length} ${step}`,
+        });
+        const answer = await requestAnswer(step, workingHistory);
+        lines.push(`### Step ${index + 1}: ${step}`);
+        lines.push(answer.content || "(no output)");
+        lines.push("");
+        if (Array.isArray(answer.steps)) {
+          answer.steps.forEach((entry) => {
+            aggregatedSteps.push({
+              step: `agent_${index + 1}_${entry.step}`,
+              detail: entry.detail,
+            });
+          });
+        }
+        if (Array.isArray(answer.toolCalls)) {
+          aggregatedToolCalls.push(...answer.toolCalls);
+        }
+        if (Array.isArray(answer.evidence)) {
+          aggregatedEvidence.push(
+            ...answer.evidence.map((item) => `step_${index + 1}:${item}`),
+          );
+        }
+        workingHistory.push({ role: "user", content: step });
+        workingHistory.push({ role: "assistant", content: answer.content || "" });
+      }
+      appendAssistantMessage({
+        intent: "agent_plan",
+        content: lines.join("\n").trim(),
+        confidence: 0.85,
+        evidence: ["rule:agent_mode", `steps:${steps.length}`, ...aggregatedEvidence],
+        steps: aggregatedSteps,
+        toolCalls: aggregatedToolCalls,
+      });
+    },
+    [requestAnswer, appendAssistantMessage],
   );
 
   async function sendText(text, extra = {}) {
@@ -1066,6 +1187,19 @@ function App() {
       });
       setPending(false);
       return;
+    }
+
+    // Issue #27: agent mode decomposes the prompt into sub-tasks and executes
+    // them sequentially, producing one consolidated assistant message with a
+    // plan preamble and a per-step result list. Chat mode runs the single-step
+    // path unchanged.
+    if (agentModeRef.current) {
+      const steps = decomposeAgentTask(trimmed);
+      if (steps.length > 1) {
+        await runAgentPlan(steps, history);
+        setPending(false);
+        return;
+      }
     }
 
     const answer = await requestAnswer(trimmed, history);
@@ -1245,6 +1379,20 @@ function App() {
             onClick: () => setDiagnosticsMode((value) => !value),
           },
           diagnosticsMode ? "Diagnostics on" : "Diagnostics",
+        ),
+        h(
+          "button",
+          {
+            type: "button",
+            className: "agent-toggle",
+            "data-testid": "agent-toggle",
+            "aria-pressed": agentMode,
+            title: agentMode
+              ? "Switch back to single-turn chat."
+              : "Switch to agent mode: each message is decomposed into sequential steps and executed as a plan.",
+            onClick: () => setAgentMode((value) => !value),
+          },
+          agentMode ? "Agent" : "Chat",
         ),
         h(
           "button",
@@ -1505,7 +1653,9 @@ function App() {
             h("textarea", {
               value: prompt,
               rows: 3,
-              placeholder: "Message formal-ai",
+              placeholder: agentMode
+                ? "Describe a multi-step task (separate steps with ; or 'then')"
+                : "Message formal-ai",
               onChange: (event) => setPrompt(event.target.value),
               onKeyDown: handleKeyDown,
               disabled: demoMode,

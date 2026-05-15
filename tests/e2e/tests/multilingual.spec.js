@@ -428,6 +428,88 @@ test.describe('Issue #27: random greeting variations', () => {
   });
 });
 
+test.describe('Issue #27: summarize skill', () => {
+  test.beforeEach(async ({ page }) => {
+    await disableGreetingVariations(page);
+    await page.goto('./');
+    await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
+    await switchToManualMode(page);
+  });
+
+  test('"summarize this conversation" returns a structured report', async ({ page }) => {
+    await sendPrompt(page, 'Hi');
+    await sendPrompt(page, 'What is 2 + 2?');
+    const last = await sendPrompt(page, 'Summarize this conversation');
+    await expect(last).toHaveClass(/assistant/);
+    await expect(last).toContainText('Conversation summary');
+    await expect(last).toContainText('user');
+    await expect(last).toContainText('assistant');
+    await expect(last).toContainText('greeting');
+    await expect(last).toContainText('calculation');
+    await expect(last).toContainText('2 + 2 = 4');
+  });
+
+  test('single-word "summarize" triggers the skill', async ({ page }) => {
+    await sendPrompt(page, 'Hi');
+    const last = await sendPrompt(page, 'Summarize');
+    await expect(last).toContainText('Conversation summary');
+  });
+
+  test('Russian "резюме беседы" triggers the skill', async ({ page }) => {
+    await sendPrompt(page, 'Привет');
+    const last = await sendPrompt(page, 'Резюме беседы');
+    await expect(last).toContainText('Conversation summary');
+  });
+
+  test('Chinese "总结" triggers the skill', async ({ page }) => {
+    await sendPrompt(page, '你好');
+    const last = await sendPrompt(page, '总结');
+    await expect(last).toContainText('Conversation summary');
+  });
+});
+
+test.describe('Issue #27: agent mode', () => {
+  test.beforeEach(async ({ page }) => {
+    await disableGreetingVariations(page);
+    await page.goto('./');
+    await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
+    await switchToManualMode(page);
+  });
+
+  test('Chat/Agent toggle is present and starts in Chat', async ({ page }) => {
+    const toggle = page.locator('[data-testid="agent-toggle"]');
+    await expect(toggle).toBeVisible();
+    await expect(toggle).toHaveText('Chat');
+    await toggle.click();
+    await expect(toggle).toHaveText('Agent');
+  });
+
+  test('Agent mode decomposes a multi-step task and runs each step', async ({ page }) => {
+    await page.locator('[data-testid="agent-toggle"]').click();
+    const last = await sendPrompt(
+      page,
+      'Hi; then what is 2 + 2; then who are you',
+    );
+    await expect(last).toHaveClass(/assistant/);
+    await expect(last).toContainText('Agent plan (3 steps)');
+    await expect(last).toContainText('Step 1: Hi');
+    await expect(last).toContainText('Step 2: what is 2 + 2');
+    await expect(last).toContainText('Step 3: who are you');
+    // Step 1 greeting, step 2 calculation, step 3 identity.
+    await expect(last).toContainText('Hi, how may I help you?');
+    await expect(last).toContainText('2 + 2 = 4');
+    await expect(last).toContainText('formal-ai');
+  });
+
+  test('Agent mode preserves single-step prompts as plain Q&A', async ({ page }) => {
+    await page.locator('[data-testid="agent-toggle"]').click();
+    const last = await sendPrompt(page, 'Hi');
+    // No "; then …" — should run as a single step (chat-style answer).
+    await expect(last).toContainText('Hi, how may I help you?');
+    await expect(last).not.toContainText('Agent plan');
+  });
+});
+
 test.describe('Issue #27: conversations sidebar', () => {
   test.beforeEach(async ({ page }) => {
     await disableGreetingVariations(page);
