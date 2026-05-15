@@ -426,3 +426,33 @@ fn humanize_url_preserves_functional_link_target() {
     let ascii = "https://en.wikipedia.org/wiki/Albert_Einstein";
     assert_eq!(humanize_url(ascii), ascii);
 }
+
+// ---------------------------------------------------------------------------
+// Issue #30: "назови цвет" — "назови " prefix must route to concept_lookup,
+// and "цвет" must resolve to the color concept record.
+// The reporter's exact prompt was "назови цвет" which returned intent:unknown.
+// ---------------------------------------------------------------------------
+
+#[test]
+fn russian_nazovi_prefix_routes_to_concept_lookup() {
+    // "назови X" is a Russian imperative meaning "name X / tell me X".
+    // It must be recognized as a concept_lookup prefix (issue #30).
+    let response = answer("назови цвет");
+    assert!(
+        response.intent.starts_with("concept_lookup"),
+        "\"назови цвет\" should route to concept_lookup, got: {}",
+        response.intent
+    );
+}
+
+#[test]
+fn russian_nazovi_tsvet_answer_references_color() {
+    // The resolved answer must reference the color concept.
+    let response = answer("назови цвет");
+    let lower = response.answer.to_lowercase();
+    assert!(
+        lower.contains("цвет") || lower.contains("color") || lower.contains("colour"),
+        "\"назови цвет\" answer should describe a color, got: {}",
+        response.answer
+    );
+}
