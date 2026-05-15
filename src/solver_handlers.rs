@@ -6,9 +6,7 @@
 
 use std::fmt::Write as _;
 
-use crate::arithmetic::{
-    evaluate_arithmetic, extract_arithmetic_expression, format_arithmetic_result,
-};
+use crate::arithmetic::{evaluate_arithmetic_formatted, extract_arithmetic_expression};
 use crate::concepts::{
     extract_concept_query, lookup_concept_query, resolve_context_label, ConceptRecord,
 };
@@ -144,9 +142,8 @@ fn try_summarize_conversation(
 pub fn try_arithmetic(prompt: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {
     let expression = extract_arithmetic_expression(prompt)?;
     log.append("calculation:request", expression.clone());
-    match evaluate_arithmetic(&expression) {
-        Ok(value) => {
-            let formatted = format_arithmetic_result(value);
+    match evaluate_arithmetic_formatted(&expression) {
+        Ok(formatted) => {
             log.append("calculation", format!("{expression} = {formatted}"));
             let body = format!("{expression} = {formatted}");
             Some(finalize_simple(

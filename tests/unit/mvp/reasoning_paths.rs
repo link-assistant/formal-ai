@@ -77,6 +77,33 @@ fn arithmetic_records_calculation_event_in_evidence_log() {
 }
 
 #[test]
+fn arithmetic_handles_large_integer_multiplication_without_overflow() {
+    // Multiplying large integers should yield an exact integer result,
+    // not an overflow error. Regression for issue #55.
+    // 9 pairs is enough to exceed f64's range (overflow happens at pair 8).
+    let expr = "123123980921093128 * 2348023048230429324 * \
+                123123980921093128 * 2348023048230429324 * \
+                123123980921093128 * 2348023048230429324 * \
+                123123980921093128 * 2348023048230429324 * \
+                123123980921093128 * 2348023048230429324 * \
+                123123980921093128 * 2348023048230429324 * \
+                123123980921093128 * 2348023048230429324 * \
+                123123980921093128 * 2348023048230429324 * \
+                123123980921093128 * 2348023048230429324";
+    let response = answer(expr);
+    assert_eq!(
+        response.intent, "calculation",
+        "large integer multiplication must succeed, not overflow: {}",
+        response.answer,
+    );
+    assert!(
+        !response.answer.contains("overflow"),
+        "answer must not mention overflow: {}",
+        response.answer,
+    );
+}
+
+#[test]
 fn arithmetic_never_fires_on_plain_greetings() {
     let response = answer("Hi");
     assert_eq!(response.intent, "greeting");
