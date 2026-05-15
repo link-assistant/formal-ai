@@ -1,0 +1,6 @@
+https://link-assistant.github.io/formal-ai/ / => https://link-assistant.github.io/
+https://link-assistant.github.io/formal-ai/ ./ => https://link-assistant.github.io/formal-ai/
+https://link-assistant.github.io/formal-ai / => https://link-assistant.github.io/
+https://link-assistant.github.io/formal-ai ./ => https://link-assistant.github.io/
+http://127.0.0.1:3456 / => http://127.0.0.1:3456/
+http://127.0.0.1:3456 ./ => http://127.0.0.1:3456/
