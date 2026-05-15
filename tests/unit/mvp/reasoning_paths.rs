@@ -177,6 +177,50 @@ fn solve_with_history_summarizes_conversation() {
 }
 
 #[test]
+fn solve_with_history_summarizes_conversation_in_russian() {
+    let history = [
+        ConversationTurn::user("Что такое яблоко?"),
+        ConversationTurn::assistant("Яблоко: Я́блоко — сочный плод яблони."),
+    ];
+    let response = solve_with_history("О чём мы разговаривали?", &history);
+    assert_eq!(response.intent, "summarize_conversation");
+    assert!(response.answer.contains("яблоко"));
+}
+
+#[test]
+fn solve_with_history_summarizes_conversation_rezyume_besedy() {
+    let history = [
+        ConversationTurn::user("Привет"),
+        ConversationTurn::assistant("Здравствуйте! Чем могу помочь?"),
+    ];
+    let response = solve_with_history("Резюме беседы", &history);
+    assert_eq!(response.intent, "summarize_conversation");
+    assert!(response.answer.contains("Привет"));
+}
+
+#[test]
+fn solve_with_history_summarizes_conversation_single_word_summarize() {
+    let history = [
+        ConversationTurn::user("Hi"),
+        ConversationTurn::assistant("Hi, how may I help you?"),
+    ];
+    let response = solve_with_history("Summarize", &history);
+    assert_eq!(response.intent, "summarize_conversation");
+    assert!(response.answer.contains("Hi"));
+}
+
+#[test]
+fn solve_with_history_summarizes_conversation_in_chinese() {
+    let history = [
+        ConversationTurn::user("你好"),
+        ConversationTurn::assistant("你好!请问有什么可以帮您的?"),
+    ];
+    let response = solve_with_history("总结", &history);
+    assert_eq!(response.intent, "summarize_conversation");
+    assert!(response.answer.contains("你好"));
+}
+
+#[test]
 fn solve_with_history_falls_through_for_unrelated_prompts() {
     let history = [ConversationTurn::user("My name is Ada.")];
     let response = solve_with_history("Hi", &history);
