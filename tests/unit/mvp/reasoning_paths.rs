@@ -77,6 +77,33 @@ fn arithmetic_records_calculation_event_in_evidence_log() {
 }
 
 #[test]
+fn arithmetic_handles_large_integer_multiplication_without_overflow() {
+    // Multiplying large integers should yield an exact integer result,
+    // not an overflow error. Regression for issue #55.
+    // 9 pairs is enough to exceed f64's range (overflow happens at pair 8).
+    let expr = "123123980921093128 * 2348023048230429324 * \
+                123123980921093128 * 2348023048230429324 * \
+                123123980921093128 * 2348023048230429324 * \
+                123123980921093128 * 2348023048230429324 * \
+                123123980921093128 * 2348023048230429324 * \
+                123123980921093128 * 2348023048230429324 * \
+                123123980921093128 * 2348023048230429324 * \
+                123123980921093128 * 2348023048230429324 * \
+                123123980921093128 * 2348023048230429324";
+    let response = answer(expr);
+    assert_eq!(
+        response.intent, "calculation",
+        "large integer multiplication must succeed, not overflow: {}",
+        response.answer,
+    );
+    assert!(
+        !response.answer.contains("overflow"),
+        "answer must not mention overflow: {}",
+        response.answer,
+    );
+}
+
+#[test]
 fn arithmetic_never_fires_on_plain_greetings() {
     let response = answer("Hi");
     assert_eq!(response.intent, "greeting");
@@ -287,6 +314,92 @@ fn javascript_handler_does_not_intercept_unrelated_code_blocks() {
     let prompt = "Here is some javascript:\n```js\nconsole.log(1);\n```";
     let response = answer(prompt);
     assert_ne!(response.intent, "javascript_execution_unavailable");
+}
+
+// ---------------------------------------------------------------------------
+// Issue #52: "how it works?" follow-up after a Wikipedia lookup must not
+// return intent: unknown.
+// ---------------------------------------------------------------------------
+
+#[test]
+fn how_it_works_bare_is_not_unknown() {
+    // The simplest bare-form follow-up must never resolve to `unknown`.
+    let response = answer("how it works?");
+    assert_ne!(
+        response.intent, "unknown",
+        "\"how it works?\" must not return unknown; got intent={}, answer={}",
+        response.intent, response.answer,
+    );
+}
+
+#[test]
+fn how_does_it_work_is_not_unknown() {
+    let response = answer("how does it work?");
+    assert_ne!(
+        response.intent, "unknown",
+        "\"how does it work?\" must not return unknown; got intent={}, answer={}",
+        response.intent, response.answer,
+    );
+}
+
+#[test]
+fn how_it_works_after_concept_lookup_looks_up_the_concept() {
+    // Issue #52: after looking up a concept, "how it works?" should elaborate
+    // on it. The prior assistant reply starts with "Wikipedia (encyclopedia): ..."
+    // so the solver should re-run a concept lookup for Wikipedia.
+    let history = [
+        ConversationTurn::user("what is 25519"),
+        ConversationTurn::assistant(
+            "Curve25519 (cryptography): An elliptic curve used in ECC. \
+             Source: https://en.wikipedia.org/wiki/Curve25519 (wikipedia).",
+        ),
+    ];
+    let response = solve_with_history("how it works?", &history);
+    assert_ne!(
+        response.intent, "unknown",
+        "\"how it works?\" after a concept reply must not return unknown; \
+         got intent={}, answer={}",
+        response.intent, response.answer,
+    );
+}
+
+#[test]
+fn how_does_wikipedia_work_resolves_concept_lookup() {
+    // Explicit subject in "how does X work?" form.
+    let response = answer("how does Wikipedia work?");
+    assert_ne!(
+        response.intent, "unknown",
+        "\"how does Wikipedia work?\" must not return unknown; got intent={}, answer={}",
+        response.intent, response.answer,
+    );
+    // Since Wikipedia is in the concept seed it should resolve as concept_lookup.
+    assert!(
+        response.intent.starts_with("concept_lookup")
+            || response.intent == "meta_explanation"
+            || response.intent == "how_it_works",
+        "unexpected intent {} for \"how does Wikipedia work?\"",
+        response.intent,
+    );
+}
+
+#[test]
+fn how_it_works_followup_records_followup_event_in_evidence() {
+    let history = [
+        ConversationTurn::user("what is Wikipedia"),
+        ConversationTurn::assistant(
+            "Wikipedia (encyclopedia): A free online encyclopedia.\n\nSource: \
+             https://en.wikipedia.org/wiki/Wikipedia (wikipedia).",
+        ),
+    ];
+    let response = solve_with_history("how it works?", &history);
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("followup:")),
+        "\"how it works?\" handler must emit a followup: evidence event: {:?}",
+        response.evidence_links,
+    );
 }
 
 // ---------------------------------------------------------------------------
