@@ -335,6 +335,12 @@ function createIssueReportBody({
   lines.push("");
   lines.push("<!-- Please describe what looked wrong or incomplete. -->");
   lines.push("");
+  lines.push("## Attach full state (recommended)");
+  lines.push("");
+  lines.push(
+    "Click **Download bundle** in the top bar to save `formal-ai-bundle.lino`, then drag it into this issue. The bundle contains the entire seed (rules, concepts, tools, multilingual responses) plus the append-only memory log of this session — every user turn, assistant reply, reasoning step, and tool invocation — so the maintainer can fully reconstruct the agent's state.",
+  );
+  lines.push("");
 
   return lines.join("\n");
 }
@@ -750,9 +756,12 @@ function App() {
           "a",
           {
             className: "report-button",
+            "data-testid": "report-issue",
             href: currentReportUrl,
             target: "_blank",
             rel: "noopener noreferrer",
+            title:
+              "Open a pre-filled GitHub issue with the current session transcript. Attach formal-ai-bundle.lino (Download bundle) for full reproducibility.",
           },
           "Report issue",
         ),

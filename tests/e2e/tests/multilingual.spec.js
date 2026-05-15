@@ -155,10 +155,68 @@ test.describe('memory export/import', () => {
     expect(api).toContain('listEvents');
     expect(api).toContain('importEvents');
     expect(api).toContain('exportLinksNotation');
+    expect(api).toContain('exportBundle');
     expect(api).not.toContain('delete');
     expect(api).not.toContain('deleteEvent');
     expect(api).not.toContain('forget');
     expect(api).not.toContain('clear');
     expect(api).not.toContain('remove');
+  });
+
+  test('Download bundle exports a formal_ai_bundle with seed and memory log', async ({ page }) => {
+    await sendPrompt(page, 'Hi');
+
+    const [download] = await Promise.all([
+      page.waitForEvent('download'),
+      page.locator('[data-testid="memory-bundle"]').click(),
+    ]);
+
+    expect(download.suggestedFilename()).toBe('formal-ai-bundle.lino');
+
+    const path = await download.path();
+    expect(path).toBeTruthy();
+    const fs = require('node:fs');
+    const text = fs.readFileSync(path, 'utf8');
+    expect(text).toContain('formal_ai_bundle');
+    expect(text).toContain('exported_at');
+    expect(text).toContain('seed_files');
+    expect(text).toContain('demo_memory');
+    expect(text).toContain('role "user"');
+  });
+
+  test('Report issue link is present in the topbar and prefills bundle hint', async ({ page }) => {
+    const reportLink = page.locator('[data-testid="report-issue"]');
+    await expect(reportLink).toBeVisible();
+    const href = await reportLink.getAttribute('href');
+    expect(href).toBeTruthy();
+    const url = new URL(href);
+    expect(url.origin + url.pathname).toBe('https://github.com/link-assistant/formal-ai/issues/new');
+    const body = url.searchParams.get('body') || '';
+    expect(body).toContain('formal-ai-bundle.lino');
+    expect(body).toContain('Download bundle');
+  });
+
+  test('Tool registry surfaces seed-loaded tools with mode badges', async ({ page }) => {
+    const registry = page.locator('[data-testid="tool-registry"]');
+    await expect(registry).toBeVisible({ timeout: 10_000 });
+    const entries = page.locator('[data-testid="tool-entry"]');
+    await expect(entries.first()).toBeVisible();
+    const count = await entries.count();
+    expect(count).toBeGreaterThan(0);
+    const modes = await entries.evaluateAll((nodes) =>
+      nodes.map((node) => node.getAttribute('data-tool-mode')),
+    );
+    expect(modes).toContain('thinking');
+  });
+
+  test('Reasoning steps and tool calls land in the append-only log', async ({ page }) => {
+    await sendPrompt(page, 'Hi');
+    const events = await page.evaluate(async () => {
+      const list = await window.FormalAiMemory.listEvents();
+      return list.map((event) => ({ kind: event.kind, role: event.role }));
+    });
+    const kinds = new Set(events.map((event) => event.kind).filter(Boolean));
+    expect(kinds.has('message')).toBe(true);
+    expect(kinds.has('reasoning')).toBe(true);
   });
 });
