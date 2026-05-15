@@ -45,46 +45,35 @@ const EXAMPLE_PROMPTS = [
   { label: "Import memory", text: "Import memory" },
 ];
 
-const DEMO_LANGUAGES = [
-  {
-    language: "Rust",
-    prompts: [
-      "Write me hello world program in Rust",
-      "Create a Rust hello world example",
-    ],
-  },
-  {
-    language: "Python",
-    prompts: [
-      "Create a hello world example in Python",
-      "Write hello world in Python",
-    ],
-  },
-  {
-    language: "JavaScript",
-    prompts: [
-      "Write hello world in JavaScript",
-      "Create a JavaScript hello world program",
-    ],
-  },
-  {
-    language: "TypeScript",
-    prompts: [
-      "Write hello world in TypeScript",
-      "Create a TypeScript hello world program",
-    ],
-  },
-  {
-    language: "Go",
-    prompts: ["Show hello world in Go", "Write a Go hello world program"],
-  },
-  {
-    language: "C",
-    prompts: ["Show hello world in C", "Write a C hello world program"],
-  },
-];
+// Issue #27 R5: the demo iterates through the same Example prompts list so
+// every advertised feature is exercised. The greeting variants come from
+// `EXAMPLE_PROMPTS` (`Greeting (...)` rows) and feature prompts are the
+// remainder, minus actions that trigger downloads / file pickers.
+const DEMO_GREETING_LABELS = new Set([
+  "Greeting (en)",
+  "Greeting (ru)",
+  "Greeting (hi)",
+  "Greeting (zh)",
+]);
+const DEMO_EXCLUDED_LABELS = new Set(["Export memory", "Import memory"]);
 
-const DEMO_GREETINGS = ["Hi", "Hello"];
+function demoGreetings() {
+  return EXAMPLE_PROMPTS.filter((entry) => DEMO_GREETING_LABELS.has(entry.label));
+}
+
+function demoFeaturePrompts() {
+  return EXAMPLE_PROMPTS.filter(
+    (entry) =>
+      !DEMO_GREETING_LABELS.has(entry.label) &&
+      !DEMO_EXCLUDED_LABELS.has(entry.label),
+  );
+}
+
+// Persistent cursors so each demo cycle advances through the lists rather
+// than repeating the same prompts forever. Wraps when the cursor runs off
+// the end.
+let demoGreetingCursor = 0;
+let demoFeatureCursor = 0;
 
 // Issue #27: typing "Export memory" / "Export your memory" (or a translation)
 // in the chat input should trigger the Export memory button so the deterministic
@@ -459,18 +448,20 @@ function localFallbackAnswer(prompt) {
 }
 
 function createDemoTurns() {
-  const greeting = randomItem(DEMO_GREETINGS);
-  const language = randomItem(DEMO_LANGUAGES);
-  return [
-    {
-      text: greeting,
-      label: "Greeting",
-    },
-    {
-      text: randomItem(language.prompts),
-      label: language.language,
-    },
-  ];
+  const greetings = demoGreetings();
+  const features = demoFeaturePrompts();
+  const turns = [];
+  if (greetings.length > 0) {
+    const greeting = greetings[demoGreetingCursor % greetings.length];
+    demoGreetingCursor = (demoGreetingCursor + 1) % greetings.length;
+    turns.push({ text: greeting.text, label: greeting.label });
+  }
+  if (features.length > 0) {
+    const feature = features[demoFeatureCursor % features.length];
+    demoFeatureCursor = (demoFeatureCursor + 1) % features.length;
+    turns.push({ text: feature.text, label: feature.label });
+  }
+  return turns;
 }
 
 function appendCodeBlock(lines, value) {
@@ -614,7 +605,11 @@ function Message({ message, diagnosticsMode, reportIssueUrl }) {
 
   return h(
     "article",
-    { className: `message ${message.role}`, "data-testid": "chat-message" },
+    {
+      className: `message ${message.role}`,
+      "data-testid": "chat-message",
+      "data-demo-label": message.demoLabel || null,
+    },
     h("div", { className: "avatar", "aria-hidden": "true" }, message.role === "user" ? "Y" : "FA"),
     h(
       "div",

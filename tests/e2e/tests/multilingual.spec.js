@@ -688,6 +688,40 @@ test.describe('Issue #27: conversations sidebar', () => {
   });
 });
 
+// Issue #27 R5: the demo cycle pulls turns from the same Example prompts
+// list that the sidebar shows, so users discover every feature in demo mode.
+test.describe('Issue #27: demo iterates Example prompts', () => {
+  test.beforeEach(async ({ page }) => {
+    await disableGreetingVariations(page);
+    await page.goto('./');
+    await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
+  });
+
+  test('demo messages carry a label that matches an Example prompts entry', async ({ page }) => {
+    // Collect labels from the sidebar (the visible Example prompts list).
+    const sidebarLabels = await page
+      .locator('.prompt-list button')
+      .evaluateAll((nodes) =>
+        nodes.map((n) => n.getAttribute('data-prompt-label')).filter(Boolean),
+      );
+    expect(sidebarLabels.length).toBeGreaterThan(0);
+
+    // Wait for the first demo user message to appear.
+    const userMessages = page.locator(
+      '[data-testid="chat-message"].user[data-demo-label]',
+    );
+    await expect(userMessages.first()).toBeVisible({ timeout: 15_000 });
+
+    const demoLabels = await userMessages.evaluateAll((nodes) =>
+      nodes.map((n) => n.getAttribute('data-demo-label')).filter(Boolean),
+    );
+    expect(demoLabels.length).toBeGreaterThan(0);
+    for (const label of demoLabels) {
+      expect(sidebarLabels).toContain(label);
+    }
+  });
+});
+
 // Issue #27 R3: sidebar sections behave like VS Code's accordion — expanded
 // sections flex to share the remaining height equally and each section body
 // scrolls independently.
