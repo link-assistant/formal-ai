@@ -13,8 +13,8 @@ use crate::concepts::{
     extract_concept_query, lookup_concept_query, resolve_context_label, ConceptRecord,
 };
 use crate::engine::{
-    answer_links_notation, knowledge_links_notation, stable_id, unknown_answer, ExecutionStatus,
-    SymbolicAnswer,
+    answer_links_notation, hello_world_program_by_alias, knowledge_links_notation, stable_id,
+    unknown_answer, ExecutionStatus, HelloWorldProgram, SymbolicAnswer,
 };
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
@@ -23,9 +23,9 @@ use crate::solver_helpers::{
     build_sorting_algorithm_answer, detect_algorithm_language, detect_program_languages,
     detect_source_language, detect_target_language, extract_backticked, extract_concept_from_query,
     extract_introduced_name, extract_javascript_program, extract_quoted_phrase, humanize_url,
-    infer_program_languages_from_code, infer_source_from_prompt, last_user_turn,
-    normalize_code_meaning, normalize_meaning, recall_name_from_history, translate_program,
-    translate_surface,
+    infer_program_languages_from_code, infer_source_from_prompt, is_write_script_request,
+    last_user_turn, normalize_code_meaning, normalize_meaning, recall_name_from_history,
+    translate_program, translate_surface,
 };
 
 pub fn try_conversation_memory(
@@ -519,6 +519,67 @@ pub fn try_translation(
         &body,
         1.0,
     ))
+}
+
+pub fn try_write_script(
+    prompt: &str,
+    normalized: &str,
+    log: &mut EventLog,
+) -> Option<SymbolicAnswer> {
+    if !is_write_script_request(normalized) {
+        return None;
+    }
+    let program = hello_world_program_by_alias(normalized)?;
+    let body = format!(
+        "Here is a minimal {} script:\n\n```{}\n{}\n```\n\n{}",
+        program.language,
+        program.code_fence,
+        program.code,
+        format_write_script_execution(program)
+    );
+    let intent = format!("write_script_{}", program.slug);
+    log.append(
+        "execution_status",
+        program.execution.status.label().to_owned(),
+    );
+    log.append(
+        "execution_environment",
+        program.execution.environment.to_owned(),
+    );
+    Some(finalize_simple(
+        prompt,
+        log,
+        &intent,
+        &format!("response:hello_world:{}", program.slug),
+        &body,
+        1.0,
+    ))
+}
+
+fn format_write_script_execution(program: &HelloWorldProgram) -> String {
+    let cmd = program.execution.check_command.map_or_else(
+        || format!("Run command: `{}`", program.execution.run_command),
+        |check| {
+            format!(
+                "Check command: `{check}`\nRun command: `{}`",
+                program.execution.run_command
+            )
+        },
+    );
+    let output_label = if matches!(program.execution.status, ExecutionStatus::Verified) {
+        "Output"
+    } else {
+        "Expected output after verification"
+    };
+    format!(
+        "Execution status: {} in {}.\n{}\n{}:\n```text\n{}\n```\n{}",
+        program.execution.status.label(),
+        program.execution.environment,
+        cmd,
+        output_label,
+        program.execution.output,
+        program.execution.notes
+    )
 }
 
 pub fn try_algorithm(prompt: &str, normalized: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {

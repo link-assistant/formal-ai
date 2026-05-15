@@ -582,6 +582,33 @@ pub fn extract_fenced_block(text: &str, languages: &[&str]) -> Option<String> {
     None
 }
 
+/// Return true when the normalized prompt is a "write a script/program in
+/// <language>" request in English, Russian, Hindi, or Chinese.
+///
+/// Excludes "hello world" prompts — those are already handled by the
+/// hello-world rule in the symbolic engine.
+pub fn is_write_script_request(normalized: &str) -> bool {
+    // Exclude hello-world prompts so the existing rule keeps its intent.
+    if normalized.contains("hello") && normalized.contains("world") {
+        return false;
+    }
+    // English: "write a script", "write a program", "write me a script", etc.
+    let en_write = normalized.contains("write")
+        && (normalized.contains("script")
+            || normalized.contains("program")
+            || normalized.contains("code"));
+    // Russian: "напиши скрипт", "напиши программу", "напиши код", "написать скрипт"
+    let ru_write = (normalized.contains("напиши") || normalized.contains("написать"))
+        && (normalized.contains("скрипт")
+            || normalized.contains("программ")
+            || normalized.contains("код"));
+    // Hindi: "script likhो", "code likhо"
+    let hi_write = normalized.contains("लिखो") || normalized.contains("लिखें");
+    // Chinese: "写一个" (write one), "帮我写" (help me write)
+    let zh_write = normalized.contains("写一个") || normalized.contains("帮我写");
+    en_write || ru_write || hi_write || zh_write
+}
+
 #[cfg(test)]
 mod tests {
     use super::{extract_fenced_block, extract_javascript_program, humanize_url, is_prime};

@@ -33,7 +33,7 @@ use crate::solver_handlers::{
     build_evidence_links, finalize_simple, try_algorithm, try_arithmetic, try_concept_lookup,
     try_conversation_memory, try_execution_failure, try_ill_formed, try_javascript_execution,
     try_meta_explanation, try_network_query, try_shell_refusal, try_source_conflict,
-    try_source_refresh, try_translation,
+    try_source_refresh, try_translation, try_write_script,
 };
 use crate::solver_helpers::{
     confidence_for, is_agent_opt_in, is_agent_request, is_cache_flush_request,
@@ -306,6 +306,9 @@ impl UniversalSolver {
             return Some(answer);
         }
         if let Some(answer) = try_translation(prompt, &normalized, log) {
+            return Some(answer);
+        }
+        if let Some(answer) = try_write_script(prompt, &normalized, log) {
             return Some(answer);
         }
         if let Some(answer) = try_algorithm(prompt, &normalized, log) {
