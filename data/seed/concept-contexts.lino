@@ -34,7 +34,7 @@ concept_contexts
       text "神经网络"
   context "context_programming"
     wikidata "Q80006"
-    aliases "programming|programming language|software development|coding|разработка|программирование|язык программирования|प्रोग्रामिंग|प्रोग्रामिंग भाषा|编程|编程语言|程序设计"
+    aliases "programming|programming language|software development|coding|software design|software engineering|computer science|разработка|программирование|программировании|программирования|програмирования|програмировании|язык программирования|разработке|разработки|प्रोग्रामिंग|प्रोग्रामिंग भाषा|编程|编程语言|程序设计"
     label "en"
       text "programming"
     label "ru"
