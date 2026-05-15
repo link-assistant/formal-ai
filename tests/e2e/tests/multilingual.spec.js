@@ -793,3 +793,77 @@ test.describe('Issue #27: sidebar accordion', () => {
     expect(grownOther.height).toBeGreaterThan(initialOther.height);
   });
 });
+
+// Issue #27 R11: natural-language cross-conversation recall. The user types
+// something like "when did I ask about Rust" / "find Donald Trump in another
+// conversation" and the assistant returns a Markdown report grouping matching
+// events by conversation.
+test.describe('Issue #27: cross-conversation recall', () => {
+  test.beforeEach(async ({ page }) => {
+    await disableGreetingVariations(page);
+    // Wipe IndexedDB so each test starts from an empty event log.
+    await page.addInitScript(() => {
+      try {
+        if (typeof indexedDB === 'undefined') return;
+        if (window.sessionStorage.getItem('formal-ai-recall-reset') === '1') return;
+        window.sessionStorage.setItem('formal-ai-recall-reset', '1');
+        indexedDB.deleteDatabase('formal-ai-demo');
+      } catch (_error) {}
+    });
+    await page.goto('./');
+    await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
+    await switchToManualMode(page);
+    await page.locator('[data-testid="conversation-new"]').click();
+    await expect(page.locator('[data-testid="chat-message"]')).toHaveCount(0, { timeout: 5_000 });
+  });
+
+  test('"When did I ask about X" lists matches grouped by conversation', async ({ page }) => {
+    // Conversation 1: ask about Rust.
+    await sendPrompt(page, 'What is Rust?');
+    // Switch to a fresh conversation.
+    await page.locator('[data-testid="conversation-new"]').click();
+    await expect(page.locator('[data-testid="chat-message"]')).toHaveCount(0, { timeout: 5_000 });
+    // Conversation 2: ask about Wikipedia.
+    await sendPrompt(page, 'What is Wikipedia?');
+    // Conversation 2 (continued): trigger recall.
+    const last = await sendPrompt(page, 'When did I ask about Rust?');
+    await expect(last).toHaveClass(/assistant/);
+    await expect(last).toContainText('mention');
+    await expect(last).toContainText('Rust');
+    // The matching conversation header should appear.
+    await expect(last).toContainText('What is Rust');
+  });
+
+  test('"find X in another conversation" excludes the current conversation', async ({ page }) => {
+    await sendPrompt(page, 'What is Rust?');
+    await page.locator('[data-testid="conversation-new"]').click();
+    await expect(page.locator('[data-testid="chat-message"]')).toHaveCount(0, { timeout: 5_000 });
+    // The current conversation also mentions Rust; "in another conversation"
+    // must filter it out and only surface the earlier one.
+    await sendPrompt(page, 'Tell me more about Rust');
+    const last = await sendPrompt(page, 'find Rust in another conversation');
+    await expect(last).toHaveClass(/assistant/);
+    const text = await last.innerText();
+    // The earlier conversation must be surfaced.
+    expect(text).toContain('What is Rust');
+    // …and the current conversation's "Tell me more" turn must NOT appear in
+    // the report (scope='other' filters out the active thread).
+    expect(text).not.toContain('Tell me more');
+  });
+
+  test('recall with no matches reports a clear "no mentions" message', async ({ page }) => {
+    await sendPrompt(page, 'Hi');
+    const last = await sendPrompt(page, 'When did I ask about Haskell?');
+    await expect(last).toHaveClass(/assistant/);
+    await expect(last).toContainText(/No mentions of "Haskell"/);
+  });
+
+  test('Russian phrasing "Когда я спрашивал про X" triggers the recall skill', async ({ page }) => {
+    await sendPrompt(page, 'Что такое Википедия?');
+    const last = await sendPrompt(page, 'Когда я спрашивал про Википедия?');
+    await expect(last).toHaveClass(/assistant/);
+    await expect(last).toContainText('Википедия');
+    // The earlier conversation header should be present.
+    await expect(last).toContainText('Что такое');
+  });
+});

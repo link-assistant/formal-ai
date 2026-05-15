@@ -1,0 +1,10 @@
+const fs = require('fs');
+const filepath = '/tmp/gh-issue-solver-1778866797787/src/web/app.js';
+let src = fs.readFileSync(filepath, 'utf8');
+const lines = src.split('\n');
+const newLine = '    if (/[\\s\\u00A0\\u2000-\\u200B]/.test(ch)) {';
+console.log('Replacing line 234 (1-indexed)');
+console.log('OLD:', JSON.stringify(lines[233]));
+lines[233] = newLine;
+console.log('NEW:', JSON.stringify(lines[233]));
+fs.writeFileSync(filepath, lines.join('\n'));
