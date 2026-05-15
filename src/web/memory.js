@@ -46,6 +46,11 @@
     "sentAt",
     "demoLabel",
     "evidence",
+    // Issue #27: conversation grouping. Events keep their global ordering in
+    // the append-only log; conversationId/conversationTitle just attribute each
+    // event to a specific chat thread so the UI can filter on read.
+    "conversationId",
+    "conversationTitle",
   ];
 
   var dbPromise = null;
@@ -211,6 +216,9 @@
     }
     if (event.demoLabel) record.demoLabel = String(event.demoLabel);
     if (Array.isArray(event.evidence)) record.evidence = event.evidence.slice();
+    if (event.conversationId) record.conversationId = String(event.conversationId);
+    if (event.conversationTitle)
+      record.conversationTitle = String(event.conversationTitle);
     return withStore("readwrite", function (store, setResult) {
       var request = store.add(record);
       request.onsuccess = function () {
@@ -275,6 +283,9 @@
         }
         if (raw.demoLabel) record.demoLabel = String(raw.demoLabel);
         if (Array.isArray(raw.evidence)) record.evidence = raw.evidence.slice();
+        if (raw.conversationId) record.conversationId = String(raw.conversationId);
+        if (raw.conversationTitle)
+          record.conversationTitle = String(raw.conversationTitle);
         var request = store.add(record);
         request.onsuccess = function () {
           inserted += 1;

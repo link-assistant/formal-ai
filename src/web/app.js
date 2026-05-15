@@ -158,6 +158,10 @@ const PREFERENCE_DEFAULTS = {
   // Issue #27: random greeting variations are opt-in but default to on so
   // newcomers see the multilingual surface immediately.
   greetingVariations: true,
+  // Issue #27: id of the conversation the user last typed in; on reload the
+  // demo restores its event log into the main transcript. Empty string means
+  // "no conversation yet — start a fresh one on first user input".
+  currentConversationId: "",
 };
 
 const MEMORY_EXPORT_FILENAME = "formal-ai-memory.lino";
@@ -220,6 +224,97 @@ function persistPreferences(values) {
 
 function randomItem(items) {
   return items[Math.floor(Math.random() * items.length)];
+}
+
+// Issue #27: conversations are grouped slices of the append-only event log.
+// Each event records the id of the conversation that produced it; the UI then
+// filters events on read. New ids are generated locally so they stay portable
+// across browsers (no server round-trip required).
+function generateConversationId() {
+  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+    return `conv-${crypto.randomUUID()}`;
+  }
+  const random = Math.random().toString(16).slice(2, 10);
+  return `conv-${Date.now().toString(16)}-${random}`;
+}
+
+function deriveConversationTitle(text) {
+  const trimmed = String(text || "").trim().replace(/\s+/g, " ");
+  if (!trimmed) {
+    return "New conversation";
+  }
+  if (trimmed.length <= 60) {
+    return trimmed;
+  }
+  return `${trimmed.slice(0, 57)}…`;
+}
+
+// Group append-only events into per-conversation summaries (id, title,
+// timestamps, message count). Events without a conversationId are aggregated
+// under the synthetic "legacy" bucket so existing demos remain visible after
+// the schema upgrade.
+function groupConversations(events) {
+  const safe = Array.isArray(events) ? events : [];
+  const map = new Map();
+  for (let index = 0; index < safe.length; index += 1) {
+    const event = safe[index];
+    if (!event || event.kind && event.kind !== "message") {
+      continue;
+    }
+    const id = event.conversationId || "legacy";
+    let entry = map.get(id);
+    if (!entry) {
+      entry = {
+        id,
+        title: id === "legacy" ? "Earlier conversation" : "",
+        firstAt: event.sentAt || "",
+        lastAt: event.sentAt || "",
+        messageCount: 0,
+      };
+      map.set(id, entry);
+    }
+    if (event.role === "user" && !entry.title && event.conversationTitle) {
+      entry.title = event.conversationTitle;
+    } else if (event.role === "user" && !entry.title) {
+      entry.title = deriveConversationTitle(event.content);
+    }
+    if (event.sentAt && (!entry.firstAt || event.sentAt < entry.firstAt)) {
+      entry.firstAt = event.sentAt;
+    }
+    if (event.sentAt && (!entry.lastAt || event.sentAt > entry.lastAt)) {
+      entry.lastAt = event.sentAt;
+    }
+    entry.messageCount += 1;
+  }
+  const list = Array.from(map.values());
+  list.sort((left, right) => {
+    if (left.lastAt && right.lastAt) {
+      return right.lastAt.localeCompare(left.lastAt);
+    }
+    return 0;
+  });
+  return list;
+}
+
+function messagesForConversation(events, conversationId) {
+  if (!conversationId) {
+    return [];
+  }
+  const safe = Array.isArray(events) ? events : [];
+  const out = [];
+  for (let index = 0; index < safe.length; index += 1) {
+    const event = safe[index];
+    if (!event || event.kind && event.kind !== "message") continue;
+    if ((event.conversationId || "legacy") !== conversationId) continue;
+    const evidence = Array.isArray(event.evidence) ? event.evidence : [];
+    out.push(
+      createMessage(event.role || "assistant", String(event.content || ""), {
+        intent: event.intent,
+        evidence,
+      }),
+    );
+  }
+  return out;
 }
 
 function randomInt(min, max) {
@@ -602,6 +697,21 @@ function App() {
   // Issue #27: a mobile-friendly slide-out menu that hosts the entire sidebar
   // plus the topbar action buttons. On wide screens the menu is hidden via CSS.
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  // Issue #27: conversations. `currentConversationId` is the thread the user is
+  // typing in right now; on first user message the demo lazily mints a new id
+  // if none is set. `conversations` is the sidebar-visible list of all known
+  // threads, derived from the append-only event log and refreshed after every
+  // turn.
+  const [currentConversationId, setCurrentConversationId] = useState(
+    initialPreferences.current.currentConversationId || "",
+  );
+  const [conversations, setConversations] = useState([]);
+  const currentConversationRef = useRef(currentConversationId);
+  const conversationTitlesRef = useRef(new Map());
+
+  useEffect(() => {
+    currentConversationRef.current = currentConversationId;
+  }, [currentConversationId]);
 
   useEffect(() => {
     if (typeof window === "undefined" || !window.FormalAiSeed) return;
@@ -614,6 +724,45 @@ function App() {
       cancelled = true;
     };
   }, []);
+
+  // Issue #27: on mount, hydrate the conversation list from the append-only
+  // event log and restore the active thread's messages. Operates purely as a
+  // projection — no events are mutated.
+  const refreshConversations = useCallback(async () => {
+    if (typeof window === "undefined" || !window.FormalAiMemory) {
+      return [];
+    }
+    try {
+      const events = await window.FormalAiMemory.listEvents();
+      const list = groupConversations(events);
+      list.forEach((entry) => {
+        if (entry.title) {
+          conversationTitlesRef.current.set(entry.id, entry.title);
+        }
+      });
+      setConversations(list);
+      return events;
+    } catch (_error) {
+      return [];
+    }
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    refreshConversations().then((events) => {
+      if (cancelled || !Array.isArray(events) || events.length === 0) return;
+      const initialId = initialPreferences.current.currentConversationId;
+      if (!initialId) return;
+      const restored = messagesForConversation(events, initialId);
+      if (restored.length > 0) {
+        setMessages(restored);
+        setDemoMode(false);
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [refreshConversations]);
 
   const handleExportMemory = useCallback(async () => {
     if (typeof window === "undefined" || !window.FormalAiMemory) {
@@ -694,6 +843,7 @@ function App() {
       sidebarTraceCollapsed,
       sidebarConversationsCollapsed,
       greetingVariations,
+      currentConversationId,
     });
   }, [
     demoMode,
@@ -703,6 +853,7 @@ function App() {
     sidebarTraceCollapsed,
     sidebarConversationsCollapsed,
     greetingVariations,
+    currentConversationId,
   ]);
 
   useEffect(() => {
@@ -752,7 +903,30 @@ function App() {
     });
   }, []);
 
+  // Issue #27: assign every appended event to the current conversation, lazily
+  // minting a fresh id on the first user message of a brand-new chat. The
+  // returned object is { conversationId, conversationTitle } so the caller can
+  // reuse it for follow-up records within the same turn (assistant reply,
+  // reasoning steps, tool calls).
+  const ensureConversation = useCallback((seedText) => {
+    let id = currentConversationRef.current;
+    let isNew = false;
+    if (!id) {
+      id = generateConversationId();
+      isNew = true;
+      currentConversationRef.current = id;
+      setCurrentConversationId(id);
+    }
+    let title = conversationTitlesRef.current.get(id);
+    if (!title && seedText) {
+      title = deriveConversationTitle(seedText);
+      conversationTitlesRef.current.set(id, title);
+    }
+    return { conversationId: id, conversationTitle: title || "", isNew };
+  }, []);
+
   const appendUserMessage = useCallback((text, extra = {}) => {
+    const { conversationId, conversationTitle } = ensureConversation(text);
     const message = createMessage("user", text, extra);
     setMessages((current) => [...current, message]);
     recordMemoryEvent({
@@ -761,8 +935,10 @@ function App() {
       content: text,
       sentAt: new Date().toISOString(),
       demoLabel: extra.demoLabel,
+      conversationId,
+      conversationTitle,
     });
-  }, []);
+  }, [ensureConversation]);
 
   const appendAssistantMessage = useCallback((answer) => {
     const source = workerRef.current ? "worker" : "fallback";
@@ -784,6 +960,7 @@ function App() {
     });
     setMessages((current) => [...current, message]);
     const sentAt = new Date().toISOString();
+    const { conversationId, conversationTitle } = ensureConversation("");
     if (Array.isArray(answer.steps)) {
       answer.steps.forEach((entry) => {
         recordMemoryEvent({
@@ -792,6 +969,8 @@ function App() {
           content: `${entry.step}: ${entry.detail}`,
           intent: answer.intent,
           sentAt,
+          conversationId,
+          conversationTitle,
         });
       });
     }
@@ -805,6 +984,8 @@ function App() {
           outputs: call.outputs,
           content: `tool:${call.tool}`,
           sentAt,
+          conversationId,
+          conversationTitle,
         });
       });
     }
@@ -815,8 +996,13 @@ function App() {
       intent: answer.intent,
       evidence,
       sentAt,
+      conversationId,
+      conversationTitle,
+    }).then(() => {
+      // Refresh the sidebar so a brand-new conversation appears immediately.
+      refreshConversations();
     });
-  }, []);
+  }, [ensureConversation, refreshConversations]);
 
   const conversationHistory = useCallback(
     () =>
@@ -1096,6 +1282,10 @@ function App() {
                 className: "conversation-new",
                 "data-testid": "conversation-new",
                 onClick: () => {
+                  // Drop the current thread id so the next user message mints a
+                  // fresh one and assigns its events accordingly.
+                  currentConversationRef.current = "";
+                  setCurrentConversationId("");
                   setMessages([]);
                   setDemoMode(false);
                   setPrompt("");
@@ -1103,13 +1293,67 @@ function App() {
               },
               "+ New conversation",
             ),
-            h(
-              "p",
-              { className: "conversation-empty" },
-              messages.length === 0
-                ? "Start a new conversation."
-                : `Current conversation: ${messages.length} message(s)`,
-            ),
+            conversations.length === 0
+              ? h(
+                  "p",
+                  { className: "conversation-empty" },
+                  "Start a new conversation.",
+                )
+              : h(
+                  "ul",
+                  {
+                    className: "conversation-entries",
+                    "data-testid": "conversation-entries",
+                  },
+                  conversations.map((entry) =>
+                    h(
+                      "li",
+                      {
+                        key: entry.id,
+                        className:
+                          entry.id === currentConversationId
+                            ? "conversation-entry is-active"
+                            : "conversation-entry",
+                      },
+                      h(
+                        "button",
+                        {
+                          type: "button",
+                          className: "conversation-entry-button",
+                          "data-conversation-id": entry.id,
+                          "aria-pressed": entry.id === currentConversationId,
+                          onClick: async () => {
+                            if (entry.id === currentConversationRef.current) {
+                              return;
+                            }
+                            currentConversationRef.current = entry.id;
+                            setCurrentConversationId(entry.id);
+                            setDemoMode(false);
+                            try {
+                              const events =
+                                await window.FormalAiMemory.listEvents();
+                              setMessages(
+                                messagesForConversation(events, entry.id),
+                              );
+                            } catch (_error) {
+                              setMessages([]);
+                            }
+                          },
+                        },
+                        h(
+                          "span",
+                          { className: "conversation-entry-title" },
+                          entry.title || "(empty)",
+                        ),
+                        h(
+                          "span",
+                          { className: "conversation-entry-meta" },
+                          `${entry.messageCount} msg`,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
           ),
         }),
         h(CollapsibleSection, {

@@ -17,13 +17,32 @@ async function switchToManualMode(page) {
 
 // Issue #27: greeting randomisation defaults to ON. Tests below pin the
 // canonical greeting text, so disable randomisation up-front for stability.
+// The script merges into any existing preference snapshot so reload-survival
+// tests still see persisted state (e.g. the active conversation id) after the
+// init script re-runs.
 async function disableGreetingVariations(page) {
   await page.addInitScript(() => {
     try {
-      window.localStorage.setItem(
-        'formal-ai.preferences.v1',
-        'demo_preferences\n  greetingVariations "off"',
-      );
+      const KEY = 'formal-ai.preferences.v1';
+      const existing = window.localStorage.getItem(KEY) || '';
+      if (/greetingVariations\s+"/.test(existing)) {
+        // Replace whatever value is set with "off"
+        const next = existing.replace(
+          /greetingVariations\s+"[^"]*"/,
+          'greetingVariations "off"',
+        );
+        window.localStorage.setItem(KEY, next);
+      } else if (existing.startsWith('demo_preferences')) {
+        window.localStorage.setItem(
+          KEY,
+          `${existing}\n  greetingVariations "off"`,
+        );
+      } else {
+        window.localStorage.setItem(
+          KEY,
+          'demo_preferences\n  greetingVariations "off"',
+        );
+      }
     } catch (_error) {
       // localStorage may be unavailable; tests will tolerate variant text.
     }
@@ -406,5 +425,73 @@ test.describe('Issue #27: random greeting variations', () => {
       const last = await sendPrompt(page, 'Hi');
       await expect(last).toContainText('Hi, how may I help you?');
     }
+  });
+});
+
+test.describe('Issue #27: conversations sidebar', () => {
+  test.beforeEach(async ({ page }) => {
+    await disableGreetingVariations(page);
+    // Reset the IndexedDB event log so each test starts with no prior
+    // conversations. The init script runs before every navigation (including
+    // page.reload()), so we use a sessionStorage sentinel to delete only on
+    // the first navigation of the test and preserve the DB on subsequent
+    // reloads (otherwise the restore-after-reload test always sees an empty
+    // log).
+    await page.addInitScript(() => {
+      try {
+        if (typeof indexedDB === 'undefined') return;
+        if (window.sessionStorage.getItem('formal-ai-test-reset') === '1') {
+          return;
+        }
+        window.sessionStorage.setItem('formal-ai-test-reset', '1');
+        indexedDB.deleteDatabase('formal-ai-demo');
+      } catch (_error) {}
+    });
+    await page.goto('./');
+    await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
+    await switchToManualMode(page);
+    // Clear any demo dialog messages so each test starts with a fresh thread.
+    await page.locator('[data-testid="conversation-new"]').click();
+    await expect(page.locator('[data-testid="chat-message"]')).toHaveCount(0, {
+      timeout: 5_000,
+    });
+  });
+
+  test('sending a prompt adds an entry to the conversation list', async ({ page }) => {
+    const entries = page.locator('[data-testid="conversation-entries"] li');
+
+    await sendPrompt(page, 'Hello');
+
+    // The new conversation now shows up titled by its first user message.
+    await expect(entries.first()).toContainText('Hello', { timeout: 5_000 });
+  });
+
+  test('"+ New conversation" clears the transcript and starts a fresh thread', async ({ page }) => {
+    const messages = page.locator('[data-testid="chat-message"]');
+    await sendPrompt(page, 'Hello');
+    await expect(messages).toHaveCount(2);
+
+    await page.locator('[data-testid="conversation-new"]').click();
+    await expect(messages).toHaveCount(0);
+
+    await sendPrompt(page, 'Who are you?');
+
+    const entries = page.locator('[data-testid="conversation-entries"] li');
+    await expect(entries.first()).toContainText('Who are you', { timeout: 5_000 });
+    await expect(entries.nth(1)).toContainText('Hello');
+  });
+
+  test('the last conversation is restored after reloading the page', async ({ page }) => {
+    const messages = page.locator('[data-testid="chat-message"]');
+    await sendPrompt(page, 'Hello');
+    await expect(messages).toHaveCount(2);
+
+    await page.reload();
+    await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
+    // The transcript should be re-populated from IndexedDB; the active
+    // conversation is the one persisted in preferences.
+    const restored = page.locator('[data-testid="chat-message"]');
+    await expect(restored).toHaveCount(2, { timeout: 15_000 });
+    await expect(restored.first()).toContainText('Hello');
   });
 });
