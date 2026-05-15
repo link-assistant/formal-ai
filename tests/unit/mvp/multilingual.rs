@@ -418,7 +418,10 @@ fn russian_confusion_phrase_returns_capabilities_intent() {
 fn russian_capabilities_answer_is_in_russian() {
     let response = answer("что ты умеешь?");
     assert!(
-        response.answer.chars().any(|c| ('\u{0400}'..='\u{04FF}').contains(&c)),
+        response
+            .answer
+            .chars()
+            .any(|c| ('\u{0400}'..='\u{04FF}').contains(&c)),
         "Russian capabilities answer should contain Cyrillic text, got: {}",
         response.answer,
     );
