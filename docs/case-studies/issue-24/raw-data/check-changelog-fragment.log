@@ -1,0 +1,82 @@
+Checking for changelog fragment in PR diff...
+
+Comparing against origin/main...HEAD
+Changed files:
+  .github/workflows/release.yml
+  .gitkeep
+  Cargo.lock
+  changelog.d/20260515_230000_issue_24_pages_e2e.md
+  docs/case-studies/issue-24/README.md
+  docs/case-studies/issue-24/raw-data/bash-syntax-after-fix.log
+  docs/case-studies/issue-24/raw-data/cargo-clippy.log
+  docs/case-studies/issue-24/raw-data/cargo-fmt-check.log
+  docs/case-studies/issue-24/raw-data/cargo-test-all-features.log
+  docs/case-studies/issue-24/raw-data/cargo-test-doc.log
+  docs/case-studies/issue-24/raw-data/check-changelog-fragment.log
+  docs/case-studies/issue-24/raw-data/check-file-size.log
+  docs/case-studies/issue-24/raw-data/check-version-modification.log
+  docs/case-studies/issue-24/raw-data/deployments.json
+  docs/case-studies/issue-24/raw-data/e2e-local-after-fix.log
+  docs/case-studies/issue-24/raw-data/e2e-local-via-pages-config-after-fix.log
+  docs/case-studies/issue-24/raw-data/e2e-npm-ci.log
+  docs/case-studies/issue-24/raw-data/issue-24-comments.json
+  docs/case-studies/issue-24/raw-data/issue-24.json
+  docs/case-studies/issue-24/raw-data/live-pages-asset-headers.txt
+  docs/case-studies/issue-24/raw-data/live-pages-root.headers
+  docs/case-studies/issue-24/raw-data/live-pages-root.html
+  docs/case-studies/issue-24/raw-data/main-runs.json
+  docs/case-studies/issue-24/raw-data/node-check-app.log
+  docs/case-studies/issue-24/raw-data/node-check-seed-loader.log
+  docs/case-studies/issue-24/raw-data/node-check-worker.log
+  docs/case-studies/issue-24/raw-data/pages-settings.json
+  docs/case-studies/issue-24/raw-data/pr-25-conversation-comments.json
+  docs/case-studies/issue-24/raw-data/pr-25-review-comments.json
+  docs/case-studies/issue-24/raw-data/pr-25-reviews.json
+  docs/case-studies/issue-24/raw-data/pr-25.json
+  docs/case-studies/issue-24/raw-data/pr-branch-runs.json
+  docs/case-studies/issue-24/raw-data/pr-run-25921591297.json
+  docs/case-studies/issue-24/raw-data/pr-run-25921591297.log
+  docs/case-studies/issue-24/raw-data/recent-runs.json
+  docs/case-studies/issue-24/raw-data/regression-test-after-fix.log
+  docs/case-studies/issue-24/raw-data/regression-test-before-fix.log
+  docs/case-studies/issue-24/raw-data/run-25920440588-jobs.json
+  docs/case-studies/issue-24/raw-data/run-25920440588.json
+  docs/case-studies/issue-24/raw-data/run-25920440588.log
+  docs/case-studies/issue-24/raw-data/rust-script-path.log
+  docs/case-studies/issue-24/raw-data/stamp-pages-artifact-smoke.log
+  docs/case-studies/issue-24/raw-data/templates/csharp-ai-driven-development-pipeline-template-tree.json
+  docs/case-studies/issue-24/raw-data/templates/csharp-ai-driven-development-pipeline-template.json
+  docs/case-studies/issue-24/raw-data/templates/csharp-ai-driven-development-pipeline-template/.github/workflows/docs.yml
+  docs/case-studies/issue-24/raw-data/templates/csharp-ai-driven-development-pipeline-template/.github/workflows/release.yml
+  docs/case-studies/issue-24/raw-data/templates/js-ai-driven-development-pipeline-template-tree.json
+  docs/case-studies/issue-24/raw-data/templates/js-ai-driven-development-pipeline-template.json
+  docs/case-studies/issue-24/raw-data/templates/js-ai-driven-development-pipeline-template/.github/workflows/example-app.yml
+  docs/case-studies/issue-24/raw-data/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml
+  docs/case-studies/issue-24/raw-data/templates/python-ai-driven-development-pipeline-template-tree.json
+  docs/case-studies/issue-24/raw-data/templates/python-ai-driven-development-pipeline-template.json
+  docs/case-studies/issue-24/raw-data/templates/python-ai-driven-development-pipeline-template/.github/workflows/release.yml
+  docs/case-studies/issue-24/raw-data/templates/rust-ai-driven-development-pipeline-template-tree.json
+  docs/case-studies/issue-24/raw-data/templates/rust-ai-driven-development-pipeline-template.json
+  docs/case-studies/issue-24/raw-data/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml
+  docs/case-studies/issue-24/raw-data/wait-pages-local-smoke.log
+  scripts/stamp-pages-artifact.sh
+  scripts/wait-for-pages-deployment.sh
+  src/web/app.js
+  src/web/formal_ai_worker.js
+  src/web/index.html
+  src/web/seed_loader.js
+  tests/unit/ci-cd/workflow_release.rs
+
+Source files changed: 7
+  scripts/stamp-pages-artifact.sh
+  scripts/wait-for-pages-deployment.sh
+  src/web/app.js
+  src/web/formal_ai_worker.js
+  src/web/index.html
+  src/web/seed_loader.js
+  tests/unit/ci-cd/workflow_release.rs
+
+Changelog fragments added: 1
+  changelog.d/20260515_230000_issue_24_pages_e2e.md
+
+Changelog check passed (source files changed: 7, fragments added: 1)

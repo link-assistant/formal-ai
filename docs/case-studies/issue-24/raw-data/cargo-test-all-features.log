@@ -1,0 +1,375 @@
+       Fresh unicode-ident v1.0.22
+       Fresh proc-macro2 v1.0.103
+       Fresh memchr v2.8.0
+       Fresh utf8parse v0.2.2
+       Fresh anstyle-query v1.1.5
+       Fresh anstyle-parse v0.2.7
+       Fresh anstyle v1.0.14
+       Fresh is_terminal_polyfill v1.70.2
+       Fresh colorchoice v1.0.5
+       Fresh quote v1.0.42
+       Fresh serde_core v1.0.228
+       Fresh anstream v0.6.21
+       Fresh dtor-proc-macro v0.0.5
+       Fresh heck v0.5.0
+       Fresh syn v2.0.111
+       Fresh clap_lex v1.1.0
+       Fresh strsim v0.11.1
+       Fresh dtor v0.0.6
+       Fresh clap_derive v4.5.55
+       Fresh serde_derive v1.0.228
+       Fresh thiserror-impl v1.0.69
+       Fresh clap_builder v4.5.60
+       Fresh nom v8.0.0
+       Fresh ctor-proc-macro v0.0.6
+       Fresh thiserror v1.0.69
+       Fresh zmij v1.0.21
+       Fresh ctor v0.4.3
+       Fresh links-notation v0.13.0
+       Fresh serde v1.0.228
+       Fresh clap v4.5.60
+       Fresh base64 v0.22.1
+       Fresh dotenvy v0.15.7
+       Fresh itoa v1.0.18
+       Fresh lino-env v0.1.0
+       Fresh lino-objects-codec v0.2.1
+       Fresh aho-corasick v1.1.4
+       Fresh regex-syntax v0.8.10
+       Fresh lino-arguments v0.3.0
+       Fresh serde_json v1.0.149
+       Fresh regex-automata v0.4.14
+       Fresh same-file v1.0.6
+       Fresh walkdir v2.5.0
+       Fresh regex v1.12.3
+   Compiling formal-ai v0.22.0 (/tmp/gh-issue-solver-1778853181780)
+     Running `/home/box/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name basic_usage --edition=2021 examples/basic_usage.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type bin --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--warn=clippy::nursery' '--warn=clippy::all' --forbid=unsafe_code '--allow=clippy::too_many_lines' '--allow=clippy::module_name_repetitions' '--allow=clippy::missing_panics_doc' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=605807c19bfe29de -C extra-filename=-bfe127ab5ffb5299 --out-dir /tmp/gh-issue-solver-1778853181780/target/debug/examples -C incremental=/tmp/gh-issue-solver-1778853181780/target/debug/incremental -L dependency=/tmp/gh-issue-solver-1778853181780/target/debug/deps --extern clap=/tmp/gh-issue-solver-1778853181780/target/debug/deps/libclap-f38ebaf997ae2065.rlib --extern formal_ai=/tmp/gh-issue-solver-1778853181780/target/debug/deps/libformal_ai-03f5fb6c2b9fba6e.rlib --extern lino_arguments=/tmp/gh-issue-solver-1778853181780/target/debug/deps/liblino_arguments-eea31ecb02aaf58c.rlib --extern lino_objects_codec=/tmp/gh-issue-solver-1778853181780/target/debug/deps/liblino_objects_codec-7040ab8451a55644.rlib --extern regex=/tmp/gh-issue-solver-1778853181780/target/debug/deps/libregex-be88561040ee64fd.rlib --extern serde=/tmp/gh-issue-solver-1778853181780/target/debug/deps/libserde-3aee14102a721195.rlib --extern serde_json=/tmp/gh-issue-solver-1778853181780/target/debug/deps/libserde_json-f0d4891802ba697c.rlib --extern walkdir=/tmp/gh-issue-solver-1778853181780/target/debug/deps/libwalkdir-f83c702250a7b97f.rlib`
+     Running `/home/box/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name unit --edition=2021 tests/unit/mod.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--warn=clippy::nursery' '--warn=clippy::all' --forbid=unsafe_code '--allow=clippy::too_many_lines' '--allow=clippy::module_name_repetitions' '--allow=clippy::missing_panics_doc' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=06a88a94e2a69189 -C extra-filename=-7d7ead9242a21063 --out-dir /tmp/gh-issue-solver-1778853181780/target/debug/deps -C incremental=/tmp/gh-issue-solver-1778853181780/target/debug/incremental -L dependency=/tmp/gh-issue-solver-1778853181780/target/debug/deps --extern clap=/tmp/gh-issue-solver-1778853181780/target/debug/deps/libclap-f38ebaf997ae2065.rlib --extern formal_ai=/tmp/gh-issue-solver-1778853181780/target/debug/deps/libformal_ai-03f5fb6c2b9fba6e.rlib --extern lino_arguments=/tmp/gh-issue-solver-1778853181780/target/debug/deps/liblino_arguments-eea31ecb02aaf58c.rlib --extern lino_objects_codec=/tmp/gh-issue-solver-1778853181780/target/debug/deps/liblino_objects_codec-7040ab8451a55644.rlib --extern regex=/tmp/gh-issue-solver-1778853181780/target/debug/deps/libregex-be88561040ee64fd.rlib --extern serde=/tmp/gh-issue-solver-1778853181780/target/debug/deps/libserde-3aee14102a721195.rlib --extern serde_json=/tmp/gh-issue-solver-1778853181780/target/debug/deps/libserde_json-f0d4891802ba697c.rlib --extern walkdir=/tmp/gh-issue-solver-1778853181780/target/debug/deps/libwalkdir-f83c702250a7b97f.rlib`
+     Running `/home/box/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name try_arithmetic --edition=2021 examples/try_arithmetic.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type bin --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--warn=clippy::nursery' '--warn=clippy::all' --forbid=unsafe_code '--allow=clippy::too_many_lines' '--allow=clippy::module_name_repetitions' '--allow=clippy::missing_panics_doc' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=ec72030c9f3e022c -C extra-filename=-8ff5004ab237a438 --out-dir /tmp/gh-issue-solver-1778853181780/target/debug/examples -C incremental=/tmp/gh-issue-solver-1778853181780/target/debug/incremental -L dependency=/tmp/gh-issue-solver-1778853181780/target/debug/deps --extern clap=/tmp/gh-issue-solver-1778853181780/target/debug/deps/libclap-f38ebaf997ae2065.rlib --extern formal_ai=/tmp/gh-issue-solver-1778853181780/target/debug/deps/libformal_ai-03f5fb6c2b9fba6e.rlib --extern lino_arguments=/tmp/gh-issue-solver-1778853181780/target/debug/deps/liblino_arguments-eea31ecb02aaf58c.rlib --extern lino_objects_codec=/tmp/gh-issue-solver-1778853181780/target/debug/deps/liblino_objects_codec-7040ab8451a55644.rlib --extern regex=/tmp/gh-issue-solver-1778853181780/target/debug/deps/libregex-be88561040ee64fd.rlib --extern serde=/tmp/gh-issue-solver-1778853181780/target/debug/deps/libserde-3aee14102a721195.rlib --extern serde_json=/tmp/gh-issue-solver-1778853181780/target/debug/deps/libserde_json-f0d4891802ba697c.rlib --extern walkdir=/tmp/gh-issue-solver-1778853181780/target/debug/deps/libwalkdir-f83c702250a7b97f.rlib`
+     Running `/home/box/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name universal_solver_tour --edition=2021 examples/universal_solver_tour.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type bin --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--warn=clippy::nursery' '--warn=clippy::all' --forbid=unsafe_code '--allow=clippy::too_many_lines' '--allow=clippy::module_name_repetitions' '--allow=clippy::missing_panics_doc' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=4a6a542f99821e84 -C extra-filename=-8f65e8e569659c84 --out-dir /tmp/gh-issue-solver-1778853181780/target/debug/examples -C incremental=/tmp/gh-issue-solver-1778853181780/target/debug/incremental -L dependency=/tmp/gh-issue-solver-1778853181780/target/debug/deps --extern clap=/tmp/gh-issue-solver-1778853181780/target/debug/deps/libclap-f38ebaf997ae2065.rlib --extern formal_ai=/tmp/gh-issue-solver-1778853181780/target/debug/deps/libformal_ai-03f5fb6c2b9fba6e.rlib --extern lino_arguments=/tmp/gh-issue-solver-1778853181780/target/debug/deps/liblino_arguments-eea31ecb02aaf58c.rlib --extern lino_objects_codec=/tmp/gh-issue-solver-1778853181780/target/debug/deps/liblino_objects_codec-7040ab8451a55644.rlib --extern regex=/tmp/gh-issue-solver-1778853181780/target/debug/deps/libregex-be88561040ee64fd.rlib --extern serde=/tmp/gh-issue-solver-1778853181780/target/debug/deps/libserde-3aee14102a721195.rlib --extern serde_json=/tmp/gh-issue-solver-1778853181780/target/debug/deps/libserde_json-f0d4891802ba697c.rlib --extern walkdir=/tmp/gh-issue-solver-1778853181780/target/debug/deps/libwalkdir-f83c702250a7b97f.rlib`
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.62s
+     Running `/tmp/gh-issue-solver-1778853181780/target/debug/deps/formal_ai-a5f89a821cdf6b48`
+
+running 61 tests
+test event_log::tests::steps_block_lists_events_in_insertion_order ... ok
+test event_log::tests::append_returns_stable_ids_for_distinct_events ... ok
+test event_log::tests::evidence_links_round_trip_event_kinds ... ok
+test language::tests::arabic_text_is_unknown ... ok
+test language::tests::cjk_text_is_chinese ... ok
+test language::tests::devanagari_text_is_hindi ... ok
+test language::tests::empty_prompt_defaults_to_english ... ok
+test language::tests::cyrillic_text_is_russian ... ok
+test language::tests::latin_text_is_english ... ok
+test memory::bundle::tests::extract_memory_from_bundle_recovers_events ... ok
+test memory::bundle::tests::import_full_memory_accepts_legacy_demo_memory ... ok
+test memory::bundle::tests::suggest_migrations_flags_legacy_only_import ... ok
+test memory::bundle::tests::full_memory_round_trip_preserves_seed_preferences_and_events ... ok
+test memory::bundle::tests::bundle_export_embeds_seed_and_memory ... ok
+test memory::bundle::tests::suggest_migrations_flags_seed_version_drift ... ok
+test memory::tests::export_round_trips_through_parse ... ok
+test memory::bundle::tests::suggest_migrations_is_quiet_when_versions_match ... ok
+test memory::tests::parse_returns_empty_when_header_missing ... ok
+test memory::tests::import_from_links_notation_appends_in_order ... ok
+test memory::tests::store_is_append_only ... ok
+test memory::tests::parse_ignores_unknown_fields ... ok
+test seed::tests::intent_routing_carries_article_and_trace_prefixes ... ok
+test seed::tests::agent_info_exposes_expected_keys ... ok
+test memory::tests::file_round_trip_preserves_events ... ok
+test seed::tests::language_rules_cover_ru_hi_zh ... ok
+test seed::tests::intent_routing_identity_combos_are_split_on_plus ... ok
+test seed::tests::intent_routing_greeting_separates_keywords_from_tokens ... ok
+test seed::tests::intent_routing_loads_greeting_identity_unknown ... ok
+test seed::tests::multilingual_responses_contain_four_languages ... ok
+test seed::tests::bundle_round_trips_through_parse_bundle ... ok
+test seed::tests::prompt_patterns_have_intents ... ok
+test seed::tests::seed_files_are_present_and_non_empty ... ok
+test seed::tests::response_for_returns_known_text ... ok
+test seed::tests::parse_bundle_accepts_nested_formal_ai_bundle_dialect ... ok
+test seed::tests::parse_bundle_recovers_intent_routing_via_inner_parser ... ok
+test seed::tests::merged_bundle_includes_every_file_name ... ok
+test solver_helpers::tests::concept_extraction_handles_common_prefixes ... ok
+test solver_helpers::tests::concept_extraction_handles_multilingual_prefixes ... ok
+test solver_helpers::tests::defaults_are_bounded_and_offline_capable ... ok
+test solver_helpers::tests::javascript_extraction_finds_fenced_program ... ok
+test solver_helpers::tests::javascript_extraction_requires_explicit_request ... ok
+test solver_helpers::tests::prime_check_recognizes_seventeen ... ok
+test solver_helpers::tests::concept_lookup_finds_multilingual_aliases ... ok
+test solver_helpers::tests::concept_lookup_finds_seeded_terms ... ok
+test solver_helpers::tests::solver_config_default_is_offline_capable ... ok
+test solver_helpers::tests::hello_world_request_is_not_routed_to_greeting ... ok
+test solver_helpers::tests::prime_validation_picks_seventeen_in_range ... ok
+test solver_helpers::tests::greeting_walks_the_universal_loop ... ok
+test solver_helpers::tests::universal_solver_answers_arithmetic_via_evaluator ... ok
+test solver_helpers::tests::universal_solver_looks_up_concept ... ok
+test solver_helpers::tests::universal_solver_recalls_introduced_name ... ok
+test solver_helpers::tests::fenced_block_picks_matching_language ... ok
+test telegram::tests::json_array_encoding_quotes_values ... ok
+test telegram::tests::parse_returns_unexpected_response_when_ok_false ... ok
+test telegram::tests::parse_skips_updates_without_message_payload ... ok
+test telegram::tests::polling_config_builds_get_updates_url_with_offset ... ok
+test telegram::tests::polling_config_omits_offset_when_unset ... ok
+test telegram::tests::parse_returns_replies_and_next_offset ... ok
+test telegram::tests::url_encoding_uses_percent_for_reserved_characters ... ok
+test telegram_runtime::tests::polling_loop_sends_replies_and_advances_offset ... ok
+test telegram_runtime::tests::polling_loop_recovers_from_invalid_payload ... ok
+
+test result: ok. 61 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.01s
+
+     Running `/tmp/gh-issue-solver-1778853181780/target/debug/deps/formal_ai-c2ece5a2345a6552`
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running `/tmp/gh-issue-solver-1778853181780/target/debug/deps/integration-f39359b8ec6149c6`
+
+running 7 tests
+test formal_ai_cli::cli_bundle_export_includes_seed_and_memory ... ok
+test formal_ai_cli::cli_environments_command_lists_every_supported_surface ... ok
+test formal_ai_cli::cli_chat_command_prints_text_response ... ok
+test formal_ai_cli::cli_chat_command_can_emit_chat_completion_json ... ok
+test formal_ai_cli::cli_bundle_import_recovers_memory_into_local_log ... ok
+test formal_ai_cli::cli_memory_export_to_stdout_returns_links_notation ... ok
+test formal_ai_cli::cli_memory_export_import_show_round_trips_events ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running `/tmp/gh-issue-solver-1778853181780/target/debug/deps/unit-7d7ead9242a21063`
+
+running 227 tests
+test ci_cd::changelog_parsing::test_nonexistent_version ... ok
+test ci_cd::check_file_size::tests::check_directory_enforces_lino_limit ... ok
+test ci_cd::changelog_parsing::test_version_with_dots_regex_escape ... ok
+test ci_cd::changelog_parsing::test_middle_version_extraction ... ok
+test ci_cd::changelog_parsing::test_last_version_extraction ... ok
+test ci_cd::check_file_size::tests::classifies_hard_limit_violations ... ok
+test ci_cd::changelog_parsing::test_empty_section_fallback ... ok
+test ci_cd::check_file_size::tests::classifies_warning_band_without_blocking ... ok
+test ci_cd::check_file_size::tests::warning_annotation_uses_github_actions_format ... ok
+test ci_cd::create_github_release::tests::docker_hub_badge_escapes_build_metadata ... ok
+test ci_cd::create_github_release::tests::docker_hub_badge_links_to_exact_tag ... ok
+test ci_cd::check_file_size::tests::check_directory_reports_warning_and_violation_separately ... ok
+test ci_cd::workflow_release::demo_deploy_is_independent_from_release_publication ... ok
+test ci_cd::create_github_release::tests::release_title_defaults_empty_language_to_rust ... ok
+test ci_cd::workflow_release::demo_deploy_uses_github_pages_workflow_artifact ... ok
+test ci_cd::create_github_release::tests::release_payload_keeps_tag_prefix_out_of_release_name ... ok
+test ci_cd::workflow_release::pages_e2e_uses_deployment_output_url ... ok
+test ci_cd::workflow_release::release_scripts_check_configured_release_artifacts ... ok
+test ci_cd::workflow_release::pages_deploy_is_pinned_and_live_e2e_waits_for_matching_deployment ... ok
+test ci_cd::workflow_release::release_workflow_publishes_optional_docker_hub_image_after_crate_is_visible ... ok
+test ci_cd::workflow_release::release_workflow_jobs_have_explicit_timeouts ... ok
+test ci_cd::workspace_manifest_resolution::path_helpers_match_repository_layout ... ok
+test ci_cd::workflow_release::static_demo_runtime_assets_are_cache_busted_by_deployment_version ... ok
+test ci_cd::create_github_release::tests::release_tag_uses_prefix_with_normalized_semver ... ok
+test ci_cd::workspace_manifest_resolution::rust_root_cli_parser_returns_none_without_configuration ... ok
+test ci_cd::workspace_manifest_resolution::rust_root_prefers_explicit_parameter ... ok
+test ci_cd::create_github_release::tests::release_label_remains_optional_suffix ... ok
+test docs_requirements::issue_12_vision_documents_are_present_and_traceable ... ok
+test ci_cd::create_github_release::tests::release_title_uses_language_and_bare_semver ... ok
+test docs_requirements::issue_16_followup_documents_capture_universal_seed_and_memory_migration ... ok
+test ci_cd::workspace_manifest_resolution::resolves_root_package_manifest_when_package_exists ... ok
+test formal_ai::environment_directory_declares_every_supported_surface ... ok
+test ci_cd::workspace_manifest_resolution::errors_when_workspace_has_no_publishable_members ... ok
+test formal_ai::environment_records_match_directory ... ok
+test formal_ai::chat_completion_has_openai_compatible_shape ... ok
+test formal_ai::greeting_prompt_returns_symbolic_greeting ... ok
+test formal_ai::hello_world_prompt_supports_multiple_programming_languages ... ok
+test formal_ai::library_memory_round_trips_through_links_notation ... ok
+test formal_ai::identity_questions_return_standard_self_description ... ok
+test formal_ai::merged_bundle_and_parse_bundle_round_trip_split_files ... ok
+test formal_ai::responses_api_shape_contains_output_text ... ok
+test formal_ai::rust_hello_world_prompt_returns_code_block ... ok
+test formal_ai::server_handler_supports_chat_completions_route ... ok
+test ci_cd::workspace_manifest_resolution::resolves_first_publishable_workspace_member ... ok
+test formal_ai::library_bundle_round_trips_seed_and_memory ... ok
+test formal_ai::telegram_webhook_supports_private_messages ... ok
+test formal_ai::telegram_webhook_supports_public_chat_code_replies ... ok
+test mvp::agent_isolation::agent_actions_are_appended_to_visible_log ... ignored, MVP-target: every agent action must be appended to a visible action log
+test formal_ai::knowledge_export_is_valid_links_notation ... ok
+test mvp::agent_isolation::agent_execution_runs_in_isolated_environment ... ignored, MVP-target: agent execution must run inside an isolated sandbox (docker/webvm/sandbox)
+test mvp::agent_isolation::agent_failures_are_visible ... ignored, MVP-target: agent failures should never be silenced — they must surface with a trace link
+test mvp::agent_isolation::agent_mode_does_not_leak_host_env_vars ... ignored, MVP-target: agent mode must not exfiltrate secrets from the host environment
+test mvp::agent_isolation::agent_mode_enforces_time_budget ... ignored, MVP-target: agent mode must enforce a time budget on long-running tasks
+test mvp::agent_isolation::agent_mode_is_off_by_default ... ignored, MVP-target: agent mode must be off by default and refused without explicit opt-in
+test mvp::agent_isolation::agent_mode_opt_in_is_explicit_and_logged ... ignored, MVP-target: agent mode opt-in must be explicit and recorded as a link
+test mvp::agent_isolation::destructive_agent_actions_require_confirmation ... ignored, MVP-target: destructive actions in agent mode require human confirmation
+test mvp::agent_isolation::switching_to_chat_revokes_agent_privileges ... ignored, MVP-target: switching back to chat mode must wipe agent privileges immediately
+test mvp::chat_surface::chat_mode_refuses_unbounded_multi_step_actions_without_agent_opt_in ... ignored, MVP-target: bounded chat mode should refuse to run agent-style tasks without explicit opt-in
+test mvp::chat_surface::diagnostics_are_excluded_from_default_user_facing_answers ... ignored, MVP-target: diagnostics-off-by-default should also be expressed at the engine level
+test mvp::chat_surface::every_answer_exposes_a_trace_link_for_inspection ... ignored, MVP-target: chat answers should expose a trace link the user can follow
+test mvp::chat_surface::every_code_answer_declares_execution_status_or_unavailability ... ignored, MVP-target: chat-mode answers must declare the execution status of any generated code
+test data_files::lino_data_files_are_parseable_human_readable_and_bounded ... ok
+test mvp::chat_surface::answers_are_deterministic_for_identical_prompts ... ok
+test mvp::agent_isolation::typescript_unavailable_status_is_honest_not_silenced ... ok
+test mvp::chat_surface::empty_prompt_does_not_crash_and_is_classified_as_unknown ... ok
+test mvp::agent_isolation::chat_prototype_never_runs_user_supplied_shell_commands ... ok
+test mvp::chat_surface::greeting_matching_is_case_insensitive ... ok
+test mvp::chat_surface::greeting_prompt_returns_a_greeting_intent ... ok
+test mvp::chat_surface::greeting_ignores_surrounding_punctuation ... ok
+test mvp::chat_surface::evidence_links_always_include_prompt_and_intent_links ... ok
+test mvp::chat_surface::identity_examples_cover_known_phrasings ... ok
+test mvp::chat_surface::unknown_intent_offers_a_path_to_extend_the_network ... ignored, MVP-target: unknown intents should propose a follow-up that creates a Links Notation seed
+test mvp::chat_surface::user_messages_are_recorded_as_impulse_events ... ignored, MVP-target: assistant should record the user message as an `impulse` link before answering
+test mvp::chat_surface::identity_question_returns_identity_intent ... ok
+test mvp::code_generation::code_answers_declare_isolation_level ... ignored, MVP-target: code answers should declare an isolation level for execution evidence
+test mvp::chat_surface::links_notation_trace_is_present_for_every_answer ... ok
+test mvp::chat_surface::unknown_prompt_returns_zero_confidence_fallback_intent ... ok
+test mvp::chat_surface::whitespace_only_prompt_is_classified_as_unknown ... ok
+test mvp::code_generation::c_hello_world_seed_compiles_and_runs ... ok
+test mvp::code_generation::code_answers_include_execution_links_in_notation ... ignored, MVP-target: code answers should include execution metadata in Links Notation form
+test mvp::code_generation::execution_failures_are_reported_with_full_trace ... ignored, MVP-target: failing generated code must be re-emitted with the failure trace, not silently
+test mvp::code_generation::go_alias_golang_is_supported ... ok
+test mvp::code_generation::hello_world_without_recognized_language_falls_back_to_unknown ... ok
+test mvp::code_generation::go_hello_world_seed_runs ... ok
+test mvp::code_generation::javascript_hello_world_seed_runs ... ok
+test mvp::code_generation::javascript_alias_node_is_supported ... ok
+test mvp::code_generation::python_alias_py_is_supported ... ok
+test mvp::code_generation::sorting_algorithm_request_returns_code_and_tests ... ignored, MVP-target: requesting `sorting algorithm` should produce reviewable code and tests
+test mvp::code_generation::top_ten_popular_languages_each_have_a_hello_world_seed ... ignored, MVP-target: hello-world should be available in the top 10 popular languages
+test mvp::code_generation::translating_a_program_between_languages_keeps_semantics ... ignored, MVP-target: translation between programming languages should keep semantics
+test mvp::code_generation::python_hello_world_seed_runs ... ok
+test mvp::links_network::concepts_are_unique_and_referenced_by_id ... ignored, MVP-target: each concept must be unique in the network and reused by reference
+test mvp::links_network::dynamic_type_system_publishes_subtype_chains ... ignored, MVP-target: dynamic type system should publish Type -> SubType chains in the network
+test mvp::links_network::every_answer_has_a_trace_link_pointer ... ignored, MVP-target: every answer must publish a trace link pointing to a reasoning record
+test mvp::code_generation::rust_hello_world_seed_compiles_and_runs ... ok
+test mvp::code_generation::rust_alias_rs_is_supported ... ok
+test mvp::code_generation::typescript_hello_world_seed_reports_unavailable_execution ... ok
+test mvp::links_network::every_fact_carries_a_source_link ... ignored, MVP-target: facts should be recorded with the source link that introduced them
+test mvp::links_network::history_is_append_only ... ignored, MVP-target: history must be append-only — earlier records cannot be mutated, only superseded
+test mvp::links_network::distinct_prompts_lead_to_distinct_links_traces ... ok
+test mvp::links_network::every_answer_records_intent_in_evidence_links ... ok
+test mvp::links_network::ill_formed_links_notation_input_is_rejected ... ignored, MVP-target: the engine should reject ill-formed Links Notation submissions
+test mvp::links_network::knowledge_dataset_declares_schema_version ... ignored, MVP-target: knowledge dataset should declare a schema version link for migrations
+test mvp::links_network::knowledge_export_is_reducible_to_doublet_links ... ignored, MVP-target: every record in the network must be reducible to doublet links
+test mvp::links_network::records_are_addressable_by_stable_id ... ignored, MVP-target: links network must support querying records via a stable id
+test mvp::links_network::trace_record_lists_ordered_reasoning_steps ... ignored, MVP-target: trace records must list ordered reasoning steps in Links Notation
+test mvp::links_network::every_answer_includes_links_notation_trace ... ok
+test mvp::links_network::knowledge_export_is_non_empty_links_notation ... ok
+test mvp::links_network::knowledge_export_uses_untyped_links_notation_only ... ok
+test mvp::multilingual::chinese_concept_question_returns_concept_lookup_intent ... ok
+test mvp::multilingual::chinese_identity_question_returns_identity_intent ... ok
+test mvp::multilingual::english_greeting_is_handled_today ... ok
+test mvp::multilingual::hindi_concept_question_returns_concept_lookup_intent ... ok
+test mvp::multilingual::chinese_greeting_returns_greeting_intent ... ok
+test mvp::multilingual::every_multilingual_answer_declares_detected_language_link ... ok
+test mvp::multilingual::hindi_greeting_returns_greeting_intent ... ok
+test mvp::multilingual::hindi_identity_question_returns_identity_intent ... ok
+test mvp::multilingual::russian_concept_question_returns_concept_lookup_intent ... ok
+test mvp::multilingual::russian_greeting_returns_greeting_intent ... ok
+test mvp::multilingual::russian_greeting_reply_is_in_russian ... ok
+test mvp::multilingual::russian_identity_question_returns_identity_intent ... ok
+test mvp::multilingual::unknown_language_prompts_fall_back_to_english_with_unknown_language_link ... ok
+test mvp::network_visualization::answers_already_carry_links_notation_for_visualization ... ok
+test mvp::network_visualization::graph_edges_describe_doublet_links ... ok
+test mvp::network_visualization::graph_endpoint_filters_by_trace_id ... ok
+test mvp::network_visualization::graph_endpoint_supports_dot_export ... ok
+test mvp::network_visualization::web_demo_chat_works_even_when_graph_is_disabled ... ignored, MVP-target: web demo must render the graph alongside chat but never block chat replies
+test mvp::openai_compatibility::authenticated_routes_accept_bearer_token ... ignored, MVP-target: an authenticated API surface should accept Bearer tokens
+test mvp::openai_compatibility::chat_completion_refuses_tool_call_without_agent_mode ... ignored, MVP-target: chat completions should refuse to call shell tools unless agent mode is opted in
+test mvp::network_visualization::graph_nodes_carry_minimum_metadata ... ok
+test mvp::links_network::knowledge_records_parse_as_links_notation ... ok
+test mvp::network_visualization::graph_endpoint_returns_nodes_and_edges ... ok
+test mvp::openai_compatibility::chat_completion_accepts_multipart_content ... ok
+test mvp::openai_compatibility::chat_completion_reports_token_usage ... ok
+test mvp::openai_compatibility::chat_completion_round_trips_user_prompt_to_assistant_response ... ok
+test mvp::network_visualization::graph_endpoint_returns_404_for_unknown_trace ... ok
+test mvp::openai_compatibility::http_chat_completions_route_rejects_invalid_json ... ok
+test mvp::openai_compatibility::chat_completion_supports_multi_turn_conversation ... ok
+test mvp::openai_compatibility::http_health_endpoint_returns_ok ... ok
+test mvp::openai_compatibility::http_models_endpoint_lists_at_least_one_model ... ok
+test mvp::openai_compatibility::http_chat_completions_route_returns_completion_object ... ok
+test mvp::openai_compatibility::http_responses_declare_a_content_type ... ok
+test mvp::openai_compatibility::http_unknown_route_returns_404 ... ok
+test mvp::openai_compatibility::rate_limit_metadata_is_exposed ... ok
+test mvp::openai_compatibility::http_responses_route_returns_response_object ... ok
+test mvp::openai_compatibility::responses_api_attaches_trace_link ... ok
+test mvp::openai_compatibility::responses_endpoint_returns_completed_response ... ok
+test mvp::reasoning_loop::confidence_reflects_corroborating_evidence ... ignored, MVP-target: confidence should reflect the number of corroborating links in the network
+test mvp::reasoning_loop::answers_are_repeatable_for_the_same_prompt ... ok
+test mvp::reasoning_loop::answers_expose_their_intent_explicitly ... ok
+test mvp::reasoning_loop::loop_terminates_on_unsolvable_questions ... ignored, MVP-target: the loop must terminate and refuse to spin forever on unsolvable questions
+test mvp::openai_compatibility::streaming_chat_completion_emits_server_sent_events ... ok
+test mvp::reasoning_loop::known_prompts_resolve_via_local_knowledge ... ok
+test mvp::reasoning_loop::step_1_prompt_is_recorded_as_impulse ... ignored, MVP-target: step 1 — every prompt should be recorded as an impulse link before reasoning
+test mvp::reasoning_loop::step_2_local_search_runs_before_external_calls ... ignored, MVP-target: step 2 — local network search should be tried before any external lookup
+test mvp::reasoning_loop::step_3_external_search_kicks_in_when_local_is_insufficient ... ignored, MVP-target: step 3 — when local search is insufficient, the loop must fall back to external sources
+test mvp::reasoning_loop::step_4_complex_requests_get_decomposed ... ignored, MVP-target: step 4 — complex requests should be decomposed into sub-impulses
+test mvp::reasoning_loop::step_5_multiple_candidates_are_generated ... ignored, MVP-target: step 5 — multiple candidate answers must be generated and recorded
+test mvp::reasoning_loop::step_6_candidates_are_validated_against_constraints ... ignored, MVP-target: step 6 — candidates must be validated against constraints from the network
+test mvp::reasoning_loop::step_7_smallest_sufficient_answer_is_selected ... ignored, MVP-target: step 7 — the smallest sufficient answer should be selected
+test mvp::reasoning_loop::step_8_full_trace_is_stored_and_linked ... ignored, MVP-target: step 8 — the complete trace must be stored and linked back to the answer
+test mvp::reasoning_loop::step_9_reply_is_returned_with_trace_pointer ... ignored, MVP-target: step 9 — final reply must be returned along with the trace pointer
+test mvp::reasoning_loop::unknown_prompts_acknowledge_inability_to_answer ... ok
+test mvp::reasoning_paths::arithmetic_handles_basic_addition ... ok
+test mvp::reasoning_paths::arithmetic_handles_division_remainder ... ok
+test mvp::reasoning_paths::arithmetic_handles_decimals ... ok
+test mvp::reasoning_paths::arithmetic_handles_parentheses_and_precedence ... ok
+test mvp::reasoning_paths::arithmetic_handles_word_operators ... ok
+test mvp::reasoning_paths::arithmetic_never_fires_on_plain_greetings ... ok
+test mvp::reasoning_paths::arithmetic_records_calculation_event_in_evidence_log ... ok
+test mvp::reasoning_paths::arithmetic_reports_division_by_zero_without_panicking ... ok
+test mvp::reasoning_paths::concept_lookup_answers_what_is_wikipedia ... ok
+test mvp::reasoning_paths::concept_lookup_handles_tell_me_about_links_notation ... ok
+test mvp::reasoning_paths::concept_lookup_does_not_fire_for_identity_questions ... ok
+test mvp::reasoning_paths::concept_lookup_handles_what_does_x_mean ... ok
+test mvp::reasoning_paths::concept_lookup_includes_source_citation ... ok
+test mvp::reasoning_paths::concept_lookup_records_concept_event_in_evidence_log ... ok
+test mvp::reasoning_paths::javascript_request_records_execution_status_event ... ok
+test mvp::reasoning_paths::javascript_request_returns_explicit_unavailability ... ok
+test mvp::reasoning_paths::prior_turns_appear_in_evidence_log ... ok
+test mvp::reasoning_paths::solve_with_history_recalls_last_question ... ok
+test mvp::reasoning_paths::every_specialized_handler_emits_a_trace_link ... ok
+test mvp::reasoning_paths::solve_with_history_recalls_name_across_turns ... ok
+test mvp::source_cache::cache_flush_is_explicit_and_auditable ... ignored, MVP-target: a request to flush the source cache should be an explicit, auditable action
+test mvp::source_cache::cached_sources_include_content_hash ... ignored, MVP-target: cached sources must include the original content hash for verification
+test mvp::reasoning_paths::solve_with_history_summarizes_conversation ... ok
+test mvp::source_cache::conflicting_sources_are_surfaced ... ignored, MVP-target: sources that disagree must be surfaced rather than silently picking one
+test mvp::source_cache::external_lookups_record_source_url ... ignored, MVP-target: external lookups should record a source link with the original URL
+test mvp::reasoning_paths::solve_without_history_matches_legacy_entry_point ... ok
+test mvp::source_cache::offline_mode_disables_external_lookups ... ignored, MVP-target: offline mode should disable external lookups and prefer cached evidence
+test mvp::source_cache::repeated_lookups_hit_the_cache ... ignored, MVP-target: repeated lookups within the TTL must hit the cache and avoid the network
+test mvp::source_cache::source_links_carry_fetched_at_timestamp ... ignored, MVP-target: source links must include a fetched_at timestamp for TTL tracking
+test mvp::source_cache::stale_sources_are_refreshed ... ignored, MVP-target: stale sources should be refreshed when older than the 2-month TTL
+test mvp::source_cache::prototype_does_not_advertise_external_fetches_for_local_prompts ... ok
+test mvp::telegram_surface::private_chat_messages_get_answered ... ok
+test mvp::telegram_surface::public_chat_silent_when_not_addressed ... ok
+test mvp::telegram_surface::private_chat_code_replies_use_html_pre_code ... ok
+test mvp::telegram_surface::telegram_answers_include_trace_link ... ignored, MVP-target: Telegram answers should include a trace link the user can tap to inspect
+test mvp::reasoning_paths::javascript_handler_does_not_intercept_unrelated_code_blocks ... ok
+test mvp::telegram_surface::public_chat_answers_when_mentioned ... ok
+test mvp::telegram_surface::public_supergroup_code_answer_remains_in_html_format ... ok
+test mvp::telegram_surface::replies_to_bot_in_public_chat_are_answered ... ok
+test mvp::reasoning_paths::solve_with_history_falls_through_for_unrelated_prompts ... ok
+test mvp::translation_via_links::cross_language_code_translation_preserves_semantics ... ignored, MVP-target: cross-language code translation must preserve runnable semantics
+test mvp::telegram_surface::telegram_response_always_declares_html_parse_mode ... ok
+test mvp::telegram_surface::telegram_code_replies_escape_html_entities ... ok
+test mvp::telegram_surface::telegram_webhook_ignores_updates_without_text ... ok
+test mvp::telegram_surface::telegram_long_replies_are_chunked ... ok
+test mvp::translation_via_links::synonyms_across_languages_share_meaning ... ignored, MVP-target: synonyms across languages should hash to the same meaning link
+test mvp::translation_via_links::translation_declares_source_and_target_language_tags ... ignored, MVP-target: translation must declare both source and target language tags
+test mvp::telegram_surface::telegram_webhook_rejects_invalid_payload_gracefully ... ok
+test mvp::translation_via_links::every_answer_publishes_a_links_notation_trace ... ok
+test mvp::translation_via_links::translation_preserves_meaning_id_across_languages ... ignored, MVP-target: translation between human languages should preserve the meaning link id
+test mvp::translation_via_links::translation_request_returns_target_surface_form ... ignored, MVP-target: translation request must return the target-language surface form
+test mvp::translation_via_links::translation_trace_includes_intermediate_meaning ... ignored, MVP-target: translation traces must include the intermediate Links Notation meaning record
+test mvp::translation_via_links::untranslatable_concepts_are_flagged ... ignored, MVP-target: untranslatable concepts must be flagged rather than approximated silently
+test mvp::transparent_state::diagnostic_ids_never_leak_into_default_chat_prose ... ignored, MVP-target: diagnostic link ids must not leak into default chat prose
+test mvp::transparent_state::diagnostic_mode_can_be_enabled_per_message ... ignored, MVP-target: the user must be able to opt-in to diagnostic mode and see all links inline
+test mvp::transparent_state::export_network_returns_links_notation_snapshot ... ignored, MVP-target: 'export network' should return a downloadable Links Notation snapshot
+test mvp::transparent_state::forget_request_requires_explicit_retraction_protocol ... ignored, MVP-target: 'forget X' must be refused unless the user invokes the explicit retraction protocol
+test mvp::transparent_state::list_my_facts_filters_by_user ... ignored, MVP-target: 'list my facts' should return only facts the current user contributed
+test mvp::transparent_state::querying_a_concept_returns_its_links ... ignored, MVP-target: 'what do you know about X' should list links involving X
+test mvp::transparent_state::querying_the_network_returns_snapshot ... ignored, MVP-target: querying 'show me the network' should return a Links Notation snapshot
+test mvp::transparent_state::why_meta_question_explains_previous_answer ... ignored, MVP-target: 'why' meta-questions should explain the previous answer using links
+test mvp::transparent_state::links_notation_trace_is_always_present ... ok
+test mvp::transparent_state::evidence_links_are_exposed_through_the_public_struct ... ok
+test mvp::transparent_state::knowledge_export_is_inspectable_at_runtime ... ok
+
+test result: ok. 158 passed; 0 failed; 69 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+   Doc-tests formal_ai
+     Running `/home/box/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustdoc --edition=2021 --crate-type lib --color auto --crate-name formal_ai --test src/lib.rs --test-run-directory /tmp/gh-issue-solver-1778853181780 '--warn=clippy::pedantic' '--warn=clippy::nursery' '--warn=clippy::all' --forbid=unsafe_code '--allow=clippy::too_many_lines' '--allow=clippy::module_name_repetitions' '--allow=clippy::missing_panics_doc' '--allow=clippy::missing_errors_doc' --extern clap=/tmp/gh-issue-solver-1778853181780/target/debug/deps/libclap-f38ebaf997ae2065.rlib --extern formal_ai=/tmp/gh-issue-solver-1778853181780/target/debug/deps/libformal_ai-03f5fb6c2b9fba6e.rlib --extern lino_arguments=/tmp/gh-issue-solver-1778853181780/target/debug/deps/liblino_arguments-eea31ecb02aaf58c.rlib --extern lino_objects_codec=/tmp/gh-issue-solver-1778853181780/target/debug/deps/liblino_objects_codec-7040ab8451a55644.rlib --extern regex=/tmp/gh-issue-solver-1778853181780/target/debug/deps/libregex-be88561040ee64fd.rlib --extern serde=/tmp/gh-issue-solver-1778853181780/target/debug/deps/libserde-3aee14102a721195.rlib --extern serde_json=/tmp/gh-issue-solver-1778853181780/target/debug/deps/libserde_json-f0d4891802ba697c.rlib --extern walkdir=/tmp/gh-issue-solver-1778853181780/target/debug/deps/libwalkdir-f83c702250a7b97f.rlib -L dependency=/tmp/gh-issue-solver-1778853181780/target/debug/deps -C embed-bitcode=no --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' --error-format human`
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
