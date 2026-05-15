@@ -479,9 +479,11 @@ test.describe('Issue #27: agent mode', () => {
   test('Chat/Agent toggle is present and starts in Chat', async ({ page }) => {
     const toggle = page.locator('[data-testid="agent-toggle"]');
     await expect(toggle).toBeVisible();
-    await expect(toggle).toHaveText('Chat');
+    // Issue #27: the topbar buttons render an emoji icon + label so the label
+    // can collapse on the mobile-icon-only breakpoint. Assert on the label span.
+    await expect(toggle.locator('.btn-label')).toHaveText('Chat');
     await toggle.click();
-    await expect(toggle).toHaveText('Agent');
+    await expect(toggle.locator('.btn-label')).toHaveText('Agent');
   });
 
   test('Agent mode decomposes a multi-step task and runs each step', async ({ page }) => {
@@ -507,6 +509,71 @@ test.describe('Issue #27: agent mode', () => {
     // No "; then …" — should run as a single step (chat-style answer).
     await expect(last).toContainText('Hi, how may I help you?');
     await expect(last).not.toContainText('Agent plan');
+  });
+});
+
+// Issue #27: phone-sized viewport asserts that the topbar collapses to
+// icon-only buttons, the sidebar hides behind a hamburger drawer, and the
+// chat surface keeps the full message viewport.
+test.describe('Issue #27: mobile layout', () => {
+  test.use({ viewport: { width: 390, height: 780 } });
+
+  test.beforeEach(async ({ page }) => {
+    await disableGreetingVariations(page);
+    await page.goto('./');
+    await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
+  });
+
+  test('topbar buttons collapse to emoji icons on mobile', async ({ page }) => {
+    const demoToggle = page.locator('.mode-toggle');
+    await expect(demoToggle).toBeVisible();
+    // The label span is hidden via CSS on the mobile breakpoint…
+    await expect(demoToggle.locator('.btn-label')).toBeHidden();
+    // …but the emoji icon stays visible so the action is still recognisable.
+    await expect(demoToggle.locator('.btn-icon')).toBeVisible();
+    // The aria-label still announces the action for screen readers.
+    await expect(demoToggle).toHaveAttribute('aria-label', /Demo/);
+  });
+
+  test('hamburger toggle opens the sidebar drawer and the backdrop closes it', async ({ page }) => {
+    const hamburger = page.locator('[data-testid="mobile-menu-toggle"]');
+    await expect(hamburger).toBeVisible();
+    const sidebar = page.locator('[data-testid="context-panel"]');
+
+    // Off-canvas: translated out of view so the chat fills the viewport.
+    const boxBefore = await sidebar.boundingBox();
+    expect(boxBefore).toBeTruthy();
+    expect(boxBefore && boxBefore.x).toBeLessThan(0);
+
+    await hamburger.click();
+    await expect(sidebar).toHaveClass(/is-mobile-open/);
+    // The drawer translates in over 200ms — wait for the transform to settle
+    // before sampling the bounding box.
+    await page.waitForTimeout(300);
+    const boxAfter = await sidebar.boundingBox();
+    expect(boxAfter).toBeTruthy();
+    expect(boxAfter && boxAfter.x).toBeGreaterThanOrEqual(0);
+
+    // Tapping the backdrop dismisses the drawer. The drawer overlays the
+    // left ~320px of the viewport with z-index above the backdrop, so click
+    // on the exposed right-hand strip where only the backdrop receives the tap.
+    const backdrop = page.locator('[data-testid="mobile-menu-backdrop"]');
+    await expect(backdrop).toBeVisible();
+    await backdrop.click({ position: { x: 360, y: 400 } });
+    await expect(sidebar).not.toHaveClass(/is-mobile-open/);
+  });
+
+  test('chat surface keeps the full viewport when the menu is closed', async ({ page }) => {
+    const sidebar = page.locator('[data-testid="context-panel"]');
+    const sidebarBox = await sidebar.boundingBox();
+    expect(sidebarBox && sidebarBox.x).toBeLessThan(0);
+
+    const composer = page.locator('[data-testid="chat-composer-input"]');
+    const composerBox = await composer.boundingBox();
+    expect(composerBox).toBeTruthy();
+    // Composer spans most of the viewport width — at 390px viewport with
+    // 12px+12px gutters it should leave only the gutters as horizontal slack.
+    expect(composerBox && composerBox.width).toBeGreaterThan(300);
   });
 });
 

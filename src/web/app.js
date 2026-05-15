@@ -1323,9 +1323,11 @@ function App() {
             target: "_blank",
             rel: "noopener noreferrer",
             title:
-              "Open a pre-filled GitHub issue with the current session transcript. Click Export memory to save the full agent state, redact sensitive content, wrap it in a .zip, and attach it (GitHub does not accept .lino directly yet).",
+              "Report issue — open a pre-filled GitHub issue with the current session transcript. Click Export memory to save the full agent state, redact sensitive content, wrap it in a .zip, and attach it (GitHub does not accept .lino directly yet).",
+            "aria-label": "Report issue",
           },
-          "Report issue",
+          h("span", { className: "btn-icon", "aria-hidden": "true" }, "🐛"),
+          h("span", { className: "btn-label" }, "Report issue"),
         ),
         h(
           "button",
@@ -1335,9 +1337,11 @@ function App() {
             "data-testid": "memory-export",
             onClick: handleExportMemory,
             title:
-              "Save the full agent state to formal-ai-memory.lino: the entire seed, UI preferences, environment metadata, and the append-only event log. Wrap the file in a .zip before attaching it to a GitHub issue (the issue uploader does not accept .lino directly yet).",
+              "Export memory — save the full agent state to formal-ai-memory.lino: the entire seed, UI preferences, environment metadata, and the append-only event log. Wrap the file in a .zip before attaching it to a GitHub issue (the issue uploader does not accept .lino directly yet).",
+            "aria-label": "Export memory",
           },
-          "Export memory",
+          h("span", { className: "btn-icon", "aria-hidden": "true" }, "📤"),
+          h("span", { className: "btn-label" }, "Export memory"),
         ),
         h(
           "button",
@@ -1347,9 +1351,11 @@ function App() {
             "data-testid": "memory-import",
             onClick: triggerImportMemory,
             title:
-              "Load a previous export. Accepts both the new full-memory bundle and the legacy demo_memory event-only log. Migration hints are shown next to this bar.",
+              "Import memory — load a previous export. Accepts both the new full-memory bundle and the legacy demo_memory event-only log. Migration hints are shown next to this bar.",
+            "aria-label": "Import memory",
           },
-          "Import memory",
+          h("span", { className: "btn-icon", "aria-hidden": "true" }, "📥"),
+          h("span", { className: "btn-label" }, "Import memory"),
         ),
         h("input", {
           ref: importInputRef,
@@ -1377,8 +1383,17 @@ function App() {
             className: "diagnostics-toggle",
             "aria-pressed": diagnosticsMode,
             onClick: () => setDiagnosticsMode((value) => !value),
+            title: diagnosticsMode
+              ? "Hide reasoning trace, intent, evidence, and thinking-steps panels."
+              : "Show reasoning trace, intent, evidence, and thinking-steps panels.",
+            "aria-label": diagnosticsMode ? "Diagnostics on" : "Diagnostics",
           },
-          diagnosticsMode ? "Diagnostics on" : "Diagnostics",
+          h("span", { className: "btn-icon", "aria-hidden": "true" }, "🔍"),
+          h(
+            "span",
+            { className: "btn-label" },
+            diagnosticsMode ? "Diagnostics on" : "Diagnostics",
+          ),
         ),
         h(
           "button",
@@ -1388,11 +1403,21 @@ function App() {
             "data-testid": "agent-toggle",
             "aria-pressed": agentMode,
             title: agentMode
-              ? "Switch back to single-turn chat."
-              : "Switch to agent mode: each message is decomposed into sequential steps and executed as a plan.",
+              ? "Agent mode is on — switch back to single-turn chat."
+              : "Chat mode — switch to agent mode and each message will be decomposed into sequential steps and executed as a plan.",
+            "aria-label": agentMode ? "Agent mode" : "Chat mode",
             onClick: () => setAgentMode((value) => !value),
           },
-          agentMode ? "Agent" : "Chat",
+          h(
+            "span",
+            { className: "btn-icon", "aria-hidden": "true" },
+            agentMode ? "🤖" : "💬",
+          ),
+          h(
+            "span",
+            { className: "btn-label" },
+            agentMode ? "Agent" : "Chat",
+          ),
         ),
         h(
           "button",
@@ -1401,11 +1426,46 @@ function App() {
             className: "mode-toggle",
             "aria-pressed": demoMode,
             onClick: () => setDemoMode((value) => !value),
+            title: demoMode
+              ? "Demo is on — stop the scripted dialog and resume manual chat."
+              : "Start the scripted demo dialog.",
+            "aria-label": demoMode ? "Demo on" : "Demo",
           },
-          demoMode ? "Demo on" : "Demo",
+          h("span", { className: "btn-icon", "aria-hidden": "true" }, "🎬"),
+          h(
+            "span",
+            { className: "btn-label" },
+            demoMode ? "Demo on" : "Demo",
+          ),
+        ),
+        h(
+          "button",
+          {
+            type: "button",
+            className: "mobile-menu-toggle",
+            "data-testid": "mobile-menu-toggle",
+            "aria-pressed": mobileMenuOpen,
+            "aria-label": mobileMenuOpen ? "Close menu" : "Open menu",
+            title: mobileMenuOpen
+              ? "Close the side panel (conversations, prompts, tools)."
+              : "Open the side panel (conversations, prompts, tools).",
+            onClick: () => setMobileMenuOpen((value) => !value),
+          },
+          h(
+            "span",
+            { className: "btn-icon", "aria-hidden": "true" },
+            mobileMenuOpen ? "✕" : "☰",
+          ),
         ),
       ),
     ),
+    mobileMenuOpen
+      ? h("div", {
+          className: "mobile-menu-backdrop",
+          "data-testid": "mobile-menu-backdrop",
+          onClick: () => setMobileMenuOpen(false),
+        })
+      : null,
     h(
       "section",
       { className: "workspace" },
