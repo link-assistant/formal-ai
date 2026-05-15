@@ -21,6 +21,33 @@ pub(crate) const UNKNOWN_ANSWER: &str = "I cannot answer that from local Links N
 const RUSSIAN_GREETING_ANSWER: &str = "Здравствуйте! Чем могу помочь?";
 const HINDI_GREETING_ANSWER: &str = "नमस्ते! मैं आपकी क्या मदद कर सकता हूँ?";
 const CHINESE_GREETING_ANSWER: &str = "你好!请问有什么可以帮您的?";
+
+const RUSSIAN_IDENTITY_ANSWER: &str = concat!(
+    "Я formal-ai — детерминированный символьный AI proof of concept, который ",
+    "отвечает на основе локальных правил Links Notation и совместимых ",
+    "OpenAI-форматов. В этой демонстрации я не выполняю нейросетевой инференс."
+);
+const HINDI_IDENTITY_ANSWER: &str = concat!(
+    "मैं formal-ai हूँ — एक नियतात्मक प्रतीकात्मक AI proof of concept, जो ",
+    "स्थानीय Links Notation नियमों और OpenAI-संगत API आकारों से उत्तर देता है। ",
+    "इस डेमो में मैं कोई न्यूरल इन्फेरेन्स नहीं करता।"
+);
+const CHINESE_IDENTITY_ANSWER: &str = concat!(
+    "我是 formal-ai —— 一个确定性的符号化 AI 概念验证项目,根据本地的 Links ",
+    "Notation 规则和兼容 OpenAI 的 API 形式作答。本演示不进行任何神经网络推理。"
+);
+
+const RUSSIAN_UNKNOWN_ANSWER: &str = concat!(
+    "Я пока не знаю символьного правила для этого запроса. Добавьте факт или ",
+    "правило в Links Notation и повторите запрос."
+);
+const HINDI_UNKNOWN_ANSWER: &str = concat!(
+    "मेरे पास इस संकेत के लिए अभी कोई सीखा हुआ प्रतीकात्मक नियम नहीं है। ",
+    "Links Notation में एक तथ्य या नियम जोड़ें और फिर अनुरोध दोबारा भेजें।"
+);
+const CHINESE_UNKNOWN_ANSWER: &str = concat!(
+    "我目前还没有针对该提示的符号规则。请用 Links Notation 添加事实或规则,然后再次发送请求。"
+);
 const UNKNOWN_LANGUAGE_FALLBACK_ANSWER: &str = concat!(
     "I detected an unsupported language. Falling back to English: I cannot ",
     "answer that from local Links Notation rules yet. Please add a fact or ",
@@ -633,6 +660,12 @@ pub(crate) fn language_aware_answer_for(
         (SelectedRule::Greeting, Language::Russian) => String::from(RUSSIAN_GREETING_ANSWER),
         (SelectedRule::Greeting, Language::Hindi) => String::from(HINDI_GREETING_ANSWER),
         (SelectedRule::Greeting, Language::Chinese) => String::from(CHINESE_GREETING_ANSWER),
+        (SelectedRule::Identity, Language::Russian) => String::from(RUSSIAN_IDENTITY_ANSWER),
+        (SelectedRule::Identity, Language::Hindi) => String::from(HINDI_IDENTITY_ANSWER),
+        (SelectedRule::Identity, Language::Chinese) => String::from(CHINESE_IDENTITY_ANSWER),
+        (SelectedRule::Unknown, Language::Russian) => String::from(RUSSIAN_UNKNOWN_ANSWER),
+        (SelectedRule::Unknown, Language::Hindi) => String::from(HINDI_UNKNOWN_ANSWER),
+        (SelectedRule::Unknown, Language::Chinese) => String::from(CHINESE_UNKNOWN_ANSWER),
         (SelectedRule::Unknown, Language::Unknown) => {
             String::from(UNKNOWN_LANGUAGE_FALLBACK_ANSWER)
         }

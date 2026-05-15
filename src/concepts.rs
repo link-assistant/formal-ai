@@ -71,7 +71,16 @@ pub const CONCEPTS: &[ConceptRecord] = &[
     ConceptRecord {
         slug: "concept_wikipedia",
         term: "Wikipedia",
-        aliases: &["wikipedia", "the wikipedia", "en.wikipedia"],
+        aliases: &[
+            "wikipedia",
+            "the wikipedia",
+            "en.wikipedia",
+            "википедия",
+            "виkipedia",
+            "विकिपीडिया",
+            "维基百科",
+            "維基百科",
+        ],
         category: "encyclopedia",
         summary: "Wikipedia is a free, multilingual online encyclopedia \
                   written and maintained by a community of volunteer \
@@ -82,7 +91,14 @@ pub const CONCEPTS: &[ConceptRecord] = &[
     ConceptRecord {
         slug: "concept_wikidata",
         term: "Wikidata",
-        aliases: &["wikidata", "the wikidata knowledge graph"],
+        aliases: &[
+            "wikidata",
+            "the wikidata knowledge graph",
+            "викидата",
+            "विकिडेटा",
+            "维基数据",
+            "維基數據",
+        ],
         category: "structured-knowledge",
         summary: "Wikidata is a collaboratively edited multilingual knowledge \
                   graph hosted by the Wikimedia Foundation. It stores \
@@ -94,7 +110,14 @@ pub const CONCEPTS: &[ConceptRecord] = &[
     ConceptRecord {
         slug: "concept_wiktionary",
         term: "Wiktionary",
-        aliases: &["wiktionary", "the wiktionary dictionary"],
+        aliases: &[
+            "wiktionary",
+            "the wiktionary dictionary",
+            "викисловарь",
+            "विक्षनरी",
+            "维基词典",
+            "維基辭典",
+        ],
         category: "dictionary",
         summary: "Wiktionary is a multilingual, web-based free-content \
                   dictionary, available in many languages and including \
@@ -123,6 +146,13 @@ pub const CONCEPTS: &[ConceptRecord] = &[
             "rust programming language",
             "the rust language",
             "rust-lang",
+            "раст",
+            "язык раст",
+            "रस्ट",
+            "रस्ट प्रोग्रामिंग",
+            "rust 语言",
+            "rust语言",
+            "rust 程序设计语言",
         ],
         category: "programming-language",
         summary: "Rust is a multi-paradigm, general-purpose programming \
@@ -137,9 +167,26 @@ pub const CONCEPTS: &[ConceptRecord] = &[
 /// Extract the concept term from a "what is X" style prompt. Returns `None`
 /// when the prompt does not look like a definition request, which lets the
 /// solver fall through to other handlers (greeting, arithmetic, etc.).
+///
+/// Supported patterns:
+/// - English: `what is X`, `what's X`, `define X`, `tell me about X`, etc.
+/// - Russian: `что такое X`, `кто такой X`, `расскажи о X`, `опиши X`.
+/// - Hindi: `X क्या है`, `X कौन है` (concept follows the prefix).
+/// - Chinese: `什么是 X`, `X是什么`, `X 是谁` (handles both prefix and suffix forms).
 pub fn extract_concept_term(prompt: &str) -> Option<String> {
-    let lower = prompt.to_lowercase();
-    let trimmed = lower.trim();
+    let trimmed = prompt.trim();
+    let trimmed = trimmed
+        .trim_end_matches(['?', '。', '.', '!', '!', ',', ',', ';', ':'])
+        .trim();
+    if trimmed.is_empty() {
+        return None;
+    }
+
+    if let Some(body) = strip_suffix_pattern(trimmed) {
+        return finalize_concept_body(&body);
+    }
+
+    let lower = trimmed.to_lowercase();
     let prefixes = [
         "what is a ",
         "what is an ",
@@ -157,28 +204,67 @@ pub fn extract_concept_term(prompt: &str) -> Option<String> {
         "describe ",
         "who is ",
         "who was ",
+        "что такое ",
+        "что это ",
+        "кто такой ",
+        "кто такая ",
+        "кто это ",
+        "расскажи о ",
+        "расскажи про ",
+        "опиши ",
+        "объясни ",
+        "什么是",
+        "甚麼是",
+        "请解释",
+        "请说说",
+        "介绍一下",
     ];
     let mut body: Option<&str> = None;
     for prefix in prefixes {
-        if let Some(rest) = trimmed.strip_prefix(prefix) {
-            body = Some(rest);
+        if let Some(rest) = lower.strip_prefix(prefix) {
+            let start = trimmed.len() - rest.len();
+            body = Some(trimmed[start..].trim());
             break;
         }
     }
     let body = body?;
-    let body = body.trim_end_matches(['?', '.', '!', ',', ';', ':']).trim();
+    finalize_concept_body(body)
+}
+
+fn finalize_concept_body(body: &str) -> Option<String> {
+    let body = body
+        .trim()
+        .trim_end_matches(['?', '。', '.', '!', '!', ',', ',', ';', ':'])
+        .trim()
+        .to_lowercase();
     if body.is_empty() {
         return None;
     }
-    let body = body
+    let trimmed_body = body
         .strip_suffix(" mean")
         .or_else(|| body.strip_suffix(" stand for"))
-        .unwrap_or(body)
+        .unwrap_or(&body)
         .trim();
-    if body.is_empty() {
+    if trimmed_body.is_empty() {
         return None;
     }
-    Some(body.to_owned())
+    Some(trimmed_body.to_owned())
+}
+
+fn strip_suffix_pattern(input: &str) -> Option<String> {
+    let hindi_suffixes = [" क्या है", " क्या होता है", " कौन है", " कौन हैं"];
+    for suffix in hindi_suffixes {
+        if let Some(rest) = input.strip_suffix(suffix) {
+            return Some(rest.trim().to_owned());
+        }
+    }
+    let chinese_suffixes = ["是什么", "是甚麼", "是谁", "是誰"];
+    for suffix in chinese_suffixes {
+        if let Some(rest) = input.strip_suffix(suffix) {
+            return Some(rest.trim().to_owned());
+        }
+    }
+    None
 }
 
 /// Look up a concept by term, alias, or slug. Comparison is case-insensitive

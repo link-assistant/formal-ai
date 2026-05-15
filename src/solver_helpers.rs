@@ -606,6 +606,37 @@ mod tests {
     }
 
     #[test]
+    fn concept_extraction_handles_multilingual_prefixes() {
+        assert_eq!(
+            extract_concept_term("Что такое Википедия?").as_deref(),
+            Some("википедия"),
+        );
+        assert_eq!(
+            extract_concept_term("Расскажи про Links Notation").as_deref(),
+            Some("links notation"),
+        );
+        assert_eq!(
+            extract_concept_term("विकिपीडिया क्या है?").as_deref(),
+            Some("विकिपीडिया"),
+        );
+        assert_eq!(
+            extract_concept_term("维基百科是什么?").as_deref(),
+            Some("维基百科"),
+        );
+        assert_eq!(
+            extract_concept_term("什么是 Rust?").as_deref(),
+            Some("rust"),
+        );
+    }
+
+    #[test]
+    fn concept_lookup_finds_multilingual_aliases() {
+        assert!(lookup_concept("Википедия").is_some());
+        assert!(lookup_concept("विकिपीडिया").is_some());
+        assert!(lookup_concept("维基百科").is_some());
+    }
+
+    #[test]
     fn javascript_extraction_finds_fenced_program() {
         let prompt = "Please run this javascript:\n```js\nconsole.log(1 + 2);\n```";
         let body = extract_javascript_program(prompt).expect("should extract");
