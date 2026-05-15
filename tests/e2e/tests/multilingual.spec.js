@@ -687,3 +687,75 @@ test.describe('Issue #27: conversations sidebar', () => {
     await expect(restored.first()).toContainText('Hello');
   });
 });
+
+// Issue #27 R3: sidebar sections behave like VS Code's accordion — expanded
+// sections flex to share the remaining height equally and each section body
+// scrolls independently.
+test.describe('Issue #27: sidebar accordion', () => {
+  test.beforeEach(async ({ page }) => {
+    await disableGreetingVariations(page);
+    await page.goto('./');
+    await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
+    await switchToManualMode(page);
+  });
+
+  test('expanded sidebar sections share the available height equally', async ({ page }) => {
+    const sections = page.locator(
+      '[data-testid="context-panel"] .sidebar-section.is-expanded',
+    );
+    const count = await sections.count();
+    expect(count).toBeGreaterThanOrEqual(2);
+    const heights = [];
+    for (let i = 0; i < count; i++) {
+      const box = await sections.nth(i).boundingBox();
+      expect(box).toBeTruthy();
+      heights.push(box.height);
+    }
+    const min = Math.min(...heights);
+    const max = Math.max(...heights);
+    // Equal-share flex: heights should differ by no more than 4px (header
+    // rounding tolerance).
+    expect(max - min).toBeLessThanOrEqual(4);
+  });
+
+  test('each section body scrolls independently when content overflows', async ({ page }) => {
+    const bodies = page.locator(
+      '[data-testid="context-panel"] .sidebar-section.is-expanded .sidebar-section-body',
+    );
+    const count = await bodies.count();
+    expect(count).toBeGreaterThanOrEqual(2);
+    for (let i = 0; i < count; i++) {
+      const overflow = await bodies.nth(i).evaluate(
+        (el) => getComputedStyle(el).overflowY,
+      );
+      // `auto` (scroll when needed) or `scroll` (always) both satisfy the
+      // independent-scroll requirement.
+      expect(['auto', 'scroll']).toContain(overflow);
+    }
+  });
+
+  test('collapsing a section gives its space to the remaining expanded sections', async ({ page }) => {
+    const allSections = page.locator(
+      '[data-testid="context-panel"] .sidebar-section',
+    );
+    const initialExpanded = await page
+      .locator('[data-testid="context-panel"] .sidebar-section.is-expanded')
+      .count();
+    if (initialExpanded < 2) test.skip();
+
+    const initialOther = await allSections
+      .nth(1)
+      .locator('.sidebar-section-body')
+      .boundingBox();
+
+    // Collapse the first section by clicking its header button.
+    await allSections.first().locator('.sidebar-section-header').click();
+    await expect(allSections.first()).toHaveAttribute('data-collapsed', 'true');
+
+    const grownOther = await allSections
+      .nth(1)
+      .locator('.sidebar-section-body')
+      .boundingBox();
+    expect(grownOther.height).toBeGreaterThan(initialOther.height);
+  });
+});

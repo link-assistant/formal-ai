@@ -15,6 +15,7 @@ bump: minor
 
 ### Fixed
 - **Issue #27 — `Кто такой Илон Маск?` Wikipedia lookup.** Russian Wikipedia biographies use the `Surname, Given names` slug form (e.g. ru.wikipedia.org redirects `Илон_Маск` to `Маск,_Илон` and the REST summary endpoint 404s on the former). `wikipediaTermVariants` now appends the swapped two-word form so the lookup hits the canonical biography slug. Covered by a new e2e test that returns 404 for every variant except `Маск,_Илон` and asserts the chat renders the biography.
+- **Issue #27 — Sidebar accordion regression coverage.** The VS Code-style sidebar (expanded sections share height via `flex: 1 1 0` and each body has `overflow: auto`) is now pinned by three Playwright tests under `Issue #27: sidebar accordion`: equal-height expanded sections, independent scroll on each body, and collapsing a section grows its siblings.
 
 ### Changed
 - Replaced the `Download bundle` button with an alias of `Export memory` so the action stays available under both names while collapsing the duplicate toolbar entry, per the issue body.

@@ -110,8 +110,8 @@ bullet so subsequent work can reference it.
 | Req | Status | Notes |
 |-----|--------|-------|
 | R1  | ✅ Shipped (previous commits on this branch) | `Download bundle` removed; alias added so any old wording still resolves. |
-| R2  | 🟡 Partially shipped | `Bundled N events + seed` summary text was deleted from the topbar in earlier work on this branch; needs a final pass to confirm no surface still emits it. |
-| R3  | 🟡 Future work | Sections are collapsible (sidebar uses `CollapsibleSection` everywhere) but they don't yet flex to equal heights with independent scrolls. Tracked for a follow-up commit. |
+| R2  | ✅ Shipped | `Bundled N events + seed` wording was removed from the topbar in earlier work on this branch. Verified with a grep across `src/` (no matches) and pinned by `tests/e2e/tests/multilingual.spec.js` (`Export memory does not surface a "Bundled N events + seed" label`), which asserts the post-export status never matches `/bundled \d+ events \+ seed/i`. |
+| R3  | ✅ Shipped | Each `.sidebar-section.is-expanded` uses `flex: 1 1 0` so expanded sections share the available height equally; each `.sidebar-section-body` is `overflow: auto` so it scrolls independently. Collapsing a section drops it to `flex: 0 0 auto` (header-only) and the remaining sections immediately grow into the freed space. Pinned by three Playwright tests under `Issue #27: sidebar accordion`. |
 | R4  | ✅ Shipped | `Example prompts` section live; lists 20 example prompts spanning hello-world variants in 6+ languages, Wikipedia look-ups in EN/RU/ZH, Export/Import memory, etc. |
 | R5  | 🟡 Partially shipped | Demo dialog uses a curated subset of examples. Random greeting selection lands in R6. |
 | R6  | ✅ Shipped (commit `036b481`) | Variants live in `data/seed/multilingual-responses.lino`; the JS seed loader returns `{ text, variants }`; the preference toggles random selection on/off. |
