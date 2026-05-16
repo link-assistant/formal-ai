@@ -357,18 +357,52 @@ pub fn try_meta_explanation(
     normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
-    if !(normalized.starts_with("why ")
+    let is_why_question = normalized.starts_with("why ")
         || normalized.starts_with("why did")
         || normalized.starts_with("why do you")
-        || normalized.contains("why did you answer"))
-    {
+        || normalized.contains("why did you answer");
+    let is_how_you_work = normalized.contains("how do you work")
+        || normalized.contains("how does this work")
+        || normalized.contains("how does it work")
+        || normalized.contains("show me how you work")
+        || normalized.contains("explain how you work")
+        // Russian
+        || normalized.contains("как ты работаешь")
+        || normalized.contains("покажи как ты работаешь")
+        || normalized.contains("расскажи как ты работаешь")
+        || normalized.contains("объясни как ты работаешь")
+        || normalized.contains("как ты устроен")
+        || normalized.contains("покажи как ты устроен")
+        // Hindi
+        || normalized.contains("तुम कैसे काम करते हो")
+        || normalized.contains("आप कैसे काम करते हैं")
+        // Chinese
+        || normalized.contains("你是怎么工作的")
+        || normalized.contains("你怎么运作");
+    if !is_why_question && !is_how_you_work {
         return None;
     }
-    let body = String::from(
-        "I answered that way because the prompt matched a deterministic Links Notation rule. \
-         The evidence and trace events are appended to the log; see the trace link for the \
-         full chain.",
-    );
+    let language = detect_language(prompt).slug();
+    let body = if is_why_question {
+        response_for("meta_explanation", language)
+            .or_else(|| response_for("meta_explanation", "en"))
+            .unwrap_or_else(|| String::from(
+                "I answered that way because the prompt matched a deterministic Links Notation rule. \
+                 The evidence and trace events are appended to the log; see the trace link for the \
+                 full chain.",
+            ))
+    } else {
+        response_for("meta_explanation", language)
+            .or_else(|| response_for("meta_explanation", "en"))
+            .unwrap_or_else(|| {
+                String::from(
+                "I work by matching your prompt against deterministic Links Notation rules stored \
+                 in memory. Each rule maps a recognized pattern to a fixed response. When no rule \
+                 matches, I report intent: unknown. There is no neural inference — every answer is \
+                 fully traceable to a symbolic rule.",
+            )
+            })
+    };
     Some(finalize_simple(
         prompt,
         log,
@@ -902,6 +936,46 @@ pub fn try_shell_refusal(
         "response:policy:bounded_autonomy",
         &body,
         0.5,
+    ))
+}
+
+pub fn try_opinion_question(
+    prompt: &str,
+    normalized: &str,
+    log: &mut EventLog,
+) -> Option<SymbolicAnswer> {
+    let is_opinion_request = normalized.starts_with("do you think")
+        || normalized.starts_with("what do you think")
+        || normalized.starts_with("what is your opinion")
+        || normalized.starts_with("what's your opinion")
+        || normalized.starts_with("in your opinion")
+        || normalized.starts_with("do you believe")
+        || normalized.starts_with("what do you believe")
+        || normalized.starts_with("do you feel")
+        || normalized.starts_with("what do you feel")
+        || normalized.starts_with("would you say")
+        || normalized.starts_with("how do you feel")
+        || normalized.starts_with("give me your opinion")
+        || normalized.starts_with("share your opinion")
+        || normalized.starts_with("share your thoughts")
+        || normalized.starts_with("what are your thoughts");
+    if !is_opinion_request {
+        return None;
+    }
+    log.append("policy:no_opinion", prompt.to_owned());
+    let body = String::from(
+        "I am a deterministic symbolic AI. I do not hold opinions, beliefs, or feelings — \
+         every answer I give is derived from an explicit Links Notation rule. \
+         If you are looking for factual information on this topic, try asking \
+         \"what is <topic>\" and I will look it up in my knowledge base.",
+    );
+    Some(finalize_simple(
+        prompt,
+        log,
+        "opinion_question",
+        "response:opinion_question",
+        &body,
+        1.0,
     ))
 }
 
