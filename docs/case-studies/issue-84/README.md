@@ -188,9 +188,11 @@ Unit tests at the bottom of `scripts/publish-crate.rs` cover all four classifica
 
 The exact same "unknown reason" message exists today in
 [`link-foundation/rust-ai-driven-development-pipeline-template/scripts/publish-crate.rs`](https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/blob/main/scripts/publish-crate.rs).
-A follow-up issue is filed there with a minimal reproduction (just bump 6 times in 10 minutes),
-the suggested patch (the same `rate_limited` branch added here), and a link back to this case
-study so the template can adopt the fix without re-deriving it.
+Follow-up issue filed at
+[link-foundation/rust-ai-driven-development-pipeline-template#57](https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/57)
+with a minimal reproduction (publish 5+ new versions of an existing crate within ~10 minutes), the
+suggested patch (the same `FailureKind` / `classify_failure` introduced here), and a link back to
+this case study so the template can adopt the fix without re-deriving it.
 
 ## Reproduction
 
@@ -227,7 +229,8 @@ the next-steps message linked above.
 
 ## Follow-ups
 
-- Upstream `link-foundation/rust-ai-driven-development-pipeline-template` issue for the
-  `publish-crate.rs` improvement (linked in the PR description once the issue is filed).
+- [link-foundation/rust-ai-driven-development-pipeline-template#57](https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/57)
+  — upstream issue for the `publish-crate.rs` rate-limit classification.
 - Upstream `codecov/codecov-action` deprecation tracking for the `actions/github-script@60a0d83`
-  reference (annotation only — the action still works through 2026-09-16).
+  reference (annotation only — the action still works through 2026-09-16). Not blocking and not
+  filed here.
