@@ -795,6 +795,7 @@ mod tests {
             routing.intents.iter().map(|r| r.id.clone()).collect();
         for expected in [
             "intent_greeting",
+            "intent_farewell",
             "intent_identity",
             "intent_unknown",
             "intent_hello_world",

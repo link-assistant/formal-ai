@@ -60,6 +60,9 @@ let MULTILINGUAL_ANSWERS = {
   greeting: {
     en: { text: FALLBACK_GREETING_ANSWER, variants: [FALLBACK_GREETING_ANSWER] },
   },
+  farewell: {
+    en: { text: "Goodbye! Feel free to return any time.", variants: ["Goodbye! Feel free to return any time."] },
+  },
   identity: {
     en: { text: FALLBACK_IDENTITY_ANSWER, variants: [FALLBACK_IDENTITY_ANSWER] },
   },
@@ -99,6 +102,15 @@ let INTENT_ROUTING = {
       keywords: ["hi", "hello", "hey", "привет", "здравствуйте", "नमस्ते", "你好", "您好"],
       phrases: [],
       tokens: ["greet"],
+      combos: [],
+    },
+    {
+      id: "intent_farewell",
+      slug: "farewell",
+      responseLink: "response:farewell",
+      keywords: ["bye", "goodbye", "пока", "ciao", "再见", "अलविदा"],
+      phrases: ["до свидания", "досвидания"],
+      tokens: [],
       combos: [],
     },
     {
@@ -841,6 +853,10 @@ function isIdentityPrompt(normalized, rawPrompt) {
 
 function isGreetingPrompt(normalized, rawPrompt) {
   return matchesIntentRoute(normalized, rawPrompt, "intent_greeting");
+}
+
+function isFarewellPrompt(normalized, rawPrompt) {
+  return matchesIntentRoute(normalized, rawPrompt, "intent_farewell");
 }
 
 function isPunctuationOnlyPrompt(prompt) {
@@ -1707,6 +1723,89 @@ function isSummarizePrompt(prompt, normalized) {
   return false;
 }
 
+function isFetchPrompt(normalized) {
+  return normalized.startsWith("fetch ") && normalized.length > 6;
+}
+
+function extractFetchUrl(normalized) {
+  const rest = normalized.slice("fetch ".length).trim();
+  if (!rest || !rest.includes(".")) return null;
+  if (rest.startsWith("http://") || rest.startsWith("https://")) return rest;
+  return `https://${rest}`;
+}
+
+async function tryFetch(prompt) {
+  const normalized = normalizePrompt(prompt);
+  if (!isFetchPrompt(normalized)) return null;
+  const url = extractFetchUrl(normalized);
+  if (!url) return null;
+
+  const evidence = [`http_fetch:request:${url}`];
+
+  if (typeof fetch !== "function") {
+    return {
+      intent: "http_fetch",
+      content: `HTTP fetch is not available in this environment.\n\nURL: [${url}](${url})`,
+      confidence: 0.5,
+      evidence,
+      iframeUrl: url,
+    };
+  }
+
+  try {
+    const response = await fetch(url, { method: "GET", mode: "cors" });
+    const status = response.status;
+    const contentType = response.headers.get("content-type") || "";
+    let body = "";
+    if (contentType.includes("text/") || contentType.includes("application/json")) {
+      const text = await response.text();
+      body = text.length > 2000 ? `${text.slice(0, 2000)}\n\n*(truncated — ${text.length} bytes total)*` : text;
+    }
+    evidence.push(`http_fetch:status:${status}`);
+    const lines = [
+      `Fetched \`${url}\` — status **${status}**.`,
+      "",
+    ];
+    if (body) {
+      lines.push("Response body:");
+      lines.push("```");
+      lines.push(body);
+      lines.push("```");
+    } else {
+      lines.push(`Content-Type: \`${contentType || "unknown"}\` — binary or empty body, not shown.`);
+      lines.push("");
+      lines.push(`You can view this URL directly: [${url}](${url})`);
+    }
+    return {
+      intent: "http_fetch",
+      content: lines.join("\n"),
+      confidence: 0.95,
+      evidence,
+      iframeUrl: null,
+    };
+  } catch (err) {
+    // CORS block or network failure — fall back to iframe.
+    const isCors =
+      err instanceof TypeError &&
+      (err.message.toLowerCase().includes("cors") ||
+        err.message.toLowerCase().includes("network") ||
+        err.message.toLowerCase().includes("failed to fetch"));
+    evidence.push(`http_fetch:error:${isCors ? "cors" : "network"}`);
+    const lines = [
+      `Could not fetch \`${url}\` directly${isCors ? " (CORS restriction)" : " (network error)"}.`,
+      "",
+      "The page is shown in the embedded frame below. Use the expand button to view it full-screen.",
+    ];
+    return {
+      intent: "http_fetch",
+      content: lines.join("\n"),
+      confidence: 0.7,
+      evidence,
+      iframeUrl: url,
+    };
+  }
+}
+
 async function solve(prompt, history, prefs) {
   const preferences = prefs || {};
   const steps = [];
@@ -1750,6 +1849,16 @@ async function solve(prompt, history, prefs) {
         `language:${language}`,
         `variation:${randomize ? "random" : "canonical"}`,
       ],
+    });
+  }
+  if (isFarewellPrompt(normalized, prompt)) {
+    events.push("rule:farewell");
+    steps.push({ step: "match_rule", detail: "farewell" });
+    return finalize(events, steps, toolCalls, {
+      intent: "farewell",
+      content: answerFor("farewell", language),
+      confidence: 1.0,
+      evidence: ["rule:farewell", `language:${language}`],
     });
   }
   if (isIdentityPrompt(normalized, prompt)) {
@@ -1796,6 +1905,19 @@ async function solve(prompt, history, prefs) {
     }
   }
 
+  steps.push({ step: "invoke_tool", detail: "http_fetch" });
+  const fetched = await tryFetch(prompt);
+  if (fetched) {
+    events.push(`handler:${fetched.intent}`);
+    steps.push({ step: "dispatch_handler", detail: "tryFetch" });
+    toolCalls.push({
+      tool: "http_fetch",
+      inputs: { prompt },
+      outputs: { intent: fetched.intent, confidence: fetched.confidence, iframeUrl: fetched.iframeUrl || null },
+    });
+    return finalize(events, steps, toolCalls, fetched);
+  }
+
   steps.push({ step: "invoke_tool", detail: "wikipedia_lookup" });
   const wiki = await tryWikipediaLookup(prompt, language);
   if (wiki) {
@@ -1838,7 +1960,7 @@ async function solve(prompt, history, prefs) {
 function finalize(events, steps, toolCalls, answer) {
   const evidence = Array.isArray(answer.evidence) ? answer.evidence : [];
   const trace = events.map((event) => `trace:${event}`);
-  return {
+  const result = {
     intent: answer.intent,
     content: answer.content,
     confidence: answer.confidence,
@@ -1846,6 +1968,10 @@ function finalize(events, steps, toolCalls, answer) {
     steps,
     toolCalls,
   };
+  if (answer.iframeUrl) {
+    result.iframeUrl = answer.iframeUrl;
+  }
+  return result;
 }
 
 let seedLoaded = false;

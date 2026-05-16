@@ -871,6 +871,7 @@ function Message({ message, diagnosticsMode, reportIssueUrl }) {
   const evidence = diagnosticsMode ? (message.evidence ?? []) : [];
   const thinkingSteps = diagnosticsMode ? (message.thinkingSteps ?? []) : [];
   const reportLabel = message.intent === "unknown" ? "Report missing rule" : "Report issue";
+  const [iframeExpanded, setIframeExpanded] = useState(true);
 
   return h(
     "article",
@@ -896,6 +897,47 @@ function Message({ message, diagnosticsMode, reportIssueUrl }) {
         className: "markdown-body",
         dangerouslySetInnerHTML: markdownHtml(message.content),
       }),
+      message.iframeUrl
+        ? h(
+            "div",
+            { className: "fetch-iframe-container", "data-testid": "fetch-iframe-container" },
+            h(
+              "div",
+              { className: "fetch-iframe-header" },
+              h(
+                "button",
+                {
+                  type: "button",
+                  className: "fetch-iframe-toggle",
+                  onClick: () => setIframeExpanded((prev) => !prev),
+                  "aria-expanded": iframeExpanded ? "true" : "false",
+                },
+                iframeExpanded ? "▼ Collapse" : "▶ Expand",
+              ),
+              h("span", { className: "fetch-iframe-url" }, message.iframeUrl),
+              h(
+                "a",
+                {
+                  href: message.iframeUrl,
+                  target: "_blank",
+                  rel: "noopener noreferrer",
+                  className: "fetch-iframe-open",
+                },
+                "Open in new tab",
+              ),
+            ),
+            iframeExpanded
+              ? h("iframe", {
+                  className: "fetch-iframe",
+                  src: message.iframeUrl,
+                  title: `Fetched page: ${message.iframeUrl}`,
+                  sandbox: "allow-scripts allow-same-origin allow-forms allow-popups",
+                  loading: "lazy",
+                  "data-testid": "fetch-iframe",
+                })
+              : null,
+          )
+        : null,
       evidence.length
         ? h(
             "div",
@@ -1282,6 +1324,7 @@ function App() {
       intent: answer.intent,
       evidence,
       thinkingSteps,
+      iframeUrl: answer.iframeUrl || null,
     });
     setMessages((current) => [...current, message]);
     const sentAt = new Date().toISOString();

@@ -39,6 +39,41 @@ fn shabbat_shalom_greeting_is_recognized_as_greeting() {
     }
 }
 
+// Issue #67: "пока" and similar farewell words were returned as unknown intent.
+#[test]
+fn farewell_prompts_are_recognized_as_farewell() {
+    let cases = [
+        ("пока", "ru"),
+        ("до свидания", "ru"),
+        ("bye", "en"),
+        ("goodbye", "en"),
+    ];
+
+    for (prompt, expected_language) in cases {
+        let response = FormalAiEngine.answer(prompt);
+
+        assert_eq!(
+            response.intent, "farewell",
+            "prompt {:?} should be recognized as farewell, got intent {:?}",
+            prompt, response.intent
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == "response:farewell"),
+            "prompt {prompt:?} response should cite response:farewell",
+        );
+        if expected_language == "ru" {
+            assert!(
+                response.answer.contains("свидания") || response.answer.contains("Пока"),
+                "Russian farewell {prompt:?} should get a Russian answer, got: {}",
+                response.answer
+            );
+        }
+    }
+}
+
 #[test]
 fn identity_questions_return_standard_self_description() {
     let cases = [
@@ -409,6 +444,32 @@ fn environment_directory_declares_every_supported_surface() {
         assert!(
             flow_ids.contains(&expected),
             "migration flow `{expected}` is missing; got {flow_ids:?}",
+        );
+    }
+}
+
+#[test]
+fn fetch_prompt_returns_http_fetch_intent_not_unknown() {
+    // Regression test for issue #71: "fetch google.com" was returning
+    // intent: unknown instead of routing to the http_fetch handler.
+    let cases = [
+        "fetch google.com",
+        "fetch https://example.com",
+        "fetch http://example.com/path",
+        "fetch example.com",
+    ];
+
+    for prompt in cases {
+        let response = FormalAiEngine.answer(prompt);
+
+        assert_eq!(
+            response.intent, "http_fetch",
+            "prompt {prompt:?} should resolve to http_fetch, got {:?} — answer: {}",
+            response.intent, response.answer
+        );
+        assert_ne!(
+            response.intent, "unknown",
+            "prompt {prompt:?} must not return unknown intent"
         );
     }
 }

@@ -27,3 +27,27 @@ greeting_5
   intent "greeting"
   response_link "response:greeting"
   answer "Здравствуйте! Чем могу помочь?"
+
+farewell_1
+  text "Bye"
+  intent "farewell"
+  response_link "response:farewell"
+  answer "Goodbye! Feel free to return any time."
+
+farewell_2
+  text "Goodbye"
+  intent "farewell"
+  response_link "response:farewell"
+  answer "Goodbye! Feel free to return any time."
+
+farewell_3
+  text "пока"
+  intent "farewell"
+  response_link "response:farewell"
+  answer "До свидания! Возвращайтесь в любое время."
+
+farewell_4
+  text "до свидания"
+  intent "farewell"
+  response_link "response:farewell"
+  answer "До свидания! Возвращайтесь в любое время."
