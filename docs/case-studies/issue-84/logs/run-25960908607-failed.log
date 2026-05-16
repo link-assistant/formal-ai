@@ -1,0 +1,74 @@
+Auto Release	Publish to Crates.io	﻿2026-05-16T11:41:19.9796926Z ##[group]Run rust-script scripts/publish-crate.rs
+Auto Release	Publish to Crates.io	2026-05-16T11:41:19.9797308Z ^[[36;1mrust-script scripts/publish-crate.rs^[[0m
+Auto Release	Publish to Crates.io	2026-05-16T11:41:19.9829407Z shell: /usr/bin/bash -e {0}
+Auto Release	Publish to Crates.io	2026-05-16T11:41:19.9829632Z env:
+Auto Release	Publish to Crates.io	2026-05-16T11:41:19.9829806Z   CARGO_TERM_COLOR: always
+Auto Release	Publish to Crates.io	2026-05-16T11:41:19.9830032Z   RUSTFLAGS: -Dwarnings
+Auto Release	Publish to Crates.io	2026-05-16T11:41:19.9830346Z   CARGO_REGISTRY_TOKEN: ***
+Auto Release	Publish to Crates.io	2026-05-16T11:41:19.9830636Z   CARGO_TOKEN: ***
+Auto Release	Publish to Crates.io	2026-05-16T11:41:19.9830819Z   DOCKERHUB_IMAGE: 
+Auto Release	Publish to Crates.io	2026-05-16T11:41:19.9831008Z   DOCKERHUB_USERNAME: 
+Auto Release	Publish to Crates.io	2026-05-16T11:41:19.9831263Z   DOCKERHUB_TOKEN: ***
+Auto Release	Publish to Crates.io	2026-05-16T11:41:19.9831464Z   CARGO_HOME: /home/runner/.cargo
+Auto Release	Publish to Crates.io	2026-05-16T11:41:19.9831692Z   CARGO_INCREMENTAL: 0
+Auto Release	Publish to Crates.io	2026-05-16T11:41:19.9831872Z ##[endgroup]
+Auto Release	Publish to Crates.io	2026-05-16T11:41:20.5190442Z Detected single-language repository (Cargo.toml in root)
+Auto Release	Publish to Crates.io	2026-05-16T11:41:20.5196662Z Package: formal-ai@0.43.0
+Auto Release	Publish to Crates.io	2026-05-16T11:41:20.5196932Z 
+Auto Release	Publish to Crates.io	2026-05-16T11:41:20.5197073Z === Attempting to publish to crates.io ===
+Auto Release	Publish to Crates.io	2026-05-16T11:41:20.5197365Z Using provided authentication token
+Auto Release	Publish to Crates.io	2026-05-16T11:41:31.3568536Z Failed to publish for unknown reason
+Auto Release	Publish to Crates.io	2026-05-16T11:41:31.3568899Z 
+Auto Release	Publish to Crates.io	2026-05-16T11:41:31.3569654Z ^[[1m^[[33mwarning^[[0m: `cargo publish --token` is deprecated in favor of using `cargo login` and environment variables
+Auto Release	Publish to Crates.io	2026-05-16T11:41:31.3570696Z ^[[1m^[[92m    Updating^[[0m crates.io index
+Auto Release	Publish to Crates.io	2026-05-16T11:41:31.3571482Z ^[[1m^[[92m   Packaging^[[0m formal-ai v0.43.0 (/home/runner/work/formal-ai/formal-ai)
+Auto Release	Publish to Crates.io	2026-05-16T11:41:31.3572245Z ^[[1m^[[92m    Updating^[[0m crates.io index
+Auto Release	Publish to Crates.io	2026-05-16T11:41:31.3573179Z ^[[1m^[[92m    Packaged^[[0m 567 files, 12.3MiB (6.3MiB compressed)
+Auto Release	Publish to Crates.io	2026-05-16T11:41:31.3574045Z ^[[1m^[[92m   Verifying^[[0m formal-ai v0.43.0 (/home/runner/work/formal-ai/formal-ai)
+Auto Release	Publish to Crates.io	2026-05-16T11:41:31.3574841Z ^[[1m^[[92m   Compiling^[[0m proc-macro2 v1.0.103
+Auto Release	Publish to Crates.io	2026-05-16T11:41:31.3575745Z ^[[1m^[[92m   Compiling^[[0m quote v1.0.42
+Auto Release	Publish to Crates.io	2026-05-16T11:41:31.3576240Z ^[[1m^[[92m   Compiling^[[0m unicode-ident v1.0.22
+Auto Release	Publish to Crates.io	2026-05-16T11:41:31.3576756Z ^[[1m^[[92m   Compiling^[[0m serde_core v1.0.228
+Auto Release	Publish to Crates.io	2026-05-16T11:41:31.3577318Z ^[[1m^[[92m   Compiling^[[0m utf8parse v0.2.2
+Auto Release	Publish to Crates.io	2026-05-16T11:41:31.3577875Z ^[[1m^[[92m   Compiling^[[0m anstyle-parse v0.2.7
+Auto Release	Publish to Crates.io	2026-05-16T11:41:31.3578393Z ^[[1m^[[92m   Compiling^[[0m anstyle v1.0.14
+Auto Release	Publish to Crates.io	2026-05-16T11:41:31.3578910Z ^[[1m^[[92m   Compiling^[[0m colorchoice v1.0.5
+Auto Release	Publish to Crates.io	2026-05-16T11:41:31.3579487Z ^[[1m^[[92m   Compiling^[[0m is_terminal_polyfill v1.70.2
+Auto Release	Publish to Crates.io	2026-05-16T11:41:31.3580030Z ^[[1m^[[92m   Compiling^[[0m memchr v2.8.0
+Auto Release	Publish to Crates.io	2026-05-16T11:41:31.3580532Z ^[[1m^[[92m   Compiling^[[0m anstyle-query v1.1.5
+Auto Release	Publish to Crates.io	2026-05-16T11:41:31.3581041Z ^[[1m^[[92m   Compiling^[[0m anstream v0.6.21
+Auto Release	Publish to Crates.io	2026-05-16T11:41:31.3581338Z ^[[1m^[[92m   Compiling^[[0m serde v1.0.228
+Auto Release	Publish to Crates.io	2026-05-16T11:41:31.3581618Z ^[[1m^[[92m   Compiling^[[0m thiserror v1.0.69
+Auto Release	Publish to Crates.io	2026-05-16T11:41:31.3581903Z ^[[1m^[[92m   Compiling^[[0m syn v2.0.111
+Auto Release	Publish to Crates.io	2026-05-16T11:41:31.3582181Z ^[[1m^[[92m   Compiling^[[0m zmij v1.0.21
+Auto Release	Publish to Crates.io	2026-05-16T11:41:31.3582445Z ^[[1m^[[92m   Compiling^[[0m heck v0.5.0
+Auto Release	Publish to Crates.io	2026-05-16T11:41:31.3582717Z ^[[1m^[[92m   Compiling^[[0m strsim v0.11.1
+Auto Release	Publish to Crates.io	2026-05-16T11:41:31.3583358Z ^[[1m^[[92m   Compiling^[[0m clap_lex v1.1.0
+Auto Release	Publish to Crates.io	2026-05-16T11:41:31.3583679Z ^[[1m^[[92m   Compiling^[[0m dtor-proc-macro v0.0.5
+Auto Release	Publish to Crates.io	2026-05-16T11:41:31.3583999Z ^[[1m^[[92m   Compiling^[[0m clap_builder v4.5.60
+Auto Release	Publish to Crates.io	2026-05-16T11:41:31.3584289Z ^[[1m^[[92m   Compiling^[[0m dtor v0.0.6
+Auto Release	Publish to Crates.io	2026-05-16T11:41:31.3584554Z ^[[1m^[[92m   Compiling^[[0m nom v8.0.0
+Auto Release	Publish to Crates.io	2026-05-16T11:41:31.3584844Z ^[[1m^[[92m   Compiling^[[0m ctor-proc-macro v0.0.6
+Auto Release	Publish to Crates.io	2026-05-16T11:41:31.3585159Z ^[[1m^[[92m   Compiling^[[0m serde_json v1.0.149
+Auto Release	Publish to Crates.io	2026-05-16T11:41:31.3585414Z Output: publish_result=failed
+Auto Release	Publish to Crates.io	2026-05-16T11:41:31.3585706Z ^[[1m^[[92m   Compiling^[[0m ctor v0.4.3
+Auto Release	Publish to Crates.io	2026-05-16T11:41:31.3585972Z ^[[1m^[[92m   Compiling^[[0m itoa v1.0.18
+Auto Release	Publish to Crates.io	2026-05-16T11:41:31.3586245Z ^[[1m^[[92m   Compiling^[[0m lino-env v0.1.0
+Auto Release	Publish to Crates.io	2026-05-16T11:41:31.3586526Z ^[[1m^[[92m   Compiling^[[0m base64 v0.22.1
+Auto Release	Publish to Crates.io	2026-05-16T11:41:31.3586816Z ^[[1m^[[92m   Compiling^[[0m dotenvy v0.15.7
+Auto Release	Publish to Crates.io	2026-05-16T11:41:31.3587118Z ^[[1m^[[92m   Compiling^[[0m links-notation v0.13.0
+Auto Release	Publish to Crates.io	2026-05-16T11:41:31.3587444Z ^[[1m^[[92m   Compiling^[[0m serde_derive v1.0.228
+Auto Release	Publish to Crates.io	2026-05-16T11:41:31.3588029Z ^[[1m^[[92m   Compiling^[[0m clap_derive v4.5.55
+Auto Release	Publish to Crates.io	2026-05-16T11:41:31.3588346Z ^[[1m^[[92m   Compiling^[[0m thiserror-impl v1.0.69
+Auto Release	Publish to Crates.io	2026-05-16T11:41:31.3588676Z ^[[1m^[[92m   Compiling^[[0m lino-objects-codec v0.2.1
+Auto Release	Publish to Crates.io	2026-05-16T11:41:31.3588985Z ^[[1m^[[92m   Compiling^[[0m clap v4.5.60
+Auto Release	Publish to Crates.io	2026-05-16T11:41:31.3589301Z ^[[1m^[[92m   Compiling^[[0m lino-arguments v0.3.0
+Auto Release	Publish to Crates.io	2026-05-16T11:41:31.3589865Z ^[[1m^[[92m   Compiling^[[0m formal-ai v0.43.0 (/home/runner/work/formal-ai/formal-ai/target/package/formal-ai-0.43.0)
+Auto Release	Publish to Crates.io	2026-05-16T11:41:31.3590510Z ^[[1m^[[92m    Finished^[[0m `dev` profile [unoptimized + debuginfo] target(s) in 10.52s
+Auto Release	Publish to Crates.io	2026-05-16T11:41:31.3591044Z ^[[1m^[[92m   Uploading^[[0m formal-ai v0.43.0 (/home/runner/work/formal-ai/formal-ai)
+Auto Release	Publish to Crates.io	2026-05-16T11:41:31.3591621Z ^[[1m^[[91merror^[[0m: failed to publish formal-ai v0.43.0 to registry at https://crates.io
+Auto Release	Publish to Crates.io	2026-05-16T11:41:31.3591956Z 
+Auto Release	Publish to Crates.io	2026-05-16T11:41:31.3592023Z Caused by:
+Auto Release	Publish to Crates.io	2026-05-16T11:41:31.3592535Z   the remote server responded with an error (status 429 Too Many Requests): You have published too many versions of this crate in the last 24 hours
+Auto Release	Publish to Crates.io	2026-05-16T11:41:31.3593330Z 
+Auto Release	Publish to Crates.io	2026-05-16T11:41:31.3604837Z ##[error]Process completed with exit code 1.
