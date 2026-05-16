@@ -99,6 +99,13 @@ test.describe('multilingual chat surface', () => {
     await expect(last).toContainText(/Wikipedia|encyclopedia/i);
   });
 
+  test('punctuation-only prompt asks for clarification', async ({ page }) => {
+    const last = await sendPrompt(page, '.');
+    await expect(last).toHaveClass(/assistant/);
+    await expect(last).toContainText(/only punctuation/i);
+    await expect(last).toContainText(/What would you like/i);
+  });
+
   // Issue #31: "что такое Kiss в рамках програмирования" was returning the
   // rock band KISS instead of the software design principle because the
   // wikipedia_lookup intent ignored the context clause.
@@ -142,6 +149,60 @@ test.describe('Wikipedia REST fallback', () => {
     await expect(last).toContainText('Albert Einstein');
     await expect(last).toContainText('theoretical physicist');
     await expect(last).toContainText('en.wikipedia.org');
+  });
+
+  test('"Tell me, who is X" resolves through Wikipedia lookup', async ({ page }) => {
+    await page.route('**/api/rest_v1/page/summary/**', async (route) => {
+      const json = {
+        title: 'Donald Trump',
+        extract:
+          'Donald John Trump is an American politician, media personality, and businessman.',
+        type: 'standard',
+        content_urls: {
+          desktop: { page: 'https://en.wikipedia.org/wiki/Donald_Trump' },
+        },
+      };
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(json),
+      });
+    });
+
+    const last = await sendPrompt(page, 'Tell me, who is Trump');
+    await expect(last).toHaveClass(/assistant/);
+    await expect(last).toContainText('Donald Trump');
+    await expect(last).toContainText('politician');
+    await expect(last).not.toContainText(
+      'learned symbolic rule for that prompt yet',
+    );
+  });
+
+  test('"Who X is" resolves through Wikipedia lookup', async ({ page }) => {
+    await page.route('**/api/rest_v1/page/summary/**', async (route) => {
+      const json = {
+        title: 'Donald Trump',
+        extract:
+          'Donald John Trump is an American politician, media personality, and businessman.',
+        type: 'standard',
+        content_urls: {
+          desktop: { page: 'https://en.wikipedia.org/wiki/Donald_Trump' },
+        },
+      };
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(json),
+      });
+    });
+
+    const last = await sendPrompt(page, 'Who Trump is');
+    await expect(last).toHaveClass(/assistant/);
+    await expect(last).toContainText('Donald Trump');
+    await expect(last).toContainText('politician');
+    await expect(last).not.toContainText(
+      'learned symbolic rule for that prompt yet',
+    );
   });
 
   // Issue #21: Wikipedia returns percent-encoded URLs for non-ASCII titles.

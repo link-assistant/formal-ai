@@ -59,6 +59,31 @@ pub fn try_clarification(
     ))
 }
 
+pub fn try_punctuation_only_prompt(
+    prompt: &str,
+    _normalized: &str,
+    log: &mut EventLog,
+) -> Option<SymbolicAnswer> {
+    let trimmed = prompt.trim();
+    let sentence_marks = ['.', '?', '!', '…', '。', '？', '！'];
+    let is_punctuation_only =
+        !trimmed.is_empty() && trimmed.chars().all(|ch| sentence_marks.contains(&ch));
+    if !is_punctuation_only {
+        return None;
+    }
+    log.append("clarification:punctuation_only", trimmed.to_owned());
+    let body =
+        format!("I received only punctuation (`{trimmed}`). What would you like me to do next?");
+    Some(finalize_simple(
+        prompt,
+        log,
+        "clarification",
+        "response:clarification",
+        &body,
+        0.8,
+    ))
+}
+
 pub fn try_ill_formed(
     prompt: &str,
     normalized: &str,
