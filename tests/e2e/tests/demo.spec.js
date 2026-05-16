@@ -164,8 +164,14 @@ test.describe('formal-ai demo UI', () => {
     expect(url.searchParams.get('labels')).toBe('bug');
     expect(body).toContain('## Environment');
     expect(body).toContain('## Dialog');
-    expect(body).toContain('Hello');
-    expect(body).toContain('Hi, how may I help you?');
+    // Issue #78: the dialog is now a single fenced code block with `U:` /
+    // `A:` line prefixes instead of one Markdown subsection per message.
+    expect(body).toContain('Legend: `U` = user, `A` = agent.');
+    expect(body).toContain('U: Hello');
+    expect(body).toContain('A: Hi, how may I help you?');
+    // The verbose per-message subsections must be gone.
+    expect(body).not.toMatch(/^### \d+\. /m);
+    expect(body).not.toContain('- **Role**:');
   });
 
   test('asking who are you produces an identity response', async ({ page }) => {
@@ -222,7 +228,9 @@ test.describe('formal-ai demo UI', () => {
     expect(body).toContain('**User Agent**');
     expect(body).toContain('## Dialog');
     expect(body).toContain(prompt);
-    expect(body).toContain('intent: unknown');
+    // Issue #78: intent now appears inline next to the assistant turn marker
+    // ("A (intent: unknown, reported): ...") inside the dialog code block.
+    expect(body).toMatch(/A \(intent: unknown[^)]*\):/);
     expect(body).toContain('## Reproduction Steps');
   });
 

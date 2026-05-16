@@ -455,7 +455,7 @@ test.describe('memory export/import', () => {
     await expect(page.locator('[data-testid="memory-import-input"]')).toHaveCount(1);
   });
 
-  test('Report issue link is present in the topbar and prefills full-memory + zip instructions (R112)', async ({ page }) => {
+  test('Report issue link is present in the topbar and links to the upload-memory guide (R112 + issue #78)', async ({ page }) => {
     const reportLink = page.locator('[data-testid="report-issue"]');
     await expect(reportLink).toBeVisible();
     const href = await reportLink.getAttribute('href');
@@ -463,13 +463,20 @@ test.describe('memory export/import', () => {
     const url = new URL(href);
     expect(url.origin + url.pathname).toBe('https://github.com/link-assistant/formal-ai/issues/new');
     const body = url.searchParams.get('body') || '';
-    // R112: the prefilled body must tell the user to attach the full memory
-    // export, wrap it in a .zip (GitHub does not accept .lino), and redact
-    // sensitive content before attaching.
+    // Issue #78: the prefilled body must stay short. It still mentions the
+    // export filename, the Export memory action, .zip / Gist upload paths, and
+    // redaction — but only in one line that links to docs/upload-memory.md for
+    // the full walkthrough (R112).
     expect(body).toContain('formal-ai-memory.lino');
     expect(body).toContain('Export memory');
     expect(body).toMatch(/\.zip/);
     expect(body).toMatch(/redact/i);
+    expect(body).toContain('docs/upload-memory.md');
+    // The long block of per-OS zip instructions that used to live in the body
+    // must be gone (it has moved into docs/upload-memory.md so a single link
+    // is enough).
+    expect(body).not.toMatch(/Send to.*Compressed/);
+    expect(body).not.toMatch(/right-click.*Compress/);
   });
 
   test('Tool registry surfaces seed-loaded tools with mode badges', async ({ page }) => {

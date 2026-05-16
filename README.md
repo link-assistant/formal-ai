@@ -64,7 +64,7 @@ cargo run -- bundle export --path bundle.lino --memory memory.lino
 cargo run -- bundle import --path bundle.lino --into memory.lino
 ```
 
-The Rust library re-exports the same helpers — `export_memory_full`, `import_memory_full`, `suggest_memory_migrations`, `BundleInfo`, `ParsedBundle` — so embedders writing their own surface get the same defaults. The prefilled **Report issue** link tells users to wrap the export in a `.zip` (GitHub does not yet accept `.lino` attachments) and to redact sensitive content before attaching.
+The Rust library re-exports the same helpers — `export_memory_full`, `import_memory_full`, `suggest_memory_migrations`, `BundleInfo`, `ParsedBundle` — so embedders writing their own surface get the same defaults. The prefilled **Report issue** link records the dialog as a single compact `U:`/`A:` code block and points to [`docs/upload-memory.md`](docs/upload-memory.md) for attaching the full memory export (GitHub Gist or `.zip` workflow, plus redaction reminders) instead of repeating those instructions inline.
 
 ## Telegram Bot
 
