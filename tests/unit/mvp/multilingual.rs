@@ -439,9 +439,9 @@ fn russian_nonsensical_question_returns_unknown_intent() {
 }
 
 #[test]
-fn russian_mixed_units_question_returns_unknown_intent() {
+fn russian_mixed_units_question_returns_unit_incompatibility_intent() {
     let response = answer("Сколько метров в килобайте?");
-    assert_eq!(response.intent, "unknown");
+    assert_eq!(response.intent, "unit_incompatibility");
 }
 
 #[test]

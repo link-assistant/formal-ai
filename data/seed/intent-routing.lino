@@ -7,6 +7,8 @@ intent_routing
     keyword "hey"
     keyword "привет"
     keyword "здравствуйте"
+    keyword "шалом"
+    phrase "шабат шалом"
     keyword "नमस्ते"
     keyword "你好"
     token "greet"

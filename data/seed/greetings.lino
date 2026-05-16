@@ -15,3 +15,15 @@ greeting_3
   intent "greeting"
   response_link "response:greeting"
   answer "Hi, how may I help you?"
+
+greeting_4
+  text "шалом"
+  intent "greeting"
+  response_link "response:greeting"
+  answer "Здравствуйте! Чем могу помочь?"
+
+greeting_5
+  text "шабат шалом"
+  intent "greeting"
+  response_link "response:greeting"
+  answer "Здравствуйте! Чем могу помочь?"
