@@ -40,8 +40,19 @@ if [[ ! -f "$index_html" ]]; then
   exit 1
 fi
 
+# Portable in-place sed: BSD sed (macOS) requires an explicit extension
+# argument after `-i`, while GNU sed (Linux) rejects that form. Stream
+# through a temp file so the script works on both CI runners.
+replace_in_place() {
+  local pattern="$1"
+  local file="$2"
+  local tmp="${file}.stamp.tmp"
+  sed "$pattern" "$file" > "$tmp"
+  mv "$tmp" "$file"
+}
+
 escaped_version="$(printf '%s' "$asset_version" | sed 's/[\/&]/\\&/g')"
-sed -i "s/__FORMAL_AI_ASSET_VERSION__/${escaped_version}/g" "$index_html"
+replace_in_place "s/__FORMAL_AI_ASSET_VERSION__/${escaped_version}/g" "$index_html"
 
 if grep -q "__FORMAL_AI_ASSET_VERSION__" "$index_html"; then
   echo "::error file=${index_html}::Failed to replace the Pages asset version placeholder"
@@ -49,7 +60,7 @@ if grep -q "__FORMAL_AI_ASSET_VERSION__" "$index_html"; then
 fi
 
 escaped_formal_ai_version="$(printf '%s' "$formal_ai_version" | sed 's/[\/&]/\\&/g')"
-sed -i "s/__FORMAL_AI_VERSION__/${escaped_formal_ai_version}/g" "$index_html"
+replace_in_place "s/__FORMAL_AI_VERSION__/${escaped_formal_ai_version}/g" "$index_html"
 
 if grep -q "__FORMAL_AI_VERSION__" "$index_html"; then
   echo "::error file=${index_html}::Failed to replace the formal-ai version placeholder"
