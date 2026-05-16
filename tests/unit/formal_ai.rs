@@ -75,6 +75,44 @@ fn rust_hello_world_prompt_returns_code_block() {
     assert!(response.answer.contains("```text\nHello, world!\n```"));
 }
 
+// Issue #31: Queries about KISS in a programming context should return the
+// software design principle, not the rock band KISS.
+#[test]
+fn kiss_in_programming_context_returns_design_principle_not_band() {
+    let cases = [
+        // Exact issue report (Russian, misspelled programming word, "в рамках" delimiter)
+        "что такое Kiss в рамках програмирования",
+        // English equivalents
+        "what is KISS in programming",
+        "what is kiss in software development",
+    ];
+
+    for prompt in cases {
+        let response = FormalAiEngine.answer(prompt);
+
+        // Must resolve as a concept lookup (offline, deterministic — no Wikipedia
+        // network call needed because the KISS principle is in the concept corpus).
+        assert!(
+            response.intent == "concept_lookup_in_context" || response.intent == "concept_lookup",
+            "[{prompt}] unexpected intent: {}",
+            response.intent
+        );
+        // Answer must mention the design principle, not the rock band.
+        assert!(
+            response.answer.contains("принцип")
+                || response.answer.contains("KISS")
+                || response.answer.contains("simple"),
+            "[{prompt}] answer does not mention the design principle: {}",
+            response.answer
+        );
+        assert!(
+            !response.answer.contains("рок-группа") && !response.answer.contains("rock band"),
+            "[{prompt}] answer incorrectly describes the rock band: {}",
+            response.answer
+        );
+    }
+}
+
 #[test]
 fn hello_world_prompt_supports_multiple_programming_languages() {
     let cases = [
