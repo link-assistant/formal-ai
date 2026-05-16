@@ -90,10 +90,7 @@ pub fn try_how_it_works(
             if lookup_concept_query(&query).is_some() {
                 log.append("followup:subject", format!("inline:{term}"));
                 // Delegate to try_concept_lookup by synthesising a standard prompt.
-                return crate::solver_handlers::try_concept_lookup(
-                    &format!("what is {term}"),
-                    log,
-                );
+                return crate::solver_handlers::try_concept_lookup(&format!("what is {term}"), log);
             }
         }
     }

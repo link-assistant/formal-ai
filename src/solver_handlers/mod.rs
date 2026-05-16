@@ -28,8 +28,8 @@ use crate::solver_helpers::{
     detect_source_language, detect_target_language, extract_backticked, extract_concept_from_query,
     extract_introduced_name, extract_javascript_program, extract_quoted_phrase, humanize_url,
     infer_program_languages_from_code, infer_source_from_prompt, last_user_turn,
-    normalize_code_meaning, normalize_meaning, recall_name_from_history,
-    translate_program, translate_surface,
+    normalize_code_meaning, normalize_meaning, recall_name_from_history, translate_program,
+    translate_surface,
 };
 
 pub fn try_conversation_memory(
