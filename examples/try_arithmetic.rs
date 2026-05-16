@@ -1,4 +1,4 @@
-//! Smoke-test the new arithmetic handler. Run with:
+//! Smoke-test the calculation handler. Run with:
 //! `cargo run --example try_arithmetic` after copying this file into examples/.
 //! Or run via: `rustc -L target/debug/deps --edition 2021 try_arithmetic.rs ...`
 //!
@@ -10,6 +10,12 @@ use formal_ai::FormalAiEngine;
 fn main() {
     let prompts = [
         "What is 2 + 2?",
+        "What is 8% of $50?",
+        "Please calculate sqrt(16)",
+        "Compute 300000 ms in seconds",
+        "Посчитай 1000 рублей в долларах",
+        "计算 1000 美元 换成 欧元",
+        "गणना करें 1000 डॉलर में यूरो",
         "Calculate 7 * (3 + 4)",
         "What is 10 / 3",
         "Compute 100 - 25 % 7",

@@ -27,6 +27,7 @@
 //!   internal state by default.
 
 mod agent_isolation;
+mod calculator_delegation;
 mod chat_surface;
 mod code_generation;
 mod links_network;

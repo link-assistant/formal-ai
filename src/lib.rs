@@ -1,4 +1,5 @@
 pub(crate) mod arithmetic;
+pub(crate) mod calculation;
 pub(crate) mod concepts;
 pub mod engine;
 pub(crate) mod engine_hello_world;

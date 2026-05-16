@@ -1,0 +1,9 @@
+link-calculator #calculator #wasm #grammar #links-notation #expression-parser
+A Rust WebAssembly calculator with grammar-based expression parsing using links-notation
+version: 0.16.0
+license: Unlicense
+rust-version: 1.70
+documentation: https://github.com/link-assistant/calculator
+repository: https://github.com/link-assistant/calculator
+crates.io: https://crates.io/crates/link-calculator/0.16.0
+note: to see how you depend on link-calculator, run `cargo tree --invert link-calculator@0.16.0`

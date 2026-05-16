@@ -551,6 +551,7 @@ test.describe('memory export/import', () => {
       nodes.map((node) => node.getAttribute('data-tool-mode')),
     );
     expect(modes).toContain('thinking');
+    await expect(registry).toContainText('calculator');
   });
 
   test('Reasoning steps and tool calls land in the append-only log', async ({ page }) => {

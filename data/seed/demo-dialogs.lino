@@ -39,3 +39,31 @@ dialog_c
   language "C"
   expected_intent "hello_world_c"
   cycle_wait_seconds "10-20"
+
+dialog_calculator_english
+  greeting "Hi"
+  request "What is 8 * (5 + 3)?"
+  language "English"
+  expected_intent "calculation"
+  cycle_wait_seconds "10-20"
+
+dialog_calculator_russian
+  greeting "Привет"
+  request "Сколько будет 2 + 2?"
+  language "Russian"
+  expected_intent "calculation"
+  cycle_wait_seconds "10-20"
+
+dialog_calculator_chinese
+  greeting "你好"
+  request "计算 2 + 2"
+  language "Chinese"
+  expected_intent "calculation"
+  cycle_wait_seconds "10-20"
+
+dialog_calculator_hindi
+  greeting "नमस्ते"
+  request "2 + 2 कितना है?"
+  language "Hindi"
+  expected_intent "calculation"
+  cycle_wait_seconds "10-20"
