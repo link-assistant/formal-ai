@@ -721,6 +721,46 @@ function appendCodeBlock(lines, value) {
   lines.push(fence);
 }
 
+// Issue #78: render the entire dialog as a single fenced block with `U:` /
+// `A:` line prefixes, instead of one Markdown subsection per message. Keeps
+// the prefilled GitHub issue body short enough to fit the `?body=` query
+// string (which truncates around 8 KB) and easier for a maintainer to scan.
+function pickDialogFence(messages) {
+  let fence = "```";
+  while (messages.some((message) => String(message.content ?? "").includes(fence))) {
+    fence += "`";
+  }
+  return fence;
+}
+
+function appendDialogBlock(lines, messages, effectiveFocus) {
+  if (messages.length === 0) {
+    lines.push("No messages have been sent yet.");
+    return;
+  }
+
+  lines.push("Legend: `U` = user, `A` = agent.");
+  lines.push("");
+  const fence = pickDialogFence(messages);
+  lines.push(fence);
+  messages.forEach((message) => {
+    const prefix = message.role === "user" ? "U" : "A";
+    const annotations = [];
+    if (message.intent === "unknown") {
+      annotations.push(`intent: ${message.intent}`);
+      if (effectiveFocus && effectiveFocus.id === message.id) {
+        annotations.push("reported");
+      }
+    }
+    const head = annotations.length > 0 ? `${prefix} (${annotations.join(", ")})` : prefix;
+    const content = String(message.content ?? "");
+    const [first, ...rest] = content.split("\n");
+    lines.push(`${head}: ${first}`);
+    rest.forEach((row) => lines.push(`   ${row}`));
+  });
+  lines.push(fence);
+}
+
 function shortText(value, limit = 70) {
   const normalized = String(value ?? "").replace(/\s+/g, " ").trim();
   if (normalized.length <= limit) {
@@ -789,26 +829,7 @@ function createIssueReportBody({
     "",
   ];
 
-  if (messages.length === 0) {
-    lines.push("No messages have been sent yet.");
-  } else {
-    messages.forEach((message, index) => {
-      const reported = effectiveFocus?.id === message.id ? " (reported message)" : "";
-      lines.push(`### ${index + 1}. ${message.author}${reported}`);
-      lines.push("");
-      lines.push(`- **Role**: ${message.role}`);
-      lines.push(`- **Time**: ${message.sentAt}`);
-      if (message.intent) {
-        lines.push(`- **Intent**: intent: ${message.intent}`);
-      }
-      if (message.demoLabel) {
-        lines.push(`- **Demo label**: ${message.demoLabel}`);
-      }
-      lines.push("");
-      appendCodeBlock(lines, message.content);
-      lines.push("");
-    });
-  }
+  appendDialogBlock(lines, messages, effectiveFocus);
 
   const prompt = promptBeforeMessage(messages, effectiveFocus);
   lines.push("");
@@ -827,22 +848,10 @@ function createIssueReportBody({
   lines.push("");
   lines.push("<!-- Please describe what looked wrong or incomplete. -->");
   lines.push("");
-  lines.push("## Attach full memory (recommended)");
+  lines.push("## Attach full memory (optional)");
   lines.push("");
   lines.push(
-    "Click **Export memory** in the top bar to save `formal-ai-memory.lino`. The file is the **full memory** of the agent — the entire seed (rules, concepts, tools, multilingual responses), your UI preferences, environment metadata, and the complete append-only event log of this session (every user turn, assistant reply, reasoning step, tool invocation) — so the maintainer can reconstruct the exact session.",
-  );
-  lines.push("");
-  lines.push(
-    "**Wrap the export in a `.zip` before attaching.** GitHub's issue uploader does not currently accept `.lino` files (see [supported file types](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/attaching-files)). On any OS:",
-  );
-  lines.push("");
-  lines.push("- macOS: right-click → *Compress*.");
-  lines.push("- Windows: right-click → *Send to* → *Compressed (zipped) folder*.");
-  lines.push("- Linux: `zip formal-ai-memory.zip formal-ai-memory.lino`.");
-  lines.push("");
-  lines.push(
-    "**Redact sensitive content first.** The export contains everything you typed into the chat. Open `formal-ai-memory.lino` in any text editor and remove personal names, secrets, API keys, internal URLs, or any pasted code you are not comfortable publishing before zipping and attaching.",
+    "Click **Export memory** in the topbar to save `formal-ai-memory.lino`, then attach it as a [GitHub Gist](https://gist.github.com) or wrap it in a `.zip` first. Redact sensitive content before uploading. See the [upload-memory guide](https://github.com/link-assistant/formal-ai/blob/main/docs/upload-memory.md) for the full walkthrough.",
   );
   lines.push("");
 
@@ -1671,7 +1680,7 @@ function App() {
             target: "_blank",
             rel: "noopener noreferrer",
             title:
-              "Report issue — open a pre-filled GitHub issue with the current session transcript. Click Export memory to save the full agent state, redact sensitive content, wrap it in a .zip, and attach it (GitHub does not accept .lino directly yet).",
+              "Report issue — open a pre-filled GitHub issue with the current session transcript. See docs/upload-memory.md for how to attach the full memory export (Gist or .zip).",
             "aria-label": "Report issue",
           },
           h("span", { className: "btn-icon", "aria-hidden": "true" }, "🐛"),
@@ -1685,7 +1694,7 @@ function App() {
             "data-testid": "memory-export",
             onClick: handleExportMemory,
             title:
-              "Export memory — save the full agent state to formal-ai-memory.lino: the entire seed, UI preferences, environment metadata, and the append-only event log. Wrap the file in a .zip before attaching it to a GitHub issue (the issue uploader does not accept .lino directly yet).",
+              "Export memory — save the full agent state to formal-ai-memory.lino: the entire seed, UI preferences, environment metadata, and the append-only event log. See docs/upload-memory.md for attaching it to a GitHub issue (Gist or .zip).",
             "aria-label": "Export memory",
           },
           h("span", { className: "btn-icon", "aria-hidden": "true" }, "📤"),
