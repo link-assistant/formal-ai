@@ -208,6 +208,51 @@ fn telegram_long_replies_are_chunked() {
 }
 
 #[test]
+fn telegram_version_command_replies_with_crate_version() {
+    // Issue #72: the bot must surface the actual release so users can quote
+    // the right version in bug reports. The reply text comes from
+    // `CARGO_PKG_VERSION`, which is the same source clap's `--version` uses.
+    let json = webhook(&serde_json::json!({
+        "update_id": 100,
+        "message": {
+            "message_id": 100,
+            "date": 0,
+            "chat": {"id": 33, "type": "private"},
+            "text": "/version",
+            "entities": [{"type": "bot_command", "offset": 0, "length": 8}]
+        }
+    }));
+    assert_eq!(json["method"], "sendMessage");
+    let text = json["text"].as_str().unwrap();
+    assert!(
+        text.starts_with(&format!("formal-ai {}", env!("CARGO_PKG_VERSION"))),
+        "expected `/version` reply to start with crate version, got: {text}"
+    );
+    assert!(
+        !text.contains("/trace"),
+        "version replies should not carry a trace link"
+    );
+}
+
+#[test]
+fn telegram_version_command_with_bot_suffix_still_replies() {
+    // Group chats use `/version@formal_ai_bot` to disambiguate; the handler
+    // must strip the `@bot_name` suffix before recognizing the command.
+    let json = webhook(&serde_json::json!({
+        "update_id": 101,
+        "message": {
+            "message_id": 101,
+            "date": 0,
+            "chat": {"id": -42, "type": "supergroup", "title": "formal-ai"},
+            "text": "/version@formal_ai_bot",
+            "entities": [{"type": "bot_command", "offset": 0, "length": 22}]
+        }
+    }));
+    let text = json["text"].as_str().unwrap();
+    assert!(text.starts_with(&format!("formal-ai {}", env!("CARGO_PKG_VERSION"))));
+}
+
+#[test]
 #[ignore = "MVP-target: Telegram answers should include a trace link the user can tap to inspect"]
 fn telegram_answers_include_trace_link() {
     let json = webhook(&serde_json::json!({

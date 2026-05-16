@@ -15,7 +15,11 @@ use formal_ai::{
 };
 
 #[derive(Parser, Debug)]
-#[command(name = "formal-ai", about = "Formal symbolic AI proof of concept")]
+#[command(
+    name = "formal-ai",
+    version,
+    about = "Formal symbolic AI proof of concept"
+)]
 struct Args {
     #[command(subcommand)]
     command: Option<Command>,

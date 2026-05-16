@@ -7,6 +7,10 @@ use crate::engine::FormalAiEngine;
 
 const TEXT_ONLY_MESSAGE: &str = "I can only process Telegram text messages in this prototype. Send a text prompt or a message caption.";
 const DEFAULT_API_BASE: &str = "https://api.telegram.org";
+/// Crate version advertised by the `/version` bot command. Tracks
+/// `Cargo.toml` automatically so every release reports the right number
+/// without manual bumps (issue #72).
+const FORMAL_AI_VERSION: &str = env!("CARGO_PKG_VERSION");
 const DEFAULT_POLL_TIMEOUT_SECONDS: u32 = 30;
 const DEFAULT_POLL_LIMIT: u32 = 100;
 const POLL_CONNECT_TIMEOUT_PADDING_SECONDS: u32 = 10;
@@ -148,22 +152,23 @@ pub fn handle_telegram_webhook(
 }
 
 fn reply_for_message(message: &TelegramMessage) -> TelegramWebhookReply {
-    let (reply_text, trace_id) = message
-        .text
-        .as_deref()
-        .or(message.caption.as_deref())
-        .filter(|text| !text.trim().is_empty())
-        .map_or_else(
-            || (String::from(TEXT_ONLY_MESSAGE), None),
-            |prompt| {
-                let symbolic = FormalAiEngine.answer(prompt.trim());
-                let trace = symbolic
-                    .evidence_links
-                    .iter()
-                    .find_map(|link| link.strip_prefix("trace:").map(str::to_owned));
-                (symbolic.answer, trace)
-            },
-        );
+    let raw_text = message.text.as_deref().or(message.caption.as_deref());
+
+    let (reply_text, trace_id) = raw_text.filter(|text| !text.trim().is_empty()).map_or_else(
+        || (String::from(TEXT_ONLY_MESSAGE), None),
+        |prompt| {
+            let trimmed = prompt.trim();
+            if is_version_command(trimmed) {
+                return (version_reply_text(), None);
+            }
+            let symbolic = FormalAiEngine.answer(trimmed);
+            let trace = symbolic
+                .evidence_links
+                .iter()
+                .find_map(|link| link.strip_prefix("trace:").map(str::to_owned));
+            (symbolic.answer, trace)
+        },
+    );
 
     let mut text = telegram_html_from_markdown(&reply_text);
     if let Some(trace) = trace_id {
@@ -180,6 +185,16 @@ fn reply_for_message(message: &TelegramMessage) -> TelegramWebhookReply {
             message_id: message.message_id,
         },
     }
+}
+
+fn is_version_command(text: &str) -> bool {
+    let first_token = text.split_whitespace().next().unwrap_or("");
+    let command = first_token.split('@').next().unwrap_or("");
+    command.eq_ignore_ascii_case("/version")
+}
+
+fn version_reply_text() -> String {
+    format!("formal-ai {FORMAL_AI_VERSION}")
 }
 
 #[must_use]
