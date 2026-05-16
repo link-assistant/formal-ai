@@ -15,7 +15,8 @@
 //!   - CARGO_TOKEN: Alternative token name for backwards compatibility
 //!
 //! Outputs (written to GITHUB_OUTPUT):
-//!   - publish_result: 'success', 'already_exists', or 'failed'
+//!   - publish_result: 'success', 'already_exists', 'auth_failed',
+//!     'rate_limited', 'skipped', or 'failed'
 //!
 //! ```cargo
 //! [dependencies]
@@ -29,6 +30,45 @@ use std::process::{Command, exit};
 
 #[path = "rust-paths.rs"]
 mod rust_paths;
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum FailureKind {
+    AlreadyExists,
+    AuthFailed,
+    RateLimited,
+    Unknown,
+}
+
+impl FailureKind {
+    fn output_value(self) -> &'static str {
+        match self {
+            FailureKind::AlreadyExists => "already_exists",
+            FailureKind::AuthFailed => "auth_failed",
+            FailureKind::RateLimited => "rate_limited",
+            FailureKind::Unknown => "failed",
+        }
+    }
+}
+
+fn classify_failure(combined: &str) -> FailureKind {
+    if combined.contains("already uploaded") || combined.contains("already exists") {
+        FailureKind::AlreadyExists
+    } else if combined.contains("429 Too Many Requests")
+        || combined.contains("Too Many Requests")
+        || combined.contains("too many versions")
+        || combined.contains("too many requests")
+    {
+        FailureKind::RateLimited
+    } else if combined.contains("non-empty token")
+        || combined.contains("please provide a")
+        || combined.contains("unauthorized")
+        || combined.contains("authentication")
+    {
+        FailureKind::AuthFailed
+    } else {
+        FailureKind::Unknown
+    }
+}
 
 fn get_arg(name: &str) -> Option<String> {
     let args: Vec<String> = env::args().collect();
@@ -136,44 +176,136 @@ fn main() {
         let stdout = String::from_utf8_lossy(&output.stdout);
         let combined = format!("{}\n{}", stdout, stderr);
 
-        if combined.contains("already uploaded") || combined.contains("already exists") {
-            eprintln!();
-            eprintln!("=== VERSION ALREADY PUBLISHED ===");
-            eprintln!();
-            eprintln!("Version {} already exists on crates.io.", version);
-            eprintln!("The release pipeline must always publish a version greater than what is already published.");
-            eprintln!("This indicates a bug in version bumping: the pipeline should have computed a new, unpublished version.");
-            eprintln!();
-            set_output("publish_result", "already_exists");
-            exit(1);
-        } else if combined.contains("non-empty token")
-            || combined.contains("please provide a")
-            || combined.contains("unauthorized")
-            || combined.contains("authentication")
-        {
-            eprintln!();
-            eprintln!("=== AUTHENTICATION FAILURE ===");
-            eprintln!();
-            eprintln!("Failed to publish due to missing or invalid authentication token.");
-            eprintln!();
-            eprintln!("SOLUTION: Configure one of these secrets in your repository or organization:");
-            eprintln!("  1. CARGO_REGISTRY_TOKEN - Cargo's native environment variable (preferred)");
-            eprintln!("  2. CARGO_TOKEN - Alternative name for backwards compatibility");
-            eprintln!();
-            eprintln!("If using organization secrets with a different name, map it in your workflow:");
-            eprintln!("  - name: Publish to Crates.io");
-            eprintln!("    env:");
-            eprintln!("      CARGO_REGISTRY_TOKEN: ${{{{ secrets.YOUR_SECRET_NAME }}}}");
-            eprintln!();
-            eprintln!("See: https://doc.rust-lang.org/cargo/reference/publishing.html");
-            eprintln!();
-            set_output("publish_result", "auth_failed");
-            exit(1);
-        } else {
-            eprintln!("Failed to publish for unknown reason");
-            eprintln!("{}", combined);
-            set_output("publish_result", "failed");
-            exit(1);
+        let kind = classify_failure(&combined);
+        match kind {
+            FailureKind::AlreadyExists => {
+                eprintln!();
+                eprintln!("=== VERSION ALREADY PUBLISHED ===");
+                eprintln!();
+                eprintln!("Version {} already exists on crates.io.", version);
+                eprintln!(
+                    "The release pipeline must always publish a version greater than what is already published."
+                );
+                eprintln!(
+                    "This indicates a bug in version bumping: the pipeline should have computed a new, unpublished version."
+                );
+                eprintln!();
+            }
+            FailureKind::RateLimited => {
+                eprintln!();
+                eprintln!("=== CRATES.IO RATE LIMITED ===");
+                eprintln!();
+                eprintln!(
+                    "crates.io rejected the publish of {}@{} with HTTP 429 Too Many Requests.",
+                    name, version
+                );
+                eprintln!(
+                    "This means too many versions of this crate were published in the last 24 hours."
+                );
+                eprintln!();
+                eprintln!("Original error from cargo publish:");
+                for line in combined.lines() {
+                    let trimmed = line.trim_end();
+                    if !trimmed.is_empty() {
+                        eprintln!("  {}", trimmed);
+                    }
+                }
+                eprintln!();
+                eprintln!("This is NOT a bug in the pipeline — the publish will be retried automatically.");
+                eprintln!(
+                    "scripts/check-release-needed.rs detects that {}@{} is missing from crates.io",
+                    name, version
+                );
+                eprintln!(
+                    "and will set should_release=true, skip_bump=true on the next push to main,"
+                );
+                eprintln!("so the same version is re-uploaded once the throttle window has rolled over.");
+                eprintln!();
+                eprintln!("To unblock immediately:");
+                eprintln!("  1. Wait until the 24-hour throttle window has rolled over.");
+                eprintln!(
+                    "  2. Re-run the failed `Auto Release` job, or push any commit to main to trigger a retry."
+                );
+                eprintln!();
+                eprintln!("See: https://doc.rust-lang.org/cargo/reference/publishing.html");
+                eprintln!("See: https://crates.io/policies");
+                eprintln!();
+            }
+            FailureKind::AuthFailed => {
+                eprintln!();
+                eprintln!("=== AUTHENTICATION FAILURE ===");
+                eprintln!();
+                eprintln!("Failed to publish due to missing or invalid authentication token.");
+                eprintln!();
+                eprintln!("SOLUTION: Configure one of these secrets in your repository or organization:");
+                eprintln!("  1. CARGO_REGISTRY_TOKEN - Cargo's native environment variable (preferred)");
+                eprintln!("  2. CARGO_TOKEN - Alternative name for backwards compatibility");
+                eprintln!();
+                eprintln!("If using organization secrets with a different name, map it in your workflow:");
+                eprintln!("  - name: Publish to Crates.io");
+                eprintln!("    env:");
+                eprintln!("      CARGO_REGISTRY_TOKEN: ${{{{ secrets.YOUR_SECRET_NAME }}}}");
+                eprintln!();
+                eprintln!("See: https://doc.rust-lang.org/cargo/reference/publishing.html");
+                eprintln!();
+            }
+            FailureKind::Unknown => {
+                eprintln!("Failed to publish for unknown reason");
+                eprintln!("{}", combined);
+            }
         }
+        set_output("publish_result", kind.output_value());
+        exit(1);
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{FailureKind, classify_failure};
+
+    #[test]
+    fn classifies_rate_limit_response() {
+        let body = "\
+error: failed to publish formal-ai v0.42.0 to registry at https://crates.io
+
+Caused by:
+  the remote server responded with an error (status 429 Too Many Requests): \
+You have published too many versions of this crate in the last 24 hours
+";
+        assert_eq!(classify_failure(body), FailureKind::RateLimited);
+        assert_eq!(FailureKind::RateLimited.output_value(), "rate_limited");
+    }
+
+    #[test]
+    fn classifies_already_uploaded_response() {
+        let body = "error: crate version 0.42.0 already uploaded";
+        assert_eq!(classify_failure(body), FailureKind::AlreadyExists);
+        assert_eq!(FailureKind::AlreadyExists.output_value(), "already_exists");
+    }
+
+    #[test]
+    fn classifies_already_exists_response() {
+        let body = "error: this crate version already exists";
+        assert_eq!(classify_failure(body), FailureKind::AlreadyExists);
+    }
+
+    #[test]
+    fn classifies_authentication_failure() {
+        let body = "error: please provide a non-empty token";
+        assert_eq!(classify_failure(body), FailureKind::AuthFailed);
+        assert_eq!(FailureKind::AuthFailed.output_value(), "auth_failed");
+    }
+
+    #[test]
+    fn classifies_unauthorized_as_auth_failure() {
+        let body = "error: unauthorized: token rejected";
+        assert_eq!(classify_failure(body), FailureKind::AuthFailed);
+    }
+
+    #[test]
+    fn classifies_unknown_failure() {
+        let body = "error: something else entirely went wrong";
+        assert_eq!(classify_failure(body), FailureKind::Unknown);
+        assert_eq!(FailureKind::Unknown.output_value(), "failed");
     }
 }
