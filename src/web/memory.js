@@ -311,6 +311,19 @@
       .join("\n");
   }
 
+  function infoFieldName(key) {
+    return String(key || "")
+      .replace(/([a-z0-9])([A-Z])/g, "$1_$2")
+      .replace(/[^a-zA-Z0-9_]+/g, "_")
+      .replace(/^_+|_+$/g, "")
+      .toLowerCase();
+  }
+
+  function appendInfoLine(lines, name, value) {
+    if (!name || value === undefined || value === null || value === "") return;
+    lines.push('  ' + name + ' "' + escapeValue(value) + '"');
+  }
+
   // Combine app metadata + every seed file + the entire append-only event log
   // into a single Links Notation document. The output is the canonical
   // "report-ready" debug snapshot — paste it into a GitHub issue and the
@@ -323,21 +336,35 @@
     var preferences = settings.preferences || null;
     var lines = ["formal_ai_bundle"];
     lines.push('  exported_at "' + escapeValue(new Date().toISOString()) + '"');
-    if (info.version) {
-      lines.push('  version "' + escapeValue(info.version) + '"');
-    }
-    if (info.url) {
-      lines.push('  url "' + escapeValue(info.url) + '"');
-    }
-    if (info.userAgent) {
-      lines.push('  user_agent "' + escapeValue(info.userAgent) + '"');
-    }
-    if (info.workerState) {
-      lines.push('  worker_state "' + escapeValue(info.workerState) + '"');
-    }
-    if (info.mode) {
-      lines.push('  mode "' + escapeValue(info.mode) + '"');
-    }
+    var preferredInfoFields = [
+      "version",
+      "url",
+      "userAgent",
+      "workerState",
+      "mode",
+      "uiLanguage",
+      "uiLanguagePreference",
+      "browserLanguage",
+      "browserLanguages",
+      "locale",
+      "timeZone",
+      "colorScheme",
+      "viewport",
+      "screen",
+      "platform",
+      "online",
+      "locationInference",
+    ];
+    var writtenInfo = {};
+    preferredInfoFields.forEach(function (key) {
+      var name = infoFieldName(key);
+      writtenInfo[key] = true;
+      appendInfoLine(lines, name, info[key]);
+    });
+    Object.keys(info).sort().forEach(function (key) {
+      if (writtenInfo[key]) return;
+      appendInfoLine(lines, infoFieldName(key), info[key]);
+    });
     var seedFiles = seed && seed.raw ? Object.keys(seed.raw) : [];
     if (seedFiles.length > 0) {
       lines.push("  seed_files");

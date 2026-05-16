@@ -292,6 +292,7 @@ fn static_demo_runtime_assets_are_cache_busted_by_deployment_version() {
         "styles.css?v=__FORMAL_AI_ASSET_VERSION__",
         "seed_loader.js?v=__FORMAL_AI_ASSET_VERSION__",
         "preferences.js?v=__FORMAL_AI_ASSET_VERSION__",
+        "i18n.js?v=__FORMAL_AI_ASSET_VERSION__",
         "memory.js?v=__FORMAL_AI_ASSET_VERSION__",
         "app.js?v=__FORMAL_AI_ASSET_VERSION__",
     ] {

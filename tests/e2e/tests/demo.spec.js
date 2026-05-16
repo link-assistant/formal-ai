@@ -369,3 +369,141 @@ test.describe('formal-ai demo UI', () => {
     await expect(hint).toHaveCount(0);
   });
 });
+
+test.describe('Issue #94: theme, localization, and report context', () => {
+  test('honors dark color-scheme preference automatically', async ({ page }) => {
+    await disableGreetingVariations(page);
+    await page.emulateMedia({ colorScheme: 'dark' });
+    await page.goto('./');
+    await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
+
+    const colors = await page.locator('.topbar').evaluate((node) => {
+      const styles = window.getComputedStyle(node);
+      return {
+        background: styles.backgroundColor,
+        color: styles.color,
+      };
+    });
+
+    expect(colors.background).not.toBe('rgb(251, 252, 253)');
+    expect(colors.color).not.toBe('rgb(30, 37, 43)');
+  });
+
+  test('auto-detects Russian UI language from browser preferences', async ({ page }) => {
+    await page.addInitScript(() => {
+      Object.defineProperty(window.navigator, 'language', {
+        configurable: true,
+        get: () => 'ru-RU',
+      });
+      Object.defineProperty(window.navigator, 'languages', {
+        configurable: true,
+        get: () => ['ru-RU', 'en-US'],
+      });
+    });
+    await disableGreetingVariations(page);
+    await page.goto('./');
+    await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
+
+    await expect(page.locator('[data-testid="demo-status"]')).toContainText('Демо');
+    await page.locator('.mode-toggle').click();
+    await expect(page.locator('[data-testid="demo-status"]')).toHaveText('Ручной режим');
+    await expect(page.locator('[data-testid="report-issue"]')).toContainText(
+      'Сообщить о проблеме',
+    );
+    await expect(page.locator('[data-testid="report-issue"]')).toHaveAttribute(
+      'title',
+      /Сообщить о проблеме/,
+    );
+    await expect(page.locator('.diagnostics-toggle')).toHaveAttribute(
+      'title',
+      /Показать диагностическую трассировку/,
+    );
+    await expect(page.locator('[data-testid="chat-composer-input"]')).toHaveAttribute(
+      'placeholder',
+      'Сообщение formal-ai',
+    );
+    await expect(page.locator('html')).toHaveAttribute('lang', 'ru');
+  });
+
+  test('ships UI dictionaries for all required languages', async ({ page }) => {
+    await disableGreetingVariations(page);
+    await page.goto('./');
+    await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
+
+    const labels = await page.evaluate(() => ({
+      en: window.FormalAiI18n.t('buttons.reportIssue', 'en'),
+      ru: window.FormalAiI18n.t('buttons.reportIssue', 'ru'),
+      zh: window.FormalAiI18n.t('buttons.reportIssue', 'zh'),
+      hi: window.FormalAiI18n.t('buttons.reportIssue', 'hi'),
+    }));
+
+    expect(labels).toEqual({
+      en: 'Report issue',
+      ru: 'Сообщить о проблеме',
+      zh: '报告问题',
+      hi: 'समस्या रिपोर्ट करें',
+    });
+  });
+
+  test('loads the published lino-i18n runtime for UI translations', async ({ page }) => {
+    await disableGreetingVariations(page);
+    await page.goto('./');
+    await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
+
+    const runtime = await page.evaluate(async () => {
+      await window.FormalAiI18n.ready;
+      return {
+        engine: window.FormalAiI18n.ENGINE_SOURCE,
+        russian: window.FormalAiI18n.t('buttons.reportIssue', 'ru'),
+        fallback: window.FormalAiI18n.t('buttons.reportIssue', 'zz'),
+      };
+    });
+
+    expect(runtime).toEqual({
+      engine: 'lino-i18n@0.0.1',
+      russian: 'Сообщить о проблеме',
+      fallback: 'Report issue',
+    });
+  });
+
+  test('issue reports include UI, browser, and coarse location context', async ({ page }) => {
+    await disableGreetingVariations(page);
+    await page.emulateMedia({ colorScheme: 'dark' });
+    await page.goto('./');
+    await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
+    await switchToManualMode(page);
+
+    const href = await page.locator('[data-testid="report-issue"]').getAttribute('href');
+    expect(href).toBeTruthy();
+
+    const body = new URL(href || '').searchParams.get('body') || '';
+    expect(body).toContain('## User Context');
+    expect(body).toContain('**UI Language**');
+    expect(body).toContain('**Browser Languages**');
+    expect(body).toContain('**Color Scheme**: dark');
+    expect(body).toContain('**Time Zone**');
+    expect(body).toContain('**Location Inference**');
+  });
+
+  test('toolbar labels switch to icon-only before controls wrap', async ({ page }) => {
+    await disableGreetingVariations(page);
+    await page.setViewportSize({ width: 980, height: 760 });
+    await page.goto('./');
+    await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
+
+    const labelDisplays = await page
+      .locator('.topbar-actions .btn-label')
+      .evaluateAll((nodes) => nodes.map((node) => window.getComputedStyle(node).display));
+    expect(labelDisplays.length).toBeGreaterThan(0);
+    expect(labelDisplays.every((display) => display === 'none')).toBe(true);
+
+    const actionBoxes = await page.locator('.topbar-actions > *').evaluateAll((nodes) =>
+      nodes.map((node) => {
+        const rect = node.getBoundingClientRect();
+        return { top: Math.round(rect.top), height: Math.round(rect.height) };
+      }),
+    );
+    const rows = new Set(actionBoxes.filter((box) => box.height > 0).map((box) => box.top));
+    expect(rows.size).toBe(1);
+  });
+});

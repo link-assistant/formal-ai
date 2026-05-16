@@ -1806,6 +1806,45 @@ async function tryFetch(prompt) {
   }
 }
 
+function cleanContextValue(value) {
+  return String(value || "").replace(/\s+/g, " ").trim();
+}
+
+function evidenceFromUserContext(userContext) {
+  if (!userContext || typeof userContext !== "object") return [];
+  const evidence = [];
+  const fields = [
+    ["uiLanguage", "ui_language"],
+    ["browserLanguage", "browser_language"],
+    ["colorScheme", "color_scheme"],
+    ["timeZone", "time_zone"],
+    ["locationInference", "location_inference"],
+  ];
+  for (const [key, label] of fields) {
+    const value = cleanContextValue(userContext[key]);
+    if (value) evidence.push(`user_context:${label}:${value}`);
+  }
+  return evidence;
+}
+
+function attachUserContext(answer, userContext) {
+  if (!answer || typeof answer !== "object") return answer;
+  const evidence = evidenceFromUserContext(userContext);
+  if (evidence.length === 0) return answer;
+  const steps = Array.isArray(answer.steps) ? answer.steps.slice() : [];
+  const detail = evidence
+    .map((item) => item.replace(/^user_context:/, ""))
+    .join(", ");
+  steps.push({ step: "user_context", detail });
+  return Object.assign({}, answer, {
+    evidence: [
+      ...(Array.isArray(answer.evidence) ? answer.evidence : []),
+      ...evidence,
+    ],
+    steps,
+  });
+}
+
 async function solve(prompt, history, prefs) {
   const preferences = prefs || {};
   const steps = [];
@@ -2103,7 +2142,14 @@ self.onmessage = async (event) => {
   const prompt = data.prompt || "";
   const history = Array.isArray(data.history) ? data.history : [];
   const prefs = (data.prefs && typeof data.prefs === "object") ? data.prefs : {};
-  const answer = await solve(prompt, history, prefs);
+  const userContext =
+    data.userContext && typeof data.userContext === "object"
+      ? data.userContext
+      : {};
+  const answer = attachUserContext(
+    await solve(prompt, history, prefs),
+    userContext,
+  );
   postMessage({
     kind: "message",
     requestId: data.requestId,

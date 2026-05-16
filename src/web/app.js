@@ -406,6 +406,9 @@ const PREFERENCE_DEFAULTS = {
   // sequential sub-tasks and runs each through the existing solver; a future
   // iteration will wire it to docker / WebVM execution.
   agentMode: false,
+  // Issue #94: "auto" follows navigator.languages; explicit values use the
+  // supported UI language catalog.
+  uiLanguage: "auto",
 };
 
 const MEMORY_EXPORT_FILENAME = "formal-ai-memory.lino";
@@ -464,6 +467,122 @@ function persistPreferences(values) {
   } catch (_error) {
     // localStorage may be unavailable (private mode, sandboxed iframe); ignore.
   }
+}
+
+function i18nApi() {
+  return typeof window !== "undefined" && window.FormalAiI18n
+    ? window.FormalAiI18n
+    : null;
+}
+
+function normalizeUiLanguagePreference(value) {
+  if (!value || value === "auto") return "auto";
+  const api = i18nApi();
+  const normalized = api && api.normalizeLanguageTag
+    ? api.normalizeLanguageTag(value)
+    : String(value).toLowerCase().split(/[-_]/)[0];
+  return normalized || "auto";
+}
+
+function detectUiLanguage(preference) {
+  const api = i18nApi();
+  if (api && api.detectLanguage) {
+    return api.detectLanguage(preference === "auto" ? "" : preference);
+  }
+  return "en";
+}
+
+function translateUi(key, language, params) {
+  const api = i18nApi();
+  if (api && api.t) {
+    return api.t(key, language, params);
+  }
+  return key;
+}
+
+function browserLanguagesList() {
+  if (typeof navigator === "undefined") return [];
+  if (Array.isArray(navigator.languages) && navigator.languages.length > 0) {
+    return Array.from(navigator.languages);
+  }
+  return navigator.language ? [navigator.language] : [];
+}
+
+function currentColorScheme() {
+  if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
+    return "unknown";
+  }
+  return window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? "dark"
+    : "light";
+}
+
+function resolvedLocale() {
+  try {
+    return Intl.DateTimeFormat().resolvedOptions().locale || "";
+  } catch (_error) {
+    return "";
+  }
+}
+
+function resolvedTimeZone() {
+  try {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone || "";
+  } catch (_error) {
+    return "";
+  }
+}
+
+function collectUserContext({ uiLanguage, uiLanguagePreference }) {
+  const browserLanguages = browserLanguagesList();
+  const nav = typeof navigator !== "undefined" ? navigator : {};
+  const screenInfo =
+    typeof screen !== "undefined"
+      ? `${screen.width}x${screen.height} @${window.devicePixelRatio || 1}x`
+      : "";
+  const viewportInfo =
+    typeof window !== "undefined" ? `${window.innerWidth}x${window.innerHeight}` : "";
+  return {
+    uiLanguage,
+    uiLanguagePreference,
+    browserLanguage: nav.language || "",
+    browserLanguages: browserLanguages.join(", "),
+    locale: resolvedLocale(),
+    timeZone: resolvedTimeZone(),
+    colorScheme: currentColorScheme(),
+    viewport: viewportInfo,
+    screen: screenInfo,
+    platform:
+      (nav.userAgentData && nav.userAgentData.platform) ||
+      nav.platform ||
+      "",
+    online: typeof nav.onLine === "boolean" ? (nav.onLine ? "yes" : "no") : "",
+    locationInference:
+      "time zone / locale only; exact geolocation was not requested",
+  };
+}
+
+function appendUserContextBlock(lines, context) {
+  const safe = context && typeof context === "object" ? context : {};
+  lines.push("## User Context");
+  lines.push("");
+  lines.push(`- **UI Language**: ${safe.uiLanguage || "unknown"}`);
+  lines.push(
+    `- **UI Language Preference**: ${safe.uiLanguagePreference || "auto"}`,
+  );
+  lines.push(`- **Browser Language**: ${safe.browserLanguage || "unknown"}`);
+  lines.push(`- **Browser Languages**: ${safe.browserLanguages || "unknown"}`);
+  lines.push(`- **Locale**: ${safe.locale || "unknown"}`);
+  lines.push(`- **Time Zone**: ${safe.timeZone || "unknown"}`);
+  lines.push(`- **Color Scheme**: ${safe.colorScheme || "unknown"}`);
+  lines.push(`- **Viewport**: ${safe.viewport || "unknown"}`);
+  lines.push(`- **Screen**: ${safe.screen || "unknown"}`);
+  lines.push(`- **Platform**: ${safe.platform || "unknown"}`);
+  lines.push(`- **Online**: ${safe.online || "unknown"}`);
+  lines.push(
+    `- **Location Inference**: ${safe.locationInference || "unknown"}`,
+  );
+  lines.push("");
 }
 
 function randomItem(items) {
@@ -814,6 +933,7 @@ function createIssueReportBody({
   demoMode,
   demoStatus,
   diagnosticsMode,
+  userContext,
 }) {
   const effectiveFocus = focusMessage ?? lastUnknownAssistantMessage(messages);
   const lines = [
@@ -828,9 +948,11 @@ function createIssueReportBody({
     `- **Diagnostics**: ${diagnosticsMode ? "on" : "off"}`,
     `- **Timestamp**: ${new Date().toISOString()}`,
     "",
-    "## Dialog",
-    "",
   ];
+
+  appendUserContextBlock(lines, userContext);
+  lines.push("## Dialog");
+  lines.push("");
 
   appendDialogBlock(lines, messages, effectiveFocus);
 
@@ -870,10 +992,13 @@ function createIssueUrl(context) {
   return `https://github.com/${ISSUE_REPOSITORY}/issues/new?${params.toString()}`;
 }
 
-function Message({ message, diagnosticsMode, reportIssueUrl }) {
+function Message({ message, diagnosticsMode, reportIssueUrl, t }) {
   const evidence = diagnosticsMode ? (message.evidence ?? []) : [];
   const thinkingSteps = diagnosticsMode ? (message.thinkingSteps ?? []) : [];
-  const reportLabel = message.intent === "unknown" ? "Report missing rule" : "Report issue";
+  const reportLabel =
+    message.intent === "unknown"
+      ? t("buttons.reportMissingRule")
+      : t("buttons.reportIssue");
   const [iframeExpanded, setIframeExpanded] = useState(true);
 
   return h(
@@ -890,7 +1015,11 @@ function Message({ message, diagnosticsMode, reportIssueUrl }) {
       h(
         "div",
         { className: "message-meta" },
-        h("strong", null, message.author),
+        h(
+          "strong",
+          null,
+          message.role === "user" ? t("message.author.user") : message.author,
+        ),
         h("time", null, message.sentAt),
         diagnosticsMode && message.intent
           ? h("span", { className: "intent" }, `intent:${message.intent}`)
@@ -915,7 +1044,9 @@ function Message({ message, diagnosticsMode, reportIssueUrl }) {
                   onClick: () => setIframeExpanded((prev) => !prev),
                   "aria-expanded": iframeExpanded ? "true" : "false",
                 },
-                iframeExpanded ? "▼ Collapse" : "▶ Expand",
+                iframeExpanded
+                  ? `▼ ${t("fetch.collapse")}`
+                  : `▶ ${t("fetch.expand")}`,
               ),
               h("span", { className: "fetch-iframe-url" }, message.iframeUrl),
               h(
@@ -926,14 +1057,14 @@ function Message({ message, diagnosticsMode, reportIssueUrl }) {
                   rel: "noopener noreferrer",
                   className: "fetch-iframe-open",
                 },
-                "Open in new tab",
+                t("fetch.openInNewTab"),
               ),
             ),
             iframeExpanded
               ? h("iframe", {
                   className: "fetch-iframe",
                   src: message.iframeUrl,
-                  title: `Fetched page: ${message.iframeUrl}`,
+                  title: t("fetch.frameTitle", { url: message.iframeUrl }),
                   sandbox: "allow-scripts allow-same-origin allow-forms allow-popups",
                   loading: "lazy",
                   "data-testid": "fetch-iframe",
@@ -952,7 +1083,7 @@ function Message({ message, diagnosticsMode, reportIssueUrl }) {
         ? h(
             "div",
             { className: "thinking-steps" },
-            h("strong", null, "Thinking"),
+            h("strong", null, t("message.thinking")),
             h(
               "ol",
               null,
@@ -1030,6 +1161,15 @@ function App() {
     responses: {},
   });
   const initialPreferences = useRef(loadPreferences());
+  const [uiLanguagePreference] = useState(
+    normalizeUiLanguagePreference(initialPreferences.current.uiLanguage),
+  );
+  const [i18nRuntimeTick, setI18nRuntimeTick] = useState(0);
+  const uiLanguage = detectUiLanguage(uiLanguagePreference);
+  const t = useCallback(
+    (key, params) => translateUi(key, uiLanguage, params),
+    [uiLanguage, i18nRuntimeTick],
+  );
   const [demoMode, setDemoMode] = useState(initialPreferences.current.demoMode);
   const [demoPhase, setDemoPhase] = useState("manual");
   const [demoCountdown, setDemoCountdown] = useState(null);
@@ -1060,6 +1200,7 @@ function App() {
   // Issue #27: a mobile-friendly slide-out menu that hosts the entire sidebar
   // plus the topbar action buttons. On wide screens the menu is hidden via CSS.
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [colorSchemeTick, setColorSchemeTick] = useState(0);
   // Issue #27: conversations. `currentConversationId` is the thread the user is
   // typing in right now; on first user message the demo lazily mints a new id
   // if none is set. `conversations` is the sidebar-visible list of all known
@@ -1073,8 +1214,63 @@ function App() {
   const conversationTitlesRef = useRef(new Map());
 
   useEffect(() => {
+    if (typeof document === "undefined") return;
+    document.documentElement.lang = uiLanguage;
+    document.documentElement.dir = "ltr";
+  }, [uiLanguage]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+    let cancelled = false;
+    const update = () => {
+      if (!cancelled) {
+        setI18nRuntimeTick((value) => value + 1);
+      }
+    };
+    window.addEventListener("formal-ai:i18n-ready", update);
+    const api = i18nApi();
+    if (api && api.ready && typeof api.ready.then === "function") {
+      api.ready.then(update).catch(() => null);
+    }
+    return () => {
+      cancelled = true;
+      window.removeEventListener("formal-ai:i18n-ready", update);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
+      return undefined;
+    }
+    const media = window.matchMedia("(prefers-color-scheme: dark)");
+    const update = () => setColorSchemeTick((value) => value + 1);
+    if (typeof media.addEventListener === "function") {
+      media.addEventListener("change", update);
+      return () => media.removeEventListener("change", update);
+    }
+    if (typeof media.addListener === "function") {
+      media.addListener(update);
+      return () => media.removeListener(update);
+    }
+    return undefined;
+  }, []);
+
+  useEffect(() => {
     currentConversationRef.current = currentConversationId;
   }, [currentConversationId]);
+
+  const userContext = useMemo(
+    () =>
+      collectUserContext({
+        uiLanguage,
+        uiLanguagePreference,
+      }),
+    [uiLanguage, uiLanguagePreference, colorSchemeTick],
+  );
+  const userContextRef = useRef(userContext);
+  useEffect(() => {
+    userContextRef.current = userContext;
+  }, [userContext]);
 
   useEffect(() => {
     if (typeof window === "undefined" || !window.FormalAiSeed) return;
@@ -1129,7 +1325,7 @@ function App() {
 
   const handleExportMemory = useCallback(async () => {
     if (typeof window === "undefined" || !window.FormalAiMemory) {
-      setMemoryStatus("Memory unavailable");
+      setMemoryStatus(t("status.memoryUnavailable"));
       return;
     }
     try {
@@ -1145,17 +1341,21 @@ function App() {
           userAgent: navigator.userAgent,
           workerState,
           mode: demoMode ? "demo" : "manual",
+          ...userContext,
         },
       });
       downloadTextFile(MEMORY_EXPORT_FILENAME, text);
       const seedFileCount = seed && seed.raw ? Object.keys(seed.raw).length : 0;
       setMemoryStatus(
-        `Exported full memory: ${events.length} event(s) + ${seedFileCount} seed file(s)`,
+        t("status.memoryExported", {
+          events: events.length,
+          seedFiles: seedFileCount,
+        }),
       );
     } catch (_error) {
-      setMemoryStatus("Export failed");
+      setMemoryStatus(t("status.exportFailed"));
     }
-  }, [seed, workerState, demoMode]);
+  }, [seed, workerState, demoMode, userContext, t]);
 
   const handleImportMemory = useCallback(async (event) => {
     const file = event.target.files && event.target.files[0];
@@ -1177,19 +1377,22 @@ function App() {
       });
       const headline =
         imported.kind === "bundle"
-          ? `Imported ${inserted} event(s) from full bundle`
-          : `Imported ${inserted} events`;
+          ? t("status.memoryImportedBundle", { inserted })
+          : t("status.memoryImportedEvents", { inserted });
       if (suggestions.length > 0) {
         setMemoryStatus(
-          `${headline}. Migration: ${suggestions.join(" / ")}`,
+          t("status.migration", {
+            headline,
+            suggestions: suggestions.join(" / "),
+          }),
         );
       } else {
         setMemoryStatus(headline);
       }
     } catch (_error) {
-      setMemoryStatus("Import failed");
+      setMemoryStatus(t("status.importFailed"));
     }
-  }, [seed]);
+  }, [seed, t]);
 
   const triggerImportMemory = useCallback(() => {
     if (importInputRef.current) {
@@ -1208,6 +1411,7 @@ function App() {
       greetingVariations,
       currentConversationId,
       agentMode,
+      uiLanguage: uiLanguagePreference,
     });
   }, [
     demoMode,
@@ -1219,6 +1423,7 @@ function App() {
     greetingVariations,
     currentConversationId,
     agentMode,
+    uiLanguagePreference,
   ]);
 
   useEffect(() => {
@@ -1269,6 +1474,7 @@ function App() {
         requestId,
         history,
         prefs: { greetingVariations: greetingVariationsRef.current },
+        userContext: userContextRef.current,
       });
     });
   }, []);
@@ -1462,8 +1668,7 @@ function App() {
       await handleExportMemory();
       appendAssistantMessage({
         intent: "memory_export",
-        content:
-          "Triggered Export memory. Your browser is downloading `formal-ai-memory.lino`.",
+        content: t("memory.exportTriggered"),
         confidence: 1.0,
         evidence: ["rule:memory_export"],
         steps: [{ step: "trigger_button", detail: "memory-export" }],
@@ -1482,8 +1687,7 @@ function App() {
       triggerImportMemory();
       appendAssistantMessage({
         intent: "memory_import",
-        content:
-          "Triggered Import memory. Pick a `.lino` file in the open dialog to restore the saved memory.",
+        content: t("memory.importTriggered"),
         confidence: 1.0,
         evidence: ["rule:memory_import"],
         steps: [{ step: "trigger_button", detail: "memory-import" }],
@@ -1650,15 +1854,16 @@ function App() {
 
   const demoStatus = demoMode
     ? demoPhase === "waiting" && demoCountdown !== null
-      ? `Next dialog in ${demoCountdown}s`
-      : "Demo playing"
-    : "Manual mode";
+      ? t("status.nextDialogIn", { seconds: demoCountdown })
+      : t("status.demoPlaying")
+    : t("status.manual");
   const reportContext = {
     messages,
     workerState,
     demoMode,
     demoStatus,
     diagnosticsMode,
+    userContext,
   };
   const currentReportUrl = createIssueUrl(reportContext);
 
@@ -1682,12 +1887,11 @@ function App() {
             href: currentReportUrl,
             target: "_blank",
             rel: "noopener noreferrer",
-            title:
-              "Report issue — open a pre-filled GitHub issue with the current session transcript. See docs/upload-memory.md for how to attach the full memory export (Gist or .zip).",
-            "aria-label": "Report issue",
+            title: t("titles.reportIssue"),
+            "aria-label": t("buttons.reportIssue"),
           },
           h("span", { className: "btn-icon", "aria-hidden": "true" }, "🐛"),
-          h("span", { className: "btn-label" }, "Report issue"),
+          h("span", { className: "btn-label" }, t("buttons.reportIssue")),
         ),
         h(
           "button",
@@ -1696,12 +1900,11 @@ function App() {
             className: "memory-button",
             "data-testid": "memory-export",
             onClick: handleExportMemory,
-            title:
-              "Export memory — save the full agent state to formal-ai-memory.lino: the entire seed, UI preferences, environment metadata, and the append-only event log. See docs/upload-memory.md for attaching it to a GitHub issue (Gist or .zip).",
-            "aria-label": "Export memory",
+            title: t("titles.exportMemory"),
+            "aria-label": t("buttons.exportMemory"),
           },
           h("span", { className: "btn-icon", "aria-hidden": "true" }, "📤"),
-          h("span", { className: "btn-label" }, "Export memory"),
+          h("span", { className: "btn-label" }, t("buttons.exportMemory")),
         ),
         h(
           "button",
@@ -1710,12 +1913,11 @@ function App() {
             className: "memory-button",
             "data-testid": "memory-import",
             onClick: triggerImportMemory,
-            title:
-              "Import memory — load a previous export. Accepts both the new full-memory bundle and the legacy demo_memory event-only log. Migration hints are shown next to this bar.",
-            "aria-label": "Import memory",
+            title: t("titles.importMemory"),
+            "aria-label": t("buttons.importMemory"),
           },
           h("span", { className: "btn-icon", "aria-hidden": "true" }, "📥"),
-          h("span", { className: "btn-label" }, "Import memory"),
+          h("span", { className: "btn-label" }, t("buttons.importMemory")),
         ),
         h("input", {
           ref: importInputRef,
@@ -1744,15 +1946,17 @@ function App() {
             "aria-pressed": diagnosticsMode,
             onClick: () => setDiagnosticsMode((value) => !value),
             title: diagnosticsMode
-              ? "Hide reasoning trace, intent, evidence, and thinking-steps panels."
-              : "Show reasoning trace, intent, evidence, and thinking-steps panels.",
-            "aria-label": diagnosticsMode ? "Diagnostics on" : "Diagnostics",
+              ? t("titles.diagnosticsHide")
+              : t("titles.diagnosticsShow"),
+            "aria-label": diagnosticsMode
+              ? t("buttons.diagnosticsOn")
+              : t("buttons.diagnostics"),
           },
           h("span", { className: "btn-icon", "aria-hidden": "true" }, "🔍"),
           h(
             "span",
             { className: "btn-label" },
-            diagnosticsMode ? "Diagnostics on" : "Diagnostics",
+            diagnosticsMode ? t("buttons.diagnosticsOn") : t("buttons.diagnostics"),
           ),
         ),
         h(
@@ -1763,9 +1967,9 @@ function App() {
             "data-testid": "agent-toggle",
             "aria-pressed": agentMode,
             title: agentMode
-              ? "Agent mode is on — switch back to single-turn chat."
-              : "Chat mode — switch to agent mode and each message will be decomposed into sequential steps and executed as a plan.",
-            "aria-label": agentMode ? "Agent mode" : "Chat mode",
+              ? t("titles.agentOn")
+              : t("titles.agentOff"),
+            "aria-label": agentMode ? t("buttons.agent") : t("buttons.chat"),
             onClick: () => setAgentMode((value) => !value),
           },
           h(
@@ -1776,7 +1980,7 @@ function App() {
           h(
             "span",
             { className: "btn-label" },
-            agentMode ? "Agent" : "Chat",
+            agentMode ? t("buttons.agent") : t("buttons.chat"),
           ),
         ),
         h(
@@ -1787,15 +1991,15 @@ function App() {
             "aria-pressed": demoMode,
             onClick: () => setDemoMode((value) => !value),
             title: demoMode
-              ? "Demo is on — stop the scripted dialog and resume manual chat."
-              : "Start the scripted demo dialog.",
-            "aria-label": demoMode ? "Demo on" : "Demo",
+              ? t("titles.demoOn")
+              : t("titles.demoOff"),
+            "aria-label": demoMode ? t("buttons.demoOn") : t("buttons.demo"),
           },
           h("span", { className: "btn-icon", "aria-hidden": "true" }, "🎬"),
           h(
             "span",
             { className: "btn-label" },
-            demoMode ? "Demo on" : "Demo",
+            demoMode ? t("buttons.demoOn") : t("buttons.demo"),
           ),
         ),
         h(
@@ -1805,10 +2009,12 @@ function App() {
             className: "mobile-menu-toggle",
             "data-testid": "mobile-menu-toggle",
             "aria-pressed": mobileMenuOpen,
-            "aria-label": mobileMenuOpen ? "Close menu" : "Open menu",
+            "aria-label": mobileMenuOpen
+              ? t("buttons.closeMenu")
+              : t("buttons.openMenu"),
             title: mobileMenuOpen
-              ? "Close the side panel (conversations, prompts, tools)."
-              : "Open the side panel (conversations, prompts, tools).",
+              ? t("titles.menuClose")
+              : t("titles.menuOpen"),
             onClick: () => setMobileMenuOpen((value) => !value),
           },
           h(
@@ -1836,7 +2042,7 @@ function App() {
           "data-testid": "context-panel",
         },
         h(CollapsibleSection, {
-          title: "Conversations",
+          title: t("sidebar.conversations"),
           testId: "sidebar-conversations",
           collapsed: sidebarConversationsCollapsed,
           onToggle: () => setSidebarConversationsCollapsed((value) => !value),
@@ -1859,13 +2065,13 @@ function App() {
                   setPrompt("");
                 },
               },
-              "+ New conversation",
+              t("conversation.new"),
             ),
             conversations.length === 0
               ? h(
                   "p",
                   { className: "conversation-empty" },
-                  "Start a new conversation.",
+                  t("conversation.empty"),
                 )
               : h(
                   "ul",
@@ -1911,12 +2117,14 @@ function App() {
                         h(
                           "span",
                           { className: "conversation-entry-title" },
-                          entry.title || "(empty)",
+                          entry.title || t("conversation.emptyTitle"),
                         ),
                         h(
                           "span",
                           { className: "conversation-entry-meta" },
-                          `${entry.messageCount} msg`,
+                          t("conversation.messageCount", {
+                            count: entry.messageCount,
+                          }),
                         ),
                       ),
                     ),
@@ -1925,7 +2133,7 @@ function App() {
           ),
         }),
         h(CollapsibleSection, {
-          title: "Example prompts",
+          title: t("sidebar.examplePrompts"),
           testId: "sidebar-prompts",
           collapsed: sidebarPromptsCollapsed,
           onToggle: () => setSidebarPromptsCollapsed((value) => !value),
@@ -1953,7 +2161,7 @@ function App() {
         }),
         seed.tools && seed.tools.length > 0
           ? h(CollapsibleSection, {
-              title: "Tools",
+              title: t("sidebar.tools"),
               testId: "sidebar-tools",
               collapsed: sidebarToolsCollapsed,
               onToggle: () => setSidebarToolsCollapsed((value) => !value),
@@ -1980,7 +2188,9 @@ function App() {
                         h(
                           "span",
                           { className: "tool-mode" },
-                          tool.mode === "agent" ? "agent" : "thinking",
+                          tool.mode === "agent"
+                            ? t("toolMode.agent")
+                            : t("toolMode.thinking"),
                         ),
                       ),
                       tool.description
@@ -1994,21 +2204,21 @@ function App() {
           : null,
         diagnosticsMode
           ? h(CollapsibleSection, {
-              title: "Trace",
+              title: t("sidebar.trace"),
               testId: "sidebar-trace",
               collapsed: sidebarTraceCollapsed,
               onToggle: () => setSidebarTraceCollapsed((value) => !value),
               children: h(
                 "dl",
                 { className: "trace-list" },
-                h("div", null, h("dt", null, "Model"), h("dd", null, "formal-symbolic-poc")),
-                h("div", null, h("dt", null, "Mode"), h("dd", null, demoStatus)),
-                h("div", null, h("dt", null, "Intent"), h("dd", null, lastAssistant?.intent ?? "none")),
-                h("div", null, h("dt", null, "Data"), h("dd", null, "data/source-index.lino")),
+                h("div", null, h("dt", null, t("trace.model")), h("dd", null, "formal-symbolic-poc")),
+                h("div", null, h("dt", null, t("trace.mode")), h("dd", null, demoStatus)),
+                h("div", null, h("dt", null, t("trace.intent")), h("dd", null, lastAssistant?.intent ?? "none")),
+                h("div", null, h("dt", null, t("trace.data")), h("dd", null, "data/source-index.lino")),
                 h(
                   "div",
                   null,
-                  h("dt", null, "Seed files"),
+                  h("dt", null, t("trace.seedFiles")),
                   h(
                     "dd",
                     null,
@@ -2018,13 +2228,13 @@ function App() {
                 h(
                   "div",
                   null,
-                  h("dt", null, "Tools loaded"),
+                  h("dt", null, t("trace.toolsLoaded")),
                   h("dd", null, String((seed.tools || []).length)),
                 ),
                 h(
                   "div",
                   null,
-                  h("dt", null, "Concepts loaded"),
+                  h("dt", null, t("trace.conceptsLoaded")),
                   h("dd", null, String((seed.concepts || []).length)),
                 ),
               ),
@@ -2042,6 +2252,7 @@ function App() {
               key: message.id,
               message,
               diagnosticsMode,
+              t,
               reportIssueUrl:
                 message.role === "assistant"
                   ? createIssueUrl({ ...reportContext, focusMessage: message })
@@ -2053,7 +2264,7 @@ function App() {
                 "article",
                 { className: "message assistant pending" },
                 h("div", { className: "avatar", "aria-hidden": "true" }, "FA"),
-                h("div", { className: "message-body" }, h("div", { className: "typing" }, "Working")),
+                h("div", { className: "message-body" }, h("div", { className: "typing" }, t("status.working"))),
               )
             : null,
           h("div", { ref: transcriptEndRef }),
@@ -2071,9 +2282,9 @@ function App() {
             ? h(
                 "p",
                 { className: "composer-demo-hint", "data-testid": "composer-demo-hint" },
-                "Demo is running — tap ",
+                t("composer.demoHint.before"),
                 h("span", { className: "composer-demo-hint-icon", "aria-hidden": "true" }, "🎬"),
-                " to stop and type your own message.",
+                t("composer.demoHint.after"),
               )
             : null,
           h(
@@ -2083,8 +2294,8 @@ function App() {
               value: prompt,
               rows: 3,
               placeholder: agentMode
-                ? "Describe a multi-step task (separate steps with ; or 'then')"
-                : "Message formal-ai",
+                ? t("composer.placeholder.agent")
+                : t("composer.placeholder.chat"),
               onChange: (event) => setPrompt(event.target.value),
               onKeyDown: handleKeyDown,
               disabled: demoMode,
@@ -2098,7 +2309,7 @@ function App() {
                 disabled: pending || demoMode || !prompt.trim(),
                 "data-testid": "chat-composer-submit",
               },
-              pending ? "..." : "Send",
+              pending ? "..." : t("composer.send"),
             ),
           ),
         ),

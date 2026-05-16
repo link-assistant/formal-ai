@@ -113,8 +113,12 @@ button {
 .mobile-menu-toggle,
 .report-button,
 .memory-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   min-height: 38px;
   padding: 0 12px;
+  white-space: nowrap;
 }
 
 /* Issue #27: topbar buttons carry an emoji icon + label so the label can be
@@ -688,6 +692,36 @@ textarea:disabled {
   cursor: not-allowed;
 }
 
+@media (max-width: 1100px) {
+  .topbar {
+    gap: 10px;
+  }
+
+  .topbar-actions {
+    gap: 8px;
+  }
+
+  /* Issue #94: switch to icon-only action buttons before labels have to wrap
+   * or force the topbar onto multiple rows. */
+  .topbar-actions .btn-label {
+    display: none;
+  }
+
+  .demo-status,
+  .memory-status {
+    display: none;
+  }
+
+  .topbar-actions .mode-toggle,
+  .topbar-actions .diagnostics-toggle,
+  .topbar-actions .agent-toggle,
+  .topbar-actions .report-button,
+  .topbar-actions .memory-button {
+    min-width: 0;
+    padding: 0 10px;
+  }
+}
+
 @media (max-width: 820px) {
   .topbar {
     min-height: 58px;
@@ -877,5 +911,181 @@ textarea:disabled {
   .mobile-menu-toggle {
     padding: 0 8px;
     min-height: 36px;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    background: #181a1b;
+    color: #ece7df;
+  }
+
+  body {
+    background: #181a1b;
+  }
+
+  .topbar {
+    border-bottom-color: #343a3d;
+    background: #202322;
+    color: #ece7df;
+  }
+
+  .context-panel,
+  .composer {
+    border-color: #343a3d;
+    background: #1d201f;
+  }
+
+  .chat-panel,
+  .sidebar-section-body {
+    background: #181a1b;
+  }
+
+  .sidebar-section {
+    border-bottom-color: #343a3d;
+  }
+
+  .sidebar-section-header {
+    background: #222624;
+    color: #d8d0c4;
+  }
+
+  .sidebar-section-header:hover {
+    background: #2b302e;
+  }
+
+  .context-panel h2,
+  .demo-status,
+  .memory-status,
+  .status,
+  .sidebar-section-caret {
+    color: #c9c1b6;
+  }
+
+  .mode-toggle,
+  .diagnostics-toggle,
+  .agent-toggle,
+  .mobile-menu-toggle,
+  .report-button,
+  .memory-button,
+  .send-button,
+  .prompt-list button,
+  .conversation-new,
+  .conversation-entry-button,
+  .fetch-iframe-toggle {
+    border-color: #4a524e;
+    background: #242826;
+    color: #ece7df;
+  }
+
+  .conversation-new {
+    color: #91d7bc;
+  }
+
+  .conversation-new:hover,
+  .conversation-entry-button:hover,
+  .prompt-list button:hover,
+  .fetch-iframe-toggle:hover {
+    border-color: #6cc5a6;
+    background: #28332f;
+  }
+
+  .conversation-empty,
+  .conversation-entry-meta,
+  .message-meta,
+  .trace-list dt,
+  .thinking-steps {
+    color: #b7b0a7;
+  }
+
+  .conversation-entry.is-active .conversation-entry-button {
+    border-color: #6cc5a6;
+    background: #1f3a31;
+  }
+
+  .message-body,
+  .trace-list div,
+  .tool {
+    border-color: #343a3d;
+    background: #202322;
+  }
+
+  .message.user .message-body {
+    border-color: #365878;
+    background: #1e3142;
+  }
+
+  .message-meta strong {
+    color: #ece7df;
+  }
+
+  .intent,
+  .composer-demo-hint {
+    border-color: #7f6831;
+    background: #332b1b;
+    color: #f1d28a;
+  }
+
+  .markdown-body :not(pre) > code,
+  textarea:disabled {
+    background: #272b2a;
+  }
+
+  .evidence-list span {
+    border-color: #4a524e;
+    color: #c9c1b6;
+  }
+
+  .thinking-steps {
+    border-top-color: #343a3d;
+  }
+
+  .thinking-steps strong {
+    color: #d8d0c4;
+  }
+
+  .message-actions a,
+  .fetch-iframe-open {
+    color: #91d7bc;
+  }
+
+  .fetch-iframe-container,
+  .fetch-iframe-header {
+    border-color: #343a3d;
+  }
+
+  .fetch-iframe-header {
+    background: #222624;
+  }
+
+  .fetch-iframe-url {
+    color: #c9c1b6;
+  }
+
+  textarea {
+    border-color: #4a524e;
+    background: #202322;
+    color: #ece7df;
+  }
+
+  textarea:focus {
+    outline-color: #7aa5ff;
+  }
+
+  .send-button:disabled {
+    border-color: #3f4643;
+    background: #3f4643;
+    color: #aba49c;
+  }
+
+  .mode-toggle[aria-pressed="true"],
+  .diagnostics-toggle[aria-pressed="true"],
+  .agent-toggle[aria-pressed="true"],
+  .mobile-menu-toggle[aria-pressed="true"],
+  .send-button {
+    border-color: #2c8f71;
+    background: #2c8f71;
+    color: #ffffff;
   }
 }

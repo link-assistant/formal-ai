@@ -1,0 +1,62 @@
+[
+  {
+    "path": "CHANGELOG.md",
+    "size": 366
+  },
+  {
+    "path": "LICENSE",
+    "size": 1211
+  },
+  {
+    "path": "README.md",
+    "size": 3422
+  },
+  {
+    "path": "bin/lino-i18n.js",
+    "size": 10842
+  },
+  {
+    "path": "package.json",
+    "size": 2041
+  },
+  {
+    "path": "src/converters/detect.js",
+    "size": 1513
+  },
+  {
+    "path": "src/converters/i18n-js.js",
+    "size": 1887
+  },
+  {
+    "path": "src/converters/i18next.js",
+    "size": 2647
+  },
+  {
+    "path": "src/converters/index.js",
+    "size": 463
+  },
+  {
+    "path": "src/converters/react-intl.js",
+    "size": 2800
+  },
+  {
+    "path": "src/format.js",
+    "size": 3172
+  },
+  {
+    "path": "src/i18n.js",
+    "size": 4292
+  },
+  {
+    "path": "src/index.d.ts",
+    "size": 3909
+  },
+  {
+    "path": "src/index.js",
+    "size": 849
+  },
+  {
+    "path": "src/loaders.js",
+    "size": 12755
+  }
+]
