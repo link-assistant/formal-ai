@@ -8,7 +8,7 @@
 //! concept knowledge base lives in [`crate::concepts`]; this module
 //! re-exports nothing — callers import those modules directly.
 
-use crate::engine::SelectedRule;
+use crate::engine::{ExecutionStatus, HelloWorldProgram, SelectedRule};
 use crate::event_log::EventLog;
 
 pub const fn confidence_for(rule: &SelectedRule, validation: Option<&ValidationChoice>) -> f32 {
@@ -618,6 +618,32 @@ pub fn is_write_script_request(normalized: &str) -> bool {
     // Chinese: "写一个" (write one), "帮我写" (help me write)
     let zh_write = normalized.contains("写一个") || normalized.contains("帮我写");
     en_write || ru_write || hi_write || zh_write
+}
+
+pub fn format_write_script_execution(program: &HelloWorldProgram) -> String {
+    let cmd = program.execution.check_command.map_or_else(
+        || format!("Run command: `{}`", program.execution.run_command),
+        |check| {
+            format!(
+                "Check command: `{check}`\nRun command: `{}`",
+                program.execution.run_command
+            )
+        },
+    );
+    let output_label = if matches!(program.execution.status, ExecutionStatus::Verified) {
+        "Output"
+    } else {
+        "Expected output after verification"
+    };
+    format!(
+        "Execution status: {} in {}.\n{}\n{}:\n```text\n{}\n```\n{}",
+        program.execution.status.label(),
+        program.execution.environment,
+        cmd,
+        output_label,
+        program.execution.output,
+        program.execution.notes
+    )
 }
 
 #[cfg(test)]
