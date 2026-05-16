@@ -20,6 +20,26 @@ fn greeting_prompt_returns_symbolic_greeting() {
 }
 
 #[test]
+fn shabbat_shalom_greeting_is_recognized_as_greeting() {
+    for prompt in ["шабат шалом!", "шабат шалом", "шалом"] {
+        let response = FormalAiEngine.answer(prompt);
+
+        assert_eq!(
+            response.intent, "greeting",
+            "prompt {:?} should be recognized as a greeting, got intent {:?}",
+            prompt, response.intent
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == "response:greeting"),
+            "prompt {prompt:?} response should cite response:greeting",
+        );
+    }
+}
+
+#[test]
 fn identity_questions_return_standard_self_description() {
     let cases = [
         "Who are you?",
@@ -37,6 +57,43 @@ fn identity_questions_return_standard_self_description() {
             .evidence_links
             .iter()
             .any(|link| link == "response:identity"));
+    }
+}
+
+#[test]
+fn how_you_work_prompts_return_meta_explanation() {
+    let cases = [
+        ("покажи как ты работаешь?", "ru"),
+        ("как ты работаешь?", "ru"),
+        ("how do you work?", "en"),
+        ("show me how you work", "en"),
+    ];
+
+    for (prompt, expected_language) in cases {
+        let response = FormalAiEngine.answer(prompt);
+
+        assert_eq!(
+            response.intent, "meta_explanation",
+            "prompt '{prompt}' should resolve to meta_explanation, got '{}'",
+            response.intent
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == "response:meta_explanation"),
+            "prompt '{prompt}' should include evidence link response:meta_explanation"
+        );
+        // Russian prompts must respond in Russian
+        if expected_language == "ru" {
+            assert!(
+                response.answer.contains("работаешь")
+                    || response.answer.contains("правил")
+                    || response.answer.contains("Notation"),
+                "Russian prompt '{prompt}' should get a Russian answer, got: {}",
+                response.answer
+            );
+        }
     }
 }
 
