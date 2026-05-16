@@ -354,11 +354,19 @@ jobs:
         run: rust-script scripts/publish-crate.rs
 
       - name: Wait for Crate availability on Crates.io
-        if: steps.check.outputs.should_release == 'true'
+        if: |
+          steps.check.outputs.should_release == 'true' && (
+            steps.check.outputs.crate_published == 'true' ||
+            steps.publish-crate.outputs.publish_result == 'success'
+          )
         run: rust-script scripts/wait-for-crate.rs --release-version "${{ steps.current_version.outputs.version }}"
 
       - name: Configure Docker Hub publishing
-        if: steps.check.outputs.should_release == 'true'
+        if: |
+          steps.check.outputs.should_release == 'true' && (
+            steps.check.outputs.crate_published == 'true' ||
+            steps.publish-crate.outputs.publish_result == 'success'
+          )
         id: dockerhub
         run: |
           disable_dockerhub() {
@@ -418,7 +426,11 @@ jobs:
           labels: ${{ steps.docker-meta.outputs.labels }}
 
       - name: Create GitHub Release
-        if: steps.check.outputs.should_release == 'true'
+        if: |
+          steps.check.outputs.should_release == 'true' && (
+            steps.check.outputs.crate_published == 'true' ||
+            steps.publish-crate.outputs.publish_result == 'success'
+          )
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DOCKER_HUB_URL: ${{ steps.dockerhub.outputs.docker_hub_url }}
@@ -495,11 +507,17 @@ jobs:
         run: rust-script scripts/publish-crate.rs
 
       - name: Wait for Crate availability on Crates.io
-        if: steps.version.outputs.version_committed == 'true' || steps.version.outputs.already_released == 'true'
+        if: |
+          (steps.version.outputs.version_committed == 'true' ||
+            steps.version.outputs.already_released == 'true') &&
+          steps.publish-crate.outputs.publish_result == 'success'
         run: rust-script scripts/wait-for-crate.rs --release-version "${{ steps.version.outputs.new_version }}"
 
       - name: Configure Docker Hub publishing
-        if: steps.version.outputs.version_committed == 'true' || steps.version.outputs.already_released == 'true'
+        if: |
+          (steps.version.outputs.version_committed == 'true' ||
+            steps.version.outputs.already_released == 'true') &&
+          steps.publish-crate.outputs.publish_result == 'success'
         id: dockerhub
         run: |
           disable_dockerhub() {
@@ -559,7 +577,10 @@ jobs:
           labels: ${{ steps.docker-meta.outputs.labels }}
 
       - name: Create GitHub Release
-        if: steps.version.outputs.version_committed == 'true' || steps.version.outputs.already_released == 'true'
+        if: |
+          (steps.version.outputs.version_committed == 'true' ||
+            steps.version.outputs.already_released == 'true') &&
+          steps.publish-crate.outputs.publish_result == 'success'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DOCKER_HUB_URL: ${{ steps.dockerhub.outputs.docker_hub_url }}

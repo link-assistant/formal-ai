@@ -34,6 +34,24 @@ fn job_block<'a>(workflow: &'a str, job_name: &str) -> &'a str {
     )
 }
 
+fn workflow_step_block<'a>(job: &'a str, step_name: &str) -> &'a str {
+    let marker = format!("      - name: {step_name}\n");
+    let start = job.find(&marker).unwrap();
+    let body_start = start + marker.len();
+    let rest = &job[body_start..];
+
+    let next_step = rest
+        .lines()
+        .scan(0usize, |offset, line| {
+            let current_offset = *offset;
+            *offset += line.len() + 1;
+            Some((current_offset, line))
+        })
+        .find_map(|(offset, line)| line.starts_with("      - ").then_some(offset));
+
+    next_step.map_or_else(|| &job[start..], |end| &job[start..body_start + end])
+}
+
 fn workflow_job_names(workflow: &str) -> Vec<&str> {
     let marker = "jobs:\n";
     let start = workflow.find(marker).unwrap() + marker.len();
@@ -437,6 +455,51 @@ fn release_workflow_publishes_optional_docker_hub_image_after_crate_is_visible()
             && manual_docker < manual_github_release,
         "manual release should publish crates.io first, then Docker Hub, then GitHub release"
     );
+}
+
+#[test]
+fn release_workflow_defers_rate_limited_crates_publish_without_downstream_artifacts() {
+    let workflow = release_workflow();
+    let auto_release = job_block(&workflow, "auto-release");
+
+    for step_name in [
+        "Wait for Crate availability on Crates.io",
+        "Configure Docker Hub publishing",
+        "Create GitHub Release",
+    ] {
+        let step = workflow_step_block(auto_release, step_name);
+        assert!(
+            step.contains("steps.check.outputs.crate_published == 'true'"),
+            "auto-release {step_name} should still run when the crate was already published"
+        );
+        assert!(
+            step.contains("steps.publish-crate.outputs.publish_result == 'success'"),
+            "auto-release {step_name} should wait for a successful crates.io publish before creating downstream artifacts"
+        );
+        assert!(
+            !step.contains("steps.check.outputs.should_release == 'true'\n"),
+            "auto-release {step_name} should not run solely because a release is needed"
+        );
+    }
+
+    let manual_release = job_block(&workflow, "manual-release");
+    for step_name in [
+        "Wait for Crate availability on Crates.io",
+        "Configure Docker Hub publishing",
+        "Create GitHub Release",
+    ] {
+        let step = workflow_step_block(manual_release, step_name);
+        assert!(
+            step.contains("steps.publish-crate.outputs.publish_result == 'success'"),
+            "manual-release {step_name} should wait for a successful crates.io publish before creating downstream artifacts"
+        );
+        assert!(
+            !step.contains(
+                "steps.version.outputs.version_committed == 'true' || steps.version.outputs.already_released == 'true'\n"
+            ),
+            "manual-release {step_name} should not run solely because a version step completed"
+        );
+    }
 }
 
 #[test]
