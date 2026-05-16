@@ -748,9 +748,12 @@ function appendDialogBlock(lines, messages, effectiveFocus) {
     const annotations = [];
     if (message.intent === "unknown") {
       annotations.push(`intent: ${message.intent}`);
-      if (effectiveFocus && effectiveFocus.id === message.id) {
-        annotations.push("reported");
+    }
+    if (effectiveFocus && effectiveFocus.id === message.id) {
+      if (message.intent && message.intent !== "unknown") {
+        annotations.push(`intent: ${message.intent}`);
       }
+      annotations.push("reported");
     }
     const head = annotations.length > 0 ? `${prefix} (${annotations.join(", ")})` : prefix;
     const content = String(message.content ?? "");
