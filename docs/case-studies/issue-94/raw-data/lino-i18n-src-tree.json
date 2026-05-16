@@ -1,1 +1,62 @@
-[{"name":"index.d.ts","path":"src/index.d.ts","sha":"658cd82a79657e0ec6727a883d8953d87f3fbe6f","size":651,"url":"https://api.github.com/repos/link-foundation/lino-i18n/contents/src/index.d.ts?ref=main","html_url":"https://github.com/link-foundation/lino-i18n/blob/main/src/index.d.ts","git_url":"https://api.github.com/repos/link-foundation/lino-i18n/git/blobs/658cd82a79657e0ec6727a883d8953d87f3fbe6f","download_url":"https://raw.githubusercontent.com/link-foundation/lino-i18n/main/src/index.d.ts","type":"file","_links":{"self":"https://api.github.com/repos/link-foundation/lino-i18n/contents/src/index.d.ts?ref=main","git":"https://api.github.com/repos/link-foundation/lino-i18n/git/blobs/658cd82a79657e0ec6727a883d8953d87f3fbe6f","html":"https://github.com/link-foundation/lino-i18n/blob/main/src/index.d.ts"}},{"name":"index.js","path":"src/index.js","sha":"22705fde8c7f091053953d6015a8fc4503f5aecf","size":694,"url":"https://api.github.com/repos/link-foundation/lino-i18n/contents/src/index.js?ref=main","html_url":"https://github.com/link-foundation/lino-i18n/blob/main/src/index.js","git_url":"https://api.github.com/repos/link-foundation/lino-i18n/git/blobs/22705fde8c7f091053953d6015a8fc4503f5aecf","download_url":"https://raw.githubusercontent.com/link-foundation/lino-i18n/main/src/index.js","type":"file","_links":{"self":"https://api.github.com/repos/link-foundation/lino-i18n/contents/src/index.js?ref=main","git":"https://api.github.com/repos/link-foundation/lino-i18n/git/blobs/22705fde8c7f091053953d6015a8fc4503f5aecf","html":"https://github.com/link-foundation/lino-i18n/blob/main/src/index.js"}}]
+[
+  {
+    "path": "CHANGELOG.md",
+    "size": 366
+  },
+  {
+    "path": "LICENSE",
+    "size": 1211
+  },
+  {
+    "path": "README.md",
+    "size": 3422
+  },
+  {
+    "path": "bin/lino-i18n.js",
+    "size": 10842
+  },
+  {
+    "path": "package.json",
+    "size": 2041
+  },
+  {
+    "path": "src/converters/detect.js",
+    "size": 1513
+  },
+  {
+    "path": "src/converters/i18n-js.js",
+    "size": 1887
+  },
+  {
+    "path": "src/converters/i18next.js",
+    "size": 2647
+  },
+  {
+    "path": "src/converters/index.js",
+    "size": 463
+  },
+  {
+    "path": "src/converters/react-intl.js",
+    "size": 2800
+  },
+  {
+    "path": "src/format.js",
+    "size": 3172
+  },
+  {
+    "path": "src/i18n.js",
+    "size": 4292
+  },
+  {
+    "path": "src/index.d.ts",
+    "size": 3909
+  },
+  {
+    "path": "src/index.js",
+    "size": 849
+  },
+  {
+    "path": "src/loaders.js",
+    "size": 12755
+  }
+]

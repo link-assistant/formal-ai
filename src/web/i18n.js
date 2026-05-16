@@ -3,10 +3,12 @@
 
   var DEFAULT_LANGUAGE = "en";
   var SUPPORTED_LANGUAGES = ["en", "ru", "zh", "hi"];
+  var PUBLISHED_RUNTIME_SOURCE = "lino-i18n@0.0.1";
+  var LOCAL_RUNTIME_SOURCE = "local-fallback";
+  var runtimeEngine = null;
 
-  // Local browser catalog while link-foundation/lino-i18n is still a package
-  // template. Keys follow a Links-Notation-style namespace so the catalog can
-  // migrate to a parser-backed package without changing callers.
+  // Flat catalog keys match lino-i18n's runtime lookup API and keep the web
+  // build usable when the CDN dependency is unavailable.
   var CATALOG = {
     en: {
       "buttons.reportIssue": "Report issue",
@@ -21,6 +23,25 @@
       "buttons.demoOn": "Demo on",
       "buttons.openMenu": "Open menu",
       "buttons.closeMenu": "Close menu",
+      "titles.reportIssue":
+        "Report issue - open a pre-filled GitHub issue with the current session transcript. See docs/upload-memory.md for how to attach the full memory export (Gist or .zip).",
+      "titles.exportMemory":
+        "Export memory - save the full agent state to formal-ai-memory.lino: the entire seed, UI preferences, environment metadata, and the append-only event log. See docs/upload-memory.md for attaching it to a GitHub issue (Gist or .zip).",
+      "titles.importMemory":
+        "Import memory - load a previous export. Accepts both the new full-memory bundle and the legacy demo_memory event-only log. Migration hints are shown next to this bar.",
+      "titles.diagnosticsShow":
+        "Show reasoning trace, intent, evidence, and thinking-steps panels.",
+      "titles.diagnosticsHide":
+        "Hide reasoning trace, intent, evidence, and thinking-steps panels.",
+      "titles.agentOn": "Agent mode is on - switch back to single-turn chat.",
+      "titles.agentOff":
+        "Chat mode - switch to agent mode and each message will be decomposed into sequential steps and executed as a plan.",
+      "titles.demoOn":
+        "Demo is on - stop the scripted dialog and resume manual chat.",
+      "titles.demoOff": "Start the scripted demo dialog.",
+      "titles.menuOpen": "Open the side panel (conversations, prompts, tools).",
+      "titles.menuClose":
+        "Close the side panel (conversations, prompts, tools).",
       "composer.placeholder.chat": "Message formal-ai",
       "composer.placeholder.agent":
         "Describe a multi-step task (separate steps with ; or 'then')",
@@ -31,6 +52,16 @@
       "conversation.empty": "Start a new conversation.",
       "conversation.emptyTitle": "(empty)",
       "conversation.messageCount": "{count} msg",
+      "message.author.user": "You",
+      "message.thinking": "Thinking",
+      "fetch.collapse": "Collapse",
+      "fetch.expand": "Expand",
+      "fetch.openInNewTab": "Open in new tab",
+      "fetch.frameTitle": "Fetched page: {url}",
+      "memory.exportTriggered":
+        "Triggered Export memory. Your browser is downloading `formal-ai-memory.lino`.",
+      "memory.importTriggered":
+        "Triggered Import memory. Pick a `.lino` file in the open dialog to restore the saved memory.",
       "sidebar.conversations": "Conversations",
       "sidebar.examplePrompts": "Example prompts",
       "sidebar.tools": "Tools",
@@ -39,9 +70,17 @@
       "status.manual": "Manual mode",
       "status.nextDialogIn": "Next dialog in {seconds}s",
       "status.memoryUnavailable": "Memory unavailable",
+      "status.memoryExported":
+        "Exported full memory: {events} event(s) + {seedFiles} seed file(s)",
+      "status.memoryImportedBundle":
+        "Imported {inserted} event(s) from full bundle",
+      "status.memoryImportedEvents": "Imported {inserted} events",
+      "status.migration": "{headline}. Migration: {suggestions}",
       "status.exportFailed": "Export failed",
       "status.importFailed": "Import failed",
       "status.working": "Working",
+      "toolMode.agent": "agent",
+      "toolMode.thinking": "thinking",
       "trace.model": "Model",
       "trace.mode": "Mode",
       "trace.intent": "Intent",
@@ -63,6 +102,24 @@
       "buttons.demoOn": "Демо включено",
       "buttons.openMenu": "Открыть меню",
       "buttons.closeMenu": "Закрыть меню",
+      "titles.reportIssue":
+        "Сообщить о проблеме - откроет заранее заполненный GitHub issue с текущим диалогом. См. docs/upload-memory.md, чтобы прикрепить полный экспорт памяти (Gist или .zip).",
+      "titles.exportMemory":
+        "Экспорт памяти - сохраняет полное состояние агента в formal-ai-memory.lino: весь seed, настройки UI, метаданные окружения и append-only журнал событий. См. docs/upload-memory.md, чтобы прикрепить экспорт к GitHub issue (Gist или .zip).",
+      "titles.importMemory":
+        "Импорт памяти - загружает предыдущий экспорт. Поддерживает новый полный bundle памяти и устаревший журнал demo_memory только с событиями. Подсказки миграции появятся рядом с панелью.",
+      "titles.diagnosticsShow":
+        "Показать диагностическую трассировку, намерение, доказательства и шаги рассуждения.",
+      "titles.diagnosticsHide":
+        "Скрыть диагностическую трассировку, намерение, доказательства и шаги рассуждения.",
+      "titles.agentOn": "Режим агента включен - вернуться к одиночному чату.",
+      "titles.agentOff":
+        "Режим чата - перейти в режим агента, где каждое сообщение разбивается на последовательные шаги и выполняется как план.",
+      "titles.demoOn":
+        "Демо включено - остановить сценарный диалог и вернуться к ручному чату.",
+      "titles.demoOff": "Запустить сценарный демо-диалог.",
+      "titles.menuOpen": "Открыть боковую панель (разговоры, запросы, инструменты).",
+      "titles.menuClose": "Закрыть боковую панель (разговоры, запросы, инструменты).",
       "composer.placeholder.chat": "Сообщение formal-ai",
       "composer.placeholder.agent":
         "Опишите задачу из нескольких шагов (разделяйте шаги ; или «затем»)",
@@ -73,6 +130,16 @@
       "conversation.empty": "Начните новый разговор.",
       "conversation.emptyTitle": "(пусто)",
       "conversation.messageCount": "{count} сообщ.",
+      "message.author.user": "Вы",
+      "message.thinking": "Мышление",
+      "fetch.collapse": "Свернуть",
+      "fetch.expand": "Развернуть",
+      "fetch.openInNewTab": "Открыть в новой вкладке",
+      "fetch.frameTitle": "Полученная страница: {url}",
+      "memory.exportTriggered":
+        "Запущен экспорт памяти. Браузер скачивает `formal-ai-memory.lino`.",
+      "memory.importTriggered":
+        "Запущен импорт памяти. Выберите файл `.lino` в открытом диалоге, чтобы восстановить сохраненную память.",
       "sidebar.conversations": "Разговоры",
       "sidebar.examplePrompts": "Примеры запросов",
       "sidebar.tools": "Инструменты",
@@ -81,9 +148,17 @@
       "status.manual": "Ручной режим",
       "status.nextDialogIn": "Следующий диалог через {seconds} с",
       "status.memoryUnavailable": "Память недоступна",
+      "status.memoryExported":
+        "Полный экспорт памяти: {events} событ. + {seedFiles} seed-файл(ов)",
+      "status.memoryImportedBundle":
+        "Импортировано {inserted} событ. из полного bundle",
+      "status.memoryImportedEvents": "Импортировано событий: {inserted}",
+      "status.migration": "{headline}. Миграция: {suggestions}",
       "status.exportFailed": "Экспорт не удался",
       "status.importFailed": "Импорт не удался",
       "status.working": "В работе",
+      "toolMode.agent": "агент",
+      "toolMode.thinking": "мышление",
       "trace.model": "Модель",
       "trace.mode": "Режим",
       "trace.intent": "Намерение",
@@ -105,6 +180,21 @@
       "buttons.demoOn": "演示开启",
       "buttons.openMenu": "打开菜单",
       "buttons.closeMenu": "关闭菜单",
+      "titles.reportIssue":
+        "报告问题 - 打开已预填当前会话记录的 GitHub issue。请参阅 docs/upload-memory.md，了解如何附加完整记忆导出（Gist 或 .zip）。",
+      "titles.exportMemory":
+        "导出记忆 - 将完整代理状态保存为 formal-ai-memory.lino：全部 seed、UI 偏好、环境元数据和追加式事件日志。请参阅 docs/upload-memory.md，了解如何附加到 GitHub issue（Gist 或 .zip）。",
+      "titles.importMemory":
+        "导入记忆 - 加载以前的导出。支持新的完整记忆 bundle 和旧版 demo_memory 事件日志。迁移提示会显示在此栏旁边。",
+      "titles.diagnosticsShow": "显示推理跟踪、意图、证据和思考步骤面板。",
+      "titles.diagnosticsHide": "隐藏推理跟踪、意图、证据和思考步骤面板。",
+      "titles.agentOn": "代理模式已开启 - 切回单轮聊天。",
+      "titles.agentOff":
+        "聊天模式 - 切换到代理模式，每条消息会被拆成连续步骤并作为计划执行。",
+      "titles.demoOn": "演示已开启 - 停止脚本对话并恢复手动聊天。",
+      "titles.demoOff": "启动脚本演示对话。",
+      "titles.menuOpen": "打开侧边面板（对话、提示、工具）。",
+      "titles.menuClose": "关闭侧边面板（对话、提示、工具）。",
       "composer.placeholder.chat": "给 formal-ai 发消息",
       "composer.placeholder.agent": "描述多步骤任务（用 ; 或“然后”分隔步骤）",
       "composer.demoHint.before": "演示正在运行 - 点按 ",
@@ -114,6 +204,16 @@
       "conversation.empty": "开始一个新对话。",
       "conversation.emptyTitle": "（空）",
       "conversation.messageCount": "{count} 条消息",
+      "message.author.user": "你",
+      "message.thinking": "思考",
+      "fetch.collapse": "折叠",
+      "fetch.expand": "展开",
+      "fetch.openInNewTab": "在新标签页打开",
+      "fetch.frameTitle": "已获取页面：{url}",
+      "memory.exportTriggered":
+        "已触发导出记忆。浏览器正在下载 `formal-ai-memory.lino`。",
+      "memory.importTriggered":
+        "已触发导入记忆。请在打开的对话框中选择 `.lino` 文件来恢复保存的记忆。",
       "sidebar.conversations": "对话",
       "sidebar.examplePrompts": "示例提示",
       "sidebar.tools": "工具",
@@ -122,9 +222,17 @@
       "status.manual": "手动模式",
       "status.nextDialogIn": "{seconds} 秒后下一个对话",
       "status.memoryUnavailable": "记忆不可用",
+      "status.memoryExported":
+        "已导出完整记忆：{events} 个事件 + {seedFiles} 个 seed 文件",
+      "status.memoryImportedBundle":
+        "已从完整 bundle 导入 {inserted} 个事件",
+      "status.memoryImportedEvents": "已导入 {inserted} 个事件",
+      "status.migration": "{headline}。迁移：{suggestions}",
       "status.exportFailed": "导出失败",
       "status.importFailed": "导入失败",
       "status.working": "工作中",
+      "toolMode.agent": "代理",
+      "toolMode.thinking": "思考",
       "trace.model": "模型",
       "trace.mode": "模式",
       "trace.intent": "意图",
@@ -146,6 +254,24 @@
       "buttons.demoOn": "डेमो चालू",
       "buttons.openMenu": "मेन्यू खोलें",
       "buttons.closeMenu": "मेन्यू बंद करें",
+      "titles.reportIssue":
+        "समस्या रिपोर्ट करें - वर्तमान सत्र transcript के साथ पहले से भरा GitHub issue खोलें। पूरा memory export जोड़ने के लिए docs/upload-memory.md देखें (Gist या .zip)।",
+      "titles.exportMemory":
+        "स्मृति निर्यात करें - पूरे agent state को formal-ai-memory.lino में सेव करें: पूरा seed, UI preferences, environment metadata, और append-only event log. GitHub issue में जोड़ने के लिए docs/upload-memory.md देखें (Gist या .zip)।",
+      "titles.importMemory":
+        "स्मृति आयात करें - पिछला export load करें। नया full-memory bundle और legacy demo_memory event-only log दोनों स्वीकार हैं। Migration hints इसी bar के पास दिखेंगे।",
+      "titles.diagnosticsShow":
+        "reasoning trace, intent, evidence, और thinking-steps panels दिखाएं।",
+      "titles.diagnosticsHide":
+        "reasoning trace, intent, evidence, और thinking-steps panels छिपाएं।",
+      "titles.agentOn": "एजेंट मोड चालू है - single-turn chat पर लौटें।",
+      "titles.agentOff":
+        "चैट मोड - एजेंट मोड पर जाएं, जहां हर संदेश sequential steps में टूटकर plan की तरह चलेगा।",
+      "titles.demoOn":
+        "डेमो चालू है - scripted dialog रोकें और manual chat फिर शुरू करें।",
+      "titles.demoOff": "scripted demo dialog शुरू करें।",
+      "titles.menuOpen": "side panel खोलें (बातचीत, prompts, tools)।",
+      "titles.menuClose": "side panel बंद करें (बातचीत, prompts, tools)।",
       "composer.placeholder.chat": "formal-ai को संदेश",
       "composer.placeholder.agent":
         "कई चरणों वाला कार्य लिखें (चरणों को ; या 'then' से अलग करें)",
@@ -156,6 +282,16 @@
       "conversation.empty": "नई बातचीत शुरू करें।",
       "conversation.emptyTitle": "(खाली)",
       "conversation.messageCount": "{count} संदेश",
+      "message.author.user": "आप",
+      "message.thinking": "सोच",
+      "fetch.collapse": "समेटें",
+      "fetch.expand": "फैलाएं",
+      "fetch.openInNewTab": "नए टैब में खोलें",
+      "fetch.frameTitle": "लाई गई पेज: {url}",
+      "memory.exportTriggered":
+        "स्मृति निर्यात शुरू हुआ। आपका browser `formal-ai-memory.lino` डाउनलोड कर रहा है।",
+      "memory.importTriggered":
+        "स्मृति आयात शुरू हुआ। saved memory restore करने के लिए खुले dialog में `.lino` file चुनें।",
       "sidebar.conversations": "बातचीत",
       "sidebar.examplePrompts": "उदाहरण प्रॉम्प्ट",
       "sidebar.tools": "टूल",
@@ -164,9 +300,17 @@
       "status.manual": "मैनुअल मोड",
       "status.nextDialogIn": "{seconds}s में अगला संवाद",
       "status.memoryUnavailable": "स्मृति उपलब्ध नहीं",
+      "status.memoryExported":
+        "पूरी स्मृति निर्यात हुई: {events} event(s) + {seedFiles} seed file(s)",
+      "status.memoryImportedBundle":
+        "full bundle से {inserted} event(s) आयात हुए",
+      "status.memoryImportedEvents": "{inserted} events आयात हुए",
+      "status.migration": "{headline}. Migration: {suggestions}",
       "status.exportFailed": "निर्यात विफल",
       "status.importFailed": "आयात विफल",
       "status.working": "काम जारी है",
+      "toolMode.agent": "एजेंट",
+      "toolMode.thinking": "सोच",
       "trace.model": "मॉडल",
       "trace.mode": "मोड",
       "trace.intent": "इरादा",
@@ -216,7 +360,7 @@
     });
   }
 
-  function t(key, language, params) {
+  function localTranslate(key, language, params) {
     var lang = normalizeLanguageTag(language) || DEFAULT_LANGUAGE;
     var table = CATALOG[lang] || CATALOG[DEFAULT_LANGUAGE];
     var fallback = CATALOG[DEFAULT_LANGUAGE] || {};
@@ -227,14 +371,86 @@
     return interpolate(value || key, params);
   }
 
-  global.FormalAiI18n = {
+  function t(key, language, params) {
+    var lang = normalizeLanguageTag(language) || DEFAULT_LANGUAGE;
+    if (runtimeEngine && typeof runtimeEngine.t === "function") {
+      try {
+        return runtimeEngine.t(key, params || {}, {
+          locale: lang,
+          defaultValue: localTranslate(key, lang, params),
+        });
+      } catch (_error) {
+        return localTranslate(key, lang, params);
+      }
+    }
+    return localTranslate(key, lang, params);
+  }
+
+  function dispatchReady() {
+    if (typeof global.dispatchEvent !== "function") return;
+    try {
+      if (typeof global.CustomEvent === "function") {
+        global.dispatchEvent(
+          new global.CustomEvent("formal-ai:i18n-ready", {
+            detail: { source: api.ENGINE_SOURCE },
+          }),
+        );
+      } else {
+        global.dispatchEvent({ type: "formal-ai:i18n-ready" });
+      }
+    } catch (_error) {
+      // Event dispatch is best-effort; the fallback translator is already live.
+    }
+  }
+
+  function importModule(specifier) {
+    try {
+      return new Function("specifier", "return import(specifier);")(specifier);
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+
+  function loadPublishedRuntime() {
+    return importModule("lino-i18n")
+      .then(function (module) {
+        if (!module || typeof module.createI18n !== "function") {
+          throw new Error("lino-i18n did not export createI18n");
+        }
+        runtimeEngine = module.createI18n({
+          locales: CATALOG,
+          defaultLocale: DEFAULT_LANGUAGE,
+          fallback: [DEFAULT_LANGUAGE],
+        });
+        api.ENGINE_SOURCE = PUBLISHED_RUNTIME_SOURCE;
+        api.lastError = null;
+        dispatchReady();
+        return api;
+      })
+      .catch(function (error) {
+        runtimeEngine = null;
+        api.ENGINE_SOURCE = LOCAL_RUNTIME_SOURCE;
+        api.lastError = error && error.message ? error.message : String(error);
+        dispatchReady();
+        return api;
+      });
+  }
+
+  var api = {
     DEFAULT_LANGUAGE: DEFAULT_LANGUAGE,
     SUPPORTED_LANGUAGES: SUPPORTED_LANGUAGES.slice(),
     CATALOG: CATALOG,
+    ENGINE_SOURCE: LOCAL_RUNTIME_SOURCE,
+    PUBLISHED_RUNTIME_SOURCE: PUBLISHED_RUNTIME_SOURCE,
+    lastError: null,
     browserLanguages: browserLanguages,
     detectLanguage: detectLanguage,
     normalizeLanguageTag: normalizeLanguageTag,
     resolveLanguage: resolveLanguage,
     t: t,
+    ready: Promise.resolve(null),
   };
+
+  global.FormalAiI18n = api;
+  api.ready = loadPublishedRuntime();
 })(typeof window !== "undefined" ? window : globalThis);

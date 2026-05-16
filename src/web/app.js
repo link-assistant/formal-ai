@@ -1015,7 +1015,11 @@ function Message({ message, diagnosticsMode, reportIssueUrl, t }) {
       h(
         "div",
         { className: "message-meta" },
-        h("strong", null, message.author),
+        h(
+          "strong",
+          null,
+          message.role === "user" ? t("message.author.user") : message.author,
+        ),
         h("time", null, message.sentAt),
         diagnosticsMode && message.intent
           ? h("span", { className: "intent" }, `intent:${message.intent}`)
@@ -1040,7 +1044,9 @@ function Message({ message, diagnosticsMode, reportIssueUrl, t }) {
                   onClick: () => setIframeExpanded((prev) => !prev),
                   "aria-expanded": iframeExpanded ? "true" : "false",
                 },
-                iframeExpanded ? "▼ Collapse" : "▶ Expand",
+                iframeExpanded
+                  ? `▼ ${t("fetch.collapse")}`
+                  : `▶ ${t("fetch.expand")}`,
               ),
               h("span", { className: "fetch-iframe-url" }, message.iframeUrl),
               h(
@@ -1051,14 +1057,14 @@ function Message({ message, diagnosticsMode, reportIssueUrl, t }) {
                   rel: "noopener noreferrer",
                   className: "fetch-iframe-open",
                 },
-                "Open in new tab",
+                t("fetch.openInNewTab"),
               ),
             ),
             iframeExpanded
               ? h("iframe", {
                   className: "fetch-iframe",
                   src: message.iframeUrl,
-                  title: `Fetched page: ${message.iframeUrl}`,
+                  title: t("fetch.frameTitle", { url: message.iframeUrl }),
                   sandbox: "allow-scripts allow-same-origin allow-forms allow-popups",
                   loading: "lazy",
                   "data-testid": "fetch-iframe",
@@ -1077,7 +1083,7 @@ function Message({ message, diagnosticsMode, reportIssueUrl, t }) {
         ? h(
             "div",
             { className: "thinking-steps" },
-            h("strong", null, "Thinking"),
+            h("strong", null, t("message.thinking")),
             h(
               "ol",
               null,
@@ -1158,10 +1164,11 @@ function App() {
   const [uiLanguagePreference] = useState(
     normalizeUiLanguagePreference(initialPreferences.current.uiLanguage),
   );
+  const [i18nRuntimeTick, setI18nRuntimeTick] = useState(0);
   const uiLanguage = detectUiLanguage(uiLanguagePreference);
   const t = useCallback(
     (key, params) => translateUi(key, uiLanguage, params),
-    [uiLanguage],
+    [uiLanguage, i18nRuntimeTick],
   );
   const [demoMode, setDemoMode] = useState(initialPreferences.current.demoMode);
   const [demoPhase, setDemoPhase] = useState("manual");
@@ -1211,6 +1218,25 @@ function App() {
     document.documentElement.lang = uiLanguage;
     document.documentElement.dir = "ltr";
   }, [uiLanguage]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+    let cancelled = false;
+    const update = () => {
+      if (!cancelled) {
+        setI18nRuntimeTick((value) => value + 1);
+      }
+    };
+    window.addEventListener("formal-ai:i18n-ready", update);
+    const api = i18nApi();
+    if (api && api.ready && typeof api.ready.then === "function") {
+      api.ready.then(update).catch(() => null);
+    }
+    return () => {
+      cancelled = true;
+      window.removeEventListener("formal-ai:i18n-ready", update);
+    };
+  }, []);
 
   useEffect(() => {
     if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
@@ -1321,7 +1347,10 @@ function App() {
       downloadTextFile(MEMORY_EXPORT_FILENAME, text);
       const seedFileCount = seed && seed.raw ? Object.keys(seed.raw).length : 0;
       setMemoryStatus(
-        `Exported full memory: ${events.length} event(s) + ${seedFileCount} seed file(s)`,
+        t("status.memoryExported", {
+          events: events.length,
+          seedFiles: seedFileCount,
+        }),
       );
     } catch (_error) {
       setMemoryStatus(t("status.exportFailed"));
@@ -1348,11 +1377,14 @@ function App() {
       });
       const headline =
         imported.kind === "bundle"
-          ? `Imported ${inserted} event(s) from full bundle`
-          : `Imported ${inserted} events`;
+          ? t("status.memoryImportedBundle", { inserted })
+          : t("status.memoryImportedEvents", { inserted });
       if (suggestions.length > 0) {
         setMemoryStatus(
-          `${headline}. Migration: ${suggestions.join(" / ")}`,
+          t("status.migration", {
+            headline,
+            suggestions: suggestions.join(" / "),
+          }),
         );
       } else {
         setMemoryStatus(headline);
@@ -1636,8 +1668,7 @@ function App() {
       await handleExportMemory();
       appendAssistantMessage({
         intent: "memory_export",
-        content:
-          "Triggered Export memory. Your browser is downloading `formal-ai-memory.lino`.",
+        content: t("memory.exportTriggered"),
         confidence: 1.0,
         evidence: ["rule:memory_export"],
         steps: [{ step: "trigger_button", detail: "memory-export" }],
@@ -1656,8 +1687,7 @@ function App() {
       triggerImportMemory();
       appendAssistantMessage({
         intent: "memory_import",
-        content:
-          "Triggered Import memory. Pick a `.lino` file in the open dialog to restore the saved memory.",
+        content: t("memory.importTriggered"),
         confidence: 1.0,
         evidence: ["rule:memory_import"],
         steps: [{ step: "trigger_button", detail: "memory-import" }],
@@ -1857,8 +1887,7 @@ function App() {
             href: currentReportUrl,
             target: "_blank",
             rel: "noopener noreferrer",
-            title:
-              "Report issue — open a pre-filled GitHub issue with the current session transcript. See docs/upload-memory.md for how to attach the full memory export (Gist or .zip).",
+            title: t("titles.reportIssue"),
             "aria-label": t("buttons.reportIssue"),
           },
           h("span", { className: "btn-icon", "aria-hidden": "true" }, "🐛"),
@@ -1871,8 +1900,7 @@ function App() {
             className: "memory-button",
             "data-testid": "memory-export",
             onClick: handleExportMemory,
-            title:
-              "Export memory — save the full agent state to formal-ai-memory.lino: the entire seed, UI preferences, environment metadata, and the append-only event log. See docs/upload-memory.md for attaching it to a GitHub issue (Gist or .zip).",
+            title: t("titles.exportMemory"),
             "aria-label": t("buttons.exportMemory"),
           },
           h("span", { className: "btn-icon", "aria-hidden": "true" }, "📤"),
@@ -1885,8 +1913,7 @@ function App() {
             className: "memory-button",
             "data-testid": "memory-import",
             onClick: triggerImportMemory,
-            title:
-              "Import memory — load a previous export. Accepts both the new full-memory bundle and the legacy demo_memory event-only log. Migration hints are shown next to this bar.",
+            title: t("titles.importMemory"),
             "aria-label": t("buttons.importMemory"),
           },
           h("span", { className: "btn-icon", "aria-hidden": "true" }, "📥"),
@@ -1919,8 +1946,8 @@ function App() {
             "aria-pressed": diagnosticsMode,
             onClick: () => setDiagnosticsMode((value) => !value),
             title: diagnosticsMode
-              ? "Hide reasoning trace, intent, evidence, and thinking-steps panels."
-              : "Show reasoning trace, intent, evidence, and thinking-steps panels.",
+              ? t("titles.diagnosticsHide")
+              : t("titles.diagnosticsShow"),
             "aria-label": diagnosticsMode
               ? t("buttons.diagnosticsOn")
               : t("buttons.diagnostics"),
@@ -1940,8 +1967,8 @@ function App() {
             "data-testid": "agent-toggle",
             "aria-pressed": agentMode,
             title: agentMode
-              ? "Agent mode is on — switch back to single-turn chat."
-              : "Chat mode — switch to agent mode and each message will be decomposed into sequential steps and executed as a plan.",
+              ? t("titles.agentOn")
+              : t("titles.agentOff"),
             "aria-label": agentMode ? t("buttons.agent") : t("buttons.chat"),
             onClick: () => setAgentMode((value) => !value),
           },
@@ -1964,8 +1991,8 @@ function App() {
             "aria-pressed": demoMode,
             onClick: () => setDemoMode((value) => !value),
             title: demoMode
-              ? "Demo is on — stop the scripted dialog and resume manual chat."
-              : "Start the scripted demo dialog.",
+              ? t("titles.demoOn")
+              : t("titles.demoOff"),
             "aria-label": demoMode ? t("buttons.demoOn") : t("buttons.demo"),
           },
           h("span", { className: "btn-icon", "aria-hidden": "true" }, "🎬"),
@@ -1986,8 +2013,8 @@ function App() {
               ? t("buttons.closeMenu")
               : t("buttons.openMenu"),
             title: mobileMenuOpen
-              ? "Close the side panel (conversations, prompts, tools)."
-              : "Open the side panel (conversations, prompts, tools).",
+              ? t("titles.menuClose")
+              : t("titles.menuOpen"),
             onClick: () => setMobileMenuOpen((value) => !value),
           },
           h(
@@ -2161,7 +2188,9 @@ function App() {
                         h(
                           "span",
                           { className: "tool-mode" },
-                          tool.mode === "agent" ? "agent" : "thinking",
+                          tool.mode === "agent"
+                            ? t("toolMode.agent")
+                            : t("toolMode.thinking"),
                         ),
                       ),
                       tool.description

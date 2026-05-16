@@ -410,6 +410,14 @@ test.describe('Issue #94: theme, localization, and report context', () => {
     await expect(page.locator('[data-testid="report-issue"]')).toContainText(
       'Сообщить о проблеме',
     );
+    await expect(page.locator('[data-testid="report-issue"]')).toHaveAttribute(
+      'title',
+      /Сообщить о проблеме/,
+    );
+    await expect(page.locator('.diagnostics-toggle')).toHaveAttribute(
+      'title',
+      /Показать диагностическую трассировку/,
+    );
     await expect(page.locator('[data-testid="chat-composer-input"]')).toHaveAttribute(
       'placeholder',
       'Сообщение formal-ai',
@@ -434,6 +442,27 @@ test.describe('Issue #94: theme, localization, and report context', () => {
       ru: 'Сообщить о проблеме',
       zh: '报告问题',
       hi: 'समस्या रिपोर्ट करें',
+    });
+  });
+
+  test('loads the published lino-i18n runtime for UI translations', async ({ page }) => {
+    await disableGreetingVariations(page);
+    await page.goto('./');
+    await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
+
+    const runtime = await page.evaluate(async () => {
+      await window.FormalAiI18n.ready;
+      return {
+        engine: window.FormalAiI18n.ENGINE_SOURCE,
+        russian: window.FormalAiI18n.t('buttons.reportIssue', 'ru'),
+        fallback: window.FormalAiI18n.t('buttons.reportIssue', 'zz'),
+      };
+    });
+
+    expect(runtime).toEqual({
+      engine: 'lino-i18n@0.0.1',
+      russian: 'Сообщить о проблеме',
+      fallback: 'Report issue',
     });
   });
 

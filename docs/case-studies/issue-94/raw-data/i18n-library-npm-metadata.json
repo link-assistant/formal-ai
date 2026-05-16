@@ -1,5 +1,21 @@
 [
   {
+    "name": "lino-i18n",
+    "version": "0.0.1",
+    "license": "Unlicense",
+    "description": "Universal i18n library that stores translations in Links Notation (.lino) instead of JSON.",
+    "homepage": "https://github.com/link-foundation/lino-i18n#readme",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/link-foundation/lino-i18n.git"
+    },
+    "published": {
+      "created": "2026-05-16T22:23:27.017Z",
+      "version": "2026-05-16T22:23:27.252Z",
+      "modified": "2026-05-16T22:23:27.442Z"
+    }
+  },
+  {
     "name": "i18next",
     "version": "26.2.0",
     "license": "MIT",

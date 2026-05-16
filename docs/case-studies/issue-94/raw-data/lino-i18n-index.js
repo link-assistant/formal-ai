@@ -1,28 +1,27 @@
-/**
- * Example module entry point
- * Replace this with your actual implementation
- */
+// Public API of the `lino-i18n` package.
+//
+// All translations are stored in Links Notation (.lino) files and parsed
+// through `lino-objects-codec`. The runtime exposed here is intentionally
+// small: it supports the features users expect from i18next / i18n-js /
+// react-intl (interpolation, plurals, namespaces, fallbacks, defaults,
+// missing-key callbacks) without locking us to a specific bundler or
+// framework.
 
-/**
- * Example function that adds two numbers
- * @param {number} a - First number
- * @param {number} b - Second number
- * @returns {number} Sum of a and b
- */
-export const add = (a, b) => a + b;
-
-/**
- * Example function that multiplies two numbers
- * @param {number} a - First number
- * @param {number} b - Second number
- * @returns {number} Product of a and b
- */
-export const multiply = (a, b) => a * b;
-
-/**
- * Example async function
- * @param {number} ms - Milliseconds to wait
- * @returns {Promise<void>}
- */
-export const delay = (ms) =>
-  new Promise((resolve) => globalThis.setTimeout(resolve, ms));
+export { createI18n } from './i18n.js';
+export {
+  parseLinoCatalog,
+  parseLinoCatalogs,
+  formatLinoCatalog,
+  formatLinoCatalogs,
+  loadLocaleFromString,
+  loadLocaleFromFile,
+  loadLocalesFromFile,
+  loadLocalesFromDirectory,
+} from './loaders.js';
+export {
+  interpolate,
+  resolveKey,
+  pluralSuffix,
+  applyContext,
+} from './format.js';
+export { fromI18next, fromI18nJs, fromReactIntl } from './converters/index.js';
