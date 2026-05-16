@@ -151,6 +151,60 @@ test.describe('Wikipedia REST fallback', () => {
     await expect(last).toContainText('en.wikipedia.org');
   });
 
+  test('"Tell me, who is X" resolves through Wikipedia lookup', async ({ page }) => {
+    await page.route('**/api/rest_v1/page/summary/**', async (route) => {
+      const json = {
+        title: 'Donald Trump',
+        extract:
+          'Donald John Trump is an American politician, media personality, and businessman.',
+        type: 'standard',
+        content_urls: {
+          desktop: { page: 'https://en.wikipedia.org/wiki/Donald_Trump' },
+        },
+      };
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(json),
+      });
+    });
+
+    const last = await sendPrompt(page, 'Tell me, who is Trump');
+    await expect(last).toHaveClass(/assistant/);
+    await expect(last).toContainText('Donald Trump');
+    await expect(last).toContainText('politician');
+    await expect(last).not.toContainText(
+      'learned symbolic rule for that prompt yet',
+    );
+  });
+
+  test('"Who X is" resolves through Wikipedia lookup', async ({ page }) => {
+    await page.route('**/api/rest_v1/page/summary/**', async (route) => {
+      const json = {
+        title: 'Donald Trump',
+        extract:
+          'Donald John Trump is an American politician, media personality, and businessman.',
+        type: 'standard',
+        content_urls: {
+          desktop: { page: 'https://en.wikipedia.org/wiki/Donald_Trump' },
+        },
+      };
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(json),
+      });
+    });
+
+    const last = await sendPrompt(page, 'Who Trump is');
+    await expect(last).toHaveClass(/assistant/);
+    await expect(last).toContainText('Donald Trump');
+    await expect(last).toContainText('politician');
+    await expect(last).not.toContainText(
+      'learned symbolic rule for that prompt yet',
+    );
+  });
+
   // Issue #21: Wikipedia returns percent-encoded URLs for non-ASCII titles.
   // The chat must display the readable Cyrillic form while the underlying
   // link still points at the canonical (encoded) URL.

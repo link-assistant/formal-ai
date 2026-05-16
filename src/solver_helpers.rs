@@ -757,6 +757,15 @@ mod tests {
     }
 
     #[test]
+    fn concept_extraction_handles_who_is_variants() {
+        assert_eq!(
+            extract_term("Tell me, who is Trump").as_deref(),
+            Some("trump"),
+        );
+        assert_eq!(extract_term("Who Trump is").as_deref(), Some("trump"));
+    }
+
+    #[test]
     fn concept_extraction_handles_multilingual_prefixes() {
         assert_eq!(
             extract_term("Что такое Википедия?").as_deref(),
