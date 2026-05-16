@@ -314,4 +314,13 @@ test.describe('formal-ai demo UI', () => {
     await expect(page.locator('.preview-toggle')).toHaveCount(0);
     await expect(page.locator('.composer-preview')).toHaveCount(0);
   });
+
+  test('demo hint is shown in demo mode and hidden in manual mode', async ({ page }) => {
+    const hint = page.locator('[data-testid="composer-demo-hint"]');
+    await expect(hint).toBeVisible({ timeout: 5_000 });
+    await expect(hint).toContainText('Demo is running');
+
+    await page.locator('.mode-toggle').click();
+    await expect(hint).toHaveCount(0);
+  });
 });
