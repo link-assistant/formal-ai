@@ -98,6 +98,17 @@ test.describe('multilingual chat surface', () => {
     await expect(last).toHaveClass(/assistant/);
     await expect(last).toContainText(/Wikipedia|encyclopedia/i);
   });
+
+  // Issue #31: "что такое Kiss в рамках програмирования" was returning the
+  // rock band KISS instead of the software design principle because the
+  // wikipedia_lookup intent ignored the context clause.
+  test('Russian "what is KISS in programming" returns the design principle, not the band', async ({ page }) => {
+    const last = await sendPrompt(page, 'что такое Kiss в рамках програмирования');
+    await expect(last).toHaveClass(/assistant/);
+    // Must mention the design principle, not the rock band.
+    await expect(last).toContainText(/принцип|principle|KISS|simple/i);
+    await expect(last).not.toContainText(/рок-группа|rock band|american.*rock|глэм/i);
+  });
 });
 
 test.describe('Wikipedia REST fallback', () => {
