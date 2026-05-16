@@ -201,36 +201,29 @@ fn unknown_intent_offers_a_path_to_extend_the_network() {
 // ---------------------------------------------------------------------------
 
 #[test]
-fn russian_vulgar_prompt_is_refused_with_policy_intent() {
+fn physical_action_question_is_answered_factually() {
     // Reproduces the exact reporter prompt from issue #39.
+    // The AI has no physical body, so the factually correct answer is "No."
+    // Treating this as inappropriate content and refusing would be unhelpful.
     let response = answer("Сосал?");
     assert_eq!(
-        response.intent, "policy_inappropriate_content",
-        "vulgar Russian prompt must be refused, got intent: {}",
+        response.intent, "physical_action_question",
+        "physical action question must be answered factually, got intent: {}",
         response.intent
-    );
-    assert!(
-        response
-            .evidence_links
-            .iter()
-            .any(|link| link == "policy:inappropriate_content"),
-        "refusal must record a policy:inappropriate_content link"
     );
 }
 
 #[test]
-fn russian_vulgar_reply_is_in_russian() {
+fn physical_action_question_reply_is_factual_no() {
     let response = answer("Сосал?");
     assert!(
-        !response.answer.contains("Links Notation"),
-        "vulgar refusal should not suggest adding Links Notation rules, got: {}",
+        response.answer.contains("Нет") || response.answer.contains("нет"),
+        "physical action question must be answered with 'No', got: {}",
         response.answer
     );
     assert!(
-        response.answer.contains("неприемлемый")
-            || response.answer.contains("уважительный")
-            || response.answer.contains("корректн"),
-        "Russian refusal should be in Russian, got: {}",
+        response.answer.contains("тело") || response.answer.contains("физич"),
+        "physical action question answer must reference absence of physical body, got: {}",
         response.answer
     );
 }
