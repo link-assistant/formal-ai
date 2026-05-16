@@ -414,6 +414,32 @@ fn environment_directory_declares_every_supported_surface() {
 }
 
 #[test]
+fn fetch_prompt_returns_http_fetch_intent_not_unknown() {
+    // Regression test for issue #71: "fetch google.com" was returning
+    // intent: unknown instead of routing to the http_fetch handler.
+    let cases = [
+        "fetch google.com",
+        "fetch https://example.com",
+        "fetch http://example.com/path",
+        "fetch example.com",
+    ];
+
+    for prompt in cases {
+        let response = FormalAiEngine.answer(prompt);
+
+        assert_eq!(
+            response.intent, "http_fetch",
+            "prompt {prompt:?} should resolve to http_fetch, got {:?} — answer: {}",
+            response.intent, response.answer
+        );
+        assert_ne!(
+            response.intent, "unknown",
+            "prompt {prompt:?} must not return unknown intent"
+        );
+    }
+}
+
+#[test]
 fn environment_records_match_directory() {
     // R108: every CLI capability must also be reachable from the library.
     // `environment_records` is the convenience accessor the CLI uses.
