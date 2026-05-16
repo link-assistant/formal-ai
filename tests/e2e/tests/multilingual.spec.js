@@ -99,6 +99,13 @@ test.describe('multilingual chat surface', () => {
     await expect(last).toContainText(/Wikipedia|encyclopedia/i);
   });
 
+  test('punctuation-only prompt asks for clarification', async ({ page }) => {
+    const last = await sendPrompt(page, '.');
+    await expect(last).toHaveClass(/assistant/);
+    await expect(last).toContainText(/only punctuation/i);
+    await expect(last).toContainText(/What would you like/i);
+  });
+
   // Issue #31: "что такое Kiss в рамках програмирования" was returning the
   // rock band KISS instead of the software design principle because the
   // wikipedia_lookup intent ignored the context clause.

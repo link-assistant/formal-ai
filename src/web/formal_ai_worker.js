@@ -48,6 +48,9 @@ const FALLBACK_GREETING_ANSWER = "Hi, how may I help you?";
 const FALLBACK_UNKNOWN_ANSWER =
   "I do not have a learned symbolic rule for that prompt yet. Add a Links Notation fact or rule, then run the request again.";
 
+const FALLBACK_CLARIFICATION_ANSWER =
+  "I'm sorry for the confusion. I am formal-ai, a deterministic symbolic AI. I can answer greetings, identity questions, concept lookups (what is X?), arithmetic, and Hello World programs. If you'd like to ask about something specific, try one of those or add a fact in Links Notation.";
+
 // Mutable runtime tables — populated from seed at init(). Each entry is
 // `{ text, variants }` so the worker can return either the canonical phrase
 // (for deterministic tests and tool calls) or a random variant (for greeting
@@ -59,6 +62,12 @@ let MULTILINGUAL_ANSWERS = {
   },
   identity: {
     en: { text: FALLBACK_IDENTITY_ANSWER, variants: [FALLBACK_IDENTITY_ANSWER] },
+  },
+  clarification: {
+    en: {
+      text: FALLBACK_CLARIFICATION_ANSWER,
+      variants: [FALLBACK_CLARIFICATION_ANSWER],
+    },
   },
   unknown: {
     en: { text: FALLBACK_UNKNOWN_ANSWER, variants: [FALLBACK_UNKNOWN_ANSWER] },
@@ -135,6 +144,12 @@ function fallbackEntry(intent) {
   }
   if (intent === "identity") {
     return { text: FALLBACK_IDENTITY_ANSWER, variants: [FALLBACK_IDENTITY_ANSWER] };
+  }
+  if (intent === "clarification") {
+    return {
+      text: FALLBACK_CLARIFICATION_ANSWER,
+      variants: [FALLBACK_CLARIFICATION_ANSWER],
+    };
   }
   return { text: FALLBACK_UNKNOWN_ANSWER, variants: [FALLBACK_UNKNOWN_ANSWER] };
 }
@@ -789,6 +804,11 @@ function isIdentityPrompt(normalized, rawPrompt) {
 
 function isGreetingPrompt(normalized, rawPrompt) {
   return matchesIntentRoute(normalized, rawPrompt, "intent_greeting");
+}
+
+function isPunctuationOnlyPrompt(prompt) {
+  const trimmed = String(prompt || "").trim();
+  return /^[.!?…。？！]+$/.test(trimmed);
 }
 
 function extractName(text) {
@@ -1662,6 +1682,23 @@ async function solve(prompt, history, prefs) {
   const language = detectLanguage(prompt);
   events.push(`language:${language}`);
   steps.push({ step: "detect_language", detail: language });
+
+  if (isPunctuationOnlyPrompt(prompt)) {
+    events.push("handler:clarification");
+    events.push(`clarification:punctuation_only:${String(prompt).trim()}`);
+    steps.push({ step: "dispatch_handler", detail: "tryPunctuationOnlyPrompt" });
+    const trimmed = String(prompt).trim();
+    return finalize(events, steps, toolCalls, {
+      intent: "clarification",
+      content: `I received only punctuation (\`${trimmed}\`). What would you like me to do next?`,
+      confidence: 0.8,
+      evidence: [
+        "handler:clarification",
+        "clarification:punctuation_only",
+        `language:${language}`,
+      ],
+    });
+  }
 
   if (isGreetingPrompt(normalized, prompt)) {
     events.push("rule:greeting");
