@@ -402,7 +402,9 @@ fn opinion_questions_return_no_opinion_response() {
             "response for {prompt:?} should mention deterministic nature"
         );
         assert!(
-            !response.answer.contains("I do not have a learned symbolic rule"),
+            !response
+                .answer
+                .contains("I do not have a learned symbolic rule"),
             "prompt {prompt:?} should not return the unknown-intent error"
         );
     }
