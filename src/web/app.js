@@ -2002,6 +2002,15 @@ function App() {
               send();
             },
           },
+          demoMode
+            ? h(
+                "p",
+                { className: "composer-demo-hint", "data-testid": "composer-demo-hint" },
+                "Demo is running — tap ",
+                h("span", { className: "composer-demo-hint-icon", "aria-hidden": "true" }, "🎬"),
+                " to stop and type your own message.",
+              )
+            : null,
           h(
             "div",
             { className: "composer-grid" },

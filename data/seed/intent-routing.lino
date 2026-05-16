@@ -38,6 +38,8 @@ intent_routing
     response_link "response:hello_world"
     keyword "hello"
     keyword "world"
+    keyword "хелло"
+    keyword "ворлд"
   intent "intent_translation"
     slug "translation"
     response_link "response:translation"
