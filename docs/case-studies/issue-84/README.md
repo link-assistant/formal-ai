@@ -146,8 +146,9 @@ purely so future audits can reuse the same baseline.
 - `Node.js 20 actions are deprecated. ... actions/github-script@60a0d83…` — this is an annotation
   from `codecov/codecov-action@v5`, which still pins `actions/github-script@60a0d83…` internally.
   The repo does not call `actions/github-script` directly. The annotation is informational only;
-  GitHub does not switch the default to Node.js 24 until 2026-06-02. A follow-up issue is filed
-  upstream at `codecov/codecov-action` rather than touching the workflow here.
+  GitHub does not switch the default to Node.js 24 until 2026-06-02. Not filed against
+  `codecov/codecov-action` in this PR — the version bump is theirs to ship and the annotation does
+  not affect run outcomes.
 - `windows-latest requests are being redirected to windows-2025-vs2026 by June 15, 2026` — a GitHub
   Runner notice. No action required; pinning to `windows-2025` ahead of the redirect would not buy
   anything and would invalidate the existing cache key.
