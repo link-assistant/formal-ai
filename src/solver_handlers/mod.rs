@@ -4,6 +4,12 @@
 //! takes the prompt (and pre-lowercased `normalized` view) plus a mutable
 //! event log, and returns `Some(SymbolicAnswer)` when it claims the impulse.
 
+mod user_intent;
+
+pub use user_intent::{
+    try_capabilities, try_clarification, try_ill_formed, try_opinion_question, try_shell_refusal,
+};
+
 use std::fmt::Write as _;
 
 use crate::arithmetic::{evaluate_arithmetic_formatted, extract_arithmetic_expression};
@@ -11,8 +17,7 @@ use crate::concepts::{
     extract_concept_query, lookup_concept_query, resolve_context_label, ConceptRecord,
 };
 use crate::engine::{
-    answer_links_notation, knowledge_links_notation, stable_id, unknown_answer, ExecutionStatus,
-    SymbolicAnswer,
+    answer_links_notation, knowledge_links_notation, stable_id, ExecutionStatus, SymbolicAnswer,
 };
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
@@ -675,152 +680,6 @@ pub fn try_source_conflict(
         "response:source_conflict",
         &body,
         0.3,
-    ))
-}
-
-pub fn try_clarification(
-    prompt: &str,
-    normalized: &str,
-    log: &mut EventLog,
-) -> Option<SymbolicAnswer> {
-    let is_clarification = normalized == "не понял"
-        || normalized == "не понимаю"
-        || normalized == "не поняла"
-        || normalized == "не понятно"
-        || normalized == "непонятно"
-        || normalized.contains("i don't understand")
-        || normalized.contains("i dont understand")
-        || normalized.contains("i didn't understand")
-        || normalized.contains("i didnt understand")
-        || normalized.contains("don't understand")
-        || normalized.contains("dont understand")
-        || normalized.contains("didn't understand")
-        || normalized.contains("didnt understand")
-        || normalized.contains("what do you mean")
-        || normalized.contains("i'm confused")
-        || normalized.contains("im confused")
-        || normalized.contains("i am confused")
-        || normalized.contains("समझ नहीं आया")
-        || normalized.contains("समझ नहीं आई")
-        || normalized.contains("我不明白")
-        || normalized.contains("我不懂")
-        || normalized.contains("听不懂");
-    if !is_clarification {
-        return None;
-    }
-    let language = detect_language(prompt);
-    let body = response_for("clarification", language.slug())
-        .or_else(|| response_for("clarification", "en"))
-        .unwrap_or_else(|| {
-            String::from(
-                "I'm sorry for the confusion. I am formal-ai, a deterministic symbolic AI. \
-                 I can answer greetings, identity questions, concept lookups (\"what is X?\"), \
-                 arithmetic, and Hello World programs.",
-            )
-        });
-    Some(finalize_simple(
-        prompt,
-        log,
-        "clarification",
-        "response:clarification",
-        &body,
-        0.9,
-    ))
-}
-
-pub fn try_ill_formed(
-    prompt: &str,
-    normalized: &str,
-    log: &mut EventLog,
-) -> Option<SymbolicAnswer> {
-    if !normalized.contains("teach this fact") {
-        return None;
-    }
-    let opens = prompt.chars().filter(|c| *c == '(').count();
-    let closes = prompt.chars().filter(|c| *c == ')').count();
-    if opens == closes {
-        return None;
-    }
-    log.append("error", "unbalanced links notation".to_owned());
-    let body = String::from(unknown_answer());
-    Some(finalize_simple(
-        prompt,
-        log,
-        "unknown",
-        "response:unknown",
-        &body,
-        0.0,
-    ))
-}
-
-pub fn try_shell_refusal(
-    prompt: &str,
-    normalized: &str,
-    log: &mut EventLog,
-) -> Option<SymbolicAnswer> {
-    if normalized.contains("[agent]") || normalized.contains("agent mode") {
-        return None;
-    }
-    let mentions_shell = (normalized.contains("run `") || normalized.contains("execute `"))
-        && (normalized.contains("rm ")
-            || normalized.contains("sudo")
-            || normalized.contains("on my behalf"));
-    if !mentions_shell {
-        return None;
-    }
-    log.append("policy:chat_bounded_autonomy", prompt.to_owned());
-    let body = String::from(
-        "I can only respond with a chat reply. Running shell commands on your behalf is not \
-         allowed without explicit agent mode opt-in, and even then only inside an isolated \
-         sandbox.",
-    );
-    Some(finalize_simple(
-        prompt,
-        log,
-        "policy_bounded_autonomy",
-        "response:policy:bounded_autonomy",
-        &body,
-        0.5,
-    ))
-}
-
-pub fn try_opinion_question(
-    prompt: &str,
-    normalized: &str,
-    log: &mut EventLog,
-) -> Option<SymbolicAnswer> {
-    let is_opinion_request = normalized.starts_with("do you think")
-        || normalized.starts_with("what do you think")
-        || normalized.starts_with("what is your opinion")
-        || normalized.starts_with("what's your opinion")
-        || normalized.starts_with("in your opinion")
-        || normalized.starts_with("do you believe")
-        || normalized.starts_with("what do you believe")
-        || normalized.starts_with("do you feel")
-        || normalized.starts_with("what do you feel")
-        || normalized.starts_with("would you say")
-        || normalized.starts_with("how do you feel")
-        || normalized.starts_with("give me your opinion")
-        || normalized.starts_with("share your opinion")
-        || normalized.starts_with("share your thoughts")
-        || normalized.starts_with("what are your thoughts");
-    if !is_opinion_request {
-        return None;
-    }
-    log.append("policy:no_opinion", prompt.to_owned());
-    let body = String::from(
-        "I am a deterministic symbolic AI. I do not hold opinions, beliefs, or feelings — \
-         every answer I give is derived from an explicit Links Notation rule. \
-         If you are looking for factual information on this topic, try asking \
-         \"what is <topic>\" and I will look it up in my knowledge base.",
-    );
-    Some(finalize_simple(
-        prompt,
-        log,
-        "opinion_question",
-        "response:opinion_question",
-        &body,
-        1.0,
     ))
 }
 

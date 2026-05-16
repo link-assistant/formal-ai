@@ -33,10 +33,11 @@ use crate::seed;
 use crate::solver_handler_how::try_how_it_works;
 use crate::solver_handler_units::try_incompatible_units;
 use crate::solver_handlers::{
-    build_evidence_links, finalize_simple, try_algorithm, try_arithmetic, try_clarification,
-    try_concept_lookup, try_conversation_memory, try_execution_failure, try_ill_formed,
-    try_javascript_execution, try_meta_explanation, try_network_query, try_opinion_question,
-    try_shell_refusal, try_source_conflict, try_source_refresh, try_translation,
+    build_evidence_links, finalize_simple, try_algorithm, try_arithmetic, try_capabilities,
+    try_clarification, try_concept_lookup, try_conversation_memory, try_execution_failure,
+    try_ill_formed, try_javascript_execution, try_meta_explanation, try_network_query,
+    try_opinion_question, try_shell_refusal, try_source_conflict, try_source_refresh,
+    try_translation,
 };
 use crate::solver_helpers::{
     confidence_for, is_agent_opt_in, is_agent_request, is_cache_flush_request,
@@ -292,6 +293,9 @@ impl UniversalSolver {
             return Some(answer);
         }
         if let Some(answer) = try_conversation_memory(prompt, &normalized, log) {
+            return Some(answer);
+        }
+        if let Some(answer) = try_capabilities(prompt, &normalized, log) {
             return Some(answer);
         }
         if let Some(answer) = try_arithmetic(prompt, log) {

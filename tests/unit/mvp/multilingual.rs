@@ -365,6 +365,79 @@ fn russian_iir_evidence_includes_wikidata_anchor() {
 }
 
 // ---------------------------------------------------------------------------
+// Issue #49: "что за дичь?" and "что ты умеешь?" must not fall through to
+// intent: unknown. The user expressed frustration after the agent failed to
+// handle a capabilities question in Russian. Both the capability query and
+// the confusion/frustration expression must produce a meaningful intent.
+// ---------------------------------------------------------------------------
+
+#[test]
+fn russian_capabilities_question_does_not_return_unknown() {
+    let response = answer("что ты умеешь?");
+    assert_ne!(
+        response.intent, "unknown",
+        "Russian capability question should not fall through to unknown, got: {}",
+        response.answer,
+    );
+}
+
+#[test]
+fn russian_capabilities_question_returns_capabilities_intent() {
+    let response = answer("что ты умеешь?");
+    assert_eq!(
+        response.intent, "capabilities",
+        "Russian capability question should map to capabilities intent, got: {}",
+        response.answer,
+    );
+}
+
+#[test]
+fn russian_confusion_phrase_does_not_return_unknown() {
+    let response = answer("что за дичь?");
+    assert_ne!(
+        response.intent, "unknown",
+        "Russian slang confusion phrase should not fall through to unknown, got: {}",
+        response.answer,
+    );
+}
+
+#[test]
+fn russian_confusion_phrase_returns_capabilities_intent() {
+    // "что за дичь?" literally means "what is this nonsense?" — a frustrated
+    // reaction to getting an unhelpful answer. The agent should respond with a
+    // capabilities overview so the user understands what the agent can handle.
+    let response = answer("что за дичь?");
+    assert_eq!(
+        response.intent, "capabilities",
+        "Russian confusion phrase should map to capabilities intent, got: {}",
+        response.answer,
+    );
+}
+
+#[test]
+fn russian_capabilities_answer_is_in_russian() {
+    let response = answer("что ты умеешь?");
+    assert!(
+        response
+            .answer
+            .chars()
+            .any(|c| ('\u{0400}'..='\u{04FF}').contains(&c)),
+        "Russian capabilities answer should contain Cyrillic text, got: {}",
+        response.answer,
+    );
+}
+
+#[test]
+fn english_capabilities_question_returns_capabilities_intent() {
+    let response = answer("what can you do?");
+    assert_eq!(
+        response.intent, "capabilities",
+        "English capability question should map to capabilities intent, got: {}",
+        response.answer,
+    );
+}
+
+// ---------------------------------------------------------------------------
 // Issue #21: URLs with non-ASCII characters must be displayed in human-readable
 // IRI form across every surface, while remaining functional (the encoded URI
 // must still resolve when clicked). These tests pin down the helper that every
