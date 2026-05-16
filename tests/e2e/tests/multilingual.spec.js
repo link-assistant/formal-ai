@@ -222,6 +222,62 @@ test.describe('Wikipedia REST fallback', () => {
     expect(requestedSlugs).toContain('Маск,_Илон');
   });
 
+  // Issue #70: terms whose Wikipedia title is a disambiguation page (e.g.
+  // "Tesla") were returning "unknown intent" because the bare-slug loop skipped
+  // disambiguation results without falling back to the search endpoint.
+  test('"what is tesla" resolves via search fallback when direct slug is disambiguation', async ({ page }) => {
+    await page.route('**/api/rest_v1/page/summary/**', async (route) => {
+      // Every direct slug attempt returns a disambiguation page.
+      const json = {
+        title: 'Tesla',
+        type: 'disambiguation',
+        extract: 'Tesla may refer to: Nikola Tesla or Tesla, Inc.',
+        content_urls: { desktop: { page: 'https://en.wikipedia.org/wiki/Tesla' } },
+      };
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(json),
+      });
+    });
+
+    await page.route('**/rest.php/v1/search/page**', async (route) => {
+      // Search returns the company as the top result.
+      const json = {
+        pages: [{ key: 'Tesla,_Inc.', title: 'Tesla, Inc.' }],
+      };
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(json),
+      });
+    });
+
+    // After stubbing search results, the second fetch for Tesla,_Inc. must
+    // return a standard article, not the disambiguation stub. Override the
+    // summary route so that the Tesla,_Inc. slug gets a real response while all
+    // other slugs remain disambiguation pages.
+    await page.route('**/api/rest_v1/page/summary/Tesla%2C_Inc.**', async (route) => {
+      const json = {
+        title: 'Tesla, Inc.',
+        type: 'standard',
+        extract: 'Tesla, Inc. is an American multinational automotive and clean energy company.',
+        content_urls: { desktop: { page: 'https://en.wikipedia.org/wiki/Tesla,_Inc.' } },
+      };
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(json),
+      });
+    });
+
+    const last = await sendPrompt(page, 'what is tesla');
+    await expect(last).toHaveClass(/assistant/);
+    await expect(last).toContainText('Tesla');
+    await expect(last).not.toContainText('learned symbolic rule for that prompt yet');
+    await expect(last).toContainText('en.wikipedia.org');
+  });
+
 });
 
 test.describe('memory export/import', () => {

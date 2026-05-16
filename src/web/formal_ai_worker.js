@@ -1344,6 +1344,43 @@ async function fetchWikipediaSummary(term, language, context) {
       }
     }
   }
+  // All direct slug variants were disambiguation pages or not found. Use the
+  // full-text search endpoint to find the top-ranked article for the term
+  // (e.g. "tesla" → "Tesla, Inc." instead of the disambiguation page).
+  const found = await searchWikipediaSlug(term, "", language);
+  if (found) {
+    const summaryBase = WIKIPEDIA_HOSTS[found.language] || WIKIPEDIA_HOSTS.en;
+    const url = `${summaryBase}/${encodeURIComponent(found.slug)}`;
+    try {
+      const response = await fetch(url, { headers: apiHeaders });
+      if (response && response.ok) {
+        const data = await response.json();
+        if (
+          data &&
+          typeof data === "object" &&
+          data.type !== "disambiguation"
+        ) {
+          const extract = String(data.extract || "").trim();
+          if (extract) {
+            const title = String(data.title || term);
+            const pageUrl =
+              (data.content_urls &&
+                data.content_urls.desktop &&
+                data.content_urls.desktop.page) ||
+              url;
+            return {
+              title,
+              extract,
+              url: pageUrl,
+              language: found.language,
+            };
+          }
+        }
+      }
+    } catch (_error) {
+      // Search-based fallback failed; return null below.
+    }
+  }
   return null;
 }
 
