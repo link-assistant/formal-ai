@@ -720,6 +720,48 @@ pub fn try_source_conflict(
     ))
 }
 
+pub fn try_http_fetch(
+    prompt: &str,
+    normalized: &str,
+    log: &mut EventLog,
+) -> Option<SymbolicAnswer> {
+    let url = extract_fetch_url(normalized)?;
+    log.append("http_fetch:request", url.clone());
+    let body = format!(
+        "HTTP fetch requested for `{url}`.\n\n\
+         The browser will attempt to load this URL via `fetch()`. If the server \
+         blocks the request with a CORS error, an embedded iframe will be shown \
+         instead so you can still view the page.\n\n\
+         Source: [{url}]({url})"
+    );
+    Some(finalize_simple(
+        prompt,
+        log,
+        "http_fetch",
+        "response:http_fetch",
+        &body,
+        0.95,
+    ))
+}
+
+fn extract_fetch_url(normalized: &str) -> Option<String> {
+    let stripped = normalized.strip_prefix("fetch ")?.trim();
+    if stripped.is_empty() {
+        return None;
+    }
+    // Accept bare hostnames (e.g. "google.com") and full URLs.
+    let url = if stripped.starts_with("http://") || stripped.starts_with("https://") {
+        stripped.to_owned()
+    } else {
+        format!("https://{stripped}")
+    };
+    // Rudimentary validation: must contain at least one dot.
+    if !url.contains('.') {
+        return None;
+    }
+    Some(url)
+}
+
 pub fn finalize_simple(
     prompt: &str,
     log: &mut EventLog,

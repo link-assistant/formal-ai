@@ -552,6 +552,67 @@ button {
   text-decoration: underline;
 }
 
+.fetch-iframe-container {
+  margin-top: 12px;
+  border: 1px solid #d6dde1;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.fetch-iframe-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  background: #f0f4f8;
+  border-bottom: 1px solid #d6dde1;
+  font-size: 12px;
+  flex-wrap: wrap;
+}
+
+.fetch-iframe-toggle {
+  background: none;
+  border: 1px solid #b0bac4;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 2px 8px;
+  white-space: nowrap;
+}
+
+.fetch-iframe-toggle:hover {
+  background: #dde3e9;
+}
+
+.fetch-iframe-url {
+  color: #444;
+  font-family: monospace;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  min-width: 0;
+}
+
+.fetch-iframe-open {
+  color: #175f4f;
+  text-decoration: none;
+  white-space: nowrap;
+  font-weight: 700;
+}
+
+.fetch-iframe-open:hover {
+  text-decoration: underline;
+}
+
+.fetch-iframe {
+  display: block;
+  width: 100%;
+  height: 400px;
+  border: none;
+  background: #fff;
+}
+
 .pending .message-body {
   width: 116px;
 }
