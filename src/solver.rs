@@ -39,7 +39,7 @@ use crate::solver_handlers::{
     try_shell_refusal, try_source_conflict, try_source_refresh, try_translation,
     try_who_is_question, try_write_script,
 };
-use crate::solver_handlers_policy::try_kupi_slona;
+use crate::solver_handlers_policy::{try_kupi_slona, try_physical_action_question};
 use crate::solver_helpers::{
     confidence_for, is_agent_opt_in, is_agent_request, is_cache_flush_request,
     is_destructive_action, is_forget_request, is_unbounded_autonomy, is_unbounded_loop,
@@ -49,10 +49,6 @@ use crate::solver_helpers::{
 fn is_inappropriate_content(normalized: &str) -> bool {
     // Russian vulgar/obscene words (mat) — normalized lowercase Cyrillic.
     let ru_vulgar: &[&str] = &[
-        "сосал",
-        "сосёшь",
-        "соси",
-        "сосать",
         "ебать",
         "ебёт",
         "ебал",
@@ -392,6 +388,9 @@ impl UniversalSolver {
             return Some(answer);
         }
         if let Some(answer) = try_ill_formed(prompt, &normalized, log) {
+            return Some(answer);
+        }
+        if let Some(answer) = try_physical_action_question(prompt, &normalized, log) {
             return Some(answer);
         }
         if let Some(answer) = try_kupi_slona(prompt, &normalized, log) {
