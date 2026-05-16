@@ -168,10 +168,47 @@ test.describe('formal-ai demo UI', () => {
     // `A:` line prefixes instead of one Markdown subsection per message.
     expect(body).toContain('Legend: `U` = user, `A` = agent.');
     expect(body).toContain('U: Hello');
-    expect(body).toContain('A: Hi, how may I help you?');
+    // Issue #73: the reported assistant message must be annotated with its
+    // intent and a "reported" marker even when the intent is not "unknown".
+    expect(body).toMatch(/A \(intent: [^,)]+, reported\):/);
     // The verbose per-message subsections must be gone.
     expect(body).not.toMatch(/^### \d+\. /m);
     expect(body).not.toContain('- **Role**:');
+  });
+
+  // Issue #73: clicking "Report issue" on a TypeScript hello-world response
+  // must include the intent and "reported" annotation in the dialog block.
+  test('reporting a TypeScript hello world dialog annotates the message with intent and reported', async ({ page }) => {
+    await switchToManualMode(page);
+
+    const input = page.locator('[data-testid="chat-composer-input"]');
+    await input.fill('Write hello world in TypeScript');
+
+    const messages = page.locator('[data-testid="chat-message"]');
+    const initialCount = await messages.count();
+
+    await page.locator('[data-testid="chat-composer-submit"]').click();
+    await expect(messages).toHaveCount(initialCount + 2, { timeout: 15_000 });
+
+    const lastMsg = messages.last();
+    await expect(lastMsg).toHaveClass(/assistant/);
+    await expect(lastMsg).toContainText('typescript');
+
+    const reportLink = lastMsg.locator('.message-actions a');
+    await expect(reportLink).toHaveText('Report issue');
+
+    const href = await reportLink.getAttribute('href');
+    expect(href).toBeTruthy();
+
+    const url = new URL(href || '');
+    const body = url.searchParams.get('body') || '';
+
+    expect(url.searchParams.get('title')).toContain('Issue with dialog');
+    expect(url.searchParams.get('title')).toContain('TypeScript');
+    // The reported message must carry both its intent and the "reported" marker.
+    expect(body).toMatch(/A \(intent: hello_world_typescript, reported\):/);
+    // The dialog must not accidentally annotate user messages.
+    expect(body).not.toMatch(/U \(.*reported.*\):/);
   });
 
   test('asking who are you produces an identity response', async ({ page }) => {
