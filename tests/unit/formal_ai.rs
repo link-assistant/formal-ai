@@ -39,6 +39,41 @@ fn shabbat_shalom_greeting_is_recognized_as_greeting() {
     }
 }
 
+// Issue #67: "пока" and similar farewell words were returned as unknown intent.
+#[test]
+fn farewell_prompts_are_recognized_as_farewell() {
+    let cases = [
+        ("пока", "ru"),
+        ("до свидания", "ru"),
+        ("bye", "en"),
+        ("goodbye", "en"),
+    ];
+
+    for (prompt, expected_language) in cases {
+        let response = FormalAiEngine.answer(prompt);
+
+        assert_eq!(
+            response.intent, "farewell",
+            "prompt {:?} should be recognized as farewell, got intent {:?}",
+            prompt, response.intent
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == "response:farewell"),
+            "prompt {prompt:?} response should cite response:farewell",
+        );
+        if expected_language == "ru" {
+            assert!(
+                response.answer.contains("свидания") || response.answer.contains("Пока"),
+                "Russian farewell {prompt:?} should get a Russian answer, got: {}",
+                response.answer
+            );
+        }
+    }
+}
+
 #[test]
 fn identity_questions_return_standard_self_description() {
     let cases = [

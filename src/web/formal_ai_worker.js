@@ -57,6 +57,9 @@ let MULTILINGUAL_ANSWERS = {
   greeting: {
     en: { text: FALLBACK_GREETING_ANSWER, variants: [FALLBACK_GREETING_ANSWER] },
   },
+  farewell: {
+    en: { text: "Goodbye! Feel free to return any time.", variants: ["Goodbye! Feel free to return any time."] },
+  },
   identity: {
     en: { text: FALLBACK_IDENTITY_ANSWER, variants: [FALLBACK_IDENTITY_ANSWER] },
   },
@@ -90,6 +93,15 @@ let INTENT_ROUTING = {
       keywords: ["hi", "hello", "hey", "привет", "здравствуйте", "नमस्ते", "你好", "您好"],
       phrases: [],
       tokens: ["greet"],
+      combos: [],
+    },
+    {
+      id: "intent_farewell",
+      slug: "farewell",
+      responseLink: "response:farewell",
+      keywords: ["bye", "goodbye", "пока", "ciao", "再见", "अलविदा"],
+      phrases: ["до свидания", "досвидания"],
+      tokens: [],
       combos: [],
     },
     {
@@ -789,6 +801,10 @@ function isIdentityPrompt(normalized, rawPrompt) {
 
 function isGreetingPrompt(normalized, rawPrompt) {
   return matchesIntentRoute(normalized, rawPrompt, "intent_greeting");
+}
+
+function isFarewellPrompt(normalized, rawPrompt) {
+  return matchesIntentRoute(normalized, rawPrompt, "intent_farewell");
 }
 
 function extractName(text) {
@@ -1676,6 +1692,16 @@ async function solve(prompt, history, prefs) {
         `language:${language}`,
         `variation:${randomize ? "random" : "canonical"}`,
       ],
+    });
+  }
+  if (isFarewellPrompt(normalized, prompt)) {
+    events.push("rule:farewell");
+    steps.push({ step: "match_rule", detail: "farewell" });
+    return finalize(events, steps, toolCalls, {
+      intent: "farewell",
+      content: answerFor("farewell", language),
+      confidence: 1.0,
+      evidence: ["rule:farewell", `language:${language}`],
     });
   }
   if (isIdentityPrompt(normalized, prompt)) {

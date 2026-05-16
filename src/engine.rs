@@ -21,6 +21,7 @@ pub const DEFAULT_MODEL: &str = "formal-symbolic-poc";
 /// cannot be parsed (which would be a build-time bug since the file is
 /// embedded via `include_str!`). All real reads come from [`crate::seed`].
 const FALLBACK_GREETING_ANSWER: &str = "Hi, how may I help you?";
+const FALLBACK_FAREWELL_ANSWER: &str = "Goodbye! Feel free to return any time.";
 const FALLBACK_IDENTITY_ANSWER: &str = "I am formal-ai, a deterministic symbolic AI proof of concept that answers from local Links Notation rules and OpenAI-compatible API shapes. I do not perform neural inference in this demo.";
 const FALLBACK_UNKNOWN_ANSWER: &str = "I cannot answer that from local Links Notation rules yet. Please add a fact or add a rule in Links Notation, then run the request again.";
 const FALLBACK_UNKNOWN_LANGUAGE_ANSWER: &str = concat!(
@@ -44,6 +45,26 @@ fn cached_response(
 pub(crate) fn greeting_answer() -> &'static str {
     static CELL: OnceLock<String> = OnceLock::new();
     cached_response(&CELL, "greeting", "en", FALLBACK_GREETING_ANSWER)
+}
+
+pub(crate) fn farewell_answer() -> &'static str {
+    static CELL: OnceLock<String> = OnceLock::new();
+    cached_response(&CELL, "farewell", "en", FALLBACK_FAREWELL_ANSWER)
+}
+
+fn russian_farewell_answer() -> &'static str {
+    static CELL: OnceLock<String> = OnceLock::new();
+    cached_response(&CELL, "farewell", "ru", FALLBACK_FAREWELL_ANSWER)
+}
+
+fn hindi_farewell_answer() -> &'static str {
+    static CELL: OnceLock<String> = OnceLock::new();
+    cached_response(&CELL, "farewell", "hi", FALLBACK_FAREWELL_ANSWER)
+}
+
+fn chinese_farewell_answer() -> &'static str {
+    static CELL: OnceLock<String> = OnceLock::new();
+    cached_response(&CELL, "farewell", "zh", FALLBACK_FAREWELL_ANSWER)
 }
 
 pub(crate) fn identity_answer() -> &'static str {
@@ -667,6 +688,7 @@ pub fn stable_id(prefix: &str, text: &str) -> String {
 
 pub(crate) enum SelectedRule {
     Greeting,
+    Farewell,
     Identity,
     HelloWorld(&'static HelloWorldProgram),
     Unknown,
@@ -676,6 +698,7 @@ impl SelectedRule {
     pub(crate) fn intent(&self) -> String {
         match self {
             Self::Greeting => String::from("greeting"),
+            Self::Farewell => String::from("farewell"),
             Self::Identity => String::from("identity"),
             Self::HelloWorld(program) => format!("hello_world_{}", program.slug),
             Self::Unknown => String::from("unknown"),
@@ -685,6 +708,7 @@ impl SelectedRule {
     pub(crate) const fn response_link(&self) -> &'static str {
         match self {
             Self::Greeting => "response:greeting",
+            Self::Farewell => "response:farewell",
             Self::Identity => "response:identity",
             Self::HelloWorld(program) => program.response_link,
             Self::Unknown => "response:unknown",
@@ -694,6 +718,7 @@ impl SelectedRule {
     pub(crate) fn answer(&self) -> String {
         match self {
             Self::Greeting => String::from(greeting_answer()),
+            Self::Farewell => String::from(farewell_answer()),
             Self::Identity => String::from(identity_answer()),
             Self::HelloWorld(program) => hello_world_answer(program),
             Self::Unknown => String::from(unknown_answer()),
@@ -705,6 +730,8 @@ pub(crate) fn select_rule_for(prompt: &str) -> SelectedRule {
     let normalized = normalize_prompt(prompt);
     if is_greeting(&normalized) {
         SelectedRule::Greeting
+    } else if is_farewell(&normalized) {
+        SelectedRule::Farewell
     } else if is_identity_question(&normalized) {
         SelectedRule::Identity
     } else if let Some(program) = hello_world_program(&normalized) {
@@ -727,6 +754,9 @@ pub(crate) fn language_aware_answer_for(
         (SelectedRule::Greeting, Language::Russian) => String::from(russian_greeting_answer()),
         (SelectedRule::Greeting, Language::Hindi) => String::from(hindi_greeting_answer()),
         (SelectedRule::Greeting, Language::Chinese) => String::from(chinese_greeting_answer()),
+        (SelectedRule::Farewell, Language::Russian) => String::from(russian_farewell_answer()),
+        (SelectedRule::Farewell, Language::Hindi) => String::from(hindi_farewell_answer()),
+        (SelectedRule::Farewell, Language::Chinese) => String::from(chinese_farewell_answer()),
         (SelectedRule::Identity, Language::Russian) => String::from(russian_identity_answer()),
         (SelectedRule::Identity, Language::Hindi) => String::from(hindi_identity_answer()),
         (SelectedRule::Identity, Language::Chinese) => String::from(chinese_identity_answer()),
@@ -785,6 +815,10 @@ fn matches_intent_route(normalized_prompt: &str, id: &str) -> bool {
 
 fn is_greeting(normalized_prompt: &str) -> bool {
     matches_intent_route(normalized_prompt, "intent_greeting")
+}
+
+fn is_farewell(normalized_prompt: &str) -> bool {
+    matches_intent_route(normalized_prompt, "intent_farewell")
 }
 
 fn is_identity_question(normalized_prompt: &str) -> bool {
