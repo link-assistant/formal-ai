@@ -176,6 +176,54 @@ fn hello_world_prompt_supports_multiple_programming_languages() {
 }
 
 #[test]
+fn write_script_prompt_returns_code_block() {
+    // Regression test for issue #35: "Напиши скрипт на питоне" was returning
+    // intent: unknown instead of routing to a code answer.
+    let cases = [
+        (
+            "Напиши скрипт на питоне",
+            "write_script_python",
+            "```python",
+        ),
+        (
+            "Write a script in Python",
+            "write_script_python",
+            "```python",
+        ),
+        ("Write a program in Rust", "write_script_rust", "```rust"),
+        (
+            "Write me some code in JavaScript",
+            "write_script_javascript",
+            "```javascript",
+        ),
+        (
+            "написать скрипт на javascript",
+            "write_script_javascript",
+            "```javascript",
+        ),
+    ];
+
+    for (prompt, intent, code_fence) in cases {
+        let response = FormalAiEngine.answer(prompt);
+
+        assert_eq!(
+            response.intent, intent,
+            "prompt: {prompt:?} — answer was: {}",
+            response.answer
+        );
+        assert!(
+            response.answer.contains(code_fence),
+            "prompt: {prompt:?} — expected {code_fence} in answer: {}",
+            response.answer
+        );
+        assert_ne!(
+            response.intent, "unknown",
+            "prompt: {prompt:?} — got unknown intent"
+        );
+    }
+}
+
+#[test]
 fn chat_completion_has_openai_compatible_shape() {
     let request = ChatCompletionRequest {
         model: Some(String::from("formal-symbolic-poc")),

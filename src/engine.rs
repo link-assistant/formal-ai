@@ -808,6 +808,29 @@ fn hello_world_program(normalized_prompt: &str) -> Option<&'static HelloWorldPro
     })
 }
 
+/// Match a program from the catalog by language alias or Russian colloquial name.
+pub(crate) fn hello_world_program_by_alias(normalized: &str) -> Option<&'static HelloWorldProgram> {
+    const RU: &[(&str, &str)] = &[
+        ("питоне", "python"),
+        ("питон", "python"),
+        ("расте", "rust"),
+        ("раст", "rust"),
+        ("джаваскрипт", "javascript"),
+        ("тайпскрипт", "typescript"),
+        ("джава", "java"),
+        ("руби", "ruby"),
+        ("го ", "go"),
+    ];
+    for (ru, slug) in RU {
+        if normalized.contains(ru) {
+            return HELLO_WORLD_PROGRAMS.iter().find(|p| p.slug == *slug);
+        }
+    }
+    HELLO_WORLD_PROGRAMS
+        .iter()
+        .find(|p| p.aliases.iter().any(|a| normalized.contains(a)))
+}
+
 fn contains_token(normalized_prompt: &str, expected: &str) -> bool {
     normalized_prompt
         .split_whitespace()

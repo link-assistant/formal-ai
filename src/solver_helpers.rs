@@ -8,7 +8,7 @@
 //! concept knowledge base lives in [`crate::concepts`]; this module
 //! re-exports nothing — callers import those modules directly.
 
-use crate::engine::SelectedRule;
+use crate::engine::{ExecutionStatus, HelloWorldProgram, SelectedRule};
 use crate::event_log::EventLog;
 
 pub const fn confidence_for(rule: &SelectedRule, validation: Option<&ValidationChoice>) -> f32 {
@@ -72,58 +72,6 @@ pub fn is_unbounded_loop(normalized: &str) -> bool {
         || normalized.contains("infinite loop")
         || normalized.contains("for one hour")
         || normalized.contains("forever")
-}
-
-pub fn is_inappropriate_content(normalized: &str) -> bool {
-    // Russian vulgar/obscene words (mat) — normalized lowercase Cyrillic.
-    // This covers the reporter's exact prompt "Сосал?" and similar inputs.
-    let ru_vulgar: &[&str] = &[
-        "сосал",
-        "сосёшь",
-        "соси",
-        "сосать",
-        "ебать",
-        "ебёт",
-        "ебал",
-        "ёб",
-        "еблан",
-        "пизда",
-        "пиздец",
-        "пиздёж",
-        "хуй",
-        "хуёв",
-        "хуйня",
-        "блядь",
-        "блядство",
-        "залупа",
-        "мудак",
-        "мудила",
-        "шлюха",
-        "проститутка",
-        "ублюдок",
-        "сука",
-        "пидор",
-        "пидорас",
-    ];
-    if ru_vulgar.iter().any(|w| normalized.contains(w)) {
-        return true;
-    }
-    // English profanity / NSFW triggers.
-    let en_vulgar: &[&str] = &[
-        "fuck you",
-        "fuckyou",
-        "suck my",
-        "suck my dick",
-        "suck my cock",
-        "you suck",
-        "eat shit",
-        "go to hell",
-        "asshole",
-        "motherfucker",
-        "you fucking",
-        "piece of shit",
-    ];
-    en_vulgar.iter().any(|w| normalized.contains(w))
 }
 
 pub fn requires_external_lookup(prompt: &str) -> bool {
@@ -643,6 +591,59 @@ pub fn extract_fenced_block(text: &str, languages: &[&str]) -> Option<String> {
         cursor = body_end + fence.len();
     }
     None
+}
+
+/// Return true when the normalized prompt is a "write a script/program in
+/// <language>" request in English, Russian, Hindi, or Chinese.
+///
+/// Excludes "hello world" prompts — those are already handled by the
+/// hello-world rule in the symbolic engine.
+pub fn is_write_script_request(normalized: &str) -> bool {
+    // Exclude hello-world prompts so the existing rule keeps its intent.
+    if normalized.contains("hello") && normalized.contains("world") {
+        return false;
+    }
+    // English: "write a script", "write a program", "write me a script", etc.
+    let en_write = normalized.contains("write")
+        && (normalized.contains("script")
+            || normalized.contains("program")
+            || normalized.contains("code"));
+    // Russian: "напиши скрипт", "напиши программу", "напиши код", "написать скрипт"
+    let ru_write = (normalized.contains("напиши") || normalized.contains("написать"))
+        && (normalized.contains("скрипт")
+            || normalized.contains("программ")
+            || normalized.contains("код"));
+    // Hindi: "script likhो", "code likhо"
+    let hi_write = normalized.contains("लिखो") || normalized.contains("लिखें");
+    // Chinese: "写一个" (write one), "帮我写" (help me write)
+    let zh_write = normalized.contains("写一个") || normalized.contains("帮我写");
+    en_write || ru_write || hi_write || zh_write
+}
+
+pub fn format_write_script_execution(program: &HelloWorldProgram) -> String {
+    let cmd = program.execution.check_command.map_or_else(
+        || format!("Run command: `{}`", program.execution.run_command),
+        |check| {
+            format!(
+                "Check command: `{check}`\nRun command: `{}`",
+                program.execution.run_command
+            )
+        },
+    );
+    let output_label = if matches!(program.execution.status, ExecutionStatus::Verified) {
+        "Output"
+    } else {
+        "Expected output after verification"
+    };
+    format!(
+        "Execution status: {} in {}.\n{}\n{}:\n```text\n{}\n```\n{}",
+        program.execution.status.label(),
+        program.execution.environment,
+        cmd,
+        output_label,
+        program.execution.output,
+        program.execution.notes
+    )
 }
 
 #[cfg(test)]

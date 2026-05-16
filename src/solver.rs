@@ -27,25 +27,74 @@ use crate::engine::{
     answer_links_notation, language_aware_answer_for, language_aware_intent_for,
     response_link_for_intent, select_rule_for, stable_id, SelectedRule, SymbolicAnswer,
 };
-use crate::event_log::EventLog;
+use crate::event_log::{build_evidence_links, EventLog};
 use crate::language::{detect as detect_language, Language};
 use crate::seed;
 use crate::solver_handler_how::try_how_it_works;
 use crate::solver_handler_units::try_incompatible_units;
 use crate::solver_handlers::{
-    build_evidence_links, finalize_simple, try_algorithm, try_arithmetic, try_capabilities,
-    try_clarification, try_concept_lookup, try_conversation_memory, try_execution_failure,
-    try_ill_formed, try_javascript_execution, try_meta_explanation, try_network_query,
-    try_opinion_question, try_shell_refusal, try_source_conflict, try_source_refresh,
-    try_translation,
+    finalize_simple, try_algorithm, try_arithmetic, try_capabilities, try_clarification,
+    try_concept_lookup, try_conversation_memory, try_execution_failure, try_ill_formed,
+    try_javascript_execution, try_meta_explanation, try_network_query, try_opinion_question,
+    try_shell_refusal, try_source_conflict, try_source_refresh, try_translation, try_write_script,
 };
 use crate::solver_handlers_policy::try_kupi_slona;
 use crate::solver_helpers::{
     confidence_for, is_agent_opt_in, is_agent_request, is_cache_flush_request,
-    is_destructive_action, is_forget_request, is_inappropriate_content, is_unbounded_autonomy,
-    is_unbounded_loop, record_candidates, record_decomposition, record_validation,
-    requires_external_lookup,
+    is_destructive_action, is_forget_request, is_unbounded_autonomy, is_unbounded_loop,
+    record_candidates, record_decomposition, record_validation, requires_external_lookup,
 };
+
+fn is_inappropriate_content(normalized: &str) -> bool {
+    // Russian vulgar/obscene words (mat) — normalized lowercase Cyrillic.
+    let ru_vulgar: &[&str] = &[
+        "сосал",
+        "сосёшь",
+        "соси",
+        "сосать",
+        "ебать",
+        "ебёт",
+        "ебал",
+        "ёб",
+        "еблан",
+        "пизда",
+        "пиздец",
+        "пиздёж",
+        "хуй",
+        "хуёв",
+        "хуйня",
+        "блядь",
+        "блядство",
+        "залупа",
+        "мудак",
+        "мудила",
+        "шлюха",
+        "проститутка",
+        "ублюдок",
+        "сука",
+        "пидор",
+        "пидорас",
+    ];
+    if ru_vulgar.iter().any(|w| normalized.contains(w)) {
+        return true;
+    }
+    // English profanity / NSFW triggers.
+    let en_vulgar: &[&str] = &[
+        "fuck you",
+        "fuckyou",
+        "suck my",
+        "suck my dick",
+        "suck my cock",
+        "you suck",
+        "eat shit",
+        "go to hell",
+        "asshole",
+        "motherfucker",
+        "you fucking",
+        "piece of shit",
+    ];
+    en_vulgar.iter().any(|w| normalized.contains(w))
+}
 
 /// Runtime configuration for the universal solver.
 ///
@@ -318,6 +367,9 @@ impl UniversalSolver {
             return Some(answer);
         }
         if let Some(answer) = try_translation(prompt, &normalized, log) {
+            return Some(answer);
+        }
+        if let Some(answer) = try_write_script(prompt, &normalized, log) {
             return Some(answer);
         }
         if let Some(answer) = try_algorithm(prompt, &normalized, log) {

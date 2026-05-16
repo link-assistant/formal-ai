@@ -91,6 +91,61 @@ impl EventLog {
     }
 }
 
+/// Build the evidence links array for a symbolic answer.
+///
+/// Translates each log event into a typed link, appending `response_link` at
+/// the end when it is not already present.
+#[must_use]
+pub fn build_evidence_links(prompt: &str, log: &EventLog, response_link: &str) -> Vec<String> {
+    let mut links: Vec<String> = Vec::new();
+    links.push(format!("prompt:{}", stable_id("prompt", prompt)));
+    for event in log.events() {
+        let evidence = match event.kind {
+            "trace:execution_failure" => format!("trace:execution_failure:{}", event.id),
+            "language" => format!("language:{}", event.payload),
+            "language_from" => format!("language_from:{}", event.payload),
+            "language_to" => format!("language_to:{}", event.payload),
+            "meaning" => format!("meaning:{}", event.payload),
+            "translation_gap" => format!("translation_gap:{}", event.payload),
+            "wikidata" => format!("wikidata:{}", event.payload),
+            "search:local" => format!("search:local:{}", event.id),
+            "search:external" => format!("search:external:{}", event.id),
+            "source:http" => format!("source:http:{}", event.payload.replace(' ', ":")),
+            "source_refresh" => format!("source_refresh:{}", event.payload),
+            "conflict:source_disagreement" => {
+                format!("conflict:source_disagreement:{}", event.id)
+            }
+            "cache_hit" => format!("cache_hit:{}", event.payload),
+            "network_fetch" => format!("network_fetch:{}", event.id),
+            "intent" => format!("intent:{}", event.payload),
+            "response" => event.payload.clone(),
+            "agent_mode:opted_in" => format!("agent_mode:opted_in:{}", event.id),
+            "agent_mode:active" => format!("agent_mode:active:{}", event.id),
+            "policy:chat_bounded_autonomy" => String::from("policy:chat_bounded_autonomy"),
+            "policy:add_only_history" => String::from("policy:add_only_history"),
+            "policy:destructive_action_requires_confirmation" => {
+                String::from("policy:destructive_action_requires_confirmation")
+            }
+            "policy:agent_time_budget" => format!("policy:agent_time_budget:{}", event.id),
+            "policy:cache_flush_requires_confirmation" => {
+                String::from("policy:cache_flush_requires_confirmation")
+            }
+            "policy:inappropriate_content" => String::from("policy:inappropriate_content"),
+            "error" => format!("error:{}", event.id),
+            "filter:user" => format!("filter:user:{}", event.payload),
+            "diagnostic_mode" => format!("diagnostic_mode:{}", event.payload),
+            "execution_status" => format!("execution_status:{}", event.id),
+            "execution_environment" => format!("execution_environment:{}", event.id),
+            _ => format!("{}:{}", event.kind, event.id),
+        };
+        links.push(evidence);
+    }
+    if !links.iter().any(|link| link == response_link) {
+        links.push(response_link.to_owned());
+    }
+    links
+}
+
 fn sanitize_payload(value: &str) -> String {
     value
         .replace('\r', "\\r")

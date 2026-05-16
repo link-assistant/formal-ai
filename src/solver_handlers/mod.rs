@@ -17,18 +17,19 @@ use crate::concepts::{
     extract_concept_query, lookup_concept_query, resolve_context_label, ConceptRecord,
 };
 use crate::engine::{
-    answer_links_notation, knowledge_links_notation, stable_id, ExecutionStatus, SymbolicAnswer,
+    answer_links_notation, hello_world_program_by_alias, knowledge_links_notation, stable_id,
+    ExecutionStatus, SymbolicAnswer,
 };
-use crate::event_log::EventLog;
+use crate::event_log::{build_evidence_links, EventLog};
 use crate::language::detect as detect_language;
 use crate::seed::response_for;
 use crate::solver_helpers::{
     build_sorting_algorithm_answer, detect_algorithm_language, detect_program_languages,
     detect_source_language, detect_target_language, extract_backticked, extract_concept_from_query,
-    extract_introduced_name, extract_javascript_program, extract_quoted_phrase, humanize_url,
-    infer_program_languages_from_code, infer_source_from_prompt, last_user_turn,
-    normalize_code_meaning, normalize_meaning, recall_name_from_history, translate_program,
-    translate_surface,
+    extract_introduced_name, extract_javascript_program, extract_quoted_phrase,
+    format_write_script_execution, humanize_url, infer_program_languages_from_code,
+    infer_source_from_prompt, is_write_script_request, last_user_turn, normalize_code_meaning,
+    normalize_meaning, recall_name_from_history, translate_program, translate_surface,
 };
 
 pub fn try_conversation_memory(
@@ -571,6 +572,41 @@ pub fn try_translation(
     ))
 }
 
+pub fn try_write_script(
+    prompt: &str,
+    normalized: &str,
+    log: &mut EventLog,
+) -> Option<SymbolicAnswer> {
+    if !is_write_script_request(normalized) {
+        return None;
+    }
+    let program = hello_world_program_by_alias(normalized)?;
+    let body = format!(
+        "Here is a minimal {} script:\n\n```{}\n{}\n```\n\n{}",
+        program.language,
+        program.code_fence,
+        program.code,
+        format_write_script_execution(program)
+    );
+    let intent = format!("write_script_{}", program.slug);
+    log.append(
+        "execution_status",
+        program.execution.status.label().to_owned(),
+    );
+    log.append(
+        "execution_environment",
+        program.execution.environment.to_owned(),
+    );
+    Some(finalize_simple(
+        prompt,
+        log,
+        &intent,
+        &format!("response:hello_world:{}", program.slug),
+        &body,
+        1.0,
+    ))
+}
+
 pub fn try_algorithm(prompt: &str, normalized: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {
     if !normalized.contains("algorithm") && !normalized.contains("sort") {
         return None;
@@ -703,54 +739,4 @@ pub fn finalize_simple(
         evidence_links,
         links_notation,
     }
-}
-
-pub fn build_evidence_links(prompt: &str, log: &EventLog, response_link: &str) -> Vec<String> {
-    let mut links: Vec<String> = Vec::new();
-    links.push(format!("prompt:{}", stable_id("prompt", prompt)));
-    for event in log.events() {
-        let evidence = match event.kind {
-            "trace:execution_failure" => format!("trace:execution_failure:{}", event.id),
-            "language" => format!("language:{}", event.payload),
-            "language_from" => format!("language_from:{}", event.payload),
-            "language_to" => format!("language_to:{}", event.payload),
-            "meaning" => format!("meaning:{}", event.payload),
-            "translation_gap" => format!("translation_gap:{}", event.payload),
-            "wikidata" => format!("wikidata:{}", event.payload),
-            "search:local" => format!("search:local:{}", event.id),
-            "search:external" => format!("search:external:{}", event.id),
-            "source:http" => format!("source:http:{}", event.payload.replace(' ', ":")),
-            "source_refresh" => format!("source_refresh:{}", event.payload),
-            "conflict:source_disagreement" => {
-                format!("conflict:source_disagreement:{}", event.id)
-            }
-            "cache_hit" => format!("cache_hit:{}", event.payload),
-            "network_fetch" => format!("network_fetch:{}", event.id),
-            "intent" => format!("intent:{}", event.payload),
-            "response" => event.payload.clone(),
-            "agent_mode:opted_in" => format!("agent_mode:opted_in:{}", event.id),
-            "agent_mode:active" => format!("agent_mode:active:{}", event.id),
-            "policy:chat_bounded_autonomy" => String::from("policy:chat_bounded_autonomy"),
-            "policy:add_only_history" => String::from("policy:add_only_history"),
-            "policy:destructive_action_requires_confirmation" => {
-                String::from("policy:destructive_action_requires_confirmation")
-            }
-            "policy:agent_time_budget" => format!("policy:agent_time_budget:{}", event.id),
-            "policy:cache_flush_requires_confirmation" => {
-                String::from("policy:cache_flush_requires_confirmation")
-            }
-            "policy:inappropriate_content" => String::from("policy:inappropriate_content"),
-            "error" => format!("error:{}", event.id),
-            "filter:user" => format!("filter:user:{}", event.payload),
-            "diagnostic_mode" => format!("diagnostic_mode:{}", event.payload),
-            "execution_status" => format!("execution_status:{}", event.id),
-            "execution_environment" => format!("execution_environment:{}", event.id),
-            _ => format!("{}:{}", event.kind, event.id),
-        };
-        links.push(evidence);
-    }
-    if !links.iter().any(|link| link == response_link) {
-        links.push(response_link.to_owned());
-    }
-    links
 }
