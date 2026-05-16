@@ -114,12 +114,17 @@ pub fn extract_concept_query(prompt: &str) -> Option<ConceptQuery> {
     if trimmed.is_empty() {
         return None;
     }
+    let trimmed = strip_leading_request(trimmed);
 
     if let Some(body) = strip_suffix_pattern(trimmed) {
         return finalize_concept_query(&body);
     }
 
     let lower = trimmed.to_lowercase();
+    if let Some(body) = strip_inverted_who_is(trimmed, &lower) {
+        return finalize_concept_query(body);
+    }
+
     let mut body: Option<&str> = None;
     for (prefix, _language) in concept_prefixes() {
         if let Some(rest) = lower.strip_prefix(prefix.as_str()) {
@@ -130,6 +135,39 @@ pub fn extract_concept_query(prompt: &str) -> Option<ConceptQuery> {
     }
     let body = body?;
     finalize_concept_query(body)
+}
+
+fn strip_leading_request(input: &str) -> &str {
+    const REQUEST_PREFIXES: &[&str] = &["please tell me,", "please tell me", "tell me,", "tell me"];
+    const QUESTION_STARTS: &[&str] = &["who ", "what ", "what's ", "who's "];
+    let lower = input.to_lowercase();
+    for prefix in REQUEST_PREFIXES {
+        let Some(rest_lower) = lower.strip_prefix(prefix) else {
+            continue;
+        };
+        let rest_start = input.len() - rest_lower.len();
+        let rest = input[rest_start..].trim_start();
+        let rest_lower = rest.to_lowercase();
+        if QUESTION_STARTS
+            .iter()
+            .any(|question_start| rest_lower.starts_with(question_start))
+        {
+            return rest;
+        }
+    }
+    input
+}
+
+fn strip_inverted_who_is<'a>(input: &'a str, lower: &str) -> Option<&'a str> {
+    let rest_lower = lower.strip_prefix("who ")?;
+    let body_lower = rest_lower.strip_suffix(" is")?;
+    let body_start = input.len() - rest_lower.len();
+    let body_end = body_start + body_lower.len();
+    let body = input[body_start..body_end].trim();
+    if body.is_empty() || matches!(body.to_lowercase().as_str(), "is" | "was" | "are") {
+        return None;
+    }
+    Some(body)
 }
 
 fn finalize_concept_query(body: &str) -> Option<ConceptQuery> {

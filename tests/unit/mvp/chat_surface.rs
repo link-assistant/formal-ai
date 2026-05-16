@@ -116,6 +116,18 @@ fn whitespace_only_prompt_is_classified_as_unknown() {
     assert_eq!(response.intent, "unknown");
 }
 
+#[test]
+fn dot_prompt_asks_for_clarification() {
+    let response = answer(".");
+    assert_eq!(response.intent, "clarification");
+    assert!(
+        response.answer.contains("only punctuation")
+            && response.answer.contains("What would you like"),
+        "dot prompt should ask a verification question, got: {}",
+        response.answer
+    );
+}
+
 // ---------------------------------------------------------------------------
 // MVP expectations: not yet implemented. See VISION.md / GOALS.md.
 // ---------------------------------------------------------------------------

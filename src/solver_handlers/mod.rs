@@ -7,8 +7,8 @@
 mod user_intent;
 
 pub use user_intent::{
-    try_capabilities, try_clarification, try_ill_formed, try_opinion_question, try_shell_refusal,
-    try_who_is_question,
+    try_capabilities, try_clarification, try_ill_formed, try_opinion_question,
+    try_punctuation_only_prompt, try_shell_refusal, try_who_is_question,
 };
 
 use std::fmt::Write as _;
