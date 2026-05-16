@@ -165,9 +165,11 @@ Distilled from the issue body, extending the matrix tracked in
   itself contains a triple backtick, so embedded code blocks stay
   unambiguous.
 - Replace the per-message subsection loop in `createIssueReportBody` with
-  a single `appendDialogBlock` call. Intent annotations and the reported
-  flag move inline (`A (intent: unknown, reported): …`) so the diagnostic
-  information survives without the verbose `- **Role**: …` boilerplate.
+  a single `appendDialogBlock` call. Known-intent turns stay as plain
+  `A: …` to match the issue example; only the `unknown` intent keeps the
+  inline annotation (`A (intent: unknown, reported): …`) where the marker
+  is needed to identify the missing rule, so the diagnostic information
+  survives without the verbose `- **Role**: …` boilerplate.
 - A smoke-test mirror lives at
   [`experiments/issue-78-dialog-format.mjs`](../../../experiments/issue-78-dialog-format.mjs)
   so the formatter can be exercised from Node without a bundler.

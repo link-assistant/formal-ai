@@ -25,11 +25,11 @@ function appendDialogBlock(lines, messages, effectiveFocus) {
   messages.forEach((message) => {
     const prefix = message.role === "user" ? "U" : "A";
     const annotations = [];
-    if (message.intent) {
+    if (message.intent === "unknown") {
       annotations.push(`intent: ${message.intent}`);
-    }
-    if (effectiveFocus && effectiveFocus.id === message.id) {
-      annotations.push("reported");
+      if (effectiveFocus && effectiveFocus.id === message.id) {
+        annotations.push("reported");
+      }
     }
     const head = annotations.length > 0 ? `${prefix} (${annotations.join(", ")})` : prefix;
     const content = String(message.content ?? "");
