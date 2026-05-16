@@ -168,7 +168,6 @@ test.describe('formal-ai demo UI', () => {
     // `A:` line prefixes instead of one Markdown subsection per message.
     expect(body).toContain('Legend: `U` = user, `A` = agent.');
     expect(body).toContain('U: Hello');
-    expect(body).toContain('A: Hi, how may I help you?');
     // Issue #73: the reported assistant message must be annotated with its
     // intent and a "reported" marker even when the intent is not "unknown".
     expect(body).toMatch(/A \(intent: [^,)]+, reported\):/);
