@@ -318,13 +318,31 @@ pub fn try_who_is_question(
 fn suggest_correction(term: &str) -> Option<String> {
     let candidates: &[(&str, &[&str])] = &[
         ("Elon Musk", &["elon musk", "elon mask", "elon muск"]),
-        ("Donald Trump", &["donald trump", "donald tramp", "donald tromp"]),
+        (
+            "Donald Trump",
+            &["donald trump", "donald tramp", "donald tromp"],
+        ),
         ("Joe Biden", &["joe biden", "joe bidan", "joe bidon"]),
-        ("Barack Obama", &["barack obama", "barak obama", "barrack obama"]),
-        ("Vladimir Putin", &["vladimir putin", "vladimir puting", "vladmir putin"]),
-        ("Albert Einstein", &["albert einstein", "albert einstien", "albert enstien"]),
-        ("Isaac Newton", &["isaac newton", "isaak newton", "issac newton"]),
-        ("Nikola Tesla", &["nikola tesla", "nicolas tesla", "nikolai tesla"]),
+        (
+            "Barack Obama",
+            &["barack obama", "barak obama", "barrack obama"],
+        ),
+        (
+            "Vladimir Putin",
+            &["vladimir putin", "vladimir puting", "vladmir putin"],
+        ),
+        (
+            "Albert Einstein",
+            &["albert einstein", "albert einstien", "albert enstien"],
+        ),
+        (
+            "Isaac Newton",
+            &["isaac newton", "isaak newton", "issac newton"],
+        ),
+        (
+            "Nikola Tesla",
+            &["nikola tesla", "nicolas tesla", "nikolai tesla"],
+        ),
     ];
     let lower = term.to_lowercase();
     for (canonical, variants) in candidates {
@@ -334,9 +352,7 @@ fn suggest_correction(term: &str) -> Option<String> {
     }
     for (canonical, variants) in candidates {
         let canonical_lower = canonical.to_lowercase();
-        let is_close = variants
-            .iter()
-            .any(|v| edit_distance(&lower, v) == 1)
+        let is_close = variants.iter().any(|v| edit_distance(&lower, v) == 1)
             || edit_distance(&lower, &canonical_lower) == 1;
         if is_close {
             return Some((*canonical).to_owned());
