@@ -25,14 +25,15 @@ fn shabbat_shalom_greeting_is_recognized_as_greeting() {
         let response = FormalAiEngine.answer(prompt);
 
         assert_eq!(
-            response.intent,
-            "greeting",
+            response.intent, "greeting",
             "prompt {:?} should be recognized as a greeting, got intent {:?}",
-            prompt,
-            response.intent
+            prompt, response.intent
         );
         assert!(
-            response.evidence_links.iter().any(|link| link == "response:greeting"),
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == "response:greeting"),
             "prompt {:?} response should cite response:greeting",
             prompt
         );
