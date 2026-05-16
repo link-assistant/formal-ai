@@ -422,12 +422,46 @@ function splitTermAndContext(bodyOriginal, bodyLower) {
   };
 }
 
+function stripLeadingRequest(input) {
+  const lower = input.toLowerCase();
+  const prefixes = [
+    "please tell me,",
+    "please tell me",
+    "tell me,",
+    "tell me",
+  ];
+  const questionStarts = ["who ", "what ", "what's ", "who's "];
+  for (const prefix of prefixes) {
+    if (!lower.startsWith(prefix)) continue;
+    const rest = input.slice(prefix.length).trimStart();
+    const restLower = rest.toLowerCase();
+    if (
+      questionStarts.some((questionStart) =>
+        restLower.startsWith(questionStart),
+      )
+    ) {
+      return rest;
+    }
+  }
+  return input;
+}
+
+function extractInvertedWhoIs(input, lower) {
+  if (!lower.startsWith("who ") || !lower.endsWith(" is")) return null;
+  const body = input.slice("who ".length, input.length - " is".length).trim();
+  if (!body) return null;
+  const normalized = body.toLowerCase();
+  if (["is", "was", "are"].includes(normalized)) return null;
+  return body;
+}
+
 function extractConceptQuery(prompt) {
-  const trimmedRaw = String(prompt || "")
+  let trimmedRaw = String(prompt || "")
     .trim()
     .replace(/[?。.!!,,;:]+$/g, "")
     .trim();
   if (!trimmedRaw) return null;
+  trimmedRaw = stripLeadingRequest(trimmedRaw);
 
   const suffixes = conceptPatternsByKind("suffix");
   for (const suffix of suffixes) {
@@ -439,6 +473,9 @@ function extractConceptQuery(prompt) {
   }
 
   const lower = trimmedRaw.toLowerCase();
+  const invertedWhoBody = extractInvertedWhoIs(trimmedRaw, lower);
+  if (invertedWhoBody) return finalizeConceptBody(invertedWhoBody);
+
   const prefixes = conceptPatternsByKind("prefix");
   let body = null;
   for (const prefix of prefixes) {
