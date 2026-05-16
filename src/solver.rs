@@ -36,7 +36,8 @@ use crate::solver_handlers::{
     finalize_simple, try_algorithm, try_arithmetic, try_capabilities, try_clarification,
     try_concept_lookup, try_conversation_memory, try_execution_failure, try_ill_formed,
     try_javascript_execution, try_meta_explanation, try_network_query, try_opinion_question,
-    try_shell_refusal, try_source_conflict, try_source_refresh, try_translation, try_write_script,
+    try_shell_refusal, try_source_conflict, try_source_refresh, try_translation,
+    try_who_is_question, try_write_script,
 };
 use crate::solver_handlers_policy::try_kupi_slona;
 use crate::solver_helpers::{
@@ -355,6 +356,9 @@ impl UniversalSolver {
             return Some(answer);
         }
         if let Some(answer) = try_concept_lookup(prompt, log) {
+            return Some(answer);
+        }
+        if let Some(answer) = try_who_is_question(prompt, &normalized, log) {
             return Some(answer);
         }
         if let Some(answer) = try_how_it_works(prompt, &normalized, log) {
