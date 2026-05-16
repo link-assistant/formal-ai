@@ -11,6 +11,7 @@ pub mod solver;
 pub(crate) mod solver_handler_how;
 pub(crate) mod solver_handler_units;
 pub(crate) mod solver_handlers;
+pub(crate) mod solver_handlers_policy;
 pub(crate) mod solver_helpers;
 pub mod telegram;
 pub mod telegram_runtime;

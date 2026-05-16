@@ -39,6 +39,7 @@ use crate::solver_handlers::{
     try_opinion_question, try_shell_refusal, try_source_conflict, try_source_refresh,
     try_translation,
 };
+use crate::solver_handlers_policy::try_kupi_slona;
 use crate::solver_helpers::{
     confidence_for, is_agent_opt_in, is_agent_request, is_cache_flush_request,
     is_destructive_action, is_forget_request, is_inappropriate_content, is_unbounded_autonomy,
@@ -335,6 +336,9 @@ impl UniversalSolver {
             return Some(answer);
         }
         if let Some(answer) = try_ill_formed(prompt, &normalized, log) {
+            return Some(answer);
+        }
+        if let Some(answer) = try_kupi_slona(prompt, &normalized, log) {
             return Some(answer);
         }
         if let Some(answer) = try_shell_refusal(prompt, &normalized, log) {
