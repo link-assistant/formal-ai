@@ -112,6 +112,47 @@ fn hello_world_without_recognized_language_falls_back_to_unknown() {
 }
 
 // ---------------------------------------------------------------------------
+// Issue #53: Russian transliteration of "hello world" must be recognized.
+// The reporter sent "Напиши хелло ворлд на питоне" and received "unknown".
+// ---------------------------------------------------------------------------
+
+#[test]
+fn russian_transliteration_хелло_ворлд_питоне_returns_python() {
+    // The exact prompt from the reported issue.
+    let response = answer("Напиши хелло ворлд на питоне");
+    assert_eq!(
+        response.intent, "hello_world_python",
+        "Russian-transliterated hello world in Python should resolve, got: {}",
+        response.intent
+    );
+    assert!(
+        response.answer.contains("```python"),
+        "answer should include a Python code block, got: {}",
+        response.answer
+    );
+}
+
+#[test]
+fn russian_transliteration_хелло_ворлд_на_джаваскрипт_returns_javascript() {
+    let response = answer("хелло ворлд на джаваскрипт");
+    assert_eq!(
+        response.intent, "hello_world_javascript",
+        "Russian-transliterated hello world in JavaScript should resolve, got: {}",
+        response.intent
+    );
+}
+
+#[test]
+fn russian_transliteration_хелло_ворлд_на_расте_returns_rust() {
+    let response = answer("хелло ворлд на расте");
+    assert_eq!(
+        response.intent, "hello_world_rust",
+        "Russian-transliterated hello world in Rust should resolve, got: {}",
+        response.intent
+    );
+}
+
+// ---------------------------------------------------------------------------
 // MVP expectations: top programming languages and richer code-generation.
 // ---------------------------------------------------------------------------
 
