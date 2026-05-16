@@ -1070,6 +1070,85 @@ function tryConceptLookup(prompt) {
   };
 }
 
+// Known person name corrections for typo suggestions. Each entry maps a
+// canonical name to a list of common misspellings (all lowercase).
+const KNOWN_PERSON_VARIANTS = [
+  { canonical: "Elon Musk", variants: ["elon musk", "elon mask", "elon muск"] },
+  { canonical: "Donald Trump", variants: ["donald trump", "donald tramp", "donald tromp"] },
+  { canonical: "Joe Biden", variants: ["joe biden", "joe bidan", "joe bidon"] },
+  { canonical: "Barack Obama", variants: ["barack obama", "barak obama", "barrack obama"] },
+  { canonical: "Vladimir Putin", variants: ["vladimir putin", "vladimir puting", "vladmir putin"] },
+  { canonical: "Albert Einstein", variants: ["albert einstein", "albert einstien", "albert enstien"] },
+  { canonical: "Isaac Newton", variants: ["isaac newton", "isaak newton", "issac newton"] },
+  { canonical: "Nikola Tesla", variants: ["nikola tesla", "nicolas tesla", "nikolai tesla"] },
+];
+
+function editDistance(a, b) {
+  const m = a.length, n = b.length;
+  const dp = Array.from({ length: m + 1 }, (_, i) =>
+    Array.from({ length: n + 1 }, (_, j) => (i === 0 ? j : j === 0 ? i : 0))
+  );
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      dp[i][j] = a[i - 1] === b[j - 1]
+        ? dp[i - 1][j - 1]
+        : 1 + Math.min(dp[i - 1][j - 1], dp[i - 1][j], dp[i][j - 1]);
+    }
+  }
+  return dp[m][n];
+}
+
+function suggestNameCorrection(term) {
+  const lower = term.toLowerCase();
+  for (const { canonical, variants } of KNOWN_PERSON_VARIANTS) {
+    if (variants.includes(lower)) return canonical;
+  }
+  for (const { canonical, variants } of KNOWN_PERSON_VARIANTS) {
+    const canonicalLower = canonical.toLowerCase();
+    if (
+      variants.some((v) => editDistance(lower, v) === 1) ||
+      editDistance(lower, canonicalLower) === 1
+    ) {
+      return canonical;
+    }
+  }
+  return null;
+}
+
+function isWhoIsPrompt(normalized) {
+  return (
+    normalized.startsWith("who is ") ||
+    normalized.startsWith("who was ") ||
+    normalized.startsWith("who are ") ||
+    normalized.startsWith("кто такой ") ||
+    normalized.startsWith("кто такая ") ||
+    normalized.startsWith("кто это ") ||
+    normalized.startsWith("кто ") ||
+    normalized.endsWith(" कौन है") ||
+    normalized.endsWith(" कौन हैं") ||
+    normalized.endsWith("是谁") ||
+    normalized.endsWith("是誰")
+  );
+}
+
+function tryWhoIsQuestion(prompt) {
+  const normalized = prompt.toLowerCase().trim();
+  if (!isWhoIsPrompt(normalized)) return null;
+  const query = extractConceptQuery(prompt);
+  if (!query) return null;
+  const term = query.term;
+  const suggestion = suggestNameCorrection(term);
+  const content = suggestion
+    ? `I don't have a Links Notation fact for "${term}" yet. Did you mean "${suggestion}"? Add a fact or rule in Links Notation and run the request again.`
+    : `I don't have a Links Notation fact for "${term}" yet. Add a fact or rule in Links Notation and run the request again.`;
+  return {
+    intent: "who_is_question",
+    content,
+    confidence: 0.5,
+    evidence: [`concept_lookup:miss:${term}`, "response:who_is_question"],
+  };
+}
+
 // Wikipedia REST summary endpoint per language. Browser-friendly: CORS is
 // enabled by Wikimedia for these summary endpoints, so the worker can fetch
 // without a proxy from GitHub Pages.
@@ -1623,6 +1702,17 @@ async function solve(prompt, history, prefs) {
     inputs: { prompt, language },
     outputs: { intent: "no_match" },
   });
+
+  // Issue #69: "who is X" prompts that were not resolved by the local
+  // knowledge base or Wikipedia should still return a question-typed response
+  // (not "unknown") and offer a typo correction when the entity name is close
+  // to a known variant.
+  const whoIs = tryWhoIsQuestion(prompt);
+  if (whoIs) {
+    events.push(`handler:${whoIs.intent}`);
+    steps.push({ step: "dispatch_handler", detail: "tryWhoIsQuestion" });
+    return finalize(events, steps, toolCalls, whoIs);
+  }
 
   events.push("fallback:unknown");
   steps.push({ step: "fallback", detail: "unknown" });

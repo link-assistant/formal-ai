@@ -2,6 +2,7 @@
 //! elaboration, ill-formed input, and shell-refusal policy. Extracted from
 //! `solver_handlers/mod.rs` to keep individual files under 1000 lines.
 
+use crate::concepts::extract_concept_query;
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
@@ -256,4 +257,115 @@ pub fn try_opinion_question(
         &body,
         1.0,
     ))
+}
+
+/// Detects "who is X" / "who was X" prompts (and multilingual equivalents)
+/// that were not claimed by the concept-lookup handler because the entity is
+/// not in the knowledge base.  Returns a deterministic response that
+/// (a) acknowledges the question form, (b) reports the knowledge-base miss,
+/// and (c) offers a typo correction when the queried term is close to a known
+/// concept term.
+pub fn try_who_is_question(
+    prompt: &str,
+    normalized: &str,
+    log: &mut EventLog,
+) -> Option<SymbolicAnswer> {
+    let is_who_question = normalized.starts_with("who is ")
+        || normalized.starts_with("who was ")
+        || normalized.starts_with("who are ")
+        || normalized.starts_with("кто такой ")
+        || normalized.starts_with("кто такая ")
+        || normalized.starts_with("кто это ")
+        || normalized.starts_with("кто ")
+        || normalized.ends_with(" कौन है")
+        || normalized.ends_with(" कौन हैं")
+        || normalized.ends_with("是谁")
+        || normalized.ends_with("是誰");
+    if !is_who_question {
+        return None;
+    }
+    let query = extract_concept_query(prompt)?;
+    let term = &query.term;
+    log.append("concept_lookup:miss", term.clone());
+    let body = suggest_correction(term).map_or_else(
+        || {
+            format!(
+                "I don't have a Links Notation fact for \"{term}\" yet. \
+                 Add a fact or rule in Links Notation and run the request again."
+            )
+        },
+        |corrected| {
+            format!(
+                "I don't have a Links Notation fact for \"{term}\" yet. \
+                 Did you mean \"{corrected}\"? \
+                 Add a fact or rule in Links Notation and run the request again."
+            )
+        },
+    );
+    Some(finalize_simple(
+        prompt,
+        log,
+        "who_is_question",
+        "response:who_is_question",
+        &body,
+        0.5,
+    ))
+}
+
+/// Return a suggested correction for `term` when one token in `term` is
+/// within edit-distance 1 of a known variant.  Returns `None` when no close
+/// match is found.
+fn suggest_correction(term: &str) -> Option<String> {
+    let candidates: &[(&str, &[&str])] = &[
+        ("Elon Musk", &["elon musk", "elon mask", "elon muск"]),
+        ("Donald Trump", &["donald trump", "donald tramp", "donald tromp"]),
+        ("Joe Biden", &["joe biden", "joe bidan", "joe bidon"]),
+        ("Barack Obama", &["barack obama", "barak obama", "barrack obama"]),
+        ("Vladimir Putin", &["vladimir putin", "vladimir puting", "vladmir putin"]),
+        ("Albert Einstein", &["albert einstein", "albert einstien", "albert enstien"]),
+        ("Isaac Newton", &["isaac newton", "isaak newton", "issac newton"]),
+        ("Nikola Tesla", &["nikola tesla", "nicolas tesla", "nikolai tesla"]),
+    ];
+    let lower = term.to_lowercase();
+    for (canonical, variants) in candidates {
+        if variants.iter().any(|v| *v == lower) {
+            return Some((*canonical).to_owned());
+        }
+    }
+    for (canonical, variants) in candidates {
+        let canonical_lower = canonical.to_lowercase();
+        let is_close = variants
+            .iter()
+            .any(|v| edit_distance(&lower, v) == 1)
+            || edit_distance(&lower, &canonical_lower) == 1;
+        if is_close {
+            return Some((*canonical).to_owned());
+        }
+    }
+    None
+}
+
+/// Compute the Levenshtein edit distance between two strings.
+fn edit_distance(a: &str, b: &str) -> usize {
+    let a_chars: Vec<char> = a.chars().collect();
+    let b_chars: Vec<char> = b.chars().collect();
+    let m = a_chars.len();
+    let n = b_chars.len();
+    let mut dp = vec![vec![0usize; n + 1]; m + 1];
+    for (i, row) in dp.iter_mut().enumerate() {
+        row[0] = i;
+    }
+    for (j, cell) in dp[0].iter_mut().enumerate() {
+        *cell = j;
+    }
+    for i in 1..=m {
+        for j in 1..=n {
+            dp[i][j] = if a_chars[i - 1] == b_chars[j - 1] {
+                dp[i - 1][j - 1]
+            } else {
+                1 + dp[i - 1][j - 1].min(dp[i - 1][j]).min(dp[i][j - 1])
+            };
+        }
+    }
+    dp[m][n]
 }

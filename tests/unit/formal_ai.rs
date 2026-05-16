@@ -514,3 +514,59 @@ fn opinion_questions_return_no_opinion_response() {
         );
     }
 }
+
+#[test]
+fn who_is_question_does_not_return_unknown_intent() {
+    // Issue #69: "who is elon mask" (typo of Musk) previously returned
+    // intent: unknown.  "Who is X" prompts must be treated as a question
+    // and return a deterministic response even when the entity is not in
+    // the knowledge base.
+    let cases = [
+        ("who is elon mask", Some("Elon Musk")),
+        ("who is elon musk", None),
+        ("who was albert einstein", None),
+    ];
+
+    for (prompt, expected_suggestion) in cases {
+        let response = FormalAiEngine.answer(prompt);
+
+        assert_ne!(
+            response.intent, "unknown",
+            "prompt {prompt:?} should not return unknown intent"
+        );
+        assert!(
+            !response
+                .answer
+                .contains("I do not have a learned symbolic rule"),
+            "prompt {prompt:?} should not return the unknown-intent error"
+        );
+        if let Some(suggestion) = expected_suggestion {
+            assert!(
+                response.answer.contains(suggestion),
+                "response for {prompt:?} should suggest \"{suggestion}\", got: {}",
+                response.answer
+            );
+        }
+    }
+}
+
+#[test]
+fn who_is_elon_mask_suggests_elon_musk() {
+    // Issue #69: specific reproduction case — typo "mask" instead of "musk".
+    let response = FormalAiEngine.answer("who is elon mask");
+
+    assert_eq!(
+        response.intent, "who_is_question",
+        "prompt should resolve to who_is_question intent"
+    );
+    assert!(
+        response.answer.contains("Elon Musk"),
+        "response should suggest \"Elon Musk\" for typo \"elon mask\", got: {}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains("Did you mean"),
+        "response should contain \"Did you mean\" correction, got: {}",
+        response.answer
+    );
+}
