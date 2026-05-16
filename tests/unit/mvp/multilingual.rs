@@ -428,6 +428,46 @@ fn humanize_url_preserves_functional_link_target() {
 }
 
 // ---------------------------------------------------------------------------
+// Issue #44: Russian prompts with no matching rule return unknown + Russian
+// reply.
+// ---------------------------------------------------------------------------
+
+#[test]
+fn russian_nonsensical_question_returns_unknown_intent() {
+    let response = answer("куда плешивый спрятал сахар?");
+    assert_eq!(response.intent, "unknown");
+}
+
+#[test]
+fn russian_mixed_units_question_returns_unknown_intent() {
+    let response = answer("Сколько метров в килобайте?");
+    assert_eq!(response.intent, "unknown");
+}
+
+#[test]
+fn russian_trick_riddle_returns_unknown_intent() {
+    let response = answer(
+        "Стоит четырёхэтажный дом, в каждом этаже по восьми окон, \
+         на крыше — два слуховых окна и две трубы, в каждом этаже \
+         по два квартиранта. А теперь скажите, господа, в каком году \
+         умерла у швейцара его бабушка?",
+    );
+    assert_eq!(response.intent, "unknown");
+}
+
+#[test]
+fn russian_unknown_reply_is_in_russian() {
+    let response = answer("куда плешивый спрятал сахар?");
+    assert_eq!(response.intent, "unknown");
+    assert!(
+        response.answer.contains("символьного правила")
+            || response.answer.contains("Links Notation"),
+        "Russian unknown reply should be in Russian or reference Links Notation, got: {}",
+        response.answer
+    );
+}
+
+// ---------------------------------------------------------------------------
 // Issue #29: "не понял" and other clarification prompts should be handled
 // with a helpful clarification response, not the generic "unknown" fallback.
 // ---------------------------------------------------------------------------
@@ -470,6 +510,36 @@ fn english_dont_understand_variant_returns_clarification_intent() {
         response.intent, "clarification",
         "\"I didn't understand\" should map to clarification intent, got: {}",
         response.intent
+    );
+}
+
+// ---------------------------------------------------------------------------
+// Issue #30: "назови цвет" — "назови " prefix must route to concept_lookup,
+// and "цвет" must resolve to the color concept record.
+// The reporter's exact prompt was "назови цвет" which returned intent:unknown.
+// ---------------------------------------------------------------------------
+
+#[test]
+fn russian_nazovi_prefix_routes_to_concept_lookup() {
+    // "назови X" is a Russian imperative meaning "name X / tell me X".
+    // It must be recognized as a concept_lookup prefix (issue #30).
+    let response = answer("назови цвет");
+    assert!(
+        response.intent.starts_with("concept_lookup"),
+        "\"назови цвет\" should route to concept_lookup, got: {}",
+        response.intent
+    );
+}
+
+#[test]
+fn russian_nazovi_tsvet_answer_references_color() {
+    // The resolved answer must reference the color concept.
+    let response = answer("назови цвет");
+    let lower = response.answer.to_lowercase();
+    assert!(
+        lower.contains("цвет") || lower.contains("color") || lower.contains("colour"),
+        "\"назови цвет\" answer should describe a color, got: {}",
+        response.answer
     );
 }
 
