@@ -423,3 +423,37 @@ fn merged_bundle_and_parse_bundle_round_trip_split_files() {
         assert_eq!(parsed_name, orig_name);
     }
 }
+
+#[test]
+fn opinion_questions_return_no_opinion_response() {
+    // Issue #42: "Do you think space is continuous or discrete" previously fell
+    // through to the generic unknown-intent error. Opinion/belief questions
+    // must now return a deterministic explanation instead.
+    let cases = [
+        "Do you think space is continuous or discrete",
+        "What do you think about quantum mechanics?",
+        "Do you believe in free will?",
+        "What is your opinion on climate change?",
+        "In your opinion, is consciousness physical?",
+        "What are your thoughts on recursion?",
+    ];
+
+    for prompt in cases {
+        let response = FormalAiEngine.answer(prompt);
+
+        assert_eq!(
+            response.intent, "opinion_question",
+            "prompt {prompt:?} should resolve to opinion_question intent"
+        );
+        assert!(
+            response.answer.contains("deterministic"),
+            "response for {prompt:?} should mention deterministic nature"
+        );
+        assert!(
+            !response
+                .answer
+                .contains("I do not have a learned symbolic rule"),
+            "prompt {prompt:?} should not return the unknown-intent error"
+        );
+    }
+}

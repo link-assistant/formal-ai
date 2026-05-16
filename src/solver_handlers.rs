@@ -20,11 +20,11 @@ use crate::seed::response_for;
 use crate::solver_helpers::{
     build_sorting_algorithm_answer, detect_algorithm_language, detect_program_languages,
     detect_source_language, detect_target_language, extract_backticked, extract_concept_from_query,
-    extract_introduced_name, extract_javascript_program, extract_quoted_phrase,
-    format_write_script_execution, humanize_url, infer_program_languages_from_code,
-    infer_source_from_prompt, is_write_script_request, last_assistant_turn, last_user_turn,
-    normalize_code_meaning, normalize_meaning, recall_name_from_history, translate_program,
-    translate_surface,
+    extract_how_it_works_subject, extract_introduced_name, extract_javascript_program,
+    extract_quoted_phrase, format_write_script_execution, humanize_url,
+    infer_program_languages_from_code, infer_source_from_prompt, is_opinion_request,
+    is_write_script_request, last_assistant_turn, last_user_turn, normalize_code_meaning,
+    normalize_meaning, recall_name_from_history, translate_program, translate_surface,
 };
 
 pub fn try_conversation_memory(
@@ -816,19 +816,6 @@ pub fn try_how_it_works(
     ))
 }
 
-/// Extract the explicit subject from a "how does X work?" prompt.
-/// Returns `None` when the prompt is the bare "how it works?" form.
-fn extract_how_it_works_subject(normalized: &str) -> Option<String> {
-    // "how does X work" / "how does X work?"
-    if let Some(rest) = normalized.strip_prefix("how does ") {
-        let term = rest.trim_end_matches('?').trim_end_matches(" work").trim();
-        if !term.is_empty() && term != "it" {
-            return Some(term.to_owned());
-        }
-    }
-    None
-}
-
 /// Extract the first meaningful topic word/phrase from a prior assistant reply.
 /// Looks for "Term (category):" patterns first, then the first capitalised token.
 fn extract_topic_from_prior_reply(reply: &str) -> Option<String> {
@@ -912,6 +899,31 @@ pub fn try_shell_refusal(
     ))
 }
 
+pub fn try_opinion_question(
+    prompt: &str,
+    normalized: &str,
+    log: &mut EventLog,
+) -> Option<SymbolicAnswer> {
+    if !is_opinion_request(normalized) {
+        return None;
+    }
+    log.append("policy:no_opinion", prompt.to_owned());
+    let body = String::from(
+        "I am a deterministic symbolic AI. I do not hold opinions, beliefs, or feelings — \
+         every answer I give is derived from an explicit Links Notation rule. \
+         If you are looking for factual information on this topic, try asking \
+         \"what is <topic>\" and I will look it up in my knowledge base.",
+    );
+    Some(finalize_simple(
+        prompt,
+        log,
+        "opinion_question",
+        "response:opinion_question",
+        &body,
+        1.0,
+    ))
+}
+
 pub fn finalize_simple(
     prompt: &str,
     log: &mut EventLog,
@@ -968,6 +980,7 @@ pub fn build_evidence_links(prompt: &str, log: &EventLog, response_link: &str) -
             "policy:cache_flush_requires_confirmation" => {
                 String::from("policy:cache_flush_requires_confirmation")
             }
+            "policy:inappropriate_content" => String::from("policy:inappropriate_content"),
             "error" => format!("error:{}", event.id),
             "filter:user" => format!("filter:user:{}", event.payload),
             "diagnostic_mode" => format!("diagnostic_mode:{}", event.payload),

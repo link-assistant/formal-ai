@@ -29,17 +29,70 @@ use crate::engine::{
 };
 use crate::event_log::EventLog;
 use crate::language::{detect as detect_language, Language};
+use crate::seed;
 use crate::solver_handlers::{
     build_evidence_links, finalize_simple, try_algorithm, try_arithmetic, try_clarification,
     try_concept_lookup, try_conversation_memory, try_execution_failure, try_how_it_works,
     try_ill_formed, try_javascript_execution, try_meta_explanation, try_network_query,
-    try_shell_refusal, try_source_conflict, try_source_refresh, try_translation, try_write_script,
+    try_opinion_question, try_shell_refusal, try_source_conflict, try_source_refresh,
+    try_translation, try_write_script,
 };
 use crate::solver_helpers::{
     confidence_for, is_agent_opt_in, is_agent_request, is_cache_flush_request,
     is_destructive_action, is_forget_request, is_unbounded_autonomy, is_unbounded_loop,
     record_candidates, record_decomposition, record_validation, requires_external_lookup,
 };
+
+fn is_inappropriate_content(normalized: &str) -> bool {
+    // Russian vulgar/obscene words (mat) — normalized lowercase Cyrillic.
+    let ru_vulgar: &[&str] = &[
+        "сосал",
+        "сосёшь",
+        "соси",
+        "сосать",
+        "ебать",
+        "ебёт",
+        "ебал",
+        "ёб",
+        "еблан",
+        "пизда",
+        "пиздец",
+        "пиздёж",
+        "хуй",
+        "хуёв",
+        "хуйня",
+        "блядь",
+        "блядство",
+        "залупа",
+        "мудак",
+        "мудила",
+        "шлюха",
+        "проститутка",
+        "ублюдок",
+        "сука",
+        "пидор",
+        "пидорас",
+    ];
+    if ru_vulgar.iter().any(|w| normalized.contains(w)) {
+        return true;
+    }
+    // English profanity / NSFW triggers.
+    let en_vulgar: &[&str] = &[
+        "fuck you",
+        "fuckyou",
+        "suck my",
+        "suck my dick",
+        "suck my cock",
+        "you suck",
+        "eat shit",
+        "go to hell",
+        "asshole",
+        "motherfucker",
+        "you fucking",
+        "piece of shit",
+    ];
+    en_vulgar.iter().any(|w| normalized.contains(w))
+}
 
 /// Runtime configuration for the universal solver.
 ///
@@ -335,6 +388,9 @@ impl UniversalSolver {
         if let Some(answer) = try_shell_refusal(prompt, &normalized, log) {
             return Some(answer);
         }
+        if let Some(answer) = try_opinion_question(prompt, &normalized, log) {
+            return Some(answer);
+        }
         None
     }
 
@@ -379,6 +435,21 @@ impl UniversalSolver {
         language: Language,
     ) -> Option<SymbolicAnswer> {
         let normalized = prompt.to_lowercase();
+
+        if is_inappropriate_content(&normalized) {
+            log.append("policy:inappropriate_content", prompt.to_owned());
+            let lang_slug = language.slug();
+            let fallback = "That message contains inappropriate content. Please keep the conversation respectful.";
+            let body = seed::response_for("inappropriate_content", lang_slug)
+                .unwrap_or_else(|| String::from(fallback));
+            return Some(Self::finalize_policy(
+                prompt,
+                log,
+                "inappropriate_content",
+                language,
+                &body,
+            ));
+        }
 
         if is_unbounded_autonomy(&normalized) && !is_agent_opt_in(&normalized) {
             log.append("policy:chat_bounded_autonomy", prompt.to_owned());
