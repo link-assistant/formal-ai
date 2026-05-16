@@ -1080,6 +1080,17 @@ const WIKIPEDIA_HOSTS = {
   zh: "https://zh.wikipedia.org/api/rest_v1/page/summary",
 };
 
+// Wikipedia full-text page search endpoint per language (CORS-enabled). Returns
+// ranked page results matching a free-text query — more effective than the
+// title-only search for context-aware disambiguation because the ranker scores
+// body content, not just the title.
+const WIKIPEDIA_SEARCH_HOSTS = {
+  en: "https://en.wikipedia.org/w/rest.php/v1/search/page",
+  ru: "https://ru.wikipedia.org/w/rest.php/v1/search/page",
+  hi: "https://hi.wikipedia.org/w/rest.php/v1/search/page",
+  zh: "https://zh.wikipedia.org/w/rest.php/v1/search/page",
+};
+
 function wikipediaHostsFor(language) {
   // Try the detected language first, then fall back to English so a Russian
   // query for an English-only article still returns a definition.
@@ -1132,21 +1143,105 @@ function wikipediaTermVariants(term) {
   return variants;
 }
 
-async function fetchWikipediaSummary(term, language) {
+// Resolve a context-qualified term to a Wikipedia page slug via full-text page
+// search. Tries multiple query formulations (uppercase term, mixed case) on the
+// detected language host then on English, returning the first match found.
+// This helps disambiguate short acronyms like "KISS" or "DRY" when the user
+// provides a programming/domain context.
+async function searchWikipediaSlug(term, context, language) {
   if (typeof fetch !== "function") return null;
+  const apiHeaders = {
+    accept: "application/json",
+    "api-user-agent":
+      "formal-ai-demo (https://github.com/link-assistant/formal-ai)",
+  };
+  const upper = term.toUpperCase();
+  // Build candidate queries in preference order: uppercase term with context is
+  // most discriminating; plain term with context is the fallback.
+  const queries = [];
+  if (upper !== term) queries.push(`${upper} ${context}`.trim());
+  queries.push(`${term} ${context}`.trim());
+  const ordered = [language, "en"].filter(
+    (value, index, array) => value && array.indexOf(value) === index,
+  );
+  for (const lang of ordered) {
+    const base = WIKIPEDIA_SEARCH_HOSTS[lang] || WIKIPEDIA_SEARCH_HOSTS.en;
+    for (const query of queries) {
+      const url = `${base}?q=${encodeURIComponent(query)}&limit=5`;
+      try {
+        const response = await fetch(url, { headers: apiHeaders });
+        if (!response || !response.ok) continue;
+        const data = await response.json();
+        if (!data || !Array.isArray(data.pages) || data.pages.length === 0)
+          continue;
+        // Return the key of the top result; callers will fetch the full summary.
+        return { slug: data.pages[0].key, language: lang };
+      } catch (_error) {
+        // Ignore and try next query / language host.
+      }
+    }
+  }
+  return null;
+}
+
+async function fetchWikipediaSummary(term, language, context) {
+  if (typeof fetch !== "function") return null;
+  const apiHeaders = {
+    accept: "application/json",
+    "api-user-agent":
+      "formal-ai-demo (https://github.com/link-assistant/formal-ai)",
+  };
+
+  // When context is provided, first try a title-search to find the most
+  // relevant article slug (e.g. "Kiss" + "рамках програмирования" → "KISS
+  // principle"). This prevents ambiguous short terms from matching the wrong
+  // article (e.g. the rock band instead of the software design principle).
+  if (context) {
+    const found = await searchWikipediaSlug(term, context, language);
+    if (found) {
+      const summaryBase =
+        WIKIPEDIA_HOSTS[found.language] || WIKIPEDIA_HOSTS.en;
+      const url = `${summaryBase}/${encodeURIComponent(found.slug)}`;
+      try {
+        const response = await fetch(url, { headers: apiHeaders });
+        if (response && response.ok) {
+          const data = await response.json();
+          if (
+            data &&
+            typeof data === "object" &&
+            data.type !== "disambiguation"
+          ) {
+            const extract = String(data.extract || "").trim();
+            if (extract) {
+              const title = String(data.title || term);
+              const pageUrl =
+                (data.content_urls &&
+                  data.content_urls.desktop &&
+                  data.content_urls.desktop.page) ||
+                url;
+              return {
+                title,
+                extract,
+                url: pageUrl,
+                language: found.language,
+              };
+            }
+          }
+        }
+      } catch (_error) {
+        // Fall through to bare-term lookup below.
+      }
+    }
+  }
+
+  // Bare-term fallback: try direct slug variants without context.
   const hosts = wikipediaHostsFor(language);
   const variants = wikipediaTermVariants(term);
   for (const host of hosts) {
     for (const slug of variants) {
       const url = `${host.url}/${encodeURIComponent(slug)}`;
       try {
-        const response = await fetch(url, {
-          headers: {
-            accept: "application/json",
-            "api-user-agent":
-              "formal-ai-demo (https://github.com/link-assistant/formal-ai)",
-          },
-        });
+        const response = await fetch(url, { headers: apiHeaders });
         if (!response || !response.ok) continue;
         const data = await response.json();
         if (!data || typeof data !== "object") continue;
@@ -1185,21 +1280,24 @@ async function tryWikipediaLookup(prompt, language) {
   // for "Илон Маск") require correct capitalization in the REST URL because
   // ru.wikipedia.org does not redirect the all-lowercase slug.
   const wikiTerm = query.termOriginal || query.term;
-  const summary = await fetchWikipediaSummary(wikiTerm, language);
+  const wikiContext = query.contextOriginal || query.context;
+  const summary = await fetchWikipediaSummary(wikiTerm, language, wikiContext);
   if (!summary) return null;
   const humanUrl = humanizeUrl(summary.url);
   const body =
     `${summary.title}: ${summary.extract}\n\n` +
     `Source: [${humanUrl}](${summary.url}) (wikipedia).`;
+  const evidence = [
+    `wikipedia_lookup:${summary.title}`,
+    `source:${humanUrl}`,
+    `language:${summary.language}`,
+  ];
+  if (wikiContext) evidence.push(`wikipedia_lookup:context:${wikiContext}`);
   return {
     intent: "wikipedia_lookup",
     content: body,
     confidence: 0.85,
-    evidence: [
-      `wikipedia_lookup:${summary.title}`,
-      `source:${humanUrl}`,
-      `language:${summary.language}`,
-    ],
+    evidence,
   };
 }
 
