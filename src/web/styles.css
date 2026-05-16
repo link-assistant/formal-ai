@@ -566,6 +566,24 @@ button {
   background: #f7f8fa;
 }
 
+.composer-demo-hint {
+  margin: 0 0 10px;
+  width: min(860px, 100%);
+  margin-left: auto;
+  margin-right: auto;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: #fff8df;
+  border: 1px solid #dac78b;
+  color: #6c5512;
+  font-size: 13px;
+  text-align: center;
+}
+
+.composer-demo-hint-icon {
+  font-size: 14px;
+}
+
 .composer-grid {
   width: min(860px, 100%);
   margin: 0 auto;

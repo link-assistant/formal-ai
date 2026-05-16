@@ -266,6 +266,17 @@ pub fn last_user_turn(log: &EventLog) -> Option<&str> {
         .map(|event| event.payload.as_str())
 }
 
+/// Return the last assistant turn recorded in the log. Used by follow-up
+/// handlers such as "how it works?" that need to infer the topic from the
+/// previous reply.
+pub fn last_assistant_turn(log: &EventLog) -> Option<&str> {
+    log.events()
+        .iter()
+        .rev()
+        .find(|event| event.kind == "prior_turn:assistant")
+        .map(|event| event.payload.as_str())
+}
+
 pub fn extract_introduced_name(prompt: &str) -> Option<String> {
     let needles = ["my name is", "i am called", "call me", "i'm", "i am "];
     let lower = prompt.to_lowercase();
