@@ -349,3 +349,43 @@ pub fn try_shell_refusal(
         0.5,
     ))
 }
+
+pub fn try_opinion_question(
+    prompt: &str,
+    normalized: &str,
+    log: &mut EventLog,
+) -> Option<SymbolicAnswer> {
+    let is_opinion_request = normalized.starts_with("do you think")
+        || normalized.starts_with("what do you think")
+        || normalized.starts_with("what is your opinion")
+        || normalized.starts_with("what's your opinion")
+        || normalized.starts_with("in your opinion")
+        || normalized.starts_with("do you believe")
+        || normalized.starts_with("what do you believe")
+        || normalized.starts_with("do you feel")
+        || normalized.starts_with("what do you feel")
+        || normalized.starts_with("would you say")
+        || normalized.starts_with("how do you feel")
+        || normalized.starts_with("give me your opinion")
+        || normalized.starts_with("share your opinion")
+        || normalized.starts_with("share your thoughts")
+        || normalized.starts_with("what are your thoughts");
+    if !is_opinion_request {
+        return None;
+    }
+    log.append("policy:no_opinion", prompt.to_owned());
+    let body = String::from(
+        "I am a deterministic symbolic AI. I do not hold opinions, beliefs, or feelings — \
+         every answer I give is derived from an explicit Links Notation rule. \
+         If you are looking for factual information on this topic, try asking \
+         \"what is <topic>\" and I will look it up in my knowledge base.",
+    );
+    Some(finalize_simple(
+        prompt,
+        log,
+        "opinion_question",
+        "response:opinion_question",
+        &body,
+        1.0,
+    ))
+}

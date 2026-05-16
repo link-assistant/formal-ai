@@ -7,7 +7,8 @@
 mod user_intent;
 
 pub use user_intent::{
-    try_capabilities, try_clarification, try_how_it_works, try_ill_formed, try_shell_refusal,
+    try_capabilities, try_clarification, try_how_it_works, try_ill_formed, try_opinion_question,
+    try_shell_refusal,
 };
 
 use std::fmt::Write as _;
@@ -705,6 +706,7 @@ pub fn build_evidence_links(prompt: &str, log: &EventLog, response_link: &str) -
             "policy:cache_flush_requires_confirmation" => {
                 String::from("policy:cache_flush_requires_confirmation")
             }
+            "policy:inappropriate_content" => String::from("policy:inappropriate_content"),
             "error" => format!("error:{}", event.id),
             "filter:user" => format!("filter:user:{}", event.payload),
             "diagnostic_mode" => format!("diagnostic_mode:{}", event.payload),
