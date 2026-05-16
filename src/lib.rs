@@ -8,6 +8,7 @@ pub mod protocol;
 pub mod seed;
 pub mod server;
 pub mod solver;
+pub(crate) mod solver_handler_units;
 pub(crate) mod solver_handlers;
 pub(crate) mod solver_helpers;
 pub mod telegram;
