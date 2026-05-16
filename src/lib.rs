@@ -1,6 +1,7 @@
 pub(crate) mod arithmetic;
 pub(crate) mod concepts;
 pub mod engine;
+pub(crate) mod engine_hello_world;
 pub mod event_log;
 pub mod language;
 pub mod memory;

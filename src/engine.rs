@@ -6,6 +6,10 @@
 //! solver — it delegates to [`crate::solver::UniversalSolver::solve`] so every
 //! request walks the same 11-step loop documented in `VISION.md`.
 
+pub(crate) use crate::engine_hello_world::{
+    ExecutionStatus, HelloWorldProgram, ProgramExecution, HELLO_WORLD_PROGRAMS,
+};
+
 use std::sync::OnceLock;
 
 use lino_objects_codec::format::format_indented_ordered;
@@ -21,6 +25,7 @@ pub const DEFAULT_MODEL: &str = "formal-symbolic-poc";
 /// cannot be parsed (which would be a build-time bug since the file is
 /// embedded via `include_str!`). All real reads come from [`crate::seed`].
 const FALLBACK_GREETING_ANSWER: &str = "Hi, how may I help you?";
+const FALLBACK_FAREWELL_ANSWER: &str = "Goodbye! Feel free to return any time.";
 const FALLBACK_IDENTITY_ANSWER: &str = "I am formal-ai, a deterministic symbolic AI proof of concept that answers from local Links Notation rules and OpenAI-compatible API shapes. I do not perform neural inference in this demo.";
 const FALLBACK_UNKNOWN_ANSWER: &str = "I cannot answer that from local Links Notation rules yet. Please add a fact or add a rule in Links Notation, then run the request again.";
 const FALLBACK_UNKNOWN_LANGUAGE_ANSWER: &str = concat!(
@@ -44,6 +49,26 @@ fn cached_response(
 pub(crate) fn greeting_answer() -> &'static str {
     static CELL: OnceLock<String> = OnceLock::new();
     cached_response(&CELL, "greeting", "en", FALLBACK_GREETING_ANSWER)
+}
+
+pub(crate) fn farewell_answer() -> &'static str {
+    static CELL: OnceLock<String> = OnceLock::new();
+    cached_response(&CELL, "farewell", "en", FALLBACK_FAREWELL_ANSWER)
+}
+
+fn russian_farewell_answer() -> &'static str {
+    static CELL: OnceLock<String> = OnceLock::new();
+    cached_response(&CELL, "farewell", "ru", FALLBACK_FAREWELL_ANSWER)
+}
+
+fn hindi_farewell_answer() -> &'static str {
+    static CELL: OnceLock<String> = OnceLock::new();
+    cached_response(&CELL, "farewell", "hi", FALLBACK_FAREWELL_ANSWER)
+}
+
+fn chinese_farewell_answer() -> &'static str {
+    static CELL: OnceLock<String> = OnceLock::new();
+    cached_response(&CELL, "farewell", "zh", FALLBACK_FAREWELL_ANSWER)
 }
 
 pub(crate) fn identity_answer() -> &'static str {
@@ -113,243 +138,6 @@ const IDENTITY_EXAMPLES: &[&str] = &[
     "What is formal-ai?",
 ];
 const UNKNOWN_EXAMPLES: &[&str] = &["Any prompt without a matching symbolic rule"];
-
-pub(crate) struct HelloWorldProgram {
-    pub(crate) slug: &'static str,
-    pub(crate) language: &'static str,
-    pub(crate) aliases: &'static [&'static str],
-    pub(crate) code_fence: &'static str,
-    pub(crate) code: &'static str,
-    pub(crate) execution: ProgramExecution,
-    pub(crate) response_link: &'static str,
-    pub(crate) source: &'static str,
-}
-
-#[derive(Clone, Copy)]
-pub(crate) struct ProgramExecution {
-    pub(crate) status: ExecutionStatus,
-    pub(crate) environment: &'static str,
-    pub(crate) check_command: Option<&'static str>,
-    pub(crate) run_command: &'static str,
-    pub(crate) output: &'static str,
-    pub(crate) notes: &'static str,
-}
-
-#[derive(Clone, Copy)]
-pub(crate) enum ExecutionStatus {
-    Verified,
-    Unavailable,
-}
-
-impl ExecutionStatus {
-    pub(crate) const fn label(self) -> &'static str {
-        match self {
-            Self::Verified => "compiled and ran",
-            Self::Unavailable => "not compiled or run",
-        }
-    }
-}
-
-const HELLO_WORLD_PROGRAMS: &[HelloWorldProgram] = &[
-    HelloWorldProgram {
-        slug: "rust",
-        language: "Rust",
-        aliases: &["rust", "rs", "раст", "расте"],
-        code_fence: "rust",
-        code: r#"fn main() {
-    println!("Hello, world!");
-}"#,
-        execution: ProgramExecution {
-            status: ExecutionStatus::Verified,
-            environment: "issue-8 local verification harness (isolated sandbox)",
-            check_command: Some("rustc main.rs -o main"),
-            run_command: "./main",
-            output: "Hello, world!",
-            notes: "1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.",
-        },
-        response_link: "response:hello_world:rust",
-        source: "local Links Notation hello-world seed",
-    },
-    HelloWorldProgram {
-        slug: "python",
-        language: "Python",
-        aliases: &["python", "py", "питон", "питоне"],
-        code_fence: "python",
-        code: r#"print("Hello, world!")"#,
-        execution: ProgramExecution {
-            status: ExecutionStatus::Verified,
-            environment: "issue-8 local verification harness (isolated sandbox)",
-            check_command: Some("python3 -m py_compile main.py"),
-            run_command: "python3 main.py",
-            output: "Hello, world!",
-            notes: "1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.",
-        },
-        response_link: "response:hello_world:python",
-        source: "local Links Notation hello-world seed",
-    },
-    HelloWorldProgram {
-        slug: "javascript",
-        language: "JavaScript",
-        aliases: &["javascript", "js", "node", "джаваскрипт"],
-        code_fence: "javascript",
-        code: r#"console.log("Hello, world!");"#,
-        execution: ProgramExecution {
-            status: ExecutionStatus::Verified,
-            environment: "issue-8 local verification harness (isolated sandbox)",
-            check_command: Some("node --check main.js"),
-            run_command: "node main.js",
-            output: "Hello, world!",
-            notes: "1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.",
-        },
-        response_link: "response:hello_world:javascript",
-        source: "local Links Notation hello-world seed",
-    },
-    HelloWorldProgram {
-        slug: "typescript",
-        language: "TypeScript",
-        aliases: &["typescript", "ts"],
-        code_fence: "typescript",
-        code: r#"console.log("Hello, world!");"#,
-        execution: ProgramExecution {
-            status: ExecutionStatus::Unavailable,
-            environment: "TypeScript compiler is not configured in this repository runtime",
-            check_command: Some("tsc hello.ts"),
-            run_command: "node hello.js",
-            output: "Hello, world!",
-            notes: "The TypeScript seed is returned with this warning until a tsc-backed execution profile is available.",
-        },
-        response_link: "response:hello_world:typescript",
-        source: "local Links Notation hello-world seed",
-    },
-    HelloWorldProgram {
-        slug: "go",
-        language: "Go",
-        aliases: &["go", "golang"],
-        code_fence: "go",
-        code: r#"package main
-
-import "fmt"
-
-func main() {
-    fmt.Println("Hello, world!")
-}"#,
-        execution: ProgramExecution {
-            status: ExecutionStatus::Verified,
-            environment: "issue-8 local verification harness (isolated sandbox)",
-            check_command: None,
-            run_command: "go run main.go",
-            output: "Hello, world!",
-            notes: "1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.",
-        },
-        response_link: "response:hello_world:go",
-        source: "local Links Notation hello-world seed",
-    },
-    HelloWorldProgram {
-        slug: "c",
-        language: "C",
-        aliases: &["c"],
-        code_fence: "c",
-        code: r#"#include <stdio.h>
-
-int main(void) {
-    puts("Hello, world!");
-    return 0;
-}"#,
-        execution: ProgramExecution {
-            status: ExecutionStatus::Verified,
-            environment: "issue-8 local verification harness (isolated sandbox)",
-            check_command: Some("gcc main.c -o main"),
-            run_command: "./main",
-            output: "Hello, world!",
-            notes: "1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.",
-        },
-        response_link: "response:hello_world:c",
-        source: "local Links Notation hello-world seed",
-    },
-    HelloWorldProgram {
-        slug: "cpp",
-        language: "C++",
-        aliases: &["cpp", "c++", "cplusplus"],
-        code_fence: "cpp",
-        code: r#"#include <iostream>
-
-int main() {
-    std::cout << "Hello, world!" << std::endl;
-    return 0;
-}"#,
-        execution: ProgramExecution {
-            status: ExecutionStatus::Unavailable,
-            environment: "C++ toolchain is not configured in this repository runtime",
-            check_command: Some("g++ main.cpp -o main"),
-            run_command: "./main",
-            output: "Hello, world!",
-            notes: "The C++ seed is returned with this warning until a g++-backed execution profile is available.",
-        },
-        response_link: "response:hello_world:cpp",
-        source: "local Links Notation hello-world seed",
-    },
-    HelloWorldProgram {
-        slug: "java",
-        language: "Java",
-        aliases: &["java"],
-        code_fence: "java",
-        code: r#"public class Main {
-    public static void main(String[] args) {
-        System.out.println("Hello, world!");
-    }
-}"#,
-        execution: ProgramExecution {
-            status: ExecutionStatus::Unavailable,
-            environment: "Java toolchain is not configured in this repository runtime",
-            check_command: Some("javac Main.java"),
-            run_command: "java Main",
-            output: "Hello, world!",
-            notes: "The Java seed is returned with this warning until a javac-backed execution profile is available.",
-        },
-        response_link: "response:hello_world:java",
-        source: "local Links Notation hello-world seed",
-    },
-    HelloWorldProgram {
-        slug: "csharp",
-        language: "C#",
-        aliases: &["csharp", "c#", "cs", "dotnet"],
-        code_fence: "csharp",
-        code: r#"using System;
-
-class Program {
-    static void Main() {
-        Console.WriteLine("Hello, world!");
-    }
-}"#,
-        execution: ProgramExecution {
-            status: ExecutionStatus::Unavailable,
-            environment: "C# / dotnet toolchain is not configured in this repository runtime",
-            check_command: Some("dotnet build"),
-            run_command: "dotnet run",
-            output: "Hello, world!",
-            notes: "The C# seed is returned with this warning until a dotnet-backed execution profile is available.",
-        },
-        response_link: "response:hello_world:csharp",
-        source: "local Links Notation hello-world seed",
-    },
-    HelloWorldProgram {
-        slug: "ruby",
-        language: "Ruby",
-        aliases: &["ruby", "rb"],
-        code_fence: "ruby",
-        code: r#"puts "Hello, world!""#,
-        execution: ProgramExecution {
-            status: ExecutionStatus::Unavailable,
-            environment: "Ruby interpreter is not configured in this repository runtime",
-            check_command: Some("ruby -c main.rb"),
-            run_command: "ruby main.rb",
-            output: "Hello, world!",
-            notes: "The Ruby seed is returned with this warning until a ruby-backed execution profile is available.",
-        },
-        response_link: "response:hello_world:ruby",
-        source: "local Links Notation hello-world seed",
-    },
-];
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct SymbolicAnswer {
@@ -667,6 +455,7 @@ pub fn stable_id(prefix: &str, text: &str) -> String {
 
 pub(crate) enum SelectedRule {
     Greeting,
+    Farewell,
     Identity,
     HelloWorld(&'static HelloWorldProgram),
     Unknown,
@@ -676,6 +465,7 @@ impl SelectedRule {
     pub(crate) fn intent(&self) -> String {
         match self {
             Self::Greeting => String::from("greeting"),
+            Self::Farewell => String::from("farewell"),
             Self::Identity => String::from("identity"),
             Self::HelloWorld(program) => format!("hello_world_{}", program.slug),
             Self::Unknown => String::from("unknown"),
@@ -685,6 +475,7 @@ impl SelectedRule {
     pub(crate) const fn response_link(&self) -> &'static str {
         match self {
             Self::Greeting => "response:greeting",
+            Self::Farewell => "response:farewell",
             Self::Identity => "response:identity",
             Self::HelloWorld(program) => program.response_link,
             Self::Unknown => "response:unknown",
@@ -694,6 +485,7 @@ impl SelectedRule {
     pub(crate) fn answer(&self) -> String {
         match self {
             Self::Greeting => String::from(greeting_answer()),
+            Self::Farewell => String::from(farewell_answer()),
             Self::Identity => String::from(identity_answer()),
             Self::HelloWorld(program) => hello_world_answer(program),
             Self::Unknown => String::from(unknown_answer()),
@@ -705,6 +497,8 @@ pub(crate) fn select_rule_for(prompt: &str) -> SelectedRule {
     let normalized = normalize_prompt(prompt);
     if is_greeting(&normalized) {
         SelectedRule::Greeting
+    } else if is_farewell(&normalized) {
+        SelectedRule::Farewell
     } else if is_identity_question(&normalized) {
         SelectedRule::Identity
     } else if let Some(program) = hello_world_program(&normalized) {
@@ -727,6 +521,9 @@ pub(crate) fn language_aware_answer_for(
         (SelectedRule::Greeting, Language::Russian) => String::from(russian_greeting_answer()),
         (SelectedRule::Greeting, Language::Hindi) => String::from(hindi_greeting_answer()),
         (SelectedRule::Greeting, Language::Chinese) => String::from(chinese_greeting_answer()),
+        (SelectedRule::Farewell, Language::Russian) => String::from(russian_farewell_answer()),
+        (SelectedRule::Farewell, Language::Hindi) => String::from(hindi_farewell_answer()),
+        (SelectedRule::Farewell, Language::Chinese) => String::from(chinese_farewell_answer()),
         (SelectedRule::Identity, Language::Russian) => String::from(russian_identity_answer()),
         (SelectedRule::Identity, Language::Hindi) => String::from(hindi_identity_answer()),
         (SelectedRule::Identity, Language::Chinese) => String::from(chinese_identity_answer()),
@@ -785,6 +582,10 @@ fn matches_intent_route(normalized_prompt: &str, id: &str) -> bool {
 
 fn is_greeting(normalized_prompt: &str) -> bool {
     matches_intent_route(normalized_prompt, "intent_greeting")
+}
+
+fn is_farewell(normalized_prompt: &str) -> bool {
+    matches_intent_route(normalized_prompt, "intent_farewell")
 }
 
 fn is_identity_question(normalized_prompt: &str) -> bool {
