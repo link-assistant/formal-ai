@@ -23,6 +23,26 @@ fn tmpdir() -> std::path::PathBuf {
 }
 
 #[test]
+fn cli_version_flag_prints_crate_version() {
+    // Issue #72: the CLI must advertise its own version so users can quote
+    // the right release in bug reports. clap's `version` attribute reads
+    // `CARGO_PKG_VERSION` so this test fails if anyone accidentally pins a
+    // stale literal in `#[command(...)]`.
+    let output = Command::new(env!("CARGO_BIN_EXE_formal-ai"))
+        .args(["--version"])
+        .output()
+        .expect("failed to execute binary");
+    assert!(output.status.success(), "exit status: {}", output.status);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let expected = format!("formal-ai {}", env!("CARGO_PKG_VERSION"));
+    assert!(
+        stdout.trim() == expected,
+        "expected `{expected}`, got `{}`",
+        stdout.trim()
+    );
+}
+
+#[test]
 fn cli_chat_command_prints_text_response() {
     let output = Command::new(env!("CARGO_BIN_EXE_formal-ai"))
         .args(["chat", "--prompt", "Hi"])

@@ -1,4 +1,5 @@
 use std::fs;
+use std::process::Command;
 
 fn release_workflow() -> String {
     fs::read_to_string(format!(
@@ -123,6 +124,133 @@ fn pages_deploy_is_pinned_and_live_e2e_waits_for_matching_deployment() {
     assert!(
         !pages_e2e.contains("run: sleep 30"),
         "a fixed sleep can still test stale GitHub Pages assets"
+    );
+}
+
+#[test]
+fn github_pages_artifact_advertises_crate_version_from_cargo_toml() {
+    // Issue #72: the deployed Pages site advertised `0.16.0` long after the
+    // crate moved past it. The fix replaces a hardcoded literal with the
+    // `__FORMAL_AI_VERSION__` placeholder and a stamp step that reads the
+    // current `Cargo.toml` version during the Pages deploy. Without these
+    // pieces the deploy can drift again.
+    let manifest_dir = env!("CARGO_MANIFEST_DIR");
+    let index_html = fs::read_to_string(format!("{manifest_dir}/src/web/index.html")).unwrap();
+    let app_js = fs::read_to_string(format!("{manifest_dir}/src/web/app.js")).unwrap();
+    let stamp_script =
+        fs::read_to_string(format!("{manifest_dir}/scripts/stamp-pages-artifact.sh")).unwrap();
+    let workflow = release_workflow();
+    let deploy_demo = job_block(&workflow, "deploy-demo");
+
+    assert!(
+        index_html.contains("__FORMAL_AI_VERSION__"),
+        "index.html should advertise the formal-ai version via a placeholder, not a hardcoded literal"
+    );
+    assert!(
+        !index_html.contains("content=\"0.16.0\""),
+        "index.html should not pin the stale 0.16.0 version literal"
+    );
+    assert!(
+        app_js.contains("formal-ai-version"),
+        "app.js should still read the formal-ai-version meta tag"
+    );
+    assert!(
+        !app_js.contains("\"0.16.0\"") && !app_js.contains("'0.16.0'"),
+        "app.js should not hardcode the stale 0.16.0 version as a string literal"
+    );
+    assert!(
+        stamp_script.contains("__FORMAL_AI_VERSION__"),
+        "stamp script should substitute the formal-ai version placeholder"
+    );
+    assert!(
+        stamp_script.contains("formal-ai-version"),
+        "stamp script should validate the rendered meta tag content"
+    );
+    assert!(
+        stamp_script.contains("formal_ai_version"),
+        "stamp deployment.json should carry the formal-ai version for the e2e wait script"
+    );
+    assert!(
+        deploy_demo.contains("Read formal-ai version from Cargo.toml"),
+        "deploy-demo should detect the crate version before stamping the artifact"
+    );
+    assert!(
+        deploy_demo.contains(
+            "scripts/stamp-pages-artifact.sh src/web \"${{ github.sha }}\" \"${{ github.sha }}\" \"${{ steps.formal_ai_version.outputs.version }}\""
+        ),
+        "deploy-demo should forward the resolved crate version to the stamp script"
+    );
+
+    let wait_script = fs::read_to_string(format!(
+        "{manifest_dir}/scripts/wait-for-pages-deployment.sh"
+    ))
+    .unwrap();
+    assert!(
+        wait_script.contains("__FORMAL_AI_VERSION__"),
+        "pages-deployment wait script should reject lingering version placeholders"
+    );
+}
+
+#[test]
+fn stamp_pages_artifact_replaces_formal_ai_version_placeholder() {
+    // Issue #72: end-to-end smoke test for the stamp script. Copy
+    // `src/web/index.html` into a scratch directory, run the script the
+    // same way CI does, and assert the rendered file advertises the
+    // requested formal-ai version. Catches regressions in either the
+    // placeholder or the substitution logic.
+    let manifest_dir = env!("CARGO_MANIFEST_DIR");
+    let script = format!("{manifest_dir}/scripts/stamp-pages-artifact.sh");
+    if !std::path::Path::new("/bin/bash").exists() {
+        eprintln!("skipping: /bin/bash not available");
+        return;
+    }
+    let tmp = std::env::temp_dir().join(format!(
+        "formal-ai-stamp-{}-{}",
+        std::process::id(),
+        std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .map_or(0, |duration| duration.as_nanos())
+    ));
+    let web_dir = tmp.join("web");
+    fs::create_dir_all(&web_dir).expect("create scratch web dir");
+    let source_index = fs::read_to_string(format!("{manifest_dir}/src/web/index.html")).unwrap();
+    fs::write(web_dir.join("index.html"), &source_index).expect("seed index.html");
+
+    let output = Command::new("/bin/bash")
+        .arg(&script)
+        .arg(web_dir.to_str().unwrap())
+        .arg("deadbeef")
+        .arg("deadbeef")
+        .arg("9.9.9")
+        .output()
+        .expect("run stamp script");
+    let status_ok = output.status.success();
+    let stdout = String::from_utf8_lossy(&output.stdout).into_owned();
+    let stderr = String::from_utf8_lossy(&output.stderr).into_owned();
+    let rendered = fs::read_to_string(web_dir.join("index.html")).unwrap_or_default();
+    let marker = fs::read_to_string(web_dir.join("deployment.json")).unwrap_or_default();
+    let _ = fs::remove_dir_all(&tmp);
+
+    assert!(
+        status_ok,
+        "stamp script exited with {status:?}\nstdout: {stdout}\nstderr: {stderr}",
+        status = output.status
+    );
+    assert!(
+        rendered.contains("content=\"9.9.9\""),
+        "stamped index.html should advertise the supplied formal-ai version, got:\n{rendered}"
+    );
+    assert!(
+        !rendered.contains("__FORMAL_AI_VERSION__"),
+        "stamped index.html should not retain the formal-ai version placeholder"
+    );
+    assert!(
+        !rendered.contains("__FORMAL_AI_ASSET_VERSION__"),
+        "stamped index.html should not retain the asset version placeholder"
+    );
+    assert!(
+        marker.contains("\"formal_ai_version\": \"9.9.9\""),
+        "deployment.json should record the formal-ai version, got:\n{marker}"
     );
 }
 

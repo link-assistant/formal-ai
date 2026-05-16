@@ -7,8 +7,18 @@ const {
   useState,
 } = React;
 
-const APP_VERSION =
-  document.querySelector('meta[name="formal-ai-version"]')?.content || "0.16.0";
+// The meta tag is stamped with the published crate version by
+// `scripts/stamp-pages-artifact.sh` during the GitHub Pages deploy. When the
+// site is served straight from the source tree (e.g. local Playwright runs)
+// the placeholder is preserved verbatim; we fall back to `"dev"` so issue
+// reports never advertise a hardcoded stale version like `0.16.0`.
+const APP_VERSION = (() => {
+  const raw = document.querySelector('meta[name="formal-ai-version"]')?.content;
+  if (!raw || raw.startsWith("__") || raw.endsWith("__")) {
+    return "dev";
+  }
+  return raw;
+})();
 const ASSET_VERSION =
   typeof window !== "undefined" ? window.FORMAL_AI_ASSET_VERSION || "" : "";
 const ISSUE_REPOSITORY = "link-assistant/formal-ai";
