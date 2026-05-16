@@ -36,7 +36,8 @@ while true; do
   if [[ "$index_ok" == true && "$marker_ok" == true ]] &&
     grep -Eq "\"sha\"[[:space:]]*:[[:space:]]*\"${expected_sha}\"" "$marker_file" &&
     grep -Fq "$expected_sha" "$index_file" &&
-    ! grep -Fq "__FORMAL_AI_ASSET_VERSION__" "$index_file"; then
+    ! grep -Fq "__FORMAL_AI_ASSET_VERSION__" "$index_file" &&
+    ! grep -Fq "__FORMAL_AI_VERSION__" "$index_file"; then
     echo "GitHub Pages is serving deployment ${expected_sha}"
     exit 0
   fi

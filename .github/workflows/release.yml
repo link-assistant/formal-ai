@@ -705,8 +705,19 @@ jobs:
       - name: Sync data/seed into src/web/seed (deployment mirror)
         run: scripts/sync-seed.sh
 
+      - name: Read formal-ai version from Cargo.toml
+        id: formal_ai_version
+        run: |
+          version="$(sed -n 's/^version[[:space:]]*=[[:space:]]*"\([^"]*\)".*/\1/p' Cargo.toml | head -n 1)"
+          if [ -z "$version" ]; then
+            echo "::error file=Cargo.toml::Could not read formal-ai version from Cargo.toml"
+            exit 1
+          fi
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+          echo "Detected formal-ai version: ${version}"
+
       - name: Stamp GitHub Pages artifact
-        run: scripts/stamp-pages-artifact.sh src/web "${{ github.sha }}"
+        run: scripts/stamp-pages-artifact.sh src/web "${{ github.sha }}" "${{ github.sha }}" "${{ steps.formal_ai_version.outputs.version }}"
 
       - name: Upload GitHub Pages artifact
         uses: actions/upload-pages-artifact@v5
