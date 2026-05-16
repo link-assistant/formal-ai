@@ -34,8 +34,7 @@ fn shabbat_shalom_greeting_is_recognized_as_greeting() {
                 .evidence_links
                 .iter()
                 .any(|link| link == "response:greeting"),
-            "prompt {:?} response should cite response:greeting",
-            prompt
+            "prompt {prompt:?} response should cite response:greeting",
         );
     }
 }
