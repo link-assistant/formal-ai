@@ -593,35 +593,6 @@ pub fn extract_fenced_block(text: &str, languages: &[&str]) -> Option<String> {
     None
 }
 
-/// Returns `None` when the prompt is the bare "how it works?" form.
-pub fn extract_how_it_works_subject(normalized: &str) -> Option<String> {
-    if let Some(rest) = normalized.strip_prefix("how does ") {
-        let term = rest.trim_end_matches('?').trim_end_matches(" work").trim();
-        if !term.is_empty() && term != "it" {
-            return Some(term.to_owned());
-        }
-    }
-    None
-}
-
-pub fn is_opinion_request(normalized: &str) -> bool {
-    normalized.starts_with("do you think")
-        || normalized.starts_with("what do you think")
-        || normalized.starts_with("what is your opinion")
-        || normalized.starts_with("what's your opinion")
-        || normalized.starts_with("in your opinion")
-        || normalized.starts_with("do you believe")
-        || normalized.starts_with("what do you believe")
-        || normalized.starts_with("do you feel")
-        || normalized.starts_with("what do you feel")
-        || normalized.starts_with("would you say")
-        || normalized.starts_with("how do you feel")
-        || normalized.starts_with("give me your opinion")
-        || normalized.starts_with("share your opinion")
-        || normalized.starts_with("share your thoughts")
-        || normalized.starts_with("what are your thoughts")
-}
-
 /// Return true when the normalized prompt is a "write a script/program in
 /// <language>" request in English, Russian, Hindi, or Chinese.
 ///

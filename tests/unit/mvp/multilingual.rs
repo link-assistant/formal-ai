@@ -365,6 +365,79 @@ fn russian_iir_evidence_includes_wikidata_anchor() {
 }
 
 // ---------------------------------------------------------------------------
+// Issue #49: "что за дичь?" and "что ты умеешь?" must not fall through to
+// intent: unknown. The user expressed frustration after the agent failed to
+// handle a capabilities question in Russian. Both the capability query and
+// the confusion/frustration expression must produce a meaningful intent.
+// ---------------------------------------------------------------------------
+
+#[test]
+fn russian_capabilities_question_does_not_return_unknown() {
+    let response = answer("что ты умеешь?");
+    assert_ne!(
+        response.intent, "unknown",
+        "Russian capability question should not fall through to unknown, got: {}",
+        response.answer,
+    );
+}
+
+#[test]
+fn russian_capabilities_question_returns_capabilities_intent() {
+    let response = answer("что ты умеешь?");
+    assert_eq!(
+        response.intent, "capabilities",
+        "Russian capability question should map to capabilities intent, got: {}",
+        response.answer,
+    );
+}
+
+#[test]
+fn russian_confusion_phrase_does_not_return_unknown() {
+    let response = answer("что за дичь?");
+    assert_ne!(
+        response.intent, "unknown",
+        "Russian slang confusion phrase should not fall through to unknown, got: {}",
+        response.answer,
+    );
+}
+
+#[test]
+fn russian_confusion_phrase_returns_capabilities_intent() {
+    // "что за дичь?" literally means "what is this nonsense?" — a frustrated
+    // reaction to getting an unhelpful answer. The agent should respond with a
+    // capabilities overview so the user understands what the agent can handle.
+    let response = answer("что за дичь?");
+    assert_eq!(
+        response.intent, "capabilities",
+        "Russian confusion phrase should map to capabilities intent, got: {}",
+        response.answer,
+    );
+}
+
+#[test]
+fn russian_capabilities_answer_is_in_russian() {
+    let response = answer("что ты умеешь?");
+    assert!(
+        response
+            .answer
+            .chars()
+            .any(|c| ('\u{0400}'..='\u{04FF}').contains(&c)),
+        "Russian capabilities answer should contain Cyrillic text, got: {}",
+        response.answer,
+    );
+}
+
+#[test]
+fn english_capabilities_question_returns_capabilities_intent() {
+    let response = answer("what can you do?");
+    assert_eq!(
+        response.intent, "capabilities",
+        "English capability question should map to capabilities intent, got: {}",
+        response.answer,
+    );
+}
+
+// ---------------------------------------------------------------------------
 // Issue #21: URLs with non-ASCII characters must be displayed in human-readable
 // IRI form across every surface, while remaining functional (the encoded URI
 // must still resolve when clicked). These tests pin down the helper that every
@@ -439,9 +512,9 @@ fn russian_nonsensical_question_returns_unknown_intent() {
 }
 
 #[test]
-fn russian_mixed_units_question_returns_unknown_intent() {
+fn russian_mixed_units_question_returns_unit_incompatibility_intent() {
     let response = answer("Сколько метров в килобайте?");
-    assert_eq!(response.intent, "unknown");
+    assert_eq!(response.intent, "unit_incompatibility");
 }
 
 #[test]
@@ -540,5 +613,53 @@ fn russian_nazovi_tsvet_answer_references_color() {
         lower.contains("цвет") || lower.contains("color") || lower.contains("colour"),
         "\"назови цвет\" answer should describe a color, got: {}",
         response.answer
+    );
+}
+
+// ---------------------------------------------------------------------------
+// Issue #41: "Купи слона" — well-known Russian circular-joke idiom.
+// The phrase should be recognized and answered with the traditional reply,
+// not fall through to the "unknown" catch-all intent.
+// ---------------------------------------------------------------------------
+
+#[test]
+fn kupi_slona_returns_dedicated_idiom_intent() {
+    // Issue #41 reporter's exact prompt.
+    let response = answer("Купи слона");
+    assert_ne!(
+        response.intent, "unknown",
+        "\"Купи слона\" must not fall through to unknown intent; got: {}",
+        response.intent
+    );
+    assert_eq!(
+        response.intent, "kupi_slona",
+        "\"Купи слона\" must map to the kupi_slona intent, got: {}",
+        response.intent
+    );
+}
+
+#[test]
+fn kupi_slona_answer_includes_traditional_reply() {
+    let response = answer("Купи слона");
+    let lower = response.answer.to_lowercase();
+    // The traditional comeback is "у всех есть слон, а у меня нет"
+    // (everyone has an elephant, but I don't) and similar variants.
+    assert!(
+        lower.contains("слон") || lower.contains("всех"),
+        "\"Купи слона\" answer should reference the elephant, got: {}",
+        response.answer
+    );
+}
+
+#[test]
+fn kupi_slona_answer_is_in_russian() {
+    let response = answer("Купи слона");
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link == "language:ru"),
+        "\"Купи слона\" should be tagged as Russian, got evidence links: {:?}",
+        response.evidence_links
     );
 }
