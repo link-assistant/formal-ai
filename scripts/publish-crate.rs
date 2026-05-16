@@ -48,6 +48,10 @@ impl FailureKind {
             FailureKind::Unknown => "failed",
         }
     }
+
+    fn is_deferred(self) -> bool {
+        matches!(self, FailureKind::RateLimited)
+    }
 }
 
 fn classify_failure(combined: &str) -> FailureKind {
@@ -211,7 +215,9 @@ fn main() {
                     }
                 }
                 eprintln!();
-                eprintln!("This is NOT a bug in the pipeline — the publish will be retried automatically.");
+                eprintln!(
+                    "This is NOT a bug in the pipeline; the publish has been deferred and will be retried automatically."
+                );
                 eprintln!(
                     "scripts/check-release-needed.rs detects that {}@{} is missing from crates.io",
                     name, version
@@ -224,7 +230,7 @@ fn main() {
                 eprintln!("To unblock immediately:");
                 eprintln!("  1. Wait until the 24-hour throttle window has rolled over.");
                 eprintln!(
-                    "  2. Re-run the failed `Auto Release` job, or push any commit to main to trigger a retry."
+                    "  2. Re-run the release workflow, or push any commit to main to trigger a retry."
                 );
                 eprintln!();
                 eprintln!("See: https://doc.rust-lang.org/cargo/reference/publishing.html");
@@ -255,6 +261,9 @@ fn main() {
             }
         }
         set_output("publish_result", kind.output_value());
+        if kind.is_deferred() {
+            return;
+        }
         exit(1);
     }
 }
@@ -274,6 +283,7 @@ You have published too many versions of this crate in the last 24 hours
 ";
         assert_eq!(classify_failure(body), FailureKind::RateLimited);
         assert_eq!(FailureKind::RateLimited.output_value(), "rate_limited");
+        assert!(FailureKind::RateLimited.is_deferred());
     }
 
     #[test]
@@ -281,6 +291,7 @@ You have published too many versions of this crate in the last 24 hours
         let body = "error: crate version 0.42.0 already uploaded";
         assert_eq!(classify_failure(body), FailureKind::AlreadyExists);
         assert_eq!(FailureKind::AlreadyExists.output_value(), "already_exists");
+        assert!(!FailureKind::AlreadyExists.is_deferred());
     }
 
     #[test]
@@ -294,6 +305,7 @@ You have published too many versions of this crate in the last 24 hours
         let body = "error: please provide a non-empty token";
         assert_eq!(classify_failure(body), FailureKind::AuthFailed);
         assert_eq!(FailureKind::AuthFailed.output_value(), "auth_failed");
+        assert!(!FailureKind::AuthFailed.is_deferred());
     }
 
     #[test]
@@ -307,5 +319,6 @@ You have published too many versions of this crate in the last 24 hours
         let body = "error: something else entirely went wrong";
         assert_eq!(classify_failure(body), FailureKind::Unknown);
         assert_eq!(FailureKind::Unknown.output_value(), "failed");
+        assert!(!FailureKind::Unknown.is_deferred());
     }
 }
