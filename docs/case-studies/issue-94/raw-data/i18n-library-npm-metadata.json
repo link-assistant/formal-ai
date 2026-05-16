@@ -1,0 +1,35 @@
+[
+  {
+    "name": "i18next",
+    "version": "26.2.0",
+    "license": "MIT",
+    "description": "i18next internationalization framework",
+    "homepage": "https://www.i18next.com",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/i18next/i18next.git"
+    }
+  },
+  {
+    "name": "react-intl",
+    "version": "10.1.7",
+    "license": "BSD-3-Clause",
+    "description": "Internationalize React apps. This library provides React components and an API to format dates, numbers, and strings, including pluralization and handling translations.",
+    "homepage": "https://formatjs.github.io/docs/react-intl",
+    "repository": {
+      "type": "git",
+      "url": "git+ssh://git@github.com/formatjs/formatjs.git"
+    }
+  },
+  {
+    "name": "i18n-js",
+    "version": "4.5.3",
+    "license": "MIT",
+    "description": "A small library to provide I18n on JavaScript.",
+    "homepage": "https://github.com/fnando/i18n#readme",
+    "repository": {
+      "url": "git+https://github.com/fnando/i18n.git",
+      "type": "git"
+    }
+  }
+]
