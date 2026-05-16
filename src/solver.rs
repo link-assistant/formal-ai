@@ -33,9 +33,11 @@ use crate::seed;
 use crate::solver_handlers::{
     build_evidence_links, finalize_simple, try_algorithm, try_arithmetic, try_clarification,
     try_concept_lookup, try_conversation_memory, try_execution_failure, try_how_it_works,
-    try_ill_formed, try_javascript_execution, try_kupi_slona, try_meta_explanation,
-    try_network_query, try_opinion_question, try_shell_refusal, try_source_conflict,
+    try_javascript_execution, try_meta_explanation, try_network_query, try_source_conflict,
     try_source_refresh, try_translation,
+};
+use crate::solver_handlers_policy::{
+    try_ill_formed, try_kupi_slona, try_opinion_question, try_shell_refusal,
 };
 use crate::solver_helpers::{
     confidence_for, is_agent_opt_in, is_agent_request, is_cache_flush_request,
