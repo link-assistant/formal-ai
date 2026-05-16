@@ -851,7 +851,11 @@ pub fn try_ill_formed(
 /// supposed to refuse, then the requester re-uses their words to keep the
 /// cycle going. Recognising it as a known idiom prevents the solver from
 /// falling through to the generic "unknown" catch-all.
-pub fn try_kupi_slona(prompt: &str, normalized: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {
+pub fn try_kupi_slona(
+    prompt: &str,
+    normalized: &str,
+    log: &mut EventLog,
+) -> Option<SymbolicAnswer> {
     if !normalized.contains("купи слона") {
         return None;
     }
