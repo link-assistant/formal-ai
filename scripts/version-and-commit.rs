@@ -142,6 +142,65 @@ fn update_cargo_toml(cargo_toml_path: &str, new_version: &str) -> Result<(), Str
     Ok(())
 }
 
+/// Update the workspace-package `version = "..."` entry in Cargo.lock so that
+/// it stays in sync with Cargo.toml in the same commit. Without this, every
+/// release leaves Cargo.lock stale and the next code PR is forced to either
+/// merge a `version = "X.Y.Z"` conflict in Cargo.lock or ship a follow-up
+/// "sync Cargo.lock" commit.
+///
+/// Returns Ok(true) if Cargo.lock was updated, Ok(false) if it does not exist
+/// or no matching entry was found.
+fn update_cargo_lock(
+    cargo_lock_path: &Path,
+    crate_name: &str,
+    new_version: &str,
+) -> Result<bool, String> {
+    if !cargo_lock_path.exists() {
+        println!(
+            "No Cargo.lock at {} (skipping lock-file version sync)",
+            cargo_lock_path.display()
+        );
+        return Ok(false);
+    }
+
+    let path_str = cargo_lock_path.to_string_lossy();
+    let content = fs::read_to_string(cargo_lock_path)
+        .map_err(|e| format!("Failed to read {}: {}", path_str, e))?;
+
+    // Match the [[package]] entry for our crate:
+    //   [[package]]
+    //   name = "<crate_name>"
+    //   version = "..."
+    let pattern = format!(
+        r#"(?m)(\[\[package\]\]\s*\nname\s*=\s*"{}"\s*\nversion\s*=\s*")[^"]+(")"#,
+        regex::escape(crate_name),
+    );
+    let re = Regex::new(&pattern)
+        .map_err(|e| format!("Failed to build Cargo.lock regex: {}", e))?;
+
+    if !re.is_match(&content) {
+        println!(
+            "Warning: Could not find [[package]] entry for `{}` in {} \
+             (lock file left untouched)",
+            crate_name, path_str
+        );
+        return Ok(false);
+    }
+
+    let new_content = re.replace(&content, format!("${{1}}{}${{2}}", new_version).as_str());
+
+    if new_content == content {
+        println!("Cargo.lock already at version {}", new_version);
+        return Ok(false);
+    }
+
+    fs::write(cargo_lock_path, new_content.as_ref())
+        .map_err(|e| format!("Failed to write {}: {}", path_str, e))?;
+
+    println!("Updated {} to version {}", path_str, new_version);
+    Ok(true)
+}
+
 #[derive(Deserialize)]
 struct CratesIoCrate {
     versions: Option<Vec<CratesIoVersionEntry>>,
@@ -441,12 +500,27 @@ fn main() {
         exit(1);
     }
 
+    // Update the workspace-package entry in Cargo.lock so it stays in sync.
+    let cargo_lock_path = rust_paths::get_cargo_lock_path(&rust_root);
+    let lock_updated = match update_cargo_lock(&cargo_lock_path, &crate_name, &new_version) {
+        Ok(updated) => updated,
+        Err(e) => {
+            eprintln!("Error updating Cargo.lock: {}", e);
+            exit(1);
+        }
+    };
+
     // Collect changelog fragments
     collect_changelog(&changelog_dir, &changelog_file, &new_version);
 
-    // Stage Cargo.toml and CHANGELOG.md
+    // Stage Cargo.toml, Cargo.lock (when bumped), and CHANGELOG.md
     let package_manifest_str = package_manifest.to_string_lossy().to_string();
-    let _ = exec("git", &["add", &package_manifest_str, &changelog_file]);
+    let cargo_lock_str = cargo_lock_path.to_string_lossy().to_string();
+    let mut add_args: Vec<&str> = vec!["add", &package_manifest_str, &changelog_file];
+    if lock_updated {
+        add_args.push(&cargo_lock_str);
+    }
+    let _ = exec("git", &add_args);
 
     // Check if there are changes to commit
     if exec_check("git", &["diff", "--cached", "--quiet"]) {
