@@ -570,3 +570,39 @@ fn who_is_elon_mask_suggests_elon_musk() {
         response.answer
     );
 }
+
+// Issue #66: "Расскажи за Telegram Ads" was returning intent: unknown because
+// the colloquial Russian prefix "расскажи за" was not in the prompt-patterns,
+// and Telegram Ads had no concept entry in the knowledge base.
+#[test]
+fn rasskazhi_za_telegram_ads_resolves_to_concept_lookup() {
+    let cases = [
+        // Exact issue report
+        "Расскажи за Telegram Ads",
+        // Variants with "расскажи мне за"
+        "Расскажи мне за Telegram Ads",
+        // Other supported Russian concept-lookup prefixes for the same concept
+        "Расскажи про Telegram Ads",
+        "Расскажи о Telegram Ads",
+        "Что такое Telegram Ads",
+    ];
+
+    for prompt in cases {
+        let response = FormalAiEngine.answer(prompt);
+
+        assert!(
+            response.intent == "concept_lookup" || response.intent == "concept_lookup_in_context",
+            "[{prompt}] expected concept_lookup, got intent: {}",
+            response.intent
+        );
+        assert!(
+            response.answer.contains("Telegram"),
+            "[{prompt}] answer should mention Telegram, got: {}",
+            response.answer
+        );
+        assert_ne!(
+            response.intent, "unknown",
+            "[{prompt}] must not fall through to unknown intent"
+        );
+    }
+}
