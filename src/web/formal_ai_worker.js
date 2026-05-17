@@ -714,6 +714,178 @@ function formatArithmeticResult(value) {
   return trimmed === "" || trimmed === "-" ? "0" : trimmed;
 }
 
+function parseLinearExpression(input) {
+  let position = 0;
+  let variable = null;
+
+  function peek() {
+    return input[position] || "";
+  }
+
+  function skipWhitespace() {
+    while (/\s/.test(peek())) position += 1;
+  }
+
+  function consume(expected) {
+    if (peek() === expected) {
+      position += 1;
+      return true;
+    }
+    return false;
+  }
+
+  function constant(value) {
+    return { coefficient: 0, constant: value };
+  }
+
+  function variableValue() {
+    return { coefficient: 1, constant: 0 };
+  }
+
+  function hasVariable(value) {
+    return Math.abs(value.coefficient) > Number.EPSILON;
+  }
+
+  function add(left, right) {
+    return {
+      coefficient: left.coefficient + right.coefficient,
+      constant: left.constant + right.constant,
+    };
+  }
+
+  function subtract(left, right) {
+    return {
+      coefficient: left.coefficient - right.coefficient,
+      constant: left.constant - right.constant,
+    };
+  }
+
+  function multiply(left, right) {
+    if (hasVariable(left) && hasVariable(right)) {
+      throw new Error("non-linear equation");
+    }
+    if (hasVariable(left)) {
+      return {
+        coefficient: left.coefficient * right.constant,
+        constant: left.constant * right.constant,
+      };
+    }
+    if (hasVariable(right)) {
+      return {
+        coefficient: right.coefficient * left.constant,
+        constant: right.constant * left.constant,
+      };
+    }
+    return constant(left.constant * right.constant);
+  }
+
+  function divide(left, right) {
+    if (hasVariable(right)) throw new Error("variable denominator");
+    if (Math.abs(right.constant) <= Number.EPSILON) throw new Error("division by zero");
+    return {
+      coefficient: left.coefficient / right.constant,
+      constant: left.constant / right.constant,
+    };
+  }
+
+  function parseExpression() {
+    let value = parseTerm();
+    while (true) {
+      skipWhitespace();
+      if (consume("+")) {
+        value = add(value, parseTerm());
+      } else if (consume("-") || consume("−")) {
+        value = subtract(value, parseTerm());
+      } else {
+        return value;
+      }
+    }
+  }
+
+  function parseTerm() {
+    let value = parseFactor();
+    while (true) {
+      skipWhitespace();
+      if (consume("*") || consume("×") || consume("·")) {
+        value = multiply(value, parseFactor());
+      } else if (consume("/") || consume("÷")) {
+        value = divide(value, parseFactor());
+      } else {
+        return value;
+      }
+    }
+  }
+
+  function parseFactor() {
+    skipWhitespace();
+    if (consume("+")) return parseFactor();
+    if (consume("-") || consume("−")) {
+      const value = parseFactor();
+      return { coefficient: -value.coefficient, constant: -value.constant };
+    }
+    if (consume("(")) {
+      const value = parseExpression();
+      skipWhitespace();
+      if (!consume(")")) throw new Error("unbalanced parentheses");
+      return value;
+    }
+    if (/[0-9.]/.test(peek())) return parseNumber();
+    if (/\p{L}/u.test(peek())) return parseVariable();
+    throw new Error("expression could not be parsed");
+  }
+
+  function parseNumber() {
+    const start = position;
+    let hasDigit = false;
+    let hasDot = false;
+    while (/[0-9.]/.test(peek())) {
+      if (peek() === ".") {
+        if (hasDot) break;
+        hasDot = true;
+      } else {
+        hasDigit = true;
+      }
+      position += 1;
+    }
+    if (!hasDigit) throw new Error("expression could not be parsed");
+    const value = Number(input.slice(start, position));
+    if (!Number.isFinite(value)) throw new Error("expression could not be parsed");
+    return constant(value);
+  }
+
+  function parseVariable() {
+    const start = position;
+    while (/[\p{L}_]/u.test(peek())) position += 1;
+    const name = input.slice(start, position);
+    if (!name) throw new Error("expression could not be parsed");
+    if (variable && variable !== name) throw new Error("multiple variables");
+    variable = name;
+    return variableValue();
+  }
+
+  const value = parseExpression();
+  skipWhitespace();
+  if (position !== input.length) throw new Error("expression could not be parsed");
+  return { value, variable };
+}
+
+function solveLinearEquation(expression) {
+  const parts = String(expression).split("=");
+  if (parts.length !== 2) throw new Error("expression could not be parsed");
+  const left = parseLinearExpression(parts[0]);
+  const right = parseLinearExpression(parts[1]);
+  const variable = left.variable || right.variable;
+  if (!variable || (left.variable && right.variable && left.variable !== right.variable)) {
+    throw new Error("expression could not be parsed");
+  }
+  const coefficient = left.value.coefficient - right.value.coefficient;
+  if (Math.abs(coefficient) <= Number.EPSILON) {
+    throw new Error("expression could not be parsed");
+  }
+  const value = (right.value.constant - left.value.constant) / coefficient;
+  return `${variable} = ${formatArithmeticResult(value)}`;
+}
+
 function extractArithmeticExpression(prompt) {
   const trimmed = String(prompt || "").trim();
   if (!trimmed) return null;
@@ -789,7 +961,7 @@ function extractArithmeticExpression(prompt) {
   if (!working) return null;
   const workingLower = working.toLowerCase();
   const hasLetter = /\p{L}/u.test(working);
-  const hasSymbolic = /[+*/%^×·÷−$€¥₹₽]/.test(working) || (!hasLetter && /-/.test(working));
+  const hasSymbolic = /[+*/%^=×·÷−$€¥₹₽]/.test(working) || (!hasLetter && /-/.test(working));
   const hasWord =
     / plus | minus | times | multiplied by | divided by | modulo | mod /.test(
       ` ${workingLower} `,
@@ -838,7 +1010,7 @@ function extractArithmeticExpression(prompt) {
   const hasDigit = /[0-9]/.test(working);
   if (!hasDigit) return null;
   if (!hasSymbolic && !hasWord && hasLetter) return null;
-  const allowed = /^[0-9+\-*/%().\s_×·÷−,a-zA-Z]+$/;
+  const allowed = /^[0-9+\-*/%().=\s_×·÷−,a-zA-Z]+$/;
   if (!allowed.test(working)) return null;
   return working;
 }
@@ -1118,13 +1290,18 @@ function tryArithmetic(prompt) {
   const expression = extractArithmeticExpression(prompt);
   if (!expression) return null;
   try {
-    const value = evaluateArithmetic(expression);
-    const formatted = formatArithmeticResult(value);
+    const isEquation = expression.includes("=");
+    const formatted = isEquation
+      ? solveLinearEquation(expression)
+      : formatArithmeticResult(evaluateArithmetic(expression));
+    const content = isEquation
+      ? `${expression.trim()} => ${formatted}`
+      : `${expression.trim()} = ${formatted}`;
     return {
       intent: "calculation",
-      content: `${expression.trim()} = ${formatted}`,
+      content: content,
       confidence: 1.0,
-      evidence: [`calculation:${expression.trim()}=${formatted}`],
+      evidence: [`calculation:${content}`],
     };
   } catch (error) {
     const message = String(error && error.message ? error.message : error);
