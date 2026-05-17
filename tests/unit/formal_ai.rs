@@ -669,3 +669,55 @@ fn rasskazhi_za_telegram_ads_resolves_to_concept_lookup() {
         );
     }
 }
+
+// Issue #64: "Расскажи о теории связей" should resolve to Link Foundation's
+// links meta-theory, while making clear that similarly named theories may mean
+// something else.
+#[test]
+fn links_theory_prompts_resolve_to_meta_theory_concept() {
+    let cases = [
+        // Exact issue report
+        "Расскажи о теории связей",
+        // Russian variants covered by concept-lookup prefixes and aliases
+        "Расскажи про теорию связей",
+        "Что такое теория связей?",
+        "Что такое глубокая теория связей?",
+        // English aliases for the same Link Foundation product
+        "Tell me about links theory",
+        "What is the links meta-theory?",
+    ];
+
+    for prompt in cases {
+        let response = FormalAiEngine.answer(prompt);
+        let lower = response.answer.to_lowercase();
+
+        assert_eq!(
+            response.intent, "concept_lookup",
+            "[{prompt}] expected concept_lookup, got intent: {}",
+            response.intent
+        );
+        assert_ne!(
+            response.intent, "unknown",
+            "[{prompt}] must not fall through to unknown intent"
+        );
+        assert!(
+            lower.contains("meta-theory")
+                || lower.contains("метатеор")
+                || lower.contains("мета-теор"),
+            "[{prompt}] answer should identify the Link Foundation meta-theory, got: {}",
+            response.answer
+        );
+        assert!(
+            lower.contains("similar") || lower.contains("похож"),
+            "[{prompt}] answer should mention similarly named theories, got: {}",
+            response.answer
+        );
+        assert!(
+            response
+                .answer
+                .contains("https://github.com/link-foundation/meta-theory"),
+            "[{prompt}] should cite the meta-theory repository, got: {}",
+            response.answer
+        );
+    }
+}
