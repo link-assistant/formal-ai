@@ -25,6 +25,27 @@ concept_links_notation
   source "https://github.com/linksplatform/Documentation"
   source_kind "project-docs"
 
+concept_links_meta_theory
+  term "Links meta-theory"
+  intent "concept_lookup"
+  category "knowledge-representation"
+  aliases "links meta-theory|the links meta-theory|links theory|the links theory|link theory|theory of links|deep theory|deep theory of links|теория связей|теории связей|теорию связей|теория связи|глубокая теория связей|глубокой теории связей|глубокую теорию связей|метатеория связей|мета-теория связей"
+  summary "In the Link Foundation context, links theory means the link-foundation/meta-theory repository and its archived Links Theory articles. It describes information representation through links: references to links, with the compact set-theory projection L -> L^2. In formal-ai, a bare question about links theory assumes this product; if you mean another similarly named theory, specify the domain because those theories are described differently."
+  source "https://github.com/link-foundation/meta-theory"
+  source_kind "official-repository"
+  localized "en"
+    term "Links meta-theory"
+    aliases "links meta-theory|the links meta-theory|links theory|the links theory|link theory|theory of links|deep theory|deep theory of links"
+    summary "In the Link Foundation context, links theory means the link-foundation/meta-theory repository and its archived Links Theory articles. It describes information representation through links: references to links, with the compact set-theory projection L -> L^2. In formal-ai, a bare question about links theory assumes this product; if you mean another similarly named theory, specify the domain because those theories are described differently."
+    source "https://github.com/link-foundation/meta-theory"
+    source_kind "official-repository"
+  localized "ru"
+    term "Теория связей"
+    aliases "теория связей|теории связей|теорию связей|теория связи|глубокая теория связей|глубокой теории связей|глубокую теорию связей|метатеория связей|мета-теория связей"
+    summary "В контексте Link Foundation «теория связей» означает репозиторий link-foundation/meta-theory и архивированные статьи о Links Theory. Она описывает представление информации через связи: ссылки на связи, с компактной проекцией в теории множеств L -> L^2. В formal-ai такой запрос по умолчанию относится к этому продукту; если имеется в виду другая теория с похожим названием, укажите область, потому что другие теории описываются иначе."
+    source "https://github.com/link-foundation/meta-theory"
+    source_kind "official-repository"
+
 concept_doublet
   term "doublet"
   intent "concept_lookup"
