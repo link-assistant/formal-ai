@@ -416,7 +416,7 @@ const ENGLISH_BASIC_MATH: &[&str] = &[
     "What is 10 - 3?",
 ];
 
-const RUSSIAN_BASIC_MATH: &[&str] = &["Сколько будет 2 + 2?"];
+const RUSSIAN_BASIC_MATH: &[&str] = &["Сколько будет 2 + 2?", "Сколько будет два плюс два?"];
 
 #[test]
 fn basic_math_matrix_is_classified_as_calculation() {

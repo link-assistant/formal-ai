@@ -354,6 +354,13 @@ fn contains_word_operator(expression: &str) -> bool {
         " divided by ",
         " modulo ",
         " mod ",
+        " плюс ",
+        " минус ",
+        " умножить ",
+        " умножь ",
+        " умножить на ",
+        " разделить на ",
+        " делить на ",
     ]
     .iter()
     .any(|operator| lower.contains(operator))
@@ -523,7 +530,8 @@ fn strip_calculation_wrappers(prompt: &str) -> (String, bool) {
 fn has_calculation_signal(expression: &str, explicit: bool) -> bool {
     let lower = format!(" {} ", expression.to_lowercase());
     let has_digit = expression.chars().any(|c| c.is_ascii_digit());
-    if !has_digit {
+    let has_spelled_arithmetic = contains_spelled_arithmetic(expression);
+    if !has_digit && !has_spelled_arithmetic {
         return false;
     }
     let has_letter = expression.chars().any(char::is_alphabetic);
@@ -603,6 +611,41 @@ fn has_calculation_signal(expression: &str, explicit: bool) -> bool {
         return true;
     }
     explicit && !has_letter
+}
+
+fn contains_spelled_arithmetic(expression: &str) -> bool {
+    let lower = format!(" {} ", expression.to_lowercase());
+    let has_number_word = [
+        " zero ",
+        " one ",
+        " two ",
+        " three ",
+        " four ",
+        " five ",
+        " six ",
+        " seven ",
+        " eight ",
+        " nine ",
+        " ten ",
+        " ноль ",
+        " нуль ",
+        " один ",
+        " одна ",
+        " одно ",
+        " два ",
+        " две ",
+        " три ",
+        " четыре ",
+        " пять ",
+        " шесть ",
+        " семь ",
+        " восемь ",
+        " девять ",
+        " десять ",
+    ]
+    .iter()
+    .any(|number| lower.contains(number));
+    has_number_word && contains_word_operator(expression)
 }
 
 /// Pull calculation expressions out of a natural-language prompt. Returns an

@@ -626,16 +626,107 @@ function tokenizeArithmetic(input) {
   return tokens;
 }
 
-function evaluateArithmetic(expression) {
-  const lower = expression.toLowerCase();
-  const normalized = lower
+const ARITHMETIC_WORD_TOKENS = new Map([
+  ["zero", "0"],
+  ["one", "1"],
+  ["two", "2"],
+  ["three", "3"],
+  ["four", "4"],
+  ["five", "5"],
+  ["six", "6"],
+  ["seven", "7"],
+  ["eight", "8"],
+  ["nine", "9"],
+  ["ten", "10"],
+  ["ноль", "0"],
+  ["нуль", "0"],
+  ["один", "1"],
+  ["одна", "1"],
+  ["одно", "1"],
+  ["два", "2"],
+  ["две", "2"],
+  ["три", "3"],
+  ["четыре", "4"],
+  ["пять", "5"],
+  ["шесть", "6"],
+  ["семь", "7"],
+  ["восемь", "8"],
+  ["девять", "9"],
+  ["десять", "10"],
+  ["plus", "+"],
+  ["плюс", "+"],
+  ["minus", "-"],
+  ["минус", "-"],
+  ["times", "*"],
+  ["умножить", "*"],
+  ["умножь", "*"],
+  ["modulo", "%"],
+  ["mod", "%"],
+]);
+
+const ARITHMETIC_WORD_OPERATORS = [
+  " plus ",
+  " minus ",
+  " times ",
+  " multiplied by ",
+  " divided by ",
+  " modulo ",
+  " mod ",
+  " плюс ",
+  " минус ",
+  " умножить ",
+  " умножь ",
+  " умножить на ",
+  " разделить на ",
+  " делить на ",
+];
+
+const ARITHMETIC_NUMBER_WORDS = [
+  " zero ",
+  " one ",
+  " two ",
+  " three ",
+  " four ",
+  " five ",
+  " six ",
+  " seven ",
+  " eight ",
+  " nine ",
+  " ten ",
+  " ноль ",
+  " нуль ",
+  " один ",
+  " одна ",
+  " одно ",
+  " два ",
+  " две ",
+  " три ",
+  " четыре ",
+  " пять ",
+  " шесть ",
+  " семь ",
+  " восемь ",
+  " девять ",
+  " десять ",
+];
+
+function normalizeArithmeticWords(expression) {
+  const lower = String(expression).toLowerCase();
+  const normalizedPhrases = lower
     .replace(/\s+multiplied by\s+/g, " * ")
     .replace(/\s+divided by\s+/g, " / ")
-    .replace(/\s+times\s+/g, " * ")
-    .replace(/\s+plus\s+/g, " + ")
-    .replace(/\s+minus\s+/g, " - ")
-    .replace(/\s+modulo\s+/g, " % ")
-    .replace(/\s+mod\s+/g, " % ");
+    .replace(/\s+умножить на\s+/g, " * ")
+    .replace(/\s+разделить на\s+/g, " / ")
+    .replace(/\s+делить на\s+/g, " / ");
+  return normalizedPhrases
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((token) => ARITHMETIC_WORD_TOKENS.get(token) || token)
+    .join(" ");
+}
+
+function evaluateArithmetic(expression) {
+  const normalized = normalizeArithmeticWords(expression);
   const tokens = tokenizeArithmetic(normalized);
   if (tokens.length === 0) {
     throw new Error("empty");
@@ -892,6 +983,19 @@ function solveLinearEquation(expression) {
   return `${variable} = ${formatArithmeticResult(value)}`;
 }
 
+function hasArithmeticWordOperator(expression) {
+  const lower = ` ${String(expression).toLowerCase()} `;
+  return ARITHMETIC_WORD_OPERATORS.some((operator) => lower.includes(operator));
+}
+
+function hasSpelledArithmetic(expression) {
+  const lower = ` ${String(expression).toLowerCase()} `;
+  const hasNumberWord = ARITHMETIC_NUMBER_WORDS.some((number) =>
+    lower.includes(number),
+  );
+  return hasNumberWord && hasArithmeticWordOperator(expression);
+}
+
 function extractArithmeticExpression(prompt) {
   const trimmed = String(prompt || "").trim();
   if (!trimmed) return null;
@@ -968,10 +1072,10 @@ function extractArithmeticExpression(prompt) {
   const workingLower = working.toLowerCase();
   const hasLetter = /\p{L}/u.test(working);
   const hasSymbolic = /[+*/%^=×·÷−$€¥₹₽]/.test(working) || (!hasLetter && /-/.test(working));
+  const hasWordOperator = hasArithmeticWordOperator(working);
+  const hasSpelled = hasSpelledArithmetic(working);
   const hasWord =
-    / plus | minus | times | multiplied by | divided by | modulo | mod /.test(
-      ` ${workingLower} `,
-    ) ||
+    hasWordOperator ||
     [
       " sqrt",
       " usd ",
@@ -1014,10 +1118,10 @@ function extractArithmeticExpression(prompt) {
       "दिन",
     ].some((signal) => ` ${workingLower} `.includes(signal));
   const hasDigit = /[0-9]/.test(working);
-  if (!hasDigit) return null;
+  if (!hasDigit && !hasSpelled) return null;
   if (!hasSymbolic && !hasWord && hasLetter) return null;
   const allowed = /^[0-9+\-*/%().=\s_×·÷−,a-zA-Z]+$/;
-  if (!allowed.test(working)) return null;
+  if (!allowed.test(working) && !hasWordOperator) return null;
   return working;
 }
 

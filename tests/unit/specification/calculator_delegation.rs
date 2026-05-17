@@ -53,6 +53,7 @@ fn calculator_handles_compact_question_equals_suffix() {
 fn calculator_handles_russian_variations() {
     for (prompt, expected) in [
         ("Сколько будет 2 + 2?", &["4"][..]),
+        ("Сколько будет два плюс два?", &["4"][..]),
         ("Посчитай 1000 рублей в долларах", &["USD"][..]),
         ("Вычисли 1 тонна в кг", &["1000", "kg"][..]),
         ("Рассчитай 17 февраля 2027 - 6 месяцев", &["2026-08"][..]),
