@@ -5,55 +5,41 @@ use super::finalize_simple;
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
-use crate::seed::{self, BrainstormSeeds, FactRecord};
+use crate::seed::{
+    self, BrainstormSeeds, CoreferenceSeeds, FactRecord, PersonaSeeds, SummaryTopicSeeds,
+};
 use crate::solver_helpers::last_user_turn;
+
+fn summary_topic_seed_data() -> &'static SummaryTopicSeeds {
+    static CELL: OnceLock<SummaryTopicSeeds> = OnceLock::new();
+    CELL.get_or_init(seed::summary_topic_seeds)
+}
 
 pub fn try_summarization_request(
     prompt: &str,
     normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
-    let asks_for_summary = normalized.contains("summarize")
-        || normalized.contains("summarise")
-        || normalized.contains("summary of")
-        || normalized.contains("one-paragraph summary");
-    if !asks_for_summary
-        || normalized.contains("conversation")
-        || normalized.contains("chat")
-        || normalized == "summarize"
-    {
+    let seeds = summary_topic_seed_data();
+    if !seeds.matches_trigger(normalized) {
         return None;
     }
 
-    let topic = summary_topic(prompt, normalized);
-    log.append("summarization:topic", topic.clone());
-    if normalized.contains("one paragraph") || normalized.contains("one-paragraph") {
-        log.append("summarization:constraint", "one_paragraph".to_owned());
-    }
+    let (topic, body) = seeds.pick_topic(normalized).map_or_else(
+        || {
+            let label = prompt
+                .trim_matches(|c: char| c.is_ascii_punctuation() || c.is_whitespace())
+                .to_owned();
+            let body = seeds.render_fallback(&label);
+            (label, body)
+        },
+        |topic| (topic.display_name.clone(), topic.body.clone()),
+    );
 
-    let body = match topic.as_str() {
-        "Rust" => concat!(
-            "Rust is a systems programming language focused on performance, memory safety, ",
-            "and concurrency. It prevents many memory errors at compile time through ownership ",
-            "and borrowing, while still compiling to native machine code."
-        )
-        .to_owned(),
-        "Wikipedia" => concat!(
-            "Wikipedia is a free multilingual encyclopedia maintained by volunteer contributors. ",
-            "Its articles are collaboratively edited, cite external sources, and are connected ",
-            "to structured Wikimedia projects such as Wikidata."
-        )
-        .to_owned(),
-        "formal-ai" => concat!(
-            "formal-ai is a deterministic symbolic assistant that routes prompts through Links ",
-            "Notation-backed rules, records reasoning events, and exposes OpenAI-shaped API ",
-            "surfaces without neural-network inference."
-        )
-        .to_owned(),
-        other => format!(
-            "{other} summary: the request is recorded as a bounded summarization task with a topic, constraint, and trace link."
-        ),
-    };
+    log.append("summarization:topic", topic);
+    if let Some(label) = seeds.constraint_for(normalized) {
+        log.append("summarization:constraint", label.to_owned());
+    }
 
     Some(finalize_simple(
         prompt,
@@ -63,22 +49,6 @@ pub fn try_summarization_request(
         &body,
         0.85,
     ))
-}
-
-fn summary_topic(prompt: &str, normalized: &str) -> String {
-    if normalized.contains("formal-ai") || normalized.contains("formal ai") {
-        return String::from("formal-ai");
-    }
-    if normalized.contains("rust") {
-        return String::from("Rust");
-    }
-    if normalized.contains("wikipedia") {
-        return String::from("Wikipedia");
-    }
-
-    prompt
-        .trim_matches(|c: char| c.is_ascii_punctuation() || c.is_whitespace())
-        .to_owned()
 }
 
 fn brainstorm_seed_data() -> &'static BrainstormSeeds {
@@ -184,40 +154,44 @@ pub fn try_fact_lookup(
     ))
 }
 
+fn coreference_seed_data() -> &'static CoreferenceSeeds {
+    static CELL: OnceLock<CoreferenceSeeds> = OnceLock::new();
+    CELL.get_or_init(seed::coreference_seeds)
+}
+
 pub fn try_coreference_request(
     prompt: &str,
     normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
-    let has_pronoun = normalized.contains(" it ")
-        || normalized.starts_with("it ")
-        || normalized.contains(" it?")
-        || normalized.contains(" it.")
-        || normalized.contains("compare it");
-    if !has_pronoun {
+    let seeds = coreference_seed_data();
+    if !seeds.matches_pronoun(normalized) {
         return None;
     }
 
     let previous = last_user_turn(log)?;
-    if !previous.to_lowercase().contains("rust") {
-        return None;
-    }
+    let antecedent = seeds.pick_antecedent(&previous.to_lowercase())?;
 
-    log.append("coreference:resolved", "it=Rust".to_owned());
-    log.append("wikidata", "Q575650".to_owned());
-    let body = concat!(
-        "`it` resolves to Rust from your prior turn. Compared with C, Rust adds ownership, ",
-        "borrowing, and stronger compile-time checks so memory-safety errors are caught before ",
-        "the program runs while retaining native-code performance."
+    log.append(
+        "coreference:resolved",
+        format!("it={}", antecedent.display_name),
     );
+    if !antecedent.wikidata.is_empty() {
+        log.append("wikidata", antecedent.wikidata.clone());
+    }
     Some(finalize_simple(
         prompt,
         log,
-        "coreference_rust",
+        &antecedent.intent,
         "response:coreference",
-        body,
+        &antecedent.body,
         0.85,
     ))
+}
+
+fn persona_seed_data() -> &'static PersonaSeeds {
+    static CELL: OnceLock<PersonaSeeds> = OnceLock::new();
+    CELL.get_or_init(seed::persona_seeds)
 }
 
 pub fn try_roleplay_request(
@@ -225,39 +199,27 @@ pub fn try_roleplay_request(
     normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
-    let asks_for_roleplay = normalized.contains("pretend you are")
-        || normalized.contains("act as")
-        || normalized.contains("roleplay")
-        || normalized.contains("explain like you are");
-    if !asks_for_roleplay {
+    let seeds = persona_seed_data();
+    if !seeds.matches_trigger(normalized) {
         return None;
     }
 
-    let persona = if normalized.contains("einstein") {
-        log.append("wikidata", "Q937".to_owned());
-        "Albert Einstein"
-    } else if normalized.contains("ada lovelace") {
-        log.append("wikidata", "Q7259".to_owned());
-        "Ada Lovelace"
-    } else if normalized.contains("teacher") {
-        "teacher"
-    } else {
-        "requested persona"
-    };
-    log.append("roleplay:persona", persona.to_owned());
-    let body = if normalized.contains("algorithm") {
-        format!(
-            "Roleplay frame recorded for {persona}. I will keep the persona explicit and factual: an algorithm is a precise sequence of steps, so a reliable explanation names the inputs, the ordered operations, and the expected result."
-        )
-    } else if normalized.contains("time dilation") {
-        format!(
-            "Roleplay frame recorded for {persona}. I will keep the persona explicit and factual: time dilation means clocks can measure different elapsed times when observers move differently or sit in different gravitational fields."
-        )
-    } else {
-        format!(
-            "Roleplay frame recorded for {persona}. I will keep the persona explicit and factual: relativity says measurements of space and time depend on the observer's motion, while the laws of physics stay consistent."
-        )
-    };
+    let persona_display = seeds.pick_persona(normalized).map_or_else(
+        || seeds.default_persona.as_str(),
+        |persona| {
+            if !persona.wikidata.is_empty() {
+                log.append("wikidata", persona.wikidata.clone());
+            }
+            persona.display_name.as_str()
+        },
+    );
+    log.append("roleplay:persona", persona_display.to_owned());
+
+    let topic_body = seeds
+        .pick_topic(normalized)
+        .map_or(seeds.fallback_body.as_str(), |topic| topic.body.as_str());
+    let body = seeds.render_body(persona_display, topic_body);
+
     Some(finalize_simple(
         prompt,
         log,
