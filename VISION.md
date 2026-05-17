@@ -82,8 +82,23 @@ The universal algorithm should be controlled by a small, explicit, persistable `
 - `diagnostic_mode` — whether diagnostic links are echoed in the user-facing reply.
 - `offline` — whether external lookups are allowed (also honored from the `FORMAL_AI_OFFLINE` environment variable).
 - `cache_ttl_seconds` — TTL for cached external sources (default ≈ two months).
+- `temperature` *(planned)* — controls how aggressively the formalization step collapses multiple candidate interpretations into one. Lower values bias the solver toward the highest-scoring interpretation; higher values keep more interpretations alive and trigger clarifying questions or guesses, depending on `guess_probability`. Modelled on the softmax-temperature pattern used by neural networks, but applied to discrete Wikidata-anchored interpretations rather than logits.
 
 These knobs are deterministic: the same prompt with the same config produces the same answer. "Random guessing" is seeded from the impulse content hash so reproducibility is preserved.
+
+## Formalization And Temperature
+
+The reasoning loop is built around an explicit formalization layer rather than memoized prompt → answer pairs. Every input message is first translated into Links Notation as a sequence of statements or questions and appended to memory in its original form. The translated statement is then formalized: each verb phrase is mapped to a Wikidata **P-id** (property), each noun phrase to a Wikidata **Q-id** (item), with a fallback chain to Wikipedia article links and Wiktionary entries when no Wikidata anchor exists. A candidate formalization is only accepted when the targeted concept actually mentions the surface form and matches it semantically — otherwise the candidate is recorded as `formalization_unresolved` and the next candidate is tried.
+
+Multiple plausible formalizations are scored, then a temperature-controlled selector picks among them in the same way neural networks pick among logits: lower temperature collapses onto the highest-scoring interpretation; higher temperature keeps competing interpretations alive. When two or more candidates have probabilities that are equal or close, the solver either asks the smallest clarifying question that distinguishes them or guesses according to `guess_probability` — the choice is config-driven and visible in the trace. Every interpretation, every clarifying question, every guess, every accepted formalization, and every fallback is appended to the event log so the user can ask "why did you read it that way?" and get a complete answer.
+
+The full pipeline is documented in [`ARCHITECTURE.md`](ARCHITECTURE.md).
+
+## Growable Memory And Public Knowledge As Cache
+
+Memory should grow with use, not just with prompts. Every reasoning step, every internal decision, every external request, and every response is appended to the same log so the next similar request can reuse the prior work in part or in full. The long-term store is doublets-rs in the library, CLI, server, and Telegram surfaces, with doublets-web (IndexedDB / `localStorage`) on the browser; backups are written as `.lino` files representing Links Notation, both to disk and to additional persistent storage (browser IndexedDB, future cloud sync).
+
+Treating the internet (Wikipedia, Wikidata, Wiktionary, Wikifunctions, Rosetta Code, public APIs) as a public database and the local doublets store as a cache for that database substitutes deterministic reasoning over reviewable links for opaque GPU-backed inference. The same caching pattern carries `source:`, `fetched_at`, and `sha256` metadata per the existing `cache_ttl_seconds` policy; offline mode refuses external lookups and emits a `policy:offline` event instead of synthesizing facts.
 
 ## Append-Only Event Log
 
@@ -97,9 +112,15 @@ Every action the algorithm takes is appended to an in-process event log before t
 
 ## Computation Model
 
-Formal AI should use trigger-style computation over links. A trigger can react to insertion, update, deletion, or a matched pattern in the network. Substitution rules should be first-class knowledge and should be able to express reads, writes, transformations, and simplification passes. These rules may be implemented as Rust code, as external handlers, or as link-native template substitutions.
+Formal AI should use trigger-style computation over links. A trigger can react to insertion, update, deletion, or a matched pattern in the network. Substitution rules should be first-class knowledge and should be able to express reads, writes, transformations, and simplification passes. The associative store supports five rule shapes, ranked from most reviewable to most flexible:
 
-Deep.Foundation is a useful reference for associative packages, handlers, permissions, and code stored inside associative memory. This project should adapt those ideas to local Rust, browser, and CLI modes using Link Foundation doublets instead of triplet links.
+1. **Pure data rules** — `when x do y` substitutions stored directly as doublets, executable by a simple matcher in any environment.
+2. **Compiled Rust handlers** — registered through `solver_handlers` and addressable as data so the rule index can point at them.
+3. **Compiled JS handlers** — registered through the browser worker and addressable the same way, so the same rule can have language-specific implementations.
+4. **Dynamically compiled Rust/JS code stored as data** — source text is itself a link payload; the runtime can compile-on-demand and cache the resulting handler.
+5. **Natural-language skills / instructions** — stored as `.lino` text, executed either by an interpreter that walks them one step at a time or by an on-demand compiler that translates them into rules in any of the four shapes above (and ultimately into native binaries when the platform allows).
+
+Deep.Foundation is a useful reference for associative packages, handlers, permissions, and code stored inside associative memory. This project adapts those ideas to local Rust, browser, and CLI modes using Link Foundation doublets instead of triplet links. `ARCHITECTURE.md` documents the data shape of each rule kind and how the trigger loop dispatches across them.
 
 ## Product Shape
 
@@ -119,7 +140,7 @@ Code-generation tasks should be a first focus area. The assistant should generat
 
 For every uniquely defined concept, the system should converge on one meaning link. If the same name points to two different meanings, the system should split them into separate concepts and record why. The network should remain dynamically growing and incomplete, but it should actively reduce contradictions as new evidence arrives.
 
-Natural languages and programming languages should be translated through link-native meanings rather than through one-off text rewrites. Links Notation should act as an intermediate language of meaning for explanations, code generation, data imports, and cross-language translation.
+Natural languages and programming languages should be translated through link-native meanings rather than through one-off text rewrites. Once a phrase has been fully formalized — verbs mapped to Wikidata P-IDs, nouns mapped to Q-IDs, fallbacks documented to Wikipedia or Wiktionary entries — translating it to another language reduces to looking up the destination-language label on the same P/Q anchor. The same mechanism translates between natural language and programming languages: formalized statements can be rendered into Rust, JavaScript, or any other target whose syntactic forms have been linked into the doublet store. Links Notation acts as the intermediate language of meaning for explanations, code generation, data imports, cross-language translation, and on-demand compilation of natural-language skills into executable code.
 
 ## Data Is The Interface
 

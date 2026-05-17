@@ -232,3 +232,25 @@ keeping local language processing and local fallbacks for unsupported syntax.
 | R126 | Register calculator as a visible tool/capability in the seed registry. | Implemented by `tool_calculator` in `data/seed/tools.lino`, exposed through the existing seed/tool-registry surfaces. |
 | R127 | Report upstream calculator gaps found while integrating the library. | Implemented by filing [`link-assistant/calculator#158`](https://github.com/link-assistant/calculator/issues/158) for binary modulo / trailing-token handling and documenting the local fallback in `docs/case-studies/issue-96/README.md`. |
 | R128 | Compile issue #96 evidence and analysis under `docs/case-studies/issue-96/`. | Implemented in `docs/case-studies/issue-96/README.md` with raw data in `docs/case-studies/issue-96/raw-data/`. |
+
+## Issue #103 Test-Matrix And Architecture Requirements
+
+Issue [#103](https://github.com/link-assistant/formal-ai/issues/103) asks
+formal-ai to grow each existing test case into **5–10 most probable input
+variations**, translate every case across the four currently supported
+languages (English, Russian, Hindi, Chinese), adopt the most frequent prompts
+from competitor AI models and agentic CLI tools, generalize the test scaffolding
+so the matrix can grow without bloating Rust source files, and capture the
+evolving architecture in a detailed `ARCHITECTURE.md` while keeping `VISION.md`
+and `REQUIREMENTS.md` in lockstep.
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R129 | For every existing test case, exercise 5–10 most probable input/output variations. | Implemented by `tests/unit/mvp/prompt_variations.rs` and matrix expansions in `tests/unit/mvp/chat_surface.rs`, `tests/unit/mvp/code_generation.rs`, and `tests/unit/mvp/multilingual.rs`; each block iterates `for (prompt, expected) in [...]` over 5–10 variations covering greeting, identity, capabilities, concept lookup, hello-world, idioms, transliteration, clarification, and math intents. |
+| R130 | Translate each test case into English, Russian, Hindi, and Chinese. | Implemented by per-language matrix builders (`english_variations`, `russian_variations`, `hindi_variations`, `chinese_variations`) inside `tests/unit/mvp/prompt_variations.rs` and `tests/unit/mvp/multilingual.rs`; each block asserts the right `language:*` evidence link is emitted on every prompt. |
+| R131 | Compare formal-ai's tests against competitor AI models and agentic CLI tools, and adopt the most frequent prompts. | Implemented in `docs/case-studies/issue-103/raw-data/competitor-test-research.md` (Claude Code, Aider, Codex, Continue, Cursor, GitHub Copilot CLI, MT-Bench, AlpacaEval, WildBench, Belebele, XNLI, XCOPA, MGSM, FLORES-200, TyDi-QA, XQuAD, Aya, HumanEval, MBPP, GSM8K, TruthfulQA); the high-frequency categories (definitions, summarization-intent, brainstorming-intent, factual Q&A, refusal/safety, multi-turn coreference, math) are added as new MVP-target tests in `prompt_variations.rs`. |
+| R132 | Generalize the test-case logic where possible. | Implemented by `tests/unit/mvp/prompt_variations.rs` helpers `assert_intent_for_each`, `assert_language_for_each`, and `assert_answer_contains_for_each`, plus matrix-builder tuples `(language, prompts)` so future categories can be added in one block instead of per-language test functions. |
+| R133 | Add a detailed `ARCHITECTURE.md` describing the evolving architecture. | Implemented in `ARCHITECTURE.md` at the repository root: 16 sections covering context assembly → translation to Links Notation → Wikidata P/Q-ID formalization → temperature-style interpretation selection → clarifying-question vs guessing under `SolverConfig` → nested reasoning steps with tool integrations → growable doublets-rs/doublets-web memory → `.lino` backups → transformation rules in data / Rust / JS / dynamic / natural language → formalization-driven translation between natural and programming languages. |
+| R134 | Update `VISION.md` with the architecture description from the issue (Wikidata P/Q-ID formalization, temperature-style interpretation selection, nested reasoning, growable doublet memory, transformation rules in data, on-demand compilation of natural-language skills, formalization-driven translation). | Implemented by adding a new **Formalization And Temperature** section to `VISION.md` and extending the **Reasoning Model**, **Computation Model**, and **Data Is The Interface** paragraphs to explicitly reference the new architecture artifacts. |
+| R135 | Expose R129+ alongside the existing requirement matrix. | Implemented by appending this **Issue #103 Test-Matrix And Architecture Requirements** block to `REQUIREMENTS.md`. |
+| R136 | Compile issue #103 evidence and case-study analysis under `docs/case-studies/issue-103/`. | Implemented in `docs/case-studies/issue-103/README.md` with raw data (`issue-103.json`, `issue-103-comments.json`, PR-104 mirrors, `recent-merged-prs.json`, `competitor-test-research.md`) in `docs/case-studies/issue-103/raw-data/`. |

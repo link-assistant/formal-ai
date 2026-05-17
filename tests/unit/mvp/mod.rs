@@ -34,6 +34,7 @@ mod links_network;
 mod multilingual;
 mod network_visualization;
 mod openai_compatibility;
+mod prompt_variations;
 mod reasoning_loop;
 mod reasoning_paths;
 mod source_cache;
