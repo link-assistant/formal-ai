@@ -183,6 +183,7 @@ fn strip_calculation_wrappers(prompt: &str) -> (String, bool) {
         " equal",
         " equals",
         " =",
+        "=",
         " please",
         " for me",
         " пожалуйста",
