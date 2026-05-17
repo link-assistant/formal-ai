@@ -213,7 +213,10 @@ function detectLanguage(prompt) {
 // CONCEPTS is populated from `seed/concepts.lino` at init() time.
 
 function normalizePrompt(prompt) {
-  return prompt.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+  return String(prompt || "")
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}]+/gu, " ")
+    .trim();
 }
 
 function normalizeConceptTerm(value) {

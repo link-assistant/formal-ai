@@ -768,7 +768,10 @@ function markdownHtml(value) {
 }
 
 function normalizePrompt(prompt) {
-  return prompt.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+  return String(prompt || "")
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}]+/gu, " ")
+    .trim();
 }
 
 function isIdentityPrompt(normalized) {
@@ -784,12 +787,17 @@ function isIdentityPrompt(normalized) {
       "what is formalai",
       "tell me about yourself",
       "introduce yourself",
+      "кто ты",
+      "что ты",
+      "你是谁",
     ].includes(normalized) ||
     (has("who") && has("you")) ||
     (has("what") && has("you")) ||
     ((has("who") || has("what")) && has("formal") && has("ai")) ||
     (has("tell") && has("yourself")) ||
-    (has("introduce") && has("yourself"))
+    (has("introduce") && has("yourself")) ||
+    (has("кто") && has("ты")) ||
+    (has("что") && has("ты"))
   );
 }
 
