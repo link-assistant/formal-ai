@@ -43,6 +43,13 @@ fn calculator_handles_english_variations() {
 }
 
 #[test]
+fn calculator_handles_compact_question_equals_suffix() {
+    for prompt in ["2*2+2=?", "2*2+2 = ?"] {
+        assert_calculation(prompt, &["2*2+2 = 6"]);
+    }
+}
+
+#[test]
 fn calculator_handles_russian_variations() {
     for (prompt, expected) in [
         ("Сколько будет 2 + 2?", &["4"][..]),
