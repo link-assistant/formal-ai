@@ -23,6 +23,7 @@
     "seed/multilingual-responses.lino",
     "seed/concepts.lino",
     "seed/concept-contexts.lino",
+    "seed/facts.lino",
     "seed/tools.lino",
     "seed/language-detection.lino",
     "seed/prompt-patterns.lino",

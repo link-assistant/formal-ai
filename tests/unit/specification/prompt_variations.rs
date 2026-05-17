@@ -507,32 +507,83 @@ fn brainstorming_intent_routes_to_brainstorm_handler() {
     }
 }
 
-const FACTUAL_PROMPTS: &[&str] = &[
+// Fact-lookup matrix: 5-10 input variations per fact across every supported
+// language. Each prompt must route to `fact_lookup`, surface a Wikidata
+// Q-id evidence link, and return the localized summary from the seed.
+const ENGLISH_FACTUAL_PROMPTS: &[&str] = &[
     "Who wrote The Lord of the Rings?",
     "Who is the author of The Lord of the Rings?",
     "When was the Eiffel Tower built?",
     "What year did construction of the Eiffel Tower start?",
     "What is the capital of Japan?",
     "Which city is Japan's capital?",
+    "Who painted the Mona Lisa?",
+    "Who is the painter of the Mona Lisa?",
+    "What is the speed of light?",
+    "How fast is the speed of light?",
+];
+
+const RUSSIAN_FACTUAL_PROMPTS: &[&str] = &[
+    "Кто написал Властелин колец?",
+    "Кто автор Властелина колец?",
+    "Когда построили Эйфелеву башню?",
+    "Какова столица Японии?",
+    "Кто написал Мону Лизу?",
+    "Чему равна скорость света?",
+];
+
+const HINDI_FACTUAL_PROMPTS: &[&str] = &[
+    "द लॉर्ड ऑफ द रिंग्स किसने लिखी?",
+    "एफिल टॉवर कब बनी?",
+    "जापान की राजधानी क्या है?",
+    "मोना लिसा किसने बनाई?",
+    "प्रकाश की गति कितनी है?",
+];
+
+const CHINESE_FACTUAL_PROMPTS: &[&str] = &[
+    "魔戒是谁写的?",
+    "埃菲尔铁塔建于何时?",
+    "日本的首都是什么?",
+    "蒙娜丽莎是谁画的?",
+    "光速是多少?",
 ];
 
 #[test]
 fn factual_qna_matrix_records_wikidata_anchor() {
-    for prompt in FACTUAL_PROMPTS {
-        let response = answer(prompt);
-        assert_eq!(
-            response.intent, "fact_lookup",
-            "prompt {prompt:?} should route to fact_lookup, got {}",
-            response.intent,
-        );
-        assert!(
-            response
-                .evidence_links
-                .iter()
-                .any(|link| link.contains("wikidata") || link.contains('Q')),
-            "prompt {prompt:?} should record a Wikidata anchor, got links: {:?}",
-            response.evidence_links,
-        );
+    for prompts in [
+        ENGLISH_FACTUAL_PROMPTS,
+        RUSSIAN_FACTUAL_PROMPTS,
+        HINDI_FACTUAL_PROMPTS,
+        CHINESE_FACTUAL_PROMPTS,
+    ] {
+        for prompt in prompts {
+            let response = answer(prompt);
+            assert_eq!(
+                response.intent, "fact_lookup",
+                "prompt {prompt:?} should route to fact_lookup, got {}",
+                response.intent,
+            );
+            assert!(
+                response
+                    .evidence_links
+                    .iter()
+                    .any(|link| link.contains("wikidata") || link.contains('Q')),
+                "prompt {prompt:?} should record a Wikidata anchor, got links: {:?}",
+                response.evidence_links,
+            );
+        }
+    }
+}
+
+#[test]
+fn factual_qna_matrix_records_per_language_evidence() {
+    for (prompts, tag) in [
+        (ENGLISH_FACTUAL_PROMPTS, "language:en"),
+        (RUSSIAN_FACTUAL_PROMPTS, "language:ru"),
+        (HINDI_FACTUAL_PROMPTS, "language:hi"),
+        (CHINESE_FACTUAL_PROMPTS, "language:zh"),
+    ] {
+        assert_language_for_each(prompts, tag);
     }
 }
 

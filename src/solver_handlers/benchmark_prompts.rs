@@ -1,7 +1,11 @@
+use std::sync::OnceLock;
+
 use super::finalize_simple;
 
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
+use crate::language::detect as detect_language;
+use crate::seed::{self, FactRecord};
 use crate::solver_helpers::last_user_turn;
 
 pub fn try_summarization_request(
@@ -160,45 +164,41 @@ fn numbered(items: &[&str], count: usize) -> String {
         .join("\n")
 }
 
+fn fact_records() -> &'static [FactRecord] {
+    static CELL: OnceLock<Vec<FactRecord>> = OnceLock::new();
+    CELL.get_or_init(seed::facts).as_slice()
+}
+
 pub fn try_fact_lookup(
     prompt: &str,
     normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
-    let fact = if normalized.contains("lord of the rings")
-        && (normalized.contains("who wrote") || normalized.contains("author"))
-    {
-        Some((
-            "The Lord of the Rings was written by J. R. R. Tolkien.",
-            &["Q892", "Q15228"][..],
-        ))
-    } else if normalized.contains("eiffel tower")
-        && (normalized.contains("built")
-            || normalized.contains("construction")
-            || normalized.contains("when"))
-    {
-        Some((
-            "Construction of the Eiffel Tower started in 1887 and it opened in 1889.",
-            &["Q243"][..],
-        ))
-    } else if normalized.contains("capital of japan")
-        || (normalized.contains("japan") && normalized.contains("capital"))
-    {
-        Some(("The capital of Japan is Tokyo.", &["Q17", "Q1490"][..]))
-    } else {
-        None
-    }?;
+    let record = fact_records()
+        .iter()
+        .find(|record| record.matches_normalized(normalized))?;
 
     log.append("fact_lookup:request", prompt.to_owned());
-    for qid in fact.1 {
-        log.append("wikidata", (*qid).to_owned());
+    log.append("fact_lookup:hit", record.slug.clone());
+    for qid in &record.wikidata {
+        if !qid.is_empty() {
+            log.append("wikidata", qid.clone());
+        }
     }
+
+    let language = detect_language(prompt).slug();
+    let summary = record.summary_for(language);
+    let source = record.source_for(language);
+    if !source.is_empty() {
+        log.append("source", source.to_owned());
+    }
+
     Some(finalize_simple(
         prompt,
         log,
         "fact_lookup",
         "response:fact_lookup",
-        fact.0,
+        summary,
         0.9,
     ))
 }
