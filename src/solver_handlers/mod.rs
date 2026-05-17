@@ -162,8 +162,12 @@ pub fn try_arithmetic(prompt: &str, log: &mut EventLog) -> Option<SymbolicAnswer
                 if !evaluation.steps.is_empty() {
                     log.append("calculation:steps", evaluation.steps.len().to_string());
                 }
-                log.append("calculation", format!("{expression} = {formatted}"));
-                let body = format!("{expression} = {formatted}");
+                let body = if expression.contains('=') && formatted.contains(" = ") {
+                    format!("{expression} => {formatted}")
+                } else {
+                    format!("{expression} = {formatted}")
+                };
+                log.append("calculation", body.clone());
                 return Some(finalize_simple(
                     prompt,
                     log,

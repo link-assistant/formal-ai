@@ -87,6 +87,12 @@ test.describe('multilingual chat surface', () => {
     await expect(last).toContainText(/符号|确定性/);
   });
 
+  test('single-variable equations resolve as calculations', async ({ page }) => {
+    const last = await sendPrompt(page, 'x*2 = 123');
+    await expect(last).toHaveClass(/assistant/);
+    await expect(last).toContainText('x*2 = 123 => x = 61.5');
+  });
+
   test('Russian "What is X?" returns the offline concept summary', async ({ page }) => {
     const last = await sendPrompt(page, 'Что такое Википедия?');
     await expect(last).toHaveClass(/assistant/);

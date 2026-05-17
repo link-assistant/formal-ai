@@ -126,6 +126,26 @@ fn local_arithmetic_fallback_keeps_word_operators_and_modulo() {
 }
 
 #[test]
+fn simple_variable_equations_are_solved_after_calculator_delegation() {
+    for (prompt, expected) in [
+        ("x*2 = 123", &["x = 61.5"][..]),
+        ("Solve x * 2 = 123", &["x = 61.5"][..]),
+        ("2 * x + 3 = 11", &["x = 4"][..]),
+        ("10 = y / 3 + 1", &["y = 27"][..]),
+    ] {
+        let response = assert_calculation(prompt, expected);
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == "calculation:engine:formal-ai-equation-fallback"),
+            "equation fallback should be observable: {:?}",
+            response.evidence_links,
+        );
+    }
+}
+
+#[test]
 fn calculator_extraction_does_not_steal_named_entities_with_digits() {
     for prompt in [
         "What is Python 3?",
