@@ -533,14 +533,43 @@ impl<'a> ArithmeticParser<'a> {
 
 fn normalize_expression(expression: &str) -> String {
     let lower = expression.to_lowercase();
-    lower
-        .replace(" multiplied by ", " * ")
-        .replace(" divided by ", " / ")
-        .replace(" times ", " * ")
-        .replace(" plus ", " + ")
-        .replace(" minus ", " - ")
-        .replace(" modulo ", " % ")
-        .replace(" mod ", " % ")
+    let normalized_phrases = [
+        (" multiplied by ", " * "),
+        (" divided by ", " / "),
+        (" умножить на ", " * "),
+        (" разделить на ", " / "),
+        (" делить на ", " / "),
+    ]
+    .iter()
+    .fold(format!(" {lower} "), |current, (from, to)| {
+        current.replace(from, to)
+    });
+    normalized_phrases
+        .split_whitespace()
+        .map(|token| normalize_word_token(token).unwrap_or(token))
+        .collect::<Vec<_>>()
+        .join(" ")
+}
+
+fn normalize_word_token(token: &str) -> Option<&'static str> {
+    match token {
+        "zero" | "ноль" | "нуль" => Some("0"),
+        "one" | "один" | "одна" | "одно" => Some("1"),
+        "two" | "два" | "две" => Some("2"),
+        "three" | "три" => Some("3"),
+        "four" | "четыре" => Some("4"),
+        "five" | "пять" => Some("5"),
+        "six" | "шесть" => Some("6"),
+        "seven" | "семь" => Some("7"),
+        "eight" | "восемь" => Some("8"),
+        "nine" | "девять" => Some("9"),
+        "ten" | "десять" => Some("10"),
+        "plus" | "плюс" => Some("+"),
+        "minus" | "минус" => Some("-"),
+        "times" | "умножить" | "умножь" => Some("*"),
+        "modulo" | "mod" => Some("%"),
+        _ => None,
+    }
 }
 
 pub fn evaluate_fallback_formatted(expression: &str) -> Result<String, ArithmeticError> {

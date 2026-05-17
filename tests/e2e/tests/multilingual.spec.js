@@ -114,6 +114,12 @@ test.describe('multilingual chat surface', () => {
     await expect(last).toContainText('x*2 = 123 => x = 61.5');
   });
 
+  test('Russian word-number arithmetic resolves as a calculation', async ({ page }) => {
+    const last = await sendPrompt(page, 'Сколько будет два плюс два?');
+    await expect(last).toHaveClass(/assistant/);
+    await expect(last).toContainText('два плюс два = 4');
+  });
+
   test('Russian "What is X?" returns the offline concept summary', async ({ page }) => {
     const last = await sendPrompt(page, 'Что такое Википедия?');
     await expect(last).toHaveClass(/assistant/);
