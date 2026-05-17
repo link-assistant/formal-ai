@@ -60,6 +60,18 @@ async function sendPrompt(page, text) {
   return messages.last();
 }
 
+async function setRangeValue(page, testId, value) {
+  await page.locator(`[data-testid="${testId}"]`).evaluate((node, nextValue) => {
+    const valueSetter = Object.getOwnPropertyDescriptor(
+      Object.getPrototypeOf(node),
+      'value',
+    )?.set;
+    valueSetter.call(node, String(nextValue));
+    node.dispatchEvent(new Event('input', { bubbles: true }));
+    node.dispatchEvent(new Event('change', { bubbles: true }));
+  }, value);
+}
+
 test.describe('multilingual chat surface', () => {
   test.beforeEach(async ({ page }) => {
     await disableGreetingVariations(page);
@@ -352,6 +364,126 @@ test.describe('Wikipedia REST fallback', () => {
     await expect(last).toContainText('en.wikipedia.org');
   });
 
+  test('Russian typo resolves to the closest Wikipedia match when guessing is preferred', async ({ page }) => {
+    await page.route('**/api/rest_v1/page/summary/**', async (route) => {
+      const slug = decodeURIComponent(route.request().url().split('/').pop() || '');
+      if (slug === 'Грамматика') {
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify({
+            title: 'Грамматика',
+            type: 'standard',
+            extract: 'Грамматика — раздел лингвистики, изучающий грамматический строй языка.',
+            content_urls: {
+              desktop: { page: 'https://ru.wikipedia.org/wiki/Грамматика' },
+            },
+          }),
+        });
+        return;
+      }
+      await route.fulfill({
+        status: 404,
+        contentType: 'application/json',
+        body: JSON.stringify({ httpCode: 404, httpReason: 'Not Found' }),
+      });
+    });
+
+    await page.route('**/rest.php/v1/search/page**', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          pages: [{ key: 'Грамматика', title: 'Грамматика' }],
+        }),
+      });
+    });
+
+    const last = await sendPrompt(page, 'что такое граматика');
+    await expect(last).toHaveClass(/assistant/);
+    await expect(last).toContainText('Грамматика');
+    await expect(last).toContainText('раздел лингвистики');
+    await expect(last).toContainText(/closest match|ближайшее совпадение/i);
+    await expect(last).not.toContainText('learned symbolic rule for that prompt yet');
+  });
+
+});
+
+test.describe('Issue #82: assistant behavior settings', () => {
+  test.beforeEach(async ({ page }) => {
+    await disableGreetingVariations(page);
+    await page.goto('./');
+    await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
+    await switchToManualMode(page);
+  });
+
+  test('settings sidebar exposes ambiguity, temperature, language, theme, and location controls', async ({ page }) => {
+    const settings = page.locator('[data-testid="sidebar-settings"]');
+    await expect(settings).toBeVisible();
+    await expect(page.locator('[data-testid="setting-guess-probability"]')).toBeVisible();
+    await expect(page.locator('[data-testid="setting-temperature"]')).toBeVisible();
+    await expect(page.locator('[data-testid="setting-ui-language"]')).toBeVisible();
+    await expect(page.locator('[data-testid="setting-theme"]')).toBeVisible();
+    await expect(page.locator('[data-testid="setting-location"]')).toBeVisible();
+
+    await setRangeValue(page, 'setting-temperature', 0);
+    await page.locator('[data-testid="setting-location"]').fill('Berlin');
+    await page.locator('[data-testid="setting-theme"]').selectOption('dark');
+
+    await expect.poll(() =>
+      page.evaluate(() => window.localStorage.getItem('formal-ai.preferences.v1') || ''),
+    ).toContain('theme "dark"');
+    const stored = await page.evaluate(() =>
+      window.localStorage.getItem('formal-ai.preferences.v1') || '',
+    );
+    expect(stored).toContain('temperature "0"');
+    expect(stored).toContain('location "Berlin"');
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  });
+
+  test('low ambiguity guessing asks before using a fuzzy Wikipedia match', async ({ page }) => {
+    await setRangeValue(page, 'setting-guess-probability', 0);
+
+    await page.route('**/api/rest_v1/page/summary/**', async (route) => {
+      const slug = decodeURIComponent(route.request().url().split('/').pop() || '');
+      if (slug === 'Грамматика') {
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify({
+            title: 'Грамматика',
+            type: 'standard',
+            extract: 'Грамматика — раздел лингвистики, изучающий грамматический строй языка.',
+            content_urls: {
+              desktop: { page: 'https://ru.wikipedia.org/wiki/Грамматика' },
+            },
+          }),
+        });
+        return;
+      }
+      await route.fulfill({
+        status: 404,
+        contentType: 'application/json',
+        body: JSON.stringify({ httpCode: 404, httpReason: 'Not Found' }),
+      });
+    });
+
+    await page.route('**/rest.php/v1/search/page**', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          pages: [{ key: 'Грамматика', title: 'Грамматика' }],
+        }),
+      });
+    });
+
+    const last = await sendPrompt(page, 'что такое граматика');
+    await expect(last).toHaveClass(/assistant/);
+    await expect(last).toContainText(/Грамматика/);
+    await expect(last).toContainText(/уточните|Did you mean/i);
+    await expect(last).not.toContainText('раздел лингвистики');
+  });
 });
 
 test.describe('memory export/import', () => {

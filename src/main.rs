@@ -278,6 +278,7 @@ fn run_chat(prompt: &str, format: OutputFormat) -> Result<(), Box<dyn Error>> {
                     role: String::from("user"),
                     content: MessageContent::Text(String::from(prompt)),
                 }],
+                temperature: None,
                 stream: false,
             };
             println!(
@@ -290,6 +291,7 @@ fn run_chat(prompt: &str, format: OutputFormat) -> Result<(), Box<dyn Error>> {
                 model: Some(String::from(DEFAULT_MODEL)),
                 input: serde_json::Value::String(String::from(prompt)),
                 instructions: None,
+                temperature: None,
                 stream: false,
             };
             println!(

@@ -192,6 +192,12 @@ function answerFor(intent, language, options) {
   return entry.text;
 }
 
+function numericPreference(value, fallback, min, max) {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed)) return fallback;
+  return Math.min(max, Math.max(min, parsed));
+}
+
 function detectLanguage(prompt) {
   const text = String(prompt || "");
   for (const ch of text) {
@@ -1595,7 +1601,13 @@ async function searchWikipediaSlug(term, context, language) {
         if (!data || !Array.isArray(data.pages) || data.pages.length === 0)
           continue;
         // Return the key of the top result; callers will fetch the full summary.
-        return { slug: data.pages[0].key, language: lang };
+        const page = data.pages[0];
+        return {
+          slug: page.key,
+          title: page.title || page.key,
+          language: lang,
+          query,
+        };
       } catch (_error) {
         // Ignore and try next query / language host.
       }
@@ -1644,6 +1656,10 @@ async function fetchWikipediaSummary(term, language, context) {
                 extract,
                 url: pageUrl,
                 language: found.language,
+                matchKind: "context_search",
+                matchedSlug: found.slug,
+                matchedTitle: found.title || title,
+                searchQuery: found.query || "",
               };
             }
           }
@@ -1679,6 +1695,8 @@ async function fetchWikipediaSummary(term, language, context) {
           extract,
           url: pageUrl,
           language: host.language,
+          matchKind: "direct",
+          matchedSlug: slug,
         };
       } catch (_error) {
         // Swallow network/parse errors and continue to the next variant.
@@ -1714,6 +1732,10 @@ async function fetchWikipediaSummary(term, language, context) {
               extract,
               url: pageUrl,
               language: found.language,
+              matchKind: "search",
+              matchedSlug: found.slug,
+              matchedTitle: found.title || title,
+              searchQuery: found.query || "",
             };
           }
         }
@@ -1725,7 +1747,39 @@ async function fetchWikipediaSummary(term, language, context) {
   return null;
 }
 
-async function tryWikipediaLookup(prompt, language) {
+function isClosestWikipediaMatch(summary) {
+  return summary && summary.matchKind === "search";
+}
+
+function closestMatchNote(summary, language) {
+  const title = summary && summary.title ? summary.title : "the top result";
+  if (language === "ru") {
+    return `Ближайшее совпадение по поиску Wikipedia: «${title}». Если это не то, уточните запрос.`;
+  }
+  if (language === "zh") {
+    return `Wikipedia 搜索的最接近匹配是“${title}”。如果这不是你的意思，请进一步说明。`;
+  }
+  if (language === "hi") {
+    return `Wikipedia खोज में सबसे नज़दीकी मिलान "${title}" है। अगर आपका मतलब यह नहीं था, तो कृपया स्पष्ट करें।`;
+  }
+  return `Closest match from Wikipedia search: "${title}". If that is not what you meant, clarify the prompt.`;
+}
+
+function wikipediaClarificationMessage(summary, language) {
+  const title = summary && summary.title ? summary.title : "the top result";
+  if (language === "ru") {
+    return `Похоже, вы имели в виду «${title}». Уточните, отвечать по этой статье Wikipedia?`;
+  }
+  if (language === "zh") {
+    return `你是指“${title}”吗？请确认后我再根据这篇 Wikipedia 文章回答。`;
+  }
+  if (language === "hi") {
+    return `क्या आपका मतलब "${title}" था? Wikipedia के इस लेख से उत्तर देने से पहले कृपया स्पष्ट करें।`;
+  }
+  return `Did you mean "${title}"? Please clarify before I answer from that Wikipedia article.`;
+}
+
+async function tryWikipediaLookup(prompt, language, preferences) {
   const query = extractConceptQuery(prompt);
   if (!query) return null;
   // Avoid hitting the network for terms that already resolved in CONCEPTS;
@@ -1740,19 +1794,43 @@ async function tryWikipediaLookup(prompt, language) {
   const wikiContext = query.contextOriginal || query.context;
   const summary = await fetchWikipediaSummary(wikiTerm, language, wikiContext);
   if (!summary) return null;
+  const isClosestMatch = isClosestWikipediaMatch(summary);
+  const guessProbability = numericPreference(
+    preferences && preferences.guessProbability,
+    0.8,
+    0,
+    1,
+  );
   const humanUrl = humanizeUrl(summary.url);
-  const body =
-    `${summary.title}: ${summary.extract}\n\n` +
-    `Source: [${humanUrl}](${summary.url}) (wikipedia).`;
   const evidence = [
     `wikipedia_lookup:${summary.title}`,
     `source:${humanUrl}`,
     `language:${summary.language}`,
   ];
   if (wikiContext) evidence.push(`wikipedia_lookup:context:${wikiContext}`);
+  if (isClosestMatch) {
+    evidence.push(`wikipedia_lookup:closest_match:${summary.title}`);
+  }
+  if (isClosestMatch && guessProbability < 0.5) {
+    evidence.push("ambiguity:ask");
+    return {
+      intent: "clarification",
+      content: wikipediaClarificationMessage(summary, language),
+      confidence: 0.65,
+      evidence,
+    };
+  }
+  const bodyLines = [
+    `${summary.title}: ${summary.extract}\n\n` +
+      `Source: [${humanUrl}](${summary.url}) (wikipedia).`,
+  ];
+  if (isClosestMatch) {
+    bodyLines.push(closestMatchNote(summary, language));
+    evidence.push("ambiguity:guess");
+  }
   return {
     intent: "wikipedia_lookup",
-    content: body,
+    content: bodyLines.join("\n\n"),
     confidence: 0.85,
     evidence,
   };
@@ -2146,7 +2224,8 @@ async function solve(prompt, history, prefs) {
   if (isGreetingPrompt(normalized, prompt)) {
     events.push("rule:greeting");
     steps.push({ step: "match_rule", detail: "greeting" });
-    const randomize = preferences.greetingVariations !== false;
+    const temperature = numericPreference(preferences.temperature, 0.7, 0, 1);
+    const randomize = preferences.greetingVariations !== false && temperature > 0;
     return finalize(events, steps, toolCalls, {
       intent: "greeting",
       content: answerFor("greeting", language, { randomize: randomize }),
@@ -2155,6 +2234,7 @@ async function solve(prompt, history, prefs) {
         "rule:greeting",
         `language:${language}`,
         `variation:${randomize ? "random" : "canonical"}`,
+        `temperature:${temperature.toFixed(2)}`,
       ],
     });
   }
@@ -2226,13 +2306,22 @@ async function solve(prompt, history, prefs) {
   }
 
   steps.push({ step: "invoke_tool", detail: "wikipedia_lookup" });
-  const wiki = await tryWikipediaLookup(prompt, language);
+  const wiki = await tryWikipediaLookup(prompt, language, preferences);
   if (wiki) {
     events.push(`handler:${wiki.intent}`);
     steps.push({ step: "dispatch_handler", detail: "tryWikipediaLookup" });
     toolCalls.push({
       tool: "wikipedia_lookup",
-      inputs: { prompt, language },
+      inputs: {
+        prompt,
+        language,
+        guessProbability: numericPreference(
+          preferences.guessProbability,
+          0.8,
+          0,
+          1,
+        ),
+      },
       outputs: { intent: wiki.intent, confidence: wiki.confidence },
     });
     return finalize(events, steps, toolCalls, wiki);
