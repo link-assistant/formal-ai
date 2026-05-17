@@ -33,11 +33,13 @@ use crate::seed;
 use crate::solver_handler_how::try_how_it_works;
 use crate::solver_handler_units::try_incompatible_units;
 use crate::solver_handlers::{
-    finalize_simple, try_algorithm, try_arithmetic, try_capabilities, try_clarification,
-    try_concept_lookup, try_conversation_memory, try_execution_failure, try_http_fetch,
-    try_ill_formed, try_javascript_execution, try_meta_explanation, try_network_query,
-    try_opinion_question, try_punctuation_only_prompt, try_shell_refusal, try_source_conflict,
-    try_source_refresh, try_translation, try_who_is_question, try_write_script,
+    finalize_simple, try_algorithm, try_arithmetic, try_brainstorming_request, try_capabilities,
+    try_clarification, try_concept_lookup, try_conversation_memory, try_coreference_request,
+    try_execution_failure, try_fact_lookup, try_http_fetch, try_ill_formed,
+    try_javascript_execution, try_meta_explanation, try_network_query, try_opinion_question,
+    try_punctuation_only_prompt, try_roleplay_request, try_shell_refusal, try_source_conflict,
+    try_source_refresh, try_summarization_request, try_translation, try_who_is_question,
+    try_write_script,
 };
 use crate::solver_handlers_policy::{try_kupi_slona, try_physical_action_question};
 use crate::solver_helpers::{
@@ -358,6 +360,21 @@ impl UniversalSolver {
             return Some(answer);
         }
         if let Some(answer) = try_conversation_memory(prompt, &normalized, log) {
+            return Some(answer);
+        }
+        if let Some(answer) = try_summarization_request(prompt, &normalized, log) {
+            return Some(answer);
+        }
+        if let Some(answer) = try_brainstorming_request(prompt, &normalized, log) {
+            return Some(answer);
+        }
+        if let Some(answer) = try_fact_lookup(prompt, &normalized, log) {
+            return Some(answer);
+        }
+        if let Some(answer) = try_coreference_request(prompt, &normalized, log) {
+            return Some(answer);
+        }
+        if let Some(answer) = try_roleplay_request(prompt, &normalized, log) {
             return Some(answer);
         }
         if let Some(answer) = try_capabilities(prompt, &normalized, log) {

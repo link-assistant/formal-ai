@@ -30,7 +30,7 @@ No inline review comments or formal reviews were present in the related PR raw d
 
 Existing case-study files were used as already reviewed repository evidence:
 
-- [`../issue-1/README.md`](../issue-1/README.md): formal AI proof of concept, OpenAI-shaped APIs, symbolic rules, Links Notation data, web demo, and dataset boundaries.
+- [`../issue-1/README.md`](../issue-1/README.md): formal AI deterministic symbolic implementation, OpenAI-shaped APIs, symbolic rules, Links Notation data, web demo, and dataset boundaries.
 - [`../issue-4/README.md`](../issue-4/README.md): GitHub Pages deploy root-cause analysis and CI/CD regression coverage.
 - [`../issue-6/README.md`](../issue-6/README.md): demo-mode default behavior, countdown feedback, and diagnostics gating.
 - [`../issue-8/README.md`](../issue-8/README.md): Telegram interface, code execution metadata, polling CLI, and `lino-arguments`.
@@ -108,7 +108,7 @@ Root documents live at the repository root because they define project-wide dire
 
 The new test checks for the presence of the project-wide documents and key concepts. This is intentionally a documentation completeness test, not a markdown style checker. It catches accidental deletion of the issue-12 deliverables without making prose hard to edit.
 
-The architecture language stays explicit about current versus future state. The current repository is still a deterministic proof of concept. The vision documents describe the target direction and near-term path without claiming that the link-store-backed reasoning loop already exists.
+The architecture language stays explicit about current versus future state. The current repository is still a deterministic deterministic symbolic implementation. The vision documents describe the target direction and near-term path without claiming that the link-store-backed reasoning loop already exists.
 
 ## Solution Plan
 

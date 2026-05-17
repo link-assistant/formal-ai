@@ -41,7 +41,7 @@ let mode = "wasm worker";
 // e.g. when the worker runs from a `file://` URL. The shipped GitHub Pages
 // build always fetches the seed successfully.
 const FALLBACK_IDENTITY_ANSWER =
-  "I am formal-ai, a deterministic symbolic AI proof of concept that answers from local Links Notation rules and OpenAI-compatible API shapes. I do not perform neural inference in this demo.";
+  "I am formal-ai, a deterministic symbolic AI implementation that answers from local Links Notation rules and OpenAI-compatible API shapes. I do not perform neural inference in this demo.";
 
 const FALLBACK_GREETING_ANSWER = "Hi, how may I help you?";
 

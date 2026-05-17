@@ -184,187 +184,187 @@ test formal_ai::library_memory_round_trips_through_links_notation ... ok
 test formal_ai::server_handler_supports_chat_completions_route ... ok
 test formal_ai::telegram_webhook_supports_private_messages ... ok
 test formal_ai::merged_bundle_and_parse_bundle_round_trip_split_files ... ok
-test mvp::agent_isolation::agent_actions_are_appended_to_visible_log ... ignored, MVP-target: every agent action must be appended to a visible action log
-test mvp::agent_isolation::agent_execution_runs_in_isolated_environment ... ignored, MVP-target: agent execution must run inside an isolated sandbox (docker/webvm/sandbox)
-test mvp::agent_isolation::agent_failures_are_visible ... ignored, MVP-target: agent failures should never be silenced — they must surface with a trace link
-test mvp::agent_isolation::agent_mode_does_not_leak_host_env_vars ... ignored, MVP-target: agent mode must not exfiltrate secrets from the host environment
-test mvp::agent_isolation::agent_mode_enforces_time_budget ... ignored, MVP-target: agent mode must enforce a time budget on long-running tasks
-test mvp::agent_isolation::agent_mode_is_off_by_default ... ignored, MVP-target: agent mode must be off by default and refused without explicit opt-in
-test mvp::agent_isolation::agent_mode_opt_in_is_explicit_and_logged ... ignored, MVP-target: agent mode opt-in must be explicit and recorded as a link
-test mvp::agent_isolation::destructive_agent_actions_require_confirmation ... ignored, MVP-target: destructive actions in agent mode require human confirmation
-test mvp::agent_isolation::switching_to_chat_revokes_agent_privileges ... ignored, MVP-target: switching back to chat mode must wipe agent privileges immediately
+test full-scope::agent_isolation::agent_actions_are_appended_to_visible_log ... ignored, tracked requirement: every agent action must be appended to a visible action log
+test full-scope::agent_isolation::agent_execution_runs_in_isolated_environment ... ignored, tracked requirement: agent execution must run inside an isolated sandbox (docker/webvm/sandbox)
+test full-scope::agent_isolation::agent_failures_are_visible ... ignored, tracked requirement: agent failures should never be silenced — they must surface with a trace link
+test full-scope::agent_isolation::agent_mode_does_not_leak_host_env_vars ... ignored, tracked requirement: agent mode must not exfiltrate secrets from the host environment
+test full-scope::agent_isolation::agent_mode_enforces_time_budget ... ignored, tracked requirement: agent mode must enforce a time budget on long-running tasks
+test full-scope::agent_isolation::agent_mode_is_off_by_default ... ignored, tracked requirement: agent mode must be off by default and refused without explicit opt-in
+test full-scope::agent_isolation::agent_mode_opt_in_is_explicit_and_logged ... ignored, tracked requirement: agent mode opt-in must be explicit and recorded as a link
+test full-scope::agent_isolation::destructive_agent_actions_require_confirmation ... ignored, tracked requirement: destructive actions in agent mode require human confirmation
+test full-scope::agent_isolation::switching_to_chat_revokes_agent_privileges ... ignored, tracked requirement: switching back to chat mode must wipe agent privileges immediately
 test ci_cd::workspace_manifest_resolution::resolves_first_publishable_workspace_member ... ok
-test mvp::agent_isolation::chat_prototype_never_runs_user_supplied_shell_commands ... ok
-test mvp::chat_surface::chat_mode_refuses_unbounded_multi_step_actions_without_agent_opt_in ... ignored, MVP-target: bounded chat mode should refuse to run agent-style tasks without explicit opt-in
-test mvp::chat_surface::diagnostics_are_excluded_from_default_user_facing_answers ... ignored, MVP-target: diagnostics-off-by-default should also be expressed at the engine level
-test mvp::agent_isolation::typescript_unavailable_status_is_honest_not_silenced ... ok
-test mvp::chat_surface::every_answer_exposes_a_trace_link_for_inspection ... ignored, MVP-target: chat answers should expose a trace link the user can follow
-test mvp::chat_surface::every_code_answer_declares_execution_status_or_unavailability ... ignored, MVP-target: chat-mode answers must declare the execution status of any generated code
-test mvp::chat_surface::empty_prompt_does_not_crash_and_is_classified_as_unknown ... ok
-test mvp::chat_surface::greeting_ignores_surrounding_punctuation ... ok
+test full-scope::agent_isolation::chat_prototype_never_runs_user_supplied_shell_commands ... ok
+test full-scope::chat_surface::chat_mode_refuses_unbounded_multi_step_actions_without_agent_opt_in ... ignored, tracked requirement: bounded chat mode should refuse to run agent-style tasks without explicit opt-in
+test full-scope::chat_surface::diagnostics_are_excluded_from_default_user_facing_answers ... ignored, tracked requirement: diagnostics-off-by-default should also be expressed at the engine level
+test full-scope::agent_isolation::typescript_unavailable_status_is_honest_not_silenced ... ok
+test full-scope::chat_surface::every_answer_exposes_a_trace_link_for_inspection ... ignored, tracked requirement: chat answers should expose a trace link the user can follow
+test full-scope::chat_surface::every_code_answer_declares_execution_status_or_unavailability ... ignored, tracked requirement: chat-mode answers must declare the execution status of any generated code
+test full-scope::chat_surface::empty_prompt_does_not_crash_and_is_classified_as_unknown ... ok
+test full-scope::chat_surface::greeting_ignores_surrounding_punctuation ... ok
 test formal_ai::telegram_webhook_supports_public_chat_code_replies ... ok
-test mvp::chat_surface::answers_are_deterministic_for_identical_prompts ... ok
-test mvp::chat_surface::greeting_matching_is_case_insensitive ... ok
-test mvp::chat_surface::evidence_links_always_include_prompt_and_intent_links ... ok
-test mvp::chat_surface::greeting_prompt_returns_a_greeting_intent ... ok
-test mvp::chat_surface::unknown_intent_offers_a_path_to_extend_the_network ... ignored, MVP-target: unknown intents should propose a follow-up that creates a Links Notation seed
-test mvp::chat_surface::user_messages_are_recorded_as_impulse_events ... ignored, MVP-target: assistant should record the user message as an `impulse` link before answering
-test mvp::chat_surface::identity_question_returns_identity_intent ... ok
-test mvp::chat_surface::links_notation_trace_is_present_for_every_answer ... ok
-test mvp::code_generation::code_answers_declare_isolation_level ... ignored, MVP-target: code answers should declare an isolation level for execution evidence
-test mvp::code_generation::code_answers_include_execution_links_in_notation ... ignored, MVP-target: code answers should include execution metadata in Links Notation form
-test mvp::code_generation::execution_failures_are_reported_with_full_trace ... ignored, MVP-target: failing generated code must be re-emitted with the failure trace, not silently
-test mvp::chat_surface::unknown_prompt_returns_zero_confidence_fallback_intent ... ok
-test mvp::code_generation::c_hello_world_seed_compiles_and_runs ... ok
-test mvp::chat_surface::identity_examples_cover_known_phrasings ... ok
-test mvp::chat_surface::whitespace_only_prompt_is_classified_as_unknown ... ok
-test mvp::code_generation::go_alias_golang_is_supported ... ok
-test mvp::code_generation::go_hello_world_seed_runs ... ok
-test mvp::code_generation::hello_world_without_recognized_language_falls_back_to_unknown ... ok
-test mvp::code_generation::javascript_alias_node_is_supported ... ok
-test mvp::code_generation::javascript_hello_world_seed_runs ... ok
-test mvp::code_generation::sorting_algorithm_request_returns_code_and_tests ... ignored, MVP-target: requesting `sorting algorithm` should produce reviewable code and tests
-test mvp::code_generation::top_ten_popular_languages_each_have_a_hello_world_seed ... ignored, MVP-target: hello-world should be available in the top 10 popular languages
-test mvp::code_generation::translating_a_program_between_languages_keeps_semantics ... ignored, MVP-target: translation between programming languages should keep semantics
-test mvp::code_generation::python_hello_world_seed_runs ... ok
-test mvp::code_generation::rust_alias_rs_is_supported ... ok
-test mvp::links_network::concepts_are_unique_and_referenced_by_id ... ignored, MVP-target: each concept must be unique in the network and reused by reference
-test mvp::links_network::dynamic_type_system_publishes_subtype_chains ... ignored, MVP-target: dynamic type system should publish Type -> SubType chains in the network
-test mvp::links_network::every_answer_has_a_trace_link_pointer ... ignored, MVP-target: every answer must publish a trace link pointing to a reasoning record
-test mvp::code_generation::rust_hello_world_seed_compiles_and_runs ... ok
-test mvp::links_network::distinct_prompts_lead_to_distinct_links_traces ... ok
-test mvp::code_generation::typescript_hello_world_seed_reports_unavailable_execution ... ok
-test mvp::links_network::every_fact_carries_a_source_link ... ignored, MVP-target: facts should be recorded with the source link that introduced them
-test mvp::links_network::history_is_append_only ... ignored, MVP-target: history must be append-only — earlier records cannot be mutated, only superseded
-test mvp::links_network::ill_formed_links_notation_input_is_rejected ... ignored, MVP-target: the engine should reject ill-formed Links Notation submissions
-test mvp::links_network::knowledge_dataset_declares_schema_version ... ignored, MVP-target: knowledge dataset should declare a schema version link for migrations
-test mvp::links_network::knowledge_export_is_reducible_to_doublet_links ... ignored, MVP-target: every record in the network must be reducible to doublet links
-test mvp::links_network::every_answer_includes_links_notation_trace ... ok
-test mvp::links_network::knowledge_export_is_non_empty_links_notation ... ok
-test mvp::links_network::every_answer_records_intent_in_evidence_links ... ok
-test mvp::links_network::knowledge_export_uses_untyped_links_notation_only ... ok
-test mvp::links_network::records_are_addressable_by_stable_id ... ignored, MVP-target: links network must support querying records via a stable id
-test mvp::links_network::trace_record_lists_ordered_reasoning_steps ... ignored, MVP-target: trace records must list ordered reasoning steps in Links Notation
-test mvp::multilingual::chinese_concept_question_returns_concept_lookup_intent ... ok
-test mvp::multilingual::chinese_greeting_returns_greeting_intent ... ok
-test mvp::multilingual::english_greeting_is_handled_today ... ok
+test full-scope::chat_surface::answers_are_deterministic_for_identical_prompts ... ok
+test full-scope::chat_surface::greeting_matching_is_case_insensitive ... ok
+test full-scope::chat_surface::evidence_links_always_include_prompt_and_intent_links ... ok
+test full-scope::chat_surface::greeting_prompt_returns_a_greeting_intent ... ok
+test full-scope::chat_surface::unknown_intent_offers_a_path_to_extend_the_network ... ignored, tracked requirement: unknown intents should propose a follow-up that creates a Links Notation seed
+test full-scope::chat_surface::user_messages_are_recorded_as_impulse_events ... ignored, tracked requirement: assistant should record the user message as an `impulse` link before answering
+test full-scope::chat_surface::identity_question_returns_identity_intent ... ok
+test full-scope::chat_surface::links_notation_trace_is_present_for_every_answer ... ok
+test full-scope::code_generation::code_answers_declare_isolation_level ... ignored, tracked requirement: code answers should declare an isolation level for execution evidence
+test full-scope::code_generation::code_answers_include_execution_links_in_notation ... ignored, tracked requirement: code answers should include execution metadata in Links Notation form
+test full-scope::code_generation::execution_failures_are_reported_with_full_trace ... ignored, tracked requirement: failing generated code must be re-emitted with the failure trace, not silently
+test full-scope::chat_surface::unknown_prompt_returns_zero_confidence_fallback_intent ... ok
+test full-scope::code_generation::c_hello_world_seed_compiles_and_runs ... ok
+test full-scope::chat_surface::identity_examples_cover_known_phrasings ... ok
+test full-scope::chat_surface::whitespace_only_prompt_is_classified_as_unknown ... ok
+test full-scope::code_generation::go_alias_golang_is_supported ... ok
+test full-scope::code_generation::go_hello_world_seed_runs ... ok
+test full-scope::code_generation::hello_world_without_recognized_language_falls_back_to_unknown ... ok
+test full-scope::code_generation::javascript_alias_node_is_supported ... ok
+test full-scope::code_generation::javascript_hello_world_seed_runs ... ok
+test full-scope::code_generation::sorting_algorithm_request_returns_code_and_tests ... ignored, tracked requirement: requesting `sorting algorithm` should produce reviewable code and tests
+test full-scope::code_generation::top_ten_popular_languages_each_have_a_hello_world_seed ... ignored, tracked requirement: hello-world should be available in the top 10 popular languages
+test full-scope::code_generation::translating_a_program_between_languages_keeps_semantics ... ignored, tracked requirement: translation between programming languages should keep semantics
+test full-scope::code_generation::python_hello_world_seed_runs ... ok
+test full-scope::code_generation::rust_alias_rs_is_supported ... ok
+test full-scope::links_network::concepts_are_unique_and_referenced_by_id ... ignored, tracked requirement: each concept must be unique in the network and reused by reference
+test full-scope::links_network::dynamic_type_system_publishes_subtype_chains ... ignored, tracked requirement: dynamic type system should publish Type -> SubType chains in the network
+test full-scope::links_network::every_answer_has_a_trace_link_pointer ... ignored, tracked requirement: every answer must publish a trace link pointing to a reasoning record
+test full-scope::code_generation::rust_hello_world_seed_compiles_and_runs ... ok
+test full-scope::links_network::distinct_prompts_lead_to_distinct_links_traces ... ok
+test full-scope::code_generation::typescript_hello_world_seed_reports_unavailable_execution ... ok
+test full-scope::links_network::every_fact_carries_a_source_link ... ignored, tracked requirement: facts should be recorded with the source link that introduced them
+test full-scope::links_network::history_is_append_only ... ignored, tracked requirement: history must be append-only — earlier records cannot be mutated, only superseded
+test full-scope::links_network::ill_formed_links_notation_input_is_rejected ... ignored, tracked requirement: the engine should reject ill-formed Links Notation submissions
+test full-scope::links_network::knowledge_dataset_declares_schema_version ... ignored, tracked requirement: knowledge dataset should declare a schema version link for migrations
+test full-scope::links_network::knowledge_export_is_reducible_to_doublet_links ... ignored, tracked requirement: every record in the network must be reducible to doublet links
+test full-scope::links_network::every_answer_includes_links_notation_trace ... ok
+test full-scope::links_network::knowledge_export_is_non_empty_links_notation ... ok
+test full-scope::links_network::every_answer_records_intent_in_evidence_links ... ok
+test full-scope::links_network::knowledge_export_uses_untyped_links_notation_only ... ok
+test full-scope::links_network::records_are_addressable_by_stable_id ... ignored, tracked requirement: links network must support querying records via a stable id
+test full-scope::links_network::trace_record_lists_ordered_reasoning_steps ... ignored, tracked requirement: trace records must list ordered reasoning steps in Links Notation
+test full-scope::multilingual::chinese_concept_question_returns_concept_lookup_intent ... ok
+test full-scope::multilingual::chinese_greeting_returns_greeting_intent ... ok
+test full-scope::multilingual::english_greeting_is_handled_today ... ok
 test data_files::lino_data_files_are_parseable_human_readable_and_bounded ... ok
-test mvp::multilingual::chinese_identity_question_returns_identity_intent ... ok
-test mvp::code_generation::python_alias_py_is_supported ... ok
-test mvp::multilingual::every_multilingual_answer_declares_detected_language_link ... ok
-test mvp::multilingual::hindi_concept_question_returns_concept_lookup_intent ... ok
-test mvp::multilingual::hindi_greeting_returns_greeting_intent ... ok
-test mvp::multilingual::hindi_identity_question_returns_identity_intent ... ok
-test mvp::multilingual::russian_greeting_returns_greeting_intent ... ok
-test mvp::multilingual::russian_concept_question_returns_concept_lookup_intent ... ok
-test mvp::multilingual::unknown_language_prompts_fall_back_to_english_with_unknown_language_link ... ok
-test mvp::multilingual::russian_greeting_reply_is_in_russian ... ok
-test mvp::multilingual::russian_identity_question_returns_identity_intent ... ok
-test mvp::network_visualization::answers_already_carry_links_notation_for_visualization ... ok
-test mvp::network_visualization::graph_endpoint_filters_by_trace_id ... ok
-test mvp::network_visualization::graph_endpoint_returns_nodes_and_edges ... ok
-test mvp::network_visualization::graph_edges_describe_doublet_links ... ok
-test mvp::network_visualization::graph_endpoint_supports_dot_export ... ok
-test mvp::network_visualization::graph_endpoint_returns_404_for_unknown_trace ... ok
-test mvp::network_visualization::web_demo_chat_works_even_when_graph_is_disabled ... ignored, MVP-target: web demo must render the graph alongside chat but never block chat replies
-test mvp::openai_compatibility::authenticated_routes_accept_bearer_token ... ignored, MVP-target: an authenticated API surface should accept Bearer tokens
-test mvp::openai_compatibility::chat_completion_refuses_tool_call_without_agent_mode ... ignored, MVP-target: chat completions should refuse to call shell tools unless agent mode is opted in
-test mvp::openai_compatibility::chat_completion_accepts_multipart_content ... ok
-test mvp::openai_compatibility::chat_completion_reports_token_usage ... ok
-test mvp::openai_compatibility::chat_completion_round_trips_user_prompt_to_assistant_response ... ok
-test mvp::network_visualization::graph_nodes_carry_minimum_metadata ... ok
-test mvp::links_network::knowledge_records_parse_as_links_notation ... ok
-test mvp::openai_compatibility::chat_completion_supports_multi_turn_conversation ... ok
-test mvp::openai_compatibility::http_chat_completions_route_rejects_invalid_json ... ok
-test mvp::openai_compatibility::http_responses_declare_a_content_type ... ok
-test mvp::openai_compatibility::http_chat_completions_route_returns_completion_object ... ok
-test mvp::openai_compatibility::http_health_endpoint_returns_ok ... ok
-test mvp::openai_compatibility::http_models_endpoint_lists_at_least_one_model ... ok
-test mvp::openai_compatibility::http_unknown_route_returns_404 ... ok
-test mvp::openai_compatibility::rate_limit_metadata_is_exposed ... ok
-test mvp::openai_compatibility::responses_api_attaches_trace_link ... ok
-test mvp::reasoning_loop::confidence_reflects_corroborating_evidence ... ignored, MVP-target: confidence should reflect the number of corroborating links in the network
-test mvp::reasoning_loop::answers_expose_their_intent_explicitly ... ok
-test mvp::openai_compatibility::responses_endpoint_returns_completed_response ... ok
-test mvp::reasoning_loop::loop_terminates_on_unsolvable_questions ... ignored, MVP-target: the loop must terminate and refuse to spin forever on unsolvable questions
-test mvp::reasoning_loop::step_1_prompt_is_recorded_as_impulse ... ignored, MVP-target: step 1 — every prompt should be recorded as an impulse link before reasoning
-test mvp::reasoning_loop::step_2_local_search_runs_before_external_calls ... ignored, MVP-target: step 2 — local network search should be tried before any external lookup
-test mvp::openai_compatibility::http_responses_route_returns_response_object ... ok
-test mvp::reasoning_loop::step_3_external_search_kicks_in_when_local_is_insufficient ... ignored, MVP-target: step 3 — when local search is insufficient, the loop must fall back to external sources
-test mvp::reasoning_loop::step_4_complex_requests_get_decomposed ... ignored, MVP-target: step 4 — complex requests should be decomposed into sub-impulses
-test mvp::openai_compatibility::streaming_chat_completion_emits_server_sent_events ... ok
-test mvp::reasoning_loop::step_5_multiple_candidates_are_generated ... ignored, MVP-target: step 5 — multiple candidate answers must be generated and recorded
-test mvp::reasoning_loop::step_6_candidates_are_validated_against_constraints ... ignored, MVP-target: step 6 — candidates must be validated against constraints from the network
-test mvp::reasoning_loop::answers_are_repeatable_for_the_same_prompt ... ok
-test mvp::reasoning_loop::step_7_smallest_sufficient_answer_is_selected ... ignored, MVP-target: step 7 — the smallest sufficient answer should be selected
-test mvp::reasoning_loop::step_8_full_trace_is_stored_and_linked ... ignored, MVP-target: step 8 — the complete trace must be stored and linked back to the answer
-test mvp::reasoning_loop::step_9_reply_is_returned_with_trace_pointer ... ignored, MVP-target: step 9 — final reply must be returned along with the trace pointer
-test mvp::reasoning_loop::known_prompts_resolve_via_local_knowledge ... ok
-test mvp::reasoning_paths::arithmetic_handles_basic_addition ... ok
-test mvp::reasoning_paths::arithmetic_handles_decimals ... ok
-test mvp::reasoning_loop::unknown_prompts_acknowledge_inability_to_answer ... ok
-test mvp::reasoning_paths::arithmetic_handles_word_operators ... ok
-test mvp::reasoning_paths::arithmetic_never_fires_on_plain_greetings ... ok
-test mvp::reasoning_paths::arithmetic_reports_division_by_zero_without_panicking ... ok
-test mvp::reasoning_paths::concept_lookup_answers_what_is_wikipedia ... ok
-test mvp::reasoning_paths::arithmetic_handles_division_remainder ... ok
-test mvp::reasoning_paths::arithmetic_handles_parentheses_and_precedence ... ok
-test mvp::reasoning_paths::arithmetic_records_calculation_event_in_evidence_log ... ok
-test mvp::reasoning_paths::concept_lookup_does_not_fire_for_identity_questions ... ok
-test mvp::reasoning_paths::concept_lookup_handles_tell_me_about_links_notation ... ok
-test mvp::reasoning_paths::concept_lookup_handles_what_does_x_mean ... ok
-test mvp::reasoning_paths::concept_lookup_includes_source_citation ... ok
-test mvp::reasoning_paths::concept_lookup_records_concept_event_in_evidence_log ... ok
-test mvp::reasoning_paths::every_specialized_handler_emits_a_trace_link ... ok
-test mvp::reasoning_paths::javascript_request_records_execution_status_event ... ok
-test mvp::reasoning_paths::javascript_request_returns_explicit_unavailability ... ok
-test mvp::reasoning_paths::prior_turns_appear_in_evidence_log ... ok
-test mvp::reasoning_paths::javascript_handler_does_not_intercept_unrelated_code_blocks ... ok
-test mvp::reasoning_paths::solve_with_history_falls_through_for_unrelated_prompts ... ok
-test mvp::source_cache::cache_flush_is_explicit_and_auditable ... ignored, MVP-target: a request to flush the source cache should be an explicit, auditable action
-test mvp::source_cache::cached_sources_include_content_hash ... ignored, MVP-target: cached sources must include the original content hash for verification
-test mvp::reasoning_paths::solve_with_history_recalls_name_across_turns ... ok
-test mvp::source_cache::conflicting_sources_are_surfaced ... ignored, MVP-target: sources that disagree must be surfaced rather than silently picking one
-test mvp::source_cache::external_lookups_record_source_url ... ignored, MVP-target: external lookups should record a source link with the original URL
-test mvp::source_cache::offline_mode_disables_external_lookups ... ignored, MVP-target: offline mode should disable external lookups and prefer cached evidence
-test mvp::reasoning_paths::solve_with_history_recalls_last_question ... ok
-test mvp::source_cache::repeated_lookups_hit_the_cache ... ignored, MVP-target: repeated lookups within the TTL must hit the cache and avoid the network
-test mvp::source_cache::source_links_carry_fetched_at_timestamp ... ignored, MVP-target: source links must include a fetched_at timestamp for TTL tracking
-test mvp::source_cache::stale_sources_are_refreshed ... ignored, MVP-target: stale sources should be refreshed when older than the 2-month TTL
-test mvp::reasoning_paths::solve_without_history_matches_legacy_entry_point ... ok
-test mvp::source_cache::prototype_does_not_advertise_external_fetches_for_local_prompts ... ok
-test mvp::telegram_surface::public_chat_silent_when_not_addressed ... ok
-test mvp::reasoning_paths::solve_with_history_summarizes_conversation ... ok
-test mvp::telegram_surface::private_chat_code_replies_use_html_pre_code ... ok
-test mvp::telegram_surface::public_supergroup_code_answer_remains_in_html_format ... ok
-test mvp::telegram_surface::private_chat_messages_get_answered ... ok
-test mvp::telegram_surface::telegram_answers_include_trace_link ... ignored, MVP-target: Telegram answers should include a trace link the user can tap to inspect
-test mvp::telegram_surface::public_chat_answers_when_mentioned ... ok
-test mvp::telegram_surface::replies_to_bot_in_public_chat_are_answered ... ok
-test mvp::telegram_surface::telegram_code_replies_escape_html_entities ... ok
-test mvp::translation_via_links::cross_language_code_translation_preserves_semantics ... ignored, MVP-target: cross-language code translation must preserve runnable semantics
-test mvp::translation_via_links::synonyms_across_languages_share_meaning ... ignored, MVP-target: synonyms across languages should hash to the same meaning link
-test mvp::telegram_surface::telegram_webhook_rejects_invalid_payload_gracefully ... ok
-test mvp::telegram_surface::telegram_long_replies_are_chunked ... ok
-test mvp::translation_via_links::translation_declares_source_and_target_language_tags ... ignored, MVP-target: translation must declare both source and target language tags
-test mvp::telegram_surface::telegram_response_always_declares_html_parse_mode ... ok
-test mvp::translation_via_links::translation_preserves_meaning_id_across_languages ... ignored, MVP-target: translation between human languages should preserve the meaning link id
-test mvp::translation_via_links::translation_request_returns_target_surface_form ... ignored, MVP-target: translation request must return the target-language surface form
-test mvp::translation_via_links::translation_trace_includes_intermediate_meaning ... ignored, MVP-target: translation traces must include the intermediate Links Notation meaning record
-test mvp::translation_via_links::untranslatable_concepts_are_flagged ... ignored, MVP-target: untranslatable concepts must be flagged rather than approximated silently
-test mvp::transparent_state::diagnostic_ids_never_leak_into_default_chat_prose ... ignored, MVP-target: diagnostic link ids must not leak into default chat prose
-test mvp::transparent_state::diagnostic_mode_can_be_enabled_per_message ... ignored, MVP-target: the user must be able to opt-in to diagnostic mode and see all links inline
-test mvp::telegram_surface::telegram_webhook_ignores_updates_without_text ... ok
-test mvp::transparent_state::export_network_returns_links_notation_snapshot ... ignored, MVP-target: 'export network' should return a downloadable Links Notation snapshot
-test mvp::transparent_state::forget_request_requires_explicit_retraction_protocol ... ignored, MVP-target: 'forget X' must be refused unless the user invokes the explicit retraction protocol
-test mvp::translation_via_links::every_answer_publishes_a_links_notation_trace ... ok
-test mvp::transparent_state::evidence_links_are_exposed_through_the_public_struct ... ok
-test mvp::transparent_state::list_my_facts_filters_by_user ... ignored, MVP-target: 'list my facts' should return only facts the current user contributed
-test mvp::transparent_state::querying_a_concept_returns_its_links ... ignored, MVP-target: 'what do you know about X' should list links involving X
-test mvp::transparent_state::querying_the_network_returns_snapshot ... ignored, MVP-target: querying 'show me the network' should return a Links Notation snapshot
-test mvp::transparent_state::why_meta_question_explains_previous_answer ... ignored, MVP-target: 'why' meta-questions should explain the previous answer using links
-test mvp::transparent_state::links_notation_trace_is_always_present ... ok
-test mvp::transparent_state::knowledge_export_is_inspectable_at_runtime ... ok
+test full-scope::multilingual::chinese_identity_question_returns_identity_intent ... ok
+test full-scope::code_generation::python_alias_py_is_supported ... ok
+test full-scope::multilingual::every_multilingual_answer_declares_detected_language_link ... ok
+test full-scope::multilingual::hindi_concept_question_returns_concept_lookup_intent ... ok
+test full-scope::multilingual::hindi_greeting_returns_greeting_intent ... ok
+test full-scope::multilingual::hindi_identity_question_returns_identity_intent ... ok
+test full-scope::multilingual::russian_greeting_returns_greeting_intent ... ok
+test full-scope::multilingual::russian_concept_question_returns_concept_lookup_intent ... ok
+test full-scope::multilingual::unknown_language_prompts_fall_back_to_english_with_unknown_language_link ... ok
+test full-scope::multilingual::russian_greeting_reply_is_in_russian ... ok
+test full-scope::multilingual::russian_identity_question_returns_identity_intent ... ok
+test full-scope::network_visualization::answers_already_carry_links_notation_for_visualization ... ok
+test full-scope::network_visualization::graph_endpoint_filters_by_trace_id ... ok
+test full-scope::network_visualization::graph_endpoint_returns_nodes_and_edges ... ok
+test full-scope::network_visualization::graph_edges_describe_doublet_links ... ok
+test full-scope::network_visualization::graph_endpoint_supports_dot_export ... ok
+test full-scope::network_visualization::graph_endpoint_returns_404_for_unknown_trace ... ok
+test full-scope::network_visualization::web_demo_chat_works_even_when_graph_is_disabled ... ignored, tracked requirement: web demo must render the graph alongside chat but never block chat replies
+test full-scope::openai_compatibility::authenticated_routes_accept_bearer_token ... ignored, tracked requirement: an authenticated API surface should accept Bearer tokens
+test full-scope::openai_compatibility::chat_completion_refuses_tool_call_without_agent_mode ... ignored, tracked requirement: chat completions should refuse to call shell tools unless agent mode is opted in
+test full-scope::openai_compatibility::chat_completion_accepts_multipart_content ... ok
+test full-scope::openai_compatibility::chat_completion_reports_token_usage ... ok
+test full-scope::openai_compatibility::chat_completion_round_trips_user_prompt_to_assistant_response ... ok
+test full-scope::network_visualization::graph_nodes_carry_minimum_metadata ... ok
+test full-scope::links_network::knowledge_records_parse_as_links_notation ... ok
+test full-scope::openai_compatibility::chat_completion_supports_multi_turn_conversation ... ok
+test full-scope::openai_compatibility::http_chat_completions_route_rejects_invalid_json ... ok
+test full-scope::openai_compatibility::http_responses_declare_a_content_type ... ok
+test full-scope::openai_compatibility::http_chat_completions_route_returns_completion_object ... ok
+test full-scope::openai_compatibility::http_health_endpoint_returns_ok ... ok
+test full-scope::openai_compatibility::http_models_endpoint_lists_at_least_one_model ... ok
+test full-scope::openai_compatibility::http_unknown_route_returns_404 ... ok
+test full-scope::openai_compatibility::rate_limit_metadata_is_exposed ... ok
+test full-scope::openai_compatibility::responses_api_attaches_trace_link ... ok
+test full-scope::reasoning_loop::confidence_reflects_corroborating_evidence ... ignored, tracked requirement: confidence should reflect the number of corroborating links in the network
+test full-scope::reasoning_loop::answers_expose_their_intent_explicitly ... ok
+test full-scope::openai_compatibility::responses_endpoint_returns_completed_response ... ok
+test full-scope::reasoning_loop::loop_terminates_on_unsolvable_questions ... ignored, tracked requirement: the loop must terminate and refuse to spin forever on unsolvable questions
+test full-scope::reasoning_loop::step_1_prompt_is_recorded_as_impulse ... ignored, tracked requirement: step 1 — every prompt should be recorded as an impulse link before reasoning
+test full-scope::reasoning_loop::step_2_local_search_runs_before_external_calls ... ignored, tracked requirement: step 2 — local network search should be tried before any external lookup
+test full-scope::openai_compatibility::http_responses_route_returns_response_object ... ok
+test full-scope::reasoning_loop::step_3_external_search_kicks_in_when_local_is_insufficient ... ignored, tracked requirement: step 3 — when local search is insufficient, the loop must fall back to external sources
+test full-scope::reasoning_loop::step_4_complex_requests_get_decomposed ... ignored, tracked requirement: step 4 — complex requests should be decomposed into sub-impulses
+test full-scope::openai_compatibility::streaming_chat_completion_emits_server_sent_events ... ok
+test full-scope::reasoning_loop::step_5_multiple_candidates_are_generated ... ignored, tracked requirement: step 5 — multiple candidate answers must be generated and recorded
+test full-scope::reasoning_loop::step_6_candidates_are_validated_against_constraints ... ignored, tracked requirement: step 6 — candidates must be validated against constraints from the network
+test full-scope::reasoning_loop::answers_are_repeatable_for_the_same_prompt ... ok
+test full-scope::reasoning_loop::step_7_smallest_sufficient_answer_is_selected ... ignored, tracked requirement: step 7 — the smallest sufficient answer should be selected
+test full-scope::reasoning_loop::step_8_full_trace_is_stored_and_linked ... ignored, tracked requirement: step 8 — the complete trace must be stored and linked back to the answer
+test full-scope::reasoning_loop::step_9_reply_is_returned_with_trace_pointer ... ignored, tracked requirement: step 9 — final reply must be returned along with the trace pointer
+test full-scope::reasoning_loop::known_prompts_resolve_via_local_knowledge ... ok
+test full-scope::reasoning_paths::arithmetic_handles_basic_addition ... ok
+test full-scope::reasoning_paths::arithmetic_handles_decimals ... ok
+test full-scope::reasoning_loop::unknown_prompts_acknowledge_inability_to_answer ... ok
+test full-scope::reasoning_paths::arithmetic_handles_word_operators ... ok
+test full-scope::reasoning_paths::arithmetic_never_fires_on_plain_greetings ... ok
+test full-scope::reasoning_paths::arithmetic_reports_division_by_zero_without_panicking ... ok
+test full-scope::reasoning_paths::concept_lookup_answers_what_is_wikipedia ... ok
+test full-scope::reasoning_paths::arithmetic_handles_division_remainder ... ok
+test full-scope::reasoning_paths::arithmetic_handles_parentheses_and_precedence ... ok
+test full-scope::reasoning_paths::arithmetic_records_calculation_event_in_evidence_log ... ok
+test full-scope::reasoning_paths::concept_lookup_does_not_fire_for_identity_questions ... ok
+test full-scope::reasoning_paths::concept_lookup_handles_tell_me_about_links_notation ... ok
+test full-scope::reasoning_paths::concept_lookup_handles_what_does_x_mean ... ok
+test full-scope::reasoning_paths::concept_lookup_includes_source_citation ... ok
+test full-scope::reasoning_paths::concept_lookup_records_concept_event_in_evidence_log ... ok
+test full-scope::reasoning_paths::every_specialized_handler_emits_a_trace_link ... ok
+test full-scope::reasoning_paths::javascript_request_records_execution_status_event ... ok
+test full-scope::reasoning_paths::javascript_request_returns_explicit_unavailability ... ok
+test full-scope::reasoning_paths::prior_turns_appear_in_evidence_log ... ok
+test full-scope::reasoning_paths::javascript_handler_does_not_intercept_unrelated_code_blocks ... ok
+test full-scope::reasoning_paths::solve_with_history_falls_through_for_unrelated_prompts ... ok
+test full-scope::source_cache::cache_flush_is_explicit_and_auditable ... ignored, tracked requirement: a request to flush the source cache should be an explicit, auditable action
+test full-scope::source_cache::cached_sources_include_content_hash ... ignored, tracked requirement: cached sources must include the original content hash for verification
+test full-scope::reasoning_paths::solve_with_history_recalls_name_across_turns ... ok
+test full-scope::source_cache::conflicting_sources_are_surfaced ... ignored, tracked requirement: sources that disagree must be surfaced rather than silently picking one
+test full-scope::source_cache::external_lookups_record_source_url ... ignored, tracked requirement: external lookups should record a source link with the original URL
+test full-scope::source_cache::offline_mode_disables_external_lookups ... ignored, tracked requirement: offline mode should disable external lookups and prefer cached evidence
+test full-scope::reasoning_paths::solve_with_history_recalls_last_question ... ok
+test full-scope::source_cache::repeated_lookups_hit_the_cache ... ignored, tracked requirement: repeated lookups within the TTL must hit the cache and avoid the network
+test full-scope::source_cache::source_links_carry_fetched_at_timestamp ... ignored, tracked requirement: source links must include a fetched_at timestamp for TTL tracking
+test full-scope::source_cache::stale_sources_are_refreshed ... ignored, tracked requirement: stale sources should be refreshed when older than the 2-month TTL
+test full-scope::reasoning_paths::solve_without_history_matches_legacy_entry_point ... ok
+test full-scope::source_cache::prototype_does_not_advertise_external_fetches_for_local_prompts ... ok
+test full-scope::telegram_surface::public_chat_silent_when_not_addressed ... ok
+test full-scope::reasoning_paths::solve_with_history_summarizes_conversation ... ok
+test full-scope::telegram_surface::private_chat_code_replies_use_html_pre_code ... ok
+test full-scope::telegram_surface::public_supergroup_code_answer_remains_in_html_format ... ok
+test full-scope::telegram_surface::private_chat_messages_get_answered ... ok
+test full-scope::telegram_surface::telegram_answers_include_trace_link ... ignored, tracked requirement: Telegram answers should include a trace link the user can tap to inspect
+test full-scope::telegram_surface::public_chat_answers_when_mentioned ... ok
+test full-scope::telegram_surface::replies_to_bot_in_public_chat_are_answered ... ok
+test full-scope::telegram_surface::telegram_code_replies_escape_html_entities ... ok
+test full-scope::translation_via_links::cross_language_code_translation_preserves_semantics ... ignored, tracked requirement: cross-language code translation must preserve runnable semantics
+test full-scope::translation_via_links::synonyms_across_languages_share_meaning ... ignored, tracked requirement: synonyms across languages should hash to the same meaning link
+test full-scope::telegram_surface::telegram_webhook_rejects_invalid_payload_gracefully ... ok
+test full-scope::telegram_surface::telegram_long_replies_are_chunked ... ok
+test full-scope::translation_via_links::translation_declares_source_and_target_language_tags ... ignored, tracked requirement: translation must declare both source and target language tags
+test full-scope::telegram_surface::telegram_response_always_declares_html_parse_mode ... ok
+test full-scope::translation_via_links::translation_preserves_meaning_id_across_languages ... ignored, tracked requirement: translation between human languages should preserve the meaning link id
+test full-scope::translation_via_links::translation_request_returns_target_surface_form ... ignored, tracked requirement: translation request must return the target-language surface form
+test full-scope::translation_via_links::translation_trace_includes_intermediate_meaning ... ignored, tracked requirement: translation traces must include the intermediate Links Notation meaning record
+test full-scope::translation_via_links::untranslatable_concepts_are_flagged ... ignored, tracked requirement: untranslatable concepts must be flagged rather than approximated silently
+test full-scope::transparent_state::diagnostic_ids_never_leak_into_default_chat_prose ... ignored, tracked requirement: diagnostic link ids must not leak into default chat prose
+test full-scope::transparent_state::diagnostic_mode_can_be_enabled_per_message ... ignored, tracked requirement: the user must be able to opt-in to diagnostic mode and see all links inline
+test full-scope::telegram_surface::telegram_webhook_ignores_updates_without_text ... ok
+test full-scope::transparent_state::export_network_returns_links_notation_snapshot ... ignored, tracked requirement: 'export network' should return a downloadable Links Notation snapshot
+test full-scope::transparent_state::forget_request_requires_explicit_retraction_protocol ... ignored, tracked requirement: 'forget X' must be refused unless the user invokes the explicit retraction protocol
+test full-scope::translation_via_links::every_answer_publishes_a_links_notation_trace ... ok
+test full-scope::transparent_state::evidence_links_are_exposed_through_the_public_struct ... ok
+test full-scope::transparent_state::list_my_facts_filters_by_user ... ignored, tracked requirement: 'list my facts' should return only facts the current user contributed
+test full-scope::transparent_state::querying_a_concept_returns_its_links ... ignored, tracked requirement: 'what do you know about X' should list links involving X
+test full-scope::transparent_state::querying_the_network_returns_snapshot ... ignored, tracked requirement: querying 'show me the network' should return a Links Notation snapshot
+test full-scope::transparent_state::why_meta_question_explains_previous_answer ... ignored, tracked requirement: 'why' meta-questions should explain the previous answer using links
+test full-scope::transparent_state::links_notation_trace_is_always_present ... ok
+test full-scope::transparent_state::knowledge_export_is_inspectable_at_runtime ... ok
 
 test result: ok. 159 passed; 0 failed; 69 ignored; 0 measured; 0 filtered out; finished in 0.03s
 

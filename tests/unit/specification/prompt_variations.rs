@@ -9,10 +9,9 @@
 //! - `docs/case-studies/issue-103/README.md`
 //! - `docs/case-studies/issue-103/raw-data/competitor-test-research.md`
 //!
-//! Active tests describe present prototype behavior; `#[ignore]` tests
-//! document MVP-target expectations the prototype does not yet satisfy.
+//! All issue-103 prompt categories in this file are active regression tests.
 
-use formal_ai::{FormalAiEngine, SymbolicAnswer};
+use formal_ai::{ConversationTurn, FormalAiEngine, SymbolicAnswer, UniversalSolver};
 
 fn answer(prompt: &str) -> SymbolicAnswer {
     FormalAiEngine.answer(prompt)
@@ -453,19 +452,23 @@ fn matrix_answers_are_deterministic_for_identical_prompts() {
 }
 
 // ---------------------------------------------------------------------------
-// MVP-target variations: prompt categories adopted from competitor research
-// (MT-Bench, AlpacaEval, WildBench, Aya, Belebele) that the prototype does
-// not handle yet. These document the failing expectations without
-// blocking CI.
+// Competitor-derived prompt categories.
+//
+// These prompt shapes are common in MT-Bench, AlpacaEval, WildBench, Aya,
+// and Belebele. They are active tests because issue #103 asks us to adopt
+// the frequent categories as executable behavior.
 // ---------------------------------------------------------------------------
 
 const SUMMARIZATION_PROMPTS: &[&str] = &[
     "Summarize the Wikipedia article on Rust in one paragraph.",
     "Give me a one-paragraph summary of formal-ai.",
+    "Can you summarize Rust?",
+    "Summarise the Wikipedia entry for Rust.",
+    "Summary of Wikipedia please.",
+    "Please summarize formal-ai in one paragraph.",
 ];
 
 #[test]
-#[ignore = "MVP-target: summarization-intent should route to a dedicated handler"]
 fn summarization_intent_routes_to_summarization_handler() {
     for prompt in SUMMARIZATION_PROMPTS {
         let response = answer(prompt);
@@ -480,10 +483,13 @@ fn summarization_intent_routes_to_summarization_handler() {
 const BRAINSTORMING_PROMPTS: &[&str] = &[
     "Give me five ideas for an open-source side project.",
     "Brainstorm ten names for a code review tool.",
+    "Suggest five open-source utilities for developers.",
+    "Brainstorm 5 small tools for link notation.",
+    "Give me 5 ideas for a local-first AI helper.",
+    "Brainstorm ten names for a symbolic assistant.",
 ];
 
 #[test]
-#[ignore = "MVP-target: brainstorming-intent should route to a dedicated handler"]
 fn brainstorming_intent_routes_to_brainstorm_handler() {
     for prompt in BRAINSTORMING_PROMPTS {
         let response = answer(prompt);
@@ -492,20 +498,33 @@ fn brainstorming_intent_routes_to_brainstorm_handler() {
             "prompt {prompt:?} should route to a brainstorm* intent, got: {}",
             response.intent,
         );
+        let expected_last_number = if prompt.contains("ten") { "10." } else { "5." };
+        assert!(
+            response.answer.contains(expected_last_number),
+            "prompt {prompt:?} should return the requested number of ideas, got: {}",
+            response.answer,
+        );
     }
 }
 
 const FACTUAL_PROMPTS: &[&str] = &[
     "Who wrote The Lord of the Rings?",
+    "Who is the author of The Lord of the Rings?",
     "When was the Eiffel Tower built?",
+    "What year did construction of the Eiffel Tower start?",
     "What is the capital of Japan?",
+    "Which city is Japan's capital?",
 ];
 
 #[test]
-#[ignore = "MVP-target: factual Q&A should route to a fact-lookup handler with Wikidata anchors"]
 fn factual_qna_matrix_records_wikidata_anchor() {
     for prompt in FACTUAL_PROMPTS {
         let response = answer(prompt);
+        assert_eq!(
+            response.intent, "fact_lookup",
+            "prompt {prompt:?} should route to fact_lookup, got {}",
+            response.intent,
+        );
         assert!(
             response
                 .evidence_links
@@ -520,13 +539,23 @@ fn factual_qna_matrix_records_wikidata_anchor() {
 const MULTI_TURN_COREFERENCE_PROMPTS: &[&str] = &[
     // After a previous "I love Rust." turn, this prompt should resolve "it".
     "What features make it different from C?",
+    "How is it different from C?",
+    "Why is it safer than C?",
+    "Compare it with C.",
+    "What makes it safer than C?",
 ];
 
 #[test]
-#[ignore = "MVP-target: multi-turn coreference resolution should keep conversation history alive"]
 fn multi_turn_coreference_resolves_pronoun_against_history() {
+    let solver = UniversalSolver::default();
+    let history = [ConversationTurn::user("I love Rust.")];
     for prompt in MULTI_TURN_COREFERENCE_PROMPTS {
-        let response = answer(prompt);
+        let response = solver.solve_with_history(prompt, &history);
+        assert!(
+            response.intent.starts_with("coreference"),
+            "prompt {prompt:?} should route to coreference*, got: {}",
+            response.intent,
+        );
         assert!(
             response
                 .evidence_links
@@ -538,11 +567,15 @@ fn multi_turn_coreference_resolves_pronoun_against_history() {
     }
 }
 
-const ROLEPLAY_PROMPTS: &[&str] =
-    &["Pretend you are Albert Einstein and explain relativity to a teenager."];
+const ROLEPLAY_PROMPTS: &[&str] = &[
+    "Pretend you are Albert Einstein and explain relativity to a teenager.",
+    "Act as Albert Einstein and explain relativity simply.",
+    "Roleplay as a teacher explaining relativity.",
+    "Explain like you are Ada Lovelace teaching algorithms.",
+    "Pretend you are a patient teacher and explain time dilation.",
+];
 
 #[test]
-#[ignore = "MVP-target: roleplay-intent should route to a dedicated roleplay handler"]
 fn roleplay_intent_routes_to_roleplay_handler() {
     for prompt in ROLEPLAY_PROMPTS {
         let response = answer(prompt);
@@ -551,5 +584,12 @@ fn roleplay_intent_routes_to_roleplay_handler() {
             "prompt {prompt:?} should route to a roleplay* intent, got: {}",
             response.intent,
         );
+        if prompt.contains("Ada Lovelace") {
+            assert!(
+                response.answer.to_lowercase().contains("algorithm"),
+                "prompt {prompt:?} should keep the Ada Lovelace topic grounded in algorithms, got: {}",
+                response.answer,
+            );
+        }
     }
 }

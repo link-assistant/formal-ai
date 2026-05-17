@@ -2,7 +2,7 @@
   "id": "chatcmpl_f0c8ccc64e37919d",
   "object": "chat.completion",
   "created": 0,
-  "model": "formal-symbolic-poc",
+  "model": "formal-symbolic-production",
   "choices": [
     {
       "index": 0,

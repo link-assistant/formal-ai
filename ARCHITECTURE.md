@@ -147,7 +147,7 @@ following Rust modules:
 | 1. Input | `src/engine.rs::FormalAiEngine::answer` and `solve_with_history` in `src/solver.rs` | Implemented |
 | 2. Translate to Links Notation | `event_log::Event::Impulse` in `src/event_log.rs` | Implemented |
 | 3. Record in memory | `MemoryStore::append` in `src/memory.rs` | Implemented |
-| 4. Formalization | `concepts::lookup_concept` in `src/concepts.rs` (today: aliases). Future: P/Q-ID extraction with wikidata cache | Partial (alias resolution today; P/Q-ID extraction tracked as MVP-target) |
+| 4. Formalization | `concepts::lookup_concept` in `src/concepts.rs` (today: aliases). Future: P/Q-ID extraction with wikidata cache | Partial (alias resolution today; P/Q-ID extraction tracked as a requirement) |
 | 5. Temperature interpretation selection | `SolverConfig::guess_probability` already lives in `src/solver.rs`; the scoring/softmax helper is the next implementation step | Knob present; softmax pending |
 | 6. Universal solver | `UniversalSolver` in `src/solver.rs` | Implemented |
 | 7. Append to memory | `event_log::EventLog`, `memory::export_full_memory` | Implemented |
@@ -235,7 +235,7 @@ Migration plan:
 
 When the local memory does not contain enough evidence to satisfy a prompt,
 the solver follows the **source cache protocol** (see
-`tests/unit/mvp/source_cache.rs`):
+`tests/unit/specification/source_cache.rs`):
 
 - check the local `source_cache` for an entry under
   `source:wikipedia:<lang>:<slug>` (or `source:wikidata:<P|Q-id>` / 
@@ -279,11 +279,11 @@ Where a P/Q-id does not yet resolve, the formalizer falls back to a
 The formalizer is deliberately allowed to emit **multiple** interpretations
 per phrase. Selection happens in step 6.
 
-The current prototype implements alias-based formalization in
+The current implementation implements alias-based formalization in
 `src/concepts.rs` (the `aliases` field on every concept record). The full
-P/Q-id pipeline is scheduled in `tests/unit/mvp/multilingual.rs` under
+P/Q-id pipeline is scheduled in `tests/unit/specification/multilingual.rs` under
 `russian_iir_evidence_includes_wikidata_anchor` (already active for the IIR
-case study); broader coverage is tracked as an MVP-target.
+case study); broader coverage is tracked as a requirement.
 
 ---
 
@@ -501,10 +501,10 @@ identically.
 
 ## 14. Testing Architecture
 
-Tests live under `tests/unit/mvp/` and follow three patterns:
+Tests live under `tests/unit/specification/` and follow three patterns:
 
-1. **Active test** — pins a current prototype behavior. Always green on CI.
-2. **MVP-target test** — `#[ignore = "MVP-target: …"]`. Documents a failing
+1. **Active test** — pins a current implementation behavior. Always green on CI.
+2. **Tracked requirement test** — `#[ignore = "tracked requirement: ..."]`. Documents a failing
    expectation without blocking CI. Run with `cargo test --include-ignored`.
 3. **Matrix test** — `for (prompt, expected) in [..]` table-driven. Used
    for 5–10 input variations per category per language (issue #103). Today
@@ -512,14 +512,14 @@ Tests live under `tests/unit/mvp/` and follow three patterns:
    external-file catalogs the cleanest upgrade is `datatest-stable` + YAML.
 
 The test module split is intentional: each surface or capability gets its
-own file under `tests/unit/mvp/`, so a contributor adding a new category
+own file under `tests/unit/specification/`, so a contributor adding a new category
 adds one file (or extends one matrix) without touching the rest.
 
 ---
 
 ## 15. Open Questions
 
-These items are tracked as MVP-target tests today and as architecture
+These items are tracked as requirements today and as architecture
 references here:
 
 1. The full Wikidata P-ID / Q-ID formalization (Section 5) is partially

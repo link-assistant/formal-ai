@@ -18,7 +18,7 @@ use formal_ai::{
 #[command(
     name = "formal-ai",
     version,
-    about = "Formal symbolic AI proof of concept"
+    about = "Formal symbolic AI implementation"
 )]
 struct Args {
     #[command(subcommand)]

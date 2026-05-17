@@ -1,11 +1,10 @@
-//! MVP specification tests for the link-native symbolic assistant.
+//! Requirement specification tests for the link-native symbolic assistant.
 //!
 //! Every test in this module pins down a single requirement from `VISION.md`,
-//! `GOALS.md`, `NON-GOALS.md`, or `REQUIREMENTS.md`. Tests that describe
-//! the current behavior of the prototype are active. Tests that describe MVP
-//! behavior that has not been implemented yet are marked with `#[ignore]` and
-//! a `MVP-target:` reason, so they document the failing expectations without
-//! blocking CI. Run them locally with `cargo test -- --include-ignored`.
+//! `GOALS.md`, `NON-GOALS.md`, or `REQUIREMENTS.md`. Active tests describe
+//! implemented behavior. Ignored tests are retained only for requirements that
+//! already have an explicit tracking entry, so the expectation stays visible
+//! without making unrelated CI jobs fail.
 //!
 //! The suite is split by surface so future PRs can grow each area:
 //!

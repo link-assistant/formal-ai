@@ -17,7 +17,7 @@ use formal_ai::{
 #[test]
 fn chat_completion_round_trips_user_prompt_to_assistant_response() {
     let request = ChatCompletionRequest {
-        model: Some(String::from("formal-symbolic-poc")),
+        model: Some(String::from("formal-symbolic-production")),
         messages: vec![ChatMessage {
             role: String::from("user"),
             content: MessageContent::Text(String::from("Hi")),
@@ -100,7 +100,7 @@ fn responses_endpoint_returns_completed_response() {
 #[test]
 fn openai_requests_accept_temperature_parameter() {
     let chat: ChatCompletionRequest = serde_json::from_value(serde_json::json!({
-        "model": "formal-symbolic-poc",
+        "model": "formal-symbolic-production",
         "messages": [{"role": "user", "content": "Hi"}],
         "temperature": 0.0
     }))
@@ -108,7 +108,7 @@ fn openai_requests_accept_temperature_parameter() {
     assert_eq!(chat.temperature, Some(0.0));
 
     let response: ResponsesRequest = serde_json::from_value(serde_json::json!({
-        "model": "formal-symbolic-poc",
+        "model": "formal-symbolic-production",
         "input": "Hi",
         "temperature": 0.25
     }))
@@ -135,7 +135,7 @@ fn http_models_endpoint_lists_at_least_one_model() {
 #[test]
 fn http_chat_completions_route_returns_completion_object() {
     let body = serde_json::json!({
-        "model": "formal-symbolic-poc",
+        "model": "formal-symbolic-production",
         "messages": [{"role": "user", "content": "Hi"}]
     })
     .to_string();
@@ -148,7 +148,7 @@ fn http_chat_completions_route_returns_completion_object() {
 #[test]
 fn http_responses_route_returns_response_object() {
     let body = serde_json::json!({
-        "model": "formal-symbolic-poc",
+        "model": "formal-symbolic-production",
         "input": "Hi"
     })
     .to_string();
@@ -181,7 +181,7 @@ fn http_responses_declare_a_content_type() {
 }
 
 // ---------------------------------------------------------------------------
-// MVP expectations: behaviors documented in VISION.md/GOALS.md/REQUIREMENTS.md
+// full-scope expectations: behaviors documented in VISION.md/GOALS.md/REQUIREMENTS.md
 // that are not yet implemented.
 // ---------------------------------------------------------------------------
 
@@ -221,7 +221,7 @@ fn chat_completion_supports_multi_turn_conversation() {
 #[test]
 fn streaming_chat_completion_emits_server_sent_events() {
     let body = serde_json::json!({
-        "model": "formal-symbolic-poc",
+        "model": "formal-symbolic-production",
         "messages": [{"role": "user", "content": "Hi"}],
         "stream": true
     })
@@ -237,9 +237,9 @@ fn streaming_chat_completion_emits_server_sent_events() {
 }
 
 #[test]
-#[ignore = "MVP-target: an authenticated API surface should accept Bearer tokens"]
+#[ignore = "tracked requirement: an authenticated API surface should accept Bearer tokens"]
 fn authenticated_routes_accept_bearer_token() {
-    let body = serde_json::json!({"model":"formal-symbolic-poc","messages":[{"role":"user","content":"Hi"}]}).to_string();
+    let body = serde_json::json!({"model":"formal-symbolic-production","messages":[{"role":"user","content":"Hi"}]}).to_string();
     let response = handle_api_request("POST", "/v1/chat/completions", &body);
     assert!(response.status_code != 401);
 }
@@ -249,7 +249,7 @@ fn rate_limit_metadata_is_exposed() {
     let response = handle_api_request("GET", "/v1/models", "");
     assert!(
         response.body.contains("\"rate_limit\":") || response.content_type.contains("ratelimit"),
-        "MVP API should publish RateLimit metadata for fair use"
+        "full-scope API should publish RateLimit metadata for fair use"
     );
 }
 
@@ -271,7 +271,7 @@ fn responses_api_attaches_trace_link() {
 }
 
 #[test]
-#[ignore = "MVP-target: chat completions should refuse to call shell tools unless agent mode is opted in"]
+#[ignore = "tracked requirement: chat completions should refuse to call shell tools unless agent mode is opted in"]
 fn chat_completion_refuses_tool_call_without_agent_mode() {
     let request = ChatCompletionRequest {
         model: None,

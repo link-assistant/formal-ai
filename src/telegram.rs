@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::engine::FormalAiEngine;
 
-const TEXT_ONLY_MESSAGE: &str = "I can only process Telegram text messages in this prototype. Send a text prompt or a message caption.";
+const TEXT_ONLY_MESSAGE: &str = "I can only process Telegram text messages in this implementation. Send a text prompt or a message caption.";
 const DEFAULT_API_BASE: &str = "https://api.telegram.org";
 /// Crate version advertised by the `/version` bot command. Tracks
 /// `Cargo.toml` automatically so every release reports the right number

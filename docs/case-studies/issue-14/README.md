@@ -49,7 +49,7 @@ Fresh GitHub evidence lives in `raw-data/`:
 This case study reuses already-reviewed evidence from earlier issues so each
 requirement points back to a known-good source rather than being rediscovered:
 
-- [`../issue-1/README.md`](../issue-1/README.md) — proof of concept: symbolic
+- [`../issue-1/README.md`](../issue-1/README.md) — deterministic symbolic implementation: symbolic
   engine, OpenAI-shaped APIs, Links Notation data, web demo, dataset scope.
 - [`../issue-6/README.md`](../issue-6/README.md) — demo mode default behavior,
   countdown feedback, and diagnostics gating.
@@ -109,7 +109,7 @@ Sources checked while planning solutions:
 | R87 | Carry conversation history into the solver so the algorithm can answer questions about prior turns. | Issue #14 body | Add `UniversalSolver::solve_with_history(prompt, history)` and a `ConversationTurn` type. The history walks back through `recall_name`, `recall_concept_introduced`, and `summarize_conversation` intents. The library, CLI, HTTP, Telegram, and demo all expose the same shape. |
 | R88 | Declare JavaScript execution capability. | Issue #14 body ("execute JavaScript code") | Add `try_javascript_execution`. The handler emits `execution_environment:javascript:webworker`, validates the snippet syntactically with a deterministic walk, and reports `isolation:sandbox`. The browser side runs the snippet inside a `Function` sandbox **only** when the user opted into agent mode; CLI and HTTP report the capability and refuse to run the snippet without an isolated runtime. |
 | R89 | Persist "Demo on" mode in Links Notation in `localStorage`. | Issue #14 body | Persist a `demo_config` record using the same `format_indented_ordered` Links Notation as the engine. On load, parse the record and restore `demo_mode`, `diagnostic_mode`, and `agent_mode`. |
-| R90 | Verify the algorithm reasons through tasks rather than memoizing answers. | Issue #14 body ("not memoization, but actually reason through") | Add `tests/unit/mvp/reasoning_paths.rs` whose assertions hold against the **event log**, not the surface string. The tests assert step ordering (`impulse → language → search:local → … → trace`), assert that the `calculation` event records the formal expression, and assert that the conversation memory tests require the prior turn to be present in the event log. |
+| R90 | Verify the algorithm reasons through tasks rather than memoizing answers. | Issue #14 body ("not memoization, but actually reason through") | Add `tests/unit/specification/reasoning_paths.rs` whose assertions hold against the **event log**, not the surface string. The tests assert step ordering (`impulse → language → search:local → … → trace`), assert that the `calculation` event records the formal expression, and assert that the conversation memory tests require the prior turn to be present in the event log. |
 | R91 | Make iteration easy: provide local scripts and CI verifications for every surface. | Issue #14 body ("give me all the tools for easy iteration") | Add `scripts/build-demo.sh` (compiles the wasm bundle and copies it into `docs/demo/`), add `examples/universal_solver.rs` as a one-file runnable example, and document the workflow in `README.md`. |
 | R92 | Preserve issue #14 evidence and analysis under `docs/case-studies/issue-14`. | Issue #14 body | Implemented by this directory, including raw-data snapshots and this analysis. |
 
@@ -178,7 +178,7 @@ moves:
   event in its local trace so the reset is visible.
 - **Tests assert the trace, not the surface.** A "did the solver reason or
   memoize?" check is meaningful only if the assertions watch the event log.
-  The new tests in `tests/unit/mvp/reasoning_paths.rs` validate that, for
+  The new tests in `tests/unit/specification/reasoning_paths.rs` validate that, for
   every new capability, the `evidence_links` and `links_notation` mention the
   expected intermediate events (`calculation`, `concept_lookup`, `prior_turn`,
   `execution_environment`).
@@ -218,7 +218,7 @@ Per requirement, in implementation order:
    `parseDemoConfigLinksNotation`, and `useDemoConfig()` to `app.js`. On
    first paint, hydrate from `localStorage`. On toggle, write back. Add a
    Playwright test that toggles, reloads, and checks the toggle survived.
-8. **R90 — Reasoning-path tests.** Add `tests/unit/mvp/reasoning_paths.rs`.
+8. **R90 — Reasoning-path tests.** Add `tests/unit/specification/reasoning_paths.rs`.
    Each test loads the new `SymbolicAnswer` and asserts the event log
    contains the required intermediate events for that capability.
 9. **R91 — Iteration tooling.** Add `scripts/build-demo.sh` that compiles
@@ -276,7 +276,7 @@ cargo fmt --all -- --check
 cargo clippy --all-targets --all-features -- -D warnings
 cargo test --all-features --verbose
 cargo test --doc --verbose
-cargo test --test unit mvp::reasoning_paths
+cargo test --test unit full-scope::reasoning_paths
 cargo build --release --target wasm32-unknown-unknown -p formal-ai-wasm
 rust-script scripts/check-file-size.rs
 rust-script scripts/check-changelog-fragment.rs

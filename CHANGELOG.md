@@ -203,7 +203,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Release completeness checks now self-heal when crates.io exists but configured Docker Hub or GitHub release artifacts are missing.
 
 ### Added
-- Added the formal-ai proof-of-concept library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
+- Added the formal-ai deterministic symbolic implementation library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
 - Added a markdown-capable chat demo with randomized dialog mode, greeting-first examples, and multi-language hello-world prompts.
 - Added Rust-script dataset generation into human-readable Links Notation `.lino` files under `data/`.
 - Added Playwright e2e test suite under `tests/e2e/` covering page load, initial messages, quick prompts, chat interactions, demo mode toggle, trace panel, and preview mode.
@@ -240,7 +240,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added the issue #12 holistic case study, root vision/goals/non-goals documents, and a unit test that keeps the documentation set present and traceable.
 
 ### Added
-- Added a TDD-style MVP test suite under `tests/unit/mvp/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented MVP behavior are marked `#[ignore = "MVP-target: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
+- Added a TDD-style full-scope test suite under `tests/unit/specification/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented full-scope behavior are marked `#[ignore = "tracked requirement: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
 
 ### Added
 - Added the universal 11-step solver loop (impulse → formalization → context → history → decomposition → TDD → synthesis → combination → verification → simplification → documentation) and wired it into `FormalAiEngine.answer` so every reply walks the same reasoning pipeline regardless of intent.
@@ -275,7 +275,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added arithmetic, concept-lookup, conversation-recall, and explicit-JavaScript-execution handlers to the universal solver so the same loop now answers "what is 2 + 2?", "what is Wikipedia?", "what is my name?", and "please run this javascript: ..." prompts (issue #14).
 - Added `solve_with_history`, `ConversationRole`, and `ConversationTurn` to the library API so every surface can carry conversation memory through the same solver loop.
 - Added `data/seed/concepts.lino` with offline records for Wikipedia, Wikidata, Wiktionary, Links Notation, doublet links, the universal solver, the event log, WebAssembly, and Rust; each record cites its source for auditability.
-- Added `tests/unit/mvp/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
+- Added `tests/unit/specification/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
 - Added `examples/universal_solver_tour.rs` which walks every specialized handler through the same `FormalAiEngine::answer` entry point used by the library, CLI, HTTP server, Telegram bot, and demo.
 
 ### Changed
@@ -338,7 +338,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Russian "назови " prefix recognized as a `concept_lookup` intent trigger (issue #30). The prompt "назови цвет" previously returned `intent: unknown`; it now resolves to `concept_lookup` and returns a definition of the color concept.
 - `concept_color` seed record in `data/seed/concepts.lino` with full multilingual support (English, Russian, Hindi, Chinese), Wikidata anchor Q1075, and per-language localized blocks citing Wikipedia in each language.
-- Two regression tests in `tests/unit/mvp/multilingual.rs` pinning down the reporter's exact prompt: `russian_nazovi_prefix_routes_to_concept_lookup` and `russian_nazovi_tsvet_answer_references_color`.
+- Two regression tests in `tests/unit/specification/multilingual.rs` pinning down the reporter's exact prompt: `russian_nazovi_prefix_routes_to_concept_lookup` and `russian_nazovi_tsvet_answer_references_color`.
 - `DEFAULT_CONCEPT_PREFIXES` fallback in `src/web/formal_ai_worker.js` updated to include "назови " so the browser worker mirrors the Rust pipeline when the seed has not yet been loaded.
 
 ### Fixed
@@ -380,12 +380,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Per-language `localized "en|ru|hi|zh"` blocks on `ConceptRecord` carrying the native term, native aliases, native-Wikipedia summary, and source URL (e.g. `Фильтр с бесконечной импульсной характеристикой … или IIR-фильтр` from ru.wikipedia.org). The solver and JS worker prefer the prevailing-language block when rendering the response, so the original maintainer prompt `что такое iir в ml` now returns a Russian-language definition citing the Russian Wikipedia article (issue #20 follow-up R9/R10/R11).
 - New `concept_lookup_in_context_no_alias` response template variant: when the user already typed the localized context label, the body renders as `В контексте Машинное обучение IIR …` instead of `«Машинное обучение» (Машинное обучение)`. The variant is picked by template id from `multilingual-responses.lino` so future languages add a row without Rust changes.
 - `wikidata "Q…"` field on every concept and new `wikidata:Q…` evidence link so the cross-language join key used by `link-assistant/human-language` and `link-assistant/meta-expression` is part of the public trace (issue #20 follow-up R13).
-- Additional Rust integration tests in `tests/unit/mvp/multilingual.rs` pinning down native-language body content (Russian, English, Hindi, Chinese), the `«ml» (Машинное обучение)` rendering, the ru.wikipedia.org source citation, the no-alias-duplication template, and the Wikidata anchor in `evidence_links`.
+- Additional Rust integration tests in `tests/unit/specification/multilingual.rs` pinning down native-language body content (Russian, English, Hindi, Chinese), the `«ml» (Машинное обучение)` rendering, the ru.wikipedia.org source citation, the no-alias-duplication template, and the Wikidata anchor in `evidence_links`.
 
 ### Changed
 - `concepts.rs` now exposes `ConceptQuery` / `ConceptLookup` and the context-aware `extract_concept_query` + `lookup_concept_query`; the prior single-string `extract_concept_term` / `lookup_concept` shims have been removed. The ranker resolves context phrases through the new registry: a record can declare `context_links "context_machine_learning|…"` and `record_has_context` will follow the registry rather than require every alias inline.
 - `src/web/formal_ai_worker.js` mirrors the Rust pipeline: it parses the context delimiter, emits the same `concept_lookup:*` and `wikidata:*` evidence labels, picks the `_no_alias` template when needed, and renders both plain and in-context bodies from the localized block selected by `detectLanguage(prompt)`.
-- `tests/unit/mvp/multilingual.rs` pins down the four-language variants of the trigger prompt and the evidence-link debug trail; `src/solver_helpers.rs` gained unit tests for context delimiter parsing across the four languages.
+- `tests/unit/specification/multilingual.rs` pins down the four-language variants of the trigger prompt and the evidence-link debug trail; `src/solver_helpers.rs` gained unit tests for context delimiter parsing across the four languages.
 
 ### Fixed
 - Russian prompts such as "покажи как ты работаешь?" now correctly resolve to `intent: meta_explanation` instead of falling back to `intent: unknown` (#51)
@@ -417,7 +417,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - `try_kupi_slona` handler in `src/solver_handlers.rs` that recognises the Russian circular-joke idiom «Купи слона» and returns the traditional reply
 - `kupi_slona` intent wired into `handle_specialized_pattern` in `src/solver.rs`
-- 3 new unit tests in `tests/unit/mvp/multilingual.rs` covering the idiom intent, answer content, and Russian language tag
+- 3 new unit tests in `tests/unit/specification/multilingual.rs` covering the idiom intent, answer content, and Russian language tag
 
 ### Fixed
 - Issue #41: «Купи слона» no longer falls through to the generic unknown-intent fallback; it is handled with a culturally appropriate Russian explanation of the folk game
@@ -708,7 +708,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Release completeness checks now self-heal when crates.io exists but configured Docker Hub or GitHub release artifacts are missing.
 
 ### Added
-- Added the formal-ai proof-of-concept library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
+- Added the formal-ai deterministic symbolic implementation library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
 - Added a markdown-capable chat demo with randomized dialog mode, greeting-first examples, and multi-language hello-world prompts.
 - Added Rust-script dataset generation into human-readable Links Notation `.lino` files under `data/`.
 - Added Playwright e2e test suite under `tests/e2e/` covering page load, initial messages, quick prompts, chat interactions, demo mode toggle, trace panel, and preview mode.
@@ -745,7 +745,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added the issue #12 holistic case study, root vision/goals/non-goals documents, and a unit test that keeps the documentation set present and traceable.
 
 ### Added
-- Added a TDD-style MVP test suite under `tests/unit/mvp/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented MVP behavior are marked `#[ignore = "MVP-target: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
+- Added a TDD-style full-scope test suite under `tests/unit/specification/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented full-scope behavior are marked `#[ignore = "tracked requirement: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
 
 ### Added
 - Added the universal 11-step solver loop (impulse → formalization → context → history → decomposition → TDD → synthesis → combination → verification → simplification → documentation) and wired it into `FormalAiEngine.answer` so every reply walks the same reasoning pipeline regardless of intent.
@@ -780,7 +780,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added arithmetic, concept-lookup, conversation-recall, and explicit-JavaScript-execution handlers to the universal solver so the same loop now answers "what is 2 + 2?", "what is Wikipedia?", "what is my name?", and "please run this javascript: ..." prompts (issue #14).
 - Added `solve_with_history`, `ConversationRole`, and `ConversationTurn` to the library API so every surface can carry conversation memory through the same solver loop.
 - Added `data/seed/concepts.lino` with offline records for Wikipedia, Wikidata, Wiktionary, Links Notation, doublet links, the universal solver, the event log, WebAssembly, and Rust; each record cites its source for auditability.
-- Added `tests/unit/mvp/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
+- Added `tests/unit/specification/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
 - Added `examples/universal_solver_tour.rs` which walks every specialized handler through the same `FormalAiEngine::answer` entry point used by the library, CLI, HTTP server, Telegram bot, and demo.
 
 ### Changed
@@ -843,7 +843,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Russian "назови " prefix recognized as a `concept_lookup` intent trigger (issue #30). The prompt "назови цвет" previously returned `intent: unknown`; it now resolves to `concept_lookup` and returns a definition of the color concept.
 - `concept_color` seed record in `data/seed/concepts.lino` with full multilingual support (English, Russian, Hindi, Chinese), Wikidata anchor Q1075, and per-language localized blocks citing Wikipedia in each language.
-- Two regression tests in `tests/unit/mvp/multilingual.rs` pinning down the reporter's exact prompt: `russian_nazovi_prefix_routes_to_concept_lookup` and `russian_nazovi_tsvet_answer_references_color`.
+- Two regression tests in `tests/unit/specification/multilingual.rs` pinning down the reporter's exact prompt: `russian_nazovi_prefix_routes_to_concept_lookup` and `russian_nazovi_tsvet_answer_references_color`.
 - `DEFAULT_CONCEPT_PREFIXES` fallback in `src/web/formal_ai_worker.js` updated to include "назови " so the browser worker mirrors the Rust pipeline when the seed has not yet been loaded.
 
 ### Fixed
@@ -885,12 +885,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Per-language `localized "en|ru|hi|zh"` blocks on `ConceptRecord` carrying the native term, native aliases, native-Wikipedia summary, and source URL (e.g. `Фильтр с бесконечной импульсной характеристикой … или IIR-фильтр` from ru.wikipedia.org). The solver and JS worker prefer the prevailing-language block when rendering the response, so the original maintainer prompt `что такое iir в ml` now returns a Russian-language definition citing the Russian Wikipedia article (issue #20 follow-up R9/R10/R11).
 - New `concept_lookup_in_context_no_alias` response template variant: when the user already typed the localized context label, the body renders as `В контексте Машинное обучение IIR …` instead of `«Машинное обучение» (Машинное обучение)`. The variant is picked by template id from `multilingual-responses.lino` so future languages add a row without Rust changes.
 - `wikidata "Q…"` field on every concept and new `wikidata:Q…` evidence link so the cross-language join key used by `link-assistant/human-language` and `link-assistant/meta-expression` is part of the public trace (issue #20 follow-up R13).
-- Additional Rust integration tests in `tests/unit/mvp/multilingual.rs` pinning down native-language body content (Russian, English, Hindi, Chinese), the `«ml» (Машинное обучение)` rendering, the ru.wikipedia.org source citation, the no-alias-duplication template, and the Wikidata anchor in `evidence_links`.
+- Additional Rust integration tests in `tests/unit/specification/multilingual.rs` pinning down native-language body content (Russian, English, Hindi, Chinese), the `«ml» (Машинное обучение)` rendering, the ru.wikipedia.org source citation, the no-alias-duplication template, and the Wikidata anchor in `evidence_links`.
 
 ### Changed
 - `concepts.rs` now exposes `ConceptQuery` / `ConceptLookup` and the context-aware `extract_concept_query` + `lookup_concept_query`; the prior single-string `extract_concept_term` / `lookup_concept` shims have been removed. The ranker resolves context phrases through the new registry: a record can declare `context_links "context_machine_learning|…"` and `record_has_context` will follow the registry rather than require every alias inline.
 - `src/web/formal_ai_worker.js` mirrors the Rust pipeline: it parses the context delimiter, emits the same `concept_lookup:*` and `wikidata:*` evidence labels, picks the `_no_alias` template when needed, and renders both plain and in-context bodies from the localized block selected by `detectLanguage(prompt)`.
-- `tests/unit/mvp/multilingual.rs` pins down the four-language variants of the trigger prompt and the evidence-link debug trail; `src/solver_helpers.rs` gained unit tests for context delimiter parsing across the four languages.
+- `tests/unit/specification/multilingual.rs` pins down the four-language variants of the trigger prompt and the evidence-link debug trail; `src/solver_helpers.rs` gained unit tests for context delimiter parsing across the four languages.
 
 ### Fixed
 - Russian prompts such as "покажи как ты работаешь?" now correctly resolve to `intent: meta_explanation` instead of falling back to `intent: unknown` (#51)
@@ -922,7 +922,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - `try_kupi_slona` handler in `src/solver_handlers.rs` that recognises the Russian circular-joke idiom «Купи слона» and returns the traditional reply
 - `kupi_slona` intent wired into `handle_specialized_pattern` in `src/solver.rs`
-- 3 new unit tests in `tests/unit/mvp/multilingual.rs` covering the idiom intent, answer content, and Russian language tag
+- 3 new unit tests in `tests/unit/specification/multilingual.rs` covering the idiom intent, answer content, and Russian language tag
 
 ### Fixed
 - Issue #41: «Купи слона» no longer falls through to the generic unknown-intent fallback; it is handled with a culturally appropriate Russian explanation of the folk game
@@ -1206,7 +1206,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Release completeness checks now self-heal when crates.io exists but configured Docker Hub or GitHub release artifacts are missing.
 
 ### Added
-- Added the formal-ai proof-of-concept library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
+- Added the formal-ai deterministic symbolic implementation library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
 - Added a markdown-capable chat demo with randomized dialog mode, greeting-first examples, and multi-language hello-world prompts.
 - Added Rust-script dataset generation into human-readable Links Notation `.lino` files under `data/`.
 - Added Playwright e2e test suite under `tests/e2e/` covering page load, initial messages, quick prompts, chat interactions, demo mode toggle, trace panel, and preview mode.
@@ -1243,7 +1243,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added the issue #12 holistic case study, root vision/goals/non-goals documents, and a unit test that keeps the documentation set present and traceable.
 
 ### Added
-- Added a TDD-style MVP test suite under `tests/unit/mvp/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented MVP behavior are marked `#[ignore = "MVP-target: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
+- Added a TDD-style full-scope test suite under `tests/unit/specification/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented full-scope behavior are marked `#[ignore = "tracked requirement: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
 
 ### Added
 - Added the universal 11-step solver loop (impulse → formalization → context → history → decomposition → TDD → synthesis → combination → verification → simplification → documentation) and wired it into `FormalAiEngine.answer` so every reply walks the same reasoning pipeline regardless of intent.
@@ -1278,7 +1278,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added arithmetic, concept-lookup, conversation-recall, and explicit-JavaScript-execution handlers to the universal solver so the same loop now answers "what is 2 + 2?", "what is Wikipedia?", "what is my name?", and "please run this javascript: ..." prompts (issue #14).
 - Added `solve_with_history`, `ConversationRole`, and `ConversationTurn` to the library API so every surface can carry conversation memory through the same solver loop.
 - Added `data/seed/concepts.lino` with offline records for Wikipedia, Wikidata, Wiktionary, Links Notation, doublet links, the universal solver, the event log, WebAssembly, and Rust; each record cites its source for auditability.
-- Added `tests/unit/mvp/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
+- Added `tests/unit/specification/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
 - Added `examples/universal_solver_tour.rs` which walks every specialized handler through the same `FormalAiEngine::answer` entry point used by the library, CLI, HTTP server, Telegram bot, and demo.
 
 ### Changed
@@ -1341,7 +1341,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Russian "назови " prefix recognized as a `concept_lookup` intent trigger (issue #30). The prompt "назови цвет" previously returned `intent: unknown`; it now resolves to `concept_lookup` and returns a definition of the color concept.
 - `concept_color` seed record in `data/seed/concepts.lino` with full multilingual support (English, Russian, Hindi, Chinese), Wikidata anchor Q1075, and per-language localized blocks citing Wikipedia in each language.
-- Two regression tests in `tests/unit/mvp/multilingual.rs` pinning down the reporter's exact prompt: `russian_nazovi_prefix_routes_to_concept_lookup` and `russian_nazovi_tsvet_answer_references_color`.
+- Two regression tests in `tests/unit/specification/multilingual.rs` pinning down the reporter's exact prompt: `russian_nazovi_prefix_routes_to_concept_lookup` and `russian_nazovi_tsvet_answer_references_color`.
 - `DEFAULT_CONCEPT_PREFIXES` fallback in `src/web/formal_ai_worker.js` updated to include "назови " so the browser worker mirrors the Rust pipeline when the seed has not yet been loaded.
 
 ### Fixed
@@ -1383,12 +1383,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Per-language `localized "en|ru|hi|zh"` blocks on `ConceptRecord` carrying the native term, native aliases, native-Wikipedia summary, and source URL (e.g. `Фильтр с бесконечной импульсной характеристикой … или IIR-фильтр` from ru.wikipedia.org). The solver and JS worker prefer the prevailing-language block when rendering the response, so the original maintainer prompt `что такое iir в ml` now returns a Russian-language definition citing the Russian Wikipedia article (issue #20 follow-up R9/R10/R11).
 - New `concept_lookup_in_context_no_alias` response template variant: when the user already typed the localized context label, the body renders as `В контексте Машинное обучение IIR …` instead of `«Машинное обучение» (Машинное обучение)`. The variant is picked by template id from `multilingual-responses.lino` so future languages add a row without Rust changes.
 - `wikidata "Q…"` field on every concept and new `wikidata:Q…` evidence link so the cross-language join key used by `link-assistant/human-language` and `link-assistant/meta-expression` is part of the public trace (issue #20 follow-up R13).
-- Additional Rust integration tests in `tests/unit/mvp/multilingual.rs` pinning down native-language body content (Russian, English, Hindi, Chinese), the `«ml» (Машинное обучение)` rendering, the ru.wikipedia.org source citation, the no-alias-duplication template, and the Wikidata anchor in `evidence_links`.
+- Additional Rust integration tests in `tests/unit/specification/multilingual.rs` pinning down native-language body content (Russian, English, Hindi, Chinese), the `«ml» (Машинное обучение)` rendering, the ru.wikipedia.org source citation, the no-alias-duplication template, and the Wikidata anchor in `evidence_links`.
 
 ### Changed
 - `concepts.rs` now exposes `ConceptQuery` / `ConceptLookup` and the context-aware `extract_concept_query` + `lookup_concept_query`; the prior single-string `extract_concept_term` / `lookup_concept` shims have been removed. The ranker resolves context phrases through the new registry: a record can declare `context_links "context_machine_learning|…"` and `record_has_context` will follow the registry rather than require every alias inline.
 - `src/web/formal_ai_worker.js` mirrors the Rust pipeline: it parses the context delimiter, emits the same `concept_lookup:*` and `wikidata:*` evidence labels, picks the `_no_alias` template when needed, and renders both plain and in-context bodies from the localized block selected by `detectLanguage(prompt)`.
-- `tests/unit/mvp/multilingual.rs` pins down the four-language variants of the trigger prompt and the evidence-link debug trail; `src/solver_helpers.rs` gained unit tests for context delimiter parsing across the four languages.
+- `tests/unit/specification/multilingual.rs` pins down the four-language variants of the trigger prompt and the evidence-link debug trail; `src/solver_helpers.rs` gained unit tests for context delimiter parsing across the four languages.
 
 ### Fixed
 - Russian prompts such as "покажи как ты работаешь?" now correctly resolve to `intent: meta_explanation` instead of falling back to `intent: unknown` (#51)
@@ -1420,7 +1420,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - `try_kupi_slona` handler in `src/solver_handlers.rs` that recognises the Russian circular-joke idiom «Купи слона» and returns the traditional reply
 - `kupi_slona` intent wired into `handle_specialized_pattern` in `src/solver.rs`
-- 3 new unit tests in `tests/unit/mvp/multilingual.rs` covering the idiom intent, answer content, and Russian language tag
+- 3 new unit tests in `tests/unit/specification/multilingual.rs` covering the idiom intent, answer content, and Russian language tag
 
 ### Fixed
 - Issue #41: «Купи слона» no longer falls through to the generic unknown-intent fallback; it is handled with a culturally appropriate Russian explanation of the folk game
@@ -1701,7 +1701,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Release completeness checks now self-heal when crates.io exists but configured Docker Hub or GitHub release artifacts are missing.
 
 ### Added
-- Added the formal-ai proof-of-concept library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
+- Added the formal-ai deterministic symbolic implementation library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
 - Added a markdown-capable chat demo with randomized dialog mode, greeting-first examples, and multi-language hello-world prompts.
 - Added Rust-script dataset generation into human-readable Links Notation `.lino` files under `data/`.
 - Added Playwright e2e test suite under `tests/e2e/` covering page load, initial messages, quick prompts, chat interactions, demo mode toggle, trace panel, and preview mode.
@@ -1738,7 +1738,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added the issue #12 holistic case study, root vision/goals/non-goals documents, and a unit test that keeps the documentation set present and traceable.
 
 ### Added
-- Added a TDD-style MVP test suite under `tests/unit/mvp/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented MVP behavior are marked `#[ignore = "MVP-target: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
+- Added a TDD-style full-scope test suite under `tests/unit/specification/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented full-scope behavior are marked `#[ignore = "tracked requirement: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
 
 ### Added
 - Added the universal 11-step solver loop (impulse → formalization → context → history → decomposition → TDD → synthesis → combination → verification → simplification → documentation) and wired it into `FormalAiEngine.answer` so every reply walks the same reasoning pipeline regardless of intent.
@@ -1773,7 +1773,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added arithmetic, concept-lookup, conversation-recall, and explicit-JavaScript-execution handlers to the universal solver so the same loop now answers "what is 2 + 2?", "what is Wikipedia?", "what is my name?", and "please run this javascript: ..." prompts (issue #14).
 - Added `solve_with_history`, `ConversationRole`, and `ConversationTurn` to the library API so every surface can carry conversation memory through the same solver loop.
 - Added `data/seed/concepts.lino` with offline records for Wikipedia, Wikidata, Wiktionary, Links Notation, doublet links, the universal solver, the event log, WebAssembly, and Rust; each record cites its source for auditability.
-- Added `tests/unit/mvp/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
+- Added `tests/unit/specification/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
 - Added `examples/universal_solver_tour.rs` which walks every specialized handler through the same `FormalAiEngine::answer` entry point used by the library, CLI, HTTP server, Telegram bot, and demo.
 
 ### Changed
@@ -1836,7 +1836,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Russian "назови " prefix recognized as a `concept_lookup` intent trigger (issue #30). The prompt "назови цвет" previously returned `intent: unknown`; it now resolves to `concept_lookup` and returns a definition of the color concept.
 - `concept_color` seed record in `data/seed/concepts.lino` with full multilingual support (English, Russian, Hindi, Chinese), Wikidata anchor Q1075, and per-language localized blocks citing Wikipedia in each language.
-- Two regression tests in `tests/unit/mvp/multilingual.rs` pinning down the reporter's exact prompt: `russian_nazovi_prefix_routes_to_concept_lookup` and `russian_nazovi_tsvet_answer_references_color`.
+- Two regression tests in `tests/unit/specification/multilingual.rs` pinning down the reporter's exact prompt: `russian_nazovi_prefix_routes_to_concept_lookup` and `russian_nazovi_tsvet_answer_references_color`.
 - `DEFAULT_CONCEPT_PREFIXES` fallback in `src/web/formal_ai_worker.js` updated to include "назови " so the browser worker mirrors the Rust pipeline when the seed has not yet been loaded.
 
 ### Fixed
@@ -1878,12 +1878,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Per-language `localized "en|ru|hi|zh"` blocks on `ConceptRecord` carrying the native term, native aliases, native-Wikipedia summary, and source URL (e.g. `Фильтр с бесконечной импульсной характеристикой … или IIR-фильтр` from ru.wikipedia.org). The solver and JS worker prefer the prevailing-language block when rendering the response, so the original maintainer prompt `что такое iir в ml` now returns a Russian-language definition citing the Russian Wikipedia article (issue #20 follow-up R9/R10/R11).
 - New `concept_lookup_in_context_no_alias` response template variant: when the user already typed the localized context label, the body renders as `В контексте Машинное обучение IIR …` instead of `«Машинное обучение» (Машинное обучение)`. The variant is picked by template id from `multilingual-responses.lino` so future languages add a row without Rust changes.
 - `wikidata "Q…"` field on every concept and new `wikidata:Q…` evidence link so the cross-language join key used by `link-assistant/human-language` and `link-assistant/meta-expression` is part of the public trace (issue #20 follow-up R13).
-- Additional Rust integration tests in `tests/unit/mvp/multilingual.rs` pinning down native-language body content (Russian, English, Hindi, Chinese), the `«ml» (Машинное обучение)` rendering, the ru.wikipedia.org source citation, the no-alias-duplication template, and the Wikidata anchor in `evidence_links`.
+- Additional Rust integration tests in `tests/unit/specification/multilingual.rs` pinning down native-language body content (Russian, English, Hindi, Chinese), the `«ml» (Машинное обучение)` rendering, the ru.wikipedia.org source citation, the no-alias-duplication template, and the Wikidata anchor in `evidence_links`.
 
 ### Changed
 - `concepts.rs` now exposes `ConceptQuery` / `ConceptLookup` and the context-aware `extract_concept_query` + `lookup_concept_query`; the prior single-string `extract_concept_term` / `lookup_concept` shims have been removed. The ranker resolves context phrases through the new registry: a record can declare `context_links "context_machine_learning|…"` and `record_has_context` will follow the registry rather than require every alias inline.
 - `src/web/formal_ai_worker.js` mirrors the Rust pipeline: it parses the context delimiter, emits the same `concept_lookup:*` and `wikidata:*` evidence labels, picks the `_no_alias` template when needed, and renders both plain and in-context bodies from the localized block selected by `detectLanguage(prompt)`.
-- `tests/unit/mvp/multilingual.rs` pins down the four-language variants of the trigger prompt and the evidence-link debug trail; `src/solver_helpers.rs` gained unit tests for context delimiter parsing across the four languages.
+- `tests/unit/specification/multilingual.rs` pins down the four-language variants of the trigger prompt and the evidence-link debug trail; `src/solver_helpers.rs` gained unit tests for context delimiter parsing across the four languages.
 
 ### Fixed
 - Russian prompts such as "покажи как ты работаешь?" now correctly resolve to `intent: meta_explanation` instead of falling back to `intent: unknown` (#51)
@@ -1915,7 +1915,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - `try_kupi_slona` handler in `src/solver_handlers.rs` that recognises the Russian circular-joke idiom «Купи слона» and returns the traditional reply
 - `kupi_slona` intent wired into `handle_specialized_pattern` in `src/solver.rs`
-- 3 new unit tests in `tests/unit/mvp/multilingual.rs` covering the idiom intent, answer content, and Russian language tag
+- 3 new unit tests in `tests/unit/specification/multilingual.rs` covering the idiom intent, answer content, and Russian language tag
 
 ### Fixed
 - Issue #41: «Купи слона» no longer falls through to the generic unknown-intent fallback; it is handled with a culturally appropriate Russian explanation of the folk game
@@ -2186,7 +2186,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Release completeness checks now self-heal when crates.io exists but configured Docker Hub or GitHub release artifacts are missing.
 
 ### Added
-- Added the formal-ai proof-of-concept library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
+- Added the formal-ai deterministic symbolic implementation library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
 - Added a markdown-capable chat demo with randomized dialog mode, greeting-first examples, and multi-language hello-world prompts.
 - Added Rust-script dataset generation into human-readable Links Notation `.lino` files under `data/`.
 - Added Playwright e2e test suite under `tests/e2e/` covering page load, initial messages, quick prompts, chat interactions, demo mode toggle, trace panel, and preview mode.
@@ -2223,7 +2223,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added the issue #12 holistic case study, root vision/goals/non-goals documents, and a unit test that keeps the documentation set present and traceable.
 
 ### Added
-- Added a TDD-style MVP test suite under `tests/unit/mvp/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented MVP behavior are marked `#[ignore = "MVP-target: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
+- Added a TDD-style full-scope test suite under `tests/unit/specification/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented full-scope behavior are marked `#[ignore = "tracked requirement: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
 
 ### Added
 - Added the universal 11-step solver loop (impulse → formalization → context → history → decomposition → TDD → synthesis → combination → verification → simplification → documentation) and wired it into `FormalAiEngine.answer` so every reply walks the same reasoning pipeline regardless of intent.
@@ -2258,7 +2258,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added arithmetic, concept-lookup, conversation-recall, and explicit-JavaScript-execution handlers to the universal solver so the same loop now answers "what is 2 + 2?", "what is Wikipedia?", "what is my name?", and "please run this javascript: ..." prompts (issue #14).
 - Added `solve_with_history`, `ConversationRole`, and `ConversationTurn` to the library API so every surface can carry conversation memory through the same solver loop.
 - Added `data/seed/concepts.lino` with offline records for Wikipedia, Wikidata, Wiktionary, Links Notation, doublet links, the universal solver, the event log, WebAssembly, and Rust; each record cites its source for auditability.
-- Added `tests/unit/mvp/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
+- Added `tests/unit/specification/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
 - Added `examples/universal_solver_tour.rs` which walks every specialized handler through the same `FormalAiEngine::answer` entry point used by the library, CLI, HTTP server, Telegram bot, and demo.
 
 ### Changed
@@ -2321,7 +2321,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Russian "назови " prefix recognized as a `concept_lookup` intent trigger (issue #30). The prompt "назови цвет" previously returned `intent: unknown`; it now resolves to `concept_lookup` and returns a definition of the color concept.
 - `concept_color` seed record in `data/seed/concepts.lino` with full multilingual support (English, Russian, Hindi, Chinese), Wikidata anchor Q1075, and per-language localized blocks citing Wikipedia in each language.
-- Two regression tests in `tests/unit/mvp/multilingual.rs` pinning down the reporter's exact prompt: `russian_nazovi_prefix_routes_to_concept_lookup` and `russian_nazovi_tsvet_answer_references_color`.
+- Two regression tests in `tests/unit/specification/multilingual.rs` pinning down the reporter's exact prompt: `russian_nazovi_prefix_routes_to_concept_lookup` and `russian_nazovi_tsvet_answer_references_color`.
 - `DEFAULT_CONCEPT_PREFIXES` fallback in `src/web/formal_ai_worker.js` updated to include "назови " so the browser worker mirrors the Rust pipeline when the seed has not yet been loaded.
 
 ### Fixed
@@ -2363,12 +2363,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Per-language `localized "en|ru|hi|zh"` blocks on `ConceptRecord` carrying the native term, native aliases, native-Wikipedia summary, and source URL (e.g. `Фильтр с бесконечной импульсной характеристикой … или IIR-фильтр` from ru.wikipedia.org). The solver and JS worker prefer the prevailing-language block when rendering the response, so the original maintainer prompt `что такое iir в ml` now returns a Russian-language definition citing the Russian Wikipedia article (issue #20 follow-up R9/R10/R11).
 - New `concept_lookup_in_context_no_alias` response template variant: when the user already typed the localized context label, the body renders as `В контексте Машинное обучение IIR …` instead of `«Машинное обучение» (Машинное обучение)`. The variant is picked by template id from `multilingual-responses.lino` so future languages add a row without Rust changes.
 - `wikidata "Q…"` field on every concept and new `wikidata:Q…` evidence link so the cross-language join key used by `link-assistant/human-language` and `link-assistant/meta-expression` is part of the public trace (issue #20 follow-up R13).
-- Additional Rust integration tests in `tests/unit/mvp/multilingual.rs` pinning down native-language body content (Russian, English, Hindi, Chinese), the `«ml» (Машинное обучение)` rendering, the ru.wikipedia.org source citation, the no-alias-duplication template, and the Wikidata anchor in `evidence_links`.
+- Additional Rust integration tests in `tests/unit/specification/multilingual.rs` pinning down native-language body content (Russian, English, Hindi, Chinese), the `«ml» (Машинное обучение)` rendering, the ru.wikipedia.org source citation, the no-alias-duplication template, and the Wikidata anchor in `evidence_links`.
 
 ### Changed
 - `concepts.rs` now exposes `ConceptQuery` / `ConceptLookup` and the context-aware `extract_concept_query` + `lookup_concept_query`; the prior single-string `extract_concept_term` / `lookup_concept` shims have been removed. The ranker resolves context phrases through the new registry: a record can declare `context_links "context_machine_learning|…"` and `record_has_context` will follow the registry rather than require every alias inline.
 - `src/web/formal_ai_worker.js` mirrors the Rust pipeline: it parses the context delimiter, emits the same `concept_lookup:*` and `wikidata:*` evidence labels, picks the `_no_alias` template when needed, and renders both plain and in-context bodies from the localized block selected by `detectLanguage(prompt)`.
-- `tests/unit/mvp/multilingual.rs` pins down the four-language variants of the trigger prompt and the evidence-link debug trail; `src/solver_helpers.rs` gained unit tests for context delimiter parsing across the four languages.
+- `tests/unit/specification/multilingual.rs` pins down the four-language variants of the trigger prompt and the evidence-link debug trail; `src/solver_helpers.rs` gained unit tests for context delimiter parsing across the four languages.
 
 ### Fixed
 - Russian prompts such as "покажи как ты работаешь?" now correctly resolve to `intent: meta_explanation` instead of falling back to `intent: unknown` (#51)
@@ -2400,7 +2400,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - `try_kupi_slona` handler in `src/solver_handlers.rs` that recognises the Russian circular-joke idiom «Купи слона» and returns the traditional reply
 - `kupi_slona` intent wired into `handle_specialized_pattern` in `src/solver.rs`
-- 3 new unit tests in `tests/unit/mvp/multilingual.rs` covering the idiom intent, answer content, and Russian language tag
+- 3 new unit tests in `tests/unit/specification/multilingual.rs` covering the idiom intent, answer content, and Russian language tag
 
 ### Fixed
 - Issue #41: «Купи слона» no longer falls through to the generic unknown-intent fallback; it is handled with a culturally appropriate Russian explanation of the folk game
@@ -2664,7 +2664,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Release completeness checks now self-heal when crates.io exists but configured Docker Hub or GitHub release artifacts are missing.
 
 ### Added
-- Added the formal-ai proof-of-concept library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
+- Added the formal-ai deterministic symbolic implementation library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
 - Added a markdown-capable chat demo with randomized dialog mode, greeting-first examples, and multi-language hello-world prompts.
 - Added Rust-script dataset generation into human-readable Links Notation `.lino` files under `data/`.
 - Added Playwright e2e test suite under `tests/e2e/` covering page load, initial messages, quick prompts, chat interactions, demo mode toggle, trace panel, and preview mode.
@@ -2701,7 +2701,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added the issue #12 holistic case study, root vision/goals/non-goals documents, and a unit test that keeps the documentation set present and traceable.
 
 ### Added
-- Added a TDD-style MVP test suite under `tests/unit/mvp/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented MVP behavior are marked `#[ignore = "MVP-target: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
+- Added a TDD-style full-scope test suite under `tests/unit/specification/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented full-scope behavior are marked `#[ignore = "tracked requirement: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
 
 ### Added
 - Added the universal 11-step solver loop (impulse → formalization → context → history → decomposition → TDD → synthesis → combination → verification → simplification → documentation) and wired it into `FormalAiEngine.answer` so every reply walks the same reasoning pipeline regardless of intent.
@@ -2736,7 +2736,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added arithmetic, concept-lookup, conversation-recall, and explicit-JavaScript-execution handlers to the universal solver so the same loop now answers "what is 2 + 2?", "what is Wikipedia?", "what is my name?", and "please run this javascript: ..." prompts (issue #14).
 - Added `solve_with_history`, `ConversationRole`, and `ConversationTurn` to the library API so every surface can carry conversation memory through the same solver loop.
 - Added `data/seed/concepts.lino` with offline records for Wikipedia, Wikidata, Wiktionary, Links Notation, doublet links, the universal solver, the event log, WebAssembly, and Rust; each record cites its source for auditability.
-- Added `tests/unit/mvp/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
+- Added `tests/unit/specification/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
 - Added `examples/universal_solver_tour.rs` which walks every specialized handler through the same `FormalAiEngine::answer` entry point used by the library, CLI, HTTP server, Telegram bot, and demo.
 
 ### Changed
@@ -2799,7 +2799,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Russian "назови " prefix recognized as a `concept_lookup` intent trigger (issue #30). The prompt "назови цвет" previously returned `intent: unknown`; it now resolves to `concept_lookup` and returns a definition of the color concept.
 - `concept_color` seed record in `data/seed/concepts.lino` with full multilingual support (English, Russian, Hindi, Chinese), Wikidata anchor Q1075, and per-language localized blocks citing Wikipedia in each language.
-- Two regression tests in `tests/unit/mvp/multilingual.rs` pinning down the reporter's exact prompt: `russian_nazovi_prefix_routes_to_concept_lookup` and `russian_nazovi_tsvet_answer_references_color`.
+- Two regression tests in `tests/unit/specification/multilingual.rs` pinning down the reporter's exact prompt: `russian_nazovi_prefix_routes_to_concept_lookup` and `russian_nazovi_tsvet_answer_references_color`.
 - `DEFAULT_CONCEPT_PREFIXES` fallback in `src/web/formal_ai_worker.js` updated to include "назови " so the browser worker mirrors the Rust pipeline when the seed has not yet been loaded.
 
 ### Fixed
@@ -2841,12 +2841,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Per-language `localized "en|ru|hi|zh"` blocks on `ConceptRecord` carrying the native term, native aliases, native-Wikipedia summary, and source URL (e.g. `Фильтр с бесконечной импульсной характеристикой … или IIR-фильтр` from ru.wikipedia.org). The solver and JS worker prefer the prevailing-language block when rendering the response, so the original maintainer prompt `что такое iir в ml` now returns a Russian-language definition citing the Russian Wikipedia article (issue #20 follow-up R9/R10/R11).
 - New `concept_lookup_in_context_no_alias` response template variant: when the user already typed the localized context label, the body renders as `В контексте Машинное обучение IIR …` instead of `«Машинное обучение» (Машинное обучение)`. The variant is picked by template id from `multilingual-responses.lino` so future languages add a row without Rust changes.
 - `wikidata "Q…"` field on every concept and new `wikidata:Q…` evidence link so the cross-language join key used by `link-assistant/human-language` and `link-assistant/meta-expression` is part of the public trace (issue #20 follow-up R13).
-- Additional Rust integration tests in `tests/unit/mvp/multilingual.rs` pinning down native-language body content (Russian, English, Hindi, Chinese), the `«ml» (Машинное обучение)` rendering, the ru.wikipedia.org source citation, the no-alias-duplication template, and the Wikidata anchor in `evidence_links`.
+- Additional Rust integration tests in `tests/unit/specification/multilingual.rs` pinning down native-language body content (Russian, English, Hindi, Chinese), the `«ml» (Машинное обучение)` rendering, the ru.wikipedia.org source citation, the no-alias-duplication template, and the Wikidata anchor in `evidence_links`.
 
 ### Changed
 - `concepts.rs` now exposes `ConceptQuery` / `ConceptLookup` and the context-aware `extract_concept_query` + `lookup_concept_query`; the prior single-string `extract_concept_term` / `lookup_concept` shims have been removed. The ranker resolves context phrases through the new registry: a record can declare `context_links "context_machine_learning|…"` and `record_has_context` will follow the registry rather than require every alias inline.
 - `src/web/formal_ai_worker.js` mirrors the Rust pipeline: it parses the context delimiter, emits the same `concept_lookup:*` and `wikidata:*` evidence labels, picks the `_no_alias` template when needed, and renders both plain and in-context bodies from the localized block selected by `detectLanguage(prompt)`.
-- `tests/unit/mvp/multilingual.rs` pins down the four-language variants of the trigger prompt and the evidence-link debug trail; `src/solver_helpers.rs` gained unit tests for context delimiter parsing across the four languages.
+- `tests/unit/specification/multilingual.rs` pins down the four-language variants of the trigger prompt and the evidence-link debug trail; `src/solver_helpers.rs` gained unit tests for context delimiter parsing across the four languages.
 
 ### Fixed
 - Russian prompts such as "покажи как ты работаешь?" now correctly resolve to `intent: meta_explanation` instead of falling back to `intent: unknown` (#51)
@@ -2878,7 +2878,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - `try_kupi_slona` handler in `src/solver_handlers.rs` that recognises the Russian circular-joke idiom «Купи слона» and returns the traditional reply
 - `kupi_slona` intent wired into `handle_specialized_pattern` in `src/solver.rs`
-- 3 new unit tests in `tests/unit/mvp/multilingual.rs` covering the idiom intent, answer content, and Russian language tag
+- 3 new unit tests in `tests/unit/specification/multilingual.rs` covering the idiom intent, answer content, and Russian language tag
 
 ### Fixed
 - Issue #41: «Купи слона» no longer falls through to the generic unknown-intent fallback; it is handled with a culturally appropriate Russian explanation of the folk game
@@ -3129,7 +3129,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Release completeness checks now self-heal when crates.io exists but configured Docker Hub or GitHub release artifacts are missing.
 
 ### Added
-- Added the formal-ai proof-of-concept library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
+- Added the formal-ai deterministic symbolic implementation library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
 - Added a markdown-capable chat demo with randomized dialog mode, greeting-first examples, and multi-language hello-world prompts.
 - Added Rust-script dataset generation into human-readable Links Notation `.lino` files under `data/`.
 - Added Playwright e2e test suite under `tests/e2e/` covering page load, initial messages, quick prompts, chat interactions, demo mode toggle, trace panel, and preview mode.
@@ -3166,7 +3166,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added the issue #12 holistic case study, root vision/goals/non-goals documents, and a unit test that keeps the documentation set present and traceable.
 
 ### Added
-- Added a TDD-style MVP test suite under `tests/unit/mvp/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented MVP behavior are marked `#[ignore = "MVP-target: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
+- Added a TDD-style full-scope test suite under `tests/unit/specification/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented full-scope behavior are marked `#[ignore = "tracked requirement: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
 
 ### Added
 - Added the universal 11-step solver loop (impulse → formalization → context → history → decomposition → TDD → synthesis → combination → verification → simplification → documentation) and wired it into `FormalAiEngine.answer` so every reply walks the same reasoning pipeline regardless of intent.
@@ -3201,7 +3201,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added arithmetic, concept-lookup, conversation-recall, and explicit-JavaScript-execution handlers to the universal solver so the same loop now answers "what is 2 + 2?", "what is Wikipedia?", "what is my name?", and "please run this javascript: ..." prompts (issue #14).
 - Added `solve_with_history`, `ConversationRole`, and `ConversationTurn` to the library API so every surface can carry conversation memory through the same solver loop.
 - Added `data/seed/concepts.lino` with offline records for Wikipedia, Wikidata, Wiktionary, Links Notation, doublet links, the universal solver, the event log, WebAssembly, and Rust; each record cites its source for auditability.
-- Added `tests/unit/mvp/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
+- Added `tests/unit/specification/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
 - Added `examples/universal_solver_tour.rs` which walks every specialized handler through the same `FormalAiEngine::answer` entry point used by the library, CLI, HTTP server, Telegram bot, and demo.
 
 ### Changed
@@ -3264,7 +3264,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Russian "назови " prefix recognized as a `concept_lookup` intent trigger (issue #30). The prompt "назови цвет" previously returned `intent: unknown`; it now resolves to `concept_lookup` and returns a definition of the color concept.
 - `concept_color` seed record in `data/seed/concepts.lino` with full multilingual support (English, Russian, Hindi, Chinese), Wikidata anchor Q1075, and per-language localized blocks citing Wikipedia in each language.
-- Two regression tests in `tests/unit/mvp/multilingual.rs` pinning down the reporter's exact prompt: `russian_nazovi_prefix_routes_to_concept_lookup` and `russian_nazovi_tsvet_answer_references_color`.
+- Two regression tests in `tests/unit/specification/multilingual.rs` pinning down the reporter's exact prompt: `russian_nazovi_prefix_routes_to_concept_lookup` and `russian_nazovi_tsvet_answer_references_color`.
 - `DEFAULT_CONCEPT_PREFIXES` fallback in `src/web/formal_ai_worker.js` updated to include "назови " so the browser worker mirrors the Rust pipeline when the seed has not yet been loaded.
 
 ### Fixed
@@ -3306,12 +3306,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Per-language `localized "en|ru|hi|zh"` blocks on `ConceptRecord` carrying the native term, native aliases, native-Wikipedia summary, and source URL (e.g. `Фильтр с бесконечной импульсной характеристикой … или IIR-фильтр` from ru.wikipedia.org). The solver and JS worker prefer the prevailing-language block when rendering the response, so the original maintainer prompt `что такое iir в ml` now returns a Russian-language definition citing the Russian Wikipedia article (issue #20 follow-up R9/R10/R11).
 - New `concept_lookup_in_context_no_alias` response template variant: when the user already typed the localized context label, the body renders as `В контексте Машинное обучение IIR …` instead of `«Машинное обучение» (Машинное обучение)`. The variant is picked by template id from `multilingual-responses.lino` so future languages add a row without Rust changes.
 - `wikidata "Q…"` field on every concept and new `wikidata:Q…` evidence link so the cross-language join key used by `link-assistant/human-language` and `link-assistant/meta-expression` is part of the public trace (issue #20 follow-up R13).
-- Additional Rust integration tests in `tests/unit/mvp/multilingual.rs` pinning down native-language body content (Russian, English, Hindi, Chinese), the `«ml» (Машинное обучение)` rendering, the ru.wikipedia.org source citation, the no-alias-duplication template, and the Wikidata anchor in `evidence_links`.
+- Additional Rust integration tests in `tests/unit/specification/multilingual.rs` pinning down native-language body content (Russian, English, Hindi, Chinese), the `«ml» (Машинное обучение)` rendering, the ru.wikipedia.org source citation, the no-alias-duplication template, and the Wikidata anchor in `evidence_links`.
 
 ### Changed
 - `concepts.rs` now exposes `ConceptQuery` / `ConceptLookup` and the context-aware `extract_concept_query` + `lookup_concept_query`; the prior single-string `extract_concept_term` / `lookup_concept` shims have been removed. The ranker resolves context phrases through the new registry: a record can declare `context_links "context_machine_learning|…"` and `record_has_context` will follow the registry rather than require every alias inline.
 - `src/web/formal_ai_worker.js` mirrors the Rust pipeline: it parses the context delimiter, emits the same `concept_lookup:*` and `wikidata:*` evidence labels, picks the `_no_alias` template when needed, and renders both plain and in-context bodies from the localized block selected by `detectLanguage(prompt)`.
-- `tests/unit/mvp/multilingual.rs` pins down the four-language variants of the trigger prompt and the evidence-link debug trail; `src/solver_helpers.rs` gained unit tests for context delimiter parsing across the four languages.
+- `tests/unit/specification/multilingual.rs` pins down the four-language variants of the trigger prompt and the evidence-link debug trail; `src/solver_helpers.rs` gained unit tests for context delimiter parsing across the four languages.
 
 ### Fixed
 - Russian prompts such as "покажи как ты работаешь?" now correctly resolve to `intent: meta_explanation` instead of falling back to `intent: unknown` (#51)
@@ -3343,7 +3343,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - `try_kupi_slona` handler in `src/solver_handlers.rs` that recognises the Russian circular-joke idiom «Купи слона» and returns the traditional reply
 - `kupi_slona` intent wired into `handle_specialized_pattern` in `src/solver.rs`
-- 3 new unit tests in `tests/unit/mvp/multilingual.rs` covering the idiom intent, answer content, and Russian language tag
+- 3 new unit tests in `tests/unit/specification/multilingual.rs` covering the idiom intent, answer content, and Russian language tag
 
 ### Fixed
 - Issue #41: «Купи слона» no longer falls through to the generic unknown-intent fallback; it is handled with a culturally appropriate Russian explanation of the folk game
@@ -3590,7 +3590,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Release completeness checks now self-heal when crates.io exists but configured Docker Hub or GitHub release artifacts are missing.
 
 ### Added
-- Added the formal-ai proof-of-concept library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
+- Added the formal-ai deterministic symbolic implementation library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
 - Added a markdown-capable chat demo with randomized dialog mode, greeting-first examples, and multi-language hello-world prompts.
 - Added Rust-script dataset generation into human-readable Links Notation `.lino` files under `data/`.
 - Added Playwright e2e test suite under `tests/e2e/` covering page load, initial messages, quick prompts, chat interactions, demo mode toggle, trace panel, and preview mode.
@@ -3627,7 +3627,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added the issue #12 holistic case study, root vision/goals/non-goals documents, and a unit test that keeps the documentation set present and traceable.
 
 ### Added
-- Added a TDD-style MVP test suite under `tests/unit/mvp/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented MVP behavior are marked `#[ignore = "MVP-target: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
+- Added a TDD-style full-scope test suite under `tests/unit/specification/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented full-scope behavior are marked `#[ignore = "tracked requirement: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
 
 ### Added
 - Added the universal 11-step solver loop (impulse → formalization → context → history → decomposition → TDD → synthesis → combination → verification → simplification → documentation) and wired it into `FormalAiEngine.answer` so every reply walks the same reasoning pipeline regardless of intent.
@@ -3662,7 +3662,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added arithmetic, concept-lookup, conversation-recall, and explicit-JavaScript-execution handlers to the universal solver so the same loop now answers "what is 2 + 2?", "what is Wikipedia?", "what is my name?", and "please run this javascript: ..." prompts (issue #14).
 - Added `solve_with_history`, `ConversationRole`, and `ConversationTurn` to the library API so every surface can carry conversation memory through the same solver loop.
 - Added `data/seed/concepts.lino` with offline records for Wikipedia, Wikidata, Wiktionary, Links Notation, doublet links, the universal solver, the event log, WebAssembly, and Rust; each record cites its source for auditability.
-- Added `tests/unit/mvp/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
+- Added `tests/unit/specification/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
 - Added `examples/universal_solver_tour.rs` which walks every specialized handler through the same `FormalAiEngine::answer` entry point used by the library, CLI, HTTP server, Telegram bot, and demo.
 
 ### Changed
@@ -3725,7 +3725,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Russian "назови " prefix recognized as a `concept_lookup` intent trigger (issue #30). The prompt "назови цвет" previously returned `intent: unknown`; it now resolves to `concept_lookup` and returns a definition of the color concept.
 - `concept_color` seed record in `data/seed/concepts.lino` with full multilingual support (English, Russian, Hindi, Chinese), Wikidata anchor Q1075, and per-language localized blocks citing Wikipedia in each language.
-- Two regression tests in `tests/unit/mvp/multilingual.rs` pinning down the reporter's exact prompt: `russian_nazovi_prefix_routes_to_concept_lookup` and `russian_nazovi_tsvet_answer_references_color`.
+- Two regression tests in `tests/unit/specification/multilingual.rs` pinning down the reporter's exact prompt: `russian_nazovi_prefix_routes_to_concept_lookup` and `russian_nazovi_tsvet_answer_references_color`.
 - `DEFAULT_CONCEPT_PREFIXES` fallback in `src/web/formal_ai_worker.js` updated to include "назови " so the browser worker mirrors the Rust pipeline when the seed has not yet been loaded.
 
 ### Fixed
@@ -3767,12 +3767,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Per-language `localized "en|ru|hi|zh"` blocks on `ConceptRecord` carrying the native term, native aliases, native-Wikipedia summary, and source URL (e.g. `Фильтр с бесконечной импульсной характеристикой … или IIR-фильтр` from ru.wikipedia.org). The solver and JS worker prefer the prevailing-language block when rendering the response, so the original maintainer prompt `что такое iir в ml` now returns a Russian-language definition citing the Russian Wikipedia article (issue #20 follow-up R9/R10/R11).
 - New `concept_lookup_in_context_no_alias` response template variant: when the user already typed the localized context label, the body renders as `В контексте Машинное обучение IIR …` instead of `«Машинное обучение» (Машинное обучение)`. The variant is picked by template id from `multilingual-responses.lino` so future languages add a row without Rust changes.
 - `wikidata "Q…"` field on every concept and new `wikidata:Q…` evidence link so the cross-language join key used by `link-assistant/human-language` and `link-assistant/meta-expression` is part of the public trace (issue #20 follow-up R13).
-- Additional Rust integration tests in `tests/unit/mvp/multilingual.rs` pinning down native-language body content (Russian, English, Hindi, Chinese), the `«ml» (Машинное обучение)` rendering, the ru.wikipedia.org source citation, the no-alias-duplication template, and the Wikidata anchor in `evidence_links`.
+- Additional Rust integration tests in `tests/unit/specification/multilingual.rs` pinning down native-language body content (Russian, English, Hindi, Chinese), the `«ml» (Машинное обучение)` rendering, the ru.wikipedia.org source citation, the no-alias-duplication template, and the Wikidata anchor in `evidence_links`.
 
 ### Changed
 - `concepts.rs` now exposes `ConceptQuery` / `ConceptLookup` and the context-aware `extract_concept_query` + `lookup_concept_query`; the prior single-string `extract_concept_term` / `lookup_concept` shims have been removed. The ranker resolves context phrases through the new registry: a record can declare `context_links "context_machine_learning|…"` and `record_has_context` will follow the registry rather than require every alias inline.
 - `src/web/formal_ai_worker.js` mirrors the Rust pipeline: it parses the context delimiter, emits the same `concept_lookup:*` and `wikidata:*` evidence labels, picks the `_no_alias` template when needed, and renders both plain and in-context bodies from the localized block selected by `detectLanguage(prompt)`.
-- `tests/unit/mvp/multilingual.rs` pins down the four-language variants of the trigger prompt and the evidence-link debug trail; `src/solver_helpers.rs` gained unit tests for context delimiter parsing across the four languages.
+- `tests/unit/specification/multilingual.rs` pins down the four-language variants of the trigger prompt and the evidence-link debug trail; `src/solver_helpers.rs` gained unit tests for context delimiter parsing across the four languages.
 
 ### Fixed
 - Russian prompts such as "покажи как ты работаешь?" now correctly resolve to `intent: meta_explanation` instead of falling back to `intent: unknown` (#51)
@@ -3804,7 +3804,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - `try_kupi_slona` handler in `src/solver_handlers.rs` that recognises the Russian circular-joke idiom «Купи слона» and returns the traditional reply
 - `kupi_slona` intent wired into `handle_specialized_pattern` in `src/solver.rs`
-- 3 new unit tests in `tests/unit/mvp/multilingual.rs` covering the idiom intent, answer content, and Russian language tag
+- 3 new unit tests in `tests/unit/specification/multilingual.rs` covering the idiom intent, answer content, and Russian language tag
 
 ### Fixed
 - Issue #41: «Купи слона» no longer falls through to the generic unknown-intent fallback; it is handled with a culturally appropriate Russian explanation of the folk game
@@ -4041,7 +4041,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Release completeness checks now self-heal when crates.io exists but configured Docker Hub or GitHub release artifacts are missing.
 
 ### Added
-- Added the formal-ai proof-of-concept library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
+- Added the formal-ai deterministic symbolic implementation library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
 - Added a markdown-capable chat demo with randomized dialog mode, greeting-first examples, and multi-language hello-world prompts.
 - Added Rust-script dataset generation into human-readable Links Notation `.lino` files under `data/`.
 - Added Playwright e2e test suite under `tests/e2e/` covering page load, initial messages, quick prompts, chat interactions, demo mode toggle, trace panel, and preview mode.
@@ -4078,7 +4078,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added the issue #12 holistic case study, root vision/goals/non-goals documents, and a unit test that keeps the documentation set present and traceable.
 
 ### Added
-- Added a TDD-style MVP test suite under `tests/unit/mvp/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented MVP behavior are marked `#[ignore = "MVP-target: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
+- Added a TDD-style full-scope test suite under `tests/unit/specification/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented full-scope behavior are marked `#[ignore = "tracked requirement: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
 
 ### Added
 - Added the universal 11-step solver loop (impulse → formalization → context → history → decomposition → TDD → synthesis → combination → verification → simplification → documentation) and wired it into `FormalAiEngine.answer` so every reply walks the same reasoning pipeline regardless of intent.
@@ -4113,7 +4113,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added arithmetic, concept-lookup, conversation-recall, and explicit-JavaScript-execution handlers to the universal solver so the same loop now answers "what is 2 + 2?", "what is Wikipedia?", "what is my name?", and "please run this javascript: ..." prompts (issue #14).
 - Added `solve_with_history`, `ConversationRole`, and `ConversationTurn` to the library API so every surface can carry conversation memory through the same solver loop.
 - Added `data/seed/concepts.lino` with offline records for Wikipedia, Wikidata, Wiktionary, Links Notation, doublet links, the universal solver, the event log, WebAssembly, and Rust; each record cites its source for auditability.
-- Added `tests/unit/mvp/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
+- Added `tests/unit/specification/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
 - Added `examples/universal_solver_tour.rs` which walks every specialized handler through the same `FormalAiEngine::answer` entry point used by the library, CLI, HTTP server, Telegram bot, and demo.
 
 ### Changed
@@ -4176,7 +4176,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Russian "назови " prefix recognized as a `concept_lookup` intent trigger (issue #30). The prompt "назови цвет" previously returned `intent: unknown`; it now resolves to `concept_lookup` and returns a definition of the color concept.
 - `concept_color` seed record in `data/seed/concepts.lino` with full multilingual support (English, Russian, Hindi, Chinese), Wikidata anchor Q1075, and per-language localized blocks citing Wikipedia in each language.
-- Two regression tests in `tests/unit/mvp/multilingual.rs` pinning down the reporter's exact prompt: `russian_nazovi_prefix_routes_to_concept_lookup` and `russian_nazovi_tsvet_answer_references_color`.
+- Two regression tests in `tests/unit/specification/multilingual.rs` pinning down the reporter's exact prompt: `russian_nazovi_prefix_routes_to_concept_lookup` and `russian_nazovi_tsvet_answer_references_color`.
 - `DEFAULT_CONCEPT_PREFIXES` fallback in `src/web/formal_ai_worker.js` updated to include "назови " so the browser worker mirrors the Rust pipeline when the seed has not yet been loaded.
 
 ### Fixed
@@ -4218,12 +4218,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Per-language `localized "en|ru|hi|zh"` blocks on `ConceptRecord` carrying the native term, native aliases, native-Wikipedia summary, and source URL (e.g. `Фильтр с бесконечной импульсной характеристикой … или IIR-фильтр` from ru.wikipedia.org). The solver and JS worker prefer the prevailing-language block when rendering the response, so the original maintainer prompt `что такое iir в ml` now returns a Russian-language definition citing the Russian Wikipedia article (issue #20 follow-up R9/R10/R11).
 - New `concept_lookup_in_context_no_alias` response template variant: when the user already typed the localized context label, the body renders as `В контексте Машинное обучение IIR …` instead of `«Машинное обучение» (Машинное обучение)`. The variant is picked by template id from `multilingual-responses.lino` so future languages add a row without Rust changes.
 - `wikidata "Q…"` field on every concept and new `wikidata:Q…` evidence link so the cross-language join key used by `link-assistant/human-language` and `link-assistant/meta-expression` is part of the public trace (issue #20 follow-up R13).
-- Additional Rust integration tests in `tests/unit/mvp/multilingual.rs` pinning down native-language body content (Russian, English, Hindi, Chinese), the `«ml» (Машинное обучение)` rendering, the ru.wikipedia.org source citation, the no-alias-duplication template, and the Wikidata anchor in `evidence_links`.
+- Additional Rust integration tests in `tests/unit/specification/multilingual.rs` pinning down native-language body content (Russian, English, Hindi, Chinese), the `«ml» (Машинное обучение)` rendering, the ru.wikipedia.org source citation, the no-alias-duplication template, and the Wikidata anchor in `evidence_links`.
 
 ### Changed
 - `concepts.rs` now exposes `ConceptQuery` / `ConceptLookup` and the context-aware `extract_concept_query` + `lookup_concept_query`; the prior single-string `extract_concept_term` / `lookup_concept` shims have been removed. The ranker resolves context phrases through the new registry: a record can declare `context_links "context_machine_learning|…"` and `record_has_context` will follow the registry rather than require every alias inline.
 - `src/web/formal_ai_worker.js` mirrors the Rust pipeline: it parses the context delimiter, emits the same `concept_lookup:*` and `wikidata:*` evidence labels, picks the `_no_alias` template when needed, and renders both plain and in-context bodies from the localized block selected by `detectLanguage(prompt)`.
-- `tests/unit/mvp/multilingual.rs` pins down the four-language variants of the trigger prompt and the evidence-link debug trail; `src/solver_helpers.rs` gained unit tests for context delimiter parsing across the four languages.
+- `tests/unit/specification/multilingual.rs` pins down the four-language variants of the trigger prompt and the evidence-link debug trail; `src/solver_helpers.rs` gained unit tests for context delimiter parsing across the four languages.
 
 ### Fixed
 - Russian prompts such as "покажи как ты работаешь?" now correctly resolve to `intent: meta_explanation` instead of falling back to `intent: unknown` (#51)
@@ -4255,7 +4255,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - `try_kupi_slona` handler in `src/solver_handlers.rs` that recognises the Russian circular-joke idiom «Купи слона» and returns the traditional reply
 - `kupi_slona` intent wired into `handle_specialized_pattern` in `src/solver.rs`
-- 3 new unit tests in `tests/unit/mvp/multilingual.rs` covering the idiom intent, answer content, and Russian language tag
+- 3 new unit tests in `tests/unit/specification/multilingual.rs` covering the idiom intent, answer content, and Russian language tag
 
 ### Fixed
 - Issue #41: «Купи слона» no longer falls through to the generic unknown-intent fallback; it is handled with a culturally appropriate Russian explanation of the folk game
@@ -4486,7 +4486,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Release completeness checks now self-heal when crates.io exists but configured Docker Hub or GitHub release artifacts are missing.
 
 ### Added
-- Added the formal-ai proof-of-concept library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
+- Added the formal-ai deterministic symbolic implementation library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
 - Added a markdown-capable chat demo with randomized dialog mode, greeting-first examples, and multi-language hello-world prompts.
 - Added Rust-script dataset generation into human-readable Links Notation `.lino` files under `data/`.
 - Added Playwright e2e test suite under `tests/e2e/` covering page load, initial messages, quick prompts, chat interactions, demo mode toggle, trace panel, and preview mode.
@@ -4523,7 +4523,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added the issue #12 holistic case study, root vision/goals/non-goals documents, and a unit test that keeps the documentation set present and traceable.
 
 ### Added
-- Added a TDD-style MVP test suite under `tests/unit/mvp/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented MVP behavior are marked `#[ignore = "MVP-target: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
+- Added a TDD-style full-scope test suite under `tests/unit/specification/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented full-scope behavior are marked `#[ignore = "tracked requirement: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
 
 ### Added
 - Added the universal 11-step solver loop (impulse → formalization → context → history → decomposition → TDD → synthesis → combination → verification → simplification → documentation) and wired it into `FormalAiEngine.answer` so every reply walks the same reasoning pipeline regardless of intent.
@@ -4558,7 +4558,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added arithmetic, concept-lookup, conversation-recall, and explicit-JavaScript-execution handlers to the universal solver so the same loop now answers "what is 2 + 2?", "what is Wikipedia?", "what is my name?", and "please run this javascript: ..." prompts (issue #14).
 - Added `solve_with_history`, `ConversationRole`, and `ConversationTurn` to the library API so every surface can carry conversation memory through the same solver loop.
 - Added `data/seed/concepts.lino` with offline records for Wikipedia, Wikidata, Wiktionary, Links Notation, doublet links, the universal solver, the event log, WebAssembly, and Rust; each record cites its source for auditability.
-- Added `tests/unit/mvp/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
+- Added `tests/unit/specification/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
 - Added `examples/universal_solver_tour.rs` which walks every specialized handler through the same `FormalAiEngine::answer` entry point used by the library, CLI, HTTP server, Telegram bot, and demo.
 
 ### Changed
@@ -4621,7 +4621,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Russian "назови " prefix recognized as a `concept_lookup` intent trigger (issue #30). The prompt "назови цвет" previously returned `intent: unknown`; it now resolves to `concept_lookup` and returns a definition of the color concept.
 - `concept_color` seed record in `data/seed/concepts.lino` with full multilingual support (English, Russian, Hindi, Chinese), Wikidata anchor Q1075, and per-language localized blocks citing Wikipedia in each language.
-- Two regression tests in `tests/unit/mvp/multilingual.rs` pinning down the reporter's exact prompt: `russian_nazovi_prefix_routes_to_concept_lookup` and `russian_nazovi_tsvet_answer_references_color`.
+- Two regression tests in `tests/unit/specification/multilingual.rs` pinning down the reporter's exact prompt: `russian_nazovi_prefix_routes_to_concept_lookup` and `russian_nazovi_tsvet_answer_references_color`.
 - `DEFAULT_CONCEPT_PREFIXES` fallback in `src/web/formal_ai_worker.js` updated to include "назови " so the browser worker mirrors the Rust pipeline when the seed has not yet been loaded.
 
 ### Fixed
@@ -4663,12 +4663,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Per-language `localized "en|ru|hi|zh"` blocks on `ConceptRecord` carrying the native term, native aliases, native-Wikipedia summary, and source URL (e.g. `Фильтр с бесконечной импульсной характеристикой … или IIR-фильтр` from ru.wikipedia.org). The solver and JS worker prefer the prevailing-language block when rendering the response, so the original maintainer prompt `что такое iir в ml` now returns a Russian-language definition citing the Russian Wikipedia article (issue #20 follow-up R9/R10/R11).
 - New `concept_lookup_in_context_no_alias` response template variant: when the user already typed the localized context label, the body renders as `В контексте Машинное обучение IIR …` instead of `«Машинное обучение» (Машинное обучение)`. The variant is picked by template id from `multilingual-responses.lino` so future languages add a row without Rust changes.
 - `wikidata "Q…"` field on every concept and new `wikidata:Q…` evidence link so the cross-language join key used by `link-assistant/human-language` and `link-assistant/meta-expression` is part of the public trace (issue #20 follow-up R13).
-- Additional Rust integration tests in `tests/unit/mvp/multilingual.rs` pinning down native-language body content (Russian, English, Hindi, Chinese), the `«ml» (Машинное обучение)` rendering, the ru.wikipedia.org source citation, the no-alias-duplication template, and the Wikidata anchor in `evidence_links`.
+- Additional Rust integration tests in `tests/unit/specification/multilingual.rs` pinning down native-language body content (Russian, English, Hindi, Chinese), the `«ml» (Машинное обучение)` rendering, the ru.wikipedia.org source citation, the no-alias-duplication template, and the Wikidata anchor in `evidence_links`.
 
 ### Changed
 - `concepts.rs` now exposes `ConceptQuery` / `ConceptLookup` and the context-aware `extract_concept_query` + `lookup_concept_query`; the prior single-string `extract_concept_term` / `lookup_concept` shims have been removed. The ranker resolves context phrases through the new registry: a record can declare `context_links "context_machine_learning|…"` and `record_has_context` will follow the registry rather than require every alias inline.
 - `src/web/formal_ai_worker.js` mirrors the Rust pipeline: it parses the context delimiter, emits the same `concept_lookup:*` and `wikidata:*` evidence labels, picks the `_no_alias` template when needed, and renders both plain and in-context bodies from the localized block selected by `detectLanguage(prompt)`.
-- `tests/unit/mvp/multilingual.rs` pins down the four-language variants of the trigger prompt and the evidence-link debug trail; `src/solver_helpers.rs` gained unit tests for context delimiter parsing across the four languages.
+- `tests/unit/specification/multilingual.rs` pins down the four-language variants of the trigger prompt and the evidence-link debug trail; `src/solver_helpers.rs` gained unit tests for context delimiter parsing across the four languages.
 
 ### Fixed
 - Russian prompts such as "покажи как ты работаешь?" now correctly resolve to `intent: meta_explanation` instead of falling back to `intent: unknown` (#51)
@@ -4700,7 +4700,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - `try_kupi_slona` handler in `src/solver_handlers.rs` that recognises the Russian circular-joke idiom «Купи слона» and returns the traditional reply
 - `kupi_slona` intent wired into `handle_specialized_pattern` in `src/solver.rs`
-- 3 new unit tests in `tests/unit/mvp/multilingual.rs` covering the idiom intent, answer content, and Russian language tag
+- 3 new unit tests in `tests/unit/specification/multilingual.rs` covering the idiom intent, answer content, and Russian language tag
 
 ### Fixed
 - Issue #41: «Купи слона» no longer falls through to the generic unknown-intent fallback; it is handled with a culturally appropriate Russian explanation of the folk game
@@ -4925,7 +4925,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Release completeness checks now self-heal when crates.io exists but configured Docker Hub or GitHub release artifacts are missing.
 
 ### Added
-- Added the formal-ai proof-of-concept library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
+- Added the formal-ai deterministic symbolic implementation library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
 - Added a markdown-capable chat demo with randomized dialog mode, greeting-first examples, and multi-language hello-world prompts.
 - Added Rust-script dataset generation into human-readable Links Notation `.lino` files under `data/`.
 - Added Playwright e2e test suite under `tests/e2e/` covering page load, initial messages, quick prompts, chat interactions, demo mode toggle, trace panel, and preview mode.
@@ -4962,7 +4962,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added the issue #12 holistic case study, root vision/goals/non-goals documents, and a unit test that keeps the documentation set present and traceable.
 
 ### Added
-- Added a TDD-style MVP test suite under `tests/unit/mvp/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented MVP behavior are marked `#[ignore = "MVP-target: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
+- Added a TDD-style full-scope test suite under `tests/unit/specification/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented full-scope behavior are marked `#[ignore = "tracked requirement: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
 
 ### Added
 - Added the universal 11-step solver loop (impulse → formalization → context → history → decomposition → TDD → synthesis → combination → verification → simplification → documentation) and wired it into `FormalAiEngine.answer` so every reply walks the same reasoning pipeline regardless of intent.
@@ -4997,7 +4997,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added arithmetic, concept-lookup, conversation-recall, and explicit-JavaScript-execution handlers to the universal solver so the same loop now answers "what is 2 + 2?", "what is Wikipedia?", "what is my name?", and "please run this javascript: ..." prompts (issue #14).
 - Added `solve_with_history`, `ConversationRole`, and `ConversationTurn` to the library API so every surface can carry conversation memory through the same solver loop.
 - Added `data/seed/concepts.lino` with offline records for Wikipedia, Wikidata, Wiktionary, Links Notation, doublet links, the universal solver, the event log, WebAssembly, and Rust; each record cites its source for auditability.
-- Added `tests/unit/mvp/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
+- Added `tests/unit/specification/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
 - Added `examples/universal_solver_tour.rs` which walks every specialized handler through the same `FormalAiEngine::answer` entry point used by the library, CLI, HTTP server, Telegram bot, and demo.
 
 ### Changed
@@ -5060,7 +5060,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Russian "назови " prefix recognized as a `concept_lookup` intent trigger (issue #30). The prompt "назови цвет" previously returned `intent: unknown`; it now resolves to `concept_lookup` and returns a definition of the color concept.
 - `concept_color` seed record in `data/seed/concepts.lino` with full multilingual support (English, Russian, Hindi, Chinese), Wikidata anchor Q1075, and per-language localized blocks citing Wikipedia in each language.
-- Two regression tests in `tests/unit/mvp/multilingual.rs` pinning down the reporter's exact prompt: `russian_nazovi_prefix_routes_to_concept_lookup` and `russian_nazovi_tsvet_answer_references_color`.
+- Two regression tests in `tests/unit/specification/multilingual.rs` pinning down the reporter's exact prompt: `russian_nazovi_prefix_routes_to_concept_lookup` and `russian_nazovi_tsvet_answer_references_color`.
 - `DEFAULT_CONCEPT_PREFIXES` fallback in `src/web/formal_ai_worker.js` updated to include "назови " so the browser worker mirrors the Rust pipeline when the seed has not yet been loaded.
 
 ### Fixed
@@ -5102,12 +5102,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Per-language `localized "en|ru|hi|zh"` blocks on `ConceptRecord` carrying the native term, native aliases, native-Wikipedia summary, and source URL (e.g. `Фильтр с бесконечной импульсной характеристикой … или IIR-фильтр` from ru.wikipedia.org). The solver and JS worker prefer the prevailing-language block when rendering the response, so the original maintainer prompt `что такое iir в ml` now returns a Russian-language definition citing the Russian Wikipedia article (issue #20 follow-up R9/R10/R11).
 - New `concept_lookup_in_context_no_alias` response template variant: when the user already typed the localized context label, the body renders as `В контексте Машинное обучение IIR …` instead of `«Машинное обучение» (Машинное обучение)`. The variant is picked by template id from `multilingual-responses.lino` so future languages add a row without Rust changes.
 - `wikidata "Q…"` field on every concept and new `wikidata:Q…` evidence link so the cross-language join key used by `link-assistant/human-language` and `link-assistant/meta-expression` is part of the public trace (issue #20 follow-up R13).
-- Additional Rust integration tests in `tests/unit/mvp/multilingual.rs` pinning down native-language body content (Russian, English, Hindi, Chinese), the `«ml» (Машинное обучение)` rendering, the ru.wikipedia.org source citation, the no-alias-duplication template, and the Wikidata anchor in `evidence_links`.
+- Additional Rust integration tests in `tests/unit/specification/multilingual.rs` pinning down native-language body content (Russian, English, Hindi, Chinese), the `«ml» (Машинное обучение)` rendering, the ru.wikipedia.org source citation, the no-alias-duplication template, and the Wikidata anchor in `evidence_links`.
 
 ### Changed
 - `concepts.rs` now exposes `ConceptQuery` / `ConceptLookup` and the context-aware `extract_concept_query` + `lookup_concept_query`; the prior single-string `extract_concept_term` / `lookup_concept` shims have been removed. The ranker resolves context phrases through the new registry: a record can declare `context_links "context_machine_learning|…"` and `record_has_context` will follow the registry rather than require every alias inline.
 - `src/web/formal_ai_worker.js` mirrors the Rust pipeline: it parses the context delimiter, emits the same `concept_lookup:*` and `wikidata:*` evidence labels, picks the `_no_alias` template when needed, and renders both plain and in-context bodies from the localized block selected by `detectLanguage(prompt)`.
-- `tests/unit/mvp/multilingual.rs` pins down the four-language variants of the trigger prompt and the evidence-link debug trail; `src/solver_helpers.rs` gained unit tests for context delimiter parsing across the four languages.
+- `tests/unit/specification/multilingual.rs` pins down the four-language variants of the trigger prompt and the evidence-link debug trail; `src/solver_helpers.rs` gained unit tests for context delimiter parsing across the four languages.
 
 ### Fixed
 - Russian prompts such as "покажи как ты работаешь?" now correctly resolve to `intent: meta_explanation` instead of falling back to `intent: unknown` (#51)
@@ -5139,7 +5139,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - `try_kupi_slona` handler in `src/solver_handlers.rs` that recognises the Russian circular-joke idiom «Купи слона» and returns the traditional reply
 - `kupi_slona` intent wired into `handle_specialized_pattern` in `src/solver.rs`
-- 3 new unit tests in `tests/unit/mvp/multilingual.rs` covering the idiom intent, answer content, and Russian language tag
+- 3 new unit tests in `tests/unit/specification/multilingual.rs` covering the idiom intent, answer content, and Russian language tag
 
 ### Fixed
 - Issue #41: «Купи слона» no longer falls through to the generic unknown-intent fallback; it is handled with a culturally appropriate Russian explanation of the folk game
@@ -5363,7 +5363,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Release completeness checks now self-heal when crates.io exists but configured Docker Hub or GitHub release artifacts are missing.
 
 ### Added
-- Added the formal-ai proof-of-concept library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
+- Added the formal-ai deterministic symbolic implementation library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
 - Added a markdown-capable chat demo with randomized dialog mode, greeting-first examples, and multi-language hello-world prompts.
 - Added Rust-script dataset generation into human-readable Links Notation `.lino` files under `data/`.
 - Added Playwright e2e test suite under `tests/e2e/` covering page load, initial messages, quick prompts, chat interactions, demo mode toggle, trace panel, and preview mode.
@@ -5400,7 +5400,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added the issue #12 holistic case study, root vision/goals/non-goals documents, and a unit test that keeps the documentation set present and traceable.
 
 ### Added
-- Added a TDD-style MVP test suite under `tests/unit/mvp/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented MVP behavior are marked `#[ignore = "MVP-target: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
+- Added a TDD-style full-scope test suite under `tests/unit/specification/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented full-scope behavior are marked `#[ignore = "tracked requirement: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
 
 ### Added
 - Added the universal 11-step solver loop (impulse → formalization → context → history → decomposition → TDD → synthesis → combination → verification → simplification → documentation) and wired it into `FormalAiEngine.answer` so every reply walks the same reasoning pipeline regardless of intent.
@@ -5435,7 +5435,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added arithmetic, concept-lookup, conversation-recall, and explicit-JavaScript-execution handlers to the universal solver so the same loop now answers "what is 2 + 2?", "what is Wikipedia?", "what is my name?", and "please run this javascript: ..." prompts (issue #14).
 - Added `solve_with_history`, `ConversationRole`, and `ConversationTurn` to the library API so every surface can carry conversation memory through the same solver loop.
 - Added `data/seed/concepts.lino` with offline records for Wikipedia, Wikidata, Wiktionary, Links Notation, doublet links, the universal solver, the event log, WebAssembly, and Rust; each record cites its source for auditability.
-- Added `tests/unit/mvp/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
+- Added `tests/unit/specification/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
 - Added `examples/universal_solver_tour.rs` which walks every specialized handler through the same `FormalAiEngine::answer` entry point used by the library, CLI, HTTP server, Telegram bot, and demo.
 
 ### Changed
@@ -5498,7 +5498,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Russian "назови " prefix recognized as a `concept_lookup` intent trigger (issue #30). The prompt "назови цвет" previously returned `intent: unknown`; it now resolves to `concept_lookup` and returns a definition of the color concept.
 - `concept_color` seed record in `data/seed/concepts.lino` with full multilingual support (English, Russian, Hindi, Chinese), Wikidata anchor Q1075, and per-language localized blocks citing Wikipedia in each language.
-- Two regression tests in `tests/unit/mvp/multilingual.rs` pinning down the reporter's exact prompt: `russian_nazovi_prefix_routes_to_concept_lookup` and `russian_nazovi_tsvet_answer_references_color`.
+- Two regression tests in `tests/unit/specification/multilingual.rs` pinning down the reporter's exact prompt: `russian_nazovi_prefix_routes_to_concept_lookup` and `russian_nazovi_tsvet_answer_references_color`.
 - `DEFAULT_CONCEPT_PREFIXES` fallback in `src/web/formal_ai_worker.js` updated to include "назови " so the browser worker mirrors the Rust pipeline when the seed has not yet been loaded.
 
 ### Fixed
@@ -5540,12 +5540,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Per-language `localized "en|ru|hi|zh"` blocks on `ConceptRecord` carrying the native term, native aliases, native-Wikipedia summary, and source URL (e.g. `Фильтр с бесконечной импульсной характеристикой … или IIR-фильтр` from ru.wikipedia.org). The solver and JS worker prefer the prevailing-language block when rendering the response, so the original maintainer prompt `что такое iir в ml` now returns a Russian-language definition citing the Russian Wikipedia article (issue #20 follow-up R9/R10/R11).
 - New `concept_lookup_in_context_no_alias` response template variant: when the user already typed the localized context label, the body renders as `В контексте Машинное обучение IIR …` instead of `«Машинное обучение» (Машинное обучение)`. The variant is picked by template id from `multilingual-responses.lino` so future languages add a row without Rust changes.
 - `wikidata "Q…"` field on every concept and new `wikidata:Q…` evidence link so the cross-language join key used by `link-assistant/human-language` and `link-assistant/meta-expression` is part of the public trace (issue #20 follow-up R13).
-- Additional Rust integration tests in `tests/unit/mvp/multilingual.rs` pinning down native-language body content (Russian, English, Hindi, Chinese), the `«ml» (Машинное обучение)` rendering, the ru.wikipedia.org source citation, the no-alias-duplication template, and the Wikidata anchor in `evidence_links`.
+- Additional Rust integration tests in `tests/unit/specification/multilingual.rs` pinning down native-language body content (Russian, English, Hindi, Chinese), the `«ml» (Машинное обучение)` rendering, the ru.wikipedia.org source citation, the no-alias-duplication template, and the Wikidata anchor in `evidence_links`.
 
 ### Changed
 - `concepts.rs` now exposes `ConceptQuery` / `ConceptLookup` and the context-aware `extract_concept_query` + `lookup_concept_query`; the prior single-string `extract_concept_term` / `lookup_concept` shims have been removed. The ranker resolves context phrases through the new registry: a record can declare `context_links "context_machine_learning|…"` and `record_has_context` will follow the registry rather than require every alias inline.
 - `src/web/formal_ai_worker.js` mirrors the Rust pipeline: it parses the context delimiter, emits the same `concept_lookup:*` and `wikidata:*` evidence labels, picks the `_no_alias` template when needed, and renders both plain and in-context bodies from the localized block selected by `detectLanguage(prompt)`.
-- `tests/unit/mvp/multilingual.rs` pins down the four-language variants of the trigger prompt and the evidence-link debug trail; `src/solver_helpers.rs` gained unit tests for context delimiter parsing across the four languages.
+- `tests/unit/specification/multilingual.rs` pins down the four-language variants of the trigger prompt and the evidence-link debug trail; `src/solver_helpers.rs` gained unit tests for context delimiter parsing across the four languages.
 
 ### Fixed
 - Russian prompts such as "покажи как ты работаешь?" now correctly resolve to `intent: meta_explanation` instead of falling back to `intent: unknown` (#51)
@@ -5577,7 +5577,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - `try_kupi_slona` handler in `src/solver_handlers.rs` that recognises the Russian circular-joke idiom «Купи слона» and returns the traditional reply
 - `kupi_slona` intent wired into `handle_specialized_pattern` in `src/solver.rs`
-- 3 new unit tests in `tests/unit/mvp/multilingual.rs` covering the idiom intent, answer content, and Russian language tag
+- 3 new unit tests in `tests/unit/specification/multilingual.rs` covering the idiom intent, answer content, and Russian language tag
 
 ### Fixed
 - Issue #41: «Купи слона» no longer falls through to the generic unknown-intent fallback; it is handled with a culturally appropriate Russian explanation of the folk game
@@ -5794,7 +5794,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Release completeness checks now self-heal when crates.io exists but configured Docker Hub or GitHub release artifacts are missing.
 
 ### Added
-- Added the formal-ai proof-of-concept library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
+- Added the formal-ai deterministic symbolic implementation library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
 - Added a markdown-capable chat demo with randomized dialog mode, greeting-first examples, and multi-language hello-world prompts.
 - Added Rust-script dataset generation into human-readable Links Notation `.lino` files under `data/`.
 - Added Playwright e2e test suite under `tests/e2e/` covering page load, initial messages, quick prompts, chat interactions, demo mode toggle, trace panel, and preview mode.
@@ -5831,7 +5831,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added the issue #12 holistic case study, root vision/goals/non-goals documents, and a unit test that keeps the documentation set present and traceable.
 
 ### Added
-- Added a TDD-style MVP test suite under `tests/unit/mvp/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented MVP behavior are marked `#[ignore = "MVP-target: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
+- Added a TDD-style full-scope test suite under `tests/unit/specification/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented full-scope behavior are marked `#[ignore = "tracked requirement: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
 
 ### Added
 - Added the universal 11-step solver loop (impulse → formalization → context → history → decomposition → TDD → synthesis → combination → verification → simplification → documentation) and wired it into `FormalAiEngine.answer` so every reply walks the same reasoning pipeline regardless of intent.
@@ -5866,7 +5866,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added arithmetic, concept-lookup, conversation-recall, and explicit-JavaScript-execution handlers to the universal solver so the same loop now answers "what is 2 + 2?", "what is Wikipedia?", "what is my name?", and "please run this javascript: ..." prompts (issue #14).
 - Added `solve_with_history`, `ConversationRole`, and `ConversationTurn` to the library API so every surface can carry conversation memory through the same solver loop.
 - Added `data/seed/concepts.lino` with offline records for Wikipedia, Wikidata, Wiktionary, Links Notation, doublet links, the universal solver, the event log, WebAssembly, and Rust; each record cites its source for auditability.
-- Added `tests/unit/mvp/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
+- Added `tests/unit/specification/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
 - Added `examples/universal_solver_tour.rs` which walks every specialized handler through the same `FormalAiEngine::answer` entry point used by the library, CLI, HTTP server, Telegram bot, and demo.
 
 ### Changed
@@ -5929,7 +5929,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Russian "назови " prefix recognized as a `concept_lookup` intent trigger (issue #30). The prompt "назови цвет" previously returned `intent: unknown`; it now resolves to `concept_lookup` and returns a definition of the color concept.
 - `concept_color` seed record in `data/seed/concepts.lino` with full multilingual support (English, Russian, Hindi, Chinese), Wikidata anchor Q1075, and per-language localized blocks citing Wikipedia in each language.
-- Two regression tests in `tests/unit/mvp/multilingual.rs` pinning down the reporter's exact prompt: `russian_nazovi_prefix_routes_to_concept_lookup` and `russian_nazovi_tsvet_answer_references_color`.
+- Two regression tests in `tests/unit/specification/multilingual.rs` pinning down the reporter's exact prompt: `russian_nazovi_prefix_routes_to_concept_lookup` and `russian_nazovi_tsvet_answer_references_color`.
 - `DEFAULT_CONCEPT_PREFIXES` fallback in `src/web/formal_ai_worker.js` updated to include "назови " so the browser worker mirrors the Rust pipeline when the seed has not yet been loaded.
 
 ### Fixed
@@ -5971,12 +5971,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Per-language `localized "en|ru|hi|zh"` blocks on `ConceptRecord` carrying the native term, native aliases, native-Wikipedia summary, and source URL (e.g. `Фильтр с бесконечной импульсной характеристикой … или IIR-фильтр` from ru.wikipedia.org). The solver and JS worker prefer the prevailing-language block when rendering the response, so the original maintainer prompt `что такое iir в ml` now returns a Russian-language definition citing the Russian Wikipedia article (issue #20 follow-up R9/R10/R11).
 - New `concept_lookup_in_context_no_alias` response template variant: when the user already typed the localized context label, the body renders as `В контексте Машинное обучение IIR …` instead of `«Машинное обучение» (Машинное обучение)`. The variant is picked by template id from `multilingual-responses.lino` so future languages add a row without Rust changes.
 - `wikidata "Q…"` field on every concept and new `wikidata:Q…` evidence link so the cross-language join key used by `link-assistant/human-language` and `link-assistant/meta-expression` is part of the public trace (issue #20 follow-up R13).
-- Additional Rust integration tests in `tests/unit/mvp/multilingual.rs` pinning down native-language body content (Russian, English, Hindi, Chinese), the `«ml» (Машинное обучение)` rendering, the ru.wikipedia.org source citation, the no-alias-duplication template, and the Wikidata anchor in `evidence_links`.
+- Additional Rust integration tests in `tests/unit/specification/multilingual.rs` pinning down native-language body content (Russian, English, Hindi, Chinese), the `«ml» (Машинное обучение)` rendering, the ru.wikipedia.org source citation, the no-alias-duplication template, and the Wikidata anchor in `evidence_links`.
 
 ### Changed
 - `concepts.rs` now exposes `ConceptQuery` / `ConceptLookup` and the context-aware `extract_concept_query` + `lookup_concept_query`; the prior single-string `extract_concept_term` / `lookup_concept` shims have been removed. The ranker resolves context phrases through the new registry: a record can declare `context_links "context_machine_learning|…"` and `record_has_context` will follow the registry rather than require every alias inline.
 - `src/web/formal_ai_worker.js` mirrors the Rust pipeline: it parses the context delimiter, emits the same `concept_lookup:*` and `wikidata:*` evidence labels, picks the `_no_alias` template when needed, and renders both plain and in-context bodies from the localized block selected by `detectLanguage(prompt)`.
-- `tests/unit/mvp/multilingual.rs` pins down the four-language variants of the trigger prompt and the evidence-link debug trail; `src/solver_helpers.rs` gained unit tests for context delimiter parsing across the four languages.
+- `tests/unit/specification/multilingual.rs` pins down the four-language variants of the trigger prompt and the evidence-link debug trail; `src/solver_helpers.rs` gained unit tests for context delimiter parsing across the four languages.
 
 ### Fixed
 - Russian prompts such as "покажи как ты работаешь?" now correctly resolve to `intent: meta_explanation` instead of falling back to `intent: unknown` (#51)
@@ -6008,7 +6008,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - `try_kupi_slona` handler in `src/solver_handlers.rs` that recognises the Russian circular-joke idiom «Купи слона» and returns the traditional reply
 - `kupi_slona` intent wired into `handle_specialized_pattern` in `src/solver.rs`
-- 3 new unit tests in `tests/unit/mvp/multilingual.rs` covering the idiom intent, answer content, and Russian language tag
+- 3 new unit tests in `tests/unit/specification/multilingual.rs` covering the idiom intent, answer content, and Russian language tag
 
 ### Fixed
 - Issue #41: «Купи слона» no longer falls through to the generic unknown-intent fallback; it is handled with a culturally appropriate Russian explanation of the folk game
@@ -6218,7 +6218,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Release completeness checks now self-heal when crates.io exists but configured Docker Hub or GitHub release artifacts are missing.
 
 ### Added
-- Added the formal-ai proof-of-concept library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
+- Added the formal-ai deterministic symbolic implementation library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
 - Added a markdown-capable chat demo with randomized dialog mode, greeting-first examples, and multi-language hello-world prompts.
 - Added Rust-script dataset generation into human-readable Links Notation `.lino` files under `data/`.
 - Added Playwright e2e test suite under `tests/e2e/` covering page load, initial messages, quick prompts, chat interactions, demo mode toggle, trace panel, and preview mode.
@@ -6255,7 +6255,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added the issue #12 holistic case study, root vision/goals/non-goals documents, and a unit test that keeps the documentation set present and traceable.
 
 ### Added
-- Added a TDD-style MVP test suite under `tests/unit/mvp/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented MVP behavior are marked `#[ignore = "MVP-target: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
+- Added a TDD-style full-scope test suite under `tests/unit/specification/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented full-scope behavior are marked `#[ignore = "tracked requirement: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
 
 ### Added
 - Added the universal 11-step solver loop (impulse → formalization → context → history → decomposition → TDD → synthesis → combination → verification → simplification → documentation) and wired it into `FormalAiEngine.answer` so every reply walks the same reasoning pipeline regardless of intent.
@@ -6290,7 +6290,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added arithmetic, concept-lookup, conversation-recall, and explicit-JavaScript-execution handlers to the universal solver so the same loop now answers "what is 2 + 2?", "what is Wikipedia?", "what is my name?", and "please run this javascript: ..." prompts (issue #14).
 - Added `solve_with_history`, `ConversationRole`, and `ConversationTurn` to the library API so every surface can carry conversation memory through the same solver loop.
 - Added `data/seed/concepts.lino` with offline records for Wikipedia, Wikidata, Wiktionary, Links Notation, doublet links, the universal solver, the event log, WebAssembly, and Rust; each record cites its source for auditability.
-- Added `tests/unit/mvp/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
+- Added `tests/unit/specification/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
 - Added `examples/universal_solver_tour.rs` which walks every specialized handler through the same `FormalAiEngine::answer` entry point used by the library, CLI, HTTP server, Telegram bot, and demo.
 
 ### Changed
@@ -6353,7 +6353,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Russian "назови " prefix recognized as a `concept_lookup` intent trigger (issue #30). The prompt "назови цвет" previously returned `intent: unknown`; it now resolves to `concept_lookup` and returns a definition of the color concept.
 - `concept_color` seed record in `data/seed/concepts.lino` with full multilingual support (English, Russian, Hindi, Chinese), Wikidata anchor Q1075, and per-language localized blocks citing Wikipedia in each language.
-- Two regression tests in `tests/unit/mvp/multilingual.rs` pinning down the reporter's exact prompt: `russian_nazovi_prefix_routes_to_concept_lookup` and `russian_nazovi_tsvet_answer_references_color`.
+- Two regression tests in `tests/unit/specification/multilingual.rs` pinning down the reporter's exact prompt: `russian_nazovi_prefix_routes_to_concept_lookup` and `russian_nazovi_tsvet_answer_references_color`.
 - `DEFAULT_CONCEPT_PREFIXES` fallback in `src/web/formal_ai_worker.js` updated to include "назови " so the browser worker mirrors the Rust pipeline when the seed has not yet been loaded.
 
 ### Fixed
@@ -6395,12 +6395,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Per-language `localized "en|ru|hi|zh"` blocks on `ConceptRecord` carrying the native term, native aliases, native-Wikipedia summary, and source URL (e.g. `Фильтр с бесконечной импульсной характеристикой … или IIR-фильтр` from ru.wikipedia.org). The solver and JS worker prefer the prevailing-language block when rendering the response, so the original maintainer prompt `что такое iir в ml` now returns a Russian-language definition citing the Russian Wikipedia article (issue #20 follow-up R9/R10/R11).
 - New `concept_lookup_in_context_no_alias` response template variant: when the user already typed the localized context label, the body renders as `В контексте Машинное обучение IIR …` instead of `«Машинное обучение» (Машинное обучение)`. The variant is picked by template id from `multilingual-responses.lino` so future languages add a row without Rust changes.
 - `wikidata "Q…"` field on every concept and new `wikidata:Q…` evidence link so the cross-language join key used by `link-assistant/human-language` and `link-assistant/meta-expression` is part of the public trace (issue #20 follow-up R13).
-- Additional Rust integration tests in `tests/unit/mvp/multilingual.rs` pinning down native-language body content (Russian, English, Hindi, Chinese), the `«ml» (Машинное обучение)` rendering, the ru.wikipedia.org source citation, the no-alias-duplication template, and the Wikidata anchor in `evidence_links`.
+- Additional Rust integration tests in `tests/unit/specification/multilingual.rs` pinning down native-language body content (Russian, English, Hindi, Chinese), the `«ml» (Машинное обучение)` rendering, the ru.wikipedia.org source citation, the no-alias-duplication template, and the Wikidata anchor in `evidence_links`.
 
 ### Changed
 - `concepts.rs` now exposes `ConceptQuery` / `ConceptLookup` and the context-aware `extract_concept_query` + `lookup_concept_query`; the prior single-string `extract_concept_term` / `lookup_concept` shims have been removed. The ranker resolves context phrases through the new registry: a record can declare `context_links "context_machine_learning|…"` and `record_has_context` will follow the registry rather than require every alias inline.
 - `src/web/formal_ai_worker.js` mirrors the Rust pipeline: it parses the context delimiter, emits the same `concept_lookup:*` and `wikidata:*` evidence labels, picks the `_no_alias` template when needed, and renders both plain and in-context bodies from the localized block selected by `detectLanguage(prompt)`.
-- `tests/unit/mvp/multilingual.rs` pins down the four-language variants of the trigger prompt and the evidence-link debug trail; `src/solver_helpers.rs` gained unit tests for context delimiter parsing across the four languages.
+- `tests/unit/specification/multilingual.rs` pins down the four-language variants of the trigger prompt and the evidence-link debug trail; `src/solver_helpers.rs` gained unit tests for context delimiter parsing across the four languages.
 
 ### Fixed
 - Russian prompts such as "покажи как ты работаешь?" now correctly resolve to `intent: meta_explanation` instead of falling back to `intent: unknown` (#51)
@@ -6432,7 +6432,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - `try_kupi_slona` handler in `src/solver_handlers.rs` that recognises the Russian circular-joke idiom «Купи слона» and returns the traditional reply
 - `kupi_slona` intent wired into `handle_specialized_pattern` in `src/solver.rs`
-- 3 new unit tests in `tests/unit/mvp/multilingual.rs` covering the idiom intent, answer content, and Russian language tag
+- 3 new unit tests in `tests/unit/specification/multilingual.rs` covering the idiom intent, answer content, and Russian language tag
 
 ### Fixed
 - Issue #41: «Купи слона» no longer falls through to the generic unknown-intent fallback; it is handled with a culturally appropriate Russian explanation of the folk game
@@ -6635,7 +6635,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Release completeness checks now self-heal when crates.io exists but configured Docker Hub or GitHub release artifacts are missing.
 
 ### Added
-- Added the formal-ai proof-of-concept library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
+- Added the formal-ai deterministic symbolic implementation library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
 - Added a markdown-capable chat demo with randomized dialog mode, greeting-first examples, and multi-language hello-world prompts.
 - Added Rust-script dataset generation into human-readable Links Notation `.lino` files under `data/`.
 - Added Playwright e2e test suite under `tests/e2e/` covering page load, initial messages, quick prompts, chat interactions, demo mode toggle, trace panel, and preview mode.
@@ -6672,7 +6672,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added the issue #12 holistic case study, root vision/goals/non-goals documents, and a unit test that keeps the documentation set present and traceable.
 
 ### Added
-- Added a TDD-style MVP test suite under `tests/unit/mvp/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented MVP behavior are marked `#[ignore = "MVP-target: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
+- Added a TDD-style full-scope test suite under `tests/unit/specification/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented full-scope behavior are marked `#[ignore = "tracked requirement: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
 
 ### Added
 - Added the universal 11-step solver loop (impulse → formalization → context → history → decomposition → TDD → synthesis → combination → verification → simplification → documentation) and wired it into `FormalAiEngine.answer` so every reply walks the same reasoning pipeline regardless of intent.
@@ -6707,7 +6707,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added arithmetic, concept-lookup, conversation-recall, and explicit-JavaScript-execution handlers to the universal solver so the same loop now answers "what is 2 + 2?", "what is Wikipedia?", "what is my name?", and "please run this javascript: ..." prompts (issue #14).
 - Added `solve_with_history`, `ConversationRole`, and `ConversationTurn` to the library API so every surface can carry conversation memory through the same solver loop.
 - Added `data/seed/concepts.lino` with offline records for Wikipedia, Wikidata, Wiktionary, Links Notation, doublet links, the universal solver, the event log, WebAssembly, and Rust; each record cites its source for auditability.
-- Added `tests/unit/mvp/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
+- Added `tests/unit/specification/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
 - Added `examples/universal_solver_tour.rs` which walks every specialized handler through the same `FormalAiEngine::answer` entry point used by the library, CLI, HTTP server, Telegram bot, and demo.
 
 ### Changed
@@ -6770,7 +6770,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Russian "назови " prefix recognized as a `concept_lookup` intent trigger (issue #30). The prompt "назови цвет" previously returned `intent: unknown`; it now resolves to `concept_lookup` and returns a definition of the color concept.
 - `concept_color` seed record in `data/seed/concepts.lino` with full multilingual support (English, Russian, Hindi, Chinese), Wikidata anchor Q1075, and per-language localized blocks citing Wikipedia in each language.
-- Two regression tests in `tests/unit/mvp/multilingual.rs` pinning down the reporter's exact prompt: `russian_nazovi_prefix_routes_to_concept_lookup` and `russian_nazovi_tsvet_answer_references_color`.
+- Two regression tests in `tests/unit/specification/multilingual.rs` pinning down the reporter's exact prompt: `russian_nazovi_prefix_routes_to_concept_lookup` and `russian_nazovi_tsvet_answer_references_color`.
 - `DEFAULT_CONCEPT_PREFIXES` fallback in `src/web/formal_ai_worker.js` updated to include "назови " so the browser worker mirrors the Rust pipeline when the seed has not yet been loaded.
 
 ### Fixed
@@ -6812,12 +6812,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Per-language `localized "en|ru|hi|zh"` blocks on `ConceptRecord` carrying the native term, native aliases, native-Wikipedia summary, and source URL (e.g. `Фильтр с бесконечной импульсной характеристикой … или IIR-фильтр` from ru.wikipedia.org). The solver and JS worker prefer the prevailing-language block when rendering the response, so the original maintainer prompt `что такое iir в ml` now returns a Russian-language definition citing the Russian Wikipedia article (issue #20 follow-up R9/R10/R11).
 - New `concept_lookup_in_context_no_alias` response template variant: when the user already typed the localized context label, the body renders as `В контексте Машинное обучение IIR …` instead of `«Машинное обучение» (Машинное обучение)`. The variant is picked by template id from `multilingual-responses.lino` so future languages add a row without Rust changes.
 - `wikidata "Q…"` field on every concept and new `wikidata:Q…` evidence link so the cross-language join key used by `link-assistant/human-language` and `link-assistant/meta-expression` is part of the public trace (issue #20 follow-up R13).
-- Additional Rust integration tests in `tests/unit/mvp/multilingual.rs` pinning down native-language body content (Russian, English, Hindi, Chinese), the `«ml» (Машинное обучение)` rendering, the ru.wikipedia.org source citation, the no-alias-duplication template, and the Wikidata anchor in `evidence_links`.
+- Additional Rust integration tests in `tests/unit/specification/multilingual.rs` pinning down native-language body content (Russian, English, Hindi, Chinese), the `«ml» (Машинное обучение)` rendering, the ru.wikipedia.org source citation, the no-alias-duplication template, and the Wikidata anchor in `evidence_links`.
 
 ### Changed
 - `concepts.rs` now exposes `ConceptQuery` / `ConceptLookup` and the context-aware `extract_concept_query` + `lookup_concept_query`; the prior single-string `extract_concept_term` / `lookup_concept` shims have been removed. The ranker resolves context phrases through the new registry: a record can declare `context_links "context_machine_learning|…"` and `record_has_context` will follow the registry rather than require every alias inline.
 - `src/web/formal_ai_worker.js` mirrors the Rust pipeline: it parses the context delimiter, emits the same `concept_lookup:*` and `wikidata:*` evidence labels, picks the `_no_alias` template when needed, and renders both plain and in-context bodies from the localized block selected by `detectLanguage(prompt)`.
-- `tests/unit/mvp/multilingual.rs` pins down the four-language variants of the trigger prompt and the evidence-link debug trail; `src/solver_helpers.rs` gained unit tests for context delimiter parsing across the four languages.
+- `tests/unit/specification/multilingual.rs` pins down the four-language variants of the trigger prompt and the evidence-link debug trail; `src/solver_helpers.rs` gained unit tests for context delimiter parsing across the four languages.
 
 ### Fixed
 - Russian prompts such as "покажи как ты работаешь?" now correctly resolve to `intent: meta_explanation` instead of falling back to `intent: unknown` (#51)
@@ -6849,7 +6849,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - `try_kupi_slona` handler in `src/solver_handlers.rs` that recognises the Russian circular-joke idiom «Купи слона» and returns the traditional reply
 - `kupi_slona` intent wired into `handle_specialized_pattern` in `src/solver.rs`
-- 3 new unit tests in `tests/unit/mvp/multilingual.rs` covering the idiom intent, answer content, and Russian language tag
+- 3 new unit tests in `tests/unit/specification/multilingual.rs` covering the idiom intent, answer content, and Russian language tag
 
 ### Fixed
 - Issue #41: «Купи слона» no longer falls through to the generic unknown-intent fallback; it is handled with a culturally appropriate Russian explanation of the folk game
@@ -7048,7 +7048,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Release completeness checks now self-heal when crates.io exists but configured Docker Hub or GitHub release artifacts are missing.
 
 ### Added
-- Added the formal-ai proof-of-concept library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
+- Added the formal-ai deterministic symbolic implementation library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
 - Added a markdown-capable chat demo with randomized dialog mode, greeting-first examples, and multi-language hello-world prompts.
 - Added Rust-script dataset generation into human-readable Links Notation `.lino` files under `data/`.
 - Added Playwright e2e test suite under `tests/e2e/` covering page load, initial messages, quick prompts, chat interactions, demo mode toggle, trace panel, and preview mode.
@@ -7085,7 +7085,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added the issue #12 holistic case study, root vision/goals/non-goals documents, and a unit test that keeps the documentation set present and traceable.
 
 ### Added
-- Added a TDD-style MVP test suite under `tests/unit/mvp/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented MVP behavior are marked `#[ignore = "MVP-target: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
+- Added a TDD-style full-scope test suite under `tests/unit/specification/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented full-scope behavior are marked `#[ignore = "tracked requirement: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
 
 ### Added
 - Added the universal 11-step solver loop (impulse → formalization → context → history → decomposition → TDD → synthesis → combination → verification → simplification → documentation) and wired it into `FormalAiEngine.answer` so every reply walks the same reasoning pipeline regardless of intent.
@@ -7120,7 +7120,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added arithmetic, concept-lookup, conversation-recall, and explicit-JavaScript-execution handlers to the universal solver so the same loop now answers "what is 2 + 2?", "what is Wikipedia?", "what is my name?", and "please run this javascript: ..." prompts (issue #14).
 - Added `solve_with_history`, `ConversationRole`, and `ConversationTurn` to the library API so every surface can carry conversation memory through the same solver loop.
 - Added `data/seed/concepts.lino` with offline records for Wikipedia, Wikidata, Wiktionary, Links Notation, doublet links, the universal solver, the event log, WebAssembly, and Rust; each record cites its source for auditability.
-- Added `tests/unit/mvp/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
+- Added `tests/unit/specification/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
 - Added `examples/universal_solver_tour.rs` which walks every specialized handler through the same `FormalAiEngine::answer` entry point used by the library, CLI, HTTP server, Telegram bot, and demo.
 
 ### Changed
@@ -7183,7 +7183,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Russian "назови " prefix recognized as a `concept_lookup` intent trigger (issue #30). The prompt "назови цвет" previously returned `intent: unknown`; it now resolves to `concept_lookup` and returns a definition of the color concept.
 - `concept_color` seed record in `data/seed/concepts.lino` with full multilingual support (English, Russian, Hindi, Chinese), Wikidata anchor Q1075, and per-language localized blocks citing Wikipedia in each language.
-- Two regression tests in `tests/unit/mvp/multilingual.rs` pinning down the reporter's exact prompt: `russian_nazovi_prefix_routes_to_concept_lookup` and `russian_nazovi_tsvet_answer_references_color`.
+- Two regression tests in `tests/unit/specification/multilingual.rs` pinning down the reporter's exact prompt: `russian_nazovi_prefix_routes_to_concept_lookup` and `russian_nazovi_tsvet_answer_references_color`.
 - `DEFAULT_CONCEPT_PREFIXES` fallback in `src/web/formal_ai_worker.js` updated to include "назови " so the browser worker mirrors the Rust pipeline when the seed has not yet been loaded.
 
 ### Fixed
@@ -7225,12 +7225,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Per-language `localized "en|ru|hi|zh"` blocks on `ConceptRecord` carrying the native term, native aliases, native-Wikipedia summary, and source URL (e.g. `Фильтр с бесконечной импульсной характеристикой … или IIR-фильтр` from ru.wikipedia.org). The solver and JS worker prefer the prevailing-language block when rendering the response, so the original maintainer prompt `что такое iir в ml` now returns a Russian-language definition citing the Russian Wikipedia article (issue #20 follow-up R9/R10/R11).
 - New `concept_lookup_in_context_no_alias` response template variant: when the user already typed the localized context label, the body renders as `В контексте Машинное обучение IIR …` instead of `«Машинное обучение» (Машинное обучение)`. The variant is picked by template id from `multilingual-responses.lino` so future languages add a row without Rust changes.
 - `wikidata "Q…"` field on every concept and new `wikidata:Q…` evidence link so the cross-language join key used by `link-assistant/human-language` and `link-assistant/meta-expression` is part of the public trace (issue #20 follow-up R13).
-- Additional Rust integration tests in `tests/unit/mvp/multilingual.rs` pinning down native-language body content (Russian, English, Hindi, Chinese), the `«ml» (Машинное обучение)` rendering, the ru.wikipedia.org source citation, the no-alias-duplication template, and the Wikidata anchor in `evidence_links`.
+- Additional Rust integration tests in `tests/unit/specification/multilingual.rs` pinning down native-language body content (Russian, English, Hindi, Chinese), the `«ml» (Машинное обучение)` rendering, the ru.wikipedia.org source citation, the no-alias-duplication template, and the Wikidata anchor in `evidence_links`.
 
 ### Changed
 - `concepts.rs` now exposes `ConceptQuery` / `ConceptLookup` and the context-aware `extract_concept_query` + `lookup_concept_query`; the prior single-string `extract_concept_term` / `lookup_concept` shims have been removed. The ranker resolves context phrases through the new registry: a record can declare `context_links "context_machine_learning|…"` and `record_has_context` will follow the registry rather than require every alias inline.
 - `src/web/formal_ai_worker.js` mirrors the Rust pipeline: it parses the context delimiter, emits the same `concept_lookup:*` and `wikidata:*` evidence labels, picks the `_no_alias` template when needed, and renders both plain and in-context bodies from the localized block selected by `detectLanguage(prompt)`.
-- `tests/unit/mvp/multilingual.rs` pins down the four-language variants of the trigger prompt and the evidence-link debug trail; `src/solver_helpers.rs` gained unit tests for context delimiter parsing across the four languages.
+- `tests/unit/specification/multilingual.rs` pins down the four-language variants of the trigger prompt and the evidence-link debug trail; `src/solver_helpers.rs` gained unit tests for context delimiter parsing across the four languages.
 
 ### Fixed
 - Russian prompts such as "покажи как ты работаешь?" now correctly resolve to `intent: meta_explanation` instead of falling back to `intent: unknown` (#51)
@@ -7262,7 +7262,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - `try_kupi_slona` handler in `src/solver_handlers.rs` that recognises the Russian circular-joke idiom «Купи слона» and returns the traditional reply
 - `kupi_slona` intent wired into `handle_specialized_pattern` in `src/solver.rs`
-- 3 new unit tests in `tests/unit/mvp/multilingual.rs` covering the idiom intent, answer content, and Russian language tag
+- 3 new unit tests in `tests/unit/specification/multilingual.rs` covering the idiom intent, answer content, and Russian language tag
 
 ### Fixed
 - Issue #41: «Купи слона» no longer falls through to the generic unknown-intent fallback; it is handled with a culturally appropriate Russian explanation of the folk game
@@ -7458,7 +7458,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Release completeness checks now self-heal when crates.io exists but configured Docker Hub or GitHub release artifacts are missing.
 
 ### Added
-- Added the formal-ai proof-of-concept library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
+- Added the formal-ai deterministic symbolic implementation library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
 - Added a markdown-capable chat demo with randomized dialog mode, greeting-first examples, and multi-language hello-world prompts.
 - Added Rust-script dataset generation into human-readable Links Notation `.lino` files under `data/`.
 - Added Playwright e2e test suite under `tests/e2e/` covering page load, initial messages, quick prompts, chat interactions, demo mode toggle, trace panel, and preview mode.
@@ -7495,7 +7495,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added the issue #12 holistic case study, root vision/goals/non-goals documents, and a unit test that keeps the documentation set present and traceable.
 
 ### Added
-- Added a TDD-style MVP test suite under `tests/unit/mvp/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented MVP behavior are marked `#[ignore = "MVP-target: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
+- Added a TDD-style full-scope test suite under `tests/unit/specification/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented full-scope behavior are marked `#[ignore = "tracked requirement: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
 
 ### Added
 - Added the universal 11-step solver loop (impulse → formalization → context → history → decomposition → TDD → synthesis → combination → verification → simplification → documentation) and wired it into `FormalAiEngine.answer` so every reply walks the same reasoning pipeline regardless of intent.
@@ -7530,7 +7530,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added arithmetic, concept-lookup, conversation-recall, and explicit-JavaScript-execution handlers to the universal solver so the same loop now answers "what is 2 + 2?", "what is Wikipedia?", "what is my name?", and "please run this javascript: ..." prompts (issue #14).
 - Added `solve_with_history`, `ConversationRole`, and `ConversationTurn` to the library API so every surface can carry conversation memory through the same solver loop.
 - Added `data/seed/concepts.lino` with offline records for Wikipedia, Wikidata, Wiktionary, Links Notation, doublet links, the universal solver, the event log, WebAssembly, and Rust; each record cites its source for auditability.
-- Added `tests/unit/mvp/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
+- Added `tests/unit/specification/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
 - Added `examples/universal_solver_tour.rs` which walks every specialized handler through the same `FormalAiEngine::answer` entry point used by the library, CLI, HTTP server, Telegram bot, and demo.
 
 ### Changed
@@ -7593,7 +7593,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Russian "назови " prefix recognized as a `concept_lookup` intent trigger (issue #30). The prompt "назови цвет" previously returned `intent: unknown`; it now resolves to `concept_lookup` and returns a definition of the color concept.
 - `concept_color` seed record in `data/seed/concepts.lino` with full multilingual support (English, Russian, Hindi, Chinese), Wikidata anchor Q1075, and per-language localized blocks citing Wikipedia in each language.
-- Two regression tests in `tests/unit/mvp/multilingual.rs` pinning down the reporter's exact prompt: `russian_nazovi_prefix_routes_to_concept_lookup` and `russian_nazovi_tsvet_answer_references_color`.
+- Two regression tests in `tests/unit/specification/multilingual.rs` pinning down the reporter's exact prompt: `russian_nazovi_prefix_routes_to_concept_lookup` and `russian_nazovi_tsvet_answer_references_color`.
 - `DEFAULT_CONCEPT_PREFIXES` fallback in `src/web/formal_ai_worker.js` updated to include "назови " so the browser worker mirrors the Rust pipeline when the seed has not yet been loaded.
 
 ### Fixed
@@ -7635,12 +7635,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Per-language `localized "en|ru|hi|zh"` blocks on `ConceptRecord` carrying the native term, native aliases, native-Wikipedia summary, and source URL (e.g. `Фильтр с бесконечной импульсной характеристикой … или IIR-фильтр` from ru.wikipedia.org). The solver and JS worker prefer the prevailing-language block when rendering the response, so the original maintainer prompt `что такое iir в ml` now returns a Russian-language definition citing the Russian Wikipedia article (issue #20 follow-up R9/R10/R11).
 - New `concept_lookup_in_context_no_alias` response template variant: when the user already typed the localized context label, the body renders as `В контексте Машинное обучение IIR …` instead of `«Машинное обучение» (Машинное обучение)`. The variant is picked by template id from `multilingual-responses.lino` so future languages add a row without Rust changes.
 - `wikidata "Q…"` field on every concept and new `wikidata:Q…` evidence link so the cross-language join key used by `link-assistant/human-language` and `link-assistant/meta-expression` is part of the public trace (issue #20 follow-up R13).
-- Additional Rust integration tests in `tests/unit/mvp/multilingual.rs` pinning down native-language body content (Russian, English, Hindi, Chinese), the `«ml» (Машинное обучение)` rendering, the ru.wikipedia.org source citation, the no-alias-duplication template, and the Wikidata anchor in `evidence_links`.
+- Additional Rust integration tests in `tests/unit/specification/multilingual.rs` pinning down native-language body content (Russian, English, Hindi, Chinese), the `«ml» (Машинное обучение)` rendering, the ru.wikipedia.org source citation, the no-alias-duplication template, and the Wikidata anchor in `evidence_links`.
 
 ### Changed
 - `concepts.rs` now exposes `ConceptQuery` / `ConceptLookup` and the context-aware `extract_concept_query` + `lookup_concept_query`; the prior single-string `extract_concept_term` / `lookup_concept` shims have been removed. The ranker resolves context phrases through the new registry: a record can declare `context_links "context_machine_learning|…"` and `record_has_context` will follow the registry rather than require every alias inline.
 - `src/web/formal_ai_worker.js` mirrors the Rust pipeline: it parses the context delimiter, emits the same `concept_lookup:*` and `wikidata:*` evidence labels, picks the `_no_alias` template when needed, and renders both plain and in-context bodies from the localized block selected by `detectLanguage(prompt)`.
-- `tests/unit/mvp/multilingual.rs` pins down the four-language variants of the trigger prompt and the evidence-link debug trail; `src/solver_helpers.rs` gained unit tests for context delimiter parsing across the four languages.
+- `tests/unit/specification/multilingual.rs` pins down the four-language variants of the trigger prompt and the evidence-link debug trail; `src/solver_helpers.rs` gained unit tests for context delimiter parsing across the four languages.
 
 ### Fixed
 - Russian prompts such as "покажи как ты работаешь?" now correctly resolve to `intent: meta_explanation` instead of falling back to `intent: unknown` (#51)
@@ -7672,7 +7672,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - `try_kupi_slona` handler in `src/solver_handlers.rs` that recognises the Russian circular-joke idiom «Купи слона» and returns the traditional reply
 - `kupi_slona` intent wired into `handle_specialized_pattern` in `src/solver.rs`
-- 3 new unit tests in `tests/unit/mvp/multilingual.rs` covering the idiom intent, answer content, and Russian language tag
+- 3 new unit tests in `tests/unit/specification/multilingual.rs` covering the idiom intent, answer content, and Russian language tag
 
 ### Fixed
 - Issue #41: «Купи слона» no longer falls through to the generic unknown-intent fallback; it is handled with a culturally appropriate Russian explanation of the folk game
@@ -7865,7 +7865,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Release completeness checks now self-heal when crates.io exists but configured Docker Hub or GitHub release artifacts are missing.
 
 ### Added
-- Added the formal-ai proof-of-concept library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
+- Added the formal-ai deterministic symbolic implementation library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
 - Added a markdown-capable chat demo with randomized dialog mode, greeting-first examples, and multi-language hello-world prompts.
 - Added Rust-script dataset generation into human-readable Links Notation `.lino` files under `data/`.
 - Added Playwright e2e test suite under `tests/e2e/` covering page load, initial messages, quick prompts, chat interactions, demo mode toggle, trace panel, and preview mode.
@@ -7902,7 +7902,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added the issue #12 holistic case study, root vision/goals/non-goals documents, and a unit test that keeps the documentation set present and traceable.
 
 ### Added
-- Added a TDD-style MVP test suite under `tests/unit/mvp/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented MVP behavior are marked `#[ignore = "MVP-target: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
+- Added a TDD-style full-scope test suite under `tests/unit/specification/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented full-scope behavior are marked `#[ignore = "tracked requirement: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
 
 ### Added
 - Added the universal 11-step solver loop (impulse → formalization → context → history → decomposition → TDD → synthesis → combination → verification → simplification → documentation) and wired it into `FormalAiEngine.answer` so every reply walks the same reasoning pipeline regardless of intent.
@@ -7929,7 +7929,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added arithmetic, concept-lookup, conversation-recall, and explicit-JavaScript-execution handlers to the universal solver so the same loop now answers "what is 2 + 2?", "what is Wikipedia?", "what is my name?", and "please run this javascript: ..." prompts (issue #14).
 - Added `solve_with_history`, `ConversationRole`, and `ConversationTurn` to the library API so every surface can carry conversation memory through the same solver loop.
 - Added `data/seed/concepts.lino` with offline records for Wikipedia, Wikidata, Wiktionary, Links Notation, doublet links, the universal solver, the event log, WebAssembly, and Rust; each record cites its source for auditability.
-- Added `tests/unit/mvp/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
+- Added `tests/unit/specification/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
 - Added `examples/universal_solver_tour.rs` which walks every specialized handler through the same `FormalAiEngine::answer` entry point used by the library, CLI, HTTP server, Telegram bot, and demo.
 
 ### Changed
@@ -7992,7 +7992,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Russian "назови " prefix recognized as a `concept_lookup` intent trigger (issue #30). The prompt "назови цвет" previously returned `intent: unknown`; it now resolves to `concept_lookup` and returns a definition of the color concept.
 - `concept_color` seed record in `data/seed/concepts.lino` with full multilingual support (English, Russian, Hindi, Chinese), Wikidata anchor Q1075, and per-language localized blocks citing Wikipedia in each language.
-- Two regression tests in `tests/unit/mvp/multilingual.rs` pinning down the reporter's exact prompt: `russian_nazovi_prefix_routes_to_concept_lookup` and `russian_nazovi_tsvet_answer_references_color`.
+- Two regression tests in `tests/unit/specification/multilingual.rs` pinning down the reporter's exact prompt: `russian_nazovi_prefix_routes_to_concept_lookup` and `russian_nazovi_tsvet_answer_references_color`.
 - `DEFAULT_CONCEPT_PREFIXES` fallback in `src/web/formal_ai_worker.js` updated to include "назови " so the browser worker mirrors the Rust pipeline when the seed has not yet been loaded.
 
 ### Fixed
@@ -8030,12 +8030,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Per-language `localized "en|ru|hi|zh"` blocks on `ConceptRecord` carrying the native term, native aliases, native-Wikipedia summary, and source URL (e.g. `Фильтр с бесконечной импульсной характеристикой … или IIR-фильтр` from ru.wikipedia.org). The solver and JS worker prefer the prevailing-language block when rendering the response, so the original maintainer prompt `что такое iir в ml` now returns a Russian-language definition citing the Russian Wikipedia article (issue #20 follow-up R9/R10/R11).
 - New `concept_lookup_in_context_no_alias` response template variant: when the user already typed the localized context label, the body renders as `В контексте Машинное обучение IIR …` instead of `«Машинное обучение» (Машинное обучение)`. The variant is picked by template id from `multilingual-responses.lino` so future languages add a row without Rust changes.
 - `wikidata "Q…"` field on every concept and new `wikidata:Q…` evidence link so the cross-language join key used by `link-assistant/human-language` and `link-assistant/meta-expression` is part of the public trace (issue #20 follow-up R13).
-- Additional Rust integration tests in `tests/unit/mvp/multilingual.rs` pinning down native-language body content (Russian, English, Hindi, Chinese), the `«ml» (Машинное обучение)` rendering, the ru.wikipedia.org source citation, the no-alias-duplication template, and the Wikidata anchor in `evidence_links`.
+- Additional Rust integration tests in `tests/unit/specification/multilingual.rs` pinning down native-language body content (Russian, English, Hindi, Chinese), the `«ml» (Машинное обучение)` rendering, the ru.wikipedia.org source citation, the no-alias-duplication template, and the Wikidata anchor in `evidence_links`.
 
 ### Changed
 - `concepts.rs` now exposes `ConceptQuery` / `ConceptLookup` and the context-aware `extract_concept_query` + `lookup_concept_query`; the prior single-string `extract_concept_term` / `lookup_concept` shims have been removed. The ranker resolves context phrases through the new registry: a record can declare `context_links "context_machine_learning|…"` and `record_has_context` will follow the registry rather than require every alias inline.
 - `src/web/formal_ai_worker.js` mirrors the Rust pipeline: it parses the context delimiter, emits the same `concept_lookup:*` and `wikidata:*` evidence labels, picks the `_no_alias` template when needed, and renders both plain and in-context bodies from the localized block selected by `detectLanguage(prompt)`.
-- `tests/unit/mvp/multilingual.rs` pins down the four-language variants of the trigger prompt and the evidence-link debug trail; `src/solver_helpers.rs` gained unit tests for context delimiter parsing across the four languages.
+- `tests/unit/specification/multilingual.rs` pins down the four-language variants of the trigger prompt and the evidence-link debug trail; `src/solver_helpers.rs` gained unit tests for context delimiter parsing across the four languages.
 
 ### Fixed
 - Russian prompts such as "покажи как ты работаешь?" now correctly resolve to `intent: meta_explanation` instead of falling back to `intent: unknown` (#51)
@@ -8289,7 +8289,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Release completeness checks now self-heal when crates.io exists but configured Docker Hub or GitHub release artifacts are missing.
 
 ### Added
-- Added the formal-ai proof-of-concept library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
+- Added the formal-ai deterministic symbolic implementation library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
 - Added a markdown-capable chat demo with randomized dialog mode, greeting-first examples, and multi-language hello-world prompts.
 - Added Rust-script dataset generation into human-readable Links Notation `.lino` files under `data/`.
 - Added Playwright e2e test suite under `tests/e2e/` covering page load, initial messages, quick prompts, chat interactions, demo mode toggle, trace panel, and preview mode.
@@ -8326,7 +8326,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added the issue #12 holistic case study, root vision/goals/non-goals documents, and a unit test that keeps the documentation set present and traceable.
 
 ### Added
-- Added a TDD-style MVP test suite under `tests/unit/mvp/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented MVP behavior are marked `#[ignore = "MVP-target: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
+- Added a TDD-style full-scope test suite under `tests/unit/specification/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented full-scope behavior are marked `#[ignore = "tracked requirement: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
 
 ### Added
 - Added the universal 11-step solver loop (impulse → formalization → context → history → decomposition → TDD → synthesis → combination → verification → simplification → documentation) and wired it into `FormalAiEngine.answer` so every reply walks the same reasoning pipeline regardless of intent.
@@ -8361,7 +8361,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added arithmetic, concept-lookup, conversation-recall, and explicit-JavaScript-execution handlers to the universal solver so the same loop now answers "what is 2 + 2?", "what is Wikipedia?", "what is my name?", and "please run this javascript: ..." prompts (issue #14).
 - Added `solve_with_history`, `ConversationRole`, and `ConversationTurn` to the library API so every surface can carry conversation memory through the same solver loop.
 - Added `data/seed/concepts.lino` with offline records for Wikipedia, Wikidata, Wiktionary, Links Notation, doublet links, the universal solver, the event log, WebAssembly, and Rust; each record cites its source for auditability.
-- Added `tests/unit/mvp/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
+- Added `tests/unit/specification/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
 - Added `examples/universal_solver_tour.rs` which walks every specialized handler through the same `FormalAiEngine::answer` entry point used by the library, CLI, HTTP server, Telegram bot, and demo.
 
 ### Changed
@@ -8424,7 +8424,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Russian "назови " prefix recognized as a `concept_lookup` intent trigger (issue #30). The prompt "назови цвет" previously returned `intent: unknown`; it now resolves to `concept_lookup` and returns a definition of the color concept.
 - `concept_color` seed record in `data/seed/concepts.lino` with full multilingual support (English, Russian, Hindi, Chinese), Wikidata anchor Q1075, and per-language localized blocks citing Wikipedia in each language.
-- Two regression tests in `tests/unit/mvp/multilingual.rs` pinning down the reporter's exact prompt: `russian_nazovi_prefix_routes_to_concept_lookup` and `russian_nazovi_tsvet_answer_references_color`.
+- Two regression tests in `tests/unit/specification/multilingual.rs` pinning down the reporter's exact prompt: `russian_nazovi_prefix_routes_to_concept_lookup` and `russian_nazovi_tsvet_answer_references_color`.
 - `DEFAULT_CONCEPT_PREFIXES` fallback in `src/web/formal_ai_worker.js` updated to include "назови " so the browser worker mirrors the Rust pipeline when the seed has not yet been loaded.
 
 ### Fixed
@@ -8466,12 +8466,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Per-language `localized "en|ru|hi|zh"` blocks on `ConceptRecord` carrying the native term, native aliases, native-Wikipedia summary, and source URL (e.g. `Фильтр с бесконечной импульсной характеристикой … или IIR-фильтр` from ru.wikipedia.org). The solver and JS worker prefer the prevailing-language block when rendering the response, so the original maintainer prompt `что такое iir в ml` now returns a Russian-language definition citing the Russian Wikipedia article (issue #20 follow-up R9/R10/R11).
 - New `concept_lookup_in_context_no_alias` response template variant: when the user already typed the localized context label, the body renders as `В контексте Машинное обучение IIR …` instead of `«Машинное обучение» (Машинное обучение)`. The variant is picked by template id from `multilingual-responses.lino` so future languages add a row without Rust changes.
 - `wikidata "Q…"` field on every concept and new `wikidata:Q…` evidence link so the cross-language join key used by `link-assistant/human-language` and `link-assistant/meta-expression` is part of the public trace (issue #20 follow-up R13).
-- Additional Rust integration tests in `tests/unit/mvp/multilingual.rs` pinning down native-language body content (Russian, English, Hindi, Chinese), the `«ml» (Машинное обучение)` rendering, the ru.wikipedia.org source citation, the no-alias-duplication template, and the Wikidata anchor in `evidence_links`.
+- Additional Rust integration tests in `tests/unit/specification/multilingual.rs` pinning down native-language body content (Russian, English, Hindi, Chinese), the `«ml» (Машинное обучение)` rendering, the ru.wikipedia.org source citation, the no-alias-duplication template, and the Wikidata anchor in `evidence_links`.
 
 ### Changed
 - `concepts.rs` now exposes `ConceptQuery` / `ConceptLookup` and the context-aware `extract_concept_query` + `lookup_concept_query`; the prior single-string `extract_concept_term` / `lookup_concept` shims have been removed. The ranker resolves context phrases through the new registry: a record can declare `context_links "context_machine_learning|…"` and `record_has_context` will follow the registry rather than require every alias inline.
 - `src/web/formal_ai_worker.js` mirrors the Rust pipeline: it parses the context delimiter, emits the same `concept_lookup:*` and `wikidata:*` evidence labels, picks the `_no_alias` template when needed, and renders both plain and in-context bodies from the localized block selected by `detectLanguage(prompt)`.
-- `tests/unit/mvp/multilingual.rs` pins down the four-language variants of the trigger prompt and the evidence-link debug trail; `src/solver_helpers.rs` gained unit tests for context delimiter parsing across the four languages.
+- `tests/unit/specification/multilingual.rs` pins down the four-language variants of the trigger prompt and the evidence-link debug trail; `src/solver_helpers.rs` gained unit tests for context delimiter parsing across the four languages.
 
 ### Fixed
 - Russian prompts such as "покажи как ты работаешь?" now correctly resolve to `intent: meta_explanation` instead of falling back to `intent: unknown` (#51)
@@ -8500,7 +8500,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - `try_kupi_slona` handler in `src/solver_handlers.rs` that recognises the Russian circular-joke idiom «Купи слона» and returns the traditional reply
 - `kupi_slona` intent wired into `handle_specialized_pattern` in `src/solver.rs`
-- 3 new unit tests in `tests/unit/mvp/multilingual.rs` covering the idiom intent, answer content, and Russian language tag
+- 3 new unit tests in `tests/unit/specification/multilingual.rs` covering the idiom intent, answer content, and Russian language tag
 
 ### Fixed
 - Issue #41: «Купи слона» no longer falls through to the generic unknown-intent fallback; it is handled with a culturally appropriate Russian explanation of the folk game
@@ -8693,7 +8693,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Release completeness checks now self-heal when crates.io exists but configured Docker Hub or GitHub release artifacts are missing.
 
 ### Added
-- Added the formal-ai proof-of-concept library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
+- Added the formal-ai deterministic symbolic implementation library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
 - Added a markdown-capable chat demo with randomized dialog mode, greeting-first examples, and multi-language hello-world prompts.
 - Added Rust-script dataset generation into human-readable Links Notation `.lino` files under `data/`.
 - Added Playwright e2e test suite under `tests/e2e/` covering page load, initial messages, quick prompts, chat interactions, demo mode toggle, trace panel, and preview mode.
@@ -8730,7 +8730,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added the issue #12 holistic case study, root vision/goals/non-goals documents, and a unit test that keeps the documentation set present and traceable.
 
 ### Added
-- Added a TDD-style MVP test suite under `tests/unit/mvp/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented MVP behavior are marked `#[ignore = "MVP-target: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
+- Added a TDD-style full-scope test suite under `tests/unit/specification/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented full-scope behavior are marked `#[ignore = "tracked requirement: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
 
 ### Added
 - Added the universal 11-step solver loop (impulse → formalization → context → history → decomposition → TDD → synthesis → combination → verification → simplification → documentation) and wired it into `FormalAiEngine.answer` so every reply walks the same reasoning pipeline regardless of intent.
@@ -8765,7 +8765,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added arithmetic, concept-lookup, conversation-recall, and explicit-JavaScript-execution handlers to the universal solver so the same loop now answers "what is 2 + 2?", "what is Wikipedia?", "what is my name?", and "please run this javascript: ..." prompts (issue #14).
 - Added `solve_with_history`, `ConversationRole`, and `ConversationTurn` to the library API so every surface can carry conversation memory through the same solver loop.
 - Added `data/seed/concepts.lino` with offline records for Wikipedia, Wikidata, Wiktionary, Links Notation, doublet links, the universal solver, the event log, WebAssembly, and Rust; each record cites its source for auditability.
-- Added `tests/unit/mvp/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
+- Added `tests/unit/specification/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
 - Added `examples/universal_solver_tour.rs` which walks every specialized handler through the same `FormalAiEngine::answer` entry point used by the library, CLI, HTTP server, Telegram bot, and demo.
 
 ### Changed
@@ -8828,7 +8828,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Russian "назови " prefix recognized as a `concept_lookup` intent trigger (issue #30). The prompt "назови цвет" previously returned `intent: unknown`; it now resolves to `concept_lookup` and returns a definition of the color concept.
 - `concept_color` seed record in `data/seed/concepts.lino` with full multilingual support (English, Russian, Hindi, Chinese), Wikidata anchor Q1075, and per-language localized blocks citing Wikipedia in each language.
-- Two regression tests in `tests/unit/mvp/multilingual.rs` pinning down the reporter's exact prompt: `russian_nazovi_prefix_routes_to_concept_lookup` and `russian_nazovi_tsvet_answer_references_color`.
+- Two regression tests in `tests/unit/specification/multilingual.rs` pinning down the reporter's exact prompt: `russian_nazovi_prefix_routes_to_concept_lookup` and `russian_nazovi_tsvet_answer_references_color`.
 - `DEFAULT_CONCEPT_PREFIXES` fallback in `src/web/formal_ai_worker.js` updated to include "назови " so the browser worker mirrors the Rust pipeline when the seed has not yet been loaded.
 
 ### Fixed
@@ -8866,12 +8866,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Per-language `localized "en|ru|hi|zh"` blocks on `ConceptRecord` carrying the native term, native aliases, native-Wikipedia summary, and source URL (e.g. `Фильтр с бесконечной импульсной характеристикой … или IIR-фильтр` from ru.wikipedia.org). The solver and JS worker prefer the prevailing-language block when rendering the response, so the original maintainer prompt `что такое iir в ml` now returns a Russian-language definition citing the Russian Wikipedia article (issue #20 follow-up R9/R10/R11).
 - New `concept_lookup_in_context_no_alias` response template variant: when the user already typed the localized context label, the body renders as `В контексте Машинное обучение IIR …` instead of `«Машинное обучение» (Машинное обучение)`. The variant is picked by template id from `multilingual-responses.lino` so future languages add a row without Rust changes.
 - `wikidata "Q…"` field on every concept and new `wikidata:Q…` evidence link so the cross-language join key used by `link-assistant/human-language` and `link-assistant/meta-expression` is part of the public trace (issue #20 follow-up R13).
-- Additional Rust integration tests in `tests/unit/mvp/multilingual.rs` pinning down native-language body content (Russian, English, Hindi, Chinese), the `«ml» (Машинное обучение)` rendering, the ru.wikipedia.org source citation, the no-alias-duplication template, and the Wikidata anchor in `evidence_links`.
+- Additional Rust integration tests in `tests/unit/specification/multilingual.rs` pinning down native-language body content (Russian, English, Hindi, Chinese), the `«ml» (Машинное обучение)` rendering, the ru.wikipedia.org source citation, the no-alias-duplication template, and the Wikidata anchor in `evidence_links`.
 
 ### Changed
 - `concepts.rs` now exposes `ConceptQuery` / `ConceptLookup` and the context-aware `extract_concept_query` + `lookup_concept_query`; the prior single-string `extract_concept_term` / `lookup_concept` shims have been removed. The ranker resolves context phrases through the new registry: a record can declare `context_links "context_machine_learning|…"` and `record_has_context` will follow the registry rather than require every alias inline.
 - `src/web/formal_ai_worker.js` mirrors the Rust pipeline: it parses the context delimiter, emits the same `concept_lookup:*` and `wikidata:*` evidence labels, picks the `_no_alias` template when needed, and renders both plain and in-context bodies from the localized block selected by `detectLanguage(prompt)`.
-- `tests/unit/mvp/multilingual.rs` pins down the four-language variants of the trigger prompt and the evidence-link debug trail; `src/solver_helpers.rs` gained unit tests for context delimiter parsing across the four languages.
+- `tests/unit/specification/multilingual.rs` pins down the four-language variants of the trigger prompt and the evidence-link debug trail; `src/solver_helpers.rs` gained unit tests for context delimiter parsing across the four languages.
 
 ### Fixed
 - Russian prompts such as "покажи как ты работаешь?" now correctly resolve to `intent: meta_explanation` instead of falling back to `intent: unknown` (#51)
@@ -9085,7 +9085,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Release completeness checks now self-heal when crates.io exists but configured Docker Hub or GitHub release artifacts are missing.
 
 ### Added
-- Added the formal-ai proof-of-concept library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
+- Added the formal-ai deterministic symbolic implementation library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
 - Added a markdown-capable chat demo with randomized dialog mode, greeting-first examples, and multi-language hello-world prompts.
 - Added Rust-script dataset generation into human-readable Links Notation `.lino` files under `data/`.
 - Added Playwright e2e test suite under `tests/e2e/` covering page load, initial messages, quick prompts, chat interactions, demo mode toggle, trace panel, and preview mode.
@@ -9122,7 +9122,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added the issue #12 holistic case study, root vision/goals/non-goals documents, and a unit test that keeps the documentation set present and traceable.
 
 ### Added
-- Added a TDD-style MVP test suite under `tests/unit/mvp/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented MVP behavior are marked `#[ignore = "MVP-target: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
+- Added a TDD-style full-scope test suite under `tests/unit/specification/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented full-scope behavior are marked `#[ignore = "tracked requirement: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
 
 ### Added
 - Added the universal 11-step solver loop (impulse → formalization → context → history → decomposition → TDD → synthesis → combination → verification → simplification → documentation) and wired it into `FormalAiEngine.answer` so every reply walks the same reasoning pipeline regardless of intent.
@@ -9149,7 +9149,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added arithmetic, concept-lookup, conversation-recall, and explicit-JavaScript-execution handlers to the universal solver so the same loop now answers "what is 2 + 2?", "what is Wikipedia?", "what is my name?", and "please run this javascript: ..." prompts (issue #14).
 - Added `solve_with_history`, `ConversationRole`, and `ConversationTurn` to the library API so every surface can carry conversation memory through the same solver loop.
 - Added `data/seed/concepts.lino` with offline records for Wikipedia, Wikidata, Wiktionary, Links Notation, doublet links, the universal solver, the event log, WebAssembly, and Rust; each record cites its source for auditability.
-- Added `tests/unit/mvp/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
+- Added `tests/unit/specification/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
 - Added `examples/universal_solver_tour.rs` which walks every specialized handler through the same `FormalAiEngine::answer` entry point used by the library, CLI, HTTP server, Telegram bot, and demo.
 
 ### Changed
@@ -9212,7 +9212,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Russian "назови " prefix recognized as a `concept_lookup` intent trigger (issue #30). The prompt "назови цвет" previously returned `intent: unknown`; it now resolves to `concept_lookup` and returns a definition of the color concept.
 - `concept_color` seed record in `data/seed/concepts.lino` with full multilingual support (English, Russian, Hindi, Chinese), Wikidata anchor Q1075, and per-language localized blocks citing Wikipedia in each language.
-- Two regression tests in `tests/unit/mvp/multilingual.rs` pinning down the reporter's exact prompt: `russian_nazovi_prefix_routes_to_concept_lookup` and `russian_nazovi_tsvet_answer_references_color`.
+- Two regression tests in `tests/unit/specification/multilingual.rs` pinning down the reporter's exact prompt: `russian_nazovi_prefix_routes_to_concept_lookup` and `russian_nazovi_tsvet_answer_references_color`.
 - `DEFAULT_CONCEPT_PREFIXES` fallback in `src/web/formal_ai_worker.js` updated to include "назови " so the browser worker mirrors the Rust pipeline when the seed has not yet been loaded.
 
 ### Fixed
@@ -9247,12 +9247,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Per-language `localized "en|ru|hi|zh"` blocks on `ConceptRecord` carrying the native term, native aliases, native-Wikipedia summary, and source URL (e.g. `Фильтр с бесконечной импульсной характеристикой … или IIR-фильтр` from ru.wikipedia.org). The solver and JS worker prefer the prevailing-language block when rendering the response, so the original maintainer prompt `что такое iir в ml` now returns a Russian-language definition citing the Russian Wikipedia article (issue #20 follow-up R9/R10/R11).
 - New `concept_lookup_in_context_no_alias` response template variant: when the user already typed the localized context label, the body renders as `В контексте Машинное обучение IIR …` instead of `«Машинное обучение» (Машинное обучение)`. The variant is picked by template id from `multilingual-responses.lino` so future languages add a row without Rust changes.
 - `wikidata "Q…"` field on every concept and new `wikidata:Q…` evidence link so the cross-language join key used by `link-assistant/human-language` and `link-assistant/meta-expression` is part of the public trace (issue #20 follow-up R13).
-- Additional Rust integration tests in `tests/unit/mvp/multilingual.rs` pinning down native-language body content (Russian, English, Hindi, Chinese), the `«ml» (Машинное обучение)` rendering, the ru.wikipedia.org source citation, the no-alias-duplication template, and the Wikidata anchor in `evidence_links`.
+- Additional Rust integration tests in `tests/unit/specification/multilingual.rs` pinning down native-language body content (Russian, English, Hindi, Chinese), the `«ml» (Машинное обучение)` rendering, the ru.wikipedia.org source citation, the no-alias-duplication template, and the Wikidata anchor in `evidence_links`.
 
 ### Changed
 - `concepts.rs` now exposes `ConceptQuery` / `ConceptLookup` and the context-aware `extract_concept_query` + `lookup_concept_query`; the prior single-string `extract_concept_term` / `lookup_concept` shims have been removed. The ranker resolves context phrases through the new registry: a record can declare `context_links "context_machine_learning|…"` and `record_has_context` will follow the registry rather than require every alias inline.
 - `src/web/formal_ai_worker.js` mirrors the Rust pipeline: it parses the context delimiter, emits the same `concept_lookup:*` and `wikidata:*` evidence labels, picks the `_no_alias` template when needed, and renders both plain and in-context bodies from the localized block selected by `detectLanguage(prompt)`.
-- `tests/unit/mvp/multilingual.rs` pins down the four-language variants of the trigger prompt and the evidence-link debug trail; `src/solver_helpers.rs` gained unit tests for context delimiter parsing across the four languages.
+- `tests/unit/specification/multilingual.rs` pins down the four-language variants of the trigger prompt and the evidence-link debug trail; `src/solver_helpers.rs` gained unit tests for context delimiter parsing across the four languages.
 
 ### Fixed
 - Hardened the GitHub Pages demo release gate so live e2e tests wait for the exact deployed commit and load cache-busted static assets.
@@ -9450,7 +9450,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Release completeness checks now self-heal when crates.io exists but configured Docker Hub or GitHub release artifacts are missing.
 
 ### Added
-- Added the formal-ai proof-of-concept library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
+- Added the formal-ai deterministic symbolic implementation library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
 - Added a markdown-capable chat demo with randomized dialog mode, greeting-first examples, and multi-language hello-world prompts.
 - Added Rust-script dataset generation into human-readable Links Notation `.lino` files under `data/`.
 - Added Playwright e2e test suite under `tests/e2e/` covering page load, initial messages, quick prompts, chat interactions, demo mode toggle, trace panel, and preview mode.
@@ -9487,7 +9487,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added the issue #12 holistic case study, root vision/goals/non-goals documents, and a unit test that keeps the documentation set present and traceable.
 
 ### Added
-- Added a TDD-style MVP test suite under `tests/unit/mvp/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented MVP behavior are marked `#[ignore = "MVP-target: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
+- Added a TDD-style full-scope test suite under `tests/unit/specification/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented full-scope behavior are marked `#[ignore = "tracked requirement: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
 
 ### Added
 - Added the universal 11-step solver loop (impulse → formalization → context → history → decomposition → TDD → synthesis → combination → verification → simplification → documentation) and wired it into `FormalAiEngine.answer` so every reply walks the same reasoning pipeline regardless of intent.
@@ -9514,7 +9514,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added arithmetic, concept-lookup, conversation-recall, and explicit-JavaScript-execution handlers to the universal solver so the same loop now answers "what is 2 + 2?", "what is Wikipedia?", "what is my name?", and "please run this javascript: ..." prompts (issue #14).
 - Added `solve_with_history`, `ConversationRole`, and `ConversationTurn` to the library API so every surface can carry conversation memory through the same solver loop.
 - Added `data/seed/concepts.lino` with offline records for Wikipedia, Wikidata, Wiktionary, Links Notation, doublet links, the universal solver, the event log, WebAssembly, and Rust; each record cites its source for auditability.
-- Added `tests/unit/mvp/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
+- Added `tests/unit/specification/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
 - Added `examples/universal_solver_tour.rs` which walks every specialized handler through the same `FormalAiEngine::answer` entry point used by the library, CLI, HTTP server, Telegram bot, and demo.
 
 ### Changed
@@ -9599,12 +9599,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Per-language `localized "en|ru|hi|zh"` blocks on `ConceptRecord` carrying the native term, native aliases, native-Wikipedia summary, and source URL (e.g. `Фильтр с бесконечной импульсной характеристикой … или IIR-фильтр` from ru.wikipedia.org). The solver and JS worker prefer the prevailing-language block when rendering the response, so the original maintainer prompt `что такое iir в ml` now returns a Russian-language definition citing the Russian Wikipedia article (issue #20 follow-up R9/R10/R11).
 - New `concept_lookup_in_context_no_alias` response template variant: when the user already typed the localized context label, the body renders as `В контексте Машинное обучение IIR …` instead of `«Машинное обучение» (Машинное обучение)`. The variant is picked by template id from `multilingual-responses.lino` so future languages add a row without Rust changes.
 - `wikidata "Q…"` field on every concept and new `wikidata:Q…` evidence link so the cross-language join key used by `link-assistant/human-language` and `link-assistant/meta-expression` is part of the public trace (issue #20 follow-up R13).
-- Additional Rust integration tests in `tests/unit/mvp/multilingual.rs` pinning down native-language body content (Russian, English, Hindi, Chinese), the `«ml» (Машинное обучение)` rendering, the ru.wikipedia.org source citation, the no-alias-duplication template, and the Wikidata anchor in `evidence_links`.
+- Additional Rust integration tests in `tests/unit/specification/multilingual.rs` pinning down native-language body content (Russian, English, Hindi, Chinese), the `«ml» (Машинное обучение)` rendering, the ru.wikipedia.org source citation, the no-alias-duplication template, and the Wikidata anchor in `evidence_links`.
 
 ### Changed
 - `concepts.rs` now exposes `ConceptQuery` / `ConceptLookup` and the context-aware `extract_concept_query` + `lookup_concept_query`; the prior single-string `extract_concept_term` / `lookup_concept` shims have been removed. The ranker resolves context phrases through the new registry: a record can declare `context_links "context_machine_learning|…"` and `record_has_context` will follow the registry rather than require every alias inline.
 - `src/web/formal_ai_worker.js` mirrors the Rust pipeline: it parses the context delimiter, emits the same `concept_lookup:*` and `wikidata:*` evidence labels, picks the `_no_alias` template when needed, and renders both plain and in-context bodies from the localized block selected by `detectLanguage(prompt)`.
-- `tests/unit/mvp/multilingual.rs` pins down the four-language variants of the trigger prompt and the evidence-link debug trail; `src/solver_helpers.rs` gained unit tests for context delimiter parsing across the four languages.
+- `tests/unit/specification/multilingual.rs` pins down the four-language variants of the trigger prompt and the evidence-link debug trail; `src/solver_helpers.rs` gained unit tests for context delimiter parsing across the four languages.
 
 ### Fixed
 - Hardened the GitHub Pages demo release gate so live e2e tests wait for the exact deployed commit and load cache-busted static assets.
@@ -9802,7 +9802,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Release completeness checks now self-heal when crates.io exists but configured Docker Hub or GitHub release artifacts are missing.
 
 ### Added
-- Added the formal-ai proof-of-concept library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
+- Added the formal-ai deterministic symbolic implementation library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
 - Added a markdown-capable chat demo with randomized dialog mode, greeting-first examples, and multi-language hello-world prompts.
 - Added Rust-script dataset generation into human-readable Links Notation `.lino` files under `data/`.
 - Added Playwright e2e test suite under `tests/e2e/` covering page load, initial messages, quick prompts, chat interactions, demo mode toggle, trace panel, and preview mode.
@@ -9839,7 +9839,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added the issue #12 holistic case study, root vision/goals/non-goals documents, and a unit test that keeps the documentation set present and traceable.
 
 ### Added
-- Added a TDD-style MVP test suite under `tests/unit/mvp/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented MVP behavior are marked `#[ignore = "MVP-target: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
+- Added a TDD-style full-scope test suite under `tests/unit/specification/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented full-scope behavior are marked `#[ignore = "tracked requirement: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
 
 ### Added
 - Added the universal 11-step solver loop (impulse → formalization → context → history → decomposition → TDD → synthesis → combination → verification → simplification → documentation) and wired it into `FormalAiEngine.answer` so every reply walks the same reasoning pipeline regardless of intent.
@@ -9866,7 +9866,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added arithmetic, concept-lookup, conversation-recall, and explicit-JavaScript-execution handlers to the universal solver so the same loop now answers "what is 2 + 2?", "what is Wikipedia?", "what is my name?", and "please run this javascript: ..." prompts (issue #14).
 - Added `solve_with_history`, `ConversationRole`, and `ConversationTurn` to the library API so every surface can carry conversation memory through the same solver loop.
 - Added `data/seed/concepts.lino` with offline records for Wikipedia, Wikidata, Wiktionary, Links Notation, doublet links, the universal solver, the event log, WebAssembly, and Rust; each record cites its source for auditability.
-- Added `tests/unit/mvp/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
+- Added `tests/unit/specification/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
 - Added `examples/universal_solver_tour.rs` which walks every specialized handler through the same `FormalAiEngine::answer` entry point used by the library, CLI, HTTP server, Telegram bot, and demo.
 
 ### Changed
@@ -9951,12 +9951,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Per-language `localized "en|ru|hi|zh"` blocks on `ConceptRecord` carrying the native term, native aliases, native-Wikipedia summary, and source URL (e.g. `Фильтр с бесконечной импульсной характеристикой … или IIR-фильтр` from ru.wikipedia.org). The solver and JS worker prefer the prevailing-language block when rendering the response, so the original maintainer prompt `что такое iir в ml` now returns a Russian-language definition citing the Russian Wikipedia article (issue #20 follow-up R9/R10/R11).
 - New `concept_lookup_in_context_no_alias` response template variant: when the user already typed the localized context label, the body renders as `В контексте Машинное обучение IIR …` instead of `«Машинное обучение» (Машинное обучение)`. The variant is picked by template id from `multilingual-responses.lino` so future languages add a row without Rust changes.
 - `wikidata "Q…"` field on every concept and new `wikidata:Q…` evidence link so the cross-language join key used by `link-assistant/human-language` and `link-assistant/meta-expression` is part of the public trace (issue #20 follow-up R13).
-- Additional Rust integration tests in `tests/unit/mvp/multilingual.rs` pinning down native-language body content (Russian, English, Hindi, Chinese), the `«ml» (Машинное обучение)` rendering, the ru.wikipedia.org source citation, the no-alias-duplication template, and the Wikidata anchor in `evidence_links`.
+- Additional Rust integration tests in `tests/unit/specification/multilingual.rs` pinning down native-language body content (Russian, English, Hindi, Chinese), the `«ml» (Машинное обучение)` rendering, the ru.wikipedia.org source citation, the no-alias-duplication template, and the Wikidata anchor in `evidence_links`.
 
 ### Changed
 - `concepts.rs` now exposes `ConceptQuery` / `ConceptLookup` and the context-aware `extract_concept_query` + `lookup_concept_query`; the prior single-string `extract_concept_term` / `lookup_concept` shims have been removed. The ranker resolves context phrases through the new registry: a record can declare `context_links "context_machine_learning|…"` and `record_has_context` will follow the registry rather than require every alias inline.
 - `src/web/formal_ai_worker.js` mirrors the Rust pipeline: it parses the context delimiter, emits the same `concept_lookup:*` and `wikidata:*` evidence labels, picks the `_no_alias` template when needed, and renders both plain and in-context bodies from the localized block selected by `detectLanguage(prompt)`.
-- `tests/unit/mvp/multilingual.rs` pins down the four-language variants of the trigger prompt and the evidence-link debug trail; `src/solver_helpers.rs` gained unit tests for context delimiter parsing across the four languages.
+- `tests/unit/specification/multilingual.rs` pins down the four-language variants of the trigger prompt and the evidence-link debug trail; `src/solver_helpers.rs` gained unit tests for context delimiter parsing across the four languages.
 
 ### Fixed
 - Hardened the GitHub Pages demo release gate so live e2e tests wait for the exact deployed commit and load cache-busted static assets.
@@ -10151,7 +10151,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Release completeness checks now self-heal when crates.io exists but configured Docker Hub or GitHub release artifacts are missing.
 
 ### Added
-- Added the formal-ai proof-of-concept library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
+- Added the formal-ai deterministic symbolic implementation library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
 - Added a markdown-capable chat demo with randomized dialog mode, greeting-first examples, and multi-language hello-world prompts.
 - Added Rust-script dataset generation into human-readable Links Notation `.lino` files under `data/`.
 - Added Playwright e2e test suite under `tests/e2e/` covering page load, initial messages, quick prompts, chat interactions, demo mode toggle, trace panel, and preview mode.
@@ -10188,7 +10188,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added the issue #12 holistic case study, root vision/goals/non-goals documents, and a unit test that keeps the documentation set present and traceable.
 
 ### Added
-- Added a TDD-style MVP test suite under `tests/unit/mvp/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented MVP behavior are marked `#[ignore = "MVP-target: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
+- Added a TDD-style full-scope test suite under `tests/unit/specification/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented full-scope behavior are marked `#[ignore = "tracked requirement: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
 
 ### Added
 - Added the universal 11-step solver loop (impulse → formalization → context → history → decomposition → TDD → synthesis → combination → verification → simplification → documentation) and wired it into `FormalAiEngine.answer` so every reply walks the same reasoning pipeline regardless of intent.
@@ -10215,7 +10215,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added arithmetic, concept-lookup, conversation-recall, and explicit-JavaScript-execution handlers to the universal solver so the same loop now answers "what is 2 + 2?", "what is Wikipedia?", "what is my name?", and "please run this javascript: ..." prompts (issue #14).
 - Added `solve_with_history`, `ConversationRole`, and `ConversationTurn` to the library API so every surface can carry conversation memory through the same solver loop.
 - Added `data/seed/concepts.lino` with offline records for Wikipedia, Wikidata, Wiktionary, Links Notation, doublet links, the universal solver, the event log, WebAssembly, and Rust; each record cites its source for auditability.
-- Added `tests/unit/mvp/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
+- Added `tests/unit/specification/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
 - Added `examples/universal_solver_tour.rs` which walks every specialized handler through the same `FormalAiEngine::answer` entry point used by the library, CLI, HTTP server, Telegram bot, and demo.
 
 ### Changed
@@ -10297,12 +10297,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Per-language `localized "en|ru|hi|zh"` blocks on `ConceptRecord` carrying the native term, native aliases, native-Wikipedia summary, and source URL (e.g. `Фильтр с бесконечной импульсной характеристикой … или IIR-фильтр` from ru.wikipedia.org). The solver and JS worker prefer the prevailing-language block when rendering the response, so the original maintainer prompt `что такое iir в ml` now returns a Russian-language definition citing the Russian Wikipedia article (issue #20 follow-up R9/R10/R11).
 - New `concept_lookup_in_context_no_alias` response template variant: when the user already typed the localized context label, the body renders as `В контексте Машинное обучение IIR …` instead of `«Машинное обучение» (Машинное обучение)`. The variant is picked by template id from `multilingual-responses.lino` so future languages add a row without Rust changes.
 - `wikidata "Q…"` field on every concept and new `wikidata:Q…` evidence link so the cross-language join key used by `link-assistant/human-language` and `link-assistant/meta-expression` is part of the public trace (issue #20 follow-up R13).
-- Additional Rust integration tests in `tests/unit/mvp/multilingual.rs` pinning down native-language body content (Russian, English, Hindi, Chinese), the `«ml» (Машинное обучение)` rendering, the ru.wikipedia.org source citation, the no-alias-duplication template, and the Wikidata anchor in `evidence_links`.
+- Additional Rust integration tests in `tests/unit/specification/multilingual.rs` pinning down native-language body content (Russian, English, Hindi, Chinese), the `«ml» (Машинное обучение)` rendering, the ru.wikipedia.org source citation, the no-alias-duplication template, and the Wikidata anchor in `evidence_links`.
 
 ### Changed
 - `concepts.rs` now exposes `ConceptQuery` / `ConceptLookup` and the context-aware `extract_concept_query` + `lookup_concept_query`; the prior single-string `extract_concept_term` / `lookup_concept` shims have been removed. The ranker resolves context phrases through the new registry: a record can declare `context_links "context_machine_learning|…"` and `record_has_context` will follow the registry rather than require every alias inline.
 - `src/web/formal_ai_worker.js` mirrors the Rust pipeline: it parses the context delimiter, emits the same `concept_lookup:*` and `wikidata:*` evidence labels, picks the `_no_alias` template when needed, and renders both plain and in-context bodies from the localized block selected by `detectLanguage(prompt)`.
-- `tests/unit/mvp/multilingual.rs` pins down the four-language variants of the trigger prompt and the evidence-link debug trail; `src/solver_helpers.rs` gained unit tests for context delimiter parsing across the four languages.
+- `tests/unit/specification/multilingual.rs` pins down the four-language variants of the trigger prompt and the evidence-link debug trail; `src/solver_helpers.rs` gained unit tests for context delimiter parsing across the four languages.
 
 ### Fixed
 - Hardened the GitHub Pages demo release gate so live e2e tests wait for the exact deployed commit and load cache-busted static assets.
@@ -10494,7 +10494,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Release completeness checks now self-heal when crates.io exists but configured Docker Hub or GitHub release artifacts are missing.
 
 ### Added
-- Added the formal-ai proof-of-concept library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
+- Added the formal-ai deterministic symbolic implementation library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
 - Added a markdown-capable chat demo with randomized dialog mode, greeting-first examples, and multi-language hello-world prompts.
 - Added Rust-script dataset generation into human-readable Links Notation `.lino` files under `data/`.
 - Added Playwright e2e test suite under `tests/e2e/` covering page load, initial messages, quick prompts, chat interactions, demo mode toggle, trace panel, and preview mode.
@@ -10531,7 +10531,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added the issue #12 holistic case study, root vision/goals/non-goals documents, and a unit test that keeps the documentation set present and traceable.
 
 ### Added
-- Added a TDD-style MVP test suite under `tests/unit/mvp/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented MVP behavior are marked `#[ignore = "MVP-target: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
+- Added a TDD-style full-scope test suite under `tests/unit/specification/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented full-scope behavior are marked `#[ignore = "tracked requirement: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
 
 ### Added
 - Added the universal 11-step solver loop (impulse → formalization → context → history → decomposition → TDD → synthesis → combination → verification → simplification → documentation) and wired it into `FormalAiEngine.answer` so every reply walks the same reasoning pipeline regardless of intent.
@@ -10558,7 +10558,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added arithmetic, concept-lookup, conversation-recall, and explicit-JavaScript-execution handlers to the universal solver so the same loop now answers "what is 2 + 2?", "what is Wikipedia?", "what is my name?", and "please run this javascript: ..." prompts (issue #14).
 - Added `solve_with_history`, `ConversationRole`, and `ConversationTurn` to the library API so every surface can carry conversation memory through the same solver loop.
 - Added `data/seed/concepts.lino` with offline records for Wikipedia, Wikidata, Wiktionary, Links Notation, doublet links, the universal solver, the event log, WebAssembly, and Rust; each record cites its source for auditability.
-- Added `tests/unit/mvp/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
+- Added `tests/unit/specification/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
 - Added `examples/universal_solver_tour.rs` which walks every specialized handler through the same `FormalAiEngine::answer` entry point used by the library, CLI, HTTP server, Telegram bot, and demo.
 
 ### Changed
@@ -10637,12 +10637,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Per-language `localized "en|ru|hi|zh"` blocks on `ConceptRecord` carrying the native term, native aliases, native-Wikipedia summary, and source URL (e.g. `Фильтр с бесконечной импульсной характеристикой … или IIR-фильтр` from ru.wikipedia.org). The solver and JS worker prefer the prevailing-language block when rendering the response, so the original maintainer prompt `что такое iir в ml` now returns a Russian-language definition citing the Russian Wikipedia article (issue #20 follow-up R9/R10/R11).
 - New `concept_lookup_in_context_no_alias` response template variant: when the user already typed the localized context label, the body renders as `В контексте Машинное обучение IIR …` instead of `«Машинное обучение» (Машинное обучение)`. The variant is picked by template id from `multilingual-responses.lino` so future languages add a row without Rust changes.
 - `wikidata "Q…"` field on every concept and new `wikidata:Q…` evidence link so the cross-language join key used by `link-assistant/human-language` and `link-assistant/meta-expression` is part of the public trace (issue #20 follow-up R13).
-- Additional Rust integration tests in `tests/unit/mvp/multilingual.rs` pinning down native-language body content (Russian, English, Hindi, Chinese), the `«ml» (Машинное обучение)` rendering, the ru.wikipedia.org source citation, the no-alias-duplication template, and the Wikidata anchor in `evidence_links`.
+- Additional Rust integration tests in `tests/unit/specification/multilingual.rs` pinning down native-language body content (Russian, English, Hindi, Chinese), the `«ml» (Машинное обучение)` rendering, the ru.wikipedia.org source citation, the no-alias-duplication template, and the Wikidata anchor in `evidence_links`.
 
 ### Changed
 - `concepts.rs` now exposes `ConceptQuery` / `ConceptLookup` and the context-aware `extract_concept_query` + `lookup_concept_query`; the prior single-string `extract_concept_term` / `lookup_concept` shims have been removed. The ranker resolves context phrases through the new registry: a record can declare `context_links "context_machine_learning|…"` and `record_has_context` will follow the registry rather than require every alias inline.
 - `src/web/formal_ai_worker.js` mirrors the Rust pipeline: it parses the context delimiter, emits the same `concept_lookup:*` and `wikidata:*` evidence labels, picks the `_no_alias` template when needed, and renders both plain and in-context bodies from the localized block selected by `detectLanguage(prompt)`.
-- `tests/unit/mvp/multilingual.rs` pins down the four-language variants of the trigger prompt and the evidence-link debug trail; `src/solver_helpers.rs` gained unit tests for context delimiter parsing across the four languages.
+- `tests/unit/specification/multilingual.rs` pins down the four-language variants of the trigger prompt and the evidence-link debug trail; `src/solver_helpers.rs` gained unit tests for context delimiter parsing across the four languages.
 
 ### Fixed
 - Hardened the GitHub Pages demo release gate so live e2e tests wait for the exact deployed commit and load cache-busted static assets.
@@ -10834,7 +10834,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Release completeness checks now self-heal when crates.io exists but configured Docker Hub or GitHub release artifacts are missing.
 
 ### Added
-- Added the formal-ai proof-of-concept library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
+- Added the formal-ai deterministic symbolic implementation library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
 - Added a markdown-capable chat demo with randomized dialog mode, greeting-first examples, and multi-language hello-world prompts.
 - Added Rust-script dataset generation into human-readable Links Notation `.lino` files under `data/`.
 - Added Playwright e2e test suite under `tests/e2e/` covering page load, initial messages, quick prompts, chat interactions, demo mode toggle, trace panel, and preview mode.
@@ -10871,7 +10871,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added the issue #12 holistic case study, root vision/goals/non-goals documents, and a unit test that keeps the documentation set present and traceable.
 
 ### Added
-- Added a TDD-style MVP test suite under `tests/unit/mvp/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented MVP behavior are marked `#[ignore = "MVP-target: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
+- Added a TDD-style full-scope test suite under `tests/unit/specification/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented full-scope behavior are marked `#[ignore = "tracked requirement: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
 
 ### Added
 - Added the universal 11-step solver loop (impulse → formalization → context → history → decomposition → TDD → synthesis → combination → verification → simplification → documentation) and wired it into `FormalAiEngine.answer` so every reply walks the same reasoning pipeline regardless of intent.
@@ -10898,7 +10898,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added arithmetic, concept-lookup, conversation-recall, and explicit-JavaScript-execution handlers to the universal solver so the same loop now answers "what is 2 + 2?", "what is Wikipedia?", "what is my name?", and "please run this javascript: ..." prompts (issue #14).
 - Added `solve_with_history`, `ConversationRole`, and `ConversationTurn` to the library API so every surface can carry conversation memory through the same solver loop.
 - Added `data/seed/concepts.lino` with offline records for Wikipedia, Wikidata, Wiktionary, Links Notation, doublet links, the universal solver, the event log, WebAssembly, and Rust; each record cites its source for auditability.
-- Added `tests/unit/mvp/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
+- Added `tests/unit/specification/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
 - Added `examples/universal_solver_tour.rs` which walks every specialized handler through the same `FormalAiEngine::answer` entry point used by the library, CLI, HTTP server, Telegram bot, and demo.
 
 ### Changed
@@ -10977,12 +10977,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Per-language `localized "en|ru|hi|zh"` blocks on `ConceptRecord` carrying the native term, native aliases, native-Wikipedia summary, and source URL (e.g. `Фильтр с бесконечной импульсной характеристикой … или IIR-фильтр` from ru.wikipedia.org). The solver and JS worker prefer the prevailing-language block when rendering the response, so the original maintainer prompt `что такое iir в ml` now returns a Russian-language definition citing the Russian Wikipedia article (issue #20 follow-up R9/R10/R11).
 - New `concept_lookup_in_context_no_alias` response template variant: when the user already typed the localized context label, the body renders as `В контексте Машинное обучение IIR …` instead of `«Машинное обучение» (Машинное обучение)`. The variant is picked by template id from `multilingual-responses.lino` so future languages add a row without Rust changes.
 - `wikidata "Q…"` field on every concept and new `wikidata:Q…` evidence link so the cross-language join key used by `link-assistant/human-language` and `link-assistant/meta-expression` is part of the public trace (issue #20 follow-up R13).
-- Additional Rust integration tests in `tests/unit/mvp/multilingual.rs` pinning down native-language body content (Russian, English, Hindi, Chinese), the `«ml» (Машинное обучение)` rendering, the ru.wikipedia.org source citation, the no-alias-duplication template, and the Wikidata anchor in `evidence_links`.
+- Additional Rust integration tests in `tests/unit/specification/multilingual.rs` pinning down native-language body content (Russian, English, Hindi, Chinese), the `«ml» (Машинное обучение)` rendering, the ru.wikipedia.org source citation, the no-alias-duplication template, and the Wikidata anchor in `evidence_links`.
 
 ### Changed
 - `concepts.rs` now exposes `ConceptQuery` / `ConceptLookup` and the context-aware `extract_concept_query` + `lookup_concept_query`; the prior single-string `extract_concept_term` / `lookup_concept` shims have been removed. The ranker resolves context phrases through the new registry: a record can declare `context_links "context_machine_learning|…"` and `record_has_context` will follow the registry rather than require every alias inline.
 - `src/web/formal_ai_worker.js` mirrors the Rust pipeline: it parses the context delimiter, emits the same `concept_lookup:*` and `wikidata:*` evidence labels, picks the `_no_alias` template when needed, and renders both plain and in-context bodies from the localized block selected by `detectLanguage(prompt)`.
-- `tests/unit/mvp/multilingual.rs` pins down the four-language variants of the trigger prompt and the evidence-link debug trail; `src/solver_helpers.rs` gained unit tests for context delimiter parsing across the four languages.
+- `tests/unit/specification/multilingual.rs` pins down the four-language variants of the trigger prompt and the evidence-link debug trail; `src/solver_helpers.rs` gained unit tests for context delimiter parsing across the four languages.
 
 ### Fixed
 - Hardened the GitHub Pages demo release gate so live e2e tests wait for the exact deployed commit and load cache-busted static assets.
@@ -11171,7 +11171,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Release completeness checks now self-heal when crates.io exists but configured Docker Hub or GitHub release artifacts are missing.
 
 ### Added
-- Added the formal-ai proof-of-concept library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
+- Added the formal-ai deterministic symbolic implementation library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
 - Added a markdown-capable chat demo with randomized dialog mode, greeting-first examples, and multi-language hello-world prompts.
 - Added Rust-script dataset generation into human-readable Links Notation `.lino` files under `data/`.
 - Added Playwright e2e test suite under `tests/e2e/` covering page load, initial messages, quick prompts, chat interactions, demo mode toggle, trace panel, and preview mode.
@@ -11208,7 +11208,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added the issue #12 holistic case study, root vision/goals/non-goals documents, and a unit test that keeps the documentation set present and traceable.
 
 ### Added
-- Added a TDD-style MVP test suite under `tests/unit/mvp/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented MVP behavior are marked `#[ignore = "MVP-target: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
+- Added a TDD-style full-scope test suite under `tests/unit/specification/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented full-scope behavior are marked `#[ignore = "tracked requirement: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
 
 ### Added
 - Added the universal 11-step solver loop (impulse → formalization → context → history → decomposition → TDD → synthesis → combination → verification → simplification → documentation) and wired it into `FormalAiEngine.answer` so every reply walks the same reasoning pipeline regardless of intent.
@@ -11226,7 +11226,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added arithmetic, concept-lookup, conversation-recall, and explicit-JavaScript-execution handlers to the universal solver so the same loop now answers "what is 2 + 2?", "what is Wikipedia?", "what is my name?", and "please run this javascript: ..." prompts (issue #14).
 - Added `solve_with_history`, `ConversationRole`, and `ConversationTurn` to the library API so every surface can carry conversation memory through the same solver loop.
 - Added `data/seed/concepts.lino` with offline records for Wikipedia, Wikidata, Wiktionary, Links Notation, doublet links, the universal solver, the event log, WebAssembly, and Rust; each record cites its source for auditability.
-- Added `tests/unit/mvp/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
+- Added `tests/unit/specification/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
 - Added `examples/universal_solver_tour.rs` which walks every specialized handler through the same `FormalAiEngine::answer` entry point used by the library, CLI, HTTP server, Telegram bot, and demo.
 
 ### Changed
@@ -11305,12 +11305,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Per-language `localized "en|ru|hi|zh"` blocks on `ConceptRecord` carrying the native term, native aliases, native-Wikipedia summary, and source URL (e.g. `Фильтр с бесконечной импульсной характеристикой … или IIR-фильтр` from ru.wikipedia.org). The solver and JS worker prefer the prevailing-language block when rendering the response, so the original maintainer prompt `что такое iir в ml` now returns a Russian-language definition citing the Russian Wikipedia article (issue #20 follow-up R9/R10/R11).
 - New `concept_lookup_in_context_no_alias` response template variant: when the user already typed the localized context label, the body renders as `В контексте Машинное обучение IIR …` instead of `«Машинное обучение» (Машинное обучение)`. The variant is picked by template id from `multilingual-responses.lino` so future languages add a row without Rust changes.
 - `wikidata "Q…"` field on every concept and new `wikidata:Q…` evidence link so the cross-language join key used by `link-assistant/human-language` and `link-assistant/meta-expression` is part of the public trace (issue #20 follow-up R13).
-- Additional Rust integration tests in `tests/unit/mvp/multilingual.rs` pinning down native-language body content (Russian, English, Hindi, Chinese), the `«ml» (Машинное обучение)` rendering, the ru.wikipedia.org source citation, the no-alias-duplication template, and the Wikidata anchor in `evidence_links`.
+- Additional Rust integration tests in `tests/unit/specification/multilingual.rs` pinning down native-language body content (Russian, English, Hindi, Chinese), the `«ml» (Машинное обучение)` rendering, the ru.wikipedia.org source citation, the no-alias-duplication template, and the Wikidata anchor in `evidence_links`.
 
 ### Changed
 - `concepts.rs` now exposes `ConceptQuery` / `ConceptLookup` and the context-aware `extract_concept_query` + `lookup_concept_query`; the prior single-string `extract_concept_term` / `lookup_concept` shims have been removed. The ranker resolves context phrases through the new registry: a record can declare `context_links "context_machine_learning|…"` and `record_has_context` will follow the registry rather than require every alias inline.
 - `src/web/formal_ai_worker.js` mirrors the Rust pipeline: it parses the context delimiter, emits the same `concept_lookup:*` and `wikidata:*` evidence labels, picks the `_no_alias` template when needed, and renders both plain and in-context bodies from the localized block selected by `detectLanguage(prompt)`.
-- `tests/unit/mvp/multilingual.rs` pins down the four-language variants of the trigger prompt and the evidence-link debug trail; `src/solver_helpers.rs` gained unit tests for context delimiter parsing across the four languages.
+- `tests/unit/specification/multilingual.rs` pins down the four-language variants of the trigger prompt and the evidence-link debug trail; `src/solver_helpers.rs` gained unit tests for context delimiter parsing across the four languages.
 
 ### Fixed
 - Hardened the GitHub Pages demo release gate so live e2e tests wait for the exact deployed commit and load cache-busted static assets.
@@ -11499,7 +11499,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Release completeness checks now self-heal when crates.io exists but configured Docker Hub or GitHub release artifacts are missing.
 
 ### Added
-- Added the formal-ai proof-of-concept library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
+- Added the formal-ai deterministic symbolic implementation library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
 - Added a markdown-capable chat demo with randomized dialog mode, greeting-first examples, and multi-language hello-world prompts.
 - Added Rust-script dataset generation into human-readable Links Notation `.lino` files under `data/`.
 - Added Playwright e2e test suite under `tests/e2e/` covering page load, initial messages, quick prompts, chat interactions, demo mode toggle, trace panel, and preview mode.
@@ -11536,7 +11536,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added the issue #12 holistic case study, root vision/goals/non-goals documents, and a unit test that keeps the documentation set present and traceable.
 
 ### Added
-- Added a TDD-style MVP test suite under `tests/unit/mvp/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented MVP behavior are marked `#[ignore = "MVP-target: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
+- Added a TDD-style full-scope test suite under `tests/unit/specification/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented full-scope behavior are marked `#[ignore = "tracked requirement: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
 
 ### Added
 - Added the universal 11-step solver loop (impulse → formalization → context → history → decomposition → TDD → synthesis → combination → verification → simplification → documentation) and wired it into `FormalAiEngine.answer` so every reply walks the same reasoning pipeline regardless of intent.
@@ -11554,7 +11554,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added arithmetic, concept-lookup, conversation-recall, and explicit-JavaScript-execution handlers to the universal solver so the same loop now answers "what is 2 + 2?", "what is Wikipedia?", "what is my name?", and "please run this javascript: ..." prompts (issue #14).
 - Added `solve_with_history`, `ConversationRole`, and `ConversationTurn` to the library API so every surface can carry conversation memory through the same solver loop.
 - Added `data/seed/concepts.lino` with offline records for Wikipedia, Wikidata, Wiktionary, Links Notation, doublet links, the universal solver, the event log, WebAssembly, and Rust; each record cites its source for auditability.
-- Added `tests/unit/mvp/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
+- Added `tests/unit/specification/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
 - Added `examples/universal_solver_tour.rs` which walks every specialized handler through the same `FormalAiEngine::answer` entry point used by the library, CLI, HTTP server, Telegram bot, and demo.
 
 ### Changed
@@ -11633,12 +11633,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Per-language `localized "en|ru|hi|zh"` blocks on `ConceptRecord` carrying the native term, native aliases, native-Wikipedia summary, and source URL (e.g. `Фильтр с бесконечной импульсной характеристикой … или IIR-фильтр` from ru.wikipedia.org). The solver and JS worker prefer the prevailing-language block when rendering the response, so the original maintainer prompt `что такое iir в ml` now returns a Russian-language definition citing the Russian Wikipedia article (issue #20 follow-up R9/R10/R11).
 - New `concept_lookup_in_context_no_alias` response template variant: when the user already typed the localized context label, the body renders as `В контексте Машинное обучение IIR …` instead of `«Машинное обучение» (Машинное обучение)`. The variant is picked by template id from `multilingual-responses.lino` so future languages add a row without Rust changes.
 - `wikidata "Q…"` field on every concept and new `wikidata:Q…` evidence link so the cross-language join key used by `link-assistant/human-language` and `link-assistant/meta-expression` is part of the public trace (issue #20 follow-up R13).
-- Additional Rust integration tests in `tests/unit/mvp/multilingual.rs` pinning down native-language body content (Russian, English, Hindi, Chinese), the `«ml» (Машинное обучение)` rendering, the ru.wikipedia.org source citation, the no-alias-duplication template, and the Wikidata anchor in `evidence_links`.
+- Additional Rust integration tests in `tests/unit/specification/multilingual.rs` pinning down native-language body content (Russian, English, Hindi, Chinese), the `«ml» (Машинное обучение)` rendering, the ru.wikipedia.org source citation, the no-alias-duplication template, and the Wikidata anchor in `evidence_links`.
 
 ### Changed
 - `concepts.rs` now exposes `ConceptQuery` / `ConceptLookup` and the context-aware `extract_concept_query` + `lookup_concept_query`; the prior single-string `extract_concept_term` / `lookup_concept` shims have been removed. The ranker resolves context phrases through the new registry: a record can declare `context_links "context_machine_learning|…"` and `record_has_context` will follow the registry rather than require every alias inline.
 - `src/web/formal_ai_worker.js` mirrors the Rust pipeline: it parses the context delimiter, emits the same `concept_lookup:*` and `wikidata:*` evidence labels, picks the `_no_alias` template when needed, and renders both plain and in-context bodies from the localized block selected by `detectLanguage(prompt)`.
-- `tests/unit/mvp/multilingual.rs` pins down the four-language variants of the trigger prompt and the evidence-link debug trail; `src/solver_helpers.rs` gained unit tests for context delimiter parsing across the four languages.
+- `tests/unit/specification/multilingual.rs` pins down the four-language variants of the trigger prompt and the evidence-link debug trail; `src/solver_helpers.rs` gained unit tests for context delimiter parsing across the four languages.
 
 ### Fixed
 - Hardened the GitHub Pages demo release gate so live e2e tests wait for the exact deployed commit and load cache-busted static assets.
@@ -11824,7 +11824,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Release completeness checks now self-heal when crates.io exists but configured Docker Hub or GitHub release artifacts are missing.
 
 ### Added
-- Added the formal-ai proof-of-concept library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
+- Added the formal-ai deterministic symbolic implementation library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
 - Added a markdown-capable chat demo with randomized dialog mode, greeting-first examples, and multi-language hello-world prompts.
 - Added Rust-script dataset generation into human-readable Links Notation `.lino` files under `data/`.
 - Added Playwright e2e test suite under `tests/e2e/` covering page load, initial messages, quick prompts, chat interactions, demo mode toggle, trace panel, and preview mode.
@@ -11861,7 +11861,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added the issue #12 holistic case study, root vision/goals/non-goals documents, and a unit test that keeps the documentation set present and traceable.
 
 ### Added
-- Added a TDD-style MVP test suite under `tests/unit/mvp/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented MVP behavior are marked `#[ignore = "MVP-target: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
+- Added a TDD-style full-scope test suite under `tests/unit/specification/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented full-scope behavior are marked `#[ignore = "tracked requirement: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
 
 ### Added
 - Added the universal 11-step solver loop (impulse → formalization → context → history → decomposition → TDD → synthesis → combination → verification → simplification → documentation) and wired it into `FormalAiEngine.answer` so every reply walks the same reasoning pipeline regardless of intent.
@@ -11879,7 +11879,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added arithmetic, concept-lookup, conversation-recall, and explicit-JavaScript-execution handlers to the universal solver so the same loop now answers "what is 2 + 2?", "what is Wikipedia?", "what is my name?", and "please run this javascript: ..." prompts (issue #14).
 - Added `solve_with_history`, `ConversationRole`, and `ConversationTurn` to the library API so every surface can carry conversation memory through the same solver loop.
 - Added `data/seed/concepts.lino` with offline records for Wikipedia, Wikidata, Wiktionary, Links Notation, doublet links, the universal solver, the event log, WebAssembly, and Rust; each record cites its source for auditability.
-- Added `tests/unit/mvp/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
+- Added `tests/unit/specification/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
 - Added `examples/universal_solver_tour.rs` which walks every specialized handler through the same `FormalAiEngine::answer` entry point used by the library, CLI, HTTP server, Telegram bot, and demo.
 
 ### Changed
@@ -11955,12 +11955,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Per-language `localized "en|ru|hi|zh"` blocks on `ConceptRecord` carrying the native term, native aliases, native-Wikipedia summary, and source URL (e.g. `Фильтр с бесконечной импульсной характеристикой … или IIR-фильтр` from ru.wikipedia.org). The solver and JS worker prefer the prevailing-language block when rendering the response, so the original maintainer prompt `что такое iir в ml` now returns a Russian-language definition citing the Russian Wikipedia article (issue #20 follow-up R9/R10/R11).
 - New `concept_lookup_in_context_no_alias` response template variant: when the user already typed the localized context label, the body renders as `В контексте Машинное обучение IIR …` instead of `«Машинное обучение» (Машинное обучение)`. The variant is picked by template id from `multilingual-responses.lino` so future languages add a row without Rust changes.
 - `wikidata "Q…"` field on every concept and new `wikidata:Q…` evidence link so the cross-language join key used by `link-assistant/human-language` and `link-assistant/meta-expression` is part of the public trace (issue #20 follow-up R13).
-- Additional Rust integration tests in `tests/unit/mvp/multilingual.rs` pinning down native-language body content (Russian, English, Hindi, Chinese), the `«ml» (Машинное обучение)` rendering, the ru.wikipedia.org source citation, the no-alias-duplication template, and the Wikidata anchor in `evidence_links`.
+- Additional Rust integration tests in `tests/unit/specification/multilingual.rs` pinning down native-language body content (Russian, English, Hindi, Chinese), the `«ml» (Машинное обучение)` rendering, the ru.wikipedia.org source citation, the no-alias-duplication template, and the Wikidata anchor in `evidence_links`.
 
 ### Changed
 - `concepts.rs` now exposes `ConceptQuery` / `ConceptLookup` and the context-aware `extract_concept_query` + `lookup_concept_query`; the prior single-string `extract_concept_term` / `lookup_concept` shims have been removed. The ranker resolves context phrases through the new registry: a record can declare `context_links "context_machine_learning|…"` and `record_has_context` will follow the registry rather than require every alias inline.
 - `src/web/formal_ai_worker.js` mirrors the Rust pipeline: it parses the context delimiter, emits the same `concept_lookup:*` and `wikidata:*` evidence labels, picks the `_no_alias` template when needed, and renders both plain and in-context bodies from the localized block selected by `detectLanguage(prompt)`.
-- `tests/unit/mvp/multilingual.rs` pins down the four-language variants of the trigger prompt and the evidence-link debug trail; `src/solver_helpers.rs` gained unit tests for context delimiter parsing across the four languages.
+- `tests/unit/specification/multilingual.rs` pins down the four-language variants of the trigger prompt and the evidence-link debug trail; `src/solver_helpers.rs` gained unit tests for context delimiter parsing across the four languages.
 
 ### Fixed
 - Hardened the GitHub Pages demo release gate so live e2e tests wait for the exact deployed commit and load cache-busted static assets.
@@ -12146,7 +12146,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Release completeness checks now self-heal when crates.io exists but configured Docker Hub or GitHub release artifacts are missing.
 
 ### Added
-- Added the formal-ai proof-of-concept library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
+- Added the formal-ai deterministic symbolic implementation library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
 - Added a markdown-capable chat demo with randomized dialog mode, greeting-first examples, and multi-language hello-world prompts.
 - Added Rust-script dataset generation into human-readable Links Notation `.lino` files under `data/`.
 - Added Playwright e2e test suite under `tests/e2e/` covering page load, initial messages, quick prompts, chat interactions, demo mode toggle, trace panel, and preview mode.
@@ -12183,7 +12183,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added the issue #12 holistic case study, root vision/goals/non-goals documents, and a unit test that keeps the documentation set present and traceable.
 
 ### Added
-- Added a TDD-style MVP test suite under `tests/unit/mvp/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented MVP behavior are marked `#[ignore = "MVP-target: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
+- Added a TDD-style full-scope test suite under `tests/unit/specification/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented full-scope behavior are marked `#[ignore = "tracked requirement: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
 
 ### Added
 - Added the universal 11-step solver loop (impulse → formalization → context → history → decomposition → TDD → synthesis → combination → verification → simplification → documentation) and wired it into `FormalAiEngine.answer` so every reply walks the same reasoning pipeline regardless of intent.
@@ -12201,7 +12201,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added arithmetic, concept-lookup, conversation-recall, and explicit-JavaScript-execution handlers to the universal solver so the same loop now answers "what is 2 + 2?", "what is Wikipedia?", "what is my name?", and "please run this javascript: ..." prompts (issue #14).
 - Added `solve_with_history`, `ConversationRole`, and `ConversationTurn` to the library API so every surface can carry conversation memory through the same solver loop.
 - Added `data/seed/concepts.lino` with offline records for Wikipedia, Wikidata, Wiktionary, Links Notation, doublet links, the universal solver, the event log, WebAssembly, and Rust; each record cites its source for auditability.
-- Added `tests/unit/mvp/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
+- Added `tests/unit/specification/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
 - Added `examples/universal_solver_tour.rs` which walks every specialized handler through the same `FormalAiEngine::answer` entry point used by the library, CLI, HTTP server, Telegram bot, and demo.
 
 ### Changed
@@ -12255,12 +12255,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Per-language `localized "en|ru|hi|zh"` blocks on `ConceptRecord` carrying the native term, native aliases, native-Wikipedia summary, and source URL (e.g. `Фильтр с бесконечной импульсной характеристикой … или IIR-фильтр` from ru.wikipedia.org). The solver and JS worker prefer the prevailing-language block when rendering the response, so the original maintainer prompt `что такое iir в ml` now returns a Russian-language definition citing the Russian Wikipedia article (issue #20 follow-up R9/R10/R11).
 - New `concept_lookup_in_context_no_alias` response template variant: when the user already typed the localized context label, the body renders as `В контексте Машинное обучение IIR …` instead of `«Машинное обучение» (Машинное обучение)`. The variant is picked by template id from `multilingual-responses.lino` so future languages add a row without Rust changes.
 - `wikidata "Q…"` field on every concept and new `wikidata:Q…` evidence link so the cross-language join key used by `link-assistant/human-language` and `link-assistant/meta-expression` is part of the public trace (issue #20 follow-up R13).
-- Additional Rust integration tests in `tests/unit/mvp/multilingual.rs` pinning down native-language body content (Russian, English, Hindi, Chinese), the `«ml» (Машинное обучение)` rendering, the ru.wikipedia.org source citation, the no-alias-duplication template, and the Wikidata anchor in `evidence_links`.
+- Additional Rust integration tests in `tests/unit/specification/multilingual.rs` pinning down native-language body content (Russian, English, Hindi, Chinese), the `«ml» (Машинное обучение)` rendering, the ru.wikipedia.org source citation, the no-alias-duplication template, and the Wikidata anchor in `evidence_links`.
 
 ### Changed
 - `concepts.rs` now exposes `ConceptQuery` / `ConceptLookup` and the context-aware `extract_concept_query` + `lookup_concept_query`; the prior single-string `extract_concept_term` / `lookup_concept` shims have been removed. The ranker resolves context phrases through the new registry: a record can declare `context_links "context_machine_learning|…"` and `record_has_context` will follow the registry rather than require every alias inline.
 - `src/web/formal_ai_worker.js` mirrors the Rust pipeline: it parses the context delimiter, emits the same `concept_lookup:*` and `wikidata:*` evidence labels, picks the `_no_alias` template when needed, and renders both plain and in-context bodies from the localized block selected by `detectLanguage(prompt)`.
-- `tests/unit/mvp/multilingual.rs` pins down the four-language variants of the trigger prompt and the evidence-link debug trail; `src/solver_helpers.rs` gained unit tests for context delimiter parsing across the four languages.
+- `tests/unit/specification/multilingual.rs` pins down the four-language variants of the trigger prompt and the evidence-link debug trail; `src/solver_helpers.rs` gained unit tests for context delimiter parsing across the four languages.
 
 ### Fixed
 - Hardened the GitHub Pages demo release gate so live e2e tests wait for the exact deployed commit and load cache-busted static assets.
@@ -12446,7 +12446,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Release completeness checks now self-heal when crates.io exists but configured Docker Hub or GitHub release artifacts are missing.
 
 ### Added
-- Added the formal-ai proof-of-concept library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
+- Added the formal-ai deterministic symbolic implementation library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
 - Added a markdown-capable chat demo with randomized dialog mode, greeting-first examples, and multi-language hello-world prompts.
 - Added Rust-script dataset generation into human-readable Links Notation `.lino` files under `data/`.
 - Added Playwright e2e test suite under `tests/e2e/` covering page load, initial messages, quick prompts, chat interactions, demo mode toggle, trace panel, and preview mode.
@@ -12483,7 +12483,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added the issue #12 holistic case study, root vision/goals/non-goals documents, and a unit test that keeps the documentation set present and traceable.
 
 ### Added
-- Added a TDD-style MVP test suite under `tests/unit/mvp/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented MVP behavior are marked `#[ignore = "MVP-target: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
+- Added a TDD-style full-scope test suite under `tests/unit/specification/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented full-scope behavior are marked `#[ignore = "tracked requirement: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
 
 ### Added
 - Added the universal 11-step solver loop (impulse → formalization → context → history → decomposition → TDD → synthesis → combination → verification → simplification → documentation) and wired it into `FormalAiEngine.answer` so every reply walks the same reasoning pipeline regardless of intent.
@@ -12501,7 +12501,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added arithmetic, concept-lookup, conversation-recall, and explicit-JavaScript-execution handlers to the universal solver so the same loop now answers "what is 2 + 2?", "what is Wikipedia?", "what is my name?", and "please run this javascript: ..." prompts (issue #14).
 - Added `solve_with_history`, `ConversationRole`, and `ConversationTurn` to the library API so every surface can carry conversation memory through the same solver loop.
 - Added `data/seed/concepts.lino` with offline records for Wikipedia, Wikidata, Wiktionary, Links Notation, doublet links, the universal solver, the event log, WebAssembly, and Rust; each record cites its source for auditability.
-- Added `tests/unit/mvp/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
+- Added `tests/unit/specification/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
 - Added `examples/universal_solver_tour.rs` which walks every specialized handler through the same `FormalAiEngine::answer` entry point used by the library, CLI, HTTP server, Telegram bot, and demo.
 
 ### Changed
@@ -12744,7 +12744,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Release completeness checks now self-heal when crates.io exists but configured Docker Hub or GitHub release artifacts are missing.
 
 ### Added
-- Added the formal-ai proof-of-concept library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
+- Added the formal-ai deterministic symbolic implementation library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
 - Added a markdown-capable chat demo with randomized dialog mode, greeting-first examples, and multi-language hello-world prompts.
 - Added Rust-script dataset generation into human-readable Links Notation `.lino` files under `data/`.
 - Added Playwright e2e test suite under `tests/e2e/` covering page load, initial messages, quick prompts, chat interactions, demo mode toggle, trace panel, and preview mode.
@@ -12781,7 +12781,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added the issue #12 holistic case study, root vision/goals/non-goals documents, and a unit test that keeps the documentation set present and traceable.
 
 ### Added
-- Added a TDD-style MVP test suite under `tests/unit/mvp/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented MVP behavior are marked `#[ignore = "MVP-target: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
+- Added a TDD-style full-scope test suite under `tests/unit/specification/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented full-scope behavior are marked `#[ignore = "tracked requirement: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
 
 ### Added
 - Added the universal 11-step solver loop (impulse → formalization → context → history → decomposition → TDD → synthesis → combination → verification → simplification → documentation) and wired it into `FormalAiEngine.answer` so every reply walks the same reasoning pipeline regardless of intent.
@@ -12799,7 +12799,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added arithmetic, concept-lookup, conversation-recall, and explicit-JavaScript-execution handlers to the universal solver so the same loop now answers "what is 2 + 2?", "what is Wikipedia?", "what is my name?", and "please run this javascript: ..." prompts (issue #14).
 - Added `solve_with_history`, `ConversationRole`, and `ConversationTurn` to the library API so every surface can carry conversation memory through the same solver loop.
 - Added `data/seed/concepts.lino` with offline records for Wikipedia, Wikidata, Wiktionary, Links Notation, doublet links, the universal solver, the event log, WebAssembly, and Rust; each record cites its source for auditability.
-- Added `tests/unit/mvp/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
+- Added `tests/unit/specification/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
 - Added `examples/universal_solver_tour.rs` which walks every specialized handler through the same `FormalAiEngine::answer` entry point used by the library, CLI, HTTP server, Telegram bot, and demo.
 
 ### Changed
@@ -13034,7 +13034,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Release completeness checks now self-heal when crates.io exists but configured Docker Hub or GitHub release artifacts are missing.
 
 ### Added
-- Added the formal-ai proof-of-concept library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
+- Added the formal-ai deterministic symbolic implementation library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
 - Added a markdown-capable chat demo with randomized dialog mode, greeting-first examples, and multi-language hello-world prompts.
 - Added Rust-script dataset generation into human-readable Links Notation `.lino` files under `data/`.
 - Added Playwright e2e test suite under `tests/e2e/` covering page load, initial messages, quick prompts, chat interactions, demo mode toggle, trace panel, and preview mode.
@@ -13071,7 +13071,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added the issue #12 holistic case study, root vision/goals/non-goals documents, and a unit test that keeps the documentation set present and traceable.
 
 ### Added
-- Added a TDD-style MVP test suite under `tests/unit/mvp/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented MVP behavior are marked `#[ignore = "MVP-target: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
+- Added a TDD-style full-scope test suite under `tests/unit/specification/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented full-scope behavior are marked `#[ignore = "tracked requirement: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
 
 ### Added
 - Added the universal 11-step solver loop (impulse → formalization → context → history → decomposition → TDD → synthesis → combination → verification → simplification → documentation) and wired it into `FormalAiEngine.answer` so every reply walks the same reasoning pipeline regardless of intent.
@@ -13089,7 +13089,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added arithmetic, concept-lookup, conversation-recall, and explicit-JavaScript-execution handlers to the universal solver so the same loop now answers "what is 2 + 2?", "what is Wikipedia?", "what is my name?", and "please run this javascript: ..." prompts (issue #14).
 - Added `solve_with_history`, `ConversationRole`, and `ConversationTurn` to the library API so every surface can carry conversation memory through the same solver loop.
 - Added `data/seed/concepts.lino` with offline records for Wikipedia, Wikidata, Wiktionary, Links Notation, doublet links, the universal solver, the event log, WebAssembly, and Rust; each record cites its source for auditability.
-- Added `tests/unit/mvp/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
+- Added `tests/unit/specification/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
 - Added `examples/universal_solver_tour.rs` which walks every specialized handler through the same `FormalAiEngine::answer` entry point used by the library, CLI, HTTP server, Telegram bot, and demo.
 
 ### Changed
@@ -13323,7 +13323,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Release completeness checks now self-heal when crates.io exists but configured Docker Hub or GitHub release artifacts are missing.
 
 ### Added
-- Added the formal-ai proof-of-concept library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
+- Added the formal-ai deterministic symbolic implementation library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
 - Added a markdown-capable chat demo with randomized dialog mode, greeting-first examples, and multi-language hello-world prompts.
 - Added Rust-script dataset generation into human-readable Links Notation `.lino` files under `data/`.
 - Added Playwright e2e test suite under `tests/e2e/` covering page load, initial messages, quick prompts, chat interactions, demo mode toggle, trace panel, and preview mode.
@@ -13360,7 +13360,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added the issue #12 holistic case study, root vision/goals/non-goals documents, and a unit test that keeps the documentation set present and traceable.
 
 ### Added
-- Added a TDD-style MVP test suite under `tests/unit/mvp/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented MVP behavior are marked `#[ignore = "MVP-target: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
+- Added a TDD-style full-scope test suite under `tests/unit/specification/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented full-scope behavior are marked `#[ignore = "tracked requirement: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
 
 ### Added
 - Added the universal 11-step solver loop (impulse → formalization → context → history → decomposition → TDD → synthesis → combination → verification → simplification → documentation) and wired it into `FormalAiEngine.answer` so every reply walks the same reasoning pipeline regardless of intent.
@@ -13378,7 +13378,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added arithmetic, concept-lookup, conversation-recall, and explicit-JavaScript-execution handlers to the universal solver so the same loop now answers "what is 2 + 2?", "what is Wikipedia?", "what is my name?", and "please run this javascript: ..." prompts (issue #14).
 - Added `solve_with_history`, `ConversationRole`, and `ConversationTurn` to the library API so every surface can carry conversation memory through the same solver loop.
 - Added `data/seed/concepts.lino` with offline records for Wikipedia, Wikidata, Wiktionary, Links Notation, doublet links, the universal solver, the event log, WebAssembly, and Rust; each record cites its source for auditability.
-- Added `tests/unit/mvp/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
+- Added `tests/unit/specification/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
 - Added `examples/universal_solver_tour.rs` which walks every specialized handler through the same `FormalAiEngine::answer` entry point used by the library, CLI, HTTP server, Telegram bot, and demo.
 
 ### Changed
@@ -13609,7 +13609,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Release completeness checks now self-heal when crates.io exists but configured Docker Hub or GitHub release artifacts are missing.
 
 ### Added
-- Added the formal-ai proof-of-concept library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
+- Added the formal-ai deterministic symbolic implementation library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
 - Added a markdown-capable chat demo with randomized dialog mode, greeting-first examples, and multi-language hello-world prompts.
 - Added Rust-script dataset generation into human-readable Links Notation `.lino` files under `data/`.
 - Added Playwright e2e test suite under `tests/e2e/` covering page load, initial messages, quick prompts, chat interactions, demo mode toggle, trace panel, and preview mode.
@@ -13646,7 +13646,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added the issue #12 holistic case study, root vision/goals/non-goals documents, and a unit test that keeps the documentation set present and traceable.
 
 ### Added
-- Added a TDD-style MVP test suite under `tests/unit/mvp/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented MVP behavior are marked `#[ignore = "MVP-target: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
+- Added a TDD-style full-scope test suite under `tests/unit/specification/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented full-scope behavior are marked `#[ignore = "tracked requirement: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
 
 ### Added
 - Added the universal 11-step solver loop (impulse → formalization → context → history → decomposition → TDD → synthesis → combination → verification → simplification → documentation) and wired it into `FormalAiEngine.answer` so every reply walks the same reasoning pipeline regardless of intent.
@@ -13664,7 +13664,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added arithmetic, concept-lookup, conversation-recall, and explicit-JavaScript-execution handlers to the universal solver so the same loop now answers "what is 2 + 2?", "what is Wikipedia?", "what is my name?", and "please run this javascript: ..." prompts (issue #14).
 - Added `solve_with_history`, `ConversationRole`, and `ConversationTurn` to the library API so every surface can carry conversation memory through the same solver loop.
 - Added `data/seed/concepts.lino` with offline records for Wikipedia, Wikidata, Wiktionary, Links Notation, doublet links, the universal solver, the event log, WebAssembly, and Rust; each record cites its source for auditability.
-- Added `tests/unit/mvp/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
+- Added `tests/unit/specification/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
 - Added `examples/universal_solver_tour.rs` which walks every specialized handler through the same `FormalAiEngine::answer` entry point used by the library, CLI, HTTP server, Telegram bot, and demo.
 
 ### Changed
@@ -13883,7 +13883,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Release completeness checks now self-heal when crates.io exists but configured Docker Hub or GitHub release artifacts are missing.
 
 ### Added
-- Added the formal-ai proof-of-concept library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
+- Added the formal-ai deterministic symbolic implementation library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
 - Added a markdown-capable chat demo with randomized dialog mode, greeting-first examples, and multi-language hello-world prompts.
 - Added Rust-script dataset generation into human-readable Links Notation `.lino` files under `data/`.
 - Added Playwright e2e test suite under `tests/e2e/` covering page load, initial messages, quick prompts, chat interactions, demo mode toggle, trace panel, and preview mode.
@@ -13920,7 +13920,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added the issue #12 holistic case study, root vision/goals/non-goals documents, and a unit test that keeps the documentation set present and traceable.
 
 ### Added
-- Added a TDD-style MVP test suite under `tests/unit/mvp/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented MVP behavior are marked `#[ignore = "MVP-target: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
+- Added a TDD-style full-scope test suite under `tests/unit/specification/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented full-scope behavior are marked `#[ignore = "tracked requirement: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
 
 ### Added
 - Added the universal 11-step solver loop (impulse → formalization → context → history → decomposition → TDD → synthesis → combination → verification → simplification → documentation) and wired it into `FormalAiEngine.answer` so every reply walks the same reasoning pipeline regardless of intent.
@@ -13938,7 +13938,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added arithmetic, concept-lookup, conversation-recall, and explicit-JavaScript-execution handlers to the universal solver so the same loop now answers "what is 2 + 2?", "what is Wikipedia?", "what is my name?", and "please run this javascript: ..." prompts (issue #14).
 - Added `solve_with_history`, `ConversationRole`, and `ConversationTurn` to the library API so every surface can carry conversation memory through the same solver loop.
 - Added `data/seed/concepts.lino` with offline records for Wikipedia, Wikidata, Wiktionary, Links Notation, doublet links, the universal solver, the event log, WebAssembly, and Rust; each record cites its source for auditability.
-- Added `tests/unit/mvp/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
+- Added `tests/unit/specification/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
 - Added `examples/universal_solver_tour.rs` which walks every specialized handler through the same `FormalAiEngine::answer` entry point used by the library, CLI, HTTP server, Telegram bot, and demo.
 
 ### Changed
@@ -14141,7 +14141,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Release completeness checks now self-heal when crates.io exists but configured Docker Hub or GitHub release artifacts are missing.
 
 ### Added
-- Added the formal-ai proof-of-concept library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
+- Added the formal-ai deterministic symbolic implementation library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
 - Added a markdown-capable chat demo with randomized dialog mode, greeting-first examples, and multi-language hello-world prompts.
 - Added Rust-script dataset generation into human-readable Links Notation `.lino` files under `data/`.
 - Added Playwright e2e test suite under `tests/e2e/` covering page load, initial messages, quick prompts, chat interactions, demo mode toggle, trace panel, and preview mode.
@@ -14178,7 +14178,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added the issue #12 holistic case study, root vision/goals/non-goals documents, and a unit test that keeps the documentation set present and traceable.
 
 ### Added
-- Added a TDD-style MVP test suite under `tests/unit/mvp/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented MVP behavior are marked `#[ignore = "MVP-target: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
+- Added a TDD-style full-scope test suite under `tests/unit/specification/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented full-scope behavior are marked `#[ignore = "tracked requirement: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
 
 ### Added
 - Added the universal 11-step solver loop (impulse → formalization → context → history → decomposition → TDD → synthesis → combination → verification → simplification → documentation) and wired it into `FormalAiEngine.answer` so every reply walks the same reasoning pipeline regardless of intent.
@@ -14388,7 +14388,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Release completeness checks now self-heal when crates.io exists but configured Docker Hub or GitHub release artifacts are missing.
 
 ### Added
-- Added the formal-ai proof-of-concept library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
+- Added the formal-ai deterministic symbolic implementation library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
 - Added a markdown-capable chat demo with randomized dialog mode, greeting-first examples, and multi-language hello-world prompts.
 - Added Rust-script dataset generation into human-readable Links Notation `.lino` files under `data/`.
 - Added Playwright e2e test suite under `tests/e2e/` covering page load, initial messages, quick prompts, chat interactions, demo mode toggle, trace panel, and preview mode.
@@ -14617,7 +14617,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Release completeness checks now self-heal when crates.io exists but configured Docker Hub or GitHub release artifacts are missing.
 
 ### Added
-- Added the formal-ai proof-of-concept library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
+- Added the formal-ai deterministic symbolic implementation library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
 - Added a markdown-capable chat demo with randomized dialog mode, greeting-first examples, and multi-language hello-world prompts.
 - Added Rust-script dataset generation into human-readable Links Notation `.lino` files under `data/`.
 - Added Playwright e2e test suite under `tests/e2e/` covering page load, initial messages, quick prompts, chat interactions, demo mode toggle, trace panel, and preview mode.
@@ -14839,7 +14839,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Release completeness checks now self-heal when crates.io exists but configured Docker Hub or GitHub release artifacts are missing.
 
 ### Added
-- Added the formal-ai proof-of-concept library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
+- Added the formal-ai deterministic symbolic implementation library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
 - Added a markdown-capable chat demo with randomized dialog mode, greeting-first examples, and multi-language hello-world prompts.
 - Added Rust-script dataset generation into human-readable Links Notation `.lino` files under `data/`.
 - Added Playwright e2e test suite under `tests/e2e/` covering page load, initial messages, quick prompts, chat interactions, demo mode toggle, trace panel, and preview mode.
@@ -15054,7 +15054,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Release completeness checks now self-heal when crates.io exists but configured Docker Hub or GitHub release artifacts are missing.
 
 ### Added
-- Added the formal-ai proof-of-concept library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
+- Added the formal-ai deterministic symbolic implementation library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
 - Added a markdown-capable chat demo with randomized dialog mode, greeting-first examples, and multi-language hello-world prompts.
 - Added Rust-script dataset generation into human-readable Links Notation `.lino` files under `data/`.
 - Added Playwright e2e test suite under `tests/e2e/` covering page load, initial messages, quick prompts, chat interactions, demo mode toggle, trace panel, and preview mode.
@@ -15265,7 +15265,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Release completeness checks now self-heal when crates.io exists but configured Docker Hub or GitHub release artifacts are missing.
 
 ### Added
-- Added the formal-ai proof-of-concept library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
+- Added the formal-ai deterministic symbolic implementation library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
 - Added a markdown-capable chat demo with randomized dialog mode, greeting-first examples, and multi-language hello-world prompts.
 - Added Rust-script dataset generation into human-readable Links Notation `.lino` files under `data/`.
 - Added Playwright e2e test suite under `tests/e2e/` covering page load, initial messages, quick prompts, chat interactions, demo mode toggle, trace panel, and preview mode.
@@ -15473,7 +15473,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Release completeness checks now self-heal when crates.io exists but configured Docker Hub or GitHub release artifacts are missing.
 
 ### Added
-- Added the formal-ai proof-of-concept library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
+- Added the formal-ai deterministic symbolic implementation library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
 - Added a markdown-capable chat demo with randomized dialog mode, greeting-first examples, and multi-language hello-world prompts.
 - Added Rust-script dataset generation into human-readable Links Notation `.lino` files under `data/`.
 

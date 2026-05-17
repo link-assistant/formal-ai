@@ -10,7 +10,7 @@ This case study reconstructs the timeline, enumerates the requirements from the 
 
 ## Background
 
-formal-ai is a deterministic symbolic AI proof-of-concept (Rust + WebAssembly demo). Every interface — CLI, HTTP `/v1/chat/completions`, Telegram bot, and the browser worker — consumes the same Links Notation seed (`data/seed/*.lino`) and runs the same eleven-step **universal solver** loop (impulse → formalization → context → history → decomposition → TDD → synthesis → combination → verification → simplification → documentation).
+formal-ai is a deterministic symbolic AI deterministic symbolic implementation (Rust + WebAssembly demo). Every interface — CLI, HTTP `/v1/chat/completions`, Telegram bot, and the browser worker — consumes the same Links Notation seed (`data/seed/*.lino`) and runs the same eleven-step **universal solver** loop (impulse → formalization → context → history → decomposition → TDD → synthesis → combination → verification → simplification → documentation).
 
 Concept lookup is one specialised handler in step 7 (synthesis). It:
 
@@ -225,7 +225,7 @@ Plan:
 
 Plan:
 
-- New Rust integration tests in `tests/unit/mvp/multilingual.rs`:
+- New Rust integration tests in `tests/unit/specification/multilingual.rs`:
   - `russian_iir_in_ml_body_uses_native_term_and_context_label` — pins `«ml»`,
     `Машинное обучение`, `Фильтр с бесконечной импульсной характеристикой`,
     and `IIR-фильтр`.
@@ -285,8 +285,8 @@ These were surveyed for design ideas before settling on the seed-data approach:
 | `src/concepts.rs` | Split body by the longest matching context delimiter; rank records by `(term match, context match)`; emit `concept_lookup:*` debug events on every branch. |
 | `src/solver_handlers.rs` | Use the extracted `(term, context)` pair to build the answer body and choose the in-context response template. |
 | `src/web/formal_ai_worker.js` | Mirror the Rust logic for the browser worker. |
-| `tests/unit/mvp/multilingual.rs` | New tests for `что такое iir в ml`, `what is iir in ml`, `iir ml में क्या है`, `ml中iir是什么`. |
-| `tests/unit/mvp/reasoning_paths.rs` | New tests pinning the diagnostic-event sequence (`concept_lookup:request`, `concept_lookup:context`, `concept_lookup:hit`). |
+| `tests/unit/specification/multilingual.rs` | New tests for `что такое iir в ml`, `what is iir in ml`, `iir ml में क्या है`, `ml中iir是什么`. |
+| `tests/unit/specification/reasoning_paths.rs` | New tests pinning the diagnostic-event sequence (`concept_lookup:request`, `concept_lookup:context`, `concept_lookup:hit`). |
 | `tests/e2e/tests/multilingual.spec.js` | E2E coverage of the browser worker for `что такое iir в ml`. |
 | `changelog.d/20260515_<timestamp>_issue_20_concept_context.md` | Changelog fragment. |
 | `Cargo.toml` | Version bump 0.21.0 → 0.22.0. |

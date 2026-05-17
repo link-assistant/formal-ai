@@ -34,11 +34,11 @@ fn links_notation_trace_is_always_present() {
 }
 
 // ---------------------------------------------------------------------------
-// MVP expectations.
+// full-scope expectations.
 // ---------------------------------------------------------------------------
 
 #[test]
-#[ignore = "MVP-target: querying 'show me the network' should return a Links Notation snapshot"]
+#[ignore = "tracked requirement: querying 'show me the network' should return a Links Notation snapshot"]
 fn querying_the_network_returns_snapshot() {
     let response = answer("Show me the current network");
     assert!(
@@ -48,7 +48,7 @@ fn querying_the_network_returns_snapshot() {
 }
 
 #[test]
-#[ignore = "MVP-target: 'what do you know about X' should list links involving X"]
+#[ignore = "tracked requirement: 'what do you know about X' should list links involving X"]
 fn querying_a_concept_returns_its_links() {
     let response = answer("What do you know about 'greeting'?");
     assert!(
@@ -58,7 +58,7 @@ fn querying_a_concept_returns_its_links() {
 }
 
 #[test]
-#[ignore = "MVP-target: diagnostic link ids must not leak into default chat prose"]
+#[ignore = "tracked requirement: diagnostic link ids must not leak into default chat prose"]
 fn diagnostic_ids_never_leak_into_default_chat_prose() {
     let response = answer("Hi");
     let lower = response.answer.to_lowercase();
@@ -69,7 +69,7 @@ fn diagnostic_ids_never_leak_into_default_chat_prose() {
 }
 
 #[test]
-#[ignore = "MVP-target: the user must be able to opt-in to diagnostic mode and see all links inline"]
+#[ignore = "tracked requirement: the user must be able to opt-in to diagnostic mode and see all links inline"]
 fn diagnostic_mode_can_be_enabled_per_message() {
     let response = answer("[diagnostic] Hi");
     let lower = response.answer.to_lowercase();
@@ -80,7 +80,7 @@ fn diagnostic_mode_can_be_enabled_per_message() {
 }
 
 #[test]
-#[ignore = "MVP-target: 'why' meta-questions should explain the previous answer using links"]
+#[ignore = "tracked requirement: 'why' meta-questions should explain the previous answer using links"]
 fn why_meta_question_explains_previous_answer() {
     let _ = answer("Hi");
     let response = answer("Why did you answer that?");
@@ -92,7 +92,7 @@ fn why_meta_question_explains_previous_answer() {
 }
 
 #[test]
-#[ignore = "MVP-target: 'forget X' must be refused unless the user invokes the explicit retraction protocol"]
+#[ignore = "tracked requirement: 'forget X' must be refused unless the user invokes the explicit retraction protocol"]
 fn forget_request_requires_explicit_retraction_protocol() {
     let response = answer("Forget the greeting concept");
     assert!(
@@ -105,7 +105,7 @@ fn forget_request_requires_explicit_retraction_protocol() {
 }
 
 #[test]
-#[ignore = "MVP-target: 'export network' should return a downloadable Links Notation snapshot"]
+#[ignore = "tracked requirement: 'export network' should return a downloadable Links Notation snapshot"]
 fn export_network_returns_links_notation_snapshot() {
     let response = answer("Export the network");
     assert!(response.answer.contains("```links") || response.answer.contains("links-notation"));
@@ -113,7 +113,7 @@ fn export_network_returns_links_notation_snapshot() {
 }
 
 #[test]
-#[ignore = "MVP-target: 'list my facts' should return only facts the current user contributed"]
+#[ignore = "tracked requirement: 'list my facts' should return only facts the current user contributed"]
 fn list_my_facts_filters_by_user() {
     let response = answer("List the facts I have contributed");
     assert!(

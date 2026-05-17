@@ -26,7 +26,7 @@ const ISSUE_LABELS = "bug";
 const UNKNOWN_ANSWER =
   "I do not have a learned symbolic rule for that prompt yet. Add a Links Notation fact or rule, then run the request again.";
 const IDENTITY_ANSWER =
-  "I am formal-ai, a deterministic symbolic AI proof of concept that answers from local Links Notation rules and OpenAI-compatible API shapes. I do not perform neural inference in this demo.";
+  "I am formal-ai, a deterministic symbolic AI implementation that answers from local Links Notation rules and OpenAI-compatible API shapes. I do not perform neural inference in this demo.";
 
 // Issue #27: the sidebar advertises every prompt family that has a deterministic
 // symbolic rule or seed-backed answer in the engine. The list intentionally
@@ -2472,7 +2472,7 @@ function App() {
               children: h(
                 "dl",
                 { className: "trace-list" },
-                h("div", null, h("dt", null, t("trace.model")), h("dd", null, "formal-symbolic-poc")),
+                h("div", null, h("dt", null, t("trace.model")), h("dd", null, "formal-symbolic-production")),
                 h("div", null, h("dt", null, t("trace.mode")), h("dd", null, demoStatus)),
                 h("div", null, h("dt", null, t("trace.intent")), h("dd", null, lastAssistant?.intent ?? "none")),
                 h("div", null, h("dt", null, t("trace.data")), h("dd", null, "data/source-index.lino")),

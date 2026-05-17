@@ -64,10 +64,10 @@ mapping from issue text to PR-104 work.
 
 | ID | Requirement | Source | Solution in this PR |
 | --- | --- | --- | --- |
-| R129 | For every existing test case, exercise 5–10 most probable input/output variations. | Issue body | Add `tests/unit/mvp/prompt_variations.rs` and expand `chat_surface.rs`, `code_generation.rs`, and `multilingual.rs` with `for (prompt, _) in [...]` matrices that cover greeting, identity, capabilities, concept lookup, code-generation, idioms, transliteration, clarification, and math intents. |
+| R129 | For every existing test case, exercise 5–10 most probable input/output variations. | Issue body | Add `tests/unit/specification/prompt_variations.rs` and expand `chat_surface.rs`, `code_generation.rs`, and `multilingual.rs` with `for (prompt, _) in [...]` matrices that cover greeting, identity, capabilities, concept lookup, code-generation, idioms, transliteration, clarification, and math intents. |
 | R130 | Translate each test case into English, Russian, Hindi, and Chinese. | Issue body | Each matrix block iterates over `(language, prompts)` tuples covering all four languages. Helper assertions confirm the right `language:*` evidence link is emitted on every prompt. |
-| R131 | Compare formal-ai's tests against competitor AI models and agentic CLI tools, and adopt the most frequent / probable prompts. | Issue body | `docs/case-studies/issue-103/raw-data/competitor-test-research.md` indexes Claude Code, Aider, Codex, Continue, Cursor, Copilot CLI, MT-Bench, AlpacaEval, and the multilingual benchmark family; the high-frequency categories (definitions, summarization-intent, brainstorming-intent, factual Q&A, refusal/safety, multi-turn coreference) are added as new MVP-target tests with active fallbacks already in place. |
-| R132 | Generalize the test-case logic where possible. | Issue body | New `tests/unit/mvp/prompt_variations.rs` introduces helpers `assert_intent_for_each`, `assert_language_for_each`, and `assert_answer_contains_for_each` plus four-language matrix builders so future categories can be added in one block instead of per-language test functions. |
+| R131 | Compare formal-ai's tests against competitor AI models and agentic CLI tools, and adopt the most frequent / probable prompts. | Issue body | `docs/case-studies/issue-103/raw-data/competitor-test-research.md` indexes Claude Code, Aider, Codex, Continue, Cursor, Copilot CLI, MT-Bench, AlpacaEval, and the multilingual benchmark family; the high-frequency categories (definitions, summarization-intent, brainstorming-intent, factual Q&A, refusal/safety, multi-turn coreference, roleplay) are implemented as active regression tests backed by deterministic solver handlers. |
+| R132 | Generalize the test-case logic where possible. | Issue body | New `tests/unit/specification/prompt_variations.rs` introduces helpers `assert_intent_for_each`, `assert_language_for_each`, and `assert_answer_contains_for_each` plus four-language matrix builders so future categories can be added in one block instead of per-language test functions. |
 | R133 | Add a detailed `ARCHITECTURE.md` describing the evolving architecture. | Issue body | New `ARCHITECTURE.md` at the repository root documents the full pipeline: context assembly → translation to Links Notation → Wikidata P/Q-ID formalization → temperature-style interpretation selection → clarifying-question vs guessing under `SolverConfig` → nested reasoning steps with tool integrations → growable doublets-rs/doublets-web memory → .lino backups → transformation rules in data / Rust / JS / natural language → formalization-driven translation. |
 | R134 | Update `VISION.md` to reflect the architecture description from the issue (Wikidata P/Q-ID formalization, temperature-style interpretation selection, nested reasoning, growable doublet memory, transformation rules in data, on-demand compilation of natural-language skills, formalization-driven translation). | Issue body ("Double check our requirements and vision are updated…") | New **Formalization And Temperature** section in `VISION.md` plus updated **Computation Model**, **Data Is The Interface**, and **Reasoning Model** paragraphs explicitly call out the architecture additions. |
 | R135 | Update `REQUIREMENTS.md` to expose R129+ alongside the existing matrix. | Issue body | The R129–R136 block is appended under a new **Issue #103 Test-Matrix and Architecture Requirements** heading. |
@@ -90,8 +90,8 @@ The relevant findings for this PR:
    Humanities), AlpacaEval, WildBench, and Chatbot Arena's category tags all
    compress into the same ten conversational categories that formal-ai already
    targets. The gaps are: roleplay (optional), refusal/safety, multi-turn
-   coreference, summarization-intent, and brainstorming-intent. All five are
-   added as variations or MVP-target tests.
+   coreference, summarization-intent, and brainstorming-intent. These categories
+   are covered by active prompt-variation tests and deterministic handlers.
 3. **Multilingual benchmarks pre-translate the same semantic prompt** instead
    of literal English-first translation. Belebele, XNLI, XCOPA, MGSM, FLORES,
    TyDi-QA, and XQuAD all use this pattern. We mirror it: each new prompt
@@ -138,20 +138,19 @@ both a horizontal expansion (more prompts per language) and a vertical anchor
 
 ## Design Decisions
 
-- **Reuse the table-driven pattern.** `tests/unit/mvp/calculator_delegation.rs`
+- **Reuse the table-driven pattern.** `tests/unit/specification/calculator_delegation.rs`
   already demonstrated the idiomatic Rust pattern for 5–6 variations per
   language. We extend the same pattern instead of adding a new test
   framework. Zero new dependencies.
 - **Pin language detection per variant.** Every multilingual matrix asserts
   the right `language:*` evidence link is emitted, so a regression that
   collapses Hindi prompts into the English fallback is caught immediately.
-- **Active assertions for working prompts, MVP-target gates for the rest.**
-  Variations that the prototype handles today become active `#[test]`
-  assertions. Variations from competitor categories that the prototype does
-  not yet handle (roleplay, brainstorming-intent, refusal/safety) are marked
-  with `#[ignore = "MVP-target: …"]` so they document the failing
-  expectation without blocking CI, consistent with how the rest of
-  `tests/unit/mvp/` is structured.
+- **Active assertions for competitor-derived prompts.**
+  Variations from competitor categories become active `#[test]` assertions in
+  `prompt_variations.rs`. The solver now has deterministic handlers for
+  summarization, brainstorming, factual Q&A, multi-turn coreference, and
+  roleplay so these prompts exercise real behavior instead of documenting a
+  gap.
 - **`ARCHITECTURE.md` is the single source of truth for design.**
   `VISION.md` retains the product/values angle, `GOALS.md` and `NON-GOALS.md`
   retain scope, `REQUIREMENTS.md` retains the issue-by-issue traceability

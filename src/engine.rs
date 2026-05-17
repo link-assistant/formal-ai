@@ -19,14 +19,14 @@ use crate::event_log::EventLog;
 use crate::language::Language;
 use crate::seed;
 
-pub const DEFAULT_MODEL: &str = "formal-symbolic-poc";
+pub const DEFAULT_MODEL: &str = "formal-symbolic-production";
 
 /// Hardcoded English fallbacks used only when `data/seed/multilingual-responses.lino`
 /// cannot be parsed (which would be a build-time bug since the file is
 /// embedded via `include_str!`). All real reads come from [`crate::seed`].
 const FALLBACK_GREETING_ANSWER: &str = "Hi, how may I help you?";
 const FALLBACK_FAREWELL_ANSWER: &str = "Goodbye! Feel free to return any time.";
-const FALLBACK_IDENTITY_ANSWER: &str = "I am formal-ai, a deterministic symbolic AI proof of concept that answers from local Links Notation rules and OpenAI-compatible API shapes. I do not perform neural inference in this demo.";
+const FALLBACK_IDENTITY_ANSWER: &str = "I am formal-ai, a deterministic symbolic AI implementation that answers from local Links Notation rules and OpenAI-compatible API shapes. I do not perform neural inference in this demo.";
 const FALLBACK_UNKNOWN_ANSWER: &str = "I cannot answer that from local Links Notation rules yet. Please add a fact or add a rule in Links Notation, then run the request again.";
 const FALLBACK_UNKNOWN_LANGUAGE_ANSWER: &str = concat!(
     "I detected an unsupported language. Falling back to English: I cannot ",

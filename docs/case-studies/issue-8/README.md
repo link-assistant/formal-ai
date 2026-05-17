@@ -47,9 +47,9 @@ Verification logs are stored in `logs/` after local checks run.
 
 ## Online Research
 
-- [Telegram Bot API](https://core.telegram.org/bots/api) supports webhooks and JSON responses that ask Telegram to call a bot method. The chosen design returns `sendMessage` directly from the webhook, so the server does not need to store a Telegram bot token for the prototype.
+- [Telegram Bot API](https://core.telegram.org/bots/api) supports webhooks and JSON responses that ask Telegram to call a bot method. The chosen design returns `sendMessage` directly from the webhook, so the server does not need to store a Telegram bot token for the implementation.
 - [Telegram `sendMessage`](https://core.telegram.org/bots/api#sendmessage) supports HTML parse mode. This avoids Markdown escaping pitfalls for code blocks by rendering fenced markdown as escaped `<pre><code>` content.
-- [Telegram `sendDocument`](https://core.telegram.org/bots/api#senddocument) is the right path for large output attachments, but multipart uploads require an outbound token-bearing bot client. This PR documents that boundary instead of storing credentials in the prototype.
+- [Telegram `sendDocument`](https://core.telegram.org/bots/api#senddocument) is the right path for large output attachments, but multipart uploads require an outbound token-bearing bot client. This PR documents that boundary instead of storing credentials in the implementation.
 - [teloxide](https://github.com/teloxide/teloxide) is a full Rust Telegram bot framework. It is useful for a future long-running bot client but too large for this small webhook adapter.
 - [frankenstein](https://github.com/ayrat555/frankenstein) is a Rust Telegram Bot API client. It was considered for future outbound `sendDocument` support; the current direct webhook route needs only `serde`.
 - [link-foundation/start](https://github.com/link-foundation/start) provides command execution with logs and optional isolation. The local `start-command` binary exists, but Docker isolation is unavailable in this runtime.
@@ -59,7 +59,7 @@ Verification logs are stored in `logs/` after local checks run.
 
 | Option | Benefits | Tradeoff | Decision |
 | --- | --- | --- | --- |
-| Direct webhook `sendMessage` JSON response. | Small, stateless, no new dependency, no bot token stored. | Cannot upload new attachment files. | Used for the prototype. |
+| Direct webhook `sendMessage` JSON response. | Small, stateless, no new dependency, no bot token stored. | Cannot upload new attachment files. | Used for the implementation. |
 | Add `teloxide` long-polling bot. | Full bot runtime and handlers. | Requires token management, async runtime integration, and more operational state. | Deferred. |
 | Add `frankenstein` outbound client. | Enables `sendDocument` and richer Telegram methods. | Adds dependency and credential path before large outputs exist. | Deferred until large-output support is real. |
 | Implement Telegram formatting manually. | Keeps dependency graph unchanged. | Must escape HTML carefully. | Used with a small markdown-fence-to-HTML renderer. |

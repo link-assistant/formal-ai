@@ -231,7 +231,7 @@ resolves via surname-first variant`) returns 404 for every slug except
 
 | Need | Library considered | Decision |
 |------|--------------------|----------|
-| Slide-in drawer on mobile (R18) | `react-burger-menu`, `@chakra-ui/react`, native CSS `position: fixed` + transform | **Native CSS.** ~30 lines of CSS + state, no runtime dependency, no library lock-in for a tiny prototype. |
+| Slide-in drawer on mobile (R18) | `react-burger-menu`, `@chakra-ui/react`, native CSS `position: fixed` + transform | **Native CSS.** ~30 lines of CSS + state, no runtime dependency, no library lock-in for a tiny implementation. |
 | Random variant selection (R6) | weighted-random crates / npm | **Plain `Math.floor(Math.random() * variants.length)`.** Uniform selection is sufficient for greeting variants. |
 | Conversation log (R10/R11) | `localForage`, `Dexie.js`, IndexedDB direct | Already on IndexedDB direct — extended in-place. |
 | Deterministic summarization (R12) | `summarize.js`, `gensim`, `rake-js` | **Custom projector.** All those use TF-IDF / text-rank, which is statistical, not "logical". The issue explicitly forbids neural / statistical summarizers and asks for "actual logical summarization", so we project onto a fixed schema. |

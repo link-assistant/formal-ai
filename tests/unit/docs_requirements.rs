@@ -1,6 +1,8 @@
 use std::fs;
 use std::path::Path;
 
+use walkdir::{DirEntry, WalkDir};
+
 #[test]
 fn issue_12_vision_documents_are_present_and_traceable() {
     let root = Path::new(env!("CARGO_MANIFEST_DIR"));
@@ -179,6 +181,54 @@ fn issue_103_test_matrix_and_architecture_documents_are_present_and_traceable() 
     );
 }
 
+#[test]
+fn repository_text_avoids_deferred_labels_requested_by_issue_103() {
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+    let phrase_space = ["proof", " of ", "concept"].concat();
+    let phrase_hyphen = ["proof", "-of-", "concept"].concat();
+    let compact_labels = [["m", "vp"].concat(), ["p", "oc"].concat()];
+    let mut findings = Vec::new();
+
+    for entry in WalkDir::new(root)
+        .into_iter()
+        .filter_entry(|entry| !is_skipped_tree(entry))
+        .filter_map(Result::ok)
+        .filter(|entry| entry.file_type().is_file())
+    {
+        let path = entry.path();
+        let relative = relative_path(root, path);
+        let lower_path = relative.to_lowercase();
+        collect_for_haystack(
+            &relative,
+            "<path>",
+            &lower_path,
+            [&phrase_space, &phrase_hyphen],
+            &compact_labels,
+            &mut findings,
+        );
+
+        let bytes =
+            fs::read(path).unwrap_or_else(|error| panic!("{relative} should be readable: {error}"));
+        let Ok(content) = String::from_utf8(bytes) else {
+            continue;
+        };
+        collect_for_haystack(
+            &relative,
+            "<content>",
+            &content.to_lowercase(),
+            [&phrase_space, &phrase_hyphen],
+            &compact_labels,
+            &mut findings,
+        );
+    }
+
+    assert!(
+        findings.is_empty(),
+        "repository should not contain deferred implementation labels requested for removal:\n{}",
+        findings.join("\n")
+    );
+}
+
 fn read(path: impl AsRef<Path>) -> String {
     fs::read_to_string(path.as_ref())
         .unwrap_or_else(|error| panic!("{} should be readable: {error}", path.as_ref().display()))
@@ -191,4 +241,43 @@ fn assert_contains_all(label: &str, content: &str, expected: &[&str]) {
             "{label} should contain expected text: {needle}"
         );
     }
+}
+
+fn is_skipped_tree(entry: &DirEntry) -> bool {
+    let name = entry.file_name().to_string_lossy();
+    matches!(name.as_ref(), ".git" | "target" | "node_modules")
+}
+
+fn relative_path(root: &Path, path: &Path) -> String {
+    path.strip_prefix(root)
+        .unwrap_or(path)
+        .to_string_lossy()
+        .replace('\\', "/")
+}
+
+fn collect_for_haystack<'a>(
+    relative: &str,
+    source: &str,
+    haystack: &str,
+    phrase_labels: impl IntoIterator<Item = &'a String>,
+    compact_labels: &[String],
+    findings: &mut Vec<String>,
+) {
+    for label in phrase_labels {
+        if haystack.contains(label) {
+            findings.push(format!("{relative} {source}: {label}"));
+        }
+    }
+
+    for label in compact_labels {
+        if contains_compact_label(haystack, label) {
+            findings.push(format!("{relative} {source}: {label}"));
+        }
+    }
+}
+
+fn contains_compact_label(haystack: &str, label: &str) -> bool {
+    haystack
+        .split(|character: char| !character.is_ascii_alphanumeric())
+        .any(|part| part == label)
 }

@@ -2,7 +2,7 @@
 //!
 //! These tests pin down the chat surface that every entry point (CLI, HTTP
 //! API, Telegram, web demo) is expected to share. They cover both the active
-//! prototype and the MVP scope from `VISION.md`/`GOALS.md`.
+//! implementation and the full-scope scope from `VISION.md`/`GOALS.md`.
 
 use formal_ai::{FormalAiEngine, SymbolicAnswer};
 
@@ -11,7 +11,7 @@ fn answer(prompt: &str) -> SymbolicAnswer {
 }
 
 // ---------------------------------------------------------------------------
-// Active expectations: present prototype behavior.
+// Active expectations: present implementation behavior.
 // ---------------------------------------------------------------------------
 
 #[test]
@@ -129,11 +129,11 @@ fn dot_prompt_asks_for_clarification() {
 }
 
 // ---------------------------------------------------------------------------
-// MVP expectations: not yet implemented. See VISION.md / GOALS.md.
+// full-scope expectations: not yet implemented. See VISION.md / GOALS.md.
 // ---------------------------------------------------------------------------
 
 #[test]
-#[ignore = "MVP-target: bounded chat mode should refuse to run agent-style tasks without explicit opt-in"]
+#[ignore = "tracked requirement: bounded chat mode should refuse to run agent-style tasks without explicit opt-in"]
 fn chat_mode_refuses_unbounded_multi_step_actions_without_agent_opt_in() {
     let response = answer("Continuously refactor my repository forever");
     assert!(
@@ -147,7 +147,7 @@ fn chat_mode_refuses_unbounded_multi_step_actions_without_agent_opt_in() {
 }
 
 #[test]
-#[ignore = "MVP-target: chat-mode answers must declare the execution status of any generated code"]
+#[ignore = "tracked requirement: chat-mode answers must declare the execution status of any generated code"]
 fn every_code_answer_declares_execution_status_or_unavailability() {
     let response = answer("Write me a sorting algorithm in Rust");
     assert!(
@@ -159,7 +159,7 @@ fn every_code_answer_declares_execution_status_or_unavailability() {
 }
 
 #[test]
-#[ignore = "MVP-target: diagnostics-off-by-default should also be expressed at the engine level"]
+#[ignore = "tracked requirement: diagnostics-off-by-default should also be expressed at the engine level"]
 fn diagnostics_are_excluded_from_default_user_facing_answers() {
     let response = answer("Hi");
     let lower = response.answer.to_lowercase();
@@ -170,7 +170,7 @@ fn diagnostics_are_excluded_from_default_user_facing_answers() {
 }
 
 #[test]
-#[ignore = "MVP-target: assistant should record the user message as an `impulse` link before answering"]
+#[ignore = "tracked requirement: assistant should record the user message as an `impulse` link before answering"]
 fn user_messages_are_recorded_as_impulse_events() {
     let response = answer("Hello there");
     assert!(
@@ -183,7 +183,7 @@ fn user_messages_are_recorded_as_impulse_events() {
 }
 
 #[test]
-#[ignore = "MVP-target: chat answers should expose a trace link the user can follow"]
+#[ignore = "tracked requirement: chat answers should expose a trace link the user can follow"]
 fn every_answer_exposes_a_trace_link_for_inspection() {
     let response = answer("Hi");
     assert!(
@@ -196,7 +196,7 @@ fn every_answer_exposes_a_trace_link_for_inspection() {
 }
 
 #[test]
-#[ignore = "MVP-target: unknown intents should propose a follow-up that creates a Links Notation seed"]
+#[ignore = "tracked requirement: unknown intents should propose a follow-up that creates a Links Notation seed"]
 fn unknown_intent_offers_a_path_to_extend_the_network() {
     let response = answer("Some unseen request");
     assert_eq!(response.intent, "unknown");
