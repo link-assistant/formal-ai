@@ -98,9 +98,9 @@ const ENGLISH_GREETINGS: &[&str] = &["Hi", "Hello", "Hey", "Hello!", "Hi.", "hEL
 
 const RUSSIAN_GREETINGS: &[&str] = &["Привет", "Здравствуйте", "привет!", "Шалом", "Шабат шалом"];
 
-const HINDI_GREETINGS: &[&str] = &["नमस्ते"];
+const HINDI_GREETINGS: &[&str] = &["नमस्ते", "नमस्कार", "राम राम", "सलाम", "हाय", "नमस्ते!"];
 
-const CHINESE_GREETINGS: &[&str] = &["你好"];
+const CHINESE_GREETINGS: &[&str] = &["你好", "您好", "早上好", "早安", "嗨", "哈喽"];
 
 #[test]
 fn greeting_matrix_is_classified_as_greeting_across_languages() {
@@ -138,9 +138,9 @@ const ENGLISH_FAREWELLS: &[&str] = &["bye", "goodbye", "ciao"];
 
 const RUSSIAN_FAREWELLS: &[&str] = &["пока", "до свидания", "досвидания"];
 
-const HINDI_FAREWELLS: &[&str] = &["अलविदा"];
+const HINDI_FAREWELLS: &[&str] = &["अलविदा", "फिर मिलेंगे", "विदा", "बाय", "टाटा"];
 
-const CHINESE_FAREWELLS: &[&str] = &["再见"];
+const CHINESE_FAREWELLS: &[&str] = &["再见", "拜拜", "回见", "改天见", "后会有期"];
 
 #[test]
 fn farewell_matrix_is_classified_as_farewell_across_languages() {
@@ -173,9 +173,21 @@ const ENGLISH_IDENTITY: &[&str] = &[
 
 const RUSSIAN_IDENTITY: &[&str] = &["Кто ты?", "что ты", "Привет. ты кто?"];
 
-const HINDI_IDENTITY: &[&str] = &["तुम कौन हो?"];
+const HINDI_IDENTITY: &[&str] = &[
+    "तुम कौन हो?",
+    "आप कौन हैं?",
+    "तू कौन है?",
+    "अपना परिचय दो",
+    "अपने बारे में बताओ",
+];
 
-const CHINESE_IDENTITY: &[&str] = &["你是谁?"];
+const CHINESE_IDENTITY: &[&str] = &[
+    "你是谁?",
+    "您是谁?",
+    "你是什么?",
+    "介绍一下你自己",
+    "告诉我你自己",
+];
 
 #[test]
 fn identity_matrix_is_classified_as_identity_across_languages() {
@@ -261,9 +273,21 @@ const ENGLISH_CONCEPT_LOOKUPS: &[&str] = &[
 
 const RUSSIAN_CONCEPT_LOOKUPS: &[&str] = &["Что такое Википедия?", "Что такое Rust?"];
 
-const HINDI_CONCEPT_LOOKUPS: &[&str] = &["विकिपीडिया क्या है?"];
+const HINDI_CONCEPT_LOOKUPS: &[&str] = &[
+    "विकिपीडिया क्या है?",
+    "रस्ट क्या है?",
+    "रंग क्या है?",
+    "विकिडेटा क्या है?",
+    "आईआईआर क्या है?",
+];
 
-const CHINESE_CONCEPT_LOOKUPS: &[&str] = &["维基百科是什么?"];
+const CHINESE_CONCEPT_LOOKUPS: &[&str] = &[
+    "维基百科是什么?",
+    "颜色是什么?",
+    "维基数据是什么?",
+    "无限脉冲响应是什么?",
+    "rust语言是什么?",
+];
 
 #[test]
 fn concept_lookup_matrix_is_classified_as_concept_lookup_across_languages() {
