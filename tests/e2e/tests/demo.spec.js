@@ -1,6 +1,8 @@
 // @ts-check
 const { test, expect } = require('@playwright/test');
 
+const UNKNOWN_ANSWER_MARKER = 'cannot answer that from local Links Notation rules';
+
 async function switchToManualMode(page) {
   const demoToggle = page.locator('.mode-toggle');
   await expect(demoToggle).toContainText('Demo on');
@@ -226,7 +228,7 @@ test.describe('formal-ai demo UI', () => {
     const lastMsg = messages.last();
     await expect(lastMsg).toHaveClass(/assistant/);
     await expect(lastMsg).toContainText('formal-ai');
-    await expect(lastMsg).not.toContainText('learned symbolic rule for that prompt yet');
+    await expect(lastMsg).not.toContainText(UNKNOWN_ANSWER_MARKER);
   });
 
   test('unknown prompts include a prefilled missing-rule issue link', async ({ page }) => {
@@ -247,7 +249,7 @@ test.describe('formal-ai demo UI', () => {
 
     const lastMsg = messages.last();
     await expect(lastMsg).toHaveClass(/assistant/);
-    await expect(lastMsg).toContainText('learned symbolic rule for that prompt yet');
+    await expect(lastMsg).toContainText(UNKNOWN_ANSWER_MARKER);
 
     const reportLink = lastMsg.locator('.message-actions a');
     await expect(reportLink).toHaveText('Report missing rule');

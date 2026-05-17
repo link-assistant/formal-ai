@@ -1,6 +1,8 @@
 // @ts-check
 const { test, expect } = require('@playwright/test');
 
+const UNKNOWN_ANSWER_MARKER = 'cannot answer that from local Links Notation rules';
+
 async function switchToManualMode(page) {
   const demoToggle = page.locator('.mode-toggle');
   await expect(demoToggle).toContainText('Demo on');
@@ -198,9 +200,7 @@ test.describe('Wikipedia REST fallback', () => {
     await expect(last).toHaveClass(/assistant/);
     await expect(last).toContainText('Donald Trump');
     await expect(last).toContainText('politician');
-    await expect(last).not.toContainText(
-      'learned symbolic rule for that prompt yet',
-    );
+    await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
   });
 
   test('"Who X is" resolves through Wikipedia lookup', async ({ page }) => {
@@ -225,9 +225,7 @@ test.describe('Wikipedia REST fallback', () => {
     await expect(last).toHaveClass(/assistant/);
     await expect(last).toContainText('Donald Trump');
     await expect(last).toContainText('politician');
-    await expect(last).not.toContainText(
-      'learned symbolic rule for that prompt yet',
-    );
+    await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
   });
 
   // Issue #21: Wikipedia returns percent-encoded URLs for non-ASCII titles.
@@ -360,7 +358,7 @@ test.describe('Wikipedia REST fallback', () => {
     const last = await sendPrompt(page, 'what is tesla');
     await expect(last).toHaveClass(/assistant/);
     await expect(last).toContainText('Tesla');
-    await expect(last).not.toContainText('learned symbolic rule for that prompt yet');
+    await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
     await expect(last).toContainText('en.wikipedia.org');
   });
 
@@ -404,7 +402,7 @@ test.describe('Wikipedia REST fallback', () => {
     await expect(last).toContainText('Грамматика');
     await expect(last).toContainText('раздел лингвистики');
     await expect(last).toContainText(/closest match|ближайшее совпадение/i);
-    await expect(last).not.toContainText('learned symbolic rule for that prompt yet');
+    await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
   });
 
 });

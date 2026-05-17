@@ -191,7 +191,7 @@ fn repository_text_avoids_deferred_labels_requested_by_issue_103() {
 
     for entry in WalkDir::new(root)
         .into_iter()
-        .filter_entry(|entry| !is_skipped_tree(entry))
+        .filter_entry(|entry| !is_skipped_tree(root, entry))
         .filter_map(Result::ok)
         .filter(|entry| entry.file_type().is_file())
     {
@@ -243,9 +243,16 @@ fn assert_contains_all(label: &str, content: &str, expected: &[&str]) {
     }
 }
 
-fn is_skipped_tree(entry: &DirEntry) -> bool {
+fn is_skipped_tree(root: &Path, entry: &DirEntry) -> bool {
     let name = entry.file_name().to_string_lossy();
-    matches!(name.as_ref(), ".git" | "target" | "node_modules")
+    if matches!(name.as_ref(), ".git" | "target" | "node_modules") {
+        return true;
+    }
+
+    matches!(
+        relative_path(root, entry.path()).as_str(),
+        "ci-logs" | "logs" | "tests/e2e/playwright-report" | "tests/e2e/test-results"
+    )
 }
 
 fn relative_path(root: &Path, path: &Path) -> String {
