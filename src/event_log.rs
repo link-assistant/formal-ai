@@ -117,6 +117,8 @@ pub fn build_evidence_links(prompt: &str, log: &EventLog, response_link: &str) -
             }
             "cache_hit" => format!("cache_hit:{}", event.payload),
             "network_fetch" => format!("network_fetch:{}", event.id),
+            "calculation:engine" => format!("calculation:engine:{}", event.payload),
+            "calculation:lino" => format!("calculation:lino:{}", event.payload),
             "intent" => format!("intent:{}", event.payload),
             "response" => event.payload.clone(),
             "agent_mode:opted_in" => format!("agent_mode:opted_in:{}", event.id),

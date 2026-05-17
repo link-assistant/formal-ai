@@ -19,6 +19,8 @@ Project direction is tracked in [VISION.md](VISION.md), [GOALS.md](GOALS.md), an
 ```bash
 cargo run -- chat --prompt "Hi"
 cargo run -- chat --prompt "Write me hello world program in Rust" --format chat
+cargo run -- chat --prompt "What is 8% of $50?"
+cargo run -- chat --prompt "Посчитай 1000 рублей в долларах"
 cargo run -- dataset
 cargo run -- serve --host 127.0.0.1 --port 8080
 TELEGRAM_BOT_TOKEN=123:abc cargo run -- telegram                       # long polling (default)
@@ -126,6 +128,7 @@ The engine normalizes a prompt, selects a deterministic symbolic rule, and retur
 
 - greetings: `Hi`, `Hello`, `Hey`
 - hello world requests for Rust, Python, JavaScript, TypeScript, Go, and C
+- calculator-parsable math, unit, currency, percentage, and datetime prompts through `link-calculator`, with the local arithmetic evaluator retained for unsupported word-operator and binary-modulo syntax
 - unknown prompts, which return an explicit learnable-rule fallback
 
 Hello-world answers include execution metadata. Rust, Python, JavaScript, Go, and C examples are compiled or syntax-checked and run by the issue-8 local verification harness with captured output. TypeScript is returned with an explicit warning because `tsc` is not configured in the current repository runtime.

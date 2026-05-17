@@ -714,8 +714,13 @@ function formatArithmeticResult(value) {
 function extractArithmeticExpression(prompt) {
   const trimmed = String(prompt || "").trim();
   if (!trimmed) return null;
-  const lower = trimmed.toLowerCase();
   const prefixes = [
+    "please calculate ",
+    "please compute ",
+    "can you calculate ",
+    "can you compute ",
+    "could you calculate ",
+    "could you compute ",
     "what is ",
     "what's ",
     "what does ",
@@ -724,29 +729,112 @@ function extractArithmeticExpression(prompt) {
     "evaluate ",
     "how much is ",
     "solve ",
+    "сколько будет ",
+    "посчитай ",
+    "посчитайте ",
+    "вычисли ",
+    "вычислите ",
+    "рассчитай ",
+    "рассчитайте ",
+    "请计算",
+    "请算一下",
+    "计算一下",
+    "算一下",
+    "计算",
+    "कृपया गणना करें ",
+    "गणना करें ",
   ];
   let working = trimmed;
-  for (const prefix of prefixes) {
-    if (lower.startsWith(prefix)) {
-      working = trimmed.slice(prefix.length);
-      break;
+  let changed = true;
+  while (changed) {
+    changed = false;
+    const lower = working.toLowerCase();
+    for (const prefix of prefixes) {
+      if (lower.startsWith(prefix)) {
+        working = working.slice(prefix.length).trimStart();
+        changed = true;
+        break;
+      }
     }
   }
   working = working.replace(/[?.!]+$/g, "").trim();
-  working = working
-    .replace(/\s+equals?$/i, "")
-    .replace(/\s+=$/g, "")
-    .trim();
+  const suffixes = [
+    /\s+equals?$/i,
+    /\s+=$/g,
+    /\s+please$/i,
+    /\s+for me$/i,
+    /\s+пожалуйста$/i,
+    /\s*是多少$/,
+    /\s*等于多少$/,
+    /\s*等于几$/,
+    /\s*कितना है$/,
+    /\s*क्या है$/,
+    /\s*की गणना करें$/,
+  ];
+  changed = true;
+  while (changed) {
+    changed = false;
+    for (const suffix of suffixes) {
+      const next = working.replace(suffix, "").trim();
+      if (next !== working) {
+        working = next;
+        changed = true;
+        break;
+      }
+    }
+  }
   if (!working) return null;
   const workingLower = working.toLowerCase();
-  const hasSymbolic = /[+\-*/%×·÷−]/.test(working);
+  const hasLetter = /\p{L}/u.test(working);
+  const hasSymbolic = /[+*/%^×·÷−$€¥₹₽]/.test(working) || (!hasLetter && /-/.test(working));
   const hasWord =
     / plus | minus | times | multiplied by | divided by | modulo | mod /.test(
       ` ${workingLower} `,
-    );
+    ) ||
+    [
+      " sqrt",
+      " usd ",
+      " eur ",
+      " rub ",
+      " dollar",
+      " euro",
+      " kg ",
+      " kb ",
+      " mb ",
+      " ms ",
+      " seconds",
+      " days",
+      " months",
+      " gram",
+      " tons",
+      "руб",
+      "доллар",
+      "евро",
+      "тонн",
+      "кг",
+      "феврал",
+      "январ",
+      "месяц",
+      "换成",
+      "美元",
+      "欧元",
+      "公斤",
+      "二月",
+      "一月",
+      "个月",
+      "天",
+      "ग्राम",
+      "किलोग्राम",
+      "डॉलर",
+      "यूरो",
+      "फरवरी",
+      "जनवरी",
+      "महीने",
+      "दिन",
+    ].some((signal) => ` ${workingLower} `.includes(signal));
   const hasDigit = /[0-9]/.test(working);
   if (!hasDigit) return null;
-  if (!hasSymbolic && !hasWord) return null;
+  if (!hasSymbolic && !hasWord && hasLetter) return null;
   const allowed = /^[0-9+\-*/%().\s_×·÷−,a-zA-Z]+$/;
   if (!allowed.test(working)) return null;
   return working;

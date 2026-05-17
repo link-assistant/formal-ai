@@ -13,7 +13,7 @@ pub use user_intent::{
 
 use std::fmt::Write as _;
 
-use crate::arithmetic::{evaluate_arithmetic_formatted, extract_arithmetic_expression};
+use crate::calculation::{calculation_expression_candidates, evaluate_calculation};
 use crate::concepts::{
     extract_concept_query, lookup_concept_query, resolve_context_label, ConceptRecord,
 };
@@ -147,37 +147,53 @@ fn try_summarize_conversation(
 }
 
 pub fn try_arithmetic(prompt: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {
-    let expression = extract_arithmetic_expression(prompt)?;
-    log.append("calculation:request", expression.clone());
-    match evaluate_arithmetic_formatted(&expression) {
-        Ok(formatted) => {
-            log.append("calculation", format!("{expression} = {formatted}"));
-            let body = format!("{expression} = {formatted}");
-            Some(finalize_simple(
-                prompt,
-                log,
-                "calculation",
-                "response:calculation",
-                &body,
-                1.0,
-            ))
-        }
-        Err(error) => {
-            log.append("calculation:error", error.to_string());
-            let body = format!(
-                "I parsed '{expression}' as an arithmetic request but could not evaluate it: \
-                 {error}."
-            );
-            Some(finalize_simple(
-                prompt,
-                log,
-                "calculation_error",
-                "response:calculation_error",
-                &body,
-                0.3,
-            ))
+    let candidates = calculation_expression_candidates(prompt);
+    let mut first_explicit_error: Option<(String, String)> = None;
+    for candidate in candidates {
+        let expression = candidate.expression;
+        log.append("calculation:request", expression.clone());
+        match evaluate_calculation(&expression) {
+            Ok(evaluation) => {
+                let formatted = evaluation.formatted;
+                log.append("calculation:engine", evaluation.engine.slug());
+                if let Some(lino) = evaluation.lino {
+                    log.append("calculation:lino", lino);
+                }
+                if !evaluation.steps.is_empty() {
+                    log.append("calculation:steps", evaluation.steps.len().to_string());
+                }
+                log.append("calculation", format!("{expression} = {formatted}"));
+                let body = format!("{expression} = {formatted}");
+                return Some(finalize_simple(
+                    prompt,
+                    log,
+                    "calculation",
+                    "response:calculation",
+                    &body,
+                    1.0,
+                ));
+            }
+            Err(error) => {
+                let error = error.to_string();
+                log.append("calculation:error", error.clone());
+                if candidate.explicit && first_explicit_error.is_none() {
+                    first_explicit_error = Some((expression, error));
+                }
+            }
         }
     }
+    let (expression, error) = first_explicit_error?;
+    let body = format!(
+        "I parsed '{expression}' as an arithmetic request but could not evaluate it: {error}."
+    );
+    Some(finalize_simple(
+        prompt,
+        log,
+        "calculation_error",
+        "response:calculation_error",
+        &body,
+        0.3,
+    ))
 }
 
 pub fn try_concept_lookup(prompt: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {

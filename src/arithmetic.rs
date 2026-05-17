@@ -9,8 +9,8 @@
 //! overflowing to `inf`. Expressions that mix integers and decimals (e.g.
 //! `1.5 + 2`) fall back to `f64`.
 
-/// Errors produced by [`evaluate_arithmetic_formatted`] when the evaluator
-/// cannot produce a numeric value for the requested expression.
+/// Errors produced when a calculation evaluator cannot produce a numeric value
+/// for the requested expression.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum ArithmeticError {
     Empty,
@@ -18,6 +18,7 @@ pub enum ArithmeticError {
     DivisionByZero,
     Overflow,
     UnbalancedParens,
+    Calculator(String),
 }
 
 impl std::fmt::Display for ArithmeticError {
@@ -28,6 +29,7 @@ impl std::fmt::Display for ArithmeticError {
             Self::DivisionByZero => "division by zero",
             Self::Overflow => "numeric overflow",
             Self::UnbalancedParens => "unbalanced parentheses",
+            Self::Calculator(error) => error,
         })
     }
 }
@@ -541,12 +543,7 @@ fn normalize_expression(expression: &str) -> String {
         .replace(" mod ", " % ")
 }
 
-/// Evaluate and return the result as a displayable string, preserving exact
-/// integer representations for integer-only expressions.
-///
-/// Integer-only expressions use arbitrary-precision arithmetic; expressions
-/// involving decimal literals fall back to `f64`.
-pub fn evaluate_arithmetic_formatted(expression: &str) -> Result<String, ArithmeticError> {
+pub fn evaluate_fallback_formatted(expression: &str) -> Result<String, ArithmeticError> {
     let normalized = normalize_expression(expression);
     let tokens = tokenize_arithmetic(&normalized)?;
     if tokens.is_empty() {
@@ -590,87 +587,4 @@ fn format_f64(value: f64) -> String {
             trimmed.to_owned()
         }
     }
-}
-
-/// Pull an arithmetic expression out of a natural-language prompt. Returns
-/// `None` when the prompt does not look like a calculator request, so the
-/// solver can fall through to other specialized handlers.
-#[must_use]
-pub fn extract_arithmetic_expression(prompt: &str) -> Option<String> {
-    let trimmed = prompt.trim();
-    if trimmed.is_empty() {
-        return None;
-    }
-    let lower = trimmed.to_lowercase();
-
-    let prefixes = [
-        "what is ",
-        "what's ",
-        "what does ",
-        "calculate ",
-        "compute ",
-        "evaluate ",
-        "how much is ",
-        "solve ",
-    ];
-
-    let mut working: &str = trimmed;
-    for prefix in prefixes {
-        if lower.starts_with(prefix) {
-            working = &trimmed[prefix.len()..];
-            break;
-        }
-    }
-
-    let working = working
-        .trim_end_matches('?')
-        .trim_end_matches('.')
-        .trim_end_matches('!')
-        .trim();
-    let working = working
-        .trim_end_matches(" equal")
-        .trim_end_matches(" equals")
-        .trim_end_matches(" =")
-        .trim();
-
-    if working.is_empty() {
-        return None;
-    }
-
-    let working_lower = working.to_lowercase();
-    let has_symbolic_operator = working.contains(['+', '-', '*', '/', '%', '×', '·', '÷', '−']);
-    let has_word_operator = [
-        " plus ",
-        " minus ",
-        " times ",
-        " multiplied by ",
-        " divided by ",
-        " modulo ",
-        " mod ",
-    ]
-    .iter()
-    .any(|word| working_lower.contains(word));
-    let has_digit = working.chars().any(|c| c.is_ascii_digit());
-
-    if !has_digit {
-        return None;
-    }
-    if !has_symbolic_operator && !has_word_operator {
-        return None;
-    }
-
-    let only_arithmetic_chars = working.chars().all(|c| {
-        c.is_ascii_digit()
-            || c.is_whitespace()
-            || matches!(
-                c,
-                '+' | '-' | '*' | '/' | '%' | '(' | ')' | '.' | '_' | '×' | '·' | '÷' | '−' | ','
-            )
-            || c.is_ascii_alphabetic()
-    });
-    if !only_arithmetic_chars {
-        return None;
-    }
-
-    Some(working.to_owned())
 }

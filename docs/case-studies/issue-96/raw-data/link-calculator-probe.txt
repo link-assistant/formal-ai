@@ -1,0 +1,43 @@
+Link Calculator v0.16.0
+Type expressions to calculate, or 'quit' to exit.
+
+> Result: 99.75
+Links notation: (100 - (25 / 100))
+
+Steps:
+  Input expression: 100 - 25 / 100
+  Literal value: 100
+  Literal value: 25
+  Literal value: 100
+  Compute: 25 / 100
+  = 0.25
+  Compute: 100 - 0.25
+  = 99.75
+  Final result: 99.75
+
+> Result: 4 please
+Links notation: (2 + (2 please))
+
+Steps:
+  Input expression: 2 + 2 please
+  Literal value: 2
+  Literal value: 2 please
+  Compute: 2 + 2 please
+  = 4 please
+  Final result: 4 please
+
+> Result: 4 USD
+Links notation: ((8 / 100) * (50 USD))
+
+Steps:
+  Input expression: 8 / 100 * 50 USD
+  Literal value: 8
+  Literal value: 100
+  Compute: 8 / 100
+  = 0.08
+  Literal value: 50 USD
+  Compute: 0.08 * 50 USD
+  = 4 USD
+  Final result: 4 USD
+
+> Goodbye!
