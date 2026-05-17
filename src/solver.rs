@@ -250,6 +250,75 @@ impl Default for UniversalSolver {
     }
 }
 
+/// Uniform signature every specialized handler conforms to. Handlers that
+/// don't need `normalized` go through tiny adapter wrappers below so the
+/// dispatch registry stays homogeneous and the loop in
+/// [`UniversalSolver::handle_specialized_pattern`] remains a single line.
+type SpecializedHandler = fn(&str, &str, &mut EventLog) -> Option<SymbolicAnswer>;
+
+fn handle_arithmetic(
+    prompt: &str,
+    _normalized: &str,
+    log: &mut EventLog,
+) -> Option<SymbolicAnswer> {
+    try_arithmetic(prompt, log)
+}
+
+fn handle_javascript_execution(
+    prompt: &str,
+    _normalized: &str,
+    log: &mut EventLog,
+) -> Option<SymbolicAnswer> {
+    try_javascript_execution(prompt, log)
+}
+
+fn handle_concept_lookup(
+    prompt: &str,
+    _normalized: &str,
+    log: &mut EventLog,
+) -> Option<SymbolicAnswer> {
+    try_concept_lookup(prompt, log)
+}
+
+/// Ordered dispatch table for the universal solver's specialized handlers.
+///
+/// Order matters: the first handler that returns `Some` wins, and several
+/// downstream tests rely on the resolution order (for example, conversation
+/// memory must trigger before the concept lookup when both could match).
+/// New handlers should be slotted into the position that preserves intent
+/// precedence rather than appended unconditionally.
+const SPECIALIZED_HANDLERS: &[(&str, SpecializedHandler)] = &[
+    ("http_fetch", try_http_fetch),
+    ("conversation_memory", try_conversation_memory),
+    ("summarization", try_summarization_request),
+    ("brainstorming", try_brainstorming_request),
+    ("fact_lookup", try_fact_lookup),
+    ("coreference", try_coreference_request),
+    ("roleplay", try_roleplay_request),
+    ("capabilities", try_capabilities),
+    ("arithmetic", handle_arithmetic),
+    ("javascript_execution", handle_javascript_execution),
+    ("concept_lookup", handle_concept_lookup),
+    ("who_is", try_who_is_question),
+    ("how_it_works", try_how_it_works),
+    ("meta_explanation", try_meta_explanation),
+    ("network_query", try_network_query),
+    ("translation", try_translation),
+    ("write_script", try_write_script),
+    ("algorithm", try_algorithm),
+    ("execution_failure", try_execution_failure),
+    ("source_refresh", try_source_refresh),
+    ("source_conflict", try_source_conflict),
+    ("clarification", try_clarification),
+    ("punctuation_only_prompt", try_punctuation_only_prompt),
+    ("ill_formed", try_ill_formed),
+    ("physical_action_question", try_physical_action_question),
+    ("kupi_slona", try_kupi_slona),
+    ("shell_refusal", try_shell_refusal),
+    ("opinion_question", try_opinion_question),
+    ("incompatible_units", try_incompatible_units),
+];
+
 impl UniversalSolver {
     /// Construct a solver with an explicit configuration.
     #[must_use]
@@ -353,95 +422,17 @@ impl UniversalSolver {
     ) -> Option<SymbolicAnswer> {
         let normalized = prompt.to_lowercase();
 
+        // `try_diagnostic` needs `&self` to construct an inner solver, so it
+        // stays outside the registry. Every other specialized handler is a
+        // plain function and runs through `SPECIALIZED_HANDLERS` below.
         if let Some(answer) = self.try_diagnostic(prompt, &normalized, log) {
             return Some(answer);
         }
-        if let Some(answer) = try_http_fetch(prompt, &normalized, log) {
-            return Some(answer);
-        }
-        if let Some(answer) = try_conversation_memory(prompt, &normalized, log) {
-            return Some(answer);
-        }
-        if let Some(answer) = try_summarization_request(prompt, &normalized, log) {
-            return Some(answer);
-        }
-        if let Some(answer) = try_brainstorming_request(prompt, &normalized, log) {
-            return Some(answer);
-        }
-        if let Some(answer) = try_fact_lookup(prompt, &normalized, log) {
-            return Some(answer);
-        }
-        if let Some(answer) = try_coreference_request(prompt, &normalized, log) {
-            return Some(answer);
-        }
-        if let Some(answer) = try_roleplay_request(prompt, &normalized, log) {
-            return Some(answer);
-        }
-        if let Some(answer) = try_capabilities(prompt, &normalized, log) {
-            return Some(answer);
-        }
-        if let Some(answer) = try_arithmetic(prompt, log) {
-            return Some(answer);
-        }
-        if let Some(answer) = try_javascript_execution(prompt, log) {
-            return Some(answer);
-        }
-        if let Some(answer) = try_concept_lookup(prompt, log) {
-            return Some(answer);
-        }
-        if let Some(answer) = try_who_is_question(prompt, &normalized, log) {
-            return Some(answer);
-        }
-        if let Some(answer) = try_how_it_works(prompt, &normalized, log) {
-            return Some(answer);
-        }
-        if let Some(answer) = try_meta_explanation(prompt, &normalized, log) {
-            return Some(answer);
-        }
-        if let Some(answer) = try_network_query(prompt, &normalized, log) {
-            return Some(answer);
-        }
-        if let Some(answer) = try_translation(prompt, &normalized, log) {
-            return Some(answer);
-        }
-        if let Some(answer) = try_write_script(prompt, &normalized, log) {
-            return Some(answer);
-        }
-        if let Some(answer) = try_algorithm(prompt, &normalized, log) {
-            return Some(answer);
-        }
-        if let Some(answer) = try_execution_failure(prompt, &normalized, log) {
-            return Some(answer);
-        }
-        if let Some(answer) = try_source_refresh(prompt, &normalized, log) {
-            return Some(answer);
-        }
-        if let Some(answer) = try_source_conflict(prompt, &normalized, log) {
-            return Some(answer);
-        }
-        if let Some(answer) = try_clarification(prompt, &normalized, log) {
-            return Some(answer);
-        }
-        if let Some(answer) = try_punctuation_only_prompt(prompt, &normalized, log) {
-            return Some(answer);
-        }
-        if let Some(answer) = try_ill_formed(prompt, &normalized, log) {
-            return Some(answer);
-        }
-        if let Some(answer) = try_physical_action_question(prompt, &normalized, log) {
-            return Some(answer);
-        }
-        if let Some(answer) = try_kupi_slona(prompt, &normalized, log) {
-            return Some(answer);
-        }
-        if let Some(answer) = try_shell_refusal(prompt, &normalized, log) {
-            return Some(answer);
-        }
-        if let Some(answer) = try_opinion_question(prompt, &normalized, log) {
-            return Some(answer);
-        }
-        if let Some(answer) = try_incompatible_units(prompt, &normalized, log) {
-            return Some(answer);
+        for (name, handler) in SPECIALIZED_HANDLERS {
+            if let Some(answer) = handler(prompt, &normalized, log) {
+                log.append("specialized_handler", (*name).to_owned());
+                return Some(answer);
+            }
         }
         None
     }
