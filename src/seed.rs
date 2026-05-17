@@ -21,6 +21,7 @@
 //! shallow trees of `name "value"` lines with two-space indentation. The
 //! schema for each category is documented in the corresponding `.lino` file.
 
+mod brainstorm;
 mod facts;
 mod parser;
 
@@ -31,6 +32,7 @@ use parser::{
     LinoNode,
 };
 
+pub use brainstorm::{brainstorm_seeds, BrainstormCategory, BrainstormSeeds};
 pub use facts::{facts, FactRecord, LocalizedFact};
 
 /// Embedded copy of every Links Notation seed file. Returned in declaration
@@ -46,6 +48,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/concepts.lino", CONCEPTS_LINO),
         ("data/seed/concept-contexts.lino", CONCEPT_CONTEXTS_LINO),
         ("data/seed/facts.lino", FACTS_LINO),
+        ("data/seed/brainstorm-seeds.lino", BRAINSTORM_SEEDS_LINO),
         ("data/seed/tools.lino", TOOLS_LINO),
         ("data/seed/language-detection.lino", LANGUAGE_DETECTION_LINO),
         ("data/seed/prompt-patterns.lino", PROMPT_PATTERNS_LINO),
@@ -698,6 +701,7 @@ pub const MULTILINGUAL_RESPONSES_LINO: &str =
 pub const CONCEPTS_LINO: &str = include_str!("../data/seed/concepts.lino");
 pub const CONCEPT_CONTEXTS_LINO: &str = include_str!("../data/seed/concept-contexts.lino");
 pub const FACTS_LINO: &str = include_str!("../data/seed/facts.lino");
+pub const BRAINSTORM_SEEDS_LINO: &str = include_str!("../data/seed/brainstorm-seeds.lino");
 pub const TOOLS_LINO: &str = include_str!("../data/seed/tools.lino");
 pub const LANGUAGE_DETECTION_LINO: &str = include_str!("../data/seed/language-detection.lino");
 pub const PROMPT_PATTERNS_LINO: &str = include_str!("../data/seed/prompt-patterns.lino");

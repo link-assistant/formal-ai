@@ -24,6 +24,7 @@
     "seed/concepts.lino",
     "seed/concept-contexts.lino",
     "seed/facts.lino",
+    "seed/brainstorm-seeds.lino",
     "seed/tools.lino",
     "seed/language-detection.lino",
     "seed/prompt-patterns.lino",

@@ -5,7 +5,7 @@ use super::finalize_simple;
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
-use crate::seed::{self, FactRecord};
+use crate::seed::{self, BrainstormSeeds, FactRecord};
 use crate::solver_helpers::last_user_turn;
 
 pub fn try_summarization_request(
@@ -81,80 +81,61 @@ fn summary_topic(prompt: &str, normalized: &str) -> String {
         .to_owned()
 }
 
+fn brainstorm_seed_data() -> &'static BrainstormSeeds {
+    static CELL: OnceLock<BrainstormSeeds> = OnceLock::new();
+    CELL.get_or_init(seed::brainstorm_seeds)
+}
+
 pub fn try_brainstorming_request(
     prompt: &str,
     normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
-    let asks_for_brainstorm = normalized.contains("brainstorm")
-        || normalized.contains("give me five ideas")
-        || normalized.contains("give me 5 ideas")
-        || normalized.contains("suggest five")
-        || normalized.contains("suggest 5")
-        || normalized.contains("ten names")
-        || normalized.contains("10 names");
-    if !asks_for_brainstorm {
+    let seeds = brainstorm_seed_data();
+    if !seeds.matches_trigger(normalized) {
         return None;
     }
-
-    let requested_count = if normalized.contains("ten") || normalized.contains("10") {
-        10
-    } else {
-        5
-    };
-    let (intent, category, body) = if normalized.contains("name") || normalized.contains("names") {
-        (
-            "brainstorm_names",
-            "names",
-            numbered(
-                &[
-                    "TraceLint",
-                    "ReviewLink",
-                    "PatchSignal",
-                    "DiffAnchor",
-                    "CodeLedger",
-                    "SymbolScribe",
-                    "RuleBeacon",
-                    "LinkHarbor",
-                    "TraceForge",
-                    "PromptLedger",
-                ],
-                requested_count,
-            ),
-        )
-    } else {
-        (
-            "brainstorm_project_ideas",
-            "project_ideas",
-            numbered(
-                &[
-                    "A local Links Notation notebook with searchable traces.",
-                    "A deterministic code-review checklist generator.",
-                    "A multilingual prompt-variation test corpus.",
-                    "A CLI that converts issue requirements into traceable tests.",
-                    "A source-cache inspector for reproducible agent runs.",
-                    "A changelog-fragment consistency checker.",
-                    "A prompt-matrix generator for four-language smoke tests.",
-                    "A Wikidata anchor verifier for local seed records.",
-                    "A trace viewer that groups events by solver phase.",
-                    "A small offline issue-to-test planning tool.",
-                ],
-                requested_count,
-            ),
-        )
-    };
-    log.append("brainstorm:category", category.to_owned());
+    let category = seeds.pick_category(normalized)?;
+    let requested_count = requested_brainstorm_count(normalized);
+    let body = numbered(&category.items, requested_count);
+    log.append("brainstorm:category", category.slug.clone());
     Some(finalize_simple(
         prompt,
         log,
-        intent,
+        &category.intent,
         "response:brainstorm",
         &body,
         0.8,
     ))
 }
 
-fn numbered(items: &[&str], count: usize) -> String {
+/// Parse the number of items the user asked for. Defaults to 5 when no
+/// explicit count is present. Recognises numeric and word forms in every
+/// supported language so the algorithm doesn't depend on English-only
+/// spelling.
+fn requested_brainstorm_count(normalized: &str) -> usize {
+    const TEN_HINTS: &[&str] = &[
+        " 10 ",
+        "10.",
+        "10 ",
+        " 10",
+        "ten ",
+        "десять",
+        "10 идей",
+        "10 имён",
+        "दस ",
+        "10 ",
+        "十个",
+        "10 个",
+    ];
+    if TEN_HINTS.iter().any(|hint| normalized.contains(hint)) {
+        10
+    } else {
+        5
+    }
+}
+
+fn numbered(items: &[String], count: usize) -> String {
     items
         .iter()
         .take(count)
