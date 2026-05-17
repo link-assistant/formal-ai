@@ -113,6 +113,7 @@ let request = ChatCompletionRequest {
         content: MessageContent::Text(String::from("Hi")),
     }],
     stream: false,
+    temperature: None,
 };
 
 let completion = create_chat_completion(&request);

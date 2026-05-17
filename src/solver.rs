@@ -107,6 +107,8 @@ pub struct SolverConfig {
     pub context_sensitivity: f32,
     /// `0.0` = accept any phrasing, `1.0` = demand fully formal phrasing.
     pub questioning_rigor: f32,
+    /// `0.0` = deterministic projection, `1.0` = allow maximum variation.
+    pub temperature: f32,
     /// Hard upper bound on recursive sub-impulse expansion.
     pub max_decomposition_depth: u8,
     /// Whether agent mode is opted in. Off by default.
@@ -125,6 +127,7 @@ impl Default for SolverConfig {
             guess_probability: 0.8,
             context_sensitivity: 0.6,
             questioning_rigor: 0.4,
+            temperature: 0.7,
             max_decomposition_depth: 4,
             agent_mode: false,
             diagnostic_mode: false,
@@ -148,12 +151,24 @@ impl SolverConfig {
         if env_truthy("FORMAL_AI_DIAGNOSTIC_MODE") {
             config.diagnostic_mode = true;
         }
+        if let Some(value) = env_bounded_f32("FORMAL_AI_TEMPERATURE", 0.0, 1.0) {
+            config.temperature = value;
+        }
         if let Ok(value) = std::env::var("FORMAL_AI_CACHE_TTL_SECONDS") {
             if let Ok(parsed) = value.parse::<u64>() {
                 config.cache_ttl_seconds = parsed;
             }
         }
         config
+    }
+}
+
+fn env_bounded_f32(name: &str, min: f32, max: f32) -> Option<f32> {
+    let parsed = std::env::var(name).ok()?.trim().parse::<f32>().ok()?;
+    if parsed.is_finite() {
+        Some(parsed.clamp(min, max))
+    } else {
+        None
     }
 }
 

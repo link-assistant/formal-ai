@@ -393,9 +393,17 @@ const PREFERENCE_DEFAULTS = {
   sidebarToolsCollapsed: false,
   sidebarTraceCollapsed: false,
   sidebarConversationsCollapsed: false,
+  sidebarSettingsCollapsed: false,
   // Issue #27: random greeting variations are opt-in but default to on so
   // newcomers see the multilingual surface immediately.
   greetingVariations: true,
+  // Issue #82: user-tunable assistant behavior. The default still guesses
+  // likely typo matches, while the sliders let cautious users ask first and
+  // deterministic users turn random response variation off with temperature=0.
+  guessProbability: 0.8,
+  temperature: 0.7,
+  theme: "auto",
+  location: "",
   // Issue #27: id of the conversation the user last typed in; on reload the
   // demo restores its event log into the main transcript. Empty string means
   // "no conversation yet — start a fresh one on first user input".
@@ -469,6 +477,24 @@ function persistPreferences(values) {
   }
 }
 
+function clampNumber(value, min, max, fallback) {
+  const number = Number(value);
+  if (!Number.isFinite(number)) return fallback;
+  return Math.min(max, Math.max(min, number));
+}
+
+function normalizeSliderPreference(value, fallback) {
+  return clampNumber(value, 0, 1, fallback);
+}
+
+function formatSliderValue(value) {
+  return String(Math.round(normalizeSliderPreference(value, 0) * 100));
+}
+
+function normalizeThemePreference(value) {
+  return ["auto", "light", "dark"].includes(value) ? value : "auto";
+}
+
 function i18nApi() {
   return typeof window !== "undefined" && window.FormalAiI18n
     ? window.FormalAiI18n
@@ -508,7 +534,10 @@ function browserLanguagesList() {
   return navigator.language ? [navigator.language] : [];
 }
 
-function currentColorScheme() {
+function currentColorScheme(themePreference) {
+  if (themePreference === "light" || themePreference === "dark") {
+    return themePreference;
+  }
   if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
     return "unknown";
   }
@@ -533,7 +562,14 @@ function resolvedTimeZone() {
   }
 }
 
-function collectUserContext({ uiLanguage, uiLanguagePreference }) {
+function collectUserContext({
+  uiLanguage,
+  uiLanguagePreference,
+  themePreference,
+  locationPreference,
+  guessProbability,
+  temperature,
+}) {
   const browserLanguages = browserLanguagesList();
   const nav = typeof navigator !== "undefined" ? navigator : {};
   const screenInfo =
@@ -545,11 +581,12 @@ function collectUserContext({ uiLanguage, uiLanguagePreference }) {
   return {
     uiLanguage,
     uiLanguagePreference,
+    themePreference,
     browserLanguage: nav.language || "",
     browserLanguages: browserLanguages.join(", "),
     locale: resolvedLocale(),
     timeZone: resolvedTimeZone(),
-    colorScheme: currentColorScheme(),
+    colorScheme: currentColorScheme(themePreference),
     viewport: viewportInfo,
     screen: screenInfo,
     platform:
@@ -557,8 +594,13 @@ function collectUserContext({ uiLanguage, uiLanguagePreference }) {
       nav.platform ||
       "",
     online: typeof nav.onLine === "boolean" ? (nav.onLine ? "yes" : "no") : "",
+    preferredLocation: locationPreference || "",
+    guessProbability: formatSliderValue(guessProbability),
+    temperature: String(normalizeSliderPreference(temperature, 0)),
     locationInference:
-      "time zone / locale only; exact geolocation was not requested",
+      locationPreference
+        ? `user-provided preference: ${locationPreference}`
+        : "time zone / locale only; exact geolocation was not requested",
   };
 }
 
@@ -570,11 +612,15 @@ function appendUserContextBlock(lines, context) {
   lines.push(
     `- **UI Language Preference**: ${safe.uiLanguagePreference || "auto"}`,
   );
+  lines.push(`- **Theme Preference**: ${safe.themePreference || "auto"}`);
   lines.push(`- **Browser Language**: ${safe.browserLanguage || "unknown"}`);
   lines.push(`- **Browser Languages**: ${safe.browserLanguages || "unknown"}`);
   lines.push(`- **Locale**: ${safe.locale || "unknown"}`);
   lines.push(`- **Time Zone**: ${safe.timeZone || "unknown"}`);
   lines.push(`- **Color Scheme**: ${safe.colorScheme || "unknown"}`);
+  lines.push(`- **Preferred Location**: ${safe.preferredLocation || "not set"}`);
+  lines.push(`- **Guess Probability**: ${safe.guessProbability || "unknown"}%`);
+  lines.push(`- **Temperature**: ${safe.temperature || "unknown"}`);
   lines.push(`- **Viewport**: ${safe.viewport || "unknown"}`);
   lines.push(`- **Screen**: ${safe.screen || "unknown"}`);
   lines.push(`- **Platform**: ${safe.platform || "unknown"}`);
@@ -1169,7 +1215,7 @@ function App() {
     responses: {},
   });
   const initialPreferences = useRef(loadPreferences());
-  const [uiLanguagePreference] = useState(
+  const [uiLanguagePreference, setUiLanguagePreference] = useState(
     normalizeUiLanguagePreference(initialPreferences.current.uiLanguage),
   );
   const [i18nRuntimeTick, setI18nRuntimeTick] = useState(0);
@@ -1197,8 +1243,29 @@ function App() {
   const [sidebarConversationsCollapsed, setSidebarConversationsCollapsed] = useState(
     initialPreferences.current.sidebarConversationsCollapsed,
   );
+  const [sidebarSettingsCollapsed, setSidebarSettingsCollapsed] = useState(
+    initialPreferences.current.sidebarSettingsCollapsed,
+  );
   const [greetingVariations, setGreetingVariations] = useState(
     initialPreferences.current.greetingVariations,
+  );
+  const [guessProbability, setGuessProbability] = useState(
+    normalizeSliderPreference(
+      initialPreferences.current.guessProbability,
+      PREFERENCE_DEFAULTS.guessProbability,
+    ),
+  );
+  const [temperature, setTemperature] = useState(
+    normalizeSliderPreference(
+      initialPreferences.current.temperature,
+      PREFERENCE_DEFAULTS.temperature,
+    ),
+  );
+  const [themePreference, setThemePreference] = useState(
+    normalizeThemePreference(initialPreferences.current.theme),
+  );
+  const [locationPreference, setLocationPreference] = useState(
+    String(initialPreferences.current.location || ""),
   );
   // Issue #27: agent mode runs the user's prompt as a multi-step plan instead
   // of a single Q&A. Persisted across reloads via preferences.
@@ -1226,6 +1293,17 @@ function App() {
     document.documentElement.lang = uiLanguage;
     document.documentElement.dir = "ltr";
   }, [uiLanguage]);
+
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    if (themePreference === "dark") {
+      document.documentElement.setAttribute("data-theme", "dark");
+    } else if (themePreference === "light") {
+      document.documentElement.setAttribute("data-theme", "light");
+    } else {
+      document.documentElement.removeAttribute("data-theme");
+    }
+  }, [themePreference]);
 
   useEffect(() => {
     if (typeof window === "undefined") return undefined;
@@ -1272,8 +1350,20 @@ function App() {
       collectUserContext({
         uiLanguage,
         uiLanguagePreference,
+        themePreference,
+        locationPreference,
+        guessProbability,
+        temperature,
       }),
-    [uiLanguage, uiLanguagePreference, colorSchemeTick],
+    [
+      uiLanguage,
+      uiLanguagePreference,
+      themePreference,
+      locationPreference,
+      guessProbability,
+      temperature,
+      colorSchemeTick,
+    ],
   );
   const userContextRef = useRef(userContext);
   useEffect(() => {
@@ -1416,7 +1506,12 @@ function App() {
       sidebarToolsCollapsed,
       sidebarTraceCollapsed,
       sidebarConversationsCollapsed,
+      sidebarSettingsCollapsed,
       greetingVariations,
+      guessProbability,
+      temperature,
+      theme: themePreference,
+      location: locationPreference,
       currentConversationId,
       agentMode,
       uiLanguage: uiLanguagePreference,
@@ -1428,7 +1523,12 @@ function App() {
     sidebarToolsCollapsed,
     sidebarTraceCollapsed,
     sidebarConversationsCollapsed,
+    sidebarSettingsCollapsed,
     greetingVariations,
+    guessProbability,
+    temperature,
+    themePreference,
+    locationPreference,
     currentConversationId,
     agentMode,
     uiLanguagePreference,
@@ -1463,6 +1563,16 @@ function App() {
     greetingVariationsRef.current = greetingVariations;
   }, [greetingVariations]);
 
+  const guessProbabilityRef = useRef(guessProbability);
+  useEffect(() => {
+    guessProbabilityRef.current = guessProbability;
+  }, [guessProbability]);
+
+  const temperatureRef = useRef(temperature);
+  useEffect(() => {
+    temperatureRef.current = temperature;
+  }, [temperature]);
+
   const agentModeRef = useRef(agentMode);
   useEffect(() => {
     agentModeRef.current = agentMode;
@@ -1481,7 +1591,11 @@ function App() {
         prompt: text,
         requestId,
         history,
-        prefs: { greetingVariations: greetingVariationsRef.current },
+        prefs: {
+          greetingVariations: greetingVariationsRef.current,
+          guessProbability: guessProbabilityRef.current,
+          temperature: temperatureRef.current,
+        },
         userContext: userContextRef.current,
       });
     });
@@ -2137,7 +2251,146 @@ function App() {
                       ),
                     ),
                   ),
-                ),
+            ),
+          ),
+        }),
+        h(CollapsibleSection, {
+          title: t("sidebar.settings"),
+          testId: "sidebar-settings",
+          collapsed: sidebarSettingsCollapsed,
+          onToggle: () => setSidebarSettingsCollapsed((value) => !value),
+          children: h(
+            "div",
+            { className: "settings-panel" },
+            h(
+              "div",
+              { className: "setting-row setting-row-slider" },
+              h(
+                "label",
+                { htmlFor: "setting-guess-probability" },
+                t("settings.ambiguity"),
+              ),
+              h(
+                "div",
+                { className: "setting-poles" },
+                h("span", null, t("settings.moreQuestions")),
+                h("span", null, t("settings.moreGuessing")),
+              ),
+              h("input", {
+                id: "setting-guess-probability",
+                "data-testid": "setting-guess-probability",
+                type: "range",
+                min: "0",
+                max: "1",
+                step: "0.05",
+                value: guessProbability,
+                onChange: (event) =>
+                  setGuessProbability(
+                    normalizeSliderPreference(event.target.value, 0.8),
+                  ),
+              }),
+              h(
+                "output",
+                { htmlFor: "setting-guess-probability" },
+                `${formatSliderValue(guessProbability)}%`,
+              ),
+            ),
+            h(
+              "div",
+              { className: "setting-row setting-row-slider" },
+              h(
+                "label",
+                { htmlFor: "setting-temperature" },
+                t("settings.temperature"),
+              ),
+              h(
+                "div",
+                { className: "setting-poles" },
+                h("span", null, t("settings.deterministic")),
+                h("span", null, t("settings.varied")),
+              ),
+              h("input", {
+                id: "setting-temperature",
+                "data-testid": "setting-temperature",
+                type: "range",
+                min: "0",
+                max: "1",
+                step: "0.05",
+                value: temperature,
+                onChange: (event) =>
+                  setTemperature(
+                    normalizeSliderPreference(event.target.value, 0),
+                  ),
+              }),
+              h(
+                "output",
+                { htmlFor: "setting-temperature" },
+                normalizeSliderPreference(temperature, 0).toFixed(2),
+              ),
+            ),
+            h(
+              "label",
+              { className: "setting-check" },
+              h("input", {
+                type: "checkbox",
+                checked: greetingVariations,
+                onChange: (event) => setGreetingVariations(event.target.checked),
+              }),
+              h("span", null, t("settings.variations")),
+            ),
+            h(
+              "label",
+              { className: "setting-row" },
+              h("span", null, t("settings.language")),
+              h(
+                "select",
+                {
+                  "data-testid": "setting-ui-language",
+                  value: uiLanguagePreference,
+                  onChange: (event) =>
+                    setUiLanguagePreference(
+                      normalizeUiLanguagePreference(event.target.value),
+                    ),
+                },
+                h("option", { value: "auto" }, t("settings.language.auto")),
+                h("option", { value: "en" }, "English"),
+                h("option", { value: "ru" }, "Русский"),
+                h("option", { value: "zh" }, "中文"),
+                h("option", { value: "hi" }, "हिन्दी"),
+              ),
+            ),
+            h(
+              "label",
+              { className: "setting-row" },
+              h("span", null, t("settings.theme")),
+              h(
+                "select",
+                {
+                  "data-testid": "setting-theme",
+                  value: themePreference,
+                  onChange: (event) =>
+                    setThemePreference(
+                      normalizeThemePreference(event.target.value),
+                    ),
+                },
+                h("option", { value: "auto" }, t("settings.theme.auto")),
+                h("option", { value: "light" }, t("settings.theme.light")),
+                h("option", { value: "dark" }, t("settings.theme.dark")),
+              ),
+            ),
+            h(
+              "label",
+              { className: "setting-row" },
+              h("span", null, t("settings.location")),
+              h("input", {
+                "data-testid": "setting-location",
+                type: "text",
+                value: locationPreference,
+                placeholder: t("settings.location.placeholder"),
+                onChange: (event) =>
+                  setLocationPreference(event.target.value.slice(0, 80)),
+              }),
+            ),
           ),
         }),
         h(CollapsibleSection, {

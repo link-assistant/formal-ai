@@ -3,12 +3,14 @@ use serde_json::Value;
 
 use crate::engine::{estimate_tokens, stable_id, FormalAiEngine, DEFAULT_MODEL};
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct ChatCompletionRequest {
     #[serde(default)]
     pub model: Option<String>,
     #[serde(default)]
     pub messages: Vec<ChatMessage>,
+    #[serde(default)]
+    pub temperature: Option<f32>,
     #[serde(default)]
     pub stream: bool,
 }
@@ -72,7 +74,7 @@ pub struct TokenUsage {
     pub total_tokens: u32,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct ResponsesRequest {
     #[serde(default)]
     pub model: Option<String>,
@@ -80,6 +82,8 @@ pub struct ResponsesRequest {
     pub input: Value,
     #[serde(default)]
     pub instructions: Option<String>,
+    #[serde(default)]
+    pub temperature: Option<f32>,
     #[serde(default)]
     pub stream: bool,
 }

@@ -7,6 +7,7 @@ fn main() {
             role: String::from("user"),
             content: MessageContent::Text(String::from("Write me hello world program in Rust")),
         }],
+        temperature: None,
         stream: false,
     };
     let completion = create_chat_completion(&request);

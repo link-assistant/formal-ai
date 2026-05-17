@@ -266,6 +266,7 @@ fn chat_completion_has_openai_compatible_shape() {
             role: String::from("user"),
             content: MessageContent::Text(String::from("Hello")),
         }],
+        temperature: None,
         stream: false,
     };
 
@@ -287,6 +288,7 @@ fn responses_api_shape_contains_output_text() {
         model: Some(String::from("formal-symbolic-poc")),
         input: serde_json::Value::String(String::from("Write hello world in Rust")),
         instructions: None,
+        temperature: None,
         stream: false,
     };
 

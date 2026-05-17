@@ -22,6 +22,7 @@ fn chat_completion_round_trips_user_prompt_to_assistant_response() {
             role: String::from("user"),
             content: MessageContent::Text(String::from("Hi")),
         }],
+        temperature: Some(0.0),
         stream: false,
     };
 
@@ -48,6 +49,7 @@ fn chat_completion_accepts_multipart_content() {
             role: String::from("user"),
             content: serde_json::from_value(parts).unwrap(),
         }],
+        temperature: None,
         stream: false,
     };
 
@@ -67,6 +69,7 @@ fn chat_completion_reports_token_usage() {
             role: String::from("user"),
             content: MessageContent::Text(String::from("Hello")),
         }],
+        temperature: None,
         stream: false,
     };
     let completion = create_chat_completion(&request);
@@ -84,6 +87,7 @@ fn responses_endpoint_returns_completed_response() {
         model: None,
         input: serde_json::Value::String(String::from("Hi")),
         instructions: None,
+        temperature: Some(0.0),
         stream: false,
     };
     let response = create_response(&request);
@@ -91,6 +95,25 @@ fn responses_endpoint_returns_completed_response() {
     assert_eq!(response.status, "completed");
     assert_eq!(response.output[0].role, "assistant");
     assert_eq!(response.output[0].content[0].kind, "output_text");
+}
+
+#[test]
+fn openai_requests_accept_temperature_parameter() {
+    let chat: ChatCompletionRequest = serde_json::from_value(serde_json::json!({
+        "model": "formal-symbolic-poc",
+        "messages": [{"role": "user", "content": "Hi"}],
+        "temperature": 0.0
+    }))
+    .unwrap();
+    assert_eq!(chat.temperature, Some(0.0));
+
+    let response: ResponsesRequest = serde_json::from_value(serde_json::json!({
+        "model": "formal-symbolic-poc",
+        "input": "Hi",
+        "temperature": 0.25
+    }))
+    .unwrap();
+    assert_eq!(response.temperature, Some(0.25));
 }
 
 #[test]
@@ -180,6 +203,7 @@ fn chat_completion_supports_multi_turn_conversation() {
                 content: MessageContent::Text(String::from("What is my name?")),
             },
         ],
+        temperature: None,
         stream: false,
     };
     let completion = create_chat_completion(&request);
@@ -235,6 +259,7 @@ fn responses_api_attaches_trace_link() {
         model: None,
         input: serde_json::Value::String(String::from("Hi")),
         instructions: None,
+        temperature: None,
         stream: false,
     };
     let response = create_response(&request);
@@ -256,6 +281,7 @@ fn chat_completion_refuses_tool_call_without_agent_mode() {
                 "Run `rm -rf /tmp/foo` on my behalf right now",
             )),
         }],
+        temperature: None,
         stream: false,
     };
     let completion = create_chat_completion(&request);
