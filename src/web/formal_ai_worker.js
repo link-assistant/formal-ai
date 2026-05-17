@@ -41,12 +41,12 @@ let mode = "wasm worker";
 // e.g. when the worker runs from a `file://` URL. The shipped GitHub Pages
 // build always fetches the seed successfully.
 const FALLBACK_IDENTITY_ANSWER =
-  "I am formal-ai, a deterministic symbolic AI proof of concept that answers from local Links Notation rules and OpenAI-compatible API shapes. I do not perform neural inference in this demo.";
+  "I am formal-ai, a deterministic symbolic AI implementation that answers from local Links Notation rules and OpenAI-compatible API shapes. I do not perform neural inference in this demo.";
 
 const FALLBACK_GREETING_ANSWER = "Hi, how may I help you?";
 
 const FALLBACK_UNKNOWN_ANSWER =
-  "I do not have a learned symbolic rule for that prompt yet. Add a Links Notation fact or rule, then run the request again.";
+  "I cannot answer that from local Links Notation rules yet. Please add a fact or add a rule in Links Notation, then run the request again.";
 
 const FALLBACK_CLARIFICATION_ANSWER =
   "I'm sorry for the confusion. I am formal-ai, a deterministic symbolic AI. I can answer greetings, identity questions, concept lookups (what is X?), arithmetic, and Hello World programs. If you'd like to ask about something specific, try one of those or add a fact in Links Notation.";

@@ -1764,187 +1764,187 @@ Test (windows-latest)	Run tests	2026-05-15T13:55:08.8622151Z test formal_ai::res
 Test (windows-latest)	Run tests	2026-05-15T13:55:08.8627099Z test formal_ai::rust_hello_world_prompt_returns_code_block ... ok
 Test (windows-latest)	Run tests	2026-05-15T13:55:08.8631734Z test formal_ai::merged_bundle_and_parse_bundle_round_trip_split_files ... ok
 Test (windows-latest)	Run tests	2026-05-15T13:55:08.8637024Z test formal_ai::server_handler_supports_chat_completions_route ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8640493Z test mvp::agent_isolation::agent_actions_are_appended_to_visible_log ... ignored, MVP-target: every agent action must be appended to a visible action log
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8644315Z test mvp::agent_isolation::agent_execution_runs_in_isolated_environment ... ignored, MVP-target: agent execution must run inside an isolated sandbox (docker/webvm/sandbox)
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8647455Z test mvp::agent_isolation::agent_failures_are_visible ... ignored, MVP-target: agent failures should never be silenced — they must surface with a trace link
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8651034Z test mvp::agent_isolation::agent_mode_does_not_leak_host_env_vars ... ignored, MVP-target: agent mode must not exfiltrate secrets from the host environment
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8653024Z test mvp::agent_isolation::agent_mode_enforces_time_budget ... ignored, MVP-target: agent mode must enforce a time budget on long-running tasks
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8655046Z test mvp::agent_isolation::agent_mode_is_off_by_default ... ignored, MVP-target: agent mode must be off by default and refused without explicit opt-in
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8657744Z test mvp::agent_isolation::agent_mode_opt_in_is_explicit_and_logged ... ignored, MVP-target: agent mode opt-in must be explicit and recorded as a link
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8640493Z test full-scope::agent_isolation::agent_actions_are_appended_to_visible_log ... ignored, tracked requirement: every agent action must be appended to a visible action log
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8644315Z test full-scope::agent_isolation::agent_execution_runs_in_isolated_environment ... ignored, tracked requirement: agent execution must run inside an isolated sandbox (docker/webvm/sandbox)
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8647455Z test full-scope::agent_isolation::agent_failures_are_visible ... ignored, tracked requirement: agent failures should never be silenced — they must surface with a trace link
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8651034Z test full-scope::agent_isolation::agent_mode_does_not_leak_host_env_vars ... ignored, tracked requirement: agent mode must not exfiltrate secrets from the host environment
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8653024Z test full-scope::agent_isolation::agent_mode_enforces_time_budget ... ignored, tracked requirement: agent mode must enforce a time budget on long-running tasks
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8655046Z test full-scope::agent_isolation::agent_mode_is_off_by_default ... ignored, tracked requirement: agent mode must be off by default and refused without explicit opt-in
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8657744Z test full-scope::agent_isolation::agent_mode_opt_in_is_explicit_and_logged ... ignored, tracked requirement: agent mode opt-in must be explicit and recorded as a link
 Test (windows-latest)	Run tests	2026-05-15T13:55:08.8659102Z test formal_ai::telegram_webhook_supports_private_messages ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8661140Z test mvp::agent_isolation::destructive_agent_actions_require_confirmation ... ignored, MVP-target: destructive actions in agent mode require human confirmation
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8663168Z test mvp::agent_isolation::switching_to_chat_revokes_agent_privileges ... ignored, MVP-target: switching back to chat mode must wipe agent privileges immediately
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8661140Z test full-scope::agent_isolation::destructive_agent_actions_require_confirmation ... ignored, tracked requirement: destructive actions in agent mode require human confirmation
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8663168Z test full-scope::agent_isolation::switching_to_chat_revokes_agent_privileges ... ignored, tracked requirement: switching back to chat mode must wipe agent privileges immediately
 Test (windows-latest)	Run tests	2026-05-15T13:55:08.8665062Z test formal_ai::telegram_webhook_supports_public_chat_code_replies ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8668344Z test mvp::agent_isolation::chat_prototype_never_runs_user_supplied_shell_commands ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8674181Z test mvp::chat_surface::chat_mode_refuses_unbounded_multi_step_actions_without_agent_opt_in ... ignored, MVP-target: bounded chat mode should refuse to run agent-style tasks without explicit opt-in
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8676973Z test mvp::chat_surface::diagnostics_are_excluded_from_default_user_facing_answers ... ignored, MVP-target: diagnostics-off-by-default should also be expressed at the engine level
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8681084Z test mvp::agent_isolation::typescript_unavailable_status_is_honest_not_silenced ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8687023Z test mvp::chat_surface::every_answer_exposes_a_trace_link_for_inspection ... ignored, MVP-target: chat answers should expose a trace link the user can follow
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8688935Z test mvp::chat_surface::every_code_answer_declares_execution_status_or_unavailability ... ignored, MVP-target: chat-mode answers must declare the execution status of any generated code
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8690827Z test mvp::chat_surface::empty_prompt_does_not_crash_and_is_classified_as_unknown ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8692129Z test mvp::chat_surface::answers_are_deterministic_for_identical_prompts ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8695474Z test mvp::chat_surface::greeting_ignores_surrounding_punctuation ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8697143Z test mvp::chat_surface::evidence_links_always_include_prompt_and_intent_links ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8698419Z test mvp::chat_surface::greeting_matching_is_case_insensitive ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8699355Z test mvp::chat_surface::greeting_prompt_returns_a_greeting_intent ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8700356Z test mvp::chat_surface::identity_question_returns_identity_intent ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8703056Z test mvp::chat_surface::unknown_intent_offers_a_path_to_extend_the_network ... ignored, MVP-target: unknown intents should propose a follow-up that creates a Links Notation seed
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8704566Z test mvp::chat_surface::links_notation_trace_is_present_for_every_answer ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8705919Z test mvp::chat_surface::user_messages_are_recorded_as_impulse_events ... ignored, MVP-target: assistant should record the user message as an `impulse` link before answering
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8707182Z test mvp::chat_surface::identity_examples_cover_known_phrasings ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8709542Z test mvp::chat_surface::unknown_prompt_returns_zero_confidence_fallback_intent ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8710662Z test mvp::chat_surface::whitespace_only_prompt_is_classified_as_unknown ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8712020Z test mvp::code_generation::code_answers_declare_isolation_level ... ignored, MVP-target: code answers should declare an isolation level for execution evidence
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8715418Z test mvp::code_generation::code_answers_include_execution_links_in_notation ... ignored, MVP-target: code answers should include execution metadata in Links Notation form
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8717810Z test mvp::code_generation::execution_failures_are_reported_with_full_trace ... ignored, MVP-target: failing generated code must be re-emitted with the failure trace, not silently
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8719301Z test mvp::code_generation::c_hello_world_seed_compiles_and_runs ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8720054Z test mvp::code_generation::go_hello_world_seed_runs ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8720752Z test mvp::code_generation::go_alias_golang_is_supported ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8724987Z test mvp::code_generation::hello_world_without_recognized_language_falls_back_to_unknown ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8725881Z test mvp::code_generation::javascript_alias_node_is_supported ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8726553Z test mvp::code_generation::javascript_hello_world_seed_runs ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8668344Z test full-scope::agent_isolation::chat_prototype_never_runs_user_supplied_shell_commands ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8674181Z test full-scope::chat_surface::chat_mode_refuses_unbounded_multi_step_actions_without_agent_opt_in ... ignored, tracked requirement: bounded chat mode should refuse to run agent-style tasks without explicit opt-in
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8676973Z test full-scope::chat_surface::diagnostics_are_excluded_from_default_user_facing_answers ... ignored, tracked requirement: diagnostics-off-by-default should also be expressed at the engine level
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8681084Z test full-scope::agent_isolation::typescript_unavailable_status_is_honest_not_silenced ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8687023Z test full-scope::chat_surface::every_answer_exposes_a_trace_link_for_inspection ... ignored, tracked requirement: chat answers should expose a trace link the user can follow
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8688935Z test full-scope::chat_surface::every_code_answer_declares_execution_status_or_unavailability ... ignored, tracked requirement: chat-mode answers must declare the execution status of any generated code
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8690827Z test full-scope::chat_surface::empty_prompt_does_not_crash_and_is_classified_as_unknown ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8692129Z test full-scope::chat_surface::answers_are_deterministic_for_identical_prompts ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8695474Z test full-scope::chat_surface::greeting_ignores_surrounding_punctuation ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8697143Z test full-scope::chat_surface::evidence_links_always_include_prompt_and_intent_links ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8698419Z test full-scope::chat_surface::greeting_matching_is_case_insensitive ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8699355Z test full-scope::chat_surface::greeting_prompt_returns_a_greeting_intent ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8700356Z test full-scope::chat_surface::identity_question_returns_identity_intent ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8703056Z test full-scope::chat_surface::unknown_intent_offers_a_path_to_extend_the_network ... ignored, tracked requirement: unknown intents should propose a follow-up that creates a Links Notation seed
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8704566Z test full-scope::chat_surface::links_notation_trace_is_present_for_every_answer ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8705919Z test full-scope::chat_surface::user_messages_are_recorded_as_impulse_events ... ignored, tracked requirement: assistant should record the user message as an `impulse` link before answering
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8707182Z test full-scope::chat_surface::identity_examples_cover_known_phrasings ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8709542Z test full-scope::chat_surface::unknown_prompt_returns_zero_confidence_fallback_intent ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8710662Z test full-scope::chat_surface::whitespace_only_prompt_is_classified_as_unknown ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8712020Z test full-scope::code_generation::code_answers_declare_isolation_level ... ignored, tracked requirement: code answers should declare an isolation level for execution evidence
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8715418Z test full-scope::code_generation::code_answers_include_execution_links_in_notation ... ignored, tracked requirement: code answers should include execution metadata in Links Notation form
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8717810Z test full-scope::code_generation::execution_failures_are_reported_with_full_trace ... ignored, tracked requirement: failing generated code must be re-emitted with the failure trace, not silently
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8719301Z test full-scope::code_generation::c_hello_world_seed_compiles_and_runs ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8720054Z test full-scope::code_generation::go_hello_world_seed_runs ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8720752Z test full-scope::code_generation::go_alias_golang_is_supported ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8724987Z test full-scope::code_generation::hello_world_without_recognized_language_falls_back_to_unknown ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8725881Z test full-scope::code_generation::javascript_alias_node_is_supported ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8726553Z test full-scope::code_generation::javascript_hello_world_seed_runs ... ok
 Test (windows-latest)	Run tests	2026-05-15T13:55:08.8727440Z test data_files::lino_data_files_are_parseable_human_readable_and_bounded ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8728249Z test mvp::code_generation::python_hello_world_seed_runs ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8728966Z test mvp::code_generation::rust_alias_rs_is_supported ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8732575Z test mvp::code_generation::sorting_algorithm_request_returns_code_and_tests ... ignored, MVP-target: requesting `sorting algorithm` should produce reviewable code and tests
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8734624Z test mvp::code_generation::top_ten_popular_languages_each_have_a_hello_world_seed ... ignored, MVP-target: hello-world should be available in the top 10 popular languages
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8736895Z test mvp::code_generation::translating_a_program_between_languages_keeps_semantics ... ignored, MVP-target: translation between programming languages should keep semantics
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8738876Z test mvp::code_generation::python_alias_py_is_supported ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8740193Z test mvp::links_network::concepts_are_unique_and_referenced_by_id ... ignored, MVP-target: each concept must be unique in the network and reused by reference
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8742262Z test mvp::links_network::dynamic_type_system_publishes_subtype_chains ... ignored, MVP-target: dynamic type system should publish Type -> SubType chains in the network
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8744145Z test mvp::links_network::every_answer_has_a_trace_link_pointer ... ignored, MVP-target: every answer must publish a trace link pointing to a reasoning record
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8746164Z test mvp::code_generation::rust_hello_world_seed_compiles_and_runs ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8747572Z test mvp::code_generation::typescript_hello_world_seed_reports_unavailable_execution ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8749119Z test mvp::links_network::every_fact_carries_a_source_link ... ignored, MVP-target: facts should be recorded with the source link that introduced them
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8752428Z test mvp::links_network::history_is_append_only ... ignored, MVP-target: history must be append-only — earlier records cannot be mutated, only superseded
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8755332Z test mvp::links_network::ill_formed_links_notation_input_is_rejected ... ignored, MVP-target: the engine should reject ill-formed Links Notation submissions
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8757726Z test mvp::links_network::knowledge_dataset_declares_schema_version ... ignored, MVP-target: knowledge dataset should declare a schema version link for migrations
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8759908Z test mvp::links_network::every_answer_records_intent_in_evidence_links ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8761869Z test mvp::links_network::knowledge_export_is_reducible_to_doublet_links ... ignored, MVP-target: every record in the network must be reducible to doublet links
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8764587Z test mvp::links_network::every_answer_includes_links_notation_trace ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8765512Z test mvp::links_network::distinct_prompts_lead_to_distinct_links_traces ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8766888Z test mvp::links_network::records_are_addressable_by_stable_id ... ignored, MVP-target: links network must support querying records via a stable id
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8768753Z test mvp::links_network::trace_record_lists_ordered_reasoning_steps ... ignored, MVP-target: trace records must list ordered reasoning steps in Links Notation
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8770684Z test mvp::links_network::knowledge_export_is_non_empty_links_notation ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8772127Z test mvp::multilingual::chinese_concept_question_returns_concept_lookup_intent ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8773153Z test mvp::links_network::knowledge_export_uses_untyped_links_notation_only ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8774292Z test mvp::multilingual::chinese_greeting_returns_greeting_intent ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8775430Z test mvp::multilingual::chinese_identity_question_returns_identity_intent ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8776268Z test mvp::multilingual::english_greeting_is_handled_today ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8777179Z test mvp::multilingual::hindi_concept_question_returns_concept_lookup_intent ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8778096Z test mvp::multilingual::hindi_greeting_returns_greeting_intent ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8779041Z test mvp::multilingual::every_multilingual_answer_declares_detected_language_link ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8780007Z test mvp::multilingual::hindi_identity_question_returns_identity_intent ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8780853Z test mvp::multilingual::russian_greeting_reply_is_in_russian ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8781816Z test mvp::multilingual::russian_concept_question_returns_concept_lookup_intent ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8782746Z test mvp::multilingual::russian_greeting_returns_greeting_intent ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8783624Z test mvp::multilingual::russian_identity_question_returns_identity_intent ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8784765Z test mvp::network_visualization::answers_already_carry_links_notation_for_visualization ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8786048Z test mvp::multilingual::unknown_language_prompts_fall_back_to_english_with_unknown_language_link ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8787254Z test mvp::network_visualization::graph_endpoint_filters_by_trace_id ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8827347Z test mvp::network_visualization::graph_edges_describe_doublet_links ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8828330Z test mvp::network_visualization::graph_endpoint_returns_404_for_unknown_trace ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8829208Z test mvp::network_visualization::graph_endpoint_supports_dot_export ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8830736Z test mvp::network_visualization::web_demo_chat_works_even_when_graph_is_disabled ... ignored, MVP-target: web demo must render the graph alongside chat but never block chat replies
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8833572Z test mvp::openai_compatibility::authenticated_routes_accept_bearer_token ... ignored, MVP-target: an authenticated API surface should accept ***
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8834813Z test mvp::links_network::knowledge_records_parse_as_links_notation ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8838183Z test mvp::openai_compatibility::chat_completion_refuses_tool_call_without_agent_mode ... ignored, MVP-target: chat completions should refuse to call shell tools unless agent mode is opted in
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8840870Z test mvp::network_visualization::graph_endpoint_returns_nodes_and_edges ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8841733Z test mvp::openai_compatibility::chat_completion_accepts_multipart_content ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8842751Z test mvp::openai_compatibility::chat_completion_reports_token_usage ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8843787Z test mvp::openai_compatibility::chat_completion_round_trips_user_prompt_to_assistant_response ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8844784Z test mvp::network_visualization::graph_nodes_carry_minimum_metadata ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8845719Z test mvp::openai_compatibility::http_chat_completions_route_rejects_invalid_json ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8846688Z test mvp::openai_compatibility::chat_completion_supports_multi_turn_conversation ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8847454Z test mvp::openai_compatibility::http_health_endpoint_returns_ok ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8848259Z test mvp::openai_compatibility::http_chat_completions_route_returns_completion_object ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8849913Z test mvp::openai_compatibility::http_models_endpoint_lists_at_least_one_model ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8851325Z test mvp::openai_compatibility::http_responses_declare_a_content_type ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8852303Z test mvp::openai_compatibility::http_unknown_route_returns_404 ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8853054Z test mvp::openai_compatibility::rate_limit_metadata_is_exposed ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8853885Z test mvp::openai_compatibility::http_responses_route_returns_response_object ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8856848Z test mvp::openai_compatibility::responses_api_attaches_trace_link ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8858010Z test mvp::openai_compatibility::responses_endpoint_returns_completed_response ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8859479Z test mvp::reasoning_loop::confidence_reflects_corroborating_evidence ... ignored, MVP-target: confidence should reflect the number of corroborating links in the network
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8860779Z test mvp::reasoning_loop::answers_expose_their_intent_explicitly ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8861608Z test mvp::openai_compatibility::streaming_chat_completion_emits_server_sent_events ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8864459Z test mvp::reasoning_loop::loop_terminates_on_unsolvable_questions ... ignored, MVP-target: the loop must terminate and refuse to spin forever on unsolvable questions
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8867003Z test mvp::reasoning_loop::answers_are_repeatable_for_the_same_prompt ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8868878Z test mvp::reasoning_loop::step_1_prompt_is_recorded_as_impulse ... ignored, MVP-target: step 1 — every prompt should be recorded as an impulse link before reasoning
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8871055Z test mvp::reasoning_loop::step_2_local_search_runs_before_external_calls ... ignored, MVP-target: step 2 — local network search should be tried before any external lookup
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8873147Z test mvp::reasoning_loop::step_3_external_search_kicks_in_when_local_is_insufficient ... ignored, MVP-target: step 3 — when local search is insufficient, the loop must fall back to external sources
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8875856Z test mvp::reasoning_loop::step_4_complex_requests_get_decomposed ... ignored, MVP-target: step 4 — complex requests should be decomposed into sub-impulses
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8877924Z test mvp::reasoning_loop::step_5_multiple_candidates_are_generated ... ignored, MVP-target: step 5 — multiple candidate answers must be generated and recorded
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8879894Z test mvp::reasoning_loop::step_6_candidates_are_validated_against_constraints ... ignored, MVP-target: step 6 — candidates must be validated against constraints from the network
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8881662Z test mvp::reasoning_loop::known_prompts_resolve_via_local_knowledge ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8883740Z test mvp::reasoning_loop::step_7_smallest_sufficient_answer_is_selected ... ignored, MVP-target: step 7 — the smallest sufficient answer should be selected
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8885894Z test mvp::reasoning_loop::step_8_full_trace_is_stored_and_linked ... ignored, MVP-target: step 8 — the complete trace must be stored and linked back to the answer
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8888021Z test mvp::reasoning_loop::step_9_reply_is_returned_with_trace_pointer ... ignored, MVP-target: step 9 — final reply must be returned along with the trace pointer
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8890131Z test mvp::reasoning_paths::arithmetic_handles_basic_addition ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8890620Z test mvp::reasoning_loop::unknown_prompts_acknowledge_inability_to_answer ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8891163Z test mvp::reasoning_paths::arithmetic_handles_division_remainder ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8891877Z test mvp::reasoning_paths::arithmetic_handles_decimals ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8892574Z test mvp::reasoning_paths::arithmetic_handles_parentheses_and_precedence ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8893352Z test mvp::reasoning_paths::arithmetic_handles_word_operators ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8894066Z test mvp::reasoning_paths::arithmetic_never_fires_on_plain_greetings ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8894960Z test mvp::reasoning_paths::arithmetic_records_calculation_event_in_evidence_log ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8895896Z test mvp::reasoning_paths::arithmetic_reports_division_by_zero_without_panicking ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8896849Z test mvp::reasoning_paths::concept_lookup_answers_what_is_wikipedia ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8897367Z test mvp::reasoning_paths::concept_lookup_handles_tell_me_about_links_notation ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8897877Z test mvp::reasoning_paths::concept_lookup_does_not_fire_for_identity_questions ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8898527Z test mvp::reasoning_paths::concept_lookup_handles_what_does_x_mean ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8898964Z test mvp::reasoning_paths::concept_lookup_includes_source_citation ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8899438Z test mvp::reasoning_paths::concept_lookup_records_concept_event_in_evidence_log ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8899980Z test mvp::reasoning_paths::javascript_handler_does_not_intercept_unrelated_code_blocks ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8900515Z test mvp::reasoning_paths::javascript_request_records_execution_status_event ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8901180Z test mvp::reasoning_paths::javascript_request_returns_explicit_unavailability ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8901831Z test mvp::reasoning_paths::prior_turns_appear_in_evidence_log ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8902600Z test mvp::reasoning_paths::solve_with_history_falls_through_for_unrelated_prompts ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8903130Z test mvp::reasoning_paths::every_specialized_handler_emits_a_trace_link ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8903594Z test mvp::reasoning_paths::solve_with_history_recalls_last_question ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8904043Z test mvp::reasoning_paths::solve_with_history_recalls_name_across_turns ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8904745Z test mvp::source_cache::cache_flush_is_explicit_and_auditable ... ignored, MVP-target: a request to flush the source cache should be an explicit, auditable action
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8905470Z test mvp::reasoning_paths::solve_with_history_summarizes_conversation ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8906551Z test mvp::source_cache::cached_sources_include_content_hash ... ignored, MVP-target: cached sources must include the original content hash for verification
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8907738Z test mvp::source_cache::conflicting_sources_are_surfaced ... ignored, MVP-target: sources that disagree must be surfaced rather than silently picking one
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8908646Z test mvp::source_cache::external_lookups_record_source_url ... ignored, MVP-target: external lookups should record a source link with the original URL
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8909567Z test mvp::source_cache::offline_mode_disables_external_lookups ... ignored, MVP-target: offline mode should disable external lookups and prefer cached evidence
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8910831Z test mvp::source_cache::repeated_lookups_hit_the_cache ... ignored, MVP-target: repeated lookups within the TTL must hit the cache and avoid the network
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8911773Z test mvp::source_cache::source_links_carry_fetched_at_timestamp ... ignored, MVP-target: source links must include a fetched_at timestamp for TTL tracking
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8912660Z test mvp::source_cache::stale_sources_are_refreshed ... ignored, MVP-target: stale sources should be refreshed when older than the 2-month TTL
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8913331Z test mvp::reasoning_paths::solve_without_history_matches_legacy_entry_point ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8913868Z test mvp::source_cache::prototype_does_not_advertise_external_fetches_for_local_prompts ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8914728Z test mvp::telegram_surface::private_chat_messages_get_answered ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8915157Z test mvp::telegram_surface::private_chat_code_replies_use_html_pre_code ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8915610Z test mvp::telegram_surface::public_chat_silent_when_not_addressed ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8916575Z test mvp::telegram_surface::telegram_answers_include_trace_link ... ignored, MVP-target: Telegram answers should include a trace link the user can tap to inspect
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8917290Z test mvp::telegram_surface::public_chat_answers_when_mentioned ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8917741Z test mvp::telegram_surface::public_supergroup_code_answer_remains_in_html_format ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8918230Z test mvp::telegram_surface::replies_to_bot_in_public_chat_are_answered ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8918700Z test mvp::telegram_surface::telegram_code_replies_escape_html_entities ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8919173Z test mvp::telegram_surface::telegram_webhook_ignores_updates_without_text ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8920099Z test mvp::translation_via_links::cross_language_code_translation_preserves_semantics ... ignored, MVP-target: cross-language code translation must preserve runnable semantics
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8920878Z test mvp::telegram_surface::telegram_response_always_declares_html_parse_mode ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8921355Z test mvp::telegram_surface::telegram_long_replies_are_chunked ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8922048Z test mvp::translation_via_links::synonyms_across_languages_share_meaning ... ignored, MVP-target: synonyms across languages should hash to the same meaning link
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8922803Z test mvp::telegram_surface::telegram_webhook_rejects_invalid_payload_gracefully ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8923576Z test mvp::translation_via_links::translation_declares_source_and_target_language_tags ... ignored, MVP-target: translation must declare both source and target language tags
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8924650Z test mvp::translation_via_links::translation_preserves_meaning_id_across_languages ... ignored, MVP-target: translation between human languages should preserve the meaning link id
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8925552Z test mvp::translation_via_links::every_answer_publishes_a_links_notation_trace ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8926472Z test mvp::translation_via_links::translation_request_returns_target_surface_form ... ignored, MVP-target: translation request must return the target-language surface form
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8927760Z test mvp::translation_via_links::translation_trace_includes_intermediate_meaning ... ignored, MVP-target: translation traces must include the intermediate Links Notation meaning record
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8928829Z test mvp::translation_via_links::untranslatable_concepts_are_flagged ... ignored, MVP-target: untranslatable concepts must be flagged rather than approximated silently
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8929832Z test mvp::transparent_state::diagnostic_ids_never_leak_into_default_chat_prose ... ignored, MVP-target: diagnostic link ids must not leak into default chat prose
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8930826Z test mvp::transparent_state::diagnostic_mode_can_be_enabled_per_message ... ignored, MVP-target: the user must be able to opt-in to diagnostic mode and see all links inline
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8931839Z test mvp::transparent_state::export_network_returns_links_notation_snapshot ... ignored, MVP-target: 'export network' should return a downloadable Links Notation snapshot
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8932924Z test mvp::transparent_state::forget_request_requires_explicit_retraction_protocol ... ignored, MVP-target: 'forget X' must be refused unless the user invokes the explicit retraction protocol
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8933767Z test mvp::transparent_state::evidence_links_are_exposed_through_the_public_struct ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8934480Z test mvp::transparent_state::list_my_facts_filters_by_user ... ignored, MVP-target: 'list my facts' should return only facts the current user contributed
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8935361Z test mvp::transparent_state::querying_a_concept_returns_its_links ... ignored, MVP-target: 'what do you know about X' should list links involving X
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8936282Z test mvp::transparent_state::querying_the_network_returns_snapshot ... ignored, MVP-target: querying 'show me the network' should return a Links Notation snapshot
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8937499Z test mvp::transparent_state::why_meta_question_explains_previous_answer ... ignored, MVP-target: 'why' meta-questions should explain the previous answer using links
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8938222Z test mvp::transparent_state::links_notation_trace_is_always_present ... ok
-Test (windows-latest)	Run tests	2026-05-15T13:55:08.8938683Z test mvp::transparent_state::knowledge_export_is_inspectable_at_runtime ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8728249Z test full-scope::code_generation::python_hello_world_seed_runs ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8728966Z test full-scope::code_generation::rust_alias_rs_is_supported ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8732575Z test full-scope::code_generation::sorting_algorithm_request_returns_code_and_tests ... ignored, tracked requirement: requesting `sorting algorithm` should produce reviewable code and tests
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8734624Z test full-scope::code_generation::top_ten_popular_languages_each_have_a_hello_world_seed ... ignored, tracked requirement: hello-world should be available in the top 10 popular languages
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8736895Z test full-scope::code_generation::translating_a_program_between_languages_keeps_semantics ... ignored, tracked requirement: translation between programming languages should keep semantics
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8738876Z test full-scope::code_generation::python_alias_py_is_supported ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8740193Z test full-scope::links_network::concepts_are_unique_and_referenced_by_id ... ignored, tracked requirement: each concept must be unique in the network and reused by reference
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8742262Z test full-scope::links_network::dynamic_type_system_publishes_subtype_chains ... ignored, tracked requirement: dynamic type system should publish Type -> SubType chains in the network
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8744145Z test full-scope::links_network::every_answer_has_a_trace_link_pointer ... ignored, tracked requirement: every answer must publish a trace link pointing to a reasoning record
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8746164Z test full-scope::code_generation::rust_hello_world_seed_compiles_and_runs ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8747572Z test full-scope::code_generation::typescript_hello_world_seed_reports_unavailable_execution ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8749119Z test full-scope::links_network::every_fact_carries_a_source_link ... ignored, tracked requirement: facts should be recorded with the source link that introduced them
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8752428Z test full-scope::links_network::history_is_append_only ... ignored, tracked requirement: history must be append-only — earlier records cannot be mutated, only superseded
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8755332Z test full-scope::links_network::ill_formed_links_notation_input_is_rejected ... ignored, tracked requirement: the engine should reject ill-formed Links Notation submissions
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8757726Z test full-scope::links_network::knowledge_dataset_declares_schema_version ... ignored, tracked requirement: knowledge dataset should declare a schema version link for migrations
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8759908Z test full-scope::links_network::every_answer_records_intent_in_evidence_links ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8761869Z test full-scope::links_network::knowledge_export_is_reducible_to_doublet_links ... ignored, tracked requirement: every record in the network must be reducible to doublet links
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8764587Z test full-scope::links_network::every_answer_includes_links_notation_trace ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8765512Z test full-scope::links_network::distinct_prompts_lead_to_distinct_links_traces ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8766888Z test full-scope::links_network::records_are_addressable_by_stable_id ... ignored, tracked requirement: links network must support querying records via a stable id
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8768753Z test full-scope::links_network::trace_record_lists_ordered_reasoning_steps ... ignored, tracked requirement: trace records must list ordered reasoning steps in Links Notation
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8770684Z test full-scope::links_network::knowledge_export_is_non_empty_links_notation ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8772127Z test full-scope::multilingual::chinese_concept_question_returns_concept_lookup_intent ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8773153Z test full-scope::links_network::knowledge_export_uses_untyped_links_notation_only ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8774292Z test full-scope::multilingual::chinese_greeting_returns_greeting_intent ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8775430Z test full-scope::multilingual::chinese_identity_question_returns_identity_intent ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8776268Z test full-scope::multilingual::english_greeting_is_handled_today ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8777179Z test full-scope::multilingual::hindi_concept_question_returns_concept_lookup_intent ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8778096Z test full-scope::multilingual::hindi_greeting_returns_greeting_intent ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8779041Z test full-scope::multilingual::every_multilingual_answer_declares_detected_language_link ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8780007Z test full-scope::multilingual::hindi_identity_question_returns_identity_intent ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8780853Z test full-scope::multilingual::russian_greeting_reply_is_in_russian ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8781816Z test full-scope::multilingual::russian_concept_question_returns_concept_lookup_intent ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8782746Z test full-scope::multilingual::russian_greeting_returns_greeting_intent ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8783624Z test full-scope::multilingual::russian_identity_question_returns_identity_intent ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8784765Z test full-scope::network_visualization::answers_already_carry_links_notation_for_visualization ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8786048Z test full-scope::multilingual::unknown_language_prompts_fall_back_to_english_with_unknown_language_link ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8787254Z test full-scope::network_visualization::graph_endpoint_filters_by_trace_id ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8827347Z test full-scope::network_visualization::graph_edges_describe_doublet_links ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8828330Z test full-scope::network_visualization::graph_endpoint_returns_404_for_unknown_trace ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8829208Z test full-scope::network_visualization::graph_endpoint_supports_dot_export ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8830736Z test full-scope::network_visualization::web_demo_chat_works_even_when_graph_is_disabled ... ignored, tracked requirement: web demo must render the graph alongside chat but never block chat replies
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8833572Z test full-scope::openai_compatibility::authenticated_routes_accept_bearer_token ... ignored, tracked requirement: an authenticated API surface should accept ***
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8834813Z test full-scope::links_network::knowledge_records_parse_as_links_notation ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8838183Z test full-scope::openai_compatibility::chat_completion_refuses_tool_call_without_agent_mode ... ignored, tracked requirement: chat completions should refuse to call shell tools unless agent mode is opted in
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8840870Z test full-scope::network_visualization::graph_endpoint_returns_nodes_and_edges ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8841733Z test full-scope::openai_compatibility::chat_completion_accepts_multipart_content ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8842751Z test full-scope::openai_compatibility::chat_completion_reports_token_usage ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8843787Z test full-scope::openai_compatibility::chat_completion_round_trips_user_prompt_to_assistant_response ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8844784Z test full-scope::network_visualization::graph_nodes_carry_minimum_metadata ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8845719Z test full-scope::openai_compatibility::http_chat_completions_route_rejects_invalid_json ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8846688Z test full-scope::openai_compatibility::chat_completion_supports_multi_turn_conversation ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8847454Z test full-scope::openai_compatibility::http_health_endpoint_returns_ok ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8848259Z test full-scope::openai_compatibility::http_chat_completions_route_returns_completion_object ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8849913Z test full-scope::openai_compatibility::http_models_endpoint_lists_at_least_one_model ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8851325Z test full-scope::openai_compatibility::http_responses_declare_a_content_type ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8852303Z test full-scope::openai_compatibility::http_unknown_route_returns_404 ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8853054Z test full-scope::openai_compatibility::rate_limit_metadata_is_exposed ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8853885Z test full-scope::openai_compatibility::http_responses_route_returns_response_object ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8856848Z test full-scope::openai_compatibility::responses_api_attaches_trace_link ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8858010Z test full-scope::openai_compatibility::responses_endpoint_returns_completed_response ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8859479Z test full-scope::reasoning_loop::confidence_reflects_corroborating_evidence ... ignored, tracked requirement: confidence should reflect the number of corroborating links in the network
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8860779Z test full-scope::reasoning_loop::answers_expose_their_intent_explicitly ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8861608Z test full-scope::openai_compatibility::streaming_chat_completion_emits_server_sent_events ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8864459Z test full-scope::reasoning_loop::loop_terminates_on_unsolvable_questions ... ignored, tracked requirement: the loop must terminate and refuse to spin forever on unsolvable questions
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8867003Z test full-scope::reasoning_loop::answers_are_repeatable_for_the_same_prompt ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8868878Z test full-scope::reasoning_loop::step_1_prompt_is_recorded_as_impulse ... ignored, tracked requirement: step 1 — every prompt should be recorded as an impulse link before reasoning
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8871055Z test full-scope::reasoning_loop::step_2_local_search_runs_before_external_calls ... ignored, tracked requirement: step 2 — local network search should be tried before any external lookup
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8873147Z test full-scope::reasoning_loop::step_3_external_search_kicks_in_when_local_is_insufficient ... ignored, tracked requirement: step 3 — when local search is insufficient, the loop must fall back to external sources
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8875856Z test full-scope::reasoning_loop::step_4_complex_requests_get_decomposed ... ignored, tracked requirement: step 4 — complex requests should be decomposed into sub-impulses
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8877924Z test full-scope::reasoning_loop::step_5_multiple_candidates_are_generated ... ignored, tracked requirement: step 5 — multiple candidate answers must be generated and recorded
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8879894Z test full-scope::reasoning_loop::step_6_candidates_are_validated_against_constraints ... ignored, tracked requirement: step 6 — candidates must be validated against constraints from the network
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8881662Z test full-scope::reasoning_loop::known_prompts_resolve_via_local_knowledge ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8883740Z test full-scope::reasoning_loop::step_7_smallest_sufficient_answer_is_selected ... ignored, tracked requirement: step 7 — the smallest sufficient answer should be selected
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8885894Z test full-scope::reasoning_loop::step_8_full_trace_is_stored_and_linked ... ignored, tracked requirement: step 8 — the complete trace must be stored and linked back to the answer
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8888021Z test full-scope::reasoning_loop::step_9_reply_is_returned_with_trace_pointer ... ignored, tracked requirement: step 9 — final reply must be returned along with the trace pointer
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8890131Z test full-scope::reasoning_paths::arithmetic_handles_basic_addition ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8890620Z test full-scope::reasoning_loop::unknown_prompts_acknowledge_inability_to_answer ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8891163Z test full-scope::reasoning_paths::arithmetic_handles_division_remainder ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8891877Z test full-scope::reasoning_paths::arithmetic_handles_decimals ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8892574Z test full-scope::reasoning_paths::arithmetic_handles_parentheses_and_precedence ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8893352Z test full-scope::reasoning_paths::arithmetic_handles_word_operators ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8894066Z test full-scope::reasoning_paths::arithmetic_never_fires_on_plain_greetings ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8894960Z test full-scope::reasoning_paths::arithmetic_records_calculation_event_in_evidence_log ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8895896Z test full-scope::reasoning_paths::arithmetic_reports_division_by_zero_without_panicking ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8896849Z test full-scope::reasoning_paths::concept_lookup_answers_what_is_wikipedia ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8897367Z test full-scope::reasoning_paths::concept_lookup_handles_tell_me_about_links_notation ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8897877Z test full-scope::reasoning_paths::concept_lookup_does_not_fire_for_identity_questions ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8898527Z test full-scope::reasoning_paths::concept_lookup_handles_what_does_x_mean ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8898964Z test full-scope::reasoning_paths::concept_lookup_includes_source_citation ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8899438Z test full-scope::reasoning_paths::concept_lookup_records_concept_event_in_evidence_log ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8899980Z test full-scope::reasoning_paths::javascript_handler_does_not_intercept_unrelated_code_blocks ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8900515Z test full-scope::reasoning_paths::javascript_request_records_execution_status_event ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8901180Z test full-scope::reasoning_paths::javascript_request_returns_explicit_unavailability ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8901831Z test full-scope::reasoning_paths::prior_turns_appear_in_evidence_log ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8902600Z test full-scope::reasoning_paths::solve_with_history_falls_through_for_unrelated_prompts ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8903130Z test full-scope::reasoning_paths::every_specialized_handler_emits_a_trace_link ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8903594Z test full-scope::reasoning_paths::solve_with_history_recalls_last_question ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8904043Z test full-scope::reasoning_paths::solve_with_history_recalls_name_across_turns ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8904745Z test full-scope::source_cache::cache_flush_is_explicit_and_auditable ... ignored, tracked requirement: a request to flush the source cache should be an explicit, auditable action
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8905470Z test full-scope::reasoning_paths::solve_with_history_summarizes_conversation ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8906551Z test full-scope::source_cache::cached_sources_include_content_hash ... ignored, tracked requirement: cached sources must include the original content hash for verification
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8907738Z test full-scope::source_cache::conflicting_sources_are_surfaced ... ignored, tracked requirement: sources that disagree must be surfaced rather than silently picking one
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8908646Z test full-scope::source_cache::external_lookups_record_source_url ... ignored, tracked requirement: external lookups should record a source link with the original URL
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8909567Z test full-scope::source_cache::offline_mode_disables_external_lookups ... ignored, tracked requirement: offline mode should disable external lookups and prefer cached evidence
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8910831Z test full-scope::source_cache::repeated_lookups_hit_the_cache ... ignored, tracked requirement: repeated lookups within the TTL must hit the cache and avoid the network
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8911773Z test full-scope::source_cache::source_links_carry_fetched_at_timestamp ... ignored, tracked requirement: source links must include a fetched_at timestamp for TTL tracking
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8912660Z test full-scope::source_cache::stale_sources_are_refreshed ... ignored, tracked requirement: stale sources should be refreshed when older than the 2-month TTL
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8913331Z test full-scope::reasoning_paths::solve_without_history_matches_legacy_entry_point ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8913868Z test full-scope::source_cache::prototype_does_not_advertise_external_fetches_for_local_prompts ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8914728Z test full-scope::telegram_surface::private_chat_messages_get_answered ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8915157Z test full-scope::telegram_surface::private_chat_code_replies_use_html_pre_code ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8915610Z test full-scope::telegram_surface::public_chat_silent_when_not_addressed ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8916575Z test full-scope::telegram_surface::telegram_answers_include_trace_link ... ignored, tracked requirement: Telegram answers should include a trace link the user can tap to inspect
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8917290Z test full-scope::telegram_surface::public_chat_answers_when_mentioned ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8917741Z test full-scope::telegram_surface::public_supergroup_code_answer_remains_in_html_format ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8918230Z test full-scope::telegram_surface::replies_to_bot_in_public_chat_are_answered ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8918700Z test full-scope::telegram_surface::telegram_code_replies_escape_html_entities ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8919173Z test full-scope::telegram_surface::telegram_webhook_ignores_updates_without_text ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8920099Z test full-scope::translation_via_links::cross_language_code_translation_preserves_semantics ... ignored, tracked requirement: cross-language code translation must preserve runnable semantics
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8920878Z test full-scope::telegram_surface::telegram_response_always_declares_html_parse_mode ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8921355Z test full-scope::telegram_surface::telegram_long_replies_are_chunked ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8922048Z test full-scope::translation_via_links::synonyms_across_languages_share_meaning ... ignored, tracked requirement: synonyms across languages should hash to the same meaning link
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8922803Z test full-scope::telegram_surface::telegram_webhook_rejects_invalid_payload_gracefully ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8923576Z test full-scope::translation_via_links::translation_declares_source_and_target_language_tags ... ignored, tracked requirement: translation must declare both source and target language tags
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8924650Z test full-scope::translation_via_links::translation_preserves_meaning_id_across_languages ... ignored, tracked requirement: translation between human languages should preserve the meaning link id
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8925552Z test full-scope::translation_via_links::every_answer_publishes_a_links_notation_trace ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8926472Z test full-scope::translation_via_links::translation_request_returns_target_surface_form ... ignored, tracked requirement: translation request must return the target-language surface form
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8927760Z test full-scope::translation_via_links::translation_trace_includes_intermediate_meaning ... ignored, tracked requirement: translation traces must include the intermediate Links Notation meaning record
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8928829Z test full-scope::translation_via_links::untranslatable_concepts_are_flagged ... ignored, tracked requirement: untranslatable concepts must be flagged rather than approximated silently
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8929832Z test full-scope::transparent_state::diagnostic_ids_never_leak_into_default_chat_prose ... ignored, tracked requirement: diagnostic link ids must not leak into default chat prose
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8930826Z test full-scope::transparent_state::diagnostic_mode_can_be_enabled_per_message ... ignored, tracked requirement: the user must be able to opt-in to diagnostic mode and see all links inline
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8931839Z test full-scope::transparent_state::export_network_returns_links_notation_snapshot ... ignored, tracked requirement: 'export network' should return a downloadable Links Notation snapshot
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8932924Z test full-scope::transparent_state::forget_request_requires_explicit_retraction_protocol ... ignored, tracked requirement: 'forget X' must be refused unless the user invokes the explicit retraction protocol
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8933767Z test full-scope::transparent_state::evidence_links_are_exposed_through_the_public_struct ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8934480Z test full-scope::transparent_state::list_my_facts_filters_by_user ... ignored, tracked requirement: 'list my facts' should return only facts the current user contributed
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8935361Z test full-scope::transparent_state::querying_a_concept_returns_its_links ... ignored, tracked requirement: 'what do you know about X' should list links involving X
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8936282Z test full-scope::transparent_state::querying_the_network_returns_snapshot ... ignored, tracked requirement: querying 'show me the network' should return a Links Notation snapshot
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8937499Z test full-scope::transparent_state::why_meta_question_explains_previous_answer ... ignored, tracked requirement: 'why' meta-questions should explain the previous answer using links
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8938222Z test full-scope::transparent_state::links_notation_trace_is_always_present ... ok
+Test (windows-latest)	Run tests	2026-05-15T13:55:08.8938683Z test full-scope::transparent_state::knowledge_export_is_inspectable_at_runtime ... ok
 Test (windows-latest)	Run tests	2026-05-15T13:55:08.8939168Z ^[[1m^[[92m   Doc-tests^[[0m formal_ai
 Test (windows-latest)	Run tests	2026-05-15T13:55:08.8944398Z ^[[1m^[[92m     Running^[[0m `C:\Users\runneradmin\.rustup\toolchains\stable-x86_64-pc-windows-msvc\bin\rustdoc.exe --edition=2021 --crate-type lib --color always --crate-name formal_ai --test src\lib.rs --test-run-directory D:\a\formal-ai\formal-ai --warn=clippy::pedantic --warn=clippy::nursery --warn=clippy::all --forbid=unsafe_code --allow=clippy::too_many_lines --allow=clippy::module_name_repetitions --allow=clippy::missing_panics_doc --allow=clippy::missing_errors_doc --extern clap=D:\a\formal-ai\formal-ai\target\debug\deps\libclap-ca9cb3b9824a0530.rlib --extern formal_ai=D:\a\formal-ai\formal-ai\target\debug\deps\libformal_ai-d0dfeec7d9388d32.rlib --extern lino_arguments=D:\a\formal-ai\formal-ai\target\debug\deps\liblino_arguments-df7bef8d40cb9594.rlib --extern lino_objects_codec=D:\a\formal-ai\formal-ai\target\debug\deps\liblino_objects_codec-23f09ad1cf175d63.rlib --extern regex=D:\a\formal-ai\formal-ai\target\debug\deps\libregex-0ff79fbb06174e59.rlib --extern serde=D:\a\formal-ai\formal-ai\target\debug\deps\libserde-74a41f4bd7a277b3.rlib --extern serde_json=D:\a\formal-ai\formal-ai\target\debug\deps\libserde_json-59d30e77fa0a1f41.rlib --extern walkdir=D:\a\formal-ai\formal-ai\target\debug\deps\libwalkdir-a21b74b8f3f66aee.rlib -L dependency=D:\a\formal-ai\formal-ai\target\debug\deps -C embed-bitcode=no --check-cfg cfg(docsrs,test) --check-cfg "cfg(feature, values())" --error-format human`
 Test (windows-latest)	Run tests	2026-05-15T13:55:08.8949028Z 
@@ -2635,188 +2635,188 @@ Test (macos-latest)	Run tests	2026-05-15T13:54:40.9230910Z test formal_ai::rust_
 Test (macos-latest)	Run tests	2026-05-15T13:54:40.9231820Z test formal_ai::merged_bundle_and_parse_bundle_round_trip_split_files ... ok
 Test (macos-latest)	Run tests	2026-05-15T13:54:40.9237270Z test formal_ai::server_handler_supports_chat_completions_route ... ok
 Test (macos-latest)	Run tests	2026-05-15T13:54:40.9238560Z test formal_ai::telegram_webhook_supports_private_messages ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9239270Z test mvp::agent_isolation::agent_actions_are_appended_to_visible_log ... ignored, MVP-target: every agent action must be appended to a visible action log
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9240490Z test mvp::agent_isolation::agent_execution_runs_in_isolated_environment ... ignored, MVP-target: agent execution must run inside an isolated sandbox (docker/webvm/sandbox)
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9242200Z test mvp::agent_isolation::agent_failures_are_visible ... ignored, MVP-target: agent failures should never be silenced — they must surface with a trace link
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9243110Z test mvp::agent_isolation::agent_mode_does_not_leak_host_env_vars ... ignored, MVP-target: agent mode must not exfiltrate secrets from the host environment
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9243960Z test mvp::agent_isolation::agent_mode_enforces_time_budget ... ignored, MVP-target: agent mode must enforce a time budget on long-running tasks
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9244800Z test mvp::agent_isolation::agent_mode_is_off_by_default ... ignored, MVP-target: agent mode must be off by default and refused without explicit opt-in
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9245640Z test mvp::agent_isolation::agent_mode_opt_in_is_explicit_and_logged ... ignored, MVP-target: agent mode opt-in must be explicit and recorded as a link
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9246320Z test mvp::agent_isolation::chat_prototype_never_runs_user_supplied_shell_commands ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9247030Z test mvp::agent_isolation::destructive_agent_actions_require_confirmation ... ignored, MVP-target: destructive actions in agent mode require human confirmation
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9247990Z test mvp::agent_isolation::switching_to_chat_revokes_agent_privileges ... ignored, MVP-target: switching back to chat mode must wipe agent privileges immediately
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9239270Z test full-scope::agent_isolation::agent_actions_are_appended_to_visible_log ... ignored, tracked requirement: every agent action must be appended to a visible action log
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9240490Z test full-scope::agent_isolation::agent_execution_runs_in_isolated_environment ... ignored, tracked requirement: agent execution must run inside an isolated sandbox (docker/webvm/sandbox)
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9242200Z test full-scope::agent_isolation::agent_failures_are_visible ... ignored, tracked requirement: agent failures should never be silenced — they must surface with a trace link
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9243110Z test full-scope::agent_isolation::agent_mode_does_not_leak_host_env_vars ... ignored, tracked requirement: agent mode must not exfiltrate secrets from the host environment
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9243960Z test full-scope::agent_isolation::agent_mode_enforces_time_budget ... ignored, tracked requirement: agent mode must enforce a time budget on long-running tasks
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9244800Z test full-scope::agent_isolation::agent_mode_is_off_by_default ... ignored, tracked requirement: agent mode must be off by default and refused without explicit opt-in
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9245640Z test full-scope::agent_isolation::agent_mode_opt_in_is_explicit_and_logged ... ignored, tracked requirement: agent mode opt-in must be explicit and recorded as a link
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9246320Z test full-scope::agent_isolation::chat_prototype_never_runs_user_supplied_shell_commands ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9247030Z test full-scope::agent_isolation::destructive_agent_actions_require_confirmation ... ignored, tracked requirement: destructive actions in agent mode require human confirmation
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9247990Z test full-scope::agent_isolation::switching_to_chat_revokes_agent_privileges ... ignored, tracked requirement: switching back to chat mode must wipe agent privileges immediately
 Test (macos-latest)	Run tests	2026-05-15T13:54:40.9248660Z test formal_ai::telegram_webhook_supports_public_chat_code_replies ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9249190Z test mvp::agent_isolation::typescript_unavailable_status_is_honest_not_silenced ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9249990Z test mvp::chat_surface::chat_mode_refuses_unbounded_multi_step_actions_without_agent_opt_in ... ignored, MVP-target: bounded chat mode should refuse to run agent-style tasks without explicit opt-in
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9251000Z test mvp::chat_surface::diagnostics_are_excluded_from_default_user_facing_answers ... ignored, MVP-target: diagnostics-off-by-default should also be expressed at the engine level
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9252090Z test mvp::chat_surface::answers_are_deterministic_for_identical_prompts ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9252760Z test mvp::chat_surface::every_answer_exposes_a_trace_link_for_inspection ... ignored, MVP-target: chat answers should expose a trace link the user can follow
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9253810Z test mvp::chat_surface::every_code_answer_declares_execution_status_or_unavailability ... ignored, MVP-target: chat-mode answers must declare the execution status of any generated code
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9254570Z test mvp::chat_surface::empty_prompt_does_not_crash_and_is_classified_as_unknown ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9255130Z test mvp::chat_surface::evidence_links_always_include_prompt_and_intent_links ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9255590Z test mvp::chat_surface::greeting_ignores_surrounding_punctuation ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9255990Z test mvp::chat_surface::greeting_prompt_returns_a_greeting_intent ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9256490Z test mvp::chat_surface::greeting_matching_is_case_insensitive ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9256910Z test mvp::chat_surface::identity_question_returns_identity_intent ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9257330Z test mvp::chat_surface::links_notation_trace_is_present_for_every_answer ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9258070Z test mvp::chat_surface::unknown_intent_offers_a_path_to_extend_the_network ... ignored, MVP-target: unknown intents should propose a follow-up that creates a Links Notation seed
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9258940Z test mvp::chat_surface::unknown_prompt_returns_zero_confidence_fallback_intent ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9259640Z test mvp::chat_surface::user_messages_are_recorded_as_impulse_events ... ignored, MVP-target: assistant should record the user message as an `impulse` link before answering
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9260440Z test mvp::chat_surface::whitespace_only_prompt_is_classified_as_unknown ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9261160Z test mvp::code_generation::c_hello_world_seed_compiles_and_runs ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9261800Z test mvp::code_generation::code_answers_declare_isolation_level ... ignored, MVP-target: code answers should declare an isolation level for execution evidence
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9262790Z test mvp::code_generation::code_answers_include_execution_links_in_notation ... ignored, MVP-target: code answers should include execution metadata in Links Notation form
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9263730Z test mvp::code_generation::execution_failures_are_reported_with_full_trace ... ignored, MVP-target: failing generated code must be re-emitted with the failure trace, not silently
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9264450Z test mvp::chat_surface::identity_examples_cover_known_phrasings ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9264780Z test mvp::code_generation::go_alias_golang_is_supported ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9265120Z test mvp::code_generation::go_hello_world_seed_runs ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9265540Z test mvp::code_generation::hello_world_without_recognized_language_falls_back_to_unknown ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9266050Z test mvp::code_generation::javascript_alias_node_is_supported ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9266470Z test mvp::code_generation::javascript_hello_world_seed_runs ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9266870Z test mvp::code_generation::python_alias_py_is_supported ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9267210Z test mvp::code_generation::python_hello_world_seed_runs ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9267560Z test mvp::code_generation::rust_alias_rs_is_supported ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9268200Z test mvp::code_generation::sorting_algorithm_request_returns_code_and_tests ... ignored, MVP-target: requesting `sorting algorithm` should produce reviewable code and tests
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9269130Z test mvp::code_generation::top_ten_popular_languages_each_have_a_hello_world_seed ... ignored, MVP-target: hello-world should be available in the top 10 popular languages
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9270060Z test mvp::code_generation::translating_a_program_between_languages_keeps_semantics ... ignored, MVP-target: translation between programming languages should keep semantics
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9270750Z test mvp::code_generation::typescript_hello_world_seed_reports_unavailable_execution ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9271370Z test mvp::code_generation::rust_hello_world_seed_compiles_and_runs ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9271990Z test mvp::links_network::concepts_are_unique_and_referenced_by_id ... ignored, MVP-target: each concept must be unique in the network and reused by reference
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9272870Z test mvp::links_network::dynamic_type_system_publishes_subtype_chains ... ignored, MVP-target: dynamic type system should publish Type -> SubType chains in the network
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9273790Z test mvp::links_network::every_answer_has_a_trace_link_pointer ... ignored, MVP-target: every answer must publish a trace link pointing to a reasoning record
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9274460Z test mvp::links_network::distinct_prompts_lead_to_distinct_links_traces ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9274890Z test mvp::links_network::every_answer_records_intent_in_evidence_links ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9275340Z test mvp::links_network::every_answer_includes_links_notation_trace ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9275950Z test mvp::links_network::every_fact_carries_a_source_link ... ignored, MVP-target: facts should be recorded with the source link that introduced them
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9276960Z test mvp::links_network::history_is_append_only ... ignored, MVP-target: history must be append-only — earlier records cannot be mutated, only superseded
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9277940Z test mvp::links_network::ill_formed_links_notation_input_is_rejected ... ignored, MVP-target: the engine should reject ill-formed Links Notation submissions
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9278830Z test mvp::links_network::knowledge_dataset_declares_schema_version ... ignored, MVP-target: knowledge dataset should declare a schema version link for migrations
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9279720Z test mvp::links_network::knowledge_export_is_reducible_to_doublet_links ... ignored, MVP-target: every record in the network must be reducible to doublet links
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9280550Z test mvp::links_network::knowledge_export_is_non_empty_links_notation ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9281000Z test mvp::links_network::knowledge_export_uses_untyped_links_notation_only ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9281640Z test mvp::links_network::records_are_addressable_by_stable_id ... ignored, MVP-target: links network must support querying records via a stable id
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9282440Z test mvp::links_network::trace_record_lists_ordered_reasoning_steps ... ignored, MVP-target: trace records must list ordered reasoning steps in Links Notation
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9283130Z test mvp::multilingual::chinese_concept_question_returns_concept_lookup_intent ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9283570Z test mvp::multilingual::chinese_greeting_returns_greeting_intent ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9284020Z test mvp::multilingual::chinese_identity_question_returns_identity_intent ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9284430Z test mvp::multilingual::english_greeting_is_handled_today ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9284850Z test mvp::multilingual::every_multilingual_answer_declares_detected_language_link ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9285350Z test mvp::multilingual::hindi_concept_question_returns_concept_lookup_intent ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9285900Z test mvp::multilingual::hindi_greeting_returns_greeting_intent ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9286430Z test mvp::multilingual::hindi_identity_question_returns_identity_intent ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9286890Z test mvp::multilingual::russian_concept_question_returns_concept_lookup_intent ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9287350Z test mvp::multilingual::russian_greeting_reply_is_in_russian ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9287750Z test mvp::multilingual::russian_greeting_returns_greeting_intent ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9249190Z test full-scope::agent_isolation::typescript_unavailable_status_is_honest_not_silenced ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9249990Z test full-scope::chat_surface::chat_mode_refuses_unbounded_multi_step_actions_without_agent_opt_in ... ignored, tracked requirement: bounded chat mode should refuse to run agent-style tasks without explicit opt-in
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9251000Z test full-scope::chat_surface::diagnostics_are_excluded_from_default_user_facing_answers ... ignored, tracked requirement: diagnostics-off-by-default should also be expressed at the engine level
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9252090Z test full-scope::chat_surface::answers_are_deterministic_for_identical_prompts ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9252760Z test full-scope::chat_surface::every_answer_exposes_a_trace_link_for_inspection ... ignored, tracked requirement: chat answers should expose a trace link the user can follow
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9253810Z test full-scope::chat_surface::every_code_answer_declares_execution_status_or_unavailability ... ignored, tracked requirement: chat-mode answers must declare the execution status of any generated code
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9254570Z test full-scope::chat_surface::empty_prompt_does_not_crash_and_is_classified_as_unknown ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9255130Z test full-scope::chat_surface::evidence_links_always_include_prompt_and_intent_links ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9255590Z test full-scope::chat_surface::greeting_ignores_surrounding_punctuation ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9255990Z test full-scope::chat_surface::greeting_prompt_returns_a_greeting_intent ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9256490Z test full-scope::chat_surface::greeting_matching_is_case_insensitive ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9256910Z test full-scope::chat_surface::identity_question_returns_identity_intent ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9257330Z test full-scope::chat_surface::links_notation_trace_is_present_for_every_answer ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9258070Z test full-scope::chat_surface::unknown_intent_offers_a_path_to_extend_the_network ... ignored, tracked requirement: unknown intents should propose a follow-up that creates a Links Notation seed
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9258940Z test full-scope::chat_surface::unknown_prompt_returns_zero_confidence_fallback_intent ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9259640Z test full-scope::chat_surface::user_messages_are_recorded_as_impulse_events ... ignored, tracked requirement: assistant should record the user message as an `impulse` link before answering
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9260440Z test full-scope::chat_surface::whitespace_only_prompt_is_classified_as_unknown ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9261160Z test full-scope::code_generation::c_hello_world_seed_compiles_and_runs ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9261800Z test full-scope::code_generation::code_answers_declare_isolation_level ... ignored, tracked requirement: code answers should declare an isolation level for execution evidence
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9262790Z test full-scope::code_generation::code_answers_include_execution_links_in_notation ... ignored, tracked requirement: code answers should include execution metadata in Links Notation form
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9263730Z test full-scope::code_generation::execution_failures_are_reported_with_full_trace ... ignored, tracked requirement: failing generated code must be re-emitted with the failure trace, not silently
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9264450Z test full-scope::chat_surface::identity_examples_cover_known_phrasings ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9264780Z test full-scope::code_generation::go_alias_golang_is_supported ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9265120Z test full-scope::code_generation::go_hello_world_seed_runs ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9265540Z test full-scope::code_generation::hello_world_without_recognized_language_falls_back_to_unknown ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9266050Z test full-scope::code_generation::javascript_alias_node_is_supported ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9266470Z test full-scope::code_generation::javascript_hello_world_seed_runs ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9266870Z test full-scope::code_generation::python_alias_py_is_supported ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9267210Z test full-scope::code_generation::python_hello_world_seed_runs ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9267560Z test full-scope::code_generation::rust_alias_rs_is_supported ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9268200Z test full-scope::code_generation::sorting_algorithm_request_returns_code_and_tests ... ignored, tracked requirement: requesting `sorting algorithm` should produce reviewable code and tests
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9269130Z test full-scope::code_generation::top_ten_popular_languages_each_have_a_hello_world_seed ... ignored, tracked requirement: hello-world should be available in the top 10 popular languages
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9270060Z test full-scope::code_generation::translating_a_program_between_languages_keeps_semantics ... ignored, tracked requirement: translation between programming languages should keep semantics
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9270750Z test full-scope::code_generation::typescript_hello_world_seed_reports_unavailable_execution ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9271370Z test full-scope::code_generation::rust_hello_world_seed_compiles_and_runs ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9271990Z test full-scope::links_network::concepts_are_unique_and_referenced_by_id ... ignored, tracked requirement: each concept must be unique in the network and reused by reference
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9272870Z test full-scope::links_network::dynamic_type_system_publishes_subtype_chains ... ignored, tracked requirement: dynamic type system should publish Type -> SubType chains in the network
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9273790Z test full-scope::links_network::every_answer_has_a_trace_link_pointer ... ignored, tracked requirement: every answer must publish a trace link pointing to a reasoning record
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9274460Z test full-scope::links_network::distinct_prompts_lead_to_distinct_links_traces ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9274890Z test full-scope::links_network::every_answer_records_intent_in_evidence_links ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9275340Z test full-scope::links_network::every_answer_includes_links_notation_trace ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9275950Z test full-scope::links_network::every_fact_carries_a_source_link ... ignored, tracked requirement: facts should be recorded with the source link that introduced them
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9276960Z test full-scope::links_network::history_is_append_only ... ignored, tracked requirement: history must be append-only — earlier records cannot be mutated, only superseded
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9277940Z test full-scope::links_network::ill_formed_links_notation_input_is_rejected ... ignored, tracked requirement: the engine should reject ill-formed Links Notation submissions
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9278830Z test full-scope::links_network::knowledge_dataset_declares_schema_version ... ignored, tracked requirement: knowledge dataset should declare a schema version link for migrations
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9279720Z test full-scope::links_network::knowledge_export_is_reducible_to_doublet_links ... ignored, tracked requirement: every record in the network must be reducible to doublet links
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9280550Z test full-scope::links_network::knowledge_export_is_non_empty_links_notation ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9281000Z test full-scope::links_network::knowledge_export_uses_untyped_links_notation_only ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9281640Z test full-scope::links_network::records_are_addressable_by_stable_id ... ignored, tracked requirement: links network must support querying records via a stable id
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9282440Z test full-scope::links_network::trace_record_lists_ordered_reasoning_steps ... ignored, tracked requirement: trace records must list ordered reasoning steps in Links Notation
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9283130Z test full-scope::multilingual::chinese_concept_question_returns_concept_lookup_intent ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9283570Z test full-scope::multilingual::chinese_greeting_returns_greeting_intent ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9284020Z test full-scope::multilingual::chinese_identity_question_returns_identity_intent ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9284430Z test full-scope::multilingual::english_greeting_is_handled_today ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9284850Z test full-scope::multilingual::every_multilingual_answer_declares_detected_language_link ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9285350Z test full-scope::multilingual::hindi_concept_question_returns_concept_lookup_intent ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9285900Z test full-scope::multilingual::hindi_greeting_returns_greeting_intent ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9286430Z test full-scope::multilingual::hindi_identity_question_returns_identity_intent ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9286890Z test full-scope::multilingual::russian_concept_question_returns_concept_lookup_intent ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9287350Z test full-scope::multilingual::russian_greeting_reply_is_in_russian ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9287750Z test full-scope::multilingual::russian_greeting_returns_greeting_intent ... ok
 Test (macos-latest)	Run tests	2026-05-15T13:54:40.9288180Z test data_files::lino_data_files_are_parseable_human_readable_and_bounded ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9288680Z test mvp::multilingual::unknown_language_prompts_fall_back_to_english_with_unknown_language_link ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9289190Z test mvp::network_visualization::answers_already_carry_links_notation_for_visualization ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9289950Z test mvp::multilingual::russian_identity_question_returns_identity_intent ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9290340Z test mvp::network_visualization::graph_edges_describe_doublet_links ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9290760Z test mvp::network_visualization::graph_endpoint_filters_by_trace_id ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9291200Z test mvp::network_visualization::graph_endpoint_returns_404_for_unknown_trace ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9291740Z test mvp::network_visualization::graph_endpoint_supports_dot_export ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9292260Z test mvp::links_network::knowledge_records_parse_as_links_notation ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9293910Z test mvp::network_visualization::web_demo_chat_works_even_when_graph_is_disabled ... ignored, MVP-target: web demo must render the graph alongside chat but never block chat replies
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9297890Z test mvp::openai_compatibility::authenticated_routes_accept_bearer_token ... ignored, MVP-target: an authenticated API surface should accept ***
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9299510Z test mvp::network_visualization::graph_endpoint_returns_nodes_and_edges ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9301490Z test mvp::openai_compatibility::chat_completion_refuses_tool_call_without_agent_mode ... ignored, MVP-target: chat completions should refuse to call shell tools unless agent mode is opted in
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9303500Z test mvp::openai_compatibility::chat_completion_accepts_multipart_content ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9303940Z test mvp::openai_compatibility::chat_completion_reports_token_usage ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9304490Z test mvp::openai_compatibility::chat_completion_round_trips_user_prompt_to_assistant_response ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9304950Z test mvp::network_visualization::graph_nodes_carry_minimum_metadata ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9305360Z test mvp::openai_compatibility::http_chat_completions_route_rejects_invalid_json ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9306220Z test mvp::openai_compatibility::chat_completion_supports_multi_turn_conversation ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9306640Z test mvp::openai_compatibility::http_health_endpoint_returns_ok ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9307100Z test mvp::openai_compatibility::http_chat_completions_route_returns_completion_object ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9307560Z test mvp::openai_compatibility::http_responses_declare_a_content_type ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9307980Z test mvp::openai_compatibility::http_models_endpoint_lists_at_least_one_model ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9308420Z test mvp::openai_compatibility::http_unknown_route_returns_404 ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9308770Z test mvp::openai_compatibility::rate_limit_metadata_is_exposed ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9309150Z test mvp::openai_compatibility::responses_endpoint_returns_completed_response ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9309550Z test mvp::openai_compatibility::responses_api_attaches_trace_link ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9309940Z test mvp::openai_compatibility::http_responses_route_returns_response_object ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9310380Z test mvp::reasoning_loop::answers_expose_their_intent_explicitly ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9310750Z test mvp::reasoning_loop::answers_are_repeatable_for_the_same_prompt ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9311380Z test mvp::reasoning_loop::confidence_reflects_corroborating_evidence ... ignored, MVP-target: confidence should reflect the number of corroborating links in the network
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9312340Z test mvp::reasoning_loop::loop_terminates_on_unsolvable_questions ... ignored, MVP-target: the loop must terminate and refuse to spin forever on unsolvable questions
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9313410Z test mvp::reasoning_loop::step_1_prompt_is_recorded_as_impulse ... ignored, MVP-target: step 1 — every prompt should be recorded as an impulse link before reasoning
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9314160Z test mvp::openai_compatibility::streaming_chat_completion_emits_server_sent_events ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9315020Z test mvp::reasoning_loop::step_2_local_search_runs_before_external_calls ... ignored, MVP-target: step 2 — local network search should be tried before any external lookup
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9316400Z test mvp::reasoning_loop::step_3_external_search_kicks_in_when_local_is_insufficient ... ignored, MVP-target: step 3 — when local search is insufficient, the loop must fall back to external sources
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9317370Z test mvp::reasoning_loop::step_4_complex_requests_get_decomposed ... ignored, MVP-target: step 4 — complex requests should be decomposed into sub-impulses
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9318290Z test mvp::reasoning_loop::step_5_multiple_candidates_are_generated ... ignored, MVP-target: step 5 — multiple candidate answers must be generated and recorded
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9320160Z test mvp::reasoning_loop::step_6_candidates_are_validated_against_constraints ... ignored, MVP-target: step 6 — candidates must be validated against constraints from the network
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9321210Z test mvp::reasoning_loop::step_7_smallest_sufficient_answer_is_selected ... ignored, MVP-target: step 7 — the smallest sufficient answer should be selected
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9322390Z test mvp::reasoning_loop::step_8_full_trace_is_stored_and_linked ... ignored, MVP-target: step 8 — the complete trace must be stored and linked back to the answer
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9323310Z test mvp::reasoning_loop::step_9_reply_is_returned_with_trace_pointer ... ignored, MVP-target: step 9 — final reply must be returned along with the trace pointer
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9323930Z test mvp::reasoning_loop::known_prompts_resolve_via_local_knowledge ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9324350Z test mvp::reasoning_paths::arithmetic_handles_basic_addition ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9324720Z test mvp::reasoning_paths::arithmetic_handles_decimals ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9325190Z test mvp::reasoning_loop::unknown_prompts_acknowledge_inability_to_answer ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9325620Z test mvp::reasoning_paths::arithmetic_handles_division_remainder ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9326300Z test mvp::reasoning_paths::arithmetic_handles_parentheses_and_precedence ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9326740Z test mvp::reasoning_paths::arithmetic_handles_word_operators ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9327130Z test mvp::reasoning_paths::arithmetic_never_fires_on_plain_greetings ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9327540Z test mvp::reasoning_paths::arithmetic_records_calculation_event_in_evidence_log ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9339810Z test mvp::reasoning_paths::arithmetic_reports_division_by_zero_without_panicking ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9340320Z test mvp::reasoning_paths::concept_lookup_answers_what_is_wikipedia ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9340780Z test mvp::reasoning_paths::concept_lookup_does_not_fire_for_identity_questions ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9341210Z test mvp::reasoning_paths::concept_lookup_handles_tell_me_about_links_notation ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9341600Z test mvp::reasoning_paths::concept_lookup_handles_what_does_x_mean ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9341970Z test mvp::reasoning_paths::concept_lookup_includes_source_citation ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9342360Z test mvp::reasoning_paths::concept_lookup_records_concept_event_in_evidence_log ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9342820Z test mvp::reasoning_paths::javascript_handler_does_not_intercept_unrelated_code_blocks ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9343270Z test mvp::reasoning_paths::javascript_request_records_execution_status_event ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9343690Z test mvp::reasoning_paths::javascript_request_returns_explicit_unavailability ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9344100Z test mvp::reasoning_paths::every_specialized_handler_emits_a_trace_link ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9344530Z test mvp::reasoning_paths::prior_turns_appear_in_evidence_log ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9344900Z test mvp::reasoning_paths::solve_with_history_recalls_last_question ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9345300Z test mvp::reasoning_paths::solve_with_history_falls_through_for_unrelated_prompts ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9345750Z test mvp::reasoning_paths::solve_with_history_recalls_name_across_turns ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9346370Z test mvp::source_cache::cache_flush_is_explicit_and_auditable ... ignored, MVP-target: a request to flush the source cache should be an explicit, auditable action
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9347410Z test mvp::source_cache::cached_sources_include_content_hash ... ignored, MVP-target: cached sources must include the original content hash for verification
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9348240Z test mvp::source_cache::conflicting_sources_are_surfaced ... ignored, MVP-target: sources that disagree must be surfaced rather than silently picking one
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9349530Z test mvp::source_cache::external_lookups_record_source_url ... ignored, MVP-target: external lookups should record a source link with the original URL
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9350360Z test mvp::source_cache::offline_mode_disables_external_lookups ... ignored, MVP-target: offline mode should disable external lookups and prefer cached evidence
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9350980Z test mvp::reasoning_paths::solve_with_history_summarizes_conversation ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9351380Z test mvp::reasoning_paths::solve_without_history_matches_legacy_entry_point ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9351980Z test mvp::source_cache::repeated_lookups_hit_the_cache ... ignored, MVP-target: repeated lookups within the TTL must hit the cache and avoid the network
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9352610Z test mvp::source_cache::prototype_does_not_advertise_external_fetches_for_local_prompts ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9353250Z test mvp::source_cache::source_links_carry_fetched_at_timestamp ... ignored, MVP-target: source links must include a fetched_at timestamp for TTL tracking
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9355420Z test mvp::source_cache::stale_sources_are_refreshed ... ignored, MVP-target: stale sources should be refreshed when older than the 2-month TTL
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9355980Z test mvp::telegram_surface::private_chat_messages_get_answered ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9356350Z test mvp::telegram_surface::public_chat_silent_when_not_addressed ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9357110Z test mvp::telegram_surface::public_chat_answers_when_mentioned ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9357480Z test mvp::telegram_surface::private_chat_code_replies_use_html_pre_code ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9358090Z test mvp::telegram_surface::telegram_answers_include_trace_link ... ignored, MVP-target: Telegram answers should include a trace link the user can tap to inspect
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9358700Z test mvp::telegram_surface::replies_to_bot_in_public_chat_are_answered ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9359110Z test mvp::telegram_surface::public_supergroup_code_answer_remains_in_html_format ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9359530Z test mvp::telegram_surface::telegram_code_replies_escape_html_entities ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9359890Z test mvp::telegram_surface::telegram_long_replies_are_chunked ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9360270Z test mvp::telegram_surface::telegram_webhook_rejects_invalid_payload_gracefully ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9360680Z test mvp::telegram_surface::telegram_webhook_ignores_updates_without_text ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9361340Z test mvp::translation_via_links::cross_language_code_translation_preserves_semantics ... ignored, MVP-target: cross-language code translation must preserve runnable semantics
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9362010Z test mvp::telegram_surface::telegram_response_always_declares_html_parse_mode ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9362630Z test mvp::translation_via_links::synonyms_across_languages_share_meaning ... ignored, MVP-target: synonyms across languages should hash to the same meaning link
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9363480Z test mvp::translation_via_links::translation_declares_source_and_target_language_tags ... ignored, MVP-target: translation must declare both source and target language tags
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9364390Z test mvp::translation_via_links::translation_preserves_meaning_id_across_languages ... ignored, MVP-target: translation between human languages should preserve the meaning link id
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9365290Z test mvp::translation_via_links::translation_request_returns_target_surface_form ... ignored, MVP-target: translation request must return the target-language surface form
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9366310Z test mvp::translation_via_links::translation_trace_includes_intermediate_meaning ... ignored, MVP-target: translation traces must include the intermediate Links Notation meaning record
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9367230Z test mvp::translation_via_links::untranslatable_concepts_are_flagged ... ignored, MVP-target: untranslatable concepts must be flagged rather than approximated silently
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9368070Z test mvp::transparent_state::diagnostic_ids_never_leak_into_default_chat_prose ... ignored, MVP-target: diagnostic link ids must not leak into default chat prose
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9288680Z test full-scope::multilingual::unknown_language_prompts_fall_back_to_english_with_unknown_language_link ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9289190Z test full-scope::network_visualization::answers_already_carry_links_notation_for_visualization ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9289950Z test full-scope::multilingual::russian_identity_question_returns_identity_intent ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9290340Z test full-scope::network_visualization::graph_edges_describe_doublet_links ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9290760Z test full-scope::network_visualization::graph_endpoint_filters_by_trace_id ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9291200Z test full-scope::network_visualization::graph_endpoint_returns_404_for_unknown_trace ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9291740Z test full-scope::network_visualization::graph_endpoint_supports_dot_export ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9292260Z test full-scope::links_network::knowledge_records_parse_as_links_notation ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9293910Z test full-scope::network_visualization::web_demo_chat_works_even_when_graph_is_disabled ... ignored, tracked requirement: web demo must render the graph alongside chat but never block chat replies
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9297890Z test full-scope::openai_compatibility::authenticated_routes_accept_bearer_token ... ignored, tracked requirement: an authenticated API surface should accept ***
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9299510Z test full-scope::network_visualization::graph_endpoint_returns_nodes_and_edges ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9301490Z test full-scope::openai_compatibility::chat_completion_refuses_tool_call_without_agent_mode ... ignored, tracked requirement: chat completions should refuse to call shell tools unless agent mode is opted in
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9303500Z test full-scope::openai_compatibility::chat_completion_accepts_multipart_content ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9303940Z test full-scope::openai_compatibility::chat_completion_reports_token_usage ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9304490Z test full-scope::openai_compatibility::chat_completion_round_trips_user_prompt_to_assistant_response ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9304950Z test full-scope::network_visualization::graph_nodes_carry_minimum_metadata ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9305360Z test full-scope::openai_compatibility::http_chat_completions_route_rejects_invalid_json ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9306220Z test full-scope::openai_compatibility::chat_completion_supports_multi_turn_conversation ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9306640Z test full-scope::openai_compatibility::http_health_endpoint_returns_ok ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9307100Z test full-scope::openai_compatibility::http_chat_completions_route_returns_completion_object ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9307560Z test full-scope::openai_compatibility::http_responses_declare_a_content_type ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9307980Z test full-scope::openai_compatibility::http_models_endpoint_lists_at_least_one_model ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9308420Z test full-scope::openai_compatibility::http_unknown_route_returns_404 ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9308770Z test full-scope::openai_compatibility::rate_limit_metadata_is_exposed ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9309150Z test full-scope::openai_compatibility::responses_endpoint_returns_completed_response ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9309550Z test full-scope::openai_compatibility::responses_api_attaches_trace_link ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9309940Z test full-scope::openai_compatibility::http_responses_route_returns_response_object ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9310380Z test full-scope::reasoning_loop::answers_expose_their_intent_explicitly ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9310750Z test full-scope::reasoning_loop::answers_are_repeatable_for_the_same_prompt ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9311380Z test full-scope::reasoning_loop::confidence_reflects_corroborating_evidence ... ignored, tracked requirement: confidence should reflect the number of corroborating links in the network
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9312340Z test full-scope::reasoning_loop::loop_terminates_on_unsolvable_questions ... ignored, tracked requirement: the loop must terminate and refuse to spin forever on unsolvable questions
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9313410Z test full-scope::reasoning_loop::step_1_prompt_is_recorded_as_impulse ... ignored, tracked requirement: step 1 — every prompt should be recorded as an impulse link before reasoning
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9314160Z test full-scope::openai_compatibility::streaming_chat_completion_emits_server_sent_events ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9315020Z test full-scope::reasoning_loop::step_2_local_search_runs_before_external_calls ... ignored, tracked requirement: step 2 — local network search should be tried before any external lookup
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9316400Z test full-scope::reasoning_loop::step_3_external_search_kicks_in_when_local_is_insufficient ... ignored, tracked requirement: step 3 — when local search is insufficient, the loop must fall back to external sources
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9317370Z test full-scope::reasoning_loop::step_4_complex_requests_get_decomposed ... ignored, tracked requirement: step 4 — complex requests should be decomposed into sub-impulses
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9318290Z test full-scope::reasoning_loop::step_5_multiple_candidates_are_generated ... ignored, tracked requirement: step 5 — multiple candidate answers must be generated and recorded
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9320160Z test full-scope::reasoning_loop::step_6_candidates_are_validated_against_constraints ... ignored, tracked requirement: step 6 — candidates must be validated against constraints from the network
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9321210Z test full-scope::reasoning_loop::step_7_smallest_sufficient_answer_is_selected ... ignored, tracked requirement: step 7 — the smallest sufficient answer should be selected
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9322390Z test full-scope::reasoning_loop::step_8_full_trace_is_stored_and_linked ... ignored, tracked requirement: step 8 — the complete trace must be stored and linked back to the answer
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9323310Z test full-scope::reasoning_loop::step_9_reply_is_returned_with_trace_pointer ... ignored, tracked requirement: step 9 — final reply must be returned along with the trace pointer
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9323930Z test full-scope::reasoning_loop::known_prompts_resolve_via_local_knowledge ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9324350Z test full-scope::reasoning_paths::arithmetic_handles_basic_addition ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9324720Z test full-scope::reasoning_paths::arithmetic_handles_decimals ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9325190Z test full-scope::reasoning_loop::unknown_prompts_acknowledge_inability_to_answer ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9325620Z test full-scope::reasoning_paths::arithmetic_handles_division_remainder ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9326300Z test full-scope::reasoning_paths::arithmetic_handles_parentheses_and_precedence ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9326740Z test full-scope::reasoning_paths::arithmetic_handles_word_operators ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9327130Z test full-scope::reasoning_paths::arithmetic_never_fires_on_plain_greetings ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9327540Z test full-scope::reasoning_paths::arithmetic_records_calculation_event_in_evidence_log ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9339810Z test full-scope::reasoning_paths::arithmetic_reports_division_by_zero_without_panicking ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9340320Z test full-scope::reasoning_paths::concept_lookup_answers_what_is_wikipedia ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9340780Z test full-scope::reasoning_paths::concept_lookup_does_not_fire_for_identity_questions ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9341210Z test full-scope::reasoning_paths::concept_lookup_handles_tell_me_about_links_notation ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9341600Z test full-scope::reasoning_paths::concept_lookup_handles_what_does_x_mean ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9341970Z test full-scope::reasoning_paths::concept_lookup_includes_source_citation ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9342360Z test full-scope::reasoning_paths::concept_lookup_records_concept_event_in_evidence_log ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9342820Z test full-scope::reasoning_paths::javascript_handler_does_not_intercept_unrelated_code_blocks ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9343270Z test full-scope::reasoning_paths::javascript_request_records_execution_status_event ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9343690Z test full-scope::reasoning_paths::javascript_request_returns_explicit_unavailability ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9344100Z test full-scope::reasoning_paths::every_specialized_handler_emits_a_trace_link ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9344530Z test full-scope::reasoning_paths::prior_turns_appear_in_evidence_log ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9344900Z test full-scope::reasoning_paths::solve_with_history_recalls_last_question ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9345300Z test full-scope::reasoning_paths::solve_with_history_falls_through_for_unrelated_prompts ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9345750Z test full-scope::reasoning_paths::solve_with_history_recalls_name_across_turns ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9346370Z test full-scope::source_cache::cache_flush_is_explicit_and_auditable ... ignored, tracked requirement: a request to flush the source cache should be an explicit, auditable action
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9347410Z test full-scope::source_cache::cached_sources_include_content_hash ... ignored, tracked requirement: cached sources must include the original content hash for verification
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9348240Z test full-scope::source_cache::conflicting_sources_are_surfaced ... ignored, tracked requirement: sources that disagree must be surfaced rather than silently picking one
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9349530Z test full-scope::source_cache::external_lookups_record_source_url ... ignored, tracked requirement: external lookups should record a source link with the original URL
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9350360Z test full-scope::source_cache::offline_mode_disables_external_lookups ... ignored, tracked requirement: offline mode should disable external lookups and prefer cached evidence
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9350980Z test full-scope::reasoning_paths::solve_with_history_summarizes_conversation ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9351380Z test full-scope::reasoning_paths::solve_without_history_matches_legacy_entry_point ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9351980Z test full-scope::source_cache::repeated_lookups_hit_the_cache ... ignored, tracked requirement: repeated lookups within the TTL must hit the cache and avoid the network
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9352610Z test full-scope::source_cache::prototype_does_not_advertise_external_fetches_for_local_prompts ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9353250Z test full-scope::source_cache::source_links_carry_fetched_at_timestamp ... ignored, tracked requirement: source links must include a fetched_at timestamp for TTL tracking
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9355420Z test full-scope::source_cache::stale_sources_are_refreshed ... ignored, tracked requirement: stale sources should be refreshed when older than the 2-month TTL
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9355980Z test full-scope::telegram_surface::private_chat_messages_get_answered ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9356350Z test full-scope::telegram_surface::public_chat_silent_when_not_addressed ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9357110Z test full-scope::telegram_surface::public_chat_answers_when_mentioned ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9357480Z test full-scope::telegram_surface::private_chat_code_replies_use_html_pre_code ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9358090Z test full-scope::telegram_surface::telegram_answers_include_trace_link ... ignored, tracked requirement: Telegram answers should include a trace link the user can tap to inspect
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9358700Z test full-scope::telegram_surface::replies_to_bot_in_public_chat_are_answered ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9359110Z test full-scope::telegram_surface::public_supergroup_code_answer_remains_in_html_format ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9359530Z test full-scope::telegram_surface::telegram_code_replies_escape_html_entities ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9359890Z test full-scope::telegram_surface::telegram_long_replies_are_chunked ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9360270Z test full-scope::telegram_surface::telegram_webhook_rejects_invalid_payload_gracefully ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9360680Z test full-scope::telegram_surface::telegram_webhook_ignores_updates_without_text ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9361340Z test full-scope::translation_via_links::cross_language_code_translation_preserves_semantics ... ignored, tracked requirement: cross-language code translation must preserve runnable semantics
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9362010Z test full-scope::telegram_surface::telegram_response_always_declares_html_parse_mode ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9362630Z test full-scope::translation_via_links::synonyms_across_languages_share_meaning ... ignored, tracked requirement: synonyms across languages should hash to the same meaning link
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9363480Z test full-scope::translation_via_links::translation_declares_source_and_target_language_tags ... ignored, tracked requirement: translation must declare both source and target language tags
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9364390Z test full-scope::translation_via_links::translation_preserves_meaning_id_across_languages ... ignored, tracked requirement: translation between human languages should preserve the meaning link id
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9365290Z test full-scope::translation_via_links::translation_request_returns_target_surface_form ... ignored, tracked requirement: translation request must return the target-language surface form
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9366310Z test full-scope::translation_via_links::translation_trace_includes_intermediate_meaning ... ignored, tracked requirement: translation traces must include the intermediate Links Notation meaning record
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9367230Z test full-scope::translation_via_links::untranslatable_concepts_are_flagged ... ignored, tracked requirement: untranslatable concepts must be flagged rather than approximated silently
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9368070Z test full-scope::transparent_state::diagnostic_ids_never_leak_into_default_chat_prose ... ignored, tracked requirement: diagnostic link ids must not leak into default chat prose
 Test (macos-latest)	Run tests	2026-05-15T13:54:40.9369000Z ^[[1m^[[92m   Doc-tests^[[0m formal_ai
 Test (macos-latest)	Run tests	2026-05-15T13:54:40.9374530Z ^[[1m^[[92m     Running^[[0m `/Users/runner/.rustup/toolchains/stable-aarch64-apple-darwin/bin/rustdoc --edition=2021 --crate-type lib --color always --crate-name formal_ai --test src/lib.rs --test-run-directory /Users/runner/work/formal-ai/formal-ai '--warn=clippy::pedantic' '--warn=clippy::nursery' '--warn=clippy::all' --forbid=unsafe_code '--allow=clippy::too_many_lines' '--allow=clippy::module_name_repetitions' '--allow=clippy::missing_panics_doc' '--allow=clippy::missing_errors_doc' --extern clap=/Users/runner/work/formal-ai/formal-ai/target/debug/deps/libclap-111982c85a7de6c4.rlib --extern formal_ai=/Users/runner/work/formal-ai/formal-ai/target/debug/deps/libformal_ai-dbc79364e6920ed2.rlib --extern lino_arguments=/Users/runner/work/formal-ai/formal-ai/target/debug/deps/liblino_arguments-d429259adf84e072.rlib --extern lino_objects_codec=/Users/runner/work/formal-ai/formal-ai/target/debug/deps/liblino_objects_codec-0e35373ce97468c1.rlib --extern regex=/Users/runner/work/formal-ai/formal-ai/target/debug/deps/libregex-69684f2c003af916.rlib --extern serde=/Users/runner/work/formal-ai/formal-ai/target/debug/deps/libserde-a1cc0de505df4648.rlib --extern serde_json=/Users/runner/work/formal-ai/formal-ai/target/debug/deps/libserde_json-704f9a20b00004fa.rlib --extern walkdir=/Users/runner/work/formal-ai/formal-ai/target/debug/deps/libwalkdir-c0752a07fba717f8.rlib -L dependency=/Users/runner/work/formal-ai/formal-ai/target/debug/deps -C embed-bitcode=no --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' --error-format human`
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9380060Z test mvp::transparent_state::diagnostic_mode_can_be_enabled_per_message ... ignored, MVP-target: the user must be able to opt-in to diagnostic mode and see all links inline
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9380940Z test mvp::transparent_state::export_network_returns_links_notation_snapshot ... ignored, MVP-target: 'export network' should return a downloadable Links Notation snapshot
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9381870Z test mvp::transparent_state::forget_request_requires_explicit_retraction_protocol ... ignored, MVP-target: 'forget X' must be refused unless the user invokes the explicit retraction protocol
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9382570Z test mvp::translation_via_links::every_answer_publishes_a_links_notation_trace ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9383010Z test mvp::transparent_state::evidence_links_are_exposed_through_the_public_struct ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9383630Z test mvp::transparent_state::list_my_facts_filters_by_user ... ignored, MVP-target: 'list my facts' should return only facts the current user contributed
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9384390Z test mvp::transparent_state::querying_a_concept_returns_its_links ... ignored, MVP-target: 'what do you know about X' should list links involving X
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9385170Z test mvp::transparent_state::querying_the_network_returns_snapshot ... ignored, MVP-target: querying 'show me the network' should return a Links Notation snapshot
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9386000Z test mvp::transparent_state::why_meta_question_explains_previous_answer ... ignored, MVP-target: 'why' meta-questions should explain the previous answer using links
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9386630Z test mvp::transparent_state::links_notation_trace_is_always_present ... ok
-Test (macos-latest)	Run tests	2026-05-15T13:54:40.9387030Z test mvp::transparent_state::knowledge_export_is_inspectable_at_runtime ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9380060Z test full-scope::transparent_state::diagnostic_mode_can_be_enabled_per_message ... ignored, tracked requirement: the user must be able to opt-in to diagnostic mode and see all links inline
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9380940Z test full-scope::transparent_state::export_network_returns_links_notation_snapshot ... ignored, tracked requirement: 'export network' should return a downloadable Links Notation snapshot
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9381870Z test full-scope::transparent_state::forget_request_requires_explicit_retraction_protocol ... ignored, tracked requirement: 'forget X' must be refused unless the user invokes the explicit retraction protocol
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9382570Z test full-scope::translation_via_links::every_answer_publishes_a_links_notation_trace ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9383010Z test full-scope::transparent_state::evidence_links_are_exposed_through_the_public_struct ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9383630Z test full-scope::transparent_state::list_my_facts_filters_by_user ... ignored, tracked requirement: 'list my facts' should return only facts the current user contributed
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9384390Z test full-scope::transparent_state::querying_a_concept_returns_its_links ... ignored, tracked requirement: 'what do you know about X' should list links involving X
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9385170Z test full-scope::transparent_state::querying_the_network_returns_snapshot ... ignored, tracked requirement: querying 'show me the network' should return a Links Notation snapshot
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9386000Z test full-scope::transparent_state::why_meta_question_explains_previous_answer ... ignored, tracked requirement: 'why' meta-questions should explain the previous answer using links
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9386630Z test full-scope::transparent_state::links_notation_trace_is_always_present ... ok
+Test (macos-latest)	Run tests	2026-05-15T13:54:40.9387030Z test full-scope::transparent_state::knowledge_export_is_inspectable_at_runtime ... ok
 Test (macos-latest)	Run tests	2026-05-15T13:54:40.9387270Z 
 Test (macos-latest)	Run tests	2026-05-15T13:54:40.9387620Z test result: ok. 156 passed; 0 failed; 69 ignored; 0 measured; 0 filtered out; finished in 0.03s
 Test (macos-latest)	Run tests	2026-05-15T13:54:40.9387890Z 
@@ -3512,189 +3512,189 @@ Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7477959Z test formal_ai::rust
 Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7478640Z test formal_ai::server_handler_supports_chat_completions_route ... ok
 Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7479581Z test formal_ai::merged_bundle_and_parse_bundle_round_trip_split_files ... ok
 Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7480426Z test formal_ai::telegram_webhook_supports_private_messages ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7481159Z test mvp::agent_isolation::agent_actions_are_appended_to_visible_log ... ignored, MVP-target: every agent action must be appended to a visible action log
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7482205Z test mvp::agent_isolation::agent_execution_runs_in_isolated_environment ... ignored, MVP-target: agent execution must run inside an isolated sandbox (docker/webvm/sandbox)
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7483550Z test mvp::agent_isolation::agent_failures_are_visible ... ignored, MVP-target: agent failures should never be silenced — they must surface with a trace link
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7484544Z test mvp::agent_isolation::agent_mode_does_not_leak_host_env_vars ... ignored, MVP-target: agent mode must not exfiltrate secrets from the host environment
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7485704Z test mvp::agent_isolation::agent_mode_enforces_time_budget ... ignored, MVP-target: agent mode must enforce a time budget on long-running tasks
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7487431Z test mvp::agent_isolation::agent_mode_is_off_by_default ... ignored, MVP-target: agent mode must be off by default and refused without explicit opt-in
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7489285Z test mvp::agent_isolation::agent_mode_opt_in_is_explicit_and_logged ... ignored, MVP-target: agent mode opt-in must be explicit and recorded as a link
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7481159Z test full-scope::agent_isolation::agent_actions_are_appended_to_visible_log ... ignored, tracked requirement: every agent action must be appended to a visible action log
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7482205Z test full-scope::agent_isolation::agent_execution_runs_in_isolated_environment ... ignored, tracked requirement: agent execution must run inside an isolated sandbox (docker/webvm/sandbox)
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7483550Z test full-scope::agent_isolation::agent_failures_are_visible ... ignored, tracked requirement: agent failures should never be silenced — they must surface with a trace link
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7484544Z test full-scope::agent_isolation::agent_mode_does_not_leak_host_env_vars ... ignored, tracked requirement: agent mode must not exfiltrate secrets from the host environment
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7485704Z test full-scope::agent_isolation::agent_mode_enforces_time_budget ... ignored, tracked requirement: agent mode must enforce a time budget on long-running tasks
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7487431Z test full-scope::agent_isolation::agent_mode_is_off_by_default ... ignored, tracked requirement: agent mode must be off by default and refused without explicit opt-in
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7489285Z test full-scope::agent_isolation::agent_mode_opt_in_is_explicit_and_logged ... ignored, tracked requirement: agent mode opt-in must be explicit and recorded as a link
 Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7490831Z test ci_cd::workspace_manifest_resolution::resolves_first_publishable_workspace_member ... ok
 Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7494299Z test formal_ai::telegram_webhook_supports_public_chat_code_replies ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7495805Z test mvp::agent_isolation::destructive_agent_actions_require_confirmation ... ignored, MVP-target: destructive actions in agent mode require human confirmation
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7498133Z test mvp::agent_isolation::switching_to_chat_revokes_agent_privileges ... ignored, MVP-target: switching back to chat mode must wipe agent privileges immediately
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7499727Z test mvp::agent_isolation::chat_prototype_never_runs_user_supplied_shell_commands ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7501503Z test mvp::chat_surface::chat_mode_refuses_unbounded_multi_step_actions_without_agent_opt_in ... ignored, MVP-target: bounded chat mode should refuse to run agent-style tasks without explicit opt-in
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7503922Z test mvp::chat_surface::diagnostics_are_excluded_from_default_user_facing_answers ... ignored, MVP-target: diagnostics-off-by-default should also be expressed at the engine level
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7505942Z test mvp::agent_isolation::typescript_unavailable_status_is_honest_not_silenced ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7507395Z test mvp::chat_surface::empty_prompt_does_not_crash_and_is_classified_as_unknown ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7508903Z test mvp::chat_surface::every_answer_exposes_a_trace_link_for_inspection ... ignored, MVP-target: chat answers should expose a trace link the user can follow
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7511070Z test mvp::chat_surface::every_code_answer_declares_execution_status_or_unavailability ... ignored, MVP-target: chat-mode answers must declare the execution status of any generated code
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7512794Z test mvp::chat_surface::evidence_links_always_include_prompt_and_intent_links ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7513758Z test mvp::chat_surface::greeting_ignores_surrounding_punctuation ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7514613Z test mvp::chat_surface::greeting_matching_is_case_insensitive ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7515531Z test mvp::chat_surface::answers_are_deterministic_for_identical_prompts ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7517014Z test mvp::chat_surface::identity_question_returns_identity_intent ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7517870Z test mvp::chat_surface::identity_examples_cover_known_phrasings ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7518699Z test mvp::chat_surface::greeting_prompt_returns_a_greeting_intent ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7520214Z test mvp::chat_surface::unknown_intent_offers_a_path_to_extend_the_network ... ignored, MVP-target: unknown intents should propose a follow-up that creates a Links Notation seed
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7522385Z test mvp::chat_surface::user_messages_are_recorded_as_impulse_events ... ignored, MVP-target: assistant should record the user message as an `impulse` link before answering
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7523920Z test mvp::chat_surface::links_notation_trace_is_present_for_every_answer ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7524843Z test mvp::chat_surface::whitespace_only_prompt_is_classified_as_unknown ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7525816Z test mvp::chat_surface::unknown_prompt_returns_zero_confidence_fallback_intent ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7527486Z test mvp::code_generation::code_answers_declare_isolation_level ... ignored, MVP-target: code answers should declare an isolation level for execution evidence
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7529769Z test mvp::code_generation::code_answers_include_execution_links_in_notation ... ignored, MVP-target: code answers should include execution metadata in Links Notation form
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7531986Z test mvp::code_generation::execution_failures_are_reported_with_full_trace ... ignored, MVP-target: failing generated code must be re-emitted with the failure trace, not silently
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7533545Z test mvp::code_generation::c_hello_world_seed_compiles_and_runs ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7534331Z test mvp::code_generation::go_alias_golang_is_supported ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7535018Z test mvp::code_generation::go_hello_world_seed_runs ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7535918Z test mvp::code_generation::hello_world_without_recognized_language_falls_back_to_unknown ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7537720Z test mvp::code_generation::javascript_hello_world_seed_runs ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7538525Z test mvp::code_generation::javascript_alias_node_is_supported ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7539307Z test mvp::code_generation::python_hello_world_seed_runs ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7540034Z test mvp::code_generation::python_alias_py_is_supported ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7544335Z test mvp::code_generation::sorting_algorithm_request_returns_code_and_tests ... ignored, MVP-target: requesting `sorting algorithm` should produce reviewable code and tests
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7546816Z test mvp::code_generation::top_ten_popular_languages_each_have_a_hello_world_seed ... ignored, MVP-target: hello-world should be available in the top 10 popular languages
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7549026Z test mvp::code_generation::translating_a_program_between_languages_keeps_semantics ... ignored, MVP-target: translation between programming languages should keep semantics
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7550480Z test mvp::code_generation::rust_alias_rs_is_supported ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7551540Z test mvp::code_generation::rust_hello_world_seed_compiles_and_runs ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7552537Z test mvp::code_generation::typescript_hello_world_seed_reports_unavailable_execution ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7554112Z test mvp::links_network::concepts_are_unique_and_referenced_by_id ... ignored, MVP-target: each concept must be unique in the network and reused by reference
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7556410Z test mvp::links_network::dynamic_type_system_publishes_subtype_chains ... ignored, MVP-target: dynamic type system should publish Type -> SubType chains in the network
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7558434Z test mvp::links_network::every_answer_has_a_trace_link_pointer ... ignored, MVP-target: every answer must publish a trace link pointing to a reasoning record
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7559894Z test mvp::links_network::distinct_prompts_lead_to_distinct_links_traces ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7560841Z test mvp::links_network::every_answer_records_intent_in_evidence_links ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7562227Z test mvp::links_network::every_fact_carries_a_source_link ... ignored, MVP-target: facts should be recorded with the source link that introduced them
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7564484Z test mvp::links_network::history_is_append_only ... ignored, MVP-target: history must be append-only — earlier records cannot be mutated, only superseded
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7569275Z test mvp::links_network::ill_formed_links_notation_input_is_rejected ... ignored, MVP-target: the engine should reject ill-formed Links Notation submissions
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7571346Z test mvp::links_network::knowledge_dataset_declares_schema_version ... ignored, MVP-target: knowledge dataset should declare a schema version link for migrations
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7573139Z test mvp::links_network::knowledge_export_is_reducible_to_doublet_links ... ignored, MVP-target: every record in the network must be reducible to doublet links
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7573906Z test mvp::links_network::every_answer_includes_links_notation_trace ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7574413Z test mvp::links_network::knowledge_export_is_non_empty_links_notation ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7574923Z test mvp::links_network::knowledge_export_uses_untyped_links_notation_only ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7575874Z test mvp::links_network::records_are_addressable_by_stable_id ... ignored, MVP-target: links network must support querying records via a stable id
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7577247Z test mvp::links_network::trace_record_lists_ordered_reasoning_steps ... ignored, MVP-target: trace records must list ordered reasoning steps in Links Notation
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7578369Z test mvp::multilingual::chinese_concept_question_returns_concept_lookup_intent ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7579322Z test mvp::multilingual::chinese_greeting_returns_greeting_intent ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7580234Z test mvp::multilingual::chinese_identity_question_returns_identity_intent ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7581071Z test mvp::multilingual::english_greeting_is_handled_today ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7581962Z test mvp::multilingual::every_multilingual_answer_declares_detected_language_link ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7582958Z test mvp::multilingual::hindi_concept_question_returns_concept_lookup_intent ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7584063Z test mvp::multilingual::hindi_greeting_returns_greeting_intent ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7584978Z test mvp::multilingual::hindi_identity_question_returns_identity_intent ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7585954Z test mvp::multilingual::russian_concept_question_returns_concept_lookup_intent ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7587533Z test mvp::multilingual::russian_greeting_reply_is_in_russian ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7588387Z test mvp::multilingual::russian_greeting_returns_greeting_intent ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7495805Z test full-scope::agent_isolation::destructive_agent_actions_require_confirmation ... ignored, tracked requirement: destructive actions in agent mode require human confirmation
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7498133Z test full-scope::agent_isolation::switching_to_chat_revokes_agent_privileges ... ignored, tracked requirement: switching back to chat mode must wipe agent privileges immediately
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7499727Z test full-scope::agent_isolation::chat_prototype_never_runs_user_supplied_shell_commands ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7501503Z test full-scope::chat_surface::chat_mode_refuses_unbounded_multi_step_actions_without_agent_opt_in ... ignored, tracked requirement: bounded chat mode should refuse to run agent-style tasks without explicit opt-in
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7503922Z test full-scope::chat_surface::diagnostics_are_excluded_from_default_user_facing_answers ... ignored, tracked requirement: diagnostics-off-by-default should also be expressed at the engine level
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7505942Z test full-scope::agent_isolation::typescript_unavailable_status_is_honest_not_silenced ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7507395Z test full-scope::chat_surface::empty_prompt_does_not_crash_and_is_classified_as_unknown ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7508903Z test full-scope::chat_surface::every_answer_exposes_a_trace_link_for_inspection ... ignored, tracked requirement: chat answers should expose a trace link the user can follow
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7511070Z test full-scope::chat_surface::every_code_answer_declares_execution_status_or_unavailability ... ignored, tracked requirement: chat-mode answers must declare the execution status of any generated code
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7512794Z test full-scope::chat_surface::evidence_links_always_include_prompt_and_intent_links ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7513758Z test full-scope::chat_surface::greeting_ignores_surrounding_punctuation ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7514613Z test full-scope::chat_surface::greeting_matching_is_case_insensitive ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7515531Z test full-scope::chat_surface::answers_are_deterministic_for_identical_prompts ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7517014Z test full-scope::chat_surface::identity_question_returns_identity_intent ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7517870Z test full-scope::chat_surface::identity_examples_cover_known_phrasings ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7518699Z test full-scope::chat_surface::greeting_prompt_returns_a_greeting_intent ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7520214Z test full-scope::chat_surface::unknown_intent_offers_a_path_to_extend_the_network ... ignored, tracked requirement: unknown intents should propose a follow-up that creates a Links Notation seed
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7522385Z test full-scope::chat_surface::user_messages_are_recorded_as_impulse_events ... ignored, tracked requirement: assistant should record the user message as an `impulse` link before answering
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7523920Z test full-scope::chat_surface::links_notation_trace_is_present_for_every_answer ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7524843Z test full-scope::chat_surface::whitespace_only_prompt_is_classified_as_unknown ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7525816Z test full-scope::chat_surface::unknown_prompt_returns_zero_confidence_fallback_intent ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7527486Z test full-scope::code_generation::code_answers_declare_isolation_level ... ignored, tracked requirement: code answers should declare an isolation level for execution evidence
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7529769Z test full-scope::code_generation::code_answers_include_execution_links_in_notation ... ignored, tracked requirement: code answers should include execution metadata in Links Notation form
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7531986Z test full-scope::code_generation::execution_failures_are_reported_with_full_trace ... ignored, tracked requirement: failing generated code must be re-emitted with the failure trace, not silently
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7533545Z test full-scope::code_generation::c_hello_world_seed_compiles_and_runs ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7534331Z test full-scope::code_generation::go_alias_golang_is_supported ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7535018Z test full-scope::code_generation::go_hello_world_seed_runs ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7535918Z test full-scope::code_generation::hello_world_without_recognized_language_falls_back_to_unknown ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7537720Z test full-scope::code_generation::javascript_hello_world_seed_runs ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7538525Z test full-scope::code_generation::javascript_alias_node_is_supported ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7539307Z test full-scope::code_generation::python_hello_world_seed_runs ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7540034Z test full-scope::code_generation::python_alias_py_is_supported ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7544335Z test full-scope::code_generation::sorting_algorithm_request_returns_code_and_tests ... ignored, tracked requirement: requesting `sorting algorithm` should produce reviewable code and tests
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7546816Z test full-scope::code_generation::top_ten_popular_languages_each_have_a_hello_world_seed ... ignored, tracked requirement: hello-world should be available in the top 10 popular languages
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7549026Z test full-scope::code_generation::translating_a_program_between_languages_keeps_semantics ... ignored, tracked requirement: translation between programming languages should keep semantics
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7550480Z test full-scope::code_generation::rust_alias_rs_is_supported ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7551540Z test full-scope::code_generation::rust_hello_world_seed_compiles_and_runs ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7552537Z test full-scope::code_generation::typescript_hello_world_seed_reports_unavailable_execution ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7554112Z test full-scope::links_network::concepts_are_unique_and_referenced_by_id ... ignored, tracked requirement: each concept must be unique in the network and reused by reference
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7556410Z test full-scope::links_network::dynamic_type_system_publishes_subtype_chains ... ignored, tracked requirement: dynamic type system should publish Type -> SubType chains in the network
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7558434Z test full-scope::links_network::every_answer_has_a_trace_link_pointer ... ignored, tracked requirement: every answer must publish a trace link pointing to a reasoning record
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7559894Z test full-scope::links_network::distinct_prompts_lead_to_distinct_links_traces ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7560841Z test full-scope::links_network::every_answer_records_intent_in_evidence_links ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7562227Z test full-scope::links_network::every_fact_carries_a_source_link ... ignored, tracked requirement: facts should be recorded with the source link that introduced them
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7564484Z test full-scope::links_network::history_is_append_only ... ignored, tracked requirement: history must be append-only — earlier records cannot be mutated, only superseded
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7569275Z test full-scope::links_network::ill_formed_links_notation_input_is_rejected ... ignored, tracked requirement: the engine should reject ill-formed Links Notation submissions
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7571346Z test full-scope::links_network::knowledge_dataset_declares_schema_version ... ignored, tracked requirement: knowledge dataset should declare a schema version link for migrations
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7573139Z test full-scope::links_network::knowledge_export_is_reducible_to_doublet_links ... ignored, tracked requirement: every record in the network must be reducible to doublet links
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7573906Z test full-scope::links_network::every_answer_includes_links_notation_trace ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7574413Z test full-scope::links_network::knowledge_export_is_non_empty_links_notation ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7574923Z test full-scope::links_network::knowledge_export_uses_untyped_links_notation_only ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7575874Z test full-scope::links_network::records_are_addressable_by_stable_id ... ignored, tracked requirement: links network must support querying records via a stable id
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7577247Z test full-scope::links_network::trace_record_lists_ordered_reasoning_steps ... ignored, tracked requirement: trace records must list ordered reasoning steps in Links Notation
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7578369Z test full-scope::multilingual::chinese_concept_question_returns_concept_lookup_intent ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7579322Z test full-scope::multilingual::chinese_greeting_returns_greeting_intent ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7580234Z test full-scope::multilingual::chinese_identity_question_returns_identity_intent ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7581071Z test full-scope::multilingual::english_greeting_is_handled_today ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7581962Z test full-scope::multilingual::every_multilingual_answer_declares_detected_language_link ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7582958Z test full-scope::multilingual::hindi_concept_question_returns_concept_lookup_intent ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7584063Z test full-scope::multilingual::hindi_greeting_returns_greeting_intent ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7584978Z test full-scope::multilingual::hindi_identity_question_returns_identity_intent ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7585954Z test full-scope::multilingual::russian_concept_question_returns_concept_lookup_intent ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7587533Z test full-scope::multilingual::russian_greeting_reply_is_in_russian ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7588387Z test full-scope::multilingual::russian_greeting_returns_greeting_intent ... ok
 Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7589311Z test data_files::lino_data_files_are_parseable_human_readable_and_bounded ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7590363Z test mvp::multilingual::unknown_language_prompts_fall_back_to_english_with_unknown_language_link ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7591695Z test mvp::multilingual::russian_identity_question_returns_identity_intent ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7592594Z test mvp::links_network::knowledge_records_parse_as_links_notation ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7593336Z test mvp::network_visualization::answers_already_carry_links_notation_for_visualization ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7594320Z test mvp::network_visualization::graph_edges_describe_doublet_links ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7594908Z test mvp::network_visualization::graph_endpoint_filters_by_trace_id ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7595748Z test mvp::network_visualization::graph_endpoint_supports_dot_export ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7596892Z test mvp::network_visualization::graph_endpoint_returns_404_for_unknown_trace ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7598015Z test mvp::network_visualization::web_demo_chat_works_even_when_graph_is_disabled ... ignored, MVP-target: web demo must render the graph alongside chat but never block chat replies
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7599929Z test mvp::openai_compatibility::authenticated_routes_accept_bearer_token ... ignored, MVP-target: an authenticated API surface should accept ***
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7602028Z test mvp::openai_compatibility::chat_completion_refuses_tool_call_without_agent_mode ... ignored, MVP-target: chat completions should refuse to call shell tools unless agent mode is opted in
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7603770Z test mvp::network_visualization::graph_endpoint_returns_nodes_and_edges ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7604690Z test mvp::openai_compatibility::chat_completion_accepts_multipart_content ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7605589Z test mvp::network_visualization::graph_nodes_carry_minimum_metadata ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7607019Z test mvp::openai_compatibility::chat_completion_reports_token_usage ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7608046Z test mvp::openai_compatibility::chat_completion_round_trips_user_prompt_to_assistant_response ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7609181Z test mvp::openai_compatibility::chat_completion_supports_multi_turn_conversation ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7610211Z test mvp::openai_compatibility::http_health_endpoint_returns_ok ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7611099Z test mvp::openai_compatibility::http_models_endpoint_lists_at_least_one_model ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7612081Z test mvp::openai_compatibility::http_responses_declare_a_content_type ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7613275Z test mvp::openai_compatibility::http_unknown_route_returns_404 ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7614151Z test mvp::openai_compatibility::http_chat_completions_route_rejects_invalid_json ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7615038Z test mvp::openai_compatibility::rate_limit_metadata_is_exposed ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7615838Z test mvp::openai_compatibility::responses_api_attaches_trace_link ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7617037Z test mvp::openai_compatibility::http_responses_route_returns_response_object ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7618131Z test mvp::openai_compatibility::http_chat_completions_route_returns_completion_object ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7619132Z test mvp::openai_compatibility::responses_endpoint_returns_completed_response ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7620196Z test mvp::openai_compatibility::streaming_chat_completion_emits_server_sent_events ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7621783Z test mvp::reasoning_loop::confidence_reflects_corroborating_evidence ... ignored, MVP-target: confidence should reflect the number of corroborating links in the network
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7623275Z test mvp::reasoning_loop::answers_expose_their_intent_explicitly ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7624737Z test mvp::reasoning_loop::loop_terminates_on_unsolvable_questions ... ignored, MVP-target: the loop must terminate and refuse to spin forever on unsolvable questions
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7627390Z test mvp::reasoning_loop::step_1_prompt_is_recorded_as_impulse ... ignored, MVP-target: step 1 — every prompt should be recorded as an impulse link before reasoning
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7629706Z test mvp::reasoning_loop::step_2_local_search_runs_before_external_calls ... ignored, MVP-target: step 2 — local network search should be tried before any external lookup
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7632443Z test mvp::reasoning_loop::step_3_external_search_kicks_in_when_local_is_insufficient ... ignored, MVP-target: step 3 — when local search is insufficient, the loop must fall back to external sources
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7634067Z test mvp::reasoning_loop::answers_are_repeatable_for_the_same_prompt ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7635791Z test mvp::reasoning_loop::step_4_complex_requests_get_decomposed ... ignored, MVP-target: step 4 — complex requests should be decomposed into sub-impulses
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7638661Z test mvp::reasoning_loop::step_5_multiple_candidates_are_generated ... ignored, MVP-target: step 5 — multiple candidate answers must be generated and recorded
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7640168Z test mvp::reasoning_loop::known_prompts_resolve_via_local_knowledge ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7642097Z test mvp::reasoning_loop::step_6_candidates_are_validated_against_constraints ... ignored, MVP-target: step 6 — candidates must be validated against constraints from the network
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7644471Z test mvp::reasoning_loop::step_7_smallest_sufficient_answer_is_selected ... ignored, MVP-target: step 7 — the smallest sufficient answer should be selected
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7646923Z test mvp::reasoning_loop::step_8_full_trace_is_stored_and_linked ... ignored, MVP-target: step 8 — the complete trace must be stored and linked back to the answer
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7649370Z test mvp::reasoning_loop::step_9_reply_is_returned_with_trace_pointer ... ignored, MVP-target: step 9 — final reply must be returned along with the trace pointer
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7650750Z test mvp::reasoning_paths::arithmetic_handles_basic_addition ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7651556Z test mvp::reasoning_loop::unknown_prompts_acknowledge_inability_to_answer ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7652441Z test mvp::reasoning_paths::arithmetic_handles_decimals ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7653260Z test mvp::reasoning_paths::arithmetic_handles_division_remainder ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7654176Z test mvp::reasoning_paths::arithmetic_handles_parentheses_and_precedence ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7655050Z test mvp::reasoning_paths::arithmetic_handles_word_operators ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7655884Z test mvp::reasoning_paths::arithmetic_never_fires_on_plain_greetings ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7657409Z test mvp::reasoning_paths::arithmetic_records_calculation_event_in_evidence_log ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7658427Z test mvp::reasoning_paths::arithmetic_reports_division_by_zero_without_panicking ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7658984Z test mvp::reasoning_paths::concept_lookup_answers_what_is_wikipedia ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7659496Z test mvp::reasoning_paths::concept_lookup_handles_tell_me_about_links_notation ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7660001Z test mvp::reasoning_paths::concept_lookup_handles_what_does_x_mean ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7660541Z test mvp::reasoning_paths::concept_lookup_does_not_fire_for_identity_questions ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7661037Z test mvp::reasoning_paths::concept_lookup_includes_source_citation ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7661544Z test mvp::reasoning_paths::concept_lookup_records_concept_event_in_evidence_log ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7662089Z test mvp::reasoning_paths::javascript_request_records_execution_status_event ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7662956Z test mvp::reasoning_paths::javascript_handler_does_not_intercept_unrelated_code_blocks ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7663961Z test mvp::reasoning_paths::javascript_request_returns_explicit_unavailability ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7664471Z test mvp::reasoning_paths::prior_turns_appear_in_evidence_log ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7664933Z test mvp::reasoning_paths::every_specialized_handler_emits_a_trace_link ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7665451Z test mvp::reasoning_paths::solve_with_history_falls_through_for_unrelated_prompts ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7665967Z test mvp::reasoning_paths::solve_with_history_recalls_last_question ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7666955Z test mvp::reasoning_paths::solve_with_history_recalls_name_across_turns ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7667930Z test mvp::source_cache::cache_flush_is_explicit_and_auditable ... ignored, MVP-target: a request to flush the source cache should be an explicit, auditable action
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7668950Z test mvp::source_cache::cached_sources_include_content_hash ... ignored, MVP-target: cached sources must include the original content hash for verification
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7670125Z test mvp::source_cache::conflicting_sources_are_surfaced ... ignored, MVP-target: sources that disagree must be surfaced rather than silently picking one
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7671104Z test mvp::source_cache::external_lookups_record_source_url ... ignored, MVP-target: external lookups should record a source link with the original URL
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7672098Z test mvp::source_cache::offline_mode_disables_external_lookups ... ignored, MVP-target: offline mode should disable external lookups and prefer cached evidence
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7672858Z test mvp::reasoning_paths::solve_with_history_summarizes_conversation ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7673716Z test mvp::source_cache::repeated_lookups_hit_the_cache ... ignored, MVP-target: repeated lookups within the TTL must hit the cache and avoid the network
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7674467Z test mvp::reasoning_paths::solve_without_history_matches_legacy_entry_point ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7675258Z test mvp::source_cache::source_links_carry_fetched_at_timestamp ... ignored, MVP-target: source links must include a fetched_at timestamp for TTL tracking
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7676461Z test mvp::source_cache::stale_sources_are_refreshed ... ignored, MVP-target: stale sources should be refreshed when older than the 2-month TTL
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7677228Z test mvp::source_cache::prototype_does_not_advertise_external_fetches_for_local_prompts ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7677766Z test mvp::telegram_surface::public_chat_silent_when_not_addressed ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7678309Z test mvp::telegram_surface::private_chat_messages_get_answered ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7678794Z test mvp::telegram_surface::private_chat_code_replies_use_html_pre_code ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7679600Z test mvp::telegram_surface::telegram_answers_include_trace_link ... ignored, MVP-target: Telegram answers should include a trace link the user can tap to inspect
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7680493Z test mvp::telegram_surface::public_chat_answers_when_mentioned ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7680954Z test mvp::telegram_surface::replies_to_bot_in_public_chat_are_answered ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7681533Z test mvp::telegram_surface::telegram_code_replies_escape_html_entities ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7682054Z test mvp::telegram_surface::public_supergroup_code_answer_remains_in_html_format ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7682554Z test mvp::telegram_surface::telegram_long_replies_are_chunked ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7683034Z test mvp::telegram_surface::telegram_response_always_declares_html_parse_mode ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7683552Z test mvp::telegram_surface::telegram_webhook_ignores_updates_without_text ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7684389Z test mvp::translation_via_links::cross_language_code_translation_preserves_semantics ... ignored, MVP-target: cross-language code translation must preserve runnable semantics
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7685241Z test mvp::telegram_surface::telegram_webhook_rejects_invalid_payload_gracefully ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7686351Z test mvp::translation_via_links::synonyms_across_languages_share_meaning ... ignored, MVP-target: synonyms across languages should hash to the same meaning link
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7687452Z test mvp::translation_via_links::translation_declares_source_and_target_language_tags ... ignored, MVP-target: translation must declare both source and target language tags
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7688595Z test mvp::translation_via_links::translation_preserves_meaning_id_across_languages ... ignored, MVP-target: translation between human languages should preserve the meaning link id
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7689740Z test mvp::translation_via_links::translation_request_returns_target_surface_form ... ignored, MVP-target: translation request must return the target-language surface form
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7691051Z test mvp::translation_via_links::translation_trace_includes_intermediate_meaning ... ignored, MVP-target: translation traces must include the intermediate Links Notation meaning record
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7692220Z test mvp::translation_via_links::untranslatable_concepts_are_flagged ... ignored, MVP-target: untranslatable concepts must be flagged rather than approximated silently
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7693284Z test mvp::transparent_state::diagnostic_ids_never_leak_into_default_chat_prose ... ignored, MVP-target: diagnostic link ids must not leak into default chat prose
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7694342Z test mvp::transparent_state::diagnostic_mode_can_be_enabled_per_message ... ignored, MVP-target: the user must be able to opt-in to diagnostic mode and see all links inline
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7695433Z test mvp::transparent_state::export_network_returns_links_notation_snapshot ... ignored, MVP-target: 'export network' should return a downloadable Links Notation snapshot
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7696978Z test mvp::transparent_state::forget_request_requires_explicit_retraction_protocol ... ignored, MVP-target: 'forget X' must be refused unless the user invokes the explicit retraction protocol
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7697905Z test mvp::transparent_state::evidence_links_are_exposed_through_the_public_struct ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7698669Z test mvp::transparent_state::list_my_facts_filters_by_user ... ignored, MVP-target: 'list my facts' should return only facts the current user contributed
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7590363Z test full-scope::multilingual::unknown_language_prompts_fall_back_to_english_with_unknown_language_link ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7591695Z test full-scope::multilingual::russian_identity_question_returns_identity_intent ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7592594Z test full-scope::links_network::knowledge_records_parse_as_links_notation ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7593336Z test full-scope::network_visualization::answers_already_carry_links_notation_for_visualization ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7594320Z test full-scope::network_visualization::graph_edges_describe_doublet_links ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7594908Z test full-scope::network_visualization::graph_endpoint_filters_by_trace_id ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7595748Z test full-scope::network_visualization::graph_endpoint_supports_dot_export ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7596892Z test full-scope::network_visualization::graph_endpoint_returns_404_for_unknown_trace ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7598015Z test full-scope::network_visualization::web_demo_chat_works_even_when_graph_is_disabled ... ignored, tracked requirement: web demo must render the graph alongside chat but never block chat replies
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7599929Z test full-scope::openai_compatibility::authenticated_routes_accept_bearer_token ... ignored, tracked requirement: an authenticated API surface should accept ***
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7602028Z test full-scope::openai_compatibility::chat_completion_refuses_tool_call_without_agent_mode ... ignored, tracked requirement: chat completions should refuse to call shell tools unless agent mode is opted in
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7603770Z test full-scope::network_visualization::graph_endpoint_returns_nodes_and_edges ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7604690Z test full-scope::openai_compatibility::chat_completion_accepts_multipart_content ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7605589Z test full-scope::network_visualization::graph_nodes_carry_minimum_metadata ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7607019Z test full-scope::openai_compatibility::chat_completion_reports_token_usage ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7608046Z test full-scope::openai_compatibility::chat_completion_round_trips_user_prompt_to_assistant_response ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7609181Z test full-scope::openai_compatibility::chat_completion_supports_multi_turn_conversation ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7610211Z test full-scope::openai_compatibility::http_health_endpoint_returns_ok ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7611099Z test full-scope::openai_compatibility::http_models_endpoint_lists_at_least_one_model ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7612081Z test full-scope::openai_compatibility::http_responses_declare_a_content_type ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7613275Z test full-scope::openai_compatibility::http_unknown_route_returns_404 ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7614151Z test full-scope::openai_compatibility::http_chat_completions_route_rejects_invalid_json ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7615038Z test full-scope::openai_compatibility::rate_limit_metadata_is_exposed ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7615838Z test full-scope::openai_compatibility::responses_api_attaches_trace_link ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7617037Z test full-scope::openai_compatibility::http_responses_route_returns_response_object ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7618131Z test full-scope::openai_compatibility::http_chat_completions_route_returns_completion_object ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7619132Z test full-scope::openai_compatibility::responses_endpoint_returns_completed_response ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7620196Z test full-scope::openai_compatibility::streaming_chat_completion_emits_server_sent_events ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7621783Z test full-scope::reasoning_loop::confidence_reflects_corroborating_evidence ... ignored, tracked requirement: confidence should reflect the number of corroborating links in the network
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7623275Z test full-scope::reasoning_loop::answers_expose_their_intent_explicitly ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7624737Z test full-scope::reasoning_loop::loop_terminates_on_unsolvable_questions ... ignored, tracked requirement: the loop must terminate and refuse to spin forever on unsolvable questions
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7627390Z test full-scope::reasoning_loop::step_1_prompt_is_recorded_as_impulse ... ignored, tracked requirement: step 1 — every prompt should be recorded as an impulse link before reasoning
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7629706Z test full-scope::reasoning_loop::step_2_local_search_runs_before_external_calls ... ignored, tracked requirement: step 2 — local network search should be tried before any external lookup
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7632443Z test full-scope::reasoning_loop::step_3_external_search_kicks_in_when_local_is_insufficient ... ignored, tracked requirement: step 3 — when local search is insufficient, the loop must fall back to external sources
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7634067Z test full-scope::reasoning_loop::answers_are_repeatable_for_the_same_prompt ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7635791Z test full-scope::reasoning_loop::step_4_complex_requests_get_decomposed ... ignored, tracked requirement: step 4 — complex requests should be decomposed into sub-impulses
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7638661Z test full-scope::reasoning_loop::step_5_multiple_candidates_are_generated ... ignored, tracked requirement: step 5 — multiple candidate answers must be generated and recorded
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7640168Z test full-scope::reasoning_loop::known_prompts_resolve_via_local_knowledge ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7642097Z test full-scope::reasoning_loop::step_6_candidates_are_validated_against_constraints ... ignored, tracked requirement: step 6 — candidates must be validated against constraints from the network
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7644471Z test full-scope::reasoning_loop::step_7_smallest_sufficient_answer_is_selected ... ignored, tracked requirement: step 7 — the smallest sufficient answer should be selected
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7646923Z test full-scope::reasoning_loop::step_8_full_trace_is_stored_and_linked ... ignored, tracked requirement: step 8 — the complete trace must be stored and linked back to the answer
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7649370Z test full-scope::reasoning_loop::step_9_reply_is_returned_with_trace_pointer ... ignored, tracked requirement: step 9 — final reply must be returned along with the trace pointer
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7650750Z test full-scope::reasoning_paths::arithmetic_handles_basic_addition ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7651556Z test full-scope::reasoning_loop::unknown_prompts_acknowledge_inability_to_answer ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7652441Z test full-scope::reasoning_paths::arithmetic_handles_decimals ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7653260Z test full-scope::reasoning_paths::arithmetic_handles_division_remainder ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7654176Z test full-scope::reasoning_paths::arithmetic_handles_parentheses_and_precedence ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7655050Z test full-scope::reasoning_paths::arithmetic_handles_word_operators ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7655884Z test full-scope::reasoning_paths::arithmetic_never_fires_on_plain_greetings ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7657409Z test full-scope::reasoning_paths::arithmetic_records_calculation_event_in_evidence_log ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7658427Z test full-scope::reasoning_paths::arithmetic_reports_division_by_zero_without_panicking ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7658984Z test full-scope::reasoning_paths::concept_lookup_answers_what_is_wikipedia ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7659496Z test full-scope::reasoning_paths::concept_lookup_handles_tell_me_about_links_notation ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7660001Z test full-scope::reasoning_paths::concept_lookup_handles_what_does_x_mean ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7660541Z test full-scope::reasoning_paths::concept_lookup_does_not_fire_for_identity_questions ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7661037Z test full-scope::reasoning_paths::concept_lookup_includes_source_citation ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7661544Z test full-scope::reasoning_paths::concept_lookup_records_concept_event_in_evidence_log ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7662089Z test full-scope::reasoning_paths::javascript_request_records_execution_status_event ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7662956Z test full-scope::reasoning_paths::javascript_handler_does_not_intercept_unrelated_code_blocks ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7663961Z test full-scope::reasoning_paths::javascript_request_returns_explicit_unavailability ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7664471Z test full-scope::reasoning_paths::prior_turns_appear_in_evidence_log ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7664933Z test full-scope::reasoning_paths::every_specialized_handler_emits_a_trace_link ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7665451Z test full-scope::reasoning_paths::solve_with_history_falls_through_for_unrelated_prompts ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7665967Z test full-scope::reasoning_paths::solve_with_history_recalls_last_question ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7666955Z test full-scope::reasoning_paths::solve_with_history_recalls_name_across_turns ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7667930Z test full-scope::source_cache::cache_flush_is_explicit_and_auditable ... ignored, tracked requirement: a request to flush the source cache should be an explicit, auditable action
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7668950Z test full-scope::source_cache::cached_sources_include_content_hash ... ignored, tracked requirement: cached sources must include the original content hash for verification
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7670125Z test full-scope::source_cache::conflicting_sources_are_surfaced ... ignored, tracked requirement: sources that disagree must be surfaced rather than silently picking one
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7671104Z test full-scope::source_cache::external_lookups_record_source_url ... ignored, tracked requirement: external lookups should record a source link with the original URL
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7672098Z test full-scope::source_cache::offline_mode_disables_external_lookups ... ignored, tracked requirement: offline mode should disable external lookups and prefer cached evidence
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7672858Z test full-scope::reasoning_paths::solve_with_history_summarizes_conversation ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7673716Z test full-scope::source_cache::repeated_lookups_hit_the_cache ... ignored, tracked requirement: repeated lookups within the TTL must hit the cache and avoid the network
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7674467Z test full-scope::reasoning_paths::solve_without_history_matches_legacy_entry_point ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7675258Z test full-scope::source_cache::source_links_carry_fetched_at_timestamp ... ignored, tracked requirement: source links must include a fetched_at timestamp for TTL tracking
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7676461Z test full-scope::source_cache::stale_sources_are_refreshed ... ignored, tracked requirement: stale sources should be refreshed when older than the 2-month TTL
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7677228Z test full-scope::source_cache::prototype_does_not_advertise_external_fetches_for_local_prompts ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7677766Z test full-scope::telegram_surface::public_chat_silent_when_not_addressed ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7678309Z test full-scope::telegram_surface::private_chat_messages_get_answered ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7678794Z test full-scope::telegram_surface::private_chat_code_replies_use_html_pre_code ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7679600Z test full-scope::telegram_surface::telegram_answers_include_trace_link ... ignored, tracked requirement: Telegram answers should include a trace link the user can tap to inspect
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7680493Z test full-scope::telegram_surface::public_chat_answers_when_mentioned ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7680954Z test full-scope::telegram_surface::replies_to_bot_in_public_chat_are_answered ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7681533Z test full-scope::telegram_surface::telegram_code_replies_escape_html_entities ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7682054Z test full-scope::telegram_surface::public_supergroup_code_answer_remains_in_html_format ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7682554Z test full-scope::telegram_surface::telegram_long_replies_are_chunked ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7683034Z test full-scope::telegram_surface::telegram_response_always_declares_html_parse_mode ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7683552Z test full-scope::telegram_surface::telegram_webhook_ignores_updates_without_text ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7684389Z test full-scope::translation_via_links::cross_language_code_translation_preserves_semantics ... ignored, tracked requirement: cross-language code translation must preserve runnable semantics
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7685241Z test full-scope::telegram_surface::telegram_webhook_rejects_invalid_payload_gracefully ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7686351Z test full-scope::translation_via_links::synonyms_across_languages_share_meaning ... ignored, tracked requirement: synonyms across languages should hash to the same meaning link
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7687452Z test full-scope::translation_via_links::translation_declares_source_and_target_language_tags ... ignored, tracked requirement: translation must declare both source and target language tags
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7688595Z test full-scope::translation_via_links::translation_preserves_meaning_id_across_languages ... ignored, tracked requirement: translation between human languages should preserve the meaning link id
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7689740Z test full-scope::translation_via_links::translation_request_returns_target_surface_form ... ignored, tracked requirement: translation request must return the target-language surface form
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7691051Z test full-scope::translation_via_links::translation_trace_includes_intermediate_meaning ... ignored, tracked requirement: translation traces must include the intermediate Links Notation meaning record
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7692220Z test full-scope::translation_via_links::untranslatable_concepts_are_flagged ... ignored, tracked requirement: untranslatable concepts must be flagged rather than approximated silently
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7693284Z test full-scope::transparent_state::diagnostic_ids_never_leak_into_default_chat_prose ... ignored, tracked requirement: diagnostic link ids must not leak into default chat prose
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7694342Z test full-scope::transparent_state::diagnostic_mode_can_be_enabled_per_message ... ignored, tracked requirement: the user must be able to opt-in to diagnostic mode and see all links inline
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7695433Z test full-scope::transparent_state::export_network_returns_links_notation_snapshot ... ignored, tracked requirement: 'export network' should return a downloadable Links Notation snapshot
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7696978Z test full-scope::transparent_state::forget_request_requires_explicit_retraction_protocol ... ignored, tracked requirement: 'forget X' must be refused unless the user invokes the explicit retraction protocol
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7697905Z test full-scope::transparent_state::evidence_links_are_exposed_through_the_public_struct ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7698669Z test full-scope::transparent_state::list_my_facts_filters_by_user ... ignored, tracked requirement: 'list my facts' should return only facts the current user contributed
 Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7699409Z ^[[1m^[[92m   Doc-tests^[[0m formal_ai
 Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7705893Z ^[[1m^[[92m     Running^[[0m `/home/runner/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustdoc --edition=2021 --crate-type lib --color always --crate-name formal_ai --test src/lib.rs --test-run-directory /home/runner/work/formal-ai/formal-ai '--warn=clippy::pedantic' '--warn=clippy::nursery' '--warn=clippy::all' --forbid=unsafe_code '--allow=clippy::too_many_lines' '--allow=clippy::module_name_repetitions' '--allow=clippy::missing_panics_doc' '--allow=clippy::missing_errors_doc' --extern clap=/home/runner/work/formal-ai/formal-ai/target/debug/deps/libclap-49341bd34ef9c6d2.rlib --extern formal_ai=/home/runner/work/formal-ai/formal-ai/target/debug/deps/libformal_ai-6135cfb5aafc976d.rlib --extern lino_arguments=/home/runner/work/formal-ai/formal-ai/target/debug/deps/liblino_arguments-e6eb18555e8c6ab1.rlib --extern lino_objects_codec=/home/runner/work/formal-ai/formal-ai/target/debug/deps/liblino_objects_codec-077edb923cb2c275.rlib --extern regex=/home/runner/work/formal-ai/formal-ai/target/debug/deps/libregex-9e1d67f9900d6ad1.rlib --extern serde=/home/runner/work/formal-ai/formal-ai/target/debug/deps/libserde-edbef423e2a9bbf9.rlib --extern serde_json=/home/runner/work/formal-ai/formal-ai/target/debug/deps/libserde_json-407b9880db98525c.rlib --extern walkdir=/home/runner/work/formal-ai/formal-ai/target/debug/deps/libwalkdir-546e8e54b1f11b39.rlib -L dependency=/home/runner/work/formal-ai/formal-ai/target/debug/deps -C embed-bitcode=no --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' --error-format human`
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7712516Z test mvp::transparent_state::querying_a_concept_returns_its_links ... ignored, MVP-target: 'what do you know about X' should list links involving X
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7713239Z test mvp::transparent_state::links_notation_trace_is_always_present ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7713748Z test mvp::translation_via_links::every_answer_publishes_a_links_notation_trace ... ok
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7714551Z test mvp::transparent_state::querying_the_network_returns_snapshot ... ignored, MVP-target: querying 'show me the network' should return a Links Notation snapshot
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7715627Z test mvp::transparent_state::why_meta_question_explains_previous_answer ... ignored, MVP-target: 'why' meta-questions should explain the previous answer using links
-Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7716643Z test mvp::transparent_state::knowledge_export_is_inspectable_at_runtime ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7712516Z test full-scope::transparent_state::querying_a_concept_returns_its_links ... ignored, tracked requirement: 'what do you know about X' should list links involving X
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7713239Z test full-scope::transparent_state::links_notation_trace_is_always_present ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7713748Z test full-scope::translation_via_links::every_answer_publishes_a_links_notation_trace ... ok
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7714551Z test full-scope::transparent_state::querying_the_network_returns_snapshot ... ignored, tracked requirement: querying 'show me the network' should return a Links Notation snapshot
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7715627Z test full-scope::transparent_state::why_meta_question_explains_previous_answer ... ignored, tracked requirement: 'why' meta-questions should explain the previous answer using links
+Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7716643Z test full-scope::transparent_state::knowledge_export_is_inspectable_at_runtime ... ok
 Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7717100Z 
 Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7717352Z test result: ok. 156 passed; 0 failed; 69 ignored; 0 measured; 0 filtered out; finished in 0.05s
 Test (ubuntu-latest)	Run tests	2026-05-15T13:54:29.7717693Z 

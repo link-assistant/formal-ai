@@ -37,7 +37,7 @@ Fresh evidence is preserved in `raw-data/`:
 | R120 | Add `link-assistant/calculator` as a library and calculator tool. | Issue body | Add `link-calculator = "0.16.0"` and the seeded `tool_calculator` entry in `data/seed/tools.lino`. |
 | R121 | Delegate everything that is calculator-parsable while keeping language processing in formal-ai. | Issue body | Strip English, Russian, Chinese, and Hindi calculation wrappers in `calculation_expression_candidates`, then call `link_calculator::Calculator::calculate_with_value`. |
 | R122 | Keep support for cases calculator does not yet support. | Issue body | Route English word operators and binary `%` remainder syntax to the existing local evaluator first. |
-| R123 | Add broad multilingual tests for touched cases. | Issue body | Add `tests/unit/mvp/calculator_delegation.rs` with 5-6 prompt variations per supported language plus explicit fallback assertions. |
+| R123 | Add broad multilingual tests for touched cases. | Issue body | Add `tests/unit/specification/calculator_delegation.rs` with 5-6 prompt variations per supported language plus explicit fallback assertions. |
 | R124 | Add safe calculator examples to examples and the chat demo simulator. | Issue body | Extend `examples/try_arithmetic.rs` and `data/seed/demo-dialogs.lino`; update the browser worker's simple arithmetic extraction for multilingual simulator wrappers. |
 | R125 | Run calculator-style checks and report upstream gaps. | Issue body | Probe `link-calculator` v0.16.0 locally and file `link-assistant/calculator#158` for binary modulo / trailing-token behavior. |
 | R126 | Compile raw data and analysis under `docs/case-studies/issue-96`. | Issue body | This directory contains the raw GitHub, crate, release, and probe artifacts used for the implementation decision. |
@@ -71,7 +71,7 @@ keeps that syntax on the local evaluator and reports the upstream issue:
 ## Root Cause
 
 Before this change, formal-ai owned every arithmetic detail itself. That was
-reasonable for issue #14's MVP arithmetic requirement, but it created three
+reasonable for issue #14's full-scope arithmetic requirement, but it created three
 problems:
 
 1. the local parser only understood a small arithmetic grammar;

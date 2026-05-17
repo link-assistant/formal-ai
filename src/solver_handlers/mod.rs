@@ -4,8 +4,13 @@
 //! takes the prompt (and pre-lowercased `normalized` view) plus a mutable
 //! event log, and returns `Some(SymbolicAnswer)` when it claims the impulse.
 
+mod benchmark_prompts;
 mod user_intent;
 
+pub use benchmark_prompts::{
+    try_brainstorming_request, try_coreference_request, try_fact_lookup, try_roleplay_request,
+    try_summarization_request,
+};
 pub use user_intent::{
     try_capabilities, try_clarification, try_ill_formed, try_opinion_question,
     try_punctuation_only_prompt, try_shell_refusal, try_who_is_question,

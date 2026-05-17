@@ -12,7 +12,7 @@ release pipeline never updated. The fix replaces the literal with a `__FORMAL_AI
 placeholder, teaches `scripts/stamp-pages-artifact.sh` to substitute it during the GitHub Pages
 deploy from the live `Cargo.toml`, and surfaces the same `CARGO_PKG_VERSION` value through the
 CLI's `--version` flag and a new Telegram `/version` command. Tests in `tests/unit/ci-cd/` and
-`tests/unit/mvp/` reject the placeholder/literal regression structurally and through a smoke
+`tests/unit/specification/` reject the placeholder/literal regression structurally and through a smoke
 subprocess that runs the stamp script end to end.
 
 ## Collected Data
@@ -128,8 +128,8 @@ fall back to a hardcoded literal.
 | Test | Layer | What it asserts |
 | --- | --- | --- |
 | `tests/integration/formal_ai_cli.rs::cli_version_flag_prints_crate_version` | CLI | `formal-ai --version` prints `formal-ai <CARGO_PKG_VERSION>` exactly. |
-| `tests/unit/mvp/telegram_surface.rs::telegram_version_command_replies_with_crate_version` | Telegram | `/version` in a private chat replies with `formal-ai <CARGO_PKG_VERSION>` and no `/trace` suffix. |
-| `tests/unit/mvp/telegram_surface.rs::telegram_version_command_with_bot_suffix_still_replies` | Telegram | `/version@formal_ai_bot` in a group chat is recognized regardless of the bot-name suffix. |
+| `tests/unit/specification/telegram_surface.rs::telegram_version_command_replies_with_crate_version` | Telegram | `/version` in a private chat replies with `formal-ai <CARGO_PKG_VERSION>` and no `/trace` suffix. |
+| `tests/unit/specification/telegram_surface.rs::telegram_version_command_with_bot_suffix_still_replies` | Telegram | `/version@formal_ai_bot` in a group chat is recognized regardless of the bot-name suffix. |
 | `tests/unit/ci-cd/workflow_release.rs::github_pages_artifact_advertises_crate_version_from_cargo_toml` | CI/CD wiring | `index.html` carries the placeholder, `app.js` carries no `"0.16.0"` literal, the stamp script substitutes it and validates the rendered meta tag, the deploy workflow reads the crate version and forwards it to the stamp script, and the wait script rejects both placeholders. |
 | `tests/unit/ci-cd/workflow_release.rs::stamp_pages_artifact_replaces_formal_ai_version_placeholder` | Stamp script smoke | Runs `scripts/stamp-pages-artifact.sh` against a scratch copy of `src/web/index.html` and asserts the rendered meta tag advertises the supplied version and `deployment.json` records it. |
 
@@ -182,7 +182,7 @@ Local checks executed before pushing the fix (all green):
 - `cargo fmt --check`
 - `cargo clippy --all-targets -- -D warnings`
 - `cargo test` (224 unit + 76 framework + 8 integration tests pass; pre-existing 69 `#[ignore]`d
-  MVP-target tests remain ignored)
+  tracked requirement tests remain ignored)
 - `cargo test --test integration cli_version_flag_prints_crate_version`
 - `cargo test --test unit telegram_version`
 - `cargo test --test unit github_pages_artifact_advertises_crate_version_from_cargo_toml`

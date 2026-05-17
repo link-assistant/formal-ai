@@ -3,7 +3,7 @@ bump: minor
 ---
 
 ### Added
-- Added the formal-ai proof-of-concept library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
+- Added the formal-ai deterministic symbolic implementation library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
 - Added a markdown-capable chat demo with randomized dialog mode, greeting-first examples, and multi-language hello-world prompts.
 - Added Rust-script dataset generation into human-readable Links Notation `.lino` files under `data/`.
 - Added Playwright e2e test suite under `tests/e2e/` covering page load, initial messages, quick prompts, chat interactions, demo mode toggle, trace panel, and preview mode.

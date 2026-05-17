@@ -14,7 +14,7 @@ fn webhook(body: &serde_json::Value) -> serde_json::Value {
 }
 
 // ---------------------------------------------------------------------------
-// Active expectations: present prototype behavior.
+// Active expectations: present implementation behavior.
 // ---------------------------------------------------------------------------
 
 #[test]
@@ -108,7 +108,7 @@ fn telegram_webhook_rejects_invalid_payload_gracefully() {
 }
 
 // ---------------------------------------------------------------------------
-// MVP expectations: from VISION.md, GOALS.md, and REQUIREMENTS.md.
+// full-scope expectations: from VISION.md, GOALS.md, and REQUIREMENTS.md.
 // ---------------------------------------------------------------------------
 
 #[test]
@@ -253,7 +253,7 @@ fn telegram_version_command_with_bot_suffix_still_replies() {
 }
 
 #[test]
-#[ignore = "MVP-target: Telegram answers should include a trace link the user can tap to inspect"]
+#[ignore = "tracked requirement: Telegram answers should include a trace link the user can tap to inspect"]
 fn telegram_answers_include_trace_link() {
     let json = webhook(&serde_json::json!({
         "update_id": 15,

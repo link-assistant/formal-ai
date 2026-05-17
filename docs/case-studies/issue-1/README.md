@@ -1,4 +1,4 @@
-# Issue 1 Case Study: Formal AI Proof of Concept
+# Issue 1 Case Study: Formal AI deterministic symbolic implementation
 
 ## Summary
 
@@ -42,7 +42,7 @@ Sources checked for the baseline architecture:
 - [Hello World Collection](http://helloworldcollection.de), used as the seed idea for language-specific hello world examples.
 - [link-assistant/react-chat-ui](https://github.com/link-assistant/react-chat-ui), used as a UI reference for markdown messages, markdown composer behavior, demo mode, and traceable chat surfaces.
 
-Crates.io checks found `links-notation = 0.13.0` and `lino-objects-codec = 0.2.1`; this prototype uses `lino-objects-codec` directly.
+Crates.io checks found `links-notation = 0.13.0` and `lino-objects-codec = 0.2.1`; this implementation uses `lino-objects-codec` directly.
 
 ## Requirements Extracted
 
@@ -56,7 +56,7 @@ The full requirement matrix is maintained in [`../../REQUIREMENTS.md`](../../REQ
 
 ## Design
 
-The prototype keeps the runtime intentionally small:
+The implementation keeps the runtime intentionally small:
 
 1. Normalize the prompt to lower-case ASCII words.
 2. Select a symbolic rule by exact greeting or Rust hello world token match.

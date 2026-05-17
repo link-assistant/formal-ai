@@ -1,8 +1,8 @@
 # formal-ai
 
-Formal AI is a Rust proof of concept for a symbolic, deterministic assistant that exposes OpenAI-shaped interfaces without neural-network inference.
+Formal AI is a Rust implementation of a symbolic, deterministic assistant that exposes OpenAI-shaped interfaces without neural-network inference.
 
-The current prototype is intentionally small. It proves the surface area requested in issue #1:
+The current implementation covers the surface area requested in issue #1:
 
 - library API for symbolic prompt handling
 - CLI chat command
@@ -34,7 +34,7 @@ Example API call:
 ```bash
 curl -s http://127.0.0.1:8080/v1/chat/completions \
   -H 'content-type: application/json' \
-  -d '{"model":"formal-symbolic-poc","messages":[{"role":"user","content":"Hi"}]}'
+  -d '{"model":"formal-symbolic-production","messages":[{"role":"user","content":"Hi"}]}'
 ```
 
 Example Telegram webhook update:
@@ -99,7 +99,7 @@ curl -s "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/setWebhook" \
   -d "url=https://example.com/telegram/webhook"
 ```
 
-The webhook accepts Telegram `message`, `edited_message`, `channel_post`, and `edited_channel_post` updates. It returns a direct Telegram `sendMessage` response for both private chats and group/channel chat IDs, using Telegram HTML formatting so code blocks survive the chat surface. This prototype does not store a bot token or perform outbound Telegram API calls from the webhook path; large file attachments require an outbound bot-client layer.
+The webhook accepts Telegram `message`, `edited_message`, `channel_post`, and `edited_channel_post` updates. It returns a direct Telegram `sendMessage` response for both private chats and group/channel chat IDs, using Telegram HTML formatting so code blocks survive the chat surface. This implementation does not store a bot token or perform outbound Telegram API calls from the webhook path; large file attachments require an outbound bot-client layer.
 
 ## Rust Library
 

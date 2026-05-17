@@ -10,7 +10,7 @@ fn answer(prompt: &str) -> SymbolicAnswer {
 }
 
 // ---------------------------------------------------------------------------
-// Active expectation: prototype English greeting.
+// Active expectation: implementation English greeting.
 // ---------------------------------------------------------------------------
 
 #[test]
@@ -21,7 +21,7 @@ fn english_greeting_is_handled_today() {
 }
 
 // ---------------------------------------------------------------------------
-// MVP expectations: Russian, Hindi, Chinese baseline greetings and identity.
+// full-scope expectations: Russian, Hindi, Chinese baseline greetings and identity.
 // ---------------------------------------------------------------------------
 
 #[test]

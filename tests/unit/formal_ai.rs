@@ -261,7 +261,7 @@ fn write_script_prompt_returns_code_block() {
 #[test]
 fn chat_completion_has_openai_compatible_shape() {
     let request = ChatCompletionRequest {
-        model: Some(String::from("formal-symbolic-poc")),
+        model: Some(String::from("formal-symbolic-production")),
         messages: vec![ChatMessage {
             role: String::from("user"),
             content: MessageContent::Text(String::from("Hello")),
@@ -273,7 +273,7 @@ fn chat_completion_has_openai_compatible_shape() {
     let completion = create_chat_completion(&request);
 
     assert_eq!(completion.object, "chat.completion");
-    assert_eq!(completion.model, "formal-symbolic-poc");
+    assert_eq!(completion.model, "formal-symbolic-production");
     assert_eq!(completion.choices[0].finish_reason, "stop");
     assert_eq!(
         completion.choices[0].message.content.plain_text(),
@@ -285,7 +285,7 @@ fn chat_completion_has_openai_compatible_shape() {
 #[test]
 fn responses_api_shape_contains_output_text() {
     let request = ResponsesRequest {
-        model: Some(String::from("formal-symbolic-poc")),
+        model: Some(String::from("formal-symbolic-production")),
         input: serde_json::Value::String(String::from("Write hello world in Rust")),
         instructions: None,
         temperature: None,
@@ -310,7 +310,7 @@ fn knowledge_export_is_valid_links_notation() {
     assert_eq!(id, "formal_ai_knowledge");
     assert_eq!(
         root.get("model").map(String::as_str),
-        Some("formal-symbolic-poc")
+        Some("formal-symbolic-production")
     );
     assert!(records.iter().any(|record| {
         let Ok((_id, parsed)) = parse_indented(record) else {
@@ -325,7 +325,7 @@ fn knowledge_export_is_valid_links_notation() {
 #[test]
 fn server_handler_supports_chat_completions_route() {
     let body = serde_json::json!({
-        "model": "formal-symbolic-poc",
+        "model": "formal-symbolic-production",
         "messages": [{"role": "user", "content": "Hi"}]
     })
     .to_string();
@@ -572,7 +572,7 @@ fn opinion_questions_return_no_opinion_response() {
         assert!(
             !response
                 .answer
-                .contains("I do not have a learned symbolic rule"),
+                .contains("cannot answer that from local Links Notation rules"),
             "prompt {prompt:?} should not return the unknown-intent error"
         );
     }
@@ -600,7 +600,7 @@ fn who_is_question_does_not_return_unknown_intent() {
         assert!(
             !response
                 .answer
-                .contains("I do not have a learned symbolic rule"),
+                .contains("cannot answer that from local Links Notation rules"),
             "prompt {prompt:?} should not return the unknown-intent error"
         );
         if let Some(suggestion) = expected_suggestion {

@@ -12,11 +12,11 @@ fn answer(prompt: &str) -> SymbolicAnswer {
 }
 
 // ---------------------------------------------------------------------------
-// Active expectations: the prototype does not yet hit external sources.
+// Active expectations: the implementation does not yet hit external sources.
 // ---------------------------------------------------------------------------
 
 #[test]
-fn prototype_does_not_advertise_external_fetches_for_local_prompts() {
+fn implementation_does_not_advertise_external_fetches_for_local_prompts() {
     let response = answer("Hi");
     assert!(
         !response
@@ -28,11 +28,11 @@ fn prototype_does_not_advertise_external_fetches_for_local_prompts() {
 }
 
 // ---------------------------------------------------------------------------
-// MVP expectations.
+// full-scope expectations.
 // ---------------------------------------------------------------------------
 
 #[test]
-#[ignore = "MVP-target: external lookups should record a source link with the original URL"]
+#[ignore = "tracked requirement: external lookups should record a source link with the original URL"]
 fn external_lookups_record_source_url() {
     let response = answer("Cite a definition of associative memory from Wikipedia");
     assert!(
@@ -45,7 +45,7 @@ fn external_lookups_record_source_url() {
 }
 
 #[test]
-#[ignore = "MVP-target: source links must include a fetched_at timestamp for TTL tracking"]
+#[ignore = "tracked requirement: source links must include a fetched_at timestamp for TTL tracking"]
 fn source_links_carry_fetched_at_timestamp() {
     let response = answer("Define associative memory");
     let has_fetched_at = response
@@ -59,7 +59,7 @@ fn source_links_carry_fetched_at_timestamp() {
 }
 
 #[test]
-#[ignore = "MVP-target: stale sources should be refreshed when older than the 2-month TTL"]
+#[ignore = "tracked requirement: stale sources should be refreshed when older than the 2-month TTL"]
 fn stale_sources_are_refreshed() {
     let response = answer("Refresh the cached page for example.com");
     assert!(
@@ -72,7 +72,7 @@ fn stale_sources_are_refreshed() {
 }
 
 #[test]
-#[ignore = "MVP-target: repeated lookups within the TTL must hit the cache and avoid the network"]
+#[ignore = "tracked requirement: repeated lookups within the TTL must hit the cache and avoid the network"]
 fn repeated_lookups_hit_the_cache() {
     let first = answer("Define associative memory");
     let second = answer("Define associative memory");
@@ -93,7 +93,7 @@ fn repeated_lookups_hit_the_cache() {
 }
 
 #[test]
-#[ignore = "MVP-target: cached sources must include the original content hash for verification"]
+#[ignore = "tracked requirement: cached sources must include the original content hash for verification"]
 fn cached_sources_include_content_hash() {
     let response = answer("Define associative memory");
     assert!(
@@ -106,7 +106,7 @@ fn cached_sources_include_content_hash() {
 }
 
 #[test]
-#[ignore = "MVP-target: sources that disagree must be surfaced rather than silently picking one"]
+#[ignore = "tracked requirement: sources that disagree must be surfaced rather than silently picking one"]
 fn conflicting_sources_are_surfaced() {
     let response = answer("Was X born in 1880 or 1881?");
     assert!(
@@ -119,7 +119,7 @@ fn conflicting_sources_are_surfaced() {
 }
 
 #[test]
-#[ignore = "MVP-target: a request to flush the source cache should be an explicit, auditable action"]
+#[ignore = "tracked requirement: a request to flush the source cache should be an explicit, auditable action"]
 fn cache_flush_is_explicit_and_auditable() {
     let response = answer("Flush the source cache please");
     assert!(
@@ -132,7 +132,7 @@ fn cache_flush_is_explicit_and_auditable() {
 }
 
 #[test]
-#[ignore = "MVP-target: offline mode should disable external lookups and prefer cached evidence"]
+#[ignore = "tracked requirement: offline mode should disable external lookups and prefer cached evidence"]
 fn offline_mode_disables_external_lookups() {
     std::env::set_var("FORMAL_AI_OFFLINE", "1");
     let response = answer("Define associative memory");

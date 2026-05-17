@@ -4,7 +4,7 @@ agent_info
   field "version"
     value "0.22.0"
   field "tagline"
-    value "Deterministic symbolic AI proof of concept with OpenAI-compatible APIs"
+    value "Deterministic symbolic AI implementation with OpenAI-compatible APIs"
   field "default_language"
     value "en"
   field "supported_languages"

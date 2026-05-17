@@ -82,9 +82,9 @@ This project should build a practical, inspectable symbolic assistant before it 
 
 - Expand the link-native dataset from current greetings, identity, demo dialogs, and hello-world examples into richer requirement, trace, and source records.
 - Introduce first-class trace links for commands, outputs, failures, and generated answers.
-- Prototype a local link-store-backed reasoning loop that can read and write the same knowledge used by CLI, API, web, and Telegram surfaces.
+- Implement a local link-store-backed reasoning loop that can read and write the same knowledge used by CLI, API, web, and Telegram surfaces.
 - Add a network visualization mode that starts from the links most relevant to the current dialog.
 - Keep every new behavior covered by focused unit, integration, or e2e tests before expanding scope.
-- Implement the universal solver and append-only event log inside the existing Rust engine so every chat answer surfaces the full evidence-link namespace expected by the MVP test suite.
+- Implement the universal solver and append-only event log inside the existing Rust engine so every chat answer surfaces the full evidence-link namespace expected by the full-scope test suite.
 - Promote knobs from `SolverConfig` to environment variables and CLI flags so the same engine can be operated in chat, agent, and offline modes without code changes.
-- Cover each step of the universal solver with explicit unit tests, including the failing MVP-target tests under `tests/unit/mvp/`, and graduate them out of `#[ignore]` as the implementation lands.
+- Cover each step of the universal solver with explicit unit tests, including the failing tracked requirement tests under `tests/unit/specification/`, and graduate them out of `#[ignore]` as the implementation lands.
