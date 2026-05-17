@@ -74,6 +74,17 @@ fn russian_identity_question_returns_identity_intent() {
 }
 
 #[test]
+fn russian_combined_greeting_and_identity_question_returns_identity_intent() {
+    let response = answer("Привет. ты кто?");
+    assert_eq!(response.intent, "identity");
+    assert!(
+        response.answer.contains("formal-ai"),
+        "combined greeting and identity prompt should answer identity, got: {}",
+        response.answer
+    );
+}
+
+#[test]
 fn hindi_identity_question_returns_identity_intent() {
     let response = answer("तुम कौन हो?");
     assert_eq!(response.intent, "identity");
