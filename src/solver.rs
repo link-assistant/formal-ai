@@ -304,9 +304,13 @@ const SPECIALIZED_HANDLERS: &[(&str, SpecializedHandler)] = &[
     ("meta_explanation", try_meta_explanation),
     ("network_query", try_network_query),
     ("translation", try_translation),
+    // `execution_failure` must run before `write_script`/`algorithm` so that
+    // explicit failure prompts (e.g. "calls undefined_function()") surface a
+    // failure trace instead of being silently transformed into a passing
+    // hello-world snippet.
+    ("execution_failure", try_execution_failure),
     ("write_script", try_write_script),
     ("algorithm", try_algorithm),
-    ("execution_failure", try_execution_failure),
     ("source_refresh", try_source_refresh),
     ("source_conflict", try_source_conflict),
     ("clarification", try_clarification),

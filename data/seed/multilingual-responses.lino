@@ -125,7 +125,7 @@ multilingual_responses
   response "response_unknown_en"
     intent "unknown"
     language "en"
-    text "I do not have a learned symbolic rule for that prompt yet. Add a Links Notation fact or rule, then run the request again."
+    text "I cannot answer that from local Links Notation rules yet. Please add a fact or add a rule in Links Notation, then run the request again."
   response "response_unknown_ru"
     intent "unknown"
     language "ru"

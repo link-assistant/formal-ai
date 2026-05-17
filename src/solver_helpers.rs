@@ -480,11 +480,11 @@ pub fn build_sorting_algorithm_answer(lang: &str, with_tests: bool) -> String {
 
     if with_tests {
         format!(
-            "Here is a reviewable sorting algorithm in {lang} with a test:\n\n```{fence}\n{code}\n```\n\nTests:\n```{fence}\n{tests}\n```\n\nExecution is unavailable in this runtime; the snippet is intended to be copy-paste reviewable."
+            "Here is a reviewable sorting algorithm in {lang} with a test:\n\n```{fence}\n{code}\n```\n\nTests:\n```{fence}\n{tests}\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable."
         )
     } else {
         format!(
-            "Here is a reviewable sorting algorithm in {lang}:\n\n```{fence}\n{code}\n```\n\nExecution is unavailable in this runtime; the snippet is intended to be copy-paste reviewable."
+            "Here is a reviewable sorting algorithm in {lang}:\n\n```{fence}\n{code}\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable."
         )
     }
 }
