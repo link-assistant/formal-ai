@@ -6,6 +6,7 @@
 
 mod benchmark_prompts;
 mod user_intent;
+mod web_requests;
 
 pub use benchmark_prompts::{
     try_brainstorming_request, try_coreference_request, try_fact_lookup, try_roleplay_request,
@@ -15,6 +16,7 @@ pub use user_intent::{
     try_capabilities, try_clarification, try_ill_formed, try_opinion_question,
     try_punctuation_only_prompt, try_shell_refusal, try_who_is_question,
 };
+pub use web_requests::{try_http_fetch, try_web_search};
 
 use std::fmt::Write as _;
 
@@ -743,48 +745,6 @@ pub fn try_source_conflict(
         &body,
         0.3,
     ))
-}
-
-pub fn try_http_fetch(
-    prompt: &str,
-    normalized: &str,
-    log: &mut EventLog,
-) -> Option<SymbolicAnswer> {
-    let url = extract_fetch_url(normalized)?;
-    log.append("http_fetch:request", url.clone());
-    let body = format!(
-        "HTTP fetch requested for `{url}`.\n\n\
-         The browser will attempt to load this URL via `fetch()`. If the server \
-         blocks the request with a CORS error, an embedded iframe will be shown \
-         instead so you can still view the page.\n\n\
-         Source: [{url}]({url})"
-    );
-    Some(finalize_simple(
-        prompt,
-        log,
-        "http_fetch",
-        "response:http_fetch",
-        &body,
-        0.95,
-    ))
-}
-
-fn extract_fetch_url(normalized: &str) -> Option<String> {
-    let stripped = normalized.strip_prefix("fetch ")?.trim();
-    if stripped.is_empty() {
-        return None;
-    }
-    // Accept bare hostnames (e.g. "google.com") and full URLs.
-    let url = if stripped.starts_with("http://") || stripped.starts_with("https://") {
-        stripped.to_owned()
-    } else {
-        format!("https://{stripped}")
-    };
-    // Rudimentary validation: must contain at least one dot.
-    if !url.contains('.') {
-        return None;
-    }
-    Some(url)
 }
 
 pub fn finalize_simple(

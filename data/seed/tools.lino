@@ -23,7 +23,7 @@ tools_registry
     inputs "query"
     outputs "results"
     isolation "network"
-    sources "duckduckgo|wikipedia"
+    sources "browser:fetch|wikipedia"
     localized "ru"
       name "web_search"
       description "Ищет в открытом вебе через настроенный поисковый источник и возвращает ранжированные ссылки."
