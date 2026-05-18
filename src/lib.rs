@@ -4,6 +4,7 @@ pub(crate) mod concepts;
 pub mod engine;
 pub(crate) mod engine_hello_world;
 pub mod event_log;
+pub mod github_logs;
 pub mod language;
 pub mod memory;
 pub mod protocol;
@@ -20,6 +21,11 @@ pub mod telegram_runtime;
 
 pub use engine::{knowledge_links_notation, FormalAiEngine, SymbolicAnswer, DEFAULT_MODEL};
 pub use event_log::{Event, EventLog};
+pub use github_logs::{
+    collect_github_logs, collect_github_logs_with_runner, github_log_capture_plan,
+    render_github_log_plan, GithubLogCapture, GithubLogCapturedFile, GithubLogCollectionSummary,
+    GithubLogCollectorConfig,
+};
 pub use language::{detect as detect_language, Language};
 pub use memory::{
     export_bundle as export_memory_bundle, export_full_memory as export_memory_full,

@@ -1,0 +1,396 @@
+{
+  "repo": "link-assistant/hive-mind",
+  "generated_by": "formal-ai github-logs collect",
+  "generated_at_unix_seconds": 1779141733,
+  "captures": [
+    {
+      "kind": "repo",
+      "file": "repo.json",
+      "command": [
+        "gh",
+        "repo",
+        "view",
+        "link-assistant/hive-mind",
+        "--json",
+        "name,description,owner,url,defaultBranchRef,createdAt,pushedAt,isPrivate,licenseInfo"
+      ],
+      "bytes": 398
+    },
+    {
+      "kind": "recent_issues",
+      "file": "issues-recent.json",
+      "command": [
+        "gh",
+        "issue",
+        "list",
+        "--repo",
+        "link-assistant/hive-mind",
+        "--state",
+        "all",
+        "--limit",
+        "10",
+        "--json",
+        "number,title,state,labels,createdAt,updatedAt,url,author"
+      ],
+      "bytes": 5047
+    },
+    {
+      "kind": "recent_pulls",
+      "file": "pulls-recent.json",
+      "command": [
+        "gh",
+        "pr",
+        "list",
+        "--repo",
+        "link-assistant/hive-mind",
+        "--state",
+        "all",
+        "--limit",
+        "10",
+        "--json",
+        "number,title,state,createdAt,updatedAt,url,author,headRefName,baseRefName,isDraft"
+      ],
+      "bytes": 4204
+    },
+    {
+      "kind": "recent_runs",
+      "file": "actions-runs-recent.json",
+      "command": [
+        "gh",
+        "run",
+        "list",
+        "--repo",
+        "link-assistant/hive-mind",
+        "--limit",
+        "10",
+        "--json",
+        "databaseId,workflowName,status,conclusion,createdAt,updatedAt,headSha,headBranch,event,url"
+      ],
+      "bytes": 3633
+    },
+    {
+      "kind": "issue",
+      "file": "issue-1814.json",
+      "command": [
+        "gh",
+        "issue",
+        "view",
+        "1814",
+        "--repo",
+        "link-assistant/hive-mind",
+        "--json",
+        "number,title,body,author,state,labels,comments,createdAt,updatedAt,url"
+      ],
+      "bytes": 1751
+    },
+    {
+      "kind": "issue_comments",
+      "file": "issue-1814-comments.json",
+      "command": [
+        "gh",
+        "api",
+        "repos/link-assistant/hive-mind/issues/1814/comments",
+        "--paginate"
+      ],
+      "bytes": 2
+    },
+    {
+      "kind": "issue",
+      "file": "issue-1813.json",
+      "command": [
+        "gh",
+        "issue",
+        "view",
+        "1813",
+        "--repo",
+        "link-assistant/hive-mind",
+        "--json",
+        "number,title,body,author,state,labels,comments,createdAt,updatedAt,url"
+      ],
+      "bytes": 2314
+    },
+    {
+      "kind": "issue_comments",
+      "file": "issue-1813-comments.json",
+      "command": [
+        "gh",
+        "api",
+        "repos/link-assistant/hive-mind/issues/1813/comments",
+        "--paginate"
+      ],
+      "bytes": 2
+    },
+    {
+      "kind": "issue",
+      "file": "issue-1811.json",
+      "command": [
+        "gh",
+        "issue",
+        "view",
+        "1811",
+        "--repo",
+        "link-assistant/hive-mind",
+        "--json",
+        "number,title,body,author,state,labels,comments,createdAt,updatedAt,url"
+      ],
+      "bytes": 1962
+    },
+    {
+      "kind": "issue_comments",
+      "file": "issue-1811-comments.json",
+      "command": [
+        "gh",
+        "api",
+        "repos/link-assistant/hive-mind/issues/1811/comments",
+        "--paginate"
+      ],
+      "bytes": 2
+    },
+    {
+      "kind": "pull",
+      "file": "pr-1816.json",
+      "command": [
+        "gh",
+        "pr",
+        "view",
+        "1816",
+        "--repo",
+        "link-assistant/hive-mind",
+        "--json",
+        "number,title,body,author,state,isDraft,headRefName,baseRefName,commits,comments,reviews,reviewDecision,mergeStateStatus,createdAt,updatedAt,url"
+      ],
+      "bytes": 22232
+    },
+    {
+      "kind": "pull_conversation_comments",
+      "file": "pr-1816-conversation-comments.json",
+      "command": [
+        "gh",
+        "api",
+        "repos/link-assistant/hive-mind/issues/1816/comments",
+        "--paginate"
+      ],
+      "bytes": 41173
+    },
+    {
+      "kind": "pull_review_comments",
+      "file": "pr-1816-review-comments.json",
+      "command": [
+        "gh",
+        "api",
+        "repos/link-assistant/hive-mind/pulls/1816/comments",
+        "--paginate"
+      ],
+      "bytes": 2
+    },
+    {
+      "kind": "pull_reviews",
+      "file": "pr-1816-reviews.json",
+      "command": [
+        "gh",
+        "api",
+        "repos/link-assistant/hive-mind/pulls/1816/reviews",
+        "--paginate"
+      ],
+      "bytes": 2
+    },
+    {
+      "kind": "pull_diff",
+      "file": "pr-1816.diff.gz",
+      "command": [
+        "gh",
+        "pr",
+        "diff",
+        "1816",
+        "--repo",
+        "link-assistant/hive-mind"
+      ],
+      "bytes": 130846,
+      "compressed": "gzip"
+    },
+    {
+      "kind": "pull",
+      "file": "pr-1815.json",
+      "command": [
+        "gh",
+        "pr",
+        "view",
+        "1815",
+        "--repo",
+        "link-assistant/hive-mind",
+        "--json",
+        "number,title,body,author,state,isDraft,headRefName,baseRefName,commits,comments,reviews,reviewDecision,mergeStateStatus,createdAt,updatedAt,url"
+      ],
+      "bytes": 6231
+    },
+    {
+      "kind": "pull_conversation_comments",
+      "file": "pr-1815-conversation-comments.json",
+      "command": [
+        "gh",
+        "api",
+        "repos/link-assistant/hive-mind/issues/1815/comments",
+        "--paginate"
+      ],
+      "bytes": 7068
+    },
+    {
+      "kind": "pull_review_comments",
+      "file": "pr-1815-review-comments.json",
+      "command": [
+        "gh",
+        "api",
+        "repos/link-assistant/hive-mind/pulls/1815/comments",
+        "--paginate"
+      ],
+      "bytes": 2
+    },
+    {
+      "kind": "pull_reviews",
+      "file": "pr-1815-reviews.json",
+      "command": [
+        "gh",
+        "api",
+        "repos/link-assistant/hive-mind/pulls/1815/reviews",
+        "--paginate"
+      ],
+      "bytes": 2
+    },
+    {
+      "kind": "pull_diff",
+      "file": "pr-1815.diff.gz",
+      "command": [
+        "gh",
+        "pr",
+        "diff",
+        "1815",
+        "--repo",
+        "link-assistant/hive-mind"
+      ],
+      "bytes": 1671421,
+      "compressed": "gzip"
+    },
+    {
+      "kind": "pull",
+      "file": "pr-1812.json",
+      "command": [
+        "gh",
+        "pr",
+        "view",
+        "1812",
+        "--repo",
+        "link-assistant/hive-mind",
+        "--json",
+        "number,title,body,author,state,isDraft,headRefName,baseRefName,commits,comments,reviews,reviewDecision,mergeStateStatus,createdAt,updatedAt,url"
+      ],
+      "bytes": 16724
+    },
+    {
+      "kind": "pull_conversation_comments",
+      "file": "pr-1812-conversation-comments.json",
+      "command": [
+        "gh",
+        "api",
+        "repos/link-assistant/hive-mind/issues/1812/comments",
+        "--paginate"
+      ],
+      "bytes": 6549
+    },
+    {
+      "kind": "pull_review_comments",
+      "file": "pr-1812-review-comments.json",
+      "command": [
+        "gh",
+        "api",
+        "repos/link-assistant/hive-mind/pulls/1812/comments",
+        "--paginate"
+      ],
+      "bytes": 2
+    },
+    {
+      "kind": "pull_reviews",
+      "file": "pr-1812-reviews.json",
+      "command": [
+        "gh",
+        "api",
+        "repos/link-assistant/hive-mind/pulls/1812/reviews",
+        "--paginate"
+      ],
+      "bytes": 2
+    },
+    {
+      "kind": "pull_diff",
+      "file": "pr-1812.diff.gz",
+      "command": [
+        "gh",
+        "pr",
+        "diff",
+        "1812",
+        "--repo",
+        "link-assistant/hive-mind"
+      ],
+      "bytes": 1138658,
+      "compressed": "gzip"
+    },
+    {
+      "kind": "run",
+      "file": "run-26058054431.json",
+      "command": [
+        "gh",
+        "run",
+        "view",
+        "26058054431",
+        "--repo",
+        "link-assistant/hive-mind",
+        "--json",
+        "databaseId,workflowName,status,conclusion,createdAt,updatedAt,headSha,headBranch,event,url,jobs"
+      ],
+      "bytes": 22792
+    },
+    {
+      "kind": "run_log",
+      "file": "run-26058054431.log.gz",
+      "command": [
+        "gh",
+        "run",
+        "view",
+        "26058054431",
+        "--repo",
+        "link-assistant/hive-mind",
+        "--log"
+      ],
+      "bytes": 503426,
+      "compressed": "gzip"
+    },
+    {
+      "kind": "run",
+      "file": "run-25976224438.json",
+      "command": [
+        "gh",
+        "run",
+        "view",
+        "25976224438",
+        "--repo",
+        "link-assistant/hive-mind",
+        "--json",
+        "databaseId,workflowName,status,conclusion,createdAt,updatedAt,headSha,headBranch,event,url,jobs"
+      ],
+      "bytes": 8147
+    },
+    {
+      "kind": "run_log",
+      "file": "run-25976224438.log.gz",
+      "command": [
+        "gh",
+        "run",
+        "view",
+        "25976224438",
+        "--repo",
+        "link-assistant/hive-mind",
+        "--log"
+      ],
+      "bytes": 28436,
+      "compressed": "gzip"
+    }
+  ]
+}
