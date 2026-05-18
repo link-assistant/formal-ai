@@ -417,7 +417,14 @@ const PREFERENCE_DEFAULTS = {
   // Issue #94: "auto" follows navigator.languages; explicit values use the
   // supported UI language catalog.
   uiLanguage: "auto",
+  // Issue #108: the input surface is configurable while keeping the default
+  // flat and cheap to render.
+  composerStyle: "flat",
+  composerAction: "attach",
 };
+
+const COMPOSER_STYLES = ["flat", "glass-soft", "glass-clear", "bubble"];
+const COMPOSER_ACTIONS = ["attach", "plus"];
 
 const MEMORY_EXPORT_FILENAME = "formal-ai-memory.lino";
 
@@ -495,6 +502,16 @@ function normalizeThemePreference(value) {
   return ["auto", "light", "dark"].includes(value) ? value : "auto";
 }
 
+function normalizeComposerStyle(value) {
+  return COMPOSER_STYLES.includes(value) ? value : PREFERENCE_DEFAULTS.composerStyle;
+}
+
+function normalizeComposerAction(value) {
+  return COMPOSER_ACTIONS.includes(value)
+    ? value
+    : PREFERENCE_DEFAULTS.composerAction;
+}
+
 function i18nApi() {
   return typeof window !== "undefined" && window.FormalAiI18n
     ? window.FormalAiI18n
@@ -566,6 +583,8 @@ function collectUserContext({
   uiLanguage,
   uiLanguagePreference,
   themePreference,
+  composerStyle,
+  composerAction,
   locationPreference,
   guessProbability,
   temperature,
@@ -582,6 +601,8 @@ function collectUserContext({
     uiLanguage,
     uiLanguagePreference,
     themePreference,
+    composerStyle,
+    composerAction,
     browserLanguage: nav.language || "",
     browserLanguages: browserLanguages.join(", "),
     locale: resolvedLocale(),
@@ -613,6 +634,8 @@ function appendUserContextBlock(lines, context) {
     `- **UI Language Preference**: ${safe.uiLanguagePreference || "auto"}`,
   );
   lines.push(`- **Theme Preference**: ${safe.themePreference || "auto"}`);
+  lines.push(`- **Composer Style**: ${safe.composerStyle || "flat"}`);
+  lines.push(`- **Composer Action**: ${safe.composerAction || "attach"}`);
   lines.push(`- **Browser Language**: ${safe.browserLanguage || "unknown"}`);
   lines.push(`- **Browser Languages**: ${safe.browserLanguages || "unknown"}`);
   lines.push(`- **Locale**: ${safe.locale || "unknown"}`);
@@ -1203,11 +1226,14 @@ function App() {
   const pendingResponses = useRef(new Map());
   const transcriptEndRef = useRef(null);
   const importInputRef = useRef(null);
+  const attachmentInputRef = useRef(null);
   const [messages, setMessages] = useState([]);
   const [prompt, setPrompt] = useState("");
   const [pending, setPending] = useState(false);
   const [workerState, setWorkerState] = useState("wasm worker");
   const [memoryStatus, setMemoryStatus] = useState("");
+  const [composerMenuOpen, setComposerMenuOpen] = useState(false);
+  const [attachments, setAttachments] = useState([]);
   const [seed, setSeed] = useState({
     raw: {},
     tools: [],
@@ -1264,6 +1290,12 @@ function App() {
   const [themePreference, setThemePreference] = useState(
     normalizeThemePreference(initialPreferences.current.theme),
   );
+  const [composerStyle, setComposerStyle] = useState(
+    normalizeComposerStyle(initialPreferences.current.composerStyle),
+  );
+  const [composerAction, setComposerAction] = useState(
+    normalizeComposerAction(initialPreferences.current.composerAction),
+  );
   const [locationPreference, setLocationPreference] = useState(
     String(initialPreferences.current.location || ""),
   );
@@ -1304,6 +1336,39 @@ function App() {
       document.documentElement.removeAttribute("data-theme");
     }
   }, [themePreference]);
+
+  useEffect(() => {
+    if (typeof window === "undefined" || typeof document === "undefined") {
+      return undefined;
+    }
+    const root = document.documentElement;
+    const updateViewport = () => {
+      const visualViewport = window.visualViewport;
+      const height = visualViewport && visualViewport.height
+        ? visualViewport.height
+        : window.innerHeight;
+      const offsetTop = visualViewport && visualViewport.offsetTop
+        ? visualViewport.offsetTop
+        : 0;
+      root.style.setProperty("--formal-ai-viewport-height", `${Math.round(height)}px`);
+      root.style.setProperty("--formal-ai-viewport-offset-top", `${Math.round(offsetTop)}px`);
+    };
+    updateViewport();
+    window.addEventListener("resize", updateViewport);
+    window.addEventListener("orientationchange", updateViewport);
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener("resize", updateViewport);
+      window.visualViewport.addEventListener("scroll", updateViewport);
+    }
+    return () => {
+      window.removeEventListener("resize", updateViewport);
+      window.removeEventListener("orientationchange", updateViewport);
+      if (window.visualViewport) {
+        window.visualViewport.removeEventListener("resize", updateViewport);
+        window.visualViewport.removeEventListener("scroll", updateViewport);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     if (typeof window === "undefined") return undefined;
@@ -1351,6 +1416,8 @@ function App() {
         uiLanguage,
         uiLanguagePreference,
         themePreference,
+        composerStyle,
+        composerAction,
         locationPreference,
         guessProbability,
         temperature,
@@ -1359,6 +1426,8 @@ function App() {
       uiLanguage,
       uiLanguagePreference,
       themePreference,
+      composerStyle,
+      composerAction,
       locationPreference,
       guessProbability,
       temperature,
@@ -1498,6 +1567,26 @@ function App() {
     }
   }, []);
 
+  const triggerAttachFiles = useCallback(() => {
+    if (attachmentInputRef.current) {
+      attachmentInputRef.current.click();
+    }
+    setComposerMenuOpen(false);
+  }, []);
+
+  const handleAttachFiles = useCallback((event) => {
+    const files = Array.from(event.target.files || []);
+    event.target.value = "";
+    setAttachments(
+      files.map((file) => ({
+        name: file.name,
+        size: file.size,
+        type: file.type || "application/octet-stream",
+      })),
+    );
+    setComposerMenuOpen(false);
+  }, []);
+
   useEffect(() => {
     persistPreferences({
       demoMode,
@@ -1511,6 +1600,8 @@ function App() {
       guessProbability,
       temperature,
       theme: themePreference,
+      composerStyle,
+      composerAction,
       location: locationPreference,
       currentConversationId,
       agentMode,
@@ -1528,6 +1619,8 @@ function App() {
     guessProbability,
     temperature,
     themePreference,
+    composerStyle,
+    composerAction,
     locationPreference,
     currentConversationId,
     agentMode,
@@ -1900,6 +1993,8 @@ function App() {
     }
 
     setPrompt("");
+    setAttachments([]);
+    setComposerMenuOpen(false);
     await sendText(text);
   }
 
@@ -1988,14 +2083,46 @@ function App() {
     userContext,
   };
   const currentReportUrl = createIssueUrl(reportContext);
+  const composerActionIcon = composerAction === "plus" ? "+" : "📎";
+  const attachmentStatus =
+    attachments.length > 0
+      ? t("composer.attachments", { count: attachments.length })
+      : "";
 
   return h(
     "main",
-    { className: "app" },
+    { className: `app composer-style-${composerStyle}` },
     h(
       "header",
       { className: "topbar" },
-      h("div", { className: "brand" }, h("span", { className: "mark" }, "FA"), h("strong", null, "formal-ai")),
+      h(
+        "button",
+        {
+          type: "button",
+          className: "mobile-menu-toggle topbar-menu-toggle",
+          "data-testid": "mobile-menu-toggle",
+          "aria-pressed": mobileMenuOpen,
+          "aria-label": mobileMenuOpen
+            ? t("buttons.closeMenu")
+            : t("buttons.openMenu"),
+          title: mobileMenuOpen
+            ? t("titles.menuClose")
+            : t("titles.menuOpen"),
+          onClick: () => setMobileMenuOpen((value) => !value),
+        },
+        h(
+          "span",
+          { className: "btn-icon", "aria-hidden": "true" },
+          mobileMenuOpen ? "✕" : "☰",
+        ),
+      ),
+      h(
+        "div",
+        { className: "brand" },
+        h("span", { className: "mark" }, "FA"),
+        h("strong", null, "formal-ai"),
+        h("span", { className: "brand-version", "data-testid": "app-version" }, `v${APP_VERSION}`),
+      ),
       h(
         "div",
         { className: "topbar-actions" },
@@ -2124,27 +2251,6 @@ function App() {
             demoMode ? t("buttons.demoOn") : t("buttons.demo"),
           ),
         ),
-        h(
-          "button",
-          {
-            type: "button",
-            className: "mobile-menu-toggle",
-            "data-testid": "mobile-menu-toggle",
-            "aria-pressed": mobileMenuOpen,
-            "aria-label": mobileMenuOpen
-              ? t("buttons.closeMenu")
-              : t("buttons.openMenu"),
-            title: mobileMenuOpen
-              ? t("titles.menuClose")
-              : t("titles.menuOpen"),
-            onClick: () => setMobileMenuOpen((value) => !value),
-          },
-          h(
-            "span",
-            { className: "btn-icon", "aria-hidden": "true" },
-            mobileMenuOpen ? "✕" : "☰",
-          ),
-        ),
       ),
     ),
     mobileMenuOpen
@@ -2163,6 +2269,17 @@ function App() {
           className: `context-panel${mobileMenuOpen ? " is-mobile-open" : ""}`,
           "data-testid": "context-panel",
         },
+        h(
+          "div",
+          { className: "drawer-brand", "data-testid": "drawer-brand" },
+          h("span", { className: "mark" }, "FA"),
+          h(
+            "div",
+            { className: "drawer-brand-copy" },
+            h("strong", null, "formal-ai"),
+            h("span", { className: "brand-version" }, `v${APP_VERSION}`),
+          ),
+        ),
         h(CollapsibleSection, {
           title: t("sidebar.conversations"),
           testId: "sidebar-conversations",
@@ -2381,6 +2498,40 @@ function App() {
             h(
               "label",
               { className: "setting-row" },
+              h("span", null, t("settings.composerStyle")),
+              h(
+                "select",
+                {
+                  "data-testid": "setting-composer-style",
+                  value: composerStyle,
+                  onChange: (event) =>
+                    setComposerStyle(normalizeComposerStyle(event.target.value)),
+                },
+                h("option", { value: "flat" }, t("settings.composerStyle.flat")),
+                h("option", { value: "glass-soft" }, t("settings.composerStyle.glassSoft")),
+                h("option", { value: "glass-clear" }, t("settings.composerStyle.glassClear")),
+                h("option", { value: "bubble" }, t("settings.composerStyle.bubble")),
+              ),
+            ),
+            h(
+              "label",
+              { className: "setting-row" },
+              h("span", null, t("settings.composerAction")),
+              h(
+                "select",
+                {
+                  "data-testid": "setting-composer-action",
+                  value: composerAction,
+                  onChange: (event) =>
+                    setComposerAction(normalizeComposerAction(event.target.value)),
+                },
+                h("option", { value: "attach" }, t("settings.composerAction.attach")),
+                h("option", { value: "plus" }, t("settings.composerAction.plus")),
+              ),
+            ),
+            h(
+              "label",
+              { className: "setting-row" },
               h("span", null, t("settings.location")),
               h("input", {
                 "data-testid": "setting-location",
@@ -2539,6 +2690,14 @@ function App() {
               send();
             },
           },
+          h("input", {
+            ref: attachmentInputRef,
+            type: "file",
+            multiple: true,
+            style: { display: "none" },
+            "data-testid": "composer-attachment-input",
+            onChange: handleAttachFiles,
+          }),
           demoMode
             ? h(
                 "p",
@@ -2548,9 +2707,65 @@ function App() {
                 t("composer.demoHint.after"),
               )
             : null,
+          composerMenuOpen
+            ? h(
+                "div",
+                { className: "composer-menu", "data-testid": "composer-menu" },
+                h(
+                  "button",
+                  {
+                    type: "button",
+                    className: "composer-menu-item",
+                    onClick: triggerAttachFiles,
+                  },
+                  t("buttons.attachFiles"),
+                ),
+                h(
+                  "button",
+                  {
+                    type: "button",
+                    className: "composer-menu-item",
+                    onClick: handleExportMemory,
+                  },
+                  t("buttons.exportMemory"),
+                ),
+                h(
+                  "button",
+                  {
+                    type: "button",
+                    className: "composer-menu-item",
+                    onClick: triggerImportMemory,
+                  },
+                  t("buttons.importMemory"),
+                ),
+                h(
+                  "a",
+                  {
+                    className: "composer-menu-item",
+                    href: currentReportUrl,
+                    target: "_blank",
+                    rel: "noopener noreferrer",
+                  },
+                  t("buttons.reportIssue"),
+                ),
+              )
+            : null,
           h(
             "div",
             { className: "composer-grid" },
+            h(
+              "button",
+              {
+                type: "button",
+                className: "composer-action-button",
+                "data-testid": "composer-menu-toggle",
+                "aria-expanded": composerMenuOpen,
+                "aria-label": t("buttons.composerMenu"),
+                title: t("titles.composerMenu"),
+                onClick: () => setComposerMenuOpen((value) => !value),
+              },
+              composerActionIcon,
+            ),
             h("textarea", {
               value: prompt,
               rows: 3,
@@ -2570,9 +2785,17 @@ function App() {
                 disabled: pending || demoMode || !prompt.trim(),
                 "data-testid": "chat-composer-submit",
               },
-              pending ? "..." : t("composer.send"),
+              h("span", { className: "send-icon", "aria-hidden": "true" }, pending ? "..." : "↑"),
+              h("span", { className: "send-label" }, pending ? "..." : t("composer.send")),
             ),
           ),
+          attachmentStatus
+            ? h(
+                "p",
+                { className: "composer-attachment-status", "data-testid": "composer-attachment-status" },
+                attachmentStatus,
+              )
+            : null,
         ),
       ),
     ),

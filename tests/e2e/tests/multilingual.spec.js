@@ -896,12 +896,17 @@ test.describe('Issue #27: mobile layout', () => {
     const sidebarBox = await sidebar.boundingBox();
     expect(sidebarBox && sidebarBox.x).toBeLessThan(0);
 
-    const composer = page.locator('[data-testid="chat-composer-input"]');
+    const composer = page.locator('.composer-grid');
     const composerBox = await composer.boundingBox();
     expect(composerBox).toBeTruthy();
-    // Composer spans most of the viewport width — at 390px viewport with
-    // 12px+12px gutters it should leave only the gutters as horizontal slack.
+    // The full composer row spans most of the viewport width. Issue #108 adds
+    // compact action/send buttons inside that row, so the textarea itself no
+    // longer owns the entire row width.
     expect(composerBox && composerBox.width).toBeGreaterThan(300);
+
+    const inputBox = await page.locator('[data-testid="chat-composer-input"]').boundingBox();
+    expect(inputBox).toBeTruthy();
+    expect(inputBox && inputBox.width).toBeGreaterThan(250);
   });
 });
 
