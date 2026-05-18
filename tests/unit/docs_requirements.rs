@@ -214,7 +214,7 @@ fn issue_117_lino_i18n_catalog_documents_and_ci_rule_are_traceable() {
         ],
     );
 
-    let catalog = read(root.join("src/web/i18n-catalog.lino"));
+    let catalog = read(root.join("src/web/i18n-catalog.lino")).replace("\r\n", "\n");
     assert_contains_all(
         "src/web/i18n-catalog.lino",
         &catalog,
