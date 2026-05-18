@@ -421,13 +421,15 @@ test.describe('Issue #82: assistant behavior settings', () => {
     await switchToManualMode(page);
   });
 
-  test('settings sidebar exposes ambiguity, temperature, language, theme, and location controls', async ({ page }) => {
+  test('settings sidebar exposes ambiguity, temperature, language, skins, and location controls', async ({ page }) => {
     const settings = page.locator('[data-testid="sidebar-settings"]');
     await expect(settings).toBeVisible();
     await expect(page.locator('[data-testid="setting-guess-probability"]')).toBeVisible();
     await expect(page.locator('[data-testid="setting-temperature"]')).toBeVisible();
     await expect(page.locator('[data-testid="setting-ui-language"]')).toBeVisible();
     await expect(page.locator('[data-testid="setting-theme"]')).toBeVisible();
+    await expect(page.locator('[data-testid="setting-ui-skin"]')).toBeVisible();
+    await expect(page.locator('[data-testid="setting-chat-style"]')).toBeVisible();
     await expect(page.locator('[data-testid="setting-location"]')).toBeVisible();
 
     await setRangeValue(page, 'setting-temperature', 0);

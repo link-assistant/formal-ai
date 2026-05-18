@@ -1,0 +1,12 @@
+
+> formal-ai-e2e@1.0.0 test:local
+> playwright test --config=playwright.local.config.js --grep Issue #110
+
+[2m[WebServer] [22m(node:993487) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+  ✓  1 [chromium] › tests/demo.spec.js:610:3 › Issue #110: mobile keyboard viewport handling › focused mobile input pins the app shell to the visual viewport offset (738ms)
+
+  1 passed (2.8s)

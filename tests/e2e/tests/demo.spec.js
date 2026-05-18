@@ -567,20 +567,26 @@ test.describe('Issue #108: mobile composer and configurable input UI', () => {
     expect(inputBox && viewport && inputBox.width).toBeGreaterThan(viewport.width * 0.55);
   });
 
-  test('composer style and action button are configurable and persisted', async ({ page }) => {
+  test('UI skin, chat style, composer style, and action button are configurable and persisted', async ({ page }) => {
     await disableGreetingVariations(page);
     await page.goto('./');
     await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
 
+    await page.locator('[data-testid="setting-ui-skin"]').selectOption('glass');
+    await page.locator('[data-testid="setting-chat-style"]').selectOption('bubbles');
     await page.locator('[data-testid="setting-composer-style"]').selectOption('glass-clear');
     await page.locator('[data-testid="setting-composer-action"]').selectOption('plus');
 
+    await expect(page.locator('.app')).toHaveClass(/ui-skin-glass/);
+    await expect(page.locator('.app')).toHaveClass(/chat-style-bubbles/);
     await expect(page.locator('.app')).toHaveClass(/composer-style-glass-clear/);
     await expect(page.locator('[data-testid="composer-menu-toggle"]')).toContainText('+');
 
     const stored = await page.evaluate(
       () => window.localStorage.getItem('formal-ai.preferences.v1') || '',
     );
+    expect(stored).toContain('uiSkin "glass"');
+    expect(stored).toContain('chatStyle "bubbles"');
     expect(stored).toContain('composerStyle "glass-clear"');
     expect(stored).toContain('composerAction "plus"');
   });
@@ -597,5 +603,79 @@ test.describe('Issue #108: mobile composer and configurable input UI', () => {
     await expect(menu).toContainText('Export memory');
     await expect(menu).toContainText('Import memory');
     await expect(menu).toContainText('Report issue');
+  });
+});
+
+test.describe('Issue #110: mobile keyboard viewport handling', () => {
+  test('focused mobile input pins the app shell to the visual viewport offset', async ({ page }) => {
+    await disableGreetingVariations(page);
+    await page.addInitScript(() => {
+      const listeners = new Map();
+      const viewport = {
+        width: 390,
+        height: 780,
+        offsetTop: 0,
+        offsetLeft: 0,
+        pageTop: 0,
+        pageLeft: 0,
+        scale: 1,
+        addEventListener(type, listener) {
+          const current = listeners.get(type) || [];
+          current.push(listener);
+          listeners.set(type, current);
+        },
+        removeEventListener(type, listener) {
+          const current = listeners.get(type) || [];
+          listeners.set(
+            type,
+            current.filter((entry) => entry !== listener),
+          );
+        },
+        dispatchEvent(event) {
+          for (const listener of listeners.get(event.type) || []) {
+            listener.call(viewport, event);
+          }
+          return true;
+        },
+        __set(next) {
+          Object.assign(viewport, next);
+          viewport.dispatchEvent(new Event('resize'));
+          viewport.dispatchEvent(new Event('scroll'));
+        },
+      };
+      Object.defineProperty(window, 'visualViewport', {
+        configurable: true,
+        value: viewport,
+      });
+    });
+    await page.setViewportSize({ width: 390, height: 780 });
+    await page.goto('./');
+    await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
+
+    await page.locator('.mode-toggle').click();
+    const input = page.locator('[data-testid="chat-composer-input"]');
+    await expect(input).toBeEnabled({ timeout: 5_000 });
+    await input.focus();
+
+    const viewportState = await page.evaluate(() => {
+      window.visualViewport.__set({
+        height: 520,
+        offsetTop: 180,
+      });
+      return {
+        height: window.visualViewport.height,
+        offsetTop: window.visualViewport.offsetTop,
+      };
+    });
+
+    const topbarBox = await page.locator('.topbar').boundingBox();
+    const composerBox = await page.locator('.composer').boundingBox();
+
+    expect(topbarBox).toBeTruthy();
+    expect(composerBox).toBeTruthy();
+    expect(Math.round(topbarBox.y)).toBe(viewportState.offsetTop);
+    expect(
+      Math.round(composerBox.y + composerBox.height),
+    ).toBeLessThanOrEqual(viewportState.offsetTop + viewportState.height + 1);
   });
 });

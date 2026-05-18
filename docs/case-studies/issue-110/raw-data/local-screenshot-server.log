@@ -1,0 +1,372 @@
+npm warn exec The following package was not found and will be installed: serve@14.2.6
+ INFO  Accepting connections at http://localhost:3499
+ HTTP  5/18/2026 10:10:07 AM ::1 GET /
+ HTTP  5/18/2026 10:10:07 AM ::1 Returned 200 in 16 ms
+ HTTP  5/18/2026 10:10:07 AM ::1 GET /styles.css?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:07 AM ::1 Returned 200 in 1 ms
+ HTTP  5/18/2026 10:10:07 AM ::1 GET /seed_loader.js?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:07 AM ::1 GET /preferences.js?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:07 AM ::1 GET /i18n.js?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:07 AM ::1 GET /memory.js?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:07 AM ::1 GET /app.js?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:07 AM ::1 Returned 200 in 4 ms
+ HTTP  5/18/2026 10:10:07 AM ::1 Returned 200 in 3 ms
+ HTTP  5/18/2026 10:10:07 AM ::1 Returned 200 in 4 ms
+ HTTP  5/18/2026 10:10:07 AM ::1 Returned 200 in 4 ms
+ HTTP  5/18/2026 10:10:07 AM ::1 Returned 200 in 5 ms
+ HTTP  5/18/2026 10:10:07 AM ::1 GET /seed/agent-info.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:07 AM ::1 GET /seed/multilingual-responses.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:07 AM ::1 GET /seed/concepts.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:07 AM ::1 Returned 200 in 3 ms
+ HTTP  5/18/2026 10:10:07 AM ::1 GET /seed/concept-contexts.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:07 AM ::1 GET /seed/facts.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:07 AM ::1 GET /seed/brainstorm-seeds.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:07 AM ::1 GET /seed/personas.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:07 AM ::1 Returned 200 in 9 ms
+ HTTP  5/18/2026 10:10:07 AM ::1 Returned 200 in 9 ms
+ HTTP  5/18/2026 10:10:07 AM ::1 Returned 200 in 7 ms
+ HTTP  5/18/2026 10:10:07 AM ::1 Returned 200 in 7 ms
+ HTTP  5/18/2026 10:10:07 AM ::1 Returned 200 in 8 ms
+ HTTP  5/18/2026 10:10:07 AM ::1 Returned 200 in 3 ms
+ HTTP  5/18/2026 10:10:07 AM ::1 GET /seed/summary-topics.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:07 AM ::1 GET /seed/coreference.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:07 AM ::1 GET /seed/tools.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:07 AM ::1 GET /seed/language-detection.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:07 AM ::1 GET /seed/prompt-patterns.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:07 AM ::1 GET /seed/intent-routing.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:07 AM ::1 Returned 200 in 4 ms
+ HTTP  5/18/2026 10:10:07 AM ::1 Returned 200 in 3 ms
+ HTTP  5/18/2026 10:10:07 AM ::1 Returned 200 in 3 ms
+ HTTP  5/18/2026 10:10:07 AM ::1 Returned 200 in 3 ms
+ HTTP  5/18/2026 10:10:07 AM ::1 Returned 200 in 2 ms
+ HTTP  5/18/2026 10:10:07 AM ::1 Returned 200 in 3 ms
+ HTTP  5/18/2026 10:10:07 AM ::1 GET /seed/greetings.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:07 AM ::1 GET /seed/identity.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:07 AM ::1 GET /seed/hello-world-programs.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:07 AM ::1 GET /seed/demo-dialogs.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:07 AM ::1 GET /seed/environments.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:07 AM ::1 GET /formal_ai_worker.js?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:07 AM ::1 Returned 200 in 1 ms
+ HTTP  5/18/2026 10:10:07 AM ::1 Returned 200 in 1 ms
+ HTTP  5/18/2026 10:10:07 AM ::1 Returned 200 in 2 ms
+ HTTP  5/18/2026 10:10:07 AM ::1 Returned 200 in 2 ms
+ HTTP  5/18/2026 10:10:07 AM ::1 Returned 200 in 2 ms
+ HTTP  5/18/2026 10:10:07 AM ::1 Returned 200 in 3 ms
+ HTTP  5/18/2026 10:10:07 AM ::1 GET /seed_loader.js?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:07 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:10:07 AM ::1 GET /seed/agent-info.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:07 AM ::1 Returned 304 in 0 ms
+ HTTP  5/18/2026 10:10:07 AM ::1 GET /seed/multilingual-responses.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:07 AM ::1 GET /seed/concepts.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:07 AM ::1 Returned 304 in 0 ms
+ HTTP  5/18/2026 10:10:07 AM ::1 GET /seed/concept-contexts.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:07 AM ::1 GET /seed/facts.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:07 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:10:07 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:10:07 AM ::1 Returned 304 in 0 ms
+ HTTP  5/18/2026 10:10:07 AM ::1 GET /seed/brainstorm-seeds.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:07 AM ::1 GET /seed/personas.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:07 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:10:07 AM ::1 Returned 304 in 0 ms
+ HTTP  5/18/2026 10:10:07 AM ::1 GET /seed/summary-topics.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:07 AM ::1 GET /seed/coreference.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:07 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:10:07 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:10:07 AM ::1 GET /seed/tools.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:07 AM ::1 GET /seed/language-detection.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:07 AM ::1 GET /seed/prompt-patterns.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:07 AM ::1 GET /seed/intent-routing.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:07 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:10:07 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:10:07 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:10:07 AM ::1 Returned 304 in 0 ms
+ HTTP  5/18/2026 10:10:07 AM ::1 GET /seed/greetings.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:07 AM ::1 Returned 304 in 0 ms
+ HTTP  5/18/2026 10:10:07 AM ::1 GET /seed/identity.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:07 AM ::1 Returned 304 in 0 ms
+ HTTP  5/18/2026 10:10:07 AM ::1 GET /seed/hello-world-programs.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:07 AM ::1 Returned 304 in 0 ms
+ HTTP  5/18/2026 10:10:07 AM ::1 GET /seed/demo-dialogs.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:07 AM ::1 GET /seed/environments.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:07 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:10:07 AM ::1 Returned 304 in 0 ms
+ HTTP  5/18/2026 10:10:07 AM ::1 GET /formal_ai_worker.wasm?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:07 AM ::1 Returned 200 in 1 ms
+ HTTP  5/18/2026 10:10:46 AM ::1 GET /
+ HTTP  5/18/2026 10:10:46 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:10:46 AM ::1 GET /styles.css?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:46 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:10:46 AM ::1 GET /seed_loader.js?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:46 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:10:46 AM ::1 GET /preferences.js?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:46 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:10:46 AM ::1 GET /i18n.js?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:46 AM ::1 GET /memory.js?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:46 AM ::1 GET /app.js?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:46 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:10:46 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:10:46 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:10:46 AM ::1 GET /seed/agent-info.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:46 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:10:46 AM ::1 GET /seed/multilingual-responses.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:46 AM ::1 GET /seed/concepts.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:46 AM ::1 GET /seed/concept-contexts.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:46 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:10:46 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:10:46 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:10:46 AM ::1 GET /seed/facts.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:46 AM ::1 GET /seed/brainstorm-seeds.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:46 AM ::1 GET /seed/personas.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:46 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:10:46 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:10:46 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:10:46 AM ::1 GET /seed/summary-topics.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:46 AM ::1 GET /seed/coreference.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:46 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:10:46 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:10:46 AM ::1 GET /seed/tools.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:46 AM ::1 GET /seed/language-detection.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:46 AM ::1 Returned 304 in 3 ms
+ HTTP  5/18/2026 10:10:46 AM ::1 GET /seed/prompt-patterns.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:46 AM ::1 GET /seed/intent-routing.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:46 AM ::1 GET /seed/greetings.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:46 AM ::1 GET /seed/identity.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:46 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:10:46 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:10:46 AM ::1 Returned 304 in 0 ms
+ HTTP  5/18/2026 10:10:46 AM ::1 Returned 304 in 0 ms
+ HTTP  5/18/2026 10:10:46 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:10:46 AM ::1 GET /seed/hello-world-programs.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:46 AM ::1 Returned 304 in 0 ms
+ HTTP  5/18/2026 10:10:46 AM ::1 GET /seed/demo-dialogs.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:46 AM ::1 Returned 304 in 0 ms
+ HTTP  5/18/2026 10:10:46 AM ::1 GET /seed/environments.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:46 AM ::1 GET /formal_ai_worker.js?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:46 AM ::1 Returned 304 in 9 ms
+ HTTP  5/18/2026 10:10:46 AM ::1 Returned 304 in 8 ms
+ HTTP  5/18/2026 10:10:46 AM ::1 GET /seed_loader.js?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:46 AM ::1 Returned 304 in 0 ms
+ HTTP  5/18/2026 10:10:46 AM ::1 GET /seed/agent-info.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:46 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:10:46 AM ::1 GET /seed/multilingual-responses.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:46 AM ::1 GET /seed/concepts.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:46 AM ::1 GET /seed/concept-contexts.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:46 AM ::1 Returned 304 in 0 ms
+ HTTP  5/18/2026 10:10:46 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:10:46 AM ::1 GET /seed/facts.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:46 AM ::1 GET /seed/brainstorm-seeds.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:46 AM ::1 GET /seed/personas.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:46 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:10:46 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:10:46 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:10:46 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:10:46 AM ::1 GET /seed/summary-topics.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:46 AM ::1 Returned 304 in 0 ms
+ HTTP  5/18/2026 10:10:46 AM ::1 GET /seed/coreference.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:46 AM ::1 Returned 304 in 0 ms
+ HTTP  5/18/2026 10:10:46 AM ::1 GET /seed/tools.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:46 AM ::1 GET /seed/language-detection.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:46 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:10:46 AM ::1 Returned 304 in 0 ms
+ HTTP  5/18/2026 10:10:46 AM ::1 GET /seed/prompt-patterns.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:46 AM ::1 GET /seed/intent-routing.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:46 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:10:46 AM ::1 GET /seed/greetings.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:46 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:10:46 AM ::1 GET /seed/identity.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:46 AM ::1 Returned 304 in 0 ms
+ HTTP  5/18/2026 10:10:46 AM ::1 Returned 304 in 0 ms
+ HTTP  5/18/2026 10:10:46 AM ::1 GET /seed/hello-world-programs.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:46 AM ::1 GET /seed/demo-dialogs.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:46 AM ::1 Returned 304 in 0 ms
+ HTTP  5/18/2026 10:10:46 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:10:46 AM ::1 GET /seed/environments.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:46 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:10:46 AM ::1 GET /formal_ai_worker.wasm?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:10:46 AM ::1 Returned 304 in 0 ms
+ HTTP  5/18/2026 10:11:44 AM ::1 GET /
+ HTTP  5/18/2026 10:11:44 AM ::1 Returned 304 in 0 ms
+ HTTP  5/18/2026 10:11:44 AM ::1 GET /styles.css?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:44 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:11:44 AM ::1 GET /preferences.js?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:44 AM ::1 GET /seed_loader.js?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:44 AM ::1 GET /i18n.js?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:44 AM ::1 GET /memory.js?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:44 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:11:44 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:11:44 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:11:44 AM ::1 GET /app.js?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:44 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:11:44 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:11:44 AM ::1 GET /seed/agent-info.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:44 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:11:44 AM ::1 GET /seed/multilingual-responses.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:44 AM ::1 GET /seed/concepts.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:44 AM ::1 GET /seed/concept-contexts.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:44 AM ::1 GET /seed/facts.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:44 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:11:44 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:11:44 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:11:44 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:11:44 AM ::1 GET /seed/brainstorm-seeds.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:44 AM ::1 GET /seed/personas.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:44 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:11:44 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:11:44 AM ::1 GET /seed/summary-topics.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:44 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:11:44 AM ::1 GET /seed/coreference.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:44 AM ::1 GET /seed/tools.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:44 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:11:44 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:11:44 AM ::1 GET /seed/language-detection.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:44 AM ::1 GET /seed/prompt-patterns.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:44 AM ::1 GET /seed/intent-routing.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:44 AM ::1 GET /seed/greetings.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:44 AM ::1 GET /seed/identity.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:44 AM ::1 GET /seed/hello-world-programs.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:44 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:11:44 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:11:44 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:11:44 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:11:44 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:11:44 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:11:44 AM ::1 GET /seed/demo-dialogs.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:44 AM ::1 Returned 304 in 0 ms
+ HTTP  5/18/2026 10:11:44 AM ::1 GET /seed/environments.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:44 AM ::1 GET /formal_ai_worker.js?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:44 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:11:44 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:11:44 AM ::1 GET /seed_loader.js?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:44 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:11:44 AM ::1 GET /seed/agent-info.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:44 AM ::1 GET /seed/multilingual-responses.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:44 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:11:44 AM ::1 Returned 304 in 0 ms
+ HTTP  5/18/2026 10:11:44 AM ::1 GET /seed/concepts.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:44 AM ::1 Returned 304 in 0 ms
+ HTTP  5/18/2026 10:11:44 AM ::1 GET /seed/concept-contexts.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:44 AM ::1 GET /seed/facts.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:44 AM ::1 Returned 304 in 0 ms
+ HTTP  5/18/2026 10:11:44 AM ::1 Returned 304 in 0 ms
+ HTTP  5/18/2026 10:11:44 AM ::1 GET /seed/brainstorm-seeds.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:44 AM ::1 Returned 304 in 0 ms
+ HTTP  5/18/2026 10:11:44 AM ::1 GET /seed/personas.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:44 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:11:44 AM ::1 GET /seed/summary-topics.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:44 AM ::1 GET /seed/coreference.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:44 AM ::1 Returned 304 in 0 ms
+ HTTP  5/18/2026 10:11:44 AM ::1 Returned 304 in 0 ms
+ HTTP  5/18/2026 10:11:44 AM ::1 GET /seed/tools.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:44 AM ::1 Returned 304 in 0 ms
+ HTTP  5/18/2026 10:11:44 AM ::1 GET /seed/language-detection.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:44 AM ::1 GET /seed/prompt-patterns.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:44 AM ::1 GET /seed/intent-routing.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:44 AM ::1 GET /seed/greetings.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:44 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:11:44 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:11:44 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:11:44 AM ::1 GET /seed/identity.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:44 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:11:44 AM ::1 GET /seed/hello-world-programs.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:44 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:11:44 AM ::1 GET /seed/demo-dialogs.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:44 AM ::1 Returned 304 in 0 ms
+ HTTP  5/18/2026 10:11:44 AM ::1 GET /seed/environments.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:44 AM ::1 Returned 304 in 5 ms
+ HTTP  5/18/2026 10:11:44 AM ::1 Returned 304 in 5 ms
+ HTTP  5/18/2026 10:11:44 AM ::1 GET /formal_ai_worker.wasm?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:44 AM ::1 Returned 304 in 0 ms
+ HTTP  5/18/2026 10:11:59 AM ::1 GET /
+ HTTP  5/18/2026 10:11:59 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:11:59 AM ::1 GET /styles.css?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:59 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:11:59 AM ::1 GET /seed_loader.js?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:59 AM ::1 GET /preferences.js?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:59 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:11:59 AM ::1 GET /i18n.js?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:59 AM ::1 GET /memory.js?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:59 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:11:59 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:11:59 AM ::1 GET /app.js?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:59 AM ::1 Returned 304 in 2 ms
+ HTTP  5/18/2026 10:11:59 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:11:59 AM ::1 GET /seed/agent-info.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:59 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:11:59 AM ::1 GET /seed/multilingual-responses.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:59 AM ::1 GET /seed/concepts.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:59 AM ::1 GET /seed/concept-contexts.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:59 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:11:59 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:11:59 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:11:59 AM ::1 GET /seed/facts.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:59 AM ::1 GET /seed/brainstorm-seeds.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:59 AM ::1 GET /seed/personas.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:59 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:11:59 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:11:59 AM ::1 GET /seed/summary-topics.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:59 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:11:59 AM ::1 GET /seed/coreference.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:59 AM ::1 Returned 304 in 2 ms
+ HTTP  5/18/2026 10:11:59 AM ::1 GET /seed/tools.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:59 AM ::1 GET /seed/language-detection.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:59 AM ::1 GET /seed/prompt-patterns.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:59 AM ::1 GET /seed/intent-routing.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:59 AM ::1 GET /seed/greetings.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:59 AM ::1 Returned 304 in 3 ms
+ HTTP  5/18/2026 10:11:59 AM ::1 Returned 304 in 3 ms
+ HTTP  5/18/2026 10:11:59 AM ::1 Returned 304 in 2 ms
+ HTTP  5/18/2026 10:11:59 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:11:59 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:11:59 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:11:59 AM ::1 GET /seed/identity.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:59 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:11:59 AM ::1 GET /seed/hello-world-programs.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:59 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:11:59 AM ::1 GET /seed/demo-dialogs.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:59 AM ::1 GET /seed/environments.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:59 AM ::1 GET /formal_ai_worker.js?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:59 AM ::1 Returned 304 in 3 ms
+ HTTP  5/18/2026 10:11:59 AM ::1 Returned 304 in 2 ms
+ HTTP  5/18/2026 10:11:59 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:11:59 AM ::1 GET /seed_loader.js?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:59 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:11:59 AM ::1 GET /seed/agent-info.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:59 AM ::1 GET /seed/multilingual-responses.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:59 AM ::1 GET /seed/concepts.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:59 AM ::1 GET /seed/concept-contexts.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:59 AM ::1 GET /seed/facts.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:59 AM ::1 GET /seed/brainstorm-seeds.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:59 AM ::1 Returned 304 in 2 ms
+ HTTP  5/18/2026 10:11:59 AM ::1 Returned 304 in 4 ms
+ HTTP  5/18/2026 10:11:59 AM ::1 Returned 304 in 3 ms
+ HTTP  5/18/2026 10:11:59 AM ::1 Returned 304 in 3 ms
+ HTTP  5/18/2026 10:11:59 AM ::1 Returned 304 in 3 ms
+ HTTP  5/18/2026 10:11:59 AM ::1 Returned 304 in 2 ms
+ HTTP  5/18/2026 10:11:59 AM ::1 GET /seed/personas.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:59 AM ::1 Returned 304 in 0 ms
+ HTTP  5/18/2026 10:11:59 AM ::1 GET /seed/summary-topics.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:59 AM ::1 GET /seed/coreference.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:59 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:11:59 AM ::1 Returned 304 in 0 ms
+ HTTP  5/18/2026 10:11:59 AM ::1 GET /seed/tools.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:59 AM ::1 GET /seed/language-detection.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:59 AM ::1 GET /seed/prompt-patterns.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:59 AM ::1 GET /seed/intent-routing.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:59 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:11:59 AM ::1 Returned 304 in 0 ms
+ HTTP  5/18/2026 10:11:59 AM ::1 Returned 304 in 0 ms
+ HTTP  5/18/2026 10:11:59 AM ::1 Returned 304 in 0 ms
+ HTTP  5/18/2026 10:11:59 AM ::1 GET /seed/greetings.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:59 AM ::1 GET /seed/identity.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:59 AM ::1 Returned 304 in 0 ms
+ HTTP  5/18/2026 10:11:59 AM ::1 Returned 304 in 0 ms
+ HTTP  5/18/2026 10:11:59 AM ::1 GET /seed/hello-world-programs.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:59 AM ::1 Returned 304 in 0 ms
+ HTTP  5/18/2026 10:11:59 AM ::1 GET /seed/demo-dialogs.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:59 AM ::1 Returned 304 in 0 ms
+ HTTP  5/18/2026 10:11:59 AM ::1 GET /seed/environments.lino?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:59 AM ::1 Returned 304 in 1 ms
+ HTTP  5/18/2026 10:11:59 AM ::1 GET /formal_ai_worker.wasm?v=__FORMAL_AI_ASSET_VERSION__
+ HTTP  5/18/2026 10:11:59 AM ::1 Returned 304 in 0 ms
+
+ INFO  Gracefully shutting down. Please wait...
