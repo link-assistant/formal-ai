@@ -254,3 +254,17 @@ and `REQUIREMENTS.md` in lockstep.
 | R134 | Update `VISION.md` with the architecture description from the issue (Wikidata P/Q-ID formalization, temperature-style interpretation selection, nested reasoning, growable doublet memory, transformation rules in data, on-demand compilation of natural-language skills, formalization-driven translation). | Implemented by adding a new **Formalization And Temperature** section to `VISION.md` and extending the **Reasoning Model**, **Computation Model**, and **Data Is The Interface** paragraphs to explicitly reference the new architecture artifacts. |
 | R135 | Expose R129+ alongside the existing requirement matrix. | Implemented by appending this **Issue #103 Test-Matrix And Architecture Requirements** block to `REQUIREMENTS.md`. |
 | R136 | Compile issue #103 evidence and case-study analysis under `docs/case-studies/issue-103/`. | Implemented in `docs/case-studies/issue-103/README.md` with raw data (`issue-103.json`, `issue-103-comments.json`, PR-104 mirrors, `recent-merged-prs.json`, `competitor-test-research.md`) in `docs/case-studies/issue-103/raw-data/`. |
+
+## Issue #80 Software Project Request Requirements
+
+Issue [#80](https://github.com/link-assistant/formal-ai/issues/80) reports that
+an Owlbear/D&D extension request for HP, Protection/Resistance mitigation, and
+cooldown tracking returned `intent: unknown`. The maintainer asked for a
+generalization across similar tasks instead of a memoized prompt answer.
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R137 | Open-ended requests to build or write a software artifact (extension, plugin, bot, app, service, website, or tool) must route to a typed software-project intent instead of `unknown`. | Implemented by `try_software_project_request` in `src/solver_handlers/software_project.rs`, mirrored by `trySoftwareProjectRequest` in `src/web/formal_ai_worker.js`, and registered as `software_project_plan` in `data/seed/intent-routing.lino`. |
+| R138 | The response must be generalized from the prompt structure: artifact, target environment, extracted requirements, state model, commands, persistence, and tests. | Implemented by the software-project handler's artifact/target/feature extraction and `software_project:*` / `requirement:*` evidence links. |
+| R139 | Game-unit tracker requests must receive a concrete starter design for HP, Protection, Resistance, damage mitigation, and cooldown ticking. | Implemented by the game-unit tracker branch, which emits a TypeScript `UnitState` core with `mitigateDamage`, `setStacks`, and `tickCooldowns`. |
+| R140 | The browser demo must handle the reported Owlbear prompt without showing the unknown-intent fallback. | Covered by `software_project_request_returns_reviewable_plan`, `software_project_variations_do_not_return_unknown`, and the Playwright regression `Owlbear extension request returns a software project plan`. |

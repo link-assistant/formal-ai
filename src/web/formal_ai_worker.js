@@ -1940,6 +1940,267 @@ async function tryWikipediaLookup(prompt, language, preferences) {
   };
 }
 
+const SOFTWARE_ACTION_WORDS = [
+  "write",
+  "build",
+  "create",
+  "implement",
+  "make",
+  "develop",
+  "generate",
+  "design",
+  "scaffold",
+];
+
+const SOFTWARE_ARTIFACTS = [
+  ["browser extension", "browser extension"],
+  ["command line tool", "command-line tool"],
+  ["cli tool", "command-line tool"],
+  ["web app", "web app"],
+  ["mobile app", "mobile app"],
+  ["extension", "extension"],
+  ["plugin", "plugin"],
+  ["add on", "extension"],
+  ["addon", "extension"],
+  ["bot", "bot"],
+  ["application", "application"],
+  ["app", "app"],
+  ["service", "service"],
+  ["api", "API"],
+  ["website", "website"],
+  ["tool", "tool"],
+  ["mod", "mod"],
+];
+
+const SOFTWARE_FEATURE_MARKERS = [
+  "track",
+  "tracking",
+  "reduce",
+  "damage",
+  "cooldown",
+  "hp",
+  "protection",
+  "resistance",
+  "stack",
+  "status",
+  "effect",
+  "export",
+  "csv",
+  "reminder",
+  "schedule",
+  "invoice",
+  "payment",
+  "rename",
+  "date",
+];
+
+const GAME_TRACKER_TYPESCRIPT = `type Cooldown = {
+  name: string;
+  remainingRounds: number;
+};
+
+type UnitState = {
+  id: string;
+  name: string;
+  hp: number;
+  maxHp: number;
+  protection: number;
+  resistance: number;
+  cooldowns: Cooldown[];
+};
+
+type DamageResult = {
+  damageTaken: number;
+  prevented: number;
+  unit: UnitState;
+};
+
+export function mitigateDamage(unit: UnitState, rawDamage: number): DamageResult {
+  const prevented = Math.max(0, unit.protection) + Math.max(0, unit.resistance);
+  const damageTaken = Math.max(0, rawDamage - prevented);
+  return {
+    damageTaken,
+    prevented,
+    unit: { ...unit, hp: Math.max(0, unit.hp - damageTaken) },
+  };
+}
+
+export function setStacks(
+  unit: UnitState,
+  protection: number,
+  resistance: number,
+): UnitState {
+  return {
+    ...unit,
+    protection: Math.max(0, protection),
+    resistance: Math.max(0, resistance),
+  };
+}
+
+export function tickCooldowns(unit: UnitState): UnitState {
+  return {
+    ...unit,
+    cooldowns: unit.cooldowns
+      .map((cooldown) => ({
+        ...cooldown,
+        remainingRounds: Math.max(0, cooldown.remainingRounds - 1),
+      }))
+      .filter((cooldown) => cooldown.remainingRounds > 0),
+  };
+}`;
+
+function containsAny(value, needles) {
+  return needles.some((needle) => value.includes(needle));
+}
+
+function detectSoftwareArtifact(normalized) {
+  const match = SOFTWARE_ARTIFACTS.find(([needle]) => normalized.includes(needle));
+  return match ? match[1] : null;
+}
+
+function extractSoftwareTarget(prompt, artifact) {
+  const markers = [`${artifact} for `, `${artifact} to `, " for ", " to "];
+  for (const marker of markers) {
+    const target = extractAfterMarker(prompt, marker);
+    if (target) return target;
+  }
+  return "the requested environment";
+}
+
+function extractAfterMarker(prompt, marker) {
+  const source = String(prompt || "");
+  const lower = source.toLowerCase();
+  const lowerMarker = marker.toLowerCase();
+  const start = lower.indexOf(lowerMarker);
+  if (start < 0) return null;
+  const tail = source.slice(start + lowerMarker.length);
+  const stopMatch = /[?.,;\n]/.exec(tail);
+  const stop = stopMatch ? stopMatch.index : tail.length;
+  const raw = tail
+    .slice(0, stop)
+    .split(" with ")[0]
+    .split(" that ")[0]
+    .split(" and ")[0]
+    .trim();
+  if (!raw) return null;
+  return capitalizeShortTarget(raw);
+}
+
+function capitalizeShortTarget(raw) {
+  const compact = String(raw || "").trim().split(/\s+/).slice(0, 5).join(" ");
+  if (!compact) return compact;
+  if (/[A-ZА-Я]/.test(compact)) return compact;
+  return compact.charAt(0).toUpperCase() + compact.slice(1);
+}
+
+function sentenceCase(raw) {
+  const trimmed = String(raw || "").trim().replace(/^[-* ]+|[-* ]+$/g, "");
+  if (!trimmed) return "";
+  return trimmed.charAt(0).toUpperCase() + trimmed.slice(1);
+}
+
+function extractSoftwareFeatures(prompt) {
+  const features = [];
+  const segments = String(prompt || "").split(/[.;\n]/);
+  for (const segment of segments) {
+    for (const clause of segment.split(",")) {
+      const cleaned = clause.trim();
+      if (!cleaned) continue;
+      const lower = cleaned.toLowerCase();
+      if (!containsAny(lower, SOFTWARE_FEATURE_MARKERS)) continue;
+      const feature = sentenceCase(cleaned);
+      if (feature && !features.includes(feature)) features.push(feature);
+    }
+  }
+  if (features.length === 0) {
+    features.push("Capture state, user commands, persistence, validation, and tests.");
+  }
+  return features;
+}
+
+function isGameUnitTracker(normalized) {
+  const domain =
+    normalized.includes("dnd") ||
+    normalized.includes("d d") ||
+    normalized.includes("wargame") ||
+    normalized.includes("tabletop") ||
+    normalized.includes("unit") ||
+    normalized.includes("token") ||
+    normalized.includes("owlbear");
+  const mechanics =
+    normalized.includes("hp") ||
+    normalized.includes("damage") ||
+    normalized.includes("protection") ||
+    normalized.includes("resistance") ||
+    normalized.includes("cooldown");
+  return domain && mechanics;
+}
+
+function renderSoftwareProjectPlan(artifact, target, features, gameTracker) {
+  const lines = [];
+  lines.push(`Implementation plan for a ${artifact} targeting ${target}:`);
+  lines.push("");
+  lines.push("Requirements extracted:");
+  for (const feature of features) lines.push(`- ${feature}`);
+  lines.push("");
+  lines.push("Architecture:");
+  lines.push("- Domain state: keep the smallest serializable records for each tracked object.");
+  lines.push("- Commands: add, edit, apply update, advance time, export/import state.");
+  lines.push("- Persistence: save state through the host extension storage boundary.");
+  lines.push("- Tests: cover state transitions before wiring UI or host APIs.");
+  if (gameTracker) {
+    lines.push("");
+    lines.push("Starter TypeScript core:");
+    lines.push("");
+    lines.push("```typescript");
+    lines.push(GAME_TRACKER_TYPESCRIPT);
+    lines.push("```");
+    lines.push("");
+    lines.push("Owlbear integration steps:");
+    lines.push("1. Map each selected token/item to a `UnitState` record in extension storage.");
+    lines.push("2. Render a compact panel with HP, Protection, Resistance, and cooldown controls.");
+    lines.push("3. Route damage buttons through `mitigateDamage` so stacks reduce damage before HP.");
+    lines.push("4. Call `tickCooldowns` at round end and persist the returned state.");
+    lines.push("5. Add tests for zero damage, overkill damage, stack edits, and cooldown expiry.");
+  } else {
+    lines.push("");
+    lines.push("Next implementation steps:");
+    lines.push("1. Define the state schema and one pure update function per user action.");
+    lines.push("2. Write unit tests for those update functions.");
+    lines.push("3. Add the host-specific adapter only after the core state transitions pass.");
+    lines.push("4. Add an export path so users can inspect and back up their data.");
+  }
+  return lines.join("\n");
+}
+
+function trySoftwareProjectRequest(prompt) {
+  const normalized = normalizePrompt(prompt);
+  const artifact = detectSoftwareArtifact(normalized);
+  if (!artifact || !containsAny(normalized, SOFTWARE_ACTION_WORDS)) return null;
+  if (normalized.includes("hello") && normalized.includes("world")) return null;
+
+  const target = extractSoftwareTarget(prompt, artifact);
+  const features = extractSoftwareFeatures(prompt);
+  const gameTracker = isGameUnitTracker(normalized);
+  const evidence = [
+    `software_project:artifact:${artifact}`,
+    `software_project:target:${target}`,
+    `software_project:strategy:${gameTracker ? "game_unit_tracker" : "bounded_project_plan"}`,
+  ];
+  for (const feature of features) evidence.push(`requirement:${feature}`);
+  if (gameTracker) {
+    evidence.push("domain_model:unit_state");
+    evidence.push("validation:damage_mitigation_floor_at_zero");
+    evidence.push("validation:cooldowns_decrement_without_negative_rounds");
+  }
+  return {
+    intent: "software_project_plan",
+    content: renderSoftwareProjectPlan(artifact, target, features, gameTracker),
+    confidence: 0.75,
+    evidence,
+  };
+}
+
 function tryJavaScriptExecution(prompt) {
   const program = extractJavaScriptProgram(prompt);
   if (program === null) return null;
@@ -2595,6 +2856,7 @@ async function solve(prompt, history, prefs) {
     { name: "tryJavaScriptExecution", run: () => tryJavaScriptExecution(prompt) },
     { name: "tryConceptLookup", run: () => tryConceptLookup(prompt) },
     { name: "tryHelloWorld", run: () => tryHelloWorld(prompt) },
+    { name: "trySoftwareProjectRequest", run: () => trySoftwareProjectRequest(prompt) },
   ];
   for (const handler of syncHandlers) {
     const hit = handler.run();

@@ -259,6 +259,57 @@ fn write_script_prompt_returns_code_block() {
 }
 
 #[test]
+fn software_project_request_returns_reviewable_plan() {
+    // Regression test for issue #80: a request to write an Owlbear/D&D
+    // extension was returning intent: unknown. This must be handled as a
+    // generalized software project request, not a memoized prompt.
+    let prompt = concat!(
+        "Hi, can you write for me extension for owlbear? I am currently leading some dnd games ",
+        "and i want to try wargame. So, i need extensions that can track hp for different units, ",
+        "that can track Protection and Resistance stacks on unit an will reduce damage count on ",
+        "those stats. Also this extension should track cooldown of some abilities"
+    );
+
+    let response = FormalAiEngine.answer(prompt);
+
+    assert_eq!(
+        response.intent, "software_project_plan",
+        "answer was: {}",
+        response.answer
+    );
+    assert_ne!(response.intent, "unknown");
+    assert!(response.answer.contains("Owlbear"));
+    assert!(response.answer.contains("HP"));
+    assert!(response.answer.contains("Protection"));
+    assert!(response.answer.contains("Resistance"));
+    assert!(response.answer.contains("cooldown"));
+    assert!(response.answer.contains("```typescript"));
+    assert!(response.answer.contains("mitigateDamage"));
+}
+
+#[test]
+fn software_project_variations_do_not_return_unknown() {
+    let prompts = [
+        "Build a browser extension that tracks reading progress and exports CSV",
+        "Create a Discord bot for scheduling game sessions with reminders",
+        "Implement a small web app for tracking invoices and overdue payments",
+        "Make a plugin for a tabletop map that tracks unit status effects",
+        "Develop a command line tool for renaming photos by date",
+    ];
+
+    for prompt in prompts {
+        let response = FormalAiEngine.answer(prompt);
+        assert_eq!(
+            response.intent, "software_project_plan",
+            "prompt: {prompt:?} answer: {}",
+            response.answer
+        );
+        assert_ne!(response.intent, "unknown");
+        assert!(response.answer.contains("Implementation plan"));
+    }
+}
+
+#[test]
 fn chat_completion_has_openai_compatible_shape() {
     let request = ChatCompletionRequest {
         model: Some(String::from("formal-symbolic-production")),
