@@ -459,6 +459,11 @@ fn fetch_prompt_returns_http_fetch_intent_not_unknown() {
         "fetch https://example.com",
         "fetch http://example.com/path",
         "fetch example.com",
+        // Regression test for issue #107: the reported Russian prompt
+        // "Сделай запрос к google.com" used to fall through to unknown.
+        "Сделай запрос к google.com",
+        "сделай запрос к https://example.com/path",
+        "запроси google.com",
     ];
 
     for prompt in cases {
@@ -467,6 +472,30 @@ fn fetch_prompt_returns_http_fetch_intent_not_unknown() {
         assert_eq!(
             response.intent, "http_fetch",
             "prompt {prompt:?} should resolve to http_fetch, got {:?} — answer: {}",
+            response.intent, response.answer
+        );
+        assert_ne!(
+            response.intent, "unknown",
+            "prompt {prompt:?} must not return unknown intent"
+        );
+    }
+}
+
+#[test]
+fn web_search_prompt_returns_web_search_intent_not_unknown() {
+    let cases = [
+        "Search the web for Nikola Tesla",
+        "Search internet for formal verification",
+        "Найди в интернете Никола Тесла",
+        "Поищи в интернете формальную верификацию",
+    ];
+
+    for prompt in cases {
+        let response = FormalAiEngine.answer(prompt);
+
+        assert_eq!(
+            response.intent, "web_search",
+            "prompt {prompt:?} should resolve to web_search, got {:?} - answer: {}",
             response.intent, response.answer
         );
         assert_ne!(

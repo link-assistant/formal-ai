@@ -2177,17 +2177,213 @@ function isFetchPrompt(normalized) {
   return normalized.startsWith("fetch ") && normalized.length > 6;
 }
 
-function extractFetchUrl(normalized) {
-  const rest = normalized.slice("fetch ".length).trim();
-  if (!rest || !rest.includes(".")) return null;
-  if (rest.startsWith("http://") || rest.startsWith("https://")) return rest;
-  return `https://${rest}`;
+function trimUrlToken(token) {
+  return String(token || "")
+    .replace(/^[<>()\[\]{}"'`«»]+/u, "")
+    .replace(/[<>()\[\]{}"'`«»]+$/u, "")
+    .replace(/[.,!?;:…]+$/u, "");
+}
+
+function looksLikeHostname(value) {
+  const host = String(value || "").trim();
+  if (!host.includes(".") || host.startsWith(".") || host.endsWith(".")) {
+    return false;
+  }
+  const labels = host.split(".");
+  if (labels.some((label) => !label)) return false;
+  const tld = labels[labels.length - 1] || "";
+  if (tld.length < 2) return false;
+  return labels.every(
+    (label) =>
+      /^[a-z0-9-]+$/i.test(label) &&
+      !label.startsWith("-") &&
+      !label.endsWith("-"),
+  );
+}
+
+function normalizeUrlCandidate(candidate) {
+  const text = String(candidate || "").trim();
+  if (!text || /\s/.test(text) || text.includes("@")) return null;
+  const lower = text.toLowerCase();
+  const url =
+    lower.startsWith("http://") || lower.startsWith("https://")
+      ? text
+      : lower.startsWith("www.") || looksLikeHostname(text)
+        ? `https://${text}`
+        : "";
+  if (!url) return null;
+  let parsed;
+  try {
+    parsed = new URL(url);
+  } catch (_error) {
+    return null;
+  }
+  if (!looksLikeHostname(parsed.hostname)) return null;
+  return parsed.href.replace(/\/$/, "");
+}
+
+function firstUrlCandidate(prompt) {
+  const tokens = String(prompt || "").split(/\s+/);
+  for (const token of tokens) {
+    const trimmed = trimUrlToken(token);
+    const url = normalizeUrlCandidate(trimmed);
+    if (url) return { raw: trimmed, url };
+  }
+  return null;
+}
+
+function isUrlRequestPrompt(prompt, normalized, rawCandidate) {
+  const raw = String(prompt || "").trimStart().toLowerCase();
+  if (raw.startsWith(String(rawCandidate || "").toLowerCase())) return true;
+  if (isFetchPrompt(normalized)) return true;
+  const prefixes = [
+    "get ",
+    "open ",
+    "load ",
+    "request ",
+    "fetch url ",
+    "open url ",
+    "сделай запрос ",
+    "выполни запрос ",
+    "запроси ",
+    "получи ",
+    "открой ",
+    "загрузи ",
+    "перейди ",
+  ];
+  if (prefixes.some((prefix) => normalized.startsWith(prefix) || raw.startsWith(prefix))) {
+    return true;
+  }
+  const markers = [
+    "make a request to",
+    "send a request to",
+    "http request to",
+    "request to",
+    "сделай запрос к",
+    "сделай запрос на",
+    "выполни запрос к",
+    "выполни запрос на",
+    "запрос к",
+    "запрос на",
+  ];
+  return markers.some((marker) => normalized.includes(marker) || raw.includes(marker));
+}
+
+function extractFetchUrl(prompt, normalized) {
+  const candidate = firstUrlCandidate(prompt);
+  if (!candidate || !isUrlRequestPrompt(prompt, normalized, candidate.raw)) {
+    return null;
+  }
+  return candidate.url;
+}
+
+function cleanSearchQuery(value) {
+  return String(value || "")
+    .trim()
+    .replace(/^[<>()\[\]{}"'`«»]+/u, "")
+    .replace(/[<>()\[\]{}"'`«»]+$/u, "")
+    .replace(/[.,!?;:…]+$/u, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function stripSearchPrefix(prompt, prefix) {
+  const text = String(prompt || "").trim();
+  if (text.toLowerCase().startsWith(prefix)) {
+    return cleanSearchQuery(text.slice(prefix.length));
+  }
+  return "";
+}
+
+function extractWebSearchQuery(prompt, normalized) {
+  if (
+    normalized.startsWith("search conversations ") ||
+    normalized.startsWith("search my conversations ") ||
+    normalized.startsWith("search my chats ")
+  ) {
+    return "";
+  }
+  const prefixes = [
+    "search the web for ",
+    "search web for ",
+    "search the internet for ",
+    "search internet for ",
+    "web search for ",
+    "find on the internet ",
+    "find online ",
+    "look up online ",
+    "найди в интернете ",
+    "поищи в интернете ",
+    "поиск в интернете ",
+    "найди онлайн ",
+    "поищи онлайн ",
+    "найди в сети ",
+    "поищи в сети ",
+  ];
+  for (const prefix of prefixes) {
+    const rawQuery = stripSearchPrefix(prompt, prefix);
+    const normalizedQuery = normalized.startsWith(prefix)
+      ? cleanSearchQuery(normalized.slice(prefix.length))
+      : "";
+    const query = rawQuery || normalizedQuery;
+    if (query && !normalizeUrlCandidate(query)) {
+      return query;
+    }
+  }
+  return "";
+}
+
+function stripHtml(value) {
+  return String(value || "")
+    .replace(/<[^>]*>/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function wikipediaPageUrl(language, key) {
+  const lang = language && WIKIPEDIA_SEARCH_HOSTS[language] ? language : "en";
+  const slug = encodeURIComponent(String(key || "")).replace(/%2F/gi, "/");
+  return `https://${lang}.wikipedia.org/wiki/${slug}`;
+}
+
+async function searchWikipediaPages(query, language, limit) {
+  if (typeof fetch !== "function") return null;
+  const apiHeaders = {
+    accept: "application/json",
+    "api-user-agent":
+      "formal-ai-demo (https://github.com/link-assistant/formal-ai)",
+  };
+  const ordered = [language, "en"].filter(
+    (value, index, array) => value && array.indexOf(value) === index,
+  );
+  for (const lang of ordered) {
+    const base = WIKIPEDIA_SEARCH_HOSTS[lang] || WIKIPEDIA_SEARCH_HOSTS.en;
+    const url = `${base}?q=${encodeURIComponent(query)}&limit=${limit || 5}`;
+    try {
+      const response = await fetch(url, { headers: apiHeaders });
+      if (!response || !response.ok) continue;
+      const data = await response.json();
+      if (!data || !Array.isArray(data.pages) || data.pages.length === 0) {
+        continue;
+      }
+      return {
+        language: lang,
+        pages: data.pages.slice(0, limit || 5).map((page) => ({
+          title: String(page.title || page.key || "Untitled"),
+          url: wikipediaPageUrl(lang, page.key || page.title || ""),
+          excerpt: stripHtml(page.excerpt || page.description || ""),
+        })),
+      };
+    } catch (_error) {
+      // Try the next language host.
+    }
+  }
+  return null;
 }
 
 async function tryFetch(prompt) {
   const normalized = normalizePrompt(prompt);
-  if (!isFetchPrompt(normalized)) return null;
-  const url = extractFetchUrl(normalized);
+  const url = extractFetchUrl(prompt, normalized);
   if (!url) return null;
 
   const evidence = [`http_fetch:request:${url}`];
@@ -2254,6 +2450,36 @@ async function tryFetch(prompt) {
       iframeUrl: url,
     };
   }
+}
+
+async function tryWebSearch(prompt, language) {
+  const normalized = normalizePrompt(prompt);
+  const query = extractWebSearchQuery(prompt, normalized);
+  if (!query) return null;
+
+  const evidence = [`web_search:query:${query}`, "web_search:provider:wikipedia"];
+  const result = await searchWikipediaPages(query, language, 5);
+  if (!result || !Array.isArray(result.pages) || result.pages.length === 0) {
+    return {
+      intent: "web_search",
+      content: `No CORS-enabled web search results were returned for \`${query}\`.\n\nProvider tried: Wikipedia search.`,
+      confidence: 0.35,
+      evidence,
+    };
+  }
+
+  evidence.push(`web_search:language:${result.language}`);
+  const lines = [`Search results for \`${query}\` (provider: Wikipedia).`, ""];
+  result.pages.forEach((page, index) => {
+    const excerpt = page.excerpt ? ` - ${page.excerpt}` : "";
+    lines.push(`${index + 1}. [${page.title}](${page.url})${excerpt}`);
+  });
+  return {
+    intent: "web_search",
+    content: lines.join("\n"),
+    confidence: 0.85,
+    evidence,
+  };
 }
 
 function cleanContextValue(value) {
@@ -2407,6 +2633,19 @@ async function solve(prompt, history, prefs) {
       outputs: { intent: fetched.intent, confidence: fetched.confidence, iframeUrl: fetched.iframeUrl || null },
     });
     return finalize(events, steps, toolCalls, fetched);
+  }
+
+  steps.push({ step: "invoke_tool", detail: "web_search" });
+  const webSearch = await tryWebSearch(prompt, language);
+  if (webSearch) {
+    events.push(`handler:${webSearch.intent}`);
+    steps.push({ step: "dispatch_handler", detail: "tryWebSearch" });
+    toolCalls.push({
+      tool: "web_search",
+      inputs: { prompt, language },
+      outputs: { intent: webSearch.intent, confidence: webSearch.confidence },
+    });
+    return finalize(events, steps, toolCalls, webSearch);
   }
 
   steps.push({ step: "invoke_tool", detail: "wikipedia_lookup" });
@@ -2620,6 +2859,7 @@ self.onmessage = async (event) => {
     evidence: answer.evidence,
     steps: answer.steps,
     toolCalls: answer.toolCalls,
+    iframeUrl: answer.iframeUrl || null,
   });
 };
 

@@ -38,8 +38,8 @@ use crate::solver_handlers::{
     try_execution_failure, try_fact_lookup, try_http_fetch, try_ill_formed,
     try_javascript_execution, try_meta_explanation, try_network_query, try_opinion_question,
     try_punctuation_only_prompt, try_roleplay_request, try_shell_refusal, try_source_conflict,
-    try_source_refresh, try_summarization_request, try_translation, try_who_is_question,
-    try_write_script,
+    try_source_refresh, try_summarization_request, try_translation, try_web_search,
+    try_who_is_question, try_write_script,
 };
 use crate::solver_handlers_policy::{try_kupi_slona, try_physical_action_question};
 use crate::solver_helpers::{
@@ -289,6 +289,7 @@ fn handle_concept_lookup(
 /// precedence rather than appended unconditionally.
 const SPECIALIZED_HANDLERS: &[(&str, SpecializedHandler)] = &[
     ("http_fetch", try_http_fetch),
+    ("web_search", try_web_search),
     ("conversation_memory", try_conversation_memory),
     ("summarization", try_summarization_request),
     ("brainstorming", try_brainstorming_request),

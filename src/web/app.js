@@ -72,6 +72,8 @@ const EXAMPLE_PROMPTS = [
   { label: "Fact Q&A (ru)", text: "Какова столица Японии?" },
   { label: "Fact Q&A (hi)", text: "जापान की राजधानी क्या है?" },
   { label: "Fact Q&A (zh)", text: "日本的首都是什么?" },
+  { label: "Fetch URL", text: "Сделай запрос к google.com" },
+  { label: "Web search", text: "Search the web for Nikola Tesla" },
   { label: "Coreference", text: "What features make it different from C?" },
   { label: "Roleplay", text: "Pretend you are Albert Einstein and explain relativity to a teenager." },
   { label: "Idiom (ru)", text: "Купи слона" },
@@ -891,6 +893,7 @@ function messagesForConversation(events, conversationId) {
       createMessage(event.role || "assistant", String(event.content || ""), {
         intent: event.intent,
         evidence,
+        iframeUrl: event.iframeUrl || null,
       }),
     );
   }
@@ -1985,6 +1988,7 @@ function App() {
       content: answer.content,
       intent: answer.intent,
       evidence,
+      iframeUrl: answer.iframeUrl || null,
       sentAt,
       conversationId,
       conversationTitle,

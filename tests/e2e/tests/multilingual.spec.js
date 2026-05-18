@@ -149,6 +149,53 @@ test.describe('multilingual chat surface', () => {
     await expect(last).toContainText(/принцип|principle|KISS|simple/i);
     await expect(last).not.toContainText(/рок-группа|rock band|american.*rock|глэм/i);
   });
+
+  test('Russian URL request uses HTTP fetch with iframe fallback', async ({ page }) => {
+    await page.route(/https:\/\/(www\.)?google\.com\/?.*/, async (route) => {
+      await route.abort('failed');
+    });
+
+    const last = await sendPrompt(page, 'Сделай запрос к google.com');
+    await expect(last).toHaveClass(/assistant/);
+    await expect(last).toContainText('Could not fetch');
+    await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
+    const frameContainer = last.locator('[data-testid="fetch-iframe-container"]');
+    await expect(frameContainer).toContainText(/https:\/\/google\.com\/?/);
+    await expect(frameContainer.locator('.fetch-iframe-toggle')).toBeVisible();
+    await expect(frameContainer.locator('.fetch-iframe-open')).toHaveAttribute(
+      'href',
+      /https:\/\/google\.com\/?/,
+    );
+  });
+
+  test('explicit web search renders Wikipedia search results', async ({ page }) => {
+    await page.locator('.diagnostics-toggle').click();
+    await page.route('**/w/rest.php/v1/search/page**', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          pages: [
+            {
+              id: 123,
+              key: 'Nikola_Tesla',
+              title: 'Nikola Tesla',
+              excerpt: 'Nikola Tesla was a Serbian-American inventor.',
+              description: 'inventor and electrical engineer',
+            },
+          ],
+        }),
+      });
+    });
+
+    const last = await sendPrompt(page, 'Search the web for Nikola Tesla');
+    await expect(last).toHaveClass(/assistant/);
+    await expect(last).toContainText('Search results for');
+    await expect(last).toContainText('Nikola Tesla');
+    await expect(last).toContainText('Serbian-American inventor');
+    await expect(last.locator('.evidence-list')).toContainText('web_search:provider:wikipedia');
+    await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
+  });
 });
 
 test.describe('Wikipedia REST fallback', () => {
@@ -1132,6 +1179,8 @@ test.describe('Issue #27: demo iterates Example prompts', () => {
       'Summarization',
       'Brainstorming',
       'Fact Q&A (zh)',
+      'Fetch URL',
+      'Web search',
       'Coreference',
       'Roleplay',
       'Recall (cross-conv)',

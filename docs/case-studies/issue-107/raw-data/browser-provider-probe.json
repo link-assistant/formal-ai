@@ -1,0 +1,154 @@
+{
+  "capturedAt": "2026-05-18T20:26:36.479Z",
+  "requestedOriginUrl": "https://link-assistant.github.io/formal-ai/tests",
+  "fallbackOriginUrl": "https://link-assistant.github.io/formal-ai/",
+  "activeOriginUrl": "https://link-assistant.github.io/formal-ai/",
+  "requestedOriginStatus": 404,
+  "activeOriginStatus": 200,
+  "actualUrl": "https://link-assistant.github.io/formal-ai/",
+  "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.7778.96 Safari/537.36",
+  "fetch": [
+    {
+      "name": "google_home",
+      "url": "https://www.google.com/",
+      "ok": false,
+      "status": null,
+      "responseType": null,
+      "contentType": null,
+      "readable": false,
+      "elapsedMs": 128,
+      "sample": "",
+      "errorName": "TypeError",
+      "errorMessage": "Failed to fetch"
+    },
+    {
+      "name": "google_search",
+      "url": "https://www.google.com/search?q=formal-ai",
+      "ok": false,
+      "status": null,
+      "responseType": null,
+      "contentType": null,
+      "readable": false,
+      "elapsedMs": 62,
+      "sample": "",
+      "errorName": "TypeError",
+      "errorMessage": "Failed to fetch"
+    },
+    {
+      "name": "bing_search",
+      "url": "https://www.bing.com/search?q=formal-ai",
+      "ok": false,
+      "status": null,
+      "responseType": null,
+      "contentType": null,
+      "readable": false,
+      "elapsedMs": 67,
+      "sample": "",
+      "errorName": "TypeError",
+      "errorMessage": "Failed to fetch"
+    },
+    {
+      "name": "duckduckgo_html_search",
+      "url": "https://duckduckgo.com/html/?q=formal-ai",
+      "ok": false,
+      "status": null,
+      "responseType": null,
+      "contentType": null,
+      "readable": false,
+      "elapsedMs": 90,
+      "sample": "",
+      "errorName": "TypeError",
+      "errorMessage": "Failed to fetch"
+    },
+    {
+      "name": "brave_search",
+      "url": "https://search.brave.com/search?q=formal-ai",
+      "ok": false,
+      "status": null,
+      "responseType": null,
+      "contentType": null,
+      "readable": false,
+      "elapsedMs": 230,
+      "sample": "",
+      "errorName": "TypeError",
+      "errorMessage": "Failed to fetch"
+    },
+    {
+      "name": "wikipedia_rest_search",
+      "url": "https://en.wikipedia.org/w/rest.php/v1/search/page?q=formal%20verification&limit=1",
+      "ok": true,
+      "status": 200,
+      "responseType": "cors",
+      "contentType": "application/json",
+      "readable": true,
+      "elapsedMs": 386,
+      "sample": "{\"pages\":[{\"id\":270054,\"key\":\"Formal_verification\",\"title\":\"Formal verification\",\"excerpt\":\"analysis and <span class=\\\"searchmatch\\\">verification</span> in electronic design automation and is one approach to software <span class=\\\"searchmat",
+      "errorName": "",
+      "errorMessage": ""
+    },
+    {
+      "name": "wikipedia_summary",
+      "url": "https://en.wikipedia.org/api/rest_v1/page/summary/Formal_verification",
+      "ok": true,
+      "status": 200,
+      "responseType": "cors",
+      "contentType": "application/json; charset=utf-8; profile=\"https://www.mediawiki.org/wiki/Specs/Summary/1.5.0\"",
+      "readable": true,
+      "elapsedMs": 119,
+      "sample": "{\"type\":\"standard\",\"title\":\"Formal verification\",\"displaytitle\":\"<span lang=\\\"en\\\" dir=\\\"ltr\\\"><span class=\\\"mw-page-title-main\\\">Formal verification</span></span>\",\"namespace\":{\"id\":0,\"text\":\"\"},\"wikibase_item\":\"Q173326\",\"titles\":{\"canonic",
+      "errorName": "",
+      "errorMessage": ""
+    }
+  ],
+  "iframe": [
+    {
+      "name": "google_home",
+      "url": "https://www.google.com/",
+      "loadEvent": true,
+      "errorEvent": false,
+      "elapsedMs": 139
+    },
+    {
+      "name": "google_search",
+      "url": "https://www.google.com/search?q=formal-ai",
+      "loadEvent": true,
+      "errorEvent": false,
+      "elapsedMs": 58
+    },
+    {
+      "name": "bing_search",
+      "url": "https://www.bing.com/search?q=formal-ai",
+      "loadEvent": true,
+      "errorEvent": false,
+      "elapsedMs": 224
+    },
+    {
+      "name": "duckduckgo_html_search",
+      "url": "https://duckduckgo.com/html/?q=formal-ai",
+      "loadEvent": true,
+      "errorEvent": false,
+      "elapsedMs": 123
+    },
+    {
+      "name": "brave_search",
+      "url": "https://search.brave.com/search?q=formal-ai",
+      "loadEvent": true,
+      "errorEvent": false,
+      "elapsedMs": 202
+    },
+    {
+      "name": "wikipedia_rest_search",
+      "url": "https://en.wikipedia.org/w/rest.php/v1/search/page?q=formal%20verification&limit=1",
+      "loadEvent": true,
+      "errorEvent": false,
+      "elapsedMs": 425
+    },
+    {
+      "name": "wikipedia_summary",
+      "url": "https://en.wikipedia.org/api/rest_v1/page/summary/Formal_verification",
+      "loadEvent": true,
+      "errorEvent": false,
+      "elapsedMs": 6
+    }
+  ]
+}
