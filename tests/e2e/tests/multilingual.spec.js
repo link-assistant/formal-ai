@@ -705,6 +705,36 @@ test.describe('memory export/import', () => {
     await expect(registry).toContainText('calculator');
   });
 
+  test('Issue #112: tool registry includes all supported tools and localizes descriptions', async ({ page }) => {
+    await page.locator('[data-testid="setting-ui-language"]').selectOption('ru');
+    const entries = page.locator('[data-testid="tool-entry"]');
+    const toolIds = await entries.evaluateAll((nodes) =>
+      nodes.map((node) => node.getAttribute('data-tool-id')),
+    );
+    expect(toolIds).toEqual(expect.arrayContaining([
+      'tool_http_fetch',
+      'tool_web_search',
+      'tool_wikipedia_lookup',
+      'tool_calculator',
+      'tool_eval_js',
+      'tool_read_local_file',
+      'tool_append_memory',
+      'tool_export_memory',
+      'tool_import_memory',
+      'tool_conversation_recall',
+      'tool_concept_lookup',
+      'tool_hello_world',
+      'tool_intent_routing',
+      'tool_fact_lookup',
+      'tool_summarize_conversation',
+      'tool_brainstorm',
+      'tool_coreference',
+      'tool_roleplay',
+    ]));
+    await expect(page.locator('[data-tool-id="tool_calculator"] .tool-desc')).toContainText(/Вычисляет|математические/);
+    await expect(page.locator('[data-tool-id="tool_web_search"] .tool-desc')).not.toContainText('Search the open web');
+  });
+
   test('Reasoning steps and tool calls land in the append-only log', async ({ page }) => {
     await sendPrompt(page, 'Hi');
     const events = await page.evaluate(async () => {
@@ -865,7 +895,7 @@ test.describe('Issue #27: mobile layout', () => {
     await expect(demoToggle).toHaveAttribute('aria-label', /Demo/);
   });
 
-  test('hamburger toggle opens the sidebar drawer and the backdrop closes it', async ({ page }) => {
+  test('hamburger toggle opens the full-width sidebar drawer and the close button dismisses it', async ({ page }) => {
     const hamburger = page.locator('[data-testid="mobile-menu-toggle"]');
     await expect(hamburger).toBeVisible();
     const sidebar = page.locator('[data-testid="context-panel"]');
@@ -883,14 +913,60 @@ test.describe('Issue #27: mobile layout', () => {
     const boxAfter = await sidebar.boundingBox();
     expect(boxAfter).toBeTruthy();
     expect(boxAfter && boxAfter.x).toBeGreaterThanOrEqual(0);
+    expect(boxAfter && boxAfter.width).toBeGreaterThanOrEqual(389);
 
-    // Tapping the backdrop dismisses the drawer. The drawer overlays the
-    // left ~320px of the viewport with z-index above the backdrop, so click
-    // on the exposed right-hand strip where only the backdrop receives the tap.
-    const backdrop = page.locator('[data-testid="mobile-menu-backdrop"]');
-    await expect(backdrop).toBeVisible();
-    await backdrop.click({ position: { x: 360, y: 400 } });
+    await page.locator('[data-testid="drawer-close"]').click();
     await expect(sidebar).not.toHaveClass(/is-mobile-open/);
+  });
+
+  test('Issue #112: mobile drawer lists topbar actions before conversations', async ({ page }) => {
+    await page.locator('[data-testid="mobile-menu-toggle"]').click();
+    const drawerActions = page.locator('[data-testid="drawer-menu-actions"]');
+    const conversations = page.locator('[data-testid="sidebar-conversations"]');
+    await expect(drawerActions).toBeVisible();
+    await expect(drawerActions).toContainText('Report issue');
+    await expect(drawerActions).toContainText('Export memory');
+    await expect(drawerActions).toContainText('Import memory');
+    await expect(drawerActions).toContainText('Diagnostics');
+    await expect(drawerActions).toContainText(/Chat|Agent/);
+    await expect(drawerActions).toContainText(/Demo/);
+
+    const actionsBox = await drawerActions.boundingBox();
+    const conversationsBox = await conversations.boundingBox();
+    expect(actionsBox).toBeTruthy();
+    expect(conversationsBox).toBeTruthy();
+    expect(actionsBox && conversationsBox && actionsBox.y).toBeLessThan(conversationsBox.y);
+  });
+
+  test('Issue #112: focused composer grows to content with equal padding and a half-panel cap', async ({ page }) => {
+    await page.locator('.mode-toggle').click();
+    const input = page.locator('[data-testid="chat-composer-input"]');
+    await expect(input).toBeEnabled({ timeout: 5_000 });
+    await input.fill('line one\nline two\nline three\nline four');
+
+    const metrics = await input.evaluate((node) => {
+      const style = getComputedStyle(node);
+      const composer = node.closest('.composer');
+      const chatPanel = document.querySelector('.chat-panel');
+      return {
+        clientHeight: node.clientHeight,
+        scrollHeight: node.scrollHeight,
+        boxHeight: node.getBoundingClientRect().height,
+        paddingTop: style.paddingTop,
+        paddingRight: style.paddingRight,
+        paddingBottom: style.paddingBottom,
+        paddingLeft: style.paddingLeft,
+        composerHeight: composer ? composer.getBoundingClientRect().height : 0,
+        chatPanelHeight: chatPanel ? chatPanel.getBoundingClientRect().height : 0,
+      };
+    });
+
+    expect(metrics.boxHeight).toBeGreaterThan(42);
+    expect(metrics.scrollHeight - metrics.clientHeight).toBeLessThanOrEqual(1);
+    expect(metrics.paddingTop).toBe(metrics.paddingRight);
+    expect(metrics.paddingRight).toBe(metrics.paddingBottom);
+    expect(metrics.paddingBottom).toBe(metrics.paddingLeft);
+    expect(metrics.composerHeight).toBeLessThanOrEqual(metrics.chatPanelHeight * 0.5 + 1);
   });
 
   test('chat surface keeps the full viewport when the menu is closed', async ({ page }) => {
@@ -978,6 +1054,32 @@ test.describe('Issue #27: conversations sidebar', () => {
     await expect(restored).toHaveCount(2, { timeout: 15_000 });
     await expect(restored.first()).toContainText('Hello');
   });
+
+  test('Issue #112: deleting a conversation soft-hides it behind the deleted view', async ({ page }) => {
+    const messages = page.locator('[data-testid="chat-message"]');
+    await sendPrompt(page, 'Hello to delete');
+    await expect(messages).toHaveCount(2);
+
+    await page.locator('[data-testid="conversation-delete"]').first().click();
+    await expect(messages).toHaveCount(0);
+    await expect(
+      page.locator('[data-testid="conversation-entries"] li', {
+        hasText: 'Hello to delete',
+      }),
+    ).toHaveCount(0);
+
+    const showDeleted = page.locator('[data-testid="conversation-show-deleted"]');
+    await expect(showDeleted).toBeVisible();
+    await showDeleted.check();
+
+    const deletedEntry = page.locator('[data-testid="conversation-entries"] li').first();
+    await expect(deletedEntry).toContainText('Hello to delete');
+    await expect(deletedEntry).toHaveClass(/is-deleted/);
+
+    await deletedEntry.locator('.conversation-entry-button').click();
+    await expect(messages).toHaveCount(2, { timeout: 5_000 });
+    await expect(messages.first()).toContainText('Hello to delete');
+  });
 });
 
 // Issue #27 R5: the demo cycle pulls turns from the same Example prompts
@@ -1011,6 +1113,31 @@ test.describe('Issue #27: demo iterates Example prompts', () => {
     for (const label of demoLabels) {
       expect(sidebarLabels).toContain(label);
     }
+  });
+
+  test('Issue #112: Example prompts cover every supported prompt family', async ({ page }) => {
+    const labels = await page
+      .locator('.prompt-list button')
+      .evaluateAll((nodes) =>
+        nodes.map((node) => node.getAttribute('data-prompt-label') || ''),
+      );
+    expect(labels).toEqual(expect.arrayContaining([
+      'Greeting (en)',
+      'Farewell (en)',
+      'Identity (hi)',
+      'Clarification (ru)',
+      'Capabilities (en)',
+      'Calculation (en)',
+      'Concept (hi)',
+      'Summarization',
+      'Brainstorming',
+      'Fact Q&A (zh)',
+      'Coreference',
+      'Roleplay',
+      'Recall (cross-conv)',
+      'Export memory',
+      'Import memory',
+    ]));
   });
 });
 

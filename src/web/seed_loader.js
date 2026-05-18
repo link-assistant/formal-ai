@@ -272,6 +272,13 @@
     var entries = findChildren(node, "tool");
     for (var i = 0; i < entries.length; i += 1) {
       var entry = entries[i];
+      var localized = findChildren(entry, "localized").map(function (loc) {
+        return {
+          language: loc.id,
+          name: findChildValue(loc, "name"),
+          description: findChildValue(loc, "description"),
+        };
+      });
       tools.push({
         id: entry.id,
         name: findChildValue(entry, "name"),
@@ -281,6 +288,7 @@
         outputs: splitList(findChildValue(entry, "outputs")),
         isolation: findChildValue(entry, "isolation"),
         sources: splitList(findChildValue(entry, "sources")),
+        localized: localized,
       });
     }
     return tools;
