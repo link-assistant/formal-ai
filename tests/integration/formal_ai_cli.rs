@@ -103,6 +103,52 @@ fn cli_environments_command_lists_every_supported_surface() {
 }
 
 #[test]
+fn cli_github_logs_plan_prints_reproducible_capture_commands() {
+    // Issue #115: the project needs a reusable way to collect GitHub issue,
+    // PR, review, and run-log evidence for hive-mind case studies without
+    // relying on handwritten command lists.
+    let output = Command::new(env!("CARGO_BIN_EXE_formal-ai"))
+        .args([
+            "github-logs",
+            "plan",
+            "--repo",
+            "link-assistant/hive-mind",
+            "--output-dir",
+            "docs/case-studies/issue-115/raw-data/hive-mind",
+            "--issue",
+            "1814",
+            "--pull",
+            "1816",
+            "--run",
+            "26058054431",
+            "--recent-issues",
+            "10",
+            "--recent-pulls",
+            "10",
+            "--recent-runs",
+            "5",
+            "--branch",
+            "issue-1814-0f855d3671ac",
+        ])
+        .output()
+        .expect("github-logs plan");
+
+    assert!(
+        output.status.success(),
+        "stderr: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(stdout.contains("# GitHub log capture plan"));
+    assert!(stdout.contains("repo: link-assistant/hive-mind"));
+    assert!(stdout.contains("issue-1814-comments.json"));
+    assert!(stdout.contains("pr-1816-review-comments.json"));
+    assert!(stdout.contains("pr-1816-conversation-comments.json"));
+    assert!(stdout.contains("run-26058054431.log"));
+    assert!(stdout.contains("gh api repos/link-assistant/hive-mind/pulls/1816/comments --paginate"));
+}
+
+#[test]
 fn cli_memory_export_import_show_round_trips_events() {
     // R107: a `demo_memory` Links Notation file written by the CLI must
     // round-trip back through `memory import` and `memory show` without

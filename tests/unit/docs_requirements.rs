@@ -182,6 +182,54 @@ fn issue_103_test_matrix_and_architecture_documents_are_present_and_traceable() 
 }
 
 #[test]
+fn issue_115_github_log_collection_documents_are_present_and_traceable() {
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+
+    let requirements = read(root.join("REQUIREMENTS.md"));
+    assert_contains_all(
+        "REQUIREMENTS.md",
+        &requirements,
+        &[
+            "Issue #115 GitHub Evidence Collection",
+            "| R137 ",
+            "| R138 ",
+            "| R139 ",
+            "| R140 ",
+            "| R141 ",
+            "| R142 ",
+            "| R143 ",
+            "formal-ai github-logs",
+        ],
+    );
+
+    let architecture = read(root.join("ARCHITECTURE.md"));
+    assert_contains_all(
+        "ARCHITECTURE.md",
+        &architecture,
+        &[
+            "GitHub Evidence Collection",
+            "src/github_logs.rs",
+            "manifest.json",
+            "link-assistant/hive-mind",
+        ],
+    );
+
+    let case_study = read(root.join("docs/case-studies/issue-115/README.md"));
+    assert_contains_all(
+        "docs/case-studies/issue-115/README.md",
+        &case_study,
+        &[
+            "# Issue 115 Case Study",
+            "## Collected Data",
+            "github-logs",
+            "hive-mind",
+            "R137",
+            "R143",
+        ],
+    );
+}
+
+#[test]
 fn repository_text_avoids_deferred_labels_requested_by_issue_103() {
     let root = Path::new(env!("CARGO_MANIFEST_DIR"));
     let phrase_space = ["proof", " of ", "concept"].concat();
