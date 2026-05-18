@@ -231,6 +231,35 @@ test.describe('formal-ai demo UI', () => {
     await expect(lastMsg).not.toContainText(UNKNOWN_ANSWER_MARKER);
   });
 
+  test('Owlbear extension request returns a software project plan', async ({ page }) => {
+    await switchToManualMode(page);
+
+    const prompt = [
+      'Hi, can you write for me extension for owlbear?',
+      'I am currently leading some dnd games and i want to try wargame.',
+      'I need extensions that can track hp for different units,',
+      'track Protection and Resistance stacks, reduce damage count on those stats,',
+      'and track cooldown of some abilities.',
+    ].join(' ');
+
+    const input = page.locator('[data-testid="chat-composer-input"]');
+    await input.fill(prompt);
+
+    const messages = page.locator('[data-testid="chat-message"]');
+    const initialCount = await messages.count();
+
+    await page.locator('[data-testid="chat-composer-submit"]').click();
+    await expect(messages).toHaveCount(initialCount + 2, { timeout: 15_000 });
+
+    const lastMsg = messages.last();
+    await expect(lastMsg).toHaveClass(/assistant/);
+    await expect(lastMsg).toContainText('Implementation plan');
+    await expect(lastMsg).toContainText('Owlbear');
+    await expect(lastMsg).toContainText('Protection');
+    await expect(lastMsg).toContainText('mitigateDamage');
+    await expect(lastMsg).not.toContainText(UNKNOWN_ANSWER_MARKER);
+  });
+
   test('unknown prompts include a prefilled missing-rule issue link', async ({ page }) => {
     await switchToManualMode(page);
 
