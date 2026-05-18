@@ -417,12 +417,16 @@ const PREFERENCE_DEFAULTS = {
   // Issue #94: "auto" follows navigator.languages; explicit values use the
   // supported UI language catalog.
   uiLanguage: "auto",
-  // Issue #108: the input surface is configurable while keeping the default
-  // flat and cheap to render.
+  // Issues #108/#110: UI, chat, and input surfaces are configurable while the
+  // defaults stay flat and cheap to render.
+  uiSkin: "flat",
+  chatStyle: "cards",
   composerStyle: "flat",
   composerAction: "attach",
 };
 
+const UI_SKINS = ["flat", "glass", "contrast"];
+const CHAT_STYLES = ["cards", "compact", "bubbles"];
 const COMPOSER_STYLES = ["flat", "glass-soft", "glass-clear", "bubble"];
 const COMPOSER_ACTIONS = ["attach", "plus"];
 
@@ -500,6 +504,14 @@ function formatSliderValue(value) {
 
 function normalizeThemePreference(value) {
   return ["auto", "light", "dark"].includes(value) ? value : "auto";
+}
+
+function normalizeUiSkin(value) {
+  return UI_SKINS.includes(value) ? value : PREFERENCE_DEFAULTS.uiSkin;
+}
+
+function normalizeChatStyle(value) {
+  return CHAT_STYLES.includes(value) ? value : PREFERENCE_DEFAULTS.chatStyle;
 }
 
 function normalizeComposerStyle(value) {
@@ -583,6 +595,8 @@ function collectUserContext({
   uiLanguage,
   uiLanguagePreference,
   themePreference,
+  uiSkin,
+  chatStyle,
   composerStyle,
   composerAction,
   locationPreference,
@@ -601,6 +615,8 @@ function collectUserContext({
     uiLanguage,
     uiLanguagePreference,
     themePreference,
+    uiSkin,
+    chatStyle,
     composerStyle,
     composerAction,
     browserLanguage: nav.language || "",
@@ -634,6 +650,8 @@ function appendUserContextBlock(lines, context) {
     `- **UI Language Preference**: ${safe.uiLanguagePreference || "auto"}`,
   );
   lines.push(`- **Theme Preference**: ${safe.themePreference || "auto"}`);
+  lines.push(`- **UI Skin**: ${safe.uiSkin || "flat"}`);
+  lines.push(`- **Chat Style**: ${safe.chatStyle || "cards"}`);
   lines.push(`- **Composer Style**: ${safe.composerStyle || "flat"}`);
   lines.push(`- **Composer Action**: ${safe.composerAction || "attach"}`);
   lines.push(`- **Browser Language**: ${safe.browserLanguage || "unknown"}`);
@@ -1290,6 +1308,12 @@ function App() {
   const [themePreference, setThemePreference] = useState(
     normalizeThemePreference(initialPreferences.current.theme),
   );
+  const [uiSkin, setUiSkin] = useState(
+    normalizeUiSkin(initialPreferences.current.uiSkin),
+  );
+  const [chatStyle, setChatStyle] = useState(
+    normalizeChatStyle(initialPreferences.current.chatStyle),
+  );
   const [composerStyle, setComposerStyle] = useState(
     normalizeComposerStyle(initialPreferences.current.composerStyle),
   );
@@ -1344,14 +1368,38 @@ function App() {
     const root = document.documentElement;
     const updateViewport = () => {
       const visualViewport = window.visualViewport;
-      const height = visualViewport && visualViewport.height
-        ? visualViewport.height
-        : window.innerHeight;
-      const offsetTop = visualViewport && visualViewport.offsetTop
-        ? visualViewport.offsetTop
-        : 0;
-      root.style.setProperty("--formal-ai-viewport-height", `${Math.round(height)}px`);
-      root.style.setProperty("--formal-ai-viewport-offset-top", `${Math.round(offsetTop)}px`);
+      const width =
+        visualViewport && visualViewport.width
+          ? visualViewport.width
+          : window.innerWidth;
+      const height =
+        visualViewport && visualViewport.height
+          ? visualViewport.height
+          : window.innerHeight;
+      const offsetLeft =
+        visualViewport && visualViewport.offsetLeft
+          ? visualViewport.offsetLeft
+          : 0;
+      const offsetTop =
+        visualViewport && visualViewport.offsetTop
+          ? visualViewport.offsetTop
+          : 0;
+      root.style.setProperty(
+        "--formal-ai-viewport-width",
+        `${Math.round(width)}px`,
+      );
+      root.style.setProperty(
+        "--formal-ai-viewport-height",
+        `${Math.round(height)}px`,
+      );
+      root.style.setProperty(
+        "--formal-ai-viewport-offset-left",
+        `${Math.round(offsetLeft)}px`,
+      );
+      root.style.setProperty(
+        "--formal-ai-viewport-offset-top",
+        `${Math.round(offsetTop)}px`,
+      );
     };
     updateViewport();
     window.addEventListener("resize", updateViewport);
@@ -1416,6 +1464,8 @@ function App() {
         uiLanguage,
         uiLanguagePreference,
         themePreference,
+        uiSkin,
+        chatStyle,
         composerStyle,
         composerAction,
         locationPreference,
@@ -1426,6 +1476,8 @@ function App() {
       uiLanguage,
       uiLanguagePreference,
       themePreference,
+      uiSkin,
+      chatStyle,
       composerStyle,
       composerAction,
       locationPreference,
@@ -1600,6 +1652,8 @@ function App() {
       guessProbability,
       temperature,
       theme: themePreference,
+      uiSkin,
+      chatStyle,
       composerStyle,
       composerAction,
       location: locationPreference,
@@ -1619,6 +1673,8 @@ function App() {
     guessProbability,
     temperature,
     themePreference,
+    uiSkin,
+    chatStyle,
     composerStyle,
     composerAction,
     locationPreference,
@@ -2091,7 +2147,9 @@ function App() {
 
   return h(
     "main",
-    { className: `app composer-style-${composerStyle}` },
+    {
+      className: `app ui-skin-${uiSkin} chat-style-${chatStyle} composer-style-${composerStyle}`,
+    },
     h(
       "header",
       { className: "topbar" },
@@ -2493,6 +2551,40 @@ function App() {
                 h("option", { value: "auto" }, t("settings.theme.auto")),
                 h("option", { value: "light" }, t("settings.theme.light")),
                 h("option", { value: "dark" }, t("settings.theme.dark")),
+              ),
+            ),
+            h(
+              "label",
+              { className: "setting-row" },
+              h("span", null, t("settings.uiSkin")),
+              h(
+                "select",
+                {
+                  "data-testid": "setting-ui-skin",
+                  value: uiSkin,
+                  onChange: (event) =>
+                    setUiSkin(normalizeUiSkin(event.target.value)),
+                },
+                h("option", { value: "flat" }, t("settings.uiSkin.flat")),
+                h("option", { value: "glass" }, t("settings.uiSkin.glass")),
+                h("option", { value: "contrast" }, t("settings.uiSkin.contrast")),
+              ),
+            ),
+            h(
+              "label",
+              { className: "setting-row" },
+              h("span", null, t("settings.chatStyle")),
+              h(
+                "select",
+                {
+                  "data-testid": "setting-chat-style",
+                  value: chatStyle,
+                  onChange: (event) =>
+                    setChatStyle(normalizeChatStyle(event.target.value)),
+                },
+                h("option", { value: "cards" }, t("settings.chatStyle.cards")),
+                h("option", { value: "compact" }, t("settings.chatStyle.compact")),
+                h("option", { value: "bubbles" }, t("settings.chatStyle.bubbles")),
               ),
             ),
             h(

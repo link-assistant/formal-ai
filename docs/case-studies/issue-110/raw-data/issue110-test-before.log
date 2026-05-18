@@ -1,0 +1,59 @@
+
+> formal-ai-e2e@1.0.0 test:local
+> playwright test --config=playwright.local.config.js --grep Issue #110
+
+[2m[WebServer] [22m(node:982604) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+  ✘  1 [chromium] › tests/demo.spec.js:604:3 › Issue #110: mobile keyboard viewport handling › focused mobile input pins the app shell to the visual viewport offset (691ms)
+  ✘  2 [chromium] › tests/demo.spec.js:604:3 › Issue #110: mobile keyboard viewport handling › focused mobile input pins the app shell to the visual viewport offset (retry #1) (703ms)
+
+
+  1) [chromium] › tests/demo.spec.js:604:3 › Issue #110: mobile keyboard viewport handling › focused mobile input pins the app shell to the visual viewport offset
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+    Expected: [32m180[39m
+    Received: [31m0[39m
+
+      668 |     expect(topbarBox).toBeTruthy();
+      669 |     expect(composerBox).toBeTruthy();
+    > 670 |     expect(Math.round(topbarBox.y)).toBe(viewportState.offsetTop);
+          |                                     ^
+      671 |     expect(
+      672 |       Math.round(composerBox.y + composerBox.height),
+      673 |     ).toBeLessThanOrEqual(viewportState.offsetTop + viewportState.height + 1);
+        at /tmp/gh-issue-solver-1779098289097/tests/e2e/tests/demo.spec.js:670:37
+
+    Error Context: test-results/demo-Issue-110-mobile-keyb-fa1c3--the-visual-viewport-offset-chromium/error-context.md
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+    Expected: [32m180[39m
+    Received: [31m0[39m
+
+      668 |     expect(topbarBox).toBeTruthy();
+      669 |     expect(composerBox).toBeTruthy();
+    > 670 |     expect(Math.round(topbarBox.y)).toBe(viewportState.offsetTop);
+          |                                     ^
+      671 |     expect(
+      672 |       Math.round(composerBox.y + composerBox.height),
+      673 |     ).toBeLessThanOrEqual(viewportState.offsetTop + viewportState.height + 1);
+        at /tmp/gh-issue-solver-1779098289097/tests/e2e/tests/demo.spec.js:670:37
+
+    Error Context: test-results/demo-Issue-110-mobile-keyb-fa1c3--the-visual-viewport-offset-chromium-retry1/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/demo-Issue-110-mobile-keyb-fa1c3--the-visual-viewport-offset-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/demo-Issue-110-mobile-keyb-fa1c3--the-visual-viewport-offset-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [chromium] › tests/demo.spec.js:604:3 › Issue #110: mobile keyboard viewport handling › focused mobile input pins the app shell to the visual viewport offset
