@@ -15,7 +15,11 @@ body {
   margin: 0;
   min-width: 320px;
   height: 100vh;
+  height: 100dvh;
+  height: var(--formal-ai-viewport-height, 100dvh);
   min-height: 100vh;
+  min-height: 100dvh;
+  min-height: var(--formal-ai-viewport-height, 100dvh);
   overflow: hidden;
 }
 
@@ -31,6 +35,8 @@ button {
 
 .app {
   height: 100vh;
+  height: 100dvh;
+  height: var(--formal-ai-viewport-height, 100dvh);
   min-height: 0;
   display: grid;
   grid-template-rows: auto 1fr;
@@ -56,6 +62,13 @@ button {
 
 .brand strong {
   font-size: 18px;
+}
+
+.brand-version {
+  color: #657584;
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
 }
 
 .mark,
@@ -157,6 +170,10 @@ button {
   inset: 0;
   background: rgba(15, 30, 40, 0.45);
   z-index: 90;
+}
+
+.drawer-brand {
+  display: none;
 }
 
 .memory-status {
@@ -695,8 +712,22 @@ button {
 
 .composer {
   border-top: 1px solid #d6dde1;
-  padding: 14px clamp(14px, 4vw, 48px) 18px;
+  padding: 12px clamp(14px, 4vw, 48px) max(12px, env(safe-area-inset-bottom));
   background: #f7f8fa;
+}
+
+.composer-style-glass-soft .composer,
+.composer-style-glass-clear .composer {
+  background: rgba(247, 248, 250, 0.86);
+  backdrop-filter: blur(18px) saturate(1.25);
+}
+
+.composer-style-glass-clear .composer {
+  background: rgba(247, 248, 250, 0.68);
+}
+
+.composer-style-bubble .composer {
+  background: #ffffff;
 }
 
 .composer-demo-hint {
@@ -721,14 +752,15 @@ button {
   width: min(860px, 100%);
   margin: 0 auto;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 10px;
-  align-items: end;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: center;
 }
 
 textarea {
   min-width: 0;
-  min-height: 76px;
+  min-height: 48px;
+  height: 48px;
   max-height: 180px;
   resize: vertical;
   border: 1px solid #b9c6ca;
@@ -736,6 +768,7 @@ textarea {
   padding: 12px 13px;
   background: #ffffff;
   color: #1e252b;
+  line-height: 1.35;
 }
 
 textarea:focus {
@@ -749,9 +782,96 @@ textarea:disabled {
 }
 
 .send-button {
-  min-width: 92px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 88px;
   min-height: 44px;
-  padding: 0 16px;
+  padding: 0 14px;
+}
+
+.composer-action-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid #b9c6ca;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #1e252b;
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.composer-action-button:hover,
+.composer-menu-item:hover {
+  border-color: #175f4f;
+  background: #f1f6f4;
+}
+
+.composer-menu {
+  width: min(860px, 100%);
+  margin: 0 auto 8px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.composer-menu-item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  border: 1px solid #b9c6ca;
+  border-radius: 8px;
+  padding: 8px 10px;
+  background: #ffffff;
+  color: #1e252b;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+  text-decoration: none;
+}
+
+.composer-attachment-status {
+  width: min(860px, 100%);
+  margin: 8px auto 0;
+  color: #40515f;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.composer-style-glass-soft textarea,
+.composer-style-glass-soft .composer-action-button,
+.composer-style-glass-soft .composer-menu-item,
+.composer-style-glass-clear textarea,
+.composer-style-glass-clear .composer-action-button,
+.composer-style-glass-clear .composer-menu-item {
+  background: rgba(255, 255, 255, 0.74);
+  backdrop-filter: blur(12px) saturate(1.2);
+}
+
+.composer-style-glass-clear textarea,
+.composer-style-glass-clear .composer-action-button,
+.composer-style-glass-clear .composer-menu-item {
+  background: rgba(255, 255, 255, 0.52);
+}
+
+.composer-style-bubble .composer-grid {
+  border: 1px solid #d6dde1;
+  border-radius: 999px;
+  padding: 6px;
+  background: #f7f8fa;
+}
+
+.composer-style-bubble textarea {
+  min-height: 42px;
+  border-color: transparent;
+  border-radius: 999px;
+  resize: none;
 }
 
 .send-button:disabled {
@@ -804,8 +924,7 @@ textarea:disabled {
   }
 
   .brand {
-    flex: 0 0 auto;
-    min-width: 0;
+    display: none;
   }
 
   .brand strong {
@@ -875,6 +994,27 @@ textarea:disabled {
     transform: translateX(0);
   }
 
+  .drawer-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 58px;
+    padding: 10px 18px;
+    border-bottom: 1px solid #d6dde1;
+    background: #fbfcfd;
+  }
+
+  .drawer-brand-copy {
+    display: grid;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .drawer-brand-copy strong {
+    color: #1e252b;
+    font-size: 17px;
+  }
+
   .prompt-list {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -896,12 +1036,54 @@ textarea:disabled {
     height: 32px;
   }
 
+  .composer {
+    padding: 8px 10px max(8px, env(safe-area-inset-bottom));
+  }
+
   .composer-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 42px minmax(0, 1fr) 42px;
+    gap: 6px;
+  }
+
+  textarea {
+    min-height: 42px;
+    height: 42px;
+    max-height: 132px;
+    padding: 10px 11px;
+    resize: none;
   }
 
   .send-button {
-    width: 100%;
+    width: 42px;
+    min-width: 42px;
+    min-height: 42px;
+    padding: 0;
+    border-radius: 8px;
+  }
+
+  .composer-action-button {
+    width: 42px;
+    height: 42px;
+    font-size: 21px;
+  }
+
+  .send-label {
+    display: none;
+  }
+
+  .send-icon {
+    font-size: 20px;
+    line-height: 1;
+  }
+
+  .composer-menu {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .composer-menu-item {
+    min-height: 36px;
+    padding: 7px 8px;
   }
 }
 
@@ -961,7 +1143,7 @@ textarea:disabled {
 
   /* Issue #27: drop the brand wordmark on the narrowest viewports so the
    * topbar holds the FA logo + emoji actions + hamburger on a single row. */
-  .brand strong {
+  .brand {
     display: none;
   }
 
@@ -1026,6 +1208,7 @@ textarea:disabled {
 :root[data-theme="dark"] .demo-status,
 :root[data-theme="dark"] .memory-status,
 :root[data-theme="dark"] .status,
+:root[data-theme="dark"] .brand-version,
 :root[data-theme="dark"] .sidebar-section-caret {
   color: #c9c1b6;
 }
@@ -1037,6 +1220,8 @@ textarea:disabled {
 :root[data-theme="dark"] .report-button,
 :root[data-theme="dark"] .memory-button,
 :root[data-theme="dark"] .send-button,
+:root[data-theme="dark"] .composer-action-button,
+:root[data-theme="dark"] .composer-menu-item,
 :root[data-theme="dark"] .prompt-list button,
 :root[data-theme="dark"] .conversation-new,
 :root[data-theme="dark"] .conversation-entry-button,
@@ -1053,6 +1238,8 @@ textarea:disabled {
 :root[data-theme="dark"] .conversation-new:hover,
 :root[data-theme="dark"] .conversation-entry-button:hover,
 :root[data-theme="dark"] .prompt-list button:hover,
+:root[data-theme="dark"] .composer-action-button:hover,
+:root[data-theme="dark"] .composer-menu-item:hover,
 :root[data-theme="dark"] .fetch-iframe-toggle:hover {
   border-color: #6cc5a6;
   background: #28332f;
@@ -1067,6 +1254,7 @@ textarea:disabled {
 :root[data-theme="dark"] .setting-row > span,
 :root[data-theme="dark"] .setting-row-slider > label,
 :root[data-theme="dark"] .setting-check,
+:root[data-theme="dark"] .composer-attachment-status,
 :root[data-theme="dark"] .thinking-steps {
   color: #b7b0a7;
 }
@@ -1139,6 +1327,15 @@ textarea:disabled {
   background: #222624;
 }
 
+:root[data-theme="dark"] .drawer-brand {
+  border-bottom-color: #343a3d;
+  background: #202322;
+}
+
+:root[data-theme="dark"] .drawer-brand-copy strong {
+  color: #ece7df;
+}
+
 :root[data-theme="dark"] .fetch-iframe-url {
   color: #c9c1b6;
 }
@@ -1149,6 +1346,39 @@ textarea:disabled {
   border-color: #4a524e;
   background: #202322;
   color: #ece7df;
+}
+
+:root[data-theme="dark"] .composer-style-glass-soft .composer,
+:root[data-theme="dark"] .composer-style-glass-clear .composer {
+  background: rgba(29, 32, 31, 0.82);
+}
+
+:root[data-theme="dark"] .composer-style-glass-clear .composer {
+  background: rgba(29, 32, 31, 0.64);
+}
+
+:root[data-theme="dark"] .composer-style-bubble .composer {
+  background: #181a1b;
+}
+
+:root[data-theme="dark"] .composer-style-glass-soft textarea,
+:root[data-theme="dark"] .composer-style-glass-soft .composer-action-button,
+:root[data-theme="dark"] .composer-style-glass-soft .composer-menu-item,
+:root[data-theme="dark"] .composer-style-glass-clear textarea,
+:root[data-theme="dark"] .composer-style-glass-clear .composer-action-button,
+:root[data-theme="dark"] .composer-style-glass-clear .composer-menu-item {
+  background: rgba(32, 35, 34, 0.74);
+}
+
+:root[data-theme="dark"] .composer-style-glass-clear textarea,
+:root[data-theme="dark"] .composer-style-glass-clear .composer-action-button,
+:root[data-theme="dark"] .composer-style-glass-clear .composer-menu-item {
+  background: rgba(32, 35, 34, 0.52);
+}
+
+:root[data-theme="dark"] .composer-style-bubble .composer-grid {
+  border-color: #343a3d;
+  background: #1d201f;
 }
 
 :root[data-theme="dark"] textarea:focus {
@@ -1216,6 +1446,7 @@ textarea:disabled {
   :root:not([data-theme="light"]) .demo-status,
   :root:not([data-theme="light"]) .memory-status,
   :root:not([data-theme="light"]) .status,
+  :root:not([data-theme="light"]) .brand-version,
   :root:not([data-theme="light"]) .sidebar-section-caret {
     color: #c9c1b6;
   }
@@ -1227,6 +1458,8 @@ textarea:disabled {
   :root:not([data-theme="light"]) .report-button,
   :root:not([data-theme="light"]) .memory-button,
   :root:not([data-theme="light"]) .send-button,
+  :root:not([data-theme="light"]) .composer-action-button,
+  :root:not([data-theme="light"]) .composer-menu-item,
   :root:not([data-theme="light"]) .prompt-list button,
   :root:not([data-theme="light"]) .conversation-new,
   :root:not([data-theme="light"]) .conversation-entry-button,
@@ -1243,6 +1476,8 @@ textarea:disabled {
   :root:not([data-theme="light"]) .conversation-new:hover,
   :root:not([data-theme="light"]) .conversation-entry-button:hover,
   :root:not([data-theme="light"]) .prompt-list button:hover,
+  :root:not([data-theme="light"]) .composer-action-button:hover,
+  :root:not([data-theme="light"]) .composer-menu-item:hover,
   :root:not([data-theme="light"]) .fetch-iframe-toggle:hover {
     border-color: #6cc5a6;
     background: #28332f;
@@ -1257,6 +1492,7 @@ textarea:disabled {
   :root:not([data-theme="light"]) .setting-row > span,
   :root:not([data-theme="light"]) .setting-row-slider > label,
   :root:not([data-theme="light"]) .setting-check,
+  :root:not([data-theme="light"]) .composer-attachment-status,
   :root:not([data-theme="light"]) .thinking-steps {
     color: #b7b0a7;
   }
@@ -1329,6 +1565,15 @@ textarea:disabled {
     background: #222624;
   }
 
+  :root:not([data-theme="light"]) .drawer-brand {
+    border-bottom-color: #343a3d;
+    background: #202322;
+  }
+
+  :root:not([data-theme="light"]) .drawer-brand-copy strong {
+    color: #ece7df;
+  }
+
   :root:not([data-theme="light"]) .fetch-iframe-url {
     color: #c9c1b6;
   }
@@ -1344,6 +1589,39 @@ textarea:disabled {
     border-color: #4a524e;
     background: #202322;
     color: #ece7df;
+  }
+
+  :root:not([data-theme="light"]) .composer-style-glass-soft .composer,
+  :root:not([data-theme="light"]) .composer-style-glass-clear .composer {
+    background: rgba(29, 32, 31, 0.82);
+  }
+
+  :root:not([data-theme="light"]) .composer-style-glass-clear .composer {
+    background: rgba(29, 32, 31, 0.64);
+  }
+
+  :root:not([data-theme="light"]) .composer-style-bubble .composer {
+    background: #181a1b;
+  }
+
+  :root:not([data-theme="light"]) .composer-style-glass-soft textarea,
+  :root:not([data-theme="light"]) .composer-style-glass-soft .composer-action-button,
+  :root:not([data-theme="light"]) .composer-style-glass-soft .composer-menu-item,
+  :root:not([data-theme="light"]) .composer-style-glass-clear textarea,
+  :root:not([data-theme="light"]) .composer-style-glass-clear .composer-action-button,
+  :root:not([data-theme="light"]) .composer-style-glass-clear .composer-menu-item {
+    background: rgba(32, 35, 34, 0.74);
+  }
+
+  :root:not([data-theme="light"]) .composer-style-glass-clear textarea,
+  :root:not([data-theme="light"]) .composer-style-glass-clear .composer-action-button,
+  :root:not([data-theme="light"]) .composer-style-glass-clear .composer-menu-item {
+    background: rgba(32, 35, 34, 0.52);
+  }
+
+  :root:not([data-theme="light"]) .composer-style-bubble .composer-grid {
+    border-color: #343a3d;
+    background: #1d201f;
   }
 
   :root:not([data-theme="light"]) textarea:focus {

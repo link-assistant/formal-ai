@@ -509,3 +509,93 @@ test.describe('Issue #94: theme, localization, and report context', () => {
     expect(rows.size).toBe(1);
   });
 });
+
+test.describe('Issue #108: mobile composer and configurable input UI', () => {
+  test('mobile uses a left menu, hides the wordmark, and exposes brand details inside the drawer', async ({ page }) => {
+    await disableGreetingVariations(page);
+    await page.setViewportSize({ width: 390, height: 780 });
+    await page.goto('./');
+    await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
+
+    const menu = page.locator('[data-testid="mobile-menu-toggle"]');
+    await expect(menu).toBeVisible();
+    const menuBox = await menu.boundingBox();
+    expect(menuBox).toBeTruthy();
+    expect(menuBox && menuBox.x).toBeLessThan(20);
+
+    await expect(page.locator('.topbar .brand')).toBeHidden();
+
+    await menu.click();
+    const drawerBrand = page.locator('[data-testid="drawer-brand"]');
+    await expect(drawerBrand).toBeVisible();
+    await expect(drawerBrand).toContainText('formal-ai');
+    await expect(drawerBrand).toContainText(/v(dev|\d+\.\d+\.\d+)/);
+  });
+
+  test('focused mobile composer stays in one row and keeps the top menu reachable', async ({ page }) => {
+    await disableGreetingVariations(page);
+    await page.setViewportSize({ width: 390, height: 780 });
+    await page.goto('./');
+    await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
+
+    await page.locator('.mode-toggle').click();
+    await expect(page.locator('[data-testid="chat-composer-input"]')).toBeEnabled({
+      timeout: 5_000,
+    });
+
+    const input = page.locator('[data-testid="chat-composer-input"]');
+    await input.focus();
+
+    const topbarBox = await page.locator('.topbar').boundingBox();
+    const menuBox = await page.locator('[data-testid="mobile-menu-toggle"]').boundingBox();
+    const actionBox = await page.locator('[data-testid="composer-menu-toggle"]').boundingBox();
+    const inputBox = await input.boundingBox();
+    const sendBox = await page.locator('[data-testid="chat-composer-submit"]').boundingBox();
+    const viewport = page.viewportSize();
+
+    expect(topbarBox).toBeTruthy();
+    expect(menuBox).toBeTruthy();
+    expect(actionBox).toBeTruthy();
+    expect(inputBox).toBeTruthy();
+    expect(sendBox).toBeTruthy();
+    expect(viewport).toBeTruthy();
+
+    expect(topbarBox && topbarBox.y).toBeGreaterThanOrEqual(0);
+    expect(menuBox && menuBox.y).toBeGreaterThanOrEqual(0);
+    expect(sendBox && inputBox && Math.abs(sendBox.y - inputBox.y)).toBeLessThan(4);
+    expect(actionBox && inputBox && Math.abs(actionBox.y - inputBox.y)).toBeLessThan(4);
+    expect(inputBox && viewport && inputBox.width).toBeGreaterThan(viewport.width * 0.55);
+  });
+
+  test('composer style and action button are configurable and persisted', async ({ page }) => {
+    await disableGreetingVariations(page);
+    await page.goto('./');
+    await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
+
+    await page.locator('[data-testid="setting-composer-style"]').selectOption('glass-clear');
+    await page.locator('[data-testid="setting-composer-action"]').selectOption('plus');
+
+    await expect(page.locator('.app')).toHaveClass(/composer-style-glass-clear/);
+    await expect(page.locator('[data-testid="composer-menu-toggle"]')).toContainText('+');
+
+    const stored = await page.evaluate(
+      () => window.localStorage.getItem('formal-ai.preferences.v1') || '',
+    );
+    expect(stored).toContain('composerStyle "glass-clear"');
+    expect(stored).toContain('composerAction "plus"');
+  });
+
+  test('composer menu exposes attachment and memory actions at the input', async ({ page }) => {
+    await disableGreetingVariations(page);
+    await page.goto('./');
+    await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
+
+    await page.locator('[data-testid="composer-menu-toggle"]').click();
+    const menu = page.locator('[data-testid="composer-menu"]');
+    await expect(menu).toBeVisible();
+    await expect(menu).toContainText('Attach files');
+    await expect(menu).toContainText('Export memory');
+    await expect(menu).toContainText('Import memory');
+    await expect(menu).toContainText('Report issue');
+  });
+});
