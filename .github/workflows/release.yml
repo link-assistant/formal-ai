@@ -172,6 +172,19 @@ jobs:
       - name: Check file size limit
         run: rust-script scripts/check-file-size.rs
 
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: tests/e2e/package-lock.json
+
+      - name: Install web test dependencies
+        run: npm ci --prefix tests/e2e
+
+      - name: Check i18n catalog coverage
+        run: npm run --prefix tests/e2e check:i18n
+
   # === TEST ===
   # Test runs independently of changelog check
   test:

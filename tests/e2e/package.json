@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "check:i18n": "node scripts/check-i18n-catalog.mjs",
     "test:local": "playwright test --config=playwright.local.config.js",
     "test:pages": "playwright test --config=playwright.pages.config.js"
   },
@@ -11,6 +12,6 @@
     "serve": "^14.2.0"
   },
   "dependencies": {
-    "lino-i18n": "0.0.1"
+    "lino-i18n": "0.1.1"
   }
 }
