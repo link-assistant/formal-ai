@@ -1,0 +1,16 @@
+
+> formal-ai-e2e@1.0.0 test:local
+> playwright test --config=playwright.local.config.js --grep Issue #112
+
+[2m[WebServer] [22m(node:1218268) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 5 tests using 1 worker
+
+  ✓  1 [chromium] › tests/multilingual.spec.js:708:3 › memory export/import › Issue #112: tool registry includes all supported tools and localizes descriptions (722ms)
+  ✓  2 [chromium] › tests/multilingual.spec.js:922:3 › Issue #27: mobile layout › Issue #112: mobile drawer lists topbar actions before conversations (553ms)
+  ✓  3 [chromium] › tests/multilingual.spec.js:941:3 › Issue #27: mobile layout › Issue #112: focused composer grows to content with equal padding and a half-panel cap (633ms)
+  ✓  4 [chromium] › tests/multilingual.spec.js:1058:3 › Issue #27: conversations sidebar › Issue #112: deleting a conversation soft-hides it behind the deleted view (891ms)
+  ✓  5 [chromium] › tests/multilingual.spec.js:1118:3 › Issue #27: demo iterates Example prompts › Issue #112: Example prompts cover every supported prompt family (597ms)
+
+  5 passed (5.3s)

@@ -58,6 +58,8 @@
 .ui-skin-contrast .diagnostics-toggle,
 .ui-skin-contrast .agent-toggle,
 .ui-skin-contrast .mobile-menu-toggle,
+.ui-skin-contrast .drawer-close,
+.ui-skin-contrast .drawer-action,
 .ui-skin-contrast .report-button,
 .ui-skin-contrast .memory-button,
 .ui-skin-contrast .composer-action-button,
@@ -65,6 +67,7 @@
 .ui-skin-contrast .prompt-list button,
 .ui-skin-contrast .conversation-new,
 .ui-skin-contrast .conversation-entry-button,
+.ui-skin-contrast .conversation-delete,
 .ui-skin-contrast textarea,
 .ui-skin-contrast .setting-row input[type="text"],
 .ui-skin-contrast .setting-row select {
@@ -145,6 +148,8 @@
 :root[data-theme="dark"] .ui-skin-contrast .diagnostics-toggle,
 :root[data-theme="dark"] .ui-skin-contrast .agent-toggle,
 :root[data-theme="dark"] .ui-skin-contrast .mobile-menu-toggle,
+:root[data-theme="dark"] .ui-skin-contrast .drawer-close,
+:root[data-theme="dark"] .ui-skin-contrast .drawer-action,
 :root[data-theme="dark"] .ui-skin-contrast .report-button,
 :root[data-theme="dark"] .ui-skin-contrast .memory-button,
 :root[data-theme="dark"] .ui-skin-contrast .composer-action-button,
@@ -152,6 +157,7 @@
 :root[data-theme="dark"] .ui-skin-contrast .prompt-list button,
 :root[data-theme="dark"] .ui-skin-contrast .conversation-new,
 :root[data-theme="dark"] .ui-skin-contrast .conversation-entry-button,
+:root[data-theme="dark"] .ui-skin-contrast .conversation-delete,
 :root[data-theme="dark"] .ui-skin-contrast textarea,
 :root[data-theme="dark"] .ui-skin-contrast .setting-row input[type="text"],
 :root[data-theme="dark"] .ui-skin-contrast .setting-row select {
@@ -202,6 +208,8 @@
   :root:not([data-theme="light"]) .ui-skin-contrast .diagnostics-toggle,
   :root:not([data-theme="light"]) .ui-skin-contrast .agent-toggle,
   :root:not([data-theme="light"]) .ui-skin-contrast .mobile-menu-toggle,
+  :root:not([data-theme="light"]) .ui-skin-contrast .drawer-close,
+  :root:not([data-theme="light"]) .ui-skin-contrast .drawer-action,
   :root:not([data-theme="light"]) .ui-skin-contrast .report-button,
   :root:not([data-theme="light"]) .ui-skin-contrast .memory-button,
   :root:not([data-theme="light"]) .ui-skin-contrast .composer-action-button,
@@ -209,6 +217,7 @@
   :root:not([data-theme="light"]) .ui-skin-contrast .prompt-list button,
   :root:not([data-theme="light"]) .ui-skin-contrast .conversation-new,
   :root:not([data-theme="light"]) .ui-skin-contrast .conversation-entry-button,
+  :root:not([data-theme="light"]) .ui-skin-contrast .conversation-delete,
   :root:not([data-theme="light"]) .ui-skin-contrast textarea,
   :root:not([data-theme="light"]) .ui-skin-contrast .setting-row input[type="text"],
   :root:not([data-theme="light"]) .ui-skin-contrast .setting-row select {
@@ -336,6 +345,8 @@ button {
 .diagnostics-toggle,
 .agent-toggle,
 .mobile-menu-toggle,
+.drawer-close,
+.drawer-action,
 .report-button,
 .memory-button,
 .send-button,
@@ -390,6 +401,47 @@ button {
   font-size: 20px;
 }
 
+.menu-icon {
+  position: relative;
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+}
+
+.menu-icon-hamburger::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 2px;
+  width: 18px;
+  height: 2px;
+  border-radius: 999px;
+  background: currentColor;
+  box-shadow:
+    0 6px 0 currentColor,
+    0 12px 0 currentColor;
+}
+
+.menu-icon-close::before,
+.menu-icon-close::after {
+  content: "";
+  position: absolute;
+  left: 1px;
+  top: 8px;
+  width: 16px;
+  height: 2px;
+  border-radius: 999px;
+  background: currentColor;
+}
+
+.menu-icon-close::before {
+  transform: rotate(45deg);
+}
+
+.menu-icon-close::after {
+  transform: rotate(-45deg);
+}
+
 /* Issue #27: full-viewport scrim sits behind the slide-in drawer and dismisses
  * the menu on tap, the same way iOS / Material navigation drawers behave. */
 .mobile-menu-backdrop {
@@ -400,6 +452,10 @@ button {
 }
 
 .drawer-brand {
+  display: none;
+}
+
+.drawer-menu-section {
   display: none;
 }
 
@@ -530,6 +586,21 @@ button {
   background: #f1f6f4;
 }
 
+.conversation-deleted-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #40515f;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.conversation-deleted-toggle input {
+  width: 16px;
+  height: 16px;
+  accent-color: #175f4f;
+}
+
 .conversation-empty {
   margin: 0;
   color: #5f6d78;
@@ -542,6 +613,13 @@ button {
   padding: 0;
   display: grid;
   gap: 4px;
+}
+
+.conversation-entry-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 4px;
+  align-items: stretch;
 }
 
 .conversation-entry-button {
@@ -560,15 +638,40 @@ button {
   cursor: pointer;
 }
 
+.conversation-delete {
+  width: 34px;
+  min-height: 34px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #d6dee2;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #8b2f2f;
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1;
+}
+
 .conversation-entry-button:hover {
   border-color: #175f4f;
   background: #f1f6f4;
+}
+
+.conversation-delete:hover {
+  border-color: #8b2f2f;
+  background: #fff0f0;
 }
 
 .conversation-entry.is-active .conversation-entry-button {
   border-color: #175f4f;
   background: #e3efe9;
   font-weight: 600;
+}
+
+.conversation-entry.is-deleted .conversation-entry-button {
+  border-color: #c7cdd1;
+  background: #f0f3f4;
+  color: #5f6d78;
 }
 
 .conversation-entry-title {
@@ -938,6 +1041,8 @@ button {
 }
 
 .composer {
+  max-height: min(280px, calc(var(--formal-ai-viewport-height, 100dvh) * 0.5));
+  overflow: auto;
   border-top: 1px solid #d6dde1;
   padding: 12px clamp(14px, 4vw, 48px) max(12px, env(safe-area-inset-bottom));
   background: #f7f8fa;
@@ -988,12 +1093,13 @@ button {
 textarea {
   min-width: 0;
   min-height: 48px;
-  height: 48px;
-  max-height: 180px;
-  resize: vertical;
+  height: auto;
+  max-height: min(180px, calc(var(--formal-ai-viewport-height, 100dvh) * 0.5 - 96px));
+  resize: none;
+  overflow-y: hidden;
   border: 1px solid #b9c6ca;
   border-radius: 8px;
-  padding: 12px 13px;
+  padding: 13px;
   background: #ffffff;
   color: #1e252b;
   line-height: 1.35;
@@ -1209,7 +1315,8 @@ textarea:disabled {
     bottom: 0;
     left: 0;
     z-index: 100;
-    width: min(86vw, 320px);
+    width: 100vw;
+    width: var(--formal-ai-viewport-width, 100vw);
     max-height: none;
     border-right: 1px solid #d6dde1;
     border-bottom: 0;
@@ -1226,11 +1333,19 @@ textarea:disabled {
   .drawer-brand {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 12px;
     min-height: 58px;
     padding: 10px 18px;
     border-bottom: 1px solid #d6dde1;
     background: #fbfcfd;
+  }
+
+  .drawer-brand-main {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
   }
 
   .drawer-brand-copy {
@@ -1242,6 +1357,40 @@ textarea:disabled {
   .drawer-brand-copy strong {
     color: #1e252b;
     font-size: 17px;
+  }
+
+  .drawer-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    padding: 0;
+  }
+
+  .drawer-menu-section {
+    display: grid;
+    gap: 8px;
+    padding: 10px 18px 12px;
+    border-bottom: 1px solid #d6dde1;
+    background: #f7f8fa;
+  }
+
+  .drawer-action-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .drawer-action {
+    min-height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+    padding: 0 10px;
+    text-decoration: none;
+    white-space: nowrap;
   }
 
   .prompt-list {
@@ -1266,6 +1415,7 @@ textarea:disabled {
   }
 
   .composer {
+    max-height: calc(var(--formal-ai-viewport-height, 100dvh) * 0.5);
     padding: 8px 10px max(8px, env(safe-area-inset-bottom));
   }
 
@@ -1276,9 +1426,9 @@ textarea:disabled {
 
   textarea {
     min-height: 42px;
-    height: 42px;
-    max-height: 132px;
-    padding: 10px 11px;
+    height: auto;
+    max-height: min(132px, calc(var(--formal-ai-viewport-height, 100dvh) * 0.5 - 64px));
+    padding: 11px;
     resize: none;
   }
 
@@ -1446,6 +1596,8 @@ textarea:disabled {
 :root[data-theme="dark"] .diagnostics-toggle,
 :root[data-theme="dark"] .agent-toggle,
 :root[data-theme="dark"] .mobile-menu-toggle,
+:root[data-theme="dark"] .drawer-close,
+:root[data-theme="dark"] .drawer-action,
 :root[data-theme="dark"] .report-button,
 :root[data-theme="dark"] .memory-button,
 :root[data-theme="dark"] .send-button,
@@ -1454,6 +1606,7 @@ textarea:disabled {
 :root[data-theme="dark"] .prompt-list button,
 :root[data-theme="dark"] .conversation-new,
 :root[data-theme="dark"] .conversation-entry-button,
+:root[data-theme="dark"] .conversation-delete,
 :root[data-theme="dark"] .fetch-iframe-toggle {
   border-color: #4a524e;
   background: #242826;
@@ -1466,6 +1619,7 @@ textarea:disabled {
 
 :root[data-theme="dark"] .conversation-new:hover,
 :root[data-theme="dark"] .conversation-entry-button:hover,
+:root[data-theme="dark"] .conversation-delete:hover,
 :root[data-theme="dark"] .prompt-list button:hover,
 :root[data-theme="dark"] .composer-action-button:hover,
 :root[data-theme="dark"] .composer-menu-item:hover,
@@ -1476,6 +1630,7 @@ textarea:disabled {
 
 :root[data-theme="dark"] .conversation-empty,
 :root[data-theme="dark"] .conversation-entry-meta,
+:root[data-theme="dark"] .conversation-deleted-toggle,
 :root[data-theme="dark"] .message-meta,
 :root[data-theme="dark"] .trace-list dt,
 :root[data-theme="dark"] .setting-row,
@@ -1556,7 +1711,8 @@ textarea:disabled {
   background: #222624;
 }
 
-:root[data-theme="dark"] .drawer-brand {
+:root[data-theme="dark"] .drawer-brand,
+:root[data-theme="dark"] .drawer-menu-section {
   border-bottom-color: #343a3d;
   background: #202322;
 }
@@ -1684,6 +1840,8 @@ textarea:disabled {
   :root:not([data-theme="light"]) .diagnostics-toggle,
   :root:not([data-theme="light"]) .agent-toggle,
   :root:not([data-theme="light"]) .mobile-menu-toggle,
+  :root:not([data-theme="light"]) .drawer-close,
+  :root:not([data-theme="light"]) .drawer-action,
   :root:not([data-theme="light"]) .report-button,
   :root:not([data-theme="light"]) .memory-button,
   :root:not([data-theme="light"]) .send-button,
@@ -1692,6 +1850,7 @@ textarea:disabled {
   :root:not([data-theme="light"]) .prompt-list button,
   :root:not([data-theme="light"]) .conversation-new,
   :root:not([data-theme="light"]) .conversation-entry-button,
+  :root:not([data-theme="light"]) .conversation-delete,
   :root:not([data-theme="light"]) .fetch-iframe-toggle {
     border-color: #4a524e;
     background: #242826;
@@ -1704,6 +1863,7 @@ textarea:disabled {
 
   :root:not([data-theme="light"]) .conversation-new:hover,
   :root:not([data-theme="light"]) .conversation-entry-button:hover,
+  :root:not([data-theme="light"]) .conversation-delete:hover,
   :root:not([data-theme="light"]) .prompt-list button:hover,
   :root:not([data-theme="light"]) .composer-action-button:hover,
   :root:not([data-theme="light"]) .composer-menu-item:hover,
@@ -1714,6 +1874,7 @@ textarea:disabled {
 
   :root:not([data-theme="light"]) .conversation-empty,
   :root:not([data-theme="light"]) .conversation-entry-meta,
+  :root:not([data-theme="light"]) .conversation-deleted-toggle,
   :root:not([data-theme="light"]) .message-meta,
   :root:not([data-theme="light"]) .trace-list dt,
   :root:not([data-theme="light"]) .setting-row,
@@ -1794,7 +1955,8 @@ textarea:disabled {
     background: #222624;
   }
 
-  :root:not([data-theme="light"]) .drawer-brand {
+  :root:not([data-theme="light"]) .drawer-brand,
+  :root:not([data-theme="light"]) .drawer-menu-section {
     border-bottom-color: #343a3d;
     background: #202322;
   }

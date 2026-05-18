@@ -37,20 +37,44 @@ const EXAMPLE_PROMPTS = [
   { label: "Greeting (ru)", text: "Привет" },
   { label: "Greeting (hi)", text: "नमस्ते" },
   { label: "Greeting (zh)", text: "你好" },
+  { label: "Farewell (en)", text: "Goodbye" },
+  { label: "Farewell (ru)", text: "До свидания" },
+  { label: "Farewell (hi)", text: "अलविदा" },
+  { label: "Farewell (zh)", text: "再见" },
   { label: "Identity (en)", text: "Who are you?" },
+  { label: "Identity (ru)", text: "Кто ты?" },
+  { label: "Identity (hi)", text: "तुम कौन हो?" },
   { label: "Identity (zh)", text: "你是谁?" },
+  { label: "Clarification (en)", text: "I don't understand" },
+  { label: "Clarification (ru)", text: "не понял" },
+  { label: "Clarification (hi)", text: "समझ नहीं आया" },
+  { label: "Clarification (zh)", text: "我不明白" },
+  { label: "Capabilities (en)", text: "What can you do?" },
+  { label: "Capabilities (ru)", text: "Что ты умеешь?" },
   { label: "Hello world (Rust)", text: "Write me hello world program in Rust" },
   { label: "Hello world (Python)", text: "Create a hello world example in Python" },
   { label: "Hello world (JavaScript)", text: "Write hello world in JavaScript" },
   { label: "Hello world (TypeScript)", text: "Write hello world in TypeScript" },
   { label: "Hello world (Go)", text: "Show hello world in Go" },
   { label: "Hello world (C)", text: "Show hello world in C" },
+  { label: "Calculation (en)", text: "What is 2 + 2?" },
+  { label: "Calculation (ru)", text: "Сколько будет два плюс два?" },
   { label: "Concept (en)", text: "What is Rust?" },
   { label: "Concept (en/Wikipedia)", text: "Who is Donald Trump?" },
   { label: "Concept (ru/Wikipedia)", text: "Кто такой Илон Маск?" },
   { label: "Concept (ru)", text: "Что такое Википедия?" },
+  { label: "Concept (hi)", text: "विकिपीडिया क्या है?" },
   { label: "Concept (zh)", text: "维基百科是什么?" },
   { label: "Concept in context", text: "What is IIR in machine learning?" },
+  { label: "Summarization", text: "Summarize this conversation" },
+  { label: "Brainstorming", text: "Brainstorm 5 small tools for link notation." },
+  { label: "Fact Q&A (en)", text: "Who wrote The Lord of the Rings?" },
+  { label: "Fact Q&A (ru)", text: "Какова столица Японии?" },
+  { label: "Fact Q&A (hi)", text: "जापान की राजधानी क्या है?" },
+  { label: "Fact Q&A (zh)", text: "日本的首都是什么?" },
+  { label: "Coreference", text: "What features make it different from C?" },
+  { label: "Roleplay", text: "Pretend you are Albert Einstein and explain relativity to a teenager." },
+  { label: "Idiom (ru)", text: "Купи слона" },
   { label: "Recall (en)", text: "When did I ask about Rust?" },
   { label: "Recall (cross-conv)", text: "Find Wikipedia in another conversation" },
   { label: "Export memory", text: "Export memory" },
@@ -394,6 +418,7 @@ const PREFERENCE_DEFAULTS = {
   sidebarTraceCollapsed: false,
   sidebarConversationsCollapsed: false,
   sidebarSettingsCollapsed: false,
+  showDeletedConversations: false,
   // Issue #27: random greeting variations are opt-in but default to on so
   // newcomers see the multilingual surface immediately.
   greetingVariations: true,
@@ -703,15 +728,11 @@ function deriveConversationTitle(text) {
 // timestamps, message count). Events without a conversationId are aggregated
 // under the synthetic "legacy" bucket so existing demos remain visible after
 // the schema upgrade.
-function groupConversations(events) {
+function groupConversations(events, options = {}) {
   const safe = Array.isArray(events) ? events : [];
   const map = new Map();
-  for (let index = 0; index < safe.length; index += 1) {
-    const event = safe[index];
-    if (!event || event.kind && event.kind !== "message") {
-      continue;
-    }
-    const id = event.conversationId || "legacy";
+
+  const ensureEntry = (id, event = {}) => {
     let entry = map.get(id);
     if (!entry) {
       entry = {
@@ -719,10 +740,38 @@ function groupConversations(events) {
         title: id === "legacy" ? "Earlier conversation" : "",
         firstAt: event.sentAt || "",
         lastAt: event.sentAt || "",
+        deletedAt: "",
         messageCount: 0,
+        deleted: false,
       };
       map.set(id, entry);
     }
+    return entry;
+  };
+
+  for (let index = 0; index < safe.length; index += 1) {
+    const event = safe[index];
+    if (!event) {
+      continue;
+    }
+    const kind = event.kind || "message";
+    const id = event.conversationId || "legacy";
+    if (kind === "conversation_deleted") {
+      const entry = ensureEntry(id, event);
+      entry.deleted = true;
+      entry.deletedAt = event.sentAt || entry.deletedAt || "";
+      if (!entry.title && event.conversationTitle) {
+        entry.title = event.conversationTitle;
+      }
+      if (event.sentAt && (!entry.lastAt || event.sentAt > entry.lastAt)) {
+        entry.lastAt = event.sentAt;
+      }
+      continue;
+    }
+    if (kind !== "message") {
+      continue;
+    }
+    const entry = ensureEntry(id, event);
     if (event.role === "user" && !entry.title && event.conversationTitle) {
       entry.title = event.conversationTitle;
     } else if (event.role === "user" && !entry.title) {
@@ -736,7 +785,10 @@ function groupConversations(events) {
     }
     entry.messageCount += 1;
   }
-  const list = Array.from(map.values());
+  const showDeleted = Boolean(options.showDeleted);
+  const list = Array.from(map.values()).filter((entry) =>
+    showDeleted ? entry.deleted : !entry.deleted,
+  );
   list.sort((left, right) => {
     if (left.lastAt && right.lastAt) {
       return right.lastAt.localeCompare(left.lastAt);
@@ -744,6 +796,41 @@ function groupConversations(events) {
     return 0;
   });
   return list;
+}
+
+function resizeComposerInput(element) {
+  if (!element) return;
+  element.style.height = "auto";
+  const computed = getComputedStyle(element);
+  const maxHeight = parseFloat(computed.maxHeight);
+  const borderHeight =
+    (parseFloat(computed.borderTopWidth) || 0) +
+    (parseFloat(computed.borderBottomWidth) || 0);
+  const scrollBorderBoxHeight = element.scrollHeight + borderHeight;
+  const target = Number.isFinite(maxHeight)
+    ? Math.min(scrollBorderBoxHeight, maxHeight)
+    : scrollBorderBoxHeight;
+  element.style.height = `${Math.max(target, 0)}px`;
+  element.style.overflowY =
+    element.scrollHeight > target - borderHeight + 1 ? "auto" : "hidden";
+}
+
+function localizeTool(tool, language) {
+  if (!tool || !Array.isArray(tool.localized)) {
+    return tool || {};
+  }
+  const normalized = normalizeUiLanguagePreference(language) || "en";
+  const localized =
+    tool.localized.find((entry) => entry.language === normalized) ||
+    tool.localized.find((entry) => entry.language === "en");
+  if (!localized) {
+    return tool;
+  }
+  return {
+    ...tool,
+    name: localized.name || tool.name,
+    description: localized.description || tool.description,
+  };
 }
 
 // Issue #27: agent-mode task decomposition. Splits a multi-step prompt into
@@ -1239,12 +1326,20 @@ function CollapsibleSection({
   );
 }
 
+function MenuGlyph({ open }) {
+  return h("span", {
+    className: `btn-icon menu-icon ${open ? "menu-icon-close" : "menu-icon-hamburger"}`,
+    "aria-hidden": "true",
+  });
+}
+
 function App() {
   const workerRef = useRef(null);
   const pendingResponses = useRef(new Map());
   const transcriptEndRef = useRef(null);
   const importInputRef = useRef(null);
   const attachmentInputRef = useRef(null);
+  const composerInputRef = useRef(null);
   const [messages, setMessages] = useState([]);
   const [prompt, setPrompt] = useState("");
   const [pending, setPending] = useState(false);
@@ -1290,6 +1385,10 @@ function App() {
   const [sidebarSettingsCollapsed, setSidebarSettingsCollapsed] = useState(
     initialPreferences.current.sidebarSettingsCollapsed,
   );
+  const [showDeletedConversations, setShowDeletedConversations] = useState(
+    Boolean(initialPreferences.current.showDeletedConversations),
+  );
+  const showDeletedConversationsRef = useRef(showDeletedConversations);
   const [greetingVariations, setGreetingVariations] = useState(
     initialPreferences.current.greetingVariations,
   );
@@ -1458,6 +1557,10 @@ function App() {
     currentConversationRef.current = currentConversationId;
   }, [currentConversationId]);
 
+  useEffect(() => {
+    showDeletedConversationsRef.current = showDeletedConversations;
+  }, [showDeletedConversations]);
+
   const userContext = useMemo(
     () =>
       collectUserContext({
@@ -1506,13 +1609,19 @@ function App() {
   // Issue #27: on mount, hydrate the conversation list from the append-only
   // event log and restore the active thread's messages. Operates purely as a
   // projection — no events are mutated.
-  const refreshConversations = useCallback(async () => {
+  const refreshConversations = useCallback(async (showDeletedOverride) => {
     if (typeof window === "undefined" || !window.FormalAiMemory) {
       return [];
     }
     try {
+      const shouldShowDeleted =
+        typeof showDeletedOverride === "boolean"
+          ? showDeletedOverride
+          : showDeletedConversationsRef.current;
       const events = await window.FormalAiMemory.listEvents();
-      const list = groupConversations(events);
+      const list = groupConversations(events, {
+        showDeleted: shouldShowDeleted,
+      });
       list.forEach((entry) => {
         if (entry.title) {
           conversationTitlesRef.current.set(entry.id, entry.title);
@@ -1639,6 +1748,33 @@ function App() {
     setComposerMenuOpen(false);
   }, []);
 
+  const handleShowDeletedConversations = useCallback((event) => {
+    const next = Boolean(event.target.checked);
+    setShowDeletedConversations(next);
+    refreshConversations(next);
+  }, [refreshConversations]);
+
+  const handleDeleteConversation = useCallback(async (entry) => {
+    if (!entry || !entry.id) return;
+    await recordMemoryEvent({
+      kind: "conversation_deleted",
+      role: "system",
+      content: `Conversation deleted: ${entry.title || entry.id}`,
+      sentAt: new Date().toISOString(),
+      conversationId: entry.id,
+      conversationTitle: entry.title || "",
+    });
+    if (entry.id === currentConversationRef.current) {
+      currentConversationRef.current = "";
+      setCurrentConversationId("");
+      setMessages([]);
+      setPrompt("");
+      setDemoMode(false);
+    }
+    setShowDeletedConversations(false);
+    await refreshConversations(false);
+  }, [refreshConversations]);
+
   useEffect(() => {
     persistPreferences({
       demoMode,
@@ -1648,6 +1784,7 @@ function App() {
       sidebarTraceCollapsed,
       sidebarConversationsCollapsed,
       sidebarSettingsCollapsed,
+      showDeletedConversations,
       greetingVariations,
       guessProbability,
       temperature,
@@ -1669,6 +1806,7 @@ function App() {
     sidebarTraceCollapsed,
     sidebarConversationsCollapsed,
     sidebarSettingsCollapsed,
+    showDeletedConversations,
     greetingVariations,
     guessProbability,
     temperature,
@@ -1706,6 +1844,10 @@ function App() {
   useEffect(() => {
     transcriptEndRef.current?.scrollIntoView({ block: "end" });
   }, [messages]);
+
+  useEffect(() => {
+    resizeComposerInput(composerInputRef.current);
+  }, [prompt, demoMode]);
 
   const greetingVariationsRef = useRef(greetingVariations);
   useEffect(() => {
@@ -2168,11 +2310,7 @@ function App() {
             : t("titles.menuOpen"),
           onClick: () => setMobileMenuOpen((value) => !value),
         },
-        h(
-          "span",
-          { className: "btn-icon", "aria-hidden": "true" },
-          mobileMenuOpen ? "✕" : "☰",
-        ),
+        h(MenuGlyph, { open: mobileMenuOpen }),
       ),
       h(
         "div",
@@ -2330,12 +2468,104 @@ function App() {
         h(
           "div",
           { className: "drawer-brand", "data-testid": "drawer-brand" },
-          h("span", { className: "mark" }, "FA"),
           h(
             "div",
-            { className: "drawer-brand-copy" },
-            h("strong", null, "formal-ai"),
-            h("span", { className: "brand-version" }, `v${APP_VERSION}`),
+            { className: "drawer-brand-main" },
+            h("span", { className: "mark" }, "FA"),
+            h(
+              "div",
+              { className: "drawer-brand-copy" },
+              h("strong", null, "formal-ai"),
+              h("span", { className: "brand-version" }, `v${APP_VERSION}`),
+            ),
+          ),
+          h(
+            "button",
+            {
+              type: "button",
+              className: "drawer-close",
+              "data-testid": "drawer-close",
+              "aria-label": t("buttons.closeMenu"),
+              title: t("titles.menuClose"),
+              onClick: () => setMobileMenuOpen(false),
+            },
+            h(MenuGlyph, { open: true }),
+          ),
+        ),
+        h(
+          "section",
+          { className: "drawer-menu-section", "data-testid": "drawer-menu-actions" },
+          h("h2", null, t("sidebar.menu")),
+          h(
+            "div",
+            { className: "drawer-action-list" },
+            h(
+              "a",
+              {
+                className: "drawer-action",
+                "data-testid": "drawer-report-issue",
+                href: currentReportUrl,
+                target: "_blank",
+                rel: "noopener noreferrer",
+              },
+              h("span", { className: "btn-icon", "aria-hidden": "true" }, "🐛"),
+              h("span", null, t("buttons.reportIssue")),
+            ),
+            h(
+              "button",
+              {
+                type: "button",
+                className: "drawer-action",
+                "data-testid": "drawer-memory-export",
+                onClick: handleExportMemory,
+              },
+              h("span", { className: "btn-icon", "aria-hidden": "true" }, "📤"),
+              h("span", null, t("buttons.exportMemory")),
+            ),
+            h(
+              "button",
+              {
+                type: "button",
+                className: "drawer-action",
+                "data-testid": "drawer-memory-import",
+                onClick: triggerImportMemory,
+              },
+              h("span", { className: "btn-icon", "aria-hidden": "true" }, "📥"),
+              h("span", null, t("buttons.importMemory")),
+            ),
+            h(
+              "button",
+              {
+                type: "button",
+                className: "drawer-action",
+                "aria-pressed": diagnosticsMode,
+                onClick: () => setDiagnosticsMode((value) => !value),
+              },
+              h("span", { className: "btn-icon", "aria-hidden": "true" }, "🔍"),
+              h("span", null, diagnosticsMode ? t("buttons.diagnosticsOn") : t("buttons.diagnostics")),
+            ),
+            h(
+              "button",
+              {
+                type: "button",
+                className: "drawer-action",
+                "aria-pressed": agentMode,
+                onClick: () => setAgentMode((value) => !value),
+              },
+              h("span", { className: "btn-icon", "aria-hidden": "true" }, agentMode ? "🤖" : "💬"),
+              h("span", null, agentMode ? t("buttons.agent") : t("buttons.chat")),
+            ),
+            h(
+              "button",
+              {
+                type: "button",
+                className: "drawer-action",
+                "aria-pressed": demoMode,
+                onClick: () => setDemoMode((value) => !value),
+              },
+              h("span", { className: "btn-icon", "aria-hidden": "true" }, "🎬"),
+              h("span", null, demoMode ? t("buttons.demoOn") : t("buttons.demo")),
+            ),
           ),
         ),
         h(CollapsibleSection, {
@@ -2364,11 +2594,24 @@ function App() {
               },
               t("conversation.new"),
             ),
+            h(
+              "label",
+              { className: "conversation-deleted-toggle" },
+              h("input", {
+                type: "checkbox",
+                checked: showDeletedConversations,
+                "data-testid": "conversation-show-deleted",
+                onChange: handleShowDeletedConversations,
+              }),
+              h("span", null, t("conversation.showDeleted")),
+            ),
             conversations.length === 0
               ? h(
                   "p",
                   { className: "conversation-empty" },
-                  t("conversation.empty"),
+                  showDeletedConversations
+                    ? t("conversation.deletedEmpty")
+                    : t("conversation.empty"),
                 )
               : h(
                   "ul",
@@ -2376,56 +2619,76 @@ function App() {
                     className: "conversation-entries",
                     "data-testid": "conversation-entries",
                   },
-                  conversations.map((entry) =>
-                    h(
+                  conversations.map((entry) => {
+                    const active = entry.id === currentConversationId;
+                    return h(
                       "li",
                       {
                         key: entry.id,
-                        className:
-                          entry.id === currentConversationId
-                            ? "conversation-entry is-active"
-                            : "conversation-entry",
+                        className: [
+                          "conversation-entry",
+                          active ? "is-active" : "",
+                          entry.deleted ? "is-deleted" : "",
+                        ].filter(Boolean).join(" "),
                       },
                       h(
-                        "button",
-                        {
-                          type: "button",
-                          className: "conversation-entry-button",
-                          "data-conversation-id": entry.id,
-                          "aria-pressed": entry.id === currentConversationId,
-                          onClick: async () => {
-                            if (entry.id === currentConversationRef.current) {
-                              return;
-                            }
-                            currentConversationRef.current = entry.id;
-                            setCurrentConversationId(entry.id);
-                            setDemoMode(false);
-                            try {
-                              const events =
-                                await window.FormalAiMemory.listEvents();
-                              setMessages(
-                                messagesForConversation(events, entry.id),
-                              );
-                            } catch (_error) {
-                              setMessages([]);
-                            }
+                        "div",
+                        { className: "conversation-entry-row" },
+                        h(
+                          "button",
+                          {
+                            type: "button",
+                            className: "conversation-entry-button",
+                            "data-conversation-id": entry.id,
+                            "aria-pressed": active,
+                            onClick: async () => {
+                              if (entry.id === currentConversationRef.current) {
+                                return;
+                              }
+                              currentConversationRef.current = entry.id;
+                              setCurrentConversationId(entry.id);
+                              setDemoMode(false);
+                              try {
+                                const events =
+                                  await window.FormalAiMemory.listEvents();
+                                setMessages(
+                                  messagesForConversation(events, entry.id),
+                                );
+                              } catch (_error) {
+                                setMessages([]);
+                              }
+                            },
                           },
-                        },
-                        h(
-                          "span",
-                          { className: "conversation-entry-title" },
-                          entry.title || t("conversation.emptyTitle"),
+                          h(
+                            "span",
+                            { className: "conversation-entry-title" },
+                            entry.title || t("conversation.emptyTitle"),
+                          ),
+                          h(
+                            "span",
+                            { className: "conversation-entry-meta" },
+                            t("conversation.messageCount", {
+                              count: entry.messageCount,
+                            }),
+                          ),
                         ),
-                        h(
-                          "span",
-                          { className: "conversation-entry-meta" },
-                          t("conversation.messageCount", {
-                            count: entry.messageCount,
-                          }),
-                        ),
+                        entry.deleted
+                          ? null
+                          : h(
+                              "button",
+                              {
+                                type: "button",
+                                className: "conversation-delete",
+                                "data-testid": "conversation-delete",
+                                "aria-label": t("conversation.delete"),
+                                title: t("conversation.delete"),
+                                onClick: () => handleDeleteConversation(entry),
+                              },
+                              "×",
+                            ),
                       ),
-                    ),
-                  ),
+                    );
+                  }),
             ),
           ),
         }),
@@ -2675,8 +2938,9 @@ function App() {
                 h(
                   "ul",
                   { className: "tool-list" },
-                  seed.tools.map((tool) =>
-                    h(
+                  seed.tools.map((tool) => {
+                    const displayTool = localizeTool(tool, uiLanguage);
+                    return h(
                       "li",
                       {
                         key: tool.id,
@@ -2688,7 +2952,7 @@ function App() {
                       h(
                         "div",
                         { className: "tool-head" },
-                        h("strong", null, tool.name || tool.id),
+                        h("strong", null, displayTool.name || tool.id),
                         h(
                           "span",
                           { className: "tool-mode" },
@@ -2697,11 +2961,11 @@ function App() {
                             : t("toolMode.thinking"),
                         ),
                       ),
-                      tool.description
-                        ? h("p", { className: "tool-desc" }, tool.description)
+                      displayTool.description
+                        ? h("p", { className: "tool-desc" }, displayTool.description)
                         : null,
-                    ),
-                  ),
+                    );
+                  }),
                 ),
               ),
             })
@@ -2859,11 +3123,18 @@ function App() {
               composerActionIcon,
             ),
             h("textarea", {
+              ref: composerInputRef,
               value: prompt,
-              rows: 3,
+              rows: 1,
               placeholder: agentMode
                 ? t("composer.placeholder.agent")
                 : t("composer.placeholder.chat"),
+              autoComplete: "off",
+              autoCorrect: "off",
+              autoCapitalize: "sentences",
+              enterKeyHint: "send",
+              inputMode: "text",
+              spellCheck: true,
               onChange: (event) => setPrompt(event.target.value),
               onKeyDown: handleKeyDown,
               disabled: demoMode,
