@@ -132,6 +132,15 @@ test.describe('multilingual chat surface', () => {
     await expect(last).toContainText(/Wikipedia|encyclopedia/i);
   });
 
+  test('merged Wikipedia definitions combine localized seed summaries', async ({ page }) => {
+    const last = await sendPrompt(page, 'Merge Wikipedia definitions of IIR');
+    await expect(last).toHaveClass(/assistant/);
+    await expect(last).toContainText('Merged definition of infinite impulse response (IIR)');
+    await expect(last).toContainText('Source languages: en, ru, hi, zh');
+    await expect(last).toContainText('recursive digital filter');
+    await expect(last).toContainText('Фильтр с бесконечной импульсной характеристикой');
+  });
+
   test('punctuation-only prompt asks for clarification', async ({ page }) => {
     const last = await sendPrompt(page, '.');
     await expect(last).toHaveClass(/assistant/);

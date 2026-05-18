@@ -35,7 +35,7 @@ use crate::solver_handler_units::try_incompatible_units;
 use crate::solver_handlers::{
     finalize_simple, try_algorithm, try_arithmetic, try_brainstorming_request, try_capabilities,
     try_clarification, try_concept_lookup, try_conversation_memory, try_coreference_request,
-    try_execution_failure, try_fact_lookup, try_http_fetch, try_ill_formed,
+    try_definition_merge, try_execution_failure, try_fact_lookup, try_http_fetch, try_ill_formed,
     try_javascript_execution, try_meta_explanation, try_network_query, try_opinion_question,
     try_punctuation_only_prompt, try_roleplay_request, try_shell_refusal, try_source_conflict,
     try_source_refresh, try_summarization_request, try_translation, try_web_search,
@@ -299,6 +299,7 @@ const SPECIALIZED_HANDLERS: &[(&str, SpecializedHandler)] = &[
     ("capabilities", try_capabilities),
     ("arithmetic", handle_arithmetic),
     ("javascript_execution", handle_javascript_execution),
+    ("definition_merge", try_definition_merge),
     ("concept_lookup", handle_concept_lookup),
     ("who_is", try_who_is_question),
     ("how_it_works", try_how_it_works),

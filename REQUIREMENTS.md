@@ -254,3 +254,21 @@ and `REQUIREMENTS.md` in lockstep.
 | R134 | Update `VISION.md` with the architecture description from the issue (Wikidata P/Q-ID formalization, temperature-style interpretation selection, nested reasoning, growable doublet memory, transformation rules in data, on-demand compilation of natural-language skills, formalization-driven translation). | Implemented by adding a new **Formalization And Temperature** section to `VISION.md` and extending the **Reasoning Model**, **Computation Model**, and **Data Is The Interface** paragraphs to explicitly reference the new architecture artifacts. |
 | R135 | Expose R129+ alongside the existing requirement matrix. | Implemented by appending this **Issue #103 Test-Matrix And Architecture Requirements** block to `REQUIREMENTS.md`. |
 | R136 | Compile issue #103 evidence and case-study analysis under `docs/case-studies/issue-103/`. | Implemented in `docs/case-studies/issue-103/README.md` with raw data (`issue-103.json`, `issue-103-comments.json`, PR-104 mirrors, `recent-merged-prs.json`, `competitor-test-research.md`) in `docs/case-studies/issue-103/raw-data/`. |
+
+## Issue #63 Cross-Language Definition Fusion Requirements
+
+Issue [#63](https://github.com/link-assistant/formal-ai/issues/63) asks the
+assistant to be better than a single Wikipedia language edition by combining
+definitions of the same concept across translations, without neural-network
+learning. The first implemented step works over the reviewable seed concept
+records: every localized block for the same concept anchor is treated as a
+source fragment, repeated facts are deterministically deduplicated, and the
+answer keeps language/source evidence visible.
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R137 | Recognize requests to merge or combine Wikipedia definitions/translations for a concept. | Implemented by the `definition_merge` specialized handler in `src/solver_handlers/definition_merge.rs`, mirrored by `tryDefinitionMerge` in `src/web/formal_ai_worker.js`. |
+| R138 | Merge only definitions that belong to the same resolved concept anchor, preferring seeded Wikidata Q-ID records when available. | Implemented by resolving the requested term through `lookup_concept_query` before collecting localized fragments; the answer and evidence keep the shared `wikidata:` link. |
+| R139 | Preserve source languages and citations for every contributing definition fragment. | Implemented by `definition_merge:language:*` and `source:http:*` evidence links in Rust, matching source-language evidence chips in the browser, plus the user-facing `Source languages:` and `Sources:` sections. |
+| R140 | Deduplicate repeated facts deterministically instead of concatenating every source verbatim. | Implemented by sentence-level normalized fact keys in `merged_definition_facts` / `mergedDefinitionFacts`; the output is stable for the same seed data. |
+| R141 | Cover cross-language definition fusion in automated tests. | Implemented by `tests/unit/specification/definition_fusion.rs` and the Playwright regression `merged Wikipedia definitions combine localized seed summaries` in `tests/e2e/tests/multilingual.spec.js`. |

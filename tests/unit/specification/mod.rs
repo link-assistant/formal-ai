@@ -29,6 +29,7 @@ mod agent_isolation;
 mod calculator_delegation;
 mod chat_surface;
 mod code_generation;
+mod definition_fusion;
 mod links_network;
 mod multilingual;
 mod network_visualization;
