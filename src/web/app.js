@@ -1819,6 +1819,7 @@ function Message({ message, diagnosticsMode, reportIssueUrl, t }) {
                     {
                       className: "diagnostics-detail",
                       "data-testid": "diagnostics-step",
+                      "data-step": entry.step,
                     },
                     h(
                       "summary",
