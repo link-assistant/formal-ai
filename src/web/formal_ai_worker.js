@@ -5121,6 +5121,59 @@ function dedupeFusedEntries(fused, metaByUrl, evidence) {
   return merged;
 }
 
+// Issue #153: localized templates for the web search response. Keep these in
+// sync with the visible UI strings in `src/web/i18n-catalog.lino`. The worker
+// runs in a separate context that cannot import lino-i18n at runtime, so we
+// inline the small subset that is actually rendered to chat. `en` is always
+// the fallback when the catalogue for the active language is missing.
+const WEB_SEARCH_TEXTS = {
+  en: {
+    header: (query, top, k) =>
+      `Search results for \`${query}\` — top ${top} after reciprocal rank fusion (k = ${k}).`,
+    otherSources: "Other sources",
+    via: "via",
+    noResults: (query, providers) =>
+      `No CORS-enabled web search results were returned for \`${query}\`.\n\nProviders tried: ${providers}.`,
+    allDisabled: (providers) =>
+      `All CORS-readable search providers are disabled for this session. Tried: ${providers}.`,
+  },
+  ru: {
+    header: (query, top, k) =>
+      `Результаты поиска для \`${query}\` — топ ${top} после реципрокного объединения рангов (k = ${k}).`,
+    otherSources: "Другие источники",
+    via: "через",
+    noResults: (query, providers) =>
+      `Не получены результаты веб-поиска с поддержкой CORS для \`${query}\`.\n\nПопробованы провайдеры: ${providers}.`,
+    allDisabled: (providers) =>
+      `Все CORS-совместимые поисковые провайдеры отключены в этой сессии. Пробовали: ${providers}.`,
+  },
+  zh: {
+    header: (query, top, k) =>
+      `搜索 \`${query}\` 的结果 — 经互惠等级融合后的前 ${top} 项（k = ${k}）。`,
+    otherSources: "其他来源",
+    via: "来自",
+    noResults: (query, providers) =>
+      `未获取到 \`${query}\` 的可用 CORS 搜索结果。\n\n已尝试的提供方：${providers}。`,
+    allDisabled: (providers) =>
+      `本会话中所有支持 CORS 的搜索提供方都已禁用。已尝试：${providers}。`,
+  },
+  hi: {
+    header: (query, top, k) =>
+      `\`${query}\` के लिए खोज परिणाम — रेसिप्रोकल रैंक फ़्यूज़न के बाद शीर्ष ${top} (k = ${k})।`,
+    otherSources: "अन्य स्रोत",
+    via: "के माध्यम से",
+    noResults: (query, providers) =>
+      `\`${query}\` के लिए CORS-समर्थित कोई खोज परिणाम नहीं मिले।\n\nप्रयास किए गए प्रदाता: ${providers}.`,
+    allDisabled: (providers) =>
+      `इस सत्र के लिए सभी CORS-समर्थित खोज प्रदाता अक्षम हैं। प्रयास किया: ${providers}.`,
+  },
+};
+
+function webSearchTexts(language) {
+  const code = String(language || "").toLowerCase().slice(0, 2);
+  return WEB_SEARCH_TEXTS[code] || WEB_SEARCH_TEXTS.en;
+}
+
 async function tryWebSearch(prompt, language) {
   const normalized = normalizePrompt(prompt);
   const query = extractWebSearchQuery(prompt, normalized);
@@ -5129,6 +5182,7 @@ async function tryWebSearch(prompt, language) {
   const rrfK = webSearchRrfK();
   const concurrency = webSearchConcurrency();
   const providerLimit = webSearchProviderLimit();
+  const texts = webSearchTexts(language);
 
   // R194: the Rust core (`web_search_core::build_request_evidence`) is the
   // source of truth for the `web_search:*` evidence prefix. We prepend its
@@ -5162,7 +5216,7 @@ async function tryWebSearch(prompt, language) {
   if (active.length === 0) {
     return {
       intent: "web_search",
-      content: `All CORS-readable search providers are disabled for this session. Tried: ${WEB_SEARCH_PROVIDERS.map((p) => p.id).join(", ")}.`,
+      content: texts.allDisabled(WEB_SEARCH_PROVIDERS.map((p) => p.id).join(", ")),
       confidence: 0.3,
       evidence,
     };
@@ -5203,28 +5257,29 @@ async function tryWebSearch(prompt, language) {
   if (top.length === 0) {
     return {
       intent: "web_search",
-      content: `No CORS-enabled web search results were returned for \`${query}\`.\n\nProviders tried: ${active.map((p) => p.label).join(", ")}.`,
+      content: texts.noResults(query, active.map((p) => p.label).join(", ")),
       confidence: 0.35,
       evidence,
     };
   }
 
-  const lines = [
-    `Search results for \`${query}\` — top ${top.length} after reciprocal rank fusion (k = ${rrfK}).`,
-    "",
-  ];
+  // Issue #153: every result follows the same template regardless of which
+  // provider produced it — `N. <virtualId> [title](url) — _via providers_ -
+  // excerpt`, with deduplicated alternate URLs rendered as a nested
+  // "Other sources:" sub-line in the user's language.
+  const lines = [texts.header(query, top.length, rrfK), ""];
   top.forEach((entry, index) => {
     const sources = entry.providers
       .map((p) => `${p.id}#${p.rank}`)
       .join(", ");
     const excerpt = entry.excerpt ? ` - ${entry.excerpt}` : "";
     const idTag = entry.virtualId ? ` \`${entry.virtualId}\`` : "";
-    lines.push(`${index + 1}.${idTag} [${entry.title}](${entry.url}) — _via ${sources}_${excerpt}`);
+    lines.push(`${index + 1}.${idTag} [${entry.title}](${entry.url}) — _${texts.via} ${sources}_${excerpt}`);
     if (Array.isArray(entry.alternateUrls) && entry.alternateUrls.length > 0) {
       const others = entry.alternateUrls
         .map((alt) => `[${alt.title || alt.url}](${alt.url})`)
         .join(", ");
-      lines.push(`   - Other sources: ${others}`);
+      lines.push(`   - ${texts.otherSources}: ${others}`);
     }
   });
 
