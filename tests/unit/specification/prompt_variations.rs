@@ -556,6 +556,8 @@ const ENGLISH_FACTUAL_PROMPTS: &[&str] = &[
     "What year did construction of the Eiffel Tower start?",
     "What is the capital of Japan?",
     "Which city is Japan's capital?",
+    "What is the capital of Russia?",
+    "Which city is Russia's capital?",
     "Who painted the Mona Lisa?",
     "Who is the painter of the Mona Lisa?",
     "What is the speed of light?",
@@ -567,6 +569,8 @@ const RUSSIAN_FACTUAL_PROMPTS: &[&str] = &[
     "Кто автор Властелина колец?",
     "Когда построили Эйфелеву башню?",
     "Какова столица Японии?",
+    "Какова столица России?",
+    "столица россии",
     "Кто написал Мону Лизу?",
     "Чему равна скорость света?",
 ];
@@ -575,6 +579,7 @@ const HINDI_FACTUAL_PROMPTS: &[&str] = &[
     "द लॉर्ड ऑफ द रिंग्स किसने लिखी?",
     "एफिल टॉवर कब बनी?",
     "जापान की राजधानी क्या है?",
+    "रूस की राजधानी क्या है?",
     "मोना लिसा किसने बनाई?",
     "प्रकाश की गति कितनी है?",
 ];
@@ -583,6 +588,7 @@ const CHINESE_FACTUAL_PROMPTS: &[&str] = &[
     "魔戒是谁写的?",
     "埃菲尔铁塔建于何时?",
     "日本的首都是什么?",
+    "俄罗斯的首都是什么?",
     "蒙娜丽莎是谁画的?",
     "光速是多少?",
 ];
@@ -624,6 +630,37 @@ fn factual_qna_matrix_records_per_language_evidence() {
     ] {
         assert_language_for_each(prompts, tag);
     }
+}
+
+#[test]
+fn russian_capital_russia_prompt_returns_moscow() {
+    let response = answer("столица россии");
+    assert_eq!(
+        response.intent, "fact_lookup",
+        "reported prompt should route to fact_lookup, got {} with answer {}",
+        response.intent, response.answer,
+    );
+    assert!(
+        response.answer.contains("Москва"),
+        "reported prompt should answer in Russian with Moscow, got {}",
+        response.answer,
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link == "wikidata:Q159"),
+        "reported prompt should record the Russia Wikidata anchor, got links: {:?}",
+        response.evidence_links,
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link == "wikidata:Q649"),
+        "reported prompt should record the Moscow Wikidata anchor, got links: {:?}",
+        response.evidence_links,
+    );
 }
 
 const MULTI_TURN_COREFERENCE_PROMPTS: &[&str] = &[

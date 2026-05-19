@@ -132,6 +132,13 @@ test.describe('multilingual chat surface', () => {
     await expect(last).toContainText(/Wikipedia|encyclopedia/i);
   });
 
+  test('Russian capital-of-Russia prompt returns the seeded fact answer', async ({ page }) => {
+    const last = await sendPrompt(page, 'столица россии');
+    await expect(last).toHaveClass(/assistant/);
+    await expect(last).toContainText('Москва');
+    await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
+  });
+
   test('merged Wikipedia definitions combine localized seed summaries', async ({ page }) => {
     const last = await sendPrompt(page, 'Merge Wikipedia definitions of IIR');
     await expect(last).toHaveClass(/assistant/);

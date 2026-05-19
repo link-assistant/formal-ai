@@ -69,7 +69,7 @@ const EXAMPLE_PROMPTS = [
   { label: "Summarization", text: "Summarize this conversation" },
   { label: "Brainstorming", text: "Brainstorm 5 small tools for link notation." },
   { label: "Fact Q&A (en)", text: "Who wrote The Lord of the Rings?" },
-  { label: "Fact Q&A (ru)", text: "Какова столица Японии?" },
+  { label: "Fact Q&A (ru)", text: "столица россии" },
   { label: "Fact Q&A (hi)", text: "जापान की राजधानी क्या है?" },
   { label: "Fact Q&A (zh)", text: "日本的首都是什么?" },
   { label: "Fetch URL", text: "Сделай запрос к google.com" },
