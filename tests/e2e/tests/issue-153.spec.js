@@ -145,11 +145,35 @@ test.describe('Issue #153 — search UX, formalization, and dedupe', () => {
   });
 
   test('sidebar can be collapsed and expanded', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
     const sidebarToggle = page.locator('[data-testid="sidebar-toggle"]');
     await expect(sidebarToggle).toBeVisible();
     const workspace = page.locator('.workspace');
     await sidebarToggle.click();
     await expect(workspace).toHaveClass(/sidebar-collapsed/);
+    const collapsedLayout = await page.evaluate(() => {
+      const box = (selector) => {
+        const rect = document.querySelector(selector).getBoundingClientRect();
+        return {
+          left: Math.round(rect.left),
+          right: Math.round(rect.right),
+          width: Math.round(rect.width),
+        };
+      };
+      return {
+        viewportWidth: window.innerWidth,
+        chat: box('.chat-panel'),
+        composer: box('.composer'),
+      };
+    });
+    expect(collapsedLayout.chat.left).toBeLessThanOrEqual(1);
+    expect(collapsedLayout.chat.right).toBeGreaterThanOrEqual(
+      collapsedLayout.viewportWidth - 1,
+    );
+    expect(collapsedLayout.composer.left).toBeLessThanOrEqual(1);
+    expect(collapsedLayout.composer.right).toBeGreaterThanOrEqual(
+      collapsedLayout.viewportWidth - 1,
+    );
     await sidebarToggle.click();
     await expect(workspace).not.toHaveClass(/sidebar-collapsed/);
   });
@@ -258,13 +282,13 @@ test.describe('Issue #153 — search UX, formalization, and dedupe', () => {
     );
   });
 
-  test('priority-based topbar overflow keeps Bug reporting visible at 375px', async ({
+  test('priority-based topbar overflow never clips actions and keeps Bug reporting visible at 375px', async ({
     page,
   }) => {
     // Issue #153: every .topbar-actions button must carry a data-menu-priority
-    // and only priorities 1-3 (Bug reporting, Diagnostics, Demo) should remain
-    // visible at mobile widths. The full action list must still be reachable
-    // via the hamburger drawer.
+    // and lower-priority actions must leave the topbar before any button is
+    // clipped. The full action list must still be reachable from the sidebar
+    // Menu on desktop and via the hamburger drawer on mobile.
     const expectVisible = async (selector) => {
       await expect(page.locator(selector)).toBeVisible();
     };
@@ -288,6 +312,71 @@ test.describe('Issue #153 — search UX, formalization, and dedupe', () => {
     await requireAttr('.topbar-actions [data-testid="source-code"]', '5');
     await requireAttr('.topbar-actions [data-testid="memory-export"]', '6');
     await requireAttr('.topbar-actions [data-testid="memory-import"]', '6');
+
+    const assertTopbarFits = async (width, expectedHiddenPriorities = []) => {
+      await page.setViewportSize({
+        width,
+        height: width <= 500 ? 720 : 900,
+      });
+      await page.waitForFunction(() => {
+        const cssWidth = Number.parseFloat(
+          getComputedStyle(document.documentElement).getPropertyValue(
+            '--formal-ai-viewport-width',
+          ),
+        );
+        return Math.abs(cssWidth - window.innerWidth) <= 1;
+      });
+      const layout = await page.evaluate(() => {
+        const viewportWidth = window.innerWidth;
+        const topbarRect = document.querySelector('.topbar').getBoundingClientRect();
+        const visibleActions = [...document.querySelectorAll('.topbar-actions > *')]
+          .filter((element) => getComputedStyle(element).display !== 'none')
+          .map((element) => {
+            const rect = element.getBoundingClientRect();
+            return {
+              id:
+                element.getAttribute('data-testid') ||
+                element.className ||
+                element.tagName,
+              priority: element.getAttribute('data-menu-priority'),
+              left: rect.left,
+              right: rect.right,
+            };
+          });
+        return {
+          viewportWidth,
+          topbarLeft: topbarRect.left,
+          topbarRight: topbarRect.right,
+          visiblePriorities: visibleActions.map((item) => item.priority),
+          visibleActions,
+        };
+      });
+      expect(layout.topbarLeft, `topbar left at ${width}px`).toBeGreaterThanOrEqual(-1);
+      expect(layout.topbarRight, `topbar right at ${width}px`).toBeLessThanOrEqual(
+        layout.viewportWidth + 1,
+      );
+      for (const item of layout.visibleActions) {
+        expect(item.left, `${item.id} left at ${width}px`).toBeGreaterThanOrEqual(-1);
+        expect(item.right, `${item.id} right at ${width}px`).toBeLessThanOrEqual(
+          layout.viewportWidth + 1,
+        );
+      }
+      for (const priority of expectedHiddenPriorities) {
+        expect(layout.visiblePriorities).not.toContain(priority);
+      }
+    };
+
+    await assertTopbarFits(1440);
+    await assertTopbarFits(1320);
+    await assertTopbarFits(1180);
+    await assertTopbarFits(1040);
+    await assertTopbarFits(980);
+
+    const sidebarMenu = page.locator('[data-testid="drawer-menu-actions"]');
+    await expect(sidebarMenu).toBeVisible();
+    await expect(sidebarMenu).toContainText(/Source code|Исходный код/);
+    await expect(sidebarMenu).toContainText(/Export memory|Экспорт памяти/);
+    await expect(sidebarMenu).toContainText(/Import memory|Импорт памяти/);
 
     // Mobile 375 — only priorities 1-3 should remain in the topbar.
     await page.setViewportSize({ width: 375, height: 720 });

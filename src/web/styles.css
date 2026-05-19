@@ -279,6 +279,8 @@ button {
 }
 
 .topbar {
+  width: 100%;
+  min-width: 0;
   min-height: 64px;
   display: flex;
   align-items: center;
@@ -294,6 +296,16 @@ button {
   display: flex;
   align-items: center;
   gap: 12px;
+  min-width: 0;
+}
+
+.brand {
+  flex: 0 0 auto;
+}
+
+.topbar-actions {
+  flex: 1 1 auto;
+  justify-content: flex-end;
 }
 
 .brand strong {
@@ -480,7 +492,44 @@ button {
 }
 
 .drawer-menu-section {
-  display: none;
+  flex: 0 0 auto;
+  display: grid;
+  gap: 8px;
+  padding: 10px 18px 12px;
+  border-bottom: 1px solid #d6dde1;
+  background: #f7f8fa;
+}
+
+.drawer-menu-section h2 {
+  margin: 0;
+  color: #40515f;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.drawer-action-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 6px;
+}
+
+.drawer-action {
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  padding: 0 10px;
+  text-align: left;
+  text-decoration: none;
+  white-space: normal;
+}
+
+.drawer-action span:last-child {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .memory-status {
@@ -522,10 +571,10 @@ button {
 }
 
 /* Issue #153: when the desktop sidebar is collapsed the workspace gives the
- * chat the full viewport width. The aside and resizer collapse to zero, and
- * the panel itself is hidden via .is-desktop-collapsed below. */
+ * chat the full viewport width. The aside and resizer are display:none, so the
+ * remaining chat panel must be laid out in a single full-width grid column. */
 .workspace.sidebar-collapsed {
-  grid-template-columns: 0 0 minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
 }
 
 .context-panel {
@@ -1037,6 +1086,123 @@ body.is-resizing-context {
   margin-top: 4px;
 }
 
+.diagnostics-steps,
+.diagnostics-tools {
+  margin-top: 12px;
+  border-top: 1px solid #dce4e7;
+  padding-top: 10px;
+  color: #334650;
+  font-size: 13px;
+}
+
+.diagnostics-steps > strong,
+.diagnostics-tools > strong {
+  display: block;
+  margin-bottom: 8px;
+  color: #40515f;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.diagnostics-step-list,
+.diagnostics-tool-list {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding-left: 22px;
+}
+
+.diagnostics-step,
+.diagnostics-tool {
+  padding-left: 2px;
+}
+
+.diagnostics-detail {
+  overflow: hidden;
+  border: 1px solid #cfdadf;
+  border-radius: 8px;
+  background: #f8fafb;
+}
+
+.diagnostics-detail > summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+  padding: 8px 10px;
+  color: #1f2d36;
+  cursor: pointer;
+  list-style: none;
+}
+
+.diagnostics-detail > summary::-webkit-details-marker {
+  display: none;
+}
+
+.diagnostics-detail > summary::before {
+  content: "▶";
+  flex: 0 0 auto;
+  color: #5f6d78;
+  font-size: 11px;
+}
+
+.diagnostics-detail[open] > summary::before {
+  content: "▼";
+}
+
+.diagnostics-step-name,
+.diagnostics-tool-name {
+  min-width: 0;
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+
+.diagnostics-step-summary,
+.diagnostics-tool-summary {
+  min-width: 0;
+  color: #5f6d78;
+  overflow-wrap: anywhere;
+}
+
+.diagnostics-detail-body {
+  display: grid;
+  gap: 10px;
+  border-top: 1px solid #dce4e7;
+  padding: 10px;
+  background: #ffffff;
+}
+
+.diagnostics-tool-section {
+  display: grid;
+  gap: 6px;
+}
+
+.diagnostics-section-label {
+  color: #657584;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.diagnostics-payload,
+.diagnostics-tool-reasoning {
+  margin: 0;
+  max-width: 100%;
+  overflow: auto;
+  border: 1px solid #dce4e7;
+  border-radius: 6px;
+  padding: 8px 10px;
+  background: #f5f8f9;
+  color: #1f2d36;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.45;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
 /* Issue #153: formalization view — Subject-Verb-Object tuple rendering for
    the `formalize` and `formalize_resolved` diagnostics steps. The raw prompt
    is shown on the left with an arrow → to the canonical tuple, then the SVO
@@ -1049,7 +1215,7 @@ body.is-resizing-context {
   color: #2c3a44;
   background: #f5f8f9;
   border: 1px solid #cfdadf;
-  border-radius: 8px;
+  border-radius: 6px;
   padding: 10px 12px;
 }
 
@@ -1421,23 +1587,16 @@ textarea:disabled {
   }
 }
 
-@media (max-width: 1100px) {
-  .topbar {
-    gap: 10px;
-  }
-
+/* Issue #153: desktop overflow first keeps the canonical controls visible and
+ * switches action labels to icon-only before any button can be clipped. The
+ * mobile drawer carries the full action list once the topbar gets tight enough
+ * that lower-priority actions have to leave the row. */
+@media (max-width: 1500px) {
   .topbar-actions {
     gap: 8px;
   }
 
-  /* Issue #94: switch to icon-only action buttons before labels have to wrap
-   * or force the topbar onto multiple rows. */
   .topbar-actions .btn-label {
-    display: none;
-  }
-
-  .demo-status,
-  .memory-status {
     display: none;
   }
 
@@ -1452,24 +1611,14 @@ textarea:disabled {
   }
 }
 
-/* Issue #153: priority-based topbar overflow. Buttons drop into the drawer in
- * descending data-menu-priority order, while Bug reporting (1), Diagnostics
- * (2) and Demo (3) remain in the topbar until the very narrowest viewports.
- * Status indicators and dynamic memory feedback (priority 7) drop first; then
- * Export/Import memory (6); Source code (5); Chat/Agent toggle (4). The full
- * action list is always reachable through the hamburger drawer (which uses
- * .drawer-menu-section, fed from the same React state). */
-@media (max-width: 720px) {
-  .topbar-actions [data-menu-priority="5"],
-  .topbar-actions [data-menu-priority="6"],
-  .topbar-actions [data-menu-priority="7"] {
-    display: none !important;
+@media (max-width: 1100px) {
+  .topbar {
+    gap: 10px;
   }
-}
 
-@media (max-width: 560px) {
-  .topbar-actions [data-menu-priority="4"] {
-    display: none !important;
+  .demo-status,
+  .memory-status {
+    display: none;
   }
 }
 
@@ -1502,7 +1651,11 @@ textarea:disabled {
     overflow: hidden;
   }
 
-  .demo-status {
+  .demo-status,
+  .topbar-actions [data-menu-priority="4"],
+  .topbar-actions [data-menu-priority="5"],
+  .topbar-actions [data-menu-priority="6"],
+  .topbar-actions [data-menu-priority="7"] {
     display: none;
   }
 
