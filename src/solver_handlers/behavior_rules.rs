@@ -277,6 +277,10 @@ fn is_behavior_rules_list(normalized: &str) -> bool {
         || normalized.contains("список правил поведения")
         || normalized.contains("покажи правила поведения")
         || normalized.contains("какие правила поведения")
+        || normalized.contains("व्यवहार के नियम")
+        || normalized.contains("व्यवहार नियम सूचीबद्ध करें")
+        || normalized.contains("行为规则")
+        || normalized.contains("列出行为规则")
 }
 
 fn is_self_fact_query(normalized: &str) -> bool {
@@ -286,6 +290,10 @@ fn is_self_fact_query(normalized: &str) -> bool {
         || normalized.contains("list all facts you know about yourself")
         || normalized.contains("какие факты ты знаешь о себе")
         || normalized.contains("факты о себе")
+        || normalized.contains("अपने बारे में तथ्य")
+        || normalized.contains("स्वयं के बारे में तथ्य")
+        || normalized.contains("关于你自己的事实")
+        || normalized.contains("自我事实")
 }
 
 fn detail_query(prompt: &str) -> Option<String> {

@@ -173,6 +173,34 @@ fn behavior_rule_detail_can_be_read_in_russian() {
 }
 
 #[test]
+fn self_facts_query_works_for_hindi_speakers() {
+    let response = answer("अपने बारे में तथ्य सूचीबद्ध करें");
+    assert_eq!(response.intent, "self_facts");
+    assert!(response.answer.contains("self_fact_model"));
+}
+
+#[test]
+fn self_facts_query_works_for_chinese_speakers() {
+    let response = answer("列出关于你自己的事实");
+    assert_eq!(response.intent, "self_facts");
+    assert!(response.answer.contains("self_fact_model"));
+}
+
+#[test]
+fn behavior_rules_list_works_for_hindi_speakers() {
+    let response = answer("व्यवहार के नियम सूचीबद्ध करें");
+    assert_eq!(response.intent, "behavior_rules_list");
+    assert!(response.answer.contains("rule_unknown"));
+}
+
+#[test]
+fn behavior_rules_list_works_for_chinese_speakers() {
+    let response = answer("列出行为规则");
+    assert_eq!(response.intent, "behavior_rules_list");
+    assert!(response.answer.contains("rule_unknown"));
+}
+
+#[test]
 fn behavior_rule_can_be_taught_with_russian_phrasing() {
     let solver = UniversalSolver::default();
     let update = solver
