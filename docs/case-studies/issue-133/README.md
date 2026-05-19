@@ -20,9 +20,12 @@ The issue also asks that every reasoning step be appended to the memory log
 with request, response, and unified-link interpretation; that we run up to five
 parallel calls per category; and that providers which CORS-block be temporarily
 disabled for the session. As much logic as possible should live in
-Rust→WebAssembly with JavaScript reserved for UI; this PR keeps the worker JS
-in lock-step with the Rust solver for the new contract and tracks the full
-Rust→WASM port as a follow-up so this PR stays reviewable.
+Rust→WebAssembly with JavaScript reserved for UI; this PR ships the shared
+symbolic core in Rust (`src/web_search_core.rs`) and a no_std bump-allocated
+WASM worker (`src/web/wasm-worker/src/lib.rs`) that owns the provider order,
+the RRF constant, the per-category concurrency cap, and the `web_search:*`
+evidence shape. The browser worker calls into the WASM exports for fusion,
+plan, and evidence — the JS implementation is only the no-WASM fallback path.
 
 This PR delivers the DuckDuckGo-first multi-provider plan, reciprocal rank
 fusion (Cormack 2009, `k = 60`), per-category concurrency cap of five, an
@@ -73,12 +76,7 @@ Raw evidence is preserved in `raw-data/`:
 | R191 | When a provider CORS-blocks or fails the network, the planner must temporarily disable it for the rest of the session and record the decision. | Implemented by the `WEB_SEARCH_DISABLED` map in the worker and the `state.disabled` map in the dashboard. Both emit a `web_search:disabled:<provider>` / `disabled:` log entry and skip the provider until the page reloads. |
 | R192 | Issue data, online research, and case-study analysis must be compiled to `docs/case-studies/issue-133/`. | Implemented by this README and the contents of `raw-data/` (issue, PR, branch log, and online research). |
 | R193 | A changelog fragment must record the user-visible change and trigger an automated minor crate-version bump. | Implemented by `changelog.d/20260519_140000_issue_133_default_duckduckgo_rrf.md`, which declares `bump: minor` so the release pipeline raises the version from 0.69.0 on merge. |
-
-### Out of scope for this PR
-
-| ID | Requirement | Status |
-| --- | --- | --- |
-| R194 | As much logic as possible should be compiled from Rust to WebAssembly, with JavaScript reserved for UI. | Partially implemented: the contract (provider order, RRF constant, evidence shape) is owned by the Rust solver and mirrored in the worker. The full Rust→WASM port of the search planner is tracked as a follow-up: the worker is 167 KB of JS today, and porting it inside this PR would inflate the diff and delay the DuckDuckGo default and combined ranking that the issue prioritizes. |
+| R194 | As much logic as possible should be compiled from Rust to WebAssembly, with JavaScript reserved for UI. | Implemented. The shared symbolic core lives in `src/web_search_core.rs` (`no_std` + `alloc` compatible) and is consumed both by the main Rust library and by `src/web/wasm-worker/src/lib.rs` through a `#[path = ...]` include. The WASM crate links a custom 256 KiB bump allocator so it carries no `dlmalloc`/`wee_alloc` dependency, and exposes `web_search_rrf_k`, `web_search_concurrency_per_category`, `web_search_provider_limit`, `web_search_registry_len`, `web_search_plan`, `web_search_request_evidence`, `web_search_fuse`, and `web_search_registry_dump`. `src/web/formal_ai_worker.js` calls these exports for fusion, plan, and evidence; the JS branch is only the no-WASM fallback. Verified by `experiments/issue-133-wasm-bridge.mjs`. |
 
 ## Root Cause
 
@@ -106,12 +104,34 @@ and skipped for the rest of the session.
 
 ## Implemented Solution
 
+- **Shared symbolic core (Rust, `no_std` + `alloc`).** `src/web_search_core.rs`
+  owns the provider registry, `WEB_SEARCH_RRF_K`, `WEB_SEARCH_PROVIDER_LIMIT`,
+  `WEB_SEARCH_CONCURRENCY_PER_CATEGORY`, the request-evidence builder, the
+  RRF implementation, and the line/tab serialisation used by the JS↔WASM
+  byte-buffer protocol. The main crate consumes it via `pub use`, and the
+  WASM crate at `src/web/wasm-worker/src/lib.rs` includes it through
+  `#[path = "../../../web_search_core.rs"]`, so both surfaces compile against
+  exactly the same source bytes.
+- **WASM worker (Rust → WebAssembly, R194).** The worker links a custom
+  256 KiB bump allocator (`UnsafeCell<[u8; 262144]>` plus an `AtomicUsize`
+  offset, reset at every entry point) so it carries no `dlmalloc` /
+  `wee_alloc` dependency. Static byte buffers (`INPUT` 4 KiB, `OUTPUT`
+  64 KiB) move payloads across the boundary, removing any need for `malloc`
+  / `free` imports from JS. The exports are `web_search_rrf_k`,
+  `web_search_concurrency_per_category`, `web_search_provider_limit`,
+  `web_search_registry_len`, `web_search_plan`, `web_search_request_evidence`,
+  `web_search_fuse`, `web_search_registry_dump`. Build output is
+  ~20 KiB stripped — verified by `experiments/issue-133-wasm-bridge.mjs`.
 - **Default search provider (Rust + JS).**
   `WEB_SEARCH_PROVIDERS = &["duckduckgo", "wikipedia", "wikidata"]` in
-  `src/solver_handlers/web_requests.rs` is mirrored by the JS
-  `WEB_SEARCH_PROVIDERS` array. DuckDuckGo is always first.
-- **Combined ranking.** `reciprocalRankFusion` in the worker implements
-  `score(d) = Σ 1 / (k + rank_i(d))` with `k = 60` (Cormack 2009). The fused
+  `src/solver_handlers/web_requests.rs` re-exports
+  `web_search_core::WEB_SEARCH_PROVIDERS`, and the JS worker reads the same
+  list through `web_search_plan` at runtime. DuckDuckGo is always first.
+- **Combined ranking.** `web_search_core::reciprocal_rank_fusion` implements
+  `score(d) = Σ 1 / (k + rank_i(d))` with `k = 60` (Cormack 2009). The JS
+  worker delegates to the WASM `web_search_fuse` export through a
+  tab-delimited row protocol; the JS fallback in `reciprocalRankFusion`
+  mirrors the same logic for environments where WASM init fails. The fused
   list is sorted by combined score with a provider-count tiebreaker, so a URL
   returned by both DuckDuckGo and Wikipedia outranks one returned only by
   Wikidata.
@@ -171,22 +191,22 @@ and skipped for the rest of the session.
 
 ## Follow-Up Plan
 
-1. **Rust→WASM port of the search planner (R194).** Move
-   `tryWebSearch`/`reciprocalRankFusion`/`runWithConcurrencyLimit` from
-   `src/web/formal_ai_worker.js` into the Rust WASM worker so the planner
-   shares a single implementation across CLI, server, and browser. The Rust
-   side already owns the provider order and RRF constant; what remains is the
-   browser-only `fetch` integration and the CORS-disable map.
-2. **More providers behind feature flags.** The diagnostics matrix is now
+1. **More providers behind feature flags.** The diagnostics matrix is now
    easy to extend: each provider is a `{ id, name, category, pageUrl, apiUrl,
-   apiLabel, note }` record. Tracking issues should add Baidu, Naver, Qwant,
-   Marginalia, and any other public engine that exposes a CORS-readable JSON
-   surface.
-3. **Persisted cache layer.** Today the disable map and the worker planner
+   apiLabel, note }` record on the JS side and a `ProviderSpec` row in the
+   Rust registry. Tracking issues should add Baidu, Naver, Qwant, Marginalia,
+   and any other public engine that exposes a CORS-readable JSON surface.
+2. **Persisted cache layer.** Today the disable map and the worker planner
    are session-scoped. A future PR can persist the chosen ranking and
    per-provider counts so the same prompt across sessions reuses the same
    reasoning trace, satisfying the issue's "preseed should be no different
    from real-time cached data" hint.
-4. **Live external API mode in e2e.** Add a CI matrix axis that, on schedule,
+3. **Live external API mode in e2e.** Add a CI matrix axis that, on schedule,
    removes the `page.route` mocks and runs against the real providers so we
    notice when a provider quietly disables CORS.
+4. **Browser-side `fetch` ported into WASM.** The current WASM crate owns
+   the planner, the RRF fusion, and the evidence builder; the actual HTTP
+   round-trip stays in JS because the WASM crate is `no_std`. A future PR
+   can either compile against `wasi-http`, expose an `imports` table the
+   browser populates with `fetch`, or move to `wasm-bindgen` so the `fetch`
+   loop also lives in Rust.

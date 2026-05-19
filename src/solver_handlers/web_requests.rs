@@ -3,6 +3,10 @@
 use crate::engine::{normalize_prompt, SymbolicAnswer};
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
+use crate::web_search_core::{
+    WEB_SEARCH_PROVIDERS as CORE_WEB_SEARCH_PROVIDERS,
+    WEB_SEARCH_RRF_K as CORE_WEB_SEARCH_RRF_K,
+};
 
 use super::finalize_simple;
 
@@ -67,19 +71,17 @@ pub fn try_url_navigate(
 }
 
 /// Reciprocal Rank Fusion constant used to combine the top-10 results returned
-/// by each search provider. `k = 60` is the value Cormack, Clarke, and
-/// Buettcher used in the 2009 TREC submissions where RRF was introduced.
+/// by each search provider. Re-exported from `crate::web_search_core` so the
+/// CLI, server, browser worker, and the Rust→WASM port all share one value.
 ///
 /// Source: <https://plg.uwaterloo.ca/~gvcormac/cormacksigir09-rrf.pdf>
-pub const WEB_SEARCH_RRF_K: u32 = 60;
+pub const WEB_SEARCH_RRF_K: u32 = CORE_WEB_SEARCH_RRF_K;
 
 /// Provider order used by the browser worker and by the offline Rust solver
-/// when describing the multi-engine plan for `web_search`. `DuckDuckGo` is the
-/// default because it exposes a CORS-readable Instant-Answer endpoint and is
-/// keyless. Wikipedia and Wikidata round out the free, CORS-readable knowledge
-/// providers that never require a token. Issue #133 makes this list the
-/// shared contract between CLI/server/browser surfaces.
-pub const WEB_SEARCH_PROVIDERS: &[&str] = &["duckduckgo", "wikipedia", "wikidata"];
+/// when describing the multi-engine plan for `web_search`. Sourced from
+/// `crate::web_search_core::WEB_SEARCH_PROVIDERS` so the WASM worker and the
+/// JS planner cannot drift apart (issue #133).
+pub const WEB_SEARCH_PROVIDERS: &[&str] = CORE_WEB_SEARCH_PROVIDERS;
 
 pub fn try_web_search(
     prompt: &str,

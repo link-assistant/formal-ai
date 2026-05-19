@@ -1,4 +1,22 @@
 #![no_std]
+#![allow(clippy::missing_safety_doc)]
+
+extern crate alloc;
+
+use alloc::string::String;
+use alloc::vec::Vec;
+use core::alloc::{GlobalAlloc, Layout};
+use core::cell::UnsafeCell;
+use core::sync::atomic::{AtomicUsize, Ordering};
+
+#[path = "../../../web_search_core.rs"]
+mod web_search_core;
+
+use web_search_core::{
+    build_request_evidence, default_search_plan_ids, parse_rrf_input, reciprocal_rank_fusion,
+    serialize_rrf_output, WEB_SEARCH_CONCURRENCY_PER_CATEGORY, WEB_SEARCH_PROVIDER_LIMIT,
+    WEB_SEARCH_PROVIDER_REGISTRY, WEB_SEARCH_RRF_K,
+};
 
 const GREETING: u32 = 1;
 const RUST_HELLO_WORLD: u32 = 2;
@@ -10,12 +28,91 @@ const C_HELLO_WORLD: u32 = 7;
 const IDENTITY: u32 = 8;
 const UNKNOWN: u32 = 0;
 const INPUT_CAPACITY: usize = 4096;
+const OUTPUT_CAPACITY: usize = 65_536;
 
+// Static byte buffers used by the JS↔WASM byte-buffer protocol.
+//
+// `INPUT` holds the prompt for `classify` and the tab-delimited RRF rows for
+// `web_search_fuse`. `OUTPUT` receives the evidence / plan / fused payload
+// the JS side decodes into UTF-8.
 static mut INPUT: [u8; INPUT_CAPACITY] = [0; INPUT_CAPACITY];
+static mut OUTPUT: [u8; OUTPUT_CAPACITY] = [0; OUTPUT_CAPACITY];
+
+// === Bump allocator ===
+//
+// Issue #133 wants the symbolic core in Rust→WASM. The web_search_core module
+// uses `alloc::String` and `alloc::Vec`, so the no_std worker needs a global
+// allocator. We use a single 256 KiB heap with an `AtomicUsize` offset: every
+// WASM entry point calls `reset_bump()` first so the heap rolls back between
+// calls and no per-allocation deallocation logic is required.
+const BUMP_HEAP_SIZE: usize = 262_144;
+
+struct BumpHeap {
+    buffer: UnsafeCell<[u8; BUMP_HEAP_SIZE]>,
+}
+
+unsafe impl Sync for BumpHeap {}
+
+static BUMP_HEAP: BumpHeap = BumpHeap {
+    buffer: UnsafeCell::new([0; BUMP_HEAP_SIZE]),
+};
+static BUMP_OFFSET: AtomicUsize = AtomicUsize::new(0);
+
+struct BumpAllocator;
+
+unsafe impl GlobalAlloc for BumpAllocator {
+    unsafe fn alloc(&self, layout: Layout) -> *mut u8 {
+        let align = layout.align().max(1);
+        let size = layout.size();
+        let base = BUMP_HEAP.buffer.get() as usize;
+        loop {
+            let current = BUMP_OFFSET.load(Ordering::Relaxed);
+            let aligned_addr = (base + current + align - 1) & !(align - 1);
+            let next_offset = aligned_addr - base + size;
+            if next_offset > BUMP_HEAP_SIZE {
+                return core::ptr::null_mut();
+            }
+            if BUMP_OFFSET
+                .compare_exchange(current, next_offset, Ordering::AcqRel, Ordering::Relaxed)
+                .is_ok()
+            {
+                return aligned_addr as *mut u8;
+            }
+        }
+    }
+
+    unsafe fn dealloc(&self, _ptr: *mut u8, _layout: Layout) {
+        // Bump allocator — `reset_bump()` reclaims everything before each call.
+    }
+}
+
+#[global_allocator]
+static ALLOCATOR: BumpAllocator = BumpAllocator;
+
+fn reset_bump() {
+    BUMP_OFFSET.store(0, Ordering::Release);
+}
+
+// === Classic prompt classifier (pre-existing API) ===
 
 #[no_mangle]
 pub extern "C" fn input_ptr() -> *mut u8 {
     core::ptr::addr_of_mut!(INPUT).cast::<u8>()
+}
+
+#[no_mangle]
+pub extern "C" fn output_ptr() -> *mut u8 {
+    core::ptr::addr_of_mut!(OUTPUT).cast::<u8>()
+}
+
+#[no_mangle]
+pub extern "C" fn input_capacity() -> usize {
+    INPUT_CAPACITY
+}
+
+#[no_mangle]
+pub extern "C" fn output_capacity() -> usize {
+    OUTPUT_CAPACITY
 }
 
 #[no_mangle]
@@ -139,6 +236,137 @@ const fn min(left: usize, right: usize) -> usize {
     } else {
         right
     }
+}
+
+// === Web search core exports ===
+//
+// Every export consumes/produces UTF-8 bytes via the `INPUT` and `OUTPUT`
+// buffers, returning the number of bytes written to `OUTPUT`. JS decodes the
+// bytes with `TextDecoder` and parses the line/tab-delimited shape produced by
+// `web_search_core::*` helpers. This keeps the WASM↔JS boundary free of any
+// allocator imports (`malloc`, `free`, `dlmalloc`, …).
+
+#[no_mangle]
+pub extern "C" fn web_search_rrf_k() -> u32 {
+    WEB_SEARCH_RRF_K
+}
+
+#[no_mangle]
+pub extern "C" fn web_search_concurrency_per_category() -> u32 {
+    WEB_SEARCH_CONCURRENCY_PER_CATEGORY
+}
+
+#[no_mangle]
+pub extern "C" fn web_search_provider_limit() -> u32 {
+    WEB_SEARCH_PROVIDER_LIMIT
+}
+
+#[no_mangle]
+pub extern "C" fn web_search_registry_len() -> u32 {
+    WEB_SEARCH_PROVIDER_REGISTRY.len() as u32
+}
+
+/// Write the canonical default plan ids to `OUTPUT`, one per line.
+///
+/// Returns the number of bytes written.
+#[no_mangle]
+pub extern "C" fn web_search_plan() -> usize {
+    reset_bump();
+    let ids = default_search_plan_ids();
+    let mut buffer = String::new();
+    for (index, id) in ids.iter().enumerate() {
+        if index > 0 {
+            buffer.push('\n');
+        }
+        buffer.push_str(id);
+    }
+    write_output(buffer.as_bytes())
+}
+
+/// Write the multi-line `web_search:*` evidence prefix for a given
+/// (query, language) pair to `OUTPUT`.
+///
+/// `INPUT` must contain `query\nlanguage` (the language line may be empty).
+#[no_mangle]
+pub extern "C" fn web_search_request_evidence(input_length: usize) -> usize {
+    reset_bump();
+    let bytes = unsafe {
+        core::slice::from_raw_parts(
+            core::ptr::addr_of!(INPUT).cast::<u8>(),
+            min(input_length, INPUT_CAPACITY),
+        )
+    };
+    let Ok(text) = core::str::from_utf8(bytes) else {
+        return 0;
+    };
+    let mut parts = text.splitn(2, '\n');
+    let query = parts.next().unwrap_or("");
+    let language = parts.next().unwrap_or("");
+    let lines = build_request_evidence(query, language);
+    let mut buffer = String::new();
+    for (index, line) in lines.iter().enumerate() {
+        if index > 0 {
+            buffer.push('\n');
+        }
+        buffer.push_str(line);
+    }
+    write_output(buffer.as_bytes())
+}
+
+/// Fuse a flat list of `provider_id\trank\turl\ttitle\texcerpt` rows
+/// (one per `INPUT` line) into the RRF-ranked `OUTPUT` block produced by
+/// `web_search_core::serialize_rrf_output`.
+#[no_mangle]
+pub extern "C" fn web_search_fuse(input_length: usize) -> usize {
+    reset_bump();
+    let bytes = unsafe {
+        core::slice::from_raw_parts(
+            core::ptr::addr_of!(INPUT).cast::<u8>(),
+            min(input_length, INPUT_CAPACITY),
+        )
+    };
+    let Ok(text) = core::str::from_utf8(bytes) else {
+        return 0;
+    };
+    let entries = parse_rrf_input(text);
+    let fused = reciprocal_rank_fusion(&entries, WEB_SEARCH_RRF_K);
+    let serialized = serialize_rrf_output(&fused);
+    write_output(serialized.as_bytes())
+}
+
+/// Write the registry as `id\tlabel\tcategory\tcors_readable\tdefault\n…`.
+#[no_mangle]
+pub extern "C" fn web_search_registry_dump() -> usize {
+    reset_bump();
+    let mut buffer = String::new();
+    for (index, spec) in WEB_SEARCH_PROVIDER_REGISTRY.iter().enumerate() {
+        if index > 0 {
+            buffer.push('\n');
+        }
+        buffer.push_str(spec.id);
+        buffer.push('\t');
+        buffer.push_str(spec.label);
+        buffer.push('\t');
+        buffer.push_str(spec.category.slug());
+        buffer.push('\t');
+        buffer.push(if spec.cors_readable { '1' } else { '0' });
+        buffer.push('\t');
+        buffer.push(if spec.default_for_category { '1' } else { '0' });
+    }
+    write_output(buffer.as_bytes())
+}
+
+fn write_output(bytes: &[u8]) -> usize {
+    let written = min(bytes.len(), OUTPUT_CAPACITY);
+    unsafe {
+        let dst = core::ptr::addr_of_mut!(OUTPUT).cast::<u8>();
+        core::ptr::copy_nonoverlapping(bytes.as_ptr(), dst, written);
+    }
+    // Silence the "unused" warning on the Vec import — it is exercised
+    // transitively by the alloc paths in web_search_core but the worker code
+    // itself never names `Vec`.
+    let _ = core::mem::size_of::<Vec<u8>>();
+    written
 }
 
 #[panic_handler]

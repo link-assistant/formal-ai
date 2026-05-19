@@ -4590,16 +4590,124 @@ async function tryUrlNavigate(prompt) {
 // Reciprocal Rank Fusion constant — Cormack et al. 2009 use k = 60 and we
 // match that so combined ranks stay comparable across the CLI, server, and
 // browser surfaces (issue #133).
-const WEB_SEARCH_RRF_K = 60;
+//
+// The authoritative value lives in `web_search_core::WEB_SEARCH_RRF_K` and is
+// fetched from the WASM worker once it boots; the JS constants below are
+// pre-WASM fallbacks used during init() and on browsers where the worker
+// could not instantiate. The Rust→WASM port is the source of truth (R194).
+const WEB_SEARCH_RRF_K_FALLBACK = 60;
+const WEB_SEARCH_CONCURRENCY_FALLBACK = 5;
+const WEB_SEARCH_PROVIDER_LIMIT_FALLBACK = 10;
 
-// Maximum concurrent providers per search category. Modern browsers cap
-// per-origin sockets near six, so five keeps a slot free for the rest of the
-// page (issue #133). Same cap is reused by the connectivity dashboard.
-const WEB_SEARCH_CONCURRENCY = 5;
+const WEB_SEARCH_TEXT_ENCODER = new TextEncoder();
+const WEB_SEARCH_TEXT_DECODER = new TextDecoder();
 
-// Per-provider top-N — the combined ranker takes ten results per source and
-// fuses them so URLs returned by more than one provider bubble up.
-const WEB_SEARCH_PROVIDER_LIMIT = 10;
+function webSearchRrfK() {
+  if (wasm && typeof wasm.web_search_rrf_k === "function") {
+    return wasm.web_search_rrf_k() >>> 0;
+  }
+  return WEB_SEARCH_RRF_K_FALLBACK;
+}
+
+function webSearchConcurrency() {
+  if (wasm && typeof wasm.web_search_concurrency_per_category === "function") {
+    return wasm.web_search_concurrency_per_category() >>> 0;
+  }
+  return WEB_SEARCH_CONCURRENCY_FALLBACK;
+}
+
+function webSearchProviderLimit() {
+  if (wasm && typeof wasm.web_search_provider_limit === "function") {
+    return wasm.web_search_provider_limit() >>> 0;
+  }
+  return WEB_SEARCH_PROVIDER_LIMIT_FALLBACK;
+}
+
+function wasmWriteInput(text) {
+  if (!wasm || typeof wasm.input_ptr !== "function") return -1;
+  const bytes = WEB_SEARCH_TEXT_ENCODER.encode(text);
+  const capacity =
+    typeof wasm.input_capacity === "function" ? wasm.input_capacity() : bytes.length;
+  if (bytes.length > capacity) return -1;
+  const view = new Uint8Array(wasm.memory.buffer, wasm.input_ptr(), bytes.length);
+  view.set(bytes);
+  return bytes.length;
+}
+
+function wasmReadOutput(length) {
+  if (!wasm || typeof wasm.output_ptr !== "function" || length <= 0) return "";
+  const view = new Uint8Array(wasm.memory.buffer, wasm.output_ptr(), length);
+  return WEB_SEARCH_TEXT_DECODER.decode(view);
+}
+
+// Delegates to `web_search_request_evidence` when the WASM core is loaded;
+// otherwise returns null so the caller can fall back to the JS list. The
+// Rust side owns the canonical evidence shape (issue #133 R194).
+function wasmWebSearchRequestEvidence(query, language) {
+  if (!wasm || typeof wasm.web_search_request_evidence !== "function") return null;
+  const payload = `${String(query || "")}\n${String(language || "")}`;
+  const length = wasmWriteInput(payload);
+  if (length < 0) return null;
+  const written = wasm.web_search_request_evidence(length) >>> 0;
+  if (written === 0) return null;
+  const text = wasmReadOutput(written);
+  return text ? text.split("\n") : null;
+}
+
+// Delegates to `web_search_fuse`. Returns the fused entries array or null when
+// WASM is unavailable / the payload exceeds the static INPUT buffer.
+function wasmReciprocalRankFusion(perProviderResults) {
+  if (!wasm || typeof wasm.web_search_fuse !== "function") return null;
+  const rows = [];
+  for (const provider of perProviderResults) {
+    const id = String(provider.id || "");
+    const list = Array.isArray(provider.results) ? provider.results : [];
+    list.forEach((item, index) => {
+      if (!item || !item.url) return;
+      const rank = index + 1;
+      const title = String(item.title || item.url).replace(/[\t\n]/g, " ");
+      const excerpt = String(item.excerpt || "").replace(/[\t\n]/g, " ");
+      const url = String(item.url).replace(/[\t\n]/g, " ");
+      rows.push(`${id}\t${rank}\t${url}\t${title}\t${excerpt}`);
+    });
+  }
+  if (rows.length === 0) return [];
+  const length = wasmWriteInput(rows.join("\n"));
+  if (length < 0) return null;
+  const written = wasm.web_search_fuse(length) >>> 0;
+  if (written === 0) return [];
+  const text = wasmReadOutput(written);
+  if (!text) return [];
+  return parseFusedOutput(text);
+}
+
+// Parse the `serialize_rrf_output` format: one entry per line, fields
+// separated by tabs, providers serialised as `id#rank` joined by `;`. The
+// shape matches `web_search_core::serialize_rrf_output`.
+function parseFusedOutput(text) {
+  return text
+    .split("\n")
+    .filter((line) => line.length > 0)
+    .map((line) => {
+      const fields = line.split("\t");
+      const url = fields[0] || "";
+      const title = fields[1] || url;
+      const excerpt = fields[2] || "";
+      const score = Number.parseFloat(fields[3] || "0") || 0;
+      const providerSpecs = (fields[4] || "")
+        .split("+")
+        .filter((part) => part.length > 0)
+        .map((part) => {
+          const hash = part.lastIndexOf("#");
+          if (hash < 0) return { id: part, rank: 0 };
+          return {
+            id: part.slice(0, hash),
+            rank: Number.parseInt(part.slice(hash + 1), 10) || 0,
+          };
+        });
+      return { url, title, excerpt, score, providers: providerSpecs };
+    });
+}
 
 // Session-scoped CORS disable list. When a provider fetch throws a CORS or
 // network error we record the timestamp so the planner skips it for the rest
@@ -4761,9 +4869,15 @@ async function runWithConcurrencyLimit(tasks, limit) {
 }
 
 function reciprocalRankFusion(perProviderResults, k) {
+  // R194: the Rust/WASM core owns the fusion logic so the offline trace and
+  // the browser worker agree to the last byte. We try WASM first and only
+  // fall back to the JS implementation when the worker booted in
+  // `js fallback` mode (e.g. WASM disabled in the browser).
+  const wasmFused = wasmReciprocalRankFusion(perProviderResults);
+  if (wasmFused !== null) {
+    return wasmFused;
+  }
   // Cormack, Clarke, Buettcher 2009: score(d) = Σ 1 / (k + rank_i(d)).
-  // Each provider contributes its ranked list; we sum reciprocal ranks per
-  // unique URL and keep the title/excerpt from the highest-ranked appearance.
   const fused = new Map();
   for (const provider of perProviderResults) {
     const list = Array.isArray(provider.results) ? provider.results : [];
@@ -4790,7 +4904,6 @@ function reciprocalRankFusion(perProviderResults, k) {
   }
   return Array.from(fused.values()).sort((a, b) => {
     if (b.score !== a.score) return b.score - a.score;
-    // Tie-break: prefer the entry that appeared in more providers.
     return b.providers.length - a.providers.length;
   });
 }
@@ -4800,21 +4913,38 @@ async function tryWebSearch(prompt, language) {
   const query = extractWebSearchQuery(prompt, normalized);
   if (!query) return null;
 
-  const evidence = [`web_search:request:${query}`];
+  const rrfK = webSearchRrfK();
+  const concurrency = webSearchConcurrency();
+  const providerLimit = webSearchProviderLimit();
 
-  // Plan: every provider that is not session-disabled by a previous CORS
-  // failure. DuckDuckGo is first because it is the default in the issue.
+  // R194: the Rust core (`web_search_core::build_request_evidence`) is the
+  // source of truth for the `web_search:*` evidence prefix. We prepend its
+  // output and fall back to the inline list when the WASM worker booted in
+  // `js fallback` mode.
+  const evidence = [];
+  const wasmEvidence = wasmWebSearchRequestEvidence(query, language || "");
+  if (Array.isArray(wasmEvidence) && wasmEvidence.length > 0) {
+    for (const line of wasmEvidence) {
+      if (line) evidence.push(line);
+    }
+  } else {
+    evidence.push(`web_search:request:${query}`);
+    for (const provider of WEB_SEARCH_PROVIDERS) {
+      evidence.push(`web_search:provider:${provider.id}`);
+    }
+    evidence.push(`web_search:combined:rrf:k=${rrfK}`);
+  }
+
+  // Session-disabled providers are session state, not part of the canonical
+  // plan, so we annotate them on top of the WASM-derived prefix.
   const active = WEB_SEARCH_PROVIDERS.filter(
     (provider) => !webSearchIsDisabled(provider.id),
   );
   for (const provider of WEB_SEARCH_PROVIDERS) {
     if (webSearchIsDisabled(provider.id)) {
       evidence.push(`web_search:disabled:${provider.id}`);
-    } else {
-      evidence.push(`web_search:provider:${provider.id}`);
     }
   }
-  evidence.push(`web_search:combined:rrf:k=${WEB_SEARCH_RRF_K}`);
 
   if (active.length === 0) {
     return {
@@ -4827,10 +4957,10 @@ async function tryWebSearch(prompt, language) {
 
   const tasks = active.map((provider) => async () => {
     const startedAt = Date.now();
-    const outcome = await provider.run(query, language, WEB_SEARCH_PROVIDER_LIMIT);
+    const outcome = await provider.run(query, language, providerLimit);
     return Object.assign({ id: provider.id, label: provider.label, elapsedMs: Date.now() - startedAt }, outcome);
   });
-  const perProvider = await runWithConcurrencyLimit(tasks, WEB_SEARCH_CONCURRENCY);
+  const perProvider = await runWithConcurrencyLimit(tasks, concurrency);
 
   for (const provider of perProvider) {
     if (!provider.ok) {
@@ -4846,8 +4976,8 @@ async function tryWebSearch(prompt, language) {
     });
   }
 
-  const fused = reciprocalRankFusion(perProvider, WEB_SEARCH_RRF_K);
-  const top = fused.slice(0, WEB_SEARCH_PROVIDER_LIMIT);
+  const fused = reciprocalRankFusion(perProvider, rrfK);
+  const top = fused.slice(0, providerLimit);
   top.forEach((entry, index) => {
     evidence.push(`web_search:fused:${index + 1}:${entry.providers.map((p) => p.id).join("+")}:${entry.url}`);
   });
@@ -4862,7 +4992,7 @@ async function tryWebSearch(prompt, language) {
   }
 
   const lines = [
-    `Search results for \`${query}\` — top ${top.length} after reciprocal rank fusion (k = ${WEB_SEARCH_RRF_K}).`,
+    `Search results for \`${query}\` — top ${top.length} after reciprocal rank fusion (k = ${rrfK}).`,
     "",
     `Providers (default first): ${active.map((p) => p.id).join(", ")}.`,
     "",
