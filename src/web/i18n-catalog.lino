@@ -59,6 +59,11 @@ en
     author
       user "You"
     thinking "Thinking"
+    diagnosticsSteps "Reasoning steps"
+    diagnosticsTools "Tool calls"
+    toolInputs "Inputs"
+    toolOutputs "Outputs"
+    toolReasoning "Tool reasoning"
   fetch
     collapse "Collapse"
     expand "Expand"
@@ -201,6 +206,11 @@ ru
     author
       user "Вы"
     thinking "Мышление"
+    diagnosticsSteps "Шаги рассуждения"
+    diagnosticsTools "Вызовы инструментов"
+    toolInputs "Входные данные"
+    toolOutputs "Результаты"
+    toolReasoning "Внутренние шаги инструмента"
   fetch
     collapse "Свернуть"
     expand "Развернуть"
@@ -339,6 +349,11 @@ zh
     author
       user "你"
     thinking "思考"
+    diagnosticsSteps "推理步骤"
+    diagnosticsTools "工具调用"
+    toolInputs "输入"
+    toolOutputs "输出"
+    toolReasoning "工具内部推理"
   fetch
     collapse "折叠"
     expand "展开"
@@ -479,6 +494,11 @@ hi
     author
       user "आप"
     thinking "सोच"
+    diagnosticsSteps "तर्क के चरण"
+    diagnosticsTools "Tool calls"
+    toolInputs "Inputs"
+    toolOutputs "Outputs"
+    toolReasoning "Tool reasoning"
   fetch
     collapse "समेटें"
     expand "फैलाएं"

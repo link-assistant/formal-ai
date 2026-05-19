@@ -266,8 +266,22 @@ function definitionFusionByDefault(preferences) {
   return ["auto", "on", "true", "1", "merge", "fusion"].includes(normalized);
 }
 
+// Language detection and prompt normalization are owned by the Rust core
+// (`src/web_engine_core.rs`) and exposed to the worker through the WASM
+// exports `engine_detect_language` and `engine_normalize_prompt`. The JS
+// branches below are pre-WASM fallbacks used during init() and on browsers
+// that could not instantiate the worker — they must stay byte-for-byte
+// compatible with the Rust path so the offline trace and the live answer
+// agree (PR #134 feedback 4489651616).
 function detectLanguage(prompt) {
   const text = String(prompt || "");
+  const fromWasm = wasmDetectLanguage(text);
+  if (fromWasm !== null) {
+    if (fromWasm === "unknown") {
+      return AGENT_INFO.default_language || "en";
+    }
+    return fromWasm;
+  }
   for (const ch of text) {
     const code = ch.codePointAt(0);
     for (const rule of LANGUAGE_RULES) {
@@ -287,7 +301,10 @@ function detectLanguage(prompt) {
 // CONCEPTS is populated from `seed/concepts.lino` at init() time.
 
 function normalizePrompt(prompt) {
-  return String(prompt || "")
+  const text = String(prompt || "");
+  const fromWasm = wasmNormalizePrompt(text);
+  if (fromWasm !== null) return fromWasm;
+  return text
     .toLowerCase()
     .replace(/[^\p{L}\p{N}]+/gu, " ")
     .trim();
@@ -1642,9 +1659,21 @@ function tryArithmetic(prompt) {
   if (!expression) return null;
   try {
     const isEquation = expression.includes("=");
-    const formatted = isEquation
-      ? solveLinearEquation(expression)
-      : formatArithmeticResult(evaluateArithmetic(expression));
+    let formatted;
+    let backend = "js";
+    if (isEquation) {
+      formatted = solveLinearEquation(expression);
+    } else {
+      const wasmResult = wasmEvaluateArithmetic(expression);
+      if (wasmResult && wasmResult.ok) {
+        formatted = wasmResult.value;
+        backend = "wasm";
+      } else if (wasmResult && wasmResult.error) {
+        throw new Error(wasmResult.error);
+      } else {
+        formatted = formatArithmeticResult(evaluateArithmetic(expression));
+      }
+    }
     const content = isEquation
       ? `${expression.trim()} => ${formatted}`
       : `${expression.trim()} = ${formatted}`;
@@ -1652,7 +1681,10 @@ function tryArithmetic(prompt) {
       intent: "calculation",
       content: content,
       confidence: 1.0,
-      evidence: [`calculation:${content}`],
+      evidence: [
+        `calculation:${content}`,
+        `calculation_backend:${backend}`,
+      ],
     };
   } catch (error) {
     const message = String(error && error.message ? error.message : error);
@@ -4638,6 +4670,44 @@ function wasmReadOutput(length) {
   if (!wasm || typeof wasm.output_ptr !== "function" || length <= 0) return "";
   const view = new Uint8Array(wasm.memory.buffer, wasm.output_ptr(), length);
   return WEB_SEARCH_TEXT_DECODER.decode(view);
+}
+
+// Engine-core bridges (R194 follow-up). Each function returns a value when
+// the WASM core is available, or `null` so the caller can fall back to the
+// pure-JS branch. Keeping a JS fallback covers offline mode and old browsers
+// where `WebAssembly.instantiate` is unavailable, but the canonical answer
+// always comes from Rust when the worker booted successfully.
+function wasmNormalizePrompt(text) {
+  if (!wasm || typeof wasm.engine_normalize_prompt !== "function") return null;
+  const length = wasmWriteInput(String(text || ""));
+  if (length < 0) return null;
+  const written = wasm.engine_normalize_prompt(length) >>> 0;
+  return wasmReadOutput(written);
+}
+
+function wasmDetectLanguage(text) {
+  if (!wasm || typeof wasm.engine_detect_language !== "function") return null;
+  const length = wasmWriteInput(String(text || ""));
+  if (length < 0) return null;
+  const written = wasm.engine_detect_language(length) >>> 0;
+  const slug = wasmReadOutput(written);
+  return slug || null;
+}
+
+// Returns `{ ok: true, value }` on success, `{ ok: false, error }` on parse
+// or runtime failure (division by zero, overflow). `null` means the WASM core
+// is unavailable — the caller should fall back to the JS parser.
+function wasmEvaluateArithmetic(expression) {
+  if (!wasm || typeof wasm.engine_evaluate_arithmetic !== "function") return null;
+  const length = wasmWriteInput(String(expression || ""));
+  if (length < 0) return null;
+  const written = wasm.engine_evaluate_arithmetic(length) >>> 0;
+  if (written === 0) return null;
+  const text = wasmReadOutput(written);
+  if (text.startsWith("ERR:")) {
+    return { ok: false, error: text.slice(4) };
+  }
+  return { ok: true, value: text };
 }
 
 // Delegates to `web_search_request_evidence` when the WASM core is loaded;

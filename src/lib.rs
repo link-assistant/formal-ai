@@ -1,6 +1,6 @@
 extern crate alloc;
 
-pub(crate) mod arithmetic;
+pub mod arithmetic;
 pub(crate) mod calculation;
 pub(crate) mod concepts;
 pub mod engine;
@@ -20,6 +20,7 @@ pub(crate) mod solver_handlers_policy;
 pub(crate) mod solver_helpers;
 pub mod telegram;
 pub mod telegram_runtime;
+pub mod web_engine_core;
 pub mod web_search_core;
 
 pub use engine::{knowledge_links_notation, FormalAiEngine, SymbolicAnswer, DEFAULT_MODEL};
@@ -62,6 +63,10 @@ pub use telegram::{
 pub use telegram_runtime::{
     run_telegram_polling, run_telegram_polling_with_transport, run_telegram_webhook_server,
     CurlTelegramTransport, TelegramPollingRuntimeError, TelegramTransport,
+};
+pub use web_engine_core::{
+    detect_language as detect_prompt_language, evaluate_arithmetic_expression,
+    normalize_prompt as normalize_prompt_text, tokenize_prompt,
 };
 pub use web_search_core::{
     build_request_evidence as build_web_search_request_evidence, default_search_plan_ids,

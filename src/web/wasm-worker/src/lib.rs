@@ -9,9 +9,21 @@ use core::alloc::{GlobalAlloc, Layout};
 use core::cell::UnsafeCell;
 use core::sync::atomic::{AtomicUsize, Ordering};
 
+#[path = "../../../language.rs"]
+mod language;
+
+#[path = "../../../arithmetic.rs"]
+mod arithmetic;
+
+#[path = "../../../web_engine_core.rs"]
+mod web_engine_core;
+
 #[path = "../../../web_search_core.rs"]
 mod web_search_core;
 
+use web_engine_core::{
+    detect_language, evaluate_arithmetic_expression, normalize_prompt, Language,
+};
 use web_search_core::{
     build_request_evidence, default_search_plan_ids, parse_rrf_input, reciprocal_rank_fusion,
     serialize_rrf_output, WEB_SEARCH_CONCURRENCY_PER_CATEGORY, WEB_SEARCH_PROVIDER_LIMIT,
@@ -332,6 +344,84 @@ pub extern "C" fn web_search_fuse(input_length: usize) -> usize {
     let fused = reciprocal_rank_fusion(&entries, WEB_SEARCH_RRF_K);
     let serialized = serialize_rrf_output(&fused);
     write_output(serialized.as_bytes())
+}
+
+// === Engine-core exports (R194 deep port) ===
+//
+// `engine_normalize_prompt`, `engine_detect_language`, and
+// `engine_evaluate_arithmetic` are the canonical Rust implementations of the
+// non-UI primitives the JS worker used to own (`normalizePrompt`,
+// `detectLanguage`, `evaluateArithmetic`). The JS side now delegates to these
+// exports and only keeps a minimal fallback for the offline `js fallback`
+// mode. This eliminates the parallel logic the user flagged in PR feedback
+// 4489651616.
+
+/// Normalize a prompt to the same lowercase/whitespace-stripped form the JS
+/// worker used to produce. `INPUT` contains the raw prompt bytes; on return
+/// `OUTPUT` carries the normalized UTF-8 bytes.
+#[no_mangle]
+pub extern "C" fn engine_normalize_prompt(input_length: usize) -> usize {
+    reset_bump();
+    let bytes = unsafe {
+        core::slice::from_raw_parts(
+            core::ptr::addr_of!(INPUT).cast::<u8>(),
+            min(input_length, INPUT_CAPACITY),
+        )
+    };
+    let Ok(text) = core::str::from_utf8(bytes) else {
+        return 0;
+    };
+    let normalized = normalize_prompt(text);
+    write_output(normalized.as_bytes())
+}
+
+/// Detect the dominant language of the prompt held in `INPUT`. Writes a
+/// 2-letter slug (`en`, `ru`, `hi`, `zh`, or `unknown`) to `OUTPUT`.
+#[no_mangle]
+pub extern "C" fn engine_detect_language(input_length: usize) -> usize {
+    reset_bump();
+    let bytes = unsafe {
+        core::slice::from_raw_parts(
+            core::ptr::addr_of!(INPUT).cast::<u8>(),
+            min(input_length, INPUT_CAPACITY),
+        )
+    };
+    let text = core::str::from_utf8(bytes).unwrap_or("");
+    let slug: &'static str = match detect_language(text) {
+        Language::English => "en",
+        Language::Russian => "ru",
+        Language::Hindi => "hi",
+        Language::Chinese => "zh",
+        Language::Unknown => "unknown",
+    };
+    write_output(slug.as_bytes())
+}
+
+/// Evaluate an arithmetic expression. `INPUT` holds the raw expression bytes;
+/// on success `OUTPUT` carries the formatted decimal result. On failure the
+/// payload is `ERR:<reason>` so JS can render the failure in its native UI
+/// without duplicating the parser. Returns the number of bytes written.
+#[no_mangle]
+pub extern "C" fn engine_evaluate_arithmetic(input_length: usize) -> usize {
+    reset_bump();
+    let bytes = unsafe {
+        core::slice::from_raw_parts(
+            core::ptr::addr_of!(INPUT).cast::<u8>(),
+            min(input_length, INPUT_CAPACITY),
+        )
+    };
+    let Ok(text) = core::str::from_utf8(bytes) else {
+        return write_output(b"ERR:unparseable");
+    };
+    match evaluate_arithmetic_expression(text) {
+        Ok(value) => write_output(value.as_bytes()),
+        Err(message) => {
+            let mut buffer = String::with_capacity(message.len() + 4);
+            buffer.push_str("ERR:");
+            buffer.push_str(&message);
+            write_output(buffer.as_bytes())
+        }
+    }
 }
 
 /// Write the registry as `id\tlabel\tcategory\tcors_readable\tdefault\n…`.
