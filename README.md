@@ -22,6 +22,7 @@ cargo run -- chat --prompt "Write me hello world program in Rust" --format chat
 cargo run -- chat --prompt "What is 8% of $50?"
 cargo run -- chat --prompt "Посчитай 1000 рублей в долларах"
 cargo run -- dataset
+rust-script scripts/mine-hive-mind-dataset.rs --plan
 cargo run -- serve --host 127.0.0.1 --port 8080
 TELEGRAM_BOT_TOKEN=123:abc cargo run -- telegram                       # long polling (default)
 cargo run -- telegram --mode webhook --host 127.0.0.1 --port 8080      # webhook server (opt-in)
@@ -148,6 +149,21 @@ rust-script scripts/check-file-size.rs
 ```
 
 The generator writes source, greeting, hello-world, and demo-dialog records. `.lino` files are kept below 1500 lines and validated by the unit tests.
+
+## Hive Mind Dataset Mining
+
+Issue #115 adds an operator script for mining GitHub evidence from
+`link-assistant/hive-mind` pull requests, issues, reviews, diffs, and Actions
+logs into a case-study dataset. Keep this outside the seed tool registry; it is
+a repository maintenance command, not an in-agent reasoning tool.
+
+```bash
+rust-script scripts/mine-hive-mind-dataset.rs --plan
+rust-script scripts/mine-hive-mind-dataset.rs --collect
+```
+
+The script wraps `formal-ai github-logs plan|collect` with the focused Hive
+Mind defaults used by `docs/case-studies/issue-115/`.
 
 ## Development
 

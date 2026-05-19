@@ -3,15 +3,16 @@ use std::path::PathBuf;
 use std::sync::atomic::AtomicBool;
 use std::sync::Arc;
 
-use clap::{Subcommand, ValueEnum};
+use clap::{Args as ClapArgs, Subcommand, ValueEnum};
 use lino_arguments::Parser;
 
 use formal_ai::{
-    agent_info, create_chat_completion, create_response, environment_records, export_memory_bundle,
-    export_memory_full, import_memory_full, knowledge_links_notation, merged_bundle, parse_bundle,
-    run_telegram_polling, run_telegram_webhook_server, seed_files, suggest_memory_migrations,
-    BundleInfo, ChatCompletionRequest, ChatMessage, FormalAiEngine, MemoryStore, MessageContent,
-    ResponsesRequest, TelegramPollingConfig, DEFAULT_MODEL,
+    agent_info, collect_github_logs, create_chat_completion, create_response, environment_records,
+    export_memory_bundle, export_memory_full, import_memory_full, knowledge_links_notation,
+    merged_bundle, parse_bundle, render_github_log_plan, run_telegram_polling,
+    run_telegram_webhook_server, seed_files, suggest_memory_migrations, BundleInfo,
+    ChatCompletionRequest, ChatMessage, FormalAiEngine, GithubLogCollectorConfig, MemoryStore,
+    MessageContent, ResponsesRequest, TelegramPollingConfig, DEFAULT_MODEL,
 };
 
 #[derive(Parser, Debug)]
@@ -59,6 +60,12 @@ enum Command {
     /// every interface the agent supports and how to migrate memory between
     /// them.
     Environments,
+    /// Plan or collect GitHub issue, PR, review, and Actions run evidence
+    /// into a case-study directory.
+    GithubLogs {
+        #[command(subcommand)]
+        action: GithubLogsAction,
+    },
     /// Run the Telegram bot client (long polling by default; webhook server is opt-in).
     Telegram {
         #[arg(
@@ -183,6 +190,53 @@ enum BundleAction {
     },
 }
 
+#[derive(Debug, Subcommand)]
+enum GithubLogsAction {
+    /// Print the exact `gh` commands and output files without executing them.
+    Plan(GithubLogsOptions),
+    /// Execute the `gh` command plan and write captures plus `manifest.json`.
+    Collect(GithubLogsOptions),
+}
+
+#[derive(Debug, Clone, ClapArgs)]
+struct GithubLogsOptions {
+    /// Repository in OWNER/REPO format.
+    #[arg(long)]
+    repo: String,
+
+    /// Directory where captured JSON, diff, and log files are written.
+    #[arg(long, default_value = "docs/case-studies/github-logs/raw-data")]
+    output_dir: PathBuf,
+
+    /// Issue number to capture. Repeat for multiple issues.
+    #[arg(long = "issue")]
+    issues: Vec<u64>,
+
+    /// Pull request number to capture. Repeat for multiple pull requests.
+    #[arg(long = "pull")]
+    pulls: Vec<u64>,
+
+    /// GitHub Actions run database id to capture. Repeat for multiple runs.
+    #[arg(long = "run")]
+    runs: Vec<u64>,
+
+    /// Number of recent issues to list for repository context.
+    #[arg(long, default_value_t = 10)]
+    recent_issues: usize,
+
+    /// Number of recent pull requests to list for repository context.
+    #[arg(long, default_value_t = 10)]
+    recent_pulls: usize,
+
+    /// Number of recent Actions runs to list for repository context.
+    #[arg(long, default_value_t = 5)]
+    recent_runs: usize,
+
+    /// Optional branch filter for recent Actions runs.
+    #[arg(long)]
+    branch: Option<String>,
+}
+
 #[derive(Debug, Clone, Copy, ValueEnum)]
 enum OutputFormat {
     Text,
@@ -229,6 +283,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         Command::Memory { action } => run_memory(action)?,
         Command::Bundle { action } => run_bundle(action)?,
         Command::Environments => run_environments(),
+        Command::GithubLogs { action } => run_github_logs(action)?,
         Command::Serve { host, port } => run_telegram_webhook_server(&format!("{host}:{port}"))?,
         Command::Telegram {
             mode,
@@ -252,6 +307,45 @@ fn main() -> Result<(), Box<dyn Error>> {
     }
 
     Ok(())
+}
+
+fn run_github_logs(action: GithubLogsAction) -> Result<(), Box<dyn Error>> {
+    match action {
+        GithubLogsAction::Plan(options) => {
+            let config = options.into_config();
+            print!("{}", render_github_log_plan(&config)?);
+        }
+        GithubLogsAction::Collect(options) => {
+            let config = options.into_config();
+            let summary = collect_github_logs(&config)?;
+            eprintln!(
+                "Captured {} file(s) into {}; manifest: {}",
+                summary.captured.len(),
+                summary.output_dir.display(),
+                summary.manifest_path.display()
+            );
+            for capture in summary.captured {
+                eprintln!("  {}", capture.file);
+            }
+        }
+    }
+    Ok(())
+}
+
+impl GithubLogsOptions {
+    fn into_config(self) -> GithubLogCollectorConfig {
+        GithubLogCollectorConfig {
+            repo: self.repo,
+            output_dir: self.output_dir,
+            issues: self.issues,
+            pulls: self.pulls,
+            runs: self.runs,
+            recent_issues: self.recent_issues,
+            recent_pulls: self.recent_pulls,
+            recent_runs: self.recent_runs,
+            branch: self.branch,
+        }
+    }
 }
 
 struct TelegramRunArgs {
