@@ -28,6 +28,18 @@ greeting_5
   response_link "response:greeting"
   answer "Здравствуйте! Чем могу помочь?"
 
+greeting_6
+  text "как твои дела"
+  intent "greeting"
+  response_link "response:greeting"
+  answer "Здравствуйте! Чем могу помочь?"
+
+greeting_7
+  text "как дела"
+  intent "greeting"
+  response_link "response:greeting"
+  answer "Здравствуйте! Чем могу помочь?"
+
 farewell_1
   text "Bye"
   intent "farewell"

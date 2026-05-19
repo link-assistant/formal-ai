@@ -39,6 +39,35 @@ fn shabbat_shalom_greeting_is_recognized_as_greeting() {
     }
 }
 
+// Issue #152: Russian "how are you?" small talk used to fall through to
+// the unknown fallback instead of being handled as a greeting.
+#[test]
+fn russian_how_are_you_prompt_is_recognized_as_greeting() {
+    let response = FormalAiEngine.answer("Как твои дела?");
+
+    assert_eq!(
+        response.intent, "greeting",
+        "Russian small-talk prompt should be recognized as greeting, got intent {:?}",
+        response.intent
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link == "response:greeting"),
+        "response should cite response:greeting, got {:?}",
+        response.evidence_links
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link == "language:ru"),
+        "response should keep Russian language evidence, got {:?}",
+        response.evidence_links
+    );
+}
+
 // Issue #67: "пока" and similar farewell words were returned as unknown intent.
 #[test]
 fn farewell_prompts_are_recognized_as_farewell() {

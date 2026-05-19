@@ -88,6 +88,13 @@ test.describe('multilingual chat surface', () => {
     await expect(last).toContainText(/Здравствуйте|Привет/);
   });
 
+  test('Russian how-are-you small talk replies as a greeting', async ({ page }) => {
+    const last = await sendPrompt(page, 'Как твои дела?');
+    await expect(last).toHaveClass(/assistant/);
+    await expect(last).toContainText(/Здравствуйте|Привет/);
+    await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
+  });
+
   test('Russian combined greeting and identity question replies with identity', async ({ page }) => {
     const last = await sendPrompt(page, 'Привет. ты кто?');
     await expect(last).toHaveClass(/assistant/);
