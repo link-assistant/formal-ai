@@ -5051,18 +5051,30 @@ function canonicalEntityKey(meta) {
 }
 
 function buildItemMetadataIndex(perProvider) {
+  // The richer the meta the better — an entry that carries a Wikidata `qid`
+  // is preferred over a Wikipedia-only entry for the same URL, because the
+  // Q-id is what cross-provider dedupe groups by. Without this preference,
+  // the Wikipedia URL would be indexed by the Wikipedia provider's meta
+  // (`WP:en:Apple`) and a separate Wikidata entry for the same fact (`Q:Q89`)
+  // would never collapse into one bullet.
   const byUrl = new Map();
+  const rank = (item) => (item && item.qid ? 2 : 1);
+  function record(url, item) {
+    if (!url || !item) return;
+    const existing = byUrl.get(url);
+    if (!existing || rank(item) > rank(existing)) {
+      byUrl.set(url, item);
+    }
+  }
   for (const provider of perProvider) {
     if (!provider || !Array.isArray(provider.results)) continue;
     for (const item of provider.results) {
       if (!item || !item.url) continue;
-      if (!byUrl.has(item.url)) byUrl.set(item.url, item);
+      record(item.url, item);
       // Wikidata results carry the Wikipedia URL of the same entity inline;
       // index that too so the Wikipedia provider's entry is recognised as
       // a duplicate of the Wikidata one.
-      if (item.wikipediaUrl && !byUrl.has(item.wikipediaUrl)) {
-        byUrl.set(item.wikipediaUrl, item);
-      }
+      if (item.wikipediaUrl) record(item.wikipediaUrl, item);
     }
   }
   return byUrl;
@@ -5285,11 +5297,15 @@ async function tryWebSearch(prompt, language) {
 
   // Resolve the formalization tuple now that we know the top-ranked entity.
   // Prefer a real Wikidata Q-id; fall back to the WP virtual id, then to the
-  // bare normalised query. We always emit at least the verb + object slots.
+  // bare normalised query. We scan the whole `top` slice instead of just
+  // `top[0]` so that a DuckDuckGo result without an id at rank 1 still lets
+  // us fold a Wikidata Q-id from rank 2+ into the resolved tuple.
   let formalizedObject = "";
-  const topEntry = top[0];
-  if (topEntry) {
-    formalizedObject = topEntry.virtualId || "";
+  for (const entry of top) {
+    if (entry && entry.virtualId) {
+      formalizedObject = entry.virtualId;
+      if (/^Q\d+$/.test(entry.virtualId)) break;
+    }
   }
 
   return {

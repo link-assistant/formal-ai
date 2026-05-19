@@ -53,7 +53,7 @@ async function mockAppleSearch(page) {
       }),
     });
   });
-  await page.route('**/w/rest.php/v1/search/page**', async (route) => {
+  await page.route('**://*.wikipedia.org/w/rest.php/v1/search/page**', async (route) => {
     await route.fulfill({
       status: 200,
       contentType: 'application/json',
@@ -70,10 +70,13 @@ async function mockAppleSearch(page) {
       }),
     });
   });
-  await page.route('**/wikidata.org/w/api.php**', async (route) => {
-    const url = new URL(route.request().url());
-    expect(url.searchParams.get('action')).toBe('wbsearchentities');
-    expect(url.searchParams.get('props')).toContain('sitelinks/urls');
+  // Wikidata: respond with the same single-entity payload regardless of which
+  // call path (fact_query or web_search) triggered the request. Both code
+  // paths use `action=wbsearchentities`; the web_search path additionally
+  // asks for `props=sitelinks/urls`, but we always include the sitelink so
+  // the dedupe logic has the data it needs even when fact_query is the
+  // first caller.
+  await page.route('**://www.wikidata.org/w/api.php**', async (route) => {
     await route.fulfill({
       status: 200,
       contentType: 'application/json',
@@ -125,6 +128,12 @@ test.describe('Issue #153 — search UX, formalization, and dedupe', () => {
     page,
   }) => {
     const newBtn = page.locator('[data-testid="conversation-new"]');
+    // Reach the canonical zero-state. Demo mode may have added a greeting
+    // turn before `switchToManualMode` flipped it off; clicking
+    // "New conversation" is exactly the operation that clears it.
+    if (await newBtn.isEnabled().catch(() => false)) {
+      await newBtn.click();
+    }
     await expect(newBtn).toBeDisabled();
     await sendPrompt(page, 'Hi');
     await expect(newBtn).toBeEnabled();
@@ -133,10 +142,11 @@ test.describe('Issue #153 — search UX, formalization, and dedupe', () => {
   test('sidebar can be collapsed and expanded', async ({ page }) => {
     const sidebarToggle = page.locator('[data-testid="sidebar-toggle"]');
     await expect(sidebarToggle).toBeVisible();
+    const workspace = page.locator('.workspace');
     await sidebarToggle.click();
-    await expect(page.locator('.app')).toHaveClass(/sidebar-collapsed/);
+    await expect(workspace).toHaveClass(/sidebar-collapsed/);
     await sidebarToggle.click();
-    await expect(page.locator('.app')).not.toHaveClass(/sidebar-collapsed/);
+    await expect(workspace).not.toHaveClass(/sidebar-collapsed/);
   });
 
   test('diagnostics shows the SVO formalization view with @USER + OP:* + Q-id', async ({
@@ -146,6 +156,13 @@ test.describe('Issue #153 — search UX, formalization, and dedupe', () => {
     await page.locator('.diagnostics-toggle').click();
 
     const last = await sendPrompt(page, 'Search the web for Apple');
+    // Diagnostic steps render each formalization view inside a collapsed
+    // <details>. Open them all so the SVO slots are visible to the assertions.
+    await last.evaluate((node) => {
+      for (const det of node.querySelectorAll('details.diagnostics-detail')) {
+        det.open = true;
+      }
+    });
     const formalizationViews = last.locator('[data-testid="formalization"]');
     await expect(formalizationViews.first()).toBeVisible({ timeout: 10_000 });
 
@@ -211,14 +228,14 @@ test.describe('Issue #153 — search UX, formalization, and dedupe', () => {
         }),
       });
     });
-    await page.route('**/w/rest.php/v1/search/page**', async (route) => {
+    await page.route('**://*.wikipedia.org/w/rest.php/v1/search/page**', async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
         body: JSON.stringify({ pages: [] }),
       });
     });
-    await page.route('**/wikidata.org/w/api.php**', async (route) => {
+    await page.route('**://www.wikidata.org/w/api.php**', async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
