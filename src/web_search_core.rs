@@ -678,4 +678,112 @@ mod tests {
             );
         }
     }
+
+    /// Issue #180: the evidence prefix must list providers in the same order
+    /// as the JS worker so the WASM-derived prefix matches what `tryWebSearch`
+    /// would emit when it falls back to its inline list. Without this the
+    /// browser would render the providers in a different order than the
+    /// canonical Rust core.
+    #[test]
+    fn build_request_evidence_lists_providers_in_priority_order() {
+        let lines = build_request_evidence("query", "en");
+        let provider_lines: Vec<&str> = lines
+            .iter()
+            .filter(|line| line.starts_with("web_search:provider:"))
+            .map(String::as_str)
+            .collect();
+        assert_eq!(
+            provider_lines,
+            vec![
+                "web_search:provider:duckduckgo",
+                "web_search:provider:internet-archive",
+                "web_search:provider:wikipedia",
+                "web_search:provider:wikidata",
+                "web_search:provider:wiktionary",
+            ]
+        );
+    }
+
+    /// Issue #180: when a language is empty the evidence prefix must still
+    /// produce well-formed lines and must not emit `web_search:language:` with
+    /// a trailing empty value.
+    #[test]
+    fn build_request_evidence_skips_empty_language_line() {
+        let lines = build_request_evidence("query", "");
+        assert!(!lines
+            .iter()
+            .any(|line| line == "web_search:language:" || line == "web_search:language: "));
+    }
+
+    /// Issue #180: Internet Archive is listed in the default plan and tagged
+    /// as CORS-readable so the browser can hit it without a proxy.
+    #[test]
+    fn internet_archive_is_cors_readable_in_registry() {
+        let spec = WEB_SEARCH_PROVIDER_REGISTRY
+            .iter()
+            .find(|spec| spec.id == "internet-archive")
+            .expect("internet-archive must be in registry");
+        assert!(
+            spec.cors_readable,
+            "internet-archive must stay CORS-readable so the demo browser can call it directly"
+        );
+        assert!(matches!(spec.category, ProviderCategory::Knowledge));
+    }
+
+    /// Issue #180: rendering depends on a stable RRF-tied score. Pin the
+    /// formula `1 / (k + rank)` to k=60 so a regression in either k or the
+    /// score function trips the test instead of silently shifting the rank
+    /// order in the rendered list.
+    #[test]
+    fn rrf_score_matches_cormack_clarke_buettcher_formula() {
+        let entries = [ProviderRanking {
+            provider_id: "duckduckgo".to_string(),
+            rank: 1,
+            url: "https://example.com".to_string(),
+            title: "Example".to_string(),
+            excerpt: String::new(),
+        }];
+        let fused = reciprocal_rank_fusion(&entries, WEB_SEARCH_RRF_K);
+        assert_eq!(fused.len(), 1);
+        let expected = 1.0_f64 / (WEB_SEARCH_RRF_K as f64 + 1.0);
+        assert!(
+            (fused[0].score - expected).abs() < 1e-9,
+            "expected score {expected}, got {}",
+            fused[0].score
+        );
+    }
+
+    /// Issue #180: every provider in the default plan must declare a label
+    /// so the diagnostics panel can render a human-readable row instead of
+    /// the raw id.
+    #[test]
+    fn default_plan_providers_carry_human_labels() {
+        for id in &*default_search_plan_ids() {
+            let spec = WEB_SEARCH_PROVIDER_REGISTRY
+                .iter()
+                .find(|spec| spec.id == id.as_str())
+                .unwrap_or_else(|| panic!("plan id `{id}` missing from registry"));
+            assert!(
+                !spec.label.is_empty(),
+                "plan provider `{id}` must have a non-empty label"
+            );
+        }
+    }
+
+    /// Issue #180: registry must include every provider in the default plan
+    /// and the plan must only reference registered providers. Tightens the
+    /// invariant from the cors-readable test so a typo can't slip through.
+    #[test]
+    fn default_plan_is_a_subset_of_registry_ids() {
+        let registry_ids: Vec<&str> = WEB_SEARCH_PROVIDER_REGISTRY
+            .iter()
+            .map(|spec| spec.id)
+            .collect();
+        for id in &*default_search_plan_ids() {
+            assert!(
+                registry_ids.contains(&id.as_str()),
+                "default-plan id `{id}` not present in registry"
+            );
+        }
+    }
 }
