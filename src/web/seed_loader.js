@@ -266,6 +266,102 @@
     return out;
   }
 
+  function extractFacts(root) {
+    if (!root || !Array.isArray(root.children)) return [];
+    var facts = [];
+    var visit = function (item) {
+      if (!item || !item.name || item.name.indexOf("fact_") !== 0) return;
+      var localized = findChildren(item, "localized").map(function (loc) {
+        return {
+          language: loc.id,
+          summary: findChildValue(loc, "summary"),
+          source: findChildValue(loc, "source"),
+          sourceKind: findChildValue(loc, "source_kind"),
+        };
+      });
+      facts.push({
+        slug: item.name,
+        intent: findChildValue(item, "intent") || "fact_lookup",
+        category: findChildValue(item, "category"),
+        wikidata: splitList(findChildValue(item, "wikidata")),
+        subjectAliases: splitList(findChildValue(item, "subject_aliases")).map(toLower),
+        questionKeywords: splitList(findChildValue(item, "question_keywords")).map(toLower),
+        summary: findChildValue(item, "summary"),
+        source: findChildValue(item, "source"),
+        sourceKind: findChildValue(item, "source_kind"),
+        localized: localized,
+      });
+    };
+    if (root.name && root.name.indexOf("fact_") === 0) {
+      visit(root);
+    } else {
+      root.children.forEach(visit);
+    }
+    return facts;
+  }
+
+  function extractBrainstormSeeds(root) {
+    var seeds = { triggers: [], categories: [] };
+    if (!root || !Array.isArray(root.children)) return seeds;
+    var section = root.name === "brainstorm_seeds" ? root : findChildren(root, "brainstorm_seeds")[0];
+    if (!section) return seeds;
+    seeds.triggers = splitList(findChildValue(section, "trigger")).map(toLower);
+    var categories = findChildren(section, "category");
+    for (var i = 0; i < categories.length; i += 1) {
+      var category = categories[i];
+      var items = findChildren(category, "item")
+        .map(function (item) {
+          return item.id || "";
+        })
+        .filter(Boolean);
+      if (!items.length) continue;
+      seeds.categories.push({
+        slug: category.id,
+        intent: findChildValue(category, "intent"),
+        detectionKeywords: splitList(findChildValue(category, "detection_keywords")).map(toLower),
+        items: items,
+      });
+    }
+    return seeds;
+  }
+
+  function extractPersonas(root) {
+    var seeds = {
+      triggers: [],
+      defaultPersona: "",
+      bodyTemplate: "",
+      fallbackBody: "",
+      personas: [],
+      topics: [],
+    };
+    if (!root || !Array.isArray(root.children)) return seeds;
+    var section = root.name === "personas" ? root : findChildren(root, "personas")[0];
+    if (!section) return seeds;
+    seeds.triggers = splitList(findChildValue(section, "trigger")).map(toLower);
+    seeds.defaultPersona = findChildValue(section, "default_persona");
+    seeds.bodyTemplate = findChildValue(section, "body_template");
+    seeds.fallbackBody = findChildValue(section, "fallback_body");
+    var personaEntries = findChildren(section, "persona");
+    for (var i = 0; i < personaEntries.length; i += 1) {
+      var persona = personaEntries[i];
+      seeds.personas.push({
+        displayName: persona.id,
+        aliases: splitList(findChildValue(persona, "aliases")).map(toLower),
+        wikidata: findChildValue(persona, "wikidata"),
+      });
+    }
+    var topicEntries = findChildren(section, "topic");
+    for (var j = 0; j < topicEntries.length; j += 1) {
+      var topic = topicEntries[j];
+      seeds.topics.push({
+        slug: topic.id,
+        detectionKeywords: splitList(findChildValue(topic, "detection_keywords")).map(toLower),
+        body: findChildValue(topic, "body"),
+      });
+    }
+    return seeds;
+  }
+
   function extractTools(node) {
     var tools = [];
     if (!node) return tools;
@@ -457,6 +553,10 @@
     return String(value || "").trim();
   }
 
+  function toLower(value) {
+    return trim(value).toLowerCase();
+  }
+
   function fetchText(url) {
     if (typeof global.fetch !== "function") {
       return Promise.resolve("");
@@ -560,6 +660,16 @@
       responses: {},
       concepts: [],
       conceptContexts: [],
+      facts: [],
+      brainstormSeeds: { triggers: [], categories: [] },
+      personas: {
+        triggers: [],
+        defaultPersona: "",
+        bodyTemplate: "",
+        fallbackBody: "",
+        personas: [],
+        topics: [],
+      },
       tools: [],
       agentInfo: {},
       languageRules: [],
@@ -578,6 +688,12 @@
           seed.responses,
           extractMultilingualResponses(root),
         );
+      } else if (item.file.indexOf("facts") !== -1) {
+        seed.facts = seed.facts.concat(extractFacts(root));
+      } else if (item.file.indexOf("brainstorm-seeds") !== -1) {
+        seed.brainstormSeeds = extractBrainstormSeeds(root);
+      } else if (item.file.indexOf("personas") !== -1) {
+        seed.personas = extractPersonas(root);
       } else if (item.file.indexOf("concept-contexts") !== -1) {
         seed.conceptContexts = seed.conceptContexts.concat(
           extractConceptContexts(root),
@@ -612,6 +728,9 @@
     extractPromptPatterns: extractPromptPatterns,
     extractConcepts: extractConcepts,
     extractConceptContexts: extractConceptContexts,
+    extractFacts: extractFacts,
+    extractBrainstormSeeds: extractBrainstormSeeds,
+    extractPersonas: extractPersonas,
     extractTools: extractTools,
     extractIntentRouting: extractIntentRouting,
     extractEnvironmentDirectory: extractEnvironmentDirectory,

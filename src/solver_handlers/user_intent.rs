@@ -141,6 +141,7 @@ pub fn try_capabilities(
         }
         _ => {
             normalized.contains("what can you do")
+                || normalized.contains("what you can do")
                 || normalized.contains("what are your capabilities")
                 || normalized.contains("what are you capable of")
                 || normalized.contains("what do you do")
