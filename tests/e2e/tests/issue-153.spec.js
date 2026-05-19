@@ -258,6 +258,57 @@ test.describe('Issue #153 — search UX, formalization, and dedupe', () => {
     );
   });
 
+  test('priority-based topbar overflow keeps Bug reporting visible at 375px', async ({
+    page,
+  }) => {
+    // Issue #153: every .topbar-actions button must carry a data-menu-priority
+    // and only priorities 1-3 (Bug reporting, Diagnostics, Demo) should remain
+    // visible at mobile widths. The full action list must still be reachable
+    // via the hamburger drawer.
+    const expectVisible = async (selector) => {
+      await expect(page.locator(selector)).toBeVisible();
+    };
+    const expectHidden = async (selector) => {
+      // `display: none !important` removes the element from layout; Playwright
+      // reports `not visible` (not `not attached`).
+      await expect(page.locator(selector)).toBeHidden();
+    };
+    const requireAttr = async (selector, value) => {
+      await expect(page.locator(selector).first()).toHaveAttribute(
+        'data-menu-priority',
+        value,
+      );
+    };
+
+    // Sanity-check every priority assignment at desktop width first.
+    await requireAttr('.topbar-actions [data-testid="report-issue"]', '1');
+    await requireAttr('.topbar-actions .diagnostics-toggle', '2');
+    await requireAttr('.topbar-actions .mode-toggle', '3');
+    await requireAttr('.topbar-actions [data-testid="agent-toggle"]', '4');
+    await requireAttr('.topbar-actions [data-testid="source-code"]', '5');
+    await requireAttr('.topbar-actions [data-testid="memory-export"]', '6');
+    await requireAttr('.topbar-actions [data-testid="memory-import"]', '6');
+
+    // Mobile 375 — only priorities 1-3 should remain in the topbar.
+    await page.setViewportSize({ width: 375, height: 720 });
+    await expectVisible('.topbar-actions [data-testid="report-issue"]');
+    await expectVisible('.topbar-actions .diagnostics-toggle');
+    await expectVisible('.topbar-actions .mode-toggle');
+    await expectHidden('.topbar-actions [data-testid="agent-toggle"]');
+    await expectHidden('.topbar-actions [data-testid="source-code"]');
+    await expectHidden('.topbar-actions [data-testid="memory-export"]');
+    await expectHidden('.topbar-actions [data-testid="memory-import"]');
+
+    // Hamburger drawer continues to expose the full action list.
+    await page.locator('[data-testid="mobile-menu-toggle"]').click();
+    const drawer = page.locator('.drawer-menu-section');
+    await expect(drawer).toBeVisible();
+    await expect(drawer).toContainText(/Source code|Исходный код/);
+    await expect(drawer).toContainText(/Export memory|Экспорт памяти/);
+    await expect(drawer).toContainText(/Import memory|Импорт памяти/);
+    await expect(drawer).toContainText(/Chat|Agent|Чат|Агент/);
+  });
+
   test('search header is localized when the UI language is Russian', async ({
     page,
   }) => {
