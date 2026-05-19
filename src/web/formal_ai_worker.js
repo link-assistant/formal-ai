@@ -795,6 +795,45 @@ const ARITHMETIC_NUMBER_WORDS = [
   " десять ",
 ];
 
+const PERCENT_OF_CURRENCY_CODES = new Map([
+  ["$", "USD"],
+  ["€", "EUR"],
+  ["¥", "JPY"],
+  ["₹", "INR"],
+  ["₽", "RUB"],
+]);
+
+function currencyCodeFromWord(value) {
+  const lower = String(value || "").toLowerCase();
+  if (lower === "usd" || lower === "dollar" || lower === "dollars") {
+    return "USD";
+  }
+  if (lower === "eur" || lower === "euro" || lower === "euros") {
+    return "EUR";
+  }
+  if (lower === "rub" || lower === "ruble" || lower === "rubles") {
+    return "RUB";
+  }
+  return "";
+}
+
+function evaluatePercentOfExpression(expression) {
+  const match = String(expression || "")
+    .trim()
+    .match(
+      /^([+-]?\d+(?:\.\d+)?)\s*%\s+of\s+([$€¥₹₽])?\s*([+-]?\d+(?:\.\d+)?)(?:\s*(usd|eur|rub|dollars?|euros?|rubles?))?$/i,
+    );
+  if (!match) return null;
+  const percent = Number(match[1]);
+  const amount = Number(match[3]);
+  if (!Number.isFinite(percent) || !Number.isFinite(amount)) return null;
+  const currency =
+    PERCENT_OF_CURRENCY_CODES.get(match[2] || "") ||
+    currencyCodeFromWord(match[4]);
+  const result = formatArithmeticResult((amount * percent) / 100);
+  return currency ? `${result} ${currency}` : result;
+}
+
 function normalizeArithmeticWords(expression) {
   const lower = String(expression).toLowerCase();
   const normalizedPhrases = lower
@@ -1159,6 +1198,7 @@ function extractArithmeticExpression(prompt) {
   const hasSymbolic = /[+*/%^=×·÷−$€¥₹₽]/.test(working) || (!hasLetter && /-/.test(working));
   const hasWordOperator = hasArithmeticWordOperator(working);
   const hasSpelled = hasSpelledArithmetic(working);
+  const hasPercentOf = evaluatePercentOfExpression(working) !== null;
   const hasWord =
     hasWordOperator ||
     [
@@ -1205,6 +1245,7 @@ function extractArithmeticExpression(prompt) {
   const hasDigit = /[0-9]/.test(working);
   if (!hasDigit && !hasSpelled) return null;
   if (!hasSymbolic && !hasWord && hasLetter) return null;
+  if (hasPercentOf) return working;
   const allowed = /^[0-9+\-*/%().=\s_×·÷−,a-zA-Z]+$/;
   if (!allowed.test(working) && !hasWordOperator) return null;
   return working;
@@ -1661,7 +1702,11 @@ function tryArithmetic(prompt) {
     const isEquation = expression.includes("=");
     let formatted;
     let backend = "js";
-    if (isEquation) {
+    const percentOfResult = evaluatePercentOfExpression(expression);
+    if (percentOfResult) {
+      formatted = percentOfResult;
+      backend = "js-percent-of";
+    } else if (isEquation) {
       formatted = solveLinearEquation(expression);
     } else {
       const wasmResult = wasmEvaluateArithmetic(expression);
