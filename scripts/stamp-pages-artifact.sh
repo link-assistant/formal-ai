@@ -52,18 +52,28 @@ replace_in_place() {
 }
 
 escaped_version="$(printf '%s' "$asset_version" | sed 's/[\/&]/\\&/g')"
-replace_in_place "s/__FORMAL_AI_ASSET_VERSION__/${escaped_version}/g" "$index_html"
+escaped_formal_ai_version="$(printf '%s' "$formal_ai_version" | sed 's/[\/&]/\\&/g')"
 
-if grep -q "__FORMAL_AI_ASSET_VERSION__" "$index_html"; then
-  echo "::error file=${index_html}::Failed to replace the Pages asset version placeholder"
+while IFS= read -r -d '' html_file; do
+  replace_in_place "s/__FORMAL_AI_ASSET_VERSION__/${escaped_version}/g" "$html_file"
+  replace_in_place "s/__FORMAL_AI_VERSION__/${escaped_formal_ai_version}/g" "$html_file"
+done < <(find "$artifact_dir" -type f -name '*.html' -print0)
+
+remaining_asset_placeholders="$(
+  find "$artifact_dir" -type f -name '*.html' -exec grep -H "__FORMAL_AI_ASSET_VERSION__" {} + || true
+)"
+if [[ -n "$remaining_asset_placeholders" ]]; then
+  echo "::error::Failed to replace the Pages asset version placeholder"
+  printf '%s\n' "$remaining_asset_placeholders"
   exit 1
 fi
 
-escaped_formal_ai_version="$(printf '%s' "$formal_ai_version" | sed 's/[\/&]/\\&/g')"
-replace_in_place "s/__FORMAL_AI_VERSION__/${escaped_formal_ai_version}/g" "$index_html"
-
-if grep -q "__FORMAL_AI_VERSION__" "$index_html"; then
-  echo "::error file=${index_html}::Failed to replace the formal-ai version placeholder"
+remaining_version_placeholders="$(
+  find "$artifact_dir" -type f -name '*.html' -exec grep -H "__FORMAL_AI_VERSION__" {} + || true
+)"
+if [[ -n "$remaining_version_placeholders" ]]; then
+  echo "::error::Failed to replace the formal-ai version placeholder"
+  printf '%s\n' "$remaining_version_placeholders"
   exit 1
 fi
 

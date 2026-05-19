@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="formal-ai-version" content="__FORMAL_AI_VERSION__" />
+    <title>formal-ai connectivity tests</title>
+    <link rel="stylesheet" href="connectivity.css?v=__FORMAL_AI_ASSET_VERSION__" />
+    <script>
+      window.FORMAL_AI_ASSET_VERSION = "__FORMAL_AI_ASSET_VERSION__";
+    </script>
+    <script defer src="connectivity.js?v=__FORMAL_AI_ASSET_VERSION__"></script>
+  </head>
+  <body>
+    <main class="diagnostics-shell" data-testid="connectivity-dashboard">
+      <header class="diagnostics-header">
+        <div class="title-block">
+          <p class="eyebrow">formal-ai</p>
+          <h1>Connectivity tests</h1>
+          <p class="deployment-line">
+            Version <span data-testid="formal-ai-version">__FORMAL_AI_VERSION__</span>
+            <span aria-hidden="true">/</span>
+            Asset <span data-testid="asset-version">__FORMAL_AI_ASSET_VERSION__</span>
+          </p>
+        </div>
+        <nav class="header-actions" aria-label="Diagnostics navigation">
+          <a href="../" class="text-link">Demo</a>
+          <button type="button" class="secondary-button" data-testid="export-log" id="export-log">
+            Export JSON
+          </button>
+        </nav>
+      </header>
+
+      <section class="controls-band" aria-label="Connectivity controls">
+        <div class="mode-control" role="group" aria-label="Fetch mode">
+          <button
+            type="button"
+            class="mode-button is-active"
+            data-mode="direct"
+            data-testid="mode-direct"
+            aria-pressed="true"
+          >
+            Direct browser
+          </button>
+          <button
+            type="button"
+            class="mode-button"
+            data-mode="proxy"
+            data-testid="mode-proxy"
+            aria-pressed="false"
+          >
+            web-capture proxy
+          </button>
+        </div>
+
+        <div class="proxy-settings" data-testid="proxy-settings">
+          <label>
+            <span>Proxy base</span>
+            <input
+              id="proxy-base"
+              data-testid="proxy-base-input"
+              type="url"
+              value="http://localhost:3000"
+              spellcheck="false"
+            />
+          </label>
+          <label>
+            <span>Endpoint</span>
+            <select id="proxy-endpoint" data-testid="proxy-endpoint-select">
+              <option value="/fetch">/fetch</option>
+              <option value="/html">/html</option>
+              <option value="/markdown">/markdown</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="run-controls" aria-label="Batch runs">
+          <button type="button" id="run-pages" data-testid="run-all-pages">Run pages</button>
+          <button type="button" id="run-apis" data-testid="run-all-apis">Run APIs</button>
+        </div>
+      </section>
+
+      <section class="summary-strip" aria-label="Run summary">
+        <div>
+          <span class="metric-value" data-testid="summary-total">0</span>
+          <span class="metric-label">checks</span>
+        </div>
+        <div>
+          <span class="metric-value ok" data-testid="summary-ok">0</span>
+          <span class="metric-label">readable</span>
+        </div>
+        <div>
+          <span class="metric-value warn" data-testid="summary-blocked">0</span>
+          <span class="metric-label">blocked</span>
+        </div>
+        <div>
+          <span class="metric-value muted" data-testid="summary-idle">0</span>
+          <span class="metric-label">idle</span>
+        </div>
+      </section>
+
+      <section class="matrix-section" aria-label="Service matrix">
+        <div class="matrix-head">
+          <span>Service</span>
+          <span>Page fetch</span>
+          <span>API fetch</span>
+          <span>Frame</span>
+          <span>Last result</span>
+        </div>
+        <div id="service-matrix" class="service-matrix" data-testid="service-matrix"></div>
+      </section>
+    </main>
+
+    <div class="frame-overlay" data-testid="frame-overlay" hidden>
+      <div class="frame-overlay-bar">
+        <strong id="frame-overlay-title">Frame</strong>
+        <button type="button" data-testid="close-frame-overlay" id="close-frame-overlay">Close</button>
+      </div>
+      <iframe
+        title="Expanded iframe diagnostics"
+        sandbox="allow-forms allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
+      ></iframe>
+    </div>
+  </body>
+</html>
