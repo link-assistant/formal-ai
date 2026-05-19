@@ -44,6 +44,7 @@ const REQUIRED_KEYS = [
   'composer.demoHint.before',
   'composer.demoHint.after',
   'composer.send',
+  'composer.sending',
   'composer.attachments',
   'conversation.new',
   'conversation.empty',

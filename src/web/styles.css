@@ -298,6 +298,7 @@ button {
 
 .brand strong {
   font-size: 18px;
+  white-space: nowrap;
 }
 
 .brand-version {
@@ -339,6 +340,8 @@ button {
   color: #40515f;
   font-size: 14px;
   font-weight: 700;
+  white-space: nowrap;
+  flex: 0 0 auto;
 }
 
 .mode-toggle,
@@ -1402,6 +1405,22 @@ textarea:disabled {
   cursor: not-allowed;
 }
 
+.send-spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.45);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: send-spinner-rotate 0.85s linear infinite;
+}
+
+@keyframes send-spinner-rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 @media (max-width: 1100px) {
   .topbar {
     gap: 10px;
@@ -1430,6 +1449,27 @@ textarea:disabled {
   .topbar-actions .memory-button {
     min-width: 0;
     padding: 0 10px;
+  }
+}
+
+/* Issue #153: priority-based topbar overflow. Buttons drop into the drawer in
+ * descending data-menu-priority order, while Bug reporting (1), Diagnostics
+ * (2) and Demo (3) remain in the topbar until the very narrowest viewports.
+ * Status indicators and dynamic memory feedback (priority 7) drop first; then
+ * Export/Import memory (6); Source code (5); Chat/Agent toggle (4). The full
+ * action list is always reachable through the hamburger drawer (which uses
+ * .drawer-menu-section, fed from the same React state). */
+@media (max-width: 720px) {
+  .topbar-actions [data-menu-priority="5"],
+  .topbar-actions [data-menu-priority="6"],
+  .topbar-actions [data-menu-priority="7"] {
+    display: none !important;
+  }
+}
+
+@media (max-width: 560px) {
+  .topbar-actions [data-menu-priority="4"] {
+    display: none !important;
   }
 }
 

@@ -2773,13 +2773,25 @@ function App() {
       h(
         "div",
         { className: "topbar-actions" },
-        h("span", { className: "demo-status", "data-testid": "demo-status", role: "status" }, demoStatus),
-        diagnosticsMode ? h("span", { className: "status" }, workerState) : null,
+        h(
+          "span",
+          {
+            className: "demo-status",
+            "data-testid": "demo-status",
+            "data-menu-priority": "7",
+            role: "status",
+          },
+          demoStatus,
+        ),
+        diagnosticsMode
+          ? h("span", { className: "status", "data-menu-priority": "7" }, workerState)
+          : null,
         h(
           "a",
           {
             className: "source-code-button",
             "data-testid": "source-code",
+            "data-menu-priority": "5",
             href: SOURCE_CODE_URL,
             target: "_blank",
             rel: "noopener noreferrer",
@@ -2794,6 +2806,7 @@ function App() {
           {
             className: "report-button",
             "data-testid": "report-issue",
+            "data-menu-priority": "1",
             href: currentReportUrl,
             target: "_blank",
             rel: "noopener noreferrer",
@@ -2809,6 +2822,7 @@ function App() {
             type: "button",
             className: "memory-button",
             "data-testid": "memory-export",
+            "data-menu-priority": "6",
             onClick: handleExportMemory,
             title: t("titles.exportMemory"),
             "aria-label": t("buttons.exportMemory"),
@@ -2822,6 +2836,7 @@ function App() {
             type: "button",
             className: "memory-button",
             "data-testid": "memory-import",
+            "data-menu-priority": "6",
             onClick: triggerImportMemory,
             title: t("titles.importMemory"),
             "aria-label": t("buttons.importMemory"),
@@ -2844,6 +2859,7 @@ function App() {
                 className: "memory-status",
                 role: "status",
                 "data-testid": "memory-status",
+                "data-menu-priority": "7",
               },
               memoryStatus,
             )
@@ -2853,6 +2869,7 @@ function App() {
           {
             type: "button",
             className: "diagnostics-toggle",
+            "data-menu-priority": "2",
             "aria-pressed": diagnosticsMode,
             onClick: () => setDiagnosticsMode((value) => !value),
             title: diagnosticsMode
@@ -2875,6 +2892,7 @@ function App() {
             type: "button",
             className: "agent-toggle",
             "data-testid": "agent-toggle",
+            "data-menu-priority": "4",
             "aria-pressed": agentMode,
             title: agentMode
               ? t("titles.agentOn")
@@ -2898,6 +2916,7 @@ function App() {
           {
             type: "button",
             className: "mode-toggle",
+            "data-menu-priority": "3",
             "aria-pressed": demoMode,
             onClick: () => setDemoMode((value) => !value),
             title: demoMode
@@ -3671,8 +3690,25 @@ function App() {
                 disabled: pending || demoMode || !prompt.trim(),
                 "data-testid": "chat-composer-submit",
               },
-              h("span", { className: "send-icon", "aria-hidden": "true" }, pending ? "..." : "↑"),
-              h("span", { className: "send-label" }, pending ? "..." : t("composer.send")),
+              pending
+                ? h(
+                    "span",
+                    {
+                      className: "send-spinner",
+                      "aria-hidden": "true",
+                      "data-testid": "send-spinner",
+                    },
+                  )
+                : h(
+                    "span",
+                    { className: "send-icon", "aria-hidden": "true" },
+                    "↑",
+                  ),
+              h(
+                "span",
+                { className: "send-label" },
+                pending ? t("composer.sending") : t("composer.send"),
+              ),
             ),
           ),
           attachmentStatus

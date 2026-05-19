@@ -53,6 +53,7 @@ en
       before "Demo is running - tap "
       after " to stop and type your own message."
     send "Send"
+    sending "Sending..."
     attachments "{count} attached"
   conversation
     new "+ New conversation"
@@ -211,6 +212,7 @@ ru
       before "Демо выполняется - нажмите "
       after ", чтобы остановить и написать свое сообщение."
     send "Отправить"
+    sending "Отправка..."
     attachments "Прикреплено: {count}"
   conversation
     new "+ Новый разговор"
@@ -365,6 +367,7 @@ zh
       before "演示正在运行 - 点按 "
       after " 可停止并输入自己的消息。"
     send "发送"
+    sending "发送中..."
     attachments "已附加 {count} 个"
   conversation
     new "+ 新对话"
@@ -521,6 +524,7 @@ hi
       before "डेमो चल रहा है - "
       after " दबाकर रोकें और अपना संदेश लिखें।"
     send "भेजें"
+    sending "भेज रहा है..."
     attachments "{count} जुड़ी हुई"
   conversation
     new "+ नई बातचीत"
