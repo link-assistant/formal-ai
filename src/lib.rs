@@ -20,13 +20,11 @@ pub(crate) mod solver_handlers_policy;
 pub(crate) mod solver_helpers;
 pub mod telegram;
 pub mod telegram_runtime;
+pub(crate) mod unknown_opener;
 pub mod web_engine_core;
 pub mod web_search_core;
 
-pub use engine::{
-    knowledge_links_notation, unknown_answer_variation_for, FormalAiEngine, SymbolicAnswer,
-    DEFAULT_MODEL,
-};
+pub use engine::{knowledge_links_notation, FormalAiEngine, SymbolicAnswer, DEFAULT_MODEL};
 pub use event_log::{Event, EventLog};
 pub use github_logs::{
     collect_github_logs, collect_github_logs_with_runner, github_log_capture_plan,
@@ -67,6 +65,7 @@ pub use telegram_runtime::{
     run_telegram_polling, run_telegram_polling_with_transport, run_telegram_webhook_server,
     CurlTelegramTransport, TelegramPollingRuntimeError, TelegramTransport,
 };
+pub use unknown_opener::unknown_answer_variation_for;
 pub use web_engine_core::{
     detect_language as detect_prompt_language, evaluate_arithmetic_expression,
     normalize_prompt as normalize_prompt_text, tokenize_prompt,
