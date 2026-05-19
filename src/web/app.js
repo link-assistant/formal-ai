@@ -677,6 +677,7 @@ function collectUserContext({
 }) {
   const browserLanguages = browserLanguagesList();
   const nav = typeof navigator !== "undefined" ? navigator : {};
+  const userAgent = nav.userAgent || "";
   const screenInfo =
     typeof screen !== "undefined"
       ? `${screen.width}x${screen.height} @${window.devicePixelRatio || 1}x`
@@ -698,6 +699,7 @@ function collectUserContext({
     colorScheme: currentColorScheme(themePreference),
     viewport: viewportInfo,
     screen: screenInfo,
+    userAgent,
     platform:
       (nav.userAgentData && nav.userAgentData.platform) ||
       nav.platform ||
@@ -714,34 +716,93 @@ function collectUserContext({
   };
 }
 
+// Issue #140: the prefilled `Report issue` URL is encoded as `?body=…` and
+// GitHub caps the request line at 8192 chars. The verbose User Context block
+// previously listed one field per line; now we combine related fields so a
+// typical 5-turn dialog fits comfortably under the cap. Defaults and
+// not-set values are omitted (UI Skin / Chat Style / Composer Style /
+// Composer Action / Online status / Preferred Location), since they are
+// uninteresting without the matching memory export.
+function formatUiLanguagesField(active, browserLanguagesStr) {
+  const browserLanguages = browserLanguagesStr
+    ? String(browserLanguagesStr)
+        .split(",")
+        .map((entry) => entry.trim())
+        .filter(Boolean)
+    : [];
+  const activeStr = String(active || "").trim();
+  if (!activeStr && browserLanguages.length === 0) return "unknown";
+  const lower = activeStr.toLowerCase();
+  const primary = (lang) => String(lang).split(/[-_]/)[0].toLowerCase();
+  const matchIndex = browserLanguages.findIndex(
+    (lang) => primary(lang) === lower || lang.toLowerCase() === lower,
+  );
+  if (matchIndex >= 0) {
+    return browserLanguages
+      .map((lang, idx) => (idx === matchIndex ? `*${lang}*` : lang))
+      .join(", ");
+  }
+  if (!activeStr) return browserLanguages.join(", ");
+  if (browserLanguages.length === 0) return `*${activeStr}*`;
+  return `*${activeStr}*, ${browserLanguages.join(", ")}`;
+}
+
+function formatUiField(context) {
+  const parts = [];
+  if (context.viewport) parts.push(`${context.viewport} viewport`);
+  if (context.screen) parts.push(`${context.screen} screen`);
+  if (context.userAgent) parts.push(`${context.userAgent} browser`);
+  if (context.platform) parts.push(`${context.platform} platform`);
+  return parts.join(", ");
+}
+
+function formatLocaleField(context) {
+  const locale = context.locale ? String(context.locale).trim() : "";
+  const timeZone = context.timeZone ? String(context.timeZone).trim() : "";
+  if (locale && timeZone) return `${locale} (${timeZone})`;
+  if (locale) return locale;
+  if (timeZone) return timeZone;
+  return "";
+}
+
+function formatThemeField(context) {
+  const preference = context.themePreference || "auto";
+  const scheme = context.colorScheme || "";
+  if (scheme && scheme !== preference) return `${preference} (${scheme})`;
+  return preference;
+}
+
 function appendUserContextBlock(lines, context) {
   const safe = context && typeof context === "object" ? context : {};
+  const entries = [];
+  const push = (label, value) => {
+    if (value === undefined || value === null) return;
+    const text = String(value).trim();
+    if (!text) return;
+    entries.push(`- **${label}**: ${text}`);
+  };
+
+  push("UI languages", formatUiLanguagesField(safe.uiLanguage, safe.browserLanguages));
+  push("Theme", formatThemeField(safe));
+  push("UI", formatUiField(safe));
+  push("Locale", formatLocaleField(safe));
+  if (safe.preferredLocation) {
+    push("Preferred location", safe.preferredLocation);
+  }
+  push("Guess probability", `${safe.guessProbability || "unknown"}%`);
+  push("Temperature", safe.temperature);
+  if (safe.locationInference && !safe.preferredLocation) {
+    // Per issue #140 feedback: "We should just write to what it inferred to,
+    // and from which source. So it can be shorter." Reuse the inference
+    // sentence verbatim when there is no explicit preference; the original
+    // wording ("time zone / locale only; …") doubles as the source.
+    push("Location", `inferred from ${safe.locationInference.replace(/;.*$/, "").trim()}`);
+  }
+
+  if (entries.length === 0) return;
   lines.push("## User Context");
   lines.push("");
-  lines.push(`- **UI Language**: ${safe.uiLanguage || "unknown"}`);
-  lines.push(
-    `- **UI Language Preference**: ${safe.uiLanguagePreference || "auto"}`,
-  );
-  lines.push(`- **Theme Preference**: ${safe.themePreference || "auto"}`);
-  lines.push(`- **UI Skin**: ${safe.uiSkin || "flat"}`);
-  lines.push(`- **Chat Style**: ${safe.chatStyle || "cards"}`);
-  lines.push(`- **Composer Style**: ${safe.composerStyle || "flat"}`);
-  lines.push(`- **Composer Action**: ${safe.composerAction || "attach"}`);
-  lines.push(`- **Browser Language**: ${safe.browserLanguage || "unknown"}`);
-  lines.push(`- **Browser Languages**: ${safe.browserLanguages || "unknown"}`);
-  lines.push(`- **Locale**: ${safe.locale || "unknown"}`);
-  lines.push(`- **Time Zone**: ${safe.timeZone || "unknown"}`);
-  lines.push(`- **Color Scheme**: ${safe.colorScheme || "unknown"}`);
-  lines.push(`- **Preferred Location**: ${safe.preferredLocation || "not set"}`);
-  lines.push(`- **Guess Probability**: ${safe.guessProbability || "unknown"}%`);
-  lines.push(`- **Temperature**: ${safe.temperature || "unknown"}`);
-  lines.push(`- **Viewport**: ${safe.viewport || "unknown"}`);
-  lines.push(`- **Screen**: ${safe.screen || "unknown"}`);
-  lines.push(`- **Platform**: ${safe.platform || "unknown"}`);
-  lines.push(`- **Online**: ${safe.online || "unknown"}`);
-  lines.push(
-    `- **Location Inference**: ${safe.locationInference || "unknown"}`,
-  );
+  for (const entry of entries) lines.push(entry);
   lines.push("");
 }
 
@@ -1121,7 +1182,7 @@ function pickDialogFence(messages) {
   return fence;
 }
 
-function appendDialogBlock(lines, messages, effectiveFocus) {
+function appendDialogBlock(lines, messages, effectiveFocus, options = {}) {
   if (messages.length === 0) {
     lines.push("No messages have been sent yet.");
     return;
@@ -1131,6 +1192,10 @@ function appendDialogBlock(lines, messages, effectiveFocus) {
   lines.push("");
   const fence = pickDialogFence(messages);
   lines.push(fence);
+  const earlierOmitted = Math.max(0, Number(options.earlierOmitted) || 0);
+  if (earlierOmitted > 0) {
+    lines.push(`... omitted ${earlierOmitted} earlier ${earlierOmitted === 1 ? "message" : "messages"} ...`);
+  }
   messages.forEach((message) => {
     const prefix = message.role === "user" ? "U" : "A";
     const annotations = [];
@@ -1150,6 +1215,90 @@ function appendDialogBlock(lines, messages, effectiveFocus) {
     rest.forEach((row) => lines.push(`   ${row}`));
   });
   lines.push(fence);
+}
+
+// Issue #140: GitHub caps the prefilled-issue URL at 8192 characters, so for
+// chats that produce a long transcript we have to shrink the body. We keep
+// the last two turns intact in shape and replace the rest with summary
+// markers: "... omitted N earlier messages ..." for trimmed-out turns,
+// "... omitted N lines ..." inside a multi-line message, and
+// "... omitted N characters ..." inside a single long line. The exact ceiling
+// is `GITHUB_URL_MAX_LENGTH` (documented limit); `URL_SAFETY_MARGIN` keeps a
+// small buffer for the encoded `&labels=…` tail.
+const GITHUB_URL_MAX_LENGTH = 8192;
+const URL_SAFETY_MARGIN = 16;
+const URL_BUDGET = GITHUB_URL_MAX_LENGTH - URL_SAFETY_MARGIN;
+
+function truncateSingleLine(text, maxChars) {
+  const str = String(text);
+  if (str.length <= maxChars) return str;
+  const markerTemplate = "... omitted XXXXX characters ...";
+  const reservedForMarker = markerTemplate.length + 12;
+  const half = Math.max(8, Math.floor((maxChars - reservedForMarker) / 2));
+  if (half * 2 + reservedForMarker >= str.length) {
+    // Not enough headroom for a useful trim — fall back to a head-only slice.
+    const headOnly = str.slice(0, Math.max(8, maxChars - reservedForMarker));
+    const omitted = str.length - headOnly.length;
+    return `${headOnly}... omitted ${omitted} characters ...`;
+  }
+  const start = str.slice(0, half);
+  const end = str.slice(str.length - half);
+  const omitted = str.length - start.length - end.length;
+  return `${start}... omitted ${omitted} characters ...${end}`;
+}
+
+function truncateMessageContent(content, maxChars) {
+  const str = String(content ?? "");
+  if (str.length <= maxChars) return str;
+  const lines = str.split("\n");
+  if (lines.length > 2) {
+    const first = lines[0];
+    const last = lines[lines.length - 1];
+    const omitted = lines.length - 2;
+    const combined = `${first}\n... omitted ${omitted} lines ...\n${last}`;
+    if (combined.length <= maxChars) return combined;
+    return `${truncateSingleLine(first, Math.floor((maxChars - 32) / 2))}\n... omitted ${omitted} lines ...\n${truncateSingleLine(last, Math.floor((maxChars - 32) / 2))}`;
+  }
+  return truncateSingleLine(str, maxChars);
+}
+
+function buildIssueUrl(title, body, labels) {
+  const params = new URLSearchParams({ title, body, labels });
+  return `https://github.com/${ISSUE_REPOSITORY}/issues/new?${params.toString()}`;
+}
+
+function fitIssueUrl(context, buildBody) {
+  const title = createIssueTitle(context.messages, context.focusMessage);
+  const labels = ISSUE_LABELS;
+  const messages = Array.isArray(context.messages) ? context.messages : [];
+
+  // Fast path: build with the full transcript and return when it already fits.
+  let body = buildBody({ ...context, messages, earlierOmitted: 0 });
+  let url = buildIssueUrl(title, body, labels);
+  if (url.length <= URL_BUDGET) return url;
+
+  // Step 1: keep only the last two messages. Earlier ones become a single
+  // "... omitted N earlier messages ..." marker.
+  const lastTwo = messages.slice(-2);
+  const earlierOmitted = messages.length - lastTwo.length;
+  body = buildBody({ ...context, messages: lastTwo, earlierOmitted });
+  url = buildIssueUrl(title, body, labels);
+  if (url.length <= URL_BUDGET) return url;
+
+  // Step 2: shrink each remaining message until the URL fits. The per-message
+  // budget halves on each pass, mirroring an exponential backoff so we
+  // converge quickly without an open-ended loop.
+  for (const perMessageBudget of [4096, 2048, 1024, 512, 256, 128, 64, 32]) {
+    const truncatedMessages = lastTwo.map((message) => ({
+      ...message,
+      content: truncateMessageContent(message.content, perMessageBudget),
+    }));
+    body = buildBody({ ...context, messages: truncatedMessages, earlierOmitted });
+    url = buildIssueUrl(title, body, labels);
+    if (url.length <= URL_BUDGET) return url;
+  }
+
+  return url;
 }
 
 function shortText(value, limit = 70) {
@@ -1203,6 +1352,7 @@ function createIssueReportBody({
   demoStatus,
   diagnosticsMode,
   userContext,
+  earlierOmitted = 0,
 }) {
   const effectiveFocus = focusMessage ?? lastUnknownAssistantMessage(messages);
   const lines = [
@@ -1210,7 +1360,6 @@ function createIssueReportBody({
     "",
     `- **Version**: ${APP_VERSION}`,
     `- **URL**: ${window.location.href}`,
-    `- **User Agent**: ${navigator.userAgent}`,
     `- **Worker**: ${workerState}`,
     `- **Mode**: ${demoMode ? "demo" : "manual"}`,
     `- **Status**: ${demoStatus}`,
@@ -1223,7 +1372,7 @@ function createIssueReportBody({
   lines.push("## Dialog");
   lines.push("");
 
-  appendDialogBlock(lines, messages, effectiveFocus);
+  appendDialogBlock(lines, messages, effectiveFocus, { earlierOmitted });
 
   const prompt = promptBeforeMessage(messages, effectiveFocus);
   lines.push("");
@@ -1253,12 +1402,7 @@ function createIssueReportBody({
 }
 
 function createIssueUrl(context) {
-  const params = new URLSearchParams({
-    title: createIssueTitle(context.messages, context.focusMessage),
-    body: createIssueReportBody(context),
-    labels: ISSUE_LABELS,
-  });
-  return `https://github.com/${ISSUE_REPOSITORY}/issues/new?${params.toString()}`;
+  return fitIssueUrl(context, (effectiveContext) => createIssueReportBody(effectiveContext));
 }
 
 function Message({ message, diagnosticsMode, reportIssueUrl, t }) {
