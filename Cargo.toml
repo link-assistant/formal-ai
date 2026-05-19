@@ -10,6 +10,14 @@ categories = ["command-line-utilities", "web-programming::http-server"]
 repository = "https://github.com/link-assistant/formal-ai"
 documentation = "https://github.com/link-assistant/formal-ai"
 rust-version = "1.70"
+include = [
+    "/Cargo.lock",
+    "/Cargo.toml",
+    "/LICENSE",
+    "/README.md",
+    "/data/**",
+    "/src/**",
+]
 
 [lib]
 name = "formal_ai"
