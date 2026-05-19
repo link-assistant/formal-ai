@@ -47,6 +47,18 @@ async function submitCurrentPrompt(page) {
   return lastMsg;
 }
 
+async function setRangeValue(page, testId, value) {
+  await page.locator(`[data-testid="${testId}"]`).evaluate((node, nextValue) => {
+    const valueSetter = Object.getOwnPropertyDescriptor(
+      Object.getPrototypeOf(node),
+      'value',
+    )?.set;
+    valueSetter.call(node, String(nextValue));
+    node.dispatchEvent(new Event('input', { bubbles: true }));
+    node.dispatchEvent(new Event('change', { bubbles: true }));
+  }, value);
+}
+
 test.describe('formal-ai demo UI', () => {
   test.beforeEach(async ({ page }) => {
     await disableGreetingVariations(page);
@@ -248,6 +260,30 @@ test.describe('formal-ai demo UI', () => {
     await expect(lastMsg).not.toContainText(UNKNOWN_ANSWER_MARKER);
   });
 
+  test('polite small-talk follow-up does not fall through to unknown', async ({ page }) => {
+    await switchToManualMode(page);
+    await setRangeValue(page, 'setting-temperature', 0);
+    await setRangeValue(page, 'setting-follow-up-probability', 1);
+
+    const lastMsg = await sendPrompt(page, 'I am fine, thank you');
+
+    await expect(lastMsg).toContainText('Glad to hear it');
+    await expect(lastMsg).toContainText('What would you like to do next?');
+    await expect(lastMsg).not.toContainText(UNKNOWN_ANSWER_MARKER);
+  });
+
+  test('courtesy response can leave initiative with the user', async ({ page }) => {
+    await switchToManualMode(page);
+    await setRangeValue(page, 'setting-temperature', 0);
+    await setRangeValue(page, 'setting-follow-up-probability', 0);
+
+    const lastMsg = await sendPrompt(page, 'I am fine, thank you');
+
+    await expect(lastMsg).toContainText('Glad to hear it.');
+    await expect(lastMsg).not.toContainText('What would you like to do next?');
+    await expect(lastMsg).not.toContainText(UNKNOWN_ANSWER_MARKER);
+  });
+
   test('reported prompt examples resolve through the browser worker', async ({ page }) => {
     await switchToManualMode(page);
 
@@ -273,6 +309,16 @@ test.describe('formal-ai demo UI', () => {
     await expect(testStatus).toContainText('Test passed');
     await expect(testStatus).toContainText("I'm here");
     await expect(testStatus).not.toContainText(UNKNOWN_ANSWER_MARKER);
+
+    for (const { prompt, expected } of [
+      { prompt: 'тест пройден', expected: 'Тест пройден' },
+      { prompt: 'परीक्षण सफल रहा', expected: 'परीक्षण सफल रहा' },
+      { prompt: '测试通过', expected: '测试通过' },
+    ]) {
+      const localizedStatus = await sendPrompt(page, prompt);
+      await expect(localizedStatus).toContainText(expected);
+      await expect(localizedStatus).not.toContainText(UNKNOWN_ANSWER_MARKER);
+    }
 
     const capabilities = await sendPrompt(page, 'What you can do?');
     await expect(capabilities).toContainText('Here is what I can do');

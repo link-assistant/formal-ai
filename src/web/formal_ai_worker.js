@@ -46,6 +46,16 @@ const FALLBACK_IDENTITY_ANSWER =
 const FALLBACK_GREETING_ANSWER = "Hi, how may I help you?";
 
 const FALLBACK_TEST_STATUS_ANSWER = "Test passed. I'm here.";
+const FALLBACK_COURTESY_RESPONSE_ANSWER =
+  "Glad to hear it. What would you like to do next?";
+const FALLBACK_COURTESY_ACKNOWLEDGEMENTS = [
+  "Glad to hear it.",
+  "You're welcome.",
+];
+const FALLBACK_COURTESY_FOLLOW_UPS = [
+  "What would you like to do next?",
+  "Do you want to discuss something else?",
+];
 
 const FALLBACK_UNKNOWN_ANSWER =
   "I cannot answer that from local Links Notation rules yet. Please add a fact or add a rule in Links Notation, then run the request again.";
@@ -56,8 +66,8 @@ const FALLBACK_CLARIFICATION_ANSWER =
 // Mutable runtime tables — populated from seed at init(). Each entry is
 // `{ text, variants }` so the worker can return either the canonical phrase
 // (for deterministic tests and tool calls) or a random variant (for greeting
-// randomisation introduced in issue #27). Non-greeting intents currently ship
-// a single phrase, so `variants` is `[text]` and randomisation is a no-op.
+// randomisation introduced in issue #27). Courtesy responses can also carry
+// separated acknowledgement and follow-up fragments for issue #160.
 let MULTILINGUAL_ANSWERS = {
   greeting: {
     en: { text: FALLBACK_GREETING_ANSWER, variants: [FALLBACK_GREETING_ANSWER] },
@@ -67,6 +77,14 @@ let MULTILINGUAL_ANSWERS = {
   },
   test_status: {
     en: { text: FALLBACK_TEST_STATUS_ANSWER, variants: [FALLBACK_TEST_STATUS_ANSWER] },
+  },
+  courtesy_response: {
+    en: {
+      text: FALLBACK_COURTESY_RESPONSE_ANSWER,
+      variants: [FALLBACK_COURTESY_RESPONSE_ANSWER],
+      acknowledgements: FALLBACK_COURTESY_ACKNOWLEDGEMENTS,
+      followUps: FALLBACK_COURTESY_FOLLOW_UPS,
+    },
   },
   identity: {
     en: { text: FALLBACK_IDENTITY_ANSWER, variants: [FALLBACK_IDENTITY_ANSWER] },
@@ -164,8 +182,55 @@ let INTENT_ROUTING = {
       id: "intent_greeting",
       slug: "greeting",
       responseLink: "response:greeting",
-      keywords: ["hi", "hello", "hey", "привет", "здравствуйте", "नमस्ते", "你好", "您好"],
-      phrases: [],
+      keywords: [
+        "hi",
+        "hello",
+        "hey",
+        "привет",
+        "здравствуйте",
+        "шалом",
+        "नमस्ते",
+        "नमस्कार",
+        "सलाम",
+        "हाय",
+        "你好",
+        "您好",
+        "嗨",
+        "哈喽",
+      ],
+      phrases: [
+        "how are you",
+        "how are you doing",
+        "how do you do",
+        "how is it going",
+        "how s it going",
+        "how are things",
+        "шабат шалом",
+        "как дела",
+        "как твои дела",
+        "как ваши дела",
+        "как у тебя дела",
+        "как у вас дела",
+        "привет как дела",
+        "здравствуйте как ваши дела",
+        "как поживаешь",
+        "как вы поживаете",
+        "राम राम",
+        "कैसे हो",
+        "आप कैसे हैं",
+        "तुम कैसे हो",
+        "क्या हाल है",
+        "आपका क्या हाल है",
+        "सब कैसा चल रहा है",
+        "早上好",
+        "早安",
+        "你好吗",
+        "你还好吗",
+        "你怎么样",
+        "您怎么样",
+        "最近怎么样",
+        "过得怎么样",
+      ],
       tokens: ["greet"],
       combos: [],
     },
@@ -173,8 +238,59 @@ let INTENT_ROUTING = {
       id: "intent_farewell",
       slug: "farewell",
       responseLink: "response:farewell",
-      keywords: ["bye", "goodbye", "пока", "ciao", "再见", "अलविदा"],
-      phrases: ["до свидания", "досвидания"],
+      keywords: [
+        "bye",
+        "goodbye",
+        "пока",
+        "ciao",
+        "tschüss",
+        "再见",
+        "拜拜",
+        "回见",
+        "अलविदा",
+        "विदा",
+        "बाय",
+        "टाटा",
+      ],
+      phrases: ["до свидания", "досвидания", "改天见", "后会有期", "फिर मिलेंगे"],
+      tokens: [],
+      combos: [],
+    },
+    {
+      id: "intent_courtesy_response",
+      slug: "courtesy_response",
+      responseLink: "response:courtesy_response",
+      keywords: ["thanks", "спасибо", "благодарю", "धन्यवाद", "शुक्रिया", "谢谢"],
+      phrases: [
+        "thank you",
+        "i am fine thank you",
+        "i am fine thanks",
+        "i m fine thank you",
+        "i m fine thanks",
+        "i am good thank you",
+        "i am good thanks",
+        "i m good thank you",
+        "i m good thanks",
+        "fine thank you",
+        "fine thanks",
+        "good thank you",
+        "good thanks",
+        "doing well thank you",
+        "doing well thanks",
+        "у меня все хорошо спасибо",
+        "у меня всё хорошо спасибо",
+        "все хорошо спасибо",
+        "всё хорошо спасибо",
+        "хорошо спасибо",
+        "нормально спасибо",
+        "मैं ठीक हूँ धन्यवाद",
+        "ठीक हूँ धन्यवाद",
+        "मैं अच्छा हूँ धन्यवाद",
+        "我很好谢谢",
+        "我很好 谢谢",
+        "好的谢谢",
+        "好的 谢谢",
+      ],
       tokens: [],
       combos: [],
     },
@@ -182,7 +298,18 @@ let INTENT_ROUTING = {
       id: "intent_test_status",
       slug: "test_status",
       responseLink: "response:test_status",
-      keywords: ["test", "ping", "pong", "testing"],
+      keywords: [
+        "test",
+        "ping",
+        "pong",
+        "testing",
+        "тест",
+        "пинг",
+        "टेस्ट",
+        "परीक्षण",
+        "测试",
+        "測試",
+      ],
       phrases: [
         "test passed",
         "testing 123",
@@ -194,6 +321,19 @@ let INTENT_ROUTING = {
         "тест пройден",
         "ты здесь",
         "вы здесь",
+        "परीक्षण सफल रहा",
+        "मैं यहाँ हूँ",
+        "मैं यहां हूं",
+        "क्या आप वहाँ हैं",
+        "क्या आप वहां हैं",
+        "测试通过",
+        "測試通過",
+        "我在这里",
+        "我在這裡",
+        "你在吗",
+        "您在吗",
+        "你在嗎",
+        "您在嗎",
       ],
       tokens: [],
       combos: [
@@ -201,6 +341,9 @@ let INTENT_ROUTING = {
         ["test", "here"],
         ["testing", "123"],
         ["ping", "test"],
+        ["тест", "пройден"],
+        ["тест", "здесь"],
+        ["परीक्षण", "सफल"],
       ],
     },
     {
@@ -220,7 +363,15 @@ let INTENT_ROUTING = {
         "кто ты",
         "что ты",
         "तुम कौन हो",
+        "तू कौन है",
+        "आप कौन हैं",
+        "अपना परिचय दो",
+        "अपने बारे में बताओ",
         "你是谁",
+        "您是谁",
+        "你是什么",
+        "介绍一下你自己",
+        "告诉我你自己",
         "你是誰",
       ],
       tokens: [],
@@ -244,6 +395,14 @@ function fallbackEntry(intent) {
   if (intent === "greeting") {
     return { text: FALLBACK_GREETING_ANSWER, variants: [FALLBACK_GREETING_ANSWER] };
   }
+  if (intent === "courtesy_response") {
+    return {
+      text: FALLBACK_COURTESY_RESPONSE_ANSWER,
+      variants: [FALLBACK_COURTESY_RESPONSE_ANSWER],
+      acknowledgements: FALLBACK_COURTESY_ACKNOWLEDGEMENTS,
+      followUps: FALLBACK_COURTESY_FOLLOW_UPS,
+    };
+  }
   if (intent === "identity") {
     return { text: FALLBACK_IDENTITY_ANSWER, variants: [FALLBACK_IDENTITY_ANSWER] };
   }
@@ -265,19 +424,39 @@ function normalizeEntry(value, intent) {
       Array.isArray(value.variants) && value.variants.length > 0
         ? value.variants
         : [value.text];
-    return { text: value.text, variants: variants };
+    const acknowledgements = Array.isArray(value.acknowledgements)
+      ? value.acknowledgements.filter(Boolean)
+      : [];
+    const followUps = Array.isArray(value.followUps)
+      ? value.followUps.filter(Boolean)
+      : [];
+    return {
+      text: value.text,
+      variants: variants,
+      acknowledgements: acknowledgements,
+      followUps: followUps,
+    };
   }
   if (typeof value === "string") {
-    return { text: value, variants: [value] };
+    return {
+      text: value,
+      variants: [value],
+      acknowledgements: [],
+      followUps: [],
+    };
   }
   return fallbackEntry(intent);
 }
 
-function answerFor(intent, language, options) {
-  const opts = options || {};
+function responseEntryFor(intent, language) {
   const table = MULTILINGUAL_ANSWERS[intent] || {};
   const raw = table[language] || table.en || fallbackEntry(intent);
-  const entry = normalizeEntry(raw, intent);
+  return normalizeEntry(raw, intent);
+}
+
+function answerFor(intent, language, options) {
+  const opts = options || {};
+  const entry = responseEntryFor(intent, language);
   if (opts.randomize && Array.isArray(entry.variants) && entry.variants.length > 1) {
     const idx = Math.floor(Math.random() * entry.variants.length);
     return entry.variants[idx] || entry.text;
@@ -289,6 +468,48 @@ function numericPreference(value, fallback, min, max) {
   const parsed = Number(value);
   if (!Number.isFinite(parsed)) return fallback;
   return Math.min(max, Math.max(min, parsed));
+}
+
+function pickVariant(values, randomize) {
+  if (!Array.isArray(values) || values.length === 0) return "";
+  if (!randomize || values.length === 1) return values[0];
+  return values[Math.floor(Math.random() * values.length)] || values[0];
+}
+
+function includeFollowUpQuestion(probability, randomize) {
+  if (probability <= 0) return false;
+  if (probability >= 1) return true;
+  if (!randomize) return probability >= 0.5;
+  return Math.random() < probability;
+}
+
+function courtesyResponseFor(language, preferences) {
+  const prefs = preferences || {};
+  const entry = responseEntryFor("courtesy_response", language);
+  const temperature = numericPreference(prefs.temperature, 0.7, 0, 1);
+  const followUpProbability = numericPreference(
+    prefs.followUpProbability,
+    0.75,
+    0,
+    1,
+  );
+  const randomize = temperature > 0;
+  const acknowledgements =
+    entry.acknowledgements.length > 0 ? entry.acknowledgements : [entry.text];
+  const followUps = entry.followUps;
+  const acknowledgement = pickVariant(acknowledgements, randomize);
+  const includeFollowUp =
+    followUps.length > 0 &&
+    includeFollowUpQuestion(followUpProbability, randomize);
+  return {
+    content: includeFollowUp
+      ? `${acknowledgement} ${pickVariant(followUps, randomize)}`
+      : acknowledgement,
+    temperature: temperature,
+    randomize: randomize,
+    followUpProbability: followUpProbability,
+    followUpIncluded: includeFollowUp,
+  };
 }
 
 function definitionFusionByDefault(preferences) {
@@ -828,6 +1049,45 @@ const ARITHMETIC_NUMBER_WORDS = [
   " десять ",
 ];
 
+const PERCENT_OF_CURRENCY_CODES = new Map([
+  ["$", "USD"],
+  ["€", "EUR"],
+  ["¥", "JPY"],
+  ["₹", "INR"],
+  ["₽", "RUB"],
+]);
+
+function currencyCodeFromWord(value) {
+  const lower = String(value || "").toLowerCase();
+  if (lower === "usd" || lower === "dollar" || lower === "dollars") {
+    return "USD";
+  }
+  if (lower === "eur" || lower === "euro" || lower === "euros") {
+    return "EUR";
+  }
+  if (lower === "rub" || lower === "ruble" || lower === "rubles") {
+    return "RUB";
+  }
+  return "";
+}
+
+function evaluatePercentOfExpression(expression) {
+  const match = String(expression || "")
+    .trim()
+    .match(
+      /^([+-]?\d+(?:\.\d+)?)\s*%\s+of\s+([$€¥₹₽])?\s*([+-]?\d+(?:\.\d+)?)(?:\s*(usd|eur|rub|dollars?|euros?|rubles?))?$/i,
+    );
+  if (!match) return null;
+  const percent = Number(match[1]);
+  const amount = Number(match[3]);
+  if (!Number.isFinite(percent) || !Number.isFinite(amount)) return null;
+  const currency =
+    PERCENT_OF_CURRENCY_CODES.get(match[2] || "") ||
+    currencyCodeFromWord(match[4]);
+  const result = formatArithmeticResult((amount * percent) / 100);
+  return currency ? `${result} ${currency}` : result;
+}
+
 function normalizeArithmeticWords(expression) {
   const lower = String(expression).toLowerCase();
   const normalizedPhrases = lower
@@ -1192,6 +1452,7 @@ function extractArithmeticExpression(prompt) {
   const hasSymbolic = /[+*/%^=×·÷−$€¥₹₽]/.test(working) || (!hasLetter && /-/.test(working));
   const hasWordOperator = hasArithmeticWordOperator(working);
   const hasSpelled = hasSpelledArithmetic(working);
+  const hasPercentOf = evaluatePercentOfExpression(working) !== null;
   const hasWord =
     hasWordOperator ||
     [
@@ -1238,6 +1499,7 @@ function extractArithmeticExpression(prompt) {
   const hasDigit = /[0-9]/.test(working);
   if (!hasDigit && !hasSpelled) return null;
   if (!hasSymbolic && !hasWord && hasLetter) return null;
+  if (hasPercentOf) return working;
   const allowed = /^[0-9+\-*/%().=\s_×·÷−,a-zA-Z]+$/;
   if (!allowed.test(working) && !hasWordOperator) return null;
   return working;
@@ -1352,6 +1614,10 @@ function isFarewellPrompt(normalized, rawPrompt) {
 
 function isTestStatusPrompt(normalized, rawPrompt) {
   return matchesIntentRoute(normalized, rawPrompt, "intent_test_status");
+}
+
+function isCourtesyResponsePrompt(normalized, rawPrompt) {
+  return matchesIntentRoute(normalized, rawPrompt, "intent_courtesy_response");
 }
 
 function isPunctuationOnlyPrompt(prompt) {
@@ -1698,7 +1964,11 @@ function tryArithmetic(prompt) {
     const isEquation = expression.includes("=");
     let formatted;
     let backend = "js";
-    if (isEquation) {
+    const percentOfResult = evaluatePercentOfExpression(expression);
+    if (percentOfResult) {
+      formatted = percentOfResult;
+      backend = "js-percent-of";
+    } else if (isEquation) {
       formatted = solveLinearEquation(expression);
     } else {
       const wasmResult = wasmEvaluateArithmetic(expression);
@@ -2160,6 +2430,13 @@ const WIKIPEDIA_SEARCH_HOSTS = {
   zh: "https://zh.wikipedia.org/w/rest.php/v1/search/page",
 };
 
+const WIKTIONARY_SEARCH_HOSTS = {
+  en: "https://en.wiktionary.org/w/api.php",
+  ru: "https://ru.wiktionary.org/w/api.php",
+  hi: "https://hi.wiktionary.org/w/api.php",
+  zh: "https://zh.wiktionary.org/w/api.php",
+};
+
 function wikipediaHostsFor(language) {
   // Try the detected language first, then fall back to English so a Russian
   // query for an English-only article still returns a definition.
@@ -2210,6 +2487,76 @@ function wikipediaTermVariants(term) {
     push(capitalizeWords(swapped.toLowerCase()));
   }
   return variants;
+}
+
+function normalizeLookupText(value) {
+  return String(value || "")
+    .normalize("NFKD")
+    .toLowerCase()
+    .replace(/\p{M}/gu, "")
+    .replace(/[^\p{L}\p{N}]+/gu, " ")
+    .trim();
+}
+
+function compactLookupText(value) {
+  return normalizeLookupText(value).replace(/\s+/g, "");
+}
+
+function boundedEditDistance(left, right, limit) {
+  if (Math.abs(left.length - right.length) > limit) return limit + 1;
+  let previous = Array.from({ length: right.length + 1 }, (_, index) => index);
+  for (let i = 1; i <= left.length; i += 1) {
+    const current = [i];
+    let rowMin = current[0];
+    for (let j = 1; j <= right.length; j += 1) {
+      const cost = left[i - 1] === right[j - 1] ? 0 : 1;
+      const next = Math.min(
+        previous[j] + 1,
+        current[j - 1] + 1,
+        previous[j - 1] + cost,
+      );
+      current[j] = next;
+      rowMin = Math.min(rowMin, next);
+    }
+    if (rowMin > limit) return limit + 1;
+    previous = current;
+  }
+  return previous[right.length];
+}
+
+function isNearLookupText(left, right) {
+  const a = compactLookupText(left);
+  const b = compactLookupText(right);
+  if (!a || !b) return false;
+  const maxLength = Math.max(a.length, b.length);
+  const limit = maxLength <= 8 ? 1 : 2;
+  return boundedEditDistance(a, b, limit) <= limit;
+}
+
+function isPlausibleWikipediaSearchMatch(summary, term) {
+  if (!summary || summary.matchKind !== "search") return true;
+  const termNormalized = normalizeLookupText(term);
+  if (!termNormalized) return true;
+  const termTokens = termNormalized.split(/\s+/).filter(Boolean);
+  const candidates = [
+    summary.title,
+    summary.matchedTitle,
+    String(summary.matchedSlug || "").replace(/_/g, " "),
+  ];
+  for (const candidate of candidates) {
+    const normalized = normalizeLookupText(candidate);
+    if (!normalized) continue;
+    if (normalized === termNormalized) return true;
+    const candidateTokens = new Set(normalized.split(/\s+/).filter(Boolean));
+    if (
+      termTokens.length > 0 &&
+      termTokens.every((token) => candidateTokens.has(token))
+    ) {
+      return true;
+    }
+    if (isNearLookupText(termNormalized, normalized)) return true;
+  }
+  return false;
 }
 
 // Resolve a context-qualified term to a Wikipedia page slug via full-text page
@@ -2803,6 +3150,180 @@ async function wikidataSearchEntity(term, language) {
   return null;
 }
 
+function wikidataConceptUrl(hit) {
+  const id = hit && hit.id ? String(hit.id) : "";
+  if (id) return `https://www.wikidata.org/wiki/${encodeURIComponent(id)}`;
+  const conceptUri = hit && hit.concepturi ? String(hit.concepturi) : "";
+  const qid = conceptUri.match(/Q\d+/);
+  if (qid) return `https://www.wikidata.org/wiki/${qid[0]}`;
+  return "https://www.wikidata.org/wiki/Wikidata:Main_Page";
+}
+
+function wikidataHitMatchesTerm(hit, term) {
+  const target = normalizeLookupText(term);
+  if (!target || !hit) return false;
+  const candidates = [
+    hit.label,
+    hit.title,
+    hit.match && hit.match.text,
+    hit.display && hit.display.label && hit.display.label.value,
+  ];
+  if (Array.isArray(hit.aliases)) {
+    candidates.push(...hit.aliases);
+  }
+  return candidates.some((candidate) => normalizeLookupText(candidate) === target);
+}
+
+async function fetchWikidataConceptSummary(term, language) {
+  if (typeof fetch !== "function") return null;
+  const ordered = [language, "en"].filter(
+    (value, index, array) => value && array.indexOf(value) === index,
+  );
+  for (const lang of ordered) {
+    const url = `${WIKIDATA_API}?action=wbsearchentities&format=json&origin=*&type=item&limit=5&language=${encodeURIComponent(
+      lang,
+    )}&search=${encodeURIComponent(term)}`;
+    try {
+      const response = await fetch(url, {
+        headers: {
+          accept: "application/json",
+          "api-user-agent":
+            "formal-ai-demo (https://github.com/link-assistant/formal-ai)",
+        },
+      });
+      if (!response || !response.ok) continue;
+      const data = await response.json();
+      const hits = data && Array.isArray(data.search) ? data.search : [];
+      const hit = hits.find((candidate) =>
+        wikidataHitMatchesTerm(candidate, term),
+      );
+      if (!hit) continue;
+      const display = hit.display || {};
+      return {
+        sourceKind: "wikidata",
+        qid: hit.id || "",
+        title:
+          (display.label && display.label.value) ||
+          hit.label ||
+          (hit.match && hit.match.text) ||
+          term,
+        description:
+          (display.description && display.description.value) ||
+          hit.description ||
+          "",
+        url: wikidataConceptUrl(hit),
+        language: lang,
+      };
+    } catch (_error) {
+      // Try the next Wikidata language.
+    }
+  }
+  return null;
+}
+
+function wiktionaryFallbackDescription(title, language) {
+  if (language === "ru") {
+    return `В Wiktionary есть словарная статья «${title}».`;
+  }
+  if (language === "zh") {
+    return `Wiktionary 有“${title}”这个词条。`;
+  }
+  if (language === "hi") {
+    return `Wiktionary में "${title}" के लिए शब्दकोश प्रविष्टि है।`;
+  }
+  return `Wiktionary has a dictionary entry for "${title}".`;
+}
+
+async function fetchWiktionaryEntry(term, language) {
+  if (typeof fetch !== "function") return null;
+  const ordered = [language, "en"].filter(
+    (value, index, array) => value && array.indexOf(value) === index,
+  );
+  const target = normalizeLookupText(term);
+  for (const lang of ordered) {
+    const base = WIKTIONARY_SEARCH_HOSTS[lang] || WIKTIONARY_SEARCH_HOSTS.en;
+    const url = `${base}?action=opensearch&search=${encodeURIComponent(
+      term,
+    )}&limit=5&format=json&origin=*`;
+    try {
+      const response = await fetch(url, {
+        headers: {
+          accept: "application/json",
+          "api-user-agent":
+            "formal-ai-demo (https://github.com/link-assistant/formal-ai)",
+        },
+      });
+      if (!response || !response.ok) continue;
+      const data = await response.json();
+      if (!Array.isArray(data) || !Array.isArray(data[1])) continue;
+      const titles = data[1];
+      const descriptions = Array.isArray(data[2]) ? data[2] : [];
+      const urls = Array.isArray(data[3]) ? data[3] : [];
+      const index = titles.findIndex(
+        (title) => normalizeLookupText(title) === target,
+      );
+      if (index < 0) continue;
+      const title = titles[index] || term;
+      return {
+        sourceKind: "wiktionary",
+        title,
+        description:
+          descriptions[index] || wiktionaryFallbackDescription(title, lang),
+        url:
+          urls[index] ||
+          `https://${lang}.wiktionary.org/wiki/${encodeURIComponent(title)}`,
+        language: lang,
+      };
+    } catch (_error) {
+      // Try the next Wiktionary language.
+    }
+  }
+  return null;
+}
+
+function renderExternalLookupContent(result, requestedTerm) {
+  const humanUrl = humanizeUrl(result.url);
+  const title = result.title || requestedTerm;
+  const heading =
+    requestedTerm && normalizeLookupText(requestedTerm) !== normalizeLookupText(title)
+      ? `${requestedTerm}: ${title}`
+      : title;
+  const description = String(result.description || "").trim();
+  const body = description ? `${heading}: ${description}` : `${heading}.`;
+  return `${body}\n\nSource: [${humanUrl}](${result.url}) (${result.sourceKind}).`;
+}
+
+function externalLookupResponse(result, requestedTerm, rejectedSummary) {
+  const humanUrl = humanizeUrl(result.url);
+  const evidence = [
+    `${result.sourceKind}_lookup:${result.qid || result.title}`,
+    `source:${humanUrl}`,
+    `language:${result.language}`,
+  ];
+  if (result.qid) evidence.push(`wikidata:${result.qid}`);
+  if (rejectedSummary && rejectedSummary.title) {
+    evidence.push(`wikipedia_lookup:rejected:${rejectedSummary.title}`);
+  }
+  return {
+    intent: `${result.sourceKind}_lookup`,
+    content: renderExternalLookupContent(result, requestedTerm),
+    confidence: result.sourceKind === "wikidata" ? 0.82 : 0.75,
+    evidence,
+  };
+}
+
+async function tryTermKnowledgeFallback(term, language, rejectedSummary) {
+  const wikidata = await fetchWikidataConceptSummary(term, language);
+  if (wikidata) {
+    return externalLookupResponse(wikidata, term, rejectedSummary);
+  }
+  const wiktionary = await fetchWiktionaryEntry(term, language);
+  if (wiktionary) {
+    return externalLookupResponse(wiktionary, term, rejectedSummary);
+  }
+  return null;
+}
+
 async function wikidataFetchEntityClaim(qid, property, language) {
   if (typeof fetch !== "function") return null;
   const url = `${WIKIDATA_API}?action=wbgetentities&format=json&origin=*&ids=${encodeURIComponent(
@@ -3141,8 +3662,15 @@ async function tryWikipediaLookup(prompt, language, preferences) {
   const wikiTerm = query.termOriginal || query.term;
   const wikiContext = query.contextOriginal || query.context;
   const summary = await fetchWikipediaSummary(wikiTerm, language, wikiContext);
-  if (!summary) return null;
+  if (!summary) {
+    return tryTermKnowledgeFallback(wikiTerm, language, null);
+  }
   const isClosestMatch = isClosestWikipediaMatch(summary);
+  if (isClosestMatch && !isPlausibleWikipediaSearchMatch(summary, wikiTerm)) {
+    const fallback = await tryTermKnowledgeFallback(wikiTerm, language, summary);
+    if (fallback) return fallback;
+    return null;
+  }
   const guessProbability = numericPreference(
     preferences && preferences.guessProbability,
     0.8,
@@ -4859,14 +5387,28 @@ async function fetchProviderJson(providerId, url, options) {
   }
 }
 
-async function searchDuckDuckGo(query, limit) {
+async function searchDuckDuckGo(query, language, limit) {
   // DuckDuckGo Instant Answer — CORS-readable, no key. Returns the abstract
   // and a flat list of related-topic links. We treat the abstract link plus
   // the related topics as the ranked result list (issue #133).
-  const url =
-    "https://api.duckduckgo.com/?q=" +
-    encodeURIComponent(query) +
-    "&format=json&no_redirect=1&no_html=1";
+  //
+  // Issue #153: the previous signature was (query, limit) but the dispatcher
+  // calls every provider as (query, language, providerLimit). That meant
+  // `limit` was set to a 2-letter language code like "en", and
+  // `results.slice(0, "en")` silently returned an empty array, so DuckDuckGo
+  // contributed nothing to the fused ranking.
+  const cap = typeof limit === "number" && Number.isFinite(limit) && limit > 0
+    ? Math.floor(limit)
+    : 5;
+  const params = ["q=" + encodeURIComponent(query), "format=json", "no_redirect=1", "no_html=1"];
+  if (language && /^[a-z]{2,3}$/i.test(language) && language !== "en") {
+    // DuckDuckGo accepts a `kl` region hint (lowercase locale). We do not
+    // require a region/country code so a bare language is treated as the
+    // canonical locale for that language; failing that, DDG falls back to
+    // English content gracefully.
+    params.push("kl=" + encodeURIComponent(`${language}-${language}`));
+  }
+  const url = "https://api.duckduckgo.com/?" + params.join("&");
   const outcome = await fetchProviderJson("duckduckgo", url);
   if (!outcome.ok || !outcome.data) {
     return { ok: false, results: [], finalUrl: outcome.finalUrl, error: outcome.error };
@@ -4900,9 +5442,9 @@ async function searchDuckDuckGo(query, limit) {
         }
       }
     }
-    if (results.length >= limit) break;
+    if (results.length >= cap) break;
   }
-  return { ok: true, results: results.slice(0, limit), finalUrl: outcome.finalUrl };
+  return { ok: true, results: results.slice(0, cap), finalUrl: outcome.finalUrl };
 }
 
 async function searchWikipediaWebProvider(query, language, limit) {
@@ -4911,9 +5453,22 @@ async function searchWikipediaWebProvider(query, language, limit) {
   if (!result || !Array.isArray(result.pages)) {
     return { ok: false, results: [], finalUrl: "", language: language || "en" };
   }
+  // R194/issue-153: thread the Wikipedia page key through so cross-source
+  // deduplication can match `Apple_(disambiguation)` against the Wikidata
+  // sitelink `enwiki: Apple_(disambiguation)` even if the URLs disagree on
+  // percent-encoding.
+  const results = result.pages.slice(0, limit).map((page) => ({
+    title: page.title,
+    url: page.url,
+    excerpt: page.excerpt,
+    wikipediaKey: page.key || page.title || "",
+    wikipediaLanguage: result.language,
+    virtualId: `WP:${page.key || page.title || query}`,
+    sourceKind: "wikipedia",
+  }));
   return {
     ok: true,
-    results: result.pages.slice(0, limit),
+    results,
     language: result.language,
     finalUrl: `https://${result.language}.wikipedia.org/w/rest.php/v1/search/page?q=${encodeURIComponent(query)}`,
   };
@@ -4921,27 +5476,108 @@ async function searchWikipediaWebProvider(query, language, limit) {
 
 async function searchWikidataEntities(query, language, limit) {
   const lang = language && /^[a-z]{2,3}$/i.test(language) ? language : "en";
+  // R194/issue-153: request `sitelinks/urls` so each entity carries its
+  // Wikipedia URL inline. We use that to merge entries returned by the
+  // Wikipedia provider with the same entity (otherwise the user sees the
+  // same fact as two bullets — "Apple" via Wikidata Q89 and "Apple" via
+  // enwiki).
   const url =
     "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=" +
     encodeURIComponent(query) +
     "&language=" +
     encodeURIComponent(lang) +
-    "&format=json&origin=*&limit=" +
+    "&format=json&origin=*&props=sitelinks/urls&limit=" +
     encodeURIComponent(limit);
   const outcome = await fetchProviderJson("wikidata", url);
   if (!outcome.ok || !outcome.data || !Array.isArray(outcome.data.search)) {
     return { ok: false, results: [], finalUrl: outcome.finalUrl, error: outcome.error };
   }
-  const results = outcome.data.search.slice(0, limit).map((entry) => ({
-    title: entry.label || entry.id || query,
-    url: entry.concepturi || `https://www.wikidata.org/wiki/${entry.id}`,
-    excerpt: stripHtml(entry.description || ""),
-  }));
+  const results = outcome.data.search.slice(0, limit).map((entry) => {
+    const sitelinks = entry.sitelinks && typeof entry.sitelinks === "object"
+      ? entry.sitelinks
+      : {};
+    const wikipediaLang = sitelinks[`${lang}wiki`] ? lang : "en";
+    const wikipediaEntry =
+      sitelinks[`${wikipediaLang}wiki`] || sitelinks.enwiki || null;
+    const wikipediaUrl = wikipediaEntry && wikipediaEntry.url
+      ? wikipediaEntry.url
+      : "";
+    const wikipediaKey = wikipediaEntry && wikipediaEntry.title
+      ? String(wikipediaEntry.title).replace(/\s+/g, "_")
+      : "";
+    return {
+      title: entry.label || entry.id || query,
+      url: entry.concepturi || `https://www.wikidata.org/wiki/${entry.id}`,
+      excerpt: stripHtml(entry.description || ""),
+      qid: entry.id || "",
+      virtualId: entry.id || "",
+      sourceKind: "wikidata",
+      wikipediaUrl,
+      wikipediaKey,
+      wikipediaLanguage: wikipediaEntry ? wikipediaLang : "",
+    };
+  });
+  return { ok: true, results, finalUrl: outcome.finalUrl };
+}
+
+async function searchInternetArchive(query, language, limit) {
+  // Issue #153: archive.org publishes a CORS-enabled `advancedsearch.php`
+  // endpoint that returns ranked results across the entire collection (web
+  // captures, books, audio, software, ...). This complements the DuckDuckGo
+  // Instant Answer (which mostly returns a single Wikipedia abstract) and
+  // gives the agent another general-purpose web search fallback to draw on
+  // when the structured providers (Wikidata/Wikipedia) miss the query.
+  const cap = typeof limit === "number" && Number.isFinite(limit) && limit > 0
+    ? Math.floor(limit)
+    : 5;
+  const params = [
+    "q=" + encodeURIComponent(query),
+    "fl%5B%5D=identifier",
+    "fl%5B%5D=title",
+    "fl%5B%5D=description",
+    "fl%5B%5D=creator",
+    "sort%5B%5D=" + encodeURIComponent("downloads desc"),
+    "rows=" + encodeURIComponent(cap),
+    "page=1",
+    "output=json",
+  ];
+  const url = "https://archive.org/advancedsearch.php?" + params.join("&");
+  const outcome = await fetchProviderJson("internet-archive", url);
+  if (
+    !outcome.ok ||
+    !outcome.data ||
+    !outcome.data.response ||
+    !Array.isArray(outcome.data.response.docs)
+  ) {
+    return { ok: false, results: [], finalUrl: outcome.finalUrl, error: outcome.error };
+  }
+  const docs = outcome.data.response.docs;
+  const results = docs.slice(0, cap).map((doc) => {
+    const identifier = doc.identifier || "";
+    const description = Array.isArray(doc.description)
+      ? doc.description.join(" • ")
+      : (doc.description || "");
+    const creator = Array.isArray(doc.creator)
+      ? doc.creator.join(", ")
+      : (doc.creator || "");
+    const excerpt = stripHtml(creator ? `${creator} — ${description}` : description);
+    return {
+      title: doc.title || identifier || query,
+      url: identifier ? `https://archive.org/details/${identifier}` : `https://archive.org/search.php?query=${encodeURIComponent(query)}`,
+      excerpt,
+      virtualId: `IA:${identifier || query}`,
+      sourceKind: "internet-archive",
+    };
+  });
   return { ok: true, results, finalUrl: outcome.finalUrl };
 }
 
 const WEB_SEARCH_PROVIDERS = [
-  { id: "duckduckgo", label: "DuckDuckGo Instant Answer", run: searchDuckDuckGo },
+  {
+    id: "duckduckgo",
+    label: "DuckDuckGo Instant Answer",
+    run: (query, language, limit) => searchDuckDuckGo(query, language, limit),
+  },
   {
     id: "wikipedia",
     label: "Wikipedia REST",
@@ -4953,6 +5589,12 @@ const WEB_SEARCH_PROVIDERS = [
     label: "Wikidata entities",
     run: (query, language, limit) =>
       searchWikidataEntities(query, language, limit),
+  },
+  {
+    id: "internet-archive",
+    label: "Internet Archive (web.archive.org)",
+    run: (query, language, limit) =>
+      searchInternetArchive(query, language, limit),
   },
 ];
 
@@ -5015,6 +5657,158 @@ function reciprocalRankFusion(perProviderResults, k) {
   });
 }
 
+// Issue #153: identify "the same entity" returned by different providers so the
+// fused list shows one bullet with the other URLs collapsed under
+// "Other sources:". We treat a Wikidata Q-id as the strongest signal and fall
+// back to the Wikipedia page key for entries that lack one (Wikipedia
+// disambiguation pages, edge cases where wbsearchentities did not return a
+// sitelink). Returns `null` when no canonical key can be inferred.
+function canonicalEntityKey(meta) {
+  if (!meta) return null;
+  if (meta.qid && /^Q\d+$/.test(meta.qid)) return `Q:${meta.qid}`;
+  if (meta.wikipediaKey) {
+    const lang = meta.wikipediaLanguage || "en";
+    return `WP:${lang}:${meta.wikipediaKey}`;
+  }
+  return null;
+}
+
+function buildItemMetadataIndex(perProvider) {
+  // The richer the meta the better — an entry that carries a Wikidata `qid`
+  // is preferred over a Wikipedia-only entry for the same URL, because the
+  // Q-id is what cross-provider dedupe groups by. Without this preference,
+  // the Wikipedia URL would be indexed by the Wikipedia provider's meta
+  // (`WP:en:Apple`) and a separate Wikidata entry for the same fact (`Q:Q89`)
+  // would never collapse into one bullet.
+  const byUrl = new Map();
+  const rank = (item) => (item && item.qid ? 2 : 1);
+  function record(url, item) {
+    if (!url || !item) return;
+    const existing = byUrl.get(url);
+    if (!existing || rank(item) > rank(existing)) {
+      byUrl.set(url, item);
+    }
+  }
+  for (const provider of perProvider) {
+    if (!provider || !Array.isArray(provider.results)) continue;
+    for (const item of provider.results) {
+      if (!item || !item.url) continue;
+      record(item.url, item);
+      // Wikidata results carry the Wikipedia URL of the same entity inline;
+      // index that too so the Wikipedia provider's entry is recognised as
+      // a duplicate of the Wikidata one.
+      if (item.wikipediaUrl) record(item.wikipediaUrl, item);
+    }
+  }
+  return byUrl;
+}
+
+function dedupeFusedEntries(fused, metaByUrl, evidence) {
+  const groups = new Map();
+  const standalone = [];
+  fused.forEach((entry, index) => {
+    const meta = metaByUrl.get(entry.url) || null;
+    const key = canonicalEntityKey(meta);
+    const enriched = Object.assign({}, entry, {
+      qid: (meta && meta.qid) || "",
+      wikipediaKey: (meta && meta.wikipediaKey) || "",
+      wikipediaLanguage: (meta && meta.wikipediaLanguage) || "",
+      sourceKind: (meta && meta.sourceKind) || "",
+      virtualId:
+        (meta && meta.virtualId) ||
+        (meta && meta.qid) ||
+        (meta && meta.wikipediaKey ? `WP:${meta.wikipediaKey}` : ""),
+      alternateUrls: [],
+      originalRank: index,
+    });
+    if (!key) {
+      standalone.push(enriched);
+      return;
+    }
+    if (groups.has(key)) {
+      const head = groups.get(key);
+      head.score += enriched.score;
+      head.alternateUrls.push({
+        url: enriched.url,
+        title: enriched.title,
+        providers: enriched.providers,
+      });
+      for (const p of enriched.providers) {
+        if (!head.providers.some((existing) => existing.id === p.id && existing.rank === p.rank)) {
+          head.providers.push(p);
+        }
+      }
+      if (Array.isArray(evidence)) {
+        evidence.push(`web_search:dedupe:${key}:absorbed:${enriched.url}`);
+      }
+      return;
+    }
+    groups.set(key, enriched);
+  });
+  const merged = [...groups.values(), ...standalone];
+  merged.sort((a, b) => {
+    if (b.score !== a.score) return b.score - a.score;
+    if (b.providers.length !== a.providers.length) {
+      return b.providers.length - a.providers.length;
+    }
+    return a.originalRank - b.originalRank;
+  });
+  return merged;
+}
+
+// Issue #153: localized templates for the web search response. Keep these in
+// sync with the visible UI strings in `src/web/i18n-catalog.lino`. The worker
+// runs in a separate context that cannot import lino-i18n at runtime, so we
+// inline the small subset that is actually rendered to chat. `en` is always
+// the fallback when the catalogue for the active language is missing.
+const WEB_SEARCH_TEXTS = {
+  en: {
+    header: (query, top, k) =>
+      `Search results for \`${query}\` — top ${top} after reciprocal rank fusion (k = ${k}).`,
+    otherSources: "Other sources",
+    via: "via",
+    noResults: (query, providers) =>
+      `No CORS-enabled web search results were returned for \`${query}\`.\n\nProviders tried: ${providers}.`,
+    allDisabled: (providers) =>
+      `All CORS-readable search providers are disabled for this session. Tried: ${providers}.`,
+  },
+  ru: {
+    header: (query, top, k) =>
+      `Результаты поиска для \`${query}\` — топ ${top} после реципрокного объединения рангов (k = ${k}).`,
+    otherSources: "Другие источники",
+    via: "через",
+    noResults: (query, providers) =>
+      `Не получены результаты веб-поиска с поддержкой CORS для \`${query}\`.\n\nПопробованы провайдеры: ${providers}.`,
+    allDisabled: (providers) =>
+      `Все CORS-совместимые поисковые провайдеры отключены в этой сессии. Пробовали: ${providers}.`,
+  },
+  zh: {
+    header: (query, top, k) =>
+      `搜索 \`${query}\` 的结果 — 经互惠等级融合后的前 ${top} 项（k = ${k}）。`,
+    otherSources: "其他来源",
+    via: "来自",
+    noResults: (query, providers) =>
+      `未获取到 \`${query}\` 的可用 CORS 搜索结果。\n\n已尝试的提供方：${providers}。`,
+    allDisabled: (providers) =>
+      `本会话中所有支持 CORS 的搜索提供方都已禁用。已尝试：${providers}。`,
+  },
+  hi: {
+    header: (query, top, k) =>
+      `\`${query}\` के लिए खोज परिणाम — रेसिप्रोकल रैंक फ़्यूज़न के बाद शीर्ष ${top} (k = ${k})।`,
+    otherSources: "अन्य स्रोत",
+    via: "के माध्यम से",
+    noResults: (query, providers) =>
+      `\`${query}\` के लिए CORS-समर्थित कोई खोज परिणाम नहीं मिले।\n\nप्रयास किए गए प्रदाता: ${providers}.`,
+    allDisabled: (providers) =>
+      `इस सत्र के लिए सभी CORS-समर्थित खोज प्रदाता अक्षम हैं। प्रयास किया: ${providers}.`,
+  },
+};
+
+function webSearchTexts(language) {
+  const code = String(language || "").toLowerCase().slice(0, 2);
+  return WEB_SEARCH_TEXTS[code] || WEB_SEARCH_TEXTS.en;
+}
+
 async function tryWebSearch(prompt, language) {
   const normalized = normalizePrompt(prompt);
   const query = extractWebSearchQuery(prompt, normalized);
@@ -5023,6 +5817,7 @@ async function tryWebSearch(prompt, language) {
   const rrfK = webSearchRrfK();
   const concurrency = webSearchConcurrency();
   const providerLimit = webSearchProviderLimit();
+  const texts = webSearchTexts(language);
 
   // R194: the Rust core (`web_search_core::build_request_evidence`) is the
   // source of truth for the `web_search:*` evidence prefix. We prepend its
@@ -5056,7 +5851,7 @@ async function tryWebSearch(prompt, language) {
   if (active.length === 0) {
     return {
       intent: "web_search",
-      content: `All CORS-readable search providers are disabled for this session. Tried: ${WEB_SEARCH_PROVIDERS.map((p) => p.id).join(", ")}.`,
+      content: texts.allDisabled(WEB_SEARCH_PROVIDERS.map((p) => p.id).join(", ")),
       confidence: 0.3,
       evidence,
     };
@@ -5084,39 +5879,65 @@ async function tryWebSearch(prompt, language) {
   }
 
   const fused = reciprocalRankFusion(perProvider, rrfK);
-  const top = fused.slice(0, providerLimit);
+  const metaByUrl = buildItemMetadataIndex(perProvider);
+  const deduped = dedupeFusedEntries(fused, metaByUrl, evidence);
+  const top = deduped.slice(0, providerLimit);
   top.forEach((entry, index) => {
     evidence.push(`web_search:fused:${index + 1}:${entry.providers.map((p) => p.id).join("+")}:${entry.url}`);
+    if (entry.virtualId) {
+      evidence.push(`web_search:formal:${index + 1}:${entry.virtualId}`);
+    }
   });
 
   if (top.length === 0) {
     return {
       intent: "web_search",
-      content: `No CORS-enabled web search results were returned for \`${query}\`.\n\nProviders tried: ${active.map((p) => p.label).join(", ")}.`,
+      content: texts.noResults(query, active.map((p) => p.label).join(", ")),
       confidence: 0.35,
       evidence,
     };
   }
 
-  const lines = [
-    `Search results for \`${query}\` — top ${top.length} after reciprocal rank fusion (k = ${rrfK}).`,
-    "",
-    `Providers (default first): ${active.map((p) => p.id).join(", ")}.`,
-    "",
-  ];
+  // Issue #153: every result follows the same template regardless of which
+  // provider produced it — `N. <virtualId> [title](url) — _via providers_ -
+  // excerpt`, with deduplicated alternate URLs rendered as a nested
+  // "Other sources:" sub-line in the user's language.
+  const lines = [texts.header(query, top.length, rrfK), ""];
   top.forEach((entry, index) => {
     const sources = entry.providers
       .map((p) => `${p.id}#${p.rank}`)
       .join(", ");
     const excerpt = entry.excerpt ? ` - ${entry.excerpt}` : "";
-    lines.push(`${index + 1}. [${entry.title}](${entry.url}) — _via ${sources}_${excerpt}`);
+    const idTag = entry.virtualId ? ` \`${entry.virtualId}\`` : "";
+    lines.push(`${index + 1}.${idTag} [${entry.title}](${entry.url}) — _${texts.via} ${sources}_${excerpt}`);
+    if (Array.isArray(entry.alternateUrls) && entry.alternateUrls.length > 0) {
+      const others = entry.alternateUrls
+        .map((alt) => `[${alt.title || alt.url}](${alt.url})`)
+        .join(", ");
+      lines.push(`   - ${texts.otherSources}: ${others}`);
+    }
   });
+
+  // Resolve the formalization tuple now that we know the top-ranked entity.
+  // Prefer a real Wikidata Q-id; fall back to the WP virtual id, then to the
+  // bare normalised query. We scan the whole `top` slice instead of just
+  // `top[0]` so that a DuckDuckGo result without an id at rank 1 still lets
+  // us fold a Wikidata Q-id from rank 2+ into the resolved tuple.
+  let formalizedObject = "";
+  for (const entry of top) {
+    if (entry && entry.virtualId) {
+      formalizedObject = entry.virtualId;
+      if (/^Q\d+$/.test(entry.virtualId)) break;
+    }
+  }
 
   return {
     intent: "web_search",
     content: lines.join("\n"),
     confidence: 0.85,
     evidence,
+    formalizedObject,
+    query,
   };
 }
 
@@ -5159,6 +5980,143 @@ function attachUserContext(answer, userContext) {
   });
 }
 
+// Issue #153: every prompt should be formalized as a Subject-Verb-Object tuple
+// regardless of source language. We emit a deterministic, offline formalization
+// here (so the trace is stable even when no APIs are reachable) and, when a
+// downstream handler resolves the object to a Wikidata/Wikipedia/Wiktionary
+// item, we emit a second `formalize_resolved` step with the real ids. Ids use
+// canonical prefixes: `Q<n>` / `P<n>` for Wikidata, `WP:<title>` for
+// Wikipedia-only items, `WT:<word>` for Wiktionary-only items, `OP:<verb>` for
+// the symbolic operation, and `@USER` for the implicit user subject.
+const FORMALIZATION_VERBS = [
+  // English
+  { verb: "search", op: "OP:search" },
+  { verb: "find", op: "OP:search" },
+  { verb: "lookup", op: "OP:lookup" },
+  { verb: "look up", op: "OP:lookup" },
+  { verb: "define", op: "OP:define" },
+  { verb: "what is", op: "OP:define" },
+  { verb: "who is", op: "OP:identify" },
+  { verb: "explain", op: "OP:define" },
+  { verb: "compute", op: "OP:compute" },
+  { verb: "calculate", op: "OP:compute" },
+  { verb: "hello", op: "OP:greet" },
+  { verb: "hi", op: "OP:greet" },
+  { verb: "goodbye", op: "OP:farewell" },
+  { verb: "bye", op: "OP:farewell" },
+  // Russian
+  { verb: "найди", op: "OP:search" },
+  { verb: "поищи", op: "OP:search" },
+  { verb: "поиск", op: "OP:search" },
+  { verb: "что такое", op: "OP:define" },
+  { verb: "кто такой", op: "OP:identify" },
+  { verb: "объясни", op: "OP:define" },
+  { verb: "посчитай", op: "OP:compute" },
+  { verb: "вычисли", op: "OP:compute" },
+  { verb: "привет", op: "OP:greet" },
+  { verb: "здравствуй", op: "OP:greet" },
+  { verb: "пока", op: "OP:farewell" },
+  { verb: "до свидания", op: "OP:farewell" },
+  // Hindi
+  { verb: "खोज", op: "OP:search" },
+  { verb: "ढूंढ", op: "OP:search" },
+  { verb: "क्या है", op: "OP:define" },
+  { verb: "कौन है", op: "OP:identify" },
+  { verb: "नमस्ते", op: "OP:greet" },
+  { verb: "अलविदा", op: "OP:farewell" },
+  // Chinese
+  { verb: "搜索", op: "OP:search" },
+  { verb: "查找", op: "OP:search" },
+  { verb: "什么是", op: "OP:define" },
+  { verb: "是谁", op: "OP:identify" },
+  { verb: "你好", op: "OP:greet" },
+  { verb: "再见", op: "OP:farewell" },
+];
+
+function detectFormalizationOp(prompt, normalized) {
+  const haystack = String(normalized || "").toLowerCase();
+  const rawLower = String(prompt || "").toLowerCase();
+  for (const { verb, op } of FORMALIZATION_VERBS) {
+    if (haystack.startsWith(verb + " ") || haystack === verb) return op;
+    if (rawLower.startsWith(verb + " ") || rawLower === verb) return op;
+    if (haystack.includes(" " + verb + " ")) return op;
+  }
+  return null;
+}
+
+function objectForFormalization(prompt, normalized, op) {
+  // For search-style ops we extract the explicit query the same way the web
+  // search handler does. For other ops we keep the prompt body that follows
+  // the detected verb so the tuple shows what the user is asking about.
+  if (op === "OP:search" || op === "OP:lookup") {
+    const query = extractWebSearchQuery(prompt, normalized);
+    if (query) return query;
+  }
+  const haystack = String(normalized || "").toLowerCase();
+  for (const { verb } of FORMALIZATION_VERBS) {
+    if (haystack.startsWith(verb + " ")) {
+      return cleanSearchQuery(normalized.slice(verb.length));
+    }
+  }
+  return cleanSearchQuery(normalized || "");
+}
+
+function virtualObjectId(term) {
+  const trimmed = String(term || "").trim();
+  if (!trimmed) return "?";
+  return `?${trimmed}`;
+}
+
+function formatFormalizationTuple(parts) {
+  return `(${parts.filter(Boolean).join(" ")})`;
+}
+
+function buildFormalization(prompt, normalized) {
+  const op = detectFormalizationOp(prompt, normalized);
+  if (!op) {
+    const fallback = normalized || "(empty)";
+    return {
+      raw: String(prompt || ""),
+      subject: "@USER",
+      verb: "OP:express",
+      object: virtualObjectId(fallback),
+      tuple: formatFormalizationTuple(["@USER", "OP:express", virtualObjectId(fallback)]),
+    };
+  }
+  const object = objectForFormalization(prompt, normalized, op);
+  return {
+    raw: String(prompt || ""),
+    subject: "@USER",
+    verb: op,
+    object: virtualObjectId(object),
+    tuple: formatFormalizationTuple(["@USER", op, virtualObjectId(object)]),
+  };
+}
+
+function formalizationDetail(formalization) {
+  if (!formalization || typeof formalization !== "object") {
+    return String(formalization || "(empty)");
+  }
+  const arrow = formalization.raw && formalization.tuple ? " -> " : "";
+  return `${formalization.raw || ""}${arrow}${formalization.tuple || ""}`.trim();
+}
+
+// Once a handler resolves the search object to a concrete entity, this helper
+// folds the resolved id back into the original formalization so the trace
+// shows the canonical (@USER OP:search Q<id>) tuple alongside the placeholder.
+function resolveFormalizationWithId(formalization, resolvedId) {
+  if (!formalization || !resolvedId) return null;
+  const next = Object.assign({}, formalization, {
+    object: resolvedId,
+    tuple: formatFormalizationTuple([
+      formalization.subject || "@USER",
+      formalization.verb || "OP:express",
+      resolvedId,
+    ]),
+  });
+  return next;
+}
+
 async function solve(prompt, history, prefs) {
   const preferences = prefs || {};
   const autoDefinitionFusion = definitionFusionByDefault(preferences);
@@ -5167,8 +6125,19 @@ async function solve(prompt, history, prefs) {
   const events = [`impulse:${prompt}`];
   steps.push({ step: "impulse", detail: prompt });
   const normalized = normalizePrompt(prompt);
-  events.push(`formalization:${normalized || "(empty)"}`);
-  steps.push({ step: "formalize", detail: normalized || "(empty)" });
+  const formalization = buildFormalization(prompt, normalized);
+  events.push(`formalization:${formalization.tuple}`);
+  steps.push({
+    step: "formalize",
+    detail: formalizationDetail(formalization),
+    formalization: {
+      raw: formalization.raw,
+      subject: formalization.subject,
+      verb: formalization.verb,
+      object: formalization.object,
+      tuple: formalization.tuple,
+    },
+  });
   const language = detectLanguage(prompt);
   events.push(`language:${language}`);
   steps.push({ step: "detect_language", detail: language });
@@ -5232,6 +6201,24 @@ async function solve(prompt, history, prefs) {
       content: answerFor("test_status", language),
       confidence: 1.0,
       evidence: ["rule:test_status", `language:${language}`],
+    });
+  }
+  if (isCourtesyResponsePrompt(normalized, prompt)) {
+    events.push("rule:courtesy_response");
+    steps.push({ step: "match_rule", detail: "courtesy_response" });
+    const courtesy = courtesyResponseFor(language, preferences);
+    return finalize(events, steps, toolCalls, {
+      intent: "courtesy_response",
+      content: courtesy.content,
+      confidence: 1.0,
+      evidence: [
+        "rule:courtesy_response",
+        `language:${language}`,
+        `variation:${courtesy.randomize ? "random" : "canonical"}`,
+        `temperature:${courtesy.temperature.toFixed(2)}`,
+        `follow_up_probability:${courtesy.followUpProbability.toFixed(2)}`,
+        `follow_up:${courtesy.followUpIncluded ? "included" : "omitted"}`,
+      ],
     });
   }
   if (isIdentityPrompt(normalized, prompt)) {
@@ -5347,10 +6334,38 @@ async function solve(prompt, history, prefs) {
   if (webSearch) {
     events.push(`handler:${webSearch.intent}`);
     steps.push({ step: "dispatch_handler", detail: "tryWebSearch" });
+    // Issue #153: once the search returns a real entity id, fold it into the
+    // formalization so the trace shows the resolved tuple alongside the
+    // initial placeholder. Skip the extra step if the search did not return
+    // a usable id (e.g. all providers failed).
+    if (webSearch.formalizedObject) {
+      const resolved = resolveFormalizationWithId(
+        formalization,
+        webSearch.formalizedObject,
+      );
+      if (resolved) {
+        events.push(`formalization:resolved:${resolved.tuple}`);
+        steps.push({
+          step: "formalize_resolved",
+          detail: formalizationDetail(resolved),
+          formalization: {
+            raw: resolved.raw,
+            subject: resolved.subject,
+            verb: resolved.verb,
+            object: resolved.object,
+            tuple: resolved.tuple,
+          },
+        });
+      }
+    }
     toolCalls.push({
       tool: "web_search",
-      inputs: { prompt, language },
-      outputs: { intent: webSearch.intent, confidence: webSearch.confidence },
+      inputs: { prompt, language, query: webSearch.query || "" },
+      outputs: {
+        intent: webSearch.intent,
+        confidence: webSearch.confidence,
+        formalizedObject: webSearch.formalizedObject || "",
+      },
     });
     return finalize(events, steps, toolCalls, webSearch);
   }
