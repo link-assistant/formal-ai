@@ -62,6 +62,24 @@ async function sendPrompt(page, text) {
   return messages.last();
 }
 
+async function routeFramePolicy(page, headers) {
+  const requests = [];
+  await page.route('**://api.microlink.io/**', async (route) => {
+    requests.push(route.request().url());
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      headers: { 'access-control-allow-origin': '*' },
+      body: JSON.stringify({
+        status: 'success',
+        statusCode: 200,
+        headers,
+      }),
+    });
+  });
+  return requests;
+}
+
 async function setRangeValue(page, testId, value) {
   await page.locator(`[data-testid="${testId}"]`).evaluate((node, nextValue) => {
     const valueSetter = Object.getOwnPropertyDescriptor(
@@ -202,6 +220,10 @@ test.describe('multilingual chat surface', () => {
   });
 
   test('GitHub navigation suggests an external link without iframe preview', async ({ page }) => {
+    const framePolicyRequests = await routeFramePolicy(page, {
+      'x-frame-options': 'deny',
+      'content-security-policy': "frame-ancestors 'none'",
+    });
     const githubRequestTypes = [];
     await page.route(/https:\/\/github\.com\/?.*/, async (route) => {
       githubRequestTypes.push(route.request().resourceType());
@@ -212,8 +234,13 @@ test.describe('multilingual chat surface', () => {
     await expect(last).toHaveClass(/assistant/);
     await expect(last).toContainText('https://github.com');
     await expect(last).toContainText('I suggest opening this in a new tab');
-    await expect(last).toContainText('This web app');
+    await expect(last).toContainText("I checked the page's frame policy");
+    await expect(last).toContainText('does not allow embedding');
+    await expect(last).toContainText('X-Frame-Options: DENY');
+    await expect(last).toContainText("CSP frame-ancestors 'none'");
+    await expect(last).toContainText('Browser JavaScript');
     await expect(last).not.toContainText('Could not fetch');
+    await expect(last).not.toContainText('cannot reliably confirm');
     await expect(last).not.toContainText('URL requested for');
     await expect(last).not.toContainText('Open this');
     await expect(last).not.toContainText('demo');
@@ -232,13 +259,46 @@ test.describe('multilingual chat surface', () => {
     await expect(link).toHaveAttribute('rel', /noopener/);
     await expect(last.locator('.external-link-icon')).toBeVisible();
     await expect(last.locator('[data-testid="fetch-iframe-container"]')).toHaveCount(0);
+    expect(framePolicyRequests).toHaveLength(1);
+    expect(framePolicyRequests[0]).toContain('url=https%3A%2F%2Fgithub.com');
     expect(githubRequestTypes).not.toContain('fetch');
     expect(githubRequestTypes).not.toContain('document');
   });
 
+  test('Navigation previews URLs when frame policy allows embedding', async ({ page }) => {
+    const framePolicyRequests = await routeFramePolicy(page, {});
+    const exampleRequestTypes = [];
+    await page.route(/https:\/\/example\.com\/?.*/, async (route) => {
+      exampleRequestTypes.push(route.request().resourceType());
+      await route.fulfill({
+        status: 200,
+        contentType: 'text/html',
+        body: '<!doctype html><title>Example preview</title><p>Example preview</p>',
+      });
+    });
+
+    const last = await sendPrompt(page, 'Navigate to example.com');
+    await expect(last).toHaveClass(/assistant/);
+    await expect(last).toContainText('https://example.com');
+    await expect(last).toContainText("I checked the page's frame policy");
+    await expect(last).toContainText('Direct link');
+    await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
+    const frameContainer = last.locator('[data-testid="fetch-iframe-container"]');
+    await expect(frameContainer).toContainText(/https:\/\/example\.com\/?/);
+    await expect(frameContainer.locator('[data-testid="fetch-iframe"]')).toHaveAttribute(
+      'src',
+      /https:\/\/example\.com\/?/,
+    );
+    expect(framePolicyRequests).toHaveLength(1);
+    expect(framePolicyRequests[0]).toContain('url=https%3A%2F%2Fexample.com');
+    expect(exampleRequestTypes).not.toContain('fetch');
+    expect(exampleRequestTypes).toContain('document');
+  });
+
   // Issue #125 follow-up: "Make a request to X" must still attempt an HTTP
-  // fetch (with CORS fallback to iframe), while "Navigate to X" must not.
+  // fetch (with frame-policy checked CORS fallback), while "Navigate to X" must not.
   test('Make a request to X attempts a fetch and falls back to the iframe', async ({ page }) => {
+    const framePolicyRequests = await routeFramePolicy(page, {});
     const fetchAttempts = [];
     await page.route(/https:\/\/example\.com\/?.*/, async (route) => {
       fetchAttempts.push(route.request().resourceType());
@@ -249,8 +309,10 @@ test.describe('multilingual chat surface', () => {
     await expect(last).toHaveClass(/assistant/);
     await expect(last).toContainText('https://example.com');
     await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
+    await expect(last).toContainText("I checked the page's frame policy");
     // The browser worker must call fetch() before falling back to the iframe.
     expect(fetchAttempts).toContain('fetch');
+    expect(framePolicyRequests).toHaveLength(1);
     const frameContainer = last.locator('[data-testid="fetch-iframe-container"]');
     await expect(frameContainer).toContainText(/https:\/\/example\.com\/?/);
   });

@@ -1,5 +1,6 @@
 ### Fixed
-- For URL navigation prompts, return a polite direct new-tab link instead of
-  hardcoding frame-blocked hosts or rendering an iframe preview that may be
-  blocked. Markdown links in chat messages now open in a new tab and show an
-  external-link indicator.
+- For URL navigation prompts, check CORS-readable frame-policy metadata before
+  rendering an iframe preview. Pages that send blocking `X-Frame-Options` or
+  CSP `frame-ancestors` headers now get a polite direct new-tab link instead of
+  a broken embedded preview. Markdown links in chat messages now open in a new
+  tab and show an external-link indicator.

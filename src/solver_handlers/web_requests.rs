@@ -12,8 +12,9 @@ use super::finalize_simple;
 /// Match prompts that explicitly ask the engine to perform an HTTP request
 /// (e.g. `fetch google.com`, `Сделай запрос к google.com`). In the browser
 /// web app the actual `fetch()` is attempted first, with an iframe fallback when
-/// CORS blocks the request. Non-fetch URL prompts (`Navigate to github.com`,
-/// `Visit github.com`, ...) are handled by [`try_url_navigate`] instead.
+/// CORS blocks the request only after target frame-policy headers have been
+/// checked. Non-fetch URL prompts (`Navigate to github.com`, `Visit github.com`,
+/// ...) are handled by [`try_url_navigate`] instead.
 pub fn try_http_fetch(
     prompt: &str,
     normalized: &str,
@@ -25,8 +26,9 @@ pub fn try_http_fetch(
         "HTTP fetch requested for `{url}`.\n\n\
          The browser web app attempts a direct `fetch()` first and shows the \
          response body when the server allows CORS. If the request is blocked \
-         by CORS, the page falls back to an embedded iframe with open-in-new-tab \
-         and full-screen controls.\n\n\
+         by CORS, the web app checks CORS-readable frame-policy metadata before \
+         deciding whether to show an embedded iframe or keep a direct external \
+         link.\n\n\
          Source: [{url}]({url})"
     );
     Some(finalize_simple(
@@ -42,7 +44,8 @@ pub fn try_http_fetch(
 /// Match prompts that ask the assistant to navigate to or display a URL
 /// without performing an HTTP request (e.g. `Navigate to github.com`,
 /// `Go to github.com`, `Перейди на github.com`). The browser web app renders
-/// a direct external link; no `fetch()` is attempted.
+/// an iframe preview only when CORS-readable frame-policy metadata does not
+/// report blocking X-Frame-Options or CSP frame-ancestors headers.
 pub fn try_url_navigate(
     prompt: &str,
     normalized: &str,
@@ -50,12 +53,14 @@ pub fn try_url_navigate(
 ) -> Option<SymbolicAnswer> {
     let url = extract_url_navigate_url(prompt, normalized)?;
     log.append("url_navigate:request", url.clone());
+    log.append("url_preview:frame_policy_check", url.clone());
     log.append("url_preview:external_link", url.clone());
     let body = format!(
         "I suggest opening this in a new tab: [{url}]({url}).\n\n\
-         This web app cannot reliably confirm ahead of time whether an \
-         arbitrary site allows embedding, so I am using a direct external link \
-         instead of an embedded preview."
+         In the browser web app, this URL is checked with browser-readable \
+         frame-policy metadata before any embedded preview is attempted. If \
+         X-Frame-Options or CSP frame-ancestors blocks embedding, the web app \
+         keeps the direct external link instead."
     );
     Some(finalize_simple(
         prompt,
@@ -102,8 +107,8 @@ pub fn try_web_search(
              reciprocal rank fusion (`score(d) = Σ 1 / ({WEB_SEARCH_RRF_K} + rank_i(d))`), \
              поэтому URL, которые встречаются у нескольких провайдеров, всплывают \
              вверх. Для произвольной страницы используйте `fetch example.com`; если \
-             прямой `fetch()` заблокирован CORS, страница откроется во встроенном \
-             iframe.\n\n\
+             прямой `fetch()` заблокирован CORS, браузер проверит frame-policy \
+             перед встроенным iframe.\n\n\
              Provider: duckduckgo (default)\n\
              Providers considered: {provider_summary}\n\
              Combined ranking: reciprocal rank fusion (k = {WEB_SEARCH_RRF_K})"
@@ -116,7 +121,8 @@ pub fn try_web_search(
              merged with reciprocal rank fusion (`score(d) = Σ 1 / ({WEB_SEARCH_RRF_K} + rank_i(d))`), \
              so URLs that appear in more than one provider bubble up. For an \
              arbitrary page, use `fetch example.com`; if direct `fetch()` is \
-             blocked by CORS, the page opens in an embedded iframe.\n\n\
+             blocked by CORS, the browser checks frame policy before an \
+             embedded iframe.\n\n\
              Provider: duckduckgo (default)\n\
              Providers considered: {provider_summary}\n\
              Combined ranking: reciprocal rank fusion (k = {WEB_SEARCH_RRF_K})"
