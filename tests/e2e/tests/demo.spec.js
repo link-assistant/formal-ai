@@ -274,6 +274,11 @@ test.describe('formal-ai demo UI', () => {
     await expect(capabilities).toContainText('Hello World');
     await expect(capabilities).not.toContainText(UNKNOWN_ANSWER_MARKER);
 
+    const webSearchCapability = await sendPrompt(page, 'Ты можешь искать в интернете?');
+    await expect(webSearchCapability).toContainText('Да');
+    await expect(webSearchCapability).toContainText('DuckDuckGo');
+    await expect(webSearchCapability).not.toContainText(UNKNOWN_ANSWER_MARKER);
+
     const search = await sendPrompt(page, 'Search online for Genshin Impact');
     await expect(search).toContainText('Search results for');
     await expect(search).toContainText('Genshin Impact');

@@ -8,6 +8,7 @@ use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
 use crate::seed::response_for;
 use crate::solver_handlers::finalize_simple;
+use crate::web_search_core::{WEB_SEARCH_PROVIDERS, WEB_SEARCH_RRF_K};
 
 pub fn try_clarification(
     prompt: &str,
@@ -160,6 +161,7 @@ pub fn try_capabilities(
              \n\
              - **Приветствия**: отвечаю на «Привет», «Здравствуйте» и т.п.\n\
              - **Hello World**: генерирую программы на Rust, Python, JavaScript, Go, C и других языках.\n\
+             - **Веб-поиск**: ищу в интернете через DuckDuckGo, Wikipedia и Wikidata, когда поиск доступен.\n\
              - **Поиск понятий**: объясняю термины — попробуйте «Что такое Википедия?»\n\
              - **Арифметика**: вычисляю выражения — например, «Сколько будет 2 + 2?»\n\
              - **Перевод**: перевожу фразы между языками.\n\
@@ -172,6 +174,7 @@ pub fn try_capabilities(
              \n\
              - **问候**：回应「你好」等问候语。\n\
              - **Hello World**：生成 Rust、Python、JavaScript、Go、C 等语言的示例程序。\n\
+             - **Web search**：在可用时通过 DuckDuckGo、Wikipedia 和 Wikidata 搜索互联网。\n\
              - **概念查找**：解释术语，例如「什么是维基百科？」\n\
              - **算术**：计算表达式，例如「2 + 2 等于多少？」\n\
              - **翻译**：在语言之间翻译短语。\n\
@@ -184,6 +187,7 @@ pub fn try_capabilities(
              \n\
              - **अभिवादन**: «नमस्ते» आदि का जवाब देना।\n\
              - **Hello World**: Rust, Python, JavaScript, Go, C आदि में प्रोग्राम बनाना।\n\
+             - **Web search**: उपलब्ध होने पर DuckDuckGo, Wikipedia, और Wikidata से इंटरनेट में खोजना।\n\
              - **अवधारणा खोज**: शब्दों को समझाना — जैसे «विकिपीडिया क्या है?»\n\
              - **अंकगणित**: गणनाएँ — जैसे «2 + 2 क्या है?»\n\
              - **अनुवाद**: भाषाओं के बीच अनुवाद।\n\
@@ -196,6 +200,7 @@ pub fn try_capabilities(
              \n\
              - **Greetings**: respond to «Hi», «Hello», and similar.\n\
              - **Hello World**: generate programs in Rust, Python, JavaScript, Go, C, and more.\n\
+             - **Web search**: search the internet through DuckDuckGo, Wikipedia, and Wikidata when available.\n\
              - **Concept lookup**: explain terms — try «What is Wikipedia?»\n\
              - **Arithmetic**: evaluate expressions — try «What is 2 + 2?»\n\
              - **Translation**: translate phrases between languages.\n\
@@ -212,6 +217,163 @@ pub fn try_capabilities(
         &body,
         1.0,
     ))
+}
+
+pub fn try_web_search_capability(
+    prompt: &str,
+    normalized: &str,
+    log: &mut EventLog,
+    offline: bool,
+) -> Option<SymbolicAnswer> {
+    let language = detect_language(prompt);
+    if !is_web_search_capability_question(normalized, language.slug()) {
+        return None;
+    }
+
+    log.append("feature:question", "web_search".to_owned());
+    let available = !offline && !WEB_SEARCH_PROVIDERS.is_empty();
+    if available {
+        log.append("feature:available", "web_search".to_owned());
+        for provider in WEB_SEARCH_PROVIDERS {
+            log.append("web_search:provider", (*provider).to_owned());
+        }
+        log.append("web_search:combined", format!("rrf:k={WEB_SEARCH_RRF_K}"));
+    } else {
+        log.append(
+            "feature:unavailable",
+            if offline {
+                "web_search:offline"
+            } else {
+                "web_search:no_providers"
+            },
+        );
+    }
+
+    let providers = WEB_SEARCH_PROVIDERS.join(", ");
+    let body = web_search_capability_body(language.slug(), available, &providers);
+    Some(finalize_simple(
+        prompt,
+        log,
+        "capabilities",
+        "response:capabilities",
+        &body,
+        if available { 0.95 } else { 0.6 },
+    ))
+}
+
+fn is_web_search_capability_question(normalized: &str, language: &str) -> bool {
+    let phrases = match language {
+        "ru" => WEB_SEARCH_CAPABILITY_RU,
+        "zh" => WEB_SEARCH_CAPABILITY_ZH,
+        "hi" => WEB_SEARCH_CAPABILITY_HI,
+        _ => WEB_SEARCH_CAPABILITY_EN,
+    };
+    phrases.iter().any(|phrase| normalized.contains(phrase))
+}
+
+const WEB_SEARCH_CAPABILITY_EN: &[&str] = &[
+    "can you search the internet",
+    "can you search internet",
+    "can you search the web",
+    "can you search web",
+    "can you search online",
+    "do you have internet search",
+    "do you have web search",
+    "do you have internet access",
+    "are you connected to search engines",
+    "can you use search engines",
+    "can you browse the web",
+];
+
+const WEB_SEARCH_CAPABILITY_RU: &[&str] = &[
+    "можешь искать в интернете",
+    "можешь искать интернет",
+    "умеешь искать в интернете",
+    "умеешь искать интернет",
+    "можешь искать онлайн",
+    "умеешь искать онлайн",
+    "у тебя есть веб-поиск",
+    "у тебя есть веб поиск",
+    "у тебя есть поиск в интернете",
+    "есть доступ к интернету",
+    "подключен к поисковикам",
+    "подключена к поисковикам",
+    "подключен к поисковым системам",
+    "можешь пользоваться интернетом",
+];
+
+const WEB_SEARCH_CAPABILITY_HI: &[&str] = &[
+    "इंटरनेट पर खोज सकते",
+    "ऑनलाइन खोज सकते",
+    "इंटरनेट खोज है",
+    "वेब खोज है",
+    "सर्च इंजन से जुड़े",
+    "खोज इंजन से जुड़े",
+];
+
+const WEB_SEARCH_CAPABILITY_ZH: &[&str] = &[
+    "上网搜索",
+    "搜索互联网",
+    "搜索网络",
+    "联网搜索",
+    "用搜索引擎",
+    "使用搜索引擎",
+    "网络搜索",
+];
+
+fn web_search_capability_body(language: &str, available: bool, providers: &str) -> String {
+    match (language, available) {
+        ("ru", true) => format!(
+            "Да. В этой конфигурации веб-поиск включен: я могу использовать \
+             DuckDuckGo Instant Answer по умолчанию и доступные CORS-провайдеры \
+             (`{providers}`) для явных запросов вроде `Найди в интернете Никола Тесла`. \
+             Результаты из top-10 по каждому провайдеру объединяются через reciprocal \
+             rank fusion (k = {WEB_SEARCH_RRF_K}). Если провайдеры отключены или \
+             заблокированы в браузерной сессии, я сообщу об этом вместо ответа \"да\"."
+        ),
+        ("ru", false) => String::from(
+            "Нет. В этой конфигурации веб-поиск отключен offline-режимом или нет \
+             доступных поисковых провайдеров. Я могу отвечать по локальным правилам \
+             и кэшу, но не буду обращаться к поисковым системам.",
+        ),
+        ("zh", true) => format!(
+            "可以。当前配置启用了 web search：我会默认使用 DuckDuckGo Instant Answer，\
+             并可使用这些 CORS-readable provider（`{providers}`）处理明确的搜索请求，\
+             例如 `Search the web for Nikola Tesla`。每个 provider 的 top-10 结果会用 \
+             reciprocal rank fusion 合并（k = {WEB_SEARCH_RRF_K}）。如果浏览器会话中所有 \
+             provider 被禁用或阻止，我会说明不可用，而不是回答可以。"
+        ),
+        ("zh", false) => String::from(
+            "不可以。当前配置的 offline 模式禁用了 web search，或者没有可用的搜索 \
+             provider。我仍可使用本地规则和缓存回答，但不会调用搜索引擎。",
+        ),
+        ("hi", true) => format!(
+            "हाँ। इस configuration में web search enabled है: मैं default रूप से \
+             DuckDuckGo Instant Answer और उपलब्ध CORS-readable providers (`{providers}`) \
+             का उपयोग explicit prompts जैसे `Search the web for Nikola Tesla` के लिए \
+             कर सकता हूँ। हर provider के top-10 results reciprocal rank fusion \
+             (k = {WEB_SEARCH_RRF_K}) से merge होते हैं। अगर browser session में providers \
+             disabled या blocked हों, तो मैं \"हाँ\" कहने के बजाय स्थिति बताऊँगा।"
+        ),
+        ("hi", false) => String::from(
+            "नहीं। इस configuration में offline mode या missing providers के कारण web \
+             search disabled है। मैं local rules और cache से जवाब दे सकता हूँ, लेकिन \
+             search engines को call नहीं करूँगा।",
+        ),
+        (_, true) => format!(
+            "Yes. Web search is enabled in this configuration: I can use DuckDuckGo \
+             Instant Answer by default plus the configured CORS-readable providers \
+             (`{providers}`) for explicit prompts such as `Search the web for Nikola Tesla`. \
+             The top-10 results from each provider are merged with reciprocal rank fusion \
+             (k = {WEB_SEARCH_RRF_K}). If the browser session disables or blocks every \
+             provider, I will say that instead of claiming search is available."
+        ),
+        (_, false) => String::from(
+            "No. Web search is disabled by this configuration's offline mode or there \
+             are no configured search providers. I can still answer from local rules \
+             and cache, but I will not call search engines.",
+        ),
+    }
 }
 
 pub fn try_shell_refusal(

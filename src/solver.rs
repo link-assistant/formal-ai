@@ -40,7 +40,7 @@ use crate::solver_handlers::{
     try_network_query, try_opinion_question, try_punctuation_only_prompt, try_roleplay_request,
     try_shell_refusal, try_software_project_request, try_source_conflict, try_source_refresh,
     try_summarization_request, try_translation, try_url_navigate, try_web_search,
-    try_who_is_question, try_write_script,
+    try_web_search_capability, try_who_is_question, try_write_script,
 };
 use crate::solver_handlers_policy::{try_kupi_slona, try_physical_action_question};
 use crate::solver_helpers::{
@@ -456,6 +456,12 @@ impl UniversalSolver {
         // stays outside the registry. Every other specialized handler is a
         // plain function and runs through `SPECIALIZED_HANDLERS` below.
         if let Some(answer) = self.try_diagnostic(prompt, &normalized, log) {
+            return Some(answer);
+        }
+        if let Some(answer) =
+            try_web_search_capability(prompt, &normalized, log, self.config.offline)
+        {
+            log.append("specialized_handler", "web_search_capability".to_owned());
             return Some(answer);
         }
         for (name, handler) in SPECIALIZED_HANDLERS {

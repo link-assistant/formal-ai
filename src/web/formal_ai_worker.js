@@ -1327,8 +1327,107 @@ function containsAny(normalized, values) {
   return values.some((value) => value && normalized.includes(String(value).toLowerCase()));
 }
 
+const WEB_SEARCH_CAPABILITY_PHRASES = {
+  en: [
+    "can you search the internet",
+    "can you search internet",
+    "can you search the web",
+    "can you search web",
+    "can you search online",
+    "do you have internet search",
+    "do you have web search",
+    "do you have internet access",
+    "are you connected to search engines",
+    "can you use search engines",
+    "can you browse the web",
+  ],
+  ru: [
+    "можешь искать в интернете",
+    "можешь искать интернет",
+    "умеешь искать в интернете",
+    "умеешь искать интернет",
+    "можешь искать онлайн",
+    "умеешь искать онлайн",
+    "у тебя есть веб-поиск",
+    "у тебя есть веб поиск",
+    "у тебя есть поиск в интернете",
+    "есть доступ к интернету",
+    "подключен к поисковикам",
+    "подключена к поисковикам",
+    "подключен к поисковым системам",
+    "можешь пользоваться интернетом",
+  ],
+  hi: [
+    "इंटरनेट पर खोज सकते",
+    "ऑनलाइन खोज सकते",
+    "इंटरनेट खोज है",
+    "वेब खोज है",
+    "सर्च इंजन से जुड़े",
+    "खोज इंजन से जुड़े",
+  ],
+  zh: [
+    "上网搜索",
+    "搜索互联网",
+    "搜索网络",
+    "联网搜索",
+    "用搜索引擎",
+    "使用搜索引擎",
+    "网络搜索",
+  ],
+};
+
+function isWebSearchCapabilityQuestion(normalized, language) {
+  return containsAny(
+    normalized,
+    WEB_SEARCH_CAPABILITY_PHRASES[language] || WEB_SEARCH_CAPABILITY_PHRASES.en,
+  );
+}
+
+function webSearchStatusContent(language, available, providers) {
+  const providerList = providers || "none";
+  const rrfK = webSearchRrfK();
+  if (language === "ru") {
+    return available
+      ? `Да. В этой конфигурации веб-поиск включен: я могу использовать DuckDuckGo Instant Answer по умолчанию и доступные CORS-провайдеры (\`${providerList}\`) для явных запросов вроде \`Найди в интернете Никола Тесла\`. Результаты из top-10 по каждому провайдеру объединяются через reciprocal rank fusion (k = ${rrfK}). Если провайдеры отключены или заблокированы в браузерной сессии, я сообщу об этом вместо ответа "да".`
+      : "Нет. В этой браузерной сессии веб-поиск сейчас недоступен: браузер offline или все CORS-readable поисковые провайдеры отключены после ошибок. Я могу отвечать по локальным правилам и кэшу, но не буду обращаться к поисковым системам.";
+  }
+  if (language === "zh") {
+    return available
+      ? `可以。当前配置启用了 web search：我会默认使用 DuckDuckGo Instant Answer，并可使用这些 CORS-readable provider（\`${providerList}\`）处理明确的搜索请求，例如 \`Search the web for Nikola Tesla\`。每个 provider 的 top-10 结果会用 reciprocal rank fusion 合并（k = ${rrfK}）。如果浏览器会话中所有 provider 被禁用或阻止，我会说明不可用，而不是回答可以。`
+      : "不可以。当前浏览器会话中 web search 不可用：浏览器 offline，或所有 CORS-readable 搜索 provider 都因错误被禁用。我仍可使用本地规则和缓存回答，但不会调用搜索引擎。";
+  }
+  if (language === "hi") {
+    return available
+      ? `हाँ। इस configuration में web search enabled है: मैं default रूप से DuckDuckGo Instant Answer और उपलब्ध CORS-readable providers (\`${providerList}\`) का उपयोग explicit prompts जैसे \`Search the web for Nikola Tesla\` के लिए कर सकता हूँ। हर provider के top-10 results reciprocal rank fusion (k = ${rrfK}) से merge होते हैं। अगर browser session में providers disabled या blocked हों, तो मैं "हाँ" कहने के बजाय स्थिति बताऊँगा।`
+      : "नहीं। इस browser session में web search अभी available नहीं है: browser offline है या सभी CORS-readable search providers errors के बाद disabled हैं। मैं local rules और cache से जवाब दे सकता हूँ, लेकिन search engines को call नहीं करूँगा।";
+  }
+  return available
+    ? `Yes. Web search is enabled in this configuration: I can use DuckDuckGo Instant Answer by default plus the configured CORS-readable providers (\`${providerList}\`) for explicit prompts such as \`Search the web for Nikola Tesla\`. The top-10 results from each provider are merged with reciprocal rank fusion (k = ${rrfK}). If the browser session disables or blocks every provider, I will say that instead of claiming search is available.`
+    : "No. Web search is unavailable in this browser session: the browser is offline or every CORS-readable search provider has been disabled after errors. I can still answer from local rules and cache, but I will not call search engines.";
+}
+
+function tryWebSearchCapabilityStatus(prompt, normalized, language) {
+  if (!isWebSearchCapabilityQuestion(normalized, language)) return null;
+  const providers = WEB_SEARCH_PROVIDERS.filter((provider) => !webSearchIsDisabled(provider.id));
+  const online = typeof navigator === "undefined" || navigator.onLine !== false;
+  const available = online && providers.length > 0;
+  return {
+    intent: "capabilities",
+    content: webSearchStatusContent(language, available, providers.map((provider) => provider.id).join(", ")),
+    confidence: available ? 0.95 : 0.6,
+    evidence: [
+      "handler:capabilities",
+      "feature:question:web_search",
+      available ? "feature:available:web_search" : "feature:unavailable:web_search",
+      `language:${language}`,
+    ],
+  };
+}
+
 function tryCapabilities(prompt, normalized) {
   const language = detectLanguage(prompt);
+  const webSearchStatus = tryWebSearchCapabilityStatus(prompt, normalized, language);
+  if (webSearchStatus) return webSearchStatus;
   const isCapabilities =
     language === "ru"
       ? normalized.includes("что ты умеешь") ||
@@ -1362,12 +1461,12 @@ function tryCapabilities(prompt, normalized) {
   if (!isCapabilities) return null;
   const content =
     language === "ru"
-      ? "Я formal-ai — детерминированный символьный ИИ. Вот что я умею:\n\n- **Приветствия**: отвечаю на «Привет», «Здравствуйте» и т.п.\n- **Hello World**: генерирую программы на Rust, Python, JavaScript, Go, C и других языках.\n- **Поиск понятий**: объясняю термины — попробуйте «Что такое Википедия?»\n- **Арифметика**: вычисляю выражения — например, «Сколько будет 2 + 2?»\n- **Перевод**: перевожу фразы между языками.\n- **Память**: помню контекст разговора в рамках сессии.\n\nЯ работаю на основе локальных символьных правил, без нейросетевого инференса."
+      ? "Я formal-ai — детерминированный символьный ИИ. Вот что я умею:\n\n- **Приветствия**: отвечаю на «Привет», «Здравствуйте» и т.п.\n- **Hello World**: генерирую программы на Rust, Python, JavaScript, Go, C и других языках.\n- **Веб-поиск**: ищу в интернете через DuckDuckGo, Wikipedia и Wikidata, когда поиск доступен.\n- **Поиск понятий**: объясняю термины — попробуйте «Что такое Википедия?»\n- **Арифметика**: вычисляю выражения — например, «Сколько будет 2 + 2?»\n- **Перевод**: перевожу фразы между языками.\n- **Память**: помню контекст разговора в рамках сессии.\n\nЯ работаю на основе локальных символьных правил, без нейросетевого инференса."
       : language === "zh"
-        ? "我是 formal-ai —— 一个确定性的符号化 AI。以下是我的功能：\n\n- **问候**：回应「你好」等问候语。\n- **Hello World**：生成 Rust、Python、JavaScript、Go、C 等语言的示例程序。\n- **概念查找**：解释术语，例如「什么是维基百科？」\n- **算术**：计算表达式，例如「2 + 2 等于多少？」\n- **翻译**：在语言之间翻译短语。\n- **记忆**：在会话中记住上下文。\n\n我基于本地符号规则运行，不进行神经网络推理。"
+        ? "我是 formal-ai —— 一个确定性的符号化 AI。以下是我的功能：\n\n- **问候**：回应「你好」等问候语。\n- **Hello World**：生成 Rust、Python、JavaScript、Go、C 等语言的示例程序。\n- **Web search**：在可用时通过 DuckDuckGo、Wikipedia 和 Wikidata 搜索互联网。\n- **概念查找**：解释术语，例如「什么是维基百科？」\n- **算术**：计算表达式，例如「2 + 2 等于多少？」\n- **翻译**：在语言之间翻译短语。\n- **记忆**：在会话中记住上下文。\n\n我基于本地符号规则运行，不进行神经网络推理。"
         : language === "hi"
-          ? "मैं formal-ai हूँ — एक नियतात्मक प्रतीकात्मक AI। मैं यह कर सकता हूँ:\n\n- **अभिवादन**: «नमस्ते» आदि का जवाब देना।\n- **Hello World**: Rust, Python, JavaScript, Go, C आदि में प्रोग्राम बनाना।\n- **अवधारणा खोज**: शब्दों को समझाना — जैसे «विकिपीडिया क्या है?»\n- **अंकगणित**: गणनाएँ — जैसे «2 + 2 क्या है?»\n- **अनुवाद**: भाषाओं के बीच अनुवाद।\n- **स्मृति**: सत्र में संदर्भ याद रखना।\n\nमैं स्थानीय प्रतीकात्मक नियमों पर चलता हूँ, कोई न्यूरल इन्फेरेन्स नहीं।"
-          : "I am formal-ai, a deterministic symbolic AI. Here is what I can do:\n\n- **Greetings**: respond to «Hi», «Hello», and similar.\n- **Hello World**: generate programs in Rust, Python, JavaScript, Go, C, and more.\n- **Concept lookup**: explain terms — try «What is Wikipedia?»\n- **Arithmetic**: evaluate expressions — try «What is 2 + 2?»\n- **Translation**: translate phrases between languages.\n- **Memory**: recall context within the current session.\n\nI run on local symbolic rules, without any neural network inference.";
+          ? "मैं formal-ai हूँ — एक नियतात्मक प्रतीकात्मक AI। मैं यह कर सकता हूँ:\n\n- **अभिवादन**: «नमस्ते» आदि का जवाब देना।\n- **Hello World**: Rust, Python, JavaScript, Go, C आदि में प्रोग्राम बनाना।\n- **Web search**: उपलब्ध होने पर DuckDuckGo, Wikipedia, और Wikidata से इंटरनेट में खोजना।\n- **अवधारणा खोज**: शब्दों को समझाना — जैसे «विकिपीडिया क्या है?»\n- **अंकगणित**: गणनाएँ — जैसे «2 + 2 क्या है?»\n- **अनुवाद**: भाषाओं के बीच अनुवाद।\n- **स्मृति**: सत्र में संदर्भ याद रखना।\n\nमैं स्थानीय प्रतीकात्मक नियमों पर चलता हूँ, कोई न्यूरल इन्फेरेन्स नहीं।"
+          : "I am formal-ai, a deterministic symbolic AI. Here is what I can do:\n\n- **Greetings**: respond to «Hi», «Hello», and similar.\n- **Hello World**: generate programs in Rust, Python, JavaScript, Go, C, and more.\n- **Web search**: search the internet through DuckDuckGo, Wikipedia, and Wikidata when available.\n- **Concept lookup**: explain terms — try «What is Wikipedia?»\n- **Arithmetic**: evaluate expressions — try «What is 2 + 2?»\n- **Translation**: translate phrases between languages.\n- **Memory**: recall context within the current session.\n\nI run on local symbolic rules, without any neural network inference.";
   return {
     intent: "capabilities",
     content,
