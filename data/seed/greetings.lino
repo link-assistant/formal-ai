@@ -51,3 +51,21 @@ farewell_4
   intent "farewell"
   response_link "response:farewell"
   answer "До свидания! Возвращайтесь в любое время."
+
+courtesy_response_1
+  text "I am fine, thank you"
+  intent "courtesy_response"
+  response_link "response:courtesy_response"
+  answer "Glad to hear it. What would you like to do next?"
+
+courtesy_response_2
+  text "thanks"
+  intent "courtesy_response"
+  response_link "response:courtesy_response"
+  answer "Glad to hear it. What would you like to do next?"
+
+courtesy_response_3
+  text "спасибо"
+  intent "courtesy_response"
+  response_link "response:courtesy_response"
+  answer "Рад это слышать. Что вы хотите сделать дальше?"

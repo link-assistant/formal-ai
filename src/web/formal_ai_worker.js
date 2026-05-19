@@ -45,6 +45,9 @@ const FALLBACK_IDENTITY_ANSWER =
 
 const FALLBACK_GREETING_ANSWER = "Hi, how may I help you?";
 
+const FALLBACK_COURTESY_RESPONSE_ANSWER =
+  "Glad to hear it. What would you like to do next?";
+
 const FALLBACK_UNKNOWN_ANSWER =
   "I cannot answer that from local Links Notation rules yet. Please add a fact or add a rule in Links Notation, then run the request again.";
 
@@ -62,6 +65,12 @@ let MULTILINGUAL_ANSWERS = {
   },
   farewell: {
     en: { text: "Goodbye! Feel free to return any time.", variants: ["Goodbye! Feel free to return any time."] },
+  },
+  courtesy_response: {
+    en: {
+      text: FALLBACK_COURTESY_RESPONSE_ANSWER,
+      variants: [FALLBACK_COURTESY_RESPONSE_ANSWER],
+    },
   },
   identity: {
     en: { text: FALLBACK_IDENTITY_ANSWER, variants: [FALLBACK_IDENTITY_ANSWER] },
@@ -174,6 +183,44 @@ let INTENT_ROUTING = {
       combos: [],
     },
     {
+      id: "intent_courtesy_response",
+      slug: "courtesy_response",
+      responseLink: "response:courtesy_response",
+      keywords: ["thanks", "спасибо", "благодарю", "धन्यवाद", "शुक्रिया", "谢谢"],
+      phrases: [
+        "thank you",
+        "i am fine thank you",
+        "i am fine thanks",
+        "i m fine thank you",
+        "i m fine thanks",
+        "i am good thank you",
+        "i am good thanks",
+        "i m good thank you",
+        "i m good thanks",
+        "fine thank you",
+        "fine thanks",
+        "good thank you",
+        "good thanks",
+        "doing well thank you",
+        "doing well thanks",
+        "у меня все хорошо спасибо",
+        "у меня всё хорошо спасибо",
+        "все хорошо спасибо",
+        "всё хорошо спасибо",
+        "хорошо спасибо",
+        "нормально спасибо",
+        "मैं ठीक हूँ धन्यवाद",
+        "ठीक हूँ धन्यवाद",
+        "मैं अच्छा हूँ धन्यवाद",
+        "我很好谢谢",
+        "我很好 谢谢",
+        "好的谢谢",
+        "好的 谢谢",
+      ],
+      tokens: [],
+      combos: [],
+    },
+    {
       id: "intent_identity",
       slug: "identity",
       responseLink: "response:identity",
@@ -213,6 +260,12 @@ let INTENT_ROUTING = {
 function fallbackEntry(intent) {
   if (intent === "greeting") {
     return { text: FALLBACK_GREETING_ANSWER, variants: [FALLBACK_GREETING_ANSWER] };
+  }
+  if (intent === "courtesy_response") {
+    return {
+      text: FALLBACK_COURTESY_RESPONSE_ANSWER,
+      variants: [FALLBACK_COURTESY_RESPONSE_ANSWER],
+    };
   }
   if (intent === "identity") {
     return { text: FALLBACK_IDENTITY_ANSWER, variants: [FALLBACK_IDENTITY_ANSWER] };
@@ -1315,6 +1368,10 @@ function isGreetingPrompt(normalized, rawPrompt) {
 
 function isFarewellPrompt(normalized, rawPrompt) {
   return matchesIntentRoute(normalized, rawPrompt, "intent_farewell");
+}
+
+function isCourtesyResponsePrompt(normalized, rawPrompt) {
+  return matchesIntentRoute(normalized, rawPrompt, "intent_courtesy_response");
 }
 
 function isPunctuationOnlyPrompt(prompt) {
@@ -5185,6 +5242,16 @@ async function solve(prompt, history, prefs) {
       content: answerFor("farewell", language),
       confidence: 1.0,
       evidence: ["rule:farewell", `language:${language}`],
+    });
+  }
+  if (isCourtesyResponsePrompt(normalized, prompt)) {
+    events.push("rule:courtesy_response");
+    steps.push({ step: "match_rule", detail: "courtesy_response" });
+    return finalize(events, steps, toolCalls, {
+      intent: "courtesy_response",
+      content: answerFor("courtesy_response", language),
+      confidence: 1.0,
+      evidence: ["rule:courtesy_response", `language:${language}`],
     });
   }
   if (isIdentityPrompt(normalized, prompt)) {

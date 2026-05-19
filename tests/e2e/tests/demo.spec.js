@@ -248,6 +248,15 @@ test.describe('formal-ai demo UI', () => {
     await expect(lastMsg).not.toContainText(UNKNOWN_ANSWER_MARKER);
   });
 
+  test('polite small-talk follow-up does not fall through to unknown', async ({ page }) => {
+    await switchToManualMode(page);
+
+    const lastMsg = await sendPrompt(page, 'I am fine, thank you');
+
+    await expect(lastMsg).toContainText('Glad to hear it');
+    await expect(lastMsg).not.toContainText(UNKNOWN_ANSWER_MARKER);
+  });
+
   test('reported prompt examples resolve through the browser worker', async ({ page }) => {
     await switchToManualMode(page);
 

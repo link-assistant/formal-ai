@@ -1132,6 +1132,21 @@ function localFallbackAnswer(prompt) {
     };
   }
 
+  const courtesyResponses = new Set([
+    "thanks",
+    "thank you",
+    "i am fine thank you",
+    "i am fine thanks",
+    "i m fine thank you",
+    "i m fine thanks",
+  ]);
+  if (courtesyResponses.has(normalized)) {
+    return {
+      intent: "courtesy_response",
+      content: "Glad to hear it. What would you like to do next?",
+    };
+  }
+
   if (isIdentityPrompt(normalized)) {
     return {
       intent: "identity",
