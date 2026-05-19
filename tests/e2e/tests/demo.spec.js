@@ -30,6 +30,23 @@ async function disableGreetingVariations(page) {
   });
 }
 
+async function sendPrompt(page, text) {
+  const input = page.locator('[data-testid="chat-composer-input"]');
+  await expect(input).toBeEnabled({ timeout: 5_000 });
+  await input.fill(text);
+  return submitCurrentPrompt(page);
+}
+
+async function submitCurrentPrompt(page) {
+  const messages = page.locator('[data-testid="chat-message"]');
+  const initialCount = await messages.count();
+  await page.locator('[data-testid="chat-composer-submit"]').click();
+  await expect(messages).toHaveCount(initialCount + 2, { timeout: 20_000 });
+  const lastMsg = messages.last();
+  await expect(lastMsg).toHaveClass(/assistant/);
+  return lastMsg;
+}
+
 test.describe('formal-ai demo UI', () => {
   test.beforeEach(async ({ page }) => {
     await disableGreetingVariations(page);
@@ -229,6 +246,52 @@ test.describe('formal-ai demo UI', () => {
     await expect(lastMsg).toHaveClass(/assistant/);
     await expect(lastMsg).toContainText('formal-ai');
     await expect(lastMsg).not.toContainText(UNKNOWN_ANSWER_MARKER);
+  });
+
+  test('reported prompt examples resolve through the browser worker', async ({ page }) => {
+    await switchToManualMode(page);
+
+    await page.route('**/w/rest.php/v1/search/page**', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          pages: [
+            {
+              id: 123,
+              key: 'Genshin_Impact',
+              title: 'Genshin Impact',
+              excerpt: 'Genshin Impact is an action role-playing game.',
+              description: 'action role-playing game',
+            },
+          ],
+        }),
+      });
+    });
+
+    const capabilities = await sendPrompt(page, 'What you can do?');
+    await expect(capabilities).toContainText('Here is what I can do');
+    await expect(capabilities).toContainText('Hello World');
+    await expect(capabilities).not.toContainText(UNKNOWN_ANSWER_MARKER);
+
+    const search = await sendPrompt(page, 'Search online for Genshin Impact');
+    await expect(search).toContainText('Search results for');
+    await expect(search).toContainText('Genshin Impact');
+    await expect(search).not.toContainText(UNKNOWN_ANSWER_MARKER);
+
+    const roleplay = await sendPrompt(
+      page,
+      'Pretend you are Albert Einstein and explain relativity to a teenager.',
+    );
+    await expect(roleplay).toContainText('Roleplay frame recorded for Albert Einstein');
+    await expect(roleplay).toContainText('relativity');
+    await expect(roleplay).not.toContainText(UNKNOWN_ANSWER_MARKER);
+
+    await page.locator('button[data-prompt-label="Idiom (ru)"]').click();
+    await expect(page.locator('[data-testid="chat-composer-input"]')).toHaveValue('Купи слона');
+    const idiom = await submitCurrentPrompt(page);
+    await expect(idiom).toContainText('У всех есть слон');
+    await expect(idiom).not.toContainText(UNKNOWN_ANSWER_MARKER);
   });
 
   test('Owlbear extension request returns a software project plan', async ({ page }) => {

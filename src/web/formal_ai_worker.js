@@ -78,6 +78,66 @@ let MULTILINGUAL_ANSWERS = {
 };
 let CONCEPTS = [];
 let CONCEPT_CONTEXTS = [];
+let FACTS = [];
+let BRAINSTORM_SEEDS = {
+  triggers: [
+    "brainstorm",
+    "give me five ideas",
+    "give me 5 ideas",
+    "give me ten ideas",
+    "give me 10 ideas",
+    "suggest five",
+    "suggest 5",
+    "suggest ten",
+    "suggest 10",
+  ],
+  categories: [
+    {
+      slug: "project_ideas",
+      intent: "brainstorm_project_ideas",
+      detectionKeywords: [],
+      items: [
+        "A local Links Notation notebook with searchable traces.",
+        "A deterministic code-review checklist generator.",
+        "A multilingual prompt-variation test corpus.",
+        "A CLI that converts issue requirements into traceable tests.",
+        "A source-cache inspector for reproducible agent runs.",
+        "A changelog-fragment consistency checker.",
+        "A prompt-matrix generator for four-language smoke tests.",
+        "A Wikidata anchor verifier for local seed records.",
+        "A trace viewer that groups events by solver phase.",
+        "A small offline issue-to-test planning tool.",
+      ],
+    },
+  ],
+};
+let PERSONA_SEEDS = {
+  triggers: ["pretend you are", "act as", "roleplay", "explain like you are"],
+  defaultPersona: "requested persona",
+  bodyTemplate:
+    "Roleplay frame recorded for <persona>. I will keep the persona explicit and factual: <body>",
+  fallbackBody:
+    "relativity says measurements of space and time depend on the observer's motion, while the laws of physics stay consistent.",
+  personas: [
+    { displayName: "Albert Einstein", aliases: ["einstein"], wikidata: "Q937" },
+    { displayName: "Ada Lovelace", aliases: ["ada lovelace"], wikidata: "Q7259" },
+    { displayName: "teacher", aliases: ["teacher"], wikidata: "" },
+  ],
+  topics: [
+    {
+      slug: "algorithm",
+      detectionKeywords: ["algorithm", "algorithms"],
+      body:
+        "an algorithm is a precise sequence of steps, so a reliable explanation names the inputs, the ordered operations, and the expected result.",
+    },
+    {
+      slug: "time_dilation",
+      detectionKeywords: ["time dilation"],
+      body:
+        "time dilation means clocks can measure different elapsed times when observers move differently or sit in different gravitational fields.",
+    },
+  ],
+};
 let TOOLS = [];
 let SEED_RAW = {};
 let AGENT_INFO = {};
@@ -1243,6 +1303,179 @@ function isFarewellPrompt(normalized, rawPrompt) {
 function isPunctuationOnlyPrompt(prompt) {
   const trimmed = String(prompt || "").trim();
   return /^[.!?…。？！]+$/.test(trimmed);
+}
+
+function containsAny(normalized, values) {
+  if (!normalized || !Array.isArray(values)) return false;
+  return values.some((value) => value && normalized.includes(String(value).toLowerCase()));
+}
+
+function tryCapabilities(prompt, normalized) {
+  const language = detectLanguage(prompt);
+  const isCapabilities =
+    language === "ru"
+      ? normalized.includes("что ты умеешь") ||
+        normalized.includes("чем ты можешь") ||
+        normalized.includes("что ты можешь") ||
+        normalized.includes("что умеет") ||
+        normalized.includes("что можешь") ||
+        normalized.includes("твои возможности") ||
+        normalized.includes("что за дичь") ||
+        normalized.includes("что это такое") ||
+        normalized.includes("что происходит") ||
+        normalized.includes("что ты делаешь")
+      : language === "zh"
+        ? normalized.includes("你能做什么") ||
+          normalized.includes("你会做什么") ||
+          normalized.includes("你有什么功能") ||
+          normalized.includes("你能干什么")
+        : language === "hi"
+          ? normalized.includes("आप क्या कर सकते") ||
+            normalized.includes("तुम क्या कर सकते") ||
+            normalized.includes("क्या क्या कर सकते")
+          : normalized.includes("what can you do") ||
+            normalized.includes("what you can do") ||
+            normalized.includes("what are your capabilities") ||
+            normalized.includes("what are you capable of") ||
+            normalized.includes("what do you do") ||
+            normalized.includes("show me what you can do") ||
+            normalized.includes("what features do you have") ||
+            normalized.includes("how can you help") ||
+            normalized.includes("what are your features");
+  if (!isCapabilities) return null;
+  const content =
+    language === "ru"
+      ? "Я formal-ai — детерминированный символьный ИИ. Вот что я умею:\n\n- **Приветствия**: отвечаю на «Привет», «Здравствуйте» и т.п.\n- **Hello World**: генерирую программы на Rust, Python, JavaScript, Go, C и других языках.\n- **Поиск понятий**: объясняю термины — попробуйте «Что такое Википедия?»\n- **Арифметика**: вычисляю выражения — например, «Сколько будет 2 + 2?»\n- **Перевод**: перевожу фразы между языками.\n- **Память**: помню контекст разговора в рамках сессии.\n\nЯ работаю на основе локальных символьных правил, без нейросетевого инференса."
+      : language === "zh"
+        ? "我是 formal-ai —— 一个确定性的符号化 AI。以下是我的功能：\n\n- **问候**：回应「你好」等问候语。\n- **Hello World**：生成 Rust、Python、JavaScript、Go、C 等语言的示例程序。\n- **概念查找**：解释术语，例如「什么是维基百科？」\n- **算术**：计算表达式，例如「2 + 2 等于多少？」\n- **翻译**：在语言之间翻译短语。\n- **记忆**：在会话中记住上下文。\n\n我基于本地符号规则运行，不进行神经网络推理。"
+        : language === "hi"
+          ? "मैं formal-ai हूँ — एक नियतात्मक प्रतीकात्मक AI। मैं यह कर सकता हूँ:\n\n- **अभिवादन**: «नमस्ते» आदि का जवाब देना।\n- **Hello World**: Rust, Python, JavaScript, Go, C आदि में प्रोग्राम बनाना।\n- **अवधारणा खोज**: शब्दों को समझाना — जैसे «विकिपीडिया क्या है?»\n- **अंकगणित**: गणनाएँ — जैसे «2 + 2 क्या है?»\n- **अनुवाद**: भाषाओं के बीच अनुवाद।\n- **स्मृति**: सत्र में संदर्भ याद रखना।\n\nमैं स्थानीय प्रतीकात्मक नियमों पर चलता हूँ, कोई न्यूरल इन्फेरेन्स नहीं।"
+          : "I am formal-ai, a deterministic symbolic AI. Here is what I can do:\n\n- **Greetings**: respond to «Hi», «Hello», and similar.\n- **Hello World**: generate programs in Rust, Python, JavaScript, Go, C, and more.\n- **Concept lookup**: explain terms — try «What is Wikipedia?»\n- **Arithmetic**: evaluate expressions — try «What is 2 + 2?»\n- **Translation**: translate phrases between languages.\n- **Memory**: recall context within the current session.\n\nI run on local symbolic rules, without any neural network inference.";
+  return {
+    intent: "capabilities",
+    content,
+    confidence: 1.0,
+    evidence: ["handler:capabilities", `language:${language}`],
+  };
+}
+
+function requestedBrainstormCount(normalized) {
+  const tenHints = [
+    " 10 ",
+    "10.",
+    "10 ",
+    " 10",
+    "ten ",
+    "десять",
+    "10 идей",
+    "10 имён",
+    "दस ",
+    "十个",
+    "10 个",
+  ];
+  return tenHints.some((hint) => normalized.includes(hint)) ? 10 : 5;
+}
+
+function numbered(items, count) {
+  return items
+    .slice(0, count)
+    .map((item, index) => `${index + 1}. ${item}`)
+    .join("\n");
+}
+
+function tryBrainstormingRequest(prompt, normalized) {
+  const seeds = BRAINSTORM_SEEDS || {};
+  if (!containsAny(normalized, seeds.triggers)) return null;
+  const categories = Array.isArray(seeds.categories) ? seeds.categories : [];
+  const category =
+    categories.find((entry) => containsAny(normalized, entry.detectionKeywords)) ||
+    categories.find((entry) => !entry.detectionKeywords || entry.detectionKeywords.length === 0);
+  if (!category || !Array.isArray(category.items) || category.items.length === 0) {
+    return null;
+  }
+  const count = requestedBrainstormCount(` ${normalized} `);
+  return {
+    intent: category.intent || "brainstorm_project_ideas",
+    content: numbered(category.items, count),
+    confidence: 0.8,
+    evidence: [`brainstorm:category:${category.slug || "project_ideas"}`],
+  };
+}
+
+function localizedFactFor(record, language) {
+  const localized = Array.isArray(record.localized) ? record.localized : [];
+  return (
+    localized.find((entry) => entry && entry.language === language) ||
+    localized.find((entry) => entry && entry.language === "en") ||
+    null
+  );
+}
+
+function tryFactLookup(prompt, normalized) {
+  const record = FACTS.find(
+    (fact) =>
+      containsAny(normalized, fact.subjectAliases) &&
+      containsAny(normalized, fact.questionKeywords),
+  );
+  if (!record) return null;
+  const language = detectLanguage(prompt);
+  const localized = localizedFactFor(record, language);
+  const summary = (localized && localized.summary) || record.summary;
+  const source = (localized && localized.source) || record.source;
+  const evidence = [
+    `fact_lookup:hit:${record.slug}`,
+    `language:${language}`,
+    ...((record.wikidata || []).map((qid) => `wikidata:${qid}`)),
+  ];
+  if (source) evidence.push(`source:${humanizeUrl(source)}`);
+  return {
+    intent: "fact_lookup",
+    content: summary,
+    confidence: 0.9,
+    evidence,
+  };
+}
+
+function renderRoleplayBody(persona, body) {
+  const template =
+    (PERSONA_SEEDS && PERSONA_SEEDS.bodyTemplate) ||
+    "Roleplay frame recorded for <persona>. I will keep the persona explicit and factual: <body>";
+  return template.replace(/<persona>/g, persona).replace(/<body>/g, body);
+}
+
+function tryRoleplayRequest(prompt, normalized) {
+  const seeds = PERSONA_SEEDS || {};
+  if (!containsAny(normalized, seeds.triggers)) return null;
+  const personas = Array.isArray(seeds.personas) ? seeds.personas : [];
+  const persona = personas.find((entry) => containsAny(normalized, entry.aliases));
+  const topics = Array.isArray(seeds.topics) ? seeds.topics : [];
+  const topic = topics.find((entry) => containsAny(normalized, entry.detectionKeywords));
+  const displayName =
+    (persona && persona.displayName) || seeds.defaultPersona || "requested persona";
+  const body =
+    (topic && topic.body) ||
+    seeds.fallbackBody ||
+    "relativity says measurements of space and time depend on the observer's motion, while the laws of physics stay consistent.";
+  const evidence = [`roleplay:persona:${displayName}`];
+  if (persona && persona.wikidata) evidence.push(`wikidata:${persona.wikidata}`);
+  if (topic && topic.slug) evidence.push(`roleplay:topic:${topic.slug}`);
+  return {
+    intent: "roleplay_explanation",
+    content: renderRoleplayBody(displayName, body),
+    confidence: 0.8,
+    evidence,
+  };
+}
+
+function tryKupiSlona(prompt, normalized) {
+  if (!normalized.includes("купи слона")) return null;
+  return {
+    intent: "kupi_slona",
+    content:
+      "«Купи слона» — это известная русская детская фраза-игра. На любой ответ следует продолжение: «Все так говорят, а ты купи слона!» Правильный ответ по правилам игры: «У всех есть слон, а у меня нет».",
+    confidence: 1.0,
+    evidence: ["handler:kupi_slona", "language:ru"],
+  };
 }
 
 function extractName(text) {
@@ -3353,6 +3586,7 @@ function extractWebSearchQuery(prompt, normalized) {
     "search web for ",
     "search the internet for ",
     "search internet for ",
+    "search online for ",
     "web search for ",
     "find on the internet ",
     "find online ",
@@ -3597,6 +3831,13 @@ async function solve(prompt, history, prefs) {
     });
   }
 
+  const capabilities = tryCapabilities(prompt, normalized);
+  if (capabilities) {
+    events.push(`handler:${capabilities.intent}`);
+    steps.push({ step: "dispatch_handler", detail: "tryCapabilities" });
+    return finalize(events, steps, toolCalls, capabilities);
+  }
+
   if (isGreetingPrompt(normalized, prompt)) {
     events.push("rule:greeting");
     steps.push({ step: "match_rule", detail: "greeting" });
@@ -3637,6 +3878,10 @@ async function solve(prompt, history, prefs) {
 
   const syncHandlers = [
     { name: "tryHistorical", run: () => tryHistorical(prompt, history) },
+    { name: "tryBrainstormingRequest", run: () => tryBrainstormingRequest(prompt, normalized) },
+    { name: "tryFactLookup", run: () => tryFactLookup(prompt, normalized) },
+    { name: "tryRoleplayRequest", run: () => tryRoleplayRequest(prompt, normalized) },
+    { name: "tryKupiSlona", run: () => tryKupiSlona(prompt, normalized) },
     { name: "tryArithmetic", run: () => tryArithmetic(prompt) },
     { name: "tryJavaScriptExecution", run: () => tryJavaScriptExecution(prompt) },
     {
@@ -3807,6 +4052,25 @@ async function loadSeed() {
     ) {
       CONCEPT_CONTEXTS = seed.conceptContexts;
     }
+    if (Array.isArray(seed && seed.facts) && seed.facts.length > 0) {
+      FACTS = seed.facts;
+    }
+    if (
+      seed &&
+      seed.brainstormSeeds &&
+      Array.isArray(seed.brainstormSeeds.triggers) &&
+      seed.brainstormSeeds.triggers.length > 0
+    ) {
+      BRAINSTORM_SEEDS = seed.brainstormSeeds;
+    }
+    if (
+      seed &&
+      seed.personas &&
+      Array.isArray(seed.personas.triggers) &&
+      seed.personas.triggers.length > 0
+    ) {
+      PERSONA_SEEDS = seed.personas;
+    }
     if (Array.isArray(seed && seed.tools) && seed.tools.length > 0) {
       TOOLS = seed.tools;
     }
@@ -3867,6 +4131,9 @@ async function init() {
       responseIntents: Object.keys(MULTILINGUAL_ANSWERS),
       conceptCount: CONCEPTS.length,
       conceptContextCount: CONCEPT_CONTEXTS.length,
+      factCount: FACTS.length,
+      brainstormCategoryCount: BRAINSTORM_SEEDS.categories.length,
+      personaCount: PERSONA_SEEDS.personas.length,
       toolCount: TOOLS.length,
       files: Object.keys(SEED_RAW),
     },
@@ -3884,6 +4151,9 @@ self.onmessage = async (event) => {
       responses: MULTILINGUAL_ANSWERS,
       concepts: CONCEPTS,
       conceptContexts: CONCEPT_CONTEXTS,
+      facts: FACTS,
+      brainstormSeeds: BRAINSTORM_SEEDS,
+      personas: PERSONA_SEEDS,
       tools: TOOLS,
       agentInfo: AGENT_INFO,
       languageRules: LANGUAGE_RULES,

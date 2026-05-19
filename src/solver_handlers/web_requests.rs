@@ -209,6 +209,7 @@ fn extract_web_search_query(prompt: &str, normalized: &str) -> Option<String> {
         "search web for ",
         "search the internet for ",
         "search internet for ",
+        "search online for ",
         "web search for ",
         "find on the internet ",
         "find online ",

@@ -310,7 +310,7 @@ fn concept_lookup_matrix_is_classified_as_concept_lookup_across_languages() {
 // model").
 // ---------------------------------------------------------------------------
 
-const ENGLISH_CAPABILITIES: &[&str] = &["what can you do?", "what can you do"];
+const ENGLISH_CAPABILITIES: &[&str] = &["what can you do?", "what can you do", "what you can do?"];
 
 const RUSSIAN_CAPABILITIES: &[&str] = &[
     "что ты умеешь?",
@@ -529,6 +529,21 @@ fn brainstorming_intent_routes_to_brainstorm_handler() {
             response.answer,
         );
     }
+}
+
+#[test]
+fn web_search_online_variant_routes_to_web_search_handler() {
+    let response = answer("Search online for Genshin Impact");
+    assert_eq!(
+        response.intent, "web_search",
+        "reported search-online phrasing should route to web_search, got {} with answer {}",
+        response.intent, response.answer,
+    );
+    assert!(
+        response.answer.to_lowercase().contains("genshin impact"),
+        "web search response should preserve the query, got {}",
+        response.answer,
+    );
 }
 
 // Fact-lookup matrix: 5-10 input variations per fact across every supported

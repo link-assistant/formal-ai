@@ -165,6 +165,7 @@ intent_routing
     response_link "response:web_search"
     phrase "search the web for"
     phrase "search the internet for"
+    phrase "search online for"
     phrase "web search for"
     phrase "найди в интернете"
     phrase "поищи в интернете"
