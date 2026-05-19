@@ -359,13 +359,17 @@ test.describe('formal-ai demo UI', () => {
     expect(url.searchParams.get('labels')).toBe('bug');
     expect(body).toContain('## Environment');
     expect(body).toContain('**Version**');
-    expect(body).toContain('**User Agent**');
+    // Issue #140: the user agent is now folded into the combined **UI** field
+    // of User Context (e.g. "1536x730 viewport, ... Chrome/... browser, ...").
+    expect(body).toMatch(/\*\*UI\*\*:.* browser/);
     expect(body).toContain('## Dialog');
     expect(body).toContain(prompt);
     // Issue #78: intent now appears inline next to the assistant turn marker
     // ("A (intent: unknown, reported): ...") inside the dialog code block.
     expect(body).toMatch(/A \(intent: unknown[^)]*\):/);
     expect(body).toContain('## Reproduction Steps');
+    // Issue #140: the prefilled URL must stay below GitHub's 8192-byte cap.
+    expect(href.length).toBeLessThanOrEqual(8192);
   });
 
   test('sending a hello world request produces a code block', async ({ page }) => {
@@ -606,11 +610,63 @@ test.describe('Issue #94: theme, localization, and report context', () => {
 
     const body = new URL(href || '').searchParams.get('body') || '';
     expect(body).toContain('## User Context');
-    expect(body).toContain('**UI Language**');
-    expect(body).toContain('**Browser Languages**');
-    expect(body).toContain('**Color Scheme**: dark');
-    expect(body).toContain('**Time Zone**');
-    expect(body).toContain('**Location Inference**');
+    // Issue #140: UI languages, theme, UI, locale, and location are now
+    // emitted on combined single lines so prefilled URLs stay below GitHub's
+    // 8192-byte cap. Browser languages appear inside **UI languages**, and
+    // the user agent / viewport / screen / platform inside **UI**.
+    expect(body).toMatch(/\*\*UI languages\*\*: \*?[^*]+\*?(?:, [^,\n]+)*/);
+    expect(body).toMatch(/\*\*Theme\*\*: .*dark/);
+    expect(body).toMatch(/\*\*UI\*\*: .*viewport, .*screen, .* browser/);
+    expect(body).toMatch(/\*\*Locale\*\*: .* \([^)]+\)/);
+    expect(body).toMatch(/\*\*Location\*\*: inferred from /);
+    // The verbose per-field labels from the old layout must be gone so the
+    // prefilled URL stays below GitHub's 8192-byte cap.
+    expect(body).not.toContain('**UI Language**');
+    expect(body).not.toContain('**Browser Languages**');
+    expect(body).not.toContain('**Color Scheme**');
+    expect(body).not.toContain('**Time Zone**');
+    expect(body).not.toContain('**Location Inference**');
+    expect(body).not.toContain('**Online**');
+    expect(body).not.toContain('**Viewport**');
+    expect(body).not.toContain('**Screen**');
+    expect(body).not.toContain('**Platform**');
+    expect(href.length).toBeLessThanOrEqual(8192);
+  });
+
+  // Issue #140: GitHub rejects prefilled URLs longer than ~8192 bytes with
+  // "Whoa there!". The Report issue link must therefore stay under that cap
+  // even when the dialog has many turns and Cyrillic content. The fitter is
+  // expected to drop earlier messages and, if needed, truncate the last two.
+  test('prefilled issue URL stays below GitHub 8KB cap with a long dialog', async ({ page }) => {
+    await disableGreetingVariations(page);
+    await page.goto('./');
+    await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
+    await switchToManualMode(page);
+
+    const input = page.locator('[data-testid="chat-composer-input"]');
+    const messages = page.locator('[data-testid="chat-message"]');
+
+    for (let i = 0; i < 12; i += 1) {
+      const baseline = await messages.count();
+      await input.fill('ва');
+      await page.locator('[data-testid="chat-composer-submit"]').click();
+      await expect(messages).toHaveCount(baseline + 2, { timeout: 15_000 });
+    }
+
+    const reportLink = messages.last().locator('.message-actions a');
+    await expect(reportLink).toHaveText(/Report missing rule|Report issue/);
+
+    const href = await reportLink.getAttribute('href');
+    expect(href).toBeTruthy();
+    expect(href.length).toBeLessThanOrEqual(8192);
+
+    const url = new URL(href || '');
+    const body = url.searchParams.get('body') || '';
+    expect(body).toContain('## Environment');
+    expect(body).toContain('## Dialog');
+    // The fitter should have either dropped earlier turns or truncated the
+    // last two. Either way the omission marker must be present.
+    expect(body).toMatch(/omitted \d+ (earlier (message|messages)|lines|characters)/);
   });
 
   test('toolbar labels switch to icon-only before controls wrap', async ({ page }) => {
