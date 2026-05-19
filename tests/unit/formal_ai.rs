@@ -565,6 +565,42 @@ fn fetch_prompt_returns_http_fetch_intent_not_unknown() {
 }
 
 #[test]
+fn url_navigation_variations_return_https_link_without_fetch_advice() {
+    let cases = [
+        ("Navigate to github.com", "https://github.com"),
+        ("Go to github.com", "https://github.com"),
+        ("Visit github.com", "https://github.com"),
+        ("Browse to github.com", "https://github.com"),
+        ("Show github.com", "https://github.com"),
+        (
+            "Open https://github.com/link-assistant/formal-ai",
+            "https://github.com/link-assistant/formal-ai",
+        ),
+        ("Перейди на github.com", "https://github.com"),
+    ];
+
+    for (prompt, expected_url) in cases {
+        let response = FormalAiEngine.answer(prompt);
+
+        assert_eq!(
+            response.intent, "http_fetch",
+            "prompt {prompt:?} should resolve to http_fetch, got {:?} — answer: {}",
+            response.intent, response.answer
+        );
+        assert!(
+            response.answer.contains(expected_url),
+            "prompt {prompt:?} should return a proper HTTPS link {expected_url:?}, got: {}",
+            response.answer
+        );
+        assert!(
+            !response.answer.contains("fetch()") && !response.answer.to_lowercase().contains("cors"),
+            "prompt {prompt:?} should not tell the user that the browser will try fetch/CORS first, got: {}",
+            response.answer
+        );
+    }
+}
+
+#[test]
 fn web_search_prompt_returns_web_search_intent_not_unknown() {
     let cases = [
         "Search the web for Nikola Tesla",

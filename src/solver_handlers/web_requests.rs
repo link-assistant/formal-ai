@@ -1,4 +1,4 @@
-//! URL fetch and browser-search handlers.
+//! URL preview and browser-search handlers.
 
 use crate::engine::{normalize_prompt, SymbolicAnswer};
 use crate::event_log::EventLog;
@@ -13,12 +13,13 @@ pub fn try_http_fetch(
 ) -> Option<SymbolicAnswer> {
     let url = extract_fetch_url(prompt, normalized)?;
     log.append("http_fetch:request", url.clone());
+    log.append("url_preview:iframe", url.clone());
     let body = format!(
-        "HTTP fetch requested for `{url}`.\n\n\
-         The browser will attempt to load this URL via `fetch()`. If the server \
-         blocks the request with a CORS error, an embedded iframe will be shown \
-         instead so you can still view the page.\n\n\
-         Source: [{url}]({url})"
+        "URL requested for `{url}`.\n\n\
+         Open this link: [{url}]({url}).\n\n\
+         The browser demo also shows the page in an embedded iframe when the \
+         site allows framing. Use the open-in-new-tab control if the site blocks \
+         embedding, or the full-screen control to view it at viewport size."
     );
     Some(finalize_simple(
         prompt,
@@ -161,17 +162,29 @@ fn is_url_request_prompt(prompt: &str, normalized: &str, raw_candidate: &str) ->
         "fetch ",
         "get ",
         "open ",
+        "navigate to ",
+        "go to ",
+        "visit ",
+        "browse to ",
+        "show ",
+        "show me ",
+        "display ",
         "load ",
         "request ",
         "fetch url ",
         "open url ",
+        "navigate url ",
+        "go to url ",
         "сделай запрос ",
         "выполни запрос ",
         "запроси ",
         "получи ",
         "открой ",
+        "открой сайт ",
+        "покажи ",
         "загрузи ",
         "перейди ",
+        "перейди на ",
     ];
     if prefixes
         .iter()
@@ -184,6 +197,9 @@ fn is_url_request_prompt(prompt: &str, normalized: &str, raw_candidate: &str) ->
         "send a request to",
         "http request to",
         "request to",
+        "navigate to",
+        "go to",
+        "browse to",
         "сделай запрос к",
         "сделай запрос на",
         "выполни запрос к",

@@ -167,22 +167,34 @@ test.describe('multilingual chat surface', () => {
     await expect(last).not.toContainText(/рок-группа|rock band|american.*rock|глэм/i);
   });
 
-  test('Russian URL request uses HTTP fetch with iframe fallback', async ({ page }) => {
-    await page.route(/https:\/\/(www\.)?google\.com\/?.*/, async (route) => {
-      await route.abort('failed');
+  test('URL navigation request shows iframe controls without fetch fallback copy', async ({ page }) => {
+    const githubRequestTypes = [];
+    await page.route(/https:\/\/github\.com\/?.*/, async (route) => {
+      githubRequestTypes.push(route.request().resourceType());
+      await route.abort('blockedbyclient');
     });
 
-    const last = await sendPrompt(page, 'Сделай запрос к google.com');
+    const last = await sendPrompt(page, 'Navigate to github.com');
     await expect(last).toHaveClass(/assistant/);
-    await expect(last).toContainText('Could not fetch');
+    await expect(last).toContainText('https://github.com');
+    await expect(last).not.toContainText('Could not fetch');
     await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
     const frameContainer = last.locator('[data-testid="fetch-iframe-container"]');
-    await expect(frameContainer).toContainText(/https:\/\/google\.com\/?/);
-    await expect(frameContainer.locator('.fetch-iframe-toggle')).toBeVisible();
+    await expect(frameContainer).toContainText(/https:\/\/github\.com\/?/);
     await expect(frameContainer.locator('.fetch-iframe-open')).toHaveAttribute(
       'href',
-      /https:\/\/google\.com\/?/,
+      /https:\/\/github\.com\/?/,
     );
+    await expect(frameContainer.locator('.fetch-iframe-open')).toHaveAttribute(
+      'aria-label',
+      'Open in new tab',
+    );
+    await expect(frameContainer.locator('.fetch-iframe-toggle')).toBeVisible();
+    await frameContainer.locator('.fetch-iframe-toggle').click();
+    await expect(frameContainer).toHaveClass(/is-fullscreen/);
+    await frameContainer.locator('.fetch-iframe-toggle').click();
+    await expect(frameContainer).not.toHaveClass(/is-fullscreen/);
+    expect(githubRequestTypes).not.toContain('fetch');
   });
 
   test('explicit web search renders Wikipedia search results', async ({ page }) => {
@@ -1199,6 +1211,7 @@ test.describe('Issue #27: demo iterates Example prompts', () => {
       'Summarization',
       'Brainstorming',
       'Fact Q&A (zh)',
+      'Navigate URL',
       'Fetch URL',
       'Web search',
       'Coreference',

@@ -3517,17 +3517,29 @@ function isUrlRequestPrompt(prompt, normalized, rawCandidate) {
   const prefixes = [
     "get ",
     "open ",
+    "navigate to ",
+    "go to ",
+    "visit ",
+    "browse to ",
+    "show ",
+    "show me ",
+    "display ",
     "load ",
     "request ",
     "fetch url ",
     "open url ",
+    "navigate url ",
+    "go to url ",
     "сделай запрос ",
     "выполни запрос ",
     "запроси ",
     "получи ",
     "открой ",
+    "открой сайт ",
+    "покажи ",
     "загрузи ",
     "перейди ",
+    "перейди на ",
   ];
   if (prefixes.some((prefix) => normalized.startsWith(prefix) || raw.startsWith(prefix))) {
     return true;
@@ -3537,6 +3549,9 @@ function isUrlRequestPrompt(prompt, normalized, rawCandidate) {
     "send a request to",
     "http request to",
     "request to",
+    "navigate to",
+    "go to",
+    "browse to",
     "сделай запрос к",
     "сделай запрос на",
     "выполни запрос к",
@@ -3665,70 +3680,26 @@ async function tryFetch(prompt) {
   const url = extractFetchUrl(prompt, normalized);
   if (!url) return null;
 
-  const evidence = [`http_fetch:request:${url}`];
+  const evidence = [`http_fetch:request:${url}`, `url_preview:iframe:${url}`];
+  const lines = [
+    `URL requested for \`${url}\`.`,
+    "",
+    `Open this link: [${url}](${url}).`,
+    "",
+    [
+      "The page is shown in the embedded frame below when the site allows framing.",
+      "Use the open-in-new-tab control if the site blocks embedding,",
+      "or the full-screen control to view it at viewport size.",
+    ].join(" "),
+  ];
 
-  if (typeof fetch !== "function") {
-    return {
-      intent: "http_fetch",
-      content: `HTTP fetch is not available in this environment.\n\nURL: [${url}](${url})`,
-      confidence: 0.5,
-      evidence,
-      iframeUrl: url,
-    };
-  }
-
-  try {
-    const response = await fetch(url, { method: "GET", mode: "cors" });
-    const status = response.status;
-    const contentType = response.headers.get("content-type") || "";
-    let body = "";
-    if (contentType.includes("text/") || contentType.includes("application/json")) {
-      const text = await response.text();
-      body = text.length > 2000 ? `${text.slice(0, 2000)}\n\n*(truncated — ${text.length} bytes total)*` : text;
-    }
-    evidence.push(`http_fetch:status:${status}`);
-    const lines = [
-      `Fetched \`${url}\` — status **${status}**.`,
-      "",
-    ];
-    if (body) {
-      lines.push("Response body:");
-      lines.push("```");
-      lines.push(body);
-      lines.push("```");
-    } else {
-      lines.push(`Content-Type: \`${contentType || "unknown"}\` — binary or empty body, not shown.`);
-      lines.push("");
-      lines.push(`You can view this URL directly: [${url}](${url})`);
-    }
-    return {
-      intent: "http_fetch",
-      content: lines.join("\n"),
-      confidence: 0.95,
-      evidence,
-      iframeUrl: null,
-    };
-  } catch (err) {
-    // CORS block or network failure — fall back to iframe.
-    const isCors =
-      err instanceof TypeError &&
-      (err.message.toLowerCase().includes("cors") ||
-        err.message.toLowerCase().includes("network") ||
-        err.message.toLowerCase().includes("failed to fetch"));
-    evidence.push(`http_fetch:error:${isCors ? "cors" : "network"}`);
-    const lines = [
-      `Could not fetch \`${url}\` directly${isCors ? " (CORS restriction)" : " (network error)"}.`,
-      "",
-      "The page is shown in the embedded frame below. Use the expand button to view it full-screen.",
-    ];
-    return {
-      intent: "http_fetch",
-      content: lines.join("\n"),
-      confidence: 0.7,
-      evidence,
-      iframeUrl: url,
-    };
-  }
+  return {
+    intent: "http_fetch",
+    content: lines.join("\n"),
+    confidence: 0.95,
+    evidence,
+    iframeUrl: url,
+  };
 }
 
 async function tryWebSearch(prompt, language) {
