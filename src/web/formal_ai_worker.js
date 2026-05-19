@@ -5084,8 +5084,14 @@ function parseFusedOutput(text) {
 
 // Session-scoped CORS disable list. When a provider fetch throws a CORS or
 // network error we record the timestamp so the planner skips it for the rest
-// of the session and records the decision in memory.
+// of the session and records the decision in memory. Issue #180: we also
+// pre-probe every provider once per session so the first user query does not
+// pay for failed sockets — the result is cached in `WEB_SEARCH_AVAILABLE`
+// alongside the disable list.
 const WEB_SEARCH_DISABLED = new Map();
+const WEB_SEARCH_AVAILABLE = new Map();
+const WEB_SEARCH_DIAGNOSTICS = [];
+let WEB_SEARCH_PROBE_PROMISE = null;
 
 function webSearchDisable(providerId, reason) {
   if (!WEB_SEARCH_DISABLED.has(providerId)) {
@@ -5097,23 +5103,95 @@ function webSearchIsDisabled(providerId) {
   return WEB_SEARCH_DISABLED.has(providerId);
 }
 
+function webSearchMarkAvailable(providerId, info) {
+  WEB_SEARCH_AVAILABLE.set(providerId, Object.assign({ at: Date.now() }, info || {}));
+  WEB_SEARCH_DISABLED.delete(providerId);
+}
+
+// Issue #180: record a single HTTP exchange so the diagnostics panel can
+// surface the raw request/response/conversion trace. We keep a small ring
+// buffer in RAM so very long sessions do not bloat memory.
+const WEB_SEARCH_DIAG_LIMIT = 64;
+function recordWebSearchDiagnostic(entry) {
+  if (!entry || typeof entry !== "object") return;
+  WEB_SEARCH_DIAGNOSTICS.push(entry);
+  while (WEB_SEARCH_DIAGNOSTICS.length > WEB_SEARCH_DIAG_LIMIT) {
+    WEB_SEARCH_DIAGNOSTICS.shift();
+  }
+}
+
+function consumeWebSearchDiagnostics() {
+  if (WEB_SEARCH_DIAGNOSTICS.length === 0) return [];
+  const snapshot = WEB_SEARCH_DIAGNOSTICS.slice();
+  WEB_SEARCH_DIAGNOSTICS.length = 0;
+  return snapshot;
+}
+
 async function fetchProviderJson(providerId, url, options) {
   if (typeof fetch !== "function") {
     webSearchDisable(providerId, "no_fetch");
+    recordWebSearchDiagnostic({
+      providerId,
+      url,
+      method: (options && options.method) || "GET",
+      requestHeaders: (options && options.headers) || null,
+      ok: false,
+      error: "fetch unavailable",
+    });
     return { ok: false, error: "fetch unavailable", finalUrl: url };
   }
+  const startedAt = Date.now();
   try {
     const response = await fetch(url, options || { mode: "cors" });
+    const status = response ? response.status : 0;
+    const statusText = response ? response.statusText : "";
     if (!response || !response.ok) {
-      return {
+      recordWebSearchDiagnostic({
+        providerId,
+        url,
+        method: (options && options.method) || "GET",
+        requestHeaders: (options && options.headers) || null,
         ok: false,
-        status: response ? response.status : 0,
-        statusText: response ? response.statusText : "",
-        finalUrl: url,
-      };
+        status,
+        statusText,
+        elapsedMs: Date.now() - startedAt,
+      });
+      return { ok: false, status, statusText, finalUrl: url };
     }
-    const data = await response.json();
-    return { ok: true, status: response.status, data, finalUrl: url };
+    const text = await response.text();
+    let data = null;
+    try {
+      data = text ? JSON.parse(text) : null;
+    } catch (parseError) {
+      const message = parseError instanceof Error ? parseError.message : String(parseError);
+      recordWebSearchDiagnostic({
+        providerId,
+        url,
+        method: (options && options.method) || "GET",
+        requestHeaders: (options && options.headers) || null,
+        ok: false,
+        status,
+        statusText,
+        elapsedMs: Date.now() - startedAt,
+        responseSnippet: text.slice(0, 1024),
+        error: `parse_error: ${message}`,
+      });
+      return { ok: false, error: `parse_error: ${message}`, finalUrl: url };
+    }
+    webSearchMarkAvailable(providerId, { status });
+    recordWebSearchDiagnostic({
+      providerId,
+      url,
+      method: (options && options.method) || "GET",
+      requestHeaders: (options && options.headers) || null,
+      ok: true,
+      status,
+      statusText,
+      elapsedMs: Date.now() - startedAt,
+      responseSnippet: text.length > 4096 ? `${text.slice(0, 4096)}…` : text,
+      responseBytes: text.length,
+    });
+    return { ok: true, status, data, finalUrl: url };
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     const isCors =
@@ -5121,8 +5199,132 @@ async function fetchProviderJson(providerId, url, options) {
       message.toLowerCase().includes("network") ||
       message.toLowerCase().includes("failed to fetch");
     webSearchDisable(providerId, isCors ? "cors" : "network");
+    recordWebSearchDiagnostic({
+      providerId,
+      url,
+      method: (options && options.method) || "GET",
+      requestHeaders: (options && options.headers) || null,
+      ok: false,
+      elapsedMs: Date.now() - startedAt,
+      error: message,
+      cors: isCors,
+    });
     return { ok: false, error: message, finalUrl: url, cors: isCors };
   }
+}
+
+// Issue #180: shared text-shaping helpers used by every web-search provider so
+// the rendered bullet looks consistent regardless of which provider produced
+// the entry. `extractDomain` returns the bare host (without `www.`),
+// `extractQuoteAroundQuery` walks the response body and returns a short
+// Google-style snippet that contains the original query word when possible,
+// and `escapeRegExp` is the standard helper used by the snippet picker.
+function escapeRegExp(value) {
+  return String(value || "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function extractDomain(url) {
+  const raw = String(url || "").trim();
+  if (!raw) return "";
+  try {
+    const u = new URL(raw);
+    return u.hostname.replace(/^www\./i, "");
+  } catch (_error) {
+    const match = raw.match(/^[a-z][a-z0-9+.\-]*:\/\/([^\/?#]+)/i);
+    if (match) return match[1].replace(/^www\./i, "");
+    return "";
+  }
+}
+
+function extractQuoteAroundQuery(text, query, maxChars) {
+  const max = typeof maxChars === "number" && maxChars > 0 ? Math.floor(maxChars) : 200;
+  const raw = String(text || "").replace(/\s+/g, " ").trim();
+  if (!raw) return "";
+  if (raw.length <= max) return raw;
+  const q = String(query || "").trim();
+  if (q) {
+    const candidates = [q, ...q.split(/\s+/)].filter((value, index, array) =>
+      value && array.indexOf(value) === index,
+    );
+    for (const candidate of candidates) {
+      if (!candidate || candidate.length < 2) continue;
+      const re = new RegExp(escapeRegExp(candidate), "i");
+      const match = raw.match(re);
+      if (match && typeof match.index === "number") {
+        const half = Math.max(20, Math.floor((max - candidate.length) / 2));
+        let start = Math.max(0, match.index - half);
+        let end = Math.min(raw.length, start + max);
+        if (start > 0) {
+          const space = raw.lastIndexOf(" ", start);
+          if (space > 0 && match.index - space <= half + 20) start = space + 1;
+        }
+        if (end < raw.length) {
+          const space = raw.indexOf(" ", end);
+          if (space > 0 && space - start <= max + 40) end = space;
+        }
+        let snippet = raw.slice(start, end).trim();
+        if (start > 0) snippet = "… " + snippet;
+        if (end < raw.length) snippet = snippet + " …";
+        return snippet;
+      }
+    }
+  }
+  let cut = raw.slice(0, max);
+  const lastPeriod = Math.max(
+    cut.lastIndexOf(". "),
+    cut.lastIndexOf("! "),
+    cut.lastIndexOf("? "),
+    cut.lastIndexOf("。"),
+  );
+  if (lastPeriod > max * 0.5) return cut.slice(0, lastPeriod + 1).trim();
+  const lastSpace = cut.lastIndexOf(" ");
+  if (lastSpace > max * 0.5) cut = cut.slice(0, lastSpace);
+  return cut.trim() + " …";
+}
+
+const PROVIDER_DISPLAY_LABELS = {
+  duckduckgo: "DuckDuckGo",
+  "internet-archive": "Internet Archive",
+  wikipedia: "Википедия",
+  wikidata: "Викидата",
+  wiktionary: "Викисловарь",
+};
+
+const PROVIDER_DISPLAY_LABELS_BY_LANG = {
+  en: {
+    duckduckgo: "DuckDuckGo",
+    "internet-archive": "Internet Archive",
+    wikipedia: "Wikipedia",
+    wikidata: "Wikidata",
+    wiktionary: "Wiktionary",
+  },
+  ru: {
+    duckduckgo: "DuckDuckGo",
+    "internet-archive": "Архив Интернета",
+    wikipedia: "Википедия",
+    wikidata: "Викидата",
+    wiktionary: "Викисловарь",
+  },
+  zh: {
+    duckduckgo: "DuckDuckGo",
+    "internet-archive": "互联网档案馆",
+    wikipedia: "维基百科",
+    wikidata: "维基数据",
+    wiktionary: "维基词典",
+  },
+  hi: {
+    duckduckgo: "DuckDuckGo",
+    "internet-archive": "इंटरनेट आर्काइव",
+    wikipedia: "विकिपीडिया",
+    wikidata: "विकिडेटा",
+    wiktionary: "विक्षनरी",
+  },
+};
+
+function providerDisplayLabel(providerId, language) {
+  const code = String(language || "").toLowerCase().slice(0, 2);
+  const table = PROVIDER_DISPLAY_LABELS_BY_LANG[code] || PROVIDER_DISPLAY_LABELS_BY_LANG.en;
+  return table[providerId] || PROVIDER_DISPLAY_LABELS[providerId] || providerId;
 }
 
 async function searchDuckDuckGo(query, language, limit) {
@@ -5310,31 +5512,178 @@ async function searchInternetArchive(query, language, limit) {
   return { ok: true, results, finalUrl: outcome.finalUrl };
 }
 
+// Issue #180: Wiktionary opensearch is a CORS-readable provider that returns
+// short dictionary definitions — exactly the kind of "fragment containing the
+// original request" the rendering template needs. We reuse the same
+// `fetchProviderJson` plumbing so the diagnostics panel records the raw call.
+async function searchWiktionary(query, language, limit) {
+  const cap = typeof limit === "number" && Number.isFinite(limit) && limit > 0
+    ? Math.floor(limit)
+    : 5;
+  const lang = language && /^[a-z]{2,3}$/i.test(language) ? language : "en";
+  const ordered = [lang, "en"].filter(
+    (value, index, array) => value && array.indexOf(value) === index,
+  );
+  const collected = [];
+  let lastFinalUrl = "";
+  let lastError = "";
+  for (const candidate of ordered) {
+    const base = WIKTIONARY_SEARCH_HOSTS[candidate] || WIKTIONARY_SEARCH_HOSTS.en;
+    const url = `${base}?action=opensearch&search=${encodeURIComponent(query)}&limit=${cap}&format=json&origin=*`;
+    const outcome = await fetchProviderJson("wiktionary", url);
+    lastFinalUrl = outcome.finalUrl || lastFinalUrl;
+    if (!outcome.ok || !Array.isArray(outcome.data) || !Array.isArray(outcome.data[1])) {
+      if (outcome.error) lastError = outcome.error;
+      continue;
+    }
+    const titles = outcome.data[1];
+    const descriptions = Array.isArray(outcome.data[2]) ? outcome.data[2] : [];
+    const urls = Array.isArray(outcome.data[3]) ? outcome.data[3] : [];
+    for (let index = 0; index < titles.length && collected.length < cap; index += 1) {
+      const title = titles[index] || query;
+      const description = stripHtml(
+        descriptions[index] || wiktionaryFallbackDescription(title, candidate),
+      );
+      const itemUrl = urls[index] ||
+        `https://${candidate}.wiktionary.org/wiki/${encodeURIComponent(title)}`;
+      collected.push({
+        title,
+        url: itemUrl,
+        excerpt: description,
+        wiktionaryKey: String(title).replace(/\s+/g, "_"),
+        wiktionaryLanguage: candidate,
+        virtualId: `WT:${candidate}:${String(title).replace(/\s+/g, "_")}`,
+        sourceKind: "wiktionary",
+      });
+    }
+    if (collected.length > 0) break;
+  }
+  if (collected.length === 0) {
+    return { ok: false, results: [], finalUrl: lastFinalUrl, error: lastError || "no_results" };
+  }
+  return { ok: true, results: collected.slice(0, cap), finalUrl: lastFinalUrl };
+}
+
+// Issue #180: The priority order requested in the issue is
+// DuckDuckGo → Internet Archive → Wikipedia → Wikidata → Wiktionary → rest.
+// We also keep the corresponding light-weight probe URL so the per-session
+// availability check at the top of `tryWebSearch` can pre-flight every
+// provider once instead of failing the first user query.
 const WEB_SEARCH_PROVIDERS = [
   {
     id: "duckduckgo",
     label: "DuckDuckGo Instant Answer",
+    priority: 1,
+    probeUrl: "https://api.duckduckgo.com/?q=ping&format=json&no_redirect=1&no_html=1",
     run: (query, language, limit) => searchDuckDuckGo(query, language, limit),
+  },
+  {
+    id: "internet-archive",
+    label: "Internet Archive (archive.org)",
+    priority: 2,
+    probeUrl:
+      "https://archive.org/advancedsearch.php?q=ping&fl%5B%5D=identifier&rows=1&page=1&output=json",
+    run: (query, language, limit) =>
+      searchInternetArchive(query, language, limit),
   },
   {
     id: "wikipedia",
     label: "Wikipedia REST",
+    priority: 3,
+    probeUrl: "https://en.wikipedia.org/w/rest.php/v1/search/page?q=ping&limit=1",
     run: (query, language, limit) =>
       searchWikipediaWebProvider(query, language, limit),
   },
   {
     id: "wikidata",
     label: "Wikidata entities",
+    priority: 4,
+    probeUrl:
+      "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=ping&language=en&format=json&origin=*&limit=1",
     run: (query, language, limit) =>
       searchWikidataEntities(query, language, limit),
   },
   {
-    id: "internet-archive",
-    label: "Internet Archive (web.archive.org)",
+    id: "wiktionary",
+    label: "Wiktionary opensearch",
+    priority: 5,
+    probeUrl:
+      "https://en.wiktionary.org/w/api.php?action=opensearch&search=ping&limit=1&format=json&origin=*",
     run: (query, language, limit) =>
-      searchInternetArchive(query, language, limit),
+      searchWiktionary(query, language, limit),
   },
 ];
+
+const WEB_SEARCH_PROVIDER_PRIORITY = WEB_SEARCH_PROVIDERS.reduce((acc, provider, index) => {
+  acc[provider.id] = typeof provider.priority === "number" ? provider.priority : index + 1;
+  return acc;
+}, Object.create(null));
+
+// Issue #180: pre-probe every provider exactly once per browser session. The
+// result lives in `WEB_SEARCH_AVAILABLE` / `WEB_SEARCH_DISABLED` for the rest
+// of the worker's lifetime so subsequent queries skip CORS-blocked endpoints
+// without re-burning a socket. We return a shared promise so concurrent
+// callers cooperate on the same probe batch.
+function ensureWebSearchProviderProbes() {
+  if (WEB_SEARCH_PROBE_PROMISE) return WEB_SEARCH_PROBE_PROMISE;
+  if (typeof fetch !== "function") {
+    WEB_SEARCH_PROBE_PROMISE = Promise.resolve([]);
+    return WEB_SEARCH_PROBE_PROMISE;
+  }
+  WEB_SEARCH_PROBE_PROMISE = (async () => {
+    const tasks = WEB_SEARCH_PROVIDERS.map((provider) => async () => {
+      if (!provider.probeUrl) return null;
+      const startedAt = Date.now();
+      try {
+        const response = await fetch(provider.probeUrl, { mode: "cors" });
+        const status = response ? response.status : 0;
+        if (response && response.ok) {
+          webSearchMarkAvailable(provider.id, { probedAt: startedAt, status });
+          recordWebSearchDiagnostic({
+            providerId: provider.id,
+            url: provider.probeUrl,
+            method: "GET",
+            ok: true,
+            status,
+            elapsedMs: Date.now() - startedAt,
+            phase: "probe",
+          });
+          return { providerId: provider.id, ok: true, status };
+        }
+        recordWebSearchDiagnostic({
+          providerId: provider.id,
+          url: provider.probeUrl,
+          method: "GET",
+          ok: false,
+          status,
+          elapsedMs: Date.now() - startedAt,
+          phase: "probe",
+        });
+        return { providerId: provider.id, ok: false, status };
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        const isCors =
+          message.toLowerCase().includes("cors") ||
+          message.toLowerCase().includes("network") ||
+          message.toLowerCase().includes("failed to fetch");
+        webSearchDisable(provider.id, isCors ? "cors" : "network");
+        recordWebSearchDiagnostic({
+          providerId: provider.id,
+          url: provider.probeUrl,
+          method: "GET",
+          ok: false,
+          elapsedMs: Date.now() - startedAt,
+          error: message,
+          cors: isCors,
+          phase: "probe",
+        });
+        return { providerId: provider.id, ok: false, error: message, cors: isCors };
+      }
+    });
+    return runWithConcurrencyLimit(tasks, webSearchConcurrency());
+  })();
+  return WEB_SEARCH_PROBE_PROMISE;
+}
 
 async function runWithConcurrencyLimit(tasks, limit) {
   // Simple p-limit style runner so we never exceed the browser's per-origin
@@ -5395,20 +5744,33 @@ function reciprocalRankFusion(perProviderResults, k) {
   });
 }
 
-// Issue #153: identify "the same entity" returned by different providers so the
-// fused list shows one bullet with the other URLs collapsed under
-// "Other sources:". We treat a Wikidata Q-id as the strongest signal and fall
-// back to the Wikipedia page key for entries that lack one (Wikipedia
-// disambiguation pages, edge cases where wbsearchentities did not return a
-// sitelink). Returns `null` when no canonical key can be inferred.
-function canonicalEntityKey(meta) {
-  if (!meta) return null;
-  if (meta.qid && /^Q\d+$/.test(meta.qid)) return `Q:${meta.qid}`;
+// Issue #153/#180: identify "the same entity" returned by different providers
+// so the fused list shows one bullet with the other URLs collapsed under
+// "Other sources:". A single result can carry several canonical identifiers
+// (Wikidata Q-id, Wikipedia page key, Wiktionary headword) — dedupe walks all
+// of them and merges into the first existing group it finds. Returning a
+// list makes the Wikipedia↔Wikidata merge robust against percent-encoding
+// differences in the two providers' URLs.
+function canonicalEntityKeys(meta) {
+  if (!meta) return [];
+  const keys = [];
+  if (meta.qid && /^Q\d+$/.test(meta.qid)) keys.push(`Q:${meta.qid}`);
   if (meta.wikipediaKey) {
     const lang = meta.wikipediaLanguage || "en";
-    return `WP:${lang}:${meta.wikipediaKey}`;
+    keys.push(`WP:${lang}:${meta.wikipediaKey}`);
   }
-  return null;
+  if (meta.wiktionaryKey) {
+    const lang = meta.wiktionaryLanguage || "en";
+    keys.push(`WT:${lang}:${meta.wiktionaryKey}`);
+  }
+  return keys;
+}
+
+// Backwards-compatible shim: prefer the primary key but keep the historical
+// single-key signature for callers that still rely on it.
+function canonicalEntityKey(meta) {
+  const keys = canonicalEntityKeys(meta);
+  return keys.length > 0 ? keys[0] : null;
 }
 
 function buildItemMetadataIndex(perProvider) {
@@ -5442,56 +5804,108 @@ function buildItemMetadataIndex(perProvider) {
 }
 
 function dedupeFusedEntries(fused, metaByUrl, evidence) {
-  const groups = new Map();
+  const groupsByKey = new Map();
+  const allGroups = [];
   const standalone = [];
+
+  function alreadyHasProvider(target, candidate) {
+    return target.providers.some(
+      (existing) => existing.id === candidate.id && existing.rank === candidate.rank,
+    );
+  }
+
   fused.forEach((entry, index) => {
     const meta = metaByUrl.get(entry.url) || null;
-    const key = canonicalEntityKey(meta);
+    const keys = canonicalEntityKeys(meta);
     const enriched = Object.assign({}, entry, {
       qid: (meta && meta.qid) || "",
       wikipediaKey: (meta && meta.wikipediaKey) || "",
       wikipediaLanguage: (meta && meta.wikipediaLanguage) || "",
+      wiktionaryKey: (meta && meta.wiktionaryKey) || "",
+      wiktionaryLanguage: (meta && meta.wiktionaryLanguage) || "",
       sourceKind: (meta && meta.sourceKind) || "",
       virtualId:
         (meta && meta.virtualId) ||
         (meta && meta.qid) ||
         (meta && meta.wikipediaKey ? `WP:${meta.wikipediaKey}` : ""),
       alternateUrls: [],
+      keys: keys.slice(),
       originalRank: index,
     });
-    if (!key) {
+
+    if (keys.length === 0) {
       standalone.push(enriched);
       return;
     }
-    if (groups.has(key)) {
-      const head = groups.get(key);
-      head.score += enriched.score;
-      head.alternateUrls.push({
-        url: enriched.url,
-        title: enriched.title,
-        providers: enriched.providers,
-      });
-      for (const p of enriched.providers) {
-        if (!head.providers.some((existing) => existing.id === p.id && existing.rank === p.rank)) {
-          head.providers.push(p);
-        }
+    let head = null;
+    for (const key of keys) {
+      if (groupsByKey.has(key)) {
+        head = groupsByKey.get(key);
+        break;
       }
-      if (Array.isArray(evidence)) {
-        evidence.push(`web_search:dedupe:${key}:absorbed:${enriched.url}`);
+    }
+    if (!head) {
+      allGroups.push(enriched);
+      for (const key of keys) {
+        if (!groupsByKey.has(key)) groupsByKey.set(key, enriched);
       }
       return;
     }
-    groups.set(key, enriched);
+    // Found an existing group — absorb this entry into it.
+    head.score += enriched.score;
+    head.alternateUrls.push({
+      url: enriched.url,
+      title: enriched.title,
+      providers: enriched.providers,
+      sourceKind: enriched.sourceKind,
+    });
+    for (const p of enriched.providers) {
+      if (!alreadyHasProvider(head, p)) head.providers.push(p);
+    }
+    // Register the absorbed entry's keys against the head group too so a third
+    // provider matching either canonical id still merges in.
+    for (const key of keys) {
+      if (!groupsByKey.has(key)) groupsByKey.set(key, head);
+    }
+    // Prefer the richest virtualId once we know more identifiers.
+    if (!head.virtualId && enriched.virtualId) head.virtualId = enriched.virtualId;
+    if (!head.qid && enriched.qid) head.qid = enriched.qid;
+    if (!head.wikipediaKey && enriched.wikipediaKey) {
+      head.wikipediaKey = enriched.wikipediaKey;
+      head.wikipediaLanguage = enriched.wikipediaLanguage;
+    }
+    if (!head.wiktionaryKey && enriched.wiktionaryKey) {
+      head.wiktionaryKey = enriched.wiktionaryKey;
+      head.wiktionaryLanguage = enriched.wiktionaryLanguage;
+    }
+    if (Array.isArray(evidence)) {
+      evidence.push(`web_search:dedupe:${keys[0]}:absorbed:${enriched.url}`);
+    }
   });
-  const merged = [...groups.values(), ...standalone];
+  const merged = [...allGroups, ...standalone];
   merged.sort((a, b) => {
     if (b.score !== a.score) return b.score - a.score;
     if (b.providers.length !== a.providers.length) {
       return b.providers.length - a.providers.length;
     }
+    // Issue #180: stable order by provider priority so DDG-led entries beat
+    // Wikidata-only entries on perfect ties.
+    const ap = providerPriorityScore(a.providers);
+    const bp = providerPriorityScore(b.providers);
+    if (ap !== bp) return ap - bp;
     return a.originalRank - b.originalRank;
   });
   return merged;
+}
+
+function providerPriorityScore(providers) {
+  if (!Array.isArray(providers) || providers.length === 0) return 999;
+  let best = 999;
+  for (const p of providers) {
+    const score = WEB_SEARCH_PROVIDER_PRIORITY[p && p.id] || 999;
+    if (score < best) best = score;
+  }
+  return best;
 }
 
 // Issue #153: localized templates for the web search response. Keep these in
@@ -5505,6 +5919,7 @@ const WEB_SEARCH_TEXTS = {
       `Search results for \`${query}\` — top ${top} after reciprocal rank fusion (k = ${k}).`,
     otherSources: "Other sources",
     via: "via",
+    readMore: "Read more",
     noResults: (query, providers) =>
       `No CORS-enabled web search results were returned for \`${query}\`.\n\nProviders tried: ${providers}.`,
     allDisabled: (providers) =>
@@ -5515,6 +5930,7 @@ const WEB_SEARCH_TEXTS = {
       `Результаты поиска для \`${query}\` — топ ${top} после реципрокного объединения рангов (k = ${k}).`,
     otherSources: "Другие источники",
     via: "через",
+    readMore: "Подробнее",
     noResults: (query, providers) =>
       `Не получены результаты веб-поиска с поддержкой CORS для \`${query}\`.\n\nПопробованы провайдеры: ${providers}.`,
     allDisabled: (providers) =>
@@ -5525,6 +5941,7 @@ const WEB_SEARCH_TEXTS = {
       `搜索 \`${query}\` 的结果 — 经互惠等级融合后的前 ${top} 项（k = ${k}）。`,
     otherSources: "其他来源",
     via: "来自",
+    readMore: "阅读更多",
     noResults: (query, providers) =>
       `未获取到 \`${query}\` 的可用 CORS 搜索结果。\n\n已尝试的提供方：${providers}。`,
     allDisabled: (providers) =>
@@ -5535,6 +5952,7 @@ const WEB_SEARCH_TEXTS = {
       `\`${query}\` के लिए खोज परिणाम — रेसिप्रोकल रैंक फ़्यूज़न के बाद शीर्ष ${top} (k = ${k})।`,
     otherSources: "अन्य स्रोत",
     via: "के माध्यम से",
+    readMore: "और पढ़ें",
     noResults: (query, providers) =>
       `\`${query}\` के लिए CORS-समर्थित कोई खोज परिणाम नहीं मिले।\n\nप्रयास किए गए प्रदाता: ${providers}.`,
     allDisabled: (providers) =>
@@ -5557,6 +5975,12 @@ async function tryWebSearch(prompt, language) {
   const providerLimit = webSearchProviderLimit();
   const texts = webSearchTexts(language);
 
+  // Issue #180: pre-probe every provider once per browser session so the
+  // first user query does not waste sockets on CORS-blocked endpoints. The
+  // probe results live in `WEB_SEARCH_AVAILABLE`/`WEB_SEARCH_DISABLED` for
+  // the rest of the worker lifetime.
+  await ensureWebSearchProviderProbes();
+
   // R194: the Rust core (`web_search_core::build_request_evidence`) is the
   // source of truth for the `web_search:*` evidence prefix. We prepend its
   // output and fall back to the inline list when the WASM worker booted in
@@ -5569,20 +5993,30 @@ async function tryWebSearch(prompt, language) {
     }
   } else {
     evidence.push(`web_search:request:${query}`);
+    if (language) {
+      evidence.push(`web_search:language:${language}`);
+    }
     for (const provider of WEB_SEARCH_PROVIDERS) {
       evidence.push(`web_search:provider:${provider.id}`);
     }
     evidence.push(`web_search:combined:rrf:k=${rrfK}`);
   }
 
-  // Session-disabled providers are session state, not part of the canonical
-  // plan, so we annotate them on top of the WASM-derived prefix.
-  const active = WEB_SEARCH_PROVIDERS.filter(
-    (provider) => !webSearchIsDisabled(provider.id),
-  );
-  for (const provider of WEB_SEARCH_PROVIDERS) {
+  // Issue #180: providers are tried in declared priority order so the rendered
+  // list matches the user's requested DDG → IA → WP → WD → Wiktionary
+  // sequence whenever scores tie. Session-disabled providers are skipped on
+  // top of the WASM-derived prefix and annotated for the diagnostics panel.
+  const ordered = WEB_SEARCH_PROVIDERS.slice().sort((a, b) => {
+    const pa = typeof a.priority === "number" ? a.priority : 999;
+    const pb = typeof b.priority === "number" ? b.priority : 999;
+    return pa - pb;
+  });
+  const active = ordered.filter((provider) => !webSearchIsDisabled(provider.id));
+  for (const provider of ordered) {
     if (webSearchIsDisabled(provider.id)) {
       evidence.push(`web_search:disabled:${provider.id}`);
+    } else if (WEB_SEARCH_AVAILABLE.has(provider.id)) {
+      evidence.push(`web_search:available:${provider.id}`);
     }
   }
 
@@ -5592,6 +6026,7 @@ async function tryWebSearch(prompt, language) {
       content: texts.allDisabled(WEB_SEARCH_PROVIDERS.map((p) => p.id).join(", ")),
       confidence: 0.3,
       evidence,
+      diagnostics: { providers: [], httpExchanges: consumeWebSearchDiagnostics() },
     };
   }
 
@@ -5627,34 +6062,76 @@ async function tryWebSearch(prompt, language) {
     }
   });
 
+  const diagnostics = {
+    query,
+    language: language || "",
+    providers: perProvider.map((p) => ({
+      id: p.id,
+      label: p.label,
+      ok: !!p.ok,
+      count: Array.isArray(p.results) ? p.results.length : 0,
+      elapsedMs: p.elapsedMs || 0,
+      finalUrl: p.finalUrl || "",
+      error: p.error || "",
+    })),
+    httpExchanges: consumeWebSearchDiagnostics(),
+    fused: top.map((entry, index) => ({
+      rank: index + 1,
+      url: entry.url,
+      title: entry.title,
+      score: entry.score,
+      providers: entry.providers,
+      alternateUrls: entry.alternateUrls,
+      virtualId: entry.virtualId || "",
+      keys: entry.keys || [],
+    })),
+  };
+
   if (top.length === 0) {
     return {
       intent: "web_search",
       content: texts.noResults(query, active.map((p) => p.label).join(", ")),
       confidence: 0.35,
       evidence,
+      diagnostics,
     };
   }
 
-  // Issue #153: every result follows the same template regardless of which
-  // provider produced it — `N. <virtualId> [title](url) — _via providers_ -
-  // excerpt`, with deduplicated alternate URLs rendered as a nested
-  // "Other sources:" sub-line in the user's language.
+  // Issue #180: every fused result is rendered Google-style — a single line
+  // with title + bare domain, an indented quote (a fragment containing the
+  // original query when possible, truncated near ~220 chars), a "Read more"
+  // link, and finally a faint "Другие источники:" line listing alternates
+  // (provider label + url) without per-source excerpts.
   const lines = [texts.header(query, top.length, rrfK), ""];
   top.forEach((entry, index) => {
-    const sources = entry.providers
+    const domain = extractDomain(entry.url);
+    const titlePiece = `**[${entry.title || entry.url}](${entry.url})**`;
+    const domainPiece = domain ? `  \`${domain}\`` : "";
+    const idTag = entry.virtualId ? `  \`${entry.virtualId}\`` : "";
+    lines.push(`${index + 1}. ${titlePiece}${domainPiece}${idTag}`);
+    const quote = extractQuoteAroundQuery(entry.excerpt, query, 220);
+    if (quote) {
+      lines.push(`   > ${quote}`);
+    }
+    const sourceTags = entry.providers
       .map((p) => `${p.id}#${p.rank}`)
       .join(", ");
-    const excerpt = entry.excerpt ? ` - ${entry.excerpt}` : "";
-    const idTag = entry.virtualId ? ` \`${entry.virtualId}\`` : "";
-    lines.push(`${index + 1}.${idTag} [${entry.title}](${entry.url}) — _${texts.via} ${sources}_${excerpt}`);
+    lines.push(`   [${texts.readMore}](${entry.url}) — _${texts.via} ${sourceTags}_`);
     if (Array.isArray(entry.alternateUrls) && entry.alternateUrls.length > 0) {
       const others = entry.alternateUrls
-        .map((alt) => `[${alt.title || alt.url}](${alt.url})`)
-        .join(", ");
-      lines.push(`   - ${texts.otherSources}: ${others}`);
+        .map((alt) => {
+          const labelProvider = pickPrimaryProviderId(alt.providers, alt.sourceKind);
+          const label = providerDisplayLabel(labelProvider, language);
+          return `[${label}](${alt.url})`;
+        })
+        .filter(Boolean);
+      if (others.length > 0) {
+        lines.push(`   _${texts.otherSources}: ${others.join(", ")}_`);
+      }
     }
+    lines.push("");
   });
+  while (lines.length > 0 && lines[lines.length - 1] === "") lines.pop();
 
   // Resolve the formalization tuple now that we know the top-ranked entity.
   // Prefer a real Wikidata Q-id; fall back to the WP virtual id, then to the
@@ -5676,7 +6153,22 @@ async function tryWebSearch(prompt, language) {
     evidence,
     formalizedObject,
     query,
+    diagnostics,
   };
+}
+
+function pickPrimaryProviderId(providers, sourceKind) {
+  if (sourceKind === "wikidata") return "wikidata";
+  if (sourceKind === "wikipedia") return "wikipedia";
+  if (sourceKind === "wiktionary") return "wiktionary";
+  if (sourceKind === "internet-archive") return "internet-archive";
+  if (Array.isArray(providers) && providers.length > 0) {
+    const sorted = providers.slice().sort(
+      (a, b) => (WEB_SEARCH_PROVIDER_PRIORITY[a.id] || 999) - (WEB_SEARCH_PROVIDER_PRIORITY[b.id] || 999),
+    );
+    return sorted[0].id;
+  }
+  return "";
 }
 
 function cleanContextValue(value) {
