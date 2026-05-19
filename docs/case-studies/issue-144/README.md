@@ -105,12 +105,16 @@ languages, available tools, etc.
 
 ## Acceptance tests
 
-`tests/unit/specification/chat_surface.rs` pins the new behavior with 30
-tests covering: English/Russian rule listing, Russian teaching grammar,
-multiple rule-prefix forms (`Show behavior rule`, `Read rule`, `describe
-behavior rule`), most-recent-rule-wins, capabilities advertising the new
-commands, opener determinism for the same prompt, and opener variation for
-distinct prompts.
+`tests/unit/specification/chat_surface.rs` pins the new behavior with 46
+tests covering: English/Russian/Hindi/Chinese rule listing and self-facts
+queries, English (`When I say`/`If I ask`) and Russian (`Когда я
+скажу`/`Если я спрошу`) teaching grammars, multiple rule-prefix forms
+(`Show behavior rule`, `Read rule`, `describe behavior rule`),
+most-recent-rule-wins, capabilities advertising the new commands in all
+four languages, opener determinism for the same prompt, opener variation
+for distinct prompts, seed-opener strict-superset invariant, dialog-local
+rule listing, self-fact identity content, and Report-issue/Export-memory
+copy in unknown answers.
 
 Run them with:
 
@@ -120,8 +124,11 @@ cargo test --test unit chat_surface
 
 ## Files touched
 
-- `src/engine.rs` — opener pools, `select_unknown_opener`,
-  `unknown_answer_variation_for`, `language_aware_unknown_answer`.
+- `src/unknown_opener.rs` — opener pools, `select_unknown_opener`,
+  `unknown_answer_variation_for`, `language_aware_unknown_answer`
+  (extracted from `engine.rs` to stay under the 1000-line file-size limit).
+- `src/engine.rs` — routes unknown intents through
+  `unknown_opener::language_aware_unknown_answer`.
 - `src/lib.rs` — re-export `unknown_answer_variation_for`.
 - `src/solver_handlers/behavior_rules.rs` — list/show/teach handlers.
 - `src/solver_handlers/user_intent.rs` — capabilities answer mentions the new
