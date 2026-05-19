@@ -173,6 +173,13 @@ pub const WEB_SEARCH_PROVIDER_REGISTRY: &[ProviderSpec] = &[
         default_for_category: false,
     },
     ProviderSpec {
+        id: "internet-archive",
+        label: "Internet Archive (archive.org)",
+        category: ProviderCategory::Knowledge,
+        cors_readable: true,
+        default_for_category: false,
+    },
+    ProviderSpec {
         id: "dbpedia",
         label: "DBpedia Lookup",
         category: ProviderCategory::Knowledge,
@@ -275,10 +282,18 @@ pub const WEB_SEARCH_PROVIDER_REGISTRY: &[ProviderSpec] = &[
 /// Provider ids that participate in live RRF fusion in the browser worker.
 /// These are the CORS-readable subset of [`WEB_SEARCH_PROVIDER_REGISTRY`].
 ///
-/// Issue #133 keeps the default plan tight (`DuckDuckGo` + Wikipedia +
-/// Wikidata) so the live demo stays predictable while the full 26-provider
-/// registry above feeds the connectivity dashboard and the case study.
-pub const WEB_SEARCH_PROVIDERS: &[&str] = &["duckduckgo", "wikipedia", "wikidata"];
+/// Issue #180 expands the default plan to also include Internet Archive and
+/// Wiktionary, in the priority order requested in the issue body
+/// (`DuckDuckGo` → Internet Archive → Wikipedia → Wikidata → Wiktionary).
+/// The remaining providers in the registry still feed the connectivity
+/// dashboard and the case study.
+pub const WEB_SEARCH_PROVIDERS: &[&str] = &[
+    "duckduckgo",
+    "internet-archive",
+    "wikipedia",
+    "wikidata",
+    "wiktionary",
+];
 
 /// Default plan id list returned to JS. JS uses this to seed the planner
 /// even when the live `fetch()` is offline.
@@ -497,6 +512,26 @@ mod tests {
         assert_eq!(plan.first().map(String::as_str), Some("duckduckgo"));
         assert!(plan.contains(&"wikipedia".to_string()));
         assert!(plan.contains(&"wikidata".to_string()));
+        assert!(plan.contains(&"wiktionary".to_string()));
+        assert!(plan.contains(&"internet-archive".to_string()));
+    }
+
+    /// Issue #180 specifies the strict priority order the JS worker uses
+    /// when rendering and deduping fused results. Pin it here so the WASM
+    /// evidence prefix stays in lockstep with the JS rendering.
+    #[test]
+    fn default_plan_preserves_issue_180_priority_order() {
+        let plan = default_search_plan_ids();
+        assert_eq!(
+            plan,
+            vec![
+                "duckduckgo".to_string(),
+                "internet-archive".to_string(),
+                "wikipedia".to_string(),
+                "wikidata".to_string(),
+                "wiktionary".to_string(),
+            ]
+        );
     }
 
     #[test]
@@ -609,6 +644,7 @@ mod tests {
             "wikipedia",
             "wikidata",
             "wiktionary",
+            "internet-archive",
             // Open-access paper providers (no paywall, as the issue requires).
             "arxiv",
             "europepmc",
