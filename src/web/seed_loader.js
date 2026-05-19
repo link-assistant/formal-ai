@@ -274,6 +274,8 @@
       var localized = findChildren(item, "localized").map(function (loc) {
         return {
           language: loc.id,
+          subjectLabel: findChildValue(loc, "subject_label"),
+          valueLabel: findChildValue(loc, "value_label"),
           summary: findChildValue(loc, "summary"),
           source: findChildValue(loc, "source"),
           sourceKind: findChildValue(loc, "source_kind"),
@@ -284,6 +286,11 @@
         intent: findChildValue(item, "intent") || "fact_lookup",
         category: findChildValue(item, "category"),
         wikidata: splitList(findChildValue(item, "wikidata")),
+        relation: findChildValue(item, "relation"),
+        subjectQid: findChildValue(item, "subject_qid"),
+        valueQid: findChildValue(item, "value_qid"),
+        subjectLabel: findChildValue(item, "subject_label"),
+        valueLabel: findChildValue(item, "value_label"),
         subjectAliases: splitList(findChildValue(item, "subject_aliases")).map(toLower),
         questionKeywords: splitList(findChildValue(item, "question_keywords")).map(toLower),
         summary: findChildValue(item, "summary"),

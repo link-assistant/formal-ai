@@ -139,6 +139,33 @@ test.describe('multilingual chat surface', () => {
     await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
   });
 
+  // Issue #127: the fact-query reasoning pipeline pre-warms the cache from
+  // `data/seed/facts.lino` records that carry a `relation` field. The seeded
+  // matrix covers Russia, Japan, France, Germany, China, India, USA, UK, and
+  // Brazil — every country resolves offline in every supported language.
+  const FACT_QUERY_CASES = [
+    { prompt: 'What is the capital of France?', expected: 'Paris' },
+    { prompt: 'What is the capital of Germany?', expected: 'Berlin' },
+    { prompt: 'What is the capital of China?', expected: 'Beijing' },
+    { prompt: 'What is the capital of India?', expected: 'New Delhi' },
+    { prompt: 'What is the capital of the United States?', expected: 'Washington' },
+    { prompt: 'What is the capital of the UK?', expected: 'London' },
+    { prompt: 'What is the capital of Brazil?', expected: 'Bras' },
+    { prompt: 'Столица Германии', expected: 'Берлин' },
+    { prompt: 'Столица Франции', expected: 'Париж' },
+    { prompt: '中国的首都是什么?', expected: '北京' },
+    { prompt: 'भारत की राजधानी क्या है?', expected: 'दिल्ली' },
+  ];
+
+  for (const { prompt, expected } of FACT_QUERY_CASES) {
+    test(`fact-query pipeline resolves: ${prompt}`, async ({ page }) => {
+      const last = await sendPrompt(page, prompt);
+      await expect(last).toHaveClass(/assistant/);
+      await expect(last).toContainText(expected);
+      await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
+    });
+  }
+
   test('merged Wikipedia definitions combine localized seed summaries', async ({ page }) => {
     const last = await sendPrompt(page, 'Merge Wikipedia definitions of IIR');
     await expect(last).toHaveClass(/assistant/);

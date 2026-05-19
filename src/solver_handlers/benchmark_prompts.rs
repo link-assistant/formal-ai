@@ -120,6 +120,138 @@ fn fact_records() -> &'static [FactRecord] {
     CELL.get_or_init(seed::facts).as_slice()
 }
 
+/// Multilingual relation patterns. Each pattern (`relation_slug`, keywords) is
+/// matched against the normalized prompt. The relation slugs match the JS
+/// worker's `FACT_RELATIONS` table so the two stacks emit identical
+/// `fact_query:relation:*` evidence and route to the same Wikidata property
+/// (e.g. P36 for `capital`).
+const RELATION_PATTERNS: &[(&str, &[&str])] = &[
+    (
+        "capital",
+        &[
+            "capital",
+            "столица",
+            "столицы",
+            "столицей",
+            "राजधानी",
+            "首都",
+        ],
+    ),
+    (
+        "population",
+        &[
+            "population",
+            "how many people",
+            "население",
+            "जनसंख्या",
+            "आबादी",
+            "人口",
+        ],
+    ),
+    ("currency", &["currency", "валюта", "मुद्रा", "货币", "貨幣"]),
+    (
+        "official_language",
+        &[
+            "official language",
+            "what language",
+            "государственный язык",
+            "официальный язык",
+            "राजभाषा",
+            "आधिकारिक भाषा",
+            "官方语言",
+            "官方語言",
+        ],
+    ),
+    ("continent", &["continent", "континент", "महाद्वीप", "大洲"]),
+    (
+        "author_of_book",
+        &[
+            "who wrote",
+            "author",
+            "written by",
+            "кто написал",
+            "написал",
+            "автор",
+            "किसने लिखी",
+            "किसने लिखा",
+            "लेखक",
+            "是谁写的",
+            "作者",
+        ],
+    ),
+    (
+        "painter_of_painting",
+        &[
+            "who painted",
+            "painted",
+            "painter",
+            "artist",
+            "кто написал",
+            "написал",
+            "художник",
+            "किसने बनाई",
+            "चित्रकार",
+            "कलाकार",
+            "谁画的",
+            "画家",
+        ],
+    ),
+    (
+        "built_year",
+        &[
+            "when",
+            "built",
+            "construction",
+            "когда",
+            "построена",
+            "построили",
+            "बनी",
+            "बनाई",
+            "कब",
+            "何时",
+            "建于",
+            "建造",
+        ],
+    ),
+    (
+        "physical_constant",
+        &[
+            "speed of light",
+            "what is",
+            "how fast",
+            "скорость света",
+            "какова",
+            "чему равна",
+            "प्रकाश की गति",
+            "कितनी",
+            "光速",
+            "是多少",
+        ],
+    ),
+];
+
+/// Match a relation slug against a normalized prompt by substring keyword.
+fn detect_relation(normalized: &str) -> Option<&'static str> {
+    RELATION_PATTERNS
+        .iter()
+        .find(|(_slug, keywords)| {
+            keywords
+                .iter()
+                .any(|keyword| !keyword.is_empty() && normalized.contains(keyword))
+        })
+        .map(|(slug, _)| *slug)
+}
+
+/// Find the subject alias the prompt mentions, if any. Returns the alias
+/// substring as it appears in `subject_aliases`.
+fn detect_subject_alias<'a>(record: &'a FactRecord, normalized: &str) -> Option<&'a str> {
+    record
+        .subject_aliases
+        .iter()
+        .find(|alias| !alias.is_empty() && normalized.contains(alias.as_str()))
+        .map(String::as_str)
+}
+
 pub fn try_fact_lookup(
     prompt: &str,
     normalized: &str,
@@ -131,6 +263,30 @@ pub fn try_fact_lookup(
 
     log.append("fact_lookup:request", prompt.to_owned());
     log.append("fact_lookup:hit", record.slug.clone());
+
+    // Structured fact_query trace events (Issue #127). When the matched record
+    // declares a `relation`, surface the parsed (relation, subject) tuple so
+    // memory consumers can render the structured reasoning trace identically
+    // to the browser worker. Records without a `relation` still emit the
+    // legacy `fact_lookup:*` events for backward compatibility.
+    if !record.relation.is_empty() {
+        let parsed_relation = detect_relation(normalized).unwrap_or(record.relation.as_str());
+        let parsed_subject =
+            detect_subject_alias(record, normalized).unwrap_or(record.subject_label.as_str());
+        log.append("fact_query:request", prompt.to_owned());
+        log.append("fact_query:relation", parsed_relation.to_owned());
+        log.append("fact_query:subject", parsed_subject.to_owned());
+        // Treat the seed entry as a pre-warmed cache hit, mirroring the JS
+        // worker's `fact_query:cache:hit:seed` event.
+        log.append("fact_query:cache:hit", "seed".to_owned());
+        if !record.subject_qid.is_empty() {
+            log.append("fact_query:subject_qid", record.subject_qid.clone());
+        }
+        if !record.value_qid.is_empty() {
+            log.append("fact_query:value_qid", record.value_qid.clone());
+        }
+    }
+
     for qid in &record.wikidata {
         if !qid.is_empty() {
             log.append("wikidata", qid.clone());
