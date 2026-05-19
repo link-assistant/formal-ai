@@ -62,7 +62,8 @@ Raw evidence is preserved in `raw-data/`:
 | 2026-05-19       | Wikidata calls now request `props=sitelinks/urls` so each entity carries its Wikipedia URL inline. `buildItemMetadataIndex` + `canonicalEntityKey` + `dedupeFusedEntries` collapse cross-provider duplicates into one bullet, recording `web_search:dedupe:<key>:absorbed:<url>` for every absorbed source. |
 | 2026-05-19       | Search results template was unified into one localized helper that picks `Search results for / Результаты поиска для / 搜索结果 / खोज परिणाम` from `searchTemplates[lang]` and renders the bullet + "Other sources:" sub-line in the same language. The legacy `Providers (default first): ...` line was deleted. |
 | 2026-05-19       | i18n catalog (`src/web/i18n-catalog.lino`) gained keys for `buttons.sourceCode`, `buttons.collapseSidebar`, `buttons.expandSidebar`, `titles.sourceCode`, `aria.collapseSidebar`, `aria.expandSidebar`, `message.formalization`, `message.formalizationSubjectVerbObject`, `message.otherSources`, `message.sourceCounts` across en/ru/zh/hi (40 new strings, all four locales). |
-| 2026-05-19       | Playwright spec `tests/e2e/tests/issue-153.spec.js` was added with 8 scenarios: lab emoji on the diagnostics toggle, the `Source code` link, the disabled `New conversation` button, the collapsible sidebar, the SVO formalization view, cross-source dedupe by Q-id, the DuckDuckGo signature regression, and the localized Russian search header. All 127 tests in the local Playwright matrix pass. |
+| 2026-05-19       | Playwright spec `tests/e2e/tests/issue-153.spec.js` was added with 9 scenarios: lab emoji on the diagnostics toggle, the `Source code` link, the disabled `New conversation` button, the collapsible sidebar, the SVO formalization view, cross-source dedupe by Q-id, the DuckDuckGo signature regression, responsive topbar/menu priority, and the localized Russian search header. All 128 tests in the local Playwright matrix pass. |
+| 2026-05-19       | PR review feedback reported three visual regressions in the generated screenshots: clipped desktop topbar at 1440px, an incorrectly constrained composer when the desktop sidebar was collapsed, and uneven diagnostics spacing. The follow-up fix changed desktop topbar labels to icon-only before clipping, exposed the full action list in the desktop sidebar Menu section, made the collapsed workspace a single full-width grid column, and tightened diagnostics/formalization spacing. Fresh screenshots were generated under `docs/screenshots/issue-153/`. |
 
 ## Requirements And Status
 
@@ -73,14 +74,14 @@ Raw evidence is preserved in `raw-data/`:
 | R197 | For every tool call in diagnostics mode the panel must show input, output, and reasoning (when the tool produces reasoning). | Implemented by the existing diagnostics step renderer; this PR only added a new dedicated branch for formalization steps. Existing tool steps already use the `diagnostics-step` / `diagnostics-payload` shape and the `Inputs / Outputs / Tool reasoning` i18n keys. |
 | R198 | The diagnostics toggle must use a "lab" emoji rather than a magnifying glass. | Implemented by replacing 🔍 with 🧪 in the diagnostics toggle button in `src/web/app.js`. |
 | R199 | The top menu must contain a "Source code" link pointing to `https://github.com/link-assistant/formal-ai`. | Implemented by the new `[data-testid="source-code"]` anchor in `src/web/app.js` with i18n labels `buttons.sourceCode` / `titles.sourceCode` (en / ru / zh / hi). |
-| R200 | The left sidebar must be collapsible on both desktop and mobile, with the collapsed state persisted to preferences. | Implemented by the `sidebarCollapsed` preference, the `[data-testid="sidebar-toggle"]` button, the `SidebarToggleGlyph` component, and the `.workspace.sidebar-collapsed` CSS in `src/web/styles.css`. The mobile drawer (`mobileMenuOpen`) remains separate so phones still slide in. |
-| R201 | Top-menu priority on narrow viewports: bug reporting, diagnostics, and demo mode are the last three to be dropped from the top menu. Bug reporting is the very last. Export/import drops to the side menu first. | Implemented by CSS media queries that hide lower-priority controls before higher-priority ones; bug reporting carries the highest priority so it remains visible until the smallest breakpoint. |
+| R200 | The left sidebar must be collapsible on both desktop and mobile, with the collapsed state persisted to preferences. | Implemented by the `sidebarCollapsed` preference, the `[data-testid="sidebar-toggle"]` button, the `SidebarToggleGlyph` component, and the `.workspace.sidebar-collapsed` CSS in `src/web/styles.css`. The collapsed desktop workspace now uses a single `minmax(0, 1fr)` grid column so the chat panel and composer occupy the full viewport instead of being auto-placed into a zero-width column. The mobile drawer (`mobileMenuOpen`) remains separate so phones still slide in. |
+| R201 | Top-menu priority on narrow viewports: bug reporting, diagnostics, and demo mode are the last three to be dropped from the top menu. Bug reporting is the very last. Export/import drops to the side menu first. | Implemented by CSS media queries that switch labels to icon-only by 1500px, hide status-only items by 1100px, and remove priorities 4-7 from the topbar by 820px. Priorities 1-3 (bug reporting, diagnostics, demo mode) remain visible at 375px, and the sidebar/hamburger Menu always exposes the full action list. |
 | R202 | The "New conversation" button must be disabled when the chat is already empty. | Implemented in `App` in `src/web/app.js`: the button is `disabled` when `messages.length === 0 && !currentConversationId && prompt.trim().length === 0`. |
 | R203 | The DuckDuckGo search provider must actually return results. | Fixed in `searchDuckDuckGo` in `src/web/formal_ai_worker.js`. The previous signature was `(query, limit)` but the dispatcher passes `(query, language, providerLimit)`, so `limit` was getting a language code like `"en"` and `slice(0, "en")` returned an empty array. The new signature accepts `(query, language, limit)`, falls back to a default cap of 5 if `limit` is non-numeric, and forwards a `kl=<lang>-<lang>` regional hint when the user's UI language is not English. |
 | R204 | Cross-provider results must be deduplicated. Wikipedia and Wikidata returning the same entity (`Apple` ↔ `Q89`) must collapse into one bullet with the other URL listed under "Other sources:" in the user's language. | Implemented by three new helpers in the worker: `canonicalEntityKey` (prefers `Q<n>`, falls back to `WP:<lang>:<key>`), `buildItemMetadataIndex` (URL-keyed map that prefers qid-bearing meta), and `dedupeFusedEntries` (groups by canonical key, keeps the top-ranked entry, records `web_search:dedupe:<key>:absorbed:<url>` evidence for the absorbed sources). |
 | R205 | The search results template must be localized so headers, bullets, and the "Other sources" sub-line render in the user's UI language. | Implemented by a `searchTemplates` table inside `tryWebSearch` covering `en`, `ru`, `zh`, `hi`. The single helper picks the user's language, formats the header (`Search results for / Результаты поиска для / 搜索结果 / खोज परिणाम`), and threads the same localized strings into every bullet and the "Other sources:" sub-line. |
 | R206 | The `Providers (default first): duckduckgo, wikipedia, wikidata.` line must be removed — it leaks implementation detail without adding user value. | Removed from `tryWebSearch`'s response composition. Providers still appear inline next to each bullet (`via wikipedia#2`, `via wikidata#3`), so no information is lost — only the redundant footer. |
-| R207 | Every requirement must be tested with unit, integration, and e2e coverage. | Implemented by the new `tests/e2e/tests/issue-153.spec.js` Playwright spec (8 scenarios, all hermetic via `page.route` mocks) plus the existing per-provider regressions in `tests/e2e/tests/multilingual.spec.js`. The full local Playwright matrix (127 tests) passes. |
+| R207 | Every requirement must be tested with unit, integration, and e2e coverage. | Implemented by the new `tests/e2e/tests/issue-153.spec.js` Playwright spec (9 scenarios, all hermetic via `page.route` mocks) plus the existing per-provider regressions in `tests/e2e/tests/multilingual.spec.js`. The full local Playwright matrix (128 tests) passes. |
 | R208 | Compile issue data, online research, and case-study analysis to `docs/case-studies/issue-153/`. | Implemented by this README and the contents of `raw-data/` (issue JSON, issue-comments JSON, and the three screenshots from the issue description). |
 | R209 | Add a changelog fragment and bump the crate version on merge. | Implemented by `changelog.d/20260519_180000_issue_153_search_ux_dedupe.md` (`bump: minor`). The release pipeline raises the version from 0.71.0 on merge. |
 
@@ -110,6 +111,12 @@ overhaul. The relevant pre-PR state was:
   `New conversation` button was always enabled, so clicking it on an empty
   chat looked like it should "do something" but produced no observable
   change.
+- **Post-review responsive regressions.** The first screenshot refresh still
+  exposed three layout bugs: desktop topbar buttons were allowed to keep full
+  text labels until too narrow, the collapsed workspace still carried hidden
+  grid tracks so the chat/composer could land in the wrong column, and the
+  diagnostics details used inconsistent padding between the formalization
+  block, payloads, and tool sections.
 
 ## Implemented Solution
 
@@ -176,8 +183,18 @@ overhaul. The relevant pre-PR state was:
     to a rail) on desktop. The mobile drawer is unchanged.
   - The "New conversation" button is disabled when the chat is empty by
     extending the existing `disabled` predicate.
-  - The CSS in `src/web/styles.css` adds media-query rules that hide lower
-    priority controls first; bug reporting carries the highest priority.
+  - The CSS in `src/web/styles.css` switches topbar labels to icon-only by
+    1500px, hides status-only items by 1100px, and removes priorities 4-7
+    from the topbar by 820px. Bug reporting carries the highest priority and
+    remains visible at 375px. The sidebar Menu is visible on desktop as a
+    fallback action list, and the hamburger drawer exposes the same actions on
+    mobile.
+  - `.workspace.sidebar-collapsed` now lays out as a single full-width column,
+    which keeps both `.chat-panel` and `.composer` aligned with the viewport
+    after the desktop sidebar and resizer are hidden.
+  - Diagnostics details, formalization rows, tool payloads, and source-count
+    sections now share consistent spacing and border treatment so the SVO
+    view does not look visually detached from the rest of the trace.
 - **i18n catalog (en / ru / zh / hi).** 40 new strings across `buttons.*`,
   `titles.*`, `aria.*`, and `message.*` for the new affordances. Strict key
   parity is enforced by `tests/e2e/scripts/check-i18n-catalog.mjs`.
@@ -195,7 +212,7 @@ overhaul. The relevant pre-PR state was:
 
 ## Tests
 
-The local Playwright matrix grew from 119 to 127 tests with the new
+The local Playwright matrix grew from 119 to 128 tests with the new
 `tests/e2e/tests/issue-153.spec.js` (registered in
 `tests/e2e/playwright.local.config.js`). Each test mocks the three providers
 via `page.route` so the assertions are hermetic.
@@ -221,16 +238,23 @@ via `page.route` so the assertions are hermetic.
    mocks DuckDuckGo only (Wikipedia + Wikidata empty), asserts DDG's
    `Geometric Tesseract` answer reaches the rendered message and the evidence
    contains `web_search:provider:duckduckgo:count:2`.
-8. `search header is localized when the UI language is Russian` — overrides
+8. `priority-based topbar overflow never clips actions and keeps Bug reporting
+   visible at 375px` — asserts every topbar action has a `data-menu-priority`,
+   verifies the visible topbar action rectangles fit within the viewport at
+   1440 / 1320 / 1180 / 1040 / 980px, verifies the desktop sidebar Menu
+   exposes Source code and memory actions, and verifies only priorities 1-3
+   remain in the mobile topbar at 375px while the hamburger drawer still
+   exposes the full action list.
+9. `search header is localized when the UI language is Russian` — overrides
    `navigator.language` to `ru-RU`, sends `Найди в интернете яблоко`, asserts
    the response begins with `Результаты поиска для` and does not contain the
    English `UNKNOWN_ANSWER_MARKER`.
 
-All 127 tests in the local Playwright matrix pass:
+All 128 tests in the local Playwright matrix pass:
 
 ```
-npm --prefix tests/e2e run test:local
-# 127 passed (90.1s)
+npm --prefix tests/e2e run test:local -- --workers=1
+# 128 passed (2.0m)
 ```
 
 Existing unit and integration coverage (`tests/unit/formal_ai.rs::web_search_prompt_returns_web_search_intent_not_unknown`,
