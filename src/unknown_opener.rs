@@ -61,7 +61,7 @@ fn unknown_openers_for(language: &str) -> &'static [&'static str] {
 /// the same one. The returned slice index never exceeds the language pool
 /// length and is safe to index without bounds checks.
 #[must_use]
-pub(crate) fn select_unknown_opener(prompt: &str, language: &str) -> &'static str {
+pub fn select_unknown_opener(prompt: &str, language: &str) -> &'static str {
     let pool = unknown_openers_for(language);
     debug_assert!(!pool.is_empty(), "unknown opener pool must be non-empty");
     let trimmed = prompt.trim();
@@ -115,7 +115,7 @@ pub fn unknown_answer_variation_for(prompt: &str) -> String {
 }
 
 #[must_use]
-pub(crate) fn language_aware_unknown_answer(prompt: &str, language: Language) -> String {
+pub fn language_aware_unknown_answer(prompt: &str, language: Language) -> String {
     let (seed_text, slug) = match language {
         Language::Russian => (russian_unknown_answer(), "ru"),
         Language::Hindi => (hindi_unknown_answer(), "hi"),
