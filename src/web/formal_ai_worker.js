@@ -198,6 +198,14 @@ function numericPreference(value, fallback, min, max) {
   return Math.min(max, Math.max(min, parsed));
 }
 
+function definitionFusionByDefault(preferences) {
+  const value = preferences && preferences.definitionFusion;
+  if (value === true) return true;
+  if (value === false) return false;
+  const normalized = String(value || "").trim().toLowerCase();
+  return ["auto", "on", "true", "1", "merge", "fusion"].includes(normalized);
+}
+
 function detectLanguage(prompt) {
   const text = String(prompt || "");
   for (const ch of text) {
@@ -1516,6 +1524,235 @@ function tryConceptLookup(prompt) {
   return {
     intent: "concept_lookup",
     content: body,
+    confidence: 0.9,
+    evidence,
+  };
+}
+
+function extractDefinitionMergeTerm(prompt, allowPlainConcept) {
+  const text = String(prompt || "");
+  const normalized = normalizePrompt(text);
+  const asksMerge =
+    normalized.includes("merge") ||
+    normalized.includes("merged") ||
+    normalized.includes("combine") ||
+    normalized.includes("combined") ||
+    normalized.includes("fuse") ||
+    normalized.includes("fusion");
+  const asksDefinition =
+    normalized.includes("definition") ||
+    normalized.includes("definitions") ||
+    normalized.includes("translation") ||
+    normalized.includes("translations") ||
+    normalized.includes("translated") ||
+    normalized.includes("wikipedia");
+  if (!asksMerge || !asksDefinition) {
+    if (allowPlainConcept) {
+      const query = extractConceptQuery(text);
+      if (query && !query.context) return query.term;
+    }
+    return null;
+  }
+
+  const lower = text.toLowerCase();
+  const markers = [
+    "translated definitions for ",
+    "translated definitions of ",
+    "wikipedia definitions for ",
+    "wikipedia definitions of ",
+    "definitions for ",
+    "definitions of ",
+    "definition for ",
+    "definition of ",
+    "translations for ",
+    "translations of ",
+    "translation for ",
+    "translation of ",
+  ];
+  for (const marker of markers) {
+    const index = lower.indexOf(marker);
+    if (index < 0) continue;
+    const candidate = trimDefinitionMergeTail(text.slice(index + marker.length));
+    if (candidate) return candidate.toLowerCase();
+  }
+  const query = extractConceptQuery(text);
+  return query ? query.term : null;
+}
+
+function trimDefinitionMergeTail(value) {
+  const text = String(value || "");
+  const lower = text.toLowerCase();
+  let end = text.length;
+  for (const delimiter of [" from ", " using ", " with ", " by ", " into ", " across "]) {
+    const index = lower.indexOf(delimiter);
+    if (index >= 0) end = Math.min(end, index);
+  }
+  return text
+    .slice(0, end)
+    .trim()
+    .replace(/^['"`“”«»]+|['"`“”«»]+$/g, "")
+    .replace(/[?。.!,;:]+$/g, "")
+    .trim();
+}
+
+function inferredSourceLanguage(source) {
+  const value = String(source || "");
+  if (value.includes("://ru.wikipedia.org/")) return "ru";
+  if (value.includes("://hi.wikipedia.org/")) return "hi";
+  if (value.includes("://zh.wikipedia.org/")) return "zh";
+  return "en";
+}
+
+function normalizeDefinitionFact(value) {
+  return String(value || "")
+    .toLocaleLowerCase()
+    .replace(/[^\p{L}\p{N}]+/gu, "");
+}
+
+function pushDefinitionFragment(fragments, language, summary, source, sourceKind) {
+  const cleanSummary = String(summary || "").trim();
+  if (!cleanSummary) return;
+  const duplicate = fragments.some(
+    (fragment) =>
+      fragment.language === language &&
+      normalizeDefinitionFact(fragment.summary) === normalizeDefinitionFact(cleanSummary),
+  );
+  if (duplicate) return;
+  fragments.push({
+    language: String(language || "en"),
+    summary: cleanSummary,
+    source: String(source || "").trim(),
+    sourceKind: String(sourceKind || "").trim(),
+  });
+}
+
+function definitionFragments(record) {
+  const fragments = [];
+  pushDefinitionFragment(
+    fragments,
+    inferredSourceLanguage(record && record.source),
+    record && record.summary,
+    record && record.source,
+    record && record.sourceKind,
+  );
+  for (const localized of Array.isArray(record && record.localized) ? record.localized : []) {
+    pushDefinitionFragment(
+      fragments,
+      localized && localized.language,
+      localized && localized.summary,
+      localized && localized.source,
+      localized && localized.sourceKind,
+    );
+  }
+  return fragments;
+}
+
+function sourceLanguages(fragments) {
+  const languages = [];
+  for (const fragment of fragments) {
+    if (!languages.includes(fragment.language)) languages.push(fragment.language);
+  }
+  return languages;
+}
+
+function sourceUrls(fragments) {
+  const sources = [];
+  for (const fragment of fragments) {
+    if (!fragment.source || sources.includes(fragment.source)) continue;
+    sources.push(fragment.source);
+  }
+  return sources;
+}
+
+function splitDefinitionSentences(summary) {
+  const sentences = [];
+  let current = "";
+  for (const character of String(summary || "")) {
+    current += character;
+    if ([".", "!", "?", "।", "。"].includes(character)) {
+      const sentence = current.trim();
+      if (sentence) sentences.push(sentence);
+      current = "";
+    }
+  }
+  const tail = current.trim();
+  if (tail) sentences.push(tail);
+  return sentences;
+}
+
+function mergedDefinitionFacts(fragments) {
+  const facts = [];
+  const seen = new Set();
+  for (const fragment of fragments) {
+    for (const sentence of splitDefinitionSentences(fragment.summary)) {
+      const key = normalizeDefinitionFact(sentence);
+      if (!key || seen.has(key)) continue;
+      seen.add(key);
+      facts.push({ language: fragment.language, text: sentence });
+    }
+  }
+  return facts;
+}
+
+function uniqueSourceFragments(fragments) {
+  const unique = [];
+  const seen = new Set();
+  for (const fragment of fragments) {
+    if (!fragment.source) continue;
+    const key = `${fragment.language}\n${fragment.source}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    unique.push(fragment);
+  }
+  return unique;
+}
+
+function renderDefinitionMerge(record, fragments, facts) {
+  const english = localizedConceptFor(record, "en");
+  const displayTerm = (english && english.term) || record.term;
+  const anchor = record.wikidata ? ` [${record.wikidata}]` : "";
+  const lines = [
+    `Merged definition of ${displayTerm}${anchor}`,
+    `Source languages: ${sourceLanguages(fragments).join(", ")}`,
+    "",
+    "Facts:",
+  ];
+  for (const fact of facts) {
+    lines.push(`- [${fact.language}] ${fact.text}`);
+  }
+  lines.push("Sources:");
+  for (const fragment of uniqueSourceFragments(fragments)) {
+    lines.push(
+      `- [${fragment.language}] ${renderSourceLink(fragment.source)} (${fragment.sourceKind})`,
+    );
+  }
+  return lines.join("\n");
+}
+
+function tryDefinitionMerge(prompt, options) {
+  const opts = options || {};
+  const term = extractDefinitionMergeTerm(prompt, Boolean(opts.allowPlainConcept));
+  if (!term) return null;
+  const evidence = [`definition_merge:request:${term}`];
+  if (opts.allowPlainConcept) evidence.push("definition_merge:mode:auto");
+  const lookup = lookupConceptQuery({ term, context: null });
+  if (!lookup) return null;
+  const record = lookup.record;
+  const fragments = definitionFragments(record);
+  if (fragments.length === 0) return null;
+  evidence.push(`definition_merge:hit:${record.slug}`);
+  if (record.wikidata) evidence.push(`wikidata:${record.wikidata}`);
+  for (const language of sourceLanguages(fragments)) {
+    evidence.push(`definition_merge:language:${language}`);
+  }
+  for (const source of sourceUrls(fragments)) {
+    evidence.push(`source:${humanizeUrl(source)}`);
+  }
+  const facts = mergedDefinitionFacts(fragments);
+  evidence.push(`definition_merge:facts:${facts.length}`);
+  return {
+    intent: "definition_merge",
+    content: renderDefinitionMerge(record, fragments, facts),
     confidence: 0.9,
     evidence,
   };
@@ -3322,6 +3559,7 @@ function attachUserContext(answer, userContext) {
 
 async function solve(prompt, history, prefs) {
   const preferences = prefs || {};
+  const autoDefinitionFusion = definitionFusionByDefault(preferences);
   const steps = [];
   const toolCalls = [];
   const events = [`impulse:${prompt}`];
@@ -3392,6 +3630,10 @@ async function solve(prompt, history, prefs) {
     { name: "tryHistorical", run: () => tryHistorical(prompt, history) },
     { name: "tryArithmetic", run: () => tryArithmetic(prompt) },
     { name: "tryJavaScriptExecution", run: () => tryJavaScriptExecution(prompt) },
+    {
+      name: "tryDefinitionMerge",
+      run: () => tryDefinitionMerge(prompt, { allowPlainConcept: autoDefinitionFusion }),
+    },
     { name: "tryConceptLookup", run: () => tryConceptLookup(prompt) },
     { name: "tryHelloWorld", run: () => tryHelloWorld(prompt) },
     { name: "trySoftwareProjectRequest", run: () => trySoftwareProjectRequest(prompt, history) },
@@ -3410,7 +3652,8 @@ async function solve(prompt, history, prefs) {
       }
       if (
         hit.intent === "concept_lookup" ||
-        hit.intent === "concept_lookup_in_context"
+        hit.intent === "concept_lookup_in_context" ||
+        hit.intent === "definition_merge"
       ) {
         toolCalls.push({
           tool: "concept_lookup",

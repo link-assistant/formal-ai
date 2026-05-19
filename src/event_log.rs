@@ -105,6 +105,7 @@ pub fn build_evidence_links(prompt: &str, log: &EventLog, response_link: &str) -
             "language" => format!("language:{}", event.payload),
             "language_from" => format!("language_from:{}", event.payload),
             "language_to" => format!("language_to:{}", event.payload),
+            "definition_merge:language" => format!("definition_merge:language:{}", event.payload),
             "meaning" => format!("meaning:{}", event.payload),
             "translation_gap" => format!("translation_gap:{}", event.payload),
             "wikidata" => format!("wikidata:{}", event.payload),

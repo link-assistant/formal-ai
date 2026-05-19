@@ -46,12 +46,60 @@ fn cli_version_flag_prints_crate_version() {
 fn cli_chat_command_prints_text_response() {
     let output = Command::new(env!("CARGO_BIN_EXE_formal-ai"))
         .args(["chat", "--prompt", "Hi"])
+        .env_remove("FORMAL_AI_DEFINITION_FUSION")
         .output()
         .expect("failed to execute binary");
 
     assert!(output.status.success());
     let stdout = String::from_utf8_lossy(&output.stdout);
     assert_eq!(stdout.trim(), "Hi, how may I help you?");
+}
+
+#[test]
+fn cli_chat_definition_fusion_option_merges_plain_definition_prompt() {
+    let output = Command::new(env!("CARGO_BIN_EXE_formal-ai"))
+        .args([
+            "chat",
+            "--prompt",
+            "What is IIR?",
+            "--definition-fusion",
+            "auto",
+        ])
+        .env_remove("FORMAL_AI_DEFINITION_FUSION")
+        .output()
+        .expect("failed to execute binary");
+
+    assert!(
+        output.status.success(),
+        "stderr: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(
+        stdout.contains("Merged definition of infinite impulse response (IIR)"),
+        "definition fusion CLI option should route a plain definition prompt to merged output:\n{stdout}"
+    );
+    assert!(stdout.contains("Source languages: en, ru, hi, zh"));
+}
+
+#[test]
+fn cli_chat_definition_fusion_env_var_merges_plain_definition_prompt() {
+    let output = Command::new(env!("CARGO_BIN_EXE_formal-ai"))
+        .args(["chat", "--prompt", "What is IIR?"])
+        .env("FORMAL_AI_DEFINITION_FUSION", "auto")
+        .output()
+        .expect("failed to execute binary");
+
+    assert!(
+        output.status.success(),
+        "stderr: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(
+        stdout.contains("Merged definition of infinite impulse response (IIR)"),
+        "definition fusion env var should route a plain definition prompt to merged output:\n{stdout}"
+    );
 }
 
 #[test]
@@ -64,6 +112,7 @@ fn cli_chat_command_can_emit_chat_completion_json() {
             "--format",
             "chat",
         ])
+        .env_remove("FORMAL_AI_DEFINITION_FUSION")
         .output()
         .expect("failed to execute binary");
 

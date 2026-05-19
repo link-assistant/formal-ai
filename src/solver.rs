@@ -35,10 +35,10 @@ use crate::solver_handler_units::try_incompatible_units;
 use crate::solver_handlers::{
     finalize_simple, try_algorithm, try_arithmetic, try_brainstorming_request, try_capabilities,
     try_clarification, try_concept_lookup, try_conversation_memory, try_coreference_request,
-    try_execution_failure, try_fact_lookup, try_http_fetch, try_ill_formed,
-    try_javascript_execution, try_meta_explanation, try_network_query, try_opinion_question,
-    try_punctuation_only_prompt, try_roleplay_request, try_shell_refusal,
-    try_software_project_request, try_source_conflict, try_source_refresh,
+    try_definition_merge, try_definition_merge_by_default, try_execution_failure, try_fact_lookup,
+    try_http_fetch, try_ill_formed, try_javascript_execution, try_meta_explanation,
+    try_network_query, try_opinion_question, try_punctuation_only_prompt, try_roleplay_request,
+    try_shell_refusal, try_software_project_request, try_source_conflict, try_source_refresh,
     try_summarization_request, try_translation, try_web_search, try_who_is_question,
     try_write_script,
 };
@@ -102,6 +102,7 @@ fn is_inappropriate_content(normalized: &str) -> bool {
 /// be tuned per surface (CLI, HTTP, Telegram) or per user. The default
 /// configuration matches the bounded-chat, offline-friendly stance from
 /// `GOALS.md` so the engine is safe to embed without further setup.
+#[allow(clippy::struct_excessive_bools)]
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct SolverConfig {
     /// `0.0` = always ask a clarifying question, `1.0` = always guess.
@@ -122,6 +123,9 @@ pub struct SolverConfig {
     pub offline: bool,
     /// Time-to-live for cached external sources, in seconds.
     pub cache_ttl_seconds: u64,
+    /// When true, plain definition prompts such as "What is IIR?" use
+    /// cross-language definition fusion before falling back to concept lookup.
+    pub definition_fusion_by_default: bool,
 }
 
 impl Default for SolverConfig {
@@ -136,6 +140,7 @@ impl Default for SolverConfig {
             diagnostic_mode: false,
             offline: false,
             cache_ttl_seconds: 60 * 60 * 24 * 60,
+            definition_fusion_by_default: false,
         }
     }
 }
@@ -154,6 +159,9 @@ impl SolverConfig {
         if env_truthy("FORMAL_AI_DIAGNOSTIC_MODE") {
             config.diagnostic_mode = true;
         }
+        if let Some(value) = env_definition_fusion_by_default() {
+            config.definition_fusion_by_default = value;
+        }
         if let Some(value) = env_bounded_f32("FORMAL_AI_TEMPERATURE", 0.0, 1.0) {
             config.temperature = value;
         }
@@ -163,6 +171,19 @@ impl SolverConfig {
             }
         }
         config
+    }
+}
+
+fn env_definition_fusion_by_default() -> Option<bool> {
+    let raw = std::env::var("FORMAL_AI_DEFINITION_FUSION").ok()?;
+    let value = raw.trim().to_ascii_lowercase();
+    if value.is_empty() {
+        return None;
+    }
+    match value.as_str() {
+        "1" | "true" | "yes" | "on" | "auto" | "merge" | "fusion" | "default" => Some(true),
+        "0" | "false" | "no" | "off" | "explicit" | "manual" | "none" => Some(false),
+        _ => None,
     }
 }
 
@@ -300,6 +321,7 @@ const SPECIALIZED_HANDLERS: &[(&str, SpecializedHandler)] = &[
     ("capabilities", try_capabilities),
     ("arithmetic", handle_arithmetic),
     ("javascript_execution", handle_javascript_execution),
+    ("definition_merge", try_definition_merge),
     ("concept_lookup", handle_concept_lookup),
     ("who_is", try_who_is_question),
     ("how_it_works", try_how_it_works),
@@ -436,6 +458,15 @@ impl UniversalSolver {
             return Some(answer);
         }
         for (name, handler) in SPECIALIZED_HANDLERS {
+            if self.config.definition_fusion_by_default && *name == "concept_lookup" {
+                if let Some(answer) = try_definition_merge_by_default(prompt, log) {
+                    log.append(
+                        "specialized_handler",
+                        "definition_merge_by_default".to_owned(),
+                    );
+                    return Some(answer);
+                }
+            }
             if let Some(answer) = handler(prompt, &normalized, log) {
                 log.append("specialized_handler", (*name).to_owned());
                 return Some(answer);
