@@ -284,7 +284,10 @@ pub const WEB_SEARCH_PROVIDERS: &[&str] = &["duckduckgo", "wikipedia", "wikidata
 /// even when the live `fetch()` is offline.
 #[must_use]
 pub fn default_search_plan_ids() -> Vec<String> {
-    WEB_SEARCH_PROVIDERS.iter().map(|id| (*id).to_string()).collect()
+    WEB_SEARCH_PROVIDERS
+        .iter()
+        .map(|id| (*id).to_string())
+        .collect()
 }
 
 /// Build the `web_search:*` evidence prefix for a given query/language.
@@ -511,7 +514,10 @@ mod tests {
             }
         }
         assert!(search >= 7, "expected ≥7 search providers, found {search}");
-        assert!(knowledge >= 6, "expected ≥6 knowledge providers, found {knowledge}");
+        assert!(
+            knowledge >= 6,
+            "expected ≥6 knowledge providers, found {knowledge}"
+        );
         assert!(papers >= 3, "expected ≥3 papers providers, found {papers}");
         assert!(code >= 5, "expected ≥5 code providers, found {code}");
     }
@@ -519,10 +525,16 @@ mod tests {
     #[test]
     fn build_request_evidence_includes_combined_ranking_line() {
         let lines = build_request_evidence("formal-ai", "en");
-        assert_eq!(lines.first().map(String::as_str), Some("web_search:request:formal-ai"));
+        assert_eq!(
+            lines.first().map(String::as_str),
+            Some("web_search:request:formal-ai")
+        );
         assert!(lines.contains(&"web_search:language:en".to_string()));
         assert!(lines.contains(&"web_search:provider:duckduckgo".to_string()));
-        assert_eq!(lines.last().map(String::as_str), Some("web_search:combined:rrf:k=60"));
+        assert_eq!(
+            lines.last().map(String::as_str),
+            Some("web_search:combined:rrf:k=60")
+        );
     }
 
     #[test]

@@ -4,8 +4,7 @@ use crate::engine::{normalize_prompt, SymbolicAnswer};
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
 use crate::web_search_core::{
-    WEB_SEARCH_PROVIDERS as CORE_WEB_SEARCH_PROVIDERS,
-    WEB_SEARCH_RRF_K as CORE_WEB_SEARCH_RRF_K,
+    WEB_SEARCH_PROVIDERS as CORE_WEB_SEARCH_PROVIDERS, WEB_SEARCH_RRF_K as CORE_WEB_SEARCH_RRF_K,
 };
 
 use super::finalize_simple;
