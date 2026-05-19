@@ -7,12 +7,13 @@ use clap::{Args as ClapArgs, Subcommand, ValueEnum};
 use lino_arguments::Parser;
 
 use formal_ai::{
-    agent_info, collect_github_logs, create_chat_completion, create_response, environment_records,
-    export_memory_bundle, export_memory_full, import_memory_full, knowledge_links_notation,
-    merged_bundle, parse_bundle, render_github_log_plan, run_telegram_polling,
-    run_telegram_webhook_server, seed_files, suggest_memory_migrations, BundleInfo,
-    ChatCompletionRequest, ChatMessage, FormalAiEngine, GithubLogCollectorConfig, MemoryStore,
-    MessageContent, ResponsesRequest, TelegramPollingConfig, DEFAULT_MODEL,
+    agent_info, collect_github_logs, create_chat_completion_with_solver,
+    create_response_with_solver, environment_records, export_memory_bundle, export_memory_full,
+    import_memory_full, knowledge_links_notation, merged_bundle, parse_bundle,
+    render_github_log_plan, run_telegram_polling, run_telegram_webhook_server, seed_files,
+    suggest_memory_migrations, BundleInfo, ChatCompletionRequest, ChatMessage,
+    GithubLogCollectorConfig, MemoryStore, MessageContent, ResponsesRequest, SolverConfig,
+    TelegramPollingConfig, UniversalSolver, DEFAULT_MODEL,
 };
 
 #[derive(Parser, Debug)]
@@ -34,6 +35,11 @@ enum Command {
 
         #[arg(long, value_enum, default_value_t = OutputFormat::Text)]
         format: OutputFormat,
+
+        /// Definition fusion mode for plain definition prompts such as
+        /// "What is IIR?". Defaults to `FORMAL_AI_DEFINITION_FUSION` or explicit.
+        #[arg(long, value_enum)]
+        definition_fusion: Option<DefinitionFusionMode>,
     },
     Dataset,
     Serve {
@@ -245,6 +251,12 @@ enum OutputFormat {
 }
 
 #[derive(Debug, Clone, Copy, ValueEnum, PartialEq, Eq)]
+enum DefinitionFusionMode {
+    Explicit,
+    Auto,
+}
+
+#[derive(Debug, Clone, Copy, ValueEnum, PartialEq, Eq)]
 enum TelegramMode {
     Polling,
     Webhook,
@@ -256,6 +268,15 @@ impl std::fmt::Display for OutputFormat {
             Self::Text => formatter.write_str("text"),
             Self::Chat => formatter.write_str("chat"),
             Self::Responses => formatter.write_str("responses"),
+        }
+    }
+}
+
+impl std::fmt::Display for DefinitionFusionMode {
+    fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Explicit => formatter.write_str("explicit"),
+            Self::Auto => formatter.write_str("auto"),
         }
     }
 }
@@ -275,10 +296,15 @@ fn main() -> Result<(), Box<dyn Error>> {
     let command = args.command.unwrap_or_else(|| Command::Chat {
         prompt: String::from("Hi"),
         format: OutputFormat::Text,
+        definition_fusion: None,
     });
 
     match command {
-        Command::Chat { prompt, format } => run_chat(&prompt, format)?,
+        Command::Chat {
+            prompt,
+            format,
+            definition_fusion,
+        } => run_chat(&prompt, format, definition_fusion)?,
         Command::Dataset => println!("{}", knowledge_links_notation()),
         Command::Memory { action } => run_memory(action)?,
         Command::Bundle { action } => run_bundle(action)?,
@@ -359,10 +385,23 @@ struct TelegramRunArgs {
     port: u16,
 }
 
-fn run_chat(prompt: &str, format: OutputFormat) -> Result<(), Box<dyn Error>> {
+fn solver_for_chat(definition_fusion: Option<DefinitionFusionMode>) -> UniversalSolver {
+    let mut config = SolverConfig::from_env();
+    if let Some(mode) = definition_fusion {
+        config.definition_fusion_by_default = matches!(mode, DefinitionFusionMode::Auto);
+    }
+    UniversalSolver::new(config)
+}
+
+fn run_chat(
+    prompt: &str,
+    format: OutputFormat,
+    definition_fusion: Option<DefinitionFusionMode>,
+) -> Result<(), Box<dyn Error>> {
+    let solver = solver_for_chat(definition_fusion);
     match format {
         OutputFormat::Text => {
-            let response = FormalAiEngine.answer(prompt);
+            let response = solver.solve(prompt);
             println!("{}", response.answer);
         }
         OutputFormat::Chat => {
@@ -377,7 +416,9 @@ fn run_chat(prompt: &str, format: OutputFormat) -> Result<(), Box<dyn Error>> {
             };
             println!(
                 "{}",
-                serde_json::to_string_pretty(&create_chat_completion(&request))?
+                serde_json::to_string_pretty(&create_chat_completion_with_solver(
+                    &request, &solver
+                ))?
             );
         }
         OutputFormat::Responses => {
@@ -390,7 +431,7 @@ fn run_chat(prompt: &str, format: OutputFormat) -> Result<(), Box<dyn Error>> {
             };
             println!(
                 "{}",
-                serde_json::to_string_pretty(&create_response(&request))?
+                serde_json::to_string_pretty(&create_response_with_solver(&request, &solver))?
             );
         }
     }

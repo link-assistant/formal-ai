@@ -300,6 +300,45 @@ fn issue_115_github_log_collection_documents_are_present_and_traceable() {
 }
 
 #[test]
+fn issue_63_definition_fusion_requirements_and_examples_are_traceable() {
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+
+    let requirements = read(root.join("REQUIREMENTS.md"));
+    assert_contains_all(
+        "REQUIREMENTS.md",
+        &requirements,
+        &[
+            "Issue #63 Cross-Language Definition Fusion Requirements",
+            "| R150 ",
+            "| R151 ",
+            "| R152 ",
+            "| R153 ",
+            "| R154 ",
+            "| R155 ",
+            "10-20 self-explanatory examples",
+            "FORMAL_AI_DEFINITION_FUSION",
+            "--definition-fusion",
+            "tests/unit/specification/definition_fusion.rs",
+        ],
+    );
+
+    let tests = read(root.join("tests/unit/specification/definition_fusion.rs"));
+    assert_contains_all(
+        "tests/unit/specification/definition_fusion.rs",
+        &tests,
+        &[
+            "review requested 10-20 concrete examples",
+            "Merge Wikipedia definitions of IIR",
+            "Merge Wikipedia definitions of color",
+            "Merge Wikipedia definitions of KISS principle",
+            "Merge definitions of Telegram Ads",
+            "Merge Wikipedia definitions of not-a-seeded-concept",
+            "What is IIR?",
+        ],
+    );
+}
+
+#[test]
 fn repository_text_avoids_deferred_labels_requested_by_issue_103() {
     let root = Path::new(env!("CARGO_MANIFEST_DIR"));
     let phrase_space = ["proof", " of ", "concept"].concat();

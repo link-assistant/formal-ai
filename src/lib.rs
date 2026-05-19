@@ -35,8 +35,9 @@ pub use memory::{
     ParsedBundle,
 };
 pub use protocol::{
-    create_chat_completion, create_response, ChatChoice, ChatCompletion, ChatCompletionRequest,
-    ChatMessage, MessageContent, MessageContentPart, ResponseObject, ResponseOutputContent,
+    create_chat_completion, create_chat_completion_with_solver, create_response,
+    create_response_with_solver, ChatChoice, ChatCompletion, ChatCompletionRequest, ChatMessage,
+    MessageContent, MessageContentPart, ResponseObject, ResponseOutputContent,
     ResponseOutputMessage, ResponseUsage, ResponsesRequest, TokenUsage,
 };
 pub use seed::{
