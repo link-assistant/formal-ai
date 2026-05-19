@@ -38,6 +38,7 @@ en
     menuOpen "Open the side panel (conversations, prompts, tools)."
     menuClose "Close the side panel (conversations, prompts, tools)."
     composerMenu "Open input actions for attachments, memory, and reporting."
+    resizeSidebar "Resize the side panel."
   composer
     placeholder
       chat "Message formal-ai"
@@ -180,6 +181,7 @@ ru
     menuOpen "Открыть боковую панель (разговоры, запросы, инструменты)."
     menuClose "Закрыть боковую панель (разговоры, запросы, инструменты)."
     composerMenu "Открыть действия ввода: вложения, память и отчеты."
+    resizeSidebar "Изменить ширину боковой панели."
   composer
     placeholder
       chat "Сообщение formal-ai"
@@ -318,6 +320,7 @@ zh
     menuOpen "打开侧边面板（对话、提示、工具）。"
     menuClose "关闭侧边面板（对话、提示、工具）。"
     composerMenu "打开输入操作：附件、记忆和报告。"
+    resizeSidebar "调整侧边面板宽度。"
   composer
     placeholder
       chat "给 formal-ai 发消息"
@@ -458,6 +461,7 @@ hi
     menuOpen "side panel खोलें (बातचीत, prompts, tools)।"
     menuClose "side panel बंद करें (बातचीत, prompts, tools)।"
     composerMenu "attachments, memory, और reporting के input actions खोलें।"
+    resizeSidebar "side panel की चौड़ाई बदलें।"
   composer
     placeholder
       chat "formal-ai को संदेश"

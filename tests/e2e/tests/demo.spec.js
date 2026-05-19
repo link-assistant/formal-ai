@@ -732,6 +732,82 @@ test.describe('Issue #108: mobile composer and configurable input UI', () => {
   });
 });
 
+test.describe('Issue #136: desktop sidebar sizing', () => {
+  test.beforeEach(async ({ page }) => {
+    await disableGreetingVariations(page);
+    await page.setViewportSize({ width: 1536, height: 730 });
+    await page.goto('./');
+    await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
+  });
+
+  test('tool cards fit inside the sidebar without horizontal overflow', async ({ page }) => {
+    await page.locator('[data-testid="setting-ui-language"]').selectOption('ru');
+    const registry = page.locator('[data-testid="tool-registry"]');
+    await expect(registry).toBeVisible({ timeout: 10_000 });
+
+    const metrics = await page.evaluate(() => {
+      const body = document.querySelector(
+        '[data-testid="sidebar-tools"] .sidebar-section-body',
+      );
+      const nodes = Array.from(
+        document.querySelectorAll(
+          [
+            '[data-testid="sidebar-tools"] [data-testid="tool-entry"]',
+            '[data-testid="sidebar-tools"] .tool-head',
+            '[data-testid="sidebar-tools"] .tool-head strong',
+            '[data-testid="sidebar-tools"] .tool-mode',
+            '[data-testid="sidebar-tools"] .tool-desc',
+          ].join(','),
+        ),
+      );
+      if (!body) {
+        return null;
+      }
+      const bodyRect = body.getBoundingClientRect();
+      const overflows = nodes.map((node) => {
+        const rect = node.getBoundingClientRect();
+        return Math.max(0, rect.right - bodyRect.right, bodyRect.left - rect.left);
+      });
+      return {
+        bodyClientWidth: body.clientWidth,
+        bodyScrollWidth: body.scrollWidth,
+        maxChildOverflow: Math.ceil(Math.max(0, ...overflows)),
+        overflowX: getComputedStyle(body).overflowX,
+      };
+    });
+
+    expect(metrics).toBeTruthy();
+    expect(metrics.bodyScrollWidth).toBeLessThanOrEqual(metrics.bodyClientWidth + 1);
+    expect(metrics.maxChildOverflow).toBeLessThanOrEqual(1);
+    expect(metrics.overflowX).toBe('hidden');
+  });
+
+  test('desktop sidebar can be resized with the separator', async ({ page }) => {
+    const panel = page.locator('[data-testid="context-panel"]');
+    const resizer = page.locator('[data-testid="context-resizer"]');
+    await expect(resizer).toBeVisible();
+
+    const before = await panel.boundingBox();
+    const handle = await resizer.boundingBox();
+    expect(before).toBeTruthy();
+    expect(handle).toBeTruthy();
+
+    await page.mouse.move(handle.x + handle.width / 2, handle.y + handle.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(handle.x + handle.width / 2 + 120, handle.y + handle.height / 2);
+    await page.mouse.up();
+
+    const after = await panel.boundingBox();
+    expect(after).toBeTruthy();
+    expect(after.width).toBeGreaterThan(before.width + 90);
+
+    const stored = await page.evaluate(
+      () => window.localStorage.getItem('formal-ai.preferences.v1') || '',
+    );
+    expect(stored).toMatch(/contextPanelWidth "\d+"/);
+  });
+});
+
 test.describe('Issue #110: mobile keyboard viewport handling', () => {
   test('focused mobile input pins the app shell to the visual viewport offset', async ({ page }) => {
     await disableGreetingVariations(page);
