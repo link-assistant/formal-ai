@@ -49,6 +49,8 @@ const REQUIRED_KEYS = [
   'message.thinking',
   'fetch.collapse',
   'fetch.expand',
+  'fetch.fullscreen',
+  'fetch.minimize',
   'fetch.openInNewTab',
   'fetch.frameTitle',
   'memory.exportTriggered',

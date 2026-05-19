@@ -72,6 +72,7 @@ const EXAMPLE_PROMPTS = [
   { label: "Fact Q&A (ru)", text: "Какова столица Японии?" },
   { label: "Fact Q&A (hi)", text: "जापान की राजधानी क्या है?" },
   { label: "Fact Q&A (zh)", text: "日本的首都是什么?" },
+  { label: "Navigate URL", text: "Navigate to github.com" },
   { label: "Fetch URL", text: "Сделай запрос к google.com" },
   { label: "Web search", text: "Search the web for Nikola Tesla" },
   { label: "Coreference", text: "What features make it different from C?" },
@@ -1196,7 +1197,20 @@ function Message({ message, diagnosticsMode, reportIssueUrl, t }) {
     message.intent === "unknown"
       ? t("buttons.reportMissingRule")
       : t("buttons.reportIssue");
-  const [iframeExpanded, setIframeExpanded] = useState(true);
+  const [iframeFullscreen, setIframeFullscreen] = useState(false);
+
+  useEffect(() => {
+    if (!iframeFullscreen) {
+      return undefined;
+    }
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        setIframeFullscreen(false);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [iframeFullscreen]);
 
   return h(
     "article",
@@ -1229,44 +1243,51 @@ function Message({ message, diagnosticsMode, reportIssueUrl, t }) {
       message.iframeUrl
         ? h(
             "div",
-            { className: "fetch-iframe-container", "data-testid": "fetch-iframe-container" },
+            {
+              className: `fetch-iframe-container${iframeFullscreen ? " is-fullscreen" : ""}`,
+              "data-testid": "fetch-iframe-container",
+            },
             h(
               "div",
               { className: "fetch-iframe-header" },
-              h(
-                "button",
-                {
-                  type: "button",
-                  className: "fetch-iframe-toggle",
-                  onClick: () => setIframeExpanded((prev) => !prev),
-                  "aria-expanded": iframeExpanded ? "true" : "false",
-                },
-                iframeExpanded
-                  ? `▼ ${t("fetch.collapse")}`
-                  : `▶ ${t("fetch.expand")}`,
-              ),
               h("span", { className: "fetch-iframe-url" }, message.iframeUrl),
               h(
-                "a",
-                {
-                  href: message.iframeUrl,
-                  target: "_blank",
-                  rel: "noopener noreferrer",
-                  className: "fetch-iframe-open",
-                },
-                t("fetch.openInNewTab"),
+                "div",
+                { className: "fetch-iframe-actions" },
+                h(
+                  "a",
+                  {
+                    href: message.iframeUrl,
+                    target: "_blank",
+                    rel: "noopener noreferrer",
+                    className: "fetch-iframe-open fetch-iframe-control",
+                    "aria-label": t("fetch.openInNewTab"),
+                    title: t("fetch.openInNewTab"),
+                  },
+                  "↗",
+                ),
+                h(
+                  "button",
+                  {
+                    type: "button",
+                    className: "fetch-iframe-toggle fetch-iframe-control",
+                    onClick: () => setIframeFullscreen((prev) => !prev),
+                    "aria-label": iframeFullscreen ? t("fetch.minimize") : t("fetch.fullscreen"),
+                    "aria-pressed": iframeFullscreen ? "true" : "false",
+                    title: iframeFullscreen ? t("fetch.minimize") : t("fetch.fullscreen"),
+                  },
+                  iframeFullscreen ? "⤡" : "⛶",
+                ),
               ),
             ),
-            iframeExpanded
-              ? h("iframe", {
-                  className: "fetch-iframe",
-                  src: message.iframeUrl,
-                  title: t("fetch.frameTitle", { url: message.iframeUrl }),
-                  sandbox: "allow-scripts allow-same-origin allow-forms allow-popups",
-                  loading: "lazy",
-                  "data-testid": "fetch-iframe",
-                })
-              : null,
+            h("iframe", {
+              className: "fetch-iframe",
+              src: message.iframeUrl,
+              title: t("fetch.frameTitle", { url: message.iframeUrl }),
+              sandbox: "allow-scripts allow-same-origin allow-forms allow-popups",
+              loading: "lazy",
+              "data-testid": "fetch-iframe",
+            }),
           )
         : null,
       evidence.length

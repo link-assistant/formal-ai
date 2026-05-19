@@ -62,8 +62,10 @@ en
   fetch
     collapse "Collapse"
     expand "Expand"
+    fullscreen "Full screen"
+    minimize "Minimize"
     openInNewTab "Open in new tab"
-    frameTitle "Fetched page: {url}"
+    frameTitle "Previewed page: {url}"
   memory
     exportTriggered "Triggered Export memory. Your browser is downloading `formal-ai-memory.lino`."
     importTriggered "Triggered Import memory. Pick a `.lino` file in the open dialog to restore the saved memory."
@@ -202,8 +204,10 @@ ru
   fetch
     collapse "Свернуть"
     expand "Развернуть"
+    fullscreen "Во весь экран"
+    minimize "Свернуть"
     openInNewTab "Открыть в новой вкладке"
-    frameTitle "Полученная страница: {url}"
+    frameTitle "Предпросмотр страницы: {url}"
   memory
     exportTriggered "Запущен экспорт памяти. Браузер скачивает `formal-ai-memory.lino`."
     importTriggered """
@@ -338,8 +342,10 @@ zh
   fetch
     collapse "折叠"
     expand "展开"
+    fullscreen "全屏"
+    minimize "最小化"
     openInNewTab "在新标签页打开"
-    frameTitle "已获取页面：{url}"
+    frameTitle "预览页面：{url}"
   memory
     exportTriggered "已触发导出记忆。浏览器正在下载 `formal-ai-memory.lino`。"
     importTriggered "已触发导入记忆。请在打开的对话框中选择 `.lino` 文件来恢复保存的记忆。"
@@ -476,8 +482,10 @@ hi
   fetch
     collapse "समेटें"
     expand "फैलाएं"
+    fullscreen "पूर्ण स्क्रीन"
+    minimize "छोटा करें"
     openInNewTab "नए टैब में खोलें"
-    frameTitle "लाई गई पेज: {url}"
+    frameTitle "पूर्वावलोकित पेज: {url}"
   memory
     exportTriggered "स्मृति निर्यात शुरू हुआ। आपका browser `formal-ai-memory.lino` डाउनलोड कर रहा है।"
     importTriggered "स्मृति आयात शुरू हुआ। saved memory restore करने के लिए खुले dialog में `.lino` file चुनें।"
