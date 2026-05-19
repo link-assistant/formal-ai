@@ -4955,6 +4955,58 @@ async function searchWikidataEntities(query, language, limit) {
   return { ok: true, results, finalUrl: outcome.finalUrl };
 }
 
+async function searchInternetArchive(query, language, limit) {
+  // Issue #153: archive.org publishes a CORS-enabled `advancedsearch.php`
+  // endpoint that returns ranked results across the entire collection (web
+  // captures, books, audio, software, ...). This complements the DuckDuckGo
+  // Instant Answer (which mostly returns a single Wikipedia abstract) and
+  // gives the agent another general-purpose web search fallback to draw on
+  // when the structured providers (Wikidata/Wikipedia) miss the query.
+  const cap = typeof limit === "number" && Number.isFinite(limit) && limit > 0
+    ? Math.floor(limit)
+    : 5;
+  const params = [
+    "q=" + encodeURIComponent(query),
+    "fl%5B%5D=identifier",
+    "fl%5B%5D=title",
+    "fl%5B%5D=description",
+    "fl%5B%5D=creator",
+    "sort%5B%5D=" + encodeURIComponent("downloads desc"),
+    "rows=" + encodeURIComponent(cap),
+    "page=1",
+    "output=json",
+  ];
+  const url = "https://archive.org/advancedsearch.php?" + params.join("&");
+  const outcome = await fetchProviderJson("internet-archive", url);
+  if (
+    !outcome.ok ||
+    !outcome.data ||
+    !outcome.data.response ||
+    !Array.isArray(outcome.data.response.docs)
+  ) {
+    return { ok: false, results: [], finalUrl: outcome.finalUrl, error: outcome.error };
+  }
+  const docs = outcome.data.response.docs;
+  const results = docs.slice(0, cap).map((doc) => {
+    const identifier = doc.identifier || "";
+    const description = Array.isArray(doc.description)
+      ? doc.description.join(" • ")
+      : (doc.description || "");
+    const creator = Array.isArray(doc.creator)
+      ? doc.creator.join(", ")
+      : (doc.creator || "");
+    const excerpt = stripHtml(creator ? `${creator} — ${description}` : description);
+    return {
+      title: doc.title || identifier || query,
+      url: identifier ? `https://archive.org/details/${identifier}` : `https://archive.org/search.php?query=${encodeURIComponent(query)}`,
+      excerpt,
+      virtualId: `IA:${identifier || query}`,
+      sourceKind: "internet-archive",
+    };
+  });
+  return { ok: true, results, finalUrl: outcome.finalUrl };
+}
+
 const WEB_SEARCH_PROVIDERS = [
   {
     id: "duckduckgo",
@@ -4972,6 +5024,12 @@ const WEB_SEARCH_PROVIDERS = [
     label: "Wikidata entities",
     run: (query, language, limit) =>
       searchWikidataEntities(query, language, limit),
+  },
+  {
+    id: "internet-archive",
+    label: "Internet Archive (web.archive.org)",
+    run: (query, language, limit) =>
+      searchInternetArchive(query, language, limit),
   },
 ];
 

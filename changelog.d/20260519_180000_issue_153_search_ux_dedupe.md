@@ -40,6 +40,31 @@ bump: minor
 - Issue #153 case study under `docs/case-studies/issue-153/`, including raw
   issue JSON, the three screenshots from the issue description, and a deep
   analysis of requirements R195–R209.
+- Priority-based topbar overflow: every `.topbar-actions` button now carries
+  a `data-menu-priority` attribute (1=highest = Bug reporting, last to drop;
+  7=lowest = dynamic status indicators). New media queries at 720px and 560px
+  drop priorities 7→5 then 4 out of the topbar, while the hamburger drawer
+  (already wired to the same React state) remains the source of truth for
+  every action. Bug reporting (1), Diagnostics (2) and Demo (3) survive to
+  the narrowest viewports.
+- Internet Archive (`archive.org/advancedsearch.php`) web search provider
+  added to `WEB_SEARCH_PROVIDERS`. The CORS-enabled JSON endpoint returns
+  ranked results across the entire collection (web captures, books, audio,
+  software, …) and complements the DuckDuckGo Instant Answer fallback. Each
+  hit surfaces with `sourceKind: "internet-archive"` and a deterministic
+  `IA:<identifier>` virtual id so RRF and dedupe handle it like any other
+  provider.
+- `composer.sending` i18n key for the in-flight Send button label, plus a
+  `.send-spinner` rotating ring and `send-spinner-rotate` keyframes that
+  replace the ASCII `...` placeholder while a request is pending.
+
+### Fixed
+
+- Top bar wrapping at narrow viewports: `.brand strong` and `.demo-status`
+  now use `white-space: nowrap` (and `flex: 0 0 auto` for the status pill)
+  so the title and "Demo will start in …" pill never wrap awkwardly.
+- Send button no longer renders as raw `... ...` while pending — it shows a
+  rotating spinner and a localized `Sending…` label instead.
 
 ### Fixed
 
