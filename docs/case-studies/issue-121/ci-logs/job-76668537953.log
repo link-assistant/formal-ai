@@ -1,0 +1,1104 @@
+Auto Release	Set up job	﻿2026-05-19T04:37:30.0355657Z Current runner version: '2.334.0'
+Auto Release	Set up job	2026-05-19T04:37:30.0381370Z ##[group]Runner Image Provisioner
+Auto Release	Set up job	2026-05-19T04:37:30.0382229Z Hosted Compute Agent
+Auto Release	Set up job	2026-05-19T04:37:30.0382937Z Version: 20260213.493
+Auto Release	Set up job	2026-05-19T04:37:30.0383783Z Commit: 5c115507f6dd24b8de37d8bbe0bb4509d0cc0fa3
+Auto Release	Set up job	2026-05-19T04:37:30.0384535Z Build Date: 2026-02-13T00:28:41Z
+Auto Release	Set up job	2026-05-19T04:37:30.0385305Z Worker ID: {ef4aa32c-eef5-418c-9e9d-b5e521632f1b}
+Auto Release	Set up job	2026-05-19T04:37:30.0386021Z Azure Region: westcentralus
+Auto Release	Set up job	2026-05-19T04:37:30.0386617Z ##[endgroup]
+Auto Release	Set up job	2026-05-19T04:37:30.0387979Z ##[group]Operating System
+Auto Release	Set up job	2026-05-19T04:37:30.0388552Z Ubuntu
+Auto Release	Set up job	2026-05-19T04:37:30.0389063Z 24.04.4
+Auto Release	Set up job	2026-05-19T04:37:30.0389611Z LTS
+Auto Release	Set up job	2026-05-19T04:37:30.0390114Z ##[endgroup]
+Auto Release	Set up job	2026-05-19T04:37:30.0390659Z ##[group]Runner Image
+Auto Release	Set up job	2026-05-19T04:37:30.0391301Z Image: ubuntu-24.04
+Auto Release	Set up job	2026-05-19T04:37:30.0391817Z Version: 20260513.135.3
+Auto Release	Set up job	2026-05-19T04:37:30.0392877Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260513.135/images/ubuntu/Ubuntu2404-Readme.md
+Auto Release	Set up job	2026-05-19T04:37:30.0394820Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260513.135
+Auto Release	Set up job	2026-05-19T04:37:30.0395745Z ##[endgroup]
+Auto Release	Set up job	2026-05-19T04:37:30.0396865Z ##[group]GITHUB_TOKEN Permissions
+Auto Release	Set up job	2026-05-19T04:37:30.0398730Z Contents: write
+Auto Release	Set up job	2026-05-19T04:37:30.0399480Z Metadata: read
+Auto Release	Set up job	2026-05-19T04:37:30.0399991Z ##[endgroup]
+Auto Release	Set up job	2026-05-19T04:37:30.0402042Z Secret source: Actions
+Auto Release	Set up job	2026-05-19T04:37:30.0402866Z Prepare workflow directory
+Auto Release	Set up job	2026-05-19T04:37:30.0941427Z Prepare all required actions
+Auto Release	Set up job	2026-05-19T04:37:30.0979411Z Getting action download info
+Auto Release	Set up job	2026-05-19T04:37:30.6337100Z Download action repository 'actions/checkout@v6' (SHA:de0fac2e4500dabe0009e67214ff5f5447ce83dd)
+Auto Release	Set up job	2026-05-19T04:37:30.7365553Z Download action repository 'dtolnay/rust-toolchain@stable' (SHA:29eef336d9b2848a0b548edc03f92a220660cdb8)
+Auto Release	Set up job	2026-05-19T04:37:30.9798284Z Download action repository 'docker/login-action@v4' (SHA:4907a6ddec9925e35a0a9e82d7399ccc52663121)
+Auto Release	Set up job	2026-05-19T04:37:31.8278824Z Download action repository 'docker/setup-buildx-action@v4' (SHA:4d04d5d9486b7bd6fa91e7baf45bbb4f8b9deedd)
+Auto Release	Set up job	2026-05-19T04:37:32.6893972Z Download action repository 'docker/metadata-action@v6' (SHA:030e881283bb7a6894de51c315a6bfe6a94e05cf)
+Auto Release	Set up job	2026-05-19T04:37:33.7675393Z Download action repository 'docker/build-push-action@v7' (SHA:bcafcacb16a39f128d818304e6c9c0c18556b85f)
+Auto Release	Set up job	2026-05-19T04:37:35.3880411Z Complete job name: Auto Release
+Auto Release	Run actions/checkout@v6	﻿2026-05-19T04:37:35.4619385Z ##[group]Run actions/checkout@v6
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.4619994Z with:
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.4620194Z   fetch-depth: 0
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.4620870Z   token: ***
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.4621110Z   repository: link-assistant/formal-ai
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.4621381Z   ssh-strict: true
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.4621583Z   ssh-user: git
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.4621790Z   persist-credentials: true
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.4622046Z   clean: true
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.4622263Z   sparse-checkout-cone-mode: true
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.4622513Z   fetch-tags: false
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.4622710Z   show-progress: true
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.4622940Z   lfs: false
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.4623645Z   submodules: false
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.4623848Z   set-safe-directory: true
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.4624328Z env:
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.4624525Z   CARGO_TERM_COLOR: always
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.4624772Z   RUSTFLAGS: -Dwarnings
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.4625141Z   CARGO_REGISTRY_TOKEN: ***
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.4625426Z   CARGO_TOKEN: ***
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.4625627Z   DOCKERHUB_IMAGE:
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.4625887Z   DOCKERHUB_USERNAME:
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.4626181Z   DOCKERHUB_TOKEN: ***
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.4626410Z ##[endgroup]
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.5629823Z Syncing repository: link-assistant/formal-ai
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.5631371Z ##[group]Getting Git version info
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.5631750Z Working directory is '/home/runner/work/formal-ai/formal-ai'
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.5632379Z [command]/usr/bin/git version
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.5670478Z git version 2.54.0
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.5726303Z ##[endgroup]
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.5742609Z Temporarily overriding HOME='/home/runner/work/_temp/04f943d8-91c1-4014-83ba-7b8ceb520e8d' before making global git config changes
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.5744631Z Adding repository directory to the temporary git global config as a safe directory
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.5749729Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.5799304Z Deleting the contents of '/home/runner/work/formal-ai/formal-ai'
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.5804077Z ##[group]Initializing the repository
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.5808751Z [command]/usr/bin/git init /home/runner/work/formal-ai/formal-ai
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.5891264Z hint: Using 'master' as the name for the initial branch. This default branch name
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.5892651Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.5893679Z hint: to use in all of your new repositories, which will suppress this warning,
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.5894283Z hint: call:
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.5894563Z hint:
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.5894987Z hint: 	git config --global init.defaultBranch <name>
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.5895493Z hint:
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.5895934Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.5896751Z hint: 'development'. The just-created branch can be renamed via this command:
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.5897349Z hint:
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.5897652Z hint: 	git branch -m <name>
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.5897885Z hint:
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.5898200Z hint: Disable this message with "git config set advice.defaultBranchName false"
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.5898757Z Initialized empty Git repository in /home/runner/work/formal-ai/formal-ai/.git/
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.5907729Z [command]/usr/bin/git remote add origin https://github.com/link-assistant/formal-ai
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.5946996Z ##[endgroup]
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.5947604Z ##[group]Disabling automatic garbage collection
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.5951089Z [command]/usr/bin/git config --local gc.auto 0
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.5979432Z ##[endgroup]
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.5979815Z ##[group]Setting up auth
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.5981233Z Removing SSH command configuration
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.5987257Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.6021022Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.6339158Z Removing HTTP extra header
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.6346025Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.6379940Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.6609959Z Removing includeIf entries pointing to credentials config files
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.6616786Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.6651948Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.6894410Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-fd2e08c9-e75a-406d-a4f5-a64c5c124fb4.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.6935677Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path /home/runner/work/_temp/git-credentials-fd2e08c9-e75a-406d-a4f5-a64c5c124fb4.config
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.6970346Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-fd2e08c9-e75a-406d-a4f5-a64c5c124fb4.config
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.7006989Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-fd2e08c9-e75a-406d-a4f5-a64c5c124fb4.config
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.7041362Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-fd2e08c9-e75a-406d-a4f5-a64c5c124fb4.config
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.7069832Z ##[endgroup]
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.7070409Z ##[group]Fetching the repository
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:35.7081206Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules origin +refs/heads/*:refs/remotes/origin/* +refs/tags/*:refs/tags/*
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.5976913Z From https://github.com/link-assistant/formal-ai
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.5977909Z  * [new branch]      gh-pages               -> origin/gh-pages
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.5978564Z  * [new branch]      issue-1-040a21d753ca   -> origin/issue-1-040a21d753ca
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.5979246Z  * [new branch]      issue-1-70671eb0ba20   -> origin/issue-1-70671eb0ba20
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.5979880Z  * [new branch]      issue-10-528ad8299bfa  -> origin/issue-10-528ad8299bfa
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.5980464Z  * [new branch]      issue-103-89b7776b0010 -> origin/issue-103-89b7776b0010
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.5981165Z  * [new branch]      issue-105-43de79808581 -> origin/issue-105-43de79808581
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.5981855Z  * [new branch]      issue-107-c995aabb2aac -> origin/issue-107-c995aabb2aac
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.5982523Z  * [new branch]      issue-108-e4fa776bf7e7 -> origin/issue-108-e4fa776bf7e7
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.5983752Z  * [new branch]      issue-110-2af174f3ddb8 -> origin/issue-110-2af174f3ddb8
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.5984479Z  * [new branch]      issue-112-248769046c3f -> origin/issue-112-248769046c3f
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.5985149Z  * [new branch]      issue-115-f9977aca33fe -> origin/issue-115-f9977aca33fe
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.5985848Z  * [new branch]      issue-117-65eb42b6b7fe -> origin/issue-117-65eb42b6b7fe
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.5986529Z  * [new branch]      issue-12-8475693e3ce5  -> origin/issue-12-8475693e3ce5
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.5987313Z  * [new branch]      issue-14-cea6df691135  -> origin/issue-14-cea6df691135
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.5988076Z  * [new branch]      issue-16-f76f85f72657  -> origin/issue-16-f76f85f72657
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.5988720Z  * [new branch]      issue-18-65b2eb796b44  -> origin/issue-18-65b2eb796b44
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.5989363Z  * [new branch]      issue-20-4275e3280a5a  -> origin/issue-20-4275e3280a5a
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.5990005Z  * [new branch]      issue-21-0c5ffd5a0979  -> origin/issue-21-0c5ffd5a0979
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.5991113Z  * [new branch]      issue-24-7fe6ff27055d  -> origin/issue-24-7fe6ff27055d
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.5991768Z  * [new branch]      issue-24-9083bf15af21  -> origin/issue-24-9083bf15af21
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.5992440Z  * [new branch]      issue-27-2a30a20dbe1d  -> origin/issue-27-2a30a20dbe1d
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.5993321Z  * [new branch]      issue-29-13a9db91b72a  -> origin/issue-29-13a9db91b72a
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.5994008Z  * [new branch]      issue-30-267957d5e55e  -> origin/issue-30-267957d5e55e
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.5994669Z  * [new branch]      issue-31-5ef83b6717f8  -> origin/issue-31-5ef83b6717f8
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.5995332Z  * [new branch]      issue-35-9545df8b8566  -> origin/issue-35-9545df8b8566
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.5995992Z  * [new branch]      issue-37-43a07241273c  -> origin/issue-37-43a07241273c
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.5996659Z  * [new branch]      issue-39-4fae946b6130  -> origin/issue-39-4fae946b6130
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.5997121Z  * [new branch]      issue-39-953cf7f12db2  -> origin/issue-39-953cf7f12db2
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.5997649Z  * [new branch]      issue-4-1e8c9b0d59e2   -> origin/issue-4-1e8c9b0d59e2
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.5998136Z  * [new branch]      issue-40-6687579f7e2e  -> origin/issue-40-6687579f7e2e
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.5998539Z  * [new branch]      issue-41-a76143723c45  -> origin/issue-41-a76143723c45
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.5998933Z  * [new branch]      issue-42-591c9157cbbf  -> origin/issue-42-591c9157cbbf
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.5999465Z  * [new branch]      issue-43-8dcfd820555c  -> origin/issue-43-8dcfd820555c
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6000089Z  * [new branch]      issue-44-932b1a8ae8ee  -> origin/issue-44-932b1a8ae8ee
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6000703Z  * [new branch]      issue-49-15e56694c4fd  -> origin/issue-49-15e56694c4fd
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6001125Z  * [new branch]      issue-50-a94d4d7b427c  -> origin/issue-50-a94d4d7b427c
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6001533Z  * [new branch]      issue-51-8693c8c9e174  -> origin/issue-51-8693c8c9e174
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6002185Z  * [new branch]      issue-52-3fef487eb097  -> origin/issue-52-3fef487eb097
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6002920Z  * [new branch]      issue-53-78dd4669e4c6  -> origin/issue-53-78dd4669e4c6
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6003764Z  * [new branch]      issue-55-b16700e01313  -> origin/issue-55-b16700e01313
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6004318Z  * [new branch]      issue-6-d8cf53772b56   -> origin/issue-6-d8cf53772b56
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6004740Z  * [new branch]      issue-63-7561bb160d49  -> origin/issue-63-7561bb160d49
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6005175Z  * [new branch]      issue-64-0f1b4b7009f5  -> origin/issue-64-0f1b4b7009f5
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6005576Z  * [new branch]      issue-65-91402602272c  -> origin/issue-65-91402602272c
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6006265Z  * [new branch]      issue-66-6832a673e048  -> origin/issue-66-6832a673e048
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6006949Z  * [new branch]      issue-67-5020a69c37b6  -> origin/issue-67-5020a69c37b6
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6007616Z  * [new branch]      issue-68-c3ada29b16ee  -> origin/issue-68-c3ada29b16ee
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6008288Z  * [new branch]      issue-69-8073bcee0480  -> origin/issue-69-8073bcee0480
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6008946Z  * [new branch]      issue-70-44b958c4d15c  -> origin/issue-70-44b958c4d15c
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6009602Z  * [new branch]      issue-71-81912fcbf3c6  -> origin/issue-71-81912fcbf3c6
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6010263Z  * [new branch]      issue-72-3c64c0a31037  -> origin/issue-72-3c64c0a31037
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6010921Z  * [new branch]      issue-73-1b287b1b431e  -> origin/issue-73-1b287b1b431e
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6011591Z  * [new branch]      issue-78-0dcc7757ac84  -> origin/issue-78-0dcc7757ac84
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6012264Z  * [new branch]      issue-79-602c5f160cb3  -> origin/issue-79-602c5f160cb3
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6012929Z  * [new branch]      issue-8-2ef42ad47e3f   -> origin/issue-8-2ef42ad47e3f
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6013798Z  * [new branch]      issue-80-290e44192310  -> origin/issue-80-290e44192310
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6014517Z  * [new branch]      issue-81-38c12ca65065  -> origin/issue-81-38c12ca65065
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6015235Z  * [new branch]      issue-82-1a6565cb42da  -> origin/issue-82-1a6565cb42da
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6016136Z  * [new branch]      issue-84-692b1f9623db  -> origin/issue-84-692b1f9623db
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6016617Z  * [new branch]      issue-84-a409f6cdf36b  -> origin/issue-84-a409f6cdf36b
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6017083Z  * [new branch]      issue-93-5c859a5dabc0  -> origin/issue-93-5c859a5dabc0
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6017677Z  * [new branch]      issue-94-ff296a0bd279  -> origin/issue-94-ff296a0bd279
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6018423Z  * [new branch]      issue-96-93a44dd34f1d  -> origin/issue-96-93a44dd34f1d
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6019088Z  * [new branch]      main                   -> origin/main
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6019656Z  * [new tag]         v0.12.0                -> v0.12.0
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6020056Z  * [new tag]         v0.13.0                -> v0.13.0
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6020391Z  * [new tag]         v0.14.0                -> v0.14.0
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6020722Z  * [new tag]         v0.15.0                -> v0.15.0
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6021061Z  * [new tag]         v0.16.0                -> v0.16.0
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6021395Z  * [new tag]         v0.17.0                -> v0.17.0
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6021720Z  * [new tag]         v0.18.0                -> v0.18.0
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6022044Z  * [new tag]         v0.19.0                -> v0.19.0
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6022362Z  * [new tag]         v0.20.0                -> v0.20.0
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6022695Z  * [new tag]         v0.21.0                -> v0.21.0
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6023231Z  * [new tag]         v0.22.0                -> v0.22.0
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6023844Z  * [new tag]         v0.23.0                -> v0.23.0
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6024296Z  * [new tag]         v0.24.0                -> v0.24.0
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6024656Z  * [new tag]         v0.25.0                -> v0.25.0
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6024984Z  * [new tag]         v0.26.0                -> v0.26.0
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6025312Z  * [new tag]         v0.27.0                -> v0.27.0
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6025649Z  * [new tag]         v0.28.0                -> v0.28.0
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6025975Z  * [new tag]         v0.29.0                -> v0.29.0
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6026292Z  * [new tag]         v0.30.0                -> v0.30.0
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6026631Z  * [new tag]         v0.31.0                -> v0.31.0
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6026964Z  * [new tag]         v0.32.0                -> v0.32.0
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6027281Z  * [new tag]         v0.33.0                -> v0.33.0
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6027625Z  * [new tag]         v0.34.0                -> v0.34.0
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6027983Z  * [new tag]         v0.35.0                -> v0.35.0
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6028309Z  * [new tag]         v0.36.0                -> v0.36.0
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6028641Z  * [new tag]         v0.36.1                -> v0.36.1
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6028966Z  * [new tag]         v0.37.0                -> v0.37.0
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6029293Z  * [new tag]         v0.38.0                -> v0.38.0
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6029615Z  * [new tag]         v0.39.0                -> v0.39.0
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6029955Z  * [new tag]         v0.40.0                -> v0.40.0
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6030305Z  * [new tag]         v0.41.0                -> v0.41.0
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6030640Z  * [new tag]         v0.42.0                -> v0.42.0
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6030966Z  * [new tag]         v0.43.0                -> v0.43.0
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6031298Z  * [new tag]         v0.44.0                -> v0.44.0
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6031622Z  * [new tag]         v0.45.0                -> v0.45.0
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6031951Z  * [new tag]         v0.46.0                -> v0.46.0
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6032284Z  * [new tag]         v0.47.0                -> v0.47.0
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6032604Z  * [new tag]         v0.48.0                -> v0.48.0
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6032930Z  * [new tag]         v0.49.0                -> v0.49.0
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6033451Z  * [new tag]         v0.50.0                -> v0.50.0
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6033787Z  * [new tag]         v0.51.0                -> v0.51.0
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6034253Z  * [new tag]         v0.52.0                -> v0.52.0
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6034584Z  * [new tag]         v0.53.0                -> v0.53.0
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6034914Z  * [new tag]         v0.54.0                -> v0.54.0
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6035201Z  * [new tag]         v0.55.0                -> v0.55.0
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6035498Z  * [new tag]         v0.56.0                -> v0.56.0
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6035794Z  * [new tag]         v0.57.0                -> v0.57.0
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6036081Z  * [new tag]         v0.58.0                -> v0.58.0
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6036383Z  * [new tag]         v0.59.0                -> v0.59.0
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6036677Z  * [new tag]         v0.60.0                -> v0.60.0
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6172368Z [command]/usr/bin/git branch --list --remote origin/main
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6201074Z   origin/main
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6211478Z [command]/usr/bin/git rev-parse refs/remotes/origin/main
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6235822Z 3f05450f8a70e61182f30058f8804d1a03796eab
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6242445Z ##[endgroup]
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6243278Z ##[group]Determining the checkout info
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6244146Z ##[endgroup]
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6247593Z [command]/usr/bin/git sparse-checkout disable
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6291576Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6323181Z ##[group]Checking out the ref
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.6323878Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.7710149Z Switched to a new branch 'main'
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.7711144Z branch 'main' set up to track 'origin/main'.
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.7730296Z ##[endgroup]
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.7783888Z [command]/usr/bin/git log -1 --format=%H
+Auto Release	Run actions/checkout@v6	2026-05-19T04:37:37.7813894Z 3f05450f8a70e61182f30058f8804d1a03796eab
+Auto Release	Setup Rust	﻿2026-05-19T04:37:37.8132622Z ##[group]Run dtolnay/rust-toolchain@stable
+Auto Release	Setup Rust	2026-05-19T04:37:37.8132932Z with:
+Auto Release	Setup Rust	2026-05-19T04:37:37.8133357Z   toolchain: stable
+Auto Release	Setup Rust	2026-05-19T04:37:37.8133560Z env:
+Auto Release	Setup Rust	2026-05-19T04:37:37.8133740Z   CARGO_TERM_COLOR: always
+Auto Release	Setup Rust	2026-05-19T04:37:37.8133962Z   RUSTFLAGS: -Dwarnings
+Auto Release	Setup Rust	2026-05-19T04:37:37.8134536Z   CARGO_REGISTRY_TOKEN: ***
+Auto Release	Setup Rust	2026-05-19T04:37:37.8134836Z   CARGO_TOKEN: ***
+Auto Release	Setup Rust	2026-05-19T04:37:37.8135035Z   DOCKERHUB_IMAGE:
+Auto Release	Setup Rust	2026-05-19T04:37:37.8135233Z   DOCKERHUB_USERNAME:
+Auto Release	Setup Rust	2026-05-19T04:37:37.8135513Z   DOCKERHUB_TOKEN: ***
+Auto Release	Setup Rust	2026-05-19T04:37:37.8135713Z ##[endgroup]
+Auto Release	Setup Rust	2026-05-19T04:37:37.8252457Z ##[group]Run : parse toolchain version
+Auto Release	Setup Rust	2026-05-19T04:37:37.8252871Z ^[[36;1m: parse toolchain version^[[0m
+Auto Release	Setup Rust	2026-05-19T04:37:37.8253362Z ^[[36;1mif [[ -z $toolchain ]]; then^[[0m
+Auto Release	Setup Rust	2026-05-19T04:37:37.8253887Z ^[[36;1m  # GitHub does not enforce `required: true` inputs itself. https://github.com/actions/runner/issues/1070^[[0m
+Auto Release	Setup Rust	2026-05-19T04:37:37.8254464Z ^[[36;1m  echo "'toolchain' is a required input" >&2^[[0m
+Auto Release	Setup Rust	2026-05-19T04:37:37.8254820Z ^[[36;1m  exit 1^[[0m
+Auto Release	Setup Rust	2026-05-19T04:37:37.8255147Z ^[[36;1melif [[ $toolchain =~ ^stable' '[0-9]+' '(year|month|week|day)s?' 'ago$ ]]; then^[[0m
+Auto Release	Setup Rust	2026-05-19T04:37:37.8255542Z ^[[36;1m  if [[ Linux == macOS ]]; then^[[0m
+Auto Release	Setup Rust	2026-05-19T04:37:37.8256054Z ^[[36;1m    echo "toolchain=1.$((($(date -v-$(sed 's/stable \([0-9]*\) \(.\).*/\1\2/' <<< $toolchain) +%s)/60/60/24-16569)/7/6))" >> $GITHUB_OUTPUT^[[0m
+Auto Release	Setup Rust	2026-05-19T04:37:37.8256528Z ^[[36;1m  else^[[0m
+Auto Release	Setup Rust	2026-05-19T04:37:37.8256912Z ^[[36;1m    echo "toolchain=1.$((($(date --date "${toolchain#stable }" +%s)/60/60/24-16569)/7/6))" >> $GITHUB_OUTPUT^[[0m
+Auto Release	Setup Rust	2026-05-19T04:37:37.8257341Z ^[[36;1m  fi^[[0m
+Auto Release	Setup Rust	2026-05-19T04:37:37.8257617Z ^[[36;1melif [[ $toolchain =~ ^stable' 'minus' '[0-9]+' 'releases?$ ]]; then^[[0m
+Auto Release	Setup Rust	2026-05-19T04:37:37.8258126Z ^[[36;1m  echo "toolchain=1.$((($(date +%s)/60/60/24-16569)/7/6-${toolchain//[^0-9]/}))" >> $GITHUB_OUTPUT^[[0m
+Auto Release	Setup Rust	2026-05-19T04:37:37.8258560Z ^[[36;1melif [[ $toolchain =~ ^1\.[0-9]+$ ]]; then^[[0m
+Auto Release	Setup Rust	2026-05-19T04:37:37.8259051Z ^[[36;1m  echo "toolchain=1.$((i=${toolchain#1.}, c=($(date +%s)/60/60/24-16569)/7/6, i+9*i*(10*i<=c)+90*i*(100*i<=c)))" >> $GITHUB_OUTPUT^[[0m
+Auto Release	Setup Rust	2026-05-19T04:37:37.8259506Z ^[[36;1melse^[[0m
+Auto Release	Setup Rust	2026-05-19T04:37:37.8259741Z ^[[36;1m  echo "toolchain=$toolchain" >> $GITHUB_OUTPUT^[[0m
+Auto Release	Setup Rust	2026-05-19T04:37:37.8260028Z ^[[36;1mfi^[[0m
+Auto Release	Setup Rust	2026-05-19T04:37:37.8299894Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Auto Release	Setup Rust	2026-05-19T04:37:37.8300248Z env:
+Auto Release	Setup Rust	2026-05-19T04:37:37.8300439Z   CARGO_TERM_COLOR: always
+Auto Release	Setup Rust	2026-05-19T04:37:37.8300672Z   RUSTFLAGS: -Dwarnings
+Auto Release	Setup Rust	2026-05-19T04:37:37.8301066Z   CARGO_REGISTRY_TOKEN: ***
+Auto Release	Setup Rust	2026-05-19T04:37:37.8301360Z   CARGO_TOKEN: ***
+Auto Release	Setup Rust	2026-05-19T04:37:37.8301565Z   DOCKERHUB_IMAGE:
+Auto Release	Setup Rust	2026-05-19T04:37:37.8301789Z   DOCKERHUB_USERNAME:
+Auto Release	Setup Rust	2026-05-19T04:37:37.8302091Z   DOCKERHUB_TOKEN: ***
+Auto Release	Setup Rust	2026-05-19T04:37:37.8302294Z   toolchain: stable
+Auto Release	Setup Rust	2026-05-19T04:37:37.8302496Z ##[endgroup]
+Auto Release	Setup Rust	2026-05-19T04:37:37.8453609Z ##[group]Run : construct rustup command line
+Auto Release	Setup Rust	2026-05-19T04:37:37.8453974Z ^[[36;1m: construct rustup command line^[[0m
+Auto Release	Setup Rust	2026-05-19T04:37:37.8454454Z ^[[36;1mecho "targets=$(for t in ${targets//,/ }; do echo -n ' --target' $t; done)" >> $GITHUB_OUTPUT^[[0m
+Auto Release	Setup Rust	2026-05-19T04:37:37.8455073Z ^[[36;1mecho "components=$(for c in ${components//,/ }; do echo -n ' --component' $c; done)" >> $GITHUB_OUTPUT^[[0m
+Auto Release	Setup Rust	2026-05-19T04:37:37.8455576Z ^[[36;1mecho "downgrade=" >> $GITHUB_OUTPUT^[[0m
+Auto Release	Setup Rust	2026-05-19T04:37:37.8490923Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Auto Release	Setup Rust	2026-05-19T04:37:37.8491258Z env:
+Auto Release	Setup Rust	2026-05-19T04:37:37.8491459Z   CARGO_TERM_COLOR: always
+Auto Release	Setup Rust	2026-05-19T04:37:37.8491689Z   RUSTFLAGS: -Dwarnings
+Auto Release	Setup Rust	2026-05-19T04:37:37.8492100Z   CARGO_REGISTRY_TOKEN: ***
+Auto Release	Setup Rust	2026-05-19T04:37:37.8492393Z   CARGO_TOKEN: ***
+Auto Release	Setup Rust	2026-05-19T04:37:37.8492804Z   DOCKERHUB_IMAGE:
+Auto Release	Setup Rust	2026-05-19T04:37:37.8493198Z   DOCKERHUB_USERNAME:
+Auto Release	Setup Rust	2026-05-19T04:37:37.8493491Z   DOCKERHUB_TOKEN: ***
+Auto Release	Setup Rust	2026-05-19T04:37:37.8493687Z   targets:
+Auto Release	Setup Rust	2026-05-19T04:37:37.8493875Z   components:
+Auto Release	Setup Rust	2026-05-19T04:37:37.8494057Z ##[endgroup]
+Auto Release	Setup Rust	2026-05-19T04:37:37.8587871Z ##[group]Run : set $CARGO_HOME
+Auto Release	Setup Rust	2026-05-19T04:37:37.8588391Z ^[[36;1m: set $CARGO_HOME^[[0m
+Auto Release	Setup Rust	2026-05-19T04:37:37.8588707Z ^[[36;1mecho CARGO_HOME=${CARGO_HOME:-"$HOME/.cargo"} >> $GITHUB_ENV^[[0m
+Auto Release	Setup Rust	2026-05-19T04:37:37.8622656Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Auto Release	Setup Rust	2026-05-19T04:37:37.8622974Z env:
+Auto Release	Setup Rust	2026-05-19T04:37:37.8623353Z   CARGO_TERM_COLOR: always
+Auto Release	Setup Rust	2026-05-19T04:37:37.8623581Z   RUSTFLAGS: -Dwarnings
+Auto Release	Setup Rust	2026-05-19T04:37:37.8623957Z   CARGO_REGISTRY_TOKEN: ***
+Auto Release	Setup Rust	2026-05-19T04:37:37.8624233Z   CARGO_TOKEN: ***
+Auto Release	Setup Rust	2026-05-19T04:37:37.8624427Z   DOCKERHUB_IMAGE:
+Auto Release	Setup Rust	2026-05-19T04:37:37.8624626Z   DOCKERHUB_USERNAME:
+Auto Release	Setup Rust	2026-05-19T04:37:37.8624889Z   DOCKERHUB_TOKEN: ***
+Auto Release	Setup Rust	2026-05-19T04:37:37.8625089Z ##[endgroup]
+Auto Release	Setup Rust	2026-05-19T04:37:37.8747040Z ##[group]Run : install rustup if needed
+Auto Release	Setup Rust	2026-05-19T04:37:37.8747385Z ^[[36;1m: install rustup if needed^[[0m
+Auto Release	Setup Rust	2026-05-19T04:37:37.8747684Z ^[[36;1mif ! command -v rustup &>/dev/null; then^[[0m
+Auto Release	Setup Rust	2026-05-19T04:37:37.8748427Z ^[[36;1m  curl --proto '=https' --tlsv1.2 --retry 10 --retry-connrefused --location --silent --show-error --fail https://sh.rustup.rs | sh -s -- --default-toolchain none -y^[[0m
+Auto Release	Setup Rust	2026-05-19T04:37:37.8749165Z ^[[36;1m  echo "$CARGO_HOME/bin" >> $GITHUB_PATH^[[0m
+Auto Release	Setup Rust	2026-05-19T04:37:37.8749447Z ^[[36;1mfi^[[0m
+Auto Release	Setup Rust	2026-05-19T04:37:37.8785304Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Auto Release	Setup Rust	2026-05-19T04:37:37.8785639Z env:
+Auto Release	Setup Rust	2026-05-19T04:37:37.8785831Z   CARGO_TERM_COLOR: always
+Auto Release	Setup Rust	2026-05-19T04:37:37.8786066Z   RUSTFLAGS: -Dwarnings
+Auto Release	Setup Rust	2026-05-19T04:37:37.8786479Z   CARGO_REGISTRY_TOKEN: ***
+Auto Release	Setup Rust	2026-05-19T04:37:37.8786765Z   CARGO_TOKEN: ***
+Auto Release	Setup Rust	2026-05-19T04:37:37.8786962Z   DOCKERHUB_IMAGE:
+Auto Release	Setup Rust	2026-05-19T04:37:37.8787165Z   DOCKERHUB_USERNAME:
+Auto Release	Setup Rust	2026-05-19T04:37:37.8787435Z   DOCKERHUB_TOKEN: ***
+Auto Release	Setup Rust	2026-05-19T04:37:37.8787666Z   CARGO_HOME: /home/runner/.cargo
+Auto Release	Setup Rust	2026-05-19T04:37:37.8787908Z ##[endgroup]
+Auto Release	Setup Rust	2026-05-19T04:37:37.8881538Z ##[group]Run rustup toolchain install stable --profile minimal --no-self-update
+Auto Release	Setup Rust	2026-05-19T04:37:37.8882120Z ^[[36;1mrustup toolchain install stable --profile minimal --no-self-update^[[0m
+Auto Release	Setup Rust	2026-05-19T04:37:37.8916386Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Auto Release	Setup Rust	2026-05-19T04:37:37.8916715Z env:
+Auto Release	Setup Rust	2026-05-19T04:37:37.8916906Z   CARGO_TERM_COLOR: always
+Auto Release	Setup Rust	2026-05-19T04:37:37.8917133Z   RUSTFLAGS: -Dwarnings
+Auto Release	Setup Rust	2026-05-19T04:37:37.8917523Z   CARGO_REGISTRY_TOKEN: ***
+Auto Release	Setup Rust	2026-05-19T04:37:37.8917821Z   CARGO_TOKEN: ***
+Auto Release	Setup Rust	2026-05-19T04:37:37.8918016Z   DOCKERHUB_IMAGE:
+Auto Release	Setup Rust	2026-05-19T04:37:37.8918222Z   DOCKERHUB_USERNAME:
+Auto Release	Setup Rust	2026-05-19T04:37:37.8918512Z   DOCKERHUB_TOKEN: ***
+Auto Release	Setup Rust	2026-05-19T04:37:37.8918740Z   CARGO_HOME: /home/runner/.cargo
+Auto Release	Setup Rust	2026-05-19T04:37:37.8918992Z   RUSTUP_PERMIT_COPY_RENAME: 1
+Auto Release	Setup Rust	2026-05-19T04:37:37.8919226Z ##[endgroup]
+Auto Release	Setup Rust	2026-05-19T04:37:38.0365312Z info: syncing channel updates for stable-x86_64-unknown-linux-gnu
+Auto Release	Setup Rust	2026-05-19T04:37:38.1829475Z
+Auto Release	Setup Rust	2026-05-19T04:37:38.1927847Z   stable-x86_64-unknown-linux-gnu unchanged - rustc 1.95.0 (59807616e 2026-04-14)
+Auto Release	Setup Rust	2026-05-19T04:37:38.1928524Z
+Auto Release	Setup Rust	2026-05-19T04:37:38.1980558Z ##[group]Run rustup default stable
+Auto Release	Setup Rust	2026-05-19T04:37:38.1980892Z ^[[36;1mrustup default stable^[[0m
+Auto Release	Setup Rust	2026-05-19T04:37:38.2017890Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Auto Release	Setup Rust	2026-05-19T04:37:38.2018243Z env:
+Auto Release	Setup Rust	2026-05-19T04:37:38.2018428Z   CARGO_TERM_COLOR: always
+Auto Release	Setup Rust	2026-05-19T04:37:38.2018652Z   RUSTFLAGS: -Dwarnings
+Auto Release	Setup Rust	2026-05-19T04:37:38.2019088Z   CARGO_REGISTRY_TOKEN: ***
+Auto Release	Setup Rust	2026-05-19T04:37:38.2019386Z   CARGO_TOKEN: ***
+Auto Release	Setup Rust	2026-05-19T04:37:38.2019574Z   DOCKERHUB_IMAGE:
+Auto Release	Setup Rust	2026-05-19T04:37:38.2019775Z   DOCKERHUB_USERNAME:
+Auto Release	Setup Rust	2026-05-19T04:37:38.2020055Z   DOCKERHUB_TOKEN: ***
+Auto Release	Setup Rust	2026-05-19T04:37:38.2020266Z   CARGO_HOME: /home/runner/.cargo
+Auto Release	Setup Rust	2026-05-19T04:37:38.2020508Z ##[endgroup]
+Auto Release	Setup Rust	2026-05-19T04:37:38.2139759Z info: using existing install for stable-x86_64-unknown-linux-gnu
+Auto Release	Setup Rust	2026-05-19T04:37:38.2146267Z info: default toolchain set to stable-x86_64-unknown-linux-gnu
+Auto Release	Setup Rust	2026-05-19T04:37:38.2146726Z
+Auto Release	Setup Rust	2026-05-19T04:37:38.2239888Z   stable-x86_64-unknown-linux-gnu unchanged - rustc 1.95.0 (59807616e 2026-04-14)
+Auto Release	Setup Rust	2026-05-19T04:37:38.2240442Z
+Auto Release	Setup Rust	2026-05-19T04:37:38.2277548Z ##[group]Run : create cachekey
+Auto Release	Setup Rust	2026-05-19T04:37:38.2278096Z ^[[36;1m: create cachekey^[[0m
+Auto Release	Setup Rust	2026-05-19T04:37:38.2278615Z ^[[36;1mDATE=$(rustc +stable --version --verbose | sed -ne 's/^commit-date: \(20[0-9][0-9]\)-\([01][0-9]\)-\([0-3][0-9]\)$/\1\2\3/p')^[[0m
+Auto Release	Setup Rust	2026-05-19T04:37:38.2279277Z ^[[36;1mHASH=$(rustc +stable --version --verbose | sed -ne 's/^commit-hash: //p')^[[0m
+Auto Release	Setup Rust	2026-05-19T04:37:38.2279770Z ^[[36;1mecho "cachekey=$(echo $DATE$HASH | head -c12)" >> $GITHUB_OUTPUT^[[0m
+Auto Release	Setup Rust	2026-05-19T04:37:38.2315767Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Auto Release	Setup Rust	2026-05-19T04:37:38.2316098Z env:
+Auto Release	Setup Rust	2026-05-19T04:37:38.2316296Z   CARGO_TERM_COLOR: always
+Auto Release	Setup Rust	2026-05-19T04:37:38.2316534Z   RUSTFLAGS: -Dwarnings
+Auto Release	Setup Rust	2026-05-19T04:37:38.2316944Z   CARGO_REGISTRY_TOKEN: ***
+Auto Release	Setup Rust	2026-05-19T04:37:38.2317258Z   CARGO_TOKEN: ***
+Auto Release	Setup Rust	2026-05-19T04:37:38.2317456Z   DOCKERHUB_IMAGE:
+Auto Release	Setup Rust	2026-05-19T04:37:38.2317663Z   DOCKERHUB_USERNAME:
+Auto Release	Setup Rust	2026-05-19T04:37:38.2317939Z   DOCKERHUB_TOKEN: ***
+Auto Release	Setup Rust	2026-05-19T04:37:38.2318156Z   CARGO_HOME: /home/runner/.cargo
+Auto Release	Setup Rust	2026-05-19T04:37:38.2318411Z ##[endgroup]
+Auto Release	Setup Rust	2026-05-19T04:37:38.2751841Z ##[group]Run : disable incremental compilation
+Auto Release	Setup Rust	2026-05-19T04:37:38.2752207Z ^[[36;1m: disable incremental compilation^[[0m
+Auto Release	Setup Rust	2026-05-19T04:37:38.2752531Z ^[[36;1mif [ -z "${CARGO_INCREMENTAL+set}" ]; then^[[0m
+Auto Release	Setup Rust	2026-05-19T04:37:38.2752856Z ^[[36;1m  echo CARGO_INCREMENTAL=0 >> $GITHUB_ENV^[[0m
+Auto Release	Setup Rust	2026-05-19T04:37:38.2753352Z ^[[36;1mfi^[[0m
+Auto Release	Setup Rust	2026-05-19T04:37:38.2789313Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Auto Release	Setup Rust	2026-05-19T04:37:38.2789663Z env:
+Auto Release	Setup Rust	2026-05-19T04:37:38.2789861Z   CARGO_TERM_COLOR: always
+Auto Release	Setup Rust	2026-05-19T04:37:38.2790090Z   RUSTFLAGS: -Dwarnings
+Auto Release	Setup Rust	2026-05-19T04:37:38.2790516Z   CARGO_REGISTRY_TOKEN: ***
+Auto Release	Setup Rust	2026-05-19T04:37:38.2790834Z   CARGO_TOKEN: ***
+Auto Release	Setup Rust	2026-05-19T04:37:38.2791044Z   DOCKERHUB_IMAGE:
+Auto Release	Setup Rust	2026-05-19T04:37:38.2791255Z   DOCKERHUB_USERNAME:
+Auto Release	Setup Rust	2026-05-19T04:37:38.2791542Z   DOCKERHUB_TOKEN: ***
+Auto Release	Setup Rust	2026-05-19T04:37:38.2791762Z   CARGO_HOME: /home/runner/.cargo
+Auto Release	Setup Rust	2026-05-19T04:37:38.2791999Z ##[endgroup]
+Auto Release	Setup Rust	2026-05-19T04:37:38.2872160Z ##[group]Run : enable colors in Cargo output
+Auto Release	Setup Rust	2026-05-19T04:37:38.2872530Z ^[[36;1m: enable colors in Cargo output^[[0m
+Auto Release	Setup Rust	2026-05-19T04:37:38.2872833Z ^[[36;1mif [ -z "${CARGO_TERM_COLOR+set}" ]; then^[[0m
+Auto Release	Setup Rust	2026-05-19T04:37:38.2873498Z ^[[36;1m  echo CARGO_TERM_COLOR=always >> $GITHUB_ENV^[[0m
+Auto Release	Setup Rust	2026-05-19T04:37:38.2873786Z ^[[36;1mfi^[[0m
+Auto Release	Setup Rust	2026-05-19T04:37:38.2908786Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Auto Release	Setup Rust	2026-05-19T04:37:38.2909122Z env:
+Auto Release	Setup Rust	2026-05-19T04:37:38.2909304Z   CARGO_TERM_COLOR: always
+Auto Release	Setup Rust	2026-05-19T04:37:38.2909532Z   RUSTFLAGS: -Dwarnings
+Auto Release	Setup Rust	2026-05-19T04:37:38.2909939Z   CARGO_REGISTRY_TOKEN: ***
+Auto Release	Setup Rust	2026-05-19T04:37:38.2910230Z   CARGO_TOKEN: ***
+Auto Release	Setup Rust	2026-05-19T04:37:38.2910428Z   DOCKERHUB_IMAGE:
+Auto Release	Setup Rust	2026-05-19T04:37:38.2910651Z   DOCKERHUB_USERNAME:
+Auto Release	Setup Rust	2026-05-19T04:37:38.2910988Z   DOCKERHUB_TOKEN: ***
+Auto Release	Setup Rust	2026-05-19T04:37:38.2911219Z   CARGO_HOME: /home/runner/.cargo
+Auto Release	Setup Rust	2026-05-19T04:37:38.2911470Z   CARGO_INCREMENTAL: 0
+Auto Release	Setup Rust	2026-05-19T04:37:38.2911678Z ##[endgroup]
+Auto Release	Setup Rust	2026-05-19T04:37:38.2993430Z ##[group]Run : enable Cargo sparse registry
+Auto Release	Setup Rust	2026-05-19T04:37:38.2993818Z ^[[36;1m: enable Cargo sparse registry^[[0m
+Auto Release	Setup Rust	2026-05-19T04:37:38.2994209Z ^[[36;1m# implemented in 1.66, stabilized in 1.68, made default in 1.70^[[0m
+Auto Release	Setup Rust	2026-05-19T04:37:38.2994931Z ^[[36;1mif [ -z "${CARGO_REGISTRIES_CRATES_IO_PROTOCOL+set}" -o -f "/home/runner/work/_temp"/.implicit_cargo_registries_crates_io_protocol ]; then^[[0m
+Auto Release	Setup Rust	2026-05-19T04:37:38.2995645Z ^[[36;1m  if rustc +stable --version --verbose | grep -q '^release: 1\.6[89]\.'; then^[[0m
+Auto Release	Setup Rust	2026-05-19T04:37:38.2996199Z ^[[36;1m    touch "/home/runner/work/_temp"/.implicit_cargo_registries_crates_io_protocol || true^[[0m
+Auto Release	Setup Rust	2026-05-19T04:37:38.2996719Z ^[[36;1m    echo CARGO_REGISTRIES_CRATES_IO_PROTOCOL=sparse >> $GITHUB_ENV^[[0m
+Auto Release	Setup Rust	2026-05-19T04:37:38.2997393Z ^[[36;1m  elif rustc +stable --version --verbose | grep -q '^release: 1\.6[67]\.'; then^[[0m
+Auto Release	Setup Rust	2026-05-19T04:37:38.2997917Z ^[[36;1m    touch "/home/runner/work/_temp"/.implicit_cargo_registries_crates_io_protocol || true^[[0m
+Auto Release	Setup Rust	2026-05-19T04:37:38.2998406Z ^[[36;1m    echo CARGO_REGISTRIES_CRATES_IO_PROTOCOL=git >> $GITHUB_ENV^[[0m
+Auto Release	Setup Rust	2026-05-19T04:37:38.2998892Z ^[[36;1m  fi^[[0m
+Auto Release	Setup Rust	2026-05-19T04:37:38.2999094Z ^[[36;1mfi^[[0m
+Auto Release	Setup Rust	2026-05-19T04:37:38.3032503Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Auto Release	Setup Rust	2026-05-19T04:37:38.3032841Z env:
+Auto Release	Setup Rust	2026-05-19T04:37:38.3033367Z   CARGO_TERM_COLOR: always
+Auto Release	Setup Rust	2026-05-19T04:37:38.3033630Z   RUSTFLAGS: -Dwarnings
+Auto Release	Setup Rust	2026-05-19T04:37:38.3034016Z   CARGO_REGISTRY_TOKEN: ***
+Auto Release	Setup Rust	2026-05-19T04:37:38.3034301Z   CARGO_TOKEN: ***
+Auto Release	Setup Rust	2026-05-19T04:37:38.3034501Z   DOCKERHUB_IMAGE:
+Auto Release	Setup Rust	2026-05-19T04:37:38.3034693Z   DOCKERHUB_USERNAME:
+Auto Release	Setup Rust	2026-05-19T04:37:38.3034979Z   DOCKERHUB_TOKEN: ***
+Auto Release	Setup Rust	2026-05-19T04:37:38.3035191Z   CARGO_HOME: /home/runner/.cargo
+Auto Release	Setup Rust	2026-05-19T04:37:38.3035439Z   CARGO_INCREMENTAL: 0
+Auto Release	Setup Rust	2026-05-19T04:37:38.3035652Z ##[endgroup]
+Auto Release	Setup Rust	2026-05-19T04:37:38.3440490Z ##[group]Run : work around spurious network errors in curl 8.0
+Auto Release	Setup Rust	2026-05-19T04:37:38.3440971Z ^[[36;1m: work around spurious network errors in curl 8.0^[[0m
+Auto Release	Setup Rust	2026-05-19T04:37:38.3441541Z ^[[36;1m# https://rust-lang.zulipchat.com/#narrow/stream/246057-t-cargo/topic/timeout.20investigation^[[0m
+Auto Release	Setup Rust	2026-05-19T04:37:38.3442180Z ^[[36;1mif rustc +stable --version --verbose | grep -q '^release: 1\.7[01]\.'; then^[[0m
+Auto Release	Setup Rust	2026-05-19T04:37:38.3442637Z ^[[36;1m  echo CARGO_HTTP_MULTIPLEXING=false >> $GITHUB_ENV^[[0m
+Auto Release	Setup Rust	2026-05-19T04:37:38.3442939Z ^[[36;1mfi^[[0m
+Auto Release	Setup Rust	2026-05-19T04:37:38.3479587Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Auto Release	Setup Rust	2026-05-19T04:37:38.3479933Z env:
+Auto Release	Setup Rust	2026-05-19T04:37:38.3480117Z   CARGO_TERM_COLOR: always
+Auto Release	Setup Rust	2026-05-19T04:37:38.3480344Z   RUSTFLAGS: -Dwarnings
+Auto Release	Setup Rust	2026-05-19T04:37:38.3480712Z   CARGO_REGISTRY_TOKEN: ***
+Auto Release	Setup Rust	2026-05-19T04:37:38.3481019Z   CARGO_TOKEN: ***
+Auto Release	Setup Rust	2026-05-19T04:37:38.3481207Z   DOCKERHUB_IMAGE:
+Auto Release	Setup Rust	2026-05-19T04:37:38.3481424Z   DOCKERHUB_USERNAME:
+Auto Release	Setup Rust	2026-05-19T04:37:38.3481697Z   DOCKERHUB_TOKEN: ***
+Auto Release	Setup Rust	2026-05-19T04:37:38.3481903Z   CARGO_HOME: /home/runner/.cargo
+Auto Release	Setup Rust	2026-05-19T04:37:38.3482148Z   CARGO_INCREMENTAL: 0
+Auto Release	Setup Rust	2026-05-19T04:37:38.3482348Z ##[endgroup]
+Auto Release	Setup Rust	2026-05-19T04:37:38.3722110Z ##[group]Run rustc +stable --version --verbose
+Auto Release	Setup Rust	2026-05-19T04:37:38.3722517Z ^[[36;1mrustc +stable --version --verbose^[[0m
+Auto Release	Setup Rust	2026-05-19T04:37:38.3758340Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Auto Release	Setup Rust	2026-05-19T04:37:38.3758699Z env:
+Auto Release	Setup Rust	2026-05-19T04:37:38.3758891Z   CARGO_TERM_COLOR: always
+Auto Release	Setup Rust	2026-05-19T04:37:38.3759110Z   RUSTFLAGS: -Dwarnings
+Auto Release	Setup Rust	2026-05-19T04:37:38.3759486Z   CARGO_REGISTRY_TOKEN: ***
+Auto Release	Setup Rust	2026-05-19T04:37:38.3759778Z   CARGO_TOKEN: ***
+Auto Release	Setup Rust	2026-05-19T04:37:38.3759973Z   DOCKERHUB_IMAGE:
+Auto Release	Setup Rust	2026-05-19T04:37:38.3760174Z   DOCKERHUB_USERNAME:
+Auto Release	Setup Rust	2026-05-19T04:37:38.3760448Z   DOCKERHUB_TOKEN: ***
+Auto Release	Setup Rust	2026-05-19T04:37:38.3760663Z   CARGO_HOME: /home/runner/.cargo
+Auto Release	Setup Rust	2026-05-19T04:37:38.3760901Z   CARGO_INCREMENTAL: 0
+Auto Release	Setup Rust	2026-05-19T04:37:38.3761131Z ##[endgroup]
+Auto Release	Setup Rust	2026-05-19T04:37:38.3955799Z rustc 1.95.0 (59807616e 2026-04-14)
+Auto Release	Setup Rust	2026-05-19T04:37:38.3956355Z binary: rustc
+Auto Release	Setup Rust	2026-05-19T04:37:38.3956761Z commit-hash: 59807616e1fa2540724bfbac14d7976d7e4a3860
+Auto Release	Setup Rust	2026-05-19T04:37:38.3957207Z commit-date: 2026-04-14
+Auto Release	Setup Rust	2026-05-19T04:37:38.3957466Z host: x86_64-unknown-linux-gnu
+Auto Release	Setup Rust	2026-05-19T04:37:38.3957750Z release: 1.95.0
+Auto Release	Setup Rust	2026-05-19T04:37:38.3957946Z LLVM version: 22.1.2
+Auto Release	Install rust-script	﻿2026-05-19T04:37:38.4033444Z ##[group]Run cargo install rust-script
+Auto Release	Install rust-script	2026-05-19T04:37:38.4033794Z ^[[36;1mcargo install rust-script^[[0m
+Auto Release	Install rust-script	2026-05-19T04:37:38.4070326Z shell: /usr/bin/bash -e {0}
+Auto Release	Install rust-script	2026-05-19T04:37:38.4070577Z env:
+Auto Release	Install rust-script	2026-05-19T04:37:38.4070766Z   CARGO_TERM_COLOR: always
+Auto Release	Install rust-script	2026-05-19T04:37:38.4070998Z   RUSTFLAGS: -Dwarnings
+Auto Release	Install rust-script	2026-05-19T04:37:38.4071381Z   CARGO_REGISTRY_TOKEN: ***
+Auto Release	Install rust-script	2026-05-19T04:37:38.4071660Z   CARGO_TOKEN: ***
+Auto Release	Install rust-script	2026-05-19T04:37:38.4071852Z   DOCKERHUB_IMAGE:
+Auto Release	Install rust-script	2026-05-19T04:37:38.4072051Z   DOCKERHUB_USERNAME:
+Auto Release	Install rust-script	2026-05-19T04:37:38.4072317Z   DOCKERHUB_TOKEN: ***
+Auto Release	Install rust-script	2026-05-19T04:37:38.4072761Z   CARGO_HOME: /home/runner/.cargo
+Auto Release	Install rust-script	2026-05-19T04:37:38.4073171Z   CARGO_INCREMENTAL: 0
+Auto Release	Install rust-script	2026-05-19T04:37:38.4073375Z ##[endgroup]
+Auto Release	Install rust-script	2026-05-19T04:37:38.4828140Z ^[[1m^[[92m    Updating^[[0m crates.io index
+Auto Release	Install rust-script	2026-05-19T04:37:38.6572791Z ^[[1m^[[92m Downloading^[[0m crates ...
+Auto Release	Install rust-script	2026-05-19T04:37:38.7518646Z ^[[1m^[[92m  Downloaded^[[0m rust-script v0.36.0
+Auto Release	Install rust-script	2026-05-19T04:37:38.7992934Z ^[[1m^[[92m  Installing^[[0m rust-script v0.36.0
+Auto Release	Install rust-script	2026-05-19T04:37:38.8489979Z ^[[1m^[[92m    Updating^[[0m crates.io index
+Auto Release	Install rust-script	2026-05-19T04:37:39.5499260Z ^[[1m^[[92m     Locking^[[0m 113 packages to latest compatible versions
+Auto Release	Install rust-script	2026-05-19T04:37:39.5542112Z ^[[1m^[[92m      Adding^[[0m generic-array v0.14.7 ^[[1m^[[33m(available: v0.14.9)^[[0m
+Auto Release	Install rust-script	2026-05-19T04:37:39.5647105Z ^[[1m^[[92m      Adding^[[0m sha1 v0.10.6 ^[[1m^[[33m(available: v0.11.0)^[[0m
+Auto Release	Install rust-script	2026-05-19T04:37:39.5671566Z ^[[1m^[[92m      Adding^[[0m toml v0.9.12+spec-1.1.0 ^[[1m^[[33m(available: v1.1.2+spec-1.1.0)^[[0m
+Auto Release	Install rust-script	2026-05-19T04:37:39.5702344Z ^[[1m^[[92m      Adding^[[0m winreg v0.55.0 ^[[1m^[[33m(available: v0.56.0)^[[0m
+Auto Release	Install rust-script	2026-05-19T04:37:39.5726267Z ^[[1m^[[92m Downloading^[[0m crates ...
+Auto Release	Install rust-script	2026-05-19T04:37:39.7059503Z ^[[1m^[[92m  Downloaded^[[0m anstyle-query v1.1.5
+Auto Release	Install rust-script	2026-05-19T04:37:39.7139029Z ^[[1m^[[92m  Downloaded^[[0m cfg-if v1.0.4
+Auto Release	Install rust-script	2026-05-19T04:37:39.7218236Z ^[[1m^[[92m  Downloaded^[[0m block-buffer v0.10.4
+Auto Release	Install rust-script	2026-05-19T04:37:39.7321351Z ^[[1m^[[92m  Downloaded^[[0m dirs v6.0.0
+Auto Release	Install rust-script	2026-05-19T04:37:39.7335515Z ^[[1m^[[92m  Downloaded^[[0m cpufeatures v0.2.17
+Auto Release	Install rust-script	2026-05-19T04:37:39.7350716Z ^[[1m^[[92m  Downloaded^[[0m env_filter v1.0.1
+Auto Release	Install rust-script	2026-05-19T04:37:39.7386166Z ^[[1m^[[92m  Downloaded^[[0m equivalent v1.0.2
+Auto Release	Install rust-script	2026-05-19T04:37:39.7494157Z ^[[1m^[[92m  Downloaded^[[0m anstyle v1.0.14
+Auto Release	Install rust-script	2026-05-19T04:37:39.7510969Z ^[[1m^[[92m  Downloaded^[[0m anstyle-parse v1.0.0
+Auto Release	Install rust-script	2026-05-19T04:37:39.7528718Z ^[[1m^[[92m  Downloaded^[[0m is_terminal_polyfill v1.70.2
+Auto Release	Install rust-script	2026-05-19T04:37:39.7538650Z ^[[1m^[[92m  Downloaded^[[0m crypto-common v0.1.7
+Auto Release	Install rust-script	2026-05-19T04:37:39.7548497Z ^[[1m^[[92m  Downloaded^[[0m anstream v1.0.0
+Auto Release	Install rust-script	2026-05-19T04:37:39.7571014Z ^[[1m^[[92m  Downloaded^[[0m generic-array v0.14.7
+Auto Release	Install rust-script	2026-05-19T04:37:39.7658300Z ^[[1m^[[92m  Downloaded^[[0m dirs-sys v0.5.0
+Auto Release	Install rust-script	2026-05-19T04:37:39.7671320Z ^[[1m^[[92m  Downloaded^[[0m colorchoice v1.0.5
+Auto Release	Install rust-script	2026-05-19T04:37:39.7684958Z ^[[1m^[[92m  Downloaded^[[0m serde_spanned v1.1.1
+Auto Release	Install rust-script	2026-05-19T04:37:39.7726173Z ^[[1m^[[92m  Downloaded^[[0m pulldown-cmark-escape v0.11.0
+Auto Release	Install rust-script	2026-05-19T04:37:39.7737176Z ^[[1m^[[92m  Downloaded^[[0m errno v0.3.14
+Auto Release	Install rust-script	2026-05-19T04:37:39.7758337Z ^[[1m^[[92m  Downloaded^[[0m sha1 v0.10.6
+Auto Release	Install rust-script	2026-05-19T04:37:39.7775065Z ^[[1m^[[92m  Downloaded^[[0m clap_lex v1.1.0
+Auto Release	Install rust-script	2026-05-19T04:37:39.7817362Z ^[[1m^[[92m  Downloaded^[[0m utf8parse v0.2.2
+Auto Release	Install rust-script	2026-05-19T04:37:39.7828977Z ^[[1m^[[92m  Downloaded^[[0m strsim v0.11.1
+Auto Release	Install rust-script	2026-05-19T04:37:39.7842061Z ^[[1m^[[92m  Downloaded^[[0m option-ext v0.2.0
+Auto Release	Install rust-script	2026-05-19T04:37:39.7851771Z ^[[1m^[[92m  Downloaded^[[0m version_check v0.9.5
+Auto Release	Install rust-script	2026-05-19T04:37:39.7910927Z ^[[1m^[[92m  Downloaded^[[0m shell-words v1.1.1
+Auto Release	Install rust-script	2026-05-19T04:37:39.7920678Z ^[[1m^[[92m  Downloaded^[[0m fastrand v2.4.1
+Auto Release	Install rust-script	2026-05-19T04:37:39.7935581Z ^[[1m^[[92m  Downloaded^[[0m bitflags v2.11.1
+Auto Release	Install rust-script	2026-05-19T04:37:39.8002360Z ^[[1m^[[92m  Downloaded^[[0m toml_datetime v0.7.5+spec-1.1.0
+Auto Release	Install rust-script	2026-05-19T04:37:39.8020668Z ^[[1m^[[92m  Downloaded^[[0m unicase v2.9.0
+Auto Release	Install rust-script	2026-05-19T04:37:39.8037855Z ^[[1m^[[92m  Downloaded^[[0m toml_writer v1.1.1+spec-1.1.0
+Auto Release	Install rust-script	2026-05-19T04:37:39.8052018Z ^[[1m^[[92m  Downloaded^[[0m getopts v0.2.24
+Auto Release	Install rust-script	2026-05-19T04:37:39.8068779Z ^[[1m^[[92m  Downloaded^[[0m env_logger v0.11.10
+Auto Release	Install rust-script	2026-05-19T04:37:39.8091711Z ^[[1m^[[92m  Downloaded^[[0m digest v0.10.7
+Auto Release	Install rust-script	2026-05-19T04:37:39.8111080Z ^[[1m^[[92m  Downloaded^[[0m toml_parser v1.1.2+spec-1.1.0
+Auto Release	Install rust-script	2026-05-19T04:37:39.8133522Z ^[[1m^[[92m  Downloaded^[[0m clap v4.6.1
+Auto Release	Install rust-script	2026-05-19T04:37:39.8236692Z ^[[1m^[[92m  Downloaded^[[0m toml v0.9.12+spec-1.1.0
+Auto Release	Install rust-script	2026-05-19T04:37:39.8278212Z ^[[1m^[[92m  Downloaded^[[0m once_cell v1.21.4
+Auto Release	Install rust-script	2026-05-19T04:37:39.8304676Z ^[[1m^[[92m  Downloaded^[[0m log v0.4.29
+Auto Release	Install rust-script	2026-05-19T04:37:39.8328918Z ^[[1m^[[92m  Downloaded^[[0m tempfile v3.27.0
+Auto Release	Install rust-script	2026-05-19T04:37:39.8356360Z ^[[1m^[[92m  Downloaded^[[0m serde_core v1.0.228
+Auto Release	Install rust-script	2026-05-19T04:37:39.8383490Z ^[[1m^[[92m  Downloaded^[[0m getrandom v0.4.2
+Auto Release	Install rust-script	2026-05-19T04:37:39.8429922Z ^[[1m^[[92m  Downloaded^[[0m memchr v2.8.0
+Auto Release	Install rust-script	2026-05-19T04:37:39.8596579Z ^[[1m^[[92m  Downloaded^[[0m typenum v1.20.0
+Auto Release	Install rust-script	2026-05-19T04:37:39.8645234Z ^[[1m^[[92m  Downloaded^[[0m indexmap v2.14.0
+Auto Release	Install rust-script	2026-05-19T04:37:39.8765991Z ^[[1m^[[92m  Downloaded^[[0m regex v1.12.3
+Auto Release	Install rust-script	2026-05-19T04:37:39.8827475Z ^[[1m^[[92m  Downloaded^[[0m winnow v1.0.3
+Auto Release	Install rust-script	2026-05-19T04:37:39.8924970Z ^[[1m^[[92m  Downloaded^[[0m hashbrown v0.17.1
+Auto Release	Install rust-script	2026-05-19T04:37:39.8980453Z ^[[1m^[[92m  Downloaded^[[0m clap_builder v4.6.0
+Auto Release	Install rust-script	2026-05-19T04:37:39.9047519Z ^[[1m^[[92m  Downloaded^[[0m winnow v0.7.15
+Auto Release	Install rust-script	2026-05-19T04:37:39.9150732Z ^[[1m^[[92m  Downloaded^[[0m pulldown-cmark v0.13.3
+Auto Release	Install rust-script	2026-05-19T04:37:39.9205114Z ^[[1m^[[92m  Downloaded^[[0m unicode-width v0.2.2
+Auto Release	Install rust-script	2026-05-19T04:37:39.9265082Z ^[[1m^[[92m  Downloaded^[[0m aho-corasick v1.1.4
+Auto Release	Install rust-script	2026-05-19T04:37:39.9324673Z ^[[1m^[[92m  Downloaded^[[0m regex-syntax v0.8.10
+Auto Release	Install rust-script	2026-05-19T04:37:39.9397641Z ^[[1m^[[92m  Downloaded^[[0m rustix v1.1.4
+Auto Release	Install rust-script	2026-05-19T04:37:39.9686725Z ^[[1m^[[92m  Downloaded^[[0m regex-automata v0.4.14
+Auto Release	Install rust-script	2026-05-19T04:37:39.9834619Z ^[[1m^[[92m  Downloaded^[[0m jiff v0.2.24
+Auto Release	Install rust-script	2026-05-19T04:37:40.0004549Z ^[[1m^[[92m  Downloaded^[[0m libc v0.2.186
+Auto Release	Install rust-script	2026-05-19T04:37:40.0736312Z ^[[1m^[[92m  Downloaded^[[0m linux-raw-sys v0.12.1
+Auto Release	Install rust-script	2026-05-19T04:37:40.1531317Z ^[[1m^[[92m   Compiling^[[0m version_check v0.9.5
+Auto Release	Install rust-script	2026-05-19T04:37:40.1531972Z ^[[1m^[[92m   Compiling^[[0m memchr v2.8.0
+Auto Release	Install rust-script	2026-05-19T04:37:40.1532463Z ^[[1m^[[92m   Compiling^[[0m libc v0.2.186
+Auto Release	Install rust-script	2026-05-19T04:37:40.1533208Z ^[[1m^[[92m   Compiling^[[0m serde_core v1.0.228
+Auto Release	Install rust-script	2026-05-19T04:37:40.5810362Z ^[[1m^[[92m   Compiling^[[0m generic-array v0.14.7
+Auto Release	Install rust-script	2026-05-19T04:37:40.7241244Z ^[[1m^[[92m   Compiling^[[0m typenum v1.20.0
+Auto Release	Install rust-script	2026-05-19T04:37:40.7399516Z ^[[1m^[[92m   Compiling^[[0m utf8parse v0.2.2
+Auto Release	Install rust-script	2026-05-19T04:37:40.8163445Z ^[[1m^[[92m   Compiling^[[0m anstyle-parse v1.0.0
+Auto Release	Install rust-script	2026-05-19T04:37:40.9634551Z ^[[1m^[[92m   Compiling^[[0m aho-corasick v1.1.4
+Auto Release	Install rust-script	2026-05-19T04:37:41.1464562Z ^[[1m^[[92m   Compiling^[[0m anstyle v1.0.14
+Auto Release	Install rust-script	2026-05-19T04:37:41.3076375Z ^[[1m^[[92m   Compiling^[[0m is_terminal_polyfill v1.70.2
+Auto Release	Install rust-script	2026-05-19T04:37:41.3464598Z ^[[1m^[[92m   Compiling^[[0m anstyle-query v1.1.5
+Auto Release	Install rust-script	2026-05-19T04:37:41.3932377Z ^[[1m^[[92m   Compiling^[[0m colorchoice v1.0.5
+Auto Release	Install rust-script	2026-05-19T04:37:41.4315970Z ^[[1m^[[92m   Compiling^[[0m regex-syntax v0.8.10
+Auto Release	Install rust-script	2026-05-19T04:37:41.9928831Z ^[[1m^[[92m   Compiling^[[0m anstream v1.0.0
+Auto Release	Install rust-script	2026-05-19T04:37:42.3059421Z ^[[1m^[[92m   Compiling^[[0m getrandom v0.4.2
+Auto Release	Install rust-script	2026-05-19T04:37:42.4284863Z ^[[1m^[[92m   Compiling^[[0m bitflags v2.11.1
+Auto Release	Install rust-script	2026-05-19T04:37:42.6644580Z ^[[1m^[[92m   Compiling^[[0m cfg-if v1.0.4
+Auto Release	Install rust-script	2026-05-19T04:37:42.6904649Z ^[[1m^[[92m   Compiling^[[0m rustix v1.1.4
+Auto Release	Install rust-script	2026-05-19T04:37:43.1574760Z ^[[1m^[[92m   Compiling^[[0m block-buffer v0.10.4
+Auto Release	Install rust-script	2026-05-19T04:37:43.2354621Z ^[[1m^[[92m   Compiling^[[0m crypto-common v0.1.7
+Auto Release	Install rust-script	2026-05-19T04:37:43.3005412Z ^[[1m^[[92m   Compiling^[[0m regex-automata v0.4.14
+Auto Release	Install rust-script	2026-05-19T04:37:44.1974849Z ^[[1m^[[92m   Compiling^[[0m pulldown-cmark v0.13.3
+Auto Release	Install rust-script	2026-05-19T04:37:44.2774586Z ^[[1m^[[92m   Compiling^[[0m strsim v0.11.1
+Auto Release	Install rust-script	2026-05-19T04:37:44.4964658Z ^[[1m^[[92m   Compiling^[[0m unicode-width v0.2.2
+Auto Release	Install rust-script	2026-05-19T04:37:44.7094530Z ^[[1m^[[92m   Compiling^[[0m log v0.4.29
+Auto Release	Install rust-script	2026-05-19T04:37:44.7803914Z ^[[1m^[[92m   Compiling^[[0m clap_lex v1.1.0
+Auto Release	Install rust-script	2026-05-19T04:37:44.8735060Z ^[[1m^[[92m   Compiling^[[0m option-ext v0.2.0
+Auto Release	Install rust-script	2026-05-19T04:37:44.9111641Z ^[[1m^[[92m   Compiling^[[0m linux-raw-sys v0.12.1
+Auto Release	Install rust-script	2026-05-19T04:37:44.9965040Z ^[[1m^[[92m   Compiling^[[0m winnow v1.0.3
+Auto Release	Install rust-script	2026-05-19T04:37:45.3815224Z ^[[1m^[[92m   Compiling^[[0m toml_parser v1.1.2+spec-1.1.0
+Auto Release	Install rust-script	2026-05-19T04:37:45.6864433Z ^[[1m^[[92m   Compiling^[[0m dirs-sys v0.5.0
+Auto Release	Install rust-script	2026-05-19T04:37:45.9674381Z ^[[1m^[[92m   Compiling^[[0m regex v1.12.3
+Auto Release	Install rust-script	2026-05-19T04:37:46.4251005Z ^[[1m^[[92m   Compiling^[[0m env_filter v1.0.1
+Auto Release	Install rust-script	2026-05-19T04:37:46.7884709Z ^[[1m^[[92m   Compiling^[[0m clap_builder v4.6.0
+Auto Release	Install rust-script	2026-05-19T04:37:46.9454877Z ^[[1m^[[92m   Compiling^[[0m getopts v0.2.24
+Auto Release	Install rust-script	2026-05-19T04:37:47.4325654Z ^[[1m^[[92m   Compiling^[[0m toml_datetime v0.7.5+spec-1.1.0
+Auto Release	Install rust-script	2026-05-19T04:37:47.5894701Z ^[[1m^[[92m   Compiling^[[0m serde_spanned v1.1.1
+Auto Release	Install rust-script	2026-05-19T04:37:47.6824744Z ^[[1m^[[92m   Compiling^[[0m digest v0.10.7
+Auto Release	Install rust-script	2026-05-19T04:37:47.8494678Z ^[[1m^[[92m   Compiling^[[0m unicase v2.9.0
+Auto Release	Install rust-script	2026-05-19T04:37:47.8795064Z ^[[1m^[[92m   Compiling^[[0m winnow v0.7.15
+Auto Release	Install rust-script	2026-05-19T04:37:48.0144716Z ^[[1m^[[92m   Compiling^[[0m cpufeatures v0.2.17
+Auto Release	Install rust-script	2026-05-19T04:37:48.0467720Z ^[[1m^[[92m   Compiling^[[0m toml_writer v1.1.1+spec-1.1.0
+Auto Release	Install rust-script	2026-05-19T04:37:48.2234504Z ^[[1m^[[92m   Compiling^[[0m once_cell v1.21.4
+Auto Release	Install rust-script	2026-05-19T04:37:48.3855502Z ^[[1m^[[92m   Compiling^[[0m jiff v0.2.24
+Auto Release	Install rust-script	2026-05-19T04:37:50.0014872Z ^[[1m^[[92m   Compiling^[[0m pulldown-cmark-escape v0.11.0
+Auto Release	Install rust-script	2026-05-19T04:37:50.0701487Z ^[[1m^[[92m   Compiling^[[0m fastrand v2.4.1
+Auto Release	Install rust-script	2026-05-19T04:37:50.2644678Z ^[[1m^[[92m   Compiling^[[0m tempfile v3.27.0
+Auto Release	Install rust-script	2026-05-19T04:37:50.7944731Z ^[[1m^[[92m   Compiling^[[0m toml v0.9.12+spec-1.1.0
+Auto Release	Install rust-script	2026-05-19T04:37:52.9073583Z ^[[1m^[[92m   Compiling^[[0m env_logger v0.11.10
+Auto Release	Install rust-script	2026-05-19T04:37:52.9534828Z ^[[1m^[[92m   Compiling^[[0m clap v4.6.1
+Auto Release	Install rust-script	2026-05-19T04:37:52.9884676Z ^[[1m^[[92m   Compiling^[[0m sha1 v0.10.6
+Auto Release	Install rust-script	2026-05-19T04:37:53.0554685Z ^[[1m^[[92m   Compiling^[[0m dirs v6.0.0
+Auto Release	Install rust-script	2026-05-19T04:37:53.1314625Z ^[[1m^[[92m   Compiling^[[0m shell-words v1.1.1
+Auto Release	Install rust-script	2026-05-19T04:37:53.7525575Z ^[[1m^[[92m   Compiling^[[0m rust-script v0.36.0
+Auto Release	Install rust-script	2026-05-19T04:38:15.9603671Z ^[[1m^[[92m    Finished^[[0m `release` profile [optimized] target(s) in 37.51s
+Auto Release	Install rust-script	2026-05-19T04:38:15.9921091Z ^[[1m^[[92m  Installing^[[0m /home/runner/.cargo/bin/rust-script
+Auto Release	Install rust-script	2026-05-19T04:38:15.9922598Z ^[[1m^[[92m   Installed^[[0m package `rust-script v0.36.0` (executable `rust-script`)
+Auto Release	Configure git	﻿2026-05-19T04:38:16.0271792Z ##[group]Run rust-script scripts/git-config.rs
+Auto Release	Configure git	2026-05-19T04:38:16.0272149Z ^[[36;1mrust-script scripts/git-config.rs^[[0m
+Auto Release	Configure git	2026-05-19T04:38:16.0307920Z shell: /usr/bin/bash -e {0}
+Auto Release	Configure git	2026-05-19T04:38:16.0308172Z env:
+Auto Release	Configure git	2026-05-19T04:38:16.0308364Z   CARGO_TERM_COLOR: always
+Auto Release	Configure git	2026-05-19T04:38:16.0308587Z   RUSTFLAGS: -Dwarnings
+Auto Release	Configure git	2026-05-19T04:38:16.0308948Z   CARGO_REGISTRY_TOKEN: ***
+Auto Release	Configure git	2026-05-19T04:38:16.0309223Z   CARGO_TOKEN: ***
+Auto Release	Configure git	2026-05-19T04:38:16.0309421Z   DOCKERHUB_IMAGE:
+Auto Release	Configure git	2026-05-19T04:38:16.0309627Z   DOCKERHUB_USERNAME:
+Auto Release	Configure git	2026-05-19T04:38:16.0309899Z   DOCKERHUB_TOKEN: ***
+Auto Release	Configure git	2026-05-19T04:38:16.0310113Z   CARGO_HOME: /home/runner/.cargo
+Auto Release	Configure git	2026-05-19T04:38:16.0310356Z   CARGO_INCREMENTAL: 0
+Auto Release	Configure git	2026-05-19T04:38:16.0310551Z ##[endgroup]
+Auto Release	Configure git	2026-05-19T04:38:16.3054297Z Configuring git user: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
+Auto Release	Configure git	2026-05-19T04:38:16.3086220Z Git configuration complete
+Auto Release	Determine bump type from changelog fragments	﻿2026-05-19T04:38:16.3116071Z ##[group]Run rust-script scripts/get-bump-type.rs
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:16.3116454Z ^[[36;1mrust-script scripts/get-bump-type.rs^[[0m
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:16.3152579Z shell: /usr/bin/bash -e {0}
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:16.3152825Z env:
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:16.3153199Z   CARGO_TERM_COLOR: always
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:16.3153505Z   RUSTFLAGS: -Dwarnings
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:16.3153938Z   CARGO_REGISTRY_TOKEN: ***
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:16.3154347Z   CARGO_TOKEN: ***
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:16.3154545Z   DOCKERHUB_IMAGE:
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:16.3154753Z   DOCKERHUB_USERNAME:
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:16.3155161Z   DOCKERHUB_TOKEN: ***
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:16.3155483Z   CARGO_HOME: /home/runner/.cargo
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:16.3155859Z   CARGO_INCREMENTAL: 0
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:16.3156084Z ##[endgroup]
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0513454Z Detected single-language repository (Cargo.toml in root)
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0519210Z Fragment 20251227_224645_changeset_support.md: bump=minor
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0522398Z Fragment 20251229_143823_fix_ci_workflow_dependencies.md: bump=patch
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0523765Z Fragment 20251231_115800_fix_readme_script_references.md: no bump specified, using default
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0525491Z Fragment 20260107_apply_best_practices.md: bump=minor
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0527814Z Fragment 20260108_171124_fix_changelog_check.md: bump=patch
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0529883Z Fragment 20260108_171435_prevent_manual_version_modification.md: bump=minor
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0531536Z Fragment 20260108_apply_lino_objects_codec_fixes.md: bump=patch
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0534002Z Fragment 20260111_multi_language_support.md: bump=minor
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0535723Z Fragment 20260311_translate_scripts_to_rust.md: bump=minor
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0537923Z Fragment 20260413-ci-cd-best-practices.md: bump=minor
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0539685Z Fragment 20260413_fix_cargo_token_fallback.md: bump=patch
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0541686Z Fragment 20260413_fix_crates_io_check.md: bump=patch
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0544106Z Fragment 20260413_fix_lookahead_regex.md: bump=minor
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0545500Z Fragment 20260414_fix_per_commit_diff.md: bump=patch
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0546660Z Fragment 20260415_fix_workspace_release_scripts.md: no bump specified, using default
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0548301Z Fragment 20260501_decouple_docs_deploy.md: bump=patch
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0550435Z Fragment 20260503_111500_ci_timeouts.md: bump=patch
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0551196Z Fragment 20260503_111700_file_size_warning_threshold.md: no bump specified, using default
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0552141Z Fragment 20260509_031015_human_readable_release_titles.md: no bump specified, using default
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0554502Z Fragment 20260509_205000_docker_hub_release_publishing.md: bump=minor
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0556365Z Fragment 20260512_110000_formal_ai_initial_implementation.md: bump=minor
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0558249Z Fragment 20260512_170000_fix_pages_workflow_deploy.md: bump=patch
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0558999Z Fragment 20260512_181444_issue_6_demo_ui.md: no bump specified, using default
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0559935Z Fragment 20260512_193000_issue_10_demo_reporting.md: no bump specified, using default
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0561909Z Fragment 20260512_193000_issue_8_telegram_bot.md: bump=minor
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0564227Z Fragment 20260512_200000_telegram_polling_cli.md: bump=minor
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0565058Z Fragment 20260513_142400_issue_12_vision_docs.md: no bump specified, using default
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0567275Z Fragment 20260514_210000_issue_12_requirements_test_suite.md: bump=minor
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0568957Z Fragment 20260514_220000_issue_12_universal_solver.md: bump=minor
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0571161Z Fragment 20260515_000000_fix_incompatible_unit_query.md: bump=minor
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0572776Z Fragment 20260515_120000_clarification_intent.md: bump=minor
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0575150Z Fragment 20260515_120000_issue_14_unified_demo.md: bump=minor
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0577004Z Fragment 20260515_180000_issue_16_universal_seed.md: bump=minor
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0579078Z Fragment 20260515_184419_issue_27_fixes_and_improvements.md: bump=minor
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0580896Z Fragment 20260515_190000_issue_21_multilingual_urls.md: bump=patch
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0583240Z Fragment 20260515_200000_issue_37_conversation_summary_phrases.md: bump=patch
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0584159Z Fragment 20260515_204450_issue_39_inappropriate_content.md: no bump specified, using default
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0585780Z Fragment 20260515_210000_issue_30_nazovi_tsvet.md: bump=minor
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0588001Z Fragment 20260515_210000_issue_44_unknown_prompt_report_title.md: bump=patch
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0589711Z Fragment 20260515_210000_issue_49_russian_capabilities_and_confusion.md: bump=patch
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0591482Z Fragment 20260515_210000_issue_50_shabbat_shalom_greeting.md: bump=patch
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0592446Z Fragment 20260515_212304_bigint_arithmetic.md: no bump specified, using default
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0594503Z Fragment 20260515_215000_cargo_lock_release_sync.md: bump=patch
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0596480Z Fragment 20260515_220000_issue_18_full_memory.md: bump=minor
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0598482Z Fragment 20260515_220000_issue_20_concept_context.md: bump=minor
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0599353Z Fragment 20260515_220000_issue_51_meta_explanation_russian.md: no bump specified, using default
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0600925Z Fragment 20260515_230000_issue_24_pages_e2e.md: bump=patch
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0602561Z Fragment 20260515_230000_issue_31_kiss_principle.md: bump=patch
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0604351Z Fragment 20260515_235000_issue_40_demo_hint.md: bump=patch
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0606020Z Fragment 20260515_235900_issue_52_how_it_works.md: bump=patch
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0607667Z Fragment 20260515_235900_issue_53_russian_hello_world.md: bump=patch
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0609296Z Fragment 20260516_000000_issue_35_write_script_intent.md: bump=minor
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0610878Z Fragment 20260516_000000_issue_41_kupi_slona.md: bump=minor
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0612619Z Fragment 20260516_000000_issue_42_opinion_question.md: bump=minor
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0614416Z Fragment 20260516_000000_issue_69_who_is_typo_correction.md: bump=patch
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0616027Z Fragment 20260516_110000_issue_39_physical_action_question.md: bump=patch
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0617702Z Fragment 20260516_110000_issue_70_wikipedia_disambiguation_fallback.md: bump=patch
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0619292Z Fragment 20260516_113000_issue_66_rasskazhi_za_telegram_ads.md: bump=patch
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0621264Z Fragment 20260516_120000_issue_72_version_display.md: bump=patch
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0622343Z Fragment 20260516_140000_issue_84_publish_crate_rate_limit.md: bump=patch
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0623538Z Fragment 20260516_145000_issue_79_who_is_variants.md: no bump specified, using default
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0625380Z Fragment 20260516_150000_issue_65_dot_prompt_clarification.md: bump=patch
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0627365Z Fragment 20260516_150000_issue_67_poka_farewell.md: bump=patch
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0629126Z Fragment 20260516_150000_issue_71_fetch_url.md: bump=minor
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0631290Z Fragment 20260516_150000_issue_78_shorter_report.md: bump=minor
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0632903Z Fragment 20260516_160000_issue_73_dialog_reported_annotation.md: bump=patch
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0634021Z Fragment 20260516_170000_issue_94_ui_ux.md: no bump specified, using default
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0635880Z Fragment 20260516_233000_issue_96_calculator.md: bump=minor
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0636808Z Fragment 20260517_094500_issue_81_compact_calculation.md: no bump specified, using default
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0637961Z Fragment 20260517_094500_issue_93_combined_identity_prompt.md: no bump specified, using default
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0638915Z Fragment 20260517_100000_issue_68_linear_equations.md: no bump specified, using default
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0639571Z Fragment 20260517_111500_issue_64_links_theory.md: no bump specified, using default
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0648642Z Fragment 20260517_120000_issue_82_typo_settings.md: bump=minor
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0649348Z Fragment 20260517_123649_issue_103_test_matrix_architecture.md: bump=minor
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0650215Z Fragment 20260517_201500_issue_105_russian_word_arithmetic.md: no bump specified, using default
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0651310Z Fragment 20260518_091500_issue_108_mobile_ui.md: bump=minor
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0651864Z Fragment 20260518_100945_issue_110_mobile_ui.md: bump=minor
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0652404Z Fragment 20260518_112000_issue_112_mobile_ui.md: bump=minor
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0653126Z Fragment 20260518_203000_issue_107_web_search.md: bump=minor
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0653732Z Fragment 20260518_223000_issue_117_lino_i18n_catalog.md: bump=minor
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0654148Z
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0654332Z Determined bump type: minor (from 80 fragment(s))
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0654793Z Output: bump_type=minor
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0655130Z Output: fragment_count=80
+Auto Release	Determine bump type from changelog fragments	2026-05-19T04:38:25.0655456Z Output: has_fragments=true
+Auto Release	Check if version already released or no fragments	﻿2026-05-19T04:38:25.0697323Z ##[group]Run rust-script scripts/check-release-needed.rs
+Auto Release	Check if version already released or no fragments	2026-05-19T04:38:25.0697993Z ^[[36;1mrust-script scripts/check-release-needed.rs^[[0m
+Auto Release	Check if version already released or no fragments	2026-05-19T04:38:25.0733747Z shell: /usr/bin/bash -e {0}
+Auto Release	Check if version already released or no fragments	2026-05-19T04:38:25.0733998Z env:
+Auto Release	Check if version already released or no fragments	2026-05-19T04:38:25.0734196Z   CARGO_TERM_COLOR: always
+Auto Release	Check if version already released or no fragments	2026-05-19T04:38:25.0734434Z   RUSTFLAGS: -Dwarnings
+Auto Release	Check if version already released or no fragments	2026-05-19T04:38:25.0734791Z   CARGO_REGISTRY_TOKEN: ***
+Auto Release	Check if version already released or no fragments	2026-05-19T04:38:25.0735095Z   CARGO_TOKEN: ***
+Auto Release	Check if version already released or no fragments	2026-05-19T04:38:25.0735291Z   DOCKERHUB_IMAGE:
+Auto Release	Check if version already released or no fragments	2026-05-19T04:38:25.0735495Z   DOCKERHUB_USERNAME:
+Auto Release	Check if version already released or no fragments	2026-05-19T04:38:25.0735769Z   DOCKERHUB_TOKEN: ***
+Auto Release	Check if version already released or no fragments	2026-05-19T04:38:25.0735980Z   CARGO_HOME: /home/runner/.cargo
+Auto Release	Check if version already released or no fragments	2026-05-19T04:38:25.0736229Z   CARGO_INCREMENTAL: 0
+Auto Release	Check if version already released or no fragments	2026-05-19T04:38:25.0736595Z   HAS_FRAGMENTS: true
+Auto Release	Check if version already released or no fragments	2026-05-19T04:38:25.0736959Z   GITHUB_TOKEN: ***
+Auto Release	Check if version already released or no fragments	2026-05-19T04:38:25.0737168Z ##[endgroup]
+Auto Release	Check if version already released or no fragments	2026-05-19T04:38:50.3953260Z Detected single-language repository (Cargo.toml in root)
+Auto Release	Check if version already released or no fragments	2026-05-19T04:38:50.6848670Z Max published version on crates.io: 0.56.0
+Auto Release	Check if version already released or no fragments	2026-05-19T04:38:50.6849289Z Output: max_published_version=0.56.0
+Auto Release	Check if version already released or no fragments	2026-05-19T04:38:50.6849610Z Found changelog fragments, proceeding with release
+Auto Release	Check if version already released or no fragments	2026-05-19T04:38:50.6849921Z Output: should_release=true
+Auto Release	Check if version already released or no fragments	2026-05-19T04:38:50.6850145Z Output: skip_bump=false
+Auto Release	Collect changelog and bump version	﻿2026-05-19T04:38:50.6888883Z ##[group]Run rust-script scripts/version-and-commit.rs \
+Auto Release	Collect changelog and bump version	2026-05-19T04:38:50.6889297Z ^[[36;1mrust-script scripts/version-and-commit.rs \^[[0m
+Auto Release	Collect changelog and bump version	2026-05-19T04:38:50.6889623Z ^[[36;1m  --bump-type "minor"^[[0m
+Auto Release	Collect changelog and bump version	2026-05-19T04:38:50.6925416Z shell: /usr/bin/bash -e {0}
+Auto Release	Collect changelog and bump version	2026-05-19T04:38:50.6925679Z env:
+Auto Release	Collect changelog and bump version	2026-05-19T04:38:50.6925861Z   CARGO_TERM_COLOR: always
+Auto Release	Collect changelog and bump version	2026-05-19T04:38:50.6926092Z   RUSTFLAGS: -Dwarnings
+Auto Release	Collect changelog and bump version	2026-05-19T04:38:50.6926452Z   CARGO_REGISTRY_TOKEN: ***
+Auto Release	Collect changelog and bump version	2026-05-19T04:38:50.6926739Z   CARGO_TOKEN: ***
+Auto Release	Collect changelog and bump version	2026-05-19T04:38:50.6926932Z   DOCKERHUB_IMAGE:
+Auto Release	Collect changelog and bump version	2026-05-19T04:38:50.6927136Z   DOCKERHUB_USERNAME:
+Auto Release	Collect changelog and bump version	2026-05-19T04:38:50.6927438Z   DOCKERHUB_TOKEN: ***
+Auto Release	Collect changelog and bump version	2026-05-19T04:38:50.6927648Z   CARGO_HOME: /home/runner/.cargo
+Auto Release	Collect changelog and bump version	2026-05-19T04:38:50.6927896Z   CARGO_INCREMENTAL: 0
+Auto Release	Collect changelog and bump version	2026-05-19T04:38:50.6928100Z ##[endgroup]
+Auto Release	Collect changelog and bump version	2026-05-19T04:38:54.9796576Z Detected single-language repository (Cargo.toml in root)
+Auto Release	Collect changelog and bump version	2026-05-19T04:38:55.1367401Z Max published version on crates.io: 0.56.0
+Auto Release	Collect changelog and bump version	2026-05-19T04:38:55.1367976Z Initial bump (minor) from 0.60.0: 0.61.0
+Auto Release	Collect changelog and bump version	2026-05-19T04:38:55.2743575Z Final release version: 0.61.0
+Auto Release	Collect changelog and bump version	2026-05-19T04:38:55.2746437Z Updated ./Cargo.toml to version 0.61.0
+Auto Release	Collect changelog and bump version	2026-05-19T04:38:55.2749234Z Updated ./Cargo.lock to version 0.61.0
+Auto Release	Collect changelog and bump version	2026-05-19T04:38:55.2875453Z Collected 80 changelog fragment(s)
+Auto Release	Collect changelog and bump version	2026-05-19T04:38:55.8144242Z Committed version 0.61.0
+Auto Release	Collect changelog and bump version	2026-05-19T04:38:55.8170460Z Created tag v0.61.0
+Auto Release	Collect changelog and bump version	2026-05-19T04:38:57.9082850Z Pushed changes and tags
+Auto Release	Collect changelog and bump version	2026-05-19T04:38:57.9083504Z Output: version_committed=true
+Auto Release	Collect changelog and bump version	2026-05-19T04:38:57.9083763Z Output: new_version=0.61.0
+Auto Release	Get current version	﻿2026-05-19T04:38:57.9118813Z ##[group]Run rust-script scripts/get-version.rs
+Auto Release	Get current version	2026-05-19T04:38:57.9119200Z ^[[36;1mrust-script scripts/get-version.rs^[[0m
+Auto Release	Get current version	2026-05-19T04:38:57.9154932Z shell: /usr/bin/bash -e {0}
+Auto Release	Get current version	2026-05-19T04:38:57.9155200Z env:
+Auto Release	Get current version	2026-05-19T04:38:57.9155389Z   CARGO_TERM_COLOR: always
+Auto Release	Get current version	2026-05-19T04:38:57.9155614Z   RUSTFLAGS: -Dwarnings
+Auto Release	Get current version	2026-05-19T04:38:57.9155976Z   CARGO_REGISTRY_TOKEN: ***
+Auto Release	Get current version	2026-05-19T04:38:57.9156384Z   CARGO_TOKEN: ***
+Auto Release	Get current version	2026-05-19T04:38:57.9156591Z   DOCKERHUB_IMAGE:
+Auto Release	Get current version	2026-05-19T04:38:57.9156791Z   DOCKERHUB_USERNAME:
+Auto Release	Get current version	2026-05-19T04:38:57.9157079Z   DOCKERHUB_TOKEN: ***
+Auto Release	Get current version	2026-05-19T04:38:57.9157297Z   CARGO_HOME: /home/runner/.cargo
+Auto Release	Get current version	2026-05-19T04:38:57.9157531Z   CARGO_INCREMENTAL: 0
+Auto Release	Get current version	2026-05-19T04:38:57.9157732Z ##[endgroup]
+Auto Release	Get current version	2026-05-19T04:38:58.4945817Z Detected single-language repository (Cargo.toml in root)
+Auto Release	Get current version	2026-05-19T04:38:58.4952123Z Current version: 0.61.0
+Auto Release	Get current version	2026-05-19T04:38:58.4952549Z Output: version=0.61.0
+Auto Release	Build release	﻿2026-05-19T04:38:58.4986760Z ##[group]Run cargo build --release
+Auto Release	Build release	2026-05-19T04:38:58.4987070Z ^[[36;1mcargo build --release^[[0m
+Auto Release	Build release	2026-05-19T04:38:58.5023148Z shell: /usr/bin/bash -e {0}
+Auto Release	Build release	2026-05-19T04:38:58.5023438Z env:
+Auto Release	Build release	2026-05-19T04:38:58.5023638Z   CARGO_TERM_COLOR: always
+Auto Release	Build release	2026-05-19T04:38:58.5023871Z   RUSTFLAGS: -Dwarnings
+Auto Release	Build release	2026-05-19T04:38:58.5024249Z   CARGO_REGISTRY_TOKEN: ***
+Auto Release	Build release	2026-05-19T04:38:58.5024538Z   CARGO_TOKEN: ***
+Auto Release	Build release	2026-05-19T04:38:58.5024738Z   DOCKERHUB_IMAGE:
+Auto Release	Build release	2026-05-19T04:38:58.5024941Z   DOCKERHUB_USERNAME:
+Auto Release	Build release	2026-05-19T04:38:58.5025219Z   DOCKERHUB_TOKEN: ***
+Auto Release	Build release	2026-05-19T04:38:58.5025434Z   CARGO_HOME: /home/runner/.cargo
+Auto Release	Build release	2026-05-19T04:38:58.5025682Z   CARGO_INCREMENTAL: 0
+Auto Release	Build release	2026-05-19T04:38:58.5025880Z ##[endgroup]
+Auto Release	Build release	2026-05-19T04:38:58.5534915Z ^[[1m^[[92m    Updating^[[0m crates.io index
+Auto Release	Build release	2026-05-19T04:38:59.4779709Z ^[[1m^[[92m Downloading^[[0m crates ...
+Auto Release	Build release	2026-05-19T04:38:59.5685517Z ^[[1m^[[92m  Downloaded^[[0m ahash v0.7.8
+Auto Release	Build release	2026-05-19T04:38:59.5814305Z ^[[1m^[[92m  Downloaded^[[0m borsh-derive v1.6.1
+Auto Release	Build release	2026-05-19T04:38:59.5858558Z ^[[1m^[[92m  Downloaded^[[0m ctor v0.4.3
+Auto Release	Build release	2026-05-19T04:38:59.5871554Z ^[[1m^[[92m  Downloaded^[[0m dotenvy v0.15.7
+Auto Release	Build release	2026-05-19T04:38:59.5900660Z ^[[1m^[[92m  Downloaded^[[0m bytecheck_derive v0.6.12
+Auto Release	Build release	2026-05-19T04:38:59.5939914Z ^[[1m^[[92m  Downloaded^[[0m ctor-proc-macro v0.0.6
+Auto Release	Build release	2026-05-19T04:38:59.5993265Z ^[[1m^[[92m  Downloaded^[[0m dtor v0.0.6
+Auto Release	Build release	2026-05-19T04:38:59.6134615Z ^[[1m^[[92m  Downloaded^[[0m funty v2.0.0
+Auto Release	Build release	2026-05-19T04:38:59.6145908Z ^[[1m^[[92m  Downloaded^[[0m dtor-proc-macro v0.0.5
+Auto Release	Build release	2026-05-19T04:38:59.6153366Z ^[[1m^[[92m  Downloaded^[[0m cfg_aliases v0.2.1
+Auto Release	Build release	2026-05-19T04:38:59.6165129Z ^[[1m^[[92m  Downloaded^[[0m bytecheck v0.6.12
+Auto Release	Build release	2026-05-19T04:38:59.6285226Z ^[[1m^[[92m  Downloaded^[[0m ptr_meta v0.1.4
+Auto Release	Build release	2026-05-19T04:38:59.6322751Z ^[[1m^[[92m  Downloaded^[[0m ptr_meta_derive v0.1.4
+Auto Release	Build release	2026-05-19T04:38:59.6336925Z ^[[1m^[[92m  Downloaded^[[0m heck v0.5.0
+Auto Release	Build release	2026-05-19T04:38:59.6369351Z ^[[1m^[[92m  Downloaded^[[0m anstream v0.6.21
+Auto Release	Build release	2026-05-19T04:38:59.6405204Z ^[[1m^[[92m  Downloaded^[[0m arrayvec v0.7.6
+Auto Release	Build release	2026-05-19T04:38:59.6539638Z ^[[1m^[[92m  Downloaded^[[0m proc-macro-crate v3.5.0
+Auto Release	Build release	2026-05-19T04:38:59.6562942Z ^[[1m^[[92m  Downloaded^[[0m lino-env v0.1.0
+Auto Release	Build release	2026-05-19T04:38:59.6584628Z ^[[1m^[[92m  Downloaded^[[0m wasm-bindgen-macro v0.2.121
+Auto Release	Build release	2026-05-19T04:38:59.6595256Z ^[[1m^[[92m  Downloaded^[[0m wasm-bindgen-futures v0.4.71
+Auto Release	Build release	2026-05-19T04:38:59.6605364Z ^[[1m^[[92m  Downloaded^[[0m tinyvec_macros v0.1.1
+Auto Release	Build release	2026-05-19T04:38:59.6614673Z ^[[1m^[[92m  Downloaded^[[0m lazy_static v1.5.0
+Auto Release	Build release	2026-05-19T04:38:59.6637335Z ^[[1m^[[92m  Downloaded^[[0m futures-task v0.3.32
+Auto Release	Build release	2026-05-19T04:38:59.6651672Z ^[[1m^[[92m  Downloaded^[[0m wasm-bindgen-shared v0.2.121
+Auto Release	Build release	2026-05-19T04:38:59.6665001Z ^[[1m^[[92m  Downloaded^[[0m tap v1.0.1
+Auto Release	Build release	2026-05-19T04:38:59.6708679Z ^[[1m^[[92m  Downloaded^[[0m rend v0.4.2
+Auto Release	Build release	2026-05-19T04:38:59.6723488Z ^[[1m^[[92m  Downloaded^[[0m radium v0.7.0
+Auto Release	Build release	2026-05-19T04:38:59.6754352Z ^[[1m^[[92m  Downloaded^[[0m rand_chacha v0.3.1
+Auto Release	Build release	2026-05-19T04:38:59.6834991Z ^[[1m^[[92m  Downloaded^[[0m anstyle-parse v0.2.7
+Auto Release	Build release	2026-05-19T04:38:59.6856148Z ^[[1m^[[92m  Downloaded^[[0m wyz v0.5.1
+Auto Release	Build release	2026-05-19T04:38:59.6869322Z ^[[1m^[[92m  Downloaded^[[0m slab v0.4.12
+Auto Release	Build release	2026-05-19T04:38:59.6884018Z ^[[1m^[[92m  Downloaded^[[0m seahash v4.1.0
+Auto Release	Build release	2026-05-19T04:38:59.6900987Z ^[[1m^[[92m  Downloaded^[[0m rustversion v1.0.22
+Auto Release	Build release	2026-05-19T04:38:59.6931404Z ^[[1m^[[92m  Downloaded^[[0m thiserror-impl v1.0.69
+Auto Release	Build release	2026-05-19T04:38:59.6945494Z ^[[1m^[[92m  Downloaded^[[0m rkyv_derive v0.7.46
+Auto Release	Build release	2026-05-19T04:38:59.6961415Z ^[[1m^[[92m  Downloaded^[[0m ppv-lite86 v0.2.21
+Auto Release	Build release	2026-05-19T04:38:59.6975269Z ^[[1m^[[92m  Downloaded^[[0m pin-project-lite v0.2.17
+Auto Release	Build release	2026-05-19T04:38:59.7048101Z ^[[1m^[[92m  Downloaded^[[0m toml_datetime v1.1.1+spec-1.1.0
+Auto Release	Build release	2026-05-19T04:38:59.7062113Z ^[[1m^[[92m  Downloaded^[[0m rand_core v0.6.4
+Auto Release	Build release	2026-05-19T04:38:59.7077067Z ^[[1m^[[92m  Downloaded^[[0m num-integer v0.1.46
+Auto Release	Build release	2026-05-19T04:38:59.7093518Z ^[[1m^[[92m  Downloaded^[[0m clap v4.5.60
+Auto Release	Build release	2026-05-19T04:38:59.7192765Z ^[[1m^[[92m  Downloaded^[[0m tinyvec v1.11.0
+Auto Release	Build release	2026-05-19T04:38:59.7233440Z ^[[1m^[[92m  Downloaded^[[0m unicode-ident v1.0.22
+Auto Release	Build release	2026-05-19T04:38:59.7264301Z ^[[1m^[[92m  Downloaded^[[0m wasm-bindgen-macro-support v0.2.121
+Auto Release	Build release	2026-05-19T04:38:59.7286412Z ^[[1m^[[92m  Downloaded^[[0m uuid v1.23.1
+Auto Release	Build release	2026-05-19T04:38:59.7316075Z ^[[1m^[[92m  Downloaded^[[0m borsh v1.6.1
+Auto Release	Build release	2026-05-19T04:38:59.7391463Z ^[[1m^[[92m  Downloaded^[[0m toml_edit v0.25.11+spec-1.1.0
+Auto Release	Build release	2026-05-19T04:38:59.7436757Z ^[[1m^[[92m  Downloaded^[[0m rand v0.8.6
+Auto Release	Build release	2026-05-19T04:38:59.7478334Z ^[[1m^[[92m  Downloaded^[[0m num-bigint v0.4.6
+Auto Release	Build release	2026-05-19T04:38:59.7530792Z ^[[1m^[[92m  Downloaded^[[0m rkyv v0.7.46
+Auto Release	Build release	2026-05-19T04:38:59.7620063Z ^[[1m^[[92m  Downloaded^[[0m nom v8.0.0
+Auto Release	Build release	2026-05-19T04:38:59.7680241Z ^[[1m^[[92m  Downloaded^[[0m rust_decimal v1.42.0
+Auto Release	Build release	2026-05-19T04:38:59.7747822Z ^[[1m^[[92m  Downloaded^[[0m futures-util v0.3.32
+Auto Release	Build release	2026-05-19T04:38:59.7882313Z ^[[1m^[[92m  Downloaded^[[0m clap_builder v4.5.60
+Auto Release	Build release	2026-05-19T04:38:59.7949683Z ^[[1m^[[92m  Downloaded^[[0m syn v1.0.109
+Auto Release	Build release	2026-05-19T04:38:59.8050853Z ^[[1m^[[92m  Downloaded^[[0m bitvec v1.0.1
+Auto Release	Build release	2026-05-19T04:38:59.8221882Z ^[[1m^[[92m  Downloaded^[[0m js-sys v0.3.98
+Auto Release	Build release	2026-05-19T04:38:59.8256692Z ^[[1m^[[92m  Downloaded^[[0m bumpalo v3.20.2
+Auto Release	Build release	2026-05-19T04:38:59.8283841Z ^[[1m^[[92m  Downloaded^[[0m zerocopy v0.8.48
+Auto Release	Build release	2026-05-19T04:38:59.8503537Z ^[[1m^[[92m  Downloaded^[[0m syn v2.0.111
+Auto Release	Build release	2026-05-19T04:38:59.8610721Z ^[[1m^[[92m  Downloaded^[[0m hashbrown v0.12.3
+Auto Release	Build release	2026-05-19T04:38:59.8648521Z ^[[1m^[[92m  Downloaded^[[0m wasm-bindgen v0.2.121
+Auto Release	Build release	2026-05-19T04:38:59.8676404Z ^[[1m^[[92m  Downloaded^[[0m bytes v1.11.1
+Auto Release	Build release	2026-05-19T04:38:59.8719322Z ^[[1m^[[92m  Downloaded^[[0m proc-macro2 v1.0.103
+Auto Release	Build release	2026-05-19T04:38:59.8749144Z ^[[1m^[[92m  Downloaded^[[0m thiserror v1.0.69
+Auto Release	Build release	2026-05-19T04:38:59.8805711Z ^[[1m^[[92m  Downloaded^[[0m simdutf8 v0.1.5
+Auto Release	Build release	2026-05-19T04:38:59.8830896Z ^[[1m^[[92m  Downloaded^[[0m serde-wasm-bindgen v0.6.5
+Auto Release	Build release	2026-05-19T04:38:59.8848644Z ^[[1m^[[92m  Downloaded^[[0m console_error_panic_hook v0.1.7
+Auto Release	Build release	2026-05-19T04:38:59.8891156Z ^[[1m^[[92m  Downloaded^[[0m quote v1.0.42
+Auto Release	Build release	2026-05-19T04:38:59.8917766Z ^[[1m^[[92m  Downloaded^[[0m num-rational v0.4.2
+Auto Release	Build release	2026-05-19T04:38:59.8932521Z ^[[1m^[[92m  Downloaded^[[0m lino-objects-codec v0.2.1
+Auto Release	Build release	2026-05-19T04:38:59.8953145Z ^[[1m^[[92m  Downloaded^[[0m lino-arguments v0.3.0
+Auto Release	Build release	2026-05-19T04:38:59.8970329Z ^[[1m^[[92m  Downloaded^[[0m links-notation v0.13.0
+Auto Release	Build release	2026-05-19T04:38:59.8991956Z ^[[1m^[[92m  Downloaded^[[0m futures-core v0.3.32
+Auto Release	Build release	2026-05-19T04:38:59.9006096Z ^[[1m^[[92m  Downloaded^[[0m clap_derive v4.5.55
+Auto Release	Build release	2026-05-19T04:38:59.9029532Z ^[[1m^[[92m  Downloaded^[[0m web-sys v0.3.98
+Auto Release	Build release	2026-05-19T04:39:00.0909106Z ^[[1m^[[92m  Downloaded^[[0m link-calculator v0.16.0
+Auto Release	Build release	2026-05-19T04:39:00.2112544Z ^[[1m^[[92m   Compiling^[[0m proc-macro2 v1.0.103
+Auto Release	Build release	2026-05-19T04:39:00.2113542Z ^[[1m^[[92m   Compiling^[[0m unicode-ident v1.0.22
+Auto Release	Build release	2026-05-19T04:39:00.2114060Z ^[[1m^[[92m   Compiling^[[0m quote v1.0.42
+Auto Release	Build release	2026-05-19T04:39:00.2114620Z ^[[1m^[[92m   Compiling^[[0m wasm-bindgen-shared v0.2.121
+Auto Release	Build release	2026-05-19T04:39:00.2717588Z ^[[1m^[[92m   Compiling^[[0m serde_core v1.0.228
+Auto Release	Build release	2026-05-19T04:39:00.3346744Z ^[[1m^[[92m   Compiling^[[0m rustversion v1.0.22
+Auto Release	Build release	2026-05-19T04:39:00.5517230Z ^[[1m^[[92m   Compiling^[[0m autocfg v1.5.0
+Auto Release	Build release	2026-05-19T04:39:00.9314711Z ^[[1m^[[92m   Compiling^[[0m serde v1.0.228
+Auto Release	Build release	2026-05-19T04:39:01.0397818Z ^[[1m^[[92m   Compiling^[[0m syn v2.0.111
+Auto Release	Build release	2026-05-19T04:39:01.0796791Z ^[[1m^[[92m   Compiling^[[0m bumpalo v3.20.2
+Auto Release	Build release	2026-05-19T04:39:01.1074718Z ^[[1m^[[92m   Compiling^[[0m wasm-bindgen v0.2.121
+Auto Release	Build release	2026-05-19T04:39:01.2314873Z ^[[1m^[[92m   Compiling^[[0m num-traits v0.2.19
+Auto Release	Build release	2026-05-19T04:39:01.2665484Z ^[[1m^[[92m   Compiling^[[0m memchr v2.8.0
+Auto Release	Build release	2026-05-19T04:39:02.4374767Z ^[[1m^[[92m   Compiling^[[0m once_cell v1.21.4
+Auto Release	Build release	2026-05-19T04:39:02.4452258Z ^[[1m^[[92m   Compiling^[[0m cfg-if v1.0.4
+Auto Release	Build release	2026-05-19T04:39:02.5064658Z ^[[1m^[[92m   Compiling^[[0m futures-task v0.3.32
+Auto Release	Build release	2026-05-19T04:39:02.6245476Z ^[[1m^[[92m   Compiling^[[0m pin-project-lite v0.2.17
+Auto Release	Build release	2026-05-19T04:39:02.6634661Z ^[[1m^[[92m   Compiling^[[0m futures-core v0.3.32
+Auto Release	Build release	2026-05-19T04:39:02.7504560Z ^[[1m^[[92m   Compiling^[[0m slab v0.4.12
+Auto Release	Build release	2026-05-19T04:39:02.8924675Z ^[[1m^[[92m   Compiling^[[0m futures-util v0.3.32
+Auto Release	Build release	2026-05-19T04:39:02.9366994Z ^[[1m^[[92m   Compiling^[[0m utf8parse v0.2.2
+Auto Release	Build release	2026-05-19T04:39:02.9914713Z ^[[1m^[[92m   Compiling^[[0m anstyle-parse v0.2.7
+Auto Release	Build release	2026-05-19T04:39:03.1285108Z ^[[1m^[[92m   Compiling^[[0m thiserror v1.0.69
+Auto Release	Build release	2026-05-19T04:39:03.2764611Z ^[[1m^[[92m   Compiling^[[0m is_terminal_polyfill v1.70.2
+Auto Release	Build release	2026-05-19T04:39:03.2985240Z ^[[1m^[[92m   Compiling^[[0m anstyle v1.0.14
+Auto Release	Build release	2026-05-19T04:39:03.3185123Z ^[[1m^[[92m   Compiling^[[0m anstyle-query v1.1.5
+Auto Release	Build release	2026-05-19T04:39:03.3685293Z ^[[1m^[[92m   Compiling^[[0m colorchoice v1.0.5
+Auto Release	Build release	2026-05-19T04:39:03.4194736Z ^[[1m^[[92m   Compiling^[[0m zmij v1.0.21
+Auto Release	Build release	2026-05-19T04:39:03.4811252Z ^[[1m^[[92m   Compiling^[[0m anstream v0.6.21
+Auto Release	Build release	2026-05-19T04:39:03.6195159Z ^[[1m^[[92m   Compiling^[[0m num-integer v0.1.46
+Auto Release	Build release	2026-05-19T04:39:03.7716043Z ^[[1m^[[92m   Compiling^[[0m aho-corasick v1.1.4
+Auto Release	Build release	2026-05-19T04:39:04.0925016Z ^[[1m^[[92m   Compiling^[[0m regex-syntax v0.8.10
+Auto Release	Build release	2026-05-19T04:39:05.1584765Z ^[[1m^[[92m   Compiling^[[0m wasm-bindgen-macro-support v0.2.121
+Auto Release	Build release	2026-05-19T04:39:06.0336125Z ^[[1m^[[92m   Compiling^[[0m serde_derive v1.0.228
+Auto Release	Build release	2026-05-19T04:39:08.9404661Z ^[[1m^[[92m   Compiling^[[0m thiserror-impl v1.0.69
+Auto Release	Build release	2026-05-19T04:39:09.0204751Z ^[[1m^[[92m   Compiling^[[0m wasm-bindgen-macro v0.2.121
+Auto Release	Build release	2026-05-19T04:39:09.7355199Z ^[[1m^[[92m   Compiling^[[0m rust_decimal v1.42.0
+Auto Release	Build release	2026-05-19T04:39:09.8987810Z ^[[1m^[[92m   Compiling^[[0m serde_json v1.0.149
+Auto Release	Build release	2026-05-19T04:39:09.9844592Z ^[[1m^[[92m   Compiling^[[0m dtor-proc-macro v0.0.5
+Auto Release	Build release	2026-05-19T04:39:09.9914451Z ^[[1m^[[92m   Compiling^[[0m strsim v0.11.1
+Auto Release	Build release	2026-05-19T04:39:10.1552186Z ^[[1m^[[92m   Compiling^[[0m heck v0.5.0
+Auto Release	Build release	2026-05-19T04:39:10.3115003Z ^[[1m^[[92m   Compiling^[[0m clap_lex v1.1.0
+Auto Release	Build release	2026-05-19T04:39:10.5104669Z ^[[1m^[[92m   Compiling^[[0m clap_builder v4.5.60
+Auto Release	Build release	2026-05-19T04:39:10.5265268Z ^[[1m^[[92m   Compiling^[[0m clap_derive v4.5.55
+Auto Release	Build release	2026-05-19T04:39:10.8164593Z ^[[1m^[[92m   Compiling^[[0m js-sys v0.3.98
+Auto Release	Build release	2026-05-19T04:39:11.0225309Z ^[[1m^[[92m   Compiling^[[0m dtor v0.0.6
+Auto Release	Build release	2026-05-19T04:39:11.1254498Z ^[[1m^[[92m   Compiling^[[0m num-bigint v0.4.6
+Auto Release	Build release	2026-05-19T04:39:12.2675205Z ^[[1m^[[92m   Compiling^[[0m regex-automata v0.4.14
+Auto Release	Build release	2026-05-19T04:39:14.9024597Z ^[[1m^[[92m   Compiling^[[0m nom v8.0.0
+Auto Release	Build release	2026-05-19T04:39:18.2994797Z ^[[1m^[[92m   Compiling^[[0m iana-time-zone v0.1.65
+Auto Release	Build release	2026-05-19T04:39:18.4845097Z ^[[1m^[[92m   Compiling^[[0m itoa v1.0.18
+Auto Release	Build release	2026-05-19T04:39:18.6634679Z ^[[1m^[[92m   Compiling^[[0m arrayvec v0.7.6
+Auto Release	Build release	2026-05-19T04:39:18.6896843Z ^[[1m^[[92m   Compiling^[[0m ctor-proc-macro v0.0.6
+Auto Release	Build release	2026-05-19T04:39:18.8645424Z ^[[1m^[[92m   Compiling^[[0m ctor v0.4.3
+Auto Release	Build release	2026-05-19T04:39:19.0895937Z ^[[1m^[[92m   Compiling^[[0m chrono v0.4.44
+Auto Release	Build release	2026-05-19T04:39:20.8164531Z ^[[1m^[[92m   Compiling^[[0m links-notation v0.13.0
+Auto Release	Build release	2026-05-19T04:39:21.3320178Z ^[[1m^[[92m   Compiling^[[0m serde-wasm-bindgen v0.6.5
+Auto Release	Build release	2026-05-19T04:39:21.8595352Z ^[[1m^[[92m   Compiling^[[0m wasm-bindgen-futures v0.4.71
+Auto Release	Build release	2026-05-19T04:39:21.9024881Z ^[[1m^[[92m   Compiling^[[0m web-sys v0.3.98
+Auto Release	Build release	2026-05-19T04:39:22.3164825Z ^[[1m^[[92m   Compiling^[[0m regex v1.12.3
+Auto Release	Build release	2026-05-19T04:39:22.4744370Z ^[[1m^[[92m   Compiling^[[0m clap v4.5.60
+Auto Release	Build release	2026-05-19T04:39:22.5174708Z ^[[1m^[[92m   Compiling^[[0m num-rational v0.4.2
+Auto Release	Build release	2026-05-19T04:39:22.7974789Z ^[[1m^[[92m   Compiling^[[0m console_error_panic_hook v0.1.7
+Auto Release	Build release	2026-05-19T04:39:22.8563299Z ^[[1m^[[92m   Compiling^[[0m dotenvy v0.15.7
+Auto Release	Build release	2026-05-19T04:39:23.3674730Z ^[[1m^[[92m   Compiling^[[0m lazy_static v1.5.0
+Auto Release	Build release	2026-05-19T04:39:23.4071708Z ^[[1m^[[92m   Compiling^[[0m lino-env v0.1.0
+Auto Release	Build release	2026-05-19T04:39:23.4358637Z ^[[1m^[[92m   Compiling^[[0m base64 v0.22.1
+Auto Release	Build release	2026-05-19T04:39:23.8144798Z ^[[1m^[[92m   Compiling^[[0m lino-objects-codec v0.2.1
+Auto Release	Build release	2026-05-19T04:39:23.8434808Z ^[[1m^[[92m   Compiling^[[0m lino-arguments v0.3.0
+Auto Release	Build release	2026-05-19T04:39:24.1800080Z ^[[1m^[[92m   Compiling^[[0m link-calculator v0.16.0
+Auto Release	Build release	2026-05-19T04:39:33.2735731Z ^[[1m^[[92m   Compiling^[[0m formal-ai v0.61.0 (/home/runner/work/formal-ai/formal-ai)
+Auto Release	Build release	2026-05-19T04:40:06.5242032Z ^[[1m^[[92m    Finished^[[0m `release` profile [optimized] target(s) in 1m 08s
+Auto Release	Publish to Crates.io	﻿2026-05-19T04:40:06.5532558Z ##[group]Run rust-script scripts/publish-crate.rs
+Auto Release	Publish to Crates.io	2026-05-19T04:40:06.5532945Z ^[[36;1mrust-script scripts/publish-crate.rs^[[0m
+Auto Release	Publish to Crates.io	2026-05-19T04:40:06.5569165Z shell: /usr/bin/bash -e {0}
+Auto Release	Publish to Crates.io	2026-05-19T04:40:06.5569413Z env:
+Auto Release	Publish to Crates.io	2026-05-19T04:40:06.5569619Z   CARGO_TERM_COLOR: always
+Auto Release	Publish to Crates.io	2026-05-19T04:40:06.5569840Z   RUSTFLAGS: -Dwarnings
+Auto Release	Publish to Crates.io	2026-05-19T04:40:06.5570196Z   CARGO_REGISTRY_TOKEN: ***
+Auto Release	Publish to Crates.io	2026-05-19T04:40:06.5570482Z   CARGO_TOKEN: ***
+Auto Release	Publish to Crates.io	2026-05-19T04:40:06.5570673Z   DOCKERHUB_IMAGE:
+Auto Release	Publish to Crates.io	2026-05-19T04:40:06.5570865Z   DOCKERHUB_USERNAME:
+Auto Release	Publish to Crates.io	2026-05-19T04:40:06.5571134Z   DOCKERHUB_TOKEN: ***
+Auto Release	Publish to Crates.io	2026-05-19T04:40:06.5571341Z   CARGO_HOME: /home/runner/.cargo
+Auto Release	Publish to Crates.io	2026-05-19T04:40:06.5571575Z   CARGO_INCREMENTAL: 0
+Auto Release	Publish to Crates.io	2026-05-19T04:40:06.5571765Z ##[endgroup]
+Auto Release	Publish to Crates.io	2026-05-19T04:40:07.2174859Z Detected single-language repository (Cargo.toml in root)
+Auto Release	Publish to Crates.io	2026-05-19T04:40:07.2181525Z Package: formal-ai@0.61.0
+Auto Release	Publish to Crates.io	2026-05-19T04:40:07.2181746Z
+Auto Release	Publish to Crates.io	2026-05-19T04:40:07.2181902Z === Attempting to publish to crates.io ===
+Auto Release	Publish to Crates.io	2026-05-19T04:40:07.2182341Z Using provided authentication token
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0578131Z Failed to publish for unknown reason
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0578751Z Output: publish_result=failed
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0579983Z
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0582160Z ^[[1m^[[33mwarning^[[0m: `cargo publish --token` is deprecated in favor of using `cargo login` and environment variables
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0588331Z ^[[1m^[[92m    Updating^[[0m crates.io index
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0588968Z ^[[1m^[[92m   Packaging^[[0m formal-ai v0.61.0 (/home/runner/work/formal-ai/formal-ai)
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0589570Z ^[[1m^[[92m    Updating^[[0m crates.io index
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0590100Z ^[[1m^[[92m    Packaged^[[0m 792 files, 25.0MiB (16.1MiB compressed)
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0590792Z ^[[1m^[[92m   Verifying^[[0m formal-ai v0.61.0 (/home/runner/work/formal-ai/formal-ai)
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0591407Z ^[[1m^[[92m   Compiling^[[0m unicode-ident v1.0.22
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0591893Z ^[[1m^[[92m   Compiling^[[0m proc-macro2 v1.0.103
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0592336Z ^[[1m^[[92m   Compiling^[[0m quote v1.0.42
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0592859Z ^[[1m^[[92m   Compiling^[[0m wasm-bindgen-shared v0.2.121
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0593578Z ^[[1m^[[92m   Compiling^[[0m serde_core v1.0.228
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0594025Z ^[[1m^[[92m   Compiling^[[0m rustversion v1.0.22
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0594478Z ^[[1m^[[92m   Compiling^[[0m serde v1.0.228
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0594911Z ^[[1m^[[92m   Compiling^[[0m autocfg v1.5.0
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0595376Z ^[[1m^[[92m   Compiling^[[0m bumpalo v3.20.2
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0595864Z ^[[1m^[[92m   Compiling^[[0m num-traits v0.2.19
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0596263Z ^[[1m^[[92m   Compiling^[[0m syn v2.0.111
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0596581Z ^[[1m^[[92m   Compiling^[[0m wasm-bindgen v0.2.121
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0596889Z ^[[1m^[[92m   Compiling^[[0m memchr v2.8.0
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0597172Z ^[[1m^[[92m   Compiling^[[0m cfg-if v1.0.4
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0597462Z ^[[1m^[[92m   Compiling^[[0m once_cell v1.21.4
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0597807Z ^[[1m^[[92m   Compiling^[[0m futures-task v0.3.32
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0598150Z ^[[1m^[[92m   Compiling^[[0m pin-project-lite v0.2.17
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0598491Z ^[[1m^[[92m   Compiling^[[0m futures-core v0.3.32
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0598785Z ^[[1m^[[92m   Compiling^[[0m slab v0.4.12
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0599069Z ^[[1m^[[92m   Compiling^[[0m utf8parse v0.2.2
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0599385Z ^[[1m^[[92m   Compiling^[[0m futures-util v0.3.32
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0599701Z ^[[1m^[[92m   Compiling^[[0m anstyle-parse v0.2.7
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0599997Z ^[[1m^[[92m   Compiling^[[0m anstyle-query v1.1.5
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0600296Z ^[[1m^[[92m   Compiling^[[0m anstyle v1.0.14
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0600630Z ^[[1m^[[92m   Compiling^[[0m is_terminal_polyfill v1.70.2
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0600959Z ^[[1m^[[92m   Compiling^[[0m thiserror v1.0.69
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0601270Z ^[[1m^[[92m   Compiling^[[0m colorchoice v1.0.5
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0601560Z ^[[1m^[[92m   Compiling^[[0m zmij v1.0.21
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0601838Z ^[[1m^[[92m   Compiling^[[0m anstream v0.6.21
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0602141Z ^[[1m^[[92m   Compiling^[[0m num-integer v0.1.46
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0602439Z ^[[1m^[[92m   Compiling^[[0m aho-corasick v1.1.4
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0603266Z ^[[1m^[[92m   Compiling^[[0m dtor-proc-macro v0.0.5
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0603589Z ^[[1m^[[92m   Compiling^[[0m clap_lex v1.1.0
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0603878Z ^[[1m^[[92m   Compiling^[[0m heck v0.5.0
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0604166Z ^[[1m^[[92m   Compiling^[[0m strsim v0.11.1
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0604463Z ^[[1m^[[92m   Compiling^[[0m rust_decimal v1.42.0
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0604770Z ^[[1m^[[92m   Compiling^[[0m regex-syntax v0.8.10
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0605077Z ^[[1m^[[92m   Compiling^[[0m serde_json v1.0.149
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0605372Z ^[[1m^[[92m   Compiling^[[0m clap_builder v4.5.60
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0605734Z ^[[1m^[[92m   Compiling^[[0m wasm-bindgen-macro-support v0.2.121
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0606106Z ^[[1m^[[92m   Compiling^[[0m serde_derive v1.0.228
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0606434Z ^[[1m^[[92m   Compiling^[[0m thiserror-impl v1.0.69
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0606755Z ^[[1m^[[92m   Compiling^[[0m clap_derive v4.5.55
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0607069Z ^[[1m^[[92m   Compiling^[[0m regex-automata v0.4.14
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0607415Z ^[[1m^[[92m   Compiling^[[0m wasm-bindgen-macro v0.2.121
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0607747Z ^[[1m^[[92m   Compiling^[[0m num-bigint v0.4.6
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0608038Z ^[[1m^[[92m   Compiling^[[0m dtor v0.0.6
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0608315Z ^[[1m^[[92m   Compiling^[[0m nom v8.0.0
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0608831Z ^[[1m^[[92m   Compiling^[[0m js-sys v0.3.98
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0609127Z ^[[1m^[[92m   Compiling^[[0m arrayvec v0.7.6
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0609417Z ^[[1m^[[92m   Compiling^[[0m itoa v1.0.18
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0609718Z ^[[1m^[[92m   Compiling^[[0m iana-time-zone v0.1.65
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0610042Z ^[[1m^[[92m   Compiling^[[0m ctor-proc-macro v0.0.6
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0610333Z ^[[1m^[[92m   Compiling^[[0m ctor v0.4.3
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0610611Z ^[[1m^[[92m   Compiling^[[0m chrono v0.4.44
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0610906Z ^[[1m^[[92m   Compiling^[[0m links-notation v0.13.0
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0611197Z ^[[1m^[[92m   Compiling^[[0m regex v1.12.3
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0611531Z ^[[1m^[[92m   Compiling^[[0m console_error_panic_hook v0.1.7
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0611887Z ^[[1m^[[92m   Compiling^[[0m num-rational v0.4.2
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0612180Z ^[[1m^[[92m   Compiling^[[0m clap v4.5.60
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0612461Z ^[[1m^[[92m   Compiling^[[0m base64 v0.22.1
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0612753Z ^[[1m^[[92m   Compiling^[[0m dotenvy v0.15.7
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0613283Z ^[[1m^[[92m   Compiling^[[0m lino-env v0.1.0
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0613578Z ^[[1m^[[92m   Compiling^[[0m lazy_static v1.5.0
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0613896Z ^[[1m^[[92m   Compiling^[[0m lino-arguments v0.3.0
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0614231Z ^[[1m^[[92m   Compiling^[[0m lino-objects-codec v0.2.1
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0614566Z ^[[1m^[[92m   Compiling^[[0m serde-wasm-bindgen v0.6.5
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0614916Z ^[[1m^[[92m   Compiling^[[0m wasm-bindgen-futures v0.4.71
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0615239Z ^[[1m^[[92m   Compiling^[[0m web-sys v0.3.98
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0615541Z ^[[1m^[[92m   Compiling^[[0m link-calculator v0.16.0
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0616130Z ^[[1m^[[92m   Compiling^[[0m formal-ai v0.61.0 (/home/runner/work/formal-ai/formal-ai/target/package/formal-ai-0.61.0)
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0616808Z ^[[1m^[[92m    Finished^[[0m `dev` profile [unoptimized + debuginfo] target(s) in 24.53s
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0617350Z ^[[1m^[[92m   Uploading^[[0m formal-ai v0.61.0 (/home/runner/work/formal-ai/formal-ai)
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0617944Z ^[[1m^[[91merror^[[0m: failed to publish formal-ai v0.61.0 to registry at https://crates.io
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0618255Z
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0618332Z Caused by:
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0618715Z   the remote server responded with an error (status 413 Payload Too Large): max upload size is: 10485760
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0619081Z
+Auto Release	Publish to Crates.io	2026-05-19T04:40:32.0629531Z ##[error]Process completed with exit code 1.
+Auto Release	Post Run actions/checkout@v6	﻿2026-05-19T04:40:32.0757712Z Post job cleanup.
+Auto Release	Post Run actions/checkout@v6	2026-05-19T04:40:32.1624769Z [command]/usr/bin/git version
+Auto Release	Post Run actions/checkout@v6	2026-05-19T04:40:32.1663557Z git version 2.54.0
+Auto Release	Post Run actions/checkout@v6	2026-05-19T04:40:32.1703991Z Temporarily overriding HOME='/home/runner/work/_temp/d100d815-f048-490c-be7c-3138adf0ed4b' before making global git config changes
+Auto Release	Post Run actions/checkout@v6	2026-05-19T04:40:32.1705247Z Adding repository directory to the temporary git global config as a safe directory
+Auto Release	Post Run actions/checkout@v6	2026-05-19T04:40:32.1710178Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai
+Auto Release	Post Run actions/checkout@v6	2026-05-19T04:40:32.1744395Z Removing SSH command configuration
+Auto Release	Post Run actions/checkout@v6	2026-05-19T04:40:32.1765839Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Auto Release	Post Run actions/checkout@v6	2026-05-19T04:40:32.1791850Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Auto Release	Post Run actions/checkout@v6	2026-05-19T04:40:32.2038621Z Removing HTTP extra header
+Auto Release	Post Run actions/checkout@v6	2026-05-19T04:40:32.2044919Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Auto Release	Post Run actions/checkout@v6	2026-05-19T04:40:32.2082082Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Auto Release	Post Run actions/checkout@v6	2026-05-19T04:40:32.2321515Z Removing includeIf entries pointing to credentials config files
+Auto Release	Post Run actions/checkout@v6	2026-05-19T04:40:32.2329331Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Auto Release	Post Run actions/checkout@v6	2026-05-19T04:40:32.2392610Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path
+Auto Release	Post Run actions/checkout@v6	2026-05-19T04:40:32.2394122Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+Auto Release	Post Run actions/checkout@v6	2026-05-19T04:40:32.2394791Z includeif.gitdir:/github/workspace/.git.path
+Auto Release	Post Run actions/checkout@v6	2026-05-19T04:40:32.2395307Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Auto Release	Post Run actions/checkout@v6	2026-05-19T04:40:32.2403829Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path
+Auto Release	Post Run actions/checkout@v6	2026-05-19T04:40:32.2428796Z /home/runner/work/_temp/git-credentials-fd2e08c9-e75a-406d-a4f5-a64c5c124fb4.config
+Auto Release	Post Run actions/checkout@v6	2026-05-19T04:40:32.2440086Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path /home/runner/work/_temp/git-credentials-fd2e08c9-e75a-406d-a4f5-a64c5c124fb4.config
+Auto Release	Post Run actions/checkout@v6	2026-05-19T04:40:32.2478592Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+Auto Release	Post Run actions/checkout@v6	2026-05-19T04:40:32.2503879Z /home/runner/work/_temp/git-credentials-fd2e08c9-e75a-406d-a4f5-a64c5c124fb4.config
+Auto Release	Post Run actions/checkout@v6	2026-05-19T04:40:32.2513580Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-fd2e08c9-e75a-406d-a4f5-a64c5c124fb4.config
+Auto Release	Post Run actions/checkout@v6	2026-05-19T04:40:32.2548682Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+Auto Release	Post Run actions/checkout@v6	2026-05-19T04:40:32.2573560Z /github/runner_temp/git-credentials-fd2e08c9-e75a-406d-a4f5-a64c5c124fb4.config
+Auto Release	Post Run actions/checkout@v6	2026-05-19T04:40:32.2581155Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-fd2e08c9-e75a-406d-a4f5-a64c5c124fb4.config
+Auto Release	Post Run actions/checkout@v6	2026-05-19T04:40:32.2615639Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Auto Release	Post Run actions/checkout@v6	2026-05-19T04:40:32.2639320Z /github/runner_temp/git-credentials-fd2e08c9-e75a-406d-a4f5-a64c5c124fb4.config
+Auto Release	Post Run actions/checkout@v6	2026-05-19T04:40:32.2652391Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-fd2e08c9-e75a-406d-a4f5-a64c5c124fb4.config
+Auto Release	Post Run actions/checkout@v6	2026-05-19T04:40:32.2697205Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Auto Release	Post Run actions/checkout@v6	2026-05-19T04:40:32.2959567Z Removing credentials config '/home/runner/work/_temp/git-credentials-fd2e08c9-e75a-406d-a4f5-a64c5c124fb4.config'
+Auto Release	Complete job	﻿2026-05-19T04:40:32.3161998Z Cleaning up orphan processes

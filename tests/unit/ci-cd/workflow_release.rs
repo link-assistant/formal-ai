@@ -390,6 +390,74 @@ fn release_workflow_jobs_have_explicit_timeouts() {
 }
 
 #[test]
+fn crate_package_manifest_uses_publish_allowlist() {
+    let manifest = fs::read_to_string(format!("{}/Cargo.toml", env!("CARGO_MANIFEST_DIR")))
+        .unwrap()
+        .replace("\r\n", "\n");
+
+    assert!(
+        manifest.contains("include = ["),
+        "Cargo.toml should explicitly allowlist files published to crates.io"
+    );
+
+    for required in [
+        "\"/Cargo.lock\"",
+        "\"/Cargo.toml\"",
+        "\"/LICENSE\"",
+        "\"/README.md\"",
+        "\"/data/**\"",
+        "\"/src/**\"",
+    ] {
+        assert!(
+            manifest.contains(required),
+            "Cargo.toml package include list should contain {required}"
+        );
+    }
+
+    for excluded in [
+        "\"/docs/**\"",
+        "\"/tests/**\"",
+        "\"/scripts/**\"",
+        "\"/examples/**\"",
+        "\"/experiments/**\"",
+        "\"/.github/**\"",
+    ] {
+        assert!(
+            !manifest.contains(excluded),
+            "Cargo.toml should use an include allowlist instead of carrying explicit excluded repository artifacts"
+        );
+    }
+}
+
+#[test]
+fn build_job_checks_generated_crate_archive_size() {
+    let workflow = release_workflow();
+    let build = job_block(&workflow, "build");
+    let package_list = build
+        .find("- name: Check package")
+        .expect("build job should list package contents");
+    let package_size = build
+        .find("- name: Check crate package size")
+        .expect("build job should check the generated crate archive size");
+    let install_rust_script = build
+        .find("- name: Install rust-script")
+        .expect("build job should install rust-script before running script guards");
+
+    assert!(
+        package_list < package_size,
+        "build job should list package contents before checking archive size"
+    );
+    assert!(
+        install_rust_script < package_size,
+        "build job should install rust-script before checking archive size"
+    );
+    assert!(
+        build.contains("rust-script scripts/check-crate-package-size.rs"),
+        "build job should run the crate size guard"
+    );
+}
+
+#[test]
 fn release_workflow_publishes_optional_docker_hub_image_after_crate_is_visible() {
     let workflow = release_workflow();
 

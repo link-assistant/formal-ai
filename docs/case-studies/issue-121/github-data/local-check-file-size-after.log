@@ -1,0 +1,15 @@
+
+Checking configured file line limits for Rust and Links Notation files...
+
+::warning file=src/solver_helpers.rs::Rust file has 973 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+WARNING: src/solver_helpers.rs has 973 lines (approaching Rust limit of 1000, warning threshold: 900)
+::warning file=src/seed.rs::Rust file has 944 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+WARNING: src/seed.rs has 944 lines (approaching Rust limit of 1000, warning threshold: 900)
+
+The following files are approaching their configured line limits:
+  src/solver_helpers.rs
+  src/seed.rs
+
+Consider extracting code to prevent concurrent PR merge limit violations.
+
+All checked files are within their line limits
