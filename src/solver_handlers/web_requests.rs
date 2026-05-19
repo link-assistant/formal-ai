@@ -50,15 +50,22 @@ pub fn try_url_navigate(
 ) -> Option<SymbolicAnswer> {
     let url = extract_url_navigate_url(prompt, normalized)?;
     log.append("url_navigate:request", url.clone());
-    log.append("url_preview:iframe", url.clone());
-    let body = format!(
-        "URL requested for `{url}`.\n\n\
-         Open this link: [{url}]({url}).\n\n\
-         The browser demo also shows the page in an embedded iframe when the \
-         site allows framing. Use the open-in-new-tab control if the site \
-         blocks embedding, or the full-screen control to view it at viewport \
-         size."
-    );
+    let body = if let Some(blocked_host) = known_frame_blocked_host(&url) {
+        log.append("url_preview:blocked", blocked_host);
+        format!(
+            "Open this in a new tab: [{url}]({url}).\n\n\
+             In the browser-only demo I can't read GitHub directly from the \
+             page, and GitHub blocks embedded frames. A new tab is the reliable \
+             way to view it."
+        )
+    } else {
+        log.append("url_preview:iframe", url.clone());
+        format!(
+            "Open this page: [{url}]({url}).\n\n\
+             I can also show a preview below when the site allows embedded \
+             frames. If the frame is blocked, use the new-tab control."
+        )
+    };
     Some(finalize_simple(
         prompt,
         log,
@@ -224,6 +231,29 @@ fn looks_like_hostname(value: &str) -> bool {
             && !label.starts_with('-')
             && !label.ends_with('-')
     })
+}
+
+fn known_frame_blocked_host(url: &str) -> Option<String> {
+    let host = host_from_url(url)?;
+    let normalized_host = host.to_ascii_lowercase();
+    if normalized_host == "github.com" || normalized_host.ends_with(".github.com") {
+        return Some(normalized_host);
+    }
+    None
+}
+
+fn host_from_url(url: &str) -> Option<&str> {
+    let after_scheme = url.split_once("://")?.1;
+    let host_port = after_scheme
+        .split(['/', '?', '#'])
+        .next()
+        .unwrap_or_default();
+    let host = host_port.split(':').next().unwrap_or_default();
+    if host.is_empty() {
+        None
+    } else {
+        Some(host)
+    }
 }
 
 /// Prefixes that mean "perform an HTTP request" — the browser worker will

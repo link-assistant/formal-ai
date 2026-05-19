@@ -201,7 +201,7 @@ test.describe('multilingual chat surface', () => {
     await expect(last).not.toContainText(/рок-группа|rock band|american.*rock|глэм/i);
   });
 
-  test('URL navigation request shows iframe controls without fetch fallback copy', async ({ page }) => {
+  test('GitHub navigation opens as an external link without iframe preview', async ({ page }) => {
     const githubRequestTypes = [];
     await page.route(/https:\/\/github\.com\/?.*/, async (route) => {
       githubRequestTypes.push(route.request().resourceType());
@@ -212,23 +212,24 @@ test.describe('multilingual chat surface', () => {
     await expect(last).toHaveClass(/assistant/);
     await expect(last).toContainText('https://github.com');
     await expect(last).not.toContainText('Could not fetch');
+    await expect(last).not.toContainText('URL requested for');
+    await expect(last).not.toContainText('iframe');
+    await expect(last).not.toContainText('preview below');
+    await expect(last).toContainText(/new tab/i);
     await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
-    const frameContainer = last.locator('[data-testid="fetch-iframe-container"]');
-    await expect(frameContainer).toContainText(/https:\/\/github\.com\/?/);
-    await expect(frameContainer.locator('.fetch-iframe-open')).toHaveAttribute(
+    const link = last.locator('.markdown-body a.external-link').filter({
+      hasText: 'https://github.com',
+    });
+    await expect(link).toHaveAttribute(
       'href',
       /https:\/\/github\.com\/?/,
     );
-    await expect(frameContainer.locator('.fetch-iframe-open')).toHaveAttribute(
-      'aria-label',
-      'Open in new tab',
-    );
-    await expect(frameContainer.locator('.fetch-iframe-toggle')).toBeVisible();
-    await frameContainer.locator('.fetch-iframe-toggle').click();
-    await expect(frameContainer).toHaveClass(/is-fullscreen/);
-    await frameContainer.locator('.fetch-iframe-toggle').click();
-    await expect(frameContainer).not.toHaveClass(/is-fullscreen/);
+    await expect(link).toHaveAttribute('target', '_blank');
+    await expect(link).toHaveAttribute('rel', /noopener/);
+    await expect(last.locator('.external-link-icon')).toBeVisible();
+    await expect(last.locator('[data-testid="fetch-iframe-container"]')).toHaveCount(0);
     expect(githubRequestTypes).not.toContain('fetch');
+    expect(githubRequestTypes).not.toContain('document');
   });
 
   // Issue #125 follow-up: "Make a request to X" must still attempt an HTTP
