@@ -339,6 +339,62 @@ fn issue_63_definition_fusion_requirements_and_examples_are_traceable() {
 }
 
 #[test]
+fn issue_80_software_project_dialogue_requirements_are_traceable() {
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+
+    let requirements = read(root.join("REQUIREMENTS.md"));
+    assert_contains_all(
+        "REQUIREMENTS.md",
+        &requirements,
+        &[
+            "Issue #80 Software Project Request Requirements",
+            "| R156 ",
+            "| R157 ",
+            "| R158 ",
+            "| R159 ",
+            "| R160 ",
+            "| R161 ",
+            "| R162 ",
+            "| R163 ",
+            "| R164 ",
+            "at least 20 full dialogue examples",
+            "Requirement model",
+            "delivery_mode",
+            "approval_gate",
+            "software_project_dialogue_examples_formalize_plan_then_implement_after_approval",
+        ],
+    );
+
+    let readme = read(root.join("README.md"));
+    assert_contains_all(
+        "README.md",
+        &readme,
+        &[
+            "software artifact requests",
+            "Links Notation meaning record",
+            "requirement graph",
+            "approval gates",
+            "language-aware starter domain code",
+            "after the user approves the plan",
+        ],
+    );
+
+    let changelog =
+        read(root.join("changelog.d/20260518_224500_issue_80_software_project_requests.md"));
+    assert_contains_all(
+        "changelog.d/20260518_224500_issue_80_software_project_requests.md",
+        &changelog,
+        &[
+            "software_project_plan",
+            "Links Notation meaning record",
+            "requirement graph",
+            "approval gates",
+            "language-aware starter code after the user approves",
+        ],
+    );
+}
+
+#[test]
 fn repository_text_avoids_deferred_labels_requested_by_issue_103() {
     let root = Path::new(env!("CARGO_MANIFEST_DIR"));
     let phrase_space = ["proof", " of ", "concept"].concat();

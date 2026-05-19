@@ -38,8 +38,9 @@ use crate::solver_handlers::{
     try_definition_merge, try_definition_merge_by_default, try_execution_failure, try_fact_lookup,
     try_http_fetch, try_ill_formed, try_javascript_execution, try_meta_explanation,
     try_network_query, try_opinion_question, try_punctuation_only_prompt, try_roleplay_request,
-    try_shell_refusal, try_source_conflict, try_source_refresh, try_summarization_request,
-    try_translation, try_web_search, try_who_is_question, try_write_script,
+    try_shell_refusal, try_software_project_request, try_source_conflict, try_source_refresh,
+    try_summarization_request, try_translation, try_web_search, try_who_is_question,
+    try_write_script,
 };
 use crate::solver_handlers_policy::{try_kupi_slona, try_physical_action_question};
 use crate::solver_helpers::{
@@ -333,6 +334,7 @@ const SPECIALIZED_HANDLERS: &[(&str, SpecializedHandler)] = &[
     // hello-world snippet.
     ("execution_failure", try_execution_failure),
     ("write_script", try_write_script),
+    ("software_project", try_software_project_request),
     ("algorithm", try_algorithm),
     ("source_refresh", try_source_refresh),
     ("source_conflict", try_source_conflict),

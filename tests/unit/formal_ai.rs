@@ -2,8 +2,8 @@ use formal_ai::{
     create_chat_completion, create_response, environment_directory, environment_records,
     export_memory_bundle, export_memory_links_notation, extract_memory_from_bundle,
     handle_api_request, knowledge_links_notation, merged_bundle, parse_bundle,
-    parse_memory_links_notation, seed_files, ChatCompletionRequest, ChatMessage, FormalAiEngine,
-    MemoryEvent, MemoryStore, MessageContent, ResponsesRequest,
+    parse_memory_links_notation, seed_files, ChatCompletionRequest, ChatMessage, ConversationTurn,
+    FormalAiEngine, MemoryEvent, MemoryStore, MessageContent, ResponsesRequest, UniversalSolver,
 };
 use lino_objects_codec::format::parse_indented;
 
@@ -256,6 +256,89 @@ fn write_script_prompt_returns_code_block() {
             "prompt: {prompt:?} — got unknown intent"
         );
     }
+}
+
+#[test]
+fn software_project_request_returns_reviewable_plan() {
+    // Regression test for issue #80: a request to write an Owlbear/D&D
+    // extension was returning intent: unknown. This must be handled as a
+    // generalized software project request, not a memoized prompt.
+    let prompt = concat!(
+        "Hi, can you write for me extension for owlbear? I am currently leading some dnd games ",
+        "and i want to try wargame. So, i need extensions that can track hp for different units, ",
+        "that can track Protection and Resistance stacks on unit an will reduce damage count on ",
+        "those stats. Also this extension should track cooldown of some abilities"
+    );
+
+    let response = FormalAiEngine.answer(prompt);
+
+    assert_eq!(
+        response.intent, "software_project_plan",
+        "answer was: {}",
+        response.answer
+    );
+    assert_ne!(response.intent, "unknown");
+    assert!(response.answer.contains("Formalized meaning"));
+    assert!(response.answer.contains("software_project_request"));
+    assert!(response.answer.contains("Reasoning steps"));
+    assert!(response.answer.contains("Proposed plan"));
+    assert!(response.answer.contains("Owlbear"));
+    assert!(response.answer.contains("HP"));
+    assert!(response.answer.contains("Protection"));
+    assert!(response.answer.contains("Resistance"));
+    assert!(response.answer.contains("cooldown"));
+    assert!(response.answer.contains("approve plan"));
+    assert!(!response.answer.contains("mitigateDamage"));
+}
+
+#[test]
+fn software_project_variations_do_not_return_unknown() {
+    let prompts = [
+        "Build a browser extension that tracks reading progress and exports CSV",
+        "Create a Discord bot for scheduling game sessions with reminders",
+        "Implement a small web app for tracking invoices and overdue payments",
+        "Make a plugin for a tabletop map that tracks unit status effects",
+        "Develop a command line tool for renaming photos by date",
+    ];
+
+    for prompt in prompts {
+        let response = FormalAiEngine.answer(prompt);
+        assert_eq!(
+            response.intent, "software_project_plan",
+            "prompt: {prompt:?} answer: {}",
+            response.answer
+        );
+        assert_ne!(response.intent, "unknown");
+        assert!(response.answer.contains("Formalized meaning"));
+        assert!(response.answer.contains("Proposed plan"));
+        assert!(response.answer.contains("approve plan"));
+    }
+}
+
+#[test]
+fn software_project_approval_returns_implementation_starter() {
+    let solver = UniversalSolver::default();
+    let prompt = concat!(
+        "Write an extension for Owlbear that tracks HP, Protection, Resistance, ",
+        "damage mitigation, and cooldowns for tabletop units"
+    );
+
+    let plan = solver.solve(prompt);
+    let history = [
+        ConversationTurn::user(prompt),
+        ConversationTurn::assistant(plan.answer),
+    ];
+    let implementation = solver.solve_with_history("approve plan", &history);
+
+    assert_eq!(
+        implementation.intent, "software_project_implementation",
+        "answer was: {}",
+        implementation.answer
+    );
+    assert!(implementation.answer.contains("approval_state approved"));
+    assert!(implementation.answer.contains("```typescript"));
+    assert!(implementation.answer.contains("mitigateDamage"));
+    assert!(implementation.answer.contains("tickCooldowns"));
 }
 
 #[test]

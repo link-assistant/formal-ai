@@ -6,6 +6,8 @@
 
 mod benchmark_prompts;
 mod definition_merge;
+mod software_project;
+mod software_project_code;
 mod user_intent;
 mod web_requests;
 
@@ -14,6 +16,7 @@ pub use benchmark_prompts::{
     try_summarization_request,
 };
 pub use definition_merge::{try_definition_merge, try_definition_merge_by_default};
+pub use software_project::try_software_project_request;
 pub use user_intent::{
     try_capabilities, try_clarification, try_ill_formed, try_opinion_question,
     try_punctuation_only_prompt, try_shell_refusal, try_who_is_question,

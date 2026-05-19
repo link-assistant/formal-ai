@@ -324,6 +324,7 @@ dependencies = [
  "link-calculator",
  "lino-arguments",
  "lino-objects-codec",
+ "nom",
  "regex",
  "serde",
  "serde_json",
