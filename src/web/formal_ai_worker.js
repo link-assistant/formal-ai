@@ -45,6 +45,8 @@ const FALLBACK_IDENTITY_ANSWER =
 
 const FALLBACK_GREETING_ANSWER = "Hi, how may I help you?";
 
+const FALLBACK_TEST_STATUS_ANSWER = "Test passed. I'm here.";
+
 const FALLBACK_UNKNOWN_ANSWER =
   "I cannot answer that from local Links Notation rules yet. Please add a fact or add a rule in Links Notation, then run the request again.";
 
@@ -62,6 +64,9 @@ let MULTILINGUAL_ANSWERS = {
   },
   farewell: {
     en: { text: "Goodbye! Feel free to return any time.", variants: ["Goodbye! Feel free to return any time."] },
+  },
+  test_status: {
+    en: { text: FALLBACK_TEST_STATUS_ANSWER, variants: [FALLBACK_TEST_STATUS_ANSWER] },
   },
   identity: {
     en: { text: FALLBACK_IDENTITY_ANSWER, variants: [FALLBACK_IDENTITY_ANSWER] },
@@ -174,6 +179,31 @@ let INTENT_ROUTING = {
       combos: [],
     },
     {
+      id: "intent_test_status",
+      slug: "test_status",
+      responseLink: "response:test_status",
+      keywords: ["test", "ping", "pong", "testing"],
+      phrases: [
+        "test passed",
+        "testing 123",
+        "are you there",
+        "you there",
+        "i m here",
+        "i am here",
+        "я здесь",
+        "тест пройден",
+        "ты здесь",
+        "вы здесь",
+      ],
+      tokens: [],
+      combos: [
+        ["test", "passed"],
+        ["test", "here"],
+        ["testing", "123"],
+        ["ping", "test"],
+      ],
+    },
+    {
       id: "intent_identity",
       slug: "identity",
       responseLink: "response:identity",
@@ -216,6 +246,9 @@ function fallbackEntry(intent) {
   }
   if (intent === "identity") {
     return { text: FALLBACK_IDENTITY_ANSWER, variants: [FALLBACK_IDENTITY_ANSWER] };
+  }
+  if (intent === "test_status") {
+    return { text: FALLBACK_TEST_STATUS_ANSWER, variants: [FALLBACK_TEST_STATUS_ANSWER] };
   }
   if (intent === "clarification") {
     return {
@@ -1315,6 +1348,10 @@ function isGreetingPrompt(normalized, rawPrompt) {
 
 function isFarewellPrompt(normalized, rawPrompt) {
   return matchesIntentRoute(normalized, rawPrompt, "intent_farewell");
+}
+
+function isTestStatusPrompt(normalized, rawPrompt) {
+  return matchesIntentRoute(normalized, rawPrompt, "intent_test_status");
 }
 
 function isPunctuationOnlyPrompt(prompt) {
@@ -5185,6 +5222,16 @@ async function solve(prompt, history, prefs) {
       content: answerFor("farewell", language),
       confidence: 1.0,
       evidence: ["rule:farewell", `language:${language}`],
+    });
+  }
+  if (isTestStatusPrompt(normalized, prompt)) {
+    events.push("rule:test_status");
+    steps.push({ step: "match_rule", detail: "test_status" });
+    return finalize(events, steps, toolCalls, {
+      intent: "test_status",
+      content: answerFor("test_status", language),
+      confidence: 1.0,
+      evidence: ["rule:test_status", `language:${language}`],
     });
   }
   if (isIdentityPrompt(normalized, prompt)) {

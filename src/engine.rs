@@ -26,6 +26,7 @@ pub const DEFAULT_MODEL: &str = "formal-symbolic-production";
 /// embedded via `include_str!`). All real reads come from [`crate::seed`].
 const FALLBACK_GREETING_ANSWER: &str = "Hi, how may I help you?";
 const FALLBACK_FAREWELL_ANSWER: &str = "Goodbye! Feel free to return any time.";
+const FALLBACK_TEST_STATUS_ANSWER: &str = "Test passed. I'm here.";
 const FALLBACK_IDENTITY_ANSWER: &str = "I am formal-ai, a deterministic symbolic AI implementation that answers from local Links Notation rules and OpenAI-compatible API shapes. I do not perform neural inference in this demo.";
 const FALLBACK_UNKNOWN_ANSWER: &str = "I cannot answer that from local Links Notation rules yet. Please add a fact or add a rule in Links Notation, then run the request again.";
 const FALLBACK_UNKNOWN_LANGUAGE_ANSWER: &str = concat!(
@@ -69,6 +70,26 @@ fn hindi_farewell_answer() -> &'static str {
 fn chinese_farewell_answer() -> &'static str {
     static CELL: OnceLock<String> = OnceLock::new();
     cached_response(&CELL, "farewell", "zh", FALLBACK_FAREWELL_ANSWER)
+}
+
+pub(crate) fn test_status_answer() -> &'static str {
+    static CELL: OnceLock<String> = OnceLock::new();
+    cached_response(&CELL, "test_status", "en", FALLBACK_TEST_STATUS_ANSWER)
+}
+
+fn russian_test_status_answer() -> &'static str {
+    static CELL: OnceLock<String> = OnceLock::new();
+    cached_response(&CELL, "test_status", "ru", FALLBACK_TEST_STATUS_ANSWER)
+}
+
+fn hindi_test_status_answer() -> &'static str {
+    static CELL: OnceLock<String> = OnceLock::new();
+    cached_response(&CELL, "test_status", "hi", FALLBACK_TEST_STATUS_ANSWER)
+}
+
+fn chinese_test_status_answer() -> &'static str {
+    static CELL: OnceLock<String> = OnceLock::new();
+    cached_response(&CELL, "test_status", "zh", FALLBACK_TEST_STATUS_ANSWER)
 }
 
 pub(crate) fn identity_answer() -> &'static str {
@@ -131,6 +152,7 @@ const fn unknown_language_fallback_answer() -> &'static str {
 }
 
 const GREETING_EXAMPLES: &[&str] = &["Hi", "Hello", "Hey"];
+const TEST_STATUS_EXAMPLES: &[&str] = &["Test", "Test passed", "I'm here", "test passed, I'm here"];
 const IDENTITY_EXAMPLES: &[&str] = &[
     "Who are you?",
     "What are you?",
@@ -180,7 +202,7 @@ pub fn knowledge_links_notation() -> String {
                         "untyped indented Links Notation via lino-objects-codec format helpers",
                     ),
                 ),
-                ("rule_count", (HELLO_WORLD_PROGRAMS.len() + 3).to_string()),
+                ("rule_count", (HELLO_WORLD_PROGRAMS.len() + 4).to_string()),
             ],
         ),
         format_concept_index_record(),
@@ -203,6 +225,16 @@ pub fn knowledge_links_notation() -> String {
                 ("response_link", String::from("response:identity")),
                 ("answer", String::from(identity_answer())),
                 ("examples", IDENTITY_EXAMPLES.join(", ")),
+                ("source", String::from("local symbolic seed set")),
+            ],
+        ),
+        format_lino_record(
+            "rule_test_status",
+            &[
+                ("intent", String::from("test_status")),
+                ("response_link", String::from("response:test_status")),
+                ("answer", String::from(test_status_answer())),
+                ("examples", TEST_STATUS_EXAMPLES.join(", ")),
                 ("source", String::from("local symbolic seed set")),
             ],
         ),
@@ -236,6 +268,7 @@ fn format_concept_index_record() -> String {
         "concept_index",
         &[
             ("greeting", String::from("intent: greeting")),
+            ("test_status", String::from("intent: test_status")),
             ("identity", String::from("intent: identity")),
             ("hello_world", String::from("intent: hello_world")),
             ("translation", String::from("intent: translation")),
@@ -456,6 +489,7 @@ pub fn stable_id(prefix: &str, text: &str) -> String {
 pub(crate) enum SelectedRule {
     Greeting,
     Farewell,
+    TestStatus,
     Identity,
     HelloWorld(&'static HelloWorldProgram),
     Unknown,
@@ -466,6 +500,7 @@ impl SelectedRule {
         match self {
             Self::Greeting => String::from("greeting"),
             Self::Farewell => String::from("farewell"),
+            Self::TestStatus => String::from("test_status"),
             Self::Identity => String::from("identity"),
             Self::HelloWorld(program) => format!("hello_world_{}", program.slug),
             Self::Unknown => String::from("unknown"),
@@ -476,6 +511,7 @@ impl SelectedRule {
         match self {
             Self::Greeting => "response:greeting",
             Self::Farewell => "response:farewell",
+            Self::TestStatus => "response:test_status",
             Self::Identity => "response:identity",
             Self::HelloWorld(program) => program.response_link,
             Self::Unknown => "response:unknown",
@@ -486,6 +522,7 @@ impl SelectedRule {
         match self {
             Self::Greeting => String::from(greeting_answer()),
             Self::Farewell => String::from(farewell_answer()),
+            Self::TestStatus => String::from(test_status_answer()),
             Self::Identity => String::from(identity_answer()),
             Self::HelloWorld(program) => hello_world_answer(program),
             Self::Unknown => String::from(unknown_answer()),
@@ -499,6 +536,8 @@ pub(crate) fn select_rule_for(prompt: &str) -> SelectedRule {
         SelectedRule::Greeting
     } else if is_farewell(&normalized) {
         SelectedRule::Farewell
+    } else if is_test_status(&normalized) {
+        SelectedRule::TestStatus
     } else if is_identity_question(&normalized) {
         SelectedRule::Identity
     } else if let Some(program) = hello_world_program(&normalized) {
@@ -524,6 +563,9 @@ pub(crate) fn language_aware_answer_for(
         (SelectedRule::Farewell, Language::Russian) => String::from(russian_farewell_answer()),
         (SelectedRule::Farewell, Language::Hindi) => String::from(hindi_farewell_answer()),
         (SelectedRule::Farewell, Language::Chinese) => String::from(chinese_farewell_answer()),
+        (SelectedRule::TestStatus, Language::Russian) => String::from(russian_test_status_answer()),
+        (SelectedRule::TestStatus, Language::Hindi) => String::from(hindi_test_status_answer()),
+        (SelectedRule::TestStatus, Language::Chinese) => String::from(chinese_test_status_answer()),
         (SelectedRule::Identity, Language::Russian) => String::from(russian_identity_answer()),
         (SelectedRule::Identity, Language::Hindi) => String::from(hindi_identity_answer()),
         (SelectedRule::Identity, Language::Chinese) => String::from(chinese_identity_answer()),
@@ -586,6 +628,10 @@ fn is_greeting(normalized_prompt: &str) -> bool {
 
 fn is_farewell(normalized_prompt: &str) -> bool {
     matches_intent_route(normalized_prompt, "intent_farewell")
+}
+
+fn is_test_status(normalized_prompt: &str) -> bool {
+    matches_intent_route(normalized_prompt, "intent_test_status")
 }
 
 fn is_identity_question(normalized_prompt: &str) -> bool {

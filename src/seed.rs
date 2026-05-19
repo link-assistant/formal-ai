@@ -817,6 +817,7 @@ mod tests {
         for expected in [
             "intent_greeting",
             "intent_farewell",
+            "intent_test_status",
             "intent_identity",
             "intent_unknown",
             "intent_hello_world",
