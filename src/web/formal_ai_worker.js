@@ -3354,6 +3354,7 @@ async function tryFactQuery(prompt, normalized, preferences) {
         confidence: 0.92,
         evidence,
         trace,
+        formalizedObject: cached.subjectQid || "",
       };
     }
     trace.push("fact_query:cache:miss");
@@ -3383,6 +3384,7 @@ async function tryFactQuery(prompt, normalized, preferences) {
     confidence: 0.92,
     evidence: factQueryEvidence(resolved, query.language),
     trace,
+    formalizedObject: resolved.subjectQid || "",
   };
 }
 
@@ -6372,6 +6374,17 @@ async function solve(prompt, history, prefs) {
   events.push(`language:${language}`);
   steps.push({ step: "detect_language", detail: language });
 
+  // Issue #180: bundle the per-turn formalization context so every
+  // handler hit can fold a resolved entity id back into the tuple and
+  // every `finalize` call can emit a `deformalize` step that records the
+  // symbolic → natural-language projection. The context is mutable so
+  // resolvers can update `resolved` as new ids surface.
+  const formalizationContext = {
+    initial: formalization,
+    resolved: null,
+    language,
+  };
+
   if (isPunctuationOnlyPrompt(prompt)) {
     events.push("handler:clarification");
     events.push(`clarification:punctuation_only:${String(prompt).trim()}`);
@@ -6386,14 +6399,14 @@ async function solve(prompt, history, prefs) {
         "clarification:punctuation_only",
         `language:${language}`,
       ],
-    });
+    }, formalizationContext);
   }
 
   const capabilities = tryCapabilities(prompt, normalized);
   if (capabilities) {
     events.push(`handler:${capabilities.intent}`);
     steps.push({ step: "dispatch_handler", detail: "tryCapabilities" });
-    return finalize(events, steps, toolCalls, capabilities);
+    return finalize(events, steps, toolCalls, capabilities, formalizationContext);
   }
 
   if (isGreetingPrompt(normalized, prompt)) {
@@ -6411,7 +6424,7 @@ async function solve(prompt, history, prefs) {
         `variation:${randomize ? "random" : "canonical"}`,
         `temperature:${temperature.toFixed(2)}`,
       ],
-    });
+    }, formalizationContext);
   }
   if (isFarewellPrompt(normalized, prompt)) {
     events.push("rule:farewell");
@@ -6421,7 +6434,7 @@ async function solve(prompt, history, prefs) {
       content: answerFor("farewell", language),
       confidence: 1.0,
       evidence: ["rule:farewell", `language:${language}`],
-    });
+    }, formalizationContext);
   }
   if (isIdentityPrompt(normalized, prompt)) {
     events.push("rule:identity");
@@ -6431,7 +6444,7 @@ async function solve(prompt, history, prefs) {
       content: answerFor("identity", language),
       confidence: 1.0,
       evidence: ["rule:identity", `language:${language}`],
-    });
+    }, formalizationContext);
   }
 
   const syncHandlers = [
@@ -6472,7 +6485,7 @@ async function solve(prompt, history, prefs) {
           outputs: { intent: hit.intent, confidence: hit.confidence },
         });
       }
-      return finalize(events, steps, toolCalls, hit);
+      return finalize(events, steps, toolCalls, hit, formalizationContext);
     }
   }
 
@@ -6493,16 +6506,20 @@ async function solve(prompt, history, prefs) {
     toolCalls.push({
       tool: "fact_query",
       inputs: { prompt, language },
-      outputs: { intent: factQuery.intent, confidence: factQuery.confidence },
+      outputs: {
+        intent: factQuery.intent,
+        confidence: factQuery.confidence,
+        formalizedObject: factQuery.formalizedObject || "",
+      },
     });
-    return finalize(events, steps, toolCalls, factQuery);
+    return finalize(events, steps, toolCalls, factQuery, formalizationContext);
   }
 
   const legacyFact = tryFactLookup(prompt, normalized);
   if (legacyFact) {
     events.push(`handler:${legacyFact.intent}`);
     steps.push({ step: "dispatch_handler", detail: "tryFactLookup" });
-    return finalize(events, steps, toolCalls, legacyFact);
+    return finalize(events, steps, toolCalls, legacyFact, formalizationContext);
   }
 
   steps.push({ step: "invoke_tool", detail: "http_fetch" });
@@ -6515,7 +6532,7 @@ async function solve(prompt, history, prefs) {
       inputs: { prompt },
       outputs: { intent: fetched.intent, confidence: fetched.confidence, iframeUrl: fetched.iframeUrl || null },
     });
-    return finalize(events, steps, toolCalls, fetched);
+    return finalize(events, steps, toolCalls, fetched, formalizationContext);
   }
 
   steps.push({ step: "invoke_tool", detail: "url_navigate" });
@@ -6528,7 +6545,7 @@ async function solve(prompt, history, prefs) {
       inputs: { prompt },
       outputs: { intent: navigated.intent, confidence: navigated.confidence, iframeUrl: navigated.iframeUrl || null },
     });
-    return finalize(events, steps, toolCalls, navigated);
+    return finalize(events, steps, toolCalls, navigated, formalizationContext);
   }
 
   steps.push({ step: "invoke_tool", detail: "web_search" });
@@ -6536,30 +6553,6 @@ async function solve(prompt, history, prefs) {
   if (webSearch) {
     events.push(`handler:${webSearch.intent}`);
     steps.push({ step: "dispatch_handler", detail: "tryWebSearch" });
-    // Issue #153: once the search returns a real entity id, fold it into the
-    // formalization so the trace shows the resolved tuple alongside the
-    // initial placeholder. Skip the extra step if the search did not return
-    // a usable id (e.g. all providers failed).
-    if (webSearch.formalizedObject) {
-      const resolved = resolveFormalizationWithId(
-        formalization,
-        webSearch.formalizedObject,
-      );
-      if (resolved) {
-        events.push(`formalization:resolved:${resolved.tuple}`);
-        steps.push({
-          step: "formalize_resolved",
-          detail: formalizationDetail(resolved),
-          formalization: {
-            raw: resolved.raw,
-            subject: resolved.subject,
-            verb: resolved.verb,
-            object: resolved.object,
-            tuple: resolved.tuple,
-          },
-        });
-      }
-    }
     toolCalls.push({
       tool: "web_search",
       inputs: { prompt, language, query: webSearch.query || "" },
@@ -6569,7 +6562,7 @@ async function solve(prompt, history, prefs) {
         formalizedObject: webSearch.formalizedObject || "",
       },
     });
-    return finalize(events, steps, toolCalls, webSearch);
+    return finalize(events, steps, toolCalls, webSearch, formalizationContext);
   }
 
   steps.push({ step: "invoke_tool", detail: "wikipedia_lookup" });
@@ -6591,7 +6584,7 @@ async function solve(prompt, history, prefs) {
       },
       outputs: { intent: wiki.intent, confidence: wiki.confidence },
     });
-    return finalize(events, steps, toolCalls, wiki);
+    return finalize(events, steps, toolCalls, wiki, formalizationContext);
   }
   toolCalls.push({
     tool: "wikipedia_lookup",
@@ -6607,7 +6600,7 @@ async function solve(prompt, history, prefs) {
   if (whoIs) {
     events.push(`handler:${whoIs.intent}`);
     steps.push({ step: "dispatch_handler", detail: "tryWhoIsQuestion" });
-    return finalize(events, steps, toolCalls, whoIs);
+    return finalize(events, steps, toolCalls, whoIs, formalizationContext);
   }
 
   events.push("fallback:unknown");
@@ -6617,11 +6610,73 @@ async function solve(prompt, history, prefs) {
     content: answerFor("unknown", language),
     confidence: 0.1,
     evidence: ["fallback:unknown", `language:${language}`],
+  }, formalizationContext);
+}
+
+// Issue #180: every handler hit flows through this helper so the trace shows
+// the resolved-formalization fold (when the handler exposes a `formalizedObject`)
+// followed by a uniform `deformalize` step that captures how the symbolic
+// answer was projected into the natural-language `content`. Keeping the logic
+// here means new handlers automatically participate in the architecture
+// without having to repeat the bookkeeping.
+function applyResolvedFormalization(events, steps, formalizationContext, answer) {
+  if (!formalizationContext || !answer || !answer.formalizedObject) return;
+  const resolved = resolveFormalizationWithId(
+    formalizationContext.initial,
+    answer.formalizedObject,
+  );
+  if (!resolved) return;
+  // Skip the extra step when the placeholder already matched the resolved id
+  // (e.g. cache hits where the formalization tuple already had a Q-id).
+  if (resolved.tuple === formalizationContext.initial.tuple) return;
+  formalizationContext.resolved = resolved;
+  events.push(`formalization:resolved:${resolved.tuple}`);
+  steps.push({
+    step: "formalize_resolved",
+    detail: formalizationDetail(resolved),
+    formalization: {
+      raw: resolved.raw,
+      subject: resolved.subject,
+      verb: resolved.verb,
+      object: resolved.object,
+      tuple: resolved.tuple,
+    },
   });
 }
 
-function finalize(events, steps, toolCalls, answer) {
+function deformalizeProjection(formalizationContext, answer) {
+  const tuple =
+    (formalizationContext &&
+      ((formalizationContext.resolved && formalizationContext.resolved.tuple) ||
+        (formalizationContext.initial && formalizationContext.initial.tuple))) ||
+    "(@USER OP:express ?)";
   const evidence = Array.isArray(answer.evidence) ? answer.evidence : [];
+  const content = String(answer.content || "");
+  const firstLine = content.split(/\r?\n/, 1)[0] || "";
+  const projection = firstLine.length > 96 ? `${firstLine.slice(0, 96)}…` : firstLine;
+  return {
+    tuple,
+    intent: answer.intent || "unknown",
+    contentChars: content.length,
+    evidenceCount: evidence.length,
+    language:
+      (formalizationContext && formalizationContext.language) ||
+      answer.language ||
+      "",
+    summary: `${tuple} ⇒ ${answer.intent || "unknown"}: ${projection}`,
+  };
+}
+
+function finalize(events, steps, toolCalls, answer, formalizationContext) {
+  applyResolvedFormalization(events, steps, formalizationContext, answer);
+  const evidence = Array.isArray(answer.evidence) ? answer.evidence : [];
+  const projection = deformalizeProjection(formalizationContext, answer);
+  events.push(`deformalize:${projection.tuple}:${projection.intent}`);
+  steps.push({
+    step: "deformalize",
+    detail: projection.summary,
+    projection,
+  });
   const trace = events.map((event) => `trace:${event}`);
   const result = {
     intent: answer.intent,
@@ -6633,6 +6688,9 @@ function finalize(events, steps, toolCalls, answer) {
   };
   if (answer.iframeUrl) {
     result.iframeUrl = answer.iframeUrl;
+  }
+  if (answer.diagnostics) {
+    result.diagnostics = answer.diagnostics;
   }
   return result;
 }
@@ -6810,6 +6868,7 @@ self.onmessage = async (event) => {
     steps: answer.steps,
     toolCalls: answer.toolCalls,
     iframeUrl: answer.iframeUrl || null,
+    diagnostics: answer.diagnostics || null,
   });
 };
 
