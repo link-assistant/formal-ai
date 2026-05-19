@@ -3,7 +3,12 @@ const { defineConfig, devices } = require('@playwright/test');
 
 module.exports = defineConfig({
   testDir: './tests',
-  testMatch: ['**/demo.spec.js', '**/multilingual.spec.js', '**/connectivity.spec.js'],
+  testMatch: [
+    '**/demo.spec.js',
+    '**/multilingual.spec.js',
+    '**/connectivity.spec.js',
+    '**/issue-153.spec.js',
+  ],
   timeout: 30_000,
   retries: 1,
   reporter: [['html', { open: 'never' }], ['list']],

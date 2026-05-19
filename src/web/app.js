@@ -23,6 +23,7 @@ const ASSET_VERSION =
   typeof window !== "undefined" ? window.FORMAL_AI_ASSET_VERSION || "" : "";
 const ISSUE_REPOSITORY = "link-assistant/formal-ai";
 const ISSUE_LABELS = "bug";
+const SOURCE_CODE_URL = `https://github.com/${ISSUE_REPOSITORY}`;
 const UNKNOWN_ANSWER =
   "I cannot answer that from local Links Notation rules yet. Please add a fact or add a rule in Links Notation, then run the request again.";
 const IDENTITY_ANSWER =
@@ -422,6 +423,10 @@ const PREFERENCE_DEFAULTS = {
   sidebarTraceCollapsed: false,
   sidebarConversationsCollapsed: false,
   sidebarSettingsCollapsed: false,
+  // Issue #153: the side panel is collapsible to give the chat full viewport
+  // width on desktop. The drawer view on mobile stays controlled by the
+  // separate `mobileMenuOpen` toggle so phones can still slide it in.
+  sidebarCollapsed: false,
   showDeletedConversations: false,
   // Issue #27: random greeting variations are opt-in but default to on so
   // newcomers see the multilingual surface immediately.
@@ -1067,6 +1072,59 @@ function createMessage(role, content, extra = {}) {
   };
 }
 
+// Issue #153: dedicated renderer for the formalize / formalize_resolved
+// diagnostics step. Keeps the SVO layout consistent regardless of source
+// language and shows the canonical id prefixes (`Q`, `WP:`, `WT:`, `OP:`,
+// `@USER`) so reviewers can verify the symbolic mapping. The verb slot
+// labels the SVO triple in the user's UI language.
+function FormalizationView({ formalization, t }) {
+  if (!formalization) return null;
+  return h(
+    "div",
+    { className: "formalization-view", "data-testid": "formalization" },
+    formalization.raw
+      ? h(
+          "div",
+          { className: "formalization-raw" },
+          h("code", null, formalization.raw),
+          h("span", { className: "formalization-arrow", "aria-hidden": "true" }, "→"),
+          h("code", { className: "formalization-tuple" }, formalization.tuple),
+        )
+      : h("code", { className: "formalization-tuple" }, formalization.tuple),
+    h(
+      "div",
+      { className: "formalization-svo" },
+      h(
+        "span",
+        { className: "formalization-svo-label" },
+        t("message.formalizationSubjectVerbObject"),
+      ),
+      h(
+        "ol",
+        { className: "formalization-svo-list" },
+        h(
+          "li",
+          null,
+          h("span", { className: "formalization-slot" }, "S"),
+          h("code", null, formalization.subject || ""),
+        ),
+        h(
+          "li",
+          null,
+          h("span", { className: "formalization-slot" }, "V"),
+          h("code", null, formalization.verb || ""),
+        ),
+        h(
+          "li",
+          null,
+          h("span", { className: "formalization-slot" }, "O"),
+          h("code", null, formalization.object || ""),
+        ),
+      ),
+    ),
+  );
+}
+
 function escapeHtml(value) {
   return value
     .replaceAll("&", "&amp;")
@@ -1557,22 +1615,31 @@ function Message({ message, diagnosticsMode, reportIssueUrl, t }) {
                       h(
                         "span",
                         { className: "diagnostics-step-name" },
-                        entry.step,
+                        entry.formalization
+                          ? t("message.formalization")
+                          : entry.step,
                       ),
                       h(
                         "span",
                         { className: "diagnostics-step-summary" },
-                        truncateDiagnosticDetail(entry.detail),
+                        entry.formalization
+                          ? truncateDiagnosticDetail(entry.formalization.tuple)
+                          : truncateDiagnosticDetail(entry.detail),
                       ),
                     ),
                     h(
                       "div",
                       { className: "diagnostics-detail-body" },
-                      h(
-                        "pre",
-                        { className: "diagnostics-payload" },
-                        formatDiagnosticPayload(entry.detail),
-                      ),
+                      entry.formalization
+                        ? h(FormalizationView, {
+                            formalization: entry.formalization,
+                            t,
+                          })
+                        : h(
+                            "pre",
+                            { className: "diagnostics-payload" },
+                            formatDiagnosticPayload(entry.detail),
+                          ),
                     ),
                   ),
                 ),
@@ -1738,6 +1805,17 @@ function MenuGlyph({ open }) {
   });
 }
 
+function SidebarToggleGlyph({ collapsed }) {
+  return h(
+    "span",
+    {
+      className: `btn-icon sidebar-toggle-icon ${collapsed ? "sidebar-toggle-icon-expand" : "sidebar-toggle-icon-collapse"}`,
+      "aria-hidden": "true",
+    },
+    collapsed ? "▶" : "◀",
+  );
+}
+
 function App() {
   const workerRef = useRef(null);
   const pendingResponses = useRef(new Map());
@@ -1792,6 +1870,12 @@ function App() {
   );
   const [sidebarSettingsCollapsed, setSidebarSettingsCollapsed] = useState(
     initialPreferences.current.sidebarSettingsCollapsed,
+  );
+  // Issue #153: persistent desktop sidebar collapse — separate from the
+  // transient `mobileMenuOpen` drawer so wide-screen layouts can dedicate the
+  // viewport to chat without losing the user's accordion state.
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(
+    Boolean(initialPreferences.current.sidebarCollapsed),
   );
   const [showDeletedConversations, setShowDeletedConversations] = useState(
     Boolean(initialPreferences.current.showDeletedConversations),
@@ -2260,6 +2344,7 @@ function App() {
       sidebarTraceCollapsed,
       sidebarConversationsCollapsed,
       sidebarSettingsCollapsed,
+      sidebarCollapsed,
       showDeletedConversations,
       greetingVariations,
       guessProbability,
@@ -2284,6 +2369,7 @@ function App() {
     sidebarTraceCollapsed,
     sidebarConversationsCollapsed,
     sidebarSettingsCollapsed,
+    sidebarCollapsed,
     showDeletedConversations,
     greetingVariations,
     guessProbability,
@@ -2805,6 +2891,23 @@ function App() {
         h(MenuGlyph, { open: mobileMenuOpen }),
       ),
       h(
+        "button",
+        {
+          type: "button",
+          className: `sidebar-toggle${sidebarCollapsed ? " is-collapsed" : ""}`,
+          "data-testid": "sidebar-toggle",
+          "aria-pressed": !sidebarCollapsed,
+          "aria-label": sidebarCollapsed
+            ? t("buttons.expandSidebar")
+            : t("buttons.collapseSidebar"),
+          title: sidebarCollapsed
+            ? t("titles.expandSidebar")
+            : t("titles.collapseSidebar"),
+          onClick: () => setSidebarCollapsed((value) => !value),
+        },
+        h(SidebarToggleGlyph, { collapsed: sidebarCollapsed }),
+      ),
+      h(
         "div",
         { className: "brand" },
         h("span", { className: "mark" }, "FA"),
@@ -2814,13 +2917,40 @@ function App() {
       h(
         "div",
         { className: "topbar-actions" },
-        h("span", { className: "demo-status", "data-testid": "demo-status", role: "status" }, demoStatus),
-        diagnosticsMode ? h("span", { className: "status" }, workerState) : null,
+        h(
+          "span",
+          {
+            className: "demo-status",
+            "data-testid": "demo-status",
+            "data-menu-priority": "7",
+            role: "status",
+          },
+          demoStatus,
+        ),
+        diagnosticsMode
+          ? h("span", { className: "status", "data-menu-priority": "7" }, workerState)
+          : null,
+        h(
+          "a",
+          {
+            className: "source-code-button",
+            "data-testid": "source-code",
+            "data-menu-priority": "5",
+            href: SOURCE_CODE_URL,
+            target: "_blank",
+            rel: "noopener noreferrer",
+            title: t("titles.sourceCode"),
+            "aria-label": t("buttons.sourceCode"),
+          },
+          h("span", { className: "btn-icon", "aria-hidden": "true" }, "💻"),
+          h("span", { className: "btn-label" }, t("buttons.sourceCode")),
+        ),
         h(
           "a",
           {
             className: "report-button",
             "data-testid": "report-issue",
+            "data-menu-priority": "1",
             href: currentReportUrl,
             target: "_blank",
             rel: "noopener noreferrer",
@@ -2836,6 +2966,7 @@ function App() {
             type: "button",
             className: "memory-button",
             "data-testid": "memory-export",
+            "data-menu-priority": "6",
             onClick: handleExportMemory,
             title: t("titles.exportMemory"),
             "aria-label": t("buttons.exportMemory"),
@@ -2849,6 +2980,7 @@ function App() {
             type: "button",
             className: "memory-button",
             "data-testid": "memory-import",
+            "data-menu-priority": "6",
             onClick: triggerImportMemory,
             title: t("titles.importMemory"),
             "aria-label": t("buttons.importMemory"),
@@ -2871,6 +3003,7 @@ function App() {
                 className: "memory-status",
                 role: "status",
                 "data-testid": "memory-status",
+                "data-menu-priority": "7",
               },
               memoryStatus,
             )
@@ -2880,6 +3013,7 @@ function App() {
           {
             type: "button",
             className: "diagnostics-toggle",
+            "data-menu-priority": "2",
             "aria-pressed": diagnosticsMode,
             onClick: () => setDiagnosticsMode((value) => !value),
             title: diagnosticsMode
@@ -2889,7 +3023,7 @@ function App() {
               ? t("buttons.diagnosticsOn")
               : t("buttons.diagnostics"),
           },
-          h("span", { className: "btn-icon", "aria-hidden": "true" }, "🔍"),
+          h("span", { className: "btn-icon", "aria-hidden": "true" }, "🧪"),
           h(
             "span",
             { className: "btn-label" },
@@ -2902,6 +3036,7 @@ function App() {
             type: "button",
             className: "agent-toggle",
             "data-testid": "agent-toggle",
+            "data-menu-priority": "4",
             "aria-pressed": agentMode,
             title: agentMode
               ? t("titles.agentOn")
@@ -2925,6 +3060,7 @@ function App() {
           {
             type: "button",
             className: "mode-toggle",
+            "data-menu-priority": "3",
             "aria-pressed": demoMode,
             onClick: () => setDemoMode((value) => !value),
             title: demoMode
@@ -2951,14 +3087,15 @@ function App() {
     h(
       "section",
       {
-        className: "workspace",
+        className: `workspace${sidebarCollapsed ? " sidebar-collapsed" : ""}`,
         style: { "--context-panel-width": `${contextPanelWidth}px` },
       },
       h(
         "aside",
         {
-          className: `context-panel${mobileMenuOpen ? " is-mobile-open" : ""}`,
+          className: `context-panel${mobileMenuOpen ? " is-mobile-open" : ""}${sidebarCollapsed ? " is-desktop-collapsed" : ""}`,
           "data-testid": "context-panel",
+          "aria-hidden": sidebarCollapsed && !mobileMenuOpen ? "true" : "false",
         },
         h(
           "div",
@@ -2994,6 +3131,18 @@ function App() {
           h(
             "div",
             { className: "drawer-action-list" },
+            h(
+              "a",
+              {
+                className: "drawer-action",
+                "data-testid": "drawer-source-code",
+                href: SOURCE_CODE_URL,
+                target: "_blank",
+                rel: "noopener noreferrer",
+              },
+              h("span", { className: "btn-icon", "aria-hidden": "true" }, "💻"),
+              h("span", null, t("buttons.sourceCode")),
+            ),
             h(
               "a",
               {
@@ -3036,7 +3185,7 @@ function App() {
                 "aria-pressed": diagnosticsMode,
                 onClick: () => setDiagnosticsMode((value) => !value),
               },
-              h("span", { className: "btn-icon", "aria-hidden": "true" }, "🔍"),
+              h("span", { className: "btn-icon", "aria-hidden": "true" }, "🧪"),
               h("span", null, diagnosticsMode ? t("buttons.diagnosticsOn") : t("buttons.diagnostics")),
             ),
             h(
@@ -3077,9 +3226,11 @@ function App() {
                 type: "button",
                 className: "conversation-new",
                 "data-testid": "conversation-new",
+                disabled:
+                  messages.length === 0 &&
+                  !currentConversationId &&
+                  prompt.trim().length === 0,
                 onClick: () => {
-                  // Drop the current thread id so the next user message mints a
-                  // fresh one and assigns its events accordingly.
                   currentConversationRef.current = "";
                   setCurrentConversationId("");
                   setMessages([]);
@@ -3683,8 +3834,25 @@ function App() {
                 disabled: pending || demoMode || !prompt.trim(),
                 "data-testid": "chat-composer-submit",
               },
-              h("span", { className: "send-icon", "aria-hidden": "true" }, pending ? "..." : "↑"),
-              h("span", { className: "send-label" }, pending ? "..." : t("composer.send")),
+              pending
+                ? h(
+                    "span",
+                    {
+                      className: "send-spinner",
+                      "aria-hidden": "true",
+                      "data-testid": "send-spinner",
+                    },
+                  )
+                : h(
+                    "span",
+                    { className: "send-icon", "aria-hidden": "true" },
+                    "↑",
+                  ),
+              h(
+                "span",
+                { className: "send-label" },
+                pending ? t("composer.sending") : t("composer.send"),
+              ),
             ),
           ),
           attachmentStatus
