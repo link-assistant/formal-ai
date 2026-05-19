@@ -1011,6 +1011,59 @@ function createMessage(role, content, extra = {}) {
   };
 }
 
+// Issue #153: dedicated renderer for the formalize / formalize_resolved
+// diagnostics step. Keeps the SVO layout consistent regardless of source
+// language and shows the canonical id prefixes (`Q`, `WP:`, `WT:`, `OP:`,
+// `@USER`) so reviewers can verify the symbolic mapping. The verb slot
+// labels the SVO triple in the user's UI language.
+function FormalizationView({ formalization, t }) {
+  if (!formalization) return null;
+  return h(
+    "div",
+    { className: "formalization-view", "data-testid": "formalization" },
+    formalization.raw
+      ? h(
+          "div",
+          { className: "formalization-raw" },
+          h("code", null, formalization.raw),
+          h("span", { className: "formalization-arrow", "aria-hidden": "true" }, "→"),
+          h("code", { className: "formalization-tuple" }, formalization.tuple),
+        )
+      : h("code", { className: "formalization-tuple" }, formalization.tuple),
+    h(
+      "div",
+      { className: "formalization-svo" },
+      h(
+        "span",
+        { className: "formalization-svo-label" },
+        t("message.formalizationSubjectVerbObject"),
+      ),
+      h(
+        "ol",
+        { className: "formalization-svo-list" },
+        h(
+          "li",
+          null,
+          h("span", { className: "formalization-slot" }, "S"),
+          h("code", null, formalization.subject || ""),
+        ),
+        h(
+          "li",
+          null,
+          h("span", { className: "formalization-slot" }, "V"),
+          h("code", null, formalization.verb || ""),
+        ),
+        h(
+          "li",
+          null,
+          h("span", { className: "formalization-slot" }, "O"),
+          h("code", null, formalization.object || ""),
+        ),
+      ),
+    ),
+  );
+}
+
 function escapeHtml(value) {
   return value
     .replaceAll("&", "&amp;")
@@ -1418,22 +1471,31 @@ function Message({ message, diagnosticsMode, reportIssueUrl, t }) {
                       h(
                         "span",
                         { className: "diagnostics-step-name" },
-                        entry.step,
+                        entry.formalization
+                          ? t("message.formalization")
+                          : entry.step,
                       ),
                       h(
                         "span",
                         { className: "diagnostics-step-summary" },
-                        truncateDiagnosticDetail(entry.detail),
+                        entry.formalization
+                          ? truncateDiagnosticDetail(entry.formalization.tuple)
+                          : truncateDiagnosticDetail(entry.detail),
                       ),
                     ),
                     h(
                       "div",
                       { className: "diagnostics-detail-body" },
-                      h(
-                        "pre",
-                        { className: "diagnostics-payload" },
-                        formatDiagnosticPayload(entry.detail),
-                      ),
+                      entry.formalization
+                        ? h(FormalizationView, {
+                            formalization: entry.formalization,
+                            t,
+                          })
+                        : h(
+                            "pre",
+                            { className: "diagnostics-payload" },
+                            formatDiagnosticPayload(entry.detail),
+                          ),
                     ),
                   ),
                 ),

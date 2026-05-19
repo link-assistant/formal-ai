@@ -1034,6 +1034,91 @@ body.is-resizing-context {
   margin-top: 4px;
 }
 
+/* Issue #153: formalization view — Subject-Verb-Object tuple rendering for
+   the `formalize` and `formalize_resolved` diagnostics steps. The raw prompt
+   is shown on the left with an arrow → to the canonical tuple, then the SVO
+   slots are listed below with one-letter labels (S/V/O). */
+.formalization-view {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 13px;
+  color: #2c3a44;
+  background: #f5f8f9;
+  border: 1px solid #cfdadf;
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.formalization-raw {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.formalization-raw code,
+.formalization-tuple {
+  background: transparent;
+  color: #1f2d36;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 13px;
+  word-break: break-word;
+}
+
+.formalization-arrow {
+  color: #6b7d89;
+  font-weight: 700;
+}
+
+.formalization-svo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.formalization-svo-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #6b7d89;
+}
+
+.formalization-svo-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.formalization-svo-list li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.formalization-slot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  background: #e3ebee;
+  color: #40515f;
+  font-weight: 700;
+  font-size: 12px;
+}
+
+.formalization-svo-list code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 13px;
+  color: #1f2d36;
+}
+
 .message-actions {
   display: flex;
   gap: 10px;
@@ -1848,6 +1933,28 @@ textarea:disabled {
   color: #d8d0c4;
 }
 
+:root[data-theme="dark"] .formalization-view {
+  background: #232726;
+  border-color: #343a3d;
+  color: #d8d0c4;
+}
+
+:root[data-theme="dark"] .formalization-raw code,
+:root[data-theme="dark"] .formalization-tuple,
+:root[data-theme="dark"] .formalization-svo-list code {
+  color: #ece7df;
+}
+
+:root[data-theme="dark"] .formalization-arrow,
+:root[data-theme="dark"] .formalization-svo-label {
+  color: #b7b0a7;
+}
+
+:root[data-theme="dark"] .formalization-slot {
+  background: #2c322f;
+  color: #c9d8d3;
+}
+
 :root[data-theme="dark"] .message-actions a {
   color: #91d7bc;
 }
@@ -2104,6 +2211,28 @@ textarea:disabled {
 
   :root:not([data-theme="light"]) .thinking-steps strong {
     color: #d8d0c4;
+  }
+
+  :root:not([data-theme="light"]) .formalization-view {
+    background: #232726;
+    border-color: #343a3d;
+    color: #d8d0c4;
+  }
+
+  :root:not([data-theme="light"]) .formalization-raw code,
+  :root:not([data-theme="light"]) .formalization-tuple,
+  :root:not([data-theme="light"]) .formalization-svo-list code {
+    color: #ece7df;
+  }
+
+  :root:not([data-theme="light"]) .formalization-arrow,
+  :root:not([data-theme="light"]) .formalization-svo-label {
+    color: #b7b0a7;
+  }
+
+  :root:not([data-theme="light"]) .formalization-slot {
+    background: #2c322f;
+    color: #c9d8d3;
   }
 
   :root:not([data-theme="light"]) .message-actions a {
