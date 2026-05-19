@@ -1,4 +1,4 @@
-//! URL preview and browser-search handlers.
+//! URL fetch, URL navigation, and browser-search handlers.
 
 use crate::engine::{normalize_prompt, SymbolicAnswer};
 use crate::event_log::EventLog;
@@ -6,26 +6,61 @@ use crate::language::detect as detect_language;
 
 use super::finalize_simple;
 
+/// Match prompts that explicitly ask the engine to perform an HTTP request
+/// (e.g. `fetch google.com`, `Сделай запрос к google.com`). In the browser
+/// demo the actual `fetch()` is attempted first, with an iframe fallback when
+/// CORS blocks the request. Non-fetch URL prompts (`Navigate to github.com`,
+/// `Visit github.com`, ...) are handled by [`try_url_navigate`] instead.
 pub fn try_http_fetch(
     prompt: &str,
     normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
-    let url = extract_fetch_url(prompt, normalized)?;
+    let url = extract_http_fetch_url(prompt, normalized)?;
     log.append("http_fetch:request", url.clone());
-    log.append("url_preview:iframe", url.clone());
     let body = format!(
-        "URL requested for `{url}`.\n\n\
-         Open this link: [{url}]({url}).\n\n\
-         The browser demo also shows the page in an embedded iframe when the \
-         site allows framing. Use the open-in-new-tab control if the site blocks \
-         embedding, or the full-screen control to view it at viewport size."
+        "HTTP fetch requested for `{url}`.\n\n\
+         The browser demo attempts a direct `fetch()` first and shows the \
+         response body when the server allows CORS. If the request is blocked \
+         by CORS, the page falls back to an embedded iframe with open-in-new-tab \
+         and full-screen controls.\n\n\
+         Source: [{url}]({url})"
     );
     Some(finalize_simple(
         prompt,
         log,
         "http_fetch",
         "response:http_fetch",
+        &body,
+        0.95,
+    ))
+}
+
+/// Match prompts that ask the assistant to navigate to or display a URL
+/// without performing an HTTP request (e.g. `Navigate to github.com`,
+/// `Go to github.com`, `Перейди на github.com`). The browser demo renders
+/// the link directly and previews it in an iframe; no `fetch()` is attempted.
+pub fn try_url_navigate(
+    prompt: &str,
+    normalized: &str,
+    log: &mut EventLog,
+) -> Option<SymbolicAnswer> {
+    let url = extract_url_navigate_url(prompt, normalized)?;
+    log.append("url_navigate:request", url.clone());
+    log.append("url_preview:iframe", url.clone());
+    let body = format!(
+        "URL requested for `{url}`.\n\n\
+         Open this link: [{url}]({url}).\n\n\
+         The browser demo also shows the page in an embedded iframe when the \
+         site allows framing. Use the open-in-new-tab control if the site \
+         blocks embedding, or the full-screen control to view it at viewport \
+         size."
+    );
+    Some(finalize_simple(
+        prompt,
+        log,
+        "url_navigate",
+        "response:url_navigate",
         &body,
         0.95,
     ))
@@ -68,9 +103,17 @@ pub fn try_web_search(
     ))
 }
 
-fn extract_fetch_url(prompt: &str, normalized: &str) -> Option<String> {
+fn extract_http_fetch_url(prompt: &str, normalized: &str) -> Option<String> {
     let (raw_candidate, url) = first_url_candidate(prompt)?;
-    if !is_url_request_prompt(prompt, normalized, &raw_candidate) {
+    if !is_http_fetch_prompt(prompt, normalized, &raw_candidate) {
+        return None;
+    }
+    Some(url)
+}
+
+fn extract_url_navigate_url(prompt: &str, normalized: &str) -> Option<String> {
+    let (raw_candidate, url) = first_url_candidate(prompt)?;
+    if !is_url_navigate_prompt(prompt, normalized, &raw_candidate) {
         return None;
     }
     Some(url)
@@ -152,64 +195,160 @@ fn looks_like_hostname(value: &str) -> bool {
     })
 }
 
-fn is_url_request_prompt(prompt: &str, normalized: &str, raw_candidate: &str) -> bool {
+/// Prefixes that mean "perform an HTTP request" — the browser worker will
+/// attempt a real `fetch()` for these prompts before falling back to iframe.
+const HTTP_FETCH_PREFIXES: &[&str] = &[
+    "fetch ",
+    "fetch url ",
+    "http fetch ",
+    "request ",
+    "make request to ",
+    "send request to ",
+    "сделай запрос ",
+    "сделай http запрос ",
+    "выполни запрос ",
+    "выполни http запрос ",
+    "запроси ",
+    "получи ",
+    "http запрос к ",
+    "http запрос на ",
+    "сделать запрос к ",
+    "выполнить запрос к ",
+];
+
+/// Markers that mean "perform an HTTP request" even when they appear after
+/// other words in the prompt.
+const HTTP_FETCH_MARKERS: &[&str] = &[
+    "make a request to",
+    "make an http request to",
+    "send a request to",
+    "send an http request to",
+    "http request to",
+    "http get to",
+    "fetch the url",
+    "fetch this url",
+    "fetch the page",
+    "сделай запрос к",
+    "сделай запрос на",
+    "сделай http запрос к",
+    "сделай http запрос на",
+    "выполни запрос к",
+    "выполни запрос на",
+    "выполни http запрос к",
+    "выполни http запрос на",
+    "запрос к",
+    "запрос на",
+    "http запрос к",
+    "http запрос на",
+];
+
+fn is_http_fetch_prompt(prompt: &str, normalized: &str, _raw_candidate: &str) -> bool {
+    let normalized_words = normalize_prompt(prompt);
+    let raw = prompt.trim_start().to_lowercase();
+    if HTTP_FETCH_PREFIXES.iter().any(|prefix| {
+        normalized_words.starts_with(prefix)
+            || normalized.starts_with(prefix)
+            || raw.starts_with(prefix)
+    }) {
+        return true;
+    }
+    HTTP_FETCH_MARKERS.iter().any(|marker| {
+        normalized_words.contains(marker) || normalized.contains(marker) || raw.contains(marker)
+    })
+}
+
+/// Prefixes that mean "navigate to / show this page" — the browser worker
+/// must NOT attempt `fetch()` for these prompts; it just renders the link
+/// and the iframe preview.
+const URL_NAVIGATE_PREFIXES: &[&str] = &[
+    "navigate to ",
+    "navigate ",
+    "go to ",
+    "goto ",
+    "visit ",
+    "browse to ",
+    "browse ",
+    "show ",
+    "show me ",
+    "display ",
+    "load ",
+    "open ",
+    "open url ",
+    "open the url ",
+    "open site ",
+    "open website ",
+    "open page ",
+    "open the page ",
+    "open the website ",
+    "take me to ",
+    "preview ",
+    "view ",
+    "see ",
+    "перейди ",
+    "перейди на ",
+    "переходи на ",
+    "переходи ",
+    "перейдите на ",
+    "открой ",
+    "открой сайт ",
+    "открой страницу ",
+    "открой ссылку ",
+    "открой урл ",
+    "покажи ",
+    "покажи сайт ",
+    "покажи страницу ",
+    "покажи мне ",
+    "загрузи ",
+    "загрузи страницу ",
+    "посети ",
+    "зайди на ",
+    "зайди ",
+    "просмотри ",
+    "отобрази ",
+];
+
+/// Markers (anywhere in the prompt) that route to the URL navigation intent.
+const URL_NAVIGATE_MARKERS: &[&str] = &[
+    "navigate to",
+    "go to",
+    "goto",
+    "browse to",
+    "take me to",
+    "open the page",
+    "open the site",
+    "open the website",
+    "open the url",
+    "open url",
+    "перейди на",
+    "переходи на",
+    "перейдите на",
+    "открой сайт",
+    "открой страницу",
+    "открой ссылку",
+    "открой урл",
+    "покажи сайт",
+    "покажи страницу",
+    "зайди на",
+];
+
+fn is_url_navigate_prompt(prompt: &str, normalized: &str, raw_candidate: &str) -> bool {
     let normalized_words = normalize_prompt(prompt);
     let prompt_trimmed = prompt.trim_start();
     if prompt_trimmed.starts_with(raw_candidate) {
+        // Bare URL — treat as navigation, not a request to fetch.
         return true;
     }
-    let prefixes = [
-        "fetch ",
-        "get ",
-        "open ",
-        "navigate to ",
-        "go to ",
-        "visit ",
-        "browse to ",
-        "show ",
-        "show me ",
-        "display ",
-        "load ",
-        "request ",
-        "fetch url ",
-        "open url ",
-        "navigate url ",
-        "go to url ",
-        "сделай запрос ",
-        "выполни запрос ",
-        "запроси ",
-        "получи ",
-        "открой ",
-        "открой сайт ",
-        "покажи ",
-        "загрузи ",
-        "перейди ",
-        "перейди на ",
-    ];
-    if prefixes
-        .iter()
-        .any(|prefix| normalized_words.starts_with(prefix) || normalized.starts_with(prefix))
-    {
+    let raw = prompt_trimmed.to_lowercase();
+    if URL_NAVIGATE_PREFIXES.iter().any(|prefix| {
+        normalized_words.starts_with(prefix)
+            || normalized.starts_with(prefix)
+            || raw.starts_with(prefix)
+    }) {
         return true;
     }
-    let markers = [
-        "make a request to",
-        "send a request to",
-        "http request to",
-        "request to",
-        "navigate to",
-        "go to",
-        "browse to",
-        "сделай запрос к",
-        "сделай запрос на",
-        "выполни запрос к",
-        "выполни запрос на",
-        "запрос к",
-        "запрос на",
-    ];
-    markers
-        .iter()
-        .any(|marker| normalized_words.contains(marker) || normalized.contains(marker))
+    URL_NAVIGATE_MARKERS.iter().any(|marker| {
+        normalized_words.contains(marker) || normalized.contains(marker) || raw.contains(marker)
+    })
 }
 
 fn extract_web_search_query(prompt: &str, normalized: &str) -> Option<String> {

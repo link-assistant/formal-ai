@@ -537,15 +537,24 @@ fn environment_directory_declares_every_supported_surface() {
 fn fetch_prompt_returns_http_fetch_intent_not_unknown() {
     // Regression test for issue #71: "fetch google.com" was returning
     // intent: unknown instead of routing to the http_fetch handler.
+    //
+    // Issue #125 follow-up: the http_fetch intent is reserved for prompts that
+    // explicitly ask to perform an HTTP request (fetch, request, "Сделай
+    // запрос к ..."). Navigation prompts ("Navigate to ...", "Visit ...")
+    // route to the separate `url_navigate` intent instead — see
+    // [`url_navigation_variations_return_https_link_without_fetch_advice`].
     let cases = [
         "fetch google.com",
         "fetch https://example.com",
         "fetch http://example.com/path",
         "fetch example.com",
+        "Make a request to google.com",
+        "Send a request to https://example.com",
         // Regression test for issue #107: the reported Russian prompt
         // "Сделай запрос к google.com" used to fall through to unknown.
         "Сделай запрос к google.com",
         "сделай запрос к https://example.com/path",
+        "Выполни запрос к google.com",
         "запроси google.com",
     ];
 
@@ -566,25 +575,53 @@ fn fetch_prompt_returns_http_fetch_intent_not_unknown() {
 
 #[test]
 fn url_navigation_variations_return_https_link_without_fetch_advice() {
+    // Regression test for issue #125: navigation-style prompts must route to
+    // the `url_navigate` intent (no HTTP fetch attempted) and surface a direct
+    // HTTPS link plus iframe preview controls. They must not be conflated
+    // with the `http_fetch` intent, which is reserved for explicit requests
+    // such as `Make a request to google.com`.
     let cases = [
         ("Navigate to github.com", "https://github.com"),
         ("Go to github.com", "https://github.com"),
+        ("Goto github.com", "https://github.com"),
         ("Visit github.com", "https://github.com"),
         ("Browse to github.com", "https://github.com"),
         ("Show github.com", "https://github.com"),
+        ("Show me github.com", "https://github.com"),
+        ("Display github.com", "https://github.com"),
+        ("Load github.com", "https://github.com"),
+        ("Take me to github.com", "https://github.com"),
+        ("Preview github.com", "https://github.com"),
+        ("View github.com", "https://github.com"),
+        ("Open github.com", "https://github.com"),
+        ("Open url github.com", "https://github.com"),
+        ("Open the page github.com", "https://github.com"),
         (
             "Open https://github.com/link-assistant/formal-ai",
             "https://github.com/link-assistant/formal-ai",
         ),
+        ("github.com", "https://github.com"),
+        ("https://github.com", "https://github.com"),
         ("Перейди на github.com", "https://github.com"),
+        ("Перейдите на github.com", "https://github.com"),
+        ("Переходи на github.com", "https://github.com"),
+        ("Открой github.com", "https://github.com"),
+        ("Открой сайт github.com", "https://github.com"),
+        ("Открой страницу github.com", "https://github.com"),
+        ("Открой ссылку github.com", "https://github.com"),
+        ("Покажи github.com", "https://github.com"),
+        ("Покажи сайт github.com", "https://github.com"),
+        ("Загрузи github.com", "https://github.com"),
+        ("Посети github.com", "https://github.com"),
+        ("Зайди на github.com", "https://github.com"),
     ];
 
     for (prompt, expected_url) in cases {
         let response = FormalAiEngine.answer(prompt);
 
         assert_eq!(
-            response.intent, "http_fetch",
-            "prompt {prompt:?} should resolve to http_fetch, got {:?} — answer: {}",
+            response.intent, "url_navigate",
+            "prompt {prompt:?} should resolve to url_navigate, got {:?} — answer: {}",
             response.intent, response.answer
         );
         assert!(
@@ -593,11 +630,46 @@ fn url_navigation_variations_return_https_link_without_fetch_advice() {
             response.answer
         );
         assert!(
-            !response.answer.contains("fetch()") && !response.answer.to_lowercase().contains("cors"),
+            !response.answer.to_lowercase().contains("cors")
+                && !response.answer.contains("fetch()"),
             "prompt {prompt:?} should not tell the user that the browser will try fetch/CORS first, got: {}",
             response.answer
         );
     }
+}
+
+#[test]
+fn http_fetch_and_url_navigate_intents_are_distinct() {
+    // Issue #125: ensure the two flows do not collide. `Make a request to X`
+    // must keep going through http_fetch (so the browser attempts an actual
+    // network request) while `Navigate to X` must surface the url_navigate
+    // intent (iframe-only, no fetch attempt). Both must surface the URL.
+    let fetch_prompt = "Make a request to google.com";
+    let navigate_prompt = "Navigate to google.com";
+
+    let fetch_response = FormalAiEngine.answer(fetch_prompt);
+    let navigate_response = FormalAiEngine.answer(navigate_prompt);
+
+    assert_eq!(
+        fetch_response.intent, "http_fetch",
+        "Make a request prompt must keep using http_fetch; got {:?}",
+        fetch_response.intent,
+    );
+    assert_eq!(
+        navigate_response.intent, "url_navigate",
+        "Navigate prompt must route to url_navigate; got {:?}",
+        navigate_response.intent,
+    );
+    assert!(fetch_response.answer.contains("https://google.com"));
+    assert!(navigate_response.answer.contains("https://google.com"));
+    // The navigation copy must not mention fetch()/CORS — the user explicitly
+    // asked us not to imply a network request will be attempted.
+    assert!(
+        !navigate_response.answer.to_lowercase().contains("cors")
+            && !navigate_response.answer.contains("fetch()"),
+        "navigate_response must not mention fetch/CORS, got: {}",
+        navigate_response.answer
+    );
 }
 
 #[test]

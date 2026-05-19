@@ -7,7 +7,7 @@ environments
     memory_export_command "Export memory button (formal-ai-memory.lino, full bundle)"
     bundle_export_command "Export memory button (alias for formal-ai-memory.lino since issue #27)"
     bundle_import_command "Import memory button (drag .lino)"
-    tools "intent_routing|hello_world|concept_lookup|fact_lookup|summarize_conversation|brainstorm|coreference|roleplay|wikipedia_lookup|calculator|http_fetch|web_search|conversation_recall|read_local_file|eval_js|append_memory|export_memory|import_memory"
+    tools "intent_routing|hello_world|concept_lookup|fact_lookup|summarize_conversation|brainstorm|coreference|roleplay|wikipedia_lookup|calculator|http_fetch|url_navigate|web_search|conversation_recall|read_local_file|eval_js|append_memory|export_memory|import_memory"
   environment "rust_library"
     label "formal-ai Rust crate"
     runtime "Rust 2021 edition (compiled in via include_str!)"

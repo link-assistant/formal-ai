@@ -3510,61 +3510,170 @@ function firstUrlCandidate(prompt) {
   return null;
 }
 
-function isUrlRequestPrompt(prompt, normalized, rawCandidate) {
-  const raw = String(prompt || "").trimStart().toLowerCase();
-  if (raw.startsWith(String(rawCandidate || "").toLowerCase())) return true;
-  if (isFetchPrompt(normalized)) return true;
-  const prefixes = [
-    "get ",
-    "open ",
-    "navigate to ",
-    "go to ",
-    "visit ",
-    "browse to ",
-    "show ",
-    "show me ",
-    "display ",
-    "load ",
-    "request ",
-    "fetch url ",
-    "open url ",
-    "navigate url ",
-    "go to url ",
-    "сделай запрос ",
-    "выполни запрос ",
-    "запроси ",
-    "получи ",
-    "открой ",
-    "открой сайт ",
-    "покажи ",
-    "загрузи ",
-    "перейди ",
-    "перейди на ",
-  ];
-  if (prefixes.some((prefix) => normalized.startsWith(prefix) || raw.startsWith(prefix))) {
-    return true;
-  }
-  const markers = [
-    "make a request to",
-    "send a request to",
-    "http request to",
-    "request to",
-    "navigate to",
-    "go to",
-    "browse to",
-    "сделай запрос к",
-    "сделай запрос на",
-    "выполни запрос к",
-    "выполни запрос на",
-    "запрос к",
-    "запрос на",
-  ];
-  return markers.some((marker) => normalized.includes(marker) || raw.includes(marker));
+const HTTP_FETCH_PREFIXES = [
+  "fetch ",
+  "fetch url ",
+  "fetch the url ",
+  "http fetch ",
+  "request ",
+  "make request to ",
+  "send request to ",
+  "сделай запрос ",
+  "сделай http запрос ",
+  "выполни запрос ",
+  "выполни http запрос ",
+  "запроси ",
+  "получи ",
+  "http запрос к ",
+  "http запрос на ",
+];
+
+const HTTP_FETCH_MARKERS = [
+  "make a request to",
+  "make an http request to",
+  "send a request to",
+  "send an http request to",
+  "http request to",
+  "http get to",
+  "fetch the url",
+  "fetch this url",
+  "fetch the page",
+  "сделай запрос к",
+  "сделай запрос на",
+  "сделай http запрос к",
+  "сделай http запрос на",
+  "выполни запрос к",
+  "выполни запрос на",
+  "выполни http запрос к",
+  "выполни http запрос на",
+  "запрос к",
+  "запрос на",
+  "http запрос к",
+  "http запрос на",
+];
+
+const URL_NAVIGATE_PREFIXES = [
+  "navigate to ",
+  "navigate ",
+  "go to ",
+  "goto ",
+  "visit ",
+  "browse to ",
+  "browse ",
+  "show ",
+  "show me ",
+  "display ",
+  "load ",
+  "open ",
+  "open url ",
+  "open the url ",
+  "open site ",
+  "open website ",
+  "open page ",
+  "open the page ",
+  "open the website ",
+  "take me to ",
+  "preview ",
+  "view ",
+  "see ",
+  "get ",
+  "перейди ",
+  "перейди на ",
+  "переходи на ",
+  "переходи ",
+  "перейдите на ",
+  "открой ",
+  "открой сайт ",
+  "открой страницу ",
+  "открой ссылку ",
+  "открой урл ",
+  "покажи ",
+  "покажи сайт ",
+  "покажи страницу ",
+  "покажи мне ",
+  "загрузи ",
+  "загрузи страницу ",
+  "посети ",
+  "зайди на ",
+  "зайди ",
+  "просмотри ",
+  "отобрази ",
+];
+
+const URL_NAVIGATE_MARKERS = [
+  "navigate to",
+  "go to",
+  "goto",
+  "browse to",
+  "take me to",
+  "open the page",
+  "open the site",
+  "open the website",
+  "open the url",
+  "open url",
+  "перейди на",
+  "переходи на",
+  "перейдите на",
+  "открой сайт",
+  "открой страницу",
+  "открой ссылку",
+  "открой урл",
+  "покажи сайт",
+  "покажи страницу",
+  "зайди на",
+];
+
+function startsWithAny(haystack, prefixes) {
+  return prefixes.some((prefix) => haystack.startsWith(prefix));
 }
 
-function extractFetchUrl(prompt, normalized) {
+function includesAny(haystack, markers) {
+  return markers.some((marker) => haystack.includes(marker));
+}
+
+function isHttpFetchPrompt(prompt, normalized) {
+  const raw = String(prompt || "").trimStart().toLowerCase();
+  if (isFetchPrompt(normalized)) return true;
+  if (
+    startsWithAny(normalized, HTTP_FETCH_PREFIXES) ||
+    startsWithAny(raw, HTTP_FETCH_PREFIXES)
+  ) {
+    return true;
+  }
+  return (
+    includesAny(normalized, HTTP_FETCH_MARKERS) ||
+    includesAny(raw, HTTP_FETCH_MARKERS)
+  );
+}
+
+function isUrlNavigatePrompt(prompt, normalized, rawCandidate) {
+  const raw = String(prompt || "").trimStart().toLowerCase();
+  if (raw.startsWith(String(rawCandidate || "").toLowerCase())) {
+    return true;
+  }
+  if (
+    startsWithAny(normalized, URL_NAVIGATE_PREFIXES) ||
+    startsWithAny(raw, URL_NAVIGATE_PREFIXES)
+  ) {
+    return true;
+  }
+  return (
+    includesAny(normalized, URL_NAVIGATE_MARKERS) ||
+    includesAny(raw, URL_NAVIGATE_MARKERS)
+  );
+}
+
+function extractHttpFetchUrl(prompt, normalized) {
   const candidate = firstUrlCandidate(prompt);
-  if (!candidate || !isUrlRequestPrompt(prompt, normalized, candidate.raw)) {
+  if (!candidate || !isHttpFetchPrompt(prompt, normalized)) {
+    return null;
+  }
+  return candidate.url;
+}
+
+function extractUrlNavigateUrl(prompt, normalized) {
+  const candidate = firstUrlCandidate(prompt);
+  if (!candidate || !isUrlNavigatePrompt(prompt, normalized, candidate.raw)) {
     return null;
   }
   return candidate.url;
@@ -3677,10 +3786,81 @@ async function searchWikipediaPages(query, language, limit) {
 
 async function tryFetch(prompt) {
   const normalized = normalizePrompt(prompt);
-  const url = extractFetchUrl(prompt, normalized);
+  const url = extractHttpFetchUrl(prompt, normalized);
   if (!url) return null;
 
-  const evidence = [`http_fetch:request:${url}`, `url_preview:iframe:${url}`];
+  const evidence = [`http_fetch:request:${url}`];
+
+  if (typeof fetch !== "function") {
+    return {
+      intent: "http_fetch",
+      content: `HTTP fetch is not available in this environment.\n\nURL: [${url}](${url})`,
+      confidence: 0.5,
+      evidence,
+      iframeUrl: url,
+    };
+  }
+
+  try {
+    const response = await fetch(url, { method: "GET", mode: "cors" });
+    const status = response.status;
+    const contentType = response.headers.get("content-type") || "";
+    let body = "";
+    if (contentType.includes("text/") || contentType.includes("application/json")) {
+      const text = await response.text();
+      body = text.length > 2000 ? `${text.slice(0, 2000)}\n\n*(truncated — ${text.length} bytes total)*` : text;
+    }
+    evidence.push(`http_fetch:status:${status}`);
+    const lines = [
+      `Fetched \`${url}\` — status **${status}**.`,
+      "",
+    ];
+    if (body) {
+      lines.push("Response body:");
+      lines.push("```");
+      lines.push(body);
+      lines.push("```");
+    } else {
+      lines.push(`Content-Type: \`${contentType || "unknown"}\` — binary or empty body, not shown.`);
+      lines.push("");
+      lines.push(`You can view this URL directly: [${url}](${url})`);
+    }
+    return {
+      intent: "http_fetch",
+      content: lines.join("\n"),
+      confidence: 0.95,
+      evidence,
+      iframeUrl: null,
+    };
+  } catch (err) {
+    // CORS block or network failure — fall back to iframe.
+    const isCors =
+      err instanceof TypeError &&
+      (err.message.toLowerCase().includes("cors") ||
+        err.message.toLowerCase().includes("network") ||
+        err.message.toLowerCase().includes("failed to fetch"));
+    evidence.push(`http_fetch:error:${isCors ? "cors" : "network"}`);
+    const lines = [
+      `Could not fetch \`${url}\` directly${isCors ? " (CORS restriction)" : " (network error)"}.`,
+      "",
+      "The page is shown in the embedded frame below. Use the open-in-new-tab control if the site blocks embedding, or the full-screen control to view it at viewport size.",
+    ];
+    return {
+      intent: "http_fetch",
+      content: lines.join("\n"),
+      confidence: 0.7,
+      evidence,
+      iframeUrl: url,
+    };
+  }
+}
+
+async function tryUrlNavigate(prompt) {
+  const normalized = normalizePrompt(prompt);
+  const url = extractUrlNavigateUrl(prompt, normalized);
+  if (!url) return null;
+
+  const evidence = [`url_navigate:request:${url}`, `url_preview:iframe:${url}`];
   const lines = [
     `URL requested for \`${url}\`.`,
     "",
@@ -3694,7 +3874,7 @@ async function tryFetch(prompt) {
   ];
 
   return {
-    intent: "http_fetch",
+    intent: "url_navigate",
     content: lines.join("\n"),
     confidence: 0.95,
     evidence,
@@ -3901,6 +4081,19 @@ async function solve(prompt, history, prefs) {
       outputs: { intent: fetched.intent, confidence: fetched.confidence, iframeUrl: fetched.iframeUrl || null },
     });
     return finalize(events, steps, toolCalls, fetched);
+  }
+
+  steps.push({ step: "invoke_tool", detail: "url_navigate" });
+  const navigated = await tryUrlNavigate(prompt);
+  if (navigated) {
+    events.push(`handler:${navigated.intent}`);
+    steps.push({ step: "dispatch_handler", detail: "tryUrlNavigate" });
+    toolCalls.push({
+      tool: "url_navigate",
+      inputs: { prompt },
+      outputs: { intent: navigated.intent, confidence: navigated.confidence, iframeUrl: navigated.iframeUrl || null },
+    });
+    return finalize(events, steps, toolCalls, navigated);
   }
 
   steps.push({ step: "invoke_tool", detail: "web_search" });
