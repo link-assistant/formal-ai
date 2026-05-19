@@ -48,8 +48,9 @@ pub fn try_behavior_rules(
     }
 
     if is_behavior_rules_list(normalized) {
+        let runtime_rules = collect_runtime_rules(log);
         log.append("behavior_rules:list", "all".to_owned());
-        let body = render_behavior_rule_list();
+        let body = render_behavior_rule_list(&runtime_rules);
         return Some(finalize_simple(
             prompt,
             log,
@@ -172,7 +173,7 @@ fn behavior_rule_records() -> Vec<BehaviorRuleRecord> {
     records
 }
 
-fn render_behavior_rule_list() -> String {
+fn render_behavior_rule_list(runtime_rules: &[RuntimeBehaviorRule]) -> String {
     let mut lines = vec![
         "Behavior rules I can inspect in this dialog:".to_owned(),
         String::new(),
@@ -183,6 +184,18 @@ fn render_behavior_rule_list() -> String {
             rule.id, rule.intent, rule.label
         ));
     }
+    if !runtime_rules.is_empty() {
+        lines.extend([
+            String::new(),
+            "Dialog-local rules taught in this conversation:".to_owned(),
+        ]);
+        for rule in runtime_rules {
+            lines.push(format!(
+                "- `{}` -> trigger `{}` -> answer `{}`",
+                rule.id, rule.trigger, rule.answer
+            ));
+        }
+    }
     lines.extend([
         String::new(),
         "Read one with `Show behavior rule unknown` or `Show behavior rule rule_greeting`."
@@ -192,6 +205,19 @@ fn render_behavior_rule_list() -> String {
             .to_owned(),
     ]);
     lines.join("\n")
+}
+
+fn collect_runtime_rules(log: &EventLog) -> Vec<RuntimeBehaviorRule> {
+    let mut seen = std::collections::HashSet::new();
+    let mut rules = Vec::new();
+    for event in log.events().iter().filter(|e| e.kind == "prior_turn:user") {
+        if let Some(rule) = runtime_rule_from_text(&event.payload) {
+            if seen.insert(rule.id.clone()) {
+                rules.push(rule);
+            }
+        }
+    }
+    rules
 }
 
 fn render_behavior_rule_detail(rule: &BehaviorRuleRecord) -> String {

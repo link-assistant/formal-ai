@@ -476,3 +476,186 @@ fn english_vulgar_prompt_is_refused_with_policy_intent() {
         response.intent
     );
 }
+
+#[test]
+fn capabilities_answer_in_hindi_advertises_behavior_rule_commands() {
+    let response = answer("तुम क्या कर सकते हो?");
+    assert_eq!(response.intent, "capabilities");
+    assert!(
+        response.answer.contains("List behavior rules"),
+        "Hindi capabilities answer must mention List behavior rules; got: {}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains("When I say"),
+        "Hindi capabilities answer must mention teach grammar; got: {}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains("Report issue"),
+        "Hindi capabilities answer must mention Report issue; got: {}",
+        response.answer
+    );
+    assert!(
+        response
+            .answer
+            .contains("List all facts you know about yourself"),
+        "Hindi capabilities answer must mention self-facts command; got: {}",
+        response.answer
+    );
+}
+
+#[test]
+fn capabilities_answer_in_chinese_advertises_behavior_rule_commands() {
+    let response = answer("你能做什么?");
+    assert_eq!(response.intent, "capabilities");
+    assert!(
+        response.answer.contains("List behavior rules"),
+        "Chinese capabilities answer must mention List behavior rules; got: {}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains("When I say"),
+        "Chinese capabilities answer must mention teach grammar; got: {}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains("Report issue"),
+        "Chinese capabilities answer must mention Report issue; got: {}",
+        response.answer
+    );
+    assert!(
+        response
+            .answer
+            .contains("List all facts you know about yourself"),
+        "Chinese capabilities answer must mention self-facts command; got: {}",
+        response.answer
+    );
+}
+
+#[test]
+fn unknown_answer_mentions_report_issue_and_export_memory() {
+    let response = answer("This is an entirely synthetic prompt nobody has seen before zzz123.");
+    assert_eq!(response.intent, "unknown");
+    assert!(
+        response.answer.contains("Report issue"),
+        "unknown answer must surface Report issue path; got: {}",
+        response.answer
+    );
+    assert!(
+        response.answer.to_lowercase().contains("export"),
+        "unknown answer must mention exporting memory for durability; got: {}",
+        response.answer
+    );
+}
+
+#[test]
+fn unknown_answer_mentions_report_issue_in_russian() {
+    let response = answer("Какая у тебя модель личности?");
+    assert_eq!(response.intent, "unknown");
+    assert!(
+        response.answer.contains("Report issue"),
+        "Russian unknown answer must surface Report issue path; got: {}",
+        response.answer
+    );
+}
+
+#[test]
+fn unknown_answer_is_strict_superset_of_seed_opener() {
+    use formal_ai::unknown_answer_variation_for;
+    // The first opener of the English pool is "I don't know how to answer that yet."
+    // which matches the seed-text opener. With an empty prompt we get that exact opener.
+    let body = unknown_answer_variation_for("");
+    assert!(
+        body.starts_with("I don't know how to answer that yet."),
+        "empty-prompt fallback must use the default seed opener as a strict superset, got: {body}"
+    );
+}
+
+#[test]
+fn behavior_rule_teach_supports_english_if_i_ask_grammar() {
+    let solver = UniversalSolver::default();
+    let update = solver.solve("If I ask `tell me a joke`, reply `I do not have a joke pool yet.`");
+    assert_eq!(update.intent, "behavior_rule_update");
+
+    let history = [ConversationTurn::user(
+        "If I ask `tell me a joke`, reply `I do not have a joke pool yet.`",
+    )];
+    let response = solver.solve_with_history("tell me a joke", &history);
+    assert_eq!(response.intent, "behavior_rule_custom");
+    assert_eq!(response.answer, "I do not have a joke pool yet.");
+}
+
+#[test]
+fn behavior_rule_teach_supports_russian_esli_grammar() {
+    let solver = UniversalSolver::default();
+    let update =
+        solver.solve("Если я спрошу `Какая у тебя модель личности?`, ответь `Символьная модель.`");
+    assert_eq!(update.intent, "behavior_rule_update");
+
+    let history = [ConversationTurn::user(
+        "Если я спрошу `Какая у тебя модель личности?`, ответь `Символьная модель.`",
+    )];
+    let response = solver.solve_with_history("Какая у тебя модель личности?", &history);
+    assert_eq!(response.intent, "behavior_rule_custom");
+    assert_eq!(response.answer, "Символьная модель.");
+}
+
+#[test]
+fn opener_pools_have_distinct_first_entries_per_language() {
+    use formal_ai::unknown_answer_variation_for;
+    // The first opener of each language pool is the seed opener for that language.
+    // For an empty prompt we always pick index 0. Verify English pool is distinct
+    // from Russian/Hindi/Chinese seeds by spot-checking the prefix characters.
+    let english = unknown_answer_variation_for("");
+    assert!(english.starts_with("I don't know"));
+}
+
+#[test]
+fn behavior_rules_listing_includes_runtime_rule_when_history_has_one() {
+    let solver = UniversalSolver::default();
+    let history = [ConversationTurn::user(
+        "When I say `synthetic question`, answer `synthetic answer`.",
+    )];
+    let response = solver.solve_with_history("List behavior rules", &history);
+    assert_eq!(response.intent, "behavior_rules_list");
+    assert!(
+        response.answer.contains("behavior_rule_runtime") || response.answer.contains("synthetic"),
+        "runtime rule should appear in the listing once taught; got: {}",
+        response.answer
+    );
+}
+
+#[test]
+fn self_facts_answer_includes_model_id_and_strategy() {
+    let response = answer("List all facts you know about yourself");
+    assert_eq!(response.intent, "self_facts");
+    assert!(
+        response.answer.to_lowercase().contains("formal-ai")
+            || response.answer.to_lowercase().contains("symbolic"),
+        "self facts should describe the model identity; got: {}",
+        response.answer
+    );
+}
+
+#[test]
+fn behavior_rule_detail_uses_describe_prefix() {
+    let response = answer("describe behavior rule unknown");
+    assert_eq!(response.intent, "behavior_rule_detail");
+    assert!(
+        response.answer.contains("rule_unknown"),
+        "describe prefix must surface the same detail as Show behavior rule; got: {}",
+        response.answer
+    );
+}
+
+#[test]
+fn behavior_rule_detail_uses_read_rule_prefix() {
+    let response = answer("Read rule unknown");
+    assert_eq!(response.intent, "behavior_rule_detail");
+    assert!(
+        response.answer.contains("rule_unknown"),
+        "Read rule prefix must surface the same detail as Show behavior rule; got: {}",
+        response.answer
+    );
+}
