@@ -750,7 +750,7 @@ mod tests {
         }
         let intents: std::collections::BTreeSet<String> =
             records.iter().map(|r| r.intent.clone()).collect();
-        for expected in ["greeting", "identity", "unknown"] {
+        for expected in ["greeting", "courtesy_response", "identity", "unknown"] {
             assert!(
                 intents.contains(expected),
                 "expected intent {expected} in seed",
@@ -817,6 +817,7 @@ mod tests {
         for expected in [
             "intent_greeting",
             "intent_farewell",
+            "intent_courtesy_response",
             "intent_identity",
             "intent_unknown",
             "intent_hello_world",

@@ -26,6 +26,7 @@ pub const DEFAULT_MODEL: &str = "formal-symbolic-production";
 /// embedded via `include_str!`). All real reads come from [`crate::seed`].
 const FALLBACK_GREETING_ANSWER: &str = "Hi, how may I help you?";
 const FALLBACK_FAREWELL_ANSWER: &str = "Goodbye! Feel free to return any time.";
+const FALLBACK_COURTESY_RESPONSE_ANSWER: &str = "Glad to hear it. What would you like to do next?";
 const FALLBACK_IDENTITY_ANSWER: &str = "I am formal-ai, a deterministic symbolic AI implementation that answers from local Links Notation rules and OpenAI-compatible API shapes. I do not perform neural inference in this demo.";
 const FALLBACK_UNKNOWN_ANSWER: &str = "I don't know how to answer that yet. I cannot answer that from local Links Notation rules yet. To inspect what I can do, send `List behavior rules`, then `Show behavior rule unknown`. To teach this dialog a response, send: When I say `your prompt`, answer `your answer`. To make it durable, export memory or use Report issue so developers can add the fact or rule to the seed.";
 const FALLBACK_UNKNOWN_LANGUAGE_ANSWER: &str = concat!(
@@ -56,6 +57,16 @@ pub(crate) fn farewell_answer() -> &'static str {
     cached_response(&CELL, "farewell", "en", FALLBACK_FAREWELL_ANSWER)
 }
 
+pub(crate) fn courtesy_response_answer() -> &'static str {
+    static CELL: OnceLock<String> = OnceLock::new();
+    cached_response(
+        &CELL,
+        "courtesy_response",
+        "en",
+        FALLBACK_COURTESY_RESPONSE_ANSWER,
+    )
+}
+
 fn russian_farewell_answer() -> &'static str {
     static CELL: OnceLock<String> = OnceLock::new();
     cached_response(&CELL, "farewell", "ru", FALLBACK_FAREWELL_ANSWER)
@@ -69,6 +80,36 @@ fn hindi_farewell_answer() -> &'static str {
 fn chinese_farewell_answer() -> &'static str {
     static CELL: OnceLock<String> = OnceLock::new();
     cached_response(&CELL, "farewell", "zh", FALLBACK_FAREWELL_ANSWER)
+}
+
+fn russian_courtesy_response_answer() -> &'static str {
+    static CELL: OnceLock<String> = OnceLock::new();
+    cached_response(
+        &CELL,
+        "courtesy_response",
+        "ru",
+        FALLBACK_COURTESY_RESPONSE_ANSWER,
+    )
+}
+
+fn hindi_courtesy_response_answer() -> &'static str {
+    static CELL: OnceLock<String> = OnceLock::new();
+    cached_response(
+        &CELL,
+        "courtesy_response",
+        "hi",
+        FALLBACK_COURTESY_RESPONSE_ANSWER,
+    )
+}
+
+fn chinese_courtesy_response_answer() -> &'static str {
+    static CELL: OnceLock<String> = OnceLock::new();
+    cached_response(
+        &CELL,
+        "courtesy_response",
+        "zh",
+        FALLBACK_COURTESY_RESPONSE_ANSWER,
+    )
 }
 
 pub(crate) fn identity_answer() -> &'static str {
@@ -245,6 +286,7 @@ pub(crate) fn language_aware_unknown_answer(prompt: &str, language: Language) ->
 }
 
 const GREETING_EXAMPLES: &[&str] = &["Hi", "Hello", "Hey"];
+const COURTESY_RESPONSE_EXAMPLES: &[&str] = &["I am fine, thank you", "thanks"];
 const IDENTITY_EXAMPLES: &[&str] = &[
     "Who are you?",
     "What are you?",
@@ -294,7 +336,7 @@ pub fn knowledge_links_notation() -> String {
                         "untyped indented Links Notation via lino-objects-codec format helpers",
                     ),
                 ),
-                ("rule_count", (HELLO_WORLD_PROGRAMS.len() + 3).to_string()),
+                ("rule_count", (HELLO_WORLD_PROGRAMS.len() + 4).to_string()),
             ],
         ),
         format_concept_index_record(),
@@ -307,6 +349,16 @@ pub fn knowledge_links_notation() -> String {
                 ("response_link", String::from("response:greeting")),
                 ("answer", String::from(greeting_answer())),
                 ("examples", GREETING_EXAMPLES.join(", ")),
+                ("source", String::from("local symbolic seed set")),
+            ],
+        ),
+        format_lino_record(
+            "rule_courtesy_response",
+            &[
+                ("intent", String::from("courtesy_response")),
+                ("response_link", String::from("response:courtesy_response")),
+                ("answer", String::from(courtesy_response_answer())),
+                ("examples", COURTESY_RESPONSE_EXAMPLES.join(", ")),
                 ("source", String::from("local symbolic seed set")),
             ],
         ),
@@ -350,6 +402,10 @@ fn format_concept_index_record() -> String {
         "concept_index",
         &[
             ("greeting", String::from("intent: greeting")),
+            (
+                "courtesy_response",
+                String::from("intent: courtesy_response"),
+            ),
             ("identity", String::from("intent: identity")),
             ("hello_world", String::from("intent: hello_world")),
             ("translation", String::from("intent: translation")),
@@ -484,6 +540,14 @@ pub fn knowledge_graph() -> KnowledgeGraph {
             links_notation: format!("rule_identity answer={}", identity_answer()),
         },
         GraphNode {
+            id: String::from("rule_courtesy_response"),
+            label: String::from("Courtesy response rule"),
+            links_notation: format!(
+                "rule_courtesy_response answer={}",
+                courtesy_response_answer()
+            ),
+        },
+        GraphNode {
             id: String::from("rule_unknown"),
             label: String::from("Unknown fallback rule"),
             links_notation: format!("rule_unknown answer={}", unknown_answer()),
@@ -502,6 +566,11 @@ pub fn knowledge_graph() -> KnowledgeGraph {
         },
         GraphEdge {
             from: String::from("formal_ai_knowledge"),
+            to: String::from("rule_courtesy_response"),
+            role: String::from("contains"),
+        },
+        GraphEdge {
+            from: String::from("formal_ai_knowledge"),
             to: String::from("rule_unknown"),
             role: String::from("contains"),
         },
@@ -513,6 +582,11 @@ pub fn knowledge_graph() -> KnowledgeGraph {
         GraphEdge {
             from: String::from("rule_identity"),
             to: String::from("response:identity"),
+            role: String::from("response_link"),
+        },
+        GraphEdge {
+            from: String::from("rule_courtesy_response"),
+            to: String::from("response:courtesy_response"),
             role: String::from("response_link"),
         },
     ];
@@ -570,6 +644,7 @@ pub fn stable_id(prefix: &str, text: &str) -> String {
 pub(crate) enum SelectedRule {
     Greeting,
     Farewell,
+    CourtesyResponse,
     Identity,
     HelloWorld(&'static HelloWorldProgram),
     Unknown,
@@ -580,6 +655,7 @@ impl SelectedRule {
         match self {
             Self::Greeting => String::from("greeting"),
             Self::Farewell => String::from("farewell"),
+            Self::CourtesyResponse => String::from("courtesy_response"),
             Self::Identity => String::from("identity"),
             Self::HelloWorld(program) => format!("hello_world_{}", program.slug),
             Self::Unknown => String::from("unknown"),
@@ -590,6 +666,7 @@ impl SelectedRule {
         match self {
             Self::Greeting => "response:greeting",
             Self::Farewell => "response:farewell",
+            Self::CourtesyResponse => "response:courtesy_response",
             Self::Identity => "response:identity",
             Self::HelloWorld(program) => program.response_link,
             Self::Unknown => "response:unknown",
@@ -600,6 +677,7 @@ impl SelectedRule {
         match self {
             Self::Greeting => String::from(greeting_answer()),
             Self::Farewell => String::from(farewell_answer()),
+            Self::CourtesyResponse => String::from(courtesy_response_answer()),
             Self::Identity => String::from(identity_answer()),
             Self::HelloWorld(program) => hello_world_answer(program),
             Self::Unknown => String::from(unknown_answer()),
@@ -613,6 +691,8 @@ pub(crate) fn select_rule_for(prompt: &str) -> SelectedRule {
         SelectedRule::Greeting
     } else if is_farewell(&normalized) {
         SelectedRule::Farewell
+    } else if is_courtesy_response(&normalized) {
+        SelectedRule::CourtesyResponse
     } else if is_identity_question(&normalized) {
         SelectedRule::Identity
     } else if let Some(program) = hello_world_program(&normalized) {
@@ -638,6 +718,15 @@ pub(crate) fn language_aware_answer_for(
         (SelectedRule::Farewell, Language::Russian) => String::from(russian_farewell_answer()),
         (SelectedRule::Farewell, Language::Hindi) => String::from(hindi_farewell_answer()),
         (SelectedRule::Farewell, Language::Chinese) => String::from(chinese_farewell_answer()),
+        (SelectedRule::CourtesyResponse, Language::Russian) => {
+            String::from(russian_courtesy_response_answer())
+        }
+        (SelectedRule::CourtesyResponse, Language::Hindi) => {
+            String::from(hindi_courtesy_response_answer())
+        }
+        (SelectedRule::CourtesyResponse, Language::Chinese) => {
+            String::from(chinese_courtesy_response_answer())
+        }
         (SelectedRule::Identity, Language::Russian) => String::from(russian_identity_answer()),
         (SelectedRule::Identity, Language::Hindi) => String::from(hindi_identity_answer()),
         (SelectedRule::Identity, Language::Chinese) => String::from(chinese_identity_answer()),
@@ -695,6 +784,10 @@ fn is_greeting(normalized_prompt: &str) -> bool {
 
 fn is_farewell(normalized_prompt: &str) -> bool {
     matches_intent_route(normalized_prompt, "intent_farewell")
+}
+
+fn is_courtesy_response(normalized_prompt: &str) -> bool {
+    matches_intent_route(normalized_prompt, "intent_courtesy_response")
 }
 
 fn is_identity_question(normalized_prompt: &str) -> bool {

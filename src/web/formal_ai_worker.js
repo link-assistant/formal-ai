@@ -45,6 +45,17 @@ const FALLBACK_IDENTITY_ANSWER =
 
 const FALLBACK_GREETING_ANSWER = "Hi, how may I help you?";
 
+const FALLBACK_COURTESY_RESPONSE_ANSWER =
+  "Glad to hear it. What would you like to do next?";
+const FALLBACK_COURTESY_ACKNOWLEDGEMENTS = [
+  "Glad to hear it.",
+  "You're welcome.",
+];
+const FALLBACK_COURTESY_FOLLOW_UPS = [
+  "What would you like to do next?",
+  "Do you want to discuss something else?",
+];
+
 const FALLBACK_UNKNOWN_ANSWER =
   "I don't know how to answer that yet. I cannot answer that from local Links Notation rules yet. To inspect what I can do, send `List behavior rules`, then `Show behavior rule unknown`. To teach this dialog a response, send: When I say `your prompt`, answer `your answer`. To make it durable, export memory or use Report issue so developers can add the fact or rule to the seed.";
 
@@ -54,14 +65,22 @@ const FALLBACK_CLARIFICATION_ANSWER =
 // Mutable runtime tables — populated from seed at init(). Each entry is
 // `{ text, variants }` so the worker can return either the canonical phrase
 // (for deterministic tests and tool calls) or a random variant (for greeting
-// randomisation introduced in issue #27). Non-greeting intents currently ship
-// a single phrase, so `variants` is `[text]` and randomisation is a no-op.
+// randomisation introduced in issue #27). Courtesy responses can also carry
+// separated acknowledgement and follow-up fragments for issue #160.
 let MULTILINGUAL_ANSWERS = {
   greeting: {
     en: { text: FALLBACK_GREETING_ANSWER, variants: [FALLBACK_GREETING_ANSWER] },
   },
   farewell: {
     en: { text: "Goodbye! Feel free to return any time.", variants: ["Goodbye! Feel free to return any time."] },
+  },
+  courtesy_response: {
+    en: {
+      text: FALLBACK_COURTESY_RESPONSE_ANSWER,
+      variants: [FALLBACK_COURTESY_RESPONSE_ANSWER],
+      acknowledgements: FALLBACK_COURTESY_ACKNOWLEDGEMENTS,
+      followUps: FALLBACK_COURTESY_FOLLOW_UPS,
+    },
   },
   identity: {
     en: { text: FALLBACK_IDENTITY_ANSWER, variants: [FALLBACK_IDENTITY_ANSWER] },
@@ -234,6 +253,44 @@ let INTENT_ROUTING = {
       combos: [],
     },
     {
+      id: "intent_courtesy_response",
+      slug: "courtesy_response",
+      responseLink: "response:courtesy_response",
+      keywords: ["thanks", "спасибо", "благодарю", "धन्यवाद", "शुक्रिया", "谢谢"],
+      phrases: [
+        "thank you",
+        "i am fine thank you",
+        "i am fine thanks",
+        "i m fine thank you",
+        "i m fine thanks",
+        "i am good thank you",
+        "i am good thanks",
+        "i m good thank you",
+        "i m good thanks",
+        "fine thank you",
+        "fine thanks",
+        "good thank you",
+        "good thanks",
+        "doing well thank you",
+        "doing well thanks",
+        "у меня все хорошо спасибо",
+        "у меня всё хорошо спасибо",
+        "все хорошо спасибо",
+        "всё хорошо спасибо",
+        "хорошо спасибо",
+        "нормально спасибо",
+        "मैं ठीक हूँ धन्यवाद",
+        "ठीक हूँ धन्यवाद",
+        "मैं अच्छा हूँ धन्यवाद",
+        "我很好谢谢",
+        "我很好 谢谢",
+        "好的谢谢",
+        "好的 谢谢",
+      ],
+      tokens: [],
+      combos: [],
+    },
+    {
       id: "intent_identity",
       slug: "identity",
       responseLink: "response:identity",
@@ -282,6 +339,14 @@ function fallbackEntry(intent) {
   if (intent === "greeting") {
     return { text: FALLBACK_GREETING_ANSWER, variants: [FALLBACK_GREETING_ANSWER] };
   }
+  if (intent === "courtesy_response") {
+    return {
+      text: FALLBACK_COURTESY_RESPONSE_ANSWER,
+      variants: [FALLBACK_COURTESY_RESPONSE_ANSWER],
+      acknowledgements: FALLBACK_COURTESY_ACKNOWLEDGEMENTS,
+      followUps: FALLBACK_COURTESY_FOLLOW_UPS,
+    };
+  }
   if (intent === "identity") {
     return { text: FALLBACK_IDENTITY_ANSWER, variants: [FALLBACK_IDENTITY_ANSWER] };
   }
@@ -300,19 +365,39 @@ function normalizeEntry(value, intent) {
       Array.isArray(value.variants) && value.variants.length > 0
         ? value.variants
         : [value.text];
-    return { text: value.text, variants: variants };
+    const acknowledgements = Array.isArray(value.acknowledgements)
+      ? value.acknowledgements.filter(Boolean)
+      : [];
+    const followUps = Array.isArray(value.followUps)
+      ? value.followUps.filter(Boolean)
+      : [];
+    return {
+      text: value.text,
+      variants: variants,
+      acknowledgements: acknowledgements,
+      followUps: followUps,
+    };
   }
   if (typeof value === "string") {
-    return { text: value, variants: [value] };
+    return {
+      text: value,
+      variants: [value],
+      acknowledgements: [],
+      followUps: [],
+    };
   }
   return fallbackEntry(intent);
 }
 
-function answerFor(intent, language, options) {
-  const opts = options || {};
+function responseEntryFor(intent, language) {
   const table = MULTILINGUAL_ANSWERS[intent] || {};
   const raw = table[language] || table.en || fallbackEntry(intent);
-  const entry = normalizeEntry(raw, intent);
+  return normalizeEntry(raw, intent);
+}
+
+function answerFor(intent, language, options) {
+  const opts = options || {};
+  const entry = responseEntryFor(intent, language);
   if (opts.randomize && Array.isArray(entry.variants) && entry.variants.length > 1) {
     const idx = Math.floor(Math.random() * entry.variants.length);
     return entry.variants[idx] || entry.text;
@@ -405,6 +490,48 @@ function numericPreference(value, fallback, min, max) {
   const parsed = Number(value);
   if (!Number.isFinite(parsed)) return fallback;
   return Math.min(max, Math.max(min, parsed));
+}
+
+function pickVariant(values, randomize) {
+  if (!Array.isArray(values) || values.length === 0) return "";
+  if (!randomize || values.length === 1) return values[0];
+  return values[Math.floor(Math.random() * values.length)] || values[0];
+}
+
+function includeFollowUpQuestion(probability, randomize) {
+  if (probability <= 0) return false;
+  if (probability >= 1) return true;
+  if (!randomize) return probability >= 0.5;
+  return Math.random() < probability;
+}
+
+function courtesyResponseFor(language, preferences) {
+  const prefs = preferences || {};
+  const entry = responseEntryFor("courtesy_response", language);
+  const temperature = numericPreference(prefs.temperature, 0.7, 0, 1);
+  const followUpProbability = numericPreference(
+    prefs.followUpProbability,
+    0.75,
+    0,
+    1,
+  );
+  const randomize = temperature > 0;
+  const acknowledgements =
+    entry.acknowledgements.length > 0 ? entry.acknowledgements : [entry.text];
+  const followUps = entry.followUps;
+  const acknowledgement = pickVariant(acknowledgements, randomize);
+  const includeFollowUp =
+    followUps.length > 0 &&
+    includeFollowUpQuestion(followUpProbability, randomize);
+  return {
+    content: includeFollowUp
+      ? `${acknowledgement} ${pickVariant(followUps, randomize)}`
+      : acknowledgement,
+    temperature: temperature,
+    randomize: randomize,
+    followUpProbability: followUpProbability,
+    followUpIncluded: includeFollowUp,
+  };
 }
 
 function definitionFusionByDefault(preferences) {
@@ -1505,6 +1632,10 @@ function isGreetingPrompt(normalized, rawPrompt) {
 
 function isFarewellPrompt(normalized, rawPrompt) {
   return matchesIntentRoute(normalized, rawPrompt, "intent_farewell");
+}
+
+function isCourtesyResponsePrompt(normalized, rawPrompt) {
+  return matchesIntentRoute(normalized, rawPrompt, "intent_courtesy_response");
 }
 
 function isPunctuationOnlyPrompt(prompt) {
@@ -6441,6 +6572,24 @@ async function solve(prompt, history, prefs) {
       content: answerFor("farewell", language),
       confidence: 1.0,
       evidence: ["rule:farewell", `language:${language}`],
+    });
+  }
+  if (isCourtesyResponsePrompt(normalized, prompt)) {
+    events.push("rule:courtesy_response");
+    steps.push({ step: "match_rule", detail: "courtesy_response" });
+    const courtesy = courtesyResponseFor(language, preferences);
+    return finalize(events, steps, toolCalls, {
+      intent: "courtesy_response",
+      content: courtesy.content,
+      confidence: 1.0,
+      evidence: [
+        "rule:courtesy_response",
+        `language:${language}`,
+        `variation:${courtesy.randomize ? "random" : "canonical"}`,
+        `temperature:${courtesy.temperature.toFixed(2)}`,
+        `follow_up_probability:${courtesy.followUpProbability.toFixed(2)}`,
+        `follow_up:${courtesy.followUpIncluded ? "included" : "omitted"}`,
+      ],
     });
   }
   if (isIdentityPrompt(normalized, prompt)) {

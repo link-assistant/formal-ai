@@ -814,6 +814,7 @@ test.describe('Issue #82: assistant behavior settings', () => {
     const settings = page.locator('[data-testid="sidebar-settings"]');
     await expect(settings).toBeVisible();
     await expect(page.locator('[data-testid="setting-guess-probability"]')).toBeVisible();
+    await expect(page.locator('[data-testid="setting-follow-up-probability"]')).toBeVisible();
     await expect(page.locator('[data-testid="setting-temperature"]')).toBeVisible();
     await expect(page.locator('[data-testid="setting-definition-fusion"]')).toBeVisible();
     await expect(page.locator('[data-testid="setting-ui-language"]')).toBeVisible();
@@ -823,6 +824,7 @@ test.describe('Issue #82: assistant behavior settings', () => {
     await expect(page.locator('[data-testid="setting-location"]')).toBeVisible();
 
     await setRangeValue(page, 'setting-temperature', 0);
+    await setRangeValue(page, 'setting-follow-up-probability', 0);
     await page.locator('[data-testid="setting-definition-fusion"]').selectOption('auto');
     await page.locator('[data-testid="setting-location"]').fill('Berlin');
     await page.locator('[data-testid="setting-theme"]').selectOption('dark');
@@ -834,6 +836,7 @@ test.describe('Issue #82: assistant behavior settings', () => {
       window.localStorage.getItem('formal-ai.preferences.v1') || '',
     );
     expect(stored).toContain('temperature "0"');
+    expect(stored).toContain('followUpProbability "0"');
     expect(stored).toContain('definitionFusion "auto"');
     expect(stored).toContain('location "Berlin"');
     await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
