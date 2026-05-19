@@ -46,12 +46,60 @@ fn cli_version_flag_prints_crate_version() {
 fn cli_chat_command_prints_text_response() {
     let output = Command::new(env!("CARGO_BIN_EXE_formal-ai"))
         .args(["chat", "--prompt", "Hi"])
+        .env_remove("FORMAL_AI_DEFINITION_FUSION")
         .output()
         .expect("failed to execute binary");
 
     assert!(output.status.success());
     let stdout = String::from_utf8_lossy(&output.stdout);
     assert_eq!(stdout.trim(), "Hi, how may I help you?");
+}
+
+#[test]
+fn cli_chat_definition_fusion_option_merges_plain_definition_prompt() {
+    let output = Command::new(env!("CARGO_BIN_EXE_formal-ai"))
+        .args([
+            "chat",
+            "--prompt",
+            "What is IIR?",
+            "--definition-fusion",
+            "auto",
+        ])
+        .env_remove("FORMAL_AI_DEFINITION_FUSION")
+        .output()
+        .expect("failed to execute binary");
+
+    assert!(
+        output.status.success(),
+        "stderr: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(
+        stdout.contains("Merged definition of infinite impulse response (IIR)"),
+        "definition fusion CLI option should route a plain definition prompt to merged output:\n{stdout}"
+    );
+    assert!(stdout.contains("Source languages: en, ru, hi, zh"));
+}
+
+#[test]
+fn cli_chat_definition_fusion_env_var_merges_plain_definition_prompt() {
+    let output = Command::new(env!("CARGO_BIN_EXE_formal-ai"))
+        .args(["chat", "--prompt", "What is IIR?"])
+        .env("FORMAL_AI_DEFINITION_FUSION", "auto")
+        .output()
+        .expect("failed to execute binary");
+
+    assert!(
+        output.status.success(),
+        "stderr: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(
+        stdout.contains("Merged definition of infinite impulse response (IIR)"),
+        "definition fusion env var should route a plain definition prompt to merged output:\n{stdout}"
+    );
 }
 
 #[test]
@@ -64,6 +112,7 @@ fn cli_chat_command_can_emit_chat_completion_json() {
             "--format",
             "chat",
         ])
+        .env_remove("FORMAL_AI_DEFINITION_FUSION")
         .output()
         .expect("failed to execute binary");
 
@@ -100,6 +149,52 @@ fn cli_environments_command_lists_every_supported_surface() {
             "expected `{expected}` in environments output:\n{stdout}",
         );
     }
+}
+
+#[test]
+fn cli_github_logs_plan_prints_reproducible_capture_commands() {
+    // Issue #115: the project needs a reusable way to collect GitHub issue,
+    // PR, review, and run-log evidence for hive-mind case studies without
+    // relying on handwritten command lists.
+    let output = Command::new(env!("CARGO_BIN_EXE_formal-ai"))
+        .args([
+            "github-logs",
+            "plan",
+            "--repo",
+            "link-assistant/hive-mind",
+            "--output-dir",
+            "docs/case-studies/issue-115/raw-data/hive-mind",
+            "--issue",
+            "1814",
+            "--pull",
+            "1816",
+            "--run",
+            "26058054431",
+            "--recent-issues",
+            "10",
+            "--recent-pulls",
+            "10",
+            "--recent-runs",
+            "5",
+            "--branch",
+            "issue-1814-0f855d3671ac",
+        ])
+        .output()
+        .expect("github-logs plan");
+
+    assert!(
+        output.status.success(),
+        "stderr: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(stdout.contains("# GitHub log capture plan"));
+    assert!(stdout.contains("repo: link-assistant/hive-mind"));
+    assert!(stdout.contains("issue-1814-comments.json"));
+    assert!(stdout.contains("pr-1816-review-comments.json"));
+    assert!(stdout.contains("pr-1816-conversation-comments.json"));
+    assert!(stdout.contains("run-26058054431.log"));
+    assert!(stdout.contains("gh api repos/link-assistant/hive-mind/pulls/1816/comments --paginate"));
 }
 
 #[test]

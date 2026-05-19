@@ -20,7 +20,27 @@ pub fn try_definition_merge(
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
     let term = extract_definition_merge_term(prompt, normalized)?;
+    definition_merge_for_term(prompt, log, term, None)
+}
+
+pub fn try_definition_merge_by_default(prompt: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {
+    let query = extract_concept_query(prompt)?;
+    if query.context.is_some() {
+        return None;
+    }
+    definition_merge_for_term(prompt, log, query.term, Some("definition_merge:mode:auto"))
+}
+
+fn definition_merge_for_term(
+    prompt: &str,
+    log: &mut EventLog,
+    term: String,
+    mode_event: Option<&'static str>,
+) -> Option<SymbolicAnswer> {
     log.append("definition_merge:request", term.clone());
+    if let Some(event) = mode_event {
+        log.append(event, "on".to_owned());
+    }
     let query = ConceptQuery {
         term: term.clone(),
         context: None,

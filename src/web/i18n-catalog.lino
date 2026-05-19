@@ -82,6 +82,10 @@ en
     deterministic "Deterministic"
     varied "Varied"
     variations "Greeting variations"
+    definitionFusion
+      label "Definition fusion"
+      explicit "Explicit only"
+      auto "Auto for definitions"
     language
       label "Language"
       auto "Auto"
@@ -220,6 +224,10 @@ ru
     deterministic "Детерминированно"
     varied "Разнообразнее"
     variations "Варианты приветствий"
+    definitionFusion
+      label "Слияние определений"
+      explicit "Только явно"
+      auto "Авто для определений"
     language
       label "Язык"
       auto "Авто"
@@ -350,6 +358,10 @@ zh
     deterministic "确定"
     varied "多样"
     variations "问候变化"
+    definitionFusion
+      label "定义融合"
+      explicit "仅显式"
+      auto "定义自动"
     language
       label "语言"
       auto "自动"
@@ -484,6 +496,10 @@ hi
     deterministic "निश्चित"
     varied "विविध"
     variations "ग्रीटिंग विविधता"
+    definitionFusion
+      label "परिभाषा fusion"
+      explicit "सिर्फ स्पष्ट"
+      auto "definitions के लिए auto"
     language
       label "भाषा"
       auto "ऑटो"

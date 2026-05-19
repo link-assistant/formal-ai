@@ -198,6 +198,14 @@ function numericPreference(value, fallback, min, max) {
   return Math.min(max, Math.max(min, parsed));
 }
 
+function definitionFusionByDefault(preferences) {
+  const value = preferences && preferences.definitionFusion;
+  if (value === true) return true;
+  if (value === false) return false;
+  const normalized = String(value || "").trim().toLowerCase();
+  return ["auto", "on", "true", "1", "merge", "fusion"].includes(normalized);
+}
+
 function detectLanguage(prompt) {
   const text = String(prompt || "");
   for (const ch of text) {
@@ -1521,7 +1529,7 @@ function tryConceptLookup(prompt) {
   };
 }
 
-function extractDefinitionMergeTerm(prompt) {
+function extractDefinitionMergeTerm(prompt, allowPlainConcept) {
   const text = String(prompt || "");
   const normalized = normalizePrompt(text);
   const asksMerge =
@@ -1538,7 +1546,13 @@ function extractDefinitionMergeTerm(prompt) {
     normalized.includes("translations") ||
     normalized.includes("translated") ||
     normalized.includes("wikipedia");
-  if (!asksMerge || !asksDefinition) return null;
+  if (!asksMerge || !asksDefinition) {
+    if (allowPlainConcept) {
+      const query = extractConceptQuery(text);
+      if (query && !query.context) return query.term;
+    }
+    return null;
+  }
 
   const lower = text.toLowerCase();
   const markers = [
@@ -1715,10 +1729,12 @@ function renderDefinitionMerge(record, fragments, facts) {
   return lines.join("\n");
 }
 
-function tryDefinitionMerge(prompt) {
-  const term = extractDefinitionMergeTerm(prompt);
+function tryDefinitionMerge(prompt, options) {
+  const opts = options || {};
+  const term = extractDefinitionMergeTerm(prompt, Boolean(opts.allowPlainConcept));
   if (!term) return null;
   const evidence = [`definition_merge:request:${term}`];
+  if (opts.allowPlainConcept) evidence.push("definition_merge:mode:auto");
   const lookup = lookupConceptQuery({ term, context: null });
   if (!lookup) return null;
   const record = lookup.record;
@@ -2744,6 +2760,7 @@ function attachUserContext(answer, userContext) {
 
 async function solve(prompt, history, prefs) {
   const preferences = prefs || {};
+  const autoDefinitionFusion = definitionFusionByDefault(preferences);
   const steps = [];
   const toolCalls = [];
   const events = [`impulse:${prompt}`];
@@ -2814,7 +2831,10 @@ async function solve(prompt, history, prefs) {
     { name: "tryHistorical", run: () => tryHistorical(prompt, history) },
     { name: "tryArithmetic", run: () => tryArithmetic(prompt) },
     { name: "tryJavaScriptExecution", run: () => tryJavaScriptExecution(prompt) },
-    { name: "tryDefinitionMerge", run: () => tryDefinitionMerge(prompt) },
+    {
+      name: "tryDefinitionMerge",
+      run: () => tryDefinitionMerge(prompt, { allowPlainConcept: autoDefinitionFusion }),
+    },
     { name: "tryConceptLookup", run: () => tryConceptLookup(prompt) },
     { name: "tryHelloWorld", run: () => tryHelloWorld(prompt) },
   ];

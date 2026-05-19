@@ -1,0 +1,84 @@
+    Updating crates.io index
+   Packaging formal-ai v0.61.0 (/tmp/gh-issue-solver-1779166747152)
+warning: ignoring example `basic_usage` as `examples/basic_usage.rs` is not included in the published package
+warning: ignoring example `try_arithmetic` as `examples/try_arithmetic.rs` is not included in the published package
+warning: ignoring example `universal_solver_tour` as `examples/universal_solver_tour.rs` is not included in the published package
+warning: ignoring test `integration` as `tests/integration/mod.rs` is not included in the published package
+warning: ignoring test `unit` as `tests/unit/mod.rs` is not included in the published package
+    Updating crates.io index
+    Packaged 69 files, 854.3KiB (208.6KiB compressed)
+   Verifying formal-ai v0.61.0 (/tmp/gh-issue-solver-1779166747152)
+   Compiling proc-macro2 v1.0.103
+   Compiling unicode-ident v1.0.22
+   Compiling quote v1.0.42
+   Compiling wasm-bindgen-shared v0.2.121
+   Compiling rustversion v1.0.22
+   Compiling serde_core v1.0.228
+   Compiling serde v1.0.228
+   Compiling bumpalo v3.20.2
+   Compiling autocfg v1.5.0
+   Compiling memchr v2.8.0
+   Compiling cfg-if v1.0.4
+   Compiling once_cell v1.21.4
+   Compiling futures-core v0.3.32
+   Compiling num-traits v0.2.19
+   Compiling pin-project-lite v0.2.17
+   Compiling wasm-bindgen v0.2.121
+   Compiling syn v2.0.111
+   Compiling futures-task v0.3.32
+   Compiling slab v0.4.12
+   Compiling utf8parse v0.2.2
+   Compiling futures-util v0.3.32
+   Compiling colorchoice v1.0.5
+   Compiling anstyle-parse v0.2.7
+   Compiling anstyle v1.0.14
+   Compiling zmij v1.0.21
+   Compiling anstyle-query v1.1.5
+   Compiling is_terminal_polyfill v1.70.2
+   Compiling thiserror v1.0.69
+   Compiling num-integer v0.1.46
+   Compiling anstream v0.6.21
+   Compiling aho-corasick v1.1.4
+   Compiling regex-syntax v0.8.10
+   Compiling serde_json v1.0.149
+   Compiling clap_lex v1.1.0
+   Compiling heck v0.5.0
+   Compiling strsim v0.11.1
+   Compiling rust_decimal v1.42.0
+   Compiling dtor-proc-macro v0.0.5
+   Compiling clap_builder v4.5.60
+   Compiling dtor v0.0.6
+   Compiling nom v8.0.0
+   Compiling itoa v1.0.18
+   Compiling arrayvec v0.7.6
+   Compiling iana-time-zone v0.1.65
+   Compiling regex-automata v0.4.14
+   Compiling wasm-bindgen-macro-support v0.2.121
+   Compiling ctor-proc-macro v0.0.6
+   Compiling ctor v0.4.3
+   Compiling serde_derive v1.0.228
+   Compiling thiserror-impl v1.0.69
+   Compiling clap_derive v4.5.55
+   Compiling regex v1.12.3
+   Compiling links-notation v0.13.0
+   Compiling lino-env v0.1.0
+   Compiling lazy_static v1.5.0
+   Compiling base64 v0.22.1
+   Compiling wasm-bindgen-macro v0.2.121
+   Compiling dotenvy v0.15.7
+   Compiling lino-objects-codec v0.2.1
+   Compiling clap v4.5.60
+   Compiling num-bigint v0.4.6
+   Compiling chrono v0.4.44
+   Compiling lino-arguments v0.3.0
+   Compiling js-sys v0.3.98
+   Compiling console_error_panic_hook v0.1.7
+   Compiling num-rational v0.4.2
+   Compiling web-sys v0.3.98
+   Compiling serde-wasm-bindgen v0.6.5
+   Compiling wasm-bindgen-futures v0.4.71
+   Compiling link-calculator v0.16.0
+   Compiling formal-ai v0.61.0 (/tmp/gh-issue-solver-1779166747152/target/package/formal-ai-0.61.0)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 18.53s
+   Uploading formal-ai v0.61.0 (/tmp/gh-issue-solver-1779166747152)
+warning: aborting upload due to dry run

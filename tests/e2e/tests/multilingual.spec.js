@@ -141,6 +141,14 @@ test.describe('multilingual chat surface', () => {
     await expect(last).toContainText('Фильтр с бесконечной импульсной характеристикой');
   });
 
+  test('definition fusion setting merges plain definition prompts', async ({ page }) => {
+    await page.locator('[data-testid="setting-definition-fusion"]').selectOption('auto');
+    const last = await sendPrompt(page, 'What is IIR?');
+    await expect(last).toHaveClass(/assistant/);
+    await expect(last).toContainText('Merged definition of infinite impulse response (IIR)');
+    await expect(last).toContainText('Source languages: en, ru, hi, zh');
+  });
+
   test('punctuation-only prompt asks for clarification', async ({ page }) => {
     const last = await sendPrompt(page, '.');
     await expect(last).toHaveClass(/assistant/);
@@ -482,6 +490,7 @@ test.describe('Issue #82: assistant behavior settings', () => {
     await expect(settings).toBeVisible();
     await expect(page.locator('[data-testid="setting-guess-probability"]')).toBeVisible();
     await expect(page.locator('[data-testid="setting-temperature"]')).toBeVisible();
+    await expect(page.locator('[data-testid="setting-definition-fusion"]')).toBeVisible();
     await expect(page.locator('[data-testid="setting-ui-language"]')).toBeVisible();
     await expect(page.locator('[data-testid="setting-theme"]')).toBeVisible();
     await expect(page.locator('[data-testid="setting-ui-skin"]')).toBeVisible();
@@ -489,6 +498,7 @@ test.describe('Issue #82: assistant behavior settings', () => {
     await expect(page.locator('[data-testid="setting-location"]')).toBeVisible();
 
     await setRangeValue(page, 'setting-temperature', 0);
+    await page.locator('[data-testid="setting-definition-fusion"]').selectOption('auto');
     await page.locator('[data-testid="setting-location"]').fill('Berlin');
     await page.locator('[data-testid="setting-theme"]').selectOption('dark');
 
@@ -499,6 +509,7 @@ test.describe('Issue #82: assistant behavior settings', () => {
       window.localStorage.getItem('formal-ai.preferences.v1') || '',
     );
     expect(stored).toContain('temperature "0"');
+    expect(stored).toContain('definitionFusion "auto"');
     expect(stored).toContain('location "Berlin"');
     await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
   });

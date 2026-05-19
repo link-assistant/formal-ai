@@ -1,0 +1,38 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.33s
+     Running unittests src/lib.rs (target/debug/deps/formal_ai-d4dcbe4760ca37c5)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 77 filtered out; finished in 0.00s
+
+     Running unittests src/main.rs (target/debug/deps/formal_ai-dba2df03a5b46deb)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/integration/mod.rs (target/debug/deps/integration-6c5e7e85c08a2496)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 8 filtered out; finished in 0.00s
+
+     Running tests/unit/mod.rs (target/debug/deps/unit-24034ea290a9cf2c)
+
+running 14 tests
+test ci_cd::workflow_release::build_job_checks_generated_crate_archive_size ... ok
+test ci_cd::workflow_release::demo_deploy_is_independent_from_release_publication ... ok
+test ci_cd::workflow_release::pages_deploy_is_pinned_and_live_e2e_waits_for_matching_deployment ... ok
+test ci_cd::workflow_release::demo_deploy_uses_github_pages_workflow_artifact ... ok
+test ci_cd::workflow_release::pages_e2e_uses_deployment_output_url ... ok
+test ci_cd::workflow_release::release_scripts_check_configured_release_artifacts ... ok
+test ci_cd::workflow_release::crate_package_manifest_uses_publish_allowlist ... ok
+test ci_cd::workflow_release::release_workflow_defers_rate_limited_crates_publish_without_downstream_artifacts ... ok
+test ci_cd::workflow_release::github_pages_artifact_advertises_crate_version_from_cargo_toml ... ok
+test ci_cd::workflow_release::release_workflow_publishes_optional_docker_hub_image_after_crate_is_visible ... ok
+test ci_cd::workflow_release::pages_e2e_navigation_preserves_repository_subpath ... ok
+test ci_cd::workflow_release::static_demo_runtime_assets_are_cache_busted_by_deployment_version ... ok
+test ci_cd::workflow_release::release_workflow_jobs_have_explicit_timeouts ... ok
+test ci_cd::workflow_release::stamp_pages_artifact_replaces_formal_ai_version_placeholder ... ok
+
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 328 filtered out; finished in 0.04s

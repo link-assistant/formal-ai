@@ -1,7 +1,8 @@
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
-use crate::engine::{estimate_tokens, stable_id, FormalAiEngine, DEFAULT_MODEL};
+use crate::engine::{estimate_tokens, stable_id, FormalAiEngine, SymbolicAnswer, DEFAULT_MODEL};
+use crate::solver::UniversalSolver;
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct ChatCompletionRequest {
@@ -128,15 +129,33 @@ pub struct ResponseUsage {
 pub fn create_chat_completion(request: &ChatCompletionRequest) -> ChatCompletion {
     let prompt = chat_prompt(&request.messages);
     let symbolic_answer = FormalAiEngine.answer(&prompt);
+    chat_completion_from_symbolic(request, &prompt, symbolic_answer)
+}
+
+#[must_use]
+pub fn create_chat_completion_with_solver(
+    request: &ChatCompletionRequest,
+    solver: &UniversalSolver,
+) -> ChatCompletion {
+    let prompt = chat_prompt(&request.messages);
+    let symbolic_answer = solver.solve(&prompt);
+    chat_completion_from_symbolic(request, &prompt, symbolic_answer)
+}
+
+fn chat_completion_from_symbolic(
+    request: &ChatCompletionRequest,
+    prompt: &str,
+    symbolic_answer: SymbolicAnswer,
+) -> ChatCompletion {
     let model = request
         .model
         .clone()
         .unwrap_or_else(|| String::from(DEFAULT_MODEL));
-    let prompt_tokens = estimate_tokens(&prompt);
+    let prompt_tokens = estimate_tokens(prompt);
     let completion_tokens = estimate_tokens(&symbolic_answer.answer);
 
     ChatCompletion {
-        id: stable_id("chatcmpl", &prompt),
+        id: stable_id("chatcmpl", prompt),
         object: String::from("chat.completion"),
         created: 0,
         model,
@@ -160,15 +179,33 @@ pub fn create_chat_completion(request: &ChatCompletionRequest) -> ChatCompletion
 pub fn create_response(request: &ResponsesRequest) -> ResponseObject {
     let prompt = response_prompt(request);
     let symbolic_answer = FormalAiEngine.answer(&prompt);
+    response_from_symbolic(request, &prompt, symbolic_answer)
+}
+
+#[must_use]
+pub fn create_response_with_solver(
+    request: &ResponsesRequest,
+    solver: &UniversalSolver,
+) -> ResponseObject {
+    let prompt = response_prompt(request);
+    let symbolic_answer = solver.solve(&prompt);
+    response_from_symbolic(request, &prompt, symbolic_answer)
+}
+
+fn response_from_symbolic(
+    request: &ResponsesRequest,
+    prompt: &str,
+    symbolic_answer: SymbolicAnswer,
+) -> ResponseObject {
     let model = request
         .model
         .clone()
         .unwrap_or_else(|| String::from(DEFAULT_MODEL));
-    let input_tokens = estimate_tokens(&prompt);
+    let input_tokens = estimate_tokens(prompt);
     let output_tokens = estimate_tokens(&symbolic_answer.answer);
 
     ResponseObject {
-        id: stable_id("resp", &prompt),
+        id: stable_id("resp", prompt),
         object: String::from("response"),
         created_at: 0,
         status: String::from("completed"),

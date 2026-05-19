@@ -195,6 +195,8 @@ fn issue_117_lino_i18n_catalog_documents_and_ci_rule_are_traceable() {
             "| R138 ",
             "| R139 ",
             "| R140 ",
+            "| R141 ",
+            "| R142 ",
             "src/web/i18n-catalog.lino",
             "npm run --prefix tests/e2e check:i18n",
         ],
@@ -240,6 +242,64 @@ fn issue_117_lino_i18n_catalog_documents_and_ci_rule_are_traceable() {
 }
 
 #[test]
+fn issue_115_github_log_collection_documents_are_present_and_traceable() {
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+
+    let requirements = read(root.join("REQUIREMENTS.md"));
+    assert_contains_all(
+        "REQUIREMENTS.md",
+        &requirements,
+        &[
+            "Issue #115 GitHub Evidence Collection",
+            "| R143 ",
+            "| R144 ",
+            "| R145 ",
+            "| R146 ",
+            "| R147 ",
+            "| R148 ",
+            "| R149 ",
+            "formal-ai github-logs",
+            "scripts/mine-hive-mind-dataset.rs",
+        ],
+    );
+
+    let architecture = read(root.join("ARCHITECTURE.md"));
+    assert_contains_all(
+        "ARCHITECTURE.md",
+        &architecture,
+        &[
+            "GitHub Evidence Collection",
+            "src/github_logs.rs",
+            "scripts/mine-hive-mind-dataset.rs",
+            "manifest.json",
+            "link-assistant/hive-mind",
+            "not registered",
+        ],
+    );
+
+    let case_study = read(root.join("docs/case-studies/issue-115/README.md"));
+    assert_contains_all(
+        "docs/case-studies/issue-115/README.md",
+        &case_study,
+        &[
+            "# Issue 115 Case Study",
+            "## Collected Data",
+            "github-logs",
+            "scripts/mine-hive-mind-dataset.rs",
+            "hive-mind",
+            "R143",
+            "R149",
+        ],
+    );
+
+    let tools = read(root.join("data/seed/tools.lino"));
+    assert!(
+        !tools.contains("tool_github_logs"),
+        "GitHub dataset mining must stay an operator script/command, not a seed agent tool"
+    );
+}
+
+#[test]
 fn issue_63_definition_fusion_requirements_and_examples_are_traceable() {
     let root = Path::new(env!("CARGO_MANIFEST_DIR"));
 
@@ -249,12 +309,15 @@ fn issue_63_definition_fusion_requirements_and_examples_are_traceable() {
         &requirements,
         &[
             "Issue #63 Cross-Language Definition Fusion Requirements",
-            "| R143 ",
-            "| R144 ",
-            "| R145 ",
-            "| R146 ",
-            "| R147 ",
+            "| R150 ",
+            "| R151 ",
+            "| R152 ",
+            "| R153 ",
+            "| R154 ",
+            "| R155 ",
             "10-20 self-explanatory examples",
+            "FORMAL_AI_DEFINITION_FUSION",
+            "--definition-fusion",
             "tests/unit/specification/definition_fusion.rs",
         ],
     );
@@ -270,6 +333,7 @@ fn issue_63_definition_fusion_requirements_and_examples_are_traceable() {
             "Merge Wikipedia definitions of KISS principle",
             "Merge definitions of Telegram Ads",
             "Merge Wikipedia definitions of not-a-seeded-concept",
+            "What is IIR?",
         ],
     );
 }

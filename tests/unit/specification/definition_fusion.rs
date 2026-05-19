@@ -7,10 +7,14 @@
 //! labels, deduplicate exact repeated facts, and expose the provenance in the
 //! evidence links.
 
-use formal_ai::{FormalAiEngine, SymbolicAnswer};
+use formal_ai::{FormalAiEngine, SolverConfig, SymbolicAnswer, UniversalSolver};
 
 fn answer(prompt: &str) -> SymbolicAnswer {
     FormalAiEngine.answer(prompt)
+}
+
+fn answer_with_config(prompt: &str, config: SolverConfig) -> SymbolicAnswer {
+    UniversalSolver::new(config).solve(prompt)
 }
 
 #[derive(Debug)]
@@ -259,6 +263,53 @@ fn definition_merge_unknown_term_falls_back_to_unknown_intent() {
             .iter()
             .any(|link| link.starts_with("definition_merge:hit:")),
         "unknown concepts should not record a definition-merge hit: {:?}",
+        response.evidence_links
+    );
+}
+
+#[test]
+fn definition_fusion_by_default_merges_plain_definition_prompts_when_enabled() {
+    let config = SolverConfig {
+        definition_fusion_by_default: true,
+        ..Default::default()
+    };
+
+    let response = answer_with_config("What is IIR?", config);
+
+    assert_eq!(response.intent, "definition_merge");
+    assert!(
+        response
+            .answer
+            .contains("Merged definition of infinite impulse response (IIR)"),
+        "plain definition prompts should use merged output when the setting is enabled: {}",
+        response.answer
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("definition_merge:mode:auto:")),
+        "auto-fused prompt should leave mode evidence: {:?}",
+        response.evidence_links
+    );
+}
+
+#[test]
+fn definition_fusion_by_default_preserves_contextual_concept_lookup() {
+    let config = SolverConfig {
+        definition_fusion_by_default: true,
+        ..Default::default()
+    };
+
+    let response = answer_with_config("what is IIR in ML?", config);
+
+    assert_eq!(response.intent, "concept_lookup_in_context");
+    assert!(
+        !response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("definition_merge:mode:auto")),
+        "contextual questions should not be auto-fused: {:?}",
         response.evidence_links
     );
 }

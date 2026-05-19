@@ -485,7 +485,8 @@ The same `FormalAiEngine` answers prompts in every surface:
 - **Rust library** — `formal_ai::FormalAiEngine::answer` /
   `formal_ai::solve_with_history`.
 - **CLI binary** — `formal-ai chat`, `formal-ai memory ...`,
-  `formal-ai bundle ...`, `formal-ai telegram`, `formal-ai serve`.
+  `formal-ai bundle ...`, operator commands such as
+  `formal-ai github-logs ...`, `formal-ai telegram`, `formal-ai serve`.
 - **HTTP server** — `POST /v1/chat/completions`, `POST /v1/responses`,
   `GET /health`, `GET /v1/graph` (with `?trace=` filter and
   `?format=dot`).
@@ -499,7 +500,33 @@ identically.
 
 ---
 
-## 14. Testing Architecture
+## 14. GitHub Evidence Collection
+
+Issue #115 adds the first concrete operator workflow for turning external
+development traces into local, reviewable memory. `src/github_logs.rs` builds
+deterministic GitHub CLI capture plans and can execute them into a case-study
+directory. `scripts/mine-hive-mind-dataset.rs` wraps that command with the
+focused Hive Mind defaults used by the issue #115 case study.
+
+The collector records:
+
+- repository metadata;
+- recent issues, pull requests, and workflow runs;
+- selected issue bodies and issue comments;
+- selected PR bodies, discussion comments, inline review comments, reviews,
+  and diffs;
+- selected GitHub Actions run metadata and full logs;
+- a `manifest.json` that preserves every command used to produce each file.
+
+This is not a reasoning engine by itself and is intentionally not registered
+as a seed agent tool. It is the ingestion boundary for real-world traces from
+systems such as `link-assistant/hive-mind`, so later solver work can operate
+over observed issue text, PR feedback, work-session summaries, CI outcomes,
+and run logs instead of undocumented anecdotes.
+
+---
+
+## 15. Testing Architecture
 
 Tests live under `tests/unit/specification/` and follow three patterns:
 
@@ -517,7 +544,7 @@ adds one file (or extends one matrix) without touching the rest.
 
 ---
 
-## 15. Open Questions
+## 16. Open Questions
 
 These items are tracked as requirements today and as architecture
 references here:
@@ -540,12 +567,12 @@ the table in Section 2 and link the new module.
 
 ---
 
-## 16. References
+## 17. References
 
 - `VISION.md` — values, product story, north-star user experience.
 - `GOALS.md` — what counts as success per surface.
 - `NON-GOALS.md` — what we explicitly do not build.
-- `REQUIREMENTS.md` — issue-by-issue implementation matrix (R1 … R136).
+- `REQUIREMENTS.md` — issue-by-issue implementation matrix (R1 … R149).
 - [`link-foundation/doublets-rs`](https://github.com/link-foundation/doublets-rs) — long-term storage backend.
 - [`link-foundation/doublets-web`](https://github.com/link-foundation/doublets-web) — browser-side mirror.
 - [`link-assistant/calculator`](https://github.com/link-assistant/calculator) — delegated calculator engine (`link-calculator` crate).

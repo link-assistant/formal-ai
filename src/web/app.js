@@ -429,6 +429,9 @@ const PREFERENCE_DEFAULTS = {
   // deterministic users turn random response variation off with temperature=0.
   guessProbability: 0.8,
   temperature: 0.7,
+  // Issue #63: definition fusion remains explicit-only by default, with an
+  // opt-in mode that treats plain "What is X?" prompts as merge requests.
+  definitionFusion: "explicit",
   theme: "auto",
   location: "",
   // Issue #27: id of the conversation the user last typed in; on reload the
@@ -456,6 +459,7 @@ const UI_SKINS = ["flat", "glass", "contrast"];
 const CHAT_STYLES = ["cards", "compact", "bubbles"];
 const COMPOSER_STYLES = ["flat", "glass-soft", "glass-clear", "bubble"];
 const COMPOSER_ACTIONS = ["attach", "plus"];
+const DEFINITION_FUSION_MODES = ["explicit", "auto"];
 
 const MEMORY_EXPORT_FILENAME = "formal-ai-memory.lino";
 
@@ -551,6 +555,12 @@ function normalizeComposerAction(value) {
     : PREFERENCE_DEFAULTS.composerAction;
 }
 
+function normalizeDefinitionFusion(value) {
+  return DEFINITION_FUSION_MODES.includes(value)
+    ? value
+    : PREFERENCE_DEFAULTS.definitionFusion;
+}
+
 function i18nApi() {
   return typeof window !== "undefined" && window.FormalAiI18n
     ? window.FormalAiI18n
@@ -629,6 +639,7 @@ function collectUserContext({
   locationPreference,
   guessProbability,
   temperature,
+  definitionFusion,
 }) {
   const browserLanguages = browserLanguagesList();
   const nav = typeof navigator !== "undefined" ? navigator : {};
@@ -661,6 +672,7 @@ function collectUserContext({
     preferredLocation: locationPreference || "",
     guessProbability: formatSliderValue(guessProbability),
     temperature: String(normalizeSliderPreference(temperature, 0)),
+    definitionFusion,
     locationInference:
       locationPreference
         ? `user-provided preference: ${locationPreference}`
@@ -1407,6 +1419,9 @@ function App() {
       PREFERENCE_DEFAULTS.temperature,
     ),
   );
+  const [definitionFusion, setDefinitionFusion] = useState(
+    normalizeDefinitionFusion(initialPreferences.current.definitionFusion),
+  );
   const [themePreference, setThemePreference] = useState(
     normalizeThemePreference(initialPreferences.current.theme),
   );
@@ -1577,6 +1592,7 @@ function App() {
         locationPreference,
         guessProbability,
         temperature,
+        definitionFusion,
       }),
     [
       uiLanguage,
@@ -1589,6 +1605,7 @@ function App() {
       locationPreference,
       guessProbability,
       temperature,
+      definitionFusion,
       colorSchemeTick,
     ],
   );
@@ -1791,6 +1808,7 @@ function App() {
       greetingVariations,
       guessProbability,
       temperature,
+      definitionFusion,
       theme: themePreference,
       uiSkin,
       chatStyle,
@@ -1813,6 +1831,7 @@ function App() {
     greetingVariations,
     guessProbability,
     temperature,
+    definitionFusion,
     themePreference,
     uiSkin,
     chatStyle,
@@ -1867,6 +1886,11 @@ function App() {
     temperatureRef.current = temperature;
   }, [temperature]);
 
+  const definitionFusionRef = useRef(definitionFusion);
+  useEffect(() => {
+    definitionFusionRef.current = definitionFusion;
+  }, [definitionFusion]);
+
   const agentModeRef = useRef(agentMode);
   useEffect(() => {
     agentModeRef.current = agentMode;
@@ -1889,6 +1913,7 @@ function App() {
           greetingVariations: greetingVariationsRef.current,
           guessProbability: guessProbabilityRef.current,
           temperature: temperatureRef.current,
+          definitionFusion: definitionFusionRef.current,
         },
         userContext: userContextRef.current,
       });
@@ -2779,6 +2804,32 @@ function App() {
                 onChange: (event) => setGreetingVariations(event.target.checked),
               }),
               h("span", null, t("settings.variations")),
+            ),
+            h(
+              "label",
+              { className: "setting-row" },
+              h("span", null, t("settings.definitionFusion")),
+              h(
+                "select",
+                {
+                  "data-testid": "setting-definition-fusion",
+                  value: definitionFusion,
+                  onChange: (event) =>
+                    setDefinitionFusion(
+                      normalizeDefinitionFusion(event.target.value),
+                    ),
+                },
+                h(
+                  "option",
+                  { value: "explicit" },
+                  t("settings.definitionFusion.explicit"),
+                ),
+                h(
+                  "option",
+                  { value: "auto" },
+                  t("settings.definitionFusion.auto"),
+                ),
+              ),
             ),
             h(
               "label",

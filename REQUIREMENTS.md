@@ -108,7 +108,7 @@ Issue [#12](https://github.com/link-assistant/formal-ai/issues/12) collects the 
 | R70 | Keep the issue #12 documentation set protected by automated coverage. | Implemented in `tests/unit/docs_requirements.rs`. |
 | R71 | Pin every current and tracked feature with executable TDD tests covering chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent state. | Implemented under `tests/unit/specification/`. Active tests describe present implementation behavior; `#[ignore = "tracked requirement: ..."]` tests document failing expectations without blocking CI. |
 | R72 | Implement a universal problem-solving algorithm that walks the same loop (impulse, formalization, context, history, decomposition, TDD, synthesis, combination, verification, simplification, presentation) for every request without branching by domain. | Implemented by `UniversalSolver` in `src/solver.rs` and exposed through `FormalAiEngine::answer`; each specification test under `tests/unit/specification/reasoning_loop.rs` is satisfied by the recorded steps. |
-| R73 | Expose every solver knob through a persistable `SolverConfig` (`guess_probability`, `context_sensitivity`, `questioning_rigor`, `max_decomposition_depth`, `agent_mode`, `diagnostic_mode`, `offline`, `cache_ttl_seconds`) honored by both library and CLI. | Implemented in `src/solver.rs` with environment-variable overrides for `FORMAL_AI_OFFLINE`, `FORMAL_AI_AGENT_MODE`, `FORMAL_AI_DIAGNOSTIC_MODE`, and `FORMAL_AI_CACHE_TTL_SECONDS`. |
+| R73 | Expose every solver knob through a persistable `SolverConfig` (`guess_probability`, `context_sensitivity`, `questioning_rigor`, `max_decomposition_depth`, `agent_mode`, `diagnostic_mode`, `offline`, `cache_ttl_seconds`, `definition_fusion_by_default`) honored by both library and CLI. | Implemented in `src/solver.rs` with environment-variable overrides for `FORMAL_AI_OFFLINE`, `FORMAL_AI_AGENT_MODE`, `FORMAL_AI_DIAGNOSTIC_MODE`, `FORMAL_AI_CACHE_TTL_SECONDS`, and `FORMAL_AI_DEFINITION_FUSION`. |
 | R74 | Decompose composite requests into recursively-formalized sub-impulses bounded by `max_decomposition_depth`. | Implemented in `UniversalSolver::decompose`, which detects conjunctions (`and`, `with tests`, `with benchmarks`) and emits `sub_impulse:` events. |
 | R75 | Generate at least one executable test or constraint check per requirement before committing to an answer. | Implemented by the TDD step in `UniversalSolver::solve`, which records a `test:` event for every candidate that is then validated. |
 | R76 | Record every step of the solver as an append-only event in the in-process event log, content-addressed by FNV-1a 64-bit hashing. | Implemented in `src/event_log.rs`, exposed through `evidence_links` and `links_notation` on `SymbolicAnswer`. |
@@ -272,6 +272,26 @@ parity, CI enforcement, and case-study evidence.
 | R141 | Runtime tests must prove the browser uses the published `lino-i18n` package and can resolve nested catalog entries, parent labels, interpolation, and fallback. | Implemented by updating the Issue #94 Playwright tests in `tests/e2e/tests/demo.spec.js` to expect `lino-i18n@0.1.1` and adding a nested catalog lookup test for Issue #117. |
 | R142 | Compile issue #117 evidence, online research, requirements, solution plan, and verification notes under `docs/case-studies/issue-117/`. | Implemented in `docs/case-studies/issue-117/README.md` with raw captured GitHub, npm, release, and upstream README data under `docs/case-studies/issue-117/raw-data/`. |
 
+## Issue #115 GitHub Evidence Collection And Hive-Mind Trace Requirements
+
+Issue [#115](https://github.com/link-assistant/formal-ai/issues/115) asks
+formal-ai to continue the issue #103 vision work, pick the next most important
+missing implementation slice, collect data under
+`docs/case-studies/issue-115/`, and specifically create a script or command
+that collects logs showing how
+[`link-assistant/hive-mind`](https://github.com/link-assistant/hive-mind)
+operates through issues, pull requests, work-session comments, and CI logs.
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R143 | Compile issue #115 evidence and analysis under `docs/case-studies/issue-115/`. | Implemented in `docs/case-studies/issue-115/README.md` with raw data in `docs/case-studies/issue-115/raw-data/formal-ai/` and `docs/case-studies/issue-115/raw-data/hive-mind/`. |
+| R144 | Add a reusable GitHub log collector command for case studies instead of relying on one-off handwritten `gh` command lists. | Implemented by `src/github_logs.rs`, exported from the library, exposed as `formal-ai github-logs plan` / `formal-ai github-logs collect`, and wrapped by `scripts/mine-hive-mind-dataset.rs` for the Hive Mind dataset workflow. |
+| R145 | Capture all GitHub conversation surfaces needed for PR/issue investigations: issue bodies, issue comments, PR bodies, PR discussion comments, inline review comments, reviews, diffs, recent workflow runs, and selected run logs. | Implemented by `github_log_capture_plan`, which emits `gh issue view`, `gh api .../issues/{n}/comments`, `gh pr view`, `gh api .../pulls/{n}/comments`, `gh api .../pulls/{n}/reviews`, `gh pr diff`, `gh run list`, and `gh run view --log` captures with a manifest. |
+| R146 | Make the collector testable without network access or a real GitHub token. | Implemented by `collect_github_logs_with_runner`, which accepts an injected command runner; unit tests use a fake runner and integration tests exercise the `plan` command only. |
+| R147 | Preserve a bounded hive-mind operational sample for analysis. | Implemented by collecting recent hive-mind issues/PRs/runs plus focused issue/PR/run data for #1811/#1813/#1814, PR #1812/#1815/#1816, and Actions runs `25976224438` / `26058054431`; large logs and diffs are compressed. |
+| R148 | Keep GitHub evidence mining outside the seed agent tool registry and expose it as an operator script/command. | Implemented by `scripts/mine-hive-mind-dataset.rs` plus `formal-ai github-logs`; `data/seed/tools.lino` intentionally does not register a `tool_github_logs` capability. |
+| R149 | Keep documentation and regression coverage in lockstep with the new collector. | Implemented by README command examples, the `ARCHITECTURE.md` GitHub evidence collection section, `tests/unit/github_logs.rs`, `tests/integration/formal_ai_cli.rs`, and `tests/unit/docs_requirements.rs`. |
+
 ## Issue #63 Cross-Language Definition Fusion Requirements
 
 Issue [#63](https://github.com/link-assistant/formal-ai/issues/63) asks the
@@ -284,8 +304,9 @@ answer keeps language/source evidence visible.
 
 | ID | Requirement | Status |
 | --- | --- | --- |
-| R143 | Recognize requests to merge or combine Wikipedia definitions/translations for a concept. | Implemented by the `definition_merge` specialized handler in `src/solver_handlers/definition_merge.rs`, mirrored by `tryDefinitionMerge` in `src/web/formal_ai_worker.js`. |
-| R144 | Merge only definitions that belong to the same resolved concept anchor, preferring seeded Wikidata Q-ID records when available. | Implemented by resolving the requested term through `lookup_concept_query` before collecting localized fragments; the answer and evidence keep the shared `wikidata:` link. |
-| R145 | Preserve source languages and citations for every contributing definition fragment. | Implemented by `definition_merge:language:*` and `source:http:*` evidence links in Rust, matching source-language evidence chips in the browser, plus the user-facing `Source languages:` and `Sources:` sections. |
-| R146 | Deduplicate repeated facts deterministically instead of concatenating every source verbatim. | Implemented by sentence-level normalized fact keys in `merged_definition_facts` / `mergedDefinitionFacts`; the output is stable for the same seed data. |
-| R147 | Cover cross-language definition fusion with 10-20 self-explanatory examples that assert specific behavior rather than matching full answer markdown. | Implemented by `tests/unit/specification/definition_fusion.rs` and the Playwright regression `merged Wikipedia definitions combine localized seed summaries` in `tests/e2e/tests/multilingual.spec.js`. |
+| R150 | Recognize requests to merge or combine Wikipedia definitions/translations for a concept. | Implemented by the `definition_merge` specialized handler in `src/solver_handlers/definition_merge.rs`, mirrored by `tryDefinitionMerge` in `src/web/formal_ai_worker.js`. |
+| R151 | Merge only definitions that belong to the same resolved concept anchor, preferring seeded Wikidata Q-ID records when available. | Implemented by resolving the requested term through `lookup_concept_query` before collecting localized fragments; the answer and evidence keep the shared `wikidata:` link. |
+| R152 | Preserve source languages and citations for every contributing definition fragment. | Implemented by `definition_merge:language:*` and `source:http:*` evidence links in Rust, matching source-language evidence chips in the browser, plus the user-facing `Source languages:` and `Sources:` sections. |
+| R153 | Deduplicate repeated facts deterministically instead of concatenating every source verbatim. | Implemented by sentence-level normalized fact keys in `merged_definition_facts` / `mergedDefinitionFacts`; the output is stable for the same seed data. |
+| R154 | Cover cross-language definition fusion with 10-20 self-explanatory examples that assert specific behavior rather than matching full answer markdown. | Implemented by `tests/unit/specification/definition_fusion.rs` and the Playwright regression `merged Wikipedia definitions combine localized seed summaries` in `tests/e2e/tests/multilingual.spec.js`. |
+| R155 | Let users choose whether plain definition prompts like `What is IIR?` automatically use definition fusion. | Implemented by `SolverConfig::definition_fusion_by_default`, `FORMAL_AI_DEFINITION_FUSION`, the CLI `--definition-fusion` option, and the browser settings control persisted through `formal-ai.preferences.v1`. |
