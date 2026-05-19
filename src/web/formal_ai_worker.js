@@ -4237,20 +4237,6 @@ function normalizeUrlCandidate(candidate) {
   return parsed.href.replace(/\/$/, "");
 }
 
-function knownFrameBlockedHost(url) {
-  let parsed;
-  try {
-    parsed = new URL(url);
-  } catch (_error) {
-    return "";
-  }
-  const host = parsed.hostname.toLowerCase();
-  if (host === "github.com" || host.endsWith(".github.com")) {
-    return host;
-  }
-  return "";
-}
-
 function firstUrlCandidate(prompt) {
   const tokens = String(prompt || "").split(/\s+/);
   for (const token of tokens) {
@@ -4611,34 +4597,14 @@ async function tryUrlNavigate(prompt) {
   const url = extractUrlNavigateUrl(prompt, normalized);
   if (!url) return null;
 
-  const blockedHost = knownFrameBlockedHost(url);
   const evidence = [`url_navigate:request:${url}`];
-  if (blockedHost) {
-    evidence.push(`url_preview:blocked:${blockedHost}`);
-    return {
-      intent: "url_navigate",
-      content: [
-        `Open this in a new tab: [${url}](${url}).`,
-        "",
-        [
-          "In the browser-only demo I can't read GitHub directly from the page,",
-          "and GitHub blocks embedded frames.",
-          "A new tab is the reliable way to view it.",
-        ].join(" "),
-      ].join("\n"),
-      confidence: 0.95,
-      evidence,
-      iframeUrl: null,
-    };
-  }
-
-  evidence.push(`url_preview:iframe:${url}`);
+  evidence.push(`url_preview:external_link:${url}`);
   const lines = [
-    `Open this page: [${url}](${url}).`,
+    `I suggest opening this in a new tab: [${url}](${url}).`,
     "",
     [
-      "I can also show a preview below when the site allows embedded frames.",
-      "If the frame is blocked, use the new-tab control.",
+      "This web app cannot reliably confirm ahead of time whether an arbitrary site allows embedding,",
+      "so I am using a direct external link instead of an embedded preview.",
     ].join(" "),
   ];
 
@@ -4647,7 +4613,7 @@ async function tryUrlNavigate(prompt) {
     content: lines.join("\n"),
     confidence: 0.95,
     evidence,
-    iframeUrl: url,
+    iframeUrl: null,
   };
 }
 

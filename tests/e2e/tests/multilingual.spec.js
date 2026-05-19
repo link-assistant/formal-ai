@@ -201,7 +201,7 @@ test.describe('multilingual chat surface', () => {
     await expect(last).not.toContainText(/рок-группа|rock band|american.*rock|глэм/i);
   });
 
-  test('GitHub navigation opens as an external link without iframe preview', async ({ page }) => {
+  test('GitHub navigation suggests an external link without iframe preview', async ({ page }) => {
     const githubRequestTypes = [];
     await page.route(/https:\/\/github\.com\/?.*/, async (route) => {
       githubRequestTypes.push(route.request().resourceType());
@@ -211,8 +211,12 @@ test.describe('multilingual chat surface', () => {
     const last = await sendPrompt(page, 'Navigate to github.com');
     await expect(last).toHaveClass(/assistant/);
     await expect(last).toContainText('https://github.com');
+    await expect(last).toContainText('I suggest opening this in a new tab');
+    await expect(last).toContainText('This web app');
     await expect(last).not.toContainText('Could not fetch');
     await expect(last).not.toContainText('URL requested for');
+    await expect(last).not.toContainText('Open this');
+    await expect(last).not.toContainText('demo');
     await expect(last).not.toContainText('iframe');
     await expect(last).not.toContainText('preview below');
     await expect(last).toContainText(/new tab/i);

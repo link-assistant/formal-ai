@@ -11,7 +11,7 @@ use super::finalize_simple;
 
 /// Match prompts that explicitly ask the engine to perform an HTTP request
 /// (e.g. `fetch google.com`, `Сделай запрос к google.com`). In the browser
-/// demo the actual `fetch()` is attempted first, with an iframe fallback when
+/// web app the actual `fetch()` is attempted first, with an iframe fallback when
 /// CORS blocks the request. Non-fetch URL prompts (`Navigate to github.com`,
 /// `Visit github.com`, ...) are handled by [`try_url_navigate`] instead.
 pub fn try_http_fetch(
@@ -23,7 +23,7 @@ pub fn try_http_fetch(
     log.append("http_fetch:request", url.clone());
     let body = format!(
         "HTTP fetch requested for `{url}`.\n\n\
-         The browser demo attempts a direct `fetch()` first and shows the \
+         The browser web app attempts a direct `fetch()` first and shows the \
          response body when the server allows CORS. If the request is blocked \
          by CORS, the page falls back to an embedded iframe with open-in-new-tab \
          and full-screen controls.\n\n\
@@ -41,8 +41,8 @@ pub fn try_http_fetch(
 
 /// Match prompts that ask the assistant to navigate to or display a URL
 /// without performing an HTTP request (e.g. `Navigate to github.com`,
-/// `Go to github.com`, `Перейди на github.com`). The browser demo renders
-/// the link directly and previews it in an iframe; no `fetch()` is attempted.
+/// `Go to github.com`, `Перейди на github.com`). The browser web app renders
+/// a direct external link; no `fetch()` is attempted.
 pub fn try_url_navigate(
     prompt: &str,
     normalized: &str,
@@ -50,22 +50,13 @@ pub fn try_url_navigate(
 ) -> Option<SymbolicAnswer> {
     let url = extract_url_navigate_url(prompt, normalized)?;
     log.append("url_navigate:request", url.clone());
-    let body = if let Some(blocked_host) = known_frame_blocked_host(&url) {
-        log.append("url_preview:blocked", blocked_host);
-        format!(
-            "Open this in a new tab: [{url}]({url}).\n\n\
-             In the browser-only demo I can't read GitHub directly from the \
-             page, and GitHub blocks embedded frames. A new tab is the reliable \
-             way to view it."
-        )
-    } else {
-        log.append("url_preview:iframe", url.clone());
-        format!(
-            "Open this page: [{url}]({url}).\n\n\
-             I can also show a preview below when the site allows embedded \
-             frames. If the frame is blocked, use the new-tab control."
-        )
-    };
+    log.append("url_preview:external_link", url.clone());
+    let body = format!(
+        "I suggest opening this in a new tab: [{url}]({url}).\n\n\
+         This web app cannot reliably confirm ahead of time whether an \
+         arbitrary site allows embedding, so I am using a direct external link \
+         instead of an embedded preview."
+    );
     Some(finalize_simple(
         prompt,
         log,
@@ -233,29 +224,6 @@ fn looks_like_hostname(value: &str) -> bool {
     })
 }
 
-fn known_frame_blocked_host(url: &str) -> Option<String> {
-    let host = host_from_url(url)?;
-    let normalized_host = host.to_ascii_lowercase();
-    if normalized_host == "github.com" || normalized_host.ends_with(".github.com") {
-        return Some(normalized_host);
-    }
-    None
-}
-
-fn host_from_url(url: &str) -> Option<&str> {
-    let after_scheme = url.split_once("://")?.1;
-    let host_port = after_scheme
-        .split(['/', '?', '#'])
-        .next()
-        .unwrap_or_default();
-    let host = host_port.split(':').next().unwrap_or_default();
-    if host.is_empty() {
-        None
-    } else {
-        Some(host)
-    }
-}
-
 /// Prefixes that mean "perform an HTTP request" — the browser worker will
 /// attempt a real `fetch()` for these prompts before falling back to iframe.
 const HTTP_FETCH_PREFIXES: &[&str] = &[
@@ -319,8 +287,8 @@ fn is_http_fetch_prompt(prompt: &str, normalized: &str, _raw_candidate: &str) ->
 }
 
 /// Prefixes that mean "navigate to / show this page" — the browser worker
-/// must NOT attempt `fetch()` for these prompts; it just renders the link
-/// and the iframe preview.
+/// must NOT attempt `fetch()` for these prompts; it returns a direct external
+/// link that the user can open in a new tab.
 const URL_NAVIGATE_PREFIXES: &[&str] = &[
     "navigate to ",
     "navigate ",
