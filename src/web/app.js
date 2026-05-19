@@ -413,6 +413,7 @@ function buildRecallReport({ events, term, scope, currentConversationId, trigger
 const PREFERENCE_DEFAULTS = {
   demoMode: true,
   diagnosticsMode: false,
+  contextPanelWidth: 300,
   // Issue #27: each sidebar section is a VS Code-style collapsible region; the
   // last expand/collapse state is persisted via FormalAiPreferences so opening
   // the demo never reshuffles the user's layout.
@@ -461,6 +462,10 @@ const CHAT_STYLES = ["cards", "compact", "bubbles"];
 const COMPOSER_STYLES = ["flat", "glass-soft", "glass-clear", "bubble"];
 const COMPOSER_ACTIONS = ["attach", "plus"];
 const DEFINITION_FUSION_MODES = ["explicit", "auto"];
+const CONTEXT_PANEL_MIN_WIDTH = 220;
+const CONTEXT_PANEL_MAX_WIDTH = 560;
+const CONTEXT_PANEL_MIN_CHAT_WIDTH = 360;
+const CONTEXT_PANEL_RESIZER_WIDTH = 10;
 
 const MEMORY_EXPORT_FILENAME = "formal-ai-memory.lino";
 
@@ -532,6 +537,34 @@ function normalizeSliderPreference(value, fallback) {
 
 function formatSliderValue(value) {
   return String(Math.round(normalizeSliderPreference(value, 0) * 100));
+}
+
+function contextPanelMaxWidth() {
+  if (typeof window === "undefined") {
+    return CONTEXT_PANEL_MAX_WIDTH;
+  }
+  const viewportWidth =
+    window.visualViewport && window.visualViewport.width
+      ? window.visualViewport.width
+      : window.innerWidth;
+  const available = Math.round(
+    viewportWidth - CONTEXT_PANEL_MIN_CHAT_WIDTH - CONTEXT_PANEL_RESIZER_WIDTH,
+  );
+  return Math.max(
+    CONTEXT_PANEL_MIN_WIDTH,
+    Math.min(CONTEXT_PANEL_MAX_WIDTH, available),
+  );
+}
+
+function normalizeContextPanelWidth(value) {
+  return Math.round(
+    clampNumber(
+      value,
+      CONTEXT_PANEL_MIN_WIDTH,
+      contextPanelMaxWidth(),
+      PREFERENCE_DEFAULTS.contextPanelWidth,
+    ),
+  );
 }
 
 function normalizeThemePreference(value) {
@@ -1405,6 +1438,9 @@ function App() {
   const [diagnosticsMode, setDiagnosticsMode] = useState(
     initialPreferences.current.diagnosticsMode,
   );
+  const [contextPanelWidth, setContextPanelWidth] = useState(
+    normalizeContextPanelWidth(initialPreferences.current.contextPanelWidth),
+  );
   // Issue #27: sidebar collapse/expand state per section.
   const [sidebarPromptsCollapsed, setSidebarPromptsCollapsed] = useState(
     initialPreferences.current.sidebarPromptsCollapsed,
@@ -1552,6 +1588,25 @@ function App() {
       if (window.visualViewport) {
         window.visualViewport.removeEventListener("resize", updateViewport);
         window.visualViewport.removeEventListener("scroll", updateViewport);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+    const clampContextPanel = () => {
+      setContextPanelWidth((width) => normalizeContextPanelWidth(width));
+    };
+    window.addEventListener("resize", clampContextPanel);
+    window.addEventListener("orientationchange", clampContextPanel);
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener("resize", clampContextPanel);
+    }
+    return () => {
+      window.removeEventListener("resize", clampContextPanel);
+      window.removeEventListener("orientationchange", clampContextPanel);
+      if (window.visualViewport) {
+        window.visualViewport.removeEventListener("resize", clampContextPanel);
       }
     };
   }, []);
@@ -1795,6 +1850,49 @@ function App() {
     refreshConversations(next);
   }, [refreshConversations]);
 
+  const handleContextResizePointerDown = useCallback((event) => {
+    if (event.button !== 0 || typeof window === "undefined") return;
+    event.preventDefault();
+    const startX = event.clientX;
+    const startWidth = contextPanelWidth;
+    const body = typeof document !== "undefined" ? document.body : null;
+    const handlePointerMove = (moveEvent) => {
+      const nextWidth = startWidth + moveEvent.clientX - startX;
+      setContextPanelWidth(normalizeContextPanelWidth(nextWidth));
+    };
+    const stopResize = () => {
+      if (body) {
+        body.classList.remove("is-resizing-context");
+      }
+      window.removeEventListener("pointermove", handlePointerMove);
+      window.removeEventListener("pointerup", stopResize);
+      window.removeEventListener("pointercancel", stopResize);
+    };
+    if (body) {
+      body.classList.add("is-resizing-context");
+    }
+    window.addEventListener("pointermove", handlePointerMove);
+    window.addEventListener("pointerup", stopResize);
+    window.addEventListener("pointercancel", stopResize);
+  }, [contextPanelWidth]);
+
+  const handleContextResizeKeyDown = useCallback((event) => {
+    const step = event.shiftKey ? 40 : 16;
+    let nextWidth = null;
+    if (event.key === "ArrowLeft") {
+      nextWidth = contextPanelWidth - step;
+    } else if (event.key === "ArrowRight") {
+      nextWidth = contextPanelWidth + step;
+    } else if (event.key === "Home") {
+      nextWidth = CONTEXT_PANEL_MIN_WIDTH;
+    } else if (event.key === "End") {
+      nextWidth = contextPanelMaxWidth();
+    }
+    if (nextWidth === null) return;
+    event.preventDefault();
+    setContextPanelWidth(normalizeContextPanelWidth(nextWidth));
+  }, [contextPanelWidth]);
+
   const handleDeleteConversation = useCallback(async (entry) => {
     if (!entry || !entry.id) return;
     await recordMemoryEvent({
@@ -1820,6 +1918,7 @@ function App() {
     persistPreferences({
       demoMode,
       diagnosticsMode,
+      contextPanelWidth,
       sidebarPromptsCollapsed,
       sidebarToolsCollapsed,
       sidebarTraceCollapsed,
@@ -1843,6 +1942,7 @@ function App() {
   }, [
     demoMode,
     diagnosticsMode,
+    contextPanelWidth,
     sidebarPromptsCollapsed,
     sidebarToolsCollapsed,
     sidebarTraceCollapsed,
@@ -2508,7 +2608,10 @@ function App() {
       : null,
     h(
       "section",
-      { className: "workspace" },
+      {
+        className: "workspace",
+        style: { "--context-panel-width": `${contextPanelWidth}px` },
+      },
       h(
         "aside",
         {
@@ -3085,6 +3188,20 @@ function App() {
             })
           : null,
       ),
+      h("div", {
+        className: "context-resizer",
+        "data-testid": "context-resizer",
+        role: "separator",
+        "aria-orientation": "vertical",
+        "aria-label": t("titles.resizeSidebar"),
+        "aria-valuemin": CONTEXT_PANEL_MIN_WIDTH,
+        "aria-valuemax": contextPanelMaxWidth(),
+        "aria-valuenow": contextPanelWidth,
+        tabIndex: 0,
+        title: t("titles.resizeSidebar"),
+        onPointerDown: handleContextResizePointerDown,
+        onKeyDown: handleContextResizeKeyDown,
+      }),
       h(
         "section",
         { className: "chat-panel" },

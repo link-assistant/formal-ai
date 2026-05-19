@@ -32,6 +32,7 @@ const REQUIRED_KEYS = [
   'titles.menuOpen',
   'titles.menuClose',
   'titles.composerMenu',
+  'titles.resizeSidebar',
   'composer.placeholder.chat',
   'composer.placeholder.agent',
   'composer.demoHint.before',
