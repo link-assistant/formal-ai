@@ -4,7 +4,7 @@
 //! API, Telegram, web demo) is expected to share. They cover both the active
 //! implementation and the full-scope scope from `VISION.md`/`GOALS.md`.
 
-use formal_ai::{FormalAiEngine, SymbolicAnswer};
+use formal_ai::{ConversationTurn, FormalAiEngine, SymbolicAnswer, UniversalSolver};
 
 fn answer(prompt: &str) -> SymbolicAnswer {
     FormalAiEngine.answer(prompt)
@@ -86,6 +86,58 @@ fn unknown_prompt_returns_zero_confidence_fallback_intent() {
     assert_eq!(response.intent, "unknown");
     assert!(response.confidence.abs() < f32::EPSILON);
     assert!(response.answer.contains("Links Notation"));
+}
+
+#[test]
+fn unknown_prompt_explains_how_to_teach_a_behavior_rule() {
+    let response = answer("Какая у тебя модель личности?");
+    assert_eq!(response.intent, "unknown");
+    assert!(
+        response.answer.contains("List behavior rules")
+            && response.answer.contains("Show behavior rule")
+            && response.answer.contains("When I say"),
+        "unknown fallback should be a self-contained rule-teaching guide, got: {}",
+        response.answer
+    );
+}
+
+#[test]
+fn behavior_rules_can_be_listed_and_read_through_chat() {
+    let list = answer("List behavior rules");
+    assert_eq!(list.intent, "behavior_rules_list");
+    assert!(list.answer.contains("rule_greeting"));
+    assert!(list.answer.contains("rule_unknown"));
+
+    let detail = answer("Show behavior rule unknown");
+    assert_eq!(detail.intent, "behavior_rule_detail");
+    assert!(detail.answer.contains("rule_unknown"));
+    assert!(detail.answer.contains("When I say"));
+}
+
+#[test]
+fn behavior_rules_can_be_updated_through_conversation_history() {
+    let solver = UniversalSolver::default();
+    let update = solver.solve(
+        "When I say `Какая у тебя модель личности?`, answer `У меня символьная модель личности.`",
+    );
+    assert_eq!(update.intent, "behavior_rule_update");
+    assert!(update.answer.contains("behavior_rule_runtime"));
+
+    let history = [ConversationTurn::user(
+        "When I say `Какая у тебя модель личности?`, answer `У меня символьная модель личности.`",
+    )];
+    let response = solver.solve_with_history("Какая у тебя модель личности?", &history);
+    assert_eq!(response.intent, "behavior_rule_custom");
+    assert_eq!(response.answer, "У меня символьная модель личности.");
+}
+
+#[test]
+fn self_facts_can_be_listed_through_chat() {
+    let response = answer("List all facts you know about yourself");
+    assert_eq!(response.intent, "self_facts");
+    assert!(response.answer.contains("self_fact"));
+    assert!(response.answer.contains("formal-symbolic-production"));
+    assert!(response.answer.contains("local Links Notation rules"));
 }
 
 #[test]

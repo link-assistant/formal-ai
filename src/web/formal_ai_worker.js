@@ -46,7 +46,7 @@ const FALLBACK_IDENTITY_ANSWER =
 const FALLBACK_GREETING_ANSWER = "Hi, how may I help you?";
 
 const FALLBACK_UNKNOWN_ANSWER =
-  "I cannot answer that from local Links Notation rules yet. Please add a fact or add a rule in Links Notation, then run the request again.";
+  "I don't know how to answer that yet. I cannot answer that from local Links Notation rules yet. To inspect what I can do, send `List behavior rules`, then `Show behavior rule unknown`. To teach this dialog a response, send: When I say `your prompt`, answer `your answer`. To make it durable, export memory or use Report issue so developers can add the fact or rule to the seed.";
 
 const FALLBACK_CLARIFICATION_ANSWER =
   "I'm sorry for the confusion. I am formal-ai, a deterministic symbolic AI. I can answer greetings, identity questions, concept lookups (what is X?), arithmetic, and Hello World programs. If you'd like to ask about something specific, try one of those or add a fact in Links Notation.";
@@ -1320,6 +1320,362 @@ function isFarewellPrompt(normalized, rawPrompt) {
 function isPunctuationOnlyPrompt(prompt) {
   const trimmed = String(prompt || "").trim();
   return /^[.!?…。？！]+$/.test(trimmed);
+}
+
+function stableBehaviorRuleId(prefix, value) {
+  let hash = 0xcbf29ce484222325n;
+  const source = String(value || "");
+  for (let index = 0; index < source.length; index += 1) {
+    hash ^= BigInt(source.charCodeAt(index));
+    hash = BigInt.asUintN(64, hash * 0x100000001b3n);
+  }
+  return `${prefix}_${hash.toString(16)}`;
+}
+
+function escapeBehaviorRuleValue(value) {
+  return String(value || "")
+    .replaceAll("\\", "\\\\")
+    .replaceAll('"', '\\"')
+    .replaceAll("\n", "\\n");
+}
+
+function behaviorRuleRecords() {
+  return [
+    {
+      id: "rule_greeting",
+      intent: "greeting",
+      label: "Greeting rule",
+      matches: "`Hi`, `Hello`, `Hey`, and multilingual greeting seed phrases",
+      response: answerFor("greeting", "en"),
+      source: "data/seed/intent-routing.lino + multilingual responses",
+    },
+    {
+      id: "rule_farewell",
+      intent: "farewell",
+      label: "Farewell rule",
+      matches: "`bye`, `goodbye`, `poka`, and multilingual farewell seed phrases",
+      response: answerFor("farewell", "en"),
+      source: "data/seed/intent-routing.lino + multilingual responses",
+    },
+    {
+      id: "rule_identity",
+      intent: "identity",
+      label: "Identity rule",
+      matches: "`Who are you?`, `Кто ты?`, and equivalent identity prompts",
+      response: answerFor("identity", "en"),
+      source: "data/seed/identity.lino + multilingual responses",
+    },
+    {
+      id: "rule_capabilities",
+      intent: "capabilities",
+      label: "Capabilities rule",
+      matches: "`What can you do?`, `Что ты умеешь?`, and equivalent capability prompts",
+      response: "Lists the supported symbolic chat capabilities.",
+      source: "src/solver_handlers/user_intent.rs",
+    },
+    {
+      id: "rule_hello_world_rust",
+      intent: "hello_world_rust",
+      label: "Hello-world rule (Rust)",
+      matches: "`hello world` plus aliases: rust, rs",
+      response: "Returns a minimal Rust hello-world program.",
+      source: "data/seed/hello-world-programs.lino",
+    },
+    {
+      id: "rule_hello_world_python",
+      intent: "hello_world_python",
+      label: "Hello-world rule (Python)",
+      matches: "`hello world` plus aliases: python, py",
+      response: "Returns a minimal Python hello-world program.",
+      source: "data/seed/hello-world-programs.lino",
+    },
+    {
+      id: "rule_hello_world_javascript",
+      intent: "hello_world_javascript",
+      label: "Hello-world rule (JavaScript)",
+      matches: "`hello world` plus aliases: javascript, js, node",
+      response: "Returns a minimal JavaScript hello-world program.",
+      source: "data/seed/hello-world-programs.lino",
+    },
+    {
+      id: "rule_hello_world_typescript",
+      intent: "hello_world_typescript",
+      label: "Hello-world rule (TypeScript)",
+      matches: "`hello world` plus aliases: typescript, ts",
+      response: "Returns a minimal TypeScript hello-world program.",
+      source: "data/seed/hello-world-programs.lino",
+    },
+    {
+      id: "rule_hello_world_go",
+      intent: "hello_world_go",
+      label: "Hello-world rule (Go)",
+      matches: "`hello world` plus aliases: go, golang",
+      response: "Returns a minimal Go hello-world program.",
+      source: "data/seed/hello-world-programs.lino",
+    },
+    {
+      id: "rule_hello_world_c",
+      intent: "hello_world_c",
+      label: "Hello-world rule (C)",
+      matches: "`hello world` plus aliases: c",
+      response: "Returns a minimal C hello-world program.",
+      source: "data/seed/hello-world-programs.lino",
+    },
+    {
+      id: "rule_unknown",
+      intent: "unknown",
+      label: "Unknown fallback rule",
+      matches: "Any prompt that no earlier rule or handler can answer",
+      response: answerFor("unknown", "en"),
+      source: "data/seed/multilingual-responses.lino",
+    },
+  ];
+}
+
+function renderBehaviorRuleList() {
+  const lines = [
+    "Behavior rules I can inspect in this dialog:",
+    "",
+  ];
+  for (const rule of behaviorRuleRecords()) {
+    lines.push(`- \`${rule.id}\` -> intent \`${rule.intent}\`: ${rule.label}`);
+  }
+  lines.push(
+    "",
+    "Read one with `Show behavior rule unknown` or `Show behavior rule rule_greeting`.",
+    "Change this dialog with: When I say `your prompt`, answer `your answer`.",
+    "The write is append-only: export memory to preserve the rule message with the dialog.",
+  );
+  return lines.join("\n");
+}
+
+function renderBehaviorRuleDetail(rule) {
+  return [
+    rule.label,
+    "",
+    "```links",
+    rule.id,
+    `  intent "${escapeBehaviorRuleValue(rule.intent)}"`,
+    `  matches "${escapeBehaviorRuleValue(rule.matches)}"`,
+    `  response "${escapeBehaviorRuleValue(rule.response)}"`,
+    `  source "${escapeBehaviorRuleValue(rule.source)}"`,
+    "```",
+    "",
+    "To change this behavior in the current dialog, send: When I say `your prompt`, answer `your answer`.",
+  ].join("\n");
+}
+
+function renderSelfFacts() {
+  return [
+    "Facts I know about myself:",
+    "",
+    "```links",
+    "self_fact_model",
+    '  subject "formal-ai"',
+    '  relation "model"',
+    `  object "${escapeBehaviorRuleValue(AGENT_INFO.model || "formal-symbolic-production")}"`,
+    "self_fact_policy",
+    '  subject "formal-ai"',
+    '  relation "policy"',
+    '  object "deterministic symbolic AI; no neural network inference"',
+    "self_fact_rules",
+    '  subject "formal-ai"',
+    '  relation "answer_source"',
+    '  object "local Links Notation rules"',
+    "self_fact_memory",
+    '  subject "formal-ai"',
+    '  relation "memory"',
+    '  object "append-only dialog events plus seed files in Links Notation"',
+    "```",
+    "",
+    "Read behavior with `List behavior rules`; teach one with When I say `prompt`, answer `answer`.",
+  ].join("\n");
+}
+
+function renderRuntimeRuleUpdate(rule) {
+  return [
+    "Behavior rule recorded for this dialog.",
+    "",
+    "```links",
+    rule.id,
+    '  type "behavior_rule_runtime"',
+    `  match_prompt "${escapeBehaviorRuleValue(rule.trigger)}"`,
+    `  answer "${escapeBehaviorRuleValue(rule.answer)}"`,
+    '  source "user_message"',
+    "```",
+    "",
+    `Send \`${rule.trigger}\` now and I will answer with the configured response. Export memory to keep this rule message with the dialog.`,
+  ].join("\n");
+}
+
+function isBehaviorRulesList(normalized) {
+  return (
+    normalized.includes("list behavior rules") ||
+    normalized.includes("list all behavior rules") ||
+    normalized.includes("show behavior rules") ||
+    normalized.includes("show all behavior rules") ||
+    normalized.includes("what behavior rules") ||
+    normalized.includes("existing behavior rules") ||
+    normalized.includes("список правил поведения") ||
+    normalized.includes("покажи правила поведения") ||
+    normalized.includes("какие правила поведения")
+  );
+}
+
+function isSelfFactQuery(normalized) {
+  return (
+    normalized.includes("facts you know about yourself") ||
+    normalized.includes("facts about yourself") ||
+    normalized.includes("self facts") ||
+    normalized.includes("list all facts you know about yourself") ||
+    normalized.includes("какие факты ты знаешь о себе") ||
+    normalized.includes("факты о себе")
+  );
+}
+
+function cleanRuleQuery(raw) {
+  return String(raw || "")
+    .trim()
+    .replace(/^[\s`"':._,\-?!]+|[\s`"':._,\-?!]+$/g, "")
+    .toLowerCase();
+}
+
+function detailQuery(prompt) {
+  const lower = String(prompt || "").toLowerCase();
+  const prefixes = [
+    "show behavior rule",
+    "read behavior rule",
+    "describe behavior rule",
+    "show rule",
+    "read rule",
+    "details for rule",
+    "детали правила",
+    "покажи правило",
+    "прочитай правило",
+  ];
+  for (const prefix of prefixes) {
+    if (lower.startsWith(prefix)) {
+      return cleanRuleQuery(String(prompt || "").slice(prefix.length));
+    }
+  }
+  if (lower.includes("rule_unknown")) return "unknown";
+  return "";
+}
+
+function findBehaviorRule(query) {
+  const cleaned = cleanRuleQuery(query);
+  const withoutPrefix = cleaned.startsWith("rule_") ? cleaned.slice(5) : cleaned;
+  return behaviorRuleRecords().find(
+    (rule) =>
+      rule.id === cleaned ||
+      rule.id === `rule_${withoutPrefix}` ||
+      rule.intent === cleaned ||
+      rule.intent === withoutPrefix ||
+      rule.label.toLowerCase().includes(withoutPrefix),
+  );
+}
+
+function codeSpans(text) {
+  return String(text || "")
+    .split("`")
+    .map((part, index) => (index % 2 === 1 ? part.trim() : ""))
+    .filter(Boolean);
+}
+
+function looksLikeRuntimeRuleUpdate(text) {
+  const lower = String(text || "").toLowerCase();
+  return (
+    (lower.includes("when i say") && (lower.includes("answer") || lower.includes("reply"))) ||
+    (lower.includes("if i ask") && (lower.includes("answer") || lower.includes("reply"))) ||
+    lower.includes("add behavior rule") ||
+    lower.includes("update behavior rule") ||
+    (lower.includes("когда я скажу") && lower.includes("ответ")) ||
+    (lower.includes("если я спрошу") && lower.includes("ответ")) ||
+    lower.includes("добавь правило поведения")
+  );
+}
+
+function runtimeRuleFromText(text) {
+  if (!looksLikeRuntimeRuleUpdate(text)) return null;
+  const spans = codeSpans(text);
+  if (spans.length < 2) return null;
+  const trigger = spans[0].trim();
+  const answer = spans[1].trim();
+  if (!trigger || !answer) return null;
+  return {
+    id: stableBehaviorRuleId("behavior_rule_runtime", `${trigger}\n${answer}`),
+    trigger,
+    answer,
+  };
+}
+
+function runtimeRuleForPrompt(prompt, history) {
+  const normalizedPrompt = normalizePrompt(prompt);
+  const turns = Array.isArray(history) ? history : [];
+  for (let index = turns.length - 1; index >= 0; index -= 1) {
+    const turn = turns[index] || {};
+    if (String(turn.role || "").toLowerCase() !== "user") continue;
+    const rule = runtimeRuleFromText(turn.content);
+    if (rule && normalizePrompt(rule.trigger) === normalizedPrompt) {
+      return rule;
+    }
+  }
+  return null;
+}
+
+function tryBehaviorRules(prompt, normalized, history) {
+  const updateRule = runtimeRuleFromText(prompt);
+  if (updateRule) {
+    return {
+      intent: "behavior_rule_update",
+      content: renderRuntimeRuleUpdate(updateRule),
+      confidence: 1.0,
+      evidence: ["behavior_rule:update", updateRule.id],
+    };
+  }
+
+  if (isBehaviorRulesList(normalized)) {
+    return {
+      intent: "behavior_rules_list",
+      content: renderBehaviorRuleList(),
+      confidence: 1.0,
+      evidence: ["behavior_rules:list", "all"],
+    };
+  }
+
+  const query = detailQuery(prompt);
+  if (query) {
+    const rule = findBehaviorRule(query);
+    if (rule) {
+      return {
+        intent: "behavior_rule_detail",
+        content: renderBehaviorRuleDetail(rule),
+        confidence: 1.0,
+        evidence: ["behavior_rule:read", rule.id],
+      };
+    }
+  }
+
+  if (isSelfFactQuery(normalized)) {
+    return {
+      intent: "self_facts",
+      content: renderSelfFacts(),
+      confidence: 1.0,
+      evidence: ["self_facts:list", "formal-ai"],
+    };
+  }
+
+  const runtimeRule = runtimeRuleForPrompt(prompt, history);
+  if (runtimeRule) {
+    return {
+      intent: "behavior_rule_custom",
+      content: runtimeRule.answer,
+      confidence: 1.0,
+      evidence: ["behavior_rule:match", runtimeRule.id],
+    };
+  }
+
+  return null;
 }
 
 function containsAny(normalized, values) {
@@ -5135,6 +5491,13 @@ async function solve(prompt, history, prefs) {
   const language = detectLanguage(prompt);
   events.push(`language:${language}`);
   steps.push({ step: "detect_language", detail: language });
+
+  const behaviorRule = tryBehaviorRules(prompt, normalized, history);
+  if (behaviorRule) {
+    events.push(`handler:${behaviorRule.intent}`);
+    steps.push({ step: "dispatch_handler", detail: "tryBehaviorRules" });
+    return finalize(events, steps, toolCalls, behaviorRule);
+  }
 
   if (isPunctuationOnlyPrompt(prompt)) {
     events.push("handler:clarification");

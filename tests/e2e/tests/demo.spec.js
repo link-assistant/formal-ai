@@ -372,6 +372,31 @@ test.describe('formal-ai demo UI', () => {
     expect(href.length).toBeLessThanOrEqual(8192);
   });
 
+  test('behavior rules can be listed, inspected, and updated through chat', async ({ page }) => {
+    await switchToManualMode(page);
+
+    let lastMsg = await sendPrompt(page, 'List behavior rules');
+    await expect(lastMsg).toContainText('rule_greeting');
+    await expect(lastMsg).toContainText('rule_unknown');
+
+    lastMsg = await sendPrompt(page, 'Show behavior rule unknown');
+    await expect(lastMsg).toContainText('rule_unknown');
+    await expect(lastMsg).toContainText('When I say');
+
+    lastMsg = await sendPrompt(
+      page,
+      'When I say `Какая у тебя модель личности?`, answer `У меня символьная модель личности.`',
+    );
+    await expect(lastMsg).toContainText('behavior_rule_runtime');
+
+    lastMsg = await sendPrompt(page, 'Какая у тебя модель личности?');
+    await expect(lastMsg).toContainText('У меня символьная модель личности.');
+
+    lastMsg = await sendPrompt(page, 'List all facts you know about yourself');
+    await expect(lastMsg).toContainText('self_fact_model');
+    await expect(lastMsg).toContainText('local Links Notation rules');
+  });
+
   test('sending a hello world request produces a code block', async ({ page }) => {
     await switchToManualMode(page);
 
