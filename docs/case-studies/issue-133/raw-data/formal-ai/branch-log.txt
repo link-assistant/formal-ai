@@ -1,0 +1,20 @@
+bfb16d1 Initial commit with task details
+b4208d2 chore: release v0.69.0
+b9813d0 Merge pull request #132 from link-assistant/issue-127-02b97a60aa65
+5bb7651 Merge branch 'main' into issue-127-02b97a60aa65
+9efa109 ci: trigger workflow re-run
+ce43b14 chore: release v0.68.0
+1e23ceb Merge pull request #131 from link-assistant/issue-125-ee624abc83ec
+e5ce49c feat: structured fact-query reasoning pipeline (issue #127)
+26e8d6a chore: release v0.67.0
+49e63d7 Merge remote-tracking branch 'origin/main' into issue-125-ee624abc83ec
+257f6a5 Issue #125: split URL navigation from HTTP fetch and add more variations
+1b32ad3 Merge pull request #130 from link-assistant/issue-129-9c664282dfea
+cf56b65 Add GitHub Pages connectivity diagnostics
+64fb1fe Initial commit with task details
+c25a801 chore: release v0.66.0
+b5066cf Initial commit with task details
+122c490 Merge pull request #128 from link-assistant/issue-127-1af8cef2ecfb
+324468d Merge pull request #126 from link-assistant/issue-125-1ca670a84080
+8648295 chore: remove task placeholder
+abf1b3c Fix URL navigation previews

@@ -4587,28 +4587,294 @@ async function tryUrlNavigate(prompt) {
   };
 }
 
+// Reciprocal Rank Fusion constant — Cormack et al. 2009 use k = 60 and we
+// match that so combined ranks stay comparable across the CLI, server, and
+// browser surfaces (issue #133).
+const WEB_SEARCH_RRF_K = 60;
+
+// Maximum concurrent providers per search category. Modern browsers cap
+// per-origin sockets near six, so five keeps a slot free for the rest of the
+// page (issue #133). Same cap is reused by the connectivity dashboard.
+const WEB_SEARCH_CONCURRENCY = 5;
+
+// Per-provider top-N — the combined ranker takes ten results per source and
+// fuses them so URLs returned by more than one provider bubble up.
+const WEB_SEARCH_PROVIDER_LIMIT = 10;
+
+// Session-scoped CORS disable list. When a provider fetch throws a CORS or
+// network error we record the timestamp so the planner skips it for the rest
+// of the session and records the decision in memory.
+const WEB_SEARCH_DISABLED = new Map();
+
+function webSearchDisable(providerId, reason) {
+  if (!WEB_SEARCH_DISABLED.has(providerId)) {
+    WEB_SEARCH_DISABLED.set(providerId, { reason, at: Date.now() });
+  }
+}
+
+function webSearchIsDisabled(providerId) {
+  return WEB_SEARCH_DISABLED.has(providerId);
+}
+
+async function fetchProviderJson(providerId, url, options) {
+  if (typeof fetch !== "function") {
+    webSearchDisable(providerId, "no_fetch");
+    return { ok: false, error: "fetch unavailable", finalUrl: url };
+  }
+  try {
+    const response = await fetch(url, options || { mode: "cors" });
+    if (!response || !response.ok) {
+      return {
+        ok: false,
+        status: response ? response.status : 0,
+        statusText: response ? response.statusText : "",
+        finalUrl: url,
+      };
+    }
+    const data = await response.json();
+    return { ok: true, status: response.status, data, finalUrl: url };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    const isCors =
+      message.toLowerCase().includes("cors") ||
+      message.toLowerCase().includes("network") ||
+      message.toLowerCase().includes("failed to fetch");
+    webSearchDisable(providerId, isCors ? "cors" : "network");
+    return { ok: false, error: message, finalUrl: url, cors: isCors };
+  }
+}
+
+async function searchDuckDuckGo(query, limit) {
+  // DuckDuckGo Instant Answer — CORS-readable, no key. Returns the abstract
+  // and a flat list of related-topic links. We treat the abstract link plus
+  // the related topics as the ranked result list (issue #133).
+  const url =
+    "https://api.duckduckgo.com/?q=" +
+    encodeURIComponent(query) +
+    "&format=json&no_redirect=1&no_html=1";
+  const outcome = await fetchProviderJson("duckduckgo", url);
+  if (!outcome.ok || !outcome.data) {
+    return { ok: false, results: [], finalUrl: outcome.finalUrl, error: outcome.error };
+  }
+  const data = outcome.data;
+  const results = [];
+  if (data.AbstractURL && data.AbstractText) {
+    results.push({
+      title: data.Heading || query,
+      url: data.AbstractURL,
+      excerpt: stripHtml(data.AbstractText),
+    });
+  }
+  const topics = Array.isArray(data.RelatedTopics) ? data.RelatedTopics : [];
+  for (const topic of topics) {
+    if (!topic) continue;
+    if (topic.FirstURL && topic.Text) {
+      results.push({
+        title: topic.Text.split(" - ")[0] || topic.Text,
+        url: topic.FirstURL,
+        excerpt: stripHtml(topic.Text),
+      });
+    } else if (Array.isArray(topic.Topics)) {
+      for (const inner of topic.Topics) {
+        if (inner && inner.FirstURL && inner.Text) {
+          results.push({
+            title: inner.Text.split(" - ")[0] || inner.Text,
+            url: inner.FirstURL,
+            excerpt: stripHtml(inner.Text),
+          });
+        }
+      }
+    }
+    if (results.length >= limit) break;
+  }
+  return { ok: true, results: results.slice(0, limit), finalUrl: outcome.finalUrl };
+}
+
+async function searchWikipediaWebProvider(query, language, limit) {
+  // Reuse the existing helper but adapt the shape to {title, url, excerpt}.
+  const result = await searchWikipediaPages(query, language, limit);
+  if (!result || !Array.isArray(result.pages)) {
+    return { ok: false, results: [], finalUrl: "", language: language || "en" };
+  }
+  return {
+    ok: true,
+    results: result.pages.slice(0, limit),
+    language: result.language,
+    finalUrl: `https://${result.language}.wikipedia.org/w/rest.php/v1/search/page?q=${encodeURIComponent(query)}`,
+  };
+}
+
+async function searchWikidataEntities(query, language, limit) {
+  const lang = language && /^[a-z]{2,3}$/i.test(language) ? language : "en";
+  const url =
+    "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=" +
+    encodeURIComponent(query) +
+    "&language=" +
+    encodeURIComponent(lang) +
+    "&format=json&origin=*&limit=" +
+    encodeURIComponent(limit);
+  const outcome = await fetchProviderJson("wikidata", url);
+  if (!outcome.ok || !outcome.data || !Array.isArray(outcome.data.search)) {
+    return { ok: false, results: [], finalUrl: outcome.finalUrl, error: outcome.error };
+  }
+  const results = outcome.data.search.slice(0, limit).map((entry) => ({
+    title: entry.label || entry.id || query,
+    url: entry.concepturi || `https://www.wikidata.org/wiki/${entry.id}`,
+    excerpt: stripHtml(entry.description || ""),
+  }));
+  return { ok: true, results, finalUrl: outcome.finalUrl };
+}
+
+const WEB_SEARCH_PROVIDERS = [
+  { id: "duckduckgo", label: "DuckDuckGo Instant Answer", run: searchDuckDuckGo },
+  {
+    id: "wikipedia",
+    label: "Wikipedia REST",
+    run: (query, language, limit) =>
+      searchWikipediaWebProvider(query, language, limit),
+  },
+  {
+    id: "wikidata",
+    label: "Wikidata entities",
+    run: (query, language, limit) =>
+      searchWikidataEntities(query, language, limit),
+  },
+];
+
+async function runWithConcurrencyLimit(tasks, limit) {
+  // Simple p-limit style runner so we never exceed the browser's per-origin
+  // socket budget. Tasks are async functions returning a value; results are
+  // returned in the original order.
+  const cap = Math.max(1, Math.min(limit, tasks.length));
+  const results = new Array(tasks.length);
+  let cursor = 0;
+  async function worker() {
+    while (true) {
+      const index = cursor;
+      cursor += 1;
+      if (index >= tasks.length) return;
+      results[index] = await tasks[index]();
+    }
+  }
+  await Promise.all(Array.from({ length: cap }, () => worker()));
+  return results;
+}
+
+function reciprocalRankFusion(perProviderResults, k) {
+  // Cormack, Clarke, Buettcher 2009: score(d) = Σ 1 / (k + rank_i(d)).
+  // Each provider contributes its ranked list; we sum reciprocal ranks per
+  // unique URL and keep the title/excerpt from the highest-ranked appearance.
+  const fused = new Map();
+  for (const provider of perProviderResults) {
+    const list = Array.isArray(provider.results) ? provider.results : [];
+    list.forEach((item, index) => {
+      if (!item || !item.url) return;
+      const rank = index + 1;
+      const score = 1 / (k + rank);
+      const existing = fused.get(item.url);
+      if (existing) {
+        existing.score += score;
+        existing.providers.push({ id: provider.id, rank });
+        if (!existing.title && item.title) existing.title = item.title;
+        if (!existing.excerpt && item.excerpt) existing.excerpt = item.excerpt;
+      } else {
+        fused.set(item.url, {
+          url: item.url,
+          title: item.title || item.url,
+          excerpt: item.excerpt || "",
+          score,
+          providers: [{ id: provider.id, rank }],
+        });
+      }
+    });
+  }
+  return Array.from(fused.values()).sort((a, b) => {
+    if (b.score !== a.score) return b.score - a.score;
+    // Tie-break: prefer the entry that appeared in more providers.
+    return b.providers.length - a.providers.length;
+  });
+}
+
 async function tryWebSearch(prompt, language) {
   const normalized = normalizePrompt(prompt);
   const query = extractWebSearchQuery(prompt, normalized);
   if (!query) return null;
 
-  const evidence = [`web_search:query:${query}`, "web_search:provider:wikipedia"];
-  const result = await searchWikipediaPages(query, language, 5);
-  if (!result || !Array.isArray(result.pages) || result.pages.length === 0) {
+  const evidence = [`web_search:request:${query}`];
+
+  // Plan: every provider that is not session-disabled by a previous CORS
+  // failure. DuckDuckGo is first because it is the default in the issue.
+  const active = WEB_SEARCH_PROVIDERS.filter(
+    (provider) => !webSearchIsDisabled(provider.id),
+  );
+  for (const provider of WEB_SEARCH_PROVIDERS) {
+    if (webSearchIsDisabled(provider.id)) {
+      evidence.push(`web_search:disabled:${provider.id}`);
+    } else {
+      evidence.push(`web_search:provider:${provider.id}`);
+    }
+  }
+  evidence.push(`web_search:combined:rrf:k=${WEB_SEARCH_RRF_K}`);
+
+  if (active.length === 0) {
     return {
       intent: "web_search",
-      content: `No CORS-enabled web search results were returned for \`${query}\`.\n\nProvider tried: Wikipedia search.`,
+      content: `All CORS-readable search providers are disabled for this session. Tried: ${WEB_SEARCH_PROVIDERS.map((p) => p.id).join(", ")}.`,
+      confidence: 0.3,
+      evidence,
+    };
+  }
+
+  const tasks = active.map((provider) => async () => {
+    const startedAt = Date.now();
+    const outcome = await provider.run(query, language, WEB_SEARCH_PROVIDER_LIMIT);
+    return Object.assign({ id: provider.id, label: provider.label, elapsedMs: Date.now() - startedAt }, outcome);
+  });
+  const perProvider = await runWithConcurrencyLimit(tasks, WEB_SEARCH_CONCURRENCY);
+
+  for (const provider of perProvider) {
+    if (!provider.ok) {
+      evidence.push(`web_search:provider:${provider.id}:error:${provider.error || "no_results"}`);
+      continue;
+    }
+    evidence.push(`web_search:provider:${provider.id}:count:${provider.results.length}`);
+    if (provider.language) {
+      evidence.push(`web_search:provider:${provider.id}:language:${provider.language}`);
+    }
+    provider.results.forEach((item, index) => {
+      evidence.push(`web_search:rank:${provider.id}:${index + 1}:${item.url}`);
+    });
+  }
+
+  const fused = reciprocalRankFusion(perProvider, WEB_SEARCH_RRF_K);
+  const top = fused.slice(0, WEB_SEARCH_PROVIDER_LIMIT);
+  top.forEach((entry, index) => {
+    evidence.push(`web_search:fused:${index + 1}:${entry.providers.map((p) => p.id).join("+")}:${entry.url}`);
+  });
+
+  if (top.length === 0) {
+    return {
+      intent: "web_search",
+      content: `No CORS-enabled web search results were returned for \`${query}\`.\n\nProviders tried: ${active.map((p) => p.label).join(", ")}.`,
       confidence: 0.35,
       evidence,
     };
   }
 
-  evidence.push(`web_search:language:${result.language}`);
-  const lines = [`Search results for \`${query}\` (provider: Wikipedia).`, ""];
-  result.pages.forEach((page, index) => {
-    const excerpt = page.excerpt ? ` - ${page.excerpt}` : "";
-    lines.push(`${index + 1}. [${page.title}](${page.url})${excerpt}`);
+  const lines = [
+    `Search results for \`${query}\` — top ${top.length} after reciprocal rank fusion (k = ${WEB_SEARCH_RRF_K}).`,
+    "",
+    `Providers (default first): ${active.map((p) => p.id).join(", ")}.`,
+    "",
+  ];
+  top.forEach((entry, index) => {
+    const sources = entry.providers
+      .map((p) => `${p.id}#${p.rank}`)
+      .join(", ");
+    const excerpt = entry.excerpt ? ` - ${entry.excerpt}` : "";
+    lines.push(`${index + 1}. [${entry.title}](${entry.url}) — _via ${sources}_${excerpt}`);
   });
+
   return {
     intent: "web_search",
     content: lines.join("\n"),

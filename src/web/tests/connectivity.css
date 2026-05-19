@@ -275,6 +275,16 @@ input {
   color: var(--blue);
 }
 
+.service-badge.code {
+  background: #f3eefb;
+  color: #5d3aa5;
+}
+
+.service-badge.papers {
+  background: #fbf4ee;
+  color: var(--amber);
+}
+
 .meta-line,
 .target-line,
 .final-url {

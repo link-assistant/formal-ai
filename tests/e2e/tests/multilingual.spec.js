@@ -250,8 +250,26 @@ test.describe('multilingual chat surface', () => {
     await expect(frameContainer).toContainText(/https:\/\/example\.com\/?/);
   });
 
-  test('explicit web search renders Wikipedia search results', async ({ page }) => {
+  test('explicit web search fuses DuckDuckGo, Wikipedia, and Wikidata results', async ({
+    page,
+  }) => {
     await page.locator('.diagnostics-toggle').click();
+
+    // Issue #133: the worker now fans out to DuckDuckGo (default), Wikipedia,
+    // and Wikidata in parallel and fuses results with reciprocal rank fusion.
+    // Mock all three so the test is deterministic.
+    await page.route('**://api.duckduckgo.com/**', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          Heading: 'Nikola Tesla',
+          AbstractText: 'Nikola Tesla was a Serbian-American inventor.',
+          AbstractURL: 'https://duckduckgo.com/Nikola_Tesla',
+          RelatedTopics: [],
+        }),
+      });
+    });
     await page.route('**/w/rest.php/v1/search/page**', async (route) => {
       await route.fulfill({
         status: 200,
@@ -269,13 +287,31 @@ test.describe('multilingual chat surface', () => {
         }),
       });
     });
+    await page.route('**/wikidata.org/w/api.php**', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          search: [
+            {
+              id: 'Q9036',
+              label: 'Nikola Tesla',
+              description: 'Serbian-American inventor and electrical engineer',
+              concepturi: 'https://www.wikidata.org/wiki/Q9036',
+            },
+          ],
+        }),
+      });
+    });
 
     const last = await sendPrompt(page, 'Search the web for Nikola Tesla');
     await expect(last).toHaveClass(/assistant/);
     await expect(last).toContainText('Search results for');
     await expect(last).toContainText('Nikola Tesla');
     await expect(last).toContainText('Serbian-American inventor');
+    await expect(last.locator('.evidence-list')).toContainText('web_search:provider:duckduckgo');
     await expect(last.locator('.evidence-list')).toContainText('web_search:provider:wikipedia');
+    await expect(last.locator('.evidence-list')).toContainText('web_search:combined:rrf:k=60');
     await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
   });
 });
