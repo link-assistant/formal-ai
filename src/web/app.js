@@ -957,6 +957,44 @@ function timeLabel() {
   });
 }
 
+// Render a single diagnostics detail value as JSON-ish text so the user can
+// read the raw payload (PR #134 feedback 4489651616: "I want diagnostics to
+// show exactly all steps with expandable requests/responses data, full lino
+// data description and so on"). The function never throws — non-serializable
+// values fall back to String() — so a diagnostics row can't crash the chat.
+function formatDiagnosticPayload(value) {
+  if (value === null || value === undefined) return "(empty)";
+  if (typeof value === "string") return value;
+  try {
+    return JSON.stringify(value, null, 2);
+  } catch (_error) {
+    return String(value);
+  }
+}
+
+function truncateDiagnosticDetail(value) {
+  const text = formatDiagnosticPayload(value).replace(/\s+/g, " ").trim();
+  if (text.length <= 64) return text;
+  return `${text.slice(0, 61)}...`;
+}
+
+function summarizeToolCall(call) {
+  if (!call || typeof call !== "object") return "";
+  const parts = [];
+  if (call.inputs && typeof call.inputs === "object") {
+    const keys = Object.keys(call.inputs).slice(0, 3);
+    if (keys.length > 0) parts.push(`in: ${keys.join(", ")}`);
+  }
+  if (call.outputs && typeof call.outputs === "object") {
+    if (call.outputs.intent) parts.push(`out: ${call.outputs.intent}`);
+    else {
+      const keys = Object.keys(call.outputs).slice(0, 2);
+      if (keys.length > 0) parts.push(`out: ${keys.join(", ")}`);
+    }
+  }
+  return parts.join(" • ");
+}
+
 function createMessage(role, content, extra = {}) {
   return {
     id: `${role}-${Date.now()}-${Math.random().toString(16).slice(2)}`,
@@ -1226,6 +1264,12 @@ function createIssueUrl(context) {
 function Message({ message, diagnosticsMode, reportIssueUrl, t }) {
   const evidence = diagnosticsMode ? (message.evidence ?? []) : [];
   const thinkingSteps = diagnosticsMode ? (message.thinkingSteps ?? []) : [];
+  const diagnosticsSteps = diagnosticsMode
+    ? (message.diagnosticsSteps ?? [])
+    : [];
+  const diagnosticsToolCalls = diagnosticsMode
+    ? (message.diagnosticsToolCalls ?? [])
+    : [];
   const reportLabel =
     message.intent === "unknown"
       ? t("buttons.reportMissingRule")
@@ -1339,6 +1383,154 @@ function Message({ message, diagnosticsMode, reportIssueUrl, t }) {
               "ol",
               null,
               thinkingSteps.map((item) => h("li", { key: item }, item)),
+            ),
+          )
+        : null,
+      diagnosticsSteps.length
+        ? h(
+            "div",
+            {
+              className: "diagnostics-steps",
+              "data-testid": "diagnostics-steps",
+            },
+            h("strong", null, t("message.diagnosticsSteps")),
+            h(
+              "ol",
+              { className: "diagnostics-step-list" },
+              diagnosticsSteps.map((entry, index) =>
+                h(
+                  "li",
+                  { key: `${entry.step}-${index}`, className: "diagnostics-step" },
+                  h(
+                    "details",
+                    {
+                      className: "diagnostics-detail",
+                      "data-testid": "diagnostics-step",
+                    },
+                    h(
+                      "summary",
+                      null,
+                      h(
+                        "span",
+                        { className: "diagnostics-step-name" },
+                        entry.step,
+                      ),
+                      h(
+                        "span",
+                        { className: "diagnostics-step-summary" },
+                        truncateDiagnosticDetail(entry.detail),
+                      ),
+                    ),
+                    h(
+                      "div",
+                      { className: "diagnostics-detail-body" },
+                      h(
+                        "pre",
+                        { className: "diagnostics-payload" },
+                        formatDiagnosticPayload(entry.detail),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          )
+        : null,
+      diagnosticsToolCalls.length
+        ? h(
+            "div",
+            {
+              className: "diagnostics-tools",
+              "data-testid": "diagnostics-tools",
+            },
+            h("strong", null, t("message.diagnosticsTools")),
+            h(
+              "ol",
+              { className: "diagnostics-tool-list" },
+              diagnosticsToolCalls.map((call, index) =>
+                h(
+                  "li",
+                  {
+                    key: `${call.tool || "tool"}-${index}`,
+                    className: "diagnostics-tool",
+                  },
+                  h(
+                    "details",
+                    {
+                      className: "diagnostics-detail",
+                      "data-testid": "diagnostics-tool",
+                    },
+                    h(
+                      "summary",
+                      null,
+                      h(
+                        "span",
+                        { className: "diagnostics-tool-name" },
+                        call.tool || "(tool)",
+                      ),
+                      h(
+                        "span",
+                        { className: "diagnostics-tool-summary" },
+                        summarizeToolCall(call),
+                      ),
+                    ),
+                    h(
+                      "div",
+                      { className: "diagnostics-detail-body" },
+                      h(
+                        "div",
+                        { className: "diagnostics-tool-section" },
+                        h(
+                          "span",
+                          { className: "diagnostics-section-label" },
+                          t("message.toolInputs"),
+                        ),
+                        h(
+                          "pre",
+                          { className: "diagnostics-payload" },
+                          formatDiagnosticPayload(call.inputs),
+                        ),
+                      ),
+                      h(
+                        "div",
+                        { className: "diagnostics-tool-section" },
+                        h(
+                          "span",
+                          { className: "diagnostics-section-label" },
+                          t("message.toolOutputs"),
+                        ),
+                        h(
+                          "pre",
+                          { className: "diagnostics-payload" },
+                          formatDiagnosticPayload(call.outputs),
+                        ),
+                      ),
+                      Array.isArray(call.steps) && call.steps.length > 0
+                        ? h(
+                            "div",
+                            { className: "diagnostics-tool-section" },
+                            h(
+                              "span",
+                              { className: "diagnostics-section-label" },
+                              t("message.toolReasoning"),
+                            ),
+                            h(
+                              "ol",
+                              { className: "diagnostics-tool-reasoning" },
+                              call.steps.map((s, j) =>
+                                h(
+                                  "li",
+                                  { key: `${call.tool}-step-${j}` },
+                                  `${s.step}: ${s.detail}`,
+                                ),
+                              ),
+                            ),
+                          )
+                        : null,
+                    ),
+                  ),
+                ),
+              ),
             ),
           )
         : null,
@@ -2084,8 +2276,12 @@ function App() {
     const evidence = answer.intent
       ? [`intent:${answer.intent}`, `source:${source}`, ...solverEvidence]
       : solverEvidence;
-    const thinkingSteps = Array.isArray(answer.steps) && answer.steps.length > 0
-      ? answer.steps.map((entry) => `${entry.step}: ${entry.detail}`)
+    const structuredSteps = Array.isArray(answer.steps) ? answer.steps : [];
+    const structuredToolCalls = Array.isArray(answer.toolCalls)
+      ? answer.toolCalls
+      : [];
+    const thinkingSteps = structuredSteps.length > 0
+      ? structuredSteps.map((entry) => `${entry.step}: ${entry.detail}`)
       : [
           "Normalize prompt text",
           `Select symbolic intent ${answer.intent || "unknown"}`,
@@ -2095,6 +2291,8 @@ function App() {
       intent: answer.intent,
       evidence,
       thinkingSteps,
+      diagnosticsSteps: structuredSteps,
+      diagnosticsToolCalls: structuredToolCalls,
       iframeUrl: answer.iframeUrl || null,
     });
     setMessages((current) => [...current, message]);

@@ -121,6 +121,18 @@ pub fn build_evidence_links(prompt: &str, log: &EventLog, response_link: &str) -
             "fact_query:force_fresh" => String::from("fact_query:force_fresh"),
             "fact_query:subject_qid" => format!("fact_query:subject_qid:{}", event.payload),
             "fact_query:value_qid" => format!("fact_query:value_qid:{}", event.payload),
+            // Structured web_search trace events (Issue #133): record the
+            // request, the providers considered (DuckDuckGo first, plus
+            // CORS-readable knowledge bases), per-provider ranks, and the
+            // combined-ranking strategy so memory consumers can reconstruct
+            // the multi-engine reasoning offline.
+            "web_search:request" => format!("web_search:request:{}", event.payload),
+            "web_search:provider" => format!("web_search:provider:{}", event.payload),
+            "web_search:language" => format!("web_search:language:{}", event.payload),
+            "web_search:combined" => format!("web_search:combined:{}", event.payload),
+            "web_search:rank" => format!("web_search:rank:{}", event.payload),
+            "web_search:fused" => format!("web_search:fused:{}", event.payload),
+            "web_search:disabled" => format!("web_search:disabled:{}", event.payload),
             "search:local" => format!("search:local:{}", event.id),
             "search:external" => format!("search:external:{}", event.id),
             "source:http" => format!("source:http:{}", event.payload.replace(' ', ":")),

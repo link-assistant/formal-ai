@@ -3,6 +3,9 @@
 use crate::engine::{normalize_prompt, SymbolicAnswer};
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
+use crate::web_search_core::{
+    WEB_SEARCH_PROVIDERS as CORE_WEB_SEARCH_PROVIDERS, WEB_SEARCH_RRF_K as CORE_WEB_SEARCH_RRF_K,
+};
 
 use super::finalize_simple;
 
@@ -66,6 +69,19 @@ pub fn try_url_navigate(
     ))
 }
 
+/// Reciprocal Rank Fusion constant used to combine the top-10 results returned
+/// by each search provider. Re-exported from `crate::web_search_core` so the
+/// CLI, server, browser worker, and the Rust→WASM port all share one value.
+///
+/// Source: <https://plg.uwaterloo.ca/~gvcormac/cormacksigir09-rrf.pdf>
+pub const WEB_SEARCH_RRF_K: u32 = CORE_WEB_SEARCH_RRF_K;
+
+/// Provider order used by the browser worker and by the offline Rust solver
+/// when describing the multi-engine plan for `web_search`. Sourced from
+/// `crate::web_search_core::WEB_SEARCH_PROVIDERS` so the WASM worker and the
+/// JS planner cannot drift apart (issue #133).
+pub const WEB_SEARCH_PROVIDERS: &[&str] = CORE_WEB_SEARCH_PROVIDERS;
+
 pub fn try_web_search(
     prompt: &str,
     normalized: &str,
@@ -73,24 +89,39 @@ pub fn try_web_search(
 ) -> Option<SymbolicAnswer> {
     let query = extract_web_search_query(prompt, normalized)?;
     log.append("web_search:request", query.clone());
-    log.append("web_search:provider", "wikipedia".to_owned());
+    for provider in WEB_SEARCH_PROVIDERS {
+        log.append("web_search:provider", (*provider).to_owned());
+    }
+    log.append("web_search:combined", format!("rrf:k={WEB_SEARCH_RRF_K}"));
+    let provider_summary = WEB_SEARCH_PROVIDERS.join(", ");
     let language = detect_language(prompt).slug();
     let body = match language {
         "ru" => format!(
             "Поиск в интернете запрошен для `{query}`.\n\n\
-             В браузерной демо-версии formal-ai сначала использует CORS-совместимый \
-             поиск Wikipedia и возвращает ранжированные ссылки. Для произвольной \
-             страницы используйте запрос вида `fetch example.com`; если прямой \
-             `fetch()` заблокирован CORS, страница откроется во встроенном iframe.\n\n\
-             Provider: wikipedia"
+             В браузерной демо-версии formal-ai по умолчанию использует DuckDuckGo \
+             Instant Answer (CORS-совместимый, без ключа) и параллельно опрашивает \
+             Wikipedia REST и Wikidata. Топ-10 ссылок объединяются через \
+             reciprocal rank fusion (`score(d) = Σ 1 / ({WEB_SEARCH_RRF_K} + rank_i(d))`), \
+             поэтому URL, которые встречаются у нескольких провайдеров, всплывают \
+             вверх. Для произвольной страницы используйте `fetch example.com`; если \
+             прямой `fetch()` заблокирован CORS, страница откроется во встроенном \
+             iframe.\n\n\
+             Provider: duckduckgo (default)\n\
+             Providers considered: {provider_summary}\n\
+             Combined ranking: reciprocal rank fusion (k = {WEB_SEARCH_RRF_K})"
         ),
         _ => format!(
             "Web search requested for `{query}`.\n\n\
-             In the browser demo formal-ai queries the CORS-enabled Wikipedia \
-             search endpoint first and returns ranked links. For an arbitrary \
-             page, use `fetch example.com`; if direct `fetch()` is blocked by \
-             CORS, the page opens in an embedded iframe.\n\n\
-             Provider: wikipedia"
+             In the browser demo formal-ai defaults to the DuckDuckGo Instant \
+             Answer endpoint (CORS-readable, keyless) and queries Wikipedia REST \
+             and Wikidata in parallel. The top-10 links from each provider are \
+             merged with reciprocal rank fusion (`score(d) = Σ 1 / ({WEB_SEARCH_RRF_K} + rank_i(d))`), \
+             so URLs that appear in more than one provider bubble up. For an \
+             arbitrary page, use `fetch example.com`; if direct `fetch()` is \
+             blocked by CORS, the page opens in an embedded iframe.\n\n\
+             Provider: duckduckgo (default)\n\
+             Providers considered: {provider_summary}\n\
+             Combined ranking: reciprocal rank fusion (k = {WEB_SEARCH_RRF_K})"
         ),
     };
     Some(finalize_simple(

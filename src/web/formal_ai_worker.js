@@ -266,8 +266,22 @@ function definitionFusionByDefault(preferences) {
   return ["auto", "on", "true", "1", "merge", "fusion"].includes(normalized);
 }
 
+// Language detection and prompt normalization are owned by the Rust core
+// (`src/web_engine_core.rs`) and exposed to the worker through the WASM
+// exports `engine_detect_language` and `engine_normalize_prompt`. The JS
+// branches below are pre-WASM fallbacks used during init() and on browsers
+// that could not instantiate the worker — they must stay byte-for-byte
+// compatible with the Rust path so the offline trace and the live answer
+// agree (PR #134 feedback 4489651616).
 function detectLanguage(prompt) {
   const text = String(prompt || "");
+  const fromWasm = wasmDetectLanguage(text);
+  if (fromWasm !== null) {
+    if (fromWasm === "unknown") {
+      return AGENT_INFO.default_language || "en";
+    }
+    return fromWasm;
+  }
   for (const ch of text) {
     const code = ch.codePointAt(0);
     for (const rule of LANGUAGE_RULES) {
@@ -287,7 +301,10 @@ function detectLanguage(prompt) {
 // CONCEPTS is populated from `seed/concepts.lino` at init() time.
 
 function normalizePrompt(prompt) {
-  return String(prompt || "")
+  const text = String(prompt || "");
+  const fromWasm = wasmNormalizePrompt(text);
+  if (fromWasm !== null) return fromWasm;
+  return text
     .toLowerCase()
     .replace(/[^\p{L}\p{N}]+/gu, " ")
     .trim();
@@ -1642,9 +1659,21 @@ function tryArithmetic(prompt) {
   if (!expression) return null;
   try {
     const isEquation = expression.includes("=");
-    const formatted = isEquation
-      ? solveLinearEquation(expression)
-      : formatArithmeticResult(evaluateArithmetic(expression));
+    let formatted;
+    let backend = "js";
+    if (isEquation) {
+      formatted = solveLinearEquation(expression);
+    } else {
+      const wasmResult = wasmEvaluateArithmetic(expression);
+      if (wasmResult && wasmResult.ok) {
+        formatted = wasmResult.value;
+        backend = "wasm";
+      } else if (wasmResult && wasmResult.error) {
+        throw new Error(wasmResult.error);
+      } else {
+        formatted = formatArithmeticResult(evaluateArithmetic(expression));
+      }
+    }
     const content = isEquation
       ? `${expression.trim()} => ${formatted}`
       : `${expression.trim()} = ${formatted}`;
@@ -1652,7 +1681,10 @@ function tryArithmetic(prompt) {
       intent: "calculation",
       content: content,
       confidence: 1.0,
-      evidence: [`calculation:${content}`],
+      evidence: [
+        `calculation:${content}`,
+        `calculation_backend:${backend}`,
+      ],
     };
   } catch (error) {
     const message = String(error && error.message ? error.message : error);
@@ -4587,28 +4619,462 @@ async function tryUrlNavigate(prompt) {
   };
 }
 
+// Reciprocal Rank Fusion constant — Cormack et al. 2009 use k = 60 and we
+// match that so combined ranks stay comparable across the CLI, server, and
+// browser surfaces (issue #133).
+//
+// The authoritative value lives in `web_search_core::WEB_SEARCH_RRF_K` and is
+// fetched from the WASM worker once it boots; the JS constants below are
+// pre-WASM fallbacks used during init() and on browsers where the worker
+// could not instantiate. The Rust→WASM port is the source of truth (R194).
+const WEB_SEARCH_RRF_K_FALLBACK = 60;
+const WEB_SEARCH_CONCURRENCY_FALLBACK = 5;
+const WEB_SEARCH_PROVIDER_LIMIT_FALLBACK = 10;
+
+const WEB_SEARCH_TEXT_ENCODER = new TextEncoder();
+const WEB_SEARCH_TEXT_DECODER = new TextDecoder();
+
+function webSearchRrfK() {
+  if (wasm && typeof wasm.web_search_rrf_k === "function") {
+    return wasm.web_search_rrf_k() >>> 0;
+  }
+  return WEB_SEARCH_RRF_K_FALLBACK;
+}
+
+function webSearchConcurrency() {
+  if (wasm && typeof wasm.web_search_concurrency_per_category === "function") {
+    return wasm.web_search_concurrency_per_category() >>> 0;
+  }
+  return WEB_SEARCH_CONCURRENCY_FALLBACK;
+}
+
+function webSearchProviderLimit() {
+  if (wasm && typeof wasm.web_search_provider_limit === "function") {
+    return wasm.web_search_provider_limit() >>> 0;
+  }
+  return WEB_SEARCH_PROVIDER_LIMIT_FALLBACK;
+}
+
+function wasmWriteInput(text) {
+  if (!wasm || typeof wasm.input_ptr !== "function") return -1;
+  const bytes = WEB_SEARCH_TEXT_ENCODER.encode(text);
+  const capacity =
+    typeof wasm.input_capacity === "function" ? wasm.input_capacity() : bytes.length;
+  if (bytes.length > capacity) return -1;
+  const view = new Uint8Array(wasm.memory.buffer, wasm.input_ptr(), bytes.length);
+  view.set(bytes);
+  return bytes.length;
+}
+
+function wasmReadOutput(length) {
+  if (!wasm || typeof wasm.output_ptr !== "function" || length <= 0) return "";
+  const view = new Uint8Array(wasm.memory.buffer, wasm.output_ptr(), length);
+  return WEB_SEARCH_TEXT_DECODER.decode(view);
+}
+
+// Engine-core bridges (R194 follow-up). Each function returns a value when
+// the WASM core is available, or `null` so the caller can fall back to the
+// pure-JS branch. Keeping a JS fallback covers offline mode and old browsers
+// where `WebAssembly.instantiate` is unavailable, but the canonical answer
+// always comes from Rust when the worker booted successfully.
+function wasmNormalizePrompt(text) {
+  if (!wasm || typeof wasm.engine_normalize_prompt !== "function") return null;
+  const length = wasmWriteInput(String(text || ""));
+  if (length < 0) return null;
+  const written = wasm.engine_normalize_prompt(length) >>> 0;
+  return wasmReadOutput(written);
+}
+
+function wasmDetectLanguage(text) {
+  if (!wasm || typeof wasm.engine_detect_language !== "function") return null;
+  const length = wasmWriteInput(String(text || ""));
+  if (length < 0) return null;
+  const written = wasm.engine_detect_language(length) >>> 0;
+  const slug = wasmReadOutput(written);
+  return slug || null;
+}
+
+// Returns `{ ok: true, value }` on success, `{ ok: false, error }` on parse
+// or runtime failure (division by zero, overflow). `null` means the WASM core
+// is unavailable — the caller should fall back to the JS parser.
+function wasmEvaluateArithmetic(expression) {
+  if (!wasm || typeof wasm.engine_evaluate_arithmetic !== "function") return null;
+  const length = wasmWriteInput(String(expression || ""));
+  if (length < 0) return null;
+  const written = wasm.engine_evaluate_arithmetic(length) >>> 0;
+  if (written === 0) return null;
+  const text = wasmReadOutput(written);
+  if (text.startsWith("ERR:")) {
+    return { ok: false, error: text.slice(4) };
+  }
+  return { ok: true, value: text };
+}
+
+// Delegates to `web_search_request_evidence` when the WASM core is loaded;
+// otherwise returns null so the caller can fall back to the JS list. The
+// Rust side owns the canonical evidence shape (issue #133 R194).
+function wasmWebSearchRequestEvidence(query, language) {
+  if (!wasm || typeof wasm.web_search_request_evidence !== "function") return null;
+  const payload = `${String(query || "")}\n${String(language || "")}`;
+  const length = wasmWriteInput(payload);
+  if (length < 0) return null;
+  const written = wasm.web_search_request_evidence(length) >>> 0;
+  if (written === 0) return null;
+  const text = wasmReadOutput(written);
+  return text ? text.split("\n") : null;
+}
+
+// Delegates to `web_search_fuse`. Returns the fused entries array or null when
+// WASM is unavailable / the payload exceeds the static INPUT buffer.
+function wasmReciprocalRankFusion(perProviderResults) {
+  if (!wasm || typeof wasm.web_search_fuse !== "function") return null;
+  const rows = [];
+  for (const provider of perProviderResults) {
+    const id = String(provider.id || "");
+    const list = Array.isArray(provider.results) ? provider.results : [];
+    list.forEach((item, index) => {
+      if (!item || !item.url) return;
+      const rank = index + 1;
+      const title = String(item.title || item.url).replace(/[\t\n]/g, " ");
+      const excerpt = String(item.excerpt || "").replace(/[\t\n]/g, " ");
+      const url = String(item.url).replace(/[\t\n]/g, " ");
+      rows.push(`${id}\t${rank}\t${url}\t${title}\t${excerpt}`);
+    });
+  }
+  if (rows.length === 0) return [];
+  const length = wasmWriteInput(rows.join("\n"));
+  if (length < 0) return null;
+  const written = wasm.web_search_fuse(length) >>> 0;
+  if (written === 0) return [];
+  const text = wasmReadOutput(written);
+  if (!text) return [];
+  return parseFusedOutput(text);
+}
+
+// Parse the `serialize_rrf_output` format: one entry per line, fields
+// separated by tabs, providers serialised as `id#rank` joined by `;`. The
+// shape matches `web_search_core::serialize_rrf_output`.
+function parseFusedOutput(text) {
+  return text
+    .split("\n")
+    .filter((line) => line.length > 0)
+    .map((line) => {
+      const fields = line.split("\t");
+      const url = fields[0] || "";
+      const title = fields[1] || url;
+      const excerpt = fields[2] || "";
+      const score = Number.parseFloat(fields[3] || "0") || 0;
+      const providerSpecs = (fields[4] || "")
+        .split("+")
+        .filter((part) => part.length > 0)
+        .map((part) => {
+          const hash = part.lastIndexOf("#");
+          if (hash < 0) return { id: part, rank: 0 };
+          return {
+            id: part.slice(0, hash),
+            rank: Number.parseInt(part.slice(hash + 1), 10) || 0,
+          };
+        });
+      return { url, title, excerpt, score, providers: providerSpecs };
+    });
+}
+
+// Session-scoped CORS disable list. When a provider fetch throws a CORS or
+// network error we record the timestamp so the planner skips it for the rest
+// of the session and records the decision in memory.
+const WEB_SEARCH_DISABLED = new Map();
+
+function webSearchDisable(providerId, reason) {
+  if (!WEB_SEARCH_DISABLED.has(providerId)) {
+    WEB_SEARCH_DISABLED.set(providerId, { reason, at: Date.now() });
+  }
+}
+
+function webSearchIsDisabled(providerId) {
+  return WEB_SEARCH_DISABLED.has(providerId);
+}
+
+async function fetchProviderJson(providerId, url, options) {
+  if (typeof fetch !== "function") {
+    webSearchDisable(providerId, "no_fetch");
+    return { ok: false, error: "fetch unavailable", finalUrl: url };
+  }
+  try {
+    const response = await fetch(url, options || { mode: "cors" });
+    if (!response || !response.ok) {
+      return {
+        ok: false,
+        status: response ? response.status : 0,
+        statusText: response ? response.statusText : "",
+        finalUrl: url,
+      };
+    }
+    const data = await response.json();
+    return { ok: true, status: response.status, data, finalUrl: url };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    const isCors =
+      message.toLowerCase().includes("cors") ||
+      message.toLowerCase().includes("network") ||
+      message.toLowerCase().includes("failed to fetch");
+    webSearchDisable(providerId, isCors ? "cors" : "network");
+    return { ok: false, error: message, finalUrl: url, cors: isCors };
+  }
+}
+
+async function searchDuckDuckGo(query, limit) {
+  // DuckDuckGo Instant Answer — CORS-readable, no key. Returns the abstract
+  // and a flat list of related-topic links. We treat the abstract link plus
+  // the related topics as the ranked result list (issue #133).
+  const url =
+    "https://api.duckduckgo.com/?q=" +
+    encodeURIComponent(query) +
+    "&format=json&no_redirect=1&no_html=1";
+  const outcome = await fetchProviderJson("duckduckgo", url);
+  if (!outcome.ok || !outcome.data) {
+    return { ok: false, results: [], finalUrl: outcome.finalUrl, error: outcome.error };
+  }
+  const data = outcome.data;
+  const results = [];
+  if (data.AbstractURL && data.AbstractText) {
+    results.push({
+      title: data.Heading || query,
+      url: data.AbstractURL,
+      excerpt: stripHtml(data.AbstractText),
+    });
+  }
+  const topics = Array.isArray(data.RelatedTopics) ? data.RelatedTopics : [];
+  for (const topic of topics) {
+    if (!topic) continue;
+    if (topic.FirstURL && topic.Text) {
+      results.push({
+        title: topic.Text.split(" - ")[0] || topic.Text,
+        url: topic.FirstURL,
+        excerpt: stripHtml(topic.Text),
+      });
+    } else if (Array.isArray(topic.Topics)) {
+      for (const inner of topic.Topics) {
+        if (inner && inner.FirstURL && inner.Text) {
+          results.push({
+            title: inner.Text.split(" - ")[0] || inner.Text,
+            url: inner.FirstURL,
+            excerpt: stripHtml(inner.Text),
+          });
+        }
+      }
+    }
+    if (results.length >= limit) break;
+  }
+  return { ok: true, results: results.slice(0, limit), finalUrl: outcome.finalUrl };
+}
+
+async function searchWikipediaWebProvider(query, language, limit) {
+  // Reuse the existing helper but adapt the shape to {title, url, excerpt}.
+  const result = await searchWikipediaPages(query, language, limit);
+  if (!result || !Array.isArray(result.pages)) {
+    return { ok: false, results: [], finalUrl: "", language: language || "en" };
+  }
+  return {
+    ok: true,
+    results: result.pages.slice(0, limit),
+    language: result.language,
+    finalUrl: `https://${result.language}.wikipedia.org/w/rest.php/v1/search/page?q=${encodeURIComponent(query)}`,
+  };
+}
+
+async function searchWikidataEntities(query, language, limit) {
+  const lang = language && /^[a-z]{2,3}$/i.test(language) ? language : "en";
+  const url =
+    "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=" +
+    encodeURIComponent(query) +
+    "&language=" +
+    encodeURIComponent(lang) +
+    "&format=json&origin=*&limit=" +
+    encodeURIComponent(limit);
+  const outcome = await fetchProviderJson("wikidata", url);
+  if (!outcome.ok || !outcome.data || !Array.isArray(outcome.data.search)) {
+    return { ok: false, results: [], finalUrl: outcome.finalUrl, error: outcome.error };
+  }
+  const results = outcome.data.search.slice(0, limit).map((entry) => ({
+    title: entry.label || entry.id || query,
+    url: entry.concepturi || `https://www.wikidata.org/wiki/${entry.id}`,
+    excerpt: stripHtml(entry.description || ""),
+  }));
+  return { ok: true, results, finalUrl: outcome.finalUrl };
+}
+
+const WEB_SEARCH_PROVIDERS = [
+  { id: "duckduckgo", label: "DuckDuckGo Instant Answer", run: searchDuckDuckGo },
+  {
+    id: "wikipedia",
+    label: "Wikipedia REST",
+    run: (query, language, limit) =>
+      searchWikipediaWebProvider(query, language, limit),
+  },
+  {
+    id: "wikidata",
+    label: "Wikidata entities",
+    run: (query, language, limit) =>
+      searchWikidataEntities(query, language, limit),
+  },
+];
+
+async function runWithConcurrencyLimit(tasks, limit) {
+  // Simple p-limit style runner so we never exceed the browser's per-origin
+  // socket budget. Tasks are async functions returning a value; results are
+  // returned in the original order.
+  const cap = Math.max(1, Math.min(limit, tasks.length));
+  const results = new Array(tasks.length);
+  let cursor = 0;
+  async function worker() {
+    while (true) {
+      const index = cursor;
+      cursor += 1;
+      if (index >= tasks.length) return;
+      results[index] = await tasks[index]();
+    }
+  }
+  await Promise.all(Array.from({ length: cap }, () => worker()));
+  return results;
+}
+
+function reciprocalRankFusion(perProviderResults, k) {
+  // R194: the Rust/WASM core owns the fusion logic so the offline trace and
+  // the browser worker agree to the last byte. We try WASM first and only
+  // fall back to the JS implementation when the worker booted in
+  // `js fallback` mode (e.g. WASM disabled in the browser).
+  const wasmFused = wasmReciprocalRankFusion(perProviderResults);
+  if (wasmFused !== null) {
+    return wasmFused;
+  }
+  // Cormack, Clarke, Buettcher 2009: score(d) = Σ 1 / (k + rank_i(d)).
+  const fused = new Map();
+  for (const provider of perProviderResults) {
+    const list = Array.isArray(provider.results) ? provider.results : [];
+    list.forEach((item, index) => {
+      if (!item || !item.url) return;
+      const rank = index + 1;
+      const score = 1 / (k + rank);
+      const existing = fused.get(item.url);
+      if (existing) {
+        existing.score += score;
+        existing.providers.push({ id: provider.id, rank });
+        if (!existing.title && item.title) existing.title = item.title;
+        if (!existing.excerpt && item.excerpt) existing.excerpt = item.excerpt;
+      } else {
+        fused.set(item.url, {
+          url: item.url,
+          title: item.title || item.url,
+          excerpt: item.excerpt || "",
+          score,
+          providers: [{ id: provider.id, rank }],
+        });
+      }
+    });
+  }
+  return Array.from(fused.values()).sort((a, b) => {
+    if (b.score !== a.score) return b.score - a.score;
+    return b.providers.length - a.providers.length;
+  });
+}
+
 async function tryWebSearch(prompt, language) {
   const normalized = normalizePrompt(prompt);
   const query = extractWebSearchQuery(prompt, normalized);
   if (!query) return null;
 
-  const evidence = [`web_search:query:${query}`, "web_search:provider:wikipedia"];
-  const result = await searchWikipediaPages(query, language, 5);
-  if (!result || !Array.isArray(result.pages) || result.pages.length === 0) {
+  const rrfK = webSearchRrfK();
+  const concurrency = webSearchConcurrency();
+  const providerLimit = webSearchProviderLimit();
+
+  // R194: the Rust core (`web_search_core::build_request_evidence`) is the
+  // source of truth for the `web_search:*` evidence prefix. We prepend its
+  // output and fall back to the inline list when the WASM worker booted in
+  // `js fallback` mode.
+  const evidence = [];
+  const wasmEvidence = wasmWebSearchRequestEvidence(query, language || "");
+  if (Array.isArray(wasmEvidence) && wasmEvidence.length > 0) {
+    for (const line of wasmEvidence) {
+      if (line) evidence.push(line);
+    }
+  } else {
+    evidence.push(`web_search:request:${query}`);
+    for (const provider of WEB_SEARCH_PROVIDERS) {
+      evidence.push(`web_search:provider:${provider.id}`);
+    }
+    evidence.push(`web_search:combined:rrf:k=${rrfK}`);
+  }
+
+  // Session-disabled providers are session state, not part of the canonical
+  // plan, so we annotate them on top of the WASM-derived prefix.
+  const active = WEB_SEARCH_PROVIDERS.filter(
+    (provider) => !webSearchIsDisabled(provider.id),
+  );
+  for (const provider of WEB_SEARCH_PROVIDERS) {
+    if (webSearchIsDisabled(provider.id)) {
+      evidence.push(`web_search:disabled:${provider.id}`);
+    }
+  }
+
+  if (active.length === 0) {
     return {
       intent: "web_search",
-      content: `No CORS-enabled web search results were returned for \`${query}\`.\n\nProvider tried: Wikipedia search.`,
+      content: `All CORS-readable search providers are disabled for this session. Tried: ${WEB_SEARCH_PROVIDERS.map((p) => p.id).join(", ")}.`,
+      confidence: 0.3,
+      evidence,
+    };
+  }
+
+  const tasks = active.map((provider) => async () => {
+    const startedAt = Date.now();
+    const outcome = await provider.run(query, language, providerLimit);
+    return Object.assign({ id: provider.id, label: provider.label, elapsedMs: Date.now() - startedAt }, outcome);
+  });
+  const perProvider = await runWithConcurrencyLimit(tasks, concurrency);
+
+  for (const provider of perProvider) {
+    if (!provider.ok) {
+      evidence.push(`web_search:provider:${provider.id}:error:${provider.error || "no_results"}`);
+      continue;
+    }
+    evidence.push(`web_search:provider:${provider.id}:count:${provider.results.length}`);
+    if (provider.language) {
+      evidence.push(`web_search:provider:${provider.id}:language:${provider.language}`);
+    }
+    provider.results.forEach((item, index) => {
+      evidence.push(`web_search:rank:${provider.id}:${index + 1}:${item.url}`);
+    });
+  }
+
+  const fused = reciprocalRankFusion(perProvider, rrfK);
+  const top = fused.slice(0, providerLimit);
+  top.forEach((entry, index) => {
+    evidence.push(`web_search:fused:${index + 1}:${entry.providers.map((p) => p.id).join("+")}:${entry.url}`);
+  });
+
+  if (top.length === 0) {
+    return {
+      intent: "web_search",
+      content: `No CORS-enabled web search results were returned for \`${query}\`.\n\nProviders tried: ${active.map((p) => p.label).join(", ")}.`,
       confidence: 0.35,
       evidence,
     };
   }
 
-  evidence.push(`web_search:language:${result.language}`);
-  const lines = [`Search results for \`${query}\` (provider: Wikipedia).`, ""];
-  result.pages.forEach((page, index) => {
-    const excerpt = page.excerpt ? ` - ${page.excerpt}` : "";
-    lines.push(`${index + 1}. [${page.title}](${page.url})${excerpt}`);
+  const lines = [
+    `Search results for \`${query}\` — top ${top.length} after reciprocal rank fusion (k = ${rrfK}).`,
+    "",
+    `Providers (default first): ${active.map((p) => p.id).join(", ")}.`,
+    "",
+  ];
+  top.forEach((entry, index) => {
+    const sources = entry.providers
+      .map((p) => `${p.id}#${p.rank}`)
+      .join(", ");
+    const excerpt = entry.excerpt ? ` - ${entry.excerpt}` : "";
+    lines.push(`${index + 1}. [${entry.title}](${entry.url}) — _via ${sources}_${excerpt}`);
   });
+
   return {
     intent: "web_search",
     content: lines.join("\n"),

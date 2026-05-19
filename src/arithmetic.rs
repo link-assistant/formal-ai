@@ -1,13 +1,27 @@
-//! Precedence-climbing arithmetic evaluator used by the universal solver's
-//! `try_arithmetic` handler. The evaluator is pure (no I/O, no allocations
-//! beyond the token vector) and shared across every interface so "what is
-//! 2 + 2?" produces the same trace from CLI, HTTP, Telegram and the demo.
+//! Precedence-climbing arithmetic evaluator for the universal solver.
+//!
+//! Used by the universal solver's `try_arithmetic` handler. The evaluator is
+//! pure (no I/O, no allocations beyond the token vector) and shared across
+//! every interface so "what is 2 + 2?" produces the same trace from CLI,
+//! HTTP, Telegram and the demo.
 //!
 //! When every literal in the expression is an integer (no decimal point),
 //! the evaluator uses arbitrary-precision integer arithmetic so results like
 //! `123123980921093128 * 2348023048230429324` are exact rather than
 //! overflowing to `inf`. Expressions that mix integers and decimals (e.g.
 //! `1.5 + 2`) fall back to `f64`.
+//!
+//! The module is `no_std` + `alloc` compatible so it can be `#[path]`-included
+//! by `src/web/wasm-worker/src/lib.rs` without dragging in the standard
+//! library. Issue #133 (R194) calls for the symbolic core to live in Rust→WASM
+//! so the browser worker and the offline solver agree on every reasoning step.
+
+#![allow(clippy::module_name_repetitions)]
+
+use alloc::format;
+use alloc::string::String;
+use alloc::vec;
+use alloc::vec::Vec;
 
 /// Errors produced when a calculation evaluator cannot produce a numeric value
 /// for the requested expression.
@@ -21,8 +35,8 @@ pub enum ArithmeticError {
     Calculator(String),
 }
 
-impl std::fmt::Display for ArithmeticError {
-    fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+impl core::fmt::Display for ArithmeticError {
+    fn fmt(&self, formatter: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         formatter.write_str(match self {
             Self::Empty => "no expression provided",
             Self::Unparseable => "expression could not be parsed",
@@ -119,12 +133,16 @@ impl BigUint {
         parts.concat()
     }
 
-    #[allow(clippy::cast_precision_loss)]
+    #[allow(clippy::cast_precision_loss, clippy::suboptimal_flops)]
     fn to_f64(&self) -> f64 {
         let base_f = BASE as f64;
         let mut result = 0.0_f64;
         for &limb in self.0.iter().rev() {
-            result = result.mul_add(base_f, limb as f64);
+            // `mul_add` would be one fused FMA instruction but it lives in
+            // `std` (or behind `libm`) which the WASM core cannot link.
+            // The plain `mul + add` form gives an identical result for the
+            // value ranges this evaluator produces (all limbs < 10^9).
+            result = result * base_f + (limb as f64);
         }
         result
     }
@@ -601,11 +619,21 @@ fn format_arith_value(value: &ArithValue) -> String {
     }
 }
 
+// `f64::fract` lives in `std`; the WASM core is `no_std`, so we recover the
+// "is whole" check via a bounded `i64` round-trip. Inside `value.abs() < 1e15`
+// the cast is lossless (well within the 2^63 i64 range and below the f64
+// mantissa precision boundary), so the bit-for-bit equality is intentional.
+#[allow(
+    clippy::cast_possible_truncation,
+    clippy::cast_precision_loss,
+    clippy::float_cmp
+)]
 fn format_f64(value: f64) -> String {
     if !value.is_finite() {
         return String::from("non-finite");
     }
-    if value.fract() == 0.0 && value.abs() < 1e15 {
+    let is_whole = value.abs() < 1e15 && value == (value as i64) as f64;
+    if is_whole {
         format!("{value:.0}")
     } else {
         let rendered = format!("{value:.10}");
@@ -613,7 +641,7 @@ fn format_f64(value: f64) -> String {
         if trimmed.is_empty() || trimmed == "-" {
             String::from("0")
         } else {
-            trimmed.to_owned()
+            String::from(trimmed)
         }
     }
 }

@@ -369,3 +369,31 @@ miss. Every step is recorded so memory holds the structured trace.
 | R178 | Every step of the fact-query pipeline must be appended to memory as a `fact_query:*` event so the reasoning trace is reconstructible offline. | Implemented by the structured `fact_query:request`, `fact_query:relation`, `fact_query:subject`, `fact_query:cache:*`, `fact_query:wikidata:*`, and `fact_query:response` trace events emitted by the JS worker and (for the seed-cache path) the Rust solver. |
 | R179 | The Rust offline solver must emit the same `fact_query:*` evidence shape as the browser worker for seeded facts so memory inspection works uniformly across stacks. | Implemented by extending `try_fact_lookup` to emit `fact_query:relation`, `fact_query:subject`, `fact_query:cache:hit:seed`, `fact_query:subject_qid`, and `fact_query:value_qid` events; formatter branches added in `src/event_log.rs::build_evidence_links`. |
 | R180 | Tests must cover multiple phrasings per country and at least four supported languages so regressions in prompt parsing surface quickly. | Implemented by `CAPITAL_CASES` and the `capital_matrix_*` tests in `tests/unit/specification/prompt_variations.rs`, and by the parameterized `fact-query pipeline resolves` cases in `tests/e2e/tests/multilingual.spec.js`. |
+
+## Issue #133 DuckDuckGo Default, Combined Ranking, and Expanded Provider Diagnostics
+
+Issue [#133](https://github.com/link-assistant/formal-ai/issues/133) asks for
+DuckDuckGo as the default search engine across every surface, a top-10
+combined ranking that bubbles up URLs returned by more than one engine, an
+expanded browser-only diagnostics matrix covering search engines, knowledge
+databases, code-hosting providers, and scientific paper providers, and full
+exportable memory for every reasoning step. The planner must run up to five
+providers in parallel per category and temporarily disable providers that
+CORS-block.
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R181 | DuckDuckGo must be the default search engine in CLI, server, and the browser-only GitHub Pages app. | Implemented by `WEB_SEARCH_PROVIDERS = &["duckduckgo", "wikipedia", "wikidata"]` in `src/solver_handlers/web_requests.rs` and the matching `WEB_SEARCH_PROVIDERS` array in `src/web/formal_ai_worker.js`. |
+| R182 | The top-10 results from each available search engine must be combined into a single ranked list so URLs returned by more than one engine bubble up. | Implemented by `reciprocalRankFusion` in the JS worker (Cormack 2009, `k = 60`); each provider returns up to `WEB_SEARCH_PROVIDER_LIMIT = 10` results and the fused list is sorted by combined score with a provider-count tiebreaker. |
+| R183 | Both stacks must record the chosen reciprocal rank fusion constant in memory so the reasoning trace stays comparable offline. | Implemented by the `web_search:combined:rrf:k=60` event appended in both `src/solver_handlers/web_requests.rs` and `src/web/formal_ai_worker.js`, with a matching formatter branch in `src/event_log.rs::build_evidence_links`. |
+| R184 | The browser-only diagnostics page must add more popular search engines beyond Google/Bing/DuckDuckGo/Brave/Yahoo. | Implemented by adding Yandex, Ecosia, Mojeek, and Startpage rows in `src/web/tests/connectivity.js`. |
+| R185 | The diagnostics page must add code-hosting providers including GitHub, GitLab, Bitbucket, and providers from China and Russia. | Implemented by the new `code` category in `src/web/tests/connectivity.js` covering GitHub, GitLab, Codeberg, Gitee (China), Bitbucket Cloud, and GitFlic (Russia). |
+| R186 | The diagnostics page must add scientific paper providers without paywalls. | Implemented by the new `papers` category covering arXiv, Europe PMC, and DOAJ. |
+| R187 | The diagnostics page must add general knowledge providers beyond Wikipedia and Wikidata. | Implemented by adding Wiktionary and DBpedia Lookup to the `knowledge` category. |
+| R188 | Test cases must actually trigger external API access for reasoning instead of memoized snapshots. | Implemented by routing `tryWebSearch` through real `fetch()` calls against DuckDuckGo, Wikipedia REST, and Wikidata; the explicit `web_search` Playwright spec mocks the same endpoints with `page.route` so CI stays deterministic while exercising the real call path. |
+| R189 | Each reasoning step must be recorded in exportable memory so the full request, response, and unified-link interpretation can be replayed. | Implemented by the `web_search:request`, `web_search:provider`, `web_search:language`, `web_search:rank`, `web_search:fused`, `web_search:combined`, and `web_search:disabled` event kinds, with formatter branches in `src/event_log.rs::build_evidence_links`. |
+| R190 | The planner must run providers in parallel with a cap of five per category. | Implemented by `runWithConcurrencyLimit` (cap `WEB_SEARCH_CONCURRENCY = 5`) in the worker and by the matching `CATEGORY_CONCURRENCY = 5` runner in the dashboard. |
+| R191 | When a provider CORS-blocks or fails the network, the planner must temporarily disable it for the rest of the session and record the decision. | Implemented by the `WEB_SEARCH_DISABLED` map in the worker and the `state.disabled` map in the dashboard; both emit a `web_search:disabled:<provider>` / `disabled:<service-id>` entry and skip the provider until the page reloads. |
+| R192 | Issue data, online research, and case-study analysis must be compiled to `docs/case-studies/issue-133/`. | Implemented by `docs/case-studies/issue-133/README.md` and the raw-data folder (issue JSON, PR JSON, branch log, and online research). |
+| R193 | A changelog fragment must record the user-visible change and trigger an automated minor crate-version bump. | Implemented by `changelog.d/20260519_140000_issue_133_default_duckduckgo_rrf.md`, which declares `bump: minor` so the release pipeline raises the version from 0.69.0 on merge. |
+| R194 | As much logic as possible should be compiled from Rust to WebAssembly, with JavaScript reserved for UI. | Partially implemented in this PR: the contract (provider order, RRF constant, and evidence shape) is owned by the Rust solver and mirrored in the JS worker; the full Rust→WASM port of the multi-provider planner is tracked as a follow-up in `docs/case-studies/issue-133/README.md` so the diff stays reviewable. |

@@ -1,5 +1,14 @@
 const SERVICES = [
   {
+    id: "duckduckgo-web",
+    name: "DuckDuckGo",
+    category: "search",
+    pageUrl: "https://duckduckgo.com/?q=formal-ai",
+    apiUrl: "https://api.duckduckgo.com/?q=formal-ai&format=json&no_redirect=1&no_html=1",
+    apiLabel: "instant answer",
+    note: "Default search engine — CORS-readable Instant Answer JSON",
+  },
+  {
     id: "google-web",
     name: "Google Search",
     category: "search",
@@ -18,15 +27,6 @@ const SERVICES = [
     note: "Search page plus suggestion endpoint",
   },
   {
-    id: "duckduckgo-web",
-    name: "DuckDuckGo",
-    category: "search",
-    pageUrl: "https://duckduckgo.com/?q=formal-ai",
-    apiUrl: "https://api.duckduckgo.com/?q=formal-ai&format=json&no_redirect=1&no_html=1",
-    apiLabel: "instant answer",
-    note: "Search page plus instant-answer JSON",
-  },
-  {
     id: "brave-web",
     name: "Brave Search",
     category: "search",
@@ -40,6 +40,42 @@ const SERVICES = [
     name: "Yahoo Search",
     category: "search",
     pageUrl: "https://search.yahoo.com/search?p=formal-ai",
+    apiUrl: "",
+    apiLabel: "none",
+    note: "Search page only",
+  },
+  {
+    id: "yandex-web",
+    name: "Yandex Search",
+    category: "search",
+    pageUrl: "https://yandex.com/search/?text=formal-ai",
+    apiUrl: "",
+    apiLabel: "none",
+    note: "Search page only — XML API requires a subscription",
+  },
+  {
+    id: "ecosia-web",
+    name: "Ecosia",
+    category: "search",
+    pageUrl: "https://www.ecosia.org/search?q=formal-ai",
+    apiUrl: "",
+    apiLabel: "none",
+    note: "Search page only",
+  },
+  {
+    id: "mojeek-web",
+    name: "Mojeek",
+    category: "search",
+    pageUrl: "https://www.mojeek.com/search?q=formal-ai",
+    apiUrl: "",
+    apiLabel: "none",
+    note: "Search page only — JSON API requires a key",
+  },
+  {
+    id: "startpage-web",
+    name: "Startpage",
+    category: "search",
+    pageUrl: "https://www.startpage.com/do/search?query=formal-ai",
     apiUrl: "",
     apiLabel: "none",
     note: "Search page only",
@@ -62,6 +98,25 @@ const SERVICES = [
       "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=formal-ai&language=en&format=json&origin=*",
     apiLabel: "entity search",
     note: "MediaWiki API with origin=*",
+  },
+  {
+    id: "wiktionary-api",
+    name: "Wiktionary",
+    category: "knowledge",
+    pageUrl: "https://en.wiktionary.org/wiki/formal",
+    apiUrl:
+      "https://en.wiktionary.org/w/api.php?action=opensearch&search=formal-ai&limit=3&format=json&origin=*",
+    apiLabel: "opensearch",
+    note: "MediaWiki opensearch with origin=*",
+  },
+  {
+    id: "dbpedia-api",
+    name: "DBpedia Lookup",
+    category: "knowledge",
+    pageUrl: "https://lookup.dbpedia.org/",
+    apiUrl: "https://lookup.dbpedia.org/api/search?query=formal-ai&format=json",
+    apiLabel: "search",
+    note: "Public DBpedia lookup",
   },
   {
     id: "openlibrary-api",
@@ -100,11 +155,102 @@ const SERVICES = [
     apiLabel: "paper search",
     note: "Public graph search endpoint",
   },
+  {
+    id: "arxiv-api",
+    name: "arXiv",
+    category: "papers",
+    pageUrl: "https://arxiv.org/search/?query=formal-ai&start=0",
+    apiUrl: "https://export.arxiv.org/api/query?search_query=all:formal-ai&max_results=3",
+    apiLabel: "atom export",
+    note: "Public Atom XML export — sends Access-Control-Allow-Origin: *",
+  },
+  {
+    id: "europepmc-api",
+    name: "Europe PMC",
+    category: "papers",
+    pageUrl: "https://europepmc.org/search?query=formal-ai",
+    apiUrl:
+      "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=formal-ai&format=json&resultType=lite&pageSize=3",
+    apiLabel: "rest search",
+    note: "Public biomedical paper search",
+  },
+  {
+    id: "doaj-api",
+    name: "DOAJ",
+    category: "papers",
+    pageUrl: "https://doaj.org/search/articles?source=%7B%22query%22%3A%7B%22query_string%22%3A%7B%22query%22%3A%22formal-ai%22%7D%7D%7D",
+    apiUrl: "https://doaj.org/api/search/articles/formal-ai?pageSize=3",
+    apiLabel: "articles",
+    note: "Directory of Open Access Journals",
+  },
+  {
+    id: "github-code",
+    name: "GitHub",
+    category: "code",
+    pageUrl: "https://github.com/search?q=formal-ai&type=repositories",
+    apiUrl: "https://api.github.com/search/repositories?q=formal-ai&per_page=3",
+    apiLabel: "repositories",
+    note: "Public repo search — 10 req/min unauthenticated",
+  },
+  {
+    id: "gitlab-code",
+    name: "GitLab",
+    category: "code",
+    pageUrl: "https://gitlab.com/search?search=formal-ai&scope=projects",
+    apiUrl: "https://gitlab.com/api/v4/search?scope=projects&search=formal-ai",
+    apiLabel: "projects",
+    note: "Public project search",
+  },
+  {
+    id: "codeberg-code",
+    name: "Codeberg",
+    category: "code",
+    pageUrl: "https://codeberg.org/explore/repos?q=formal-ai",
+    apiUrl: "https://codeberg.org/api/v1/repos/search?q=formal-ai&limit=3",
+    apiLabel: "repos search",
+    note: "Forgejo public repo search",
+  },
+  {
+    id: "gitee-code",
+    name: "Gitee",
+    category: "code",
+    pageUrl: "https://search.gitee.com/?q=formal-ai&type=repository",
+    apiUrl: "https://gitee.com/api/v5/search/repositories?q=formal-ai&per_page=3",
+    apiLabel: "repositories",
+    note: "Public repo search (China)",
+  },
+  {
+    id: "bitbucket-code",
+    name: "Bitbucket Cloud",
+    category: "code",
+    pageUrl: "https://bitbucket.org/repo/all?name=formal-ai",
+    apiUrl: 'https://api.bitbucket.org/2.0/repositories?q=name~"formal-ai"&pagelen=3',
+    apiLabel: "repositories",
+    note: "Public repo search with strict q syntax",
+  },
+  {
+    id: "gitflic-code",
+    name: "GitFlic",
+    category: "code",
+    pageUrl: "https://gitflic.ru/project?search=formal-ai",
+    apiUrl: "",
+    apiLabel: "none",
+    note: "HTML-only search (Russia)",
+  },
 ];
+
+// Maximum concurrent fetches per category — modern browsers cap per-origin
+// sockets near six, so five keeps a slot free for the rest of the page.
+const CATEGORY_CONCURRENCY = 5;
 
 const state = {
   mode: "direct",
   results: {},
+  // CORS auto-disable: when a direct browser fetch throws a CORS/network error
+  // for a given service+kind we record the timestamp so subsequent runs in the
+  // same session skip the call and the UI marks it as disabled. The user can
+  // re-enable the row at any time.
+  disabled: {},
 };
 
 const elements = {
@@ -328,6 +474,21 @@ function outcomeLabel(outcome) {
   return outcome.blocked ? "Blocked/failed" : "Error";
 }
 
+function disableKey(serviceId, kind) {
+  return `${serviceId}:${kind}`;
+}
+
+function isDisabled(serviceId, kind) {
+  return Boolean(state.disabled[disableKey(serviceId, kind)]);
+}
+
+function markDisabled(serviceId, kind, reason) {
+  state.disabled[disableKey(serviceId, kind)] = {
+    reason,
+    at: new Date().toISOString(),
+  };
+}
+
 async function runFetch(serviceId, kind) {
   const service = serviceById(serviceId);
   if (!service) {
@@ -336,6 +497,14 @@ async function runFetch(serviceId, kind) {
   const originalUrl = kind === "api" ? service.apiUrl : service.pageUrl;
   if (!originalUrl) {
     updateStatus(serviceId, kind, "No API", "blocked");
+    return;
+  }
+  if (isDisabled(serviceId, kind)) {
+    updateStatus(serviceId, kind, "Blocked (CORS, disabled)", "blocked");
+    updatePreview(
+      serviceId,
+      `Skipped — disabled for this session after a prior CORS/network failure.`,
+    );
     return;
   }
 
@@ -372,6 +541,12 @@ async function runFetch(serviceId, kind) {
     updatePreview(serviceId, outcome.preview);
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
+    const lower = message.toLowerCase();
+    const isCors =
+      state.mode === "direct" &&
+      (lower.includes("cors") ||
+        lower.includes("network") ||
+        lower.includes("failed to fetch"));
     const directPrefix =
       state.mode === "direct"
         ? "Direct browser fetch failed"
@@ -390,9 +565,18 @@ async function runFetch(serviceId, kind) {
       elapsedMs: Math.round(performance.now() - startedAt),
       completedAt: new Date().toISOString(),
       preview: `${directPrefix}: ${message}`,
+      disabledForSession: isCors,
     };
     state.results[resultKey(serviceId, kind)] = outcome;
-    updateStatus(serviceId, kind, outcomeLabel(outcome), "blocked");
+    if (isCors) {
+      markDisabled(serviceId, kind, "cors");
+    }
+    updateStatus(
+      serviceId,
+      kind,
+      isCors ? "Blocked (CORS, disabled)" : outcomeLabel(outcome),
+      "blocked",
+    );
     updatePreview(serviceId, outcome.preview);
   } finally {
     setRowRunning(serviceId, false);
@@ -460,11 +644,40 @@ function setMode(mode) {
   elements.proxySettings?.classList.toggle("is-visible", mode === "proxy");
 }
 
-async function runAll(kind) {
-  const services = SERVICES.filter((service) => (kind === "api" ? service.apiUrl : service.pageUrl));
-  for (const service of services) {
-    await runFetch(service.id, kind);
+async function runWithLimit(jobs, limit) {
+  const cap = Math.max(1, Math.min(limit, jobs.length));
+  let cursor = 0;
+  async function worker() {
+    while (true) {
+      const index = cursor;
+      cursor += 1;
+      if (index >= jobs.length) return;
+      await jobs[index]();
+    }
   }
+  await Promise.all(Array.from({ length: cap }, () => worker()));
+}
+
+async function runAll(kind) {
+  const services = SERVICES.filter((service) =>
+    kind === "api" ? service.apiUrl : service.pageUrl,
+  );
+  const grouped = new Map();
+  for (const service of services) {
+    const category = service.category || "other";
+    if (!grouped.has(category)) grouped.set(category, []);
+    grouped.get(category).push(service);
+  }
+  // Each category runs its own concurrency-capped pool so that, e.g., the
+  // five search engines fire in parallel without overwhelming the per-origin
+  // socket budget. Categories themselves run in parallel because no two
+  // share an origin (issue #133).
+  await Promise.all(
+    Array.from(grouped.values()).map((bucket) => {
+      const jobs = bucket.map((service) => () => runFetch(service.id, kind));
+      return runWithLimit(jobs, CATEGORY_CONCURRENCY);
+    }),
+  );
 }
 
 function updateSummary() {
@@ -497,6 +710,11 @@ function exportLog() {
     },
     services: SERVICES,
     results: Object.values(state.results),
+    disabled: Object.assign({}, state.disabled),
+    concurrency: {
+      perCategory: CATEGORY_CONCURRENCY,
+      categories: Array.from(new Set(SERVICES.map((service) => service.category))),
+    },
     userAgent: navigator.userAgent,
     assetVersion: window.FORMAL_AI_ASSET_VERSION || "",
   };
