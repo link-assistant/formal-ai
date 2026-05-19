@@ -345,9 +345,11 @@ button {
 .diagnostics-toggle,
 .agent-toggle,
 .mobile-menu-toggle,
+.sidebar-toggle,
 .drawer-close,
 .drawer-action,
 .report-button,
+.source-code-button,
 .memory-button,
 .send-button,
 .prompt-list button {
@@ -362,7 +364,9 @@ button {
 .diagnostics-toggle,
 .agent-toggle,
 .mobile-menu-toggle,
+.sidebar-toggle,
 .report-button,
+.source-code-button,
 .memory-button {
   display: inline-flex;
   align-items: center;
@@ -399,6 +403,23 @@ button {
 
 .mobile-menu-toggle .btn-icon {
   font-size: 20px;
+}
+
+/* Issue #153: desktop-only sidebar collapse toggle. Hidden on the mobile
+ * breakpoint where the slide-in drawer already provides the equivalent
+ * affordance. */
+.sidebar-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 10px;
+  min-height: 38px;
+  flex: 0 0 auto;
+}
+
+.sidebar-toggle-icon {
+  font-size: 14px;
+  line-height: 1;
 }
 
 .menu-icon {
@@ -465,7 +486,8 @@ button {
   align-self: center;
 }
 
-.report-button {
+.report-button,
+.source-code-button {
   display: inline-flex;
   align-items: center;
   text-decoration: none;
@@ -481,12 +503,26 @@ button {
   color: #ffffff;
 }
 
+/* Issue #153: when the desktop sidebar is collapsed the toggle keeps its
+ * "expand" affordance subtle — no green press state, since the action label
+ * already flips. */
+.sidebar-toggle.is-collapsed {
+  background: #eef2f1;
+}
+
 .workspace {
   --context-panel-width: 300px;
   min-height: 0;
   display: grid;
   grid-template-columns: minmax(220px, var(--context-panel-width)) 10px minmax(0, 1fr);
   overflow: hidden;
+}
+
+/* Issue #153: when the desktop sidebar is collapsed the workspace gives the
+ * chat the full viewport width. The aside and resizer collapse to zero, and
+ * the panel itself is hidden via .is-desktop-collapsed below. */
+.workspace.sidebar-collapsed {
+  grid-template-columns: 0 0 minmax(0, 1fr);
 }
 
 .context-panel {
@@ -498,6 +534,14 @@ button {
   padding: 0;
   border-right: 1px solid #d6dde1;
   background: #f7f8fa;
+}
+
+.context-panel.is-desktop-collapsed {
+  display: none;
+}
+
+.workspace.sidebar-collapsed .context-resizer {
+  display: none;
 }
 
 .context-resizer {
@@ -1297,6 +1341,7 @@ textarea:disabled {
   .topbar-actions .diagnostics-toggle,
   .topbar-actions .agent-toggle,
   .topbar-actions .report-button,
+  .topbar-actions .source-code-button,
   .topbar-actions .memory-button {
     min-width: 0;
     padding: 0 10px;
@@ -1351,9 +1396,16 @@ textarea:disabled {
   .topbar-actions .diagnostics-toggle,
   .topbar-actions .agent-toggle,
   .topbar-actions .report-button,
+  .topbar-actions .source-code-button,
   .topbar-actions .memory-button {
     min-width: 0;
     padding: 0 10px;
+  }
+
+  /* Issue #153: on mobile the desktop sidebar toggle disappears — the
+   * hamburger drawer drives all sidebar visibility there. */
+  .sidebar-toggle {
+    display: none;
   }
 
   .mobile-menu-toggle {
@@ -1371,7 +1423,8 @@ textarea:disabled {
 
   /* Issue #27: the sidebar slides in over the chat as a drawer rather than
    * eating into the message viewport. */
-  .context-panel {
+  .context-panel,
+  .context-panel.is-desktop-collapsed {
     position: fixed;
     top: 0;
     bottom: 0;
@@ -1386,10 +1439,18 @@ textarea:disabled {
     transform: translateX(-100%);
     transition: transform 200ms ease;
     box-shadow: 4px 0 18px rgba(15, 30, 40, 0.18);
+    display: flex;
   }
 
   .context-panel.is-mobile-open {
     transform: translateX(0);
+  }
+
+  /* Issue #153: on mobile the desktop collapse flag is irrelevant — the
+   * drawer's visibility is owned by `.is-mobile-open` alone. */
+  .workspace.sidebar-collapsed {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(0, 1fr);
   }
 
   .drawer-brand {

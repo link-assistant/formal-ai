@@ -23,6 +23,7 @@ const ASSET_VERSION =
   typeof window !== "undefined" ? window.FORMAL_AI_ASSET_VERSION || "" : "";
 const ISSUE_REPOSITORY = "link-assistant/formal-ai";
 const ISSUE_LABELS = "bug";
+const SOURCE_CODE_URL = `https://github.com/${ISSUE_REPOSITORY}`;
 const UNKNOWN_ANSWER =
   "I cannot answer that from local Links Notation rules yet. Please add a fact or add a rule in Links Notation, then run the request again.";
 const IDENTITY_ANSWER =
@@ -422,6 +423,10 @@ const PREFERENCE_DEFAULTS = {
   sidebarTraceCollapsed: false,
   sidebarConversationsCollapsed: false,
   sidebarSettingsCollapsed: false,
+  // Issue #153: the side panel is collapsible to give the chat full viewport
+  // width on desktop. The drawer view on mobile stays controlled by the
+  // separate `mobileMenuOpen` toggle so phones can still slide it in.
+  sidebarCollapsed: false,
   showDeletedConversations: false,
   // Issue #27: random greeting variations are opt-in but default to on so
   // newcomers see the multilingual surface immediately.
@@ -1594,6 +1599,17 @@ function MenuGlyph({ open }) {
   });
 }
 
+function SidebarToggleGlyph({ collapsed }) {
+  return h(
+    "span",
+    {
+      className: `btn-icon sidebar-toggle-icon ${collapsed ? "sidebar-toggle-icon-expand" : "sidebar-toggle-icon-collapse"}`,
+      "aria-hidden": "true",
+    },
+    collapsed ? "▶" : "◀",
+  );
+}
+
 function App() {
   const workerRef = useRef(null);
   const pendingResponses = useRef(new Map());
@@ -1648,6 +1664,12 @@ function App() {
   );
   const [sidebarSettingsCollapsed, setSidebarSettingsCollapsed] = useState(
     initialPreferences.current.sidebarSettingsCollapsed,
+  );
+  // Issue #153: persistent desktop sidebar collapse — separate from the
+  // transient `mobileMenuOpen` drawer so wide-screen layouts can dedicate the
+  // viewport to chat without losing the user's accordion state.
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(
+    Boolean(initialPreferences.current.sidebarCollapsed),
   );
   const [showDeletedConversations, setShowDeletedConversations] = useState(
     Boolean(initialPreferences.current.showDeletedConversations),
@@ -2116,6 +2138,7 @@ function App() {
       sidebarTraceCollapsed,
       sidebarConversationsCollapsed,
       sidebarSettingsCollapsed,
+      sidebarCollapsed,
       showDeletedConversations,
       greetingVariations,
       guessProbability,
@@ -2140,6 +2163,7 @@ function App() {
     sidebarTraceCollapsed,
     sidebarConversationsCollapsed,
     sidebarSettingsCollapsed,
+    sidebarCollapsed,
     showDeletedConversations,
     greetingVariations,
     guessProbability,
@@ -2661,6 +2685,23 @@ function App() {
         h(MenuGlyph, { open: mobileMenuOpen }),
       ),
       h(
+        "button",
+        {
+          type: "button",
+          className: `sidebar-toggle${sidebarCollapsed ? " is-collapsed" : ""}`,
+          "data-testid": "sidebar-toggle",
+          "aria-pressed": !sidebarCollapsed,
+          "aria-label": sidebarCollapsed
+            ? t("buttons.expandSidebar")
+            : t("buttons.collapseSidebar"),
+          title: sidebarCollapsed
+            ? t("titles.expandSidebar")
+            : t("titles.collapseSidebar"),
+          onClick: () => setSidebarCollapsed((value) => !value),
+        },
+        h(SidebarToggleGlyph, { collapsed: sidebarCollapsed }),
+      ),
+      h(
         "div",
         { className: "brand" },
         h("span", { className: "mark" }, "FA"),
@@ -2672,6 +2713,20 @@ function App() {
         { className: "topbar-actions" },
         h("span", { className: "demo-status", "data-testid": "demo-status", role: "status" }, demoStatus),
         diagnosticsMode ? h("span", { className: "status" }, workerState) : null,
+        h(
+          "a",
+          {
+            className: "source-code-button",
+            "data-testid": "source-code",
+            href: SOURCE_CODE_URL,
+            target: "_blank",
+            rel: "noopener noreferrer",
+            title: t("titles.sourceCode"),
+            "aria-label": t("buttons.sourceCode"),
+          },
+          h("span", { className: "btn-icon", "aria-hidden": "true" }, "💻"),
+          h("span", { className: "btn-label" }, t("buttons.sourceCode")),
+        ),
         h(
           "a",
           {
@@ -2745,7 +2800,7 @@ function App() {
               ? t("buttons.diagnosticsOn")
               : t("buttons.diagnostics"),
           },
-          h("span", { className: "btn-icon", "aria-hidden": "true" }, "🔍"),
+          h("span", { className: "btn-icon", "aria-hidden": "true" }, "🧪"),
           h(
             "span",
             { className: "btn-label" },
@@ -2807,14 +2862,15 @@ function App() {
     h(
       "section",
       {
-        className: "workspace",
+        className: `workspace${sidebarCollapsed ? " sidebar-collapsed" : ""}`,
         style: { "--context-panel-width": `${contextPanelWidth}px` },
       },
       h(
         "aside",
         {
-          className: `context-panel${mobileMenuOpen ? " is-mobile-open" : ""}`,
+          className: `context-panel${mobileMenuOpen ? " is-mobile-open" : ""}${sidebarCollapsed ? " is-desktop-collapsed" : ""}`,
           "data-testid": "context-panel",
+          "aria-hidden": sidebarCollapsed && !mobileMenuOpen ? "true" : "false",
         },
         h(
           "div",
@@ -2850,6 +2906,18 @@ function App() {
           h(
             "div",
             { className: "drawer-action-list" },
+            h(
+              "a",
+              {
+                className: "drawer-action",
+                "data-testid": "drawer-source-code",
+                href: SOURCE_CODE_URL,
+                target: "_blank",
+                rel: "noopener noreferrer",
+              },
+              h("span", { className: "btn-icon", "aria-hidden": "true" }, "💻"),
+              h("span", null, t("buttons.sourceCode")),
+            ),
             h(
               "a",
               {
@@ -2892,7 +2960,7 @@ function App() {
                 "aria-pressed": diagnosticsMode,
                 onClick: () => setDiagnosticsMode((value) => !value),
               },
-              h("span", { className: "btn-icon", "aria-hidden": "true" }, "🔍"),
+              h("span", { className: "btn-icon", "aria-hidden": "true" }, "🧪"),
               h("span", null, diagnosticsMode ? t("buttons.diagnosticsOn") : t("buttons.diagnostics")),
             ),
             h(
@@ -2933,9 +3001,11 @@ function App() {
                 type: "button",
                 className: "conversation-new",
                 "data-testid": "conversation-new",
+                disabled:
+                  messages.length === 0 &&
+                  !currentConversationId &&
+                  prompt.trim().length === 0,
                 onClick: () => {
-                  // Drop the current thread id so the next user message mints a
-                  // fresh one and assigns its events accordingly.
                   currentConversationRef.current = "";
                   setCurrentConversationId("");
                   setMessages([]);

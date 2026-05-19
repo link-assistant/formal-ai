@@ -5064,8 +5064,6 @@ async function tryWebSearch(prompt, language) {
   const lines = [
     `Search results for \`${query}\` — top ${top.length} after reciprocal rank fusion (k = ${rrfK}).`,
     "",
-    `Providers (default first): ${active.map((p) => p.id).join(", ")}.`,
-    "",
   ];
   top.forEach((entry, index) => {
     const sources = entry.providers
