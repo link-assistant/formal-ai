@@ -177,4 +177,11 @@ cargo test --doc --verbose
 rust-script scripts/check-file-size.rs
 ```
 
+Decode an overlong prefilled GitHub issue URL into readable Markdown during
+report-link triage:
+
+```bash
+rust-script scripts/decode-github-issue-url.rs --url 'https://github.com/link-assistant/formal-ai/issues/new?...'
+```
+
 See [REQUIREMENTS.md](REQUIREMENTS.md) for the cumulative requirement matrix (now alongside [VISION.md](VISION.md)) and [docs/case-studies/issue-1/README.md](docs/case-studies/issue-1/README.md) for the collected research and implementation plan.

@@ -126,6 +126,85 @@ test.describe('multilingual chat surface', () => {
     await expect(last).toContainText(/Wikipedia|encyclopedia/i);
   });
 
+  test('Issue #159: Russian Hive Mind prompt prefers link-assistant project and still searches the web', async ({ page }) => {
+    await page.route('**://api.duckduckgo.com/**', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          Heading: 'Hive mind',
+          AbstractText: 'A hive mind is a collective intelligence concept.',
+          AbstractURL: 'https://example.com/hive-mind-overview',
+          RelatedTopics: [],
+        }),
+      });
+    });
+    await page.route('**/w/rest.php/v1/search/page**', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          pages: [
+            {
+              id: 42,
+              key: 'LOIC',
+              title: 'LOIC',
+              excerpt: 'LOIC has a Hive Mind mode, but it is not the preferred project match.',
+              description: 'network stress-testing software',
+            },
+          ],
+        }),
+      });
+    });
+    await page.route('**/wikidata.org/w/api.php**', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          search: [
+            {
+              id: 'Q188641',
+              label: 'Hive mind',
+              description: 'collective consciousness or group intelligence concept',
+              concepturi: 'https://www.wikidata.org/wiki/Q188641',
+            },
+          ],
+        }),
+      });
+    });
+    await page.route('**/api/rest_v1/page/summary/**', async (route) => {
+      const url = route.request().url();
+      if (url.endsWith('/LOIC')) {
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify({
+            title: 'LOIC',
+            extract: 'LOIC is open-source software with a Hive Mind mode.',
+            type: 'standard',
+            content_urls: {
+              desktop: { page: 'https://ru.wikipedia.org/wiki/LOIC' },
+            },
+          }),
+        });
+        return;
+      }
+      await route.fulfill({
+        status: 404,
+        contentType: 'application/json',
+        body: JSON.stringify({ title: 'Not found' }),
+      });
+    });
+
+    const last = await sendPrompt(page, 'Что такое Hive Mind?');
+    await expect(last).toHaveClass(/assistant/);
+    await expect(last).toContainText('link-assistant/hive-mind');
+    await expect(last).toContainText('The AI that controls AIs');
+    await expect(last).toContainText('Search results for');
+    await expect(last).toContainText('LOIC');
+    await expect(last).not.toContainText('Ближайшее совпадение по поиску Wikipedia');
+  });
+
   test('Chinese "X 是什么?" returns the offline concept summary', async ({ page }) => {
     const last = await sendPrompt(page, '维基百科是什么?');
     await expect(last).toHaveClass(/assistant/);

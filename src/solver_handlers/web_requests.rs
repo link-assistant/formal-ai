@@ -1,5 +1,6 @@
 //! URL fetch, URL navigation, and browser-search handlers.
 
+use crate::concepts::extract_concept_query;
 use crate::engine::{normalize_prompt, SymbolicAnswer};
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
@@ -132,6 +133,68 @@ pub fn try_web_search(
         &body,
         0.8,
     ))
+}
+
+pub fn try_hive_mind_lookup(
+    prompt: &str,
+    _normalized: &str,
+    log: &mut EventLog,
+) -> Option<SymbolicAnswer> {
+    if !is_hive_mind_concept_prompt(prompt) {
+        return None;
+    }
+
+    let preferred_repo = "link-assistant/hive-mind";
+    let preferred_url = "https://github.com/link-assistant/hive-mind";
+    let preferred_description = "The AI that controls AIs to do the automation of automation.";
+
+    log.append("hive_mind:preferred", preferred_repo.to_owned());
+    log.append("source", preferred_url.to_owned());
+    log.append("web_search:request", "Hive Mind".to_owned());
+    for provider in WEB_SEARCH_PROVIDERS {
+        log.append("web_search:provider", (*provider).to_owned());
+    }
+    log.append("web_search:combined", format!("rrf:k={WEB_SEARCH_RRF_K}"));
+
+    let provider_summary = WEB_SEARCH_PROVIDERS.join(", ");
+    let language = detect_language(prompt).slug();
+    let body = match language {
+        "ru" => format!(
+            "В контексте Link Assistant под `Hive Mind` я прежде всего имею в виду \
+             [{preferred_repo}]({preferred_url}) — {preferred_description}\n\n\
+             Другие найденные в интернете сущности должна показывать браузерная \
+             демо-версия через поиск по запросу `Hive Mind`. Провайдеры: \
+             {provider_summary}. Ранжирование: reciprocal rank fusion \
+             (k = {WEB_SEARCH_RRF_K})."
+        ),
+        _ => format!(
+            "In the Link Assistant context, `Hive Mind` should first mean \
+             [{preferred_repo}]({preferred_url}) — {preferred_description}\n\n\
+             Other entities found online are shown by the browser demo through \
+             a web search for `Hive Mind`. Providers: {provider_summary}. \
+             Combined ranking: reciprocal rank fusion (k = {WEB_SEARCH_RRF_K})."
+        ),
+    };
+    Some(finalize_simple(
+        prompt,
+        log,
+        "hive_mind_lookup",
+        "response:hive_mind_lookup",
+        &body,
+        0.9,
+    ))
+}
+
+fn is_hive_mind_concept_prompt(prompt: &str) -> bool {
+    let Some(query) = extract_concept_query(prompt) else {
+        return false;
+    };
+    let term = normalize_prompt(&query.term)
+        .replace(['-', '_'], " ")
+        .split_whitespace()
+        .collect::<Vec<_>>()
+        .join(" ");
+    term == "hive mind" || term == "hivemind"
 }
 
 fn extract_http_fetch_url(prompt: &str, normalized: &str) -> Option<String> {

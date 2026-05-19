@@ -4978,11 +4978,9 @@ function reciprocalRankFusion(perProviderResults, k) {
   });
 }
 
-async function tryWebSearch(prompt, language) {
-  const normalized = normalizePrompt(prompt);
-  const query = extractWebSearchQuery(prompt, normalized);
+async function runWebSearchQuery(query, language) {
+  query = String(query || "").trim();
   if (!query) return null;
-
   const rrfK = webSearchRrfK();
   const concurrency = webSearchConcurrency();
   const providerLimit = webSearchProviderLimit();
@@ -5079,6 +5077,73 @@ async function tryWebSearch(prompt, language) {
     intent: "web_search",
     content: lines.join("\n"),
     confidence: 0.85,
+    evidence,
+  };
+}
+
+async function tryWebSearch(prompt, language) {
+  const normalized = normalizePrompt(prompt);
+  const query = extractWebSearchQuery(prompt, normalized);
+  if (!query) return null;
+  return runWebSearchQuery(query, language);
+}
+
+function isHiveMindConceptQuery(prompt) {
+  const query = extractConceptQuery(prompt);
+  if (!query) return false;
+  const term = normalizePrompt(query.termOriginal || query.term)
+    .replace(/[-_]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+  return term === "hive mind" || term === "hivemind";
+}
+
+async function tryHiveMindLookup(prompt, language) {
+  if (!isHiveMindConceptQuery(prompt)) return null;
+
+  const preferredUrl = "https://github.com/link-assistant/hive-mind";
+  const preferredRepo = "link-assistant/hive-mind";
+  const preferredDescription =
+    "The AI that controls AIs to do the automation of automation.";
+  const preferredLine =
+    language === "ru"
+      ? `В контексте Link Assistant под \`Hive Mind\` я прежде всего имею в виду [${preferredRepo}](${preferredUrl}) — ${preferredDescription}`
+      : `In the Link Assistant context, \`Hive Mind\` should first mean [${preferredRepo}](${preferredUrl}) — ${preferredDescription}`;
+
+  const search = await runWebSearchQuery("Hive Mind", language);
+  const evidence = [
+    `hive_mind:preferred:${preferredRepo}`,
+    `source:${preferredUrl}`,
+  ];
+  if (search && Array.isArray(search.evidence)) {
+    evidence.push(...search.evidence);
+  } else {
+    evidence.push("web_search:no_results");
+  }
+
+  const lines = [preferredLine];
+  if (search && search.content) {
+    lines.push("");
+    lines.push(
+      language === "ru"
+        ? "Другие найденные в интернете сущности:"
+        : "Other entities found online:",
+    );
+    lines.push("");
+    lines.push(search.content);
+  } else {
+    lines.push("");
+    lines.push(
+      language === "ru"
+        ? "Интернет-поиск по другим сущностям Hive Mind не вернул результатов через доступные CORS-провайдеры."
+        : "Web search for other Hive Mind entities returned no results through the available CORS providers.",
+    );
+  }
+
+  return {
+    intent: "hive_mind_lookup",
+    content: lines.join("\n"),
+    confidence: 0.9,
     evidence,
   };
 }
@@ -5267,6 +5332,19 @@ async function solve(prompt, history, prefs) {
     events.push(`handler:${legacyFact.intent}`);
     steps.push({ step: "dispatch_handler", detail: "tryFactLookup" });
     return finalize(events, steps, toolCalls, legacyFact);
+  }
+
+  steps.push({ step: "invoke_tool", detail: "hive_mind_lookup" });
+  const hiveMind = await tryHiveMindLookup(prompt, language);
+  if (hiveMind) {
+    events.push(`handler:${hiveMind.intent}`);
+    steps.push({ step: "dispatch_handler", detail: "tryHiveMindLookup" });
+    toolCalls.push({
+      tool: "web_search",
+      inputs: { prompt, query: "Hive Mind", language },
+      outputs: { intent: hiveMind.intent, confidence: hiveMind.confidence },
+    });
+    return finalize(events, steps, toolCalls, hiveMind);
   }
 
   steps.push({ step: "invoke_tool", detail: "http_fetch" });
