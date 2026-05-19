@@ -1416,8 +1416,45 @@ function localFallbackAnswer(prompt, history = []) {
 
   return {
     intent: "unknown",
-    content: UNKNOWN_ANSWER,
+    content: localUnknownAnswerWithVariation(prompt),
   };
+}
+
+// Mirrors `src/engine.rs::UNKNOWN_OPENERS_EN` so the React fallback (used when
+// the worker is unavailable, e.g. on `file://`) presents the same set of
+// variations as the worker and Rust solver. Only the English pool is kept
+// here because the React fallback never reaches non-English seeds.
+const LOCAL_UNKNOWN_OPENERS = [
+  "I don't know how to answer that yet.",
+  "I didn't understand you.",
+  "I'm not sure how to respond to that yet.",
+  "I haven't learned to answer that yet.",
+  "That one is new to me.",
+];
+
+function localSelectUnknownOpener(prompt) {
+  const trimmed = String(prompt || "").trim();
+  if (trimmed === "") return LOCAL_UNKNOWN_OPENERS[0];
+  const id = localBehaviorRuleId(`unknown_opener\n${trimmed}`);
+  const hex = id.split("_").pop() || "0";
+  const value = parseInt(hex, 16) || 0;
+  return LOCAL_UNKNOWN_OPENERS[value % LOCAL_UNKNOWN_OPENERS.length];
+}
+
+function localUnknownAnswerWithVariation(prompt) {
+  const opener = localSelectUnknownOpener(prompt);
+  const body = String(UNKNOWN_ANSWER || "").trimStart();
+  for (const known of LOCAL_UNKNOWN_OPENERS) {
+    if (body.startsWith(known)) {
+      const rest = body.slice(known.length).trimStart();
+      return rest ? `${opener} ${rest}` : opener;
+    }
+  }
+  const idx = body.indexOf(". ");
+  if (idx >= 0) {
+    return `${opener} ${body.slice(idx + 2).trimStart()}`;
+  }
+  return `${opener} ${body}`;
 }
 
 function createDemoTurns() {

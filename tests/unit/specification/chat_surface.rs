@@ -141,6 +141,153 @@ fn self_facts_can_be_listed_through_chat() {
 }
 
 #[test]
+fn self_facts_query_works_for_russian_speakers() {
+    let response = answer("Какие факты ты знаешь о себе?");
+    assert_eq!(response.intent, "self_facts");
+    assert!(response.answer.contains("self_fact_model"));
+}
+
+#[test]
+fn behavior_rules_list_works_for_russian_speakers() {
+    for prompt in [
+        "Список правил поведения",
+        "Покажи правила поведения",
+        "Какие правила поведения",
+    ] {
+        let response = answer(prompt);
+        assert_eq!(
+            response.intent, "behavior_rules_list",
+            "expected behavior_rules_list for {prompt:?}, got {}",
+            response.intent
+        );
+        assert!(response.answer.contains("rule_greeting"));
+        assert!(response.answer.contains("rule_unknown"));
+    }
+}
+
+#[test]
+fn behavior_rule_detail_can_be_read_in_russian() {
+    let response = answer("Покажи правило unknown");
+    assert_eq!(response.intent, "behavior_rule_detail");
+    assert!(response.answer.contains("rule_unknown"));
+}
+
+#[test]
+fn behavior_rule_can_be_taught_with_russian_phrasing() {
+    let solver = UniversalSolver::default();
+    let update = solver
+        .solve("Когда я скажу `Какая у тебя модель личности?`, ответь `Символьная личность.`");
+    assert_eq!(update.intent, "behavior_rule_update");
+    let history = [ConversationTurn::user(
+        "Когда я скажу `Какая у тебя модель личности?`, ответь `Символьная личность.`",
+    )];
+    let response = solver.solve_with_history("Какая у тебя модель личности?", &history);
+    assert_eq!(response.intent, "behavior_rule_custom");
+    assert_eq!(response.answer, "Символьная личность.");
+}
+
+#[test]
+fn behavior_rule_detail_supports_multiple_rule_prefixes() {
+    for prompt in [
+        "Show behavior rule greeting",
+        "Show behavior rule rule_greeting",
+        "Read rule greeting",
+        "describe behavior rule greeting",
+    ] {
+        let response = answer(prompt);
+        assert_eq!(
+            response.intent, "behavior_rule_detail",
+            "expected behavior_rule_detail for {prompt:?}, got {}",
+            response.intent
+        );
+        assert!(
+            response.answer.contains("rule_greeting"),
+            "missing rule_greeting body for {prompt:?}: {}",
+            response.answer
+        );
+    }
+}
+
+#[test]
+fn most_recent_behavior_rule_wins_when_multiple_apply() {
+    let solver = UniversalSolver::default();
+    let history = [
+        ConversationTurn::user("When I say `weather?`, answer `Sunny in seed-1.`"),
+        ConversationTurn::user("When I say `weather?`, answer `Rainy in seed-2.`"),
+    ];
+    let response = solver.solve_with_history("weather?", &history);
+    assert_eq!(response.intent, "behavior_rule_custom");
+    assert_eq!(response.answer, "Rainy in seed-2.");
+}
+
+#[test]
+fn capabilities_answer_advertises_behavior_rule_commands() {
+    let response = answer("What can you do?");
+    assert_eq!(response.intent, "capabilities");
+    assert!(
+        response.answer.contains("List behavior rules"),
+        "capabilities answer must mention List behavior rules; got: {}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains("When I say"),
+        "capabilities answer must mention the teach-by-dialog form; got: {}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains("Report issue"),
+        "capabilities answer must mention the Report issue path; got: {}",
+        response.answer
+    );
+}
+
+#[test]
+fn capabilities_answer_in_russian_advertises_behavior_rule_commands() {
+    let response = answer("Что ты умеешь?");
+    assert_eq!(response.intent, "capabilities");
+    assert!(response.answer.contains("List behavior rules"));
+    assert!(response.answer.contains("When I say"));
+    assert!(response.answer.contains("Report issue"));
+}
+
+#[test]
+fn unknown_answer_uses_different_opener_for_different_prompts() {
+    use formal_ai::unknown_answer_variation_for;
+    // Synthesise enough prompts to be confident at least two openers fire.
+    let mut openers = std::collections::HashSet::new();
+    for seed in 0..50_u32 {
+        let body = unknown_answer_variation_for(&format!("synthetic-prompt-{seed}"));
+        let first_sentence = body.split(['.', '。', '।']).next().unwrap_or("").trim();
+        openers.insert(first_sentence.to_owned());
+    }
+    assert!(
+        openers.len() > 1,
+        "expected multiple opener variations across distinct prompts, got: {openers:?}"
+    );
+}
+
+#[test]
+fn unknown_answer_opener_is_deterministic_for_the_same_prompt() {
+    let solver = UniversalSolver::default();
+    let first = solver.solve("Какая у тебя модель личности?").answer;
+    let second = solver.solve("Какая у тебя модель личности?").answer;
+    assert_eq!(first, second);
+}
+
+#[test]
+fn behavior_rule_listing_includes_capabilities_and_farewell_rules() {
+    let response = answer("List behavior rules");
+    assert_eq!(response.intent, "behavior_rules_list");
+    for expected in ["rule_capabilities", "rule_farewell", "rule_identity"] {
+        assert!(
+            response.answer.contains(expected),
+            "missing {expected} from listing: {}",
+            response.answer
+        );
+    }
+}
+
+#[test]
 fn links_notation_trace_is_present_for_every_answer() {
     let response = answer("Hi");
     assert!(!response.links_notation.is_empty());

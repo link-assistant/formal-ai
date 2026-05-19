@@ -320,6 +320,87 @@ function answerFor(intent, language, options) {
   return entry.text;
 }
 
+// Mirrors `src/engine.rs::UNKNOWN_OPENERS_*`. The first entry of each pool
+// equals the opener already embedded in the seed text so the "with-variations"
+// answer is a strict superset of the seed. Different prompts get different
+// openers; the same prompt always picks the same one (FNV-1a hash, mirrored
+// from `stableBehaviorRuleId`).
+const UNKNOWN_OPENERS_BY_LANGUAGE = {
+  en: [
+    "I don't know how to answer that yet.",
+    "I didn't understand you.",
+    "I'm not sure how to respond to that yet.",
+    "I haven't learned to answer that yet.",
+    "That one is new to me.",
+  ],
+  ru: [
+    "Я пока не знаю, как ответить на это.",
+    "Я тебя не понял.",
+    "Я не уверен, как на это ответить.",
+    "Я ещё не научился отвечать на это.",
+    "Это для меня новое.",
+  ],
+  hi: [
+    "मुझे अभी इसका उत्तर देना नहीं आता।",
+    "मैं समझ नहीं पाया।",
+    "मुझे यकीन नहीं है कि कैसे उत्तर दूँ।",
+    "मैंने अभी तक यह उत्तर देना नहीं सीखा।",
+    "यह मेरे लिए नया है।",
+  ],
+  zh: [
+    "我还不知道如何回答这个问题。",
+    "我不太明白你说的意思。",
+    "我不确定该如何回答。",
+    "我还没有学会回答这个问题。",
+    "这对我来说是新的。",
+  ],
+};
+
+function unknownOpenersFor(language) {
+  return UNKNOWN_OPENERS_BY_LANGUAGE[language] || UNKNOWN_OPENERS_BY_LANGUAGE.en;
+}
+
+function selectUnknownOpener(prompt, language) {
+  const pool = unknownOpenersFor(language);
+  const trimmed = String(prompt || "").trim();
+  if (trimmed === "") return pool[0];
+  const id = stableBehaviorRuleId("unknown_opener", trimmed);
+  const hex = id.split("_").pop() || "0";
+  let value;
+  try {
+    value = BigInt(`0x${hex}`);
+  } catch (_err) {
+    value = 0n;
+  }
+  const index = Number(value % BigInt(pool.length));
+  return pool[index] || pool[0];
+}
+
+function stripLeadingUnknownOpener(text, language) {
+  const trimmed = String(text || "").trimStart();
+  const openers = unknownOpenersFor(language);
+  for (const known of openers) {
+    if (trimmed.startsWith(known)) {
+      return trimmed.slice(known.length).trimStart();
+    }
+  }
+  for (const separator of [". ", "。", "। "]) {
+    const idx = trimmed.indexOf(separator);
+    if (idx >= 0) {
+      return trimmed.slice(idx + separator.length).trimStart();
+    }
+  }
+  return trimmed;
+}
+
+function unknownAnswerWithVariation(prompt, language) {
+  const seedText = answerFor("unknown", language);
+  const opener = selectUnknownOpener(prompt, language);
+  const body = stripLeadingUnknownOpener(seedText, language);
+  if (!body) return opener;
+  return `${opener} ${body}`;
+}
+
 function numericPreference(value, fallback, min, max) {
   const parsed = Number(value);
   if (!Number.isFinite(parsed)) return fallback;
@@ -6553,7 +6634,7 @@ async function solve(prompt, history, prefs) {
   steps.push({ step: "fallback", detail: "unknown" });
   return finalize(events, steps, toolCalls, {
     intent: "unknown",
-    content: answerFor("unknown", language),
+    content: unknownAnswerWithVariation(prompt, language),
     confidence: 0.1,
     evidence: ["fallback:unknown", `language:${language}`],
   });
