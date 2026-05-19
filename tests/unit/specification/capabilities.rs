@@ -1,9 +1,9 @@
 //! Capability and feature-status prompt coverage.
 //!
 //! Issue #145 reported that "Ты можешь искать в интернете?" fell through to
-//! the unknown fallback. These tests pin the feature-specific capability shape:
-//! asking whether web search is available should resolve as `capabilities`,
-//! answer in the user's language, and respect offline configuration.
+//! the unknown fallback. Follow-up review broadened the requirement: supported
+//! features and settings/actions must have the same feature-specific capability
+//! shape, answer in the user's language, and respect runtime configuration.
 
 use formal_ai::{FormalAiEngine, SolverConfig, UniversalSolver};
 
@@ -93,4 +93,104 @@ fn web_search_capability_respects_offline_config() {
         "offline capability answer should explain that web search is unavailable, got {}",
         response.answer,
     );
+}
+
+#[test]
+fn supported_feature_capability_questions_do_not_return_unknown() {
+    let cases = [
+        ("Can you do arithmetic?", "arithmetic"),
+        ("Can you translate text?", "translation"),
+        (
+            "Can you remember conversation context?",
+            "conversation memory",
+        ),
+        ("Can you write code?", "Hello World"),
+        (
+            "Can you configure settings from text?",
+            "message-driven configuration",
+        ),
+        ("Can you export memory?", "memory import/export"),
+        ("Ты умеешь считать?", "арифметика"),
+        ("Ты можешь менять настройки?", "настройка"),
+        ("你能翻译吗？", "翻译"),
+        ("क्या आप अनुवाद कर सकते हैं?", "अनुवाद"),
+    ];
+
+    for (prompt, expected_fragment) in cases {
+        let response = FormalAiEngine.answer(prompt);
+        assert_eq!(
+            response.intent, "capabilities",
+            "prompt {prompt:?} should resolve to capabilities, got {}: {}",
+            response.intent, response.answer,
+        );
+        assert_ne!(response.intent, "unknown");
+        assert!(
+            response
+                .answer
+                .to_lowercase()
+                .contains(&expected_fragment.to_lowercase()),
+            "prompt {prompt:?} should mention {expected_fragment:?}, got {}",
+            response.answer,
+        );
+    }
+}
+
+#[test]
+fn action_requests_keep_routing_to_primary_handlers() {
+    let calculation = FormalAiEngine.answer("Can you calculate 2 + 2?");
+    assert_eq!(
+        calculation.intent, "calculation",
+        "calculation request should not be swallowed by feature capability handling: {}",
+        calculation.answer,
+    );
+    assert!(
+        calculation.answer.contains('4'),
+        "calculation response should include the evaluated result, got {}",
+        calculation.answer,
+    );
+
+    let summary = FormalAiEngine.answer("Can you summarize Rust?");
+    assert!(
+        summary.intent.starts_with("summarize"),
+        "summarization request should not be swallowed by feature capability handling: {}",
+        summary.answer,
+    );
+}
+
+#[test]
+fn runtime_gated_capabilities_report_current_configuration() {
+    let default_solver = UniversalSolver::new(SolverConfig::default());
+    let diagnostics = default_solver.solve("Can you show diagnostics?");
+    assert_eq!(diagnostics.intent, "capabilities");
+    assert!(
+        diagnostics.answer.to_lowercase().contains("no")
+            && diagnostics.answer.to_lowercase().contains("off"),
+        "diagnostics should report disabled default state, got {}",
+        diagnostics.answer,
+    );
+
+    let enabled = UniversalSolver::new(SolverConfig {
+        diagnostic_mode: true,
+        agent_mode: true,
+        definition_fusion_by_default: true,
+        ..SolverConfig::default()
+    });
+
+    for prompt in [
+        "Can you show diagnostics?",
+        "Can you use agent mode?",
+        "Can you merge definitions automatically?",
+    ] {
+        let response = enabled.solve(prompt);
+        assert_eq!(
+            response.intent, "capabilities",
+            "prompt {prompt:?} should resolve to capabilities, got {}",
+            response.intent,
+        );
+        assert!(
+            response.answer.to_lowercase().contains("yes"),
+            "enabled capability should answer yes for {prompt:?}, got {}",
+            response.answer,
+        );
+    }
 }

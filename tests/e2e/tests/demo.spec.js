@@ -279,6 +279,11 @@ test.describe('formal-ai demo UI', () => {
     await expect(webSearchCapability).toContainText('DuckDuckGo');
     await expect(webSearchCapability).not.toContainText(UNKNOWN_ANSWER_MARKER);
 
+    const arithmeticCapability = await sendPrompt(page, 'Can you do arithmetic?');
+    await expect(arithmeticCapability).toContainText('Yes');
+    await expect(arithmeticCapability).toContainText('arithmetic');
+    await expect(arithmeticCapability).not.toContainText(UNKNOWN_ANSWER_MARKER);
+
     const search = await sendPrompt(page, 'Search online for Genshin Impact');
     await expect(search).toContainText('Search results for');
     await expect(search).toContainText('Genshin Impact');
@@ -457,6 +462,19 @@ test.describe('formal-ai demo UI', () => {
     await expect(assistantMessage.locator('.intent')).toContainText(/intent:/);
     await expect(assistantMessage.locator('.evidence-list')).toContainText(/source:/);
     await expect(assistantMessage.locator('.thinking-steps')).toContainText(/match_rule|dispatch_handler|fallback/);
+  });
+
+  test('message commands configure UI controls', async ({ page }) => {
+    await switchToManualMode(page);
+
+    const diagnostics = await sendPrompt(page, 'Turn on diagnostics');
+    await expect(diagnostics).toContainText('Diagnostics is now on');
+    await expect(page.locator('.diagnostics-toggle')).toHaveAttribute('aria-pressed', 'true');
+
+    const theme = await sendPrompt(page, 'Switch to dark theme');
+    await expect(theme).toContainText('Theme is now dark');
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+    await expect(page.locator('[data-testid="setting-theme"]')).toHaveValue('dark');
   });
 
   test('composer does not expose an unused preview control', async ({ page }) => {

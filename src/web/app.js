@@ -174,6 +174,333 @@ function recognizeMemoryAction(text) {
   return null;
 }
 
+function includesAnyText(value, terms) {
+  return terms.some((term) => value.includes(term));
+}
+
+const COMMAND_ON_TERMS = [
+  "turn on",
+  "enable",
+  "show",
+  "start",
+  "включи",
+  "включить",
+  "покажи",
+  "запусти",
+  "开启",
+  "打开",
+  "चालू",
+  "enable",
+];
+
+const COMMAND_OFF_TERMS = [
+  "turn off",
+  "disable",
+  "hide",
+  "stop",
+  "выключи",
+  "выключить",
+  "отключи",
+  "скрой",
+  "останови",
+  "关闭",
+  "隐藏",
+  "बंद",
+  "disable",
+];
+
+function detectToggleCommand(normalized, featureTerms) {
+  if (!includesAnyText(normalized, featureTerms)) return null;
+  if (includesAnyText(normalized, COMMAND_OFF_TERMS)) return false;
+  if (includesAnyText(normalized, COMMAND_ON_TERMS)) return true;
+  return null;
+}
+
+function commandNumberValue(normalized, terms) {
+  if (!includesAnyText(normalized, terms)) return null;
+  const match = normalized.match(/(\d+(?:[.,]\d+)?)\s*%?/);
+  if (!match) return null;
+  const raw = Number(match[1].replace(",", "."));
+  if (!Number.isFinite(raw)) return null;
+  if (normalized.includes("%") || raw > 1) {
+    return clampNumber(raw / 100, 0, 1, 0);
+  }
+  return clampNumber(raw, 0, 1, 0);
+}
+
+function commandValueLabel(command) {
+  if (command.kind === "report_issue") return command.label;
+  if (command.kind === "trigger") return command.label;
+  if (typeof command.value === "boolean") return command.value ? "on" : "off";
+  if (typeof command.value === "number") return command.value.toFixed(2);
+  return String(command.value);
+}
+
+function interfaceCommandResponse(command, reportIssueUrl) {
+  if (command.kind === "report_issue") {
+    return `Report issue link: [Report issue](${reportIssueUrl}).`;
+  }
+  if (command.kind === "trigger" && command.action === "attach_files") {
+    return "Opening the file picker.";
+  }
+  return `Done. ${command.label} is now ${commandValueLabel(command)}.`;
+}
+
+function recognizeInterfaceCommand(text) {
+  const normalized = normalizeMemoryPrompt(text);
+  if (!normalized) return null;
+
+  const reportPhrases = [
+    "report issue",
+    "create issue",
+    "open issue",
+    "сообщить о проблеме",
+    "создай issue",
+    "报告问题",
+    "समस्या रिपोर्ट करें",
+  ];
+  if (reportPhrases.some((phrase) => normalized === phrase)) {
+    return { kind: "report_issue", intent: "report_issue", label: "Report issue" };
+  }
+
+  const attachPhrases = [
+    "attach file",
+    "attach files",
+    "add attachment",
+    "upload file",
+    "прикрепи файл",
+    "добавь файл",
+    "附加文件",
+    "फ़ाइल जोड़ें",
+  ];
+  if (attachPhrases.some((phrase) => normalized === phrase || normalized.includes(phrase))) {
+    return { kind: "trigger", action: "attach_files", intent: "attach_files", label: "Attach files" };
+  }
+
+  const diagnostics = detectToggleCommand(normalized, [
+    "diagnostics",
+    "diagnostic",
+    "trace",
+    "диагност",
+    "трассиров",
+    "诊断",
+    "निदान",
+  ]);
+  if (diagnostics !== null) {
+    return {
+      kind: "set_preference",
+      key: "diagnosticsMode",
+      value: diagnostics,
+      intent: "configure_diagnostics",
+      label: "Diagnostics",
+    };
+  }
+
+  const demo = detectToggleCommand(normalized, ["demo", "демо", "演示", "डेमो"]);
+  if (demo !== null || normalized === "manual mode" || normalized === "ручной режим") {
+    return {
+      kind: "set_preference",
+      key: "demoMode",
+      value: demo === null ? false : demo,
+      intent: "configure_demo_mode",
+      label: "Demo mode",
+    };
+  }
+
+  const agent = detectToggleCommand(normalized, ["agent mode", "агент", "代理", "एजेंट"]);
+  if (agent !== null || normalized === "chat mode") {
+    return {
+      kind: "set_preference",
+      key: "agentMode",
+      value: agent === null ? false : agent,
+      intent: "configure_agent_mode",
+      label: "Agent mode",
+    };
+  }
+
+  const variations = detectToggleCommand(normalized, [
+    "greeting variations",
+    "greeting variation",
+    "вариации приветствий",
+    "варианты приветствий",
+  ]);
+  if (variations !== null) {
+    return {
+      kind: "set_preference",
+      key: "greetingVariations",
+      value: variations,
+      intent: "configure_greeting_variations",
+      label: "Greeting variations",
+    };
+  }
+
+  const definitionFusion = detectToggleCommand(normalized, [
+    "definition fusion",
+    "merge definitions",
+    "слияние определений",
+    "合并定义",
+  ]);
+  if (definitionFusion !== null) {
+    return {
+      kind: "set_preference",
+      key: "definitionFusion",
+      value: definitionFusion ? "auto" : "explicit",
+      intent: "configure_definition_fusion",
+      label: "Definition fusion",
+    };
+  }
+
+  if (includesAnyText(normalized, ["theme", "dark mode", "light mode", "тема", "режим", "主题"])) {
+    if (includesAnyText(normalized, ["dark", "темн", "тёмн", "深色", "dark mode"])) {
+      return { kind: "set_preference", key: "theme", value: "dark", intent: "configure_theme", label: "Theme" };
+    }
+    if (includesAnyText(normalized, ["light", "светл", "浅色", "light mode"])) {
+      return { kind: "set_preference", key: "theme", value: "light", intent: "configure_theme", label: "Theme" };
+    }
+    if (includesAnyText(normalized, ["auto", "system", "авто", "систем", "自动"])) {
+      return { kind: "set_preference", key: "theme", value: "auto", intent: "configure_theme", label: "Theme" };
+    }
+  }
+
+  if (includesAnyText(normalized, ["language", "ui language", "язык", "语言", "भाषा"])) {
+    if (includesAnyText(normalized, ["russian", "рус", "俄语"])) {
+      return { kind: "set_preference", key: "uiLanguage", value: "ru", intent: "configure_language", label: "UI language" };
+    }
+    if (includesAnyText(normalized, ["english", "англ", "英语"])) {
+      return { kind: "set_preference", key: "uiLanguage", value: "en", intent: "configure_language", label: "UI language" };
+    }
+    if (includesAnyText(normalized, ["chinese", "китай", "中文", "汉语"])) {
+      return { kind: "set_preference", key: "uiLanguage", value: "zh", intent: "configure_language", label: "UI language" };
+    }
+    if (includesAnyText(normalized, ["hindi", "хинди", "हिन्दी", "हिंदी"])) {
+      return { kind: "set_preference", key: "uiLanguage", value: "hi", intent: "configure_language", label: "UI language" };
+    }
+    if (includesAnyText(normalized, ["auto", "system", "авто", "自动"])) {
+      return { kind: "set_preference", key: "uiLanguage", value: "auto", intent: "configure_language", label: "UI language" };
+    }
+  }
+
+  if (includesAnyText(normalized, ["ui skin", "skin", "оформление", "外观"])) {
+    if (normalized.includes("glass")) {
+      return { kind: "set_preference", key: "uiSkin", value: "glass", intent: "configure_ui_skin", label: "UI skin" };
+    }
+    if (normalized.includes("contrast") || normalized.includes("контраст")) {
+      return { kind: "set_preference", key: "uiSkin", value: "contrast", intent: "configure_ui_skin", label: "UI skin" };
+    }
+    if (normalized.includes("flat") || normalized.includes("плоск")) {
+      return { kind: "set_preference", key: "uiSkin", value: "flat", intent: "configure_ui_skin", label: "UI skin" };
+    }
+  }
+
+  if (includesAnyText(normalized, ["chat style", "стиль чата", "聊天样式"])) {
+    if (normalized.includes("compact")) {
+      return { kind: "set_preference", key: "chatStyle", value: "compact", intent: "configure_chat_style", label: "Chat style" };
+    }
+    if (normalized.includes("bubble") || normalized.includes("bubbles")) {
+      return { kind: "set_preference", key: "chatStyle", value: "bubbles", intent: "configure_chat_style", label: "Chat style" };
+    }
+    if (normalized.includes("card") || normalized.includes("cards")) {
+      return { kind: "set_preference", key: "chatStyle", value: "cards", intent: "configure_chat_style", label: "Chat style" };
+    }
+  }
+
+  if (includesAnyText(normalized, ["composer style", "input style", "стиль ввода", "输入样式"])) {
+    if (normalized.includes("glass clear") || normalized.includes("glass-clear")) {
+      return { kind: "set_preference", key: "composerStyle", value: "glass-clear", intent: "configure_composer_style", label: "Composer style" };
+    }
+    if (normalized.includes("glass")) {
+      return { kind: "set_preference", key: "composerStyle", value: "glass-soft", intent: "configure_composer_style", label: "Composer style" };
+    }
+    if (normalized.includes("bubble")) {
+      return { kind: "set_preference", key: "composerStyle", value: "bubble", intent: "configure_composer_style", label: "Composer style" };
+    }
+    if (normalized.includes("flat")) {
+      return { kind: "set_preference", key: "composerStyle", value: "flat", intent: "configure_composer_style", label: "Composer style" };
+    }
+  }
+
+  if (includesAnyText(normalized, ["composer action", "attach button", "plus button", "кнопка ввода"])) {
+    if (normalized.includes("plus") || normalized.includes("плюс")) {
+      return { kind: "set_preference", key: "composerAction", value: "plus", intent: "configure_composer_action", label: "Composer action" };
+    }
+    if (normalized.includes("attach") || normalized.includes("attachment") || normalized.includes("скреп")) {
+      return { kind: "set_preference", key: "composerAction", value: "attach", intent: "configure_composer_action", label: "Composer action" };
+    }
+  }
+
+  const temperature = commandNumberValue(normalized, ["temperature", "температур", "तापमान", "温度"]);
+  if (temperature !== null) {
+    return {
+      kind: "set_preference",
+      key: "temperature",
+      value: temperature,
+      intent: "configure_temperature",
+      label: "Temperature",
+    };
+  }
+
+  const guessProbability = commandNumberValue(normalized, [
+    "guess probability",
+    "ambiguity",
+    "вероятность догадки",
+    "угадыв",
+  ]);
+  if (guessProbability !== null) {
+    return {
+      kind: "set_preference",
+      key: "guessProbability",
+      value: guessProbability,
+      intent: "configure_guess_probability",
+      label: "Guess probability",
+    };
+  }
+
+  const locationPrefixes = [
+    "set location to ",
+    "my location is ",
+    "remember my location as ",
+    "установи местоположение ",
+    "мое местоположение ",
+  ];
+  const locationPrefix = locationPrefixes.find((prefix) => normalized.startsWith(prefix));
+  if (locationPrefix) {
+    const value = normalized.slice(locationPrefix.length).trim().slice(0, 80);
+    if (value) {
+      return {
+        kind: "set_preference",
+        key: "location",
+        value,
+        intent: "configure_location",
+        label: "Location",
+      };
+    }
+  }
+
+  const sidebar = detectToggleCommand(normalized, ["sidebar", "side panel", "боковая панель"]);
+  if (sidebar !== null) {
+    return {
+      kind: "set_preference",
+      key: "sidebarCollapsed",
+      value: !sidebar,
+      intent: "configure_sidebar",
+      label: "Sidebar",
+    };
+  }
+
+  const deleted = detectToggleCommand(normalized, ["deleted conversations", "deleted chats", "удаленные беседы"]);
+  if (deleted !== null) {
+    return {
+      kind: "set_preference",
+      key: "showDeletedConversations",
+      value: deleted,
+      intent: "configure_deleted_conversations",
+      label: "Deleted conversations",
+    };
+  }
+
+  return null;
+}
+
 // Issue #27 R11: natural-language cross-conversation recall. The user types
 // something like "when did I ask about Rust?" or "find Donald Trump in another
 // conversation" and the assistant projects the append-only memory log onto
@@ -2419,6 +2746,16 @@ function App() {
     greetingVariationsRef.current = greetingVariations;
   }, [greetingVariations]);
 
+  const diagnosticsModeRef = useRef(diagnosticsMode);
+  useEffect(() => {
+    diagnosticsModeRef.current = diagnosticsMode;
+  }, [diagnosticsMode]);
+
+  const demoModeRef = useRef(demoMode);
+  useEffect(() => {
+    demoModeRef.current = demoMode;
+  }, [demoMode]);
+
   const guessProbabilityRef = useRef(guessProbability);
   useEffect(() => {
     guessProbabilityRef.current = guessProbability;
@@ -2439,6 +2776,41 @@ function App() {
     agentModeRef.current = agentMode;
   }, [agentMode]);
 
+  const themePreferenceRef = useRef(themePreference);
+  useEffect(() => {
+    themePreferenceRef.current = themePreference;
+  }, [themePreference]);
+
+  const uiLanguagePreferenceRef = useRef(uiLanguagePreference);
+  useEffect(() => {
+    uiLanguagePreferenceRef.current = uiLanguagePreference;
+  }, [uiLanguagePreference]);
+
+  const uiSkinRef = useRef(uiSkin);
+  useEffect(() => {
+    uiSkinRef.current = uiSkin;
+  }, [uiSkin]);
+
+  const chatStyleRef = useRef(chatStyle);
+  useEffect(() => {
+    chatStyleRef.current = chatStyle;
+  }, [chatStyle]);
+
+  const composerStyleRef = useRef(composerStyle);
+  useEffect(() => {
+    composerStyleRef.current = composerStyle;
+  }, [composerStyle]);
+
+  const composerActionRef = useRef(composerAction);
+  useEffect(() => {
+    composerActionRef.current = composerAction;
+  }, [composerAction]);
+
+  const locationPreferenceRef = useRef(locationPreference);
+  useEffect(() => {
+    locationPreferenceRef.current = locationPreference;
+  }, [locationPreference]);
+
   const requestAnswer = useCallback((text, history = []) => {
     const worker = workerRef.current;
     if (!worker) {
@@ -2454,9 +2826,19 @@ function App() {
         history,
         prefs: {
           greetingVariations: greetingVariationsRef.current,
+          diagnosticsMode: diagnosticsModeRef.current,
+          demoMode: demoModeRef.current,
           guessProbability: guessProbabilityRef.current,
           temperature: temperatureRef.current,
           definitionFusion: definitionFusionRef.current,
+          agentMode: agentModeRef.current,
+          theme: themePreferenceRef.current,
+          uiLanguage: uiLanguagePreferenceRef.current,
+          uiSkin: uiSkinRef.current,
+          chatStyle: chatStyleRef.current,
+          composerStyle: composerStyleRef.current,
+          composerAction: composerActionRef.current,
+          location: locationPreferenceRef.current,
         },
         userContext: userContextRef.current,
       });
@@ -2583,6 +2965,80 @@ function App() {
     [messages],
   );
 
+  const applyInterfaceCommand = useCallback(
+    (command) => {
+      if (!command) return;
+      if (command.kind === "trigger" && command.action === "attach_files") {
+        triggerAttachFiles();
+        return;
+      }
+      if (command.kind !== "set_preference") {
+        return;
+      }
+      switch (command.key) {
+        case "diagnosticsMode":
+          setDiagnosticsMode(Boolean(command.value));
+          break;
+        case "demoMode":
+          setDemoMode(Boolean(command.value));
+          break;
+        case "agentMode":
+          setAgentMode(Boolean(command.value));
+          break;
+        case "greetingVariations":
+          setGreetingVariations(Boolean(command.value));
+          break;
+        case "definitionFusion":
+          setDefinitionFusion(normalizeDefinitionFusion(command.value));
+          break;
+        case "theme":
+          setThemePreference(normalizeThemePreference(command.value));
+          break;
+        case "uiLanguage":
+          setUiLanguagePreference(normalizeUiLanguagePreference(command.value));
+          break;
+        case "uiSkin":
+          setUiSkin(normalizeUiSkin(command.value));
+          break;
+        case "chatStyle":
+          setChatStyle(normalizeChatStyle(command.value));
+          break;
+        case "composerStyle":
+          setComposerStyle(normalizeComposerStyle(command.value));
+          break;
+        case "composerAction":
+          setComposerAction(normalizeComposerAction(command.value));
+          break;
+        case "temperature":
+          setTemperature(
+            normalizeSliderPreference(command.value, PREFERENCE_DEFAULTS.temperature),
+          );
+          break;
+        case "guessProbability":
+          setGuessProbability(
+            normalizeSliderPreference(
+              command.value,
+              PREFERENCE_DEFAULTS.guessProbability,
+            ),
+          );
+          break;
+        case "location":
+          setLocationPreference(String(command.value || "").slice(0, 80));
+          break;
+        case "sidebarCollapsed":
+          setSidebarCollapsed(Boolean(command.value));
+          break;
+        case "showDeletedConversations":
+          setShowDeletedConversations(Boolean(command.value));
+          refreshConversations(Boolean(command.value));
+          break;
+        default:
+          break;
+      }
+    },
+    [refreshConversations, triggerAttachFiles],
+  );
+
   // Issue #27: agent mode — run a decomposed task plan and merge the per-step
   // results into a single assistant message. Each step calls the same solver
   // the chat path uses, so deterministic intents (greeting, identity,
@@ -2687,6 +3143,52 @@ function App() {
             tool: "import_memory",
             inputs: { prompt: trimmed },
             outputs: { intent: "memory_import" },
+          },
+        ],
+      });
+      setPending(false);
+      return;
+    }
+
+    const interfaceCommand = recognizeInterfaceCommand(trimmed);
+    if (interfaceCommand) {
+      const valueLabel = commandValueLabel(interfaceCommand);
+      if (interfaceCommand.kind !== "report_issue") {
+        applyInterfaceCommand(interfaceCommand);
+      }
+      appendAssistantMessage({
+        intent: interfaceCommand.intent,
+        content: interfaceCommandResponse(interfaceCommand, currentReportUrl),
+        confidence: 1.0,
+        evidence: [
+          `rule:${interfaceCommand.intent}`,
+          `command:${interfaceCommand.kind}`,
+          ...(interfaceCommand.key ? [`preference:${interfaceCommand.key}`] : []),
+          `value:${valueLabel}`,
+        ],
+        steps: [
+          {
+            step:
+              interfaceCommand.kind === "set_preference"
+                ? "apply_message_command"
+                : "trigger_message_action",
+            detail: interfaceCommand.key
+              ? `${interfaceCommand.key}=${valueLabel}`
+              : interfaceCommand.label,
+          },
+        ],
+        toolCalls: [
+          {
+            tool:
+              interfaceCommand.kind === "set_preference"
+                ? "configure_preference"
+                : interfaceCommand.intent,
+            inputs: { prompt: trimmed },
+            outputs: {
+              kind: interfaceCommand.kind,
+              key: interfaceCommand.key || interfaceCommand.action || "",
+              value: interfaceCommand.value ?? interfaceCommand.label,
+            },
           },
         ],
       });
