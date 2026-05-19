@@ -2123,6 +2123,13 @@ const WIKIPEDIA_SEARCH_HOSTS = {
   zh: "https://zh.wikipedia.org/w/rest.php/v1/search/page",
 };
 
+const WIKTIONARY_SEARCH_HOSTS = {
+  en: "https://en.wiktionary.org/w/api.php",
+  ru: "https://ru.wiktionary.org/w/api.php",
+  hi: "https://hi.wiktionary.org/w/api.php",
+  zh: "https://zh.wiktionary.org/w/api.php",
+};
+
 function wikipediaHostsFor(language) {
   // Try the detected language first, then fall back to English so a Russian
   // query for an English-only article still returns a definition.
@@ -2173,6 +2180,76 @@ function wikipediaTermVariants(term) {
     push(capitalizeWords(swapped.toLowerCase()));
   }
   return variants;
+}
+
+function normalizeLookupText(value) {
+  return String(value || "")
+    .normalize("NFKD")
+    .toLowerCase()
+    .replace(/\p{M}/gu, "")
+    .replace(/[^\p{L}\p{N}]+/gu, " ")
+    .trim();
+}
+
+function compactLookupText(value) {
+  return normalizeLookupText(value).replace(/\s+/g, "");
+}
+
+function boundedEditDistance(left, right, limit) {
+  if (Math.abs(left.length - right.length) > limit) return limit + 1;
+  let previous = Array.from({ length: right.length + 1 }, (_, index) => index);
+  for (let i = 1; i <= left.length; i += 1) {
+    const current = [i];
+    let rowMin = current[0];
+    for (let j = 1; j <= right.length; j += 1) {
+      const cost = left[i - 1] === right[j - 1] ? 0 : 1;
+      const next = Math.min(
+        previous[j] + 1,
+        current[j - 1] + 1,
+        previous[j - 1] + cost,
+      );
+      current[j] = next;
+      rowMin = Math.min(rowMin, next);
+    }
+    if (rowMin > limit) return limit + 1;
+    previous = current;
+  }
+  return previous[right.length];
+}
+
+function isNearLookupText(left, right) {
+  const a = compactLookupText(left);
+  const b = compactLookupText(right);
+  if (!a || !b) return false;
+  const maxLength = Math.max(a.length, b.length);
+  const limit = maxLength <= 8 ? 1 : 2;
+  return boundedEditDistance(a, b, limit) <= limit;
+}
+
+function isPlausibleWikipediaSearchMatch(summary, term) {
+  if (!summary || summary.matchKind !== "search") return true;
+  const termNormalized = normalizeLookupText(term);
+  if (!termNormalized) return true;
+  const termTokens = termNormalized.split(/\s+/).filter(Boolean);
+  const candidates = [
+    summary.title,
+    summary.matchedTitle,
+    String(summary.matchedSlug || "").replace(/_/g, " "),
+  ];
+  for (const candidate of candidates) {
+    const normalized = normalizeLookupText(candidate);
+    if (!normalized) continue;
+    if (normalized === termNormalized) return true;
+    const candidateTokens = new Set(normalized.split(/\s+/).filter(Boolean));
+    if (
+      termTokens.length > 0 &&
+      termTokens.every((token) => candidateTokens.has(token))
+    ) {
+      return true;
+    }
+    if (isNearLookupText(termNormalized, normalized)) return true;
+  }
+  return false;
 }
 
 // Resolve a context-qualified term to a Wikipedia page slug via full-text page
@@ -2766,6 +2843,180 @@ async function wikidataSearchEntity(term, language) {
   return null;
 }
 
+function wikidataConceptUrl(hit) {
+  const id = hit && hit.id ? String(hit.id) : "";
+  if (id) return `https://www.wikidata.org/wiki/${encodeURIComponent(id)}`;
+  const conceptUri = hit && hit.concepturi ? String(hit.concepturi) : "";
+  const qid = conceptUri.match(/Q\d+/);
+  if (qid) return `https://www.wikidata.org/wiki/${qid[0]}`;
+  return "https://www.wikidata.org/wiki/Wikidata:Main_Page";
+}
+
+function wikidataHitMatchesTerm(hit, term) {
+  const target = normalizeLookupText(term);
+  if (!target || !hit) return false;
+  const candidates = [
+    hit.label,
+    hit.title,
+    hit.match && hit.match.text,
+    hit.display && hit.display.label && hit.display.label.value,
+  ];
+  if (Array.isArray(hit.aliases)) {
+    candidates.push(...hit.aliases);
+  }
+  return candidates.some((candidate) => normalizeLookupText(candidate) === target);
+}
+
+async function fetchWikidataConceptSummary(term, language) {
+  if (typeof fetch !== "function") return null;
+  const ordered = [language, "en"].filter(
+    (value, index, array) => value && array.indexOf(value) === index,
+  );
+  for (const lang of ordered) {
+    const url = `${WIKIDATA_API}?action=wbsearchentities&format=json&origin=*&type=item&limit=5&language=${encodeURIComponent(
+      lang,
+    )}&search=${encodeURIComponent(term)}`;
+    try {
+      const response = await fetch(url, {
+        headers: {
+          accept: "application/json",
+          "api-user-agent":
+            "formal-ai-demo (https://github.com/link-assistant/formal-ai)",
+        },
+      });
+      if (!response || !response.ok) continue;
+      const data = await response.json();
+      const hits = data && Array.isArray(data.search) ? data.search : [];
+      const hit = hits.find((candidate) =>
+        wikidataHitMatchesTerm(candidate, term),
+      );
+      if (!hit) continue;
+      const display = hit.display || {};
+      return {
+        sourceKind: "wikidata",
+        qid: hit.id || "",
+        title:
+          (display.label && display.label.value) ||
+          hit.label ||
+          (hit.match && hit.match.text) ||
+          term,
+        description:
+          (display.description && display.description.value) ||
+          hit.description ||
+          "",
+        url: wikidataConceptUrl(hit),
+        language: lang,
+      };
+    } catch (_error) {
+      // Try the next Wikidata language.
+    }
+  }
+  return null;
+}
+
+function wiktionaryFallbackDescription(title, language) {
+  if (language === "ru") {
+    return `В Wiktionary есть словарная статья «${title}».`;
+  }
+  if (language === "zh") {
+    return `Wiktionary 有“${title}”这个词条。`;
+  }
+  if (language === "hi") {
+    return `Wiktionary में "${title}" के लिए शब्दकोश प्रविष्टि है।`;
+  }
+  return `Wiktionary has a dictionary entry for "${title}".`;
+}
+
+async function fetchWiktionaryEntry(term, language) {
+  if (typeof fetch !== "function") return null;
+  const ordered = [language, "en"].filter(
+    (value, index, array) => value && array.indexOf(value) === index,
+  );
+  const target = normalizeLookupText(term);
+  for (const lang of ordered) {
+    const base = WIKTIONARY_SEARCH_HOSTS[lang] || WIKTIONARY_SEARCH_HOSTS.en;
+    const url = `${base}?action=opensearch&search=${encodeURIComponent(
+      term,
+    )}&limit=5&format=json&origin=*`;
+    try {
+      const response = await fetch(url, {
+        headers: {
+          accept: "application/json",
+          "api-user-agent":
+            "formal-ai-demo (https://github.com/link-assistant/formal-ai)",
+        },
+      });
+      if (!response || !response.ok) continue;
+      const data = await response.json();
+      if (!Array.isArray(data) || !Array.isArray(data[1])) continue;
+      const titles = data[1];
+      const descriptions = Array.isArray(data[2]) ? data[2] : [];
+      const urls = Array.isArray(data[3]) ? data[3] : [];
+      const index = titles.findIndex(
+        (title) => normalizeLookupText(title) === target,
+      );
+      if (index < 0) continue;
+      const title = titles[index] || term;
+      return {
+        sourceKind: "wiktionary",
+        title,
+        description:
+          descriptions[index] || wiktionaryFallbackDescription(title, lang),
+        url:
+          urls[index] ||
+          `https://${lang}.wiktionary.org/wiki/${encodeURIComponent(title)}`,
+        language: lang,
+      };
+    } catch (_error) {
+      // Try the next Wiktionary language.
+    }
+  }
+  return null;
+}
+
+function renderExternalLookupContent(result, requestedTerm) {
+  const humanUrl = humanizeUrl(result.url);
+  const title = result.title || requestedTerm;
+  const heading =
+    requestedTerm && normalizeLookupText(requestedTerm) !== normalizeLookupText(title)
+      ? `${requestedTerm}: ${title}`
+      : title;
+  const description = String(result.description || "").trim();
+  const body = description ? `${heading}: ${description}` : `${heading}.`;
+  return `${body}\n\nSource: [${humanUrl}](${result.url}) (${result.sourceKind}).`;
+}
+
+function externalLookupResponse(result, requestedTerm, rejectedSummary) {
+  const humanUrl = humanizeUrl(result.url);
+  const evidence = [
+    `${result.sourceKind}_lookup:${result.qid || result.title}`,
+    `source:${humanUrl}`,
+    `language:${result.language}`,
+  ];
+  if (result.qid) evidence.push(`wikidata:${result.qid}`);
+  if (rejectedSummary && rejectedSummary.title) {
+    evidence.push(`wikipedia_lookup:rejected:${rejectedSummary.title}`);
+  }
+  return {
+    intent: `${result.sourceKind}_lookup`,
+    content: renderExternalLookupContent(result, requestedTerm),
+    confidence: result.sourceKind === "wikidata" ? 0.82 : 0.75,
+    evidence,
+  };
+}
+
+async function tryTermKnowledgeFallback(term, language, rejectedSummary) {
+  const wikidata = await fetchWikidataConceptSummary(term, language);
+  if (wikidata) {
+    return externalLookupResponse(wikidata, term, rejectedSummary);
+  }
+  const wiktionary = await fetchWiktionaryEntry(term, language);
+  if (wiktionary) {
+    return externalLookupResponse(wiktionary, term, rejectedSummary);
+  }
+  return null;
+}
+
 async function wikidataFetchEntityClaim(qid, property, language) {
   if (typeof fetch !== "function") return null;
   const url = `${WIKIDATA_API}?action=wbgetentities&format=json&origin=*&ids=${encodeURIComponent(
@@ -3104,8 +3355,15 @@ async function tryWikipediaLookup(prompt, language, preferences) {
   const wikiTerm = query.termOriginal || query.term;
   const wikiContext = query.contextOriginal || query.context;
   const summary = await fetchWikipediaSummary(wikiTerm, language, wikiContext);
-  if (!summary) return null;
+  if (!summary) {
+    return tryTermKnowledgeFallback(wikiTerm, language, null);
+  }
   const isClosestMatch = isClosestWikipediaMatch(summary);
+  if (isClosestMatch && !isPlausibleWikipediaSearchMatch(summary, wikiTerm)) {
+    const fallback = await tryTermKnowledgeFallback(wikiTerm, language, summary);
+    if (fallback) return fallback;
+    return null;
+  }
   const guessProbability = numericPreference(
     preferences && preferences.guessProbability,
     0.8,
