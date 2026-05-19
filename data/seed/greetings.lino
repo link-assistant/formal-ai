@@ -40,6 +40,24 @@ greeting_7
   response_link "response:greeting"
   answer "Здравствуйте! Чем могу помочь?"
 
+greeting_8
+  text "how are you"
+  intent "greeting"
+  response_link "response:greeting"
+  answer "Hi, how may I help you?"
+
+greeting_9
+  text "आप कैसे हैं"
+  intent "greeting"
+  response_link "response:greeting"
+  answer "नमस्ते! मैं आपकी क्या मदद कर सकता हूँ?"
+
+greeting_10
+  text "你好吗"
+  intent "greeting"
+  response_link "response:greeting"
+  answer "你好!请问有什么可以帮您的?"
+
 farewell_1
   text "Bye"
   intent "farewell"

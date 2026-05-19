@@ -88,11 +88,20 @@ test.describe('multilingual chat surface', () => {
     await expect(last).toContainText(/Здравствуйте|Привет/);
   });
 
-  test('Russian how-are-you small talk replies as a greeting', async ({ page }) => {
-    const last = await sendPrompt(page, 'Как твои дела?');
-    await expect(last).toHaveClass(/assistant/);
-    await expect(last).toContainText(/Здравствуйте|Привет/);
-    await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
+  test('how-are-you small talk replies as a greeting across languages', async ({ page }) => {
+    const cases = [
+      { prompt: 'How are you?', answer: /Hi|Hello|Hey/ },
+      { prompt: 'Как твои дела?', answer: /Здравствуйте|Привет/ },
+      { prompt: 'आप कैसे हैं?', answer: /नमस्ते|नमस्कार/ },
+      { prompt: '你好吗?', answer: /你好|您好/ },
+    ];
+
+    for (const { prompt, answer } of cases) {
+      const last = await sendPrompt(page, prompt);
+      await expect(last).toHaveClass(/assistant/);
+      await expect(last).toContainText(answer);
+      await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
+    }
   });
 
   test('Russian combined greeting and identity question replies with identity', async ({ page }) => {
