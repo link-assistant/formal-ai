@@ -1,0 +1,33 @@
+{
+  "version": "0.1.1",
+  "time": {
+    "created": "2026-05-16T22:23:27.017Z",
+    "modified": "2026-05-18T18:00:32.045Z",
+    "0.0.1": "2026-05-16T22:23:27.252Z",
+    "0.1.1": "2026-05-18T18:00:31.707Z"
+  },
+  "dist-tags": {
+    "latest": "0.1.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/link-foundation/lino-i18n.git"
+  },
+  "description": "Universal i18n library that stores translations in Links Notation (.lino) instead of JSON.",
+  "exports": {
+    ".": {
+      "types": "./src/index.d.ts",
+      "import": "./src/index.js"
+    },
+    "./converters": "./src/converters/index.js",
+    "./loaders": "./src/loaders.js"
+  },
+  "dependencies": {
+    "links-notation": "^0.13.0",
+    "lino-arguments": "^0.3.0",
+    "lino-objects-codec": "^0.4.0"
+  },
+  "bin": {
+    "lino-i18n": "bin/lino-i18n.js"
+  }
+}
