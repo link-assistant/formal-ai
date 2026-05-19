@@ -255,22 +255,39 @@ and `REQUIREMENTS.md` in lockstep.
 | R135 | Expose R129+ alongside the existing requirement matrix. | Implemented by appending this **Issue #103 Test-Matrix And Architecture Requirements** block to `REQUIREMENTS.md`. |
 | R136 | Compile issue #103 evidence and case-study analysis under `docs/case-studies/issue-103/`. | Implemented in `docs/case-studies/issue-103/README.md` with raw data (`issue-103.json`, `issue-103-comments.json`, PR-104 mirrors, `recent-merged-prs.json`, `competitor-test-research.md`) in `docs/case-studies/issue-103/raw-data/`. |
 
+## Issue #117 Lino I18n Catalog Requirements
+
+Issue [#117](https://github.com/link-assistant/formal-ai/issues/117) asks the
+browser UI to stop using its own i18n implementation and instead use
+[`link-foundation/lino-i18n`](https://github.com/link-foundation/lino-i18n),
+with nested Links Notation authoring, multiline quoted strings, full language
+parity, CI enforcement, and case-study evidence.
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R137 | Browser UI translations must be loaded through `link-foundation/lino-i18n`, not through a hand-maintained JavaScript translation/interpolation implementation. | Implemented by `src/web/i18n.js`, which imports `lino-i18n@0.1.1`, fetches `src/web/i18n-catalog.lino`, parses it with `parseLinoCatalogs`, and creates the runtime with `createI18n`. The import map in `src/web/index.html` is pinned to the same package version. |
+| R138 | UI translation source must use nested Links Notation and multiline quoted strings for long entries. | Implemented in `src/web/i18n-catalog.lino`, where `buttons`, `titles`, `composer`, `settings`, `status`, and trace messages are nested under top-level locale blocks and long tooltip values use `"""` strings. |
+| R139 | English, Russian, Chinese, and Hindi must all contain the same complete UI key surface. | Implemented by migrating all 104 existing UI keys into each locale block in `src/web/i18n-catalog.lino`, including parent-label keys such as `settings.language` via the upstream `label` convention. |
+| R140 | CI/CD must fail when the i18n catalog loses a required key, adds a non-label drift key, drops a locale, or contains empty translations. | Implemented by `tests/e2e/scripts/check-i18n-catalog.mjs` and the `Check i18n catalog coverage` step in `.github/workflows/release.yml`, run as `npm run --prefix tests/e2e check:i18n`. |
+| R141 | Runtime tests must prove the browser uses the published `lino-i18n` package and can resolve nested catalog entries, parent labels, interpolation, and fallback. | Implemented by updating the Issue #94 Playwright tests in `tests/e2e/tests/demo.spec.js` to expect `lino-i18n@0.1.1` and adding a nested catalog lookup test for Issue #117. |
+| R142 | Compile issue #117 evidence, online research, requirements, solution plan, and verification notes under `docs/case-studies/issue-117/`. | Implemented in `docs/case-studies/issue-117/README.md` with raw captured GitHub, npm, release, and upstream README data under `docs/case-studies/issue-117/raw-data/`. |
+
 ## Issue #115 GitHub Evidence Collection And Hive-Mind Trace Requirements
 
 Issue [#115](https://github.com/link-assistant/formal-ai/issues/115) asks
 formal-ai to continue the issue #103 vision work, pick the next most important
 missing implementation slice, collect data under
 `docs/case-studies/issue-115/`, and specifically create a script or command
-that collects
-logs showing how [`link-assistant/hive-mind`](https://github.com/link-assistant/hive-mind)
+that collects logs showing how
+[`link-assistant/hive-mind`](https://github.com/link-assistant/hive-mind)
 operates through issues, pull requests, work-session comments, and CI logs.
 
 | ID | Requirement | Status |
 | --- | --- | --- |
-| R137 | Compile issue #115 evidence and analysis under `docs/case-studies/issue-115/`. | Implemented in `docs/case-studies/issue-115/README.md` with raw data in `docs/case-studies/issue-115/raw-data/formal-ai/` and `docs/case-studies/issue-115/raw-data/hive-mind/`. |
-| R138 | Add a reusable GitHub log collector command for case studies instead of relying on one-off handwritten `gh` command lists. | Implemented by `src/github_logs.rs`, exported from the library, exposed as `formal-ai github-logs plan` / `formal-ai github-logs collect`, and wrapped by `scripts/mine-hive-mind-dataset.rs` for the Hive Mind dataset workflow. |
-| R139 | Capture all GitHub conversation surfaces needed for PR/issue investigations: issue bodies, issue comments, PR bodies, PR discussion comments, inline review comments, reviews, diffs, recent workflow runs, and selected run logs. | Implemented by `github_log_capture_plan`, which emits `gh issue view`, `gh api .../issues/{n}/comments`, `gh pr view`, `gh api .../pulls/{n}/comments`, `gh api .../pulls/{n}/reviews`, `gh pr diff`, `gh run list`, and `gh run view --log` captures with a manifest. |
-| R140 | Make the collector testable without network access or a real GitHub token. | Implemented by `collect_github_logs_with_runner`, which accepts an injected command runner; unit tests use a fake runner and integration tests exercise the `plan` command only. |
-| R141 | Preserve a bounded hive-mind operational sample for analysis. | Implemented by collecting recent hive-mind issues/PRs/runs plus focused issue/PR/run data for #1811/#1813/#1814, PR #1812/#1815/#1816, and Actions runs `25976224438` / `26058054431`; large logs and diffs are compressed. |
-| R142 | Keep GitHub evidence mining outside the seed agent tool registry and expose it as an operator script/command. | Implemented by `scripts/mine-hive-mind-dataset.rs` plus `formal-ai github-logs`; `data/seed/tools.lino` intentionally does not register a `tool_github_logs` capability. |
-| R143 | Keep documentation and regression coverage in lockstep with the new collector. | Implemented by README command examples, the `ARCHITECTURE.md` GitHub evidence collection section, `tests/unit/github_logs.rs`, `tests/integration/formal_ai_cli.rs`, and `tests/unit/docs_requirements.rs`. |
+| R143 | Compile issue #115 evidence and analysis under `docs/case-studies/issue-115/`. | Implemented in `docs/case-studies/issue-115/README.md` with raw data in `docs/case-studies/issue-115/raw-data/formal-ai/` and `docs/case-studies/issue-115/raw-data/hive-mind/`. |
+| R144 | Add a reusable GitHub log collector command for case studies instead of relying on one-off handwritten `gh` command lists. | Implemented by `src/github_logs.rs`, exported from the library, exposed as `formal-ai github-logs plan` / `formal-ai github-logs collect`, and wrapped by `scripts/mine-hive-mind-dataset.rs` for the Hive Mind dataset workflow. |
+| R145 | Capture all GitHub conversation surfaces needed for PR/issue investigations: issue bodies, issue comments, PR bodies, PR discussion comments, inline review comments, reviews, diffs, recent workflow runs, and selected run logs. | Implemented by `github_log_capture_plan`, which emits `gh issue view`, `gh api .../issues/{n}/comments`, `gh pr view`, `gh api .../pulls/{n}/comments`, `gh api .../pulls/{n}/reviews`, `gh pr diff`, `gh run list`, and `gh run view --log` captures with a manifest. |
+| R146 | Make the collector testable without network access or a real GitHub token. | Implemented by `collect_github_logs_with_runner`, which accepts an injected command runner; unit tests use a fake runner and integration tests exercise the `plan` command only. |
+| R147 | Preserve a bounded hive-mind operational sample for analysis. | Implemented by collecting recent hive-mind issues/PRs/runs plus focused issue/PR/run data for #1811/#1813/#1814, PR #1812/#1815/#1816, and Actions runs `25976224438` / `26058054431`; large logs and diffs are compressed. |
+| R148 | Keep GitHub evidence mining outside the seed agent tool registry and expose it as an operator script/command. | Implemented by `scripts/mine-hive-mind-dataset.rs` plus `formal-ai github-logs`; `data/seed/tools.lino` intentionally does not register a `tool_github_logs` capability. |
+| R149 | Keep documentation and regression coverage in lockstep with the new collector. | Implemented by README command examples, the `ARCHITECTURE.md` GitHub evidence collection section, `tests/unit/github_logs.rs`, `tests/integration/formal_ai_cli.rs`, and `tests/unit/docs_requirements.rs`. |

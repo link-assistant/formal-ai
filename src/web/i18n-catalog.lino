@@ -1,0 +1,540 @@
+# UI translations for the browser demo, parsed by lino-i18n at runtime.
+# Keep locale blocks in sync; tests/e2e/scripts/check-i18n-catalog.mjs enforces key parity.
+
+en
+  buttons
+    reportIssue "Report issue"
+    reportMissingRule "Report missing rule"
+    exportMemory "Export memory"
+    importMemory "Import memory"
+    diagnostics "Diagnostics"
+    diagnosticsOn "Diagnostics on"
+    agent "Agent"
+    chat "Chat"
+    demo "Demo"
+    demoOn "Demo on"
+    openMenu "Open menu"
+    closeMenu "Close menu"
+    attachFiles "Attach files"
+    composerMenu "Composer menu"
+  titles
+    reportIssue """
+      Report issue - open a pre-filled GitHub issue with the current session transcript. See docs/upload-memory.md for how to attach the full memory export (Gist or .zip).
+    """
+    exportMemory """
+      Export memory - save the full agent state to formal-ai-memory.lino: the entire seed, UI preferences, environment metadata, and the append-only event log. See docs/upload-memory.md for attaching it to a GitHub issue (Gist or .zip).
+    """
+    importMemory """
+      Import memory - load a previous export. Accepts both the new full-memory bundle and the legacy demo_memory event-only log. Migration hints are shown next to this bar.
+    """
+    diagnosticsShow "Show reasoning trace, intent, evidence, and thinking-steps panels."
+    diagnosticsHide "Hide reasoning trace, intent, evidence, and thinking-steps panels."
+    agentOn "Agent mode is on - switch back to single-turn chat."
+    agentOff """
+      Chat mode - switch to agent mode and each message will be decomposed into sequential steps and executed as a plan.
+    """
+    demoOn "Demo is on - stop the scripted dialog and resume manual chat."
+    demoOff "Start the scripted demo dialog."
+    menuOpen "Open the side panel (conversations, prompts, tools)."
+    menuClose "Close the side panel (conversations, prompts, tools)."
+    composerMenu "Open input actions for attachments, memory, and reporting."
+  composer
+    placeholder
+      chat "Message formal-ai"
+      agent "Describe a multi-step task (separate steps with ; or 'then')"
+    demoHint
+      before "Demo is running - tap "
+      after " to stop and type your own message."
+    send "Send"
+    attachments "{count} attached"
+  conversation
+    new "+ New conversation"
+    empty "Start a new conversation."
+    deletedEmpty "No deleted conversations."
+    emptyTitle "(empty)"
+    messageCount "{count} msg"
+    showDeleted "Show deleted conversations"
+    delete "Delete conversation"
+  message
+    author
+      user "You"
+    thinking "Thinking"
+  fetch
+    collapse "Collapse"
+    expand "Expand"
+    openInNewTab "Open in new tab"
+    frameTitle "Fetched page: {url}"
+  memory
+    exportTriggered "Triggered Export memory. Your browser is downloading `formal-ai-memory.lino`."
+    importTriggered "Triggered Import memory. Pick a `.lino` file in the open dialog to restore the saved memory."
+  sidebar
+    conversations "Conversations"
+    menu "Menu"
+    examplePrompts "Example prompts"
+    tools "Tools"
+    trace "Trace"
+    settings "Settings"
+  settings
+    ambiguity "Ambiguity"
+    moreQuestions "More questions"
+    moreGuessing "More guessing"
+    temperature "Temperature"
+    deterministic "Deterministic"
+    varied "Varied"
+    variations "Greeting variations"
+    language
+      label "Language"
+      auto "Auto"
+    theme
+      label "Theme"
+      auto "Auto"
+      light "Light"
+      dark "Dark"
+    uiSkin
+      label "UI skin"
+      flat "Flat"
+      glass "Glass"
+      contrast "Contrast"
+    chatStyle
+      label "Chat style"
+      cards "Cards"
+      compact "Compact"
+      bubbles "Bubbles"
+    composerStyle
+      label "Input style"
+      flat "Flat"
+      glassSoft "Glass soft"
+      glassClear "Glass clear"
+      bubble "Bubble"
+    composerAction
+      label "Input action"
+      attach "Attach"
+      plus "Plus"
+    location
+      label "Location"
+      placeholder "City or region"
+  status
+    demoPlaying "Demo playing"
+    manual "Manual mode"
+    nextDialogIn "Next dialog in {seconds}s"
+    memoryUnavailable "Memory unavailable"
+    memoryExported "Exported full memory: {events} event(s) + {seedFiles} seed file(s)"
+    memoryImportedBundle "Imported {inserted} event(s) from full bundle"
+    memoryImportedEvents "Imported {inserted} events"
+    migration "{headline}. Migration: {suggestions}"
+    exportFailed "Export failed"
+    importFailed "Import failed"
+    working "Working"
+  toolMode
+    agent "agent"
+    thinking "thinking"
+  trace
+    model "Model"
+    mode "Mode"
+    intent "Intent"
+    data "Data"
+    seedFiles "Seed files"
+    toolsLoaded "Tools loaded"
+    conceptsLoaded "Concepts loaded"
+
+ru
+  buttons
+    reportIssue "Сообщить о проблеме"
+    reportMissingRule "Сообщить о недостающем правиле"
+    exportMemory "Экспорт памяти"
+    importMemory "Импорт памяти"
+    diagnostics "Диагностика"
+    diagnosticsOn "Диагностика включена"
+    agent "Агент"
+    chat "Чат"
+    demo "Демо"
+    demoOn "Демо включено"
+    openMenu "Открыть меню"
+    closeMenu "Закрыть меню"
+    attachFiles "Прикрепить файлы"
+    composerMenu "Меню ввода"
+  titles
+    reportIssue """
+      Сообщить о проблеме - откроет заранее заполненный GitHub issue с текущим диалогом. См. docs/upload-memory.md, чтобы прикрепить полный экспорт памяти (Gist или .zip).
+    """
+    exportMemory """
+      Экспорт памяти - сохраняет полное состояние агента в formal-ai-memory.lino: весь seed, настройки UI, метаданные окружения и append-only журнал событий. См. docs/upload-memory.md, чтобы прикрепить экспорт к GitHub issue (Gist или .zip).
+    """
+    importMemory """
+      Импорт памяти - загружает предыдущий экспорт. Поддерживает новый полный bundle памяти и устаревший журнал demo_memory только с событиями. Подсказки миграции появятся рядом с панелью.
+    """
+    diagnosticsShow "Показать диагностическую трассировку, намерение, доказательства и шаги рассуждения."
+    diagnosticsHide "Скрыть диагностическую трассировку, намерение, доказательства и шаги рассуждения."
+    agentOn "Режим агента включен - вернуться к одиночному чату."
+    agentOff """
+      Режим чата - перейти в режим агента, где каждое сообщение разбивается на последовательные шаги и выполняется как план.
+    """
+    demoOn "Демо включено - остановить сценарный диалог и вернуться к ручному чату."
+    demoOff "Запустить сценарный демо-диалог."
+    menuOpen "Открыть боковую панель (разговоры, запросы, инструменты)."
+    menuClose "Закрыть боковую панель (разговоры, запросы, инструменты)."
+    composerMenu "Открыть действия ввода: вложения, память и отчеты."
+  composer
+    placeholder
+      chat "Сообщение formal-ai"
+      agent "Опишите задачу из нескольких шагов (разделяйте шаги ; или «затем»)"
+    demoHint
+      before "Демо выполняется - нажмите "
+      after ", чтобы остановить и написать свое сообщение."
+    send "Отправить"
+    attachments "Прикреплено: {count}"
+  conversation
+    new "+ Новый разговор"
+    empty "Начните новый разговор."
+    deletedEmpty "Удаленных разговоров нет."
+    emptyTitle "(пусто)"
+    messageCount "{count} сообщ."
+    showDeleted "Показать удаленные разговоры"
+    delete "Удалить разговор"
+  message
+    author
+      user "Вы"
+    thinking "Мышление"
+  fetch
+    collapse "Свернуть"
+    expand "Развернуть"
+    openInNewTab "Открыть в новой вкладке"
+    frameTitle "Полученная страница: {url}"
+  memory
+    exportTriggered "Запущен экспорт памяти. Браузер скачивает `formal-ai-memory.lino`."
+    importTriggered """
+      Запущен импорт памяти. Выберите файл `.lino` в открытом диалоге, чтобы восстановить сохраненную память.
+    """
+  sidebar
+    conversations "Разговоры"
+    menu "Меню"
+    examplePrompts "Примеры запросов"
+    tools "Инструменты"
+    trace "Трассировка"
+    settings "Настройки"
+  settings
+    ambiguity "Неясность"
+    moreQuestions "Больше вопросов"
+    moreGuessing "Больше догадок"
+    temperature "Температура"
+    deterministic "Детерминированно"
+    varied "Разнообразнее"
+    variations "Варианты приветствий"
+    language
+      label "Язык"
+      auto "Авто"
+    theme
+      label "Тема"
+      auto "Авто"
+      light "Светлая"
+      dark "Темная"
+    uiSkin
+      label "Скин UI"
+      flat "Плоский"
+      glass "Стекло"
+      contrast "Контраст"
+    chatStyle
+      label "Стиль чата"
+      cards "Карточки"
+      compact "Компактный"
+      bubbles "Пузыри"
+    composerStyle
+      label "Стиль ввода"
+      flat "Плоский"
+      glassSoft "Мягкое стекло"
+      glassClear "Прозрачное стекло"
+      bubble "Пузырь"
+    composerAction
+      label "Действие ввода"
+      attach "Скрепка"
+      plus "Плюс"
+    location
+      label "Местоположение"
+      placeholder "Город или регион"
+  status
+    demoPlaying "Демо выполняется"
+    manual "Ручной режим"
+    nextDialogIn "Следующий диалог через {seconds} с"
+    memoryUnavailable "Память недоступна"
+    memoryExported "Полный экспорт памяти: {events} событ. + {seedFiles} seed-файл(ов)"
+    memoryImportedBundle "Импортировано {inserted} событ. из полного bundle"
+    memoryImportedEvents "Импортировано событий: {inserted}"
+    migration "{headline}. Миграция: {suggestions}"
+    exportFailed "Экспорт не удался"
+    importFailed "Импорт не удался"
+    working "В работе"
+  toolMode
+    agent "агент"
+    thinking "мышление"
+  trace
+    model "Модель"
+    mode "Режим"
+    intent "Намерение"
+    data "Данные"
+    seedFiles "Файлы seed"
+    toolsLoaded "Инструментов загружено"
+    conceptsLoaded "Понятий загружено"
+
+zh
+  buttons
+    reportIssue "报告问题"
+    reportMissingRule "报告缺失规则"
+    exportMemory "导出记忆"
+    importMemory "导入记忆"
+    diagnostics "诊断"
+    diagnosticsOn "诊断开启"
+    agent "代理"
+    chat "聊天"
+    demo "演示"
+    demoOn "演示开启"
+    openMenu "打开菜单"
+    closeMenu "关闭菜单"
+    attachFiles "附加文件"
+    composerMenu "输入菜单"
+  titles
+    reportIssue "报告问题 - 打开已预填当前会话记录的 GitHub issue。请参阅 docs/upload-memory.md，了解如何附加完整记忆导出（Gist 或 .zip）。"
+    exportMemory """
+      导出记忆 - 将完整代理状态保存为 formal-ai-memory.lino：全部 seed、UI 偏好、环境元数据和追加式事件日志。请参阅 docs/upload-memory.md，了解如何附加到 GitHub issue（Gist 或 .zip）。
+    """
+    importMemory "导入记忆 - 加载以前的导出。支持新的完整记忆 bundle 和旧版 demo_memory 事件日志。迁移提示会显示在此栏旁边。"
+    diagnosticsShow "显示推理跟踪、意图、证据和思考步骤面板。"
+    diagnosticsHide "隐藏推理跟踪、意图、证据和思考步骤面板。"
+    agentOn "代理模式已开启 - 切回单轮聊天。"
+    agentOff "聊天模式 - 切换到代理模式，每条消息会被拆成连续步骤并作为计划执行。"
+    demoOn "演示已开启 - 停止脚本对话并恢复手动聊天。"
+    demoOff "启动脚本演示对话。"
+    menuOpen "打开侧边面板（对话、提示、工具）。"
+    menuClose "关闭侧边面板（对话、提示、工具）。"
+    composerMenu "打开输入操作：附件、记忆和报告。"
+  composer
+    placeholder
+      chat "给 formal-ai 发消息"
+      agent "描述多步骤任务（用 ; 或“然后”分隔步骤）"
+    demoHint
+      before "演示正在运行 - 点按 "
+      after " 可停止并输入自己的消息。"
+    send "发送"
+    attachments "已附加 {count} 个"
+  conversation
+    new "+ 新对话"
+    empty "开始一个新对话。"
+    deletedEmpty "没有已删除的对话。"
+    emptyTitle "（空）"
+    messageCount "{count} 条消息"
+    showDeleted "显示已删除的对话"
+    delete "删除对话"
+  message
+    author
+      user "你"
+    thinking "思考"
+  fetch
+    collapse "折叠"
+    expand "展开"
+    openInNewTab "在新标签页打开"
+    frameTitle "已获取页面：{url}"
+  memory
+    exportTriggered "已触发导出记忆。浏览器正在下载 `formal-ai-memory.lino`。"
+    importTriggered "已触发导入记忆。请在打开的对话框中选择 `.lino` 文件来恢复保存的记忆。"
+  sidebar
+    conversations "对话"
+    menu "菜单"
+    examplePrompts "示例提示"
+    tools "工具"
+    trace "跟踪"
+    settings "设置"
+  settings
+    ambiguity "歧义"
+    moreQuestions "多提问"
+    moreGuessing "多猜测"
+    temperature "温度"
+    deterministic "确定"
+    varied "多样"
+    variations "问候变化"
+    language
+      label "语言"
+      auto "自动"
+    theme
+      label "主题"
+      auto "自动"
+      light "浅色"
+      dark "深色"
+    uiSkin
+      label "界面皮肤"
+      flat "扁平"
+      glass "玻璃"
+      contrast "高对比"
+    chatStyle
+      label "聊天样式"
+      cards "卡片"
+      compact "紧凑"
+      bubbles "气泡"
+    composerStyle
+      label "输入样式"
+      flat "扁平"
+      glassSoft "柔和玻璃"
+      glassClear "透明玻璃"
+      bubble "气泡"
+    composerAction
+      label "输入操作"
+      attach "附件"
+      plus "加号"
+    location
+      label "位置"
+      placeholder "城市或地区"
+  status
+    demoPlaying "演示播放中"
+    manual "手动模式"
+    nextDialogIn "{seconds} 秒后下一个对话"
+    memoryUnavailable "记忆不可用"
+    memoryExported "已导出完整记忆：{events} 个事件 + {seedFiles} 个 seed 文件"
+    memoryImportedBundle "已从完整 bundle 导入 {inserted} 个事件"
+    memoryImportedEvents "已导入 {inserted} 个事件"
+    migration "{headline}。迁移：{suggestions}"
+    exportFailed "导出失败"
+    importFailed "导入失败"
+    working "工作中"
+  toolMode
+    agent "代理"
+    thinking "思考"
+  trace
+    model "模型"
+    mode "模式"
+    intent "意图"
+    data "数据"
+    seedFiles "Seed 文件"
+    toolsLoaded "已加载工具"
+    conceptsLoaded "已加载概念"
+
+hi
+  buttons
+    reportIssue "समस्या रिपोर्ट करें"
+    reportMissingRule "छूटा नियम रिपोर्ट करें"
+    exportMemory "स्मृति निर्यात करें"
+    importMemory "स्मृति आयात करें"
+    diagnostics "निदान"
+    diagnosticsOn "निदान चालू"
+    agent "एजेंट"
+    chat "चैट"
+    demo "डेमो"
+    demoOn "डेमो चालू"
+    openMenu "मेन्यू खोलें"
+    closeMenu "मेन्यू बंद करें"
+    attachFiles "फाइलें जोड़ें"
+    composerMenu "इनपुट मेन्यू"
+  titles
+    reportIssue """
+      समस्या रिपोर्ट करें - वर्तमान सत्र transcript के साथ पहले से भरा GitHub issue खोलें। पूरा memory export जोड़ने के लिए docs/upload-memory.md देखें (Gist या .zip)।
+    """
+    exportMemory """
+      स्मृति निर्यात करें - पूरे agent state को formal-ai-memory.lino में सेव करें: पूरा seed, UI preferences, environment metadata, और append-only event log. GitHub issue में जोड़ने के लिए docs/upload-memory.md देखें (Gist या .zip)।
+    """
+    importMemory """
+      स्मृति आयात करें - पिछला export load करें। नया full-memory bundle और legacy demo_memory event-only log दोनों स्वीकार हैं। Migration hints इसी bar के पास दिखेंगे।
+    """
+    diagnosticsShow "reasoning trace, intent, evidence, और thinking-steps panels दिखाएं।"
+    diagnosticsHide "reasoning trace, intent, evidence, और thinking-steps panels छिपाएं।"
+    agentOn "एजेंट मोड चालू है - single-turn chat पर लौटें।"
+    agentOff "चैट मोड - एजेंट मोड पर जाएं, जहां हर संदेश sequential steps में टूटकर plan की तरह चलेगा।"
+    demoOn "डेमो चालू है - scripted dialog रोकें और manual chat फिर शुरू करें।"
+    demoOff "scripted demo dialog शुरू करें।"
+    menuOpen "side panel खोलें (बातचीत, prompts, tools)।"
+    menuClose "side panel बंद करें (बातचीत, prompts, tools)।"
+    composerMenu "attachments, memory, और reporting के input actions खोलें।"
+  composer
+    placeholder
+      chat "formal-ai को संदेश"
+      agent "कई चरणों वाला कार्य लिखें (चरणों को ; या 'then' से अलग करें)"
+    demoHint
+      before "डेमो चल रहा है - "
+      after " दबाकर रोकें और अपना संदेश लिखें।"
+    send "भेजें"
+    attachments "{count} जुड़ी हुई"
+  conversation
+    new "+ नई बातचीत"
+    empty "नई बातचीत शुरू करें।"
+    deletedEmpty "कोई deleted बातचीत नहीं है।"
+    emptyTitle "(खाली)"
+    messageCount "{count} संदेश"
+    showDeleted "Deleted बातचीत दिखाएं"
+    delete "बातचीत हटाएं"
+  message
+    author
+      user "आप"
+    thinking "सोच"
+  fetch
+    collapse "समेटें"
+    expand "फैलाएं"
+    openInNewTab "नए टैब में खोलें"
+    frameTitle "लाई गई पेज: {url}"
+  memory
+    exportTriggered "स्मृति निर्यात शुरू हुआ। आपका browser `formal-ai-memory.lino` डाउनलोड कर रहा है।"
+    importTriggered "स्मृति आयात शुरू हुआ। saved memory restore करने के लिए खुले dialog में `.lino` file चुनें।"
+  sidebar
+    conversations "बातचीत"
+    menu "मेन्यू"
+    examplePrompts "उदाहरण प्रॉम्प्ट"
+    tools "टूल"
+    trace "ट्रेस"
+    settings "सेटिंग्स"
+  settings
+    ambiguity "अस्पष्टता"
+    moreQuestions "अधिक सवाल"
+    moreGuessing "अधिक अनुमान"
+    temperature "तापमान"
+    deterministic "निश्चित"
+    varied "विविध"
+    variations "ग्रीटिंग विविधता"
+    language
+      label "भाषा"
+      auto "ऑटो"
+    theme
+      label "थीम"
+      auto "ऑटो"
+      light "लाइट"
+      dark "डार्क"
+    uiSkin
+      label "UI स्किन"
+      flat "फ्लैट"
+      glass "ग्लास"
+      contrast "कॉन्ट्रास्ट"
+    chatStyle
+      label "चैट शैली"
+      cards "कार्ड"
+      compact "कॉम्पैक्ट"
+      bubbles "बबल"
+    composerStyle
+      label "इनपुट शैली"
+      flat "फ्लैट"
+      glassSoft "सॉफ्ट ग्लास"
+      glassClear "क्लियर ग्लास"
+      bubble "बबल"
+    composerAction
+      label "इनपुट action"
+      attach "अटैच"
+      plus "प्लस"
+    location
+      label "स्थान"
+      placeholder "शहर या क्षेत्र"
+  status
+    demoPlaying "डेमो चल रहा है"
+    manual "मैनुअल मोड"
+    nextDialogIn "{seconds}s में अगला संवाद"
+    memoryUnavailable "स्मृति उपलब्ध नहीं"
+    memoryExported "पूरी स्मृति निर्यात हुई: {events} event(s) + {seedFiles} seed file(s)"
+    memoryImportedBundle "full bundle से {inserted} event(s) आयात हुए"
+    memoryImportedEvents "{inserted} events आयात हुए"
+    migration "{headline}. Migration: {suggestions}"
+    exportFailed "निर्यात विफल"
+    importFailed "आयात विफल"
+    working "काम जारी है"
+  toolMode
+    agent "एजेंट"
+    thinking "सोच"
+  trace
+    model "मॉडल"
+    mode "मोड"
+    intent "इरादा"
+    data "डेटा"
+    seedFiles "Seed फाइलें"
+    toolsLoaded "लोड किए गए टूल"
+    conceptsLoaded "लोड किए गए कॉन्सेप्ट"

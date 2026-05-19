@@ -182,6 +182,66 @@ fn issue_103_test_matrix_and_architecture_documents_are_present_and_traceable() 
 }
 
 #[test]
+fn issue_117_lino_i18n_catalog_documents_and_ci_rule_are_traceable() {
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+
+    let requirements = read(root.join("REQUIREMENTS.md"));
+    assert_contains_all(
+        "REQUIREMENTS.md",
+        &requirements,
+        &[
+            "Issue #117 Lino I18n Catalog Requirements",
+            "| R137 ",
+            "| R138 ",
+            "| R139 ",
+            "| R140 ",
+            "| R141 ",
+            "| R142 ",
+            "src/web/i18n-catalog.lino",
+            "npm run --prefix tests/e2e check:i18n",
+        ],
+    );
+
+    let case_study = read(root.join("docs/case-studies/issue-117/README.md"));
+    assert_contains_all(
+        "docs/case-studies/issue-117/README.md",
+        &case_study,
+        &[
+            "# Issue 117 Case Study",
+            "lino-i18n@0.1.1",
+            "parseLinoCatalogs",
+            "createI18n",
+            "CI Rule",
+            "104 keys",
+        ],
+    );
+
+    let catalog = read(root.join("src/web/i18n-catalog.lino")).replace("\r\n", "\n");
+    assert_contains_all(
+        "src/web/i18n-catalog.lino",
+        &catalog,
+        &[
+            "en\n  buttons",
+            "ru\n  buttons",
+            "zh\n  buttons",
+            "hi\n  buttons",
+            "\"\"\"",
+            "label \"Language\"",
+        ],
+    );
+
+    let workflow = read(root.join(".github/workflows/release.yml"));
+    assert_contains_all(
+        ".github/workflows/release.yml",
+        &workflow,
+        &[
+            "Check i18n catalog coverage",
+            "npm run --prefix tests/e2e check:i18n",
+        ],
+    );
+}
+
+#[test]
 fn issue_115_github_log_collection_documents_are_present_and_traceable() {
     let root = Path::new(env!("CARGO_MANIFEST_DIR"));
 
@@ -191,13 +251,13 @@ fn issue_115_github_log_collection_documents_are_present_and_traceable() {
         &requirements,
         &[
             "Issue #115 GitHub Evidence Collection",
-            "| R137 ",
-            "| R138 ",
-            "| R139 ",
-            "| R140 ",
-            "| R141 ",
-            "| R142 ",
             "| R143 ",
+            "| R144 ",
+            "| R145 ",
+            "| R146 ",
+            "| R147 ",
+            "| R148 ",
+            "| R149 ",
             "formal-ai github-logs",
             "scripts/mine-hive-mind-dataset.rs",
         ],
@@ -227,8 +287,8 @@ fn issue_115_github_log_collection_documents_are_present_and_traceable() {
             "github-logs",
             "scripts/mine-hive-mind-dataset.rs",
             "hive-mind",
-            "R137",
             "R143",
+            "R149",
         ],
     );
 
