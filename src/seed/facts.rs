@@ -28,6 +28,8 @@ use super::FACTS_LINO;
 #[derive(Debug, Clone, Default)]
 pub struct LocalizedFact {
     pub language: String,
+    pub subject_label: String,
+    pub value_label: String,
     pub summary: String,
     pub source: String,
     pub source_kind: String,
@@ -35,12 +37,26 @@ pub struct LocalizedFact {
 
 /// A canned fact-lookup record from `data/seed/facts.lino`. See the module
 /// docs for the matching contract.
+///
+/// The optional structured fields (`relation`, `subject_qid`, `value_qid`,
+/// `subject_label`, `value_label`) anchor a fact to a Wikidata property triple
+/// (e.g. `relation = "capital"`, `subject_qid = "Q159"`, `value_qid = "Q649"`
+/// for "Moscow is the capital of Russia"). Records that carry these fields
+/// pre-warm the fact-query reasoning cache so the browser worker can answer
+/// structured questions like "столица России" instantly. Records without them
+/// remain in the legacy substring-matching path for free-form facts (e.g.
+/// "who painted the Mona Lisa").
 #[derive(Debug, Clone)]
 pub struct FactRecord {
     pub slug: String,
     pub intent: String,
     pub category: String,
     pub wikidata: Vec<String>,
+    pub relation: String,
+    pub subject_qid: String,
+    pub value_qid: String,
+    pub subject_label: String,
+    pub value_label: String,
     pub subject_aliases: Vec<String>,
     pub question_keywords: Vec<String>,
     pub summary: String,
@@ -76,6 +92,24 @@ impl FactRecord {
             .map(|loc| loc.source.as_str())
             .filter(|s| !s.is_empty())
             .unwrap_or(self.source.as_str())
+    }
+
+    /// Return the localized subject label for `language` (or the default).
+    #[must_use]
+    pub fn subject_label_for(&self, language: &str) -> &str {
+        self.localized_for(language)
+            .map(|loc| loc.subject_label.as_str())
+            .filter(|s| !s.is_empty())
+            .unwrap_or(self.subject_label.as_str())
+    }
+
+    /// Return the localized value label for `language` (or the default).
+    #[must_use]
+    pub fn value_label_for(&self, language: &str) -> &str {
+        self.localized_for(language)
+            .map(|loc| loc.value_label.as_str())
+            .filter(|s| !s.is_empty())
+            .unwrap_or(self.value_label.as_str())
     }
 
     /// Return `true` when at least one subject alias **and** at least one
@@ -138,6 +172,8 @@ pub fn facts() -> Vec<FactRecord> {
             }
             localized.push(LocalizedFact {
                 language: lang,
+                subject_label: child.find_child_value("subject_label").to_string(),
+                value_label: child.find_child_value("value_label").to_string(),
                 summary: child.find_child_value("summary").to_string(),
                 source: child.find_child_value("source").to_string(),
                 source_kind: child.find_child_value("source_kind").to_string(),
@@ -148,6 +184,11 @@ pub fn facts() -> Vec<FactRecord> {
             intent: entry.find_child_value("intent").to_string(),
             category: entry.find_child_value("category").to_string(),
             wikidata,
+            relation: entry.find_child_value("relation").to_string(),
+            subject_qid: entry.find_child_value("subject_qid").to_string(),
+            value_qid: entry.find_child_value("value_qid").to_string(),
+            subject_label: entry.find_child_value("subject_label").to_string(),
+            value_label: entry.find_child_value("value_label").to_string(),
             subject_aliases,
             question_keywords,
             summary,

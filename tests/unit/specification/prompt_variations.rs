@@ -663,6 +663,188 @@ fn russian_capital_russia_prompt_returns_moscow() {
     );
 }
 
+// Issue #127 follow-up: the structured fact-query pipeline pre-warms the
+// cache from `data/seed/facts.lino` records that carry a `relation` field.
+// Every country in the matrix below has a `relation "capital"` seed entry,
+// so every prompt — across English/Russian/Hindi/Chinese — must route to
+// `fact_lookup` and surface the subject Q-ID, the value Q-ID, and the
+// structured `fact_query:*` trace events.
+//
+// (country_label, expected_subject_qid, expected_value_qid, expected_answer_fragment, prompts)
+type CapitalCase = (
+    &'static str,
+    &'static str,
+    &'static str,
+    &'static str,
+    &'static [&'static str],
+);
+
+const CAPITAL_CASES: &[CapitalCase] = &[
+    (
+        "Russia",
+        "Q159",
+        "Q649",
+        "Moscow",
+        &[
+            "What is the capital of Russia?",
+            "Which city is Russia's capital?",
+            "capital of the Russian Federation",
+        ],
+    ),
+    (
+        "Japan",
+        "Q17",
+        "Q1490",
+        "Tokyo",
+        &[
+            "What is the capital of Japan?",
+            "Which city is Japan's capital?",
+        ],
+    ),
+    (
+        "France",
+        "Q142",
+        "Q90",
+        "Paris",
+        &[
+            "What is the capital of France?",
+            "What is the capital of the French Republic?",
+        ],
+    ),
+    (
+        "Germany",
+        "Q183",
+        "Q64",
+        "Berlin",
+        &[
+            "What is the capital of Germany?",
+            "What is Germany's capital?",
+        ],
+    ),
+    (
+        "China",
+        "Q148",
+        "Q956",
+        "Beijing",
+        &[
+            "What is the capital of China?",
+            "Which city is the capital of the People's Republic of China?",
+        ],
+    ),
+    (
+        "India",
+        "Q668",
+        "Q987",
+        "New Delhi",
+        &[
+            "What is the capital of India?",
+            "Which city is India's capital?",
+        ],
+    ),
+    (
+        "Brazil",
+        "Q155",
+        "Q2844",
+        "Brasília",
+        &[
+            "What is the capital of Brazil?",
+            "Which city is Brazil's capital?",
+        ],
+    ),
+    (
+        "United States",
+        "Q30",
+        "Q61",
+        "Washington",
+        &[
+            "What is the capital of the United States?",
+            "What is the capital of the USA?",
+        ],
+    ),
+    (
+        "United Kingdom",
+        "Q145",
+        "Q84",
+        "London",
+        &[
+            "What is the capital of the United Kingdom?",
+            "What is the capital of the UK?",
+        ],
+    ),
+];
+
+#[test]
+fn capital_matrix_resolves_every_seeded_country() {
+    for (country, subject_qid, value_qid, expected_substr, prompts) in CAPITAL_CASES {
+        for prompt in *prompts {
+            let response = answer(prompt);
+            assert_eq!(
+                response.intent, "fact_lookup",
+                "{country} prompt {prompt:?} should route to fact_lookup, got {}",
+                response.intent,
+            );
+            assert!(
+                response.answer.contains(expected_substr),
+                "{country} prompt {prompt:?} should mention {expected_substr}, got: {}",
+                response.answer,
+            );
+            let subject_link = format!("wikidata:{subject_qid}");
+            let value_link = format!("wikidata:{value_qid}");
+            assert!(
+                response
+                    .evidence_links
+                    .iter()
+                    .any(|link| link == &subject_link),
+                "{country} prompt {prompt:?} should record {subject_link}, got: {:?}",
+                response.evidence_links,
+            );
+            assert!(
+                response
+                    .evidence_links
+                    .iter()
+                    .any(|link| link == &value_link),
+                "{country} prompt {prompt:?} should record {value_link}, got: {:?}",
+                response.evidence_links,
+            );
+        }
+    }
+}
+
+#[test]
+fn capital_matrix_records_structured_fact_query_trace() {
+    // The Russian "столица России" trace should include the structured
+    // `fact_query:relation:capital` event and the subject term, so the
+    // browser memory and the Rust solver agree on the reasoning shape.
+    let response = answer("столица россии");
+    let has_relation = response
+        .evidence_links
+        .iter()
+        .any(|link| link == "fact_query:relation:capital");
+    assert!(
+        has_relation,
+        "structured trace should record `fact_query:relation:capital`, got: {:?}",
+        response.evidence_links,
+    );
+    let has_subject = response
+        .evidence_links
+        .iter()
+        .any(|link| link.starts_with("fact_query:subject:"));
+    assert!(
+        has_subject,
+        "structured trace should record `fact_query:subject:*`, got: {:?}",
+        response.evidence_links,
+    );
+    let has_cache_hit = response
+        .evidence_links
+        .iter()
+        .any(|link| link == "fact_query:cache:hit:seed");
+    assert!(
+        has_cache_hit,
+        "structured trace should record a seed cache hit, got: {:?}",
+        response.evidence_links,
+    );
+}
+
 const MULTI_TURN_COREFERENCE_PROMPTS: &[&str] = &[
     // After a previous "I love Rust." turn, this prompt should resolve "it".
     "What features make it different from C?",

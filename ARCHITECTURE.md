@@ -250,6 +250,52 @@ This is the architectural answer to "instead of GPU and neural networks, use
 reasoning with internet as a public database with our local memory as
 cache."
 
+### 4.4 Fact-query reasoning pipeline (Issue #127)
+
+Structured factual prompts — "what is the capital of France?", "столица
+Германии", "भारत की राजधानी", "中国的首都" — are answered by a dedicated
+reasoning pipeline that combines the seed cache with live Wikidata calls.
+The pipeline is implemented in `src/web/formal_ai_worker.js` as
+`parseFactQuestion` + `tryFactQuery` and mirrored in Rust as
+`src/solver_handlers/benchmark_prompts.rs::try_fact_lookup` (the offline
+solver uses the seed exclusively; the browser worker reaches the live API
+on cache miss).
+
+Pipeline stages:
+
+1. **Parse.** `parseFactQuestion(prompt, normalized)` extracts a
+   `(relation, subjectTerm, language, forceFresh)` tuple. The relation
+   slug — `capital`, `population`, `currency`, `official_language`,
+   `continent`, `area`, `head_of_state`, `head_of_government` — anchors to
+   a Wikidata property (`P36`, `P1082`, `P38`, `P37`, `P30`, `P2046`,
+   `P35`, `P6`). Multilingual regexes recognize the question in en/ru/hi/zh.
+2. **Cache check.** A 1-week TTL in-memory store is keyed by
+   `<relation>|<subjectTerm>|<language>`. `data/seed/facts.lino` entries
+   that carry a `relation` field pre-warm the cache at worker startup via
+   `warmFactCacheFromSeed`, so every seeded country resolves offline. The
+   user can opt out of the cache with force-fresh markers in any supported
+   language (`refresh`, `не из кэша`, `ताज़ा`, `刷新`, …).
+3. **Wikidata resolution.** On cache miss the worker calls
+   `wbsearchentities` to map the subject term to a Q-ID, then
+   `wbgetentities` to read the relation's property claim and its label /
+   sitelink in the user's language.
+4. **Cache store.** The resolved triple `(subject_qid, value_qid, summary,
+   source_url)` is written back to the cache with the original
+   `fetched_at` timestamp.
+5. **Trace.** Every step is appended to the event log as a `fact_query:*`
+   event (`fact_query:request`, `fact_query:relation`,
+   `fact_query:subject`, `fact_query:cache:check`, `fact_query:cache:hit`,
+   `fact_query:cache:miss`, `fact_query:wikidata:*`, `fact_query:response`)
+   so the reasoning trace can be reconstructed from memory.
+
+The Rust offline solver follows the same shape: when a `fact_*` record in
+`data/seed/facts.lino` declares a `relation`, the matcher emits the
+structured `fact_query:relation`, `fact_query:subject`,
+`fact_query:cache:hit:seed`, `fact_query:subject_qid`, and
+`fact_query:value_qid` events alongside the legacy `fact_lookup:*` events.
+That guarantees the Rust and browser stacks agree on the evidence shape
+even though only the browser stack reaches Wikidata at runtime.
+
 ---
 
 ## 5. Formalization

@@ -2353,6 +2353,711 @@ function wikipediaClarificationMessage(summary, language) {
   return `Did you mean "${title}"? Please clarify before I answer from that Wikipedia article.`;
 }
 
+// ---------------------------------------------------------------------------
+// Wikidata-backed fact reasoning pipeline (issue #127).
+//
+// Rather than matching against hardcoded summaries in `data/seed/facts.lino`,
+// fact questions ("what is the capital of X?", "столица X", "X की राजधानी",
+// "X的首都") are parsed into a structured query
+// `{ relation, subjectTerm, language, forceFresh }`. The query is then
+// resolved against:
+//
+//   1. An in-memory cache (1-week TTL) keyed by `relation:subject:language`.
+//      The cache is pre-warmed from the seed `FACTS` entries so the test
+//      matrix stays deterministic offline.
+//   2. Wikidata `wbsearchentities` to resolve the subject term to a Q-ID.
+//   3. Wikidata `wbgetentities` to fetch the property claim (P36 = capital,
+//      P1082 = population, P38 = currency, P37 = official language, P30 =
+//      continent, P2046 = area, P35 = head of state, P6 = head of government).
+//   4. Wikidata `wbgetentities` again to resolve the target Q-ID to a label
+//      in the user's prevailing language (and to a Wikipedia sitelink).
+//
+// Every step is recorded as a `fact_query:*` event so the reasoning trace
+// shows the structured query, the cache decision, the Wikidata round-trips,
+// and the final resolved answer. A user can force a fresh resolution by
+// adding markers like "fresh", "no cache", "не из кэша", "без кеша",
+// "ताज़ा", or "刷新" to the prompt.
+// ---------------------------------------------------------------------------
+
+const WIKIDATA_API = "https://www.wikidata.org/w/api.php";
+
+const FACT_RELATIONS = [
+  {
+    relation: "capital",
+    property: "P36",
+    valueType: "entity",
+  },
+  {
+    relation: "population",
+    property: "P1082",
+    valueType: "quantity",
+  },
+  {
+    relation: "currency",
+    property: "P38",
+    valueType: "entity",
+  },
+  {
+    relation: "official_language",
+    property: "P37",
+    valueType: "entity",
+  },
+  {
+    relation: "continent",
+    property: "P30",
+    valueType: "entity",
+  },
+  {
+    relation: "area",
+    property: "P2046",
+    valueType: "quantity",
+  },
+  {
+    relation: "head_of_state",
+    property: "P35",
+    valueType: "entity",
+  },
+  {
+    relation: "head_of_government",
+    property: "P6",
+    valueType: "entity",
+  },
+];
+
+function relationConfig(relation) {
+  return FACT_RELATIONS.find((entry) => entry.relation === relation) || null;
+}
+
+// Markers that flag the user wants a fresh (uncached) result. Detected in all
+// four supported languages plus a couple of common English phrasings.
+const FORCE_FRESH_MARKERS = [
+  "fresh",
+  "no cache",
+  "no-cache",
+  "without cache",
+  "skip cache",
+  "ignore cache",
+  "refresh",
+  "не из кэша",
+  "не из кеша",
+  "без кэша",
+  "без кеша",
+  "обнови",
+  "свежий ответ",
+  "свежие данные",
+  "ताज़ा",
+  "ताज़े",
+  "बिना कैश",
+  "नया जवाब",
+  "刷新",
+  "新鲜",
+  "不要缓存",
+  "不用缓存",
+];
+
+function shouldForceFresh(normalized, prompt) {
+  const lowerPrompt = String(prompt || "").toLowerCase();
+  return FORCE_FRESH_MARKERS.some(
+    (marker) => normalized.includes(marker) || lowerPrompt.includes(marker),
+  );
+}
+
+// Multilingual relation patterns. Each entry has a list of triggers that, when
+// present in the normalized prompt, identify the relation. Subject extraction
+// uses the `extract` regexes which capture the subject term verbatim from the
+// original (un-normalized) prompt — that preserves Cyrillic/Devanagari/CJK
+// scripts that the normalizer otherwise strips.
+const FACT_QUESTION_PATTERNS = [
+  {
+    relation: "capital",
+    // English
+    extract: [
+      /\bcapital\s+(?:city\s+)?of\s+(?:the\s+)?([^?.!,;:]+?)(?:[?.!,;:]|$)/i,
+      /\b([^?.!,;:]+?)['’]s\s+capital\b/i,
+      /\bwhich\s+city\s+is\s+(?:the\s+)?capital\s+of\s+([^?.!,;:]+?)(?:[?.!,;:]|$)/i,
+      /\bwhich\s+city\s+is\s+([^?.!,;:]+?)['’]s\s+capital\b/i,
+      // Russian: "столица России", "какова столица России",
+      // "столицей какой страны является Москва" — only the first form is
+      // resolved; the inverted form falls through to other handlers.
+      /столица\s+([^?.!,;:]+?)(?:[?.!,;:]|$)/i,
+      /какова\s+столица\s+([^?.!,;:]+?)(?:[?.!,;:]|$)/i,
+      /какая\s+столица\s+([^?.!,;:]+?)(?:[?.!,;:]|$)/i,
+      // Hindi: "X की राजधानी क्या है"
+      /([^?.!,;:]+?)\s+की\s+राजधानी(?:\s+क्या\s+है)?(?:[?.!,;:]|$)/i,
+      // Chinese: "X的首都" / "X的首都是什么"
+      /([^?。.!!,,;:、]+?)的首都(?:是什么|是哪里|是哪个城市)?(?:[?。.!!,,;:、]|$)/i,
+    ],
+  },
+  {
+    relation: "population",
+    extract: [
+      /\bpopulation\s+of\s+(?:the\s+)?([^?.!,;:]+?)(?:[?.!,;:]|$)/i,
+      /\bhow\s+many\s+people\s+(?:live|are\s+there)\s+in\s+([^?.!,;:]+?)(?:[?.!,;:]|$)/i,
+      /\b([^?.!,;:]+?)['’]s\s+population\b/i,
+      /население\s+([^?.!,;:]+?)(?:[?.!,;:]|$)/i,
+      /какое\s+население\s+([^?.!,;:]+?)(?:[?.!,;:]|$)/i,
+      /([^?.!,;:]+?)\s+की\s+(?:जनसंख्या|आबादी)(?:[?.!,;:]|$)/i,
+      /([^?。.!!,,;:、]+?)的人口(?:是多少|有多少)?(?:[?。.!!,,;:、]|$)/i,
+    ],
+  },
+  {
+    relation: "currency",
+    extract: [
+      /\bcurrency\s+of\s+(?:the\s+)?([^?.!,;:]+?)(?:[?.!,;:]|$)/i,
+      /\b([^?.!,;:]+?)['’]s\s+currency\b/i,
+      /валюта\s+([^?.!,;:]+?)(?:[?.!,;:]|$)/i,
+      /какая\s+валюта\s+в\s+([^?.!,;:]+?)(?:[?.!,;:]|$)/i,
+      /([^?.!,;:]+?)\s+की\s+मुद्रा(?:[?.!,;:]|$)/i,
+      /([^?。.!!,,;:、]+?)的(?:货币|貨幣)(?:是什么|是哪种)?(?:[?。.!!,,;:、]|$)/i,
+    ],
+  },
+  {
+    relation: "official_language",
+    extract: [
+      /\bofficial\s+language\s+of\s+(?:the\s+)?([^?.!,;:]+?)(?:[?.!,;:]|$)/i,
+      /\bwhat\s+language\s+(?:do\s+they\s+speak|is\s+spoken)\s+in\s+([^?.!,;:]+?)(?:[?.!,;:]|$)/i,
+      /государственный\s+язык\s+([^?.!,;:]+?)(?:[?.!,;:]|$)/i,
+      /официальный\s+язык\s+([^?.!,;:]+?)(?:[?.!,;:]|$)/i,
+      /([^?.!,;:]+?)\s+की\s+(?:राजभाषा|आधिकारिक\s+भाषा)(?:[?.!,;:]|$)/i,
+      /([^?。.!!,,;:、]+?)的(?:官方语言|官方語言)(?:[?。.!!,,;:、]|$)/i,
+    ],
+  },
+  {
+    relation: "continent",
+    extract: [
+      /\bcontinent\s+(?:is\s+)?([^?.!,;:]+?)\s+(?:on|in)\b/i,
+      /\bwhich\s+continent\s+is\s+([^?.!,;:]+?)\s+(?:on|in)\b/i,
+      /на\s+каком\s+континенте\s+(?:находится|расположена|расположен)\s+([^?.!,;:]+?)(?:[?.!,;:]|$)/i,
+      /([^?.!,;:]+?)\s+किस\s+महाद्वीप\s+में\s+है(?:[?.!,;:]|$)/i,
+      /([^?。.!!,,;:、]+?)在哪个(?:大洲|洲)(?:[?。.!!,,;:、]|$)/i,
+    ],
+  },
+];
+
+// Words/phrases that should be stripped from a captured subject before we
+// hand it off to Wikidata. These are not part of the entity name — they leak
+// from question prefixes the regex didn't consume (e.g. "the country called
+// France" → "France"). Order matters: longer prefixes first.
+const SUBJECT_TRIM_PREFIXES = [
+  "the country called ",
+  "the country ",
+  "country ",
+  "the city of ",
+  "the city ",
+  "city of ",
+  "country called ",
+  "republic of ",
+  "kingdom of ",
+  "is ",
+  "in ",
+  "of the ",
+  "of ",
+  "страна ",
+  "страны ",
+  "стране ",
+  "страну ",
+];
+
+function trimSubjectTerm(raw) {
+  let value = String(raw || "")
+    .replace(/[«»"'`“”„‟‹›]+/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+  let changed = true;
+  while (changed) {
+    changed = false;
+    const lower = value.toLowerCase();
+    for (const prefix of SUBJECT_TRIM_PREFIXES) {
+      if (lower.startsWith(prefix)) {
+        value = value.slice(prefix.length).trim();
+        changed = true;
+        break;
+      }
+    }
+  }
+  return value;
+}
+
+function parseFactQuestion(prompt, normalized) {
+  const text = String(prompt || "");
+  if (!text.trim()) return null;
+  for (const pattern of FACT_QUESTION_PATTERNS) {
+    for (const regex of pattern.extract) {
+      const match = regex.exec(text);
+      if (!match) continue;
+      const subjectTerm = trimSubjectTerm(match[1]);
+      if (!subjectTerm) continue;
+      // Reject single-letter or pure-punctuation captures so we don't fire
+      // on noise like "x." or "?".
+      if (subjectTerm.length < 2 && !/[Ѐ-鿿]/.test(subjectTerm)) {
+        continue;
+      }
+      return {
+        relation: pattern.relation,
+        subjectTerm,
+        language: detectLanguage(prompt),
+        forceFresh: shouldForceFresh(normalized, prompt),
+      };
+    }
+  }
+  return null;
+}
+
+// In-memory cache. Keyed by `relation:subject_normalized:language`. The TTL
+// matches the user-requested 1 week. Pre-warmed from FACTS at init() so the
+// offline test matrix sees the same starting cache the Rust solver does.
+const FACT_QUERY_CACHE = new Map();
+const FACT_QUERY_TTL_MS = 7 * 24 * 60 * 60 * 1000;
+
+function factCacheKey(relation, subjectTerm, language) {
+  return [
+    String(relation || "").toLowerCase(),
+    String(subjectTerm || "")
+      .toLowerCase()
+      .replace(/\s+/g, " ")
+      .trim(),
+    String(language || "en").toLowerCase(),
+  ].join(":");
+}
+
+function factCacheGet(relation, subjectTerm, language) {
+  const key = factCacheKey(relation, subjectTerm, language);
+  const entry = FACT_QUERY_CACHE.get(key);
+  if (!entry) return null;
+  if (
+    entry.expiresAt &&
+    typeof entry.expiresAt === "number" &&
+    entry.expiresAt < Date.now()
+  ) {
+    FACT_QUERY_CACHE.delete(key);
+    return null;
+  }
+  return entry;
+}
+
+function factCachePut(relation, subjectTerm, language, value) {
+  const key = factCacheKey(relation, subjectTerm, language);
+  const ttl = typeof value.ttlMs === "number" ? value.ttlMs : FACT_QUERY_TTL_MS;
+  const entry = Object.assign({}, value, {
+    expiresAt: Date.now() + ttl,
+  });
+  FACT_QUERY_CACHE.set(key, entry);
+  return entry;
+}
+
+// Pre-warm the runtime cache from the seed `facts.lino`. Each seed record can
+// optionally declare `relation`, `subjectQid`, `valueQid`, plus per-language
+// `subjectLabel`/`valueLabel`/`valueText` overrides — those are the structured
+// cache anchors. The legacy fields (`summary`, `subjectAliases`,
+// `questionKeywords`) remain in place for the `tryFactLookup` substring path.
+function warmFactCacheFromSeed() {
+  if (!Array.isArray(FACTS)) return;
+  const languages = ["en", "ru", "hi", "zh"];
+  for (const record of FACTS) {
+    if (!record || !record.relation || !record.subjectAliases) continue;
+    const localizedMap = new Map();
+    if (Array.isArray(record.localized)) {
+      for (const loc of record.localized) {
+        if (loc && loc.language) localizedMap.set(loc.language, loc);
+      }
+    }
+    for (const lang of languages) {
+      const loc = localizedMap.get(lang) || localizedMap.get("en") || {};
+      const summary =
+        (loc && loc.summary) || record.summary || "";
+      const source = (loc && loc.source) || record.source || "";
+      const sourceKind =
+        (loc && loc.sourceKind) || record.sourceKind || "wikipedia";
+      const valueLabel = (loc && loc.valueLabel) || record.valueLabel || "";
+      const subjectLabel =
+        (loc && loc.subjectLabel) || record.subjectLabel || "";
+      // The aliases for the subject language drive cache key lookup. For each
+      // alias (already lowercased by seed_loader.js), pre-seed a cache entry.
+      const aliases = Array.isArray(record.subjectAliases)
+        ? record.subjectAliases
+        : [];
+      for (const alias of aliases) {
+        if (!alias) continue;
+        factCachePut(record.relation, alias, lang, {
+          relation: record.relation,
+          subjectTerm: alias,
+          subjectLabel: subjectLabel || alias,
+          subjectQid: record.subjectQid || "",
+          valueLabel,
+          valueQid: record.valueQid || "",
+          summary,
+          source,
+          sourceKind,
+          language: lang,
+          fromSeed: true,
+          ttlMs: FACT_QUERY_TTL_MS,
+        });
+      }
+    }
+  }
+}
+
+async function wikidataSearchEntity(term, language) {
+  if (typeof fetch !== "function") return null;
+  // Wikidata supports per-language search; English fallback ensures broad
+  // recall even for non-Latin scripts.
+  const ordered = [language, "en"].filter(
+    (value, index, array) => value && array.indexOf(value) === index,
+  );
+  for (const lang of ordered) {
+    const url = `${WIKIDATA_API}?action=wbsearchentities&format=json&origin=*&type=item&limit=5&language=${encodeURIComponent(
+      lang,
+    )}&search=${encodeURIComponent(term)}`;
+    try {
+      const response = await fetch(url, {
+        headers: {
+          accept: "application/json",
+          "api-user-agent":
+            "formal-ai-demo (https://github.com/link-assistant/formal-ai)",
+        },
+      });
+      if (!response || !response.ok) continue;
+      const data = await response.json();
+      if (data && Array.isArray(data.search) && data.search.length > 0) {
+        const hit = data.search[0];
+        return {
+          qid: hit.id,
+          label: hit.label || term,
+          description: hit.description || "",
+          language: lang,
+        };
+      }
+    } catch (_error) {
+      // Try the next language.
+    }
+  }
+  return null;
+}
+
+async function wikidataFetchEntityClaim(qid, property, language) {
+  if (typeof fetch !== "function") return null;
+  const url = `${WIKIDATA_API}?action=wbgetentities&format=json&origin=*&ids=${encodeURIComponent(
+    qid,
+  )}&props=claims%7Clabels%7Csitelinks&languages=${encodeURIComponent(
+    language,
+  )}%7Cen`;
+  try {
+    const response = await fetch(url, {
+      headers: {
+        accept: "application/json",
+        "api-user-agent":
+          "formal-ai-demo (https://github.com/link-assistant/formal-ai)",
+      },
+    });
+    if (!response || !response.ok) return null;
+    const data = await response.json();
+    if (!data || !data.entities) return null;
+    const entity = data.entities[qid];
+    if (!entity) return null;
+    const claims = (entity.claims || {})[property] || [];
+    const subjectLabel =
+      (entity.labels && (entity.labels[language] || entity.labels.en) || {})
+        .value || "";
+    const sitelinks = entity.sitelinks || {};
+    return { claims, subjectLabel, sitelinks };
+  } catch (_error) {
+    return null;
+  }
+}
+
+async function wikidataResolveLabel(qid, language) {
+  if (typeof fetch !== "function") return null;
+  const url = `${WIKIDATA_API}?action=wbgetentities&format=json&origin=*&ids=${encodeURIComponent(
+    qid,
+  )}&props=labels%7Csitelinks&languages=${encodeURIComponent(language)}%7Cen`;
+  try {
+    const response = await fetch(url, {
+      headers: {
+        accept: "application/json",
+        "api-user-agent":
+          "formal-ai-demo (https://github.com/link-assistant/formal-ai)",
+      },
+    });
+    if (!response || !response.ok) return null;
+    const data = await response.json();
+    if (!data || !data.entities) return null;
+    const entity = data.entities[qid];
+    if (!entity) return null;
+    const label =
+      (entity.labels && (entity.labels[language] || entity.labels.en) || {})
+        .value || "";
+    const sitelinks = entity.sitelinks || {};
+    return { label, sitelinks };
+  } catch (_error) {
+    return null;
+  }
+}
+
+function wikipediaSitelinkUrl(sitelinks, language) {
+  if (!sitelinks || typeof sitelinks !== "object") return "";
+  const key = `${language}wiki`;
+  const fallback = "enwiki";
+  const entry = sitelinks[key] || sitelinks[fallback];
+  if (!entry) return "";
+  if (entry.url) return entry.url;
+  if (entry.title) {
+    const lang = sitelinks[key] ? language : "en";
+    return `https://${lang}.wikipedia.org/wiki/${encodeURIComponent(
+      String(entry.title).replace(/\s+/g, "_"),
+    ).replace(/%2F/gi, "/")}`;
+  }
+  return "";
+}
+
+// Localized templates for rendering the final answer. The seed value is
+// inserted via `{value}`; the subject is inserted via `{subject}`.
+const FACT_RESPONSE_TEMPLATES = {
+  capital: {
+    en: "The capital of {subject} is {value}.",
+    ru: "Столица {subject} — {value}.",
+    hi: "{subject} की राजधानी {value} है।",
+    zh: "{subject}的首都是{value}。",
+  },
+  population: {
+    en: "The population of {subject} is approximately {value}.",
+    ru: "Население {subject} составляет примерно {value}.",
+    hi: "{subject} की जनसंख्या लगभग {value} है।",
+    zh: "{subject}的人口约为 {value}。",
+  },
+  currency: {
+    en: "The currency of {subject} is the {value}.",
+    ru: "Валюта {subject} — {value}.",
+    hi: "{subject} की मुद्रा {value} है।",
+    zh: "{subject}的货币是{value}。",
+  },
+  official_language: {
+    en: "The official language of {subject} is {value}.",
+    ru: "Государственный язык {subject} — {value}.",
+    hi: "{subject} की राजभाषा {value} है।",
+    zh: "{subject}的官方语言是{value}。",
+  },
+  continent: {
+    en: "{subject} is located on the continent of {value}.",
+    ru: "{subject} расположена на континенте {value}.",
+    hi: "{subject} {value} महाद्वीप पर स्थित है।",
+    zh: "{subject}位于{value}。",
+  },
+  area: {
+    en: "The area of {subject} is approximately {value}.",
+    ru: "Площадь {subject} составляет примерно {value}.",
+    hi: "{subject} का क्षेत्रफल लगभग {value} है।",
+    zh: "{subject}的面积约为 {value}。",
+  },
+  head_of_state: {
+    en: "The head of state of {subject} is {value}.",
+    ru: "Глава государства {subject} — {value}.",
+    hi: "{subject} के राष्ट्राध्यक्ष {value} हैं।",
+    zh: "{subject}的国家元首是{value}。",
+  },
+  head_of_government: {
+    en: "The head of government of {subject} is {value}.",
+    ru: "Глава правительства {subject} — {value}.",
+    hi: "{subject} के सरकार के प्रमुख {value} हैं।",
+    zh: "{subject}的政府首脑是{value}。",
+  },
+};
+
+function renderFactSummary(relation, subjectLabel, valueLabel, language) {
+  const templates =
+    FACT_RESPONSE_TEMPLATES[relation] || FACT_RESPONSE_TEMPLATES.capital;
+  const template = templates[language] || templates.en;
+  return template
+    .replace("{subject}", subjectLabel || "")
+    .replace("{value}", valueLabel || "");
+}
+
+function factQueryEvidence(record, language) {
+  const evidence = [
+    `fact_query:relation:${record.relation}`,
+    `fact_query:subject:${record.subjectLabel || record.subjectTerm}`,
+    `language:${language}`,
+  ];
+  if (record.subjectQid) evidence.push(`wikidata:${record.subjectQid}`);
+  if (record.valueQid) evidence.push(`wikidata:${record.valueQid}`);
+  if (record.source) evidence.push(`source:${humanizeUrl(record.source)}`);
+  if (record.fromSeed) evidence.push("fact_query:cache:seed");
+  else if (record.fromCache) evidence.push("fact_query:cache:hit");
+  else evidence.push("fact_query:cache:miss");
+  return evidence;
+}
+
+async function resolveFactQueryViaWikidata(query, log) {
+  // Stage 1: subject resolution via wbsearchentities.
+  if (log) log.push(`fact_query:wbsearchentities:request:${query.subjectTerm}`);
+  const subject = await wikidataSearchEntity(query.subjectTerm, query.language);
+  if (!subject) {
+    if (log) log.push("fact_query:wbsearchentities:miss");
+    return null;
+  }
+  if (log) log.push(`fact_query:wbsearchentities:resolved:${subject.qid}`);
+
+  const config = relationConfig(query.relation);
+  if (!config) return null;
+
+  // Stage 2: claim fetch via wbgetentities.
+  if (log) log.push(`fact_query:wbgetentities:request:${config.property}`);
+  const claimData = await wikidataFetchEntityClaim(
+    subject.qid,
+    config.property,
+    query.language,
+  );
+  if (!claimData || !claimData.claims || claimData.claims.length === 0) {
+    if (log) log.push("fact_query:wbgetentities:no_claim");
+    return null;
+  }
+  const claim = claimData.claims[0];
+  const mainsnak = claim && claim.mainsnak;
+  if (!mainsnak || !mainsnak.datavalue) {
+    if (log) log.push("fact_query:wbgetentities:no_datavalue");
+    return null;
+  }
+
+  // Stage 3: value resolution.
+  let valueLabel = "";
+  let valueQid = "";
+  if (config.valueType === "entity") {
+    const value = mainsnak.datavalue.value || {};
+    valueQid = value.id || "";
+    if (!valueQid) {
+      if (log) log.push("fact_query:wbgetentities:value_not_entity");
+      return null;
+    }
+    if (log) log.push(`fact_query:label_resolve:request:${valueQid}`);
+    const labelResult = await wikidataResolveLabel(valueQid, query.language);
+    if (!labelResult || !labelResult.label) {
+      if (log) log.push("fact_query:label_resolve:miss");
+      return null;
+    }
+    valueLabel = labelResult.label;
+    if (log) log.push(`fact_query:label_resolve:${valueLabel}`);
+    // Capture the Wikipedia sitelink for the value entity as the canonical
+    // evidence source — that's the human-readable artifact users can verify.
+    const url =
+      wikipediaSitelinkUrl(labelResult.sitelinks, query.language) ||
+      wikipediaSitelinkUrl(claimData.sitelinks, query.language);
+    return {
+      relation: query.relation,
+      subjectTerm: query.subjectTerm,
+      subjectLabel: claimData.subjectLabel || subject.label,
+      subjectQid: subject.qid,
+      valueLabel,
+      valueQid,
+      summary: renderFactSummary(
+        query.relation,
+        claimData.subjectLabel || subject.label,
+        valueLabel,
+        query.language,
+      ),
+      source: url,
+      sourceKind: "wikidata",
+      language: query.language,
+      fromCache: false,
+      fromSeed: false,
+    };
+  }
+
+  // Quantity values (population, area) are not Q-IDs.
+  const value = mainsnak.datavalue.value || {};
+  const rawAmount = String(value.amount || "").replace(/^\+/, "");
+  if (!rawAmount) {
+    if (log) log.push("fact_query:wbgetentities:value_empty");
+    return null;
+  }
+  valueLabel = rawAmount;
+  if (log) log.push(`fact_query:quantity:${valueLabel}`);
+  const url = wikipediaSitelinkUrl(claimData.sitelinks, query.language);
+  return {
+    relation: query.relation,
+    subjectTerm: query.subjectTerm,
+    subjectLabel: claimData.subjectLabel || subject.label,
+    subjectQid: subject.qid,
+    valueLabel,
+    valueQid: "",
+    summary: renderFactSummary(
+      query.relation,
+      claimData.subjectLabel || subject.label,
+      valueLabel,
+      query.language,
+    ),
+    source: url,
+    sourceKind: "wikidata",
+    language: query.language,
+    fromCache: false,
+    fromSeed: false,
+  };
+}
+
+async function tryFactQuery(prompt, normalized, preferences) {
+  const query = parseFactQuestion(prompt, normalized);
+  if (!query) return null;
+
+  // Trace events: every step of the reasoning pipeline is recorded so the
+  // browser memory log shows the structured query, the cache decision, and
+  // any Wikidata calls.
+  const trace = [];
+  trace.push(`fact_query:request:${prompt}`);
+  trace.push(`fact_query:relation:${query.relation}`);
+  trace.push(`fact_query:subject:${query.subjectTerm}`);
+  trace.push(`fact_query:language:${query.language}`);
+  if (query.forceFresh) trace.push("fact_query:force_fresh");
+
+  // Stage 1: cache check (skipped when the user asked for fresh data).
+  if (!query.forceFresh) {
+    trace.push("fact_query:cache:check");
+    const cached = factCacheGet(
+      query.relation,
+      query.subjectTerm,
+      query.language,
+    );
+    if (cached) {
+      trace.push(`fact_query:cache:hit:${cached.fromSeed ? "seed" : "runtime"}`);
+      const evidence = factQueryEvidence(
+        Object.assign({}, cached, { fromCache: true }),
+        query.language,
+      );
+      return {
+        intent: "fact_query",
+        content: cached.summary,
+        confidence: 0.92,
+        evidence,
+        trace,
+      };
+    }
+    trace.push("fact_query:cache:miss");
+  } else {
+    trace.push("fact_query:cache:bypass");
+  }
+
+  // Stage 2: Wikidata resolution.
+  const resolved = await resolveFactQueryViaWikidata(query, trace);
+  if (!resolved) {
+    trace.push("fact_query:wikidata:no_match");
+    return null;
+  }
+
+  // Stage 3: cache the resolution.
+  factCachePut(query.relation, query.subjectTerm, query.language, resolved);
+  trace.push(`fact_query:cache:store:${factCacheKey(
+    query.relation,
+    query.subjectTerm,
+    query.language,
+  )}`);
+
+  trace.push(`fact_query:response:${resolved.summary}`);
+  return {
+    intent: "fact_query",
+    content: resolved.summary,
+    confidence: 0.92,
+    evidence: factQueryEvidence(resolved, query.language),
+    trace,
+  };
+}
+
 async function tryWikipediaLookup(prompt, language, preferences) {
   const query = extractConceptQuery(prompt);
   if (!query) return null;
@@ -4030,7 +4735,6 @@ async function solve(prompt, history, prefs) {
   const syncHandlers = [
     { name: "tryHistorical", run: () => tryHistorical(prompt, history) },
     { name: "tryBrainstormingRequest", run: () => tryBrainstormingRequest(prompt, normalized) },
-    { name: "tryFactLookup", run: () => tryFactLookup(prompt, normalized) },
     { name: "tryRoleplayRequest", run: () => tryRoleplayRequest(prompt, normalized) },
     { name: "tryKupiSlona", run: () => tryKupiSlona(prompt, normalized) },
     { name: "tryArithmetic", run: () => tryArithmetic(prompt) },
@@ -4068,6 +4772,35 @@ async function solve(prompt, history, prefs) {
       }
       return finalize(events, steps, toolCalls, hit);
     }
+  }
+
+  // Real-time fact reasoning: parse structured (relation, subject) queries, hit
+  // the 1-week TTL cache, fall back to Wikidata/Wikipedia for any country or
+  // entity. Cache warmed from `data/seed/facts.lino` so the test matrix and
+  // offline browsers still answer instantly. The legacy substring-based
+  // `tryFactLookup` remains as a fallback for non-relation seed facts
+  // (e.g. who painted the Mona Lisa) until those are migrated to relations.
+  steps.push({ step: "invoke_tool", detail: "fact_query" });
+  const factQuery = await tryFactQuery(prompt, normalized, preferences);
+  if (factQuery) {
+    events.push(`handler:${factQuery.intent}`);
+    steps.push({ step: "dispatch_handler", detail: "tryFactQuery" });
+    if (Array.isArray(factQuery.trace)) {
+      for (const event of factQuery.trace) events.push(event);
+    }
+    toolCalls.push({
+      tool: "fact_query",
+      inputs: { prompt, language },
+      outputs: { intent: factQuery.intent, confidence: factQuery.confidence },
+    });
+    return finalize(events, steps, toolCalls, factQuery);
+  }
+
+  const legacyFact = tryFactLookup(prompt, normalized);
+  if (legacyFact) {
+    events.push(`handler:${legacyFact.intent}`);
+    steps.push({ step: "dispatch_handler", detail: "tryFactLookup" });
+    return finalize(events, steps, toolCalls, legacyFact);
   }
 
   steps.push({ step: "invoke_tool", detail: "http_fetch" });
@@ -4218,6 +4951,7 @@ async function loadSeed() {
     }
     if (Array.isArray(seed && seed.facts) && seed.facts.length > 0) {
       FACTS = seed.facts;
+      warmFactCacheFromSeed();
     }
     if (
       seed &&

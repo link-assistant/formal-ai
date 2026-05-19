@@ -109,6 +109,18 @@ pub fn build_evidence_links(prompt: &str, log: &EventLog, response_link: &str) -
             "meaning" => format!("meaning:{}", event.payload),
             "translation_gap" => format!("translation_gap:{}", event.payload),
             "wikidata" => format!("wikidata:{}", event.payload),
+            // Structured fact_query trace events (Issue #127): preserve the
+            // payload verbatim so memory consumers can render the parsed
+            // relation, subject, and cache decision (rather than a hash id).
+            "fact_query:request" => format!("fact_query:request:{}", event.id),
+            "fact_query:relation" => format!("fact_query:relation:{}", event.payload),
+            "fact_query:subject" => format!("fact_query:subject:{}", event.payload),
+            "fact_query:cache:hit" => format!("fact_query:cache:hit:{}", event.payload),
+            "fact_query:cache:miss" => String::from("fact_query:cache:miss"),
+            "fact_query:cache:bypass" => String::from("fact_query:cache:bypass"),
+            "fact_query:force_fresh" => String::from("fact_query:force_fresh"),
+            "fact_query:subject_qid" => format!("fact_query:subject_qid:{}", event.payload),
+            "fact_query:value_qid" => format!("fact_query:value_qid:{}", event.payload),
             "search:local" => format!("search:local:{}", event.id),
             "search:external" => format!("search:external:{}", event.id),
             "source:http" => format!("source:http:{}", event.payload.replace(' ', ":")),
