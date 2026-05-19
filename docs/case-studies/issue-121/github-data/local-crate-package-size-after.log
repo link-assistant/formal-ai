@@ -1,0 +1,13 @@
+Detected single-language repository (Cargo.toml in root)
+Checking crates.io package size for formal-ai@0.61.0
+crates.io package size limit: 10.00 MiB (10485760 bytes)
+   Packaging formal-ai v0.61.0 (/tmp/gh-issue-solver-1779166747152)
+warning: ignoring example `basic_usage` as `examples/basic_usage.rs` is not included in the published package
+warning: ignoring example `try_arithmetic` as `examples/try_arithmetic.rs` is not included in the published package
+warning: ignoring example `universal_solver_tour` as `examples/universal_solver_tour.rs` is not included in the published package
+warning: ignoring test `integration` as `tests/integration/mod.rs` is not included in the published package
+warning: ignoring test `unit` as `tests/unit/mod.rs` is not included in the published package
+    Updating crates.io index
+    Packaged 69 files, 854.3KiB (208.6KiB compressed)
+
+Crate archive ./target/package/formal-ai-0.61.0.crate is within the crates.io limit: 0.20 MiB (213569 bytes)

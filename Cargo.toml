@@ -1,6 +1,6 @@
 [package]
 name = "formal-ai"
-version = "0.61.0"
+version = "0.62.0"
 edition = "2021"
 description = "Formal symbolic AI implementation with OpenAI-compatible APIs"
 readme = "README.md"
@@ -10,6 +10,14 @@ categories = ["command-line-utilities", "web-programming::http-server"]
 repository = "https://github.com/link-assistant/formal-ai"
 documentation = "https://github.com/link-assistant/formal-ai"
 rust-version = "1.70"
+include = [
+    "/Cargo.lock",
+    "/Cargo.toml",
+    "/LICENSE",
+    "/README.md",
+    "/data/**",
+    "/src/**",
+]
 
 [lib]
 name = "formal_ai"

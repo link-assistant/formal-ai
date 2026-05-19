@@ -22,6 +22,7 @@ cargo run -- chat --prompt "Write me hello world program in Rust" --format chat
 cargo run -- chat --prompt "What is 8% of $50?"
 cargo run -- chat --prompt "Посчитай 1000 рублей в долларах"
 cargo run -- dataset
+rust-script scripts/mine-hive-mind-dataset.rs --plan
 cargo run -- serve --host 127.0.0.1 --port 8080
 TELEGRAM_BOT_TOKEN=123:abc cargo run -- telegram                       # long polling (default)
 cargo run -- telegram --mode webhook --host 127.0.0.1 --port 8080      # webhook server (opt-in)
@@ -129,7 +130,7 @@ The engine normalizes a prompt, selects a deterministic symbolic rule, and retur
 
 - greetings: `Hi`, `Hello`, `Hey`
 - hello world requests for Rust, Python, JavaScript, TypeScript, Go, and C
-- open-ended software artifact requests such as extensions, plugins, bots, apps, and tools, first returning a Links Notation meaning record with reasoning and plan steps, then returning starter domain code after the user approves the plan
+- open-ended software artifact requests such as extensions, plugins, bots, apps, and tools, first returning a Links Notation meaning record with a requirement graph, subtasks, delivery mode, approval gates, reasoning, and plan steps, then returning language-aware starter domain code after the user approves the plan
 - calculator-parsable math, unit, currency, percentage, and datetime prompts through `link-calculator`, with the local arithmetic evaluator retained for unsupported word-operator and binary-modulo syntax
 - URL requests such as `fetch example.com` and `Сделай запрос к google.com`; the browser demo tries CORS `fetch()` first and falls back to an embedded iframe
 - explicit web-search prompts such as `Search the web for Nikola Tesla` and `Найди в интернете Никола Тесла`; the browser demo uses the CORS-enabled Wikipedia search endpoint and returns ranked links
@@ -149,6 +150,21 @@ rust-script scripts/check-file-size.rs
 ```
 
 The generator writes source, greeting, hello-world, and demo-dialog records. `.lino` files are kept below 1500 lines and validated by the unit tests.
+
+## Hive Mind Dataset Mining
+
+Issue #115 adds an operator script for mining GitHub evidence from
+`link-assistant/hive-mind` pull requests, issues, reviews, diffs, and Actions
+logs into a case-study dataset. Keep this outside the seed tool registry; it is
+a repository maintenance command, not an in-agent reasoning tool.
+
+```bash
+rust-script scripts/mine-hive-mind-dataset.rs --plan
+rust-script scripts/mine-hive-mind-dataset.rs --collect
+```
+
+The script wraps `formal-ai github-logs plan|collect` with the focused Hive
+Mind defaults used by `docs/case-studies/issue-115/`.
 
 ## Development
 

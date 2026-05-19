@@ -1,6 +1,8 @@
 mod data_files;
 mod docs_requirements;
 mod formal_ai;
+mod github_logs;
+mod software_project;
 mod specification;
 
 #[path = "ci-cd/mod.rs"]

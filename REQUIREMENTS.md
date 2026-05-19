@@ -272,6 +272,26 @@ parity, CI enforcement, and case-study evidence.
 | R141 | Runtime tests must prove the browser uses the published `lino-i18n` package and can resolve nested catalog entries, parent labels, interpolation, and fallback. | Implemented by updating the Issue #94 Playwright tests in `tests/e2e/tests/demo.spec.js` to expect `lino-i18n@0.1.1` and adding a nested catalog lookup test for Issue #117. |
 | R142 | Compile issue #117 evidence, online research, requirements, solution plan, and verification notes under `docs/case-studies/issue-117/`. | Implemented in `docs/case-studies/issue-117/README.md` with raw captured GitHub, npm, release, and upstream README data under `docs/case-studies/issue-117/raw-data/`. |
 
+## Issue #115 GitHub Evidence Collection And Hive-Mind Trace Requirements
+
+Issue [#115](https://github.com/link-assistant/formal-ai/issues/115) asks
+formal-ai to continue the issue #103 vision work, pick the next most important
+missing implementation slice, collect data under
+`docs/case-studies/issue-115/`, and specifically create a script or command
+that collects logs showing how
+[`link-assistant/hive-mind`](https://github.com/link-assistant/hive-mind)
+operates through issues, pull requests, work-session comments, and CI logs.
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R143 | Compile issue #115 evidence and analysis under `docs/case-studies/issue-115/`. | Implemented in `docs/case-studies/issue-115/README.md` with raw data in `docs/case-studies/issue-115/raw-data/formal-ai/` and `docs/case-studies/issue-115/raw-data/hive-mind/`. |
+| R144 | Add a reusable GitHub log collector command for case studies instead of relying on one-off handwritten `gh` command lists. | Implemented by `src/github_logs.rs`, exported from the library, exposed as `formal-ai github-logs plan` / `formal-ai github-logs collect`, and wrapped by `scripts/mine-hive-mind-dataset.rs` for the Hive Mind dataset workflow. |
+| R145 | Capture all GitHub conversation surfaces needed for PR/issue investigations: issue bodies, issue comments, PR bodies, PR discussion comments, inline review comments, reviews, diffs, recent workflow runs, and selected run logs. | Implemented by `github_log_capture_plan`, which emits `gh issue view`, `gh api .../issues/{n}/comments`, `gh pr view`, `gh api .../pulls/{n}/comments`, `gh api .../pulls/{n}/reviews`, `gh pr diff`, `gh run list`, and `gh run view --log` captures with a manifest. |
+| R146 | Make the collector testable without network access or a real GitHub token. | Implemented by `collect_github_logs_with_runner`, which accepts an injected command runner; unit tests use a fake runner and integration tests exercise the `plan` command only. |
+| R147 | Preserve a bounded hive-mind operational sample for analysis. | Implemented by collecting recent hive-mind issues/PRs/runs plus focused issue/PR/run data for #1811/#1813/#1814, PR #1812/#1815/#1816, and Actions runs `25976224438` / `26058054431`; large logs and diffs are compressed. |
+| R148 | Keep GitHub evidence mining outside the seed agent tool registry and expose it as an operator script/command. | Implemented by `scripts/mine-hive-mind-dataset.rs` plus `formal-ai github-logs`; `data/seed/tools.lino` intentionally does not register a `tool_github_logs` capability. |
+| R149 | Keep documentation and regression coverage in lockstep with the new collector. | Implemented by README command examples, the `ARCHITECTURE.md` GitHub evidence collection section, `tests/unit/github_logs.rs`, `tests/integration/formal_ai_cli.rs`, and `tests/unit/docs_requirements.rs`. |
+
 ## Issue #80 Software Project Request Requirements
 
 Issue [#80](https://github.com/link-assistant/formal-ai/issues/80) reports that
@@ -283,9 +303,12 @@ Notation meaning before deriving reasoning and plan steps.
 
 | ID | Requirement | Status |
 | --- | --- | --- |
-| R143 | Open-ended requests to build or write a software artifact (extension, plugin, bot, app, service, website, or tool) must route to a typed software-project intent instead of `unknown`. | Implemented by `try_software_project_request` in `src/solver_handlers/software_project.rs`, mirrored by `trySoftwareProjectRequest` in `src/web/formal_ai_worker.js`, and registered in `data/seed/intent-routing.lino`. |
-| R144 | The first response must formalize the user text into a reviewable Links Notation meaning record before producing project steps. | Implemented by the software-project meaning parser and `software_project_request` Links Notation block rendered in Rust and browser responses. |
-| R145 | The response must derive reasoning steps and a proposed plan from the meaning record, then wait for user approval before converting the plan into code or execution steps. | Implemented by the plan response asking for `approve plan` and by the approval follow-up handler that uses the prior user request and assistant plan. |
-| R146 | Game-unit tracker requests must receive a concrete implementation starter for HP, Protection, Resistance, damage mitigation, and cooldown ticking only after the user approves the plan. | Implemented by the game-unit tracker approval branch, which emits a TypeScript `UnitState` core with `mitigateDamage`, `setStacks`, and `tickCooldowns`. |
-| R147 | Tests must show 10-20 full dialogue examples so reviewers can inspect the text → meaning → reasoning → plan → approval flow. | Covered by the `software_project_dialogue_examples_formalize_plan_then_implement_after_approval` regression matrix. |
-| R148 | The browser demo must handle the reported Owlbear prompt without showing the unknown-intent fallback. | Covered by `software_project_request_returns_reviewable_plan`, `software_project_variations_do_not_return_unknown`, the full dialogue matrix, and the Playwright regression `Owlbear extension request returns a software project plan`. |
+| R150 | Open-ended requests to build or write a software artifact (extension, plugin, bot, app, service, website, or tool) must route to a typed software-project intent instead of `unknown`. | Implemented by `try_software_project_request` in `src/solver_handlers/software_project.rs`, mirrored by `trySoftwareProjectRequest` in `src/web/formal_ai_worker.js`, and registered in `data/seed/intent-routing.lino`. |
+| R151 | The first response must formalize the user text into a reviewable Links Notation meaning record before producing project steps. | Implemented by the software-project meaning parser and `software_project_request` Links Notation block rendered in Rust and browser responses. |
+| R152 | The meaning record must model the task as a graph of requirements and subtasks, grouped by general categories instead of by one-off memorized prompts. | Implemented by requirement extraction, category assignment, subtask derivation, `Requirement model`, and `Subtasks` sections in Rust and browser responses. |
+| R153 | The response must derive deep reasoning steps and a detailed implementation plan from the meaning record, then wait for user approval before converting the plan into code, scripts, manual instructions, or execution steps. | Implemented by the plan response asking for `approve plan`, by the approval follow-up handler that uses the prior user request and assistant plan, and by explicit delivery-mode/approval-gate fields. |
+| R154 | Game-unit tracker requests must receive a concrete implementation starter for HP, Protection, Resistance, damage mitigation, and cooldown ticking only after the user approves the plan. | Implemented by the game-unit tracker approval branch, which emits a TypeScript `UnitState` core with `mitigateDamage`, `setStacks`, and `tickCooldowns`. |
+| R155 | Tests must show 10-20 full dialogue examples, including popular programming-task requests, so reviewers can inspect the text -> meaning -> reasoning -> plan -> approval flow. | Covered by the `software_project_dialogue_examples_formalize_plan_then_implement_after_approval` regression matrix and the dedicated software-project prompt matrix. |
+| R156 | The browser demo must handle the reported Owlbear prompt and generalized software-project prompts without showing the unknown-intent fallback. | Covered by `software_project_request_returns_reviewable_plan`, `software_project_variations_do_not_return_unknown`, the full dialogue matrix, and the Playwright regression `Owlbear extension request returns a software project plan`. |
+| R157 | Software-task formalization must expose user autonomy preferences: manual instructions, code generation, script generation, immediate execution intent, and approval gates for task formalization, requirements, plan, code, each step, and shell/WebVM commands. | Implemented by `delivery_mode` and `approval_gate` fields in the Links Notation meaning record plus matching reasoning and plan text. |
+| R158 | Approval follow-up must generate language-aware starter code where the prompt names a common programming language, and tests must assert the generated code surface. | Implemented by TypeScript, JavaScript, Python, and Rust starter cores selected from the formalized meaning and checked by unit regressions. |

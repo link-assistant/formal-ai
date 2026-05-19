@@ -1955,47 +1955,72 @@ const SOFTWARE_ACTION_WORDS = [
 const SOFTWARE_ARTIFACTS = [
   ["browser extension", "browser extension"],
   ["command line tool", "command-line tool"],
+  ["github action", "action"],
+  ["mobile app", "mobile app"],
   ["cli tool", "command-line tool"],
   ["web app", "web app"],
-  ["mobile app", "mobile app"],
+  ["application", "application"],
   ["extension", "extension"],
+  ["dashboard", "dashboard"],
+  ["scraper", "scraper"],
+  ["library", "library"],
+  ["website", "website"],
   ["plugin", "plugin"],
   ["add on", "extension"],
   ["addon", "extension"],
-  ["bot", "bot"],
-  ["application", "application"],
-  ["app", "app"],
   ["service", "service"],
+  ["bot", "bot"],
+  ["app", "app"],
   ["api", "API"],
-  ["website", "website"],
+  ["sdk", "SDK"],
   ["tool", "tool"],
   ["mod", "mod"],
 ];
 
 const SOFTWARE_FEATURE_MARKERS = [
-  "track",
-  "tracking",
-  "reduce",
-  "damage",
+  "add",
+  "admin",
+  "audit",
+  "backup",
+  "calendar",
+  "chart",
+  "check",
+  "conflict",
   "cooldown",
+  "csv",
+  "customer",
+  "damage",
+  "date",
+  "email",
+  "expense",
+  "export",
+  "file",
+  "filter",
+  "history",
   "hp",
+  "import",
+  "invoice",
+  "log",
+  "maintenance",
+  "notification",
+  "payment",
+  "progress",
   "protection",
+  "record",
+  "reminder",
+  "rename",
+  "report",
   "resistance",
+  "retry",
+  "schedule",
+  "scrape",
   "stack",
   "status",
-  "effect",
-  "export",
-  "csv",
-  "reminder",
-  "schedule",
-  "invoice",
-  "payment",
-  "rename",
-  "date",
-  "report",
-  "notification",
-  "import",
-  "backup",
+  "sync",
+  "track",
+  "tracking",
+  "upload",
+  "validate",
 ];
 
 const GAME_TRACKER_TYPESCRIPT = `type Cooldown = {
@@ -2086,6 +2111,100 @@ export function applyCommand(
         record.id === command.id ? { ...record, status: "done" } : record,
       );
   }
+}`;
+
+const GENERIC_PROJECT_JAVASCRIPT = `export function applyCommand(records, command) {
+  switch (command.type) {
+    case "add":
+      return [...records, { id: command.id, title: command.title, status: "open", notes: [] }];
+    case "note":
+      return records.map((record) =>
+        record.id === command.id
+          ? { ...record, notes: [...record.notes, command.note] }
+          : record,
+      );
+    case "complete":
+      return records.map((record) =>
+        record.id === command.id ? { ...record, status: "done" } : record,
+      );
+    default:
+      throw new Error("Unknown command: " + command.type);
+  }
+}`;
+
+const GENERIC_PROJECT_PYTHON = `from dataclasses import dataclass, field
+
+
+@dataclass(frozen=True)
+class ProjectRecord:
+    id: str
+    title: str
+    status: str = "open"
+    notes: tuple[str, ...] = field(default_factory=tuple)
+
+
+def apply_command(records: tuple[ProjectRecord, ...], command: dict) -> tuple[ProjectRecord, ...]:
+    if command["type"] == "add":
+        return (*records, ProjectRecord(id=command["id"], title=command["title"]))
+    if command["type"] == "note":
+        return tuple(
+            ProjectRecord(r.id, r.title, r.status, (*r.notes, command["note"]))
+            if r.id == command["id"] else r
+            for r in records
+        )
+    if command["type"] == "complete":
+        return tuple(
+            ProjectRecord(r.id, r.title, "done", r.notes)
+            if r.id == command["id"] else r
+            for r in records
+        )
+    raise ValueError(f"Unknown command: {command['type']}")
+`;
+
+const GENERIC_PROJECT_RUST = `#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ProjectRecord {
+    pub id: String,
+    pub title: String,
+    pub status: ProjectStatus,
+    pub notes: Vec<String>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum ProjectStatus {
+    Open,
+    Done,
+}
+
+pub enum ProjectCommand {
+    Add { id: String, title: String },
+    Note { id: String, note: String },
+    Complete { id: String },
+}
+
+pub fn apply_command(mut records: Vec<ProjectRecord>, command: ProjectCommand) -> Vec<ProjectRecord> {
+    match command {
+        ProjectCommand::Add { id, title } => records.push(ProjectRecord {
+            id,
+            title,
+            status: ProjectStatus::Open,
+            notes: Vec::new(),
+        }),
+        ProjectCommand::Note { id, note } => {
+            for record in &mut records {
+                if record.id == id {
+                    record.notes.push(note.clone());
+                }
+            }
+        }
+        ProjectCommand::Complete { id } => {
+            for record in &mut records {
+                if record.id == id {
+                    record.status = ProjectStatus::Done;
+                }
+            }
+        }
+    }
+    records
 }`;
 
 function containsAny(value, needles) {
@@ -2193,6 +2312,117 @@ function isGameUnitTracker(normalized) {
   return domain && mechanics;
 }
 
+function classifySoftwareRequirement(requirement, gameTracker) {
+  const lower = String(requirement || "").toLowerCase();
+  if (gameTracker || containsAny(lower, ["track", "hp", "status", "damage", "cooldown"])) {
+    return "state_tracking";
+  }
+  if (containsAny(lower, ["import", "export", "csv", "backup", "report", "calendar"])) {
+    return "data_exchange";
+  }
+  if (containsAny(lower, ["reminder", "notification", "schedule", "weekly"])) {
+    return "automation";
+  }
+  if (containsAny(lower, ["validate", "check", "conflict", "audit"])) {
+    return "validation";
+  }
+  if (containsAny(lower, ["api", "discord", "telegram", "github", "browser"])) {
+    return "integration";
+  }
+  if (containsAny(lower, ["dashboard", "chart", "filter", "progress"])) {
+    return "user_interface";
+  }
+  return "project_behavior";
+}
+
+function softwareSubtaskTitle(category, requirement) {
+  switch (category) {
+    case "state_tracking":
+      return `Model state fields and pure transitions for ${requirement}`;
+    case "data_exchange":
+      return `Define parsers, serializers, and backup flow for ${requirement}`;
+    case "automation":
+      return `Schedule deterministic jobs and delivery checks for ${requirement}`;
+    case "validation":
+      return `Encode validation rules and failure messages for ${requirement}`;
+    case "integration":
+      return `Isolate host API boundaries and mocks for ${requirement}`;
+    case "user_interface":
+      return `Design focused views and state updates for ${requirement}`;
+    default:
+      return `Implement and test the smallest behavior for ${requirement}`;
+  }
+}
+
+function deriveSoftwareSubtasks(requirements, gameTracker) {
+  return requirements.map((requirement, index) => {
+    const category = classifySoftwareRequirement(requirement, gameTracker);
+    return {
+      requirementId: `R${index + 1}`,
+      category,
+      title: softwareSubtaskTitle(category, requirement),
+    };
+  });
+}
+
+function detectSoftwareDeliveryMode(normalized) {
+  if (containsAny(normalized, ["manual instruction", "instructions", "no code"])) {
+    return "manual_instructions";
+  }
+  if (containsAny(normalized, ["execute", "run command", "run it", "webvm"])) {
+    return "immediate_execution";
+  }
+  if (containsAny(normalized, ["bash", "shell", "script", "commands"])) {
+    return "script_generation";
+  }
+  return "code_generation";
+}
+
+function detectSoftwareImplementationLanguage(normalized) {
+  if (containsAny(normalized, ["python", "django", "fastapi"])) return "python";
+  if (containsAny(normalized, ["rust", "cargo"])) return "rust";
+  if (containsAny(normalized, ["javascript", "node.js", "node "])) return "javascript";
+  return "typescript";
+}
+
+function softwareApprovalGates(normalized, deliveryMode) {
+  const gates = ["task_formalization", "implementation_plan"];
+  if (normalized.includes("requirement")) gates.push("requirements");
+  if (containsAny(normalized, ["each step", "step by step"])) gates.push("each_step");
+  if (deliveryMode === "code_generation") {
+    gates.push("generated_code");
+  } else if (deliveryMode === "manual_instructions") {
+    gates.push("manual_instructions");
+  } else {
+    gates.push("generated_script");
+    gates.push("bash_command");
+  }
+  if (containsAny(normalized, ["shell", "bash", "command", "docker", "webvm"])) {
+    gates.push("bash_command");
+  }
+  return [...new Set(gates)].sort();
+}
+
+function softwareImplementationCode(meaning) {
+  if (meaning.gameTracker) {
+    return {
+      label: "TypeScript",
+      fence: "typescript",
+      body: GAME_TRACKER_TYPESCRIPT,
+    };
+  }
+  if (meaning.implementationLanguage === "python") {
+    return { label: "Python", fence: "python", body: GENERIC_PROJECT_PYTHON };
+  }
+  if (meaning.implementationLanguage === "rust") {
+    return { label: "Rust", fence: "rust", body: GENERIC_PROJECT_RUST };
+  }
+  if (meaning.implementationLanguage === "javascript") {
+    return { label: "JavaScript", fence: "javascript", body: GENERIC_PROJECT_JAVASCRIPT };
+  }
+  return { label: "TypeScript", fence: "typescript", body: GENERIC_PROJECT_TYPESCRIPT };
+}
+
 function softwareDomainLabel(meaning) {
   return meaning.gameTracker ? "tabletop_game_unit_tracker" : "software_project";
 }
@@ -2216,10 +2446,27 @@ function softwareMeaningLino(meaning, approved) {
   lines.push(`  artifact_surface ${linoString(meaning.artifactSurface)}`);
   lines.push(`  target ${linoString(meaning.target)}`);
   lines.push(`  domain ${linoString(softwareDomainLabel(meaning))}`);
+  lines.push(`  delivery_mode ${meaning.deliveryMode}`);
+  lines.push(`  implementation_language ${linoString(meaning.implementationLanguage)}`);
   lines.push(`  approval_state ${softwareApprovalLabel(approved)}`);
   lines.push("  approval_required true");
+  for (const gate of meaning.approvalGates) {
+    lines.push(`  approval_gate ${linoString(gate)}`);
+  }
   for (const requirement of meaning.requirements) {
     lines.push(`  requirement ${linoString(requirement)}`);
+    lines.push(
+      `  requirement_category ${linoString(
+        classifySoftwareRequirement(requirement, meaning.gameTracker),
+      )}`,
+    );
+  }
+  for (const subtask of meaning.subtasks) {
+    lines.push(
+      `  subtask ${linoString(
+        `${subtask.requirementId} [${subtask.category}] ${subtask.title}`,
+      )}`,
+    );
   }
   if (meaning.gameTracker) {
     lines.push('  state_model "unit_state"');
@@ -2244,7 +2491,10 @@ function softwareMeaningKey(meaning) {
     `artifact=${meaning.artifact}`,
     `target=${meaning.target}`,
     `game_tracker=${meaning.gameTracker}`,
+    `delivery_mode=${meaning.deliveryMode}`,
+    `implementation_language=${meaning.implementationLanguage}`,
     ...meaning.requirements.map((requirement) => `requirement=${requirement}`),
+    ...meaning.subtasks.map((subtask) => `subtask=${subtask.category}:${subtask.title}`),
   ].join(";");
 }
 
@@ -2264,13 +2514,20 @@ function formalizeSoftwareProjectRequest(prompt) {
   const action = detectSoftwareAction(normalized);
   const artifact = detectSoftwareArtifact(normalized);
   if (!action || !artifact) return null;
+  const requirements = extractSoftwareFeatures(prompt);
+  const gameTracker = isGameUnitTracker(normalized);
+  const deliveryMode = detectSoftwareDeliveryMode(normalized);
   return {
     action,
     artifactSurface: artifact.surface,
     artifact: artifact.label,
     target: extractSoftwareTarget(prompt, artifact),
-    requirements: extractSoftwareFeatures(prompt),
-    gameTracker: isGameUnitTracker(normalized),
+    requirements,
+    subtasks: deriveSoftwareSubtasks(requirements, gameTracker),
+    deliveryMode,
+    implementationLanguage: detectSoftwareImplementationLanguage(normalized),
+    approvalGates: softwareApprovalGates(normalized, deliveryMode),
+    gameTracker,
   };
 }
 
@@ -2279,33 +2536,44 @@ function softwareReasoningSteps(meaning) {
     `Classify the impulse as a request to ${meaning.action} a ${meaning.artifact} instead of a fact lookup.`,
     `Bind the target environment to ${meaning.target} and keep the first response reviewable.`,
     `Extract ${meaning.requirements.length} requirement(s) into the meaning record before planning.`,
+    `Decompose the requirement graph into ${meaning.subtasks.length} implementation subtask(s) with category labels.`,
+    `Select delivery mode ${meaning.deliveryMode} and approval gates: ${meaning.approvalGates.join(", ")}.`,
   ];
   if (meaning.gameTracker) {
     steps.push(
       "Map HP, Protection, Resistance, damage, and cooldown phrases to a unit-state domain model.",
     );
   }
-  steps.push("Ask for approval before producing code or execution steps.");
+  steps.push("Ask for approval before producing code, scripts, manual instructions, or execution steps.");
   return steps;
 }
 
 function softwarePlanSteps(meaning) {
+  const steps = [
+    "Review the formalized task, requirement graph, approval gates, and delivery mode with the user.",
+  ];
   if (meaning.gameTracker) {
-    return [
+    steps.push(
       `Confirm the ${meaning.target} storage and selected-token API boundaries.`,
       "Define `UnitState` with HP, max HP, Protection, Resistance, and cooldowns.",
       "Write pure transition functions for damage mitigation, stack edits, and round ticks.",
       "Add tests for zero damage, overkill damage, stack changes, and cooldown expiry.",
       "Wire the tested core into the extension panel and host persistence.",
-    ];
+    );
+    return steps;
   }
-  return [
+  steps.push(
     `Confirm the host API and data boundaries for ${meaning.target}.`,
     "Define the smallest serializable state records for the requirements.",
-    "Write one pure update function per user command.",
-    "Add tests for each state transition before host integration.",
-    "Add import/export so users can inspect and back up their data.",
-  ];
+  );
+  for (const subtask of meaning.subtasks) {
+    steps.push(`Implement ${subtask.category}: ${subtask.title}.`);
+  }
+  steps.push(
+    `Generate a ${meaning.implementationLanguage} starter core plus language-appropriate repository initialization and checks.`,
+  );
+  steps.push("Keep shell, Docker, or WebVM commands behind the configured approval gates.");
+  return steps;
 }
 
 function softwareEvidence(meaning, approved) {
@@ -2316,11 +2584,20 @@ function softwareEvidence(meaning, approved) {
     `software_project:artifact:${meaning.artifact}`,
     `software_project:target:${meaning.target}`,
     `software_project:domain:${softwareDomainLabel(meaning)}`,
+    `software_project:delivery_mode:${meaning.deliveryMode}`,
+    `software_project:implementation_language:${meaning.implementationLanguage}`,
     `approval_state:${softwareApprovalLabel(approved)}`,
     `software_project:strategy:${meaning.gameTracker ? "game_unit_tracker" : "bounded_project_plan"}`,
   ];
+  for (const gate of meaning.approvalGates) {
+    evidence.push(`approval_gate:${gate}`);
+  }
   for (const requirement of meaning.requirements) {
     evidence.push(`requirement:${requirement}`);
+    evidence.push(`requirement_category:${classifySoftwareRequirement(requirement, meaning.gameTracker)}`);
+  }
+  for (const subtask of meaning.subtasks) {
+    evidence.push(`software_project:subtask:${subtask.requirementId}:${subtask.category}:${subtask.title}`);
   }
   return evidence;
 }
@@ -2339,6 +2616,22 @@ function renderSoftwareProjectPlan(meaning) {
   lines.push("Reasoning steps:");
   softwareReasoningSteps(meaning).forEach((step, index) => {
     lines.push(`${index + 1}. ${step}`);
+  });
+  lines.push("");
+  lines.push("Requirement model:");
+  meaning.requirements.forEach((requirement, index) => {
+    const category = classifySoftwareRequirement(requirement, meaning.gameTracker);
+    lines.push(`${index + 1}. [${category}] ${requirement}`);
+  });
+  lines.push("");
+  lines.push("Subtasks:");
+  meaning.subtasks.forEach((subtask, index) => {
+    lines.push(`${index + 1}. ${subtask.requirementId} -> ${subtask.title}`);
+  });
+  lines.push("");
+  lines.push("Approval gates:");
+  meaning.approvalGates.forEach((gate) => {
+    lines.push(`- ${gate}`);
   });
   lines.push("");
   lines.push("Proposed plan:");
@@ -2368,11 +2661,16 @@ function renderSoftwareProjectImplementation(meaning) {
     lines.push(`${index + 1}. ${step}`);
   });
   lines.push("");
-  lines.push("Starter TypeScript core:");
+  const code = softwareImplementationCode(meaning);
+  lines.push(`Starter ${code.label} core:`);
   lines.push("");
-  lines.push("```typescript");
-  lines.push(meaning.gameTracker ? GAME_TRACKER_TYPESCRIPT : GENERIC_PROJECT_TYPESCRIPT);
+  lines.push(`\`\`\`${code.fence}`);
+  lines.push(code.body);
   lines.push("```");
+  lines.push("");
+  lines.push("Generated code checks:");
+  lines.push(`1. Initialize a ${code.label} project in an isolated workspace.`);
+  lines.push("2. Run the language-native syntax/type check before host integration.");
   return lines.join("\n");
 }
 

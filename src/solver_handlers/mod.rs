@@ -6,6 +6,7 @@
 
 mod benchmark_prompts;
 mod software_project;
+mod software_project_code;
 mod user_intent;
 mod web_requests;
 
