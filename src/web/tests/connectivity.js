@@ -500,7 +500,7 @@ async function runFetch(serviceId, kind) {
     return;
   }
   if (isDisabled(serviceId, kind)) {
-    updateStatus(serviceId, kind, "Disabled (CORS)", "blocked");
+    updateStatus(serviceId, kind, "Blocked (CORS, disabled)", "blocked");
     updatePreview(
       serviceId,
       `Skipped — disabled for this session after a prior CORS/network failure.`,
@@ -574,7 +574,7 @@ async function runFetch(serviceId, kind) {
     updateStatus(
       serviceId,
       kind,
-      isCors ? "Disabled (CORS)" : outcomeLabel(outcome),
+      isCors ? "Blocked (CORS, disabled)" : outcomeLabel(outcome),
       "blocked",
     );
     updatePreview(serviceId, outcome.preview);
