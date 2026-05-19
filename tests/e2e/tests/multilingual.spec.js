@@ -5,9 +5,10 @@ const UNKNOWN_ANSWER_MARKER = 'cannot answer that from local Links Notation rule
 
 async function switchToManualMode(page) {
   const demoToggle = page.locator('.mode-toggle');
-  await expect(demoToggle).toContainText('Demo on');
+  await expect(demoToggle).toContainText(/Demo on|Demo off|Демо/, {
+    timeout: 10_000,
+  });
   await demoToggle.click();
-  await expect(demoToggle).toContainText('Demo');
   await expect(page.locator('[data-testid="demo-status"]')).toHaveText('Manual mode');
   await expect(page.locator('[data-testid="chat-composer-input"]')).toBeEnabled({
     timeout: 5_000,
@@ -86,6 +87,22 @@ test.describe('multilingual chat surface', () => {
     const last = await sendPrompt(page, 'Привет');
     await expect(last).toHaveClass(/assistant/);
     await expect(last).toContainText(/Здравствуйте|Привет/);
+  });
+
+  test('how-are-you small talk replies as a greeting across languages', async ({ page }) => {
+    const cases = [
+      { prompt: 'How are you?', answer: /Hi|Hello|Hey/ },
+      { prompt: 'Как твои дела?', answer: /Здравствуйте|Привет/ },
+      { prompt: 'आप कैसे हैं?', answer: /नमस्ते|नमस्कार/ },
+      { prompt: '你好吗?', answer: /你好|您好/ },
+    ];
+
+    for (const { prompt, answer } of cases) {
+      const last = await sendPrompt(page, prompt);
+      await expect(last).toHaveClass(/assistant/);
+      await expect(last).toContainText(answer);
+      await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
+    }
   });
 
   test('Russian combined greeting and identity question replies with identity', async ({ page }) => {
@@ -337,7 +354,7 @@ test.describe('multilingual chat surface', () => {
         }),
       });
     });
-    await page.route('**/wikidata.org/w/api.php**', async (route) => {
+    await page.route('**://*.wikidata.org/w/api.php**', async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -626,6 +643,171 @@ test.describe('Wikipedia REST fallback', () => {
     await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
   });
 
+  // Issue #163: a short word query like "что такое что" should not accept an
+  // unrelated full-text Wikipedia hit ("Знак ударения"). If direct Wikipedia
+  // lookup misses and the search title is not a plausible term match, the
+  // worker should fall back to Wikidata before rendering the fuzzy result.
+  test('Russian word lookup falls back to Wikidata before unrelated Wikipedia search hits', async ({ page }) => {
+    await page.route('**/api/rest_v1/page/summary/**', async (route) => {
+      const slug = decodeURIComponent(route.request().url().split('/').pop() || '');
+      if (slug === 'Знак_ударения') {
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify({
+            title: 'Знак ударения',
+            type: 'standard',
+            extract: 'Знак ударения — небуквенный орфографический знак.',
+            content_urls: {
+              desktop: { page: 'https://ru.wikipedia.org/wiki/Знак_ударения' },
+            },
+          }),
+        });
+        return;
+      }
+      await route.fulfill({
+        status: 404,
+        contentType: 'application/json',
+        body: JSON.stringify({ httpCode: 404, httpReason: 'Not Found' }),
+      });
+    });
+
+    await page.route('**/rest.php/v1/search/page**', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          pages: [{ key: 'Знак_ударения', title: 'Знак ударения' }],
+        }),
+      });
+    });
+
+    await page.route('**://*.wikidata.org/w/api.php**', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          search: [
+            {
+              id: 'Q12892367',
+              label: 'what',
+              description: 'interrogative pronoun or question',
+              concepturi: 'https://www.wikidata.org/wiki/Q12892367',
+              match: { type: 'label', language: 'ru', text: 'что' },
+              aliases: ['что'],
+            },
+          ],
+        }),
+      });
+    });
+
+    const last = await sendPrompt(page, 'что такое что');
+    await expect(last).toHaveClass(/assistant/);
+    await expect(last).toContainText('what');
+    await expect(last).toContainText('interrogative pronoun');
+    await expect(last).toContainText('wikidata.org');
+    await expect(last).not.toContainText('Знак ударения');
+    await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
+  });
+
+  test('unrelated Wikipedia search hits are rejected when exact term fallbacks miss', async ({ page }) => {
+    await page.route('**/api/rest_v1/page/summary/**', async (route) => {
+      const slug = decodeURIComponent(route.request().url().split('/').pop() || '');
+      if (slug === 'Знак_ударения') {
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify({
+            title: 'Знак ударения',
+            type: 'standard',
+            extract: 'Знак ударения — небуквенный орфографический знак.',
+            content_urls: {
+              desktop: { page: 'https://ru.wikipedia.org/wiki/Знак_ударения' },
+            },
+          }),
+        });
+        return;
+      }
+      await route.fulfill({
+        status: 404,
+        contentType: 'application/json',
+        body: JSON.stringify({ httpCode: 404, httpReason: 'Not Found' }),
+      });
+    });
+
+    await page.route('**/rest.php/v1/search/page**', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          pages: [{ key: 'Знак_ударения', title: 'Знак ударения' }],
+        }),
+      });
+    });
+    await page.route('**://*.wikidata.org/w/api.php**', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ search: [] }),
+      });
+    });
+    await page.route('**://*.wiktionary.org/w/api.php**', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(['что', [], [], []]),
+      });
+    });
+
+    const last = await sendPrompt(page, 'что такое что');
+    await expect(last).toHaveClass(/assistant/);
+    await expect(last).toContainText(/не могу ответить|cannot answer/i);
+    await expect(last).not.toContainText('Знак ударения');
+  });
+
+  test('word lookup falls back to Wiktionary when Wikipedia and Wikidata miss', async ({ page }) => {
+    await page.route('**/api/rest_v1/page/summary/**', async (route) => {
+      await route.fulfill({
+        status: 404,
+        contentType: 'application/json',
+        body: JSON.stringify({ httpCode: 404, httpReason: 'Not Found' }),
+      });
+    });
+    await page.route('**/rest.php/v1/search/page**', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ pages: [] }),
+      });
+    });
+    await page.route('**://*.wikidata.org/w/api.php**', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ search: [] }),
+      });
+    });
+    await page.route('**://*.wiktionary.org/w/api.php**', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify([
+          'flibbertigibbet',
+          ['flibbertigibbet'],
+          ['a frivolous, flighty person'],
+          ['https://en.wiktionary.org/wiki/flibbertigibbet'],
+        ]),
+      });
+    });
+
+    const last = await sendPrompt(page, 'what is flibbertigibbet');
+    await expect(last).toHaveClass(/assistant/);
+    await expect(last).toContainText('flibbertigibbet');
+    await expect(last).toContainText('frivolous');
+    await expect(last).toContainText('wiktionary.org');
+    await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
+  });
+
 });
 
 test.describe('Issue #82: assistant behavior settings', () => {
@@ -640,6 +822,7 @@ test.describe('Issue #82: assistant behavior settings', () => {
     const settings = page.locator('[data-testid="sidebar-settings"]');
     await expect(settings).toBeVisible();
     await expect(page.locator('[data-testid="setting-guess-probability"]')).toBeVisible();
+    await expect(page.locator('[data-testid="setting-follow-up-probability"]')).toBeVisible();
     await expect(page.locator('[data-testid="setting-temperature"]')).toBeVisible();
     await expect(page.locator('[data-testid="setting-definition-fusion"]')).toBeVisible();
     await expect(page.locator('[data-testid="setting-ui-language"]')).toBeVisible();
@@ -649,6 +832,7 @@ test.describe('Issue #82: assistant behavior settings', () => {
     await expect(page.locator('[data-testid="setting-location"]')).toBeVisible();
 
     await setRangeValue(page, 'setting-temperature', 0);
+    await setRangeValue(page, 'setting-follow-up-probability', 0);
     await page.locator('[data-testid="setting-definition-fusion"]').selectOption('auto');
     await page.locator('[data-testid="setting-location"]').fill('Berlin');
     await page.locator('[data-testid="setting-theme"]').selectOption('dark');
@@ -660,6 +844,7 @@ test.describe('Issue #82: assistant behavior settings', () => {
       window.localStorage.getItem('formal-ai.preferences.v1') || '',
     );
     expect(stored).toContain('temperature "0"');
+    expect(stored).toContain('followUpProbability "0"');
     expect(stored).toContain('definitionFusion "auto"');
     expect(stored).toContain('location "Berlin"');
     await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');

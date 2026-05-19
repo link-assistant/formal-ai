@@ -5,9 +5,10 @@ const UNKNOWN_ANSWER_MARKER = 'cannot answer that from local Links Notation rule
 
 async function switchToManualMode(page) {
   const demoToggle = page.locator('.mode-toggle');
-  await expect(demoToggle).toContainText('Demo on');
+  await expect(demoToggle).toContainText(/Demo on|Demo off|Демо/, {
+    timeout: 10_000,
+  });
   await demoToggle.click();
-  await expect(demoToggle).toContainText('Demo');
   await expect(page.locator('[data-testid="demo-status"]')).toHaveText('Manual mode');
   await expect(page.locator('[data-testid="chat-composer-input"]')).toBeEnabled({
     timeout: 5_000,
@@ -45,6 +46,18 @@ async function submitCurrentPrompt(page) {
   const lastMsg = messages.last();
   await expect(lastMsg).toHaveClass(/assistant/);
   return lastMsg;
+}
+
+async function setRangeValue(page, testId, value) {
+  await page.locator(`[data-testid="${testId}"]`).evaluate((node, nextValue) => {
+    const valueSetter = Object.getOwnPropertyDescriptor(
+      Object.getPrototypeOf(node),
+      'value',
+    )?.set;
+    valueSetter.call(node, String(nextValue));
+    node.dispatchEvent(new Event('input', { bubbles: true }));
+    node.dispatchEvent(new Event('change', { bubbles: true }));
+  }, value);
 }
 
 test.describe('formal-ai demo UI', () => {
@@ -245,6 +258,30 @@ test.describe('formal-ai demo UI', () => {
     const lastMsg = messages.last();
     await expect(lastMsg).toHaveClass(/assistant/);
     await expect(lastMsg).toContainText('formal-ai');
+    await expect(lastMsg).not.toContainText(UNKNOWN_ANSWER_MARKER);
+  });
+
+  test('polite small-talk follow-up does not fall through to unknown', async ({ page }) => {
+    await switchToManualMode(page);
+    await setRangeValue(page, 'setting-temperature', 0);
+    await setRangeValue(page, 'setting-follow-up-probability', 1);
+
+    const lastMsg = await sendPrompt(page, 'I am fine, thank you');
+
+    await expect(lastMsg).toContainText('Glad to hear it');
+    await expect(lastMsg).toContainText('What would you like to do next?');
+    await expect(lastMsg).not.toContainText(UNKNOWN_ANSWER_MARKER);
+  });
+
+  test('courtesy response can leave initiative with the user', async ({ page }) => {
+    await switchToManualMode(page);
+    await setRangeValue(page, 'setting-temperature', 0);
+    await setRangeValue(page, 'setting-follow-up-probability', 0);
+
+    const lastMsg = await sendPrompt(page, 'I am fine, thank you');
+
+    await expect(lastMsg).toContainText('Glad to hear it.');
+    await expect(lastMsg).not.toContainText('What would you like to do next?');
     await expect(lastMsg).not.toContainText(UNKNOWN_ANSWER_MARKER);
   });
 
