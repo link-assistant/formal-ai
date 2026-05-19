@@ -1,0 +1,56 @@
+HTTP/2 200
+server: GitHub.com
+content-type: text/html; charset=utf-8
+last-modified: Tue, 19 May 2026 09:55:08 GMT
+access-control-allow-origin: *
+strict-transport-security: max-age=31556952
+etag: "6a0c337c-59a"
+expires: Tue, 19 May 2026 12:17:54 GMT
+cache-control: max-age=600
+x-proxy-cache: MISS
+x-github-request-id: CD42:9BF6F:E7EFE3:EB60CB:6A0C529A
+accept-ranges: bytes
+age: 0
+date: Tue, 19 May 2026 12:07:54 GMT
+via: 1.1 varnish
+x-served-by: cache-fra-eddf8230078-FRA
+x-cache: MISS
+x-cache-hits: 0
+x-timer: S1779192475.802918,VS0,VE139
+vary: Accept-Encoding
+x-fastly-request-id: 8c32300f42c6d0de11985697a4ca0cf3dc711e30
+content-length: 1434
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="formal-ai-version" content="0.64.0" />
+    <title>formal-ai</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="styles.css?v=5529e6eb9d6f39001ee97a780ec0c52242cd0295" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js"></script>
+    <script>
+      window.FORMAL_AI_ASSET_VERSION = "5529e6eb9d6f39001ee97a780ec0c52242cd0295";
+    </script>
+    <script type="importmap">
+      {
+        "imports": {
+          "lino-i18n": "https://esm.sh/lino-i18n@0.1.1?bundle"
+        }
+      }
+    </script>
+    <script src="seed_loader.js?v=5529e6eb9d6f39001ee97a780ec0c52242cd0295"></script>
+    <script src="preferences.js?v=5529e6eb9d6f39001ee97a780ec0c52242cd0295"></script>
+    <script src="i18n.js?v=5529e6eb9d6f39001ee97a780ec0c52242cd0295"></script>
+    <script src="memory.js?v=5529e6eb9d6f39001ee97a780ec0c52242cd0295"></script>
+    <script src="app.js?v=5529e6eb9d6f39001ee97a780ec0c52242cd0295"></script>
+  </body>
+</html>

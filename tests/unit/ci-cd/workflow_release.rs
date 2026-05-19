@@ -231,8 +231,14 @@ fn stamp_pages_artifact_replaces_formal_ai_version_placeholder() {
     ));
     let web_dir = tmp.join("web");
     fs::create_dir_all(&web_dir).expect("create scratch web dir");
+    fs::create_dir_all(web_dir.join("tests")).expect("create scratch tests dir");
     let source_index = fs::read_to_string(format!("{manifest_dir}/src/web/index.html")).unwrap();
     fs::write(web_dir.join("index.html"), &source_index).expect("seed index.html");
+    fs::write(
+        web_dir.join("tests/index.html"),
+        r#"<meta name="formal-ai-version" content="__FORMAL_AI_VERSION__"><script src="connectivity.js?v=__FORMAL_AI_ASSET_VERSION__"></script>"#,
+    )
+    .expect("seed tests/index.html");
 
     let output = Command::new("/bin/bash")
         .arg(&script)
@@ -246,6 +252,7 @@ fn stamp_pages_artifact_replaces_formal_ai_version_placeholder() {
     let stdout = String::from_utf8_lossy(&output.stdout).into_owned();
     let stderr = String::from_utf8_lossy(&output.stderr).into_owned();
     let rendered = fs::read_to_string(web_dir.join("index.html")).unwrap_or_default();
+    let rendered_tests = fs::read_to_string(web_dir.join("tests/index.html")).unwrap_or_default();
     let marker = fs::read_to_string(web_dir.join("deployment.json")).unwrap_or_default();
     let _ = fs::remove_dir_all(&tmp);
 
@@ -267,6 +274,19 @@ fn stamp_pages_artifact_replaces_formal_ai_version_placeholder() {
         "stamped index.html should not retain the asset version placeholder"
     );
     assert!(
+        rendered_tests.contains("content=\"9.9.9\""),
+        "stamped tests/index.html should advertise the supplied formal-ai version, got:\n{rendered_tests}"
+    );
+    assert!(
+        rendered_tests.contains("connectivity.js?v=deadbeef"),
+        "stamp script should cache-bust nested test page assets, got:\n{rendered_tests}"
+    );
+    assert!(
+        !rendered_tests.contains("__FORMAL_AI_VERSION__")
+            && !rendered_tests.contains("__FORMAL_AI_ASSET_VERSION__"),
+        "stamped tests/index.html should not retain placeholders, got:\n{rendered_tests}"
+    );
+    assert!(
         marker.contains("\"formal_ai_version\": \"9.9.9\""),
         "deployment.json should record the formal-ai version, got:\n{marker}"
     );
@@ -276,6 +296,8 @@ fn stamp_pages_artifact_replaces_formal_ai_version_placeholder() {
 fn static_demo_runtime_assets_are_cache_busted_by_deployment_version() {
     let manifest_dir = env!("CARGO_MANIFEST_DIR");
     let index_html = fs::read_to_string(format!("{manifest_dir}/src/web/index.html")).unwrap();
+    let tests_index =
+        fs::read_to_string(format!("{manifest_dir}/src/web/tests/index.html")).unwrap();
     let app_js = fs::read_to_string(format!("{manifest_dir}/src/web/app.js")).unwrap();
     let seed_loader_js =
         fs::read_to_string(format!("{manifest_dir}/src/web/seed_loader.js")).unwrap();
@@ -306,7 +328,18 @@ fn static_demo_runtime_assets_are_cache_busted_by_deployment_version() {
     assert!(seed_loader_js.contains("fetchText(withAssetVersion(file))"));
     assert!(worker_js.contains("importScripts(withAssetVersion(\"seed_loader.js\"))"));
     assert!(worker_js.contains("fetch(withAssetVersion(\"formal_ai_worker.wasm\"))"));
+    for asset in [
+        "connectivity.css?v=__FORMAL_AI_ASSET_VERSION__",
+        "connectivity.js?v=__FORMAL_AI_ASSET_VERSION__",
+    ] {
+        assert!(
+            tests_index.contains(asset),
+            "tests/index.html should version local asset {asset}"
+        );
+    }
+    assert!(tests_index.contains("__FORMAL_AI_VERSION__"));
     assert!(stamp_script.contains("__FORMAL_AI_ASSET_VERSION__"));
+    assert!(stamp_script.contains("find \"$artifact_dir\" -type f -name '*.html'"));
     assert!(stamp_script.contains("deployment.json"));
     assert!(wait_script.contains("deployment.json"));
     assert!(wait_script.contains("expected_sha"));
@@ -325,6 +358,10 @@ fn pages_e2e_navigation_preserves_repository_subpath() {
         "{manifest_dir}/tests/e2e/tests/multilingual.spec.js"
     ))
     .unwrap();
+    let connectivity_spec = fs::read_to_string(format!(
+        "{manifest_dir}/tests/e2e/tests/connectivity.spec.js"
+    ))
+    .unwrap();
 
     assert!(
         pages_config.contains("normalizeBaseUrl"),
@@ -341,13 +378,17 @@ fn pages_e2e_navigation_preserves_repository_subpath() {
             "tests/e2e/tests/multilingual.spec.js",
             multilingual_spec.as_str(),
         ),
+        (
+            "tests/e2e/tests/connectivity.spec.js",
+            connectivity_spec.as_str(),
+        ),
     ] {
         assert!(
             !spec.contains("page.goto('/');"),
             "{path} should not navigate to / because URL resolution drops the /formal-ai/ subpath"
         );
         assert!(
-            spec.contains("page.goto('./');"),
+            spec.contains("page.goto('./')") || spec.contains("page.goto('./tests/')"),
             "{path} should navigate with ./ so Pages tests stay under the repository subpath"
         );
     }
