@@ -22,7 +22,12 @@ async function disableGreetingVariations(page) {
 
 async function switchToManualMode(page) {
   const demoToggle = page.locator('.mode-toggle');
-  await expect(demoToggle).toContainText(/Demo on|Демо/);
+  // Wait for i18n hydration to finish before reading the label — on a slow
+  // CI worker the catalog is still resolving when the locator first appears,
+  // and we briefly see `buttons.demoOn` instead of the translated text.
+  await expect(demoToggle).toContainText(/Demo on|Demo off|Демо/, {
+    timeout: 10_000,
+  });
   await demoToggle.click();
   await expect(page.locator('[data-testid="chat-composer-input"]')).toBeEnabled({
     timeout: 5_000,
