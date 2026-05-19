@@ -10,11 +10,13 @@ collect logs about how
 [`link-assistant/hive-mind`](https://github.com/link-assistant/hive-mind)
 operates.
 
-This PR adds that ingestion boundary. `formal-ai github-logs plan` prints a
-reproducible capture plan. `formal-ai github-logs collect` executes that plan
-with the GitHub CLI, writes raw issue/PR/review/run data into a case-study
-directory, and emits `manifest.json` so every saved file can be traced back to
-the command that produced it.
+This PR adds that ingestion boundary as an operator script and command rather
+than an in-agent seed tool. `scripts/mine-hive-mind-dataset.rs` wraps the
+focused Hive Mind dataset workflow. Under it, `formal-ai github-logs plan`
+prints a reproducible capture plan, while `formal-ai github-logs collect`
+executes that plan with the GitHub CLI, writes raw issue/PR/review/run data
+into a case-study directory, and emits `manifest.json` so every saved file can
+be traced back to the command that produced it.
 
 ## Collected Data
 
@@ -44,11 +46,11 @@ existing `docs/case-studies/issue-19` pattern:
 | ID | Requirement | Solution |
 | --- | --- | --- |
 | R137 | Preserve issue #115 evidence and analysis under `docs/case-studies/issue-115/`. | Added this case study and raw captures for both formal-ai and hive-mind. |
-| R138 | Add a reusable GitHub log collector. | Added `src/github_logs.rs`, `formal_ai::github_log_capture_plan`, `formal_ai::collect_github_logs`, and CLI subcommands `github-logs plan|collect`. |
+| R138 | Add a reusable GitHub log collector command. | Added `src/github_logs.rs`, `formal_ai::github_log_capture_plan`, `formal_ai::collect_github_logs`, CLI subcommands `github-logs plan|collect`, and `scripts/mine-hive-mind-dataset.rs` for the Hive Mind dataset workflow. |
 | R139 | Capture all comment surfaces and CI logs needed for investigations. | The plan captures issue bodies/comments, PR bodies, PR conversation comments, inline PR review comments, PR reviews, PR diffs, recent run lists, run metadata, and full selected run logs. |
 | R140 | Make the collector testable without network access. | The library exposes `collect_github_logs_with_runner`; unit tests use a fake runner, and the integration test exercises `github-logs plan` only. |
 | R141 | Preserve a bounded hive-mind operational sample. | Captured recent hive-mind issue/PR/run lists plus focused evidence for #1811, #1813, #1814, #1812, #1815, #1816, and selected Actions runs. |
-| R142 | Register the collector as an agent capability. | Added `tool_github_logs` to `data/seed/tools.lino`. |
+| R142 | Keep the collector outside the seed agent tool registry. | The workflow is exposed through `scripts/mine-hive-mind-dataset.rs` and `formal-ai github-logs`; `data/seed/tools.lino` intentionally has no `tool_github_logs` entry. |
 | R143 | Keep docs and tests in lockstep. | Updated README, ARCHITECTURE, REQUIREMENTS, docs regression tests, unit tests, integration tests, and changelog. |
 
 ## Hive-Mind Observations
@@ -74,6 +76,9 @@ recurred across issues?" without scraping GitHub again.
 
 ## Design Decisions
 
+- **Script first, command underneath.** `scripts/mine-hive-mind-dataset.rs`
+  is the repeatable Hive Mind dataset workflow; the lower-level
+  `github-logs plan|collect` command remains generic for other case studies.
 - **Plan first, collect second.** `github-logs plan` lets reviewers inspect
   the exact commands and output files before any network call is made.
 - **Use GitHub CLI instead of hand-written HTTP clients.** The repository
@@ -92,6 +97,7 @@ recurred across issues?" without scraping GitHub again.
 Focused tests:
 
 ```bash
+rustc scripts/mine-hive-mind-dataset.rs -o /tmp/mine-hive-mind-dataset-check
 cargo test --test unit github_logs -- --nocapture
 cargo test --test integration cli_github_logs_plan_prints_reproducible_capture_commands -- --nocapture
 ```

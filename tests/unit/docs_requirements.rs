@@ -199,6 +199,7 @@ fn issue_115_github_log_collection_documents_are_present_and_traceable() {
             "| R142 ",
             "| R143 ",
             "formal-ai github-logs",
+            "scripts/mine-hive-mind-dataset.rs",
         ],
     );
 
@@ -209,8 +210,10 @@ fn issue_115_github_log_collection_documents_are_present_and_traceable() {
         &[
             "GitHub Evidence Collection",
             "src/github_logs.rs",
+            "scripts/mine-hive-mind-dataset.rs",
             "manifest.json",
             "link-assistant/hive-mind",
+            "not registered",
         ],
     );
 
@@ -222,10 +225,17 @@ fn issue_115_github_log_collection_documents_are_present_and_traceable() {
             "# Issue 115 Case Study",
             "## Collected Data",
             "github-logs",
+            "scripts/mine-hive-mind-dataset.rs",
             "hive-mind",
             "R137",
             "R143",
         ],
+    );
+
+    let tools = read(root.join("data/seed/tools.lino"));
+    assert!(
+        !tools.contains("tool_github_logs"),
+        "GitHub dataset mining must stay an operator script/command, not a seed agent tool"
     );
 }
 

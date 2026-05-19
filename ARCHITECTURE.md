@@ -485,8 +485,8 @@ The same `FormalAiEngine` answers prompts in every surface:
 - **Rust library** — `formal_ai::FormalAiEngine::answer` /
   `formal_ai::solve_with_history`.
 - **CLI binary** — `formal-ai chat`, `formal-ai memory ...`,
-  `formal-ai bundle ...`, `formal-ai github-logs ...`,
-  `formal-ai telegram`, `formal-ai serve`.
+  `formal-ai bundle ...`, operator commands such as
+  `formal-ai github-logs ...`, `formal-ai telegram`, `formal-ai serve`.
 - **HTTP server** — `POST /v1/chat/completions`, `POST /v1/responses`,
   `GET /health`, `GET /v1/graph` (with `?trace=` filter and
   `?format=dot`).
@@ -502,9 +502,12 @@ identically.
 
 ## 14. GitHub Evidence Collection
 
-Issue #115 adds a first concrete tool for turning external development traces
-into local, reviewable memory. `src/github_logs.rs` builds deterministic
-GitHub CLI capture plans and can execute them into a case-study directory.
+Issue #115 adds the first concrete operator workflow for turning external
+development traces into local, reviewable memory. `src/github_logs.rs` builds
+deterministic GitHub CLI capture plans and can execute them into a case-study
+directory. `scripts/mine-hive-mind-dataset.rs` wraps that command with the
+focused Hive Mind defaults used by the issue #115 case study.
+
 The collector records:
 
 - repository metadata;
@@ -515,10 +518,11 @@ The collector records:
 - selected GitHub Actions run metadata and full logs;
 - a `manifest.json` that preserves every command used to produce each file.
 
-This is not a reasoning engine by itself. It is the ingestion boundary for
-real-world traces from systems such as `link-assistant/hive-mind`, so later
-solver work can operate over observed issue text, PR feedback, work-session
-summaries, CI outcomes, and run logs instead of undocumented anecdotes.
+This is not a reasoning engine by itself and is intentionally not registered
+as a seed agent tool. It is the ingestion boundary for real-world traces from
+systems such as `link-assistant/hive-mind`, so later solver work can operate
+over observed issue text, PR feedback, work-session summaries, CI outcomes,
+and run logs instead of undocumented anecdotes.
 
 ---
 

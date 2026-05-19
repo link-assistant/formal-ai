@@ -22,8 +22,7 @@ cargo run -- chat --prompt "Write me hello world program in Rust" --format chat
 cargo run -- chat --prompt "What is 8% of $50?"
 cargo run -- chat --prompt "Посчитай 1000 рублей в долларах"
 cargo run -- dataset
-cargo run -- github-logs plan --repo link-assistant/hive-mind --issue 1814 --pull 1816
-cargo run -- github-logs collect --repo link-assistant/hive-mind --output-dir docs/case-studies/issue-115/raw-data/hive-mind --issue 1814 --pull 1816 --run 26058054431
+rust-script scripts/mine-hive-mind-dataset.rs --plan
 cargo run -- serve --host 127.0.0.1 --port 8080
 TELEGRAM_BOT_TOKEN=123:abc cargo run -- telegram                       # long polling (default)
 cargo run -- telegram --mode webhook --host 127.0.0.1 --port 8080      # webhook server (opt-in)
@@ -134,7 +133,6 @@ The engine normalizes a prompt, selects a deterministic symbolic rule, and retur
 - calculator-parsable math, unit, currency, percentage, and datetime prompts through `link-calculator`, with the local arithmetic evaluator retained for unsupported word-operator and binary-modulo syntax
 - URL requests such as `fetch example.com` and `Сделай запрос к google.com`; the browser demo tries CORS `fetch()` first and falls back to an embedded iframe
 - explicit web-search prompts such as `Search the web for Nikola Tesla` and `Найди в интернете Никола Тесла`; the browser demo uses the CORS-enabled Wikipedia search endpoint and returns ranked links
-- GitHub evidence collection for case studies through `formal-ai github-logs plan|collect`, including issue bodies, issue comments, PR discussion comments, inline review comments, reviews, diffs, recent workflow runs, and selected Actions logs
 - unknown prompts, which return an explicit learnable-rule fallback
 
 Hello-world answers include execution metadata. Rust, Python, JavaScript, Go, and C examples are compiled or syntax-checked and run by the issue-8 local verification harness with captured output. TypeScript is returned with an explicit warning because `tsc` is not configured in the current repository runtime.
@@ -151,6 +149,21 @@ rust-script scripts/check-file-size.rs
 ```
 
 The generator writes source, greeting, hello-world, and demo-dialog records. `.lino` files are kept below 1500 lines and validated by the unit tests.
+
+## Hive Mind Dataset Mining
+
+Issue #115 adds an operator script for mining GitHub evidence from
+`link-assistant/hive-mind` pull requests, issues, reviews, diffs, and Actions
+logs into a case-study dataset. Keep this outside the seed tool registry; it is
+a repository maintenance command, not an in-agent reasoning tool.
+
+```bash
+rust-script scripts/mine-hive-mind-dataset.rs --plan
+rust-script scripts/mine-hive-mind-dataset.rs --collect
+```
+
+The script wraps `formal-ai github-logs plan|collect` with the focused Hive
+Mind defaults used by `docs/case-studies/issue-115/`.
 
 ## Development
 
