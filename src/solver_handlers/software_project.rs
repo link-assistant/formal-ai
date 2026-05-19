@@ -576,7 +576,9 @@ fn detect_delivery_mode(normalized: &str) -> DeliveryMode {
         DeliveryMode::ManualInstructions
     } else if contains_any(normalized, &["execute", "run command", "run it", "webvm"]) {
         DeliveryMode::ImmediateExecution
-    } else if contains_any(normalized, &["bash", "shell", "script", "commands"]) {
+    } else if contains_any(normalized, &["bash", "shell"])
+        || contains_word(normalized, &["script", "scripts", "commands"])
+    {
         DeliveryMode::ScriptGeneration
     } else {
         DeliveryMode::CodeGeneration
@@ -621,6 +623,12 @@ fn approval_gates(normalized: &str, delivery_mode: DeliveryMode) -> Vec<&'static
 
 fn contains_any(haystack: &str, needles: &[&str]) -> bool {
     needles.iter().any(|needle| haystack.contains(needle))
+}
+
+fn contains_word(haystack: &str, words: &[&str]) -> bool {
+    haystack
+        .split_whitespace()
+        .any(|token| words.contains(&token))
 }
 
 fn push_unique(items: &mut Vec<String>, value: String) {

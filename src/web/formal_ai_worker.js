@@ -2452,6 +2452,12 @@ function containsToken(normalized, token) {
   return String(normalized || "").split(/\s+/).includes(token);
 }
 
+function containsAnyToken(normalized, tokens) {
+  return String(normalized || "")
+    .split(/\s+/)
+    .some((token) => tokens.includes(token));
+}
+
 function detectSoftwareAction(normalized) {
   return SOFTWARE_ACTION_WORDS.find((word) => containsToken(normalized, word)) || null;
 }
@@ -2609,7 +2615,10 @@ function detectSoftwareDeliveryMode(normalized) {
   if (containsAny(normalized, ["execute", "run command", "run it", "webvm"])) {
     return "immediate_execution";
   }
-  if (containsAny(normalized, ["bash", "shell", "script", "commands"])) {
+  if (
+    containsAny(normalized, ["bash", "shell"]) ||
+    containsAnyToken(normalized, ["script", "scripts", "commands"])
+  ) {
     return "script_generation";
   }
   return "code_generation";
