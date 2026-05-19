@@ -47,7 +47,8 @@ the same prompt.
 `src/solver_handlers/behavior_rules.rs` exposes:
 
 - `List behavior rules` (and Russian variants like `Список правил поведения`,
-  `Покажи правила поведения`) — returns a Links-Notation table listing every
+  `Покажи правила поведения`, Hindi `व्यवहार के नियम सूचीबद्ध करें`, and
+  Chinese `列出行为规则`) — returns a Links-Notation table listing every
   built-in rule plus any per-conversation runtime rule.
 - `Show behavior rule <id-or-slug>` (also `Read rule <slug>`,
   `describe behavior rule <slug>`, and `Покажи правило <slug>`) — returns the
