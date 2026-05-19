@@ -231,6 +231,25 @@ test.describe('multilingual chat surface', () => {
     expect(githubRequestTypes).not.toContain('fetch');
   });
 
+  // Issue #125 follow-up: "Make a request to X" must still attempt an HTTP
+  // fetch (with CORS fallback to iframe), while "Navigate to X" must not.
+  test('Make a request to X attempts a fetch and falls back to the iframe', async ({ page }) => {
+    const fetchAttempts = [];
+    await page.route(/https:\/\/example\.com\/?.*/, async (route) => {
+      fetchAttempts.push(route.request().resourceType());
+      await route.abort('blockedbyclient');
+    });
+
+    const last = await sendPrompt(page, 'Make a request to example.com');
+    await expect(last).toHaveClass(/assistant/);
+    await expect(last).toContainText('https://example.com');
+    await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
+    // The browser worker must call fetch() before falling back to the iframe.
+    expect(fetchAttempts).toContain('fetch');
+    const frameContainer = last.locator('[data-testid="fetch-iframe-container"]');
+    await expect(frameContainer).toContainText(/https:\/\/example\.com\/?/);
+  });
+
   test('explicit web search renders Wikipedia search results', async ({ page }) => {
     await page.locator('.diagnostics-toggle').click();
     await page.route('**/w/rest.php/v1/search/page**', async (route) => {
@@ -826,6 +845,7 @@ test.describe('memory export/import', () => {
     );
     expect(toolIds).toEqual(expect.arrayContaining([
       'tool_http_fetch',
+      'tool_url_navigate',
       'tool_web_search',
       'tool_wikipedia_lookup',
       'tool_calculator',
