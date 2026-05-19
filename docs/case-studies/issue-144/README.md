@@ -49,7 +49,8 @@ the same prompt.
 - `List behavior rules` (and Russian variants like `Список правил поведения`,
   `Покажи правила поведения`, Hindi `व्यवहार के नियम सूचीबद्ध करें`, and
   Chinese `列出行为规则`) — returns a Links-Notation table listing every
-  built-in rule plus any per-conversation runtime rule.
+  built-in rule, plus a *Dialog-local rules* section enumerating any
+  runtime rules taught earlier in the same conversation.
 - `Show behavior rule <id-or-slug>` (also `Read rule <slug>`,
   `describe behavior rule <slug>`, and `Покажи правило <slug>`) — returns the
   full Links-Notation body of one rule, including its trigger, matched
