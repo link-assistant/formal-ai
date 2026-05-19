@@ -185,6 +185,9 @@ jobs:
       - name: Check i18n catalog coverage
         run: npm run --prefix tests/e2e check:i18n
 
+      - name: Check multilingual intent coverage
+        run: npm run --prefix tests/e2e check:intent-coverage
+
   # === TEST ===
   # Test runs independently of changelog check
   test:

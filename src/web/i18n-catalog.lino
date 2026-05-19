@@ -5,6 +5,7 @@ en
   buttons
     reportIssue "Report issue"
     reportMissingRule "Report missing rule"
+    sourceCode "Source code"
     exportMemory "Export memory"
     importMemory "Import memory"
     diagnostics "Diagnostics"
@@ -17,10 +18,13 @@ en
     closeMenu "Close menu"
     attachFiles "Attach files"
     composerMenu "Composer menu"
+    collapseSidebar "Collapse side panel"
+    expandSidebar "Expand side panel"
   titles
     reportIssue """
       Report issue - open a pre-filled GitHub issue with the current session transcript. See docs/upload-memory.md for how to attach the full memory export (Gist or .zip).
     """
+    sourceCode "Open the formal-ai source code on GitHub."
     exportMemory """
       Export memory - save the full agent state to formal-ai-memory.lino: the entire seed, UI preferences, environment metadata, and the append-only event log. See docs/upload-memory.md for attaching it to a GitHub issue (Gist or .zip).
     """
@@ -39,6 +43,8 @@ en
     menuClose "Close the side panel (conversations, prompts, tools)."
     composerMenu "Open input actions for attachments, memory, and reporting."
     resizeSidebar "Resize the side panel."
+    collapseSidebar "Hide the side panel (more space for the chat)."
+    expandSidebar "Show the side panel (conversations, prompts, tools)."
   composer
     placeholder
       chat "Message formal-ai"
@@ -47,6 +53,7 @@ en
       before "Demo is running - tap "
       after " to stop and type your own message."
     send "Send"
+    sending "Sending..."
     attachments "{count} attached"
   conversation
     new "+ New conversation"
@@ -65,6 +72,10 @@ en
     toolInputs "Inputs"
     toolOutputs "Outputs"
     toolReasoning "Tool reasoning"
+    formalization "Formalization"
+    formalizationSubjectVerbObject "Subject - Verb - Object"
+    otherSources "Other sources"
+    sourceCounts "{count} source(s)"
   fetch
     collapse "Collapse"
     expand "Expand"
@@ -153,6 +164,7 @@ ru
   buttons
     reportIssue "Сообщить о проблеме"
     reportMissingRule "Сообщить о недостающем правиле"
+    sourceCode "Исходный код"
     exportMemory "Экспорт памяти"
     importMemory "Импорт памяти"
     diagnostics "Диагностика"
@@ -165,10 +177,13 @@ ru
     closeMenu "Закрыть меню"
     attachFiles "Прикрепить файлы"
     composerMenu "Меню ввода"
+    collapseSidebar "Свернуть боковую панель"
+    expandSidebar "Развернуть боковую панель"
   titles
     reportIssue """
       Сообщить о проблеме - откроет заранее заполненный GitHub issue с текущим диалогом. См. docs/upload-memory.md, чтобы прикрепить полный экспорт памяти (Gist или .zip).
     """
+    sourceCode "Открыть исходный код formal-ai на GitHub."
     exportMemory """
       Экспорт памяти - сохраняет полное состояние агента в formal-ai-memory.lino: весь seed, настройки UI, метаданные окружения и append-only журнал событий. См. docs/upload-memory.md, чтобы прикрепить экспорт к GitHub issue (Gist или .zip).
     """
@@ -187,6 +202,8 @@ ru
     menuClose "Закрыть боковую панель (разговоры, запросы, инструменты)."
     composerMenu "Открыть действия ввода: вложения, память и отчеты."
     resizeSidebar "Изменить ширину боковой панели."
+    collapseSidebar "Скрыть боковую панель (больше места для чата)."
+    expandSidebar "Показать боковую панель (разговоры, запросы, инструменты)."
   composer
     placeholder
       chat "Сообщение formal-ai"
@@ -195,6 +212,7 @@ ru
       before "Демо выполняется - нажмите "
       after ", чтобы остановить и написать свое сообщение."
     send "Отправить"
+    sending "Отправка..."
     attachments "Прикреплено: {count}"
   conversation
     new "+ Новый разговор"
@@ -213,6 +231,10 @@ ru
     toolInputs "Входные данные"
     toolOutputs "Результаты"
     toolReasoning "Внутренние шаги инструмента"
+    formalization "Формализация"
+    formalizationSubjectVerbObject "Субъект - Глагол - Объект"
+    otherSources "Другие источники"
+    sourceCounts "{count} источник(ов)"
   fetch
     collapse "Свернуть"
     expand "Развернуть"
@@ -303,6 +325,7 @@ zh
   buttons
     reportIssue "报告问题"
     reportMissingRule "报告缺失规则"
+    sourceCode "源代码"
     exportMemory "导出记忆"
     importMemory "导入记忆"
     diagnostics "诊断"
@@ -315,8 +338,11 @@ zh
     closeMenu "关闭菜单"
     attachFiles "附加文件"
     composerMenu "输入菜单"
+    collapseSidebar "收起侧边面板"
+    expandSidebar "展开侧边面板"
   titles
     reportIssue "报告问题 - 打开已预填当前会话记录的 GitHub issue。请参阅 docs/upload-memory.md，了解如何附加完整记忆导出（Gist 或 .zip）。"
+    sourceCode "在 GitHub 上查看 formal-ai 的源代码。"
     exportMemory """
       导出记忆 - 将完整代理状态保存为 formal-ai-memory.lino：全部 seed、UI 偏好、环境元数据和追加式事件日志。请参阅 docs/upload-memory.md，了解如何附加到 GitHub issue（Gist 或 .zip）。
     """
@@ -331,6 +357,8 @@ zh
     menuClose "关闭侧边面板（对话、提示、工具）。"
     composerMenu "打开输入操作：附件、记忆和报告。"
     resizeSidebar "调整侧边面板宽度。"
+    collapseSidebar "隐藏侧边面板（聊天获得更多空间）。"
+    expandSidebar "显示侧边面板（对话、提示、工具）。"
   composer
     placeholder
       chat "给 formal-ai 发消息"
@@ -339,6 +367,7 @@ zh
       before "演示正在运行 - 点按 "
       after " 可停止并输入自己的消息。"
     send "发送"
+    sending "发送中..."
     attachments "已附加 {count} 个"
   conversation
     new "+ 新对话"
@@ -357,6 +386,10 @@ zh
     toolInputs "输入"
     toolOutputs "输出"
     toolReasoning "工具内部推理"
+    formalization "形式化"
+    formalizationSubjectVerbObject "主语 - 谓语 - 宾语"
+    otherSources "其他来源"
+    sourceCounts "{count} 个来源"
   fetch
     collapse "折叠"
     expand "展开"
@@ -445,6 +478,7 @@ hi
   buttons
     reportIssue "समस्या रिपोर्ट करें"
     reportMissingRule "छूटा नियम रिपोर्ट करें"
+    sourceCode "स्रोत कोड"
     exportMemory "स्मृति निर्यात करें"
     importMemory "स्मृति आयात करें"
     diagnostics "निदान"
@@ -457,10 +491,13 @@ hi
     closeMenu "मेन्यू बंद करें"
     attachFiles "फाइलें जोड़ें"
     composerMenu "इनपुट मेन्यू"
+    collapseSidebar "साइड पैनल छिपाएं"
+    expandSidebar "साइड पैनल दिखाएं"
   titles
     reportIssue """
       समस्या रिपोर्ट करें - वर्तमान सत्र transcript के साथ पहले से भरा GitHub issue खोलें। पूरा memory export जोड़ने के लिए docs/upload-memory.md देखें (Gist या .zip)।
     """
+    sourceCode "GitHub पर formal-ai का source code खोलें।"
     exportMemory """
       स्मृति निर्यात करें - पूरे agent state को formal-ai-memory.lino में सेव करें: पूरा seed, UI preferences, environment metadata, और append-only event log. GitHub issue में जोड़ने के लिए docs/upload-memory.md देखें (Gist या .zip)।
     """
@@ -477,6 +514,8 @@ hi
     menuClose "side panel बंद करें (बातचीत, prompts, tools)।"
     composerMenu "attachments, memory, और reporting के input actions खोलें।"
     resizeSidebar "side panel की चौड़ाई बदलें।"
+    collapseSidebar "side panel छिपाएं (chat के लिए अधिक जगह)।"
+    expandSidebar "side panel दिखाएं (बातचीत, prompts, tools)।"
   composer
     placeholder
       chat "formal-ai को संदेश"
@@ -485,6 +524,7 @@ hi
       before "डेमो चल रहा है - "
       after " दबाकर रोकें और अपना संदेश लिखें।"
     send "भेजें"
+    sending "भेज रहा है..."
     attachments "{count} जुड़ी हुई"
   conversation
     new "+ नई बातचीत"
@@ -503,6 +543,10 @@ hi
     toolInputs "Inputs"
     toolOutputs "Outputs"
     toolReasoning "Tool reasoning"
+    formalization "औपचारिकीकरण"
+    formalizationSubjectVerbObject "Subject - Verb - Object"
+    otherSources "अन्य स्रोत"
+    sourceCounts "{count} स्रोत"
   fetch
     collapse "समेटें"
     expand "फैलाएं"
