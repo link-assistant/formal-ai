@@ -120,6 +120,49 @@ test.describe('multilingual chat surface', () => {
     await expect(last).toContainText('два плюс два = 4');
   });
 
+  test('percentage-of-currency prompt resolves as a calculation before Wikipedia fallback', async ({ page }) => {
+    let wikipediaRequests = 0;
+    await page.route('https://en.wikipedia.org/**', async (route) => {
+      wikipediaRequests += 1;
+      const url = route.request().url();
+      if (url.includes('/w/rest.php/v1/search/page')) {
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify({
+            pages: [
+              {
+                id: 1,
+                key: 'Douglas_DC-8',
+                title: 'Douglas DC-8',
+                excerpt: 'The Douglas DC-8 is an early long-range narrow-body jetliner.',
+                description: 'Jet airliner',
+              },
+            ],
+          }),
+        });
+        return;
+      }
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          title: 'Douglas DC-8',
+          extract: 'The Douglas DC-8 is an early long-range narrow-body jetliner.',
+          content_urls: {
+            desktop: { page: 'https://en.wikipedia.org/wiki/Douglas_DC-8' },
+          },
+        }),
+      });
+    });
+
+    const last = await sendPrompt(page, 'What is 8% of $50?');
+    await expect(last).toHaveClass(/assistant/);
+    await expect(last).toContainText('8% of $50 = 4 USD');
+    await expect(last).not.toContainText('Douglas DC-8');
+    expect(wikipediaRequests).toBe(0);
+  });
+
   test('Russian "What is X?" returns the offline concept summary', async ({ page }) => {
     const last = await sendPrompt(page, 'Что такое Википедия?');
     await expect(last).toHaveClass(/assistant/);
