@@ -254,9 +254,12 @@ test.describe('formal-ai demo UI', () => {
     const lastMsg = messages.last();
     await expect(lastMsg).toHaveClass(/assistant/);
     await expect(lastMsg).toContainText('Implementation plan');
+    await expect(lastMsg).toContainText('Formalized meaning');
+    await expect(lastMsg).toContainText('software_project_request');
     await expect(lastMsg).toContainText('Owlbear');
     await expect(lastMsg).toContainText('Protection');
-    await expect(lastMsg).toContainText('mitigateDamage');
+    await expect(lastMsg).toContainText('approve plan');
+    await expect(lastMsg).not.toContainText('mitigateDamage');
     await expect(lastMsg).not.toContainText(UNKNOWN_ANSWER_MARKER);
   });
 
@@ -461,12 +464,15 @@ test.describe('Issue #94: theme, localization, and report context', () => {
     await page.goto('./');
     await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
 
-    const labels = await page.evaluate(() => ({
-      en: window.FormalAiI18n.t('buttons.reportIssue', 'en'),
-      ru: window.FormalAiI18n.t('buttons.reportIssue', 'ru'),
-      zh: window.FormalAiI18n.t('buttons.reportIssue', 'zh'),
-      hi: window.FormalAiI18n.t('buttons.reportIssue', 'hi'),
-    }));
+    const labels = await page.evaluate(async () => {
+      await window.FormalAiI18n.ready;
+      return {
+        en: window.FormalAiI18n.t('buttons.reportIssue', 'en'),
+        ru: window.FormalAiI18n.t('buttons.reportIssue', 'ru'),
+        zh: window.FormalAiI18n.t('buttons.reportIssue', 'zh'),
+        hi: window.FormalAiI18n.t('buttons.reportIssue', 'hi'),
+      };
+    });
 
     expect(labels).toEqual({
       en: 'Report issue',
@@ -491,10 +497,38 @@ test.describe('Issue #94: theme, localization, and report context', () => {
     });
 
     expect(runtime).toEqual({
-      engine: 'lino-i18n@0.0.1',
+      engine: 'lino-i18n@0.1.1',
       russian: 'Сообщить о проблеме',
       fallback: 'Report issue',
     });
+  });
+
+  test('loads the nested Links Notation catalog with generated parent labels', async ({ page }) => {
+    await disableGreetingVariations(page);
+    await page.goto('./');
+    await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
+
+    const catalog = await page.evaluate(async () => {
+      await window.FormalAiI18n.ready;
+      return {
+        source: window.FormalAiI18n.ENGINE_SOURCE,
+        reportTitle: window.FormalAiI18n.t('titles.reportIssue', 'en'),
+        settingsLanguage: window.FormalAiI18n.t('settings.language', 'en'),
+        timedStatus: window.FormalAiI18n.t('status.nextDialogIn', 'en', {
+          seconds: 8,
+        }),
+        catalogUrl: window.FormalAiI18n.CATALOG_URL,
+      };
+    });
+
+    expect(catalog).toMatchObject({
+      source: 'lino-i18n@0.1.1',
+      settingsLanguage: 'Language',
+      timedStatus: 'Next dialog in 8s',
+      catalogUrl: 'i18n-catalog.lino',
+    });
+    expect(catalog.reportTitle).toContain('pre-filled GitHub issue');
+    expect(catalog.reportTitle).toContain('docs/upload-memory.md');
   });
 
   test('issue reports include UI, browser, and coarse location context', async ({ page }) => {

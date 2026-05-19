@@ -1992,6 +1992,10 @@ const SOFTWARE_FEATURE_MARKERS = [
   "payment",
   "rename",
   "date",
+  "report",
+  "notification",
+  "import",
+  "backup",
 ];
 
 const GAME_TRACKER_TYPESCRIPT = `type Cooldown = {
@@ -2049,17 +2053,70 @@ export function tickCooldowns(unit: UnitState): UnitState {
   };
 }`;
 
+const GENERIC_PROJECT_TYPESCRIPT = `type ProjectRecord = {
+  id: string;
+  title: string;
+  status: "open" | "done";
+  notes: string[];
+};
+
+type ProjectCommand =
+  | { type: "add"; id: string; title: string }
+  | { type: "note"; id: string; note: string }
+  | { type: "complete"; id: string };
+
+export function applyCommand(
+  records: ProjectRecord[],
+  command: ProjectCommand,
+): ProjectRecord[] {
+  switch (command.type) {
+    case "add":
+      return [
+        ...records,
+        { id: command.id, title: command.title, status: "open", notes: [] },
+      ];
+    case "note":
+      return records.map((record) =>
+        record.id === command.id
+          ? { ...record, notes: [...record.notes, command.note] }
+          : record,
+      );
+    case "complete":
+      return records.map((record) =>
+        record.id === command.id ? { ...record, status: "done" } : record,
+      );
+  }
+}`;
+
 function containsAny(value, needles) {
   return needles.some((needle) => value.includes(needle));
 }
 
+function containsToken(normalized, token) {
+  return String(normalized || "").split(/\s+/).includes(token);
+}
+
+function detectSoftwareAction(normalized) {
+  return SOFTWARE_ACTION_WORDS.find((word) => containsToken(normalized, word)) || null;
+}
+
 function detectSoftwareArtifact(normalized) {
-  const match = SOFTWARE_ARTIFACTS.find(([needle]) => normalized.includes(needle));
-  return match ? match[1] : null;
+  const match = SOFTWARE_ARTIFACTS.find(([needle]) => {
+    if (needle.includes(" ")) return normalized.includes(needle);
+    return containsToken(normalized, needle);
+  });
+  return match ? { surface: match[0], label: match[1] } : null;
 }
 
 function extractSoftwareTarget(prompt, artifact) {
-  const markers = [`${artifact} for `, `${artifact} to `, " for ", " to "];
+  const markers = [
+    `${artifact.surface} for `,
+    `${artifact.surface} to `,
+    `${artifact.label} for `,
+    `${artifact.label} to `,
+    " for ",
+    " to ",
+  ];
   for (const marker of markers) {
     const target = extractAfterMarker(prompt, marker);
     if (target) return target;
@@ -2136,68 +2193,251 @@ function isGameUnitTracker(normalized) {
   return domain && mechanics;
 }
 
-function renderSoftwareProjectPlan(artifact, target, features, gameTracker) {
-  const lines = [];
-  lines.push(`Implementation plan for a ${artifact} targeting ${target}:`);
-  lines.push("");
-  lines.push("Requirements extracted:");
-  for (const feature of features) lines.push(`- ${feature}`);
-  lines.push("");
-  lines.push("Architecture:");
-  lines.push("- Domain state: keep the smallest serializable records for each tracked object.");
-  lines.push("- Commands: add, edit, apply update, advance time, export/import state.");
-  lines.push("- Persistence: save state through the host extension storage boundary.");
-  lines.push("- Tests: cover state transitions before wiring UI or host APIs.");
-  if (gameTracker) {
-    lines.push("");
-    lines.push("Starter TypeScript core:");
-    lines.push("");
-    lines.push("```typescript");
-    lines.push(GAME_TRACKER_TYPESCRIPT);
-    lines.push("```");
-    lines.push("");
-    lines.push("Owlbear integration steps:");
-    lines.push("1. Map each selected token/item to a `UnitState` record in extension storage.");
-    lines.push("2. Render a compact panel with HP, Protection, Resistance, and cooldown controls.");
-    lines.push("3. Route damage buttons through `mitigateDamage` so stacks reduce damage before HP.");
-    lines.push("4. Call `tickCooldowns` at round end and persist the returned state.");
-    lines.push("5. Add tests for zero damage, overkill damage, stack edits, and cooldown expiry.");
-  } else {
-    lines.push("");
-    lines.push("Next implementation steps:");
-    lines.push("1. Define the state schema and one pure update function per user action.");
-    lines.push("2. Write unit tests for those update functions.");
-    lines.push("3. Add the host-specific adapter only after the core state transitions pass.");
-    lines.push("4. Add an export path so users can inspect and back up their data.");
+function softwareDomainLabel(meaning) {
+  return meaning.gameTracker ? "tabletop_game_unit_tracker" : "software_project";
+}
+
+function softwareApprovalLabel(approved) {
+  return approved ? "approved" : "proposed";
+}
+
+function linoString(value) {
+  return `"${String(value || "")
+    .replace(/\\/g, "\\\\")
+    .replace(/"/g, '\\"')
+    .replace(/\n/g, "\\n")
+    .replace(/\r/g, "\\r")}"`;
+}
+
+function softwareMeaningLino(meaning, approved) {
+  const lines = ["software_project_request"];
+  lines.push(`  action ${linoString(meaning.action)}`);
+  lines.push(`  artifact ${linoString(meaning.artifact)}`);
+  lines.push(`  artifact_surface ${linoString(meaning.artifactSurface)}`);
+  lines.push(`  target ${linoString(meaning.target)}`);
+  lines.push(`  domain ${linoString(softwareDomainLabel(meaning))}`);
+  lines.push(`  approval_state ${softwareApprovalLabel(approved)}`);
+  lines.push("  approval_required true");
+  for (const requirement of meaning.requirements) {
+    lines.push(`  requirement ${linoString(requirement)}`);
   }
+  if (meaning.gameTracker) {
+    lines.push('  state_model "unit_state"');
+    lines.push('  command "apply_damage"');
+    lines.push('  command "set_stacks"');
+    lines.push('  command "tick_cooldowns"');
+    lines.push('  validation "damage_mitigation_floor_at_zero"');
+    lines.push('  validation "cooldowns_decrement_without_negative_rounds"');
+  } else {
+    lines.push('  state_model "project_records"');
+    lines.push('  command "create_record"');
+    lines.push('  command "update_record"');
+    lines.push('  command "export_state"');
+    lines.push('  validation "pure_state_transitions_before_host_api"');
+  }
+  return lines.join("\n") + "\n";
+}
+
+function softwareMeaningKey(meaning) {
+  return [
+    `action=${meaning.action}`,
+    `artifact=${meaning.artifact}`,
+    `target=${meaning.target}`,
+    `game_tracker=${meaning.gameTracker}`,
+    ...meaning.requirements.map((requirement) => `requirement=${requirement}`),
+  ].join(";");
+}
+
+function stableSoftwareMeaningId(meaning) {
+  let hash = 0xcbf29ce484222325n;
+  const source = softwareMeaningKey(meaning);
+  for (let index = 0; index < source.length; index += 1) {
+    hash ^= BigInt(source.charCodeAt(index));
+    hash = BigInt.asUintN(64, hash * 0x100000001b3n);
+  }
+  return `software_project_request_${hash.toString(16)}`;
+}
+
+function formalizeSoftwareProjectRequest(prompt) {
+  const normalized = normalizePrompt(prompt);
+  if (normalized.includes("hello") && normalized.includes("world")) return null;
+  const action = detectSoftwareAction(normalized);
+  const artifact = detectSoftwareArtifact(normalized);
+  if (!action || !artifact) return null;
+  return {
+    action,
+    artifactSurface: artifact.surface,
+    artifact: artifact.label,
+    target: extractSoftwareTarget(prompt, artifact),
+    requirements: extractSoftwareFeatures(prompt),
+    gameTracker: isGameUnitTracker(normalized),
+  };
+}
+
+function softwareReasoningSteps(meaning) {
+  const steps = [
+    `Classify the impulse as a request to ${meaning.action} a ${meaning.artifact} instead of a fact lookup.`,
+    `Bind the target environment to ${meaning.target} and keep the first response reviewable.`,
+    `Extract ${meaning.requirements.length} requirement(s) into the meaning record before planning.`,
+  ];
+  if (meaning.gameTracker) {
+    steps.push(
+      "Map HP, Protection, Resistance, damage, and cooldown phrases to a unit-state domain model.",
+    );
+  }
+  steps.push("Ask for approval before producing code or execution steps.");
+  return steps;
+}
+
+function softwarePlanSteps(meaning) {
+  if (meaning.gameTracker) {
+    return [
+      `Confirm the ${meaning.target} storage and selected-token API boundaries.`,
+      "Define `UnitState` with HP, max HP, Protection, Resistance, and cooldowns.",
+      "Write pure transition functions for damage mitigation, stack edits, and round ticks.",
+      "Add tests for zero damage, overkill damage, stack changes, and cooldown expiry.",
+      "Wire the tested core into the extension panel and host persistence.",
+    ];
+  }
+  return [
+    `Confirm the host API and data boundaries for ${meaning.target}.`,
+    "Define the smallest serializable state records for the requirements.",
+    "Write one pure update function per user command.",
+    "Add tests for each state transition before host integration.",
+    "Add import/export so users can inspect and back up their data.",
+  ];
+}
+
+function softwareEvidence(meaning, approved) {
+  const evidence = [
+    "formalization:text_to_links_notation",
+    `meaning:${stableSoftwareMeaningId(meaning)}`,
+    `software_project:action:${meaning.action}`,
+    `software_project:artifact:${meaning.artifact}`,
+    `software_project:target:${meaning.target}`,
+    `software_project:domain:${softwareDomainLabel(meaning)}`,
+    `approval_state:${softwareApprovalLabel(approved)}`,
+    `software_project:strategy:${meaning.gameTracker ? "game_unit_tracker" : "bounded_project_plan"}`,
+  ];
+  for (const requirement of meaning.requirements) {
+    evidence.push(`requirement:${requirement}`);
+  }
+  return evidence;
+}
+
+function renderSoftwareProjectPlan(meaning) {
+  const lines = [];
+  lines.push(
+    `Implementation plan pending approval for a ${meaning.artifact} targeting ${meaning.target}.`,
+  );
+  lines.push("");
+  lines.push("Formalized meaning:");
+  lines.push("```lino");
+  lines.push(softwareMeaningLino(meaning, false).trimEnd());
+  lines.push("```");
+  lines.push("");
+  lines.push("Reasoning steps:");
+  softwareReasoningSteps(meaning).forEach((step, index) => {
+    lines.push(`${index + 1}. ${step}`);
+  });
+  lines.push("");
+  lines.push("Proposed plan:");
+  softwarePlanSteps(meaning).forEach((step, index) => {
+    lines.push(`${index + 1}. ${step}`);
+  });
+  lines.push("");
+  lines.push(
+    "Reply `approve plan` to generate the starter implementation, or describe what to change.",
+  );
   return lines.join("\n");
 }
 
-function trySoftwareProjectRequest(prompt) {
-  const normalized = normalizePrompt(prompt);
-  const artifact = detectSoftwareArtifact(normalized);
-  if (!artifact || !containsAny(normalized, SOFTWARE_ACTION_WORDS)) return null;
-  if (normalized.includes("hello") && normalized.includes("world")) return null;
+function renderSoftwareProjectImplementation(meaning) {
+  const lines = [];
+  lines.push(
+    `Approved implementation starter for a ${meaning.artifact} targeting ${meaning.target}.`,
+  );
+  lines.push("");
+  lines.push("Formalized meaning:");
+  lines.push("```lino");
+  lines.push(softwareMeaningLino(meaning, true).trimEnd());
+  lines.push("```");
+  lines.push("");
+  lines.push("Implementation steps:");
+  softwarePlanSteps(meaning).forEach((step, index) => {
+    lines.push(`${index + 1}. ${step}`);
+  });
+  lines.push("");
+  lines.push("Starter TypeScript core:");
+  lines.push("");
+  lines.push("```typescript");
+  lines.push(meaning.gameTracker ? GAME_TRACKER_TYPESCRIPT : GENERIC_PROJECT_TYPESCRIPT);
+  lines.push("```");
+  return lines.join("\n");
+}
 
-  const target = extractSoftwareTarget(prompt, artifact);
-  const features = extractSoftwareFeatures(prompt);
-  const gameTracker = isGameUnitTracker(normalized);
-  const evidence = [
-    `software_project:artifact:${artifact}`,
-    `software_project:target:${target}`,
-    `software_project:strategy:${gameTracker ? "game_unit_tracker" : "bounded_project_plan"}`,
-  ];
-  for (const feature of features) evidence.push(`requirement:${feature}`);
-  if (gameTracker) {
-    evidence.push("domain_model:unit_state");
-    evidence.push("validation:damage_mitigation_floor_at_zero");
-    evidence.push("validation:cooldowns_decrement_without_negative_rounds");
+function isSoftwareApprovalPrompt(normalized) {
+  const compact = String(normalized || "").replace(/[.!?,]/g, "").trim();
+  return [
+    "approve",
+    "approved",
+    "approve plan",
+    "yes",
+    "yes proceed",
+    "proceed",
+    "go ahead",
+    "looks good",
+    "do it",
+    "start implementation",
+    "generate code",
+    "convert to code",
+  ].includes(compact);
+}
+
+function lastHistoryTurn(history, role) {
+  if (!Array.isArray(history)) return null;
+  for (let index = history.length - 1; index >= 0; index -= 1) {
+    const turn = history[index];
+    if (turn && turn.role === role && turn.content) return String(turn.content);
   }
+  return null;
+}
+
+function priorSoftwareProjectMeaning(history) {
+  const assistant = lastHistoryTurn(history, "assistant");
+  if (
+    !assistant ||
+    !assistant.includes("software_project_request") ||
+    !assistant.includes("approve plan")
+  ) {
+    return null;
+  }
+  const user = lastHistoryTurn(history, "user");
+  return user ? formalizeSoftwareProjectRequest(user) : null;
+}
+
+function trySoftwareProjectRequest(prompt, history = []) {
+  const normalized = normalizePrompt(prompt);
+  if (isSoftwareApprovalPrompt(normalized)) {
+    const prior = priorSoftwareProjectMeaning(history);
+    if (prior) {
+      return {
+        intent: "software_project_implementation",
+        content: renderSoftwareProjectImplementation(prior),
+        confidence: 0.82,
+        evidence: softwareEvidence(prior, true),
+      };
+    }
+  }
+
+  const meaning = formalizeSoftwareProjectRequest(prompt);
+  if (!meaning) return null;
+
   return {
     intent: "software_project_plan",
-    content: renderSoftwareProjectPlan(artifact, target, features, gameTracker),
-    confidence: 0.75,
-    evidence,
+    content: renderSoftwareProjectPlan(meaning),
+    confidence: 0.78,
+    evidence: softwareEvidence(meaning, false),
   };
 }
 
@@ -2856,7 +3096,7 @@ async function solve(prompt, history, prefs) {
     { name: "tryJavaScriptExecution", run: () => tryJavaScriptExecution(prompt) },
     { name: "tryConceptLookup", run: () => tryConceptLookup(prompt) },
     { name: "tryHelloWorld", run: () => tryHelloWorld(prompt) },
-    { name: "trySoftwareProjectRequest", run: () => trySoftwareProjectRequest(prompt) },
+    { name: "trySoftwareProjectRequest", run: () => trySoftwareProjectRequest(prompt, history) },
   ];
   for (const handler of syncHandlers) {
     const hit = handler.run();

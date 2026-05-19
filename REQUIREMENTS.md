@@ -255,16 +255,37 @@ and `REQUIREMENTS.md` in lockstep.
 | R135 | Expose R129+ alongside the existing requirement matrix. | Implemented by appending this **Issue #103 Test-Matrix And Architecture Requirements** block to `REQUIREMENTS.md`. |
 | R136 | Compile issue #103 evidence and case-study analysis under `docs/case-studies/issue-103/`. | Implemented in `docs/case-studies/issue-103/README.md` with raw data (`issue-103.json`, `issue-103-comments.json`, PR-104 mirrors, `recent-merged-prs.json`, `competitor-test-research.md`) in `docs/case-studies/issue-103/raw-data/`. |
 
+## Issue #117 Lino I18n Catalog Requirements
+
+Issue [#117](https://github.com/link-assistant/formal-ai/issues/117) asks the
+browser UI to stop using its own i18n implementation and instead use
+[`link-foundation/lino-i18n`](https://github.com/link-foundation/lino-i18n),
+with nested Links Notation authoring, multiline quoted strings, full language
+parity, CI enforcement, and case-study evidence.
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R137 | Browser UI translations must be loaded through `link-foundation/lino-i18n`, not through a hand-maintained JavaScript translation/interpolation implementation. | Implemented by `src/web/i18n.js`, which imports `lino-i18n@0.1.1`, fetches `src/web/i18n-catalog.lino`, parses it with `parseLinoCatalogs`, and creates the runtime with `createI18n`. The import map in `src/web/index.html` is pinned to the same package version. |
+| R138 | UI translation source must use nested Links Notation and multiline quoted strings for long entries. | Implemented in `src/web/i18n-catalog.lino`, where `buttons`, `titles`, `composer`, `settings`, `status`, and trace messages are nested under top-level locale blocks and long tooltip values use `"""` strings. |
+| R139 | English, Russian, Chinese, and Hindi must all contain the same complete UI key surface. | Implemented by migrating all 104 existing UI keys into each locale block in `src/web/i18n-catalog.lino`, including parent-label keys such as `settings.language` via the upstream `label` convention. |
+| R140 | CI/CD must fail when the i18n catalog loses a required key, adds a non-label drift key, drops a locale, or contains empty translations. | Implemented by `tests/e2e/scripts/check-i18n-catalog.mjs` and the `Check i18n catalog coverage` step in `.github/workflows/release.yml`, run as `npm run --prefix tests/e2e check:i18n`. |
+| R141 | Runtime tests must prove the browser uses the published `lino-i18n` package and can resolve nested catalog entries, parent labels, interpolation, and fallback. | Implemented by updating the Issue #94 Playwright tests in `tests/e2e/tests/demo.spec.js` to expect `lino-i18n@0.1.1` and adding a nested catalog lookup test for Issue #117. |
+| R142 | Compile issue #117 evidence, online research, requirements, solution plan, and verification notes under `docs/case-studies/issue-117/`. | Implemented in `docs/case-studies/issue-117/README.md` with raw captured GitHub, npm, release, and upstream README data under `docs/case-studies/issue-117/raw-data/`. |
+
 ## Issue #80 Software Project Request Requirements
 
 Issue [#80](https://github.com/link-assistant/formal-ai/issues/80) reports that
 an Owlbear/D&D extension request for HP, Protection/Resistance mitigation, and
 cooldown tracking returned `intent: unknown`. The maintainer asked for a
-generalization across similar tasks instead of a memoized prompt answer.
+generalization across similar tasks instead of a memoized prompt answer, and
+then clarified that the first step must formalize the message into Links
+Notation meaning before deriving reasoning and plan steps.
 
 | ID | Requirement | Status |
 | --- | --- | --- |
-| R137 | Open-ended requests to build or write a software artifact (extension, plugin, bot, app, service, website, or tool) must route to a typed software-project intent instead of `unknown`. | Implemented by `try_software_project_request` in `src/solver_handlers/software_project.rs`, mirrored by `trySoftwareProjectRequest` in `src/web/formal_ai_worker.js`, and registered as `software_project_plan` in `data/seed/intent-routing.lino`. |
-| R138 | The response must be generalized from the prompt structure: artifact, target environment, extracted requirements, state model, commands, persistence, and tests. | Implemented by the software-project handler's artifact/target/feature extraction and `software_project:*` / `requirement:*` evidence links. |
-| R139 | Game-unit tracker requests must receive a concrete starter design for HP, Protection, Resistance, damage mitigation, and cooldown ticking. | Implemented by the game-unit tracker branch, which emits a TypeScript `UnitState` core with `mitigateDamage`, `setStacks`, and `tickCooldowns`. |
-| R140 | The browser demo must handle the reported Owlbear prompt without showing the unknown-intent fallback. | Covered by `software_project_request_returns_reviewable_plan`, `software_project_variations_do_not_return_unknown`, and the Playwright regression `Owlbear extension request returns a software project plan`. |
+| R143 | Open-ended requests to build or write a software artifact (extension, plugin, bot, app, service, website, or tool) must route to a typed software-project intent instead of `unknown`. | Implemented by `try_software_project_request` in `src/solver_handlers/software_project.rs`, mirrored by `trySoftwareProjectRequest` in `src/web/formal_ai_worker.js`, and registered in `data/seed/intent-routing.lino`. |
+| R144 | The first response must formalize the user text into a reviewable Links Notation meaning record before producing project steps. | Implemented by the software-project meaning parser and `software_project_request` Links Notation block rendered in Rust and browser responses. |
+| R145 | The response must derive reasoning steps and a proposed plan from the meaning record, then wait for user approval before converting the plan into code or execution steps. | Implemented by the plan response asking for `approve plan` and by the approval follow-up handler that uses the prior user request and assistant plan. |
+| R146 | Game-unit tracker requests must receive a concrete implementation starter for HP, Protection, Resistance, damage mitigation, and cooldown ticking only after the user approves the plan. | Implemented by the game-unit tracker approval branch, which emits a TypeScript `UnitState` core with `mitigateDamage`, `setStacks`, and `tickCooldowns`. |
+| R147 | Tests must show 10-20 full dialogue examples so reviewers can inspect the text → meaning → reasoning → plan → approval flow. | Covered by the `software_project_dialogue_examples_formalize_plan_then_implement_after_approval` regression matrix. |
+| R148 | The browser demo must handle the reported Owlbear prompt without showing the unknown-intent fallback. | Covered by `software_project_request_returns_reviewable_plan`, `software_project_variations_do_not_return_unknown`, the full dialogue matrix, and the Playwright regression `Owlbear extension request returns a software project plan`. |

@@ -2,8 +2,8 @@ use formal_ai::{
     create_chat_completion, create_response, environment_directory, environment_records,
     export_memory_bundle, export_memory_links_notation, extract_memory_from_bundle,
     handle_api_request, knowledge_links_notation, merged_bundle, parse_bundle,
-    parse_memory_links_notation, seed_files, ChatCompletionRequest, ChatMessage, FormalAiEngine,
-    MemoryEvent, MemoryStore, MessageContent, ResponsesRequest,
+    parse_memory_links_notation, seed_files, ChatCompletionRequest, ChatMessage, ConversationTurn,
+    FormalAiEngine, MemoryEvent, MemoryStore, MessageContent, ResponsesRequest, UniversalSolver,
 };
 use lino_objects_codec::format::parse_indented;
 
@@ -278,13 +278,17 @@ fn software_project_request_returns_reviewable_plan() {
         response.answer
     );
     assert_ne!(response.intent, "unknown");
+    assert!(response.answer.contains("Formalized meaning"));
+    assert!(response.answer.contains("software_project_request"));
+    assert!(response.answer.contains("Reasoning steps"));
+    assert!(response.answer.contains("Proposed plan"));
     assert!(response.answer.contains("Owlbear"));
     assert!(response.answer.contains("HP"));
     assert!(response.answer.contains("Protection"));
     assert!(response.answer.contains("Resistance"));
     assert!(response.answer.contains("cooldown"));
-    assert!(response.answer.contains("```typescript"));
-    assert!(response.answer.contains("mitigateDamage"));
+    assert!(response.answer.contains("approve plan"));
+    assert!(!response.answer.contains("mitigateDamage"));
 }
 
 #[test]
@@ -305,7 +309,128 @@ fn software_project_variations_do_not_return_unknown() {
             response.answer
         );
         assert_ne!(response.intent, "unknown");
-        assert!(response.answer.contains("Implementation plan"));
+        assert!(response.answer.contains("Formalized meaning"));
+        assert!(response.answer.contains("Proposed plan"));
+        assert!(response.answer.contains("approve plan"));
+    }
+}
+
+#[test]
+fn software_project_approval_returns_implementation_starter() {
+    let solver = UniversalSolver::default();
+    let prompt = concat!(
+        "Write an extension for Owlbear that tracks HP, Protection, Resistance, ",
+        "damage mitigation, and cooldowns for tabletop units"
+    );
+
+    let plan = solver.solve(prompt);
+    let history = [
+        ConversationTurn::user(prompt),
+        ConversationTurn::assistant(plan.answer),
+    ];
+    let implementation = solver.solve_with_history("approve plan", &history);
+
+    assert_eq!(
+        implementation.intent, "software_project_implementation",
+        "answer was: {}",
+        implementation.answer
+    );
+    assert!(implementation.answer.contains("approval_state approved"));
+    assert!(implementation.answer.contains("```typescript"));
+    assert!(implementation.answer.contains("mitigateDamage"));
+    assert!(implementation.answer.contains("tickCooldowns"));
+}
+
+#[test]
+fn software_project_dialogue_examples_formalize_plan_then_implement_after_approval() {
+    let solver = UniversalSolver::default();
+    let examples = [
+        (
+            "Write an extension for Owlbear that tracks HP, Protection, Resistance, damage, and cooldowns",
+            "mitigateDamage",
+        ),
+        (
+            "Build a browser extension for reading progress that tracks pages and exports CSV",
+            "applyCommand",
+        ),
+        (
+            "Create a Discord bot for scheduling game sessions with reminders",
+            "applyCommand",
+        ),
+        (
+            "Implement a web app for invoices that tracks overdue payments and exports reports",
+            "applyCommand",
+        ),
+        (
+            "Make a plugin for a tabletop map that tracks unit status effects",
+            "applyCommand",
+        ),
+        (
+            "Develop a command line tool for renaming photos by date",
+            "applyCommand",
+        ),
+        (
+            "Generate a mobile app for habit tracking with notifications and backups",
+            "applyCommand",
+        ),
+        (
+            "Design a service for importing customer invoices and sending payment reminders",
+            "applyCommand",
+        ),
+        (
+            "Scaffold a website for event schedules that exports calendar data",
+            "applyCommand",
+        ),
+        (
+            "Create an API for tracking equipment status and maintenance dates",
+            "applyCommand",
+        ),
+        (
+            "Build a bot for project reports that sends weekly notifications",
+            "applyCommand",
+        ),
+        (
+            "Make an add-on for a tabletop token that tracks hp and damage",
+            "mitigateDamage",
+        ),
+    ];
+
+    for (prompt, implementation_needle) in examples {
+        let plan = solver.solve(prompt);
+        assert_eq!(
+            plan.intent, "software_project_plan",
+            "prompt: {prompt:?} answer: {}",
+            plan.answer
+        );
+        assert!(plan.answer.contains("```lino"));
+        assert!(plan.answer.contains("software_project_request"));
+        assert!(plan.answer.contains("approval_state proposed"));
+        assert!(plan.answer.contains("Reasoning steps"));
+        assert!(plan.answer.contains("Proposed plan"));
+        assert!(plan.answer.contains("approve plan"));
+        assert!(
+            !plan.answer.contains("```typescript"),
+            "first turn must not generate code before approval: {}",
+            plan.answer
+        );
+
+        let history = [
+            ConversationTurn::user(prompt),
+            ConversationTurn::assistant(plan.answer),
+        ];
+        let implementation = solver.solve_with_history("approve plan", &history);
+        assert_eq!(
+            implementation.intent, "software_project_implementation",
+            "prompt: {prompt:?} answer: {}",
+            implementation.answer
+        );
+        assert!(implementation.answer.contains("approval_state approved"));
+        assert!(implementation.answer.contains("Starter TypeScript core"));
+        assert!(
+            implementation.answer.contains(implementation_needle),
+            "prompt: {prompt:?} expected {implementation_needle} in {}",
+            implementation.answer
+        );
     }
 }
 

@@ -129,7 +129,7 @@ The engine normalizes a prompt, selects a deterministic symbolic rule, and retur
 
 - greetings: `Hi`, `Hello`, `Hey`
 - hello world requests for Rust, Python, JavaScript, TypeScript, Go, and C
-- open-ended software artifact requests such as extensions, plugins, bots, apps, and tools, returning a bounded implementation plan plus starter domain code when the requirements are concrete
+- open-ended software artifact requests such as extensions, plugins, bots, apps, and tools, first returning a Links Notation meaning record with reasoning and plan steps, then returning starter domain code after the user approves the plan
 - calculator-parsable math, unit, currency, percentage, and datetime prompts through `link-calculator`, with the local arithmetic evaluator retained for unsupported word-operator and binary-modulo syntax
 - URL requests such as `fetch example.com` and `Сделай запрос к google.com`; the browser demo tries CORS `fetch()` first and falls back to an embedded iframe
 - explicit web-search prompts such as `Search the web for Nikola Tesla` and `Найди в интернете Никола Тесла`; the browser demo uses the CORS-enabled Wikipedia search endpoint and returns ranked links
