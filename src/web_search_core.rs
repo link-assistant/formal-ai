@@ -745,7 +745,7 @@ mod tests {
         }];
         let fused = reciprocal_rank_fusion(&entries, WEB_SEARCH_RRF_K);
         assert_eq!(fused.len(), 1);
-        let expected = 1.0_f64 / (WEB_SEARCH_RRF_K as f64 + 1.0);
+        let expected = 1.0_f64 / (f64::from(WEB_SEARCH_RRF_K) + 1.0);
         assert!(
             (fused[0].score - expected).abs() < 1e-9,
             "expected score {expected}, got {}",
