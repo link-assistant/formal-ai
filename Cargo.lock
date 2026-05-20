@@ -465,9 +465,9 @@ checksum = "68ab91017fe16c622486840e4c83c9a37afeff978bd239b5293d61ece587de66"
 
 [[package]]
 name = "link-calculator"
-version = "0.16.0"
+version = "0.17.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6169dfd2ab4bb765e6e23490f5bf21631b67bce6397914dea850c54160687569"
+checksum = "73946e07cfee4642f2d688776a47ea3e886ca252232f5c25c4241d9a23dde594"
 dependencies = [
  "chrono",
  "console_error_panic_hook",

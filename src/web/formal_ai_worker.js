@@ -1139,18 +1139,89 @@ const PERCENT_OF_CURRENCY_CODES = new Map([
   ["₽", "RUB"],
 ]);
 
+const DEFAULT_CURRENCY_RATES = new Map([
+  ["USD:EUR", 0.92],
+  ["USD:GBP", 0.79],
+  ["USD:JPY", 148.5],
+  ["USD:CHF", 0.88],
+  ["USD:CNY", 7.25],
+  ["USD:RUB", 89.5],
+  ["USD:INR", 86.5],
+  ["USD:CLF", 0.022],
+  ["USD:VND", 25810.0],
+  ["USD:KZT", 470.0],
+  ["EUR:USD", 1.087],
+  ["EUR:GBP", 0.86],
+  ["EUR:JPY", 161.5],
+  ["EUR:CHF", 0.96],
+  ["GBP:USD", 1.27],
+  ["GBP:EUR", 1.16],
+]);
+
 function currencyCodeFromWord(value) {
   const lower = String(value || "").toLowerCase();
-  if (lower === "usd" || lower === "dollar" || lower === "dollars") {
+  if (
+    lower === "usd" ||
+    lower === "dollar" ||
+    lower === "dollars" ||
+    [
+      "доллар",
+      "доллара",
+      "долларе",
+      "доллары",
+      "долларов",
+      "долларам",
+      "доллару",
+      "долларом",
+      "долларами",
+      "долларах",
+    ].includes(lower)
+  ) {
     return "USD";
   }
-  if (lower === "eur" || lower === "euro" || lower === "euros") {
+  if (
+    lower === "eur" ||
+    lower === "euro" ||
+    lower === "euros" ||
+    lower === "евро"
+  ) {
     return "EUR";
   }
-  if (lower === "rub" || lower === "ruble" || lower === "rubles") {
+  if (
+    lower === "rub" ||
+    lower === "ruble" ||
+    lower === "rubles" ||
+    [
+      "рубль",
+      "рубля",
+      "рубле",
+      "рубли",
+      "рублей",
+      "рублям",
+      "рублю",
+      "рублём",
+      "рублем",
+      "рублями",
+      "рублях",
+    ].includes(lower)
+  ) {
     return "RUB";
   }
   return "";
+}
+
+function defaultCurrencyRate(from, to) {
+  if (from === to) return 1;
+  const direct = DEFAULT_CURRENCY_RATES.get(`${from}:${to}`);
+  if (direct) return direct;
+  const inverse = DEFAULT_CURRENCY_RATES.get(`${to}:${from}`);
+  if (inverse) return 1 / inverse;
+  if (from !== "USD" && to !== "USD") {
+    const fromUsd = defaultCurrencyRate(from, "USD");
+    const usdTo = defaultCurrencyRate("USD", to);
+    if (fromUsd && usdTo) return fromUsd * usdTo;
+  }
+  return null;
 }
 
 function evaluatePercentOfExpression(expression) {
@@ -1168,6 +1239,23 @@ function evaluatePercentOfExpression(expression) {
     currencyCodeFromWord(match[4]);
   const result = formatArithmeticResult((amount * percent) / 100);
   return currency ? `${result} ${currency}` : result;
+}
+
+function evaluateCurrencyConversionExpression(expression) {
+  const match = String(expression || "")
+    .trim()
+    .match(
+      /^([+-]?\d+(?:[.,]\d+)?)\s+(.+?)\s+(?:in|as|to|в|во|к)\s+(.+)$/iu,
+    );
+  if (!match) return null;
+  const amount = Number(match[1].replace(",", "."));
+  if (!Number.isFinite(amount)) return null;
+  const from = currencyCodeFromWord(match[2].trim());
+  const to = currencyCodeFromWord(match[3].trim());
+  if (!from || !to) return null;
+  const rate = defaultCurrencyRate(from, to);
+  if (!rate) return null;
+  return `${formatArithmeticResult(amount * rate)} ${to}`;
 }
 
 function normalizeArithmeticWords(expression) {
@@ -1582,6 +1670,7 @@ function extractArithmeticExpression(prompt) {
   if (!hasDigit && !hasSpelled) return null;
   if (!hasSymbolic && !hasWord && hasLetter) return null;
   if (hasPercentOf) return working;
+  if (evaluateCurrencyConversionExpression(working) !== null) return working;
   const allowed = /^[0-9+\-*/%().=\s_×·÷−,a-zA-Z]+$/;
   if (!allowed.test(working) && !hasWordOperator) return null;
   return working;
@@ -3142,7 +3231,11 @@ function tryArithmetic(prompt) {
     let formatted;
     let backend = "js";
     const percentOfResult = evaluatePercentOfExpression(expression);
-    if (percentOfResult) {
+    const currencyConversionResult = evaluateCurrencyConversionExpression(expression);
+    if (currencyConversionResult !== null) {
+      formatted = currencyConversionResult;
+      backend = "js-currency";
+    } else if (percentOfResult) {
       formatted = percentOfResult;
       backend = "js-percent-of";
     } else if (isEquation) {

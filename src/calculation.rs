@@ -57,7 +57,7 @@ fn evaluate_with_link_calculator(
 }
 
 fn should_use_fallback_before_calculator(expression: &str) -> bool {
-    contains_word_operator(expression) || contains_binary_percent_remainder(expression)
+    contains_word_operator(expression)
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -364,40 +364,6 @@ fn contains_word_operator(expression: &str) -> bool {
     ]
     .iter()
     .any(|operator| lower.contains(operator))
-}
-
-fn contains_binary_percent_remainder(expression: &str) -> bool {
-    let mut chars = expression.char_indices();
-    while let Some((_, character)) = chars.next() {
-        if character != '%' {
-            continue;
-        }
-        let after = chars
-            .clone()
-            .map(|(_, c)| c)
-            .collect::<String>()
-            .trim_start()
-            .to_lowercase();
-        if after.starts_with("of") {
-            continue;
-        }
-        if after.starts_with('*')
-            || after.starts_with('/')
-            || after.starts_with('+')
-            || after.starts_with('-')
-            || after.is_empty()
-        {
-            continue;
-        }
-        if after
-            .chars()
-            .next()
-            .is_some_and(|c| c.is_ascii_digit() || c == '(')
-        {
-            return true;
-        }
-    }
-    false
 }
 
 /// Evaluate an expression, delegating calculator-supported syntax to
