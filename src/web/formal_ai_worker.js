@@ -1807,6 +1807,23 @@ function stableBehaviorRuleId(prefix, value) {
   return `${prefix}_${hash.toString(16)}`;
 }
 
+function extractQuotedPhrase(text) {
+  const source = String(text || "");
+  const pairs = [
+    ['"', '"'],
+    ["'", "'"],
+    ["`", "`"],
+    ["«", "»"],
+  ];
+  for (const [open, close] of pairs) {
+    const start = source.indexOf(open);
+    if (start === -1) continue;
+    const end = source.indexOf(close, start + open.length);
+    if (end !== -1) return source.slice(start + open.length, end);
+  }
+  return null;
+}
+
 function escapeBehaviorRuleValue(value) {
   return String(value || "")
     .replaceAll("\\", "\\\\")
@@ -2894,13 +2911,55 @@ function tryFeatureCapabilityStatus(prompt, normalized, language, preferences) {
   };
 }
 
-function tryCapabilities(prompt, normalized, preferences) {
+function isMoreCapabilitiesPrompt(normalized, language) {
+  if (language === "ru") {
+    return (
+      normalized.includes("что ещё ты умеешь") ||
+      normalized.includes("что еще ты умеешь") ||
+      normalized.includes("что ещё можешь") ||
+      normalized.includes("что еще можешь") ||
+      normalized.includes("что ты ещё умеешь") ||
+      normalized.includes("что ты еще умеешь")
+    );
+  }
+  return (
+    normalized.includes("what else can you do") ||
+    normalized.includes("what else do you do") ||
+    normalized.includes("what other things can you do")
+  );
+}
+
+function historyMentionsWebSearch(history) {
+  if (!Array.isArray(history)) return false;
+  return history.some((turn) => {
+    const content = String(turn && turn.content ? turn.content : "").toLowerCase();
+    return (
+      content.includes("duckduckgo") ||
+      content.includes("web search") ||
+      content.includes("search the internet") ||
+      content.includes("веб-поиск") ||
+      content.includes("веб поиск") ||
+      content.includes("интернет")
+    );
+  });
+}
+
+function additionalCapabilitiesContent(language) {
+  if (language === "ru") {
+    return "Кроме уже названных возможностей, могу ещё:\n\n- **Арифметика**: вычислять выражения вроде «Сколько будет 2 + 2?»\n- **Перевод**: переводить короткие фразы между поддерживаемыми языками.\n- **Поиск понятий**: объяснять термины, например «Что такое Википедия?»\n- **Hello World**: генерировать минимальные программы на Rust, Python, JavaScript, Go, C и других языках.\n- **Память диалога**: использовать предыдущие сообщения текущей сессии.\n- **Правила поведения**: показывать встроенные правила через `List behavior rules` и `Show behavior rule unknown`.\n- **Настройки и действия**: включать диагностику/демо/agent mode, менять тему, язык, стиль чата, экспортировать и импортировать память.";
+  }
+  return "Beyond the capability already discussed, I can also:\n\n- **Arithmetic**: evaluate expressions like `2 + 2`.\n- **Translation**: translate short phrases between supported languages.\n- **Concept lookup**: explain terms such as `What is Wikipedia?`.\n- **Hello World**: generate small programs in Rust, Python, JavaScript, Go, C, and more.\n- **Conversation memory**: use earlier messages from the current session.\n- **Behavior rules**: show built-in rules with `List behavior rules` and `Show behavior rule unknown`.\n- **Settings and actions**: configure diagnostics, demo mode, agent mode, theme, language, chat style, and memory import/export.";
+}
+
+function tryCapabilities(prompt, normalized, preferences, history) {
   const language = detectLanguage(prompt);
   const featureStatus = tryFeatureCapabilityStatus(prompt, normalized, language, preferences);
   if (featureStatus) return featureStatus;
+  const moreCapabilities = isMoreCapabilitiesPrompt(normalized, language);
   const isCapabilities =
     language === "ru"
-      ? normalized.includes("что ты умеешь") ||
+      ? moreCapabilities ||
+        normalized.includes("что ты умеешь") ||
         normalized.includes("чем ты можешь") ||
         normalized.includes("что ты можешь") ||
         normalized.includes("что умеет") ||
@@ -2919,7 +2978,8 @@ function tryCapabilities(prompt, normalized, preferences) {
           ? normalized.includes("आप क्या कर सकते") ||
             normalized.includes("तुम क्या कर सकते") ||
             normalized.includes("क्या क्या कर सकते")
-          : normalized.includes("what can you do") ||
+          : moreCapabilities ||
+            normalized.includes("what can you do") ||
             normalized.includes("what you can do") ||
             normalized.includes("what are your capabilities") ||
             normalized.includes("what are you capable of") ||
@@ -2929,6 +2989,20 @@ function tryCapabilities(prompt, normalized, preferences) {
             normalized.includes("how can you help") ||
             normalized.includes("what are your features");
   if (!isCapabilities) return null;
+  if (moreCapabilities) {
+    const priorSearch = historyMentionsWebSearch(history);
+    return {
+      intent: "capabilities",
+      content: additionalCapabilitiesContent(language),
+      confidence: 1.0,
+      evidence: [
+        "handler:capabilities",
+        "capabilities:follow_up",
+        ...(priorSearch ? ["capabilities:history:prior_web_search"] : []),
+        `language:${language}`,
+      ],
+    };
+  }
   const content =
     language === "ru"
       ? "Я formal-ai — детерминированный символьный ИИ. Вот что я умею:\n\n- **Приветствия**: отвечаю на «Привет», «Здравствуйте» и т.п.\n- **Hello World**: генерирую программы на Rust, Python, JavaScript, Go, C и других языках.\n- **Веб-поиск**: ищу в интернете через DuckDuckGo, Wikipedia и Wikidata, когда поиск доступен.\n- **Поиск понятий**: объясняю термины — попробуйте «Что такое Википедия?»\n- **Арифметика**: вычисляю выражения — например, «Сколько будет 2 + 2?»\n- **Перевод**: перевожу фразы между языками.\n- **Память**: помню контекст разговора в рамках сессии.\n- **Настройки и действия**: через сообщения можно включать диагностику/демо/agent mode, менять тему, язык, стиль чата и экспортировать или импортировать память.\n\nЯ работаю на основе локальных символьных правил, без нейросетевого инференса."
@@ -2942,6 +3016,128 @@ function tryCapabilities(prompt, normalized, preferences) {
     content,
     confidence: 1.0,
     evidence: ["handler:capabilities", `language:${language}`],
+  };
+}
+
+function detectTranslationSourceLanguage(normalized) {
+  if (normalized.includes("from russian") || normalized.includes("с русского")) return "ru";
+  if (normalized.includes("from english") || normalized.includes("с английского")) return "en";
+  if (normalized.includes("from hindi")) return "hi";
+  if (normalized.includes("from chinese")) return "zh";
+  return null;
+}
+
+function detectTranslationTargetLanguage(normalized) {
+  if (
+    normalized.includes("to english") ||
+    normalized.includes("на английский") ||
+    normalized.includes("на английском")
+  ) {
+    return "en";
+  }
+  if (normalized.includes("to russian") || normalized.includes("на русский")) return "ru";
+  if (normalized.includes("to hindi") || normalized.includes("на хинди")) return "hi";
+  if (normalized.includes("to chinese") || normalized.includes("на китайский")) return "zh";
+  return null;
+}
+
+function canonicalMeaningToken(raw) {
+  if (["hello", "hi", "hey", "привет", "здравствуйте", "नमस्ते", "你好"].includes(raw)) {
+    return "greeting";
+  }
+  if (
+    [
+      "hellohowareyou",
+      "какдела",
+      "какутебядела",
+      "какувасдела",
+      "приветкакдела",
+      "здравствуйтекаквашидела",
+    ].includes(raw)
+  ) {
+    return "greeting_how_are_you";
+  }
+  return raw;
+}
+
+function normalizeMeaningText(surface) {
+  const raw = Array.from(String(surface || "").toLowerCase())
+    .filter((character) => /[\p{L}\p{N}]/u.test(character))
+    .join("");
+  return canonicalMeaningToken(raw);
+}
+
+function inferTranslationSource(prompt) {
+  const lower = String(prompt || "").toLowerCase();
+  if (lower.includes("переведи") || lower.includes("опиши")) return "ru";
+  const quoted = extractQuotedPhrase(prompt);
+  if (quoted) {
+    let latin = 0;
+    let cyrillic = 0;
+    for (const character of quoted) {
+      const code = character.codePointAt(0);
+      if (/[a-z]/i.test(character)) latin += 1;
+      if (code >= 0x0400 && code <= 0x04ff) cyrillic += 1;
+    }
+    if (cyrillic > latin) return "ru";
+  }
+  return "en";
+}
+
+function translateSurface(surface, _source, target) {
+  const normalized = String(surface || "").trim().toLowerCase();
+  if (target === "ru") {
+    if (normalized === "hello" || normalized === "hi") return "Привет";
+    if (normalized === "hello, how are you?") return "Здравствуйте, как ваши дела?";
+    return `[ru] ${surface}`;
+  }
+  if (target === "en") {
+    if (normalized === "привет") return "Hi";
+    if (
+      [
+        "как дела",
+        "как дела?",
+        "как у тебя дела",
+        "как у тебя дела?",
+        "как у вас дела",
+        "как у вас дела?",
+        "как ваши дела",
+        "как ваши дела?",
+      ].includes(normalized)
+    ) {
+      return "How are you?";
+    }
+    if (normalized === "hello, how are you?") return "Hello, how are you?";
+    return `[en] ${surface}`;
+  }
+  if (target === "hi") return `[hi] ${surface}`;
+  if (target === "zh") return `[zh] ${surface}`;
+  return String(surface || "");
+}
+
+function tryTranslation(prompt, normalized) {
+  const isTranslationRequest =
+    normalized.startsWith("translate") ||
+    normalized.startsWith("переведи") ||
+    normalized.startsWith("опиши");
+  if (!isTranslationRequest) return null;
+
+  const surface = extractQuotedPhrase(prompt) || "";
+  const surfaceMeaning = surface || prompt;
+  const source = detectTranslationSourceLanguage(normalized) || inferTranslationSource(prompt);
+  const target = detectTranslationTargetLanguage(normalized) || "en";
+  const meaningId = stableBehaviorRuleId("meaning", normalizeMeaningText(surfaceMeaning));
+  const translatedSurface = translateSurface(surface, source, target);
+  return {
+    intent: `translate_${source}_to_${target}`,
+    content: `meaning: ${meaningId}\nsurface (${source}): ${surface}\nsurface (${target}): ${translatedSurface}`,
+    confidence: 1.0,
+    evidence: [
+      "handler:translation",
+      `language_from:${source}`,
+      `language_to:${target}`,
+      `meaning:${meaningId}`,
+    ],
   };
 }
 
@@ -8976,7 +9172,7 @@ async function solve(prompt, history, prefs) {
     }, formalizationContext);
   }
 
-  const capabilities = tryCapabilities(prompt, normalized, preferences);
+  const capabilities = tryCapabilities(prompt, normalized, preferences, history);
   if (capabilities) {
     events.push(`handler:${capabilities.intent}`);
     steps.push({ step: "dispatch_handler", detail: "tryCapabilities" });
@@ -9057,6 +9253,7 @@ async function solve(prompt, history, prefs) {
     { name: "tryCalendarReasoning", run: () => tryCalendarReasoning(prompt, normalized) },
     { name: "tryArithmetic", run: () => tryArithmetic(prompt) },
     { name: "tryJavaScriptExecution", run: () => tryJavaScriptExecution(prompt) },
+    { name: "tryTranslation", run: () => tryTranslation(prompt, normalized) },
     {
       name: "tryDefinitionMerge",
       run: () => tryDefinitionMerge(prompt, { allowPlainConcept: autoDefinitionFusion }),

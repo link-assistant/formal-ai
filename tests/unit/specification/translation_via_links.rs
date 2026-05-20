@@ -21,6 +21,37 @@ fn every_answer_publishes_a_links_notation_trace() {
     assert!(!response.links_notation.is_empty());
 }
 
+#[test]
+fn russian_translate_how_are_you_prompt_returns_english_surface() {
+    let response = answer("Переведи \"как у тебя дела?\" на английский.");
+    assert_eq!(
+        response.intent, "translate_ru_to_en",
+        "Russian translation prompt should resolve to translation, got {}: {}",
+        response.intent, response.answer,
+    );
+    assert!(
+        response.answer.contains("How are you?"),
+        "translation should include the English surface form, got: {}",
+        response.answer,
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link == "language_from:ru"),
+        "translation should record the Russian source language, got {:?}",
+        response.evidence_links,
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link == "language_to:en"),
+        "translation should record the English target language, got {:?}",
+        response.evidence_links,
+    );
+}
+
 // ---------------------------------------------------------------------------
 // full-scope expectations.
 // ---------------------------------------------------------------------------

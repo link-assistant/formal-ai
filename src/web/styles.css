@@ -697,6 +697,24 @@ body.is-resizing-context {
   padding: 10px 18px 14px;
 }
 
+.drawer-menu-section.sidebar-section {
+  display: flex;
+  gap: 0;
+  padding: 0;
+}
+
+.drawer-menu-section.sidebar-section.is-expanded {
+  flex: 1 1 0;
+}
+
+.drawer-menu-section.sidebar-section .sidebar-section-body {
+  padding: 10px 18px 12px;
+}
+
+.drawer-menu-body {
+  min-height: 0;
+}
+
 .conversation-list {
   display: grid;
   gap: 6px;

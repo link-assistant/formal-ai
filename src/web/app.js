@@ -777,6 +777,7 @@ const PREFERENCE_DEFAULTS = {
   // Issue #27: each sidebar section is a VS Code-style collapsible region; the
   // last expand/collapse state is persisted via FormalAiPreferences so opening
   // the demo never reshuffles the user's layout.
+  sidebarMenuCollapsed: false,
   sidebarPromptsCollapsed: false,
   sidebarToolsCollapsed: false,
   sidebarTraceCollapsed: false,
@@ -2109,6 +2110,11 @@ function buildIssueUrl(title, body, labels) {
   return `https://github.com/${ISSUE_REPOSITORY}/issues/new?${params.toString()}`;
 }
 
+function buildIssueUrlForMessages(context, buildBody, title, labels, messages, earlierOmitted) {
+  const body = buildBody({ ...context, messages, earlierOmitted });
+  return buildIssueUrl(title, body, labels);
+}
+
 function fitIssueUrl(context, buildBody) {
   const title = createIssueTitle(context.messages, context.focusMessage);
   const labels = ISSUE_LABELS;
@@ -2119,28 +2125,101 @@ function fitIssueUrl(context, buildBody) {
   let url = buildIssueUrl(title, body, labels);
   if (url.length <= URL_BUDGET) return url;
 
-  // Step 1: keep only the last two messages. Earlier ones become a single
-  // "... omitted N earlier messages ..." marker.
-  const lastTwo = messages.slice(-2);
-  const earlierOmitted = messages.length - lastTwo.length;
-  body = buildBody({ ...context, messages: lastTwo, earlierOmitted });
-  url = buildIssueUrl(title, body, labels);
-  if (url.length <= URL_BUDGET) return url;
+  // Step 1: keep the last two messages as the minimum useful reproduction,
+  // then backfill older turns while URL budget remains.
+  let includedMessages = messages.slice(-Math.min(2, messages.length));
+  let earlierOmitted = messages.length - includedMessages.length;
+  url = buildIssueUrlForMessages(
+    context,
+    buildBody,
+    title,
+    labels,
+    includedMessages,
+    earlierOmitted,
+  );
 
-  // Step 2: shrink each remaining message until the URL fits. The per-message
-  // budget halves on each pass, mirroring an exponential backoff so we
-  // converge quickly without an open-ended loop.
+  // If the final exchange itself is too large, shrink it first so the link
+  // stays usable before trying to preserve any earlier context.
+  if (url.length > URL_BUDGET) {
+    for (const perMessageBudget of [4096, 2048, 1024, 512, 256, 128, 64, 32]) {
+      const truncatedMessages = includedMessages.map((message) => ({
+        ...message,
+        content: truncateMessageContent(message.content, perMessageBudget),
+      }));
+      url = buildIssueUrlForMessages(
+        context,
+        buildBody,
+        title,
+        labels,
+        truncatedMessages,
+        earlierOmitted,
+      );
+      if (url.length <= URL_BUDGET) return url;
+    }
+    return url;
+  }
+
+  let bestUrl = url;
+
+  while (earlierOmitted > 0) {
+    const boundaryIndex = earlierOmitted - 1;
+    const candidateMessages = [messages[boundaryIndex], ...includedMessages];
+    const candidateOmitted = boundaryIndex;
+    url = buildIssueUrlForMessages(
+      context,
+      buildBody,
+      title,
+      labels,
+      candidateMessages,
+      candidateOmitted,
+    );
+    if (url.length <= URL_BUDGET) {
+      includedMessages = candidateMessages;
+      earlierOmitted = candidateOmitted;
+      bestUrl = url;
+      continue;
+    }
+
+    // The next earlier turn does not fit in full. Keep a truncated version
+    // instead of dropping all context before the last two messages.
+    for (const perMessageBudget of [4096, 2048, 1024, 512, 256, 128, 64, 32]) {
+      const truncatedBoundary = {
+        ...messages[boundaryIndex],
+        content: truncateMessageContent(messages[boundaryIndex].content, perMessageBudget),
+      };
+      url = buildIssueUrlForMessages(
+        context,
+        buildBody,
+        title,
+        labels,
+        [truncatedBoundary, ...includedMessages],
+        candidateOmitted,
+      );
+      if (url.length <= URL_BUDGET) return url;
+    }
+
+    return bestUrl;
+  }
+
+  // Final defensive pass: if the transcript had fewer than two messages and
+  // still overflowed, shrink whatever was available.
   for (const perMessageBudget of [4096, 2048, 1024, 512, 256, 128, 64, 32]) {
-    const truncatedMessages = lastTwo.map((message) => ({
+    const truncatedMessages = includedMessages.map((message) => ({
       ...message,
       content: truncateMessageContent(message.content, perMessageBudget),
     }));
-    body = buildBody({ ...context, messages: truncatedMessages, earlierOmitted });
-    url = buildIssueUrl(title, body, labels);
+    url = buildIssueUrlForMessages(
+      context,
+      buildBody,
+      title,
+      labels,
+      truncatedMessages,
+      earlierOmitted,
+    );
     if (url.length <= URL_BUDGET) return url;
   }
 
-  return url;
+  return bestUrl;
 }
 
 function shortText(value, limit = 70) {
@@ -2211,23 +2290,11 @@ function createIssueReportBody({
   ];
 
   appendUserContextBlock(lines, userContext);
-  lines.push("## Dialog");
+  lines.push("## Reproduction of dialog");
   lines.push("");
 
   appendDialogBlock(lines, messages, effectiveFocus, { earlierOmitted });
 
-  const prompt = promptBeforeMessage(messages, effectiveFocus);
-  lines.push("");
-  lines.push("## Reproduction Steps");
-  lines.push("");
-  lines.push(`1. Open ${window.location.href}`);
-  if (prompt) {
-    lines.push(`2. Send the prompt "${shortText(prompt, 120)}"`);
-    lines.push("3. Click the report link on the dialog message");
-  } else {
-    lines.push("2. Use the demo until the issue occurs");
-    lines.push("3. Click Report issue");
-  }
   lines.push("");
   lines.push("## Description");
   lines.push("");
@@ -2775,12 +2842,24 @@ function CollapsibleSection({
   collapsed,
   onToggle,
   testId,
+  className = "",
+  bodyClassName = "",
   children,
 }) {
+  const sectionClassName = [
+    "sidebar-section",
+    collapsed ? "is-collapsed" : "is-expanded",
+    className,
+  ]
+    .filter(Boolean)
+    .join(" ");
+  const sectionBodyClassName = ["sidebar-section-body", bodyClassName]
+    .filter(Boolean)
+    .join(" ");
   return h(
     "section",
     {
-      className: `sidebar-section ${collapsed ? "is-collapsed" : "is-expanded"}`,
+      className: sectionClassName,
       "data-testid": testId,
       "data-collapsed": collapsed ? "true" : "false",
     },
@@ -2797,7 +2876,7 @@ function CollapsibleSection({
     ),
     collapsed
       ? null
-      : h("div", { className: "sidebar-section-body" }, children),
+      : h("div", { className: sectionBodyClassName }, children),
   );
 }
 
@@ -2859,6 +2938,9 @@ function App() {
     normalizeContextPanelWidth(initialPreferences.current.contextPanelWidth),
   );
   // Issue #27: sidebar collapse/expand state per section.
+  const [sidebarMenuCollapsed, setSidebarMenuCollapsed] = useState(
+    initialPreferences.current.sidebarMenuCollapsed,
+  );
   const [sidebarPromptsCollapsed, setSidebarPromptsCollapsed] = useState(
     initialPreferences.current.sidebarPromptsCollapsed,
   );
@@ -3353,6 +3435,7 @@ function App() {
       demoMode,
       diagnosticsMode,
       contextPanelWidth,
+      sidebarMenuCollapsed,
       sidebarPromptsCollapsed,
       sidebarToolsCollapsed,
       sidebarTraceCollapsed,
@@ -3380,6 +3463,7 @@ function App() {
     demoMode,
     diagnosticsMode,
     contextPanelWidth,
+    sidebarMenuCollapsed,
     sidebarPromptsCollapsed,
     sidebarToolsCollapsed,
     sidebarTraceCollapsed,
@@ -4337,11 +4421,14 @@ function App() {
             h(MenuGlyph, { open: true }),
           ),
         ),
-        h(
-          "section",
-          { className: "drawer-menu-section", "data-testid": "drawer-menu-actions" },
-          h("h2", null, t("sidebar.menu")),
-          h(
+        h(CollapsibleSection, {
+          title: t("sidebar.menu"),
+          testId: "drawer-menu-actions",
+          collapsed: sidebarMenuCollapsed,
+          onToggle: () => setSidebarMenuCollapsed((value) => !value),
+          className: "drawer-menu-section",
+          bodyClassName: "drawer-menu-body",
+          children: h(
             "div",
             { className: "drawer-action-list" },
             h(
@@ -4424,7 +4511,7 @@ function App() {
               h("span", null, demoMode ? t("buttons.demoOn") : t("buttons.demo")),
             ),
           ),
-        ),
+        }),
         h(CollapsibleSection, {
           title: t("sidebar.conversations"),
           testId: "sidebar-conversations",
