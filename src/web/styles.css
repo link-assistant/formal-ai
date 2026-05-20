@@ -820,8 +820,11 @@ body.is-resizing-context {
   white-space: nowrap;
 }
 
+/* Issue #180: prompt list is always a single column so it never competes for
+ * width with the conversation list in the left menu. */
 .prompt-list {
   display: grid;
+  grid-template-columns: 1fr;
   gap: 8px;
 }
 
@@ -999,7 +1002,15 @@ body.is-resizing-context {
   color: #1e252b;
 }
 
+/* Issue #180: diagnostic badges (intent label, evidence chips, tool mode
+ * tags) were rendered as inline pills with no wrap rules, so long ids
+ * (`intent:web_search`, evidence prefixes such as
+ * `web_search:provider:internet-archive`) overflowed the message body and
+ * the rounded background bled past the text. Allow them to wrap to the
+ * next line, soft-break long tokens, and keep the pill shape intact. */
 .intent {
+  display: inline-block;
+  max-width: 100%;
   border: 1px solid #dac78b;
   border-radius: 999px;
   padding: 2px 7px;
@@ -1007,6 +1018,9 @@ body.is-resizing-context {
   color: #6c5512;
   font-size: 12px;
   font-weight: 800;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .markdown-body {
@@ -1051,15 +1065,21 @@ body.is-resizing-context {
   gap: 6px;
   flex-wrap: wrap;
   margin-top: 10px;
+  min-width: 0;
 }
 
 .evidence-list span {
+  display: inline-block;
+  max-width: 100%;
   border: 1px solid #cbd6db;
   border-radius: 999px;
   padding: 3px 7px;
   color: #4b5e6b;
   font-size: 12px;
   font-weight: 700;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .thinking-steps {
@@ -1125,9 +1145,13 @@ body.is-resizing-context {
   background: #f8fafb;
 }
 
+/* Issue #180: diagnostics summary rows must wrap long step names and detail
+ * fragments onto multiple lines so the rounded chevron does not collide with
+ * the name when the panel is narrow. */
 .diagnostics-detail > summary {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
   gap: 8px;
   min-height: 38px;
   padding: 8px 10px;
@@ -1154,15 +1178,21 @@ body.is-resizing-context {
 .diagnostics-step-name,
 .diagnostics-tool-name {
   min-width: 0;
+  flex: 0 1 auto;
   font-weight: 800;
   overflow-wrap: anywhere;
+  word-break: break-word;
+  line-height: 1.4;
 }
 
 .diagnostics-step-summary,
 .diagnostics-tool-summary {
   min-width: 0;
+  flex: 1 1 100%;
   color: #5f6d78;
   overflow-wrap: anywhere;
+  word-break: break-word;
+  line-height: 1.4;
 }
 
 .diagnostics-detail-body {
@@ -1201,6 +1231,84 @@ body.is-resizing-context {
   line-height: 1.45;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
+}
+
+/* Issue #180: raw HTTP exchange panel. One block per worker turn that
+ * surfaces the per-provider status row and an expandable details element
+ * for every fetch the worker performed. */
+.diagnostics-http {
+  margin-top: 12px;
+  display: grid;
+  gap: 12px;
+  padding-top: 10px;
+  border-top: 1px solid #dce4e7;
+  color: #334650;
+  font-size: 13px;
+}
+
+.diagnostics-http-section {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.diagnostics-http-provider-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.diagnostics-http-provider {
+  padding: 4px 8px;
+  border: 1px solid #dce4e7;
+  border-radius: 6px;
+  background: #f8fafb;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  line-height: 1.45;
+}
+
+.diagnostics-http-provider.is-error {
+  border-color: #ecc2c2;
+  background: #fdf3f3;
+  color: #7d2c2c;
+}
+
+.diagnostics-http-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.diagnostics-http-item {
+  display: block;
+  min-width: 0;
+}
+
+.diagnostics-http-status {
+  flex: 1 1 100%;
+  font-size: 11px;
+  font-weight: 700;
+  color: #5f6d78;
+  overflow-wrap: anywhere;
+}
+
+.diagnostics-http-links {
+  background: #f0f4f7;
+  border-color: #cbd6db;
+}
+
+.diagnostics-http-empty {
+  margin: 0;
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: #f5f8f9;
+  color: #5f6d78;
+  font-size: 12px;
 }
 
 /* Issue #153: formalization view — Subject-Verb-Object tuple rendering for
@@ -1777,9 +1885,12 @@ textarea:disabled {
     background: #f7f8fa;
   }
 
+  /* Issue #180: keep the left-menu lists single-column on mobile too. The
+   * old two-column grid wrapped the labels and made the conversation list
+   * scrollable in a tiny strip below the drawer actions. */
   .drawer-action-list {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: 1fr;
     gap: 6px;
   }
 
@@ -1791,11 +1902,12 @@ textarea:disabled {
     gap: 8px;
     padding: 0 10px;
     text-decoration: none;
-    white-space: nowrap;
+    white-space: normal;
+    overflow-wrap: anywhere;
   }
 
   .prompt-list {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: 1fr;
   }
 
   .messages {
@@ -1914,6 +2026,9 @@ textarea:disabled {
   border-radius: 4px;
   background: rgba(120, 140, 255, 0.18);
   color: #4a5acc;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  line-height: 1.4;
 }
 
 .tool-mode-agent .tool-mode {
@@ -2025,6 +2140,8 @@ textarea:disabled {
 :root[data-theme="dark"] .diagnostics-toggle,
 :root[data-theme="dark"] .agent-toggle,
 :root[data-theme="dark"] .mobile-menu-toggle,
+:root[data-theme="dark"] .sidebar-toggle,
+:root[data-theme="dark"] .source-code-button,
 :root[data-theme="dark"] .drawer-close,
 :root[data-theme="dark"] .drawer-action,
 :root[data-theme="dark"] .report-button,
@@ -2036,10 +2153,18 @@ textarea:disabled {
 :root[data-theme="dark"] .conversation-new,
 :root[data-theme="dark"] .conversation-entry-button,
 :root[data-theme="dark"] .conversation-delete,
-:root[data-theme="dark"] .fetch-iframe-control {
+:root[data-theme="dark"] .fetch-iframe-control,
+:root[data-theme="dark"] .sidebar-section-collapse {
   border-color: #4a524e;
   background: #242826;
   color: #ece7df;
+}
+
+:root[data-theme="dark"] .sidebar-toggle:hover,
+:root[data-theme="dark"] .source-code-button:hover,
+:root[data-theme="dark"] .sidebar-section-collapse:hover {
+  border-color: #6cc5a6;
+  background: #28332f;
 }
 
 :root[data-theme="dark"] .conversation-new {
@@ -2116,6 +2241,38 @@ textarea:disabled {
 :root[data-theme="dark"] .evidence-list span {
   border-color: #4a524e;
   color: #c9c1b6;
+}
+
+/* Issue #180: dark theme parity for the new diagnostics-http panel. */
+:root[data-theme="dark"] .diagnostics-http {
+  border-top-color: #343a3d;
+  color: #c9c1b6;
+}
+
+:root[data-theme="dark"] .diagnostics-http-provider {
+  border-color: #4a524e;
+  background: #1f2322;
+  color: #d8d0c4;
+}
+
+:root[data-theme="dark"] .diagnostics-http-provider.is-error {
+  border-color: #6c3030;
+  background: #2c1d1d;
+  color: #efc5c5;
+}
+
+:root[data-theme="dark"] .diagnostics-http-status {
+  color: #b7b0a7;
+}
+
+:root[data-theme="dark"] .diagnostics-http-links {
+  border-color: #4a524e;
+  background: #1c1f1e;
+}
+
+:root[data-theme="dark"] .diagnostics-http-empty {
+  background: #1f2322;
+  color: #b7b0a7;
 }
 
 :root[data-theme="dark"] .thinking-steps {
@@ -2305,6 +2462,8 @@ textarea:disabled {
   :root:not([data-theme="light"]) .diagnostics-toggle,
   :root:not([data-theme="light"]) .agent-toggle,
   :root:not([data-theme="light"]) .mobile-menu-toggle,
+  :root:not([data-theme="light"]) .sidebar-toggle,
+  :root:not([data-theme="light"]) .source-code-button,
   :root:not([data-theme="light"]) .drawer-close,
   :root:not([data-theme="light"]) .drawer-action,
   :root:not([data-theme="light"]) .report-button,
@@ -2316,7 +2475,8 @@ textarea:disabled {
   :root:not([data-theme="light"]) .conversation-new,
   :root:not([data-theme="light"]) .conversation-entry-button,
   :root:not([data-theme="light"]) .conversation-delete,
-  :root:not([data-theme="light"]) .fetch-iframe-control {
+  :root:not([data-theme="light"]) .fetch-iframe-control,
+  :root:not([data-theme="light"]) .sidebar-section-collapse {
     border-color: #4a524e;
     background: #242826;
     color: #ece7df;
@@ -2332,7 +2492,10 @@ textarea:disabled {
   :root:not([data-theme="light"]) .prompt-list button:hover,
   :root:not([data-theme="light"]) .composer-action-button:hover,
   :root:not([data-theme="light"]) .composer-menu-item:hover,
-  :root:not([data-theme="light"]) .fetch-iframe-control:hover {
+  :root:not([data-theme="light"]) .fetch-iframe-control:hover,
+  :root:not([data-theme="light"]) .sidebar-toggle:hover,
+  :root:not([data-theme="light"]) .source-code-button:hover,
+  :root:not([data-theme="light"]) .sidebar-section-collapse:hover {
     border-color: #6cc5a6;
     background: #28332f;
   }
@@ -2396,6 +2559,37 @@ textarea:disabled {
   :root:not([data-theme="light"]) .evidence-list span {
     border-color: #4a524e;
     color: #c9c1b6;
+  }
+
+  :root:not([data-theme="light"]) .diagnostics-http {
+    border-top-color: #343a3d;
+    color: #c9c1b6;
+  }
+
+  :root:not([data-theme="light"]) .diagnostics-http-provider {
+    border-color: #4a524e;
+    background: #1f2322;
+    color: #d8d0c4;
+  }
+
+  :root:not([data-theme="light"]) .diagnostics-http-provider.is-error {
+    border-color: #6c3030;
+    background: #2c1d1d;
+    color: #efc5c5;
+  }
+
+  :root:not([data-theme="light"]) .diagnostics-http-status {
+    color: #b7b0a7;
+  }
+
+  :root:not([data-theme="light"]) .diagnostics-http-links {
+    border-color: #4a524e;
+    background: #1c1f1e;
+  }
+
+  :root:not([data-theme="light"]) .diagnostics-http-empty {
+    background: #1f2322;
+    color: #b7b0a7;
   }
 
   :root:not([data-theme="light"]) .thinking-steps {

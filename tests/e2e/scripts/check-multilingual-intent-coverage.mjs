@@ -159,9 +159,59 @@ for (const [language, phrases] of Object.entries(howAreYouGreetingPhrases)) {
   }
 }
 
+const testStatusPatterns = {
+  en: [
+    { kind: 'keyword', text: 'test' },
+    { kind: 'phrase', text: 'test passed' },
+    { kind: 'phrase', text: 'i am here' },
+  ],
+  ru: [
+    { kind: 'keyword', text: 'тест' },
+    { kind: 'phrase', text: 'тест пройден' },
+    { kind: 'phrase', text: 'я здесь' },
+  ],
+  hi: [
+    { kind: 'keyword', text: 'टेस्ट' },
+    { kind: 'phrase', text: 'परीक्षण सफल रहा' },
+    { kind: 'phrase', text: 'मैं यहाँ हूँ' },
+  ],
+  zh: [
+    { kind: 'keyword', text: '测试' },
+    { kind: 'phrase', text: '测试通过' },
+    { kind: 'phrase', text: '我在这里' },
+  ],
+};
+
+assertMatrixMatchesSupportedLanguages('testStatusPatterns', testStatusPatterns);
+
+const testStatusRoute = routes.get('intent_test_status');
+assert(testStatusRoute, 'intent-routing.lino must define intent_test_status');
+
+for (const [language, entries] of Object.entries(testStatusPatterns)) {
+  for (const entry of entries) {
+    const routeCollection = entry.kind === 'keyword' ? 'keywords' : 'phrases';
+    assert(
+      testStatusRoute?.[routeCollection].includes(entry.text),
+      `intent_test_status must route ${language} ${entry.kind} ${JSON.stringify(entry.text)}`,
+    );
+    assert(
+      patterns.some(
+        (pattern) =>
+          pattern.intent === 'test_status' &&
+          pattern.language === language &&
+          pattern.kind === entry.kind &&
+          pattern.text === entry.text,
+      ),
+      `prompt-patterns.lino must document ${language} test_status ${entry.kind} ${JSON.stringify(entry.text)}`,
+    );
+  }
+}
+
 const requiredLocalizedResponseIntents = [
   'greeting',
   'farewell',
+  'courtesy_response',
+  'test_status',
   'identity',
   'clarification',
   'unknown',

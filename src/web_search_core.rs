@@ -173,6 +173,13 @@ pub const WEB_SEARCH_PROVIDER_REGISTRY: &[ProviderSpec] = &[
         default_for_category: false,
     },
     ProviderSpec {
+        id: "internet-archive",
+        label: "Internet Archive (archive.org)",
+        category: ProviderCategory::Knowledge,
+        cors_readable: true,
+        default_for_category: false,
+    },
+    ProviderSpec {
         id: "dbpedia",
         label: "DBpedia Lookup",
         category: ProviderCategory::Knowledge,
@@ -275,10 +282,18 @@ pub const WEB_SEARCH_PROVIDER_REGISTRY: &[ProviderSpec] = &[
 /// Provider ids that participate in live RRF fusion in the browser worker.
 /// These are the CORS-readable subset of [`WEB_SEARCH_PROVIDER_REGISTRY`].
 ///
-/// Issue #133 keeps the default plan tight (`DuckDuckGo` + Wikipedia +
-/// Wikidata) so the live demo stays predictable while the full 26-provider
-/// registry above feeds the connectivity dashboard and the case study.
-pub const WEB_SEARCH_PROVIDERS: &[&str] = &["duckduckgo", "wikipedia", "wikidata"];
+/// Issue #180 expands the default plan to also include Internet Archive and
+/// Wiktionary, in the priority order requested in the issue body
+/// (`DuckDuckGo` → Internet Archive → Wikipedia → Wikidata → Wiktionary).
+/// The remaining providers in the registry still feed the connectivity
+/// dashboard and the case study.
+pub const WEB_SEARCH_PROVIDERS: &[&str] = &[
+    "duckduckgo",
+    "internet-archive",
+    "wikipedia",
+    "wikidata",
+    "wiktionary",
+];
 
 /// Default plan id list returned to JS. JS uses this to seed the planner
 /// even when the live `fetch()` is offline.
@@ -497,6 +512,26 @@ mod tests {
         assert_eq!(plan.first().map(String::as_str), Some("duckduckgo"));
         assert!(plan.contains(&"wikipedia".to_string()));
         assert!(plan.contains(&"wikidata".to_string()));
+        assert!(plan.contains(&"wiktionary".to_string()));
+        assert!(plan.contains(&"internet-archive".to_string()));
+    }
+
+    /// Issue #180 specifies the strict priority order the JS worker uses
+    /// when rendering and deduping fused results. Pin it here so the WASM
+    /// evidence prefix stays in lockstep with the JS rendering.
+    #[test]
+    fn default_plan_preserves_issue_180_priority_order() {
+        let plan = default_search_plan_ids();
+        assert_eq!(
+            plan,
+            vec![
+                "duckduckgo".to_string(),
+                "internet-archive".to_string(),
+                "wikipedia".to_string(),
+                "wikidata".to_string(),
+                "wiktionary".to_string(),
+            ]
+        );
     }
 
     #[test]
@@ -609,6 +644,7 @@ mod tests {
             "wikipedia",
             "wikidata",
             "wiktionary",
+            "internet-archive",
             // Open-access paper providers (no paywall, as the issue requires).
             "arxiv",
             "europepmc",
@@ -639,6 +675,114 @@ mod tests {
             assert!(
                 spec.cors_readable,
                 "default-plan provider `{id}` must be CORS-readable"
+            );
+        }
+    }
+
+    /// Issue #180: the evidence prefix must list providers in the same order
+    /// as the JS worker so the WASM-derived prefix matches what `tryWebSearch`
+    /// would emit when it falls back to its inline list. Without this the
+    /// browser would render the providers in a different order than the
+    /// canonical Rust core.
+    #[test]
+    fn build_request_evidence_lists_providers_in_priority_order() {
+        let lines = build_request_evidence("query", "en");
+        let provider_lines: Vec<&str> = lines
+            .iter()
+            .filter(|line| line.starts_with("web_search:provider:"))
+            .map(String::as_str)
+            .collect();
+        assert_eq!(
+            provider_lines,
+            vec![
+                "web_search:provider:duckduckgo",
+                "web_search:provider:internet-archive",
+                "web_search:provider:wikipedia",
+                "web_search:provider:wikidata",
+                "web_search:provider:wiktionary",
+            ]
+        );
+    }
+
+    /// Issue #180: when a language is empty the evidence prefix must still
+    /// produce well-formed lines and must not emit `web_search:language:` with
+    /// a trailing empty value.
+    #[test]
+    fn build_request_evidence_skips_empty_language_line() {
+        let lines = build_request_evidence("query", "");
+        assert!(!lines
+            .iter()
+            .any(|line| line == "web_search:language:" || line == "web_search:language: "));
+    }
+
+    /// Issue #180: Internet Archive is listed in the default plan and tagged
+    /// as CORS-readable so the browser can hit it without a proxy.
+    #[test]
+    fn internet_archive_is_cors_readable_in_registry() {
+        let spec = WEB_SEARCH_PROVIDER_REGISTRY
+            .iter()
+            .find(|spec| spec.id == "internet-archive")
+            .expect("internet-archive must be in registry");
+        assert!(
+            spec.cors_readable,
+            "internet-archive must stay CORS-readable so the demo browser can call it directly"
+        );
+        assert!(matches!(spec.category, ProviderCategory::Knowledge));
+    }
+
+    /// Issue #180: rendering depends on a stable RRF-tied score. Pin the
+    /// formula `1 / (k + rank)` to k=60 so a regression in either k or the
+    /// score function trips the test instead of silently shifting the rank
+    /// order in the rendered list.
+    #[test]
+    fn rrf_score_matches_cormack_clarke_buettcher_formula() {
+        let entries = [ProviderRanking {
+            provider_id: "duckduckgo".to_string(),
+            rank: 1,
+            url: "https://example.com".to_string(),
+            title: "Example".to_string(),
+            excerpt: String::new(),
+        }];
+        let fused = reciprocal_rank_fusion(&entries, WEB_SEARCH_RRF_K);
+        assert_eq!(fused.len(), 1);
+        let expected = 1.0_f64 / (f64::from(WEB_SEARCH_RRF_K) + 1.0);
+        assert!(
+            (fused[0].score - expected).abs() < 1e-9,
+            "expected score {expected}, got {}",
+            fused[0].score
+        );
+    }
+
+    /// Issue #180: every provider in the default plan must declare a label
+    /// so the diagnostics panel can render a human-readable row instead of
+    /// the raw id.
+    #[test]
+    fn default_plan_providers_carry_human_labels() {
+        for id in &*default_search_plan_ids() {
+            let spec = WEB_SEARCH_PROVIDER_REGISTRY
+                .iter()
+                .find(|spec| spec.id == id.as_str())
+                .unwrap_or_else(|| panic!("plan id `{id}` missing from registry"));
+            assert!(
+                !spec.label.is_empty(),
+                "plan provider `{id}` must have a non-empty label"
+            );
+        }
+    }
+
+    /// Issue #180: registry must include every provider in the default plan
+    /// and the plan must only reference registered providers. Tightens the
+    /// invariant from the cors-readable test so a typo can't slip through.
+    #[test]
+    fn default_plan_is_a_subset_of_registry_ids() {
+        let registry_ids: Vec<&str> = WEB_SEARCH_PROVIDER_REGISTRY
+            .iter()
+            .map(|spec| spec.id)
+            .collect();
+        for id in &*default_search_plan_ids() {
+            assert!(
+                registry_ids.contains(&id.as_str()),
+                "default-plan id `{id}` not present in registry"
             );
         }
     }

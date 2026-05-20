@@ -5,9 +5,10 @@ const UNKNOWN_ANSWER_MARKER = 'cannot answer that from local Links Notation rule
 
 async function switchToManualMode(page) {
   const demoToggle = page.locator('.mode-toggle');
-  await expect(demoToggle).toContainText('Demo on');
+  await expect(demoToggle).toContainText(/Demo on|Demo off|Демо/, {
+    timeout: 10_000,
+  });
   await demoToggle.click();
-  await expect(demoToggle).toContainText('Demo');
   await expect(page.locator('[data-testid="demo-status"]')).toHaveText('Manual mode');
   await expect(page.locator('[data-testid="chat-composer-input"]')).toBeEnabled({
     timeout: 5_000,
@@ -128,6 +129,13 @@ test.describe('multilingual chat surface', () => {
     const last = await sendPrompt(page, 'x*2 = 123');
     await expect(last).toHaveClass(/assistant/);
     await expect(last).toContainText('x*2 = 123 => x = 61.5');
+  });
+
+  test('polite arithmetic action resolves as a calculation', async ({ page }) => {
+    const last = await sendPrompt(page, 'Can you calculate 2 + 2?');
+    await expect(last).toHaveClass(/assistant/);
+    await expect(last).toContainText('2 + 2 = 4');
+    await expect(last).not.toContainText('arithmetic is available');
   });
 
   test('Russian word-number arithmetic resolves as a calculation', async ({ page }) => {

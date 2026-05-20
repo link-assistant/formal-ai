@@ -45,6 +45,7 @@ const FALLBACK_IDENTITY_ANSWER =
 
 const FALLBACK_GREETING_ANSWER = "Hi, how may I help you?";
 
+const FALLBACK_TEST_STATUS_ANSWER = "Test passed. I'm here.";
 const FALLBACK_COURTESY_RESPONSE_ANSWER =
   "Glad to hear it. What would you like to do next?";
 const FALLBACK_COURTESY_ACKNOWLEDGEMENTS = [
@@ -73,6 +74,9 @@ let MULTILINGUAL_ANSWERS = {
   },
   farewell: {
     en: { text: "Goodbye! Feel free to return any time.", variants: ["Goodbye! Feel free to return any time."] },
+  },
+  test_status: {
+    en: { text: FALLBACK_TEST_STATUS_ANSWER, variants: [FALLBACK_TEST_STATUS_ANSWER] },
   },
   courtesy_response: {
     en: {
@@ -291,6 +295,58 @@ let INTENT_ROUTING = {
       combos: [],
     },
     {
+      id: "intent_test_status",
+      slug: "test_status",
+      responseLink: "response:test_status",
+      keywords: [
+        "test",
+        "ping",
+        "pong",
+        "testing",
+        "тест",
+        "пинг",
+        "टेस्ट",
+        "परीक्षण",
+        "测试",
+        "測試",
+      ],
+      phrases: [
+        "test passed",
+        "testing 123",
+        "are you there",
+        "you there",
+        "i m here",
+        "i am here",
+        "я здесь",
+        "тест пройден",
+        "ты здесь",
+        "вы здесь",
+        "परीक्षण सफल रहा",
+        "मैं यहाँ हूँ",
+        "मैं यहां हूं",
+        "क्या आप वहाँ हैं",
+        "क्या आप वहां हैं",
+        "测试通过",
+        "測試通過",
+        "我在这里",
+        "我在這裡",
+        "你在吗",
+        "您在吗",
+        "你在嗎",
+        "您在嗎",
+      ],
+      tokens: [],
+      combos: [
+        ["test", "passed"],
+        ["test", "here"],
+        ["testing", "123"],
+        ["ping", "test"],
+        ["тест", "пройден"],
+        ["тест", "здесь"],
+        ["परीक्षण", "सफल"],
+      ],
+    },
+    {
       id: "intent_identity",
       slug: "identity",
       responseLink: "response:identity",
@@ -349,6 +405,9 @@ function fallbackEntry(intent) {
   }
   if (intent === "identity") {
     return { text: FALLBACK_IDENTITY_ANSWER, variants: [FALLBACK_IDENTITY_ANSWER] };
+  }
+  if (intent === "test_status") {
+    return { text: FALLBACK_TEST_STATUS_ANSWER, variants: [FALLBACK_TEST_STATUS_ANSWER] };
   }
   if (intent === "clarification") {
     return {
@@ -1634,6 +1693,10 @@ function isFarewellPrompt(normalized, rawPrompt) {
   return matchesIntentRoute(normalized, rawPrompt, "intent_farewell");
 }
 
+function isTestStatusPrompt(normalized, rawPrompt) {
+  return matchesIntentRoute(normalized, rawPrompt, "intent_test_status");
+}
+
 function isCourtesyResponsePrompt(normalized, rawPrompt) {
   return matchesIntentRoute(normalized, rawPrompt, "intent_courtesy_response");
 }
@@ -2004,8 +2067,583 @@ function containsAny(normalized, values) {
   return values.some((value) => value && normalized.includes(String(value).toLowerCase()));
 }
 
-function tryCapabilities(prompt, normalized) {
+const WEB_SEARCH_CAPABILITY_PHRASES = {
+  en: [
+    "web search",
+    "internet search",
+    "search engines",
+    "can you search the internet",
+    "can you search internet",
+    "can you search the web",
+    "can you search web",
+    "can you search online",
+    "do you have internet search",
+    "do you have web search",
+    "do you have internet access",
+    "are you connected to search engines",
+    "can you use search engines",
+    "can you browse the web",
+  ],
+  ru: [
+    "веб-поиск",
+    "веб поиск",
+    "поиск в интернете",
+    "поисковик",
+    "поисковые системы",
+    "можешь искать в интернете",
+    "можешь искать интернет",
+    "умеешь искать в интернете",
+    "умеешь искать интернет",
+    "можешь искать онлайн",
+    "умеешь искать онлайн",
+    "у тебя есть веб-поиск",
+    "у тебя есть веб поиск",
+    "у тебя есть поиск в интернете",
+    "есть доступ к интернету",
+    "подключен к поисковикам",
+    "подключена к поисковикам",
+    "подключен к поисковым системам",
+    "можешь пользоваться интернетом",
+  ],
+  hi: [
+    "web search",
+    "internet search",
+    "search engine",
+    "इंटरनेट पर खोज सकते",
+    "ऑनलाइन खोज सकते",
+    "इंटरनेट खोज है",
+    "वेब खोज है",
+    "सर्च इंजन से जुड़े",
+    "खोज इंजन से जुड़े",
+  ],
+  zh: [
+    "web search",
+    "搜索引擎",
+    "上网搜索",
+    "搜索互联网",
+    "搜索网络",
+    "联网搜索",
+    "用搜索引擎",
+    "使用搜索引擎",
+    "网络搜索",
+  ],
+};
+
+const FEATURE_CAPABILITIES = [
+  {
+    slug: "web_search",
+    state: "web_search",
+    labels: { en: "web search", ru: "веб-поиск", hi: "web search", zh: "web search" },
+    aliases: WEB_SEARCH_CAPABILITY_PHRASES,
+    examples: {
+      en: "Search the web for Nikola Tesla",
+      ru: "Найди в интернете Никола Тесла",
+      hi: "Search the web for Nikola Tesla",
+      zh: "Search the web for Nikola Tesla",
+    },
+  },
+  {
+    slug: "diagnostics",
+    state: "diagnostics",
+    labels: { en: "diagnostics", ru: "диагностика", hi: "diagnostics", zh: "诊断" },
+    aliases: {
+      en: ["diagnostics", "diagnostic", "trace", "reasoning trace"],
+      ru: ["диагностика", "диагност", "трассировка", "trace"],
+      hi: ["diagnostics", "निदान", "trace"],
+      zh: ["诊断", "trace", "推理跟踪"],
+    },
+    examples: {
+      en: "Turn on diagnostics",
+      ru: "Включи диагностику",
+      hi: "Turn on diagnostics",
+      zh: "开启诊断",
+    },
+  },
+  {
+    slug: "agent_mode",
+    state: "agent_mode",
+    labels: { en: "agent mode", ru: "agent mode", hi: "agent mode", zh: "agent mode" },
+    aliases: {
+      en: ["agent mode", "agent", "multi-step", "autonomous"],
+      ru: ["agent mode", "агент", "многошаг", "автоном"],
+      hi: ["agent mode", "एजेंट", "multi-step"],
+      zh: ["agent mode", "代理", "多步骤"],
+    },
+    examples: {
+      en: "Turn on agent mode",
+      ru: "Включи agent mode",
+      hi: "Turn on agent mode",
+      zh: "开启 agent mode",
+    },
+  },
+  {
+    slug: "definition_fusion",
+    state: "definition_fusion",
+    labels: {
+      en: "automatic definition fusion",
+      ru: "автоматическое слияние определений",
+      hi: "automatic definition fusion",
+      zh: "自动 definition fusion",
+    },
+    aliases: {
+      en: ["definition fusion", "merge definitions", "automatic definition"],
+      ru: ["слияние определений", "объединение определений"],
+      hi: ["definition fusion", "merge definitions"],
+      zh: ["definition fusion", "合并定义"],
+    },
+    examples: {
+      en: "Turn on definition fusion",
+      ru: "Включи слияние определений",
+      hi: "Turn on definition fusion",
+      zh: "开启 definition fusion",
+    },
+  },
+  {
+    slug: "configuration",
+    state: "always",
+    labels: {
+      en: "message-driven configuration",
+      ru: "настройка через сообщения",
+      hi: "message-driven configuration",
+      zh: "消息驱动设置",
+    },
+    aliases: {
+      en: ["configure", "configuration", "settings", "preferences", "theme", "language", "chat style", "composer style", "ui skin"],
+      ru: ["настрой", "конфигурац", "параметр", "тема", "язык", "стиль чата", "оформление"],
+      hi: ["settings", "configuration", "theme", "language", "सेटिंग"],
+      zh: ["设置", "配置", "主题", "语言", "聊天样式"],
+    },
+    examples: {
+      en: "Switch to dark theme",
+      ru: "Переключи тему на темную",
+      hi: "Switch to dark theme",
+      zh: "切换到深色主题",
+    },
+  },
+  {
+    slug: "memory_actions",
+    state: "always",
+    labels: {
+      en: "memory import/export",
+      ru: "импорт и экспорт памяти",
+      hi: "memory import/export",
+      zh: "记忆导入/导出",
+    },
+    aliases: {
+      en: ["export memory", "import memory", "memory export", "memory import"],
+      ru: ["экспорт памяти", "импорт памяти", "память экспорт", "память импорт"],
+      hi: ["memory export", "memory import", "स्मृति निर्यात", "स्मृति आयात"],
+      zh: ["导出记忆", "导入记忆", "memory export", "memory import"],
+    },
+    examples: {
+      en: "Export memory",
+      ru: "Экспортируй память",
+      hi: "Export memory",
+      zh: "导出记忆",
+    },
+  },
+  {
+    slug: "greeting",
+    state: "always",
+    labels: { en: "greetings", ru: "приветствия", hi: "अभिवादन", zh: "问候" },
+    aliases: {
+      en: ["greeting", "greetings", "say hello", "respond to hello"],
+      ru: ["приветствие", "приветствия", "здороваться", "привет"],
+      hi: ["अभिवादन", "नमस्ते", "hello"],
+      zh: ["问候", "打招呼", "你好"],
+    },
+    examples: { en: "Hello", ru: "Привет", hi: "नमस्ते", zh: "你好" },
+  },
+  {
+    slug: "hello_world",
+    state: "always",
+    labels: {
+      en: "Hello World code generation",
+      ru: "генерация Hello World",
+      hi: "Hello World code generation",
+      zh: "Hello World 代码生成",
+    },
+    aliases: {
+      en: ["hello world", "write code", "generate code", "program"],
+      ru: ["hello world", "код", "программу", "программа"],
+      hi: ["hello world", "code", "program", "प्रोग्राम"],
+      zh: ["hello world", "代码", "程序"],
+    },
+    examples: {
+      en: "Write hello world in Rust",
+      ru: "Напиши hello world на Rust",
+      hi: "Write hello world in Rust",
+      zh: "Write hello world in Rust",
+    },
+  },
+  {
+    slug: "concept_lookup",
+    state: "always",
+    labels: { en: "concept lookup", ru: "поиск понятий", hi: "concept lookup", zh: "概念查找" },
+    aliases: {
+      en: ["concept lookup", "concept", "wikipedia lookup"],
+      ru: ["поиск понятий", "понятие"],
+      hi: ["concept", "अवधारणा"],
+      zh: ["概念"],
+    },
+    examples: {
+      en: "What is Wikipedia?",
+      ru: "Что такое Википедия?",
+      hi: "विकिपीडिया क्या है?",
+      zh: "什么是维基百科？",
+    },
+  },
+  {
+    slug: "arithmetic",
+    state: "always",
+    labels: { en: "arithmetic", ru: "арифметика", hi: "अंकगणित", zh: "算术" },
+    aliases: {
+      en: ["arithmetic", "calculate", "math", "2 + 2"],
+      ru: ["арифмет", "считать", "посчитать", "2 + 2"],
+      hi: ["अंकगणित", "गणना", "math", "2 + 2"],
+      zh: ["算术", "计算", "数学", "2 + 2"],
+    },
+    examples: {
+      en: "What is 2 + 2?",
+      ru: "Сколько будет 2 + 2?",
+      hi: "2 + 2 क्या है?",
+      zh: "2 + 2 等于多少？",
+    },
+  },
+  {
+    slug: "translation",
+    state: "always",
+    labels: { en: "translation", ru: "перевод", hi: "अनुवाद", zh: "翻译" },
+    aliases: {
+      en: ["translation", "translate", "language translation"],
+      ru: ["перевод", "переводить", "перевести"],
+      hi: ["अनुवाद", "translate", "translation"],
+      zh: ["翻译", "translation", "translate"],
+    },
+    examples: {
+      en: 'Translate "hello" to Russian',
+      ru: 'Переведи "hello" на русский',
+      hi: 'Translate "hello" to Hindi',
+      zh: 'Translate "hello" to Chinese',
+    },
+  },
+  {
+    slug: "memory",
+    state: "always",
+    labels: {
+      en: "conversation memory",
+      ru: "память разговора",
+      hi: "conversation memory",
+      zh: "会话记忆",
+    },
+    aliases: {
+      en: ["memory", "remember", "recall", "conversation context"],
+      ru: ["память", "помнить", "запомнить", "контекст"],
+      hi: ["स्मृति", "याद", "memory", "context"],
+      zh: ["记忆", "记住", "回忆", "上下文"],
+    },
+    examples: {
+      en: "My name is Ada. What is my name?",
+      ru: "Меня зовут Ада. Как меня зовут?",
+      hi: "My name is Ada. What is my name?",
+      zh: "My name is Ada. What is my name?",
+    },
+  },
+  {
+    slug: "demo_mode",
+    state: "always",
+    labels: { en: "demo mode", ru: "демо-режим", hi: "demo mode", zh: "演示模式" },
+    aliases: {
+      en: ["demo mode", "demo", "scripted demo"],
+      ru: ["демо", "демо-режим", "сценарный демо"],
+      hi: ["demo", "डेमो"],
+      zh: ["演示", "demo"],
+    },
+    examples: { en: "Turn off demo mode", ru: "Выключи демо", hi: "Turn off demo mode", zh: "关闭演示" },
+  },
+  {
+    slug: "http_url",
+    state: "always",
+    labels: {
+      en: "URL fetch/navigation",
+      ru: "HTTP-запросы и переходы по URL",
+      hi: "URL fetch/navigation",
+      zh: "URL fetch/navigation",
+    },
+    aliases: {
+      en: ["http fetch", "fetch url", "open url", "navigate to url", "visit url"],
+      ru: ["http запрос", "открыть url", "перейти на", "сделать запрос"],
+      hi: ["http fetch", "url", "navigate"],
+      zh: ["http fetch", "url", "打开链接", "访问链接"],
+    },
+    examples: {
+      en: "Navigate to example.com",
+      ru: "Перейди на example.com",
+      hi: "Navigate to example.com",
+      zh: "Navigate to example.com",
+    },
+  },
+  {
+    slug: "javascript_execution",
+    state: "always",
+    labels: {
+      en: "JavaScript execution",
+      ru: "выполнение JavaScript",
+      hi: "JavaScript execution",
+      zh: "JavaScript execution",
+    },
+    aliases: {
+      en: ["javascript", "run javascript", "execute javascript"],
+      ru: ["javascript", "js", "выполнить javascript"],
+      hi: ["javascript", "js"],
+      zh: ["javascript", "js"],
+    },
+    examples: {
+      en: "Run JavaScript: 1 + 1",
+      ru: "Выполни JavaScript: 1 + 1",
+      hi: "Run JavaScript: 1 + 1",
+      zh: "Run JavaScript: 1 + 1",
+    },
+  },
+  {
+    slug: "planning",
+    state: "always",
+    labels: {
+      en: "summaries, brainstorming, roleplay, and project planning",
+      ru: "резюме, брейншторминг, роли и планирование проектов",
+      hi: "summaries, brainstorming, roleplay, and project planning",
+      zh: "总结、头脑风暴、角色扮演和项目计划",
+    },
+    aliases: {
+      en: ["summarize", "brainstorm", "roleplay", "software project", "project plan"],
+      ru: ["резюмировать", "брейншторм", "роль", "проект", "план проекта"],
+      hi: ["summary", "brainstorm", "roleplay", "project plan"],
+      zh: ["总结", "头脑风暴", "角色扮演", "项目计划"],
+    },
+    examples: {
+      en: "Brainstorm 5 project ideas",
+      ru: "Предложи 5 идей проекта",
+      hi: "Brainstorm 5 project ideas",
+      zh: "Brainstorm 5 project ideas",
+    },
+  },
+];
+
+function localizedValue(record, language) {
+  if (!record || typeof record !== "object") return "";
+  return record[language] || record.en || "";
+}
+
+function featureAliases(feature, language) {
+  if (!feature || !feature.aliases) return [];
+  return feature.aliases[language] || feature.aliases.en || [];
+}
+
+function detectFeatureCapability(normalized, language) {
+  return FEATURE_CAPABILITIES.find((feature) => {
+    return (
+      containsAny(normalized, featureAliases(feature, language)) ||
+      (language !== "en" && containsAny(normalized, featureAliases(feature, "en")))
+    );
+  }) || null;
+}
+
+function isFeatureCapabilityQuestion(normalized, language) {
+  if (language === "ru") {
+    return containsAny(normalized, [
+      "можешь",
+      "умеешь",
+      "поддерживаешь",
+      "у тебя есть",
+      "есть ли",
+      "доступен",
+      "доступна",
+      "включен",
+      "включена",
+      "подключен",
+      "подключена",
+      "можно ли",
+    ]);
+  }
+  if (language === "zh") {
+    return containsAny(normalized, ["能", "可以", "支持", "有", "启用", "可用"]);
+  }
+  if (language === "hi") {
+    return containsAny(normalized, ["क्या", "सकते", "सकती", "समर्थन", "उपलब्ध"]);
+  }
+  return containsAny(normalized, [
+    "can you",
+    "can formal-ai",
+    "are you able",
+    "are you connected",
+    "do you support",
+    "do you have",
+    "enabled",
+    "available",
+    "can i",
+  ]);
+}
+
+function isFeatureActionRequest(normalized, feature) {
+  if (!feature) return false;
+  if (feature.slug === "arithmetic") {
+    return [
+      "can you calculate ",
+      "can you compute ",
+    ].some((prefix) => normalized.startsWith(prefix));
+  }
+  if (feature.slug === "planning") {
+    return containsAny(normalized, [
+      "can you summarize ",
+      "can you brainstorm ",
+      "can you roleplay ",
+    ]);
+  }
+  return false;
+}
+
+function webSearchStatusContent(language, available, providers) {
+  const providerList = providers || "none";
+  const rrfK = webSearchRrfK();
+  if (language === "ru") {
+    return available
+      ? `Да. В этой конфигурации веб-поиск включен: я могу использовать DuckDuckGo Instant Answer по умолчанию и доступные CORS-провайдеры (\`${providerList}\`) для явных запросов вроде \`Найди в интернете Никола Тесла\`. Результаты из top-10 по каждому провайдеру объединяются через reciprocal rank fusion (k = ${rrfK}). Если провайдеры отключены или заблокированы в браузерной сессии, я сообщу об этом вместо ответа "да".`
+      : "Нет. В этой браузерной сессии веб-поиск сейчас недоступен: браузер offline или все CORS-readable поисковые провайдеры отключены после ошибок. Я могу отвечать по локальным правилам и кэшу, но не буду обращаться к поисковым системам.";
+  }
+  if (language === "zh") {
+    return available
+      ? `可以。当前配置启用了 web search：我会默认使用 DuckDuckGo Instant Answer，并可使用这些 CORS-readable provider（\`${providerList}\`）处理明确的搜索请求，例如 \`Search the web for Nikola Tesla\`。每个 provider 的 top-10 结果会用 reciprocal rank fusion 合并（k = ${rrfK}）。如果浏览器会话中所有 provider 被禁用或阻止，我会说明不可用，而不是回答可以。`
+      : "不可以。当前浏览器会话中 web search 不可用：浏览器 offline，或所有 CORS-readable 搜索 provider 都因错误被禁用。我仍可使用本地规则和缓存回答，但不会调用搜索引擎。";
+  }
+  if (language === "hi") {
+    return available
+      ? `हाँ। इस configuration में web search enabled है: मैं default रूप से DuckDuckGo Instant Answer और उपलब्ध CORS-readable providers (\`${providerList}\`) का उपयोग explicit prompts जैसे \`Search the web for Nikola Tesla\` के लिए कर सकता हूँ। हर provider के top-10 results reciprocal rank fusion (k = ${rrfK}) से merge होते हैं। अगर browser session में providers disabled या blocked हों, तो मैं "हाँ" कहने के बजाय स्थिति बताऊँगा।`
+      : "नहीं। इस browser session में web search अभी available नहीं है: browser offline है या सभी CORS-readable search providers errors के बाद disabled हैं। मैं local rules और cache से जवाब दे सकता हूँ, लेकिन search engines को call नहीं करूँगा।";
+  }
+  return available
+    ? `Yes. Web search is enabled in this configuration: I can use DuckDuckGo Instant Answer by default plus the configured CORS-readable providers (\`${providerList}\`) for explicit prompts such as \`Search the web for Nikola Tesla\`. The top-10 results from each provider are merged with reciprocal rank fusion (k = ${rrfK}). If the browser session disables or blocks every provider, I will say that instead of claiming search is available.`
+    : "No. Web search is unavailable in this browser session: the browser is offline or every CORS-readable search provider has been disabled after errors. I can still answer from local rules and cache, but I will not call search engines.";
+}
+
+function featureAvailability(feature, preferences) {
+  if (!feature) return { available: false, reason: "unknown" };
+  if (feature.state === "web_search") {
+    const providers = WEB_SEARCH_PROVIDERS.filter((provider) => !webSearchIsDisabled(provider.id));
+    const online = typeof navigator === "undefined" || navigator.onLine !== false;
+    return {
+      available: online && providers.length > 0,
+      reason: online && providers.length > 0 ? "none" : "offline_or_no_providers",
+      providers,
+    };
+  }
+  if (feature.state === "diagnostics") {
+    const available = Boolean(preferences && preferences.diagnosticsMode);
+    return { available, reason: available ? "none" : "diagnostics_off" };
+  }
+  if (feature.state === "agent_mode") {
+    const available = Boolean(preferences && preferences.agentMode);
+    return { available, reason: available ? "none" : "agent_mode_off" };
+  }
+  if (feature.state === "definition_fusion") {
+    const available = definitionFusionByDefault(preferences || {});
+    return { available, reason: available ? "none" : "definition_fusion_explicit" };
+  }
+  return { available: true, reason: "none" };
+}
+
+function unavailableReasonText(reason, language) {
+  const reasons = {
+    offline_or_no_providers: {
+      en: "the browser is offline or no search providers are available",
+      ru: "браузер offline или нет доступных поисковых провайдеров",
+      hi: "browser offline है या कोई search provider available नहीं है",
+      zh: "浏览器 offline，或没有可用搜索 provider",
+    },
+    diagnostics_off: {
+      en: "diagnostics are off; enable them to show traces",
+      ru: "диагностика выключена; включите ее, чтобы видеть трассировку",
+      hi: "diagnostics off है; trace दिखाने के लिए इसे enable करें",
+      zh: "诊断已关闭；开启后才会显示 trace",
+    },
+    agent_mode_off: {
+      en: "agent mode is off; multi-step actions require explicit opt-in",
+      ru: "agent mode выключен; для многошаговых действий нужен явный opt-in",
+      hi: "agent mode off है; multi-step actions के लिए explicit opt-in चाहिए",
+      zh: "agent mode 已关闭；多步骤操作需要显式启用",
+    },
+    definition_fusion_explicit: {
+      en: "automatic definition fusion is set to explicit-only",
+      ru: "автоматическое слияние определений работает только после включения режима auto",
+      hi: "automatic definition fusion के लिए auto mode enable करना होगा",
+      zh: "自动 definition fusion 需要切换到 auto 模式",
+    },
+  };
+  return localizedValue(reasons[reason] || { en: "not available" }, language);
+}
+
+function featureCapabilityContent(feature, language, availability) {
+  if (feature.slug === "web_search") {
+    const providers = availability.providers || [];
+    return webSearchStatusContent(
+      language,
+      availability.available,
+      providers.map((provider) => provider.id).join(", "),
+    );
+  }
+  const label = localizedValue(feature.labels, language);
+  const example = localizedValue(feature.examples, language);
+  if (availability.available) {
+    if (language === "ru") {
+      return `Да. Возможность «${label}» доступна в этой конфигурации. Пример сообщения: \`${example}\`.`;
+    }
+    if (language === "zh") {
+      return `可以。当前配置中「${label}」可用。示例消息：\`${example}\`。`;
+    }
+    if (language === "hi") {
+      return `हाँ। इस configuration में \`${label}\` available है। Example message: \`${example}\`.`;
+    }
+    return `Yes. ${label} is available in this configuration. Example message: \`${example}\`.`;
+  }
+  const reason = unavailableReasonText(availability.reason, language);
+  if (language === "ru") {
+    return `Нет. Возможность «${label}» сейчас недоступна в этой конфигурации: ${reason}. Пример сообщения после включения: \`${example}\`.`;
+  }
+  if (language === "zh") {
+    return `不可以。当前配置中「${label}」不可用：${reason}。启用后的示例消息：\`${example}\`。`;
+  }
+  if (language === "hi") {
+    return `नहीं। इस configuration में \`${label}\` अभी available नहीं है: ${reason}. Enable करने के बाद example message: \`${example}\`.`;
+  }
+  return `No. ${label} is not available in this configuration: ${reason}. Example message after enabling it: \`${example}\`.`;
+}
+
+function tryFeatureCapabilityStatus(prompt, normalized, language, preferences) {
+  if (!isFeatureCapabilityQuestion(normalized, language)) return null;
+  const feature = detectFeatureCapability(normalized, language);
+  if (!feature) return null;
+  if (isFeatureActionRequest(normalized, feature)) return null;
+  const availability = featureAvailability(feature, preferences || {});
+  const providers = WEB_SEARCH_PROVIDERS.filter((provider) => !webSearchIsDisabled(provider.id));
+  return {
+    intent: "capabilities",
+    content: featureCapabilityContent(feature, language, availability),
+    confidence: availability.available ? 0.95 : 0.6,
+    evidence: [
+      "handler:capabilities",
+      `feature:question:${feature.slug}`,
+      availability.available
+        ? `feature:available:${feature.slug}`
+        : `feature:unavailable:${feature.slug}:${availability.reason}`,
+      ...(feature.slug === "web_search" ? providers.map((provider) => `web_search:provider:${provider.id}`) : []),
+      `language:${language}`,
+    ],
+  };
+}
+
+function tryCapabilities(prompt, normalized, preferences) {
   const language = detectLanguage(prompt);
+  const featureStatus = tryFeatureCapabilityStatus(prompt, normalized, language, preferences);
+  if (featureStatus) return featureStatus;
   const isCapabilities =
     language === "ru"
       ? normalized.includes("что ты умеешь") ||
@@ -2039,12 +2677,12 @@ function tryCapabilities(prompt, normalized) {
   if (!isCapabilities) return null;
   const content =
     language === "ru"
-      ? "Я formal-ai — детерминированный символьный ИИ. Вот что я умею:\n\n- **Приветствия**: отвечаю на «Привет», «Здравствуйте» и т.п.\n- **Hello World**: генерирую программы на Rust, Python, JavaScript, Go, C и других языках.\n- **Поиск понятий**: объясняю термины — попробуйте «Что такое Википедия?»\n- **Арифметика**: вычисляю выражения — например, «Сколько будет 2 + 2?»\n- **Перевод**: перевожу фразы между языками.\n- **Память**: помню контекст разговора в рамках сессии.\n\nЯ работаю на основе локальных символьных правил, без нейросетевого инференса."
+      ? "Я formal-ai — детерминированный символьный ИИ. Вот что я умею:\n\n- **Приветствия**: отвечаю на «Привет», «Здравствуйте» и т.п.\n- **Hello World**: генерирую программы на Rust, Python, JavaScript, Go, C и других языках.\n- **Веб-поиск**: ищу в интернете через DuckDuckGo, Wikipedia и Wikidata, когда поиск доступен.\n- **Поиск понятий**: объясняю термины — попробуйте «Что такое Википедия?»\n- **Арифметика**: вычисляю выражения — например, «Сколько будет 2 + 2?»\n- **Перевод**: перевожу фразы между языками.\n- **Память**: помню контекст разговора в рамках сессии.\n- **Настройки и действия**: через сообщения можно включать диагностику/демо/agent mode, менять тему, язык, стиль чата и экспортировать или импортировать память.\n\nЯ работаю на основе локальных символьных правил, без нейросетевого инференса."
       : language === "zh"
-        ? "我是 formal-ai —— 一个确定性的符号化 AI。以下是我的功能：\n\n- **问候**：回应「你好」等问候语。\n- **Hello World**：生成 Rust、Python、JavaScript、Go、C 等语言的示例程序。\n- **概念查找**：解释术语，例如「什么是维基百科？」\n- **算术**：计算表达式，例如「2 + 2 等于多少？」\n- **翻译**：在语言之间翻译短语。\n- **记忆**：在会话中记住上下文。\n\n我基于本地符号规则运行，不进行神经网络推理。"
+        ? "我是 formal-ai —— 一个确定性的符号化 AI。以下是我的功能：\n\n- **问候**：回应「你好」等问候语。\n- **Hello World**：生成 Rust、Python、JavaScript、Go、C 等语言的示例程序。\n- **Web search**：在可用时通过 DuckDuckGo、Wikipedia 和 Wikidata 搜索互联网。\n- **概念查找**：解释术语，例如「什么是维基百科？」\n- **算术**：计算表达式，例如「2 + 2 等于多少？」\n- **翻译**：在语言之间翻译短语。\n- **记忆**：在会话中记住上下文。\n- **设置和操作**：可通过消息开启诊断、演示、agent mode，切换主题、语言、聊天样式，并导出或导入记忆。\n\n我基于本地符号规则运行，不进行神经网络推理。"
         : language === "hi"
-          ? "मैं formal-ai हूँ — एक नियतात्मक प्रतीकात्मक AI। मैं यह कर सकता हूँ:\n\n- **अभिवादन**: «नमस्ते» आदि का जवाब देना।\n- **Hello World**: Rust, Python, JavaScript, Go, C आदि में प्रोग्राम बनाना।\n- **अवधारणा खोज**: शब्दों को समझाना — जैसे «विकिपीडिया क्या है?»\n- **अंकगणित**: गणनाएँ — जैसे «2 + 2 क्या है?»\n- **अनुवाद**: भाषाओं के बीच अनुवाद।\n- **स्मृति**: सत्र में संदर्भ याद रखना।\n\nमैं स्थानीय प्रतीकात्मक नियमों पर चलता हूँ, कोई न्यूरल इन्फेरेन्स नहीं।"
-          : "I am formal-ai, a deterministic symbolic AI. Here is what I can do:\n\n- **Greetings**: respond to «Hi», «Hello», and similar.\n- **Hello World**: generate programs in Rust, Python, JavaScript, Go, C, and more.\n- **Concept lookup**: explain terms — try «What is Wikipedia?»\n- **Arithmetic**: evaluate expressions — try «What is 2 + 2?»\n- **Translation**: translate phrases between languages.\n- **Memory**: recall context within the current session.\n\nI run on local symbolic rules, without any neural network inference.";
+          ? "मैं formal-ai हूँ — एक नियतात्मक प्रतीकात्मक AI। मैं यह कर सकता हूँ:\n\n- **अभिवादन**: «नमस्ते» आदि का जवाब देना।\n- **Hello World**: Rust, Python, JavaScript, Go, C आदि में प्रोग्राम बनाना।\n- **Web search**: उपलब्ध होने पर DuckDuckGo, Wikipedia, और Wikidata से इंटरनेट में खोजना।\n- **अवधारणा खोज**: शब्दों को समझाना — जैसे «विकिपीडिया क्या है?»\n- **अंकगणित**: गणनाएँ — जैसे «2 + 2 क्या है?»\n- **अनुवाद**: भाषाओं के बीच अनुवाद।\n- **स्मृति**: सत्र में संदर्भ याद रखना।\n- **Settings और actions**: messages से diagnostics/demo/agent mode बदलना, theme/language/chat style बदलना, और memory export/import करना।\n\nमैं स्थानीय प्रतीकात्मक नियमों पर चलता हूँ, कोई न्यूरल इन्फेरेन्स नहीं।"
+          : "I am formal-ai, a deterministic symbolic AI. Here is what I can do:\n\n- **Greetings**: respond to «Hi», «Hello», and similar.\n- **Hello World**: generate programs in Rust, Python, JavaScript, Go, C, and more.\n- **Web search**: search the internet through DuckDuckGo, Wikipedia, and Wikidata when available.\n- **Concept lookup**: explain terms — try «What is Wikipedia?»\n- **Arithmetic**: evaluate expressions — try «What is 2 + 2?»\n- **Translation**: translate phrases between languages.\n- **Memory**: recall context within the current session.\n- **Settings and actions**: configure diagnostics, demo mode, agent mode, theme, language, chat style, and memory import/export from messages.\n\nI run on local symbolic rules, without any neural network inference.";
   return {
     intent: "capabilities",
     content,
@@ -3990,6 +4628,7 @@ async function tryFactQuery(prompt, normalized, preferences) {
         confidence: 0.92,
         evidence,
         trace,
+        formalizedObject: cached.subjectQid || "",
       };
     }
     trace.push("fact_query:cache:miss");
@@ -4019,6 +4658,7 @@ async function tryFactQuery(prompt, normalized, preferences) {
     confidence: 0.92,
     evidence: factQueryEvidence(resolved, query.language),
     trace,
+    formalizedObject: resolved.subjectQid || "",
   };
 }
 
@@ -5720,8 +6360,14 @@ function parseFusedOutput(text) {
 
 // Session-scoped CORS disable list. When a provider fetch throws a CORS or
 // network error we record the timestamp so the planner skips it for the rest
-// of the session and records the decision in memory.
+// of the session and records the decision in memory. Issue #180: we also
+// pre-probe every provider once per session so the first user query does not
+// pay for failed sockets — the result is cached in `WEB_SEARCH_AVAILABLE`
+// alongside the disable list.
 const WEB_SEARCH_DISABLED = new Map();
+const WEB_SEARCH_AVAILABLE = new Map();
+const WEB_SEARCH_DIAGNOSTICS = [];
+let WEB_SEARCH_PROBE_PROMISE = null;
 
 function webSearchDisable(providerId, reason) {
   if (!WEB_SEARCH_DISABLED.has(providerId)) {
@@ -5733,23 +6379,95 @@ function webSearchIsDisabled(providerId) {
   return WEB_SEARCH_DISABLED.has(providerId);
 }
 
+function webSearchMarkAvailable(providerId, info) {
+  WEB_SEARCH_AVAILABLE.set(providerId, Object.assign({ at: Date.now() }, info || {}));
+  WEB_SEARCH_DISABLED.delete(providerId);
+}
+
+// Issue #180: record a single HTTP exchange so the diagnostics panel can
+// surface the raw request/response/conversion trace. We keep a small ring
+// buffer in RAM so very long sessions do not bloat memory.
+const WEB_SEARCH_DIAG_LIMIT = 64;
+function recordWebSearchDiagnostic(entry) {
+  if (!entry || typeof entry !== "object") return;
+  WEB_SEARCH_DIAGNOSTICS.push(entry);
+  while (WEB_SEARCH_DIAGNOSTICS.length > WEB_SEARCH_DIAG_LIMIT) {
+    WEB_SEARCH_DIAGNOSTICS.shift();
+  }
+}
+
+function consumeWebSearchDiagnostics() {
+  if (WEB_SEARCH_DIAGNOSTICS.length === 0) return [];
+  const snapshot = WEB_SEARCH_DIAGNOSTICS.slice();
+  WEB_SEARCH_DIAGNOSTICS.length = 0;
+  return snapshot;
+}
+
 async function fetchProviderJson(providerId, url, options) {
   if (typeof fetch !== "function") {
     webSearchDisable(providerId, "no_fetch");
+    recordWebSearchDiagnostic({
+      providerId,
+      url,
+      method: (options && options.method) || "GET",
+      requestHeaders: (options && options.headers) || null,
+      ok: false,
+      error: "fetch unavailable",
+    });
     return { ok: false, error: "fetch unavailable", finalUrl: url };
   }
+  const startedAt = Date.now();
   try {
     const response = await fetch(url, options || { mode: "cors" });
+    const status = response ? response.status : 0;
+    const statusText = response ? response.statusText : "";
     if (!response || !response.ok) {
-      return {
+      recordWebSearchDiagnostic({
+        providerId,
+        url,
+        method: (options && options.method) || "GET",
+        requestHeaders: (options && options.headers) || null,
         ok: false,
-        status: response ? response.status : 0,
-        statusText: response ? response.statusText : "",
-        finalUrl: url,
-      };
+        status,
+        statusText,
+        elapsedMs: Date.now() - startedAt,
+      });
+      return { ok: false, status, statusText, finalUrl: url };
     }
-    const data = await response.json();
-    return { ok: true, status: response.status, data, finalUrl: url };
+    const text = await response.text();
+    let data = null;
+    try {
+      data = text ? JSON.parse(text) : null;
+    } catch (parseError) {
+      const message = parseError instanceof Error ? parseError.message : String(parseError);
+      recordWebSearchDiagnostic({
+        providerId,
+        url,
+        method: (options && options.method) || "GET",
+        requestHeaders: (options && options.headers) || null,
+        ok: false,
+        status,
+        statusText,
+        elapsedMs: Date.now() - startedAt,
+        responseSnippet: text.slice(0, 1024),
+        error: `parse_error: ${message}`,
+      });
+      return { ok: false, error: `parse_error: ${message}`, finalUrl: url };
+    }
+    webSearchMarkAvailable(providerId, { status });
+    recordWebSearchDiagnostic({
+      providerId,
+      url,
+      method: (options && options.method) || "GET",
+      requestHeaders: (options && options.headers) || null,
+      ok: true,
+      status,
+      statusText,
+      elapsedMs: Date.now() - startedAt,
+      responseSnippet: text.length > 4096 ? `${text.slice(0, 4096)}…` : text,
+      responseBytes: text.length,
+    });
+    return { ok: true, status, data, finalUrl: url };
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     const isCors =
@@ -5757,8 +6475,132 @@ async function fetchProviderJson(providerId, url, options) {
       message.toLowerCase().includes("network") ||
       message.toLowerCase().includes("failed to fetch");
     webSearchDisable(providerId, isCors ? "cors" : "network");
+    recordWebSearchDiagnostic({
+      providerId,
+      url,
+      method: (options && options.method) || "GET",
+      requestHeaders: (options && options.headers) || null,
+      ok: false,
+      elapsedMs: Date.now() - startedAt,
+      error: message,
+      cors: isCors,
+    });
     return { ok: false, error: message, finalUrl: url, cors: isCors };
   }
+}
+
+// Issue #180: shared text-shaping helpers used by every web-search provider so
+// the rendered bullet looks consistent regardless of which provider produced
+// the entry. `extractDomain` returns the bare host (without `www.`),
+// `extractQuoteAroundQuery` walks the response body and returns a short
+// Google-style snippet that contains the original query word when possible,
+// and `escapeRegExp` is the standard helper used by the snippet picker.
+function escapeRegExp(value) {
+  return String(value || "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function extractDomain(url) {
+  const raw = String(url || "").trim();
+  if (!raw) return "";
+  try {
+    const u = new URL(raw);
+    return u.hostname.replace(/^www\./i, "");
+  } catch (_error) {
+    const match = raw.match(/^[a-z][a-z0-9+.\-]*:\/\/([^\/?#]+)/i);
+    if (match) return match[1].replace(/^www\./i, "");
+    return "";
+  }
+}
+
+function extractQuoteAroundQuery(text, query, maxChars) {
+  const max = typeof maxChars === "number" && maxChars > 0 ? Math.floor(maxChars) : 200;
+  const raw = String(text || "").replace(/\s+/g, " ").trim();
+  if (!raw) return "";
+  if (raw.length <= max) return raw;
+  const q = String(query || "").trim();
+  if (q) {
+    const candidates = [q, ...q.split(/\s+/)].filter((value, index, array) =>
+      value && array.indexOf(value) === index,
+    );
+    for (const candidate of candidates) {
+      if (!candidate || candidate.length < 2) continue;
+      const re = new RegExp(escapeRegExp(candidate), "i");
+      const match = raw.match(re);
+      if (match && typeof match.index === "number") {
+        const half = Math.max(20, Math.floor((max - candidate.length) / 2));
+        let start = Math.max(0, match.index - half);
+        let end = Math.min(raw.length, start + max);
+        if (start > 0) {
+          const space = raw.lastIndexOf(" ", start);
+          if (space > 0 && match.index - space <= half + 20) start = space + 1;
+        }
+        if (end < raw.length) {
+          const space = raw.indexOf(" ", end);
+          if (space > 0 && space - start <= max + 40) end = space;
+        }
+        let snippet = raw.slice(start, end).trim();
+        if (start > 0) snippet = "… " + snippet;
+        if (end < raw.length) snippet = snippet + " …";
+        return snippet;
+      }
+    }
+  }
+  let cut = raw.slice(0, max);
+  const lastPeriod = Math.max(
+    cut.lastIndexOf(". "),
+    cut.lastIndexOf("! "),
+    cut.lastIndexOf("? "),
+    cut.lastIndexOf("。"),
+  );
+  if (lastPeriod > max * 0.5) return cut.slice(0, lastPeriod + 1).trim();
+  const lastSpace = cut.lastIndexOf(" ");
+  if (lastSpace > max * 0.5) cut = cut.slice(0, lastSpace);
+  return cut.trim() + " …";
+}
+
+const PROVIDER_DISPLAY_LABELS = {
+  duckduckgo: "DuckDuckGo",
+  "internet-archive": "Internet Archive",
+  wikipedia: "Википедия",
+  wikidata: "Викидата",
+  wiktionary: "Викисловарь",
+};
+
+const PROVIDER_DISPLAY_LABELS_BY_LANG = {
+  en: {
+    duckduckgo: "DuckDuckGo",
+    "internet-archive": "Internet Archive",
+    wikipedia: "Wikipedia",
+    wikidata: "Wikidata",
+    wiktionary: "Wiktionary",
+  },
+  ru: {
+    duckduckgo: "DuckDuckGo",
+    "internet-archive": "Архив Интернета",
+    wikipedia: "Википедия",
+    wikidata: "Викидата",
+    wiktionary: "Викисловарь",
+  },
+  zh: {
+    duckduckgo: "DuckDuckGo",
+    "internet-archive": "互联网档案馆",
+    wikipedia: "维基百科",
+    wikidata: "维基数据",
+    wiktionary: "维基词典",
+  },
+  hi: {
+    duckduckgo: "DuckDuckGo",
+    "internet-archive": "इंटरनेट आर्काइव",
+    wikipedia: "विकिपीडिया",
+    wikidata: "विकिडेटा",
+    wiktionary: "विक्षनरी",
+  },
+};
+
+function providerDisplayLabel(providerId, language) {
+  const code = String(language || "").toLowerCase().slice(0, 2);
+  const table = PROVIDER_DISPLAY_LABELS_BY_LANG[code] || PROVIDER_DISPLAY_LABELS_BY_LANG.en;
+  return table[providerId] || PROVIDER_DISPLAY_LABELS[providerId] || providerId;
 }
 
 async function searchDuckDuckGo(query, language, limit) {
@@ -5946,31 +6788,178 @@ async function searchInternetArchive(query, language, limit) {
   return { ok: true, results, finalUrl: outcome.finalUrl };
 }
 
+// Issue #180: Wiktionary opensearch is a CORS-readable provider that returns
+// short dictionary definitions — exactly the kind of "fragment containing the
+// original request" the rendering template needs. We reuse the same
+// `fetchProviderJson` plumbing so the diagnostics panel records the raw call.
+async function searchWiktionary(query, language, limit) {
+  const cap = typeof limit === "number" && Number.isFinite(limit) && limit > 0
+    ? Math.floor(limit)
+    : 5;
+  const lang = language && /^[a-z]{2,3}$/i.test(language) ? language : "en";
+  const ordered = [lang, "en"].filter(
+    (value, index, array) => value && array.indexOf(value) === index,
+  );
+  const collected = [];
+  let lastFinalUrl = "";
+  let lastError = "";
+  for (const candidate of ordered) {
+    const base = WIKTIONARY_SEARCH_HOSTS[candidate] || WIKTIONARY_SEARCH_HOSTS.en;
+    const url = `${base}?action=opensearch&search=${encodeURIComponent(query)}&limit=${cap}&format=json&origin=*`;
+    const outcome = await fetchProviderJson("wiktionary", url);
+    lastFinalUrl = outcome.finalUrl || lastFinalUrl;
+    if (!outcome.ok || !Array.isArray(outcome.data) || !Array.isArray(outcome.data[1])) {
+      if (outcome.error) lastError = outcome.error;
+      continue;
+    }
+    const titles = outcome.data[1];
+    const descriptions = Array.isArray(outcome.data[2]) ? outcome.data[2] : [];
+    const urls = Array.isArray(outcome.data[3]) ? outcome.data[3] : [];
+    for (let index = 0; index < titles.length && collected.length < cap; index += 1) {
+      const title = titles[index] || query;
+      const description = stripHtml(
+        descriptions[index] || wiktionaryFallbackDescription(title, candidate),
+      );
+      const itemUrl = urls[index] ||
+        `https://${candidate}.wiktionary.org/wiki/${encodeURIComponent(title)}`;
+      collected.push({
+        title,
+        url: itemUrl,
+        excerpt: description,
+        wiktionaryKey: String(title).replace(/\s+/g, "_"),
+        wiktionaryLanguage: candidate,
+        virtualId: `WT:${candidate}:${String(title).replace(/\s+/g, "_")}`,
+        sourceKind: "wiktionary",
+      });
+    }
+    if (collected.length > 0) break;
+  }
+  if (collected.length === 0) {
+    return { ok: false, results: [], finalUrl: lastFinalUrl, error: lastError || "no_results" };
+  }
+  return { ok: true, results: collected.slice(0, cap), finalUrl: lastFinalUrl };
+}
+
+// Issue #180: The priority order requested in the issue is
+// DuckDuckGo → Internet Archive → Wikipedia → Wikidata → Wiktionary → rest.
+// We also keep the corresponding light-weight probe URL so the per-session
+// availability check at the top of `tryWebSearch` can pre-flight every
+// provider once instead of failing the first user query.
 const WEB_SEARCH_PROVIDERS = [
   {
     id: "duckduckgo",
     label: "DuckDuckGo Instant Answer",
+    priority: 1,
+    probeUrl: "https://api.duckduckgo.com/?q=ping&format=json&no_redirect=1&no_html=1",
     run: (query, language, limit) => searchDuckDuckGo(query, language, limit),
+  },
+  {
+    id: "internet-archive",
+    label: "Internet Archive (archive.org)",
+    priority: 2,
+    probeUrl:
+      "https://archive.org/advancedsearch.php?q=ping&fl%5B%5D=identifier&rows=1&page=1&output=json",
+    run: (query, language, limit) =>
+      searchInternetArchive(query, language, limit),
   },
   {
     id: "wikipedia",
     label: "Wikipedia REST",
+    priority: 3,
+    probeUrl: "https://en.wikipedia.org/w/rest.php/v1/search/page?q=ping&limit=1",
     run: (query, language, limit) =>
       searchWikipediaWebProvider(query, language, limit),
   },
   {
     id: "wikidata",
     label: "Wikidata entities",
+    priority: 4,
+    probeUrl:
+      "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=ping&language=en&format=json&origin=*&limit=1",
     run: (query, language, limit) =>
       searchWikidataEntities(query, language, limit),
   },
   {
-    id: "internet-archive",
-    label: "Internet Archive (web.archive.org)",
+    id: "wiktionary",
+    label: "Wiktionary opensearch",
+    priority: 5,
+    probeUrl:
+      "https://en.wiktionary.org/w/api.php?action=opensearch&search=ping&limit=1&format=json&origin=*",
     run: (query, language, limit) =>
-      searchInternetArchive(query, language, limit),
+      searchWiktionary(query, language, limit),
   },
 ];
+
+const WEB_SEARCH_PROVIDER_PRIORITY = WEB_SEARCH_PROVIDERS.reduce((acc, provider, index) => {
+  acc[provider.id] = typeof provider.priority === "number" ? provider.priority : index + 1;
+  return acc;
+}, Object.create(null));
+
+// Issue #180: pre-probe every provider exactly once per browser session. The
+// result lives in `WEB_SEARCH_AVAILABLE` / `WEB_SEARCH_DISABLED` for the rest
+// of the worker's lifetime so subsequent queries skip CORS-blocked endpoints
+// without re-burning a socket. We return a shared promise so concurrent
+// callers cooperate on the same probe batch.
+function ensureWebSearchProviderProbes() {
+  if (WEB_SEARCH_PROBE_PROMISE) return WEB_SEARCH_PROBE_PROMISE;
+  if (typeof fetch !== "function") {
+    WEB_SEARCH_PROBE_PROMISE = Promise.resolve([]);
+    return WEB_SEARCH_PROBE_PROMISE;
+  }
+  WEB_SEARCH_PROBE_PROMISE = (async () => {
+    const tasks = WEB_SEARCH_PROVIDERS.map((provider) => async () => {
+      if (!provider.probeUrl) return null;
+      const startedAt = Date.now();
+      try {
+        const response = await fetch(provider.probeUrl, { mode: "cors" });
+        const status = response ? response.status : 0;
+        if (response && response.ok) {
+          webSearchMarkAvailable(provider.id, { probedAt: startedAt, status });
+          recordWebSearchDiagnostic({
+            providerId: provider.id,
+            url: provider.probeUrl,
+            method: "GET",
+            ok: true,
+            status,
+            elapsedMs: Date.now() - startedAt,
+            phase: "probe",
+          });
+          return { providerId: provider.id, ok: true, status };
+        }
+        recordWebSearchDiagnostic({
+          providerId: provider.id,
+          url: provider.probeUrl,
+          method: "GET",
+          ok: false,
+          status,
+          elapsedMs: Date.now() - startedAt,
+          phase: "probe",
+        });
+        return { providerId: provider.id, ok: false, status };
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        const isCors =
+          message.toLowerCase().includes("cors") ||
+          message.toLowerCase().includes("network") ||
+          message.toLowerCase().includes("failed to fetch");
+        webSearchDisable(provider.id, isCors ? "cors" : "network");
+        recordWebSearchDiagnostic({
+          providerId: provider.id,
+          url: provider.probeUrl,
+          method: "GET",
+          ok: false,
+          elapsedMs: Date.now() - startedAt,
+          error: message,
+          cors: isCors,
+          phase: "probe",
+        });
+        return { providerId: provider.id, ok: false, error: message, cors: isCors };
+      }
+    });
+    return runWithConcurrencyLimit(tasks, webSearchConcurrency());
+  })();
+  return WEB_SEARCH_PROBE_PROMISE;
+}
 
 async function runWithConcurrencyLimit(tasks, limit) {
   // Simple p-limit style runner so we never exceed the browser's per-origin
@@ -6031,20 +7020,33 @@ function reciprocalRankFusion(perProviderResults, k) {
   });
 }
 
-// Issue #153: identify "the same entity" returned by different providers so the
-// fused list shows one bullet with the other URLs collapsed under
-// "Other sources:". We treat a Wikidata Q-id as the strongest signal and fall
-// back to the Wikipedia page key for entries that lack one (Wikipedia
-// disambiguation pages, edge cases where wbsearchentities did not return a
-// sitelink). Returns `null` when no canonical key can be inferred.
-function canonicalEntityKey(meta) {
-  if (!meta) return null;
-  if (meta.qid && /^Q\d+$/.test(meta.qid)) return `Q:${meta.qid}`;
+// Issue #153/#180: identify "the same entity" returned by different providers
+// so the fused list shows one bullet with the other URLs collapsed under
+// "Other sources:". A single result can carry several canonical identifiers
+// (Wikidata Q-id, Wikipedia page key, Wiktionary headword) — dedupe walks all
+// of them and merges into the first existing group it finds. Returning a
+// list makes the Wikipedia↔Wikidata merge robust against percent-encoding
+// differences in the two providers' URLs.
+function canonicalEntityKeys(meta) {
+  if (!meta) return [];
+  const keys = [];
+  if (meta.qid && /^Q\d+$/.test(meta.qid)) keys.push(`Q:${meta.qid}`);
   if (meta.wikipediaKey) {
     const lang = meta.wikipediaLanguage || "en";
-    return `WP:${lang}:${meta.wikipediaKey}`;
+    keys.push(`WP:${lang}:${meta.wikipediaKey}`);
   }
-  return null;
+  if (meta.wiktionaryKey) {
+    const lang = meta.wiktionaryLanguage || "en";
+    keys.push(`WT:${lang}:${meta.wiktionaryKey}`);
+  }
+  return keys;
+}
+
+// Backwards-compatible shim: prefer the primary key but keep the historical
+// single-key signature for callers that still rely on it.
+function canonicalEntityKey(meta) {
+  const keys = canonicalEntityKeys(meta);
+  return keys.length > 0 ? keys[0] : null;
 }
 
 function buildItemMetadataIndex(perProvider) {
@@ -6078,56 +7080,108 @@ function buildItemMetadataIndex(perProvider) {
 }
 
 function dedupeFusedEntries(fused, metaByUrl, evidence) {
-  const groups = new Map();
+  const groupsByKey = new Map();
+  const allGroups = [];
   const standalone = [];
+
+  function alreadyHasProvider(target, candidate) {
+    return target.providers.some(
+      (existing) => existing.id === candidate.id && existing.rank === candidate.rank,
+    );
+  }
+
   fused.forEach((entry, index) => {
     const meta = metaByUrl.get(entry.url) || null;
-    const key = canonicalEntityKey(meta);
+    const keys = canonicalEntityKeys(meta);
     const enriched = Object.assign({}, entry, {
       qid: (meta && meta.qid) || "",
       wikipediaKey: (meta && meta.wikipediaKey) || "",
       wikipediaLanguage: (meta && meta.wikipediaLanguage) || "",
+      wiktionaryKey: (meta && meta.wiktionaryKey) || "",
+      wiktionaryLanguage: (meta && meta.wiktionaryLanguage) || "",
       sourceKind: (meta && meta.sourceKind) || "",
       virtualId:
         (meta && meta.virtualId) ||
         (meta && meta.qid) ||
         (meta && meta.wikipediaKey ? `WP:${meta.wikipediaKey}` : ""),
       alternateUrls: [],
+      keys: keys.slice(),
       originalRank: index,
     });
-    if (!key) {
+
+    if (keys.length === 0) {
       standalone.push(enriched);
       return;
     }
-    if (groups.has(key)) {
-      const head = groups.get(key);
-      head.score += enriched.score;
-      head.alternateUrls.push({
-        url: enriched.url,
-        title: enriched.title,
-        providers: enriched.providers,
-      });
-      for (const p of enriched.providers) {
-        if (!head.providers.some((existing) => existing.id === p.id && existing.rank === p.rank)) {
-          head.providers.push(p);
-        }
+    let head = null;
+    for (const key of keys) {
+      if (groupsByKey.has(key)) {
+        head = groupsByKey.get(key);
+        break;
       }
-      if (Array.isArray(evidence)) {
-        evidence.push(`web_search:dedupe:${key}:absorbed:${enriched.url}`);
+    }
+    if (!head) {
+      allGroups.push(enriched);
+      for (const key of keys) {
+        if (!groupsByKey.has(key)) groupsByKey.set(key, enriched);
       }
       return;
     }
-    groups.set(key, enriched);
+    // Found an existing group — absorb this entry into it.
+    head.score += enriched.score;
+    head.alternateUrls.push({
+      url: enriched.url,
+      title: enriched.title,
+      providers: enriched.providers,
+      sourceKind: enriched.sourceKind,
+    });
+    for (const p of enriched.providers) {
+      if (!alreadyHasProvider(head, p)) head.providers.push(p);
+    }
+    // Register the absorbed entry's keys against the head group too so a third
+    // provider matching either canonical id still merges in.
+    for (const key of keys) {
+      if (!groupsByKey.has(key)) groupsByKey.set(key, head);
+    }
+    // Prefer the richest virtualId once we know more identifiers.
+    if (!head.virtualId && enriched.virtualId) head.virtualId = enriched.virtualId;
+    if (!head.qid && enriched.qid) head.qid = enriched.qid;
+    if (!head.wikipediaKey && enriched.wikipediaKey) {
+      head.wikipediaKey = enriched.wikipediaKey;
+      head.wikipediaLanguage = enriched.wikipediaLanguage;
+    }
+    if (!head.wiktionaryKey && enriched.wiktionaryKey) {
+      head.wiktionaryKey = enriched.wiktionaryKey;
+      head.wiktionaryLanguage = enriched.wiktionaryLanguage;
+    }
+    if (Array.isArray(evidence)) {
+      evidence.push(`web_search:dedupe:${keys[0]}:absorbed:${enriched.url}`);
+    }
   });
-  const merged = [...groups.values(), ...standalone];
+  const merged = [...allGroups, ...standalone];
   merged.sort((a, b) => {
     if (b.score !== a.score) return b.score - a.score;
     if (b.providers.length !== a.providers.length) {
       return b.providers.length - a.providers.length;
     }
+    // Issue #180: stable order by provider priority so DDG-led entries beat
+    // Wikidata-only entries on perfect ties.
+    const ap = providerPriorityScore(a.providers);
+    const bp = providerPriorityScore(b.providers);
+    if (ap !== bp) return ap - bp;
     return a.originalRank - b.originalRank;
   });
   return merged;
+}
+
+function providerPriorityScore(providers) {
+  if (!Array.isArray(providers) || providers.length === 0) return 999;
+  let best = 999;
+  for (const p of providers) {
+    const score = WEB_SEARCH_PROVIDER_PRIORITY[p && p.id] || 999;
+    if (score < best) best = score;
+  }
+  return best;
 }
 
 // Issue #153: localized templates for the web search response. Keep these in
@@ -6141,6 +7195,7 @@ const WEB_SEARCH_TEXTS = {
       `Search results for \`${query}\` — top ${top} after reciprocal rank fusion (k = ${k}).`,
     otherSources: "Other sources",
     via: "via",
+    readMore: "Read more",
     noResults: (query, providers) =>
       `No CORS-enabled web search results were returned for \`${query}\`.\n\nProviders tried: ${providers}.`,
     allDisabled: (providers) =>
@@ -6151,6 +7206,7 @@ const WEB_SEARCH_TEXTS = {
       `Результаты поиска для \`${query}\` — топ ${top} после реципрокного объединения рангов (k = ${k}).`,
     otherSources: "Другие источники",
     via: "через",
+    readMore: "Подробнее",
     noResults: (query, providers) =>
       `Не получены результаты веб-поиска с поддержкой CORS для \`${query}\`.\n\nПопробованы провайдеры: ${providers}.`,
     allDisabled: (providers) =>
@@ -6161,6 +7217,7 @@ const WEB_SEARCH_TEXTS = {
       `搜索 \`${query}\` 的结果 — 经互惠等级融合后的前 ${top} 项（k = ${k}）。`,
     otherSources: "其他来源",
     via: "来自",
+    readMore: "阅读更多",
     noResults: (query, providers) =>
       `未获取到 \`${query}\` 的可用 CORS 搜索结果。\n\n已尝试的提供方：${providers}。`,
     allDisabled: (providers) =>
@@ -6171,6 +7228,7 @@ const WEB_SEARCH_TEXTS = {
       `\`${query}\` के लिए खोज परिणाम — रेसिप्रोकल रैंक फ़्यूज़न के बाद शीर्ष ${top} (k = ${k})।`,
     otherSources: "अन्य स्रोत",
     via: "के माध्यम से",
+    readMore: "और पढ़ें",
     noResults: (query, providers) =>
       `\`${query}\` के लिए CORS-समर्थित कोई खोज परिणाम नहीं मिले।\n\nप्रयास किए गए प्रदाता: ${providers}.`,
     allDisabled: (providers) =>
@@ -6193,6 +7251,12 @@ async function tryWebSearch(prompt, language) {
   const providerLimit = webSearchProviderLimit();
   const texts = webSearchTexts(language);
 
+  // Issue #180: pre-probe every provider once per browser session so the
+  // first user query does not waste sockets on CORS-blocked endpoints. The
+  // probe results live in `WEB_SEARCH_AVAILABLE`/`WEB_SEARCH_DISABLED` for
+  // the rest of the worker lifetime.
+  await ensureWebSearchProviderProbes();
+
   // R194: the Rust core (`web_search_core::build_request_evidence`) is the
   // source of truth for the `web_search:*` evidence prefix. We prepend its
   // output and fall back to the inline list when the WASM worker booted in
@@ -6205,20 +7269,30 @@ async function tryWebSearch(prompt, language) {
     }
   } else {
     evidence.push(`web_search:request:${query}`);
+    if (language) {
+      evidence.push(`web_search:language:${language}`);
+    }
     for (const provider of WEB_SEARCH_PROVIDERS) {
       evidence.push(`web_search:provider:${provider.id}`);
     }
     evidence.push(`web_search:combined:rrf:k=${rrfK}`);
   }
 
-  // Session-disabled providers are session state, not part of the canonical
-  // plan, so we annotate them on top of the WASM-derived prefix.
-  const active = WEB_SEARCH_PROVIDERS.filter(
-    (provider) => !webSearchIsDisabled(provider.id),
-  );
-  for (const provider of WEB_SEARCH_PROVIDERS) {
+  // Issue #180: providers are tried in declared priority order so the rendered
+  // list matches the user's requested DDG → IA → WP → WD → Wiktionary
+  // sequence whenever scores tie. Session-disabled providers are skipped on
+  // top of the WASM-derived prefix and annotated for the diagnostics panel.
+  const ordered = WEB_SEARCH_PROVIDERS.slice().sort((a, b) => {
+    const pa = typeof a.priority === "number" ? a.priority : 999;
+    const pb = typeof b.priority === "number" ? b.priority : 999;
+    return pa - pb;
+  });
+  const active = ordered.filter((provider) => !webSearchIsDisabled(provider.id));
+  for (const provider of ordered) {
     if (webSearchIsDisabled(provider.id)) {
       evidence.push(`web_search:disabled:${provider.id}`);
+    } else if (WEB_SEARCH_AVAILABLE.has(provider.id)) {
+      evidence.push(`web_search:available:${provider.id}`);
     }
   }
 
@@ -6228,6 +7302,7 @@ async function tryWebSearch(prompt, language) {
       content: texts.allDisabled(WEB_SEARCH_PROVIDERS.map((p) => p.id).join(", ")),
       confidence: 0.3,
       evidence,
+      diagnostics: { providers: [], httpExchanges: consumeWebSearchDiagnostics() },
     };
   }
 
@@ -6263,34 +7338,76 @@ async function tryWebSearch(prompt, language) {
     }
   });
 
+  const diagnostics = {
+    query,
+    language: language || "",
+    providers: perProvider.map((p) => ({
+      id: p.id,
+      label: p.label,
+      ok: !!p.ok,
+      count: Array.isArray(p.results) ? p.results.length : 0,
+      elapsedMs: p.elapsedMs || 0,
+      finalUrl: p.finalUrl || "",
+      error: p.error || "",
+    })),
+    httpExchanges: consumeWebSearchDiagnostics(),
+    fused: top.map((entry, index) => ({
+      rank: index + 1,
+      url: entry.url,
+      title: entry.title,
+      score: entry.score,
+      providers: entry.providers,
+      alternateUrls: entry.alternateUrls,
+      virtualId: entry.virtualId || "",
+      keys: entry.keys || [],
+    })),
+  };
+
   if (top.length === 0) {
     return {
       intent: "web_search",
       content: texts.noResults(query, active.map((p) => p.label).join(", ")),
       confidence: 0.35,
       evidence,
+      diagnostics,
     };
   }
 
-  // Issue #153: every result follows the same template regardless of which
-  // provider produced it — `N. <virtualId> [title](url) — _via providers_ -
-  // excerpt`, with deduplicated alternate URLs rendered as a nested
-  // "Other sources:" sub-line in the user's language.
+  // Issue #180: every fused result is rendered Google-style — a single line
+  // with title + bare domain, an indented quote (a fragment containing the
+  // original query when possible, truncated near ~220 chars), a "Read more"
+  // link, and finally a faint "Другие источники:" line listing alternates
+  // (provider label + url) without per-source excerpts.
   const lines = [texts.header(query, top.length, rrfK), ""];
   top.forEach((entry, index) => {
-    const sources = entry.providers
+    const domain = extractDomain(entry.url);
+    const titlePiece = `**[${entry.title || entry.url}](${entry.url})**`;
+    const domainPiece = domain ? `  \`${domain}\`` : "";
+    const idTag = entry.virtualId ? `  \`${entry.virtualId}\`` : "";
+    lines.push(`${index + 1}. ${titlePiece}${domainPiece}${idTag}`);
+    const quote = extractQuoteAroundQuery(entry.excerpt, query, 220);
+    if (quote) {
+      lines.push(`   > ${quote}`);
+    }
+    const sourceTags = entry.providers
       .map((p) => `${p.id}#${p.rank}`)
       .join(", ");
-    const excerpt = entry.excerpt ? ` - ${entry.excerpt}` : "";
-    const idTag = entry.virtualId ? ` \`${entry.virtualId}\`` : "";
-    lines.push(`${index + 1}.${idTag} [${entry.title}](${entry.url}) — _${texts.via} ${sources}_${excerpt}`);
+    lines.push(`   [${texts.readMore}](${entry.url}) — _${texts.via} ${sourceTags}_`);
     if (Array.isArray(entry.alternateUrls) && entry.alternateUrls.length > 0) {
       const others = entry.alternateUrls
-        .map((alt) => `[${alt.title || alt.url}](${alt.url})`)
-        .join(", ");
-      lines.push(`   - ${texts.otherSources}: ${others}`);
+        .map((alt) => {
+          const labelProvider = pickPrimaryProviderId(alt.providers, alt.sourceKind);
+          const label = providerDisplayLabel(labelProvider, language);
+          return `[${label}](${alt.url})`;
+        })
+        .filter(Boolean);
+      if (others.length > 0) {
+        lines.push(`   _${texts.otherSources}: ${others.join(", ")}_`);
+      }
     }
+    lines.push("");
   });
+  while (lines.length > 0 && lines[lines.length - 1] === "") lines.pop();
 
   // Resolve the formalization tuple now that we know the top-ranked entity.
   // Prefer a real Wikidata Q-id; fall back to the WP virtual id, then to the
@@ -6312,7 +7429,22 @@ async function tryWebSearch(prompt, language) {
     evidence,
     formalizedObject,
     query,
+    diagnostics,
   };
+}
+
+function pickPrimaryProviderId(providers, sourceKind) {
+  if (sourceKind === "wikidata") return "wikidata";
+  if (sourceKind === "wikipedia") return "wikipedia";
+  if (sourceKind === "wiktionary") return "wiktionary";
+  if (sourceKind === "internet-archive") return "internet-archive";
+  if (Array.isArray(providers) && providers.length > 0) {
+    const sorted = providers.slice().sort(
+      (a, b) => (WEB_SEARCH_PROVIDER_PRIORITY[a.id] || 999) - (WEB_SEARCH_PROVIDER_PRIORITY[b.id] || 999),
+    );
+    return sorted[0].id;
+  }
+  return "";
 }
 
 function cleanContextValue(value) {
@@ -6516,11 +7648,22 @@ async function solve(prompt, history, prefs) {
   events.push(`language:${language}`);
   steps.push({ step: "detect_language", detail: language });
 
+  // Issue #180: bundle the per-turn formalization context so every
+  // handler hit can fold a resolved entity id back into the tuple and
+  // every `finalize` call can emit a `deformalize` step that records the
+  // symbolic → natural-language projection. The context is mutable so
+  // resolvers can update `resolved` as new ids surface.
+  const formalizationContext = {
+    initial: formalization,
+    resolved: null,
+    language,
+  };
+
   const behaviorRule = tryBehaviorRules(prompt, normalized, history);
   if (behaviorRule) {
     events.push(`handler:${behaviorRule.intent}`);
     steps.push({ step: "dispatch_handler", detail: "tryBehaviorRules" });
-    return finalize(events, steps, toolCalls, behaviorRule);
+    return finalize(events, steps, toolCalls, behaviorRule, formalizationContext);
   }
 
   if (isPunctuationOnlyPrompt(prompt)) {
@@ -6537,14 +7680,14 @@ async function solve(prompt, history, prefs) {
         "clarification:punctuation_only",
         `language:${language}`,
       ],
-    });
+    }, formalizationContext);
   }
 
-  const capabilities = tryCapabilities(prompt, normalized);
+  const capabilities = tryCapabilities(prompt, normalized, preferences);
   if (capabilities) {
     events.push(`handler:${capabilities.intent}`);
     steps.push({ step: "dispatch_handler", detail: "tryCapabilities" });
-    return finalize(events, steps, toolCalls, capabilities);
+    return finalize(events, steps, toolCalls, capabilities, formalizationContext);
   }
 
   if (isGreetingPrompt(normalized, prompt)) {
@@ -6562,7 +7705,7 @@ async function solve(prompt, history, prefs) {
         `variation:${randomize ? "random" : "canonical"}`,
         `temperature:${temperature.toFixed(2)}`,
       ],
-    });
+    }, formalizationContext);
   }
   if (isFarewellPrompt(normalized, prompt)) {
     events.push("rule:farewell");
@@ -6572,6 +7715,16 @@ async function solve(prompt, history, prefs) {
       content: answerFor("farewell", language),
       confidence: 1.0,
       evidence: ["rule:farewell", `language:${language}`],
+    }, formalizationContext);
+  }
+  if (isTestStatusPrompt(normalized, prompt)) {
+    events.push("rule:test_status");
+    steps.push({ step: "match_rule", detail: "test_status" });
+    return finalize(events, steps, toolCalls, {
+      intent: "test_status",
+      content: answerFor("test_status", language),
+      confidence: 1.0,
+      evidence: ["rule:test_status", `language:${language}`],
     });
   }
   if (isCourtesyResponsePrompt(normalized, prompt)) {
@@ -6600,7 +7753,7 @@ async function solve(prompt, history, prefs) {
       content: answerFor("identity", language),
       confidence: 1.0,
       evidence: ["rule:identity", `language:${language}`],
-    });
+    }, formalizationContext);
   }
 
   const syncHandlers = [
@@ -6641,7 +7794,7 @@ async function solve(prompt, history, prefs) {
           outputs: { intent: hit.intent, confidence: hit.confidence },
         });
       }
-      return finalize(events, steps, toolCalls, hit);
+      return finalize(events, steps, toolCalls, hit, formalizationContext);
     }
   }
 
@@ -6662,16 +7815,20 @@ async function solve(prompt, history, prefs) {
     toolCalls.push({
       tool: "fact_query",
       inputs: { prompt, language },
-      outputs: { intent: factQuery.intent, confidence: factQuery.confidence },
+      outputs: {
+        intent: factQuery.intent,
+        confidence: factQuery.confidence,
+        formalizedObject: factQuery.formalizedObject || "",
+      },
     });
-    return finalize(events, steps, toolCalls, factQuery);
+    return finalize(events, steps, toolCalls, factQuery, formalizationContext);
   }
 
   const legacyFact = tryFactLookup(prompt, normalized);
   if (legacyFact) {
     events.push(`handler:${legacyFact.intent}`);
     steps.push({ step: "dispatch_handler", detail: "tryFactLookup" });
-    return finalize(events, steps, toolCalls, legacyFact);
+    return finalize(events, steps, toolCalls, legacyFact, formalizationContext);
   }
 
   steps.push({ step: "invoke_tool", detail: "http_fetch" });
@@ -6684,7 +7841,7 @@ async function solve(prompt, history, prefs) {
       inputs: { prompt },
       outputs: { intent: fetched.intent, confidence: fetched.confidence, iframeUrl: fetched.iframeUrl || null },
     });
-    return finalize(events, steps, toolCalls, fetched);
+    return finalize(events, steps, toolCalls, fetched, formalizationContext);
   }
 
   steps.push({ step: "invoke_tool", detail: "url_navigate" });
@@ -6697,7 +7854,7 @@ async function solve(prompt, history, prefs) {
       inputs: { prompt },
       outputs: { intent: navigated.intent, confidence: navigated.confidence, iframeUrl: navigated.iframeUrl || null },
     });
-    return finalize(events, steps, toolCalls, navigated);
+    return finalize(events, steps, toolCalls, navigated, formalizationContext);
   }
 
   steps.push({ step: "invoke_tool", detail: "web_search" });
@@ -6705,30 +7862,6 @@ async function solve(prompt, history, prefs) {
   if (webSearch) {
     events.push(`handler:${webSearch.intent}`);
     steps.push({ step: "dispatch_handler", detail: "tryWebSearch" });
-    // Issue #153: once the search returns a real entity id, fold it into the
-    // formalization so the trace shows the resolved tuple alongside the
-    // initial placeholder. Skip the extra step if the search did not return
-    // a usable id (e.g. all providers failed).
-    if (webSearch.formalizedObject) {
-      const resolved = resolveFormalizationWithId(
-        formalization,
-        webSearch.formalizedObject,
-      );
-      if (resolved) {
-        events.push(`formalization:resolved:${resolved.tuple}`);
-        steps.push({
-          step: "formalize_resolved",
-          detail: formalizationDetail(resolved),
-          formalization: {
-            raw: resolved.raw,
-            subject: resolved.subject,
-            verb: resolved.verb,
-            object: resolved.object,
-            tuple: resolved.tuple,
-          },
-        });
-      }
-    }
     toolCalls.push({
       tool: "web_search",
       inputs: { prompt, language, query: webSearch.query || "" },
@@ -6738,7 +7871,7 @@ async function solve(prompt, history, prefs) {
         formalizedObject: webSearch.formalizedObject || "",
       },
     });
-    return finalize(events, steps, toolCalls, webSearch);
+    return finalize(events, steps, toolCalls, webSearch, formalizationContext);
   }
 
   steps.push({ step: "invoke_tool", detail: "wikipedia_lookup" });
@@ -6760,7 +7893,7 @@ async function solve(prompt, history, prefs) {
       },
       outputs: { intent: wiki.intent, confidence: wiki.confidence },
     });
-    return finalize(events, steps, toolCalls, wiki);
+    return finalize(events, steps, toolCalls, wiki, formalizationContext);
   }
   toolCalls.push({
     tool: "wikipedia_lookup",
@@ -6776,7 +7909,7 @@ async function solve(prompt, history, prefs) {
   if (whoIs) {
     events.push(`handler:${whoIs.intent}`);
     steps.push({ step: "dispatch_handler", detail: "tryWhoIsQuestion" });
-    return finalize(events, steps, toolCalls, whoIs);
+    return finalize(events, steps, toolCalls, whoIs, formalizationContext);
   }
 
   events.push("fallback:unknown");
@@ -6786,11 +7919,73 @@ async function solve(prompt, history, prefs) {
     content: unknownAnswerWithVariation(prompt, language),
     confidence: 0.1,
     evidence: ["fallback:unknown", `language:${language}`],
+  }, formalizationContext);
+}
+
+// Issue #180: every handler hit flows through this helper so the trace shows
+// the resolved-formalization fold (when the handler exposes a `formalizedObject`)
+// followed by a uniform `deformalize` step that captures how the symbolic
+// answer was projected into the natural-language `content`. Keeping the logic
+// here means new handlers automatically participate in the architecture
+// without having to repeat the bookkeeping.
+function applyResolvedFormalization(events, steps, formalizationContext, answer) {
+  if (!formalizationContext || !answer || !answer.formalizedObject) return;
+  const resolved = resolveFormalizationWithId(
+    formalizationContext.initial,
+    answer.formalizedObject,
+  );
+  if (!resolved) return;
+  // Skip the extra step when the placeholder already matched the resolved id
+  // (e.g. cache hits where the formalization tuple already had a Q-id).
+  if (resolved.tuple === formalizationContext.initial.tuple) return;
+  formalizationContext.resolved = resolved;
+  events.push(`formalization:resolved:${resolved.tuple}`);
+  steps.push({
+    step: "formalize_resolved",
+    detail: formalizationDetail(resolved),
+    formalization: {
+      raw: resolved.raw,
+      subject: resolved.subject,
+      verb: resolved.verb,
+      object: resolved.object,
+      tuple: resolved.tuple,
+    },
   });
 }
 
-function finalize(events, steps, toolCalls, answer) {
+function deformalizeProjection(formalizationContext, answer) {
+  const tuple =
+    (formalizationContext &&
+      ((formalizationContext.resolved && formalizationContext.resolved.tuple) ||
+        (formalizationContext.initial && formalizationContext.initial.tuple))) ||
+    "(@USER OP:express ?)";
   const evidence = Array.isArray(answer.evidence) ? answer.evidence : [];
+  const content = String(answer.content || "");
+  const firstLine = content.split(/\r?\n/, 1)[0] || "";
+  const projection = firstLine.length > 96 ? `${firstLine.slice(0, 96)}…` : firstLine;
+  return {
+    tuple,
+    intent: answer.intent || "unknown",
+    contentChars: content.length,
+    evidenceCount: evidence.length,
+    language:
+      (formalizationContext && formalizationContext.language) ||
+      answer.language ||
+      "",
+    summary: `${tuple} ⇒ ${answer.intent || "unknown"}: ${projection}`,
+  };
+}
+
+function finalize(events, steps, toolCalls, answer, formalizationContext) {
+  applyResolvedFormalization(events, steps, formalizationContext, answer);
+  const evidence = Array.isArray(answer.evidence) ? answer.evidence : [];
+  const projection = deformalizeProjection(formalizationContext, answer);
+  events.push(`deformalize:${projection.tuple}:${projection.intent}`);
+  steps.push({
+    step: "deformalize",
+    detail: projection.summary,
+    projection,
+  });
   const trace = events.map((event) => `trace:${event}`);
   const result = {
     intent: answer.intent,
@@ -6802,6 +7997,9 @@ function finalize(events, steps, toolCalls, answer) {
   };
   if (answer.iframeUrl) {
     result.iframeUrl = answer.iframeUrl;
+  }
+  if (answer.diagnostics) {
+    result.diagnostics = answer.diagnostics;
   }
   return result;
 }
@@ -6979,6 +8177,7 @@ self.onmessage = async (event) => {
     steps: answer.steps,
     toolCalls: answer.toolCalls,
     iframeUrl: answer.iframeUrl || null,
+    diagnostics: answer.diagnostics || null,
   });
 };
 
