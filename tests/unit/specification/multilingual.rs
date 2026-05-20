@@ -144,6 +144,42 @@ fn russian_concept_question_returns_concept_lookup_intent() {
     );
 }
 
+// Issue #161: "что такое граф" should be answered from the local concept seed,
+// and with associative project promotion enabled by default it should explain
+// graphs through the Link Foundation meta-theory / Links Notation lens.
+#[test]
+fn russian_graph_question_promotes_links_notation_context() {
+    let response = answer("что такое граф");
+    let lower = response.answer.to_lowercase();
+
+    assert_eq!(
+        response.intent, "concept_lookup",
+        "Russian graph question should resolve as concept_lookup, got {} -> {}",
+        response.intent, response.answer
+    );
+    assert_ne!(
+        response.intent, "unknown",
+        "Russian graph question must not fall through to unknown"
+    );
+    assert!(
+        lower.contains("граф") && lower.contains("вершин") && lower.contains("реб"),
+        "answer should define a graph using vertices and edges, got: {}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains("Links Notation") && lower.contains("сеть связей"),
+        "answer should promote the Links Notation / links-network framing, got: {}",
+        response.answer
+    );
+    assert!(
+        response
+            .answer
+            .contains("https://github.com/link-foundation/meta-theory"),
+        "answer should cite the Link Foundation meta-theory repository, got: {}",
+        response.answer
+    );
+}
+
 #[test]
 fn hindi_concept_question_returns_concept_lookup_intent() {
     let response = answer("विकिपीडिया क्या है?");

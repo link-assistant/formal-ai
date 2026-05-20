@@ -46,6 +46,27 @@ concept_links_meta_theory
     source "https://github.com/link-foundation/meta-theory"
     source_kind "official-repository"
 
+concept_graph
+  term "Graph"
+  intent "concept_lookup"
+  category "knowledge-representation"
+  aliases "graph|graphs|graph theory|граф|графы|теория графов|графовой структуры"
+  summary "A graph is a mathematical structure made of vertices and edges, where edges relate pairs of vertices. Through Link Foundation meta-theory, a Links Notation links network can represent any graph while also allowing links to link to links. That avoids treating knowledge as two artificial classes of vertices and edges; in many common graph definitions, edges between edges are not allowed."
+  source "https://github.com/link-foundation/meta-theory"
+  source_kind "official-repository"
+  localized "en"
+    term "Graph"
+    aliases "graph|graphs|graph theory"
+    summary "A graph is a mathematical structure made of vertices and edges, where edges relate pairs of vertices. Through Link Foundation meta-theory, a Links Notation links network can represent any graph while also allowing links to link to links. That avoids treating knowledge as two artificial classes of vertices and edges; in many common graph definitions, edges between edges are not allowed."
+    source "https://github.com/link-foundation/meta-theory"
+    source_kind "official-repository"
+  localized "ru"
+    term "Граф"
+    aliases "граф|графы|теория графов|графовая структура|графовой структуры"
+    summary "Граф — математическая структура из вершин и ребер, где ребра связывают пары вершин. В контексте Link Foundation meta-theory и Links Notation сеть связей может представить любой граф, а также позволяет ссылкам ссылаться на ссылки. Поэтому Links Notation не ограничивает знание искусственным разделением на вершины и ребра: в популярных определениях графов ребра между ребрами обычно не допускаются."
+    source "https://github.com/link-foundation/meta-theory"
+    source_kind "official-repository"
+
 concept_doublet
   term "doublet"
   intent "concept_lookup"
