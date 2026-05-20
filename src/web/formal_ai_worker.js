@@ -3230,23 +3230,21 @@ function tryArithmetic(prompt) {
     const isEquation = expression.includes("=");
     let formatted;
     let backend = "js";
-    const percentOfResult = evaluatePercentOfExpression(expression);
-    const currencyConversionResult = evaluateCurrencyConversionExpression(expression);
-    if (currencyConversionResult !== null) {
-      formatted = currencyConversionResult;
-      backend = "js-currency";
-    } else if (percentOfResult) {
-      formatted = percentOfResult;
-      backend = "js-percent-of";
-    } else if (isEquation) {
-      formatted = solveLinearEquation(expression);
+    const wasmResult = wasmEvaluateArithmetic(expression);
+    if (wasmResult && wasmResult.ok) {
+      formatted = wasmResult.value;
+      backend = "wasm";
     } else {
-      const wasmResult = wasmEvaluateArithmetic(expression);
-      if (wasmResult && wasmResult.ok) {
-        formatted = wasmResult.value;
-        backend = "wasm";
-      } else if (wasmResult && wasmResult.error) {
-        throw new Error(wasmResult.error);
+      const percentOfResult = evaluatePercentOfExpression(expression);
+      const currencyConversionResult = evaluateCurrencyConversionExpression(expression);
+      if (currencyConversionResult !== null) {
+        formatted = currencyConversionResult;
+        backend = "js-currency";
+      } else if (percentOfResult) {
+        formatted = percentOfResult;
+        backend = "js-percent-of";
+      } else if (isEquation) {
+        formatted = solveLinearEquation(expression);
       } else {
         formatted = formatArithmeticResult(evaluateArithmetic(expression));
       }
@@ -3272,6 +3270,180 @@ function tryArithmetic(prompt) {
       evidence: [`calculation_error:${message}`],
     };
   }
+}
+
+const WEEKDAY_CYCLE = [
+  {
+    slug: "monday",
+    en: "Monday",
+    ru: "понедельник",
+    ruGenitive: "понедельника",
+    ruInstrumental: "понедельником",
+    aliases: ["monday", "mon", "понедельника", "понедельником", "понедельнику", "понедельнике", "понедельник"],
+  },
+  {
+    slug: "tuesday",
+    en: "Tuesday",
+    ru: "вторник",
+    ruGenitive: "вторника",
+    ruInstrumental: "вторником",
+    aliases: ["tuesday", "tue", "tues", "вторника", "вторником", "вторнику", "вторнике", "вторник"],
+  },
+  {
+    slug: "wednesday",
+    en: "Wednesday",
+    ru: "среда",
+    ruGenitive: "среды",
+    ruInstrumental: "средой",
+    aliases: ["wednesday", "wed", "средой", "среде", "среду", "среды", "среда"],
+  },
+  {
+    slug: "thursday",
+    en: "Thursday",
+    ru: "четверг",
+    ruGenitive: "четверга",
+    ruInstrumental: "четвергом",
+    aliases: ["thursday", "thu", "thur", "thurs", "четверга", "четвергом", "четвергу", "четверге", "четверг"],
+  },
+  {
+    slug: "friday",
+    en: "Friday",
+    ru: "пятница",
+    ruGenitive: "пятницы",
+    ruInstrumental: "пятницей",
+    aliases: ["friday", "fri", "пятницей", "пятнице", "пятницу", "пятницы", "пятница"],
+  },
+  {
+    slug: "saturday",
+    en: "Saturday",
+    ru: "суббота",
+    ruGenitive: "субботы",
+    ruInstrumental: "субботой",
+    aliases: ["saturday", "sat", "субботой", "субботе", "субботу", "субботы", "суббота"],
+  },
+  {
+    slug: "sunday",
+    en: "Sunday",
+    ru: "воскресенье",
+    ruGenitive: "воскресенья",
+    ruInstrumental: "воскресеньем",
+    aliases: ["sunday", "sun", "воскресеньем", "воскресенью", "воскресенья", "воскресенье"],
+  },
+];
+
+const CALENDAR_NEXT_MARKERS = [
+  "after",
+  "comes after",
+  "day after",
+  "next day",
+  "following day",
+  "following weekday",
+  "follows",
+  "после",
+  "наступает после",
+  "следующий день",
+  "следующая",
+  "следом за",
+];
+
+const CALENDAR_PREVIOUS_MARKERS = [
+  "before",
+  "comes before",
+  "day before",
+  "previous day",
+  "previous weekday",
+  "precedes",
+  "перед",
+  "предыдущий день",
+  "предыдущая",
+  "предшествует",
+];
+
+function isCalendarWordCharacter(character) {
+  return /[\p{L}\p{N}_]/u.test(character);
+}
+
+function containsCalendarTerm(text, term) {
+  let index = String(text || "").indexOf(term);
+  while (index !== -1) {
+    const before = index > 0 ? Array.from(text.slice(0, index)).pop() : "";
+    const after = Array.from(text.slice(index + term.length))[0] || "";
+    if (
+      (!before || !isCalendarWordCharacter(before)) &&
+      (!after || !isCalendarWordCharacter(after))
+    ) {
+      return true;
+    }
+    index = text.indexOf(term, index + term.length);
+  }
+  return false;
+}
+
+function mentionsWeekdayContext(normalized) {
+  return (
+    ["day", "weekday", "week day", "день", "дня", "дни", "дней"].some((marker) =>
+      containsCalendarTerm(normalized, marker),
+    ) || normalized.includes("недел")
+  );
+}
+
+function detectWeekdayOperation(normalized) {
+  const hasNext = CALENDAR_NEXT_MARKERS.some((marker) => normalized.includes(marker));
+  const hasPrevious = CALENDAR_PREVIOUS_MARKERS.some((marker) => normalized.includes(marker));
+  if (hasNext && !hasPrevious) return "next";
+  if (hasPrevious && !hasNext) return "previous";
+  return null;
+}
+
+function detectWeekday(normalized) {
+  for (const weekday of WEEKDAY_CYCLE) {
+    if (weekday.aliases.some((alias) => containsCalendarTerm(normalized, alias))) {
+      return weekday;
+    }
+  }
+  return null;
+}
+
+function shiftWeekday(weekday, operation) {
+  const index = WEEKDAY_CYCLE.indexOf(weekday);
+  const offset = operation === "next" ? 1 : -1;
+  return WEEKDAY_CYCLE[(index + offset + WEEKDAY_CYCLE.length) % WEEKDAY_CYCLE.length];
+}
+
+function renderWeekdayRelation(language, operation, source, result) {
+  const delta = operation === "next" ? "+1" : "-1";
+  if (language === "ru") {
+    if (operation === "next") {
+      return `После ${source.ruGenitive} наступает ${result.ru}. Я сдвинул ${source.ru} на ${delta} в семидневном календарном цикле.`;
+    }
+    return `Перед ${source.ruInstrumental} идёт ${result.ru}. Я сдвинул ${source.ru} на ${delta} в семидневном календарном цикле.`;
+  }
+  if (operation === "next") {
+    return `The day after ${source.en} is ${result.en}. I move ${source.en} by ${delta} in the seven-day calendar cycle.`;
+  }
+  return `The day before ${source.en} is ${result.en}. I move ${source.en} by ${delta} in the seven-day calendar cycle.`;
+}
+
+function tryCalendarReasoning(prompt, normalized) {
+  if (!mentionsWeekdayContext(normalized)) return null;
+  const operation = detectWeekdayOperation(normalized);
+  if (!operation) return null;
+  const source = detectWeekday(normalized);
+  if (!source) return null;
+  const result = shiftWeekday(source, operation);
+  const language = detectLanguage(prompt);
+  return {
+    intent: "calendar_weekday_relation",
+    content: renderWeekdayRelation(language, operation, source, result),
+    confidence: 1.0,
+    evidence: [
+      "calendar:cycle:monday,tuesday,wednesday,thursday,friday,saturday,sunday",
+      `calendar:subject_weekday:${source.slug}`,
+      `calendar:operation:${operation}:${source.slug}`,
+      `calendar:result_weekday:${result.slug}`,
+      `language:${language}`,
+    ],
+  };
 }
 
 function renderConceptInContext(language, context, record) {
@@ -8882,6 +9054,7 @@ async function solve(prompt, history, prefs) {
     { name: "tryBrainstormingRequest", run: () => tryBrainstormingRequest(prompt, normalized) },
     { name: "tryRoleplayRequest", run: () => tryRoleplayRequest(prompt, normalized) },
     { name: "tryKupiSlona", run: () => tryKupiSlona(prompt, normalized) },
+    { name: "tryCalendarReasoning", run: () => tryCalendarReasoning(prompt, normalized) },
     { name: "tryArithmetic", run: () => tryArithmetic(prompt) },
     { name: "tryJavaScriptExecution", run: () => tryJavaScriptExecution(prompt) },
     {
