@@ -30,18 +30,18 @@ use crate::engine::{
 use crate::event_log::{build_evidence_links, EventLog};
 use crate::language::{detect as detect_language, Language};
 use crate::seed;
-use crate::solver_handler_how::try_how_it_works;
+use crate::solver_handler_how::{try_how_it_works, try_how_to_procedure};
 use crate::solver_handler_units::try_incompatible_units;
 use crate::solver_handlers::{
-    finalize_simple, try_algorithm, try_arithmetic, try_brainstorming_request, try_capabilities,
-    try_clarification, try_concept_lookup, try_conversation_memory, try_coreference_request,
-    try_definition_merge, try_definition_merge_by_default, try_execution_failure, try_fact_lookup,
-    try_feature_capability, try_hive_mind_lookup, try_http_fetch, try_ill_formed,
-    try_javascript_execution, try_meta_explanation, try_network_query, try_opinion_question,
-    try_project_lookup, try_punctuation_only_prompt, try_roleplay_request, try_shell_refusal,
-    try_software_project_request, try_source_conflict, try_source_refresh,
-    try_summarization_request, try_translation, try_url_navigate, try_web_search,
-    try_who_is_question, try_write_script, CapabilityRuntime,
+    finalize_simple, try_algorithm, try_arithmetic, try_behavior_rules, try_brainstorming_request,
+    try_capabilities, try_clarification, try_concept_lookup, try_conversation_memory,
+    try_coreference_request, try_definition_merge, try_definition_merge_by_default,
+    try_execution_failure, try_fact_lookup, try_feature_capability, try_hive_mind_lookup,
+    try_http_fetch, try_ill_formed, try_javascript_execution, try_meta_explanation,
+    try_network_query, try_opinion_question, try_project_lookup, try_punctuation_only_prompt,
+    try_roleplay_request, try_shell_refusal, try_software_project_request, try_source_conflict,
+    try_source_refresh, try_summarization_request, try_translation, try_url_navigate,
+    try_web_search, try_who_is_question, try_write_script, CapabilityRuntime,
 };
 use crate::solver_handlers_policy::{try_kupi_slona, try_physical_action_question};
 use crate::solver_helpers::{
@@ -311,9 +311,11 @@ fn handle_concept_lookup(
 /// New handlers should be slotted into the position that preserves intent
 /// precedence rather than appended unconditionally.
 const SPECIALIZED_HANDLERS: &[(&str, SpecializedHandler)] = &[
+    ("behavior_rules", try_behavior_rules),
     ("http_fetch", try_http_fetch),
     ("url_navigate", try_url_navigate),
     ("web_search", try_web_search),
+    ("procedural_how_to", try_how_to_procedure),
     ("conversation_memory", try_conversation_memory),
     ("summarization", try_summarization_request),
     ("brainstorming", try_brainstorming_request),

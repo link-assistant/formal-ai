@@ -25,7 +25,7 @@ const ISSUE_REPOSITORY = "link-assistant/formal-ai";
 const ISSUE_LABELS = "bug";
 const SOURCE_CODE_URL = `https://github.com/${ISSUE_REPOSITORY}`;
 const UNKNOWN_ANSWER =
-  "I cannot answer that from local Links Notation rules yet. Please add a fact or add a rule in Links Notation, then run the request again.";
+  "I don't know how to answer that yet. I cannot answer that from local Links Notation rules yet. To inspect what I can do, send `List behavior rules`, then `Show behavior rule unknown`. To teach this dialog a response, send: When I say `your prompt`, answer `your answer`. To make it durable, export memory or use Report issue so developers can add the fact or rule to the seed.";
 const IDENTITY_ANSWER =
   "I am formal-ai, a deterministic symbolic AI implementation that answers from local Links Notation rules and OpenAI-compatible API shapes. I do not perform neural inference in this demo.";
 const COURTESY_ACKNOWLEDGEMENTS = [
@@ -64,6 +64,8 @@ const EXAMPLE_PROMPTS = [
   { label: "Clarification (zh)", text: "我不明白" },
   { label: "Capabilities (en)", text: "What can you do?" },
   { label: "Capabilities (ru)", text: "Что ты умеешь?" },
+  { label: "Behavior rules", text: "List behavior rules" },
+  { label: "Self facts", text: "List all facts you know about yourself" },
   { label: "Hello world (Rust)", text: "Write me hello world program in Rust" },
   { label: "Hello world (Python)", text: "Create a hello world example in Python" },
   { label: "Hello world (JavaScript)", text: "Write hello world in JavaScript" },
@@ -1557,6 +1559,306 @@ function isIdentityPrompt(normalized) {
   );
 }
 
+function localBehaviorRuleId(value) {
+  let hash = 2166136261;
+  const text = String(value || "");
+  for (let index = 0; index < text.length; index += 1) {
+    hash ^= text.charCodeAt(index);
+    hash = Math.imul(hash, 16777619) >>> 0;
+  }
+  return `behavior_rule_runtime_${hash.toString(16)}`;
+}
+
+function localCodeSpans(text) {
+  return String(text || "")
+    .split("`")
+    .map((part, index) => (index % 2 === 1 ? part.trim() : ""))
+    .filter(Boolean);
+}
+
+// Issue #144: mirror the worker's multilingual `When X then Y` grammar so the
+// local fallback recognizes the same teach forms even without WASM.
+const LOCAL_BEHAVIOR_RULE_KEYWORD_PAIRS = [
+  ["when ", " then "],
+  ["when ", " do "],
+  ["когда ", " тогда "],
+  ["когда ", " делай "],
+  ["когда ", " сделай "],
+  ["когда ", " отвечай "],
+  ["когда ", " отвечать "],
+  ["если ", " то "],
+  ["जब ", " तब "],
+  ["जब ", " तो "],
+  ["当 ", " 时 "],
+  ["当 ", " 则 "],
+  ["当 ", " 回答 "],
+  ["当 ", "时回答 "],
+  ["当 ", "则回答 "],
+];
+
+function localLooksLikeRuntimeRuleUpdate(text) {
+  const raw = String(text || "");
+  const lower = raw.toLowerCase();
+  if (
+    (lower.includes("when i say") && (lower.includes("answer") || lower.includes("reply"))) ||
+    (lower.includes("if i ask") && (lower.includes("answer") || lower.includes("reply"))) ||
+    lower.includes("add behavior rule") ||
+    lower.includes("update behavior rule") ||
+    (lower.includes("когда я скажу") && lower.includes("ответ")) ||
+    (lower.includes("если я спрошу") && lower.includes("ответ")) ||
+    lower.includes("добавь правило поведения") ||
+    lower.includes("обнови правило поведения")
+  ) {
+    return true;
+  }
+  for (const [head, link] of LOCAL_BEHAVIOR_RULE_KEYWORD_PAIRS) {
+    const headPos = lower.indexOf(head);
+    if (headPos === -1) continue;
+    const tail = lower.slice(headPos + head.length);
+    const linkPos = tail.indexOf(link);
+    if (linkPos === -1) continue;
+    const absoluteLinkPos = headPos + head.length + linkPos;
+    const beforeLink = raw.slice(headPos, absoluteLinkPos);
+    const afterLink = raw.slice(absoluteLinkPos + link.length);
+    if (beforeLink.includes("`") && afterLink.includes("`")) return true;
+  }
+  return false;
+}
+
+function localRuntimeRuleFromText(text) {
+  if (!localLooksLikeRuntimeRuleUpdate(text)) return null;
+  const spans = localCodeSpans(text);
+  if (spans.length < 2) return null;
+  const trigger = spans[0].trim();
+  const answer = spans[1].trim();
+  if (!trigger || !answer) return null;
+  return {
+    id: localBehaviorRuleId(`${trigger}\n${answer}`),
+    trigger,
+    answer,
+  };
+}
+
+function localBehaviorRuleRecords() {
+  return [
+    {
+      id: "rule_greeting",
+      topic: "greetings",
+      intent: "greeting",
+      label: "Greeting rule",
+      matches: "`Hi`, `Hello`, and `Hey`",
+      response: "Hi, how may I help you?",
+      source: "local fallback",
+      whenThen:
+        "When the user says `Hi`, `Hello`, or `Hey` then respond with `Hi, how may I help you?`.",
+    },
+    {
+      id: "rule_identity",
+      topic: "identity",
+      intent: "identity",
+      label: "Identity rule",
+      matches: "`Who are you?`, `Кто ты?`, and equivalent identity prompts",
+      response: IDENTITY_ANSWER,
+      source: "local fallback",
+      whenThen: `When the user asks \`Who are you?\` or \`Кто ты?\` then respond with the identity answer.`,
+    },
+    {
+      id: "rule_unknown",
+      topic: "unknown_fallback",
+      intent: "unknown",
+      label: "Unknown fallback rule",
+      matches: "Any prompt that no earlier rule can answer",
+      response: UNKNOWN_ANSWER,
+      source: "local fallback",
+      whenThen:
+        "When no earlier rule or handler matches the prompt then respond with the unknown-intent guide.",
+    },
+  ];
+}
+
+const LOCAL_BEHAVIOR_RULE_TOPIC_LABELS = {
+  greetings: "Greetings",
+  identity: "Identity",
+  unknown_fallback: "Unknown fallback",
+};
+
+const LOCAL_BEHAVIOR_RULE_TOPIC_ORDER = ["greetings", "identity", "unknown_fallback"];
+
+function localBehaviorRulesList(runtimeRules) {
+  const lines = [
+    "Behavior rules I can inspect in this dialog (grouped by topic, each shown as a `When X then Y` statement):",
+    "",
+  ];
+  const groups = new Map();
+  for (const rule of localBehaviorRuleRecords()) {
+    const order = LOCAL_BEHAVIOR_RULE_TOPIC_ORDER.indexOf(rule.topic);
+    const safeOrder = order === -1 ? LOCAL_BEHAVIOR_RULE_TOPIC_ORDER.length : order;
+    if (!groups.has(safeOrder)) {
+      groups.set(safeOrder, {
+        label: LOCAL_BEHAVIOR_RULE_TOPIC_LABELS[rule.topic] || "Other",
+        rules: [],
+      });
+    }
+    groups.get(safeOrder).rules.push(rule);
+  }
+  const ordered = Array.from(groups.entries()).sort((a, b) => a[0] - b[0]);
+  ordered.forEach(([, group], index) => {
+    lines.push(`# ${group.label}`);
+    for (const rule of group.rules) {
+      lines.push(`- \`${rule.id}\` -> ${rule.whenThen}`);
+    }
+    if (index + 1 < ordered.length) lines.push("");
+  });
+  if (Array.isArray(runtimeRules) && runtimeRules.length > 0) {
+    lines.push("", "# Dialog-local rules taught in this conversation");
+    for (const rule of runtimeRules) {
+      lines.push(
+        `- \`${rule.id}\` -> When the user says \`${rule.trigger}\` then respond with \`${rule.answer}\`.`,
+      );
+    }
+  }
+  lines.push(
+    "",
+    "Read one with `Show behavior rule unknown`.",
+    "Teach this dialog with: When `your prompt` then `your answer`. Equivalent: When I say `your prompt`, answer `your answer`.",
+    "Multilingual forms: Russian `Когда \\`X\\` тогда \\`Y\\``, Hindi `जब \\`X\\` तब \\`Y\\``, Chinese `当 \\`X\\` 时 \\`Y\\``.",
+    "The write is append-only: export memory to preserve the rule message with the dialog.",
+  );
+  return lines.join("\n");
+}
+
+function localBehaviorRuleDetail(rule) {
+  return [
+    rule.label,
+    "",
+    rule.whenThen || "",
+    "",
+    "```links",
+    rule.id,
+    `  topic "${(rule.topic || "").replaceAll('"', '\\"')}"`,
+    `  intent "${rule.intent}"`,
+    `  matches "${rule.matches.replaceAll('"', '\\"')}"`,
+    `  response "${rule.response.replaceAll('"', '\\"')}"`,
+    `  source "${rule.source}"`,
+    `  when_then "${(rule.whenThen || "").replaceAll('"', '\\"')}"`,
+    "```",
+    "",
+    "To change this behavior in the current dialog, send: When `your prompt` then `your answer`. Equivalent: When I say `your prompt`, answer `your answer`.",
+  ].join("\n");
+}
+
+function localSelfFacts() {
+  return [
+    "Facts I know about myself:",
+    "",
+    "```links",
+    "self_fact_model",
+    '  subject "formal-ai"',
+    '  relation "model"',
+    '  object "formal-symbolic-production"',
+    "self_fact_rules",
+    '  subject "formal-ai"',
+    '  relation "answer_source"',
+    '  object "local Links Notation rules"',
+    "```",
+    "",
+    "Read behavior with `List behavior rules`; teach one with When I say `prompt`, answer `answer`.",
+  ].join("\n");
+}
+
+function localCleanRuleQuery(raw) {
+  return String(raw || "")
+    .trim()
+    .replace(/^[\s`"':._,\-?!]+|[\s`"':._,\-?!]+$/g, "")
+    .toLowerCase();
+}
+
+function localDetailQuery(prompt) {
+  const lower = String(prompt || "").toLowerCase();
+  for (const prefix of ["show behavior rule", "read behavior rule", "show rule", "read rule"]) {
+    if (lower.startsWith(prefix)) {
+      return localCleanRuleQuery(String(prompt || "").slice(prefix.length));
+    }
+  }
+  if (lower.includes("rule_unknown")) return "unknown";
+  return "";
+}
+
+function localFindBehaviorRule(query) {
+  const cleaned = localCleanRuleQuery(query);
+  const withoutPrefix = cleaned.startsWith("rule_") ? cleaned.slice(5) : cleaned;
+  return localBehaviorRuleRecords().find(
+    (rule) =>
+      rule.id === cleaned ||
+      rule.id === `rule_${withoutPrefix}` ||
+      rule.intent === cleaned ||
+      rule.intent === withoutPrefix,
+  );
+}
+
+function localRuntimeRuleForPrompt(prompt, history) {
+  const normalizedPrompt = normalizePrompt(prompt);
+  const turns = Array.isArray(history) ? history : [];
+  for (let index = turns.length - 1; index >= 0; index -= 1) {
+    const turn = turns[index] || {};
+    if (String(turn.role || "").toLowerCase() !== "user") continue;
+    const rule = localRuntimeRuleFromText(turn.content);
+    if (rule && normalizePrompt(rule.trigger) === normalizedPrompt) {
+      return rule;
+    }
+  }
+  return null;
+}
+
+function tryLocalBehaviorRules(prompt, normalized, history) {
+  const updateRule = localRuntimeRuleFromText(prompt);
+  if (updateRule) {
+    return {
+      intent: "behavior_rule_update",
+      content: [
+        "Behavior rule recorded for this dialog.",
+        "",
+        "```links",
+        updateRule.id,
+        '  type "behavior_rule_runtime"',
+        `  match_prompt "${updateRule.trigger.replaceAll('"', '\\"')}"`,
+        `  answer "${updateRule.answer.replaceAll('"', '\\"')}"`,
+        '  source "user_message"',
+        "```",
+        "",
+        `Send \`${updateRule.trigger}\` now and I will answer with the configured response. Export memory to keep this rule message with the dialog.`,
+      ].join("\n"),
+    };
+  }
+  if (
+    normalized.includes("list behavior rules") ||
+    normalized.includes("list all behavior rules") ||
+    normalized.includes("show behavior rules") ||
+    normalized.includes("список правил поведения")
+  ) {
+    return { intent: "behavior_rules_list", content: localBehaviorRulesList() };
+  }
+  const query = localDetailQuery(prompt);
+  if (query) {
+    const rule = localFindBehaviorRule(query);
+    if (rule) {
+      return { intent: "behavior_rule_detail", content: localBehaviorRuleDetail(rule) };
+    }
+  }
+  if (
+    normalized.includes("facts you know about yourself") ||
+    normalized.includes("self facts") ||
+    normalized.includes("факты о себе")
+  ) {
+    return { intent: "self_facts", content: localSelfFacts() };
+  }
+  const runtimeRule = localRuntimeRuleForPrompt(prompt, history);
+  if (runtimeRule) {
+    return { intent: "behavior_rule_custom", content: runtimeRule.answer };
+  }
+  return null;
+}
+
 function chooseVariant(variants, randomize) {
   if (!Array.isArray(variants) || variants.length === 0) return "";
   if (!randomize || variants.length === 1) return variants[0];
@@ -1588,8 +1890,12 @@ function courtesyResponseContent(preferences = {}) {
   return `${acknowledgement} ${followUp}`;
 }
 
-function localFallbackAnswer(prompt, preferences = {}) {
+function localFallbackAnswer(prompt, history = [], preferences = {}) {
   const normalized = normalizePrompt(prompt);
+  const behaviorRule = tryLocalBehaviorRules(prompt, normalized, history);
+  if (behaviorRule) {
+    return behaviorRule;
+  }
   if (["hi", "hello", "hey"].includes(normalized)) {
     return {
       intent: "greeting",
@@ -1621,8 +1927,45 @@ function localFallbackAnswer(prompt, preferences = {}) {
 
   return {
     intent: "unknown",
-    content: UNKNOWN_ANSWER,
+    content: localUnknownAnswerWithVariation(prompt),
   };
+}
+
+// Mirrors `src/engine.rs::UNKNOWN_OPENERS_EN` so the React fallback (used when
+// the worker is unavailable, e.g. on `file://`) presents the same set of
+// variations as the worker and Rust solver. Only the English pool is kept
+// here because the React fallback never reaches non-English seeds.
+const LOCAL_UNKNOWN_OPENERS = [
+  "I don't know how to answer that yet.",
+  "I didn't understand you.",
+  "I'm not sure how to respond to that yet.",
+  "I haven't learned to answer that yet.",
+  "That one is new to me.",
+];
+
+function localSelectUnknownOpener(prompt) {
+  const trimmed = String(prompt || "").trim();
+  if (trimmed === "") return LOCAL_UNKNOWN_OPENERS[0];
+  const id = localBehaviorRuleId(`unknown_opener\n${trimmed}`);
+  const hex = id.split("_").pop() || "0";
+  const value = parseInt(hex, 16) || 0;
+  return LOCAL_UNKNOWN_OPENERS[value % LOCAL_UNKNOWN_OPENERS.length];
+}
+
+function localUnknownAnswerWithVariation(prompt) {
+  const opener = localSelectUnknownOpener(prompt);
+  const body = String(UNKNOWN_ANSWER || "").trimStart();
+  for (const known of LOCAL_UNKNOWN_OPENERS) {
+    if (body.startsWith(known)) {
+      const rest = body.slice(known.length).trimStart();
+      return rest ? `${opener} ${rest}` : opener;
+    }
+  }
+  const idx = body.indexOf(". ");
+  if (idx >= 0) {
+    return `${opener} ${body.slice(idx + 2).trimStart()}`;
+  }
+  return `${opener} ${body}`;
 }
 
 function createDemoTurns() {
@@ -3160,7 +3503,7 @@ function App() {
       location: locationPreferenceRef.current,
     };
     if (!worker) {
-      return Promise.resolve(localFallbackAnswer(text, prefs));
+      return Promise.resolve(localFallbackAnswer(text, history, prefs));
     }
 
     return new Promise((resolve) => {

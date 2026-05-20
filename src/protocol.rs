@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
 use crate::engine::{estimate_tokens, stable_id, FormalAiEngine, SymbolicAnswer, DEFAULT_MODEL};
-use crate::solver::UniversalSolver;
+use crate::solver::{ConversationTurn, UniversalSolver};
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct ChatCompletionRequest {
@@ -127,8 +127,8 @@ pub struct ResponseUsage {
 
 #[must_use]
 pub fn create_chat_completion(request: &ChatCompletionRequest) -> ChatCompletion {
-    let prompt = chat_prompt(&request.messages);
-    let symbolic_answer = FormalAiEngine.answer(&prompt);
+    let (prompt, history) = chat_prompt_and_history(&request.messages);
+    let symbolic_answer = UniversalSolver::default().solve_with_history(&prompt, &history);
     chat_completion_from_symbolic(request, &prompt, symbolic_answer)
 }
 
@@ -137,8 +137,8 @@ pub fn create_chat_completion_with_solver(
     request: &ChatCompletionRequest,
     solver: &UniversalSolver,
 ) -> ChatCompletion {
-    let prompt = chat_prompt(&request.messages);
-    let symbolic_answer = solver.solve(&prompt);
+    let (prompt, history) = chat_prompt_and_history(&request.messages);
+    let symbolic_answer = solver.solve_with_history(&prompt, &history);
     chat_completion_from_symbolic(request, &prompt, symbolic_answer)
 }
 
@@ -228,31 +228,34 @@ fn response_from_symbolic(
     }
 }
 
-fn chat_prompt(messages: &[ChatMessage]) -> String {
-    let latest_user = messages
+fn chat_prompt_and_history(messages: &[ChatMessage]) -> (String, Vec<ConversationTurn>) {
+    let Some(latest_user_index) = messages
         .iter()
-        .rev()
-        .find(|message| message.role.eq_ignore_ascii_case("user"))
-        .map(|message| message.content.plain_text())
-        .unwrap_or_default();
+        .rposition(|message| message.role.eq_ignore_ascii_case("user"))
+    else {
+        return (String::new(), Vec::new());
+    };
 
-    if messages.len() <= 1 {
-        return latest_user;
-    }
-
-    let history = messages
+    let prompt = messages[latest_user_index].content.plain_text();
+    let history = messages[..latest_user_index]
         .iter()
-        .filter(|message| message.role.eq_ignore_ascii_case("user"))
-        .map(|message| message.content.plain_text())
-        .filter(|text| !text.trim().is_empty())
-        .collect::<Vec<_>>()
-        .join("\n");
+        .filter_map(chat_message_to_turn)
+        .collect();
+    (prompt, history)
+}
 
-    if history.trim() == latest_user.trim() {
-        latest_user
-    } else {
-        history
+fn chat_message_to_turn(message: &ChatMessage) -> Option<ConversationTurn> {
+    let content = message.content.plain_text();
+    if content.trim().is_empty() {
+        return None;
     }
+    if message.role.eq_ignore_ascii_case("user") {
+        return Some(ConversationTurn::user(content));
+    }
+    if message.role.eq_ignore_ascii_case("assistant") {
+        return Some(ConversationTurn::assistant(content));
+    }
+    None
 }
 
 fn response_prompt(request: &ResponsesRequest) -> String {

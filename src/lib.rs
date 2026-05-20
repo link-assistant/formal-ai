@@ -21,6 +21,7 @@ pub(crate) mod solver_helpers;
 pub mod summarization;
 pub mod telegram;
 pub mod telegram_runtime;
+pub(crate) mod unknown_opener;
 pub mod web_engine_core;
 pub mod web_search_core;
 
@@ -72,6 +73,7 @@ pub use telegram_runtime::{
     run_telegram_polling, run_telegram_polling_with_transport, run_telegram_webhook_server,
     CurlTelegramTransport, TelegramPollingRuntimeError, TelegramTransport,
 };
+pub use unknown_opener::unknown_answer_variation_for;
 pub use web_engine_core::{
     detect_language as detect_prompt_language, evaluate_arithmetic_expression,
     normalize_prompt as normalize_prompt_text, tokenize_prompt,

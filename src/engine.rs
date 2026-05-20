@@ -29,7 +29,7 @@ const FALLBACK_FAREWELL_ANSWER: &str = "Goodbye! Feel free to return any time.";
 const FALLBACK_TEST_STATUS_ANSWER: &str = "Test passed. I'm here.";
 const FALLBACK_COURTESY_RESPONSE_ANSWER: &str = "Glad to hear it. What would you like to do next?";
 const FALLBACK_IDENTITY_ANSWER: &str = "I am formal-ai, a deterministic symbolic AI implementation that answers from local Links Notation rules and OpenAI-compatible API shapes. I do not perform neural inference in this demo.";
-const FALLBACK_UNKNOWN_ANSWER: &str = "I cannot answer that from local Links Notation rules yet. Please add a fact or add a rule in Links Notation, then run the request again.";
+const FALLBACK_UNKNOWN_ANSWER: &str = "I don't know how to answer that yet. I cannot answer that from local Links Notation rules yet. To inspect what I can do, send `List behavior rules`, then `Show behavior rule unknown`. To teach this dialog a response, send: When I say `your prompt`, answer `your answer`. To make it durable, export memory or use Report issue so developers can add the fact or rule to the seed.";
 const FALLBACK_UNKNOWN_LANGUAGE_ANSWER: &str = concat!(
     "I detected an unsupported language. Falling back to English: I cannot ",
     "answer that from local Links Notation rules yet. Please add a fact or ",
@@ -173,22 +173,22 @@ fn chinese_identity_answer() -> &'static str {
     cached_response(&CELL, "identity", "zh", FALLBACK_IDENTITY_ANSWER)
 }
 
-fn russian_unknown_answer() -> &'static str {
+pub(crate) fn russian_unknown_answer() -> &'static str {
     static CELL: OnceLock<String> = OnceLock::new();
     cached_response(&CELL, "unknown", "ru", FALLBACK_UNKNOWN_ANSWER)
 }
 
-fn hindi_unknown_answer() -> &'static str {
+pub(crate) fn hindi_unknown_answer() -> &'static str {
     static CELL: OnceLock<String> = OnceLock::new();
     cached_response(&CELL, "unknown", "hi", FALLBACK_UNKNOWN_ANSWER)
 }
 
-fn chinese_unknown_answer() -> &'static str {
+pub(crate) fn chinese_unknown_answer() -> &'static str {
     static CELL: OnceLock<String> = OnceLock::new();
     cached_response(&CELL, "unknown", "zh", FALLBACK_UNKNOWN_ANSWER)
 }
 
-const fn unknown_language_fallback_answer() -> &'static str {
+pub(crate) const fn unknown_language_fallback_answer() -> &'static str {
     FALLBACK_UNKNOWN_LANGUAGE_ANSWER
 }
 
@@ -649,7 +649,7 @@ pub(crate) fn language_aware_intent_for(rule: &SelectedRule, _language: Language
 pub(crate) fn language_aware_answer_for(
     rule: &SelectedRule,
     language: Language,
-    _prompt: &str,
+    prompt: &str,
 ) -> String {
     match (rule, language) {
         (SelectedRule::Greeting, Language::Russian) => String::from(russian_greeting_answer()),
@@ -673,11 +673,8 @@ pub(crate) fn language_aware_answer_for(
         (SelectedRule::Identity, Language::Russian) => String::from(russian_identity_answer()),
         (SelectedRule::Identity, Language::Hindi) => String::from(hindi_identity_answer()),
         (SelectedRule::Identity, Language::Chinese) => String::from(chinese_identity_answer()),
-        (SelectedRule::Unknown, Language::Russian) => String::from(russian_unknown_answer()),
-        (SelectedRule::Unknown, Language::Hindi) => String::from(hindi_unknown_answer()),
-        (SelectedRule::Unknown, Language::Chinese) => String::from(chinese_unknown_answer()),
-        (SelectedRule::Unknown, Language::Unknown) => {
-            String::from(unknown_language_fallback_answer())
+        (SelectedRule::Unknown, _) => {
+            crate::unknown_opener::language_aware_unknown_answer(prompt, language)
         }
         _ => rule.answer(),
     }

@@ -58,7 +58,7 @@ const FALLBACK_COURTESY_FOLLOW_UPS = [
 ];
 
 const FALLBACK_UNKNOWN_ANSWER =
-  "I cannot answer that from local Links Notation rules yet. Please add a fact or add a rule in Links Notation, then run the request again.";
+  "I don't know how to answer that yet. I cannot answer that from local Links Notation rules yet. To inspect what I can do, send `List behavior rules`, then `Show behavior rule unknown`. To teach this dialog a response, send: When I say `your prompt`, answer `your answer`. To make it durable, export memory or use Report issue so developers can add the fact or rule to the seed.";
 
 const FALLBACK_CLARIFICATION_ANSWER =
   "I'm sorry for the confusion. I am formal-ai, a deterministic symbolic AI. I can answer greetings, identity questions, concept lookups (what is X?), arithmetic, and Hello World programs. If you'd like to ask about something specific, try one of those or add a fact in Links Notation.";
@@ -462,6 +462,87 @@ function answerFor(intent, language, options) {
     return entry.variants[idx] || entry.text;
   }
   return entry.text;
+}
+
+// Mirrors `src/engine.rs::UNKNOWN_OPENERS_*`. The first entry of each pool
+// equals the opener already embedded in the seed text so the "with-variations"
+// answer is a strict superset of the seed. Different prompts get different
+// openers; the same prompt always picks the same one (FNV-1a hash, mirrored
+// from `stableBehaviorRuleId`).
+const UNKNOWN_OPENERS_BY_LANGUAGE = {
+  en: [
+    "I don't know how to answer that yet.",
+    "I didn't understand you.",
+    "I'm not sure how to respond to that yet.",
+    "I haven't learned to answer that yet.",
+    "That one is new to me.",
+  ],
+  ru: [
+    "Я пока не знаю, как ответить на это.",
+    "Я тебя не понял.",
+    "Я не уверен, как на это ответить.",
+    "Я ещё не научился отвечать на это.",
+    "Это для меня новое.",
+  ],
+  hi: [
+    "मुझे अभी इसका उत्तर देना नहीं आता।",
+    "मैं समझ नहीं पाया।",
+    "मुझे यकीन नहीं है कि कैसे उत्तर दूँ।",
+    "मैंने अभी तक यह उत्तर देना नहीं सीखा।",
+    "यह मेरे लिए नया है।",
+  ],
+  zh: [
+    "我还不知道如何回答这个问题。",
+    "我不太明白你说的意思。",
+    "我不确定该如何回答。",
+    "我还没有学会回答这个问题。",
+    "这对我来说是新的。",
+  ],
+};
+
+function unknownOpenersFor(language) {
+  return UNKNOWN_OPENERS_BY_LANGUAGE[language] || UNKNOWN_OPENERS_BY_LANGUAGE.en;
+}
+
+function selectUnknownOpener(prompt, language) {
+  const pool = unknownOpenersFor(language);
+  const trimmed = String(prompt || "").trim();
+  if (trimmed === "") return pool[0];
+  const id = stableBehaviorRuleId("unknown_opener", trimmed);
+  const hex = id.split("_").pop() || "0";
+  let value;
+  try {
+    value = BigInt(`0x${hex}`);
+  } catch (_err) {
+    value = 0n;
+  }
+  const index = Number(value % BigInt(pool.length));
+  return pool[index] || pool[0];
+}
+
+function stripLeadingUnknownOpener(text, language) {
+  const trimmed = String(text || "").trimStart();
+  const openers = unknownOpenersFor(language);
+  for (const known of openers) {
+    if (trimmed.startsWith(known)) {
+      return trimmed.slice(known.length).trimStart();
+    }
+  }
+  for (const separator of [". ", "。", "। "]) {
+    const idx = trimmed.indexOf(separator);
+    if (idx >= 0) {
+      return trimmed.slice(idx + separator.length).trimStart();
+    }
+  }
+  return trimmed;
+}
+
+function unknownAnswerWithVariation(prompt, language) {
+  const seedText = answerFor("unknown", language);
+  const opener = selectUnknownOpener(prompt, language);
+  const body = stripLeadingUnknownOpener(seedText, language);
+  if (!body) return opener;
+  return `${opener} ${body}`;
 }
 
 function numericPreference(value, fallback, min, max) {
@@ -1623,6 +1704,525 @@ function isCourtesyResponsePrompt(normalized, rawPrompt) {
 function isPunctuationOnlyPrompt(prompt) {
   const trimmed = String(prompt || "").trim();
   return /^[.!?…。？！]+$/.test(trimmed);
+}
+
+function stableBehaviorRuleId(prefix, value) {
+  let hash = 0xcbf29ce484222325n;
+  const source = String(value || "");
+  for (let index = 0; index < source.length; index += 1) {
+    hash ^= BigInt(source.charCodeAt(index));
+    hash = BigInt.asUintN(64, hash * 0x100000001b3n);
+  }
+  return `${prefix}_${hash.toString(16)}`;
+}
+
+function escapeBehaviorRuleValue(value) {
+  return String(value || "")
+    .replaceAll("\\", "\\\\")
+    .replaceAll('"', '\\"')
+    .replaceAll("\n", "\\n");
+}
+
+function behaviorRuleRecords() {
+  const greeting = answerFor("greeting", "en");
+  const farewell = answerFor("farewell", "en");
+  const identity = answerFor("identity", "en");
+  return [
+    {
+      id: "rule_greeting",
+      topic: "greetings",
+      intent: "greeting",
+      label: "Greeting rule",
+      matches: "`Hi`, `Hello`, `Hey`, and multilingual greeting seed phrases",
+      response: greeting,
+      source: "data/seed/intent-routing.lino + multilingual responses",
+      whenThen: `When the user says \`Hi\`, \`Hello\`, or \`Hey\` then respond with \`${greeting}\`.`,
+    },
+    {
+      id: "rule_farewell",
+      topic: "farewells",
+      intent: "farewell",
+      label: "Farewell rule",
+      matches: "`bye`, `goodbye`, `poka`, and multilingual farewell seed phrases",
+      response: farewell,
+      source: "data/seed/intent-routing.lino + multilingual responses",
+      whenThen: `When the user says \`bye\`, \`goodbye\`, or \`пока\` then respond with \`${farewell}\`.`,
+    },
+    {
+      id: "rule_identity",
+      topic: "identity",
+      intent: "identity",
+      label: "Identity rule",
+      matches: "`Who are you?`, `Кто ты?`, and equivalent identity prompts",
+      response: identity,
+      source: "data/seed/identity.lino + multilingual responses",
+      whenThen: `When the user asks \`Who are you?\` or \`Кто ты?\` then respond with \`${identity}\`.`,
+    },
+    {
+      id: "rule_capabilities",
+      topic: "capabilities",
+      intent: "capabilities",
+      label: "Capabilities rule",
+      matches: "`What can you do?`, `Что ты умеешь?`, and equivalent capability prompts",
+      response: "Lists the supported symbolic chat capabilities.",
+      source: "src/solver_handlers/user_intent.rs",
+      whenThen:
+        "When the user asks `What can you do?` or `Что ты умеешь?` then respond with the multilingual capability listing.",
+    },
+    {
+      id: "rule_hello_world_rust",
+      topic: "hello_world",
+      intent: "hello_world_rust",
+      label: "Hello-world rule (Rust)",
+      matches: "`hello world` plus aliases: rust, rs",
+      response: "Returns a minimal Rust hello-world program.",
+      source: "data/seed/hello-world-programs.lino",
+      whenThen:
+        "When the user requests a `hello world` program with alias `rust` then respond with a minimal Rust hello-world program.",
+    },
+    {
+      id: "rule_hello_world_python",
+      topic: "hello_world",
+      intent: "hello_world_python",
+      label: "Hello-world rule (Python)",
+      matches: "`hello world` plus aliases: python, py",
+      response: "Returns a minimal Python hello-world program.",
+      source: "data/seed/hello-world-programs.lino",
+      whenThen:
+        "When the user requests a `hello world` program with alias `python` then respond with a minimal Python hello-world program.",
+    },
+    {
+      id: "rule_hello_world_javascript",
+      topic: "hello_world",
+      intent: "hello_world_javascript",
+      label: "Hello-world rule (JavaScript)",
+      matches: "`hello world` plus aliases: javascript, js, node",
+      response: "Returns a minimal JavaScript hello-world program.",
+      source: "data/seed/hello-world-programs.lino",
+      whenThen:
+        "When the user requests a `hello world` program with alias `javascript` then respond with a minimal JavaScript hello-world program.",
+    },
+    {
+      id: "rule_hello_world_typescript",
+      topic: "hello_world",
+      intent: "hello_world_typescript",
+      label: "Hello-world rule (TypeScript)",
+      matches: "`hello world` plus aliases: typescript, ts",
+      response: "Returns a minimal TypeScript hello-world program.",
+      source: "data/seed/hello-world-programs.lino",
+      whenThen:
+        "When the user requests a `hello world` program with alias `typescript` then respond with a minimal TypeScript hello-world program.",
+    },
+    {
+      id: "rule_hello_world_go",
+      topic: "hello_world",
+      intent: "hello_world_go",
+      label: "Hello-world rule (Go)",
+      matches: "`hello world` plus aliases: go, golang",
+      response: "Returns a minimal Go hello-world program.",
+      source: "data/seed/hello-world-programs.lino",
+      whenThen:
+        "When the user requests a `hello world` program with alias `go` then respond with a minimal Go hello-world program.",
+    },
+    {
+      id: "rule_hello_world_c",
+      topic: "hello_world",
+      intent: "hello_world_c",
+      label: "Hello-world rule (C)",
+      matches: "`hello world` plus aliases: c",
+      response: "Returns a minimal C hello-world program.",
+      source: "data/seed/hello-world-programs.lino",
+      whenThen:
+        "When the user requests a `hello world` program with alias `c` then respond with a minimal C hello-world program.",
+    },
+    {
+      id: "rule_unknown",
+      topic: "unknown_fallback",
+      intent: "unknown",
+      label: "Unknown fallback rule",
+      matches: "Any prompt that no earlier rule or handler can answer",
+      response: answerFor("unknown", "en"),
+      source: "data/seed/multilingual-responses.lino",
+      whenThen:
+        "When no earlier rule or handler matches the prompt then respond with the multilingual unknown-intent guide (`List behavior rules`, `Show behavior rule`, `When I say … answer …`, `Report issue`, `Export memory`).",
+    },
+  ];
+}
+
+const BEHAVIOR_RULE_TOPIC_LABELS = {
+  greetings: "Greetings",
+  farewells: "Farewells",
+  identity: "Identity",
+  capabilities: "Capabilities",
+  hello_world: "Hello-world programs",
+  unknown_fallback: "Unknown fallback",
+};
+
+const BEHAVIOR_RULE_TOPIC_ORDER = [
+  "greetings",
+  "farewells",
+  "identity",
+  "capabilities",
+  "hello_world",
+  "unknown_fallback",
+];
+
+function behaviorRuleTopicLabel(topic) {
+  return BEHAVIOR_RULE_TOPIC_LABELS[topic] || "Other";
+}
+
+function behaviorRuleTopicOrder(topic) {
+  const index = BEHAVIOR_RULE_TOPIC_ORDER.indexOf(topic);
+  return index === -1 ? BEHAVIOR_RULE_TOPIC_ORDER.length : index;
+}
+
+function renderBehaviorRuleList(runtimeRules) {
+  const lines = [
+    "Behavior rules I can inspect in this dialog (grouped by topic, each shown as a `When X then Y` statement):",
+    "",
+  ];
+  const groups = new Map();
+  for (const rule of behaviorRuleRecords()) {
+    const order = behaviorRuleTopicOrder(rule.topic);
+    if (!groups.has(order)) {
+      groups.set(order, { label: behaviorRuleTopicLabel(rule.topic), rules: [] });
+    }
+    groups.get(order).rules.push(rule);
+  }
+  const ordered = Array.from(groups.entries()).sort((a, b) => a[0] - b[0]);
+  ordered.forEach(([, group], index) => {
+    lines.push(`# ${group.label}`);
+    for (const rule of group.rules) {
+      lines.push(`- \`${rule.id}\` -> ${rule.whenThen}`);
+    }
+    if (index + 1 < ordered.length) lines.push("");
+  });
+  if (Array.isArray(runtimeRules) && runtimeRules.length > 0) {
+    lines.push("", "# Dialog-local rules taught in this conversation");
+    for (const rule of runtimeRules) {
+      lines.push(
+        `- \`${rule.id}\` -> When the user says \`${rule.trigger}\` then respond with \`${rule.answer}\`.`,
+      );
+    }
+  }
+  lines.push(
+    "",
+    "Read one with `Show behavior rule unknown` or `Show behavior rule rule_greeting`.",
+    "Teach this dialog with: When `your prompt` then `your answer`. " +
+      "Equivalent forms: When I say `your prompt`, answer `your answer`; " +
+      "If I ask `your prompt`, reply `your answer`; " +
+      "When `your prompt` do `your answer`.",
+    "Multilingual forms: Russian `Когда \\`X\\` тогда \\`Y\\`` / `Когда \\`X\\` делай \\`Y\\``, " +
+      "Hindi `जब \\`X\\` तब \\`Y\\``, Chinese `当 \\`X\\` 时 \\`Y\\``.",
+    "The write is append-only: export memory to preserve the rule message with the dialog.",
+  );
+  return lines.join("\n");
+}
+
+function renderBehaviorRuleDetail(rule) {
+  return [
+    rule.label,
+    "",
+    rule.whenThen,
+    "",
+    "```links",
+    rule.id,
+    `  topic "${escapeBehaviorRuleValue(rule.topic)}"`,
+    `  intent "${escapeBehaviorRuleValue(rule.intent)}"`,
+    `  matches "${escapeBehaviorRuleValue(rule.matches)}"`,
+    `  response "${escapeBehaviorRuleValue(rule.response)}"`,
+    `  source "${escapeBehaviorRuleValue(rule.source)}"`,
+    `  when_then "${escapeBehaviorRuleValue(rule.whenThen)}"`,
+    "```",
+    "",
+    "To change this behavior in the current dialog, send: When `your prompt` then `your answer`. " +
+      "Equivalent: When I say `your prompt`, answer `your answer`.",
+  ].join("\n");
+}
+
+function renderSelfFacts() {
+  return [
+    "Facts I know about myself:",
+    "",
+    "```links",
+    "self_fact_model",
+    '  subject "formal-ai"',
+    '  relation "model"',
+    `  object "${escapeBehaviorRuleValue(AGENT_INFO.model || "formal-symbolic-production")}"`,
+    "self_fact_policy",
+    '  subject "formal-ai"',
+    '  relation "policy"',
+    '  object "deterministic symbolic AI; no neural network inference"',
+    "self_fact_rules",
+    '  subject "formal-ai"',
+    '  relation "answer_source"',
+    '  object "local Links Notation rules"',
+    "self_fact_memory",
+    '  subject "formal-ai"',
+    '  relation "memory"',
+    '  object "append-only dialog events plus seed files in Links Notation"',
+    "```",
+    "",
+    "Read behavior with `List behavior rules`; teach one with When `prompt` then `answer` (or When I say `prompt`, answer `answer`).",
+  ].join("\n");
+}
+
+function renderRuntimeRuleUpdate(rule) {
+  const whenThenText = `When the user says \`${rule.trigger}\` then respond with \`${rule.answer}\`.`;
+  return [
+    "Behavior rule recorded for this dialog.",
+    "",
+    whenThenText,
+    "",
+    "```links",
+    rule.id,
+    '  type "behavior_rule_runtime"',
+    `  match_prompt "${escapeBehaviorRuleValue(rule.trigger)}"`,
+    `  answer "${escapeBehaviorRuleValue(rule.answer)}"`,
+    `  when_then "${escapeBehaviorRuleValue(whenThenText)}"`,
+    '  source "user_message"',
+    "```",
+    "",
+    `Send \`${rule.trigger}\` now and I will answer with the configured response. Export memory to keep this rule message with the dialog.`,
+  ].join("\n");
+}
+
+function isBehaviorRulesList(normalized) {
+  return (
+    normalized.includes("list behavior rules") ||
+    normalized.includes("list all behavior rules") ||
+    normalized.includes("show behavior rules") ||
+    normalized.includes("show all behavior rules") ||
+    normalized.includes("what behavior rules") ||
+    normalized.includes("existing behavior rules") ||
+    normalized.includes("список правил поведения") ||
+    normalized.includes("покажи правила поведения") ||
+    normalized.includes("какие правила поведения") ||
+    normalized.includes("व्यवहार के नियम") ||
+    normalized.includes("व्यवहार नियम सूचीबद्ध करें") ||
+    normalized.includes("行为规则") ||
+    normalized.includes("列出行为规则")
+  );
+}
+
+function isSelfFactQuery(normalized) {
+  return (
+    normalized.includes("facts you know about yourself") ||
+    normalized.includes("facts about yourself") ||
+    normalized.includes("self facts") ||
+    normalized.includes("list all facts you know about yourself") ||
+    normalized.includes("какие факты ты знаешь о себе") ||
+    normalized.includes("факты о себе") ||
+    normalized.includes("अपने बारे में तथ्य") ||
+    normalized.includes("स्वयं के बारे में तथ्य") ||
+    normalized.includes("关于你自己的事实") ||
+    normalized.includes("自我事实")
+  );
+}
+
+function cleanRuleQuery(raw) {
+  return String(raw || "")
+    .trim()
+    .replace(/^[\s`"':._,\-?!]+|[\s`"':._,\-?!]+$/g, "")
+    .toLowerCase();
+}
+
+function detailQuery(prompt) {
+  const lower = String(prompt || "").toLowerCase();
+  const prefixes = [
+    "show behavior rule",
+    "read behavior rule",
+    "describe behavior rule",
+    "show rule",
+    "read rule",
+    "details for rule",
+    "детали правила",
+    "покажи правило",
+    "прочитай правило",
+  ];
+  for (const prefix of prefixes) {
+    if (lower.startsWith(prefix)) {
+      return cleanRuleQuery(String(prompt || "").slice(prefix.length));
+    }
+  }
+  if (lower.includes("rule_unknown")) return "unknown";
+  return "";
+}
+
+function findBehaviorRule(query) {
+  const cleaned = cleanRuleQuery(query);
+  const withoutPrefix = cleaned.startsWith("rule_") ? cleaned.slice(5) : cleaned;
+  return behaviorRuleRecords().find(
+    (rule) =>
+      rule.id === cleaned ||
+      rule.id === `rule_${withoutPrefix}` ||
+      rule.intent === cleaned ||
+      rule.intent === withoutPrefix ||
+      rule.label.toLowerCase().includes(withoutPrefix),
+  );
+}
+
+function codeSpans(text) {
+  return String(text || "")
+    .split("`")
+    .map((part, index) => (index % 2 === 1 ? part.trim() : ""))
+    .filter(Boolean);
+}
+
+// Issue #144: recognize behavior-rule updates expressed as `When X then Y`
+// (and translations) in addition to the explicit `When I say … answer …`
+// grammar. KEYWORD_PAIRS is a list of (head, link) tuples that bracket the
+// trigger and the answer; both must appear, head before link, and there must
+// be at least one backtick on each side so the runtime extractor can pull the
+// trigger and answer deterministically.
+const BEHAVIOR_RULE_KEYWORD_PAIRS = [
+  // English
+  ["when ", " then "],
+  ["when ", " do "],
+  // Russian
+  ["когда ", " тогда "],
+  ["когда ", " делай "],
+  ["когда ", " сделай "],
+  ["когда ", " отвечай "],
+  ["когда ", " отвечать "],
+  ["если ", " то "],
+  // Hindi
+  ["जब ", " तब "],
+  ["जब ", " तो "],
+  // Chinese
+  ["当 ", " 时 "],
+  ["当 ", " 则 "],
+  ["当 ", " 回答 "],
+  ["当 ", "时回答 "],
+  ["当 ", "则回答 "],
+];
+
+function looksLikeRuntimeRuleUpdate(text) {
+  const raw = String(text || "");
+  const lower = raw.toLowerCase();
+  if (
+    (lower.includes("when i say") && (lower.includes("answer") || lower.includes("reply"))) ||
+    (lower.includes("if i ask") && (lower.includes("answer") || lower.includes("reply"))) ||
+    lower.includes("add behavior rule") ||
+    lower.includes("update behavior rule") ||
+    (lower.includes("когда я скажу") && lower.includes("ответ")) ||
+    (lower.includes("если я спрошу") && lower.includes("ответ")) ||
+    lower.includes("добавь правило поведения") ||
+    lower.includes("обнови правило поведения")
+  ) {
+    return true;
+  }
+  for (const [head, link] of BEHAVIOR_RULE_KEYWORD_PAIRS) {
+    const headPos = lower.indexOf(head);
+    if (headPos === -1) continue;
+    const tail = lower.slice(headPos + head.length);
+    const linkPos = tail.indexOf(link);
+    if (linkPos === -1) continue;
+    const absoluteLinkPos = headPos + head.length + linkPos;
+    const beforeLink = raw.slice(headPos, absoluteLinkPos);
+    const afterLink = raw.slice(absoluteLinkPos + link.length);
+    if (beforeLink.includes("`") && afterLink.includes("`")) return true;
+  }
+  return false;
+}
+
+function runtimeRuleFromText(text) {
+  if (!looksLikeRuntimeRuleUpdate(text)) return null;
+  const spans = codeSpans(text);
+  if (spans.length < 2) return null;
+  const trigger = spans[0].trim();
+  const answer = spans[1].trim();
+  if (!trigger || !answer) return null;
+  return {
+    id: stableBehaviorRuleId("behavior_rule_runtime", `${trigger}\n${answer}`),
+    trigger,
+    answer,
+  };
+}
+
+function runtimeRuleForPrompt(prompt, history) {
+  const normalizedPrompt = normalizePrompt(prompt);
+  const turns = Array.isArray(history) ? history : [];
+  for (let index = turns.length - 1; index >= 0; index -= 1) {
+    const turn = turns[index] || {};
+    if (String(turn.role || "").toLowerCase() !== "user") continue;
+    const rule = runtimeRuleFromText(turn.content);
+    if (rule && normalizePrompt(rule.trigger) === normalizedPrompt) {
+      return rule;
+    }
+  }
+  return null;
+}
+
+function collectRuntimeRules(history) {
+  const turns = Array.isArray(history) ? history : [];
+  const seen = new Set();
+  const rules = [];
+  for (const turn of turns) {
+    const role = String((turn || {}).role || "").toLowerCase();
+    if (role !== "user") continue;
+    const rule = runtimeRuleFromText((turn || {}).content);
+    if (rule && !seen.has(rule.id)) {
+      seen.add(rule.id);
+      rules.push(rule);
+    }
+  }
+  return rules;
+}
+
+function tryBehaviorRules(prompt, normalized, history) {
+  const updateRule = runtimeRuleFromText(prompt);
+  if (updateRule) {
+    return {
+      intent: "behavior_rule_update",
+      content: renderRuntimeRuleUpdate(updateRule),
+      confidence: 1.0,
+      evidence: ["behavior_rule:update", updateRule.id],
+    };
+  }
+
+  if (isBehaviorRulesList(normalized)) {
+    return {
+      intent: "behavior_rules_list",
+      content: renderBehaviorRuleList(collectRuntimeRules(history)),
+      confidence: 1.0,
+      evidence: ["behavior_rules:list", "all"],
+    };
+  }
+
+  const query = detailQuery(prompt);
+  if (query) {
+    const rule = findBehaviorRule(query);
+    if (rule) {
+      return {
+        intent: "behavior_rule_detail",
+        content: renderBehaviorRuleDetail(rule),
+        confidence: 1.0,
+        evidence: ["behavior_rule:read", rule.id],
+      };
+    }
+  }
+
+  if (isSelfFactQuery(normalized)) {
+    return {
+      intent: "self_facts",
+      content: renderSelfFacts(),
+      confidence: 1.0,
+      evidence: ["self_facts:list", "formal-ai"],
+    };
+  }
+
+  const runtimeRule = runtimeRuleForPrompt(prompt, history);
+  if (runtimeRule) {
+    return {
+      intent: "behavior_rule_custom",
+      content: runtimeRule.answer,
+      confidence: 1.0,
+      evidence: ["behavior_rule:match", runtimeRule.id],
+    };
+  }
+
+  return null;
 }
 
 function containsAny(normalized, values) {
@@ -5615,6 +6215,274 @@ function extractWebSearchQuery(prompt, normalized) {
   return "";
 }
 
+function cleanProceduralFragment(value) {
+  let clean = String(value || "")
+    .trim()
+    .replace(/^[`"' ]+/u, "")
+    .replace(/[`"' ]+$/u, "")
+    .replace(/[?!.,;:]+$/u, "")
+    .replace(/\s+/g, " ")
+    .trim();
+  const suffixes = [
+    " step by step",
+    " in steps",
+    " with steps",
+    " for me",
+    " please",
+  ];
+  for (const suffix of suffixes) {
+    if (clean.endsWith(suffix)) {
+      clean = clean.slice(0, -suffix.length).trim();
+      break;
+    }
+  }
+  return clean;
+}
+
+function extractProceduralHowToTask(normalized) {
+  const prefixes = [
+    "please tell me how to ",
+    "please show me how to ",
+    "tell me how to ",
+    "show me how to ",
+    "what are the steps to ",
+    "what steps do i need to ",
+    "what steps do we need to ",
+    "how should i ",
+    "how should we ",
+    "how could i ",
+    "how could we ",
+    "how would i ",
+    "how would we ",
+    "how can i ",
+    "how can we ",
+    "how do i ",
+    "how do we ",
+    "how to ",
+  ];
+  const clean = cleanProceduralFragment(normalized);
+  for (const prefix of prefixes) {
+    if (!clean.startsWith(prefix)) continue;
+    const task = cleanProceduralFragment(clean.slice(prefix.length));
+    if (!task) return null;
+    const firstSpace = task.search(/\s/u);
+    const action = firstSpace === -1 ? task : task.slice(0, firstSpace);
+    const object = firstSpace === -1 ? "" : task.slice(firstSpace + 1).trim();
+    return { task, action, object };
+  }
+  return null;
+}
+
+function capitalizeForWikiHow(word) {
+  const text = String(word || "");
+  if (!text) return "";
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
+function wikiHowPageTitle(task) {
+  return String(task || "")
+    .split(/[^\p{L}\p{N}]+/u)
+    .filter(Boolean)
+    .map(capitalizeForWikiHow)
+    .join("-");
+}
+
+function wikiHowParseApiUrl(pageTitle) {
+  const encodedPage = encodeURIComponent(pageTitle).replace(/%2D/gi, "-");
+  return `https://www.wikihow.com/api.php?action=parse&page=${encodedPage}&prop=text%7Csections%7Cdisplaytitle&format=json&origin=*`;
+}
+
+function decodeBasicHtmlEntities(value) {
+  return String(value || "")
+    .replace(/&nbsp;|&#160;/g, " ")
+    .replace(/&amp;/g, "&")
+    .replace(/&quot;/g, '"')
+    .replace(/&#039;|&apos;/g, "'")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&#(\d+);/g, (_match, code) => {
+      const value = Number(code);
+      if (!Number.isFinite(value) || value < 0 || value > 0x10ffff) return "";
+      return String.fromCodePoint(value);
+    });
+}
+
+function compactStepText(value) {
+  const text = decodeBasicHtmlEntities(stripHtml(value))
+    .replace(/\[[0-9]+\]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+  if (text.length <= 180) return text;
+  const sentence = text.match(/^(.{40,180}?[.!?])\s/u);
+  if (sentence) return sentence[1].trim();
+  return `${text.slice(0, 177).trim()}...`;
+}
+
+function extractWikiHowSteps(html) {
+  const lines = String(html || "").split(/\n+/u);
+  const steps = [];
+  const seen = new Set();
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (!trimmed.startsWith("<li>") || trimmed.startsWith("<li><b>")) {
+      continue;
+    }
+    const text = compactStepText(trimmed);
+    if (text.length < 40 || seen.has(text)) continue;
+    seen.add(text);
+    steps.push(text);
+    if (steps.length >= 6) break;
+  }
+  return steps;
+}
+
+async function fetchWikiHowProcedure(pageTitle, evidence) {
+  const url = wikiHowParseApiUrl(pageTitle);
+  if (typeof fetch !== "function") {
+    return { ok: false, url, error: "fetch_unavailable", steps: [] };
+  }
+  try {
+    const response = await fetch(url, { method: "GET", mode: "cors" });
+    evidence.push(`http_fetch:status:${response.status}`);
+    if (!response.ok) {
+      return { ok: false, url, error: `http_${response.status}`, steps: [] };
+    }
+    const data = await response.json();
+    if (data && data.error) {
+      return {
+        ok: false,
+        url,
+        error: data.error.code || "wikihow_error",
+        steps: [],
+      };
+    }
+    const parse = data && data.parse ? data.parse : null;
+    const html = parse && parse.text ? parse.text["*"] : "";
+    const steps = extractWikiHowSteps(html);
+    const title = compactStepText(parse && parse.displaytitle ? parse.displaytitle : pageTitle);
+    const sourceUrl = `https://www.wikihow.com/${encodeURIComponent(pageTitle).replace(/%2D/gi, "-")}`;
+    return {
+      ok: steps.length > 0,
+      url,
+      title: title || pageTitle,
+      sourceUrl,
+      error: steps.length > 0 ? "" : "no_explicit_steps",
+      steps,
+    };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    evidence.push(`http_fetch:error:${message.toLowerCase().includes("cors") ? "cors" : "network"}`);
+    return { ok: false, url, error: message || "network", steps: [] };
+  }
+}
+
+function appendUniqueEvidence(target, source) {
+  const seen = new Set(target);
+  for (const item of source || []) {
+    if (!item || seen.has(item)) continue;
+    seen.add(item);
+    target.push(item);
+  }
+}
+
+async function tryProceduralHowTo(prompt, language) {
+  const normalized = normalizePrompt(prompt);
+  const task = extractProceduralHowToTask(normalized);
+  if (!task) return null;
+
+  const query = `how to ${task.task}`;
+  const pageTitle = wikiHowPageTitle(task.task);
+  const apiUrl = wikiHowParseApiUrl(pageTitle);
+  const providerSummary = WEB_SEARCH_PROVIDERS.map((provider) => provider.id).join(", ");
+  const evidence = [
+    `procedural_how_to:request:${task.task}`,
+    `procedural_how_to:action:${task.action}`,
+    `procedural_how_to:stage:wikipedia`,
+    `procedural_how_to:stage:wikidata`,
+    `procedural_how_to:stage:wikihow_api`,
+    `procedural_how_to:wikihow_candidate:${pageTitle}`,
+    `http_fetch:request:${apiUrl}`,
+  ];
+  if (task.object) {
+    evidence.splice(2, 0, `procedural_how_to:object:${task.object}`);
+  }
+
+  const wikiHow = await fetchWikiHowProcedure(pageTitle, evidence);
+  const lines = [
+    `Procedural discovery for \`${task.task}\` (action \`${task.action}\`, object \`${task.object}\`).`,
+    "",
+    "Source path: Wikipedia -> Wikidata -> wikiHow API -> web search fallback -> recursive fetch check.",
+    "",
+  ];
+
+  let confidence = 0.78;
+  let diagnostics = null;
+  let formalizedObject = "";
+  if (wikiHow.ok) {
+    evidence.push(`procedural_how_to:wikihow_steps:${wikiHow.steps.length}`);
+    evidence.push(`source:${wikiHow.sourceUrl}`);
+    formalizedObject = `WH:${pageTitle}`;
+    confidence = 0.86;
+    lines.push(`wikiHow API returned \`${wikiHow.title}\` for candidate \`${pageTitle}\`.`);
+    lines.push("");
+    wikiHow.steps.forEach((step, index) => {
+      lines.push(`${index + 1}. ${step}`);
+    });
+    lines.push("");
+    lines.push(`[Source](${wikiHow.sourceUrl})`);
+  } else {
+    evidence.push(`procedural_how_to:wikihow_miss:${wikiHow.error || "no_match"}`);
+    evidence.push("procedural_how_to:stage:web_search");
+    const webSearch = await tryWebSearch(`search the web for ${query}`, language);
+    if (webSearch) {
+      appendUniqueEvidence(evidence, webSearch.evidence);
+      diagnostics = webSearch.diagnostics || null;
+      formalizedObject = webSearch.formalizedObject || "";
+      lines.push(
+        `wikiHow candidate \`${pageTitle}\` did not return explicit steps (${wikiHow.error || "no_match"}).`,
+      );
+      lines.push("");
+      lines.push(`Fallback web search for \`${query}\`:`);
+      lines.push("");
+      lines.push(webSearch.content);
+    } else {
+      evidence.push(`web_search:request:${query}`);
+      for (const provider of WEB_SEARCH_PROVIDERS) {
+        evidence.push(`web_search:provider:${provider.id}`);
+      }
+      evidence.push(`web_search:combined:rrf:k=${webSearchRrfK()}`);
+      lines.push(
+        `wikiHow candidate \`${pageTitle}\` did not return explicit steps (${wikiHow.error || "no_match"}).`,
+      );
+      lines.push("");
+      lines.push(
+        `Fallback web search for \`${query}\` should use ${providerSummary} and reciprocal rank fusion (k = ${webSearchRrfK()}).`,
+      );
+    }
+  }
+  if (!evidence.includes("procedural_how_to:stage:web_search")) {
+    evidence.push("procedural_how_to:stage:web_search");
+    evidence.push(`web_search:request:${query}`);
+    for (const provider of WEB_SEARCH_PROVIDERS) {
+      evidence.push(`web_search:provider:${provider.id}`);
+    }
+    evidence.push(`web_search:combined:rrf:k=${webSearchRrfK()}`);
+  }
+  evidence.push("procedural_how_to:stage:recursive_fetch_check");
+  evidence.push("procedural_how_to:source_gate:explicit_steps_only");
+
+  return {
+    intent: "procedural_how_to",
+    content: lines.join("\n"),
+    confidence,
+    evidence,
+    diagnostics,
+    query,
+    wikihowCandidate: pageTitle,
+    formalizedObject,
+  };
+}
+
 function stripHtml(value) {
   return String(value || "")
     .replace(/<[^>]*>/g, "")
@@ -7425,6 +8293,15 @@ function attachUserContext(answer, userContext) {
 // the symbolic operation, and `@USER` for the implicit user subject.
 const FORMALIZATION_VERBS = [
   // English
+  { verb: "what are the steps to", op: "OP:procedure" },
+  { verb: "show me how to", op: "OP:procedure" },
+  { verb: "tell me how to", op: "OP:procedure" },
+  { verb: "how should i", op: "OP:procedure" },
+  { verb: "how could i", op: "OP:procedure" },
+  { verb: "how would i", op: "OP:procedure" },
+  { verb: "how can i", op: "OP:procedure" },
+  { verb: "how do i", op: "OP:procedure" },
+  { verb: "how to", op: "OP:procedure" },
   { verb: "search", op: "OP:search" },
   { verb: "find", op: "OP:search" },
   { verb: "lookup", op: "OP:lookup" },
@@ -7486,6 +8363,10 @@ function objectForFormalization(prompt, normalized, op) {
   if (op === "OP:search" || op === "OP:lookup") {
     const query = extractWebSearchQuery(prompt, normalized);
     if (query) return query;
+  }
+  if (op === "OP:procedure") {
+    const task = extractProceduralHowToTask(normalized);
+    if (task) return task.task;
   }
   const haystack = String(normalized || "").toLowerCase();
   for (const { verb } of FORMALIZATION_VERBS) {
@@ -7587,6 +8468,13 @@ async function solve(prompt, history, prefs) {
     resolved: null,
     language,
   };
+
+  const behaviorRule = tryBehaviorRules(prompt, normalized, history);
+  if (behaviorRule) {
+    events.push(`handler:${behaviorRule.intent}`);
+    steps.push({ step: "dispatch_handler", detail: "tryBehaviorRules" });
+    return finalize(events, steps, toolCalls, behaviorRule, formalizationContext);
+  }
 
   if (isPunctuationOnlyPrompt(prompt)) {
     events.push("handler:clarification");
@@ -7792,6 +8680,28 @@ async function solve(prompt, history, prefs) {
     return finalize(events, steps, toolCalls, navigated, formalizationContext);
   }
 
+  steps.push({ step: "invoke_tool", detail: "procedural_how_to" });
+  const procedure = await tryProceduralHowTo(prompt, language);
+  if (procedure) {
+    events.push(`handler:${procedure.intent}`);
+    steps.push({ step: "dispatch_handler", detail: "tryProceduralHowTo" });
+    toolCalls.push({
+      tool: "procedural_how_to",
+      inputs: {
+        prompt,
+        language,
+        query: procedure.query || "",
+        wikihowCandidate: procedure.wikihowCandidate || "",
+      },
+      outputs: {
+        intent: procedure.intent,
+        confidence: procedure.confidence,
+        formalizedObject: procedure.formalizedObject || "",
+      },
+    });
+    return finalize(events, steps, toolCalls, procedure, formalizationContext);
+  }
+
   steps.push({ step: "invoke_tool", detail: "web_search" });
   const webSearch = await tryWebSearch(prompt, language);
   if (webSearch) {
@@ -7851,7 +8761,7 @@ async function solve(prompt, history, prefs) {
   steps.push({ step: "fallback", detail: "unknown" });
   return finalize(events, steps, toolCalls, {
     intent: "unknown",
-    content: answerFor("unknown", language),
+    content: unknownAnswerWithVariation(prompt, language),
     confidence: 0.1,
     evidence: ["fallback:unknown", `language:${language}`],
   }, formalizationContext);
