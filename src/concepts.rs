@@ -271,7 +271,9 @@ fn rank_for_pair(term: &str, context: Option<&str>) -> Option<ConceptLookup> {
 
     let mut term_matches: Vec<&'static ConceptRecord> = concepts()
         .iter()
-        .filter(|record| record_matches_term(record, &normalized))
+        .filter(|record| {
+            record_matches_query_term(record, &normalized, context_normalized.as_deref())
+        })
         .collect();
     if term_matches.is_empty() {
         return None;
@@ -302,6 +304,21 @@ fn rank_for_pair(term: &str, context: Option<&str>) -> Option<ConceptLookup> {
         context_match: false,
         context: context_normalized,
     })
+}
+
+fn record_matches_query_term(
+    record: &ConceptRecord,
+    normalized: &str,
+    context_normalized: Option<&str>,
+) -> bool {
+    if record_matches_term(record, normalized) {
+        return true;
+    }
+    let Some(context) = context_normalized else {
+        return false;
+    };
+    let combined = format!("{normalized} {context}");
+    record_matches_term(record, &combined)
 }
 
 fn record_matches_term(record: &ConceptRecord, normalized: &str) -> bool {
