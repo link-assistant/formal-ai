@@ -1,8 +1,8 @@
 //! Calculator delegation boundary for the universal solver.
 //!
 //! This module keeps natural-language prompt processing in formal-ai, delegates
-//! calculator-shaped expressions to `link-calculator`, and preserves the local
-//! arithmetic evaluator for syntax the upstream crate does not support yet.
+//! calculator-shaped expressions to `link-calculator` first, and preserves the
+//! local arithmetic evaluator for syntax the upstream crate does not support yet.
 
 use crate::arithmetic::{evaluate_fallback_formatted, ArithmeticError};
 
@@ -54,10 +54,6 @@ fn evaluate_with_link_calculator(
         lino: Some(lino),
         steps,
     })
-}
-
-fn should_use_fallback_before_calculator(expression: &str) -> bool {
-    contains_word_operator(expression) || contains_binary_percent_remainder(expression)
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -366,48 +362,12 @@ fn contains_word_operator(expression: &str) -> bool {
     .any(|operator| lower.contains(operator))
 }
 
-fn contains_binary_percent_remainder(expression: &str) -> bool {
-    let mut chars = expression.char_indices();
-    while let Some((_, character)) = chars.next() {
-        if character != '%' {
-            continue;
-        }
-        let after = chars
-            .clone()
-            .map(|(_, c)| c)
-            .collect::<String>()
-            .trim_start()
-            .to_lowercase();
-        if after.starts_with("of") {
-            continue;
-        }
-        if after.starts_with('*')
-            || after.starts_with('/')
-            || after.starts_with('+')
-            || after.starts_with('-')
-            || after.is_empty()
-        {
-            continue;
-        }
-        if after
-            .chars()
-            .next()
-            .is_some_and(|c| c.is_ascii_digit() || c == '(')
-        {
-            return true;
-        }
-    }
-    false
-}
-
 /// Evaluate an expression, delegating calculator-supported syntax to
 /// `link-calculator` and preserving the in-repo evaluator as a fallback for
 /// syntax the upstream crate does not support yet.
 pub fn evaluate_calculation(expression: &str) -> Result<CalculationEvaluation, ArithmeticError> {
-    if !should_use_fallback_before_calculator(expression) {
-        if let Ok(evaluation) = evaluate_with_link_calculator(expression) {
-            return Ok(evaluation);
-        }
+    if let Ok(evaluation) = evaluate_with_link_calculator(expression) {
+        return Ok(evaluation);
     }
     if expression.contains('=') {
         if let Ok(evaluation) = evaluate_linear_equation(expression) {

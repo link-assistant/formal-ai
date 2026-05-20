@@ -111,7 +111,7 @@ fn calculator_delegation_is_visible_in_evidence() {
 }
 
 #[test]
-fn local_arithmetic_fallback_keeps_word_operators_and_modulo() {
+fn local_arithmetic_fallback_keeps_word_operators() {
     let word_response = assert_calculation("What is 10 plus 20 times 3?", &["70"]);
     assert!(
         word_response
@@ -121,14 +121,17 @@ fn local_arithmetic_fallback_keeps_word_operators_and_modulo() {
         "word-operator fallback should be observable: {:?}",
         word_response.evidence_links,
     );
+}
 
+#[test]
+fn calculator_handles_binary_modulo_after_upstream_fix() {
     let modulo_response = assert_calculation("Compute 100 - 25 % 7", &["96"]);
     assert!(
         modulo_response
             .evidence_links
             .iter()
-            .any(|link| link == "calculation:engine:formal-ai-fallback"),
-        "binary modulo should stay on the local fallback until calculator supports it: {:?}",
+            .any(|link| link == "calculation:engine:link-calculator"),
+        "binary modulo should be delegated after link-calculator v0.17.0: {:?}",
         modulo_response.evidence_links,
     );
 }
@@ -146,8 +149,8 @@ fn simple_variable_equations_are_solved_after_calculator_delegation() {
             response
                 .evidence_links
                 .iter()
-                .any(|link| link == "calculation:engine:formal-ai-equation-fallback"),
-            "equation fallback should be observable: {:?}",
+                .any(|link| link == "calculation:engine:link-calculator"),
+            "simple equations should be delegated after link-calculator v0.17.1: {:?}",
             response.evidence_links,
         );
     }

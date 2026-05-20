@@ -162,6 +162,13 @@ test.describe('multilingual chat surface', () => {
     await expect(last).toContainText('два плюс два = 4');
   });
 
+  test('Russian currency conversion resolves as a calculation', async ({ page }) => {
+    const last = await sendPrompt(page, 'Посчитай 1000 рублей в долларах');
+    await expect(last).toHaveClass(/assistant/);
+    await expect(last).toContainText('1000 рублей в долларах = 11.1731843575 USD');
+    await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
+  });
+
   test('Russian weekday relation resolves through calendar reasoning', async ({ page }) => {
     const last = await sendPrompt(page, 'какой день недели наступает после вторника');
     await expect(last).toHaveClass(/assistant/);
