@@ -109,15 +109,78 @@ pub fn try_ill_formed(
     ))
 }
 
+fn is_more_capabilities_prompt(normalized: &str, language: &str) -> bool {
+    match language {
+        "ru" => {
+            normalized.contains("что ещё ты умеешь")
+                || normalized.contains("что еще ты умеешь")
+                || normalized.contains("что ещё можешь")
+                || normalized.contains("что еще можешь")
+                || normalized.contains("что ты ещё умеешь")
+                || normalized.contains("что ты еще умеешь")
+        }
+        _ => {
+            normalized.contains("what else can you do")
+                || normalized.contains("what else do you do")
+                || normalized.contains("what other things can you do")
+        }
+    }
+}
+
+fn prior_history_mentions_web_search(log: &EventLog) -> bool {
+    log.events()
+        .iter()
+        .filter(|event| event.kind == "prior_turn:user" || event.kind == "prior_turn:assistant")
+        .any(|event| {
+            let payload = event.payload.to_lowercase();
+            payload.contains("duckduckgo")
+                || payload.contains("web search")
+                || payload.contains("search the internet")
+                || payload.contains("веб-поиск")
+                || payload.contains("веб поиск")
+                || payload.contains("интернет")
+        })
+}
+
+fn additional_capabilities_body_ru() -> String {
+    String::from(
+        "Кроме уже названных возможностей, могу ещё:\n\
+         \n\
+         - **Арифметика**: вычислять выражения вроде «Сколько будет 2 + 2?»\n\
+         - **Перевод**: переводить короткие фразы между поддерживаемыми языками.\n\
+         - **Поиск понятий**: объяснять термины, например «Что такое Википедия?»\n\
+         - **Hello World**: генерировать минимальные программы на Rust, Python, JavaScript, Go, C и других языках.\n\
+         - **Память диалога**: использовать предыдущие сообщения текущей сессии.\n\
+         - **Правила поведения**: показывать встроенные правила через `List behavior rules` и `Show behavior rule unknown`.\n\
+         - **Настройки и действия**: включать диагностику/демо/agent mode, менять тему, язык, стиль чата, экспортировать и импортировать память.",
+    )
+}
+
+fn additional_capabilities_body_en() -> String {
+    String::from(
+        "Beyond the capability already discussed, I can also:\n\
+         \n\
+         - **Arithmetic**: evaluate expressions like `2 + 2`.\n\
+         - **Translation**: translate short phrases between supported languages.\n\
+         - **Concept lookup**: explain terms such as `What is Wikipedia?`.\n\
+         - **Hello World**: generate small programs in Rust, Python, JavaScript, Go, C, and more.\n\
+         - **Conversation memory**: use earlier messages from the current session.\n\
+         - **Behavior rules**: show built-in rules with `List behavior rules` and `Show behavior rule unknown`.\n\
+         - **Settings and actions**: configure diagnostics, demo mode, agent mode, theme, language, chat style, and memory import/export.",
+    )
+}
+
 pub fn try_capabilities(
     prompt: &str,
     normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
     let language = detect_language(prompt);
+    let more_capabilities = is_more_capabilities_prompt(normalized, language.slug());
     let is_capabilities = match language.slug() {
         "ru" => {
-            normalized.contains("что ты умеешь")
+            more_capabilities
+                || normalized.contains("что ты умеешь")
                 || normalized.contains("чем ты можешь")
                 || normalized.contains("что ты можешь")
                 || normalized.contains("что умеет")
@@ -140,7 +203,8 @@ pub fn try_capabilities(
                 || normalized.contains("क्या क्या कर सकते")
         }
         _ => {
-            normalized.contains("what can you do")
+            more_capabilities
+                || normalized.contains("what can you do")
                 || normalized.contains("what you can do")
                 || normalized.contains("what are your capabilities")
                 || normalized.contains("what are you capable of")
@@ -153,6 +217,24 @@ pub fn try_capabilities(
     };
     if !is_capabilities {
         return None;
+    }
+    if more_capabilities {
+        if prior_history_mentions_web_search(log) {
+            log.append("capabilities:history", "prior_web_search".to_owned());
+        }
+        let body = if language.slug() == "ru" {
+            additional_capabilities_body_ru()
+        } else {
+            additional_capabilities_body_en()
+        };
+        return Some(finalize_simple(
+            prompt,
+            log,
+            "capabilities",
+            "response:capabilities",
+            &body,
+            1.0,
+        ));
     }
     let body = match language.slug() {
         "ru" => String::from(

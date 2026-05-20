@@ -266,7 +266,10 @@ pub fn detect_source_language(normalized: &str) -> Option<&'static str> {
 }
 
 pub fn detect_target_language(normalized: &str) -> Option<&'static str> {
-    if normalized.contains("to english") {
+    if normalized.contains("to english")
+        || normalized.contains("на английский")
+        || normalized.contains("на английском")
+    {
         return Some("en");
     }
     if normalized.contains("to russian") || normalized.contains("на русский") {
@@ -348,9 +351,12 @@ pub fn canonical_meaning_token(raw: &str) -> String {
         "hello" | "hi" | "hey" | "привет" | "здравствуйте" | "नमस्ते" | "你好" => {
             String::from("greeting")
         }
-        "hellohowareyou" | "приветкакдела" | "здравствуйтекаквашидела" => {
-            String::from("greeting_how_are_you")
-        }
+        "hellohowareyou"
+        | "какдела"
+        | "какутебядела"
+        | "какувасдела"
+        | "приветкакдела"
+        | "здравствуйтекаквашидела" => String::from("greeting_how_are_you"),
         _ => String::from(raw),
     }
 }
@@ -420,6 +426,14 @@ pub fn translate_surface(surface: &str, source: &str, target: &str) -> String {
         },
         "en" => match normalized.as_str() {
             "привет" => String::from("Hi"),
+            "как дела"
+            | "как дела?"
+            | "как у тебя дела"
+            | "как у тебя дела?"
+            | "как у вас дела"
+            | "как у вас дела?"
+            | "как ваши дела"
+            | "как ваши дела?" => String::from("How are you?"),
             "hello, how are you?" => String::from("Hello, how are you?"),
             _ => format!("[en] {surface}"),
         },

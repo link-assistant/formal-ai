@@ -178,6 +178,21 @@ test.describe('Issue #153 — search UX, formalization, and dedupe', () => {
     await expect(workspace).not.toHaveClass(/sidebar-collapsed/);
   });
 
+  test('left menu actions section can be collapsed like the other sidebar sections', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    const menu = page.locator('[data-testid="drawer-menu-actions"]');
+    await expect(menu).toBeVisible();
+    await expect(menu).toHaveAttribute('data-collapsed', 'false');
+    await expect(menu.locator('[data-testid="drawer-source-code"]')).toBeVisible();
+
+    await menu.locator('.sidebar-section-header').click();
+
+    await expect(menu).toHaveAttribute('data-collapsed', 'true');
+    await expect(menu.locator('[data-testid="drawer-source-code"]')).toHaveCount(0);
+  });
+
   test('diagnostics shows the SVO formalization view with @USER + OP:* + Q-id', async ({
     page,
   }) => {

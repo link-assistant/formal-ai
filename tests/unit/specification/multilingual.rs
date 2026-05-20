@@ -3,7 +3,7 @@
 //! `VISION.md` asks for chat in English, Russian, Hindi, Chinese, and later
 //! other languages. These tests pin down the user-visible expectations.
 
-use formal_ai::{humanize_url, FormalAiEngine, SymbolicAnswer};
+use formal_ai::{humanize_url, ConversationTurn, FormalAiEngine, SymbolicAnswer, UniversalSolver};
 
 fn answer(prompt: &str) -> SymbolicAnswer {
     FormalAiEngine.answer(prompt)
@@ -434,6 +434,34 @@ fn russian_capabilities_answer_is_in_russian() {
             .chars()
             .any(|c| ('\u{0400}'..='\u{04FF}').contains(&c)),
         "Russian capabilities answer should contain Cyrillic text, got: {}",
+        response.answer,
+    );
+}
+
+#[test]
+fn russian_more_capabilities_follow_up_uses_history_without_repeating_web_search() {
+    let history = [
+        ConversationTurn::user("Ты можешь искать в интернете?"),
+        ConversationTurn::assistant(
+            "Да. В этой конфигурации веб-поиск включен: я могу использовать DuckDuckGo.",
+        ),
+    ];
+    let response = UniversalSolver::default().solve_with_history("Что ещё ты умеешь?", &history);
+    assert_eq!(
+        response.intent, "capabilities",
+        "Russian follow-up capabilities question should map to capabilities, got {}: {}",
+        response.intent, response.answer,
+    );
+    assert!(
+        response.answer.contains("Арифметика") && response.answer.contains("Перевод"),
+        "follow-up should list additional capabilities, got: {}",
+        response.answer,
+    );
+    assert!(
+        !response.answer.contains("Веб-поиск")
+            && !response.answer.to_lowercase().contains("интернет")
+            && !response.answer.contains("DuckDuckGo"),
+        "follow-up should not repeat the already discussed web-search capability, got: {}",
         response.answer,
     );
 }

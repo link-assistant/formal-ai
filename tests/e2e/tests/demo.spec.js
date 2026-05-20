@@ -195,7 +195,9 @@ test.describe('formal-ai demo UI', () => {
     );
     expect(url.searchParams.get('labels')).toBe('bug');
     expect(body).toContain('## Environment');
-    expect(body).toContain('## Dialog');
+    expect(body).toContain('## Reproduction of dialog');
+    expect(body).not.toContain('## Dialog');
+    expect(body).not.toContain('## Reproduction Steps');
     // Issue #78: the dialog is now a single fenced code block with `U:` /
     // `A:` line prefixes instead of one Markdown subsection per message.
     expect(body).toContain('Legend: `U` = user, `A` = agent.');
@@ -331,10 +333,21 @@ test.describe('formal-ai demo UI', () => {
     await expect(webSearchCapability).toContainText('DuckDuckGo');
     await expect(webSearchCapability).not.toContainText(UNKNOWN_ANSWER_MARKER);
 
+    const moreCapabilities = await sendPrompt(page, 'Что ещё ты умеешь?');
+    await expect(moreCapabilities).toContainText('Арифметика');
+    await expect(moreCapabilities).toContainText('Перевод');
+    await expect(moreCapabilities).not.toContainText('DuckDuckGo');
+    await expect(moreCapabilities).not.toContainText('интернете');
+    await expect(moreCapabilities).not.toContainText(UNKNOWN_ANSWER_MARKER);
+
     const arithmeticCapability = await sendPrompt(page, 'Can you do arithmetic?');
     await expect(arithmeticCapability).toContainText('Yes');
     await expect(arithmeticCapability).toContainText('arithmetic');
     await expect(arithmeticCapability).not.toContainText(UNKNOWN_ANSWER_MARKER);
+
+    const translation = await sendPrompt(page, 'Переведи "как у тебя дела?" на английский.');
+    await expect(translation).toContainText('How are you?');
+    await expect(translation).not.toContainText(UNKNOWN_ANSWER_MARKER);
 
     const search = await sendPrompt(page, 'Search online for Genshin Impact');
     await expect(search).toContainText('Search results for');
@@ -424,12 +437,12 @@ test.describe('formal-ai demo UI', () => {
     // Issue #140: the user agent is now folded into the combined **UI** field
     // of User Context (e.g. "1536x730 viewport, ... Chrome/... browser, ...").
     expect(body).toMatch(/\*\*UI\*\*:.* browser/);
-    expect(body).toContain('## Dialog');
+    expect(body).toContain('## Reproduction of dialog');
     expect(body).toContain(prompt);
     // Issue #78: intent now appears inline next to the assistant turn marker
     // ("A (intent: unknown, reported): ...") inside the dialog code block.
     expect(body).toMatch(/A \(intent: unknown[^)]*\):/);
-    expect(body).toContain('## Reproduction Steps');
+    expect(body).not.toContain('## Reproduction Steps');
     // Issue #140: the prefilled URL must stay below GitHub's 8192-byte cap.
     expect(href.length).toBeLessThanOrEqual(8192);
   });
@@ -763,10 +776,14 @@ test.describe('Issue #94: theme, localization, and report context', () => {
     const url = new URL(href || '');
     const body = url.searchParams.get('body') || '';
     expect(body).toContain('## Environment');
-    expect(body).toContain('## Dialog');
-    // The fitter should have either dropped earlier turns or truncated the
-    // last two. Either way the omission marker must be present.
+    expect(body).toContain('## Reproduction of dialog');
+    // The fitter should keep the final exchange and as much earlier dialog as
+    // will fit. When the boundary turn is too large, it should be represented
+    // by a truncation marker rather than dropping everything before the last
+    // two messages.
     expect(body).toMatch(/omitted \d+ (earlier (message|messages)|lines|characters)/);
+    const dialogTurnCount = (body.match(/^(U|A)( \([^)]*\))?: /gm) || []).length;
+    expect(dialogTurnCount).toBeGreaterThanOrEqual(3);
   });
 
   test('toolbar labels switch to icon-only before controls wrap', async ({ page }) => {
