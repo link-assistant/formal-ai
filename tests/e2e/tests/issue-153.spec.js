@@ -455,4 +455,34 @@ test.describe('Issue #153 — search UX, formalization, and dedupe', () => {
     );
     await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
   });
+
+  test('multilingual information-search phrasings route to web search', async ({
+    page,
+  }) => {
+    await page.locator('.diagnostics-toggle').click();
+    await mockAppleSearch(page);
+
+    const cases = [
+      {
+        prompt: 'Find detailed information about Rust programming',
+        query: 'Rust programming',
+      },
+      {
+        prompt: 'Rust programming के बारे में जानकारी खोजो',
+        query: 'Rust programming',
+      },
+      {
+        prompt: '查找关于 Rust 编程的信息',
+        query: 'Rust 编程',
+      },
+    ];
+
+    for (const item of cases) {
+      const last = await sendPrompt(page, item.prompt);
+      await expect(last.locator('.evidence-list')).toContainText(
+        `web_search:request:${item.query}`,
+      );
+      await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
+    }
+  });
 });
