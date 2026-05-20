@@ -6,6 +6,7 @@
 
 mod behavior_rules;
 mod benchmark_prompts;
+mod calendar;
 mod definition_merge;
 mod feature_capability;
 mod software_project;
@@ -18,6 +19,7 @@ pub use benchmark_prompts::{
     try_brainstorming_request, try_coreference_request, try_fact_lookup, try_roleplay_request,
     try_summarization_request,
 };
+pub use calendar::try_calendar_reasoning;
 pub use definition_merge::{try_definition_merge, try_definition_merge_by_default};
 pub use feature_capability::{try_feature_capability, CapabilityRuntime};
 pub use software_project::try_software_project_request;
