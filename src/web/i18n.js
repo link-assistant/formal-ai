@@ -83,12 +83,13 @@
     }
   }
 
-  function importModule(specifier) {
-    try {
-      return new Function("specifier", "return import(specifier);")(specifier);
-    } catch (error) {
-      return Promise.reject(error);
+  function bundledRuntimeModule() {
+    var vendor = global.FormalAiVendor || {};
+    var module = vendor.LinoI18n || global.LinoI18n || null;
+    if (!module) {
+      return Promise.reject(new Error("bundled lino-i18n runtime is not available"));
     }
+    return Promise.resolve(module);
   }
 
   function fetchCatalogText() {
@@ -135,7 +136,7 @@
   }
 
   function loadPublishedRuntime() {
-    return Promise.all([importModule("lino-i18n"), fetchCatalogText()])
+    return Promise.all([bundledRuntimeModule(), fetchCatalogText()])
       .then(function (results) {
         var module = results[0];
         var catalogText = results[1];
