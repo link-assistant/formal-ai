@@ -1528,6 +1528,207 @@ function createIssueUrl(context) {
   return fitIssueUrl(context, (effectiveContext) => createIssueReportBody(effectiveContext));
 }
 
+// Issue #180: format the unified link-notation projection for an HTTP
+// exchange so the user can see the formalization step alongside the raw
+// request and response in diagnostics mode.
+function formatHttpExchangeAsLinks(exchange) {
+  if (!exchange || typeof exchange !== "object") return "";
+  const lines = [];
+  const id = exchange.id || `http:${exchange.method || "GET"}:${exchange.url || ""}`;
+  lines.push(`(${id}: kind http_exchange)`);
+  if (exchange.provider) lines.push(`(${id}: provider ${exchange.provider})`);
+  if (exchange.phase) lines.push(`(${id}: phase ${exchange.phase})`);
+  if (exchange.method) lines.push(`(${id}: method ${exchange.method})`);
+  if (exchange.url) lines.push(`(${id}: url ${exchange.url})`);
+  if (typeof exchange.status === "number") {
+    lines.push(`(${id}: status ${exchange.status})`);
+  }
+  if (typeof exchange.elapsedMs === "number") {
+    lines.push(`(${id}: elapsed_ms ${exchange.elapsedMs})`);
+  }
+  if (typeof exchange.responseBytes === "number") {
+    lines.push(`(${id}: response_bytes ${exchange.responseBytes})`);
+  }
+  if (exchange.error) {
+    const safeError = String(exchange.error).replace(/[()]/g, " ");
+    lines.push(`(${id}: error ${safeError})`);
+  }
+  return lines.join("\n");
+}
+
+// Issue #180: render the worker's per-provider summary and the raw HTTP
+// exchange list (request URL, status, elapsed time, response snippet,
+// unified Links Notation projection) for each search-providing message.
+function DiagnosticsHttpPanel({ providers, exchanges, t }) {
+  if (
+    (!Array.isArray(providers) || providers.length === 0) &&
+    (!Array.isArray(exchanges) || exchanges.length === 0)
+  ) {
+    return null;
+  }
+  const safeExchanges = Array.isArray(exchanges) ? exchanges : [];
+  return h(
+    "div",
+    {
+      className: "diagnostics-http",
+      "data-testid": "diagnostics-http",
+    },
+    Array.isArray(providers) && providers.length > 0
+      ? h(
+          "div",
+          { className: "diagnostics-http-section" },
+          h(
+            "strong",
+            { className: "diagnostics-section-label" },
+            t("message.diagnosticsProviders"),
+          ),
+          h(
+            "ul",
+            { className: "diagnostics-http-provider-list" },
+            providers.map((entry, index) =>
+              h(
+                "li",
+                {
+                  key: `${entry.id || "provider"}-${index}`,
+                  className: `diagnostics-http-provider ${entry.ok ? "is-ok" : "is-error"}`,
+                  "data-testid": "diagnostics-http-provider",
+                },
+                t("message.diagnosticsProviderRow", {
+                  label: entry.label || entry.id || "(provider)",
+                  status: entry.ok
+                    ? t("message.diagnosticsProviderOk")
+                    : `${t("message.diagnosticsProviderError")}: ${entry.error || "(unknown)"}`,
+                  count: typeof entry.count === "number" ? entry.count : 0,
+                  elapsed: typeof entry.elapsedMs === "number" ? entry.elapsedMs : 0,
+                }),
+              ),
+            ),
+          ),
+        )
+      : null,
+    h(
+      "div",
+      { className: "diagnostics-http-section" },
+      h(
+        "strong",
+        { className: "diagnostics-section-label" },
+        t("message.diagnosticsHttp"),
+      ),
+      safeExchanges.length === 0
+        ? h(
+            "p",
+            { className: "diagnostics-http-empty" },
+            t("message.diagnosticsHttpEmpty"),
+          )
+        : h(
+            "ol",
+            { className: "diagnostics-http-list" },
+            safeExchanges.map((exchange, index) =>
+              h(
+                "li",
+                {
+                  key: `${exchange.id || index}`,
+                  className: "diagnostics-http-item",
+                },
+                h(
+                  "details",
+                  {
+                    className: "diagnostics-detail",
+                    "data-testid": "diagnostics-http-exchange",
+                  },
+                  h(
+                    "summary",
+                    null,
+                    h(
+                      "span",
+                      { className: "diagnostics-step-name" },
+                      `${exchange.method || "GET"} ${exchange.provider ? `[${exchange.provider}] ` : ""}`,
+                    ),
+                    h(
+                      "span",
+                      { className: "diagnostics-step-summary" },
+                      exchange.url || "(no url)",
+                    ),
+                    h(
+                      "span",
+                      { className: "diagnostics-http-status" },
+                      t("message.diagnosticsHttpStatus", {
+                        status: typeof exchange.status === "number" ? exchange.status : "—",
+                        elapsed: typeof exchange.elapsedMs === "number" ? exchange.elapsedMs : 0,
+                        bytes: typeof exchange.responseBytes === "number" ? exchange.responseBytes : 0,
+                      }),
+                    ),
+                  ),
+                  h(
+                    "div",
+                    { className: "diagnostics-detail-body" },
+                    h(
+                      "div",
+                      { className: "diagnostics-tool-section" },
+                      h(
+                        "span",
+                        { className: "diagnostics-section-label" },
+                        t("message.diagnosticsHttpRequest"),
+                      ),
+                      h(
+                        "pre",
+                        { className: "diagnostics-payload" },
+                        formatDiagnosticPayload({
+                          method: exchange.method || "GET",
+                          url: exchange.url || "",
+                          headers: exchange.requestHeaders || {},
+                          body: exchange.requestBody || null,
+                          provider: exchange.provider || "",
+                          phase: exchange.phase || "",
+                        }),
+                      ),
+                    ),
+                    h(
+                      "div",
+                      { className: "diagnostics-tool-section" },
+                      h(
+                        "span",
+                        { className: "diagnostics-section-label" },
+                        t("message.diagnosticsHttpResponse"),
+                      ),
+                      h(
+                        "pre",
+                        { className: "diagnostics-payload" },
+                        formatDiagnosticPayload({
+                          status: exchange.status ?? null,
+                          ok: !!exchange.ok,
+                          elapsedMs: exchange.elapsedMs ?? null,
+                          responseBytes: exchange.responseBytes ?? null,
+                          finalUrl: exchange.finalUrl || "",
+                          contentType: exchange.contentType || "",
+                          responseSnippet: exchange.responseSnippet || "",
+                          error: exchange.error || "",
+                        }),
+                      ),
+                    ),
+                    h(
+                      "div",
+                      { className: "diagnostics-tool-section" },
+                      h(
+                        "span",
+                        { className: "diagnostics-section-label" },
+                        t("message.diagnosticsHttpUnified"),
+                      ),
+                      h(
+                        "pre",
+                        { className: "diagnostics-payload diagnostics-http-links" },
+                        formatHttpExchangeAsLinks(exchange),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+    ),
+  );
+}
+
 function Message({ message, diagnosticsMode, reportIssueUrl, t }) {
   const evidence = diagnosticsMode ? (message.evidence ?? []) : [];
   const thinkingSteps = diagnosticsMode ? (message.thinkingSteps ?? []) : [];
@@ -1536,6 +1737,16 @@ function Message({ message, diagnosticsMode, reportIssueUrl, t }) {
     : [];
   const diagnosticsToolCalls = diagnosticsMode
     ? (message.diagnosticsToolCalls ?? [])
+    : [];
+  // Issue #180: surface raw HTTP request/response bodies and the per-provider
+  // outcomes inside the diagnostics panel so the user can audit every network
+  // call the worker performed on their behalf.
+  const diagnosticsPayload = diagnosticsMode ? message.diagnostics : null;
+  const diagnosticsProviders = Array.isArray(diagnosticsPayload?.providers)
+    ? diagnosticsPayload.providers
+    : [];
+  const diagnosticsHttp = Array.isArray(diagnosticsPayload?.httpExchanges)
+    ? diagnosticsPayload.httpExchanges
     : [];
   const reportLabel =
     message.intent === "unknown"
@@ -1673,6 +1884,7 @@ function Message({ message, diagnosticsMode, reportIssueUrl, t }) {
                     {
                       className: "diagnostics-detail",
                       "data-testid": "diagnostics-step",
+                      "data-step": entry.step,
                     },
                     h(
                       "summary",
@@ -1809,6 +2021,13 @@ function Message({ message, diagnosticsMode, reportIssueUrl, t }) {
               ),
             ),
           )
+        : null,
+      diagnosticsPayload
+        ? h(DiagnosticsHttpPanel, {
+            providers: diagnosticsProviders,
+            exchanges: diagnosticsHttp,
+            t,
+          })
         : null,
       reportIssueUrl
         ? h(
@@ -2605,6 +2824,10 @@ function App() {
       thinkingSteps,
       diagnosticsSteps: structuredSteps,
       diagnosticsToolCalls: structuredToolCalls,
+      // Issue #180: forward the web_search diagnostics envelope so the
+      // diagnostics panel can show raw HTTP request/response exchanges and
+      // the per-provider success/failure status.
+      diagnostics: answer.diagnostics || null,
       iframeUrl: answer.iframeUrl || null,
     });
     setMessages((current) => [...current, message]);
