@@ -393,6 +393,44 @@ The solver follows the universal loop documented in `VISION.md` (Section
 
 Every numbered step writes its own event before the next one starts.
 
+### 7.1 Project lookups and summarization
+
+"What is `<project>`?" prompts about Link Assistant and Link Foundation
+software are answered locally, without round-tripping through a live GitHub
+search. The pipeline has three pieces:
+
+1. **Curated registry.** `data/seed/projects.lino` records the canonical
+   repository, primary language, weighted statements, English/Russian
+   localisations, topic label, and aliases for each project. The seed file is
+   embedded at compile time and parsed once per process via
+   `src/seed/projects.rs::projects_registry()`.
+2. **Formalize → summarize → deformalize pipeline.** `src/summarization.rs`
+   exposes a deterministic three-stage pipeline. `formalize` (or
+   `Statement::from_seed`) turns free-form prose or curated statements into a
+   homogeneous `Vec<Statement>` with a `StatementKind` (identity, purpose,
+   language, stars, feature, use_case, install, example, misc) and a numeric
+   weight. `summarize` then applies a `SummarizationConfig` whose
+   `SummarizationMode` selects the target size — `Topic` (1–5 words),
+   `Short` (~20%), `Standard` (~50%), `Full` (100%), or `Expand` (~200%) — and
+   the optional explicit `max_statements` cap. Boilerplate kinds (`install`,
+   `example`) are dropped from compressed answers; `Expand` mode appends
+   Natural Semantic Metalanguage paraphrases. `deformalize` joins the
+   surviving statements back into a single block of prose.
+3. **Handler integration.** The solver dispatch table in `src/solver.rs`
+   runs the curated handlers in this order: `hive_mind_lookup` (Hive Mind
+   aliases only), `concept_lookup` (seed concepts such as Links Notation),
+   and finally `project_lookup` (the rest of the curated registry). The
+   `project_lookup` handler skips `hive_mind` and `formal-ai` slugs so the
+   dedicated handlers and the identity rule keep ownership of those terms.
+   Every answer logs `summarization:mode`, `summarization:language`, the
+   repository URL, and the web-search providers consulted alongside the
+   local answer so the trace explains both *what* was matched and *how* the
+   text was compressed.
+
+The compression knobs are configurable from one struct (`SummarizationConfig`)
+so callers can dial topic labels, chat titles, project descriptions, or
+expanded explanations from the same pipeline.
+
 ---
 
 ## 8. Nested Reasoning Steps

@@ -18,6 +18,7 @@ pub(crate) mod solver_handler_units;
 pub(crate) mod solver_handlers;
 pub(crate) mod solver_handlers_policy;
 pub(crate) mod solver_helpers;
+pub mod summarization;
 pub mod telegram;
 pub mod telegram_runtime;
 pub mod web_engine_core;
@@ -47,14 +48,20 @@ pub use protocol::{
 pub use seed::{
     agent_info, concepts as seed_concepts, environment_directory, environment_records,
     intent_routing, language_rules, merged_bundle, multilingual_responses, parse_bundle,
-    prompt_patterns, response_for, seed_files, EnvironmentDirectory, EnvironmentRecord,
-    IntentRouting, MigrationFlow,
+    projects_registry, prompt_patterns, response_for, seed_files, EnvironmentDirectory,
+    EnvironmentRecord, IntentRouting, LocalizedProject, MigrationFlow, ProjectRecord,
+    ProjectStatement, ProjectsRegistry,
 };
 pub use server::{handle_api_request, serve, ApiHttpResponse};
 pub use solver::{
     solve, solve_with_history, ConversationRole, ConversationTurn, SolverConfig, UniversalSolver,
 };
 pub use solver_helpers::humanize_url;
+pub use summarization::{
+    apply_compound_words, apply_semantic_primes, classify_sentence, deformalize, describe_project,
+    formalize, summarize, to_topic, Statement, StatementKind, SummarizationConfig,
+    SummarizationMode,
+};
 pub use telegram::{
     handle_telegram_webhook, parse_get_updates_response, telegram_html_from_markdown,
     ParsedUpdatesBatch, TelegramPollingConfig, TelegramPollingError, TelegramPollingReply,

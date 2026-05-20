@@ -38,7 +38,7 @@ use crate::solver_handlers::{
     try_definition_merge, try_definition_merge_by_default, try_execution_failure, try_fact_lookup,
     try_feature_capability, try_hive_mind_lookup, try_http_fetch, try_ill_formed,
     try_javascript_execution, try_meta_explanation, try_network_query, try_opinion_question,
-    try_punctuation_only_prompt, try_roleplay_request, try_shell_refusal,
+    try_project_lookup, try_punctuation_only_prompt, try_roleplay_request, try_shell_refusal,
     try_software_project_request, try_source_conflict, try_source_refresh,
     try_summarization_request, try_translation, try_url_navigate, try_web_search,
     try_who_is_question, try_write_script, CapabilityRuntime,
@@ -326,6 +326,10 @@ const SPECIALIZED_HANDLERS: &[(&str, SpecializedHandler)] = &[
     ("definition_merge", try_definition_merge),
     ("hive_mind_lookup", try_hive_mind_lookup),
     ("concept_lookup", handle_concept_lookup),
+    // `project_lookup` runs after `concept_lookup` so curated Link Assistant /
+    // Link Foundation projects only surface when the prompt's term is not
+    // already covered by the seed concept table.
+    ("project_lookup", try_project_lookup),
     ("who_is", try_who_is_question),
     ("how_it_works", try_how_it_works),
     ("meta_explanation", try_meta_explanation),

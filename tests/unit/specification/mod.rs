@@ -36,6 +36,7 @@ mod links_network;
 mod multilingual;
 mod network_visualization;
 mod openai_compatibility;
+mod project_lookups;
 mod prompt_variations;
 mod reasoning_loop;
 mod reasoning_paths;

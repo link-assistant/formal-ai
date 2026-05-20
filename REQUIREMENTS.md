@@ -397,3 +397,27 @@ CORS-block.
 | R192 | Issue data, online research, and case-study analysis must be compiled to `docs/case-studies/issue-133/`. | Implemented by `docs/case-studies/issue-133/README.md` and the raw-data folder (issue JSON, PR JSON, branch log, and online research). |
 | R193 | A changelog fragment must record the user-visible change and trigger an automated minor crate-version bump. | Implemented by `changelog.d/20260519_140000_issue_133_default_duckduckgo_rrf.md`, which declares `bump: minor` so the release pipeline raises the version from 0.69.0 on merge. |
 | R194 | As much logic as possible should be compiled from Rust to WebAssembly, with JavaScript reserved for UI. | Partially implemented in this PR: the contract (provider order, RRF constant, and evidence shape) is owned by the Rust solver and mirrored in the JS worker; the full Rust→WASM port of the multi-provider planner is tracked as a follow-up in `docs/case-studies/issue-133/README.md` so the diff stays reviewable. |
+
+## Issue #159 Hive Mind Lookup and Curated Project Summarization
+
+Issue [#159](https://github.com/link-assistant/formal-ai/issues/159) reported
+that "What is Hive Mind?" / "Что такое Hive Mind?" prompts fell through to
+the Wikipedia closest-match fallback and surfaced unrelated pages such as
+LOIC. The PR comments expanded the scope: deduplicate and simplify project
+descriptions through a formalize → summarize → deformalize pipeline that
+drops installation noise, keep purpose / language / stars / why-useful
+statements, expose configurable lengths (`Topic` 1–5 words, `Short` ~20%,
+`Standard` ~50%, `Full` 100%, `Expand` ~200%), and use Natural Semantic
+Metalanguage primes plus compound-word substitution when the configuration
+requests them. The same pipeline must back project descriptions, dialog
+summaries, chat titles, and URL content.
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R195 | "What is Hive Mind?" must prefer `link-assistant/hive-mind` before any web-search closest-match fallback in every supported language. | Implemented by `try_hive_mind_lookup` in `src/solver_handlers/web_requests.rs`, which matches the `hive mind` / `hivemind` aliases against the curated registry and renders a language-aware answer. Covered by `tests/unit/specification/project_lookups.rs::russian_hive_mind_prompt_prefers_link_assistant_project` and the matching English test. |
+| R196 | The Hive Mind / curated project answers must be generated from a reviewable seed file rather than hard-coded strings, so adding or editing a project is a data change. | Implemented by `data/seed/projects.lino` (13 curated Link Assistant / Link Foundation projects with weighted statements, localisations, repository URLs, topic labels, and aliases) and the `ProjectsRegistry` reader in `src/seed/projects.rs`. |
+| R197 | A configurable summarization pipeline must expose `formalize`, `summarize`, and `deformalize` stages so the same code can drive topic labels, short descriptions, standard answers, full text, and expanded explanations. | Implemented by `src/summarization.rs` with `Statement`, `StatementKind`, `SummarizationMode` (`Topic` / `Short` / `Standard` / `Full` / `Expand`), `SummarizationConfig`, and the `formalize` / `summarize` / `deformalize` / `to_topic` / `describe_project` functions. Covered by 18 unit tests in `src/summarization.rs::tests`. |
+| R198 | Compressed answers must filter out boilerplate (install / example) sentences and keep the highest-weighted purpose, language, and feature statements. | Implemented by `StatementKind::is_boilerplate` plus `SummarizationConfig::drop_boilerplate` (default `true`) and the weight-descending sort in `summarize`. |
+| R199 | Configurable compound-word substitution and Natural Semantic Metalanguage primes must be available so callers can shorten chat titles or expand explanations from the same configuration. | Implemented by `apply_compound_words` (compound-word shortening) and `apply_semantic_primes` (NSM substitution table for English and Russian); `Expand` mode appends NSM paraphrases to the surviving statements. |
+| R200 | The curated project handler must run after `concept_lookup` so existing seed-backed concepts (Links Notation, Wikipedia, …) keep their answers, and must skip slugs already owned by other handlers (Hive Mind, formal-ai). | Implemented by ordering `("project_lookup", try_project_lookup)` after `concept_lookup` in `src/solver.rs::SPECIALIZED_HANDLERS` and the explicit slug skip in `try_project_lookup`. Covered by `tests/unit/specification/project_lookups.rs::curated_project_concept_prompt_routes_to_project_lookup` (uses `link-cli`). |
+| R201 | Every curated project answer must log the summarization configuration so the trace explains both what was matched and how the text was compressed. | Implemented by `render_project_lookup` emitting `summarization:mode`, `summarization:language`, `<evidence_kind>` (the repository slug), `source` (the project URL), and the consulted web-search providers. Covered by `tests/unit/specification/project_lookups.rs::curated_project_lookup_records_summarization_evidence`. |

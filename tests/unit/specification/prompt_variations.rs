@@ -546,25 +546,8 @@ fn web_search_online_variant_routes_to_web_search_handler() {
     );
 }
 
-#[test]
-fn russian_hive_mind_prompt_prefers_link_assistant_project() {
-    let response = answer("Что такое Hive Mind?");
-    assert_eq!(
-        response.intent, "hive_mind_lookup",
-        "Hive Mind should not fall through to a generic concept or Wikipedia-style answer: {}",
-        response.answer,
-    );
-    assert!(response.answer.contains("link-assistant/hive-mind"));
-    assert!(response.answer.contains("The AI that controls AIs"));
-    assert!(
-        response
-            .evidence_links
-            .iter()
-            .any(|link| link.starts_with("hive_mind:preferred:")),
-        "expected preferred Hive Mind evidence, got {:?}",
-        response.evidence_links,
-    );
-}
+// Curated Link Assistant / Link Foundation project tests live in
+// `project_lookups.rs` so this file stays under the 1000-line cap.
 
 // Fact-lookup matrix: 5-10 input variations per fact across every supported
 // language. Each prompt must route to `fact_lookup`, surface a Wikidata

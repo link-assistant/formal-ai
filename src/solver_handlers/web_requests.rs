@@ -4,6 +4,8 @@ use crate::concepts::extract_concept_query;
 use crate::engine::{normalize_prompt, SymbolicAnswer};
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
+use crate::seed::{projects_registry, ProjectRecord};
+use crate::summarization::{describe_project, SummarizationConfig, SummarizationMode};
 use crate::web_search_core::{
     WEB_SEARCH_PROVIDERS as CORE_WEB_SEARCH_PROVIDERS, WEB_SEARCH_RRF_K as CORE_WEB_SEARCH_RRF_K,
 };
@@ -144,6 +146,11 @@ pub fn try_web_search(
     ))
 }
 
+/// Hive-Mind specific concept handler. Matches `hive mind` / `hivemind` /
+/// `hive-mind` only — the broader Link Assistant / Link Foundation project
+/// registry is exposed through [`try_project_lookup`] further down the
+/// handler chain so existing identity / concept-lookup tests keep winning
+/// for terms like `formal-ai` and `links notation`.
 pub fn try_hive_mind_lookup(
     prompt: &str,
     _normalized: &str,
@@ -152,58 +159,136 @@ pub fn try_hive_mind_lookup(
     if !is_hive_mind_concept_prompt(prompt) {
         return None;
     }
+    let registry = registry_static();
+    let project = registry.by_alias("hive mind")?;
+    Some(render_project_lookup(
+        prompt,
+        log,
+        project,
+        "hive_mind_lookup",
+        "hive_mind:preferred",
+    ))
+}
 
-    let preferred_repo = "link-assistant/hive-mind";
-    let preferred_url = "https://github.com/link-assistant/hive-mind";
-    let preferred_description = "The AI that controls AIs to do the automation of automation.";
+/// Lookup for curated Link Assistant / Link Foundation projects beyond Hive
+/// Mind. Runs *after* `concept_lookup` so seed-backed concept terms
+/// (`Links Notation`, `Wikipedia`, `Rust`, …) keep their existing intent.
+///
+/// Returns a `project_lookup` answer rendered through the
+/// [`crate::summarization`] formalize-summarize-deformalize pipeline with the
+/// caller's detected language.
+pub fn try_project_lookup(
+    prompt: &str,
+    _normalized: &str,
+    log: &mut EventLog,
+) -> Option<SymbolicAnswer> {
+    let project = matched_project(prompt)?;
+    // The narrow hive-mind handler above already covered this slug, and the
+    // identity rule owns formal-ai. Defer to those handlers instead of
+    // shadowing them here.
+    if project.slug == "project_link_assistant_hive_mind"
+        || project.slug == "project_link_assistant_formal_ai"
+    {
+        return None;
+    }
+    Some(render_project_lookup(
+        prompt,
+        log,
+        project,
+        "project_lookup",
+        "project:preferred",
+    ))
+}
 
-    log.append("hive_mind:preferred", preferred_repo.to_owned());
-    log.append("source", preferred_url.to_owned());
-    log.append("web_search:request", "Hive Mind".to_owned());
+fn render_project_lookup(
+    prompt: &str,
+    log: &mut EventLog,
+    project: &ProjectRecord,
+    route: &'static str,
+    evidence_kind: &'static str,
+) -> SymbolicAnswer {
+    let language = detect_language(prompt).slug();
+    let config = SummarizationConfig::default()
+        .with_mode(SummarizationMode::Short)
+        .with_language(language);
+    let description = describe_project(project, &config);
+    let display_name = project.display_name_for(language);
+    let repo_slug = project.repo_slug();
+    let project_url = project.url.clone();
+
+    log.append(evidence_kind, repo_slug.clone());
+    log.append("source", project_url.clone());
+    log.append("summarization:mode", "short".to_owned());
+    log.append("summarization:language", language.to_owned());
+    log.append("web_search:request", display_name.to_owned());
     for provider in WEB_SEARCH_PROVIDERS {
         log.append("web_search:provider", (*provider).to_owned());
     }
     log.append("web_search:combined", format!("rrf:k={WEB_SEARCH_RRF_K}"));
 
     let provider_summary = WEB_SEARCH_PROVIDERS.join(", ");
-    let language = detect_language(prompt).slug();
     let body = match language {
         "ru" => format!(
-            "В контексте Link Assistant под `Hive Mind` я прежде всего имею в виду \
-             [{preferred_repo}]({preferred_url}) — {preferred_description}\n\n\
+            "В контексте Link Assistant под `{display_name}` я прежде всего имею в виду \
+             [{repo_slug}]({project_url}) — {description}\n\n\
              Другие найденные в интернете сущности должна показывать браузерная \
-             демо-версия через поиск по запросу `Hive Mind`. Провайдеры: \
+             демо-версия через поиск по запросу `{display_name}`. Провайдеры: \
              {provider_summary}. Ранжирование: reciprocal rank fusion \
              (k = {WEB_SEARCH_RRF_K})."
         ),
         _ => format!(
-            "In the Link Assistant context, `Hive Mind` should first mean \
-             [{preferred_repo}]({preferred_url}) — {preferred_description}\n\n\
+            "In the Link Assistant context, `{display_name}` should first mean \
+             [{repo_slug}]({project_url}) — {description}\n\n\
              Other entities found online are shown by the browser demo through \
-             a web search for `Hive Mind`. Providers: {provider_summary}. \
+             a web search for `{display_name}`. Providers: {provider_summary}. \
              Combined ranking: reciprocal rank fusion (k = {WEB_SEARCH_RRF_K})."
         ),
     };
-    Some(finalize_simple(
-        prompt,
-        log,
-        "hive_mind_lookup",
-        "response:hive_mind_lookup",
-        &body,
-        0.9,
-    ))
+    let response_label = format!("response:{route}");
+    finalize_simple(prompt, log, route, &response_label, &body, 0.9)
 }
 
 fn is_hive_mind_concept_prompt(prompt: &str) -> bool {
     let Some(query) = extract_concept_query(prompt) else {
         return false;
     };
-    let term = normalize_prompt(&query.term)
+    let term = normalize_concept_term(&query.term);
+    term == "hive mind" || term == "hivemind"
+}
+
+/// Match the concept term against the curated project registry. Returns the
+/// matching [`ProjectRecord`] or `None` when no curated project matches.
+fn matched_project(prompt: &str) -> Option<&'static ProjectRecord> {
+    let query = extract_concept_query(prompt)?;
+    let term = normalize_concept_term(&query.term);
+    if term.is_empty() {
+        return None;
+    }
+    let registry = registry_static();
+    if let Some(project) = registry.by_alias(&term) {
+        return Some(project);
+    }
+    if term == "hivemind" {
+        return registry.by_alias("hive mind");
+    }
+    None
+}
+
+fn normalize_concept_term(value: &str) -> String {
+    normalize_prompt(value)
         .replace(['-', '_'], " ")
         .split_whitespace()
         .collect::<Vec<_>>()
-        .join(" ");
-    term == "hive mind" || term == "hivemind"
+        .join(" ")
+}
+
+/// Lazy-init the curated projects registry once per process. The seed file is
+/// embedded via `include_str!` and the parsed form is immutable, so a `OnceLock`
+/// is enough and avoids re-parsing on every prompt.
+fn registry_static() -> &'static crate::seed::ProjectsRegistry {
+    use std::sync::OnceLock;
+    static REGISTRY: OnceLock<crate::seed::ProjectsRegistry> = OnceLock::new();
+    REGISTRY.get_or_init(projects_registry)
 }
 
 fn extract_http_fetch_url(prompt: &str, normalized: &str) -> Option<String> {
