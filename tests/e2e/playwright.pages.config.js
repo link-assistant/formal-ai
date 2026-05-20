@@ -11,7 +11,12 @@ const PAGES_URL = normalizeBaseUrl(
 
 module.exports = defineConfig({
   testDir: './tests',
-  testMatch: ['**/demo.spec.js', '**/multilingual.spec.js', '**/connectivity.spec.js'],
+  testMatch: [
+    '**/demo.spec.js',
+    '**/multilingual.spec.js',
+    '**/connectivity.spec.js',
+    '**/issue-193.spec.js',
+  ],
   timeout: 60_000,
   retries: 2,
   reporter: [['html', { open: 'never' }], ['list']],
