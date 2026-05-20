@@ -136,6 +136,7 @@ jobs:
       always() && !cancelled() && (
         github.event_name == 'push' ||
         github.event_name == 'workflow_dispatch' ||
+        needs.detect-changes.outputs.any-code-changed == 'true' ||
         needs.detect-changes.outputs.rs-changed == 'true' ||
         needs.detect-changes.outputs.toml-changed == 'true' ||
         needs.detect-changes.outputs.docs-changed == 'true' ||
