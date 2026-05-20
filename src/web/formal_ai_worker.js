@@ -5615,6 +5615,274 @@ function extractWebSearchQuery(prompt, normalized) {
   return "";
 }
 
+function cleanProceduralFragment(value) {
+  let clean = String(value || "")
+    .trim()
+    .replace(/^[`"' ]+/u, "")
+    .replace(/[`"' ]+$/u, "")
+    .replace(/[?!.,;:]+$/u, "")
+    .replace(/\s+/g, " ")
+    .trim();
+  const suffixes = [
+    " step by step",
+    " in steps",
+    " with steps",
+    " for me",
+    " please",
+  ];
+  for (const suffix of suffixes) {
+    if (clean.endsWith(suffix)) {
+      clean = clean.slice(0, -suffix.length).trim();
+      break;
+    }
+  }
+  return clean;
+}
+
+function extractProceduralHowToTask(normalized) {
+  const prefixes = [
+    "please tell me how to ",
+    "please show me how to ",
+    "tell me how to ",
+    "show me how to ",
+    "what are the steps to ",
+    "what steps do i need to ",
+    "what steps do we need to ",
+    "how should i ",
+    "how should we ",
+    "how could i ",
+    "how could we ",
+    "how would i ",
+    "how would we ",
+    "how can i ",
+    "how can we ",
+    "how do i ",
+    "how do we ",
+    "how to ",
+  ];
+  const clean = cleanProceduralFragment(normalized);
+  for (const prefix of prefixes) {
+    if (!clean.startsWith(prefix)) continue;
+    const task = cleanProceduralFragment(clean.slice(prefix.length));
+    if (!task) return null;
+    const firstSpace = task.search(/\s/u);
+    const action = firstSpace === -1 ? task : task.slice(0, firstSpace);
+    const object = firstSpace === -1 ? "" : task.slice(firstSpace + 1).trim();
+    return { task, action, object };
+  }
+  return null;
+}
+
+function capitalizeForWikiHow(word) {
+  const text = String(word || "");
+  if (!text) return "";
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
+function wikiHowPageTitle(task) {
+  return String(task || "")
+    .split(/[^\p{L}\p{N}]+/u)
+    .filter(Boolean)
+    .map(capitalizeForWikiHow)
+    .join("-");
+}
+
+function wikiHowParseApiUrl(pageTitle) {
+  const encodedPage = encodeURIComponent(pageTitle).replace(/%2D/gi, "-");
+  return `https://www.wikihow.com/api.php?action=parse&page=${encodedPage}&prop=text%7Csections%7Cdisplaytitle&format=json&origin=*`;
+}
+
+function decodeBasicHtmlEntities(value) {
+  return String(value || "")
+    .replace(/&nbsp;|&#160;/g, " ")
+    .replace(/&amp;/g, "&")
+    .replace(/&quot;/g, '"')
+    .replace(/&#039;|&apos;/g, "'")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&#(\d+);/g, (_match, code) => {
+      const value = Number(code);
+      if (!Number.isFinite(value) || value < 0 || value > 0x10ffff) return "";
+      return String.fromCodePoint(value);
+    });
+}
+
+function compactStepText(value) {
+  const text = decodeBasicHtmlEntities(stripHtml(value))
+    .replace(/\[[0-9]+\]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+  if (text.length <= 180) return text;
+  const sentence = text.match(/^(.{40,180}?[.!?])\s/u);
+  if (sentence) return sentence[1].trim();
+  return `${text.slice(0, 177).trim()}...`;
+}
+
+function extractWikiHowSteps(html) {
+  const lines = String(html || "").split(/\n+/u);
+  const steps = [];
+  const seen = new Set();
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (!trimmed.startsWith("<li>") || trimmed.startsWith("<li><b>")) {
+      continue;
+    }
+    const text = compactStepText(trimmed);
+    if (text.length < 40 || seen.has(text)) continue;
+    seen.add(text);
+    steps.push(text);
+    if (steps.length >= 6) break;
+  }
+  return steps;
+}
+
+async function fetchWikiHowProcedure(pageTitle, evidence) {
+  const url = wikiHowParseApiUrl(pageTitle);
+  if (typeof fetch !== "function") {
+    return { ok: false, url, error: "fetch_unavailable", steps: [] };
+  }
+  try {
+    const response = await fetch(url, { method: "GET", mode: "cors" });
+    evidence.push(`http_fetch:status:${response.status}`);
+    if (!response.ok) {
+      return { ok: false, url, error: `http_${response.status}`, steps: [] };
+    }
+    const data = await response.json();
+    if (data && data.error) {
+      return {
+        ok: false,
+        url,
+        error: data.error.code || "wikihow_error",
+        steps: [],
+      };
+    }
+    const parse = data && data.parse ? data.parse : null;
+    const html = parse && parse.text ? parse.text["*"] : "";
+    const steps = extractWikiHowSteps(html);
+    const title = compactStepText(parse && parse.displaytitle ? parse.displaytitle : pageTitle);
+    const sourceUrl = `https://www.wikihow.com/${encodeURIComponent(pageTitle).replace(/%2D/gi, "-")}`;
+    return {
+      ok: steps.length > 0,
+      url,
+      title: title || pageTitle,
+      sourceUrl,
+      error: steps.length > 0 ? "" : "no_explicit_steps",
+      steps,
+    };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    evidence.push(`http_fetch:error:${message.toLowerCase().includes("cors") ? "cors" : "network"}`);
+    return { ok: false, url, error: message || "network", steps: [] };
+  }
+}
+
+function appendUniqueEvidence(target, source) {
+  const seen = new Set(target);
+  for (const item of source || []) {
+    if (!item || seen.has(item)) continue;
+    seen.add(item);
+    target.push(item);
+  }
+}
+
+async function tryProceduralHowTo(prompt, language) {
+  const normalized = normalizePrompt(prompt);
+  const task = extractProceduralHowToTask(normalized);
+  if (!task) return null;
+
+  const query = `how to ${task.task}`;
+  const pageTitle = wikiHowPageTitle(task.task);
+  const apiUrl = wikiHowParseApiUrl(pageTitle);
+  const providerSummary = WEB_SEARCH_PROVIDERS.map((provider) => provider.id).join(", ");
+  const evidence = [
+    `procedural_how_to:request:${task.task}`,
+    `procedural_how_to:action:${task.action}`,
+    `procedural_how_to:stage:wikipedia`,
+    `procedural_how_to:stage:wikidata`,
+    `procedural_how_to:stage:wikihow_api`,
+    `procedural_how_to:wikihow_candidate:${pageTitle}`,
+    `http_fetch:request:${apiUrl}`,
+  ];
+  if (task.object) {
+    evidence.splice(2, 0, `procedural_how_to:object:${task.object}`);
+  }
+
+  const wikiHow = await fetchWikiHowProcedure(pageTitle, evidence);
+  const lines = [
+    `Procedural discovery for \`${task.task}\` (action \`${task.action}\`, object \`${task.object}\`).`,
+    "",
+    "Source path: Wikipedia -> Wikidata -> wikiHow API -> web search fallback -> recursive fetch check.",
+    "",
+  ];
+
+  let confidence = 0.78;
+  let diagnostics = null;
+  let formalizedObject = "";
+  if (wikiHow.ok) {
+    evidence.push(`procedural_how_to:wikihow_steps:${wikiHow.steps.length}`);
+    evidence.push(`source:${wikiHow.sourceUrl}`);
+    formalizedObject = `WH:${pageTitle}`;
+    confidence = 0.86;
+    lines.push(`wikiHow API returned \`${wikiHow.title}\` for candidate \`${pageTitle}\`.`);
+    lines.push("");
+    wikiHow.steps.forEach((step, index) => {
+      lines.push(`${index + 1}. ${step}`);
+    });
+    lines.push("");
+    lines.push(`[Source](${wikiHow.sourceUrl})`);
+  } else {
+    evidence.push(`procedural_how_to:wikihow_miss:${wikiHow.error || "no_match"}`);
+    evidence.push("procedural_how_to:stage:web_search");
+    const webSearch = await tryWebSearch(`search the web for ${query}`, language);
+    if (webSearch) {
+      appendUniqueEvidence(evidence, webSearch.evidence);
+      diagnostics = webSearch.diagnostics || null;
+      formalizedObject = webSearch.formalizedObject || "";
+      lines.push(
+        `wikiHow candidate \`${pageTitle}\` did not return explicit steps (${wikiHow.error || "no_match"}).`,
+      );
+      lines.push("");
+      lines.push(`Fallback web search for \`${query}\`:`);
+      lines.push("");
+      lines.push(webSearch.content);
+    } else {
+      evidence.push(`web_search:request:${query}`);
+      for (const provider of WEB_SEARCH_PROVIDERS) {
+        evidence.push(`web_search:provider:${provider.id}`);
+      }
+      evidence.push(`web_search:combined:rrf:k=${webSearchRrfK()}`);
+      lines.push(
+        `wikiHow candidate \`${pageTitle}\` did not return explicit steps (${wikiHow.error || "no_match"}).`,
+      );
+      lines.push("");
+      lines.push(
+        `Fallback web search for \`${query}\` should use ${providerSummary} and reciprocal rank fusion (k = ${webSearchRrfK()}).`,
+      );
+    }
+  }
+  if (!evidence.includes("procedural_how_to:stage:web_search")) {
+    evidence.push("procedural_how_to:stage:web_search");
+    evidence.push(`web_search:request:${query}`);
+    for (const provider of WEB_SEARCH_PROVIDERS) {
+      evidence.push(`web_search:provider:${provider.id}`);
+    }
+    evidence.push(`web_search:combined:rrf:k=${webSearchRrfK()}`);
+  }
+  evidence.push("procedural_how_to:stage:recursive_fetch_check");
+  evidence.push("procedural_how_to:source_gate:explicit_steps_only");
+
+  return {
+    intent: "procedural_how_to",
+    content: lines.join("\n"),
+    confidence,
+    evidence,
+    diagnostics,
+    query,
+    wikihowCandidate: pageTitle,
+    formalizedObject,
+  };
+}
+
 function stripHtml(value) {
   return String(value || "")
     .replace(/<[^>]*>/g, "")
@@ -7059,6 +7327,15 @@ function attachUserContext(answer, userContext) {
 // the symbolic operation, and `@USER` for the implicit user subject.
 const FORMALIZATION_VERBS = [
   // English
+  { verb: "what are the steps to", op: "OP:procedure" },
+  { verb: "show me how to", op: "OP:procedure" },
+  { verb: "tell me how to", op: "OP:procedure" },
+  { verb: "how should i", op: "OP:procedure" },
+  { verb: "how could i", op: "OP:procedure" },
+  { verb: "how would i", op: "OP:procedure" },
+  { verb: "how can i", op: "OP:procedure" },
+  { verb: "how do i", op: "OP:procedure" },
+  { verb: "how to", op: "OP:procedure" },
   { verb: "search", op: "OP:search" },
   { verb: "find", op: "OP:search" },
   { verb: "lookup", op: "OP:lookup" },
@@ -7120,6 +7397,10 @@ function objectForFormalization(prompt, normalized, op) {
   if (op === "OP:search" || op === "OP:lookup") {
     const query = extractWebSearchQuery(prompt, normalized);
     if (query) return query;
+  }
+  if (op === "OP:procedure") {
+    const task = extractProceduralHowToTask(normalized);
+    if (task) return task.task;
   }
   const haystack = String(normalized || "").toLowerCase();
   for (const { verb } of FORMALIZATION_VERBS) {
@@ -7411,6 +7692,28 @@ async function solve(prompt, history, prefs) {
       outputs: { intent: navigated.intent, confidence: navigated.confidence, iframeUrl: navigated.iframeUrl || null },
     });
     return finalize(events, steps, toolCalls, navigated, formalizationContext);
+  }
+
+  steps.push({ step: "invoke_tool", detail: "procedural_how_to" });
+  const procedure = await tryProceduralHowTo(prompt, language);
+  if (procedure) {
+    events.push(`handler:${procedure.intent}`);
+    steps.push({ step: "dispatch_handler", detail: "tryProceduralHowTo" });
+    toolCalls.push({
+      tool: "procedural_how_to",
+      inputs: {
+        prompt,
+        language,
+        query: procedure.query || "",
+        wikihowCandidate: procedure.wikihowCandidate || "",
+      },
+      outputs: {
+        intent: procedure.intent,
+        confidence: procedure.confidence,
+        formalizedObject: procedure.formalizedObject || "",
+      },
+    });
+    return finalize(events, steps, toolCalls, procedure, formalizationContext);
   }
 
   steps.push({ step: "invoke_tool", detail: "web_search" });

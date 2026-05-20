@@ -5,6 +5,91 @@ use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::solver_handlers::{finalize_simple, try_concept_lookup};
 use crate::solver_helpers::last_assistant_turn;
+use crate::web_search_core::{WEB_SEARCH_PROVIDERS, WEB_SEARCH_RRF_K};
+
+struct ProceduralHowToTask {
+    task: String,
+    action: String,
+    object: String,
+}
+
+/// Handles source-backed procedural requests such as "How to make tea?" and
+/// "How can I prepare fried potatoes?". The offline Rust engine records the
+/// same discovery plan that the browser worker can execute: local
+/// decomposition first, Wikimedia/wikiHow candidates next, then web search
+/// and recursive fetch checks only as the fallback path.
+pub fn try_how_to_procedure(
+    prompt: &str,
+    normalized: &str,
+    log: &mut EventLog,
+) -> Option<SymbolicAnswer> {
+    let task = extract_procedural_how_to_task(normalized)?;
+    let query = format!("how to {}", task.task);
+    let wikihow_candidate = wikihow_page_title(&task.task);
+    let wikihow_api_url = format!(
+        "https://www.wikihow.com/api.php?action=parse&page={wikihow_candidate}\
+         &prop=text%7Csections%7Cdisplaytitle&format=json&origin=*"
+    );
+
+    log.append("procedural_how_to:request", task.task.clone());
+    log.append("procedural_how_to:action", task.action.clone());
+    if !task.object.is_empty() {
+        log.append("procedural_how_to:object", task.object.clone());
+    }
+    log.append("procedural_how_to:stage", "wikipedia".to_owned());
+    log.append("procedural_how_to:stage", "wikidata".to_owned());
+    log.append("procedural_how_to:stage", "wikihow_api".to_owned());
+    log.append(
+        "procedural_how_to:wikihow_candidate",
+        wikihow_candidate.clone(),
+    );
+    log.append("http_fetch:request", wikihow_api_url.clone());
+    log.append("procedural_how_to:stage", "web_search".to_owned());
+    log.append("web_search:request", query.clone());
+    for provider in WEB_SEARCH_PROVIDERS {
+        log.append("web_search:provider", (*provider).to_owned());
+    }
+    log.append("web_search:combined", format!("rrf:k={WEB_SEARCH_RRF_K}"));
+    log.append(
+        "procedural_how_to:stage",
+        "recursive_fetch_check".to_owned(),
+    );
+    log.append(
+        "procedural_how_to:source_gate",
+        "explicit_steps_only".to_owned(),
+    );
+
+    let provider_summary = WEB_SEARCH_PROVIDERS.join(", ");
+    let body = format!(
+        "Procedural discovery plan for `{}` (action `{}`, object `{}`).\n\n\
+         I do not answer this from a memoized recipe. The solver first checks \
+         Wikipedia for topic context and Wikidata for entity/action/object hints. \
+         It then tries wikiHow's CORS-readable MediaWiki parse API candidate \
+         `{}` via `{}`. If those sources do not expose usable steps, the fallback \
+         path runs web search for `{}` across {} and merges the top results with \
+         reciprocal rank fusion (k = {}). The final recursive fetch check only \
+         accepts pages that actually contain explicit ordered or instructional \
+         steps for `{}`.",
+        task.task,
+        task.action,
+        task.object,
+        wikihow_candidate,
+        wikihow_api_url,
+        query,
+        provider_summary,
+        WEB_SEARCH_RRF_K,
+        task.task,
+    );
+
+    Some(finalize_simple(
+        prompt,
+        log,
+        "procedural_how_to",
+        "response:procedural_how_to",
+        &body,
+        0.78,
+    ))
+}
 
 /// Handles follow-up elaboration prompts such as "how it works?", "how does
 /// it work?", or "how does X work?". When the prior assistant turn mentioned a
@@ -103,6 +188,99 @@ fn extract_how_it_works_subject(normalized: &str) -> Option<String> {
         }
     }
     None
+}
+
+fn extract_procedural_how_to_task(normalized: &str) -> Option<ProceduralHowToTask> {
+    const PREFIXES: &[&str] = &[
+        "please tell me how to ",
+        "please show me how to ",
+        "tell me how to ",
+        "show me how to ",
+        "what are the steps to ",
+        "what steps do i need to ",
+        "what steps do we need to ",
+        "how should i ",
+        "how should we ",
+        "how could i ",
+        "how could we ",
+        "how would i ",
+        "how would we ",
+        "how can i ",
+        "how can we ",
+        "how do i ",
+        "how do we ",
+        "how to ",
+    ];
+
+    let clean_prompt = clean_procedural_fragment(normalized);
+    for prefix in PREFIXES {
+        if let Some(rest) = clean_prompt.strip_prefix(prefix) {
+            return build_procedural_task(rest);
+        }
+    }
+    None
+}
+
+fn build_procedural_task(raw_task: &str) -> Option<ProceduralHowToTask> {
+    let task = clean_procedural_fragment(raw_task);
+    if task.is_empty() {
+        return None;
+    }
+
+    let (action, object) = {
+        let mut parts = task.splitn(2, char::is_whitespace);
+        let action = parts.next()?.trim();
+        if action.is_empty() {
+            return None;
+        }
+        let object = parts.next().unwrap_or("").trim();
+        (action.to_owned(), object.to_owned())
+    };
+
+    Some(ProceduralHowToTask {
+        task,
+        action,
+        object,
+    })
+}
+
+fn clean_procedural_fragment(value: &str) -> String {
+    let mut clean = value
+        .trim()
+        .trim_matches(|character: char| matches!(character, '`' | '"' | '\'' | ' '))
+        .trim_end_matches(['?', '!', '.', ',', ';', ':'])
+        .trim()
+        .to_owned();
+
+    for suffix in [
+        " step by step",
+        " in steps",
+        " with steps",
+        " for me",
+        " please",
+    ] {
+        if let Some(stripped) = clean.strip_suffix(suffix) {
+            clean = stripped.trim().to_owned();
+            break;
+        }
+    }
+    clean
+}
+
+fn wikihow_page_title(task: &str) -> String {
+    task.split(|character: char| !character.is_alphanumeric())
+        .filter(|word| !word.is_empty())
+        .map(capitalize_word)
+        .collect::<Vec<_>>()
+        .join("-")
+}
+
+fn capitalize_word(word: &str) -> String {
+    let mut chars = word.chars();
+    let Some(first) = chars.next() else {
+        return String::new();
+    };
+    format!("{}{rest}", first.to_uppercase(), rest = chars.as_str())
 }
 
 /// Extract the first meaningful topic word/phrase from a prior assistant reply.
