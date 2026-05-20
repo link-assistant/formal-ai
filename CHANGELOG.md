@@ -54,6 +54,968 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
+
+## [0.86.0] - 2026-05-20
+
+### Added
+- Changeset-style fragment format with frontmatter for specifying version bump type
+- New `get-bump-type.mjs` script to automatically determine version bump from fragments
+- Automatic version bumping on merge to main based on changelog fragments
+- Detailed documentation for the changelog fragment system in `changelog.d/README.md`
+
+### Changed
+- Updated `collect-changelog.mjs` to strip frontmatter when collecting fragments
+- Updated `version-and-commit.mjs` to handle frontmatter in fragments
+- Enhanced release workflow to automatically determine bump type from changesets
+
+### Changed
+- Add `detect-changes` job with cross-platform `detect-code-changes.mjs` script
+- Make lint job independent of changelog check (runs based on file changes only)
+- Allow docs-only PRs without changelog fragment requirement
+- Handle changelog check 'skipped' state in dependent jobs
+- Exclude `changelog.d/`, `docs/`, `experiments/`, `examples/` folders and markdown files from code changes detection
+
+### Fixed
+- Fixed README.md to correctly reference Node.js scripts (`.mjs`) instead of Python scripts (`.py`)
+- Updated project structure in README.md to match actual script files in `scripts/` directory
+- Fixed example code in README.md that had invalid Rust with two `main` functions
+
+### Added
+
+- Added crates.io publishing support to CI/CD workflow
+- Added `release_mode` input with "instant" and "changelog-pr" options for manual releases
+- Added `--tag-prefix` and `--crates-io-url` options to create-github-release.mjs script
+- Added comprehensive case study documentation for Issue #11 in docs/case-studies/issue-11/
+
+### Changed
+
+- Changed changelog fragment check from warning to error (exit 1) to enforce changelog requirements
+- Updated job conditions with `always() && !cancelled()` to fix workflow_dispatch job skipping issue
+- Renamed manual-release job to "Instant Release" for clarity
+
+### Fixed
+
+- Fixed deprecated `::set-output` GitHub Actions command in version-and-commit.mjs
+- Fixed workflow_dispatch triggering issues where lint/build/release jobs were incorrectly skipped
+
+### Fixed
+
+- Fixed changelog fragment check to validate that a fragment is **added in the PR diff** rather than just checking if any fragments exist in the directory. This prevents the check from incorrectly passing when there are leftover fragments from previous PRs that haven't been released yet.
+
+### Changed
+
+- Converted shell scripts in `release.yml` to cross-platform `.mjs` scripts for improved portability and performance:
+  - `check-changelog-fragment.mjs` - validates changelog fragment is added in PR diff
+  - `git-config.mjs` - configures git user for CI/CD
+  - `check-release-needed.mjs` - checks if release is needed
+  - `publish-crate.mjs` - publishes package to crates.io
+  - `create-changelog-fragment.mjs` - creates changelog fragments for manual releases
+  - `get-version.mjs` - gets current version from Cargo.toml
+
+### Added
+
+- Added `check-version-modification.mjs` script to detect manual version changes in Cargo.toml
+- Added `version-check` job to CI/CD workflow that runs on pull requests
+- Added skip logic for automated release branches (changelog-manual-release-*, changeset-release/*, release/*, automated-release/*)
+
+### Changed
+
+- Version modifications in Cargo.toml are now blocked in pull requests to enforce automated release pipeline
+
+### Added
+
+- Added support for `CARGO_REGISTRY_TOKEN` as alternative to `CARGO_TOKEN` for crates.io publishing
+- Added case study documentation for Issue #17 (yargs reserved word and dual token support)
+
+### Changed
+
+- Updated workflow to use fallback logic: `${{ secrets.CARGO_REGISTRY_TOKEN || secrets.CARGO_TOKEN }}`
+- Improved publish-crate.mjs to check both `CARGO_REGISTRY_TOKEN` and `CARGO_TOKEN` environment variables
+- Added warning message when neither token is set
+
+### Added
+- New `scripts/rust-paths.mjs` utility for automatic Rust package root detection
+- Support for both single-language and multi-language repository structures in all CI/CD scripts
+- Configuration options via `--rust-root` CLI argument and `RUST_ROOT` environment variable
+- Comprehensive case study documentation in `docs/case-studies/issue-19/`
+
+### Changed
+- Updated all release scripts to use the new path detection utility:
+  - `scripts/bump-version.mjs`
+  - `scripts/check-release-needed.mjs`
+  - `scripts/collect-changelog.mjs`
+  - `scripts/get-bump-type.mjs`
+  - `scripts/get-version.mjs`
+  - `scripts/publish-crate.mjs`
+  - `scripts/version-and-commit.mjs`
+
+### Changed
+
+- Translated all CI/CD scripts from JavaScript (.mjs) to Rust (.rs) using rust-script
+- Scripts now use native Rust with rust-script for execution in shell
+- Removed Node.js dependency from CI/CD pipeline
+- Updated GitHub Actions workflow to use rust-script instead of node
+- Updated README and CONTRIBUTING documentation with new script references
+
+### Added
+
+- Cache `restore-keys` for partial cache hits across all workflow jobs
+- Explicit `token` parameter in checkout for release jobs
+- Code coverage job with `cargo-llvm-cov` and Codecov integration
+- Codecov badge in README.md
+- Pre-release version support (e.g., `0.1.0-beta.1`) in version parsing
+- `--release-label` parameter for multi-language release disambiguation
+- `ensure_version_exceeds_published()` logic to prevent publishing duplicate versions
+- `get_max_published_version()` to query highest non-yanked version from crates.io
+- `max_published_version` output from check-release-needed for downstream use
+- Version fallback logic in auto-release Create GitHub Release step
+
+### Changed
+
+- Updated `actions/checkout` from v4 to v6
+- Updated `actions/cache` from v4 to v5
+- Updated `peter-evans/create-pull-request` from v7 to v8
+- Made `publish-crate.rs` fail (exit 1) when version already exists on crates.io
+- Improved `create-github-release.rs` to check combined stdout+stderr and detect "Validation Failed"
+
+### Fixed
+
+- Fix publish steps overriding workflow-level CARGO_TOKEN fallback, breaking CARGO_REGISTRY_TOKEN-only configurations (#32)
+- Fix non-fast-forward push failures in multi-workflow repos by adding fetch/rebase and push retry logic (#31)
+- Add mono-repo path support to check-changelog-fragment.rs, check-version-modification.rs, and create-changelog-fragment.rs
+- Add `!cancelled()` guard to test job condition to respect workflow cancellation
+
+### Fixed
+
+- Fixed `version-and-commit.rs` to check crates.io instead of git tags for determining if a version is already released
+- This prevents the release pipeline from getting stuck when git tags exist without corresponding crates.io publication
+
+### Added
+
+- Added `--tag-prefix` support to `version-and-commit.rs` for multi-language repository compatibility
+- Added crates.io and docs.rs badges to README.md
+- Added automatic crates.io and docs.rs badge injection in GitHub release notes
+- Added documentation deployment job to CI/CD pipeline (deploys to GitHub Pages after release)
+- Added case study documentation for issue #25
+
+### Fixed
+- Fixed unsupported look-ahead regex in `create-github-release.rs` that caused a panic when parsing CHANGELOG.md. Replaced with a two-step approach using only features supported by Rust's `regex` crate.
+
+### Changed
+- Restructured example application as a simple CLI sum calculator using `lino-arguments`
+- Renamed default package to `example-sum-package-name` with Unlicense license
+- Reorganized test structure: `tests/unit/sum.rs`, `tests/integration/sum.rs`, `tests/unit/ci-cd/`
+- Converted experiment scripts into proper unit tests in `tests/unit/ci-cd/changelog_parsing.rs`
+- Added CI/CD skip logic for template default package name `example-sum-package-name`
+- Updated README.md badges and documentation
+
+### Fixed
+
+- Change detection script now uses per-commit diff instead of full PR diff, so commits touching only non-code files correctly skip CI jobs even when earlier commits in the same PR changed code files
+
+### Fixed
+- Make release scripts resolve the publishable crate manifest when the repository root uses a Cargo workspace manifest.
+
+### Fixed
+- Decoupled GitHub Pages documentation deployment from package release publication and fixed release-script warning failures under `RUSTFLAGS=-Dwarnings`.
+
+### Changed
+- Added explicit GitHub Actions job timeouts and documented Rust test timeout guidance.
+
+### Fixed
+- Added a non-blocking warning threshold to the Rust file-size check so near-limit files are surfaced before concurrent PR merges can exceed the hard limit.
+
+### Fixed
+- Made `create-github-release.rs` build GitHub release titles as `[Language] X.Y.Z` instead of reusing the tag prefix.
+
+### Added
+- Added optional Docker Hub image publishing tied to Rust crate releases, including crates.io visibility waiting, version/latest image tags, and Docker Hub badges in GitHub release notes.
+
+### Changed
+- Release completeness checks now self-heal when crates.io exists but configured Docker Hub or GitHub release artifacts are missing.
+
+### Added
+- Added the formal-ai deterministic symbolic implementation library, CLI, OpenAI-compatible JSON API server, Docker packaging, and GitHub Pages demo.
+- Added a markdown-capable chat demo with randomized dialog mode, greeting-first examples, and multi-language hello-world prompts.
+- Added Rust-script dataset generation into human-readable Links Notation `.lino` files under `data/`.
+- Added Playwright e2e test suite under `tests/e2e/` covering page load, initial messages, quick prompts, chat interactions, demo mode toggle, trace panel, and preview mode.
+- Added `test-e2e-local` CI job that serves the demo with a local HTTP server and runs Playwright tests on every PR.
+- Added `test-e2e-pages` CI job that runs Playwright tests against the live GitHub Pages URL after each deployment.
+
+### Changed
+- Expanded deterministic hello-world responses from Rust-only to Rust, Python, JavaScript, TypeScript, Go, and C.
+- Extended repository file-size checks to enforce the 1500-line limit for `.lino` dataset chunks.
+- Fixed GitHub Pages deployment to publish the React chat demo from `docs/demo/` instead of Rust API documentation.
+
+### Fixed
+- Deploy the demo through the GitHub Pages workflow artifact path so workflow-sourced Pages deployments fail accurately and expose the deployed URL to Pages e2e tests.
+
+### Changed
+
+- Start the web demo in interactive demo mode by default, add a live next-dialog countdown, and hide diagnostic trace details unless diagnostics mode is enabled.
+
+### Added
+- Added demo chat issue-report links that prefill GitHub issues with dialog history and browser metadata.
+- Added a symbolic identity response for "Who are you?" style prompts.
+
+### Removed
+- Removed the unused demo composer preview control.
+
+### Added
+- Added a Telegram webhook endpoint backed by the symbolic engine, plus execution metadata for hello-world code answers and verification coverage for private and public chat updates.
+
+### Added
+- Added a `formal-ai telegram` CLI subcommand that defaults to Telegram long polling (`getUpdates`) and keeps the existing webhook server as `--mode=webhook`, configured through `lino-arguments` so flags, environment variables, and `.lenv`/`.env` files all feed the same parser.
+- Introduced `TelegramPollingConfig`, `parse_get_updates_response`, the `TelegramTransport` trait, and a curl-backed default transport so the polling loop is fully unit-tested without a network.
+
+### Added
+- Added the issue #12 holistic case study, root vision/goals/non-goals documents, and a unit test that keeps the documentation set present and traceable.
+
+### Added
+- Added a TDD-style full-scope test suite under `tests/unit/specification/` that pins down the chat surface, code generation, multilingual chat, OpenAI compatibility, Telegram surface, links network, reasoning loop, source cache, agent isolation, translation-via-Links, network visualization, and transparent-state requirements drawn from `VISION.md`, `GOALS.md`, `NON-GOALS.md`, and `docs/REQUIREMENTS.md`. Tests describing not-yet-implemented full-scope behavior are marked `#[ignore = "tracked requirement: ..."]` so they document expectations without blocking CI; run them locally with `cargo test -- --include-ignored`.
+
+### Added
+- Added the universal 11-step solver loop (impulse → formalization → context → history → decomposition → TDD → synthesis → combination → verification → simplification → documentation) and wired it into `FormalAiEngine.answer` so every reply walks the same reasoning pipeline regardless of intent.
+- Added a deterministic in-process append-only event log (`EventLog`) that records every step of the loop with content-addressed ids and projects to `evidence_links` plus a Links Notation `steps:` trace block.
+- Added lightweight Unicode-block based language detection (`Language::{English, Russian, Hindi, Chinese, Unknown}`) so every impulse is tagged with `language:<slug>` evidence.
+- Added in-process knowledge graph projection with `GraphNode`/`GraphEdge`/`KnowledgeGraph` and a `/v1/graph` endpoint that returns either Links Notation, JSON, or Graphviz DOT.
+- Added `rate_limit` metadata on `/v1/models` responses, SSE streaming for `/v1/chat/completions` when `stream: true` is requested, and a configurable `SolverConfig` (offline mode, autonomy bounds) driven by environment variables.
+- Added Telegram trace pointers: every chat reply now ends with a `/trace <id>` footer so users can request the inline event log for the message they just received.
+
+### Changed
+- Re-implemented Telegram, OpenAI, and library code paths to consume the universal solver instead of bespoke per-intent helpers, removing the previous hard-coded greeting/identity/hello-world branches in favor of pattern-matched specialized handlers (diagnostic, conversation memory, translation, algorithm synthesis, source-cache refresh, conflict surfacing, policy bounded-autonomy).
+- Split `src/solver.rs` into `solver.rs` + `solver_helpers.rs` to keep both modules under the 1000-line hard limit and re-organized the imports so each helper is explicit.
+
+### Added
+- `try_incompatible_units` handler: queries that mix dimensionally incompatible units
+  (e.g. meters vs kilobytes) now return `intent:unit_incompatibility` with a clear
+  symbolic explanation instead of falling through to `intent:unknown` (fixes #43).
+- Five new `reasoning_paths` tests covering the Russian prompt from the bug report
+  (`"Сколько метров в килобайте?"`), the English equivalent, evidence-link emission,
+  and regression guards for greetings and arithmetic.
+
+### Added
+- Clarification intent that handles "не понял" and similar phrases across Russian, English, Hindi, and Chinese
+- Multilingual clarification responses in `data/seed/multilingual-responses.lino`
+- `try_clarification` handler in `solver_handlers.rs` with language-aware response selection
+- Tests pinning the clarification intent for Russian ("не понял") and English ("I don't understand", "I didn't understand")
+
+### Fixed
+- Issue #29: "не понял" (Russian: "I didn't understand") now returns a helpful explanation of what formal-ai can do instead of the generic unknown-intent fallback
+
+### Added
+- Added arithmetic, concept-lookup, conversation-recall, and explicit-JavaScript-execution handlers to the universal solver so the same loop now answers "what is 2 + 2?", "what is Wikipedia?", "what is my name?", and "please run this javascript: ..." prompts (issue #14).
+- Added `solve_with_history`, `ConversationRole`, and `ConversationTurn` to the library API so every surface can carry conversation memory through the same solver loop.
+- Added `data/seed/concepts.lino` with offline records for Wikipedia, Wikidata, Wiktionary, Links Notation, doublet links, the universal solver, the event log, WebAssembly, and Rust; each record cites its source for auditability.
+- Added `tests/unit/specification/reasoning_paths.rs` (R85–R88) with 24 tests pinning the new handlers and proving every answer is a projection of the append-only event log rather than a memoized constant.
+- Added `examples/universal_solver_tour.rs` which walks every specialized handler through the same `FormalAiEngine::answer` entry point used by the library, CLI, HTTP server, Telegram bot, and demo.
+
+### Changed
+- Re-implemented `docs/demo/formal_ai_worker.js` as a universal-solver port: the hardcoded prompt→answer table is gone and every reply now walks greeting, identity, arithmetic, concept-lookup, recall, JavaScript-execution, hello-world, and unknown-fallback handlers that mirror `src/solver.rs`. JavaScript snippets requested with "please run this javascript" are actually executed in the worker sandbox; output, return value, and errors are reported with execution-status evidence.
+- Persisted the demo's "Demo on/off" and "Diagnostics" toggles in `localStorage` using a Links Notation encoding (`docs/demo/preferences.js`) so the UI state survives reloads in the same format that grounds the solver's knowledge.
+
+### Added
+- Multilingual chat across Rust, CLI, HTTP server, Telegram bot, and the web demo: greetings, identity, unknown-answer, and concept-lookup handlers reply in Russian, Hindi, and Chinese in addition to English; the input language is detected from Unicode blocks (Cyrillic, Devanagari, CJK) (issue #16).
+- Browser Wikipedia REST fallback for `What is X?` prompts that miss the offline `CONCEPTS` table; the offline corpus still wins and the network answer carries `source:` evidence so the citation can be audited.
+- `data/seed/` as the canonical knowledge surface for every interface: `src/seed.rs` `include_str!`-embeds every `.lino` file and exposes typed accessors (`multilingual_responses`, `concepts`, `tools`, `language_rules`, `prompt_patterns`, `intent_routing`) that the Rust library, CLI binary, HTTP server, and Telegram webhook all read; the browser worker fetches the same files through `src/web/seed_loader.js`.
+- Data-driven intent routing via `data/seed/intent-routing.lino` with explicit `keyword` / `phrase` / `token` / `combo` match semantics, replacing hardcoded match arms in the dispatcher.
+- `seed::merged_bundle()` / `seed::parse_bundle()` plus their JS mirrors `FormalAiSeed.parseBundle` / `FormalAiSeed.loadFromBundle` give the seed a single-file Links Notation round-trip.
+- Append-only memory log in the web demo (`src/web/memory.js`) with Export memory, Import memory, and Download bundle buttons; reasoning steps and tool invocations are recorded alongside chat turns, and no delete/forget/clear API is exposed.
+- Tool registry panel surfacing seeded tools (`http_fetch`, `web_search`, `wikipedia_lookup`, `eval_js`, `read_local_file`, `append_memory`, `export_memory`) with a `thinking` vs `agent` mode badge.
+- Playwright e2e suite (`tests/e2e/tests/multilingual.spec.js`) covering multilingual greetings/identity, offline + Wikipedia `What is X?` resolution, export/import round-trip, append-only enforcement, bundle download, tool registry, and reasoning-event logging; runs both against `npx serve src/web` (PR) and against `link-assistant.github.io/formal-ai` (post-deploy).
+- `docs/case-studies/issue-16/` with raw GitHub data, online research, requirements-to-implementation mapping, and a Follow-Up section covering the universal seed loader and bundle round-trip.
+
+### Changed
+- Moved the deployable demo from `docs/demo/` to `src/web/` so it sits next to the other library/CLI/web sources; the GitHub Pages deploy job already targets `src/web`.
+- Relocated `REQUIREMENTS.md` to the repository root next to `VISION.md` and expanded it with R90–R104 (move to `src/web`, multilingual surface, Wikipedia fallback, e2e coverage, export/import, append-only constraint, seed externalization, tool registry UI, reasoning/tool-call events, single-file bundle, universal seed loader, intent routing as data, bundle round-trip).
+- Rewrote `src/web/formal_ai_worker.js` to initialise mutable `MULTILINGUAL_ANSWERS`, `CONCEPTS`, and `TOOLS` tables from the seed instead of carrying hardcoded literals; `solve()` now returns structured `steps[]` and `toolCalls[]` for the append-only log.
+
+### Added
+- **Issue #27 — Mobile-responsive topbar and slide-out drawer.** Topbar buttons (Report issue, Export memory, Import memory, Diagnostics, Chat/Agent, Demo) now render an emoji icon next to their label; under the 820 px breakpoint the label collapses and only the emoji is shown while the full action name stays available via `aria-label` and `title`. A hamburger toggle (`☰` / `✕`) surfaces below the same breakpoint and slides the conversations / prompts / tools sidebar in over the chat as a drawer with a tappable backdrop, so the chat surface keeps the full viewport on phones. Three new Playwright tests under `Issue #27: mobile layout` pin the behavior at a 390×780 viewport.
+- **Issue #27 — Chat / Agent mode toggle.** A new topbar toggle decomposes a single user message into sequential steps (`;` / `then` / Russian and Chinese equivalents) and executes each step through the existing deterministic solver, rendering the aggregated plan + per-step result as Markdown. Single-step prompts keep the plain Q&A surface. Covered by three e2e tests.
+- **Issue #27 — Deterministic summarize skill.** A logical (no neural-network) summarizer projects the live conversation onto turn counts, languages, intents, concepts, calculations, hello-world programs, and unanswered questions, then renders a Markdown report. Triggered by EN / RU / HI / ZH phrasings (`summarize`, `резюме беседы`, `सारांश`, `总结`, …). The trigger now runs before normalization bails on non-Latin scripts, and `conversationHistory()` carries intent / evidence so per-turn classification survives into the summary. Four new e2e tests.
+- **Issue #27 — Conversations sidebar.** Every appended event is now tagged with `conversationId` / `conversationTitle`, so the append-only log can be grouped per chat thread on read. The sidebar lists known threads (most-recent first), click-to-switch hydrates the transcript from IndexedDB, the `+ New conversation` button mints a fresh thread, and a new `currentConversationId` preference restores the last active conversation on reload. Three e2e tests under `Issue #27: conversations sidebar`.
+- **Issue #27 — Random greeting variations.** Variant entries for the four greeting languages live alongside the canonical `text` in `data/seed/multilingual-responses.lino`; the JS seed loader returns `{ text, variants }` per response while the Rust parser ignores `variant` siblings so the shared seed stays compatible. A preference toggle exposes the random-variant selection and pins the canonical greeting when disabled.
+- **Issue #27 — Natural-language Export/Import memory.** Typing `Export memory` / `Export your memory` (and ru / hi / zh translations) into the chat now triggers the Export memory toolbar action and produces an assistant acknowledgement; same for `Import memory` → Import memory dialog. The phrase recognizer normalizes casing / punctuation / whitespace before matching against a curated seed list so the chat surface and the sidebar stay in lock-step.
+- **Issue #27 — Natural-language cross-conversation recall.** Typing recall prompts like `When did I ask about Rust?`, `search my conversations for Wikipedia`, `find Donald Trump in another conversation` (and ru / zh equivalents — `Когда я спрашивал про Илона Маска?`, `найди Илон Маск в другой беседе`, `我什么时候问过 Rust`, `在对话中搜索 Donald Trump`) now scans the IndexedDB event log, groups matching turns by `conversationId`, and renders a Markdown report with timestamps and excerpts. A scope suffix (`in another conversation` / `в другой беседе` / `在其他对话中`) restricts the search to threads other than the current one; otherwise all conversations are scanned. Two new Example prompts surface the skill in the sidebar, and four new e2e tests under `Issue #27: cross-conversation recall` pin the EN/RU phrasings, the cross-conversation scope filter, and the no-match path.
+- `tests/e2e/playwright.adhoc.config.js` — Playwright config that listens on port 3499 to sidestep stale dev servers occupying 3456.
+- `docs/case-studies/issue-27/` — raw issue + PR snapshots used as input to the case study.
+- `docs/screenshots/desktop-topbar.png`, `docs/screenshots/mobile-topbar-closed.png`, `docs/screenshots/mobile-drawer-open.png` — visual regression baselines for the new responsive topbar.
+
+### Fixed
+- **Issue #27 — `Кто такой Илон Маск?` Wikipedia lookup.** Russian Wikipedia biographies use the `Surname, Given names` slug form (e.g. ru.wikipedia.org redirects `Илон_Маск` to `Маск,_Илон` and the REST summary endpoint 404s on the former). `wikipediaTermVariants` now appends the swapped two-word form so the lookup hits the canonical biography slug. Covered by a new e2e test that returns 404 for every variant except `Маск,_Илон` and asserts the chat renders the biography.
+- **Issue #27 — Sidebar accordion regression coverage.** The VS Code-style sidebar (expanded sections share height via `flex: 1 1 0` and each body has `overflow: auto`) is now pinned by three Playwright tests under `Issue #27: sidebar accordion`: equal-height expanded sections, independent scroll on each body, and collapsing a section grows its siblings.
+
+### Changed
+- **Issue #27 — Demo cycle iterates the Example prompts list.** `createDemoTurns` now reads directly from `EXAMPLE_PROMPTS` and advances persistent `demoGreetingCursor` / `demoFeatureCursor` indices, so each demo cycle visits a new greeting + feature prompt in deterministic rotation (instead of repeatedly picking from a tiny hard-coded `DEMO_LANGUAGES` / `DEMO_GREETINGS` subset). Export / Import are filtered out since they would trigger file downloads. Each demo user message now exposes the source label via `data-demo-label` for regression testing.
+- Replaced the `Download bundle` button with an alias of `Export memory` so the action stays available under both names while collapsing the duplicate toolbar entry, per the issue body.
+- `tests/e2e/tests/demo.spec.js`: the `quick prompts sidebar` test now selects `Rust` by label instead of by absolute index because the example-prompts list now leads with multilingual greetings; the `unknown prompts …` test now uses a nonsense prompt that cannot resolve so the unknown-intent path is actually exercised.
+- The Chat/Agent toggle test asserts on the `.btn-label` span because the topbar buttons now render `btn-icon` + `btn-label` so the label can collapse on the mobile breakpoint.
+
+### Fixed
+- Wikipedia and concept-lookup source URLs now render in human-readable IRI form (e.g. `https://ru.wikipedia.org/wiki/Изумруд`) across every formal-ai surface — web demo, CLI, HTTP server, Telegram bot, and library — while the underlying link target stays the canonical percent-encoded URI so the link still resolves (issue #21).
+
+### Added
+- `formal_ai::humanize_url` — public helper that decodes percent-encoded UTF-8 sequences in a URL while preserving reserved URI delimiters (`; / ? : @ & = + $ , #`), with `String::from_utf8` fallback for malformed input. Mirrored by `humanizeUrl` in `src/web/formal_ai_worker.js`. Covered by Cyrillic, Devanagari, CJK, Japanese, Arabic, query-string-preservation, malformed-escape, lowercase-hex, and invalid-UTF-8 unit tests.
+- Playwright e2e regression test that stubs the Wikipedia REST endpoint with the exact percent-encoded URL pattern from the bug report and asserts both the readable display text and the canonical `href` are present on the rendered assistant message.
+- `docs/case-studies/issue-21/` — full root-cause analysis (URI vs IRI), reproducible curl example, library survey, and upstream considerations.
+
+### Fixed
+- **Issue #37 — Russian and Chinese conversation-summary phrases not recognised.** The `try_summarize_conversation` handler now matches Russian phrasings (`о чём мы разговаривали`, `о чём мы говорили`, `резюме беседы`, `резюмируй разговор`, bare `резюме`) and the Chinese shorthand (`总结`), as well as the English `summarize this conversation` and bare `summarize`, so users asking "О чём мы разговаривали?" receive the conversation summary instead of the unknown-intent response.
+
+### Fixed
+
+- Inappropriate or vulgar prompts (e.g. Russian mat) now receive a polite policy refusal (`intent: policy_inappropriate_content`) with a language-matched response instead of the generic "intent: unknown" fallback. Applies to Russian, Hindi, Chinese, and English content. Fixes issue #39.
+
+### Added
+- Russian "назови " prefix recognized as a `concept_lookup` intent trigger (issue #30). The prompt "назови цвет" previously returned `intent: unknown`; it now resolves to `concept_lookup` and returns a definition of the color concept.
+- `concept_color` seed record in `data/seed/concepts.lino` with full multilingual support (English, Russian, Hindi, Chinese), Wikidata anchor Q1075, and per-language localized blocks citing Wikipedia in each language.
+- Two regression tests in `tests/unit/specification/multilingual.rs` pinning down the reporter's exact prompt: `russian_nazovi_prefix_routes_to_concept_lookup` and `russian_nazovi_tsvet_answer_references_color`.
+- `DEFAULT_CONCEPT_PREFIXES` fallback in `src/web/formal_ai_worker.js` updated to include "назови " so the browser worker mirrors the Rust pipeline when the seed has not yet been loaded.
+
+### Fixed
+- **Issue #44 — Topbar "Report issue" generates misleading title when session contains unknown-intent responses.** `createIssueTitle` and `createIssueReportBody` now fall back to the last `intent: unknown` assistant message as the effective focus when the user clicks the topbar button (no per-message `focusMessage`). This ensures the generated GitHub issue title reads `Unknown prompt: <prompt>` and the dialog body marks the relevant message as `(reported message)`, matching the behaviour already seen when clicking the per-message "Report missing rule" link.
+
+### Fixed
+- Russian capability phrases (e.g. "что ты умеешь?") now correctly map to the capabilities intent and return a Russian-language answer
+- Russian confusion phrases (e.g. "я не понимаю") now correctly map to the confusion intent instead of being misidentified
+
+### Fixed
+- **Issue #50 — "шабат шалом!" not recognised as a greeting.** Added `шалом` as a greeting keyword and `шабат шалом` as a greeting phrase to `intent-routing.lino`, `greetings.lino`, and `prompt-patterns.lino`. The agent now routes these Hebrew-origin greetings (common in Russian-speaking communities) to the `greeting` intent and responds in Russian instead of returning the unknown-intent fallback.
+
+### Fixed
+- Large integer multiplication no longer returns an overflow error; integer-only expressions now use arbitrary-precision arithmetic so results like `123123980921093128 * 2348023048230429324 * …` are exact (issue #55).
+
+### Fixed
+- `scripts/version-and-commit.rs` now updates the workspace-package entry in `Cargo.lock` in the same release commit that bumps `Cargo.toml`. Previously every release left `Cargo.lock` stale, forcing follow-up "sync Cargo.lock" commits and producing avoidable merge conflicts on every open PR.
+
+### Changed
+- **Export memory** now produces the full, self-contained agent state by default on every interface (issue #18). The browser **Export memory** topbar button writes `formal-ai-memory.lino` as a complete `formal_ai_bundle` — seed files (rules, concepts, tools, multilingual responses), UI preferences, environment metadata, version, and the full append-only event log — instead of only the in-session events. `formal-ai memory export` matches: it defaults to the full bundle and accepts `--events-only` to opt back into the legacy `demo_memory` shape (R109, R113).
+
+### Added
+- `FormalAiMemory.exportFullMemory({ seed, events, preferences, info })`, `FormalAiMemory.importFullMemory(text)`, and `FormalAiMemory.suggestMigrations({ imported, current })` in `src/web/memory.js`, mirrored on the Rust side by `memory::export_full_memory`, `memory::import_full_memory`, `memory::suggest_migrations`, `BundleInfo`, and `ParsedBundle` (re-exported from `formal_ai`'s crate root) so embedders writing their own surface get the same defaults (R109, R110, R111, R113).
+- Header-agnostic imports: both `formal-ai memory import` / `formal-ai bundle import` (CLI) and `handleImportMemory` (browser) auto-detect `formal_ai_bundle` and legacy `demo_memory` documents so older exports keep round-tripping (R110).
+- Seed-version migration suggestions on import. When the imported bundle's `agent_info.version` differs from the running app, the browser memory-status indicator and the CLI (`Migration: <message>` via `eprintln!`) tell the user what changed in `data/seed/` so they can take action without reading code (R111).
+- Rewritten **Attach full memory** block in the prefilled "Report issue" body: explicitly tells users that the export is the full memory of the agent, walks them through wrapping it in a `.zip` on macOS / Windows / Linux (GitHub does not yet accept `.lino` attachments), and reminds them to redact sensitive content (R112).
+- `docs/case-studies/issue-18/` with raw GitHub data, root-cause analysis, requirement-to-implementation mapping (R109-R114), and verification notes.
+- Playwright e2e coverage in `tests/e2e/tests/multilingual.spec.js`: `Export memory downloads a full formal_ai_bundle by default` asserts `formal_ai_bundle` / `seed_files` / `preferences` in the downloaded file; `Import memory accepts a formal_ai_bundle and reports seed migrations` exercises the auto-detect path and the migration-suggestion surface; the report-issue test now also asserts the `.zip` and redaction guidance (R114).
+- Rust unit coverage in `src/memory.rs`: `full_memory_round_trip_preserves_seed_preferences_and_events`, `import_full_memory_accepts_legacy_demo_memory`, `suggest_migrations_flags_seed_version_drift`, `suggest_migrations_flags_legacy_only_import`, `suggest_migrations_is_quiet_when_versions_match`.
+
+### Added
+- Context-aware concept lookup for "what is X in Y" style prompts in English, Russian, Hindi, and Chinese: the solver now models a definition query as `(concept, optional context)` and ranks records whose `contexts` list matches the user-supplied context phrase (issue #20). The trigger prompt `что такое iir в ml`, which previously returned `intent: unknown`, now resolves to `concept_lookup_in_context` with a localised response template per language.
+- New `context_delimiter` pattern kind in `data/seed/prompt-patterns.lino` describing how to split "concept" from "context" per language (` in `, ` for ` for English; ` в `, ` для ` for Russian; ` में `, ` के लिए ` for Hindi; `中`, `中的`, `领域的` for Chinese). Hindi and Chinese also place context before the concept, so the ranker retries with swapped halves.
+- New `contexts` field on `ConceptRecord` (Links Notation `context "..."` line) listing applicable domains in every supported language; the IIR seed entry covers signal processing and machine-learning aliases (`ml`, `машинное обучение`, `मशीन लर्निंग`, `机器学习`, `digital signal processing`, etc.).
+- New `concept_lookup_in_context` intent with localised response templates in `data/seed/multilingual-responses.lino` (`В контексте «{context}»…`, `In the context of {context}…`, `{context} के संदर्भ में…`, `在「{context}」的语境下…`).
+- Append-only event-log debug surface for the concept handler: every lookup emits `concept_lookup:request`, `concept_lookup:context` (when a context is parsed), and one of `concept_lookup:hit` / `concept_lookup:miss` / `concept_lookup:context-match` / `concept_lookup:context-mismatch`. The events are exposed through `evidence_links` in `--format chat` and `--format responses`, satisfying the verbose-trace requirement from the issue without a new flag.
+- `docs/case-studies/issue-20/` with raw GitHub data, timeline, root-cause analysis, comparison against Wikipedia/Wikidata/schema.org disambiguation, and per-requirement solution plan.
+- New `data/seed/concept-contexts.lino` registry of disambiguating contexts (`context_machine_learning`, `context_signal_processing`, `context_neural_network`, `context_programming`) anchored by Wikidata Q-IDs (Q2539, Q1058710, Q192776, Q80006) with per-language `label "en|ru|hi|zh"` blocks and multilingual alias lists. The IIR record references the registry via a new `context_links "..."` field so contexts are wired as links rather than restated inline (issue #20 follow-up R8/R13).
+- Per-language `localized "en|ru|hi|zh"` blocks on `ConceptRecord` carrying the native term, native aliases, native-Wikipedia summary, and source URL (e.g. `Фильтр с бесконечной импульсной характеристикой … или IIR-фильтр` from ru.wikipedia.org). The solver and JS worker prefer the prevailing-language block when rendering the response, so the original maintainer prompt `что такое iir в ml` now returns a Russian-language definition citing the Russian Wikipedia article (issue #20 follow-up R9/R10/R11).
+- New `concept_lookup_in_context_no_alias` response template variant: when the user already typed the localized context label, the body renders as `В контексте Машинное обучение IIR …` instead of `«Машинное обучение» (Машинное обучение)`. The variant is picked by template id from `multilingual-responses.lino` so future languages add a row without Rust changes.
+- `wikidata "Q…"` field on every concept and new `wikidata:Q…` evidence link so the cross-language join key used by `link-assistant/human-language` and `link-assistant/meta-expression` is part of the public trace (issue #20 follow-up R13).
+- Additional Rust integration tests in `tests/unit/specification/multilingual.rs` pinning down native-language body content (Russian, English, Hindi, Chinese), the `«ml» (Машинное обучение)` rendering, the ru.wikipedia.org source citation, the no-alias-duplication template, and the Wikidata anchor in `evidence_links`.
+
+### Changed
+- `concepts.rs` now exposes `ConceptQuery` / `ConceptLookup` and the context-aware `extract_concept_query` + `lookup_concept_query`; the prior single-string `extract_concept_term` / `lookup_concept` shims have been removed. The ranker resolves context phrases through the new registry: a record can declare `context_links "context_machine_learning|…"` and `record_has_context` will follow the registry rather than require every alias inline.
+- `src/web/formal_ai_worker.js` mirrors the Rust pipeline: it parses the context delimiter, emits the same `concept_lookup:*` and `wikidata:*` evidence labels, picks the `_no_alias` template when needed, and renders both plain and in-context bodies from the localized block selected by `detectLanguage(prompt)`.
+- `tests/unit/specification/multilingual.rs` pins down the four-language variants of the trigger prompt and the evidence-link debug trail; `src/solver_helpers.rs` gained unit tests for context delimiter parsing across the four languages.
+
+### Fixed
+- Russian prompts such as "покажи как ты работаешь?" now correctly resolve to `intent: meta_explanation` instead of falling back to `intent: unknown` (#51)
+
+### Added
+- Multilingual responses for the `meta_explanation` intent (English, Russian, Hindi, Chinese) so the agent explains how it works in the user's language
+- Pattern recognition for "how do you work" / "show me how you work" style queries in English, Russian, Hindi, and Chinese
+- Prompt patterns for `meta_explanation` intent in the routing seed
+
+### Fixed
+- Hardened the GitHub Pages demo release gate so live e2e tests wait for the exact deployed commit and load cache-busted static assets.
+- Fixed live GitHub Pages Playwright navigation so tests preserve the `/formal-ai/` repository subpath and wait for seeded manual-mode data before multilingual prompts.
+
+### Fixed
+- KISS queries in a programming context (e.g., "что такое Kiss в рамках програмирования") now return the KISS software design principle instead of the rock band. Fixed by adding the " в рамках " Russian context delimiter, extending `context_programming` aliases with genitive/locative misspellings, adding an offline `concept_kiss_principle` corpus entry, and adding a context-aware Wikipedia search fallback in the browser worker.
+
+### Fixed
+- Added a visible hint message in the composer when demo mode is active, explaining how to stop the demo and type a custom message. Fixes confusion on Android and other mobile browsers where the demo-status text and button labels are hidden.
+
+### Fixed
+- Follow-up prompts such as "how it works?" or "how does it work?" after a concept lookup no longer return `intent: unknown`. A new `try_how_it_works` handler recognises these elaboration patterns, extracts the topic from an inline subject ("how does Wikipedia work?") or from the prior assistant reply, and either re-runs a concept lookup or returns a meaningful fallback. Five new regression tests cover the bare form, the explicit-subject form, the multi-turn history form, and the evidence-link audit requirement (issue #52).
+
+### Fixed
+- Russian phonetic transliterations "хелло" and "ворлд" are now recognized as valid hello/world tokens, and Russian language names "питоне" (Python), "расте" (Rust), and "джаваскрипт" (JavaScript) are now matched as language aliases. Previously, prompts like "Напиши хелло ворлд на питоне" fell through to `intent: unknown` (issue #53).
+
+### Added
+- Generic "write a script in \<language>" requests now route to the matching code block instead of returning `intent: unknown`. Supports English ("write a script in Python"), Russian with inflected language names ("Напиши скрипт на питоне", "расте", "джаваскрипт"), Hindi, and Chinese phrasing (issue #35).
+
+### Added
+- `try_kupi_slona` handler in `src/solver_handlers.rs` that recognises the Russian circular-joke idiom «Купи слона» and returns the traditional reply
+- `kupi_slona` intent wired into `handle_specialized_pattern` in `src/solver.rs`
+- 3 new unit tests in `tests/unit/specification/multilingual.rs` covering the idiom intent, answer content, and Russian language tag
+
+### Fixed
+- Issue #41: «Купи слона» no longer falls through to the generic unknown-intent fallback; it is handled with a culturally appropriate Russian explanation of the folk game
+
+### Added
+- Opinion question intent (`opinion_question`) that handles prompts like "Do you think space is continuous or discrete?" with a deterministic explanation instead of the generic unknown-intent error
+- `try_opinion_question` handler in `solver_handlers.rs` detecting opinion/belief phrasings across multiple patterns
+- Tests pinning the opinion question intent for the exact prompt from issue #42 and five related phrasings
+
+### Fixed
+- Issue #42: Opinion-style questions such as "Do you think space is continuous or discrete?" now return a helpful deterministic explanation instead of the confusing "I do not have a learned symbolic rule" fallback
+
+### Fixed
+- Handle "who is X" prompts with typo correction: queries like "who is elon mask" now suggest "Elon Musk" instead of returning an unknown intent error
+
+### Fixed
+- Issue #39: Queries asking whether formal-ai performed a physical action (e.g. Russian «Сосал?») are now answered factually ("No. I have no physical body.") via a new `try_physical_action_question` handler instead of being refused as inappropriate content
+- Removed «сосал»/«сосёшь»/«соси»/«сосать» from the vulgar-content word list since these words describe physical actions and deserve a factual response, not a policy refusal
+
+### Fixed
+- Issue #70: Prompts like "what is tesla" that match a Wikipedia disambiguation page now fall back to the full-text search endpoint to find the top-ranked article (e.g. "Tesla, Inc.") instead of returning an unknown-intent error
+
+### Added
+- `pattern_concept_prefix_rasskazhi_za` and `pattern_concept_prefix_rasskazhi_mne_za` prompt patterns in `data/seed/prompt-patterns.lino` so the colloquial Russian prefix «расскажи за» triggers `concept_lookup` instead of falling through to unknown-intent
+- `concept_telegram_ads` entry in `data/seed/concepts.lino` with English and Russian localisations, aliases, and an official source so queries about Telegram Ads are answered from the knowledge base
+
+### Fixed
+- Issue #66: «Расскажи за Telegram Ads» now resolves to `concept_lookup` and returns a factual summary about Telegram Ads instead of the generic «я пока не знаю символьного правила» fallback
+
+### Fixed
+- Issue #72: GitHub Pages demo no longer advertises a stale hardcoded version. `src/web/index.html` now uses a `__FORMAL_AI_VERSION__` placeholder that `scripts/stamp-pages-artifact.sh` substitutes from `Cargo.toml` during the Pages deploy.
+
+### Added
+- CLI `--version` flag prints `formal-ai <CARGO_PKG_VERSION>` via clap's `version` attribute.
+- Telegram `/version` (and `/version@formal_ai_bot`) command replies with `formal-ai <CARGO_PKG_VERSION>`.
+
+### Fixed
+- Issue #84: `scripts/publish-crate.rs` now treats crates.io HTTP 429 rate-limit responses ("You have published too many versions of this crate in the last 24 hours") as a deferred `publish_result=rate_limited` outcome instead of a hard CI failure, with a dedicated banner explaining that `scripts/check-release-needed.rs` will automatically retry on the next push to `main` once the 24-hour throttle window has rolled over
+- Issue #84: release workflow artifact steps now wait for either an already-published crate or `publish_result=success`, preventing Docker Hub publishing and GitHub release creation when crates.io has rejected the crate upload
+
+### Added
+- `FailureKind` enum and `classify_failure` helper in `scripts/publish-crate.rs` with unit tests covering rate-limit, already-uploaded, already-exists, missing-token, unauthorized, and unknown-failure responses
+- `docs/case-studies/issue-84/` case study capturing the failing CI runs, the follow-up `rate_limited` exit-code failure, root cause, upstream template comparison and reproduction commands
+
+### Fixed
+- Recognize English `who is X` variants such as `Tell me, who is Trump` and `Who Trump is` as concept/Wikipedia lookup prompts instead of falling back to `intent: unknown`.
+
+### Fixed
+- Issue #65: punctuation-only prompts such as `.` now ask a clarification question instead of returning the generic unknown-intent fallback.
+
+### Fixed
+- **Issue #67 — "пока" not recognised as a valid prompt.** Added a new `farewell` intent to `intent-routing.lino` with keywords for "bye", "goodbye", "пока", "ciao", "再见", "अलविदा" and phrases "до свидания" / "досвидания". Added multilingual farewell responses for English, Russian, Hindi, and Chinese in `multilingual-responses.lino`, farewell examples in `greetings.lino`, and keyword/phrase patterns in `prompt-patterns.lino`. Wired the `Farewell` variant into the Rust engine (`SelectedRule`, `select_rule_for`, `language_aware_answer_for`) and the browser worker (`isFarewellPrompt`, `solve`). The agent now responds with a language-appropriate goodbye instead of the unknown-intent fallback.
+
+### Added
+- Issue #71: `fetch <url>` prompts are now recognised as `http_fetch` intent instead of falling through to `unknown`; the assistant returns a structured response that triggers a browser `fetch()` request and falls back to an embedded iframe when CORS blocks the direct request
+
+### Changed
+- **Report issue** prefilled body is now short enough to fit GitHub's `/issues/new?body=…` URL-length limit (issue #78). The verbose memory-upload instructions (`.zip` walkthroughs per OS, redaction reminders, full-memory explainer) moved out of the prefilled body and into a single repository doc, [`docs/upload-memory.md`](docs/upload-memory.md). The body now references that page with a one-line link instead of repeating the workflow each click (R112, R115, R117).
+- Dialog transcripts inside the prefilled body now render as a single fenced code block with `U:` / `A:` line prefixes (issue example: `U: 1+2` / `A: 3`) instead of one Markdown subsection per message. Known-intent turns stay as plain `A: …`; only the `unknown` intent keeps the inline annotation (`A (intent: unknown, reported): …`) where the marker is needed to identify the missing rule, so the encoded `body=` parameter stays comfortably below GitHub's request-line cap (R116).
+
+### Added
+- [`docs/upload-memory.md`](docs/upload-memory.md): single canonical guide that explains what *full memory* means, walks through **Export memory**, redaction, and the two upload paths (GitHub Gist with no extension restrictions, or `.zip` for issue attachments), and documents why `.lino` is not yet a native attachment type (R117, R118).
+- `docs/case-studies/issue-78/` with raw GitHub data, mirrored issue screenshots, root-cause analysis (the encoded `?body=` query string overflows the 8192-byte URL cap once the transcript reaches ~5 turns), the R115–R119 requirement matrix, and verification notes.
+- Playwright e2e coverage in `tests/e2e/tests/multilingual.spec.js` and `tests/e2e/tests/demo.spec.js`: the Report-issue test now asserts the body links to `docs/upload-memory.md` and no longer contains the long per-OS Compress / Send-to instructions; the dialog-shape tests assert the `Legend: \`U\` = user, \`A\` = agent.` block, `U: …` / `A: …` line prefixes, and the absence of the old `### 1. …` / `- **Role**: …` subsections (R119).
+- `experiments/issue-78-dialog-format.mjs` smoke script that prints the compact transcript for a hand-crafted set of cases (empty, greeting, unknown prompt, fenced code block, arithmetic dialogue).
+
+### Fixed
+- **Report issue** dialog annotation now marks the reported message with `intent: <intent>, reported` for any intent, not only `unknown` (issue #73). Previously, clicking "Report issue" on a TypeScript hello-world response (intent: `hello_world_typescript`) produced a prefilled GitHub issue body with no annotation on the reported message — a maintainer could not tell which turn was considered problematic. The `appendDialogBlock` function now always adds `intent: <intent>` and `reported` to the focused message regardless of its intent value.
+- Updated E2E Playwright coverage in `tests/e2e/tests/demo.spec.js`: the known-dialog report test now asserts `A (intent: …, reported):` appears in the body, and a new test verifies that a TypeScript hello-world dialog report includes `A (intent: hello_world_typescript, reported):`.
+
+## Added
+
+- Added automatic UI language detection for English, Russian, Chinese, and Hindi in the browser demo.
+- Added `lino-i18n@0.0.1` as the browser demo's translation runtime with a local fallback catalog.
+- Added user UI/browser context to agent requests, issue reports, and full-memory exports.
+- Added a case study for Issue #94 with issue assets, research notes, and implementation tradeoffs.
+
+## Changed
+
+- The browser demo now follows `prefers-color-scheme` for dark mode.
+- The browser demo now localizes action tooltips, message metadata, fetched-page controls, memory action responses, and tool mode labels.
+- Topbar action labels now switch to icon-only at wider breakpoints before the controls wrap.
+
+### Added
+- Delegate calculator-parsable expressions to `link-calculator`, including unit, currency, percentage, datetime, and function-style calculator prompts.
+- Add multilingual calculator delegation tests, calculator tool seed metadata, demo simulator prompts, and issue #96 case-study documentation.
+
+### Fixed
+- Preserve the local arithmetic fallback for English word operators and binary `%` remainder expressions until those cases are supported by `link-calculator`.
+
+### Fixed
+- Treat compact calculation prompts like `2*2+2=?` as calculator requests.
+
+### Fixed
+
+- Fixed Russian combined prompts such as "Привет. ты кто?" so the browser worker preserves Unicode words during intent routing and answers with the identity rule instead of `unknown`.
+
+### Fixed
+- Solved simple single-variable linear equations such as `x*2 = 123` instead of returning the unknown-intent fallback.
+
+### Fixed
+- Issue #64: Russian prompts like «Расскажи о теории связей» now resolve to the Link Foundation `meta-theory` concept instead of the generic unknown-intent fallback. The seeded answer cites `https://github.com/link-foundation/meta-theory` and notes that similarly named theories may refer to different domains.
+
+### Added
+- Added an Assistant behavior settings section to the web sidebar with controls for ambiguity handling, temperature, UI language, theme, location, and greeting variations.
+- OpenAI-compatible Chat Completions and Responses requests now accept an optional `temperature` parameter, and `SolverConfig` can read `FORMAL_AI_TEMPERATURE`.
+
+### Fixed
+- Russian typo prompts such as `что такое граматика` now resolve through Wikipedia search as the closest match by default, while low-guessing settings ask the user to clarify before using that fuzzy match.
+
+### Added
+- Issue #103: New `tests/unit/specification/prompt_variations.rs` test module with 5-10 input variations per category (greetings, farewells, identity, clarification, concept lookups, capabilities, hello-world, basic math, refusal, idioms) translated across English, Russian, Hindi, and Chinese. The module ships generalized helpers (`assert_intent_for_each`, `assert_language_for_each`, `assert_answer_contains_for_each`, etc.) so per-language matrices stay declarative.
+- Issue #103: New `ARCHITECTURE.md` describing the evolving architecture — context assembly, Links Notation translation, Wikidata P-id/Q-id formalization, temperature-driven interpretation selection, doublets-rs/doublets-web persistence, internet-as-public-database with local cache, and the five transformation-rule shapes (data rules, Rust handlers, JS handlers, dynamic compilation, natural-language skills).
+- Issue #103: New `docs/case-studies/issue-103/` case study folder with collected raw data, competitor-test research, and the holistic plan that ties R129-R136 together.
+- Issue #103: Added deterministic solver handlers for summarization, brainstorming, factual Q&A with Wikidata anchors, multi-turn coreference, and roleplay so the competitor-derived prompt categories run as active regression tests.
+
+### Changed
+- Issue #103: Updated `VISION.md` with a new "Formalization And Temperature" section, expanded "Computation Model" coverage of the five transformation-rule shapes, and meaning-and-identity language tying together natural-language ↔ programming-language translation via Links Notation.
+- Issue #103: Updated `REQUIREMENTS.md` with the new R129-R136 entries and the "Issue #103 Test-Matrix And Architecture" matrix that traces each requirement to its enforcing test or document.
+- Issue #103: Updated `tests/unit/docs_requirements.rs` to pin the documentation surface for issue #103 alongside the existing issue #12 and issue #16 traceability tests.
+
+### Fixed
+- Recognize Russian word-number arithmetic such as "Сколько будет два плюс два?" as a calculation instead of falling through to the unknown-intent response.
+
+### Added
+- Issue #108: Added configurable composer input styles (`flat`, `glass-soft`, `glass-clear`, `bubble`) and configurable composer action icons (`attach`, `plus`) to the web demo settings.
+- Issue #108: Added a composer-adjacent action menu for attachments, memory export/import, and report issue actions.
+- Issue #108: Added a mobile UI case study with source issue data, screenshots, research notes, and verification evidence.
+
+### Fixed
+- Issue #108: Reworked the mobile topbar and composer so the menu stays reachable, the logo/title/version live inside the drawer, and the input remains a compact one-row control above mobile browser UI.
+- Issue #108: Show the app version next to the logo/title on desktop.
+
+### Added
+- Issue #110: Added whole-UI skin settings (`flat`, `glass`, `contrast`) and chat message style settings (`cards`, `compact`, `bubbles`) alongside the existing input style controls.
+- Issue #110: Added focused mobile keyboard viewport coverage that simulates `visualViewport.offsetTop`.
+
+### Fixed
+- Issue #110: Anchored the web app shell to the visual viewport offset so the mobile topbar and chat remain reachable when the on-screen keyboard pans the viewport.
+
+### Added
+- Issue #112: Added mobile drawer menu actions, conversation soft-delete visibility, localized tool registry descriptions, and broader example/tool seed coverage.
+- Issue #112: Added case-study evidence under `docs/case-studies/issue-112`.
+
+### Fixed
+- Issue #112: Fixed the mobile composer to auto-resize without clipping text, cap itself to half the visible chat space, and use a centered CSS menu icon.
+
+### Added
+- Issue #107: Russian URL-request prompts such as `Сделай запрос к google.com` now route to the `http_fetch` intent instead of the unknown fallback.
+- Explicit web-search prompts now route to `web_search`; the browser demo queries the CORS-enabled Wikipedia search endpoint and renders ranked result links.
+
+### Documented
+- Added an issue #107 case study with raw GitHub data, browser provider probe results, and web-capture capability notes.
+
+### Added
+- Added `scripts/mine-hive-mind-dataset.rs` plus `formal-ai github-logs plan|collect` for reproducible GitHub issue, PR, review, diff, workflow-run, and run-log evidence collection into case-study directories.
+- Added the issue #115 case study with formal-ai and hive-mind raw evidence captures.
+
+### Added
+- Added deterministic cross-language definition fusion for prompts like `Merge Wikipedia definitions of IIR`, combining localized seed/Wikipedia definition blocks for the same concept anchor with source-language and citation evidence. Fixes issue #63.
+- Added `SolverConfig::definition_fusion_by_default`, `FORMAL_AI_DEFINITION_FUSION`, `formal-ai chat --definition-fusion auto`, and a persisted browser Settings control so plain prompts like `What is IIR?` can opt into the same fusion path.
+- Expanded definition-fusion coverage with 15 self-explanatory prompt examples across IIR, color, KISS, Links theory, and Telegram Ads, plus a negative unknown-term case.
+
+### Changed
+- Issue #117: browser UI translations now live in a nested Links Notation catalog loaded through `lino-i18n@0.1.1` instead of a flat JavaScript translation object.
+
+### Added
+- Added a CI catalog check that parses `src/web/i18n-catalog.lino` with `lino-i18n` and enforces complete English, Russian, Chinese, and Hindi key coverage.
+
+### Added
+- Open-ended software artifact requests now route to a `software_project_plan` answer instead of `intent: unknown`, first rendering a Links Notation meaning record with a requirement graph, subtasks, delivery mode, approval gates, reasoning, and plan steps, then returning language-aware starter code after the user approves the plan (issue #80).
+
+### Fixed
+
+- Recognize test and liveness prompts such as `Test`, `test passed`, and `I'm here` as `test_status` instead of unknown.
+
+### Fixed
+- Keep the crates.io archive below the upload limit by publishing only source/runtime inputs and checking the generated `.crate` size in CI.
+
+### Fixed
+- Browser demo prompt examples now handle the reported `What you can do?`, `Search online for Genshin Impact`, `Pretend you are Albert Einstein...`, and `Купи слона` prompts without falling through to `intent: unknown`.
+- Added regression coverage for the reported browser examples and the `search online for ...` web-search wording.
+
+### Fixed
+- Issue #127: Russian fact prompts like `столица россии` now resolve to the seeded Russia/Moscow capital answer instead of the unknown fallback.
+
+### Added
+
+- Added the GitHub Pages `/tests` connectivity diagnostics page with direct browser fetch checks, iframe expansion, and configurable `web-capture` proxy mode.
+- Added issue #129 case-study evidence and Playwright coverage for the diagnostics route in both local and Pages e2e suites.
+
+### Changed
+
+- Updated the Pages artifact stamping script to replace version and asset placeholders in nested HTML files, not only the root demo page.
+
+### Fixed
+- Split URL navigation and HTTP fetch into two distinct intents so that
+  `Navigate to github.com`, `Go to google.com`, and the Russian `Перейди на github.com`
+  return a direct HTTPS link with iframe preview controls (no fetch attempted),
+  while `Make a request to example.com`, `Fetch example.com`, and the Russian
+  `Сделай запрос к example.com` keep the previous HTTP GET with CORS-fallback to
+  an iframe. Added many more navigation variations (`open`, `visit`, `show`,
+  `display`, `load`, `take me to`, `preview`, `view`, `browse to`, `открой`,
+  `покажи`, `загрузи`, `посети`, `зайди на`, `просмотри`, `отобрази`) and bare
+  URLs (`github.com`).
+
+### Added
+- Issue #127: structured fact-query reasoning pipeline. Multilingual prompts
+  about a country's capital, population, currency, official language,
+  continent, area, head of state, and head of government are parsed into
+  `(relation, subject, language)` triples, routed against a 1-week TTL cache
+  pre-warmed from `data/seed/facts.lino`, and resolved live against Wikidata
+  (`wbsearchentities` + `wbgetentities`) for any uncovered country. Each step
+  is recorded in the append-only memory log as a `fact_query:*` event so the
+  reasoning trace is fully inspectable.
+- Pre-warmed capital cache for Russia, Japan, France, Germany, China, India,
+  the United States, the United Kingdom, and Brazil — every entry carries
+  multilingual `subject_aliases`, localized labels, and Wikidata Q-IDs so the
+  same prompt resolves consistently across English, Russian, Hindi, and
+  Chinese.
+- Force-fresh markers in every supported language (e.g. "refresh", "не из
+  кэша", "ताज़ा", "刷新") let users bypass the cache and force a live
+  Wikidata fetch when they explicitly ask for fresh data.
+
+### Changed
+- The Rust solver now emits structured `fact_query:request`,
+  `fact_query:relation`, `fact_query:subject`, `fact_query:cache:hit`,
+  `fact_query:subject_qid`, and `fact_query:value_qid` evidence links
+  alongside the legacy `fact_lookup:*` events so the Rust and browser stacks
+  agree on the reasoning shape and on Q-ID anchoring.
+
+### Added
+
+- Issue #133: DuckDuckGo Instant Answer is now the default web search engine
+  across the CLI, server, and the browser-only GitHub Pages app. The shared
+  provider list `WEB_SEARCH_PROVIDERS = ["duckduckgo", "wikipedia", "wikidata"]`
+  is owned by `src/solver_handlers/web_requests.rs` and mirrored by the JS
+  worker so every surface dispatches the same plan.
+- Combined ranking via Reciprocal Rank Fusion (Cormack, Clarke, Buettcher
+  2009) with `k = 60`. Each provider returns up to its top-10 results and the
+  worker merges them with `score(d) = Σ 1 / (k + rank_i(d))`, so URLs returned
+  by more than one engine bubble up. The fused order is appended to memory as
+  `web_search:fused:<rank>:<providers>:<url>` events.
+- Per-category concurrency cap of 5 with `runWithConcurrencyLimit` in the
+  worker and `CATEGORY_CONCURRENCY = 5` in the browser diagnostics page so the
+  per-origin socket budget is never starved.
+- Session-scoped CORS auto-disable: when a provider fetch throws a CORS or
+  network error, the worker's `WEB_SEARCH_DISABLED` map (and the dashboard's
+  `state.disabled` map) record the failure and skip the provider for the rest
+  of the session. The decision is appended to memory as
+  `web_search:disabled:<provider>`.
+- Expanded browser-only diagnostics matrix at `/formal-ai/tests`: now 26
+  providers across four categories.
+  - `search`: DuckDuckGo (default), Google, Bing, Brave, Yahoo, Yandex,
+    Ecosia, Mojeek, Startpage.
+  - `knowledge`: Wikipedia, Wikidata, Wiktionary, DBpedia, Open Library,
+    OpenAlex, Crossref, Semantic Scholar.
+  - `papers`: arXiv, Europe PMC, DOAJ.
+  - `code`: GitHub, GitLab, Codeberg, Gitee (China), Bitbucket Cloud,
+    GitFlic (Russia).
+- Structured `web_search:*` evidence kinds in both the Rust solver and the JS
+  worker, with matching formatter branches in
+  `src/event_log.rs::build_evidence_links` so the reasoning trace can be
+  replayed offline.
+- Issue #133 case study under `docs/case-studies/issue-133/`, including raw
+  issue/PR JSON, branch log, online research notes, and a deep analysis of
+  requirements R181–R194.
+
+### Changed
+
+- The Playwright explicit web-search regression now mocks all three default
+  providers (`api.duckduckgo.com`, Wikipedia REST, `wikidata.org/w/api.php`)
+  and asserts the new `web_search:provider:duckduckgo`,
+  `web_search:provider:wikipedia`, and `web_search:combined:rrf:k=60` evidence
+  shape.
+
+### Fixed
+- Kept the desktop tools registry inside the side panel without horizontal overflow
+  and added a draggable sidebar/chat separator for non-mobile layouts.
+
+### Added
+
+- Issue #153: every reasoning step is now formalized as a deterministic
+  `(Subject Verb Object)` tuple using `@USER`, `OP:<verb>`, `Q<n>`, `WP:<key>`,
+  and `WT:<word>` ids regardless of the prompt's source language. Diagnostics
+  mode shows the raw message, the SVO tuple, and a numbered S / V / O slot
+  list through a new `FormalizationView` React component. A second
+  `formalize_resolved` step folds the matched Wikidata Q-id (when one is
+  found) back into the tuple as `(@USER OP:search Q89)` so the trace records
+  the symbolic mapping end-to-end.
+- Cross-provider deduplication for web search results. `searchWikidataEntities`
+  now requests `props=sitelinks/urls`, and a new
+  `canonicalEntityKey` / `buildItemMetadataIndex` / `dedupeFusedEntries`
+  pipeline collapses entries returned by multiple providers (Wikipedia +
+  Wikidata for the same `Q89`) into a single bullet with the other URLs
+  surfaced under an `"Other sources:"` sub-line in the user's language. Each
+  merge is appended to memory as
+  `web_search:dedupe:<key>:absorbed:<url>` so the trace stays replayable.
+- Localized search results template covering `en`, `ru`, `zh`, `hi`. Header
+  (`Search results for / Результаты поиска для / 搜索结果 / खोज परिणाम`), the
+  empty-state line, and the "Other sources:" sub-line all render in the UI
+  language picked up from `navigator.language` / saved preferences.
+- "Source code" link in the top menu, pointing to
+  `https://github.com/link-assistant/formal-ai`, with i18n labels for
+  `buttons.sourceCode` / `titles.sourceCode` in all four locales.
+- Collapsible left sidebar for desktop, persisted through a new
+  `sidebarCollapsed` preference. The mobile drawer is unchanged. A
+  `[data-testid="sidebar-toggle"]` button with i18n labels
+  (`buttons.collapseSidebar` / `buttons.expandSidebar`) flips the state, and
+  `.workspace.sidebar-collapsed` styles the collapsed layout.
+- Playwright spec `tests/e2e/tests/issue-153.spec.js` with eight scenarios
+  (lab emoji, source-code link, disabled `New conversation`, sidebar collapse,
+  SVO formalization view, cross-source dedupe, DuckDuckGo signature
+  regression, localized search header) registered in
+  `tests/e2e/playwright.local.config.js`. All 127 local Playwright tests pass.
+- Issue #153 case study under `docs/case-studies/issue-153/`, including raw
+  issue JSON, the three screenshots from the issue description, and a deep
+  analysis of requirements R195–R209.
+- Priority-based topbar overflow: every `.topbar-actions` button now carries
+  a `data-menu-priority` attribute (1=highest = Bug reporting, last to drop;
+  7=lowest = dynamic status indicators). New media queries at 720px and 560px
+  drop priorities 7→5 then 4 out of the topbar, while the hamburger drawer
+  (already wired to the same React state) remains the source of truth for
+  every action. Bug reporting (1), Diagnostics (2) and Demo (3) survive to
+  the narrowest viewports.
+- Internet Archive (`archive.org/advancedsearch.php`) web search provider
+  added to `WEB_SEARCH_PROVIDERS`. The CORS-enabled JSON endpoint returns
+  ranked results across the entire collection (web captures, books, audio,
+  software, …) and complements the DuckDuckGo Instant Answer fallback. Each
+  hit surfaces with `sourceKind: "internet-archive"` and a deterministic
+  `IA:<identifier>` virtual id so RRF and dedupe handle it like any other
+  provider.
+- `composer.sending` i18n key for the in-flight Send button label, plus a
+  `.send-spinner` rotating ring and `send-spinner-rotate` keyframes that
+  replace the ASCII `...` placeholder while a request is pending.
+
+### Fixed
+
+- Top bar wrapping at narrow viewports: `.brand strong` and `.demo-status`
+  now use `white-space: nowrap` (and `flex: 0 0 auto` for the status pill)
+  so the title and "Demo will start in …" pill never wrap awkwardly.
+- Send button no longer renders as raw `... ...` while pending — it shows a
+  rotating spinner and a localized `Sending…` label instead.
+
+### Fixed
+
+- DuckDuckGo provider was silently returning zero results because
+  `searchDuckDuckGo(query, limit)` was declared with two parameters while the
+  dispatcher passed three (`(query, language, providerLimit)`). The new
+  signature `(query, language, limit)` coerces `limit` to a numeric cap with
+  `Math.floor`, defaults to 5 when missing, and forwards a `kl=<lang>-<lang>`
+  region hint when the UI language is not English. A new regression test
+  proves the fix.
+- The diagnostics toggle's magnifying-glass icon (🔍) was replaced with a lab
+  emoji (🧪) to match the issue's request for a "diagnostics" affordance.
+- `New conversation` is now disabled when the chat is empty so the click is
+  no longer a no-op.
+
+### Removed
+
+- Stripped the `Providers (default first): duckduckgo, wikipedia, wikidata.`
+  footer from search responses. Providers still appear inline next to each
+  bullet (`via wikipedia#2, wikidata#1`), so no information is lost.
+
+### Fixed
+- Kept prefilled GitHub "Report issue" URLs from the web demo within
+  GitHub's 8 KB request-line cap by progressively omitting earlier dialog
+  messages (keeping the last user/assistant pair) and truncating very
+  long messages while preserving their start and end.
+
+### Changed
+- Compacted the "User Context" block in reported issues: UI languages
+  are emitted on a single line with the active language emphasized,
+  viewport/screen/user-agent/platform are folded into one `**UI**` line,
+  locale/time zone into one `**Locale**` line, and the user agent line
+  is dropped from "Environment". Unset preferences (UI Skin, Chat Style,
+  Composer Style, Composer Action, Online, empty Preferred Location)
+  are no longer emitted.
+- Simplified the `**Location**` line to `inferred from <source>` form
+  instead of a separate `Location Inference` paragraph.
+
+### Added
+- Added `docs/case-studies/issue-140/` with root-cause analysis, raw
+  GitHub evidence, a reproduction script, and the verification log.
+- Added `experiments/issue-140-prefilled-url-budget.mjs`, a standalone
+  Node smoke harness that mirrors the web bundle's URL fitter so the
+  8 KB cap and omission markers can be checked without a browser.
+
+### Added
+
+- Added chat commands to list and read behavior rules, list self facts, and teach dialog-local behavior overrides.
+- Surfaced behavior rules as `When X then Y` (or `When X do Y`) statements grouped by topic in both the catalog listing and per-rule detail; the same grammar — and its Russian, Hindi, and Chinese translations — now records dialog-local overrides.
+
+### Changed
+
+- Expanded unknown-intent fallback text with self-contained Links Notation teaching guidance.
+- Behavior-rule listing now groups entries by topic (Greetings, Farewells, Identity, Capabilities, Hello-world programs, Unknown fallback) and renders each row as a `When X then Y` statement; runtime rules appear in a dedicated `Dialog-local rules` section.
+
+### Fixed
+- Browser demo percentage-of-currency prompts such as `What is 8% of $50?` now resolve as calculations before the Wikipedia fallback.
+
+### Fixed
+
+- Recognize "how are you?" small-talk prompts as greeting intent across English, Russian, Hindi, and Chinese instead of returning the unknown fallback.
+- Add a CI coverage check that guards supported-language greeting phrases and localized conversational responses.
+
+### Fixed
+- Avoid accepting unrelated fuzzy Wikipedia search results for short term lookups; fall back to exact Wikidata and Wiktionary matches instead.
+
+### Added
+- Added a `summarization` module (`src/summarization.rs`) implementing a
+  deterministic formalize → summarize → deformalize pipeline with configurable
+  `SummarizationMode` (`Topic` 1–5 words, `Short` ~20%, `Standard` ~50%, `Full`
+  100%, `Expand` ~200%), explicit statement caps, NSM-style semantic-prime
+  expansion, compound-word shortening, and a boilerplate filter that drops
+  install / example sentences from compressed answers.
+- Added a curated project registry (`data/seed/projects.lino`,
+  `src/seed/projects.rs`) covering Link Assistant, Link Foundation, and
+  LinksPlatform projects with weighted statements, English/Russian localized
+  variants, repository URLs, topic labels, and aliases.
+- Added a `project_lookup` handler that runs after `concept_lookup` and answers
+  "What is <project>?" prompts using the curated registry plus the summarization
+  pipeline, logging `summarization:mode`, `summarization:language`, repository
+  evidence, and the web-search providers consulted alongside the local answer.
+- Added `scripts/decode-github-issue-url.rs` to decode prefilled GitHub issue
+  URLs into readable Markdown for future overlong report-link investigations.
+
+### Fixed
+- Routed "What is Hive Mind?" / "Что такое Hive Mind?" prompts through
+  `project_lookup` as a promoted registry match for `link-assistant/hive-mind`
+  before showing other web-search results, preventing the Wikipedia
+  closest-match fallback from answering with unrelated pages such as LOIC.
+  Hive Mind now shares the same generic project path as other repository
+  records.
+
+### Fixed
+- For URL navigation prompts, check CORS-readable frame-policy metadata before
+  rendering an iframe preview. Pages that send blocking `X-Frame-Options` or
+  CSP `frame-ancestors` headers now get a polite direct new-tab link instead of
+  a broken embedded preview. Markdown links in chat messages now open in a new
+  tab and show an external-link indicator.
+
+### Fixed
+- Issue #145: Feature capability questions such as "Can you search the internet?", "Can you do arithmetic?", and "Ты можешь искать в интернете?" now resolve to localized capabilities answers instead of the unknown fallback, with runtime-aware availability for web search, diagnostics, agent mode, and definition fusion.
+
+### Added
+- Issue #145: The demo chat now accepts message-driven settings/actions for existing controls such as diagnostics, theme, UI language/style, agent/demo mode, attachments, issue reports, and memory visibility.
+
+### Fixed
+- **Issue #160 — polite follow-up returned unknown intent.** Added a `courtesy_response` intent for phrases such as "I am fine, thank you", "thanks", "спасибо", "धन्यवाद", and "谢谢", with localized responses across the Rust solver and browser worker so small-talk acknowledgements stay in normal chat flow instead of showing the missing-rule fallback.
+- Added browser courtesy-response variation that composes the acknowledgement and optional next-action question separately, with a settings slider for how often the assistant should ask/propose the next step.
+
+### Added
+
+- Issue #180: every `solve()` turn now ends with a `deformalize` reasoning
+  step that projects the resolved formalization back to natural language. A
+  new `formalization-context` payload is threaded through every handler so
+  the worker can emit `formalize → <handler> → formalize_resolved →
+  deformalize` for the fact-style and `web_search` flows, and `formalize →
+  <handler> → deformalize` for greeting / unknown / agent / memory flows. The
+  diagnostics row carries the worker-emitted `projection.summary` (with the
+  `⇒` glyph) so the symbolic-to-natural-language hand-off is visible in the
+  UI, not only in the underlying step payload.
+- Google-style rendering for `web_search` results: each hit is now formatted
+  as `url + title (≥ domain) + fragment containing query + "Read more"` with
+  the source priority order **DuckDuckGo, Internet Archive, Wikipedia,
+  Wikidata, Wiktionary, then everything else**. Duplicate Wikipedia /
+  Wikidata entries for the same canonical Q-id collapse into a single bullet
+  with the alternate URLs surfaced under a localized `"Другие
+  источники:" / "Other sources:"` sub-line.
+- Per-session CORS availability cache. Each provider is probed once per tab
+  and the result is kept in RAM until the tab is closed, so unreachable
+  providers no longer add latency to subsequent searches in the same session.
+- Diagnostics mode: raw HTTP request / response panels per provider call and
+  a unified Links Notation block per reasoning step. Every diagnostics row
+  also exposes a stable `data-step` attribute so automation can assert raw
+  step kinds (`impulse`, `formalize`, `formalize_resolved`, `deformalize`, …)
+  without depending on the i18n-localised display label.
+- Six new unit tests in `src/web_search_core.rs` pinning the issue-180
+  contract: provider priority order, language-line trimming, Internet Archive
+  CORS readability, the Cormack / Clarke / Buettcher RRF formula
+  (`score = 1 / (k + rank)`, `k = 60`), human-readable provider labels in the
+  default plan, and the default plan being a subset of the provider
+  registry. All 16 `web_search_core` tests pass (10 existing + 6 new).
+- Playwright spec `tests/e2e/tests/issue-180.spec.js` with three scenarios
+  (greeting prompt ends with `deformalize`, unknown prompt ends with
+  `deformalize`, `web_search` emits `formalize` → `formalize_resolved` →
+  `deformalize` with the `⇒` projection summary). Registered in
+  `tests/e2e/playwright.local.config.js`. All 136 local Playwright tests
+  pass.
+- Node-side smoke test `experiments/issue-180-deformalize-trace.mjs` boots
+  the Web Worker inside a `vm.createContext` shim and asserts the full step
+  list across the greeting / unknown / fact-style / web-search flows (24
+  assertions). Useful for fast local regressions without booting Playwright.
+- Issue #180 case study under `docs/case-studies/issue-180/`: the issue and
+  comment payloads, the three screenshots referenced in the issue, and a
+  deep dive into requirements R210–R220 (Google-style rendering, dedupe,
+  priority order, session-CORS cache, dark theme, single-column menu,
+  diagnostics badges, raw HTTP panels, always-on deformalize, 2× test
+  coverage, case study).
+
+### Fixed
+
+- Dark theme parity in the new UI: topbar collapse / expand affordance and
+  the source-code button now honor the active palette; broader audit of the
+  remaining surfaces.
+- Left menu now renders as a single column on both mobile and desktop and
+  stays collapsible.
+- Diagnostics badges: sizing and markup are now consistent across providers
+  so long provider labels no longer break the row layout.
+
+Added procedural "how to X Y" handling that decomposes action/object requests,
+checks Wikimedia/wikiHow sources first, and records web-search plus recursive
+fetch fallback evidence instead of returning the unknown fallback.
+
+### Added
+- Extended the `summarization` module (`src/summarization.rs`) with a README
+  ingestion path: `strip_markdown_noise` removes badges, fenced code blocks,
+  HTML comments, heading markers, and blockquote chevrons; `formalize_markdown`
+  feeds the cleaned prose through the existing classifier; `describe_readme`
+  drives the whole `formalize → summarize → deformalize` pipeline with any
+  `SummarizationConfig` (returns the repository slug in `Topic` mode).
+- Added `DialogTurn`, `formalize_dialog`, `summarize_dialog`, and
+  `generate_chat_title` so multi-turn conversations and chat titles are
+  produced by the same pipeline (user turns weigh +20, assistant turns -10).
+  The conversation-summary intent in `src/solver_handlers/mod.rs` now uses
+  this pipeline and logs `summarization:mode`, `summarization:language`, and
+  `chat_title` evidence in addition to the per-turn list.
+- Wired `try_http_fetch` to recognise curated GitHub repositories
+  (`match_curated_github_url`): when the requested URL points to one of the
+  projects in `data/seed/projects.lino`, the response embeds a `Standard`-mode
+  project description and the trace records `http_fetch:curated_project`,
+  `summarization:mode`, and `summarization:language` so the URL → curated
+  record → summary path is fully visible.
+- Generalized project lookup so Hive Mind is treated as a promoted project
+  record instead of a special handler. Project promotion defaults on for
+  `link-assistant`, `link-foundation`, and `linksplatform`, can be switched
+  off through solver/browser configuration, and explicit GitHub/GitLab/
+  Bitbucket repository URLs route through the same `project_lookup` intent.
+- Documented the default 30-statement cap as a `DEFAULT_MAX_STATEMENTS`
+  constant in `src/summarization.rs` and re-exported it from the crate root.
+- Re-exported the new helpers (`describe_readme`, `formalize_markdown`,
+  `strip_markdown_noise`, `DialogTurn`, `formalize_dialog`, `summarize_dialog`,
+  `generate_chat_title`, `DEFAULT_MAX_STATEMENTS`) from the crate root so
+  downstream callers and the integration tests can use them directly.
+- Added 11 specification tests in
+  `tests/unit/specification/summarization_pipeline.rs` covering the new
+  README, dialog, and chat-title flows plus the documented size targets and
+  default cap; added two new tests to
+  `tests/unit/specification/project_lookups.rs` pinning the HTTP-fetch
+  curated-URL evidence.
+- Documented the new surfaces in `ARCHITECTURE.md` § 7.1 and added rows
+  R202-R207 to `REQUIREMENTS.md`.
+
+### Fixed
+- Added browser-worker and Rust-core handling for `Переведи "как у тебя дела?" на английский.` so it returns an English translation instead of the unknown fallback.
+- Made the Russian `Что ещё ты умеешь?` follow-up use conversation history and avoid repeating already discussed web-search details.
+- Made the left `MENU` sidebar action group collapsible and persistent like the other sidebar sections.
+- Improved prefilled issue reports by renaming the dialog section, removing reproduction boilerplate, and preserving more earlier dialog context within the GitHub URL budget.
+
+### Added
+- Added symbolic calendar reasoning for weekday successor and predecessor prompts, including the reported Russian "после вторника" case.
+
+### Fixed
+- Updated `link-calculator` to v0.17.2 so Russian currency conversions, binary modulo expressions, and simple equations use the latest upstream parser fixes.
+
 ## [0.85.0] - 2026-05-20
 
 ### Added
