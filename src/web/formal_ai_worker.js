@@ -45,6 +45,7 @@ const FALLBACK_IDENTITY_ANSWER =
 
 const FALLBACK_GREETING_ANSWER = "Hi, how may I help you?";
 
+const FALLBACK_TEST_STATUS_ANSWER = "Test passed. I'm here.";
 const FALLBACK_COURTESY_RESPONSE_ANSWER =
   "Glad to hear it. What would you like to do next?";
 const FALLBACK_COURTESY_ACKNOWLEDGEMENTS = [
@@ -73,6 +74,9 @@ let MULTILINGUAL_ANSWERS = {
   },
   farewell: {
     en: { text: "Goodbye! Feel free to return any time.", variants: ["Goodbye! Feel free to return any time."] },
+  },
+  test_status: {
+    en: { text: FALLBACK_TEST_STATUS_ANSWER, variants: [FALLBACK_TEST_STATUS_ANSWER] },
   },
   courtesy_response: {
     en: {
@@ -291,6 +295,58 @@ let INTENT_ROUTING = {
       combos: [],
     },
     {
+      id: "intent_test_status",
+      slug: "test_status",
+      responseLink: "response:test_status",
+      keywords: [
+        "test",
+        "ping",
+        "pong",
+        "testing",
+        "тест",
+        "пинг",
+        "टेस्ट",
+        "परीक्षण",
+        "测试",
+        "測試",
+      ],
+      phrases: [
+        "test passed",
+        "testing 123",
+        "are you there",
+        "you there",
+        "i m here",
+        "i am here",
+        "я здесь",
+        "тест пройден",
+        "ты здесь",
+        "вы здесь",
+        "परीक्षण सफल रहा",
+        "मैं यहाँ हूँ",
+        "मैं यहां हूं",
+        "क्या आप वहाँ हैं",
+        "क्या आप वहां हैं",
+        "测试通过",
+        "測試通過",
+        "我在这里",
+        "我在這裡",
+        "你在吗",
+        "您在吗",
+        "你在嗎",
+        "您在嗎",
+      ],
+      tokens: [],
+      combos: [
+        ["test", "passed"],
+        ["test", "here"],
+        ["testing", "123"],
+        ["ping", "test"],
+        ["тест", "пройден"],
+        ["тест", "здесь"],
+        ["परीक्षण", "सफल"],
+      ],
+    },
+    {
       id: "intent_identity",
       slug: "identity",
       responseLink: "response:identity",
@@ -349,6 +405,9 @@ function fallbackEntry(intent) {
   }
   if (intent === "identity") {
     return { text: FALLBACK_IDENTITY_ANSWER, variants: [FALLBACK_IDENTITY_ANSWER] };
+  }
+  if (intent === "test_status") {
+    return { text: FALLBACK_TEST_STATUS_ANSWER, variants: [FALLBACK_TEST_STATUS_ANSWER] };
   }
   if (intent === "clarification") {
     return {
@@ -1551,6 +1610,10 @@ function isGreetingPrompt(normalized, rawPrompt) {
 
 function isFarewellPrompt(normalized, rawPrompt) {
   return matchesIntentRoute(normalized, rawPrompt, "intent_farewell");
+}
+
+function isTestStatusPrompt(normalized, rawPrompt) {
+  return matchesIntentRoute(normalized, rawPrompt, "intent_test_status");
 }
 
 function isCourtesyResponsePrompt(normalized, rawPrompt) {
@@ -7209,6 +7272,16 @@ async function solve(prompt, history, prefs) {
       confidence: 1.0,
       evidence: ["rule:farewell", `language:${language}`],
     }, formalizationContext);
+  }
+  if (isTestStatusPrompt(normalized, prompt)) {
+    events.push("rule:test_status");
+    steps.push({ step: "match_rule", detail: "test_status" });
+    return finalize(events, steps, toolCalls, {
+      intent: "test_status",
+      content: answerFor("test_status", language),
+      confidence: 1.0,
+      evidence: ["rule:test_status", `language:${language}`],
+    });
   }
   if (isCourtesyResponsePrompt(normalized, prompt)) {
     events.push("rule:courtesy_response");

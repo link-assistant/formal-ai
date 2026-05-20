@@ -306,6 +306,21 @@ test.describe('formal-ai demo UI', () => {
       });
     });
 
+    const testStatus = await sendPrompt(page, 'Test');
+    await expect(testStatus).toContainText('Test passed');
+    await expect(testStatus).toContainText("I'm here");
+    await expect(testStatus).not.toContainText(UNKNOWN_ANSWER_MARKER);
+
+    for (const { prompt, expected } of [
+      { prompt: 'тест пройден', expected: 'Тест пройден' },
+      { prompt: 'परीक्षण सफल रहा', expected: 'परीक्षण सफल रहा' },
+      { prompt: '测试通过', expected: '测试通过' },
+    ]) {
+      const localizedStatus = await sendPrompt(page, prompt);
+      await expect(localizedStatus).toContainText(expected);
+      await expect(localizedStatus).not.toContainText(UNKNOWN_ANSWER_MARKER);
+    }
+
     const capabilities = await sendPrompt(page, 'What you can do?');
     await expect(capabilities).toContainText('Here is what I can do');
     await expect(capabilities).toContainText('Hello World');
