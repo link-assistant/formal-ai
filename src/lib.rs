@@ -6,6 +6,7 @@ pub(crate) mod concepts;
 pub mod engine;
 pub(crate) mod engine_hello_world;
 pub mod event_log;
+pub(crate) mod fuzzy;
 pub mod github_logs;
 pub mod language;
 pub mod memory;

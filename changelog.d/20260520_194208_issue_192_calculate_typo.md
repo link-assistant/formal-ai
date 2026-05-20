@@ -1,2 +1,2 @@
 ### Fixed
-- Treat the common `Calcualte` typo as a calculator command prefix so arithmetic prompts like `Calcualte 2+5050` evaluate instead of falling through or reporting a parse error.
+- Fuzzily match close calculator command typos such as `Calcualte` and `Calcuate`, and show an interpretation statement before evaluating prompts like `Calcualte 2+5050`.

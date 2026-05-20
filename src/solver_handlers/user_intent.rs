@@ -5,6 +5,7 @@
 use crate::concepts::extract_concept_query;
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
+use crate::fuzzy::typo_distance;
 use crate::language::detect as detect_language;
 use crate::seed::response_for;
 use crate::solver_handlers::finalize_simple;
@@ -483,36 +484,11 @@ fn suggest_correction(term: &str) -> Option<String> {
     }
     for (canonical, variants) in candidates {
         let canonical_lower = canonical.to_lowercase();
-        let is_close = variants.iter().any(|v| edit_distance(&lower, v) == 1)
-            || edit_distance(&lower, &canonical_lower) == 1;
+        let is_close = variants.iter().any(|v| typo_distance(&lower, v) == 1)
+            || typo_distance(&lower, &canonical_lower) == 1;
         if is_close {
             return Some((*canonical).to_owned());
         }
     }
     None
-}
-
-/// Compute the Levenshtein edit distance between two strings.
-fn edit_distance(a: &str, b: &str) -> usize {
-    let a_chars: Vec<char> = a.chars().collect();
-    let b_chars: Vec<char> = b.chars().collect();
-    let m = a_chars.len();
-    let n = b_chars.len();
-    let mut dp = vec![vec![0usize; n + 1]; m + 1];
-    for (i, row) in dp.iter_mut().enumerate() {
-        row[0] = i;
-    }
-    for (j, cell) in dp[0].iter_mut().enumerate() {
-        *cell = j;
-    }
-    for i in 1..=m {
-        for j in 1..=n {
-            dp[i][j] = if a_chars[i - 1] == b_chars[j - 1] {
-                dp[i - 1][j - 1]
-            } else {
-                1 + dp[i - 1][j - 1].min(dp[i - 1][j]).min(dp[i][j - 1])
-            };
-        }
-    }
-    dp[m][n]
 }

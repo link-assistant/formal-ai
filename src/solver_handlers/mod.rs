@@ -31,7 +31,10 @@ pub use web_requests::{try_http_fetch, try_project_lookup, try_url_navigate, try
 
 use std::fmt::Write as _;
 
-use crate::calculation::{calculation_expression_candidates, evaluate_calculation};
+use crate::calculation::{
+    calculation_expression_candidates, evaluate_calculation, interpretation_statements,
+    PromptInterpretation,
+};
 use crate::concepts::{
     extract_concept_query, lookup_concept_query, resolve_context_label, ConceptRecord,
 };
@@ -197,9 +200,10 @@ fn try_summarize_conversation(
 
 pub fn try_arithmetic(prompt: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {
     let candidates = calculation_expression_candidates(prompt);
-    let mut first_explicit_error: Option<(String, String)> = None;
+    let mut first_explicit_error: Option<(String, String, Vec<PromptInterpretation>)> = None;
     for candidate in candidates {
         let expression = candidate.expression;
+        let interpretations = candidate.interpretations;
         log.append("calculation:request", expression.clone());
         match evaluate_calculation(&expression) {
             Ok(evaluation) => {
@@ -211,10 +215,28 @@ pub fn try_arithmetic(prompt: &str, log: &mut EventLog) -> Option<SymbolicAnswer
                 if !evaluation.steps.is_empty() {
                     log.append("calculation:steps", evaluation.steps.len().to_string());
                 }
-                let body = if expression.contains('=') && formatted.contains(" = ") {
+                let calculation_body = if expression.contains('=') && formatted.contains(" = ") {
                     format!("{expression} => {formatted}")
                 } else {
                     format!("{expression} = {formatted}")
+                };
+                for interpretation in &interpretations {
+                    log.append(
+                        "interpretation",
+                        format!(
+                            "{} -> {}",
+                            interpretation.original, interpretation.corrected
+                        ),
+                    );
+                }
+                let body = if interpretations.is_empty() {
+                    calculation_body
+                } else {
+                    format!(
+                        "{}\n\n{}",
+                        interpretation_statements(&interpretations),
+                        calculation_body
+                    )
                 };
                 log.append("calculation", body.clone());
                 return Some(finalize_simple(
@@ -230,15 +252,33 @@ pub fn try_arithmetic(prompt: &str, log: &mut EventLog) -> Option<SymbolicAnswer
                 let error = error.to_string();
                 log.append("calculation:error", error.clone());
                 if candidate.explicit && first_explicit_error.is_none() {
-                    first_explicit_error = Some((expression, error));
+                    first_explicit_error = Some((expression, error, interpretations));
                 }
             }
         }
     }
-    let (expression, error) = first_explicit_error?;
-    let body = format!(
+    let (expression, error, interpretations) = first_explicit_error?;
+    for interpretation in &interpretations {
+        log.append(
+            "interpretation",
+            format!(
+                "{} -> {}",
+                interpretation.original, interpretation.corrected
+            ),
+        );
+    }
+    let error_body = format!(
         "I parsed '{expression}' as an arithmetic request but could not evaluate it: {error}."
     );
+    let body = if interpretations.is_empty() {
+        error_body
+    } else {
+        format!(
+            "{}\n\n{}",
+            interpretation_statements(&interpretations),
+            error_body
+        )
+    };
     Some(finalize_simple(
         prompt,
         log,

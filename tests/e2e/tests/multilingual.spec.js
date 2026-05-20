@@ -156,11 +156,27 @@ test.describe('multilingual chat surface', () => {
     await expect(last).not.toContainText('arithmetic is available');
   });
 
-  test('misspelled calculate action resolves as a calculation', async ({ page }) => {
+  test('misspelled calculate action resolves as a calculation with interpretation', async ({ page }) => {
+    await page.locator('.diagnostics-toggle').click();
+
     const last = await sendPrompt(page, 'Calcualte 2+5050');
     await expect(last).toHaveClass(/assistant/);
+    await expect(last).toContainText('Interpreted "Calcualte" as "calculate".');
     await expect(last).toContainText('2+5050 = 5052');
     await expect(last).not.toContainText('could not evaluate');
+    await last.evaluate((node) => {
+      for (const det of node.querySelectorAll('details.diagnostics-detail')) {
+        det.open = true;
+      }
+    });
+    const formalization = last.locator('[data-testid="formalization"]').first();
+    await expect(formalization).toContainText('OP:compute');
+
+    const second = await sendPrompt(page, 'Calcuate 2+5050');
+    await expect(second).toHaveClass(/assistant/);
+    await expect(second).toContainText('Interpreted "Calcuate" as "calculate".');
+    await expect(second).toContainText('2+5050 = 5052');
+    await expect(second).not.toContainText('could not evaluate');
   });
 
   test('Russian word-number arithmetic resolves as a calculation', async ({ page }) => {
