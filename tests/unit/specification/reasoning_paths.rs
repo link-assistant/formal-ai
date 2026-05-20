@@ -453,6 +453,69 @@ fn how_it_works_followup_records_followup_event_in_evidence() {
 }
 
 // ---------------------------------------------------------------------------
+// Issue #183: "how X works?" must support explicit subjects across languages.
+// ---------------------------------------------------------------------------
+
+#[test]
+fn multilingual_how_x_works_prompts_use_mechanism_discovery() {
+    for prompt in [
+        "как устроен AUR?",
+        "как работает AUR?",
+        "how does AUR work?",
+        "AUR कैसे काम करता है?",
+        "AUR 如何工作?",
+    ] {
+        let response = answer(prompt);
+        assert_eq!(
+            response.intent, "how_it_works",
+            "{prompt:?} must route to mechanism discovery; got intent={}, answer={}",
+            response.intent, response.answer,
+        );
+        assert!(
+            response.answer.to_lowercase().contains("aur"),
+            "{prompt:?} answer should name the requested subject; answer={}",
+            response.answer,
+        );
+
+        for expected in [
+            "followup:how_it_works",
+            "followup:subject:inline:aur",
+            "mechanism_query:stage:wikipedia",
+            "mechanism_query:stage:wikidata",
+            "mechanism_query:stage:web_search",
+        ] {
+            assert!(
+                has_evidence(&response, expected),
+                "{prompt:?} missing evidence prefix {expected:?}: {:?}",
+                response.evidence_links,
+            );
+        }
+    }
+}
+
+#[test]
+fn russian_how_known_concept_works_resolves_concept_lookup() {
+    let response = answer("как устроена Википедия?");
+    assert!(
+        response.intent.starts_with("concept_lookup"),
+        "known Russian subject should still resolve through concept lookup; \
+         got intent={}, answer={}",
+        response.intent,
+        response.answer,
+    );
+    assert!(
+        has_evidence(&response, "followup:how_it_works"),
+        "handler should record the how-it-works follow-up event: {:?}",
+        response.evidence_links,
+    );
+    assert!(
+        has_evidence(&response, "concept_lookup:hit:concept_wikipedia"),
+        "known subject should hit the Wikipedia concept seed: {:?}",
+        response.evidence_links,
+    );
+}
+
+// ---------------------------------------------------------------------------
 // Issue #172: procedural "how to X Y" prompts should discover source-backed
 // procedure steps instead of returning the unknown fallback.
 // ---------------------------------------------------------------------------

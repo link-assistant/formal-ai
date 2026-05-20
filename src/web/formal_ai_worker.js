@@ -912,6 +912,164 @@ function extractInvertedWhoIs(input, lower) {
   return body;
 }
 
+function cleanMechanismFragment(value) {
+  return String(value || "")
+    .trim()
+    .replace(/^[`"'«»<>()\[\]{}]+/u, "")
+    .replace(/[`"'«»<>()\[\]{}]+$/u, "")
+    .replace(/[?？。.!,,;:]+$/u, "")
+    .trim();
+}
+
+function cleanMechanismSubject(value) {
+  let clean = cleanMechanismFragment(value);
+  for (const suffix of [
+    " in detail",
+    " internally",
+    " exactly",
+    " please",
+    " подробнее",
+    " подробно",
+    " пожалуйста",
+  ]) {
+    const lower = clean.toLowerCase();
+    if (lower.endsWith(suffix)) {
+      clean = cleanMechanismFragment(clean.slice(0, -suffix.length));
+    }
+  }
+  const lower = clean.toLowerCase();
+  const pronouns = new Set([
+    "it",
+    "this",
+    "that",
+    "you",
+    "yourself",
+    "does",
+    "do",
+    "это",
+    "оно",
+    "он",
+    "она",
+    "они",
+    "ты",
+    "вы",
+    "यह",
+    "ये",
+    "这",
+    "这个",
+    "它",
+  ]);
+  if (
+    !clean ||
+    pronouns.has(lower) ||
+    lower.startsWith("does ") ||
+    lower.startsWith("do ") ||
+    lower.startsWith("to ") ||
+    lower.startsWith("you ")
+  ) {
+    return null;
+  }
+  return clean;
+}
+
+function stripMechanismTail(subject) {
+  let clean = cleanMechanismSubject(subject);
+  if (!clean) return null;
+  const lower = clean.toLowerCase();
+  for (const suffix of [
+    " work",
+    " works",
+    " structured",
+    " organized",
+    " organised",
+    " built",
+  ]) {
+    if (lower.endsWith(suffix)) {
+      clean = cleanMechanismSubject(clean.slice(0, -suffix.length));
+      break;
+    }
+  }
+  return clean;
+}
+
+function mechanismSubjectAfterPrefix(original, lower, prefix) {
+  if (!lower.startsWith(prefix)) return null;
+  return cleanMechanismSubject(original.slice(prefix.length));
+}
+
+function mechanismSubjectBeforeSuffix(original, lower, suffix) {
+  if (!lower.endsWith(suffix)) return null;
+  return cleanMechanismSubject(original.slice(0, -suffix.length));
+}
+
+function mechanismSubjectBetween(original, lower, prefix, suffixes) {
+  if (!lower.startsWith(prefix)) return null;
+  for (const suffix of suffixes) {
+    if (!lower.endsWith(suffix)) continue;
+    const end = original.length - suffix.length;
+    if (end <= prefix.length) return null;
+    return cleanMechanismSubject(original.slice(prefix.length, end));
+  }
+  return null;
+}
+
+function extractHowItWorksSubject(input, lowerInput) {
+  const original = cleanMechanismFragment(input);
+  if (!original) return null;
+  const lower = cleanMechanismFragment(lowerInput || original.toLowerCase())
+    .toLowerCase();
+
+  for (const prefix of [
+    "how does ",
+    "how do ",
+    "how did ",
+    "how is ",
+    "как устроен ",
+    "как устроена ",
+    "как устроено ",
+    "как устроены ",
+    "как работает ",
+    "как работают ",
+  ]) {
+    const subject = mechanismSubjectAfterPrefix(original, lower, prefix);
+    if (subject) return stripMechanismTail(subject);
+  }
+
+  for (const [prefix, suffixes] of [
+    ["how ", [" works", " work"]],
+    ["как ", [" работает", " работают"]],
+  ]) {
+    const subject = mechanismSubjectBetween(original, lower, prefix, suffixes);
+    if (subject) return subject;
+  }
+
+  for (const suffix of [
+    " कैसे काम करता है",
+    " कैसे काम करती है",
+    " कैसे काम करते हैं",
+    " कैसे काम करता",
+    " कैसे काम करती",
+    " कैसे काम करते",
+    " 是如何工作的",
+    "是如何工作的",
+    " 是怎么工作的",
+    "是怎么工作的",
+    " 如何工作",
+    "如何工作",
+    " 怎么工作",
+    "怎么工作",
+    " 的工作原理是什么",
+    "的工作原理是什么",
+    " как работает",
+    " как работают",
+  ]) {
+    const subject = mechanismSubjectBeforeSuffix(original, lower, suffix);
+    if (subject) return subject;
+  }
+
+  return null;
+}
+
 function extractConceptQuery(prompt) {
   let trimmedRaw = String(prompt || "")
     .trim()
@@ -932,6 +1090,9 @@ function extractConceptQuery(prompt) {
   const lower = trimmedRaw.toLowerCase();
   const invertedWhoBody = extractInvertedWhoIs(trimmedRaw, lower);
   if (invertedWhoBody) return finalizeConceptBody(invertedWhoBody);
+
+  const howItWorksSubject = extractHowItWorksSubject(trimmedRaw, lower);
+  if (howItWorksSubject) return finalizeConceptBody(howItWorksSubject);
 
   const prefixes = conceptPatternsByKind("prefix");
   let body = null;
@@ -5618,10 +5779,6 @@ pub fn apply_command(mut records: Vec<ProjectRecord>, command: ProjectCommand) -
     }
     records
 }`;
-
-function containsAny(value, needles) {
-  return needles.some((needle) => value.includes(needle));
-}
 
 function containsToken(normalized, token) {
   return String(normalized || "").split(/\s+/).includes(token);

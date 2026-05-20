@@ -626,6 +626,47 @@ test.describe('Wikipedia REST fallback', () => {
     await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
   });
 
+  test('Issue #183: Russian "как устроен X" resolves through Wikipedia lookup', async ({ page }) => {
+    const requestedSlugs = [];
+    await page.route('**/api/rest_v1/page/summary/**', async (route) => {
+      const url = route.request().url();
+      const slug = decodeURIComponent(url.split('/').pop() || '');
+      requestedSlugs.push(slug);
+      if (slug.toLowerCase() === 'aur') {
+        const json = {
+          title: 'Arch User Repository',
+          extract:
+            'The Arch User Repository is a community-driven repository for Arch Linux users.',
+          type: 'standard',
+          content_urls: {
+            desktop: {
+              page: 'https://en.wikipedia.org/wiki/Arch_User_Repository',
+            },
+          },
+        };
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify(json),
+        });
+        return;
+      }
+      await route.fulfill({
+        status: 404,
+        contentType: 'application/json',
+        body: JSON.stringify({ httpCode: 404, httpReason: 'Not Found' }),
+      });
+    });
+
+    const last = await sendPrompt(page, 'как устроен AUR');
+    await expect(last).toHaveClass(/assistant/);
+    await expect(last).toContainText('Arch User Repository');
+    await expect(last).toContainText('community-driven repository');
+    await expect(last).toContainText('en.wikipedia.org');
+    await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
+    expect(requestedSlugs.some((slug) => slug.toLowerCase() === 'aur')).toBe(true);
+  });
+
   // Issue #21: Wikipedia returns percent-encoded URLs for non-ASCII titles.
   // The chat must display the readable Cyrillic form while the underlying
   // link still points at the canonical (encoded) URL.
