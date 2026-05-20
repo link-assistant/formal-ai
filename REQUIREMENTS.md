@@ -443,3 +443,15 @@ reasoning where possible, not by a one-off memoized answer or tool call.
 | R210 | Weekday successor and predecessor prompts must route to a typed calendar intent instead of `unknown`. | Implemented by `try_calendar_reasoning` in `src/solver_handlers/calendar.rs` and mirrored by `tryCalendarReasoning` in `src/web/formal_ai_worker.js`. |
 | R211 | The answer must be derived by shifting through the seven-day calendar cycle, not by matching one reported prompt to one fixed string. | Implemented by parsing the source weekday and next/previous operation, applying a `+1` or `-1` cyclic shift, and recording `calendar:cycle`, `calendar:subject_weekday`, `calendar:operation:*`, and `calendar:result_weekday` events. |
 | R212 | Russian and English weekday relation variations must be covered by automated tests. | Covered by `calendar_reasoning_answers_russian_weekday_successor` and `calendar_reasoning_answers_weekday_predecessor_and_successor_variations` in `tests/unit/specification/reasoning_paths.rs`. |
+
+## Issue #187 Current Day Calendar Prompt
+
+Issue [#187](https://github.com/link-assistant/formal-ai/issues/187)
+reported that the Russian prompt "Какой сегодня день?" returned the
+unknown-intent fallback in the browser demo.
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R213 | Current-day and current-date prompts must route to a typed calendar intent instead of `unknown`. | Implemented by the `calendar_current_day` branch in `try_calendar_reasoning` and mirrored by `tryCalendarReasoning` in `src/web/formal_ai_worker.js`. |
+| R214 | Current-day answers must be derived from the runtime clock and must expose date, weekday, and time-zone evidence. | Rust resolves the current UTC date and records `calendar:today`, `calendar:weekday`, and `calendar:time_zone:UTC`; the browser worker resolves the current browser date in the user-context time zone and records the same evidence shape. |
+| R215 | The reported Russian prompt must be covered by automated tests on both Rust and browser surfaces. | Covered by `calendar_reasoning_answers_russian_current_day_question` in `tests/unit/specification/reasoning_paths.rs` and `Russian current-day question resolves through calendar reasoning` in `tests/e2e/tests/multilingual.spec.js`. |

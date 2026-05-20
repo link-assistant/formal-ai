@@ -133,6 +133,31 @@ fn calendar_reasoning_answers_russian_weekday_successor() {
 }
 
 #[test]
+fn calendar_reasoning_answers_russian_current_day_question() {
+    let response = answer("Какой сегодня день?");
+    assert_eq!(
+        response.intent, "calendar_current_day",
+        "today questions should use calendar reasoning, got: {}",
+        response.answer,
+    );
+    assert!(
+        response.answer.to_lowercase().contains("сегодня"),
+        "Russian current-day answer should be localized, got: {}",
+        response.answer,
+    );
+    assert!(
+        has_evidence(&response, "calendar:today"),
+        "current-day reasoning must record the resolved date: {:?}",
+        response.evidence_links,
+    );
+    assert!(
+        has_evidence(&response, "calendar:weekday"),
+        "current-day reasoning must record the resolved weekday: {:?}",
+        response.evidence_links,
+    );
+}
+
+#[test]
 fn calendar_reasoning_answers_weekday_predecessor_and_successor_variations() {
     let cases = [
         ("What day of the week comes after Tuesday?", "Wednesday"),

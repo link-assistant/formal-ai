@@ -176,6 +176,19 @@ test.describe('multilingual chat surface', () => {
     await expect(last).toContainText('семидневном календарном цикле');
   });
 
+  test('Russian current-day question resolves through calendar reasoning', async ({ page }) => {
+    const expectedWeekday = await page.evaluate(() =>
+      new Intl.DateTimeFormat('ru-RU', { weekday: 'long' })
+        .format(new Date())
+        .toLowerCase(),
+    );
+    const last = await sendPrompt(page, 'Какой сегодня день?');
+    await expect(last).toHaveClass(/assistant/);
+    await expect(last).toContainText('Сегодня');
+    await expect(last).toContainText(expectedWeekday);
+    await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
+  });
+
   test('percentage-of-currency prompt resolves as a calculation before Wikipedia fallback', async ({ page }) => {
     let wikipediaRequests = 0;
     await page.route('https://en.wikipedia.org/**', async (route) => {

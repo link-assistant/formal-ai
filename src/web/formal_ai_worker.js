@@ -3555,6 +3555,33 @@ const CALENDAR_PREVIOUS_MARKERS = [
   "предшествует",
 ];
 
+const CALENDAR_TODAY_MARKERS = ["today", "сегодня"];
+
+const CALENDAR_CURRENT_DAY_MARKERS = [
+  "day",
+  "weekday",
+  "week day",
+  "date",
+  "день",
+  "дня",
+  "дату",
+  "дата",
+  "число",
+];
+
+const CALENDAR_CURRENT_DAY_QUESTION_MARKERS = [
+  "?",
+  "what",
+  "which",
+  "tell me",
+  "show",
+  "какой",
+  "какая",
+  "какое",
+  "скажи",
+  "покажи",
+];
+
 function isCalendarWordCharacter(character) {
   return /[\p{L}\p{N}_]/u.test(character);
 }
@@ -3583,6 +3610,21 @@ function mentionsWeekdayContext(normalized) {
   );
 }
 
+function mentionsCurrentDayQuestion(normalized) {
+  const mentionsToday = CALENDAR_TODAY_MARKERS.some((marker) =>
+    containsCalendarTerm(normalized, marker),
+  );
+  if (!mentionsToday) return false;
+  const asksForDay =
+    CALENDAR_CURRENT_DAY_MARKERS.some((marker) =>
+      containsCalendarTerm(normalized, marker),
+    ) || normalized.includes("недел");
+  const questionLike = CALENDAR_CURRENT_DAY_QUESTION_MARKERS.some((marker) =>
+    normalized.includes(marker),
+  );
+  return asksForDay && questionLike;
+}
+
 function detectWeekdayOperation(normalized) {
   const hasNext = CALENDAR_NEXT_MARKERS.some((marker) => normalized.includes(marker));
   const hasPrevious = CALENDAR_PREVIOUS_MARKERS.some((marker) => normalized.includes(marker));
@@ -3606,6 +3648,64 @@ function shiftWeekday(weekday, operation) {
   return WEEKDAY_CYCLE[(index + offset + WEEKDAY_CYCLE.length) % WEEKDAY_CYCLE.length];
 }
 
+function validCalendarTimeZone(candidate) {
+  const timeZone = cleanContextValue(candidate);
+  if (!timeZone) return "";
+  try {
+    new Intl.DateTimeFormat("en-US", { timeZone }).format(new Date(0));
+    return timeZone;
+  } catch (_error) {
+    return "";
+  }
+}
+
+function resolvedCalendarTimeZone(userContext) {
+  const fromContext = validCalendarTimeZone(userContext && userContext.timeZone);
+  if (fromContext) return fromContext;
+  try {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone || "";
+  } catch (_error) {
+    return "";
+  }
+}
+
+function calendarDateInTimeZone(date, timeZone) {
+  const options = {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  };
+  if (timeZone) options.timeZone = timeZone;
+  const parts = new Intl.DateTimeFormat("en-CA", options).formatToParts(date);
+  const value = (type) => parts.find((part) => part.type === type)?.value || "";
+  const year = Number(value("year"));
+  const month = Number(value("month"));
+  const day = Number(value("day"));
+  if (!Number.isFinite(year) || !Number.isFinite(month) || !Number.isFinite(day)) {
+    return null;
+  }
+  const iso = `${String(year).padStart(4, "0")}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+  const dayIndex = new Date(Date.UTC(year, month - 1, day)).getUTCDay();
+  const weekday = WEEKDAY_CYCLE[(dayIndex + 6) % 7];
+  return { iso, weekday };
+}
+
+function currentCalendarDate(userContext) {
+  const reference = new Date();
+  const timeZone = resolvedCalendarTimeZone(userContext);
+  return {
+    timeZone: timeZone || "local",
+    date: calendarDateInTimeZone(reference, timeZone),
+  };
+}
+
+function renderCurrentDay(language, weekday, isoDate, timeZone) {
+  if (language === "ru") {
+    return `Сегодня ${weekday.ru}, ${isoDate} (${timeZone}).`;
+  }
+  return `Today is ${weekday.en}, ${isoDate} (${timeZone}).`;
+}
+
 function renderWeekdayRelation(language, operation, source, result) {
   const delta = operation === "next" ? "+1" : "-1";
   if (language === "ru") {
@@ -3620,7 +3720,29 @@ function renderWeekdayRelation(language, operation, source, result) {
   return `The day before ${source.en} is ${result.en}. I move ${source.en} by ${delta} in the seven-day calendar cycle.`;
 }
 
-function tryCalendarReasoning(prompt, normalized) {
+function tryCalendarReasoning(prompt, normalized, userContext = {}) {
+  if (mentionsCurrentDayQuestion(normalized)) {
+    const language = detectLanguage(prompt);
+    const resolved = currentCalendarDate(userContext);
+    if (!resolved.date) return null;
+    return {
+      intent: "calendar_current_day",
+      content: renderCurrentDay(
+        language,
+        resolved.date.weekday,
+        resolved.date.iso,
+        resolved.timeZone,
+      ),
+      confidence: 1.0,
+      evidence: [
+        "calendar:clock:browser",
+        `calendar:today:${resolved.date.iso}`,
+        `calendar:weekday:${resolved.date.weekday.slug}`,
+        `calendar:time_zone:${resolved.timeZone}`,
+        `language:${language}`,
+      ],
+    };
+  }
   if (!mentionsWeekdayContext(normalized)) return null;
   const operation = detectWeekdayOperation(normalized);
   if (!operation) return null;
@@ -5619,7 +5741,7 @@ pub fn apply_command(mut records: Vec<ProjectRecord>, command: ProjectCommand) -
     records
 }`;
 
-function containsAny(value, needles) {
+function containsAnySubstring(value, needles) {
   return needles.some((needle) => value.includes(needle));
 }
 
@@ -5701,7 +5823,7 @@ function extractSoftwareFeatures(prompt) {
       const cleaned = clause.trim();
       if (!cleaned) continue;
       const lower = cleaned.toLowerCase();
-      if (!containsAny(lower, SOFTWARE_FEATURE_MARKERS)) continue;
+      if (!containsAnySubstring(lower, SOFTWARE_FEATURE_MARKERS)) continue;
       const feature = sentenceCase(cleaned);
       if (feature && !features.includes(feature)) features.push(feature);
     }
@@ -5732,22 +5854,22 @@ function isGameUnitTracker(normalized) {
 
 function classifySoftwareRequirement(requirement, gameTracker) {
   const lower = String(requirement || "").toLowerCase();
-  if (gameTracker || containsAny(lower, ["track", "hp", "status", "damage", "cooldown"])) {
+  if (gameTracker || containsAnySubstring(lower, ["track", "hp", "status", "damage", "cooldown"])) {
     return "state_tracking";
   }
-  if (containsAny(lower, ["import", "export", "csv", "backup", "report", "calendar"])) {
+  if (containsAnySubstring(lower, ["import", "export", "csv", "backup", "report", "calendar"])) {
     return "data_exchange";
   }
-  if (containsAny(lower, ["reminder", "notification", "schedule", "weekly"])) {
+  if (containsAnySubstring(lower, ["reminder", "notification", "schedule", "weekly"])) {
     return "automation";
   }
-  if (containsAny(lower, ["validate", "check", "conflict", "audit"])) {
+  if (containsAnySubstring(lower, ["validate", "check", "conflict", "audit"])) {
     return "validation";
   }
-  if (containsAny(lower, ["api", "discord", "telegram", "github", "browser"])) {
+  if (containsAnySubstring(lower, ["api", "discord", "telegram", "github", "browser"])) {
     return "integration";
   }
-  if (containsAny(lower, ["dashboard", "chart", "filter", "progress"])) {
+  if (containsAnySubstring(lower, ["dashboard", "chart", "filter", "progress"])) {
     return "user_interface";
   }
   return "project_behavior";
@@ -5784,14 +5906,14 @@ function deriveSoftwareSubtasks(requirements, gameTracker) {
 }
 
 function detectSoftwareDeliveryMode(normalized) {
-  if (containsAny(normalized, ["manual instruction", "instructions", "no code"])) {
+  if (containsAnySubstring(normalized, ["manual instruction", "instructions", "no code"])) {
     return "manual_instructions";
   }
-  if (containsAny(normalized, ["execute", "run command", "run it", "webvm"])) {
+  if (containsAnySubstring(normalized, ["execute", "run command", "run it", "webvm"])) {
     return "immediate_execution";
   }
   if (
-    containsAny(normalized, ["bash", "shell"]) ||
+    containsAnySubstring(normalized, ["bash", "shell"]) ||
     containsAnyToken(normalized, ["script", "scripts", "commands"])
   ) {
     return "script_generation";
@@ -5800,16 +5922,16 @@ function detectSoftwareDeliveryMode(normalized) {
 }
 
 function detectSoftwareImplementationLanguage(normalized) {
-  if (containsAny(normalized, ["python", "django", "fastapi"])) return "python";
-  if (containsAny(normalized, ["rust", "cargo"])) return "rust";
-  if (containsAny(normalized, ["javascript", "node.js", "node "])) return "javascript";
+  if (containsAnySubstring(normalized, ["python", "django", "fastapi"])) return "python";
+  if (containsAnySubstring(normalized, ["rust", "cargo"])) return "rust";
+  if (containsAnySubstring(normalized, ["javascript", "node.js", "node "])) return "javascript";
   return "typescript";
 }
 
 function softwareApprovalGates(normalized, deliveryMode) {
   const gates = ["task_formalization", "implementation_plan"];
   if (normalized.includes("requirement")) gates.push("requirements");
-  if (containsAny(normalized, ["each step", "step by step"])) gates.push("each_step");
+  if (containsAnySubstring(normalized, ["each step", "step by step"])) gates.push("each_step");
   if (deliveryMode === "code_generation") {
     gates.push("generated_code");
   } else if (deliveryMode === "manual_instructions") {
@@ -5818,7 +5940,7 @@ function softwareApprovalGates(normalized, deliveryMode) {
     gates.push("generated_script");
     gates.push("bash_command");
   }
-  if (containsAny(normalized, ["shell", "bash", "command", "docker", "webvm"])) {
+  if (containsAnySubstring(normalized, ["shell", "bash", "command", "docker", "webvm"])) {
     gates.push("bash_command");
   }
   return [...new Set(gates)].sort();
@@ -9112,7 +9234,7 @@ function resolveFormalizationWithId(formalization, resolvedId) {
   return next;
 }
 
-async function solve(prompt, history, prefs) {
+async function solve(prompt, history, prefs, userContext = {}) {
   const preferences = prefs || {};
   const autoDefinitionFusion = definitionFusionByDefault(preferences);
   const steps = [];
@@ -9250,7 +9372,10 @@ async function solve(prompt, history, prefs) {
     { name: "tryBrainstormingRequest", run: () => tryBrainstormingRequest(prompt, normalized) },
     { name: "tryRoleplayRequest", run: () => tryRoleplayRequest(prompt, normalized) },
     { name: "tryKupiSlona", run: () => tryKupiSlona(prompt, normalized) },
-    { name: "tryCalendarReasoning", run: () => tryCalendarReasoning(prompt, normalized) },
+    {
+      name: "tryCalendarReasoning",
+      run: () => tryCalendarReasoning(prompt, normalized, userContext),
+    },
     { name: "tryArithmetic", run: () => tryArithmetic(prompt) },
     { name: "tryJavaScriptExecution", run: () => tryJavaScriptExecution(prompt) },
     { name: "tryTranslation", run: () => tryTranslation(prompt, normalized) },
@@ -9698,7 +9823,7 @@ self.onmessage = async (event) => {
       ? data.userContext
       : {};
   const answer = attachUserContext(
-    await solve(prompt, history, prefs),
+    await solve(prompt, history, prefs, userContext),
     userContext,
   );
   postMessage({
