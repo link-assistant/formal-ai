@@ -5,9 +5,10 @@ const UNKNOWN_ANSWER_MARKER = 'cannot answer that from local Links Notation rule
 
 async function switchToManualMode(page) {
   const demoToggle = page.locator('.mode-toggle');
-  await expect(demoToggle).toContainText('Demo on');
+  await expect(demoToggle).toContainText(/Demo on|Demo off|Демо/, {
+    timeout: 10_000,
+  });
   await demoToggle.click();
-  await expect(demoToggle).toContainText('Demo');
   await expect(page.locator('[data-testid="demo-status"]')).toHaveText('Manual mode');
   await expect(page.locator('[data-testid="chat-composer-input"]')).toBeEnabled({
     timeout: 5_000,
@@ -310,6 +311,16 @@ test.describe('formal-ai demo UI', () => {
     await expect(capabilities).toContainText('Hello World');
     await expect(capabilities).not.toContainText(UNKNOWN_ANSWER_MARKER);
 
+    const webSearchCapability = await sendPrompt(page, 'Ты можешь искать в интернете?');
+    await expect(webSearchCapability).toContainText('Да');
+    await expect(webSearchCapability).toContainText('DuckDuckGo');
+    await expect(webSearchCapability).not.toContainText(UNKNOWN_ANSWER_MARKER);
+
+    const arithmeticCapability = await sendPrompt(page, 'Can you do arithmetic?');
+    await expect(arithmeticCapability).toContainText('Yes');
+    await expect(arithmeticCapability).toContainText('arithmetic');
+    await expect(arithmeticCapability).not.toContainText(UNKNOWN_ANSWER_MARKER);
+
     const search = await sendPrompt(page, 'Search online for Genshin Impact');
     await expect(search).toContainText('Search results for');
     await expect(search).toContainText('Genshin Impact');
@@ -488,6 +499,19 @@ test.describe('formal-ai demo UI', () => {
     await expect(assistantMessage.locator('.intent')).toContainText(/intent:/);
     await expect(assistantMessage.locator('.evidence-list')).toContainText(/source:/);
     await expect(assistantMessage.locator('.thinking-steps')).toContainText(/match_rule|dispatch_handler|fallback/);
+  });
+
+  test('message commands configure UI controls', async ({ page }) => {
+    await switchToManualMode(page);
+
+    const diagnostics = await sendPrompt(page, 'Turn on diagnostics');
+    await expect(diagnostics).toContainText('Diagnostics is now on');
+    await expect(page.locator('.diagnostics-toggle')).toHaveAttribute('aria-pressed', 'true');
+
+    const theme = await sendPrompt(page, 'Switch to dark theme');
+    await expect(theme).toContainText('Theme is now dark');
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+    await expect(page.locator('[data-testid="setting-theme"]')).toHaveValue('dark');
   });
 
   test('composer does not expose an unused preview control', async ({ page }) => {

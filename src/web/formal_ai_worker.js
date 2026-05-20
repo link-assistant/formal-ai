@@ -1567,8 +1567,583 @@ function containsAny(normalized, values) {
   return values.some((value) => value && normalized.includes(String(value).toLowerCase()));
 }
 
-function tryCapabilities(prompt, normalized) {
+const WEB_SEARCH_CAPABILITY_PHRASES = {
+  en: [
+    "web search",
+    "internet search",
+    "search engines",
+    "can you search the internet",
+    "can you search internet",
+    "can you search the web",
+    "can you search web",
+    "can you search online",
+    "do you have internet search",
+    "do you have web search",
+    "do you have internet access",
+    "are you connected to search engines",
+    "can you use search engines",
+    "can you browse the web",
+  ],
+  ru: [
+    "веб-поиск",
+    "веб поиск",
+    "поиск в интернете",
+    "поисковик",
+    "поисковые системы",
+    "можешь искать в интернете",
+    "можешь искать интернет",
+    "умеешь искать в интернете",
+    "умеешь искать интернет",
+    "можешь искать онлайн",
+    "умеешь искать онлайн",
+    "у тебя есть веб-поиск",
+    "у тебя есть веб поиск",
+    "у тебя есть поиск в интернете",
+    "есть доступ к интернету",
+    "подключен к поисковикам",
+    "подключена к поисковикам",
+    "подключен к поисковым системам",
+    "можешь пользоваться интернетом",
+  ],
+  hi: [
+    "web search",
+    "internet search",
+    "search engine",
+    "इंटरनेट पर खोज सकते",
+    "ऑनलाइन खोज सकते",
+    "इंटरनेट खोज है",
+    "वेब खोज है",
+    "सर्च इंजन से जुड़े",
+    "खोज इंजन से जुड़े",
+  ],
+  zh: [
+    "web search",
+    "搜索引擎",
+    "上网搜索",
+    "搜索互联网",
+    "搜索网络",
+    "联网搜索",
+    "用搜索引擎",
+    "使用搜索引擎",
+    "网络搜索",
+  ],
+};
+
+const FEATURE_CAPABILITIES = [
+  {
+    slug: "web_search",
+    state: "web_search",
+    labels: { en: "web search", ru: "веб-поиск", hi: "web search", zh: "web search" },
+    aliases: WEB_SEARCH_CAPABILITY_PHRASES,
+    examples: {
+      en: "Search the web for Nikola Tesla",
+      ru: "Найди в интернете Никола Тесла",
+      hi: "Search the web for Nikola Tesla",
+      zh: "Search the web for Nikola Tesla",
+    },
+  },
+  {
+    slug: "diagnostics",
+    state: "diagnostics",
+    labels: { en: "diagnostics", ru: "диагностика", hi: "diagnostics", zh: "诊断" },
+    aliases: {
+      en: ["diagnostics", "diagnostic", "trace", "reasoning trace"],
+      ru: ["диагностика", "диагност", "трассировка", "trace"],
+      hi: ["diagnostics", "निदान", "trace"],
+      zh: ["诊断", "trace", "推理跟踪"],
+    },
+    examples: {
+      en: "Turn on diagnostics",
+      ru: "Включи диагностику",
+      hi: "Turn on diagnostics",
+      zh: "开启诊断",
+    },
+  },
+  {
+    slug: "agent_mode",
+    state: "agent_mode",
+    labels: { en: "agent mode", ru: "agent mode", hi: "agent mode", zh: "agent mode" },
+    aliases: {
+      en: ["agent mode", "agent", "multi-step", "autonomous"],
+      ru: ["agent mode", "агент", "многошаг", "автоном"],
+      hi: ["agent mode", "एजेंट", "multi-step"],
+      zh: ["agent mode", "代理", "多步骤"],
+    },
+    examples: {
+      en: "Turn on agent mode",
+      ru: "Включи agent mode",
+      hi: "Turn on agent mode",
+      zh: "开启 agent mode",
+    },
+  },
+  {
+    slug: "definition_fusion",
+    state: "definition_fusion",
+    labels: {
+      en: "automatic definition fusion",
+      ru: "автоматическое слияние определений",
+      hi: "automatic definition fusion",
+      zh: "自动 definition fusion",
+    },
+    aliases: {
+      en: ["definition fusion", "merge definitions", "automatic definition"],
+      ru: ["слияние определений", "объединение определений"],
+      hi: ["definition fusion", "merge definitions"],
+      zh: ["definition fusion", "合并定义"],
+    },
+    examples: {
+      en: "Turn on definition fusion",
+      ru: "Включи слияние определений",
+      hi: "Turn on definition fusion",
+      zh: "开启 definition fusion",
+    },
+  },
+  {
+    slug: "configuration",
+    state: "always",
+    labels: {
+      en: "message-driven configuration",
+      ru: "настройка через сообщения",
+      hi: "message-driven configuration",
+      zh: "消息驱动设置",
+    },
+    aliases: {
+      en: ["configure", "configuration", "settings", "preferences", "theme", "language", "chat style", "composer style", "ui skin"],
+      ru: ["настрой", "конфигурац", "параметр", "тема", "язык", "стиль чата", "оформление"],
+      hi: ["settings", "configuration", "theme", "language", "सेटिंग"],
+      zh: ["设置", "配置", "主题", "语言", "聊天样式"],
+    },
+    examples: {
+      en: "Switch to dark theme",
+      ru: "Переключи тему на темную",
+      hi: "Switch to dark theme",
+      zh: "切换到深色主题",
+    },
+  },
+  {
+    slug: "memory_actions",
+    state: "always",
+    labels: {
+      en: "memory import/export",
+      ru: "импорт и экспорт памяти",
+      hi: "memory import/export",
+      zh: "记忆导入/导出",
+    },
+    aliases: {
+      en: ["export memory", "import memory", "memory export", "memory import"],
+      ru: ["экспорт памяти", "импорт памяти", "память экспорт", "память импорт"],
+      hi: ["memory export", "memory import", "स्मृति निर्यात", "स्मृति आयात"],
+      zh: ["导出记忆", "导入记忆", "memory export", "memory import"],
+    },
+    examples: {
+      en: "Export memory",
+      ru: "Экспортируй память",
+      hi: "Export memory",
+      zh: "导出记忆",
+    },
+  },
+  {
+    slug: "greeting",
+    state: "always",
+    labels: { en: "greetings", ru: "приветствия", hi: "अभिवादन", zh: "问候" },
+    aliases: {
+      en: ["greeting", "greetings", "say hello", "respond to hello"],
+      ru: ["приветствие", "приветствия", "здороваться", "привет"],
+      hi: ["अभिवादन", "नमस्ते", "hello"],
+      zh: ["问候", "打招呼", "你好"],
+    },
+    examples: { en: "Hello", ru: "Привет", hi: "नमस्ते", zh: "你好" },
+  },
+  {
+    slug: "hello_world",
+    state: "always",
+    labels: {
+      en: "Hello World code generation",
+      ru: "генерация Hello World",
+      hi: "Hello World code generation",
+      zh: "Hello World 代码生成",
+    },
+    aliases: {
+      en: ["hello world", "write code", "generate code", "program"],
+      ru: ["hello world", "код", "программу", "программа"],
+      hi: ["hello world", "code", "program", "प्रोग्राम"],
+      zh: ["hello world", "代码", "程序"],
+    },
+    examples: {
+      en: "Write hello world in Rust",
+      ru: "Напиши hello world на Rust",
+      hi: "Write hello world in Rust",
+      zh: "Write hello world in Rust",
+    },
+  },
+  {
+    slug: "concept_lookup",
+    state: "always",
+    labels: { en: "concept lookup", ru: "поиск понятий", hi: "concept lookup", zh: "概念查找" },
+    aliases: {
+      en: ["concept lookup", "concept", "wikipedia lookup"],
+      ru: ["поиск понятий", "понятие"],
+      hi: ["concept", "अवधारणा"],
+      zh: ["概念"],
+    },
+    examples: {
+      en: "What is Wikipedia?",
+      ru: "Что такое Википедия?",
+      hi: "विकिपीडिया क्या है?",
+      zh: "什么是维基百科？",
+    },
+  },
+  {
+    slug: "arithmetic",
+    state: "always",
+    labels: { en: "arithmetic", ru: "арифметика", hi: "अंकगणित", zh: "算术" },
+    aliases: {
+      en: ["arithmetic", "calculate", "math", "2 + 2"],
+      ru: ["арифмет", "считать", "посчитать", "2 + 2"],
+      hi: ["अंकगणित", "गणना", "math", "2 + 2"],
+      zh: ["算术", "计算", "数学", "2 + 2"],
+    },
+    examples: {
+      en: "What is 2 + 2?",
+      ru: "Сколько будет 2 + 2?",
+      hi: "2 + 2 क्या है?",
+      zh: "2 + 2 等于多少？",
+    },
+  },
+  {
+    slug: "translation",
+    state: "always",
+    labels: { en: "translation", ru: "перевод", hi: "अनुवाद", zh: "翻译" },
+    aliases: {
+      en: ["translation", "translate", "language translation"],
+      ru: ["перевод", "переводить", "перевести"],
+      hi: ["अनुवाद", "translate", "translation"],
+      zh: ["翻译", "translation", "translate"],
+    },
+    examples: {
+      en: 'Translate "hello" to Russian',
+      ru: 'Переведи "hello" на русский',
+      hi: 'Translate "hello" to Hindi',
+      zh: 'Translate "hello" to Chinese',
+    },
+  },
+  {
+    slug: "memory",
+    state: "always",
+    labels: {
+      en: "conversation memory",
+      ru: "память разговора",
+      hi: "conversation memory",
+      zh: "会话记忆",
+    },
+    aliases: {
+      en: ["memory", "remember", "recall", "conversation context"],
+      ru: ["память", "помнить", "запомнить", "контекст"],
+      hi: ["स्मृति", "याद", "memory", "context"],
+      zh: ["记忆", "记住", "回忆", "上下文"],
+    },
+    examples: {
+      en: "My name is Ada. What is my name?",
+      ru: "Меня зовут Ада. Как меня зовут?",
+      hi: "My name is Ada. What is my name?",
+      zh: "My name is Ada. What is my name?",
+    },
+  },
+  {
+    slug: "demo_mode",
+    state: "always",
+    labels: { en: "demo mode", ru: "демо-режим", hi: "demo mode", zh: "演示模式" },
+    aliases: {
+      en: ["demo mode", "demo", "scripted demo"],
+      ru: ["демо", "демо-режим", "сценарный демо"],
+      hi: ["demo", "डेमो"],
+      zh: ["演示", "demo"],
+    },
+    examples: { en: "Turn off demo mode", ru: "Выключи демо", hi: "Turn off demo mode", zh: "关闭演示" },
+  },
+  {
+    slug: "http_url",
+    state: "always",
+    labels: {
+      en: "URL fetch/navigation",
+      ru: "HTTP-запросы и переходы по URL",
+      hi: "URL fetch/navigation",
+      zh: "URL fetch/navigation",
+    },
+    aliases: {
+      en: ["http fetch", "fetch url", "open url", "navigate to url", "visit url"],
+      ru: ["http запрос", "открыть url", "перейти на", "сделать запрос"],
+      hi: ["http fetch", "url", "navigate"],
+      zh: ["http fetch", "url", "打开链接", "访问链接"],
+    },
+    examples: {
+      en: "Navigate to example.com",
+      ru: "Перейди на example.com",
+      hi: "Navigate to example.com",
+      zh: "Navigate to example.com",
+    },
+  },
+  {
+    slug: "javascript_execution",
+    state: "always",
+    labels: {
+      en: "JavaScript execution",
+      ru: "выполнение JavaScript",
+      hi: "JavaScript execution",
+      zh: "JavaScript execution",
+    },
+    aliases: {
+      en: ["javascript", "run javascript", "execute javascript"],
+      ru: ["javascript", "js", "выполнить javascript"],
+      hi: ["javascript", "js"],
+      zh: ["javascript", "js"],
+    },
+    examples: {
+      en: "Run JavaScript: 1 + 1",
+      ru: "Выполни JavaScript: 1 + 1",
+      hi: "Run JavaScript: 1 + 1",
+      zh: "Run JavaScript: 1 + 1",
+    },
+  },
+  {
+    slug: "planning",
+    state: "always",
+    labels: {
+      en: "summaries, brainstorming, roleplay, and project planning",
+      ru: "резюме, брейншторминг, роли и планирование проектов",
+      hi: "summaries, brainstorming, roleplay, and project planning",
+      zh: "总结、头脑风暴、角色扮演和项目计划",
+    },
+    aliases: {
+      en: ["summarize", "brainstorm", "roleplay", "software project", "project plan"],
+      ru: ["резюмировать", "брейншторм", "роль", "проект", "план проекта"],
+      hi: ["summary", "brainstorm", "roleplay", "project plan"],
+      zh: ["总结", "头脑风暴", "角色扮演", "项目计划"],
+    },
+    examples: {
+      en: "Brainstorm 5 project ideas",
+      ru: "Предложи 5 идей проекта",
+      hi: "Brainstorm 5 project ideas",
+      zh: "Brainstorm 5 project ideas",
+    },
+  },
+];
+
+function localizedValue(record, language) {
+  if (!record || typeof record !== "object") return "";
+  return record[language] || record.en || "";
+}
+
+function featureAliases(feature, language) {
+  if (!feature || !feature.aliases) return [];
+  return feature.aliases[language] || feature.aliases.en || [];
+}
+
+function detectFeatureCapability(normalized, language) {
+  return FEATURE_CAPABILITIES.find((feature) => {
+    return (
+      containsAny(normalized, featureAliases(feature, language)) ||
+      (language !== "en" && containsAny(normalized, featureAliases(feature, "en")))
+    );
+  }) || null;
+}
+
+function isFeatureCapabilityQuestion(normalized, language) {
+  if (language === "ru") {
+    return containsAny(normalized, [
+      "можешь",
+      "умеешь",
+      "поддерживаешь",
+      "у тебя есть",
+      "есть ли",
+      "доступен",
+      "доступна",
+      "включен",
+      "включена",
+      "подключен",
+      "подключена",
+      "можно ли",
+    ]);
+  }
+  if (language === "zh") {
+    return containsAny(normalized, ["能", "可以", "支持", "有", "启用", "可用"]);
+  }
+  if (language === "hi") {
+    return containsAny(normalized, ["क्या", "सकते", "सकती", "समर्थन", "उपलब्ध"]);
+  }
+  return containsAny(normalized, [
+    "can you",
+    "can formal-ai",
+    "are you able",
+    "are you connected",
+    "do you support",
+    "do you have",
+    "enabled",
+    "available",
+    "can i",
+  ]);
+}
+
+function isFeatureActionRequest(normalized, feature) {
+  if (!feature) return false;
+  if (feature.slug === "arithmetic") {
+    return [
+      "can you calculate ",
+      "can you compute ",
+    ].some((prefix) => normalized.startsWith(prefix));
+  }
+  if (feature.slug === "planning") {
+    return containsAny(normalized, [
+      "can you summarize ",
+      "can you brainstorm ",
+      "can you roleplay ",
+    ]);
+  }
+  return false;
+}
+
+function webSearchStatusContent(language, available, providers) {
+  const providerList = providers || "none";
+  const rrfK = webSearchRrfK();
+  if (language === "ru") {
+    return available
+      ? `Да. В этой конфигурации веб-поиск включен: я могу использовать DuckDuckGo Instant Answer по умолчанию и доступные CORS-провайдеры (\`${providerList}\`) для явных запросов вроде \`Найди в интернете Никола Тесла\`. Результаты из top-10 по каждому провайдеру объединяются через reciprocal rank fusion (k = ${rrfK}). Если провайдеры отключены или заблокированы в браузерной сессии, я сообщу об этом вместо ответа "да".`
+      : "Нет. В этой браузерной сессии веб-поиск сейчас недоступен: браузер offline или все CORS-readable поисковые провайдеры отключены после ошибок. Я могу отвечать по локальным правилам и кэшу, но не буду обращаться к поисковым системам.";
+  }
+  if (language === "zh") {
+    return available
+      ? `可以。当前配置启用了 web search：我会默认使用 DuckDuckGo Instant Answer，并可使用这些 CORS-readable provider（\`${providerList}\`）处理明确的搜索请求，例如 \`Search the web for Nikola Tesla\`。每个 provider 的 top-10 结果会用 reciprocal rank fusion 合并（k = ${rrfK}）。如果浏览器会话中所有 provider 被禁用或阻止，我会说明不可用，而不是回答可以。`
+      : "不可以。当前浏览器会话中 web search 不可用：浏览器 offline，或所有 CORS-readable 搜索 provider 都因错误被禁用。我仍可使用本地规则和缓存回答，但不会调用搜索引擎。";
+  }
+  if (language === "hi") {
+    return available
+      ? `हाँ। इस configuration में web search enabled है: मैं default रूप से DuckDuckGo Instant Answer और उपलब्ध CORS-readable providers (\`${providerList}\`) का उपयोग explicit prompts जैसे \`Search the web for Nikola Tesla\` के लिए कर सकता हूँ। हर provider के top-10 results reciprocal rank fusion (k = ${rrfK}) से merge होते हैं। अगर browser session में providers disabled या blocked हों, तो मैं "हाँ" कहने के बजाय स्थिति बताऊँगा।`
+      : "नहीं। इस browser session में web search अभी available नहीं है: browser offline है या सभी CORS-readable search providers errors के बाद disabled हैं। मैं local rules और cache से जवाब दे सकता हूँ, लेकिन search engines को call नहीं करूँगा।";
+  }
+  return available
+    ? `Yes. Web search is enabled in this configuration: I can use DuckDuckGo Instant Answer by default plus the configured CORS-readable providers (\`${providerList}\`) for explicit prompts such as \`Search the web for Nikola Tesla\`. The top-10 results from each provider are merged with reciprocal rank fusion (k = ${rrfK}). If the browser session disables or blocks every provider, I will say that instead of claiming search is available.`
+    : "No. Web search is unavailable in this browser session: the browser is offline or every CORS-readable search provider has been disabled after errors. I can still answer from local rules and cache, but I will not call search engines.";
+}
+
+function featureAvailability(feature, preferences) {
+  if (!feature) return { available: false, reason: "unknown" };
+  if (feature.state === "web_search") {
+    const providers = WEB_SEARCH_PROVIDERS.filter((provider) => !webSearchIsDisabled(provider.id));
+    const online = typeof navigator === "undefined" || navigator.onLine !== false;
+    return {
+      available: online && providers.length > 0,
+      reason: online && providers.length > 0 ? "none" : "offline_or_no_providers",
+      providers,
+    };
+  }
+  if (feature.state === "diagnostics") {
+    const available = Boolean(preferences && preferences.diagnosticsMode);
+    return { available, reason: available ? "none" : "diagnostics_off" };
+  }
+  if (feature.state === "agent_mode") {
+    const available = Boolean(preferences && preferences.agentMode);
+    return { available, reason: available ? "none" : "agent_mode_off" };
+  }
+  if (feature.state === "definition_fusion") {
+    const available = definitionFusionByDefault(preferences || {});
+    return { available, reason: available ? "none" : "definition_fusion_explicit" };
+  }
+  return { available: true, reason: "none" };
+}
+
+function unavailableReasonText(reason, language) {
+  const reasons = {
+    offline_or_no_providers: {
+      en: "the browser is offline or no search providers are available",
+      ru: "браузер offline или нет доступных поисковых провайдеров",
+      hi: "browser offline है या कोई search provider available नहीं है",
+      zh: "浏览器 offline，或没有可用搜索 provider",
+    },
+    diagnostics_off: {
+      en: "diagnostics are off; enable them to show traces",
+      ru: "диагностика выключена; включите ее, чтобы видеть трассировку",
+      hi: "diagnostics off है; trace दिखाने के लिए इसे enable करें",
+      zh: "诊断已关闭；开启后才会显示 trace",
+    },
+    agent_mode_off: {
+      en: "agent mode is off; multi-step actions require explicit opt-in",
+      ru: "agent mode выключен; для многошаговых действий нужен явный opt-in",
+      hi: "agent mode off है; multi-step actions के लिए explicit opt-in चाहिए",
+      zh: "agent mode 已关闭；多步骤操作需要显式启用",
+    },
+    definition_fusion_explicit: {
+      en: "automatic definition fusion is set to explicit-only",
+      ru: "автоматическое слияние определений работает только после включения режима auto",
+      hi: "automatic definition fusion के लिए auto mode enable करना होगा",
+      zh: "自动 definition fusion 需要切换到 auto 模式",
+    },
+  };
+  return localizedValue(reasons[reason] || { en: "not available" }, language);
+}
+
+function featureCapabilityContent(feature, language, availability) {
+  if (feature.slug === "web_search") {
+    const providers = availability.providers || [];
+    return webSearchStatusContent(
+      language,
+      availability.available,
+      providers.map((provider) => provider.id).join(", "),
+    );
+  }
+  const label = localizedValue(feature.labels, language);
+  const example = localizedValue(feature.examples, language);
+  if (availability.available) {
+    if (language === "ru") {
+      return `Да. Возможность «${label}» доступна в этой конфигурации. Пример сообщения: \`${example}\`.`;
+    }
+    if (language === "zh") {
+      return `可以。当前配置中「${label}」可用。示例消息：\`${example}\`。`;
+    }
+    if (language === "hi") {
+      return `हाँ। इस configuration में \`${label}\` available है। Example message: \`${example}\`.`;
+    }
+    return `Yes. ${label} is available in this configuration. Example message: \`${example}\`.`;
+  }
+  const reason = unavailableReasonText(availability.reason, language);
+  if (language === "ru") {
+    return `Нет. Возможность «${label}» сейчас недоступна в этой конфигурации: ${reason}. Пример сообщения после включения: \`${example}\`.`;
+  }
+  if (language === "zh") {
+    return `不可以。当前配置中「${label}」不可用：${reason}。启用后的示例消息：\`${example}\`。`;
+  }
+  if (language === "hi") {
+    return `नहीं। इस configuration में \`${label}\` अभी available नहीं है: ${reason}. Enable करने के बाद example message: \`${example}\`.`;
+  }
+  return `No. ${label} is not available in this configuration: ${reason}. Example message after enabling it: \`${example}\`.`;
+}
+
+function tryFeatureCapabilityStatus(prompt, normalized, language, preferences) {
+  if (!isFeatureCapabilityQuestion(normalized, language)) return null;
+  const feature = detectFeatureCapability(normalized, language);
+  if (!feature) return null;
+  if (isFeatureActionRequest(normalized, feature)) return null;
+  const availability = featureAvailability(feature, preferences || {});
+  const providers = WEB_SEARCH_PROVIDERS.filter((provider) => !webSearchIsDisabled(provider.id));
+  return {
+    intent: "capabilities",
+    content: featureCapabilityContent(feature, language, availability),
+    confidence: availability.available ? 0.95 : 0.6,
+    evidence: [
+      "handler:capabilities",
+      `feature:question:${feature.slug}`,
+      availability.available
+        ? `feature:available:${feature.slug}`
+        : `feature:unavailable:${feature.slug}:${availability.reason}`,
+      ...(feature.slug === "web_search" ? providers.map((provider) => `web_search:provider:${provider.id}`) : []),
+      `language:${language}`,
+    ],
+  };
+}
+
+function tryCapabilities(prompt, normalized, preferences) {
   const language = detectLanguage(prompt);
+  const featureStatus = tryFeatureCapabilityStatus(prompt, normalized, language, preferences);
+  if (featureStatus) return featureStatus;
   const isCapabilities =
     language === "ru"
       ? normalized.includes("что ты умеешь") ||
@@ -1602,12 +2177,12 @@ function tryCapabilities(prompt, normalized) {
   if (!isCapabilities) return null;
   const content =
     language === "ru"
-      ? "Я formal-ai — детерминированный символьный ИИ. Вот что я умею:\n\n- **Приветствия**: отвечаю на «Привет», «Здравствуйте» и т.п.\n- **Hello World**: генерирую программы на Rust, Python, JavaScript, Go, C и других языках.\n- **Поиск понятий**: объясняю термины — попробуйте «Что такое Википедия?»\n- **Арифметика**: вычисляю выражения — например, «Сколько будет 2 + 2?»\n- **Перевод**: перевожу фразы между языками.\n- **Память**: помню контекст разговора в рамках сессии.\n\nЯ работаю на основе локальных символьных правил, без нейросетевого инференса."
+      ? "Я formal-ai — детерминированный символьный ИИ. Вот что я умею:\n\n- **Приветствия**: отвечаю на «Привет», «Здравствуйте» и т.п.\n- **Hello World**: генерирую программы на Rust, Python, JavaScript, Go, C и других языках.\n- **Веб-поиск**: ищу в интернете через DuckDuckGo, Wikipedia и Wikidata, когда поиск доступен.\n- **Поиск понятий**: объясняю термины — попробуйте «Что такое Википедия?»\n- **Арифметика**: вычисляю выражения — например, «Сколько будет 2 + 2?»\n- **Перевод**: перевожу фразы между языками.\n- **Память**: помню контекст разговора в рамках сессии.\n- **Настройки и действия**: через сообщения можно включать диагностику/демо/agent mode, менять тему, язык, стиль чата и экспортировать или импортировать память.\n\nЯ работаю на основе локальных символьных правил, без нейросетевого инференса."
       : language === "zh"
-        ? "我是 formal-ai —— 一个确定性的符号化 AI。以下是我的功能：\n\n- **问候**：回应「你好」等问候语。\n- **Hello World**：生成 Rust、Python、JavaScript、Go、C 等语言的示例程序。\n- **概念查找**：解释术语，例如「什么是维基百科？」\n- **算术**：计算表达式，例如「2 + 2 等于多少？」\n- **翻译**：在语言之间翻译短语。\n- **记忆**：在会话中记住上下文。\n\n我基于本地符号规则运行，不进行神经网络推理。"
+        ? "我是 formal-ai —— 一个确定性的符号化 AI。以下是我的功能：\n\n- **问候**：回应「你好」等问候语。\n- **Hello World**：生成 Rust、Python、JavaScript、Go、C 等语言的示例程序。\n- **Web search**：在可用时通过 DuckDuckGo、Wikipedia 和 Wikidata 搜索互联网。\n- **概念查找**：解释术语，例如「什么是维基百科？」\n- **算术**：计算表达式，例如「2 + 2 等于多少？」\n- **翻译**：在语言之间翻译短语。\n- **记忆**：在会话中记住上下文。\n- **设置和操作**：可通过消息开启诊断、演示、agent mode，切换主题、语言、聊天样式，并导出或导入记忆。\n\n我基于本地符号规则运行，不进行神经网络推理。"
         : language === "hi"
-          ? "मैं formal-ai हूँ — एक नियतात्मक प्रतीकात्मक AI। मैं यह कर सकता हूँ:\n\n- **अभिवादन**: «नमस्ते» आदि का जवाब देना।\n- **Hello World**: Rust, Python, JavaScript, Go, C आदि में प्रोग्राम बनाना।\n- **अवधारणा खोज**: शब्दों को समझाना — जैसे «विकिपीडिया क्या है?»\n- **अंकगणित**: गणनाएँ — जैसे «2 + 2 क्या है?»\n- **अनुवाद**: भाषाओं के बीच अनुवाद।\n- **स्मृति**: सत्र में संदर्भ याद रखना।\n\nमैं स्थानीय प्रतीकात्मक नियमों पर चलता हूँ, कोई न्यूरल इन्फेरेन्स नहीं।"
-          : "I am formal-ai, a deterministic symbolic AI. Here is what I can do:\n\n- **Greetings**: respond to «Hi», «Hello», and similar.\n- **Hello World**: generate programs in Rust, Python, JavaScript, Go, C, and more.\n- **Concept lookup**: explain terms — try «What is Wikipedia?»\n- **Arithmetic**: evaluate expressions — try «What is 2 + 2?»\n- **Translation**: translate phrases between languages.\n- **Memory**: recall context within the current session.\n\nI run on local symbolic rules, without any neural network inference.";
+          ? "मैं formal-ai हूँ — एक नियतात्मक प्रतीकात्मक AI। मैं यह कर सकता हूँ:\n\n- **अभिवादन**: «नमस्ते» आदि का जवाब देना।\n- **Hello World**: Rust, Python, JavaScript, Go, C आदि में प्रोग्राम बनाना।\n- **Web search**: उपलब्ध होने पर DuckDuckGo, Wikipedia, और Wikidata से इंटरनेट में खोजना।\n- **अवधारणा खोज**: शब्दों को समझाना — जैसे «विकिपीडिया क्या है?»\n- **अंकगणित**: गणनाएँ — जैसे «2 + 2 क्या है?»\n- **अनुवाद**: भाषाओं के बीच अनुवाद।\n- **स्मृति**: सत्र में संदर्भ याद रखना।\n- **Settings और actions**: messages से diagnostics/demo/agent mode बदलना, theme/language/chat style बदलना, और memory export/import करना।\n\nमैं स्थानीय प्रतीकात्मक नियमों पर चलता हूँ, कोई न्यूरल इन्फेरेन्स नहीं।"
+          : "I am formal-ai, a deterministic symbolic AI. Here is what I can do:\n\n- **Greetings**: respond to «Hi», «Hello», and similar.\n- **Hello World**: generate programs in Rust, Python, JavaScript, Go, C, and more.\n- **Web search**: search the internet through DuckDuckGo, Wikipedia, and Wikidata when available.\n- **Concept lookup**: explain terms — try «What is Wikipedia?»\n- **Arithmetic**: evaluate expressions — try «What is 2 + 2?»\n- **Translation**: translate phrases between languages.\n- **Memory**: recall context within the current session.\n- **Settings and actions**: configure diagnostics, demo mode, agent mode, theme, language, chat style, and memory import/export from messages.\n\nI run on local symbolic rules, without any neural network inference.";
   return {
     intent: "capabilities",
     content,
@@ -6601,7 +7176,7 @@ async function solve(prompt, history, prefs) {
     }, formalizationContext);
   }
 
-  const capabilities = tryCapabilities(prompt, normalized);
+  const capabilities = tryCapabilities(prompt, normalized, preferences);
   if (capabilities) {
     events.push(`handler:${capabilities.intent}`);
     steps.push({ step: "dispatch_handler", detail: "tryCapabilities" });
