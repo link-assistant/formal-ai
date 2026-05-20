@@ -36,11 +36,12 @@ use crate::solver_handlers::{
     finalize_simple, try_algorithm, try_arithmetic, try_brainstorming_request, try_capabilities,
     try_clarification, try_concept_lookup, try_conversation_memory, try_coreference_request,
     try_definition_merge, try_definition_merge_by_default, try_execution_failure, try_fact_lookup,
-    try_hive_mind_lookup, try_http_fetch, try_ill_formed, try_javascript_execution,
-    try_meta_explanation, try_network_query, try_opinion_question, try_punctuation_only_prompt,
-    try_roleplay_request, try_shell_refusal, try_software_project_request, try_source_conflict,
-    try_source_refresh, try_summarization_request, try_translation, try_url_navigate,
-    try_web_search, try_who_is_question, try_write_script,
+    try_feature_capability, try_hive_mind_lookup, try_http_fetch, try_ill_formed,
+    try_javascript_execution, try_meta_explanation, try_network_query, try_opinion_question,
+    try_punctuation_only_prompt, try_roleplay_request, try_shell_refusal,
+    try_software_project_request, try_source_conflict, try_source_refresh,
+    try_summarization_request, try_translation, try_url_navigate, try_web_search,
+    try_who_is_question, try_write_script, CapabilityRuntime,
 };
 use crate::solver_handlers_policy::{try_kupi_slona, try_physical_action_question};
 use crate::solver_helpers::{
@@ -457,6 +458,16 @@ impl UniversalSolver {
         // stays outside the registry. Every other specialized handler is a
         // plain function and runs through `SPECIALIZED_HANDLERS` below.
         if let Some(answer) = self.try_diagnostic(prompt, &normalized, log) {
+            return Some(answer);
+        }
+        let capability_runtime = CapabilityRuntime::new(
+            self.config.offline,
+            self.config.agent_mode,
+            self.config.diagnostic_mode,
+            self.config.definition_fusion_by_default,
+        );
+        if let Some(answer) = try_feature_capability(prompt, &normalized, log, capability_runtime) {
+            log.append("specialized_handler", "feature_capability".to_owned());
             return Some(answer);
         }
         for (name, handler) in SPECIALIZED_HANDLERS {

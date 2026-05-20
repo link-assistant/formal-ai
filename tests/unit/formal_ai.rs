@@ -39,6 +39,45 @@ fn shabbat_shalom_greeting_is_recognized_as_greeting() {
     }
 }
 
+// Issue #152: "how are you?" small talk used to fall through to the unknown
+// fallback. The follow-up review made this a supported-language invariant,
+// not a Russian-only route.
+#[test]
+fn how_are_you_prompt_is_recognized_as_greeting_in_supported_languages() {
+    let cases = [
+        ("How are you?", "language:en"),
+        ("Как твои дела?", "language:ru"),
+        ("आप कैसे हैं?", "language:hi"),
+        ("你好吗?", "language:zh"),
+    ];
+
+    for (prompt, language_link) in cases {
+        let response = FormalAiEngine.answer(prompt);
+
+        assert_eq!(
+            response.intent, "greeting",
+            "small-talk prompt {prompt:?} should be recognized as greeting, got intent {:?}",
+            response.intent
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == "response:greeting"),
+            "response should cite response:greeting for {prompt:?}, got {:?}",
+            response.evidence_links
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == language_link),
+            "response should keep {language_link} for {prompt:?}, got {:?}",
+            response.evidence_links
+        );
+    }
+}
+
 // Issue #67: "пока" and similar farewell words were returned as unknown intent.
 #[test]
 fn farewell_prompts_are_recognized_as_farewell() {

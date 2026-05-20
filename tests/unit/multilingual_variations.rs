@@ -96,6 +96,28 @@ fn greeting_chinese_variations_match() {
     assert_intent(&prompts, "greeting", "response:greeting");
 }
 
+// Issue #152 follow-up: "how are you?" small talk is greeting intent, not a
+// language-specific one-off. Keep the semantic family covered in every
+// language declared by `agent_info.supported_languages`.
+#[test]
+fn greeting_how_are_you_variations_match_across_languages() {
+    let prompts = [
+        "How are you?",
+        "how are you doing?",
+        "How do you do?",
+        "Как твои дела?",
+        "как дела",
+        "как у вас дела?",
+        "आप कैसे हैं?",
+        "तुम कैसे हो?",
+        "क्या हाल है?",
+        "你好吗?",
+        "你怎么样?",
+        "最近怎么样?",
+    ];
+    assert_intent(&prompts, "greeting", "response:greeting");
+}
+
 // -----------------------------------------------------------------------------
 // Farewells — 8-9 variants per language.
 // -----------------------------------------------------------------------------

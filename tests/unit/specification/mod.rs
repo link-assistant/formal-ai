@@ -9,6 +9,7 @@
 //! The suite is split by surface so future PRs can grow each area:
 //!
 //! - `chat_surface`: bounded chat, identity, greeting, diagnostics defaults.
+//! - `capabilities`: supported feature-status questions and availability.
 //! - `code_generation`: top programming languages, execution evidence,
 //!   unsupported-execution honesty.
 //! - `multilingual`: English, Russian, Hindi, and Chinese conversations.
@@ -27,6 +28,7 @@
 
 mod agent_isolation;
 mod calculator_delegation;
+mod capabilities;
 mod chat_surface;
 mod code_generation;
 mod definition_fusion;

@@ -279,6 +279,8 @@ button {
 }
 
 .topbar {
+  width: 100%;
+  min-width: 0;
   min-height: 64px;
   display: flex;
   align-items: center;
@@ -294,10 +296,21 @@ button {
   display: flex;
   align-items: center;
   gap: 12px;
+  min-width: 0;
+}
+
+.brand {
+  flex: 0 0 auto;
+}
+
+.topbar-actions {
+  flex: 1 1 auto;
+  justify-content: flex-end;
 }
 
 .brand strong {
   font-size: 18px;
+  white-space: nowrap;
 }
 
 .brand-version {
@@ -339,15 +352,19 @@ button {
   color: #40515f;
   font-size: 14px;
   font-weight: 700;
+  white-space: nowrap;
+  flex: 0 0 auto;
 }
 
 .mode-toggle,
 .diagnostics-toggle,
 .agent-toggle,
 .mobile-menu-toggle,
+.sidebar-toggle,
 .drawer-close,
 .drawer-action,
 .report-button,
+.source-code-button,
 .memory-button,
 .send-button,
 .prompt-list button {
@@ -362,7 +379,9 @@ button {
 .diagnostics-toggle,
 .agent-toggle,
 .mobile-menu-toggle,
+.sidebar-toggle,
 .report-button,
+.source-code-button,
 .memory-button {
   display: inline-flex;
   align-items: center;
@@ -399,6 +418,23 @@ button {
 
 .mobile-menu-toggle .btn-icon {
   font-size: 20px;
+}
+
+/* Issue #153: desktop-only sidebar collapse toggle. Hidden on the mobile
+ * breakpoint where the slide-in drawer already provides the equivalent
+ * affordance. */
+.sidebar-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 10px;
+  min-height: 38px;
+  flex: 0 0 auto;
+}
+
+.sidebar-toggle-icon {
+  font-size: 14px;
+  line-height: 1;
 }
 
 .menu-icon {
@@ -456,7 +492,44 @@ button {
 }
 
 .drawer-menu-section {
-  display: none;
+  flex: 0 0 auto;
+  display: grid;
+  gap: 8px;
+  padding: 10px 18px 12px;
+  border-bottom: 1px solid #d6dde1;
+  background: #f7f8fa;
+}
+
+.drawer-menu-section h2 {
+  margin: 0;
+  color: #40515f;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.drawer-action-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 6px;
+}
+
+.drawer-action {
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  padding: 0 10px;
+  text-align: left;
+  text-decoration: none;
+  white-space: normal;
+}
+
+.drawer-action span:last-child {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .memory-status {
@@ -465,7 +538,8 @@ button {
   align-self: center;
 }
 
-.report-button {
+.report-button,
+.source-code-button {
   display: inline-flex;
   align-items: center;
   text-decoration: none;
@@ -481,12 +555,26 @@ button {
   color: #ffffff;
 }
 
+/* Issue #153: when the desktop sidebar is collapsed the toggle keeps its
+ * "expand" affordance subtle — no green press state, since the action label
+ * already flips. */
+.sidebar-toggle.is-collapsed {
+  background: #eef2f1;
+}
+
 .workspace {
   --context-panel-width: 300px;
   min-height: 0;
   display: grid;
   grid-template-columns: minmax(220px, var(--context-panel-width)) 10px minmax(0, 1fr);
   overflow: hidden;
+}
+
+/* Issue #153: when the desktop sidebar is collapsed the workspace gives the
+ * chat the full viewport width. The aside and resizer are display:none, so the
+ * remaining chat panel must be laid out in a single full-width grid column. */
+.workspace.sidebar-collapsed {
+  grid-template-columns: minmax(0, 1fr);
 }
 
 .context-panel {
@@ -498,6 +586,14 @@ button {
   padding: 0;
   border-right: 1px solid #d6dde1;
   background: #f7f8fa;
+}
+
+.context-panel.is-desktop-collapsed {
+  display: none;
+}
+
+.workspace.sidebar-collapsed .context-resizer {
+  display: none;
 }
 
 .context-resizer {
@@ -724,8 +820,11 @@ body.is-resizing-context {
   white-space: nowrap;
 }
 
+/* Issue #180: prompt list is always a single column so it never competes for
+ * width with the conversation list in the left menu. */
 .prompt-list {
   display: grid;
+  grid-template-columns: 1fr;
   gap: 8px;
 }
 
@@ -903,7 +1002,15 @@ body.is-resizing-context {
   color: #1e252b;
 }
 
+/* Issue #180: diagnostic badges (intent label, evidence chips, tool mode
+ * tags) were rendered as inline pills with no wrap rules, so long ids
+ * (`intent:web_search`, evidence prefixes such as
+ * `web_search:provider:internet-archive`) overflowed the message body and
+ * the rounded background bled past the text. Allow them to wrap to the
+ * next line, soft-break long tokens, and keep the pill shape intact. */
 .intent {
+  display: inline-block;
+  max-width: 100%;
   border: 1px solid #dac78b;
   border-radius: 999px;
   padding: 2px 7px;
@@ -911,6 +1018,9 @@ body.is-resizing-context {
   color: #6c5512;
   font-size: 12px;
   font-weight: 800;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .markdown-body {
@@ -955,15 +1065,21 @@ body.is-resizing-context {
   gap: 6px;
   flex-wrap: wrap;
   margin-top: 10px;
+  min-width: 0;
 }
 
 .evidence-list span {
+  display: inline-block;
+  max-width: 100%;
   border: 1px solid #cbd6db;
   border-radius: 999px;
   padding: 3px 7px;
   color: #4b5e6b;
   font-size: 12px;
   font-weight: 700;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .thinking-steps {
@@ -988,6 +1104,296 @@ body.is-resizing-context {
 
 .thinking-steps li + li {
   margin-top: 4px;
+}
+
+.diagnostics-steps,
+.diagnostics-tools {
+  margin-top: 12px;
+  border-top: 1px solid #dce4e7;
+  padding-top: 10px;
+  color: #334650;
+  font-size: 13px;
+}
+
+.diagnostics-steps > strong,
+.diagnostics-tools > strong {
+  display: block;
+  margin-bottom: 8px;
+  color: #40515f;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.diagnostics-step-list,
+.diagnostics-tool-list {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding-left: 22px;
+}
+
+.diagnostics-step,
+.diagnostics-tool {
+  padding-left: 2px;
+}
+
+.diagnostics-detail {
+  overflow: hidden;
+  border: 1px solid #cfdadf;
+  border-radius: 8px;
+  background: #f8fafb;
+}
+
+/* Issue #180: diagnostics summary rows must wrap long step names and detail
+ * fragments onto multiple lines so the rounded chevron does not collide with
+ * the name when the panel is narrow. */
+.diagnostics-detail > summary {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-height: 38px;
+  padding: 8px 10px;
+  color: #1f2d36;
+  cursor: pointer;
+  list-style: none;
+}
+
+.diagnostics-detail > summary::-webkit-details-marker {
+  display: none;
+}
+
+.diagnostics-detail > summary::before {
+  content: "▶";
+  flex: 0 0 auto;
+  color: #5f6d78;
+  font-size: 11px;
+}
+
+.diagnostics-detail[open] > summary::before {
+  content: "▼";
+}
+
+.diagnostics-step-name,
+.diagnostics-tool-name {
+  min-width: 0;
+  flex: 0 1 auto;
+  font-weight: 800;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  line-height: 1.4;
+}
+
+.diagnostics-step-summary,
+.diagnostics-tool-summary {
+  min-width: 0;
+  flex: 1 1 100%;
+  color: #5f6d78;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  line-height: 1.4;
+}
+
+.diagnostics-detail-body {
+  display: grid;
+  gap: 10px;
+  border-top: 1px solid #dce4e7;
+  padding: 10px;
+  background: #ffffff;
+}
+
+.diagnostics-tool-section {
+  display: grid;
+  gap: 6px;
+}
+
+.diagnostics-section-label {
+  color: #657584;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.diagnostics-payload,
+.diagnostics-tool-reasoning {
+  margin: 0;
+  max-width: 100%;
+  overflow: auto;
+  border: 1px solid #dce4e7;
+  border-radius: 6px;
+  padding: 8px 10px;
+  background: #f5f8f9;
+  color: #1f2d36;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.45;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* Issue #180: raw HTTP exchange panel. One block per worker turn that
+ * surfaces the per-provider status row and an expandable details element
+ * for every fetch the worker performed. */
+.diagnostics-http {
+  margin-top: 12px;
+  display: grid;
+  gap: 12px;
+  padding-top: 10px;
+  border-top: 1px solid #dce4e7;
+  color: #334650;
+  font-size: 13px;
+}
+
+.diagnostics-http-section {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.diagnostics-http-provider-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.diagnostics-http-provider {
+  padding: 4px 8px;
+  border: 1px solid #dce4e7;
+  border-radius: 6px;
+  background: #f8fafb;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  line-height: 1.45;
+}
+
+.diagnostics-http-provider.is-error {
+  border-color: #ecc2c2;
+  background: #fdf3f3;
+  color: #7d2c2c;
+}
+
+.diagnostics-http-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.diagnostics-http-item {
+  display: block;
+  min-width: 0;
+}
+
+.diagnostics-http-status {
+  flex: 1 1 100%;
+  font-size: 11px;
+  font-weight: 700;
+  color: #5f6d78;
+  overflow-wrap: anywhere;
+}
+
+.diagnostics-http-links {
+  background: #f0f4f7;
+  border-color: #cbd6db;
+}
+
+.diagnostics-http-empty {
+  margin: 0;
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: #f5f8f9;
+  color: #5f6d78;
+  font-size: 12px;
+}
+
+/* Issue #153: formalization view — Subject-Verb-Object tuple rendering for
+   the `formalize` and `formalize_resolved` diagnostics steps. The raw prompt
+   is shown on the left with an arrow → to the canonical tuple, then the SVO
+   slots are listed below with one-letter labels (S/V/O). */
+.formalization-view {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 13px;
+  color: #2c3a44;
+  background: #f5f8f9;
+  border: 1px solid #cfdadf;
+  border-radius: 6px;
+  padding: 10px 12px;
+}
+
+.formalization-raw {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.formalization-raw code,
+.formalization-tuple {
+  background: transparent;
+  color: #1f2d36;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 13px;
+  word-break: break-word;
+}
+
+.formalization-arrow {
+  color: #6b7d89;
+  font-weight: 700;
+}
+
+.formalization-svo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.formalization-svo-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #6b7d89;
+}
+
+.formalization-svo-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.formalization-svo-list li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.formalization-slot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  background: #e3ebee;
+  color: #40515f;
+  font-weight: 700;
+  font-size: 12px;
+}
+
+.formalization-svo-list code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 13px;
+  color: #1f2d36;
 }
 
 .message-actions {
@@ -1273,23 +1679,32 @@ textarea:disabled {
   cursor: not-allowed;
 }
 
-@media (max-width: 1100px) {
-  .topbar {
-    gap: 10px;
-  }
+.send-spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.45);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: send-spinner-rotate 0.85s linear infinite;
+}
 
+@keyframes send-spinner-rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Issue #153: desktop overflow first keeps the canonical controls visible and
+ * switches action labels to icon-only before any button can be clipped. The
+ * mobile drawer carries the full action list once the topbar gets tight enough
+ * that lower-priority actions have to leave the row. */
+@media (max-width: 1500px) {
   .topbar-actions {
     gap: 8px;
   }
 
-  /* Issue #94: switch to icon-only action buttons before labels have to wrap
-   * or force the topbar onto multiple rows. */
   .topbar-actions .btn-label {
-    display: none;
-  }
-
-  .demo-status,
-  .memory-status {
     display: none;
   }
 
@@ -1297,9 +1712,21 @@ textarea:disabled {
   .topbar-actions .diagnostics-toggle,
   .topbar-actions .agent-toggle,
   .topbar-actions .report-button,
+  .topbar-actions .source-code-button,
   .topbar-actions .memory-button {
     min-width: 0;
     padding: 0 10px;
+  }
+}
+
+@media (max-width: 1100px) {
+  .topbar {
+    gap: 10px;
+  }
+
+  .demo-status,
+  .memory-status {
+    display: none;
   }
 }
 
@@ -1332,7 +1759,11 @@ textarea:disabled {
     overflow: hidden;
   }
 
-  .demo-status {
+  .demo-status,
+  .topbar-actions [data-menu-priority="4"],
+  .topbar-actions [data-menu-priority="5"],
+  .topbar-actions [data-menu-priority="6"],
+  .topbar-actions [data-menu-priority="7"] {
     display: none;
   }
 
@@ -1351,9 +1782,16 @@ textarea:disabled {
   .topbar-actions .diagnostics-toggle,
   .topbar-actions .agent-toggle,
   .topbar-actions .report-button,
+  .topbar-actions .source-code-button,
   .topbar-actions .memory-button {
     min-width: 0;
     padding: 0 10px;
+  }
+
+  /* Issue #153: on mobile the desktop sidebar toggle disappears — the
+   * hamburger drawer drives all sidebar visibility there. */
+  .sidebar-toggle {
+    display: none;
   }
 
   .mobile-menu-toggle {
@@ -1371,7 +1809,8 @@ textarea:disabled {
 
   /* Issue #27: the sidebar slides in over the chat as a drawer rather than
    * eating into the message viewport. */
-  .context-panel {
+  .context-panel,
+  .context-panel.is-desktop-collapsed {
     position: fixed;
     top: 0;
     bottom: 0;
@@ -1386,10 +1825,18 @@ textarea:disabled {
     transform: translateX(-100%);
     transition: transform 200ms ease;
     box-shadow: 4px 0 18px rgba(15, 30, 40, 0.18);
+    display: flex;
   }
 
   .context-panel.is-mobile-open {
     transform: translateX(0);
+  }
+
+  /* Issue #153: on mobile the desktop collapse flag is irrelevant — the
+   * drawer's visibility is owned by `.is-mobile-open` alone. */
+  .workspace.sidebar-collapsed {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(0, 1fr);
   }
 
   .drawer-brand {
@@ -1438,9 +1885,12 @@ textarea:disabled {
     background: #f7f8fa;
   }
 
+  /* Issue #180: keep the left-menu lists single-column on mobile too. The
+   * old two-column grid wrapped the labels and made the conversation list
+   * scrollable in a tiny strip below the drawer actions. */
   .drawer-action-list {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: 1fr;
     gap: 6px;
   }
 
@@ -1452,11 +1902,12 @@ textarea:disabled {
     gap: 8px;
     padding: 0 10px;
     text-decoration: none;
-    white-space: nowrap;
+    white-space: normal;
+    overflow-wrap: anywhere;
   }
 
   .prompt-list {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: 1fr;
   }
 
   .messages {
@@ -1575,6 +2026,9 @@ textarea:disabled {
   border-radius: 4px;
   background: rgba(120, 140, 255, 0.18);
   color: #4a5acc;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  line-height: 1.4;
 }
 
 .tool-mode-agent .tool-mode {
@@ -1686,6 +2140,8 @@ textarea:disabled {
 :root[data-theme="dark"] .diagnostics-toggle,
 :root[data-theme="dark"] .agent-toggle,
 :root[data-theme="dark"] .mobile-menu-toggle,
+:root[data-theme="dark"] .sidebar-toggle,
+:root[data-theme="dark"] .source-code-button,
 :root[data-theme="dark"] .drawer-close,
 :root[data-theme="dark"] .drawer-action,
 :root[data-theme="dark"] .report-button,
@@ -1697,10 +2153,18 @@ textarea:disabled {
 :root[data-theme="dark"] .conversation-new,
 :root[data-theme="dark"] .conversation-entry-button,
 :root[data-theme="dark"] .conversation-delete,
-:root[data-theme="dark"] .fetch-iframe-control {
+:root[data-theme="dark"] .fetch-iframe-control,
+:root[data-theme="dark"] .sidebar-section-collapse {
   border-color: #4a524e;
   background: #242826;
   color: #ece7df;
+}
+
+:root[data-theme="dark"] .sidebar-toggle:hover,
+:root[data-theme="dark"] .source-code-button:hover,
+:root[data-theme="dark"] .sidebar-section-collapse:hover {
+  border-color: #6cc5a6;
+  background: #28332f;
 }
 
 :root[data-theme="dark"] .conversation-new {
@@ -1779,12 +2243,66 @@ textarea:disabled {
   color: #c9c1b6;
 }
 
+/* Issue #180: dark theme parity for the new diagnostics-http panel. */
+:root[data-theme="dark"] .diagnostics-http {
+  border-top-color: #343a3d;
+  color: #c9c1b6;
+}
+
+:root[data-theme="dark"] .diagnostics-http-provider {
+  border-color: #4a524e;
+  background: #1f2322;
+  color: #d8d0c4;
+}
+
+:root[data-theme="dark"] .diagnostics-http-provider.is-error {
+  border-color: #6c3030;
+  background: #2c1d1d;
+  color: #efc5c5;
+}
+
+:root[data-theme="dark"] .diagnostics-http-status {
+  color: #b7b0a7;
+}
+
+:root[data-theme="dark"] .diagnostics-http-links {
+  border-color: #4a524e;
+  background: #1c1f1e;
+}
+
+:root[data-theme="dark"] .diagnostics-http-empty {
+  background: #1f2322;
+  color: #b7b0a7;
+}
+
 :root[data-theme="dark"] .thinking-steps {
   border-top-color: #343a3d;
 }
 
 :root[data-theme="dark"] .thinking-steps strong {
   color: #d8d0c4;
+}
+
+:root[data-theme="dark"] .formalization-view {
+  background: #232726;
+  border-color: #343a3d;
+  color: #d8d0c4;
+}
+
+:root[data-theme="dark"] .formalization-raw code,
+:root[data-theme="dark"] .formalization-tuple,
+:root[data-theme="dark"] .formalization-svo-list code {
+  color: #ece7df;
+}
+
+:root[data-theme="dark"] .formalization-arrow,
+:root[data-theme="dark"] .formalization-svo-label {
+  color: #b7b0a7;
+}
+
+:root[data-theme="dark"] .formalization-slot {
+  background: #2c322f;
+  color: #c9d8d3;
 }
 
 :root[data-theme="dark"] .message-actions a {
@@ -1944,6 +2462,8 @@ textarea:disabled {
   :root:not([data-theme="light"]) .diagnostics-toggle,
   :root:not([data-theme="light"]) .agent-toggle,
   :root:not([data-theme="light"]) .mobile-menu-toggle,
+  :root:not([data-theme="light"]) .sidebar-toggle,
+  :root:not([data-theme="light"]) .source-code-button,
   :root:not([data-theme="light"]) .drawer-close,
   :root:not([data-theme="light"]) .drawer-action,
   :root:not([data-theme="light"]) .report-button,
@@ -1955,7 +2475,8 @@ textarea:disabled {
   :root:not([data-theme="light"]) .conversation-new,
   :root:not([data-theme="light"]) .conversation-entry-button,
   :root:not([data-theme="light"]) .conversation-delete,
-  :root:not([data-theme="light"]) .fetch-iframe-control {
+  :root:not([data-theme="light"]) .fetch-iframe-control,
+  :root:not([data-theme="light"]) .sidebar-section-collapse {
     border-color: #4a524e;
     background: #242826;
     color: #ece7df;
@@ -1971,7 +2492,10 @@ textarea:disabled {
   :root:not([data-theme="light"]) .prompt-list button:hover,
   :root:not([data-theme="light"]) .composer-action-button:hover,
   :root:not([data-theme="light"]) .composer-menu-item:hover,
-  :root:not([data-theme="light"]) .fetch-iframe-control:hover {
+  :root:not([data-theme="light"]) .fetch-iframe-control:hover,
+  :root:not([data-theme="light"]) .sidebar-toggle:hover,
+  :root:not([data-theme="light"]) .source-code-button:hover,
+  :root:not([data-theme="light"]) .sidebar-section-collapse:hover {
     border-color: #6cc5a6;
     background: #28332f;
   }
@@ -2037,12 +2561,65 @@ textarea:disabled {
     color: #c9c1b6;
   }
 
+  :root:not([data-theme="light"]) .diagnostics-http {
+    border-top-color: #343a3d;
+    color: #c9c1b6;
+  }
+
+  :root:not([data-theme="light"]) .diagnostics-http-provider {
+    border-color: #4a524e;
+    background: #1f2322;
+    color: #d8d0c4;
+  }
+
+  :root:not([data-theme="light"]) .diagnostics-http-provider.is-error {
+    border-color: #6c3030;
+    background: #2c1d1d;
+    color: #efc5c5;
+  }
+
+  :root:not([data-theme="light"]) .diagnostics-http-status {
+    color: #b7b0a7;
+  }
+
+  :root:not([data-theme="light"]) .diagnostics-http-links {
+    border-color: #4a524e;
+    background: #1c1f1e;
+  }
+
+  :root:not([data-theme="light"]) .diagnostics-http-empty {
+    background: #1f2322;
+    color: #b7b0a7;
+  }
+
   :root:not([data-theme="light"]) .thinking-steps {
     border-top-color: #343a3d;
   }
 
   :root:not([data-theme="light"]) .thinking-steps strong {
     color: #d8d0c4;
+  }
+
+  :root:not([data-theme="light"]) .formalization-view {
+    background: #232726;
+    border-color: #343a3d;
+    color: #d8d0c4;
+  }
+
+  :root:not([data-theme="light"]) .formalization-raw code,
+  :root:not([data-theme="light"]) .formalization-tuple,
+  :root:not([data-theme="light"]) .formalization-svo-list code {
+    color: #ece7df;
+  }
+
+  :root:not([data-theme="light"]) .formalization-arrow,
+  :root:not([data-theme="light"]) .formalization-svo-label {
+    color: #b7b0a7;
+  }
+
+  :root:not([data-theme="light"]) .formalization-slot {
+    background: #2c322f;
+    color: #c9d8d3;
   }
 
   :root:not([data-theme="light"]) .message-actions a {
