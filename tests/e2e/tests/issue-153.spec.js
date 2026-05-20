@@ -437,4 +437,22 @@ test.describe('Issue #153 — search UX, formalization, and dedupe', () => {
     await expect(last).toContainText('Apple');
     await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
   });
+
+  test('Russian information-search phrasing routes to web search', async ({
+    page,
+  }) => {
+    await page.locator('.diagnostics-toggle').click();
+    await mockAppleSearch(page);
+
+    const last = await sendPrompt(
+      page,
+      'Найди информацию о Rust программировании',
+    );
+    await expect(last).toContainText('Результаты поиска для');
+    await expect(last).toContainText('Rust программировании');
+    await expect(last.locator('.evidence-list')).toContainText(
+      'web_search:request:Rust программировании',
+    );
+    await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
+  });
 });

@@ -111,3 +111,26 @@ fn generic_navigation_uses_same_frame_policy_path_as_github() {
         response.evidence_links
     );
 }
+
+#[test]
+fn information_search_variants_route_to_web_search_handler() {
+    let prompts = [
+        "Найди информацию о Rust программировании",
+        "Поищи информацию про Rust программирование",
+        "Find information about Rust programming",
+        "Look up information on Rust programming",
+    ];
+    for prompt in prompts {
+        let response = FormalAiEngine.answer(prompt);
+        assert_eq!(
+            response.intent, "web_search",
+            "prompt {prompt:?} should route to web_search, got {} with answer {}",
+            response.intent, response.answer,
+        );
+        assert!(
+            response.answer.to_lowercase().contains("rust"),
+            "web search response should preserve the query, got {}",
+            response.answer,
+        );
+    }
+}
