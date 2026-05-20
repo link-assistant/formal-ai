@@ -418,6 +418,7 @@ fn strip_calculation_wrappers(prompt: &str) -> (String, bool) {
         "what's ",
         "what does ",
         "calculate ",
+        "calcualte ",
         "compute ",
         "evaluate ",
         "how much is ",

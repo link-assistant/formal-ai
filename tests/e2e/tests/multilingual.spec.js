@@ -156,6 +156,13 @@ test.describe('multilingual chat surface', () => {
     await expect(last).not.toContainText('arithmetic is available');
   });
 
+  test('misspelled calculate action resolves as a calculation', async ({ page }) => {
+    const last = await sendPrompt(page, 'Calcualte 2+5050');
+    await expect(last).toHaveClass(/assistant/);
+    await expect(last).toContainText('2+5050 = 5052');
+    await expect(last).not.toContainText('could not evaluate');
+  });
+
   test('Russian word-number arithmetic resolves as a calculation', async ({ page }) => {
     const last = await sendPrompt(page, 'Сколько будет два плюс два?');
     await expect(last).toHaveClass(/assistant/);

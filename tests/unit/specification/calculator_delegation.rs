@@ -43,6 +43,11 @@ fn calculator_handles_english_variations() {
 }
 
 #[test]
+fn calculator_strips_common_calculate_typo() {
+    assert_calculation("Calcualte 2+5050", &["2+5050 = 5052"]);
+}
+
+#[test]
 fn calculator_handles_compact_question_equals_suffix() {
     for prompt in ["2*2+2=?", "2*2+2 = ?"] {
         assert_calculation(prompt, &["2*2+2 = 6"]);

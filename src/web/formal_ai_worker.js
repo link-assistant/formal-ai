@@ -1558,6 +1558,7 @@ function extractArithmeticExpression(prompt) {
     "what's ",
     "what does ",
     "calculate ",
+    "calcualte ",
     "compute ",
     "evaluate ",
     "how much is ",
