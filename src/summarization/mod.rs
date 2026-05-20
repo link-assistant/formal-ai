@@ -34,8 +34,8 @@
 //! - [`summarize_dialog`] — chat turns → short recap of the conversation.
 //! - [`generate_chat_title`] — chat turns → 1–5 word chat title.
 //!
-//! See `ARCHITECTURE.md` § "Project lookups and summarization" for how the
-//! Hive Mind handler chains the three stages together.
+//! See `ARCHITECTURE.md` § "Project lookups and summarization" for how
+//! `project_lookup` chains the three stages together.
 
 use crate::seed::{ProjectRecord, ProjectStatement};
 
@@ -213,7 +213,7 @@ impl Default for SummarizationConfig {
 }
 
 impl SummarizationConfig {
-    /// Builder helper used by Hive Mind handler call sites.
+    /// Builder helper used by project lookup call sites.
     #[must_use]
     pub const fn with_mode(mut self, mode: SummarizationMode) -> Self {
         self.mode = mode;

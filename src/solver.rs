@@ -36,12 +36,12 @@ use crate::solver_handlers::{
     finalize_simple, try_algorithm, try_arithmetic, try_behavior_rules, try_brainstorming_request,
     try_capabilities, try_clarification, try_concept_lookup, try_conversation_memory,
     try_coreference_request, try_definition_merge, try_definition_merge_by_default,
-    try_execution_failure, try_fact_lookup, try_feature_capability, try_hive_mind_lookup,
-    try_http_fetch, try_ill_formed, try_javascript_execution, try_meta_explanation,
-    try_network_query, try_opinion_question, try_project_lookup, try_punctuation_only_prompt,
-    try_roleplay_request, try_shell_refusal, try_software_project_request, try_source_conflict,
-    try_source_refresh, try_summarization_request, try_translation, try_url_navigate,
-    try_web_search, try_who_is_question, try_write_script, CapabilityRuntime,
+    try_execution_failure, try_fact_lookup, try_feature_capability, try_http_fetch, try_ill_formed,
+    try_javascript_execution, try_meta_explanation, try_network_query, try_opinion_question,
+    try_project_lookup, try_punctuation_only_prompt, try_roleplay_request, try_shell_refusal,
+    try_software_project_request, try_source_conflict, try_source_refresh,
+    try_summarization_request, try_translation, try_url_navigate, try_web_search,
+    try_who_is_question, try_write_script, CapabilityRuntime,
 };
 use crate::solver_handlers_policy::{try_kupi_slona, try_physical_action_question};
 use crate::solver_helpers::{
@@ -127,6 +127,10 @@ pub struct SolverConfig {
     /// When true, plain definition prompts such as "What is IIR?" use
     /// cross-language definition fusion before falling back to concept lookup.
     pub definition_fusion_by_default: bool,
+    /// When true, repository/project questions prefer known projects from
+    /// Link Assistant, Link Foundation, and `LinksPlatform` before showing the
+    /// generic multi-host repository lookup path.
+    pub associative_project_promotion: bool,
 }
 
 impl Default for SolverConfig {
@@ -142,6 +146,7 @@ impl Default for SolverConfig {
             offline: false,
             cache_ttl_seconds: 60 * 60 * 24 * 60,
             definition_fusion_by_default: false,
+            associative_project_promotion: true,
         }
     }
 }
@@ -163,6 +168,11 @@ impl SolverConfig {
         if let Some(value) = env_definition_fusion_by_default() {
             config.definition_fusion_by_default = value;
         }
+        if let Some(value) = env_bool("FORMAL_AI_ASSOCIATIVE_PROJECT_PROMOTION")
+            .or_else(|| env_bool("FORMAL_AI_PROJECT_PROMOTION"))
+        {
+            config.associative_project_promotion = value;
+        }
         if let Some(value) = env_bounded_f32("FORMAL_AI_TEMPERATURE", 0.0, 1.0) {
             config.temperature = value;
         }
@@ -176,14 +186,28 @@ impl SolverConfig {
 }
 
 fn env_definition_fusion_by_default() -> Option<bool> {
-    let raw = std::env::var("FORMAL_AI_DEFINITION_FUSION").ok()?;
+    env_bool_with_extra_truthy(
+        "FORMAL_AI_DEFINITION_FUSION",
+        &["auto", "merge", "fusion", "default"],
+        &["explicit", "manual", "none"],
+    )
+}
+
+fn env_bool(name: &str) -> Option<bool> {
+    env_bool_with_extra_truthy(name, &[], &[])
+}
+
+fn env_bool_with_extra_truthy(name: &str, truthy: &[&str], falsy: &[&str]) -> Option<bool> {
+    let raw = std::env::var(name).ok()?;
     let value = raw.trim().to_ascii_lowercase();
     if value.is_empty() {
         return None;
     }
     match value.as_str() {
-        "1" | "true" | "yes" | "on" | "auto" | "merge" | "fusion" | "default" => Some(true),
-        "0" | "false" | "no" | "off" | "explicit" | "manual" | "none" => Some(false),
+        "1" | "true" | "yes" | "on" => Some(true),
+        "0" | "false" | "no" | "off" => Some(false),
+        other if truthy.contains(&other) => Some(true),
+        other if falsy.contains(&other) => Some(false),
         _ => None,
     }
 }
@@ -326,12 +350,7 @@ const SPECIALIZED_HANDLERS: &[(&str, SpecializedHandler)] = &[
     ("arithmetic", handle_arithmetic),
     ("javascript_execution", handle_javascript_execution),
     ("definition_merge", try_definition_merge),
-    ("hive_mind_lookup", try_hive_mind_lookup),
     ("concept_lookup", handle_concept_lookup),
-    // `project_lookup` runs after `concept_lookup` so curated Link Assistant /
-    // Link Foundation projects only surface when the prompt's term is not
-    // already covered by the seed concept table.
-    ("project_lookup", try_project_lookup),
     ("who_is", try_who_is_question),
     ("how_it_works", try_how_it_works),
     ("meta_explanation", try_meta_explanation),
@@ -489,6 +508,17 @@ impl UniversalSolver {
             if let Some(answer) = handler(prompt, &normalized, log) {
                 log.append("specialized_handler", (*name).to_owned());
                 return Some(answer);
+            }
+            if *name == "concept_lookup" {
+                if let Some(answer) = try_project_lookup(
+                    prompt,
+                    &normalized,
+                    log,
+                    self.config.associative_project_promotion,
+                ) {
+                    log.append("specialized_handler", "project_lookup".to_owned());
+                    return Some(answer);
+                }
             }
         }
         None

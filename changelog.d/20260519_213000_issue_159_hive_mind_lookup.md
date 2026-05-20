@@ -10,9 +10,9 @@ bump: minor
   expansion, compound-word shortening, and a boilerplate filter that drops
   install / example sentences from compressed answers.
 - Added a curated project registry (`data/seed/projects.lino`,
-  `src/seed/projects.rs`) covering 13 Link Assistant / Link Foundation projects
-  with weighted statements, English/Russian localized variants, repository URLs,
-  topic labels, and aliases.
+  `src/seed/projects.rs`) covering Link Assistant, Link Foundation, and
+  LinksPlatform projects with weighted statements, English/Russian localized
+  variants, repository URLs, topic labels, and aliases.
 - Added a `project_lookup` handler that runs after `concept_lookup` and answers
   "What is <project>?" prompts using the curated registry plus the summarization
   pipeline, logging `summarization:mode`, `summarization:language`, repository
@@ -21,9 +21,9 @@ bump: minor
   URLs into readable Markdown for future overlong report-link investigations.
 
 ### Fixed
-- Routed "What is Hive Mind?" / "Что такое Hive Mind?" prompts to a dedicated
-  Hive Mind answer that prefers `link-assistant/hive-mind` before showing
-  other web-search results, preventing the Wikipedia closest-match fallback
-  from answering with unrelated pages such as LOIC. The Hive Mind answer now
-  shares the summarization pipeline with the broader project registry so the
-  description is generated from the same seed data.
+- Routed "What is Hive Mind?" / "Что такое Hive Mind?" prompts through
+  `project_lookup` as a promoted registry match for `link-assistant/hive-mind`
+  before showing other web-search results, preventing the Wikipedia
+  closest-match fallback from answering with unrelated pages such as LOIC.
+  Hive Mind now shares the same generic project path as other repository
+  records.

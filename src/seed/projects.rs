@@ -1,8 +1,8 @@
 //! Curated GitHub-project registry loaded from `data/seed/projects.lino`.
 //!
-//! Each `project_*` entry encodes one open-source project from the
-//! `link-assistant` or `link-foundation` organizations. The entry carries
-//! everything that the Hive Mind handler (and other concept lookups) need to
+//! Each `project_*` entry encodes one open-source project from the promoted
+//! repository organizations. The entry carries
+//! everything that project lookup call sites need to
 //! describe the project at any summarization length:
 //!
 //! - identity metadata (`org`, `name`, `display_name`, `url`),
@@ -18,11 +18,10 @@
 //! statement list per language. Empty fields fall back to the outer English
 //! values so a localization only needs to differ where it actually does.
 //!
-//! The Hive Mind handler treats this registry as the authoritative source for
-//! Link Assistant project lookups: when the prompt asks about
-//! `Hive Mind` / `hive-mind` (or any other registered project), the answer
-//! starts from the curated statements here before any fallback Wikipedia
-//! search.
+//! `project_lookup` treats this registry as the authoritative source for
+//! promoted project answers: when the prompt asks about `Hive Mind` /
+//! `hive-mind` (or any other registered project), the answer starts from the
+//! curated statements here before any fallback web search.
 
 use super::parser::{parse_lino, split_pipe_list, LinoNode};
 use super::PROJECTS_LINO;
@@ -170,7 +169,7 @@ impl ProjectsRegistry {
         })
     }
 
-    /// Filter projects by organization (`link-assistant`, `link-foundation`).
+    /// Filter projects by organization (`link-assistant`, `link-foundation`, ...).
     #[must_use]
     pub fn by_org<'a>(&'a self, org: &str) -> Vec<&'a ProjectRecord> {
         self.projects.iter().filter(|p| p.org == org).collect()

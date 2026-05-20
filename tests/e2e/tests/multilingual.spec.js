@@ -284,7 +284,7 @@ test.describe('multilingual chat surface', () => {
     const last = await sendPrompt(page, 'Что такое Hive Mind?');
     await expect(last).toHaveClass(/assistant/);
     await expect(last).toContainText('link-assistant/hive-mind');
-    await expect(last).toContainText('The AI that controls AIs');
+    await expect(last).toContainText(/ИИ|AI that controls AIs/);
     await expect(last).toContainText('Результаты поиска для');
     await expect(last).toContainText('LOIC');
     await expect(last).not.toContainText('Ближайшее совпадение по поиску Wikipedia');

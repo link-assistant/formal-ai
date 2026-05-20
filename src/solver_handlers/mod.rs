@@ -25,9 +25,7 @@ pub use user_intent::{
     try_capabilities, try_clarification, try_ill_formed, try_opinion_question,
     try_punctuation_only_prompt, try_shell_refusal, try_who_is_question,
 };
-pub use web_requests::{
-    try_hive_mind_lookup, try_http_fetch, try_project_lookup, try_url_navigate, try_web_search,
-};
+pub use web_requests::{try_http_fetch, try_project_lookup, try_url_navigate, try_web_search};
 
 use std::fmt::Write as _;
 

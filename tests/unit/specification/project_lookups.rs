@@ -1,12 +1,13 @@
-//! Curated Link Assistant / Link Foundation project lookup tests.
+//! Promoted project lookup tests.
 //!
 //! These tests pin down the "what is <project>?" behavior for the curated
-//! registry described in `data/seed/projects.lino` and the
+//! registry described in `data/seed/projects.lino`, generic repository URL
+//! routing, promotion switches, and the
 //! formalize-summarize-deformalize pipeline in `src/summarization.rs`.
 //! Splitting them out of `prompt_variations.rs` keeps each test file under
 //! the repository's 1000-line cap (see `scripts/check-file-size.rs`).
 
-use formal_ai::{FormalAiEngine, SymbolicAnswer};
+use formal_ai::{FormalAiEngine, SolverConfig, SymbolicAnswer, UniversalSolver};
 
 fn answer(prompt: &str) -> SymbolicAnswer {
     FormalAiEngine.answer(prompt)
@@ -16,7 +17,7 @@ fn answer(prompt: &str) -> SymbolicAnswer {
 fn russian_hive_mind_prompt_prefers_link_assistant_project() {
     let response = answer("Что такое Hive Mind?");
     assert_eq!(
-        response.intent, "hive_mind_lookup",
+        response.intent, "project_lookup",
         "Hive Mind should not fall through to a generic concept or Wikipedia-style answer: {}",
         response.answer,
     );
@@ -32,8 +33,8 @@ fn russian_hive_mind_prompt_prefers_link_assistant_project() {
         response
             .evidence_links
             .iter()
-            .any(|link| link.starts_with("hive_mind:preferred:")),
-        "expected preferred Hive Mind evidence, got {:?}",
+            .any(|link| link.starts_with("project:promoted:")),
+        "expected promoted project evidence, got {:?}",
         response.evidence_links,
     );
 }
@@ -42,7 +43,7 @@ fn russian_hive_mind_prompt_prefers_link_assistant_project() {
 fn english_hive_mind_prompt_prefers_link_assistant_project() {
     let response = answer("What is Hive Mind?");
     assert_eq!(
-        response.intent, "hive_mind_lookup",
+        response.intent, "project_lookup",
         "Hive Mind should resolve to the curated project answer, got {} -> {}",
         response.intent, response.answer,
     );
@@ -59,8 +60,42 @@ fn english_hive_mind_prompt_prefers_link_assistant_project() {
         response
             .evidence_links
             .iter()
-            .any(|link| link.starts_with("hive_mind:preferred:")),
-        "expected preferred Hive Mind evidence, got {:?}",
+            .any(|link| link.starts_with("project:promoted:")),
+        "expected promoted project evidence, got {:?}",
+        response.evidence_links,
+    );
+}
+
+#[test]
+fn associative_project_promotion_can_be_disabled() {
+    let solver = UniversalSolver::new(SolverConfig {
+        associative_project_promotion: false,
+        ..SolverConfig::default()
+    });
+    let response = solver.solve("What is Hive Mind?");
+    assert_eq!(
+        response.intent, "project_lookup",
+        "disabling promotion should keep the generic project lookup path, got {} -> {}",
+        response.intent, response.answer,
+    );
+    assert!(
+        !response.answer.contains("link-assistant/hive-mind"),
+        "promotion-off answer must not privilege the Link Assistant repository, got {}",
+        response.answer,
+    );
+    assert!(
+        response.answer.contains("GitHub")
+            && response.answer.contains("GitLab")
+            && response.answer.contains("Bitbucket"),
+        "generic project lookup should cover repository hosts, got {}",
+        response.answer,
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("project_lookup:promotion:disabled")),
+        "expected disabled-promotion evidence, got {:?}",
         response.evidence_links,
     );
 }
@@ -82,8 +117,8 @@ fn curated_project_concept_prompt_routes_to_project_lookup() {
         response
             .evidence_links
             .iter()
-            .any(|link| link.starts_with("project:preferred:")),
-        "expected curated project evidence, got {:?}",
+            .any(|link| link.starts_with("project:promoted:")),
+        "expected promoted project evidence, got {:?}",
         response.evidence_links,
     );
 }
@@ -108,6 +143,83 @@ fn curated_project_lookup_records_summarization_evidence() {
         "project lookup should log a summarization language event, got {:?}",
         response.evidence_links,
     );
+}
+
+#[test]
+fn linksplatform_repository_is_promoted_by_default() {
+    let response = answer("What is https://github.com/linksplatform/Documentation?");
+    assert_eq!(response.intent, "project_lookup");
+    assert!(
+        response.answer.contains("linksplatform/Documentation"),
+        "LinksPlatform repository should be listed as a promoted project, got {}",
+        response.answer,
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("project:promoted:linksplatform/Documentation")),
+        "expected linksplatform promotion evidence, got {:?}",
+        response.evidence_links,
+    );
+}
+
+#[test]
+fn explicit_formal_ai_repository_url_still_routes_to_project_lookup() {
+    let response = answer("What is https://github.com/link-assistant/formal-ai?");
+    assert_eq!(
+        response.intent, "project_lookup",
+        "explicit formal-ai repository URLs should not be treated as identity prompts",
+    );
+    assert!(
+        response.answer.contains("link-assistant/formal-ai"),
+        "formal-ai repository lookup should link to the repository, got {}",
+        response.answer,
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("project:promoted:link-assistant/formal-ai")),
+        "expected formal-ai promotion evidence, got {:?}",
+        response.evidence_links,
+    );
+}
+
+#[test]
+fn github_repository_url_routes_to_generic_project_lookup() {
+    let response = answer("What is https://github.com/rust-lang/rust?");
+    assert_eq!(
+        response.intent, "project_lookup",
+        "explicit GitHub repository URLs should route to project_lookup, got {} -> {}",
+        response.intent, response.answer,
+    );
+    assert!(response.answer.contains("rust-lang/rust"));
+    assert!(response.answer.contains("GitHub"));
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("project_lookup:repository:github:rust-lang/rust")),
+        "expected GitHub repository evidence, got {:?}",
+        response.evidence_links,
+    );
+}
+
+#[test]
+fn gitlab_repository_url_routes_to_generic_project_lookup() {
+    let response = answer("Describe https://gitlab.com/gitlab-org/gitlab");
+    assert_eq!(response.intent, "project_lookup");
+    assert!(response.answer.contains("gitlab-org/gitlab"));
+    assert!(response.answer.contains("GitLab"));
+}
+
+#[test]
+fn bitbucket_repository_url_routes_to_generic_project_lookup() {
+    let response = answer("Describe https://bitbucket.org/atlassian/python-bitbucket");
+    assert_eq!(response.intent, "project_lookup");
+    assert!(response.answer.contains("atlassian/python-bitbucket"));
+    assert!(response.answer.contains("Bitbucket"));
 }
 
 #[test]

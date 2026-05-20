@@ -1,7 +1,7 @@
 // Shared Links Notation seed loader for the demo.
 //
 // The browser demo loads its multilingual response phrases, concept summaries,
-// tool registry, language-detection rules, prompt patterns, and agent metadata
+// project registry, tool registry, language-detection rules, prompt patterns, and agent metadata
 // from `src/web/seed/*.lino` instead of hardcoded JavaScript constants. Every
 // prompt-handling decision is therefore data-driven: a user who wants to
 // retune their own agent can edit a `.lino` file and ship it alongside the
@@ -24,6 +24,7 @@
     "seed/concepts.lino",
     "seed/concept-contexts.lino",
     "seed/facts.lino",
+    "seed/projects.lino",
     "seed/brainstorm-seeds.lino",
     "seed/personas.lino",
     "seed/summary-topics.lino",
@@ -323,6 +324,61 @@
       root.children.forEach(visit);
     }
     return facts;
+  }
+
+  function extractProjectStatement(node) {
+    if (!node || node.name !== "statement" || !node.id) return null;
+    return {
+      text: String(node.id || "").trim(),
+      kind: findChildValue(node, "kind"),
+      weight: parseInt(findChildValue(node, "weight"), 10) || 50,
+    };
+  }
+
+  function normalizeProjectAlias(value) {
+    return String(value || "")
+      .toLowerCase()
+      .replace(/[-_]+/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  function extractProjects(root) {
+    if (!root || !Array.isArray(root.children)) return [];
+    var projects = [];
+    var visit = function (item) {
+      if (!item || !item.name || item.name.indexOf("project_") !== 0) return;
+      var localized = findChildren(item, "localized").map(function (loc) {
+        return {
+          language: loc.id,
+          displayName: findChildValue(loc, "display_name"),
+          statements: findChildren(loc, "statement")
+            .map(extractProjectStatement)
+            .filter(Boolean),
+        };
+      });
+      projects.push({
+        slug: item.name,
+        org: findChildValue(item, "org"),
+        name: findChildValue(item, "name"),
+        displayName: findChildValue(item, "display_name"),
+        url: findChildValue(item, "url"),
+        language: findChildValue(item, "language"),
+        category: findChildValue(item, "category"),
+        aliases: splitList(findChildValue(item, "aliases")).map(normalizeProjectAlias),
+        topic: findChildValue(item, "topic"),
+        statements: findChildren(item, "statement")
+          .map(extractProjectStatement)
+          .filter(Boolean),
+        localized: localized,
+      });
+    };
+    if (root.name && root.name.indexOf("project_") === 0) {
+      visit(root);
+    } else {
+      root.children.forEach(visit);
+    }
+    return projects;
   }
 
   function extractBrainstormSeeds(root) {
@@ -686,6 +742,7 @@
       concepts: [],
       conceptContexts: [],
       facts: [],
+      projects: [],
       brainstormSeeds: { triggers: [], categories: [] },
       personas: {
         triggers: [],
@@ -715,6 +772,8 @@
         );
       } else if (item.file.indexOf("facts") !== -1) {
         seed.facts = seed.facts.concat(extractFacts(root));
+      } else if (item.file.indexOf("projects") !== -1) {
+        seed.projects = seed.projects.concat(extractProjects(root));
       } else if (item.file.indexOf("brainstorm-seeds") !== -1) {
         seed.brainstormSeeds = extractBrainstormSeeds(root);
       } else if (item.file.indexOf("personas") !== -1) {
@@ -754,6 +813,7 @@
     extractConcepts: extractConcepts,
     extractConceptContexts: extractConceptContexts,
     extractFacts: extractFacts,
+    extractProjects: extractProjects,
     extractBrainstormSeeds: extractBrainstormSeeds,
     extractPersonas: extractPersonas,
     extractTools: extractTools,

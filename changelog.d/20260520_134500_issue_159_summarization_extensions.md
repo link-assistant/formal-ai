@@ -21,6 +21,11 @@ bump: minor
   project description and the trace records `http_fetch:curated_project`,
   `summarization:mode`, and `summarization:language` so the URL → curated
   record → summary path is fully visible.
+- Generalized project lookup so Hive Mind is treated as a promoted project
+  record instead of a special handler. Project promotion defaults on for
+  `link-assistant`, `link-foundation`, and `linksplatform`, can be switched
+  off through solver/browser configuration, and explicit GitHub/GitLab/
+  Bitbucket repository URLs route through the same `project_lookup` intent.
 - Documented the default 30-statement cap as a `DEFAULT_MAX_STATEMENTS`
   constant in `src/summarization.rs` and re-exported it from the crate root.
 - Re-exported the new helpers (`describe_readme`, `formalize_markdown`,
