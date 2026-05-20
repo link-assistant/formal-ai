@@ -5663,6 +5663,280 @@ async function searchWikipediaPages(query, language, limit) {
   return null;
 }
 
+const FRAME_POLICY_CHECK_ENDPOINT = "https://api.microlink.io/";
+
+function framePolicyCheckUrl(url) {
+  const params = new URLSearchParams({ url });
+  return `${FRAME_POLICY_CHECK_ENDPOINT}?${params.toString()}`;
+}
+
+function currentEmbedderOrigin() {
+  try {
+    const origin = self && self.location && self.location.origin;
+    return origin && origin !== "null" ? origin : "";
+  } catch (_error) {
+    return "";
+  }
+}
+
+function isPrivateOrLocalHostname(hostname) {
+  const host = String(hostname || "").toLowerCase();
+  if (
+    !host ||
+    host === "localhost" ||
+    host.endsWith(".localhost") ||
+    host.endsWith(".local")
+  ) {
+    return true;
+  }
+  if (host === "::1" || host === "[::1]") {
+    return true;
+  }
+  const parts = host.split(".");
+  if (parts.length !== 4 || parts.some((part) => !/^\d+$/.test(part))) {
+    return false;
+  }
+  const octets = parts.map((part) => Number(part));
+  if (octets.some((part) => part < 0 || part > 255)) return false;
+  const [first, second] = octets;
+  return (
+    first === 10 ||
+    first === 127 ||
+    (first === 172 && second >= 16 && second <= 31) ||
+    (first === 192 && second === 168) ||
+    (first === 169 && second === 254)
+  );
+}
+
+function isPublicHttpUrl(url) {
+  try {
+    const parsed = new URL(url);
+    return (
+      (parsed.protocol === "http:" || parsed.protocol === "https:") &&
+      !isPrivateOrLocalHostname(parsed.hostname)
+    );
+  } catch (_error) {
+    return false;
+  }
+}
+
+function normalizeFramePolicyHeaders(headers) {
+  const normalized = {};
+  for (const [key, value] of Object.entries(headers || {})) {
+    const name = String(key || "").toLowerCase();
+    if (name !== "x-frame-options" && name !== "content-security-policy") {
+      continue;
+    }
+    normalized[name] = Array.isArray(value)
+      ? value.map((item) => String(item || "")).join(", ")
+      : String(value || "");
+  }
+  return normalized;
+}
+
+function frameAncestorsSourceSets(csp) {
+  const sourceSets = [];
+  for (const policy of String(csp || "").split(",")) {
+    for (const directive of policy.split(";")) {
+      const trimmed = directive.trim();
+      if (!/^frame-ancestors(?:\s|$)/i.test(trimmed)) continue;
+      const sources = trimmed
+        .replace(/^frame-ancestors/i, "")
+        .trim()
+        .split(/\s+/)
+        .filter(Boolean);
+      sourceSets.push(sources);
+    }
+  }
+  return sourceSets;
+}
+
+function sourceExpressionMatches(source, targetUrl, embedderUrl) {
+  const token = String(source || "").trim().toLowerCase();
+  if (!token || token === "'none'") return false;
+  if (token === "*") return true;
+  if (token === "'self'") return embedderUrl.origin === targetUrl.origin;
+  if (/^[a-z][a-z0-9+.-]*:$/.test(token)) {
+    return embedderUrl.protocol === token;
+  }
+
+  let candidate = token;
+  if (!candidate.includes("://")) {
+    candidate = `${targetUrl.protocol}//${candidate}`;
+  }
+  let parsed;
+  try {
+    parsed = new URL(candidate);
+  } catch (_error) {
+    return false;
+  }
+  if (parsed.protocol !== embedderUrl.protocol) return false;
+  if (parsed.port && parsed.port !== "*" && parsed.port !== embedderUrl.port) {
+    return false;
+  }
+  const host = parsed.hostname.toLowerCase();
+  const embedderHost = embedderUrl.hostname.toLowerCase();
+  if (host.startsWith("*.")) {
+    const suffix = host.slice(2);
+    return embedderHost.endsWith(`.${suffix}`);
+  }
+  return embedderHost === host;
+}
+
+function evaluateFramePolicy(headers, targetUrl, embedderOrigin) {
+  const frameHeaders = normalizeFramePolicyHeaders(headers);
+  const xFrameOptions = frameHeaders["x-frame-options"] || "";
+  const csp = frameHeaders["content-security-policy"] || "";
+  let target;
+  try {
+    target = new URL(targetUrl);
+  } catch (_error) {
+    return { status: "unknown", reason: "the target URL could not be parsed" };
+  }
+
+  const xFrameDirectives = xFrameOptions
+    .split(",")
+    .map((part) => part.trim().toLowerCase())
+    .filter(Boolean);
+  const sourceSets = frameAncestorsSourceSets(csp);
+  const cspHasFrameAncestorsNone = sourceSets.some((sources) =>
+    sources.includes("'none'"),
+  );
+  if (xFrameDirectives.includes("deny")) {
+    return {
+      status: "blocked",
+      reason: cspHasFrameAncestorsNone
+        ? "the page sends X-Frame-Options: DENY and CSP frame-ancestors 'none'"
+        : "the page sends X-Frame-Options: DENY",
+    };
+  }
+  if (xFrameDirectives.includes("sameorigin")) {
+    let embedder;
+    try {
+      embedder = embedderOrigin ? new URL(embedderOrigin) : null;
+    } catch (_error) {
+      embedder = null;
+    }
+    if (!embedder || embedder.origin !== target.origin) {
+      return {
+        status: "blocked",
+        reason: "the page sends X-Frame-Options: SAMEORIGIN",
+      };
+    }
+  }
+
+  if (sourceSets.length > 0) {
+    let embedder;
+    try {
+      embedder = embedderOrigin ? new URL(embedderOrigin) : null;
+    } catch (_error) {
+      embedder = null;
+    }
+    if (!embedder) {
+      return {
+        status: "unknown",
+        reason: "the current web app origin is unavailable",
+      };
+    }
+    for (const sources of sourceSets) {
+      if (sources.includes("'none'")) {
+        return {
+          status: "blocked",
+          reason: "the page sends CSP frame-ancestors 'none'",
+        };
+      }
+      if (
+        sources.length > 0 &&
+        !sources.some((source) => sourceExpressionMatches(source, target, embedder))
+      ) {
+        return {
+          status: "blocked",
+          reason:
+            "the page's CSP frame-ancestors directive does not include this web app",
+        };
+      }
+    }
+  }
+
+  return {
+    status: "allowed",
+    reason: "no blocking X-Frame-Options or CSP frame-ancestors policy was detected",
+  };
+}
+
+async function detectFramePolicy(url) {
+  const evidence = [`url_preview:frame_policy_check:${FRAME_POLICY_CHECK_ENDPOINT}`];
+  if (typeof fetch !== "function") {
+    return {
+      status: "unknown",
+      reason: "browser fetch is not available",
+      evidence: evidence.concat("url_preview:frame_policy:unknown"),
+    };
+  }
+  if (!isPublicHttpUrl(url)) {
+    return {
+      status: "unknown",
+      reason: "only public HTTP(S) URLs are checked by the frame-policy service",
+      evidence: evidence.concat("url_preview:frame_policy:unknown"),
+    };
+  }
+
+  try {
+    const response = await fetch(framePolicyCheckUrl(url), {
+      method: "GET",
+      mode: "cors",
+      credentials: "omit",
+    });
+    evidence.push(`url_preview:frame_policy_status:${response.status}`);
+    if (!response.ok) {
+      return {
+        status: "unknown",
+        reason: `the frame-policy service returned HTTP ${response.status}`,
+        evidence: evidence.concat("url_preview:frame_policy:unknown"),
+      };
+    }
+    const data = await response.json();
+    const headers = (data && (data.headers || (data.data && data.data.headers))) || null;
+    if (!headers || typeof headers !== "object") {
+      return {
+        status: "unknown",
+        reason: "the frame-policy service did not return response headers",
+        evidence: evidence.concat("url_preview:frame_policy:unknown"),
+      };
+    }
+    const verdict = evaluateFramePolicy(headers, url, currentEmbedderOrigin());
+    return {
+      ...verdict,
+      evidence: evidence.concat(`url_preview:frame_policy:${verdict.status}`),
+    };
+  } catch (_error) {
+    return {
+      status: "unknown",
+      reason: "the frame-policy service could not be reached from this browser",
+      evidence: evidence.concat("url_preview:frame_policy:unknown"),
+    };
+  }
+}
+
+function directExternalLinkAnswer(url, framePolicy, leadingLine) {
+  const lines = [leadingLine || `I suggest opening this in a new tab: [${url}](${url}).`, ""];
+  if (framePolicy && framePolicy.status === "blocked") {
+    lines.push(
+      `I checked the page's frame policy, and it does not allow embedding here because ${framePolicy.reason}.`,
+    );
+  } else if (framePolicy && framePolicy.status === "unknown") {
+    lines.push(
+      `I could not verify that this page allows embedding here because ${framePolicy.reason}.`,
+    );
+  } else {
+    lines.push("I could not verify that this page allows embedding here.");
+  }
+  lines.push(
+    "Browser JavaScript also cannot read the page content directly unless the site allows CORS, so the direct external link is the reliable option.",
+  );
+  return lines.join("\n");
+}
+
 async function tryFetch(prompt) {
   const normalized = normalizePrompt(prompt);
   const url = extractHttpFetchUrl(prompt, normalized);
@@ -5712,22 +5986,41 @@ async function tryFetch(prompt) {
       iframeUrl: null,
     };
   } catch (err) {
-    // CORS block or network failure — fall back to iframe.
+    // CORS block or network failure. Check target frame policy before choosing
+    // between an iframe preview and a direct external link.
     const isCors =
       err instanceof TypeError &&
       (err.message.toLowerCase().includes("cors") ||
         err.message.toLowerCase().includes("network") ||
         err.message.toLowerCase().includes("failed to fetch"));
     evidence.push(`http_fetch:error:${isCors ? "cors" : "network"}`);
+    const framePolicy = await detectFramePolicy(url);
+    evidence.push(...framePolicy.evidence);
+    const fetchFailureLine = `Could not fetch \`${url}\` directly${isCors ? " (CORS restriction)" : " (network error)"}.`;
+    if (framePolicy.status !== "allowed") {
+      evidence.push(`url_preview:external_link:${url}`);
+      return {
+        intent: "http_fetch",
+        content: directExternalLinkAnswer(
+          url,
+          framePolicy,
+          `${fetchFailureLine}\n\nI suggest opening this in a new tab: [${url}](${url}).`,
+        ),
+        confidence: 0.75,
+        evidence,
+        iframeUrl: null,
+      };
+    }
+    evidence.push(`url_preview:iframe:${url}`);
     const lines = [
-      `Could not fetch \`${url}\` directly${isCors ? " (CORS restriction)" : " (network error)"}.`,
+      fetchFailureLine,
       "",
-      "The page is shown in the embedded frame below. Use the open-in-new-tab control if the site blocks embedding, or the full-screen control to view it at viewport size.",
+      "I checked the page's frame policy and can show it in the embedded frame below.",
     ];
     return {
       intent: "http_fetch",
       content: lines.join("\n"),
-      confidence: 0.7,
+      confidence: 0.8,
       evidence,
       iframeUrl: url,
     };
@@ -5739,17 +6032,25 @@ async function tryUrlNavigate(prompt) {
   const url = extractUrlNavigateUrl(prompt, normalized);
   if (!url) return null;
 
-  const evidence = [`url_navigate:request:${url}`, `url_preview:iframe:${url}`];
+  const evidence = [`url_navigate:request:${url}`];
+  const framePolicy = await detectFramePolicy(url);
+  evidence.push(...framePolicy.evidence);
+  if (framePolicy.status !== "allowed") {
+    evidence.push(`url_preview:external_link:${url}`);
+    return {
+      intent: "url_navigate",
+      content: directExternalLinkAnswer(url, framePolicy),
+      confidence: 0.95,
+      evidence,
+      iframeUrl: null,
+    };
+  }
+
+  evidence.push(`url_preview:iframe:${url}`);
   const lines = [
-    `URL requested for \`${url}\`.`,
+    "I checked the page's frame policy and can show it here.",
     "",
-    `Open this link: [${url}](${url}).`,
-    "",
-    [
-      "The page is shown in the embedded frame below when the site allows framing.",
-      "Use the open-in-new-tab control if the site blocks embedding,",
-      "or the full-screen control to view it at viewport size.",
-    ].join(" "),
+    `Direct link: [${url}](${url}).`,
   ];
 
   return {
