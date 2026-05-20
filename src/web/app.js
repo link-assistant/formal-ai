@@ -1546,17 +1546,57 @@ function localCodeSpans(text) {
     .filter(Boolean);
 }
 
-function localRuntimeRuleFromText(text) {
-  const lower = String(text || "").toLowerCase();
-  const looksLikeUpdate =
+// Issue #144: mirror the worker's multilingual `When X then Y` grammar so the
+// local fallback recognizes the same teach forms even without WASM.
+const LOCAL_BEHAVIOR_RULE_KEYWORD_PAIRS = [
+  ["when ", " then "],
+  ["when ", " do "],
+  ["когда ", " тогда "],
+  ["когда ", " делай "],
+  ["когда ", " сделай "],
+  ["когда ", " отвечай "],
+  ["когда ", " отвечать "],
+  ["если ", " то "],
+  ["जब ", " तब "],
+  ["जब ", " तो "],
+  ["当 ", " 时 "],
+  ["当 ", " 则 "],
+  ["当 ", " 回答 "],
+  ["当 ", "时回答 "],
+  ["当 ", "则回答 "],
+];
+
+function localLooksLikeRuntimeRuleUpdate(text) {
+  const raw = String(text || "");
+  const lower = raw.toLowerCase();
+  if (
     (lower.includes("when i say") && (lower.includes("answer") || lower.includes("reply"))) ||
     (lower.includes("if i ask") && (lower.includes("answer") || lower.includes("reply"))) ||
     lower.includes("add behavior rule") ||
     lower.includes("update behavior rule") ||
     (lower.includes("когда я скажу") && lower.includes("ответ")) ||
     (lower.includes("если я спрошу") && lower.includes("ответ")) ||
-    lower.includes("добавь правило поведения");
-  if (!looksLikeUpdate) return null;
+    lower.includes("добавь правило поведения") ||
+    lower.includes("обнови правило поведения")
+  ) {
+    return true;
+  }
+  for (const [head, link] of LOCAL_BEHAVIOR_RULE_KEYWORD_PAIRS) {
+    const headPos = lower.indexOf(head);
+    if (headPos === -1) continue;
+    const tail = lower.slice(headPos + head.length);
+    const linkPos = tail.indexOf(link);
+    if (linkPos === -1) continue;
+    const absoluteLinkPos = headPos + head.length + linkPos;
+    const beforeLink = raw.slice(headPos, absoluteLinkPos);
+    const afterLink = raw.slice(absoluteLinkPos + link.length);
+    if (beforeLink.includes("`") && afterLink.includes("`")) return true;
+  }
+  return false;
+}
+
+function localRuntimeRuleFromText(text) {
+  if (!localLooksLikeRuntimeRuleUpdate(text)) return null;
   const spans = localCodeSpans(text);
   if (spans.length < 2) return null;
   const trigger = spans[0].trim();
@@ -1573,40 +1613,85 @@ function localBehaviorRuleRecords() {
   return [
     {
       id: "rule_greeting",
+      topic: "greetings",
       intent: "greeting",
       label: "Greeting rule",
       matches: "`Hi`, `Hello`, and `Hey`",
       response: "Hi, how may I help you?",
       source: "local fallback",
+      whenThen:
+        "When the user says `Hi`, `Hello`, or `Hey` then respond with `Hi, how may I help you?`.",
     },
     {
       id: "rule_identity",
+      topic: "identity",
       intent: "identity",
       label: "Identity rule",
       matches: "`Who are you?`, `Кто ты?`, and equivalent identity prompts",
       response: IDENTITY_ANSWER,
       source: "local fallback",
+      whenThen: `When the user asks \`Who are you?\` or \`Кто ты?\` then respond with the identity answer.`,
     },
     {
       id: "rule_unknown",
+      topic: "unknown_fallback",
       intent: "unknown",
       label: "Unknown fallback rule",
       matches: "Any prompt that no earlier rule can answer",
       response: UNKNOWN_ANSWER,
       source: "local fallback",
+      whenThen:
+        "When no earlier rule or handler matches the prompt then respond with the unknown-intent guide.",
     },
   ];
 }
 
-function localBehaviorRulesList() {
-  const lines = ["Behavior rules I can inspect in this dialog:", ""];
+const LOCAL_BEHAVIOR_RULE_TOPIC_LABELS = {
+  greetings: "Greetings",
+  identity: "Identity",
+  unknown_fallback: "Unknown fallback",
+};
+
+const LOCAL_BEHAVIOR_RULE_TOPIC_ORDER = ["greetings", "identity", "unknown_fallback"];
+
+function localBehaviorRulesList(runtimeRules) {
+  const lines = [
+    "Behavior rules I can inspect in this dialog (grouped by topic, each shown as a `When X then Y` statement):",
+    "",
+  ];
+  const groups = new Map();
   for (const rule of localBehaviorRuleRecords()) {
-    lines.push(`- \`${rule.id}\` -> intent \`${rule.intent}\`: ${rule.label}`);
+    const order = LOCAL_BEHAVIOR_RULE_TOPIC_ORDER.indexOf(rule.topic);
+    const safeOrder = order === -1 ? LOCAL_BEHAVIOR_RULE_TOPIC_ORDER.length : order;
+    if (!groups.has(safeOrder)) {
+      groups.set(safeOrder, {
+        label: LOCAL_BEHAVIOR_RULE_TOPIC_LABELS[rule.topic] || "Other",
+        rules: [],
+      });
+    }
+    groups.get(safeOrder).rules.push(rule);
+  }
+  const ordered = Array.from(groups.entries()).sort((a, b) => a[0] - b[0]);
+  ordered.forEach(([, group], index) => {
+    lines.push(`# ${group.label}`);
+    for (const rule of group.rules) {
+      lines.push(`- \`${rule.id}\` -> ${rule.whenThen}`);
+    }
+    if (index + 1 < ordered.length) lines.push("");
+  });
+  if (Array.isArray(runtimeRules) && runtimeRules.length > 0) {
+    lines.push("", "# Dialog-local rules taught in this conversation");
+    for (const rule of runtimeRules) {
+      lines.push(
+        `- \`${rule.id}\` -> When the user says \`${rule.trigger}\` then respond with \`${rule.answer}\`.`,
+      );
+    }
   }
   lines.push(
     "",
     "Read one with `Show behavior rule unknown`.",
-    "Change this dialog with: When I say `your prompt`, answer `your answer`.",
+    "Teach this dialog with: When `your prompt` then `your answer`. Equivalent: When I say `your prompt`, answer `your answer`.",
+    "Multilingual forms: Russian `Когда \\`X\\` тогда \\`Y\\``, Hindi `जब \\`X\\` तब \\`Y\\``, Chinese `当 \\`X\\` 时 \\`Y\\``.",
     "The write is append-only: export memory to preserve the rule message with the dialog.",
   );
   return lines.join("\n");
@@ -1616,15 +1701,19 @@ function localBehaviorRuleDetail(rule) {
   return [
     rule.label,
     "",
+    rule.whenThen || "",
+    "",
     "```links",
     rule.id,
+    `  topic "${(rule.topic || "").replaceAll('"', '\\"')}"`,
     `  intent "${rule.intent}"`,
     `  matches "${rule.matches.replaceAll('"', '\\"')}"`,
     `  response "${rule.response.replaceAll('"', '\\"')}"`,
     `  source "${rule.source}"`,
+    `  when_then "${(rule.whenThen || "").replaceAll('"', '\\"')}"`,
     "```",
     "",
-    "To change this behavior in the current dialog, send: When I say `your prompt`, answer `your answer`.",
+    "To change this behavior in the current dialog, send: When `your prompt` then `your answer`. Equivalent: When I say `your prompt`, answer `your answer`.",
   ].join("\n");
 }
 

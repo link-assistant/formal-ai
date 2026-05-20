@@ -1724,110 +1724,196 @@ function escapeBehaviorRuleValue(value) {
 }
 
 function behaviorRuleRecords() {
+  const greeting = answerFor("greeting", "en");
+  const farewell = answerFor("farewell", "en");
+  const identity = answerFor("identity", "en");
   return [
     {
       id: "rule_greeting",
+      topic: "greetings",
       intent: "greeting",
       label: "Greeting rule",
       matches: "`Hi`, `Hello`, `Hey`, and multilingual greeting seed phrases",
-      response: answerFor("greeting", "en"),
+      response: greeting,
       source: "data/seed/intent-routing.lino + multilingual responses",
+      whenThen: `When the user says \`Hi\`, \`Hello\`, or \`Hey\` then respond with \`${greeting}\`.`,
     },
     {
       id: "rule_farewell",
+      topic: "farewells",
       intent: "farewell",
       label: "Farewell rule",
       matches: "`bye`, `goodbye`, `poka`, and multilingual farewell seed phrases",
-      response: answerFor("farewell", "en"),
+      response: farewell,
       source: "data/seed/intent-routing.lino + multilingual responses",
+      whenThen: `When the user says \`bye\`, \`goodbye\`, or \`пока\` then respond with \`${farewell}\`.`,
     },
     {
       id: "rule_identity",
+      topic: "identity",
       intent: "identity",
       label: "Identity rule",
       matches: "`Who are you?`, `Кто ты?`, and equivalent identity prompts",
-      response: answerFor("identity", "en"),
+      response: identity,
       source: "data/seed/identity.lino + multilingual responses",
+      whenThen: `When the user asks \`Who are you?\` or \`Кто ты?\` then respond with \`${identity}\`.`,
     },
     {
       id: "rule_capabilities",
+      topic: "capabilities",
       intent: "capabilities",
       label: "Capabilities rule",
       matches: "`What can you do?`, `Что ты умеешь?`, and equivalent capability prompts",
       response: "Lists the supported symbolic chat capabilities.",
       source: "src/solver_handlers/user_intent.rs",
+      whenThen:
+        "When the user asks `What can you do?` or `Что ты умеешь?` then respond with the multilingual capability listing.",
     },
     {
       id: "rule_hello_world_rust",
+      topic: "hello_world",
       intent: "hello_world_rust",
       label: "Hello-world rule (Rust)",
       matches: "`hello world` plus aliases: rust, rs",
       response: "Returns a minimal Rust hello-world program.",
       source: "data/seed/hello-world-programs.lino",
+      whenThen:
+        "When the user requests a `hello world` program with alias `rust` then respond with a minimal Rust hello-world program.",
     },
     {
       id: "rule_hello_world_python",
+      topic: "hello_world",
       intent: "hello_world_python",
       label: "Hello-world rule (Python)",
       matches: "`hello world` plus aliases: python, py",
       response: "Returns a minimal Python hello-world program.",
       source: "data/seed/hello-world-programs.lino",
+      whenThen:
+        "When the user requests a `hello world` program with alias `python` then respond with a minimal Python hello-world program.",
     },
     {
       id: "rule_hello_world_javascript",
+      topic: "hello_world",
       intent: "hello_world_javascript",
       label: "Hello-world rule (JavaScript)",
       matches: "`hello world` plus aliases: javascript, js, node",
       response: "Returns a minimal JavaScript hello-world program.",
       source: "data/seed/hello-world-programs.lino",
+      whenThen:
+        "When the user requests a `hello world` program with alias `javascript` then respond with a minimal JavaScript hello-world program.",
     },
     {
       id: "rule_hello_world_typescript",
+      topic: "hello_world",
       intent: "hello_world_typescript",
       label: "Hello-world rule (TypeScript)",
       matches: "`hello world` plus aliases: typescript, ts",
       response: "Returns a minimal TypeScript hello-world program.",
       source: "data/seed/hello-world-programs.lino",
+      whenThen:
+        "When the user requests a `hello world` program with alias `typescript` then respond with a minimal TypeScript hello-world program.",
     },
     {
       id: "rule_hello_world_go",
+      topic: "hello_world",
       intent: "hello_world_go",
       label: "Hello-world rule (Go)",
       matches: "`hello world` plus aliases: go, golang",
       response: "Returns a minimal Go hello-world program.",
       source: "data/seed/hello-world-programs.lino",
+      whenThen:
+        "When the user requests a `hello world` program with alias `go` then respond with a minimal Go hello-world program.",
     },
     {
       id: "rule_hello_world_c",
+      topic: "hello_world",
       intent: "hello_world_c",
       label: "Hello-world rule (C)",
       matches: "`hello world` plus aliases: c",
       response: "Returns a minimal C hello-world program.",
       source: "data/seed/hello-world-programs.lino",
+      whenThen:
+        "When the user requests a `hello world` program with alias `c` then respond with a minimal C hello-world program.",
     },
     {
       id: "rule_unknown",
+      topic: "unknown_fallback",
       intent: "unknown",
       label: "Unknown fallback rule",
       matches: "Any prompt that no earlier rule or handler can answer",
       response: answerFor("unknown", "en"),
       source: "data/seed/multilingual-responses.lino",
+      whenThen:
+        "When no earlier rule or handler matches the prompt then respond with the multilingual unknown-intent guide (`List behavior rules`, `Show behavior rule`, `When I say … answer …`, `Report issue`, `Export memory`).",
     },
   ];
 }
 
-function renderBehaviorRuleList() {
+const BEHAVIOR_RULE_TOPIC_LABELS = {
+  greetings: "Greetings",
+  farewells: "Farewells",
+  identity: "Identity",
+  capabilities: "Capabilities",
+  hello_world: "Hello-world programs",
+  unknown_fallback: "Unknown fallback",
+};
+
+const BEHAVIOR_RULE_TOPIC_ORDER = [
+  "greetings",
+  "farewells",
+  "identity",
+  "capabilities",
+  "hello_world",
+  "unknown_fallback",
+];
+
+function behaviorRuleTopicLabel(topic) {
+  return BEHAVIOR_RULE_TOPIC_LABELS[topic] || "Other";
+}
+
+function behaviorRuleTopicOrder(topic) {
+  const index = BEHAVIOR_RULE_TOPIC_ORDER.indexOf(topic);
+  return index === -1 ? BEHAVIOR_RULE_TOPIC_ORDER.length : index;
+}
+
+function renderBehaviorRuleList(runtimeRules) {
   const lines = [
-    "Behavior rules I can inspect in this dialog:",
+    "Behavior rules I can inspect in this dialog (grouped by topic, each shown as a `When X then Y` statement):",
     "",
   ];
+  const groups = new Map();
   for (const rule of behaviorRuleRecords()) {
-    lines.push(`- \`${rule.id}\` -> intent \`${rule.intent}\`: ${rule.label}`);
+    const order = behaviorRuleTopicOrder(rule.topic);
+    if (!groups.has(order)) {
+      groups.set(order, { label: behaviorRuleTopicLabel(rule.topic), rules: [] });
+    }
+    groups.get(order).rules.push(rule);
+  }
+  const ordered = Array.from(groups.entries()).sort((a, b) => a[0] - b[0]);
+  ordered.forEach(([, group], index) => {
+    lines.push(`# ${group.label}`);
+    for (const rule of group.rules) {
+      lines.push(`- \`${rule.id}\` -> ${rule.whenThen}`);
+    }
+    if (index + 1 < ordered.length) lines.push("");
+  });
+  if (Array.isArray(runtimeRules) && runtimeRules.length > 0) {
+    lines.push("", "# Dialog-local rules taught in this conversation");
+    for (const rule of runtimeRules) {
+      lines.push(
+        `- \`${rule.id}\` -> When the user says \`${rule.trigger}\` then respond with \`${rule.answer}\`.`,
+      );
+    }
   }
   lines.push(
     "",
     "Read one with `Show behavior rule unknown` or `Show behavior rule rule_greeting`.",
-    "Change this dialog with: When I say `your prompt`, answer `your answer`.",
+    "Teach this dialog with: When `your prompt` then `your answer`. " +
+      "Equivalent forms: When I say `your prompt`, answer `your answer`; " +
+      "If I ask `your prompt`, reply `your answer`; " +
+      "When `your prompt` do `your answer`.",
+    "Multilingual forms: Russian `Когда \\`X\\` тогда \\`Y\\`` / `Когда \\`X\\` делай \\`Y\\``, " +
+      "Hindi `जब \\`X\\` तब \\`Y\\``, Chinese `当 \\`X\\` 时 \\`Y\\``.",
     "The write is append-only: export memory to preserve the rule message with the dialog.",
   );
   return lines.join("\n");
@@ -1837,15 +1923,20 @@ function renderBehaviorRuleDetail(rule) {
   return [
     rule.label,
     "",
+    rule.whenThen,
+    "",
     "```links",
     rule.id,
+    `  topic "${escapeBehaviorRuleValue(rule.topic)}"`,
     `  intent "${escapeBehaviorRuleValue(rule.intent)}"`,
     `  matches "${escapeBehaviorRuleValue(rule.matches)}"`,
     `  response "${escapeBehaviorRuleValue(rule.response)}"`,
     `  source "${escapeBehaviorRuleValue(rule.source)}"`,
+    `  when_then "${escapeBehaviorRuleValue(rule.whenThen)}"`,
     "```",
     "",
-    "To change this behavior in the current dialog, send: When I say `your prompt`, answer `your answer`.",
+    "To change this behavior in the current dialog, send: When `your prompt` then `your answer`. " +
+      "Equivalent: When I say `your prompt`, answer `your answer`.",
   ].join("\n");
 }
 
@@ -1872,19 +1963,23 @@ function renderSelfFacts() {
     '  object "append-only dialog events plus seed files in Links Notation"',
     "```",
     "",
-    "Read behavior with `List behavior rules`; teach one with When I say `prompt`, answer `answer`.",
+    "Read behavior with `List behavior rules`; teach one with When `prompt` then `answer` (or When I say `prompt`, answer `answer`).",
   ].join("\n");
 }
 
 function renderRuntimeRuleUpdate(rule) {
+  const whenThenText = `When the user says \`${rule.trigger}\` then respond with \`${rule.answer}\`.`;
   return [
     "Behavior rule recorded for this dialog.",
+    "",
+    whenThenText,
     "",
     "```links",
     rule.id,
     '  type "behavior_rule_runtime"',
     `  match_prompt "${escapeBehaviorRuleValue(rule.trigger)}"`,
     `  answer "${escapeBehaviorRuleValue(rule.answer)}"`,
+    `  when_then "${escapeBehaviorRuleValue(whenThenText)}"`,
     '  source "user_message"',
     "```",
     "",
@@ -1902,7 +1997,11 @@ function isBehaviorRulesList(normalized) {
     normalized.includes("existing behavior rules") ||
     normalized.includes("список правил поведения") ||
     normalized.includes("покажи правила поведения") ||
-    normalized.includes("какие правила поведения")
+    normalized.includes("какие правила поведения") ||
+    normalized.includes("व्यवहार के नियम") ||
+    normalized.includes("व्यवहार नियम सूचीबद्ध करें") ||
+    normalized.includes("行为规则") ||
+    normalized.includes("列出行为规则")
   );
 }
 
@@ -1913,7 +2012,11 @@ function isSelfFactQuery(normalized) {
     normalized.includes("self facts") ||
     normalized.includes("list all facts you know about yourself") ||
     normalized.includes("какие факты ты знаешь о себе") ||
-    normalized.includes("факты о себе")
+    normalized.includes("факты о себе") ||
+    normalized.includes("अपने बारे में तथ्य") ||
+    normalized.includes("स्वयं के बारे में तथ्य") ||
+    normalized.includes("关于你自己的事实") ||
+    normalized.includes("自我事实")
   );
 }
 
@@ -1966,17 +2069,61 @@ function codeSpans(text) {
     .filter(Boolean);
 }
 
+// Issue #144: recognize behavior-rule updates expressed as `When X then Y`
+// (and translations) in addition to the explicit `When I say … answer …`
+// grammar. KEYWORD_PAIRS is a list of (head, link) tuples that bracket the
+// trigger and the answer; both must appear, head before link, and there must
+// be at least one backtick on each side so the runtime extractor can pull the
+// trigger and answer deterministically.
+const BEHAVIOR_RULE_KEYWORD_PAIRS = [
+  // English
+  ["when ", " then "],
+  ["when ", " do "],
+  // Russian
+  ["когда ", " тогда "],
+  ["когда ", " делай "],
+  ["когда ", " сделай "],
+  ["когда ", " отвечай "],
+  ["когда ", " отвечать "],
+  ["если ", " то "],
+  // Hindi
+  ["जब ", " तब "],
+  ["जब ", " तो "],
+  // Chinese
+  ["当 ", " 时 "],
+  ["当 ", " 则 "],
+  ["当 ", " 回答 "],
+  ["当 ", "时回答 "],
+  ["当 ", "则回答 "],
+];
+
 function looksLikeRuntimeRuleUpdate(text) {
-  const lower = String(text || "").toLowerCase();
-  return (
+  const raw = String(text || "");
+  const lower = raw.toLowerCase();
+  if (
     (lower.includes("when i say") && (lower.includes("answer") || lower.includes("reply"))) ||
     (lower.includes("if i ask") && (lower.includes("answer") || lower.includes("reply"))) ||
     lower.includes("add behavior rule") ||
     lower.includes("update behavior rule") ||
     (lower.includes("когда я скажу") && lower.includes("ответ")) ||
     (lower.includes("если я спрошу") && lower.includes("ответ")) ||
-    lower.includes("добавь правило поведения")
-  );
+    lower.includes("добавь правило поведения") ||
+    lower.includes("обнови правило поведения")
+  ) {
+    return true;
+  }
+  for (const [head, link] of BEHAVIOR_RULE_KEYWORD_PAIRS) {
+    const headPos = lower.indexOf(head);
+    if (headPos === -1) continue;
+    const tail = lower.slice(headPos + head.length);
+    const linkPos = tail.indexOf(link);
+    if (linkPos === -1) continue;
+    const absoluteLinkPos = headPos + head.length + linkPos;
+    const beforeLink = raw.slice(headPos, absoluteLinkPos);
+    const afterLink = raw.slice(absoluteLinkPos + link.length);
+    if (beforeLink.includes("`") && afterLink.includes("`")) return true;
+  }
+  return false;
 }
 
 function runtimeRuleFromText(text) {
@@ -2007,6 +2154,22 @@ function runtimeRuleForPrompt(prompt, history) {
   return null;
 }
 
+function collectRuntimeRules(history) {
+  const turns = Array.isArray(history) ? history : [];
+  const seen = new Set();
+  const rules = [];
+  for (const turn of turns) {
+    const role = String((turn || {}).role || "").toLowerCase();
+    if (role !== "user") continue;
+    const rule = runtimeRuleFromText((turn || {}).content);
+    if (rule && !seen.has(rule.id)) {
+      seen.add(rule.id);
+      rules.push(rule);
+    }
+  }
+  return rules;
+}
+
 function tryBehaviorRules(prompt, normalized, history) {
   const updateRule = runtimeRuleFromText(prompt);
   if (updateRule) {
@@ -2021,7 +2184,7 @@ function tryBehaviorRules(prompt, normalized, history) {
   if (isBehaviorRulesList(normalized)) {
     return {
       intent: "behavior_rules_list",
-      content: renderBehaviorRuleList(),
+      content: renderBehaviorRuleList(collectRuntimeRules(history)),
       confidence: 1.0,
       evidence: ["behavior_rules:list", "all"],
     };

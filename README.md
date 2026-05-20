@@ -71,16 +71,17 @@ The Rust library re-exports the same helpers — `export_memory_full`, `import_m
 
 ### Teaching behavior in chat
 
-The chat surface can explain and modify behavior rules without leaving the dialog:
+The chat surface can explain and modify behavior rules without leaving the dialog. Behavior is surfaced as a series of `When X then Y` (or `When X do Y`) statements grouped by topic, and the same grammar can also update the dialog:
 
 ```text
 List behavior rules
 Show behavior rule unknown
 List all facts you know about yourself
+When `Какая у тебя модель личности?` then `У меня символьная модель личности.`
 When I say `Какая у тебя модель личности?`, answer `У меня символьная модель личности.`
 ```
 
-`List behavior rules` shows the current built-in routing rules, including the unknown fallback. `Show behavior rule unknown` renders one rule as Links Notation with its match condition, response, and source. The `When I say ... answer ...` form records an append-only, dialog-local override, so the same prompt can answer differently in that conversation. Use **Export memory** to preserve that rule message with the session, or **Report issue** when the fact or rule should become part of the built-in seed.
+`List behavior rules` shows the current built-in routing rules, grouped by topic (Greetings, Farewells, Identity, Capabilities, Hello-world programs, Unknown fallback) and rendered as `When X then Y` statements. `Show behavior rule unknown` renders one rule as Links Notation with its topic, intent, match condition, response, source, and the canonical `when_then` statement. The `When X then Y` and `When X do Y` forms (and the explicit `When I say ... answer ...` form) record an append-only, dialog-local override, so the same prompt can answer differently in that conversation. The grammar is recognized in English (`When ... then ...`, `When ... do ...`, `If I ask ... reply ...`), Russian (`Когда ... тогда ...`, `Когда ... делай ...`, `Если ... то ...`), Hindi (`जब ... तब ...`, `जब ... तो ...`), and Chinese (`当 ... 时 ...`, `当 ... 则 ...`). Use **Export memory** to preserve that rule message with the session, or **Report issue** when the fact or rule should become part of the built-in seed.
 
 ## Telegram Bot
 
@@ -148,7 +149,7 @@ The engine normalizes a prompt, selects a deterministic symbolic rule, and retur
 - URL requests such as `Navigate to github.com`, `fetch example.com`, and `Сделай запрос к google.com`; the browser demo returns a direct HTTPS link and shows an embedded iframe preview with full-screen and open-in-new-tab controls
 - explicit web-search prompts such as `Search the web for Nikola Tesla` and `Найди в интернете Никола Тесла`; the browser demo uses the CORS-enabled Wikipedia search endpoint and returns ranked links
 - merged definition prompts such as `Merge Wikipedia definitions of IIR`, which combine localized definition blocks for the same seed/Wikidata concept, deduplicate repeated facts, and cite every source language; use `--definition-fusion auto`, `FORMAL_AI_DEFINITION_FUSION=auto`, or the browser Settings control to make plain prompts like `What is IIR?` use the same fusion path
-- behavior-rule inspection and dialog-local rule updates through `List behavior rules`, `Show behavior rule unknown`, and `When I say ... answer ...`
+- behavior-rule inspection and dialog-local rule updates through `List behavior rules` (grouped by topic, each rendered as a `When X then Y` statement), `Show behavior rule unknown`, and the multilingual `When ... then ...` / `When ... do ...` / `When I say ... answer ...` grammar
 - unknown prompts, which return a larger learnable-rule fallback with exact commands for inspecting rules, teaching the current dialog, exporting memory, or reporting a missing built-in rule
 
 Hello-world answers include execution metadata. Rust, Python, JavaScript, Go, and C examples are compiled or syntax-checked and run by the issue-8 local verification harness with captured output. TypeScript is returned with an explicit warning because `tsc` is not configured in the current repository runtime.
