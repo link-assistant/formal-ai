@@ -390,6 +390,172 @@ pub fn try_opinion_question(
     ))
 }
 
+/// Issue #185: catch "prove …" / "show that …" / "доказать …" / "साबित कर
+/// …" / "证明 …" prompts and return a structured response that names the
+/// formalization pipeline and the planned `relative-meta-logic` integration
+/// instead of falling through to the unknown-prompt opener.
+///
+/// The handler deliberately does **not** attempt to synthesise a proof
+/// itself: discharging a proof requires the `relative-meta-logic` Rust
+/// prover from `link-foundation/relative-meta-logic`, which is currently
+/// only published as a git repository (no crates.io release) and which
+/// requires a Wikidata-backed formalization step before it can be invoked
+/// with a concrete axiom set. Wiring that integration is tracked in the
+/// case study at `docs/case-studies/issue-185/README.md` and will land in
+/// a follow-up PR.
+pub fn try_proof_request(
+    prompt: &str,
+    normalized: &str,
+    log: &mut EventLog,
+) -> Option<SymbolicAnswer> {
+    // A proof verb may be followed by whitespace or punctuation (",", ":",
+    // "!", "."). Avoid false positives on longer words that just happen to
+    // start with the verb (e.g. "prover" or "proven") by checking the
+    // following character is non-alphabetic. End-of-string is treated as a
+    // boundary (so `normalized == verb` still matches).
+    let starts_with_verb = |verb: &str| -> bool {
+        normalized
+            .strip_prefix(verb)
+            .is_some_and(|tail| !tail.chars().next().unwrap_or(' ').is_alphabetic())
+    };
+    let is_proof_request = starts_with_verb("prove")
+        || starts_with_verb("proof")
+        || normalized.starts_with("can you prove")
+        || normalized.starts_with("could you prove")
+        || normalized.starts_with("please prove")
+        || normalized.starts_with("give me a proof")
+        || normalized.starts_with("give a proof")
+        || normalized.starts_with("show that ")
+        || normalized.starts_with("demonstrate that ")
+        || normalized.contains(" prove that ")
+        || normalized.contains(" proof of ")
+        // Russian
+        || starts_with_verb("докажи")
+        || starts_with_verb("докажите")
+        || starts_with_verb("доказать")
+        || starts_with_verb("доказательство")
+        || normalized.contains(" докажи ")
+        // Hindi
+        || normalized.contains("साबित कर")
+        || normalized.contains("सिद्ध कर")
+        || normalized.contains("प्रमाण")
+        // Chinese
+        || normalized.contains("证明")
+        || normalized.contains("證明");
+    if !is_proof_request {
+        return None;
+    }
+    let language = detect_language(prompt).slug();
+    let mentions_godel = normalized.contains("godel")
+        || normalized.contains("gödel")
+        || normalized.contains("гёдел")
+        || normalized.contains("гёделя")
+        || normalized.contains("гедел")
+        || normalized.contains("哥德尔")
+        || normalized.contains("गोडेल");
+    let mentions_determinism = normalized.contains("determinism")
+        || normalized.contains("deterministic")
+        || normalized.contains("детерминизм")
+        || normalized.contains("决定论")
+        || normalized.contains("निर्धारणवाद");
+    log.append("policy:proof_request", prompt.to_owned());
+    if mentions_godel {
+        log.append("concept", "godel_incompleteness".to_owned());
+    }
+    if mentions_determinism {
+        log.append("concept", "determinism".to_owned());
+    }
+    log.append("pipeline:planned", "relative-meta-logic".to_owned());
+    let body = proof_request_body(language, mentions_godel, mentions_determinism);
+    Some(finalize_simple(
+        prompt,
+        log,
+        "proof_request",
+        "response:proof_request",
+        &body,
+        0.6,
+    ))
+}
+
+fn proof_request_body(language: &str, mentions_godel: bool, mentions_determinism: bool) -> String {
+    let mut body = match language {
+        "ru" => String::from(
+            "Я пока не могу самостоятельно вывести это доказательство: библиотека-доказатель \
+             relative-meta-logic (github.com/link-foundation/relative-meta-logic) ещё не \
+             подключена к этому сборочному графу. Когда подключение появится, конвейер \
+             будет работать так: impulse → formalize (с использованием Викиданных) → context \
+             (math / logic / science) → план доказательства → выполнение в relative-meta-logic \
+             → deformalize → finalize. Чтобы продвинуться сейчас, переформулируйте утверждение \
+             как формальное высказывание и явно перечислите аксиомы и контекст.",
+        ),
+        "hi" => String::from(
+            "मैं अभी स्वयं प्रमाण नहीं दे सकता: relative-meta-logic \
+             (github.com/link-foundation/relative-meta-logic) प्रूवर पुस्तकालय अभी इस बिल्ड \
+             ग्राफ़ में नहीं जुड़ा है। जब जुड़ जाएगा तो पाइपलाइन इस तरह चलेगी: impulse → \
+             formalize (Wikidata के साथ) → context (math / logic / science) → प्रमाण योजना \
+             → relative-meta-logic में निष्पादन → deformalize → finalize। अभी आगे बढ़ने के \
+             लिए, कथन को औपचारिक प्रस्ताव के रूप में फिर से लिखें और अपने अभिगृहीत \
+             (axioms) तथा संदर्भ स्पष्ट रूप से बताएँ।",
+        ),
+        "zh" => String::from(
+            "我目前还无法自己完成这个证明:relative-meta-logic\
+             (github.com/link-foundation/relative-meta-logic) 证明库尚未集成到本次构建中。\
+             集成后,流程将是:impulse → formalize(借助 Wikidata)→ context\
+             (math / logic / science)→ 证明计划 → 在 relative-meta-logic 中执行 → \
+             deformalize → finalize。现在要推进的话,请把陈述改写为形式化命题,并明确给出\
+             公理与上下文。",
+        ),
+        _ => String::from(
+            "I cannot discharge that proof yet because the relative-meta-logic prover \
+             (github.com/link-foundation/relative-meta-logic) is not wired into this build \
+             as a library. When the integration lands, the pipeline will run: impulse → \
+             formalize (Wikidata-backed) → context (math / logic / science) → proof plan → \
+             execution in relative-meta-logic → deformalize → finalize. To move forward \
+             today, restate the claim as a formal proposition and supply the axiom set and \
+             context you want the proof to live in.",
+        ),
+    };
+    if mentions_godel && mentions_determinism {
+        let note = match language {
+            "ru" => {
+                "\n\nЗамечание про Гёделя и детерминизм: «детерминизм» сам по себе \
+                     не является формальным высказыванием. Чтобы свести его к проверяемому \
+                     утверждению, выберите конкретную формулировку — например, «лапласовский \
+                     детерминизм совместим с классической механикой при наборе аксиом A» — и \
+                     укажите аксиомы A. Теоремы Гёделя о неполноте применимы только к \
+                     достаточно богатым формальным системам, поэтому контекст (PA, ZFC и т.д.) \
+                     должен быть выбран явно перед запуском доказательства."
+            }
+            "hi" => {
+                "\n\nगोडेल और निर्धारणवाद पर टिप्पणी: \"निर्धारणवाद\" अपने आप में \
+                     औपचारिक प्रस्ताव नहीं है। इसे जाँचने योग्य कथन तक घटाने के लिए एक \
+                     विशेष रूप चुनें — जैसे \"Laplace का निर्धारणवाद अभिगृहीत समुच्चय A के \
+                     साथ शास्त्रीय यांत्रिकी के अनुकूल है\" — और A स्पष्ट रूप से बताएँ। \
+                     गोडेल के अपूर्णता प्रमेय केवल पर्याप्त समृद्ध औपचारिक तंत्र (PA, ZFC \
+                     आदि) पर लागू होते हैं, इसलिए संदर्भ पहले स्पष्ट करना ज़रूरी है।"
+            }
+            "zh" => {
+                "\n\n关于哥德尔与决定论的说明:\"决定论\"本身并不是一个形式命题。\
+                     要把它化简为可检验的陈述,请选择一种具体表述——例如\
+                     \"拉普拉斯式决定论在公理集 A 下与经典力学相容\"——并明确给出 A。\
+                     哥德尔不完备性定理只适用于足够丰富的形式系统(如 PA、ZFC),\
+                     因此在启动证明之前必须显式选择上下文。"
+            }
+            _ => {
+                "\n\nGödel-and-determinism note: \"determinism\" is not itself a formal \
+                  proposition. To reduce it to a checkable claim, pick a concrete reading — \
+                  for example, \"Laplacian determinism is consistent with classical \
+                  mechanics under axiom set A\" — and spell out A. Gödel's incompleteness \
+                  theorems only apply to sufficiently rich formal systems (PA, ZFC, …), so \
+                  the context (PA, ZFC, …) must be chosen explicitly before the proof is \
+                  attempted."
+            }
+        };
+        body.push_str(note);
+    }
+    body
+}
+
 /// Detects "who is X" / "who was X" prompts (and multilingual equivalents)
 /// that were not claimed by the concept-lookup handler because the entity is
 /// not in the knowledge base.  Returns a deterministic response that

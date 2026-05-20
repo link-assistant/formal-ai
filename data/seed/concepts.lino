@@ -214,3 +214,30 @@ concept_telegram_ads
     summary "Telegram Ads — официальная рекламная платформа Telegram, позволяющая размещать спонсируемые сообщения (до 160 символов) в публичных каналах с более чем 1 000 подписчиков. Таргетинг осуществляется по тематике каналов или конкретным каналам. Оплата производится через блокчейн TON, минимальный бюджет для самостоятельного запуска кампании — €2."
     source "https://promote.telegram.org"
     source_kind "official-docs"
+
+concept_godel_incompleteness
+  term "Gödel's incompleteness theorems"
+  intent "concept_lookup"
+  category "mathematical-logic"
+  aliases "godel incompleteness|godels incompleteness theorems|gödel's incompleteness theorems|godel incompleteness theorem|incompleteness theorem|incompleteness theorems|теоремы гёделя о неполноте|теорема гёделя о неполноте|гёделя неполнота|哥德尔不完备性定理|गोडेल अपूर्णता प्रमेय"
+  summary "Gödel's incompleteness theorems are two theorems of mathematical logic proven by Kurt Gödel in 1931. The first states that any consistent formal system rich enough to express elementary arithmetic contains true statements that cannot be proven within the system. The second states that such a system cannot prove its own consistency. They apply only to sufficiently rich formal systems such as Peano Arithmetic or Zermelo-Fraenkel set theory."
+  source "https://en.wikipedia.org/wiki/G%C3%B6del%27s_incompleteness_theorems"
+  source_kind "wikipedia"
+
+concept_determinism
+  term "determinism"
+  intent "concept_lookup"
+  category "philosophy"
+  aliases "determinism|causal determinism|laplacian determinism|laplace's determinism|детерминизм|причинный детерминизм|決定論|决定论|निर्धारणवाद"
+  summary "Determinism is the philosophical view that every event, including human cognition and decision, is the necessary consequence of antecedent states of affairs together with the laws of nature. Causal determinism is not itself a formal proposition; to be checked formally it must be reduced to a concrete claim within a specific axiom set (for example, Laplacian determinism stated within classical mechanics)."
+  source "https://en.wikipedia.org/wiki/Determinism"
+  source_kind "wikipedia"
+
+concept_relative_meta_logic
+  term "relative-meta-logic"
+  intent "concept_lookup"
+  category "proof-system"
+  aliases "relative-meta-logic|relative meta logic|rml|link-foundation/relative-meta-logic|relative meta-logic"
+  summary "relative-meta-logic (RML) is the Rust implementation of the Relative Meta-Logic framework maintained by Link Foundation. It exposes a `run`/`evaluate` entry point, a formalization pipeline (`formalize_selected_interpretation`, `evaluate_formalization`, `FormalizationRequest`, `Interpretation`), and exporters for Lean 4 and Rocq. formal-ai plans to use it as the prover backend for `proof_request` prompts once the crate is wired in as a library."
+  source "https://github.com/link-foundation/relative-meta-logic"
+  source_kind "official-repository"

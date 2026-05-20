@@ -39,7 +39,7 @@ use crate::solver_handlers::{
     try_definition_merge_by_default, try_execution_failure, try_fact_lookup,
     try_feature_capability, try_http_fetch, try_ill_formed, try_javascript_execution,
     try_meta_explanation, try_network_query, try_opinion_question, try_project_lookup,
-    try_punctuation_only_prompt, try_roleplay_request, try_shell_refusal,
+    try_proof_request, try_punctuation_only_prompt, try_roleplay_request, try_shell_refusal,
     try_software_project_request, try_source_conflict, try_source_refresh,
     try_summarization_request, try_translation, try_url_navigate, try_web_search,
     try_who_is_question, try_write_script, CapabilityRuntime,
@@ -374,6 +374,10 @@ const SPECIALIZED_HANDLERS: &[(&str, SpecializedHandler)] = &[
     ("physical_action_question", try_physical_action_question),
     ("kupi_slona", try_kupi_slona),
     ("shell_refusal", try_shell_refusal),
+    // Proof requests must beat `opinion_question` so prompts like
+    // "Do you think you can prove …" land on the formalization pipeline
+    // explanation instead of the no-opinion policy.
+    ("proof_request", try_proof_request),
     ("opinion_question", try_opinion_question),
     ("incompatible_units", try_incompatible_units),
 ];
