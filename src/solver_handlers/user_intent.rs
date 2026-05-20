@@ -160,10 +160,12 @@ pub fn try_capabilities(
              \n\
              - **Приветствия**: отвечаю на «Привет», «Здравствуйте» и т.п.\n\
              - **Hello World**: генерирую программы на Rust, Python, JavaScript, Go, C и других языках.\n\
+             - **Веб-поиск**: ищу в интернете через DuckDuckGo, Wikipedia и Wikidata, когда поиск доступен.\n\
              - **Поиск понятий**: объясняю термины — попробуйте «Что такое Википедия?»\n\
              - **Арифметика**: вычисляю выражения — например, «Сколько будет 2 + 2?»\n\
              - **Перевод**: перевожу фразы между языками.\n\
              - **Память**: помню контекст разговора в рамках сессии.\n\
+             - **Настройки и действия**: через сообщения можно включать диагностику/демо/agent mode, менять тему, язык, стиль чата и экспортировать или импортировать память.\n\
              \n\
              Я работаю на основе локальных символьных правил, без нейросетевого инференса.",
         ),
@@ -172,10 +174,12 @@ pub fn try_capabilities(
              \n\
              - **问候**：回应「你好」等问候语。\n\
              - **Hello World**：生成 Rust、Python、JavaScript、Go、C 等语言的示例程序。\n\
+             - **Web search**：在可用时通过 DuckDuckGo、Wikipedia 和 Wikidata 搜索互联网。\n\
              - **概念查找**：解释术语，例如「什么是维基百科？」\n\
              - **算术**：计算表达式，例如「2 + 2 等于多少？」\n\
              - **翻译**：在语言之间翻译短语。\n\
              - **记忆**：在会话中记住上下文。\n\
+             - **设置和操作**：可通过消息开启诊断、演示、agent mode，切换主题、语言、聊天样式，并导出或导入记忆。\n\
              \n\
              我基于本地符号规则运行，不进行神经网络推理。",
         ),
@@ -184,10 +188,12 @@ pub fn try_capabilities(
              \n\
              - **अभिवादन**: «नमस्ते» आदि का जवाब देना।\n\
              - **Hello World**: Rust, Python, JavaScript, Go, C आदि में प्रोग्राम बनाना।\n\
+             - **Web search**: उपलब्ध होने पर DuckDuckGo, Wikipedia, और Wikidata से इंटरनेट में खोजना।\n\
              - **अवधारणा खोज**: शब्दों को समझाना — जैसे «विकिपीडिया क्या है?»\n\
              - **अंकगणित**: गणनाएँ — जैसे «2 + 2 क्या है?»\n\
              - **अनुवाद**: भाषाओं के बीच अनुवाद।\n\
              - **स्मृति**: सत्र में संदर्भ याद रखना।\n\
+             - **Settings और actions**: messages से diagnostics/demo/agent mode बदलना, theme/language/chat style बदलना, और memory export/import करना।\n\
              \n\
              मैं स्थानीय प्रतीकात्मक नियमों पर चलता हूँ, कोई न्यूरल इन्फेरेन्स नहीं।",
         ),
@@ -196,10 +202,12 @@ pub fn try_capabilities(
              \n\
              - **Greetings**: respond to «Hi», «Hello», and similar.\n\
              - **Hello World**: generate programs in Rust, Python, JavaScript, Go, C, and more.\n\
+             - **Web search**: search the internet through DuckDuckGo, Wikipedia, and Wikidata when available.\n\
              - **Concept lookup**: explain terms — try «What is Wikipedia?»\n\
              - **Arithmetic**: evaluate expressions — try «What is 2 + 2?»\n\
              - **Translation**: translate phrases between languages.\n\
              - **Memory**: recall context within the current session.\n\
+             - **Settings and actions**: configure diagnostics, demo mode, agent mode, theme, language, chat style, and memory import/export from messages.\n\
              \n\
              I run on local symbolic rules, without any neural network inference.",
         ),
@@ -213,7 +221,6 @@ pub fn try_capabilities(
         1.0,
     ))
 }
-
 pub fn try_shell_refusal(
     prompt: &str,
     normalized: &str,

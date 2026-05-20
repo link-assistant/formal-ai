@@ -162,8 +162,8 @@
   function extractMultilingualResponses(node) {
     // The seed stores both a canonical `text` (kept stable so deterministic
     // tests can match it) and zero or more `variant` entries. Issue #27 adds
-    // `variant`s to greetings so the demo can randomise its hello messages
-    // when the user opts in; non-greeting intents still ship a single text.
+    // `variant`s to greetings so the demo can randomise its hello messages;
+    // issue #160 adds separated courtesy acknowledgement/follow-up fragments.
     var responses = {};
     if (!node) return responses;
     var entries = findChildren(node, "response");
@@ -181,10 +181,28 @@
         .filter(function (value) {
           return value && value.length > 0;
         });
+      var acknowledgementNodes = findChildren(entry, "ack_variant");
+      var acknowledgements = acknowledgementNodes
+        .map(function (variant) {
+          return variant.id || "";
+        })
+        .filter(function (value) {
+          return value && value.length > 0;
+        });
+      var followUpNodes = findChildren(entry, "follow_up_variant");
+      var followUps = followUpNodes
+        .map(function (variant) {
+          return variant.id || "";
+        })
+        .filter(function (value) {
+          return value && value.length > 0;
+        });
       if (!responses[intent]) responses[intent] = {};
       responses[intent][language] = {
         text: text,
         variants: variants.length > 0 ? variants : [text],
+        acknowledgements: acknowledgements,
+        followUps: followUps,
       };
     }
     return responses;

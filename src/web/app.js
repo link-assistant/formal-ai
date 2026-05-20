@@ -23,10 +23,23 @@ const ASSET_VERSION =
   typeof window !== "undefined" ? window.FORMAL_AI_ASSET_VERSION || "" : "";
 const ISSUE_REPOSITORY = "link-assistant/formal-ai";
 const ISSUE_LABELS = "bug";
+const SOURCE_CODE_URL = `https://github.com/${ISSUE_REPOSITORY}`;
 const UNKNOWN_ANSWER =
   "I cannot answer that from local Links Notation rules yet. Please add a fact or add a rule in Links Notation, then run the request again.";
 const IDENTITY_ANSWER =
   "I am formal-ai, a deterministic symbolic AI implementation that answers from local Links Notation rules and OpenAI-compatible API shapes. I do not perform neural inference in this demo.";
+const COURTESY_ACKNOWLEDGEMENTS = [
+  "Glad to hear it.",
+  "You're welcome.",
+  "Good to hear.",
+  "Happy to hear that.",
+];
+const COURTESY_FOLLOW_UPS = [
+  "What would you like to do next?",
+  "Do you want to discuss something else?",
+  "Is there anything else you want to work on?",
+  "Would you like to explore another topic?",
+];
 
 // Issue #27: the sidebar advertises every prompt family that has a deterministic
 // symbolic rule or seed-backed answer in the engine. The list intentionally
@@ -170,6 +183,333 @@ function recognizeMemoryAction(text) {
   if (MEMORY_ACTION_PHRASES.import.some((phrase) => normalized === phrase)) {
     return "import";
   }
+  return null;
+}
+
+function includesAnyText(value, terms) {
+  return terms.some((term) => value.includes(term));
+}
+
+const COMMAND_ON_TERMS = [
+  "turn on",
+  "enable",
+  "show",
+  "start",
+  "включи",
+  "включить",
+  "покажи",
+  "запусти",
+  "开启",
+  "打开",
+  "चालू",
+  "enable",
+];
+
+const COMMAND_OFF_TERMS = [
+  "turn off",
+  "disable",
+  "hide",
+  "stop",
+  "выключи",
+  "выключить",
+  "отключи",
+  "скрой",
+  "останови",
+  "关闭",
+  "隐藏",
+  "बंद",
+  "disable",
+];
+
+function detectToggleCommand(normalized, featureTerms) {
+  if (!includesAnyText(normalized, featureTerms)) return null;
+  if (includesAnyText(normalized, COMMAND_OFF_TERMS)) return false;
+  if (includesAnyText(normalized, COMMAND_ON_TERMS)) return true;
+  return null;
+}
+
+function commandNumberValue(normalized, terms) {
+  if (!includesAnyText(normalized, terms)) return null;
+  const match = normalized.match(/(\d+(?:[.,]\d+)?)\s*%?/);
+  if (!match) return null;
+  const raw = Number(match[1].replace(",", "."));
+  if (!Number.isFinite(raw)) return null;
+  if (normalized.includes("%") || raw > 1) {
+    return clampNumber(raw / 100, 0, 1, 0);
+  }
+  return clampNumber(raw, 0, 1, 0);
+}
+
+function commandValueLabel(command) {
+  if (command.kind === "report_issue") return command.label;
+  if (command.kind === "trigger") return command.label;
+  if (typeof command.value === "boolean") return command.value ? "on" : "off";
+  if (typeof command.value === "number") return command.value.toFixed(2);
+  return String(command.value);
+}
+
+function interfaceCommandResponse(command, reportIssueUrl) {
+  if (command.kind === "report_issue") {
+    return `Report issue link: [Report issue](${reportIssueUrl}).`;
+  }
+  if (command.kind === "trigger" && command.action === "attach_files") {
+    return "Opening the file picker.";
+  }
+  return `Done. ${command.label} is now ${commandValueLabel(command)}.`;
+}
+
+function recognizeInterfaceCommand(text) {
+  const normalized = normalizeMemoryPrompt(text);
+  if (!normalized) return null;
+
+  const reportPhrases = [
+    "report issue",
+    "create issue",
+    "open issue",
+    "сообщить о проблеме",
+    "создай issue",
+    "报告问题",
+    "समस्या रिपोर्ट करें",
+  ];
+  if (reportPhrases.some((phrase) => normalized === phrase)) {
+    return { kind: "report_issue", intent: "report_issue", label: "Report issue" };
+  }
+
+  const attachPhrases = [
+    "attach file",
+    "attach files",
+    "add attachment",
+    "upload file",
+    "прикрепи файл",
+    "добавь файл",
+    "附加文件",
+    "फ़ाइल जोड़ें",
+  ];
+  if (attachPhrases.some((phrase) => normalized === phrase || normalized.includes(phrase))) {
+    return { kind: "trigger", action: "attach_files", intent: "attach_files", label: "Attach files" };
+  }
+
+  const diagnostics = detectToggleCommand(normalized, [
+    "diagnostics",
+    "diagnostic",
+    "trace",
+    "диагност",
+    "трассиров",
+    "诊断",
+    "निदान",
+  ]);
+  if (diagnostics !== null) {
+    return {
+      kind: "set_preference",
+      key: "diagnosticsMode",
+      value: diagnostics,
+      intent: "configure_diagnostics",
+      label: "Diagnostics",
+    };
+  }
+
+  const demo = detectToggleCommand(normalized, ["demo", "демо", "演示", "डेमो"]);
+  if (demo !== null || normalized === "manual mode" || normalized === "ручной режим") {
+    return {
+      kind: "set_preference",
+      key: "demoMode",
+      value: demo === null ? false : demo,
+      intent: "configure_demo_mode",
+      label: "Demo mode",
+    };
+  }
+
+  const agent = detectToggleCommand(normalized, ["agent mode", "агент", "代理", "एजेंट"]);
+  if (agent !== null || normalized === "chat mode") {
+    return {
+      kind: "set_preference",
+      key: "agentMode",
+      value: agent === null ? false : agent,
+      intent: "configure_agent_mode",
+      label: "Agent mode",
+    };
+  }
+
+  const variations = detectToggleCommand(normalized, [
+    "greeting variations",
+    "greeting variation",
+    "вариации приветствий",
+    "варианты приветствий",
+  ]);
+  if (variations !== null) {
+    return {
+      kind: "set_preference",
+      key: "greetingVariations",
+      value: variations,
+      intent: "configure_greeting_variations",
+      label: "Greeting variations",
+    };
+  }
+
+  const definitionFusion = detectToggleCommand(normalized, [
+    "definition fusion",
+    "merge definitions",
+    "слияние определений",
+    "合并定义",
+  ]);
+  if (definitionFusion !== null) {
+    return {
+      kind: "set_preference",
+      key: "definitionFusion",
+      value: definitionFusion ? "auto" : "explicit",
+      intent: "configure_definition_fusion",
+      label: "Definition fusion",
+    };
+  }
+
+  if (includesAnyText(normalized, ["theme", "dark mode", "light mode", "тема", "режим", "主题"])) {
+    if (includesAnyText(normalized, ["dark", "темн", "тёмн", "深色", "dark mode"])) {
+      return { kind: "set_preference", key: "theme", value: "dark", intent: "configure_theme", label: "Theme" };
+    }
+    if (includesAnyText(normalized, ["light", "светл", "浅色", "light mode"])) {
+      return { kind: "set_preference", key: "theme", value: "light", intent: "configure_theme", label: "Theme" };
+    }
+    if (includesAnyText(normalized, ["auto", "system", "авто", "систем", "自动"])) {
+      return { kind: "set_preference", key: "theme", value: "auto", intent: "configure_theme", label: "Theme" };
+    }
+  }
+
+  if (includesAnyText(normalized, ["language", "ui language", "язык", "语言", "भाषा"])) {
+    if (includesAnyText(normalized, ["russian", "рус", "俄语"])) {
+      return { kind: "set_preference", key: "uiLanguage", value: "ru", intent: "configure_language", label: "UI language" };
+    }
+    if (includesAnyText(normalized, ["english", "англ", "英语"])) {
+      return { kind: "set_preference", key: "uiLanguage", value: "en", intent: "configure_language", label: "UI language" };
+    }
+    if (includesAnyText(normalized, ["chinese", "китай", "中文", "汉语"])) {
+      return { kind: "set_preference", key: "uiLanguage", value: "zh", intent: "configure_language", label: "UI language" };
+    }
+    if (includesAnyText(normalized, ["hindi", "хинди", "हिन्दी", "हिंदी"])) {
+      return { kind: "set_preference", key: "uiLanguage", value: "hi", intent: "configure_language", label: "UI language" };
+    }
+    if (includesAnyText(normalized, ["auto", "system", "авто", "自动"])) {
+      return { kind: "set_preference", key: "uiLanguage", value: "auto", intent: "configure_language", label: "UI language" };
+    }
+  }
+
+  if (includesAnyText(normalized, ["ui skin", "skin", "оформление", "外观"])) {
+    if (normalized.includes("glass")) {
+      return { kind: "set_preference", key: "uiSkin", value: "glass", intent: "configure_ui_skin", label: "UI skin" };
+    }
+    if (normalized.includes("contrast") || normalized.includes("контраст")) {
+      return { kind: "set_preference", key: "uiSkin", value: "contrast", intent: "configure_ui_skin", label: "UI skin" };
+    }
+    if (normalized.includes("flat") || normalized.includes("плоск")) {
+      return { kind: "set_preference", key: "uiSkin", value: "flat", intent: "configure_ui_skin", label: "UI skin" };
+    }
+  }
+
+  if (includesAnyText(normalized, ["chat style", "стиль чата", "聊天样式"])) {
+    if (normalized.includes("compact")) {
+      return { kind: "set_preference", key: "chatStyle", value: "compact", intent: "configure_chat_style", label: "Chat style" };
+    }
+    if (normalized.includes("bubble") || normalized.includes("bubbles")) {
+      return { kind: "set_preference", key: "chatStyle", value: "bubbles", intent: "configure_chat_style", label: "Chat style" };
+    }
+    if (normalized.includes("card") || normalized.includes("cards")) {
+      return { kind: "set_preference", key: "chatStyle", value: "cards", intent: "configure_chat_style", label: "Chat style" };
+    }
+  }
+
+  if (includesAnyText(normalized, ["composer style", "input style", "стиль ввода", "输入样式"])) {
+    if (normalized.includes("glass clear") || normalized.includes("glass-clear")) {
+      return { kind: "set_preference", key: "composerStyle", value: "glass-clear", intent: "configure_composer_style", label: "Composer style" };
+    }
+    if (normalized.includes("glass")) {
+      return { kind: "set_preference", key: "composerStyle", value: "glass-soft", intent: "configure_composer_style", label: "Composer style" };
+    }
+    if (normalized.includes("bubble")) {
+      return { kind: "set_preference", key: "composerStyle", value: "bubble", intent: "configure_composer_style", label: "Composer style" };
+    }
+    if (normalized.includes("flat")) {
+      return { kind: "set_preference", key: "composerStyle", value: "flat", intent: "configure_composer_style", label: "Composer style" };
+    }
+  }
+
+  if (includesAnyText(normalized, ["composer action", "attach button", "plus button", "кнопка ввода"])) {
+    if (normalized.includes("plus") || normalized.includes("плюс")) {
+      return { kind: "set_preference", key: "composerAction", value: "plus", intent: "configure_composer_action", label: "Composer action" };
+    }
+    if (normalized.includes("attach") || normalized.includes("attachment") || normalized.includes("скреп")) {
+      return { kind: "set_preference", key: "composerAction", value: "attach", intent: "configure_composer_action", label: "Composer action" };
+    }
+  }
+
+  const temperature = commandNumberValue(normalized, ["temperature", "температур", "तापमान", "温度"]);
+  if (temperature !== null) {
+    return {
+      kind: "set_preference",
+      key: "temperature",
+      value: temperature,
+      intent: "configure_temperature",
+      label: "Temperature",
+    };
+  }
+
+  const guessProbability = commandNumberValue(normalized, [
+    "guess probability",
+    "ambiguity",
+    "вероятность догадки",
+    "угадыв",
+  ]);
+  if (guessProbability !== null) {
+    return {
+      kind: "set_preference",
+      key: "guessProbability",
+      value: guessProbability,
+      intent: "configure_guess_probability",
+      label: "Guess probability",
+    };
+  }
+
+  const locationPrefixes = [
+    "set location to ",
+    "my location is ",
+    "remember my location as ",
+    "установи местоположение ",
+    "мое местоположение ",
+  ];
+  const locationPrefix = locationPrefixes.find((prefix) => normalized.startsWith(prefix));
+  if (locationPrefix) {
+    const value = normalized.slice(locationPrefix.length).trim().slice(0, 80);
+    if (value) {
+      return {
+        kind: "set_preference",
+        key: "location",
+        value,
+        intent: "configure_location",
+        label: "Location",
+      };
+    }
+  }
+
+  const sidebar = detectToggleCommand(normalized, ["sidebar", "side panel", "боковая панель"]);
+  if (sidebar !== null) {
+    return {
+      kind: "set_preference",
+      key: "sidebarCollapsed",
+      value: !sidebar,
+      intent: "configure_sidebar",
+      label: "Sidebar",
+    };
+  }
+
+  const deleted = detectToggleCommand(normalized, ["deleted conversations", "deleted chats", "удаленные беседы"]);
+  if (deleted !== null) {
+    return {
+      kind: "set_preference",
+      key: "showDeletedConversations",
+      value: deleted,
+      intent: "configure_deleted_conversations",
+      label: "Deleted conversations",
+    };
+  }
+
   return null;
 }
 
@@ -422,6 +762,10 @@ const PREFERENCE_DEFAULTS = {
   sidebarTraceCollapsed: false,
   sidebarConversationsCollapsed: false,
   sidebarSettingsCollapsed: false,
+  // Issue #153: the side panel is collapsible to give the chat full viewport
+  // width on desktop. The drawer view on mobile stays controlled by the
+  // separate `mobileMenuOpen` toggle so phones can still slide it in.
+  sidebarCollapsed: false,
   showDeletedConversations: false,
   // Issue #27: random greeting variations are opt-in but default to on so
   // newcomers see the multilingual surface immediately.
@@ -431,6 +775,10 @@ const PREFERENCE_DEFAULTS = {
   // deterministic users turn random response variation off with temperature=0.
   guessProbability: 0.8,
   temperature: 0.7,
+  // Issue #160 follow-up: polite courtesy responses can either leave the
+  // initiative with the user or ask/propose the next action. This probability
+  // controls whether the next-action sentence is appended.
+  followUpProbability: 0.75,
   // Issue #63: definition fusion remains explicit-only by default, with an
   // opt-in mode that treats plain "What is X?" prompts as merge requests.
   definitionFusion: "explicit",
@@ -673,6 +1021,7 @@ function collectUserContext({
   locationPreference,
   guessProbability,
   temperature,
+  followUpProbability,
   definitionFusion,
 }) {
   const browserLanguages = browserLanguagesList();
@@ -708,6 +1057,7 @@ function collectUserContext({
     preferredLocation: locationPreference || "",
     guessProbability: formatSliderValue(guessProbability),
     temperature: String(normalizeSliderPreference(temperature, 0)),
+    followUpProbability: formatSliderValue(followUpProbability),
     definitionFusion,
     locationInference:
       locationPreference
@@ -791,6 +1141,7 @@ function appendUserContextBlock(lines, context) {
   }
   push("Guess probability", `${safe.guessProbability || "unknown"}%`);
   push("Temperature", safe.temperature);
+  push("Follow-up probability", `${safe.followUpProbability || "unknown"}%`);
   if (safe.locationInference && !safe.preferredLocation) {
     // Per issue #140 feedback: "We should just write to what it inferred to,
     // and from which source. So it can be shorter." Reuse the inference
@@ -1067,6 +1418,59 @@ function createMessage(role, content, extra = {}) {
   };
 }
 
+// Issue #153: dedicated renderer for the formalize / formalize_resolved
+// diagnostics step. Keeps the SVO layout consistent regardless of source
+// language and shows the canonical id prefixes (`Q`, `WP:`, `WT:`, `OP:`,
+// `@USER`) so reviewers can verify the symbolic mapping. The verb slot
+// labels the SVO triple in the user's UI language.
+function FormalizationView({ formalization, t }) {
+  if (!formalization) return null;
+  return h(
+    "div",
+    { className: "formalization-view", "data-testid": "formalization" },
+    formalization.raw
+      ? h(
+          "div",
+          { className: "formalization-raw" },
+          h("code", null, formalization.raw),
+          h("span", { className: "formalization-arrow", "aria-hidden": "true" }, "→"),
+          h("code", { className: "formalization-tuple" }, formalization.tuple),
+        )
+      : h("code", { className: "formalization-tuple" }, formalization.tuple),
+    h(
+      "div",
+      { className: "formalization-svo" },
+      h(
+        "span",
+        { className: "formalization-svo-label" },
+        t("message.formalizationSubjectVerbObject"),
+      ),
+      h(
+        "ol",
+        { className: "formalization-svo-list" },
+        h(
+          "li",
+          null,
+          h("span", { className: "formalization-slot" }, "S"),
+          h("code", null, formalization.subject || ""),
+        ),
+        h(
+          "li",
+          null,
+          h("span", { className: "formalization-slot" }, "V"),
+          h("code", null, formalization.verb || ""),
+        ),
+        h(
+          "li",
+          null,
+          h("span", { className: "formalization-slot" }, "O"),
+          h("code", null, formalization.object || ""),
+        ),
+      ),
+    ),
+  );
+}
+
 function escapeHtml(value) {
   return value
     .replaceAll("&", "&amp;")
@@ -1153,12 +1557,58 @@ function isIdentityPrompt(normalized) {
   );
 }
 
-function localFallbackAnswer(prompt) {
+function chooseVariant(variants, randomize) {
+  if (!Array.isArray(variants) || variants.length === 0) return "";
+  if (!randomize || variants.length === 1) return variants[0];
+  return variants[Math.floor(Math.random() * variants.length)] || variants[0];
+}
+
+function shouldIncludeCourtesyFollowUp(probability, randomize) {
+  const normalized = normalizeSliderPreference(
+    probability,
+    PREFERENCE_DEFAULTS.followUpProbability,
+  );
+  if (normalized <= 0) return false;
+  if (normalized >= 1) return true;
+  if (!randomize) return normalized >= 0.5;
+  return Math.random() < normalized;
+}
+
+function courtesyResponseContent(preferences = {}) {
+  const temperature = normalizeSliderPreference(
+    preferences.temperature,
+    PREFERENCE_DEFAULTS.temperature,
+  );
+  const randomize = temperature > 0;
+  const acknowledgement = chooseVariant(COURTESY_ACKNOWLEDGEMENTS, randomize);
+  if (!shouldIncludeCourtesyFollowUp(preferences.followUpProbability, randomize)) {
+    return acknowledgement;
+  }
+  const followUp = chooseVariant(COURTESY_FOLLOW_UPS, randomize);
+  return `${acknowledgement} ${followUp}`;
+}
+
+function localFallbackAnswer(prompt, preferences = {}) {
   const normalized = normalizePrompt(prompt);
   if (["hi", "hello", "hey"].includes(normalized)) {
     return {
       intent: "greeting",
       content: "Hi, how may I help you?",
+    };
+  }
+
+  const courtesyResponses = new Set([
+    "thanks",
+    "thank you",
+    "i am fine thank you",
+    "i am fine thanks",
+    "i m fine thank you",
+    "i m fine thanks",
+  ]);
+  if (courtesyResponses.has(normalized)) {
+    return {
+      intent: "courtesy_response",
+      content: courtesyResponseContent(preferences),
     };
   }
 
@@ -1435,6 +1885,207 @@ function createIssueUrl(context) {
   return fitIssueUrl(context, (effectiveContext) => createIssueReportBody(effectiveContext));
 }
 
+// Issue #180: format the unified link-notation projection for an HTTP
+// exchange so the user can see the formalization step alongside the raw
+// request and response in diagnostics mode.
+function formatHttpExchangeAsLinks(exchange) {
+  if (!exchange || typeof exchange !== "object") return "";
+  const lines = [];
+  const id = exchange.id || `http:${exchange.method || "GET"}:${exchange.url || ""}`;
+  lines.push(`(${id}: kind http_exchange)`);
+  if (exchange.provider) lines.push(`(${id}: provider ${exchange.provider})`);
+  if (exchange.phase) lines.push(`(${id}: phase ${exchange.phase})`);
+  if (exchange.method) lines.push(`(${id}: method ${exchange.method})`);
+  if (exchange.url) lines.push(`(${id}: url ${exchange.url})`);
+  if (typeof exchange.status === "number") {
+    lines.push(`(${id}: status ${exchange.status})`);
+  }
+  if (typeof exchange.elapsedMs === "number") {
+    lines.push(`(${id}: elapsed_ms ${exchange.elapsedMs})`);
+  }
+  if (typeof exchange.responseBytes === "number") {
+    lines.push(`(${id}: response_bytes ${exchange.responseBytes})`);
+  }
+  if (exchange.error) {
+    const safeError = String(exchange.error).replace(/[()]/g, " ");
+    lines.push(`(${id}: error ${safeError})`);
+  }
+  return lines.join("\n");
+}
+
+// Issue #180: render the worker's per-provider summary and the raw HTTP
+// exchange list (request URL, status, elapsed time, response snippet,
+// unified Links Notation projection) for each search-providing message.
+function DiagnosticsHttpPanel({ providers, exchanges, t }) {
+  if (
+    (!Array.isArray(providers) || providers.length === 0) &&
+    (!Array.isArray(exchanges) || exchanges.length === 0)
+  ) {
+    return null;
+  }
+  const safeExchanges = Array.isArray(exchanges) ? exchanges : [];
+  return h(
+    "div",
+    {
+      className: "diagnostics-http",
+      "data-testid": "diagnostics-http",
+    },
+    Array.isArray(providers) && providers.length > 0
+      ? h(
+          "div",
+          { className: "diagnostics-http-section" },
+          h(
+            "strong",
+            { className: "diagnostics-section-label" },
+            t("message.diagnosticsProviders"),
+          ),
+          h(
+            "ul",
+            { className: "diagnostics-http-provider-list" },
+            providers.map((entry, index) =>
+              h(
+                "li",
+                {
+                  key: `${entry.id || "provider"}-${index}`,
+                  className: `diagnostics-http-provider ${entry.ok ? "is-ok" : "is-error"}`,
+                  "data-testid": "diagnostics-http-provider",
+                },
+                t("message.diagnosticsProviderRow", {
+                  label: entry.label || entry.id || "(provider)",
+                  status: entry.ok
+                    ? t("message.diagnosticsProviderOk")
+                    : `${t("message.diagnosticsProviderError")}: ${entry.error || "(unknown)"}`,
+                  count: typeof entry.count === "number" ? entry.count : 0,
+                  elapsed: typeof entry.elapsedMs === "number" ? entry.elapsedMs : 0,
+                }),
+              ),
+            ),
+          ),
+        )
+      : null,
+    h(
+      "div",
+      { className: "diagnostics-http-section" },
+      h(
+        "strong",
+        { className: "diagnostics-section-label" },
+        t("message.diagnosticsHttp"),
+      ),
+      safeExchanges.length === 0
+        ? h(
+            "p",
+            { className: "diagnostics-http-empty" },
+            t("message.diagnosticsHttpEmpty"),
+          )
+        : h(
+            "ol",
+            { className: "diagnostics-http-list" },
+            safeExchanges.map((exchange, index) =>
+              h(
+                "li",
+                {
+                  key: `${exchange.id || index}`,
+                  className: "diagnostics-http-item",
+                },
+                h(
+                  "details",
+                  {
+                    className: "diagnostics-detail",
+                    "data-testid": "diagnostics-http-exchange",
+                  },
+                  h(
+                    "summary",
+                    null,
+                    h(
+                      "span",
+                      { className: "diagnostics-step-name" },
+                      `${exchange.method || "GET"} ${exchange.provider ? `[${exchange.provider}] ` : ""}`,
+                    ),
+                    h(
+                      "span",
+                      { className: "diagnostics-step-summary" },
+                      exchange.url || "(no url)",
+                    ),
+                    h(
+                      "span",
+                      { className: "diagnostics-http-status" },
+                      t("message.diagnosticsHttpStatus", {
+                        status: typeof exchange.status === "number" ? exchange.status : "—",
+                        elapsed: typeof exchange.elapsedMs === "number" ? exchange.elapsedMs : 0,
+                        bytes: typeof exchange.responseBytes === "number" ? exchange.responseBytes : 0,
+                      }),
+                    ),
+                  ),
+                  h(
+                    "div",
+                    { className: "diagnostics-detail-body" },
+                    h(
+                      "div",
+                      { className: "diagnostics-tool-section" },
+                      h(
+                        "span",
+                        { className: "diagnostics-section-label" },
+                        t("message.diagnosticsHttpRequest"),
+                      ),
+                      h(
+                        "pre",
+                        { className: "diagnostics-payload" },
+                        formatDiagnosticPayload({
+                          method: exchange.method || "GET",
+                          url: exchange.url || "",
+                          headers: exchange.requestHeaders || {},
+                          body: exchange.requestBody || null,
+                          provider: exchange.provider || "",
+                          phase: exchange.phase || "",
+                        }),
+                      ),
+                    ),
+                    h(
+                      "div",
+                      { className: "diagnostics-tool-section" },
+                      h(
+                        "span",
+                        { className: "diagnostics-section-label" },
+                        t("message.diagnosticsHttpResponse"),
+                      ),
+                      h(
+                        "pre",
+                        { className: "diagnostics-payload" },
+                        formatDiagnosticPayload({
+                          status: exchange.status ?? null,
+                          ok: !!exchange.ok,
+                          elapsedMs: exchange.elapsedMs ?? null,
+                          responseBytes: exchange.responseBytes ?? null,
+                          finalUrl: exchange.finalUrl || "",
+                          contentType: exchange.contentType || "",
+                          responseSnippet: exchange.responseSnippet || "",
+                          error: exchange.error || "",
+                        }),
+                      ),
+                    ),
+                    h(
+                      "div",
+                      { className: "diagnostics-tool-section" },
+                      h(
+                        "span",
+                        { className: "diagnostics-section-label" },
+                        t("message.diagnosticsHttpUnified"),
+                      ),
+                      h(
+                        "pre",
+                        { className: "diagnostics-payload diagnostics-http-links" },
+                        formatHttpExchangeAsLinks(exchange),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+    ),
+  );
+}
+
 function Message({ message, diagnosticsMode, reportIssueUrl, t }) {
   const evidence = diagnosticsMode ? (message.evidence ?? []) : [];
   const thinkingSteps = diagnosticsMode ? (message.thinkingSteps ?? []) : [];
@@ -1443,6 +2094,16 @@ function Message({ message, diagnosticsMode, reportIssueUrl, t }) {
     : [];
   const diagnosticsToolCalls = diagnosticsMode
     ? (message.diagnosticsToolCalls ?? [])
+    : [];
+  // Issue #180: surface raw HTTP request/response bodies and the per-provider
+  // outcomes inside the diagnostics panel so the user can audit every network
+  // call the worker performed on their behalf.
+  const diagnosticsPayload = diagnosticsMode ? message.diagnostics : null;
+  const diagnosticsProviders = Array.isArray(diagnosticsPayload?.providers)
+    ? diagnosticsPayload.providers
+    : [];
+  const diagnosticsHttp = Array.isArray(diagnosticsPayload?.httpExchanges)
+    ? diagnosticsPayload.httpExchanges
     : [];
   const reportLabel =
     message.intent === "unknown"
@@ -1580,6 +2241,7 @@ function Message({ message, diagnosticsMode, reportIssueUrl, t }) {
                     {
                       className: "diagnostics-detail",
                       "data-testid": "diagnostics-step",
+                      "data-step": entry.step,
                     },
                     h(
                       "summary",
@@ -1587,22 +2249,31 @@ function Message({ message, diagnosticsMode, reportIssueUrl, t }) {
                       h(
                         "span",
                         { className: "diagnostics-step-name" },
-                        entry.step,
+                        entry.formalization
+                          ? t("message.formalization")
+                          : entry.step,
                       ),
                       h(
                         "span",
                         { className: "diagnostics-step-summary" },
-                        truncateDiagnosticDetail(entry.detail),
+                        entry.formalization
+                          ? truncateDiagnosticDetail(entry.formalization.tuple)
+                          : truncateDiagnosticDetail(entry.detail),
                       ),
                     ),
                     h(
                       "div",
                       { className: "diagnostics-detail-body" },
-                      h(
-                        "pre",
-                        { className: "diagnostics-payload" },
-                        formatDiagnosticPayload(entry.detail),
-                      ),
+                      entry.formalization
+                        ? h(FormalizationView, {
+                            formalization: entry.formalization,
+                            t,
+                          })
+                        : h(
+                            "pre",
+                            { className: "diagnostics-payload" },
+                            formatDiagnosticPayload(entry.detail),
+                          ),
                     ),
                   ),
                 ),
@@ -1708,6 +2379,13 @@ function Message({ message, diagnosticsMode, reportIssueUrl, t }) {
             ),
           )
         : null,
+      diagnosticsPayload
+        ? h(DiagnosticsHttpPanel, {
+            providers: diagnosticsProviders,
+            exchanges: diagnosticsHttp,
+            t,
+          })
+        : null,
       reportIssueUrl
         ? h(
             "div",
@@ -1768,6 +2446,17 @@ function MenuGlyph({ open }) {
   });
 }
 
+function SidebarToggleGlyph({ collapsed }) {
+  return h(
+    "span",
+    {
+      className: `btn-icon sidebar-toggle-icon ${collapsed ? "sidebar-toggle-icon-expand" : "sidebar-toggle-icon-collapse"}`,
+      "aria-hidden": "true",
+    },
+    collapsed ? "▶" : "◀",
+  );
+}
+
 function App() {
   const workerRef = useRef(null);
   const pendingResponses = useRef(new Map());
@@ -1823,6 +2512,12 @@ function App() {
   const [sidebarSettingsCollapsed, setSidebarSettingsCollapsed] = useState(
     initialPreferences.current.sidebarSettingsCollapsed,
   );
+  // Issue #153: persistent desktop sidebar collapse — separate from the
+  // transient `mobileMenuOpen` drawer so wide-screen layouts can dedicate the
+  // viewport to chat without losing the user's accordion state.
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(
+    Boolean(initialPreferences.current.sidebarCollapsed),
+  );
   const [showDeletedConversations, setShowDeletedConversations] = useState(
     Boolean(initialPreferences.current.showDeletedConversations),
   );
@@ -1840,6 +2535,12 @@ function App() {
     normalizeSliderPreference(
       initialPreferences.current.temperature,
       PREFERENCE_DEFAULTS.temperature,
+    ),
+  );
+  const [followUpProbability, setFollowUpProbability] = useState(
+    normalizeSliderPreference(
+      initialPreferences.current.followUpProbability,
+      PREFERENCE_DEFAULTS.followUpProbability,
     ),
   );
   const [definitionFusion, setDefinitionFusion] = useState(
@@ -2034,6 +2735,7 @@ function App() {
         locationPreference,
         guessProbability,
         temperature,
+        followUpProbability,
         definitionFusion,
       }),
     [
@@ -2047,6 +2749,7 @@ function App() {
       locationPreference,
       guessProbability,
       temperature,
+      followUpProbability,
       definitionFusion,
       colorSchemeTick,
     ],
@@ -2290,10 +2993,12 @@ function App() {
       sidebarTraceCollapsed,
       sidebarConversationsCollapsed,
       sidebarSettingsCollapsed,
+      sidebarCollapsed,
       showDeletedConversations,
       greetingVariations,
       guessProbability,
       temperature,
+      followUpProbability,
       definitionFusion,
       theme: themePreference,
       uiSkin,
@@ -2314,10 +3019,12 @@ function App() {
     sidebarTraceCollapsed,
     sidebarConversationsCollapsed,
     sidebarSettingsCollapsed,
+    sidebarCollapsed,
     showDeletedConversations,
     greetingVariations,
     guessProbability,
     temperature,
+    followUpProbability,
     definitionFusion,
     themePreference,
     uiSkin,
@@ -2363,6 +3070,16 @@ function App() {
     greetingVariationsRef.current = greetingVariations;
   }, [greetingVariations]);
 
+  const diagnosticsModeRef = useRef(diagnosticsMode);
+  useEffect(() => {
+    diagnosticsModeRef.current = diagnosticsMode;
+  }, [diagnosticsMode]);
+
+  const demoModeRef = useRef(demoMode);
+  useEffect(() => {
+    demoModeRef.current = demoMode;
+  }, [demoMode]);
+
   const guessProbabilityRef = useRef(guessProbability);
   useEffect(() => {
     guessProbabilityRef.current = guessProbability;
@@ -2372,6 +3089,11 @@ function App() {
   useEffect(() => {
     temperatureRef.current = temperature;
   }, [temperature]);
+
+  const followUpProbabilityRef = useRef(followUpProbability);
+  useEffect(() => {
+    followUpProbabilityRef.current = followUpProbability;
+  }, [followUpProbability]);
 
   const definitionFusionRef = useRef(definitionFusion);
   useEffect(() => {
@@ -2383,10 +3105,62 @@ function App() {
     agentModeRef.current = agentMode;
   }, [agentMode]);
 
+  const themePreferenceRef = useRef(themePreference);
+  useEffect(() => {
+    themePreferenceRef.current = themePreference;
+  }, [themePreference]);
+
+  const uiLanguagePreferenceRef = useRef(uiLanguagePreference);
+  useEffect(() => {
+    uiLanguagePreferenceRef.current = uiLanguagePreference;
+  }, [uiLanguagePreference]);
+
+  const uiSkinRef = useRef(uiSkin);
+  useEffect(() => {
+    uiSkinRef.current = uiSkin;
+  }, [uiSkin]);
+
+  const chatStyleRef = useRef(chatStyle);
+  useEffect(() => {
+    chatStyleRef.current = chatStyle;
+  }, [chatStyle]);
+
+  const composerStyleRef = useRef(composerStyle);
+  useEffect(() => {
+    composerStyleRef.current = composerStyle;
+  }, [composerStyle]);
+
+  const composerActionRef = useRef(composerAction);
+  useEffect(() => {
+    composerActionRef.current = composerAction;
+  }, [composerAction]);
+
+  const locationPreferenceRef = useRef(locationPreference);
+  useEffect(() => {
+    locationPreferenceRef.current = locationPreference;
+  }, [locationPreference]);
+
   const requestAnswer = useCallback((text, history = []) => {
     const worker = workerRef.current;
+    const prefs = {
+      greetingVariations: greetingVariationsRef.current,
+      diagnosticsMode: diagnosticsModeRef.current,
+      demoMode: demoModeRef.current,
+      guessProbability: guessProbabilityRef.current,
+      temperature: temperatureRef.current,
+      followUpProbability: followUpProbabilityRef.current,
+      definitionFusion: definitionFusionRef.current,
+      agentMode: agentModeRef.current,
+      theme: themePreferenceRef.current,
+      uiLanguage: uiLanguagePreferenceRef.current,
+      uiSkin: uiSkinRef.current,
+      chatStyle: chatStyleRef.current,
+      composerStyle: composerStyleRef.current,
+      composerAction: composerActionRef.current,
+      location: locationPreferenceRef.current,
+    };
     if (!worker) {
-      return Promise.resolve(localFallbackAnswer(text));
+      return Promise.resolve(localFallbackAnswer(text, prefs));
     }
 
     return new Promise((resolve) => {
@@ -2396,12 +3170,7 @@ function App() {
         prompt: text,
         requestId,
         history,
-        prefs: {
-          greetingVariations: greetingVariationsRef.current,
-          guessProbability: guessProbabilityRef.current,
-          temperature: temperatureRef.current,
-          definitionFusion: definitionFusionRef.current,
-        },
+        prefs,
         userContext: userContextRef.current,
       });
     });
@@ -2467,6 +3236,10 @@ function App() {
       thinkingSteps,
       diagnosticsSteps: structuredSteps,
       diagnosticsToolCalls: structuredToolCalls,
+      // Issue #180: forward the web_search diagnostics envelope so the
+      // diagnostics panel can show raw HTTP request/response exchanges and
+      // the per-provider success/failure status.
+      diagnostics: answer.diagnostics || null,
       iframeUrl: answer.iframeUrl || null,
     });
     setMessages((current) => [...current, message]);
@@ -2525,6 +3298,80 @@ function App() {
         evidence: message.evidence,
       })),
     [messages],
+  );
+
+  const applyInterfaceCommand = useCallback(
+    (command) => {
+      if (!command) return;
+      if (command.kind === "trigger" && command.action === "attach_files") {
+        triggerAttachFiles();
+        return;
+      }
+      if (command.kind !== "set_preference") {
+        return;
+      }
+      switch (command.key) {
+        case "diagnosticsMode":
+          setDiagnosticsMode(Boolean(command.value));
+          break;
+        case "demoMode":
+          setDemoMode(Boolean(command.value));
+          break;
+        case "agentMode":
+          setAgentMode(Boolean(command.value));
+          break;
+        case "greetingVariations":
+          setGreetingVariations(Boolean(command.value));
+          break;
+        case "definitionFusion":
+          setDefinitionFusion(normalizeDefinitionFusion(command.value));
+          break;
+        case "theme":
+          setThemePreference(normalizeThemePreference(command.value));
+          break;
+        case "uiLanguage":
+          setUiLanguagePreference(normalizeUiLanguagePreference(command.value));
+          break;
+        case "uiSkin":
+          setUiSkin(normalizeUiSkin(command.value));
+          break;
+        case "chatStyle":
+          setChatStyle(normalizeChatStyle(command.value));
+          break;
+        case "composerStyle":
+          setComposerStyle(normalizeComposerStyle(command.value));
+          break;
+        case "composerAction":
+          setComposerAction(normalizeComposerAction(command.value));
+          break;
+        case "temperature":
+          setTemperature(
+            normalizeSliderPreference(command.value, PREFERENCE_DEFAULTS.temperature),
+          );
+          break;
+        case "guessProbability":
+          setGuessProbability(
+            normalizeSliderPreference(
+              command.value,
+              PREFERENCE_DEFAULTS.guessProbability,
+            ),
+          );
+          break;
+        case "location":
+          setLocationPreference(String(command.value || "").slice(0, 80));
+          break;
+        case "sidebarCollapsed":
+          setSidebarCollapsed(Boolean(command.value));
+          break;
+        case "showDeletedConversations":
+          setShowDeletedConversations(Boolean(command.value));
+          refreshConversations(Boolean(command.value));
+          break;
+        default:
+          break;
+      }
+    },
+    [refreshConversations, triggerAttachFiles],
   );
 
   // Issue #27: agent mode — run a decomposed task plan and merge the per-step
@@ -2631,6 +3478,52 @@ function App() {
             tool: "import_memory",
             inputs: { prompt: trimmed },
             outputs: { intent: "memory_import" },
+          },
+        ],
+      });
+      setPending(false);
+      return;
+    }
+
+    const interfaceCommand = recognizeInterfaceCommand(trimmed);
+    if (interfaceCommand) {
+      const valueLabel = commandValueLabel(interfaceCommand);
+      if (interfaceCommand.kind !== "report_issue") {
+        applyInterfaceCommand(interfaceCommand);
+      }
+      appendAssistantMessage({
+        intent: interfaceCommand.intent,
+        content: interfaceCommandResponse(interfaceCommand, currentReportUrl),
+        confidence: 1.0,
+        evidence: [
+          `rule:${interfaceCommand.intent}`,
+          `command:${interfaceCommand.kind}`,
+          ...(interfaceCommand.key ? [`preference:${interfaceCommand.key}`] : []),
+          `value:${valueLabel}`,
+        ],
+        steps: [
+          {
+            step:
+              interfaceCommand.kind === "set_preference"
+                ? "apply_message_command"
+                : "trigger_message_action",
+            detail: interfaceCommand.key
+              ? `${interfaceCommand.key}=${valueLabel}`
+              : interfaceCommand.label,
+          },
+        ],
+        toolCalls: [
+          {
+            tool:
+              interfaceCommand.kind === "set_preference"
+                ? "configure_preference"
+                : interfaceCommand.intent,
+            inputs: { prompt: trimmed },
+            outputs: {
+              kind: interfaceCommand.kind,
+              key: interfaceCommand.key || interfaceCommand.action || "",
+              value: interfaceCommand.value ?? interfaceCommand.label,
+            },
           },
         ],
       });
@@ -2835,6 +3728,23 @@ function App() {
         h(MenuGlyph, { open: mobileMenuOpen }),
       ),
       h(
+        "button",
+        {
+          type: "button",
+          className: `sidebar-toggle${sidebarCollapsed ? " is-collapsed" : ""}`,
+          "data-testid": "sidebar-toggle",
+          "aria-pressed": !sidebarCollapsed,
+          "aria-label": sidebarCollapsed
+            ? t("buttons.expandSidebar")
+            : t("buttons.collapseSidebar"),
+          title: sidebarCollapsed
+            ? t("titles.expandSidebar")
+            : t("titles.collapseSidebar"),
+          onClick: () => setSidebarCollapsed((value) => !value),
+        },
+        h(SidebarToggleGlyph, { collapsed: sidebarCollapsed }),
+      ),
+      h(
         "div",
         { className: "brand" },
         h("span", { className: "mark" }, "FA"),
@@ -2844,13 +3754,40 @@ function App() {
       h(
         "div",
         { className: "topbar-actions" },
-        h("span", { className: "demo-status", "data-testid": "demo-status", role: "status" }, demoStatus),
-        diagnosticsMode ? h("span", { className: "status" }, workerState) : null,
+        h(
+          "span",
+          {
+            className: "demo-status",
+            "data-testid": "demo-status",
+            "data-menu-priority": "7",
+            role: "status",
+          },
+          demoStatus,
+        ),
+        diagnosticsMode
+          ? h("span", { className: "status", "data-menu-priority": "7" }, workerState)
+          : null,
+        h(
+          "a",
+          {
+            className: "source-code-button",
+            "data-testid": "source-code",
+            "data-menu-priority": "5",
+            href: SOURCE_CODE_URL,
+            target: "_blank",
+            rel: "noopener noreferrer",
+            title: t("titles.sourceCode"),
+            "aria-label": t("buttons.sourceCode"),
+          },
+          h("span", { className: "btn-icon", "aria-hidden": "true" }, "💻"),
+          h("span", { className: "btn-label" }, t("buttons.sourceCode")),
+        ),
         h(
           "a",
           {
             className: "report-button",
             "data-testid": "report-issue",
+            "data-menu-priority": "1",
             href: currentReportUrl,
             target: "_blank",
             rel: "noopener noreferrer",
@@ -2866,6 +3803,7 @@ function App() {
             type: "button",
             className: "memory-button",
             "data-testid": "memory-export",
+            "data-menu-priority": "6",
             onClick: handleExportMemory,
             title: t("titles.exportMemory"),
             "aria-label": t("buttons.exportMemory"),
@@ -2879,6 +3817,7 @@ function App() {
             type: "button",
             className: "memory-button",
             "data-testid": "memory-import",
+            "data-menu-priority": "6",
             onClick: triggerImportMemory,
             title: t("titles.importMemory"),
             "aria-label": t("buttons.importMemory"),
@@ -2901,6 +3840,7 @@ function App() {
                 className: "memory-status",
                 role: "status",
                 "data-testid": "memory-status",
+                "data-menu-priority": "7",
               },
               memoryStatus,
             )
@@ -2910,6 +3850,7 @@ function App() {
           {
             type: "button",
             className: "diagnostics-toggle",
+            "data-menu-priority": "2",
             "aria-pressed": diagnosticsMode,
             onClick: () => setDiagnosticsMode((value) => !value),
             title: diagnosticsMode
@@ -2919,7 +3860,7 @@ function App() {
               ? t("buttons.diagnosticsOn")
               : t("buttons.diagnostics"),
           },
-          h("span", { className: "btn-icon", "aria-hidden": "true" }, "🔍"),
+          h("span", { className: "btn-icon", "aria-hidden": "true" }, "🧪"),
           h(
             "span",
             { className: "btn-label" },
@@ -2932,6 +3873,7 @@ function App() {
             type: "button",
             className: "agent-toggle",
             "data-testid": "agent-toggle",
+            "data-menu-priority": "4",
             "aria-pressed": agentMode,
             title: agentMode
               ? t("titles.agentOn")
@@ -2955,6 +3897,7 @@ function App() {
           {
             type: "button",
             className: "mode-toggle",
+            "data-menu-priority": "3",
             "aria-pressed": demoMode,
             onClick: () => setDemoMode((value) => !value),
             title: demoMode
@@ -2981,14 +3924,15 @@ function App() {
     h(
       "section",
       {
-        className: "workspace",
+        className: `workspace${sidebarCollapsed ? " sidebar-collapsed" : ""}`,
         style: { "--context-panel-width": `${contextPanelWidth}px` },
       },
       h(
         "aside",
         {
-          className: `context-panel${mobileMenuOpen ? " is-mobile-open" : ""}`,
+          className: `context-panel${mobileMenuOpen ? " is-mobile-open" : ""}${sidebarCollapsed ? " is-desktop-collapsed" : ""}`,
           "data-testid": "context-panel",
+          "aria-hidden": sidebarCollapsed && !mobileMenuOpen ? "true" : "false",
         },
         h(
           "div",
@@ -3024,6 +3968,18 @@ function App() {
           h(
             "div",
             { className: "drawer-action-list" },
+            h(
+              "a",
+              {
+                className: "drawer-action",
+                "data-testid": "drawer-source-code",
+                href: SOURCE_CODE_URL,
+                target: "_blank",
+                rel: "noopener noreferrer",
+              },
+              h("span", { className: "btn-icon", "aria-hidden": "true" }, "💻"),
+              h("span", null, t("buttons.sourceCode")),
+            ),
             h(
               "a",
               {
@@ -3066,7 +4022,7 @@ function App() {
                 "aria-pressed": diagnosticsMode,
                 onClick: () => setDiagnosticsMode((value) => !value),
               },
-              h("span", { className: "btn-icon", "aria-hidden": "true" }, "🔍"),
+              h("span", { className: "btn-icon", "aria-hidden": "true" }, "🧪"),
               h("span", null, diagnosticsMode ? t("buttons.diagnosticsOn") : t("buttons.diagnostics")),
             ),
             h(
@@ -3107,9 +4063,11 @@ function App() {
                 type: "button",
                 className: "conversation-new",
                 "data-testid": "conversation-new",
+                disabled:
+                  messages.length === 0 &&
+                  !currentConversationId &&
+                  prompt.trim().length === 0,
                 onClick: () => {
-                  // Drop the current thread id so the next user message mints a
-                  // fresh one and assigns its events accordingly.
                   currentConversationRef.current = "";
                   setCurrentConversationId("");
                   setMessages([]);
@@ -3256,6 +4214,42 @@ function App() {
                 "output",
                 { htmlFor: "setting-guess-probability" },
                 `${formatSliderValue(guessProbability)}%`,
+              ),
+            ),
+            h(
+              "div",
+              { className: "setting-row setting-row-slider" },
+              h(
+                "label",
+                { htmlFor: "setting-follow-up-probability" },
+                t("settings.followUpInitiative"),
+              ),
+              h(
+                "div",
+                { className: "setting-poles" },
+                h("span", null, t("settings.userInitiative")),
+                h("span", null, t("settings.assistantInitiative")),
+              ),
+              h("input", {
+                id: "setting-follow-up-probability",
+                "data-testid": "setting-follow-up-probability",
+                type: "range",
+                min: "0",
+                max: "1",
+                step: "0.05",
+                value: followUpProbability,
+                onChange: (event) =>
+                  setFollowUpProbability(
+                    normalizeSliderPreference(
+                      event.target.value,
+                      PREFERENCE_DEFAULTS.followUpProbability,
+                    ),
+                  ),
+              }),
+              h(
+                "output",
+                { htmlFor: "setting-follow-up-probability" },
+                `${formatSliderValue(followUpProbability)}%`,
               ),
             ),
             h(
@@ -3713,8 +4707,25 @@ function App() {
                 disabled: pending || demoMode || !prompt.trim(),
                 "data-testid": "chat-composer-submit",
               },
-              h("span", { className: "send-icon", "aria-hidden": "true" }, pending ? "..." : "↑"),
-              h("span", { className: "send-label" }, pending ? "..." : t("composer.send")),
+              pending
+                ? h(
+                    "span",
+                    {
+                      className: "send-spinner",
+                      "aria-hidden": "true",
+                      "data-testid": "send-spinner",
+                    },
+                  )
+                : h(
+                    "span",
+                    { className: "send-icon", "aria-hidden": "true" },
+                    "↑",
+                  ),
+              h(
+                "span",
+                { className: "send-label" },
+                pending ? t("composer.sending") : t("composer.send"),
+              ),
             ),
           ),
           attachmentStatus

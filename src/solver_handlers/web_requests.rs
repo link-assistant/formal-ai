@@ -103,12 +103,15 @@ pub fn try_web_search(
             "Поиск в интернете запрошен для `{query}`.\n\n\
              В браузерной демо-версии formal-ai по умолчанию использует DuckDuckGo \
              Instant Answer (CORS-совместимый, без ключа) и параллельно опрашивает \
-             Wikipedia REST и Wikidata. Топ-10 ссылок объединяются через \
-             reciprocal rank fusion (`score(d) = Σ 1 / ({WEB_SEARCH_RRF_K} + rank_i(d))`), \
-             поэтому URL, которые встречаются у нескольких провайдеров, всплывают \
-             вверх. Для произвольной страницы используйте `fetch example.com`; если \
-             прямой `fetch()` заблокирован CORS, браузер проверит frame-policy \
-             перед встроенным iframe.\n\n\
+             Internet Archive, Wikipedia REST, Wikidata и Wiktionary в указанном \
+             порядке приоритета. Топ-10 ссылок от каждого провайдера объединяются \
+             через reciprocal rank fusion (`score(d) = Σ 1 / ({WEB_SEARCH_RRF_K} + \
+             rank_i(d))`), поэтому URL, которые встречаются у нескольких провайдеров, \
+             всплывают вверх. Дубликаты одной и той же сущности (например, \
+             Викидата + Википедия) сворачиваются в один пункт с пометкой \
+             «Другие источники». Для произвольной страницы используйте \
+             `fetch example.com`; если прямой `fetch()` заблокирован CORS, \
+             браузер проверит frame-policy перед встроенным iframe.\n\n\
              Provider: duckduckgo (default)\n\
              Providers considered: {provider_summary}\n\
              Combined ranking: reciprocal rank fusion (k = {WEB_SEARCH_RRF_K})"
@@ -116,13 +119,15 @@ pub fn try_web_search(
         _ => format!(
             "Web search requested for `{query}`.\n\n\
              In the browser demo formal-ai defaults to the DuckDuckGo Instant \
-             Answer endpoint (CORS-readable, keyless) and queries Wikipedia REST \
-             and Wikidata in parallel. The top-10 links from each provider are \
-             merged with reciprocal rank fusion (`score(d) = Σ 1 / ({WEB_SEARCH_RRF_K} + rank_i(d))`), \
-             so URLs that appear in more than one provider bubble up. For an \
-             arbitrary page, use `fetch example.com`; if direct `fetch()` is \
-             blocked by CORS, the browser checks frame policy before an \
-             embedded iframe.\n\n\
+             Answer endpoint (CORS-readable, keyless) and queries Internet Archive, \
+             Wikipedia REST, Wikidata, and Wiktionary in that priority order. The \
+             top-10 links from each provider are merged with reciprocal rank fusion \
+             (`score(d) = Σ 1 / ({WEB_SEARCH_RRF_K} + rank_i(d))`), so URLs that \
+             appear in more than one provider bubble up. Duplicate entries for the \
+             same entity (e.g. Wikidata + Wikipedia) are collapsed into a single \
+             bullet with an \"other sources\" footnote. For an arbitrary page, use \
+             `fetch example.com`; if direct `fetch()` is blocked by CORS, the \
+             browser checks frame policy before an embedded iframe.\n\n\
              Provider: duckduckgo (default)\n\
              Providers considered: {provider_summary}\n\
              Combined ranking: reciprocal rank fusion (k = {WEB_SEARCH_RRF_K})"
