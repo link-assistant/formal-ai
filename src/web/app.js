@@ -1480,6 +1480,36 @@ function escapeHtml(value) {
     .replaceAll("'", "&#039;");
 }
 
+function isHttpExternalLink(href) {
+  try {
+    const url = new URL(href, window.location.href);
+    return url.protocol === "http:" || url.protocol === "https:";
+  } catch (_error) {
+    return /^https?:\/\//i.test(String(href || ""));
+  }
+}
+
+function enhanceMarkdownLinks(html) {
+  if (typeof document === "undefined") return html;
+  const template = document.createElement("template");
+  template.innerHTML = html;
+  template.content.querySelectorAll("a[href]").forEach((anchor) => {
+    const href = anchor.getAttribute("href") || "";
+    if (!isHttpExternalLink(href)) return;
+    anchor.setAttribute("target", "_blank");
+    anchor.setAttribute("rel", "noopener noreferrer");
+    anchor.classList.add("external-link");
+    if (!anchor.querySelector(".external-link-icon")) {
+      anchor.appendChild(document.createTextNode(" "));
+      const icon = document.createElement("span");
+      icon.className = "external-link-icon";
+      icon.setAttribute("aria-hidden", "true");
+      anchor.appendChild(icon);
+    }
+  });
+  return template.innerHTML;
+}
+
 function markdownHtml(value) {
   const text = String(value ?? "");
   if (window.marked && window.DOMPurify) {
@@ -1487,7 +1517,7 @@ function markdownHtml(value) {
       breaks: true,
       gfm: true,
     });
-    return { __html: window.DOMPurify.sanitize(html) };
+    return { __html: enhanceMarkdownLinks(window.DOMPurify.sanitize(html)) };
   }
 
   return { __html: escapeHtml(text).replaceAll("\n", "<br>") };

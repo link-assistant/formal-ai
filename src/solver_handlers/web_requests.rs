@@ -11,9 +11,10 @@ use super::finalize_simple;
 
 /// Match prompts that explicitly ask the engine to perform an HTTP request
 /// (e.g. `fetch google.com`, `Сделай запрос к google.com`). In the browser
-/// demo the actual `fetch()` is attempted first, with an iframe fallback when
-/// CORS blocks the request. Non-fetch URL prompts (`Navigate to github.com`,
-/// `Visit github.com`, ...) are handled by [`try_url_navigate`] instead.
+/// web app the actual `fetch()` is attempted first, with an iframe fallback when
+/// CORS blocks the request only after target frame-policy headers have been
+/// checked. Non-fetch URL prompts (`Navigate to github.com`, `Visit github.com`,
+/// ...) are handled by [`try_url_navigate`] instead.
 pub fn try_http_fetch(
     prompt: &str,
     normalized: &str,
@@ -23,10 +24,11 @@ pub fn try_http_fetch(
     log.append("http_fetch:request", url.clone());
     let body = format!(
         "HTTP fetch requested for `{url}`.\n\n\
-         The browser demo attempts a direct `fetch()` first and shows the \
+         The browser web app attempts a direct `fetch()` first and shows the \
          response body when the server allows CORS. If the request is blocked \
-         by CORS, the page falls back to an embedded iframe with open-in-new-tab \
-         and full-screen controls.\n\n\
+         by CORS, the web app checks CORS-readable frame-policy metadata before \
+         deciding whether to show an embedded iframe or keep a direct external \
+         link.\n\n\
          Source: [{url}]({url})"
     );
     Some(finalize_simple(
@@ -41,8 +43,9 @@ pub fn try_http_fetch(
 
 /// Match prompts that ask the assistant to navigate to or display a URL
 /// without performing an HTTP request (e.g. `Navigate to github.com`,
-/// `Go to github.com`, `Перейди на github.com`). The browser demo renders
-/// the link directly and previews it in an iframe; no `fetch()` is attempted.
+/// `Go to github.com`, `Перейди на github.com`). The browser web app renders
+/// an iframe preview only when CORS-readable frame-policy metadata does not
+/// report blocking X-Frame-Options or CSP frame-ancestors headers.
 pub fn try_url_navigate(
     prompt: &str,
     normalized: &str,
@@ -50,14 +53,14 @@ pub fn try_url_navigate(
 ) -> Option<SymbolicAnswer> {
     let url = extract_url_navigate_url(prompt, normalized)?;
     log.append("url_navigate:request", url.clone());
-    log.append("url_preview:iframe", url.clone());
+    log.append("url_preview:frame_policy_check", url.clone());
+    log.append("url_preview:external_link", url.clone());
     let body = format!(
-        "URL requested for `{url}`.\n\n\
-         Open this link: [{url}]({url}).\n\n\
-         The browser demo also shows the page in an embedded iframe when the \
-         site allows framing. Use the open-in-new-tab control if the site \
-         blocks embedding, or the full-screen control to view it at viewport \
-         size."
+        "I suggest opening this in a new tab: [{url}]({url}).\n\n\
+         In the browser web app, this URL is checked with browser-readable \
+         frame-policy metadata before any embedded preview is attempted. If \
+         X-Frame-Options or CSP frame-ancestors blocks embedding, the web app \
+         keeps the direct external link instead."
     );
     Some(finalize_simple(
         prompt,
@@ -108,7 +111,7 @@ pub fn try_web_search(
              Викидата + Википедия) сворачиваются в один пункт с пометкой \
              «Другие источники». Для произвольной страницы используйте \
              `fetch example.com`; если прямой `fetch()` заблокирован CORS, \
-             страница откроется во встроенном iframe.\n\n\
+             браузер проверит frame-policy перед встроенным iframe.\n\n\
              Provider: duckduckgo (default)\n\
              Providers considered: {provider_summary}\n\
              Combined ranking: reciprocal rank fusion (k = {WEB_SEARCH_RRF_K})"
@@ -123,8 +126,8 @@ pub fn try_web_search(
              appear in more than one provider bubble up. Duplicate entries for the \
              same entity (e.g. Wikidata + Wikipedia) are collapsed into a single \
              bullet with an \"other sources\" footnote. For an arbitrary page, use \
-             `fetch example.com`; if direct `fetch()` is blocked by CORS, the page \
-             opens in an embedded iframe.\n\n\
+             `fetch example.com`; if direct `fetch()` is blocked by CORS, the \
+             browser checks frame policy before an embedded iframe.\n\n\
              Provider: duckduckgo (default)\n\
              Providers considered: {provider_summary}\n\
              Combined ranking: reciprocal rank fusion (k = {WEB_SEARCH_RRF_K})"
@@ -295,8 +298,8 @@ fn is_http_fetch_prompt(prompt: &str, normalized: &str, _raw_candidate: &str) ->
 }
 
 /// Prefixes that mean "navigate to / show this page" — the browser worker
-/// must NOT attempt `fetch()` for these prompts; it just renders the link
-/// and the iframe preview.
+/// must NOT attempt `fetch()` for these prompts; it returns a direct external
+/// link that the user can open in a new tab.
 const URL_NAVIGATE_PREFIXES: &[&str] = &[
     "navigate to ",
     "navigate ",

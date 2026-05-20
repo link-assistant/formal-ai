@@ -7,6 +7,7 @@ mod multilingual_variations;
 mod software_project;
 mod specification;
 mod test_status;
+mod web_requests;
 
 #[path = "ci-cd/mod.rs"]
 mod ci_cd;

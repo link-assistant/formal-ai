@@ -616,9 +616,9 @@ fn fetch_prompt_returns_http_fetch_intent_not_unknown() {
 fn url_navigation_variations_return_https_link_without_fetch_advice() {
     // Regression test for issue #125: navigation-style prompts must route to
     // the `url_navigate` intent (no HTTP fetch attempted) and surface a direct
-    // HTTPS link plus iframe preview controls. They must not be conflated
-    // with the `http_fetch` intent, which is reserved for explicit requests
-    // such as `Make a request to google.com`.
+    // HTTPS external link. They must not be conflated with the `http_fetch`
+    // intent, which is reserved for explicit requests such as
+    // `Make a request to google.com`.
     let cases = [
         ("Navigate to github.com", "https://github.com"),
         ("Go to github.com", "https://github.com"),
@@ -682,7 +682,8 @@ fn http_fetch_and_url_navigate_intents_are_distinct() {
     // Issue #125: ensure the two flows do not collide. `Make a request to X`
     // must keep going through http_fetch (so the browser attempts an actual
     // network request) while `Navigate to X` must surface the url_navigate
-    // intent (iframe-only, no fetch attempt). Both must surface the URL.
+    // intent (direct external link, no fetch attempt). Both must surface the
+    // URL.
     let fetch_prompt = "Make a request to google.com";
     let navigate_prompt = "Navigate to google.com";
 
