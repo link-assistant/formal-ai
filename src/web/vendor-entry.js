@@ -9,6 +9,7 @@ window.ReactDOM = { createRoot };
 window.marked = marked;
 window.DOMPurify = DOMPurify;
 window.FormalAiVendor = {
+  ...(window.FormalAiVendor || {}),
   LinoI18n: {
     createI18n,
     parseLinoCatalogs,
