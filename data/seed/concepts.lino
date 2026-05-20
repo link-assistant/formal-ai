@@ -82,6 +82,16 @@ concept_wiktionary
   source "https://en.wikipedia.org/wiki/Wiktionary"
   source_kind "wikipedia"
 
+concept_openstreetmap
+  term "OpenStreetMap"
+  intent "concept_lookup"
+  category "map-database"
+  wikidata "Q936"
+  aliases "openstreetmap|open street map|osm|openstreermap"
+  summary "OpenStreetMap (OSM) is a free collaborative map database built and maintained by volunteer contributors, who collect geographic data from surveys, imagery, and openly licensed sources for maps, navigation, humanitarian work, and geospatial analysis."
+  source "https://en.wikipedia.org/wiki/OpenStreetMap"
+  source_kind "wikipedia"
+
 concept_webassembly
   term "WebAssembly"
   intent "concept_lookup"

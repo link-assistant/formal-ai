@@ -225,6 +225,27 @@ test.describe('multilingual chat surface', () => {
     await expect(last).toContainText(/Wikipedia|encyclopedia/i);
   });
 
+  test('Issue #184: Russian OpenStreerMap typo returns the offline OpenStreetMap summary', async ({
+    page,
+  }) => {
+    let wikipediaRequests = 0;
+    await page.route('**://*.wikipedia.org/**', async (route) => {
+      wikipediaRequests += 1;
+      await route.fulfill({
+        status: 500,
+        contentType: 'application/json',
+        body: JSON.stringify({ error: 'network disabled for offline seed test' }),
+      });
+    });
+
+    const last = await sendPrompt(page, 'что такое OpenStreerMap');
+    await expect(last).toHaveClass(/assistant/);
+    await expect(last).toContainText('OpenStreetMap');
+    await expect(last).toContainText('map database');
+    await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
+    expect(wikipediaRequests).toBe(0);
+  });
+
   test('Issue #159: Russian Hive Mind prompt prefers link-assistant project and still searches the web', async ({ page }) => {
     await page.route('**://api.duckduckgo.com/**', async (route) => {
       await route.fulfill({
