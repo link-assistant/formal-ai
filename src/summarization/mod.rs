@@ -1,15 +1,16 @@
 //! Formalize-summarize-deformalize pipeline for project descriptions, README
-//! prose, and conversation summaries.
+//! prose, conversation summaries, and chat titles.
 //!
 //! The module is intentionally deterministic: every transformation is a pure
 //! function of its input plus the [`SummarizationConfig`]. No neural model
 //! or external API is consulted. The pipeline has three explicit stages:
 //!
-//! 1. **Formalize.** Free-form prose (or a curated list of
-//!    [`crate::seed::ProjectStatement`]s) is converted into a homogeneous
-//!    `Vec<Statement>`. Each statement is one sentence with a coarse `kind`
-//!    inferred from cue words (purpose, feature, install, …) and a numeric
-//!    `weight` (0–100) that says how important it is.
+//! 1. **Formalize.** Free-form prose, Markdown README content, dialog turns,
+//!    or a curated list of [`crate::seed::ProjectStatement`]s is converted
+//!    into a homogeneous `Vec<Statement>`. Each statement is one sentence
+//!    with a coarse `kind` inferred from cue words (purpose, feature,
+//!    install, …) and a numeric `weight` (0–100) that says how important it
+//!    is.
 //! 2. **Summarize.** [`summarize`] applies the configured [`SummarizationMode`]
 //!    and `max_statements` limit. Compressing keeps the highest-weighted
 //!    statements; expanding *adds* paraphrases generated from the NSM
@@ -22,10 +23,29 @@
 //! words" requirement from PR #174. Both are vocabulary-driven so they can be
 //! extended without touching call sites.
 //!
+//! Higher-level helpers chain the three stages together for the most common
+//! callers:
+//!
+//! - [`describe_project`] — curated GitHub project → language-aware
+//!   description.
+//! - [`describe_readme`] — Markdown README text → language-aware description
+//!   (badges, headings, and fenced code blocks are stripped before
+//!   formalization).
+//! - [`summarize_dialog`] — chat turns → short recap of the conversation.
+//! - [`generate_chat_title`] — chat turns → 1–5 word chat title.
+//!
 //! See `ARCHITECTURE.md` § "Project lookups and summarization" for how the
 //! Hive Mind handler chains the three stages together.
 
 use crate::seed::{ProjectRecord, ProjectStatement};
+
+/// Default cap on the number of retained statements per summary.
+///
+/// Applied when the caller does not supply an explicit `max_statements`
+/// value. Mirrors the vision note in PR #174: "for example not more than
+/// 30 statements (it should be configurable also)". Set via
+/// [`SummarizationConfig::default`] callers that opt into the cap.
+pub const DEFAULT_MAX_STATEMENTS: usize = 30;
 
 /// Coarse classification used by the summarizer to decide which statements
 /// survive a compression pass. Mirrors the `kind "..."` field accepted by
@@ -577,6 +597,12 @@ pub fn describe_project(project: &ProjectRecord, config: &SummarizationConfig) -
     deformalize(&summarized)
 }
 
+mod dialog;
+mod markdown;
+
+pub use dialog::{formalize_dialog, generate_chat_title, summarize_dialog, DialogTurn};
+pub use markdown::{describe_readme, formalize_markdown, strip_markdown_noise};
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -764,5 +790,139 @@ mod tests {
         let config = SummarizationConfig::default().with_mode(SummarizationMode::Topic);
         assert_eq!(config.effective_max_statements(10), 1);
         assert_eq!(config.effective_max_statements(0), 0);
+    }
+
+    #[test]
+    fn strip_markdown_noise_drops_headings_badges_and_code_blocks() {
+        let md = "# Title\n\
+                  \n\
+                  [![ci](https://example.com/ci.svg)](https://example.com/ci)\n\
+                  \n\
+                  Hive Mind is the AI that controls AIs.\n\
+                  \n\
+                  ```bash\n\
+                  npm install hive-mind\n\
+                  ```\n\
+                  \n\
+                  > It orchestrates multiple agents.\n";
+        let stripped = strip_markdown_noise(md);
+        let lower = stripped.to_lowercase();
+        assert!(lower.contains("hive mind"));
+        assert!(lower.contains("orchestrates multiple agents"));
+        assert!(
+            !lower.contains("npm install"),
+            "fenced code block should be dropped, got: {stripped}",
+        );
+        assert!(
+            !lower.contains("[![ci]"),
+            "badge line should be dropped, got: {stripped}",
+        );
+    }
+
+    #[test]
+    fn strip_markdown_noise_keeps_heading_text_when_no_marker() {
+        let md = "## Section\n\nBody sentence one. Body sentence two.";
+        let stripped = strip_markdown_noise(md);
+        assert!(stripped.contains("Section"));
+        assert!(stripped.contains("Body sentence one"));
+    }
+
+    #[test]
+    fn strip_markdown_noise_skips_html_comments() {
+        let md = "<!-- internal note -->\n\nReal sentence.";
+        let stripped = strip_markdown_noise(md);
+        assert!(!stripped.contains("internal note"));
+        assert!(stripped.contains("Real sentence"));
+    }
+
+    #[test]
+    fn formalize_markdown_yields_statements_for_readme_prose() {
+        let md = "# hive-mind\n\nHive Mind orchestrates multiple agents.\n\
+                  Install with npm install hive-mind.\n";
+        let stmts = formalize_markdown(md);
+        assert!(!stmts.is_empty());
+        assert!(stmts
+            .iter()
+            .any(|s| s.text.to_lowercase().contains("orchestrates")));
+        assert!(stmts.iter().any(|s| s.kind == StatementKind::Install));
+    }
+
+    #[test]
+    fn describe_readme_strips_boilerplate_and_keeps_purpose() {
+        let readme = "# command-stream\n\n\
+                      ![ci](https://example.com/ci.svg)\n\n\
+                      command-stream is the streaming shell helper used by hive-mind.\n\
+                      Install with npm install command-stream.\n\
+                      \n\
+                      ```bash\n\
+                      npm run example\n\
+                      ```\n";
+        let description = describe_readme(
+            "link-foundation/command-stream",
+            readme,
+            &SummarizationConfig::default().with_mode(SummarizationMode::Short),
+        );
+        assert!(
+            !description.to_lowercase().contains("npm install"),
+            "Short mode should drop install boilerplate, got: {description}",
+        );
+        assert!(description.to_lowercase().contains("command-stream"));
+    }
+
+    #[test]
+    fn describe_readme_topic_mode_returns_repo_slug() {
+        let topic = describe_readme(
+            "link-assistant/hive-mind",
+            "# Anything\n",
+            &SummarizationConfig::default().with_mode(SummarizationMode::Topic),
+        );
+        assert!(topic.split_whitespace().count() <= 5);
+        assert!(topic.contains("link-assistant/hive-mind") || topic.contains("hive-mind"));
+    }
+
+    #[test]
+    fn summarize_dialog_keeps_user_question_over_assistant_chatter() {
+        let turns = vec![
+            DialogTurn::user("What is Hive Mind?"),
+            DialogTurn::assistant("Hive Mind is an AI orchestrator."),
+            DialogTurn::user("How do I install it?"),
+        ];
+        let summary = summarize_dialog(
+            &turns,
+            &SummarizationConfig::default()
+                .with_mode(SummarizationMode::Short)
+                .with_max_statements(2),
+        );
+        let lower = summary.to_lowercase();
+        assert!(
+            lower.contains("hive mind") || lower.contains("install"),
+            "expected dialog summary to surface user questions, got: {summary}",
+        );
+    }
+
+    #[test]
+    fn generate_chat_title_returns_up_to_five_words() {
+        let turns = vec![DialogTurn::user("What is the Hive Mind project about?")];
+        let title = generate_chat_title(&turns, "en");
+        assert!(!title.is_empty());
+        assert!(
+            title.split_whitespace().count() <= 5,
+            "chat title must be at most 5 words, got: {title}",
+        );
+    }
+
+    #[test]
+    fn default_max_statements_constant_is_thirty() {
+        assert_eq!(DEFAULT_MAX_STATEMENTS, 30);
+        // Smoke test: applying the documented cap to a long input does not
+        // exceed it.
+        let stmts: Vec<Statement> = (0..50)
+            .map(|i| Statement::new(format!("Sentence {i}."), StatementKind::Feature, 50))
+            .collect();
+        let config = SummarizationConfig::default()
+            .with_mode(SummarizationMode::Full)
+            .with_max_statements(DEFAULT_MAX_STATEMENTS);
+        let out = summarize(&stmts, &config);
+        assert_eq!(out.len(), DEFAULT_MAX_STATEMENTS);
     }
 }

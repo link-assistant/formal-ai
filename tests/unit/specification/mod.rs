@@ -41,6 +41,7 @@ mod prompt_variations;
 mod reasoning_loop;
 mod reasoning_paths;
 mod source_cache;
+mod summarization_pipeline;
 mod telegram_surface;
 mod translation_via_links;
 mod transparent_state;

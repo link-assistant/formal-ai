@@ -109,3 +109,50 @@ fn curated_project_lookup_records_summarization_evidence() {
         response.evidence_links,
     );
 }
+
+#[test]
+fn http_fetch_of_curated_github_url_describes_project_via_summarization() {
+    let response = answer("fetch https://github.com/link-assistant/hive-mind");
+    assert_eq!(
+        response.intent, "http_fetch",
+        "GitHub URL fetch should still resolve as http_fetch, got {} -> {}",
+        response.intent, response.answer,
+    );
+    assert!(
+        response.answer.contains("link-assistant/hive-mind")
+            || response.answer.to_lowercase().contains("the ai")
+            || response.answer.to_lowercase().contains("hive mind"),
+        "curated-URL fetch should describe the project, got {}",
+        response.answer,
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("http_fetch:curated_project")),
+        "curated GitHub URL fetch should log http_fetch:curated_project evidence, got {:?}",
+        response.evidence_links,
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("summarization:mode")),
+        "curated GitHub URL fetch should record a summarization mode event, got {:?}",
+        response.evidence_links,
+    );
+}
+
+#[test]
+fn http_fetch_of_unknown_url_skips_curated_project_summary() {
+    let response = answer("fetch https://example.com");
+    assert_eq!(response.intent, "http_fetch");
+    assert!(
+        !response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("http_fetch:curated_project")),
+        "non-curated URL fetch must not log a curated_project event, got {:?}",
+        response.evidence_links,
+    );
+}
