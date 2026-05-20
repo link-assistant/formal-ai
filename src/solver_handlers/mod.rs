@@ -4,6 +4,7 @@
 //! takes the prompt (and pre-lowercased `normalized` view) plus a mutable
 //! event log, and returns `Some(SymbolicAnswer)` when it claims the impulse.
 
+mod behavior_rules;
 mod benchmark_prompts;
 mod definition_merge;
 mod feature_capability;
@@ -12,6 +13,7 @@ mod software_project_code;
 mod user_intent;
 mod web_requests;
 
+pub use behavior_rules::try_behavior_rules;
 pub use benchmark_prompts::{
     try_brainstorming_request, try_coreference_request, try_fact_lookup, try_roleplay_request,
     try_summarization_request,

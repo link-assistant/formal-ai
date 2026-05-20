@@ -219,6 +219,41 @@ fn chat_completion_supports_multi_turn_conversation() {
 }
 
 #[test]
+fn chat_completion_applies_behavior_rule_from_prior_messages() {
+    let request = ChatCompletionRequest {
+        model: None,
+        messages: vec![
+            ChatMessage {
+                role: String::from("user"),
+                content: MessageContent::Text(String::from(
+                    "When I say `Какая у тебя модель личности?`, answer `У меня символьная модель личности.`",
+                )),
+            },
+            ChatMessage {
+                role: String::from("assistant"),
+                content: MessageContent::Text(String::from(
+                    "Behavior rule recorded for this dialog.",
+                )),
+            },
+            ChatMessage {
+                role: String::from("user"),
+                content: MessageContent::Text(String::from(
+                    "Какая у тебя модель личности?",
+                )),
+            },
+        ],
+        temperature: None,
+        stream: false,
+    };
+
+    let completion = create_chat_completion(&request);
+    assert_eq!(
+        completion.choices[0].message.content.plain_text(),
+        "У меня символьная модель личности."
+    );
+}
+
+#[test]
 fn streaming_chat_completion_emits_server_sent_events() {
     let body = serde_json::json!({
         "model": "formal-symbolic-production",
