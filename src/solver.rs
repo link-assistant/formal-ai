@@ -30,7 +30,7 @@ use crate::engine::{
 use crate::event_log::{build_evidence_links, EventLog};
 use crate::language::{detect as detect_language, Language};
 use crate::seed;
-use crate::solver_handler_how::try_how_it_works;
+use crate::solver_handler_how::{try_how_it_works, try_how_to_procedure};
 use crate::solver_handler_units::try_incompatible_units;
 use crate::solver_handlers::{
     finalize_simple, try_algorithm, try_arithmetic, try_brainstorming_request, try_capabilities,
@@ -313,6 +313,7 @@ const SPECIALIZED_HANDLERS: &[(&str, SpecializedHandler)] = &[
     ("http_fetch", try_http_fetch),
     ("url_navigate", try_url_navigate),
     ("web_search", try_web_search),
+    ("procedural_how_to", try_how_to_procedure),
     ("conversation_memory", try_conversation_memory),
     ("summarization", try_summarization_request),
     ("brainstorming", try_brainstorming_request),

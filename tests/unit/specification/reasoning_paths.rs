@@ -14,6 +14,13 @@ fn answer(prompt: &str) -> SymbolicAnswer {
     FormalAiEngine.answer(prompt)
 }
 
+fn has_evidence(response: &SymbolicAnswer, expected: &str) -> bool {
+    response
+        .evidence_links
+        .iter()
+        .any(|link| link.starts_with(expected))
+}
+
 // ---------------------------------------------------------------------------
 // R85: arithmetic — symbols, words, parentheses, errors.
 // ---------------------------------------------------------------------------
@@ -400,6 +407,127 @@ fn how_it_works_followup_records_followup_event_in_evidence() {
         "\"how it works?\" handler must emit a followup: evidence event: {:?}",
         response.evidence_links,
     );
+}
+
+// ---------------------------------------------------------------------------
+// Issue #172: procedural "how to X Y" prompts should discover source-backed
+// procedure steps instead of returning the unknown fallback.
+// ---------------------------------------------------------------------------
+
+#[test]
+fn how_to_make_tea_uses_source_backed_procedure_plan() {
+    let response = answer("How to make tea?");
+    assert_eq!(
+        response.intent, "procedural_how_to",
+        "\"How to make tea?\" must use the procedural handler; answer={}",
+        response.answer,
+    );
+
+    let answer = response.answer.to_lowercase();
+    for expected in [
+        "make tea",
+        "wikipedia",
+        "wikidata",
+        "wikihow",
+        "web search",
+        "recursive",
+    ] {
+        assert!(
+            answer.contains(expected),
+            "procedural answer should mention {expected:?}; answer={}",
+            response.answer,
+        );
+    }
+
+    for expected in [
+        "procedural_how_to:request:make tea",
+        "procedural_how_to:action:make",
+        "procedural_how_to:object:tea",
+        "procedural_how_to:stage:wikipedia",
+        "procedural_how_to:stage:wikidata",
+        "procedural_how_to:stage:wikihow_api",
+        "http_fetch:request:https://www.wikihow.com/api.php",
+        "web_search:request:how to make tea",
+        "web_search:provider:wikipedia",
+        "web_search:provider:wikidata",
+        "procedural_how_to:stage:recursive_fetch_check",
+    ] {
+        assert!(
+            has_evidence(&response, expected),
+            "missing evidence prefix {expected:?}: {:?}",
+            response.evidence_links,
+        );
+    }
+}
+
+#[test]
+fn how_to_prepare_fried_potatoes_falls_back_to_web_search() {
+    let response = answer("How to prepare fried potatoes?");
+    assert_eq!(
+        response.intent, "procedural_how_to",
+        "\"How to prepare fried potatoes?\" must use the procedural handler; answer={}",
+        response.answer,
+    );
+
+    let answer = response.answer.to_lowercase();
+    for expected in [
+        "prepare fried potatoes",
+        "fried potatoes",
+        "fallback",
+        "fetch",
+    ] {
+        assert!(
+            answer.contains(expected),
+            "procedural answer should mention {expected:?}; answer={}",
+            response.answer,
+        );
+    }
+
+    for expected in [
+        "procedural_how_to:request:prepare fried potatoes",
+        "procedural_how_to:action:prepare",
+        "procedural_how_to:object:fried potatoes",
+        "procedural_how_to:wikihow_candidate:Prepare-Fried-Potatoes",
+        "web_search:request:how to prepare fried potatoes",
+        "procedural_how_to:stage:recursive_fetch_check",
+    ] {
+        assert!(
+            has_evidence(&response, expected),
+            "missing evidence prefix {expected:?}: {:?}",
+            response.evidence_links,
+        );
+    }
+}
+
+#[test]
+fn how_to_procedure_is_general_not_memoized_to_examples() {
+    let response = answer("How can I calibrate a torque wrench?");
+    assert_eq!(
+        response.intent, "procedural_how_to",
+        "arbitrary procedural prompts must not fall back to unknown; answer={}",
+        response.answer,
+    );
+
+    let answer = response.answer.to_lowercase();
+    assert!(answer.contains("calibrate a torque wrench"));
+    assert!(
+        !answer.contains("make tea") && !answer.contains("fried potatoes"),
+        "answer must be generated from the requested task, not memoized examples: {}",
+        response.answer,
+    );
+
+    for expected in [
+        "procedural_how_to:request:calibrate a torque wrench",
+        "procedural_how_to:action:calibrate",
+        "procedural_how_to:object:a torque wrench",
+        "web_search:request:how to calibrate a torque wrench",
+    ] {
+        assert!(
+            has_evidence(&response, expected),
+            "missing evidence prefix {expected:?}: {:?}",
+            response.evidence_links,
+        );
+    }
 }
 
 // ---------------------------------------------------------------------------

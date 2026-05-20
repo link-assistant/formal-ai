@@ -133,6 +133,27 @@ pub fn build_evidence_links(prompt: &str, log: &EventLog, response_link: &str) -
             "web_search:rank" => format!("web_search:rank:{}", event.payload),
             "web_search:fused" => format!("web_search:fused:{}", event.payload),
             "web_search:disabled" => format!("web_search:disabled:{}", event.payload),
+            "http_fetch:request" => format!("http_fetch:request:{}", event.payload),
+            "url_navigate:request" => format!("url_navigate:request:{}", event.payload),
+            "url_preview:iframe" => format!("url_preview:iframe:{}", event.payload),
+            "procedural_how_to:request" => {
+                format!("procedural_how_to:request:{}", event.payload)
+            }
+            "procedural_how_to:action" => {
+                format!("procedural_how_to:action:{}", event.payload)
+            }
+            "procedural_how_to:object" => {
+                format!("procedural_how_to:object:{}", event.payload)
+            }
+            "procedural_how_to:stage" => {
+                format!("procedural_how_to:stage:{}", event.payload)
+            }
+            "procedural_how_to:wikihow_candidate" => {
+                format!("procedural_how_to:wikihow_candidate:{}", event.payload)
+            }
+            "procedural_how_to:source_gate" => {
+                format!("procedural_how_to:source_gate:{}", event.payload)
+            }
             "search:local" => format!("search:local:{}", event.id),
             "search:external" => format!("search:external:{}", event.id),
             "source:http" => format!("source:http:{}", event.payload.replace(' ', ":")),
