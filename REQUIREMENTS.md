@@ -429,3 +429,17 @@ summaries, chat titles, and URL content.
 | R207 | The 5 summarization modes must match the documented size targets (topic = 1-5 words, short ≈ 20%, standard ≈ 50%, full = 100%, expand ≈ 200%). | Implemented by `SummarizationMode::target_percent`. Covered by `tests/unit/specification/summarization_pipeline.rs::summarization_mode_target_percent_matches_vision`. |
 | R208 | Associative repository promotion must be switchable off and default on. | Implemented by `SolverConfig::associative_project_promotion` (default `true`) with `FORMAL_AI_ASSOCIATIVE_PROJECT_PROMOTION` / `FORMAL_AI_PROJECT_PROMOTION` overrides, plus the browser `associativeProjectPromotion` preference. Covered by `tests/unit/specification/project_lookups.rs::associative_project_promotion_can_be_disabled`. |
 | R209 | Explicit repository URLs must route through generic project lookup across GitHub, GitLab, and Bitbucket. | Implemented by repository URL parsing in `try_project_lookup`; covered by `github_repository_url_routes_to_generic_project_lookup`, `gitlab_repository_url_routes_to_generic_project_lookup`, and `bitbucket_repository_url_routes_to_generic_project_lookup`. |
+
+## Issue #162 Calendar Weekday Reasoning
+
+Issue [#162](https://github.com/link-assistant/formal-ai/issues/162)
+reported that the Russian prompt "какой день недели наступает после
+вторника" returned the unknown-intent fallback. The maintainer asked for
+date, time, and calendar questions to be handled through actual symbolic
+reasoning where possible, not by a one-off memoized answer or tool call.
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R210 | Weekday successor and predecessor prompts must route to a typed calendar intent instead of `unknown`. | Implemented by `try_calendar_reasoning` in `src/solver_handlers/calendar.rs` and mirrored by `tryCalendarReasoning` in `src/web/formal_ai_worker.js`. |
+| R211 | The answer must be derived by shifting through the seven-day calendar cycle, not by matching one reported prompt to one fixed string. | Implemented by parsing the source weekday and next/previous operation, applying a `+1` or `-1` cyclic shift, and recording `calendar:cycle`, `calendar:subject_weekday`, `calendar:operation:*`, and `calendar:result_weekday` events. |
+| R212 | Russian and English weekday relation variations must be covered by automated tests. | Covered by `calendar_reasoning_answers_russian_weekday_successor` and `calendar_reasoning_answers_weekday_predecessor_and_successor_variations` in `tests/unit/specification/reasoning_paths.rs`. |

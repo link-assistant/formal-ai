@@ -116,6 +116,49 @@ fn arithmetic_never_fires_on_plain_greetings() {
     assert_eq!(response.intent, "greeting");
 }
 
+#[test]
+fn calendar_reasoning_answers_russian_weekday_successor() {
+    let response = answer("какой день недели наступает после вторника");
+    assert_eq!(response.intent, "calendar_weekday_relation");
+    assert!(
+        response.answer.to_lowercase().contains("среда"),
+        "weekday successor should be computed as Wednesday, got: {}",
+        response.answer,
+    );
+    assert!(
+        has_evidence(&response, "calendar:operation:next"),
+        "calendar reasoning must expose the successor operation in evidence: {:?}",
+        response.evidence_links,
+    );
+}
+
+#[test]
+fn calendar_reasoning_answers_weekday_predecessor_and_successor_variations() {
+    let cases = [
+        ("What day of the week comes after Tuesday?", "Wednesday"),
+        ("What day comes before Monday?", "Sunday"),
+        ("какой день недели перед средой", "вторник"),
+        ("следующий день после воскресенья", "понедельник"),
+    ];
+
+    for (prompt, expected) in cases {
+        let response = answer(prompt);
+        assert_eq!(
+            response.intent, "calendar_weekday_relation",
+            "prompt {prompt:?} should route to calendar reasoning, got {}",
+            response.intent,
+        );
+        assert!(
+            response
+                .answer
+                .to_lowercase()
+                .contains(&expected.to_lowercase()),
+            "prompt {prompt:?} should mention {expected:?}, got: {}",
+            response.answer,
+        );
+    }
+}
+
 // ---------------------------------------------------------------------------
 // R86: concept lookup against the offline seed.
 // ---------------------------------------------------------------------------
