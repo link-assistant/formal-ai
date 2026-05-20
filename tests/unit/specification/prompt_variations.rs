@@ -546,6 +546,9 @@ fn web_search_online_variant_routes_to_web_search_handler() {
     );
 }
 
+// Promoted project lookup tests live in
+// `project_lookups.rs` so this file stays under the 1000-line cap.
+
 // Fact-lookup matrix: 5-10 input variations per fact across every supported
 // language. Each prompt must route to `fact_lookup`, surface a Wikidata
 // Q-id evidence link, and return the localized summary from the seed.

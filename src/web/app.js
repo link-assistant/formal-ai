@@ -364,6 +364,24 @@ function recognizeInterfaceCommand(text) {
     };
   }
 
+  const projectPromotion = detectToggleCommand(normalized, [
+    "project promotion",
+    "repository promotion",
+    "associative project promotion",
+    "associative repository promotion",
+    "продвижение проектов",
+    "продвижение репозиториев",
+  ]);
+  if (projectPromotion !== null) {
+    return {
+      kind: "set_preference",
+      key: "associativeProjectPromotion",
+      value: projectPromotion,
+      intent: "configure_project_promotion",
+      label: "Project promotion",
+    };
+  }
+
   if (includesAnyText(normalized, ["theme", "dark mode", "light mode", "тема", "режим", "主题"])) {
     if (includesAnyText(normalized, ["dark", "темн", "тёмн", "深色", "dark mode"])) {
       return { kind: "set_preference", key: "theme", value: "dark", intent: "configure_theme", label: "Theme" };
@@ -784,6 +802,7 @@ const PREFERENCE_DEFAULTS = {
   // Issue #63: definition fusion remains explicit-only by default, with an
   // opt-in mode that treats plain "What is X?" prompts as merge requests.
   definitionFusion: "explicit",
+  associativeProjectPromotion: true,
   theme: "auto",
   location: "",
   // Issue #27: id of the conversation the user last typed in; on reload the
@@ -2889,6 +2908,9 @@ function App() {
   const [definitionFusion, setDefinitionFusion] = useState(
     normalizeDefinitionFusion(initialPreferences.current.definitionFusion),
   );
+  const [associativeProjectPromotion, setAssociativeProjectPromotion] = useState(
+    initialPreferences.current.associativeProjectPromotion !== false,
+  );
   const [themePreference, setThemePreference] = useState(
     normalizeThemePreference(initialPreferences.current.theme),
   );
@@ -3343,6 +3365,7 @@ function App() {
       temperature,
       followUpProbability,
       definitionFusion,
+      associativeProjectPromotion,
       theme: themePreference,
       uiSkin,
       chatStyle,
@@ -3369,6 +3392,7 @@ function App() {
     temperature,
     followUpProbability,
     definitionFusion,
+    associativeProjectPromotion,
     themePreference,
     uiSkin,
     chatStyle,
@@ -3443,6 +3467,11 @@ function App() {
     definitionFusionRef.current = definitionFusion;
   }, [definitionFusion]);
 
+  const associativeProjectPromotionRef = useRef(associativeProjectPromotion);
+  useEffect(() => {
+    associativeProjectPromotionRef.current = associativeProjectPromotion;
+  }, [associativeProjectPromotion]);
+
   const agentModeRef = useRef(agentMode);
   useEffect(() => {
     agentModeRef.current = agentMode;
@@ -3493,6 +3522,7 @@ function App() {
       temperature: temperatureRef.current,
       followUpProbability: followUpProbabilityRef.current,
       definitionFusion: definitionFusionRef.current,
+      associativeProjectPromotion: associativeProjectPromotionRef.current,
       agentMode: agentModeRef.current,
       theme: themePreferenceRef.current,
       uiLanguage: uiLanguagePreferenceRef.current,
@@ -3668,6 +3698,9 @@ function App() {
           break;
         case "definitionFusion":
           setDefinitionFusion(normalizeDefinitionFusion(command.value));
+          break;
+        case "associativeProjectPromotion":
+          setAssociativeProjectPromotion(Boolean(command.value));
           break;
         case "theme":
           setThemePreference(normalizeThemePreference(command.value));

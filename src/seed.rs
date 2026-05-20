@@ -26,6 +26,7 @@ mod coreference;
 mod facts;
 mod parser;
 mod personas;
+mod projects;
 mod summary_topics;
 
 use std::collections::BTreeMap;
@@ -39,6 +40,9 @@ pub use brainstorm::{brainstorm_seeds, BrainstormCategory, BrainstormSeeds};
 pub use coreference::{coreference_seeds, Antecedent, CoreferenceSeeds, Pronoun};
 pub use facts::{facts, FactRecord, LocalizedFact};
 pub use personas::{persona_seeds, Persona, PersonaSeeds, PersonaTopic};
+pub use projects::{
+    projects_registry, LocalizedProject, ProjectRecord, ProjectStatement, ProjectsRegistry,
+};
 pub use summary_topics::{summary_topic_seeds, SummaryTopic, SummaryTopicSeeds};
 
 /// Embedded copy of every Links Notation seed file. Returned in declaration
@@ -70,6 +74,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ),
         ("data/seed/demo-dialogs.lino", DEMO_DIALOGS_LINO),
         ("data/seed/environments.lino", ENVIRONMENTS_LINO),
+        ("data/seed/projects.lino", PROJECTS_LINO),
     ]
 }
 
@@ -723,6 +728,7 @@ pub const IDENTITY_LINO: &str = include_str!("../data/seed/identity.lino");
 pub const HELLO_WORLD_PROGRAMS_LINO: &str = include_str!("../data/seed/hello-world-programs.lino");
 pub const DEMO_DIALOGS_LINO: &str = include_str!("../data/seed/demo-dialogs.lino");
 pub const ENVIRONMENTS_LINO: &str = include_str!("../data/seed/environments.lino");
+pub const PROJECTS_LINO: &str = include_str!("../data/seed/projects.lino");
 
 #[cfg(test)]
 mod tests {

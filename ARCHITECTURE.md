@@ -393,6 +393,77 @@ The solver follows the universal loop documented in `VISION.md` (Section
 
 Every numbered step writes its own event before the next one starts.
 
+### 7.1 Project lookups and summarization
+
+"What is `<project>`?" prompts about projects and repository URLs go through a
+generic `project_lookup` path. When associative project promotion is enabled
+(the default), repositories from `link-assistant`, `link-foundation`, and
+`linksplatform` are listed first when they match the prompt; turning promotion
+off keeps the same prompt on the generic GitHub/GitLab/Bitbucket lookup path.
+The pipeline has three pieces:
+
+1. **Curated registry.** `data/seed/projects.lino` records the canonical
+   repository, primary language, weighted statements, English/Russian
+   localisations, topic label, and aliases for each project. The seed file is
+   embedded at compile time and parsed once per process via
+   `src/seed/projects.rs::projects_registry()`.
+2. **Formalize → summarize → deformalize pipeline.** `src/summarization.rs`
+   exposes a deterministic three-stage pipeline. `formalize` (or
+   `Statement::from_seed`) turns free-form prose or curated statements into a
+   homogeneous `Vec<Statement>` with a `StatementKind` (identity, purpose,
+   language, stars, feature, use_case, install, example, misc) and a numeric
+   weight. `summarize` then applies a `SummarizationConfig` whose
+   `SummarizationMode` selects the target size — `Topic` (1–5 words),
+   `Short` (~20%), `Standard` (~50%), `Full` (100%), or `Expand` (~200%) — and
+   the optional explicit `max_statements` cap. Boilerplate kinds (`install`,
+   `example`) are dropped from compressed answers; `Expand` mode appends
+   Natural Semantic Metalanguage paraphrases. `deformalize` joins the
+   surviving statements back into a single block of prose.
+3. **Handler integration.** The solver dispatch table in `src/solver.rs`
+   still lets `concept_lookup` answer seed concepts such as Links Notation
+   first. Immediately after a concept miss, `project_lookup` handles promoted
+   project aliases such as Hive Mind or link-cli, explicit GitHub/GitLab/
+   Bitbucket repository URLs, and the promotion-off fallback. Promoted answers
+   log `project:promoted`, `summarization:mode`, `summarization:language`, the
+   repository URL, and the web-search providers consulted alongside the local
+   answer so the trace explains both *what* was matched and *how* the text was
+   compressed.
+
+The compression knobs are configurable from one struct (`SummarizationConfig`)
+so callers can dial topic labels, chat titles, project descriptions, or
+expanded explanations from the same pipeline.
+
+The same pipeline also drives three additional surfaces:
+
+- **README ingestion.** `strip_markdown_noise` removes badges, fenced code
+  blocks, HTML comments, heading markers, and blockquote chevrons. The
+  cleaned prose is fed through `formalize_markdown` (a thin wrapper around
+  `formalize`) and `describe_readme(repo_slug, markdown, &config)`. In
+  `Topic` mode the helper returns the repository slug so the same call can
+  serve as a chat-title source for a fetched repository.
+- **Dialog summarization.** `DialogTurn { role, text }` and
+  `formalize_dialog` weight user turns +20 and assistant turns -10 so a
+  short summary keeps the user's questions even when both sides talk a
+  lot. `summarize_dialog(turns, &config)` runs the result through
+  `summarize` / `deformalize`, and `generate_chat_title(turns, language)`
+  wraps it in `SummarizationMode::Topic`. `try_summarize_conversation` in
+  `src/solver_handlers/mod.rs` now collects `prior_turn:user` and
+  `prior_turn:assistant` events into `DialogTurn`s, calls `summarize_dialog`
+  in `Standard` mode, and logs `summarization:mode`,
+  `summarization:language`, and `chat_title` evidence alongside the
+  per-turn list.
+- **HTTP fetch for curated GitHub URLs.** When `try_http_fetch` recognises
+  a `github.com/<org>/<name>` URL whose `<org>/<name>` matches the curated
+  registry (`match_curated_github_url`), the handler runs `describe_project`
+  in `Standard` mode and embeds the result in the response. The trace
+  records `http_fetch:curated_project`, `summarization:mode`, and
+  `summarization:language` so the path from URL → curated record → summary
+  is fully visible.
+
+The shared `DEFAULT_MAX_STATEMENTS = 30` constant in `src/summarization.rs`
+documents the default cap on retained statements; any caller can raise or
+lower it with `SummarizationConfig::with_max_statements`.
+
 ---
 
 ## 8. Nested Reasoning Steps

@@ -25,7 +25,7 @@ pub use user_intent::{
     try_capabilities, try_clarification, try_ill_formed, try_opinion_question,
     try_punctuation_only_prompt, try_shell_refusal, try_who_is_question,
 };
-pub use web_requests::{try_http_fetch, try_url_navigate, try_web_search};
+pub use web_requests::{try_http_fetch, try_project_lookup, try_url_navigate, try_web_search};
 
 use std::fmt::Write as _;
 
@@ -47,6 +47,9 @@ use crate::solver_helpers::{
     format_write_script_execution, humanize_url, infer_program_languages_from_code,
     infer_source_from_prompt, is_write_script_request, last_user_turn, normalize_code_meaning,
     normalize_meaning, recall_name_from_history, translate_program, translate_surface,
+};
+use crate::summarization::{
+    generate_chat_title, summarize_dialog, DialogTurn, SummarizationConfig, SummarizationMode,
 };
 
 pub fn try_conversation_memory(
@@ -138,20 +141,48 @@ fn try_summarize_conversation(
     if !asks {
         return None;
     }
-    let user_turns: Vec<&str> = log
+    let turns: Vec<DialogTurn> = log
         .events()
         .iter()
-        .filter(|event| event.kind == "prior_turn:user")
-        .map(|event| event.payload.as_str())
+        .filter_map(|event| match event.kind {
+            "prior_turn:user" => Some(DialogTurn::user(event.payload.clone())),
+            "prior_turn:assistant" => Some(DialogTurn::assistant(event.payload.clone())),
+            _ => None,
+        })
         .collect();
-    if user_turns.is_empty() {
+    let user_turn_count = turns.iter().filter(|t| t.role == "user").count();
+    if user_turn_count == 0 {
         return None;
     }
-    let mut body = String::from("Conversation summary (user turns recorded so far):\n");
+    let language = detect_language(prompt).slug();
+    // Standard mode keeps roughly 50% of the highest-weighted statements; with
+    // the dialog bias (user +20, assistant -10) the user's questions dominate
+    // the output while still keeping room for any assistant prose worth
+    // remembering.
+    let config = SummarizationConfig::default()
+        .with_mode(SummarizationMode::Standard)
+        .with_language(language);
+    let summary = summarize_dialog(&turns, &config);
+    let title = generate_chat_title(&turns, language);
+    let user_turns: Vec<&str> = turns
+        .iter()
+        .filter(|t| t.role == "user")
+        .map(|t| t.text.as_str())
+        .collect();
+    let mut body = match language {
+        "ru" => {
+            format!("Резюме разговора: {summary}\n\nЗаголовок: {title}\n\nРеплики пользователя:\n")
+        }
+        "zh" => format!("对话摘要:{summary}\n\n标题:{title}\n\n用户发言:\n"),
+        _ => format!("Conversation summary: {summary}\n\nTitle: {title}\n\nUser turns:\n"),
+    };
     for (index, turn) in user_turns.iter().enumerate() {
         writeln!(body, "  {}. {turn}", index + 1).expect("string write is infallible");
     }
     log.append("filter:user", "conversation_summary".to_owned());
+    log.append("summarization:mode", "standard".to_owned());
+    log.append("summarization:language", language.to_owned());
+    log.append("chat_title", title);
     Some(finalize_simple(
         prompt,
         log,

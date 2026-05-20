@@ -102,6 +102,7 @@ let MULTILINGUAL_ANSWERS = {
 let CONCEPTS = [];
 let CONCEPT_CONTEXTS = [];
 let FACTS = [];
+let PROJECTS = [];
 let BRAINSTORM_SEEDS = {
   triggers: [
     "brainstorm",
@@ -1682,6 +1683,7 @@ function matchesIntentRoute(normalized, rawPrompt, id) {
 }
 
 function isIdentityPrompt(normalized, rawPrompt) {
+  if (repositoryFromPrompt(rawPrompt)) return false;
   return matchesIntentRoute(normalized, rawPrompt, "intent_identity");
 }
 
@@ -7977,7 +7979,12 @@ async function tryWebSearch(prompt, language) {
   const normalized = normalizePrompt(prompt);
   const query = extractWebSearchQuery(prompt, normalized);
   if (!query) return null;
+  return runWebSearchQuery(query, language);
+}
 
+async function runWebSearchQuery(query, language) {
+  query = String(query || "").trim();
+  if (!query) return null;
   const rrfK = webSearchRrfK();
   const concurrency = webSearchConcurrency();
   const providerLimit = webSearchProviderLimit();
@@ -8163,6 +8170,282 @@ async function tryWebSearch(prompt, language) {
     query,
     diagnostics,
   };
+}
+
+const PROMOTED_PROJECT_ORGS = ["link-assistant", "link-foundation", "linksplatform"];
+
+function projectPromotionEnabled(preferences) {
+  const value = preferences && preferences.associativeProjectPromotion;
+  if (value === undefined || value === null || value === "") return true;
+  if (value === true) return true;
+  if (value === false) return false;
+  const normalized = String(value).trim().toLowerCase();
+  if (["0", "false", "no", "off", "disabled"].includes(normalized)) return false;
+  if (["1", "true", "yes", "on", "enabled"].includes(normalized)) return true;
+  return true;
+}
+
+function normalizeProjectTerm(value) {
+  let term = normalizePrompt(value)
+    .replace(/[-_]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+  for (const prefix of ["the ", "a ", "an "]) {
+    if (term.startsWith(prefix)) {
+      term = term.slice(prefix.length).trim();
+      break;
+    }
+  }
+  return term;
+}
+
+function projectRepoSlug(project) {
+  return `${project.org}/${project.name}`;
+}
+
+function localizedProject(project, language) {
+  if (!project || !Array.isArray(project.localized)) return null;
+  return (
+    project.localized.find((loc) => loc && loc.language === language) ||
+    project.localized.find((loc) => loc && loc.language === "en") ||
+    null
+  );
+}
+
+function projectDisplayName(project, language) {
+  const localized = localizedProject(project, language);
+  return (localized && localized.displayName) || project.displayName || project.name || "";
+}
+
+function projectStatementsFor(project, language) {
+  const localized = localizedProject(project, language);
+  if (
+    localized &&
+    Array.isArray(localized.statements) &&
+    localized.statements.length > 0
+  ) {
+    return localized.statements;
+  }
+  return Array.isArray(project && project.statements) ? project.statements : [];
+}
+
+function describeProjectRecord(project, language) {
+  const statements = projectStatementsFor(project, language)
+    .filter((statement) => {
+      const kind = statement && statement.kind;
+      return statement && statement.text && kind !== "install" && kind !== "example";
+    })
+    .slice()
+    .sort((a, b) => Number(b.weight || 0) - Number(a.weight || 0))
+    .slice(0, 3)
+    .map((statement) => String(statement.text).trim())
+    .filter(Boolean);
+  if (statements.length > 0) return statements.join(" ");
+  return project.description || projectDisplayName(project, language);
+}
+
+function projectMatchesAlias(project, normalizedTerm) {
+  if (!project || !normalizedTerm) return false;
+  const aliases = Array.isArray(project.aliases) ? project.aliases : [];
+  return (
+    normalizeProjectTerm(project.displayName) === normalizedTerm ||
+    normalizeProjectTerm(project.name) === normalizedTerm ||
+    normalizeProjectTerm(projectRepoSlug(project)) === normalizedTerm ||
+    aliases.some((alias) => normalizeProjectTerm(alias) === normalizedTerm)
+  );
+}
+
+function projectByAlias(term) {
+  const normalizedTerm = normalizeProjectTerm(term);
+  if (!normalizedTerm) return null;
+  return PROJECTS.find((project) => projectMatchesAlias(project, normalizedTerm)) || null;
+}
+
+function isPromotedProject(project) {
+  return PROMOTED_PROJECT_ORGS.some(
+    (org) => String(project && project.org).toLowerCase() === org,
+  );
+}
+
+function promotedProjectByRepo(owner, name) {
+  const ownerLower = String(owner || "").toLowerCase();
+  const nameLower = String(name || "").toLowerCase();
+  return (
+    PROJECTS.find(
+      (project) =>
+        isPromotedProject(project) &&
+        String(project.org || "").toLowerCase() === ownerLower &&
+        String(project.name || "").toLowerCase() === nameLower,
+    ) || null
+  );
+}
+
+function cleanRepositorySegment(segment) {
+  const trimmed = String(segment || "").trim().replace(/\.git$/i, "");
+  if (!trimmed || !/^[A-Za-z0-9._-]+$/.test(trimmed)) return "";
+  return trimmed;
+}
+
+function repositoryFromUrl(url) {
+  let parsed;
+  try {
+    parsed = new URL(url);
+  } catch (_error) {
+    return null;
+  }
+  const host = parsed.hostname.toLowerCase().replace(/^www\./, "");
+  const platform =
+    host === "github.com"
+      ? { slug: "github", label: "GitHub", host: "github.com" }
+      : host === "gitlab.com"
+        ? { slug: "gitlab", label: "GitLab", host: "gitlab.com" }
+        : host === "bitbucket.org"
+          ? { slug: "bitbucket", label: "Bitbucket", host: "bitbucket.org" }
+          : null;
+  if (!platform) return null;
+  const segments = parsed.pathname.split("/").filter(Boolean);
+  const owner = cleanRepositorySegment(segments[0]);
+  const name = cleanRepositorySegment(segments[1]);
+  if (!owner || !name) return null;
+  return {
+    platform,
+    owner,
+    name,
+    url: `https://${platform.host}/${owner}/${name}`,
+  };
+}
+
+function repositoryFromSlug(term) {
+  const parts = String(term || "").trim().split("/");
+  if (parts.length !== 2) return null;
+  const owner = cleanRepositorySegment(parts[0]);
+  const name = cleanRepositorySegment(parts[1]);
+  if (!owner || !name) return null;
+  return {
+    platform: { slug: "github", label: "GitHub", host: "github.com" },
+    owner,
+    name,
+    url: `https://github.com/${owner}/${name}`,
+  };
+}
+
+function repositoryFromPrompt(prompt) {
+  const urlCandidate = firstUrlCandidate(prompt);
+  if (urlCandidate) {
+    const repo = repositoryFromUrl(urlCandidate.url);
+    if (repo) return repo;
+  }
+  const query = extractConceptQuery(prompt);
+  if (!query) return null;
+  const term = String(query.termOriginal || query.term || "").trim();
+  if (!term) return null;
+  if (term.includes("://") || looksLikeHostname(term)) {
+    const url = normalizeUrlCandidate(term);
+    return url ? repositoryFromUrl(url) : null;
+  }
+  if (term.includes("/") && !/\s/.test(term)) {
+    return repositoryFromSlug(term);
+  }
+  return null;
+}
+
+function repositorySlug(repo) {
+  return `${repo.owner}/${repo.name}`;
+}
+
+function genericProjectLookupAnswer(prompt, language, repo, promotionEnabled) {
+  const evidence = [];
+  if (!promotionEnabled) evidence.push("project_lookup:promotion:disabled");
+  if (repo) {
+    const slug = repositorySlug(repo);
+    evidence.push(`project_lookup:repository:${repo.platform.slug}:${slug}`);
+    evidence.push(`source:${repo.url}`);
+    const content =
+      language === "ru"
+        ? `Это запрос о репозитории [${slug}](${repo.url}) на ${repo.platform.label}.\n\nОбычный путь project_lookup ищет и резюмирует README или описание проекта на GitHub, GitLab и Bitbucket без особого правила для отдельного названия. Если репозиторий находится в продвигаемых организациях и продвижение включено, он будет показан первым.`
+        : `This is a repository lookup for [${slug}](${repo.url}) on ${repo.platform.label}.\n\nThe generic project_lookup path can summarize README or project descriptions from GitHub, GitLab, and Bitbucket without a special case for any single name. If the repository belongs to a promoted organization and promotion is enabled, that repository is listed first.`;
+    return { intent: "project_lookup", content, confidence: 0.82, evidence };
+  }
+  evidence.push("project_lookup:repository_hosts:GitHub,GitLab,Bitbucket");
+  const content =
+    language === "ru"
+      ? "Это обычный запрос project_lookup о проекте или репозитории.\n\nЯ не выделяю специальный репозиторий, потому что продвижение ассоциативных репозиториев отключено. Дальше следует искать и резюмировать подходящие проекты на GitHub, GitLab и Bitbucket и похожих хостингах."
+      : "This is a generic project_lookup request for a project or repository.\n\nI am not privileging a specific repository because associative repository promotion is disabled. The next step is to search and summarize matching projects across GitHub, GitLab, Bitbucket, and similar hosts.";
+  return { intent: "project_lookup", content, confidence: 0.72, evidence };
+}
+
+async function renderPromotedProjectLookup(prompt, language, project) {
+  const displayName = projectDisplayName(project, language);
+  const repo = projectRepoSlug(project);
+  const url = project.url || `https://github.com/${repo}`;
+  const description = describeProjectRecord(project, language);
+  const orgs = PROMOTED_PROJECT_ORGS.join(", ");
+  const preferredLine =
+    language === "ru"
+      ? `В контексте репозиториев ${orgs} под \`${displayName}\` я прежде всего имею в виду [${repo}](${url}) — ${description}`
+      : `In the ${orgs} repository context, \`${displayName}\` should first mean [${repo}](${url}) — ${description}`;
+
+  const search = await runWebSearchQuery(displayName, language);
+  const evidence = [
+    `project:promoted:${repo}`,
+    `source:${url}`,
+    "summarization:mode:short",
+    `summarization:language:${language}`,
+  ];
+  if (search && Array.isArray(search.evidence)) {
+    evidence.push(...search.evidence);
+  } else {
+    evidence.push("web_search:no_results");
+  }
+
+  const lines = [preferredLine];
+  if (search && search.content) {
+    lines.push("");
+    lines.push(
+      language === "ru"
+        ? "Другие найденные в интернете репозитории и сущности:"
+        : "Other repositories and entities found online:",
+    );
+    lines.push("");
+    lines.push(search.content);
+  } else {
+    lines.push("");
+    lines.push(
+      language === "ru"
+        ? "Интернет-поиск по другим совпадениям не вернул результатов через доступные CORS-провайдеры."
+        : "Web search for other matches returned no results through the available CORS providers.",
+    );
+  }
+
+  return {
+    intent: "project_lookup",
+    content: lines.join("\n"),
+    confidence: 0.9,
+    evidence,
+  };
+}
+
+async function tryProjectLookup(prompt, language, preferences) {
+  const promotionEnabled = projectPromotionEnabled(preferences);
+  const repo = repositoryFromPrompt(prompt);
+  if (repo) {
+    const promoted = promotionEnabled
+      ? promotedProjectByRepo(repo.owner, repo.name)
+      : null;
+    if (promoted) {
+      return renderPromotedProjectLookup(prompt, language, promoted);
+    }
+    return genericProjectLookupAnswer(prompt, language, repo, promotionEnabled);
+  }
+
+  const query = extractConceptQuery(prompt);
+  if (!query) return null;
+  const project = projectByAlias(query.termOriginal || query.term);
+  if (!project) return null;
+  if (promotionEnabled && isPromotedProject(project)) {
+    return renderPromotedProjectLookup(prompt, language, project);
+  }
+  return genericProjectLookupAnswer(prompt, language, null, promotionEnabled);
 }
 
 function pickPrimaryProviderId(providers, sourceKind) {
@@ -8576,6 +8859,22 @@ async function solve(prompt, history, prefs) {
     return finalize(events, steps, toolCalls, legacyFact, formalizationContext);
   }
 
+  steps.push({ step: "invoke_tool", detail: "project_lookup" });
+  const projectLookup = await tryProjectLookup(prompt, language, preferences);
+  if (projectLookup) {
+    events.push(`handler:${projectLookup.intent}`);
+    steps.push({ step: "dispatch_handler", detail: "tryProjectLookup" });
+    toolCalls.push({
+      tool: "project_lookup",
+      inputs: { prompt, language },
+      outputs: {
+        intent: projectLookup.intent,
+        confidence: projectLookup.confidence,
+      },
+    });
+    return finalize(events, steps, toolCalls, projectLookup);
+  }
+
   steps.push({ step: "invoke_tool", detail: "http_fetch" });
   const fetched = await tryFetch(prompt);
   if (fetched) {
@@ -8817,6 +9116,9 @@ async function loadSeed() {
       FACTS = seed.facts;
       warmFactCacheFromSeed();
     }
+    if (Array.isArray(seed && seed.projects) && seed.projects.length > 0) {
+      PROJECTS = seed.projects;
+    }
     if (
       seed &&
       seed.brainstormSeeds &&
@@ -8894,6 +9196,7 @@ async function init() {
       conceptCount: CONCEPTS.length,
       conceptContextCount: CONCEPT_CONTEXTS.length,
       factCount: FACTS.length,
+      projectCount: PROJECTS.length,
       brainstormCategoryCount: BRAINSTORM_SEEDS.categories.length,
       personaCount: PERSONA_SEEDS.personas.length,
       toolCount: TOOLS.length,
@@ -8914,6 +9217,7 @@ self.onmessage = async (event) => {
       concepts: CONCEPTS,
       conceptContexts: CONCEPT_CONTEXTS,
       facts: FACTS,
+      projects: PROJECTS,
       brainstormSeeds: BRAINSTORM_SEEDS,
       personas: PERSONA_SEEDS,
       tools: TOOLS,
