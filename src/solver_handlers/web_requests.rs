@@ -11,6 +11,7 @@ use crate::web_search_core::{
 };
 
 use super::finalize_simple;
+use super::web_search_intent::extract_web_search_query;
 
 /// Match prompts that explicitly ask the engine to perform an HTTP request
 /// (e.g. `fetch google.com`, `Сделай запрос к google.com`). In the browser
@@ -603,7 +604,7 @@ const fn is_url_trailing_punctuation(character: char) -> bool {
     matches!(character, '.' | ',' | '!' | '?' | ';' | ':' | '…')
 }
 
-fn normalize_url_candidate(candidate: &str) -> Option<String> {
+pub(super) fn normalize_url_candidate(candidate: &str) -> Option<String> {
     let candidate = candidate.trim();
     if candidate.is_empty() || candidate.contains(char::is_whitespace) || candidate.contains('@') {
         return None;
@@ -806,86 +807,4 @@ fn is_url_navigate_prompt(prompt: &str, normalized: &str, raw_candidate: &str) -
     URL_NAVIGATE_MARKERS.iter().any(|marker| {
         normalized_words.contains(marker) || normalized.contains(marker) || raw.contains(marker)
     })
-}
-
-fn extract_web_search_query(prompt: &str, normalized: &str) -> Option<String> {
-    let normalized_words = normalize_prompt(prompt);
-    if normalized_words.starts_with("search conversations ")
-        || normalized_words.starts_with("search my conversations ")
-        || normalized_words.starts_with("search my chats ")
-    {
-        return None;
-    }
-    let prefixes = [
-        "search the web for ",
-        "search web for ",
-        "search the internet for ",
-        "search internet for ",
-        "search online for ",
-        "web search for ",
-        "find on the internet ",
-        "find online ",
-        "look up online ",
-        "найди в интернете ",
-        "поищи в интернете ",
-        "поиск в интернете ",
-        "найди онлайн ",
-        "поищи онлайн ",
-        "найди в сети ",
-        "поищи в сети ",
-    ];
-    for prefix in prefixes {
-        if let Some(query) = normalized_words.strip_prefix(prefix) {
-            let query = clean_search_query(query);
-            if !query.is_empty() && normalize_url_candidate(&query).is_none() {
-                return Some(query);
-            }
-        }
-        if let Some(query) = normalized.strip_prefix(prefix) {
-            let query = clean_search_query(query);
-            if !query.is_empty() && normalize_url_candidate(&query).is_none() {
-                return Some(query);
-            }
-        }
-    }
-    let surrounding_markers = [
-        ("find ", &[" on the internet", " online"][..]),
-        ("search ", &[" on the internet", " online"][..]),
-        ("look up ", &[" online"][..]),
-        ("найди ", &[" в интернете", " онлайн", " в сети"][..]),
-        ("поищи ", &[" в интернете", " онлайн", " в сети"][..]),
-    ];
-    for (prefix, suffixes) in surrounding_markers {
-        for suffix in suffixes {
-            if let Some(query) = extract_surrounded_search_query(&normalized_words, prefix, suffix)
-            {
-                return Some(query);
-            }
-            if let Some(query) = extract_surrounded_search_query(normalized, prefix, suffix) {
-                return Some(query);
-            }
-        }
-    }
-    None
-}
-
-fn extract_surrounded_search_query(value: &str, prefix: &str, suffix: &str) -> Option<String> {
-    let remainder = value.strip_prefix(prefix)?;
-    let query = remainder.strip_suffix(suffix)?;
-    let query = clean_search_query(query);
-    if !query.is_empty() && normalize_url_candidate(&query).is_none() {
-        Some(query)
-    } else {
-        None
-    }
-}
-
-fn clean_search_query(value: &str) -> String {
-    value
-        .trim()
-        .trim_matches(is_url_wrapper_punctuation)
-        .trim_end_matches(is_url_trailing_punctuation)
-        .split_whitespace()
-        .collect::<Vec<_>>()
-        .join(" ")
 }

@@ -314,6 +314,13 @@ fn record_matches_term(record: &ConceptRecord, normalized: &str) -> bool {
         .aliases
         .iter()
         .any(|alias| normalize_concept_term(alias) == normalized)
+        || record.localized.iter().any(|localized| {
+            normalize_concept_term(&localized.term) == normalized
+                || localized
+                    .aliases
+                    .iter()
+                    .any(|alias| normalize_concept_term(alias) == normalized)
+        })
 }
 
 fn record_has_context(record: &ConceptRecord, context_normalized: &str) -> bool {
