@@ -6,6 +6,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
+import vm from 'node:vm';
 import { fileURLToPath } from 'node:url';
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
@@ -149,11 +150,89 @@ function parseConceptRecords() {
   return concepts;
 }
 
+function parseToolRecords() {
+  const tools = [];
+  let current = null;
+  let localized = null;
+
+  for (const line of readRepoFile('data/seed/tools.lino').split(/\r?\n/)) {
+    const tool = line.match(/^  tool "([^"]+)"/);
+    if (tool) {
+      if (current) tools.push(current);
+      current = { id: tool[1], localized: [] };
+      localized = null;
+      continue;
+    }
+
+    if (!current) continue;
+
+    const localizedHeader = line.match(/^    localized "([^"]+)"/);
+    if (localizedHeader) {
+      localized = { language: localizedHeader[1] };
+      current.localized.push(localized);
+      continue;
+    }
+
+    const localizedField = line.match(/^      ([a-z_]+) "([^"]*)"/);
+    if (localized && localizedField) {
+      localized[localizedField[1]] = localizedField[2];
+      continue;
+    }
+
+    const field = line.match(/^    ([a-z_]+) "([^"]*)"/);
+    if (field) {
+      current[field[1]] = field[2];
+      localized = null;
+    }
+  }
+
+  if (current) tools.push(current);
+  return tools;
+}
+
+function parseFeatureCapabilitySlugs() {
+  return [
+    ...readRepoFile('src/solver_handlers/feature_capability.rs').matchAll(
+      /slug:\s*"([^"]+)"/g,
+    ),
+  ].map((match) => match[1]);
+}
+
+function parseFeatureCapabilityTestMatrix() {
+  const matrix = new Map();
+  const source = readRepoFile('tests/unit/specification/capabilities.rs');
+  const cases = source.matchAll(
+    /FeatureCapabilityLanguageCase\s*\{[\s\S]*?feature:\s*"([^"]+)"[\s\S]*?language:\s*"([^"]+)"/g,
+  );
+  for (const match of cases) {
+    const feature = match[1];
+    const language = match[2];
+    if (!matrix.has(feature)) matrix.set(feature, new Set());
+    matrix.get(feature).add(language);
+  }
+  return matrix;
+}
+
+function parseBrowserTranslationRegistry() {
+  const source = readRepoFile('src/web/formal_ai_worker.js');
+  const match = source.match(
+    /const TRANSLATION_MEANING_REGISTRY = (\[[\s\S]*?\n\]);/,
+  );
+  if (!match) {
+    throw new Error('src/web/formal_ai_worker.js is missing TRANSLATION_MEANING_REGISTRY');
+  }
+  return vm.runInNewContext(`(${match[1]})`);
+}
+
 const supportedLanguages = parseSupportedLanguages();
 const routes = parseIntentRouting();
 const patterns = parsePromptPatterns();
 const responses = parseResponseRecords();
 const concepts = parseConceptRecords();
+const tools = parseToolRecords();
+const featureCapabilitySlugs = parseFeatureCapabilitySlugs();
+const featureCapabilityTestMatrix = parseFeatureCapabilityTestMatrix();
+const browserTranslationRegistry = parseBrowserTranslationRegistry();
 const errors = [];
 
 function assert(condition, message) {
@@ -342,6 +421,68 @@ for (const concept of concepts.filter((record) => record.localized.length > 0)) 
   }
 }
 
+for (const tool of tools) {
+  const languageRecords = {
+    en: { name: tool.name, description: tool.description },
+    ...Object.fromEntries(tool.localized.map((localized) => [localized.language, localized])),
+  };
+  assertMatrixMatchesSupportedLanguages(
+    `tools.lino ${tool.id} localized records`,
+    languageRecords,
+  );
+  for (const language of supportedLanguages) {
+    const localized = languageRecords[language];
+    for (const field of ['name', 'description']) {
+      assert(
+        localized?.[field]?.trim(),
+        `tools.lino ${tool.id} ${language} must define ${field}`,
+      );
+    }
+  }
+}
+
+const knownFeatureCapabilities = new Set(featureCapabilitySlugs);
+for (const [feature, languages] of featureCapabilityTestMatrix) {
+  assert(
+    knownFeatureCapabilities.has(feature),
+    `tests/unit/specification/capabilities.rs covers unknown feature capability ${feature}`,
+  );
+  assertMatrixMatchesSupportedLanguages(
+    `feature capability unit-test matrix for ${feature}`,
+    Object.fromEntries([...languages].map((language) => [language, true])),
+  );
+}
+
+for (const feature of featureCapabilitySlugs) {
+  assert(
+    featureCapabilityTestMatrix.has(feature),
+    `tests/unit/specification/capabilities.rs must cover feature capability ${feature} for every supported language`,
+  );
+}
+
+for (const entry of browserTranslationRegistry) {
+  assert(entry.token, 'TRANSLATION_MEANING_REGISTRY entries must define token');
+  assertMatrixMatchesSupportedLanguages(
+    `TRANSLATION_MEANING_REGISTRY ${entry.token} primary`,
+    entry.primary || {},
+  );
+  assertMatrixMatchesSupportedLanguages(
+    `TRANSLATION_MEANING_REGISTRY ${entry.token} aliases`,
+    entry.aliases || {},
+  );
+
+  for (const language of supportedLanguages) {
+    assert(
+      entry.primary?.[language]?.trim(),
+      `TRANSLATION_MEANING_REGISTRY ${entry.token} primary.${language} must be non-empty`,
+    );
+    assert(
+      Array.isArray(entry.aliases?.[language]) && entry.aliases[language].length > 0,
+      `TRANSLATION_MEANING_REGISTRY ${entry.token} aliases.${language} must be a non-empty array`,
+    );
+  }
+}
+
 if (errors.length > 0) {
   console.error('Multilingual intent coverage check failed:');
   for (const error of errors) {
@@ -351,5 +492,5 @@ if (errors.length > 0) {
 }
 
 console.log(
-  `Multilingual intent coverage OK for ${supportedLanguages.join(', ')} (${requiredLocalizedResponseIntents.length} localized response intents, ${concepts.filter((record) => record.localized.length > 0).length} localized concept records).`,
+  `Multilingual intent coverage OK for ${supportedLanguages.join(', ')} (${requiredLocalizedResponseIntents.length} localized response intents, ${concepts.filter((record) => record.localized.length > 0).length} localized concept records, ${tools.length} localized tools, ${featureCapabilitySlugs.length} feature capabilities, ${browserTranslationRegistry.length} translation meanings).`,
 );

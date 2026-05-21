@@ -595,9 +595,14 @@ pub fn try_translation(
     normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
+    let target = detect_target_language(normalized);
     let is_translation_request = normalized.starts_with("translate")
         || normalized.starts_with("переведи")
         || normalized.starts_with("опиши")
+        || (target.is_some()
+            && (normalized.contains("अनुवाद")
+                || normalized.contains("翻译")
+                || normalized.contains("翻譯")))
         || (normalized.starts_with("define ")
             && (extract_quoted_phrase(prompt).is_some() || extract_backticked(prompt).is_some())
             && (normalized.contains(" links notation") || normalized.contains(" в links")));
@@ -605,7 +610,6 @@ pub fn try_translation(
         return None;
     }
 
-    let target = detect_target_language(normalized);
     let mut source = detect_source_language(normalized);
     if source.is_none() {
         source = Some(infer_source_from_prompt(prompt));

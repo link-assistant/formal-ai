@@ -38,8 +38,10 @@ fn main() {
         ("apple", "en", "ru"),
         // English → Hindi
         ("hello", "en", "hi"),
+        ("apple", "en", "hi"),
         // English → Chinese
         ("hello", "en", "zh"),
+        ("apple", "en", "zh"),
     ];
 
     let cache_dir = std::env::var("FORMAL_AI_TRANSLATION_CACHE_DIR")

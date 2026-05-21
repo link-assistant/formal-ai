@@ -57,6 +57,31 @@ test.describe('Issue #218 apple/яблоко translation prompts', () => {
     await expect(reply).not.toContainText('[ru]');
   });
 
+  test('#216 — unquoted apple covers all supported target languages', async ({ page }) => {
+    const cases = [
+      { prompt: 'translate apple to english', expected: 'apple', placeholder: '[en]' },
+      { prompt: 'translate apple to russian', expected: 'яблоко', placeholder: '[ru]' },
+      { prompt: 'translate apple to hindi', expected: 'सेब', placeholder: '[hi]' },
+      { prompt: 'translate apple to chinese', expected: '苹果', placeholder: '[zh]' },
+    ];
+
+    for (const { prompt, expected, placeholder } of cases) {
+      const reply = await sendPrompt(page, prompt);
+      await expect(reply).toContainText(expected);
+      await expect(reply).not.toContainText(placeholder);
+    }
+  });
+
+  test('native Hindi and Chinese translation prompts work without quotes', async ({ page }) => {
+    const hindi = await sendPrompt(page, 'apple का हिंदी में अनुवाद करो');
+    await expect(hindi).toContainText('सेब');
+    await expect(hindi).not.toContainText('[hi]');
+
+    const chinese = await sendPrompt(page, '把 apple 翻译成中文');
+    await expect(chinese).toContainText('苹果');
+    await expect(chinese).not.toContainText('[zh]');
+  });
+
   test('#217 — single Russian noun quoted with ASCII quotes', async ({ page }) => {
     const reply = await sendPrompt(page, 'переведи "яблоко" на английский');
     await expect(reply).toContainText('apple');

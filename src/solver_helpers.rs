@@ -10,6 +10,7 @@
 
 use crate::engine::{ExecutionStatus, HelloWorldProgram, SelectedRule};
 use crate::event_log::EventLog;
+use crate::language::{detect as detect_language, Language};
 
 pub const fn confidence_for(rule: &SelectedRule, validation: Option<&ValidationChoice>) -> f32 {
     if validation.is_some() {
@@ -250,16 +251,36 @@ pub fn extract_introduced_name(prompt: &str) -> Option<String> {
 }
 
 pub fn detect_source_language(normalized: &str) -> Option<&'static str> {
-    if normalized.contains("from english") {
+    if normalized.contains("from english")
+        || normalized.contains("с английского")
+        || normalized.contains("अंग्रेजी से")
+        || normalized.contains("अंग्रेज़ी से")
+        || normalized.contains("从英语")
+        || normalized.contains("从英文")
+    {
         return Some("en");
     }
-    if normalized.contains("from russian") || normalized.starts_with("переведи") {
+    if normalized.contains("from russian")
+        || normalized.contains("с русского")
+        || normalized.contains("रूसी से")
+        || normalized.contains("从俄语")
+    {
         return Some("ru");
     }
-    if normalized.contains("from hindi") {
+    if normalized.contains("from hindi")
+        || normalized.contains("हिंदी से")
+        || normalized.contains("हिन्दी से")
+        || normalized.contains("从印地语")
+        || normalized.contains("从印地文")
+    {
         return Some("hi");
     }
-    if normalized.contains("from chinese") {
+    if normalized.contains("from chinese")
+        || normalized.contains("चीनी से")
+        || normalized.contains("从中文")
+        || normalized.contains("从汉语")
+        || normalized.contains("从漢語")
+    {
         return Some("zh");
     }
     None
@@ -269,16 +290,80 @@ pub fn detect_target_language(normalized: &str) -> Option<&'static str> {
     if normalized.contains("to english")
         || normalized.contains("на английский")
         || normalized.contains("на английском")
+        || normalized.contains("अंग्रेजी में")
+        || normalized.contains("अंग्रेज़ी में")
+        || [
+            "成英文",
+            "成英语",
+            "为英文",
+            "为英语",
+            "為英文",
+            "為英语",
+            "到英文",
+            "到英语",
+        ]
+        .iter()
+        .any(|marker| normalized.contains(marker))
     {
         return Some("en");
     }
-    if normalized.contains("to russian") || normalized.contains("на русский") {
+    if normalized.contains("to russian")
+        || normalized.contains("на русский")
+        || normalized.contains("रूसी में")
+        || [
+            "成俄语",
+            "成俄語",
+            "为俄语",
+            "为俄語",
+            "為俄语",
+            "為俄語",
+            "到俄语",
+            "到俄語",
+        ]
+        .iter()
+        .any(|marker| normalized.contains(marker))
+    {
         return Some("ru");
     }
-    if normalized.contains("to hindi") || normalized.contains("на хинди") {
+    if normalized.contains("to hindi")
+        || normalized.contains("на хинди")
+        || normalized.contains("हिंदी में")
+        || normalized.contains("हिन्दी में")
+        || [
+            "成印地语",
+            "成印地文",
+            "为印地语",
+            "为印地文",
+            "為印地语",
+            "為印地文",
+            "到印地语",
+            "到印地文",
+        ]
+        .iter()
+        .any(|marker| normalized.contains(marker))
+    {
         return Some("hi");
     }
-    if normalized.contains("to chinese") || normalized.contains("на китайский") {
+    if normalized.contains("to chinese")
+        || normalized.contains("на китайский")
+        || normalized.contains("चीनी में")
+        || [
+            "成中文",
+            "成汉语",
+            "成漢語",
+            "为中文",
+            "为汉语",
+            "为漢語",
+            "為中文",
+            "為汉语",
+            "為漢語",
+            "到中文",
+            "到汉语",
+            "到漢語",
+        ]
+        .iter()
+        .any(|marker| normalized.contains(marker))
+    {
         return Some("zh");
     }
     None
@@ -363,23 +448,22 @@ pub fn canonical_meaning_token(raw: &str) -> String {
 
 pub fn infer_source_from_prompt(prompt: &str) -> &'static str {
     let lower = prompt.to_lowercase();
+    if let Some(surface) = extract_quoted_phrase(prompt)
+        .or_else(|| crate::translation::extract_unquoted_translation_surface(prompt))
+    {
+        let language = detect_language(&surface);
+        if language != Language::Unknown {
+            return language.slug();
+        }
+    }
     if lower.contains("переведи") || lower.contains("опиши") {
         return "ru";
     }
-    if let Some(quoted) = extract_quoted_phrase(prompt) {
-        let mut latin = 0_usize;
-        let mut cyrillic = 0_usize;
-        for character in quoted.chars() {
-            let codepoint = u32::from(character);
-            if character.is_ascii_alphabetic() {
-                latin += 1;
-            } else if (0x0400..=0x04FF).contains(&codepoint) {
-                cyrillic += 1;
-            }
-        }
-        if cyrillic > latin {
-            return "ru";
-        }
+    if lower.contains("अनुवाद") {
+        return "hi";
+    }
+    if lower.contains("翻译") || lower.contains("翻譯") {
+        return "zh";
     }
     "en"
 }
