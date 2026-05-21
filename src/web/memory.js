@@ -43,6 +43,7 @@
     "inputs",
     "outputs",
     "content",
+    "attachments",
     "sentAt",
     "demoLabel",
     "evidence",
@@ -214,6 +215,12 @@
           ? event.outputs
           : JSON.stringify(event.outputs);
     }
+    if (event.attachments !== undefined && event.attachments !== null) {
+      record.attachments =
+        typeof event.attachments === "string"
+          ? event.attachments
+          : JSON.stringify(event.attachments);
+    }
     if (event.demoLabel) record.demoLabel = String(event.demoLabel);
     if (Array.isArray(event.evidence)) record.evidence = event.evidence.slice();
     if (event.conversationId) record.conversationId = String(event.conversationId);
@@ -280,6 +287,12 @@
             typeof raw.outputs === "string"
               ? raw.outputs
               : JSON.stringify(raw.outputs);
+        }
+        if (raw.attachments !== undefined && raw.attachments !== null) {
+          record.attachments =
+            typeof raw.attachments === "string"
+              ? raw.attachments
+              : JSON.stringify(raw.attachments);
         }
         if (raw.demoLabel) record.demoLabel = String(raw.demoLabel);
         if (Array.isArray(raw.evidence)) record.evidence = raw.evidence.slice();

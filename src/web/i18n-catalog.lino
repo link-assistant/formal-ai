@@ -118,6 +118,9 @@ en
       label "Definition fusion"
       explicit "Explicit only"
       auto "Auto for definitions"
+    experimentalOcr
+      label "Experimental OCR"
+      warning "Downloads about 6 MB on first use: OCR wrapper, worker, WebAssembly core, and English traineddata."
     language
       label "Language"
       auto "Auto"
@@ -292,6 +295,9 @@ ru
       label "Слияние определений"
       explicit "Только явно"
       auto "Авто для определений"
+    experimentalOcr
+      label "Экспериментальный OCR"
+      warning "При первом использовании скачивается около 6 MB: оболочка OCR, worker, ядро WebAssembly и английские traineddata."
     language
       label "Язык"
       auto "Авто"
@@ -458,6 +464,9 @@ zh
       label "定义融合"
       explicit "仅显式"
       auto "定义自动"
+    experimentalOcr
+      label "实验性 OCR"
+      warning "首次使用会下载约 6 MB：OCR 包装层、worker、WebAssembly 核心和英语训练数据。"
     language
       label "语言"
       auto "自动"
@@ -628,6 +637,9 @@ hi
       label "परिभाषा fusion"
       explicit "सिर्फ स्पष्ट"
       auto "definitions के लिए auto"
+    experimentalOcr
+      label "Experimental OCR"
+      warning "पहली बार इस्तेमाल पर लगभग 6 MB डाउनलोड होता है: OCR wrapper, worker, WebAssembly core, और English traineddata."
     language
       label "भाषा"
       auto "ऑटो"
