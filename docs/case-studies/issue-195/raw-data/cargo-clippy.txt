@@ -1,0 +1,2 @@
+    Checking formal-ai v0.97.0 (/tmp/gh-issue-solver-1779402559702)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 7.10s

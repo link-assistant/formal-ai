@@ -1,0 +1,14 @@
+/bin/bash: line 1: docker: command not found
+/bin/bash: line 1: start-command: command not found
+/home/box/.bun/bin/$
+start-command version: 0.27.2
+
+OS: linux
+OS Version: 6.8.0-106-generic
+Bun Version: 1.3.13
+Architecture: x64
+
+Isolation tools:
+  screen: Screen version 4.09.01 (GNU) 20-Aug-23
+  tmux: not installed
+  docker: not installed

@@ -9,7 +9,7 @@ The current implementation covers the surface area requested in issue #1:
 - HTTP API server with `/v1/chat/completions` and `/v1/responses`
 - Telegram bot CLI with long polling by default and an opt-in webhook server, configured through [`lino-arguments`](https://github.com/link-foundation/lino-arguments)
 - human-readable Links Notation knowledge and dataset export through `lino-objects-codec`
-- Docker-ready microservice
+- Docker-in-Docker Telegram bot image based on `konard/box-dind:2.1.1`
 - GitHub Pages markdown chat demo backed by a Rust-generated WebAssembly worker
 
 Project direction is tracked in [VISION.md](VISION.md), [GOALS.md](GOALS.md), and [NON-GOALS.md](NON-GOALS.md). The issue #12 synthesis is in [docs/case-studies/issue-12/README.md](docs/case-studies/issue-12/README.md).
@@ -46,11 +46,34 @@ curl -s http://127.0.0.1:8080/telegram/webhook \
   -d '{"update_id":1,"message":{"message_id":7,"date":1,"chat":{"id":42,"type":"private"},"text":"Write me hello world program in Rust"}}'
 ```
 
-Docker:
+Docker-in-Docker Telegram bot image:
 
 ```bash
 docker build -t formal-ai .
-docker run --rm -p 8080:8080 formal-ai
+docker run --rm --privileged \
+  -e TELEGRAM_BOT_TOKEN=123:abc \
+  -v formal-ai-docker:/var/lib/docker \
+  formal-ai
+
+# Preferred when Sysbox is available:
+docker run --rm --runtime=sysbox-runc \
+  -e TELEGRAM_BOT_TOKEN=123:abc \
+  -v formal-ai-docker:/var/lib/docker \
+  formal-ai
+```
+
+The root image is intentionally the only supported Docker runtime: it inherits
+from `konard/box-dind:2.1.1`, starts `/usr/local/bin/dind-entrypoint.sh`, and
+defaults to `formal-ai telegram --mode polling`. Do not bind-mount the host
+`/var/run/docker.sock`; the image expects its own inner Docker daemon and uses
+`/var/lib/docker` for that daemon's storage.
+
+Verify the container contract and the `start-command` Docker isolation wrapper:
+
+```bash
+docker run --rm --privileged formal-ai verify-formal-ai-dind
+docker run --rm --privileged formal-ai bash -lc \
+  '$ --isolated docker --auto-remove-docker-container -- echo formal-ai-dind-ok'
 ```
 
 The static demo lives in `src/web/index.html`. Serve it from a local web server or GitHub Pages so the WebAssembly worker can be fetched by the browser. The demo starts with a user greeting, renders markdown in messages, previews markdown input, and includes a randomized dialog mode for hello-world prompts across several programming languages. Browser JavaScript dependencies are prebundled with Bun into `src/web/vendor.bundle.js`; run `bun install` once and `bun run build:web` after changing web dependencies. The companion connectivity diagnostics page lives in `src/web/tests/index.html` and is deployed at `/formal-ai/tests/`; it checks direct browser fetches, public knowledge APIs, iframe embeddability, and a configurable local `web-capture` proxy.
@@ -99,12 +122,24 @@ cargo run -- telegram --mode polling \
 
 The polling client shells out to `curl`, calls Telegram's `getUpdates`, advances the offset after each batch, and replies through `sendMessage` with HTML formatting. The same `FormalAiEngine` used by the library, HTTP API, and web demo is reused, so polling answers match the other surfaces.
 
+The Docker image uses this polling command as its default `CMD`, so the
+container starts the bot as soon as `TELEGRAM_BOT_TOKEN` is set. Commands that
+need nested containers should run through the bundled `$` wrapper with
+`--isolated docker`; `start-command` records command output and metadata under
+`/tmp/start-command/logs/`. Issue #195 called this `--isolation docker`; the
+current Link Foundation Start CLI documents the flag as `--isolated docker`.
+
 ### Webhook (opt-in)
 
 ```bash
 cargo run -- telegram --mode webhook --host 127.0.0.1 --port 8080
 # or equivalently for backwards compatibility:
 cargo run -- serve --host 127.0.0.1 --port 8080
+
+# Docker override for webhook mode:
+docker run --rm --privileged -p 8080:8080 \
+  -e TELEGRAM_BOT_TOKEN=123:abc \
+  formal-ai formal-ai telegram --mode webhook --host 0.0.0.0 --port 8080
 ```
 
 Expose the server through HTTPS and register the endpoint with Telegram:

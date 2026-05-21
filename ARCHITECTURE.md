@@ -687,6 +687,13 @@ The same `FormalAiEngine` answers prompts in every surface:
   `?format=dot`).
 - **Telegram bot** — `POST /telegram/webhook` (webhook) or
   `formal-ai telegram` (long polling).
+- **Docker-in-Docker Telegram image** — the root `Dockerfile` builds the
+  Rust binary, copies it into `konard/box-dind:2.1.1`, keeps
+  `/usr/local/bin/dind-entrypoint.sh` as the entrypoint, and defaults to
+  `formal-ai telegram --mode polling`. Commands that need nested execution
+  use the bundled `$ --isolated docker --auto-remove-docker-container --`
+  wrapper from `start-command`, which records logs under
+  `/tmp/start-command/logs/`.
 - **Browser demo** — `src/web/formal_ai_worker.js` plus the WebAssembly
   worker built from `src/web/wasm-worker/src/lib.rs`.
 

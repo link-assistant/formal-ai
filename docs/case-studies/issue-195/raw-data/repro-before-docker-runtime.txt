@@ -1,0 +1,96 @@
+   Compiling proc-macro2 v1.0.103
+   Compiling unicode-ident v1.0.22
+   Compiling quote v1.0.42
+   Compiling wasm-bindgen-shared v0.2.121
+   Compiling rustversion v1.0.22
+   Compiling serde_core v1.0.228
+   Compiling bumpalo v3.20.2
+   Compiling serde v1.0.228
+   Compiling autocfg v1.5.0
+   Compiling memchr v2.8.0
+   Compiling cfg-if v1.0.4
+   Compiling once_cell v1.21.4
+   Compiling num-traits v0.2.19
+   Compiling pin-project-lite v0.2.17
+   Compiling wasm-bindgen v0.2.121
+   Compiling syn v2.0.111
+   Compiling slab v0.4.12
+   Compiling futures-core v0.3.32
+   Compiling futures-task v0.3.32
+   Compiling utf8parse v0.2.2
+   Compiling futures-util v0.3.32
+   Compiling anstyle-parse v0.2.7
+   Compiling zmij v1.0.21
+   Compiling anstyle-query v1.1.5
+   Compiling anstyle v1.0.14
+   Compiling colorchoice v1.0.5
+   Compiling is_terminal_polyfill v1.70.2
+   Compiling thiserror v1.0.69
+   Compiling num-integer v0.1.46
+   Compiling anstream v0.6.21
+   Compiling aho-corasick v1.1.4
+   Compiling strsim v0.11.1
+   Compiling clap_lex v1.1.0
+   Compiling heck v0.5.0
+   Compiling dtor-proc-macro v0.0.5
+   Compiling rust_decimal v1.42.0
+   Compiling regex-syntax v0.8.10
+   Compiling serde_json v1.0.149
+   Compiling dtor v0.0.6
+   Compiling clap_builder v4.5.60
+   Compiling nom v8.0.0
+   Compiling ctor-proc-macro v0.0.6
+   Compiling arrayvec v0.7.6
+   Compiling iana-time-zone v0.1.65
+   Compiling regex-automata v0.4.14
+   Compiling wasm-bindgen-macro-support v0.2.121
+   Compiling itoa v1.0.18
+   Compiling serde_derive v1.0.228
+   Compiling thiserror-impl v1.0.69
+   Compiling clap_derive v4.5.55
+   Compiling regex v1.12.3
+   Compiling links-notation v0.13.0
+   Compiling ctor v0.4.3
+   Compiling dotenvy v0.15.7
+   Compiling lino-env v0.1.0
+   Compiling base64 v0.22.1
+   Compiling lazy_static v1.5.0
+   Compiling same-file v1.0.6
+   Compiling wasm-bindgen-macro v0.2.121
+   Compiling lino-objects-codec v0.2.1
+   Compiling walkdir v2.5.0
+   Compiling clap v4.5.60
+   Compiling num-bigint v0.4.6
+   Compiling chrono v0.4.44
+   Compiling lino-arguments v0.3.0
+   Compiling js-sys v0.3.98
+   Compiling console_error_panic_hook v0.1.7
+   Compiling num-rational v0.4.2
+   Compiling wasm-bindgen-futures v0.4.71
+   Compiling serde-wasm-bindgen v0.6.5
+   Compiling web-sys v0.3.98
+   Compiling link-calculator v0.17.2
+   Compiling formal-ai v0.96.0 (/tmp/gh-issue-solver-1779402559702)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 23.63s
+     Running tests/unit/mod.rs (target/debug/deps/unit-6fac2366806d037b)
+
+running 2 tests
+
+thread 'docker_runtime::dockerfile_defines_only_supported_dind_telegram_runtime' (2201632) panicked at tests/unit/docker_runtime.rs:70:9:
+Dockerfile should contain expected text: FROM konard/box-dind:2.1.1
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test docker_runtime::dockerfile_defines_only_supported_dind_telegram_runtime ... FAILED
+
+thread 'docker_runtime::docker_microservice_seed_declares_dind_start_command_contract' (2201631) panicked at tests/unit/docker_runtime.rs:47:5:
+docker_microservice label should describe the only supported image variant: EnvironmentRecord { id: "docker_microservice", label: "Docker image of the HTTP server", runtime: "Rust binary in alpine-based container", seed_path: "data/seed/ (embedded in the binary)", memory_store: "Per-request only (stateless responses)", memory_export_command: "GET /v1/bundle from the container", bundle_export_command: "GET /v1/bundle from the container", bundle_import_command: "n/a", tools: ["same as http_server"] }
+test docker_runtime::docker_microservice_seed_declares_dind_start_command_contract ... FAILED
+
+failures:
+
+failures:
+    docker_runtime::docker_microservice_seed_declares_dind_start_command_contract
+    docker_runtime::dockerfile_defines_only_supported_dind_telegram_runtime
+
+test result: FAILED. 0 passed; 2 failed; 0 ignored; 0 measured; 519 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `--test unit`
