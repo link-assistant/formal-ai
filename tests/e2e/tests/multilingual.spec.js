@@ -289,6 +289,100 @@ test.describe('multilingual chat surface', () => {
     await expect(last).toContainText(/Wikipedia|encyclopedia/i);
   });
 
+  test('Issue #184: OpenStreerMap typo resolves through Wikipedia fuzzy search across supported languages', async ({
+    page,
+  }) => {
+    const apiCalls = [];
+
+    await page.route('**/api/rest_v1/page/summary/**', async (route) => {
+      const url = route.request().url();
+      const slug = decodeURIComponent(url.split('/').pop() || '');
+      apiCalls.push({ kind: 'summary', slug, url });
+      if (slug === 'OpenStreetMap') {
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify({
+            title: 'OpenStreetMap',
+            type: 'standard',
+            extract:
+              'OpenStreetMap is a free collaborative map database maintained by volunteers.',
+            content_urls: {
+              desktop: { page: 'https://en.wikipedia.org/wiki/OpenStreetMap' },
+            },
+          }),
+        });
+        return;
+      }
+      await route.fulfill({
+        status: 404,
+        contentType: 'application/json',
+        body: JSON.stringify({ httpCode: 404, httpReason: 'Not Found' }),
+      });
+    });
+
+    await page.route('**/w/rest.php/v1/search/page**', async (route) => {
+      const url = route.request().url();
+      apiCalls.push({ kind: 'search', url });
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          pages: [
+            {
+              key: 'OpenStreetMap',
+              title: 'OpenStreetMap',
+              excerpt:
+                'OpenStreetMap is a free collaborative map database maintained by volunteers.',
+              description: 'collaborative map database',
+            },
+          ],
+        }),
+      });
+    });
+
+    await page.route('**://*.wikidata.org/w/api.php**', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ search: [] }),
+      });
+    });
+
+    await page.route('**://*.wiktionary.org/w/api.php**', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(['OpenStreerMap', [], [], []]),
+      });
+    });
+
+    const cases = [
+      'what is OpenStreerMap',
+      'что такое OpenStreerMap',
+      'OpenStreerMap क्या है',
+      'OpenStreerMap是什么',
+    ];
+
+    for (const prompt of cases) {
+      const before = apiCalls.length;
+      const last = await sendPrompt(page, prompt);
+      const calls = apiCalls.slice(before);
+      await expect(last).toHaveClass(/assistant/);
+      await expect(last).toContainText('OpenStreetMap');
+      await expect(last).toContainText('collaborative map database');
+      await expect(last).toContainText('wikipedia.org');
+      await expect(last).toContainText('Closest match from Wikipedia search');
+      await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
+      expect(calls.some((call) => call.kind === 'search')).toBeTruthy();
+      expect(
+        calls.some(
+          (call) => call.kind === 'summary' && call.slug === 'OpenStreetMap',
+        ),
+      ).toBeTruthy();
+    }
+  });
+
   test('Issue #182: BSD ports prompts across supported languages do not fall through to OpenBSD', async ({
     page,
   }) => {
