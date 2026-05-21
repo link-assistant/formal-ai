@@ -183,6 +183,34 @@ function assertBalancedLanguageCaseCounts(name, matrix) {
   }
 }
 
+function assertPromptPatternCoverageGroups(intent) {
+  const intentPatterns = patterns.filter((pattern) => pattern.intent === intent);
+  assert(intentPatterns.length > 0, `prompt-patterns.lino must define patterns for ${intent}`);
+
+  const groups = new Map();
+  for (const pattern of intentPatterns) {
+    assert(
+      pattern.coverage_group,
+      `prompt-patterns.lino ${pattern.id} must define coverage_group so ${intent} additions stay multilingual`,
+    );
+    if (!pattern.coverage_group) continue;
+    if (!groups.has(pattern.coverage_group)) groups.set(pattern.coverage_group, {});
+    const group = groups.get(pattern.coverage_group);
+    assert(
+      !group[pattern.language],
+      `prompt-patterns.lino ${intent} coverage_group ${pattern.coverage_group} must not duplicate ${pattern.language}`,
+    );
+    group[pattern.language] = pattern;
+  }
+
+  for (const [group, matrix] of groups.entries()) {
+    assertMatrixMatchesSupportedLanguages(
+      `prompt-patterns.lino ${intent} coverage_group ${group}`,
+      matrix,
+    );
+  }
+}
+
 const howAreYouGreetingPhrases = {
   en: ['how are you', 'how are you doing'],
   ru: ['как дела', 'как твои дела'],
@@ -258,6 +286,31 @@ for (const [language, entries] of Object.entries(testStatusPatterns)) {
           pattern.text === entry.text,
       ),
       `prompt-patterns.lino must document ${language} test_status ${entry.kind} ${JSON.stringify(entry.text)}`,
+    );
+  }
+}
+
+const behaviorRulesListPatterns = {
+  en: ['show behavior rules', 'show list of your rules'],
+  ru: ['покажи правила поведения', 'покажи список своих правил'],
+  hi: ['व्यवहार के नियम सूचीबद्ध करें', 'अपने नियमों की सूची दिखाओ'],
+  zh: ['列出行为规则', '显示你的规则列表'],
+};
+
+assertMatrixMatchesSupportedLanguages('behaviorRulesListPatterns', behaviorRulesListPatterns);
+assertPromptPatternCoverageGroups('behavior_rules_list');
+
+for (const [language, phrases] of Object.entries(behaviorRulesListPatterns)) {
+  for (const phrase of phrases) {
+    assert(
+      patterns.some(
+        (pattern) =>
+          pattern.intent === 'behavior_rules_list' &&
+          pattern.language === language &&
+          pattern.kind === 'phrase' &&
+          pattern.text === phrase,
+      ),
+      `prompt-patterns.lino must document ${language} behavior_rules_list phrase ${JSON.stringify(phrase)}`,
     );
   }
 }

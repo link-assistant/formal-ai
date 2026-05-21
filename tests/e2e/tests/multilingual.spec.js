@@ -130,6 +130,23 @@ test.describe('multilingual chat surface', () => {
     await expect(last).toContainText(/символьный|детерминированный/);
   });
 
+  test('behavior-rule list possessive phrasing shows rules across supported languages', async ({ page }) => {
+    const cases = [
+      'Show list of your rules',
+      'Покажи список своих правил',
+      'अपने नियमों की सूची दिखाओ',
+      '显示你的规则列表',
+    ];
+
+    for (const prompt of cases) {
+      const last = await sendPrompt(page, prompt);
+      await expect(last).toHaveClass(/assistant/);
+      await expect(last).toContainText('rule_greeting');
+      await expect(last).toContainText('rule_unknown');
+      await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
+    }
+  });
+
   test('Hindi greeting replies in Hindi', async ({ page }) => {
     const last = await sendPrompt(page, 'नमस्ते');
     await expect(last).toHaveClass(/assistant/);
