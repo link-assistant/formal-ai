@@ -149,11 +149,50 @@ function parseConceptRecords() {
   return concepts;
 }
 
+function parseContextRecords() {
+  const contexts = [];
+  let current = null;
+  let label = null;
+
+  for (const line of readRepoFile('data/seed/concept-contexts.lino').split(/\r?\n/)) {
+    const context = line.match(/^  context "([^"]+)"/);
+    if (context) {
+      if (current) contexts.push(current);
+      current = { id: context[1], labels: [] };
+      label = null;
+      continue;
+    }
+
+    if (!current) continue;
+
+    const labelHeader = line.match(/^    label "([^"]+)"/);
+    if (labelHeader) {
+      label = { language: labelHeader[1] };
+      current.labels.push(label);
+      continue;
+    }
+
+    const labelText = line.match(/^      text "([^"]*)"/);
+    if (label && labelText) {
+      label.text = labelText[1];
+      continue;
+    }
+
+    if (line.match(/^    [a-z_]+ /) || line.match(/^  [a-z_]+ /)) {
+      label = null;
+    }
+  }
+
+  if (current) contexts.push(current);
+  return contexts;
+}
+
 const supportedLanguages = parseSupportedLanguages();
 const routes = parseIntentRouting();
 const patterns = parsePromptPatterns();
 const responses = parseResponseRecords();
 const concepts = parseConceptRecords();
+const contextRecords = parseContextRecords();
 const errors = [];
 
 function assert(condition, message) {
@@ -395,6 +434,26 @@ for (const concept of concepts.filter((record) => record.localized.length > 0)) 
   }
 }
 
+for (const context of contextRecords) {
+  const languages = context.labels.map((label) => label.language);
+  assert(
+    new Set(languages).size === languages.length,
+    `concept-contexts.lino ${context.id} must not duplicate label languages`,
+  );
+  assertMatrixMatchesSupportedLanguages(
+    `concept-contexts.lino ${context.id} labels`,
+    Object.fromEntries(context.labels.map((label) => [label.language, label])),
+  );
+
+  for (const language of supportedLanguages) {
+    const label = context.labels.find((entry) => entry.language === language);
+    assert(
+      label?.text?.trim(),
+      `concept-contexts.lino ${context.id} label ${language} must define text`,
+    );
+  }
+}
+
 if (errors.length > 0) {
   console.error('Multilingual intent coverage check failed:');
   for (const error of errors) {
@@ -404,5 +463,5 @@ if (errors.length > 0) {
 }
 
 console.log(
-  `Multilingual intent coverage OK for ${supportedLanguages.join(', ')} (${requiredLocalizedResponseIntents.length} localized response intents, ${concepts.filter((record) => record.localized.length > 0).length} localized concept records).`,
+  `Multilingual intent coverage OK for ${supportedLanguages.join(', ')} (${requiredLocalizedResponseIntents.length} localized response intents, ${concepts.filter((record) => record.localized.length > 0).length} localized concept records, ${contextRecords.length} concept context records).`,
 );
