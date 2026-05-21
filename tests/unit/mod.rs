@@ -4,6 +4,8 @@ mod docs_requirements;
 mod formal_ai;
 mod github_logs;
 mod multilingual_variations;
+mod proof_request;
+mod proof_request_config;
 mod software_project;
 mod specification;
 mod test_status;

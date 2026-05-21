@@ -9,6 +9,7 @@ pub mod event_log;
 pub mod github_logs;
 pub mod language;
 pub mod memory;
+pub mod proof_engine;
 pub mod protocol;
 pub mod seed;
 pub mod server;

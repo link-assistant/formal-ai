@@ -29,6 +29,7 @@ use crate::engine::{
 };
 use crate::event_log::{build_evidence_links, EventLog};
 use crate::language::{detect as detect_language, Language};
+use crate::proof_engine::ProofRenderConfig;
 use crate::seed;
 use crate::solver_handler_how::{try_how_it_works, try_how_to_procedure};
 use crate::solver_handler_units::try_incompatible_units;
@@ -39,10 +40,10 @@ use crate::solver_handlers::{
     try_definition_merge_by_default, try_execution_failure, try_fact_lookup,
     try_feature_capability, try_http_fetch, try_ill_formed, try_javascript_execution,
     try_meta_explanation, try_network_query, try_opinion_question, try_project_lookup,
-    try_punctuation_only_prompt, try_roleplay_request, try_shell_refusal,
-    try_software_project_request, try_source_conflict, try_source_refresh,
-    try_summarization_request, try_translation, try_url_navigate, try_web_search,
-    try_who_is_question, try_write_script, CapabilityRuntime,
+    try_proof_request, try_proof_request_with_config, try_punctuation_only_prompt,
+    try_roleplay_request, try_shell_refusal, try_software_project_request, try_source_conflict,
+    try_source_refresh, try_summarization_request, try_translation, try_url_navigate,
+    try_web_search, try_who_is_question, try_write_script, CapabilityRuntime,
 };
 use crate::solver_handlers_policy::{try_kupi_slona, try_physical_action_question};
 use crate::solver_helpers::{
@@ -108,7 +109,20 @@ fn is_inappropriate_content(normalized: &str) -> bool {
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct SolverConfig {
     /// `0.0` = always ask a clarifying question, `1.0` = always guess.
+    ///
+    /// When this is high the engine commits to its best interpretation of the
+    /// prompt, shows that interpretation, translates the claim into the
+    /// chosen formal system, and executes the proof. When it is low the
+    /// engine stays literal and avoids speculative reductions.
     pub guess_probability: f32,
+    /// `0.0` = stay action-only, `1.0` = always invite the user to refine the
+    /// proof inputs before final execution.
+    ///
+    /// Independent of `guess_probability`. When this is high the proof engine
+    /// appends a "Clarifying questions" section listing every input the user
+    /// still has to confirm (axiom set, definitions, proof technique) so the
+    /// final research execution is unambiguous.
+    pub follow_up_probability: f32,
     /// `0.0` = ignore surrounding context, `1.0` = use all available context.
     pub context_sensitivity: f32,
     /// `0.0` = accept any phrasing, `1.0` = demand fully formal phrasing.
@@ -138,6 +152,7 @@ impl Default for SolverConfig {
     fn default() -> Self {
         Self {
             guess_probability: 0.8,
+            follow_up_probability: 0.75,
             context_sensitivity: 0.6,
             questioning_rigor: 0.4,
             temperature: 0.7,
@@ -176,6 +191,12 @@ impl SolverConfig {
         }
         if let Some(value) = env_bounded_f32("FORMAL_AI_TEMPERATURE", 0.0, 1.0) {
             config.temperature = value;
+        }
+        if let Some(value) = env_bounded_f32("FORMAL_AI_GUESS_PROBABILITY", 0.0, 1.0) {
+            config.guess_probability = value;
+        }
+        if let Some(value) = env_bounded_f32("FORMAL_AI_FOLLOW_UP_PROBABILITY", 0.0, 1.0) {
+            config.follow_up_probability = value;
         }
         if let Ok(value) = std::env::var("FORMAL_AI_CACHE_TTL_SECONDS") {
             if let Ok(parsed) = value.parse::<u64>() {
@@ -374,6 +395,10 @@ const SPECIALIZED_HANDLERS: &[(&str, SpecializedHandler)] = &[
     ("physical_action_question", try_physical_action_question),
     ("kupi_slona", try_kupi_slona),
     ("shell_refusal", try_shell_refusal),
+    // Proof requests must beat `opinion_question` so prompts like
+    // "Do you think you can prove …" land on the formalization pipeline
+    // explanation instead of the no-opinion policy.
+    ("proof_request", try_proof_request),
     ("opinion_question", try_opinion_question),
     ("incompatible_units", try_incompatible_units),
 ];
@@ -497,6 +522,10 @@ impl UniversalSolver {
             log.append("specialized_handler", "feature_capability".to_owned());
             return Some(answer);
         }
+        let proof_render_config = ProofRenderConfig {
+            guess_probability: self.config.guess_probability,
+            follow_up_probability: self.config.follow_up_probability,
+        };
         for (name, handler) in SPECIALIZED_HANDLERS {
             if self.config.definition_fusion_by_default && *name == "concept_lookup" {
                 if let Some(answer) = try_definition_merge_by_default(prompt, log) {
@@ -506,6 +535,21 @@ impl UniversalSolver {
                     );
                     return Some(answer);
                 }
+            }
+            // The proof handler is the only entry that depends on the solver
+            // configuration sliders — route it through the config-aware
+            // variant instead of the static handler in the registry. The
+            // entry stays in `SPECIALIZED_HANDLERS` so the precedence order
+            // (and the existing default-config fallback) remains documented
+            // in one place.
+            if *name == "proof_request" {
+                if let Some(answer) =
+                    try_proof_request_with_config(prompt, &normalized, log, proof_render_config)
+                {
+                    log.append("specialized_handler", "proof_request".to_owned());
+                    return Some(answer);
+                }
+                continue;
             }
             if let Some(answer) = handler(prompt, &normalized, log) {
                 log.append("specialized_handler", (*name).to_owned());
