@@ -10,6 +10,7 @@
 
 use crate::engine::{ExecutionStatus, HelloWorldProgram, SelectedRule};
 use crate::event_log::EventLog;
+use crate::language::{detect as detect_language, Language};
 
 pub const fn confidence_for(rule: &SelectedRule, validation: Option<&ValidationChoice>) -> f32 {
     if validation.is_some() {
@@ -249,41 +250,6 @@ pub fn extract_introduced_name(prompt: &str) -> Option<String> {
     None
 }
 
-pub fn detect_source_language(normalized: &str) -> Option<&'static str> {
-    if normalized.contains("from english") {
-        return Some("en");
-    }
-    if normalized.contains("from russian") || normalized.starts_with("переведи") {
-        return Some("ru");
-    }
-    if normalized.contains("from hindi") {
-        return Some("hi");
-    }
-    if normalized.contains("from chinese") {
-        return Some("zh");
-    }
-    None
-}
-
-pub fn detect_target_language(normalized: &str) -> Option<&'static str> {
-    if normalized.contains("to english")
-        || normalized.contains("на английский")
-        || normalized.contains("на английском")
-    {
-        return Some("en");
-    }
-    if normalized.contains("to russian") || normalized.contains("на русский") {
-        return Some("ru");
-    }
-    if normalized.contains("to hindi") || normalized.contains("на хинди") {
-        return Some("hi");
-    }
-    if normalized.contains("to chinese") || normalized.contains("на китайский") {
-        return Some("zh");
-    }
-    None
-}
-
 pub fn detect_program_languages(normalized: &str) -> Option<(&'static str, &'static str)> {
     let langs = [
         "python",
@@ -363,23 +329,22 @@ pub fn canonical_meaning_token(raw: &str) -> String {
 
 pub fn infer_source_from_prompt(prompt: &str) -> &'static str {
     let lower = prompt.to_lowercase();
+    if let Some(surface) = extract_quoted_phrase(prompt)
+        .or_else(|| crate::translation::extract_unquoted_translation_surface(prompt))
+    {
+        let language = detect_language(&surface);
+        if language != Language::Unknown {
+            return language.slug();
+        }
+    }
     if lower.contains("переведи") || lower.contains("опиши") {
         return "ru";
     }
-    if let Some(quoted) = extract_quoted_phrase(prompt) {
-        let mut latin = 0_usize;
-        let mut cyrillic = 0_usize;
-        for character in quoted.chars() {
-            let codepoint = u32::from(character);
-            if character.is_ascii_alphabetic() {
-                latin += 1;
-            } else if (0x0400..=0x04FF).contains(&codepoint) {
-                cyrillic += 1;
-            }
-        }
-        if cyrillic > latin {
-            return "ru";
-        }
+    if lower.contains("अनुवाद") {
+        return "hi";
+    }
+    if lower.contains("翻译") || lower.contains("翻譯") {
+        return "zh";
     }
     "en"
 }

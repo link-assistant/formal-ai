@@ -377,7 +377,7 @@ const FEATURE_CAPABILITIES: &[FeatureCapability] = &[
         slug: "definition_fusion",
         state: FeatureState::DefinitionFusion,
         labels: text("automatic definition fusion", "автоматическое слияние определений", "automatic definition fusion", "自动 definition fusion"),
-        aliases: text("definition fusion|merge definitions|automatic definition", "слияние определений|объединение определений", "definition fusion|merge definitions", "definition fusion|合并定义"),
+        aliases: text("definition fusion|merge definitions|automatic definition", "слияние определений|объединение определений", "definition fusion|merge definitions|परिभाषा विलय", "definition fusion|合并定义"),
         examples: text("Turn on definition fusion", "Включи слияние определений", "Turn on definition fusion", "Turn on definition fusion"),
     },
     FeatureCapability {
@@ -447,21 +447,21 @@ const FEATURE_CAPABILITIES: &[FeatureCapability] = &[
         slug: "http_url",
         state: FeatureState::Always,
         labels: text("URL navigation and HTTP fetch", "URL-навигация и HTTP-запросы", "URL navigation and HTTP fetch", "URL 导航和 HTTP 请求"),
-        aliases: text("http fetch|fetch url|open url|navigate to url|visit url", "http запрос|открыть url|перейти на|сделать запрос", "http fetch|url|navigate", "http fetch|url|打开链接|访问链接"),
+        aliases: text("http fetch|fetch url|open url|navigate to url|visit url|url navigation", "http запрос|открыть url|перейти на|сделать запрос|url-навигация|url навигация", "http fetch|url|navigate|लिंक|यूआरएल", "http fetch|url|打开链接|访问链接"),
         examples: text("Navigate to github.com", "Сделай запрос к google.com", "Navigate to github.com", "Navigate to github.com"),
     },
     FeatureCapability {
         slug: "javascript_execution",
         state: FeatureState::Always,
         labels: text("JavaScript execution", "выполнение JavaScript", "JavaScript execution", "JavaScript 执行"),
-        aliases: text("javascript|run javascript|execute javascript|js", "javascript|js", "javascript|js", "javascript|js"),
+        aliases: text("javascript|run javascript|execute javascript|js", "javascript|js", "javascript|js|स्क्रिप्ट", "javascript|js|脚本执行|执行脚本"),
         examples: text("Run JavaScript: 1 + 1", "Выполни JavaScript: 1 + 1", "Run JavaScript: 1 + 1", "Run JavaScript: 1 + 1"),
     },
     FeatureCapability {
         slug: "planning",
         state: FeatureState::Always,
         labels: text("summaries, brainstorming, roleplay, and project planning", "резюме, брейншторминг, роли и планирование проектов", "summaries, brainstorming, roleplay, and project planning", "总结、头脑风暴、角色扮演和项目计划"),
-        aliases: text("summarize|brainstorm|roleplay|software project|project plan", "резюмировать|брейншторм|роль|проект|план проекта", "summary|brainstorm|roleplay|project plan", "总结|头脑风暴|角色扮演|项目计划"),
+        aliases: text("summarize|brainstorm|roleplay|software project|project plan", "резюмировать|брейншторм|роль|проект|план проекта", "summary|brainstorm|roleplay|project plan|परियोजना योजना", "总结|头脑风暴|角色扮演|项目计划"),
         examples: text("Brainstorm 5 project ideas", "Предложи 5 идей проекта", "Brainstorm 5 project ideas", "Brainstorm 5 project ideas"),
     },
 ];

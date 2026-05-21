@@ -1,0 +1,26 @@
+{
+  "head" : {
+    "vars" : [ "lemma" ]
+  },
+  "results" : {
+    "bindings" : [ {
+      "lemma" : {
+        "xml:lang" : "en",
+        "type" : "literal",
+        "value" : "apple"
+      }
+    }, {
+      "lemma" : {
+        "xml:lang" : "en",
+        "type" : "literal",
+        "value" : "orb"
+      }
+    }, {
+      "lemma" : {
+        "xml:lang" : "en",
+        "type" : "literal",
+        "value" : "pommel"
+      }
+    } ]
+  }
+}

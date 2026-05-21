@@ -49,14 +49,17 @@ use crate::language::detect as detect_language;
 use crate::seed::response_for;
 use crate::solver_helpers::{
     build_sorting_algorithm_answer, detect_algorithm_language, detect_program_languages,
-    detect_source_language, detect_target_language, extract_backticked, extract_concept_from_query,
-    extract_introduced_name, extract_javascript_program, extract_quoted_phrase,
-    format_write_script_execution, humanize_url, infer_program_languages_from_code,
-    infer_source_from_prompt, is_write_script_request, last_user_turn, normalize_code_meaning,
-    normalize_meaning, recall_name_from_history, translate_program,
+    extract_backticked, extract_concept_from_query, extract_introduced_name,
+    extract_javascript_program, extract_quoted_phrase, format_write_script_execution, humanize_url,
+    infer_program_languages_from_code, infer_source_from_prompt, is_write_script_request,
+    last_user_turn, normalize_code_meaning, normalize_meaning, recall_name_from_history,
+    translate_program,
 };
 use crate::summarization::{
     generate_chat_title, summarize_dialog, DialogTurn, SummarizationConfig, SummarizationMode,
+};
+use crate::translation::{
+    detect_source_language, detect_target_language, extract_unquoted_translation_surface,
 };
 
 pub fn try_conversation_memory(
@@ -594,9 +597,14 @@ pub fn try_translation(
     normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
+    let target = detect_target_language(normalized);
     let is_translation_request = normalized.starts_with("translate")
         || normalized.starts_with("переведи")
         || normalized.starts_with("опиши")
+        || (target.is_some()
+            && (normalized.contains("अनुवाद")
+                || normalized.contains("翻译")
+                || normalized.contains("翻譯")))
         || (normalized.starts_with("define ")
             && (extract_quoted_phrase(prompt).is_some() || extract_backticked(prompt).is_some())
             && (normalized.contains(" links notation") || normalized.contains(" в links")));
@@ -604,7 +612,6 @@ pub fn try_translation(
         return None;
     }
 
-    let target = detect_target_language(normalized);
     let mut source = detect_source_language(normalized);
     if source.is_none() {
         source = Some(infer_source_from_prompt(prompt));
@@ -636,7 +643,14 @@ pub fn try_translation(
         }
     }
 
-    let surface = extract_quoted_phrase(prompt).unwrap_or_default();
+    // Prefer an explicitly quoted fragment (`Translate "apple" to Russian`).
+    // When the user omits the quotes (`translate apple to russian`),
+    // fall back to a structural extraction of the substring between the
+    // verb and the target preposition so the Wiktionary pipeline still
+    // receives a non-empty surface. See issue #216.
+    let surface = extract_quoted_phrase(prompt)
+        .or_else(|| extract_unquoted_translation_surface(prompt))
+        .unwrap_or_default();
     let source_slug = source.unwrap_or("en");
     let target_slug = target.unwrap_or("en");
 

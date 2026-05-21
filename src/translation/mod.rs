@@ -41,15 +41,19 @@ use std::sync::OnceLock;
 pub mod cache;
 pub mod formatting;
 pub mod http;
+mod language_markers;
 pub mod meaning;
 pub mod pipeline;
+pub mod prompt;
 pub mod wikidata;
 pub mod wiktionary;
 
 pub use cache::CachedHttpClient;
 pub use formatting::match_source_formatting;
 pub use http::{CurlClient, HttpError};
+pub(crate) use language_markers::{detect_source_language, detect_target_language};
 pub use pipeline::{Translation, TranslationPipeline};
+pub use prompt::extract_unquoted_translation_surface;
 
 /// Process-wide cached HTTP client used by the default pipeline.
 ///

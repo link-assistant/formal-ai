@@ -1993,6 +1993,99 @@ function extractQuotedPhrase(text) {
   return null;
 }
 
+// Issue #216: extract the surface from unquoted translation prompts such as
+// `translate apple to russian`, `переведи яблоко на английский`,
+// `apple का हिंदी में अनुवाद करो`, or `把 apple 翻译成中文`. Returns null when
+// the prompt already contains a quoted fragment or does not match a supported
+// verb + target-marker pattern.
+function extractUnquotedTranslationSurface(text) {
+  const source = String(text || "").trim();
+  const trimmed = source.replace(/[.!?。]+$/u, "");
+  const lower = trimmed.toLowerCase();
+
+  const extractBetween = (prefix, marker) => {
+    if (!lower.startsWith(prefix)) return null;
+    const afterPrefix = lower.slice(prefix.length);
+    const markerIndex = afterPrefix.indexOf(marker);
+    if (markerIndex === -1) return null;
+    return cleanUnquotedTranslationSurface(
+      trimmed.slice(prefix.length, prefix.length + markerIndex),
+    );
+  };
+
+  const direct =
+    extractBetween("translate ", " to ") ||
+    extractBetween("переведи ", " на ");
+  if (direct) return direct;
+
+  const hindi = extractHindiUnquotedTranslationSurface(trimmed, lower);
+  if (hindi) return hindi;
+  return extractChineseUnquotedTranslationSurface(trimmed, lower);
+}
+
+function cleanUnquotedTranslationSurface(candidate) {
+  const cleaned = String(candidate || "").trim();
+  if (!cleaned || /["'«»`“”‘’]/u.test(cleaned)) return null;
+  return cleaned;
+}
+
+function extractHindiUnquotedTranslationSurface(original, lower) {
+  if (!lower.includes("अनुवाद")) return null;
+  for (const targetMarker of [" में अनुवाद", " मे अनुवाद"]) {
+    const targetIndex = lower.indexOf(targetMarker);
+    if (targetIndex === -1) continue;
+    const beforeTarget = lower.slice(0, targetIndex);
+    for (const surfaceMarker of [" का ", " को "]) {
+      const surfaceEnd = beforeTarget.lastIndexOf(surfaceMarker);
+      if (surfaceEnd !== -1) {
+        return cleanUnquotedTranslationSurface(original.slice(0, surfaceEnd));
+      }
+    }
+  }
+  return null;
+}
+
+function firstMarkerOffset(text, markers) {
+  let best = null;
+  for (const marker of markers) {
+    const offset = text.indexOf(marker);
+    if (offset !== -1 && (best === null || offset < best)) best = offset;
+  }
+  return best;
+}
+
+function extractChineseUnquotedTranslationSurface(original, lower) {
+  for (const prefix of ["把", "将"]) {
+    if (!lower.startsWith(prefix)) continue;
+    const rest = lower.slice(prefix.length);
+    const markerIndex = firstMarkerOffset(rest, [
+      "翻译成",
+      "翻译为",
+      "翻译到",
+      "翻譯成",
+      "翻譯為",
+      "翻譯到",
+    ]);
+    if (markerIndex !== null) {
+      return cleanUnquotedTranslationSurface(
+        original.slice(prefix.length, prefix.length + markerIndex),
+      );
+    }
+  }
+
+  for (const prefix of ["翻译", "翻譯"]) {
+    if (!lower.startsWith(prefix)) continue;
+    const rest = lower.slice(prefix.length);
+    const markerIndex = firstMarkerOffset(rest, ["成", "为", "為", "到"]);
+    if (markerIndex !== null) {
+      return cleanUnquotedTranslationSurface(
+        original.slice(prefix.length, prefix.length + markerIndex),
+      );
+    }
+  }
+  return null;
+}
+
 function escapeBehaviorRuleValue(value) {
   return String(value || "")
     .replaceAll("\\", "\\\\")
@@ -3300,10 +3393,34 @@ function tryCapabilities(prompt, normalized, preferences, history) {
 }
 
 function detectTranslationSourceLanguage(normalized) {
-  if (normalized.includes("from russian") || normalized.includes("с русского")) return "ru";
-  if (normalized.includes("from english") || normalized.includes("с английского")) return "en";
-  if (normalized.includes("from hindi")) return "hi";
-  if (normalized.includes("from chinese")) return "zh";
+  if (
+    normalized.includes("from english") ||
+    normalized.includes("с английского") ||
+    normalized.includes("अंग्रेजी से") ||
+    normalized.includes("अंग्रेज़ी से") ||
+    normalized.includes("从英语") ||
+    normalized.includes("从英文")
+  ) return "en";
+  if (
+    normalized.includes("from russian") ||
+    normalized.includes("с русского") ||
+    normalized.includes("रूसी से") ||
+    normalized.includes("从俄语")
+  ) return "ru";
+  if (
+    normalized.includes("from hindi") ||
+    normalized.includes("हिंदी से") ||
+    normalized.includes("हिन्दी से") ||
+    normalized.includes("从印地语") ||
+    normalized.includes("从印地文")
+  ) return "hi";
+  if (
+    normalized.includes("from chinese") ||
+    normalized.includes("चीनी से") ||
+    normalized.includes("从中文") ||
+    normalized.includes("从汉语") ||
+    normalized.includes("从漢語")
+  ) return "zh";
   return null;
 }
 
@@ -3311,13 +3428,56 @@ function detectTranslationTargetLanguage(normalized) {
   if (
     normalized.includes("to english") ||
     normalized.includes("на английский") ||
-    normalized.includes("на английском")
+    normalized.includes("на английском") ||
+    normalized.includes("अंग्रेजी में") ||
+    normalized.includes("अंग्रेज़ी में") ||
+    ["成英文", "成英语", "为英文", "为英语", "為英文", "為英语", "到英文", "到英语"]
+      .some((marker) => normalized.includes(marker))
   ) {
     return "en";
   }
-  if (normalized.includes("to russian") || normalized.includes("на русский")) return "ru";
-  if (normalized.includes("to hindi") || normalized.includes("на хинди")) return "hi";
-  if (normalized.includes("to chinese") || normalized.includes("на китайский")) return "zh";
+  if (
+    normalized.includes("to russian") ||
+    normalized.includes("на русский") ||
+    normalized.includes("रूसी में") ||
+    ["成俄语", "成俄語", "为俄语", "为俄語", "為俄语", "為俄語", "到俄语", "到俄語"]
+      .some((marker) => normalized.includes(marker))
+  ) return "ru";
+  if (
+    normalized.includes("to hindi") ||
+    normalized.includes("на хинди") ||
+    normalized.includes("हिंदी में") ||
+    normalized.includes("हिन्दी में") ||
+    [
+      "成印地语",
+      "成印地文",
+      "为印地语",
+      "为印地文",
+      "為印地语",
+      "為印地文",
+      "到印地语",
+      "到印地文",
+    ].some((marker) => normalized.includes(marker))
+  ) return "hi";
+  if (
+    normalized.includes("to chinese") ||
+    normalized.includes("на китайский") ||
+    normalized.includes("चीनी में") ||
+    [
+      "成中文",
+      "成汉语",
+      "成漢語",
+      "为中文",
+      "为汉语",
+      "为漢語",
+      "為中文",
+      "為汉语",
+      "為漢語",
+      "到中文",
+      "到汉语",
+      "到漢語",
+    ].some((marker) => normalized.includes(marker))
+  ) return "zh";
   return null;
 }
 
@@ -3439,10 +3599,14 @@ const TRANSLATION_MEANING_REGISTRY = [
     primary: {
       en: "Who are you?",
       ru: "Кто ты такой?",
+      hi: "तुम कौन हो?",
+      zh: "你是谁？",
     },
     aliases: {
       en: ["whoareyou"],
       ru: ["ктоты", "ктотытакой", "ктотытакая", "ктовы", "ктовытакой", "ктовытакая"],
+      hi: ["तुमकौनहो", "आपकौनहैं"],
+      zh: ["你是谁", "您是谁"],
     },
   },
   {
@@ -3450,10 +3614,14 @@ const TRANSLATION_MEANING_REGISTRY = [
     primary: {
       en: "What is this?",
       ru: "Что это такое?",
+      hi: "यह क्या है?",
+      zh: "这是什么？",
     },
     aliases: {
       en: ["whatisthis", "whatisit"],
       ru: ["чтоэто", "чтоэтотакое"],
+      hi: ["यहक्याहै", "येक्याहै"],
+      zh: ["这是什么", "這是什麼"],
     },
   },
   {
@@ -3484,6 +3652,29 @@ const TRANSLATION_MEANING_REGISTRY = [
       ru: ["нет", "неа"],
       hi: ["नहीं", "ना"],
       zh: ["不", "不是"],
+    },
+  },
+  // Issue #216 / #217: the apple noun must be translatable in both
+  // directions from the browser demo, including unquoted prompts.
+  {
+    token: "apple",
+    primary: { en: "apple", ru: "яблоко", hi: "सेब", zh: "苹果" },
+    aliases: {
+      en: ["apple", "apples"],
+      ru: [
+        "яблоко",
+        "яблока",
+        "яблоку",
+        "яблоком",
+        "яблоке",
+        "яблоки",
+        "яблок",
+        "яблокам",
+        "яблоками",
+        "яблоках",
+      ],
+      hi: ["सेब"],
+      zh: ["苹果"],
     },
   },
 ];
@@ -3664,20 +3855,41 @@ function translateCompositionalSurface(surface, source, target) {
   return capitalizeAsciiFirst(translated.join(" "));
 }
 
+function detectLanguageSlug(text) {
+  let latin = 0;
+  let cyrillic = 0;
+  let devanagari = 0;
+  let cjk = 0;
+  let other = 0;
+  for (const character of String(text || "")) {
+    const code = character.codePointAt(0);
+    if (/[a-z]/i.test(character)) latin += 1;
+    else if (code >= 0x0400 && code <= 0x04ff) cyrillic += 1;
+    else if (code >= 0x0900 && code <= 0x097f) devanagari += 1;
+    else if (code >= 0x4e00 && code <= 0x9fff) cjk += 1;
+    else if (/\p{L}/u.test(character)) other += 1;
+  }
+  const total = latin + cyrillic + devanagari + cjk + other;
+  if (total === 0) return "en";
+  if (other > latin && other >= cyrillic && other >= devanagari && other >= cjk) {
+    return "unknown";
+  }
+  if (cyrillic >= Math.max(latin, devanagari, cjk) && cyrillic > 0) return "ru";
+  if (devanagari >= Math.max(latin, cyrillic, cjk) && devanagari > 0) return "hi";
+  if (cjk >= Math.max(latin, cyrillic, devanagari) && cjk > 0) return "zh";
+  return "en";
+}
+
 function inferTranslationSource(prompt) {
   const lower = String(prompt || "").toLowerCase();
-  if (lower.includes("переведи") || lower.includes("опиши")) return "ru";
-  const quoted = extractQuotedPhrase(prompt);
-  if (quoted) {
-    let latin = 0;
-    let cyrillic = 0;
-    for (const character of quoted) {
-      const code = character.codePointAt(0);
-      if (/[a-z]/i.test(character)) latin += 1;
-      if (code >= 0x0400 && code <= 0x04ff) cyrillic += 1;
-    }
-    if (cyrillic > latin) return "ru";
+  const surface = extractQuotedPhrase(prompt) || extractUnquotedTranslationSurface(prompt);
+  if (surface) {
+    const detected = detectLanguageSlug(surface);
+    if (detected !== "unknown") return detected;
   }
+  if (lower.includes("переведи") || lower.includes("опиши")) return "ru";
+  if (lower.includes("अनुवाद")) return "hi";
+  if (lower.includes("翻译") || lower.includes("翻譯")) return "zh";
   return "en";
 }
 
@@ -3694,16 +3906,27 @@ function translateSurface(surface, source, target) {
 }
 
 function tryTranslation(prompt, normalized) {
+  const targetHint = detectTranslationTargetLanguage(normalized);
   const isTranslationRequest =
     normalized.startsWith("translate") ||
     normalized.startsWith("переведи") ||
-    normalized.startsWith("опиши");
+    normalized.startsWith("опиши") ||
+    Boolean(
+      targetHint &&
+        (normalized.includes("अनुवाद") ||
+          normalized.includes("翻译") ||
+          normalized.includes("翻譯")),
+    );
   if (!isTranslationRequest) return null;
 
-  const surface = extractQuotedPhrase(prompt) || "";
+  // Issue #216: fall back to an unquoted surface (`translate apple to
+  // russian`) when no quoted fragment is present so the offline registry
+  // can still resolve a meaning token.
+  const surface =
+    extractQuotedPhrase(prompt) || extractUnquotedTranslationSurface(prompt) || "";
   const surfaceMeaning = surface || prompt;
   const source = detectTranslationSourceLanguage(normalized) || inferTranslationSource(prompt);
-  const target = detectTranslationTargetLanguage(normalized) || "en";
+  const target = targetHint || "en";
   const meaningId = stableBehaviorRuleId("meaning", normalizeMeaningText(surfaceMeaning));
   const rawTarget = translateSurface(surface, source, target);
   const translatedSurface = matchSourceFormatting(rawTarget, surface);

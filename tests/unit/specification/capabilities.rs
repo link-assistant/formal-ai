@@ -95,42 +95,433 @@ fn web_search_capability_respects_offline_config() {
     );
 }
 
-#[test]
-fn supported_feature_capability_questions_do_not_return_unknown() {
-    let cases = [
-        ("Can you do arithmetic?", "arithmetic"),
-        ("Can you translate text?", "translation"),
-        (
-            "Can you remember conversation context?",
-            "conversation memory",
-        ),
-        ("Can you write code?", "Hello World"),
-        (
-            "Can you configure settings from text?",
-            "message-driven configuration",
-        ),
-        ("Can you export memory?", "memory import/export"),
-        ("Ты умеешь считать?", "арифметика"),
-        ("Ты можешь менять настройки?", "настройка"),
-        ("你能翻译吗？", "翻译"),
-        ("क्या आप अनुवाद कर सकते हैं?", "अनुवाद"),
-    ];
+#[derive(Debug, Clone, Copy)]
+struct FeatureCapabilityLanguageCase {
+    feature: &'static str,
+    language: &'static str,
+    prompt: &'static str,
+    expected_fragment: &'static str,
+}
 
-    for (prompt, expected_fragment) in cases {
-        let response = FormalAiEngine.answer(prompt);
+const FEATURE_CAPABILITY_LANGUAGE_CASES: &[FeatureCapabilityLanguageCase] = &[
+    FeatureCapabilityLanguageCase {
+        feature: "web_search",
+        language: "en",
+        prompt: "Can you search the internet?",
+        expected_fragment: "web search",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "web_search",
+        language: "ru",
+        prompt: "Ты можешь искать в интернете?",
+        expected_fragment: "веб-поиск",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "web_search",
+        language: "hi",
+        prompt: "क्या तुम इंटरनेट पर खोज सकते हो?",
+        expected_fragment: "web search",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "web_search",
+        language: "zh",
+        prompt: "你能上网搜索吗？",
+        expected_fragment: "web search",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "diagnostics",
+        language: "en",
+        prompt: "Do you support diagnostics?",
+        expected_fragment: "diagnostic trace",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "diagnostics",
+        language: "ru",
+        prompt: "У тебя есть диагностика?",
+        expected_fragment: "диагностика",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "diagnostics",
+        language: "hi",
+        prompt: "क्या diagnostics उपलब्ध है?",
+        expected_fragment: "diagnostic trace",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "diagnostics",
+        language: "zh",
+        prompt: "诊断可用吗？",
+        expected_fragment: "诊断 trace",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "agent_mode",
+        language: "en",
+        prompt: "Do you support agent mode?",
+        expected_fragment: "agent mode",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "agent_mode",
+        language: "ru",
+        prompt: "У тебя есть agent mode?",
+        expected_fragment: "agent mode",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "agent_mode",
+        language: "hi",
+        prompt: "क्या agent mode उपलब्ध है?",
+        expected_fragment: "agent mode",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "agent_mode",
+        language: "zh",
+        prompt: "支持代理吗？",
+        expected_fragment: "agent mode",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "definition_fusion",
+        language: "en",
+        prompt: "Do you support definition fusion?",
+        expected_fragment: "automatic definition fusion",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "definition_fusion",
+        language: "ru",
+        prompt: "У тебя есть слияние определений?",
+        expected_fragment: "слияние определений",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "definition_fusion",
+        language: "hi",
+        prompt: "क्या परिभाषा विलय उपलब्ध है?",
+        expected_fragment: "automatic definition fusion",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "definition_fusion",
+        language: "zh",
+        prompt: "支持合并定义吗？",
+        expected_fragment: "自动 definition fusion",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "configuration",
+        language: "en",
+        prompt: "Can you configure settings?",
+        expected_fragment: "message-driven configuration",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "configuration",
+        language: "ru",
+        prompt: "Ты можешь менять настройки?",
+        expected_fragment: "настройка через сообщения",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "configuration",
+        language: "hi",
+        prompt: "क्या सेटिंग उपलब्ध है?",
+        expected_fragment: "message-driven configuration",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "configuration",
+        language: "zh",
+        prompt: "可以配置设置吗？",
+        expected_fragment: "消息配置",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "memory_actions",
+        language: "en",
+        prompt: "Can you export memory?",
+        expected_fragment: "memory import/export",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "memory_actions",
+        language: "ru",
+        prompt: "У тебя есть экспорт памяти?",
+        expected_fragment: "импорт и экспорт памяти",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "memory_actions",
+        language: "hi",
+        prompt: "क्या स्मृति निर्यात उपलब्ध है?",
+        expected_fragment: "memory import/export",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "memory_actions",
+        language: "zh",
+        prompt: "可以导出记忆吗？",
+        expected_fragment: "记忆导入/导出",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "greeting",
+        language: "en",
+        prompt: "Can you respond to hello?",
+        expected_fragment: "greetings",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "greeting",
+        language: "ru",
+        prompt: "Ты умеешь здороваться?",
+        expected_fragment: "приветствия",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "greeting",
+        language: "hi",
+        prompt: "क्या आप नमस्ते का जवाब दे सकते हैं?",
+        expected_fragment: "अभिवादन",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "greeting",
+        language: "zh",
+        prompt: "你能打招呼吗？",
+        expected_fragment: "问候",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "hello_world",
+        language: "en",
+        prompt: "Do you support hello world code generation?",
+        expected_fragment: "Hello World code generation",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "hello_world",
+        language: "ru",
+        prompt: "Ты можешь написать hello world программу?",
+        expected_fragment: "генерация Hello World",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "hello_world",
+        language: "hi",
+        prompt: "क्या प्रोग्राम उपलब्ध है?",
+        expected_fragment: "Hello World code generation",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "hello_world",
+        language: "zh",
+        prompt: "支持代码生成吗？",
+        expected_fragment: "Hello World 代码生成",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "concept_lookup",
+        language: "en",
+        prompt: "Do you support concept lookup?",
+        expected_fragment: "concept lookup",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "concept_lookup",
+        language: "ru",
+        prompt: "У тебя есть поиск понятий?",
+        expected_fragment: "поиск понятий",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "concept_lookup",
+        language: "hi",
+        prompt: "क्या अवधारणा उपलब्ध है?",
+        expected_fragment: "concept lookup",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "concept_lookup",
+        language: "zh",
+        prompt: "支持概念查找吗？",
+        expected_fragment: "概念查找",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "arithmetic",
+        language: "en",
+        prompt: "Can you do arithmetic?",
+        expected_fragment: "arithmetic",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "arithmetic",
+        language: "ru",
+        prompt: "Ты умеешь считать?",
+        expected_fragment: "арифметика",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "arithmetic",
+        language: "hi",
+        prompt: "क्या अंकगणित उपलब्ध है?",
+        expected_fragment: "अंकगणित",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "arithmetic",
+        language: "zh",
+        prompt: "支持算术吗？",
+        expected_fragment: "算术",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "translation",
+        language: "en",
+        prompt: "Can you translate text?",
+        expected_fragment: "translation",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "translation",
+        language: "ru",
+        prompt: "Ты умеешь переводить?",
+        expected_fragment: "перевод",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "translation",
+        language: "hi",
+        prompt: "क्या आप अनुवाद कर सकते हैं?",
+        expected_fragment: "अनुवाद",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "translation",
+        language: "zh",
+        prompt: "你能翻译吗？",
+        expected_fragment: "翻译",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "memory",
+        language: "en",
+        prompt: "Can you remember conversation context?",
+        expected_fragment: "conversation memory",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "memory",
+        language: "ru",
+        prompt: "Ты можешь помнить контекст?",
+        expected_fragment: "память разговора",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "memory",
+        language: "hi",
+        prompt: "क्या स्मृति उपलब्ध है?",
+        expected_fragment: "conversation memory",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "memory",
+        language: "zh",
+        prompt: "你有会话记忆吗？",
+        expected_fragment: "会话记忆",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "demo_mode",
+        language: "en",
+        prompt: "Do you support demo mode?",
+        expected_fragment: "demo mode",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "demo_mode",
+        language: "ru",
+        prompt: "У тебя есть демо-режим?",
+        expected_fragment: "демо-режим",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "demo_mode",
+        language: "hi",
+        prompt: "क्या डेमो उपलब्ध है?",
+        expected_fragment: "demo mode",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "demo_mode",
+        language: "zh",
+        prompt: "支持演示模式吗？",
+        expected_fragment: "演示模式",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "http_url",
+        language: "en",
+        prompt: "Do you support open url?",
+        expected_fragment: "URL navigation and HTTP fetch",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "http_url",
+        language: "ru",
+        prompt: "У тебя есть URL-навигация?",
+        expected_fragment: "URL-навигация и HTTP-запросы",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "http_url",
+        language: "hi",
+        prompt: "क्या लिंक खोलना उपलब्ध है?",
+        expected_fragment: "URL navigation and HTTP fetch",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "http_url",
+        language: "zh",
+        prompt: "支持 URL 导航吗？",
+        expected_fragment: "URL 导航和 HTTP 请求",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "javascript_execution",
+        language: "en",
+        prompt: "Can you execute JavaScript?",
+        expected_fragment: "JavaScript execution",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "javascript_execution",
+        language: "ru",
+        prompt: "Ты можешь выполнять JavaScript?",
+        expected_fragment: "выполнение JavaScript",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "javascript_execution",
+        language: "hi",
+        prompt: "क्या js उपलब्ध है?",
+        expected_fragment: "JavaScript execution",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "javascript_execution",
+        language: "zh",
+        prompt: "支持脚本执行吗？",
+        expected_fragment: "JavaScript 执行",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "planning",
+        language: "en",
+        prompt: "Do you support project plan?",
+        expected_fragment: "project planning",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "planning",
+        language: "ru",
+        prompt: "Ты можешь планировать проект?",
+        expected_fragment: "планирование проектов",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "planning",
+        language: "hi",
+        prompt: "क्या परियोजना योजना उपलब्ध है?",
+        expected_fragment: "project planning",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "planning",
+        language: "zh",
+        prompt: "支持项目计划吗？",
+        expected_fragment: "项目计划",
+    },
+];
+
+#[test]
+fn supported_feature_capability_questions_cover_every_supported_language() {
+    for case in FEATURE_CAPABILITY_LANGUAGE_CASES {
+        let response = FormalAiEngine.answer(case.prompt);
         assert_eq!(
             response.intent, "capabilities",
-            "prompt {prompt:?} should resolve to capabilities, got {}: {}",
-            response.intent, response.answer,
+            "prompt {:?} ({}/{}) should resolve to capabilities, got {}: {}",
+            case.prompt, case.feature, case.language, response.intent, response.answer,
         );
         assert_ne!(response.intent, "unknown");
         assert!(
             response
                 .answer
                 .to_lowercase()
-                .contains(&expected_fragment.to_lowercase()),
-            "prompt {prompt:?} should mention {expected_fragment:?}, got {}",
+                .contains(&case.expected_fragment.to_lowercase()),
+            "prompt {:?} ({}/{}) should mention {:?}, got {}",
+            case.prompt,
+            case.feature,
+            case.language,
+            case.expected_fragment,
             response.answer,
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link.starts_with("feature:question:")),
+            "prompt {:?} ({}/{}) should record feature evidence, got {:?}",
+            case.prompt,
+            case.feature,
+            case.language,
+            response.evidence_links,
         );
     }
 }
