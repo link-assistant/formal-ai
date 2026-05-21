@@ -1,11 +1,17 @@
 //! "How it works" follow-up handler extracted from `solver_handlers` to keep
 //! that module under the 1000-line cap enforced by `scripts/check-file-size.rs`.
 
+use crate::concepts::{extract_concept_query, lookup_concept_query};
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
+use crate::language::{detect as detect_language, Language};
 use crate::solver_handlers::{finalize_simple, try_concept_lookup};
 use crate::solver_helpers::last_assistant_turn;
 use crate::web_search_core::{WEB_SEARCH_PROVIDERS, WEB_SEARCH_RRF_K};
+
+struct HowItWorksQuery {
+    subject: Option<String>,
+}
 
 struct ProceduralHowToTask {
     task: String,
@@ -92,40 +98,41 @@ pub fn try_how_to_procedure(
 }
 
 /// Handles follow-up elaboration prompts such as "how it works?", "how does
-/// it work?", or "how does X work?". When the prior assistant turn mentioned a
-/// named concept the solver re-runs a concept lookup for that topic; when no
-/// prior context is present it redirects to the meta-explanation handler.
+/// it work?", or multilingual "how X works?" variants. When the prior
+/// assistant turn mentioned a named concept the solver re-runs a concept lookup
+/// for that topic. Explicit unknown subjects get a source-backed discovery plan
+/// instead of falling through to the unknown fallback.
 pub fn try_how_it_works(
     prompt: &str,
     normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
-    let is_how_it_works = normalized == "how it works?"
-        || normalized == "how it works"
-        || normalized == "how does it work?"
-        || normalized == "how does it work"
-        || normalized.starts_with("how does it work")
-        || normalized.starts_with("how it works")
-        || normalized.starts_with("how does ")
-            && (normalized.ends_with(" work?") || normalized.ends_with(" work"));
-    if !is_how_it_works {
-        return None;
-    }
+    let query = extract_how_it_works_query(prompt, normalized)?;
     log.append("followup:how_it_works", normalized.to_owned());
 
-    // Try to extract the subject from the prompt itself ("how does Curve25519 work?").
-    let subject = extract_how_it_works_subject(normalized);
-
     // When a subject was explicit in the prompt, do a direct concept lookup.
-    if let Some(ref term) = subject {
-        use crate::concepts::{extract_concept_query, lookup_concept_query};
-        if let Some(query) = extract_concept_query(&format!("what is {term}")) {
-            if lookup_concept_query(&query).is_some() {
-                log.append("followup:subject", format!("inline:{term}"));
+    if let Some(ref term) = query.subject {
+        log.append(
+            "followup:subject",
+            format!("inline:{}", term.to_lowercase()),
+        );
+        let concept_prompt = format!("what is {term}");
+        if let Some(concept_query) = extract_concept_query(&concept_prompt) {
+            if lookup_concept_query(&concept_query).is_some() {
                 // Delegate to try_concept_lookup by synthesising a standard prompt.
-                return try_concept_lookup(&format!("what is {term}"), log);
+                return try_concept_lookup(&concept_prompt, log);
             }
         }
+        record_mechanism_query(log, term);
+        let body = render_mechanism_discovery_answer(term, detect_language(prompt));
+        return Some(finalize_simple(
+            prompt,
+            log,
+            "how_it_works",
+            "response:how_it_works",
+            &body,
+            0.68,
+        ));
     }
 
     // No inline subject — look for the topic in the prior assistant reply.
@@ -177,17 +184,253 @@ pub fn try_how_it_works(
     ))
 }
 
-/// Extract the explicit subject from a "how does X work?" prompt.
+fn extract_how_it_works_query(prompt: &str, _normalized: &str) -> Option<HowItWorksQuery> {
+    let original = clean_mechanism_fragment(prompt);
+    if original.is_empty() {
+        return None;
+    }
+    let lower = original.to_lowercase();
+    if is_bare_how_it_works(&lower) {
+        return Some(HowItWorksQuery { subject: None });
+    }
+    extract_how_it_works_subject(&original, &lower).map(|subject| HowItWorksQuery {
+        subject: Some(subject),
+    })
+}
+
+fn is_bare_how_it_works(lower: &str) -> bool {
+    const BARE_PHRASES: &[&str] = &[
+        "how it works",
+        "how does it work",
+        "как это работает",
+        "как оно работает",
+        "यह कैसे काम करता है",
+        "यह कैसे काम करती है",
+        "यह कैसे काम करता",
+        "这是如何工作的",
+        "这是怎么工作的",
+        "这个如何工作",
+        "它如何工作",
+        "它是如何工作的",
+        "它怎么工作",
+    ];
+    BARE_PHRASES.iter().any(|phrase| {
+        lower == *phrase
+            || lower
+                .strip_prefix(*phrase)
+                .is_some_and(|rest| rest.starts_with(' '))
+    })
+}
+
+/// Extract the explicit subject from multilingual "how X works?" prompts.
 /// Returns `None` when the prompt is the bare "how it works?" form.
-fn extract_how_it_works_subject(normalized: &str) -> Option<String> {
-    // "how does X work" / "how does X work?"
-    if let Some(rest) = normalized.strip_prefix("how does ") {
-        let term = rest.trim_end_matches('?').trim_end_matches(" work").trim();
-        if !term.is_empty() && term != "it" {
-            return Some(term.to_owned());
+fn extract_how_it_works_subject(original: &str, lower: &str) -> Option<String> {
+    for prefix in [
+        "how does ",
+        "how do ",
+        "how did ",
+        "how is ",
+        "как устроен ",
+        "как устроена ",
+        "как устроено ",
+        "как устроены ",
+        "как работает ",
+        "как работают ",
+    ] {
+        if let Some(subject) = subject_after_prefix(original, lower, prefix) {
+            return strip_mechanism_tail(&subject);
+        }
+    }
+
+    for (prefix, suffixes) in [
+        ("how ", &[" works", " work"] as &[_]),
+        ("как ", &[" работает", " работают"]),
+    ] {
+        if let Some(subject) = subject_between(original, lower, prefix, suffixes) {
+            return Some(subject);
+        }
+    }
+
+    for suffix in [
+        " कैसे काम करता है",
+        " कैसे काम करती है",
+        " कैसे काम करते हैं",
+        " कैसे काम करता",
+        " कैसे काम करती",
+        " कैसे काम करते",
+        " 是如何工作的",
+        "是如何工作的",
+        " 是怎么工作的",
+        "是怎么工作的",
+        " 如何工作",
+        "如何工作",
+        " 怎么工作",
+        "怎么工作",
+        " 的工作原理是什么",
+        "的工作原理是什么",
+        " как работает",
+        " как работают",
+    ] {
+        if let Some(subject) = subject_before_suffix(original, lower, suffix) {
+            return Some(subject);
+        }
+    }
+
+    None
+}
+
+fn subject_after_prefix(original: &str, lower: &str, prefix: &str) -> Option<String> {
+    lower.strip_prefix(prefix)?;
+    let rest = original.get(prefix.len()..)?;
+    clean_mechanism_subject(rest)
+}
+
+fn subject_before_suffix(original: &str, lower: &str, suffix: &str) -> Option<String> {
+    lower.strip_suffix(suffix)?;
+    let end = original.len().checked_sub(suffix.len())?;
+    clean_mechanism_subject(original.get(..end)?)
+}
+
+fn subject_between(original: &str, lower: &str, prefix: &str, suffixes: &[&str]) -> Option<String> {
+    if !lower.starts_with(prefix) {
+        return None;
+    }
+    for suffix in suffixes {
+        if lower.ends_with(suffix) {
+            let end = original.len().checked_sub(suffix.len())?;
+            if end <= prefix.len() {
+                return None;
+            }
+            return clean_mechanism_subject(original.get(prefix.len()..end)?);
         }
     }
     None
+}
+
+fn strip_mechanism_tail(subject: &str) -> Option<String> {
+    let mut clean = clean_mechanism_subject(subject)?;
+    let lower = clean.to_lowercase();
+    for suffix in [
+        " work",
+        " works",
+        " structured",
+        " organized",
+        " organised",
+        " built",
+    ] {
+        if lower.ends_with(suffix) {
+            let end = clean.len().checked_sub(suffix.len())?;
+            clean.truncate(end);
+            return clean_mechanism_subject(&clean);
+        }
+    }
+    Some(clean)
+}
+
+fn clean_mechanism_fragment(value: &str) -> String {
+    value
+        .trim()
+        .trim_matches(|character: char| {
+            matches!(
+                character,
+                '`' | '"' | '\'' | '«' | '»' | '<' | '>' | '(' | ')' | '[' | ']' | '{' | '}'
+            )
+        })
+        .trim_end_matches(['?', '？', '。', '.', '!', ',', ';', ':'])
+        .trim()
+        .to_owned()
+}
+
+fn clean_mechanism_subject(value: &str) -> Option<String> {
+    const PRONOUN_SUBJECTS: &[&str] = &[
+        "it", "this", "that", "you", "yourself", "does", "do", "это", "оно", "он", "она", "они",
+        "ты", "вы", "यह", "ये", "这", "这个", "它",
+    ];
+
+    let mut clean = clean_mechanism_fragment(value);
+    for suffix in [
+        " in detail",
+        " internally",
+        " exactly",
+        " please",
+        " подробнее",
+        " подробно",
+        " пожалуйста",
+    ] {
+        let lower = clean.to_lowercase();
+        if lower.ends_with(suffix) {
+            let end = clean.len().checked_sub(suffix.len())?;
+            clean.truncate(end);
+            clean = clean_mechanism_fragment(&clean);
+        }
+    }
+    let lower = clean.to_lowercase();
+    if clean.is_empty()
+        || PRONOUN_SUBJECTS.contains(&lower.as_str())
+        || lower.starts_with("does ")
+        || lower.starts_with("do ")
+        || lower.starts_with("to ")
+        || lower.starts_with("you ")
+    {
+        return None;
+    }
+    Some(clean)
+}
+
+fn record_mechanism_query(log: &mut EventLog, subject: &str) {
+    log.append("mechanism_query:request", subject.to_owned());
+    for stage in ["wikipedia", "wikidata", "web_search"] {
+        log.append("mechanism_query:stage", stage.to_owned());
+    }
+    log.append("web_search:request", format!("how {subject} works"));
+    for provider in WEB_SEARCH_PROVIDERS {
+        log.append("web_search:provider", (*provider).to_owned());
+    }
+    log.append("web_search:combined", format!("rrf:k={WEB_SEARCH_RRF_K}"));
+    log.append(
+        "mechanism_query:source_gate",
+        "source_backed_mechanism_only".to_owned(),
+    );
+}
+
+fn render_mechanism_discovery_answer(subject: &str, language: Language) -> String {
+    let provider_summary = WEB_SEARCH_PROVIDERS.join(", ");
+    match language {
+        Language::Russian => format!(
+            "План поиска механизма для `{subject}`.\n\n\
+             Я не отвечаю на это из зашитого факта. Решатель трактует запрос \
+             как вопрос о том, как устроен или работает `{subject}`: сначала \
+             проверяет Wikipedia для обзорного источника, затем Wikidata для \
+             связей сущности, затем веб-поиск через {provider_summary}. Если \
+             источники не объясняют механизм, ответ должен попросить источник \
+             или более узкий термин, а не выдумывать детали."
+        ),
+        Language::Hindi => format!(
+            "`{subject}` के लिए mechanism discovery plan.\n\n\
+             I do not answer this from a memoized fact. The solver treats the \
+             prompt as a question about how `{subject}` works, checks Wikipedia \
+             for a source-backed overview, Wikidata for entity relationships, \
+             then web search across {provider_summary}. If no source explains \
+             the mechanism, it should ask for a source or a narrower term."
+        ),
+        Language::Chinese => format!(
+            "`{subject}` 的机制发现计划。\n\n\
+             I do not answer this from a memoized fact. The solver treats the \
+             prompt as a question about how `{subject}` works, checks Wikipedia \
+             for a source-backed overview, Wikidata for entity relationships, \
+             then web search across {provider_summary}. If no source explains \
+             the mechanism, it should ask for a source or a narrower term."
+        ),
+        Language::English | Language::Unknown => format!(
+            "Mechanism discovery plan for `{subject}`.\n\n\
+             I do not answer this from a memoized fact. The solver treats the \
+             prompt as a question about how `{subject}` works, checks Wikipedia \
+             for a source-backed overview, Wikidata for entity relationships, \
+             then web search across {provider_summary}. If no source explains \
+             the mechanism, it should ask for a source or a narrower term \
+             instead of inventing details."
+        ),
+    }
 }
 
 fn extract_procedural_how_to_task(normalized: &str) -> Option<ProceduralHowToTask> {
