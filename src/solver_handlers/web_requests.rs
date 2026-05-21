@@ -848,7 +848,36 @@ fn extract_web_search_query(prompt: &str, normalized: &str) -> Option<String> {
             }
         }
     }
+    let surrounding_markers = [
+        ("find ", &[" on the internet", " online"][..]),
+        ("search ", &[" on the internet", " online"][..]),
+        ("look up ", &[" online"][..]),
+        ("найди ", &[" в интернете", " онлайн", " в сети"][..]),
+        ("поищи ", &[" в интернете", " онлайн", " в сети"][..]),
+    ];
+    for (prefix, suffixes) in surrounding_markers {
+        for suffix in suffixes {
+            if let Some(query) = extract_surrounded_search_query(&normalized_words, prefix, suffix)
+            {
+                return Some(query);
+            }
+            if let Some(query) = extract_surrounded_search_query(normalized, prefix, suffix) {
+                return Some(query);
+            }
+        }
+    }
     None
+}
+
+fn extract_surrounded_search_query(value: &str, prefix: &str, suffix: &str) -> Option<String> {
+    let remainder = value.strip_prefix(prefix)?;
+    let query = remainder.strip_suffix(suffix)?;
+    let query = clean_search_query(query);
+    if !query.is_empty() && normalize_url_candidate(&query).is_none() {
+        Some(query)
+    } else {
+        None
+    }
 }
 
 fn clean_search_query(value: &str) -> String {

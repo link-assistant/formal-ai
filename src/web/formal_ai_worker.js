@@ -7187,6 +7187,15 @@ function stripSearchPrefix(prompt, prefix) {
   return "";
 }
 
+function stripSearchSurroundingMarkers(prompt, prefix, suffix) {
+  const text = String(prompt || "").trim();
+  const lower = text.toLowerCase();
+  if (!lower.startsWith(prefix) || !lower.endsWith(suffix)) {
+    return "";
+  }
+  return cleanSearchQuery(text.slice(prefix.length, text.length - suffix.length));
+}
+
 function extractWebSearchQuery(prompt, normalized) {
   if (
     normalized.startsWith("search conversations ") ||
@@ -7221,6 +7230,23 @@ function extractWebSearchQuery(prompt, normalized) {
     const query = rawQuery || normalizedQuery;
     if (query && !normalizeUrlCandidate(query)) {
       return query;
+    }
+  }
+  const surroundingMarkers = [
+    ["find ", [" on the internet", " online"]],
+    ["search ", [" on the internet", " online"]],
+    ["look up ", [" online"]],
+    ["найди ", [" в интернете", " онлайн", " в сети"]],
+    ["поищи ", [" в интернете", " онлайн", " в сети"]],
+  ];
+  for (const [prefix, suffixes] of surroundingMarkers) {
+    for (const suffix of suffixes) {
+      const rawQuery = stripSearchSurroundingMarkers(prompt, prefix, suffix);
+      const normalizedQuery = stripSearchSurroundingMarkers(normalized, prefix, suffix);
+      const query = rawQuery || normalizedQuery;
+      if (query && !normalizeUrlCandidate(query)) {
+        return query;
+      }
     }
   }
   return "";

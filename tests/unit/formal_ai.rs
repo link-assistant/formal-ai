@@ -719,6 +719,7 @@ fn web_search_prompt_returns_web_search_intent_not_unknown() {
         "Search internet for formal verification",
         "Найди в интернете Никола Тесла",
         "Поищи в интернете формальную верификацию",
+        "Найди яблоко в интернете",
     ];
 
     for prompt in cases {

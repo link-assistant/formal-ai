@@ -111,3 +111,24 @@ fn generic_navigation_uses_same_frame_policy_path_as_github() {
         response.evidence_links
     );
 }
+
+#[test]
+fn russian_web_search_with_query_before_internet_marker_extracts_query() {
+    let response = FormalAiEngine.answer("Найди яблоко в интернете");
+
+    assert_eq!(response.intent, "web_search");
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link == "web_search:request:яблоко"),
+        "Russian web search should extract only the query term: {:?}",
+        response.evidence_links
+    );
+    assert!(
+        response.answer.contains("`яблоко`"),
+        "web-search answer should echo the extracted query, got: {}",
+        response.answer
+    );
+    assert_ne!(response.intent, "unknown");
+}
