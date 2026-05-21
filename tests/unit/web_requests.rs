@@ -111,3 +111,36 @@ fn generic_navigation_uses_same_frame_policy_path_as_github() {
         response.evidence_links
     );
 }
+
+#[test]
+fn information_search_variants_route_to_web_search_handler() {
+    let prompts = [
+        "Найди информацию о Rust программировании",
+        "Поищи информацию про Rust программирование",
+        "Найди подробные сведения о Rust программировании",
+        "Поищи материалы по Rust программированию в Википедии",
+        "Find information about Rust programming",
+        "Look up information on Rust programming",
+        "Find detailed information about Rust programming",
+        "Research Rust programming online",
+        "Rust programming के बारे में जानकारी खोजो",
+        "Rust programming पर जानकारी ढूंढो",
+        "Rust programming के बारे में विकिपीडिया में खोजें",
+        "查找关于 Rust 编程的信息",
+        "搜索 Rust 编程 的资料",
+        "在维基百科上查一下 Rust 编程",
+    ];
+    for prompt in prompts {
+        let response = FormalAiEngine.answer(prompt);
+        assert_eq!(
+            response.intent, "web_search",
+            "prompt {prompt:?} should route to web_search, got {} with answer {}",
+            response.intent, response.answer,
+        );
+        assert!(
+            response.answer.to_lowercase().contains("rust"),
+            "web search response should preserve the query, got {}",
+            response.answer,
+        );
+    }
+}
