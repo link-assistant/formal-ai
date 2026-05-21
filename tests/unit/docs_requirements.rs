@@ -452,6 +452,81 @@ fn issue_207_natural_translation_documents_are_present_and_traceable() {
 }
 
 #[test]
+fn issue_195_dind_telegram_runtime_documents_are_present_and_traceable() {
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+
+    let requirements = read(root.join("REQUIREMENTS.md"));
+    assert_contains_all(
+        "REQUIREMENTS.md",
+        &requirements,
+        &[
+            "Issue #195 Docker-in-Docker Telegram Runtime",
+            "| R220 ",
+            "| R221 ",
+            "| R222 ",
+            "| R223 ",
+            "| R224 ",
+            "| R225 ",
+            "konard/box-dind:2.1.1",
+            "FORMAL_AI_START_RUNNER",
+        ],
+    );
+
+    let readme = read(root.join("README.md"));
+    assert_contains_all(
+        "README.md",
+        &readme,
+        &[
+            "Docker-in-Docker Telegram bot image",
+            "konard/box-dind:2.1.1",
+            "TELEGRAM_BOT_TOKEN",
+            "--runtime=sysbox-runc",
+            "Do not bind-mount the host",
+            "$ --isolated docker --auto-remove-docker-container --",
+            "verify-formal-ai-dind",
+        ],
+    );
+
+    let architecture = read(root.join("ARCHITECTURE.md"));
+    assert_contains_all(
+        "ARCHITECTURE.md",
+        &architecture,
+        &[
+            "Docker-in-Docker Telegram image",
+            "konard/box-dind:2.1.1",
+            "formal-ai telegram --mode polling",
+            "/tmp/start-command/logs/",
+        ],
+    );
+
+    let case_study = read(root.join("docs/case-studies/issue-195/README.md"));
+    assert_contains_all(
+        "docs/case-studies/issue-195/README.md",
+        &case_study,
+        &[
+            "# Issue 195 Case Study",
+            "## Collected Data",
+            "## Online Facts",
+            "## Root Causes",
+            "## Verification Plan",
+            "repro-before-docker-runtime.txt",
+        ],
+    );
+
+    let research = read(root.join("docs/case-studies/issue-195/raw-data/online-research.md"));
+    assert_contains_all(
+        "docs/case-studies/issue-195/raw-data/online-research.md",
+        &research,
+        &[
+            "https://github.com/link-foundation/box",
+            "https://github.com/link-foundation/start",
+            "konard/box-dind:2.1.1",
+            "--isolated docker",
+        ],
+    );
+}
+
+#[test]
 fn repository_text_avoids_deferred_labels_requested_by_issue_103() {
     let root = Path::new(env!("CARGO_MANIFEST_DIR"));
     let phrase_space = ["proof", " of ", "concept"].concat();

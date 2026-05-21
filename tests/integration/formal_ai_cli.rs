@@ -143,6 +143,9 @@ fn cli_environments_command_lists_every_supported_surface() {
         "# http_server",
         "# telegram",
         "# docker_microservice",
+        "Docker-in-Docker Telegram bot image",
+        "konard/box-dind:2.1.1",
+        "start_command, docker_isolation",
     ] {
         assert!(
             stdout.contains(expected),
