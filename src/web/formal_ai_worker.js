@@ -3041,9 +3041,14 @@ function detectTranslationTargetLanguage(normalized) {
   return null;
 }
 
-// Offline meaning registry mirroring `src/translation.rs::MEANING_REGISTRY`.
-// `primary` is the canonical form deformalization renders; `aliases` is a list
-// of normalized alternative surfaces used during formalization.
+// Offline meaning registry for the browser worker.
+//
+// The Rust pipeline (`src/translation/pipeline.rs`) now goes through
+// Wiktionary + Wikidata to resolve any pair of surfaces via cached HTTP
+// responses. The browser worker cannot reach those APIs directly (CORS),
+// so it keeps this small offline registry as a fallback for the demo set.
+// `primary` is the canonical form deformalization renders; `aliases` is a
+// list of normalized alternative surfaces used during formalization.
 const TRANSLATION_MEANING_REGISTRY = [
   {
     token: "greeting",

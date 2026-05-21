@@ -408,9 +408,9 @@ fn issue_207_natural_translation_documents_are_present_and_traceable() {
             "| R214 ",
             "| R215 ",
             "match_source_formatting",
-            "formalize_surface",
-            "deformalize_meaning",
-            "src/translation.rs",
+            "TranslationPipeline",
+            "src/translation/pipeline.rs",
+            "src/translation/formatting.rs",
         ],
     );
 
@@ -421,8 +421,8 @@ fn issue_207_natural_translation_documents_are_present_and_traceable() {
         &[
             "Formalize → Meaning → Deformalize Pipeline",
             "match_source_formatting",
-            "src/translation.rs",
-            "Online Enrichment Fallback",
+            "src/translation/pipeline.rs",
+            "Resolution Order and Browser Fallback",
         ],
     );
 

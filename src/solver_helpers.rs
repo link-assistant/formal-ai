@@ -337,6 +337,12 @@ pub fn normalize_code_meaning(code: &str) -> String {
         .to_lowercase()
 }
 
+/// Normalize a surface fragment into a deterministic, language-independent
+/// key for hashing into a meaning id. The previous implementation looked
+/// the surface up in a hand-curated registry; that is now removed (the
+/// real meaning id comes from Wikidata via the translation pipeline). We
+/// keep the normalization step so the legacy hash continues to be stable
+/// across whitespace, casing, and punctuation differences.
 pub fn normalize_meaning(surface: &str) -> String {
     let raw: String = surface
         .chars()
@@ -346,9 +352,13 @@ pub fn normalize_meaning(surface: &str) -> String {
     canonical_meaning_token(&raw)
 }
 
+/// Return the canonical meaning token for a normalized surface. With the
+/// offline registry gone, this is currently the identity function — the
+/// translation pipeline supplies the language-neutral [`MeaningId`] when a
+/// translation request actually fires, and callers that need a hash key
+/// (e.g. the engine's stable id) feed the normalized surface directly.
 pub fn canonical_meaning_token(raw: &str) -> String {
-    crate::translation::canonical_token_for_normalized(raw)
-        .map_or_else(|| String::from(raw), String::from)
+    String::from(raw)
 }
 
 pub fn infer_source_from_prompt(prompt: &str) -> &'static str {
@@ -405,24 +415,17 @@ pub fn infer_program_languages_from_code(
     Some((source, target))
 }
 
-/// Translate a surface form by going through the offline meaning registry:
-/// formalize the source surface into a canonical meaning token, then
-/// deformalize the token into the target language. Falls back to a
-/// language-tagged placeholder when no registry entry matches, which
-/// preserves the trace for unknown phrases.
+/// Translate `surface` and return the full pipeline result so callers can
+/// inspect the meaning id, candidate list, and provenance trail.
 ///
 /// The caller is responsible for matching the source's leading case and
 /// terminal punctuation; see [`crate::translation::match_source_formatting`].
-pub fn translate_surface(surface: &str, source: &str, target: &str) -> String {
-    if source == target {
-        return surface.to_owned();
-    }
-    if let Some(token) = crate::translation::formalize_surface(surface, source) {
-        if let Some(primary) = crate::translation::deformalize_meaning(token, target) {
-            return primary.to_owned();
-        }
-    }
-    format!("[{target}] {surface}")
+pub fn translate_surface_detailed(
+    surface: &str,
+    source: &str,
+    target: &str,
+) -> Result<crate::translation::Translation, crate::translation::HttpError> {
+    crate::translation::translate_via_default_pipeline(surface, source, target)
 }
 
 pub fn extract_concept_from_query(prompt: &str) -> Option<String> {

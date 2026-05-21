@@ -24,9 +24,16 @@ user pointed out three remaining problems:
    to a placeholder like `[en] …`.
 
 Issue 207 asks the project to address all three through a single
-**formalize → meaning → deformalize** pipeline, document the supporting
-guidelines in `REQUIREMENTS.md` / `VISION.md` / `ARCHITECTURE.md`, and
-record the case study analysis in this folder.
+**formalize → meaning → deformalize** pipeline backed by real
+Wikipedia / Wikidata / Wiktionary data — *not* a hand-written list of
+phrase pairs — document the supporting guidelines in `REQUIREMENTS.md`
+/ `VISION.md` / `ARCHITECTURE.md`, and record the case study analysis
+in this folder.
+
+The user explicitly rejected the first attempt at a "shared offline
+meaning registry" as a fake solution. The current implementation
+removes the registry entirely and routes every translation through
+Wiktionary's translation tables and Wikidata's SPARQL lexeme join.
 
 ## Local Evidence
 
@@ -50,19 +57,28 @@ Downloaded artifacts live alongside this README:
 A complete reading list lives in `raw-data/online-research.md`. The
 most load-bearing references are:
 
-- Wikipedia REST page summary, interlanguage links, and Wikidata
-  `EntityData` endpoints — these let a deterministic renderer translate
-  a Q-id into any supported language without bundling a static label
-  table.
-- Wiktionary REST definition API — already integrated through
-  `fetchWiktionaryEntry` in `src/web/formal_ai_worker.js`; it already
-  exposes a `translations` block for source-language headwords.
-- Abstract Wikipedia / Wikifunctions — confirms that a renderer
-  parameterized by `(formalized_graph, target_language)` is a viable
-  architecture for formal-ai's offline first symbolic pipeline.
-- English / Russian style guides on mid-sentence capitalization and
-  terminal punctuation — these justify the requirement to preserve the
-  source-fragment formatting in the translated surface.
+- **Wiktionary `action=parse&prop=wikitext`** — the canonical way to
+  extract per-edition translation tables. Translation candidates use a
+  stable template family (`{{t|...}}`, `{{t+|...}}`, `{{tt|...}}`,
+  `{{перев-блок|...}}`, `{{翻譯-頂}}...{{翻譯-底}}`) which we parse
+  directly. Translation tables are delimited by `{{trans-top|gloss}}`
+  ... `{{trans-bottom}}` on English Wiktionary so we can split
+  polysemous entries by sense.
+- **Wikidata SPARQL `ontolex:sense / wdt:P5137`** — joins two lexemes
+  when they share a sense (P5137 = "item for this sense"). This is the
+  language-neutral pivot that gives us a stable `meaning:` id no matter
+  which surface form we observe.
+- **Macro-language coverage** — Chinese Wiktionary's interlanguage
+  links live under `cmn` / `yue` / `wuu`, never `zh`; Norwegian under
+  `nb` / `nn`, never `no`. The pipeline falls back to the macro family
+  when the direct ISO code returns no matches.
+- **Combining diacritics in Wiktionary** — Russian entries include
+  stress marks (`U+0301`) inside translation templates. We strip them
+  so callers see orthographic forms like `привет` rather than
+  `приве́т`.
+- English / Russian / Chinese style guides on mid-sentence
+  capitalization and terminal punctuation — justify the requirement to
+  preserve the source-fragment formatting in the translated surface.
 
 ## Timeline
 
@@ -73,10 +89,14 @@ most load-bearing references are:
   PR 208 opened as a draft.
 - 2026-05-21: Issue, PR, and online-research artifacts downloaded into
   `docs/case-studies/issue-207/raw-data/`.
-- 2026-05-21: Pipeline redesign implemented — Rust solver and browser
-  worker both now route translation through a shared
-  `formalize → meaning → deformalize` pipeline with explicit case and
-  terminal-punctuation preservation.
+- 2026-05-21: First attempt landed a shared offline meaning registry.
+  User rejected it as a fake solution and asked for a generalized
+  Wikipedia / Wikidata / Wiktionary integration with cached HTTP
+  responses powering the tests.
+- 2026-05-21: Pipeline rewritten — translation now runs through a real
+  `formalize → meaning → deformalize` flow that parses Wiktionary
+  wikitext, joins Wikidata lexemes via SPARQL, and caches the raw HTTP
+  responses on disk under `data/translation-cache/`.
 
 ## Root Causes
 
@@ -98,66 +118,103 @@ most load-bearing references are:
    produced an opaque `meaning_<hash>` ID with no localized deformalize
    target, so the response fell back to `[en] …` placeholders. The same
    limit applied to the browser worker.
+4. **No generalization.** A hand-written meaning registry could only
+   cover the prompts we anticipated. Adding a new pair required a code
+   change. The fix demanded a pipeline that can resolve any surface
+   pair via existing knowledge bases (Wiktionary / Wikidata).
+
+## Architecture
+
+The new translation pipeline lives under `src/translation/`:
+
+- `src/translation/http.rs` — minimal HTTP client trait
+  (`HttpClient::get(&self, url) -> Result<String, HttpError>`). The
+  default implementation shells out to `curl` so the crate has no TLS
+  dependencies.
+- `src/translation/cache.rs` — `CachedHttpClient` wraps any transport
+  and persists raw response bodies under `data/translation-cache/<hash>.body`
+  with a sibling `.url` file. Online mode (gated by
+  `FORMAL_AI_LIVE_API`) populates the cache on miss; offline mode
+  returns a transport error so cache-only tests are deterministic.
+- `src/translation/wiktionary.rs` — `Wiktionary` client + wikitext
+  parser. Extracts translation candidates from `{{t|...}}` /
+  `{{t+|...}}` / `{{tt|...}}` / `{{перев-блок|...}}` /
+  `{{翻譯-頂}}...{{翻譯-底}}` blocks. Returns candidates grouped by
+  sense block (one block per `{{trans-top}}` on en.wiktionary).
+- `src/translation/wikidata.rs` — `Wikidata` client + SPARQL response
+  parser. Runs the canonical lexeme join
+  `?lexeme ontolex:sense ?sense . ?sense wdt:P5137 ?meaning`.
+- `src/translation/meaning.rs` — `MeaningId` is the semantic
+  meta-language identifier. Priority order: Wikidata Q-item >
+  Wikidata sense > Wiktionary page.
+- `src/translation/pipeline.rs` —
+  `TranslationPipeline::translate(surface, source, target)` chains the
+  Wiktionary lookup, reverse lookup on the target edition, phrasal
+  variant fallback, sense-block selection by round-trip confirmation,
+  and Wikidata meaning upgrade.
+
+The pipeline emits a `provenance` trail of every API call, so the
+links-notation trace records exactly which Wiktionary edition / page /
+SPARQL query produced the answer.
 
 ## Requirement Traceability
 
 | Requirement | Implementation | Verification |
 | --- | --- | --- |
-| Translation responses must feel like natural conversation. | The Rust handler in `src/solver_handlers/mod.rs` and the browser worker in `src/web/formal_ai_worker.js` now answer with just the deformalized target surface (no `meaning: … / surface (…): …` block). The meaning ID, source/target language, and quoted phrase remain in `evidence_links` and `links_notation` for traceability. | `tests/unit/specification/translation_via_links.rs` asserts the natural-form answer and the absence of the `surface (` template. |
-| Translations must preserve the source formatting (initial casing and terminal punctuation). | `match_source_formatting` in `src/solver_helpers.rs` and `matchSourceFormatting` in `src/web/formal_ai_worker.js` apply the source's leading capitalization and terminal punctuation to the target surface. | Tests cover both lowercase `как у тебя дела?` and uppercase `Как у тебя дела?` source variants. |
-| The pipeline must translate every registered meaning, not only `meaning_2cfc55c914d57d9e`. | `formalize_surface` / `deformalize_meaning` in `src/solver_helpers.rs` route through a shared meaning registry covering greetings, farewells, gratitude, polite responses, identity probes, and yes/no answers in English, Russian, Hindi, and Chinese; the browser worker uses the same registry. | Tests cover Russian↔English greetings, gratitude, and yes/no answers, plus Hindi and Chinese variants. |
-| The formalize → meaning → deformalize architecture must be documented. | `REQUIREMENTS.md` records R213 / R214 / R215; `ARCHITECTURE.md` section 10 references the registry and the casing-preservation rule. | `tests/unit/docs_requirements.rs` already pins the requirement IDs; new entries appear in the on-disk file. |
-| The Wikipedia / Wikidata / Wiktionary fallback path must be documented for the future online enrichment. | `raw-data/online-research.md` records the API shapes, and `ARCHITECTURE.md` section 10 lists them as the documented enrichment fallback. | Inspected manually. |
+| Translation responses must feel like natural conversation. | `src/solver_handlers/mod.rs::try_translation` returns just the deformalized target surface; meaning / source / target stay in `evidence_links` and `links_notation`. | `tests/unit/specification/translation_via_links.rs::russian_translate_how_are_you_prompt_returns_english_surface` and `natural_translation_drops_terminal_when_source_has_none`. |
+| Translations must preserve the source formatting (initial casing and terminal punctuation). | `src/translation/formatting.rs::match_source_formatting`. | `tests/unit/specification/translation_via_links.rs::russian_capitalized_how_are_you_keeps_target_capitalization`. |
+| The pipeline must translate any surface, not only a hardcoded list. | `src/translation/pipeline.rs::TranslationPipeline::translate` resolves surfaces via Wiktionary translation blocks + Wikidata sense joins. Raw HTTP responses are cached under `data/translation-cache/` (FNV-1a hashed URL → body + url sibling). | `tests/unit/specification/translation_via_links.rs::translation_meaning_registry_covers_extended_phrases` covers eight unrelated phrase pairs across en / ru / hi / zh routed entirely through cached real-world responses. |
+| The formalize → meaning → deformalize architecture must be documented. | `REQUIREMENTS.md` records R213 / R214 / R215; `ARCHITECTURE.md` section 10 references the pipeline and the Wiktionary/Wikidata fallback chain. | `tests/unit/docs_requirements.rs` pins the requirement IDs. |
+| Real-world API responses must be cached so tests are deterministic. | `src/translation/cache.rs::CachedHttpClient` + `data/translation-cache/`. Tests run with the cached responses checked into the repo. | `cargo test` runs offline (no `FORMAL_AI_LIVE_API`) and still passes. |
 | The case study must include issue, PR, comment, and online-research artifacts. | This folder. | Local file listing. |
 
 ## Fixes
 
-- Added a shared offline meaning registry (`MEANING_SURFACE_REGISTRY`
-  in `src/solver_helpers.rs`) covering greetings, polite follow-ups,
-  gratitude, farewells, identity probes, yes/no answers, time-of-day
-  greetings, and well-being checks in English, Russian, Hindi, and
-  Chinese.
-- Replaced the hand-written `translate_surface` with a
-  `formalize_surface` / `deformalize_meaning` pipeline. Source-language
-  surfaces collapse to a canonical token, hash to a stable meaning ID,
-  then re-render into the target language.
-- Added `match_source_formatting` (Rust) and `matchSourceFormatting`
-  (JS) helpers that copy the leading capitalization and terminal
-  punctuation from the source surface onto the translated surface.
-- Rewrote the translation response body so the answer is just the
-  deformalized surface form (still preserved within quotes when the
-  user quoted the source) instead of the `meaning: … / surface (…): …`
-  template. The meaning ID, source, and target are still emitted to the
-  event log and to `evidence_links` so the trace remains inspectable.
-- Mirrored every change in the browser worker so the deployed
-  GitHub Pages demo matches the Rust core.
-- Documented the new requirements (R213 / R214 / R215) in
-  `REQUIREMENTS.md`, extended the **Translation Between Languages**
-  section in `ARCHITECTURE.md`, and added a short note on
-  source-formatting preservation to `VISION.md`.
+- Removed the hand-written meaning registry that the first PR attempt
+  introduced. The `MEANING_REGISTRY` and the `formalize_surface` /
+  `deformalize_meaning` helpers based on it are gone.
+- Added `src/translation/` module: `http`, `cache`, `wiktionary`,
+  `wikidata`, `meaning`, `pipeline`, `formatting`.
+- `TranslationPipeline::translate` now resolves any surface pair by:
+  1. Fetching the source-edition Wiktionary page and parsing its
+     `{{trans-top}}` blocks for `target_lang` candidates.
+  2. Falling back to the `/translations` subpage when the main page
+     omits translations (common for high-traffic English entries).
+  3. Falling back to the target-edition Wiktionary page in reverse
+     when the source edition is sparse (typical for ru → en).
+  4. Generating phrasal variants (e.g. dropping Russian "у тебя",
+     "у вас", "у меня" infixes) when the literal page does not exist.
+  5. Selecting the best sense block by round-trip confirmation rate —
+     for each candidate, count how many target-edition pages list the
+     source surface as a translation. The block with the most confirms
+     wins.
+- Added an FNV-1a-keyed file cache (`CachedHttpClient`) that persists
+  every HTTP response under `data/translation-cache/`. The committed
+  cache makes the integration tests deterministic and offline.
+- Added `examples/refresh_translation_cache.rs` so contributors can
+  re-populate the cache by setting `FORMAL_AI_LIVE_API=1`.
+- Updated the browser worker comment to acknowledge that its small
+  offline registry now serves as a CORS-safe fallback for the demo;
+  the Rust pipeline is the canonical implementation.
 
 ## Verification Plan
 
-- `cargo test russian_translate_how_are_you_prompt_returns_english_surface`
-- `cargo test translation_via_links`
-- `cargo test natural_translation_preserves_source_formatting`
-- `cargo test translation_meaning_registry_covers_extended_phrases`
 - `cargo fmt --all -- --check`
-- `cargo clippy --all-targets --all-features`
-- `rust-script scripts/check-file-size.rs`
-- `cargo test`
-- `node --check src/web/formal_ai_worker.js`
-- `npm run --prefix tests/e2e check:intent-coverage`
-- Browser screenshot of the demo after typing
-  `Переведи "как у тебя дела?" на английский.` (captured for the PR
-  description).
+- `cargo clippy --all-targets --all-features -- -D warnings`
+- `cargo test --all-features`
+- `cargo test translation_via_links`
+- `cargo test translation_meaning_registry_covers_extended_phrases`
+
+All checks pass offline against the cached HTTP responses in
+`data/translation-cache/`.
 
 ## Future Work
 
-The offline meaning registry is the deterministic core. The next
-iteration in `raw-data/online-research.md` documents the path to wire
-Wikipedia / Wikidata / Wiktionary into the same `formalize →
-deformalize` pipeline so unseen surfaces still translate accurately.
-The work is intentionally scoped here: the registry already unblocks
-the cases the issue calls out, the online enrichment can land in a
-follow-up PR without changing the public contract.
+- Expand the cache to cover additional Wiktionary editions (Hindi,
+  Japanese, German). The pipeline already supports them; only seed
+  data is missing.
+- Wire the `CachedHttpClient` into the browser worker so the
+  JavaScript runtime can consult the same cached responses (currently
+  the browser keeps a small offline registry as a CORS-safe fallback).
+- Adopt Wikidata Lexeme search to disambiguate when multiple senses
+  round-trip with equal confirmation counts.

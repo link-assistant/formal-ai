@@ -48,7 +48,7 @@ use crate::solver_helpers::{
     extract_introduced_name, extract_javascript_program, extract_quoted_phrase,
     format_write_script_execution, humanize_url, infer_program_languages_from_code,
     infer_source_from_prompt, is_write_script_request, last_user_turn, normalize_code_meaning,
-    normalize_meaning, recall_name_from_history, translate_program, translate_surface,
+    normalize_meaning, recall_name_from_history, translate_program,
 };
 use crate::summarization::{
     generate_chat_title, summarize_dialog, DialogTurn, SummarizationConfig, SummarizationMode,
@@ -594,40 +594,44 @@ pub fn try_translation(
         }
     }
 
-    if normalized.contains("'тоска'") || normalized.contains("\"тоска\"") {
-        log.append("translation_gap", "тоска".to_owned());
-        log.append("language_from", "ru".to_owned());
-        log.append("language_to", "en".to_owned());
-        let body = String::from(
-            "The Russian word 'тоска' has no single-word English equivalent. The closest \
-             surface forms are 'melancholy', 'yearning' or 'spiritual anguish'. The \
-             translation gap is recorded explicitly in the link network.",
-        );
-        return Some(finalize_simple(
-            prompt,
-            log,
-            "translate_ru_to_en",
-            "response:translate",
-            &body,
-            0.6,
-        ));
-    }
-
     let surface = extract_quoted_phrase(prompt).unwrap_or_default();
-    let surface_meaning = if surface.is_empty() {
-        prompt.to_owned()
-    } else {
-        surface.clone()
-    };
-    let meaning_id = stable_id("meaning", &normalize_meaning(&surface_meaning));
     let source_slug = source.unwrap_or("en");
     let target_slug = target.unwrap_or("en");
 
     log.append("language_from", source_slug.to_owned());
     log.append("language_to", target_slug.to_owned());
-    log.append("meaning", meaning_id);
 
-    let raw_target = translate_surface(&surface, source_slug, target_slug);
+    // Run the real Wiktionary + Wikidata translation pipeline. The pipeline
+    // returns a `MeaningId` that we publish into the trace verbatim, so two
+    // surfaces that resolve to the same Wikidata Q-item end up with the
+    // same `meaning:...` id regardless of source language.
+    let pipeline_result =
+        crate::solver_helpers::translate_surface_detailed(&surface, source_slug, target_slug);
+
+    let (raw_target, meaning_id, translation_gap) = if let Ok(translation) = pipeline_result {
+        let raw = translation
+            .primary_surface()
+            .map_or_else(|| format!("[{target_slug}] {surface}"), str::to_owned);
+        let gap = translation.candidates.is_empty();
+        (raw, translation.meaning.slug(), gap)
+    } else {
+        // Fallback: hash the surface fragment so the trace still has a
+        // stable id. The pipeline error itself is not propagated to the
+        // user — the placeholder string already signals that translation
+        // could not be performed.
+        let surface_meaning = if surface.is_empty() {
+            prompt.to_owned()
+        } else {
+            surface.clone()
+        };
+        let id = stable_id("meaning", &normalize_meaning(&surface_meaning));
+        (format!("[{target_slug}] {surface}"), id, true)
+    };
+    log.append("meaning", meaning_id);
+    if translation_gap && !surface.is_empty() {
+        log.append("translation_gap", surface.clone());
+    }
+
     let translated_surface = crate::translation::match_source_formatting(&raw_target, &surface);
     let body = if surface.is_empty() {
         translated_surface
