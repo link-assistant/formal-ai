@@ -437,4 +437,68 @@ test.describe('Issue #153 — search UX, formalization, and dedupe', () => {
     await expect(last).toContainText('Apple');
     await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
   });
+
+  test('Russian information-search phrasing routes to web search', async ({
+    page,
+  }) => {
+    await page.locator('.diagnostics-toggle').click();
+    await mockAppleSearch(page);
+
+    const last = await sendPrompt(
+      page,
+      'Найди информацию о Rust программировании',
+    );
+    await expect(last).toContainText('Результаты поиска для');
+    await expect(last).toContainText('Rust программировании');
+    await expect(last.locator('.evidence-list')).toContainText(
+      'web_search:request:Rust программировании',
+    );
+    await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
+  });
+
+  test('multilingual information-search phrasings route to web search', async ({
+    page,
+  }) => {
+    await page.locator('.diagnostics-toggle').click();
+    await mockAppleSearch(page);
+
+    const cases = [
+      {
+        prompt: 'Find apple on the internet',
+        query: 'apple',
+      },
+      {
+        prompt: 'Найди яблоко в интернете',
+        query: 'яблоко',
+      },
+      {
+        prompt: 'सेब के बारे में इंटरनेट पर खोजो',
+        query: 'सेब',
+      },
+      {
+        prompt: '查找苹果网上信息',
+        query: '苹果',
+      },
+      {
+        prompt: 'Find detailed information about Rust programming',
+        query: 'Rust programming',
+      },
+      {
+        prompt: 'Rust programming के बारे में जानकारी खोजो',
+        query: 'Rust programming',
+      },
+      {
+        prompt: '查找关于 Rust 编程的信息',
+        query: 'Rust 编程',
+      },
+    ];
+
+    for (const item of cases) {
+      const last = await sendPrompt(page, item.prompt);
+      await expect(last.locator('.evidence-list')).toContainText(
+        `web_search:request:${item.query}`,
+      );
+      await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
+    }
+  });
 });

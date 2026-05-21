@@ -101,6 +101,8 @@ const REQUIRED_KEYS = [
   'settings.definitionFusion',
   'settings.definitionFusion.explicit',
   'settings.definitionFusion.auto',
+  'settings.experimentalOcr',
+  'settings.experimentalOcr.warning',
   'settings.language',
   'settings.language.auto',
   'settings.theme',

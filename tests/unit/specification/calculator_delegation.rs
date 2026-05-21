@@ -28,6 +28,23 @@ fn assert_calculation(prompt: &str, expected_fragments: &[&str]) -> SymbolicAnsw
     response
 }
 
+fn assert_calculation_error(prompt: &str, expected_fragments: &[&str]) -> SymbolicAnswer {
+    let response = answer(prompt);
+    assert_eq!(
+        response.intent, "calculation_error",
+        "prompt {prompt:?} should report calculator parse failure, got intent={} answer={}",
+        response.intent, response.answer,
+    );
+    for fragment in expected_fragments {
+        assert!(
+            response.answer.contains(fragment),
+            "prompt {prompt:?} answer should contain {fragment:?}, got {}",
+            response.answer,
+        );
+    }
+    response
+}
+
 #[test]
 fn calculator_handles_english_variations() {
     for (prompt, expected) in [
@@ -40,6 +57,39 @@ fn calculator_handles_english_variations() {
     ] {
         assert_calculation(prompt, expected);
     }
+}
+
+#[test]
+fn calculator_explains_fuzzy_calculate_typo() {
+    assert_calculation(
+        "Calcualte 2+5050",
+        &[
+            "Interpreted \"Calcualte\" as \"calculate\".",
+            "2+5050 = 5052",
+        ],
+    );
+}
+
+#[test]
+fn calculator_fuzzy_prefix_is_not_limited_to_one_spelling() {
+    assert_calculation(
+        "Calcuate 2+5050",
+        &[
+            "Interpreted \"Calcuate\" as \"calculate\".",
+            "2+5050 = 5052",
+        ],
+    );
+}
+
+#[test]
+fn calculator_error_keeps_fuzzy_interpretation() {
+    assert_calculation_error(
+        "Calcualte 2+",
+        &[
+            "Interpreted \"Calcualte\" as \"calculate\".",
+            "could not evaluate",
+        ],
+    );
 }
 
 #[test]

@@ -337,6 +337,12 @@ pub fn normalize_code_meaning(code: &str) -> String {
         .to_lowercase()
 }
 
+/// Normalize a surface fragment into a deterministic, language-independent
+/// key for hashing into a meaning id. The previous implementation looked
+/// the surface up in a hand-curated registry; that is now removed (the
+/// real meaning id comes from Wikidata via the translation pipeline). We
+/// keep the normalization step so the legacy hash continues to be stable
+/// across whitespace, casing, and punctuation differences.
 pub fn normalize_meaning(surface: &str) -> String {
     let raw: String = surface
         .chars()
@@ -346,19 +352,13 @@ pub fn normalize_meaning(surface: &str) -> String {
     canonical_meaning_token(&raw)
 }
 
+/// Return the canonical meaning token for a normalized surface. With the
+/// offline registry gone, this is currently the identity function — the
+/// translation pipeline supplies the language-neutral [`MeaningId`] when a
+/// translation request actually fires, and callers that need a hash key
+/// (e.g. the engine's stable id) feed the normalized surface directly.
 pub fn canonical_meaning_token(raw: &str) -> String {
-    match raw {
-        "hello" | "hi" | "hey" | "привет" | "здравствуйте" | "नमस्ते" | "你好" => {
-            String::from("greeting")
-        }
-        "hellohowareyou"
-        | "какдела"
-        | "какутебядела"
-        | "какувасдела"
-        | "приветкакдела"
-        | "здравствуйтекаквашидела" => String::from("greeting_how_are_you"),
-        _ => String::from(raw),
-    }
+    String::from(raw)
 }
 
 pub fn infer_source_from_prompt(prompt: &str) -> &'static str {
@@ -415,32 +415,17 @@ pub fn infer_program_languages_from_code(
     Some((source, target))
 }
 
-pub fn translate_surface(surface: &str, source: &str, target: &str) -> String {
-    let _ = source;
-    let normalized = surface.trim().to_lowercase();
-    match target {
-        "ru" => match normalized.as_str() {
-            "hello" | "hi" => String::from("Привет"),
-            "hello, how are you?" => String::from("Здравствуйте, как ваши дела?"),
-            _ => format!("[ru] {surface}"),
-        },
-        "en" => match normalized.as_str() {
-            "привет" => String::from("Hi"),
-            "как дела"
-            | "как дела?"
-            | "как у тебя дела"
-            | "как у тебя дела?"
-            | "как у вас дела"
-            | "как у вас дела?"
-            | "как ваши дела"
-            | "как ваши дела?" => String::from("How are you?"),
-            "hello, how are you?" => String::from("Hello, how are you?"),
-            _ => format!("[en] {surface}"),
-        },
-        "hi" => format!("[hi] {surface}"),
-        "zh" => format!("[zh] {surface}"),
-        _ => surface.to_owned(),
-    }
+/// Translate `surface` and return the full pipeline result so callers can
+/// inspect the meaning id, candidate list, and provenance trail.
+///
+/// The caller is responsible for matching the source's leading case and
+/// terminal punctuation; see [`crate::translation::match_source_formatting`].
+pub fn translate_surface_detailed(
+    surface: &str,
+    source: &str,
+    target: &str,
+) -> Result<crate::translation::Translation, crate::translation::HttpError> {
+    crate::translation::translate_via_default_pipeline(surface, source, target)
 }
 
 pub fn extract_concept_from_query(prompt: &str) -> Option<String> {
@@ -802,6 +787,8 @@ mod tests {
         assert!(lookup_term("Википедия"));
         assert!(lookup_term("विकिपीडिया"));
         assert!(lookup_term("维基百科"));
+        assert!(lookup_term("recursive digital filter"));
+        assert!(lookup_term("IIR滤波器"));
     }
 
     #[test]

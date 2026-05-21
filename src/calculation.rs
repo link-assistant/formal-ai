@@ -5,6 +5,7 @@
 //! local arithmetic evaluator for syntax the upstream crate does not support yet.
 
 use crate::arithmetic::{evaluate_fallback_formatted, ArithmeticError};
+use crate::fuzzy::is_close_token_typo;
 
 /// Engine that produced a calculation result.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -39,6 +40,14 @@ pub struct CalculationEvaluation {
 pub struct CalculationCandidate {
     pub expression: String,
     pub explicit: bool,
+    pub interpretations: Vec<PromptInterpretation>,
+}
+
+/// A visible interpretation applied while normalizing a user prompt.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct PromptInterpretation {
+    pub original: String,
+    pub corrected: String,
 }
 
 fn evaluate_with_link_calculator(
@@ -406,7 +415,94 @@ fn strip_suffix_case_insensitive<'a>(value: &'a str, suffix: &str) -> Option<&'a
         .then(|| value[..value.len() - suffix.len()].trim_end())
 }
 
-fn strip_calculation_wrappers(prompt: &str) -> (String, bool) {
+fn leading_word_spans(value: &str, limit: usize) -> Vec<(usize, usize, &str)> {
+    let mut spans = Vec::new();
+    let mut start = None;
+    for (index, character) in value.char_indices() {
+        if character.is_whitespace() {
+            if let Some(word_start) = start.take() {
+                spans.push((word_start, index, &value[word_start..index]));
+                if spans.len() == limit {
+                    return spans;
+                }
+            }
+        } else if start.is_none() {
+            start = Some(index);
+        }
+    }
+    if let Some(word_start) = start {
+        spans.push((word_start, value.len(), &value[word_start..]));
+    }
+    spans
+}
+
+fn fuzzy_prefix_match(value: &str, prefix: &str) -> Option<(usize, usize, PromptInterpretation)> {
+    let prefix_words: Vec<&str> = prefix.split_whitespace().collect();
+    if prefix_words.is_empty() {
+        return None;
+    }
+    let spans = leading_word_spans(value, prefix_words.len());
+    if spans.len() != prefix_words.len() {
+        return None;
+    }
+    let mut typo_count = 0;
+    for ((_, _, actual), expected) in spans.iter().zip(prefix_words.iter()) {
+        if actual.eq_ignore_ascii_case(expected) {
+            continue;
+        }
+        if !is_close_token_typo(actual, expected) {
+            return None;
+        }
+        typo_count += 1;
+    }
+    if typo_count != 1 {
+        return None;
+    }
+    let matched_end = spans.last()?.1;
+    Some((
+        typo_count,
+        matched_end,
+        PromptInterpretation {
+            original: value[..matched_end].to_owned(),
+            corrected: prefix.trim().to_owned(),
+        },
+    ))
+}
+
+fn strip_fuzzy_prefix_case_insensitive<'a>(
+    value: &'a str,
+    prefixes: &[&str],
+) -> Option<(&'a str, PromptInterpretation)> {
+    let mut matches = prefixes
+        .iter()
+        .filter_map(|prefix| fuzzy_prefix_match(value, prefix))
+        .collect::<Vec<_>>();
+    matches.sort_by(|left, right| left.0.cmp(&right.0).then_with(|| right.1.cmp(&left.1)));
+    let (typos, matched_end, interpretation) = matches.first()?.clone();
+    if matches
+        .get(1)
+        .is_some_and(|candidate| candidate.0 == typos && candidate.1 == matched_end)
+    {
+        return None;
+    }
+    Some((value[matched_end..].trim_start(), interpretation))
+}
+
+#[must_use]
+pub fn interpretation_statements(interpretations: &[PromptInterpretation]) -> String {
+    interpretations
+        .iter()
+        .map(|interpretation| {
+            format!(
+                "Interpreted \"{}\" as \"{}\".",
+                interpretation.original, interpretation.corrected
+            )
+        })
+        .collect::<Vec<_>>()
+        .join("\n")
+}
+
+fn strip_calculation_wrappers(prompt: &str) -> (String, bool, Vec<PromptInterpretation>) {
     let prefixes = [
         "please calculate ",
         "please compute ",
@@ -455,14 +551,25 @@ fn strip_calculation_wrappers(prompt: &str) -> (String, bool) {
 
     let mut working = trim_prompt_punctuation(prompt).to_owned();
     let mut explicit = false;
+    let mut interpretations = Vec::new();
     loop {
         let mut changed = false;
-        for prefix in prefixes {
+        for prefix in &prefixes {
             if let Some(stripped) = strip_prefix_case_insensitive(&working, prefix) {
                 working = stripped.to_owned();
                 explicit = true;
                 changed = true;
                 break;
+            }
+        }
+        if !changed {
+            if let Some((stripped, interpretation)) =
+                strip_fuzzy_prefix_case_insensitive(&working, &prefixes)
+            {
+                working = stripped.to_owned();
+                explicit = true;
+                interpretations.push(interpretation);
+                changed = true;
             }
         }
         if !changed {
@@ -472,7 +579,7 @@ fn strip_calculation_wrappers(prompt: &str) -> (String, bool) {
     loop {
         working = trim_prompt_punctuation(&working).to_owned();
         let mut changed = false;
-        for suffix in suffixes {
+        for suffix in &suffixes {
             if let Some(stripped) = strip_suffix_case_insensitive(&working, suffix) {
                 working = stripped.to_owned();
                 explicit = true;
@@ -484,7 +591,7 @@ fn strip_calculation_wrappers(prompt: &str) -> (String, bool) {
             break;
         }
     }
-    (working.trim().to_owned(), explicit)
+    (working.trim().to_owned(), explicit, interpretations)
 }
 
 fn has_calculation_signal(expression: &str, explicit: bool) -> bool {
@@ -617,12 +724,13 @@ pub fn calculation_expression_candidates(prompt: &str) -> Vec<CalculationCandida
     if trimmed.is_empty() {
         return Vec::new();
     }
-    let (stripped, explicit) = strip_calculation_wrappers(trimmed);
+    let (stripped, explicit, interpretations) = strip_calculation_wrappers(trimmed);
     let mut candidates = Vec::new();
     if !stripped.is_empty() && has_calculation_signal(&stripped, explicit) {
         candidates.push(CalculationCandidate {
             expression: stripped,
             explicit,
+            interpretations,
         });
     }
     if trimmed
@@ -635,6 +743,7 @@ pub fn calculation_expression_candidates(prompt: &str) -> Vec<CalculationCandida
         candidates.push(CalculationCandidate {
             expression: trimmed.to_owned(),
             explicit: false,
+            interpretations: Vec::new(),
         });
     }
     candidates

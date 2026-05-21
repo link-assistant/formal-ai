@@ -112,6 +112,30 @@ impl Weekday {
             Self::Sunday => "воскресеньем",
         }
     }
+
+    const fn hi(self) -> &'static str {
+        match self {
+            Self::Monday => "सोमवार",
+            Self::Tuesday => "मंगलवार",
+            Self::Wednesday => "बुधवार",
+            Self::Thursday => "गुरुवार",
+            Self::Friday => "शुक्रवार",
+            Self::Saturday => "शनिवार",
+            Self::Sunday => "रविवार",
+        }
+    }
+
+    const fn zh(self) -> &'static str {
+        match self {
+            Self::Monday => "星期一",
+            Self::Tuesday => "星期二",
+            Self::Wednesday => "星期三",
+            Self::Thursday => "星期四",
+            Self::Friday => "星期五",
+            Self::Saturday => "星期六",
+            Self::Sunday => "星期日",
+        }
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -218,7 +242,7 @@ const PREVIOUS_MARKERS: &[&str] = &[
     "предшествует",
 ];
 
-const TODAY_MARKERS: &[&str] = &["today", "сегодня"];
+const TODAY_MARKERS: &[&str] = &["today", "сегодня", "आज", "今天"];
 
 const CURRENT_DAY_MARKERS: &[&str] = &[
     "day",
@@ -230,6 +254,14 @@ const CURRENT_DAY_MARKERS: &[&str] = &[
     "дату",
     "дата",
     "число",
+    "दिन",
+    "तारीख",
+    "दिनांक",
+    "星期",
+    "星期几",
+    "日期",
+    "几号",
+    "日子",
 ];
 
 const CURRENT_DAY_QUESTION_MARKERS: &[&str] = &[
@@ -243,6 +275,14 @@ const CURRENT_DAY_QUESTION_MARKERS: &[&str] = &[
     "какое",
     "скажи",
     "покажи",
+    "कौन",
+    "क्या",
+    "बताओ",
+    "दिखाओ",
+    "什么",
+    "几",
+    "告诉",
+    "显示",
 ];
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -283,6 +323,7 @@ pub fn try_calendar_reasoning(
     log.append("calendar:result_weekday", result.slug());
 
     let language = detect_language(prompt).slug();
+    log.append("language", language.to_owned());
     let body = render_answer(language, operation, source, result);
     Some(finalize_simple(
         prompt,
@@ -304,6 +345,7 @@ fn try_current_day_reasoning(prompt: &str, log: &mut EventLog) -> Option<Symboli
     log.append("calendar:time_zone", "UTC".to_owned());
 
     let language = detect_language(prompt).slug();
+    log.append("language", language.to_owned());
     let body = render_current_day_answer(language, weekday, &iso, "UTC");
     Some(finalize_simple(
         prompt,
@@ -361,12 +403,19 @@ fn detect_weekday(normalized: &str) -> Option<Weekday> {
 }
 
 fn contains_term(haystack: &str, needle: &str) -> bool {
+    if needle.chars().any(is_cjk_character) {
+        return haystack.contains(needle);
+    }
     haystack.match_indices(needle).any(|(start, _)| {
         let before = haystack[..start].chars().next_back();
         let after = haystack[start + needle.len()..].chars().next();
         before.map_or(true, |character| !is_word_character(character))
             && after.map_or(true, |character| !is_word_character(character))
     })
+}
+
+fn is_cjk_character(character: char) -> bool {
+    (0x4E00..=0x9FFF).contains(&u32::from(character))
 }
 
 fn is_word_character(character: char) -> bool {
@@ -428,6 +477,8 @@ fn render_current_day_answer(
 ) -> String {
     match language {
         "ru" => format!("Сегодня {}, {iso_date} ({time_zone}).", weekday.ru()),
+        "hi" => format!("आज {} है, {iso_date} ({time_zone}).", weekday.hi()),
+        "zh" => format!("今天是{}，{iso_date}（{time_zone}）。", weekday.zh()),
         _ => format!("Today is {}, {iso_date} ({time_zone}).", weekday.en()),
     }
 }

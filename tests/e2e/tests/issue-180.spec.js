@@ -188,3 +188,27 @@ test.describe('Issue #180 — always-on deformalize step', () => {
     await expect(deformalizeSummary).toContainText('⇒');
   });
 });
+
+test.describe('Issue #212 — Russian web-search word order', () => {
+  test.beforeEach(async ({ page }) => {
+    await disableGreetingVariations(page);
+    await page.goto('./');
+    await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
+    await switchToManualMode(page);
+  });
+
+  test('Найди яблоко в интернете routes to web_search instead of unknown', async ({
+    page,
+  }) => {
+    await mockAppleSearch(page);
+    await page.locator('.diagnostics-toggle').click();
+
+    const last = await sendPrompt(page, 'Найди яблоко в интернете');
+
+    await expect(last.locator('.intent')).toContainText('intent:web_search');
+    await expect(last.locator('.markdown-body')).toContainText('яблоко');
+    await expect(last.locator('.markdown-body')).not.toContainText(
+      'Я пока не могу ответить',
+    );
+  });
+});

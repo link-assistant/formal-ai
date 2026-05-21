@@ -130,6 +130,23 @@ test.describe('multilingual chat surface', () => {
     await expect(last).toContainText(/символьный|детерминированный/);
   });
 
+  test('behavior-rule list possessive phrasing shows rules across supported languages', async ({ page }) => {
+    const cases = [
+      'Show list of your rules',
+      'Покажи список своих правил',
+      'अपने नियमों की सूची दिखाओ',
+      '显示你的规则列表',
+    ];
+
+    for (const prompt of cases) {
+      const last = await sendPrompt(page, prompt);
+      await expect(last).toHaveClass(/assistant/);
+      await expect(last).toContainText('rule_greeting');
+      await expect(last).toContainText('rule_unknown');
+      await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
+    }
+  });
+
   test('Hindi greeting replies in Hindi', async ({ page }) => {
     const last = await sendPrompt(page, 'नमस्ते');
     await expect(last).toHaveClass(/assistant/);
@@ -156,6 +173,29 @@ test.describe('multilingual chat surface', () => {
     await expect(last).not.toContainText('arithmetic is available');
   });
 
+  test('misspelled calculate action resolves as a calculation with interpretation', async ({ page }) => {
+    await page.locator('.diagnostics-toggle').click();
+
+    const last = await sendPrompt(page, 'Calcualte 2+5050');
+    await expect(last).toHaveClass(/assistant/);
+    await expect(last).toContainText('Interpreted "Calcualte" as "calculate".');
+    await expect(last).toContainText('2+5050 = 5052');
+    await expect(last).not.toContainText('could not evaluate');
+    await last.evaluate((node) => {
+      for (const det of node.querySelectorAll('details.diagnostics-detail')) {
+        det.open = true;
+      }
+    });
+    const formalization = last.locator('[data-testid="formalization"]').first();
+    await expect(formalization).toContainText('OP:compute');
+
+    const second = await sendPrompt(page, 'Calcuate 2+5050');
+    await expect(second).toHaveClass(/assistant/);
+    await expect(second).toContainText('Interpreted "Calcuate" as "calculate".');
+    await expect(second).toContainText('2+5050 = 5052');
+    await expect(second).not.toContainText('could not evaluate');
+  });
+
   test('Russian word-number arithmetic resolves as a calculation', async ({ page }) => {
     const last = await sendPrompt(page, 'Сколько будет два плюс два?');
     await expect(last).toHaveClass(/assistant/);
@@ -176,17 +216,28 @@ test.describe('multilingual chat surface', () => {
     await expect(last).toContainText('семидневном календарном цикле');
   });
 
-  test('Russian current-day question resolves through calendar reasoning', async ({ page }) => {
-    const expectedWeekday = await page.evaluate(() =>
-      new Intl.DateTimeFormat('ru-RU', { weekday: 'long' })
-        .format(new Date())
-        .toLowerCase(),
-    );
-    const last = await sendPrompt(page, 'Какой сегодня день?');
-    await expect(last).toHaveClass(/assistant/);
-    await expect(last).toContainText('Сегодня');
-    await expect(last).toContainText(expectedWeekday);
-    await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
+  test('current-day questions resolve through calendar reasoning across supported languages', async ({ page }) => {
+    const cases = [
+      { prompt: 'What day is today?', locale: 'en-US', today: 'Today is' },
+      { prompt: 'Какой сегодня день?', locale: 'ru-RU', today: 'Сегодня' },
+      { prompt: 'आज कौन सा दिन है?', locale: 'hi-IN', today: 'आज' },
+      { prompt: '今天是星期几?', locale: 'zh-CN', today: '今天' },
+    ];
+
+    for (const { prompt, locale, today } of cases) {
+      const expectedWeekday = await page.evaluate(
+        (nextLocale) =>
+          new Intl.DateTimeFormat(nextLocale, { weekday: 'long' }).format(
+            new Date(),
+          ),
+        locale,
+      );
+      const last = await sendPrompt(page, prompt);
+      await expect(last).toHaveClass(/assistant/);
+      await expect(last).toContainText(today);
+      await expect(last).toContainText(expectedWeekday);
+      await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
+    }
   });
 
   test('percentage-of-currency prompt resolves as a calculation before Wikipedia fallback', async ({ page }) => {
@@ -637,6 +688,47 @@ test.describe('Wikipedia REST fallback', () => {
     await expect(last).toContainText('Donald Trump');
     await expect(last).toContainText('politician');
     await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
+  });
+
+  test('Issue #183: Russian "как устроен X" resolves through Wikipedia lookup', async ({ page }) => {
+    const requestedSlugs = [];
+    await page.route('**/api/rest_v1/page/summary/**', async (route) => {
+      const url = route.request().url();
+      const slug = decodeURIComponent(url.split('/').pop() || '');
+      requestedSlugs.push(slug);
+      if (slug.toLowerCase() === 'aur') {
+        const json = {
+          title: 'Arch User Repository',
+          extract:
+            'The Arch User Repository is a community-driven repository for Arch Linux users.',
+          type: 'standard',
+          content_urls: {
+            desktop: {
+              page: 'https://en.wikipedia.org/wiki/Arch_User_Repository',
+            },
+          },
+        };
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify(json),
+        });
+        return;
+      }
+      await route.fulfill({
+        status: 404,
+        contentType: 'application/json',
+        body: JSON.stringify({ httpCode: 404, httpReason: 'Not Found' }),
+      });
+    });
+
+    const last = await sendPrompt(page, 'как устроен AUR');
+    await expect(last).toHaveClass(/assistant/);
+    await expect(last).toContainText('Arch User Repository');
+    await expect(last).toContainText('community-driven repository');
+    await expect(last).toContainText('en.wikipedia.org');
+    await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
+    expect(requestedSlugs.some((slug) => slug.toLowerCase() === 'aur')).toBe(true);
   });
 
   // Issue #21: Wikipedia returns percent-encoded URLs for non-ASCII titles.

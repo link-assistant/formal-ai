@@ -1,0 +1,9 @@
+{
+  "default_branch": "main",
+  "description": "A prototype for logic framework that can reason about anything relative to given probability of input statements.",
+  "html_url": "https://github.com/link-foundation/relative-meta-logic",
+  "language": "Rust",
+  "name": "relative-meta-logic",
+  "pushed_at": "2026-05-17T15:28:40Z",
+  "size": 3677
+}

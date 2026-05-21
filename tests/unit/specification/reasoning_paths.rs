@@ -133,28 +133,45 @@ fn calendar_reasoning_answers_russian_weekday_successor() {
 }
 
 #[test]
-fn calendar_reasoning_answers_russian_current_day_question() {
-    let response = answer("Какой сегодня день?");
-    assert_eq!(
-        response.intent, "calendar_current_day",
-        "today questions should use calendar reasoning, got: {}",
-        response.answer,
-    );
-    assert!(
-        response.answer.to_lowercase().contains("сегодня"),
-        "Russian current-day answer should be localized, got: {}",
-        response.answer,
-    );
-    assert!(
-        has_evidence(&response, "calendar:today"),
-        "current-day reasoning must record the resolved date: {:?}",
-        response.evidence_links,
-    );
-    assert!(
-        has_evidence(&response, "calendar:weekday"),
-        "current-day reasoning must record the resolved weekday: {:?}",
-        response.evidence_links,
-    );
+fn calendar_reasoning_answers_current_day_questions_across_supported_languages() {
+    let cases = [
+        ("What day is today?", "Today is", "language:en"),
+        ("Какой сегодня день?", "Сегодня", "language:ru"),
+        ("आज कौन सा दिन है?", "आज", "language:hi"),
+        ("今天是星期几?", "今天", "language:zh"),
+    ];
+
+    for (prompt, expected_fragment, language_tag) in cases {
+        let response = answer(prompt);
+        assert_eq!(
+            response.intent, "calendar_current_day",
+            "today question {prompt:?} should use calendar reasoning, got: {}",
+            response.answer,
+        );
+        assert!(
+            response.answer.contains(expected_fragment),
+            "current-day answer for {prompt:?} should be localized, got: {}",
+            response.answer,
+        );
+        assert!(
+            has_evidence(&response, "calendar:today"),
+            "current-day reasoning must record the resolved date for {prompt:?}: {:?}",
+            response.evidence_links,
+        );
+        assert!(
+            has_evidence(&response, "calendar:weekday"),
+            "current-day reasoning must record the resolved weekday for {prompt:?}: {:?}",
+            response.evidence_links,
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == language_tag),
+            "current-day reasoning must record {language_tag} for {prompt:?}: {:?}",
+            response.evidence_links,
+        );
+    }
 }
 
 #[test]
@@ -473,6 +490,69 @@ fn how_it_works_followup_records_followup_event_in_evidence() {
             .iter()
             .any(|link| link.starts_with("followup:")),
         "\"how it works?\" handler must emit a followup: evidence event: {:?}",
+        response.evidence_links,
+    );
+}
+
+// ---------------------------------------------------------------------------
+// Issue #183: "how X works?" must support explicit subjects across languages.
+// ---------------------------------------------------------------------------
+
+#[test]
+fn multilingual_how_x_works_prompts_use_mechanism_discovery() {
+    for prompt in [
+        "как устроен AUR?",
+        "как работает AUR?",
+        "how does AUR work?",
+        "AUR कैसे काम करता है?",
+        "AUR 如何工作?",
+    ] {
+        let response = answer(prompt);
+        assert_eq!(
+            response.intent, "how_it_works",
+            "{prompt:?} must route to mechanism discovery; got intent={}, answer={}",
+            response.intent, response.answer,
+        );
+        assert!(
+            response.answer.to_lowercase().contains("aur"),
+            "{prompt:?} answer should name the requested subject; answer={}",
+            response.answer,
+        );
+
+        for expected in [
+            "followup:how_it_works",
+            "followup:subject:inline:aur",
+            "mechanism_query:stage:wikipedia",
+            "mechanism_query:stage:wikidata",
+            "mechanism_query:stage:web_search",
+        ] {
+            assert!(
+                has_evidence(&response, expected),
+                "{prompt:?} missing evidence prefix {expected:?}: {:?}",
+                response.evidence_links,
+            );
+        }
+    }
+}
+
+#[test]
+fn russian_how_known_concept_works_resolves_concept_lookup() {
+    let response = answer("как устроена Википедия?");
+    assert!(
+        response.intent.starts_with("concept_lookup"),
+        "known Russian subject should still resolve through concept lookup; \
+         got intent={}, answer={}",
+        response.intent,
+        response.answer,
+    );
+    assert!(
+        has_evidence(&response, "followup:how_it_works"),
+        "handler should record the how-it-works follow-up event: {:?}",
+        response.evidence_links,
+    );
+    assert!(
+        has_evidence(&response, "concept_lookup:hit:concept_wikipedia"),
+        "known subject should hit the Wikipedia concept seed: {:?}",
         response.evidence_links,
     );
 }
