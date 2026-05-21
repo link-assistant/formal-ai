@@ -1986,10 +1986,11 @@ function tryLocalBehaviorRules(prompt, normalized, history) {
     };
   }
   if (
+    matchesLocalBehaviorRulesListPattern(normalized) ||
     normalized.includes("list behavior rules") ||
     normalized.includes("list all behavior rules") ||
     normalized.includes("show behavior rules") ||
-    isRussianBehaviorRulesListQuery(normalized) ||
+    isSupportedLanguageBehaviorRulesListQuery(normalized) ||
     normalized.includes("список правил поведения")
   ) {
     return { intent: "behavior_rules_list", content: localBehaviorRulesList() };
@@ -2015,6 +2016,53 @@ function tryLocalBehaviorRules(prompt, normalized, history) {
   return null;
 }
 
+const LOCAL_BEHAVIOR_RULES_LIST_PATTERNS = [
+  "show behavior rules",
+  "show list of your rules",
+  "покажи правила поведения",
+  "покажи список своих правил",
+  "व्यवहार के नियम सूचीबद्ध करें",
+  "अपने नियमों की सूची दिखाओ",
+  "列出行为规则",
+  "显示你的规则列表",
+];
+
+function matchesLocalBehaviorRulesListPattern(normalized) {
+  return LOCAL_BEHAVIOR_RULES_LIST_PATTERNS.some((pattern) => {
+    const text = normalizePrompt(pattern);
+    return text && (normalized === text || normalized.includes(text));
+  });
+}
+
+function isSupportedLanguageBehaviorRulesListQuery(normalized) {
+  return (
+    isEnglishBehaviorRulesListQuery(normalized) ||
+    isRussianBehaviorRulesListQuery(normalized) ||
+    isHindiBehaviorRulesListQuery(normalized) ||
+    isChineseBehaviorRulesListQuery(normalized)
+  );
+}
+
+function isEnglishBehaviorRulesListQuery(normalized) {
+  const mentionsRules =
+    normalized.includes("rules") ||
+    normalized.includes("rule list") ||
+    normalized.includes("rules list");
+  const asksToList =
+    normalized.includes("list") ||
+    normalized.includes("show") ||
+    normalized.includes("what") ||
+    normalized.includes("which");
+  const pointsAtAssistantRules =
+    normalized.includes("behavior") ||
+    normalized.includes("your") ||
+    normalized.includes("own") ||
+    normalized.includes("current") ||
+    normalized.includes("existing");
+
+  return mentionsRules && asksToList && pointsAtAssistantRules;
+}
+
 function isRussianBehaviorRulesListQuery(normalized) {
   const mentionsRules = normalized.includes("правил") || normalized.includes("правила");
   const asksToList =
@@ -2030,6 +2078,46 @@ function isRussianBehaviorRulesListQuery(normalized) {
     normalized.includes("твои") ||
     normalized.includes("собственные") ||
     normalized.includes("список правил");
+
+  return mentionsRules && asksToList && pointsAtAssistantRules;
+}
+
+function isHindiBehaviorRulesListQuery(normalized) {
+  const mentionsRules = normalized.includes("नियम") || normalized.includes("नियमों");
+  const asksToList =
+    normalized.includes("सूची") ||
+    normalized.includes("सूचीबद्ध") ||
+    normalized.includes("दिखाओ") ||
+    normalized.includes("दिखाएं") ||
+    normalized.includes("बताओ") ||
+    normalized.includes("कौन");
+  const pointsAtAssistantRules =
+    normalized.includes("व्यवहार") ||
+    normalized.includes("अपने") ||
+    normalized.includes("तुम्हारे") ||
+    normalized.includes("आपके") ||
+    normalized.includes("नियमों की सूची");
+
+  return mentionsRules && asksToList && pointsAtAssistantRules;
+}
+
+function isChineseBehaviorRulesListQuery(normalized) {
+  const mentionsRules = normalized.includes("规则") || normalized.includes("規則");
+  const asksToList =
+    normalized.includes("列出") ||
+    normalized.includes("显示") ||
+    normalized.includes("顯示") ||
+    normalized.includes("展示") ||
+    normalized.includes("哪些") ||
+    normalized.includes("什么");
+  const pointsAtAssistantRules =
+    normalized.includes("行为") ||
+    normalized.includes("行為") ||
+    normalized.includes("你的") ||
+    normalized.includes("您的") ||
+    normalized.includes("自己") ||
+    normalized.includes("规则列表") ||
+    normalized.includes("規則列表");
 
   return mentionsRules && asksToList && pointsAtAssistantRules;
 }

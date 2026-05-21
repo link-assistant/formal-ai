@@ -2259,13 +2259,14 @@ function renderRuntimeRuleUpdate(rule) {
 
 function isBehaviorRulesList(normalized) {
   return (
+    matchesBehaviorRulesListSeedPattern(normalized) ||
     normalized.includes("list behavior rules") ||
     normalized.includes("list all behavior rules") ||
     normalized.includes("show behavior rules") ||
     normalized.includes("show all behavior rules") ||
     normalized.includes("what behavior rules") ||
     normalized.includes("existing behavior rules") ||
-    isRussianBehaviorRulesListQuery(normalized) ||
+    isSupportedLanguageBehaviorRulesListQuery(normalized) ||
     normalized.includes("список правил поведения") ||
     normalized.includes("покажи правила поведения") ||
     normalized.includes("какие правила поведения") ||
@@ -2274,6 +2275,56 @@ function isBehaviorRulesList(normalized) {
     normalized.includes("行为规则") ||
     normalized.includes("列出行为规则")
   );
+}
+
+function matchesBehaviorRulesListSeedPattern(normalized) {
+  return PROMPT_PATTERNS.some((pattern) => {
+    if (!pattern || pattern.intent !== "behavior_rules_list" || !pattern.text) {
+      return false;
+    }
+    const text = normalizePrompt(pattern.text);
+    if (!text) return false;
+    switch (pattern.kind) {
+      case "keyword":
+      case "phrase":
+        return normalized === text || normalized.includes(text);
+      case "prefix":
+        return normalized.startsWith(text);
+      case "suffix":
+        return normalized.endsWith(text);
+      default:
+        return false;
+    }
+  });
+}
+
+function isSupportedLanguageBehaviorRulesListQuery(normalized) {
+  return (
+    isEnglishBehaviorRulesListQuery(normalized) ||
+    isRussianBehaviorRulesListQuery(normalized) ||
+    isHindiBehaviorRulesListQuery(normalized) ||
+    isChineseBehaviorRulesListQuery(normalized)
+  );
+}
+
+function isEnglishBehaviorRulesListQuery(normalized) {
+  const mentionsRules =
+    normalized.includes("rules") ||
+    normalized.includes("rule list") ||
+    normalized.includes("rules list");
+  const asksToList =
+    normalized.includes("list") ||
+    normalized.includes("show") ||
+    normalized.includes("what") ||
+    normalized.includes("which");
+  const pointsAtAssistantRules =
+    normalized.includes("behavior") ||
+    normalized.includes("your") ||
+    normalized.includes("own") ||
+    normalized.includes("current") ||
+    normalized.includes("existing");
+
+  return mentionsRules && asksToList && pointsAtAssistantRules;
 }
 
 function isRussianBehaviorRulesListQuery(normalized) {
@@ -2291,6 +2342,46 @@ function isRussianBehaviorRulesListQuery(normalized) {
     normalized.includes("твои") ||
     normalized.includes("собственные") ||
     normalized.includes("список правил");
+
+  return mentionsRules && asksToList && pointsAtAssistantRules;
+}
+
+function isHindiBehaviorRulesListQuery(normalized) {
+  const mentionsRules = normalized.includes("नियम") || normalized.includes("नियमों");
+  const asksToList =
+    normalized.includes("सूची") ||
+    normalized.includes("सूचीबद्ध") ||
+    normalized.includes("दिखाओ") ||
+    normalized.includes("दिखाएं") ||
+    normalized.includes("बताओ") ||
+    normalized.includes("कौन");
+  const pointsAtAssistantRules =
+    normalized.includes("व्यवहार") ||
+    normalized.includes("अपने") ||
+    normalized.includes("तुम्हारे") ||
+    normalized.includes("आपके") ||
+    normalized.includes("नियमों की सूची");
+
+  return mentionsRules && asksToList && pointsAtAssistantRules;
+}
+
+function isChineseBehaviorRulesListQuery(normalized) {
+  const mentionsRules = normalized.includes("规则") || normalized.includes("規則");
+  const asksToList =
+    normalized.includes("列出") ||
+    normalized.includes("显示") ||
+    normalized.includes("顯示") ||
+    normalized.includes("展示") ||
+    normalized.includes("哪些") ||
+    normalized.includes("什么");
+  const pointsAtAssistantRules =
+    normalized.includes("行为") ||
+    normalized.includes("行為") ||
+    normalized.includes("你的") ||
+    normalized.includes("您的") ||
+    normalized.includes("自己") ||
+    normalized.includes("规则列表") ||
+    normalized.includes("規則列表");
 
   return mentionsRules && asksToList && pointsAtAssistantRules;
 }
