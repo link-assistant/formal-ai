@@ -1,0 +1,25 @@
+[package]
+name = "relative-meta-logic"
+version = "0.19.0"
+edition = "2021"
+description = "A prototype for logic framework that can reason about anything relative to given probability of input statements"
+license = "Unlicense"
+
+[[bin]]
+name = "rml"
+path = "src/main.rs"
+
+[[bin]]
+name = "rml-check"
+path = "src/bin/rml-check.rs"
+
+[[bin]]
+name = "rml-meta"
+path = "src/bin/rml-meta.rs"
+
+[lib]
+name = "rml"
+path = "src/lib.rs"
+
+[dependencies]
+links-notation = "0.13.0"

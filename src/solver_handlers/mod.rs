@@ -25,14 +25,18 @@ pub use definition_merge::{try_definition_merge, try_definition_merge_by_default
 pub use feature_capability::{try_feature_capability, CapabilityRuntime};
 pub use software_project::try_software_project_request;
 pub use user_intent::{
-    try_capabilities, try_clarification, try_ill_formed, try_opinion_question,
-    try_punctuation_only_prompt, try_shell_refusal, try_who_is_question,
+    try_capabilities, try_clarification, try_ill_formed, try_opinion_question, try_proof_request,
+    try_proof_request_with_config, try_punctuation_only_prompt, try_shell_refusal,
+    try_who_is_question,
 };
 pub use web_requests::{try_http_fetch, try_project_lookup, try_url_navigate, try_web_search};
 
 use std::fmt::Write as _;
 
-use crate::calculation::{calculation_expression_candidates, evaluate_calculation};
+use crate::calculation::{
+    calculation_expression_candidates, evaluate_calculation, interpretation_statements,
+    PromptInterpretation,
+};
 use crate::concepts::{
     extract_concept_query, lookup_concept_query, resolve_context_label, ConceptRecord,
 };
@@ -49,7 +53,7 @@ use crate::solver_helpers::{
     extract_introduced_name, extract_javascript_program, extract_quoted_phrase,
     format_write_script_execution, humanize_url, infer_program_languages_from_code,
     infer_source_from_prompt, is_write_script_request, last_user_turn, normalize_code_meaning,
-    normalize_meaning, recall_name_from_history, translate_program, translate_surface,
+    normalize_meaning, recall_name_from_history, translate_program,
 };
 use crate::summarization::{
     generate_chat_title, summarize_dialog, DialogTurn, SummarizationConfig, SummarizationMode,
@@ -198,9 +202,10 @@ fn try_summarize_conversation(
 
 pub fn try_arithmetic(prompt: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {
     let candidates = calculation_expression_candidates(prompt);
-    let mut first_explicit_error: Option<(String, String)> = None;
+    let mut first_explicit_error: Option<(String, String, Vec<PromptInterpretation>)> = None;
     for candidate in candidates {
         let expression = candidate.expression;
+        let interpretations = candidate.interpretations;
         log.append("calculation:request", expression.clone());
         match evaluate_calculation(&expression) {
             Ok(evaluation) => {
@@ -212,10 +217,28 @@ pub fn try_arithmetic(prompt: &str, log: &mut EventLog) -> Option<SymbolicAnswer
                 if !evaluation.steps.is_empty() {
                     log.append("calculation:steps", evaluation.steps.len().to_string());
                 }
-                let body = if expression.contains('=') && formatted.contains(" = ") {
+                let calculation_body = if expression.contains('=') && formatted.contains(" = ") {
                     format!("{expression} => {formatted}")
                 } else {
                     format!("{expression} = {formatted}")
+                };
+                for interpretation in &interpretations {
+                    log.append(
+                        "interpretation",
+                        format!(
+                            "{} -> {}",
+                            interpretation.original, interpretation.corrected
+                        ),
+                    );
+                }
+                let body = if interpretations.is_empty() {
+                    calculation_body
+                } else {
+                    format!(
+                        "{}\n\n{}",
+                        interpretation_statements(&interpretations),
+                        calculation_body
+                    )
                 };
                 log.append("calculation", body.clone());
                 return Some(finalize_simple(
@@ -231,15 +254,33 @@ pub fn try_arithmetic(prompt: &str, log: &mut EventLog) -> Option<SymbolicAnswer
                 let error = error.to_string();
                 log.append("calculation:error", error.clone());
                 if candidate.explicit && first_explicit_error.is_none() {
-                    first_explicit_error = Some((expression, error));
+                    first_explicit_error = Some((expression, error, interpretations));
                 }
             }
         }
     }
-    let (expression, error) = first_explicit_error?;
-    let body = format!(
+    let (expression, error, interpretations) = first_explicit_error?;
+    for interpretation in &interpretations {
+        log.append(
+            "interpretation",
+            format!(
+                "{} -> {}",
+                interpretation.original, interpretation.corrected
+            ),
+        );
+    }
+    let error_body = format!(
         "I parsed '{expression}' as an arithmetic request but could not evaluate it: {error}."
     );
+    let body = if interpretations.is_empty() {
+        error_body
+    } else {
+        format!(
+            "{}\n\n{}",
+            interpretation_statements(&interpretations),
+            error_body
+        )
+    };
     Some(finalize_simple(
         prompt,
         log,
@@ -595,43 +636,50 @@ pub fn try_translation(
         }
     }
 
-    if normalized.contains("'тоска'") || normalized.contains("\"тоска\"") {
-        log.append("translation_gap", "тоска".to_owned());
-        log.append("language_from", "ru".to_owned());
-        log.append("language_to", "en".to_owned());
-        let body = String::from(
-            "The Russian word 'тоска' has no single-word English equivalent. The closest \
-             surface forms are 'melancholy', 'yearning' or 'spiritual anguish'. The \
-             translation gap is recorded explicitly in the link network.",
-        );
-        return Some(finalize_simple(
-            prompt,
-            log,
-            "translate_ru_to_en",
-            "response:translate",
-            &body,
-            0.6,
-        ));
-    }
-
     let surface = extract_quoted_phrase(prompt).unwrap_or_default();
-    let surface_meaning = if surface.is_empty() {
-        prompt.to_owned()
-    } else {
-        surface.clone()
-    };
-    let meaning_id = stable_id("meaning", &normalize_meaning(&surface_meaning));
     let source_slug = source.unwrap_or("en");
     let target_slug = target.unwrap_or("en");
 
     log.append("language_from", source_slug.to_owned());
     log.append("language_to", target_slug.to_owned());
-    log.append("meaning", meaning_id.clone());
 
-    let translated_surface = translate_surface(&surface, source_slug, target_slug);
-    let body = format!(
-        "meaning: {meaning_id}\nsurface ({source_slug}): {surface}\nsurface ({target_slug}): {translated_surface}"
-    );
+    // Run the real Wiktionary + Wikidata translation pipeline. The pipeline
+    // returns a `MeaningId` that we publish into the trace verbatim, so two
+    // surfaces that resolve to the same Wikidata Q-item end up with the
+    // same `meaning:...` id regardless of source language.
+    let pipeline_result =
+        crate::solver_helpers::translate_surface_detailed(&surface, source_slug, target_slug);
+
+    let (raw_target, meaning_id, translation_gap) = if let Ok(translation) = pipeline_result {
+        let raw = translation
+            .primary_surface()
+            .map_or_else(|| format!("[{target_slug}] {surface}"), str::to_owned);
+        let gap = translation.candidates.is_empty();
+        (raw, translation.meaning.slug(), gap)
+    } else {
+        // Fallback: hash the surface fragment so the trace still has a
+        // stable id. The pipeline error itself is not propagated to the
+        // user — the placeholder string already signals that translation
+        // could not be performed.
+        let surface_meaning = if surface.is_empty() {
+            prompt.to_owned()
+        } else {
+            surface.clone()
+        };
+        let id = stable_id("meaning", &normalize_meaning(&surface_meaning));
+        (format!("[{target_slug}] {surface}"), id, true)
+    };
+    log.append("meaning", meaning_id);
+    if translation_gap && !surface.is_empty() {
+        log.append("translation_gap", surface.clone());
+    }
+
+    let translated_surface = crate::translation::match_source_formatting(&raw_target, &surface);
+    let body = if surface.is_empty() {
+        translated_surface
+    } else {
+        format!("\"{translated_surface}\"")
+    };
     let intent = format!("translate_{source_slug}_to_{target_slug}");
     Some(finalize_simple(
         prompt,

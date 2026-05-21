@@ -156,6 +156,29 @@ test.describe('multilingual chat surface', () => {
     await expect(last).not.toContainText('arithmetic is available');
   });
 
+  test('misspelled calculate action resolves as a calculation with interpretation', async ({ page }) => {
+    await page.locator('.diagnostics-toggle').click();
+
+    const last = await sendPrompt(page, 'Calcualte 2+5050');
+    await expect(last).toHaveClass(/assistant/);
+    await expect(last).toContainText('Interpreted "Calcualte" as "calculate".');
+    await expect(last).toContainText('2+5050 = 5052');
+    await expect(last).not.toContainText('could not evaluate');
+    await last.evaluate((node) => {
+      for (const det of node.querySelectorAll('details.diagnostics-detail')) {
+        det.open = true;
+      }
+    });
+    const formalization = last.locator('[data-testid="formalization"]').first();
+    await expect(formalization).toContainText('OP:compute');
+
+    const second = await sendPrompt(page, 'Calcuate 2+5050');
+    await expect(second).toHaveClass(/assistant/);
+    await expect(second).toContainText('Interpreted "Calcuate" as "calculate".');
+    await expect(second).toContainText('2+5050 = 5052');
+    await expect(second).not.toContainText('could not evaluate');
+  });
+
   test('Russian word-number arithmetic resolves as a calculation', async ({ page }) => {
     const last = await sendPrompt(page, 'Сколько будет два плюс два?');
     await expect(last).toHaveClass(/assistant/);
@@ -624,6 +647,47 @@ test.describe('Wikipedia REST fallback', () => {
     await expect(last).toContainText('Donald Trump');
     await expect(last).toContainText('politician');
     await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
+  });
+
+  test('Issue #183: Russian "как устроен X" resolves through Wikipedia lookup', async ({ page }) => {
+    const requestedSlugs = [];
+    await page.route('**/api/rest_v1/page/summary/**', async (route) => {
+      const url = route.request().url();
+      const slug = decodeURIComponent(url.split('/').pop() || '');
+      requestedSlugs.push(slug);
+      if (slug.toLowerCase() === 'aur') {
+        const json = {
+          title: 'Arch User Repository',
+          extract:
+            'The Arch User Repository is a community-driven repository for Arch Linux users.',
+          type: 'standard',
+          content_urls: {
+            desktop: {
+              page: 'https://en.wikipedia.org/wiki/Arch_User_Repository',
+            },
+          },
+        };
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify(json),
+        });
+        return;
+      }
+      await route.fulfill({
+        status: 404,
+        contentType: 'application/json',
+        body: JSON.stringify({ httpCode: 404, httpReason: 'Not Found' }),
+      });
+    });
+
+    const last = await sendPrompt(page, 'как устроен AUR');
+    await expect(last).toHaveClass(/assistant/);
+    await expect(last).toContainText('Arch User Repository');
+    await expect(last).toContainText('community-driven repository');
+    await expect(last).toContainText('en.wikipedia.org');
+    await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
+    expect(requestedSlugs.some((slug) => slug.toLowerCase() === 'aur')).toBe(true);
   });
 
   // Issue #21: Wikipedia returns percent-encoded URLs for non-ASCII titles.
