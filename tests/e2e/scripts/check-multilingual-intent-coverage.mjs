@@ -391,6 +391,39 @@ for (const [language, entries] of Object.entries(webSearchSourceMarkerCases)) {
   }
 }
 
+const currentDayCalendarCases = {
+  en: ['What day is today?'],
+  ru: ['Какой сегодня день?'],
+  hi: ['आज कौन सा दिन है?'],
+  zh: ['今天是星期几?'],
+};
+
+assertMatrixMatchesSupportedLanguages(
+  'currentDayCalendarCases',
+  currentDayCalendarCases,
+);
+assertBalancedLanguageCaseCounts(
+  'currentDayCalendarCases',
+  currentDayCalendarCases,
+);
+
+{
+  const rustReasoningTests = readRepoFile('tests/unit/specification/reasoning_paths.rs');
+  const browserMultilingualTests = readRepoFile('tests/e2e/tests/multilingual.spec.js');
+  for (const [language, prompts] of Object.entries(currentDayCalendarCases)) {
+    for (const prompt of prompts) {
+      assert(
+        rustReasoningTests.includes(prompt),
+        `tests/unit/specification/reasoning_paths.rs must cover ${language} current-day calendar prompt ${JSON.stringify(prompt)}`,
+      );
+      assert(
+        browserMultilingualTests.includes(prompt),
+        `tests/e2e/tests/multilingual.spec.js must cover ${language} current-day calendar prompt ${JSON.stringify(prompt)}`,
+      );
+    }
+  }
+}
+
 const requiredLocalizedResponseIntents = [
   'greeting',
   'farewell',

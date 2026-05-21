@@ -8,6 +8,7 @@ use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
 use crate::solver_handlers::finalize_simple;
+use std::time::{SystemTime, UNIX_EPOCH};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 enum Weekday {
@@ -109,6 +110,30 @@ impl Weekday {
             Self::Friday => "пятницей",
             Self::Saturday => "субботой",
             Self::Sunday => "воскресеньем",
+        }
+    }
+
+    const fn hi(self) -> &'static str {
+        match self {
+            Self::Monday => "सोमवार",
+            Self::Tuesday => "मंगलवार",
+            Self::Wednesday => "बुधवार",
+            Self::Thursday => "गुरुवार",
+            Self::Friday => "शुक्रवार",
+            Self::Saturday => "शनिवार",
+            Self::Sunday => "रविवार",
+        }
+    }
+
+    const fn zh(self) -> &'static str {
+        match self {
+            Self::Monday => "星期一",
+            Self::Tuesday => "星期二",
+            Self::Wednesday => "星期三",
+            Self::Thursday => "星期四",
+            Self::Friday => "星期五",
+            Self::Saturday => "星期六",
+            Self::Sunday => "星期日",
         }
     }
 }
@@ -217,11 +242,71 @@ const PREVIOUS_MARKERS: &[&str] = &[
     "предшествует",
 ];
 
+const TODAY_MARKERS: &[&str] = &["today", "сегодня", "आज", "今天"];
+
+const CURRENT_DAY_MARKERS: &[&str] = &[
+    "day",
+    "weekday",
+    "week day",
+    "date",
+    "день",
+    "дня",
+    "дату",
+    "дата",
+    "число",
+    "दिन",
+    "तारीख",
+    "दिनांक",
+    "星期",
+    "星期几",
+    "日期",
+    "几号",
+    "日子",
+];
+
+const CURRENT_DAY_QUESTION_MARKERS: &[&str] = &[
+    "?",
+    "what",
+    "which",
+    "tell me",
+    "show",
+    "какой",
+    "какая",
+    "какое",
+    "скажи",
+    "покажи",
+    "कौन",
+    "क्या",
+    "बताओ",
+    "दिखाओ",
+    "什么",
+    "几",
+    "告诉",
+    "显示",
+];
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+struct CalendarDate {
+    year: i32,
+    month: u32,
+    day: u32,
+    days_since_unix_epoch: i64,
+}
+
+impl CalendarDate {
+    fn iso(self) -> String {
+        format!("{:04}-{:02}-{:02}", self.year, self.month, self.day)
+    }
+}
+
 pub fn try_calendar_reasoning(
     prompt: &str,
     normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
+    if mentions_current_day_question(normalized) {
+        return try_current_day_reasoning(prompt, log);
+    }
     if !mentions_weekday_context(normalized) {
         return None;
     }
@@ -238,6 +323,7 @@ pub fn try_calendar_reasoning(
     log.append("calendar:result_weekday", result.slug());
 
     let language = detect_language(prompt).slug();
+    log.append("language", language.to_owned());
     let body = render_answer(language, operation, source, result);
     Some(finalize_simple(
         prompt,
@@ -247,6 +333,46 @@ pub fn try_calendar_reasoning(
         &body,
         1.0,
     ))
+}
+
+fn try_current_day_reasoning(prompt: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {
+    let date = current_utc_date()?;
+    let weekday = weekday_for_unix_days(date.days_since_unix_epoch);
+    let iso = date.iso();
+    log.append("calendar:clock", "system_utc".to_owned());
+    log.append("calendar:today", iso.clone());
+    log.append("calendar:weekday", weekday.slug());
+    log.append("calendar:time_zone", "UTC".to_owned());
+
+    let language = detect_language(prompt).slug();
+    log.append("language", language.to_owned());
+    let body = render_current_day_answer(language, weekday, &iso, "UTC");
+    Some(finalize_simple(
+        prompt,
+        log,
+        "calendar_current_day",
+        "response:calendar_current_day",
+        &body,
+        1.0,
+    ))
+}
+
+fn mentions_current_day_question(normalized: &str) -> bool {
+    let mentions_today = TODAY_MARKERS
+        .iter()
+        .any(|marker| contains_term(normalized, marker));
+    if !mentions_today {
+        return false;
+    }
+
+    let asks_for_day = CURRENT_DAY_MARKERS
+        .iter()
+        .any(|marker| contains_term(normalized, marker))
+        || normalized.contains("недел");
+    let question_like = CURRENT_DAY_QUESTION_MARKERS
+        .iter()
+        .any(|marker| normalized.contains(marker));
+    asks_for_day && question_like
 }
 
 fn mentions_weekday_context(normalized: &str) -> bool {
@@ -277,6 +403,9 @@ fn detect_weekday(normalized: &str) -> Option<Weekday> {
 }
 
 fn contains_term(haystack: &str, needle: &str) -> bool {
+    if needle.chars().any(is_cjk_character) {
+        return haystack.contains(needle);
+    }
     haystack.match_indices(needle).any(|(start, _)| {
         let before = haystack[..start].chars().next_back();
         let after = haystack[start + needle.len()..].chars().next();
@@ -285,8 +414,73 @@ fn contains_term(haystack: &str, needle: &str) -> bool {
     })
 }
 
+fn is_cjk_character(character: char) -> bool {
+    (0x4E00..=0x9FFF).contains(&u32::from(character))
+}
+
 fn is_word_character(character: char) -> bool {
     character.is_alphanumeric() || character == '_'
+}
+
+fn current_utc_date() -> Option<CalendarDate> {
+    let seconds_since_epoch =
+        i64::try_from(SystemTime::now().duration_since(UNIX_EPOCH).ok()?.as_secs()).ok()?;
+    Some(date_from_unix_days(seconds_since_epoch.div_euclid(86_400)))
+}
+
+fn date_from_unix_days(days_since_unix_epoch: i64) -> CalendarDate {
+    let (year, month, day) = days_to_date(days_since_unix_epoch);
+    CalendarDate {
+        year,
+        month,
+        day,
+        days_since_unix_epoch,
+    }
+}
+
+fn days_to_date(days: i64) -> (i32, u32, u32) {
+    // Algorithm adapted from civil-from-days (Howard Hinnant, public domain).
+    let z = days + 719_468;
+    let era = if z >= 0 { z } else { z - 146_096 } / 146_097;
+    let doe = z - era * 146_097;
+    let yoe = (doe - doe / 1_460 + doe / 36_524 - doe / 146_096) / 365;
+    let y = yoe + era * 400;
+    let doy = doe - (365 * yoe + yoe / 4 - yoe / 100);
+    let mp = (5 * doy + 2) / 153;
+    let day = doy - (153 * mp + 2) / 5 + 1;
+    let month = mp + if mp < 10 { 3 } else { -9 };
+    let year = y + i64::from(month <= 2);
+    (
+        i32::try_from(year).expect("civil date year fits i32"),
+        u32::try_from(month).expect("civil date month fits u32"),
+        u32::try_from(day).expect("civil date day fits u32"),
+    )
+}
+
+const fn weekday_for_unix_days(days_since_unix_epoch: i64) -> Weekday {
+    match (days_since_unix_epoch + 3).rem_euclid(7) {
+        0 => Weekday::Monday,
+        1 => Weekday::Tuesday,
+        2 => Weekday::Wednesday,
+        3 => Weekday::Thursday,
+        4 => Weekday::Friday,
+        5 => Weekday::Saturday,
+        _ => Weekday::Sunday,
+    }
+}
+
+fn render_current_day_answer(
+    language: &str,
+    weekday: Weekday,
+    iso_date: &str,
+    time_zone: &str,
+) -> String {
+    match language {
+        "ru" => format!("Сегодня {}, {iso_date} ({time_zone}).", weekday.ru()),
+        "hi" => format!("आज {} है, {iso_date} ({time_zone}).", weekday.hi()),
+        "zh" => format!("今天是{}，{iso_date}（{time_zone}）。", weekday.zh()),
+        _ => format!("Today is {}, {iso_date} ({time_zone}).", weekday.en()),
+    }
 }
 
 fn render_answer(

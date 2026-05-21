@@ -216,6 +216,30 @@ test.describe('multilingual chat surface', () => {
     await expect(last).toContainText('семидневном календарном цикле');
   });
 
+  test('current-day questions resolve through calendar reasoning across supported languages', async ({ page }) => {
+    const cases = [
+      { prompt: 'What day is today?', locale: 'en-US', today: 'Today is' },
+      { prompt: 'Какой сегодня день?', locale: 'ru-RU', today: 'Сегодня' },
+      { prompt: 'आज कौन सा दिन है?', locale: 'hi-IN', today: 'आज' },
+      { prompt: '今天是星期几?', locale: 'zh-CN', today: '今天' },
+    ];
+
+    for (const { prompt, locale, today } of cases) {
+      const expectedWeekday = await page.evaluate(
+        (nextLocale) =>
+          new Intl.DateTimeFormat(nextLocale, { weekday: 'long' }).format(
+            new Date(),
+          ),
+        locale,
+      );
+      const last = await sendPrompt(page, prompt);
+      await expect(last).toHaveClass(/assistant/);
+      await expect(last).toContainText(today);
+      await expect(last).toContainText(expectedWeekday);
+      await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
+    }
+  });
+
   test('percentage-of-currency prompt resolves as a calculation before Wikipedia fallback', async ({ page }) => {
     let wikipediaRequests = 0;
     await page.route('https://en.wikipedia.org/**', async (route) => {
