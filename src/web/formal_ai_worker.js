@@ -1708,6 +1708,7 @@ function hasSpelledArithmetic(expression) {
 function extractArithmeticExpression(prompt) {
   const trimmed = String(prompt || "").trim();
   if (!trimmed) return null;
+  const interpretations = [];
   const prefixes = [
     "please calculate ",
     "please compute ",
@@ -1742,13 +1743,11 @@ function extractArithmeticExpression(prompt) {
   let changed = true;
   while (changed) {
     changed = false;
-    const lower = working.toLowerCase();
-    for (const prefix of prefixes) {
-      if (lower.startsWith(prefix)) {
-        working = working.slice(prefix.length).trimStart();
-        changed = true;
-        break;
-      }
+    const stripped = stripKnownPrefix(working, prefixes);
+    if (stripped) {
+      working = stripped.value;
+      if (stripped.interpretation) interpretations.push(stripped.interpretation);
+      changed = true;
     }
   }
   working = working.replace(/[?.!]+$/g, "").trim();
@@ -1830,11 +1829,13 @@ function extractArithmeticExpression(prompt) {
   const hasDigit = /[0-9]/.test(working);
   if (!hasDigit && !hasSpelled) return null;
   if (!hasSymbolic && !hasWord && hasLetter) return null;
-  if (hasPercentOf) return working;
-  if (evaluateCurrencyConversionExpression(working) !== null) return working;
+  if (hasPercentOf) return { expression: working, interpretations };
+  if (evaluateCurrencyConversionExpression(working) !== null) {
+    return { expression: working, interpretations };
+  }
   const allowed = /^[0-9+\-*/%().=\s_×·÷−,a-zA-Z]+$/;
   if (!allowed.test(working) && !hasWordOperator) return null;
-  return working;
+  return { expression: working, interpretations };
 }
 
 function extractFencedBlock(text, languages) {
@@ -3790,8 +3791,12 @@ function trySummarizeConversation(history) {
 }
 
 function tryArithmetic(prompt) {
-  const expression = extractArithmeticExpression(prompt);
-  if (!expression) return null;
+  const extracted = extractArithmeticExpression(prompt);
+  if (!extracted) return null;
+  const expression = extracted.expression;
+  const interpretations = Array.isArray(extracted.interpretations)
+    ? extracted.interpretations
+    : [];
   try {
     const isEquation = expression.includes("=");
     let formatted;
@@ -3826,6 +3831,7 @@ function tryArithmetic(prompt) {
         `calculation:${content}`,
         `calculation_backend:${backend}`,
       ],
+      interpretations,
     };
   } catch (error) {
     const message = String(error && error.message ? error.message : error);
@@ -3834,6 +3840,7 @@ function tryArithmetic(prompt) {
       content: `I could not evaluate \`${expression.trim()}\`: ${message}.`,
       confidence: 0.4,
       evidence: [`calculation_error:${message}`],
+      interpretations,
     };
   }
 }
@@ -4352,18 +4359,102 @@ const KNOWN_PERSON_VARIANTS = [
 ];
 
 function editDistance(a, b) {
-  const m = a.length, n = b.length;
+  const left = Array.from(String(a || ""));
+  const right = Array.from(String(b || ""));
+  const m = left.length, n = right.length;
   const dp = Array.from({ length: m + 1 }, (_, i) =>
     Array.from({ length: n + 1 }, (_, j) => (i === 0 ? j : j === 0 ? i : 0))
   );
   for (let i = 1; i <= m; i++) {
     for (let j = 1; j <= n; j++) {
-      dp[i][j] = a[i - 1] === b[j - 1]
+      dp[i][j] = left[i - 1] === right[j - 1]
         ? dp[i - 1][j - 1]
         : 1 + Math.min(dp[i - 1][j - 1], dp[i - 1][j], dp[i][j - 1]);
+      if (
+        i > 1 &&
+        j > 1 &&
+        left[i - 1] === right[j - 2] &&
+        left[i - 2] === right[j - 1]
+      ) {
+        dp[i][j] = Math.min(dp[i][j], dp[i - 2][j - 2] + 1);
+      }
     }
   }
   return dp[m][n];
+}
+
+function isCloseTokenTypo(actual, expected) {
+  const left = String(actual || "").toLowerCase();
+  const right = String(expected || "").toLowerCase();
+  const leftLength = Array.from(left).length;
+  const rightLength = Array.from(right).length;
+  return Math.min(leftLength, rightLength) >= 4 && editDistance(left, right) === 1;
+}
+
+function leadingTokenSpans(value, limit) {
+  const text = String(value || "");
+  const spans = [];
+  const pattern = /\S+/gu;
+  let match;
+  while ((match = pattern.exec(text)) !== null && spans.length < limit) {
+    spans.push({
+      start: match.index,
+      end: match.index + match[0].length,
+      text: match[0],
+    });
+  }
+  return spans;
+}
+
+function fuzzyPrefixMatch(value, prefix) {
+  const words = String(prefix || "").trim().split(/\s+/u).filter(Boolean);
+  if (words.length === 0) return null;
+  const spans = leadingTokenSpans(value, words.length);
+  if (spans.length !== words.length) return null;
+  let typoCount = 0;
+  for (let i = 0; i < words.length; i += 1) {
+    const actual = spans[i].text;
+    const expected = words[i];
+    if (actual.toLowerCase() === expected.toLowerCase()) continue;
+    if (!isCloseTokenTypo(actual, expected)) return null;
+    typoCount += 1;
+  }
+  if (typoCount !== 1) return null;
+  const end = spans[spans.length - 1].end;
+  return {
+    typoCount,
+    end,
+    interpretation: {
+      original: String(value || "").slice(0, end),
+      corrected: String(prefix || "").trim(),
+    },
+  };
+}
+
+function stripKnownPrefix(value, prefixes) {
+  const text = String(value || "");
+  const lower = text.toLowerCase();
+  for (const prefix of prefixes) {
+    if (lower.startsWith(prefix)) {
+      return { value: text.slice(prefix.length).trimStart(), interpretation: null };
+    }
+  }
+  const matches = prefixes
+    .map((prefix) => fuzzyPrefixMatch(text, prefix))
+    .filter(Boolean)
+    .sort((left, right) =>
+      left.typoCount - right.typoCount || right.end - left.end,
+    );
+  const best = matches[0];
+  if (!best) return null;
+  const next = matches[1];
+  if (next && next.typoCount === best.typoCount && next.end === best.end) {
+    return null;
+  }
+  return {
+    value: text.slice(best.end).trimStart(),
+    interpretation: best.interpretation,
+  };
 }
 
 function suggestNameCorrection(term) {
@@ -9390,21 +9481,73 @@ const FORMALIZATION_VERBS = [
   { verb: "再见", op: "OP:farewell" },
 ];
 
-function detectFormalizationOp(prompt, normalized) {
+function exactFormalizationMatch(prompt, normalized) {
   const haystack = String(normalized || "").toLowerCase();
+  const raw = String(prompt || "");
   const rawLower = String(prompt || "").toLowerCase();
   for (const { verb, op } of FORMALIZATION_VERBS) {
-    if (haystack.startsWith(verb + " ") || haystack === verb) return op;
-    if (rawLower.startsWith(verb + " ") || rawLower === verb) return op;
-    if (haystack.includes(" " + verb + " ")) return op;
+    if (haystack.startsWith(verb + " ") || haystack === verb) {
+      return {
+        op,
+        verb,
+        objectText: haystack === verb ? "" : normalized.slice(verb.length),
+        interpretations: [],
+      };
+    }
+    if (rawLower.startsWith(verb + " ") || rawLower === verb) {
+      return {
+        op,
+        verb,
+        objectText: rawLower === verb ? "" : raw.slice(verb.length),
+        interpretations: [],
+      };
+    }
+    if (haystack.includes(" " + verb + " ")) {
+      return { op, verb, objectText: null, interpretations: [] };
+    }
   }
   return null;
 }
 
-function objectForFormalization(prompt, normalized, op) {
+function fuzzyFormalizationMatch(prompt) {
+  const matches = FORMALIZATION_VERBS
+    .map((entry) => {
+      const match = fuzzyPrefixMatch(prompt, entry.verb);
+      return match ? Object.assign({ entry }, match) : null;
+    })
+    .filter(Boolean)
+    .sort((left, right) =>
+      left.typoCount - right.typoCount || right.end - left.end,
+    );
+  const best = matches[0];
+  if (!best) return null;
+  const peers = matches.filter(
+    (match) => match.typoCount === best.typoCount && match.end === best.end,
+  );
+  if (peers.length > 1) {
+    return {
+      ambiguous: true,
+      suggestions: peers.map((match) => match.entry.verb),
+      interpretations: [],
+    };
+  }
+  return {
+    op: best.entry.op,
+    verb: best.entry.verb,
+    objectText: String(prompt || "").slice(best.end),
+    interpretations: [best.interpretation],
+  };
+}
+
+function detectFormalizationMatch(prompt, normalized) {
+  return exactFormalizationMatch(prompt, normalized) || fuzzyFormalizationMatch(prompt);
+}
+
+function objectForFormalization(prompt, normalized, match) {
   // For search-style ops we extract the explicit query the same way the web
   // search handler does. For other ops we keep the prompt body that follows
   // the detected verb so the tuple shows what the user is asking about.
+  const op = match && match.op;
   if (op === "OP:search" || op === "OP:lookup") {
     const query = extractWebSearchQuery(prompt, normalized);
     if (query) return query;
@@ -9418,6 +9561,9 @@ function objectForFormalization(prompt, normalized, op) {
     if (haystack.startsWith(verb + " ")) {
       return cleanSearchQuery(normalized.slice(verb.length));
     }
+  }
+  if (match && typeof match.objectText === "string") {
+    return cleanSearchQuery(match.objectText);
   }
   return cleanSearchQuery(normalized || "");
 }
@@ -9433,8 +9579,8 @@ function formatFormalizationTuple(parts) {
 }
 
 function buildFormalization(prompt, normalized) {
-  const op = detectFormalizationOp(prompt, normalized);
-  if (!op) {
+  const match = detectFormalizationMatch(prompt, normalized);
+  if (!match || match.ambiguous) {
     const fallback = normalized || "(empty)";
     return {
       raw: String(prompt || ""),
@@ -9442,15 +9588,19 @@ function buildFormalization(prompt, normalized) {
       verb: "OP:express",
       object: virtualObjectId(fallback),
       tuple: formatFormalizationTuple(["@USER", "OP:express", virtualObjectId(fallback)]),
+      needsClarification: Boolean(match && match.ambiguous),
+      suggestions: match && match.suggestions ? match.suggestions : [],
+      interpretations: [],
     };
   }
-  const object = objectForFormalization(prompt, normalized, op);
+  const object = objectForFormalization(prompt, normalized, match);
   return {
     raw: String(prompt || ""),
     subject: "@USER",
-    verb: op,
+    verb: match.op,
     object: virtualObjectId(object),
-    tuple: formatFormalizationTuple(["@USER", op, virtualObjectId(object)]),
+    tuple: formatFormalizationTuple(["@USER", match.op, virtualObjectId(object)]),
+    interpretations: match.interpretations || [],
   };
 }
 
@@ -9460,6 +9610,25 @@ function formalizationDetail(formalization) {
   }
   const arrow = formalization.raw && formalization.tuple ? " -> " : "";
   return `${formalization.raw || ""}${arrow}${formalization.tuple || ""}`.trim();
+}
+
+function formalizationClarificationMessage(formalization, language) {
+  const suggestions = Array.isArray(formalization && formalization.suggestions)
+    ? formalization.suggestions
+    : [];
+  const rendered = suggestions.length > 0
+    ? suggestions.map((item) => `"${item}"`).join(", ")
+    : "one of the known commands";
+  if (language === "ru") {
+    return `Не уверен, как интерпретировать этот запрос. Вы имели в виду ${rendered}?`;
+  }
+  if (language === "zh") {
+    return `我不确定如何解释这个请求。你是指 ${rendered} 吗？`;
+  }
+  if (language === "hi") {
+    return `मुझे पक्का नहीं है कि इस अनुरोध को कैसे समझूं। क्या आपका मतलब ${rendered} था?`;
+  }
+  return `I am not sure how to interpret that request. Did you mean ${rendered}?`;
 }
 
 // Once a handler resolves the search object to a concrete entity, this helper
@@ -9497,6 +9666,7 @@ async function solve(prompt, history, prefs) {
       verb: formalization.verb,
       object: formalization.object,
       tuple: formalization.tuple,
+      interpretations: formalization.interpretations || [],
     },
   });
   const language = detectLanguage(prompt);
@@ -9513,6 +9683,20 @@ async function solve(prompt, history, prefs) {
     resolved: null,
     language,
   };
+
+  if (formalization.needsClarification) {
+    events.push("formalization:ambiguous");
+    steps.push({
+      step: "clarify_formalization",
+      detail: (formalization.suggestions || []).join(", "),
+    });
+    return finalize(events, steps, toolCalls, {
+      intent: "clarification",
+      content: formalizationClarificationMessage(formalization, language),
+      confidence: 0.4,
+      evidence: ["formalization:ambiguous"],
+    }, formalizationContext);
+  }
 
   const behaviorRule = tryBehaviorRules(prompt, normalized, history);
   if (behaviorRule) {
@@ -9848,6 +10032,51 @@ function applyResolvedFormalization(events, steps, formalizationContext, answer)
   });
 }
 
+function collectInterpretations(formalizationContext, answer) {
+  const combined = [];
+  const pushAll = (items) => {
+    if (!Array.isArray(items)) return;
+    for (const item of items) {
+      if (!item || !item.original || !item.corrected) continue;
+      combined.push({
+        original: String(item.original),
+        corrected: String(item.corrected),
+      });
+    }
+  };
+  pushAll(
+    formalizationContext &&
+      formalizationContext.initial &&
+      formalizationContext.initial.interpretations,
+  );
+  pushAll(answer && answer.interpretations);
+  const seen = new Set();
+  return combined.filter((item) => {
+    const key = `${item.original.toLowerCase()}\u0000${item.corrected.toLowerCase()}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+function interpretationStatements(interpretations) {
+  return interpretations
+    .map((item) => `Interpreted "${item.original}" as "${item.corrected}".`)
+    .join("\n");
+}
+
+function applyVisibleInterpretations(answer, interpretations) {
+  if (!answer || interpretations.length === 0) return answer;
+  const statements = interpretationStatements(interpretations);
+  return Object.assign({}, answer, {
+    content: `${statements}\n\n${String(answer.content || "")}`,
+    evidence: [
+      ...(Array.isArray(answer.evidence) ? answer.evidence : []),
+      ...interpretations.map((item) => `interpretation:${item.original}->${item.corrected}`),
+    ],
+  });
+}
+
 function deformalizeProjection(formalizationContext, answer) {
   const tuple =
     (formalizationContext &&
@@ -9872,6 +10101,8 @@ function deformalizeProjection(formalizationContext, answer) {
 }
 
 function finalize(events, steps, toolCalls, answer, formalizationContext) {
+  const interpretations = collectInterpretations(formalizationContext, answer);
+  answer = applyVisibleInterpretations(answer, interpretations);
   applyResolvedFormalization(events, steps, formalizationContext, answer);
   const evidence = Array.isArray(answer.evidence) ? answer.evidence : [];
   const projection = deformalizeProjection(formalizationContext, answer);
