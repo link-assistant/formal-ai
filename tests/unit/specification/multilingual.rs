@@ -144,40 +144,69 @@ fn russian_concept_question_returns_concept_lookup_intent() {
     );
 }
 
-// Issue #161: "что такое граф" should be answered from the local concept seed,
-// and with associative project promotion enabled by default it should explain
-// graphs through the Link Foundation meta-theory / Links Notation lens.
+// Issue #161: graph prompts should be answered from the local concept seed in
+// every supported language. With associative project promotion enabled by
+// default, each localized answer explains graphs through the Link Foundation
+// meta-theory / Links Notation lens.
 #[test]
-fn russian_graph_question_promotes_links_notation_context() {
-    let response = answer("что такое граф");
-    let lower = response.answer.to_lowercase();
+fn graph_questions_promote_links_notation_context_across_supported_languages() {
+    let cases: &[(&str, &str, &[&str])] = &[
+        (
+            "what is graph",
+            "language:en",
+            &["Graph", "vertices", "edges", "Links Notation"],
+        ),
+        (
+            "что такое граф",
+            "language:ru",
+            &["Граф", "вершин", "ребер", "Links Notation", "сеть связей"],
+        ),
+        (
+            "ग्राफ क्या है",
+            "language:hi",
+            &["ग्राफ", "शीर्ष", "किनार", "Links Notation", "links network"],
+        ),
+        (
+            "图是什么",
+            "language:zh",
+            &["图", "顶点", "边", "Links Notation", "链接网络"],
+        ),
+    ];
 
-    assert_eq!(
-        response.intent, "concept_lookup",
-        "Russian graph question should resolve as concept_lookup, got {} -> {}",
-        response.intent, response.answer
-    );
-    assert_ne!(
-        response.intent, "unknown",
-        "Russian graph question must not fall through to unknown"
-    );
-    assert!(
-        lower.contains("граф") && lower.contains("вершин") && lower.contains("реб"),
-        "answer should define a graph using vertices and edges, got: {}",
-        response.answer
-    );
-    assert!(
-        response.answer.contains("Links Notation") && lower.contains("сеть связей"),
-        "answer should promote the Links Notation / links-network framing, got: {}",
-        response.answer
-    );
-    assert!(
-        response
-            .answer
-            .contains("https://github.com/link-foundation/meta-theory"),
-        "answer should cite the Link Foundation meta-theory repository, got: {}",
-        response.answer
-    );
+    for (prompt, language_link, fragments) in cases {
+        let response = answer(prompt);
+        assert_eq!(
+            response.intent, "concept_lookup",
+            "graph question {prompt:?} should resolve as concept_lookup, got {} -> {}",
+            response.intent, response.answer
+        );
+        assert_ne!(
+            response.intent, "unknown",
+            "graph question {prompt:?} must not fall through to unknown"
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == language_link),
+            "graph question {prompt:?} should record {language_link}, got {:?}",
+            response.evidence_links
+        );
+        for fragment in *fragments {
+            assert!(
+                response.answer.contains(fragment),
+                "graph answer for {prompt:?} should contain {fragment:?}, got: {}",
+                response.answer
+            );
+        }
+        assert!(
+            response
+                .answer
+                .contains("https://github.com/link-foundation/meta-theory"),
+            "graph answer for {prompt:?} should cite the Link Foundation meta-theory repository, got: {}",
+            response.answer
+        );
+    }
 }
 
 #[test]

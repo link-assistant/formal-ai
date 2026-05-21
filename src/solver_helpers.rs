@@ -802,6 +802,8 @@ mod tests {
         assert!(lookup_term("Википедия"));
         assert!(lookup_term("विकिपीडिया"));
         assert!(lookup_term("维基百科"));
+        assert!(lookup_term("recursive digital filter"));
+        assert!(lookup_term("IIR滤波器"));
     }
 
     #[test]
