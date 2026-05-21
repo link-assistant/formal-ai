@@ -13,6 +13,7 @@ mod software_project;
 mod software_project_code;
 mod user_intent;
 mod web_requests;
+mod web_search_intent;
 
 pub use behavior_rules::try_behavior_rules;
 pub use benchmark_prompts::{

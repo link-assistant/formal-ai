@@ -6282,6 +6282,10 @@ pub fn apply_command(mut records: Vec<ProjectRecord>, command: ProjectCommand) -
     records
 }`;
 
+function containsAnySubstring(value, needles) {
+  return needles.some((needle) => value.includes(needle));
+}
+
 function containsToken(normalized, token) {
   return String(normalized || "").split(/\s+/).includes(token);
 }
@@ -6360,7 +6364,7 @@ function extractSoftwareFeatures(prompt) {
       const cleaned = clause.trim();
       if (!cleaned) continue;
       const lower = cleaned.toLowerCase();
-      if (!containsAny(lower, SOFTWARE_FEATURE_MARKERS)) continue;
+      if (!containsAnySubstring(lower, SOFTWARE_FEATURE_MARKERS)) continue;
       const feature = sentenceCase(cleaned);
       if (feature && !features.includes(feature)) features.push(feature);
     }
@@ -6391,22 +6395,22 @@ function isGameUnitTracker(normalized) {
 
 function classifySoftwareRequirement(requirement, gameTracker) {
   const lower = String(requirement || "").toLowerCase();
-  if (gameTracker || containsAny(lower, ["track", "hp", "status", "damage", "cooldown"])) {
+  if (gameTracker || containsAnySubstring(lower, ["track", "hp", "status", "damage", "cooldown"])) {
     return "state_tracking";
   }
-  if (containsAny(lower, ["import", "export", "csv", "backup", "report", "calendar"])) {
+  if (containsAnySubstring(lower, ["import", "export", "csv", "backup", "report", "calendar"])) {
     return "data_exchange";
   }
-  if (containsAny(lower, ["reminder", "notification", "schedule", "weekly"])) {
+  if (containsAnySubstring(lower, ["reminder", "notification", "schedule", "weekly"])) {
     return "automation";
   }
-  if (containsAny(lower, ["validate", "check", "conflict", "audit"])) {
+  if (containsAnySubstring(lower, ["validate", "check", "conflict", "audit"])) {
     return "validation";
   }
-  if (containsAny(lower, ["api", "discord", "telegram", "github", "browser"])) {
+  if (containsAnySubstring(lower, ["api", "discord", "telegram", "github", "browser"])) {
     return "integration";
   }
-  if (containsAny(lower, ["dashboard", "chart", "filter", "progress"])) {
+  if (containsAnySubstring(lower, ["dashboard", "chart", "filter", "progress"])) {
     return "user_interface";
   }
   return "project_behavior";
@@ -6443,14 +6447,14 @@ function deriveSoftwareSubtasks(requirements, gameTracker) {
 }
 
 function detectSoftwareDeliveryMode(normalized) {
-  if (containsAny(normalized, ["manual instruction", "instructions", "no code"])) {
+  if (containsAnySubstring(normalized, ["manual instruction", "instructions", "no code"])) {
     return "manual_instructions";
   }
-  if (containsAny(normalized, ["execute", "run command", "run it", "webvm"])) {
+  if (containsAnySubstring(normalized, ["execute", "run command", "run it", "webvm"])) {
     return "immediate_execution";
   }
   if (
-    containsAny(normalized, ["bash", "shell"]) ||
+    containsAnySubstring(normalized, ["bash", "shell"]) ||
     containsAnyToken(normalized, ["script", "scripts", "commands"])
   ) {
     return "script_generation";
@@ -6459,16 +6463,16 @@ function detectSoftwareDeliveryMode(normalized) {
 }
 
 function detectSoftwareImplementationLanguage(normalized) {
-  if (containsAny(normalized, ["python", "django", "fastapi"])) return "python";
-  if (containsAny(normalized, ["rust", "cargo"])) return "rust";
-  if (containsAny(normalized, ["javascript", "node.js", "node "])) return "javascript";
+  if (containsAnySubstring(normalized, ["python", "django", "fastapi"])) return "python";
+  if (containsAnySubstring(normalized, ["rust", "cargo"])) return "rust";
+  if (containsAnySubstring(normalized, ["javascript", "node.js", "node "])) return "javascript";
   return "typescript";
 }
 
 function softwareApprovalGates(normalized, deliveryMode) {
   const gates = ["task_formalization", "implementation_plan"];
   if (normalized.includes("requirement")) gates.push("requirements");
-  if (containsAny(normalized, ["each step", "step by step"])) gates.push("each_step");
+  if (containsAnySubstring(normalized, ["each step", "step by step"])) gates.push("each_step");
   if (deliveryMode === "code_generation") {
     gates.push("generated_code");
   } else if (deliveryMode === "manual_instructions") {
@@ -6477,7 +6481,7 @@ function softwareApprovalGates(normalized, deliveryMode) {
     gates.push("generated_script");
     gates.push("bash_command");
   }
-  if (containsAny(normalized, ["shell", "bash", "command", "docker", "webvm"])) {
+  if (containsAnySubstring(normalized, ["shell", "bash", "command", "docker", "webvm"])) {
     gates.push("bash_command");
   }
   return [...new Set(gates)].sort();
@@ -7298,6 +7302,484 @@ function stripSearchPrefix(prompt, prefix) {
   return "";
 }
 
+const WEB_SEARCH_EXPLICIT_PREFIXES = [
+  "search the web for ",
+  "search web for ",
+  "search the internet for ",
+  "search internet for ",
+  "search online for ",
+  "search for information about ",
+  "search for information on ",
+  "web search for ",
+  "find on the internet ",
+  "find online ",
+  "find information about ",
+  "find information on ",
+  "find detailed information about ",
+  "find detailed information on ",
+  "find info about ",
+  "find info on ",
+  "look up information about ",
+  "look up information on ",
+  "look up info about ",
+  "look up info on ",
+  "look up online ",
+  "найди в интернете ",
+  "поищи в интернете ",
+  "поиск в интернете ",
+  "найди онлайн ",
+  "поищи онлайн ",
+  "найди в сети ",
+  "поищи в сети ",
+  "найди информацию в интернете о ",
+  "найди информацию в интернете об ",
+  "поищи информацию в интернете о ",
+  "поищи информацию в интернете об ",
+  "найди информацию о ",
+  "найди информацию об ",
+  "найди информацию про ",
+  "найди информацию по ",
+  "найти информацию о ",
+  "найти информацию об ",
+  "поищи информацию о ",
+  "поищи информацию об ",
+  "поищи информацию про ",
+  "поищи информацию по ",
+  "найди инфу о ",
+  "найди инфу об ",
+  "поищи инфу о ",
+  "поищи инфу об ",
+  "найди сведения о ",
+  "найди сведения об ",
+  "поищи сведения о ",
+  "поищи сведения об ",
+  "найди материалы о ",
+  "найди материалы об ",
+  "поищи материалы о ",
+  "поищи материалы об ",
+];
+
+const WEB_SEARCH_ACTION_MARKERS = [
+  " search ",
+  " find ",
+  " look up ",
+  " lookup ",
+  " research ",
+  " investigate ",
+  " найди ",
+  " найти ",
+  " поищи ",
+  " поиск ",
+  " поискать ",
+  " ищи ",
+  " разыщи ",
+  " узнай ",
+  "खोज",
+  "ढूंढ",
+  "ढूँढ",
+  "搜索",
+  "查找",
+  "查询",
+  "檢索",
+  "检索",
+  "搜一下",
+  "查一下",
+];
+
+const WEB_SEARCH_STRONG_ACTION_MARKERS = [
+  " search ",
+  " look up ",
+  " lookup ",
+  " research ",
+  " investigate ",
+  " поищи ",
+  " поиск ",
+  " поискать ",
+  " ищи ",
+  "खोज",
+  "ढूंढ",
+  "ढूँढ",
+  "搜索",
+  "查找",
+  "查询",
+  "檢索",
+  "检索",
+  "搜一下",
+  "查一下",
+];
+
+const WEB_SEARCH_SIGNAL_MARKERS = [
+  " web ",
+  " internet ",
+  " online ",
+  " wikipedia ",
+  " wikidata ",
+  " wiktionary ",
+  " information ",
+  " info ",
+  " details ",
+  " data ",
+  " material ",
+  " materials ",
+  " resource ",
+  " resources ",
+  " source ",
+  " sources ",
+  " article ",
+  " articles ",
+  " fact ",
+  " facts ",
+  " интернете ",
+  " интернет ",
+  " онлайн ",
+  " сети ",
+  " википед",
+  " викиданн",
+  " информац",
+  " инфу ",
+  " сведения ",
+  " материал",
+  " данные ",
+  " источник",
+  "जानकारी",
+  "सूचना",
+  "विवरण",
+  "सामग्री",
+  "स्रोत",
+  "लेख",
+  "इंटरनेट",
+  "ऑनलाइन",
+  "वेब",
+  "विकिपीडिया",
+  "विकिडाटा",
+  "信息",
+  "資料",
+  "资料",
+  "内容",
+  "來源",
+  "来源",
+  "资源",
+  "資源",
+  "文章",
+  "百科",
+  "维基百科",
+  "維基百科",
+  "维基数据",
+  "維基數據",
+  "网上",
+  "網上",
+  "在线",
+  "在線",
+  "互联网",
+  "網路",
+  "网络",
+];
+
+const SEARCH_QUERY_AFTER_MARKERS = [
+  " about ",
+  " on ",
+  " regarding ",
+  " concerning ",
+  " for ",
+  " о ",
+  " об ",
+  " про ",
+  " по ",
+  " насчет ",
+  " относительно ",
+  "关于",
+  "關於",
+  "有关",
+  "有關",
+];
+
+const SEARCH_QUERY_BEFORE_MARKERS = [
+  " के बारे में",
+  " के विषय में",
+  " से संबंधित",
+  " पर",
+  " की जानकारी",
+  " की सूचना",
+];
+
+const SEARCH_ACTION_AFTER_MARKERS = [
+  "search for ",
+  "search ",
+  "find ",
+  "look up ",
+  "lookup ",
+  "research ",
+  "investigate ",
+  "найди ",
+  "найти ",
+  "поищи ",
+  "поискать ",
+  "ищи ",
+  "разыщи ",
+  "узнай ",
+  "खोजो ",
+  "खोजें ",
+  "खोजिए ",
+  "ढूंढो ",
+  "ढूँढो ",
+  "ढूंढें ",
+  "ढूँढें ",
+  "搜索",
+  "查找",
+  "查询",
+  "檢索",
+  "检索",
+  "搜一下",
+  "查一下",
+];
+
+const SEARCH_QUERY_LEADING_NOISE = [
+  "please ",
+  "can you ",
+  "could you ",
+  "would you ",
+  "me ",
+  "the ",
+  "some ",
+  "detailed ",
+  "more ",
+  "current ",
+  "latest ",
+  "information about ",
+  "information on ",
+  "info about ",
+  "info on ",
+  "details about ",
+  "details on ",
+  "data about ",
+  "data on ",
+  "подробные ",
+  "информацию о ",
+  "информацию об ",
+  "инфу о ",
+  "инфу об ",
+  "сведения о ",
+  "сведения об ",
+  "материалы о ",
+  "материалы об ",
+  "материалы по ",
+  "данные о ",
+  "данные об ",
+  "о ",
+  "об ",
+  "про ",
+  "по ",
+  "कृपया ",
+  "जानकारी ",
+  "सूचना ",
+  "विवरण ",
+  "सामग्री ",
+  "关于",
+  "關於",
+  "有关",
+  "有關",
+];
+
+const SEARCH_QUERY_TRAILING_NOISE = [
+  " online",
+  " on the internet",
+  " on the web",
+  " on wikipedia",
+  " in wikipedia",
+  " from wikipedia",
+  " information",
+  " info",
+  " details",
+  " data",
+  " material",
+  " materials",
+  " resources",
+  " sources",
+  " articles",
+  " facts",
+  " в интернете",
+  " онлайн",
+  " в сети",
+  " в википедии",
+  " википедии",
+  " информация",
+  " сведения",
+  " материалы",
+  " данные",
+  " के बारे में",
+  " के विषय में",
+  " से संबंधित",
+  " पर",
+  " की जानकारी",
+  " की सूचना",
+  " जानकारी",
+  " सूचना",
+  " विवरण",
+  " सामग्री",
+  " स्रोत",
+  " विकिपीडिया में",
+  " ऑनलाइन",
+  " इंटरनेट पर",
+  " खोजो",
+  " खोजें",
+  " खोजिए",
+  " ढूंढो",
+  " ढूँढो",
+  " ढूंढें",
+  " ढूँढें",
+  "的信息",
+  "的資料",
+  "的资料",
+  "信息",
+  "資料",
+  "资料",
+  "内容",
+  "文章",
+  "在维基百科上",
+  "在維基百科上",
+  "维基百科",
+  "維基百科",
+  "网上",
+  "網上",
+  "在线",
+  "在線",
+  "搜索",
+  "查找",
+  "查一下",
+  "搜一下",
+];
+
+const SEARCH_QUERY_SOURCE_ONLY = [
+  "web",
+  "internet",
+  "online",
+  "wikipedia",
+  "wikidata",
+  "wiktionary",
+  "интернет",
+  "интернете",
+  "онлайн",
+  "сети",
+  "википедии",
+  "इंटरनेट",
+  "ऑनलाइन",
+  "वेब",
+  "विकिपीडिया",
+  "网上",
+  "網上",
+  "在线",
+  "在線",
+  "互联网",
+  "網路",
+  "网络",
+  "维基百科",
+  "維基百科",
+];
+
+function containsSearchMarker(normalized, marker) {
+  const text = String(normalized || "");
+  if (marker.startsWith(" ") || marker.endsWith(" ")) {
+    return ` ${text} `.includes(marker);
+  }
+  return text.includes(marker);
+}
+
+function containsAnySearchMarker(normalized, markers) {
+  return markers.some((marker) => containsSearchMarker(normalized, marker));
+}
+
+function stripSearchNoisePrefix(value, prefix) {
+  const text = cleanSearchQuery(value);
+  return text.toLowerCase().startsWith(prefix)
+    ? cleanSearchQuery(text.slice(prefix.length))
+    : text;
+}
+
+function stripSearchNoiseSuffix(value, suffix) {
+  const text = cleanSearchQuery(value);
+  return text.toLowerCase().endsWith(suffix)
+    ? cleanSearchQuery(text.slice(0, text.length - suffix.length))
+    : text;
+}
+
+function cleanSemanticSearchQuery(value) {
+  let query = cleanSearchQuery(value);
+  while (true) {
+    const before = query;
+    for (const prefix of SEARCH_QUERY_LEADING_NOISE) {
+      query = stripSearchNoisePrefix(query, prefix);
+    }
+    for (const suffix of SEARCH_QUERY_TRAILING_NOISE) {
+      query = stripSearchNoiseSuffix(query, suffix);
+    }
+    if (query === before) return query;
+  }
+}
+
+function validSearchQuery(value) {
+  const query = cleanSemanticSearchQuery(value);
+  const queryKey = query.toLowerCase();
+  if (SEARCH_QUERY_SOURCE_ONLY.includes(queryKey)) return "";
+  return query && !normalizeUrlCandidate(query) ? query : "";
+}
+
+function rawSearchMarkerIndex(prompt, marker) {
+  return String(prompt || "").toLowerCase().indexOf(marker);
+}
+
+function queryAfterRawMarker(prompt, marker) {
+  const text = String(prompt || "").trim();
+  const index = rawSearchMarkerIndex(text, marker);
+  return index === -1 ? "" : validSearchQuery(text.slice(index + marker.length));
+}
+
+function queryBeforeRawMarker(prompt, marker) {
+  const text = String(prompt || "").trim();
+  const index = rawSearchMarkerIndex(text, marker);
+  return index === -1 ? "" : validSearchQuery(text.slice(0, index));
+}
+
+function queryAfterNormalizedMarker(normalized, marker) {
+  const index = String(normalized || "").indexOf(marker);
+  return index === -1 ? "" : validSearchQuery(normalized.slice(index + marker.length));
+}
+
+function queryBeforeNormalizedMarker(normalized, marker) {
+  const index = String(normalized || "").indexOf(marker);
+  return index === -1 ? "" : validSearchQuery(normalized.slice(0, index));
+}
+
+function extractSemanticWebSearchQuery(prompt, normalized) {
+  const hasAction = containsAnySearchMarker(normalized, WEB_SEARCH_ACTION_MARKERS);
+  if (!hasAction) return "";
+  const hasStrongAction = containsAnySearchMarker(
+    normalized,
+    WEB_SEARCH_STRONG_ACTION_MARKERS,
+  );
+  if (!hasStrongAction && !containsAnySearchMarker(normalized, WEB_SEARCH_SIGNAL_MARKERS)) {
+    return "";
+  }
+  for (const marker of SEARCH_QUERY_AFTER_MARKERS) {
+    const query =
+      queryAfterRawMarker(prompt, marker) ||
+      queryAfterNormalizedMarker(normalized, marker);
+    if (query) return query;
+  }
+  for (const marker of SEARCH_QUERY_BEFORE_MARKERS) {
+    const query =
+      queryBeforeRawMarker(prompt, marker) ||
+      queryBeforeNormalizedMarker(normalized, marker);
+    if (query) return query;
+  }
+  for (const marker of SEARCH_ACTION_AFTER_MARKERS) {
+    const query =
+      queryAfterRawMarker(prompt, marker) ||
+      queryAfterNormalizedMarker(normalized, marker);
+    if (query) return query;
+  }
+  return "";
+}
+
 function extractWebSearchQuery(prompt, normalized) {
   if (
     normalized.startsWith("search conversations ") ||
@@ -7306,35 +7788,17 @@ function extractWebSearchQuery(prompt, normalized) {
   ) {
     return "";
   }
-  const prefixes = [
-    "search the web for ",
-    "search web for ",
-    "search the internet for ",
-    "search internet for ",
-    "search online for ",
-    "web search for ",
-    "find on the internet ",
-    "find online ",
-    "look up online ",
-    "найди в интернете ",
-    "поищи в интернете ",
-    "поиск в интернете ",
-    "найди онлайн ",
-    "поищи онлайн ",
-    "найди в сети ",
-    "поищи в сети ",
-  ];
-  for (const prefix of prefixes) {
+  for (const prefix of WEB_SEARCH_EXPLICIT_PREFIXES) {
     const rawQuery = stripSearchPrefix(prompt, prefix);
     const normalizedQuery = normalized.startsWith(prefix)
-      ? cleanSearchQuery(normalized.slice(prefix.length))
+      ? validSearchQuery(normalized.slice(prefix.length))
       : "";
     const query = rawQuery || normalizedQuery;
-    if (query && !normalizeUrlCandidate(query)) {
+    if (query) {
       return query;
     }
   }
-  return "";
+  return extractSemanticWebSearchQuery(prompt, normalized);
 }
 
 function cleanProceduralFragment(value) {
