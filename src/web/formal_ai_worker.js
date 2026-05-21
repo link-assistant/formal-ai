@@ -7471,6 +7471,8 @@ const SEARCH_QUERY_LEADING_NOISE = [
 
 const SEARCH_QUERY_TRAILING_NOISE = [
   " online",
+  " on the internet",
+  " on the web",
   " on wikipedia",
   " in wikipedia",
   " from wikipedia",
@@ -7536,6 +7538,33 @@ const SEARCH_QUERY_TRAILING_NOISE = [
   "搜一下",
 ];
 
+const SEARCH_QUERY_SOURCE_ONLY = [
+  "web",
+  "internet",
+  "online",
+  "wikipedia",
+  "wikidata",
+  "wiktionary",
+  "интернет",
+  "интернете",
+  "онлайн",
+  "сети",
+  "википедии",
+  "इंटरनेट",
+  "ऑनलाइन",
+  "वेब",
+  "विकिपीडिया",
+  "网上",
+  "網上",
+  "在线",
+  "在線",
+  "互联网",
+  "網路",
+  "网络",
+  "维基百科",
+  "維基百科",
+];
+
 function containsSearchMarker(normalized, marker) {
   const text = String(normalized || "");
   if (marker.startsWith(" ") || marker.endsWith(" ")) {
@@ -7578,6 +7607,8 @@ function cleanSemanticSearchQuery(value) {
 
 function validSearchQuery(value) {
   const query = cleanSemanticSearchQuery(value);
+  const queryKey = query.toLowerCase();
+  if (SEARCH_QUERY_SOURCE_ONLY.includes(queryKey)) return "";
   return query && !normalizeUrlCandidate(query) ? query : "";
 }
 

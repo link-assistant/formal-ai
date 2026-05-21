@@ -169,6 +169,20 @@ function assertMatrixMatchesSupportedLanguages(name, matrix) {
   );
 }
 
+function assertBalancedLanguageCaseCounts(name, matrix) {
+  const counts = Object.entries(matrix).map(([language, entries]) => [
+    language,
+    entries.length,
+  ]);
+  const expected = counts[0]?.[1] ?? 0;
+  for (const [language, count] of counts) {
+    assert(
+      count === expected,
+      `${name} must add the same number of cases for every supported language: expected ${expected} for ${language}, got ${count}`,
+    );
+  }
+}
+
 const howAreYouGreetingPhrases = {
   en: ['how are you', 'how are you doing'],
   ru: ['как дела', 'как твои дела'],
@@ -244,6 +258,43 @@ for (const [language, entries] of Object.entries(testStatusPatterns)) {
           pattern.text === entry.text,
       ),
       `prompt-patterns.lino must document ${language} test_status ${entry.kind} ${JSON.stringify(entry.text)}`,
+    );
+  }
+}
+
+const webSearchSourceMarkerCases = {
+  en: [{ prompt: 'Find apple on the internet', query: 'apple' }],
+  ru: [{ prompt: 'Найди яблоко в интернете', query: 'яблоко' }],
+  hi: [{ prompt: 'सेब के बारे में इंटरनेट पर खोजो', query: 'सेब' }],
+  zh: [{ prompt: '查找苹果网上信息', query: '苹果' }],
+};
+
+assertMatrixMatchesSupportedLanguages(
+  'webSearchSourceMarkerCases',
+  webSearchSourceMarkerCases,
+);
+assertBalancedLanguageCaseCounts(
+  'webSearchSourceMarkerCases',
+  webSearchSourceMarkerCases,
+);
+
+for (const [language, entries] of Object.entries(webSearchSourceMarkerCases)) {
+  const rustWebRequestTests = readRepoFile('tests/unit/web_requests.rs');
+  const browserSearchTests = readRepoFile('tests/e2e/tests/issue-153.spec.js');
+  for (const entry of entries) {
+    assert(
+      entry.prompt.trim() && entry.query.trim(),
+      `webSearchSourceMarkerCases ${language} entries must define prompt and query`,
+    );
+    assert(
+      rustWebRequestTests.includes(entry.prompt) &&
+        rustWebRequestTests.includes(entry.query),
+      `tests/unit/web_requests.rs must cover ${language} web-search source-marker prompt ${JSON.stringify(entry.prompt)}`,
+    );
+    assert(
+      browserSearchTests.includes(entry.prompt) &&
+        browserSearchTests.includes(entry.query),
+      `tests/e2e/tests/issue-153.spec.js must cover ${language} web-search source-marker prompt ${JSON.stringify(entry.prompt)}`,
     );
   }
 }

@@ -464,6 +464,22 @@ test.describe('Issue #153 — search UX, formalization, and dedupe', () => {
 
     const cases = [
       {
+        prompt: 'Find apple on the internet',
+        query: 'apple',
+      },
+      {
+        prompt: 'Найди яблоко в интернете',
+        query: 'яблоко',
+      },
+      {
+        prompt: 'सेब के बारे में इंटरनेट पर खोजो',
+        query: 'सेब',
+      },
+      {
+        prompt: '查找苹果网上信息',
+        query: '苹果',
+      },
+      {
         prompt: 'Find detailed information about Rust programming',
         query: 'Rust programming',
       },

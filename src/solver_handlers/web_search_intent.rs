@@ -328,6 +328,8 @@ const SEARCH_QUERY_LEADING_NOISE: &[&str] = &[
 
 const SEARCH_QUERY_TRAILING_NOISE: &[&str] = &[
     " online",
+    " on the internet",
+    " on the web",
     " on wikipedia",
     " in wikipedia",
     " from wikipedia",
@@ -393,6 +395,33 @@ const SEARCH_QUERY_TRAILING_NOISE: &[&str] = &[
     "搜一下",
 ];
 
+const SEARCH_QUERY_SOURCE_ONLY: &[&str] = &[
+    "web",
+    "internet",
+    "online",
+    "wikipedia",
+    "wikidata",
+    "wiktionary",
+    "интернет",
+    "интернете",
+    "онлайн",
+    "сети",
+    "википедии",
+    "इंटरनेट",
+    "ऑनलाइन",
+    "वेब",
+    "विकिपीडिया",
+    "网上",
+    "網上",
+    "在线",
+    "在線",
+    "互联网",
+    "網路",
+    "网络",
+    "维基百科",
+    "維基百科",
+];
+
 fn extract_semantic_web_search_query(normalized: &str) -> Option<String> {
     let has_action = contains_any_search_marker(normalized, WEB_SEARCH_ACTION_MARKERS);
     if !has_action {
@@ -446,7 +475,11 @@ fn contains_search_marker(normalized: &str, marker: &str) -> bool {
 
 fn valid_search_query(value: &str) -> Option<String> {
     let query = clean_semantic_search_query(value);
-    if query.is_empty() || normalize_url_candidate(&query).is_some() {
+    let query_key = query.to_lowercase();
+    if query.is_empty()
+        || SEARCH_QUERY_SOURCE_ONLY.contains(&query_key.as_str())
+        || normalize_url_candidate(&query).is_some()
+    {
         return None;
     }
     Some(query)
