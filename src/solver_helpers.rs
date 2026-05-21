@@ -347,18 +347,8 @@ pub fn normalize_meaning(surface: &str) -> String {
 }
 
 pub fn canonical_meaning_token(raw: &str) -> String {
-    match raw {
-        "hello" | "hi" | "hey" | "привет" | "здравствуйте" | "नमस्ते" | "你好" => {
-            String::from("greeting")
-        }
-        "hellohowareyou"
-        | "какдела"
-        | "какутебядела"
-        | "какувасдела"
-        | "приветкакдела"
-        | "здравствуйтекаквашидела" => String::from("greeting_how_are_you"),
-        _ => String::from(raw),
-    }
+    crate::translation::canonical_token_for_normalized(raw)
+        .map_or_else(|| String::from(raw), String::from)
 }
 
 pub fn infer_source_from_prompt(prompt: &str) -> &'static str {
@@ -415,32 +405,24 @@ pub fn infer_program_languages_from_code(
     Some((source, target))
 }
 
+/// Translate a surface form by going through the offline meaning registry:
+/// formalize the source surface into a canonical meaning token, then
+/// deformalize the token into the target language. Falls back to a
+/// language-tagged placeholder when no registry entry matches, which
+/// preserves the trace for unknown phrases.
+///
+/// The caller is responsible for matching the source's leading case and
+/// terminal punctuation; see [`crate::translation::match_source_formatting`].
 pub fn translate_surface(surface: &str, source: &str, target: &str) -> String {
-    let _ = source;
-    let normalized = surface.trim().to_lowercase();
-    match target {
-        "ru" => match normalized.as_str() {
-            "hello" | "hi" => String::from("Привет"),
-            "hello, how are you?" => String::from("Здравствуйте, как ваши дела?"),
-            _ => format!("[ru] {surface}"),
-        },
-        "en" => match normalized.as_str() {
-            "привет" => String::from("Hi"),
-            "как дела"
-            | "как дела?"
-            | "как у тебя дела"
-            | "как у тебя дела?"
-            | "как у вас дела"
-            | "как у вас дела?"
-            | "как ваши дела"
-            | "как ваши дела?" => String::from("How are you?"),
-            "hello, how are you?" => String::from("Hello, how are you?"),
-            _ => format!("[en] {surface}"),
-        },
-        "hi" => format!("[hi] {surface}"),
-        "zh" => format!("[zh] {surface}"),
-        _ => surface.to_owned(),
+    if source == target {
+        return surface.to_owned();
     }
+    if let Some(token) = crate::translation::formalize_surface(surface, source) {
+        if let Some(primary) = crate::translation::deformalize_meaning(token, target) {
+            return primary.to_owned();
+        }
+    }
+    format!("[{target}] {surface}")
 }
 
 pub fn extract_concept_from_query(prompt: &str) -> Option<String> {

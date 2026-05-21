@@ -625,12 +625,15 @@ pub fn try_translation(
 
     log.append("language_from", source_slug.to_owned());
     log.append("language_to", target_slug.to_owned());
-    log.append("meaning", meaning_id.clone());
+    log.append("meaning", meaning_id);
 
-    let translated_surface = translate_surface(&surface, source_slug, target_slug);
-    let body = format!(
-        "meaning: {meaning_id}\nsurface ({source_slug}): {surface}\nsurface ({target_slug}): {translated_surface}"
-    );
+    let raw_target = translate_surface(&surface, source_slug, target_slug);
+    let translated_surface = crate::translation::match_source_formatting(&raw_target, &surface);
+    let body = if surface.is_empty() {
+        translated_surface
+    } else {
+        format!("\"{translated_surface}\"")
+    };
     let intent = format!("translate_{source_slug}_to_{target_slug}");
     Some(finalize_simple(
         prompt,

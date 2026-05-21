@@ -21,6 +21,7 @@ pub(crate) mod solver_helpers;
 pub mod summarization;
 pub mod telegram;
 pub mod telegram_runtime;
+pub(crate) mod translation;
 pub(crate) mod unknown_opener;
 pub mod web_engine_core;
 pub mod web_search_core;

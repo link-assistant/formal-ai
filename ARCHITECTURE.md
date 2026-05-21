@@ -548,6 +548,60 @@ to a formalized graph the same way and re-renders into any other language
 the renderer supports. The renderer is a transformation rule (Section 9):
 the input is `(graph, target_language)`; the output is rendered text.
 
+### 10.1 Formalize → Meaning → Deformalize Pipeline
+
+Short conversational translations (greetings, gratitude, yes/no answers,
+identity probes) flow through an offline meaning registry that the Rust
+solver and the browser worker share:
+
+```text
+formalize_surface(surface, source_lang)   -> Option<canonical_token>
+canonical_token                           -> stable_id() -> meaning_id
+deformalize_meaning(canonical_token, tgt) -> Option<target_surface>
+match_source_formatting(target, source)   -> deformalized surface that
+                                              mirrors the source's leading
+                                              capitalization and terminal
+                                              punctuation
+```
+
+The registry lives in `src/translation.rs` and is mirrored in
+`src/web/formal_ai_worker.js`. Each entry records:
+
+- a canonical token (`greeting_how_are_you`, `thank_you`, `yes`, ...);
+- the primary surface form per supported language (`en`, `ru`, `hi`,
+  `zh`);
+- aliases used by the formalizer to collapse paraphrases (lowercased,
+  whitespace-normalized, punctuation-stripped) to the canonical token.
+
+The pipeline preserves the source's surface signal: `match_source_formatting`
+keeps lowercase phrases lowercase, capitalizes targets when the source
+fragment is capitalized, and only emits a terminal `? ! .` (or the
+Chinese full-width equivalents `？ ！ ．`) when the source carried one.
+The meaning ID, source language, and target language remain in
+`evidence_links` so the Links Notation trace is still inspectable; the
+user-facing body is just the deformalized surface.
+
+### 10.2 Online Enrichment Fallback
+
+Surfaces that miss the offline registry can still be translated by
+re-rendering a Wikidata Q-id into the target language. The browser
+worker already integrates `fetchWiktionaryEntry`, the Wikipedia REST
+summary, and the Wikidata `EntityData` endpoint; the documented
+fallback order is:
+
+1. Look up the source surface in the offline meaning registry.
+2. Look up the source surface in `fetchWiktionaryEntry` and inspect its
+   `translations` block for the target language.
+3. Look up the source surface in the Wikipedia REST page summary and
+   follow its interlanguage link to the target.
+4. Fall back to `[<lang>] <surface>` only if every deterministic
+   lookup misses (this is the only case where the placeholder appears).
+
+This keeps formal-ai's offline-first guarantee intact: the registry
+covers the common conversational cases, and the online steps extend
+coverage when a network is available without changing the public
+contract.
+
 ---
 
 ## 11. Configuration

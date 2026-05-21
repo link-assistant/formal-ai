@@ -395,6 +395,63 @@ fn issue_80_software_project_dialogue_requirements_are_traceable() {
 }
 
 #[test]
+fn issue_207_natural_translation_documents_are_present_and_traceable() {
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+
+    let requirements = read(root.join("REQUIREMENTS.md"));
+    assert_contains_all(
+        "REQUIREMENTS.md",
+        &requirements,
+        &[
+            "Issue #207 Natural Translation Pipeline",
+            "| R213 ",
+            "| R214 ",
+            "| R215 ",
+            "match_source_formatting",
+            "formalize_surface",
+            "deformalize_meaning",
+            "src/translation.rs",
+        ],
+    );
+
+    let architecture = read(root.join("ARCHITECTURE.md"));
+    assert_contains_all(
+        "ARCHITECTURE.md",
+        &architecture,
+        &[
+            "Formalize → Meaning → Deformalize Pipeline",
+            "match_source_formatting",
+            "src/translation.rs",
+            "Online Enrichment Fallback",
+        ],
+    );
+
+    let vision = read(root.join("VISION.md"));
+    assert_contains_all(
+        "VISION.md",
+        &vision,
+        &[
+            "preserve the source's surface signal",
+            "match_source_formatting",
+        ],
+    );
+
+    let case_study = read(root.join("docs/case-studies/issue-207/README.md"));
+    assert_contains_all(
+        "docs/case-studies/issue-207/README.md",
+        &case_study,
+        &[
+            "# Issue 207 Case Study",
+            "## Root Causes",
+            "## Requirement Traceability",
+            "## Fixes",
+            "## Verification Plan",
+            "formalize → meaning → deformalize",
+        ],
+    );
+}
+
+#[test]
 fn repository_text_avoids_deferred_labels_requested_by_issue_103() {
     let root = Path::new(env!("CARGO_MANIFEST_DIR"));
     let phrase_space = ["proof", " of ", "concept"].concat();
