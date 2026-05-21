@@ -1,10 +1,11 @@
     Blocking waiting for file lock on package cache
     Blocking waiting for file lock on package cache
     Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
     Blocking waiting for file lock on artifact directory
-   Compiling formal-ai v0.96.0 (/tmp/gh-issue-solver-1779402559702)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.67s
-     Running tests/integration/mod.rs (target/debug/deps/integration-4fb56978cae54d9a)
+   Compiling formal-ai v0.97.0 (/tmp/gh-issue-solver-1779402559702)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 7.65s
+     Running tests/integration/mod.rs (target/debug/deps/integration-95fa7f8cf3cbf320)
 
 running 1 test
 test formal_ai_cli::cli_environments_command_lists_every_supported_surface ... ok

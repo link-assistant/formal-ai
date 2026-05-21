@@ -1,6 +1,9 @@
-   Compiling formal-ai v0.96.0 (/tmp/gh-issue-solver-1779402559702)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.04s
-     Running tests/unit/mod.rs (target/debug/deps/unit-6fac2366806d037b)
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on artifact directory
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 7.27s
+     Running tests/unit/mod.rs (target/debug/deps/unit-9d3f6446b4f1d3f8)
 
 running 1 test
 test docs_requirements::issue_195_dind_telegram_runtime_documents_are_present_and_traceable ... ok
