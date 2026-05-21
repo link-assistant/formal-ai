@@ -346,7 +346,7 @@ test.describe('formal-ai demo UI', () => {
     await expect(arithmeticCapability).not.toContainText(UNKNOWN_ANSWER_MARKER);
 
     const translation = await sendPrompt(page, 'Переведи "как у тебя дела?" на английский.');
-    await expect(translation).toContainText('How are you?');
+    await expect(translation).toContainText('how are you?');
     await expect(translation).not.toContainText(UNKNOWN_ANSWER_MARKER);
 
     const search = await sendPrompt(page, 'Search online for Genshin Impact');

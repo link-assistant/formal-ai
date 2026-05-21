@@ -548,6 +548,84 @@ to a formalized graph the same way and re-renders into any other language
 the renderer supports. The renderer is a transformation rule (Section 9):
 the input is `(graph, target_language)`; the output is rendered text.
 
+### 10.1 Formalize → Meaning → Deformalize Pipeline
+
+Translations flow through a generalized pipeline that resolves any
+surface pair via existing public knowledge bases — Wiktionary's
+translation tables and Wikidata's lexeme/sense graph — instead of a
+hand-written list of phrase pairs:
+
+```text
+formalize(surface, source_lang)
+  -> Wiktionary translation_blocks(source_edition, page)
+  -> sense_blocks ⨯ candidates(target_lang)
+meaning(source_lexeme, target_lexeme)
+  -> Wikidata SPARQL: ?lexeme ontolex:sense ?sense .
+                      ?sense  wdt:P5137     ?meaning .
+  -> MeaningId (priority: Q-item > sense > Wiktionary page)
+deformalize(meaning, target_lang)
+  -> winning candidate by round-trip confirmation
+match_source_formatting(target, source)
+  -> mirrors the source fragment's leading capitalization
+     and terminal punctuation
+```
+
+The pipeline lives under `src/translation/`:
+
+- `src/translation/http.rs` — `HttpClient` trait. The default
+  transport shells out to `curl` so the crate has no TLS dependency.
+- `src/translation/cache.rs` — `CachedHttpClient` persists raw
+  response bodies under `data/translation-cache/<fnv1a>.body` with a
+  sibling `.url` file. Online mode is gated by `FORMAL_AI_LIVE_API`;
+  offline mode reads only from the committed cache, so every test
+  runs deterministically.
+- `src/translation/wiktionary.rs` — parses `{{t|...}}` / `{{t+|...}}`
+  / `{{tt|...}}` / `{{перев-блок|...}}` / `{{翻譯-頂}}...{{翻譯-底}}`
+  templates and splits polysemous entries by `{{trans-top|gloss}}`
+  blocks.
+- `src/translation/wikidata.rs` — runs the canonical lexeme join
+  (`ontolex:sense` / `wdt:P5137`) so two surfaces share a stable
+  `meaning:` id regardless of which language we observe first.
+- `src/translation/meaning.rs` — `MeaningId` selector.
+- `src/translation/pipeline.rs` —
+  `TranslationPipeline::translate(surface, source, target)`.
+- `src/translation/formatting.rs` — `match_source_formatting` keeps
+  lowercase phrases lowercase, capitalizes targets when the source
+  fragment is capitalized, and only emits a terminal `? ! .` (or the
+  Chinese full-width equivalents `？ ！ ．`) when the source carried
+  one.
+
+The meaning ID, source language, and target language remain in
+`evidence_links` so the Links Notation trace is still inspectable;
+the user-facing body is just the deformalized surface.
+
+### 10.2 Resolution Order and Browser Fallback
+
+`TranslationPipeline::translate` resolves any surface pair by:
+
+1. Fetching the source-edition Wiktionary page and parsing its
+   `{{trans-top}}` blocks for `target_lang` candidates.
+2. Falling back to the `/translations` subpage when the main page
+   omits translations (common for high-traffic English entries).
+3. Falling back to the target-edition Wiktionary page in reverse when
+   the source edition is sparse (typical for ru → en).
+4. Generating phrasal variants (e.g. dropping Russian "у тебя",
+   "у вас", "у меня" infixes) when the literal page does not exist.
+5. Selecting the best sense block by round-trip confirmation rate —
+   for each candidate, count how many target-edition pages list the
+   source surface as a translation. The block with the most confirms
+   wins.
+6. Upgrading the meaning id to a Wikidata Q-item or sense id when the
+   lexeme join returns one.
+
+The Rust pipeline is the canonical implementation. The browser worker
+(`src/web/formal_ai_worker.js`) cannot reach Wiktionary or Wikidata
+directly because of browser CORS restrictions, so it keeps a small
+offline phrase table as a CORS-safe fallback for the GitHub Pages
+demo. The fallback returns the same `[<lang>] <surface>` placeholder
+the Rust pipeline uses when a lookup misses, so the contract stays
+identical across surfaces.
+
 ---
 
 ## 11. Configuration

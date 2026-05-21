@@ -167,6 +167,24 @@ pub fn build_evidence_links(prompt: &str, log: &EventLog, response_link: &str) -
             "procedural_how_to:source_gate" => {
                 format!("procedural_how_to:source_gate:{}", event.payload)
             }
+            "concept_lookup:request" => format!("concept_lookup:request:{}", event.payload),
+            "concept_lookup:context" => format!("concept_lookup:context:{}", event.payload),
+            "concept_lookup:hit" => format!("concept_lookup:hit:{}", event.payload),
+            "concept_lookup:miss" => format!("concept_lookup:miss:{}", event.payload),
+            "concept_lookup:context-match" => {
+                format!("concept_lookup:context-match:{}", event.payload)
+            }
+            "concept_lookup:context-mismatch" => {
+                format!("concept_lookup:context-mismatch:{}", event.payload)
+            }
+            "followup:subject" => format!("followup:subject:{}", event.payload),
+            "mechanism_query:request" => {
+                format!("mechanism_query:request:{}", event.payload)
+            }
+            "mechanism_query:stage" => format!("mechanism_query:stage:{}", event.payload),
+            "mechanism_query:source_gate" => {
+                format!("mechanism_query:source_gate:{}", event.payload)
+            }
             "search:local" => format!("search:local:{}", event.id),
             "search:external" => format!("search:external:{}", event.id),
             "source:http" => format!("source:http:{}", event.payload.replace(' ', ":")),

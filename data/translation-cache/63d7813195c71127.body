@@ -1,0 +1,32 @@
+{
+  "head" : {
+    "vars" : [ "lemma" ]
+  },
+  "results" : {
+    "bindings" : [ {
+      "lemma" : {
+        "xml:lang" : "en",
+        "type" : "literal",
+        "value" : "uh-huh"
+      }
+    }, {
+      "lemma" : {
+        "xml:lang" : "en-x-q59342809",
+        "type" : "literal",
+        "value" : "uh huh"
+      }
+    }, {
+      "lemma" : {
+        "xml:lang" : "en",
+        "type" : "literal",
+        "value" : "yes"
+      }
+    }, {
+      "lemma" : {
+        "xml:lang" : "en",
+        "type" : "literal",
+        "value" : "ja"
+      }
+    } ]
+  }
+}

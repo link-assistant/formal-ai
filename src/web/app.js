@@ -364,6 +364,26 @@ function recognizeInterfaceCommand(text) {
     };
   }
 
+  const experimentalOcr = detectToggleCommand(normalized, [
+    "ocr",
+    "image text",
+    "image recognition",
+    "optical character recognition",
+    "tesseract",
+    "распознавание текста",
+    "图片文字",
+    "छवि पाठ",
+  ]);
+  if (experimentalOcr !== null) {
+    return {
+      kind: "set_preference",
+      key: "experimentalOcr",
+      value: experimentalOcr,
+      intent: "configure_experimental_ocr",
+      label: "Experimental OCR",
+    };
+  }
+
   const projectPromotion = detectToggleCommand(normalized, [
     "project promotion",
     "repository promotion",
@@ -803,6 +823,7 @@ const PREFERENCE_DEFAULTS = {
   // Issue #63: definition fusion remains explicit-only by default, with an
   // opt-in mode that treats plain "What is X?" prompts as merge requests.
   definitionFusion: "explicit",
+  experimentalOcr: false,
   associativeProjectPromotion: true,
   theme: "auto",
   location: "",
@@ -838,6 +859,11 @@ const CONTEXT_PANEL_MIN_CHAT_WIDTH = 360;
 const CONTEXT_PANEL_RESIZER_WIDTH = 10;
 
 const MEMORY_EXPORT_FILENAME = "formal-ai-memory.lino";
+const OCR_BUNDLE_FILENAME = "ocr.bundle.js";
+const OCR_DOWNLOAD_WARNING =
+  "Downloads about 6 MB on first use: OCR wrapper, worker, WebAssembly core, and English traineddata.";
+
+let ocrBundlePromise = null;
 
 function withAssetVersion(path) {
   if (!ASSET_VERSION) {
@@ -871,6 +897,113 @@ function downloadTextFile(filename, text) {
   link.click();
   document.body.removeChild(link);
   URL.revokeObjectURL(url);
+}
+
+function isImageAttachment(file) {
+  if (!file) return false;
+  const type = String(file.type || "").toLowerCase();
+  if (type.startsWith("image/")) return true;
+  return /\.(png|jpe?g|webp|gif|bmp|tiff?)$/i.test(String(file.name || ""));
+}
+
+function formatFileSize(bytes) {
+  const value = Number(bytes);
+  if (!Number.isFinite(value) || value <= 0) return "0 B";
+  if (value < 1024) return `${value} B`;
+  if (value < 1024 * 1024) return `${(value / 1024).toFixed(1)} KB`;
+  return `${(value / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+function readFileAsDataUrl(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result || ""));
+    reader.onerror = () => reject(reader.error || new Error("Unable to read file"));
+    reader.readAsDataURL(file);
+  });
+}
+
+function loadOcrBundle() {
+  if (typeof window === "undefined" || typeof document === "undefined") {
+    return Promise.reject(new Error("OCR is only available in the browser"));
+  }
+  if (window.FormalAiOcr && typeof window.FormalAiOcr.recognizeImage === "function") {
+    return Promise.resolve(window.FormalAiOcr);
+  }
+  if (ocrBundlePromise) {
+    return ocrBundlePromise;
+  }
+  ocrBundlePromise = new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+    script.src = withAssetVersion(OCR_BUNDLE_FILENAME);
+    script.async = true;
+    script.onload = () => {
+      if (
+        window.FormalAiOcr &&
+        typeof window.FormalAiOcr.recognizeImage === "function"
+      ) {
+        resolve(window.FormalAiOcr);
+      } else {
+        ocrBundlePromise = null;
+        reject(new Error("OCR bundle loaded without an OCR API"));
+      }
+    };
+    script.onerror = () => {
+      ocrBundlePromise = null;
+      reject(new Error("Unable to load OCR bundle"));
+    };
+    document.head.appendChild(script);
+  });
+  return ocrBundlePromise;
+}
+
+function attachmentMemoryRecord(attachment) {
+  const record = {
+    name: String(attachment.name || "attachment"),
+    size: Number(attachment.size || 0),
+    type: String(attachment.type || "application/octet-stream"),
+    kind: attachment.isImage ? "image" : "file",
+  };
+  if (attachment.dataUrl) record.dataUrl = attachment.dataUrl;
+  if (attachment.ocrText) record.ocrText = attachment.ocrText;
+  if (attachment.ocrConfidence !== undefined && attachment.ocrConfidence !== null) {
+    record.ocrConfidence = attachment.ocrConfidence;
+  }
+  if (attachment.ocrError) record.ocrError = attachment.ocrError;
+  return record;
+}
+
+function attachmentOnlyPrompt(attachments) {
+  const count = attachments.length;
+  if (count === 1) {
+    return `Attached ${attachments[0].isImage ? "image" : "file"}: ${attachments[0].name}`;
+  }
+  return `Attached ${count} files`;
+}
+
+function attachmentContextText(attachments) {
+  if (!attachments.length) return "";
+  const lines = ["Attached files:"];
+  attachments.forEach((attachment, index) => {
+    lines.push(
+      `${index + 1}. ${attachment.name} (${attachment.type}, ${formatFileSize(attachment.size)})`,
+    );
+    if (attachment.ocrText) {
+      lines.push(`OCR text: ${attachment.ocrText}`);
+    } else if (attachment.ocrError) {
+      lines.push(`OCR unavailable: ${attachment.ocrError}`);
+    } else if (attachment.isImage && attachment.dataUrl) {
+      lines.push("Image data is stored in memory as a base64 data URL.");
+    }
+  });
+  return lines.join("\n");
+}
+
+function buildPromptWithAttachments(text, attachments) {
+  const context = attachmentContextText(attachments);
+  if (!context) return text;
+  const promptText = String(text || "").trim();
+  return `${promptText}\n\n${context}`.trim();
 }
 
 function loadPreferences() {
@@ -1045,6 +1178,7 @@ function collectUserContext({
   temperature,
   followUpProbability,
   definitionFusion,
+  experimentalOcr,
 }) {
   const browserLanguages = browserLanguagesList();
   const nav = typeof navigator !== "undefined" ? navigator : {};
@@ -1081,6 +1215,7 @@ function collectUserContext({
     temperature: String(normalizeSliderPreference(temperature, 0)),
     followUpProbability: formatSliderValue(followUpProbability),
     definitionFusion,
+    experimentalOcr: experimentalOcr ? "on" : "off",
     locationInference:
       locationPreference
         ? `user-provided preference: ${locationPreference}`
@@ -2990,6 +3125,9 @@ function App() {
   const [definitionFusion, setDefinitionFusion] = useState(
     normalizeDefinitionFusion(initialPreferences.current.definitionFusion),
   );
+  const [experimentalOcr, setExperimentalOcr] = useState(
+    Boolean(initialPreferences.current.experimentalOcr),
+  );
   const [associativeProjectPromotion, setAssociativeProjectPromotion] = useState(
     initialPreferences.current.associativeProjectPromotion !== false,
   );
@@ -3184,6 +3322,7 @@ function App() {
         temperature,
         followUpProbability,
         definitionFusion,
+        experimentalOcr,
       }),
     [
       uiLanguage,
@@ -3198,6 +3337,7 @@ function App() {
       temperature,
       followUpProbability,
       definitionFusion,
+      experimentalOcr,
       colorSchemeTick,
     ],
   );
@@ -3352,13 +3492,57 @@ function App() {
     event.target.value = "";
     setAttachments(
       files.map((file) => ({
+        id: `attachment-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+        sourceFile: file,
         name: file.name,
         size: file.size,
         type: file.type || "application/octet-stream",
+        isImage: isImageAttachment(file),
       })),
     );
     setComposerMenuOpen(false);
   }, []);
+
+  const prepareAttachmentsForSend = useCallback(
+    async (items) => {
+      const safe = Array.isArray(items) ? items : [];
+      const prepared = [];
+      for (const attachment of safe) {
+        const next = {
+          id: attachment.id,
+          name: attachment.name,
+          size: attachment.size,
+          type: attachment.type || "application/octet-stream",
+          isImage: Boolean(attachment.isImage),
+        };
+        if (experimentalOcr && next.isImage && attachment.sourceFile) {
+          try {
+            next.dataUrl = await readFileAsDataUrl(attachment.sourceFile);
+            try {
+              const ocr = await loadOcrBundle();
+              const result = await ocr.recognizeImage(next.dataUrl, { language: "eng" });
+              next.ocrText = result && result.text ? String(result.text).trim() : "";
+              if (
+                result &&
+                typeof result.confidence === "number" &&
+                Number.isFinite(result.confidence)
+              ) {
+                next.ocrConfidence = result.confidence;
+              }
+            } catch (error) {
+              next.ocrError =
+                error && error.message ? error.message : "OCR recognition failed";
+            }
+          } catch (error) {
+            next.ocrError = error && error.message ? error.message : "File read failed";
+          }
+        }
+        prepared.push(next);
+      }
+      return prepared;
+    },
+    [experimentalOcr],
+  );
 
   const handleShowDeletedConversations = useCallback((event) => {
     const next = Boolean(event.target.checked);
@@ -3448,6 +3632,7 @@ function App() {
       temperature,
       followUpProbability,
       definitionFusion,
+      experimentalOcr,
       associativeProjectPromotion,
       theme: themePreference,
       uiSkin,
@@ -3476,6 +3661,7 @@ function App() {
     temperature,
     followUpProbability,
     definitionFusion,
+    experimentalOcr,
     associativeProjectPromotion,
     themePreference,
     uiSkin,
@@ -3551,6 +3737,11 @@ function App() {
     definitionFusionRef.current = definitionFusion;
   }, [definitionFusion]);
 
+  const experimentalOcrRef = useRef(experimentalOcr);
+  useEffect(() => {
+    experimentalOcrRef.current = experimentalOcr;
+  }, [experimentalOcr]);
+
   const associativeProjectPromotionRef = useRef(associativeProjectPromotion);
   useEffect(() => {
     associativeProjectPromotionRef.current = associativeProjectPromotion;
@@ -3606,6 +3797,7 @@ function App() {
       temperature: temperatureRef.current,
       followUpProbability: followUpProbabilityRef.current,
       definitionFusion: definitionFusionRef.current,
+      experimentalOcr: experimentalOcrRef.current,
       associativeProjectPromotion: associativeProjectPromotionRef.current,
       agentMode: agentModeRef.current,
       theme: themePreferenceRef.current,
@@ -3658,6 +3850,9 @@ function App() {
   const appendUserMessage = useCallback((text, extra = {}) => {
     const { conversationId, conversationTitle } = ensureConversation(text);
     const message = createMessage("user", text, extra);
+    const memoryAttachments = Array.isArray(extra.attachments)
+      ? extra.attachments.map(attachmentMemoryRecord)
+      : [];
     setMessages((current) => [...current, message]);
     recordMemoryEvent({
       kind: "message",
@@ -3665,6 +3860,10 @@ function App() {
       content: text,
       sentAt: new Date().toISOString(),
       demoLabel: extra.demoLabel,
+      attachments:
+        memoryAttachments.length > 0
+          ? JSON.stringify(memoryAttachments)
+          : undefined,
       conversationId,
       conversationTitle,
     });
@@ -3783,6 +3982,9 @@ function App() {
         case "definitionFusion":
           setDefinitionFusion(normalizeDefinitionFusion(command.value));
           break;
+        case "experimentalOcr":
+          setExperimentalOcr(Boolean(command.value));
+          break;
         case "associativeProjectPromotion":
           setAssociativeProjectPromotion(Boolean(command.value));
           break;
@@ -3894,18 +4096,21 @@ function App() {
 
   async function sendText(text, extra = {}) {
     const trimmed = text.trim();
-    if (!trimmed || pending) {
+    const displayText = String(extra.displayText || trimmed).trim();
+    const hasAttachments =
+      Array.isArray(extra.attachments) && extra.attachments.length > 0;
+    if ((!trimmed && !displayText) || pending) {
       return;
     }
 
     setPending(true);
     const history = conversationHistory();
-    appendUserMessage(trimmed, extra);
+    appendUserMessage(displayText || trimmed, extra);
 
     // Issue #27: short-circuit memory-action phrases to the corresponding
     // toolbar button before invoking the worker so the chat surface and the
     // sidebar stay in lock-step.
-    const memoryAction = recognizeMemoryAction(trimmed);
+    const memoryAction = hasAttachments ? null : recognizeMemoryAction(displayText);
     if (memoryAction === "export") {
       await handleExportMemory();
       appendAssistantMessage({
@@ -3917,7 +4122,7 @@ function App() {
         toolCalls: [
           {
             tool: "export_memory",
-            inputs: { prompt: trimmed },
+            inputs: { prompt: displayText },
             outputs: { intent: "memory_export" },
           },
         ],
@@ -3936,7 +4141,7 @@ function App() {
         toolCalls: [
           {
             tool: "import_memory",
-            inputs: { prompt: trimmed },
+            inputs: { prompt: displayText },
             outputs: { intent: "memory_import" },
           },
         ],
@@ -3945,7 +4150,7 @@ function App() {
       return;
     }
 
-    const interfaceCommand = recognizeInterfaceCommand(trimmed);
+    const interfaceCommand = hasAttachments ? null : recognizeInterfaceCommand(displayText);
     if (interfaceCommand) {
       const valueLabel = commandValueLabel(interfaceCommand);
       if (interfaceCommand.kind !== "report_issue") {
@@ -3978,7 +4183,7 @@ function App() {
               interfaceCommand.kind === "set_preference"
                 ? "configure_preference"
                 : interfaceCommand.intent,
-            inputs: { prompt: trimmed },
+            inputs: { prompt: displayText },
             outputs: {
               kind: interfaceCommand.kind,
               key: interfaceCommand.key || interfaceCommand.action || "",
@@ -3997,7 +4202,7 @@ function App() {
     // and emit a Markdown report grouped by conversation. The recognition
     // happens before the worker round-trip so we never have to ferry the full
     // event log across the worker boundary.
-    const recallQuery = recognizeRecallQuery(trimmed);
+    const recallQuery = hasAttachments ? null : recognizeRecallQuery(displayText);
     if (recallQuery && typeof window !== "undefined" && window.FormalAiMemory) {
       let events = [];
       try {
@@ -4010,7 +4215,7 @@ function App() {
         term: recallQuery.term,
         scope: recallQuery.scope,
         currentConversationId: currentConversationRef.current,
-        triggerText: trimmed,
+        triggerText: displayText,
       });
       appendAssistantMessage({
         intent: "conversation_recall",
@@ -4045,8 +4250,8 @@ function App() {
     // them sequentially, producing one consolidated assistant message with a
     // plan preamble and a per-step result list. Chat mode runs the single-step
     // path unchanged.
-    if (agentModeRef.current) {
-      const steps = decomposeAgentTask(trimmed);
+    if (agentModeRef.current && !hasAttachments) {
+      const steps = decomposeAgentTask(displayText);
       if (steps.length > 1) {
         await runAgentPlan(steps, history);
         setPending(false);
@@ -4061,14 +4266,21 @@ function App() {
 
   async function send() {
     const text = prompt.trim();
-    if (!text) {
+    if (!text && attachments.length === 0) {
       return;
     }
 
     setPrompt("");
-    setAttachments([]);
     setComposerMenuOpen(false);
-    await sendText(text);
+    const queuedAttachments = attachments;
+    setAttachments([]);
+    const preparedAttachments = await prepareAttachmentsForSend(queuedAttachments);
+    const displayText = text || attachmentOnlyPrompt(preparedAttachments);
+    const solverText = buildPromptWithAttachments(displayText, preparedAttachments);
+    await sendText(solverText, {
+      displayText,
+      attachments: preparedAttachments,
+    });
   }
 
   function handleKeyDown(event) {
@@ -4785,6 +4997,30 @@ function App() {
               ),
             ),
             h(
+              "div",
+              { className: "setting-row setting-row-ocr" },
+              h(
+                "label",
+                { className: "setting-check" },
+                h("input", {
+                  type: "checkbox",
+                  checked: experimentalOcr,
+                  "data-testid": "setting-experimental-ocr",
+                  onChange: (event) => setExperimentalOcr(event.target.checked),
+                }),
+                h("span", null, t("settings.experimentalOcr")),
+              ),
+              h(
+                "p",
+                {
+                  className: "setting-warning",
+                  "data-testid": "setting-experimental-ocr-warning",
+                  title: OCR_DOWNLOAD_WARNING,
+                },
+                t("settings.experimentalOcr.warning"),
+              ),
+            ),
+            h(
               "label",
               { className: "setting-row" },
               h("span", null, t("settings.language")),
@@ -5167,7 +5403,7 @@ function App() {
               {
                 className: "send-button",
                 type: "submit",
-                disabled: pending || demoMode || !prompt.trim(),
+                disabled: pending || demoMode || (!prompt.trim() && attachments.length === 0),
                 "data-testid": "chat-composer-submit",
               },
               pending

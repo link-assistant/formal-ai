@@ -912,6 +912,164 @@ function extractInvertedWhoIs(input, lower) {
   return body;
 }
 
+function cleanMechanismFragment(value) {
+  return String(value || "")
+    .trim()
+    .replace(/^[`"'«»<>()\[\]{}]+/u, "")
+    .replace(/[`"'«»<>()\[\]{}]+$/u, "")
+    .replace(/[?？。.!,,;:]+$/u, "")
+    .trim();
+}
+
+function cleanMechanismSubject(value) {
+  let clean = cleanMechanismFragment(value);
+  for (const suffix of [
+    " in detail",
+    " internally",
+    " exactly",
+    " please",
+    " подробнее",
+    " подробно",
+    " пожалуйста",
+  ]) {
+    const lower = clean.toLowerCase();
+    if (lower.endsWith(suffix)) {
+      clean = cleanMechanismFragment(clean.slice(0, -suffix.length));
+    }
+  }
+  const lower = clean.toLowerCase();
+  const pronouns = new Set([
+    "it",
+    "this",
+    "that",
+    "you",
+    "yourself",
+    "does",
+    "do",
+    "это",
+    "оно",
+    "он",
+    "она",
+    "они",
+    "ты",
+    "вы",
+    "यह",
+    "ये",
+    "这",
+    "这个",
+    "它",
+  ]);
+  if (
+    !clean ||
+    pronouns.has(lower) ||
+    lower.startsWith("does ") ||
+    lower.startsWith("do ") ||
+    lower.startsWith("to ") ||
+    lower.startsWith("you ")
+  ) {
+    return null;
+  }
+  return clean;
+}
+
+function stripMechanismTail(subject) {
+  let clean = cleanMechanismSubject(subject);
+  if (!clean) return null;
+  const lower = clean.toLowerCase();
+  for (const suffix of [
+    " work",
+    " works",
+    " structured",
+    " organized",
+    " organised",
+    " built",
+  ]) {
+    if (lower.endsWith(suffix)) {
+      clean = cleanMechanismSubject(clean.slice(0, -suffix.length));
+      break;
+    }
+  }
+  return clean;
+}
+
+function mechanismSubjectAfterPrefix(original, lower, prefix) {
+  if (!lower.startsWith(prefix)) return null;
+  return cleanMechanismSubject(original.slice(prefix.length));
+}
+
+function mechanismSubjectBeforeSuffix(original, lower, suffix) {
+  if (!lower.endsWith(suffix)) return null;
+  return cleanMechanismSubject(original.slice(0, -suffix.length));
+}
+
+function mechanismSubjectBetween(original, lower, prefix, suffixes) {
+  if (!lower.startsWith(prefix)) return null;
+  for (const suffix of suffixes) {
+    if (!lower.endsWith(suffix)) continue;
+    const end = original.length - suffix.length;
+    if (end <= prefix.length) return null;
+    return cleanMechanismSubject(original.slice(prefix.length, end));
+  }
+  return null;
+}
+
+function extractHowItWorksSubject(input, lowerInput) {
+  const original = cleanMechanismFragment(input);
+  if (!original) return null;
+  const lower = cleanMechanismFragment(lowerInput || original.toLowerCase())
+    .toLowerCase();
+
+  for (const prefix of [
+    "how does ",
+    "how do ",
+    "how did ",
+    "how is ",
+    "как устроен ",
+    "как устроена ",
+    "как устроено ",
+    "как устроены ",
+    "как работает ",
+    "как работают ",
+  ]) {
+    const subject = mechanismSubjectAfterPrefix(original, lower, prefix);
+    if (subject) return stripMechanismTail(subject);
+  }
+
+  for (const [prefix, suffixes] of [
+    ["how ", [" works", " work"]],
+    ["как ", [" работает", " работают"]],
+  ]) {
+    const subject = mechanismSubjectBetween(original, lower, prefix, suffixes);
+    if (subject) return subject;
+  }
+
+  for (const suffix of [
+    " कैसे काम करता है",
+    " कैसे काम करती है",
+    " कैसे काम करते हैं",
+    " कैसे काम करता",
+    " कैसे काम करती",
+    " कैसे काम करते",
+    " 是如何工作的",
+    "是如何工作的",
+    " 是怎么工作的",
+    "是怎么工作的",
+    " 如何工作",
+    "如何工作",
+    " 怎么工作",
+    "怎么工作",
+    " 的工作原理是什么",
+    "的工作原理是什么",
+    " как работает",
+    " как работают",
+  ]) {
+    const subject = mechanismSubjectBeforeSuffix(original, lower, suffix);
+    if (subject) return subject;
+  }
+
+  return null;
+}
+
 function extractConceptQuery(prompt) {
   let trimmedRaw = String(prompt || "")
     .trim()
@@ -932,6 +1090,9 @@ function extractConceptQuery(prompt) {
   const lower = trimmedRaw.toLowerCase();
   const invertedWhoBody = extractInvertedWhoIs(trimmedRaw, lower);
   if (invertedWhoBody) return finalizeConceptBody(invertedWhoBody);
+
+  const howItWorksSubject = extractHowItWorksSubject(trimmedRaw, lower);
+  if (howItWorksSubject) return finalizeConceptBody(howItWorksSubject);
 
   const prefixes = conceptPatternsByKind("prefix");
   let body = null;
@@ -1547,6 +1708,7 @@ function hasSpelledArithmetic(expression) {
 function extractArithmeticExpression(prompt) {
   const trimmed = String(prompt || "").trim();
   if (!trimmed) return null;
+  const interpretations = [];
   const prefixes = [
     "please calculate ",
     "please compute ",
@@ -1581,13 +1743,11 @@ function extractArithmeticExpression(prompt) {
   let changed = true;
   while (changed) {
     changed = false;
-    const lower = working.toLowerCase();
-    for (const prefix of prefixes) {
-      if (lower.startsWith(prefix)) {
-        working = working.slice(prefix.length).trimStart();
-        changed = true;
-        break;
-      }
+    const stripped = stripKnownPrefix(working, prefixes);
+    if (stripped) {
+      working = stripped.value;
+      if (stripped.interpretation) interpretations.push(stripped.interpretation);
+      changed = true;
     }
   }
   working = working.replace(/[?.!]+$/g, "").trim();
@@ -1669,11 +1829,13 @@ function extractArithmeticExpression(prompt) {
   const hasDigit = /[0-9]/.test(working);
   if (!hasDigit && !hasSpelled) return null;
   if (!hasSymbolic && !hasWord && hasLetter) return null;
-  if (hasPercentOf) return working;
-  if (evaluateCurrencyConversionExpression(working) !== null) return working;
+  if (hasPercentOf) return { expression: working, interpretations };
+  if (evaluateCurrencyConversionExpression(working) !== null) {
+    return { expression: working, interpretations };
+  }
   const allowed = /^[0-9+\-*/%().=\s_×·÷−,a-zA-Z]+$/;
   if (!allowed.test(working) && !hasWordOperator) return null;
-  return working;
+  return { expression: working, interpretations };
 }
 
 function extractFencedBlock(text, languages) {
@@ -3041,30 +3203,258 @@ function detectTranslationTargetLanguage(normalized) {
   return null;
 }
 
+// Offline meaning registry for the browser worker.
+//
+// The Rust pipeline (`src/translation/pipeline.rs`) now goes through
+// Wiktionary + Wikidata to resolve any pair of surfaces via cached HTTP
+// responses. The browser worker cannot reach those APIs directly (CORS),
+// so it keeps this small offline registry as a fallback for the demo set.
+// `primary` is the canonical form deformalization renders; `aliases` is a
+// list of normalized alternative surfaces used during formalization.
+const TRANSLATION_MEANING_REGISTRY = [
+  {
+    token: "greeting",
+    primary: { en: "Hello", ru: "Привет", hi: "नमस्ते", zh: "你好" },
+    aliases: {
+      en: ["hello", "hi", "hey"],
+      ru: ["привет", "здравствуйте", "здравствуй"],
+      hi: ["नमस्ते", "नमस्कार"],
+      zh: ["你好", "您好"],
+    },
+  },
+  {
+    token: "greeting_how_are_you",
+    primary: {
+      en: "How are you?",
+      ru: "Как у тебя дела?",
+      hi: "आप कैसे हैं?",
+      zh: "你好吗？",
+    },
+    aliases: {
+      en: ["howareyou", "hellohowareyou", "hihowareyou"],
+      ru: [
+        "какдела",
+        "какутебядела",
+        "какувасдела",
+        "какваши дела",
+        "какватидела",
+        "какваши",
+        "приветкакдела",
+        "здравствуйтекаквашидела",
+      ],
+      hi: ["आपकैसेहैं", "तुमकैसेहो"],
+      zh: ["你好吗", "你怎么样"],
+    },
+  },
+  {
+    token: "thank_you",
+    primary: { en: "Thank you", ru: "Спасибо", hi: "धन्यवाद", zh: "谢谢" },
+    aliases: {
+      en: ["thanks", "thankyou", "thankyouverymuch"],
+      ru: ["спасибо", "благодарю", "большоеспасибо"],
+      hi: ["धन्यवाद", "शुक्रिया"],
+      zh: ["谢谢", "多谢", "感谢"],
+    },
+  },
+  {
+    token: "you_are_welcome",
+    primary: {
+      en: "You are welcome",
+      ru: "Пожалуйста",
+      hi: "आपका स्वागत है",
+      zh: "不客气",
+    },
+    aliases: {
+      en: ["youarewelcome", "yourewelcome", "nottoworry"],
+      ru: ["пожалуйста", "незачто"],
+      hi: ["आपकास्वागतहै", "कोईबातनहीं"],
+      zh: ["不客气", "不用谢"],
+    },
+  },
+  {
+    token: "goodbye",
+    primary: { en: "Goodbye", ru: "До свидания", hi: "अलविदा", zh: "再见" },
+    aliases: {
+      en: ["goodbye", "bye", "seeyou", "byebye"],
+      ru: ["досвидания", "пока", "прощай"],
+      hi: ["अलविदा", "फिरमिलेंगे"],
+      zh: ["再见", "拜拜"],
+    },
+  },
+  {
+    token: "good_morning",
+    primary: { en: "Good morning", ru: "Доброе утро", hi: "सुप्रभात", zh: "早上好" },
+    aliases: {
+      en: ["goodmorning"],
+      ru: ["доброеутро"],
+      hi: ["सुप्रभात", "शुभप्रभात"],
+      zh: ["早上好", "早安"],
+    },
+  },
+  {
+    token: "good_evening",
+    primary: { en: "Good evening", ru: "Добрый вечер", hi: "शुभ संध्या", zh: "晚上好" },
+    aliases: {
+      en: ["goodevening"],
+      ru: ["добрыйвечер"],
+      hi: ["शुभसंध्या"],
+      zh: ["晚上好", "晚安"],
+    },
+  },
+  {
+    token: "what_is_your_name",
+    primary: {
+      en: "What is your name?",
+      ru: "Как тебя зовут?",
+      hi: "तुम्हारा नाम क्या है?",
+      zh: "你叫什么名字？",
+    },
+    aliases: {
+      en: ["whatisyourname", "whatsyourname"],
+      ru: ["кактебязовут", "каквасзовут"],
+      hi: ["तुम्हारानामक्याहै", "आपकानामक्याहै"],
+      zh: ["你叫什么名字", "您叫什么名字"],
+    },
+  },
+  {
+    token: "i_am_fine",
+    primary: { en: "I am fine", ru: "У меня всё хорошо", hi: "मैं ठीक हूँ", zh: "我很好" },
+    aliases: {
+      en: ["iamfine", "imfine", "imdoingfine", "imdoingwell"],
+      ru: ["уменявсёхорошо", "уменявсехорошо", "всёхорошо"],
+      hi: ["मैंठीकहूँ", "मैंठीकहूं"],
+      zh: ["我很好", "我挺好的"],
+    },
+  },
+  {
+    token: "yes",
+    primary: { en: "Yes", ru: "Да", hi: "हाँ", zh: "是" },
+    aliases: {
+      en: ["yes", "yeah", "yep", "aye"],
+      ru: ["да", "ага", "конечно"],
+      hi: ["हाँ", "हां", "जी"],
+      zh: ["是", "是的", "对"],
+    },
+  },
+  {
+    token: "no",
+    primary: { en: "No", ru: "Нет", hi: "नहीं", zh: "不" },
+    aliases: {
+      en: ["no", "nope", "nah"],
+      ru: ["нет", "неа"],
+      hi: ["नहीं", "ना"],
+      zh: ["不", "不是"],
+    },
+  },
+];
+
+const TRANSLATION_TERMINAL_PUNCTUATION = ["?", "!", ".", "。", "？", "！", "．"];
+
+function normalizeTranslationAlias(surface) {
+  return Array.from(String(surface || "").toLowerCase())
+    .filter((character) => /[\p{L}\p{N}]/u.test(character))
+    .join("");
+}
+
+function formalizeSurface(surface, source) {
+  const normalized = normalizeTranslationAlias(surface);
+  if (!normalized) return null;
+  for (const entry of TRANSLATION_MEANING_REGISTRY) {
+    const aliases = (entry.aliases && entry.aliases[source]) || [];
+    if (aliases.some((alias) => normalizeTranslationAlias(alias) === normalized)) {
+      return entry.token;
+    }
+    const primary = entry.primary && entry.primary[source];
+    if (primary && normalizeTranslationAlias(primary) === normalized) {
+      return entry.token;
+    }
+  }
+  return null;
+}
+
+function deformalizeMeaning(token, target) {
+  for (const entry of TRANSLATION_MEANING_REGISTRY) {
+    if (entry.token !== token) continue;
+    const primary = entry.primary && entry.primary[target];
+    return primary || null;
+  }
+  return null;
+}
+
+function canonicalTokenForNormalized(normalized) {
+  if (!normalized) return null;
+  for (const entry of TRANSLATION_MEANING_REGISTRY) {
+    const aliasesByLang = entry.aliases || {};
+    for (const lang of Object.keys(aliasesByLang)) {
+      const aliases = aliasesByLang[lang] || [];
+      if (aliases.some((alias) => normalizeTranslationAlias(alias) === normalized)) {
+        return entry.token;
+      }
+    }
+    const primaryByLang = entry.primary || {};
+    for (const lang of Object.keys(primaryByLang)) {
+      if (normalizeTranslationAlias(primaryByLang[lang]) === normalized) {
+        return entry.token;
+      }
+    }
+  }
+  return null;
+}
+
 function canonicalMeaningToken(raw) {
-  if (["hello", "hi", "hey", "привет", "здравствуйте", "नमस्ते", "你好"].includes(raw)) {
-    return "greeting";
-  }
-  if (
-    [
-      "hellohowareyou",
-      "какдела",
-      "какутебядела",
-      "какувасдела",
-      "приветкакдела",
-      "здравствуйтекаквашидела",
-    ].includes(raw)
-  ) {
-    return "greeting_how_are_you";
-  }
-  return raw;
+  return canonicalTokenForNormalized(raw) || raw;
 }
 
 function normalizeMeaningText(surface) {
-  const raw = Array.from(String(surface || "").toLowerCase())
-    .filter((character) => /[\p{L}\p{N}]/u.test(character))
-    .join("");
+  const raw = normalizeTranslationAlias(surface);
   return canonicalMeaningToken(raw);
+}
+
+function matchSourceFormatting(target, source) {
+  const targetTrimmed = String(target || "").trim();
+  if (!targetTrimmed) return "";
+  const sourceTrimmed = String(source || "").trim();
+
+  let sourceTerminal = null;
+  if (sourceTrimmed.length > 0) {
+    const lastChar = Array.from(sourceTrimmed).pop();
+    if (TRANSLATION_TERMINAL_PUNCTUATION.includes(lastChar)) sourceTerminal = lastChar;
+  }
+  let targetNoTerminal = targetTrimmed;
+  while (
+    targetNoTerminal.length > 0 &&
+    TRANSLATION_TERMINAL_PUNCTUATION.includes(Array.from(targetNoTerminal).pop())
+  ) {
+    const lastChar = Array.from(targetNoTerminal).pop();
+    targetNoTerminal = targetNoTerminal.slice(0, targetNoTerminal.length - lastChar.length);
+  }
+  const withTerminal = sourceTerminal ? targetNoTerminal + sourceTerminal : targetNoTerminal;
+
+  const sourceFirstLetter = Array.from(sourceTrimmed).find((character) =>
+    /\p{L}/u.test(character),
+  );
+  if (!sourceFirstLetter) return withTerminal;
+  const targetChars = Array.from(withTerminal);
+  const targetFirstIdx = targetChars.findIndex((character) => /\p{L}/u.test(character));
+  if (targetFirstIdx === -1) return withTerminal;
+  const targetFirstLetter = targetChars[targetFirstIdx];
+  const sourceLower = sourceFirstLetter.toLowerCase() === sourceFirstLetter
+    && sourceFirstLetter.toUpperCase() !== sourceFirstLetter;
+  const sourceUpper = sourceFirstLetter.toUpperCase() === sourceFirstLetter
+    && sourceFirstLetter.toLowerCase() !== sourceFirstLetter;
+  const targetLower = targetFirstLetter.toLowerCase() === targetFirstLetter
+    && targetFirstLetter.toUpperCase() !== targetFirstLetter;
+  const targetUpper = targetFirstLetter.toUpperCase() === targetFirstLetter
+    && targetFirstLetter.toLowerCase() !== targetFirstLetter;
+  if (sourceLower && targetUpper) {
+    targetChars[targetFirstIdx] = targetFirstLetter.toLowerCase();
+    return targetChars.join("");
+  }
+  if (sourceUpper && targetLower) {
+    targetChars[targetFirstIdx] = targetFirstLetter.toUpperCase();
+    return targetChars.join("");
+  }
+  return withTerminal;
 }
 
 function inferTranslationSource(prompt) {
@@ -3084,35 +3474,14 @@ function inferTranslationSource(prompt) {
   return "en";
 }
 
-function translateSurface(surface, _source, target) {
-  const normalized = String(surface || "").trim().toLowerCase();
-  if (target === "ru") {
-    if (normalized === "hello" || normalized === "hi") return "Привет";
-    if (normalized === "hello, how are you?") return "Здравствуйте, как ваши дела?";
-    return `[ru] ${surface}`;
+function translateSurface(surface, source, target) {
+  if (source === target) return String(surface || "");
+  const token = formalizeSurface(surface, source);
+  if (token) {
+    const primary = deformalizeMeaning(token, target);
+    if (primary) return primary;
   }
-  if (target === "en") {
-    if (normalized === "привет") return "Hi";
-    if (
-      [
-        "как дела",
-        "как дела?",
-        "как у тебя дела",
-        "как у тебя дела?",
-        "как у вас дела",
-        "как у вас дела?",
-        "как ваши дела",
-        "как ваши дела?",
-      ].includes(normalized)
-    ) {
-      return "How are you?";
-    }
-    if (normalized === "hello, how are you?") return "Hello, how are you?";
-    return `[en] ${surface}`;
-  }
-  if (target === "hi") return `[hi] ${surface}`;
-  if (target === "zh") return `[zh] ${surface}`;
-  return String(surface || "");
+  return `[${target}] ${surface}`;
 }
 
 function tryTranslation(prompt, normalized) {
@@ -3127,10 +3496,12 @@ function tryTranslation(prompt, normalized) {
   const source = detectTranslationSourceLanguage(normalized) || inferTranslationSource(prompt);
   const target = detectTranslationTargetLanguage(normalized) || "en";
   const meaningId = stableBehaviorRuleId("meaning", normalizeMeaningText(surfaceMeaning));
-  const translatedSurface = translateSurface(surface, source, target);
+  const rawTarget = translateSurface(surface, source, target);
+  const translatedSurface = matchSourceFormatting(rawTarget, surface);
+  const content = surface ? `"${translatedSurface}"` : translatedSurface;
   return {
     intent: `translate_${source}_to_${target}`,
-    content: `meaning: ${meaningId}\nsurface (${source}): ${surface}\nsurface (${target}): ${translatedSurface}`,
+    content,
     confidence: 1.0,
     evidence: [
       "handler:translation",
@@ -3420,8 +3791,12 @@ function trySummarizeConversation(history) {
 }
 
 function tryArithmetic(prompt) {
-  const expression = extractArithmeticExpression(prompt);
-  if (!expression) return null;
+  const extracted = extractArithmeticExpression(prompt);
+  if (!extracted) return null;
+  const expression = extracted.expression;
+  const interpretations = Array.isArray(extracted.interpretations)
+    ? extracted.interpretations
+    : [];
   try {
     const isEquation = expression.includes("=");
     let formatted;
@@ -3456,6 +3831,7 @@ function tryArithmetic(prompt) {
         `calculation:${content}`,
         `calculation_backend:${backend}`,
       ],
+      interpretations,
     };
   } catch (error) {
     const message = String(error && error.message ? error.message : error);
@@ -3464,6 +3840,7 @@ function tryArithmetic(prompt) {
       content: `I could not evaluate \`${expression.trim()}\`: ${message}.`,
       confidence: 0.4,
       evidence: [`calculation_error:${message}`],
+      interpretations,
     };
   }
 }
@@ -3982,18 +4359,102 @@ const KNOWN_PERSON_VARIANTS = [
 ];
 
 function editDistance(a, b) {
-  const m = a.length, n = b.length;
+  const left = Array.from(String(a || ""));
+  const right = Array.from(String(b || ""));
+  const m = left.length, n = right.length;
   const dp = Array.from({ length: m + 1 }, (_, i) =>
     Array.from({ length: n + 1 }, (_, j) => (i === 0 ? j : j === 0 ? i : 0))
   );
   for (let i = 1; i <= m; i++) {
     for (let j = 1; j <= n; j++) {
-      dp[i][j] = a[i - 1] === b[j - 1]
+      dp[i][j] = left[i - 1] === right[j - 1]
         ? dp[i - 1][j - 1]
         : 1 + Math.min(dp[i - 1][j - 1], dp[i - 1][j], dp[i][j - 1]);
+      if (
+        i > 1 &&
+        j > 1 &&
+        left[i - 1] === right[j - 2] &&
+        left[i - 2] === right[j - 1]
+      ) {
+        dp[i][j] = Math.min(dp[i][j], dp[i - 2][j - 2] + 1);
+      }
     }
   }
   return dp[m][n];
+}
+
+function isCloseTokenTypo(actual, expected) {
+  const left = String(actual || "").toLowerCase();
+  const right = String(expected || "").toLowerCase();
+  const leftLength = Array.from(left).length;
+  const rightLength = Array.from(right).length;
+  return Math.min(leftLength, rightLength) >= 4 && editDistance(left, right) === 1;
+}
+
+function leadingTokenSpans(value, limit) {
+  const text = String(value || "");
+  const spans = [];
+  const pattern = /\S+/gu;
+  let match;
+  while ((match = pattern.exec(text)) !== null && spans.length < limit) {
+    spans.push({
+      start: match.index,
+      end: match.index + match[0].length,
+      text: match[0],
+    });
+  }
+  return spans;
+}
+
+function fuzzyPrefixMatch(value, prefix) {
+  const words = String(prefix || "").trim().split(/\s+/u).filter(Boolean);
+  if (words.length === 0) return null;
+  const spans = leadingTokenSpans(value, words.length);
+  if (spans.length !== words.length) return null;
+  let typoCount = 0;
+  for (let i = 0; i < words.length; i += 1) {
+    const actual = spans[i].text;
+    const expected = words[i];
+    if (actual.toLowerCase() === expected.toLowerCase()) continue;
+    if (!isCloseTokenTypo(actual, expected)) return null;
+    typoCount += 1;
+  }
+  if (typoCount !== 1) return null;
+  const end = spans[spans.length - 1].end;
+  return {
+    typoCount,
+    end,
+    interpretation: {
+      original: String(value || "").slice(0, end),
+      corrected: String(prefix || "").trim(),
+    },
+  };
+}
+
+function stripKnownPrefix(value, prefixes) {
+  const text = String(value || "");
+  const lower = text.toLowerCase();
+  for (const prefix of prefixes) {
+    if (lower.startsWith(prefix)) {
+      return { value: text.slice(prefix.length).trimStart(), interpretation: null };
+    }
+  }
+  const matches = prefixes
+    .map((prefix) => fuzzyPrefixMatch(text, prefix))
+    .filter(Boolean)
+    .sort((left, right) =>
+      left.typoCount - right.typoCount || right.end - left.end,
+    );
+  const best = matches[0];
+  if (!best) return null;
+  const next = matches[1];
+  if (next && next.typoCount === best.typoCount && next.end === best.end) {
+    return null;
+  }
+  return {
+    value: text.slice(best.end).trimStart(),
+    interpretation: best.interpretation,
+  };
 }
 
 function suggestNameCorrection(term) {
@@ -5618,10 +6079,6 @@ pub fn apply_command(mut records: Vec<ProjectRecord>, command: ProjectCommand) -
     }
     records
 }`;
-
-function containsAny(value, needles) {
-  return needles.some((needle) => value.includes(needle));
-}
 
 function containsToken(normalized, token) {
   return String(normalized || "").split(/\s+/).includes(token);
@@ -9024,21 +9481,73 @@ const FORMALIZATION_VERBS = [
   { verb: "再见", op: "OP:farewell" },
 ];
 
-function detectFormalizationOp(prompt, normalized) {
+function exactFormalizationMatch(prompt, normalized) {
   const haystack = String(normalized || "").toLowerCase();
+  const raw = String(prompt || "");
   const rawLower = String(prompt || "").toLowerCase();
   for (const { verb, op } of FORMALIZATION_VERBS) {
-    if (haystack.startsWith(verb + " ") || haystack === verb) return op;
-    if (rawLower.startsWith(verb + " ") || rawLower === verb) return op;
-    if (haystack.includes(" " + verb + " ")) return op;
+    if (haystack.startsWith(verb + " ") || haystack === verb) {
+      return {
+        op,
+        verb,
+        objectText: haystack === verb ? "" : normalized.slice(verb.length),
+        interpretations: [],
+      };
+    }
+    if (rawLower.startsWith(verb + " ") || rawLower === verb) {
+      return {
+        op,
+        verb,
+        objectText: rawLower === verb ? "" : raw.slice(verb.length),
+        interpretations: [],
+      };
+    }
+    if (haystack.includes(" " + verb + " ")) {
+      return { op, verb, objectText: null, interpretations: [] };
+    }
   }
   return null;
 }
 
-function objectForFormalization(prompt, normalized, op) {
+function fuzzyFormalizationMatch(prompt) {
+  const matches = FORMALIZATION_VERBS
+    .map((entry) => {
+      const match = fuzzyPrefixMatch(prompt, entry.verb);
+      return match ? Object.assign({ entry }, match) : null;
+    })
+    .filter(Boolean)
+    .sort((left, right) =>
+      left.typoCount - right.typoCount || right.end - left.end,
+    );
+  const best = matches[0];
+  if (!best) return null;
+  const peers = matches.filter(
+    (match) => match.typoCount === best.typoCount && match.end === best.end,
+  );
+  if (peers.length > 1) {
+    return {
+      ambiguous: true,
+      suggestions: peers.map((match) => match.entry.verb),
+      interpretations: [],
+    };
+  }
+  return {
+    op: best.entry.op,
+    verb: best.entry.verb,
+    objectText: String(prompt || "").slice(best.end),
+    interpretations: [best.interpretation],
+  };
+}
+
+function detectFormalizationMatch(prompt, normalized) {
+  return exactFormalizationMatch(prompt, normalized) || fuzzyFormalizationMatch(prompt);
+}
+
+function objectForFormalization(prompt, normalized, match) {
   // For search-style ops we extract the explicit query the same way the web
   // search handler does. For other ops we keep the prompt body that follows
   // the detected verb so the tuple shows what the user is asking about.
+  const op = match && match.op;
   if (op === "OP:search" || op === "OP:lookup") {
     const query = extractWebSearchQuery(prompt, normalized);
     if (query) return query;
@@ -9052,6 +9561,9 @@ function objectForFormalization(prompt, normalized, op) {
     if (haystack.startsWith(verb + " ")) {
       return cleanSearchQuery(normalized.slice(verb.length));
     }
+  }
+  if (match && typeof match.objectText === "string") {
+    return cleanSearchQuery(match.objectText);
   }
   return cleanSearchQuery(normalized || "");
 }
@@ -9067,8 +9579,8 @@ function formatFormalizationTuple(parts) {
 }
 
 function buildFormalization(prompt, normalized) {
-  const op = detectFormalizationOp(prompt, normalized);
-  if (!op) {
+  const match = detectFormalizationMatch(prompt, normalized);
+  if (!match || match.ambiguous) {
     const fallback = normalized || "(empty)";
     return {
       raw: String(prompt || ""),
@@ -9076,15 +9588,19 @@ function buildFormalization(prompt, normalized) {
       verb: "OP:express",
       object: virtualObjectId(fallback),
       tuple: formatFormalizationTuple(["@USER", "OP:express", virtualObjectId(fallback)]),
+      needsClarification: Boolean(match && match.ambiguous),
+      suggestions: match && match.suggestions ? match.suggestions : [],
+      interpretations: [],
     };
   }
-  const object = objectForFormalization(prompt, normalized, op);
+  const object = objectForFormalization(prompt, normalized, match);
   return {
     raw: String(prompt || ""),
     subject: "@USER",
-    verb: op,
+    verb: match.op,
     object: virtualObjectId(object),
-    tuple: formatFormalizationTuple(["@USER", op, virtualObjectId(object)]),
+    tuple: formatFormalizationTuple(["@USER", match.op, virtualObjectId(object)]),
+    interpretations: match.interpretations || [],
   };
 }
 
@@ -9094,6 +9610,25 @@ function formalizationDetail(formalization) {
   }
   const arrow = formalization.raw && formalization.tuple ? " -> " : "";
   return `${formalization.raw || ""}${arrow}${formalization.tuple || ""}`.trim();
+}
+
+function formalizationClarificationMessage(formalization, language) {
+  const suggestions = Array.isArray(formalization && formalization.suggestions)
+    ? formalization.suggestions
+    : [];
+  const rendered = suggestions.length > 0
+    ? suggestions.map((item) => `"${item}"`).join(", ")
+    : "one of the known commands";
+  if (language === "ru") {
+    return `Не уверен, как интерпретировать этот запрос. Вы имели в виду ${rendered}?`;
+  }
+  if (language === "zh") {
+    return `我不确定如何解释这个请求。你是指 ${rendered} 吗？`;
+  }
+  if (language === "hi") {
+    return `मुझे पक्का नहीं है कि इस अनुरोध को कैसे समझूं। क्या आपका मतलब ${rendered} था?`;
+  }
+  return `I am not sure how to interpret that request. Did you mean ${rendered}?`;
 }
 
 // Once a handler resolves the search object to a concrete entity, this helper
@@ -9131,6 +9666,7 @@ async function solve(prompt, history, prefs) {
       verb: formalization.verb,
       object: formalization.object,
       tuple: formalization.tuple,
+      interpretations: formalization.interpretations || [],
     },
   });
   const language = detectLanguage(prompt);
@@ -9147,6 +9683,20 @@ async function solve(prompt, history, prefs) {
     resolved: null,
     language,
   };
+
+  if (formalization.needsClarification) {
+    events.push("formalization:ambiguous");
+    steps.push({
+      step: "clarify_formalization",
+      detail: (formalization.suggestions || []).join(", "),
+    });
+    return finalize(events, steps, toolCalls, {
+      intent: "clarification",
+      content: formalizationClarificationMessage(formalization, language),
+      confidence: 0.4,
+      evidence: ["formalization:ambiguous"],
+    }, formalizationContext);
+  }
 
   const behaviorRule = tryBehaviorRules(prompt, normalized, history);
   if (behaviorRule) {
@@ -9482,6 +10032,51 @@ function applyResolvedFormalization(events, steps, formalizationContext, answer)
   });
 }
 
+function collectInterpretations(formalizationContext, answer) {
+  const combined = [];
+  const pushAll = (items) => {
+    if (!Array.isArray(items)) return;
+    for (const item of items) {
+      if (!item || !item.original || !item.corrected) continue;
+      combined.push({
+        original: String(item.original),
+        corrected: String(item.corrected),
+      });
+    }
+  };
+  pushAll(
+    formalizationContext &&
+      formalizationContext.initial &&
+      formalizationContext.initial.interpretations,
+  );
+  pushAll(answer && answer.interpretations);
+  const seen = new Set();
+  return combined.filter((item) => {
+    const key = `${item.original.toLowerCase()}\u0000${item.corrected.toLowerCase()}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+function interpretationStatements(interpretations) {
+  return interpretations
+    .map((item) => `Interpreted "${item.original}" as "${item.corrected}".`)
+    .join("\n");
+}
+
+function applyVisibleInterpretations(answer, interpretations) {
+  if (!answer || interpretations.length === 0) return answer;
+  const statements = interpretationStatements(interpretations);
+  return Object.assign({}, answer, {
+    content: `${statements}\n\n${String(answer.content || "")}`,
+    evidence: [
+      ...(Array.isArray(answer.evidence) ? answer.evidence : []),
+      ...interpretations.map((item) => `interpretation:${item.original}->${item.corrected}`),
+    ],
+  });
+}
+
 function deformalizeProjection(formalizationContext, answer) {
   const tuple =
     (formalizationContext &&
@@ -9506,6 +10101,8 @@ function deformalizeProjection(formalizationContext, answer) {
 }
 
 function finalize(events, steps, toolCalls, answer, formalizationContext) {
+  const interpretations = collectInterpretations(formalizationContext, answer);
+  answer = applyVisibleInterpretations(answer, interpretations);
   applyResolvedFormalization(events, steps, formalizationContext, answer);
   const evidence = Array.isArray(answer.evidence) ? answer.evidence : [];
   const projection = deformalizeProjection(formalizationContext, answer);

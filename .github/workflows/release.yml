@@ -184,8 +184,8 @@ jobs:
       - name: Build web vendor bundle
         run: bun run build:web
 
-      - name: Check web vendor bundle is current
-        run: git diff --exit-code -- src/web/vendor.bundle.js
+      - name: Check web bundles are current
+        run: git diff --exit-code -- src/web/vendor.bundle.js src/web/ocr.bundle.js
 
       - name: Setup Node
         uses: actions/setup-node@v6

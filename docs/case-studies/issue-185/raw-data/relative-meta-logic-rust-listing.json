@@ -1,0 +1,37 @@
+[
+  {
+    "name": ".gitignore",
+    "size": 8,
+    "type": "file"
+  },
+  {
+    "name": "Cargo.lock",
+    "size": 835,
+    "type": "file"
+  },
+  {
+    "name": "Cargo.toml",
+    "size": 465,
+    "type": "file"
+  },
+  {
+    "name": "README.md",
+    "size": 5451,
+    "type": "file"
+  },
+  {
+    "name": "examples",
+    "size": 0,
+    "type": "dir"
+  },
+  {
+    "name": "src",
+    "size": 0,
+    "type": "dir"
+  },
+  {
+    "name": "tests",
+    "size": 0,
+    "type": "dir"
+  }
+]
