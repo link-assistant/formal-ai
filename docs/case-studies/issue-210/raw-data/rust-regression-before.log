@@ -1,0 +1,39 @@
+   Compiling same-file v1.0.6
+   Compiling walkdir v2.5.0
+   Compiling formal-ai v0.91.0 (/tmp/gh-issue-solver-1779385838871)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.99s
+     Running unittests src/lib.rs (target/debug/deps/formal_ai-893badfb48b94671)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 205 filtered out; finished in 0.00s
+
+     Running unittests src/main.rs (target/debug/deps/formal_ai-a81c0020d273d340)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/integration/mod.rs (target/debug/deps/integration-1ce98a4533d95ceb)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 11 filtered out; finished in 0.00s
+
+     Running tests/unit/mod.rs (target/debug/deps/unit-3e13e3ca11a7343d)
+
+running 1 test
+
+thread 'specification::translation_via_links::issue_210_russian_translation_prompts_keep_translation_intent' (1869948) panicked at tests/unit/specification/translation_via_links.rs:131:9:
+expected English surface "who are you" for "Переведи \"кто ты такой\" на английский.", got: "[en] кто ты такой"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test specification::translation_via_links::issue_210_russian_translation_prompts_keep_translation_intent ... FAILED
+
+failures:
+
+failures:
+    specification::translation_via_links::issue_210_russian_translation_prompts_keep_translation_intent
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 506 filtered out; finished in 0.01s
+
+error: test failed, to rerun pass `--test unit`

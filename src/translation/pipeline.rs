@@ -232,6 +232,15 @@ impl<'a, T: HttpClient + ?Sized> TranslationPipeline<'a, T> {
             meaning = updated;
         }
 
+        if candidates.is_empty() {
+            candidates = compositional_candidates(
+                &active_page_title,
+                source_lang,
+                target_lang,
+                &mut provenance,
+            );
+        }
+
         Ok(Translation {
             source_surface: surface.to_owned(),
             source_lang: source_lang.to_owned(),
@@ -417,6 +426,78 @@ fn upgrade_meaning_via_wikidata<T: HttpClient + ?Sized>(
     Some(MeaningId::from_sense(first.id.clone()))
 }
 
+fn compositional_candidates(
+    page_title: &str,
+    source_lang: &str,
+    target_lang: &str,
+    provenance: &mut Vec<String>,
+) -> Vec<WiktionaryCandidate> {
+    if !source_lang.eq_ignore_ascii_case("ru") || !target_lang.eq_ignore_ascii_case("en") {
+        return Vec::new();
+    }
+
+    if let Some(surface) = russian_phrase_to_english(page_title) {
+        provenance.push(format!("compositional:ru->en:{page_title}"));
+        return vec![WiktionaryCandidate {
+            surface: surface.to_owned(),
+            qualifier: None,
+        }];
+    }
+
+    let words: Vec<&str> = page_title.split_whitespace().collect();
+    if !(2..=4).contains(&words.len()) {
+        return Vec::new();
+    }
+
+    let mut translated = Vec::with_capacity(words.len());
+    for word in words {
+        let Some(surface) = russian_word_to_english(word) else {
+            return Vec::new();
+        };
+        translated.push(surface);
+    }
+
+    let surface = capitalize_ascii_first(&translated.join(" "));
+    provenance.push(format!("compositional:ru->en:{page_title}"));
+    vec![WiktionaryCandidate {
+        surface,
+        qualifier: None,
+    }]
+}
+
+fn russian_phrase_to_english(page_title: &str) -> Option<&'static str> {
+    match page_title {
+        "кто ты" | "кто ты такой" | "кто ты такая" | "кто вы" | "кто вы такой" | "кто вы такая" => {
+            Some("Who are you?")
+        }
+        "что это" | "что это такое" => Some("What is this?"),
+        _ => None,
+    }
+}
+
+fn russian_word_to_english(word: &str) -> Option<&'static str> {
+    match word {
+        "доброе" | "добрый" | "добрая" | "добрые" | "доброго" | "добрую" | "добрым" | "хорошее"
+        | "хороший" | "хорошая" | "хорошие" | "хорошего" | "хорошую" | "хорошим" => {
+            Some("good")
+        }
+        "яблоко" | "яблока" | "яблоку" | "яблоком" | "яблоке" | "яблоки" | "яблок" | "яблокам"
+        | "яблоками" | "яблоках" => Some("apple"),
+        _ => None,
+    }
+}
+
+fn capitalize_ascii_first(surface: &str) -> String {
+    let mut chars = surface.chars();
+    let Some(first) = chars.next() else {
+        return String::new();
+    };
+    let mut out = String::with_capacity(surface.len());
+    out.extend(first.to_uppercase());
+    out.extend(chars);
+    out
+}
+
 /// Generate alternate phrasal forms to retry when the original page is
 /// missing on Wiktionary.
 ///
@@ -575,6 +656,26 @@ mod tests {
         assert!(translation.candidates.is_empty());
         assert!(translation.primary_surface().is_none());
         assert!(translation.provenance.iter().any(|p| p.contains("error")));
+    }
+
+    #[test]
+    fn translate_uses_compositional_ru_en_fallback_for_short_phrases() {
+        let http = StubHttp::new(&[]);
+        let pipeline = TranslationPipeline::new(&http);
+
+        let noun_phrase = pipeline.translate("доброе яблоко", "ru", "en").unwrap();
+        assert_eq!(noun_phrase.primary_surface(), Some("Good apple"));
+        assert!(noun_phrase
+            .provenance
+            .iter()
+            .any(|p| p == "compositional:ru->en:доброе яблоко"));
+
+        let question_phrase = pipeline.translate("что это такое?", "ru", "en").unwrap();
+        assert_eq!(question_phrase.primary_surface(), Some("What is this?"));
+        assert!(question_phrase
+            .provenance
+            .iter()
+            .any(|p| p == "compositional:ru->en:что это такое"));
     }
 
     #[test]

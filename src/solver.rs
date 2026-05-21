@@ -368,6 +368,7 @@ const SPECIALIZED_HANDLERS: &[(&str, SpecializedHandler)] = &[
     ("fact_lookup", try_fact_lookup),
     ("coreference", try_coreference_request),
     ("roleplay", try_roleplay_request),
+    ("translation", try_translation),
     ("capabilities", try_capabilities),
     ("calendar_reasoning", try_calendar_reasoning),
     ("arithmetic", handle_arithmetic),
@@ -378,7 +379,6 @@ const SPECIALIZED_HANDLERS: &[(&str, SpecializedHandler)] = &[
     ("how_it_works", try_how_it_works),
     ("meta_explanation", try_meta_explanation),
     ("network_query", try_network_query),
-    ("translation", try_translation),
     // `execution_failure` must run before `write_script`/`algorithm` so that
     // explicit failure prompts (e.g. "calls undefined_function()") surface a
     // failure trace instead of being silently transformed into a passing
