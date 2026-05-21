@@ -1,0 +1,20 @@
+{
+  "head" : {
+    "vars" : [ "lemma" ]
+  },
+  "results" : {
+    "bindings" : [ {
+      "lemma" : {
+        "xml:lang" : "zh-hans",
+        "type" : "literal",
+        "value" : "国家"
+      }
+    }, {
+      "lemma" : {
+        "xml:lang" : "zh-hant",
+        "type" : "literal",
+        "value" : "國家"
+      }
+    } ]
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "head" : {
+    "vars" : [ "lemma" ]
+  },
+  "results" : {
+    "bindings" : [ {
+      "lemma" : {
+        "xml:lang" : "ru",
+        "type" : "literal",
+        "value" : "лошак"
+      }
+    }, {
+      "lemma" : {
+        "xml:lang" : "ru",
+        "type" : "literal",
+        "value" : "коняга"
+      }
+    }, {
+      "lemma" : {
+        "xml:lang" : "ru",
+        "type" : "literal",
+        "value" : "кляча"
+      }
+    }, {
+      "lemma" : {
+        "xml:lang" : "ru",
+        "type" : "literal",
+        "value" : "конёк"
+      }
+    }, {
+      "lemma" : {
+        "xml:lang" : "ru",
+        "type" : "literal",
+        "value" : "лошадь"
+      }
+    }, {
+      "lemma" : {
+        "xml:lang" : "ru",
+        "type" : "literal",
+        "value" : "конь"
+      }
+    } ]
+  }
+}

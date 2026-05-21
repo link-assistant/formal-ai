@@ -1,0 +1,56 @@
+{
+  "head" : {
+    "vars" : [ "lemma" ]
+  },
+  "results" : {
+    "bindings" : [ {
+      "lemma" : {
+        "xml:lang" : "en",
+        "type" : "literal",
+        "value" : "house"
+      }
+    }, {
+      "lemma" : {
+        "xml:lang" : "en",
+        "type" : "literal",
+        "value" : "company"
+      }
+    }, {
+      "lemma" : {
+        "xml:lang" : "en",
+        "type" : "literal",
+        "value" : "building"
+      }
+    }, {
+      "lemma" : {
+        "xml:lang" : "en",
+        "type" : "literal",
+        "value" : "home"
+      }
+    }, {
+      "lemma" : {
+        "xml:lang" : "en",
+        "type" : "literal",
+        "value" : "residence"
+      }
+    }, {
+      "lemma" : {
+        "xml:lang" : "en",
+        "type" : "literal",
+        "value" : "domicile"
+      }
+    }, {
+      "lemma" : {
+        "xml:lang" : "en",
+        "type" : "literal",
+        "value" : "firm"
+      }
+    }, {
+      "lemma" : {
+        "xml:lang" : "en",
+        "type" : "literal",
+        "value" : "edifice"
+      }
+    } ]
+  }
+}

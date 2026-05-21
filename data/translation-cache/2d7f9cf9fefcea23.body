@@ -1,0 +1,32 @@
+{
+  "head" : {
+    "vars" : [ "lemma" ]
+  },
+  "results" : {
+    "bindings" : [ {
+      "lemma" : {
+        "xml:lang" : "en",
+        "type" : "literal",
+        "value" : "star"
+      }
+    }, {
+      "lemma" : {
+        "xml:lang" : "en",
+        "type" : "literal",
+        "value" : "helio-"
+      }
+    }, {
+      "lemma" : {
+        "xml:lang" : "en",
+        "type" : "literal",
+        "value" : "sun"
+      }
+    }, {
+      "lemma" : {
+        "xml:lang" : "en",
+        "type" : "literal",
+        "value" : "Sol"
+      }
+    } ]
+  }
+}

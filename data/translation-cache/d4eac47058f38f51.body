@@ -1,0 +1,32 @@
+{
+  "head" : {
+    "vars" : [ "lemma" ]
+  },
+  "results" : {
+    "bindings" : [ {
+      "lemma" : {
+        "xml:lang" : "en",
+        "type" : "literal",
+        "value" : "mountain"
+      }
+    }, {
+      "lemma" : {
+        "xml:lang" : "en",
+        "type" : "literal",
+        "value" : "bank"
+      }
+    }, {
+      "lemma" : {
+        "xml:lang" : "en",
+        "type" : "literal",
+        "value" : "summit"
+      }
+    }, {
+      "lemma" : {
+        "xml:lang" : "en",
+        "type" : "literal",
+        "value" : "riverbank"
+      }
+    } ]
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "head" : {
+    "vars" : [ "lemma" ]
+  },
+  "results" : {
+    "bindings" : [ {
+      "lemma" : {
+        "xml:lang" : "ru",
+        "type" : "literal",
+        "value" : "моська"
+      }
+    }, {
+      "lemma" : {
+        "xml:lang" : "ru",
+        "type" : "literal",
+        "value" : "пёс"
+      }
+    }, {
+      "lemma" : {
+        "xml:lang" : "ru-x-q2442696",
+        "type" : "literal",
+        "value" : "пёсъ"
+      }
+    }, {
+      "lemma" : {
+        "xml:lang" : "ru",
+        "type" : "literal",
+        "value" : "собака"
+      }
+    } ]
+  }
+}

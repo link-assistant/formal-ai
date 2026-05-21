@@ -1,0 +1,26 @@
+{
+  "head" : {
+    "vars" : [ "lemma" ]
+  },
+  "results" : {
+    "bindings" : [ {
+      "lemma" : {
+        "xml:lang" : "ru",
+        "type" : "literal",
+        "value" : "картофель"
+      }
+    }, {
+      "lemma" : {
+        "xml:lang" : "ru",
+        "type" : "literal",
+        "value" : "картоха"
+      }
+    }, {
+      "lemma" : {
+        "xml:lang" : "ru",
+        "type" : "literal",
+        "value" : "картошка"
+      }
+    } ]
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "head" : {
+    "vars" : [ "lemma" ]
+  },
+  "results" : {
+    "bindings" : [ {
+      "lemma" : {
+        "xml:lang" : "ru",
+        "type" : "literal",
+        "value" : "лук"
+      }
+    }, {
+      "lemma" : {
+        "xml:lang" : "ru-petr1708",
+        "type" : "literal",
+        "value" : "лукъ"
+      }
+    } ]
+  }
+}

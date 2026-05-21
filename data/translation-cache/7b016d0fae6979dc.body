@@ -1,0 +1,26 @@
+{
+  "head" : {
+    "vars" : [ "lemma" ]
+  },
+  "results" : {
+    "bindings" : [ {
+      "lemma" : {
+        "xml:lang" : "en",
+        "type" : "literal",
+        "value" : "city"
+      }
+    }, {
+      "lemma" : {
+        "xml:lang" : "en",
+        "type" : "literal",
+        "value" : "town centre"
+      }
+    }, {
+      "lemma" : {
+        "xml:lang" : "en-us",
+        "type" : "literal",
+        "value" : "town center"
+      }
+    } ]
+  }
+}
