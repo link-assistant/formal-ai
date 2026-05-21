@@ -668,6 +668,12 @@ function recordMatchesTerm(record, normalized) {
   );
 }
 
+function recordMatchesQueryTerm(record, normalized, contextNormalized) {
+  if (recordMatchesTerm(record, normalized)) return true;
+  if (!contextNormalized) return false;
+  return recordMatchesTerm(record, `${normalized} ${contextNormalized}`);
+}
+
 function contextRecordMatches(contextRecord, contextNormalized) {
   if (!contextRecord) return false;
   if (
@@ -746,7 +752,7 @@ function rankConceptForPair(termRaw, contextRaw) {
   const contextNormalized = contextRaw ? normalizeConceptTerm(contextRaw) : "";
 
   const termMatches = CONCEPTS.filter((record) =>
-    recordMatchesTerm(record, normalized),
+    recordMatchesQueryTerm(record, normalized, contextNormalized),
   );
   if (termMatches.length === 0) return null;
 
@@ -779,12 +785,13 @@ function rankConceptForPair(termRaw, contextRaw) {
 function lookupConceptQuery(query) {
   if (!query) return null;
   const direct = rankConceptForPair(query.term, query.context);
-  if (direct) return direct;
   if (query.context) {
     const reversed = rankConceptForPair(query.context, query.term);
-    if (reversed) return reversed;
+    if (reversed && (!direct || (!direct.contextMatch && reversed.contextMatch))) {
+      return reversed;
+    }
   }
-  return null;
+  return direct || null;
 }
 
 function lookupConcept(term) {
@@ -4835,7 +4842,12 @@ function isNearLookupText(left, right) {
 }
 
 function isPlausibleWikipediaSearchMatch(summary, term) {
-  if (!summary || summary.matchKind !== "search") return true;
+  if (
+    !summary ||
+    (summary.matchKind !== "search" && summary.matchKind !== "context_search")
+  ) {
+    return true;
+  }
   const termNormalized = normalizeLookupText(term);
   if (!termNormalized) return true;
   const termTokens = termNormalized.split(/\s+/).filter(Boolean);
@@ -4843,6 +4855,7 @@ function isPlausibleWikipediaSearchMatch(summary, term) {
     summary.title,
     summary.matchedTitle,
     String(summary.matchedSlug || "").replace(/_/g, " "),
+    summary.extract,
   ];
   for (const candidate of candidates) {
     const normalized = normalizeLookupText(candidate);
@@ -5969,7 +5982,12 @@ async function tryWikipediaLookup(prompt, language, preferences) {
     return tryTermKnowledgeFallback(wikiTerm, language, null);
   }
   const isClosestMatch = isClosestWikipediaMatch(summary);
-  if (isClosestMatch && !isPlausibleWikipediaSearchMatch(summary, wikiTerm)) {
+  const requiresPlausibleSearchMatch =
+    isClosestMatch || summary.matchKind === "context_search";
+  if (
+    requiresPlausibleSearchMatch &&
+    !isPlausibleWikipediaSearchMatch(summary, wikiTerm)
+  ) {
     const fallback = await tryTermKnowledgeFallback(wikiTerm, language, summary);
     if (fallback) return fallback;
     return null;
