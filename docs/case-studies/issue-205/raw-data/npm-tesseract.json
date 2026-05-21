@@ -1,0 +1,18 @@
+{
+  "version": "7.0.0",
+  "dist.unpackedSize": 1411341,
+  "dependencies": {
+    "bmp-js": "^0.1.0",
+    "idb-keyval": "^6.2.0",
+    "is-url": "^1.2.4",
+    "node-fetch": "^2.6.9",
+    "opencollective-postinstall": "^2.0.3",
+    "regenerator-runtime": "^0.13.3",
+    "tesseract.js-core": "^7.0.0",
+    "wasm-feature-detect": "^1.8.0",
+    "zlibjs": "^0.3.1"
+  },
+  "license": "Apache-2.0",
+  "time.modified": "2025-12-15T03:37:59.984Z",
+  "time.created": "2015-07-07T00:52:27.114Z"
+}

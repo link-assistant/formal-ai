@@ -1,4 +1,13 @@
-use formal_ai::FormalAiEngine;
+use std::collections::{BTreeMap, BTreeSet};
+
+use formal_ai::{agent_info, FormalAiEngine};
+
+const WEB_SEARCH_SOURCE_MARKER_CASES: &[(&str, &str, &str)] = &[
+    ("en", "Find apple on the internet", "apple"),
+    ("ru", "Найди яблоко в интернете", "яблоко"),
+    ("hi", "सेब के बारे में इंटरनेट पर खोजो", "सेब"),
+    ("zh", "查找苹果网上信息", "苹果"),
+];
 
 #[test]
 fn navigation_describes_frame_policy_check_before_iframe_preview() {
@@ -110,4 +119,88 @@ fn generic_navigation_uses_same_frame_policy_path_as_github() {
         "Generic navigation should not hardcode a blocked host verdict: {:?}",
         response.evidence_links
     );
+}
+
+#[test]
+fn web_search_source_marker_cases_cover_every_supported_language() {
+    let info = agent_info();
+    let supported_languages = info
+        .get("supported_languages")
+        .expect("agent-info.lino should define supported_languages")
+        .split('|')
+        .filter(|language| !language.is_empty())
+        .collect::<BTreeSet<_>>();
+    let mut case_languages = BTreeMap::<&str, usize>::new();
+    for &(language, _, _) in WEB_SEARCH_SOURCE_MARKER_CASES {
+        *case_languages.entry(language).or_insert(0) += 1;
+    }
+    assert_eq!(
+        case_languages.keys().copied().collect::<BTreeSet<_>>(),
+        supported_languages,
+        "source-marker web-search prompts must cover every supported language",
+    );
+    assert!(
+        case_languages.values().all(|count| *count == 1),
+        "source-marker web-search prompts should add one case per supported language: {case_languages:?}",
+    );
+}
+
+#[test]
+fn web_search_source_marker_prompts_extract_query_without_source_marker() {
+    for &(language, prompt, expected_query) in WEB_SEARCH_SOURCE_MARKER_CASES {
+        let response = FormalAiEngine.answer(prompt);
+
+        assert_eq!(
+            response.intent, "web_search",
+            "{language} prompt {prompt:?} should route to web_search, got {} with answer {}",
+            response.intent, response.answer,
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == &format!("web_search:request:{expected_query}")),
+            "{language} web search should extract only the query term {expected_query:?}: {:?}",
+            response.evidence_links,
+        );
+        assert!(
+            response.answer.contains(&format!("`{expected_query}`")),
+            "{language} web-search answer should echo the extracted query, got: {}",
+            response.answer,
+        );
+        assert_ne!(response.intent, "unknown");
+    }
+}
+
+#[test]
+fn information_search_variants_route_to_web_search_handler() {
+    let prompts = [
+        "Найди информацию о Rust программировании",
+        "Поищи информацию про Rust программирование",
+        "Найди подробные сведения о Rust программировании",
+        "Поищи материалы по Rust программированию в Википедии",
+        "Find information about Rust programming",
+        "Look up information on Rust programming",
+        "Find detailed information about Rust programming",
+        "Research Rust programming online",
+        "Rust programming के बारे में जानकारी खोजो",
+        "Rust programming पर जानकारी ढूंढो",
+        "Rust programming के बारे में विकिपीडिया में खोजें",
+        "查找关于 Rust 编程的信息",
+        "搜索 Rust 编程 的资料",
+        "在维基百科上查一下 Rust 编程",
+    ];
+    for prompt in prompts {
+        let response = FormalAiEngine.answer(prompt);
+        assert_eq!(
+            response.intent, "web_search",
+            "prompt {prompt:?} should route to web_search, got {} with answer {}",
+            response.intent, response.answer,
+        );
+        assert!(
+            response.answer.to_lowercase().contains("rust"),
+            "web search response should preserve the query, got {}",
+            response.answer,
+        );
+    }
 }
