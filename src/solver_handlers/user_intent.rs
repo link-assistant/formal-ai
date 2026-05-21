@@ -6,7 +6,9 @@ use crate::concepts::extract_concept_query;
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
-use crate::proof_engine::{attempt_proof, render_outcome, ProofOutcome};
+use crate::proof_engine::{
+    attempt_proof_with_config, render_outcome_with_config, ProofOutcome, ProofRenderConfig,
+};
 use crate::seed::response_for;
 use crate::solver_handlers::finalize_simple;
 
@@ -407,6 +409,28 @@ pub fn try_proof_request(
     normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
+    try_proof_request_with_config(prompt, normalized, log, ProofRenderConfig::default())
+}
+
+/// Configuration-aware variant of [`try_proof_request`].
+///
+/// The two sliders in [`ProofRenderConfig`] control how the proof is
+/// surfaced to the user:
+///
+/// * High `guess_probability` → the engine explains how it interpreted the
+///   prompt (an "Interpretation" header), commits to a formal translation,
+///   and runs the proof through to a conclusion.
+/// * High `follow_up_probability` → the engine appends a "Clarifying
+///   questions" footer listing every input it still needs before the final
+///   research execution.
+///
+/// The two sliders are independent so all four combinations work.
+pub fn try_proof_request_with_config(
+    prompt: &str,
+    normalized: &str,
+    log: &mut EventLog,
+    config: ProofRenderConfig,
+) -> Option<SymbolicAnswer> {
     // A proof verb may be followed by whitespace or punctuation (",", ":",
     // "!", "."). Avoid false positives on longer words that just happen to
     // start with the verb (e.g. "prover" or "proven") by checking the
@@ -436,7 +460,11 @@ pub fn try_proof_request(
         || normalized.contains(" докажи ")
         // Hindi
         || normalized.contains("साबित कर")
+        || normalized.contains("साबित कीजिए")
+        || normalized.contains("साबित कीजिये")
         || normalized.contains("सिद्ध कर")
+        || normalized.contains("सिद्ध कीजिए")
+        || normalized.contains("सिद्ध कीजिये")
         || normalized.contains("प्रमाण")
         // Chinese
         || normalized.contains("证明")
@@ -458,6 +486,14 @@ pub fn try_proof_request(
         || normalized.contains("决定论")
         || normalized.contains("निर्धारणवाद");
     log.append("policy:proof_request", prompt.to_owned());
+    log.append(
+        "policy:proof_guess_probability",
+        format!("{:.2}", config.guess_probability),
+    );
+    log.append(
+        "policy:proof_follow_up_probability",
+        format!("{:.2}", config.follow_up_probability),
+    );
     if mentions_godel {
         log.append("concept", "godel_incompleteness".to_owned());
     }
@@ -466,18 +502,25 @@ pub fn try_proof_request(
     }
     log.append("pipeline:planned", "relative-meta-logic".to_owned());
     let claim = extract_claim_from_prompt(normalized);
-    let outcome = attempt_proof(
+    let outcome = attempt_proof_with_config(
         prompt,
         &claim,
         language,
         mentions_godel,
         mentions_determinism,
+        config,
     );
     log.append("proof_outcome", outcome.status_slug().to_owned());
     if let Some(method) = outcome.method() {
         log.append("proof_method", method.slug().to_owned());
     }
-    let mut body = render_outcome(&outcome, language);
+    if config.show_interpretation() {
+        log.append("proof_render:interpretation", "shown".to_owned());
+    }
+    if config.ask_follow_ups() {
+        log.append("proof_render:follow_ups", "shown".to_owned());
+    }
+    let mut body = render_outcome_with_config(&outcome, language, config);
     if matches!(outcome, ProofOutcome::PartialPlan { .. }) {
         body.push_str(&pipeline_footer(language));
     }

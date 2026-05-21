@@ -208,3 +208,59 @@ impl ProofOutcome {
         }
     }
 }
+
+/// Configuration the proof engine reads to decide *how* to present a proof.
+///
+/// The two sliders mirror the JS front-end (`src/web/app.js`) and the surface
+/// [`crate::solver::SolverConfig`]:
+///
+/// * `guess_probability` (0.0..1.0): high values mean "be confident, show how
+///   you interpreted the prompt, translate it into the formal system, and
+///   execute the proof". Low values mean "stay literal, only execute what is
+///   unambiguous".
+/// * `follow_up_probability` (0.0..1.0): high values mean "after presenting
+///   what you have, ask the user the questions you still need answered so the
+///   final research execution is unambiguous". Low values keep the response
+///   action-only.
+///
+/// The two sliders are independent: setting both high produces an
+/// interpretation header *and* a clarifying-questions footer. Setting both low
+/// reduces the response to just the proof body.
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub struct ProofRenderConfig {
+    pub guess_probability: f32,
+    pub follow_up_probability: f32,
+}
+
+impl Default for ProofRenderConfig {
+    fn default() -> Self {
+        Self {
+            guess_probability: 0.8,
+            follow_up_probability: 0.75,
+        }
+    }
+}
+
+impl ProofRenderConfig {
+    /// True when the configuration asks the engine to surface how it
+    /// interpreted the prompt (translation to the formal system).
+    #[must_use]
+    pub fn show_interpretation(self) -> bool {
+        self.guess_probability >= 0.6
+    }
+
+    /// True when the configuration asks the engine to add follow-up
+    /// clarification questions instead of (or in addition to) executing.
+    #[must_use]
+    pub fn ask_follow_ups(self) -> bool {
+        self.follow_up_probability >= 0.5
+    }
+
+    /// True when the configuration explicitly asks the engine to be terse
+    /// (low guess *and* low follow-up). Used to drop the deep-reasoning block
+    /// from the rendered proof.
+    #[must_use]
+    pub fn is_terse(self) -> bool {
+        self.guess_probability < 0.4 && self.follow_up_probability < 0.5
+    }
+}

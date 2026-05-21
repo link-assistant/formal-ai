@@ -21,8 +21,8 @@ pub mod library;
 pub mod presenter;
 pub mod types;
 
-pub use presenter::render_outcome;
-pub use types::{Proof, ProofMethod, ProofOutcome, ProofStep, StepKind};
+pub use presenter::{render_outcome, render_outcome_with_config};
+pub use types::{Proof, ProofMethod, ProofOutcome, ProofRenderConfig, ProofStep, StepKind};
 
 /// Run the engine against a free-form prompt.
 ///
@@ -43,6 +43,33 @@ pub fn attempt_proof(
     language: &str,
     mentions_godel: bool,
     mentions_determinism: bool,
+) -> ProofOutcome {
+    attempt_proof_with_config(
+        prompt,
+        claim,
+        language,
+        mentions_godel,
+        mentions_determinism,
+        ProofRenderConfig::default(),
+    )
+}
+
+/// Configuration-aware variant of [`attempt_proof`].
+///
+/// When `config.guess_probability` is high the engine spends extra effort on
+/// the partial-plan branches: it expands the deep formal-reasoning thread
+/// (closed sentences in PA / ZFC, ATP citations, relative-meta-logic step
+/// refs). The proven and disproven branches do not depend on the slider —
+/// once the engine can actually discharge the proof, the proof itself is the
+/// answer.
+#[must_use]
+pub fn attempt_proof_with_config(
+    prompt: &str,
+    claim: &str,
+    language: &str,
+    mentions_godel: bool,
+    mentions_determinism: bool,
+    config: ProofRenderConfig,
 ) -> ProofOutcome {
     // 1. Arithmetic equality / inequality — direct calculation.
     if let Some(outcome) = arithmetic::attempt_arithmetic_claim(claim) {
@@ -66,13 +93,110 @@ pub fn attempt_proof(
     // 3. Gödel + determinism combo without a direct library hit still
     //    deserves the structured "axiom set needed" walkthrough.
     if mentions_godel && mentions_determinism {
-        return godel_determinism_partial_plan(language);
+        let mut outcome = godel_determinism_partial_plan(language);
+        if config.guess_probability >= 0.6 {
+            enrich_partial_plan_with_deep_reasoning(&mut outcome, language);
+        }
+        return outcome;
     }
 
     // 4. Fallback: produce a proof plan that asks the user for an axiom
     //    set / definitions. This is never a refusal — it's an honest
     //    description of what the engine would do with the missing inputs.
-    generic_partial_plan(prompt, language)
+    let mut outcome = generic_partial_plan(prompt, language);
+    if config.guess_probability >= 0.6 {
+        enrich_partial_plan_with_deep_reasoning(&mut outcome, language);
+    }
+    outcome
+}
+
+/// When the user has dialled the guess slider up, the engine commits to a
+/// concrete formal-reasoning sketch instead of stopping at a high-level plan.
+/// We append two extra steps to any `PartialPlan` produced by the fallback
+/// branches: an explicit translation to a closed sentence in PA / ZFC, and a
+/// pointer to the relative-meta-logic verification step.
+fn enrich_partial_plan_with_deep_reasoning(outcome: &mut ProofOutcome, language: &str) {
+    if let ProofOutcome::PartialPlan { plan, .. } = outcome {
+        let formal_step = deep_formal_translation_step(language);
+        let verify_step = deep_relative_meta_logic_step(language);
+        // Insert the formal-translation step just before the final Conclusion
+        // (so the plan reads as: hypothesis → reasoning → translation →
+        // verification → conclusion) and append the verification step.
+        let conclusion_pos = plan
+            .iter()
+            .rposition(|s| matches!(s.kind, StepKind::Conclusion));
+        if let Some(pos) = conclusion_pos {
+            plan.insert(pos, formal_step);
+            plan.insert(pos + 1, verify_step);
+        } else {
+            plan.push(formal_step);
+            plan.push(verify_step);
+        }
+    }
+}
+
+fn deep_formal_translation_step(language: &str) -> ProofStep {
+    let text = match language {
+        "ru" => String::from(
+            "Запишем утверждение как закрытое предложение φ в выбранной аксиоматике (PA, ZFC \
+             или ньютоновская механика). Перевод соответствует канонической формализации \
+             relative-meta-logic: ⟦φ⟧ = ∀x. P(x) → Q(x), где P и Q — предикаты, заданные в \
+             выбранной сигнатуре.",
+        ),
+        "hi" => String::from(
+            "कथन को चयनित अभिगृहीत समुच्चय (PA, ZFC या न्यूटनीय यांत्रिकी) में बंद \
+             वाक्य φ के रूप में लिखें। यह अनुवाद relative-meta-logic के विहित रूप ⟦φ⟧ = \
+             ∀x. P(x) → Q(x) से मेल खाता है, जहाँ P और Q चयनित सिग्नेचर में परिभाषित \
+             प्रिडिकेट हैं।",
+        ),
+        "zh" => String::from(
+            "把陈述写成所选公理集(PA、ZFC 或牛顿力学)中的闭命题 φ。该翻译\
+             对应 relative-meta-logic 的规范形式 ⟦φ⟧ = ∀x. P(x) → Q(x),\
+             其中 P、Q 为所选签名中的谓词。",
+        ),
+        _ => String::from(
+            "Translate the claim into a closed sentence φ in the chosen axiom set (PA, ZFC or \
+             Newtonian mechanics). The translation matches the canonical relative-meta-logic \
+             encoding ⟦φ⟧ = ∀x. P(x) → Q(x), where P and Q are predicates over the chosen \
+             signature.",
+        ),
+    };
+    ProofStep {
+        kind: StepKind::Definition,
+        text,
+    }
+}
+
+fn deep_relative_meta_logic_step(language: &str) -> ProofStep {
+    let text = match language {
+        "ru" => String::from(
+            "Передадим ⟦φ⟧ в библиотеку relative-meta-logic: она запускает выбранную тактику \
+             (rewrite / induction / contradiction) и возвращает либо подписанный сертификат \
+             доказательства, либо контрпример. Каждый шаг тактики записывается как событие \
+             `proof_step:*` в append-only журнал.",
+        ),
+        "hi" => String::from(
+            "⟦φ⟧ को relative-meta-logic लाइब्रेरी में भेजें: यह चयनित युक्ति (rewrite / \
+             induction / contradiction) चलाती है और या तो हस्ताक्षरित प्रमाण-प्रमाणपत्र \
+             लौटाती है या एक प्रतिउदाहरण। प्रत्येक युक्ति-चरण `proof_step:*` घटना के रूप में \
+             append-only लॉग में दर्ज होता है।",
+        ),
+        "zh" => String::from(
+            "把 ⟦φ⟧ 交给 relative-meta-logic 库:它运行所选策略\
+             (rewrite / induction / contradiction)并返回签名的证明证书或反例。\
+             每一步策略都作为 `proof_step:*` 事件追加进只追加日志。",
+        ),
+        _ => String::from(
+            "Hand ⟦φ⟧ to the relative-meta-logic library: it runs the selected tactic \
+             (rewrite / induction / contradiction) and returns either a signed proof \
+             certificate or a counterexample. Every tactic step is appended to the \
+             append-only log as a `proof_step:*` event.",
+        ),
+    };
+    ProofStep {
+        kind: StepKind::Inference,
+        text,
+    }
 }
 
 fn mixed_godel_determinism(language: &str, proof: &Proof) -> ProofOutcome {

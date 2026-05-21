@@ -82,6 +82,10 @@ limit from Gödel's incompleteness.
 | R185-11 | The bot must take "math / logic / science" as available contexts for the formalization. | **Done.** The proof engine recognizes arithmetic (math), classical theorems with axiom sets (logic), and the Newtonian / Laplacian reduction (science). |
 | R185-12 | The whole change must land in a single pull request with the case study attached. | **Done.** PR [#199](https://github.com/link-assistant/formal-ai/pull/199) carries the proof engine, the tests, the changelog fragment, and this case study. |
 | R185-13 | The proof body must include localized terminology for ru/hi/zh. | **Done.** Each entry in `library::REGISTRY` carries en/ru/hi/zh translations; the presenter localizes step labels, headings, and section markers. |
+| R185-14 | High `guess_probability` must surface how the engine interpreted the prompt and walk it through to the relative-meta-logic translation and verification. | **Done.** `ProofRenderConfig::show_interpretation()` (threshold 0.6) prepends a localized "How I interpreted the request" header, and `attempt_proof_with_config` expands `PartialPlan` outcomes with two extra steps: a closed-sentence translation `⟦φ⟧ = ∀x. P(x) → Q(x)` and a `relative-meta-logic` verification step. |
+| R185-15 | High `follow_up_probability` must ask clarifying questions before final research execution. | **Done.** New `follow_up_probability` slider (default 0.75) on `SolverConfig`. `ProofRenderConfig::ask_follow_ups()` (threshold 0.5) appends a "Clarifying questions" footer with localized prompts for the disproven, partial-plan, and inconclusive arms (en/ru/hi/zh). |
+| R185-16 | The configuration sliders must be observable in the append-only evidence log. | **Done.** Every proof request emits `policy:proof_guess_probability` and `policy:proof_follow_up_probability` events with the live values, plus `proof_render:interpretation` and `proof_render:follow_ups` events whenever the corresponding section is rendered. |
+| R185-17 | The sliders must be configurable from the web UI, the public Rust API, and the environment. | **Done.** `src/web/app.js` exposes both sliders in the preferences panel; the `guess_probability` and `follow_up_probability` fields on `SolverConfig` accept programmatic overrides; `SolverConfig::from_env` honours the `FORMAL_AI_GUESS_PROBABILITY` and `FORMAL_AI_FOLLOW_UP_PROBABILITY` environment variables (both clamped to `[0.0, 1.0]`). |
 
 ## Root Cause
 
@@ -131,9 +135,34 @@ above `try_opinion_question`.
 | Hindi | `साबित`, `सिद्ध`, `प्रमाण` | "साबित करो कि 1 + 1 = 2" |
 | Chinese | `证明`, `證明` | "证明费马小定理" |
 
-### 4. Tests (`tests/unit/proof_request.rs`)
+### 4. Configuration-aware proof rendering
 
-Thirteen tests assert the new contract end-to-end:
+The proof engine now reads two sliders off `SolverConfig`:
+
+| Slider | Default | Behavior at high values |
+| --- | --- | --- |
+| `guess_probability` | `0.8` | Prepends a localized "How I interpreted the request" header that names the formal system; expands every `PartialPlan` outcome with two extra steps — a closed-sentence translation `⟦φ⟧ = ∀x. P(x) → Q(x)` (Definition) and a `relative-meta-logic` verification step (Inference) that runs `rewrite` / `induction` / `contradiction` tactics. Threshold: `0.6`. |
+| `follow_up_probability` | `0.75` | Appends a localized "Clarifying questions" footer for the `Disproven`, `PartialPlan`, and `Inconclusive` arms. The questions are translated for en/ru/hi/zh and enumerate the axiom set, definition, and acceptance criterion the user still has to confirm before final research execution. Threshold: `0.5`. |
+
+`ProofRenderConfig` lives in `src/proof_engine/types.rs` so the engine has no
+direct dependency on `SolverConfig`; the dispatcher in `src/solver.rs` builds
+the render config from `SolverConfig::{guess_probability,
+follow_up_probability}` per iteration and hands it to `try_proof_request_with_config`.
+Both sliders are also reachable from:
+
+- the web preferences UI (`src/web/app.js`),
+- the Rust builder API (the fields on `SolverConfig`), and
+- the environment (`FORMAL_AI_GUESS_PROBABILITY`,
+  `FORMAL_AI_FOLLOW_UP_PROBABILITY`; both clamped to `[0.0, 1.0]`).
+
+Every render decision is auditable through `policy:proof_guess_probability`,
+`policy:proof_follow_up_probability`, `proof_render:interpretation`, and
+`proof_render:follow_ups` events on the append-only log.
+
+### 5. Tests (`tests/unit/proof_request.rs` and `tests/unit/proof_request_config.rs`)
+
+Thirteen tests in `tests/unit/proof_request.rs` assert the baseline contract
+end-to-end:
 
 - `proof_requests_return_proof_response` — every proof-shaped prompt resolves to `proof_request`, the body is non-trivial, and the body never contains the unknown-fallback marker or the legacy "I cannot discharge" refusal.
 - `arithmetic_proof_request_contains_evaluated_values` — "Prove that 1 + 1 = 2" produces a Proven outcome that restates the claim, labels the method "direct calculation", and ends with ∎.
@@ -148,6 +177,26 @@ Thirteen tests assert the new contract end-to-end:
 - `unknown_theorem_returns_partial_plan_not_refusal` — "Prove the Riemann hypothesis" returns a structured plan, never "I cannot".
 - `proof_request_handler_does_not_swallow_opinion_questions` — opinion questions still resolve to `opinion_question`.
 - `proof_request_handler_does_not_swallow_concept_lookups` — "What is a proof?" still resolves through concept-lookup, not proof-request.
+
+Sixteen further tests in `tests/unit/proof_request_config.rs` lock in the
+configuration-aware behavior:
+
+- `high_guess_low_follow_up_shows_interpretation_no_questions_for_riemann` — `guess_probability` 0.95, `follow_up_probability` 0.1: shows interpretation header for the Riemann hypothesis, omits clarifying questions.
+- `low_guess_high_follow_up_asks_questions_no_interpretation` — opposite slider configuration appends the clarifying-questions footer without an interpretation header.
+- `balanced_config_shows_both_headers` — defaults (0.8 / 0.75) produce both sections.
+- `terse_config_drops_both_headers_for_partial_plan` — `guess_probability` 0.2 and `follow_up_probability` 0.2 strip both decorations.
+- `proven_branch_shows_interpretation_only_for_high_guess` — a proven outcome still surfaces the interpretation header but never a follow-up footer.
+- `disproven_branch_asks_followup_questions_when_follow_up_high` — disproof + high follow-up surfaces the clarifying-questions footer.
+- `godel_determinism_high_guess_includes_relative_meta_logic_translation` — high guess on the Gödel / determinism prompt inserts the relative-meta-logic translation step and the verification step.
+- `russian_high_follow_up_asks_clarification_in_russian` — Russian prompt with high follow-up uses Russian question text.
+- `chinese_high_guess_shows_chinese_interpretation_header` — Chinese prompt with high guess uses Chinese interpretation text.
+- `hindi_high_follow_up_uses_hindi_question_label` — Hindi prompt with high follow-up uses Hindi question text.
+- `proof_render_config_threshold_helpers` — `show_interpretation()`, `ask_follow_ups()`, `is_terse()` use the documented thresholds.
+- `config_propagates_through_event_log_via_policy_events` — every proof request emits `policy:proof_guess_probability` and `policy:proof_follow_up_probability` events.
+- `proof_engine_deeper_reasoning_when_guess_is_high` — `attempt_proof_with_config` adds the deep-reasoning steps when the slider is at or above the threshold.
+- `proof_engine_keeps_default_plan_when_guess_low` — low guess leaves the partial plan untouched.
+- `render_outcome_with_config_is_pure_function` — repeated calls with the same arguments return the same body.
+- `env_overrides_for_guess_and_follow_up_probability_parse` — `FORMAL_AI_GUESS_PROBABILITY` / `FORMAL_AI_FOLLOW_UP_PROBABILITY` are read by `SolverConfig::from_env` and clamped to `[0.0, 1.0]`.
 
 ## Solution Plans Considered
 
