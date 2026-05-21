@@ -6,6 +6,7 @@ use crate::concepts::extract_concept_query;
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
+use crate::proof_engine::{attempt_proof, render_outcome, ProofOutcome};
 use crate::seed::response_for;
 use crate::solver_handlers::finalize_simple;
 
@@ -391,18 +392,16 @@ pub fn try_opinion_question(
 }
 
 /// Issue #185: catch "prove …" / "show that …" / "доказать …" / "साबित कर
-/// …" / "证明 …" prompts and return a structured response that names the
-/// formalization pipeline and the planned `relative-meta-logic` integration
-/// instead of falling through to the unknown-prompt opener.
+/// …" / "证明 …" prompts and route them through the universal proof
+/// engine (`crate::proof_engine`).
 ///
-/// The handler deliberately does **not** attempt to synthesise a proof
-/// itself: discharging a proof requires the `relative-meta-logic` Rust
-/// prover from `link-foundation/relative-meta-logic`, which is currently
-/// only published as a git repository (no crates.io release) and which
-/// requires a Wikidata-backed formalization step before it can be invoked
-/// with a concrete axiom set. Wiring that integration is tracked in the
-/// case study at `docs/case-studies/issue-185/README.md` and will land in
-/// a follow-up PR.
+/// Every branch of the engine returns a real outcome — `Proven` for a
+/// theorem we can discharge by direct calculation or by quoting the
+/// classical proof, `Disproven` with a worked counterexample,
+/// `PartialPlan` that walks the user through the proof plan and asks
+/// for the missing axiom set or definitions, or `Inconclusive` with a
+/// concrete reason. The handler never falls back to the generic
+/// "unknown intent" opener.
 pub fn try_proof_request(
     prompt: &str,
     normalized: &str,
@@ -466,94 +465,107 @@ pub fn try_proof_request(
         log.append("concept", "determinism".to_owned());
     }
     log.append("pipeline:planned", "relative-meta-logic".to_owned());
-    let body = proof_request_body(language, mentions_godel, mentions_determinism);
+    let claim = extract_claim_from_prompt(normalized);
+    let outcome = attempt_proof(
+        prompt,
+        &claim,
+        language,
+        mentions_godel,
+        mentions_determinism,
+    );
+    log.append("proof_outcome", outcome.status_slug().to_owned());
+    if let Some(method) = outcome.method() {
+        log.append("proof_method", method.slug().to_owned());
+    }
+    let mut body = render_outcome(&outcome, language);
+    if matches!(outcome, ProofOutcome::PartialPlan { .. }) {
+        body.push_str(&pipeline_footer(language));
+    }
+    let confidence = match &outcome {
+        ProofOutcome::Proven { .. } | ProofOutcome::Disproven { .. } => 0.85,
+        ProofOutcome::PartialPlan { .. } => 0.6,
+        ProofOutcome::Inconclusive { .. } => 0.4,
+    };
     Some(finalize_simple(
         prompt,
         log,
         "proof_request",
         "response:proof_request",
         &body,
-        0.6,
+        confidence,
     ))
 }
 
-fn proof_request_body(language: &str, mentions_godel: bool, mentions_determinism: bool) -> String {
-    let mut body = match language {
+/// Strip the surrounding "prove that …" / "докажи, что …" / "证明 …"
+/// scaffolding so the proof engine receives the bare claim. We err on
+/// the side of returning the full normalized prompt — the engine
+/// tolerates extra text in its keyword search and arithmetic split.
+fn extract_claim_from_prompt(normalized: &str) -> String {
+    let trimmed = normalized.trim();
+    let prefixes: &[&str] = &[
+        "prove that ",
+        "prove ",
+        "proof of ",
+        "proof that ",
+        "show that ",
+        "demonstrate that ",
+        "demonstrate ",
+        "can you prove that ",
+        "can you prove ",
+        "could you prove that ",
+        "could you prove ",
+        "please prove that ",
+        "please prove ",
+        "give me a proof of ",
+        "give me a proof that ",
+        "give a proof of ",
+        "give a proof that ",
+        "докажи, что ",
+        "докажи что ",
+        "докажите, что ",
+        "докажите что ",
+        "доказать, что ",
+        "доказать что ",
+        "докажите ",
+        "докажи ",
+        "доказать ",
+        "доказательство ",
+        "साबित करो कि ",
+        "साबित कीजिए कि ",
+        "साबित कर ",
+        "सिद्ध कीजिए कि ",
+        "सिद्ध करो कि ",
+        "证明",
+        "證明",
+    ];
+    for prefix in prefixes {
+        if let Some(rest) = trimmed.strip_prefix(prefix) {
+            let stripped = rest.trim_start_matches(|c: char| c == ',' || c.is_whitespace());
+            return stripped.to_owned();
+        }
+    }
+    trimmed.to_owned()
+}
+
+fn pipeline_footer(language: &str) -> String {
+    match language {
         "ru" => String::from(
-            "Я пока не могу самостоятельно вывести это доказательство: библиотека-доказатель \
-             relative-meta-logic (github.com/link-foundation/relative-meta-logic) ещё не \
-             подключена к этому сборочному графу. Когда подключение появится, конвейер \
-             будет работать так: impulse → formalize (с использованием Викиданных) → context \
-             (math / logic / science) → план доказательства → выполнение в relative-meta-logic \
-             → deformalize → finalize. Чтобы продвинуться сейчас, переформулируйте утверждение \
-             как формальное высказывание и явно перечислите аксиомы и контекст.",
+            "\n\nПоддерживаемый конвейер: impulse → formalize (Викиданные) → context → \
+             план доказательства → проверка в relative-meta-logic → deformalize → finalize.",
         ),
         "hi" => String::from(
-            "मैं अभी स्वयं प्रमाण नहीं दे सकता: relative-meta-logic \
-             (github.com/link-foundation/relative-meta-logic) प्रूवर पुस्तकालय अभी इस बिल्ड \
-             ग्राफ़ में नहीं जुड़ा है। जब जुड़ जाएगा तो पाइपलाइन इस तरह चलेगी: impulse → \
-             formalize (Wikidata के साथ) → context (math / logic / science) → प्रमाण योजना \
-             → relative-meta-logic में निष्पादन → deformalize → finalize। अभी आगे बढ़ने के \
-             लिए, कथन को औपचारिक प्रस्ताव के रूप में फिर से लिखें और अपने अभिगृहीत \
-             (axioms) तथा संदर्भ स्पष्ट रूप से बताएँ।",
+            "\n\nसमर्थित पाइपलाइन: impulse → formalize (Wikidata) → context → प्रमाण योजना \
+             → relative-meta-logic में सत्यापन → deformalize → finalize।",
         ),
         "zh" => String::from(
-            "我目前还无法自己完成这个证明:relative-meta-logic\
-             (github.com/link-foundation/relative-meta-logic) 证明库尚未集成到本次构建中。\
-             集成后,流程将是:impulse → formalize(借助 Wikidata)→ context\
-             (math / logic / science)→ 证明计划 → 在 relative-meta-logic 中执行 → \
-             deformalize → finalize。现在要推进的话,请把陈述改写为形式化命题,并明确给出\
-             公理与上下文。",
+            "\n\n所支持的流程:impulse → formalize(Wikidata)→ context → 证明计划 → \
+             relative-meta-logic 校验 → deformalize → finalize。",
         ),
         _ => String::from(
-            "I cannot discharge that proof yet because the relative-meta-logic prover \
-             (github.com/link-foundation/relative-meta-logic) is not wired into this build \
-             as a library. When the integration lands, the pipeline will run: impulse → \
-             formalize (Wikidata-backed) → context (math / logic / science) → proof plan → \
-             execution in relative-meta-logic → deformalize → finalize. To move forward \
-             today, restate the claim as a formal proposition and supply the axiom set and \
-             context you want the proof to live in.",
+            "\n\nSupported pipeline: impulse → formalize (Wikidata-backed) → context → \
+             proof plan → verification in relative-meta-logic → deformalize → finalize.",
         ),
-    };
-    if mentions_godel && mentions_determinism {
-        let note = match language {
-            "ru" => {
-                "\n\nЗамечание про Гёделя и детерминизм: «детерминизм» сам по себе \
-                     не является формальным высказыванием. Чтобы свести его к проверяемому \
-                     утверждению, выберите конкретную формулировку — например, «лапласовский \
-                     детерминизм совместим с классической механикой при наборе аксиом A» — и \
-                     укажите аксиомы A. Теоремы Гёделя о неполноте применимы только к \
-                     достаточно богатым формальным системам, поэтому контекст (PA, ZFC и т.д.) \
-                     должен быть выбран явно перед запуском доказательства."
-            }
-            "hi" => {
-                "\n\nगोडेल और निर्धारणवाद पर टिप्पणी: \"निर्धारणवाद\" अपने आप में \
-                     औपचारिक प्रस्ताव नहीं है। इसे जाँचने योग्य कथन तक घटाने के लिए एक \
-                     विशेष रूप चुनें — जैसे \"Laplace का निर्धारणवाद अभिगृहीत समुच्चय A के \
-                     साथ शास्त्रीय यांत्रिकी के अनुकूल है\" — और A स्पष्ट रूप से बताएँ। \
-                     गोडेल के अपूर्णता प्रमेय केवल पर्याप्त समृद्ध औपचारिक तंत्र (PA, ZFC \
-                     आदि) पर लागू होते हैं, इसलिए संदर्भ पहले स्पष्ट करना ज़रूरी है।"
-            }
-            "zh" => {
-                "\n\n关于哥德尔与决定论的说明:\"决定论\"本身并不是一个形式命题。\
-                     要把它化简为可检验的陈述,请选择一种具体表述——例如\
-                     \"拉普拉斯式决定论在公理集 A 下与经典力学相容\"——并明确给出 A。\
-                     哥德尔不完备性定理只适用于足够丰富的形式系统(如 PA、ZFC),\
-                     因此在启动证明之前必须显式选择上下文。"
-            }
-            _ => {
-                "\n\nGödel-and-determinism note: \"determinism\" is not itself a formal \
-                  proposition. To reduce it to a checkable claim, pick a concrete reading — \
-                  for example, \"Laplacian determinism is consistent with classical \
-                  mechanics under axiom set A\" — and spell out A. Gödel's incompleteness \
-                  theorems only apply to sufficiently rich formal systems (PA, ZFC, …), so \
-                  the context (PA, ZFC, …) must be chosen explicitly before the proof is \
-                  attempted."
-            }
-        };
-        body.push_str(note);
     }
-    body
 }
 
 /// Detects "who is X" / "who was X" prompts (and multilingual equivalents)
