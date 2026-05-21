@@ -1989,6 +1989,7 @@ function tryLocalBehaviorRules(prompt, normalized, history) {
     normalized.includes("list behavior rules") ||
     normalized.includes("list all behavior rules") ||
     normalized.includes("show behavior rules") ||
+    isRussianBehaviorRulesListQuery(normalized) ||
     normalized.includes("список правил поведения")
   ) {
     return { intent: "behavior_rules_list", content: localBehaviorRulesList() };
@@ -2012,6 +2013,25 @@ function tryLocalBehaviorRules(prompt, normalized, history) {
     return { intent: "behavior_rule_custom", content: runtimeRule.answer };
   }
   return null;
+}
+
+function isRussianBehaviorRulesListQuery(normalized) {
+  const mentionsRules = normalized.includes("правил") || normalized.includes("правила");
+  const asksToList =
+    normalized.includes("список") ||
+    normalized.includes("перечисли") ||
+    normalized.includes("покажи") ||
+    normalized.includes("какие");
+  const pointsAtAssistantRules =
+    normalized.includes("поведения") ||
+    normalized.includes("своих") ||
+    normalized.includes("свои") ||
+    normalized.includes("твоих") ||
+    normalized.includes("твои") ||
+    normalized.includes("собственные") ||
+    normalized.includes("список правил");
+
+  return mentionsRules && asksToList && pointsAtAssistantRules;
 }
 
 function chooseVariant(variants, randomize) {

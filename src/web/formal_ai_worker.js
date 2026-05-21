@@ -2265,6 +2265,7 @@ function isBehaviorRulesList(normalized) {
     normalized.includes("show all behavior rules") ||
     normalized.includes("what behavior rules") ||
     normalized.includes("existing behavior rules") ||
+    isRussianBehaviorRulesListQuery(normalized) ||
     normalized.includes("список правил поведения") ||
     normalized.includes("покажи правила поведения") ||
     normalized.includes("какие правила поведения") ||
@@ -2273,6 +2274,25 @@ function isBehaviorRulesList(normalized) {
     normalized.includes("行为规则") ||
     normalized.includes("列出行为规则")
   );
+}
+
+function isRussianBehaviorRulesListQuery(normalized) {
+  const mentionsRules = normalized.includes("правил") || normalized.includes("правила");
+  const asksToList =
+    normalized.includes("список") ||
+    normalized.includes("перечисли") ||
+    normalized.includes("покажи") ||
+    normalized.includes("какие");
+  const pointsAtAssistantRules =
+    normalized.includes("поведения") ||
+    normalized.includes("своих") ||
+    normalized.includes("свои") ||
+    normalized.includes("твоих") ||
+    normalized.includes("твои") ||
+    normalized.includes("собственные") ||
+    normalized.includes("список правил");
+
+  return mentionsRules && asksToList && pointsAtAssistantRules;
 }
 
 function isSelfFactQuery(normalized) {

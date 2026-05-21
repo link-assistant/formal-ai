@@ -130,6 +130,14 @@ test.describe('multilingual chat surface', () => {
     await expect(last).toContainText(/символьный|детерминированный/);
   });
 
+  test('Russian behavior-rule list request with possessive phrasing shows rules', async ({ page }) => {
+    const last = await sendPrompt(page, 'Покажи список своих правил');
+    await expect(last).toHaveClass(/assistant/);
+    await expect(last).toContainText('rule_greeting');
+    await expect(last).toContainText('rule_unknown');
+    await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
+  });
+
   test('Hindi greeting replies in Hindi', async ({ page }) => {
     const last = await sendPrompt(page, 'नमस्ते');
     await expect(last).toHaveClass(/assistant/);

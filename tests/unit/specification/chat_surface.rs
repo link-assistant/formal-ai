@@ -153,6 +153,7 @@ fn behavior_rules_list_works_for_russian_speakers() {
         "Список правил поведения",
         "Покажи правила поведения",
         "Какие правила поведения",
+        "Покажи список своих правил",
     ] {
         let response = answer(prompt);
         assert_eq!(

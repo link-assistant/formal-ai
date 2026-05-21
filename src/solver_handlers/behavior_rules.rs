@@ -399,6 +399,7 @@ fn is_behavior_rules_list(normalized: &str) -> bool {
         || normalized.contains("show all behavior rules")
         || normalized.contains("what behavior rules")
         || normalized.contains("existing behavior rules")
+        || is_russian_behavior_rules_list_query(normalized)
         || normalized.contains("список правил поведения")
         || normalized.contains("покажи правила поведения")
         || normalized.contains("какие правила поведения")
@@ -406,6 +407,23 @@ fn is_behavior_rules_list(normalized: &str) -> bool {
         || normalized.contains("व्यवहार नियम सूचीबद्ध करें")
         || normalized.contains("行为规则")
         || normalized.contains("列出行为规则")
+}
+
+fn is_russian_behavior_rules_list_query(normalized: &str) -> bool {
+    let mentions_rules = normalized.contains("правил") || normalized.contains("правила");
+    let asks_to_list = normalized.contains("список")
+        || normalized.contains("перечисли")
+        || normalized.contains("покажи")
+        || normalized.contains("какие");
+    let points_at_assistant_rules = normalized.contains("поведения")
+        || normalized.contains("своих")
+        || normalized.contains("свои")
+        || normalized.contains("твоих")
+        || normalized.contains("твои")
+        || normalized.contains("собственные")
+        || normalized.contains("список правил");
+
+    mentions_rules && asks_to_list && points_at_assistant_rules
 }
 
 fn is_self_fact_query(normalized: &str) -> bool {
