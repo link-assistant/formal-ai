@@ -32,6 +32,104 @@ use super::meaning::MeaningId;
 use super::wikidata::Wikidata;
 use super::wiktionary::{Wiktionary, WiktionaryCandidate};
 
+/// `true` when `FORMAL_AI_TRANSLATION_DEBUG=1` is set in the environment.
+///
+/// Reading the env var on every call would be wasteful, but tests rely on
+/// per-process toggling, so we re-check each call here (cheap stdlib lookup).
+fn translation_debug_enabled() -> bool {
+    std::env::var("FORMAL_AI_TRANSLATION_DEBUG")
+        .ok()
+        .is_some_and(|value| !value.is_empty() && value != "0")
+}
+
+/// Emit a structured debug line to stderr when
+/// `FORMAL_AI_TRANSLATION_DEBUG=1`. Used to trace each pipeline stage
+/// when investigating issues like #221 (common-noun translation gaps).
+fn translation_debug(stage: &str, message: &str) {
+    if translation_debug_enabled() {
+        eprintln!("[formal-ai translation] {stage}: {message}");
+    }
+}
+
+/// Known polysemy fixes. The Wikidata SPARQL lexeme join (`P5137`)
+/// returns the first matching lexeme regardless of part of speech, so
+/// common noun ↔ verb homographs (e.g. English `milk` → Russian
+/// `доить` "to milk", `water` → `поливать` "to water") land on the
+/// verb. The long-term fix is restricting the join by lexical category
+/// (tracked in `docs/case-studies/issue-221/README.md`'s "Future
+/// work"), but for the demo we over-ride the affected entries with the
+/// canonical noun translation. Each tuple is
+/// `(source_lang, lemma_lower, target_lang, canonical_noun_surface)`.
+const POLYSEMY_OVERRIDES: &[(&str, &str, &str, &str)] = &[
+    // English nouns where Wikidata returned the verb lexeme in Russian.
+    ("en", "milk", "ru", "молоко"),
+    ("en", "water", "ru", "вода"),
+    ("en", "house", "ru", "дом"),
+    ("en", "dog", "ru", "собака"),
+    ("en", "fish", "ru", "рыба"),
+    ("en", "friend", "ru", "друг"),
+    ("en", "phone", "ru", "телефон"),
+    ("en", "salt", "ru", "соль"),
+    ("en", "grape", "ru", "виноград"),
+    // English nouns whose Chinese lexeme was wrong / overly literal.
+    ("en", "cat", "zh", "貓"),
+    ("en", "mother", "zh", "母親"),
+    ("en", "language", "zh", "語言"),
+    ("en", "moon", "zh", "月亮"),
+    ("en", "chicken", "zh", "雞"),
+    ("en", "bird", "zh", "鳥"),
+    ("en", "child", "zh", "孩子"),
+    ("en", "country", "zh", "國家"),
+    ("en", "phone", "zh", "電話"),
+    ("en", "milk", "zh", "牛奶"),
+    ("en", "water", "zh", "水"),
+    ("en", "fish", "zh", "魚"),
+    ("en", "friend", "zh", "朋友"),
+    ("en", "house", "zh", "房子"),
+    ("en", "dog", "zh", "狗"),
+    // English nouns where the Hindi lexeme was missing or verb-shaped.
+    ("en", "phone", "hi", "फ़ोन"),
+    // Russian nouns where the ru→en mapping landed on a non-canonical
+    // English noun (e.g. язык → "tongue" rather than "language").
+    ("ru", "язык", "en", "language"),
+    ("ru", "телефон", "en", "phone"),
+];
+
+/// Apply [`POLYSEMY_OVERRIDES`] to a candidate list: if a (source,
+/// surface, target) triple matches, move the canonical noun to the
+/// front so [`Translation::primary_surface`] returns it.
+fn apply_polysemy_override(
+    surface: &str,
+    source_lang: &str,
+    target_lang: &str,
+    candidates: &mut Vec<WiktionaryCandidate>,
+    provenance: &mut Vec<String>,
+) {
+    let key = surface.to_lowercase();
+    for (src, lemma, tgt, canonical) in POLYSEMY_OVERRIDES {
+        if *src == source_lang && *tgt == target_lang && *lemma == key {
+            // Remove existing entries for the canonical surface, then
+            // push it at the front.
+            candidates.retain(|c| c.surface != *canonical);
+            candidates.insert(
+                0,
+                WiktionaryCandidate {
+                    surface: (*canonical).to_owned(),
+                    qualifier: None,
+                },
+            );
+            provenance.push(format!(
+                "polysemy-override:{src}:{lemma}->{tgt}:{canonical}"
+            ));
+            translation_debug(
+                "polysemy",
+                &format!("override {src}:{lemma}->{tgt} = {canonical}"),
+            );
+            return;
+        }
+    }
+}
+
 /// Result of a translation request.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Translation {
@@ -78,7 +176,12 @@ impl<'a, T: HttpClient + ?Sized> TranslationPipeline<'a, T> {
         source_lang: &str,
         target_lang: &str,
     ) -> Result<Translation, HttpError> {
+        translation_debug(
+            "translate",
+            &format!("start surface={surface:?} {source_lang}->{target_lang}"),
+        );
         if source_lang == target_lang {
+            translation_debug("translate", "identity (source==target)");
             return Ok(Translation {
                 source_surface: surface.to_owned(),
                 source_lang: source_lang.to_owned(),
@@ -94,6 +197,7 @@ impl<'a, T: HttpClient + ?Sized> TranslationPipeline<'a, T> {
 
         let mut provenance: Vec<String> = Vec::new();
         let page_title = normalize_page_title(surface);
+        translation_debug("translate", &format!("page_title={page_title:?}"));
 
         // Stage 1: formalize — fetch the source-edition Wiktionary page.
         // This single fetch usually carries translations for every target
@@ -107,6 +211,7 @@ impl<'a, T: HttpClient + ?Sized> TranslationPipeline<'a, T> {
                 provenance.push(format!(
                     "wiktionary:{source_lang}:{page_title}#translations->{target_lang}"
                 ));
+                translation_debug("stage1", &format!("source-edition blocks={}", found.len()));
                 if !found.is_empty() {
                     blocks = found;
                 }
@@ -115,6 +220,7 @@ impl<'a, T: HttpClient + ?Sized> TranslationPipeline<'a, T> {
                 provenance.push(format!(
                     "wiktionary:{source_lang}:{page_title}#translations->error({error})",
                 ));
+                translation_debug("stage1", &format!("source-edition error: {error}"));
             }
         }
 
@@ -241,6 +347,30 @@ impl<'a, T: HttpClient + ?Sized> TranslationPipeline<'a, T> {
             );
         }
 
+        // Polysemy: when the lemma is a known noun↔verb homograph,
+        // promote the canonical noun translation to the front of the
+        // candidate list. See [`POLYSEMY_OVERRIDES`].
+        apply_polysemy_override(
+            &active_page_title,
+            source_lang,
+            target_lang,
+            &mut candidates,
+            &mut provenance,
+        );
+
+        translation_debug(
+            "translate",
+            &format!(
+                "done candidates={} primary={:?} meaning={:?}",
+                candidates.len(),
+                candidates
+                    .iter()
+                    .find(|c| c.qualifier.is_none())
+                    .or_else(|| candidates.first())
+                    .map(|c| c.surface.as_str()),
+                meaning,
+            ),
+        );
         Ok(Translation {
             source_surface: surface.to_owned(),
             source_lang: source_lang.to_owned(),

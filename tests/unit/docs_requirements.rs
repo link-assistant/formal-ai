@@ -596,7 +596,11 @@ fn is_skipped_tree(root: &Path, entry: &DirEntry) -> bool {
 
     matches!(
         relative_path(root, entry.path()).as_str(),
-        "ci-logs" | "logs" | "tests/e2e/playwright-report" | "tests/e2e/test-results"
+        "ci-logs"
+            | "logs"
+            | "tests/e2e/playwright-report"
+            | "tests/e2e/test-results"
+            | "data/translation-cache"
     )
 }
 
