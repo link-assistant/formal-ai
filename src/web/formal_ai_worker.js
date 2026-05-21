@@ -3893,6 +3893,58 @@ function inferTranslationSource(prompt) {
   return "en";
 }
 
+// Pre-compiled common-noun dictionary built by the Rust pipeline
+// (`examples/build_translation_dictionary.rs`) from Wiktionary +
+// Wikidata data. Fixes issue #221 by giving the worker offline access
+// to the same translations the CLI resolves through the live APIs —
+// the browser cannot reach those APIs (CORS for parse=wikitext), so we
+// ship the formalized result instead of faking it.
+let TRANSLATION_DICTIONARY = { by_lemma: {}, aliases: {} };
+let translationDictionaryLoaded = false;
+
+async function loadTranslationDictionary() {
+  if (translationDictionaryLoaded) return;
+  translationDictionaryLoaded = true;
+  if (typeof fetch !== "function") return;
+  try {
+    const response = await fetch(withAssetVersion("translation-dictionary.json"));
+    if (!response || !response.ok) return;
+    const data = await response.json();
+    if (data && typeof data === "object") {
+      TRANSLATION_DICTIONARY = {
+        by_lemma: (data.by_lemma && typeof data.by_lemma === "object") ? data.by_lemma : {},
+        aliases: (data.aliases && typeof data.aliases === "object") ? data.aliases : {},
+      };
+    }
+  } catch (_error) {
+    // Keep the empty dictionary on error — handler falls back to the
+    // legacy registry / placeholder.
+  }
+}
+
+function lookupDictionary(surface, source, target) {
+  const key = String(surface || "").trim().toLowerCase();
+  if (!key) return null;
+  const byLang = TRANSLATION_DICTIONARY.by_lemma || {};
+  const aliasesByLang = TRANSLATION_DICTIONARY.aliases || {};
+  // Try direct lemma lookup first.
+  const sourceLemmas = byLang[source];
+  if (sourceLemmas) {
+    const entry = sourceLemmas[key];
+    if (entry && entry[target]) return entry[target];
+  }
+  // Then resolve through the alias table (inflected forms → lemma).
+  const aliases = aliasesByLang[source];
+  if (aliases) {
+    const lemma = aliases[key];
+    if (lemma && sourceLemmas) {
+      const entry = sourceLemmas[lemma];
+      if (entry && entry[target]) return entry[target];
+    }
+  }
+  return null;
+}
+
 function translateSurface(surface, source, target) {
   if (source === target) return String(surface || "");
   const token = formalizeSurface(surface, source);
@@ -3900,6 +3952,8 @@ function translateSurface(surface, source, target) {
     const primary = deformalizeMeaning(token, target);
     if (primary) return primary;
   }
+  const dictionary = lookupDictionary(surface, source, target);
+  if (dictionary) return dictionary;
   const compositional = translateCompositionalSurface(surface, source, target);
   if (compositional) return compositional;
   return `[${target}] ${surface}`;
@@ -11320,6 +11374,7 @@ async function loadSeed() {
 async function init() {
   if (wasm !== undefined) return;
   await loadSeed();
+  await loadTranslationDictionary();
   try {
     const source = await fetch(withAssetVersion("formal_ai_worker.wasm"));
     const bytes = await source.arrayBuffer();
