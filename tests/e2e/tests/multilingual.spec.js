@@ -130,6 +130,23 @@ test.describe('multilingual chat surface', () => {
     await expect(last).toContainText(/символьный|детерминированный/);
   });
 
+  test('behavior-rule list possessive phrasing shows rules across supported languages', async ({ page }) => {
+    const cases = [
+      'Show list of your rules',
+      'Покажи список своих правил',
+      'अपने नियमों की सूची दिखाओ',
+      '显示你的规则列表',
+    ];
+
+    for (const prompt of cases) {
+      const last = await sendPrompt(page, prompt);
+      await expect(last).toHaveClass(/assistant/);
+      await expect(last).toContainText('rule_greeting');
+      await expect(last).toContainText('rule_unknown');
+      await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
+    }
+  });
+
   test('Hindi greeting replies in Hindi', async ({ page }) => {
     const last = await sendPrompt(page, 'नमस्ते');
     await expect(last).toHaveClass(/assistant/);
@@ -199,6 +216,30 @@ test.describe('multilingual chat surface', () => {
     await expect(last).toContainText('семидневном календарном цикле');
   });
 
+  test('current-day questions resolve through calendar reasoning across supported languages', async ({ page }) => {
+    const cases = [
+      { prompt: 'What day is today?', locale: 'en-US', today: 'Today is' },
+      { prompt: 'Какой сегодня день?', locale: 'ru-RU', today: 'Сегодня' },
+      { prompt: 'आज कौन सा दिन है?', locale: 'hi-IN', today: 'आज' },
+      { prompt: '今天是星期几?', locale: 'zh-CN', today: '今天' },
+    ];
+
+    for (const { prompt, locale, today } of cases) {
+      const expectedWeekday = await page.evaluate(
+        (nextLocale) =>
+          new Intl.DateTimeFormat(nextLocale, { weekday: 'long' }).format(
+            new Date(),
+          ),
+        locale,
+      );
+      const last = await sendPrompt(page, prompt);
+      await expect(last).toHaveClass(/assistant/);
+      await expect(last).toContainText(today);
+      await expect(last).toContainText(expectedWeekday);
+      await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
+    }
+  });
+
   test('percentage-of-currency prompt resolves as a calculation before Wikipedia fallback', async ({ page }) => {
     let wikipediaRequests = 0;
     await page.route('https://en.wikipedia.org/**', async (route) => {
@@ -246,6 +287,142 @@ test.describe('multilingual chat surface', () => {
     const last = await sendPrompt(page, 'Что такое Википедия?');
     await expect(last).toHaveClass(/assistant/);
     await expect(last).toContainText(/Wikipedia|encyclopedia/i);
+  });
+
+  test('Issue #182: BSD ports prompts across supported languages do not fall through to OpenBSD', async ({
+    page,
+  }) => {
+    let wikipediaRequests = 0;
+    await page.route('**/w/rest.php/v1/search/page**', async (route) => {
+      wikipediaRequests += 1;
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          pages: [
+            {
+              id: 12,
+              key: 'OpenBSD',
+              title: 'OpenBSD',
+              excerpt: 'OpenBSD is a security-focused operating system.',
+              description: 'BSD operating system',
+            },
+          ],
+        }),
+      });
+    });
+    await page.route('**/api/rest_v1/page/summary/**', async (route) => {
+      wikipediaRequests += 1;
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          title: 'OpenBSD',
+          extract:
+            'OpenBSD is a security-focused operating system based on the Berkeley Software Distribution.',
+          type: 'standard',
+          content_urls: {
+            desktop: { page: 'https://ru.wikipedia.org/wiki/OpenBSD' },
+          },
+        }),
+      });
+    });
+
+    const cases = [
+      {
+        prompt: 'what is ports in BSD?',
+        term: /BSD ports/i,
+        explanation: /package|source-based/i,
+      },
+      {
+        prompt: 'что такое порты в bsd',
+        term: /Порты BSD|BSD ports/i,
+        explanation: /пакет|package|приложен/i,
+      },
+      {
+        prompt: 'BSD में पोर्ट्स क्या है?',
+        term: /BSD पोर्ट्स|BSD ports/i,
+        explanation: /पैकेज|package|source/i,
+      },
+      {
+        prompt: 'BSD中的端口集合是什么?',
+        term: /BSD Ports|BSD ports/i,
+        explanation: /源代码|package|包管理/i,
+      },
+    ];
+
+    for (const entry of cases) {
+      const last = await sendPrompt(page, entry.prompt);
+      await expect(last).toHaveClass(/assistant/);
+      await expect(last).toContainText(entry.term);
+      await expect(last).toContainText(entry.explanation);
+      await expect(last).not.toContainText('OpenBSD:');
+    }
+
+    expect(wikipediaRequests).toBe(0);
+  });
+
+  test('Issue #182: context Wikipedia search rejects a title that only matches the context', async ({ page }) => {
+    await page.route('**/w/rest.php/v1/search/page**', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          pages: [
+            {
+              id: 12,
+              key: 'OpenBSD',
+              title: 'OpenBSD',
+              excerpt: 'OpenBSD is a security-focused operating system.',
+              description: 'BSD operating system',
+            },
+          ],
+        }),
+      });
+    });
+    await page.route('**/api/rest_v1/page/summary/**', async (route) => {
+      const slug = decodeURIComponent(route.request().url().split('/').pop() || '');
+      if (slug === 'OpenBSD') {
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify({
+            title: 'OpenBSD',
+            extract:
+              'OpenBSD is a security-focused operating system based on the Berkeley Software Distribution.',
+            type: 'standard',
+            content_urls: {
+              desktop: { page: 'https://ru.wikipedia.org/wiki/OpenBSD' },
+            },
+          }),
+        });
+        return;
+      }
+      await route.fulfill({
+        status: 404,
+        contentType: 'application/json',
+        body: JSON.stringify({ httpCode: 404, httpReason: 'Not Found' }),
+      });
+    });
+    await page.route('**://*.wikidata.org/w/api.php**', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ search: [] }),
+      });
+    });
+    await page.route('**://*.wiktionary.org/w/api.php**', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(['зупфы', [], [], []]),
+      });
+    });
+
+    const last = await sendPrompt(page, 'что такое зупфы в bsd');
+    await expect(last).toHaveClass(/assistant/);
+    await expect(last).toContainText(/не могу ответить|cannot answer/i);
+    await expect(last).not.toContainText('OpenBSD');
   });
 
   test('Issue #159: Russian Hive Mind prompt prefers link-assistant project and still searches the web', async ({ page }) => {

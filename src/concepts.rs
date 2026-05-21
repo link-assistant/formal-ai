@@ -248,16 +248,18 @@ pub struct ConceptLookup {
 /// word-order rule, matching schema:disambiguatingDescription semantics.
 #[must_use]
 pub fn lookup_concept_query(query: &ConceptQuery) -> Option<ConceptLookup> {
-    if let Some(lookup) = rank_for_pair(&query.term, query.context.as_deref()) {
-        return Some(lookup);
-    }
+    let direct = rank_for_pair(&query.term, query.context.as_deref());
     // Reversed ordering (context-first languages).
     if let Some(context) = query.context.as_deref() {
-        if let Some(lookup) = rank_for_pair(context, Some(&query.term)) {
-            return Some(lookup);
+        if let Some(reversed) = rank_for_pair(context, Some(&query.term)) {
+            if direct.as_ref().map_or(true, |lookup| {
+                !lookup.context_match && reversed.context_match
+            }) {
+                return Some(reversed);
+            }
         }
     }
-    None
+    direct
 }
 
 fn rank_for_pair(term: &str, context: Option<&str>) -> Option<ConceptLookup> {
@@ -271,7 +273,9 @@ fn rank_for_pair(term: &str, context: Option<&str>) -> Option<ConceptLookup> {
 
     let mut term_matches: Vec<&'static ConceptRecord> = concepts()
         .iter()
-        .filter(|record| record_matches_term(record, &normalized))
+        .filter(|record| {
+            record_matches_query_term(record, &normalized, context_normalized.as_deref())
+        })
         .collect();
     if term_matches.is_empty() {
         return None;
@@ -302,6 +306,21 @@ fn rank_for_pair(term: &str, context: Option<&str>) -> Option<ConceptLookup> {
         context_match: false,
         context: context_normalized,
     })
+}
+
+fn record_matches_query_term(
+    record: &ConceptRecord,
+    normalized: &str,
+    context_normalized: Option<&str>,
+) -> bool {
+    if record_matches_term(record, normalized) {
+        return true;
+    }
+    let Some(context) = context_normalized else {
+        return false;
+    };
+    let combined = format!("{normalized} {context}");
+    record_matches_term(record, &combined)
 }
 
 fn record_matches_term(record: &ConceptRecord, normalized: &str) -> bool {

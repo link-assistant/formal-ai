@@ -464,3 +464,18 @@ for Wikipedia / Wikidata / Wiktionary enrichment.
 | R213 | Translation responses must read like natural conversation: the answer body is the deformalized target surface (quoted when the user quoted the source), not a multi-line `meaning: …` / `surface (…)` template. | Implemented by `try_translation` in `src/solver_handlers/mod.rs` and `tryTranslation` in `src/web/formal_ai_worker.js`. The meaning id, source language, and target language stay available through `evidence_links` so the trace remains inspectable. Covered by `tests/unit/specification/translation_via_links.rs::russian_translate_how_are_you_prompt_returns_english_surface`. |
 | R214 | Translations must preserve the source fragment's leading capitalization and terminal punctuation. A lowercase, unpunctuated source must produce a lowercase, unpunctuated target. | Implemented by `match_source_formatting` in `src/translation/formatting.rs` and `matchSourceFormatting` in `src/web/formal_ai_worker.js`. Covered by `tests/unit/specification/translation_via_links.rs::russian_translate_how_are_you_prompt_returns_english_surface`, `russian_capitalized_how_are_you_keeps_target_capitalization`, and `natural_translation_drops_terminal_when_source_has_none`. |
 | R215 | The pipeline must translate any surface, not only a hand-written subset, by routing through Wiktionary translation tables and Wikidata sense joins. Raw HTTP responses are cached on disk so unit tests run offline against real data. | Implemented by `TranslationPipeline` in `src/translation/pipeline.rs`, `Wiktionary` in `src/translation/wiktionary.rs`, `Wikidata` in `src/translation/wikidata.rs`, and `CachedHttpClient` in `src/translation/cache.rs`. Cached responses live under `data/translation-cache/`; integration runs can refresh them with `FORMAL_AI_LIVE_API=1`. Covered by `tests/unit/specification/translation_via_links.rs::translation_meaning_registry_covers_extended_phrases` (eight unrelated pairs across en / ru / hi / zh) plus per-module unit tests. The online enrichment design is documented in `ARCHITECTURE.md` section 10 and `docs/case-studies/issue-207/raw-data/online-research.md`. |
+
+## Issue #187 Current Day Calendar Prompt
+
+Issue [#187](https://github.com/link-assistant/formal-ai/issues/187)
+reported that the Russian prompt "Какой сегодня день?" returned the
+unknown-intent fallback in the browser demo. PR review feedback then
+required the fix to cover every supported language, not only English and
+Russian.
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R216 | Current-day and current-date prompts must route to a typed calendar intent instead of `unknown`. | Implemented by the `calendar_current_day` branch in `try_calendar_reasoning` and mirrored by `tryCalendarReasoning` in `src/web/formal_ai_worker.js`. |
+| R217 | Current-day answers must be derived from the runtime clock and must expose date, weekday, and time-zone evidence. | Rust resolves the current UTC date and records `calendar:today`, `calendar:weekday`, and `calendar:time_zone:UTC`; the browser worker resolves the current browser date in the user-context time zone and records the same evidence shape. |
+| R218 | Current-day prompts must be supported for every language declared by `agent_info.supported_languages`. | Covered by the English, Russian, Hindi, and Chinese current-day matrix in `tests/unit/specification/reasoning_paths.rs` and the browser e2e matrix in `tests/e2e/tests/multilingual.spec.js`. |
+| R219 | CI must fail when a multilingual feature matrix omits one of the supported languages. | Enforced by `tests/e2e/scripts/check-multilingual-intent-coverage.mjs`, which parses `data/seed/agent-info.lino` and validates feature matrices against the supported-language list. |

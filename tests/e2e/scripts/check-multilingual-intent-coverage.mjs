@@ -190,6 +190,44 @@ function parseToolRecords() {
   return tools;
 }
 
+function parseContextRecords() {
+  const contexts = [];
+  let current = null;
+  let label = null;
+
+  for (const line of readRepoFile('data/seed/concept-contexts.lino').split(/\r?\n/)) {
+    const context = line.match(/^  context "([^"]+)"/);
+    if (context) {
+      if (current) contexts.push(current);
+      current = { id: context[1], labels: [] };
+      label = null;
+      continue;
+    }
+
+    if (!current) continue;
+
+    const labelHeader = line.match(/^    label "([^"]+)"/);
+    if (labelHeader) {
+      label = { language: labelHeader[1] };
+      current.labels.push(label);
+      continue;
+    }
+
+    const labelText = line.match(/^      text "([^"]*)"/);
+    if (label && labelText) {
+      label.text = labelText[1];
+      continue;
+    }
+
+    if (line.match(/^    [a-z_]+ /) || line.match(/^  [a-z_]+ /)) {
+      label = null;
+    }
+  }
+
+  if (current) contexts.push(current);
+  return contexts;
+}
+
 function parseFeatureCapabilitySlugs() {
   return [
     ...readRepoFile('src/solver_handlers/feature_capability.rs').matchAll(
@@ -230,6 +268,7 @@ const patterns = parsePromptPatterns();
 const responses = parseResponseRecords();
 const concepts = parseConceptRecords();
 const tools = parseToolRecords();
+const contextRecords = parseContextRecords();
 const featureCapabilitySlugs = parseFeatureCapabilitySlugs();
 const featureCapabilityTestMatrix = parseFeatureCapabilityTestMatrix();
 const browserTranslationRegistry = parseBrowserTranslationRegistry();
@@ -258,6 +297,34 @@ function assertBalancedLanguageCaseCounts(name, matrix) {
     assert(
       count === expected,
       `${name} must add the same number of cases for every supported language: expected ${expected} for ${language}, got ${count}`,
+    );
+  }
+}
+
+function assertPromptPatternCoverageGroups(intent) {
+  const intentPatterns = patterns.filter((pattern) => pattern.intent === intent);
+  assert(intentPatterns.length > 0, `prompt-patterns.lino must define patterns for ${intent}`);
+
+  const groups = new Map();
+  for (const pattern of intentPatterns) {
+    assert(
+      pattern.coverage_group,
+      `prompt-patterns.lino ${pattern.id} must define coverage_group so ${intent} additions stay multilingual`,
+    );
+    if (!pattern.coverage_group) continue;
+    if (!groups.has(pattern.coverage_group)) groups.set(pattern.coverage_group, {});
+    const group = groups.get(pattern.coverage_group);
+    assert(
+      !group[pattern.language],
+      `prompt-patterns.lino ${intent} coverage_group ${pattern.coverage_group} must not duplicate ${pattern.language}`,
+    );
+    group[pattern.language] = pattern;
+  }
+
+  for (const [group, matrix] of groups.entries()) {
+    assertMatrixMatchesSupportedLanguages(
+      `prompt-patterns.lino ${intent} coverage_group ${group}`,
+      matrix,
     );
   }
 }
@@ -341,6 +408,31 @@ for (const [language, entries] of Object.entries(testStatusPatterns)) {
   }
 }
 
+const behaviorRulesListPatterns = {
+  en: ['show behavior rules', 'show list of your rules'],
+  ru: ['покажи правила поведения', 'покажи список своих правил'],
+  hi: ['व्यवहार के नियम सूचीबद्ध करें', 'अपने नियमों की सूची दिखाओ'],
+  zh: ['列出行为规则', '显示你的规则列表'],
+};
+
+assertMatrixMatchesSupportedLanguages('behaviorRulesListPatterns', behaviorRulesListPatterns);
+assertPromptPatternCoverageGroups('behavior_rules_list');
+
+for (const [language, phrases] of Object.entries(behaviorRulesListPatterns)) {
+  for (const phrase of phrases) {
+    assert(
+      patterns.some(
+        (pattern) =>
+          pattern.intent === 'behavior_rules_list' &&
+          pattern.language === language &&
+          pattern.kind === 'phrase' &&
+          pattern.text === phrase,
+      ),
+      `prompt-patterns.lino must document ${language} behavior_rules_list phrase ${JSON.stringify(phrase)}`,
+    );
+  }
+}
+
 const webSearchSourceMarkerCases = {
   en: [{ prompt: 'Find apple on the internet', query: 'apple' }],
   ru: [{ prompt: 'Найди яблоко в интернете', query: 'яблоко' }],
@@ -375,6 +467,39 @@ for (const [language, entries] of Object.entries(webSearchSourceMarkerCases)) {
         browserSearchTests.includes(entry.query),
       `tests/e2e/tests/issue-153.spec.js must cover ${language} web-search source-marker prompt ${JSON.stringify(entry.prompt)}`,
     );
+  }
+}
+
+const currentDayCalendarCases = {
+  en: ['What day is today?'],
+  ru: ['Какой сегодня день?'],
+  hi: ['आज कौन सा दिन है?'],
+  zh: ['今天是星期几?'],
+};
+
+assertMatrixMatchesSupportedLanguages(
+  'currentDayCalendarCases',
+  currentDayCalendarCases,
+);
+assertBalancedLanguageCaseCounts(
+  'currentDayCalendarCases',
+  currentDayCalendarCases,
+);
+
+{
+  const rustReasoningTests = readRepoFile('tests/unit/specification/reasoning_paths.rs');
+  const browserMultilingualTests = readRepoFile('tests/e2e/tests/multilingual.spec.js');
+  for (const [language, prompts] of Object.entries(currentDayCalendarCases)) {
+    for (const prompt of prompts) {
+      assert(
+        rustReasoningTests.includes(prompt),
+        `tests/unit/specification/reasoning_paths.rs must cover ${language} current-day calendar prompt ${JSON.stringify(prompt)}`,
+      );
+      assert(
+        browserMultilingualTests.includes(prompt),
+        `tests/e2e/tests/multilingual.spec.js must cover ${language} current-day calendar prompt ${JSON.stringify(prompt)}`,
+      );
+    }
   }
 }
 
@@ -483,6 +608,26 @@ for (const entry of browserTranslationRegistry) {
   }
 }
 
+for (const context of contextRecords) {
+  const languages = context.labels.map((label) => label.language);
+  assert(
+    new Set(languages).size === languages.length,
+    `concept-contexts.lino ${context.id} must not duplicate label languages`,
+  );
+  assertMatrixMatchesSupportedLanguages(
+    `concept-contexts.lino ${context.id} labels`,
+    Object.fromEntries(context.labels.map((label) => [label.language, label])),
+  );
+
+  for (const language of supportedLanguages) {
+    const label = context.labels.find((entry) => entry.language === language);
+    assert(
+      label?.text?.trim(),
+      `concept-contexts.lino ${context.id} label ${language} must define text`,
+    );
+  }
+}
+
 if (errors.length > 0) {
   console.error('Multilingual intent coverage check failed:');
   for (const error of errors) {
@@ -492,5 +637,5 @@ if (errors.length > 0) {
 }
 
 console.log(
-  `Multilingual intent coverage OK for ${supportedLanguages.join(', ')} (${requiredLocalizedResponseIntents.length} localized response intents, ${concepts.filter((record) => record.localized.length > 0).length} localized concept records, ${tools.length} localized tools, ${featureCapabilitySlugs.length} feature capabilities, ${browserTranslationRegistry.length} translation meanings).`,
+  `Multilingual intent coverage OK for ${supportedLanguages.join(', ')} (${requiredLocalizedResponseIntents.length} localized response intents, ${concepts.filter((record) => record.localized.length > 0).length} localized concept records, ${contextRecords.length} concept context records, ${tools.length} localized tools, ${featureCapabilitySlugs.length} feature capabilities, ${browserTranslationRegistry.length} translation meanings).`,
 );

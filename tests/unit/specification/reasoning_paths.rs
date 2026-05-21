@@ -133,6 +133,48 @@ fn calendar_reasoning_answers_russian_weekday_successor() {
 }
 
 #[test]
+fn calendar_reasoning_answers_current_day_questions_across_supported_languages() {
+    let cases = [
+        ("What day is today?", "Today is", "language:en"),
+        ("Какой сегодня день?", "Сегодня", "language:ru"),
+        ("आज कौन सा दिन है?", "आज", "language:hi"),
+        ("今天是星期几?", "今天", "language:zh"),
+    ];
+
+    for (prompt, expected_fragment, language_tag) in cases {
+        let response = answer(prompt);
+        assert_eq!(
+            response.intent, "calendar_current_day",
+            "today question {prompt:?} should use calendar reasoning, got: {}",
+            response.answer,
+        );
+        assert!(
+            response.answer.contains(expected_fragment),
+            "current-day answer for {prompt:?} should be localized, got: {}",
+            response.answer,
+        );
+        assert!(
+            has_evidence(&response, "calendar:today"),
+            "current-day reasoning must record the resolved date for {prompt:?}: {:?}",
+            response.evidence_links,
+        );
+        assert!(
+            has_evidence(&response, "calendar:weekday"),
+            "current-day reasoning must record the resolved weekday for {prompt:?}: {:?}",
+            response.evidence_links,
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == language_tag),
+            "current-day reasoning must record {language_tag} for {prompt:?}: {:?}",
+            response.evidence_links,
+        );
+    }
+}
+
+#[test]
 fn calendar_reasoning_answers_weekday_predecessor_and_successor_variations() {
     let cases = [
         ("What day of the week comes after Tuesday?", "Wednesday"),

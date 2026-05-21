@@ -668,6 +668,12 @@ function recordMatchesTerm(record, normalized) {
   );
 }
 
+function recordMatchesQueryTerm(record, normalized, contextNormalized) {
+  if (recordMatchesTerm(record, normalized)) return true;
+  if (!contextNormalized) return false;
+  return recordMatchesTerm(record, `${normalized} ${contextNormalized}`);
+}
+
 function contextRecordMatches(contextRecord, contextNormalized) {
   if (!contextRecord) return false;
   if (
@@ -746,7 +752,7 @@ function rankConceptForPair(termRaw, contextRaw) {
   const contextNormalized = contextRaw ? normalizeConceptTerm(contextRaw) : "";
 
   const termMatches = CONCEPTS.filter((record) =>
-    recordMatchesTerm(record, normalized),
+    recordMatchesQueryTerm(record, normalized, contextNormalized),
   );
   if (termMatches.length === 0) return null;
 
@@ -779,12 +785,13 @@ function rankConceptForPair(termRaw, contextRaw) {
 function lookupConceptQuery(query) {
   if (!query) return null;
   const direct = rankConceptForPair(query.term, query.context);
-  if (direct) return direct;
   if (query.context) {
     const reversed = rankConceptForPair(query.context, query.term);
-    if (reversed) return reversed;
+    if (reversed && (!direct || (!direct.contextMatch && reversed.contextMatch))) {
+      return reversed;
+    }
   }
-  return null;
+  return direct || null;
 }
 
 function lookupConcept(term) {
@@ -2352,12 +2359,14 @@ function renderRuntimeRuleUpdate(rule) {
 
 function isBehaviorRulesList(normalized) {
   return (
+    matchesBehaviorRulesListSeedPattern(normalized) ||
     normalized.includes("list behavior rules") ||
     normalized.includes("list all behavior rules") ||
     normalized.includes("show behavior rules") ||
     normalized.includes("show all behavior rules") ||
     normalized.includes("what behavior rules") ||
     normalized.includes("existing behavior rules") ||
+    isSupportedLanguageBehaviorRulesListQuery(normalized) ||
     normalized.includes("список правил поведения") ||
     normalized.includes("покажи правила поведения") ||
     normalized.includes("какие правила поведения") ||
@@ -2366,6 +2375,115 @@ function isBehaviorRulesList(normalized) {
     normalized.includes("行为规则") ||
     normalized.includes("列出行为规则")
   );
+}
+
+function matchesBehaviorRulesListSeedPattern(normalized) {
+  return PROMPT_PATTERNS.some((pattern) => {
+    if (!pattern || pattern.intent !== "behavior_rules_list" || !pattern.text) {
+      return false;
+    }
+    const text = normalizePrompt(pattern.text);
+    if (!text) return false;
+    switch (pattern.kind) {
+      case "keyword":
+      case "phrase":
+        return normalized === text || normalized.includes(text);
+      case "prefix":
+        return normalized.startsWith(text);
+      case "suffix":
+        return normalized.endsWith(text);
+      default:
+        return false;
+    }
+  });
+}
+
+function isSupportedLanguageBehaviorRulesListQuery(normalized) {
+  return (
+    isEnglishBehaviorRulesListQuery(normalized) ||
+    isRussianBehaviorRulesListQuery(normalized) ||
+    isHindiBehaviorRulesListQuery(normalized) ||
+    isChineseBehaviorRulesListQuery(normalized)
+  );
+}
+
+function isEnglishBehaviorRulesListQuery(normalized) {
+  const mentionsRules =
+    normalized.includes("rules") ||
+    normalized.includes("rule list") ||
+    normalized.includes("rules list");
+  const asksToList =
+    normalized.includes("list") ||
+    normalized.includes("show") ||
+    normalized.includes("what") ||
+    normalized.includes("which");
+  const pointsAtAssistantRules =
+    normalized.includes("behavior") ||
+    normalized.includes("your") ||
+    normalized.includes("own") ||
+    normalized.includes("current") ||
+    normalized.includes("existing");
+
+  return mentionsRules && asksToList && pointsAtAssistantRules;
+}
+
+function isRussianBehaviorRulesListQuery(normalized) {
+  const mentionsRules = normalized.includes("правил") || normalized.includes("правила");
+  const asksToList =
+    normalized.includes("список") ||
+    normalized.includes("перечисли") ||
+    normalized.includes("покажи") ||
+    normalized.includes("какие");
+  const pointsAtAssistantRules =
+    normalized.includes("поведения") ||
+    normalized.includes("своих") ||
+    normalized.includes("свои") ||
+    normalized.includes("твоих") ||
+    normalized.includes("твои") ||
+    normalized.includes("собственные") ||
+    normalized.includes("список правил");
+
+  return mentionsRules && asksToList && pointsAtAssistantRules;
+}
+
+function isHindiBehaviorRulesListQuery(normalized) {
+  const mentionsRules = normalized.includes("नियम") || normalized.includes("नियमों");
+  const asksToList =
+    normalized.includes("सूची") ||
+    normalized.includes("सूचीबद्ध") ||
+    normalized.includes("दिखाओ") ||
+    normalized.includes("दिखाएं") ||
+    normalized.includes("बताओ") ||
+    normalized.includes("कौन");
+  const pointsAtAssistantRules =
+    normalized.includes("व्यवहार") ||
+    normalized.includes("अपने") ||
+    normalized.includes("तुम्हारे") ||
+    normalized.includes("आपके") ||
+    normalized.includes("नियमों की सूची");
+
+  return mentionsRules && asksToList && pointsAtAssistantRules;
+}
+
+function isChineseBehaviorRulesListQuery(normalized) {
+  const mentionsRules = normalized.includes("规则") || normalized.includes("規則");
+  const asksToList =
+    normalized.includes("列出") ||
+    normalized.includes("显示") ||
+    normalized.includes("顯示") ||
+    normalized.includes("展示") ||
+    normalized.includes("哪些") ||
+    normalized.includes("什么");
+  const pointsAtAssistantRules =
+    normalized.includes("行为") ||
+    normalized.includes("行為") ||
+    normalized.includes("你的") ||
+    normalized.includes("您的") ||
+    normalized.includes("自己") ||
+    normalized.includes("规则列表") ||
+    normalized.includes("規則列表");
+
+  return mentionsRules && asksToList && pointsAtAssistantRules;
 }
 
 function isSelfFactQuery(normalized) {
@@ -4164,6 +4282,8 @@ const WEEKDAY_CYCLE = [
     slug: "monday",
     en: "Monday",
     ru: "понедельник",
+    hi: "सोमवार",
+    zh: "星期一",
     ruGenitive: "понедельника",
     ruInstrumental: "понедельником",
     aliases: ["monday", "mon", "понедельника", "понедельником", "понедельнику", "понедельнике", "понедельник"],
@@ -4172,6 +4292,8 @@ const WEEKDAY_CYCLE = [
     slug: "tuesday",
     en: "Tuesday",
     ru: "вторник",
+    hi: "मंगलवार",
+    zh: "星期二",
     ruGenitive: "вторника",
     ruInstrumental: "вторником",
     aliases: ["tuesday", "tue", "tues", "вторника", "вторником", "вторнику", "вторнике", "вторник"],
@@ -4180,6 +4302,8 @@ const WEEKDAY_CYCLE = [
     slug: "wednesday",
     en: "Wednesday",
     ru: "среда",
+    hi: "बुधवार",
+    zh: "星期三",
     ruGenitive: "среды",
     ruInstrumental: "средой",
     aliases: ["wednesday", "wed", "средой", "среде", "среду", "среды", "среда"],
@@ -4188,6 +4312,8 @@ const WEEKDAY_CYCLE = [
     slug: "thursday",
     en: "Thursday",
     ru: "четверг",
+    hi: "गुरुवार",
+    zh: "星期四",
     ruGenitive: "четверга",
     ruInstrumental: "четвергом",
     aliases: ["thursday", "thu", "thur", "thurs", "четверга", "четвергом", "четвергу", "четверге", "четверг"],
@@ -4196,6 +4322,8 @@ const WEEKDAY_CYCLE = [
     slug: "friday",
     en: "Friday",
     ru: "пятница",
+    hi: "शुक्रवार",
+    zh: "星期五",
     ruGenitive: "пятницы",
     ruInstrumental: "пятницей",
     aliases: ["friday", "fri", "пятницей", "пятнице", "пятницу", "пятницы", "пятница"],
@@ -4204,6 +4332,8 @@ const WEEKDAY_CYCLE = [
     slug: "saturday",
     en: "Saturday",
     ru: "суббота",
+    hi: "शनिवार",
+    zh: "星期六",
     ruGenitive: "субботы",
     ruInstrumental: "субботой",
     aliases: ["saturday", "sat", "субботой", "субботе", "субботу", "субботы", "суббота"],
@@ -4212,6 +4342,8 @@ const WEEKDAY_CYCLE = [
     slug: "sunday",
     en: "Sunday",
     ru: "воскресенье",
+    hi: "रविवार",
+    zh: "星期日",
     ruGenitive: "воскресенья",
     ruInstrumental: "воскресеньем",
     aliases: ["sunday", "sun", "воскресеньем", "воскресенью", "воскресенья", "воскресенье"],
@@ -4246,11 +4378,61 @@ const CALENDAR_PREVIOUS_MARKERS = [
   "предшествует",
 ];
 
+const CALENDAR_TODAY_MARKERS = ["today", "сегодня", "आज", "今天"];
+
+const CALENDAR_CURRENT_DAY_MARKERS = [
+  "day",
+  "weekday",
+  "week day",
+  "date",
+  "день",
+  "дня",
+  "дату",
+  "дата",
+  "число",
+  "दिन",
+  "तारीख",
+  "दिनांक",
+  "星期",
+  "星期几",
+  "日期",
+  "几号",
+  "日子",
+];
+
+const CALENDAR_CURRENT_DAY_QUESTION_MARKERS = [
+  "?",
+  "what",
+  "which",
+  "tell me",
+  "show",
+  "какой",
+  "какая",
+  "какое",
+  "скажи",
+  "покажи",
+  "कौन",
+  "क्या",
+  "बताओ",
+  "दिखाओ",
+  "什么",
+  "几",
+  "告诉",
+  "显示",
+];
+
+function hasCalendarCjkCharacter(term) {
+  return /[\u4e00-\u9fff]/u.test(term);
+}
+
 function isCalendarWordCharacter(character) {
   return /[\p{L}\p{N}_]/u.test(character);
 }
 
 function containsCalendarTerm(text, term) {
+  if (hasCalendarCjkCharacter(term)) {
+    return String(text || "").includes(term);
+  }
   let index = String(text || "").indexOf(term);
   while (index !== -1) {
     const before = index > 0 ? Array.from(text.slice(0, index)).pop() : "";
@@ -4272,6 +4454,21 @@ function mentionsWeekdayContext(normalized) {
       containsCalendarTerm(normalized, marker),
     ) || normalized.includes("недел")
   );
+}
+
+function mentionsCurrentDayQuestion(normalized) {
+  const mentionsToday = CALENDAR_TODAY_MARKERS.some((marker) =>
+    containsCalendarTerm(normalized, marker),
+  );
+  if (!mentionsToday) return false;
+  const asksForDay =
+    CALENDAR_CURRENT_DAY_MARKERS.some((marker) =>
+      containsCalendarTerm(normalized, marker),
+    ) || normalized.includes("недел");
+  const questionLike = CALENDAR_CURRENT_DAY_QUESTION_MARKERS.some((marker) =>
+    normalized.includes(marker),
+  );
+  return asksForDay && questionLike;
 }
 
 function detectWeekdayOperation(normalized) {
@@ -4297,6 +4494,70 @@ function shiftWeekday(weekday, operation) {
   return WEEKDAY_CYCLE[(index + offset + WEEKDAY_CYCLE.length) % WEEKDAY_CYCLE.length];
 }
 
+function validCalendarTimeZone(candidate) {
+  const timeZone = cleanContextValue(candidate);
+  if (!timeZone) return "";
+  try {
+    new Intl.DateTimeFormat("en-US", { timeZone }).format(new Date(0));
+    return timeZone;
+  } catch (_error) {
+    return "";
+  }
+}
+
+function resolvedCalendarTimeZone(userContext) {
+  const fromContext = validCalendarTimeZone(userContext && userContext.timeZone);
+  if (fromContext) return fromContext;
+  try {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone || "";
+  } catch (_error) {
+    return "";
+  }
+}
+
+function calendarDateInTimeZone(date, timeZone) {
+  const options = {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  };
+  if (timeZone) options.timeZone = timeZone;
+  const parts = new Intl.DateTimeFormat("en-CA", options).formatToParts(date);
+  const value = (type) => parts.find((part) => part.type === type)?.value || "";
+  const year = Number(value("year"));
+  const month = Number(value("month"));
+  const day = Number(value("day"));
+  if (!Number.isFinite(year) || !Number.isFinite(month) || !Number.isFinite(day)) {
+    return null;
+  }
+  const iso = `${String(year).padStart(4, "0")}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+  const dayIndex = new Date(Date.UTC(year, month - 1, day)).getUTCDay();
+  const weekday = WEEKDAY_CYCLE[(dayIndex + 6) % 7];
+  return { iso, weekday };
+}
+
+function currentCalendarDate(userContext) {
+  const reference = new Date();
+  const timeZone = resolvedCalendarTimeZone(userContext);
+  return {
+    timeZone: timeZone || "local",
+    date: calendarDateInTimeZone(reference, timeZone),
+  };
+}
+
+function renderCurrentDay(language, weekday, isoDate, timeZone) {
+  if (language === "ru") {
+    return `Сегодня ${weekday.ru}, ${isoDate} (${timeZone}).`;
+  }
+  if (language === "hi") {
+    return `आज ${weekday.hi} है, ${isoDate} (${timeZone}).`;
+  }
+  if (language === "zh") {
+    return `今天是${weekday.zh}，${isoDate}（${timeZone}）。`;
+  }
+  return `Today is ${weekday.en}, ${isoDate} (${timeZone}).`;
+}
+
 function renderWeekdayRelation(language, operation, source, result) {
   const delta = operation === "next" ? "+1" : "-1";
   if (language === "ru") {
@@ -4311,7 +4572,29 @@ function renderWeekdayRelation(language, operation, source, result) {
   return `The day before ${source.en} is ${result.en}. I move ${source.en} by ${delta} in the seven-day calendar cycle.`;
 }
 
-function tryCalendarReasoning(prompt, normalized) {
+function tryCalendarReasoning(prompt, normalized, userContext = {}) {
+  if (mentionsCurrentDayQuestion(normalized)) {
+    const language = detectLanguage(prompt);
+    const resolved = currentCalendarDate(userContext);
+    if (!resolved.date) return null;
+    return {
+      intent: "calendar_current_day",
+      content: renderCurrentDay(
+        language,
+        resolved.date.weekday,
+        resolved.date.iso,
+        resolved.timeZone,
+      ),
+      confidence: 1.0,
+      evidence: [
+        "calendar:clock:browser",
+        `calendar:today:${resolved.date.iso}`,
+        `calendar:weekday:${resolved.date.weekday.slug}`,
+        `calendar:time_zone:${resolved.timeZone}`,
+        `language:${language}`,
+      ],
+    };
+  }
   if (!mentionsWeekdayContext(normalized)) return null;
   const operation = detectWeekdayOperation(normalized);
   if (!operation) return null;
@@ -4947,7 +5230,12 @@ function isNearLookupText(left, right) {
 }
 
 function isPlausibleWikipediaSearchMatch(summary, term) {
-  if (!summary || summary.matchKind !== "search") return true;
+  if (
+    !summary ||
+    (summary.matchKind !== "search" && summary.matchKind !== "context_search")
+  ) {
+    return true;
+  }
   const termNormalized = normalizeLookupText(term);
   if (!termNormalized) return true;
   const termTokens = termNormalized.split(/\s+/).filter(Boolean);
@@ -4955,6 +5243,7 @@ function isPlausibleWikipediaSearchMatch(summary, term) {
     summary.title,
     summary.matchedTitle,
     String(summary.matchedSlug || "").replace(/_/g, " "),
+    summary.extract,
   ];
   for (const candidate of candidates) {
     const normalized = normalizeLookupText(candidate);
@@ -6081,7 +6370,12 @@ async function tryWikipediaLookup(prompt, language, preferences) {
     return tryTermKnowledgeFallback(wikiTerm, language, null);
   }
   const isClosestMatch = isClosestWikipediaMatch(summary);
-  if (isClosestMatch && !isPlausibleWikipediaSearchMatch(summary, wikiTerm)) {
+  const requiresPlausibleSearchMatch =
+    isClosestMatch || summary.matchKind === "context_search";
+  if (
+    requiresPlausibleSearchMatch &&
+    !isPlausibleWikipediaSearchMatch(summary, wikiTerm)
+  ) {
     const fallback = await tryTermKnowledgeFallback(wikiTerm, language, summary);
     if (fallback) return fallback;
     return null;
@@ -10425,7 +10719,7 @@ function resolveFormalizationWithId(formalization, resolvedId) {
   return next;
 }
 
-async function solve(prompt, history, prefs) {
+async function solve(prompt, history, prefs, userContext = {}) {
   const preferences = prefs || {};
   const autoDefinitionFusion = definitionFusionByDefault(preferences);
   const steps = [];
@@ -10585,7 +10879,10 @@ async function solve(prompt, history, prefs) {
     { name: "tryBrainstormingRequest", run: () => tryBrainstormingRequest(prompt, normalized) },
     { name: "tryRoleplayRequest", run: () => tryRoleplayRequest(prompt, normalized) },
     { name: "tryKupiSlona", run: () => tryKupiSlona(prompt, normalized) },
-    { name: "tryCalendarReasoning", run: () => tryCalendarReasoning(prompt, normalized) },
+    {
+      name: "tryCalendarReasoning",
+      run: () => tryCalendarReasoning(prompt, normalized, userContext),
+    },
     { name: "tryArithmetic", run: () => tryArithmetic(prompt) },
     { name: "tryJavaScriptExecution", run: () => tryJavaScriptExecution(prompt) },
     {
@@ -11079,7 +11376,7 @@ self.onmessage = async (event) => {
       ? data.userContext
       : {};
   const answer = attachUserContext(
-    await solve(prompt, history, prefs),
+    await solve(prompt, history, prefs, userContext),
     userContext,
   );
   postMessage({
