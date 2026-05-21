@@ -23,6 +23,9 @@ fn every_answer_publishes_a_links_notation_trace() {
 
 #[test]
 fn russian_translate_how_are_you_prompt_returns_english_surface() {
+    // R213/R214: the answer is the deformalized surface form, preserving the
+    // source fragment's lowercase casing and trailing question mark. No
+    // `meaning: ...` / `surface (...)` template anymore.
     let response = answer("Переведи \"как у тебя дела?\" на английский.");
     assert_eq!(
         response.intent, "translate_ru_to_en",
@@ -30,8 +33,23 @@ fn russian_translate_how_are_you_prompt_returns_english_surface() {
         response.intent, response.answer,
     );
     assert!(
-        response.answer.contains("How are you?"),
-        "translation should include the English surface form, got: {}",
+        response.answer.contains("how are you?"),
+        "translation should preserve the source's lowercase casing, got: {}",
+        response.answer,
+    );
+    assert!(
+        !response.answer.contains("How are you?"),
+        "source was lowercase, so the target must not be capitalized; got: {}",
+        response.answer,
+    );
+    assert!(
+        !response.answer.contains("surface ("),
+        "natural translation must not use the robotic surface (lang): template; got: {}",
+        response.answer,
+    );
+    assert!(
+        !response.answer.contains("meaning:"),
+        "natural translation must not embed the meaning id in the body; got: {}",
         response.answer,
     );
     assert!(
@@ -50,6 +68,163 @@ fn russian_translate_how_are_you_prompt_returns_english_surface() {
         "translation should record the English target language, got {:?}",
         response.evidence_links,
     );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("meaning:")),
+        "meaning id must remain available in evidence_links for traceability, got {:?}",
+        response.evidence_links,
+    );
+}
+
+#[test]
+fn russian_capitalized_how_are_you_keeps_target_capitalization() {
+    // R214: when the source fragment starts capitalized, the target stays
+    // capitalized.
+    let response = answer("Переведи \"Как у тебя дела?\" на английский.");
+    assert_eq!(response.intent, "translate_ru_to_en");
+    assert!(
+        response.answer.contains("How are you?"),
+        "capitalized source should yield capitalized target, got: {}",
+        response.answer,
+    );
+}
+
+#[test]
+fn natural_translation_drops_terminal_when_source_has_none() {
+    // R214: terminal punctuation is mirrored — when the source has none, the
+    // target has none either.
+    let response = answer("Переведи \"как дела\" на английский.");
+    assert_eq!(response.intent, "translate_ru_to_en");
+    assert!(
+        response.answer.contains("how are you") && !response.answer.contains("how are you?"),
+        "source had no question mark, so target must not invent one; got: {}",
+        response.answer,
+    );
+}
+
+#[test]
+fn issue_210_russian_translation_prompts_keep_translation_intent() {
+    let cases: &[(&str, &str)] = &[
+        ("Переведи \"кто ты такой\" на английский.", "who are you"),
+        (
+            "Переведи \"что это такое?\" на английский.",
+            "what is this?",
+        ),
+        ("Переведи \"доброе яблоко\" на английский.", "good apple"),
+    ];
+
+    for (prompt, expected_surface) in cases {
+        let response = answer(prompt);
+        assert_eq!(
+            response.intent, "translate_ru_to_en",
+            "translation prompt should not be routed to another handler for {prompt:?}; got {}: {}",
+            response.intent, response.answer,
+        );
+        assert!(
+            response
+                .answer
+                .to_lowercase()
+                .contains(&expected_surface.to_lowercase()),
+            "expected English surface {expected_surface:?} for {prompt:?}, got: {}",
+            response.answer,
+        );
+        assert!(
+            !response.answer.contains("[en] "),
+            "translation must not fall back to a placeholder for {prompt:?}; got: {}",
+            response.answer,
+        );
+        assert!(
+            !response.answer.contains("formal-ai"),
+            "translation prompt must not return assistant identity/capabilities for {prompt:?}; got: {}",
+            response.answer,
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == "language_from:ru"),
+            "translation should record Russian source language for {prompt:?}, got {:?}",
+            response.evidence_links,
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == "language_to:en"),
+            "translation should record English target language for {prompt:?}, got {:?}",
+            response.evidence_links,
+        );
+    }
+}
+
+#[test]
+fn translation_meaning_registry_covers_extended_phrases() {
+    // R215: the formalize → meaning → deformalize pipeline must cover more
+    // than the single hardcoded greeting_how_are_you id.
+    let cases: &[(&str, &str, &str)] = &[
+        (
+            "Переведи \"спасибо\" на английский.",
+            "translate_ru_to_en",
+            "thank you",
+        ),
+        (
+            "Переведи \"да\" на английский.",
+            "translate_ru_to_en",
+            "yes",
+        ),
+        (
+            "Переведи \"нет\" на английский.",
+            "translate_ru_to_en",
+            "no",
+        ),
+        (
+            "Переведи \"привет\" на английский.",
+            "translate_ru_to_en",
+            "hello",
+        ),
+        (
+            "Translate \"hello\" to Russian",
+            "translate_en_to_ru",
+            "привет",
+        ),
+        (
+            "Translate \"thank you\" to Russian",
+            "translate_en_to_ru",
+            "спасибо",
+        ),
+        ("Translate \"hello\" to Hindi", "translate_en_to_hi", "नमस्ते"),
+        (
+            "Translate \"hello\" to Chinese",
+            "translate_en_to_zh",
+            "你好",
+        ),
+    ];
+    for (prompt, expected_intent, expected_substring) in cases {
+        let response = answer(prompt);
+        assert_eq!(
+            response.intent, *expected_intent,
+            "intent mismatch for prompt {prompt:?}, answer was: {}",
+            response.answer,
+        );
+        assert!(
+            response
+                .answer
+                .to_lowercase()
+                .contains(&expected_substring.to_lowercase()),
+            "expected target surface {expected_substring:?} in answer for {prompt:?}, got: {}",
+            response.answer,
+        );
+        assert!(
+            !response.answer.contains("[en] ")
+                && !response.answer.contains("[ru] ")
+                && !response.answer.contains("[hi] ")
+                && !response.answer.contains("[zh] "),
+            "registry-backed translation must not fall back to a [lang] placeholder; got: {}",
+            response.answer,
+        );
+    }
 }
 
 // ---------------------------------------------------------------------------

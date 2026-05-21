@@ -132,7 +132,7 @@ fn definition_merge_examples_show_exact_behavior_across_terms_and_concepts() {
         DefinitionMergeExample {
             prompt: "Merge Wikipedia definitions of KISS principle",
             merged_title: "KISS principle",
-            source_languages: &["en", "ru"],
+            source_languages: &["en", "ru", "hi", "zh"],
             wikidata: Some("Q649540"),
             expected_facts: &[
                 ("en", "simplicity as a primary goal"),
@@ -149,7 +149,7 @@ fn definition_merge_examples_show_exact_behavior_across_terms_and_concepts() {
         DefinitionMergeExample {
             prompt: "Combine translated definitions for keep it simple, stupid",
             merged_title: "KISS principle",
-            source_languages: &["en", "ru"],
+            source_languages: &["en", "ru", "hi", "zh"],
             wikidata: Some("Q649540"),
             expected_facts: &[("en", "cornerstone of software engineering")],
             expected_sources: &[("en", "https://en.wikipedia.org/wiki/KISS_principle")],
@@ -157,7 +157,7 @@ fn definition_merge_examples_show_exact_behavior_across_terms_and_concepts() {
         DefinitionMergeExample {
             prompt: "Merge definitions of Links theory",
             merged_title: "Links meta-theory",
-            source_languages: &["en", "ru"],
+            source_languages: &["en", "ru", "hi", "zh"],
             wikidata: None,
             expected_facts: &[
                 ("en", "compact set-theory projection"),
@@ -171,7 +171,7 @@ fn definition_merge_examples_show_exact_behavior_across_terms_and_concepts() {
         DefinitionMergeExample {
             prompt: "Combine translated definitions for теория связей",
             merged_title: "Links meta-theory",
-            source_languages: &["en", "ru"],
+            source_languages: &["en", "ru", "hi", "zh"],
             wikidata: None,
             expected_facts: &[("ru", "архивированные статьи о Links Theory")],
             expected_sources: &[("ru", "https://github.com/link-foundation/meta-theory")],
@@ -179,7 +179,7 @@ fn definition_merge_examples_show_exact_behavior_across_terms_and_concepts() {
         DefinitionMergeExample {
             prompt: "Merge definitions of Telegram Ads",
             merged_title: "Telegram Ads",
-            source_languages: &["en", "ru"],
+            source_languages: &["en", "ru", "hi", "zh"],
             wikidata: None,
             expected_facts: &[
                 ("en", "native advertising platform"),
@@ -193,7 +193,7 @@ fn definition_merge_examples_show_exact_behavior_across_terms_and_concepts() {
         DefinitionMergeExample {
             prompt: "Combine translated definitions for telegram advertising",
             merged_title: "Telegram Ads",
-            source_languages: &["en", "ru"],
+            source_languages: &["en", "ru", "hi", "zh"],
             wikidata: None,
             expected_facts: &[("en", "public channels with over 1,000 subscribers")],
             expected_sources: &[("en", "https://promote.telegram.org")],
@@ -201,7 +201,7 @@ fn definition_merge_examples_show_exact_behavior_across_terms_and_concepts() {
         DefinitionMergeExample {
             prompt: "Merge definitions of реклама в Telegram",
             merged_title: "Telegram Ads",
-            source_languages: &["en", "ru"],
+            source_languages: &["en", "ru", "hi", "zh"],
             wikidata: None,
             expected_facts: &[("ru", "минимальный бюджет")],
             expected_sources: &[("ru", "https://promote.telegram.org")],

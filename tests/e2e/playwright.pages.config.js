@@ -16,6 +16,7 @@ module.exports = defineConfig({
     '**/multilingual.spec.js',
     '**/connectivity.spec.js',
     '**/issue-193.spec.js',
+    '**/issue-205.spec.js',
   ],
   timeout: 60_000,
   retries: 2,

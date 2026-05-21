@@ -925,6 +925,18 @@ body.is-resizing-context {
   accent-color: #175f4f;
 }
 
+.setting-row-ocr {
+  gap: 4px;
+}
+
+.setting-warning {
+  margin: 0;
+  color: #6e5a2f;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
 .trace-list {
   display: grid;
   gap: 8px;
@@ -2227,6 +2239,7 @@ textarea:disabled {
 :root[data-theme="dark"] .setting-row > span,
 :root[data-theme="dark"] .setting-row-slider > label,
 :root[data-theme="dark"] .setting-check,
+:root[data-theme="dark"] .setting-warning,
 :root[data-theme="dark"] .composer-attachment-status,
 :root[data-theme="dark"] .thinking-steps {
   color: #b7b0a7;
@@ -2549,6 +2562,7 @@ textarea:disabled {
   :root:not([data-theme="light"]) .setting-row > span,
   :root:not([data-theme="light"]) .setting-row-slider > label,
   :root:not([data-theme="light"]) .setting-check,
+  :root:not([data-theme="light"]) .setting-warning,
   :root:not([data-theme="light"]) .composer-attachment-status,
   :root:not([data-theme="light"]) .thinking-steps {
     color: #b7b0a7;

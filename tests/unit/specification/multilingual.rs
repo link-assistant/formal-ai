@@ -144,6 +144,71 @@ fn russian_concept_question_returns_concept_lookup_intent() {
     );
 }
 
+// Issue #161: graph prompts should be answered from the local concept seed in
+// every supported language. With associative project promotion enabled by
+// default, each localized answer explains graphs through the Link Foundation
+// meta-theory / Links Notation lens.
+#[test]
+fn graph_questions_promote_links_notation_context_across_supported_languages() {
+    let cases: &[(&str, &str, &[&str])] = &[
+        (
+            "what is graph",
+            "language:en",
+            &["Graph", "vertices", "edges", "Links Notation"],
+        ),
+        (
+            "что такое граф",
+            "language:ru",
+            &["Граф", "вершин", "ребер", "Links Notation", "сеть связей"],
+        ),
+        (
+            "ग्राफ क्या है",
+            "language:hi",
+            &["ग्राफ", "शीर्ष", "किनार", "Links Notation", "links network"],
+        ),
+        (
+            "图是什么",
+            "language:zh",
+            &["图", "顶点", "边", "Links Notation", "链接网络"],
+        ),
+    ];
+
+    for (prompt, language_link, fragments) in cases {
+        let response = answer(prompt);
+        assert_eq!(
+            response.intent, "concept_lookup",
+            "graph question {prompt:?} should resolve as concept_lookup, got {} -> {}",
+            response.intent, response.answer
+        );
+        assert_ne!(
+            response.intent, "unknown",
+            "graph question {prompt:?} must not fall through to unknown"
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == language_link),
+            "graph question {prompt:?} should record {language_link}, got {:?}",
+            response.evidence_links
+        );
+        for fragment in *fragments {
+            assert!(
+                response.answer.contains(fragment),
+                "graph answer for {prompt:?} should contain {fragment:?}, got: {}",
+                response.answer
+            );
+        }
+        assert!(
+            response
+                .answer
+                .contains("https://github.com/link-foundation/meta-theory"),
+            "graph answer for {prompt:?} should cite the Link Foundation meta-theory repository, got: {}",
+            response.answer
+        );
+    }
+}
+
 #[test]
 fn hindi_concept_question_returns_concept_lookup_intent() {
     let response = answer("विकिपीडिया क्या है?");
