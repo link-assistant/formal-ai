@@ -1986,6 +1986,38 @@ function extractQuotedPhrase(text) {
   return null;
 }
 
+// Issue #216: extract the surface from unquoted translation prompts such as
+// `translate apple to russian` or `переведи яблоко на английский`. Returns
+// null when the prompt already contains a quoted fragment (handled by
+// `extractQuotedPhrase`) or does not match the verb + preposition pattern.
+function extractUnquotedTranslationSurface(text) {
+  const source = String(text || "").trim();
+  const trimmed = source.replace(/[.!?。]+$/u, "");
+  const lower = trimmed.toLowerCase();
+  let verb;
+  let preposition;
+  if (lower.startsWith("translate ")) {
+    verb = "translate ";
+    preposition = " to ";
+  } else if (lower.startsWith("переведи ")) {
+    verb = "переведи ";
+    preposition = " на ";
+  } else {
+    return null;
+  }
+  const afterVerb = lower.slice(verb.length);
+  const prepIndex = afterVerb.indexOf(preposition);
+  if (prepIndex === -1) return null;
+  const start = verb.length;
+  const end = start + prepIndex;
+  const candidate = trimmed.slice(start, end).trim();
+  if (!candidate) return null;
+  // If the user already used quotes, let `extractQuotedPhrase` win so the
+  // surrounding punctuation is stripped consistently.
+  if (/["'«»`]/u.test(candidate)) return null;
+  return candidate;
+}
+
 function escapeBehaviorRuleValue(value) {
   return String(value || "")
     .replaceAll("\\", "\\\\")
@@ -3368,6 +3400,29 @@ const TRANSLATION_MEANING_REGISTRY = [
       zh: ["不", "不是"],
     },
   },
+  // Issue #216 / #217: the apple noun must be translatable in both
+  // directions from the browser demo, including unquoted prompts.
+  {
+    token: "apple",
+    primary: { en: "apple", ru: "яблоко", hi: "सेब", zh: "苹果" },
+    aliases: {
+      en: ["apple", "apples"],
+      ru: [
+        "яблоко",
+        "яблока",
+        "яблоку",
+        "яблоком",
+        "яблоке",
+        "яблоки",
+        "яблок",
+        "яблокам",
+        "яблоками",
+        "яблоках",
+      ],
+      hi: ["सेब"],
+      zh: ["苹果"],
+    },
+  },
 ];
 
 const TRANSLATION_TERMINAL_PUNCTUATION = ["?", "!", ".", "。", "？", "！", "．"];
@@ -3582,7 +3637,11 @@ function tryTranslation(prompt, normalized) {
     normalized.startsWith("опиши");
   if (!isTranslationRequest) return null;
 
-  const surface = extractQuotedPhrase(prompt) || "";
+  // Issue #216: fall back to an unquoted surface (`translate apple to
+  // russian`) when no quoted fragment is present so the offline registry
+  // can still resolve a meaning token.
+  const surface =
+    extractQuotedPhrase(prompt) || extractUnquotedTranslationSurface(prompt) || "";
   const surfaceMeaning = surface || prompt;
   const source = detectTranslationSourceLanguage(normalized) || inferTranslationSource(prompt);
   const target = detectTranslationTargetLanguage(normalized) || "en";

@@ -43,6 +43,7 @@ pub mod formatting;
 pub mod http;
 pub mod meaning;
 pub mod pipeline;
+pub mod prompt;
 pub mod wikidata;
 pub mod wiktionary;
 
@@ -50,6 +51,7 @@ pub use cache::CachedHttpClient;
 pub use formatting::match_source_formatting;
 pub use http::{CurlClient, HttpError};
 pub use pipeline::{Translation, TranslationPipeline};
+pub use prompt::extract_unquoted_translation_surface;
 
 /// Process-wide cached HTTP client used by the default pipeline.
 ///

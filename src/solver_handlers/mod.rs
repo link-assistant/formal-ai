@@ -58,6 +58,7 @@ use crate::solver_helpers::{
 use crate::summarization::{
     generate_chat_title, summarize_dialog, DialogTurn, SummarizationConfig, SummarizationMode,
 };
+use crate::translation::extract_unquoted_translation_surface;
 
 pub fn try_conversation_memory(
     prompt: &str,
@@ -636,7 +637,14 @@ pub fn try_translation(
         }
     }
 
-    let surface = extract_quoted_phrase(prompt).unwrap_or_default();
+    // Prefer an explicitly quoted fragment (`Translate "apple" to Russian`).
+    // When the user omits the quotes (`translate apple to russian`),
+    // fall back to a structural extraction of the substring between the
+    // verb and the target preposition so the Wiktionary pipeline still
+    // receives a non-empty surface. See issue #216.
+    let surface = extract_quoted_phrase(prompt)
+        .or_else(|| extract_unquoted_translation_surface(prompt))
+        .unwrap_or_default();
     let source_slug = source.unwrap_or("en");
     let target_slug = target.unwrap_or("en");
 

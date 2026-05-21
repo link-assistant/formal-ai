@@ -227,6 +227,100 @@ fn translation_meaning_registry_covers_extended_phrases() {
     }
 }
 
+#[test]
+fn issue_216_translate_apple_to_russian_without_quotes() {
+    // Issue #216: `translate apple to russian` (no quotes around `apple`)
+    // used to return the placeholder `[ru]` because the surface
+    // extractor only handled quoted fragments. The handler must now
+    // recover the surface from the unquoted form and translate it.
+    let cases: &[&str] = &[
+        "translate apple to russian",
+        "Translate apple to Russian",
+        "translate apple to russian.",
+        "translate Apple to Russian",
+    ];
+    for prompt in cases {
+        let response = answer(prompt);
+        assert_eq!(
+            response.intent, "translate_en_to_ru",
+            "unquoted English→Russian prompt should route to translation for {prompt:?}, got {}: {}",
+            response.intent, response.answer,
+        );
+        assert!(
+            response.answer.contains("яблоко") || response.answer.contains("Яблоко"),
+            "unquoted apple→russian must produce the Russian surface, got: {}",
+            response.answer,
+        );
+        assert!(
+            !response.answer.contains("[ru]"),
+            "unquoted apple→russian must not fall back to the [ru] placeholder, got: {}",
+            response.answer,
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == "language_to:ru"),
+            "expected language_to:ru in evidence for {prompt:?}, got {:?}",
+            response.evidence_links,
+        );
+    }
+}
+
+#[test]
+fn issue_217_single_russian_noun_quoted() {
+    // Issue #217: `переведи "яблоко" на английский` used to return the
+    // placeholder `[en] яблоко` because the Wiktionary cache was empty
+    // for the single noun. The cache is now seeded so the pipeline
+    // resolves it to `apple`.
+    let cases: &[&str] = &[
+        "переведи \"яблоко\" на английский",
+        "Переведи \"яблоко\" на английский.",
+        "переведи «яблоко» на английский",
+        "переведи 'яблоко' на английский",
+    ];
+    for prompt in cases {
+        let response = answer(prompt);
+        assert_eq!(
+            response.intent, "translate_ru_to_en",
+            "quoted Russian noun should route to translation for {prompt:?}, got {}: {}",
+            response.intent, response.answer,
+        );
+        assert!(
+            response.answer.to_lowercase().contains("apple"),
+            "expected `apple` in answer for {prompt:?}, got: {}",
+            response.answer,
+        );
+        assert!(
+            !response.answer.contains("[en]"),
+            "single Russian noun must not fall back to [en] placeholder for {prompt:?}, got: {}",
+            response.answer,
+        );
+    }
+}
+
+#[test]
+fn issue_218_unquoted_russian_translation() {
+    // Issue #218 / mirror of #216 in the Russian direction:
+    // `переведи яблоко на английский` (no quotes) should also work.
+    let response = answer("переведи яблоко на английский");
+    assert_eq!(
+        response.intent, "translate_ru_to_en",
+        "unquoted Russian→English should route to translation, got {}: {}",
+        response.intent, response.answer,
+    );
+    assert!(
+        response.answer.to_lowercase().contains("apple"),
+        "expected `apple` in answer, got: {}",
+        response.answer,
+    );
+    assert!(
+        !response.answer.contains("[en]"),
+        "unquoted Russian→English must not fall back to [en], got: {}",
+        response.answer,
+    );
+}
+
 // ---------------------------------------------------------------------------
 // full-scope expectations.
 // ---------------------------------------------------------------------------

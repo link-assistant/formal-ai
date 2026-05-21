@@ -27,11 +27,15 @@ fn main() {
         ("привет", "ru", "en"),
         ("да", "ru", "en"),
         ("нет", "ru", "en"),
+        // Issue #217: single Russian noun
+        ("яблоко", "ru", "en"),
         // English → Russian
         ("hello", "en", "ru"),
         ("thank you", "en", "ru"),
         ("yes", "en", "ru"),
         ("no", "en", "ru"),
+        // Issue #216: single English noun
+        ("apple", "en", "ru"),
         // English → Hindi
         ("hello", "en", "hi"),
         // English → Chinese
