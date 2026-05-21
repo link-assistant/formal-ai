@@ -1,0 +1,21 @@
+HTTP/2 200
+server: GitHub.com
+content-type: application/gzip
+last-modified: Sun, 02 Jun 2019 05:54:18 GMT
+access-control-allow-origin: *
+etag: "5cf3648a-1e4711"
+expires: Wed, 20 May 2026 22:36:47 GMT
+cache-control: max-age=600
+x-proxy-cache: MISS
+x-github-request-id: BD80:14EC3F:141FA55:1465C9B:6A0E3525
+accept-ranges: bytes
+age: 0
+date: Wed, 20 May 2026 22:26:47 GMT
+via: 1.1 varnish
+x-served-by: cache-fra-eddf8230234-FRA
+x-cache: MISS
+x-cache-hits: 0
+x-timer: S1779316007.947150,VS0,VE121
+vary: Accept-Encoding
+x-fastly-request-id: 73b2daad3a3c91139fb91310f86db22f493c0a99
+content-length: 1984273

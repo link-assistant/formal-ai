@@ -9,6 +9,7 @@ module.exports = defineConfig({
     '**/connectivity.spec.js',
     '**/issue-153.spec.js',
     '**/issue-193.spec.js',
+    '**/issue-205.spec.js',
     '**/issue-180.spec.js',
   ],
   timeout: 30_000,
