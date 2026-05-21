@@ -785,12 +785,13 @@ function rankConceptForPair(termRaw, contextRaw) {
 function lookupConceptQuery(query) {
   if (!query) return null;
   const direct = rankConceptForPair(query.term, query.context);
-  if (direct) return direct;
   if (query.context) {
     const reversed = rankConceptForPair(query.context, query.term);
-    if (reversed) return reversed;
+    if (reversed && (!direct || (!direct.contextMatch && reversed.contextMatch))) {
+      return reversed;
+    }
   }
-  return null;
+  return direct || null;
 }
 
 function lookupConcept(term) {

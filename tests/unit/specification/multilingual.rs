@@ -272,6 +272,40 @@ fn russian_bsd_ports_question_returns_ports_not_openbsd() {
 }
 
 #[test]
+fn hindi_bsd_ports_question_returns_localized_ports_answer() {
+    let response = answer("BSD में पोर्ट्स क्या है?");
+    assert_eq!(
+        response.intent, "concept_lookup_in_context",
+        "Hindi BSD ports prompt should resolve as a context-aware local concept, got: {}",
+        response.intent
+    );
+    assert!(
+        response.answer.contains("BSD")
+            && response.answer.contains("पोर्ट्स")
+            && response.answer.contains("पैकेज"),
+        "Hindi answer should explain BSD ports as package recipes, got: {}",
+        response.answer
+    );
+}
+
+#[test]
+fn chinese_bsd_ports_question_returns_localized_ports_answer() {
+    let response = answer("BSD中的端口集合是什么?");
+    assert_eq!(
+        response.intent, "concept_lookup_in_context",
+        "Chinese BSD ports prompt should resolve as a context-aware local concept, got: {}",
+        response.intent
+    );
+    assert!(
+        response.answer.contains("BSD")
+            && response.answer.contains("Ports")
+            && response.answer.contains("源代码"),
+        "Chinese answer should explain BSD ports as source-based package recipes, got: {}",
+        response.answer
+    );
+}
+
+#[test]
 fn english_what_is_iir_in_ml_returns_context_aware_concept_lookup() {
     let response = answer("what is IIR in ML?");
     assert_eq!(response.intent, "concept_lookup_in_context");

@@ -265,7 +265,9 @@ test.describe('multilingual chat surface', () => {
     await expect(last).toContainText(/Wikipedia|encyclopedia/i);
   });
 
-  test('Issue #182: Russian BSD ports prompt does not fall through to OpenBSD', async ({ page }) => {
+  test('Issue #182: BSD ports prompts across supported languages do not fall through to OpenBSD', async ({
+    page,
+  }) => {
     let wikipediaRequests = 0;
     await page.route('**/w/rest.php/v1/search/page**', async (route) => {
       wikipediaRequests += 1;
@@ -302,11 +304,37 @@ test.describe('multilingual chat surface', () => {
       });
     });
 
-    const last = await sendPrompt(page, 'что такое порты в bsd');
-    await expect(last).toHaveClass(/assistant/);
-    await expect(last).toContainText(/Порты BSD|BSD ports/i);
-    await expect(last).toContainText(/пакет|package|приложен/i);
-    await expect(last).not.toContainText('OpenBSD:');
+    const cases = [
+      {
+        prompt: 'what is ports in BSD?',
+        term: /BSD ports/i,
+        explanation: /package|source-based/i,
+      },
+      {
+        prompt: 'что такое порты в bsd',
+        term: /Порты BSD|BSD ports/i,
+        explanation: /пакет|package|приложен/i,
+      },
+      {
+        prompt: 'BSD में पोर्ट्स क्या है?',
+        term: /BSD पोर्ट्स|BSD ports/i,
+        explanation: /पैकेज|package|source/i,
+      },
+      {
+        prompt: 'BSD中的端口集合是什么?',
+        term: /BSD Ports|BSD ports/i,
+        explanation: /源代码|package|包管理/i,
+      },
+    ];
+
+    for (const entry of cases) {
+      const last = await sendPrompt(page, entry.prompt);
+      await expect(last).toHaveClass(/assistant/);
+      await expect(last).toContainText(entry.term);
+      await expect(last).toContainText(entry.explanation);
+      await expect(last).not.toContainText('OpenBSD:');
+    }
+
     expect(wikipediaRequests).toBe(0);
   });
 
