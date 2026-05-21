@@ -109,10 +109,51 @@ function parseResponseRecords() {
   return responses;
 }
 
+function parseConceptRecords() {
+  const concepts = [];
+  let current = null;
+  let localized = null;
+
+  for (const line of readRepoFile('data/seed/concepts.lino').split(/\r?\n/)) {
+    const concept = line.match(/^(concept_[a-z0-9_]+)$/);
+    if (concept) {
+      if (current) concepts.push(current);
+      current = { id: concept[1], localized: [] };
+      localized = null;
+      continue;
+    }
+
+    if (!current) continue;
+
+    const localizedHeader = line.match(/^  localized "([^"]+)"/);
+    if (localizedHeader) {
+      localized = { language: localizedHeader[1] };
+      current.localized.push(localized);
+      continue;
+    }
+
+    const localizedField = line.match(/^    ([a-z_]+) "([^"]*)"/);
+    if (localized && localizedField) {
+      localized[localizedField[1]] = localizedField[2];
+      continue;
+    }
+
+    const field = line.match(/^  ([a-z_]+) "([^"]*)"/);
+    if (field) {
+      current[field[1]] = field[2];
+      localized = null;
+    }
+  }
+
+  if (current) concepts.push(current);
+  return concepts;
+}
+
 const supportedLanguages = parseSupportedLanguages();
 const routes = parseIntentRouting();
 const patterns = parsePromptPatterns();
 const responses = parseResponseRecords();
+const concepts = parseConceptRecords();
 const errors = [];
 
 function assert(condition, message) {
@@ -228,6 +269,28 @@ for (const intent of requiredLocalizedResponseIntents) {
   }
 }
 
+for (const concept of concepts.filter((record) => record.localized.length > 0)) {
+  const languages = concept.localized.map((localized) => localized.language);
+  assert(
+    new Set(languages).size === languages.length,
+    `concepts.lino ${concept.id} must not duplicate localized language records`,
+  );
+  assertMatrixMatchesSupportedLanguages(
+    `concepts.lino ${concept.id} localized records`,
+    Object.fromEntries(concept.localized.map((localized) => [localized.language, localized])),
+  );
+
+  for (const language of supportedLanguages) {
+    const localized = concept.localized.find((entry) => entry.language === language);
+    for (const field of ['term', 'aliases', 'summary', 'source', 'source_kind']) {
+      assert(
+        localized?.[field]?.trim(),
+        `concepts.lino ${concept.id} localized ${language} must define ${field}`,
+      );
+    }
+  }
+}
+
 if (errors.length > 0) {
   console.error('Multilingual intent coverage check failed:');
   for (const error of errors) {
@@ -237,5 +300,5 @@ if (errors.length > 0) {
 }
 
 console.log(
-  `Multilingual intent coverage OK for ${supportedLanguages.join(', ')} (${requiredLocalizedResponseIntents.length} localized response intents).`,
+  `Multilingual intent coverage OK for ${supportedLanguages.join(', ')} (${requiredLocalizedResponseIntents.length} localized response intents, ${concepts.filter((record) => record.localized.length > 0).length} localized concept records).`,
 );
