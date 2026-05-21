@@ -3316,6 +3316,28 @@ const TRANSLATION_MEANING_REGISTRY = [
     },
   },
   {
+    token: "who_are_you",
+    primary: {
+      en: "Who are you?",
+      ru: "Кто ты такой?",
+    },
+    aliases: {
+      en: ["whoareyou"],
+      ru: ["ктоты", "ктотытакой", "ктотытакая", "ктовы", "ктовытакой", "ктовытакая"],
+    },
+  },
+  {
+    token: "what_is_this",
+    primary: {
+      en: "What is this?",
+      ru: "Что это такое?",
+    },
+    aliases: {
+      en: ["whatisthis", "whatisit"],
+      ru: ["чтоэто", "чтоэтотакое"],
+    },
+  },
+  {
     token: "i_am_fine",
     primary: { en: "I am fine", ru: "У меня всё хорошо", hi: "मैं ठीक हूँ", zh: "我很好" },
     aliases: {
@@ -3456,6 +3478,73 @@ function matchSourceFormatting(target, source) {
   return withTerminal;
 }
 
+function normalizeComposableSurface(surface) {
+  return String(surface || "")
+    .trim()
+    .replace(/[?!.。？！．]+$/u, "")
+    .toLowerCase()
+    .split(/\s+/u)
+    .filter(Boolean)
+    .join(" ");
+}
+
+const RU_EN_PHRASE_FALLBACKS = new Map([
+  ["кто ты", "Who are you?"],
+  ["кто ты такой", "Who are you?"],
+  ["кто ты такая", "Who are you?"],
+  ["кто вы", "Who are you?"],
+  ["кто вы такой", "Who are you?"],
+  ["кто вы такая", "Who are you?"],
+  ["что это", "What is this?"],
+  ["что это такое", "What is this?"],
+]);
+
+const RU_EN_WORD_FALLBACKS = new Map([
+  ["доброе", "good"],
+  ["добрый", "good"],
+  ["добрая", "good"],
+  ["добрые", "good"],
+  ["доброго", "good"],
+  ["добрую", "good"],
+  ["добрым", "good"],
+  ["хорошее", "good"],
+  ["хороший", "good"],
+  ["хорошая", "good"],
+  ["хорошие", "good"],
+  ["хорошего", "good"],
+  ["хорошую", "good"],
+  ["хорошим", "good"],
+  ["яблоко", "apple"],
+  ["яблока", "apple"],
+  ["яблоку", "apple"],
+  ["яблоком", "apple"],
+  ["яблоке", "apple"],
+  ["яблоки", "apple"],
+  ["яблок", "apple"],
+  ["яблокам", "apple"],
+  ["яблоками", "apple"],
+  ["яблоках", "apple"],
+]);
+
+function capitalizeAsciiFirst(surface) {
+  const text = String(surface || "");
+  if (!text) return "";
+  return text[0].toUpperCase() + text.slice(1);
+}
+
+function translateCompositionalSurface(surface, source, target) {
+  if (source !== "ru" || target !== "en") return null;
+  const normalized = normalizeComposableSurface(surface);
+  const phrase = RU_EN_PHRASE_FALLBACKS.get(normalized);
+  if (phrase) return phrase;
+
+  const words = normalized.split(/\s+/u).filter(Boolean);
+  if (words.length < 2 || words.length > 4) return null;
+  const translated = words.map((word) => RU_EN_WORD_FALLBACKS.get(word));
+  if (translated.some((word) => !word)) return null;
+  return capitalizeAsciiFirst(translated.join(" "));
+}
+
 function inferTranslationSource(prompt) {
   const lower = String(prompt || "").toLowerCase();
   if (lower.includes("переведи") || lower.includes("опиши")) return "ru";
@@ -3480,6 +3569,8 @@ function translateSurface(surface, source, target) {
     const primary = deformalizeMeaning(token, target);
     if (primary) return primary;
   }
+  const compositional = translateCompositionalSurface(surface, source, target);
+  if (compositional) return compositional;
   return `[${target}] ${surface}`;
 }
 
@@ -9538,6 +9629,13 @@ async function solve(prompt, history, prefs) {
     }, formalizationContext);
   }
 
+  const translation = tryTranslation(prompt, normalized);
+  if (translation) {
+    events.push(`handler:${translation.intent}`);
+    steps.push({ step: "dispatch_handler", detail: "tryTranslation" });
+    return finalize(events, steps, toolCalls, translation, formalizationContext);
+  }
+
   const capabilities = tryCapabilities(prompt, normalized, preferences, history);
   if (capabilities) {
     events.push(`handler:${capabilities.intent}`);
@@ -9619,7 +9717,6 @@ async function solve(prompt, history, prefs) {
     { name: "tryCalendarReasoning", run: () => tryCalendarReasoning(prompt, normalized) },
     { name: "tryArithmetic", run: () => tryArithmetic(prompt) },
     { name: "tryJavaScriptExecution", run: () => tryJavaScriptExecution(prompt) },
-    { name: "tryTranslation", run: () => tryTranslation(prompt, normalized) },
     {
       name: "tryDefinitionMerge",
       run: () => tryDefinitionMerge(prompt, { allowPlainConcept: autoDefinitionFusion }),

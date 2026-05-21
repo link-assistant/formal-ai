@@ -105,6 +105,61 @@ fn natural_translation_drops_terminal_when_source_has_none() {
 }
 
 #[test]
+fn issue_210_russian_translation_prompts_keep_translation_intent() {
+    let cases: &[(&str, &str)] = &[
+        ("Переведи \"кто ты такой\" на английский.", "who are you"),
+        (
+            "Переведи \"что это такое?\" на английский.",
+            "what is this?",
+        ),
+        ("Переведи \"доброе яблоко\" на английский.", "good apple"),
+    ];
+
+    for (prompt, expected_surface) in cases {
+        let response = answer(prompt);
+        assert_eq!(
+            response.intent, "translate_ru_to_en",
+            "translation prompt should not be routed to another handler for {prompt:?}; got {}: {}",
+            response.intent, response.answer,
+        );
+        assert!(
+            response
+                .answer
+                .to_lowercase()
+                .contains(&expected_surface.to_lowercase()),
+            "expected English surface {expected_surface:?} for {prompt:?}, got: {}",
+            response.answer,
+        );
+        assert!(
+            !response.answer.contains("[en] "),
+            "translation must not fall back to a placeholder for {prompt:?}; got: {}",
+            response.answer,
+        );
+        assert!(
+            !response.answer.contains("formal-ai"),
+            "translation prompt must not return assistant identity/capabilities for {prompt:?}; got: {}",
+            response.answer,
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == "language_from:ru"),
+            "translation should record Russian source language for {prompt:?}, got {:?}",
+            response.evidence_links,
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == "language_to:en"),
+            "translation should record English target language for {prompt:?}, got {:?}",
+            response.evidence_links,
+        );
+    }
+}
+
+#[test]
 fn translation_meaning_registry_covers_extended_phrases() {
     // R215: the formalize → meaning → deformalize pipeline must cover more
     // than the single hardcoded greeting_how_are_you id.
