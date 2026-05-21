@@ -49,16 +49,18 @@ use crate::language::detect as detect_language;
 use crate::seed::response_for;
 use crate::solver_helpers::{
     build_sorting_algorithm_answer, detect_algorithm_language, detect_program_languages,
-    detect_source_language, detect_target_language, extract_backticked, extract_concept_from_query,
-    extract_introduced_name, extract_javascript_program, extract_quoted_phrase,
-    format_write_script_execution, humanize_url, infer_program_languages_from_code,
-    infer_source_from_prompt, is_write_script_request, last_user_turn, normalize_code_meaning,
-    normalize_meaning, recall_name_from_history, translate_program,
+    extract_backticked, extract_concept_from_query, extract_introduced_name,
+    extract_javascript_program, extract_quoted_phrase, format_write_script_execution, humanize_url,
+    infer_program_languages_from_code, infer_source_from_prompt, is_write_script_request,
+    last_user_turn, normalize_code_meaning, normalize_meaning, recall_name_from_history,
+    translate_program,
 };
 use crate::summarization::{
     generate_chat_title, summarize_dialog, DialogTurn, SummarizationConfig, SummarizationMode,
 };
-use crate::translation::extract_unquoted_translation_surface;
+use crate::translation::{
+    detect_source_language, detect_target_language, extract_unquoted_translation_surface,
+};
 
 pub fn try_conversation_memory(
     prompt: &str,
