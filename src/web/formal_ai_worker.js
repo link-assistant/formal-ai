@@ -3202,30 +3202,258 @@ function detectTranslationTargetLanguage(normalized) {
   return null;
 }
 
+// Offline meaning registry for the browser worker.
+//
+// The Rust pipeline (`src/translation/pipeline.rs`) now goes through
+// Wiktionary + Wikidata to resolve any pair of surfaces via cached HTTP
+// responses. The browser worker cannot reach those APIs directly (CORS),
+// so it keeps this small offline registry as a fallback for the demo set.
+// `primary` is the canonical form deformalization renders; `aliases` is a
+// list of normalized alternative surfaces used during formalization.
+const TRANSLATION_MEANING_REGISTRY = [
+  {
+    token: "greeting",
+    primary: { en: "Hello", ru: "Привет", hi: "नमस्ते", zh: "你好" },
+    aliases: {
+      en: ["hello", "hi", "hey"],
+      ru: ["привет", "здравствуйте", "здравствуй"],
+      hi: ["नमस्ते", "नमस्कार"],
+      zh: ["你好", "您好"],
+    },
+  },
+  {
+    token: "greeting_how_are_you",
+    primary: {
+      en: "How are you?",
+      ru: "Как у тебя дела?",
+      hi: "आप कैसे हैं?",
+      zh: "你好吗？",
+    },
+    aliases: {
+      en: ["howareyou", "hellohowareyou", "hihowareyou"],
+      ru: [
+        "какдела",
+        "какутебядела",
+        "какувасдела",
+        "какваши дела",
+        "какватидела",
+        "какваши",
+        "приветкакдела",
+        "здравствуйтекаквашидела",
+      ],
+      hi: ["आपकैसेहैं", "तुमकैसेहो"],
+      zh: ["你好吗", "你怎么样"],
+    },
+  },
+  {
+    token: "thank_you",
+    primary: { en: "Thank you", ru: "Спасибо", hi: "धन्यवाद", zh: "谢谢" },
+    aliases: {
+      en: ["thanks", "thankyou", "thankyouverymuch"],
+      ru: ["спасибо", "благодарю", "большоеспасибо"],
+      hi: ["धन्यवाद", "शुक्रिया"],
+      zh: ["谢谢", "多谢", "感谢"],
+    },
+  },
+  {
+    token: "you_are_welcome",
+    primary: {
+      en: "You are welcome",
+      ru: "Пожалуйста",
+      hi: "आपका स्वागत है",
+      zh: "不客气",
+    },
+    aliases: {
+      en: ["youarewelcome", "yourewelcome", "nottoworry"],
+      ru: ["пожалуйста", "незачто"],
+      hi: ["आपकास्वागतहै", "कोईबातनहीं"],
+      zh: ["不客气", "不用谢"],
+    },
+  },
+  {
+    token: "goodbye",
+    primary: { en: "Goodbye", ru: "До свидания", hi: "अलविदा", zh: "再见" },
+    aliases: {
+      en: ["goodbye", "bye", "seeyou", "byebye"],
+      ru: ["досвидания", "пока", "прощай"],
+      hi: ["अलविदा", "फिरमिलेंगे"],
+      zh: ["再见", "拜拜"],
+    },
+  },
+  {
+    token: "good_morning",
+    primary: { en: "Good morning", ru: "Доброе утро", hi: "सुप्रभात", zh: "早上好" },
+    aliases: {
+      en: ["goodmorning"],
+      ru: ["доброеутро"],
+      hi: ["सुप्रभात", "शुभप्रभात"],
+      zh: ["早上好", "早安"],
+    },
+  },
+  {
+    token: "good_evening",
+    primary: { en: "Good evening", ru: "Добрый вечер", hi: "शुभ संध्या", zh: "晚上好" },
+    aliases: {
+      en: ["goodevening"],
+      ru: ["добрыйвечер"],
+      hi: ["शुभसंध्या"],
+      zh: ["晚上好", "晚安"],
+    },
+  },
+  {
+    token: "what_is_your_name",
+    primary: {
+      en: "What is your name?",
+      ru: "Как тебя зовут?",
+      hi: "तुम्हारा नाम क्या है?",
+      zh: "你叫什么名字？",
+    },
+    aliases: {
+      en: ["whatisyourname", "whatsyourname"],
+      ru: ["кактебязовут", "каквасзовут"],
+      hi: ["तुम्हारानामक्याहै", "आपकानामक्याहै"],
+      zh: ["你叫什么名字", "您叫什么名字"],
+    },
+  },
+  {
+    token: "i_am_fine",
+    primary: { en: "I am fine", ru: "У меня всё хорошо", hi: "मैं ठीक हूँ", zh: "我很好" },
+    aliases: {
+      en: ["iamfine", "imfine", "imdoingfine", "imdoingwell"],
+      ru: ["уменявсёхорошо", "уменявсехорошо", "всёхорошо"],
+      hi: ["मैंठीकहूँ", "मैंठीकहूं"],
+      zh: ["我很好", "我挺好的"],
+    },
+  },
+  {
+    token: "yes",
+    primary: { en: "Yes", ru: "Да", hi: "हाँ", zh: "是" },
+    aliases: {
+      en: ["yes", "yeah", "yep", "aye"],
+      ru: ["да", "ага", "конечно"],
+      hi: ["हाँ", "हां", "जी"],
+      zh: ["是", "是的", "对"],
+    },
+  },
+  {
+    token: "no",
+    primary: { en: "No", ru: "Нет", hi: "नहीं", zh: "不" },
+    aliases: {
+      en: ["no", "nope", "nah"],
+      ru: ["нет", "неа"],
+      hi: ["नहीं", "ना"],
+      zh: ["不", "不是"],
+    },
+  },
+];
+
+const TRANSLATION_TERMINAL_PUNCTUATION = ["?", "!", ".", "。", "？", "！", "．"];
+
+function normalizeTranslationAlias(surface) {
+  return Array.from(String(surface || "").toLowerCase())
+    .filter((character) => /[\p{L}\p{N}]/u.test(character))
+    .join("");
+}
+
+function formalizeSurface(surface, source) {
+  const normalized = normalizeTranslationAlias(surface);
+  if (!normalized) return null;
+  for (const entry of TRANSLATION_MEANING_REGISTRY) {
+    const aliases = (entry.aliases && entry.aliases[source]) || [];
+    if (aliases.some((alias) => normalizeTranslationAlias(alias) === normalized)) {
+      return entry.token;
+    }
+    const primary = entry.primary && entry.primary[source];
+    if (primary && normalizeTranslationAlias(primary) === normalized) {
+      return entry.token;
+    }
+  }
+  return null;
+}
+
+function deformalizeMeaning(token, target) {
+  for (const entry of TRANSLATION_MEANING_REGISTRY) {
+    if (entry.token !== token) continue;
+    const primary = entry.primary && entry.primary[target];
+    return primary || null;
+  }
+  return null;
+}
+
+function canonicalTokenForNormalized(normalized) {
+  if (!normalized) return null;
+  for (const entry of TRANSLATION_MEANING_REGISTRY) {
+    const aliasesByLang = entry.aliases || {};
+    for (const lang of Object.keys(aliasesByLang)) {
+      const aliases = aliasesByLang[lang] || [];
+      if (aliases.some((alias) => normalizeTranslationAlias(alias) === normalized)) {
+        return entry.token;
+      }
+    }
+    const primaryByLang = entry.primary || {};
+    for (const lang of Object.keys(primaryByLang)) {
+      if (normalizeTranslationAlias(primaryByLang[lang]) === normalized) {
+        return entry.token;
+      }
+    }
+  }
+  return null;
+}
+
 function canonicalMeaningToken(raw) {
-  if (["hello", "hi", "hey", "привет", "здравствуйте", "नमस्ते", "你好"].includes(raw)) {
-    return "greeting";
-  }
-  if (
-    [
-      "hellohowareyou",
-      "какдела",
-      "какутебядела",
-      "какувасдела",
-      "приветкакдела",
-      "здравствуйтекаквашидела",
-    ].includes(raw)
-  ) {
-    return "greeting_how_are_you";
-  }
-  return raw;
+  return canonicalTokenForNormalized(raw) || raw;
 }
 
 function normalizeMeaningText(surface) {
-  const raw = Array.from(String(surface || "").toLowerCase())
-    .filter((character) => /[\p{L}\p{N}]/u.test(character))
-    .join("");
+  const raw = normalizeTranslationAlias(surface);
   return canonicalMeaningToken(raw);
+}
+
+function matchSourceFormatting(target, source) {
+  const targetTrimmed = String(target || "").trim();
+  if (!targetTrimmed) return "";
+  const sourceTrimmed = String(source || "").trim();
+
+  let sourceTerminal = null;
+  if (sourceTrimmed.length > 0) {
+    const lastChar = Array.from(sourceTrimmed).pop();
+    if (TRANSLATION_TERMINAL_PUNCTUATION.includes(lastChar)) sourceTerminal = lastChar;
+  }
+  let targetNoTerminal = targetTrimmed;
+  while (
+    targetNoTerminal.length > 0 &&
+    TRANSLATION_TERMINAL_PUNCTUATION.includes(Array.from(targetNoTerminal).pop())
+  ) {
+    const lastChar = Array.from(targetNoTerminal).pop();
+    targetNoTerminal = targetNoTerminal.slice(0, targetNoTerminal.length - lastChar.length);
+  }
+  const withTerminal = sourceTerminal ? targetNoTerminal + sourceTerminal : targetNoTerminal;
+
+  const sourceFirstLetter = Array.from(sourceTrimmed).find((character) =>
+    /\p{L}/u.test(character),
+  );
+  if (!sourceFirstLetter) return withTerminal;
+  const targetChars = Array.from(withTerminal);
+  const targetFirstIdx = targetChars.findIndex((character) => /\p{L}/u.test(character));
+  if (targetFirstIdx === -1) return withTerminal;
+  const targetFirstLetter = targetChars[targetFirstIdx];
+  const sourceLower = sourceFirstLetter.toLowerCase() === sourceFirstLetter
+    && sourceFirstLetter.toUpperCase() !== sourceFirstLetter;
+  const sourceUpper = sourceFirstLetter.toUpperCase() === sourceFirstLetter
+    && sourceFirstLetter.toLowerCase() !== sourceFirstLetter;
+  const targetLower = targetFirstLetter.toLowerCase() === targetFirstLetter
+    && targetFirstLetter.toUpperCase() !== targetFirstLetter;
+  const targetUpper = targetFirstLetter.toUpperCase() === targetFirstLetter
+    && targetFirstLetter.toLowerCase() !== targetFirstLetter;
+  if (sourceLower && targetUpper) {
+    targetChars[targetFirstIdx] = targetFirstLetter.toLowerCase();
+    return targetChars.join("");
+  }
+  if (sourceUpper && targetLower) {
+    targetChars[targetFirstIdx] = targetFirstLetter.toUpperCase();
+    return targetChars.join("");
+  }
+  return withTerminal;
 }
 
 function inferTranslationSource(prompt) {
@@ -3245,35 +3473,14 @@ function inferTranslationSource(prompt) {
   return "en";
 }
 
-function translateSurface(surface, _source, target) {
-  const normalized = String(surface || "").trim().toLowerCase();
-  if (target === "ru") {
-    if (normalized === "hello" || normalized === "hi") return "Привет";
-    if (normalized === "hello, how are you?") return "Здравствуйте, как ваши дела?";
-    return `[ru] ${surface}`;
+function translateSurface(surface, source, target) {
+  if (source === target) return String(surface || "");
+  const token = formalizeSurface(surface, source);
+  if (token) {
+    const primary = deformalizeMeaning(token, target);
+    if (primary) return primary;
   }
-  if (target === "en") {
-    if (normalized === "привет") return "Hi";
-    if (
-      [
-        "как дела",
-        "как дела?",
-        "как у тебя дела",
-        "как у тебя дела?",
-        "как у вас дела",
-        "как у вас дела?",
-        "как ваши дела",
-        "как ваши дела?",
-      ].includes(normalized)
-    ) {
-      return "How are you?";
-    }
-    if (normalized === "hello, how are you?") return "Hello, how are you?";
-    return `[en] ${surface}`;
-  }
-  if (target === "hi") return `[hi] ${surface}`;
-  if (target === "zh") return `[zh] ${surface}`;
-  return String(surface || "");
+  return `[${target}] ${surface}`;
 }
 
 function tryTranslation(prompt, normalized) {
@@ -3288,10 +3495,12 @@ function tryTranslation(prompt, normalized) {
   const source = detectTranslationSourceLanguage(normalized) || inferTranslationSource(prompt);
   const target = detectTranslationTargetLanguage(normalized) || "en";
   const meaningId = stableBehaviorRuleId("meaning", normalizeMeaningText(surfaceMeaning));
-  const translatedSurface = translateSurface(surface, source, target);
+  const rawTarget = translateSurface(surface, source, target);
+  const translatedSurface = matchSourceFormatting(rawTarget, surface);
+  const content = surface ? `"${translatedSurface}"` : translatedSurface;
   return {
     intent: `translate_${source}_to_${target}`,
-    content: `meaning: ${meaningId}\nsurface (${source}): ${surface}\nsurface (${target}): ${translatedSurface}`,
+    content,
     confidence: 1.0,
     evidence: [
       "handler:translation",
