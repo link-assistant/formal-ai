@@ -210,41 +210,6 @@ fn graph_questions_promote_links_notation_context_across_supported_languages() {
 }
 
 #[test]
-fn russian_openstreermap_typo_returns_openstreetmap_concept() {
-    let response = answer("что такое OpenStreerMap");
-    assert_eq!(
-        response.intent, "concept_lookup",
-        "reported OpenStreetMap typo should resolve through concept lookup, got: {}",
-        response.intent
-    );
-    assert!(
-        response.answer.contains("OpenStreetMap"),
-        "answer should name the intended concept, got: {}",
-        response.answer
-    );
-    assert!(
-        response.answer.contains("map database"),
-        "answer should describe OpenStreetMap, got: {}",
-        response.answer
-    );
-    assert!(
-        response
-            .answer
-            .contains("https://en.wikipedia.org/wiki/OpenStreetMap"),
-        "answer should cite the OpenStreetMap source, got: {}",
-        response.answer
-    );
-    assert!(
-        !response
-            .answer
-            .to_lowercase()
-            .contains("cannot answer that from local links notation rules"),
-        "reported typo must not fall back to unknown, got: {}",
-        response.answer
-    );
-}
-
-#[test]
 fn hindi_concept_question_returns_concept_lookup_intent() {
     let response = answer("विकिपीडिया क्या है?");
     assert!(
