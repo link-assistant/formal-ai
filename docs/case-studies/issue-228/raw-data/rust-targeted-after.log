@@ -1,0 +1,26 @@
+   Compiling formal-ai v0.101.0 (/tmp/gh-issue-solver-1779458630985)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.24s
+     Running unittests src/lib.rs (target/debug/deps/formal_ai-8bf842e0edb51525)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 217 filtered out; finished in 0.00s
+
+     Running unittests src/main.rs (target/debug/deps/formal_ai-4bc01dab012e1cf0)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/integration/mod.rs (target/debug/deps/integration-5e919a5c562eff9f)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 11 filtered out; finished in 0.00s
+
+     Running tests/unit/mod.rs (target/debug/deps/unit-27a7b8f4a83ec95e)
+
+running 1 test
+test web_requests::enumeration_research_request_routes_to_web_search_handler ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 528 filtered out; finished in 0.00s

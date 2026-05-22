@@ -1,0 +1,16 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.08s
+     Running tests/unit/mod.rs (target/debug/deps/unit-27a7b8f4a83ec95e)
+
+running 10 tests
+test docs_requirements::issue_12_vision_documents_are_present_and_traceable ... ok
+test docs_requirements::issue_115_github_log_collection_documents_are_present_and_traceable ... ok
+test docs_requirements::issue_16_followup_documents_capture_universal_seed_and_memory_migration ... ok
+test docs_requirements::issue_117_lino_i18n_catalog_documents_and_ci_rule_are_traceable ... ok
+test docs_requirements::issue_103_test_matrix_and_architecture_documents_are_present_and_traceable ... ok
+test docs_requirements::issue_63_definition_fusion_requirements_and_examples_are_traceable ... ok
+test docs_requirements::issue_195_dind_telegram_runtime_documents_are_present_and_traceable ... ok
+test docs_requirements::issue_207_natural_translation_documents_are_present_and_traceable ... ok
+test docs_requirements::issue_80_software_project_dialogue_requirements_are_traceable ... ok
+test docs_requirements::repository_text_avoids_deferred_labels_requested_by_issue_103 ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 519 filtered out; finished in 1.62s

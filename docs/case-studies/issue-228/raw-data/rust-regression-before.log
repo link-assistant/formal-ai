@@ -1,0 +1,41 @@
+   Compiling same-file v1.0.6
+   Compiling walkdir v2.5.0
+   Compiling formal-ai v0.101.0 (/tmp/gh-issue-solver-1779458630985)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.71s
+     Running unittests src/lib.rs (target/debug/deps/formal_ai-8bf842e0edb51525)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 217 filtered out; finished in 0.00s
+
+     Running unittests src/main.rs (target/debug/deps/formal_ai-4bc01dab012e1cf0)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/integration/mod.rs (target/debug/deps/integration-5e919a5c562eff9f)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 11 filtered out; finished in 0.00s
+
+     Running tests/unit/mod.rs (target/debug/deps/unit-27a7b8f4a83ec95e)
+
+running 1 test
+
+thread 'web_requests::enumeration_research_request_routes_to_web_search_handler' (1588305) panicked at tests/unit/web_requests.rs:240:5:
+assertion `left == right` failed: enumeration research requests should route to web_search, got unknown with answer I didn't understand you. I cannot answer that from local Links Notation rules yet. To inspect what I can do, send `List behavior rules`, then `Show behavior rule unknown`. To teach this dialog a response, send: When I say `your prompt`, answer `your answer`. To make it durable, export memory or use Report issue so developers can add the fact or rule to the seed.
+  left: "unknown"
+ right: "web_search"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test web_requests::enumeration_research_request_routes_to_web_search_handler ... FAILED
+
+failures:
+
+failures:
+    web_requests::enumeration_research_request_routes_to_web_search_handler
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 528 filtered out; finished in 0.01s
+
+error: test failed, to rerun pass `--test unit`

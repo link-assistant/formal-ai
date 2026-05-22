@@ -231,3 +231,32 @@ fn implicit_research_question_routes_to_web_search_handler() {
     );
     assert_ne!(response.intent, "unknown");
 }
+
+#[test]
+fn enumeration_research_request_routes_to_web_search_handler() {
+    let prompt = "list all genshin characters with off-field DMG";
+    let response = FormalAiEngine.answer(prompt);
+
+    assert_eq!(
+        response.intent, "web_search",
+        "enumeration research requests should route to web_search, got {} with answer {}",
+        response.intent, response.answer,
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link == "web_search:request:genshin characters with off field dmg"),
+        "web_search should extract the list target without the list-all prefix: {:?}",
+        response.evidence_links,
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link == "web_search:query_kind:enumeration_research_request"),
+        "web_search should record why a list-all request was routed: {:?}",
+        response.evidence_links,
+    );
+    assert_ne!(response.intent, "unknown");
+}

@@ -9,6 +9,7 @@ pub(super) enum WebSearchQueryKind {
     ExplicitPrefix,
     SemanticAction,
     ImplicitResearchQuestion,
+    EnumerationResearchRequest,
 }
 
 impl WebSearchQueryKind {
@@ -17,6 +18,7 @@ impl WebSearchQueryKind {
             Self::ExplicitPrefix => "explicit_prefix",
             Self::SemanticAction => "semantic_action",
             Self::ImplicitResearchQuestion => "implicit_research_question",
+            Self::EnumerationResearchRequest => "enumeration_research_request",
         }
     }
 }
@@ -60,6 +62,12 @@ pub(super) fn extract_web_search_request(
         return Some(WebSearchRequest {
             query,
             kind: WebSearchQueryKind::SemanticAction,
+        });
+    }
+    if let Some(query) = extract_enumeration_research_request(&normalized_words) {
+        return Some(WebSearchRequest {
+            query,
+            kind: WebSearchQueryKind::EnumerationResearchRequest,
         });
     }
     extract_implicit_research_question(&normalized_words).map(|query| WebSearchRequest {
@@ -549,6 +557,36 @@ const IMPLICIT_RESEARCH_EVALUATION_DOMAINS: &[&str] = &[
     " comparison ",
 ];
 
+const ENUMERATION_RESEARCH_PREFIXES: &[&str] = &[
+    "list all ",
+    "list every ",
+    "list the ",
+    "show all ",
+    "show me all ",
+    "show me the ",
+    "give me all ",
+    "name all ",
+    "enumerate all ",
+];
+
+const ENUMERATION_RESEARCH_CONSTRAINT_MARKERS: &[&str] = &[
+    " with ",
+    " that ",
+    " who ",
+    " whose ",
+    " where ",
+    " which ",
+    " having ",
+    " have ",
+    " has ",
+    " featuring ",
+    " capable of ",
+    " can ",
+    " for ",
+    " by ",
+    " in ",
+];
+
 fn extract_semantic_web_search_query(normalized: &str) -> Option<String> {
     let has_action = contains_any_search_marker(normalized, WEB_SEARCH_ACTION_MARKERS);
     if !has_action {
@@ -606,6 +644,14 @@ fn extract_implicit_research_question(normalized: &str) -> Option<String> {
     valid_search_query(query)
 }
 
+fn extract_enumeration_research_request(normalized: &str) -> Option<String> {
+    let query = strip_enumeration_research_prefix(normalized)?;
+    if !looks_like_enumeration_research_query(query) {
+        return None;
+    }
+    valid_search_query(query)
+}
+
 fn starts_with_any(value: &str, prefixes: &[&str]) -> bool {
     prefixes.iter().any(|prefix| value.starts_with(prefix))
 }
@@ -617,6 +663,22 @@ fn strip_implicit_research_prefix(value: &str) -> &str {
         }
     }
     value
+}
+
+fn strip_enumeration_research_prefix(value: &str) -> Option<&str> {
+    for prefix in ENUMERATION_RESEARCH_PREFIXES {
+        if let Some(stripped) = value.strip_prefix(prefix) {
+            return Some(stripped);
+        }
+    }
+    None
+}
+
+fn looks_like_enumeration_research_query(query: &str) -> bool {
+    if query.split_whitespace().count() < 3 {
+        return false;
+    }
+    contains_any_search_marker(query, ENUMERATION_RESEARCH_CONSTRAINT_MARKERS)
 }
 
 fn contains_any_search_marker(normalized: &str, markers: &[&str]) -> bool {
