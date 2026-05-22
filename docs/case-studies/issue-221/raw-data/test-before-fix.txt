@@ -1,0 +1,35 @@
+ Downloading crates ...
+  Downloaded same-file v1.0.6
+  Downloaded walkdir v2.5.0
+   Compiling same-file v1.0.6
+   Compiling walkdir v2.5.0
+   Compiling formal-ai v0.100.0 (/tmp/gh-issue-solver-1779405696562)
+    Finished `release` profile [optimized] target(s) in 42.02s
+     Running tests/unit/mod.rs (target/release/deps/unit-b4297da26910207d)
+
+running 3 tests
+test specification::translation_via_links::issue_221_common_russian_nouns_translate_to_english ... FAILED
+test specification::translation_via_links::issue_221_common_english_nouns_translate_to_russian ... FAILED
+test specification::translation_via_links::issue_221_unquoted_common_noun_works_in_all_languages ... ok
+
+failures:
+
+---- specification::translation_via_links::issue_221_common_russian_nouns_translate_to_english stdout ----
+
+thread 'specification::translation_via_links::issue_221_common_russian_nouns_translate_to_english' (45216) panicked at tests/unit/specification/translation_via_links.rs:458:9:
+expected "potato" in answer for "переведи \"картофель\" на английский", got: "[en] картофель"
+
+---- specification::translation_via_links::issue_221_common_english_nouns_translate_to_russian stdout ----
+
+thread 'specification::translation_via_links::issue_221_common_english_nouns_translate_to_russian' (45215) panicked at tests/unit/specification/translation_via_links.rs:489:9:
+expected one of ["картофель", "картошка"] in answer for "translate \"potato\" to russian", got: "[ru] potato"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    specification::translation_via_links::issue_221_common_english_nouns_translate_to_russian
+    specification::translation_via_links::issue_221_common_russian_nouns_translate_to_english
+
+test result: FAILED. 1 passed; 2 failed; 0 ignored; 0 measured; 527 filtered out; finished in 0.01s
+
+error: test failed, to rerun pass `--test unit`

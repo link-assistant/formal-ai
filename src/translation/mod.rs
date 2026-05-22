@@ -1,40 +1,52 @@
 //! Translation pipeline.
 //!
 //! Translates an arbitrary natural-language fragment from one language to
-//! another by going through three real, online resources:
+//! another by running the full
+//! `source → formalize → semantic meta language → deformalize → target`
+//! flow on top of Wikipedia, Wikidata and Wiktionary. There is no
+//! pre-extracted translation table built into the binary: every answer is
+//! the result of an actual API round-trip (live or replayed from the
+//! seeded raw-response cache).
 //!
-//! 1. **Wiktionary** — the source-edition entry hosts a translation table
-//!    that lists candidate surface forms for every target language. When
-//!    the source edition has no entry, we try the target-language edition
-//!    in reverse (Russian Wiktionary, for instance, lists English
-//!    translations under `=== Перевод ===` / `{{перев-блок}}`).
+//! 1. **Formalize** — fetch the source-edition Wiktionary page and the
+//!    Wikidata Lexeme / Q-item that backs the surface so the surface
+//!    collapses to a language-neutral [`MeaningId`].
 //!
-//! 2. **Wikidata Lexemes** — when a Lexeme exists for the source surface,
-//!    we run a SPARQL `?lemma` query that joins on `P5137` ("item for this
-//!    sense") so any target-language Lexeme sharing that sense becomes a
-//!    candidate. This also gives the [`MeaningId`] a language-neutral
-//!    Wikidata anchor.
+//! 2. **Deformalize** — render that [`MeaningId`] back into the target
+//!    language by joining on Wikidata `P5137` ("item for this sense") and
+//!    by parsing translation tables (`{{trans-top}}`, `{{перев-блок}}`,
+//!    `=== Translations ===` / `=== Перевод ===`) on either the source-
+//!    or target-edition Wiktionary page.
 //!
-//! 3. **No offline registry**. There are no hand-curated translation pairs
-//!    in this module. Tests run against committed responses from the real
-//!    APIs, captured under `data/translation-cache/`. Run with
-//!    `FORMAL_AI_LIVE_API=1` to refresh the cache against the live network.
+//! Every successful HTTP response is preserved verbatim under
+//! [`cache::DEFAULT_CACHE_DIR`] keyed by **semantic identity** of the
+//! resource (Wikidata Q-id, Wiktionary `(lang, page)`, SPARQL query hash,
+//! …) so a single fetch can feed translation, fact lookup, attribute
+//! formalization or any other formalization path. The first ~128 most
+//! frequent Wikidata entities and ~128 most frequent properties — plus
+//! the Wiktionary pages they point at — are committed to the repository
+//! under [`cache::SEED_CACHE_DIR`] so unit tests, the browser worker and
+//! a clean CI checkout can all run the full pipeline offline without
+//! hitting the network. Live fetches are gated on
+//! `FORMAL_AI_LIVE_API=1`.
 //!
 //! ## Module layout
 //!
 //! - [`http`] — `curl`-backed HTTP client; mirrors [`crate::telegram_runtime`]
 //!   so we don't pull a TLS crate into the core.
-//! - [`cache`] — file cache for raw API responses keyed by URL.
+//! - [`cache`] — semantic-identity file cache for raw API responses, with
+//!   support for replaying responses from a committed `.lino` seed bundle.
 //! - [`meaning`] — [`MeaningId`], the semantic meta-language identity.
 //! - [`wiktionary`] — Wiktionary client + wikitext parser.
-//! - [`wikidata`] — Wikidata SPARQL + Lexeme search client.
+//! - [`wikidata`] — Wikidata SPARQL + Lexeme / entity / property client.
 //! - [`formatting`] — typography mirror (case + terminal punctuation).
 //! - [`pipeline`] — orchestration (`TranslationPipeline::translate`).
 //!
 //! ## Default wiring
 //!
-//! Most callers want a process-wide cached translator that reads from the
-//! committed cache by default. Use [`default_translator`] for that.
+//! Most callers want a process-wide translator that consults the seeded
+//! raw-response cache first and falls through to live HTTP only when
+//! `FORMAL_AI_LIVE_API=1`. Use [`translate_via_default_pipeline`] for that.
 
 use std::sync::OnceLock;
 
@@ -57,10 +69,11 @@ pub use prompt::extract_unquoted_translation_surface;
 
 /// Process-wide cached HTTP client used by the default pipeline.
 ///
-/// The client reads from `data/translation-cache/` first and falls through
-/// to the live network only when `FORMAL_AI_LIVE_API=1` is set. This means
-/// production callers can rely on the committed cache; integration runs
-/// that refresh the cache opt in explicitly.
+/// The client reads from the committed seed cache and the gitignored
+/// local accelerator under `data/` first and falls through to the live
+/// network only when `FORMAL_AI_LIVE_API=1` is set. This keeps unit
+/// tests offline by default; integration runs that refresh the cache
+/// opt in explicitly.
 fn default_cached_client() -> &'static CachedHttpClient<CurlClient> {
     static CLIENT: OnceLock<CachedHttpClient<CurlClient>> = OnceLock::new();
     CLIENT.get_or_init(|| CachedHttpClient::new(cache::DEFAULT_CACHE_DIR, CurlClient::default()))

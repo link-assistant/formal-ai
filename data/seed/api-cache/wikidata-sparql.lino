@@ -1,0 +1,975 @@
+seed_metadata
+  bucket "wikidata-sparql"
+  format "Links Notation; one `response_<short_id>` record per fetched URL"
+  populated_by "examples/refresh_translation_cache.rs"
+  max_records "128"
+  max_lines "1500"
+  split_marker "wikidata-sparql-partN.lino"
+  body_format "raw response text; concatenate `body` chunks; values escape one literal quote as two consecutive quotes per Links Notation"
+response_0000_sparql_format_json_query
+  url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL115433%20ontolex%3Asense%20%3Fsource_sense%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22en%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+        ""value"" : ""potato""
+      }
+    }, {
+ "
+  body "     ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+        ""value"" : ""spud""
+      }
+    }, {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+        ""valu"
+  body "e"" : ""Irish potato""
+      }
+    }, {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+        ""value"" : ""tatie""
+      }
+    }, {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+  "
+  body "      ""type"" : ""literal"",
+        ""value"" : ""tattie""
+      }
+    } ]
+  }
+}"
+
+response_0001_sparql_format_json_query
+  url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL115433%20ontolex%3Asense%20%3Fsource_sense%20.%20wd%3AL115433%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22en%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+        ""value"" : ""potato""
+      }
+    }, {
+ "
+  body "     ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+        ""value"" : ""Irish potato""
+      }
+    }, {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+     "
+  body "   ""value"" : ""spud""
+      }
+    }, {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+        ""value"" : ""tatie""
+      }
+    }, {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+  "
+  body "      ""type"" : ""literal"",
+        ""value"" : ""tattie""
+      }
+    } ]
+  }
+}"
+
+response_0002_sparql_format_json_query
+  url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL129448%20ontolex%3Asense%20%3Fsource_sense%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22en%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+        ""value"" : ""carrot""
+      }
+    } ]
+  "
+  body "}
+}"
+
+response_0003_sparql_format_json_query
+  url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL129448%20ontolex%3Asense%20%3Fsource_sense%20.%20wd%3AL129448%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22en%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+        ""value"" : ""carrot""
+      }
+    } ]
+  "
+  body "}
+}"
+
+response_0004_sparql_format_json_query
+  url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL150880%20ontolex%3Asense%20%3Fsource_sense%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22en%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ ]
+  }
+}"
+
+response_0005_sparql_format_json_query
+  url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL150880%20ontolex%3Asense%20%3Fsource_sense%20.%20wd%3AL150880%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22en%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ ]
+  }
+}"
+
+response_0006_sparql_format_json_query
+  url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL184031%20ontolex%3Asense%20%3Fsource_sense%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22en%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ ]
+  }
+}"
+
+response_0007_sparql_format_json_query
+  url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL184031%20ontolex%3Asense%20%3Fsource_sense%20.%20wd%3AL184031%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22en%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ ]
+  }
+}"
+
+response_0008_sparql_format_json_query
+  url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL189%20ontolex%3Asense%20%3Fsource_sense%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22en%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+        ""value"" : ""water""
+      }
+    }, {
+  "
+  body "    ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+        ""value"" : ""aqua""
+      }
+    }, {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+        ""value"""
+  body " : ""ice""
+      }
+    }, {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+        ""value"" : ""drinking water""
+      }
+    }, {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+    "
+  body "    ""type"" : ""literal"",
+        ""value"" : ""flood""
+      }
+    }, {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+        ""value"" : ""tide""
+      }
+    }, {
+      ""lemma"" : {
+"
+  body "        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+        ""value"" : ""flooding""
+      }
+    }, {
+      ""lemma"" : {
+        ""xml:lang"" : ""en-gb"",
+        ""type"" : ""literal"",
+        ""value"" : ""vapo"
+  body "ur""
+      }
+    }, {
+      ""lemma"" : {
+        ""xml:lang"" : ""en-us"",
+        ""type"" : ""literal"",
+        ""value"" : ""vapor""
+      }
+    }, {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" "
+  body ": ""literal"",
+        ""value"" : ""tear""
+      }
+    } ]
+  }
+}"
+
+response_0009_sparql_format_json_query
+  url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL189%20ontolex%3Asense%20%3Fsource_sense%20.%20wd%3AL189%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22en%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+        ""value"" : ""aqua""
+      }
+    }, {
+   "
+  body "   ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+        ""value"" : ""water""
+      }
+    }, {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+        ""value"""
+  body " : ""drinking water""
+      }
+    }, {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+        ""value"" : ""flood""
+      }
+    }, {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+  "
+  body "      ""type"" : ""literal"",
+        ""value"" : ""tide""
+      }
+    }, {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+        ""value"" : ""ice""
+      }
+    }, {
+      ""lemma"" : {
+"
+  body "        ""xml:lang"" : ""en-gb"",
+        ""type"" : ""literal"",
+        ""value"" : ""vapour""
+      }
+    }, {
+      ""lemma"" : {
+        ""xml:lang"" : ""en-us"",
+        ""type"" : ""literal"",
+        ""value"" : ""vap"
+  body "or""
+      }
+    }, {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+        ""value"" : ""flooding""
+      }
+    }, {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" "
+  body ": ""literal"",
+        ""value"" : ""tear""
+      }
+    } ]
+  }
+}"
+
+response_0010_sparql_format_json_query
+  url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL318943%20ontolex%3Asense%20%3Fsource_sense%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22ru%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ {
+      ""lemma"" : {
+        ""xml:lang"" : ""ru"",
+        ""type"" : ""literal"",
+        ""value"" : ""огурец""
+      }
+    } ]
+  "
+  body "}
+}"
+
+response_0011_sparql_format_json_query
+  url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL318943%20ontolex%3Asense%20%3Fsource_sense%20.%20wd%3AL318943%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22ru%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ {
+      ""lemma"" : {
+        ""xml:lang"" : ""ru"",
+        ""type"" : ""literal"",
+        ""value"" : ""огурец""
+      }
+    } ]
+  "
+  body "}
+}"
+
+response_0012_sparql_format_json_query
+  url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL3257%20ontolex%3Asense%20%3Fsource_sense%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22hi%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ ]
+  }
+}"
+
+response_0013_sparql_format_json_query
+  url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL3257%20ontolex%3Asense%20%3Fsource_sense%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22ru%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ {
+      ""lemma"" : {
+        ""xml:lang"" : ""ru"",
+        ""type"" : ""literal"",
+        ""value"" : ""яблочный""
+      }
+    }, {"
+  body "
+      ""lemma"" : {
+        ""xml:lang"" : ""ru"",
+        ""type"" : ""literal"",
+        ""value"" : ""яблоко""
+      }
+    } ]
+  }
+}"
+
+response_0014_sparql_format_json_query
+  url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL3257%20ontolex%3Asense%20%3Fsource_sense%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22zh%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ ]
+  }
+}"
+
+response_0015_sparql_format_json_query
+  url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL3257%20ontolex%3Asense%20%3Fsource_sense%20.%20wd%3AL3257%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22hi%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ ]
+  }
+}"
+
+response_0016_sparql_format_json_query
+  url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL3302%20ontolex%3Asense%20%3Fsource_sense%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22ru%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ {
+      ""lemma"" : {
+        ""xml:lang"" : ""ru"",
+        ""type"" : ""literal"",
+        ""value"" : ""вода""
+      }
+    }, {
+   "
+  body "   ""lemma"" : {
+        ""xml:lang"" : ""ru"",
+        ""type"" : ""literal"",
+        ""value"" : ""пар""
+      }
+    }, {
+      ""lemma"" : {
+        ""xml:lang"" : ""ru"",
+        ""type"" : ""literal"",
+        ""value"" "
+  body ": ""водяра""
+      }
+    } ]
+  }
+}"
+
+response_0017_sparql_format_json_query
+  url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL3302%20ontolex%3Asense%20%3Fsource_sense%20.%20wd%3AL3302%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22ru%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ {
+      ""lemma"" : {
+        ""xml:lang"" : ""ru"",
+        ""type"" : ""literal"",
+        ""value"" : ""вода""
+      }
+    }, {
+   "
+  body "   ""lemma"" : {
+        ""xml:lang"" : ""ru"",
+        ""type"" : ""literal"",
+        ""value"" : ""пар""
+      }
+    }, {
+      ""lemma"" : {
+        ""xml:lang"" : ""ru"",
+        ""type"" : ""literal"",
+        ""value"" "
+  body ": ""водяра""
+      }
+    } ]
+  }
+}"
+
+response_0018_sparql_format_json_query
+  url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL3525%20ontolex%3Asense%20%3Fsource_sense%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22en%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+        ""value"" : ""cucumber""
+      }
+    } ]
+"
+  body "  }
+}"
+
+response_0019_sparql_format_json_query
+  url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL3525%20ontolex%3Asense%20%3Fsource_sense%20.%20wd%3AL3525%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22en%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+        ""value"" : ""cucumber""
+      }
+    } ]
+"
+  body "  }
+}"
+
+response_0020_sparql_format_json_query
+  url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL3526%20ontolex%3Asense%20%3Fsource_sense%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22en%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+        ""value"" : ""tomato""
+      }
+    } ]
+  "
+  body "}
+}"
+
+response_0021_sparql_format_json_query
+  url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL37724%20ontolex%3Asense%20%3Fsource_sense%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22en%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+        ""value"" : ""apple""
+      }
+    }, {
+  "
+  body "    ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+        ""value"" : ""orb""
+      }
+    }, {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+        ""value"""
+  body " : ""pommel""
+      }
+    } ]
+  }
+}"
+
+response_0022_sparql_format_json_query
+  url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL3782%20ontolex%3Asense%20%3Fsource_sense%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22ru%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ {
+      ""lemma"" : {
+        ""xml:lang"" : ""ru"",
+        ""type"" : ""literal"",
+        ""value"" : ""морковный""
+      }
+    }, "
+  body "{
+      ""lemma"" : {
+        ""xml:lang"" : ""ru"",
+        ""type"" : ""literal"",
+        ""value"" : ""морковка""
+      }
+    }, {
+      ""lemma"" : {
+        ""xml:lang"" : ""ru"",
+        ""type"" : ""literal"",
+      "
+  body "  ""value"" : ""морковочка""
+      }
+    }, {
+      ""lemma"" : {
+        ""xml:lang"" : ""ru"",
+        ""type"" : ""literal"",
+        ""value"" : ""морковь""
+      }
+    } ]
+  }
+}"
+
+response_0023_sparql_format_json_query
+  url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL3782%20ontolex%3Asense%20%3Fsource_sense%20.%20wd%3AL3782%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22ru%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ {
+      ""lemma"" : {
+        ""xml:lang"" : ""ru"",
+        ""type"" : ""literal"",
+        ""value"" : ""морковка""
+      }
+    }, {"
+  body "
+      ""lemma"" : {
+        ""xml:lang"" : ""ru"",
+        ""type"" : ""literal"",
+        ""value"" : ""морковочка""
+      }
+    }, {
+      ""lemma"" : {
+        ""xml:lang"" : ""ru"",
+        ""type"" : ""literal"",
+     "
+  body "   ""value"" : ""морковь""
+      }
+    } ]
+  }
+}"
+
+response_0024_sparql_format_json_query
+  url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL3784%20ontolex%3Asense%20%3Fsource_sense%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22ru%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ {
+      ""lemma"" : {
+        ""xml:lang"" : ""ru"",
+        ""type"" : ""literal"",
+        ""value"" : ""картофель""
+      }
+    }, "
+  body "{
+      ""lemma"" : {
+        ""xml:lang"" : ""ru"",
+        ""type"" : ""literal"",
+        ""value"" : ""картоха""
+      }
+    }, {
+      ""lemma"" : {
+        ""xml:lang"" : ""ru"",
+        ""type"" : ""literal"",
+       "
+  body " ""value"" : ""картошка""
+      }
+    } ]
+  }
+}"
+
+response_0025_sparql_format_json_query
+  url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL3784%20ontolex%3Asense%20%3Fsource_sense%20.%20wd%3AL3784%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22ru%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ {
+      ""lemma"" : {
+        ""xml:lang"" : ""ru"",
+        ""type"" : ""literal"",
+        ""value"" : ""картофель""
+      }
+    }, "
+  body "{
+      ""lemma"" : {
+        ""xml:lang"" : ""ru"",
+        ""type"" : ""literal"",
+        ""value"" : ""картоха""
+      }
+    }, {
+      ""lemma"" : {
+        ""xml:lang"" : ""ru"",
+        ""type"" : ""literal"",
+       "
+  body " ""value"" : ""картошка""
+      }
+    } ]
+  }
+}"
+
+response_0026_sparql_format_json_query
+  url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL3865%20ontolex%3Asense%20%3Fsource_sense%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22ru%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ {
+      ""lemma"" : {
+        ""xml:lang"" : ""ru"",
+        ""type"" : ""literal"",
+        ""value"" : ""папка""
+      }
+    }, {
+  "
+  body "    ""lemma"" : {
+        ""xml:lang"" : ""ru"",
+        ""type"" : ""literal"",
+        ""value"" : ""хлеб""
+      }
+    } ]
+  }
+}"
+
+response_0027_sparql_format_json_query
+  url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL3865%20ontolex%3Asense%20%3Fsource_sense%20.%20wd%3AL3865%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22ru%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ {
+      ""lemma"" : {
+        ""xml:lang"" : ""ru"",
+        ""type"" : ""literal"",
+        ""value"" : ""папка""
+      }
+    }, {
+  "
+  body "    ""lemma"" : {
+        ""xml:lang"" : ""ru"",
+        ""type"" : ""literal"",
+        ""value"" : ""хлеб""
+      }
+    } ]
+  }
+}"
+
+response_0028_sparql_format_json_query
+  url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL579678%20ontolex%3Asense%20%3Fsource_sense%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22ru%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ ]
+  }
+}"
+
+response_0029_sparql_format_json_query
+  url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL579678%20ontolex%3Asense%20%3Fsource_sense%20.%20wd%3AL579678%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22ru%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ ]
+  }
+}"
+
+response_0030_sparql_format_json_query
+  url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL583362%20ontolex%3Asense%20%3Fsource_sense%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22en%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+        ""value"" : ""uh-huh""
+      }
+    }, {
+ "
+  body "     ""lemma"" : {
+        ""xml:lang"" : ""en-x-q59342809"",
+        ""type"" : ""literal"",
+        ""value"" : ""uh huh""
+      }
+    }, {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"","
+  body "
+        ""value"" : ""yes""
+      }
+    }, {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+        ""value"" : ""ja""
+      }
+    } ]
+  }
+}"
+
+response_0031_sparql_format_json_query
+  url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL583362%20ontolex%3Asense%20%3Fsource_sense%20.%20wd%3AL583362%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22en%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+        ""value"" : ""yes""
+      }
+    } ]
+  }
+}"
+
+response_0032_sparql_format_json_query
+  url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL7993%20ontolex%3Asense%20%3Fsource_sense%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22ru%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ {
+      ""lemma"" : {
+        ""xml:lang"" : ""ru"",
+        ""type"" : ""literal"",
+        ""value"" : ""помидор""
+      }
+    } ]
+ "
+  body " }
+}"
+
+response_0033_sparql_format_json_query
+  url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL7993%20ontolex%3Asense%20%3Fsource_sense%20.%20wd%3AL7993%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22ru%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ {
+      ""lemma"" : {
+        ""xml:lang"" : ""ru"",
+        ""type"" : ""literal"",
+        ""value"" : ""помидор""
+      }
+    } ]
+ "
+  body " }
+}"
+
+response_0034_sparql_format_json_query
+  url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL8885%20ontolex%3Asense%20%3Fsource_sense%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22hi%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ ]
+  }
+}"
+
+response_0035_sparql_format_json_query
+  url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL8885%20ontolex%3Asense%20%3Fsource_sense%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22ru%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ {
+      ""lemma"" : {
+        ""xml:lang"" : ""ru"",
+        ""type"" : ""literal"",
+        ""value"" : ""привет""
+      }
+    } ]
+  "
+  body "}
+}"
+
+response_0036_sparql_format_json_query
+  url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL8885%20ontolex%3Asense%20%3Fsource_sense%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22zh%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ ]
+  }
+}"
+
+response_0037_sparql_format_json_query
+  url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL8885%20ontolex%3Asense%20%3Fsource_sense%20.%20wd%3AL8885%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22hi%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ ]
+  }
+}"
+
+response_0038_sparql_format_json_query
+  url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL8885%20ontolex%3Asense%20%3Fsource_sense%20.%20wd%3AL8885%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22ru%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ {
+      ""lemma"" : {
+        ""xml:lang"" : ""ru"",
+        ""type"" : ""literal"",
+        ""value"" : ""привет""
+      }
+    } ]
+  "
+  body "}
+}"
+
+response_0039_sparql_format_json_query
+  url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL8885%20ontolex%3Asense%20%3Fsource_sense%20.%20wd%3AL8885%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22zh%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ ]
+  }
+}"
+
+response_0040_sparql_format_json_query
+  url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL991459%20ontolex%3Asense%20%3Fsource_sense%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22en%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+        ""value"" : ""bread""
+      }
+    } ]
+  }"
+  body "
+}"
+
+response_0041_sparql_format_json_query
+  url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL991459%20ontolex%3Asense%20%3Fsource_sense%20.%20wd%3AL991459%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22en%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+        ""value"" : ""bread""
+      }
+    } ]
+  }"
+  body "
+}"

@@ -433,6 +433,126 @@ fn issue_218_unquoted_russian_translation() {
     );
 }
 
+#[test]
+fn issue_221_common_russian_nouns_translate_to_english() {
+    // Issue #221: `Переведи "помидор" на английский.` produced the
+    // placeholder `[en] помидор` because the offline cache only covered
+    // `яблоко`. The fix seeds a broader common-noun set so the pipeline
+    // resolves any common noun (tomato, cucumber, ...) to its target
+    // surface offline.
+    let cases: &[(&str, &str)] = &[
+        ("Переведи \"помидор\" на английский.", "tomato"),
+        ("Переведи \"огурец\" на английский.", "cucumber"),
+        ("переведи \"картофель\" на английский", "potato"),
+        ("переведи \"морковь\" на английский", "carrot"),
+        ("переведи \"хлеб\" на английский", "bread"),
+        ("переведи \"вода\" на английский", "water"),
+    ];
+    for (prompt, expected) in cases {
+        let response = answer(prompt);
+        assert_eq!(
+            response.intent, "translate_ru_to_en",
+            "common Russian noun should route to translation for {prompt:?}, got {}: {}",
+            response.intent, response.answer,
+        );
+        assert!(
+            response.answer.to_lowercase().contains(expected),
+            "expected {expected:?} in answer for {prompt:?}, got: {}",
+            response.answer,
+        );
+        assert!(
+            !response.answer.contains("[en]"),
+            "common Russian noun must not fall back to [en] placeholder for {prompt:?}, got: {}",
+            response.answer,
+        );
+    }
+}
+
+#[test]
+fn issue_221_common_english_nouns_translate_to_russian() {
+    let cases: &[(&str, &[&str])] = &[
+        ("Translate \"tomato\" to Russian.", &["помидор", "томат"]),
+        ("translate \"cucumber\" to russian", &["огурец"]),
+        (
+            "translate \"potato\" to russian",
+            &["картофель", "картошка"],
+        ),
+        ("translate \"carrot\" to russian", &["морковь"]),
+        ("translate \"bread\" to russian", &["хлеб"]),
+        ("translate \"water\" to russian", &["вода"]),
+    ];
+    for (prompt, expected_any) in cases {
+        let response = answer(prompt);
+        assert_eq!(
+            response.intent, "translate_en_to_ru",
+            "common English noun should route to translation for {prompt:?}, got {}: {}",
+            response.intent, response.answer,
+        );
+        let lower = response.answer.to_lowercase();
+        assert!(
+            expected_any.iter().any(|expected| lower.contains(expected)),
+            "expected one of {expected_any:?} in answer for {prompt:?}, got: {}",
+            response.answer,
+        );
+        assert!(
+            !response.answer.contains("[ru]"),
+            "common English noun must not fall back to [ru] placeholder for {prompt:?}, got: {}",
+            response.answer,
+        );
+    }
+}
+
+#[test]
+fn issue_221_unquoted_common_noun_works_in_all_languages() {
+    // Unquoted forms must also work for the broader common-noun set,
+    // not just the quoted variants. Mirrors issue #216 / #218 for the
+    // longer tail of vocabulary.
+    let cases: &[(&str, &str, &str, &str)] = &[
+        (
+            "translate tomato to russian",
+            "translate_en_to_ru",
+            "помидор",
+            "[ru]",
+        ),
+        (
+            "translate cucumber to russian",
+            "translate_en_to_ru",
+            "огурец",
+            "[ru]",
+        ),
+        (
+            "переведи помидор на английский",
+            "translate_ru_to_en",
+            "tomato",
+            "[en]",
+        ),
+        (
+            "переведи огурец на английский",
+            "translate_ru_to_en",
+            "cucumber",
+            "[en]",
+        ),
+    ];
+    for (prompt, expected_intent, expected_surface, placeholder) in cases {
+        let response = answer(prompt);
+        assert_eq!(
+            response.intent, *expected_intent,
+            "unquoted common-noun prompt should route to translation for {prompt:?}, got {}: {}",
+            response.intent, response.answer,
+        );
+        assert!(
+            response.answer.to_lowercase().contains(expected_surface),
+            "expected {expected_surface:?} in answer for {prompt:?}, got: {}",
+            response.answer,
+        );
+        assert!(
+            !response.answer.contains(placeholder),
+            "unquoted common-noun translation must not fall back to {placeholder} for {prompt:?}, got: {}",
+            response.answer,
+        );
+    }
+}
+
 // ---------------------------------------------------------------------------
 // full-scope expectations.
 // ---------------------------------------------------------------------------

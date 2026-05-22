@@ -3483,10 +3483,12 @@ function detectTranslationTargetLanguage(normalized) {
 
 // Offline meaning registry for the browser worker.
 //
-// The Rust pipeline (`src/translation/pipeline.rs`) now goes through
-// Wiktionary + Wikidata to resolve any pair of surfaces via cached HTTP
-// responses. The browser worker cannot reach those APIs directly (CORS),
-// so it keeps this small offline registry as a fallback for the demo set.
+// The Rust pipeline (`src/translation/pipeline.rs`) resolves any pair
+// of surfaces through Wiktionary + Wikidata using cached HTTP
+// responses. The worker mirrors that with a live `liveWiktionaryTranslate`
+// fallback below (MediaWiki action API is CORS-friendly via
+// `origin=*`), but keeps this small in-memory registry of greetings and
+// stock phrases so the demo stays snappy when the network is slow.
 // `primary` is the canonical form deformalization renders; `aliases` is a
 // list of normalized alternative surfaces used during formalization.
 const TRANSLATION_MEANING_REGISTRY = [
@@ -3893,19 +3895,144 @@ function inferTranslationSource(prompt) {
   return "en";
 }
 
-function translateSurface(surface, source, target) {
+// Live Wiktionary fallback (issue #221). When the offline meaning
+// registry above does not cover `surface`, fetch the Wiktionary page
+// for `source` and pull the first `{{tt+|<target>|...}}` (or `{{t+}}` /
+// `{{t}}`) entry. Mirrors the Rust pipeline's Stage 1a in
+// `src/translation/pipeline.rs`: if the main page delegates noun
+// translations via `{{see translation subpage|...}}`, fetch the
+// subpage and search it first. Keeps the worker mobile-friendly: no
+// offline dictionary bundled, just a single CORS-safe HTTP call.
+async function fetchWiktionaryWikitext(pageTitle, language) {
+  if (typeof fetch !== "function" || !pageTitle) return null;
+  const host = WIKTIONARY_SEARCH_HOSTS[language] || WIKTIONARY_SEARCH_HOSTS.en;
+  const url = `${host}?action=parse&page=${encodeURIComponent(
+    pageTitle,
+  )}&prop=wikitext&format=json&origin=*`;
+  try {
+    const response = await fetch(url, {
+      headers: {
+        accept: "application/json",
+        "api-user-agent":
+          "formal-ai-demo (https://github.com/link-assistant/formal-ai)",
+      },
+    });
+    if (!response || !response.ok) return null;
+    const data = await response.json();
+    return (data && data.parse && data.parse.wikitext && data.parse.wikitext["*"]) || null;
+  } catch (_error) {
+    return null;
+  }
+}
+
+function stripCombiningMarks(value) {
+  // Russian Wiktionary entries are stored with combining stress marks
+  // (U+0301) so readers can see where the accent falls. The surface
+  // form must drop them so the result matches the lemma (помидо́р →
+  // помидор) and downstream substring assertions still hit.
+  return typeof value === "string" && value.normalize
+    ? value.normalize("NFD").replace(/[̀-ͯ]/g, "").normalize("NFC")
+    : value;
+}
+
+function extractWiktionaryTranslation(wikitext, targetLang) {
+  if (!wikitext || !targetLang) return null;
+  // English-edition templates: {{t|<lang>|...}}, {{t+|<lang>|...}},
+  // {{tt|<lang>|...}}, {{tt+|<lang>|...}}.
+  const enPattern = new RegExp(
+    `\\{\\{tt?\\+?\\|${targetLang}\\|([^|}\\n]+)`,
+    "i",
+  );
+  const enMatch = enPattern.exec(wikitext);
+  if (enMatch) {
+    const surface = stripCombiningMarks(String(enMatch[1] || "").trim());
+    if (surface) return surface;
+  }
+  // Russian-edition translation blocks: `{{перев-блок|...|<lang>=[[surface]]\n|...}}`.
+  // The language code may appear at the very start (no leading newline)
+  // or after `\n|`; the surface can be inside `[[...]]`, optionally
+  // followed by transliteration in parentheses we drop.
+  const ruPattern = new RegExp(
+    `[|\\n]${targetLang}\\s*=\\s*(?:\\[\\[([^\\]|]+)(?:\\|[^\\]]+)?\\]\\]|([^\\n|}]+))`,
+    "i",
+  );
+  const ruMatch = ruPattern.exec(wikitext);
+  if (ruMatch) {
+    const raw = (ruMatch[1] || ruMatch[2] || "").trim();
+    const surface = stripCombiningMarks(raw.replace(/\s*\([^)]*\)\s*$/, "").trim());
+    if (surface) return surface;
+  }
+  return null;
+}
+
+async function resolveWiktionaryLemma(surface, language) {
+  // Inflected forms (e.g. Russian plural `помидоры`) are not always stored
+  // as separate pages on the source-language Wiktionary. OpenSearch returns
+  // the closest matching titles; the first hit is the dictionary lemma
+  // (`помидор`) we want to look up next.
+  if (typeof fetch !== "function" || !surface) return null;
+  const host = WIKTIONARY_SEARCH_HOSTS[language] || WIKTIONARY_SEARCH_HOSTS.en;
+  const url = `${host}?action=opensearch&search=${encodeURIComponent(
+    surface,
+  )}&limit=1&format=json&origin=*`;
+  try {
+    const response = await fetch(url, {
+      headers: {
+        accept: "application/json",
+        "api-user-agent":
+          "formal-ai-demo (https://github.com/link-assistant/formal-ai)",
+      },
+    });
+    if (!response || !response.ok) return null;
+    const data = await response.json();
+    const titles = Array.isArray(data) && Array.isArray(data[1]) ? data[1] : [];
+    const lemma = titles[0];
+    if (typeof lemma !== "string" || !lemma || lemma === surface) return null;
+    return lemma;
+  } catch (_error) {
+    return null;
+  }
+}
+
+async function liveWiktionaryTranslate(surface, source, target) {
+  // Run the direct page fetch and the OpenSearch lemma resolution in
+  // parallel. For inflected forms (e.g. `помидоры`) the direct fetch
+  // 404s, and chaining the lemma lookup sequentially after it added a
+  // third sequential round-trip that pushed CI past the 5s expect cap.
+  const [direct, lemma] = await Promise.all([
+    fetchWiktionaryWikitext(surface, source),
+    resolveWiktionaryLemma(surface, source),
+  ]);
+  let main = direct;
+  if (!main && lemma) {
+    main = await fetchWiktionaryWikitext(lemma, source);
+  }
+  if (!main) return null;
+  let wikitext = main;
+  if (/\{\{see translation subpage\|/i.test(main)) {
+    const subpage = await fetchWiktionaryWikitext(`${surface}/translations`, source);
+    if (subpage) wikitext = `${subpage}\n${main}`;
+  }
+  return extractWiktionaryTranslation(wikitext, target);
+}
+
+async function translateSurface(surface, source, target) {
   if (source === target) return String(surface || "");
   const token = formalizeSurface(surface, source);
   if (token) {
     const primary = deformalizeMeaning(token, target);
     if (primary) return primary;
   }
+  if (surface) {
+    const live = await liveWiktionaryTranslate(surface, source, target);
+    if (live) return live;
+  }
   const compositional = translateCompositionalSurface(surface, source, target);
   if (compositional) return compositional;
   return `[${target}] ${surface}`;
 }
 
-function tryTranslation(prompt, normalized) {
+async function tryTranslation(prompt, normalized) {
   const targetHint = detectTranslationTargetLanguage(normalized);
   const isTranslationRequest =
     normalized.startsWith("translate") ||
@@ -3928,7 +4055,7 @@ function tryTranslation(prompt, normalized) {
   const source = detectTranslationSourceLanguage(normalized) || inferTranslationSource(prompt);
   const target = targetHint || "en";
   const meaningId = stableBehaviorRuleId("meaning", normalizeMeaningText(surfaceMeaning));
-  const rawTarget = translateSurface(surface, source, target);
+  const rawTarget = await translateSurface(surface, source, target);
   const translatedSurface = matchSourceFormatting(rawTarget, surface);
   const content = surface ? `"${translatedSurface}"` : translatedSurface;
   return {
@@ -10922,7 +11049,7 @@ async function solve(prompt, history, prefs, userContext = {}) {
     }, formalizationContext);
   }
 
-  const translation = tryTranslation(prompt, normalized);
+  const translation = await tryTranslation(prompt, normalized);
   if (translation) {
     events.push(`handler:${translation.intent}`);
     steps.push({ step: "dispatch_handler", detail: "tryTranslation" });

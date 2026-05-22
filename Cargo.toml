@@ -15,9 +15,11 @@ include = [
     "/Cargo.toml",
     "/LICENSE",
     "/README.md",
+    "/build.rs",
     "/data/**",
     "/src/**",
 ]
+build = "build.rs"
 
 [lib]
 name = "formal_ai"
