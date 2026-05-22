@@ -32,6 +32,8 @@ Downloaded and generated artifacts live under `raw-data/`:
   and comment snapshots.
 - `ci-runs-branch-before.json`: recent branch CI run list collected at
   the start of the investigation.
+- `ci-runs-branch-after-language-matrix.json`: branch CI run list
+  refreshed before the language-matrix update.
 - `github-code-search-fetchWikipediaSummary.json`,
   `recent-merged-prs-wikipedia-disambiguation.json`: related GitHub
   search/PR research.
@@ -45,9 +47,15 @@ Downloaded and generated artifacts live under `raw-data/`:
   `Animalia` answer was specific to the browser worker's online lookup
   path.
 - `npm-ci-e2e.log`: e2e dependency install log.
+- `npm-ci-e2e-language-matrix.log`: e2e dependency install log for the
+  follow-up language-matrix verification.
 - `e2e-issue232-before.log`: failing browser regression before the fix.
 - `e2e-issue232-after.log`: passing focused browser regression after the
   fix.
+- `e2e-issue232-language-matrix.log`: passing English/Russian/Hindi/Chinese
+  browser regression after the CI guard update.
+- `e2e-tesla-after-language-matrix.log`: passing Tesla fallback regression
+  after the CI guard update.
 - `e2e-wikipedia-regression-after.log`: passing focused regression that
   checks both Issue #232 and the earlier Issue #70 Tesla disambiguation
   fallback.
@@ -61,6 +69,12 @@ Downloaded and generated artifacts live under `raw-data/`:
 - `i18n-catalog-check.log`, `language-parity-check.log`,
   `intent-coverage-check.log`: e2e catalog and multilingual coverage
   guards.
+- Additional `*-language-matrix.log` files capture the follow-up local
+  verification after the CI language-matrix rule was added.
+- `intent-coverage-before-language-matrix.log`,
+  `intent-coverage-after-language-matrix.log`: proof that the old
+  multilingual guard did not cover the Issue #232 language matrix, followed
+  by the updated guard passing with that matrix present.
 - `online-research.md`: external API/source notes used for the analysis.
 
 ## Timeline
@@ -74,6 +88,8 @@ Downloaded and generated artifacts live under `raw-data/`:
 | 2026-05-22 | Live Wikidata `wbsearchentities` response showed `Animalia` (`Q729`) ranked first because `существо` is an alias. |
 | 2026-05-22 | A failing Playwright regression reproduced the browser worker choosing Wikidata over the Russian Wikipedia disambiguation page. |
 | 2026-05-22 | The worker was updated to accept direct definition-style Wikipedia disambiguation pages and render their entries before trying Wikidata/Wiktionary fallbacks. |
+| 2026-05-22 20:50 | PR feedback requested CI/CD rules requiring language coverage for English, Russian, Hindi, and Chinese rather than only the originally reported Russian prompt. |
+| 2026-05-22 | The Issue #232 Playwright regression was expanded into a supported-language matrix, and `check:intent-coverage` was extended to require that matrix in CI. |
 
 ## Requirements And Status
 
@@ -87,6 +103,7 @@ Downloaded and generated artifacts live under `raw-data/`:
 | R6 | Search online for additional facts and data. | Implemented in `raw-data/online-research.md` and the saved live API payloads. |
 | R7 | Reconstruct timeline, requirements, root causes, and solution options. | Implemented in this case study. |
 | R8 | Add debug output if the root cause cannot be found. | Not needed; the failure was reproduced and isolated. |
+| R9 | Require tests for English, Russian, Hindi, and Chinese in CI/CD for this class of language-sensitive regression. | Implemented in `tests/e2e/scripts/check-multilingual-intent-coverage.mjs`; the guard now fails if the Issue #232 definition-style disambiguation matrix loses any supported language. |
 
 ## Root Cause
 
@@ -130,8 +147,11 @@ incorrect answer.
   context search and generic disambiguation search behavior stay intact.
 - Rendered accepted disambiguation pages as sourced Wikipedia lookup
   answers with the collected entries.
-- Added a Playwright regression that mocks the exact Russian Wikipedia
-  page and the competing Wikidata `Animalia` alias.
+- Added a Playwright regression matrix that mocks exact English, Russian,
+  Hindi, and Chinese Wikipedia definition-style disambiguation pages and
+  their competing Wikidata `Animalia` aliases.
+- Extended the CI multilingual intent coverage guard so this regression
+  remains covered for every supported language.
 
 ## Before / After
 
@@ -147,13 +167,22 @@ incorrect answer.
   failed because the browser worker answered with Wikidata `Q729`.
 - After fix:
   `npx playwright test --config=playwright.local.config.js multilingual.spec.js --grep "Issue #232"`
-  passed.
+  passed with English, Russian, Hindi, and Chinese cases.
+- After CI guard update:
+  `npm run --prefix tests/e2e check:intent-coverage`
+  passed and now asserts the Issue #232 language matrix.
+- After CI guard update:
+  `npx playwright test --config=playwright.local.config.js multilingual.spec.js --grep "what is tesla"`
+  passed, preserving the earlier generic disambiguation fallback behavior.
 - After fix:
   `npx playwright test --config=playwright.local.config.js multilingual.spec.js --grep "what is tesla|Issue #232"`
   passed.
-- After fix:
+- After initial fix:
   `npx playwright test --config=playwright.local.config.js multilingual.spec.js`
   passed with 96 tests.
+- After CI guard update:
+  `npx playwright test --config=playwright.local.config.js multilingual.spec.js`
+  passed with 99 tests.
 - After fix:
   `cargo fmt --check`,
   `cargo clippy --all-targets --all-features`,

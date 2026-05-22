@@ -518,6 +518,70 @@ assertPromptPatternCoverageGroups('wikipedia_article_question');
   }
 }
 
+const definitionStyleDisambiguationCases = {
+  en: [
+    {
+      prompt: 'What is creature?',
+      expectedTitle: 'Creature',
+      expectedText: 'Creature — a living being or organism.',
+      expectedHost: 'en.wikipedia.org',
+      rejectedText: 'Animalia',
+    },
+  ],
+  ru: [
+    {
+      prompt: 'Что такое существо?',
+      expectedTitle: 'Существо',
+      expectedText: 'Существо — живой организм, живая особь, животное, человек.',
+      expectedHost: 'ru.wikipedia.org',
+      rejectedText: 'Animalia',
+    },
+  ],
+  hi: [
+    {
+      prompt: 'प्राणी क्या है?',
+      expectedTitle: 'प्राणी',
+      expectedText: 'प्राणी — जीवित जीव या व्यक्ति।',
+      expectedHost: 'hi.wikipedia.org',
+      rejectedText: 'Animalia',
+    },
+  ],
+  zh: [
+    {
+      prompt: '生物是什么?',
+      expectedTitle: '生物',
+      expectedText: '生物 — 有生命的个体或有机体。',
+      expectedHost: 'zh.wikipedia.org',
+      rejectedText: 'Animalia',
+    },
+  ],
+};
+
+assertMatrixMatchesSupportedLanguages(
+  'definitionStyleDisambiguationCases',
+  definitionStyleDisambiguationCases,
+);
+assertBalancedLanguageCaseCounts(
+  'definitionStyleDisambiguationCases',
+  definitionStyleDisambiguationCases,
+);
+
+{
+  const browserMultilingualTests = readRepoFile('tests/e2e/tests/multilingual.spec.js');
+  for (const [language, entries] of Object.entries(definitionStyleDisambiguationCases)) {
+    for (const entry of entries) {
+      assert(
+        browserMultilingualTests.includes(entry.prompt) &&
+          browserMultilingualTests.includes(entry.expectedTitle) &&
+          browserMultilingualTests.includes(entry.expectedText) &&
+          browserMultilingualTests.includes(entry.expectedHost) &&
+          browserMultilingualTests.includes(entry.rejectedText),
+        `tests/e2e/tests/multilingual.spec.js must cover ${language} definition-style disambiguation prompt ${JSON.stringify(entry.prompt)} with expected Wikipedia title ${JSON.stringify(entry.expectedTitle)} before Wikidata fallback`,
+      );
+    }
+  }
+}
+
 const uiLanguageCommandCases = {
   en: [{ prompt: 'set ui language to english', expectedValue: 'en' }],
   ru: [{ prompt: 'переключи язык на русский', expectedValue: 'ru' }],

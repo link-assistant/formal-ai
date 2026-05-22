@@ -1,0 +1,11 @@
+[2m[WebServer] [22m(node:2273977) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 4 tests using 1 worker
+
+  ✓  1 [chromium] › tests/multilingual.spec.js:1262:5 › Wikipedia REST fallback › Issue #232: definition-style disambiguation page outranks Wikidata alias fallback (en) (767ms)
+  ✓  2 [chromium] › tests/multilingual.spec.js:1262:5 › Wikipedia REST fallback › Issue #232: definition-style disambiguation page outranks Wikidata alias fallback (ru) (488ms)
+  ✓  3 [chromium] › tests/multilingual.spec.js:1262:5 › Wikipedia REST fallback › Issue #232: definition-style disambiguation page outranks Wikidata alias fallback (hi) (442ms)
+  ✓  4 [chromium] › tests/multilingual.spec.js:1262:5 › Wikipedia REST fallback › Issue #232: definition-style disambiguation page outranks Wikidata alias fallback (zh) (443ms)
+
+  4 passed (4.6s)
