@@ -1,0 +1,156 @@
+
+> formal-ai-e2e@1.0.0 test:local
+> playwright test --config=playwright.local.config.js -g Issue #226
+
+[2m[WebServer] [22m(node:1266815) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 2 workers
+
+  ✘  1 [chromium] › tests/demo.spec.js:570:3 › formal-ai demo UI › Issue #226: quoted Russian prose is not a UI language command (5.8s)
+  ✘  2 [chromium] › tests/multilingual.spec.js:1141:3 › Wikipedia REST fallback › Issue #226: Russian Wikipedia article-existence question finds the closest grammar article (5.8s)
+  ✘  3 [chromium] › tests/demo.spec.js:570:3 › formal-ai demo UI › Issue #226: quoted Russian prose is not a UI language command (retry #1) (6.0s)
+  ✘  4 [chromium] › tests/multilingual.spec.js:1141:3 › Wikipedia REST fallback › Issue #226: Russian Wikipedia article-existence question finds the closest grammar article (retry #1) (6.1s)
+
+
+  1) [chromium] › tests/demo.spec.js:570:3 › formal-ai demo UI › Issue #226: quoted Russian prose is not a UI language command 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).not.[22mtoContainText[2m([22m[32mexpected[39m[2m)[22m failed
+
+    Locator: locator('[data-testid="chat-message"]').last()
+    Expected substring: not [32m"Done. UI language is now ru."[39m
+    Received string: [31m"FAformal-ai11:52 AM[7mDone. UI language is now ru.[27m[39m
+    [31mСообщить о проблеме"[39m
+    Timeout: 5000ms
+
+    Call log:
+    [2m  - Expect "not toContainText" with timeout 5000ms[22m
+    [2m  - waiting for locator('[data-testid="chat-message"]').last()[22m
+    [2m    14 × locator resolved to <article class="message assistant" data-testid="chat-message">…</article>[22m
+    [2m       - unexpected value "FAformal-ai11:52 AMDone. UI language is now ru.[22m
+    [2mСообщить о проблеме"[22m
+
+
+      581 |     );
+      582 |
+    > 583 |     await expect(quotedAnswer).not.toContainText('Done. UI language is now ru.');
+          |                                    ^
+      584 |     await expect(page.locator('[data-testid="setting-ui-language"]')).toHaveValue('auto');
+      585 |
+      586 |     const explicitCommand = await sendPrompt(page, 'Switch UI language to Russian');
+        at /tmp/gh-issue-solver-1779450113799/tests/e2e/tests/demo.spec.js:583:36
+
+    Error Context: test-results/demo-formal-ai-demo-UI-Iss-64830-s-not-a-UI-language-command-chromium/error-context.md
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).not.[22mtoContainText[2m([22m[32mexpected[39m[2m)[22m failed
+
+    Locator: locator('[data-testid="chat-message"]').last()
+    Expected substring: not [32m"Done. UI language is now ru."[39m
+    Received string: [31m"FAformal-ai11:52 AM[7mDone. UI language is now ru.[27m[39m
+    [31mСообщить о проблеме"[39m
+    Timeout: 5000ms
+
+    Call log:
+    [2m  - Expect "not toContainText" with timeout 5000ms[22m
+    [2m  - waiting for locator('[data-testid="chat-message"]').last()[22m
+    [2m    14 × locator resolved to <article class="message assistant" data-testid="chat-message">…</article>[22m
+    [2m       - unexpected value "FAformal-ai11:52 AMDone. UI language is now ru.[22m
+    [2mСообщить о проблеме"[22m
+
+
+      581 |     );
+      582 |
+    > 583 |     await expect(quotedAnswer).not.toContainText('Done. UI language is now ru.');
+          |                                    ^
+      584 |     await expect(page.locator('[data-testid="setting-ui-language"]')).toHaveValue('auto');
+      585 |
+      586 |     const explicitCommand = await sendPrompt(page, 'Switch UI language to Russian');
+        at /tmp/gh-issue-solver-1779450113799/tests/e2e/tests/demo.spec.js:583:36
+
+    Error Context: test-results/demo-formal-ai-demo-UI-Iss-64830-s-not-a-UI-language-command-chromium-retry1/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/demo-formal-ai-demo-UI-Iss-64830-s-not-a-UI-language-command-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/demo-formal-ai-demo-UI-Iss-64830-s-not-a-UI-language-command-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [chromium] › tests/multilingual.spec.js:1141:3 › Wikipedia REST fallback › Issue #226: Russian Wikipedia article-existence question finds the closest grammar article 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoContainText[2m([22m[32mexpected[39m[2m)[22m failed
+
+    Locator: locator('[data-testid="chat-message"]').last()
+    Timeout: 5000ms
+    [32m- Expected substring  - 1[39m
+    [31m+ Received string     + 2[39m
+
+    [32m- не нашёл отдельной статьи[39m
+    [31m+ FAformal-ai11:52 AMЯ ещё не научился отвечать на это. Я пока не могу ответить на это по локальным правилам Links Notation. Чтобы посмотреть текущие правила, отправьте List behavior rules, затем Show behavior rule unknown. Чтобы научить этот диалог ответу, отправьте: When I say ваш запрос, answer ваш ответ. Для постоянного факта или правила экспортируйте память или нажмите Report issue, чтобы разработчики добавили встроенную возможность.[39m
+    [31m+ Report missing rule[39m
+
+    Call log:
+    [2m  - Expect "toContainText" with timeout 5000ms[22m
+    [2m  - waiting for locator('[data-testid="chat-message"]').last()[22m
+    [2m    14 × locator resolved to <article class="message assistant" data-testid="chat-message">…</article>[22m
+    [2m       - unexpected value "FAformal-ai11:52 AMЯ ещё не научился отвечать на это. Я пока не могу ответить на это по локальным правилам Links Notation. Чтобы посмотреть текущие правила, отправьте List behavior rules, затем Show behavior rule unknown. Чтобы научить этот диалог ответу, отправьте: When I say ваш запрос, answer ваш ответ. Для постоянного факта или правила экспортируйте память или нажмите Report issue, чтобы разработчики добавили встроенную возможность.[22m
+    [2mReport missing rule"[22m
+
+
+      1189 |     );
+      1190 |     await expect(last).toHaveClass(/assistant/);
+    > 1191 |     await expect(last).toContainText('не нашёл отдельной статьи');
+           |                        ^
+      1192 |     await expect(last).toContainText('Согласование (грамматика)');
+      1193 |     await expect(last).toContainText('ru.wikipedia.org');
+      1194 |     await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
+        at /tmp/gh-issue-solver-1779450113799/tests/e2e/tests/multilingual.spec.js:1191:24
+
+    Error Context: test-results/multilingual-Wikipedia-RES-52208-the-closest-grammar-article-chromium/error-context.md
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoContainText[2m([22m[32mexpected[39m[2m)[22m failed
+
+    Locator: locator('[data-testid="chat-message"]').last()
+    Timeout: 5000ms
+    [32m- Expected substring  - 1[39m
+    [31m+ Received string     + 2[39m
+
+    [32m- не нашёл отдельной статьи[39m
+    [31m+ FAformal-ai11:52 AMЯ ещё не научился отвечать на это. Я пока не могу ответить на это по локальным правилам Links Notation. Чтобы посмотреть текущие правила, отправьте List behavior rules, затем Show behavior rule unknown. Чтобы научить этот диалог ответу, отправьте: When I say ваш запрос, answer ваш ответ. Для постоянного факта или правила экспортируйте память или нажмите Report issue, чтобы разработчики добавили встроенную возможность.[39m
+    [31m+ Report missing rule[39m
+
+    Call log:
+    [2m  - Expect "toContainText" with timeout 5000ms[22m
+    [2m  - waiting for locator('[data-testid="chat-message"]').last()[22m
+    [2m    14 × locator resolved to <article class="message assistant" data-testid="chat-message">…</article>[22m
+    [2m       - unexpected value "FAformal-ai11:52 AMЯ ещё не научился отвечать на это. Я пока не могу ответить на это по локальным правилам Links Notation. Чтобы посмотреть текущие правила, отправьте List behavior rules, затем Show behavior rule unknown. Чтобы научить этот диалог ответу, отправьте: When I say ваш запрос, answer ваш ответ. Для постоянного факта или правила экспортируйте память или нажмите Report issue, чтобы разработчики добавили встроенную возможность.[22m
+    [2mReport missing rule"[22m
+
+
+      1189 |     );
+      1190 |     await expect(last).toHaveClass(/assistant/);
+    > 1191 |     await expect(last).toContainText('не нашёл отдельной статьи');
+           |                        ^
+      1192 |     await expect(last).toContainText('Согласование (грамматика)');
+      1193 |     await expect(last).toContainText('ru.wikipedia.org');
+      1194 |     await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
+        at /tmp/gh-issue-solver-1779450113799/tests/e2e/tests/multilingual.spec.js:1191:24
+
+    Error Context: test-results/multilingual-Wikipedia-RES-52208-the-closest-grammar-article-chromium-retry1/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/multilingual-Wikipedia-RES-52208-the-closest-grammar-article-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/multilingual-Wikipedia-RES-52208-the-closest-grammar-article-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    [chromium] › tests/demo.spec.js:570:3 › formal-ai demo UI › Issue #226: quoted Russian prose is not a UI language command 
+    [chromium] › tests/multilingual.spec.js:1141:3 › Wikipedia REST fallback › Issue #226: Russian Wikipedia article-existence question finds the closest grammar article 

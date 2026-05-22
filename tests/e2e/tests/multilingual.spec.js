@@ -1138,6 +1138,64 @@ test.describe('Wikipedia REST fallback', () => {
     await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
   });
 
+  test('Issue #226: Russian Wikipedia article-existence question finds the closest grammar article', async ({ page }) => {
+    const requestedSlugs = [];
+    const searchQueries = [];
+
+    await page.route('**/api/rest_v1/page/summary/**', async (route) => {
+      const slug = decodeURIComponent(route.request().url().split('/').pop() || '');
+      requestedSlugs.push(slug);
+      if (slug === 'Согласование_(грамматика)') {
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify({
+            title: 'Согласование (грамматика)',
+            type: 'standard',
+            extract:
+              'Согласование — одна из трёх основных разновидностей подчинительной синтаксической связи.',
+            content_urls: {
+              desktop: {
+                page: 'https://ru.wikipedia.org/wiki/Согласование_(грамматика)',
+              },
+            },
+          }),
+        });
+        return;
+      }
+      await route.fulfill({
+        status: 404,
+        contentType: 'application/json',
+        body: JSON.stringify({ httpCode: 404, httpReason: 'Not Found' }),
+      });
+    });
+
+    await page.route('**/rest.php/v1/search/page**', async (route) => {
+      const url = new URL(route.request().url());
+      const query = url.searchParams.get('q') || '';
+      searchQueries.push(query);
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          pages: [{ key: 'Согласование_(грамматика)', title: 'Согласование (грамматика)' }],
+        }),
+      });
+    });
+
+    const last = await sendPrompt(
+      page,
+      'согласованность в предложении - есть такая статья в википедии?',
+    );
+    await expect(last).toHaveClass(/assistant/);
+    await expect(last).toContainText('не нашёл отдельной статьи');
+    await expect(last).toContainText('Согласование (грамматика)');
+    await expect(last).toContainText('ru.wikipedia.org');
+    await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
+    expect(requestedSlugs).toContain('Согласование_(грамматика)');
+    expect(searchQueries.some((query) => query.includes('граммат'))).toBe(true);
+  });
+
   // Issue #163: a short word query like "что такое что" should not accept an
   // unrelated full-text Wikipedia hit ("Знак ударения"). If direct Wikipedia
   // lookup misses and the search title is not a plausible term match, the

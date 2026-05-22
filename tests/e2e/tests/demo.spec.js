@@ -567,6 +567,28 @@ test.describe('formal-ai demo UI', () => {
     await expect(page.locator('[data-testid="setting-theme"]')).toHaveValue('dark');
   });
 
+  test('Issue #226: quoted Russian prose is not a UI language command', async ({ page }) => {
+    await switchToManualMode(page);
+
+    const quotedAnswer = await sendPrompt(
+      page,
+      [
+        'Google Gemini ответил мне так -',
+        'В русскоязычной Википедии нет отдельной статьи с названием «Согласованность в предложении»,',
+        'однако есть статья «Согласование (грамматика)» о грамматике русского языка.',
+        'Можешь научиться делать так же?',
+      ].join(' '),
+    );
+
+    await expect(quotedAnswer).not.toContainText('Done. UI language is now ru.');
+    await expect(page.locator('[data-testid="setting-ui-language"]')).toHaveValue('auto');
+
+    const explicitCommand = await sendPrompt(page, 'Switch UI language to Russian');
+    await expect(explicitCommand).toContainText('UI language is now ru');
+    await expect(page.locator('[data-testid="setting-ui-language"]')).toHaveValue('ru');
+    await expect(page.locator('html')).toHaveAttribute('lang', 'ru');
+  });
+
   test('composer does not expose an unused preview control', async ({ page }) => {
     await switchToManualMode(page);
 
