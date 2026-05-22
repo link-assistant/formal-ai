@@ -1,0 +1,20 @@
+Command:
+
+```text
+cargo test issue_230_russian_compositional_translation_handles_search_phrase -- --nocapture
+```
+
+Observed failure after adding the regression and before implementing the fix:
+
+```text
+running 1 test
+
+thread 'specification::translation_via_links::issue_230_russian_compositional_translation_handles_search_phrase' panicked at tests/unit/specification/translation_via_links.rs:
+expected the reported phrase to translate compositionally, got: "[En] Найти синонимы или примеры согласования"
+test specification::translation_via_links::issue_230_russian_compositional_translation_handles_search_phrase ... FAILED
+
+failures:
+    specification::translation_via_links::issue_230_russian_compositional_translation_handles_search_phrase
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored
+```

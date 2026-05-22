@@ -515,19 +515,13 @@ fn compositional_candidates(
     }
 
     let words: Vec<&str> = page_title.split_whitespace().collect();
-    if !(2..=4).contains(&words.len()) {
+    if !(2..=8).contains(&words.len()) {
         return Vec::new();
     }
 
-    let mut translated = Vec::with_capacity(words.len());
-    for word in words {
-        let Some(surface) = russian_word_to_english(word) else {
-            return Vec::new();
-        };
-        translated.push(surface);
-    }
-
-    let surface = capitalize_ascii_first(&translated.join(" "));
+    let Some(surface) = translate_russian_word_sequence(&words) else {
+        return Vec::new();
+    };
     provenance.push(format!("compositional:ru->en:{page_title}"));
     vec![WiktionaryCandidate {
         surface,
@@ -551,12 +545,53 @@ fn russian_phrase_to_english(page_title: &str) -> Option<&'static str> {
 
 fn russian_word_to_english(word: &str) -> Option<&'static str> {
     match word {
+        "найди" | "найдите" | "найти" => Some("find"),
+        "синоним" | "синонимы" | "синонимов" => Some("synonyms"),
+        "или" => Some("or"),
+        "пример" | "примеры" | "примеров" => Some("examples"),
+        "согласование" | "согласования" | "согласованию" | "согласованием" | "согласовании" => {
+            Some("agreement")
+        }
         "доброе" | "добрый" | "добрая" | "добрые" | "доброго" | "добрую" | "добрым" | "хорошее"
         | "хороший" | "хорошая" | "хорошие" | "хорошего" | "хорошую" | "хорошим" => {
             Some("good")
         }
         "яблоко" | "яблока" | "яблоку" | "яблоком" | "яблоке" | "яблоки" | "яблок" | "яблокам"
         | "яблоками" | "яблоках" => Some("apple"),
+        _ => None,
+    }
+}
+
+fn translate_russian_word_sequence(words: &[&str]) -> Option<String> {
+    let mut translated: Vec<&str> = Vec::with_capacity(words.len() + 2);
+    let mut index = 0;
+    while index < words.len() {
+        let word = words[index];
+        if let Some(next) = words.get(index + 1) {
+            if russian_genitive_relation_head(word) && russian_genitive_noun(next).is_some() {
+                translated.push(russian_word_to_english(word)?);
+                translated.push("of");
+                translated.push(russian_genitive_noun(next)?);
+                index += 2;
+                continue;
+            }
+        }
+        translated.push(russian_word_to_english(word)?);
+        index += 1;
+    }
+    Some(capitalize_ascii_first(&translated.join(" ")))
+}
+
+fn russian_genitive_relation_head(word: &str) -> bool {
+    matches!(
+        word,
+        "пример" | "примеры" | "примеров" | "синоним" | "синонимы" | "синонимов"
+    )
+}
+
+fn russian_genitive_noun(word: &str) -> Option<&'static str> {
+    match word {
+        "согласования" => Some("agreement"),
         _ => None,
     }
 }

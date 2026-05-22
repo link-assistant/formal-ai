@@ -1,0 +1,161 @@
+{
+  "repo": "link-assistant/formal-ai",
+  "generated_by": "formal-ai github-logs collect",
+  "generated_at_unix_seconds": 1779483810,
+  "captures": [
+    {
+      "kind": "repo",
+      "file": "repo.json",
+      "command": [
+        "gh",
+        "repo",
+        "view",
+        "link-assistant/formal-ai",
+        "--json",
+        "name,description,owner,url,defaultBranchRef,createdAt,pushedAt,isPrivate,licenseInfo"
+      ],
+      "bytes": 403
+    },
+    {
+      "kind": "recent_issues",
+      "file": "issues-recent.json",
+      "command": [
+        "gh",
+        "issue",
+        "list",
+        "--repo",
+        "link-assistant/formal-ai",
+        "--state",
+        "all",
+        "--limit",
+        "10",
+        "--json",
+        "number,title,state,labels,createdAt,updatedAt,url,author"
+      ],
+      "bytes": 4339
+    },
+    {
+      "kind": "recent_pulls",
+      "file": "pulls-recent.json",
+      "command": [
+        "gh",
+        "pr",
+        "list",
+        "--repo",
+        "link-assistant/formal-ai",
+        "--state",
+        "all",
+        "--limit",
+        "10",
+        "--json",
+        "number,title,state,createdAt,updatedAt,url,author,headRefName,baseRefName,isDraft"
+      ],
+      "bytes": 4041
+    },
+    {
+      "kind": "recent_runs",
+      "file": "actions-runs-recent.json",
+      "command": [
+        "gh",
+        "run",
+        "list",
+        "--repo",
+        "link-assistant/formal-ai",
+        "--limit",
+        "5",
+        "--branch",
+        "issue-230-a9436b51254d",
+        "--json",
+        "databaseId,workflowName,status,conclusion,createdAt,updatedAt,headSha,headBranch,event,url"
+      ],
+      "bytes": 1458
+    },
+    {
+      "kind": "issue",
+      "file": "issue-230.json",
+      "command": [
+        "gh",
+        "issue",
+        "view",
+        "230",
+        "--repo",
+        "link-assistant/formal-ai",
+        "--json",
+        "number,title,body,author,state,labels,comments,createdAt,updatedAt,url"
+      ],
+      "bytes": 3227
+    },
+    {
+      "kind": "issue_comments",
+      "file": "issue-230-comments.json",
+      "command": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/issues/230/comments",
+        "--paginate"
+      ],
+      "bytes": 2
+    },
+    {
+      "kind": "pull",
+      "file": "pr-231.json",
+      "command": [
+        "gh",
+        "pr",
+        "view",
+        "231",
+        "--repo",
+        "link-assistant/formal-ai",
+        "--json",
+        "number,title,body,author,state,isDraft,headRefName,baseRefName,commits,comments,reviews,reviewDecision,mergeStateStatus,createdAt,updatedAt,url"
+      ],
+      "bytes": 12822
+    },
+    {
+      "kind": "pull_conversation_comments",
+      "file": "pr-231-conversation-comments.json",
+      "command": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/issues/231/comments",
+        "--paginate"
+      ],
+      "bytes": 21754
+    },
+    {
+      "kind": "pull_review_comments",
+      "file": "pr-231-review-comments.json",
+      "command": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/pulls/231/comments",
+        "--paginate"
+      ],
+      "bytes": 2
+    },
+    {
+      "kind": "pull_reviews",
+      "file": "pr-231-reviews.json",
+      "command": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/pulls/231/reviews",
+        "--paginate"
+      ],
+      "bytes": 2
+    },
+    {
+      "kind": "pull_diff",
+      "file": "pr-231.diff",
+      "command": [
+        "gh",
+        "pr",
+        "diff",
+        "231",
+        "--repo",
+        "link-assistant/formal-ai"
+      ],
+      "bytes": 236359
+    }
+  ]
+}

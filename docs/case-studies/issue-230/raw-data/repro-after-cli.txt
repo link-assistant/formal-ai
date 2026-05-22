@@ -1,0 +1,6 @@
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.13s
+     Running `target/debug/formal-ai chat --prompt 'Переведи "Найти синонимы или примеры согласования" на ангилйский'`
+"Find synonyms or examples of agreement"

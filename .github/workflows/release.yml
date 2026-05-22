@@ -207,6 +207,11 @@ jobs:
           GITHUB_BASE_REF: ${{ github.base_ref }}
         run: npm run --prefix tests/e2e check:language-parity
 
+      - name: Check language test coverage
+        env:
+          GITHUB_BASE_REF: ${{ github.base_ref }}
+        run: npm run --prefix tests/e2e check:language-test-coverage
+
       - name: Check multilingual intent coverage
         run: npm run --prefix tests/e2e check:intent-coverage
 

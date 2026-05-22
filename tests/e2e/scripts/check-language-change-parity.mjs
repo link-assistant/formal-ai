@@ -1,9 +1,9 @@
-// CI guard for PRs that update one supported language but forget Hindi or Chinese.
+// CI guard for PRs that update one supported language but forget the rest.
 //
 // Existing catalog checks verify key parity in the final tree. This diff-aware
-// check catches stale translations when a PR changes wording for English,
-// Russian, or another supported language without changing both hi and zh in
-// the same language resource.
+// check catches stale translations when a PR changes wording for one supported
+// language without changing every other supported language in the same
+// language resource.
 
 import fs from 'node:fs';
 import path from 'node:path';
@@ -12,8 +12,6 @@ import { fileURLToPath } from 'node:url';
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(scriptDir, '../../..');
-const requiredCompanionLocales = ['hi', 'zh'];
-
 const watchedFiles = [
   'src/web/i18n-catalog.lino',
   'data/seed/prompt-patterns.lino',
@@ -221,9 +219,7 @@ function changedLanguages(oldSignatures, newSignatures, supportedLanguages) {
 }
 
 const supportedLanguages = parseSupportedLanguages();
-const companionLocales = requiredCompanionLocales.filter((language) =>
-  supportedLanguages.includes(language),
-);
+const requiredLocales = [...supportedLanguages];
 const baseRef = resolveBaseRef();
 const errors = [];
 
@@ -241,12 +237,12 @@ for (const relativePath of watchedFiles) {
 
   if (changed.length === 0) continue;
 
-  const missingCompanions = companionLocales.filter(
+  const missingLocales = requiredLocales.filter(
     (language) => !changed.includes(language),
   );
-  if (missingCompanions.length > 0) {
+  if (missingLocales.length > 0) {
     errors.push(
-      `${relativePath} changed ${changed.join(', ')} language content without updating ${missingCompanions.join(', ')}`,
+      `${relativePath} changed ${changed.join(', ')} language content without updating ${missingLocales.join(', ')}`,
     );
   }
 }
@@ -257,11 +253,11 @@ if (errors.length > 0) {
     console.error(`- ${error}`);
   }
   console.error(
-    `When a supported-language resource changes, update both ${companionLocales.join(' and ')} in the same PR.`,
+    `When a supported-language resource changes, update every supported language in the same PR: ${requiredLocales.join(', ')}.`,
   );
   process.exit(1);
 }
 
 console.log(
-  `Language change parity OK against ${baseRef} for companion locales ${companionLocales.join(', ')}.`,
+  `Language change parity OK against ${baseRef} for required locales ${requiredLocales.join(', ')}.`,
 );

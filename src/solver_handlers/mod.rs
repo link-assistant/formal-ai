@@ -664,36 +664,40 @@ pub fn try_translation(
     let pipeline_result =
         crate::solver_helpers::translate_surface_detailed(&surface, source_slug, target_slug);
 
-    let (raw_target, meaning_id, translation_gap) = if let Ok(translation) = pipeline_result {
-        let raw = translation
-            .primary_surface()
-            .map_or_else(|| format!("[{target_slug}] {surface}"), str::to_owned);
-        let gap = translation.candidates.is_empty();
-        (raw, translation.meaning.slug(), gap)
+    let (target_surface, meaning_id, translation_gap) = if let Ok(translation) = pipeline_result {
+        let target_surface = translation.primary_surface().map(str::to_owned);
+        let gap = target_surface.is_none();
+        (target_surface, translation.meaning.slug(), gap)
     } else {
         // Fallback: hash the surface fragment so the trace still has a
         // stable id. The pipeline error itself is not propagated to the
-        // user — the placeholder string already signals that translation
-        // could not be performed.
+        // user; the response below reports the gap without manufacturing
+        // a fake target-language surface.
         let surface_meaning = if surface.is_empty() {
-            prompt.to_owned()
+            prompt
         } else {
-            surface.clone()
+            surface.as_str()
         };
-        let id = stable_id("meaning", &normalize_meaning(&surface_meaning));
-        (format!("[{target_slug}] {surface}"), id, true)
+        let id = stable_id("meaning", &normalize_meaning(surface_meaning));
+        (None, id, true)
     };
     log.append("meaning", meaning_id);
     if translation_gap && !surface.is_empty() {
         log.append("translation_gap", surface.clone());
     }
 
-    let translated_surface = crate::translation::match_source_formatting(&raw_target, &surface);
-    let body = if surface.is_empty() {
-        translated_surface
-    } else {
-        format!("\"{translated_surface}\"")
-    };
+    let body = target_surface.map_or_else(
+        || render_translation_gap(&surface, source_slug, target_slug),
+        |raw_target| {
+            let translated_surface =
+                crate::translation::match_source_formatting(&raw_target, &surface);
+            if surface.is_empty() {
+                translated_surface
+            } else {
+                format!("\"{translated_surface}\"")
+            }
+        },
+    );
     let intent = format!("translate_{source_slug}_to_{target_slug}");
     Some(finalize_simple(
         prompt,
@@ -703,6 +707,20 @@ pub fn try_translation(
         &body,
         1.0,
     ))
+}
+
+fn render_translation_gap(surface: &str, source_slug: &str, target_slug: &str) -> String {
+    let surface = surface.trim();
+    if surface.is_empty() {
+        return format!(
+            "I could not identify a source phrase to translate from {source_slug} to \
+             {target_slug}."
+        );
+    }
+    format!(
+        "I could not translate \"{surface}\" from {source_slug} to {target_slug} with the \
+         available formalization data. I recorded this as a translation gap for follow-up."
+    )
 }
 
 pub fn try_write_script(

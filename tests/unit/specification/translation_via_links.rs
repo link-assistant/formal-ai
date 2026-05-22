@@ -160,6 +160,118 @@ fn issue_210_russian_translation_prompts_keep_translation_intent() {
 }
 
 #[test]
+fn issue_230_russian_compositional_translation_handles_search_phrase() {
+    let response = answer("Переведи \"Найти синонимы или примеры согласования\" на ангилйский");
+    assert_eq!(
+        response.intent, "translate_ru_to_en",
+        "reported prompt should remain a Russian to English translation, got {}: {}",
+        response.intent, response.answer,
+    );
+    assert!(
+        response
+            .answer
+            .contains("Find synonyms or examples of agreement"),
+        "expected the reported phrase to translate compositionally, got: {}",
+        response.answer,
+    );
+    assert!(
+        !response.answer.contains("[en]") && !response.answer.contains("[En]"),
+        "reported phrase must not fall back to an English placeholder, got: {}",
+        response.answer,
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link == "language_from:ru"),
+        "translation should record Russian source language, got {:?}",
+        response.evidence_links,
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link == "language_to:en"),
+        "translation should record English target language, got {:?}",
+        response.evidence_links,
+    );
+}
+
+#[test]
+fn translation_gaps_are_reported_without_language_placeholders() {
+    let cases: &[(&str, &str, &str, &str, &[&str])] = &[
+        (
+            "en",
+            "Переведи \"неведомослово\" на английский",
+            "translate_ru_to_en",
+            "translation_gap:неведомослово",
+            &["[en]", "[En]"],
+        ),
+        (
+            "ru",
+            "Translate \"zzqxqv\" to Russian",
+            "translate_en_to_ru",
+            "translation_gap:zzqxqv",
+            &["[ru]", "[Ru]"],
+        ),
+        (
+            "hi",
+            "Translate \"zzqxqv\" to Hindi",
+            "translate_en_to_hi",
+            "translation_gap:zzqxqv",
+            &["[hi]", "[Hi]"],
+        ),
+        (
+            "zh",
+            "Translate \"zzqxqv\" to Chinese",
+            "translate_en_to_zh",
+            "translation_gap:zzqxqv",
+            &["[zh]", "[Zh]"],
+        ),
+    ];
+
+    for (language, prompt, expected_intent, expected_gap, forbidden_placeholders) in cases {
+        let response = answer(prompt);
+        assert_eq!(
+            response.intent, *expected_intent,
+            "translation gap should stay on the translation handler for {prompt:?}, got {}: {}",
+            response.intent, response.answer,
+        );
+        for placeholder in *forbidden_placeholders {
+            assert!(
+                !response.answer.contains(placeholder),
+                "translation gap must not render placeholder {placeholder} for {prompt:?}, got: {}",
+                response.answer,
+            );
+        }
+        assert!(
+            response
+                .answer
+                .to_lowercase()
+                .contains("could not translate"),
+            "translation gap should be explicit to the user for {prompt:?}, got: {}",
+            response.answer,
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == expected_gap),
+            "translation gap must be traceable as {expected_gap}, got {:?}",
+            response.evidence_links,
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == &format!("language_to:{language}")),
+            "translation gap should record target language {language} for {prompt:?}, got {:?}",
+            response.evidence_links,
+        );
+    }
+}
+
+#[test]
 fn translation_meaning_registry_covers_extended_phrases() {
     // R215: the formalize → meaning → deformalize pipeline must cover more
     // than the single hardcoded greeting_how_are_you id.
