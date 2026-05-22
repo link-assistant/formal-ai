@@ -48,6 +48,13 @@ impl<'a, T: HttpClient + ?Sized> Wikidata<'a, T> {
     /// `P5137` value is the same Q-item. The query is robust because it
     /// does not depend on P5972 ("translation") which is sparsely
     /// populated.
+    ///
+    /// The result is filtered to lexemes whose `wikibase:lexicalCategory`
+    /// matches the source lexeme. Wikidata sometimes links a noun and a
+    /// verb to the same Q-item (e.g. `water` noun and `поливать` verb
+    /// both pivot through Q283), and we want to translate noun→noun and
+    /// verb→verb. Cross-category translations are still discoverable by
+    /// the caller through Wiktionary's `#translations` blocks.
     pub fn lexeme_translations(
         &self,
         source_lexeme_id: &str,
@@ -56,9 +63,11 @@ impl<'a, T: HttpClient + ?Sized> Wikidata<'a, T> {
         let query = format!(
             "SELECT DISTINCT ?lemma WHERE {{ \
                wd:{source_lexeme_id} ontolex:sense ?source_sense . \
+               wd:{source_lexeme_id} wikibase:lexicalCategory ?category . \
                ?source_sense wdt:P5137 ?meaning . \
                ?lexeme ontolex:sense ?sense . \
                ?sense wdt:P5137 ?meaning . \
+               ?lexeme wikibase:lexicalCategory ?category . \
                ?lexeme dct:language ?language . \
                ?language wdt:P218 \"{target_lang_iso}\" . \
                ?lexeme wikibase:lemma ?lemma . \

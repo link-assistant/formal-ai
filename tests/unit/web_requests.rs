@@ -204,3 +204,30 @@ fn information_search_variants_route_to_web_search_handler() {
         );
     }
 }
+
+#[test]
+fn implicit_research_question_routes_to_web_search_handler() {
+    let prompt = "What is the most popular dataset for translation quality validation?";
+    let response = FormalAiEngine.answer(prompt);
+
+    assert_eq!(
+        response.intent, "web_search",
+        "implicit research questions should route to web_search, got {} with answer {}",
+        response.intent, response.answer,
+    );
+    assert!(
+        response.evidence_links.iter().any(|link| link
+            == "web_search:request:most popular dataset for translation quality validation"),
+        "web_search should extract the research query without the question prefix: {:?}",
+        response.evidence_links,
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link == "web_search:query_kind:implicit_research_question"),
+        "web_search should record why a question without an explicit search verb was routed: {:?}",
+        response.evidence_links,
+    );
+    assert_ne!(response.intent, "unknown");
+}

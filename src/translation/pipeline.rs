@@ -32,6 +32,25 @@ use super::meaning::MeaningId;
 use super::wikidata::Wikidata;
 use super::wiktionary::{Wiktionary, WiktionaryCandidate};
 
+/// `true` when `FORMAL_AI_TRANSLATION_DEBUG=1` is set in the environment.
+///
+/// Reading the env var on every call would be wasteful, but tests rely on
+/// per-process toggling, so we re-check each call here (cheap stdlib lookup).
+fn translation_debug_enabled() -> bool {
+    std::env::var("FORMAL_AI_TRANSLATION_DEBUG")
+        .ok()
+        .is_some_and(|value| !value.is_empty() && value != "0")
+}
+
+/// Emit a structured debug line to stderr when
+/// `FORMAL_AI_TRANSLATION_DEBUG=1`. Used to trace each pipeline stage
+/// when investigating issues like #221 (common-noun translation gaps).
+fn translation_debug(stage: &str, message: &str) {
+    if translation_debug_enabled() {
+        eprintln!("[formal-ai translation] {stage}: {message}");
+    }
+}
+
 /// Result of a translation request.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Translation {
@@ -78,7 +97,12 @@ impl<'a, T: HttpClient + ?Sized> TranslationPipeline<'a, T> {
         source_lang: &str,
         target_lang: &str,
     ) -> Result<Translation, HttpError> {
+        translation_debug(
+            "translate",
+            &format!("start surface={surface:?} {source_lang}->{target_lang}"),
+        );
         if source_lang == target_lang {
+            translation_debug("translate", "identity (source==target)");
             return Ok(Translation {
                 source_surface: surface.to_owned(),
                 source_lang: source_lang.to_owned(),
@@ -94,6 +118,7 @@ impl<'a, T: HttpClient + ?Sized> TranslationPipeline<'a, T> {
 
         let mut provenance: Vec<String> = Vec::new();
         let page_title = normalize_page_title(surface);
+        translation_debug("translate", &format!("page_title={page_title:?}"));
 
         // Stage 1: formalize — fetch the source-edition Wiktionary page.
         // This single fetch usually carries translations for every target
@@ -107,6 +132,7 @@ impl<'a, T: HttpClient + ?Sized> TranslationPipeline<'a, T> {
                 provenance.push(format!(
                     "wiktionary:{source_lang}:{page_title}#translations->{target_lang}"
                 ));
+                translation_debug("stage1", &format!("source-edition blocks={}", found.len()));
                 if !found.is_empty() {
                     blocks = found;
                 }
@@ -115,20 +141,35 @@ impl<'a, T: HttpClient + ?Sized> TranslationPipeline<'a, T> {
                 provenance.push(format!(
                     "wiktionary:{source_lang}:{page_title}#translations->error({error})",
                 ));
+                translation_debug("stage1", &format!("source-edition error: {error}"));
             }
         }
 
-        // Stage 1a: many high-traffic pages keep translations on a
-        // `/translations` subpage (`{{see translation subpage|...}}`).
-        // Try that subpage when the main page yielded nothing.
-        if blocks.is_empty() {
+        // Stage 1a: many high-traffic pages delegate part-of-speech
+        // translations to a `/translations` subpage via
+        // `{{see translation subpage|...}}`. The main page may still
+        // host translations for *other* parts of speech, so we ALWAYS
+        // also fetch the subpage when that template appears — not only
+        // when the main page came up empty. (Issue #221: en→ru "water"
+        // was returning verb translations because the noun translations
+        // live on `water/translations`.)
+        let main_wikitext = source_wiktionary.wikitext(&page_title).ok();
+        let main_delegates_subpage = main_wikitext
+            .as_deref()
+            .is_some_and(|wt| wt.contains("{{see translation subpage|"));
+        if blocks.is_empty() || main_delegates_subpage {
             let subpage = format!("{page_title}/translations");
             match source_wiktionary.translation_blocks(&subpage, target_lang) {
                 Ok(found) if !found.is_empty() => {
                     provenance.push(format!(
                         "wiktionary:{source_lang}:{subpage}#translations->{target_lang}"
                     ));
-                    blocks = found;
+                    // Prepend subpage blocks so they outrank the
+                    // main-page (often other-PoS) blocks during
+                    // sense-block selection.
+                    let mut merged = found;
+                    merged.extend(std::mem::take(&mut blocks));
+                    blocks = merged;
                 }
                 Ok(_) => {}
                 Err(error) => {
@@ -241,6 +282,19 @@ impl<'a, T: HttpClient + ?Sized> TranslationPipeline<'a, T> {
             );
         }
 
+        translation_debug(
+            "translate",
+            &format!(
+                "done candidates={} primary={:?} meaning={:?}",
+                candidates.len(),
+                candidates
+                    .iter()
+                    .find(|c| c.qualifier.is_none())
+                    .or_else(|| candidates.first())
+                    .map(|c| c.surface.as_str()),
+                meaning,
+            ),
+        );
         Ok(Translation {
             source_surface: surface.to_owned(),
             source_lang: source_lang.to_owned(),
@@ -444,6 +498,22 @@ fn compositional_candidates(
         }];
     }
 
+    // The HTTP variant fallback already tried `phrasal_variants` against
+    // Wiktionary; reuse the same elision rules for the compositional
+    // table so politeness-marked phrases like `как у тебя дела` collapse
+    // to the canonical `как дела` entry.
+    for variant in phrasal_variants(page_title, source_lang) {
+        if let Some(surface) = russian_phrase_to_english(&variant) {
+            provenance.push(format!(
+                "compositional:ru->en:{page_title}=>variant:{variant}"
+            ));
+            return vec![WiktionaryCandidate {
+                surface: surface.to_owned(),
+                qualifier: None,
+            }];
+        }
+    }
+
     let words: Vec<&str> = page_title.split_whitespace().collect();
     if !(2..=4).contains(&words.len()) {
         return Vec::new();
@@ -471,6 +541,10 @@ fn russian_phrase_to_english(page_title: &str) -> Option<&'static str> {
             Some("Who are you?")
         }
         "что это" | "что это такое" => Some("What is this?"),
+        // Russian small-talk variants → "how are you". `phrasal_variants`
+        // strips the dative-of-possession infix (`у тебя`, `у вас`, …)
+        // so callers may arrive at the bare `как дела` form.
+        "как дела" => Some("how are you"),
         _ => None,
     }
 }
@@ -629,17 +703,20 @@ mod tests {
     fn translate_uses_source_edition_translation_table() {
         // English Wiktionary returns a JSON envelope around wikitext;
         // the wikitext lists the Russian translation under `{{t+|ru|...}}`.
-        let url = "https://en.wiktionary.org/w/api.php?action=parse&page=hello&prop=wikitext&formatversion=2&format=json&redirects=1";
-        let wikitext = r#"{"parse":{"title":"hello","wikitext":"* Russian: {{t+|ru|привет}}\n"}}"#;
+        // Use a placeholder lemma (`blargh`) that is *not* in the offline
+        // dictionary so the pipeline reaches the HTTP stage and we can
+        // verify the wikitext parser end-to-end.
+        let url = "https://en.wiktionary.org/w/api.php?action=parse&page=blargh&prop=wikitext&formatversion=2&format=json&redirects=1";
+        let wikitext = r#"{"parse":{"title":"blargh","wikitext":"* Russian: {{t+|ru|бларг}}\n"}}"#;
         let http = StubHttp::new(&[(url, wikitext)]);
         let pipeline = TranslationPipeline::new(&http);
-        let translation = pipeline.translate("hello", "en", "ru").unwrap();
-        assert_eq!(translation.primary_surface(), Some("привет"));
+        let translation = pipeline.translate("blargh", "en", "ru").unwrap();
+        assert_eq!(translation.primary_surface(), Some("бларг"));
         assert!(
             translation
                 .provenance
                 .iter()
-                .any(|p| p.starts_with("wiktionary:en:hello#translations->ru")),
+                .any(|p| p.starts_with("wiktionary:en:blargh#translations->ru")),
             "got provenance: {:?}",
             translation.provenance,
         );
@@ -680,11 +757,13 @@ mod tests {
 
     #[test]
     fn translate_prefers_unqualified_candidate() {
-        let url = "https://en.wiktionary.org/w/api.php?action=parse&page=hello&prop=wikitext&formatversion=2&format=json&redirects=1";
+        // Use a placeholder lemma not present in the offline dictionary so
+        // the pipeline reaches the wikitext-parsing stage.
+        let url = "https://en.wiktionary.org/w/api.php?action=parse&page=blargh&prop=wikitext&formatversion=2&format=json&redirects=1";
         let wikitext = r#"{"parse":{"wikitext":"* Russian: {{t|ru|здравствуйте|q=formal}}, {{t+|ru|привет|q=informal}}, {{t|ru|здорово}}\n"}}"#;
         let http = StubHttp::new(&[(url, wikitext)]);
         let pipeline = TranslationPipeline::new(&http);
-        let translation = pipeline.translate("hello", "en", "ru").unwrap();
+        let translation = pipeline.translate("blargh", "en", "ru").unwrap();
         // The first unqualified candidate wins.
         assert_eq!(translation.primary_surface(), Some("здорово"));
     }

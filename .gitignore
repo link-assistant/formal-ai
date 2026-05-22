@@ -64,3 +64,11 @@ ci-logs/
 # The canonical source of truth is data/seed/; the web copy is rebuilt at
 # CI / dev-server start time so the browser worker can fetch the same files.
 src/web/seed/
+
+# Semantic-identity HTTP cache populated by FORMAL_AI_LIVE_API=1. These
+# directories are a local accelerator only; the committed source of
+# truth for offline tests is the raw-API-response seed bundle under
+# data/seed/api-cache/*.lino, bundled by examples/refresh_translation_cache.rs.
+data/wikidata-cache/
+data/wiktionary-cache/
+data/http-cache/

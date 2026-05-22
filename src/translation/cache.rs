@@ -1,29 +1,78 @@
 //! File-based cache for raw HTTP responses from Wikipedia / Wikidata /
-//! Wiktionary.
+//! Wiktionary, keyed by the **semantic identity** of the resource.
 //!
-//! The cache stores only **source data**, never the logic that computes a
-//! translation. Each entry is the verbatim response body for a URL keyed
-//! by a deterministic 64-bit hash of the URL, and the URL itself lives in
-//! a sibling `.url` file for auditability.
+//! Issue #221 reshaped the cache so that:
 //!
-//! Why a file cache instead of `OnceLock<HashMap>`:
+//! - **Wikidata** responses land under `wikidata-cache/` keyed by the
+//!   Q-id, P-id or Lexeme-id mentioned in the URL.
+//! - **Wiktionary** wikitext lands under `wiktionary-cache/<lang>/`
+//!   keyed by the page title.
+//! - **SPARQL** queries land under `wikidata-cache/sparql/` keyed by a
+//!   short hash, because there is no natural semantic name for a SPARQL
+//!   string.
+//! - **Everything else** still uses a URL-hash filename, but in a
+//!   dedicated `http-cache/misc/` bucket. Unrecognised hosts should be
+//!   rare in practice — the cache is intentionally narrow.
 //!
-//! 1. Integration tests run with `FORMAL_AI_LIVE_API=1` and write cache
-//!    entries to disk. The next time the unit suite runs (offline), those
-//!    entries make the same code paths exercise real wikitext — no
-//!    hardcoded translation pairs, just real cached responses.
-//! 2. The committed cache becomes part of the repo's pre-seed data
-//!    (`data/translation-cache/`) so CI never hits the live network.
-//! 3. The cache is content-addressable and idempotent — running the same
-//!    test twice yields the same files on disk.
+//! There is no pre-extracted translation table in this repo: the only
+//! committed data are **verbatim API response bodies** that the live
+//! formalization pipeline produced. Those committed bodies live in the
+//! seed bundle at [`SEED_CACHE_DIR`] as a small set of `.lino` files,
+//! capped at 128 Wikidata entities + 128 properties + the Wiktionary
+//! pages they point at. Each `.lino` file stays under
+//! [`MAX_SEED_LINES_PER_FILE`] so reviewers can read it like any other
+//! Links Notation file — bodies are stored verbatim (split into
+//! [`SEED_BODY_CHUNK_CHARS`]-char chunks using Links Notation's
+//! doubled-quote escape — every literal `"` becomes `""`, everything else
+//! is verbatim) so reviewers can read the raw API JSON directly.
+//!
+//! At runtime [`CachedHttpClient::get`] tries three layers in order:
+//!
+//! 1. The committed `.lino` seed bundle (deterministic, ships in git).
+//! 2. The gitignored on-disk accelerator under
+//!    `<DEFAULT_CACHE_DIR>/{wikidata,wiktionary,http}-cache/...` —
+//!    populated by `FORMAL_AI_LIVE_API=1` runs on a developer machine.
+//! 3. The live transport (only when `online == true`).
+//!
+//! This three-layer design keeps the repository light, lets the same
+//! Wikidata or Wiktionary fetch feed translation, fact lookup and any
+//! other formalization path without duplicating bytes, and keeps unit
+//! tests offline by default.
 
+use std::collections::HashMap;
 use std::fs;
 use std::path::{Path, PathBuf};
+use std::sync::OnceLock;
 
 use super::http::{HttpClient, HttpError};
 
-/// Default cache directory, relative to the crate root.
-pub const DEFAULT_CACHE_DIR: &str = "data/translation-cache";
+/// Default cache root, relative to the crate root.
+///
+/// Per-source subfolders (`wikidata-cache/`, `wiktionary-cache/<lang>/`, …)
+/// live as siblings of this directory so callers from other formalization
+/// paths can share the same bytes.
+pub const DEFAULT_CACHE_DIR: &str = "data";
+
+/// Directory under the repository root that holds the committed seed.
+///
+/// `.lino` files here are shipped in git so a clean checkout can run the
+/// full pipeline offline; the on-disk accelerator under
+/// [`DEFAULT_CACHE_DIR`] is gitignored and only used when
+/// `FORMAL_AI_LIVE_API=1` populates it.
+pub const SEED_CACHE_DIR: &str = "data/seed/api-cache";
+
+/// Hard cap on the number of lines per seeded `.lino` cache file. Larger
+/// files become unreadable; the refresh tool splits responses into
+/// `<bucket>-partN.lino` files when needed.
+pub const MAX_SEED_LINES_PER_FILE: usize = 1500;
+
+/// Hard cap on the number of distinct entities (or properties) per bucket.
+///
+/// We never ship more than this many records in the seeded cache. This
+/// keeps the repository small enough to review and stays honest about the
+/// "lightweight by default" constraint from issue #221's reviewer
+/// feedback.
+pub const MAX_SEED_RECORDS_PER_BUCKET: usize = 128;
 
 /// HTTP client that consults a file cache before delegating to a real
 /// transport. Cache hits always short-circuit the underlying transport;
@@ -73,12 +122,192 @@ impl<T: HttpClient> CachedHttpClient<T> {
     }
 
     fn cache_paths(&self, url: &str) -> (PathBuf, PathBuf) {
-        let key = cache_key(url);
+        let location = cache_location(url);
         let mut body = self.cache_dir.clone();
-        body.push(format!("{key}.body"));
+        body.push(&location.directory);
+        body.push(format!("{}.body", location.stem));
         let mut meta = self.cache_dir.clone();
-        meta.push(format!("{key}.url"));
+        meta.push(&location.directory);
+        meta.push(format!("{}.url", location.stem));
         (body, meta)
+    }
+}
+
+/// Where a URL should land inside the cache root.
+///
+/// `directory` is a relative subpath (e.g. `wiktionary-cache/en`) and
+/// `stem` is the filename without extension (e.g. `apple`). The cache
+/// writes `<root>/<directory>/<stem>.body` and `<root>/<directory>/<stem>.url`.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct CacheLocation {
+    pub directory: PathBuf,
+    pub stem: String,
+}
+
+/// Decide the cache location for a URL.
+///
+/// The mapping is best-effort: well-known Wikidata / Wiktionary URLs land
+/// under human-readable semantic folders, and anything else falls back to
+/// a hashed bucket so we never refuse to cache a response.
+#[must_use]
+pub fn cache_location(url: &str) -> CacheLocation {
+    if let Some(location) = classify_wiktionary(url) {
+        return location;
+    }
+    if let Some(location) = classify_wikidata(url) {
+        return location;
+    }
+    CacheLocation {
+        directory: PathBuf::from("http-cache").join("misc"),
+        stem: cache_key(url),
+    }
+}
+
+fn classify_wiktionary(url: &str) -> Option<CacheLocation> {
+    let host_start = url.find("://")? + 3;
+    let after_scheme = &url[host_start..];
+    let dot = after_scheme.find('.')?;
+    let host_end = after_scheme.find('/').unwrap_or(after_scheme.len());
+    let host_rest = &after_scheme[dot..host_end];
+    if !host_rest.starts_with(".wiktionary.org") {
+        return None;
+    }
+    let lang = sanitize_segment(&after_scheme[..dot]);
+    let page = wiktionary_page_from_url(url).unwrap_or_else(|| cache_key(url));
+    Some(CacheLocation {
+        directory: PathBuf::from("wiktionary-cache").join(lang),
+        stem: page,
+    })
+}
+
+fn wiktionary_page_from_url(url: &str) -> Option<String> {
+    // Pages are fetched via the `parse` API:
+    //   /w/api.php?action=parse&page=<title>&...
+    let query_start = url.find('?')?;
+    let query = &url[query_start + 1..];
+    for pair in query.split('&') {
+        if let Some(value) = pair.strip_prefix("page=") {
+            let decoded = percent_decode(value);
+            if !decoded.is_empty() {
+                return Some(sanitize_segment(&decoded));
+            }
+        }
+    }
+    None
+}
+
+fn classify_wikidata(url: &str) -> Option<CacheLocation> {
+    if !url.contains("wikidata.org") {
+        return None;
+    }
+    let query_start = url.find('?')?;
+    let query = &url[query_start + 1..];
+    let mut action: Option<String> = None;
+    let mut srsearch: Option<String> = None;
+    let mut ids: Option<String> = None;
+    let mut sparql: Option<String> = None;
+    let mut titles: Option<String> = None;
+    let mut search_term: Option<String> = None;
+    for pair in query.split('&') {
+        if let Some(value) = pair.strip_prefix("action=") {
+            action = Some(percent_decode(value));
+        } else if let Some(value) = pair.strip_prefix("srsearch=") {
+            srsearch = Some(percent_decode(value));
+        } else if let Some(value) = pair.strip_prefix("search=") {
+            search_term = Some(percent_decode(value));
+        } else if let Some(value) = pair.strip_prefix("ids=") {
+            ids = Some(percent_decode(value));
+        } else if let Some(value) = pair.strip_prefix("query=") {
+            sparql = Some(percent_decode(value));
+        } else if let Some(value) = pair.strip_prefix("titles=") {
+            titles = Some(percent_decode(value));
+        }
+    }
+    if sparql.is_some() || url.contains("/sparql") || url.contains("query.wikidata.org") {
+        return Some(CacheLocation {
+            directory: PathBuf::from("wikidata-cache").join("sparql"),
+            stem: cache_key(url),
+        });
+    }
+    let stem = match action.as_deref() {
+        Some("wbsearchentities") => srsearch
+            .as_deref()
+            .or(search_term.as_deref())
+            .map_or_else(|| cache_key(url), sanitize_segment),
+        Some("wbgetentities" | "query") => ids
+            .as_deref()
+            .or(titles.as_deref())
+            .map_or_else(|| cache_key(url), sanitize_segment),
+        _ => cache_key(url),
+    };
+    let sub = match action.as_deref() {
+        Some("wbsearchentities") => "search",
+        Some("wbgetentities") => "entities",
+        Some("query") => "query",
+        _ => "misc",
+    };
+    Some(CacheLocation {
+        directory: PathBuf::from("wikidata-cache").join(sub),
+        stem,
+    })
+}
+
+fn sanitize_segment(value: &str) -> String {
+    let mut out = String::with_capacity(value.len());
+    for ch in value.chars() {
+        if ch.is_alphanumeric() || matches!(ch, '-' | '_' | '.') {
+            out.push(ch);
+        } else if ch == ' ' || ch == '+' {
+            out.push('_');
+        } else {
+            out.push('-');
+        }
+    }
+    if out.len() > 96 {
+        // Avoid blowing past common filesystem name limits when a SPARQL
+        // search returns a freakishly long title.
+        out.truncate(96);
+        out.push('~');
+        out.push_str(&cache_key(value)[..8]);
+    }
+    if out.is_empty() {
+        cache_key(value)
+    } else {
+        out
+    }
+}
+
+fn percent_decode(value: &str) -> String {
+    let bytes = value.as_bytes();
+    let mut out: Vec<u8> = Vec::with_capacity(bytes.len());
+    let mut i = 0;
+    while i < bytes.len() {
+        let byte = bytes[i];
+        if byte == b'%' && i + 2 < bytes.len() {
+            let hi = hex_nibble(bytes[i + 1]);
+            let lo = hex_nibble(bytes[i + 2]);
+            if let (Some(hi), Some(lo)) = (hi, lo) {
+                out.push((hi << 4) | lo);
+                i += 3;
+                continue;
+            }
+        }
+        if byte == b'+' {
+            out.push(b' ');
+        } else {
+            out.push(byte);
+        }
+        i += 1;
+    }
+    String::from_utf8_lossy(&out).into_owned()
+}
+
+const fn hex_nibble(byte: u8) -> Option<u8> {
+    match byte {
+        b'0'..=b'9' => Some(byte - b'0'),
+        b'a'..=b'f' => Some(byte - b'a' + 10),
+        b'A'..=b'F' => Some(byte - b'A' + 10),
+        _ => None,
     }
 }
 
@@ -111,6 +340,12 @@ fn live_api_enabled() -> bool {
 
 impl<T: HttpClient> HttpClient for CachedHttpClient<T> {
     fn get(&self, url: &str) -> Result<String, HttpError> {
+        // Layer 1: committed seed bundle (deterministic, ships in git).
+        if let Some(body) = seed_response(url) {
+            return Ok(body);
+        }
+
+        // Layer 2: gitignored on-disk accelerator under `cache_dir`.
         let (body_path, meta_path) = self.cache_paths(url);
         if let Ok(body) = fs::read_to_string(&body_path) {
             return Ok(body);
@@ -121,11 +356,14 @@ impl<T: HttpClient> HttpClient for CachedHttpClient<T> {
                  set FORMAL_AI_LIVE_API=1 to fetch and populate the cache",
             )));
         }
+
+        // Layer 3: live transport.
         let body = self.transport.get(url)?;
-        if let Err(error) = fs::create_dir_all(&self.cache_dir) {
+        let parent = body_path.parent().unwrap_or(&self.cache_dir);
+        if let Err(error) = fs::create_dir_all(parent) {
             return Err(HttpError::Transport(format!(
                 "failed to create cache directory {}: {error}",
-                self.cache_dir.display(),
+                parent.display(),
             )));
         }
         if let Err(error) = fs::write(&body_path, &body) {
@@ -144,14 +382,244 @@ impl<T: HttpClient> HttpClient for CachedHttpClient<T> {
     }
 }
 
+// ---------------------------------------------------------------------------
+// Seeded raw API response bundle
+// ---------------------------------------------------------------------------
+
+// The list of seed `.lino` files is generated by `build.rs`, which walks
+// `data/seed/api-cache/` at build time. That keeps the registry honest as
+// the bundler splits a bucket into `<bucket>-partN.lino` files without
+// requiring per-file edits here.
+include!(concat!(env!("OUT_DIR"), "/seed_bundle_files.rs"));
+
+/// All committed seed `.lino` files in deterministic (sorted) order.
+#[must_use]
+pub fn seed_files() -> Vec<(&'static str, &'static str)> {
+    SEED_BUNDLE_FILES.to_vec()
+}
+
+/// Look up a seeded response body by URL. Returns `None` when the URL
+/// is not part of the committed bundle.
+#[must_use]
+pub fn seed_response(url: &str) -> Option<String> {
+    seed_index().get(url).cloned()
+}
+
+/// Process-wide lazily-parsed URL → body map. Loaded once on first
+/// access from the embedded `.lino` seed files. Records sharing a URL
+/// (a body whose chunks span multiple `.lino` parts) have their chunks
+/// concatenated in the file/record order returned by [`seed_files`], so
+/// an oversize response can be split across as many `<bucket>-partN.lino`
+/// files as needed without breaking lookup.
+fn seed_index() -> &'static HashMap<String, String> {
+    static INDEX: OnceLock<HashMap<String, String>> = OnceLock::new();
+    INDEX.get_or_init(|| {
+        let mut chunks: HashMap<String, String> = HashMap::new();
+        let mut order: Vec<String> = Vec::new();
+        for (_name, contents) in seed_files() {
+            for (url, body) in parse_seed_chunks(contents) {
+                let entry = chunks.entry(url.clone()).or_insert_with(|| {
+                    order.push(url.clone());
+                    String::new()
+                });
+                entry.push_str(&body);
+            }
+        }
+        let mut index = HashMap::new();
+        for url in order {
+            if let Some(body) = chunks.remove(&url) {
+                index.insert(url, body);
+            }
+        }
+        index
+    })
+}
+
+/// Parse a `.lino` seed bundle into `(url, body)` pairs.
+///
+/// Each `response_<short_id>` block produces one pair. Records sharing a
+/// URL are returned separately in the order they appear — call
+/// [`seed_index`] (which concatenates them) if you want the assembled body.
+///
+/// The grammar is intentionally narrow and stays human-readable so a
+/// reviewer can inspect the raw API JSON without decoding tooling:
+///
+/// ```text
+/// response_<short_id>
+///   url "<full URL>"
+///   body "<chunk 1>"
+///   body "<chunk 2>"
+///   ...
+/// ```
+///
+/// `body` chunks store the raw response text using Links Notation's
+/// doubled-quote escape: one literal `"` is written as two consecutive
+/// `"` characters; no other characters are escaped. Concatenating the
+/// unescaped chunks reproduces the original API response byte-for-byte.
+#[must_use]
+pub fn parse_seed_bundle(text: &str) -> Vec<(String, String)> {
+    parse_seed_chunks(text)
+}
+
+/// Parse a `.lino` seed bundle into `(url, body_chunk)` pairs.
+///
+/// Used by [`seed_index`] so split-body records (multiple records with
+/// the same URL across `<bucket>-partN.lino` files) can be concatenated
+/// into a single body.
+#[must_use]
+pub fn parse_seed_chunks(text: &str) -> Vec<(String, String)> {
+    let mut out: Vec<(String, String)> = Vec::new();
+    let mut current_url: Option<String> = None;
+    let mut current_body: String = String::new();
+
+    let flush = |url: &mut Option<String>, body: &mut String, out: &mut Vec<(String, String)>| {
+        if let Some(url_value) = url.take() {
+            if body.is_empty() {
+                body.clear();
+            } else {
+                out.push((url_value, std::mem::take(body)));
+            }
+        }
+    };
+
+    for raw_line in text.lines() {
+        let trimmed = raw_line.trim_end_matches(['\r', '\n']);
+        if trimmed.trim().is_empty() {
+            continue;
+        }
+        let indent = trimmed.bytes().take_while(|b| *b == b' ').count();
+        let content = &trimmed[indent..];
+        if indent == 0 {
+            flush(&mut current_url, &mut current_body, &mut out);
+            if content.starts_with("response_") {
+                current_url = Some(String::new());
+            }
+            continue;
+        }
+        if current_url.is_none() {
+            continue;
+        }
+        if let Some(value) = strip_kv(content, "url") {
+            current_url = Some(unescape_lino_string(value));
+        } else if let Some(value) = strip_kv(content, "body") {
+            current_body.push_str(&unescape_lino_string(value));
+        }
+    }
+    flush(&mut current_url, &mut current_body, &mut out);
+    out
+}
+
+/// Extract a `"value"` after `key ` from a line. Returns `None` when the
+/// line does not match `key "value"`.
+fn strip_kv<'a>(content: &'a str, key: &str) -> Option<&'a str> {
+    let rest = content.strip_prefix(key)?;
+    let rest = rest.strip_prefix(' ')?;
+    let rest = rest.strip_prefix('"')?;
+    rest.strip_suffix('"')
+}
+
+/// Maximum number of characters per `body "..."` chunk when writing
+/// seed records. Wide enough to keep large API responses compact, narrow
+/// enough that each line stays inside a standard editor viewport.
+pub const SEED_BODY_CHUNK_CHARS: usize = 200;
+
+/// Escape a string for embedding as a double-quoted Links Notation value.
+///
+/// Links Notation uses **doubled-quote escapes**: every literal `"` in
+/// the value is doubled to `""`. Backslashes and all other bytes — including
+/// CJK, Cyrillic, Devanagari, etc. — pass through verbatim so reviewers see
+/// the raw API JSON, not a re-encoded form.
+#[must_use]
+pub fn escape_lino_string(input: &str) -> String {
+    let mut out = String::with_capacity(input.len() + 8);
+    for ch in input.chars() {
+        if ch == '"' {
+            out.push('"');
+            out.push('"');
+        } else {
+            out.push(ch);
+        }
+    }
+    out
+}
+
+/// Reverse of [`escape_lino_string`].
+///
+/// Collapses every `""` pair into a single `"`. A lone trailing `"` (which
+/// should never appear in well-formed seed records) is preserved verbatim.
+#[must_use]
+pub fn unescape_lino_string(input: &str) -> String {
+    let mut out = String::with_capacity(input.len());
+    let mut chars = input.chars().peekable();
+    while let Some(ch) = chars.next() {
+        if ch == '"' && chars.peek() == Some(&'"') {
+            out.push('"');
+            chars.next();
+        } else {
+            out.push(ch);
+        }
+    }
+    out
+}
+
+/// Split a string into chunks of at most `chars` characters at character
+/// boundaries. Used to keep individual `body "..."` lines bounded so
+/// `.lino` files stay reviewable.
+///
+/// A chunk never **starts** with a `"` character, because Links Notation
+/// detects the quote-delimiter count by counting consecutive leading `"`
+/// chars: if a chunk began with `"`, wrapping it as `"<chunk>"` would
+/// produce `"""...` and the parser would treat it as a 3-quote delimited
+/// string, mis-parsing the value. We therefore extend a chunk past any
+/// trailing run of `"` chars so the next chunk starts on a non-`"` byte.
+#[must_use]
+pub fn split_body_into_chunks(body: &str, chars: usize) -> Vec<String> {
+    let mut out: Vec<String> = Vec::new();
+    if body.is_empty() {
+        return out;
+    }
+    let chars_vec: Vec<char> = body.chars().collect();
+    let total = chars_vec.len();
+    let mut start = 0usize;
+    while start < total {
+        let mut end = (start + chars).min(total);
+        while end < total && chars_vec[end] == '"' {
+            end += 1;
+        }
+        out.push(chars_vec[start..end].iter().collect());
+        start = end;
+    }
+    out
+}
+
+/// Emit a single `response_<short_id>` record into a `.lino` buffer.
+///
+/// Public so the refresh-cache example (and tests) can produce seed
+/// files using the exact format [`parse_seed_bundle`] consumes. Bodies
+/// are split into [`SEED_BODY_CHUNK_CHARS`]-char chunks and escaped with
+/// [`escape_lino_string`] so the raw API JSON remains human-readable.
+pub fn write_seed_record(out: &mut String, short_id: &str, url: &str, body: &str) {
+    out.push_str("response_");
+    out.push_str(short_id);
+    out.push('\n');
+    out.push_str("  url \"");
+    out.push_str(&escape_lino_string(url));
+    out.push_str("\"\n");
+    for chunk in split_body_into_chunks(body, SEED_BODY_CHUNK_CHARS) {
+        out.push_str("  body \"");
+        out.push_str(&escape_lino_string(&chunk));
+        out.push_str("\"\n");
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::collections::HashMap;
+    use std::collections::HashMap as StdHashMap;
     use std::sync::Mutex;
 
     struct StubHttp {
-        responses: Mutex<HashMap<String, String>>,
+        responses: Mutex<StdHashMap<String, String>>,
         calls: Mutex<Vec<String>>,
     }
 
@@ -195,7 +663,6 @@ mod tests {
     }
 
     fn rand_u32() -> u32 {
-        // Cheap deterministic-ish randomness: use the system time in nanos.
         use std::time::{SystemTime, UNIX_EPOCH};
         u32::try_from(
             SystemTime::now()
@@ -218,14 +685,12 @@ mod tests {
     fn cache_hit_short_circuits_transport() {
         let dir = temp_dir("hit");
         let cache = CachedHttpClient::new(&dir, StubHttp::new(&[])).with_online(false);
-        // Pre-populate the cache by hand.
         let url = "https://example.com/cached";
         let (body_path, meta_path) = cache.cache_paths(url);
-        fs::create_dir_all(&dir).unwrap();
+        fs::create_dir_all(body_path.parent().unwrap()).unwrap();
         fs::write(&body_path, "cached body").unwrap();
         fs::write(&meta_path, url).unwrap();
         assert_eq!(cache.get(url).unwrap(), "cached body");
-        // Stub had no entry; if it had been called we'd see a 404.
     }
 
     #[test]
@@ -251,17 +716,192 @@ mod tests {
         let stub = StubHttp::new(&[(url, "fetched body")]);
         let cache = CachedHttpClient::new(&dir, stub).with_online(true);
         assert_eq!(cache.get(url).unwrap(), "fetched body");
-        // Second call should be a cache hit even if the stub disappears.
         let again = CachedHttpClient::new(&dir, StubHttp::new(&[])).with_online(false);
         assert_eq!(again.get(url).unwrap(), "fetched body");
     }
 
     #[test]
-    fn cache_paths_use_fnv_keyed_filenames() {
-        let dir = PathBuf::from("/tmp/whatever");
+    fn cache_paths_use_semantic_subdirectories() {
+        let dir = PathBuf::from("cache-root");
         let cache = CachedHttpClient::new(&dir, StubHttp::new(&[])).with_online(false);
         let (body, meta) = cache.cache_paths("https://example.com/x");
-        assert!(body.to_string_lossy().ends_with(".body"));
-        assert!(meta.to_string_lossy().ends_with(".url"));
+        assert!(
+            body.extension()
+                .is_some_and(|ext| ext.eq_ignore_ascii_case("body")),
+            "got: {}",
+            body.display()
+        );
+        assert!(
+            meta.extension()
+                .is_some_and(|ext| ext.eq_ignore_ascii_case("url")),
+            "got: {}",
+            meta.display()
+        );
+        let location = cache_location("https://example.com/x");
+        assert_eq!(location.directory, PathBuf::from("http-cache").join("misc"),);
+        assert!(!location.stem.is_empty());
+    }
+
+    #[test]
+    fn wiktionary_url_lands_under_per_language_subdirectory() {
+        let location = cache_location(
+            "https://en.wiktionary.org/w/api.php?action=parse&page=apple&prop=wikitext&formatversion=2&format=json&redirects=1",
+        );
+        assert_eq!(
+            location.directory,
+            PathBuf::from("wiktionary-cache").join("en")
+        );
+        assert_eq!(location.stem, "apple");
+    }
+
+    #[test]
+    fn wikidata_search_url_keyed_by_search_term() {
+        let location = cache_location(
+            "https://www.wikidata.org/w/api.php?action=wbsearchentities&format=json&language=en&type=lexeme&srsearch=apple&limit=3",
+        );
+        assert_eq!(
+            location.directory,
+            PathBuf::from("wikidata-cache").join("search")
+        );
+        assert_eq!(location.stem, "apple");
+    }
+
+    #[test]
+    fn wikidata_sparql_url_lands_in_sparql_bucket() {
+        let location = cache_location(
+            "https://query.wikidata.org/sparql?format=json&query=SELECT%20%3Flemma%20WHERE%20%7B%20%7D",
+        );
+        assert_eq!(
+            location.directory,
+            PathBuf::from("wikidata-cache").join("sparql")
+        );
+        assert_eq!(location.stem.len(), 16);
+    }
+
+    #[test]
+    fn parse_seed_bundle_round_trips_through_write_seed_record() {
+        let body = r#"{"parse":{"title":"apple","wikitext":"* Russian: {{t+|ru|яблоко}}"}}"#;
+        let url = "https://en.wiktionary.org/w/api.php?action=parse&page=apple&prop=wikitext&formatversion=2&format=json&redirects=1";
+        let mut buf = String::new();
+        write_seed_record(&mut buf, "wiktionary_en_apple", url, body);
+        let parsed = parse_seed_bundle(&buf);
+        assert_eq!(parsed.len(), 1);
+        assert_eq!(parsed[0].0, url);
+        assert_eq!(parsed[0].1, body);
+    }
+
+    #[test]
+    fn parse_seed_bundle_concatenates_chunked_body() {
+        let bundle =
+            "response_chunky\n  url \"https://example.org/x\"\n  body \"hel\"\n  body \"lo\"\n";
+        let parsed = parse_seed_bundle(bundle);
+        assert_eq!(parsed.len(), 1);
+        assert_eq!(parsed[0].1, "hello");
+    }
+
+    #[test]
+    fn parse_seed_chunks_yields_one_pair_per_record() {
+        let bundle = "response_a\n  url \"https://example.org/x\"\n  body \"hel\"\n\nresponse_b\n  url \"https://example.org/x\"\n  body \"lo\"\n";
+        let chunks = parse_seed_chunks(bundle);
+        assert_eq!(chunks.len(), 2);
+        assert_eq!(chunks[0].0, "https://example.org/x");
+        assert_eq!(chunks[0].1, "hel");
+        assert_eq!(chunks[1].0, "https://example.org/x");
+        assert_eq!(chunks[1].1, "lo");
+    }
+
+    #[test]
+    fn escape_round_trips_quotes_backslashes_and_unicode() {
+        let cases: &[&str] = &[
+            "",
+            "plain ascii",
+            "with \"quotes\"",
+            "with \\backslash\\",
+            "{\"wikitext\":\"== {{-ru-}} ==\\n=== {{з|}} ===\"}",
+            "яблоко 苹果 🍎",
+            "trailing-quote\"",
+            "leading-quote: \"abc",
+            "double\"\"middle",
+        ];
+        for case in cases {
+            let escaped = escape_lino_string(case);
+            let back = unescape_lino_string(&escaped);
+            assert_eq!(back, *case, "round trip failed for {case:?}");
+        }
+    }
+
+    #[test]
+    fn split_body_into_chunks_respects_char_boundaries() {
+        let body = "яблоко 苹果 🍎"; // mix of 2/3/4-byte UTF-8 chars
+        let chunks = split_body_into_chunks(body, 4);
+        let recombined: String = chunks.concat();
+        assert_eq!(recombined, body);
+        for chunk in &chunks {
+            assert!(chunk.chars().count() <= 4);
+        }
+    }
+
+    #[test]
+    fn split_body_into_chunks_never_starts_chunk_with_quote() {
+        // Boundary case: a `"` immediately after the target chunk size
+        // would normally split into chunk N ending mid-stream and chunk
+        // N+1 starting with `"`. The latter breaks Links Notation parsing
+        // because `"` + chunk-content's leading `"` reads as a 2-quote
+        // delimiter. The chunker must defer the break past any run of
+        // quotes so the next chunk starts on a non-`"` byte.
+        let body = "aaaa\"bbbb\"cccc";
+        let chunks = split_body_into_chunks(body, 4);
+        for (idx, chunk) in chunks.iter().enumerate() {
+            assert!(
+                !chunk.starts_with('"'),
+                "chunk[{idx}] starts with a quote: {chunk:?}",
+            );
+        }
+        let recombined: String = chunks.concat();
+        assert_eq!(recombined, body);
+    }
+
+    #[test]
+    fn escaped_record_parses_as_links_notation() {
+        // The committed bundle is round-tripped through
+        // `lino_objects_codec::format::parse_indented` in
+        // `tests/unit/data_files.rs`. Mirror that contract here so the
+        // escape rules stay aligned with Links Notation expectations.
+        let mut buf = String::new();
+        write_seed_record(
+            &mut buf,
+            "demo",
+            "https://example.org/q",
+            r#"{"key":"value with \"escaped\" quotes","arr":[""]}"#,
+        );
+        lino_objects_codec::format::parse_indented(buf.trim()).unwrap_or_else(|error| {
+            panic!("record should be valid Links Notation: {error}\nbuffer:\n{buf}");
+        });
+    }
+
+    #[test]
+    fn seed_files_stay_under_per_file_line_cap() {
+        for (name, contents) in seed_files() {
+            let lines = contents.lines().count();
+            assert!(
+                lines <= MAX_SEED_LINES_PER_FILE,
+                "{name} has {lines} lines, exceeds MAX_SEED_LINES_PER_FILE={MAX_SEED_LINES_PER_FILE}",
+            );
+        }
+    }
+
+    #[test]
+    fn seed_response_is_consulted_before_disk_or_transport() {
+        // Use a URL we expect to be present in the committed bundle. If the
+        // bundle is empty during early bootstrapping, skip the assertion —
+        // the test exists to lock the precedence once the bundle is filled.
+        let any_url = seed_index().keys().next().cloned();
+        let Some(url) = any_url else {
+            return;
+        };
+        let dir = temp_dir("seed-precedence");
+        let cache = CachedHttpClient::new(&dir, StubHttp::new(&[])).with_online(false);
+        let body = cache.get(&url).expect("seeded response must hit");
+        assert!(!body.is_empty());
     }
 }
