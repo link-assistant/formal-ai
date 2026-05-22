@@ -8082,6 +8082,92 @@ const SEARCH_QUERY_SOURCE_ONLY = [
   "維基百科",
 ];
 
+const IMPLICIT_RESEARCH_QUESTION_PREFIXES = [
+  "what is the ",
+  "what is a ",
+  "what is an ",
+  "what is ",
+  "what are the ",
+  "what are ",
+  "what s the ",
+  "what s a ",
+  "what s an ",
+  "what s ",
+  "which is the ",
+  "which is a ",
+  "which is an ",
+  "which are the ",
+  "which are ",
+  "which ",
+  "who is the ",
+  "who are the ",
+  "who ",
+  "where is the ",
+  "where are the ",
+  "where ",
+  "when is the ",
+  "when are the ",
+  "when ",
+  "why is the ",
+  "why are the ",
+  "why ",
+  "how is the ",
+  "how are the ",
+  "how ",
+  "can you tell me ",
+  "could you tell me ",
+  "do you know ",
+];
+
+const IMPLICIT_RESEARCH_MODIFIERS = [
+  " most ",
+  " best ",
+  " top ",
+  " leading ",
+  " standard ",
+  " de facto ",
+  " widely used ",
+  " commonly used ",
+  " popular ",
+  " recommended ",
+  " current ",
+  " latest ",
+  " recent ",
+  " state of the art ",
+  " sota ",
+  " should i use ",
+  " should we use ",
+  " should be used ",
+];
+
+const IMPLICIT_RESEARCH_EVIDENCE_DOMAINS = [
+  " dataset ",
+  " datasets ",
+  " benchmark ",
+  " benchmarks ",
+  " corpus ",
+  " corpora ",
+  " metric ",
+  " metrics ",
+  " framework ",
+  " frameworks ",
+  " paper ",
+  " papers ",
+  " study ",
+  " studies ",
+];
+
+const IMPLICIT_RESEARCH_EVALUATION_DOMAINS = [
+  " evaluation ",
+  " evaluate ",
+  " validation ",
+  " validate ",
+  " quality ",
+  " translation ",
+  " compare ",
+  " comparison ",
+];
+
 function containsSearchMarker(normalized, marker) {
   const text = String(normalized || "");
   if (marker.startsWith(" ") || marker.endsWith(" ")) {
@@ -8186,7 +8272,34 @@ function extractSemanticWebSearchQuery(prompt, normalized) {
   return "";
 }
 
-function extractWebSearchQuery(prompt, normalized) {
+function stripImplicitResearchPrefix(value) {
+  const text = String(value || "");
+  for (const prefix of IMPLICIT_RESEARCH_QUESTION_PREFIXES) {
+    if (text.startsWith(prefix)) {
+      return text.slice(prefix.length);
+    }
+  }
+  return text;
+}
+
+function extractImplicitResearchQuestion(normalized) {
+  const text = String(normalized || "");
+  if (!startsWithAny(text, IMPLICIT_RESEARCH_QUESTION_PREFIXES)) return "";
+  const padded = ` ${text} `;
+  const hasModifier = IMPLICIT_RESEARCH_MODIFIERS.some((marker) =>
+    padded.includes(marker),
+  );
+  const hasEvidenceDomain = IMPLICIT_RESEARCH_EVIDENCE_DOMAINS.some((marker) =>
+    padded.includes(marker),
+  );
+  const hasEvaluationDomain = IMPLICIT_RESEARCH_EVALUATION_DOMAINS.some((marker) =>
+    padded.includes(marker),
+  );
+  if (!hasModifier && !(hasEvidenceDomain && hasEvaluationDomain)) return "";
+  return validSearchQuery(stripImplicitResearchPrefix(text));
+}
+
+function extractWebSearchRequest(prompt, normalized) {
   if (
     normalized.startsWith("search conversations ") ||
     normalized.startsWith("search my conversations ") ||
@@ -8201,10 +8314,22 @@ function extractWebSearchQuery(prompt, normalized) {
       : "";
     const query = rawQuery || normalizedQuery;
     if (query) {
-      return query;
+      return { query, kind: "explicit_prefix" };
     }
   }
-  return extractSemanticWebSearchQuery(prompt, normalized);
+  const semanticQuery = extractSemanticWebSearchQuery(prompt, normalized);
+  if (semanticQuery) {
+    return { query: semanticQuery, kind: "semantic_action" };
+  }
+  const researchQuery = extractImplicitResearchQuestion(normalized);
+  return researchQuery
+    ? { query: researchQuery, kind: "implicit_research_question" }
+    : null;
+}
+
+function extractWebSearchQuery(prompt, normalized) {
+  const request = extractWebSearchRequest(prompt, normalized);
+  return request ? request.query : "";
 }
 
 function cleanProceduralFragment(value) {
@@ -9967,12 +10092,12 @@ function webSearchTexts(language) {
 
 async function tryWebSearch(prompt, language) {
   const normalized = normalizePrompt(prompt);
-  const query = extractWebSearchQuery(prompt, normalized);
-  if (!query) return null;
-  return runWebSearchQuery(query, language);
+  const request = extractWebSearchRequest(prompt, normalized);
+  if (!request || !request.query) return null;
+  return runWebSearchQuery(request.query, language, request.kind);
 }
 
-async function runWebSearchQuery(query, language) {
+async function runWebSearchQuery(query, language, queryKind) {
   query = String(query || "").trim();
   if (!query) return null;
   const rrfK = webSearchRrfK();
@@ -10005,6 +10130,9 @@ async function runWebSearchQuery(query, language) {
       evidence.push(`web_search:provider:${provider.id}`);
     }
     evidence.push(`web_search:combined:rrf:k=${rrfK}`);
+  }
+  if (queryKind) {
+    evidence.push(`web_search:query_kind:${queryKind}`);
   }
 
   // Issue #180: providers are tried in declared priority order so the rendered

@@ -4,7 +4,33 @@ use crate::engine::normalize_prompt;
 
 use super::web_requests::normalize_url_candidate;
 
-pub(super) fn extract_web_search_query(prompt: &str, normalized: &str) -> Option<String> {
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub(super) enum WebSearchQueryKind {
+    ExplicitPrefix,
+    SemanticAction,
+    ImplicitResearchQuestion,
+}
+
+impl WebSearchQueryKind {
+    pub(super) const fn as_str(self) -> &'static str {
+        match self {
+            Self::ExplicitPrefix => "explicit_prefix",
+            Self::SemanticAction => "semantic_action",
+            Self::ImplicitResearchQuestion => "implicit_research_question",
+        }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(super) struct WebSearchRequest {
+    pub(super) query: String,
+    pub(super) kind: WebSearchQueryKind,
+}
+
+pub(super) fn extract_web_search_request(
+    prompt: &str,
+    normalized: &str,
+) -> Option<WebSearchRequest> {
     let normalized_words = normalize_prompt(prompt);
     if normalized_words.starts_with("search conversations ")
         || normalized_words.starts_with("search my conversations ")
@@ -15,16 +41,31 @@ pub(super) fn extract_web_search_query(prompt: &str, normalized: &str) -> Option
     for prefix in WEB_SEARCH_EXPLICIT_PREFIXES {
         if let Some(query) = normalized_words.strip_prefix(prefix) {
             if let Some(query) = valid_search_query(query) {
-                return Some(query);
+                return Some(WebSearchRequest {
+                    query,
+                    kind: WebSearchQueryKind::ExplicitPrefix,
+                });
             }
         }
         if let Some(query) = normalized.strip_prefix(prefix) {
             if let Some(query) = valid_search_query(query) {
-                return Some(query);
+                return Some(WebSearchRequest {
+                    query,
+                    kind: WebSearchQueryKind::ExplicitPrefix,
+                });
             }
         }
     }
-    extract_semantic_web_search_query(&normalized_words)
+    if let Some(query) = extract_semantic_web_search_query(&normalized_words) {
+        return Some(WebSearchRequest {
+            query,
+            kind: WebSearchQueryKind::SemanticAction,
+        });
+    }
+    extract_implicit_research_question(&normalized_words).map(|query| WebSearchRequest {
+        query,
+        kind: WebSearchQueryKind::ImplicitResearchQuestion,
+    })
 }
 
 fn clean_search_query(value: &str) -> String {
@@ -422,6 +463,92 @@ const SEARCH_QUERY_SOURCE_ONLY: &[&str] = &[
     "維基百科",
 ];
 
+const IMPLICIT_RESEARCH_QUESTION_PREFIXES: &[&str] = &[
+    "what is the ",
+    "what is a ",
+    "what is an ",
+    "what is ",
+    "what are the ",
+    "what are ",
+    "what s the ",
+    "what s a ",
+    "what s an ",
+    "what s ",
+    "which is the ",
+    "which is a ",
+    "which is an ",
+    "which are the ",
+    "which are ",
+    "which ",
+    "who is the ",
+    "who are the ",
+    "who ",
+    "where is the ",
+    "where are the ",
+    "where ",
+    "when is the ",
+    "when are the ",
+    "when ",
+    "why is the ",
+    "why are the ",
+    "why ",
+    "how is the ",
+    "how are the ",
+    "how ",
+    "can you tell me ",
+    "could you tell me ",
+    "do you know ",
+];
+
+const IMPLICIT_RESEARCH_MODIFIERS: &[&str] = &[
+    " most ",
+    " best ",
+    " top ",
+    " leading ",
+    " standard ",
+    " de facto ",
+    " widely used ",
+    " commonly used ",
+    " popular ",
+    " recommended ",
+    " current ",
+    " latest ",
+    " recent ",
+    " state of the art ",
+    " sota ",
+    " should i use ",
+    " should we use ",
+    " should be used ",
+];
+
+const IMPLICIT_RESEARCH_EVIDENCE_DOMAINS: &[&str] = &[
+    " dataset ",
+    " datasets ",
+    " benchmark ",
+    " benchmarks ",
+    " corpus ",
+    " corpora ",
+    " metric ",
+    " metrics ",
+    " framework ",
+    " frameworks ",
+    " paper ",
+    " papers ",
+    " study ",
+    " studies ",
+];
+
+const IMPLICIT_RESEARCH_EVALUATION_DOMAINS: &[&str] = &[
+    " evaluation ",
+    " evaluate ",
+    " validation ",
+    " validate ",
+    " quality ",
+    " translation ",
+    " compare ",
+    " comparison ",
+];
+
 fn extract_semantic_web_search_query(normalized: &str) -> Option<String> {
     let has_action = contains_any_search_marker(normalized, WEB_SEARCH_ACTION_MARKERS);
     if !has_action {
@@ -456,6 +583,40 @@ fn extract_semantic_web_search_query(normalized: &str) -> Option<String> {
         }
     }
     None
+}
+
+fn extract_implicit_research_question(normalized: &str) -> Option<String> {
+    if !starts_with_any(normalized, IMPLICIT_RESEARCH_QUESTION_PREFIXES) {
+        return None;
+    }
+    let padded = format!(" {normalized} ");
+    let has_modifier = IMPLICIT_RESEARCH_MODIFIERS
+        .iter()
+        .any(|marker| padded.contains(marker));
+    let has_evidence_domain = IMPLICIT_RESEARCH_EVIDENCE_DOMAINS
+        .iter()
+        .any(|marker| padded.contains(marker));
+    let has_evaluation_domain = IMPLICIT_RESEARCH_EVALUATION_DOMAINS
+        .iter()
+        .any(|marker| padded.contains(marker));
+    if !(has_modifier || has_evidence_domain && has_evaluation_domain) {
+        return None;
+    }
+    let query = strip_implicit_research_prefix(normalized);
+    valid_search_query(query)
+}
+
+fn starts_with_any(value: &str, prefixes: &[&str]) -> bool {
+    prefixes.iter().any(|prefix| value.starts_with(prefix))
+}
+
+fn strip_implicit_research_prefix(value: &str) -> &str {
+    for prefix in IMPLICIT_RESEARCH_QUESTION_PREFIXES {
+        if let Some(stripped) = value.strip_prefix(prefix) {
+            return stripped;
+        }
+    }
+    value
 }
 
 fn contains_any_search_marker(normalized: &str, markers: &[&str]) -> bool {
