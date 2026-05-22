@@ -127,6 +127,7 @@ pub fn build_evidence_links(prompt: &str, log: &EventLog, response_link: &str) -
             // combined-ranking strategy so memory consumers can reconstruct
             // the multi-engine reasoning offline.
             "web_search:request" => format!("web_search:request:{}", event.payload),
+            "web_search:query_kind" => format!("web_search:query_kind:{}", event.payload),
             "web_search:provider" => format!("web_search:provider:{}", event.payload),
             "web_search:language" => format!("web_search:language:{}", event.payload),
             "web_search:combined" => format!("web_search:combined:{}", event.payload),

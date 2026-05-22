@@ -11,7 +11,7 @@ use crate::web_search_core::{
 };
 
 use super::finalize_simple;
-use super::web_search_intent::extract_web_search_query;
+use super::web_search_intent::{extract_web_search_request, WebSearchQueryKind};
 
 /// Match prompts that explicitly ask the engine to perform an HTTP request
 /// (e.g. `fetch google.com`, `Сделай запрос к google.com`). In the browser
@@ -157,8 +157,10 @@ pub fn try_web_search(
     normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
-    let query = extract_web_search_query(prompt, normalized)?;
+    let request = extract_web_search_request(prompt, normalized)?;
+    let query = request.query;
     log.append("web_search:request", query.clone());
+    log.append("web_search:query_kind", request.kind.as_str());
     for provider in WEB_SEARCH_PROVIDERS {
         log.append("web_search:provider", (*provider).to_owned());
     }
@@ -166,6 +168,20 @@ pub fn try_web_search(
     let provider_summary = WEB_SEARCH_PROVIDERS.join(", ");
     let language = detect_language(prompt).slug();
     let body = match language {
+        "ru" if request.kind == WebSearchQueryKind::ImplicitResearchQuestion => format!(
+            "Распознан исследовательский вопрос для `{query}`.\n\n\
+             Чтобы ответить на такой вопрос без локального правила, браузерная \
+             демо-версия formal-ai ищет проверяемые источники: по умолчанию \
+             DuckDuckGo Instant Answer (CORS-совместимый, без ключа), затем \
+             Internet Archive, Wikipedia REST, Wikidata и Wiktionary в указанном \
+             порядке приоритета. Топ-10 ссылок от каждого провайдера объединяются \
+             через reciprocal rank fusion (`score(d) = Σ 1 / ({WEB_SEARCH_RRF_K} + \
+             rank_i(d))`), а диагностика записывает провайдеры, ранги, объединение \
+             и итоговые ссылки, чтобы рассуждение можно было проверить.\n\n\
+             Provider: duckduckgo (default)\n\
+             Providers considered: {provider_summary}\n\
+             Combined ranking: reciprocal rank fusion (k = {WEB_SEARCH_RRF_K})"
+        ),
         "ru" => format!(
             "Поиск в интернете запрошен для `{query}`.\n\n\
              В браузерной демо-версии formal-ai по умолчанию использует DuckDuckGo \
@@ -179,6 +195,19 @@ pub fn try_web_search(
              «Другие источники». Для произвольной страницы используйте \
              `fetch example.com`; если прямой `fetch()` заблокирован CORS, \
              браузер проверит frame-policy перед встроенным iframe.\n\n\
+             Provider: duckduckgo (default)\n\
+             Providers considered: {provider_summary}\n\
+             Combined ranking: reciprocal rank fusion (k = {WEB_SEARCH_RRF_K})"
+        ),
+        _ if request.kind == WebSearchQueryKind::ImplicitResearchQuestion => format!(
+            "Open research question detected for `{query}`.\n\n\
+             To answer this without a local rule, the browser demo searches \
+             verifiable sources: DuckDuckGo Instant Answer by default, then \
+             Internet Archive, Wikipedia REST, Wikidata, and Wiktionary in \
+             priority order. The top-10 links from each provider are merged \
+             with reciprocal rank fusion (`score(d) = Σ 1 / ({WEB_SEARCH_RRF_K} + \
+             rank_i(d))`), and diagnostics record each provider, rank, fusion \
+             step, and final source link so the reasoning path can be inspected.\n\n\
              Provider: duckduckgo (default)\n\
              Providers considered: {provider_summary}\n\
              Combined ranking: reciprocal rank fusion (k = {WEB_SEARCH_RRF_K})"
