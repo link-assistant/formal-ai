@@ -474,10 +474,7 @@ mod tests {
         // Assert on the relative semantic directory directly to avoid any
         // platform-specific quirks of joining absolute paths.
         let location = cache_location("https://example.com/x");
-        assert_eq!(
-            location.directory,
-            PathBuf::from("http-cache").join("misc"),
-        );
+        assert_eq!(location.directory, PathBuf::from("http-cache").join("misc"),);
         assert!(!location.stem.is_empty());
     }
 
