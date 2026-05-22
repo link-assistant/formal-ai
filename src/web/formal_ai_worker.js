@@ -3965,8 +3965,48 @@ function extractWiktionaryTranslation(wikitext, targetLang) {
   return null;
 }
 
+async function resolveWiktionaryLemma(surface, language) {
+  // Inflected forms (e.g. Russian plural `помидоры`) are not always stored
+  // as separate pages on the source-language Wiktionary. OpenSearch returns
+  // the closest matching titles; the first hit is the dictionary lemma
+  // (`помидор`) we want to look up next.
+  if (typeof fetch !== "function" || !surface) return null;
+  const host = WIKTIONARY_SEARCH_HOSTS[language] || WIKTIONARY_SEARCH_HOSTS.en;
+  const url = `${host}?action=opensearch&search=${encodeURIComponent(
+    surface,
+  )}&limit=1&format=json&origin=*`;
+  try {
+    const response = await fetch(url, {
+      headers: {
+        accept: "application/json",
+        "api-user-agent":
+          "formal-ai-demo (https://github.com/link-assistant/formal-ai)",
+      },
+    });
+    if (!response || !response.ok) return null;
+    const data = await response.json();
+    const titles = Array.isArray(data) && Array.isArray(data[1]) ? data[1] : [];
+    const lemma = titles[0];
+    if (typeof lemma !== "string" || !lemma || lemma === surface) return null;
+    return lemma;
+  } catch (_error) {
+    return null;
+  }
+}
+
 async function liveWiktionaryTranslate(surface, source, target) {
-  const main = await fetchWiktionaryWikitext(surface, source);
+  // Run the direct page fetch and the OpenSearch lemma resolution in
+  // parallel. For inflected forms (e.g. `помидоры`) the direct fetch
+  // 404s, and chaining the lemma lookup sequentially after it added a
+  // third sequential round-trip that pushed CI past the 5s expect cap.
+  const [direct, lemma] = await Promise.all([
+    fetchWiktionaryWikitext(surface, source),
+    resolveWiktionaryLemma(surface, source),
+  ]);
+  let main = direct;
+  if (!main && lemma) {
+    main = await fetchWiktionaryWikitext(lemma, source);
+  }
   if (!main) return null;
   let wikitext = main;
   if (/\{\{see translation subpage\|/i.test(main)) {
