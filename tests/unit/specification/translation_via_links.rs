@@ -160,6 +160,44 @@ fn issue_210_russian_translation_prompts_keep_translation_intent() {
 }
 
 #[test]
+fn issue_230_russian_compositional_translation_handles_search_phrase() {
+    let response = answer("Переведи \"Найти синонимы или примеры согласования\" на ангилйский");
+    assert_eq!(
+        response.intent, "translate_ru_to_en",
+        "reported prompt should remain a Russian to English translation, got {}: {}",
+        response.intent, response.answer,
+    );
+    assert!(
+        response
+            .answer
+            .contains("Find synonyms or examples of agreement"),
+        "expected the reported phrase to translate compositionally, got: {}",
+        response.answer,
+    );
+    assert!(
+        !response.answer.contains("[en]") && !response.answer.contains("[En]"),
+        "reported phrase must not fall back to an English placeholder, got: {}",
+        response.answer,
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link == "language_from:ru"),
+        "translation should record Russian source language, got {:?}",
+        response.evidence_links,
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link == "language_to:en"),
+        "translation should record English target language, got {:?}",
+        response.evidence_links,
+    );
+}
+
+#[test]
 fn translation_meaning_registry_covers_extended_phrases() {
     // R215: the formalize → meaning → deformalize pipeline must cover more
     // than the single hardcoded greeting_how_are_you id.

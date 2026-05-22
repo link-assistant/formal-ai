@@ -1,0 +1,15 @@
+Command:
+
+```text
+cargo run -- chat --prompt 'Переведи "Найти синонимы или примеры согласования" на ангилйский'
+```
+
+Observed output before the fix:
+
+```text
+"[En] Найти синонимы или примеры согласования"
+```
+
+The CLI reproduced the browser-reported failure: the translation handler
+recognized `translate_ru_to_en`, but the pipeline had no target-language
+candidate and rendered the placeholder fallback.
