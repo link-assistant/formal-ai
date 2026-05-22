@@ -567,6 +567,45 @@ test.describe('formal-ai demo UI', () => {
     await expect(page.locator('[data-testid="setting-theme"]')).toHaveValue('dark');
   });
 
+  test('Issue #226: quoted language prose is not a UI language command across supported languages', async ({ page }) => {
+    await switchToManualMode(page);
+
+    const quotedPrompts = [
+      [
+        'Gemini answered that English Wikipedia does not have a separate article',
+        'titled "agreement in a sentence", but it has an article about Russian grammar.',
+      ].join(' '),
+      [
+        'Google Gemini ответил мне так -',
+        'В русскоязычной Википедии нет отдельной статьи с названием «Согласованность в предложении»,',
+        'однако есть статья «Согласование (грамматика)» о грамматике русского языка.',
+        'Можешь научиться делать так же?',
+      ].join(' '),
+      'हिन्दी विकिपीडिया में रूसी भाषा पर लेख है। क्या तुम ऐसा उत्तर सीख सकते हो?',
+      '中文维基百科有一篇关于俄语语言的条目。可以学习这种回答吗？',
+    ];
+
+    for (const prompt of quotedPrompts) {
+      const quotedAnswer = await sendPrompt(page, prompt);
+      await expect(quotedAnswer).not.toContainText('Done. UI language is now');
+      await expect(page.locator('[data-testid="setting-ui-language"]')).toHaveValue('auto');
+    }
+
+    const commands = [
+      { prompt: 'set ui language to english', value: 'en' },
+      { prompt: 'переключи язык на русский', value: 'ru' },
+      { prompt: 'भाषा हिंदी सेट करें', value: 'hi' },
+      { prompt: '设置界面语言为中文', value: 'zh' },
+    ];
+
+    for (const { prompt, value } of commands) {
+      const explicitCommand = await sendPrompt(page, prompt);
+      await expect(explicitCommand).toContainText(`UI language is now ${value}`);
+      await expect(page.locator('[data-testid="setting-ui-language"]')).toHaveValue(value);
+      await expect(page.locator('html')).toHaveAttribute('lang', value);
+    }
+  });
+
   test('composer does not expose an unused preview control', async ({ page }) => {
     await switchToManualMode(page);
 

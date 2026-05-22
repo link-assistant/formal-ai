@@ -192,6 +192,10 @@ function includesAnyText(value, terms) {
   return terms.some((term) => value.includes(term));
 }
 
+function matchesAnyPattern(value, patterns) {
+  return patterns.some((pattern) => pattern.test(value));
+}
+
 const COMMAND_ON_TERMS = [
   "turn on",
   "enable",
@@ -228,6 +232,68 @@ function detectToggleCommand(normalized, featureTerms) {
   if (includesAnyText(normalized, COMMAND_OFF_TERMS)) return false;
   if (includesAnyText(normalized, COMMAND_ON_TERMS)) return true;
   return null;
+}
+
+const UI_LANGUAGE_COMMAND_TERMS = [
+  "switch",
+  "change",
+  "set",
+  "use",
+  "select",
+  "configure",
+  "переключи",
+  "переключить",
+  "смени",
+  "сменить",
+  "измени",
+  "изменить",
+  "установи",
+  "установить",
+  "поставь",
+  "поставить",
+  "выбери",
+  "выбрать",
+  "используй",
+  "использовать",
+  "поменяй",
+  "поменять",
+  "настрой",
+  "настроить",
+  "切换",
+  "设置",
+  "使用",
+  "选择",
+  "बदल",
+  "सेट",
+  "चुन",
+];
+
+const UI_LANGUAGE_OBJECT_TERMS = [
+  "ui language",
+  "interface language",
+  "app language",
+  "application language",
+  "language",
+  "язык интерфейса",
+  "язык приложения",
+  "язык ui",
+  "язык",
+  "语言",
+  "भाषा",
+];
+
+const UI_LANGUAGE_SHORT_PATTERNS = [
+  /^(?:ui language|interface language|app language|application language|language)\s*(?:=|:|to)?\s*(?:russian|english|chinese|hindi|auto|system|ru|en|zh|hi)$/u,
+  /^язык(?:\s+интерфейса|\s+приложения)?\s*(?:=|:|на)?\s*(?:русский|английский|китайский|хинди|авто|системный|ru|en|zh|hi)$/u,
+  /^(?:русский|английский|китайский|хинди|авто|системный)\s+язык(?:\s+интерфейса|\s+приложения)?$/u,
+  /^(?:俄语|英语|中文|汉语|自动)\s*语言$/u,
+  /^भाषा\s*(?:=|:)?\s*(?:हिन्दी|हिंदी|अंग्रेज़ी|अंग्रेजी|auto|system)$/u,
+];
+
+function isExplicitUiLanguageCommand(normalized) {
+  if (matchesAnyPattern(normalized, UI_LANGUAGE_SHORT_PATTERNS)) return true;
+  if (!includesAnyText(normalized, UI_LANGUAGE_OBJECT_TERMS)) return false;
+  return includesAnyText(normalized, UI_LANGUAGE_COMMAND_TERMS);
 }
 
 function commandNumberValue(normalized, terms) {
@@ -414,7 +480,7 @@ function recognizeInterfaceCommand(text) {
     }
   }
 
-  if (includesAnyText(normalized, ["language", "ui language", "язык", "语言", "भाषा"])) {
+  if (isExplicitUiLanguageCommand(normalized)) {
     if (includesAnyText(normalized, ["russian", "рус", "俄语"])) {
       return { kind: "set_preference", key: "uiLanguage", value: "ru", intent: "configure_language", label: "UI language" };
     }

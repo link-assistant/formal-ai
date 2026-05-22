@@ -433,6 +433,120 @@ for (const [language, phrases] of Object.entries(behaviorRulesListPatterns)) {
   }
 }
 
+const wikipediaArticleQuestionCases = {
+  en: [
+    {
+      prompt: 'does wikipedia have an article about Agreement (linguistics)',
+      expectedTitle: 'Agreement (linguistics)',
+      coverageGroup: 'exact_title',
+    },
+    {
+      prompt: 'agreement in a sentence - is there a wikipedia article',
+      expectedTitle: 'Agreement (linguistics)',
+      coverageGroup: 'grammar_context',
+    },
+  ],
+  ru: [
+    {
+      prompt: 'есть ли в википедии статья о Согласование (грамматика)',
+      expectedTitle: 'Согласование (грамматика)',
+      coverageGroup: 'exact_title',
+    },
+    {
+      prompt: 'согласованность в предложении - есть такая статья в википедии',
+      expectedTitle: 'Согласование (грамматика)',
+      coverageGroup: 'grammar_context',
+    },
+  ],
+  hi: [
+    {
+      prompt: 'क्या विकिपीडिया पर व्याकरणिक सहमति लेख है',
+      expectedTitle: 'व्याकरणिक सहमति',
+      coverageGroup: 'exact_title',
+    },
+    {
+      prompt: 'वाक्य में सहमति - क्या विकिपीडिया पर ऐसा लेख है',
+      expectedTitle: 'व्याकरणिक सहमति',
+      coverageGroup: 'grammar_context',
+    },
+  ],
+  zh: [
+    {
+      prompt: '维基百科有一致 (语言学)条目吗',
+      expectedTitle: '一致 (语言学)',
+      coverageGroup: 'exact_title',
+    },
+    {
+      prompt: '句子中的一致 - 维基百科有这样的条目吗',
+      expectedTitle: '一致 (语言学)',
+      coverageGroup: 'grammar_context',
+    },
+  ],
+};
+
+assertMatrixMatchesSupportedLanguages(
+  'wikipediaArticleQuestionCases',
+  wikipediaArticleQuestionCases,
+);
+assertBalancedLanguageCaseCounts(
+  'wikipediaArticleQuestionCases',
+  wikipediaArticleQuestionCases,
+);
+assertPromptPatternCoverageGroups('wikipedia_article_question');
+
+{
+  const browserMultilingualTests = readRepoFile('tests/e2e/tests/multilingual.spec.js');
+  for (const [language, entries] of Object.entries(wikipediaArticleQuestionCases)) {
+    for (const entry of entries) {
+      assert(
+        patterns.some(
+          (pattern) =>
+            pattern.intent === 'wikipedia_article_question' &&
+            pattern.language === language &&
+            pattern.kind === 'phrase' &&
+            pattern.coverage_group === entry.coverageGroup &&
+            pattern.text === entry.prompt,
+        ),
+        `prompt-patterns.lino must document ${language} wikipedia_article_question ${entry.coverageGroup} prompt ${JSON.stringify(entry.prompt)}`,
+      );
+      assert(
+        browserMultilingualTests.includes(entry.prompt) &&
+          browserMultilingualTests.includes(entry.expectedTitle),
+        `tests/e2e/tests/multilingual.spec.js must cover ${language} wikipedia_article_question prompt ${JSON.stringify(entry.prompt)} and expected title ${JSON.stringify(entry.expectedTitle)}`,
+      );
+    }
+  }
+}
+
+const uiLanguageCommandCases = {
+  en: [{ prompt: 'set ui language to english', expectedValue: 'en' }],
+  ru: [{ prompt: 'переключи язык на русский', expectedValue: 'ru' }],
+  hi: [{ prompt: 'भाषा हिंदी सेट करें', expectedValue: 'hi' }],
+  zh: [{ prompt: '设置界面语言为中文', expectedValue: 'zh' }],
+};
+
+assertMatrixMatchesSupportedLanguages(
+  'uiLanguageCommandCases',
+  uiLanguageCommandCases,
+);
+assertBalancedLanguageCaseCounts(
+  'uiLanguageCommandCases',
+  uiLanguageCommandCases,
+);
+
+{
+  const browserDemoTests = readRepoFile('tests/e2e/tests/demo.spec.js');
+  for (const [language, entries] of Object.entries(uiLanguageCommandCases)) {
+    for (const entry of entries) {
+      assert(
+        browserDemoTests.includes(entry.prompt) &&
+          browserDemoTests.includes(entry.expectedValue),
+        `tests/e2e/tests/demo.spec.js must cover ${language} UI-language command ${JSON.stringify(entry.prompt)} -> ${entry.expectedValue}`,
+      );
+    }
+  }
+}
+
 const webSearchSourceMarkerCases = {
   en: [{ prompt: 'Find apple on the internet', query: 'apple' }],
   ru: [{ prompt: 'Найди яблоко в интернете', query: 'яблоко' }],

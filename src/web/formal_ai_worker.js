@@ -1118,6 +1118,103 @@ function extractConceptTerm(prompt) {
   return query ? query.term : null;
 }
 
+function cleanWikipediaArticleQuestionTerm(value) {
+  return String(value || "")
+    .trim()
+    .replace(/^[«»"“”‘’'`「」『』]+|[«»"“”‘’'`「」『』]+$/gu, "")
+    .replace(/[?!.。！？।]+$/gu, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function hasWikipediaArticleQuestionShape(value) {
+  const lower = String(value || "").toLowerCase();
+  if (!/(?:wikipedia|wiki|википед|维基百科|維基百科|विकिपीडिया)/u.test(lower)) return false;
+  const hasArticleWord = /(?:article|page|стать[ьяеию]|страниц|条目|條目|页面|頁面|文章|लेख|पृष्ठ)/u.test(lower);
+  if (!hasArticleWord) return false;
+  return /(?:is there|does .*have|exist|available|есть|существ|имеет|найд|назв|有|存在|有没有|是否有|吗|嗎|क्या|है|मौजूद)/u.test(lower);
+}
+
+function extractWikipediaArticleQuestionTerm(prompt) {
+  const raw = cleanWikipediaArticleQuestionTerm(prompt);
+  if (!raw || !hasWikipediaArticleQuestionShape(raw)) return null;
+
+  const dashMatch = raw.match(/^(.+?)\s+[-—–:]\s+(.+)$/u);
+  if (dashMatch && hasWikipediaArticleQuestionShape(dashMatch[2])) {
+    return cleanWikipediaArticleQuestionTerm(dashMatch[1]);
+  }
+
+  for (const pattern of [
+    /^(?:is|are)\s+there\s+(?:an?\s+)?(?:wikipedia|wiki)\s+(?:article|page)\s+(?:about|on|for)\s+(.+)$/iu,
+    /^does\s+(?:wikipedia|wiki)\s+have\s+(?:an?\s+)?(?:article|page)\s+(?:about|on|for)\s+(.+)$/iu,
+    /^(?:есть|существует|имеется)\s+(?:ли\s+)?(?:в\s+)?(?:русскоязычной\s+)?википедии\s+(?:отдельная\s+)?(?:статья|страница)\s+(?:о|об|про|с\s+названием)\s+(.+)$/iu,
+    /^(?:есть|существует|имеется)\s+(?:ли\s+)?(?:отдельная\s+)?(?:статья|страница)\s+(?:в\s+)?(?:русскоязычной\s+)?википедии\s+(?:о|об|про|с\s+названием)\s+(.+)$/iu,
+    /^(?:维基百科|維基百科)(?:上)?(?:有|存在)(?:关于|關於|名为|名為)?\s*(.+?)\s*(?:的)?(?:条目|條目|文章|页面|頁面)(?:吗|嗎)?$/iu,
+    /^(.+?)\s*(?:在)?(?:维基百科|維基百科)(?:上)?(?:有|存在)(?:这样(?:的)?|這樣(?:的)?|一篇)?(?:条目|條目|文章|页面|頁面)(?:吗|嗎)?$/iu,
+    /^(?:क्या\s+)?(?:विकिपीडिया|wiki)\s+(?:पर|में)\s+(.+?)\s+(?:के\s+बारे\s+में\s+)?(?:लेख|पृष्ठ)\s+(?:है|मौजूद\s+है)$/iu,
+    /^(?:क्या\s+)?(.+?)\s+(?:के\s+बारे\s+में\s+)?(?:विकिपीडिया|wiki)\s+(?:पर|में)\s+(?:ऐसा\s+)?(?:लेख|पृष्ठ)\s+(?:है|मौजूद\s+है)$/iu,
+  ]) {
+    const match = raw.match(pattern);
+    if (match) return cleanWikipediaArticleQuestionTerm(match[1]);
+  }
+
+  const trailingRussian = raw.match(/^(.+?)\s+(?:есть|существует|имеется)\s+(?:ли\s+)?(?:такая\s+)?(?:статья|страница)\s+(?:в\s+)?(?:русскоязычной\s+)?википедии$/iu);
+  if (trailingRussian) return cleanWikipediaArticleQuestionTerm(trailingRussian[1]);
+  const trailingHindi = raw.match(/^(.+?)\s+(?:के\s+बारे\s+में\s+)?(?:विकिपीडिया|wiki)\s+(?:पर|में)\s+(?:ऐसा\s+)?(?:लेख|पृष्ठ)\s+(?:है|मौजूद\s+है)$/iu);
+  if (trailingHindi) return cleanWikipediaArticleQuestionTerm(trailingHindi[1]);
+  const trailingChinese = raw.match(/^(.+?)\s*(?:在)?(?:维基百科|維基百科)(?:上)?(?:有|存在)(?:这样(?:的)?|這樣(?:的)?|一篇)?(?:条目|條目|文章|页面|頁面)(?:吗|嗎)?$/iu);
+  if (trailingChinese) return cleanWikipediaArticleQuestionTerm(trailingChinese[1]);
+
+  return null;
+}
+
+function refineWikipediaArticleQuestionLookup(term, language) {
+  const exactTerm = cleanWikipediaArticleQuestionTerm(term);
+  const query = {
+    exactTerm,
+    lookupTerm: exactTerm,
+    contextOriginal: "",
+  };
+  const lower = exactTerm.toLowerCase();
+  if (
+    (language === "ru" || /[а-яё]/iu.test(exactTerm)) &&
+    /\s(?:в|на)\s+(?:предложени[еяию]|предложениях|словосочетани[еяию]|словосочетаниях)$/iu.test(lower)
+  ) {
+    query.lookupTerm = cleanWikipediaArticleQuestionTerm(
+      exactTerm.replace(/\s(?:в|на)\s+(?:предложени[еяию]|предложениях|словосочетани[еяию]|словосочетаниях)$/iu, ""),
+    );
+    query.contextOriginal = "грамматика";
+  }
+  if (
+    (language === "en" || /^[\p{ASCII}\s]+$/u.test(exactTerm)) &&
+    /\s+in\s+(?:a\s+)?sentences?$/iu.test(lower)
+  ) {
+    query.lookupTerm = cleanWikipediaArticleQuestionTerm(
+      exactTerm.replace(/\s+in\s+(?:a\s+)?sentences?$/iu, ""),
+    );
+    query.contextOriginal = "grammar";
+  }
+  if (language === "hi" || /[\u0900-\u097f]/u.test(exactTerm)) {
+    const prefix = exactTerm.match(/^(?:वाक्य|वाक्यों)\s+में\s+(.+)$/u);
+    const suffix = exactTerm.match(/^(.+?)\s+(?:वाक्य|वाक्यों)\s+में$/u);
+    const match = prefix || suffix;
+    if (match) {
+      query.lookupTerm = cleanWikipediaArticleQuestionTerm(match[1]);
+      query.contextOriginal = "व्याकरण";
+    }
+  }
+  if (language === "zh" || /[\u3400-\u9fff]/u.test(exactTerm)) {
+    const prefix = exactTerm.match(/^(?:句子中(?:的)?|句子里(?:的)?|句中的)(.+)$/u);
+    const suffix = exactTerm.match(/^(.+?)(?:在)?句子(?:中|里)$/u);
+    const match = prefix || suffix;
+    if (match) {
+      query.lookupTerm = cleanWikipediaArticleQuestionTerm(match[1]);
+      query.contextOriginal = "语法";
+    }
+  }
+  return query;
+}
+
 // Issue #21: render a percent-encoded URL in its readable IRI form for
 // display, while leaving the original encoded form available as the href.
 // `decodeURI` keeps reserved URI delimiters (`; / ? : @ & = + $ , #`) intact,
@@ -5388,6 +5485,68 @@ function isPlausibleWikipediaSearchMatch(summary, term) {
   return false;
 }
 
+const LOOKUP_STEM_STOPWORDS = new Set([
+  "a",
+  "an",
+  "and",
+  "for",
+  "in",
+  "of",
+  "on",
+  "the",
+  "to",
+  "about",
+  "sentence",
+  "sentences",
+  "в",
+  "во",
+  "и",
+  "или",
+  "на",
+  "о",
+  "об",
+  "про",
+]);
+
+function hasSharedLookupStem(summary, term) {
+  const normalizedTerm = normalizeLookupText(term);
+  if (!normalizedTerm) return false;
+  const content = normalizeLookupText(
+    [
+      summary && summary.title,
+      summary && summary.matchedTitle,
+      summary && String(summary.matchedSlug || "").replace(/_/g, " "),
+      summary && summary.extract,
+    ]
+      .filter(Boolean)
+      .join(" "),
+  );
+  if (!content) return false;
+  const contentTokens = content.split(/\s+/).filter(Boolean);
+  for (const token of normalizedTerm.split(/\s+/).filter(Boolean)) {
+    if (LOOKUP_STEM_STOPWORDS.has(token) || token.length < 7) continue;
+    const stemLength = Math.min(8, token.length - 2);
+    const stem = token.slice(0, stemLength);
+    if (stem.length >= 5 && contentTokens.some((candidate) => candidate.startsWith(stem))) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function isArticleQuestionWikipediaMatch(summary, query) {
+  if (!summary) return false;
+  if (summary.matchKind === "direct") return true;
+  if (isPlausibleWikipediaSearchMatch(summary, query.exactTerm)) return true;
+  if (query.lookupTerm !== query.exactTerm && isPlausibleWikipediaSearchMatch(summary, query.lookupTerm)) {
+    return true;
+  }
+  if (!hasSharedLookupStem(summary, query.lookupTerm || query.exactTerm)) {
+    return false;
+  }
+  return !query.contextOriginal || hasSharedLookupStem(summary, query.contextOriginal);
+}
+
 // Resolve a context-qualified term to a Wikipedia page slug via full-text page
 // search. Tries multiple query formulations (uppercase term, mixed case) on the
 // detected language host then on English, returning the first match found.
@@ -5596,6 +5755,40 @@ function wikipediaClarificationMessage(summary, language) {
     return `क्या आपका मतलब "${title}" था? Wikipedia के इस लेख से उत्तर देने से पहले कृपया स्पष्ट करें।`;
   }
   return `Did you mean "${title}"? Please clarify before I answer from that Wikipedia article.`;
+}
+
+function wikipediaArticleQuestionMessage(summary, query, language, exactMatch) {
+  const humanUrl = humanizeUrl(summary.url);
+  const source = `Source: [${humanUrl}](${summary.url}) (wikipedia).`;
+  if (language === "ru") {
+    const wikipediaName =
+      summary.language === "ru" ? "русскоязычной Википедии" : "Wikipedia";
+    if (exactMatch) {
+      return `В Wikipedia есть статья «${summary.title}»: ${summary.extract}\n\nИсточник: [${humanUrl}](${summary.url}) (wikipedia).`;
+    }
+    return [
+      `В ${wikipediaName} я не нашёл отдельной статьи с названием «${query.exactTerm}», но ближайшая подходящая страница — «${summary.title}»: ${summary.extract}`,
+      `Источник: [${humanUrl}](${summary.url}) (wikipedia).`,
+    ].join("\n\n");
+  }
+  if (language === "zh") {
+    const zhSource = `来源：[${humanUrl}](${summary.url}) (wikipedia).`;
+    if (exactMatch) {
+      return `Wikipedia 有一篇“${summary.title}”条目：${summary.extract}\n\n${zhSource}`;
+    }
+    return `我没有找到标题为“${query.exactTerm}”的 Wikipedia 条目，但最接近的有用页面是“${summary.title}”：${summary.extract}\n\n${zhSource}`;
+  }
+  if (language === "hi") {
+    const hiSource = `स्रोत: [${humanUrl}](${summary.url}) (wikipedia).`;
+    if (exactMatch) {
+      return `Wikipedia पर "${summary.title}" लेख है: ${summary.extract}\n\n${hiSource}`;
+    }
+    return `मुझे Wikipedia पर "${query.exactTerm}" शीर्षक वाला अलग लेख नहीं मिला, लेकिन सबसे नज़दीकी उपयोगी पृष्ठ "${summary.title}" है: ${summary.extract}\n\n${hiSource}`;
+  }
+  if (exactMatch) {
+    return `Wikipedia has an article titled "${summary.title}": ${summary.extract}\n\n${source}`;
+  }
+  return `I did not find an exact Wikipedia article titled "${query.exactTerm}", but the closest useful page is "${summary.title}": ${summary.extract}\n\n${source}`;
 }
 
 // ---------------------------------------------------------------------------
@@ -6545,6 +6738,79 @@ async function tryWikipediaLookup(prompt, language, preferences) {
     content: bodyLines.join("\n\n"),
     confidence: 0.85,
     evidence,
+  };
+}
+
+async function tryWikipediaArticleQuestion(prompt, language, preferences) {
+  const term = extractWikipediaArticleQuestionTerm(prompt);
+  if (!term) return null;
+  const query = refineWikipediaArticleQuestionLookup(term, language);
+  if (!query.exactTerm) return null;
+
+  const exactSummary = await fetchWikipediaSummary(query.exactTerm, language, null);
+  let summary = exactSummary;
+  const exactMatch = exactSummary && exactSummary.matchKind === "direct";
+  if (!exactMatch && (query.lookupTerm !== query.exactTerm || query.contextOriginal)) {
+    const refinedSummary = await fetchWikipediaSummary(
+      query.lookupTerm,
+      language,
+      query.contextOriginal,
+    );
+    if (refinedSummary) summary = refinedSummary;
+  }
+  if (!summary) {
+    return tryTermKnowledgeFallback(query.exactTerm, language, null);
+  }
+  if (!exactMatch && !isArticleQuestionWikipediaMatch(summary, query)) {
+    const fallback = await tryTermKnowledgeFallback(
+      query.exactTerm,
+      language,
+      summary,
+    );
+    if (fallback) return fallback;
+    return null;
+  }
+
+  const guessProbability = numericPreference(
+    preferences && preferences.guessProbability,
+    0.8,
+    0,
+    1,
+  );
+  const humanUrl = humanizeUrl(summary.url);
+  const evidence = [
+    `wikipedia_article_question:${query.exactTerm}`,
+    `source:${humanUrl}`,
+    `language:${summary.language}`,
+  ];
+  if (query.lookupTerm !== query.exactTerm) {
+    evidence.push(`wikipedia_article_question:lookup:${query.lookupTerm}`);
+  }
+  if (query.contextOriginal) {
+    evidence.push(`wikipedia_article_question:context:${query.contextOriginal}`);
+  }
+  if (exactMatch) {
+    evidence.push("wikipedia_article_question:exact");
+  } else {
+    evidence.push(`wikipedia_article_question:closest_match:${summary.title}`);
+  }
+  if (!exactMatch && guessProbability < 0.5) {
+    evidence.push("ambiguity:ask");
+    return {
+      intent: "wikipedia_article_question",
+      content: wikipediaClarificationMessage(summary, language),
+      confidence: 0.65,
+      evidence,
+    };
+  }
+  if (!exactMatch) evidence.push("ambiguity:guess");
+  return {
+    intent: "wikipedia_article_question",
+    content: wikipediaArticleQuestionMessage(summary, query, language, exactMatch),
+    confidence: exactMatch ? 0.88 : 0.82,
+    evidence,
+    query: query.exactTerm,
+    formalizedObject: summary.title,
   };
 }
 
@@ -11054,6 +11320,40 @@ async function solve(prompt, history, prefs, userContext = {}) {
     events.push(`handler:${translation.intent}`);
     steps.push({ step: "dispatch_handler", detail: "tryTranslation" });
     return finalize(events, steps, toolCalls, translation, formalizationContext);
+  }
+
+  steps.push({ step: "invoke_tool", detail: "wikipedia_article_question" });
+  const earlyWikiArticleQuestion = await tryWikipediaArticleQuestion(
+    prompt,
+    language,
+    preferences,
+  );
+  if (earlyWikiArticleQuestion) {
+    events.push(`handler:${earlyWikiArticleQuestion.intent}`);
+    steps.push({
+      step: "dispatch_handler",
+      detail: "tryWikipediaArticleQuestion",
+    });
+    toolCalls.push({
+      tool: "wikipedia_article_question",
+      inputs: {
+        prompt,
+        language,
+        query: earlyWikiArticleQuestion.query || "",
+      },
+      outputs: {
+        intent: earlyWikiArticleQuestion.intent,
+        confidence: earlyWikiArticleQuestion.confidence,
+        formalizedObject: earlyWikiArticleQuestion.formalizedObject || "",
+      },
+    });
+    return finalize(
+      events,
+      steps,
+      toolCalls,
+      earlyWikiArticleQuestion,
+      formalizationContext,
+    );
   }
 
   const capabilities = tryCapabilities(prompt, normalized, preferences, history);

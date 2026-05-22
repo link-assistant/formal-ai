@@ -1,0 +1,83 @@
+
+> formal-ai-e2e@1.0.0 test:local
+> playwright test --config=playwright.local.config.js -g Issue #226
+
+[2m[WebServer] [22m(node:1809991) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 2 workers
+
+  ✓  2 [chromium] › tests/demo.spec.js:570:3 › formal-ai demo UI › Issue #226: quoted language prose is not a UI language command across supported languages (1.8s)
+  ✘  1 [chromium] › tests/multilingual.spec.js:1141:3 › Wikipedia REST fallback › Issue #226: Wikipedia article-existence questions cover supported languages (6.1s)
+  ✘  3 [chromium] › tests/multilingual.spec.js:1141:3 › Wikipedia REST fallback › Issue #226: Wikipedia article-existence questions cover supported languages (retry #1) (6.4s)
+
+
+  1) [chromium] › tests/multilingual.spec.js:1141:3 › Wikipedia REST fallback › Issue #226: Wikipedia article-existence questions cover supported languages 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoContainText[2m([22m[32mexpected[39m[2m)[22m failed
+
+    Locator: locator('[data-testid="chat-message"]').last()
+    Timeout: 5000ms
+    Expected pattern: [32m/लेख है/[39m
+    Received string:  [31m"FAformal-ai03:30 PMमैं समझ नहीं पाया। मैं अभी स्थानीय Links Notation नियमों से इसका उत्तर नहीं दे सकता। नियम देखने के लिए List behavior rules भेजें, फिर Show behavior rule unknown भेजें। इस संवाद को उत्तर सिखाने के लिए भेजें: When I say your prompt, answer your answer. स्थायी बदलाव के लिए memory export करें या Report issue का उपयोग करें।[39m
+    [31mReport missing rule"[39m
+
+    Call log:
+    [2m  - Expect "toContainText" with timeout 5000ms[22m
+    [2m  - waiting for locator('[data-testid="chat-message"]').last()[22m
+    [2m    14 × locator resolved to <article class="message assistant" data-testid="chat-message">…</article>[22m
+    [2m       - unexpected value "FAformal-ai03:30 PMमैं समझ नहीं पाया। मैं अभी स्थानीय Links Notation नियमों से इसका उत्तर नहीं दे सकता। नियम देखने के लिए List behavior rules भेजें, फिर Show behavior rule unknown भेजें। इस संवाद को उत्तर सिखाने के लिए भेजें: When I say your prompt, answer your answer. स्थायी बदलाव के लिए memory export करें या Report issue का उपयोग करें।[22m
+    [2mReport missing rule"[22m
+
+
+      1261 |       const last = await sendPrompt(page, prompt);
+      1262 |       await expect(last).toHaveClass(/assistant/);
+    > 1263 |       await expect(last).toContainText(marker);
+           |                          ^
+      1264 |       await expect(last).toContainText(title);
+      1265 |       await expect(last).toContainText(`${language}.wikipedia.org`);
+      1266 |       await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
+        at /tmp/gh-issue-solver-1779463302484/tests/e2e/tests/multilingual.spec.js:1263:26
+
+    Error Context: test-results/multilingual-Wikipedia-RES-97c23-s-cover-supported-languages-chromium/error-context.md
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoContainText[2m([22m[32mexpected[39m[2m)[22m failed
+
+    Locator: locator('[data-testid="chat-message"]').last()
+    Timeout: 5000ms
+    Expected pattern: [32m/लेख है/[39m
+    Received string:  [31m"FAformal-ai03:30 PMमैं समझ नहीं पाया। मैं अभी स्थानीय Links Notation नियमों से इसका उत्तर नहीं दे सकता। नियम देखने के लिए List behavior rules भेजें, फिर Show behavior rule unknown भेजें। इस संवाद को उत्तर सिखाने के लिए भेजें: When I say your prompt, answer your answer. स्थायी बदलाव के लिए memory export करें या Report issue का उपयोग करें।[39m
+    [31mReport missing rule"[39m
+
+    Call log:
+    [2m  - Expect "toContainText" with timeout 5000ms[22m
+    [2m  - waiting for locator('[data-testid="chat-message"]').last()[22m
+    [2m    14 × locator resolved to <article class="message assistant" data-testid="chat-message">…</article>[22m
+    [2m       - unexpected value "FAformal-ai03:30 PMमैं समझ नहीं पाया। मैं अभी स्थानीय Links Notation नियमों से इसका उत्तर नहीं दे सकता। नियम देखने के लिए List behavior rules भेजें, फिर Show behavior rule unknown भेजें। इस संवाद को उत्तर सिखाने के लिए भेजें: When I say your prompt, answer your answer. स्थायी बदलाव के लिए memory export करें या Report issue का उपयोग करें।[22m
+    [2mReport missing rule"[22m
+
+
+      1261 |       const last = await sendPrompt(page, prompt);
+      1262 |       await expect(last).toHaveClass(/assistant/);
+    > 1263 |       await expect(last).toContainText(marker);
+           |                          ^
+      1264 |       await expect(last).toContainText(title);
+      1265 |       await expect(last).toContainText(`${language}.wikipedia.org`);
+      1266 |       await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
+        at /tmp/gh-issue-solver-1779463302484/tests/e2e/tests/multilingual.spec.js:1263:26
+
+    Error Context: test-results/multilingual-Wikipedia-RES-97c23-s-cover-supported-languages-chromium-retry1/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/multilingual-Wikipedia-RES-97c23-s-cover-supported-languages-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/multilingual-Wikipedia-RES-97c23-s-cover-supported-languages-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [chromium] › tests/multilingual.spec.js:1141:3 › Wikipedia REST fallback › Issue #226: Wikipedia article-existence questions cover supported languages 
+  1 passed (16.3s)

@@ -1138,6 +1138,188 @@ test.describe('Wikipedia REST fallback', () => {
     await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
   });
 
+  test('Issue #226: Wikipedia article-existence questions cover supported languages', async ({ page }) => {
+    const articleSummaries = {
+      'Agreement_(linguistics)': {
+        language: 'en',
+        title: 'Agreement (linguistics)',
+        extract: 'Agreement is a grammatical phenomenon where words change form to match one another.',
+        url: 'https://en.wikipedia.org/wiki/Agreement_(linguistics)',
+      },
+      'Согласование_(грамматика)': {
+        language: 'ru',
+        title: 'Согласование (грамматика)',
+        extract: 'Согласование — одна из трёх основных разновидностей подчинительной синтаксической связи.',
+        url: 'https://ru.wikipedia.org/wiki/Согласование_(грамматика)',
+      },
+      'व्याकरणिक_सहमति': {
+        language: 'hi',
+        title: 'व्याकरणिक सहमति',
+        extract: 'व्याकरणिक सहमति वह संबंध है जिसमें शब्द व्याकरणिक रूप से मेल खाते हैं.',
+        url: 'https://hi.wikipedia.org/wiki/व्याकरणिक_सहमति',
+      },
+      '一致_(语言学)': {
+        language: 'zh',
+        title: '一致 (语言学)',
+        extract: '一致是语法中一个词的形式与另一个词相配合的现象。',
+        url: 'https://zh.wikipedia.org/wiki/一致_(语言学)',
+      },
+    };
+    const slugByLanguage = {
+      en: 'Agreement_(linguistics)',
+      ru: 'Согласование_(грамматика)',
+      hi: 'व्याकरणिक_सहमति',
+      zh: '一致_(语言学)',
+    };
+    const requestedSlugs = [];
+    const searchQueries = [];
+
+    await page.route('**/api/rest_v1/page/summary/**', async (route) => {
+      const slug = decodeURIComponent(route.request().url().split('/').pop() || '');
+      const language = new URL(route.request().url()).hostname.split('.')[0];
+      requestedSlugs.push({ language, slug });
+      const summary = articleSummaries[slug];
+      if (summary) {
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify({
+            title: summary.title,
+            type: 'standard',
+            extract: summary.extract,
+            content_urls: {
+              desktop: {
+                page: summary.url,
+              },
+            },
+          }),
+        });
+        return;
+      }
+      await route.fulfill({
+        status: 404,
+        contentType: 'application/json',
+        body: JSON.stringify({ httpCode: 404, httpReason: 'Not Found' }),
+      });
+    });
+
+    await page.route('**/rest.php/v1/search/page**', async (route) => {
+      const url = new URL(route.request().url());
+      const language = url.hostname.split('.')[0];
+      const query = url.searchParams.get('q') || '';
+      searchQueries.push({ language, query });
+      const summary = articleSummaries[slugByLanguage[language] || slugByLanguage.en];
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          pages: [
+            {
+              key: slugByLanguage[summary.language],
+              title: summary.title,
+              excerpt: summary.extract,
+              description: 'grammar article',
+            },
+          ],
+        }),
+      });
+    });
+
+    const exactCases = [
+      {
+        language: 'en',
+        prompt: 'does wikipedia have an article about Agreement (linguistics)',
+        title: 'Agreement (linguistics)',
+        slug: 'Agreement_(linguistics)',
+        marker: /has an article titled/i,
+      },
+      {
+        language: 'ru',
+        prompt: 'есть ли в википедии статья о Согласование (грамматика)',
+        title: 'Согласование (грамматика)',
+        slug: 'Согласование_(грамматика)',
+        marker: /есть статья/,
+      },
+      {
+        language: 'hi',
+        prompt: 'क्या विकिपीडिया पर व्याकरणिक सहमति लेख है',
+        title: 'व्याकरणिक सहमति',
+        slug: 'व्याकरणिक_सहमति',
+        marker: /लेख है/,
+      },
+      {
+        language: 'zh',
+        prompt: '维基百科有一致 (语言学)条目吗',
+        title: '一致 (语言学)',
+        slug: '一致_(语言学)',
+        marker: /有一篇/,
+      },
+    ];
+
+    for (const { language, prompt, title, slug, marker } of exactCases) {
+      const searchCountBefore = searchQueries.length;
+      const last = await sendPrompt(page, prompt);
+      await expect(last).toHaveClass(/assistant/);
+      await expect(last).toContainText(marker);
+      await expect(last).toContainText(title);
+      await expect(last).toContainText(`${language}.wikipedia.org`);
+      await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
+      expect(requestedSlugs).toContainEqual({ language, slug });
+      expect(searchQueries.slice(searchCountBefore)).toEqual([]);
+    }
+
+    const closestCases = [
+      {
+        language: 'en',
+        prompt: 'agreement in a sentence - is there a wikipedia article?',
+        title: 'Agreement (linguistics)',
+        slug: 'Agreement_(linguistics)',
+        context: 'grammar',
+        marker: /did not find an exact/i,
+      },
+      {
+        language: 'ru',
+        prompt: 'согласованность в предложении - есть такая статья в википедии?',
+        title: 'Согласование (грамматика)',
+        slug: 'Согласование_(грамматика)',
+        context: 'граммат',
+        marker: /не нашёл отдельной статьи/,
+      },
+      {
+        language: 'hi',
+        prompt: 'वाक्य में सहमति - क्या विकिपीडिया पर ऐसा लेख है?',
+        title: 'व्याकरणिक सहमति',
+        slug: 'व्याकरणिक_सहमति',
+        context: 'व्याकरण',
+        marker: /शीर्षक वाला अलग लेख नहीं मिला/,
+      },
+      {
+        language: 'zh',
+        prompt: '句子中的一致 - 维基百科有这样的条目吗?',
+        title: '一致 (语言学)',
+        slug: '一致_(语言学)',
+        context: '语法',
+        marker: /没有找到标题为/,
+      },
+    ];
+
+    for (const { language, prompt, title, slug, context, marker } of closestCases) {
+      const searchCountBefore = searchQueries.length;
+      const last = await sendPrompt(page, prompt);
+      await expect(last).toHaveClass(/assistant/);
+      await expect(last).toContainText(marker);
+      await expect(last).toContainText(title);
+      await expect(last).toContainText(`${language}.wikipedia.org`);
+      await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
+      expect(requestedSlugs).toContainEqual({ language, slug });
+      expect(
+        searchQueries
+          .slice(searchCountBefore)
+          .some((entry) => entry.language === language && entry.query.includes(context)),
+      ).toBe(true);
+    }
+  });
+
   // Issue #163: a short word query like "что такое что" should not accept an
   // unrelated full-text Wikipedia hit ("Знак ударения"). If direct Wikipedia
   // lookup misses and the search title is not a plausible term match, the

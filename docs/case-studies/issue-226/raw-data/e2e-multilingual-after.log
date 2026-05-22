@@ -1,0 +1,13 @@
+
+> formal-ai-e2e@1.0.0 test:local
+> playwright test --config=playwright.local.config.js -g Issue #226
+
+[2m[WebServer] [22m(node:1822070) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 2 workers
+
+  ✓  2 [chromium] › tests/multilingual.spec.js:1141:3 › Wikipedia REST fallback › Issue #226: Wikipedia article-existence questions cover supported languages (1.8s)
+  ✓  1 [chromium] › tests/demo.spec.js:570:3 › formal-ai demo UI › Issue #226: quoted language prose is not a UI language command across supported languages (7.4s)
+
+  2 passed (9.8s)
