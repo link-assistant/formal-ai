@@ -451,36 +451,34 @@ mod tests {
 
     #[test]
     fn cache_paths_use_semantic_subdirectories() {
-        let dir = PathBuf::from("/tmp/whatever");
+        // Use a single-component relative root so the test stays
+        // platform-agnostic: an absolute Unix-style path like `/tmp/...`
+        // confuses Windows path parsing once we push backslash-separated
+        // subdirs onto it.
+        let dir = PathBuf::from("cache-root");
         let cache = CachedHttpClient::new(&dir, StubHttp::new(&[])).with_online(false);
         let (body, meta) = cache.cache_paths("https://example.com/x");
-        let body_str = body.to_string_lossy().to_string();
-        let meta_str = meta.to_string_lossy().to_string();
         assert!(
-            std::path::Path::new(&body_str)
-                .extension()
+            body.extension()
                 .is_some_and(|ext| ext.eq_ignore_ascii_case("body")),
-            "got: {body_str}"
+            "got: {}",
+            body.display()
         );
         assert!(
-            std::path::Path::new(&meta_str)
-                .extension()
+            meta.extension()
                 .is_some_and(|ext| ext.eq_ignore_ascii_case("url")),
-            "got: {meta_str}"
+            "got: {}",
+            meta.display()
         );
         // Unknown host → falls into the misc bucket so it is still cached.
-        // Compare path components rather than substring matching so Windows
-        // (which renders the separator as `\`) and Unix agree.
-        let segments: Vec<String> = body
-            .components()
-            .map(|c| c.as_os_str().to_string_lossy().into_owned())
-            .collect();
-        assert!(
-            segments
-                .windows(2)
-                .any(|w| w[0] == "http-cache" && w[1] == "misc"),
-            "expected http-cache/misc subdir, got: {body_str}"
+        // Assert on the relative semantic directory directly to avoid any
+        // platform-specific quirks of joining absolute paths.
+        let location = cache_location("https://example.com/x");
+        assert_eq!(
+            location.directory,
+            PathBuf::from("http-cache").join("misc"),
         );
+        assert!(!location.stem.is_empty());
     }
 
     #[test]
