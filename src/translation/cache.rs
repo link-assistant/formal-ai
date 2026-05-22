@@ -469,8 +469,16 @@ mod tests {
             "got: {meta_str}"
         );
         // Unknown host → falls into the misc bucket so it is still cached.
+        // Compare path components rather than substring matching so Windows
+        // (which renders the separator as `\`) and Unix agree.
+        let segments: Vec<String> = body
+            .components()
+            .map(|c| c.as_os_str().to_string_lossy().into_owned())
+            .collect();
         assert!(
-            body_str.contains("http-cache/misc/"),
+            segments
+                .windows(2)
+                .any(|w| w[0] == "http-cache" && w[1] == "misc"),
             "expected http-cache/misc subdir, got: {body_str}"
         );
     }
