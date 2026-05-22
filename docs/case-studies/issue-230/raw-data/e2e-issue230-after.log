@@ -2,12 +2,12 @@
 > formal-ai-e2e@1.0.0 test:local
 > playwright test --config=playwright.local.config.js issue-230.spec.js
 
-[2m[WebServer] [22m(node:2198236) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(node:2285686) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
 [2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
 
 Running 2 tests using 1 worker
 
   ✓  1 [chromium] › tests/issue-230.spec.js:43:3 › Issue #230 Russian search-phrase translation › reported quoted phrase translates instead of using a placeholder (1.3s)
-  ✓  2 [chromium] › tests/issue-230.spec.js:53:3 › Issue #230 Russian search-phrase translation › unknown translation gaps are explicit instead of placeholders (1.2s)
+  ✓  2 [chromium] › tests/issue-230.spec.js:53:3 › Issue #230 Russian search-phrase translation › unknown translation gaps are explicit for every supported target language (2.6s)
 
-  2 passed (4.4s)
+  2 passed (5.9s)

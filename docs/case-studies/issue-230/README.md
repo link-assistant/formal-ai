@@ -51,9 +51,10 @@ Downloaded and generated artifacts live under `raw-data/`:
   dependency and bundle verification logs.
 - `cargo-fmt-check.log`, `clippy.log`, `check-file-size.log`,
   `i18n-catalog-check.log`, `language-parity-check.log`,
-  `intent-coverage-check.log`, `web-bundle-diff.log`,
-  `changelog-check.log`, `version-check.log`, `cargo-test.log`,
-  `cargo-doc-test.log`: local CI-style verification logs.
+  `language-test-coverage-check.log`, `intent-coverage-check.log`,
+  `web-bundle-diff.log`, `changelog-check.log`, `version-check.log`,
+  `cargo-test.log`, `cargo-doc-test.log`: local CI-style verification
+  logs.
 - `online-research.md`: external references used for the analysis.
 
 ## Timeline
@@ -70,6 +71,8 @@ Downloaded and generated artifacts live under `raw-data/`:
 | 2026-05-22 | A failing regression showed `Translate "zzqxqv" to Russian` still rendered `"[ru] zzqxqv"` when the pipeline had no candidates. |
 | 2026-05-22 | Rust and browser projection code was changed to treat zero candidates as explicit `translation_gap` evidence and user-facing gap text. |
 | 2026-05-22 | Focused Rust and Playwright regressions passed. |
+| 2026-05-22 20:52 | PR feedback requested CI/CD rules requiring tests for every supported language, not only Russian. |
+| 2026-05-22 | A diff-aware CI guard was added to require changed tests covering English, Russian, Hindi, and Chinese when a PR changes language-facing code. |
 
 ## Requirements And Status
 
@@ -86,6 +89,7 @@ Downloaded and generated artifacts live under `raw-data/`:
 | R9 | Add debug output if the root cause cannot be found. | Not needed; the root cause was reproduced and isolated. Existing `FORMAL_AI_TRANSLATION_DEBUG=1` tracing remains available. |
 | R10 | Report upstream issues if needed. | Not needed; no upstream Wiktionary/Wikidata defect was found. |
 | R11 | No translation miss may render a bracketed language placeholder such as `[en] ...` or `[ru] ...`. | Implemented with active Rust and Playwright regressions. |
+| R12 | CI/CD must require tests for every supported language: English, Russian, Hindi, and Chinese. | Implemented with `check:language-test-coverage`, stricter language-resource parity, and expanded gap regressions. |
 
 ## Root Cause
 
@@ -147,11 +151,19 @@ unknown language pair, even after the reported phrase was fixed.
     evidence links.
 - `tests/unit/specification/translation_via_links.rs`
   - Adds the reported prompt as a Rust regression.
-  - Adds unknown English and Russian source regressions proving gaps do
-    not render `[ru]`, `[Ru]`, `[en]`, or `[En]`.
+  - Adds supported-target-language regressions proving gaps do not
+    render `[en]`, `[ru]`, `[hi]`, or `[zh]` placeholders.
 - `tests/e2e/tests/issue-230.spec.js`
   - Adds a manual-mode browser regression for the reported prompt.
-  - Adds a browser regression for an unknown English -> Russian gap.
+  - Adds browser regressions for unknown translation gaps across every
+    supported target language.
+- `tests/e2e/scripts/check-language-test-coverage.mjs`
+  - Fails PRs that change language-facing code without adding or
+    updating tests for all supported languages.
+- `tests/e2e/scripts/check-language-change-parity.mjs`
+  - Now requires every supported language to change together in watched
+    language resources, rather than only requiring Hindi and Chinese
+    companion updates.
 
 ## Before / After
 
@@ -171,7 +183,7 @@ unknown language pair, even after the reported phrase was fixed.
   `[ru]` placeholder.
 - After architecture fix:
   `cargo test --test unit specification::translation_via_links::translation_gaps_are_reported_without_language_placeholders -- --nocapture`
-  passed.
+  passed for English, Russian, Hindi, and Chinese target-language gaps.
 - After fix:
   `cargo test --test unit specification::translation_via_links:: -- --nocapture`
   passed.
@@ -189,6 +201,7 @@ unknown language pair, even after the reported phrase was fixed.
   `git diff --exit-code -- src/web/vendor.bundle.js src/web/ocr.bundle.js`,
   `npm run --prefix tests/e2e check:i18n`,
   `npm run --prefix tests/e2e check:language-parity`,
+  `npm run --prefix tests/e2e check:language-test-coverage`,
   `npm run --prefix tests/e2e check:intent-coverage`,
   `rust-script scripts/check-changelog-fragment.rs`,
   `rust-script scripts/check-version-modification.rs`,

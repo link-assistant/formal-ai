@@ -199,22 +199,38 @@ fn issue_230_russian_compositional_translation_handles_search_phrase() {
 
 #[test]
 fn translation_gaps_are_reported_without_language_placeholders() {
-    let cases: &[(&str, &str, &str, &[&str])] = &[
+    let cases: &[(&str, &str, &str, &str, &[&str])] = &[
         (
+            "en",
+            "Переведи \"неведомослово\" на английский",
+            "translate_ru_to_en",
+            "translation_gap:неведомослово",
+            &["[en]", "[En]"],
+        ),
+        (
+            "ru",
             "Translate \"zzqxqv\" to Russian",
             "translate_en_to_ru",
             "translation_gap:zzqxqv",
             &["[ru]", "[Ru]"],
         ),
         (
-            "Переведи \"неведомослово\" на английский",
-            "translate_ru_to_en",
-            "translation_gap:неведомослово",
-            &["[en]", "[En]"],
+            "hi",
+            "Translate \"zzqxqv\" to Hindi",
+            "translate_en_to_hi",
+            "translation_gap:zzqxqv",
+            &["[hi]", "[Hi]"],
+        ),
+        (
+            "zh",
+            "Translate \"zzqxqv\" to Chinese",
+            "translate_en_to_zh",
+            "translation_gap:zzqxqv",
+            &["[zh]", "[Zh]"],
         ),
     ];
 
-    for (prompt, expected_intent, expected_gap, forbidden_placeholders) in cases {
+    for (language, prompt, expected_intent, expected_gap, forbidden_placeholders) in cases {
         let response = answer(prompt);
         assert_eq!(
             response.intent, *expected_intent,
@@ -242,6 +258,14 @@ fn translation_gaps_are_reported_without_language_placeholders() {
                 .iter()
                 .any(|link| link == expected_gap),
             "translation gap must be traceable as {expected_gap}, got {:?}",
+            response.evidence_links,
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == &format!("language_to:{language}")),
+            "translation gap should record target language {language} for {prompt:?}, got {:?}",
             response.evidence_links,
         );
     }
