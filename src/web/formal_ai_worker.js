@@ -5350,6 +5350,13 @@ const WIKIPEDIA_SEARCH_HOSTS = {
   zh: "https://zh.wikipedia.org/w/rest.php/v1/search/page",
 };
 
+const WIKIPEDIA_ACTION_API_HOSTS = {
+  en: "https://en.wikipedia.org/w/api.php",
+  ru: "https://ru.wikipedia.org/w/api.php",
+  hi: "https://hi.wikipedia.org/w/api.php",
+  zh: "https://zh.wikipedia.org/w/api.php",
+};
+
 const WIKTIONARY_SEARCH_HOSTS = {
   en: "https://en.wiktionary.org/w/api.php",
   ru: "https://ru.wiktionary.org/w/api.php",
@@ -5594,8 +5601,194 @@ async function searchWikipediaSlug(term, context, language) {
   return null;
 }
 
-async function fetchWikipediaSummary(term, language, context) {
+function decodeHtmlEntities(value) {
+  const named = {
+    amp: "&",
+    apos: "'",
+    mdash: "—",
+    ndash: "–",
+    gt: ">",
+    lt: "<",
+    nbsp: " ",
+    quot: '"',
+  };
+  return String(value || "")
+    .replace(/&#x([0-9a-f]+);/giu, (_match, code) => {
+      const parsed = Number.parseInt(code, 16);
+      return Number.isFinite(parsed) ? String.fromCodePoint(parsed) : "";
+    })
+    .replace(/&#(\d+);/gu, (_match, code) => {
+      const parsed = Number.parseInt(code, 10);
+      return Number.isFinite(parsed) ? String.fromCodePoint(parsed) : "";
+    })
+    .replace(/&([a-z]+);/giu, (match, name) => named[name.toLowerCase()] || match);
+}
+
+function stripHtmlToText(html) {
+  return decodeHtmlEntities(
+    String(html || "")
+      .replace(/<style\b[\s\S]*?<\/style>/giu, " ")
+      .replace(/<script\b[\s\S]*?<\/script>/giu, " ")
+      .replace(/<sup\b[\s\S]*?<\/sup>/giu, " ")
+      .replace(/<[^>]+>/gu, " "),
+  )
+    .replace(/\s+([,.;:!?])/gu, "$1")
+    .replace(/\s+/gu, " ")
+    .trim();
+}
+
+function truncateDisambiguationHtml(html) {
+  const text = String(html || "");
+  let end = text.length;
+  for (const marker of [
+    /<h[1-6]\b[^>]*id=["'](?:См\._также|See_also|Примечания|References|Notes)["']/iu,
+    /<div\b[^>]*id=["']disambig["']/iu,
+  ]) {
+    const match = marker.exec(text);
+    if (match && match.index > 0) end = Math.min(end, match.index);
+  }
+  return text.slice(0, end);
+}
+
+function deduplicateTextList(values) {
+  const out = [];
+  const seen = new Set();
+  for (const value of values) {
+    const text = String(value || "").trim();
+    if (!text) continue;
+    const key = normalizeLookupText(text);
+    if (!key || seen.has(key)) continue;
+    seen.add(key);
+    out.push(text);
+  }
+  return out;
+}
+
+function extractDisambiguationEntriesFromHtml(html) {
+  const scoped = truncateDisambiguationHtml(html);
+  const entries = [];
+  const itemPattern = /<li\b[^>]*>([\s\S]*?)<\/li>/giu;
+  let match;
+  while ((match = itemPattern.exec(scoped)) !== null) {
+    const text = stripHtmlToText(match[1]);
+    if (!text || text.startsWith("↑")) continue;
+    entries.push(text);
+  }
+  return deduplicateTextList(entries).slice(0, 12);
+}
+
+function extractDisambiguationEntriesFromSummary(summary) {
+  const title = normalizeLookupText(summary && summary.title);
+  const raw = String((summary && summary.extract) || "");
+  const extract = raw.replace(
+    /^([^:\n]{1,80}):\s*([«»"'“”„]?[^\n]{1,80}[»"'“”„]?\s[—–-]\s)/u,
+    "$1:\n$2",
+  );
+  const lines = extract
+    .split(/\n+/u)
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .filter((line) => {
+      const normalized = normalizeLookupText(line.replace(/:$/u, ""));
+      return normalized && normalized !== title;
+    });
+  return deduplicateTextList(lines);
+}
+
+function definitionPrefixForDisambiguationEntry(entry) {
+  const text = String(entry || "").trim();
+  const dash = text.search(/\s[—–-]\s/u);
+  if (dash <= 0) return "";
+  return normalizeLookupText(
+    text
+      .slice(0, dash)
+      .trim()
+      .replace(/^[«»"'“”„]+|[«»"'“”„]+$/gu, ""),
+  );
+}
+
+function isDefinitionStyleDisambiguation(summary, requestedTerm, entries) {
+  const targets = [requestedTerm, summary && summary.title]
+    .map((value) => normalizeLookupText(value))
+    .filter(Boolean);
+  if (targets.length === 0) return false;
+  return entries.some((entry) => {
+    const prefix = definitionPrefixForDisambiguationEntry(entry);
+    return prefix && targets.includes(prefix);
+  });
+}
+
+async function fetchWikipediaDisambiguationEntries(summary) {
+  if (typeof fetch !== "function" || !summary) return [];
+  const base =
+    WIKIPEDIA_ACTION_API_HOSTS[summary.language] || WIKIPEDIA_ACTION_API_HOSTS.en;
+  const page = summary.matchedSlug || summary.title;
+  if (!page) return [];
+  const url = `${base}?action=parse&page=${encodeURIComponent(
+    page,
+  )}&prop=text&format=json&formatversion=2&redirects=1&origin=*`;
+  try {
+    const response = await fetch(url, {
+      headers: {
+        accept: "application/json",
+        "api-user-agent":
+          "formal-ai-demo (https://github.com/link-assistant/formal-ai)",
+      },
+    });
+    if (!response || !response.ok) return [];
+    const data = await response.json();
+    const text = data && data.parse ? data.parse.text : "";
+    let html = "";
+    if (typeof text === "string") {
+      html = text;
+    } else if (text && typeof text === "object" && text["*"]) {
+      html = text["*"];
+    }
+    return extractDisambiguationEntriesFromHtml(html);
+  } catch (_error) {
+    return [];
+  }
+}
+
+async function buildDefinitionStyleDisambiguationSummary(
+  data,
+  term,
+  language,
+  matchedSlug,
+  requestUrl,
+) {
+  const title = String(data.title || term);
+  const pageUrl =
+    (data.content_urls &&
+      data.content_urls.desktop &&
+      data.content_urls.desktop.page) ||
+    requestUrl;
+  const summary = {
+    title,
+    extract: String(data.extract || "").trim(),
+    url: pageUrl,
+    language,
+    matchKind: "disambiguation",
+    matchedSlug,
+  };
+  const summaryEntries = extractDisambiguationEntriesFromSummary(summary);
+  if (!isDefinitionStyleDisambiguation(summary, term, summaryEntries)) {
+    return null;
+  }
+  const parsedEntries = await fetchWikipediaDisambiguationEntries(summary);
+  const entries = parsedEntries.length > 0 ? parsedEntries : summaryEntries;
+  return {
+    ...summary,
+    extract: entries.join("\n"),
+    disambiguationEntries: entries,
+  };
+}
+
+async function fetchWikipediaSummary(term, language, context, options) {
   if (typeof fetch !== "function") return null;
+  const includeDefinitionDisambiguation = Boolean(
+    options && options.includeDefinitionDisambiguation,
+  );
   const apiHeaders = {
     accept: "application/json",
     "api-user-agent":
@@ -5659,7 +5852,19 @@ async function fetchWikipediaSummary(term, language, context) {
         if (!response || !response.ok) continue;
         const data = await response.json();
         if (!data || typeof data !== "object") continue;
-        if (data.type === "disambiguation") continue;
+        if (data.type === "disambiguation") {
+          if (includeDefinitionDisambiguation && !context) {
+            const disambiguation = await buildDefinitionStyleDisambiguationSummary(
+              data,
+              term,
+              host.language,
+              slug,
+              url,
+            );
+            if (disambiguation) return disambiguation;
+          }
+          continue;
+        }
         const extract = String(data.extract || "").trim();
         if (!extract) continue;
         const title = String(data.title || term);
@@ -5755,6 +5960,27 @@ function wikipediaClarificationMessage(summary, language) {
     return `क्या आपका मतलब "${title}" था? Wikipedia के इस लेख से उत्तर देने से पहले कृपया स्पष्ट करें।`;
   }
   return `Did you mean "${title}"? Please clarify before I answer from that Wikipedia article.`;
+}
+
+function wikipediaDisambiguationMessage(summary, language) {
+  const humanUrl = humanizeUrl(summary.url);
+  const entries = Array.isArray(summary.disambiguationEntries)
+    ? summary.disambiguationEntries
+    : String(summary.extract || "")
+        .split(/\n+/u)
+        .map((line) => line.trim())
+        .filter(Boolean);
+  const list = entries.map((entry) => `- ${entry}`).join("\n");
+  if (language === "ru") {
+    return `На странице Wikipedia «${summary.title}» перечислены значения:\n\n${list}\n\nИсточник: [${humanUrl}](${summary.url}) (wikipedia).`;
+  }
+  if (language === "zh") {
+    return `Wikipedia “${summary.title}”页面列出以下含义：\n\n${list}\n\n来源：[${humanUrl}](${summary.url}) (wikipedia).`;
+  }
+  if (language === "hi") {
+    return `Wikipedia पृष्ठ "${summary.title}" ये अर्थ सूचीबद्ध करता है:\n\n${list}\n\nस्रोत: [${humanUrl}](${summary.url}) (wikipedia).`;
+  }
+  return `Wikipedia's "${summary.title}" page lists these meanings:\n\n${list}\n\nSource: [${humanUrl}](${summary.url}) (wikipedia).`;
 }
 
 function wikipediaArticleQuestionMessage(summary, query, language, exactMatch) {
@@ -6685,7 +6911,9 @@ async function tryWikipediaLookup(prompt, language, preferences) {
   // ru.wikipedia.org does not redirect the all-lowercase slug.
   const wikiTerm = query.termOriginal || query.term;
   const wikiContext = query.contextOriginal || query.context;
-  const summary = await fetchWikipediaSummary(wikiTerm, language, wikiContext);
+  const summary = await fetchWikipediaSummary(wikiTerm, language, wikiContext, {
+    includeDefinitionDisambiguation: !wikiContext,
+  });
   if (!summary) {
     return tryTermKnowledgeFallback(wikiTerm, language, null);
   }
@@ -6715,6 +6943,19 @@ async function tryWikipediaLookup(prompt, language, preferences) {
   if (wikiContext) evidence.push(`wikipedia_lookup:context:${wikiContext}`);
   if (isClosestMatch) {
     evidence.push(`wikipedia_lookup:closest_match:${summary.title}`);
+  }
+  if (summary.matchKind === "disambiguation") {
+    const entryCount = Array.isArray(summary.disambiguationEntries)
+      ? summary.disambiguationEntries.length
+      : 0;
+    evidence.push(`wikipedia_lookup:disambiguation:${summary.title}`);
+    evidence.push(`wikipedia_lookup:disambiguation_entries:${entryCount}`);
+    return {
+      intent: "wikipedia_lookup",
+      content: wikipediaDisambiguationMessage(summary, language),
+      confidence: 0.84,
+      evidence,
+    };
   }
   if (isClosestMatch && guessProbability < 0.5) {
     evidence.push("ambiguity:ask");

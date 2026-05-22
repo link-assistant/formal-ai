@@ -1,0 +1,3 @@
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.09s
+     Running `target/debug/formal-ai chat --prompt 'Что такое существо?' --format text`
+Я не уверен, как на это ответить. Я пока не могу ответить на это по локальным правилам Links Notation. Чтобы посмотреть текущие правила, отправьте `List behavior rules`, затем `Show behavior rule unknown`. Чтобы научить этот диалог ответу, отправьте: When I say `ваш запрос`, answer `ваш ответ`. Для постоянного факта или правила экспортируйте память или нажмите Report issue, чтобы разработчики добавили встроенную возможность.

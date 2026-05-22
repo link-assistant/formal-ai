@@ -1095,6 +1095,96 @@ test.describe('Wikipedia REST fallback', () => {
     await expect(last).toContainText('en.wikipedia.org');
   });
 
+  test('Issue #232: Russian definition-style disambiguation page outranks Wikidata alias fallback', async ({ page }) => {
+    await page.route('**/api/rest_v1/page/summary/**', async (route) => {
+      const slug = decodeURIComponent(route.request().url().split('/').pop() || '');
+      if (slug === 'Существо') {
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify({
+            title: 'Существо',
+            type: 'disambiguation',
+            extract:
+              'Существо́:\nСущество — живой организм, живая особь, животное, человек.\nСущество — главное, существенное в ком-либо, чем-либо, его суть; сущность.',
+            content_urls: {
+              desktop: { page: 'https://ru.wikipedia.org/wiki/Существо' },
+            },
+          }),
+        });
+        return;
+      }
+      await route.fulfill({
+        status: 404,
+        contentType: 'application/json',
+        body: JSON.stringify({ httpCode: 404, httpReason: 'Not Found' }),
+      });
+    });
+
+    await page.route('**://ru.wikipedia.org/w/api.php**', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          parse: {
+            title: 'Существо',
+            pageid: 133629,
+            text:
+              '<p><b>Существо́</b>:</p>' +
+              '<ul>' +
+              '<li><b>Существо</b>&nbsp;— живой организм, живая особь, животное, человек.</li>' +
+              '<li><b>Существо</b> — главное, существенное в ком-либо, чем-либо, его суть; сущность.</li>' +
+              '</ul>' +
+              '<h2 id="В_культуре">В культуре</h2>' +
+              '<ul>' +
+              '<li>«Существо»&nbsp;— музыкальный альбом Дельфина (2011).</li>' +
+              '<li>«Существо»&nbsp;— фильм ужасов (США, 1982).</li>' +
+              '</ul>' +
+              '<h2 id="См._также">См. также</h2>',
+          },
+        }),
+      });
+    });
+
+    await page.route('**/rest.php/v1/search/page**', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ pages: [] }),
+      });
+    });
+
+    await page.route('**://*.wikidata.org/w/api.php**', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          search: [
+            {
+              id: 'Q729',
+              label: 'Animalia',
+              description: 'kingdom of multicellular eukaryotic organisms',
+              concepturi: 'https://www.wikidata.org/wiki/Q729',
+              match: { type: 'alias', language: 'ru', text: 'существо' },
+              aliases: ['существо'],
+            },
+          ],
+        }),
+      });
+    });
+
+    const last = await sendPrompt(page, 'Что такое существо?');
+    await expect(last).toHaveClass(/assistant/);
+    await expect(last).toContainText('Существо');
+    await expect(last).toContainText('живой организм');
+    await expect(last).toContainText('сущность');
+    await expect(last).toContainText('музыкальный альбом');
+    await expect(last).toContainText('ru.wikipedia.org/wiki/Существо');
+    await expect(last).not.toContainText('Animalia');
+    await expect(last).not.toContainText('wikidata.org');
+    await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
+  });
+
   test('Russian typo resolves to the closest Wikipedia match when guessing is preferred', async ({ page }) => {
     await page.route('**/api/rest_v1/page/summary/**', async (route) => {
       const slug = decodeURIComponent(route.request().url().split('/').pop() || '');
