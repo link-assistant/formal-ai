@@ -11,52 +11,52 @@
    Compiling num-traits v0.2.19
     Checking cfg-if v1.0.4
     Checking once_cell v1.21.4
-   Compiling wasm-bindgen v0.2.121
-    Checking pin-project-lite v0.2.17
-    Checking futures-core v0.3.32
-   Compiling syn v2.0.111
     Checking futures-task v0.3.32
+   Compiling wasm-bindgen v0.2.121
     Checking slab v0.4.12
+   Compiling syn v2.0.111
+    Checking futures-core v0.3.32
+    Checking pin-project-lite v0.2.17
     Checking utf8parse v0.2.2
-    Checking is_terminal_polyfill v1.70.2
-    Checking anstyle-parse v0.2.7
     Checking colorchoice v1.0.5
+    Checking anstyle-parse v0.2.7
     Checking futures-util v0.3.32
-   Compiling zmij v1.0.21
-    Checking anstyle v1.0.14
+    Checking is_terminal_polyfill v1.70.2
     Checking anstyle-query v1.1.5
    Compiling thiserror v1.0.69
+   Compiling zmij v1.0.21
+    Checking anstyle v1.0.14
     Checking num-integer v0.1.46
-    Checking anstream v0.6.21
     Checking aho-corasick v1.1.4
-    Checking regex-syntax v0.8.10
-    Checking strsim v0.11.1
-   Compiling rust_decimal v1.42.0
-   Compiling dtor-proc-macro v0.0.5
+    Checking anstream v0.6.21
    Compiling heck v0.5.0
-   Compiling serde_json v1.0.149
+    Checking regex-syntax v0.8.10
+   Compiling rust_decimal v1.42.0
     Checking clap_lex v1.1.0
-    Checking dtor v0.0.6
+   Compiling serde_json v1.0.149
+   Compiling dtor-proc-macro v0.0.5
+    Checking strsim v0.11.1
     Checking clap_builder v4.5.60
+    Checking dtor v0.0.6
     Checking nom v8.0.0
+   Compiling ctor-proc-macro v0.0.6
     Checking arrayvec v0.7.6
     Checking iana-time-zone v0.1.65
     Checking itoa v1.0.18
-   Compiling ctor-proc-macro v0.0.6
     Checking ctor v0.4.3
-    Checking regex-automata v0.4.14
-    Checking lino-env v0.1.0
-    Checking base64 v0.22.1
     Checking dotenvy v0.15.7
+    Checking lino-env v0.1.0
+    Checking regex-automata v0.4.14
+    Checking base64 v0.22.1
     Checking lazy_static v1.5.0
     Checking same-file v1.0.6
     Checking walkdir v2.5.0
    Compiling wasm-bindgen-macro-support v0.2.121
-    Checking regex v1.12.3
-    Checking links-notation v0.13.0
    Compiling serde_derive v1.0.228
    Compiling thiserror-impl v1.0.69
    Compiling clap_derive v4.5.55
+    Checking links-notation v0.13.0
+    Checking regex v1.12.3
     Checking lino-objects-codec v0.2.1
     Checking clap v4.5.60
    Compiling wasm-bindgen-macro v0.2.121
@@ -66,9 +66,9 @@
     Checking js-sys v0.3.98
     Checking console_error_panic_hook v0.1.7
     Checking num-rational v0.4.2
-    Checking serde-wasm-bindgen v0.6.5
-    Checking wasm-bindgen-futures v0.4.71
     Checking web-sys v0.3.98
+    Checking wasm-bindgen-futures v0.4.71
+    Checking serde-wasm-bindgen v0.6.5
     Checking link-calculator v0.17.2
-    Checking formal-ai v0.100.0 (/tmp/gh-issue-solver-1779450113799)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 21.21s
+    Checking formal-ai v0.100.0 (/tmp/gh-issue-solver-1779463302484)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 21.02s

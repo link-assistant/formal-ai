@@ -1121,18 +1121,18 @@ function extractConceptTerm(prompt) {
 function cleanWikipediaArticleQuestionTerm(value) {
   return String(value || "")
     .trim()
-    .replace(/^[«"“”'`]+|[»"“”'`]+$/gu, "")
-    .replace(/[?!.。]+$/gu, "")
+    .replace(/^[«»"“”‘’'`「」『』]+|[«»"“”‘’'`「」『』]+$/gu, "")
+    .replace(/[?!.。！？।]+$/gu, "")
     .replace(/\s+/g, " ")
     .trim();
 }
 
 function hasWikipediaArticleQuestionShape(value) {
   const lower = String(value || "").toLowerCase();
-  if (!/(?:wikipedia|wiki|википед)/u.test(lower)) return false;
-  const hasArticleWord = /(?:article|page|стать[ьяеию]|страниц)/u.test(lower);
+  if (!/(?:wikipedia|wiki|википед|维基百科|維基百科|विकिपीडिया)/u.test(lower)) return false;
+  const hasArticleWord = /(?:article|page|стать[ьяеию]|страниц|条目|條目|页面|頁面|文章|लेख|पृष्ठ)/u.test(lower);
   if (!hasArticleWord) return false;
-  return /(?:is there|does .*have|exist|available|есть|существ|имеет|найд|назв)/u.test(lower);
+  return /(?:is there|does .*have|exist|available|есть|существ|имеет|найд|назв|有|存在|有没有|是否有|吗|嗎|क्या|है|मौजूद)/u.test(lower);
 }
 
 function extractWikipediaArticleQuestionTerm(prompt) {
@@ -1149,6 +1149,10 @@ function extractWikipediaArticleQuestionTerm(prompt) {
     /^does\s+(?:wikipedia|wiki)\s+have\s+(?:an?\s+)?(?:article|page)\s+(?:about|on|for)\s+(.+)$/iu,
     /^(?:есть|существует|имеется)\s+(?:ли\s+)?(?:в\s+)?(?:русскоязычной\s+)?википедии\s+(?:отдельная\s+)?(?:статья|страница)\s+(?:о|об|про|с\s+названием)\s+(.+)$/iu,
     /^(?:есть|существует|имеется)\s+(?:ли\s+)?(?:отдельная\s+)?(?:статья|страница)\s+(?:в\s+)?(?:русскоязычной\s+)?википедии\s+(?:о|об|про|с\s+названием)\s+(.+)$/iu,
+    /^(?:维基百科|維基百科)(?:上)?(?:有|存在)(?:关于|關於|名为|名為)?\s*(.+?)\s*(?:的)?(?:条目|條目|文章|页面|頁面)(?:吗|嗎)?$/iu,
+    /^(.+?)\s*(?:在)?(?:维基百科|維基百科)(?:上)?(?:有|存在)(?:这样(?:的)?|這樣(?:的)?|一篇)?(?:条目|條目|文章|页面|頁面)(?:吗|嗎)?$/iu,
+    /^(?:क्या\s+)?(?:विकिपीडिया|wiki)\s+(?:पर|में)\s+(.+?)\s+(?:के\s+बारे\s+में\s+)?(?:लेख|पृष्ठ)\s+(?:है|मौजूद\s+है)$/iu,
+    /^(?:क्या\s+)?(.+?)\s+(?:के\s+बारे\s+में\s+)?(?:विकिपीडिया|wiki)\s+(?:पर|में)\s+(?:ऐसा\s+)?(?:लेख|पृष्ठ)\s+(?:है|मौजूद\s+है)$/iu,
   ]) {
     const match = raw.match(pattern);
     if (match) return cleanWikipediaArticleQuestionTerm(match[1]);
@@ -1156,6 +1160,10 @@ function extractWikipediaArticleQuestionTerm(prompt) {
 
   const trailingRussian = raw.match(/^(.+?)\s+(?:есть|существует|имеется)\s+(?:ли\s+)?(?:такая\s+)?(?:статья|страница)\s+(?:в\s+)?(?:русскоязычной\s+)?википедии$/iu);
   if (trailingRussian) return cleanWikipediaArticleQuestionTerm(trailingRussian[1]);
+  const trailingHindi = raw.match(/^(.+?)\s+(?:के\s+बारे\s+में\s+)?(?:विकिपीडिया|wiki)\s+(?:पर|में)\s+(?:ऐसा\s+)?(?:लेख|पृष्ठ)\s+(?:है|मौजूद\s+है)$/iu);
+  if (trailingHindi) return cleanWikipediaArticleQuestionTerm(trailingHindi[1]);
+  const trailingChinese = raw.match(/^(.+?)\s*(?:在)?(?:维基百科|維基百科)(?:上)?(?:有|存在)(?:这样(?:的)?|這樣(?:的)?|一篇)?(?:条目|條目|文章|页面|頁面)(?:吗|嗎)?$/iu);
+  if (trailingChinese) return cleanWikipediaArticleQuestionTerm(trailingChinese[1]);
 
   return null;
 }
@@ -1176,6 +1184,33 @@ function refineWikipediaArticleQuestionLookup(term, language) {
       exactTerm.replace(/\s(?:в|на)\s+(?:предложени[еяию]|предложениях|словосочетани[еяию]|словосочетаниях)$/iu, ""),
     );
     query.contextOriginal = "грамматика";
+  }
+  if (
+    (language === "en" || /^[\p{ASCII}\s]+$/u.test(exactTerm)) &&
+    /\s+in\s+(?:a\s+)?sentences?$/iu.test(lower)
+  ) {
+    query.lookupTerm = cleanWikipediaArticleQuestionTerm(
+      exactTerm.replace(/\s+in\s+(?:a\s+)?sentences?$/iu, ""),
+    );
+    query.contextOriginal = "grammar";
+  }
+  if (language === "hi" || /[\u0900-\u097f]/u.test(exactTerm)) {
+    const prefix = exactTerm.match(/^(?:वाक्य|वाक्यों)\s+में\s+(.+)$/u);
+    const suffix = exactTerm.match(/^(.+?)\s+(?:वाक्य|वाक्यों)\s+में$/u);
+    const match = prefix || suffix;
+    if (match) {
+      query.lookupTerm = cleanWikipediaArticleQuestionTerm(match[1]);
+      query.contextOriginal = "व्याकरण";
+    }
+  }
+  if (language === "zh" || /[\u3400-\u9fff]/u.test(exactTerm)) {
+    const prefix = exactTerm.match(/^(?:句子中(?:的)?|句子里(?:的)?|句中的)(.+)$/u);
+    const suffix = exactTerm.match(/^(.+?)(?:在)?句子(?:中|里)$/u);
+    const match = prefix || suffix;
+    if (match) {
+      query.lookupTerm = cleanWikipediaArticleQuestionTerm(match[1]);
+      query.contextOriginal = "语法";
+    }
   }
   return query;
 }
@@ -5334,6 +5369,8 @@ const LOOKUP_STEM_STOPWORDS = new Set([
   "the",
   "to",
   "about",
+  "sentence",
+  "sentences",
   "в",
   "во",
   "и",
@@ -5608,16 +5645,18 @@ function wikipediaArticleQuestionMessage(summary, query, language, exactMatch) {
     ].join("\n\n");
   }
   if (language === "zh") {
+    const zhSource = `来源：[${humanUrl}](${summary.url}) (wikipedia).`;
     if (exactMatch) {
-      return `Wikipedia 有一篇“${summary.title}”条目：${summary.extract}\n\n${source}`;
+      return `Wikipedia 有一篇“${summary.title}”条目：${summary.extract}\n\n${zhSource}`;
     }
-    return `I did not find an exact Wikipedia article titled "${query.exactTerm}", but the closest useful page is "${summary.title}": ${summary.extract}\n\n${source}`;
+    return `我没有找到标题为“${query.exactTerm}”的 Wikipedia 条目，但最接近的有用页面是“${summary.title}”：${summary.extract}\n\n${zhSource}`;
   }
   if (language === "hi") {
+    const hiSource = `स्रोत: [${humanUrl}](${summary.url}) (wikipedia).`;
     if (exactMatch) {
-      return `Wikipedia पर "${summary.title}" लेख है: ${summary.extract}\n\n${source}`;
+      return `Wikipedia पर "${summary.title}" लेख है: ${summary.extract}\n\n${hiSource}`;
     }
-    return `I did not find an exact Wikipedia article titled "${query.exactTerm}", but the closest useful page is "${summary.title}": ${summary.extract}\n\n${source}`;
+    return `मुझे Wikipedia पर "${query.exactTerm}" शीर्षक वाला अलग लेख नहीं मिला, लेकिन सबसे नज़दीकी उपयोगी पृष्ठ "${summary.title}" है: ${summary.extract}\n\n${hiSource}`;
   }
   if (exactMatch) {
     return `Wikipedia has an article titled "${summary.title}": ${summary.extract}\n\n${source}`;
@@ -11028,6 +11067,40 @@ async function solve(prompt, history, prefs, userContext = {}) {
     return finalize(events, steps, toolCalls, translation, formalizationContext);
   }
 
+  steps.push({ step: "invoke_tool", detail: "wikipedia_article_question" });
+  const earlyWikiArticleQuestion = await tryWikipediaArticleQuestion(
+    prompt,
+    language,
+    preferences,
+  );
+  if (earlyWikiArticleQuestion) {
+    events.push(`handler:${earlyWikiArticleQuestion.intent}`);
+    steps.push({
+      step: "dispatch_handler",
+      detail: "tryWikipediaArticleQuestion",
+    });
+    toolCalls.push({
+      tool: "wikipedia_article_question",
+      inputs: {
+        prompt,
+        language,
+        query: earlyWikiArticleQuestion.query || "",
+      },
+      outputs: {
+        intent: earlyWikiArticleQuestion.intent,
+        confidence: earlyWikiArticleQuestion.confidence,
+        formalizedObject: earlyWikiArticleQuestion.formalizedObject || "",
+      },
+    });
+    return finalize(
+      events,
+      steps,
+      toolCalls,
+      earlyWikiArticleQuestion,
+      formalizationContext,
+    );
+  }
+
   const capabilities = tryCapabilities(prompt, normalized, preferences, history);
   if (capabilities) {
     events.push(`handler:${capabilities.intent}`);
@@ -11259,40 +11332,6 @@ async function solve(prompt, history, prefs, userContext = {}) {
       },
     });
     return finalize(events, steps, toolCalls, webSearch, formalizationContext);
-  }
-
-  steps.push({ step: "invoke_tool", detail: "wikipedia_article_question" });
-  const wikiArticleQuestion = await tryWikipediaArticleQuestion(
-    prompt,
-    language,
-    preferences,
-  );
-  if (wikiArticleQuestion) {
-    events.push(`handler:${wikiArticleQuestion.intent}`);
-    steps.push({
-      step: "dispatch_handler",
-      detail: "tryWikipediaArticleQuestion",
-    });
-    toolCalls.push({
-      tool: "wikipedia_article_question",
-      inputs: {
-        prompt,
-        language,
-        query: wikiArticleQuestion.query || "",
-      },
-      outputs: {
-        intent: wikiArticleQuestion.intent,
-        confidence: wikiArticleQuestion.confidence,
-        formalizedObject: wikiArticleQuestion.formalizedObject || "",
-      },
-    });
-    return finalize(
-      events,
-      steps,
-      toolCalls,
-      wikiArticleQuestion,
-      formalizationContext,
-    );
   }
 
   steps.push({ step: "invoke_tool", detail: "wikipedia_lookup" });
