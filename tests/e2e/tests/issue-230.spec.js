@@ -49,4 +49,11 @@ test.describe('Issue #230 Russian search-phrase translation', () => {
     await expect(reply).not.toContainText('[en]');
     await expect(reply).not.toContainText('[En]');
   });
+
+  test('unknown translation gaps are explicit instead of placeholders', async ({ page }) => {
+    const reply = await sendPrompt(page, 'Translate "zzqxqv" to Russian');
+    await expect(reply).toContainText('could not translate');
+    await expect(reply).not.toContainText('[ru]');
+    await expect(reply).not.toContainText('[Ru]');
+  });
 });

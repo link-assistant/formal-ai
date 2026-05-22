@@ -198,6 +198,56 @@ fn issue_230_russian_compositional_translation_handles_search_phrase() {
 }
 
 #[test]
+fn translation_gaps_are_reported_without_language_placeholders() {
+    let cases: &[(&str, &str, &str, &[&str])] = &[
+        (
+            "Translate \"zzqxqv\" to Russian",
+            "translate_en_to_ru",
+            "translation_gap:zzqxqv",
+            &["[ru]", "[Ru]"],
+        ),
+        (
+            "Переведи \"неведомослово\" на английский",
+            "translate_ru_to_en",
+            "translation_gap:неведомослово",
+            &["[en]", "[En]"],
+        ),
+    ];
+
+    for (prompt, expected_intent, expected_gap, forbidden_placeholders) in cases {
+        let response = answer(prompt);
+        assert_eq!(
+            response.intent, *expected_intent,
+            "translation gap should stay on the translation handler for {prompt:?}, got {}: {}",
+            response.intent, response.answer,
+        );
+        for placeholder in *forbidden_placeholders {
+            assert!(
+                !response.answer.contains(placeholder),
+                "translation gap must not render placeholder {placeholder} for {prompt:?}, got: {}",
+                response.answer,
+            );
+        }
+        assert!(
+            response
+                .answer
+                .to_lowercase()
+                .contains("could not translate"),
+            "translation gap should be explicit to the user for {prompt:?}, got: {}",
+            response.answer,
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == expected_gap),
+            "translation gap must be traceable as {expected_gap}, got {:?}",
+            response.evidence_links,
+        );
+    }
+}
+
+#[test]
 fn translation_meaning_registry_covers_extended_phrases() {
     // R215: the formalize → meaning → deformalize pipeline must cover more
     // than the single hardcoded greeting_how_are_you id.

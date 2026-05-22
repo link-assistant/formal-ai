@@ -1,33 +1,29 @@
-    Blocking waiting for file lock on package cache
-    Blocking waiting for file lock on package cache
-    Blocking waiting for file lock on package cache
-    Blocking waiting for file lock on artifact directory
-   Compiling formal-ai v0.104.0 (/tmp/gh-issue-solver-1779473932728)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.17s
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.08s
      Running tests/unit/mod.rs (target/debug/deps/unit-336746293b2e950a)
 
-running 22 tests
+running 23 tests
 test specification::translation_via_links::cross_language_code_translation_preserves_semantics ... ignored, tracked requirement: cross-language code translation must preserve runnable semantics
 test specification::translation_via_links::every_answer_publishes_a_links_notation_trace ... ok
 test specification::translation_via_links::issue_218_unquoted_russian_translation ... ok
 test specification::translation_via_links::issue_210_russian_translation_prompts_keep_translation_intent ... ok
-test specification::translation_via_links::issue_217_single_russian_noun_quoted ... ok
 test specification::translation_via_links::issue_216_unquoted_apple_covers_every_supported_target_language ... ok
 test specification::translation_via_links::issue_230_russian_compositional_translation_handles_search_phrase ... ok
-test specification::translation_via_links::natural_translation_drops_terminal_when_source_has_none ... ok
+test specification::translation_via_links::issue_216_translate_apple_to_russian_without_quotes ... ok
+test specification::translation_via_links::issue_217_single_russian_noun_quoted ... ok
 test specification::translation_via_links::russian_capitalized_how_are_you_keeps_target_capitalization ... ok
-test specification::translation_via_links::issue_221_unquoted_common_noun_works_in_all_languages ... ok
+test specification::translation_via_links::native_hindi_and_chinese_unquoted_translation_prompts_are_supported ... ok
 test specification::translation_via_links::synonyms_across_languages_share_meaning ... ignored, tracked requirement: synonyms across languages should hash to the same meaning link
 test specification::translation_via_links::translation_declares_source_and_target_language_tags ... ignored, tracked requirement: translation must declare both source and target language tags
-test specification::translation_via_links::issue_216_translate_apple_to_russian_without_quotes ... ok
+test specification::translation_via_links::russian_translate_how_are_you_prompt_returns_english_surface ... ok
+test specification::translation_via_links::natural_translation_drops_terminal_when_source_has_none ... ok
 test specification::translation_via_links::translation_preserves_meaning_id_across_languages ... ignored, tracked requirement: translation between human languages should preserve the meaning link id
 test specification::translation_via_links::translation_request_returns_target_surface_form ... ignored, tracked requirement: translation request must return the target-language surface form
 test specification::translation_via_links::translation_trace_includes_intermediate_meaning ... ignored, tracked requirement: translation traces must include the intermediate Links Notation meaning record
 test specification::translation_via_links::untranslatable_concepts_are_flagged ... ignored, tracked requirement: untranslatable concepts must be flagged rather than approximated silently
-test specification::translation_via_links::russian_translate_how_are_you_prompt_returns_english_surface ... ok
-test specification::translation_via_links::native_hindi_and_chinese_unquoted_translation_prompts_are_supported ... ok
-test specification::translation_via_links::issue_221_common_russian_nouns_translate_to_english ... ok
+test specification::translation_via_links::translation_gaps_are_reported_without_language_placeholders ... ok
+test specification::translation_via_links::issue_221_unquoted_common_noun_works_in_all_languages ... ok
 test specification::translation_via_links::issue_221_common_english_nouns_translate_to_russian ... ok
+test specification::translation_via_links::issue_221_common_russian_nouns_translate_to_english ... ok
 test specification::translation_via_links::translation_meaning_registry_covers_extended_phrases ... ok
 
-test result: ok. 15 passed; 0 failed; 7 ignored; 0 measured; 512 filtered out; finished in 0.15s
+test result: ok. 16 passed; 0 failed; 7 ignored; 0 measured; 512 filtered out; finished in 0.13s

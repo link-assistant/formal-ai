@@ -85,8 +85,9 @@ fn default_cached_client() -> &'static CachedHttpClient<CurlClient> {
 /// candidate surface form along with the meaning id, so callers can
 /// both render the answer and embed the meaning id in their trace.
 ///
-/// Errors propagate as [`HttpError`]; the caller decides whether to render
-/// a placeholder or surface the error to the user.
+/// Errors propagate as [`HttpError`]; zero-candidate translations are
+/// returned as explicit gaps so callers can surface a traceable miss
+/// without manufacturing a target-language placeholder.
 pub fn translate_via_default_pipeline(
     surface: &str,
     source: &str,

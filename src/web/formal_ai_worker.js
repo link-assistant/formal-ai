@@ -4165,19 +4165,29 @@ async function liveWiktionaryTranslate(surface, source, target) {
 }
 
 async function translateSurface(surface, source, target) {
-  if (source === target) return String(surface || "");
+  if (source === target) {
+    return { surface: String(surface || ""), gap: false };
+  }
   const token = formalizeSurface(surface, source);
   if (token) {
     const primary = deformalizeMeaning(token, target);
-    if (primary) return primary;
+    if (primary) return { surface: primary, gap: false };
   }
   if (surface) {
     const live = await liveWiktionaryTranslate(surface, source, target);
-    if (live) return live;
+    if (live) return { surface: live, gap: false };
   }
   const compositional = translateCompositionalSurface(surface, source, target);
-  if (compositional) return compositional;
-  return `[${target}] ${surface}`;
+  if (compositional) return { surface: compositional, gap: false };
+  return { surface: null, gap: true };
+}
+
+function renderTranslationGap(surface, source, target) {
+  const trimmed = String(surface || "").trim();
+  if (!trimmed) {
+    return `I could not identify a source phrase to translate from ${source} to ${target}.`;
+  }
+  return `I could not translate "${trimmed}" from ${source} to ${target} with the available formalization data. I recorded this as a translation gap for follow-up.`;
 }
 
 async function tryTranslation(prompt, normalized) {
@@ -4203,19 +4213,26 @@ async function tryTranslation(prompt, normalized) {
   const source = detectTranslationSourceLanguage(normalized) || inferTranslationSource(prompt);
   const target = targetHint || "en";
   const meaningId = stableBehaviorRuleId("meaning", normalizeMeaningText(surfaceMeaning));
-  const rawTarget = await translateSurface(surface, source, target);
-  const translatedSurface = matchSourceFormatting(rawTarget, surface);
-  const content = surface ? `"${translatedSurface}"` : translatedSurface;
+  const translation = await translateSurface(surface, source, target);
+  let content;
+  if (translation.gap) {
+    content = renderTranslationGap(surface, source, target);
+  } else {
+    const translatedSurface = matchSourceFormatting(translation.surface || "", surface);
+    content = surface ? `"${translatedSurface}"` : translatedSurface;
+  }
+  const evidence = [
+    "handler:translation",
+    `language_from:${source}`,
+    `language_to:${target}`,
+    `meaning:${meaningId}`,
+  ];
+  if (translation.gap && surface) evidence.push(`translation_gap:${surface}`);
   return {
     intent: `translate_${source}_to_${target}`,
     content,
     confidence: 1.0,
-    evidence: [
-      "handler:translation",
-      `language_from:${source}`,
-      `language_to:${target}`,
-      `meaning:${meaningId}`,
-    ],
+    evidence,
   };
 }
 
