@@ -60,7 +60,7 @@ endpoints before any code change.
 - Web workers run in the same origin as the host page (GitHub
   Pages: `link-assistant.github.io`). They can `fetch()` any
   same-origin asset (the seed bundles, the WASM blob, and now
-  `translation-dictionary.json`).
+  `seed/translations.lino`).
 - Cross-origin fetches succeed only when the remote server emits
   `Access-Control-Allow-Origin: *`. Wiktionary's `api.php` does so
   when you pass `&origin=*`. So a live fallback is technically

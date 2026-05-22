@@ -203,7 +203,7 @@ fn main() {
     }
 
     let cache_dir = std::env::var("FORMAL_AI_TRANSLATION_CACHE_DIR")
-        .unwrap_or_else(|_| "data/translation-cache".to_owned());
+        .unwrap_or_else(|_| formal_ai::translation::cache::DEFAULT_CACHE_DIR.to_owned());
     println!("cache_dir = {cache_dir}");
     println!(
         "live = {} (set FORMAL_AI_LIVE_API=1 to hit the network)",

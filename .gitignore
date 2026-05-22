@@ -64,3 +64,11 @@ ci-logs/
 # The canonical source of truth is data/seed/; the web copy is rebuilt at
 # CI / dev-server start time so the browser worker can fetch the same files.
 src/web/seed/
+
+# Semantic-identity HTTP cache (populated by FORMAL_AI_LIVE_API=1). The
+# committed translation source of truth is data/seed/translations.lino;
+# cached Wikidata / Wiktionary responses are a local accelerator, not
+# pre-seeded data, so they stay out of git.
+data/wikidata-cache/
+data/wiktionary-cache/
+data/http-cache/

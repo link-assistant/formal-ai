@@ -43,6 +43,7 @@ browser demo, *without LLMs*.
 | 2026-05-21 | CLI reproduction confirms the placeholder lives in two places: the offline cache only has `яблоко`, and the browser registry only has `apple`. |
 | 2026-05-21 | Cache seed list expanded from 1 noun to 71×4 + 71 pairs; `examples/build_translation_dictionary.rs` ships the result as `src/web/translation-dictionary.json` so the browser worker can resolve common nouns without CORS-blocked API calls. |
 | 2026-05-21 | `FORMAL_AI_TRANSLATION_DEBUG=1` verbose tracing added to the Rust pipeline (issue #218 "Future work" item). |
+| 2026-05-22 | PR #222 review (konard) flags 3,000+ files in the diff and asks for a lightweight architecture. Cache is reorganised by **semantic data type** (`wikidata-cache/{search,entities,query,sparql}/`, `wiktionary-cache/<lang>/`, `http-cache/misc/`) and gitignored; the JSON dictionary is replaced by a single 128-entry **`data/seed/translations.lino`** file embedded into the Rust binary via `include_str!` and fetched by the browser worker through the standard seed loader. |
 
 ## Requirements (from issue #221)
 
@@ -122,43 +123,76 @@ convention, Wikidata SPARQL endpoint behaviour for polysemous lexemes).
   the issue exemplifies. `pairs` is now built procedurally so future
   expansions stay readable.
 
-### Pre-compiled offline dictionary
+### Single-file offline dictionary (revised 2026-05-22)
 
-- `examples/build_translation_dictionary.rs` (new): runs the cached
-  pipeline against the full seed list and emits
-  `src/web/translation-dictionary.json`. Schema:
+- `data/seed/translations.lino` (new): the canonical 128-entry
+  common-noun dictionary, indented Links Notation, ~1,300 lines.
+  Embedded into the Rust binary via `include_str!` and fetched by the
+  browser worker through the existing seed loader. One file → one
+  source of truth across Rust, CLI, browser, and tests.
+  Schema (one record per lemma):
 
-  ```json
-  {
-    "version": 1,
-    "entries": …,
-    "alias_count": …,
-    "by_lemma": {
-      "en": { "tomato": { "ru": "помидор", "hi": "टमाटर", "zh": "番茄" } },
-      "ru": { "помидор": { "en": "tomato" } }
-    },
-    "aliases": {
-      "ru": { "помидора": "помидор", "помидору": "помидор", … },
-      "en": { "tomatoes": "tomato", … }
-    }
-  }
+  ```text
+  translation_en_tomato
+    language "en"
+    lemma "tomato"
+    aliases "tomato|tomatoes"
+    target "ru"
+      surface "помидор"
+    target "hi"
+      surface "टमाटर"
+    target "zh"
+      surface "番茄"
   ```
 
-  Inflection forms are generated deterministically — Russian
-  declension suffixes by ending class and English plural rules — so
-  `Переведи "помидоры" на английский.` resolves to `tomato` without
-  another network call.
+  `src/translation/dictionary.rs` parses the file once at startup
+  (`OnceLock`) into a bidirectional `(language, surface_lower) →
+  entry` map plus a reverse `(target_lang, target_surface_lower) →
+  entry` map. The reverse map lets a single en→ru entry cover both
+  directions, keeping the 128-entry cap meaningful.
 
-### Browser worker
+- `examples/build_translation_dictionary.rs` (revised): runs the
+  cached pipeline against the seed list and writes
+  `data/seed/translations.lino` instead of a JSON file. Inflection
+  forms are generated deterministically — Russian declension suffixes
+  by ending class and English plural rules — so `Переведи "помидоры"
+  на английский.` still resolves to `tomato` via the alias index.
 
-- `src/web/formal_ai_worker.js`: `loadTranslationDictionary()` fetches
-  the JSON above during `init()` (alongside the existing seed loader),
-  and `translateSurface` consults `lookupDictionary(...)` before
-  falling back to the hand-curated registry / placeholder. The fetch
-  is same-origin (no CORS), and the JSON ships as a static asset.
-- The browser worker can therefore resolve every common noun in the
-  seed list **without** crossing the network, while keeping the
-  existing registry as a back-up for greeting phrases.
+### Generic semantic-key cache (revised 2026-05-22)
+
+- `src/translation/cache.rs` now routes URLs to per-source folders by
+  the **kind of data** they carry, not by URL hash:
+
+  | URL pattern | Cache folder |
+  | --- | --- |
+  | `wikidata.org/w/api.php?action=wbsearchentities` | `data/wikidata-cache/search/` |
+  | `wikidata.org/w/api.php?action=wbgetentities` | `data/wikidata-cache/entities/` |
+  | `wikidata.org/w/api.php?action=query` | `data/wikidata-cache/query/` |
+  | `query.wikidata.org/sparql` | `data/wikidata-cache/sparql/` |
+  | `<lang>.wiktionary.org` | `data/wiktionary-cache/<lang>/` |
+  | anything else | `data/http-cache/misc/` |
+
+  Every folder under `data/` listed above is gitignored — the cache
+  is a local accelerator, not pre-seeded data. Formalisation flows
+  beyond translation (entity resolution, fact lookup, etc.) reuse the
+  same buckets so we never grow a per-feature cache silo again.
+
+### Browser worker (revised 2026-05-22)
+
+- `src/web/seed_loader.js`: a new `extractTranslations` parser mirrors
+  the Rust `Dictionary::parse` (same bidirectional index, same alias
+  handling). It runs as part of the standard `buildSeed` step so the
+  worker hydrates the dictionary alongside facts, projects, concepts,
+  and intent routing — no separate fetch, no JSON glue.
+- `src/web/formal_ai_worker.js`: `TRANSLATION_DICTIONARY` is now
+  populated directly from `seed.translations`; `lookupDictionary`
+  consults the forward map first and falls back to the reverse map
+  for the opposite direction. The previous JSON loader and
+  `src/web/translation-dictionary.json` were deleted.
+- Because the dictionary is capped at 128 entries (R221.cap) and most
+  prompts will never hit it, the architecture stays mobile-friendly:
+  uncached lookups fall through to the live Wiktionary / Wikidata
+  APIs over `fetch()` instead of shipping a precomputed corpus.
 
 ### Tests
 
@@ -194,7 +228,7 @@ Raw CLI reproductions are in `raw-data/repro-*-before-fix.txt` and
 - `FORMAL_AI_LIVE_API=1 cargo run --release --example refresh_translation_cache`
   — no gaps in the new seed list (rerun once a quarter to refresh).
 - `cargo run --release --example build_translation_dictionary` —
-  rebuilds `src/web/translation-dictionary.json` from the cache.
+  rebuilds `data/seed/translations.lino` from the cache.
 - `npm --prefix tests/e2e run test:local -- tests/issue-221.spec.js` —
   browser worker regressions pass.
 

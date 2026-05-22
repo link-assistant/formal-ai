@@ -3893,54 +3893,30 @@ function inferTranslationSource(prompt) {
   return "en";
 }
 
-// Pre-compiled common-noun dictionary built by the Rust pipeline
-// (`examples/build_translation_dictionary.rs`) from Wiktionary +
-// Wikidata data. Fixes issue #221 by giving the worker offline access
-// to the same translations the CLI resolves through the live APIs —
-// the browser cannot reach those APIs (CORS for parse=wikitext), so we
-// ship the formalized result instead of faking it.
-let TRANSLATION_DICTIONARY = { by_lemma: {}, aliases: {} };
-let translationDictionaryLoaded = false;
-
-async function loadTranslationDictionary() {
-  if (translationDictionaryLoaded) return;
-  translationDictionaryLoaded = true;
-  if (typeof fetch !== "function") return;
-  try {
-    const response = await fetch(withAssetVersion("translation-dictionary.json"));
-    if (!response || !response.ok) return;
-    const data = await response.json();
-    if (data && typeof data === "object") {
-      TRANSLATION_DICTIONARY = {
-        by_lemma: (data.by_lemma && typeof data.by_lemma === "object") ? data.by_lemma : {},
-        aliases: (data.aliases && typeof data.aliases === "object") ? data.aliases : {},
-      };
-    }
-  } catch (_error) {
-    // Keep the empty dictionary on error — handler falls back to the
-    // legacy registry / placeholder.
-  }
-}
+// 128-noun translation dictionary hydrated from `seed/translations.lino`
+// at startup. Mirrors `src/translation/dictionary.rs` so the browser
+// shares one source of truth with the Rust pipeline. Fixes issue #221
+// by giving the worker offline access to the top common nouns when the
+// live Wiktionary/Wikidata APIs are unreachable (CORS for
+// parse=wikitext).
+let TRANSLATION_DICTIONARY = { entries: {}, reverse: {} };
 
 function lookupDictionary(surface, source, target) {
   const key = String(surface || "").trim().toLowerCase();
   if (!key) return null;
-  const byLang = TRANSLATION_DICTIONARY.by_lemma || {};
-  const aliasesByLang = TRANSLATION_DICTIONARY.aliases || {};
-  // Try direct lemma lookup first.
-  const sourceLemmas = byLang[source];
-  if (sourceLemmas) {
-    const entry = sourceLemmas[key];
-    if (entry && entry[target]) return entry[target];
+  if (source === target) return null;
+  const entries = TRANSLATION_DICTIONARY.entries || {};
+  const reverse = TRANSLATION_DICTIONARY.reverse || {};
+  const forward = entries[source + "|" + key];
+  if (forward && forward.language === source) {
+    const direct = forward.targets && forward.targets[target];
+    if (direct) return direct;
   }
-  // Then resolve through the alias table (inflected forms → lemma).
-  const aliases = aliasesByLang[source];
-  if (aliases) {
-    const lemma = aliases[key];
-    if (lemma && sourceLemmas) {
-      const entry = sourceLemmas[lemma];
-      if (entry && entry[target]) return entry[target];
-    }
+  const reversed = reverse[source + "|" + key];
+  if (reversed) {
+    if (reversed.language === target) return reversed.lemma;
+    const targeted = reversed.targets && reversed.targets[target];
+    if (targeted) return targeted;
   }
   return null;
 }
@@ -11350,6 +11326,18 @@ async function loadSeed() {
     }
     if (
       seed &&
+      seed.translations &&
+      typeof seed.translations === "object" &&
+      seed.translations.entries &&
+      Object.keys(seed.translations.entries).length > 0
+    ) {
+      TRANSLATION_DICTIONARY = {
+        entries: seed.translations.entries,
+        reverse: seed.translations.reverse || {},
+      };
+    }
+    if (
+      seed &&
       seed.intentRouting &&
       Array.isArray(seed.intentRouting.intents) &&
       seed.intentRouting.intents.length > 0
@@ -11374,7 +11362,6 @@ async function loadSeed() {
 async function init() {
   if (wasm !== undefined) return;
   await loadSeed();
-  await loadTranslationDictionary();
   try {
     const source = await fetch(withAssetVersion("formal_ai_worker.wasm"));
     const bytes = await source.arrayBuffer();

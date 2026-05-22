@@ -27,6 +27,7 @@
 //! [`Translation`], so the resulting links-notation trace shows
 //! exactly which API responses fed the answer.
 
+use super::dictionary;
 use super::http::{HttpClient, HttpError};
 use super::meaning::MeaningId;
 use super::wikidata::Wikidata;
@@ -198,6 +199,37 @@ impl<'a, T: HttpClient + ?Sized> TranslationPipeline<'a, T> {
         let mut provenance: Vec<String> = Vec::new();
         let page_title = normalize_page_title(surface);
         translation_debug("translate", &format!("page_title={page_title:?}"));
+
+        // Stage 0: consult the offline dictionary first. The 128-noun
+        // `.lino` registry catches the most frequent words without a
+        // network round trip, which keeps the browser worker responsive
+        // and CI deterministic. Misses fall through to the live HTTP
+        // stages below; the same surface is matched against the entry's
+        // canonical lemma and its inflected aliases.
+        let dict = dictionary::shared();
+        if let Some(target_surface) = dict.lookup(&page_title, source_lang, target_lang) {
+            let lemma = dict
+                .lemma(&page_title, source_lang)
+                .unwrap_or(page_title.as_str());
+            provenance.push(format!(
+                "dictionary:{source_lang}:{lemma}->{target_lang}:{target_surface}"
+            ));
+            translation_debug(
+                "stage0",
+                &format!("dictionary hit {source_lang}:{lemma}->{target_lang}:{target_surface}"),
+            );
+            return Ok(Translation {
+                source_surface: surface.to_owned(),
+                source_lang: source_lang.to_owned(),
+                target_lang: target_lang.to_owned(),
+                meaning: MeaningId::from_wiktionary_page(source_lang, lemma),
+                candidates: vec![WiktionaryCandidate {
+                    surface: target_surface.to_owned(),
+                    qualifier: None,
+                }],
+                provenance,
+            });
+        }
 
         // Stage 1: formalize — fetch the source-edition Wiktionary page.
         // This single fetch usually carries translations for every target
@@ -574,6 +606,22 @@ fn compositional_candidates(
         }];
     }
 
+    // The HTTP variant fallback already tried `phrasal_variants` against
+    // Wiktionary; reuse the same elision rules for the compositional
+    // table so politeness-marked phrases like `как у тебя дела` collapse
+    // to the canonical `как дела` entry.
+    for variant in phrasal_variants(page_title, source_lang) {
+        if let Some(surface) = russian_phrase_to_english(&variant) {
+            provenance.push(format!(
+                "compositional:ru->en:{page_title}=>variant:{variant}"
+            ));
+            return vec![WiktionaryCandidate {
+                surface: surface.to_owned(),
+                qualifier: None,
+            }];
+        }
+    }
+
     let words: Vec<&str> = page_title.split_whitespace().collect();
     if !(2..=4).contains(&words.len()) {
         return Vec::new();
@@ -601,6 +649,10 @@ fn russian_phrase_to_english(page_title: &str) -> Option<&'static str> {
             Some("Who are you?")
         }
         "что это" | "что это такое" => Some("What is this?"),
+        // Russian small-talk variants → "how are you". `phrasal_variants`
+        // strips the dative-of-possession infix (`у тебя`, `у вас`, …)
+        // so callers may arrive at the bare `как дела` form.
+        "как дела" => Some("how are you"),
         _ => None,
     }
 }
@@ -759,17 +811,20 @@ mod tests {
     fn translate_uses_source_edition_translation_table() {
         // English Wiktionary returns a JSON envelope around wikitext;
         // the wikitext lists the Russian translation under `{{t+|ru|...}}`.
-        let url = "https://en.wiktionary.org/w/api.php?action=parse&page=hello&prop=wikitext&formatversion=2&format=json&redirects=1";
-        let wikitext = r#"{"parse":{"title":"hello","wikitext":"* Russian: {{t+|ru|привет}}\n"}}"#;
+        // Use a placeholder lemma (`blargh`) that is *not* in the offline
+        // dictionary so the pipeline reaches the HTTP stage and we can
+        // verify the wikitext parser end-to-end.
+        let url = "https://en.wiktionary.org/w/api.php?action=parse&page=blargh&prop=wikitext&formatversion=2&format=json&redirects=1";
+        let wikitext = r#"{"parse":{"title":"blargh","wikitext":"* Russian: {{t+|ru|бларг}}\n"}}"#;
         let http = StubHttp::new(&[(url, wikitext)]);
         let pipeline = TranslationPipeline::new(&http);
-        let translation = pipeline.translate("hello", "en", "ru").unwrap();
-        assert_eq!(translation.primary_surface(), Some("привет"));
+        let translation = pipeline.translate("blargh", "en", "ru").unwrap();
+        assert_eq!(translation.primary_surface(), Some("бларг"));
         assert!(
             translation
                 .provenance
                 .iter()
-                .any(|p| p.starts_with("wiktionary:en:hello#translations->ru")),
+                .any(|p| p.starts_with("wiktionary:en:blargh#translations->ru")),
             "got provenance: {:?}",
             translation.provenance,
         );
@@ -810,11 +865,13 @@ mod tests {
 
     #[test]
     fn translate_prefers_unqualified_candidate() {
-        let url = "https://en.wiktionary.org/w/api.php?action=parse&page=hello&prop=wikitext&formatversion=2&format=json&redirects=1";
+        // Use a placeholder lemma not present in the offline dictionary so
+        // the pipeline reaches the wikitext-parsing stage.
+        let url = "https://en.wiktionary.org/w/api.php?action=parse&page=blargh&prop=wikitext&formatversion=2&format=json&redirects=1";
         let wikitext = r#"{"parse":{"wikitext":"* Russian: {{t|ru|здравствуйте|q=formal}}, {{t+|ru|привет|q=informal}}, {{t|ru|здорово}}\n"}}"#;
         let http = StubHttp::new(&[(url, wikitext)]);
         let pipeline = TranslationPipeline::new(&http);
-        let translation = pipeline.translate("hello", "en", "ru").unwrap();
+        let translation = pipeline.translate("blargh", "en", "ru").unwrap();
         // The first unqualified candidate wins.
         assert_eq!(translation.primary_surface(), Some("здорово"));
     }

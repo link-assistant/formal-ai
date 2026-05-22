@@ -1,29 +1,45 @@
 //! File-based cache for raw HTTP responses from Wikipedia / Wikidata /
-//! Wiktionary.
+//! Wiktionary, keyed by the **semantic identity** of the resource.
 //!
-//! The cache stores only **source data**, never the logic that computes a
-//! translation. Each entry is the verbatim response body for a URL keyed
-//! by a deterministic 64-bit hash of the URL, and the URL itself lives in
-//! a sibling `.url` file for auditability.
+//! Earlier revisions of this module hashed the full URL and dumped 3 500+
+//! tiny `.body` / `.url` files into a single `data/translation-cache/`
+//! directory. That made the pull request unreviewable and locked the
+//! cache to one consumer (translation). Issue #221 reshaped the cache so
+//! that:
 //!
-//! Why a file cache instead of `OnceLock<HashMap>`:
+//! - **Wikidata** responses land under `data/wikidata-cache/` keyed by
+//!   the Q-id or Lexeme-id mentioned in the URL.
+//! - **Wiktionary** wikitext lands under `data/wiktionary-cache/<lang>/`
+//!   keyed by the page title.
+//! - **SPARQL** queries land under `data/wikidata-cache/sparql/` keyed by
+//!   a short hash, because there is no natural semantic name for a SPARQL
+//!   string.
+//! - **Everything else** still uses a URL-hash filename, but in a
+//!   dedicated `data/http-cache/misc/` bucket. Unrecognised hosts should
+//!   be rare in practice — the cache is intentionally narrow.
 //!
-//! 1. Integration tests run with `FORMAL_AI_LIVE_API=1` and write cache
-//!    entries to disk. The next time the unit suite runs (offline), those
-//!    entries make the same code paths exercise real wikitext — no
-//!    hardcoded translation pairs, just real cached responses.
-//! 2. The committed cache becomes part of the repo's pre-seed data
-//!    (`data/translation-cache/`) so CI never hits the live network.
-//! 3. The cache is content-addressable and idempotent — running the same
-//!    test twice yields the same files on disk.
+//! This layout lets other formalization paths reuse the same Wikidata or
+//! Wiktionary lookups without duplicating bytes. It also keeps each
+//! directory small and human-readable (`grep -R apple
+//! data/wiktionary-cache/` works).
+//!
+//! Cache contents are gitignored: they are populated lazily by integration
+//! runs (`FORMAL_AI_LIVE_API=1`) and serve only as a local accelerator.
+//! Unit tests rely on the offline dictionary at
+//! `data/seed/translations.lino`, not on cached HTTP responses, so the
+//! committed repository stays light.
 
 use std::fs;
 use std::path::{Path, PathBuf};
 
 use super::http::{HttpClient, HttpError};
 
-/// Default cache directory, relative to the crate root.
-pub const DEFAULT_CACHE_DIR: &str = "data/translation-cache";
+/// Default cache root, relative to the crate root.
+///
+/// Per-source subfolders (`wikidata-cache/`, `wiktionary-cache/<lang>/`, …)
+/// live as siblings of this directory so callers from other formalization
+/// paths can share the same bytes.
+pub const DEFAULT_CACHE_DIR: &str = "data";
 
 /// HTTP client that consults a file cache before delegating to a real
 /// transport. Cache hits always short-circuit the underlying transport;
@@ -73,12 +89,188 @@ impl<T: HttpClient> CachedHttpClient<T> {
     }
 
     fn cache_paths(&self, url: &str) -> (PathBuf, PathBuf) {
-        let key = cache_key(url);
+        let location = cache_location(url);
         let mut body = self.cache_dir.clone();
-        body.push(format!("{key}.body"));
+        body.push(&location.directory);
+        body.push(format!("{}.body", location.stem));
         let mut meta = self.cache_dir.clone();
-        meta.push(format!("{key}.url"));
+        meta.push(&location.directory);
+        meta.push(format!("{}.url", location.stem));
         (body, meta)
+    }
+}
+
+/// Where a URL should land inside the cache root.
+///
+/// `directory` is a relative subpath (e.g. `wiktionary-cache/en`) and
+/// `stem` is the filename without extension (e.g. `apple`). The cache
+/// writes `<root>/<directory>/<stem>.body` and `<root>/<directory>/<stem>.url`.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct CacheLocation {
+    pub directory: PathBuf,
+    pub stem: String,
+}
+
+/// Decide the cache location for a URL.
+///
+/// The mapping is best-effort: well-known Wikidata / Wiktionary URLs land
+/// under human-readable semantic folders, and anything else falls back to
+/// a hashed bucket so we never refuse to cache a response.
+#[must_use]
+pub fn cache_location(url: &str) -> CacheLocation {
+    if let Some(location) = classify_wiktionary(url) {
+        return location;
+    }
+    if let Some(location) = classify_wikidata(url) {
+        return location;
+    }
+    CacheLocation {
+        directory: PathBuf::from("http-cache").join("misc"),
+        stem: cache_key(url),
+    }
+}
+
+fn classify_wiktionary(url: &str) -> Option<CacheLocation> {
+    let host_start = url.find("://")? + 3;
+    let after_scheme = &url[host_start..];
+    let dot = after_scheme.find('.')?;
+    let host_end = after_scheme.find('/').unwrap_or(after_scheme.len());
+    let host_rest = &after_scheme[dot..host_end];
+    if !host_rest.starts_with(".wiktionary.org") {
+        return None;
+    }
+    let lang = sanitize_segment(&after_scheme[..dot]);
+    let page = wiktionary_page_from_url(url).unwrap_or_else(|| cache_key(url));
+    Some(CacheLocation {
+        directory: PathBuf::from("wiktionary-cache").join(lang),
+        stem: page,
+    })
+}
+
+fn wiktionary_page_from_url(url: &str) -> Option<String> {
+    // Pages are fetched via the `parse` API:
+    //   /w/api.php?action=parse&page=<title>&...
+    let query_start = url.find('?')?;
+    let query = &url[query_start + 1..];
+    for pair in query.split('&') {
+        if let Some(value) = pair.strip_prefix("page=") {
+            let decoded = percent_decode(value);
+            if !decoded.is_empty() {
+                return Some(sanitize_segment(&decoded));
+            }
+        }
+    }
+    None
+}
+
+fn classify_wikidata(url: &str) -> Option<CacheLocation> {
+    if !url.contains("wikidata.org") {
+        return None;
+    }
+    let query_start = url.find('?')?;
+    let query = &url[query_start + 1..];
+    let mut action: Option<String> = None;
+    let mut srsearch: Option<String> = None;
+    let mut ids: Option<String> = None;
+    let mut sparql: Option<String> = None;
+    let mut titles: Option<String> = None;
+    for pair in query.split('&') {
+        if let Some(value) = pair.strip_prefix("action=") {
+            action = Some(percent_decode(value));
+        } else if let Some(value) = pair.strip_prefix("srsearch=") {
+            srsearch = Some(percent_decode(value));
+        } else if let Some(value) = pair.strip_prefix("ids=") {
+            ids = Some(percent_decode(value));
+        } else if let Some(value) = pair.strip_prefix("query=") {
+            sparql = Some(percent_decode(value));
+        } else if let Some(value) = pair.strip_prefix("titles=") {
+            titles = Some(percent_decode(value));
+        }
+    }
+    if sparql.is_some() || url.contains("/sparql") || url.contains("query.wikidata.org") {
+        return Some(CacheLocation {
+            directory: PathBuf::from("wikidata-cache").join("sparql"),
+            stem: cache_key(url),
+        });
+    }
+    let stem = match action.as_deref() {
+        Some("wbsearchentities") => srsearch
+            .as_deref()
+            .map_or_else(|| cache_key(url), sanitize_segment),
+        Some("wbgetentities" | "query") => ids
+            .as_deref()
+            .or(titles.as_deref())
+            .map_or_else(|| cache_key(url), sanitize_segment),
+        _ => cache_key(url),
+    };
+    let sub = match action.as_deref() {
+        Some("wbsearchentities") => "search",
+        Some("wbgetentities") => "entities",
+        Some("query") => "query",
+        _ => "misc",
+    };
+    Some(CacheLocation {
+        directory: PathBuf::from("wikidata-cache").join(sub),
+        stem,
+    })
+}
+
+fn sanitize_segment(value: &str) -> String {
+    let mut out = String::with_capacity(value.len());
+    for ch in value.chars() {
+        if ch.is_alphanumeric() || matches!(ch, '-' | '_' | '.') {
+            out.push(ch);
+        } else if ch == ' ' || ch == '+' {
+            out.push('_');
+        } else {
+            out.push('-');
+        }
+    }
+    if out.len() > 96 {
+        // Avoid blowing past common filesystem name limits when a SPARQL
+        // search returns a freakishly long title.
+        out.truncate(96);
+        out.push('~');
+        out.push_str(&cache_key(value)[..8]);
+    }
+    if out.is_empty() {
+        cache_key(value)
+    } else {
+        out
+    }
+}
+
+fn percent_decode(value: &str) -> String {
+    let bytes = value.as_bytes();
+    let mut out: Vec<u8> = Vec::with_capacity(bytes.len());
+    let mut i = 0;
+    while i < bytes.len() {
+        let byte = bytes[i];
+        if byte == b'%' && i + 2 < bytes.len() {
+            let hi = hex_nibble(bytes[i + 1]);
+            let lo = hex_nibble(bytes[i + 2]);
+            if let (Some(hi), Some(lo)) = (hi, lo) {
+                out.push((hi << 4) | lo);
+                i += 3;
+                continue;
+            }
+        }
+        if byte == b'+' {
+            out.push(b' ');
+        } else {
+            out.push(byte);
+        }
+        i += 1;
+    }
+    String::from_utf8_lossy(&out).into_owned()
+}
+
+const fn hex_nibble(byte: u8) -> Option<u8> {
+    match byte {
+        b'0'..=b'9' => Some(byte - b'0'),
+        b'a'..=b'f' => Some(byte - b'a' + 10),
+        b'A'..=b'F' => Some(byte - b'A' + 10),
+        _ => None,
     }
 }
 
@@ -122,10 +314,11 @@ impl<T: HttpClient> HttpClient for CachedHttpClient<T> {
             )));
         }
         let body = self.transport.get(url)?;
-        if let Err(error) = fs::create_dir_all(&self.cache_dir) {
+        let parent = body_path.parent().unwrap_or(&self.cache_dir);
+        if let Err(error) = fs::create_dir_all(parent) {
             return Err(HttpError::Transport(format!(
                 "failed to create cache directory {}: {error}",
-                self.cache_dir.display(),
+                parent.display(),
             )));
         }
         if let Err(error) = fs::write(&body_path, &body) {
@@ -221,7 +414,7 @@ mod tests {
         // Pre-populate the cache by hand.
         let url = "https://example.com/cached";
         let (body_path, meta_path) = cache.cache_paths(url);
-        fs::create_dir_all(&dir).unwrap();
+        fs::create_dir_all(body_path.parent().unwrap()).unwrap();
         fs::write(&body_path, "cached body").unwrap();
         fs::write(&meta_path, url).unwrap();
         assert_eq!(cache.get(url).unwrap(), "cached body");
@@ -257,11 +450,64 @@ mod tests {
     }
 
     #[test]
-    fn cache_paths_use_fnv_keyed_filenames() {
+    fn cache_paths_use_semantic_subdirectories() {
         let dir = PathBuf::from("/tmp/whatever");
         let cache = CachedHttpClient::new(&dir, StubHttp::new(&[])).with_online(false);
         let (body, meta) = cache.cache_paths("https://example.com/x");
-        assert!(body.to_string_lossy().ends_with(".body"));
-        assert!(meta.to_string_lossy().ends_with(".url"));
+        let body_str = body.to_string_lossy().to_string();
+        let meta_str = meta.to_string_lossy().to_string();
+        assert!(
+            std::path::Path::new(&body_str)
+                .extension()
+                .is_some_and(|ext| ext.eq_ignore_ascii_case("body")),
+            "got: {body_str}"
+        );
+        assert!(
+            std::path::Path::new(&meta_str)
+                .extension()
+                .is_some_and(|ext| ext.eq_ignore_ascii_case("url")),
+            "got: {meta_str}"
+        );
+        // Unknown host → falls into the misc bucket so it is still cached.
+        assert!(
+            body_str.contains("http-cache/misc/"),
+            "expected http-cache/misc subdir, got: {body_str}"
+        );
+    }
+
+    #[test]
+    fn wiktionary_url_lands_under_per_language_subdirectory() {
+        let location = cache_location(
+            "https://en.wiktionary.org/w/api.php?action=parse&page=apple&prop=wikitext&formatversion=2&format=json&redirects=1",
+        );
+        assert_eq!(
+            location.directory,
+            PathBuf::from("wiktionary-cache").join("en")
+        );
+        assert_eq!(location.stem, "apple");
+    }
+
+    #[test]
+    fn wikidata_search_url_keyed_by_search_term() {
+        let location = cache_location(
+            "https://www.wikidata.org/w/api.php?action=wbsearchentities&format=json&language=en&type=lexeme&srsearch=apple&limit=3",
+        );
+        assert_eq!(
+            location.directory,
+            PathBuf::from("wikidata-cache").join("search")
+        );
+        assert_eq!(location.stem, "apple");
+    }
+
+    #[test]
+    fn wikidata_sparql_url_lands_in_sparql_bucket() {
+        let location = cache_location(
+            "https://query.wikidata.org/sparql?format=json&query=SELECT%20%3Flemma%20WHERE%20%7B%20%7D",
+        );
+        assert_eq!(
+            location.directory,
+            PathBuf::from("wikidata-cache").join("sparql")
+        );
+        assert_eq!(location.stem.len(), 16);
     }
 }

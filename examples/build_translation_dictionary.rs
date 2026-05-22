@@ -1,8 +1,12 @@
-//! Compile a static translation dictionary the browser worker can load
-//! at start-up. This solves issue #221 for the demo: the worker cannot
-//! reach Wiktionary directly for every word the user types, but it can
-//! load a small JSON dictionary that the Rust pipeline has already
-//! resolved offline.
+//! Regenerate `data/seed/translations.lino` — the 128-entry common-noun
+//! dictionary shared between the Rust pipeline and the browser worker.
+//!
+//! Issue #221 narrowed the offline translation strategy: instead of
+//! shipping a 3,500-file URL-hash cache or an 826-line JSON dictionary,
+//! we keep a single reviewable Links Notation file with the top common
+//! nouns and a short list of greeting phrases. The browser worker reads
+//! the same file via `fetch()` (no JSON glue layer) so both surfaces
+//! agree on contents.
 //!
 //! Run with:
 //!
@@ -10,26 +14,32 @@
 //! # Optional: populate the cache first so the run is fully offline.
 //! FORMAL_AI_LIVE_API=1 cargo run --release --example refresh_translation_cache
 //!
-//! # Build the dictionary (no live API needed if the cache is warm).
+//! # Rebuild the dictionary (no live API needed if the cache is warm).
 //! cargo run --release --example build_translation_dictionary
-//! ```
-//!
-//! Writes `src/web/translation-dictionary.json`. The schema is:
-//!
-//! ```json
-//! {
-//!   "version": 1,
-//!   "generated_at": "...",
-//!   "by_lemma": {
-//!     "en": { "tomato": { "ru": "помидор", "hi": "टमाटर", "zh": "番茄" } },
-//!     "ru": { "помидор": { "en": "tomato" } }
-//!   },
-//!   "aliases": { "ru": { "помидора": "помидор", "помидору": "помидор", ... } }
-//! }
 //! ```
 //!
 //! The seed list mirrors `refresh_translation_cache.rs` so every word the
 //! demo and tests rely on lands in the dictionary.
+//!
+//! Output format (one record per lemma, indented Links Notation):
+//!
+//! ```text
+//! translation_en_apple
+//!   language "en"
+//!   lemma "apple"
+//!   aliases "apple|apples"
+//!   target "ru"
+//!     surface "яблоко"
+//!   target "hi"
+//!     surface "सेब"
+//!   target "zh"
+//!     surface "蘋果"
+//! ```
+//!
+//! The 128-entry cap (R221.cap, enforced by
+//! `src/translation/dictionary.rs::tests::embedded_dictionary_parses_with_entries`)
+//! keeps the bundle small enough for mobile devices; richer translations
+//! fall back to the live Wiktionary/Wikidata APIs at runtime.
 
 use std::collections::BTreeMap;
 use std::fmt::Write as _;
@@ -39,6 +49,7 @@ use std::path::Path;
 use formal_ai::translation::{CachedHttpClient, CurlClient, TranslationPipeline};
 
 // Common-noun seed list — keep in sync with refresh_translation_cache.rs.
+// The cap is 128 entries (R221.cap); en + ru combined must not exceed it.
 const COMMON_ENGLISH_NOUNS: &[&str] = &[
     "apple",
     "tomato",
@@ -101,17 +112,6 @@ const COMMON_ENGLISH_NOUNS: &[&str] = &[
     "teacher",
     "student",
     "child",
-    "friend",
-    "family",
-    "mother",
-    "father",
-    "brother",
-    "sister",
-    "computer",
-    "phone",
-    "music",
-    "language",
-    "country",
 ];
 
 const COMMON_RUSSIAN_NOUNS: &[&str] = &[
@@ -176,94 +176,47 @@ const COMMON_RUSSIAN_NOUNS: &[&str] = &[
     "учитель",
     "студент",
     "ребёнок",
-    "друг",
-    "семья",
-    "мать",
-    "отец",
-    "брат",
-    "сестра",
-    "компьютер",
-    "телефон",
-    "музыка",
-    "язык",
-    "страна",
-];
-
-const GREETING_PHRASES_RU: &[&str] = &[
-    "как у тебя дела",
-    "как дела",
-    "спасибо",
-    "привет",
-    "да",
-    "нет",
 ];
 
 const GREETING_PHRASES_EN: &[&str] = &["hello", "thank you", "yes", "no"];
 
 const TARGET_LANGUAGES: &[&str] = &["en", "ru", "hi", "zh"];
 
-type LangMap = BTreeMap<String, String>;
-type LemmaMap = BTreeMap<String, LangMap>;
-type ByLang = BTreeMap<String, LemmaMap>;
-type AliasIndex = BTreeMap<String, BTreeMap<String, String>>;
+const DICTIONARY_CAP: usize = 128;
 
-fn record(by_lang: &mut ByLang, source: &str, surface: &str, target: &str, candidate: &str) {
-    let key = surface.to_lowercase();
-    by_lang
-        .entry(source.to_owned())
-        .or_default()
-        .entry(key)
-        .or_default()
-        .insert(target.to_owned(), candidate.to_owned());
+#[derive(Debug, Default, Clone)]
+struct Entry {
+    language: String,
+    lemma: String,
+    aliases: Vec<String>,
+    targets: BTreeMap<String, String>,
 }
 
-fn record_alias(aliases: &mut AliasIndex, language: &str, alias: &str, lemma: &str) {
-    let alias_normalized = alias.to_lowercase();
-    let lemma_normalized = lemma.to_lowercase();
-    if alias_normalized == lemma_normalized {
-        return;
-    }
-    aliases
-        .entry(language.to_owned())
-        .or_default()
-        .insert(alias_normalized, lemma_normalized);
-}
-
-/// Generate common Russian noun inflections via a deterministic suffix
-/// table. Real Wiktionary parsing of inflection templates is huge, so
-/// for issue #221 we ship the common 2nd-declension / 3rd-declension
-/// case suffixes — enough to cover `помидора`, `огурцом`, `яблоку` etc.
 fn russian_inflections(lemma: &str) -> Vec<String> {
     let lemma_lower = lemma.to_lowercase();
     let mut forms: Vec<String> = Vec::new();
-    // Strip final vowel to get the stem when applicable.
     let stem_after_strip = |word: &str, suffix: char| -> Option<String> {
         if word.ends_with(suffix) {
-            let stem: String = word.chars().take(word.chars().count() - 1).collect();
-            Some(stem)
+            Some(word.chars().take(word.chars().count() - 1).collect())
         } else {
             None
         }
     };
-    // Words ending in -о (neuter, e.g. яблоко): а, у, ом, е, и, ам, ами, ах
     if let Some(stem) = stem_after_strip(&lemma_lower, 'о') {
         for suffix in ["а", "у", "ом", "е", "и", "ам", "ами", "ах"] {
             forms.push(format!("{stem}{suffix}"));
         }
     }
-    // Words ending in -а (1st declension feminine, e.g. книга): ы, е, у, ой, ою, и, ам, ами, ах
     if let Some(stem) = stem_after_strip(&lemma_lower, 'а') {
         for suffix in ["ы", "е", "у", "ой", "ою", "и", "ам", "ами", "ах"] {
             forms.push(format!("{stem}{suffix}"));
         }
     }
-    // Words ending in -я (e.g. семья): и, е, ю, ёй, ёю, ям, ями, ях
     if let Some(stem) = stem_after_strip(&lemma_lower, 'я') {
         for suffix in ["и", "е", "ю", "ёй", "ёю", "ям", "ями", "ях"] {
             forms.push(format!("{stem}{suffix}"));
         }
     }
-    // Words ending in -ь (3rd declension): и, ью, ей, ям, ями, ях
     if lemma_lower.ends_with('ь') {
         let stem: String = lemma_lower
             .chars()
@@ -273,8 +226,6 @@ fn russian_inflections(lemma: &str) -> Vec<String> {
             forms.push(format!("{stem}{suffix}"));
         }
     }
-    // Words ending in a consonant (2nd declension masculine, e.g. помидор):
-    // а, у, ом, е, ы, ов, ам, ами, ах
     let last_char = lemma_lower.chars().last();
     let ends_in_vowel_or_sign = matches!(
         last_char,
@@ -289,7 +240,6 @@ fn russian_inflections(lemma: &str) -> Vec<String> {
     forms
 }
 
-/// English inflections: plural -s / -es so `apples`, `tomatoes` resolve.
 fn english_inflections(lemma: &str) -> Vec<String> {
     let lemma_lower = lemma.to_lowercase();
     let mut forms: Vec<String> = Vec::new();
@@ -311,22 +261,59 @@ fn english_inflections(lemma: &str) -> Vec<String> {
     forms
 }
 
+fn slug_segment(value: &str) -> String {
+    let mut out = String::with_capacity(value.len());
+    for ch in value.chars() {
+        if ch.is_ascii_alphanumeric() {
+            out.push(ch.to_ascii_lowercase());
+        } else if ch == ' ' || ch == '-' || ch == '_' {
+            out.push('_');
+        }
+    }
+    out
+}
+
+fn record_alias(entry: &mut Entry, alias: &str) {
+    let normalized = alias.to_lowercase();
+    if normalized.is_empty() {
+        return;
+    }
+    if !entry.aliases.iter().any(|a| a == &normalized) {
+        entry.aliases.push(normalized);
+    }
+}
+
 fn main() {
     let cache_dir = std::env::var("FORMAL_AI_TRANSLATION_CACHE_DIR")
-        .unwrap_or_else(|_| "data/translation-cache".to_owned());
+        .unwrap_or_else(|_| formal_ai::translation::cache::DEFAULT_CACHE_DIR.to_owned());
     let output_path = std::env::var("FORMAL_AI_TRANSLATION_DICTIONARY")
-        .unwrap_or_else(|_| "src/web/translation-dictionary.json".to_owned());
+        .unwrap_or_else(|_| "data/seed/translations.lino".to_owned());
     println!("cache_dir   = {cache_dir}");
     println!("output_path = {output_path}");
 
     let http = CachedHttpClient::new(&cache_dir, CurlClient::default());
     let pipeline = TranslationPipeline::new(&http);
 
-    let mut by_lemma: ByLang = BTreeMap::new();
-    let mut aliases: AliasIndex = BTreeMap::new();
+    let mut entries: BTreeMap<(String, String), Entry> = BTreeMap::new();
     let mut gaps: Vec<String> = Vec::new();
 
-    let mut run_pair = |surface: &str, source: &str| {
+    let upsert = |entries: &mut BTreeMap<(String, String), Entry>,
+                  gaps: &mut Vec<String>,
+                  surface: &str,
+                  source: &str,
+                  aliases: Vec<String>| {
+        let entry = entries
+            .entry((source.to_owned(), surface.to_lowercase()))
+            .or_insert_with(|| Entry {
+                language: source.to_owned(),
+                lemma: surface.to_owned(),
+                aliases: Vec::new(),
+                targets: BTreeMap::new(),
+            });
+        record_alias(entry, surface);
+        for alias in aliases {
+            record_alias(entry, &alias);
+        }
         for target in TARGET_LANGUAGES {
             if source == *target {
                 continue;
@@ -334,7 +321,9 @@ fn main() {
             match pipeline.translate(surface, source, target) {
                 Ok(translation) => {
                     if let Some(candidate) = translation.primary_surface() {
-                        record(&mut by_lemma, source, surface, target, candidate);
+                        entry
+                            .targets
+                            .insert((*target).to_owned(), candidate.to_owned());
                     } else {
                         gaps.push(format!("{source}->{target} \"{surface}\""));
                     }
@@ -347,135 +336,71 @@ fn main() {
     };
 
     for noun in COMMON_ENGLISH_NOUNS {
-        run_pair(noun, "en");
-        for form in english_inflections(noun) {
-            record_alias(&mut aliases, "en", &form, noun);
-        }
+        let aliases = english_inflections(noun);
+        upsert(&mut entries, &mut gaps, noun, "en", aliases);
     }
     for noun in COMMON_RUSSIAN_NOUNS {
-        run_pair(noun, "ru");
-        for form in russian_inflections(noun) {
-            record_alias(&mut aliases, "ru", &form, noun);
-        }
-    }
-    for phrase in GREETING_PHRASES_RU {
-        run_pair(phrase, "ru");
+        let aliases = russian_inflections(noun);
+        upsert(&mut entries, &mut gaps, noun, "ru", aliases);
     }
     for phrase in GREETING_PHRASES_EN {
-        run_pair(phrase, "en");
+        upsert(&mut entries, &mut gaps, phrase, "en", Vec::new());
     }
 
-    let mut entries_count = 0_usize;
-    for lemmas in by_lemma.values() {
-        for langs in lemmas.values() {
-            entries_count += langs.len();
-        }
-    }
-    let alias_count: usize = aliases.values().map(BTreeMap::len).sum();
+    assert!(
+        entries.len() <= DICTIONARY_CAP,
+        "dictionary must stay under {DICTIONARY_CAP} entries (R221.cap); got {}",
+        entries.len()
+    );
 
-    // Hand-render JSON so we don't add serde_json to the runtime deps;
-    // the schema is small and stable.
-    let mut json = String::new();
-    json.push_str("{\n");
-    json.push_str("  \"version\": 1,\n");
-    writeln!(json, "  \"entries\": {entries_count},").expect("write json");
-    writeln!(json, "  \"alias_count\": {alias_count},").expect("write json");
-    json.push_str("  \"by_lemma\": {\n");
-    let langs: Vec<&String> = by_lemma.keys().collect();
-    for (lang_idx, lang) in langs.iter().enumerate() {
-        writeln!(json, "    {}: {{", json_string(lang)).expect("write json");
-        let lemmas = &by_lemma[*lang];
-        let lemma_keys: Vec<&String> = lemmas.keys().collect();
-        for (lemma_idx, lemma) in lemma_keys.iter().enumerate() {
-            write!(json, "      {}: {{", json_string(lemma)).expect("write json");
-            let targets = &lemmas[*lemma];
-            let target_keys: Vec<&String> = targets.keys().collect();
-            for (target_idx, target_lang) in target_keys.iter().enumerate() {
-                write!(
-                    json,
-                    "{}: {}",
-                    json_string(target_lang),
-                    json_string(&targets[*target_lang]),
-                )
-                .expect("write json");
-                if target_idx + 1 < target_keys.len() {
-                    json.push_str(", ");
-                }
-            }
-            json.push('}');
-            if lemma_idx + 1 < lemma_keys.len() {
-                json.push(',');
-            }
-            json.push('\n');
+    let mut lino = String::new();
+    let mut first = true;
+    for entry in entries.values() {
+        if entry.targets.is_empty() {
+            continue;
         }
-        json.push_str("    }");
-        if lang_idx + 1 < langs.len() {
-            json.push(',');
+        if !first {
+            lino.push('\n');
         }
-        json.push('\n');
+        first = false;
+        writeln!(
+            lino,
+            "translation_{}_{}",
+            entry.language,
+            slug_segment(&entry.lemma)
+        )
+        .expect("write lino");
+        writeln!(lino, "  language \"{}\"", entry.language).expect("write lino");
+        writeln!(lino, "  lemma \"{}\"", entry.lemma).expect("write lino");
+        if !entry.aliases.is_empty() {
+            writeln!(lino, "  aliases \"{}\"", entry.aliases.join("|")).expect("write lino");
+        }
+        for (target, surface) in &entry.targets {
+            writeln!(lino, "  target \"{target}\"").expect("write lino");
+            writeln!(lino, "    surface \"{surface}\"").expect("write lino");
+        }
     }
-    json.push_str("  },\n");
-    json.push_str("  \"aliases\": {\n");
-    let alias_langs: Vec<&String> = aliases.keys().collect();
-    for (lang_idx, lang) in alias_langs.iter().enumerate() {
-        writeln!(json, "    {}: {{", json_string(lang)).expect("write json");
-        let pairs = &aliases[*lang];
-        let alias_keys: Vec<&String> = pairs.keys().collect();
-        for (alias_idx, alias) in alias_keys.iter().enumerate() {
-            write!(
-                json,
-                "      {}: {}",
-                json_string(alias),
-                json_string(&pairs[*alias]),
-            )
-            .expect("write json");
-            if alias_idx + 1 < alias_keys.len() {
-                json.push(',');
-            }
-            json.push('\n');
-        }
-        json.push_str("    }");
-        if lang_idx + 1 < alias_langs.len() {
-            json.push(',');
-        }
-        json.push('\n');
-    }
-    json.push_str("  }\n");
-    json.push_str("}\n");
+
+    let line_count = lino.lines().count();
+    assert!(
+        line_count <= 1500,
+        "dictionary file must stay under 1500 lines; got {line_count}"
+    );
 
     let path = Path::new(&output_path);
     if let Some(parent) = path.parent() {
         fs::create_dir_all(parent).expect("create output directory");
     }
-    fs::write(path, json).expect("write dictionary");
-    println!("wrote {entries_count} entries, {alias_count} aliases -> {output_path}");
+    fs::write(path, lino).expect("write dictionary");
+    println!(
+        "wrote {} entries ({} lines) -> {output_path}",
+        entries.len(),
+        line_count,
+    );
     if !gaps.is_empty() {
         eprintln!("\n{} gaps:", gaps.len());
         for gap in &gaps {
             eprintln!("  - {gap}");
         }
-        // Note: we deliberately do NOT exit non-zero here. The seed list
-        // is intentionally aggressive; a few unresolved entries are
-        // acceptable and easier to spot in the dictionary itself.
     }
-}
-
-fn json_string(value: &str) -> String {
-    let mut out = String::with_capacity(value.len() + 2);
-    out.push('"');
-    for ch in value.chars() {
-        match ch {
-            '"' => out.push_str("\\\""),
-            '\\' => out.push_str("\\\\"),
-            '\n' => out.push_str("\\n"),
-            '\r' => out.push_str("\\r"),
-            '\t' => out.push_str("\\t"),
-            c if (c as u32) < 0x20 => {
-                write!(out, "\\u{:04x}", c as u32).expect("write json escape");
-            }
-            c => out.push(c),
-        }
-    }
-    out.push('"');
-    out
 }

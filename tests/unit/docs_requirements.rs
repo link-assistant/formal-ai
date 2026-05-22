@@ -600,7 +600,9 @@ fn is_skipped_tree(root: &Path, entry: &DirEntry) -> bool {
             | "logs"
             | "tests/e2e/playwright-report"
             | "tests/e2e/test-results"
-            | "data/translation-cache"
+            | "data/wikidata-cache"
+            | "data/wiktionary-cache"
+            | "data/http-cache"
     )
 }
 

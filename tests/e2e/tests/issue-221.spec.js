@@ -4,9 +4,11 @@
 // #218 fixed the apple noun; #221 demands the same machinery for any
 // common noun (tomato/cucumber/potato/...) plus the unquoted variants.
 //
-// The browser worker now loads a static `translation-dictionary.json`
-// pre-compiled by the Rust pipeline so it can resolve common nouns
-// without CORS-blocked Wiktionary calls.
+// The browser worker now loads a shared `seed/translations.lino`
+// dictionary (capped at 128 entries) alongside the rest of the seed
+// data so it can resolve common nouns without CORS-blocked Wiktionary
+// calls. The same `.lino` file is embedded into the Rust binary via
+// `include_str!` so the two surfaces stay in sync.
 const { test, expect } = require('@playwright/test');
 
 async function switchToManualMode(page) {
