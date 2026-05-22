@@ -8561,6 +8561,67 @@ const IMPLICIT_RESEARCH_EVALUATION_DOMAINS = [
   " comparison ",
 ];
 
+const ENUMERATION_RESEARCH_PREFIXES = [
+  "list all ",
+  "list every ",
+  "list the ",
+  "show all ",
+  "show me all ",
+  "show me the ",
+  "give me all ",
+  "name all ",
+  "enumerate all ",
+  "перечисли всех ",
+  "перечисли все ",
+  "список всех ",
+  "назови всех ",
+  "सभी ",
+  "हर ",
+  "列出所有 ",
+  "列出全部 ",
+  "显示所有 ",
+  "枚举所有 ",
+];
+
+const ENUMERATION_RESEARCH_CONSTRAINT_MARKERS = [
+  " with ",
+  " that ",
+  " who ",
+  " whose ",
+  " where ",
+  " which ",
+  " having ",
+  " have ",
+  " has ",
+  " featuring ",
+  " capable of ",
+  " can ",
+  " for ",
+  " by ",
+  " in ",
+  " с ",
+  " у которых ",
+  " которые ",
+  " имеющие ",
+  " имеющих ",
+  " для ",
+  " в ",
+  " जिनके ",
+  " जिनमें ",
+  " जिसमें ",
+  " वाले ",
+  " के साथ ",
+  " के लिए ",
+  " में ",
+  " 具有 ",
+  " 有 ",
+  " 带有 ",
+  " 可以 ",
+  " 能 ",
+  " 在 ",
+  " 用于 ",
+];
+
 function containsSearchMarker(normalized, marker) {
   const text = String(normalized || "");
   if (marker.startsWith(" ") || marker.endsWith(" ")) {
@@ -8692,6 +8753,37 @@ function extractImplicitResearchQuestion(normalized) {
   return validSearchQuery(stripImplicitResearchPrefix(text));
 }
 
+function stripEnumerationResearchPrefix(value) {
+  const text = String(value || "").trim();
+  const lower = text.toLowerCase();
+  for (const prefix of ENUMERATION_RESEARCH_PREFIXES) {
+    if (lower.startsWith(prefix)) {
+      return cleanSearchQuery(text.slice(prefix.length));
+    }
+  }
+  return "";
+}
+
+function looksLikeEnumerationResearchQuery(query) {
+  const normalized = normalizePrompt(query);
+  if (normalized.split(/\s+/u).filter(Boolean).length < 3) return false;
+  return containsAnySearchMarker(
+    normalized,
+    ENUMERATION_RESEARCH_CONSTRAINT_MARKERS,
+  );
+}
+
+function extractEnumerationResearchRequest(prompt, normalized) {
+  const rawQuery = stripEnumerationResearchPrefix(prompt);
+  if (rawQuery && looksLikeEnumerationResearchQuery(rawQuery)) {
+    return validSearchQuery(rawQuery);
+  }
+  const normalizedQuery = stripEnumerationResearchPrefix(normalized);
+  return normalizedQuery && looksLikeEnumerationResearchQuery(normalizedQuery)
+    ? validSearchQuery(normalizedQuery)
+    : "";
+}
+
 function extractWebSearchRequest(prompt, normalized) {
   if (
     normalized.startsWith("search conversations ") ||
@@ -8713,6 +8805,10 @@ function extractWebSearchRequest(prompt, normalized) {
   const semanticQuery = extractSemanticWebSearchQuery(prompt, normalized);
   if (semanticQuery) {
     return { query: semanticQuery, kind: "semantic_action" };
+  }
+  const enumerationQuery = extractEnumerationResearchRequest(prompt, normalized);
+  if (enumerationQuery) {
+    return { query: enumerationQuery, kind: "enumeration_research_request" };
   }
   const researchQuery = extractImplicitResearchQuestion(normalized);
   return researchQuery

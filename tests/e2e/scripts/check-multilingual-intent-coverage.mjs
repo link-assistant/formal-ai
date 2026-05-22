@@ -584,6 +584,71 @@ for (const [language, entries] of Object.entries(webSearchSourceMarkerCases)) {
   }
 }
 
+const webSearchEnumerationResearchCases = {
+  en: [
+    {
+      prompt: 'list all genshin characters with off-field DMG',
+      rustQuery: 'genshin characters with off field dmg',
+      browserRequest: 'genshin characters with off-field DMG',
+    },
+  ],
+  ru: [
+    {
+      prompt: 'перечисли всех персонажей genshin с уроном вне поля',
+      rustQuery: 'персонажей genshin с уроном вне поля',
+      browserRequest: 'персонажей genshin с уроном вне поля',
+    },
+  ],
+  hi: [
+    {
+      prompt: 'सभी Genshin पात्र जिनके पास off-field DMG है',
+      rustQuery: 'genshin पात्र जिनके पास off field dmg है',
+      browserRequest: 'Genshin पात्र जिनके पास off-field DMG है',
+    },
+  ],
+  zh: [
+    {
+      prompt: '列出所有 Genshin 角色 具有 off-field DMG',
+      rustQuery: 'genshin 角色 具有 off field dmg',
+      browserRequest: 'Genshin 角色 具有 off-field DMG',
+    },
+  ],
+};
+
+assertMatrixMatchesSupportedLanguages(
+  'webSearchEnumerationResearchCases',
+  webSearchEnumerationResearchCases,
+);
+assertBalancedLanguageCaseCounts(
+  'webSearchEnumerationResearchCases',
+  webSearchEnumerationResearchCases,
+);
+
+{
+  const rustWebRequestTests = readRepoFile('tests/unit/web_requests.rs');
+  const browserIssue228Tests = readRepoFile('tests/e2e/tests/issue-228.spec.js');
+  for (const [language, entries] of Object.entries(webSearchEnumerationResearchCases)) {
+    for (const entry of entries) {
+      assert(
+        entry.prompt.trim() &&
+          entry.rustQuery.trim() &&
+          entry.browserRequest.trim(),
+        `webSearchEnumerationResearchCases ${language} entries must define prompt, rustQuery, and browserRequest`,
+      );
+      assert(
+        rustWebRequestTests.includes(entry.prompt) &&
+          rustWebRequestTests.includes(entry.rustQuery),
+        `tests/unit/web_requests.rs must cover ${language} enumeration-research prompt ${JSON.stringify(entry.prompt)}`,
+      );
+      assert(
+        browserIssue228Tests.includes(entry.prompt) &&
+          browserIssue228Tests.includes(entry.browserRequest),
+        `tests/e2e/tests/issue-228.spec.js must cover ${language} enumeration-research prompt ${JSON.stringify(entry.prompt)}`,
+      );
+    }
+  }
+}
+
 const currentDayCalendarCases = {
   en: ['What day is today?'],
   ru: ['Какой сегодня день?'],

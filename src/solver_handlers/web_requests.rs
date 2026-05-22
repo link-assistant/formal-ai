@@ -167,8 +167,13 @@ pub fn try_web_search(
     log.append("web_search:combined", format!("rrf:k={WEB_SEARCH_RRF_K}"));
     let provider_summary = WEB_SEARCH_PROVIDERS.join(", ");
     let language = detect_language(prompt).slug();
+    let is_research_request = matches!(
+        request.kind,
+        WebSearchQueryKind::ImplicitResearchQuestion
+            | WebSearchQueryKind::EnumerationResearchRequest
+    );
     let body = match language {
-        "ru" if request.kind == WebSearchQueryKind::ImplicitResearchQuestion => format!(
+        "ru" if is_research_request => format!(
             "Распознан исследовательский вопрос для `{query}`.\n\n\
              Чтобы ответить на такой вопрос без локального правила, браузерная \
              демо-версия formal-ai ищет проверяемые источники: по умолчанию \
@@ -199,7 +204,7 @@ pub fn try_web_search(
              Providers considered: {provider_summary}\n\
              Combined ranking: reciprocal rank fusion (k = {WEB_SEARCH_RRF_K})"
         ),
-        _ if request.kind == WebSearchQueryKind::ImplicitResearchQuestion => format!(
+        _ if is_research_request => format!(
             "Open research question detected for `{query}`.\n\n\
              To answer this without a local rule, the browser demo searches \
              verifiable sources: DuckDuckGo Instant Answer by default, then \

@@ -1,0 +1,874 @@
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+       Fresh unicode-ident v1.0.22
+       Fresh autocfg v1.5.0
+       Fresh proc-macro2 v1.0.103
+       Fresh bumpalo v3.20.2
+       Fresh quote v1.0.42
+       Fresh serde_core v1.0.228
+       Fresh wasm-bindgen-shared v0.2.121
+       Fresh rustversion v1.0.22
+       Fresh syn v2.0.111
+       Fresh memchr v2.8.0
+       Fresh once_cell v1.21.4
+       Fresh wasm-bindgen-macro-support v0.2.121
+       Fresh serde_derive v1.0.228
+       Fresh cfg-if v1.0.4
+       Fresh num-traits v0.2.19
+       Fresh futures-task v0.3.32
+       Fresh wasm-bindgen-macro v0.2.121
+       Fresh serde v1.0.228
+       Fresh slab v0.4.12
+       Fresh futures-core v0.3.32
+       Fresh pin-project-lite v0.2.17
+       Fresh utf8parse v0.2.2
+       Fresh wasm-bindgen v0.2.121
+       Fresh futures-util v0.3.32
+       Fresh anstyle-parse v0.2.7
+       Fresh anstyle v1.0.14
+       Fresh js-sys v0.3.98
+       Fresh is_terminal_polyfill v1.70.2
+       Fresh anstyle-query v1.1.5
+       Fresh colorchoice v1.0.5
+       Fresh anstream v0.6.21
+       Fresh num-integer v0.1.46
+       Fresh thiserror-impl v1.0.69
+       Fresh aho-corasick v1.1.4
+       Fresh dtor-proc-macro v0.0.5
+       Fresh strsim v0.11.1
+       Fresh clap_lex v1.1.0
+       Fresh regex-syntax v0.8.10
+       Fresh heck v0.5.0
+       Fresh dtor v0.0.6
+       Fresh clap_builder v4.5.60
+       Fresh regex-automata v0.4.14
+       Fresh clap_derive v4.5.55
+       Fresh num-bigint v0.4.6
+       Fresh thiserror v1.0.69
+       Fresh zmij v1.0.21
+       Fresh nom v8.0.0
+       Fresh arrayvec v0.7.6
+       Fresh itoa v1.0.18
+       Fresh ctor-proc-macro v0.0.6
+       Fresh iana-time-zone v0.1.65
+       Fresh links-notation v0.13.0
+       Fresh serde_json v1.0.149
+       Fresh rust_decimal v1.42.0
+       Fresh ctor v0.4.3
+       Fresh num-rational v0.4.2
+       Fresh chrono v0.4.44
+       Fresh clap v4.5.60
+       Fresh regex v1.12.3
+       Fresh serde-wasm-bindgen v0.6.5
+       Fresh wasm-bindgen-futures v0.4.71
+       Fresh web-sys v0.3.98
+       Fresh console_error_panic_hook v0.1.7
+       Fresh lino-env v0.1.0
+       Fresh lazy_static v1.5.0
+       Fresh dotenvy v0.15.7
+       Fresh base64 v0.22.1
+       Fresh same-file v1.0.6
+       Fresh link-calculator v0.17.2
+       Fresh lino-arguments v0.3.0
+       Fresh lino-objects-codec v0.2.1
+       Fresh walkdir v2.5.0
+   Compiling formal-ai v0.101.0 (/tmp/gh-issue-solver-1779463208867)
+     Running `/home/box/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name formal_ai --edition=2021 src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--warn=clippy::nursery' '--warn=clippy::all' --forbid=unsafe_code '--allow=clippy::too_many_lines' '--allow=clippy::module_name_repetitions' '--allow=clippy::missing_panics_doc' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=2cc388041ddf183e -C extra-filename=-8bf842e0edb51525 --out-dir /tmp/gh-issue-solver-1779463208867/target/debug/deps -C incremental=/tmp/gh-issue-solver-1779463208867/target/debug/incremental -L dependency=/tmp/gh-issue-solver-1779463208867/target/debug/deps --extern clap=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libclap-12ebb64179d43072.rlib --extern link_calculator=/tmp/gh-issue-solver-1779463208867/target/debug/deps/liblink_calculator-001a204a779f8a95.rlib --extern lino_arguments=/tmp/gh-issue-solver-1779463208867/target/debug/deps/liblino_arguments-9873ab72ccd4b79b.rlib --extern lino_objects_codec=/tmp/gh-issue-solver-1779463208867/target/debug/deps/liblino_objects_codec-7040ab8451a55644.rlib --extern nom=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libnom-13bb431128f29afc.rlib --extern regex=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libregex-be88561040ee64fd.rlib --extern serde=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libserde-e968938d03e10c8f.rlib --extern serde_json=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libserde_json-f0d4891802ba697c.rlib --extern walkdir=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libwalkdir-f83c702250a7b97f.rlib`
+     Running `/home/box/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name formal_ai --edition=2021 src/main.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--warn=clippy::nursery' '--warn=clippy::all' --forbid=unsafe_code '--allow=clippy::too_many_lines' '--allow=clippy::module_name_repetitions' '--allow=clippy::missing_panics_doc' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=72aa2ae995c9e52a -C extra-filename=-4bc01dab012e1cf0 --out-dir /tmp/gh-issue-solver-1779463208867/target/debug/deps -C incremental=/tmp/gh-issue-solver-1779463208867/target/debug/incremental -L dependency=/tmp/gh-issue-solver-1779463208867/target/debug/deps --extern clap=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libclap-12ebb64179d43072.rlib --extern formal_ai=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libformal_ai-b8344f9bb247da17.rlib --extern link_calculator=/tmp/gh-issue-solver-1779463208867/target/debug/deps/liblink_calculator-001a204a779f8a95.rlib --extern lino_arguments=/tmp/gh-issue-solver-1779463208867/target/debug/deps/liblino_arguments-9873ab72ccd4b79b.rlib --extern lino_objects_codec=/tmp/gh-issue-solver-1779463208867/target/debug/deps/liblino_objects_codec-7040ab8451a55644.rlib --extern nom=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libnom-13bb431128f29afc.rlib --extern regex=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libregex-be88561040ee64fd.rlib --extern serde=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libserde-e968938d03e10c8f.rlib --extern serde_json=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libserde_json-f0d4891802ba697c.rlib --extern walkdir=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libwalkdir-f83c702250a7b97f.rlib`
+     Running `/home/box/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name basic_usage --edition=2021 examples/basic_usage.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type bin --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--warn=clippy::nursery' '--warn=clippy::all' --forbid=unsafe_code '--allow=clippy::too_many_lines' '--allow=clippy::module_name_repetitions' '--allow=clippy::missing_panics_doc' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=2af2246d2a3bda92 -C extra-filename=-62cbec14af8e4e7d --out-dir /tmp/gh-issue-solver-1779463208867/target/debug/examples -C incremental=/tmp/gh-issue-solver-1779463208867/target/debug/incremental -L dependency=/tmp/gh-issue-solver-1779463208867/target/debug/deps --extern clap=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libclap-12ebb64179d43072.rlib --extern formal_ai=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libformal_ai-b8344f9bb247da17.rlib --extern link_calculator=/tmp/gh-issue-solver-1779463208867/target/debug/deps/liblink_calculator-001a204a779f8a95.rlib --extern lino_arguments=/tmp/gh-issue-solver-1779463208867/target/debug/deps/liblino_arguments-9873ab72ccd4b79b.rlib --extern lino_objects_codec=/tmp/gh-issue-solver-1779463208867/target/debug/deps/liblino_objects_codec-7040ab8451a55644.rlib --extern nom=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libnom-13bb431128f29afc.rlib --extern regex=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libregex-be88561040ee64fd.rlib --extern serde=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libserde-e968938d03e10c8f.rlib --extern serde_json=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libserde_json-f0d4891802ba697c.rlib --extern walkdir=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libwalkdir-f83c702250a7b97f.rlib`
+     Running `/home/box/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name universal_solver_tour --edition=2021 examples/universal_solver_tour.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type bin --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--warn=clippy::nursery' '--warn=clippy::all' --forbid=unsafe_code '--allow=clippy::too_many_lines' '--allow=clippy::module_name_repetitions' '--allow=clippy::missing_panics_doc' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=eab5aab60456d05c -C extra-filename=-7c60705b8f3d0fb1 --out-dir /tmp/gh-issue-solver-1779463208867/target/debug/examples -C incremental=/tmp/gh-issue-solver-1779463208867/target/debug/incremental -L dependency=/tmp/gh-issue-solver-1779463208867/target/debug/deps --extern clap=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libclap-12ebb64179d43072.rlib --extern formal_ai=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libformal_ai-b8344f9bb247da17.rlib --extern link_calculator=/tmp/gh-issue-solver-1779463208867/target/debug/deps/liblink_calculator-001a204a779f8a95.rlib --extern lino_arguments=/tmp/gh-issue-solver-1779463208867/target/debug/deps/liblino_arguments-9873ab72ccd4b79b.rlib --extern lino_objects_codec=/tmp/gh-issue-solver-1779463208867/target/debug/deps/liblino_objects_codec-7040ab8451a55644.rlib --extern nom=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libnom-13bb431128f29afc.rlib --extern regex=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libregex-be88561040ee64fd.rlib --extern serde=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libserde-e968938d03e10c8f.rlib --extern serde_json=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libserde_json-f0d4891802ba697c.rlib --extern walkdir=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libwalkdir-f83c702250a7b97f.rlib`
+     Running `/home/box/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name debug_extract --edition=2021 examples/debug_extract.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type bin --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--warn=clippy::nursery' '--warn=clippy::all' --forbid=unsafe_code '--allow=clippy::too_many_lines' '--allow=clippy::module_name_repetitions' '--allow=clippy::missing_panics_doc' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=5f1a2ed7229920ce -C extra-filename=-589cb34127924e2c --out-dir /tmp/gh-issue-solver-1779463208867/target/debug/examples -C incremental=/tmp/gh-issue-solver-1779463208867/target/debug/incremental -L dependency=/tmp/gh-issue-solver-1779463208867/target/debug/deps --extern clap=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libclap-12ebb64179d43072.rlib --extern formal_ai=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libformal_ai-b8344f9bb247da17.rlib --extern link_calculator=/tmp/gh-issue-solver-1779463208867/target/debug/deps/liblink_calculator-001a204a779f8a95.rlib --extern lino_arguments=/tmp/gh-issue-solver-1779463208867/target/debug/deps/liblino_arguments-9873ab72ccd4b79b.rlib --extern lino_objects_codec=/tmp/gh-issue-solver-1779463208867/target/debug/deps/liblino_objects_codec-7040ab8451a55644.rlib --extern nom=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libnom-13bb431128f29afc.rlib --extern regex=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libregex-be88561040ee64fd.rlib --extern serde=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libserde-e968938d03e10c8f.rlib --extern serde_json=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libserde_json-f0d4891802ba697c.rlib --extern walkdir=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libwalkdir-f83c702250a7b97f.rlib`
+     Running `/home/box/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name refresh_translation_cache --edition=2021 examples/refresh_translation_cache.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type bin --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--warn=clippy::nursery' '--warn=clippy::all' --forbid=unsafe_code '--allow=clippy::too_many_lines' '--allow=clippy::module_name_repetitions' '--allow=clippy::missing_panics_doc' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=7b65348f528fe610 -C extra-filename=-7dfb546b86835c9c --out-dir /tmp/gh-issue-solver-1779463208867/target/debug/examples -C incremental=/tmp/gh-issue-solver-1779463208867/target/debug/incremental -L dependency=/tmp/gh-issue-solver-1779463208867/target/debug/deps --extern clap=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libclap-12ebb64179d43072.rlib --extern formal_ai=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libformal_ai-b8344f9bb247da17.rlib --extern link_calculator=/tmp/gh-issue-solver-1779463208867/target/debug/deps/liblink_calculator-001a204a779f8a95.rlib --extern lino_arguments=/tmp/gh-issue-solver-1779463208867/target/debug/deps/liblino_arguments-9873ab72ccd4b79b.rlib --extern lino_objects_codec=/tmp/gh-issue-solver-1779463208867/target/debug/deps/liblino_objects_codec-7040ab8451a55644.rlib --extern nom=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libnom-13bb431128f29afc.rlib --extern regex=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libregex-be88561040ee64fd.rlib --extern serde=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libserde-e968938d03e10c8f.rlib --extern serde_json=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libserde_json-f0d4891802ba697c.rlib --extern walkdir=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libwalkdir-f83c702250a7b97f.rlib`
+     Running `/home/box/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name repro_issue_218 --edition=2021 examples/repro_issue_218.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type bin --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--warn=clippy::nursery' '--warn=clippy::all' --forbid=unsafe_code '--allow=clippy::too_many_lines' '--allow=clippy::module_name_repetitions' '--allow=clippy::missing_panics_doc' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=2b40ad0a4efbe761 -C extra-filename=-0be3ca46aa6bbcf3 --out-dir /tmp/gh-issue-solver-1779463208867/target/debug/examples -C incremental=/tmp/gh-issue-solver-1779463208867/target/debug/incremental -L dependency=/tmp/gh-issue-solver-1779463208867/target/debug/deps --extern clap=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libclap-12ebb64179d43072.rlib --extern formal_ai=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libformal_ai-b8344f9bb247da17.rlib --extern link_calculator=/tmp/gh-issue-solver-1779463208867/target/debug/deps/liblink_calculator-001a204a779f8a95.rlib --extern lino_arguments=/tmp/gh-issue-solver-1779463208867/target/debug/deps/liblino_arguments-9873ab72ccd4b79b.rlib --extern lino_objects_codec=/tmp/gh-issue-solver-1779463208867/target/debug/deps/liblino_objects_codec-7040ab8451a55644.rlib --extern nom=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libnom-13bb431128f29afc.rlib --extern regex=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libregex-be88561040ee64fd.rlib --extern serde=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libserde-e968938d03e10c8f.rlib --extern serde_json=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libserde_json-f0d4891802ba697c.rlib --extern walkdir=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libwalkdir-f83c702250a7b97f.rlib`
+     Running `/home/box/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name integration --edition=2021 tests/integration/mod.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--warn=clippy::nursery' '--warn=clippy::all' --forbid=unsafe_code '--allow=clippy::too_many_lines' '--allow=clippy::module_name_repetitions' '--allow=clippy::missing_panics_doc' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=92abcf34ed0f33dc -C extra-filename=-5e919a5c562eff9f --out-dir /tmp/gh-issue-solver-1779463208867/target/debug/deps -C incremental=/tmp/gh-issue-solver-1779463208867/target/debug/incremental -L dependency=/tmp/gh-issue-solver-1779463208867/target/debug/deps --extern clap=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libclap-12ebb64179d43072.rlib --extern formal_ai=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libformal_ai-b8344f9bb247da17.rlib --extern link_calculator=/tmp/gh-issue-solver-1779463208867/target/debug/deps/liblink_calculator-001a204a779f8a95.rlib --extern lino_arguments=/tmp/gh-issue-solver-1779463208867/target/debug/deps/liblino_arguments-9873ab72ccd4b79b.rlib --extern lino_objects_codec=/tmp/gh-issue-solver-1779463208867/target/debug/deps/liblino_objects_codec-7040ab8451a55644.rlib --extern nom=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libnom-13bb431128f29afc.rlib --extern regex=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libregex-be88561040ee64fd.rlib --extern serde=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libserde-e968938d03e10c8f.rlib --extern serde_json=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libserde_json-f0d4891802ba697c.rlib --extern walkdir=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libwalkdir-f83c702250a7b97f.rlib`
+     Running `/home/box/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name try_arithmetic --edition=2021 examples/try_arithmetic.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type bin --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--warn=clippy::nursery' '--warn=clippy::all' --forbid=unsafe_code '--allow=clippy::too_many_lines' '--allow=clippy::module_name_repetitions' '--allow=clippy::missing_panics_doc' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=ed5a0951ef9105d3 -C extra-filename=-61eb6de31e5a017b --out-dir /tmp/gh-issue-solver-1779463208867/target/debug/examples -C incremental=/tmp/gh-issue-solver-1779463208867/target/debug/incremental -L dependency=/tmp/gh-issue-solver-1779463208867/target/debug/deps --extern clap=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libclap-12ebb64179d43072.rlib --extern formal_ai=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libformal_ai-b8344f9bb247da17.rlib --extern link_calculator=/tmp/gh-issue-solver-1779463208867/target/debug/deps/liblink_calculator-001a204a779f8a95.rlib --extern lino_arguments=/tmp/gh-issue-solver-1779463208867/target/debug/deps/liblino_arguments-9873ab72ccd4b79b.rlib --extern lino_objects_codec=/tmp/gh-issue-solver-1779463208867/target/debug/deps/liblino_objects_codec-7040ab8451a55644.rlib --extern nom=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libnom-13bb431128f29afc.rlib --extern regex=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libregex-be88561040ee64fd.rlib --extern serde=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libserde-e968938d03e10c8f.rlib --extern serde_json=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libserde_json-f0d4891802ba697c.rlib --extern walkdir=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libwalkdir-f83c702250a7b97f.rlib`
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 5.62s
+     Running `/tmp/gh-issue-solver-1779463208867/target/debug/deps/formal_ai-8bf842e0edb51525`
+
+running 217 tests
+test event_log::tests::evidence_links_round_trip_event_kinds ... ok
+test event_log::tests::append_returns_stable_ids_for_distinct_events ... ok
+test event_log::tests::steps_block_lists_events_in_insertion_order ... ok
+test language::tests::arabic_text_is_unknown ... ok
+test language::tests::devanagari_text_is_hindi ... ok
+test language::tests::cjk_text_is_chinese ... ok
+test language::tests::latin_text_is_english ... ok
+test memory::bundle::tests::bundle_export_embeds_seed_and_memory ... ok
+test memory::bundle::tests::extract_memory_from_bundle_recovers_events ... ok
+test language::tests::cyrillic_text_is_russian ... ok
+test fuzzy::tests::typo_distance_counts_adjacent_transposition_as_one_edit ... ok
+test memory::bundle::tests::full_memory_round_trip_preserves_seed_preferences_and_events ... ok
+test language::tests::empty_prompt_defaults_to_english ... ok
+test memory::bundle::tests::import_full_memory_accepts_legacy_demo_memory ... ok
+test memory::bundle::tests::suggest_migrations_flags_legacy_only_import ... ok
+test memory::bundle::tests::suggest_migrations_flags_seed_version_drift ... ok
+test fuzzy::tests::close_token_typo_requires_meaningful_token_length ... ok
+test memory::tests::export_round_trips_through_parse ... ok
+test memory::tests::import_from_links_notation_appends_in_order ... ok
+test memory::tests::file_round_trip_preserves_events ... ok
+test memory::bundle::tests::suggest_migrations_is_quiet_when_versions_match ... ok
+test memory::tests::parse_ignores_unknown_fields ... ok
+test proof_engine::arithmetic::tests::no_match_when_sides_lack_digits ... ok
+test proof_engine::arithmetic::tests::proves_simple_addition ... ok
+test proof_engine::library::tests::build_proof_returns_localized_text ... ok
+test proof_engine::library::tests::determinism_matches_english ... ok
+test proof_engine::library::tests::euclid_primes_matches_english ... ok
+test proof_engine::library::tests::fermat_little_matches_chinese ... ok
+test proof_engine::library::tests::godel_matches_english ... ok
+test memory::tests::parse_returns_empty_when_header_missing ... ok
+test proof_engine::library::tests::pythagoras_matches_english ... ok
+test memory::tests::store_is_append_only ... ok
+test proof_engine::library::tests::pythagoras_matches_russian ... ok
+test proof_engine::library::tests::sqrt_two_matches_english ... ok
+test proof_engine::presenter::tests::proven_render_contains_statement_and_conclusion ... ok
+test proof_engine::library::tests::registry_lookup_is_first_match_wins ... ok
+test proof_engine::presenter::tests::partial_plan_lists_missing_inputs ... ok
+test proof_engine::presenter::tests::russian_proven_uses_russian_labels ... ok
+test proof_engine::arithmetic::tests::no_match_when_no_comparison ... ok
+test proof_engine::arithmetic::tests::handles_unicode_operators ... ok
+test proof_engine::tests::arithmetic_claim_routes_through_direct_calculation ... ok
+test proof_engine::tests::fermat_little_is_proven_chinese ... ok
+test proof_engine::tests::pythagorean_routes_through_library ... ok
+test proof_engine::tests::render_outcome_for_arithmetic_proof_includes_steps ... ok
+test proof_engine::tests::godel_plus_determinism_returns_partial_plan ... ok
+test proof_engine::tests::unknown_claim_returns_partial_plan_not_refusal ... ok
+test proof_engine::tests::euclid_primes_is_proven ... ok
+test seed::projects::tests::alias_lookup_is_case_insensitive ... ok
+test proof_engine::tests::sqrt_two_uses_contradiction ... ok
+test proof_engine::arithmetic::tests::disproves_false_equality ... ok
+test seed::projects::tests::by_org_returns_only_matching_org ... ok
+test seed::projects::tests::alias_lookup_handles_hyphen_variants ... ok
+test seed::tests::agent_info_exposes_expected_keys ... ok
+test seed::projects::tests::loads_hive_mind_project ... ok
+test seed::projects::tests::unknown_language_falls_back_to_default ... ok
+test seed::projects::tests::localized_russian_overrides_statements_when_present ... ok
+test seed::tests::intent_routing_greeting_separates_keywords_from_tokens ... ok
+test seed::tests::intent_routing_identity_combos_are_split_on_plus ... ok
+test seed::tests::intent_routing_loads_greeting_identity_unknown ... ok
+test seed::projects::tests::every_project_carries_url_and_purpose ... ok
+test seed::tests::bundle_round_trips_through_parse_bundle ... ok
+test seed::tests::intent_routing_carries_article_and_trace_prefixes ... ok
+test seed::tests::language_rules_cover_ru_hi_zh ... ok
+test seed::tests::prompt_patterns_have_intents ... ok
+test seed::tests::response_for_returns_known_text ... ok
+test seed::tests::multilingual_responses_contain_four_languages ... ok
+test seed::tests::parse_bundle_recovers_intent_routing_via_inner_parser ... ok
+test seed::tests::seed_files_are_present_and_non_empty ... ok
+test seed::tests::parse_bundle_accepts_nested_formal_ai_bundle_dialect ... ok
+test seed::tests::merged_bundle_includes_every_file_name ... ok
+test solver_helpers::tests::concept_extraction_handles_who_is_variants ... ok
+test solver_helpers::tests::concept_extraction_handles_common_prefixes ... ok
+test solver_helpers::tests::concept_extraction_handles_multilingual_prefixes ... ok
+test solver_helpers::tests::concept_query_handles_hindi_context_first ... ok
+test solver_helpers::tests::concept_query_handles_russian_context_delimiter ... ok
+test solver_helpers::tests::concept_query_splits_term_and_context ... ok
+test solver_helpers::tests::concept_query_handles_chinese_context_first ... ok
+test solver_helpers::tests::defaults_are_bounded_and_offline_capable ... ok
+test solver_helpers::tests::fenced_block_picks_matching_language ... ok
+test solver_helpers::tests::humanize_url_accepts_lowercase_hex_digits ... ok
+test solver_helpers::tests::humanize_url_decodes_chinese_percent_escapes ... ok
+test solver_helpers::tests::humanize_url_decodes_devanagari_percent_escapes ... ok
+test solver_helpers::tests::humanize_url_decodes_mixed_already_decoded_and_encoded_path ... ok
+test solver_helpers::tests::humanize_url_decodes_only_invalid_utf8_returns_original ... ok
+test solver_helpers::tests::humanize_url_handles_truncated_trailing_percent ... ok
+test solver_helpers::tests::humanize_url_passes_through_malformed_escapes ... ok
+test solver_helpers::tests::humanize_url_preserves_query_string_values_around_decoded_path ... ok
+test solver_helpers::tests::humanize_url_preserves_reserved_uri_delimiters ... ok
+test solver_helpers::tests::humanize_url_returns_original_when_no_percent_escapes_present ... ok
+test solver_helpers::tests::javascript_extraction_finds_fenced_program ... ok
+test solver_helpers::tests::javascript_extraction_requires_explicit_request ... ok
+test solver_helpers::tests::prime_check_recognizes_seventeen ... ok
+test solver_helpers::tests::humanize_url_decodes_cyrillic_percent_escapes ... ok
+test solver_helpers::tests::concept_lookup_finds_multilingual_aliases ... ok
+test solver_helpers::tests::solver_config_default_is_offline_capable ... ok
+test solver_helpers::tests::concept_lookup_finds_seeded_terms ... ok
+test solver_helpers::tests::universal_solver_answers_arithmetic_via_evaluator ... ok
+test solver_helpers::tests::prime_validation_picks_seventeen_in_range ... ok
+test solver_helpers::tests::greeting_walks_the_universal_loop ... ok
+test solver_helpers::tests::hello_world_request_is_not_routed_to_greeting ... ok
+test summarization::tests::apply_semantic_primes_supports_russian ... ok
+test summarization::tests::classify_picks_install_for_npm_install ... ok
+test summarization::tests::default_max_statements_constant_is_thirty ... ok
+test summarization::tests::deformalize_joins_statements_with_period_terminator ... ok
+test summarization::tests::describe_project_russian_uses_localized_statements ... ok
+test solver_helpers::tests::universal_solver_looks_up_concept ... ok
+test summarization::tests::describe_project_short_returns_purpose_statement ... ok
+test summarization::tests::describe_readme_topic_mode_returns_repo_slug ... ok
+test summarization::tests::apply_semantic_primes_expands_orchestrates ... ok
+test summarization::tests::describe_project_topic_returns_topic_label ... ok
+test summarization::tests::describe_readme_strips_boilerplate_and_keeps_purpose ... ok
+test summarization::tests::effective_max_statements_clamps_explicit_cap ... ok
+test solver_helpers::tests::universal_solver_recalls_introduced_name ... ok
+test summarization::tests::formalize_markdown_yields_statements_for_readme_prose ... ok
+test summarization::tests::effective_max_statements_topic_returns_one ... ok
+test summarization::tests::strip_markdown_noise_keeps_heading_text_when_no_marker ... ok
+test summarization::tests::strip_markdown_noise_skips_html_comments ... ok
+test summarization::tests::generate_chat_title_returns_up_to_five_words ... ok
+test summarization::tests::summarize_dialog_keeps_user_question_over_assistant_chatter ... ok
+test summarization::tests::apply_compound_words_shortens_english_phrases ... ok
+test summarization::tests::summarize_drops_install_and_example_by_default ... ok
+test summarization::tests::summarize_expand_with_primes_grows_output ... ok
+test summarization::tests::formalize_splits_on_punctuation ... ok
+test summarization::tests::to_topic_clamps_to_five_words ... ok
+test telegram::tests::json_array_encoding_quotes_values ... ok
+test summarization::tests::to_topic_uses_explicit_topic_when_present ... ok
+test summarization::tests::strip_markdown_noise_drops_headings_badges_and_code_blocks ... ok
+test summarization::tests::summarize_short_keeps_highest_weight ... ok
+test summarization::tests::summarize_topic_returns_at_most_one_statement ... ok
+test summarization::tests::summarize_full_keeps_install_when_drop_boilerplate_false ... ok
+test telegram::tests::parse_skips_updates_without_message_payload ... ok
+test telegram::tests::polling_config_builds_get_updates_url_with_offset ... ok
+test telegram::tests::parse_returns_unexpected_response_when_ok_false ... ok
+test telegram::tests::polling_config_omits_offset_when_unset ... ok
+test translation::cache::tests::cache_hit_short_circuits_transport ... ok
+test translation::cache::tests::cache_key_is_stable_across_runs ... ok
+test telegram::tests::url_encoding_uses_percent_for_reserved_characters ... ok
+test translation::cache::tests::cache_miss_offline_returns_transport_error ... ok
+test translation::formatting::tests::drops_terminal_when_source_has_none ... ok
+test translation::formatting::tests::handles_empty_source ... ok
+test translation::formatting::tests::keeps_target_when_source_has_no_letters ... ok
+test translation::formatting::tests::mirrors_chinese_terminal_punctuation ... ok
+test translation::formatting::tests::preserves_lowercase_and_question_mark ... ok
+test translation::formatting::tests::preserves_uppercase_and_question_mark ... ok
+test translation::cache::tests::cache_miss_online_populates_and_returns_body ... ok
+test translation::http::tests::http_error_display_truncates_long_body ... ok
+test translation::cache::tests::cache_paths_use_fnv_keyed_filenames ... ok
+test translation::http::tests::split_body_and_status_handles_body_containing_newlines ... ok
+test translation::http::tests::split_body_and_status_handles_empty_body ... ok
+test translation::http::tests::split_body_and_status_parses_curl_sentinel_format ... ok
+test translation::http::tests::split_body_and_status_returns_error_for_missing_sentinel ... ok
+test translation::meaning::tests::equal_ids_carry_the_same_wikidata_pointer ... ok
+test translation::meaning::tests::slug_prefers_q_item_then_sense_then_wiktionary ... ok
+test translation::pipeline::tests::normalize_page_title_lowercases_first_letter ... ok
+test translation::pipeline::tests::normalize_page_title_strips_terminal_punctuation ... ok
+test translation::meaning::tests::wikidata_backed_predicate_distinguishes_fallback_from_item ... ok
+test translation::pipeline::tests::translate_identity_returns_self_with_identity_provenance ... ok
+test telegram_runtime::tests::polling_loop_sends_replies_and_advances_offset ... ok
+test translation::pipeline::tests::translate_returns_translation_with_empty_candidates_when_nothing_matches ... ok
+test translation::pipeline::tests::translate_uses_compositional_ru_en_fallback_for_short_phrases ... ok
+test translation::prompt::tests::extracts_unquoted_chinese_surface ... ok
+test translation::prompt::tests::extracts_unquoted_english_surface ... ok
+test translation::pipeline::tests::translate_prefers_unqualified_candidate ... ok
+test translation::pipeline::tests::translate_uses_source_edition_translation_table ... ok
+test translation::prompt::tests::preserves_capitalization ... ok
+test translation::prompt::tests::returns_none_for_quoted_prompts ... ok
+test translation::prompt::tests::returns_none_without_preposition ... ok
+test translation::prompt::tests::returns_none_without_verb ... ok
+test translation::prompt::tests::extracts_unquoted_hindi_surface ... ok
+test translation::prompt::tests::extracts_unquoted_russian_surface ... ok
+test translation::prompt::tests::ignores_trailing_punctuation ... ok
+test translation::wikidata::tests::escaped_string_advance_handles_unicode_escapes ... ok
+test translation::wikidata::tests::parse_sparql_lemmas_extracts_values_and_languages ... ok
+test translation::wikidata::tests::escaped_string_advance_skips_to_closing_quote ... ok
+test telegram::tests::parse_returns_replies_and_next_offset ... ok
+test translation::wikidata::tests::parse_sparql_lemmas_handles_empty_bindings ... ok
+test translation::wikidata::tests::parse_wbsearch_hits_extracts_lexeme_ids_and_labels ... ok
+test translation::wiktionary::tests::clean_surface_strips_nested_templates ... ok
+test translation::wikidata::tests::read_json_string_decodes_unicode_escapes ... ok
+test translation::wiktionary::tests::clean_surface_strips_wikilinks ... ok
+test translation::wiktionary::tests::extract_translations_descends_into_multitrans_wrapper ... ok
+test translation::wiktionary::tests::clean_surface_handles_alt_key_value_pair ... ok
+test translation::wiktionary::tests::extract_translations_parses_russian_wiktionary_perev_blok ... ok
+test translation::wiktionary::tests::extract_translations_falls_back_to_chinese_macro_language ... ok
+test translation::wiktionary::tests::extract_translations_finds_russian_from_english_page ... ok
+test translation::wiktionary::tests::extract_translations_strips_combining_stress_accents ... ok
+test translation::wiktionary::tests::extract_translations_ignores_irrelevant_languages ... ok
+test translation::wiktionary::tests::extract_wikitext_decodes_json_escapes_including_unicode ... ok
+test translation::wiktionary::tests::extract_wikitext_decodes_surrogate_pair_for_supplementary_plane ... ok
+test translation::wiktionary::tests::extract_translations_recognises_double_t_templates ... ok
+test translation::wiktionary::tests::url_encode_keeps_ascii_alphanumerics ... ok
+test translation::wiktionary::tests::query_encode_uses_percent_twenty_for_spaces ... ok
+test web_engine_core::tests::detect_language_matches_existing_rules ... ok
+test web_engine_core::tests::normalize_handles_devanagari ... ok
+test web_engine_core::tests::evaluate_arithmetic_returns_localizable_errors ... ok
+test web_engine_core::tests::normalize_keeps_cjk_codepoints ... ok
+test web_engine_core::tests::evaluate_arithmetic_handles_word_operators ... ok
+test web_engine_core::tests::normalize_lowercases_cyrillic ... ok
+test web_search_core::tests::build_request_evidence_includes_combined_ranking_line ... ok
+test web_search_core::tests::build_request_evidence_skips_empty_language_line ... ok
+test web_engine_core::tests::normalize_collapses_punctuation_to_single_space ... ok
+test web_search_core::tests::cors_readable_defaults_are_consistent_with_default_plan ... ok
+test web_engine_core::tests::tokenize_returns_individual_words ... ok
+test web_search_core::tests::build_request_evidence_lists_providers_in_priority_order ... ok
+test web_search_core::tests::default_plan_lists_duckduckgo_first ... ok
+test web_search_core::tests::default_plan_providers_carry_human_labels ... ok
+test web_search_core::tests::format_score_pads_fraction_to_six_digits ... ok
+test web_search_core::tests::internet_archive_is_cors_readable_in_registry ... ok
+test web_search_core::tests::reciprocal_rank_fusion_combines_shared_urls ... ok
+test web_search_core::tests::default_plan_is_a_subset_of_registry_ids ... ok
+test web_search_core::tests::registry_pins_issue_133_explicit_providers ... ok
+test web_search_core::tests::registry_includes_all_four_categories ... ok
+test web_search_core::tests::default_plan_preserves_issue_180_priority_order ... ok
+test web_search_core::tests::rrf_k_is_sixty ... ok
+test web_search_core::tests::rrf_input_round_trips_through_parser_and_serializer ... ok
+test web_search_core::tests::rrf_score_matches_cormack_clarke_buettcher_formula ... ok
+test telegram_runtime::tests::polling_loop_recovers_from_invalid_payload ... ok
+
+test result: ok. 217 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.05s
+
+     Running `/tmp/gh-issue-solver-1779463208867/target/debug/deps/formal_ai-4bc01dab012e1cf0`
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running `/tmp/gh-issue-solver-1779463208867/target/debug/deps/integration-5e919a5c562eff9f`
+
+running 11 tests
+test formal_ai_cli::cli_bundle_export_includes_seed_and_memory ... ok
+test formal_ai_cli::cli_environments_command_lists_every_supported_surface ... ok
+test formal_ai_cli::cli_chat_definition_fusion_option_merges_plain_definition_prompt ... ok
+test formal_ai_cli::cli_chat_command_can_emit_chat_completion_json ... ok
+test formal_ai_cli::cli_bundle_import_recovers_memory_into_local_log ... ok
+test formal_ai_cli::cli_github_logs_plan_prints_reproducible_capture_commands ... ok
+test formal_ai_cli::cli_chat_command_prints_text_response ... ok
+test formal_ai_cli::cli_chat_definition_fusion_env_var_merges_plain_definition_prompt ... ok
+test formal_ai_cli::cli_version_flag_prints_crate_version ... ok
+test formal_ai_cli::cli_memory_export_to_stdout_returns_links_notation ... ok
+test formal_ai_cli::cli_memory_export_import_show_round_trips_events ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+
+     Running `/tmp/gh-issue-solver-1779463208867/target/debug/deps/unit-27a7b8f4a83ec95e`
+
+running 530 tests
+test ci_cd::changelog_parsing::test_nonexistent_version ... ok
+test ci_cd::check_crate_package_size::tests::classifies_package_sizes_against_crates_io_limit ... ok
+test ci_cd::changelog_parsing::test_last_version_extraction ... ok
+test ci_cd::check_crate_package_size::tests::derives_crate_archive_path_from_package_metadata ... ok
+test ci_cd::changelog_parsing::test_middle_version_extraction ... ok
+test ci_cd::changelog_parsing::test_empty_section_fallback ... ok
+test ci_cd::changelog_parsing::test_version_with_dots_regex_escape ... ok
+test ci_cd::check_crate_package_size::tests::formats_bytes_with_raw_count_for_ci_logs ... ok
+test ci_cd::check_file_size::tests::classifies_hard_limit_violations ... ok
+test ci_cd::check_file_size::tests::classifies_warning_band_without_blocking ... ok
+test ci_cd::check_file_size::tests::warning_annotation_uses_github_actions_format ... ok
+test ci_cd::create_github_release::tests::docker_hub_badge_escapes_build_metadata ... ok
+test ci_cd::check_file_size::tests::check_directory_enforces_lino_limit ... ok
+test ci_cd::create_github_release::tests::docker_hub_badge_links_to_exact_tag ... ok
+test ci_cd::check_file_size::tests::check_directory_reports_warning_and_violation_separately ... ok
+test ci_cd::workflow_release::build_job_checks_generated_crate_archive_size ... ok
+test ci_cd::workflow_release::crate_package_manifest_uses_publish_allowlist ... ok
+test ci_cd::workflow_release::demo_deploy_is_independent_from_release_publication ... ok
+test ci_cd::workflow_release::demo_deploy_uses_github_pages_workflow_artifact ... ok
+test ci_cd::create_github_release::tests::release_payload_keeps_tag_prefix_out_of_release_name ... ok
+test ci_cd::create_github_release::tests::release_title_defaults_empty_language_to_rust ... ok
+test ci_cd::workflow_release::github_pages_artifact_advertises_crate_version_from_cargo_toml ... ok
+test ci_cd::create_github_release::tests::release_label_remains_optional_suffix ... ok
+test ci_cd::workflow_release::pages_deploy_is_pinned_and_live_e2e_waits_for_matching_deployment ... ok
+test ci_cd::workflow_release::pages_e2e_navigation_preserves_repository_subpath ... ok
+test ci_cd::workflow_release::release_scripts_check_configured_release_artifacts ... ok
+test ci_cd::workflow_release::release_workflow_defers_rate_limited_crates_publish_without_downstream_artifacts ... ok
+test ci_cd::workflow_release::release_workflow_jobs_have_explicit_timeouts ... ok
+test ci_cd::workflow_release::release_workflow_publishes_optional_docker_hub_image_after_crate_is_visible ... ok
+test ci_cd::workflow_release::pages_e2e_uses_deployment_output_url ... ok
+test ci_cd::workflow_release::static_demo_runtime_assets_are_cache_busted_by_deployment_version ... ok
+test ci_cd::workspace_manifest_resolution::path_helpers_match_repository_layout ... ok
+test ci_cd::create_github_release::tests::release_title_uses_language_and_bare_semver ... ok
+test ci_cd::workspace_manifest_resolution::rust_root_cli_parser_returns_none_without_configuration ... ok
+test ci_cd::create_github_release::tests::release_tag_uses_prefix_with_normalized_semver ... ok
+test ci_cd::workspace_manifest_resolution::errors_when_workspace_has_no_publishable_members ... ok
+test ci_cd::workspace_manifest_resolution::resolves_root_package_manifest_when_package_exists ... ok
+test ci_cd::workspace_manifest_resolution::rust_root_prefers_explicit_parameter ... ok
+test ci_cd::workspace_manifest_resolution::resolves_first_publishable_workspace_member ... ok
+test docker_runtime::docker_microservice_seed_declares_dind_start_command_contract ... ok
+test docker_runtime::dockerfile_defines_only_supported_dind_telegram_runtime ... ok
+test docs_requirements::issue_103_test_matrix_and_architecture_documents_are_present_and_traceable ... ok
+test docs_requirements::issue_115_github_log_collection_documents_are_present_and_traceable ... ok
+test courtesy_response::courteous_follow_up_is_recognized ... ok
+test docs_requirements::issue_117_lino_i18n_catalog_documents_and_ci_rule_are_traceable ... ok
+test docs_requirements::issue_12_vision_documents_are_present_and_traceable ... ok
+test docs_requirements::issue_16_followup_documents_capture_universal_seed_and_memory_migration ... ok
+test docs_requirements::issue_207_natural_translation_documents_are_present_and_traceable ... ok
+test docs_requirements::issue_195_dind_telegram_runtime_documents_are_present_and_traceable ... ok
+test docs_requirements::issue_63_definition_fusion_requirements_and_examples_are_traceable ... ok
+test docs_requirements::issue_80_software_project_dialogue_requirements_are_traceable ... ok
+test formal_ai::chat_completion_has_openai_compatible_shape ... ok
+test formal_ai::environment_directory_declares_every_supported_surface ... ok
+test formal_ai::environment_records_match_directory ... ok
+test formal_ai::farewell_prompts_are_recognized_as_farewell ... ok
+test courtesy_response::courtesy_response_matrix_is_classified_across_languages ... ok
+test formal_ai::greeting_prompt_returns_symbolic_greeting ... ok
+test data_files::lino_data_files_are_parseable_human_readable_and_bounded ... ok
+test courtesy_response::courtesy_response_matrix_never_falls_through_to_unknown ... ok
+test formal_ai::hello_world_prompt_supports_multiple_programming_languages ... ok
+test formal_ai::http_fetch_and_url_navigate_intents_are_distinct ... ok
+test formal_ai::fetch_prompt_returns_http_fetch_intent_not_unknown ... ok
+test formal_ai::how_you_work_prompts_return_meta_explanation ... ok
+test formal_ai::how_are_you_prompt_is_recognized_as_greeting_in_supported_languages ... ok
+test formal_ai::knowledge_export_is_valid_links_notation ... ok
+test formal_ai::library_memory_round_trips_through_links_notation ... ok
+test formal_ai::library_bundle_round_trips_seed_and_memory ... ok
+test formal_ai::identity_questions_return_standard_self_description ... ok
+test ci_cd::workflow_release::stamp_pages_artifact_replaces_formal_ai_version_placeholder ... ok
+test formal_ai::merged_bundle_and_parse_bundle_round_trip_split_files ... ok
+test formal_ai::responses_api_shape_contains_output_text ... ok
+test formal_ai::links_theory_prompts_resolve_to_meta_theory_concept ... ok
+test formal_ai::rust_hello_world_prompt_returns_code_block ... ok
+test formal_ai::kiss_in_programming_context_returns_design_principle_not_band ... ok
+test formal_ai::server_handler_supports_chat_completions_route ... ok
+test formal_ai::software_project_request_returns_reviewable_plan ... ok
+test formal_ai::opinion_questions_return_no_opinion_response ... ok
+test formal_ai::shabbat_shalom_greeting_is_recognized_as_greeting ... ok
+test formal_ai::software_project_approval_returns_implementation_starter ... ok
+test formal_ai::telegram_webhook_supports_public_chat_code_replies ... ok
+test formal_ai::telegram_webhook_supports_private_messages ... ok
+test formal_ai::rasskazhi_za_telegram_ads_resolves_to_concept_lookup ... ok
+test formal_ai::software_project_variations_do_not_return_unknown ... ok
+test formal_ai::who_is_elon_mask_suggests_elon_musk ... ok
+test github_logs::github_log_collector_writes_manifest_and_captured_files ... ok
+test github_logs::github_log_plan_captures_issue_pr_run_and_all_comment_types ... ok
+test github_logs::github_log_plan_rejects_repo_names_without_owner ... ok
+test formal_ai::web_search_prompt_returns_web_search_intent_not_unknown ... ok
+test formal_ai::who_is_question_does_not_return_unknown_intent ... ok
+test formal_ai::write_script_prompt_returns_code_block ... ok
+test multilingual_variations::arithmetic_russian_word_variations_match ... ok
+test multilingual_variations::arithmetic_english_word_variations_match ... ok
+test multilingual_variations::arithmetic_symbolic_variations_match ... ok
+test multilingual_variations::farewell_english_variations_match ... ok
+test formal_ai::url_navigation_variations_return_https_link_without_fetch_advice ... ok
+test multilingual_variations::farewell_chinese_variations_match ... ok
+test multilingual_variations::farewell_hindi_variations_match ... ok
+test multilingual_variations::farewell_russian_variations_match ... ok
+test multilingual_variations::greeting_chinese_variations_match ... ok
+test multilingual_variations::greeting_hindi_variations_match ... ok
+test multilingual_variations::greeting_english_variations_match ... ok
+test multilingual_variations::greeting_how_are_you_variations_match_across_languages ... ok
+test multilingual_variations::identity_chinese_variations_match ... ok
+test multilingual_variations::identity_russian_variations_match ... ok
+test multilingual_variations::greeting_russian_variations_match ... ok
+test proof_request::arithmetic_disproof_reports_counterexample ... ok
+test multilingual_variations::identity_english_variations_match ... ok
+test proof_request::chinese_fermat_little_returns_chinese_proof ... ok
+test proof_request::fermat_little_proof_uses_induction ... ok
+test proof_request::arithmetic_proof_request_contains_evaluated_values ... ok
+test proof_request::euclid_primes_proof_is_returned ... ok
+test proof_request::godel_determinism_proof_request_mentions_axiom_set ... ok
+test multilingual_variations::identity_hindi_variations_match ... ok
+test proof_request::proof_request_handler_does_not_swallow_concept_lookups ... ok
+test proof_request::proof_request_handler_does_not_swallow_opinion_questions ... ok
+test proof_request::unknown_theorem_returns_partial_plan_not_refusal ... ok
+test proof_request::pythagorean_request_contains_textbook_proof ... ok
+test proof_request::sqrt_two_proof_uses_contradiction ... ok
+test proof_request_config::balanced_config_shows_both_headers ... ok
+test proof_request_config::chinese_high_guess_shows_chinese_interpretation_header ... ok
+test proof_request::russian_pythagoras_returns_russian_proof ... ok
+test proof_request_config::disproven_branch_asks_followup_questions_when_follow_up_high ... ok
+test proof_request_config::env_overrides_for_guess_and_follow_up_probability_parse ... ok
+test proof_request_config::config_propagates_through_event_log_via_policy_events ... ok
+test proof_request_config::high_guess_low_follow_up_shows_interpretation_no_questions_for_riemann ... ok
+test proof_request_config::hindi_high_follow_up_uses_hindi_question_label ... ok
+test proof_request_config::godel_determinism_high_guess_includes_relative_meta_logic_translation ... ok
+test proof_request_config::proof_render_config_threshold_helpers ... ok
+test proof_request_config::proof_engine_deeper_reasoning_when_guess_is_high ... ok
+test proof_request_config::proof_engine_keeps_default_plan_when_guess_low ... ok
+test proof_request_config::low_guess_high_follow_up_asks_questions_no_interpretation ... ok
+test proof_request_config::proven_branch_shows_interpretation_only_for_high_guess ... ok
+test proof_request_config::render_outcome_with_config_is_pure_function ... ok
+test proof_request_config::russian_high_follow_up_asks_clarification_in_russian ... ok
+test proof_request_config::terse_config_drops_both_headers_for_partial_plan ... ok
+test proof_request::proof_requests_return_proof_response ... ok
+test specification::agent_isolation::agent_actions_are_appended_to_visible_log ... ignored, tracked requirement: every agent action must be appended to a visible action log
+test specification::agent_isolation::agent_execution_runs_in_isolated_environment ... ignored, tracked requirement: agent execution must run inside an isolated sandbox (docker/webvm/sandbox)
+test specification::agent_isolation::agent_failures_are_visible ... ignored, tracked requirement: agent failures should never be silenced — they must surface with a trace link
+test specification::agent_isolation::agent_mode_does_not_leak_host_env_vars ... ignored, tracked requirement: agent mode must not exfiltrate secrets from the host environment
+test specification::agent_isolation::agent_mode_enforces_time_budget ... ignored, tracked requirement: agent mode must enforce a time budget on long-running tasks
+test specification::agent_isolation::agent_mode_is_off_by_default ... ignored, tracked requirement: agent mode must be off by default and refused without explicit opt-in
+test specification::agent_isolation::agent_mode_opt_in_is_explicit_and_logged ... ignored, tracked requirement: agent mode opt-in must be explicit and recorded as a link
+test software_project::software_project_plan_exposes_requirement_graph_and_approval_preferences ... ok
+test specification::agent_isolation::chat_mode_never_runs_user_supplied_shell_commands ... ok
+test specification::agent_isolation::destructive_agent_actions_require_confirmation ... ignored, tracked requirement: destructive actions in agent mode require human confirmation
+test specification::agent_isolation::switching_to_chat_revokes_agent_privileges ... ignored, tracked requirement: switching back to chat mode must wipe agent privileges immediately
+test specification::calculator_delegation::calculator_delegation_is_visible_in_evidence ... ok
+test specification::agent_isolation::typescript_unavailable_status_is_honest_not_silenced ... ok
+test specification::calculator_delegation::calculator_error_keeps_fuzzy_interpretation ... ok
+test specification::calculator_delegation::calculator_explains_fuzzy_calculate_typo ... ok
+test software_project::approval_returns_language_aware_generated_code_surface ... ok
+test specification::calculator_delegation::calculator_handles_binary_modulo_after_upstream_fix ... ok
+test specification::calculator_delegation::calculator_fuzzy_prefix_is_not_limited_to_one_spelling ... ok
+test specification::calculator_delegation::calculator_handles_compact_question_equals_suffix ... ok
+test specification::calculator_delegation::calculator_extraction_does_not_steal_named_entities_with_digits ... ok
+test specification::calculator_delegation::calculator_handles_chinese_variations ... ok
+test specification::calculator_delegation::calculator_handles_hindi_variations ... ok
+test software_project::popular_software_project_prompts_use_the_general_formalization_path ... ok
+test specification::calculator_delegation::local_arithmetic_fallback_keeps_word_operators ... ok
+test specification::calculator_delegation::calculator_handles_english_variations ... ok
+test specification::capabilities::runtime_gated_capabilities_report_current_configuration ... ok
+test specification::capabilities::action_requests_keep_routing_to_primary_handlers ... ok
+test specification::calculator_delegation::simple_variable_equations_are_solved_after_calculator_delegation ... ok
+test specification::capabilities::web_search_capability_questions_are_supported_across_languages ... ok
+test specification::capabilities::web_search_capability_respects_offline_config ... ok
+test specification::capabilities::supported_feature_capability_questions_cover_every_supported_language ... ok
+test specification::chat_surface::behavior_rule_can_be_taught_with_russian_phrasing ... ok
+test specification::calculator_delegation::calculator_handles_russian_variations ... ok
+test specification::chat_surface::answers_are_deterministic_for_identical_prompts ... ok
+test specification::chat_surface::behavior_rule_detail_can_be_read_in_russian ... ok
+test specification::chat_surface::behavior_rule_detail_includes_topic_and_when_then_in_links ... ok
+test specification::chat_surface::behavior_rule_detail_uses_describe_prefix ... ok
+test specification::chat_surface::behavior_rule_detail_supports_multiple_rule_prefixes ... ok
+test specification::chat_surface::behavior_rule_detail_uses_read_rule_prefix ... ok
+test specification::chat_surface::behavior_rule_listing_does_not_match_when_x_then_y_in_running_text ... ok
+test specification::chat_surface::behavior_rule_listing_includes_capabilities_and_farewell_rules ... ok
+test specification::chat_surface::behavior_rule_listing_renders_when_then_statements_grouped_by_topic ... ok
+test specification::chat_surface::behavior_rule_listing_invites_when_x_then_y_teaching_form ... ok
+test specification::chat_surface::behavior_rule_teach_recognized_for_capabilities_questions ... ok
+test specification::chat_surface::behavior_rule_listing_shows_dialog_local_runtime_rule_as_when_then ... ok
+test specification::chat_surface::behavior_rule_teach_supports_chinese_dang_shi_grammar ... ok
+test specification::chat_surface::behavior_rule_teach_supports_chinese_dang_ze_grammar ... ok
+test specification::chat_surface::behavior_rule_teach_supports_english_if_i_ask_grammar ... ok
+test specification::chat_surface::behavior_rule_teach_supports_english_when_x_do_y_grammar ... ok
+test specification::chat_surface::behavior_rule_teach_supports_english_when_x_then_y_grammar ... ok
+test specification::chat_surface::behavior_rule_teach_supports_hindi_jab_tab_grammar ... ok
+test specification::chat_surface::behavior_rule_teach_supports_russian_kogda_delai_grammar ... ok
+test specification::chat_surface::behavior_rule_teach_supports_russian_esli_grammar ... ok
+test specification::chat_surface::behavior_rule_teach_supports_russian_kogda_togda_grammar ... ok
+test specification::chat_surface::behavior_rules_list_works_for_chinese_speakers ... ok
+test specification::chat_surface::behavior_rules_can_be_listed_and_read_through_chat ... ok
+test specification::chat_surface::behavior_rules_can_be_updated_through_conversation_history ... ok
+test specification::chat_surface::behavior_rules_list_works_for_hindi_speakers ... ok
+test specification::chat_surface::behavior_rules_listing_includes_runtime_rule_when_history_has_one ... ok
+test specification::chat_surface::capabilities_answer_advertises_behavior_rule_commands ... ok
+test specification::chat_surface::capabilities_answer_in_hindi_advertises_behavior_rule_commands ... ok
+test specification::chat_surface::capabilities_answer_in_chinese_advertises_behavior_rule_commands ... ok
+test specification::chat_surface::chat_mode_refuses_unbounded_multi_step_actions_without_agent_opt_in ... ignored, tracked requirement: bounded chat mode should refuse to run agent-style tasks without explicit opt-in
+test specification::chat_surface::diagnostics_are_excluded_from_default_user_facing_answers ... ignored, tracked requirement: diagnostics-off-by-default should also be expressed at the engine level
+test specification::chat_surface::behavior_rules_list_possessive_list_phrase_covers_supported_languages ... ok
+test specification::chat_surface::dot_prompt_asks_for_clarification ... ok
+test specification::chat_surface::empty_prompt_does_not_crash_and_is_classified_as_unknown ... ok
+test specification::chat_surface::capabilities_answer_in_russian_advertises_behavior_rule_commands ... ok
+test specification::chat_surface::behavior_rules_list_works_for_russian_speakers ... ok
+test specification::chat_surface::english_vulgar_prompt_is_refused_with_policy_intent ... ok
+test specification::chat_surface::every_answer_exposes_a_trace_link_for_inspection ... ignored, tracked requirement: chat answers should expose a trace link the user can follow
+test specification::chat_surface::every_code_answer_declares_execution_status_or_unavailability ... ignored, tracked requirement: chat-mode answers must declare the execution status of any generated code
+test specification::chat_surface::greeting_ignores_surrounding_punctuation ... ok
+test specification::chat_surface::evidence_links_always_include_prompt_and_intent_links ... ok
+test specification::chat_surface::greeting_matching_is_case_insensitive ... ok
+test specification::chat_surface::greeting_prompt_returns_a_greeting_intent ... ok
+test specification::chat_surface::identity_question_returns_identity_intent ... ok
+test specification::chat_surface::links_notation_trace_is_present_for_every_answer ... ok
+test specification::chat_surface::physical_action_question_is_answered_factually ... ok
+test specification::chat_surface::opener_pools_have_distinct_first_entries_per_language ... ok
+test specification::chat_surface::most_recent_behavior_rule_wins_when_multiple_apply ... ok
+test specification::chat_surface::physical_action_question_reply_is_factual_no ... ok
+test specification::chat_surface::self_facts_query_works_for_chinese_speakers ... ok
+test specification::chat_surface::self_facts_answer_includes_model_id_and_strategy ... ok
+test specification::chat_surface::self_facts_query_works_for_hindi_speakers ... ok
+test specification::chat_surface::self_facts_can_be_listed_through_chat ... ok
+test specification::chat_surface::identity_examples_cover_known_phrasings ... ok
+test specification::chat_surface::self_facts_query_works_for_russian_speakers ... ok
+test software_project::software_project_dialogue_examples_formalize_plan_then_implement_after_approval ... ok
+test specification::chat_surface::unknown_answer_is_strict_superset_of_seed_opener ... ok
+test specification::chat_surface::unknown_answer_mentions_report_issue_and_export_memory ... ok
+test specification::chat_surface::unknown_answer_mentions_report_issue_in_russian ... ok
+test specification::chat_surface::unknown_intent_offers_a_path_to_extend_the_network ... ignored, tracked requirement: unknown intents should propose a follow-up that creates a Links Notation seed
+test specification::chat_surface::user_messages_are_recorded_as_impulse_events ... ignored, tracked requirement: assistant should record the user message as an `impulse` link before answering
+test specification::chat_surface::unknown_answer_uses_different_opener_for_different_prompts ... ok
+test specification::chat_surface::unknown_prompt_explains_how_to_teach_a_behavior_rule ... ok
+test specification::code_generation::code_answers_declare_isolation_level ... ignored, tracked requirement: code answers should declare an isolation level for execution evidence
+test specification::code_generation::code_answers_include_execution_links_in_notation ... ignored, tracked requirement: code answers should include execution metadata in Links Notation form
+test specification::code_generation::execution_failures_are_reported_with_full_trace ... ignored, tracked requirement: failing generated code must be re-emitted with the failure trace, not silently
+test specification::chat_surface::unknown_prompt_returns_zero_confidence_fallback_intent ... ok
+test specification::code_generation::go_alias_golang_is_supported ... ok
+test specification::chat_surface::whitespace_only_prompt_is_classified_as_unknown ... ok
+test specification::chat_surface::unknown_answer_opener_is_deterministic_for_the_same_prompt ... ok
+test specification::code_generation::c_hello_world_seed_compiles_and_runs ... ok
+test specification::code_generation::hello_world_without_recognized_language_falls_back_to_unknown ... ok
+test specification::code_generation::javascript_hello_world_seed_runs ... ok
+test specification::code_generation::javascript_alias_node_is_supported ... ok
+test specification::code_generation::russian_transliteration_хелло_ворлд_на_джаваскрипт_returns_javascript ... ok
+test specification::code_generation::python_alias_py_is_supported ... ok
+test specification::code_generation::russian_transliteration_хелло_ворлд_на_расте_returns_rust ... ok
+test specification::code_generation::go_hello_world_seed_runs ... ok
+test specification::code_generation::python_hello_world_seed_runs ... ok
+test specification::code_generation::sorting_algorithm_request_returns_code_and_tests ... ignored, tracked requirement: requesting `sorting algorithm` should produce reviewable code and tests
+test specification::code_generation::top_ten_popular_languages_each_have_a_hello_world_seed ... ignored, tracked requirement: hello-world should be available in the top 10 popular languages
+test specification::code_generation::translating_a_program_between_languages_keeps_semantics ... ignored, tracked requirement: translation between programming languages should keep semantics
+test specification::code_generation::rust_alias_rs_is_supported ... ok
+test specification::code_generation::rust_hello_world_seed_compiles_and_runs ... ok
+test specification::definition_fusion::definition_fusion_by_default_merges_plain_definition_prompts_when_enabled ... ok
+test specification::code_generation::russian_transliteration_хелло_ворлд_питоне_returns_python ... ok
+test specification::code_generation::typescript_hello_world_seed_reports_unavailable_execution ... ok
+test specification::links_network::concepts_are_unique_and_referenced_by_id ... ignored, tracked requirement: each concept must be unique in the network and reused by reference
+test specification::definition_fusion::definition_merge_keeps_shared_anchor_and_source_evidence ... ok
+test specification::links_network::dynamic_type_system_publishes_subtype_chains ... ignored, tracked requirement: dynamic type system should publish Type -> SubType chains in the network
+test specification::links_network::every_answer_has_a_trace_link_pointer ... ignored, tracked requirement: every answer must publish a trace link pointing to a reasoning record
+test specification::definition_fusion::definition_fusion_by_default_preserves_contextual_concept_lookup ... ok
+test specification::definition_fusion::definition_merge_unknown_term_falls_back_to_unknown_intent ... ok
+test specification::links_network::every_fact_carries_a_source_link ... ignored, tracked requirement: facts should be recorded with the source link that introduced them
+test specification::links_network::history_is_append_only ... ignored, tracked requirement: history must be append-only — earlier records cannot be mutated, only superseded
+test specification::links_network::ill_formed_links_notation_input_is_rejected ... ignored, tracked requirement: the engine should reject ill-formed Links Notation submissions
+test specification::links_network::knowledge_dataset_declares_schema_version ... ignored, tracked requirement: knowledge dataset should declare a schema version link for migrations
+test specification::links_network::knowledge_export_is_non_empty_links_notation ... ok
+test specification::links_network::distinct_prompts_lead_to_distinct_links_traces ... ok
+test specification::links_network::every_answer_includes_links_notation_trace ... ok
+test specification::links_network::every_answer_records_intent_in_evidence_links ... ok
+test specification::links_network::knowledge_export_is_reducible_to_doublet_links ... ignored, tracked requirement: every record in the network must be reducible to doublet links
+test specification::links_network::records_are_addressable_by_stable_id ... ignored, tracked requirement: links network must support querying records via a stable id
+test specification::links_network::trace_record_lists_ordered_reasoning_steps ... ignored, tracked requirement: trace records must list ordered reasoning steps in Links Notation
+test specification::links_network::knowledge_export_uses_untyped_links_notation_only ... ok
+test specification::multilingual::bare_iir_without_context_still_resolves ... ok
+test specification::multilingual::chinese_concept_question_returns_concept_lookup_intent ... ok
+test specification::links_network::knowledge_records_parse_as_links_notation ... ok
+test specification::multilingual::chinese_greeting_returns_greeting_intent ... ok
+test specification::multilingual::chinese_bsd_ports_question_returns_localized_ports_answer ... ok
+test specification::multilingual::chinese_identity_question_returns_identity_intent ... ok
+test specification::multilingual::chinese_iir_in_ml_returns_context_aware_concept_lookup ... ok
+test specification::multilingual::english_did_not_understand_returns_clarification_intent ... ok
+test specification::multilingual::english_capabilities_question_returns_capabilities_intent ... ok
+test specification::multilingual::chinese_iir_in_ml_body_uses_chinese_context_label ... ok
+test specification::multilingual::concept_lookup_evidence_records_context_match_event ... ok
+test specification::multilingual::english_dont_understand_variant_returns_clarification_intent ... ok
+test specification::multilingual::english_greeting_is_handled_today ... ok
+test specification::multilingual::english_what_is_iir_in_ml_returns_context_aware_concept_lookup ... ok
+test specification::multilingual::english_iir_in_ml_body_uses_english_native_term ... ok
+test specification::multilingual::hindi_concept_question_returns_concept_lookup_intent ... ok
+test specification::multilingual::hindi_bsd_ports_question_returns_localized_ports_answer ... ok
+test specification::multilingual::every_multilingual_answer_declares_detected_language_link ... ok
+test specification::multilingual::hindi_greeting_returns_greeting_intent ... ok
+test specification::definition_fusion::definition_merge_examples_show_exact_behavior_across_terms_and_concepts ... ok
+test specification::multilingual::humanize_url_handles_every_supported_language ... ok
+test specification::multilingual::graph_questions_promote_links_notation_context_across_supported_languages ... ok
+test specification::multilingual::humanize_url_preserves_functional_link_target ... ok
+test specification::multilingual::hindi_identity_question_returns_identity_intent ... ok
+test specification::multilingual::kupi_slona_answer_is_in_russian ... ok
+test specification::multilingual::kupi_slona_returns_dedicated_idiom_intent ... ok
+test specification::multilingual::kupi_slona_answer_includes_traditional_reply ... ok
+test specification::multilingual::humanize_url_renders_cyrillic_wikipedia_link_readably ... ok
+test specification::multilingual::russian_capabilities_answer_is_in_russian ... ok
+test specification::multilingual::hindi_iir_in_ml_returns_context_aware_concept_lookup ... ok
+test specification::multilingual::hindi_iir_in_ml_body_uses_hindi_context_label ... ok
+test specification::multilingual::russian_capabilities_question_does_not_return_unknown ... ok
+test specification::multilingual::russian_clarification_reply_is_in_russian ... ok
+test specification::multilingual::russian_bsd_ports_question_returns_ports_not_openbsd ... ok
+test specification::multilingual::russian_capabilities_question_returns_capabilities_intent ... ok
+test specification::multilingual::russian_combined_greeting_and_identity_question_returns_identity_intent ... ok
+test specification::multilingual::russian_confusion_phrase_does_not_return_unknown ... ok
+test specification::multilingual::russian_did_not_understand_returns_clarification_intent ... ok
+test specification::multilingual::russian_confusion_phrase_returns_capabilities_intent ... ok
+test specification::multilingual::russian_greeting_returns_greeting_intent ... ok
+test specification::multilingual::russian_greeting_reply_is_in_russian ... ok
+test specification::multilingual::russian_identity_question_returns_identity_intent ... ok
+test specification::multilingual::russian_concept_question_returns_concept_lookup_intent ... ok
+test specification::multilingual::russian_iir_in_ml_body_uses_native_term_and_context_label ... ok
+test specification::multilingual::russian_iir_in_ml_returns_context_aware_concept_lookup ... ok
+test specification::multilingual::russian_more_capabilities_follow_up_uses_history_without_repeating_web_search ... ok
+test specification::multilingual::russian_iir_evidence_includes_wikidata_anchor ... ok
+test specification::multilingual::russian_mixed_units_question_returns_unit_incompatibility_intent ... ok
+test specification::multilingual::russian_iir_when_context_is_typed_natively_drops_redundant_parens ... ok
+test specification::multilingual::russian_iir_in_ml_source_points_at_russian_wikipedia ... ok
+test specification::multilingual::russian_nonsensical_question_returns_unknown_intent ... ok
+test specification::multilingual::russian_nazovi_tsvet_answer_references_color ... ok
+test specification::multilingual::russian_unknown_reply_is_in_russian ... ok
+test specification::multilingual::russian_nazovi_prefix_routes_to_concept_lookup ... ok
+test specification::multilingual::russian_trick_riddle_returns_unknown_intent ... ok
+test specification::network_visualization::graph_edges_describe_doublet_links ... ok
+test specification::network_visualization::graph_endpoint_returns_404_for_unknown_trace ... ok
+test specification::multilingual::unknown_language_prompts_fall_back_to_english_with_unknown_language_link ... ok
+test specification::network_visualization::graph_endpoint_supports_dot_export ... ok
+test specification::network_visualization::graph_endpoint_filters_by_trace_id ... ok
+test specification::network_visualization::web_demo_chat_works_even_when_graph_is_disabled ... ignored, tracked requirement: web demo must render the graph alongside chat but never block chat replies
+test specification::openai_compatibility::authenticated_routes_accept_bearer_token ... ignored, tracked requirement: an authenticated API surface should accept Bearer tokens
+test specification::network_visualization::graph_nodes_carry_minimum_metadata ... ok
+test specification::openai_compatibility::chat_completion_refuses_tool_call_without_agent_mode ... ignored, tracked requirement: chat completions should refuse to call shell tools unless agent mode is opted in
+test specification::network_visualization::graph_endpoint_returns_nodes_and_edges ... ok
+test specification::openai_compatibility::chat_completion_applies_behavior_rule_from_prior_messages ... ok
+test specification::openai_compatibility::chat_completion_round_trips_user_prompt_to_assistant_response ... ok
+test specification::openai_compatibility::chat_completion_reports_token_usage ... ok
+test specification::network_visualization::answers_already_carry_links_notation_for_visualization ... ok
+test specification::openai_compatibility::chat_completion_supports_multi_turn_conversation ... ok
+test specification::openai_compatibility::http_health_endpoint_returns_ok ... ok
+test specification::openai_compatibility::http_chat_completions_route_rejects_invalid_json ... ok
+test specification::openai_compatibility::chat_completion_accepts_multipart_content ... ok
+test specification::openai_compatibility::http_chat_completions_route_returns_completion_object ... ok
+test specification::openai_compatibility::http_models_endpoint_lists_at_least_one_model ... ok
+test specification::openai_compatibility::http_responses_declare_a_content_type ... ok
+test specification::openai_compatibility::http_unknown_route_returns_404 ... ok
+test specification::openai_compatibility::openai_requests_accept_temperature_parameter ... ok
+test specification::openai_compatibility::rate_limit_metadata_is_exposed ... ok
+test specification::openai_compatibility::streaming_chat_completion_emits_server_sent_events ... ok
+test specification::openai_compatibility::http_responses_route_returns_response_object ... ok
+test specification::openai_compatibility::responses_api_attaches_trace_link ... ok
+test specification::openai_compatibility::responses_endpoint_returns_completed_response ... ok
+test specification::project_lookups::curated_project_concept_prompt_routes_to_project_lookup ... ok
+test specification::project_lookups::bitbucket_repository_url_routes_to_generic_project_lookup ... ok
+test specification::project_lookups::associative_project_promotion_can_be_disabled ... ok
+test specification::project_lookups::curated_project_lookup_records_summarization_evidence ... ok
+test specification::project_lookups::english_hive_mind_prompt_prefers_link_assistant_project ... ok
+test specification::project_lookups::github_repository_url_routes_to_generic_project_lookup ... ok
+test specification::project_lookups::explicit_formal_ai_repository_url_still_routes_to_project_lookup ... ok
+test specification::project_lookups::http_fetch_of_curated_github_url_describes_project_via_summarization ... ok
+test specification::project_lookups::gitlab_repository_url_routes_to_generic_project_lookup ... ok
+test specification::project_lookups::http_fetch_of_unknown_url_skips_curated_project_summary ... ok
+test specification::project_lookups::linksplatform_repository_is_promoted_by_default ... ok
+test specification::project_lookups::russian_hive_mind_prompt_prefers_link_assistant_project ... ok
+test specification::prompt_variations::capital_matrix_records_structured_fact_query_trace ... ok
+test specification::prompt_variations::basic_math_matrix_is_classified_as_calculation ... ok
+test specification::prompt_variations::brainstorming_intent_routes_to_brainstorm_handler ... ok
+test specification::prompt_variations::capabilities_matrix_is_classified_as_capabilities_across_languages ... ok
+test specification::prompt_variations::capabilities_matrix_never_falls_through_to_unknown ... ok
+test specification::prompt_variations::capital_matrix_resolves_every_seeded_country ... ok
+test specification::prompt_variations::farewell_matrix_is_classified_as_farewell_across_languages ... ok
+test specification::prompt_variations::concept_lookup_matrix_is_classified_as_concept_lookup_across_languages ... ok
+test specification::prompt_variations::clarification_matrix_is_classified_as_clarification_across_languages ... ok
+test specification::prompt_variations::greeting_matrix_is_classified_as_greeting_across_languages ... ok
+test specification::prompt_variations::factual_qna_matrix_records_per_language_evidence ... ok
+test specification::prompt_variations::factual_qna_matrix_records_wikidata_anchor ... ok
+test specification::prompt_variations::greeting_matrix_records_per_language_evidence ... ok
+test specification::prompt_variations::hello_world_matrix_emits_a_code_block_per_language ... ok
+test specification::prompt_variations::idiom_matrix_routes_to_dedicated_idiom_intent ... ok
+test specification::prompt_variations::multi_turn_coreference_resolves_pronoun_against_history ... ok
+test specification::prompt_variations::refusal_matrix_routes_to_policy_inappropriate_content ... ok
+test specification::prompt_variations::hello_world_matrix_routes_to_per_language_intent ... ok
+test specification::prompt_variations::identity_matrix_is_classified_as_identity_across_languages ... ok
+test specification::prompt_variations::matrix_answers_are_deterministic_for_identical_prompts ... ok
+test specification::prompt_variations::russian_capital_russia_prompt_returns_moscow ... ok
+test specification::reasoning_loop::answers_are_repeatable_for_the_same_prompt ... ok
+test specification::prompt_variations::web_search_online_variant_routes_to_web_search_handler ... ok
+test specification::reasoning_loop::confidence_reflects_corroborating_evidence ... ignored, tracked requirement: confidence should reflect the number of corroborating links in the network
+test specification::prompt_variations::roleplay_intent_routes_to_roleplay_handler ... ok
+test specification::reasoning_loop::loop_terminates_on_unsolvable_questions ... ignored, tracked requirement: the loop must terminate and refuse to spin forever on unsolvable questions
+test specification::reasoning_loop::step_1_prompt_is_recorded_as_impulse ... ignored, tracked requirement: step 1 — every prompt should be recorded as an impulse link before reasoning
+test specification::reasoning_loop::step_2_local_search_runs_before_external_calls ... ignored, tracked requirement: step 2 — local network search should be tried before any external lookup
+test specification::reasoning_loop::step_3_external_search_kicks_in_when_local_is_insufficient ... ignored, tracked requirement: step 3 — when local search is insufficient, the loop must fall back to external sources
+test specification::reasoning_loop::step_4_complex_requests_get_decomposed ... ignored, tracked requirement: step 4 — complex requests should be decomposed into sub-impulses
+test specification::reasoning_loop::step_5_multiple_candidates_are_generated ... ignored, tracked requirement: step 5 — multiple candidate answers must be generated and recorded
+test specification::reasoning_loop::step_6_candidates_are_validated_against_constraints ... ignored, tracked requirement: step 6 — candidates must be validated against constraints from the network
+test specification::reasoning_loop::step_7_smallest_sufficient_answer_is_selected ... ignored, tracked requirement: step 7 — the smallest sufficient answer should be selected
+test specification::reasoning_loop::step_8_full_trace_is_stored_and_linked ... ignored, tracked requirement: step 8 — the complete trace must be stored and linked back to the answer
+test specification::reasoning_loop::step_9_reply_is_returned_with_trace_pointer ... ignored, tracked requirement: step 9 — final reply must be returned along with the trace pointer
+test specification::reasoning_loop::answers_expose_their_intent_explicitly ... ok
+test specification::reasoning_loop::known_prompts_resolve_via_local_knowledge ... ok
+test specification::reasoning_loop::unknown_prompts_acknowledge_inability_to_answer ... ok
+test specification::reasoning_paths::arithmetic_handles_basic_addition ... ok
+test specification::reasoning_paths::arithmetic_handles_decimals ... ok
+test specification::reasoning_paths::arithmetic_handles_division_remainder ... ok
+test specification::prompt_variations::identity_matrix_mentions_formal_ai_in_every_language ... ok
+test specification::reasoning_paths::arithmetic_handles_word_operators ... ok
+test specification::reasoning_paths::arithmetic_handles_parentheses_and_precedence ... ok
+test specification::reasoning_paths::arithmetic_never_fires_on_plain_greetings ... ok
+test specification::reasoning_paths::arithmetic_reports_division_by_zero_without_panicking ... ok
+test specification::reasoning_paths::arithmetic_records_calculation_event_in_evidence_log ... ok
+test specification::prompt_variations::summarization_intent_routes_to_summarization_handler ... ok
+test specification::reasoning_paths::calendar_reasoning_answers_russian_weekday_successor ... ok
+test specification::reasoning_paths::arithmetic_handles_large_integer_multiplication_without_overflow ... ok
+test specification::reasoning_paths::calendar_reasoning_answers_current_day_questions_across_supported_languages ... ok
+test specification::reasoning_paths::concept_lookup_answers_what_is_wikipedia ... ok
+test specification::reasoning_paths::concept_lookup_does_not_fire_for_identity_questions ... ok
+test specification::reasoning_paths::concept_lookup_handles_what_does_x_mean ... ok
+test specification::reasoning_paths::concept_lookup_includes_source_citation ... ok
+test specification::reasoning_paths::compatible_unit_query_does_not_trigger_incompatibility_handler ... ok
+test specification::reasoning_paths::calendar_reasoning_answers_weekday_predecessor_and_successor_variations ... ok
+test specification::reasoning_paths::concept_lookup_handles_tell_me_about_links_notation ... ok
+test specification::reasoning_paths::english_meters_in_kilobyte_returns_unit_incompatibility ... ok
+test specification::reasoning_paths::greeting_is_not_intercepted_by_incompatibility_handler ... ok
+test specification::reasoning_paths::concept_lookup_records_concept_event_in_evidence_log ... ok
+test specification::reasoning_paths::how_does_it_work_is_not_unknown ... ok
+test specification::reasoning_paths::how_does_wikipedia_work_resolves_concept_lookup ... ok
+test specification::reasoning_paths::how_it_works_after_concept_lookup_looks_up_the_concept ... ok
+test specification::reasoning_paths::how_it_works_bare_is_not_unknown ... ok
+test specification::reasoning_paths::how_to_make_tea_uses_source_backed_procedure_plan ... ok
+test specification::reasoning_paths::how_to_prepare_fried_potatoes_falls_back_to_web_search ... ok
+test specification::reasoning_paths::how_to_procedure_is_general_not_memoized_to_examples ... ok
+test specification::reasoning_paths::every_specialized_handler_emits_a_trace_link ... ok
+test specification::reasoning_paths::how_it_works_followup_records_followup_event_in_evidence ... ok
+test specification::reasoning_paths::incompatible_unit_answer_records_evidence_link ... ok
+test specification::reasoning_paths::javascript_handler_does_not_intercept_unrelated_code_blocks ... ok
+test specification::reasoning_paths::javascript_request_records_execution_status_event ... ok
+test specification::reasoning_paths::prior_turns_appear_in_evidence_log ... ok
+test specification::reasoning_paths::russian_how_known_concept_works_resolves_concept_lookup ... ok
+test specification::reasoning_paths::solve_with_history_falls_through_for_unrelated_prompts ... ok
+test specification::reasoning_paths::russian_meters_in_kilobyte_returns_unit_incompatibility ... ok
+test specification::reasoning_paths::javascript_request_returns_explicit_unavailability ... ok
+test specification::reasoning_paths::solve_with_history_recalls_last_question ... ok
+test specification::reasoning_paths::solve_with_history_summarizes_conversation ... ok
+test specification::reasoning_paths::solve_with_history_recalls_name_across_turns ... ok
+test specification::reasoning_paths::solve_with_history_summarizes_conversation_in_russian ... ok
+test specification::reasoning_paths::solve_with_history_summarizes_conversation_in_chinese ... ok
+test specification::reasoning_paths::solve_with_history_summarizes_conversation_rezyume_besedy ... ok
+test specification::reasoning_paths::solve_with_history_summarizes_conversation_single_word_summarize ... ok
+test specification::source_cache::cache_flush_is_explicit_and_auditable ... ignored, tracked requirement: a request to flush the source cache should be an explicit, auditable action
+test specification::source_cache::cached_sources_include_content_hash ... ignored, tracked requirement: cached sources must include the original content hash for verification
+test specification::reasoning_paths::solve_without_history_matches_legacy_entry_point ... ok
+test specification::source_cache::conflicting_sources_are_surfaced ... ignored, tracked requirement: sources that disagree must be surfaced rather than silently picking one
+test specification::source_cache::external_lookups_record_source_url ... ignored, tracked requirement: external lookups should record a source link with the original URL
+test specification::source_cache::offline_mode_disables_external_lookups ... ignored, tracked requirement: offline mode should disable external lookups and prefer cached evidence
+test specification::source_cache::repeated_lookups_hit_the_cache ... ignored, tracked requirement: repeated lookups within the TTL must hit the cache and avoid the network
+test specification::source_cache::source_links_carry_fetched_at_timestamp ... ignored, tracked requirement: source links must include a fetched_at timestamp for TTL tracking
+test specification::source_cache::stale_sources_are_refreshed ... ignored, tracked requirement: stale sources should be refreshed when older than the 2-month TTL
+test specification::summarization_pipeline::compound_words_and_semantic_primes_are_reversible_by_size ... ok
+test specification::summarization_pipeline::describe_readme_short_keeps_purpose_drops_install ... ok
+test specification::summarization_pipeline::default_max_statements_is_thirty ... ok
+test specification::summarization_pipeline::describe_readme_topic_returns_repo_slug ... ok
+test specification::summarization_pipeline::formalize_dialog_biases_user_turns_above_assistant_turns ... ok
+test specification::summarization_pipeline::formalize_summarize_deformalize_round_trip_keeps_meaning ... ok
+test specification::summarization_pipeline::formalize_markdown_classifies_install_and_purpose_lines ... ok
+test specification::source_cache::implementation_does_not_advertise_external_fetches_for_local_prompts ... ok
+test specification::summarization_pipeline::generate_chat_title_returns_five_or_fewer_words ... ok
+test specification::summarization_pipeline::summarize_dialog_short_keeps_user_questions ... ok
+test specification::reasoning_paths::multilingual_how_x_works_prompts_use_mechanism_discovery ... ok
+test specification::summarization_pipeline::strip_markdown_noise_drops_badges_html_comments_and_code_blocks ... ok
+test specification::summarization_pipeline::summarization_mode_target_percent_matches_vision ... ok
+test specification::telegram_surface::public_chat_silent_when_not_addressed ... ok
+test specification::telegram_surface::private_chat_code_replies_use_html_pre_code ... ok
+test specification::telegram_surface::private_chat_messages_get_answered ... ok
+test specification::telegram_surface::telegram_answers_include_trace_link ... ignored, tracked requirement: Telegram answers should include a trace link the user can tap to inspect
+test specification::telegram_surface::public_supergroup_code_answer_remains_in_html_format ... ok
+test specification::telegram_surface::replies_to_bot_in_public_chat_are_answered ... ok
+test specification::telegram_surface::telegram_version_command_replies_with_crate_version ... ok
+test specification::telegram_surface::telegram_version_command_with_bot_suffix_still_replies ... ok
+test specification::telegram_surface::telegram_webhook_ignores_updates_without_text ... ok
+test specification::telegram_surface::telegram_long_replies_are_chunked ... ok
+test specification::telegram_surface::public_chat_answers_when_mentioned ... ok
+test specification::telegram_surface::telegram_code_replies_escape_html_entities ... ok
+test specification::translation_via_links::cross_language_code_translation_preserves_semantics ... ignored, tracked requirement: cross-language code translation must preserve runnable semantics
+test specification::telegram_surface::telegram_response_always_declares_html_parse_mode ... ok
+test specification::telegram_surface::telegram_webhook_rejects_invalid_payload_gracefully ... ok
+test specification::translation_via_links::every_answer_publishes_a_links_notation_trace ... ok
+test specification::translation_via_links::issue_218_unquoted_russian_translation ... ok
+test specification::translation_via_links::issue_210_russian_translation_prompts_keep_translation_intent ... ok
+test specification::translation_via_links::native_hindi_and_chinese_unquoted_translation_prompts_are_supported ... ok
+test specification::translation_via_links::natural_translation_drops_terminal_when_source_has_none ... ok
+test specification::translation_via_links::russian_capitalized_how_are_you_keeps_target_capitalization ... ok
+test specification::translation_via_links::synonyms_across_languages_share_meaning ... ignored, tracked requirement: synonyms across languages should hash to the same meaning link
+test specification::translation_via_links::translation_declares_source_and_target_language_tags ... ignored, tracked requirement: translation must declare both source and target language tags
+test specification::translation_via_links::issue_216_unquoted_apple_covers_every_supported_target_language ... ok
+test specification::translation_via_links::russian_translate_how_are_you_prompt_returns_english_surface ... ok
+test specification::translation_via_links::translation_preserves_meaning_id_across_languages ... ignored, tracked requirement: translation between human languages should preserve the meaning link id
+test specification::translation_via_links::translation_request_returns_target_surface_form ... ignored, tracked requirement: translation request must return the target-language surface form
+test specification::translation_via_links::translation_trace_includes_intermediate_meaning ... ignored, tracked requirement: translation traces must include the intermediate Links Notation meaning record
+test specification::translation_via_links::untranslatable_concepts_are_flagged ... ignored, tracked requirement: untranslatable concepts must be flagged rather than approximated silently
+test specification::transparent_state::diagnostic_ids_never_leak_into_default_chat_prose ... ignored, tracked requirement: diagnostic link ids must not leak into default chat prose
+test specification::transparent_state::diagnostic_mode_can_be_enabled_per_message ... ignored, tracked requirement: the user must be able to opt-in to diagnostic mode and see all links inline
+test specification::transparent_state::export_network_returns_links_notation_snapshot ... ignored, tracked requirement: 'export network' should return a downloadable Links Notation snapshot
+test specification::transparent_state::forget_request_requires_explicit_retraction_protocol ... ignored, tracked requirement: 'forget X' must be refused unless the user invokes the explicit retraction protocol
+test specification::transparent_state::evidence_links_are_exposed_through_the_public_struct ... ok
+test specification::transparent_state::knowledge_export_is_inspectable_at_runtime ... ok
+test specification::transparent_state::list_my_facts_filters_by_user ... ignored, tracked requirement: 'list my facts' should return only facts the current user contributed
+test specification::transparent_state::querying_a_concept_returns_its_links ... ignored, tracked requirement: 'what do you know about X' should list links involving X
+test specification::transparent_state::querying_the_network_returns_snapshot ... ignored, tracked requirement: querying 'show me the network' should return a Links Notation snapshot
+test specification::transparent_state::why_meta_question_explains_previous_answer ... ignored, tracked requirement: 'why' meta-questions should explain the previous answer using links
+test specification::transparent_state::links_notation_trace_is_always_present ... ok
+test specification::translation_via_links::issue_217_single_russian_noun_quoted ... ok
+test specification::translation_via_links::issue_216_translate_apple_to_russian_without_quotes ... ok
+test web_requests::generic_navigation_uses_same_frame_policy_path_as_github ... ok
+test web_requests::implicit_research_question_routes_to_web_search_handler ... ok
+test web_requests::enumeration_research_request_routes_to_web_search_handler ... ok
+test web_requests::navigation_describes_frame_policy_check_before_iframe_preview ... ok
+test web_requests::web_search_enumeration_research_cases_cover_every_supported_language ... ok
+test web_requests::web_search_source_marker_cases_cover_every_supported_language ... ok
+test test_status::test_status_prompts_are_recognized ... ok
+test web_requests::web_search_source_marker_prompts_extract_query_without_source_marker ... ok
+test specification::translation_via_links::translation_meaning_registry_covers_extended_phrases ... ok
+test web_requests::information_search_variants_route_to_web_search_handler ... ok
+test test_status::test_status_matrix_is_classified_across_languages ... ok
+test docs_requirements::repository_text_avoids_deferred_labels_requested_by_issue_103 ... ok
+
+test result: ok. 461 passed; 0 failed; 69 ignored; 0 measured; 0 filtered out; finished in 1.86s
+
+   Doc-tests formal_ai
+     Running `/home/box/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustdoc --edition=2021 --crate-type lib --color auto --crate-name formal_ai --test src/lib.rs --test-run-directory /tmp/gh-issue-solver-1779463208867 '--warn=clippy::pedantic' '--warn=clippy::nursery' '--warn=clippy::all' --forbid=unsafe_code '--allow=clippy::too_many_lines' '--allow=clippy::module_name_repetitions' '--allow=clippy::missing_panics_doc' '--allow=clippy::missing_errors_doc' --extern clap=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libclap-12ebb64179d43072.rlib --extern formal_ai=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libformal_ai-b8344f9bb247da17.rlib --extern link_calculator=/tmp/gh-issue-solver-1779463208867/target/debug/deps/liblink_calculator-001a204a779f8a95.rlib --extern lino_arguments=/tmp/gh-issue-solver-1779463208867/target/debug/deps/liblino_arguments-9873ab72ccd4b79b.rlib --extern lino_objects_codec=/tmp/gh-issue-solver-1779463208867/target/debug/deps/liblino_objects_codec-7040ab8451a55644.rlib --extern nom=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libnom-13bb431128f29afc.rlib --extern regex=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libregex-be88561040ee64fd.rlib --extern serde=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libserde-e968938d03e10c8f.rlib --extern serde_json=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libserde_json-f0d4891802ba697c.rlib --extern walkdir=/tmp/gh-issue-solver-1779463208867/target/debug/deps/libwalkdir-f83c702250a7b97f.rlib -L dependency=/tmp/gh-issue-solver-1779463208867/target/debug/deps -C embed-bitcode=no --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' --error-format human`
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s

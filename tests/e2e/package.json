@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "check:i18n": "node scripts/check-i18n-catalog.mjs",
+    "check:language-parity": "node scripts/check-language-change-parity.mjs",
     "check:intent-coverage": "node scripts/check-multilingual-intent-coverage.mjs",
     "test:local": "playwright test --config=playwright.local.config.js",
     "test:pages": "playwright test --config=playwright.pages.config.js"

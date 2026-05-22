@@ -1,0 +1,27 @@
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on artifact directory
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 2.01s
+     Running `target/debug/formal-ai chat --prompt 'list all genshin characters with off-field DMG' --format chat`
+{
+  "id": "chatcmpl_be49f46e200f8aa4",
+  "object": "chat.completion",
+  "created": 0,
+  "model": "formal-symbolic-production",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "Open research question detected for `genshin characters with off field dmg`.\n\nTo answer this without a local rule, the browser demo searches verifiable sources: DuckDuckGo Instant Answer by default, then Internet Archive, Wikipedia REST, Wikidata, and Wiktionary in priority order. The top-10 links from each provider are merged with reciprocal rank fusion (`score(d) = Σ 1 / (60 + rank_i(d))`), and diagnostics record each provider, rank, fusion step, and final source link so the reasoning path can be inspected.\n\nProvider: duckduckgo (default)\nProviders considered: duckduckgo, internet-archive, wikipedia, wikidata, wiktionary\nCombined ranking: reciprocal rank fusion (k = 60)"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 7,
+    "completion_tokens": 97,
+    "total_tokens": 104
+  }
+}

@@ -144,6 +144,8 @@ jobs:
       )
     steps:
       - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
@@ -199,6 +201,11 @@ jobs:
 
       - name: Check i18n catalog coverage
         run: npm run --prefix tests/e2e check:i18n
+
+      - name: Check language change parity
+        env:
+          GITHUB_BASE_REF: ${{ github.base_ref }}
+        run: npm run --prefix tests/e2e check:language-parity
 
       - name: Check multilingual intent coverage
         run: npm run --prefix tests/e2e check:intent-coverage
