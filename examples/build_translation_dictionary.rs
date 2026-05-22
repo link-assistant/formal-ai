@@ -378,24 +378,26 @@ fn main() {
     let mut json = String::new();
     json.push_str("{\n");
     json.push_str("  \"version\": 1,\n");
-    json.push_str(&format!("  \"entries\": {entries_count},\n"));
-    json.push_str(&format!("  \"alias_count\": {alias_count},\n"));
+    writeln!(json, "  \"entries\": {entries_count},").expect("write json");
+    writeln!(json, "  \"alias_count\": {alias_count},").expect("write json");
     json.push_str("  \"by_lemma\": {\n");
     let langs: Vec<&String> = by_lemma.keys().collect();
     for (lang_idx, lang) in langs.iter().enumerate() {
-        json.push_str(&format!("    {}: {{\n", json_string(lang)));
+        writeln!(json, "    {}: {{", json_string(lang)).expect("write json");
         let lemmas = &by_lemma[*lang];
         let lemma_keys: Vec<&String> = lemmas.keys().collect();
         for (lemma_idx, lemma) in lemma_keys.iter().enumerate() {
-            json.push_str(&format!("      {}: {{", json_string(lemma)));
+            write!(json, "      {}: {{", json_string(lemma)).expect("write json");
             let targets = &lemmas[*lemma];
             let target_keys: Vec<&String> = targets.keys().collect();
             for (target_idx, target_lang) in target_keys.iter().enumerate() {
-                json.push_str(&format!(
+                write!(
+                    json,
                     "{}: {}",
                     json_string(target_lang),
                     json_string(&targets[*target_lang]),
-                ));
+                )
+                .expect("write json");
                 if target_idx + 1 < target_keys.len() {
                     json.push_str(", ");
                 }
@@ -416,15 +418,17 @@ fn main() {
     json.push_str("  \"aliases\": {\n");
     let alias_langs: Vec<&String> = aliases.keys().collect();
     for (lang_idx, lang) in alias_langs.iter().enumerate() {
-        json.push_str(&format!("    {}: {{\n", json_string(lang)));
+        writeln!(json, "    {}: {{", json_string(lang)).expect("write json");
         let pairs = &aliases[*lang];
         let alias_keys: Vec<&String> = pairs.keys().collect();
         for (alias_idx, alias) in alias_keys.iter().enumerate() {
-            json.push_str(&format!(
+            write!(
+                json,
                 "      {}: {}",
                 json_string(alias),
                 json_string(&pairs[*alias]),
-            ));
+            )
+            .expect("write json");
             if alias_idx + 1 < alias_keys.len() {
                 json.push(',');
             }
@@ -444,7 +448,7 @@ fn main() {
         fs::create_dir_all(parent).expect("create output directory");
     }
     fs::write(path, json).expect("write dictionary");
-    println!("wrote {entries_count} entries, {alias_count} aliases -> {output_path}",);
+    println!("wrote {entries_count} entries, {alias_count} aliases -> {output_path}");
     if !gaps.is_empty() {
         eprintln!("\n{} gaps:", gaps.len());
         for gap in &gaps {
@@ -467,7 +471,7 @@ fn json_string(value: &str) -> String {
             '\r' => out.push_str("\\r"),
             '\t' => out.push_str("\\t"),
             c if (c as u32) < 0x20 => {
-                out.push_str(&format!("\\u{:04x}", c as u32));
+                write!(out, "\\u{:04x}", c as u32).expect("write json escape");
             }
             c => out.push(c),
         }
