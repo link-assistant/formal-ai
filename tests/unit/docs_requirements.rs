@@ -603,6 +603,7 @@ fn is_skipped_tree(root: &Path, entry: &DirEntry) -> bool {
             | "data/wikidata-cache"
             | "data/wiktionary-cache"
             | "data/http-cache"
+            | "data/seed/api-cache"
     )
 }
 

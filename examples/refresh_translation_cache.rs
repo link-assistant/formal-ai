@@ -28,8 +28,8 @@ use std::fs;
 use std::path::{Path, PathBuf};
 
 use formal_ai::translation::cache::{
-    base64_encode, cache_location, CacheLocation, MAX_SEED_LINES_PER_FILE,
-    MAX_SEED_RECORDS_PER_BUCKET, SEED_CACHE_DIR,
+    cache_location, escape_lino_string, split_body_into_chunks, CacheLocation,
+    MAX_SEED_LINES_PER_FILE, MAX_SEED_RECORDS_PER_BUCKET, SEED_BODY_CHUNK_CHARS, SEED_CACHE_DIR,
 };
 use formal_ai::translation::{CachedHttpClient, CurlClient, TranslationPipeline};
 
@@ -287,10 +287,10 @@ fn looks_like_property_id(value: &str) -> bool {
 /// Write the bucket as one or more `.lino` parts, each strictly under
 /// [`MAX_SEED_LINES_PER_FILE`] lines.
 ///
-/// If a single record's base64 body would not fit in one part, its
-/// `body_base64` chunks are spread across multiple records that all
-/// share the same URL. `cache::seed_index` concatenates same-URL chunks
-/// before decoding, so the split is transparent to consumers.
+/// If a single record's body would not fit in one part, its `body`
+/// chunks are spread across multiple records that all share the same
+/// URL. `cache::seed_index` concatenates same-URL chunks, so the split
+/// is transparent to consumers.
 fn write_bucket_parts(
     bucket_name: &str,
     header_block: &str,
@@ -311,8 +311,7 @@ fn write_bucket_parts(
     let mut wrote_records_in_part = false;
 
     for (idx, (url, body)) in entries.iter().enumerate() {
-        let encoded = base64_encode(body.as_bytes());
-        let chunks = split_into_chunks(&encoded, 76);
+        let chunks = split_body_into_chunks(body, SEED_BODY_CHUNK_CHARS);
         let mut remaining: &[String] = &chunks;
         let mut split_index = 0usize;
         loop {
@@ -353,14 +352,14 @@ fn write_bucket_parts(
             buffer.push_str(&short_id);
             buffer.push('\n');
             buffer.push_str("  url \"");
-            buffer.push_str(url);
+            buffer.push_str(&escape_lino_string(url));
             buffer.push_str("\"\n");
             lines_in_buffer += 2;
 
             let take = body_budget.min(remaining.len());
             for chunk in &remaining[..take] {
-                buffer.push_str("  body_base64 \"");
-                buffer.push_str(chunk);
+                buffer.push_str("  body \"");
+                buffer.push_str(&escape_lino_string(chunk));
                 buffer.push_str("\"\n");
                 lines_in_buffer += 1;
             }
@@ -408,18 +407,6 @@ fn flush_part(
     *part_index += 1;
     buffer.clear();
     Ok(())
-}
-
-fn split_into_chunks(encoded: &str, width: usize) -> Vec<String> {
-    let mut out: Vec<String> = Vec::new();
-    let mut cursor = 0;
-    let bytes = encoded.as_bytes();
-    while cursor < bytes.len() {
-        let end = (cursor + width).min(bytes.len());
-        out.push(encoded[cursor..end].to_owned());
-        cursor = end;
-    }
-    out
 }
 
 /// Remove `<bucket>-partN.lino` files (any N ≥ 1) from a previous run.
@@ -477,22 +464,22 @@ fn short_record_id(idx: usize, url: &str) -> String {
 const BUCKETS: &[(&str, &str)] = &[
     (
         "wikidata-entities",
-        "seed_metadata\n  bucket \"wikidata-entities\"\n  format \"Links Notation; one `response_<short_id>` record per fetched URL\"\n  populated_by \"examples/refresh_translation_cache.rs\"\n  max_records \"128\"\n  max_lines \"1500\"\n  split_marker \"wikidata-entities-partN.lino\"\n  decoded_body \"base64 RFC 4648, concatenated chunks of 76 chars\"\n",
+        "seed_metadata\n  bucket \"wikidata-entities\"\n  format \"Links Notation; one `response_<short_id>` record per fetched URL\"\n  populated_by \"examples/refresh_translation_cache.rs\"\n  max_records \"128\"\n  max_lines \"1500\"\n  split_marker \"wikidata-entities-partN.lino\"\n  body_format \"raw response text; concatenate `body` chunks; values escape one literal quote as two consecutive quotes per Links Notation\"\n",
     ),
     (
         "wikidata-properties",
-        "seed_metadata\n  bucket \"wikidata-properties\"\n  format \"Links Notation; one `response_<short_id>` record per fetched URL\"\n  populated_by \"examples/refresh_translation_cache.rs\"\n  max_records \"128\"\n  max_lines \"1500\"\n  split_marker \"wikidata-properties-partN.lino\"\n  decoded_body \"base64 RFC 4648, concatenated chunks of 76 chars\"\n",
+        "seed_metadata\n  bucket \"wikidata-properties\"\n  format \"Links Notation; one `response_<short_id>` record per fetched URL\"\n  populated_by \"examples/refresh_translation_cache.rs\"\n  max_records \"128\"\n  max_lines \"1500\"\n  split_marker \"wikidata-properties-partN.lino\"\n  body_format \"raw response text; concatenate `body` chunks; values escape one literal quote as two consecutive quotes per Links Notation\"\n",
     ),
     (
         "wikidata-search",
-        "seed_metadata\n  bucket \"wikidata-search\"\n  format \"Links Notation; one `response_<short_id>` record per fetched URL\"\n  populated_by \"examples/refresh_translation_cache.rs\"\n  max_records \"128\"\n  max_lines \"1500\"\n  split_marker \"wikidata-search-partN.lino\"\n  decoded_body \"base64 RFC 4648, concatenated chunks of 76 chars\"\n",
+        "seed_metadata\n  bucket \"wikidata-search\"\n  format \"Links Notation; one `response_<short_id>` record per fetched URL\"\n  populated_by \"examples/refresh_translation_cache.rs\"\n  max_records \"128\"\n  max_lines \"1500\"\n  split_marker \"wikidata-search-partN.lino\"\n  body_format \"raw response text; concatenate `body` chunks; values escape one literal quote as two consecutive quotes per Links Notation\"\n",
     ),
     (
         "wikidata-sparql",
-        "seed_metadata\n  bucket \"wikidata-sparql\"\n  format \"Links Notation; one `response_<short_id>` record per fetched URL\"\n  populated_by \"examples/refresh_translation_cache.rs\"\n  max_records \"128\"\n  max_lines \"1500\"\n  split_marker \"wikidata-sparql-partN.lino\"\n  decoded_body \"base64 RFC 4648, concatenated chunks of 76 chars\"\n",
+        "seed_metadata\n  bucket \"wikidata-sparql\"\n  format \"Links Notation; one `response_<short_id>` record per fetched URL\"\n  populated_by \"examples/refresh_translation_cache.rs\"\n  max_records \"128\"\n  max_lines \"1500\"\n  split_marker \"wikidata-sparql-partN.lino\"\n  body_format \"raw response text; concatenate `body` chunks; values escape one literal quote as two consecutive quotes per Links Notation\"\n",
     ),
     (
         "wiktionary-pages",
-        "seed_metadata\n  bucket \"wiktionary-pages\"\n  format \"Links Notation; one `response_<short_id>` record per fetched URL\"\n  populated_by \"examples/refresh_translation_cache.rs\"\n  max_records \"256\"\n  max_lines \"1500\"\n  split_marker \"wiktionary-pages-partN.lino\"\n  decoded_body \"base64 RFC 4648, concatenated chunks of 76 chars\"\n",
+        "seed_metadata\n  bucket \"wiktionary-pages\"\n  format \"Links Notation; one `response_<short_id>` record per fetched URL\"\n  populated_by \"examples/refresh_translation_cache.rs\"\n  max_records \"256\"\n  max_lines \"1500\"\n  split_marker \"wiktionary-pages-partN.lino\"\n  body_format \"raw response text; concatenate `body` chunks; values escape one literal quote as two consecutive quotes per Links Notation\"\n",
     ),
 ];

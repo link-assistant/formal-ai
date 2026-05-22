@@ -5,371 +5,971 @@ seed_metadata
   max_records "128"
   max_lines "1500"
   split_marker "wikidata-sparql-partN.lino"
-  decoded_body "base64 RFC 4648, concatenated chunks of 76 chars"
+  body_format "raw response text; concatenate `body` chunks; values escape one literal quote as two consecutive quotes per Links Notation"
 response_0000_sparql_format_json_query
   url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL115433%20ontolex%3Asense%20%3Fsource_sense%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22en%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
-  body_base64 "ewogICJoZWFkIiA6IHsKICAgICJ2YXJzIiA6IFsgImxlbW1hIiBdCiAgfSwKICAicmVzdWx0cyIg"
-  body_base64 "OiB7CiAgICAiYmluZGluZ3MiIDogWyB7CiAgICAgICJsZW1tYSIgOiB7CiAgICAgICAgInhtbDps"
-  body_base64 "YW5nIiA6ICJlbiIsCiAgICAgICAgInR5cGUiIDogImxpdGVyYWwiLAogICAgICAgICJ2YWx1ZSIg"
-  body_base64 "OiAicG90YXRvIgogICAgICB9CiAgICB9LCB7CiAgICAgICJsZW1tYSIgOiB7CiAgICAgICAgInht"
-  body_base64 "bDpsYW5nIiA6ICJlbiIsCiAgICAgICAgInR5cGUiIDogImxpdGVyYWwiLAogICAgICAgICJ2YWx1"
-  body_base64 "ZSIgOiAic3B1ZCIKICAgICAgfQogICAgfSwgewogICAgICAibGVtbWEiIDogewogICAgICAgICJ4"
-  body_base64 "bWw6bGFuZyIgOiAiZW4iLAogICAgICAgICJ0eXBlIiA6ICJsaXRlcmFsIiwKICAgICAgICAidmFs"
-  body_base64 "dWUiIDogIklyaXNoIHBvdGF0byIKICAgICAgfQogICAgfSwgewogICAgICAibGVtbWEiIDogewog"
-  body_base64 "ICAgICAgICJ4bWw6bGFuZyIgOiAiZW4iLAogICAgICAgICJ0eXBlIiA6ICJsaXRlcmFsIiwKICAg"
-  body_base64 "ICAgICAidmFsdWUiIDogInRhdGllIgogICAgICB9CiAgICB9LCB7CiAgICAgICJsZW1tYSIgOiB7"
-  body_base64 "CiAgICAgICAgInhtbDpsYW5nIiA6ICJlbiIsCiAgICAgICAgInR5cGUiIDogImxpdGVyYWwiLAog"
-  body_base64 "ICAgICAgICJ2YWx1ZSIgOiAidGF0dGllIgogICAgICB9CiAgICB9IF0KICB9Cn0="
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+        ""value"" : ""potato""
+      }
+    }, {
+ "
+  body "     ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+        ""value"" : ""spud""
+      }
+    }, {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+        ""valu"
+  body "e"" : ""Irish potato""
+      }
+    }, {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+        ""value"" : ""tatie""
+      }
+    }, {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+  "
+  body "      ""type"" : ""literal"",
+        ""value"" : ""tattie""
+      }
+    } ]
+  }
+}"
 
 response_0001_sparql_format_json_query
   url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL115433%20ontolex%3Asense%20%3Fsource_sense%20.%20wd%3AL115433%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22en%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
-  body_base64 "ewogICJoZWFkIiA6IHsKICAgICJ2YXJzIiA6IFsgImxlbW1hIiBdCiAgfSwKICAicmVzdWx0cyIg"
-  body_base64 "OiB7CiAgICAiYmluZGluZ3MiIDogWyB7CiAgICAgICJsZW1tYSIgOiB7CiAgICAgICAgInhtbDps"
-  body_base64 "YW5nIiA6ICJlbiIsCiAgICAgICAgInR5cGUiIDogImxpdGVyYWwiLAogICAgICAgICJ2YWx1ZSIg"
-  body_base64 "OiAicG90YXRvIgogICAgICB9CiAgICB9LCB7CiAgICAgICJsZW1tYSIgOiB7CiAgICAgICAgInht"
-  body_base64 "bDpsYW5nIiA6ICJlbiIsCiAgICAgICAgInR5cGUiIDogImxpdGVyYWwiLAogICAgICAgICJ2YWx1"
-  body_base64 "ZSIgOiAiSXJpc2ggcG90YXRvIgogICAgICB9CiAgICB9LCB7CiAgICAgICJsZW1tYSIgOiB7CiAg"
-  body_base64 "ICAgICAgInhtbDpsYW5nIiA6ICJlbiIsCiAgICAgICAgInR5cGUiIDogImxpdGVyYWwiLAogICAg"
-  body_base64 "ICAgICJ2YWx1ZSIgOiAic3B1ZCIKICAgICAgfQogICAgfSwgewogICAgICAibGVtbWEiIDogewog"
-  body_base64 "ICAgICAgICJ4bWw6bGFuZyIgOiAiZW4iLAogICAgICAgICJ0eXBlIiA6ICJsaXRlcmFsIiwKICAg"
-  body_base64 "ICAgICAidmFsdWUiIDogInRhdGllIgogICAgICB9CiAgICB9LCB7CiAgICAgICJsZW1tYSIgOiB7"
-  body_base64 "CiAgICAgICAgInhtbDpsYW5nIiA6ICJlbiIsCiAgICAgICAgInR5cGUiIDogImxpdGVyYWwiLAog"
-  body_base64 "ICAgICAgICJ2YWx1ZSIgOiAidGF0dGllIgogICAgICB9CiAgICB9IF0KICB9Cn0="
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+        ""value"" : ""potato""
+      }
+    }, {
+ "
+  body "     ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+        ""value"" : ""Irish potato""
+      }
+    }, {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+     "
+  body "   ""value"" : ""spud""
+      }
+    }, {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+        ""value"" : ""tatie""
+      }
+    }, {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+  "
+  body "      ""type"" : ""literal"",
+        ""value"" : ""tattie""
+      }
+    } ]
+  }
+}"
 
 response_0002_sparql_format_json_query
   url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL129448%20ontolex%3Asense%20%3Fsource_sense%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22en%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
-  body_base64 "ewogICJoZWFkIiA6IHsKICAgICJ2YXJzIiA6IFsgImxlbW1hIiBdCiAgfSwKICAicmVzdWx0cyIg"
-  body_base64 "OiB7CiAgICAiYmluZGluZ3MiIDogWyB7CiAgICAgICJsZW1tYSIgOiB7CiAgICAgICAgInhtbDps"
-  body_base64 "YW5nIiA6ICJlbiIsCiAgICAgICAgInR5cGUiIDogImxpdGVyYWwiLAogICAgICAgICJ2YWx1ZSIg"
-  body_base64 "OiAiY2Fycm90IgogICAgICB9CiAgICB9IF0KICB9Cn0="
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+        ""value"" : ""carrot""
+      }
+    } ]
+  "
+  body "}
+}"
 
 response_0003_sparql_format_json_query
   url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL129448%20ontolex%3Asense%20%3Fsource_sense%20.%20wd%3AL129448%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22en%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
-  body_base64 "ewogICJoZWFkIiA6IHsKICAgICJ2YXJzIiA6IFsgImxlbW1hIiBdCiAgfSwKICAicmVzdWx0cyIg"
-  body_base64 "OiB7CiAgICAiYmluZGluZ3MiIDogWyB7CiAgICAgICJsZW1tYSIgOiB7CiAgICAgICAgInhtbDps"
-  body_base64 "YW5nIiA6ICJlbiIsCiAgICAgICAgInR5cGUiIDogImxpdGVyYWwiLAogICAgICAgICJ2YWx1ZSIg"
-  body_base64 "OiAiY2Fycm90IgogICAgICB9CiAgICB9IF0KICB9Cn0="
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+        ""value"" : ""carrot""
+      }
+    } ]
+  "
+  body "}
+}"
 
 response_0004_sparql_format_json_query
   url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL150880%20ontolex%3Asense%20%3Fsource_sense%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22en%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
-  body_base64 "ewogICJoZWFkIiA6IHsKICAgICJ2YXJzIiA6IFsgImxlbW1hIiBdCiAgfSwKICAicmVzdWx0cyIg"
-  body_base64 "OiB7CiAgICAiYmluZGluZ3MiIDogWyBdCiAgfQp9"
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ ]
+  }
+}"
 
 response_0005_sparql_format_json_query
   url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL150880%20ontolex%3Asense%20%3Fsource_sense%20.%20wd%3AL150880%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22en%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
-  body_base64 "ewogICJoZWFkIiA6IHsKICAgICJ2YXJzIiA6IFsgImxlbW1hIiBdCiAgfSwKICAicmVzdWx0cyIg"
-  body_base64 "OiB7CiAgICAiYmluZGluZ3MiIDogWyBdCiAgfQp9"
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ ]
+  }
+}"
 
 response_0006_sparql_format_json_query
   url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL184031%20ontolex%3Asense%20%3Fsource_sense%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22en%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
-  body_base64 "ewogICJoZWFkIiA6IHsKICAgICJ2YXJzIiA6IFsgImxlbW1hIiBdCiAgfSwKICAicmVzdWx0cyIg"
-  body_base64 "OiB7CiAgICAiYmluZGluZ3MiIDogWyBdCiAgfQp9"
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ ]
+  }
+}"
 
 response_0007_sparql_format_json_query
   url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL184031%20ontolex%3Asense%20%3Fsource_sense%20.%20wd%3AL184031%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22en%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
-  body_base64 "ewogICJoZWFkIiA6IHsKICAgICJ2YXJzIiA6IFsgImxlbW1hIiBdCiAgfSwKICAicmVzdWx0cyIg"
-  body_base64 "OiB7CiAgICAiYmluZGluZ3MiIDogWyBdCiAgfQp9"
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ ]
+  }
+}"
 
 response_0008_sparql_format_json_query
   url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL189%20ontolex%3Asense%20%3Fsource_sense%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22en%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
-  body_base64 "ewogICJoZWFkIiA6IHsKICAgICJ2YXJzIiA6IFsgImxlbW1hIiBdCiAgfSwKICAicmVzdWx0cyIg"
-  body_base64 "OiB7CiAgICAiYmluZGluZ3MiIDogWyB7CiAgICAgICJsZW1tYSIgOiB7CiAgICAgICAgInhtbDps"
-  body_base64 "YW5nIiA6ICJlbiIsCiAgICAgICAgInR5cGUiIDogImxpdGVyYWwiLAogICAgICAgICJ2YWx1ZSIg"
-  body_base64 "OiAid2F0ZXIiCiAgICAgIH0KICAgIH0sIHsKICAgICAgImxlbW1hIiA6IHsKICAgICAgICAieG1s"
-  body_base64 "OmxhbmciIDogImVuIiwKICAgICAgICAidHlwZSIgOiAibGl0ZXJhbCIsCiAgICAgICAgInZhbHVl"
-  body_base64 "IiA6ICJhcXVhIgogICAgICB9CiAgICB9LCB7CiAgICAgICJsZW1tYSIgOiB7CiAgICAgICAgInht"
-  body_base64 "bDpsYW5nIiA6ICJlbiIsCiAgICAgICAgInR5cGUiIDogImxpdGVyYWwiLAogICAgICAgICJ2YWx1"
-  body_base64 "ZSIgOiAiaWNlIgogICAgICB9CiAgICB9LCB7CiAgICAgICJsZW1tYSIgOiB7CiAgICAgICAgInht"
-  body_base64 "bDpsYW5nIiA6ICJlbiIsCiAgICAgICAgInR5cGUiIDogImxpdGVyYWwiLAogICAgICAgICJ2YWx1"
-  body_base64 "ZSIgOiAiZHJpbmtpbmcgd2F0ZXIiCiAgICAgIH0KICAgIH0sIHsKICAgICAgImxlbW1hIiA6IHsK"
-  body_base64 "ICAgICAgICAieG1sOmxhbmciIDogImVuIiwKICAgICAgICAidHlwZSIgOiAibGl0ZXJhbCIsCiAg"
-  body_base64 "ICAgICAgInZhbHVlIiA6ICJmbG9vZCIKICAgICAgfQogICAgfSwgewogICAgICAibGVtbWEiIDog"
-  body_base64 "ewogICAgICAgICJ4bWw6bGFuZyIgOiAiZW4iLAogICAgICAgICJ0eXBlIiA6ICJsaXRlcmFsIiwK"
-  body_base64 "ICAgICAgICAidmFsdWUiIDogInRpZGUiCiAgICAgIH0KICAgIH0sIHsKICAgICAgImxlbW1hIiA6"
-  body_base64 "IHsKICAgICAgICAieG1sOmxhbmciIDogImVuIiwKICAgICAgICAidHlwZSIgOiAibGl0ZXJhbCIs"
-  body_base64 "CiAgICAgICAgInZhbHVlIiA6ICJmbG9vZGluZyIKICAgICAgfQogICAgfSwgewogICAgICAibGVt"
-  body_base64 "bWEiIDogewogICAgICAgICJ4bWw6bGFuZyIgOiAiZW4tZ2IiLAogICAgICAgICJ0eXBlIiA6ICJs"
-  body_base64 "aXRlcmFsIiwKICAgICAgICAidmFsdWUiIDogInZhcG91ciIKICAgICAgfQogICAgfSwgewogICAg"
-  body_base64 "ICAibGVtbWEiIDogewogICAgICAgICJ4bWw6bGFuZyIgOiAiZW4tdXMiLAogICAgICAgICJ0eXBl"
-  body_base64 "IiA6ICJsaXRlcmFsIiwKICAgICAgICAidmFsdWUiIDogInZhcG9yIgogICAgICB9CiAgICB9LCB7"
-  body_base64 "CiAgICAgICJsZW1tYSIgOiB7CiAgICAgICAgInhtbDpsYW5nIiA6ICJlbiIsCiAgICAgICAgInR5"
-  body_base64 "cGUiIDogImxpdGVyYWwiLAogICAgICAgICJ2YWx1ZSIgOiAidGVhciIKICAgICAgfQogICAgfSBd"
-  body_base64 "CiAgfQp9"
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+        ""value"" : ""water""
+      }
+    }, {
+  "
+  body "    ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+        ""value"" : ""aqua""
+      }
+    }, {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+        ""value"""
+  body " : ""ice""
+      }
+    }, {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+        ""value"" : ""drinking water""
+      }
+    }, {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+    "
+  body "    ""type"" : ""literal"",
+        ""value"" : ""flood""
+      }
+    }, {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+        ""value"" : ""tide""
+      }
+    }, {
+      ""lemma"" : {
+"
+  body "        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+        ""value"" : ""flooding""
+      }
+    }, {
+      ""lemma"" : {
+        ""xml:lang"" : ""en-gb"",
+        ""type"" : ""literal"",
+        ""value"" : ""vapo"
+  body "ur""
+      }
+    }, {
+      ""lemma"" : {
+        ""xml:lang"" : ""en-us"",
+        ""type"" : ""literal"",
+        ""value"" : ""vapor""
+      }
+    }, {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" "
+  body ": ""literal"",
+        ""value"" : ""tear""
+      }
+    } ]
+  }
+}"
 
 response_0009_sparql_format_json_query
   url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL189%20ontolex%3Asense%20%3Fsource_sense%20.%20wd%3AL189%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22en%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
-  body_base64 "ewogICJoZWFkIiA6IHsKICAgICJ2YXJzIiA6IFsgImxlbW1hIiBdCiAgfSwKICAicmVzdWx0cyIg"
-  body_base64 "OiB7CiAgICAiYmluZGluZ3MiIDogWyB7CiAgICAgICJsZW1tYSIgOiB7CiAgICAgICAgInhtbDps"
-  body_base64 "YW5nIiA6ICJlbiIsCiAgICAgICAgInR5cGUiIDogImxpdGVyYWwiLAogICAgICAgICJ2YWx1ZSIg"
-  body_base64 "OiAiYXF1YSIKICAgICAgfQogICAgfSwgewogICAgICAibGVtbWEiIDogewogICAgICAgICJ4bWw6"
-  body_base64 "bGFuZyIgOiAiZW4iLAogICAgICAgICJ0eXBlIiA6ICJsaXRlcmFsIiwKICAgICAgICAidmFsdWUi"
-  body_base64 "IDogIndhdGVyIgogICAgICB9CiAgICB9LCB7CiAgICAgICJsZW1tYSIgOiB7CiAgICAgICAgInht"
-  body_base64 "bDpsYW5nIiA6ICJlbiIsCiAgICAgICAgInR5cGUiIDogImxpdGVyYWwiLAogICAgICAgICJ2YWx1"
-  body_base64 "ZSIgOiAiZHJpbmtpbmcgd2F0ZXIiCiAgICAgIH0KICAgIH0sIHsKICAgICAgImxlbW1hIiA6IHsK"
-  body_base64 "ICAgICAgICAieG1sOmxhbmciIDogImVuIiwKICAgICAgICAidHlwZSIgOiAibGl0ZXJhbCIsCiAg"
-  body_base64 "ICAgICAgInZhbHVlIiA6ICJmbG9vZCIKICAgICAgfQogICAgfSwgewogICAgICAibGVtbWEiIDog"
-  body_base64 "ewogICAgICAgICJ4bWw6bGFuZyIgOiAiZW4iLAogICAgICAgICJ0eXBlIiA6ICJsaXRlcmFsIiwK"
-  body_base64 "ICAgICAgICAidmFsdWUiIDogInRpZGUiCiAgICAgIH0KICAgIH0sIHsKICAgICAgImxlbW1hIiA6"
-  body_base64 "IHsKICAgICAgICAieG1sOmxhbmciIDogImVuIiwKICAgICAgICAidHlwZSIgOiAibGl0ZXJhbCIs"
-  body_base64 "CiAgICAgICAgInZhbHVlIiA6ICJpY2UiCiAgICAgIH0KICAgIH0sIHsKICAgICAgImxlbW1hIiA6"
-  body_base64 "IHsKICAgICAgICAieG1sOmxhbmciIDogImVuLWdiIiwKICAgICAgICAidHlwZSIgOiAibGl0ZXJh"
-  body_base64 "bCIsCiAgICAgICAgInZhbHVlIiA6ICJ2YXBvdXIiCiAgICAgIH0KICAgIH0sIHsKICAgICAgImxl"
-  body_base64 "bW1hIiA6IHsKICAgICAgICAieG1sOmxhbmciIDogImVuLXVzIiwKICAgICAgICAidHlwZSIgOiAi"
-  body_base64 "bGl0ZXJhbCIsCiAgICAgICAgInZhbHVlIiA6ICJ2YXBvciIKICAgICAgfQogICAgfSwgewogICAg"
-  body_base64 "ICAibGVtbWEiIDogewogICAgICAgICJ4bWw6bGFuZyIgOiAiZW4iLAogICAgICAgICJ0eXBlIiA6"
-  body_base64 "ICJsaXRlcmFsIiwKICAgICAgICAidmFsdWUiIDogImZsb29kaW5nIgogICAgICB9CiAgICB9LCB7"
-  body_base64 "CiAgICAgICJsZW1tYSIgOiB7CiAgICAgICAgInhtbDpsYW5nIiA6ICJlbiIsCiAgICAgICAgInR5"
-  body_base64 "cGUiIDogImxpdGVyYWwiLAogICAgICAgICJ2YWx1ZSIgOiAidGVhciIKICAgICAgfQogICAgfSBd"
-  body_base64 "CiAgfQp9"
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+        ""value"" : ""aqua""
+      }
+    }, {
+   "
+  body "   ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+        ""value"" : ""water""
+      }
+    }, {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+        ""value"""
+  body " : ""drinking water""
+      }
+    }, {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+        ""value"" : ""flood""
+      }
+    }, {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+  "
+  body "      ""type"" : ""literal"",
+        ""value"" : ""tide""
+      }
+    }, {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+        ""value"" : ""ice""
+      }
+    }, {
+      ""lemma"" : {
+"
+  body "        ""xml:lang"" : ""en-gb"",
+        ""type"" : ""literal"",
+        ""value"" : ""vapour""
+      }
+    }, {
+      ""lemma"" : {
+        ""xml:lang"" : ""en-us"",
+        ""type"" : ""literal"",
+        ""value"" : ""vap"
+  body "or""
+      }
+    }, {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+        ""value"" : ""flooding""
+      }
+    }, {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" "
+  body ": ""literal"",
+        ""value"" : ""tear""
+      }
+    } ]
+  }
+}"
 
 response_0010_sparql_format_json_query
   url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL318943%20ontolex%3Asense%20%3Fsource_sense%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22ru%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
-  body_base64 "ewogICJoZWFkIiA6IHsKICAgICJ2YXJzIiA6IFsgImxlbW1hIiBdCiAgfSwKICAicmVzdWx0cyIg"
-  body_base64 "OiB7CiAgICAiYmluZGluZ3MiIDogWyB7CiAgICAgICJsZW1tYSIgOiB7CiAgICAgICAgInhtbDps"
-  body_base64 "YW5nIiA6ICJydSIsCiAgICAgICAgInR5cGUiIDogImxpdGVyYWwiLAogICAgICAgICJ2YWx1ZSIg"
-  body_base64 "OiAi0L7Qs9GD0YDQtdGGIgogICAgICB9CiAgICB9IF0KICB9Cn0="
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ {
+      ""lemma"" : {
+        ""xml:lang"" : ""ru"",
+        ""type"" : ""literal"",
+        ""value"" : ""огурец""
+      }
+    } ]
+  "
+  body "}
+}"
 
 response_0011_sparql_format_json_query
   url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL318943%20ontolex%3Asense%20%3Fsource_sense%20.%20wd%3AL318943%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22ru%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
-  body_base64 "ewogICJoZWFkIiA6IHsKICAgICJ2YXJzIiA6IFsgImxlbW1hIiBdCiAgfSwKICAicmVzdWx0cyIg"
-  body_base64 "OiB7CiAgICAiYmluZGluZ3MiIDogWyB7CiAgICAgICJsZW1tYSIgOiB7CiAgICAgICAgInhtbDps"
-  body_base64 "YW5nIiA6ICJydSIsCiAgICAgICAgInR5cGUiIDogImxpdGVyYWwiLAogICAgICAgICJ2YWx1ZSIg"
-  body_base64 "OiAi0L7Qs9GD0YDQtdGGIgogICAgICB9CiAgICB9IF0KICB9Cn0="
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ {
+      ""lemma"" : {
+        ""xml:lang"" : ""ru"",
+        ""type"" : ""literal"",
+        ""value"" : ""огурец""
+      }
+    } ]
+  "
+  body "}
+}"
 
 response_0012_sparql_format_json_query
   url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL3257%20ontolex%3Asense%20%3Fsource_sense%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22hi%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
-  body_base64 "ewogICJoZWFkIiA6IHsKICAgICJ2YXJzIiA6IFsgImxlbW1hIiBdCiAgfSwKICAicmVzdWx0cyIg"
-  body_base64 "OiB7CiAgICAiYmluZGluZ3MiIDogWyBdCiAgfQp9"
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ ]
+  }
+}"
 
 response_0013_sparql_format_json_query
   url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL3257%20ontolex%3Asense%20%3Fsource_sense%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22ru%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
-  body_base64 "ewogICJoZWFkIiA6IHsKICAgICJ2YXJzIiA6IFsgImxlbW1hIiBdCiAgfSwKICAicmVzdWx0cyIg"
-  body_base64 "OiB7CiAgICAiYmluZGluZ3MiIDogWyB7CiAgICAgICJsZW1tYSIgOiB7CiAgICAgICAgInhtbDps"
-  body_base64 "YW5nIiA6ICJydSIsCiAgICAgICAgInR5cGUiIDogImxpdGVyYWwiLAogICAgICAgICJ2YWx1ZSIg"
-  body_base64 "OiAi0Y/QsdC70L7Rh9C90YvQuSIKICAgICAgfQogICAgfSwgewogICAgICAibGVtbWEiIDogewog"
-  body_base64 "ICAgICAgICJ4bWw6bGFuZyIgOiAicnUiLAogICAgICAgICJ0eXBlIiA6ICJsaXRlcmFsIiwKICAg"
-  body_base64 "ICAgICAidmFsdWUiIDogItGP0LHQu9C+0LrQviIKICAgICAgfQogICAgfSBdCiAgfQp9"
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ {
+      ""lemma"" : {
+        ""xml:lang"" : ""ru"",
+        ""type"" : ""literal"",
+        ""value"" : ""яблочный""
+      }
+    }, {"
+  body "
+      ""lemma"" : {
+        ""xml:lang"" : ""ru"",
+        ""type"" : ""literal"",
+        ""value"" : ""яблоко""
+      }
+    } ]
+  }
+}"
 
 response_0014_sparql_format_json_query
   url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL3257%20ontolex%3Asense%20%3Fsource_sense%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22zh%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
-  body_base64 "ewogICJoZWFkIiA6IHsKICAgICJ2YXJzIiA6IFsgImxlbW1hIiBdCiAgfSwKICAicmVzdWx0cyIg"
-  body_base64 "OiB7CiAgICAiYmluZGluZ3MiIDogWyBdCiAgfQp9"
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ ]
+  }
+}"
 
 response_0015_sparql_format_json_query
   url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL3257%20ontolex%3Asense%20%3Fsource_sense%20.%20wd%3AL3257%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22hi%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
-  body_base64 "ewogICJoZWFkIiA6IHsKICAgICJ2YXJzIiA6IFsgImxlbW1hIiBdCiAgfSwKICAicmVzdWx0cyIg"
-  body_base64 "OiB7CiAgICAiYmluZGluZ3MiIDogWyBdCiAgfQp9"
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ ]
+  }
+}"
 
 response_0016_sparql_format_json_query
   url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL3302%20ontolex%3Asense%20%3Fsource_sense%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22ru%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
-  body_base64 "ewogICJoZWFkIiA6IHsKICAgICJ2YXJzIiA6IFsgImxlbW1hIiBdCiAgfSwKICAicmVzdWx0cyIg"
-  body_base64 "OiB7CiAgICAiYmluZGluZ3MiIDogWyB7CiAgICAgICJsZW1tYSIgOiB7CiAgICAgICAgInhtbDps"
-  body_base64 "YW5nIiA6ICJydSIsCiAgICAgICAgInR5cGUiIDogImxpdGVyYWwiLAogICAgICAgICJ2YWx1ZSIg"
-  body_base64 "OiAi0LLQvtC00LAiCiAgICAgIH0KICAgIH0sIHsKICAgICAgImxlbW1hIiA6IHsKICAgICAgICAi"
-  body_base64 "eG1sOmxhbmciIDogInJ1IiwKICAgICAgICAidHlwZSIgOiAibGl0ZXJhbCIsCiAgICAgICAgInZh"
-  body_base64 "bHVlIiA6ICLQv9Cw0YAiCiAgICAgIH0KICAgIH0sIHsKICAgICAgImxlbW1hIiA6IHsKICAgICAg"
-  body_base64 "ICAieG1sOmxhbmciIDogInJ1IiwKICAgICAgICAidHlwZSIgOiAibGl0ZXJhbCIsCiAgICAgICAg"
-  body_base64 "InZhbHVlIiA6ICLQstC+0LTRj9GA0LAiCiAgICAgIH0KICAgIH0gXQogIH0KfQ=="
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ {
+      ""lemma"" : {
+        ""xml:lang"" : ""ru"",
+        ""type"" : ""literal"",
+        ""value"" : ""вода""
+      }
+    }, {
+   "
+  body "   ""lemma"" : {
+        ""xml:lang"" : ""ru"",
+        ""type"" : ""literal"",
+        ""value"" : ""пар""
+      }
+    }, {
+      ""lemma"" : {
+        ""xml:lang"" : ""ru"",
+        ""type"" : ""literal"",
+        ""value"" "
+  body ": ""водяра""
+      }
+    } ]
+  }
+}"
 
 response_0017_sparql_format_json_query
   url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL3302%20ontolex%3Asense%20%3Fsource_sense%20.%20wd%3AL3302%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22ru%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
-  body_base64 "ewogICJoZWFkIiA6IHsKICAgICJ2YXJzIiA6IFsgImxlbW1hIiBdCiAgfSwKICAicmVzdWx0cyIg"
-  body_base64 "OiB7CiAgICAiYmluZGluZ3MiIDogWyB7CiAgICAgICJsZW1tYSIgOiB7CiAgICAgICAgInhtbDps"
-  body_base64 "YW5nIiA6ICJydSIsCiAgICAgICAgInR5cGUiIDogImxpdGVyYWwiLAogICAgICAgICJ2YWx1ZSIg"
-  body_base64 "OiAi0LLQvtC00LAiCiAgICAgIH0KICAgIH0sIHsKICAgICAgImxlbW1hIiA6IHsKICAgICAgICAi"
-  body_base64 "eG1sOmxhbmciIDogInJ1IiwKICAgICAgICAidHlwZSIgOiAibGl0ZXJhbCIsCiAgICAgICAgInZh"
-  body_base64 "bHVlIiA6ICLQv9Cw0YAiCiAgICAgIH0KICAgIH0sIHsKICAgICAgImxlbW1hIiA6IHsKICAgICAg"
-  body_base64 "ICAieG1sOmxhbmciIDogInJ1IiwKICAgICAgICAidHlwZSIgOiAibGl0ZXJhbCIsCiAgICAgICAg"
-  body_base64 "InZhbHVlIiA6ICLQstC+0LTRj9GA0LAiCiAgICAgIH0KICAgIH0gXQogIH0KfQ=="
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ {
+      ""lemma"" : {
+        ""xml:lang"" : ""ru"",
+        ""type"" : ""literal"",
+        ""value"" : ""вода""
+      }
+    }, {
+   "
+  body "   ""lemma"" : {
+        ""xml:lang"" : ""ru"",
+        ""type"" : ""literal"",
+        ""value"" : ""пар""
+      }
+    }, {
+      ""lemma"" : {
+        ""xml:lang"" : ""ru"",
+        ""type"" : ""literal"",
+        ""value"" "
+  body ": ""водяра""
+      }
+    } ]
+  }
+}"
 
 response_0018_sparql_format_json_query
   url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL3525%20ontolex%3Asense%20%3Fsource_sense%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22en%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
-  body_base64 "ewogICJoZWFkIiA6IHsKICAgICJ2YXJzIiA6IFsgImxlbW1hIiBdCiAgfSwKICAicmVzdWx0cyIg"
-  body_base64 "OiB7CiAgICAiYmluZGluZ3MiIDogWyB7CiAgICAgICJsZW1tYSIgOiB7CiAgICAgICAgInhtbDps"
-  body_base64 "YW5nIiA6ICJlbiIsCiAgICAgICAgInR5cGUiIDogImxpdGVyYWwiLAogICAgICAgICJ2YWx1ZSIg"
-  body_base64 "OiAiY3VjdW1iZXIiCiAgICAgIH0KICAgIH0gXQogIH0KfQ=="
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+        ""value"" : ""cucumber""
+      }
+    } ]
+"
+  body "  }
+}"
 
 response_0019_sparql_format_json_query
   url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL3525%20ontolex%3Asense%20%3Fsource_sense%20.%20wd%3AL3525%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22en%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
-  body_base64 "ewogICJoZWFkIiA6IHsKICAgICJ2YXJzIiA6IFsgImxlbW1hIiBdCiAgfSwKICAicmVzdWx0cyIg"
-  body_base64 "OiB7CiAgICAiYmluZGluZ3MiIDogWyB7CiAgICAgICJsZW1tYSIgOiB7CiAgICAgICAgInhtbDps"
-  body_base64 "YW5nIiA6ICJlbiIsCiAgICAgICAgInR5cGUiIDogImxpdGVyYWwiLAogICAgICAgICJ2YWx1ZSIg"
-  body_base64 "OiAiY3VjdW1iZXIiCiAgICAgIH0KICAgIH0gXQogIH0KfQ=="
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+        ""value"" : ""cucumber""
+      }
+    } ]
+"
+  body "  }
+}"
 
 response_0020_sparql_format_json_query
   url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL3526%20ontolex%3Asense%20%3Fsource_sense%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22en%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
-  body_base64 "ewogICJoZWFkIiA6IHsKICAgICJ2YXJzIiA6IFsgImxlbW1hIiBdCiAgfSwKICAicmVzdWx0cyIg"
-  body_base64 "OiB7CiAgICAiYmluZGluZ3MiIDogWyB7CiAgICAgICJsZW1tYSIgOiB7CiAgICAgICAgInhtbDps"
-  body_base64 "YW5nIiA6ICJlbiIsCiAgICAgICAgInR5cGUiIDogImxpdGVyYWwiLAogICAgICAgICJ2YWx1ZSIg"
-  body_base64 "OiAidG9tYXRvIgogICAgICB9CiAgICB9IF0KICB9Cn0="
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+        ""value"" : ""tomato""
+      }
+    } ]
+  "
+  body "}
+}"
 
 response_0021_sparql_format_json_query
   url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL37724%20ontolex%3Asense%20%3Fsource_sense%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22en%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
-  body_base64 "ewogICJoZWFkIiA6IHsKICAgICJ2YXJzIiA6IFsgImxlbW1hIiBdCiAgfSwKICAicmVzdWx0cyIg"
-  body_base64 "OiB7CiAgICAiYmluZGluZ3MiIDogWyB7CiAgICAgICJsZW1tYSIgOiB7CiAgICAgICAgInhtbDps"
-  body_base64 "YW5nIiA6ICJlbiIsCiAgICAgICAgInR5cGUiIDogImxpdGVyYWwiLAogICAgICAgICJ2YWx1ZSIg"
-  body_base64 "OiAiYXBwbGUiCiAgICAgIH0KICAgIH0sIHsKICAgICAgImxlbW1hIiA6IHsKICAgICAgICAieG1s"
-  body_base64 "OmxhbmciIDogImVuIiwKICAgICAgICAidHlwZSIgOiAibGl0ZXJhbCIsCiAgICAgICAgInZhbHVl"
-  body_base64 "IiA6ICJvcmIiCiAgICAgIH0KICAgIH0sIHsKICAgICAgImxlbW1hIiA6IHsKICAgICAgICAieG1s"
-  body_base64 "OmxhbmciIDogImVuIiwKICAgICAgICAidHlwZSIgOiAibGl0ZXJhbCIsCiAgICAgICAgInZhbHVl"
-  body_base64 "IiA6ICJwb21tZWwiCiAgICAgIH0KICAgIH0gXQogIH0KfQ=="
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+        ""value"" : ""apple""
+      }
+    }, {
+  "
+  body "    ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+        ""value"" : ""orb""
+      }
+    }, {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+        ""value"""
+  body " : ""pommel""
+      }
+    } ]
+  }
+}"
 
 response_0022_sparql_format_json_query
   url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL3782%20ontolex%3Asense%20%3Fsource_sense%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22ru%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
-  body_base64 "ewogICJoZWFkIiA6IHsKICAgICJ2YXJzIiA6IFsgImxlbW1hIiBdCiAgfSwKICAicmVzdWx0cyIg"
-  body_base64 "OiB7CiAgICAiYmluZGluZ3MiIDogWyB7CiAgICAgICJsZW1tYSIgOiB7CiAgICAgICAgInhtbDps"
-  body_base64 "YW5nIiA6ICJydSIsCiAgICAgICAgInR5cGUiIDogImxpdGVyYWwiLAogICAgICAgICJ2YWx1ZSIg"
-  body_base64 "OiAi0LzQvtGA0LrQvtCy0L3Ri9C5IgogICAgICB9CiAgICB9LCB7CiAgICAgICJsZW1tYSIgOiB7"
-  body_base64 "CiAgICAgICAgInhtbDpsYW5nIiA6ICJydSIsCiAgICAgICAgInR5cGUiIDogImxpdGVyYWwiLAog"
-  body_base64 "ICAgICAgICJ2YWx1ZSIgOiAi0LzQvtGA0LrQvtCy0LrQsCIKICAgICAgfQogICAgfSwgewogICAg"
-  body_base64 "ICAibGVtbWEiIDogewogICAgICAgICJ4bWw6bGFuZyIgOiAicnUiLAogICAgICAgICJ0eXBlIiA6"
-  body_base64 "ICJsaXRlcmFsIiwKICAgICAgICAidmFsdWUiIDogItC80L7RgNC60L7QstC+0YfQutCwIgogICAg"
-  body_base64 "ICB9CiAgICB9LCB7CiAgICAgICJsZW1tYSIgOiB7CiAgICAgICAgInhtbDpsYW5nIiA6ICJydSIs"
-  body_base64 "CiAgICAgICAgInR5cGUiIDogImxpdGVyYWwiLAogICAgICAgICJ2YWx1ZSIgOiAi0LzQvtGA0LrQ"
-  body_base64 "vtCy0YwiCiAgICAgIH0KICAgIH0gXQogIH0KfQ=="
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ {
+      ""lemma"" : {
+        ""xml:lang"" : ""ru"",
+        ""type"" : ""literal"",
+        ""value"" : ""морковный""
+      }
+    }, "
+  body "{
+      ""lemma"" : {
+        ""xml:lang"" : ""ru"",
+        ""type"" : ""literal"",
+        ""value"" : ""морковка""
+      }
+    }, {
+      ""lemma"" : {
+        ""xml:lang"" : ""ru"",
+        ""type"" : ""literal"",
+      "
+  body "  ""value"" : ""морковочка""
+      }
+    }, {
+      ""lemma"" : {
+        ""xml:lang"" : ""ru"",
+        ""type"" : ""literal"",
+        ""value"" : ""морковь""
+      }
+    } ]
+  }
+}"
 
 response_0023_sparql_format_json_query
   url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL3782%20ontolex%3Asense%20%3Fsource_sense%20.%20wd%3AL3782%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22ru%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
-  body_base64 "ewogICJoZWFkIiA6IHsKICAgICJ2YXJzIiA6IFsgImxlbW1hIiBdCiAgfSwKICAicmVzdWx0cyIg"
-  body_base64 "OiB7CiAgICAiYmluZGluZ3MiIDogWyB7CiAgICAgICJsZW1tYSIgOiB7CiAgICAgICAgInhtbDps"
-  body_base64 "YW5nIiA6ICJydSIsCiAgICAgICAgInR5cGUiIDogImxpdGVyYWwiLAogICAgICAgICJ2YWx1ZSIg"
-  body_base64 "OiAi0LzQvtGA0LrQvtCy0LrQsCIKICAgICAgfQogICAgfSwgewogICAgICAibGVtbWEiIDogewog"
-  body_base64 "ICAgICAgICJ4bWw6bGFuZyIgOiAicnUiLAogICAgICAgICJ0eXBlIiA6ICJsaXRlcmFsIiwKICAg"
-  body_base64 "ICAgICAidmFsdWUiIDogItC80L7RgNC60L7QstC+0YfQutCwIgogICAgICB9CiAgICB9LCB7CiAg"
-  body_base64 "ICAgICJsZW1tYSIgOiB7CiAgICAgICAgInhtbDpsYW5nIiA6ICJydSIsCiAgICAgICAgInR5cGUi"
-  body_base64 "IDogImxpdGVyYWwiLAogICAgICAgICJ2YWx1ZSIgOiAi0LzQvtGA0LrQvtCy0YwiCiAgICAgIH0K"
-  body_base64 "ICAgIH0gXQogIH0KfQ=="
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ {
+      ""lemma"" : {
+        ""xml:lang"" : ""ru"",
+        ""type"" : ""literal"",
+        ""value"" : ""морковка""
+      }
+    }, {"
+  body "
+      ""lemma"" : {
+        ""xml:lang"" : ""ru"",
+        ""type"" : ""literal"",
+        ""value"" : ""морковочка""
+      }
+    }, {
+      ""lemma"" : {
+        ""xml:lang"" : ""ru"",
+        ""type"" : ""literal"",
+     "
+  body "   ""value"" : ""морковь""
+      }
+    } ]
+  }
+}"
 
 response_0024_sparql_format_json_query
   url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL3784%20ontolex%3Asense%20%3Fsource_sense%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22ru%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
-  body_base64 "ewogICJoZWFkIiA6IHsKICAgICJ2YXJzIiA6IFsgImxlbW1hIiBdCiAgfSwKICAicmVzdWx0cyIg"
-  body_base64 "OiB7CiAgICAiYmluZGluZ3MiIDogWyB7CiAgICAgICJsZW1tYSIgOiB7CiAgICAgICAgInhtbDps"
-  body_base64 "YW5nIiA6ICJydSIsCiAgICAgICAgInR5cGUiIDogImxpdGVyYWwiLAogICAgICAgICJ2YWx1ZSIg"
-  body_base64 "OiAi0LrQsNGA0YLQvtGE0LXQu9GMIgogICAgICB9CiAgICB9LCB7CiAgICAgICJsZW1tYSIgOiB7"
-  body_base64 "CiAgICAgICAgInhtbDpsYW5nIiA6ICJydSIsCiAgICAgICAgInR5cGUiIDogImxpdGVyYWwiLAog"
-  body_base64 "ICAgICAgICJ2YWx1ZSIgOiAi0LrQsNGA0YLQvtGF0LAiCiAgICAgIH0KICAgIH0sIHsKICAgICAg"
-  body_base64 "ImxlbW1hIiA6IHsKICAgICAgICAieG1sOmxhbmciIDogInJ1IiwKICAgICAgICAidHlwZSIgOiAi"
-  body_base64 "bGl0ZXJhbCIsCiAgICAgICAgInZhbHVlIiA6ICLQutCw0YDRgtC+0YjQutCwIgogICAgICB9CiAg"
-  body_base64 "ICB9IF0KICB9Cn0="
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ {
+      ""lemma"" : {
+        ""xml:lang"" : ""ru"",
+        ""type"" : ""literal"",
+        ""value"" : ""картофель""
+      }
+    }, "
+  body "{
+      ""lemma"" : {
+        ""xml:lang"" : ""ru"",
+        ""type"" : ""literal"",
+        ""value"" : ""картоха""
+      }
+    }, {
+      ""lemma"" : {
+        ""xml:lang"" : ""ru"",
+        ""type"" : ""literal"",
+       "
+  body " ""value"" : ""картошка""
+      }
+    } ]
+  }
+}"
 
 response_0025_sparql_format_json_query
   url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL3784%20ontolex%3Asense%20%3Fsource_sense%20.%20wd%3AL3784%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22ru%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
-  body_base64 "ewogICJoZWFkIiA6IHsKICAgICJ2YXJzIiA6IFsgImxlbW1hIiBdCiAgfSwKICAicmVzdWx0cyIg"
-  body_base64 "OiB7CiAgICAiYmluZGluZ3MiIDogWyB7CiAgICAgICJsZW1tYSIgOiB7CiAgICAgICAgInhtbDps"
-  body_base64 "YW5nIiA6ICJydSIsCiAgICAgICAgInR5cGUiIDogImxpdGVyYWwiLAogICAgICAgICJ2YWx1ZSIg"
-  body_base64 "OiAi0LrQsNGA0YLQvtGE0LXQu9GMIgogICAgICB9CiAgICB9LCB7CiAgICAgICJsZW1tYSIgOiB7"
-  body_base64 "CiAgICAgICAgInhtbDpsYW5nIiA6ICJydSIsCiAgICAgICAgInR5cGUiIDogImxpdGVyYWwiLAog"
-  body_base64 "ICAgICAgICJ2YWx1ZSIgOiAi0LrQsNGA0YLQvtGF0LAiCiAgICAgIH0KICAgIH0sIHsKICAgICAg"
-  body_base64 "ImxlbW1hIiA6IHsKICAgICAgICAieG1sOmxhbmciIDogInJ1IiwKICAgICAgICAidHlwZSIgOiAi"
-  body_base64 "bGl0ZXJhbCIsCiAgICAgICAgInZhbHVlIiA6ICLQutCw0YDRgtC+0YjQutCwIgogICAgICB9CiAg"
-  body_base64 "ICB9IF0KICB9Cn0="
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ {
+      ""lemma"" : {
+        ""xml:lang"" : ""ru"",
+        ""type"" : ""literal"",
+        ""value"" : ""картофель""
+      }
+    }, "
+  body "{
+      ""lemma"" : {
+        ""xml:lang"" : ""ru"",
+        ""type"" : ""literal"",
+        ""value"" : ""картоха""
+      }
+    }, {
+      ""lemma"" : {
+        ""xml:lang"" : ""ru"",
+        ""type"" : ""literal"",
+       "
+  body " ""value"" : ""картошка""
+      }
+    } ]
+  }
+}"
 
 response_0026_sparql_format_json_query
   url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL3865%20ontolex%3Asense%20%3Fsource_sense%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22ru%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
-  body_base64 "ewogICJoZWFkIiA6IHsKICAgICJ2YXJzIiA6IFsgImxlbW1hIiBdCiAgfSwKICAicmVzdWx0cyIg"
-  body_base64 "OiB7CiAgICAiYmluZGluZ3MiIDogWyB7CiAgICAgICJsZW1tYSIgOiB7CiAgICAgICAgInhtbDps"
-  body_base64 "YW5nIiA6ICJydSIsCiAgICAgICAgInR5cGUiIDogImxpdGVyYWwiLAogICAgICAgICJ2YWx1ZSIg"
-  body_base64 "OiAi0L/QsNC/0LrQsCIKICAgICAgfQogICAgfSwgewogICAgICAibGVtbWEiIDogewogICAgICAg"
-  body_base64 "ICJ4bWw6bGFuZyIgOiAicnUiLAogICAgICAgICJ0eXBlIiA6ICJsaXRlcmFsIiwKICAgICAgICAi"
-  body_base64 "dmFsdWUiIDogItGF0LvQtdCxIgogICAgICB9CiAgICB9IF0KICB9Cn0="
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ {
+      ""lemma"" : {
+        ""xml:lang"" : ""ru"",
+        ""type"" : ""literal"",
+        ""value"" : ""папка""
+      }
+    }, {
+  "
+  body "    ""lemma"" : {
+        ""xml:lang"" : ""ru"",
+        ""type"" : ""literal"",
+        ""value"" : ""хлеб""
+      }
+    } ]
+  }
+}"
 
 response_0027_sparql_format_json_query
   url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL3865%20ontolex%3Asense%20%3Fsource_sense%20.%20wd%3AL3865%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22ru%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
-  body_base64 "ewogICJoZWFkIiA6IHsKICAgICJ2YXJzIiA6IFsgImxlbW1hIiBdCiAgfSwKICAicmVzdWx0cyIg"
-  body_base64 "OiB7CiAgICAiYmluZGluZ3MiIDogWyB7CiAgICAgICJsZW1tYSIgOiB7CiAgICAgICAgInhtbDps"
-  body_base64 "YW5nIiA6ICJydSIsCiAgICAgICAgInR5cGUiIDogImxpdGVyYWwiLAogICAgICAgICJ2YWx1ZSIg"
-  body_base64 "OiAi0L/QsNC/0LrQsCIKICAgICAgfQogICAgfSwgewogICAgICAibGVtbWEiIDogewogICAgICAg"
-  body_base64 "ICJ4bWw6bGFuZyIgOiAicnUiLAogICAgICAgICJ0eXBlIiA6ICJsaXRlcmFsIiwKICAgICAgICAi"
-  body_base64 "dmFsdWUiIDogItGF0LvQtdCxIgogICAgICB9CiAgICB9IF0KICB9Cn0="
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ {
+      ""lemma"" : {
+        ""xml:lang"" : ""ru"",
+        ""type"" : ""literal"",
+        ""value"" : ""папка""
+      }
+    }, {
+  "
+  body "    ""lemma"" : {
+        ""xml:lang"" : ""ru"",
+        ""type"" : ""literal"",
+        ""value"" : ""хлеб""
+      }
+    } ]
+  }
+}"
 
 response_0028_sparql_format_json_query
   url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL579678%20ontolex%3Asense%20%3Fsource_sense%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22ru%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
-  body_base64 "ewogICJoZWFkIiA6IHsKICAgICJ2YXJzIiA6IFsgImxlbW1hIiBdCiAgfSwKICAicmVzdWx0cyIg"
-  body_base64 "OiB7CiAgICAiYmluZGluZ3MiIDogWyBdCiAgfQp9"
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ ]
+  }
+}"
 
 response_0029_sparql_format_json_query
   url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL579678%20ontolex%3Asense%20%3Fsource_sense%20.%20wd%3AL579678%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22ru%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
-  body_base64 "ewogICJoZWFkIiA6IHsKICAgICJ2YXJzIiA6IFsgImxlbW1hIiBdCiAgfSwKICAicmVzdWx0cyIg"
-  body_base64 "OiB7CiAgICAiYmluZGluZ3MiIDogWyBdCiAgfQp9"
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ ]
+  }
+}"
 
 response_0030_sparql_format_json_query
   url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL583362%20ontolex%3Asense%20%3Fsource_sense%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22en%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
-  body_base64 "ewogICJoZWFkIiA6IHsKICAgICJ2YXJzIiA6IFsgImxlbW1hIiBdCiAgfSwKICAicmVzdWx0cyIg"
-  body_base64 "OiB7CiAgICAiYmluZGluZ3MiIDogWyB7CiAgICAgICJsZW1tYSIgOiB7CiAgICAgICAgInhtbDps"
-  body_base64 "YW5nIiA6ICJlbiIsCiAgICAgICAgInR5cGUiIDogImxpdGVyYWwiLAogICAgICAgICJ2YWx1ZSIg"
-  body_base64 "OiAidWgtaHVoIgogICAgICB9CiAgICB9LCB7CiAgICAgICJsZW1tYSIgOiB7CiAgICAgICAgInht"
-  body_base64 "bDpsYW5nIiA6ICJlbi14LXE1OTM0MjgwOSIsCiAgICAgICAgInR5cGUiIDogImxpdGVyYWwiLAog"
-  body_base64 "ICAgICAgICJ2YWx1ZSIgOiAidWggaHVoIgogICAgICB9CiAgICB9LCB7CiAgICAgICJsZW1tYSIg"
-  body_base64 "OiB7CiAgICAgICAgInhtbDpsYW5nIiA6ICJlbiIsCiAgICAgICAgInR5cGUiIDogImxpdGVyYWwi"
-  body_base64 "LAogICAgICAgICJ2YWx1ZSIgOiAieWVzIgogICAgICB9CiAgICB9LCB7CiAgICAgICJsZW1tYSIg"
-  body_base64 "OiB7CiAgICAgICAgInhtbDpsYW5nIiA6ICJlbiIsCiAgICAgICAgInR5cGUiIDogImxpdGVyYWwi"
-  body_base64 "LAogICAgICAgICJ2YWx1ZSIgOiAiamEiCiAgICAgIH0KICAgIH0gXQogIH0KfQ=="
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+        ""value"" : ""uh-huh""
+      }
+    }, {
+ "
+  body "     ""lemma"" : {
+        ""xml:lang"" : ""en-x-q59342809"",
+        ""type"" : ""literal"",
+        ""value"" : ""uh huh""
+      }
+    }, {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"","
+  body "
+        ""value"" : ""yes""
+      }
+    }, {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+        ""value"" : ""ja""
+      }
+    } ]
+  }
+}"
 
 response_0031_sparql_format_json_query
   url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL583362%20ontolex%3Asense%20%3Fsource_sense%20.%20wd%3AL583362%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22en%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
-  body_base64 "ewogICJoZWFkIiA6IHsKICAgICJ2YXJzIiA6IFsgImxlbW1hIiBdCiAgfSwKICAicmVzdWx0cyIg"
-  body_base64 "OiB7CiAgICAiYmluZGluZ3MiIDogWyB7CiAgICAgICJsZW1tYSIgOiB7CiAgICAgICAgInhtbDps"
-  body_base64 "YW5nIiA6ICJlbiIsCiAgICAgICAgInR5cGUiIDogImxpdGVyYWwiLAogICAgICAgICJ2YWx1ZSIg"
-  body_base64 "OiAieWVzIgogICAgICB9CiAgICB9IF0KICB9Cn0="
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+        ""value"" : ""yes""
+      }
+    } ]
+  }
+}"
 
 response_0032_sparql_format_json_query
   url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL7993%20ontolex%3Asense%20%3Fsource_sense%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22ru%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
-  body_base64 "ewogICJoZWFkIiA6IHsKICAgICJ2YXJzIiA6IFsgImxlbW1hIiBdCiAgfSwKICAicmVzdWx0cyIg"
-  body_base64 "OiB7CiAgICAiYmluZGluZ3MiIDogWyB7CiAgICAgICJsZW1tYSIgOiB7CiAgICAgICAgInhtbDps"
-  body_base64 "YW5nIiA6ICJydSIsCiAgICAgICAgInR5cGUiIDogImxpdGVyYWwiLAogICAgICAgICJ2YWx1ZSIg"
-  body_base64 "OiAi0L/QvtC80LjQtNC+0YAiCiAgICAgIH0KICAgIH0gXQogIH0KfQ=="
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ {
+      ""lemma"" : {
+        ""xml:lang"" : ""ru"",
+        ""type"" : ""literal"",
+        ""value"" : ""помидор""
+      }
+    } ]
+ "
+  body " }
+}"
 
 response_0033_sparql_format_json_query
   url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL7993%20ontolex%3Asense%20%3Fsource_sense%20.%20wd%3AL7993%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22ru%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
-  body_base64 "ewogICJoZWFkIiA6IHsKICAgICJ2YXJzIiA6IFsgImxlbW1hIiBdCiAgfSwKICAicmVzdWx0cyIg"
-  body_base64 "OiB7CiAgICAiYmluZGluZ3MiIDogWyB7CiAgICAgICJsZW1tYSIgOiB7CiAgICAgICAgInhtbDps"
-  body_base64 "YW5nIiA6ICJydSIsCiAgICAgICAgInR5cGUiIDogImxpdGVyYWwiLAogICAgICAgICJ2YWx1ZSIg"
-  body_base64 "OiAi0L/QvtC80LjQtNC+0YAiCiAgICAgIH0KICAgIH0gXQogIH0KfQ=="
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ {
+      ""lemma"" : {
+        ""xml:lang"" : ""ru"",
+        ""type"" : ""literal"",
+        ""value"" : ""помидор""
+      }
+    } ]
+ "
+  body " }
+}"
 
 response_0034_sparql_format_json_query
   url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL8885%20ontolex%3Asense%20%3Fsource_sense%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22hi%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
-  body_base64 "ewogICJoZWFkIiA6IHsKICAgICJ2YXJzIiA6IFsgImxlbW1hIiBdCiAgfSwKICAicmVzdWx0cyIg"
-  body_base64 "OiB7CiAgICAiYmluZGluZ3MiIDogWyBdCiAgfQp9"
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ ]
+  }
+}"
 
 response_0035_sparql_format_json_query
   url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL8885%20ontolex%3Asense%20%3Fsource_sense%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22ru%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
-  body_base64 "ewogICJoZWFkIiA6IHsKICAgICJ2YXJzIiA6IFsgImxlbW1hIiBdCiAgfSwKICAicmVzdWx0cyIg"
-  body_base64 "OiB7CiAgICAiYmluZGluZ3MiIDogWyB7CiAgICAgICJsZW1tYSIgOiB7CiAgICAgICAgInhtbDps"
-  body_base64 "YW5nIiA6ICJydSIsCiAgICAgICAgInR5cGUiIDogImxpdGVyYWwiLAogICAgICAgICJ2YWx1ZSIg"
-  body_base64 "OiAi0L/RgNC40LLQtdGCIgogICAgICB9CiAgICB9IF0KICB9Cn0="
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ {
+      ""lemma"" : {
+        ""xml:lang"" : ""ru"",
+        ""type"" : ""literal"",
+        ""value"" : ""привет""
+      }
+    } ]
+  "
+  body "}
+}"
 
 response_0036_sparql_format_json_query
   url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL8885%20ontolex%3Asense%20%3Fsource_sense%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22zh%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
-  body_base64 "ewogICJoZWFkIiA6IHsKICAgICJ2YXJzIiA6IFsgImxlbW1hIiBdCiAgfSwKICAicmVzdWx0cyIg"
-  body_base64 "OiB7CiAgICAiYmluZGluZ3MiIDogWyBdCiAgfQp9"
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ ]
+  }
+}"
 
 response_0037_sparql_format_json_query
   url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL8885%20ontolex%3Asense%20%3Fsource_sense%20.%20wd%3AL8885%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22hi%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
-  body_base64 "ewogICJoZWFkIiA6IHsKICAgICJ2YXJzIiA6IFsgImxlbW1hIiBdCiAgfSwKICAicmVzdWx0cyIg"
-  body_base64 "OiB7CiAgICAiYmluZGluZ3MiIDogWyBdCiAgfQp9"
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ ]
+  }
+}"
 
 response_0038_sparql_format_json_query
   url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL8885%20ontolex%3Asense%20%3Fsource_sense%20.%20wd%3AL8885%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22ru%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
-  body_base64 "ewogICJoZWFkIiA6IHsKICAgICJ2YXJzIiA6IFsgImxlbW1hIiBdCiAgfSwKICAicmVzdWx0cyIg"
-  body_base64 "OiB7CiAgICAiYmluZGluZ3MiIDogWyB7CiAgICAgICJsZW1tYSIgOiB7CiAgICAgICAgInhtbDps"
-  body_base64 "YW5nIiA6ICJydSIsCiAgICAgICAgInR5cGUiIDogImxpdGVyYWwiLAogICAgICAgICJ2YWx1ZSIg"
-  body_base64 "OiAi0L/RgNC40LLQtdGCIgogICAgICB9CiAgICB9IF0KICB9Cn0="
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ {
+      ""lemma"" : {
+        ""xml:lang"" : ""ru"",
+        ""type"" : ""literal"",
+        ""value"" : ""привет""
+      }
+    } ]
+  "
+  body "}
+}"
 
 response_0039_sparql_format_json_query
   url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL8885%20ontolex%3Asense%20%3Fsource_sense%20.%20wd%3AL8885%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22zh%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
-  body_base64 "ewogICJoZWFkIiA6IHsKICAgICJ2YXJzIiA6IFsgImxlbW1hIiBdCiAgfSwKICAicmVzdWx0cyIg"
-  body_base64 "OiB7CiAgICAiYmluZGluZ3MiIDogWyBdCiAgfQp9"
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ ]
+  }
+}"
 
 response_0040_sparql_format_json_query
   url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL991459%20ontolex%3Asense%20%3Fsource_sense%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22en%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
-  body_base64 "ewogICJoZWFkIiA6IHsKICAgICJ2YXJzIiA6IFsgImxlbW1hIiBdCiAgfSwKICAicmVzdWx0cyIg"
-  body_base64 "OiB7CiAgICAiYmluZGluZ3MiIDogWyB7CiAgICAgICJsZW1tYSIgOiB7CiAgICAgICAgInhtbDps"
-  body_base64 "YW5nIiA6ICJlbiIsCiAgICAgICAgInR5cGUiIDogImxpdGVyYWwiLAogICAgICAgICJ2YWx1ZSIg"
-  body_base64 "OiAiYnJlYWQiCiAgICAgIH0KICAgIH0gXQogIH0KfQ=="
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+        ""value"" : ""bread""
+      }
+    } ]
+  }"
+  body "
+}"
 
 response_0041_sparql_format_json_query
   url "https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Flemma%20WHERE%20%7B%20wd%3AL991459%20ontolex%3Asense%20%3Fsource_sense%20.%20wd%3AL991459%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Fsource_sense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20ontolex%3Asense%20%3Fsense%20.%20%3Fsense%20wdt%3AP5137%20%3Fmeaning%20.%20%3Flexeme%20wikibase%3AlexicalCategory%20%3Fcategory%20.%20%3Flexeme%20dct%3Alanguage%20%3Flanguage%20.%20%3Flanguage%20wdt%3AP218%20%22en%22%20.%20%3Flexeme%20wikibase%3Alemma%20%3Flemma%20.%20%7D"
-  body_base64 "ewogICJoZWFkIiA6IHsKICAgICJ2YXJzIiA6IFsgImxlbW1hIiBdCiAgfSwKICAicmVzdWx0cyIg"
-  body_base64 "OiB7CiAgICAiYmluZGluZ3MiIDogWyB7CiAgICAgICJsZW1tYSIgOiB7CiAgICAgICAgInhtbDps"
-  body_base64 "YW5nIiA6ICJlbiIsCiAgICAgICAgInR5cGUiIDogImxpdGVyYWwiLAogICAgICAgICJ2YWx1ZSIg"
-  body_base64 "OiAiYnJlYWQiCiAgICAgIH0KICAgIH0gXQogIH0KfQ=="
+  body "{
+  ""head"" : {
+    ""vars"" : [ ""lemma"" ]
+  },
+  ""results"" : {
+    ""bindings"" : [ {
+      ""lemma"" : {
+        ""xml:lang"" : ""en"",
+        ""type"" : ""literal"",
+        ""value"" : ""bread""
+      }
+    } ]
+  }"
+  body "
+}"

@@ -5,4 +5,4 @@ seed_metadata
   max_records "128"
   max_lines "1500"
   split_marker "wikidata-properties-partN.lino"
-  decoded_body "base64 RFC 4648, concatenated chunks of 76 chars"
+  body_format "raw response text; concatenate `body` chunks; values escape one literal quote as two consecutive quotes per Links Notation"

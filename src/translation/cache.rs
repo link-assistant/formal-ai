@@ -21,7 +21,10 @@
 //! capped at 128 Wikidata entities + 128 properties + the Wiktionary
 //! pages they point at. Each `.lino` file stays under
 //! [`MAX_SEED_LINES_PER_FILE`] so reviewers can read it like any other
-//! Links Notation file.
+//! Links Notation file — bodies are stored verbatim (split into
+//! [`SEED_BODY_CHUNK_CHARS`]-char chunks using Links Notation's
+//! doubled-quote escape — every literal `"` becomes `""`, everything else
+//! is verbatim) so reviewers can read the raw API JSON directly.
 //!
 //! At runtime [`CachedHttpClient::get`] tries three layers in order:
 //!
@@ -404,30 +407,27 @@ pub fn seed_response(url: &str) -> Option<String> {
 
 /// Process-wide lazily-parsed URL → body map. Loaded once on first
 /// access from the embedded `.lino` seed files. Records sharing a URL
-/// (a body whose base64 spans multiple `.lino` parts) have their chunks
-/// concatenated in the file/record order returned by [`seed_files`]
-/// before decoding, so an oversize response can be split across as many
-/// `<bucket>-partN.lino` files as needed without breaking lookup.
+/// (a body whose chunks span multiple `.lino` parts) have their chunks
+/// concatenated in the file/record order returned by [`seed_files`], so
+/// an oversize response can be split across as many `<bucket>-partN.lino`
+/// files as needed without breaking lookup.
 fn seed_index() -> &'static HashMap<String, String> {
     static INDEX: OnceLock<HashMap<String, String>> = OnceLock::new();
     INDEX.get_or_init(|| {
         let mut chunks: HashMap<String, String> = HashMap::new();
         let mut order: Vec<String> = Vec::new();
         for (_name, contents) in seed_files() {
-            for (url, b64) in parse_seed_chunks(contents) {
+            for (url, body) in parse_seed_chunks(contents) {
                 let entry = chunks.entry(url.clone()).or_insert_with(|| {
                     order.push(url.clone());
                     String::new()
                 });
-                entry.push_str(&b64);
+                entry.push_str(&body);
             }
         }
         let mut index = HashMap::new();
         for url in order {
-            let Some(b64) = chunks.remove(&url) else {
-                continue;
-            };
-            if let Some(body) = base64_decode_to_string(&b64) {
+            if let Some(body) = chunks.remove(&url) {
                 index.insert(url, body);
             }
         }
@@ -437,46 +437,47 @@ fn seed_index() -> &'static HashMap<String, String> {
 
 /// Parse a `.lino` seed bundle into `(url, body)` pairs.
 ///
-/// Each `response_<short_id>` block produces one pair with the body
-/// already base64-decoded. Records sharing a URL are returned separately
-/// in the order they appear — call [`seed_index`] (which concatenates
-/// them) if you want the assembled body.
+/// Each `response_<short_id>` block produces one pair. Records sharing a
+/// URL are returned separately in the order they appear — call
+/// [`seed_index`] (which concatenates them) if you want the assembled body.
 ///
-/// The grammar is intentionally narrow:
+/// The grammar is intentionally narrow and stays human-readable so a
+/// reviewer can inspect the raw API JSON without decoding tooling:
 ///
 /// ```text
 /// response_<short_id>
 ///   url "<full URL>"
-///   body_base64 "<chunk 1>"
-///   body_base64 "<chunk 2>"
+///   body "<chunk 1>"
+///   body "<chunk 2>"
 ///   ...
 /// ```
+///
+/// `body` chunks store the raw response text using Links Notation's
+/// doubled-quote escape: one literal `"` is written as two consecutive
+/// `"` characters; no other characters are escaped. Concatenating the
+/// unescaped chunks reproduces the original API response byte-for-byte.
 #[must_use]
 pub fn parse_seed_bundle(text: &str) -> Vec<(String, String)> {
     parse_seed_chunks(text)
-        .into_iter()
-        .filter_map(|(url, b64)| base64_decode_to_string(&b64).map(|body| (url, body)))
-        .collect()
 }
 
-/// Parse a `.lino` seed bundle into `(url, base64_chunk)` pairs.
+/// Parse a `.lino` seed bundle into `(url, body_chunk)` pairs.
 ///
-/// Returns chunks without decoding. Used by [`seed_index`] so split-body
-/// records (multiple records with the same URL across
-/// `<bucket>-partN.lino` files) can be concatenated before a single
-/// base64 decode.
+/// Used by [`seed_index`] so split-body records (multiple records with
+/// the same URL across `<bucket>-partN.lino` files) can be concatenated
+/// into a single body.
 #[must_use]
 pub fn parse_seed_chunks(text: &str) -> Vec<(String, String)> {
     let mut out: Vec<(String, String)> = Vec::new();
     let mut current_url: Option<String> = None;
-    let mut current_b64: String = String::new();
+    let mut current_body: String = String::new();
 
-    let flush = |url: &mut Option<String>, b64: &mut String, out: &mut Vec<(String, String)>| {
+    let flush = |url: &mut Option<String>, body: &mut String, out: &mut Vec<(String, String)>| {
         if let Some(url_value) = url.take() {
-            if b64.is_empty() {
-                b64.clear();
+            if body.is_empty() {
+                body.clear();
             } else {
-                out.push((url_value, std::mem::take(b64)));
+                out.push((url_value, std::mem::take(body)));
             }
         }
     };
@@ -489,7 +490,7 @@ pub fn parse_seed_chunks(text: &str) -> Vec<(String, String)> {
         let indent = trimmed.bytes().take_while(|b| *b == b' ').count();
         let content = &trimmed[indent..];
         if indent == 0 {
-            flush(&mut current_url, &mut current_b64, &mut out);
+            flush(&mut current_url, &mut current_body, &mut out);
             if content.starts_with("response_") {
                 current_url = Some(String::new());
             }
@@ -499,12 +500,12 @@ pub fn parse_seed_chunks(text: &str) -> Vec<(String, String)> {
             continue;
         }
         if let Some(value) = strip_kv(content, "url") {
-            current_url = Some(value.to_owned());
-        } else if let Some(value) = strip_kv(content, "body_base64") {
-            current_b64.push_str(value);
+            current_url = Some(unescape_lino_string(value));
+        } else if let Some(value) = strip_kv(content, "body") {
+            current_body.push_str(&unescape_lino_string(value));
         }
     }
-    flush(&mut current_url, &mut current_b64, &mut out);
+    flush(&mut current_url, &mut current_body, &mut out);
     out
 }
 
@@ -517,94 +518,76 @@ fn strip_kv<'a>(content: &'a str, key: &str) -> Option<&'a str> {
     rest.strip_suffix('"')
 }
 
-/// Base64-decode a stream of characters into a UTF-8 string. Returns
-/// `None` if the input is malformed or the resulting bytes are not UTF-8.
-#[must_use]
-pub fn base64_decode_to_string(input: &str) -> Option<String> {
-    let bytes = base64_decode(input)?;
-    String::from_utf8(bytes).ok()
-}
+/// Maximum number of characters per `body "..."` chunk when writing
+/// seed records. Wide enough to keep large API responses compact, narrow
+/// enough that each line stays inside a standard editor viewport.
+pub const SEED_BODY_CHUNK_CHARS: usize = 200;
 
-/// Standard RFC 4648 base64 decoder. Skips whitespace; rejects invalid
-/// characters and bad padding. Kept inline so the cache layer has no
-/// dependency outside the standard library.
+/// Escape a string for embedding as a double-quoted Links Notation value.
+///
+/// Links Notation uses **doubled-quote escapes**: every literal `"` in
+/// the value is doubled to `""`. Backslashes and all other bytes — including
+/// CJK, Cyrillic, Devanagari, etc. — pass through verbatim so reviewers see
+/// the raw API JSON, not a re-encoded form.
 #[must_use]
-pub fn base64_decode(input: &str) -> Option<Vec<u8>> {
-    let mut out: Vec<u8> = Vec::with_capacity(input.len() * 3 / 4);
-    let mut buf: u32 = 0;
-    let mut bits: u32 = 0;
-    let mut pad: u32 = 0;
-    for byte in input.bytes() {
-        if matches!(byte, b' ' | b'\t' | b'\r' | b'\n') {
-            continue;
-        }
-        let value = match byte {
-            b'A'..=b'Z' => u32::from(byte - b'A'),
-            b'a'..=b'z' => u32::from(byte - b'a') + 26,
-            b'0'..=b'9' => u32::from(byte - b'0') + 52,
-            b'+' => 62,
-            b'/' => 63,
-            b'=' => {
-                pad += 1;
-                if pad > 2 {
-                    return None;
-                }
-                buf <<= 6;
-                bits += 6;
-                if bits >= 8 {
-                    bits -= 8;
-                }
-                continue;
-            }
-            _ => return None,
-        };
-        if pad > 0 {
-            return None;
-        }
-        buf = (buf << 6) | value;
-        bits += 6;
-        if bits >= 8 {
-            bits -= 8;
-            out.push(((buf >> bits) & 0xff) as u8);
+pub fn escape_lino_string(input: &str) -> String {
+    let mut out = String::with_capacity(input.len() + 8);
+    for ch in input.chars() {
+        if ch == '"' {
+            out.push('"');
+            out.push('"');
+        } else {
+            out.push(ch);
         }
     }
-    Some(out)
+    out
 }
 
-/// Standard RFC 4648 base64 encoder. Pads with `=` to a multiple of four
-/// characters. The refresh tool uses this to write seed bundles.
+/// Reverse of [`escape_lino_string`].
+///
+/// Collapses every `""` pair into a single `"`. A lone trailing `"` (which
+/// should never appear in well-formed seed records) is preserved verbatim.
 #[must_use]
-pub fn base64_encode(input: &[u8]) -> String {
-    const ALPHABET: &[u8; 64] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-    let mut out = String::with_capacity(((input.len() + 2) / 3) * 4);
-    let mut i = 0;
-    while i + 3 <= input.len() {
-        let b0 = input[i];
-        let b1 = input[i + 1];
-        let b2 = input[i + 2];
-        out.push(ALPHABET[(b0 >> 2) as usize] as char);
-        out.push(ALPHABET[(((b0 & 0x03) << 4) | (b1 >> 4)) as usize] as char);
-        out.push(ALPHABET[(((b1 & 0x0f) << 2) | (b2 >> 6)) as usize] as char);
-        out.push(ALPHABET[(b2 & 0x3f) as usize] as char);
-        i += 3;
+pub fn unescape_lino_string(input: &str) -> String {
+    let mut out = String::with_capacity(input.len());
+    let mut chars = input.chars().peekable();
+    while let Some(ch) = chars.next() {
+        if ch == '"' && chars.peek() == Some(&'"') {
+            out.push('"');
+            chars.next();
+        } else {
+            out.push(ch);
+        }
     }
-    match input.len() - i {
-        1 => {
-            let b0 = input[i];
-            out.push(ALPHABET[(b0 >> 2) as usize] as char);
-            out.push(ALPHABET[((b0 & 0x03) << 4) as usize] as char);
-            out.push('=');
-            out.push('=');
+    out
+}
+
+/// Split a string into chunks of at most `chars` characters at character
+/// boundaries. Used to keep individual `body "..."` lines bounded so
+/// `.lino` files stay reviewable.
+///
+/// A chunk never **starts** with a `"` character, because Links Notation
+/// detects the quote-delimiter count by counting consecutive leading `"`
+/// chars: if a chunk began with `"`, wrapping it as `"<chunk>"` would
+/// produce `"""...` and the parser would treat it as a 3-quote delimited
+/// string, mis-parsing the value. We therefore extend a chunk past any
+/// trailing run of `"` chars so the next chunk starts on a non-`"` byte.
+#[must_use]
+pub fn split_body_into_chunks(body: &str, chars: usize) -> Vec<String> {
+    let mut out: Vec<String> = Vec::new();
+    if body.is_empty() {
+        return out;
+    }
+    let chars_vec: Vec<char> = body.chars().collect();
+    let total = chars_vec.len();
+    let mut start = 0usize;
+    while start < total {
+        let mut end = (start + chars).min(total);
+        while end < total && chars_vec[end] == '"' {
+            end += 1;
         }
-        2 => {
-            let b0 = input[i];
-            let b1 = input[i + 1];
-            out.push(ALPHABET[(b0 >> 2) as usize] as char);
-            out.push(ALPHABET[(((b0 & 0x03) << 4) | (b1 >> 4)) as usize] as char);
-            out.push(ALPHABET[((b1 & 0x0f) << 2) as usize] as char);
-            out.push('=');
-        }
-        _ => {}
+        out.push(chars_vec[start..end].iter().collect());
+        start = end;
     }
     out
 }
@@ -612,23 +595,20 @@ pub fn base64_encode(input: &[u8]) -> String {
 /// Emit a single `response_<short_id>` record into a `.lino` buffer.
 ///
 /// Public so the refresh-cache example (and tests) can produce seed
-/// files using the exact format [`parse_seed_bundle`] consumes.
+/// files using the exact format [`parse_seed_bundle`] consumes. Bodies
+/// are split into [`SEED_BODY_CHUNK_CHARS`]-char chunks and escaped with
+/// [`escape_lino_string`] so the raw API JSON remains human-readable.
 pub fn write_seed_record(out: &mut String, short_id: &str, url: &str, body: &str) {
     out.push_str("response_");
     out.push_str(short_id);
     out.push('\n');
     out.push_str("  url \"");
-    out.push_str(url);
+    out.push_str(&escape_lino_string(url));
     out.push_str("\"\n");
-    let encoded = base64_encode(body.as_bytes());
-    let mut cursor = 0usize;
-    let bytes = encoded.as_bytes();
-    while cursor < bytes.len() {
-        let end = (cursor + 76).min(bytes.len());
-        out.push_str("  body_base64 \"");
-        out.push_str(&encoded[cursor..end]);
+    for chunk in split_body_into_chunks(body, SEED_BODY_CHUNK_CHARS) {
+        out.push_str("  body \"");
+        out.push_str(&escape_lino_string(&chunk));
         out.push_str("\"\n");
-        cursor = end;
     }
 }
 
@@ -799,24 +779,6 @@ mod tests {
     }
 
     #[test]
-    fn base64_round_trip_preserves_arbitrary_bytes() {
-        let cases: &[&[u8]] = &[
-            b"",
-            b"x",
-            b"ab",
-            b"abc",
-            b"abcd",
-            b"hello world",
-            &[0u8, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0xff, 0xfe, 0xfd],
-        ];
-        for case in cases {
-            let encoded = base64_encode(case);
-            let decoded = base64_decode(&encoded).expect("decode");
-            assert_eq!(&decoded, case, "round trip differs for input {case:?}");
-        }
-    }
-
-    #[test]
     fn parse_seed_bundle_round_trips_through_write_seed_record() {
         let body = r#"{"parse":{"title":"apple","wikitext":"* Russian: {{t+|ru|яблоко}}"}}"#;
         let url = "https://en.wiktionary.org/w/api.php?action=parse&page=apple&prop=wikitext&formatversion=2&format=json&redirects=1";
@@ -830,7 +792,8 @@ mod tests {
 
     #[test]
     fn parse_seed_bundle_concatenates_chunked_body() {
-        let bundle = "response_chunky\n  url \"https://example.org/x\"\n  body_base64 \"aGVs\"\n  body_base64 \"bG8=\"\n";
+        let bundle =
+            "response_chunky\n  url \"https://example.org/x\"\n  body \"hel\"\n  body \"lo\"\n";
         let parsed = parse_seed_bundle(bundle);
         assert_eq!(parsed.len(), 1);
         assert_eq!(parsed[0].1, "hello");
@@ -838,13 +801,82 @@ mod tests {
 
     #[test]
     fn parse_seed_chunks_yields_one_pair_per_record() {
-        let bundle = "response_a\n  url \"https://example.org/x\"\n  body_base64 \"aGVs\"\n\nresponse_b\n  url \"https://example.org/x\"\n  body_base64 \"bG8=\"\n";
+        let bundle = "response_a\n  url \"https://example.org/x\"\n  body \"hel\"\n\nresponse_b\n  url \"https://example.org/x\"\n  body \"lo\"\n";
         let chunks = parse_seed_chunks(bundle);
         assert_eq!(chunks.len(), 2);
         assert_eq!(chunks[0].0, "https://example.org/x");
-        assert_eq!(chunks[0].1, "aGVs");
+        assert_eq!(chunks[0].1, "hel");
         assert_eq!(chunks[1].0, "https://example.org/x");
-        assert_eq!(chunks[1].1, "bG8=");
+        assert_eq!(chunks[1].1, "lo");
+    }
+
+    #[test]
+    fn escape_round_trips_quotes_backslashes_and_unicode() {
+        let cases: &[&str] = &[
+            "",
+            "plain ascii",
+            "with \"quotes\"",
+            "with \\backslash\\",
+            "{\"wikitext\":\"== {{-ru-}} ==\\n=== {{з|}} ===\"}",
+            "яблоко 苹果 🍎",
+            "trailing-quote\"",
+            "leading-quote: \"abc",
+            "double\"\"middle",
+        ];
+        for case in cases {
+            let escaped = escape_lino_string(case);
+            let back = unescape_lino_string(&escaped);
+            assert_eq!(back, *case, "round trip failed for {case:?}");
+        }
+    }
+
+    #[test]
+    fn split_body_into_chunks_respects_char_boundaries() {
+        let body = "яблоко 苹果 🍎"; // mix of 2/3/4-byte UTF-8 chars
+        let chunks = split_body_into_chunks(body, 4);
+        let recombined: String = chunks.concat();
+        assert_eq!(recombined, body);
+        for chunk in &chunks {
+            assert!(chunk.chars().count() <= 4);
+        }
+    }
+
+    #[test]
+    fn split_body_into_chunks_never_starts_chunk_with_quote() {
+        // Boundary case: a `"` immediately after the target chunk size
+        // would normally split into chunk N ending mid-stream and chunk
+        // N+1 starting with `"`. The latter breaks Links Notation parsing
+        // because `"` + chunk-content's leading `"` reads as a 2-quote
+        // delimiter. The chunker must defer the break past any run of
+        // quotes so the next chunk starts on a non-`"` byte.
+        let body = "aaaa\"bbbb\"cccc";
+        let chunks = split_body_into_chunks(body, 4);
+        for (idx, chunk) in chunks.iter().enumerate() {
+            assert!(
+                !chunk.starts_with('"'),
+                "chunk[{idx}] starts with a quote: {chunk:?}",
+            );
+        }
+        let recombined: String = chunks.concat();
+        assert_eq!(recombined, body);
+    }
+
+    #[test]
+    fn escaped_record_parses_as_links_notation() {
+        // The committed bundle is round-tripped through
+        // `lino_objects_codec::format::parse_indented` in
+        // `tests/unit/data_files.rs`. Mirror that contract here so the
+        // escape rules stay aligned with Links Notation expectations.
+        let mut buf = String::new();
+        write_seed_record(
+            &mut buf,
+            "demo",
+            "https://example.org/q",
+            r#"{"key":"value with \"escaped\" quotes","arr":[""]}"#,
+        );
+        lino_objects_codec::format::parse_indented(buf.trim()).unwrap_or_else(|error| {
+            panic!("record should be valid Links Notation: {error}\nbuffer:\n{buf}");
+        });
     }
 
     #[test]
