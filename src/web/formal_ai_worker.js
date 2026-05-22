@@ -3925,17 +3925,44 @@ async function fetchWiktionaryWikitext(pageTitle, language) {
   }
 }
 
+function stripCombiningMarks(value) {
+  // Russian Wiktionary entries are stored with combining stress marks
+  // (U+0301) so readers can see where the accent falls. The surface
+  // form must drop them so the result matches the lemma (помидо́р →
+  // помидор) and downstream substring assertions still hit.
+  return typeof value === "string" && value.normalize
+    ? value.normalize("NFD").replace(/[̀-ͯ]/g, "").normalize("NFC")
+    : value;
+}
+
 function extractWiktionaryTranslation(wikitext, targetLang) {
   if (!wikitext || !targetLang) return null;
-  // Accept {{t|<lang>|...}}, {{t+|<lang>|...}}, {{tt|<lang>|...}}, {{tt+|<lang>|...}}.
-  const pattern = new RegExp(
+  // English-edition templates: {{t|<lang>|...}}, {{t+|<lang>|...}},
+  // {{tt|<lang>|...}}, {{tt+|<lang>|...}}.
+  const enPattern = new RegExp(
     `\\{\\{tt?\\+?\\|${targetLang}\\|([^|}\\n]+)`,
     "i",
   );
-  const match = pattern.exec(wikitext);
-  if (!match) return null;
-  const surface = String(match[1] || "").trim();
-  return surface || null;
+  const enMatch = enPattern.exec(wikitext);
+  if (enMatch) {
+    const surface = stripCombiningMarks(String(enMatch[1] || "").trim());
+    if (surface) return surface;
+  }
+  // Russian-edition translation blocks: `{{перев-блок|...|<lang>=[[surface]]\n|...}}`.
+  // The language code may appear at the very start (no leading newline)
+  // or after `\n|`; the surface can be inside `[[...]]`, optionally
+  // followed by transliteration in parentheses we drop.
+  const ruPattern = new RegExp(
+    `[|\\n]${targetLang}\\s*=\\s*(?:\\[\\[([^\\]|]+)(?:\\|[^\\]]+)?\\]\\]|([^\\n|}]+))`,
+    "i",
+  );
+  const ruMatch = ruPattern.exec(wikitext);
+  if (ruMatch) {
+    const raw = (ruMatch[1] || ruMatch[2] || "").trim();
+    const surface = stripCombiningMarks(raw.replace(/\s*\([^)]*\)\s*$/, "").trim());
+    if (surface) return surface;
+  }
+  return null;
 }
 
 async function liveWiktionaryTranslate(surface, source, target) {
