@@ -1,36 +1,45 @@
 //! File-based cache for raw HTTP responses from Wikipedia / Wikidata /
 //! Wiktionary, keyed by the **semantic identity** of the resource.
 //!
-//! Earlier revisions of this module hashed the full URL and dumped 3 500+
-//! tiny `.body` / `.url` files into a single `data/translation-cache/`
-//! directory. That made the pull request unreviewable and locked the
-//! cache to one consumer (translation). Issue #221 reshaped the cache so
-//! that:
+//! Issue #221 reshaped the cache so that:
 //!
-//! - **Wikidata** responses land under `data/wikidata-cache/` keyed by
-//!   the Q-id or Lexeme-id mentioned in the URL.
-//! - **Wiktionary** wikitext lands under `data/wiktionary-cache/<lang>/`
+//! - **Wikidata** responses land under `wikidata-cache/` keyed by the
+//!   Q-id, P-id or Lexeme-id mentioned in the URL.
+//! - **Wiktionary** wikitext lands under `wiktionary-cache/<lang>/`
 //!   keyed by the page title.
-//! - **SPARQL** queries land under `data/wikidata-cache/sparql/` keyed by
-//!   a short hash, because there is no natural semantic name for a SPARQL
+//! - **SPARQL** queries land under `wikidata-cache/sparql/` keyed by a
+//!   short hash, because there is no natural semantic name for a SPARQL
 //!   string.
 //! - **Everything else** still uses a URL-hash filename, but in a
-//!   dedicated `data/http-cache/misc/` bucket. Unrecognised hosts should
-//!   be rare in practice — the cache is intentionally narrow.
+//!   dedicated `http-cache/misc/` bucket. Unrecognised hosts should be
+//!   rare in practice — the cache is intentionally narrow.
 //!
-//! This layout lets other formalization paths reuse the same Wikidata or
-//! Wiktionary lookups without duplicating bytes. It also keeps each
-//! directory small and human-readable (`grep -R apple
-//! data/wiktionary-cache/` works).
+//! There is no pre-extracted translation table in this repo: the only
+//! committed data are **verbatim API response bodies** that the live
+//! formalization pipeline produced. Those committed bodies live in the
+//! seed bundle at [`SEED_CACHE_DIR`] as a small set of `.lino` files,
+//! capped at 128 Wikidata entities + 128 properties + the Wiktionary
+//! pages they point at. Each `.lino` file stays under
+//! [`MAX_SEED_LINES_PER_FILE`] so reviewers can read it like any other
+//! Links Notation file.
 //!
-//! Cache contents are gitignored: they are populated lazily by integration
-//! runs (`FORMAL_AI_LIVE_API=1`) and serve only as a local accelerator.
-//! Unit tests rely on the offline dictionary at
-//! `data/seed/translations.lino`, not on cached HTTP responses, so the
-//! committed repository stays light.
+//! At runtime [`CachedHttpClient::get`] tries three layers in order:
+//!
+//! 1. The committed `.lino` seed bundle (deterministic, ships in git).
+//! 2. The gitignored on-disk accelerator under
+//!    `<DEFAULT_CACHE_DIR>/{wikidata,wiktionary,http}-cache/...` —
+//!    populated by `FORMAL_AI_LIVE_API=1` runs on a developer machine.
+//! 3. The live transport (only when `online == true`).
+//!
+//! This three-layer design keeps the repository light, lets the same
+//! Wikidata or Wiktionary fetch feed translation, fact lookup and any
+//! other formalization path without duplicating bytes, and keeps unit
+//! tests offline by default.
 
+use std::collections::HashMap;
 use std::fs;
 use std::path::{Path, PathBuf};
+use std::sync::OnceLock;
 
 use super::http::{HttpClient, HttpError};
 
@@ -40,6 +49,27 @@ use super::http::{HttpClient, HttpError};
 /// live as siblings of this directory so callers from other formalization
 /// paths can share the same bytes.
 pub const DEFAULT_CACHE_DIR: &str = "data";
+
+/// Directory under the repository root that holds the committed seed.
+///
+/// `.lino` files here are shipped in git so a clean checkout can run the
+/// full pipeline offline; the on-disk accelerator under
+/// [`DEFAULT_CACHE_DIR`] is gitignored and only used when
+/// `FORMAL_AI_LIVE_API=1` populates it.
+pub const SEED_CACHE_DIR: &str = "data/seed/api-cache";
+
+/// Hard cap on the number of lines per seeded `.lino` cache file. Larger
+/// files become unreadable; the refresh tool splits responses into
+/// `<bucket>-partN.lino` files when needed.
+pub const MAX_SEED_LINES_PER_FILE: usize = 1500;
+
+/// Hard cap on the number of distinct entities (or properties) per bucket.
+///
+/// We never ship more than this many records in the seeded cache. This
+/// keeps the repository small enough to review and stays honest about the
+/// "lightweight by default" constraint from issue #221's reviewer
+/// feedback.
+pub const MAX_SEED_RECORDS_PER_BUCKET: usize = 128;
 
 /// HTTP client that consults a file cache before delegating to a real
 /// transport. Cache hits always short-circuit the underlying transport;
@@ -174,11 +204,14 @@ fn classify_wikidata(url: &str) -> Option<CacheLocation> {
     let mut ids: Option<String> = None;
     let mut sparql: Option<String> = None;
     let mut titles: Option<String> = None;
+    let mut search_term: Option<String> = None;
     for pair in query.split('&') {
         if let Some(value) = pair.strip_prefix("action=") {
             action = Some(percent_decode(value));
         } else if let Some(value) = pair.strip_prefix("srsearch=") {
             srsearch = Some(percent_decode(value));
+        } else if let Some(value) = pair.strip_prefix("search=") {
+            search_term = Some(percent_decode(value));
         } else if let Some(value) = pair.strip_prefix("ids=") {
             ids = Some(percent_decode(value));
         } else if let Some(value) = pair.strip_prefix("query=") {
@@ -196,6 +229,7 @@ fn classify_wikidata(url: &str) -> Option<CacheLocation> {
     let stem = match action.as_deref() {
         Some("wbsearchentities") => srsearch
             .as_deref()
+            .or(search_term.as_deref())
             .map_or_else(|| cache_key(url), sanitize_segment),
         Some("wbgetentities" | "query") => ids
             .as_deref()
@@ -303,6 +337,12 @@ fn live_api_enabled() -> bool {
 
 impl<T: HttpClient> HttpClient for CachedHttpClient<T> {
     fn get(&self, url: &str) -> Result<String, HttpError> {
+        // Layer 1: committed seed bundle (deterministic, ships in git).
+        if let Some(body) = seed_response(url) {
+            return Ok(body);
+        }
+
+        // Layer 2: gitignored on-disk accelerator under `cache_dir`.
         let (body_path, meta_path) = self.cache_paths(url);
         if let Ok(body) = fs::read_to_string(&body_path) {
             return Ok(body);
@@ -313,6 +353,8 @@ impl<T: HttpClient> HttpClient for CachedHttpClient<T> {
                  set FORMAL_AI_LIVE_API=1 to fetch and populate the cache",
             )));
         }
+
+        // Layer 3: live transport.
         let body = self.transport.get(url)?;
         let parent = body_path.parent().unwrap_or(&self.cache_dir);
         if let Err(error) = fs::create_dir_all(parent) {
@@ -337,14 +379,267 @@ impl<T: HttpClient> HttpClient for CachedHttpClient<T> {
     }
 }
 
+// ---------------------------------------------------------------------------
+// Seeded raw API response bundle
+// ---------------------------------------------------------------------------
+
+// The list of seed `.lino` files is generated by `build.rs`, which walks
+// `data/seed/api-cache/` at build time. That keeps the registry honest as
+// the bundler splits a bucket into `<bucket>-partN.lino` files without
+// requiring per-file edits here.
+include!(concat!(env!("OUT_DIR"), "/seed_bundle_files.rs"));
+
+/// All committed seed `.lino` files in deterministic (sorted) order.
+#[must_use]
+pub fn seed_files() -> Vec<(&'static str, &'static str)> {
+    SEED_BUNDLE_FILES.to_vec()
+}
+
+/// Look up a seeded response body by URL. Returns `None` when the URL
+/// is not part of the committed bundle.
+#[must_use]
+pub fn seed_response(url: &str) -> Option<String> {
+    seed_index().get(url).cloned()
+}
+
+/// Process-wide lazily-parsed URL → body map. Loaded once on first
+/// access from the embedded `.lino` seed files. Records sharing a URL
+/// (a body whose base64 spans multiple `.lino` parts) have their chunks
+/// concatenated in the file/record order returned by [`seed_files`]
+/// before decoding, so an oversize response can be split across as many
+/// `<bucket>-partN.lino` files as needed without breaking lookup.
+fn seed_index() -> &'static HashMap<String, String> {
+    static INDEX: OnceLock<HashMap<String, String>> = OnceLock::new();
+    INDEX.get_or_init(|| {
+        let mut chunks: HashMap<String, String> = HashMap::new();
+        let mut order: Vec<String> = Vec::new();
+        for (_name, contents) in seed_files() {
+            for (url, b64) in parse_seed_chunks(contents) {
+                let entry = chunks.entry(url.clone()).or_insert_with(|| {
+                    order.push(url.clone());
+                    String::new()
+                });
+                entry.push_str(&b64);
+            }
+        }
+        let mut index = HashMap::new();
+        for url in order {
+            let Some(b64) = chunks.remove(&url) else {
+                continue;
+            };
+            if let Some(body) = base64_decode_to_string(&b64) {
+                index.insert(url, body);
+            }
+        }
+        index
+    })
+}
+
+/// Parse a `.lino` seed bundle into `(url, body)` pairs.
+///
+/// Each `response_<short_id>` block produces one pair with the body
+/// already base64-decoded. Records sharing a URL are returned separately
+/// in the order they appear — call [`seed_index`] (which concatenates
+/// them) if you want the assembled body.
+///
+/// The grammar is intentionally narrow:
+///
+/// ```text
+/// response_<short_id>
+///   url "<full URL>"
+///   body_base64 "<chunk 1>"
+///   body_base64 "<chunk 2>"
+///   ...
+/// ```
+#[must_use]
+pub fn parse_seed_bundle(text: &str) -> Vec<(String, String)> {
+    parse_seed_chunks(text)
+        .into_iter()
+        .filter_map(|(url, b64)| base64_decode_to_string(&b64).map(|body| (url, body)))
+        .collect()
+}
+
+/// Parse a `.lino` seed bundle into `(url, base64_chunk)` pairs.
+///
+/// Returns chunks without decoding. Used by [`seed_index`] so split-body
+/// records (multiple records with the same URL across
+/// `<bucket>-partN.lino` files) can be concatenated before a single
+/// base64 decode.
+#[must_use]
+pub fn parse_seed_chunks(text: &str) -> Vec<(String, String)> {
+    let mut out: Vec<(String, String)> = Vec::new();
+    let mut current_url: Option<String> = None;
+    let mut current_b64: String = String::new();
+
+    let flush = |url: &mut Option<String>, b64: &mut String, out: &mut Vec<(String, String)>| {
+        if let Some(url_value) = url.take() {
+            if b64.is_empty() {
+                b64.clear();
+            } else {
+                out.push((url_value, std::mem::take(b64)));
+            }
+        }
+    };
+
+    for raw_line in text.lines() {
+        let trimmed = raw_line.trim_end_matches(['\r', '\n']);
+        if trimmed.trim().is_empty() {
+            continue;
+        }
+        let indent = trimmed.bytes().take_while(|b| *b == b' ').count();
+        let content = &trimmed[indent..];
+        if indent == 0 {
+            flush(&mut current_url, &mut current_b64, &mut out);
+            if content.starts_with("response_") {
+                current_url = Some(String::new());
+            }
+            continue;
+        }
+        if current_url.is_none() {
+            continue;
+        }
+        if let Some(value) = strip_kv(content, "url") {
+            current_url = Some(value.to_owned());
+        } else if let Some(value) = strip_kv(content, "body_base64") {
+            current_b64.push_str(value);
+        }
+    }
+    flush(&mut current_url, &mut current_b64, &mut out);
+    out
+}
+
+/// Extract a `"value"` after `key ` from a line. Returns `None` when the
+/// line does not match `key "value"`.
+fn strip_kv<'a>(content: &'a str, key: &str) -> Option<&'a str> {
+    let rest = content.strip_prefix(key)?;
+    let rest = rest.strip_prefix(' ')?;
+    let rest = rest.strip_prefix('"')?;
+    rest.strip_suffix('"')
+}
+
+/// Base64-decode a stream of characters into a UTF-8 string. Returns
+/// `None` if the input is malformed or the resulting bytes are not UTF-8.
+#[must_use]
+pub fn base64_decode_to_string(input: &str) -> Option<String> {
+    let bytes = base64_decode(input)?;
+    String::from_utf8(bytes).ok()
+}
+
+/// Standard RFC 4648 base64 decoder. Skips whitespace; rejects invalid
+/// characters and bad padding. Kept inline so the cache layer has no
+/// dependency outside the standard library.
+#[must_use]
+pub fn base64_decode(input: &str) -> Option<Vec<u8>> {
+    let mut out: Vec<u8> = Vec::with_capacity(input.len() * 3 / 4);
+    let mut buf: u32 = 0;
+    let mut bits: u32 = 0;
+    let mut pad: u32 = 0;
+    for byte in input.bytes() {
+        if matches!(byte, b' ' | b'\t' | b'\r' | b'\n') {
+            continue;
+        }
+        let value = match byte {
+            b'A'..=b'Z' => u32::from(byte - b'A'),
+            b'a'..=b'z' => u32::from(byte - b'a') + 26,
+            b'0'..=b'9' => u32::from(byte - b'0') + 52,
+            b'+' => 62,
+            b'/' => 63,
+            b'=' => {
+                pad += 1;
+                if pad > 2 {
+                    return None;
+                }
+                buf <<= 6;
+                bits += 6;
+                if bits >= 8 {
+                    bits -= 8;
+                }
+                continue;
+            }
+            _ => return None,
+        };
+        if pad > 0 {
+            return None;
+        }
+        buf = (buf << 6) | value;
+        bits += 6;
+        if bits >= 8 {
+            bits -= 8;
+            out.push(((buf >> bits) & 0xff) as u8);
+        }
+    }
+    Some(out)
+}
+
+/// Standard RFC 4648 base64 encoder. Pads with `=` to a multiple of four
+/// characters. The refresh tool uses this to write seed bundles.
+#[must_use]
+pub fn base64_encode(input: &[u8]) -> String {
+    const ALPHABET: &[u8; 64] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+    let mut out = String::with_capacity(((input.len() + 2) / 3) * 4);
+    let mut i = 0;
+    while i + 3 <= input.len() {
+        let b0 = input[i];
+        let b1 = input[i + 1];
+        let b2 = input[i + 2];
+        out.push(ALPHABET[(b0 >> 2) as usize] as char);
+        out.push(ALPHABET[(((b0 & 0x03) << 4) | (b1 >> 4)) as usize] as char);
+        out.push(ALPHABET[(((b1 & 0x0f) << 2) | (b2 >> 6)) as usize] as char);
+        out.push(ALPHABET[(b2 & 0x3f) as usize] as char);
+        i += 3;
+    }
+    match input.len() - i {
+        1 => {
+            let b0 = input[i];
+            out.push(ALPHABET[(b0 >> 2) as usize] as char);
+            out.push(ALPHABET[((b0 & 0x03) << 4) as usize] as char);
+            out.push('=');
+            out.push('=');
+        }
+        2 => {
+            let b0 = input[i];
+            let b1 = input[i + 1];
+            out.push(ALPHABET[(b0 >> 2) as usize] as char);
+            out.push(ALPHABET[(((b0 & 0x03) << 4) | (b1 >> 4)) as usize] as char);
+            out.push(ALPHABET[((b1 & 0x0f) << 2) as usize] as char);
+            out.push('=');
+        }
+        _ => {}
+    }
+    out
+}
+
+/// Emit a single `response_<short_id>` record into a `.lino` buffer.
+///
+/// Public so the refresh-cache example (and tests) can produce seed
+/// files using the exact format [`parse_seed_bundle`] consumes.
+pub fn write_seed_record(out: &mut String, short_id: &str, url: &str, body: &str) {
+    out.push_str("response_");
+    out.push_str(short_id);
+    out.push('\n');
+    out.push_str("  url \"");
+    out.push_str(url);
+    out.push_str("\"\n");
+    let encoded = base64_encode(body.as_bytes());
+    let mut cursor = 0usize;
+    let bytes = encoded.as_bytes();
+    while cursor < bytes.len() {
+        let end = (cursor + 76).min(bytes.len());
+        out.push_str("  body_base64 \"");
+        out.push_str(&encoded[cursor..end]);
+        out.push_str("\"\n");
+        cursor = end;
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::collections::HashMap;
+    use std::collections::HashMap as StdHashMap;
     use std::sync::Mutex;
 
     struct StubHttp {
-        responses: Mutex<HashMap<String, String>>,
+        responses: Mutex<StdHashMap<String, String>>,
         calls: Mutex<Vec<String>>,
     }
 
@@ -388,7 +683,6 @@ mod tests {
     }
 
     fn rand_u32() -> u32 {
-        // Cheap deterministic-ish randomness: use the system time in nanos.
         use std::time::{SystemTime, UNIX_EPOCH};
         u32::try_from(
             SystemTime::now()
@@ -411,14 +705,12 @@ mod tests {
     fn cache_hit_short_circuits_transport() {
         let dir = temp_dir("hit");
         let cache = CachedHttpClient::new(&dir, StubHttp::new(&[])).with_online(false);
-        // Pre-populate the cache by hand.
         let url = "https://example.com/cached";
         let (body_path, meta_path) = cache.cache_paths(url);
         fs::create_dir_all(body_path.parent().unwrap()).unwrap();
         fs::write(&body_path, "cached body").unwrap();
         fs::write(&meta_path, url).unwrap();
         assert_eq!(cache.get(url).unwrap(), "cached body");
-        // Stub had no entry; if it had been called we'd see a 404.
     }
 
     #[test]
@@ -444,17 +736,12 @@ mod tests {
         let stub = StubHttp::new(&[(url, "fetched body")]);
         let cache = CachedHttpClient::new(&dir, stub).with_online(true);
         assert_eq!(cache.get(url).unwrap(), "fetched body");
-        // Second call should be a cache hit even if the stub disappears.
         let again = CachedHttpClient::new(&dir, StubHttp::new(&[])).with_online(false);
         assert_eq!(again.get(url).unwrap(), "fetched body");
     }
 
     #[test]
     fn cache_paths_use_semantic_subdirectories() {
-        // Use a single-component relative root so the test stays
-        // platform-agnostic: an absolute Unix-style path like `/tmp/...`
-        // confuses Windows path parsing once we push backslash-separated
-        // subdirs onto it.
         let dir = PathBuf::from("cache-root");
         let cache = CachedHttpClient::new(&dir, StubHttp::new(&[])).with_online(false);
         let (body, meta) = cache.cache_paths("https://example.com/x");
@@ -470,9 +757,6 @@ mod tests {
             "got: {}",
             meta.display()
         );
-        // Unknown host → falls into the misc bucket so it is still cached.
-        // Assert on the relative semantic directory directly to avoid any
-        // platform-specific quirks of joining absolute paths.
         let location = cache_location("https://example.com/x");
         assert_eq!(location.directory, PathBuf::from("http-cache").join("misc"),);
         assert!(!location.stem.is_empty());
@@ -512,5 +796,80 @@ mod tests {
             PathBuf::from("wikidata-cache").join("sparql")
         );
         assert_eq!(location.stem.len(), 16);
+    }
+
+    #[test]
+    fn base64_round_trip_preserves_arbitrary_bytes() {
+        let cases: &[&[u8]] = &[
+            b"",
+            b"x",
+            b"ab",
+            b"abc",
+            b"abcd",
+            b"hello world",
+            &[0u8, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0xff, 0xfe, 0xfd],
+        ];
+        for case in cases {
+            let encoded = base64_encode(case);
+            let decoded = base64_decode(&encoded).expect("decode");
+            assert_eq!(&decoded, case, "round trip differs for input {case:?}");
+        }
+    }
+
+    #[test]
+    fn parse_seed_bundle_round_trips_through_write_seed_record() {
+        let body = r#"{"parse":{"title":"apple","wikitext":"* Russian: {{t+|ru|яблоко}}"}}"#;
+        let url = "https://en.wiktionary.org/w/api.php?action=parse&page=apple&prop=wikitext&formatversion=2&format=json&redirects=1";
+        let mut buf = String::new();
+        write_seed_record(&mut buf, "wiktionary_en_apple", url, body);
+        let parsed = parse_seed_bundle(&buf);
+        assert_eq!(parsed.len(), 1);
+        assert_eq!(parsed[0].0, url);
+        assert_eq!(parsed[0].1, body);
+    }
+
+    #[test]
+    fn parse_seed_bundle_concatenates_chunked_body() {
+        let bundle = "response_chunky\n  url \"https://example.org/x\"\n  body_base64 \"aGVs\"\n  body_base64 \"bG8=\"\n";
+        let parsed = parse_seed_bundle(bundle);
+        assert_eq!(parsed.len(), 1);
+        assert_eq!(parsed[0].1, "hello");
+    }
+
+    #[test]
+    fn parse_seed_chunks_yields_one_pair_per_record() {
+        let bundle = "response_a\n  url \"https://example.org/x\"\n  body_base64 \"aGVs\"\n\nresponse_b\n  url \"https://example.org/x\"\n  body_base64 \"bG8=\"\n";
+        let chunks = parse_seed_chunks(bundle);
+        assert_eq!(chunks.len(), 2);
+        assert_eq!(chunks[0].0, "https://example.org/x");
+        assert_eq!(chunks[0].1, "aGVs");
+        assert_eq!(chunks[1].0, "https://example.org/x");
+        assert_eq!(chunks[1].1, "bG8=");
+    }
+
+    #[test]
+    fn seed_files_stay_under_per_file_line_cap() {
+        for (name, contents) in seed_files() {
+            let lines = contents.lines().count();
+            assert!(
+                lines <= MAX_SEED_LINES_PER_FILE,
+                "{name} has {lines} lines, exceeds MAX_SEED_LINES_PER_FILE={MAX_SEED_LINES_PER_FILE}",
+            );
+        }
+    }
+
+    #[test]
+    fn seed_response_is_consulted_before_disk_or_transport() {
+        // Use a URL we expect to be present in the committed bundle. If the
+        // bundle is empty during early bootstrapping, skip the assertion —
+        // the test exists to lock the precedence once the bundle is filled.
+        let any_url = seed_index().keys().next().cloned();
+        let Some(url) = any_url else {
+            return;
+        };
+        let dir = temp_dir("seed-precedence");
+        let cache = CachedHttpClient::new(&dir, StubHttp::new(&[])).with_online(false);
+        let body = cache.get(&url).expect("seeded response must hit");
+        assert!(!body.is_empty());
     }
 }

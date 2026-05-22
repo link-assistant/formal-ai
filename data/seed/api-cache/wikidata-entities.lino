@@ -1,0 +1,8 @@
+seed_metadata
+  bucket "wikidata-entities"
+  format "Links Notation; one `response_<short_id>` record per fetched URL"
+  populated_by "examples/refresh_translation_cache.rs"
+  max_records "128"
+  max_lines "1500"
+  split_marker "wikidata-entities-partN.lino"
+  decoded_body "base64 RFC 4648, concatenated chunks of 76 chars"

@@ -38,7 +38,6 @@
     "seed/hello-world-programs.lino",
     "seed/demo-dialogs.lino",
     "seed/environments.lino",
-    "seed/translations.lino",
   ];
 
   function isWorker() {
@@ -558,58 +557,6 @@
     return directory;
   }
 
-  // Extract the offline translation dictionary (`translations.lino`).
-  // Mirrors `src/translation/dictionary.rs::Dictionary::parse` so the
-  // browser worker can answer issue-#221 prompts (e.g. `Переведи
-  // "помидор" на английский`) without round-tripping to Wiktionary or
-  // Wikidata. The 128-entry cap keeps the bundle tiny (≈30 KB) so the
-  // demo still runs on mobile devices.
-  //
-  // Returned shape (matching the bidirectional Rust map):
-  //   {
-  //     entries:  { "<source_lang>|<surface_lower>": entry, ... },
-  //     reverse:  { "<target_lang>|<surface_lower>": entry, ... },
-  //   }
-  // where entry = { language, lemma, aliases: [...], targets: { <lang>: surface } }
-  function extractTranslations(root) {
-    var dict = { entries: {}, reverse: {} };
-    if (!root || !Array.isArray(root.children)) return dict;
-    var iterate = function (item) {
-      if (!item || !item.name) return;
-      if (item.name.indexOf("translation_") !== 0) return;
-      var entry = {
-        language: findChildValue(item, "language"),
-        lemma: findChildValue(item, "lemma"),
-        aliases: splitList(findChildValue(item, "aliases")),
-        targets: {},
-      };
-      if (!entry.language || !entry.lemma) return;
-      var targetNodes = findChildren(item, "target");
-      for (var t = 0; t < targetNodes.length; t += 1) {
-        var target = targetNodes[t];
-        if (!target.id) continue;
-        var surface = findChildValue(target, "surface");
-        if (surface) entry.targets[target.id] = surface;
-      }
-      var lemmaLower = entry.lemma.toLowerCase();
-      var keys = entry.aliases.map(toLower);
-      if (keys.indexOf(lemmaLower) === -1) keys.push(lemmaLower);
-      for (var k = 0; k < keys.length; k += 1) {
-        dict.entries[entry.language + "|" + keys[k]] = entry;
-      }
-      Object.keys(entry.targets).forEach(function (targetLang) {
-        var key = targetLang + "|" + entry.targets[targetLang].trim().toLowerCase();
-        if (!dict.reverse[key]) dict.reverse[key] = entry;
-      });
-    };
-    if (root.name && root.name.indexOf("translation_") === 0) {
-      iterate(root);
-    } else {
-      root.children.forEach(iterate);
-    }
-    return dict;
-  }
-
   function extractPromptPatterns(node) {
     var patterns = [];
     if (!node) return patterns;
@@ -811,7 +758,6 @@
       promptPatterns: [],
       intentRouting: { intents: [], articlePrefixes: [], tracePrefixes: [] },
       environments: { environments: [], migrationDescription: "", flows: [] },
-      translations: { entries: {}, reverse: {} },
       raw: {},
     };
     for (var i = 0; i < results.length; i += 1) {
@@ -850,14 +796,6 @@
         seed.intentRouting = extractIntentRouting(root);
       } else if (item.file.indexOf("environments") !== -1) {
         seed.environments = extractEnvironmentDirectory(root);
-      } else if (item.file.indexOf("translations") !== -1) {
-        var parsed = extractTranslations(root);
-        Object.assign(seed.translations.entries, parsed.entries);
-        Object.keys(parsed.reverse).forEach(function (key) {
-          if (!seed.translations.reverse[key]) {
-            seed.translations.reverse[key] = parsed.reverse[key];
-          }
-        });
       }
     }
     return seed;
@@ -881,7 +819,6 @@
     extractTools: extractTools,
     extractIntentRouting: extractIntentRouting,
     extractEnvironmentDirectory: extractEnvironmentDirectory,
-    extractTranslations: extractTranslations,
     DEFAULT_FILES: DEFAULT_FILES,
     isWorker: isWorker(),
   };

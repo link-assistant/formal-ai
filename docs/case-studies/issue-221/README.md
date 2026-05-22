@@ -27,7 +27,8 @@ can find in wikipedia, wikidata, wiktionary, and actually use APIs."*
 In other words, #218 fixed the **single-noun apple** case; #221 demands
 that the **same machinery works for any common noun**, in any direction
 between the supported languages, in **both** the Rust CLI and the
-browser demo, *without LLMs*.
+browser demo, *without LLMs* and *without a pre-extracted offline
+dictionary*.
 
 ## Timeline
 
@@ -41,11 +42,14 @@ browser demo, *without LLMs*.
 | 2026-05-21 | Demo report #221 — the same fix does not cover `помидор` / `огурец` and the request escalates to **all** common nouns plus *texts of any size*. |
 | 2026-05-21 | Branch `issue-221-77aad836fb28` cut; PR #222 prepared. |
 | 2026-05-21 | CLI reproduction confirms the placeholder lives in two places: the offline cache only has `яблоко`, and the browser registry only has `apple`. |
-| 2026-05-21 | Cache seed list expanded from 1 noun to 71×4 + 71 pairs; `examples/build_translation_dictionary.rs` ships the result as `src/web/translation-dictionary.json` so the browser worker can resolve common nouns without CORS-blocked API calls. |
-| 2026-05-21 | `FORMAL_AI_TRANSLATION_DEBUG=1` verbose tracing added to the Rust pipeline (issue #218 "Future work" item). |
-| 2026-05-22 | PR #222 review (konard) flags 3,000+ files in the diff and asks for a lightweight architecture. Cache is reorganised by **semantic data type** (`wikidata-cache/{search,entities,query,sparql}/`, `wiktionary-cache/<lang>/`, `http-cache/misc/`) and gitignored; the JSON dictionary is replaced by a single 128-entry **`data/seed/translations.lino`** file embedded into the Rust binary via `include_str!` and fetched by the browser worker through the standard seed loader. |
+| 2026-05-21 | First-pass fix expanded the seed list and shipped a 128-entry JSON dictionary to the browser worker. |
+| 2026-05-22 | PR #222 review (konard) rejects the dictionary approach: *"we should only store originals of the source data from wikipedia/wikidata/wiktionary, that should be used for formalization steps, we should never cache or preseed `Extract the offline translation dictionary`."* — pipeline must always go through `source → formalize → meaning → deformalize → target`, the only legal cached artefact is the raw API response. |
+| 2026-05-22 | `data/seed/translations.lino` and `examples/build_translation_dictionary.rs` deleted. Cache reorganised by **semantic identity** (`wikidata-cache/{search,entities,query,sparql}/`, `wiktionary-cache/<lang>/`, `http-cache/misc/`). Raw API responses are bundled into `data/seed/api-cache/*.lino` (base64-payload Links Notation) capped at 128 records per bucket and 1500 lines per file. |
+| 2026-05-22 | `build.rs` added so the bundle's `<bucket>-partN.lino` parts ship in the binary without per-file `include_str!` edits. The refresh tool splits oversize records into deterministic parts and cleans up stale parts. |
+| 2026-05-22 | Browser worker's `TRANSLATION_DICTIONARY` removed; replaced with `liveWiktionaryTranslate` calling MediaWiki action API (`origin=*`) directly. |
+| 2026-05-22 | `en→ru "water"` debugged: SPARQL lexeme join crossed noun ↔ verb boundary (`L7234-S1` → `поливать`). Fix narrows the join by `wikibase:lexicalCategory`. Stage 1a in `pipeline.rs` also delegates to the `/translations` subpage when the main page carries `{{see translation subpage|...}}`. |
 
-## Requirements (from issue #221)
+## Requirements (from issue #221 and PR #222 review)
 
 1. Stop faking translation — no `[en] X` / `[ru] X` placeholders for
    any common noun in any supported direction.
@@ -53,15 +57,26 @@ browser demo, *without LLMs*.
    meaning — the symbolic AI pipeline must remain LLM-free.
 3. Follow the *source → meta → target* flow already proven in #218:
    `formalize(source) → meaning_id (Q/L/sense) → deformalize(target)`.
-4. Solve everything in a single pull request that **actually works**,
-   not just for one phrase but for arbitrary text size.
-5. Compile all logs and data into `docs/case-studies/issue-{id}/`,
+4. **Never** ship a pre-extracted dictionary. The only legal cached
+   artefact is a raw API request/response from Wikipedia, Wikidata or
+   Wiktionary, kept in `.lino` format. (PR #222 review, 2026-05-22.)
+5. Cap committed data at **128 most-frequent records per bucket** so
+   the diff stays reviewable and the architecture scales beyond
+   translation (entity resolution, fact lookup, etc.).
+6. Each `.lino` file must stay under 1500 lines (Links Notation
+   readability cap); oversize bodies split into `<bucket>-partN.lino`.
+7. The browser worker must stay mobile-friendly: no bundled offline
+   dictionary, lookups uncovered by the seed must fall through to live
+   MediaWiki calls with `origin=*`.
+8. Solve everything in a single pull request that **actually works**
+   end-to-end, not just for one phrase.
+9. Compile all logs and data into `docs/case-studies/issue-{id}/`,
    reconstruct the timeline, list every requirement, find every root
    cause, and propose solutions. Search externally for additional data.
-6. Add debug output and a verbose mode if a root cause cannot yet be
-   pinned down.
-7. Report upstream defects against any external repo (Wiktionary,
-   Wikidata, etc.) that surface during investigation.
+10. Add debug output and a verbose mode if a root cause cannot yet be
+    pinned down.
+11. Report upstream defects against any external repo (Wiktionary,
+    Wikidata, etc.) that surface during investigation.
 
 ## Artifacts
 
@@ -97,13 +112,18 @@ convention, Wikidata SPARQL endpoint behaviour for polysemous lexemes).
    built up phrase-by-phrase. Words missing from the registry fell
    through to `[${target}] ${surface}` (line 3905 pre-fix). The Rust
    pipeline never runs in the browser — the worker is the only code
-   that handles in-browser translation, and the existing infrastructure
-   for live Wiktionary calls (e.g. `fetchWiktionaryEntry`) is only used
-   for the *external lookup* fallback, not for translation.
-3. **No automated bridge between the Rust ground truth and the JS
-   worker.** Even when PR #219 added the apple noun in both places, the
-   data lived in two unrelated source files; nothing kept them in sync.
-4. **No verbose mode in the pipeline.** When tests failed, the only
+   that handles in-browser translation.
+3. **Wikidata SPARQL lexeme join ignored part of speech.** Joining two
+   lexemes by P5137 without filtering on `wikibase:lexicalCategory`
+   crosses noun ↔ verb boundaries when both senses exist (e.g.
+   `water` → `поливать`, `milk` → `доить`). The fix adds the category
+   filter to `src/translation/wikidata.rs`.
+4. **High-traffic English entries hide translations on a subpage.**
+   `apple`, `water`, `milk`, `bread` keep their translation tables on
+   `<lemma>/translations` referenced by `{{see translation subpage|...}}`.
+   The pipeline's Stage 1a delegates to the subpage when the marker is
+   present.
+5. **No verbose mode in the pipeline.** When tests failed, the only
    signal was a single line of output. Issue #218 explicitly listed
    `FORMAL_AI_TRANSLATION_DEBUG=1` as future work.
 
@@ -111,57 +131,22 @@ convention, Wikidata SPARQL endpoint behaviour for polysemous lexemes).
 
 ### Rust core
 
-- `src/translation/pipeline.rs`: add `FORMAL_AI_TRANSLATION_DEBUG=1`
+- `src/translation/pipeline.rs`: `FORMAL_AI_TRANSLATION_DEBUG=1`
   verbose tracing through every stage (`stage1` source-edition,
   reverse, variants, Wikidata upgrade, compositional fallback). When
   enabled, every translation prints stage-by-stage to stderr so
   cache-miss vs sparse-Wiktionary-table vs polysemy can be
-  distinguished in a single run.
-- `examples/refresh_translation_cache.rs`: grow the seed list from one
-  noun + greetings to **71 English nouns × 4 targets and 71 Russian
-  nouns × 1 target** — every word listed in the demo / regression set
-  the issue exemplifies. `pairs` is now built procedurally so future
-  expansions stay readable.
+  distinguished in a single run. Stage 1a also follows
+  `{{see translation subpage|...}}` to the `/translations` subpage and
+  merges the table back into the parsed wikitext.
+- `src/translation/wikidata.rs`: SPARQL lexeme join now requires
+  `?source wikibase:lexicalCategory ?cat. ?target wikibase:lexicalCategory ?cat`
+  so source and target lexemes share a part of speech.
 
-### Single-file offline dictionary (revised 2026-05-22)
+### Semantic-identity HTTP cache
 
-- `data/seed/translations.lino` (new): the canonical 128-entry
-  common-noun dictionary, indented Links Notation, ~1,300 lines.
-  Embedded into the Rust binary via `include_str!` and fetched by the
-  browser worker through the existing seed loader. One file → one
-  source of truth across Rust, CLI, browser, and tests.
-  Schema (one record per lemma):
-
-  ```text
-  translation_en_tomato
-    language "en"
-    lemma "tomato"
-    aliases "tomato|tomatoes"
-    target "ru"
-      surface "помидор"
-    target "hi"
-      surface "टमाटर"
-    target "zh"
-      surface "番茄"
-  ```
-
-  `src/translation/dictionary.rs` parses the file once at startup
-  (`OnceLock`) into a bidirectional `(language, surface_lower) →
-  entry` map plus a reverse `(target_lang, target_surface_lower) →
-  entry` map. The reverse map lets a single en→ru entry cover both
-  directions, keeping the 128-entry cap meaningful.
-
-- `examples/build_translation_dictionary.rs` (revised): runs the
-  cached pipeline against the seed list and writes
-  `data/seed/translations.lino` instead of a JSON file. Inflection
-  forms are generated deterministically — Russian declension suffixes
-  by ending class and English plural rules — so `Переведи "помидоры"
-  на английский.` still resolves to `tomato` via the alias index.
-
-### Generic semantic-key cache (revised 2026-05-22)
-
-- `src/translation/cache.rs` now routes URLs to per-source folders by
-  the **kind of data** they carry, not by URL hash:
+- `src/translation/cache.rs` routes URLs to per-source folders by the
+  **kind of data** they carry, not by URL hash:
 
   | URL pattern | Cache folder |
   | --- | --- |
@@ -172,39 +157,70 @@ convention, Wikidata SPARQL endpoint behaviour for polysemous lexemes).
   | `<lang>.wiktionary.org` | `data/wiktionary-cache/<lang>/` |
   | anything else | `data/http-cache/misc/` |
 
-  Every folder under `data/` listed above is gitignored — the cache
-  is a local accelerator, not pre-seeded data. Formalisation flows
-  beyond translation (entity resolution, fact lookup, etc.) reuse the
-  same buckets so we never grow a per-feature cache silo again.
+  Every folder under `data/` listed above is gitignored — the
+  on-disk cache is a local accelerator written by `FORMAL_AI_LIVE_API=1`
+  runs, not pre-seeded data. Formalisation flows beyond translation
+  (entity resolution, fact lookup, etc.) reuse the same buckets so we
+  never grow a per-feature cache silo again.
 
-### Browser worker (revised 2026-05-22)
+- `CachedHttpClient::get` consults three layers in order:
+  1. Committed `data/seed/api-cache/*.lino` seed bundle (deterministic,
+     ships in git, base64 payloads decode to the verbatim response
+     body).
+  2. Gitignored on-disk accelerator under `data/<bucket>-cache/...`.
+  3. Live HTTP transport (only when `online == true`).
 
-- `src/web/seed_loader.js`: a new `extractTranslations` parser mirrors
-  the Rust `Dictionary::parse` (same bidirectional index, same alias
-  handling). It runs as part of the standard `buildSeed` step so the
-  worker hydrates the dictionary alongside facts, projects, concepts,
-  and intent routing — no separate fetch, no JSON glue.
-- `src/web/formal_ai_worker.js`: `TRANSLATION_DICTIONARY` is now
-  populated directly from `seed.translations`; `lookupDictionary`
-  consults the forward map first and falls back to the reverse map
-  for the opposite direction. The previous JSON loader and
-  `src/web/translation-dictionary.json` were deleted.
-- Because the dictionary is capped at 128 entries (R221.cap) and most
-  prompts will never hit it, the architecture stays mobile-friendly:
-  uncached lookups fall through to the live Wiktionary / Wikidata
-  APIs over `fetch()` instead of shipping a precomputed corpus.
+### Committed seed bundle (raw API responses, not a dictionary)
+
+- `data/seed/api-cache/*.lino` ships **verbatim API response bodies** —
+  one indented record per URL, payload base64-encoded (RFC 4648,
+  76-character chunks). Buckets:
+  - `wikidata-search.lino` (`wbsearchentities` results)
+  - `wikidata-entities.lino` (`wbgetentities` results)
+  - `wikidata-sparql.lino` (SPARQL responses)
+  - `wikidata-properties.lino` (property lookups)
+  - `wiktionary-pages.lino` + `wiktionary-pages-partN.lino` (per-language
+    `parse` API responses)
+- Hard caps: at most 128 records per bucket, each file ≤ 1500 lines.
+  `examples/refresh_translation_cache.rs` enforces both during bundling
+  and splits oversize records into `<bucket>-partN.lino` parts that
+  rejoin transparently at load time (same URL key → bytes concatenated).
+- `build.rs` enumerates every `.lino` file in `data/seed/api-cache/` at
+  compile time and writes the list into `OUT_DIR/seed_bundle_files.rs`.
+  `cache.rs` pulls it via `include!(concat!(env!("OUT_DIR"), "..."))`,
+  so adding a new `-partN` file is automatic — no per-file
+  `include_str!` edit.
+
+### Browser worker
+
+- `src/web/seed_loader.js`: removed the `extractTranslations` parser
+  and the `translations` field — the worker no longer hydrates a
+  dictionary from a bundled file.
+- `src/web/formal_ai_worker.js`: removed `TRANSLATION_DICTIONARY` and
+  `lookupDictionary`. Translation flows through the existing meaning
+  registry first, then through a new `liveWiktionaryTranslate(surface,
+  source, target)` that calls
+  `*.wiktionary.org/w/api.php?action=parse&page=...&prop=wikitext&format=json&origin=*`
+  directly. The fetcher follows `{{see translation subpage|...}}` to
+  the `/translations` subpage and runs the standard
+  `{{tt+|<lang>|...}}` / `{{t|...}}` regex against the merged wikitext.
+  `translateSurface` and `tryTranslation` are now async; the single
+  caller in `solve` already runs inside `async`.
+- Mobile-friendly by design: nothing is pre-bundled, the MediaWiki
+  action API is CORS-friendly through `origin=*`, and the seed bundle
+  caps keep the worker payload tiny.
 
 ### Tests
 
-- `tests/unit/specification/translation_via_links.rs`: three new tests
-  — `issue_221_common_russian_nouns_translate_to_english`,
-  `issue_221_common_english_nouns_translate_to_russian`, and
-  `issue_221_unquoted_common_noun_works_in_all_languages` — fail
-  loudly when any of помидор/огурец/картофель/морковь/хлеб/вода or
-  their English counterparts return a placeholder.
+- `tests/unit/specification/translation_via_links.rs`: three
+  `issue_221_*` tests fail loudly when any of
+  помидор/огурец/картофель/морковь/хлеб/вода or their English
+  counterparts return a placeholder.
 - `tests/e2e/tests/issue-221.spec.js`: Playwright coverage for the
-  browser worker — same prompts as the Rust tests, plus the round-trip
-  `ru→en→ru` to prove the dictionary keeps semantics symmetric.
+  browser worker — quoted RU→EN, quoted EN→RU, unquoted prompts,
+  Russian inflected forms via MediaWiki redirect, and the round-trip
+  `tomato → помидор → tomato` to prove the live path keeps semantics
+  symmetric.
 
 ## Before / After
 
@@ -215,6 +231,7 @@ convention, Wikidata SPARQL endpoint behaviour for polysemous lexemes).
 | `переведи "картофель" на английский` | `"[en] картофель"` | `"potato"` |
 | `translate "tomato" to russian` | `"[ru] tomato"` | `"помидор"` |
 | `translate "carrot" to russian` | `"[ru] carrot"` | `"морковь"` |
+| `translate "water" to russian` | `"поливать"` (verb!) | `"вода"` |
 | `переведи помидор на английский` (unquoted) | `"[en] помидор"` | `"tomato"` |
 
 Raw CLI reproductions are in `raw-data/repro-*-before-fix.txt` and
@@ -225,36 +242,37 @@ Raw CLI reproductions are in `raw-data/repro-*-before-fix.txt` and
 - `cargo build --release` — clean.
 - `cargo test --release --test unit translation_via_links` — issue
   #218 tests still pass; three new `issue_221_*` tests pass.
+- `cargo clippy --all-targets --release` — clean.
+- `cargo fmt --all -- --check` — clean.
 - `FORMAL_AI_LIVE_API=1 cargo run --release --example refresh_translation_cache`
-  — no gaps in the new seed list (rerun once a quarter to refresh).
-- `cargo run --release --example build_translation_dictionary` —
-  rebuilds `data/seed/translations.lino` from the cache.
+  — refreshes the on-disk accelerator and rebundles
+  `data/seed/api-cache/*.lino` from scratch (rerun once a quarter or
+  whenever the seed list changes).
 - `npm --prefix tests/e2e run test:local -- tests/issue-221.spec.js` —
-  browser worker regressions pass.
+  browser worker hits live Wiktionary; expects network connectivity.
 
 ## Upstream-issue reports
 
-None filed. Same diagnosis as #218 applies: Wiktionary serves correct
-data, Wikidata serves correct lexemes, the gaps were entirely in our
-seeding pipeline. The polysemy edge cases that surfaced during seeding
-(e.g. `milk` → `доить` because the Wikidata lexeme query returned the
-verb first) are catalogued in `online-research.md` and tracked in the
-"Future work" section below — the dictionary captures the right
-surface for nouns explicitly, side-stepping the issue for the demo.
+None filed. Wiktionary serves correct data, Wikidata serves correct
+lexemes; the gaps were entirely in our seeding pipeline and SPARQL
+filter. The polysemy edge case is now mitigated by the
+`wikibase:lexicalCategory` filter, with the rationale documented in
+`online-research.md`.
 
 ## Future work
 
-- **Lexeme disambiguation** — the SPARQL query in
-  `src/translation/wikidata.rs` should restrict P5137 joins by
-  lexical category (noun ↔ noun) so `milk` resolves to `молоко`
-  instead of `доить`. Tracked under the polysemy follow-up.
-- **Live Wiktionary fetch in the browser** — the worker can still
-  reach `*.wiktionary.org/w/api.php?...&origin=*` for words not in
-  the dictionary. Now that the dictionary infrastructure exists we
-  can layer a tiny CORS-aware wikitext parser on top.
+- **Wikibase lexeme part-of-speech for languages without lexemes** —
+  the SPARQL filter only helps when both source and target carry
+  lexeme entries. Several Russian and Hindi nouns still lack lexemes
+  and fall back to the Q-item join. Tracked under the
+  multilingual-coverage CI guard added in #219.
 - **Sentence-level translation** — the issue asks for "text of any
-  size". The current pipeline plus dictionary covers single words and
+  size". The current pipeline plus live worker covers single words and
   short greetings. A proper sentence pipeline (tokenize → translate
   per-token → re-inflect via Wiktionary grammar tables) is the
   long-form follow-up. Tracked in the "согласованность" comment in
   issue #221.
+- **Inflection tables from `{{сущ-ru}}`** — Russian Wiktionary carries
+  the full declension paradigm in wikitext. Parsing those templates
+  would let us drop the heuristic plural fallback. Tracked under the
+  same follow-up.

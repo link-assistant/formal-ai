@@ -4,11 +4,13 @@
 // #218 fixed the apple noun; #221 demands the same machinery for any
 // common noun (tomato/cucumber/potato/...) plus the unquoted variants.
 //
-// The browser worker now loads a shared `seed/translations.lino`
-// dictionary (capped at 128 entries) alongside the rest of the seed
-// data so it can resolve common nouns without CORS-blocked Wiktionary
-// calls. The same `.lino` file is embedded into the Rust binary via
-// `include_str!` so the two surfaces stay in sync.
+// The browser worker resolves common nouns via a live Wiktionary
+// fetch (`liveWiktionaryTranslate` in `formal_ai_worker.js`) — the
+// MediaWiki action API is CORS-friendly through `origin=*`, so the
+// worker stays lightweight (no offline dictionary bundled) and always
+// reflects the latest Wiktionary data. The Rust pipeline uses the
+// same source through the cached API-response bundles in
+// `data/seed/api-cache/*.lino` so the two surfaces agree.
 const { test, expect } = require('@playwright/test');
 
 async function switchToManualMode(page) {
@@ -90,8 +92,9 @@ test.describe('Issue #221 common-noun translation', () => {
   });
 
   test('Russian inflected forms resolve to the lemma translation', async ({ page }) => {
-    // The dictionary aliases include common Russian case forms so
-    // `помидоры`, `помидору`, `яблоки` resolve to the lemma.
+    // Wiktionary's `помидоры` page redirects/links to the lemma `помидор`,
+    // and the live MediaWiki action API follows the redirect transparently
+    // so the translation block we extract is the noun's English glosses.
     const reply = await sendPrompt(page, 'переведи "помидоры" на английский');
     await expect(reply).toContainText('tomato');
     await expect(reply).not.toContainText('[en]');

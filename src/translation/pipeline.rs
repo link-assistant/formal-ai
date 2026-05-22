@@ -27,7 +27,6 @@
 //! [`Translation`], so the resulting links-notation trace shows
 //! exactly which API responses fed the answer.
 
-use super::dictionary;
 use super::http::{HttpClient, HttpError};
 use super::meaning::MeaningId;
 use super::wikidata::Wikidata;
@@ -49,85 +48,6 @@ fn translation_debug_enabled() -> bool {
 fn translation_debug(stage: &str, message: &str) {
     if translation_debug_enabled() {
         eprintln!("[formal-ai translation] {stage}: {message}");
-    }
-}
-
-/// Known polysemy fixes. The Wikidata SPARQL lexeme join (`P5137`)
-/// returns the first matching lexeme regardless of part of speech, so
-/// common noun ↔ verb homographs (e.g. English `milk` → Russian
-/// `доить` "to milk", `water` → `поливать` "to water") land on the
-/// verb. The long-term fix is restricting the join by lexical category
-/// (tracked in `docs/case-studies/issue-221/README.md`'s "Future
-/// work"), but for the demo we over-ride the affected entries with the
-/// canonical noun translation. Each tuple is
-/// `(source_lang, lemma_lower, target_lang, canonical_noun_surface)`.
-const POLYSEMY_OVERRIDES: &[(&str, &str, &str, &str)] = &[
-    // English nouns where Wikidata returned the verb lexeme in Russian.
-    ("en", "milk", "ru", "молоко"),
-    ("en", "water", "ru", "вода"),
-    ("en", "house", "ru", "дом"),
-    ("en", "dog", "ru", "собака"),
-    ("en", "fish", "ru", "рыба"),
-    ("en", "friend", "ru", "друг"),
-    ("en", "phone", "ru", "телефон"),
-    ("en", "salt", "ru", "соль"),
-    ("en", "grape", "ru", "виноград"),
-    // English nouns whose Chinese lexeme was wrong / overly literal.
-    ("en", "cat", "zh", "貓"),
-    ("en", "mother", "zh", "母親"),
-    ("en", "language", "zh", "語言"),
-    ("en", "moon", "zh", "月亮"),
-    ("en", "chicken", "zh", "雞"),
-    ("en", "bird", "zh", "鳥"),
-    ("en", "child", "zh", "孩子"),
-    ("en", "country", "zh", "國家"),
-    ("en", "phone", "zh", "電話"),
-    ("en", "milk", "zh", "牛奶"),
-    ("en", "water", "zh", "水"),
-    ("en", "fish", "zh", "魚"),
-    ("en", "friend", "zh", "朋友"),
-    ("en", "house", "zh", "房子"),
-    ("en", "dog", "zh", "狗"),
-    // English nouns where the Hindi lexeme was missing or verb-shaped.
-    ("en", "phone", "hi", "फ़ोन"),
-    // Russian nouns where the ru→en mapping landed on a non-canonical
-    // English noun (e.g. язык → "tongue" rather than "language").
-    ("ru", "язык", "en", "language"),
-    ("ru", "телефон", "en", "phone"),
-];
-
-/// Apply [`POLYSEMY_OVERRIDES`] to a candidate list: if a (source,
-/// surface, target) triple matches, move the canonical noun to the
-/// front so [`Translation::primary_surface`] returns it.
-fn apply_polysemy_override(
-    surface: &str,
-    source_lang: &str,
-    target_lang: &str,
-    candidates: &mut Vec<WiktionaryCandidate>,
-    provenance: &mut Vec<String>,
-) {
-    let key = surface.to_lowercase();
-    for (src, lemma, tgt, canonical) in POLYSEMY_OVERRIDES {
-        if *src == source_lang && *tgt == target_lang && *lemma == key {
-            // Remove existing entries for the canonical surface, then
-            // push it at the front.
-            candidates.retain(|c| c.surface != *canonical);
-            candidates.insert(
-                0,
-                WiktionaryCandidate {
-                    surface: (*canonical).to_owned(),
-                    qualifier: None,
-                },
-            );
-            provenance.push(format!(
-                "polysemy-override:{src}:{lemma}->{tgt}:{canonical}"
-            ));
-            translation_debug(
-                "polysemy",
-                &format!("override {src}:{lemma}->{tgt} = {canonical}"),
-            );
-            return;
-        }
     }
 }
 
@@ -200,37 +120,6 @@ impl<'a, T: HttpClient + ?Sized> TranslationPipeline<'a, T> {
         let page_title = normalize_page_title(surface);
         translation_debug("translate", &format!("page_title={page_title:?}"));
 
-        // Stage 0: consult the offline dictionary first. The 128-noun
-        // `.lino` registry catches the most frequent words without a
-        // network round trip, which keeps the browser worker responsive
-        // and CI deterministic. Misses fall through to the live HTTP
-        // stages below; the same surface is matched against the entry's
-        // canonical lemma and its inflected aliases.
-        let dict = dictionary::shared();
-        if let Some(target_surface) = dict.lookup(&page_title, source_lang, target_lang) {
-            let lemma = dict
-                .lemma(&page_title, source_lang)
-                .unwrap_or(page_title.as_str());
-            provenance.push(format!(
-                "dictionary:{source_lang}:{lemma}->{target_lang}:{target_surface}"
-            ));
-            translation_debug(
-                "stage0",
-                &format!("dictionary hit {source_lang}:{lemma}->{target_lang}:{target_surface}"),
-            );
-            return Ok(Translation {
-                source_surface: surface.to_owned(),
-                source_lang: source_lang.to_owned(),
-                target_lang: target_lang.to_owned(),
-                meaning: MeaningId::from_wiktionary_page(source_lang, lemma),
-                candidates: vec![WiktionaryCandidate {
-                    surface: target_surface.to_owned(),
-                    qualifier: None,
-                }],
-                provenance,
-            });
-        }
-
         // Stage 1: formalize — fetch the source-edition Wiktionary page.
         // This single fetch usually carries translations for every target
         // language, grouped by sense (one block per `{{trans-top}}` on
@@ -256,17 +145,31 @@ impl<'a, T: HttpClient + ?Sized> TranslationPipeline<'a, T> {
             }
         }
 
-        // Stage 1a: many high-traffic pages keep translations on a
-        // `/translations` subpage (`{{see translation subpage|...}}`).
-        // Try that subpage when the main page yielded nothing.
-        if blocks.is_empty() {
+        // Stage 1a: many high-traffic pages delegate part-of-speech
+        // translations to a `/translations` subpage via
+        // `{{see translation subpage|...}}`. The main page may still
+        // host translations for *other* parts of speech, so we ALWAYS
+        // also fetch the subpage when that template appears — not only
+        // when the main page came up empty. (Issue #221: en→ru "water"
+        // was returning verb translations because the noun translations
+        // live on `water/translations`.)
+        let main_wikitext = source_wiktionary.wikitext(&page_title).ok();
+        let main_delegates_subpage = main_wikitext
+            .as_deref()
+            .is_some_and(|wt| wt.contains("{{see translation subpage|"));
+        if blocks.is_empty() || main_delegates_subpage {
             let subpage = format!("{page_title}/translations");
             match source_wiktionary.translation_blocks(&subpage, target_lang) {
                 Ok(found) if !found.is_empty() => {
                     provenance.push(format!(
                         "wiktionary:{source_lang}:{subpage}#translations->{target_lang}"
                     ));
-                    blocks = found;
+                    // Prepend subpage blocks so they outrank the
+                    // main-page (often other-PoS) blocks during
+                    // sense-block selection.
+                    let mut merged = found;
+                    merged.extend(std::mem::take(&mut blocks));
+                    blocks = merged;
                 }
                 Ok(_) => {}
                 Err(error) => {
@@ -378,17 +281,6 @@ impl<'a, T: HttpClient + ?Sized> TranslationPipeline<'a, T> {
                 &mut provenance,
             );
         }
-
-        // Polysemy: when the lemma is a known noun↔verb homograph,
-        // promote the canonical noun translation to the front of the
-        // candidate list. See [`POLYSEMY_OVERRIDES`].
-        apply_polysemy_override(
-            &active_page_title,
-            source_lang,
-            target_lang,
-            &mut candidates,
-            &mut provenance,
-        );
 
         translation_debug(
             "translate",

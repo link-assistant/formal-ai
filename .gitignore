@@ -65,10 +65,10 @@ ci-logs/
 # CI / dev-server start time so the browser worker can fetch the same files.
 src/web/seed/
 
-# Semantic-identity HTTP cache (populated by FORMAL_AI_LIVE_API=1). The
-# committed translation source of truth is data/seed/translations.lino;
-# cached Wikidata / Wiktionary responses are a local accelerator, not
-# pre-seeded data, so they stay out of git.
+# Semantic-identity HTTP cache populated by FORMAL_AI_LIVE_API=1. These
+# directories are a local accelerator only; the committed source of
+# truth for offline tests is the raw-API-response seed bundle under
+# data/seed/api-cache/*.lino, bundled by examples/refresh_translation_cache.rs.
 data/wikidata-cache/
 data/wiktionary-cache/
 data/http-cache/

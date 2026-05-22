@@ -3483,10 +3483,12 @@ function detectTranslationTargetLanguage(normalized) {
 
 // Offline meaning registry for the browser worker.
 //
-// The Rust pipeline (`src/translation/pipeline.rs`) now goes through
-// Wiktionary + Wikidata to resolve any pair of surfaces via cached HTTP
-// responses. The browser worker cannot reach those APIs directly (CORS),
-// so it keeps this small offline registry as a fallback for the demo set.
+// The Rust pipeline (`src/translation/pipeline.rs`) resolves any pair
+// of surfaces through Wiktionary + Wikidata using cached HTTP
+// responses. The worker mirrors that with a live `liveWiktionaryTranslate`
+// fallback below (MediaWiki action API is CORS-friendly via
+// `origin=*`), but keeps this small in-memory registry of greetings and
+// stock phrases so the demo stays snappy when the network is slow.
 // `primary` is the canonical form deformalization renders; `aliases` is a
 // list of normalized alternative surfaces used during formalization.
 const TRANSLATION_MEANING_REGISTRY = [
@@ -3893,49 +3895,77 @@ function inferTranslationSource(prompt) {
   return "en";
 }
 
-// 128-noun translation dictionary hydrated from `seed/translations.lino`
-// at startup. Mirrors `src/translation/dictionary.rs` so the browser
-// shares one source of truth with the Rust pipeline. Fixes issue #221
-// by giving the worker offline access to the top common nouns when the
-// live Wiktionary/Wikidata APIs are unreachable (CORS for
-// parse=wikitext).
-let TRANSLATION_DICTIONARY = { entries: {}, reverse: {} };
-
-function lookupDictionary(surface, source, target) {
-  const key = String(surface || "").trim().toLowerCase();
-  if (!key) return null;
-  if (source === target) return null;
-  const entries = TRANSLATION_DICTIONARY.entries || {};
-  const reverse = TRANSLATION_DICTIONARY.reverse || {};
-  const forward = entries[source + "|" + key];
-  if (forward && forward.language === source) {
-    const direct = forward.targets && forward.targets[target];
-    if (direct) return direct;
+// Live Wiktionary fallback (issue #221). When the offline meaning
+// registry above does not cover `surface`, fetch the Wiktionary page
+// for `source` and pull the first `{{tt+|<target>|...}}` (or `{{t+}}` /
+// `{{t}}`) entry. Mirrors the Rust pipeline's Stage 1a in
+// `src/translation/pipeline.rs`: if the main page delegates noun
+// translations via `{{see translation subpage|...}}`, fetch the
+// subpage and search it first. Keeps the worker mobile-friendly: no
+// offline dictionary bundled, just a single CORS-safe HTTP call.
+async function fetchWiktionaryWikitext(pageTitle, language) {
+  if (typeof fetch !== "function" || !pageTitle) return null;
+  const host = WIKTIONARY_SEARCH_HOSTS[language] || WIKTIONARY_SEARCH_HOSTS.en;
+  const url = `${host}?action=parse&page=${encodeURIComponent(
+    pageTitle,
+  )}&prop=wikitext&format=json&origin=*`;
+  try {
+    const response = await fetch(url, {
+      headers: {
+        accept: "application/json",
+        "api-user-agent":
+          "formal-ai-demo (https://github.com/link-assistant/formal-ai)",
+      },
+    });
+    if (!response || !response.ok) return null;
+    const data = await response.json();
+    return (data && data.parse && data.parse.wikitext && data.parse.wikitext["*"]) || null;
+  } catch (_error) {
+    return null;
   }
-  const reversed = reverse[source + "|" + key];
-  if (reversed) {
-    if (reversed.language === target) return reversed.lemma;
-    const targeted = reversed.targets && reversed.targets[target];
-    if (targeted) return targeted;
-  }
-  return null;
 }
 
-function translateSurface(surface, source, target) {
+function extractWiktionaryTranslation(wikitext, targetLang) {
+  if (!wikitext || !targetLang) return null;
+  // Accept {{t|<lang>|...}}, {{t+|<lang>|...}}, {{tt|<lang>|...}}, {{tt+|<lang>|...}}.
+  const pattern = new RegExp(
+    `\\{\\{tt?\\+?\\|${targetLang}\\|([^|}\\n]+)`,
+    "i",
+  );
+  const match = pattern.exec(wikitext);
+  if (!match) return null;
+  const surface = String(match[1] || "").trim();
+  return surface || null;
+}
+
+async function liveWiktionaryTranslate(surface, source, target) {
+  const main = await fetchWiktionaryWikitext(surface, source);
+  if (!main) return null;
+  let wikitext = main;
+  if (/\{\{see translation subpage\|/i.test(main)) {
+    const subpage = await fetchWiktionaryWikitext(`${surface}/translations`, source);
+    if (subpage) wikitext = `${subpage}\n${main}`;
+  }
+  return extractWiktionaryTranslation(wikitext, target);
+}
+
+async function translateSurface(surface, source, target) {
   if (source === target) return String(surface || "");
   const token = formalizeSurface(surface, source);
   if (token) {
     const primary = deformalizeMeaning(token, target);
     if (primary) return primary;
   }
-  const dictionary = lookupDictionary(surface, source, target);
-  if (dictionary) return dictionary;
+  if (surface) {
+    const live = await liveWiktionaryTranslate(surface, source, target);
+    if (live) return live;
+  }
   const compositional = translateCompositionalSurface(surface, source, target);
   if (compositional) return compositional;
   return `[${target}] ${surface}`;
 }
 
-function tryTranslation(prompt, normalized) {
+async function tryTranslation(prompt, normalized) {
   const targetHint = detectTranslationTargetLanguage(normalized);
   const isTranslationRequest =
     normalized.startsWith("translate") ||
@@ -3958,7 +3988,7 @@ function tryTranslation(prompt, normalized) {
   const source = detectTranslationSourceLanguage(normalized) || inferTranslationSource(prompt);
   const target = targetHint || "en";
   const meaningId = stableBehaviorRuleId("meaning", normalizeMeaningText(surfaceMeaning));
-  const rawTarget = translateSurface(surface, source, target);
+  const rawTarget = await translateSurface(surface, source, target);
   const translatedSurface = matchSourceFormatting(rawTarget, surface);
   const content = surface ? `"${translatedSurface}"` : translatedSurface;
   return {
@@ -10824,7 +10854,7 @@ async function solve(prompt, history, prefs, userContext = {}) {
     }, formalizationContext);
   }
 
-  const translation = tryTranslation(prompt, normalized);
+  const translation = await tryTranslation(prompt, normalized);
   if (translation) {
     events.push(`handler:${translation.intent}`);
     steps.push({ step: "dispatch_handler", detail: "tryTranslation" });
@@ -11323,18 +11353,6 @@ async function loadSeed() {
     }
     if (Array.isArray(seed && seed.promptPatterns) && seed.promptPatterns.length > 0) {
       PROMPT_PATTERNS = seed.promptPatterns;
-    }
-    if (
-      seed &&
-      seed.translations &&
-      typeof seed.translations === "object" &&
-      seed.translations.entries &&
-      Object.keys(seed.translations.entries).length > 0
-    ) {
-      TRANSLATION_DICTIONARY = {
-        entries: seed.translations.entries,
-        reverse: seed.translations.reverse || {},
-      };
     }
     if (
       seed &&
