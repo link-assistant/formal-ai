@@ -31,6 +31,7 @@ bump: minor
   nouns × 1 target so the offline cache covers the full demo vocabulary.
 - `tests/unit/docs_requirements.rs` skips `data/translation-cache/` when
   scanning for deferred labels so raw Wiktionary bodies (which contain
-  ISO 639-3 language codes like `mvp` for Duri) don't trip the scanner.
+  three-letter ISO 639-3 language codes that coincide with deferred-label
+  vocabulary) don't trip the scanner.
 
 Case study and provenance live in `docs/case-studies/issue-221/`.
