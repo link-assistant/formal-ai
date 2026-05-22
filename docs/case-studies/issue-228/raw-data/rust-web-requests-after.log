@@ -1,11 +1,8 @@
-    Blocking waiting for file lock on package cache
-    Blocking waiting for file lock on package cache
-    Blocking waiting for file lock on package cache
-   Compiling formal-ai v0.101.0 (/tmp/gh-issue-solver-1779458630985)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.99s
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.08s
      Running tests/unit/mod.rs (target/debug/deps/unit-27a7b8f4a83ec95e)
 
-running 7 tests
+running 8 tests
+test web_requests::web_search_enumeration_research_cases_cover_every_supported_language ... ok
 test web_requests::generic_navigation_uses_same_frame_policy_path_as_github ... ok
 test web_requests::navigation_describes_frame_policy_check_before_iframe_preview ... ok
 test web_requests::web_search_source_marker_cases_cover_every_supported_language ... ok
@@ -14,4 +11,4 @@ test web_requests::enumeration_research_request_routes_to_web_search_handler ...
 test web_requests::web_search_source_marker_prompts_extract_query_without_source_marker ... ok
 test web_requests::information_search_variants_route_to_web_search_handler ... ok
 
-test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 522 filtered out; finished in 0.02s
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 522 filtered out; finished in 0.02s

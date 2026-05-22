@@ -39,9 +39,14 @@ Downloaded and generated artifacts live under `raw-data/`:
 - `repro-after-cli.txt`: local CLI output after implementation.
 - `npm-ci.log`, `e2e-issue228-after.log`: e2e dependency install and
   focused browser regression result.
+- `i18n-catalog-check.log`, `language-parity-check.log`,
+  `intent-coverage-check.log`: CI language coverage guard results.
+- `bun-install.log`, `web-build.log`, `web-bundle-diff.log`: browser
+  bundle verification results.
 - `cargo-fmt.log`, `cargo-fmt-check.log`, `clippy.log`,
-  `check-file-size.log`, `cargo-test.log`, `docs-requirements-after.log`,
-  `git-diff-check.log`: local verification logs.
+  `check-file-size.log`, `cargo-test.log`, `cargo-doc-test.log`,
+  `docs-requirements-after.log`, `changelog-check.log`,
+  `version-check.log`, `git-diff-check.log`: local verification logs.
 - `online-research.md`: external references used for the analysis.
 
 ## Timeline
@@ -54,6 +59,8 @@ Downloaded and generated artifacts live under `raw-data/`:
 | 2026-05-22 | A failing unit regression was added for enumeration-style research prompts. |
 | 2026-05-22 | The shared Rust web-search recognizer and browser worker recognizer were extended with `enumeration_research_request`. |
 | 2026-05-22 | Focused Rust and Playwright regressions passed with mocked search-provider results. |
+| 2026-05-22 15:19 | PR feedback requested CI/CD rules and tests so language changes do not omit Hindi and Chinese support. |
+| 2026-05-22 | Enumeration-research prompts were extended across English, Russian, Hindi, and Chinese, and a diff-aware language parity CI check was added. |
 
 ## Requirements And Status
 
@@ -67,6 +74,7 @@ Downloaded and generated artifacts live under `raw-data/`:
 | R6 | Reconstruct timeline, requirements, root causes, and solution options. | Implemented in this case study. |
 | R7 | Add debug output if the root cause cannot be found. | Not needed; the root cause was reproduced and isolated. |
 | R8 | Report issues to related upstream projects if needed. | Not needed; the failure was local intent recognition. |
+| R9 | If supported-language resources change, CI should catch missing Hindi and Chinese updates. | Implemented with `check-language-change-parity.mjs` in the lint workflow. |
 
 ## Root Cause
 
@@ -107,12 +115,20 @@ through every specialized handler and returned `intent: unknown`.
 - Recorded the reason as
   `web_search:query_kind:enumeration_research_request`.
 - Added Rust and browser regressions for the exact reported prompt.
+- Expanded enumeration-research coverage across English, Russian, Hindi,
+  and Chinese in both the Rust solver and browser worker.
+- Added a diff-aware CI guard that compares supported-language resource
+  signatures against the PR base and fails when a language change does not
+  update both Hindi (`hi`) and Chinese (`zh`).
 
 ## Before / After
 
 | Prompt | Before | After |
 | --- | --- | --- |
 | `list all genshin characters with off-field DMG` | Unknown fallback | `intent:web_search`; query `genshin characters with off field dmg` in Rust and `genshin characters with off-field DMG` in the browser worker |
+| `перечисли всех персонажей genshin с уроном вне поля` | Not covered by the first draft | `intent:web_search`; query `персонажей genshin с уроном вне поля` |
+| `सभी Genshin पात्र जिनके पास off-field DMG है` | Not covered by the first draft | `intent:web_search`; query `genshin पात्र जिनके पास off field dmg है` in Rust and `Genshin पात्र जिनके पास off-field DMG है` in the browser worker |
+| `列出所有 Genshin 角色 具有 off-field DMG` | Not covered by the first draft | `intent:web_search`; query `genshin 角色 具有 off field dmg` in Rust and `Genshin 角色 具有 off-field DMG` in the browser worker |
 
 ## Verification
 
@@ -124,8 +140,16 @@ through every specialized handler and returned `intent: unknown`.
   passed.
 - After fix:
   `cargo test --test unit web_requests::` passed.
+- After follow-up:
+  `npm run --prefix tests/e2e check:language-parity` passed.
+- After follow-up:
+  `npm run --prefix tests/e2e check:intent-coverage` passed with
+  enumeration-research cases for every supported language.
 - After fix:
   `npx playwright test --config=playwright.local.config.js issue-228.spec.js`
-  passed from `tests/e2e`.
+  passed from `tests/e2e` across English, Russian, Hindi, and Chinese prompts.
+- Full local suite:
+  `cargo test --all-features --verbose` and
+  `cargo test --doc --verbose` passed.
 
 Full local verification logs are stored in `raw-data/`.

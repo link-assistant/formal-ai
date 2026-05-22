@@ -1,8 +1,8 @@
-[2m[WebServer] [22m(node:1600233) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(node:1803773) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
 [2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
 
 Running 1 test using 1 worker
 
-  ✓  1 [chromium] › tests/issue-228.spec.js:139:3 › Issue #228 — enumeration research requests use web search › list-all Genshin off-field damage prompt routes to web_search (710ms)
+  ✓  1 [chromium] › tests/issue-228.spec.js:162:3 › Issue #228 — enumeration research requests use web search › Genshin off-field damage enumeration prompts route to web_search (1.9s)
 
-  1 passed (2.7s)
+  1 passed (4.7s)

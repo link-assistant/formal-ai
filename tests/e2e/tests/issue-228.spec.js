@@ -3,6 +3,29 @@ const { test, expect } = require('@playwright/test');
 
 const UNKNOWN_ANSWER_MARKER = 'cannot answer that from local Links Notation rules';
 
+const ENUMERATION_RESEARCH_CASES = [
+  {
+    language: 'en',
+    prompt: 'list all genshin characters with off-field DMG',
+    request: 'genshin characters with off-field DMG',
+  },
+  {
+    language: 'ru',
+    prompt: 'перечисли всех персонажей genshin с уроном вне поля',
+    request: 'персонажей genshin с уроном вне поля',
+  },
+  {
+    language: 'hi',
+    prompt: 'सभी Genshin पात्र जिनके पास off-field DMG है',
+    request: 'Genshin पात्र जिनके पास off-field DMG है',
+  },
+  {
+    language: 'zh',
+    prompt: '列出所有 Genshin 角色 具有 off-field DMG',
+    request: 'Genshin 角色 具有 off-field DMG',
+  },
+];
+
 async function disableGreetingVariations(page) {
   await page.addInitScript(() => {
     try {
@@ -136,25 +159,28 @@ test.describe('Issue #228 — enumeration research requests use web search', () 
     await switchToManualMode(page);
   });
 
-  test('list-all Genshin off-field damage prompt routes to web_search', async ({
+  test('Genshin off-field damage enumeration prompts route to web_search', async ({
     page,
   }) => {
     await page.locator('.diagnostics-toggle').click();
 
-    const last = await sendPrompt(
-      page,
-      'list all genshin characters with off-field DMG',
-    );
+    for (const { language, prompt, request } of ENUMERATION_RESEARCH_CASES) {
+      await test.step(language, async () => {
+        const last = await sendPrompt(page, prompt);
 
-    await expect(last).toContainText('Search results for');
-    await expect(last).toContainText('Furina');
-    await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
-    await expect(last.locator('.intent')).toContainText('intent:web_search');
-    await expect(last.locator('.evidence-list')).toContainText(
-      'web_search:request:genshin characters with off-field DMG',
-    );
-    await expect(last.locator('.evidence-list')).toContainText(
-      'web_search:query_kind:enumeration_research_request',
-    );
+        await expect(last).toContainText(
+          /Search results for|Результаты поиска|खोज परिणाम|搜索/u,
+        );
+        await expect(last).toContainText('Furina');
+        await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
+        await expect(last.locator('.intent')).toContainText('intent:web_search');
+        await expect(last.locator('.evidence-list')).toContainText(
+          `web_search:request:${request}`,
+        );
+        await expect(last.locator('.evidence-list')).toContainText(
+          'web_search:query_kind:enumeration_research_request',
+        );
+      });
+    }
   });
 });

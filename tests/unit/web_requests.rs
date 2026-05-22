@@ -9,6 +9,29 @@ const WEB_SEARCH_SOURCE_MARKER_CASES: &[(&str, &str, &str)] = &[
     ("zh", "查找苹果网上信息", "苹果"),
 ];
 
+const WEB_SEARCH_ENUMERATION_RESEARCH_CASES: &[(&str, &str, &str)] = &[
+    (
+        "en",
+        "list all genshin characters with off-field DMG",
+        "genshin characters with off field dmg",
+    ),
+    (
+        "ru",
+        "перечисли всех персонажей genshin с уроном вне поля",
+        "персонажей genshin с уроном вне поля",
+    ),
+    (
+        "hi",
+        "सभी Genshin पात्र जिनके पास off-field DMG है",
+        "genshin पात्र जिनके पास off field dmg है",
+    ),
+    (
+        "zh",
+        "列出所有 Genshin 角色 具有 off-field DMG",
+        "genshin 角色 具有 off field dmg",
+    ),
+];
+
 #[test]
 fn navigation_describes_frame_policy_check_before_iframe_preview() {
     // Regression test for issue #169: navigation must not use a host-specific
@@ -146,6 +169,30 @@ fn web_search_source_marker_cases_cover_every_supported_language() {
 }
 
 #[test]
+fn web_search_enumeration_research_cases_cover_every_supported_language() {
+    let info = agent_info();
+    let supported_languages = info
+        .get("supported_languages")
+        .expect("agent-info.lino should define supported_languages")
+        .split('|')
+        .filter(|language| !language.is_empty())
+        .collect::<BTreeSet<_>>();
+    let mut case_languages = BTreeMap::<&str, usize>::new();
+    for &(language, _, _) in WEB_SEARCH_ENUMERATION_RESEARCH_CASES {
+        *case_languages.entry(language).or_insert(0) += 1;
+    }
+    assert_eq!(
+        case_languages.keys().copied().collect::<BTreeSet<_>>(),
+        supported_languages,
+        "enumeration-research web-search prompts must cover every supported language",
+    );
+    assert!(
+        case_languages.values().all(|count| *count == 1),
+        "enumeration-research prompts should add one case per supported language: {case_languages:?}",
+    );
+}
+
+#[test]
 fn web_search_source_marker_prompts_extract_query_without_source_marker() {
     for &(language, prompt, expected_query) in WEB_SEARCH_SOURCE_MARKER_CASES {
         let response = FormalAiEngine.answer(prompt);
@@ -234,29 +281,30 @@ fn implicit_research_question_routes_to_web_search_handler() {
 
 #[test]
 fn enumeration_research_request_routes_to_web_search_handler() {
-    let prompt = "list all genshin characters with off-field DMG";
-    let response = FormalAiEngine.answer(prompt);
+    for &(language, prompt, expected_query) in WEB_SEARCH_ENUMERATION_RESEARCH_CASES {
+        let response = FormalAiEngine.answer(prompt);
 
-    assert_eq!(
-        response.intent, "web_search",
-        "enumeration research requests should route to web_search, got {} with answer {}",
-        response.intent, response.answer,
-    );
-    assert!(
-        response
-            .evidence_links
-            .iter()
-            .any(|link| link == "web_search:request:genshin characters with off field dmg"),
-        "web_search should extract the list target without the list-all prefix: {:?}",
-        response.evidence_links,
-    );
-    assert!(
-        response
-            .evidence_links
-            .iter()
-            .any(|link| link == "web_search:query_kind:enumeration_research_request"),
-        "web_search should record why a list-all request was routed: {:?}",
-        response.evidence_links,
-    );
-    assert_ne!(response.intent, "unknown");
+        assert_eq!(
+            response.intent, "web_search",
+            "{language} enumeration research request should route to web_search, got {} with answer {}",
+            response.intent, response.answer,
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == &format!("web_search:request:{expected_query}")),
+            "{language} web_search should extract the list target without the enumeration prefix: {:?}",
+            response.evidence_links,
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == "web_search:query_kind:enumeration_research_request"),
+            "{language} web_search should record why an enumeration request was routed: {:?}",
+            response.evidence_links,
+        );
+        assert_ne!(response.intent, "unknown");
+    }
 }
