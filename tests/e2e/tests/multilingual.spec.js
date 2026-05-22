@@ -3,6 +3,169 @@ const { test, expect } = require('@playwright/test');
 
 const UNKNOWN_ANSWER_MARKER = 'cannot answer that from local Links Notation rules';
 
+const definitionDisambiguationCases = [
+  {
+    language: 'en',
+    prompt: 'What is creature?',
+    term: 'creature',
+    title: 'Creature',
+    wikipediaHost: 'en.wikipedia.org',
+    sourceUrl: 'https://en.wikipedia.org/wiki/Creature',
+    entries: [
+      'Creature — a living being or organism.',
+      'Creature — a fictional or legendary being.',
+    ],
+    rejectedWikidata: {
+      id: 'Q729',
+      label: 'Animalia',
+      description: 'kingdom of multicellular eukaryotic organisms',
+      alias: 'creature',
+    },
+  },
+  {
+    language: 'ru',
+    prompt: 'Что такое существо?',
+    term: 'существо',
+    title: 'Существо',
+    wikipediaHost: 'ru.wikipedia.org',
+    sourceUrl: 'https://ru.wikipedia.org/wiki/Существо',
+    entries: [
+      'Существо — живой организм, живая особь, животное, человек.',
+      'Существо — главное, существенное в ком-либо, чем-либо, его суть; сущность.',
+      '«Существо» — музыкальный альбом Дельфина (2011).',
+      '«Существо» — фильм ужасов (США, 1982).',
+    ],
+    rejectedWikidata: {
+      id: 'Q729',
+      label: 'Animalia',
+      description: 'kingdom of multicellular eukaryotic organisms',
+      alias: 'существо',
+    },
+  },
+  {
+    language: 'hi',
+    prompt: 'प्राणी क्या है?',
+    term: 'प्राणी',
+    title: 'प्राणी',
+    wikipediaHost: 'hi.wikipedia.org',
+    sourceUrl: 'https://hi.wikipedia.org/wiki/प्राणी',
+    entries: [
+      'प्राणी — जीवित जीव या व्यक्ति।',
+      'प्राणी — कथा या लोककथा का कल्पित जीव।',
+    ],
+    rejectedWikidata: {
+      id: 'Q729',
+      label: 'Animalia',
+      description: 'बहुकोशिकीय यूकैरियोटिक जीवों का जगत',
+      alias: 'प्राणी',
+    },
+  },
+  {
+    language: 'zh',
+    prompt: '生物是什么?',
+    term: '生物',
+    title: '生物',
+    wikipediaHost: 'zh.wikipedia.org',
+    sourceUrl: 'https://zh.wikipedia.org/wiki/生物',
+    entries: [
+      '生物 — 有生命的个体或有机体。',
+      '生物 — 小说或传说中的生命体。',
+    ],
+    rejectedWikidata: {
+      id: 'Q729',
+      label: 'Animalia',
+      description: '多细胞真核生物界',
+      alias: '生物',
+    },
+  },
+];
+
+function escapeHtml(value) {
+  const replacements = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;',
+  };
+  return String(value).replace(/[&<>"']/g, (char) => replacements[char]);
+}
+
+async function routeDefinitionDisambiguationCase(page, testCase) {
+  await page.route('**/api/rest_v1/page/summary/**', async (route) => {
+    const url = new URL(route.request().url());
+    const slug = decodeURIComponent(url.pathname.split('/').pop() || '');
+    if (url.hostname === testCase.wikipediaHost && slug === testCase.title) {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          title: testCase.title,
+          type: 'disambiguation',
+          extract: `${testCase.title}:\n${testCase.entries.join('\n')}`,
+          content_urls: {
+            desktop: { page: testCase.sourceUrl },
+          },
+        }),
+      });
+      return;
+    }
+    await route.fulfill({
+      status: 404,
+      contentType: 'application/json',
+      body: JSON.stringify({ httpCode: 404, httpReason: 'Not Found' }),
+    });
+  });
+
+  await page.route(`**://${testCase.wikipediaHost}/w/api.php**`, async (route) => {
+    const items = testCase.entries
+      .map((entry) => `<li>${escapeHtml(entry)}</li>`)
+      .join('');
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        parse: {
+          title: testCase.title,
+          pageid: 133629,
+          text: `<p><b>${escapeHtml(testCase.title)}</b>:</p><ul>${items}</ul>`,
+        },
+      }),
+    });
+  });
+
+  await page.route('**/rest.php/v1/search/page**', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ pages: [] }),
+    });
+  });
+
+  await page.route('**://*.wikidata.org/w/api.php**', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        search: [
+          {
+            id: testCase.rejectedWikidata.id,
+            label: testCase.rejectedWikidata.label,
+            description: testCase.rejectedWikidata.description,
+            concepturi: `https://www.wikidata.org/wiki/${testCase.rejectedWikidata.id}`,
+            match: {
+              type: 'alias',
+              language: testCase.language,
+              text: testCase.rejectedWikidata.alias,
+            },
+            aliases: [testCase.rejectedWikidata.alias],
+          },
+        ],
+      }),
+    });
+  });
+}
+
 async function switchToManualMode(page) {
   const demoToggle = page.locator('.mode-toggle');
   await expect(demoToggle).toContainText(/Demo on|Demo off|Демо/, {
@@ -1094,6 +1257,25 @@ test.describe('Wikipedia REST fallback', () => {
     await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
     await expect(last).toContainText('en.wikipedia.org');
   });
+
+  for (const testCase of definitionDisambiguationCases) {
+    test(`Issue #232: definition-style disambiguation page outranks Wikidata alias fallback (${testCase.language})`, async ({
+      page,
+    }) => {
+      await routeDefinitionDisambiguationCase(page, testCase);
+
+      const last = await sendPrompt(page, testCase.prompt);
+      await expect(last).toHaveClass(/assistant/);
+      await expect(last).toContainText(testCase.title);
+      for (const entry of testCase.entries) {
+        await expect(last).toContainText(entry);
+      }
+      await expect(last).toContainText(testCase.sourceUrl);
+      await expect(last).not.toContainText(testCase.rejectedWikidata.label);
+      await expect(last).not.toContainText('wikidata.org');
+      await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
+    });
+  }
 
   test('Russian typo resolves to the closest Wikipedia match when guessing is preferred', async ({ page }) => {
     await page.route('**/api/rest_v1/page/summary/**', async (route) => {

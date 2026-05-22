@@ -1,0 +1,9 @@
+[2m[WebServer] [22m(node:2215884) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 1 worker
+
+  ✓  1 [chromium] › tests/multilingual.spec.js:1045:3 › Wikipedia REST fallback › "what is tesla" resolves via search fallback when direct slug is disambiguation (539ms)
+  ✓  2 [chromium] › tests/multilingual.spec.js:1098:3 › Wikipedia REST fallback › Issue #232: Russian definition-style disambiguation page outranks Wikidata alias fallback (474ms)
+
+  2 passed (3.0s)

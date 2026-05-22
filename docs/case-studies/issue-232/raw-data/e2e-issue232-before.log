@@ -1,0 +1,87 @@
+[2m[WebServer] [22m(node:2208417) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+  ✘  1 [chromium] › tests/multilingual.spec.js:1098:3 › Wikipedia REST fallback › Issue #232: Russian definition-style disambiguation page outranks Wikidata alias fallback (5.8s)
+  ✘  2 [chromium] › tests/multilingual.spec.js:1098:3 › Wikipedia REST fallback › Issue #232: Russian definition-style disambiguation page outranks Wikidata alias fallback (retry #1) (5.9s)
+
+
+  1) [chromium] › tests/multilingual.spec.js:1098:3 › Wikipedia REST fallback › Issue #232: Russian definition-style disambiguation page outranks Wikidata alias fallback
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoContainText[2m([22m[32mexpected[39m[2m)[22m failed
+
+    Locator: locator('[data-testid="chat-message"]').last()
+    Timeout: 5000ms
+    [32m- Expected substring  - 1[39m
+    [31m+ Received string     + 3[39m
+
+    [32m- Существо[39m
+    [31m+ FAformal-ai07:41 PMсущество: Animalia: kingdom of multicellular eukaryotic organisms[39m
+    [31m+ Source: https://www.wikidata.org/wiki/Q729  (wikidata).[39m
+    [31m+ Report issue[39m
+
+    Call log:
+    [2m  - Expect "toContainText" with timeout 5000ms[22m
+    [2m  - waiting for locator('[data-testid="chat-message"]').last()[22m
+    [2m    14 × locator resolved to <article class="message assistant" data-testid="chat-message">…</article>[22m
+    [2m       - unexpected value "FAformal-ai07:41 PMсущество: Animalia: kingdom of multicellular eukaryotic organisms[22m
+    [2mSource: https://www.wikidata.org/wiki/Q729  (wikidata).[22m
+    [2mReport issue"[22m
+
+
+      1176 |     const last = await sendPrompt(page, 'Что такое существо?');
+      1177 |     await expect(last).toHaveClass(/assistant/);
+    > 1178 |     await expect(last).toContainText('Существо');
+           |                        ^
+      1179 |     await expect(last).toContainText('живой организм');
+      1180 |     await expect(last).toContainText('сущность');
+      1181 |     await expect(last).toContainText('музыкальный альбом');
+        at /tmp/gh-issue-solver-1779478517743/tests/e2e/tests/multilingual.spec.js:1178:24
+
+    Error Context: test-results/multilingual-Wikipedia-RES-cfada-nks-Wikidata-alias-fallback-chromium/error-context.md
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoContainText[2m([22m[32mexpected[39m[2m)[22m failed
+
+    Locator: locator('[data-testid="chat-message"]').last()
+    Timeout: 5000ms
+    [32m- Expected substring  - 1[39m
+    [31m+ Received string     + 3[39m
+
+    [32m- Существо[39m
+    [31m+ FAformal-ai07:42 PMсущество: Animalia: kingdom of multicellular eukaryotic organisms[39m
+    [31m+ Source: https://www.wikidata.org/wiki/Q729  (wikidata).[39m
+    [31m+ Report issue[39m
+
+    Call log:
+    [2m  - Expect "toContainText" with timeout 5000ms[22m
+    [2m  - waiting for locator('[data-testid="chat-message"]').last()[22m
+    [2m    14 × locator resolved to <article class="message assistant" data-testid="chat-message">…</article>[22m
+    [2m       - unexpected value "FAformal-ai07:42 PMсущество: Animalia: kingdom of multicellular eukaryotic organisms[22m
+    [2mSource: https://www.wikidata.org/wiki/Q729  (wikidata).[22m
+    [2mReport issue"[22m
+
+
+      1176 |     const last = await sendPrompt(page, 'Что такое существо?');
+      1177 |     await expect(last).toHaveClass(/assistant/);
+    > 1178 |     await expect(last).toContainText('Существо');
+           |                        ^
+      1179 |     await expect(last).toContainText('живой организм');
+      1180 |     await expect(last).toContainText('сущность');
+      1181 |     await expect(last).toContainText('музыкальный альбом');
+        at /tmp/gh-issue-solver-1779478517743/tests/e2e/tests/multilingual.spec.js:1178:24
+
+    Error Context: test-results/multilingual-Wikipedia-RES-cfada-nks-Wikidata-alias-fallback-chromium-retry1/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/multilingual-Wikipedia-RES-cfada-nks-Wikidata-alias-fallback-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/multilingual-Wikipedia-RES-cfada-nks-Wikidata-alias-fallback-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [chromium] › tests/multilingual.spec.js:1098:3 › Wikipedia REST fallback › Issue #232: Russian definition-style disambiguation page outranks Wikidata alias fallback
