@@ -7,6 +7,7 @@ module.exports = defineConfig({
     '**/demo.spec.js',
     '**/multilingual.spec.js',
     '**/connectivity.spec.js',
+    '**/issue-135.spec.js',
     '**/issue-153.spec.js',
     '**/issue-193.spec.js',
     '**/issue-205.spec.js',

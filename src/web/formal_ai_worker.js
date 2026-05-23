@@ -7390,6 +7390,17 @@ pub fn apply_command(mut records: Vec<ProjectRecord>, command: ProjectCommand) -
     records
 }`;
 
+const PLAYWRIGHT_DOCS_URL = "https://playwright.dev/docs/writing-tests";
+const PLAYWRIGHT_STARTER_TYPESCRIPT = `import { test, expect } from '@playwright/test';
+
+test('opens the Playwright docs', async ({ page }) => {
+  await page.goto('https://playwright.dev/');
+  await expect(page).toHaveTitle(/Playwright/);
+
+  await page.getByRole('link', { name: 'Docs' }).click();
+  await expect(page.getByRole('heading', { name: /Playwright/ })).toBeVisible();
+});`;
+
 function containsAnySubstring(value, needles) {
   return needles.some((needle) => value.includes(needle));
 }
@@ -7402,6 +7413,128 @@ function containsAnyToken(normalized, tokens) {
   return String(normalized || "")
     .split(/\s+/)
     .some((token) => tokens.includes(token));
+}
+
+function mentionsPlaywright(normalized) {
+  return containsAnySubstring(normalized, [
+    "playwright",
+    "playright",
+    "плейврайт",
+    "плейрайт",
+  ]);
+}
+
+function isPlaywrightScriptRequest(normalized) {
+  if (!mentionsPlaywright(normalized)) return false;
+  return containsAnySubstring(normalized, [
+    "script",
+    "test",
+    "spec",
+    "code",
+    "скрипт",
+    "сценар",
+    "тест",
+    "код",
+    "write",
+    "create",
+    "generate",
+    "make",
+    "build",
+    "can you",
+    "could you",
+    "напиши",
+    "написать",
+    "можешь",
+    "сделай",
+    "создай",
+  ]);
+}
+
+function renderPlaywrightClarification(language) {
+  if (language === "ru") {
+    return [
+      "Я могу написать Playwright-скрипт. Уточните URL страницы, действия и ожидаемую проверку.",
+      "Если нужен пример по умолчанию, я могу взять стартовый сценарий из документации Playwright.",
+    ].join(" ");
+  }
+  return [
+    "I can write a Playwright script. Please provide the page URL, the actions to perform, and the expected assertion.",
+    "If you want a default example, I can use the starter scenario from the Playwright docs.",
+  ].join(" ");
+}
+
+function renderPlaywrightStarter(language, correctedSpelling) {
+  const lines = [];
+  if (language === "ru" && correctedSpelling) {
+    lines.push(
+      "Я трактую `Playright` как `Playwright` и даю стартовый TypeScript-пример по документации Playwright.",
+    );
+  } else if (language === "ru") {
+    lines.push("Даю стартовый TypeScript-пример по документации Playwright.");
+  } else if (correctedSpelling) {
+    lines.push(
+      "I interpret `Playright` as `Playwright` and will use a starter TypeScript example based on the Playwright docs.",
+    );
+  } else {
+    lines.push(
+      "I will use a starter TypeScript example based on the Playwright docs.",
+    );
+  }
+  lines.push("");
+  lines.push(`Source: ${PLAYWRIGHT_DOCS_URL}`);
+  lines.push("");
+  lines.push("```typescript");
+  lines.push(PLAYWRIGHT_STARTER_TYPESCRIPT);
+  lines.push("```");
+  lines.push("");
+  if (language === "ru") {
+    lines.push("Проверка:");
+    lines.push("1. `npm init playwright@latest`");
+    lines.push("2. `npx playwright test`");
+    lines.push("");
+    lines.push("Уточните URL, действия и ожидаемый результат, если нужен сценарий под конкретный сайт.");
+  } else {
+    lines.push("Check it with:");
+    lines.push("1. `npm init playwright@latest`");
+    lines.push("2. `npx playwright test`");
+    lines.push("");
+    lines.push("Provide the URL, actions, and expected result if you want a site-specific script.");
+  }
+  return lines.join("\n");
+}
+
+function tryPlaywrightScript(prompt, preferences = {}, language = "en") {
+  const normalized = normalizePrompt(prompt);
+  if (!isPlaywrightScriptRequest(normalized)) return null;
+  const guessProbability = numericPreference(
+    preferences && preferences.guessProbability,
+    0.8,
+    0,
+    1,
+  );
+  const evidence = [
+    "script_framework:playwright",
+    `source:${PLAYWRIGHT_DOCS_URL}`,
+    `guess_probability:${guessProbability.toFixed(2)}`,
+  ];
+  const correctedSpelling = normalized.includes("playright");
+  if (correctedSpelling) {
+    evidence.push("spelling_correction:Playright->Playwright");
+  }
+  if (guessProbability < 0.5) {
+    return {
+      intent: "playwright_script_clarification",
+      content: renderPlaywrightClarification(language),
+      confidence: 0.64,
+      evidence,
+    };
+  }
+  return {
+    intent: "playwright_script",
+    content: renderPlaywrightStarter(language, correctedSpelling),
+    confidence: 0.82,
+    evidence,
+  };
 }
 
 function detectSoftwareAction(normalized) {
@@ -11851,6 +11984,10 @@ async function solve(prompt, history, prefs, userContext = {}) {
     },
     { name: "tryConceptLookup", run: () => tryConceptLookup(prompt) },
     { name: "tryHelloWorld", run: () => tryHelloWorld(prompt) },
+    {
+      name: "tryPlaywrightScript",
+      run: () => tryPlaywrightScript(prompt, preferences, language),
+    },
     { name: "trySoftwareProjectRequest", run: () => trySoftwareProjectRequest(prompt, history) },
   ];
   for (const handler of syncHandlers) {

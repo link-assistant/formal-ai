@@ -9,6 +9,7 @@ mod benchmark_prompts;
 mod calendar;
 mod definition_merge;
 mod feature_capability;
+mod playwright_script;
 mod software_project;
 mod software_project_code;
 mod user_intent;
@@ -23,6 +24,7 @@ pub use benchmark_prompts::{
 pub use calendar::try_calendar_reasoning;
 pub use definition_merge::{try_definition_merge, try_definition_merge_by_default};
 pub use feature_capability::{try_feature_capability, CapabilityRuntime};
+pub use playwright_script::try_playwright_script;
 pub use software_project::try_software_project_request;
 pub use user_intent::{
     try_capabilities, try_clarification, try_ill_formed, try_opinion_question, try_proof_request,

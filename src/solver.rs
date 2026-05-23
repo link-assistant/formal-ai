@@ -39,11 +39,12 @@ use crate::solver_handlers::{
     try_conversation_memory, try_coreference_request, try_definition_merge,
     try_definition_merge_by_default, try_execution_failure, try_fact_lookup,
     try_feature_capability, try_http_fetch, try_ill_formed, try_javascript_execution,
-    try_meta_explanation, try_network_query, try_opinion_question, try_project_lookup,
-    try_proof_request, try_proof_request_with_config, try_punctuation_only_prompt,
-    try_roleplay_request, try_shell_refusal, try_software_project_request, try_source_conflict,
-    try_source_refresh, try_summarization_request, try_translation, try_url_navigate,
-    try_web_search, try_who_is_question, try_write_script, CapabilityRuntime,
+    try_meta_explanation, try_network_query, try_opinion_question, try_playwright_script,
+    try_project_lookup, try_proof_request, try_proof_request_with_config,
+    try_punctuation_only_prompt, try_roleplay_request, try_shell_refusal,
+    try_software_project_request, try_source_conflict, try_source_refresh,
+    try_summarization_request, try_translation, try_url_navigate, try_web_search,
+    try_who_is_question, try_write_script, CapabilityRuntime,
 };
 use crate::solver_handlers_policy::{try_kupi_slona, try_physical_action_question};
 use crate::solver_helpers::{
@@ -520,6 +521,12 @@ impl UniversalSolver {
         );
         if let Some(answer) = try_feature_capability(prompt, &normalized, log, capability_runtime) {
             log.append("specialized_handler", "feature_capability".to_owned());
+            return Some(answer);
+        }
+        if let Some(answer) =
+            try_playwright_script(prompt, &normalized, log, self.config.guess_probability)
+        {
+            log.append("specialized_handler", "playwright_script".to_owned());
             return Some(answer);
         }
         let proof_render_config = ProofRenderConfig {
