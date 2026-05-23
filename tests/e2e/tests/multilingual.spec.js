@@ -1688,11 +1688,13 @@ test.describe('Issue #82: assistant behavior settings', () => {
     await expect(page.locator('[data-testid="setting-theme"]')).toBeVisible();
     await expect(page.locator('[data-testid="setting-ui-skin"]')).toBeVisible();
     await expect(page.locator('[data-testid="setting-chat-style"]')).toBeVisible();
+    await expect(page.locator('[data-testid="setting-assistant-name"]')).toBeVisible();
     await expect(page.locator('[data-testid="setting-location"]')).toBeVisible();
 
     await setRangeValue(page, 'setting-temperature', 0);
     await setRangeValue(page, 'setting-follow-up-probability', 0);
     await page.locator('[data-testid="setting-definition-fusion"]').selectOption('auto');
+    await page.locator('[data-testid="setting-assistant-name"]').fill('Astra');
     await page.locator('[data-testid="setting-location"]').fill('Berlin');
     await page.locator('[data-testid="setting-theme"]').selectOption('dark');
 
@@ -1705,6 +1707,7 @@ test.describe('Issue #82: assistant behavior settings', () => {
     expect(stored).toContain('temperature "0"');
     expect(stored).toContain('followUpProbability "0"');
     expect(stored).toContain('definitionFusion "auto"');
+    expect(stored).toContain('assistantName "Astra"');
     expect(stored).toContain('location "Berlin"');
     await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
   });

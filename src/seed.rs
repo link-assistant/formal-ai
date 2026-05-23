@@ -761,6 +761,7 @@ mod tests {
             "courtesy_response",
             "test_status",
             "identity",
+            "assistant_name",
             "unknown",
         ] {
             assert!(
@@ -831,6 +832,7 @@ mod tests {
             "intent_farewell",
             "intent_test_status",
             "intent_courtesy_response",
+            "intent_assistant_name",
             "intent_identity",
             "intent_unknown",
             "intent_hello_world",

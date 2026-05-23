@@ -4,6 +4,7 @@ pub mod arithmetic;
 pub(crate) mod calculation;
 pub(crate) mod concepts;
 pub mod engine;
+pub(crate) mod engine_assistant_name;
 pub(crate) mod engine_hello_world;
 pub mod event_log;
 pub(crate) mod fuzzy;

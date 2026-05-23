@@ -263,6 +263,31 @@ test.describe('formal-ai demo UI', () => {
     await expect(lastMsg).not.toContainText(UNKNOWN_ANSWER_MARKER);
   });
 
+  test('assistant name prompts answer and respect the configured name', async ({ page }) => {
+    await switchToManualMode(page);
+
+    let lastMsg = await sendPrompt(page, 'Как твое имя?');
+    await expect(lastMsg).toContainText('formal AI');
+    await expect(lastMsg).not.toContainText(UNKNOWN_ANSWER_MARKER);
+
+    await page.locator('[data-testid="setting-assistant-name"]').fill('Astra');
+    await expect.poll(() =>
+      page.evaluate(() => window.localStorage.getItem('formal-ai.preferences.v1') || ''),
+    ).toContain('assistantName "Astra"');
+
+    lastMsg = await sendPrompt(page, 'What is your name?');
+    await expect(lastMsg).toContainText('Astra');
+    await expect(lastMsg).not.toContainText(UNKNOWN_ANSWER_MARKER);
+
+    lastMsg = await sendPrompt(page, 'call yourself Vega');
+    await expect(lastMsg).toContainText('Assistant name');
+    await expect(lastMsg).toContainText('Vega');
+
+    lastMsg = await sendPrompt(page, 'What is your name?');
+    await expect(lastMsg).toContainText('Vega');
+    await expect(lastMsg).not.toContainText(UNKNOWN_ANSWER_MARKER);
+  });
+
   test('polite small-talk follow-up does not fall through to unknown', async ({ page }) => {
     await switchToManualMode(page);
     await setRangeValue(page, 'setting-temperature', 0);
