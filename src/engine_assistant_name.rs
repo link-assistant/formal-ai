@@ -11,7 +11,7 @@ const FALLBACK_ASSISTANT_NAME_ANSWER_HI: &str =
 const FALLBACK_ASSISTANT_NAME_ANSWER_ZH: &str =
     "我是 formal AI,目前还没有名字。不过您可以按自己的喜好给我起名。";
 
-pub(crate) const ASSISTANT_NAME_EXAMPLES: &[&str] = &[
+pub(super) const ASSISTANT_NAME_EXAMPLES: &[&str] = &[
     "What is your name?",
     "Как твое имя?",
     "Как тебя зовут?",
@@ -30,22 +30,22 @@ fn cached_response(
     .as_str()
 }
 
-pub(crate) fn assistant_name_answer() -> &'static str {
+pub(super) fn assistant_name_answer() -> &'static str {
     static CELL: OnceLock<String> = OnceLock::new();
     cached_response(&CELL, "en", FALLBACK_ASSISTANT_NAME_ANSWER)
 }
 
-pub(crate) fn russian_assistant_name_answer() -> &'static str {
+pub(super) fn russian_assistant_name_answer() -> &'static str {
     static CELL: OnceLock<String> = OnceLock::new();
     cached_response(&CELL, "ru", FALLBACK_ASSISTANT_NAME_ANSWER_RU)
 }
 
-pub(crate) fn hindi_assistant_name_answer() -> &'static str {
+pub(super) fn hindi_assistant_name_answer() -> &'static str {
     static CELL: OnceLock<String> = OnceLock::new();
     cached_response(&CELL, "hi", FALLBACK_ASSISTANT_NAME_ANSWER_HI)
 }
 
-pub(crate) fn chinese_assistant_name_answer() -> &'static str {
+pub(super) fn chinese_assistant_name_answer() -> &'static str {
     static CELL: OnceLock<String> = OnceLock::new();
     cached_response(&CELL, "zh", FALLBACK_ASSISTANT_NAME_ANSWER_ZH)
 }
