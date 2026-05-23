@@ -64,6 +64,35 @@ fn identity_examples_cover_known_phrasings() {
 }
 
 #[test]
+fn creator_questions_return_formal_ai_origin_fact_across_languages() {
+    let cases = [
+        ("English", "who created you?"),
+        ("Russian", "кто тебя создал?"),
+        ("Hindi", "तुम्हें किसने बनाया?"),
+        ("Chinese", "谁创建了你?"),
+    ];
+    for (language, prompt) in cases {
+        let response = answer(prompt);
+        assert_eq!(
+            response.intent, "fact_lookup",
+            "{language} creator prompt should route to fact_lookup"
+        );
+        assert!(
+            response.answer.contains("github.com/konard"),
+            "{language} creator answer must name the creator account, got: {}",
+            response.answer
+        );
+        assert!(
+            response
+                .answer
+                .contains("github.com/link-assistant/hive-mind"),
+            "{language} creator answer must name the hive-mind project, got: {}",
+            response.answer
+        );
+    }
+}
+
+#[test]
 fn evidence_links_always_include_prompt_and_intent_links() {
     let response = answer("Hi");
     assert!(response
