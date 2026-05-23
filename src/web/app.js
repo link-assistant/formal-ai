@@ -1987,6 +1987,123 @@ function localSelfFacts() {
   ].join("\n");
 }
 
+function localKnownFacts(language) {
+  const links = [
+    "```links",
+    "known_fact_local_seed",
+    '  source "local_links_notation_seed"',
+    '  scope "built-in rules, concepts, facts, tools, and response templates"',
+    "known_fact_internet",
+    '  source "internet_search"',
+    '  scope "public facts reachable through DuckDuckGo, Wikipedia, and Wikidata when online"',
+    "known_fact_memory",
+    '  source "conversation_memory"',
+    '  scope "facts the user contributed in the current dialog or imported memory"',
+    "known_fact_self",
+    '  subject "formal-ai"',
+    '  relation "model"',
+    '  object "formal-symbolic-production"',
+    "```",
+  ].join("\n");
+  if (language === "ru") {
+    return [
+      "Я могу использовать несколько классов фактов:",
+      "",
+      "- **Локальные факты и правила**: встроенный seed Links Notation, включая правила, понятия, инструменты и ответы.",
+      "- **Интернет**: когда веб-поиск доступен, я могу искать публичные факты через DuckDuckGo, Wikipedia и Wikidata. Интернет не загружен в локальную память целиком.",
+      "- **Память диалога**: факты, которые вы сообщили в этом разговоре или импортировали через память, доступны как события памяти.",
+      "- **Факты о себе**: модель, политика исполнения и источники ответов.",
+      "",
+      links,
+      "",
+      "Если нужен конкретный факт, задайте прямой вопрос; я сначала проверю локальные правила и память, а затем при необходимости использую веб-поиск.",
+    ].join("\n");
+  }
+  return [
+    "I can use several classes of facts:",
+    "",
+    "- **Local facts and rules**: built-in Links Notation seed data, including rules, concepts, tools, and response templates.",
+    "- **Internet**: when web search is available, I can look up public facts through DuckDuckGo, Wikipedia, and Wikidata. The whole internet is not preloaded into local memory.",
+    "- **Conversation memory**: facts you contribute in this dialog, or import through memory, are available as memory events.",
+    "- **Self facts**: my model, execution policy, and answer sources.",
+    "",
+    links,
+    "",
+    "Ask for a specific fact directly; I check local rules and memory first, then use web search when needed.",
+  ].join("\n");
+}
+
+function localContainsAny(normalized, needles) {
+  return needles.some((needle) => normalized.includes(needle));
+}
+
+function localIsKnownFactQuery(normalized) {
+  const english =
+    normalized.includes("facts") &&
+    localContainsAny(normalized, ["what", "which", "list", "show"]) &&
+    localContainsAny(normalized, [
+      "you know",
+      "do you know",
+      "you have",
+      "available to you",
+      "in your knowledge",
+      "known to you",
+    ]);
+  const russian =
+    normalized.includes("факт") &&
+    localContainsAny(normalized, ["какие", "что", "перечисли", "покажи", "назови"]) &&
+    localContainsAny(normalized, [
+      "ты знаешь",
+      "знаешь",
+      "тебе извест",
+      "у тебя есть",
+      "твои знания",
+      "что ты знаешь",
+    ]);
+  return english || russian;
+}
+
+function localIsArchitectureQuestion(normalized) {
+  const mentionsAssistant = localContainsAny(normalized, [
+    "you",
+    "your",
+    "formal ai",
+    "ты",
+    "теб",
+    "твоя",
+    "твой",
+    "вы",
+  ]);
+  if (!mentionsAssistant) return false;
+  return localContainsAny(normalized, [
+    "llm",
+    "large language model",
+    "language model",
+    "openai api",
+    "openai",
+    "neural inference",
+    "neural network",
+    "links notation rules",
+    "local rules",
+    "бям",
+    "языковая модель",
+    "языковой моделью",
+    "нейросет",
+    "нейрон",
+    "локальных правил",
+    "локальных правилах",
+    "область знаний",
+    "ссылк",
+  ]);
+}
+
+function localArchitectureExplanation(language) {
+  if (language === "ru") {
+    return "Я не LLM-рантайм в этой демонстрации и не выполняю нейросетевой инференс. У проекта есть OpenAI-совместимые API-форматы, но ответы строит детерминированный solver: сначала он проверяет локальный seed Links Notation, правила и память диалога; затем, когда веб-поиск доступен, может искать публичные факты через DuckDuckGo, Wikipedia и Wikidata. Память хранит факты, которые вы сообщили в этом разговоре или импортировали; весь интернет не загружен в локальные правила целиком.";
+  }
+  return "In this demo I am not an LLM runtime and I do not perform neural inference. The project exposes OpenAI-compatible API shapes, but answers come from a deterministic solver: it checks the local Links Notation seed, rules, and conversation memory first; when web search is available, it can look up public facts through DuckDuckGo, Wikipedia, and Wikidata. Memory stores facts you contributed in this conversation or imported memory; the whole internet is not preloaded into local rules.";
+}
+
 function localCleanRuleQuery(raw) {
   return String(raw || "")
     .trim()
@@ -2074,6 +2191,10 @@ function tryLocalBehaviorRules(prompt, normalized, history) {
     normalized.includes("факты о себе")
   ) {
     return { intent: "self_facts", content: localSelfFacts() };
+  }
+  if (localIsKnownFactQuery(normalized)) {
+    const language = /[\u0400-\u04ff]/u.test(String(prompt || "")) ? "ru" : "en";
+    return { intent: "known_facts", content: localKnownFacts(language) };
   }
   const runtimeRule = localRuntimeRuleForPrompt(prompt, history);
   if (runtimeRule) {
@@ -2224,6 +2345,10 @@ function localFallbackAnswer(prompt, history = [], preferences = {}) {
   const behaviorRule = tryLocalBehaviorRules(prompt, normalized, history);
   if (behaviorRule) {
     return behaviorRule;
+  }
+  if (localIsArchitectureQuestion(normalized)) {
+    const language = /[\u0400-\u04ff]/u.test(String(prompt || "")) ? "ru" : "en";
+    return { intent: "meta_explanation", content: localArchitectureExplanation(language) };
   }
   if (["hi", "hello", "hey"].includes(normalized)) {
     return {

@@ -17,6 +17,7 @@ use crate::engine::{
     SymbolicAnswer, DEFAULT_MODEL, HELLO_WORLD_PROGRAMS,
 };
 use crate::event_log::EventLog;
+use crate::language::detect as detect_language;
 use crate::seed;
 
 use super::finalize_simple;
@@ -95,6 +96,20 @@ pub fn try_behavior_rules(
             log,
             "self_facts",
             "response:self_facts",
+            &body,
+            1.0,
+        ));
+    }
+
+    if is_known_fact_query(normalized) {
+        log.append("known_facts:list", "formal-ai".to_owned());
+        let language = detect_language(prompt);
+        let body = render_known_facts(language.slug());
+        return Some(finalize_simple(
+            prompt,
+            log,
+            "known_facts",
+            "response:known_facts",
             &body,
             1.0,
         ));
@@ -364,6 +379,80 @@ fn render_self_facts() -> String {
     )
 }
 
+fn render_known_facts(language: &str) -> String {
+    let links = concat!(
+        "```links\n",
+        "known_fact_local_seed\n",
+        "  source \"local_links_notation_seed\"\n",
+        "  scope \"built-in rules, concepts, facts, tools, and response templates\"\n",
+        "known_fact_internet\n",
+        "  source \"internet_search\"\n",
+        "  scope \"public facts reachable through DuckDuckGo, Wikipedia, and Wikidata when online\"\n",
+        "known_fact_memory\n",
+        "  source \"conversation_memory\"\n",
+        "  scope \"facts the user contributed in the current dialog or imported memory\"\n",
+        "known_fact_self\n",
+        "  subject \"formal-ai\"\n",
+        "  relation \"model\"\n",
+        "  object \"formal-symbolic-production\"\n",
+        "```"
+    );
+    match language {
+        "ru" => [
+            "Я могу использовать несколько классов фактов:",
+            "",
+            "- **Локальные факты и правила**: встроенный seed Links Notation, включая правила, понятия, инструменты и ответы.",
+            "- **Интернет**: когда веб-поиск доступен, я могу искать публичные факты через DuckDuckGo, Wikipedia и Wikidata. Интернет не загружен в локальную память целиком.",
+            "- **Память диалога**: факты, которые вы сообщили в этом разговоре или импортировали через память, доступны как события памяти.",
+            "- **Факты о себе**: модель, политика исполнения и источники ответов.",
+            "",
+            links,
+            "",
+            "Если нужен конкретный факт, задайте прямой вопрос; я сначала проверю локальные правила и память, а затем при необходимости использую веб-поиск.",
+        ]
+        .join("\n"),
+        "hi" => [
+            "मैं इन स्रोतों से तथ्य इस्तेमाल कर सकता हूँ:",
+            "",
+            "- **स्थानीय तथ्य और नियम**: Links Notation seed में बने नियम, concepts, tools और responses.",
+            "- **Internet**: online होने पर DuckDuckGo, Wikipedia और Wikidata से public facts खोज सकता हूँ; पूरा internet local memory में preload नहीं है.",
+            "- **Conversation memory**: इस बातचीत या imported memory में दिए गए facts events के रूप में उपलब्ध रहते हैं.",
+            "- **Self facts**: मेरा model, execution policy और answer sources.",
+            "",
+            links,
+            "",
+            "किसी खास fact के लिए सीधे पूछें; मैं local rules और memory पहले देखता हूँ, फिर जरूरत होने पर web search इस्तेमाल करता हूँ.",
+        ]
+        .join("\n"),
+        "zh" => [
+            "我可以使用几类事实来源:",
+            "",
+            "- **本地事实和规则**: Links Notation seed 中的规则、概念、工具和回复模板。",
+            "- **Internet**: 在线且搜索可用时, 我可以通过 DuckDuckGo、Wikipedia 和 Wikidata 查找公开事实; 整个互联网不会预加载到本地记忆中。",
+            "- **Conversation memory**: 你在当前对话或导入记忆中提供的事实会作为记忆事件使用。",
+            "- **Self facts**: 我的模型、执行策略和回答来源。",
+            "",
+            links,
+            "",
+            "如果需要某个具体事实, 请直接提问; 我会先检查本地规则和记忆, 必要时再使用 web search。",
+        ]
+        .join("\n"),
+        _ => [
+            "I can use several classes of facts:",
+            "",
+            "- **Local facts and rules**: built-in Links Notation seed data, including rules, concepts, tools, and response templates.",
+            "- **Internet**: when web search is available, I can look up public facts through DuckDuckGo, Wikipedia, and Wikidata. The whole internet is not preloaded into local memory.",
+            "- **Conversation memory**: facts you contribute in this dialog, or import through memory, are available as memory events.",
+            "- **Self facts**: my model, execution policy, and answer sources.",
+            "",
+            links,
+            "",
+            "Ask for a specific fact directly; I check local rules and memory first, then use web search when needed.",
+        ]
+        .join("\n"),
+    }
+}
+
 fn render_runtime_rule_update(rule: &RuntimeBehaviorRule) -> String {
     format!(
         concat!(
@@ -517,6 +606,59 @@ fn is_self_fact_query(normalized: &str) -> bool {
         || normalized.contains("स्वयं के बारे में तथ्य")
         || normalized.contains("关于你自己的事实")
         || normalized.contains("自我事实")
+}
+
+fn contains_any(normalized: &str, needles: &[&str]) -> bool {
+    needles.iter().any(|needle| normalized.contains(needle))
+}
+
+fn is_known_fact_query(normalized: &str) -> bool {
+    if is_self_fact_query(normalized) {
+        return false;
+    }
+
+    let english = normalized.contains("facts")
+        && contains_any(normalized, &["what", "which", "list", "show"])
+        && contains_any(
+            normalized,
+            &[
+                "you know",
+                "do you know",
+                "you have",
+                "available to you",
+                "in your knowledge",
+                "known to you",
+            ],
+        );
+    let russian = normalized.contains("факт")
+        && contains_any(
+            normalized,
+            &["какие", "что", "перечисли", "покажи", "назови"],
+        )
+        && contains_any(
+            normalized,
+            &[
+                "ты знаешь",
+                "знаешь",
+                "тебе извест",
+                "у тебя есть",
+                "твои знания",
+                "что ты знаешь",
+            ],
+        );
+    let hindi = normalized.contains("तथ्य")
+        && contains_any(
+            normalized,
+            &["कौन", "क्या", "सूची", "सूचीबद्ध", "बताओ", "दिखाओ"],
+        )
+        && contains_any(normalized, &["तुम", "आप", "जानते", "जानती", "आपके", "तुम्हारे"]);
+    let chinese = (normalized.contains("事实") || normalized.contains("事實"))
+        && contains_any(
+            normalized,
+            &["你知道", "您知道", "你有", "您有", "哪些", "什么", "什麼"],
+        );
+
+    english || russian || hindi || chinese
 }
 
 fn detail_query(prompt: &str) -> Option<String> {

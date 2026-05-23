@@ -2434,6 +2434,80 @@ function renderSelfFacts() {
   ].join("\n");
 }
 
+function renderKnownFacts(language) {
+  const links = [
+    "```links",
+    "known_fact_local_seed",
+    '  source "local_links_notation_seed"',
+    '  scope "built-in rules, concepts, facts, tools, and response templates"',
+    "known_fact_internet",
+    '  source "internet_search"',
+    '  scope "public facts reachable through DuckDuckGo, Wikipedia, and Wikidata when online"',
+    "known_fact_memory",
+    '  source "conversation_memory"',
+    '  scope "facts the user contributed in the current dialog or imported memory"',
+    "known_fact_self",
+    '  subject "formal-ai"',
+    '  relation "model"',
+    `  object "${escapeBehaviorRuleValue(AGENT_INFO.model || "formal-symbolic-production")}"`,
+    "```",
+  ].join("\n");
+  if (language === "ru") {
+    return [
+      "Я могу использовать несколько классов фактов:",
+      "",
+      "- **Локальные факты и правила**: встроенный seed Links Notation, включая правила, понятия, инструменты и ответы.",
+      "- **Интернет**: когда веб-поиск доступен, я могу искать публичные факты через DuckDuckGo, Wikipedia и Wikidata. Интернет не загружен в локальную память целиком.",
+      "- **Память диалога**: факты, которые вы сообщили в этом разговоре или импортировали через память, доступны как события памяти.",
+      "- **Факты о себе**: модель, политика исполнения и источники ответов.",
+      "",
+      links,
+      "",
+      "Если нужен конкретный факт, задайте прямой вопрос; я сначала проверю локальные правила и память, а затем при необходимости использую веб-поиск.",
+    ].join("\n");
+  }
+  if (language === "hi") {
+    return [
+      "मैं इन स्रोतों से तथ्य इस्तेमाल कर सकता हूँ:",
+      "",
+      "- **स्थानीय तथ्य और नियम**: Links Notation seed में बने नियम, concepts, tools और responses.",
+      "- **Internet**: online होने पर DuckDuckGo, Wikipedia और Wikidata से public facts खोज सकता हूँ; पूरा internet local memory में preload नहीं है.",
+      "- **Conversation memory**: इस बातचीत या imported memory में दिए गए facts events के रूप में उपलब्ध रहते हैं.",
+      "- **Self facts**: मेरा model, execution policy और answer sources.",
+      "",
+      links,
+      "",
+      "किसी खास fact के लिए सीधे पूछें; मैं local rules और memory पहले देखता हूँ, फिर जरूरत होने पर web search इस्तेमाल करता हूँ.",
+    ].join("\n");
+  }
+  if (language === "zh") {
+    return [
+      "我可以使用几类事实来源:",
+      "",
+      "- **本地事实和规则**: Links Notation seed 中的规则、概念、工具和回复模板。",
+      "- **Internet**: 在线且搜索可用时, 我可以通过 DuckDuckGo、Wikipedia 和 Wikidata 查找公开事实; 整个互联网不会预加载到本地记忆中。",
+      "- **Conversation memory**: 你在当前对话或导入记忆中提供的事实会作为记忆事件使用。",
+      "- **Self facts**: 我的模型、执行策略和回答来源。",
+      "",
+      links,
+      "",
+      "如果需要某个具体事实, 请直接提问; 我会先检查本地规则和记忆, 必要时再使用 web search。",
+    ].join("\n");
+  }
+  return [
+    "I can use several classes of facts:",
+    "",
+    "- **Local facts and rules**: built-in Links Notation seed data, including rules, concepts, tools, and response templates.",
+    "- **Internet**: when web search is available, I can look up public facts through DuckDuckGo, Wikipedia, and Wikidata. The whole internet is not preloaded into local memory.",
+    "- **Conversation memory**: facts you contribute in this dialog, or import through memory, are available as memory events.",
+    "- **Self facts**: my model, execution policy, and answer sources.",
+    "",
+    links,
+    "",
+    "Ask for a specific fact directly; I check local rules and memory first, then use web search when needed.",
+  ].join("\n");
+}
+
 function renderRuntimeRuleUpdate(rule) {
   const whenThenText = `When the user says \`${rule.trigger}\` then respond with \`${rule.answer}\`.`;
   return [
@@ -2596,6 +2670,41 @@ function isSelfFactQuery(normalized) {
     normalized.includes("关于你自己的事实") ||
     normalized.includes("自我事实")
   );
+}
+
+function isKnownFactQuery(normalized) {
+  if (isSelfFactQuery(normalized)) return false;
+  const english =
+    normalized.includes("facts") &&
+    containsAny(normalized, ["what", "which", "list", "show"]) &&
+    containsAny(normalized, [
+      "you know",
+      "do you know",
+      "you have",
+      "available to you",
+      "in your knowledge",
+      "known to you",
+    ]);
+  const russian =
+    normalized.includes("факт") &&
+    containsAny(normalized, ["какие", "что", "перечисли", "покажи", "назови"]) &&
+    containsAny(normalized, [
+      "ты знаешь",
+      "знаешь",
+      "тебе извест",
+      "у тебя есть",
+      "твои знания",
+      "что ты знаешь",
+    ]);
+  const hindi =
+    normalized.includes("तथ्य") &&
+    containsAny(normalized, ["कौन", "क्या", "सूची", "सूचीबद्ध", "बताओ", "दिखाओ"]) &&
+    containsAny(normalized, ["तुम", "आप", "जानते", "जानती", "आपके", "तुम्हारे"]);
+  const chinese =
+    (normalized.includes("事实") || normalized.includes("事實")) &&
+    containsAny(normalized, ["你知道", "您知道", "你有", "您有", "哪些", "什么", "什麼"]);
+
+  return english || russian || hindi || chinese;
 }
 
 function cleanRuleQuery(raw) {
@@ -2787,6 +2896,16 @@ function tryBehaviorRules(prompt, normalized, history) {
       content: renderSelfFacts(),
       confidence: 1.0,
       evidence: ["self_facts:list", "formal-ai"],
+    };
+  }
+
+  if (isKnownFactQuery(normalized)) {
+    const language = detectLanguage(prompt);
+    return {
+      intent: "known_facts",
+      content: renderKnownFacts(language),
+      confidence: 1.0,
+      evidence: ["known_facts:list", "formal-ai", `language:${language}`],
     };
   }
 
@@ -3419,6 +3538,73 @@ function additionalCapabilitiesContent(language) {
     return "Кроме уже названных возможностей, могу ещё:\n\n- **Арифметика**: вычислять выражения вроде «Сколько будет 2 + 2?»\n- **Перевод**: переводить короткие фразы между поддерживаемыми языками.\n- **Поиск понятий**: объяснять термины, например «Что такое Википедия?»\n- **Hello World**: генерировать минимальные программы на Rust, Python, JavaScript, Go, C и других языках.\n- **Память диалога**: использовать предыдущие сообщения текущей сессии.\n- **Правила поведения**: показывать встроенные правила через `List behavior rules` и `Show behavior rule unknown`.\n- **Настройки и действия**: включать диагностику/демо/agent mode, менять тему, язык, стиль чата, экспортировать и импортировать память.";
   }
   return "Beyond the capability already discussed, I can also:\n\n- **Arithmetic**: evaluate expressions like `2 + 2`.\n- **Translation**: translate short phrases between supported languages.\n- **Concept lookup**: explain terms such as `What is Wikipedia?`.\n- **Hello World**: generate small programs in Rust, Python, JavaScript, Go, C, and more.\n- **Conversation memory**: use earlier messages from the current session.\n- **Behavior rules**: show built-in rules with `List behavior rules` and `Show behavior rule unknown`.\n- **Settings and actions**: configure diagnostics, demo mode, agent mode, theme, language, chat style, and memory import/export.";
+}
+
+function isArchitectureQuestion(normalized) {
+  const mentionsAssistant = containsAny(normalized, [
+    "you",
+    "your",
+    "formal ai",
+    "ты",
+    "теб",
+    "твоя",
+    "твой",
+    "вы",
+    "आप",
+    "तुम",
+    "你",
+    "您",
+  ]);
+  if (!mentionsAssistant) return false;
+  return containsAny(normalized, [
+    "llm",
+    "large language model",
+    "language model",
+    "openai api",
+    "openai",
+    "neural inference",
+    "neural network",
+    "links notation rules",
+    "local rules",
+    "бям",
+    "языковая модель",
+    "языковой моделью",
+    "нейросет",
+    "нейрон",
+    "локальных правил",
+    "локальных правилах",
+    "область знаний",
+    "ссылк",
+    "न्यूरल",
+    "भाषा मॉडल",
+    "神经",
+    "語言模型",
+    "语言模型",
+  ]);
+}
+
+function architectureExplanationContent(language) {
+  if (language === "ru") {
+    return "Я не LLM-рантайм в этой демонстрации и не выполняю нейросетевой инференс. У проекта есть OpenAI-совместимые API-форматы, но ответы строит детерминированный solver: сначала он проверяет локальный seed Links Notation, правила и память диалога; затем, когда веб-поиск доступен, может искать публичные факты через DuckDuckGo, Wikipedia и Wikidata. Память хранит факты, которые вы сообщили в этом разговоре или импортировали; весь интернет не загружен в локальные правила целиком.";
+  }
+  if (language === "hi") {
+    return "इस demo में मैं LLM runtime नहीं हूँ और neural inference नहीं चलाता. Project OpenAI-compatible API shapes देता है, लेकिन जवाब deterministic solver बनाता है: पहले local Links Notation seed, rules और conversation memory देखता है; फिर web search उपलब्ध हो तो DuckDuckGo, Wikipedia और Wikidata से public facts खोजता है. Memory में वे facts रहते हैं जो आपने इस conversation या imported memory में दिए हैं.";
+  }
+  if (language === "zh") {
+    return "在这个演示中我不是 LLM runtime, 也不执行神经网络推理。项目提供 OpenAI-compatible API 形状, 但回答由确定性的 solver 生成: 先检查本地 Links Notation seed、规则和对话记忆; 当 web search 可用时, 再通过 DuckDuckGo、Wikipedia 和 Wikidata 查找公开事实。记忆保存的是你在本对话或导入记忆中提供的事实, 并不是把整个互联网预加载到本地规则中。";
+  }
+  return "In this demo I am not an LLM runtime and I do not perform neural inference. The project exposes OpenAI-compatible API shapes, but answers come from a deterministic solver: it checks the local Links Notation seed, rules, and conversation memory first; when web search is available, it can look up public facts through DuckDuckGo, Wikipedia, and Wikidata. Memory stores facts you contributed in this conversation or imported memory; the whole internet is not preloaded into local rules.";
+}
+
+function tryArchitectureExplanation(prompt, normalized) {
+  if (!isArchitectureQuestion(normalized)) return null;
+  const language = detectLanguage(prompt);
+  return {
+    intent: "meta_explanation",
+    content: architectureExplanationContent(language),
+    confidence: 1.0,
+    evidence: ["response:meta_explanation", "meta_explanation:architecture", `language:${language}`],
+  };
 }
 
 function tryCapabilities(prompt, normalized, preferences, history) {
@@ -11766,6 +11952,13 @@ async function solve(prompt, history, prefs, userContext = {}) {
     events.push(`handler:${capabilities.intent}`);
     steps.push({ step: "dispatch_handler", detail: "tryCapabilities" });
     return finalize(events, steps, toolCalls, capabilities, formalizationContext);
+  }
+
+  const architecture = tryArchitectureExplanation(prompt, normalized);
+  if (architecture) {
+    events.push("handler:meta_explanation");
+    steps.push({ step: "dispatch_handler", detail: "tryArchitectureExplanation" });
+    return finalize(events, steps, toolCalls, architecture, formalizationContext);
   }
 
   if (isGreetingPrompt(normalized, prompt)) {
