@@ -15,6 +15,10 @@ use std::sync::OnceLock;
 use lino_objects_codec::format::format_indented_ordered;
 use serde::{Deserialize, Serialize};
 
+use crate::engine_assistant_name::{
+    assistant_name_answer, chinese_assistant_name_answer, hindi_assistant_name_answer,
+    russian_assistant_name_answer, ASSISTANT_NAME_EXAMPLES,
+};
 use crate::event_log::EventLog;
 use crate::language::Language;
 use crate::seed;
@@ -244,7 +248,7 @@ pub fn knowledge_links_notation() -> String {
                         "untyped indented Links Notation via lino-objects-codec format helpers",
                     ),
                 ),
-                ("rule_count", (HELLO_WORLD_PROGRAMS.len() + 5).to_string()),
+                ("rule_count", (HELLO_WORLD_PROGRAMS.len() + 6).to_string()),
             ],
         ),
         format_concept_index_record(),
@@ -277,6 +281,16 @@ pub fn knowledge_links_notation() -> String {
                 ("response_link", String::from("response:identity")),
                 ("answer", String::from(identity_answer())),
                 ("examples", IDENTITY_EXAMPLES.join(", ")),
+                ("source", String::from("local symbolic seed set")),
+            ],
+        ),
+        format_lino_record(
+            "rule_assistant_name",
+            &[
+                ("intent", String::from("assistant_name")),
+                ("response_link", String::from("response:assistant_name")),
+                ("answer", String::from(assistant_name_answer())),
+                ("examples", ASSISTANT_NAME_EXAMPLES.join(", ")),
                 ("source", String::from("local symbolic seed set")),
             ],
         ),
@@ -326,6 +340,7 @@ fn format_concept_index_record() -> String {
                 String::from("intent: courtesy_response"),
             ),
             ("identity", String::from("intent: identity")),
+            ("assistant_name", String::from("intent: assistant_name")),
             ("hello_world", String::from("intent: hello_world")),
             ("translation", String::from("intent: translation")),
             ("algorithm", String::from("intent: algorithm")),
@@ -459,6 +474,11 @@ pub fn knowledge_graph() -> KnowledgeGraph {
             links_notation: format!("rule_identity answer={}", identity_answer()),
         },
         GraphNode {
+            id: String::from("rule_assistant_name"),
+            label: String::from("Assistant name rule"),
+            links_notation: format!("rule_assistant_name answer={}", assistant_name_answer()),
+        },
+        GraphNode {
             id: String::from("rule_courtesy_response"),
             label: String::from("Courtesy response rule"),
             links_notation: format!(
@@ -490,6 +510,11 @@ pub fn knowledge_graph() -> KnowledgeGraph {
         },
         GraphEdge {
             from: String::from("formal_ai_knowledge"),
+            to: String::from("rule_assistant_name"),
+            role: String::from("contains"),
+        },
+        GraphEdge {
+            from: String::from("formal_ai_knowledge"),
             to: String::from("rule_courtesy_response"),
             role: String::from("contains"),
         },
@@ -511,6 +536,11 @@ pub fn knowledge_graph() -> KnowledgeGraph {
         GraphEdge {
             from: String::from("rule_identity"),
             to: String::from("response:identity"),
+            role: String::from("response_link"),
+        },
+        GraphEdge {
+            from: String::from("rule_assistant_name"),
+            to: String::from("response:assistant_name"),
             role: String::from("response_link"),
         },
         GraphEdge {
@@ -581,6 +611,7 @@ pub(crate) enum SelectedRule {
     TestStatus,
     CourtesyResponse,
     Identity,
+    AssistantName,
     HelloWorld(&'static HelloWorldProgram),
     Unknown,
 }
@@ -593,6 +624,7 @@ impl SelectedRule {
             Self::TestStatus => String::from("test_status"),
             Self::CourtesyResponse => String::from("courtesy_response"),
             Self::Identity => String::from("identity"),
+            Self::AssistantName => String::from("assistant_name"),
             Self::HelloWorld(program) => format!("hello_world_{}", program.slug),
             Self::Unknown => String::from("unknown"),
         }
@@ -605,6 +637,7 @@ impl SelectedRule {
             Self::TestStatus => "response:test_status",
             Self::CourtesyResponse => "response:courtesy_response",
             Self::Identity => "response:identity",
+            Self::AssistantName => "response:assistant_name",
             Self::HelloWorld(program) => program.response_link,
             Self::Unknown => "response:unknown",
         }
@@ -617,6 +650,7 @@ impl SelectedRule {
             Self::TestStatus => String::from(test_status_answer()),
             Self::CourtesyResponse => String::from(courtesy_response_answer()),
             Self::Identity => String::from(identity_answer()),
+            Self::AssistantName => String::from(assistant_name_answer()),
             Self::HelloWorld(program) => hello_world_answer(program),
             Self::Unknown => String::from(unknown_answer()),
         }
@@ -633,6 +667,8 @@ pub(crate) fn select_rule_for(prompt: &str) -> SelectedRule {
         SelectedRule::TestStatus
     } else if is_courtesy_response(&normalized) {
         SelectedRule::CourtesyResponse
+    } else if is_assistant_name_question(&normalized) {
+        SelectedRule::AssistantName
     } else if is_identity_question(&normalized) {
         SelectedRule::Identity
     } else if let Some(program) = hello_world_program(&normalized) {
@@ -673,6 +709,15 @@ pub(crate) fn language_aware_answer_for(
         (SelectedRule::Identity, Language::Russian) => String::from(russian_identity_answer()),
         (SelectedRule::Identity, Language::Hindi) => String::from(hindi_identity_answer()),
         (SelectedRule::Identity, Language::Chinese) => String::from(chinese_identity_answer()),
+        (SelectedRule::AssistantName, Language::Russian) => {
+            String::from(russian_assistant_name_answer())
+        }
+        (SelectedRule::AssistantName, Language::Hindi) => {
+            String::from(hindi_assistant_name_answer())
+        }
+        (SelectedRule::AssistantName, Language::Chinese) => {
+            String::from(chinese_assistant_name_answer())
+        }
         (SelectedRule::Unknown, _) => {
             crate::unknown_opener::language_aware_unknown_answer(prompt, language)
         }
@@ -737,6 +782,10 @@ fn is_test_status(normalized_prompt: &str) -> bool {
 
 fn is_courtesy_response(normalized_prompt: &str) -> bool {
     matches_intent_route(normalized_prompt, "intent_courtesy_response")
+}
+
+fn is_assistant_name_question(normalized_prompt: &str) -> bool {
+    matches_intent_route(normalized_prompt, "intent_assistant_name")
 }
 
 fn is_identity_question(normalized_prompt: &str) -> bool {

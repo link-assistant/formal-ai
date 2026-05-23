@@ -125,6 +125,8 @@ const REQUIRED_KEYS = [
   'settings.composerAction',
   'settings.composerAction.attach',
   'settings.composerAction.plus',
+  'settings.assistantName',
+  'settings.assistantName.placeholder',
   'settings.location',
   'settings.location.placeholder',
   'status.demoPlaying',
