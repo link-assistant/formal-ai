@@ -9300,6 +9300,126 @@ function appendUniqueEvidence(target, source) {
   }
 }
 
+const PANDAS_DATAFRAME_JOIN_DOCS_URL =
+  "https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.join.html";
+
+function hasNormalizedWord(normalized, word) {
+  return String(normalized || "")
+    .split(/\s+/)
+    .some((token) => token === word);
+}
+
+function isExplicitWebSearchPrompt(normalized) {
+  const text = String(normalized || "");
+  const requestsSearch =
+    text.startsWith("search ") ||
+    text.startsWith("find ") ||
+    text.startsWith("look up ") ||
+    text.startsWith("lookup ");
+  return (
+    requestsSearch &&
+    (hasNormalizedWord(text, "web") ||
+      hasNormalizedWord(text, "internet") ||
+      hasNormalizedWord(text, "online"))
+  );
+}
+
+function isExplanationRequest(normalized) {
+  const text = String(normalized || "");
+  return (
+    text.startsWith("how ") ||
+    text.includes(" how ") ||
+    text.startsWith("explain ") ||
+    text.startsWith("describe ") ||
+    text.startsWith("what does ") ||
+    text.startsWith("what is ") ||
+    text.startsWith("tell me about ") ||
+    text.startsWith("how to use ") ||
+    text.startsWith("как ") ||
+    text.includes(" как ") ||
+    text.startsWith("объясни ") ||
+    text.startsWith("расскажи ") ||
+    text.startsWith("что такое ") ||
+    text.includes("कैसे काम") ||
+    text.startsWith("समझाओ") ||
+    text.startsWith("क्या है ") ||
+    text.includes("如何工作") ||
+    text.includes("怎么工作") ||
+    text.startsWith("解释") ||
+    text.includes("是什么")
+  );
+}
+
+function isPandasDataFrameJoinPrompt(prompt, normalized) {
+  const lower = String(prompt || "").toLowerCase();
+  const text = String(normalized || "").trim();
+  if (isExplicitWebSearchPrompt(text)) return false;
+  if (!hasNormalizedWord(text, "pandas")) return false;
+  if (!isExplanationRequest(text)) return false;
+  return (
+    lower.includes("dataframe.join") ||
+    lower.includes("df.join") ||
+    text.includes("join method") ||
+    text.includes("method join") ||
+    (hasNormalizedWord(text, "join") && hasNormalizedWord(text, "метод")) ||
+    (hasNormalizedWord(text, "join") && text.includes("विधि")) ||
+    (hasNormalizedWord(text, "join") && text.includes("方法")) ||
+    (hasNormalizedWord(text, "join") &&
+      (hasNormalizedWord(text, "method") || hasNormalizedWord(text, "dataframe")))
+  );
+}
+
+function docsMethodContent(language) {
+  if (language === "ru") {
+    return [
+      "pandas `DataFrame.join` добавляет столбцы из `other` DataFrame или именованной Series к вызывающему DataFrame и возвращает новый DataFrame.",
+      "В рамках этого метода: по умолчанию это left join по индексу вызывающего DataFrame. Если задан `on`, pandas сопоставляет этот столбец или уровень индекса с индексом объекта `other`. Параметр `how` управляет объединением ключей (`left`, `right`, `outer`, `inner`, `cross`, `left_anti` или `right_anti`). `lsuffix` и `rsuffix` нужны при совпадающих именах столбцов, `sort` сортирует ключи join, а `validate` проверяет связи one-to-one, one-to-many, many-to-one или many-to-many. Для join столбец-к-столбцу документация pandas указывает на `DataFrame.merge`.",
+      `Источник: [pandas.DataFrame.join](${PANDAS_DATAFRAME_JOIN_DOCS_URL}) (официальная документация pandas).`,
+    ].join("\n\n");
+  }
+
+  if (language === "hi") {
+    return [
+      "pandas `DataFrame.join` कॉल करने वाले DataFrame में `other` DataFrame या named Series के columns जोड़ता है और नया DataFrame लौटाता है.",
+      "इस method के दायरे में: default रूप से यह caller के index पर left join करता है. `on` देने पर pandas caller के उस column या index level को `other` object के index से मिलाता है. `how` parameter keys को मिलाने का तरीका चुनता है (`left`, `right`, `outer`, `inner`, `cross`, `left_anti`, या `right_anti`). Column नाम टकराने पर `lsuffix` और `rsuffix`, join keys को sort करने के लिए `sort`, और one-to-one, one-to-many, many-to-one, या many-to-many संबंध जांचने के लिए `validate` इस्तेमाल करें. Column-on-column joins के लिए pandas docs `DataFrame.merge` की ओर भेजते हैं.",
+      `Source: [pandas.DataFrame.join](${PANDAS_DATAFRAME_JOIN_DOCS_URL}) (official pandas docs).`,
+    ].join("\n\n");
+  }
+
+  if (language === "zh") {
+    return [
+      "pandas `DataFrame.join` 会把 `other` DataFrame 或具名 Series 的列加入调用方，并返回新的 DataFrame。",
+      "只看这个方法：默认情况下，它使用调用方的 index 执行 left join。设置 `on` 时，pandas 会把调用方的列或索引层级与 `other` 对象的 index 匹配。`how` 参数控制键的组合方式（`left`、`right`、`outer`、`inner`、`cross`、`left_anti` 或 `right_anti`）。列名冲突时使用 `lsuffix` 和 `rsuffix`，用 `sort` 排序 join keys，用 `validate` 检查 one-to-one、one-to-many、many-to-one 或 many-to-many 关系。对于列到列的 join，pandas 文档指向 `DataFrame.merge`。",
+      `Source: [pandas.DataFrame.join](${PANDAS_DATAFRAME_JOIN_DOCS_URL}) (official pandas docs).`,
+    ].join("\n\n");
+  }
+
+  return [
+    "pandas `DataFrame.join` joins columns from the `other` DataFrame or named Series into the caller and returns a new DataFrame.",
+    "Scoped to this method: by default, it performs a left join using the caller's index. If `on` is set, pandas matches that caller column or index level against the `other` object's index. The `how` parameter controls key handling (`left`, `right`, `outer`, `inner`, `cross`, `left_anti`, or `right_anti`). Use `lsuffix` and `rsuffix` when column names overlap, `sort` to order join keys, and `validate` to check one-to-one, one-to-many, many-to-one, or many-to-many relationships. For column-on-column joins, the pandas docs point to `DataFrame.merge`.",
+    `Source: [pandas.DataFrame.join](${PANDAS_DATAFRAME_JOIN_DOCS_URL}) (official pandas docs).`,
+  ].join("\n\n");
+}
+
+function tryDocsMethodExplanation(prompt, language) {
+  const normalized = normalizePrompt(prompt);
+  if (!isPandasDataFrameJoinPrompt(prompt, normalized)) return null;
+
+  return {
+    intent: "docs_method_explanation",
+    content: docsMethodContent(language),
+    confidence: 0.92,
+    evidence: [
+      "docs_method:project:pandas",
+      "docs_method:method:pandas.DataFrame.join",
+      "docs_method:source_kind:official-docs",
+      `source:${PANDAS_DATAFRAME_JOIN_DOCS_URL}`,
+      `language:${language}`,
+    ],
+    formalizedObject: "pandas.DataFrame.join",
+  };
+}
+
 async function tryProceduralHowTo(prompt, language) {
   const normalized = normalizePrompt(prompt);
   const task = extractProceduralHowToTask(normalized);
@@ -11953,6 +12073,23 @@ async function solve(prompt, history, prefs, userContext = {}) {
       outputs: { intent: navigated.intent, confidence: navigated.confidence, iframeUrl: navigated.iframeUrl || null },
     });
     return finalize(events, steps, toolCalls, navigated, formalizationContext);
+  }
+
+  steps.push({ step: "invoke_tool", detail: "docs_method_explanation" });
+  const docsMethod = tryDocsMethodExplanation(prompt, language);
+  if (docsMethod) {
+    events.push(`handler:${docsMethod.intent}`);
+    steps.push({ step: "dispatch_handler", detail: "tryDocsMethodExplanation" });
+    toolCalls.push({
+      tool: "docs_method_explanation",
+      inputs: { prompt, language, project: "pandas", method: "DataFrame.join" },
+      outputs: {
+        intent: docsMethod.intent,
+        confidence: docsMethod.confidence,
+        formalizedObject: docsMethod.formalizedObject || "",
+      },
+    });
+    return finalize(events, steps, toolCalls, docsMethod, formalizationContext);
   }
 
   steps.push({ step: "invoke_tool", detail: "procedural_how_to" });

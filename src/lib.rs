@@ -15,6 +15,7 @@ pub mod protocol;
 pub mod seed;
 pub mod server;
 pub mod solver;
+pub(crate) mod solver_handler_docs;
 pub(crate) mod solver_handler_how;
 pub(crate) mod solver_handler_units;
 pub(crate) mod solver_handlers;
