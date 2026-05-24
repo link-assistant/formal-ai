@@ -43,6 +43,9 @@ let mode = "wasm worker";
 const FALLBACK_IDENTITY_ANSWER =
   "I am formal-ai, a deterministic symbolic AI implementation that answers from local Links Notation rules and OpenAI-compatible API shapes. I do not perform neural inference in this demo.";
 
+const FALLBACK_ASSISTANT_NAME_ANSWER =
+  "I'm formal AI, and currently I don't have a name. But you can name me as you like.";
+
 const FALLBACK_GREETING_ANSWER = "Hi, how may I help you?";
 
 const FALLBACK_TEST_STATUS_ANSWER = "Test passed. I'm here.";
@@ -88,6 +91,12 @@ let MULTILINGUAL_ANSWERS = {
   },
   identity: {
     en: { text: FALLBACK_IDENTITY_ANSWER, variants: [FALLBACK_IDENTITY_ANSWER] },
+  },
+  assistant_name: {
+    en: {
+      text: FALLBACK_ASSISTANT_NAME_ANSWER,
+      variants: [FALLBACK_ASSISTANT_NAME_ANSWER],
+    },
   },
   clarification: {
     en: {
@@ -348,6 +357,36 @@ let INTENT_ROUTING = {
       ],
     },
     {
+      id: "intent_assistant_name",
+      slug: "assistant_name",
+      responseLink: "response:assistant_name",
+      keywords: [],
+      phrases: [
+        "what is your name",
+        "what s your name",
+        "what's your name",
+        "do you have a name",
+        "what should i call you",
+        "как твое имя",
+        "как твоё имя",
+        "как тебя зовут",
+        "у тебя есть имя",
+        "आपका नाम क्या है",
+        "तुम्हारा नाम क्या है",
+        "你叫什么名字",
+        "您叫什么名字",
+        "你的名字是什么",
+        "你有名字吗",
+      ],
+      tokens: [],
+      combos: [
+        ["what", "your", "name"],
+        ["you", "have", "name"],
+        ["call", "you"],
+        ["как", "тебя", "зовут"],
+      ],
+    },
+    {
       id: "intent_identity",
       slug: "identity",
       responseLink: "response:identity",
@@ -407,6 +446,12 @@ function fallbackEntry(intent) {
   if (intent === "identity") {
     return { text: FALLBACK_IDENTITY_ANSWER, variants: [FALLBACK_IDENTITY_ANSWER] };
   }
+  if (intent === "assistant_name") {
+    return {
+      text: FALLBACK_ASSISTANT_NAME_ANSWER,
+      variants: [FALLBACK_ASSISTANT_NAME_ANSWER],
+    };
+  }
   if (intent === "test_status") {
     return { text: FALLBACK_TEST_STATUS_ANSWER, variants: [FALLBACK_TEST_STATUS_ANSWER] };
   }
@@ -463,6 +508,33 @@ function answerFor(intent, language, options) {
     return entry.variants[idx] || entry.text;
   }
   return entry.text;
+}
+
+function normalizeAssistantNamePreference(value) {
+  return String(value || "")
+    .replace(/[\r\n\t]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .replace(/^[`"']+|[`"']+$/g, "")
+    .trim()
+    .slice(0, 64);
+}
+
+function assistantNameAnswer(language, preferences) {
+  const name = normalizeAssistantNamePreference(
+    preferences && preferences.assistantName,
+  );
+  if (!name) return answerFor("assistant_name", language);
+  if (language === "ru") {
+    return `Меня зовут ${name}. Я formal AI.`;
+  }
+  if (language === "hi") {
+    return `मेरा नाम ${name} है। मैं formal AI हूँ।`;
+  }
+  if (language === "zh") {
+    return `我的名字是 ${name}。我是 formal AI。`;
+  }
+  return `My name is ${name}. I'm formal AI.`;
 }
 
 // Mirrors `src/engine.rs::UNKNOWN_OPENERS_*`. The first entry of each pool
@@ -2042,6 +2114,10 @@ function isIdentityPrompt(normalized, rawPrompt) {
   return matchesIntentRoute(normalized, rawPrompt, "intent_identity");
 }
 
+function isAssistantNamePrompt(normalized, rawPrompt) {
+  return matchesIntentRoute(normalized, rawPrompt, "intent_assistant_name");
+}
+
 function isGreetingPrompt(normalized, rawPrompt) {
   return matchesIntentRoute(normalized, rawPrompt, "intent_greeting");
 }
@@ -2194,6 +2270,7 @@ function behaviorRuleRecords() {
   const greeting = answerFor("greeting", "en");
   const farewell = answerFor("farewell", "en");
   const identity = answerFor("identity", "en");
+  const assistantName = answerFor("assistant_name", "en");
   return [
     {
       id: "rule_greeting",
@@ -2224,6 +2301,16 @@ function behaviorRuleRecords() {
       response: identity,
       source: "data/seed/identity.lino + multilingual responses",
       whenThen: `When the user asks \`Who are you?\` or \`Кто ты?\` then respond with \`${identity}\`.`,
+    },
+    {
+      id: "rule_assistant_name",
+      topic: "assistant_name",
+      intent: "assistant_name",
+      label: "Assistant name rule",
+      matches: "`What is your name?`, `Как твое имя?`, and equivalent name prompts",
+      response: assistantName,
+      source: "data/seed/intent-routing.lino + multilingual responses",
+      whenThen: `When the user asks \`What is your name?\` or \`Как твое имя?\` then respond with \`${assistantName}\`, unless the assistant name setting is configured.`,
     },
     {
       id: "rule_capabilities",
@@ -2320,6 +2407,7 @@ const BEHAVIOR_RULE_TOPIC_LABELS = {
   greetings: "Greetings",
   farewells: "Farewells",
   identity: "Identity",
+  assistant_name: "Assistant name",
   capabilities: "Capabilities",
   hello_world: "Hello-world programs",
   unknown_fallback: "Unknown fallback",
@@ -2329,6 +2417,7 @@ const BEHAVIOR_RULE_TOPIC_ORDER = [
   "greetings",
   "farewells",
   "identity",
+  "assistant_name",
   "capabilities",
   "hello_world",
   "unknown_fallback",
@@ -12015,6 +12104,21 @@ async function solve(prompt, history, prefs, userContext = {}) {
         `follow_up:${courtesy.followUpIncluded ? "included" : "omitted"}`,
       ],
     });
+  }
+  if (isAssistantNamePrompt(normalized, prompt)) {
+    events.push("rule:assistant_name");
+    steps.push({ step: "match_rule", detail: "assistant_name" });
+    const configuredName = normalizeAssistantNamePreference(preferences.assistantName);
+    return finalize(events, steps, toolCalls, {
+      intent: "assistant_name",
+      content: assistantNameAnswer(language, preferences),
+      confidence: 1.0,
+      evidence: [
+        "rule:assistant_name",
+        `language:${language}`,
+        `assistant_name:${configuredName ? "configured" : "not_set"}`,
+      ],
+    }, formalizationContext);
   }
   if (isIdentityPrompt(normalized, prompt)) {
     events.push("rule:identity");
