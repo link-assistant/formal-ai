@@ -746,6 +746,61 @@ assertBalancedLanguageCaseCounts(
   }
 }
 
+const primeInfinitudeProofCases = {
+  en: [
+    {
+      prompt: 'Hello. Prove that there are infinitely many prime numbers',
+      expectedStatement: 'There are infinitely many prime numbers',
+    },
+  ],
+  ru: [
+    {
+      prompt: 'привет. докажи что простых бесконечно',
+      expectedStatement: 'Простых чисел бесконечно много',
+    },
+  ],
+  hi: [
+    {
+      prompt: 'नमस्ते. साबित करो कि अभाज्य संख्याएँ अनंत हैं',
+      expectedStatement: 'अभाज्य संख्याएँ अनंत हैं',
+    },
+  ],
+  zh: [
+    {
+      prompt: '你好。证明素数有无穷多个',
+      expectedStatement: '素数有无穷多个',
+    },
+  ],
+};
+
+assertMatrixMatchesSupportedLanguages(
+  'primeInfinitudeProofCases',
+  primeInfinitudeProofCases,
+);
+assertBalancedLanguageCaseCounts(
+  'primeInfinitudeProofCases',
+  primeInfinitudeProofCases,
+);
+
+{
+  const rustProofTests = readRepoFile('tests/unit/proof_request.rs');
+  const browserIssue209Tests = readRepoFile('tests/e2e/tests/issue-209.spec.js');
+  for (const [language, entries] of Object.entries(primeInfinitudeProofCases)) {
+    for (const entry of entries) {
+      assert(
+        rustProofTests.includes(entry.prompt) &&
+          rustProofTests.includes(entry.expectedStatement),
+        `tests/unit/proof_request.rs must cover ${language} prime-infinitude proof prompt ${JSON.stringify(entry.prompt)}`,
+      );
+      assert(
+        browserIssue209Tests.includes(entry.prompt) &&
+          browserIssue209Tests.includes(entry.expectedStatement),
+        `tests/e2e/tests/issue-209.spec.js must cover ${language} prime-infinitude proof prompt ${JSON.stringify(entry.prompt)}`,
+      );
+    }
+  }
+}
+
 const requiredLocalizedResponseIntents = [
   'greeting',
   'farewell',

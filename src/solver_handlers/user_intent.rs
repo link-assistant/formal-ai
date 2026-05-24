@@ -584,11 +584,31 @@ fn extract_claim_from_prompt(normalized: &str) -> String {
     ];
     for prefix in prefixes {
         if let Some(rest) = trimmed.strip_prefix(prefix) {
-            let stripped = rest.trim_start_matches(|c: char| c == ',' || c.is_whitespace());
-            return stripped.to_owned();
+            return strip_claim_prefix_noise(rest).to_owned();
+        }
+    }
+    for prefix in prefixes {
+        if let Some(index) = trimmed.find(prefix) {
+            let before = &trimmed[..index];
+            if before.chars().last().is_some_and(is_claim_intro_boundary) {
+                let rest = &trimmed[index + prefix.len()..];
+                return strip_claim_prefix_noise(rest).to_owned();
+            }
         }
     }
     trimmed.to_owned()
+}
+
+fn is_claim_intro_boundary(ch: char) -> bool {
+    ch.is_whitespace()
+        || matches!(
+            ch,
+            '.' | ',' | ':' | ';' | '!' | '?' | '…' | '。' | '，' | '：' | '；' | '！' | '？'
+        )
+}
+
+fn strip_claim_prefix_noise(text: &str) -> &str {
+    text.trim_start_matches(|c: char| c == ',' || c == ':' || c.is_whitespace())
 }
 
 fn pipeline_footer(language: &str) -> String {

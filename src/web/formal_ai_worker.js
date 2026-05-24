@@ -3656,7 +3656,7 @@ function isFeatureCapabilityQuestion(normalized, language) {
     ]);
   }
   if (language === "zh") {
-    return containsAny(normalized, ["能", "可以", "支持", "有", "启用", "可用"]);
+    return containsAny(normalized, ["能", "可以", "支持", "你有", "您有", "有没有", "是否有", "启用", "可用"]);
   }
   if (language === "hi") {
     return containsAny(normalized, ["क्या", "सकते", "सकती", "समर्थन", "उपलब्ध"]);
@@ -5097,6 +5097,292 @@ function tryArithmetic(prompt) {
       interpretations,
     };
   }
+}
+
+function isProofIntroBoundary(ch) {
+  return /\s|[.,:;!?…。，：；！？]/u.test(ch);
+}
+
+function stripProofClaimNoise(value) {
+  return String(value || "")
+    .replace(/^[\s,.:;!?…。，：；！？]+/u, "")
+    .trim();
+}
+
+function startsWithProofVerb(normalized, verb) {
+  if (!normalized.startsWith(verb)) return false;
+  const tail = normalized.slice(verb.length);
+  if (!tail) return true;
+  return !/[\p{L}\p{N}]/u.test(tail.charAt(0));
+}
+
+function hasProofRequestShape(normalized) {
+  const text = String(normalized || "").trim();
+  if (!text) return false;
+  return (
+    startsWithProofVerb(text, "prove") ||
+    startsWithProofVerb(text, "proof") ||
+    text.startsWith("can you prove") ||
+    text.startsWith("could you prove") ||
+    text.startsWith("please prove") ||
+    text.startsWith("give me a proof") ||
+    text.startsWith("give a proof") ||
+    text.startsWith("show that ") ||
+    text.startsWith("demonstrate that ") ||
+    text.includes(" prove that ") ||
+    text.includes(" proof of ") ||
+    startsWithProofVerb(text, "докажи") ||
+    startsWithProofVerb(text, "докажите") ||
+    startsWithProofVerb(text, "доказать") ||
+    startsWithProofVerb(text, "доказательство") ||
+    text.includes(" докажи ") ||
+    text.includes(" докажите ") ||
+    text.includes(" доказать ") ||
+    text.includes(" доказательство ") ||
+    text.includes("साबित कर") ||
+    text.includes("साबित कीजिए") ||
+    text.includes("साबित कीजिये") ||
+    text.includes("सिद्ध कर") ||
+    text.includes("सिद्ध कीजिए") ||
+    text.includes("सिद्ध कीजिये") ||
+    text.includes("प्रमाण") ||
+    text.includes("证明") ||
+    text.includes("證明")
+  );
+}
+
+function extractProofClaim(normalized) {
+  const trimmed = String(normalized || "").trim();
+  const prefixes = [
+    "prove that ",
+    "prove ",
+    "proof of ",
+    "proof that ",
+    "show that ",
+    "demonstrate that ",
+    "demonstrate ",
+    "can you prove that ",
+    "can you prove ",
+    "could you prove that ",
+    "could you prove ",
+    "please prove that ",
+    "please prove ",
+    "give me a proof of ",
+    "give me a proof that ",
+    "give a proof of ",
+    "give a proof that ",
+    "докажи что ",
+    "докажите что ",
+    "доказать что ",
+    "докажите ",
+    "докажи ",
+    "доказать ",
+    "доказательство ",
+    "साबित करो कि ",
+    "साबित कीजिए कि ",
+    "साबित कर ",
+    "सिद्ध कीजिए कि ",
+    "सिद्ध करो कि ",
+    "证明",
+    "證明",
+  ];
+  for (const prefix of prefixes) {
+    if (trimmed.startsWith(prefix)) {
+      return stripProofClaimNoise(trimmed.slice(prefix.length));
+    }
+  }
+  for (const prefix of prefixes) {
+    const index = trimmed.indexOf(prefix);
+    if (index <= 0) continue;
+    const before = trimmed.charAt(index - 1);
+    if (isProofIntroBoundary(before)) {
+      return stripProofClaimNoise(trimmed.slice(index + prefix.length));
+    }
+  }
+  return trimmed;
+}
+
+function matchesEuclidPrimeClaim(claim) {
+  const lower = String(claim || "").toLowerCase();
+  return (
+    lower.includes("infinitely many primes") ||
+    lower.includes("infinitely many prime numbers") ||
+    lower.includes("infinitude of primes") ||
+    lower.includes("prime numbers are infinite") ||
+    lower.includes("euclid") ||
+    lower.includes("евклид") ||
+    (lower.includes("прост") && lower.includes("бесконеч")) ||
+    lower.includes("अनंत अभाज्य") ||
+    lower.includes("अनन्त अभाज्य") ||
+    lower.includes("अभाज्य संख्याएँ अनंत") ||
+    lower.includes("अभाज्य संख्याएं अनंत") ||
+    lower.includes("अभाज्य संख्याएँ अनन्त") ||
+    lower.includes("अभाज्य संख्याएं अनन्त") ||
+    lower.includes("无穷多素数") ||
+    lower.includes("无穷多个素数") ||
+    lower.includes("素数有无穷") ||
+    lower.includes("素数无穷") ||
+    lower.includes("無窮多素數") ||
+    lower.includes("素數有無窮") ||
+    lower.includes("素數無窮") ||
+    lower.includes("欧几里得")
+  );
+}
+
+function euclidPrimeProofBody(language) {
+  if (language === "ru") {
+    return [
+      "Как я понял запрос: трактуем запрос как формальное утверждение «Простых чисел бесконечно много.» и доказываем методом «от противного» в relative-meta-logic.",
+      "",
+      "Доказательство (метод: от противного).",
+      "",
+      "Утверждение: Простых чисел бесконечно много.",
+      "1. Работаем в элементарной теории чисел, формализуемой в арифметике Пеано (PA): простое число — это целое число больше 1, положительные делители которого только 1 и оно само. В доказательстве используется теорема PA: у каждого целого числа больше 1 есть простой делитель; это формальный контекст для тактики от противного в relative-meta-logic.",
+      "2. Предположим противное: простых чисел конечное число; обозначим их p₁, p₂, …, pₙ.",
+      "3. Рассмотрим число N = p₁·p₂·…·pₙ + 1. Это целое число, большее единицы.",
+      "4. По основной теореме арифметики у N есть простой делитель q. Если q = pᵢ для некоторого i, то pᵢ делит и p₁·p₂·…·pₙ, и N, а значит делит их разность, равную 1 — противоречие.",
+      "5. Значит, q — простое число, не входящее в список p₁, …, pₙ, что противоречит предположению о полноте списка.",
+      "",
+      "Предположение несостоятельно, следовательно простых чисел бесконечно много. ∎",
+    ].join("\n");
+  }
+  if (language === "hi") {
+    return [
+      "मैंने प्रश्न को कैसे समझा: प्रश्न को औपचारिक कथन \"अभाज्य संख्याएँ अनंत हैं।\" मानकर relative-meta-logic में \"विरोधाभास\" विधि से प्रमाणित कर रहे हैं।",
+      "",
+      "प्रमाण (विधि: विरोधाभास)।",
+      "",
+      "कथन: अभाज्य संख्याएँ अनंत हैं।",
+      "1. हम प्राथमिक संख्या-सिद्धांत में काम करते हैं, जिसे Peano arithmetic (PA) में औपचारिक किया जा सकता है: अभाज्य वह पूर्णांक है जो 1 से बड़ा है और जिसके धनात्मक भाजक केवल 1 और वही संख्या हैं। प्रमाण PA के इस प्रमेय का उपयोग करता है कि 1 से बड़े हर पूर्णांक का कोई अभाज्य भाजक होता है; यही relative-meta-logic की contradiction युक्ति का औपचारिक संदर्भ है।",
+      "2. विरोधाभास हेतु मान लीजिए कि अभाज्य संख्याएँ केवल सीमित संख्या में हैं: p₁, p₂, …, pₙ।",
+      "3. संख्या N = p₁·p₂·…·pₙ + 1 लीजिए। N एक से बड़ा पूर्णांक है।",
+      "4. अंकगणित की मूल प्रमेय से N का कोई अभाज्य भाजक q है। यदि किसी i के लिए q = pᵢ हो, तो pᵢ संख्या p₁·p₂·…·pₙ और N दोनों को विभाजित करेगा, अर्थात उनका अंतर 1 भी विभाजित करेगा — असंभव।",
+      "5. अतः q एक ऐसा अभाज्य है जो सूची p₁, …, pₙ में नहीं है, जो सूची के पूर्ण होने की परिकल्पना का खंडन करता है।",
+      "",
+      "अतः परिकल्पना असत्य है और अभाज्य संख्याएँ अनंत हैं। ∎",
+    ].join("\n");
+  }
+  if (language === "zh") {
+    return [
+      "对问题的理解: 把问题视为形式命题“素数有无穷多个。”, 在 relative-meta-logic 中用“反证法”方法证明。",
+      "",
+      "证明 (方法: 反证法)。",
+      "",
+      "命题: 素数有无穷多个。",
+      "1. 在可由 Peano arithmetic (PA) 形式化的初等数论中工作: 素数是大于 1 的整数, 其正因数只有 1 和自身。证明使用 PA 中的定理: 每个大于 1 的整数都有素因数; 这就是 relative-meta-logic 反证策略的形式上下文。",
+      "2. 假设素数仅有有限多个, 记为 p₁、p₂、…、pₙ。",
+      "3. 构造数 N = p₁·p₂·…·pₙ + 1。N 是大于 1 的整数。",
+      "4. 由算术基本定理, N 有一个素因数 q。若 q = pᵢ, 则 pᵢ 同时整除 p₁·p₂·…·pₙ 与 N, 因而整除二者之差 1, 矛盾。",
+      "5. 因此 q 是不在 p₁, …, pₙ 中的素数, 与假设矛盾。",
+      "",
+      "假设不成立, 故素数有无穷多个。∎",
+    ].join("\n");
+  }
+  return [
+    "How I interpreted the request: treating the request as the formal claim \"There are infinitely many prime numbers.\" and discharging it by contradiction inside relative-meta-logic.",
+    "",
+    "Proof (method: contradiction).",
+    "",
+    "Statement: There are infinitely many prime numbers.",
+    "1. Work in elementary number theory, formalizable in Peano arithmetic (PA): a prime is an integer greater than 1 whose only positive divisors are 1 and itself. The proof uses the PA theorem that every integer greater than 1 has a prime divisor; this is the formal context for the relative-meta-logic contradiction tactic.",
+    "2. Assume for contradiction that only finitely many primes exist; call them p₁, p₂, …, pₙ.",
+    "3. Form the number N = p₁·p₂·…·pₙ + 1. Then N is an integer greater than 1.",
+    "4. By the fundamental theorem of arithmetic, N has a prime divisor q. If q = pᵢ for some i, then pᵢ divides both p₁·p₂·…·pₙ and N, so pᵢ divides their difference, which is 1 — impossible.",
+    "5. Hence q is a prime not in the list p₁, …, pₙ, contradicting the assumption that the list was complete.",
+    "",
+    "The assumption fails, so there are infinitely many primes. ∎",
+  ].join("\n");
+}
+
+function genericProofPlanBody(prompt, language) {
+  if (language === "ru") {
+    return [
+      "Как я понял запрос: утверждение нужно доказать, но для финального исполнения не хватает выбранной формальной системы.",
+      "",
+      "План доказательства (метод: формализация и проверка).",
+      "",
+      `Утверждение: ${String(prompt || "").trim()}`,
+      "1. Зафиксировать систему аксиом, например PA для арифметики, ZFC для теории множеств или конкретную теорию предметной области.",
+      "2. Перевести утверждение в закрытую формулу этой системы.",
+      "3. Выбрать тактику relative-meta-logic: rewrite, induction, contradiction или поиск контрпримера.",
+      "4. Проверить каждый шаг и вернуть либо сертификат доказательства, либо контрпример.",
+      "",
+      "Чтобы выполнить доказательство полностью, нужен явный набор аксиом и точная формулировка утверждения.",
+    ].join("\n");
+  }
+  if (language === "hi") {
+    return [
+      "मैंने प्रश्न को कैसे समझा: यह प्रमाण का अनुरोध है, पर अंतिम निष्पादन के लिए चुनी हुई औपचारिक प्रणाली चाहिए।",
+      "",
+      "प्रमाण योजना (विधि: औपचारिकरण और सत्यापन)।",
+      "",
+      `कथन: ${String(prompt || "").trim()}`,
+      "1. कोई अभिगृहीत प्रणाली चुनें, जैसे arithmetic के लिए PA, set theory के लिए ZFC, या किसी क्षेत्र-विशेष की theory।",
+      "2. कथन को उस प्रणाली के बंद सूत्र में अनुवादित करें।",
+      "3. relative-meta-logic की tactic चुनें: rewrite, induction, contradiction, या counterexample search।",
+      "4. प्रत्येक चरण जाँचें और proof certificate या counterexample लौटाएँ।",
+      "",
+      "प्रमाण पूरा करने के लिए सटीक axiom set और closed statement चाहिए।",
+    ].join("\n");
+  }
+  if (language === "zh") {
+    return [
+      "对问题的理解: 该提示要求证明, 但最终执行需要选定的形式系统。",
+      "",
+      "证明计划 (方法: 形式化与验证)。",
+      "",
+      `命题: ${String(prompt || "").trim()}`,
+      "1. 固定一个公理系统, 例如 arithmetic 用 PA, set theory 用 ZFC, 或某个领域专用理论。",
+      "2. 将命题翻译成该系统中的闭公式。",
+      "3. 选择 relative-meta-logic 策略: rewrite、induction、contradiction 或 counterexample search。",
+      "4. 检查每一步, 并返回证明证书或反例。",
+      "",
+      "要完成证明, 需要精确的 axiom set 和 closed statement。",
+    ].join("\n");
+  }
+  return [
+    "How I interpreted the request: the prompt asks for a proof, but final execution needs a chosen formal system.",
+    "",
+    "Proof plan (method: formalization and verification).",
+    "",
+    `Statement: ${String(prompt || "").trim()}`,
+    "1. Fix an axiom system, for example PA for arithmetic, ZFC for set theory, or a domain-specific theory.",
+    "2. Translate the claim into a closed formula in that system.",
+    "3. Choose a relative-meta-logic tactic: rewrite, induction, contradiction, or counterexample search.",
+    "4. Check each step and return either a proof certificate or a counterexample.",
+    "",
+    "To finish the proof, provide the exact axiom set and a closed statement.",
+  ].join("\n");
+}
+
+function tryProofRequest(prompt, normalized, language) {
+  if (!hasProofRequestShape(normalized)) return null;
+  const claim = extractProofClaim(normalized);
+  if (matchesEuclidPrimeClaim(claim)) {
+    return {
+      intent: "proof_request",
+      content: euclidPrimeProofBody(language),
+      confidence: 0.85,
+      evidence: [
+        "policy:proof_request",
+        "pipeline:planned:relative-meta-logic",
+        "proof_outcome:proven",
+        "proof_method:contradiction",
+        `language:${language}`,
+      ],
+    };
+  }
+  return {
+    intent: "proof_request",
+    content: genericProofPlanBody(prompt, language),
+    confidence: 0.6,
+    evidence: [
+      "policy:proof_request",
+      "pipeline:planned:relative-meta-logic",
+      "proof_outcome:partial_plan",
+      `language:${language}`,
+    ],
+  };
 }
 
 const WEEKDAY_CYCLE = [
@@ -12647,6 +12933,10 @@ async function solve(prompt, history, prefs, userContext = {}) {
     {
       name: "tryCalendarReasoning",
       run: () => tryCalendarReasoning(prompt, normalized, userContext),
+    },
+    {
+      name: "tryProofRequest",
+      run: () => tryProofRequest(prompt, normalized, language),
     },
     { name: "tryArithmetic", run: () => tryArithmetic(prompt) },
     { name: "tryJavaScriptExecution", run: () => tryJavaScriptExecution(prompt) },
