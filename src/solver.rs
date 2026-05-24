@@ -34,16 +34,17 @@ use crate::seed;
 use crate::solver_handler_how::{try_how_it_works, try_how_to_procedure};
 use crate::solver_handler_units::try_incompatible_units;
 use crate::solver_handlers::{
-    finalize_simple, try_algorithm, try_arithmetic, try_behavior_rules, try_brainstorming_request,
-    try_calendar_reasoning, try_capabilities, try_clarification, try_concept_lookup,
-    try_conversation_memory, try_coreference_request, try_definition_merge,
-    try_definition_merge_by_default, try_execution_failure, try_fact_lookup,
-    try_feature_capability, try_http_fetch, try_ill_formed, try_javascript_execution,
-    try_meta_explanation, try_network_query, try_opinion_question, try_project_lookup,
-    try_proof_request, try_proof_request_with_config, try_punctuation_only_prompt,
-    try_roleplay_request, try_shell_refusal, try_software_project_request, try_source_conflict,
-    try_source_refresh, try_summarization_request, try_translation, try_url_navigate,
-    try_web_search, try_who_is_question, try_write_script, CapabilityRuntime,
+    finalize_simple, try_algorithm, try_arithmetic, try_behavior_rules_with_runtime,
+    try_brainstorming_request, try_calendar_reasoning, try_capabilities, try_clarification,
+    try_concept_lookup, try_conversation_memory, try_conversation_topic_request,
+    try_coreference_request, try_definition_merge, try_definition_merge_by_default,
+    try_execution_failure, try_fact_lookup, try_feature_capability, try_http_fetch, try_ill_formed,
+    try_javascript_execution, try_meta_explanation, try_meta_explanation_with_runtime,
+    try_network_query, try_opinion_question, try_project_lookup, try_proof_request,
+    try_proof_request_with_config, try_punctuation_only_prompt, try_roleplay_request,
+    try_shell_refusal, try_software_project_request, try_source_conflict, try_source_refresh,
+    try_summarization_request, try_translation, try_url_navigate, try_web_search,
+    try_who_is_question, try_write_script, CapabilityRuntime, SelfAwarenessRuntime,
 };
 use crate::solver_handlers_policy::{try_kupi_slona, try_physical_action_question};
 use crate::solver_helpers::{
@@ -99,6 +100,47 @@ fn is_inappropriate_content(normalized: &str) -> bool {
     en_vulgar.iter().any(|w| normalized.contains(w))
 }
 
+/// Runtime surface where the solver is embedded.
+///
+/// Self-awareness answers use this to avoid claiming browser-only, CLI-only, or
+/// server-only affordances in the wrong environment.
+#[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
+pub enum ExecutionSurface {
+    #[default]
+    RustLibrary,
+    Cli,
+    HttpServer,
+    Browser,
+    Telegram,
+    DockerMicroservice,
+}
+
+impl ExecutionSurface {
+    #[must_use]
+    pub const fn slug(self) -> &'static str {
+        match self {
+            Self::RustLibrary => "rust_library",
+            Self::Cli => "cli",
+            Self::HttpServer => "http_server",
+            Self::Browser => "browser",
+            Self::Telegram => "telegram",
+            Self::DockerMicroservice => "docker_microservice",
+        }
+    }
+
+    fn from_env_value(raw: &str) -> Option<Self> {
+        match raw.trim().to_ascii_lowercase().as_str() {
+            "rust" | "rust_library" | "library" | "lib" => Some(Self::RustLibrary),
+            "cli" | "terminal" | "shell" => Some(Self::Cli),
+            "http" | "http_server" | "server" | "api" => Some(Self::HttpServer),
+            "browser" | "web" | "wasm" | "demo" => Some(Self::Browser),
+            "telegram" | "telegram_bot" | "bot" => Some(Self::Telegram),
+            "docker" | "docker_microservice" | "container" => Some(Self::DockerMicroservice),
+            _ => None,
+        }
+    }
+}
+
 /// Runtime configuration for the universal solver.
 ///
 /// These knobs control the universal loop's tradeoffs and let the same engine
@@ -146,6 +188,8 @@ pub struct SolverConfig {
     /// Link Assistant, Link Foundation, and `LinksPlatform` before showing the
     /// generic multi-host repository lookup path.
     pub associative_project_promotion: bool,
+    /// Embedding surface used for environment-aware self-description.
+    pub execution_surface: ExecutionSurface,
 }
 
 impl Default for SolverConfig {
@@ -163,6 +207,7 @@ impl Default for SolverConfig {
             cache_ttl_seconds: 60 * 60 * 24 * 60,
             definition_fusion_by_default: false,
             associative_project_promotion: true,
+            execution_surface: ExecutionSurface::default(),
         }
     }
 }
@@ -188,6 +233,13 @@ impl SolverConfig {
             .or_else(|| env_bool("FORMAL_AI_PROJECT_PROMOTION"))
         {
             config.associative_project_promotion = value;
+        }
+        if let Ok(value) = std::env::var("FORMAL_AI_EXECUTION_SURFACE")
+            .or_else(|_| std::env::var("FORMAL_AI_SURFACE"))
+        {
+            if let Some(surface) = ExecutionSurface::from_env_value(&value) {
+                config.execution_surface = surface;
+            }
         }
         if let Some(value) = env_bounded_f32("FORMAL_AI_TEMPERATURE", 0.0, 1.0) {
             config.temperature = value;
@@ -357,7 +409,6 @@ fn handle_concept_lookup(
 /// New handlers should be slotted into the position that preserves intent
 /// precedence rather than appended unconditionally.
 const SPECIALIZED_HANDLERS: &[(&str, SpecializedHandler)] = &[
-    ("behavior_rules", try_behavior_rules),
     ("http_fetch", try_http_fetch),
     ("url_navigate", try_url_navigate),
     ("web_search", try_web_search),
@@ -365,6 +416,7 @@ const SPECIALIZED_HANDLERS: &[(&str, SpecializedHandler)] = &[
     ("conversation_memory", try_conversation_memory),
     ("summarization", try_summarization_request),
     ("brainstorming", try_brainstorming_request),
+    ("conversation_topic", try_conversation_topic_request),
     ("fact_lookup", try_fact_lookup),
     ("coreference", try_coreference_request),
     ("roleplay", try_roleplay_request),
@@ -518,6 +570,19 @@ impl UniversalSolver {
             self.config.diagnostic_mode,
             self.config.definition_fusion_by_default,
         );
+        let self_awareness_runtime = SelfAwarenessRuntime::new(
+            self.config.execution_surface,
+            self.config.offline,
+            self.config.agent_mode,
+            self.config.diagnostic_mode,
+            self.config.definition_fusion_by_default,
+        );
+        if let Some(answer) =
+            try_behavior_rules_with_runtime(prompt, &normalized, log, self_awareness_runtime)
+        {
+            log.append("specialized_handler", "behavior_rules".to_owned());
+            return Some(answer);
+        }
         if let Some(answer) = try_feature_capability(prompt, &normalized, log, capability_runtime) {
             log.append("specialized_handler", "feature_capability".to_owned());
             return Some(answer);
@@ -547,6 +612,18 @@ impl UniversalSolver {
                     try_proof_request_with_config(prompt, &normalized, log, proof_render_config)
                 {
                     log.append("specialized_handler", "proof_request".to_owned());
+                    return Some(answer);
+                }
+                continue;
+            }
+            if *name == "meta_explanation" {
+                if let Some(answer) = try_meta_explanation_with_runtime(
+                    prompt,
+                    &normalized,
+                    log,
+                    self_awareness_runtime,
+                ) {
+                    log.append("specialized_handler", "meta_explanation".to_owned());
                     return Some(answer);
                 }
                 continue;

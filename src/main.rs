@@ -11,7 +11,7 @@ use formal_ai::{
     create_response_with_solver, environment_records, export_memory_bundle, export_memory_full,
     import_memory_full, knowledge_links_notation, merged_bundle, parse_bundle,
     render_github_log_plan, run_telegram_polling, run_telegram_webhook_server, seed_files,
-    suggest_memory_migrations, BundleInfo, ChatCompletionRequest, ChatMessage,
+    suggest_memory_migrations, BundleInfo, ChatCompletionRequest, ChatMessage, ExecutionSurface,
     GithubLogCollectorConfig, MemoryStore, MessageContent, ResponsesRequest, SolverConfig,
     TelegramPollingConfig, UniversalSolver, DEFAULT_MODEL,
 };
@@ -387,6 +387,7 @@ struct TelegramRunArgs {
 
 fn solver_for_chat(definition_fusion: Option<DefinitionFusionMode>) -> UniversalSolver {
     let mut config = SolverConfig::from_env();
+    config.execution_surface = ExecutionSurface::Cli;
     if let Some(mode) = definition_fusion {
         config.definition_fusion_by_default = matches!(mode, DefinitionFusionMode::Auto);
     }

@@ -495,6 +495,10 @@ test.describe('formal-ai demo UI', () => {
     lastMsg = await sendPrompt(page, 'List all facts you know about yourself');
     await expect(lastMsg).toContainText('self_fact_model');
     await expect(lastMsg).toContainText('local Links Notation rules');
+
+    lastMsg = await sendPrompt(page, 'какие факты ты знаешь?');
+    await expect(lastMsg).toContainText(/Интернет|Internet/);
+    await expect(lastMsg).toContainText(/Память|memory/i);
   });
 
   test('sending a hello world request produces a code block', async ({ page }) => {

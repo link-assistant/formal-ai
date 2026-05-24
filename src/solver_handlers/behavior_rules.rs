@@ -14,12 +14,13 @@ use std::collections::BTreeMap;
 
 use crate::engine::{
     farewell_answer, greeting_answer, identity_answer, normalize_prompt, stable_id, unknown_answer,
-    SymbolicAnswer, DEFAULT_MODEL, HELLO_WORLD_PROGRAMS,
+    SymbolicAnswer, HELLO_WORLD_PROGRAMS,
 };
 use crate::event_log::EventLog;
 use crate::seed;
 
 use super::finalize_simple;
+use super::self_awareness::{try_self_awareness, SelfAwarenessRuntime};
 
 #[derive(Debug, Clone)]
 struct BehaviorRuleRecord {
@@ -40,10 +41,11 @@ struct RuntimeBehaviorRule {
     answer: String,
 }
 
-pub fn try_behavior_rules(
+pub fn try_behavior_rules_with_runtime(
     prompt: &str,
     normalized: &str,
     log: &mut EventLog,
+    runtime: SelfAwarenessRuntime,
 ) -> Option<SymbolicAnswer> {
     if let Some(rule) = runtime_rule_from_text(prompt) {
         log.append("behavior_rule:update", rule.id.clone());
@@ -87,17 +89,8 @@ pub fn try_behavior_rules(
         }
     }
 
-    if is_self_fact_query(normalized) {
-        log.append("self_facts:list", "formal-ai".to_owned());
-        let body = render_self_facts();
-        return Some(finalize_simple(
-            prompt,
-            log,
-            "self_facts",
-            "response:self_facts",
-            &body,
-            1.0,
-        ));
+    if let Some(answer) = try_self_awareness(prompt, normalized, log, runtime) {
+        return Some(answer);
     }
 
     if let Some(rule) = runtime_rule_for_prompt(prompt, log) {
@@ -156,6 +149,22 @@ fn behavior_rule_records() -> Vec<BehaviorRuleRecord> {
                 "When the user asks `Who are you?` or `Кто ты?` then respond with `{}`.",
                 identity_answer()
             ),
+        },
+        BehaviorRuleRecord {
+            id: "rule_assistant_name".to_owned(),
+            topic: "assistant_name",
+            intent: "assistant_name".to_owned(),
+            label: "Assistant name rule".to_owned(),
+            matches: "`What is your name?`, `Как тебя зовут?`, and equivalent name prompts"
+                .to_owned(),
+            response: "Returns the assistant-name answer; browser surfaces can override it from \
+                 the assistant name setting."
+                .to_owned(),
+            source: "data/seed/intent-routing.lino + browser preferences".to_owned(),
+            when_then: "When the user asks `What is your name?` or `Как тебя зовут?` then \
+                 respond with the assistant-name answer; if a surface has an assistant-name \
+                 setting, include that configured name."
+                .to_owned(),
         },
         BehaviorRuleRecord {
             id: "rule_capabilities".to_owned(),
@@ -219,6 +228,7 @@ fn topic_label(topic: &str) -> &'static str {
         "greetings" => "Greetings",
         "farewells" => "Farewells",
         "identity" => "Identity",
+        "assistant_name" => "Assistant name",
         "capabilities" => "Capabilities",
         "hello_world" => "Hello-world programs",
         "unknown_fallback" => "Unknown fallback",
@@ -231,10 +241,11 @@ fn topic_order(topic: &str) -> u8 {
         "greetings" => 0,
         "farewells" => 1,
         "identity" => 2,
-        "capabilities" => 3,
-        "hello_world" => 4,
-        "unknown_fallback" => 5,
-        _ => 6,
+        "assistant_name" => 3,
+        "capabilities" => 4,
+        "hello_world" => 5,
+        "unknown_fallback" => 6,
+        _ => 7,
     }
 }
 
@@ -332,35 +343,6 @@ fn render_behavior_rule_detail(rule: &BehaviorRuleRecord) -> String {
         escape_lino_value(&rule.response),
         escape_lino_value(&rule.source),
         escape_lino_value(&rule.when_then),
-    )
-}
-
-fn render_self_facts() -> String {
-    format!(
-        concat!(
-            "Facts I know about myself:\n\n",
-            "```links\n",
-            "self_fact_model\n",
-            "  subject \"formal-ai\"\n",
-            "  relation \"model\"\n",
-            "  object \"{}\"\n",
-            "self_fact_policy\n",
-            "  subject \"formal-ai\"\n",
-            "  relation \"policy\"\n",
-            "  object \"deterministic symbolic AI; no neural network inference\"\n",
-            "self_fact_rules\n",
-            "  subject \"formal-ai\"\n",
-            "  relation \"answer_source\"\n",
-            "  object \"local Links Notation rules\"\n",
-            "self_fact_memory\n",
-            "  subject \"formal-ai\"\n",
-            "  relation \"memory\"\n",
-            "  object \"append-only dialog events plus seed files in Links Notation\"\n",
-            "```\n\n",
-            "Read behavior with `List behavior rules`; teach one with ",
-            "When `prompt` then `answer` (or When I say `prompt`, answer `answer`)."
-        ),
-        DEFAULT_MODEL
     )
 }
 
@@ -504,19 +486,6 @@ fn is_chinese_behavior_rules_list_query(normalized: &str) -> bool {
         || normalized.contains("規則列表");
 
     mentions_rules && asks_to_list && points_at_assistant_rules
-}
-
-fn is_self_fact_query(normalized: &str) -> bool {
-    normalized.contains("facts you know about yourself")
-        || normalized.contains("facts about yourself")
-        || normalized.contains("self facts")
-        || normalized.contains("list all facts you know about yourself")
-        || normalized.contains("какие факты ты знаешь о себе")
-        || normalized.contains("факты о себе")
-        || normalized.contains("अपने बारे में तथ्य")
-        || normalized.contains("स्वयं के बारे में तथ्य")
-        || normalized.contains("关于你自己的事实")
-        || normalized.contains("自我事实")
 }
 
 fn detail_query(prompt: &str) -> Option<String> {
