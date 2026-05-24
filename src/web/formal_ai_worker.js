@@ -2827,6 +2827,57 @@ function selfIntroductionContent(language, preferences) {
   return `My name is ${name}. ${identity}`;
 }
 
+function cleanConversationTopic(raw) {
+  return String(raw || "")
+    .trim()
+    .replace(/^[`"':._,\-\s!?]+|[`"':._,\-\s!?]+$/gu, "");
+}
+
+function conversationTopic(prompt, normalized) {
+  const prefixes = [
+    "let's talk about ",
+    "lets talk about ",
+    "can we talk about ",
+    "talk about ",
+    "давай поговорим о ",
+    "давай поговорим об ",
+    "давайте поговорим о ",
+    "давайте поговорим об ",
+    "поговорим о ",
+    "поговорим об ",
+    "обсудим ",
+    "चलो बात करें ",
+    "बात करें ",
+    "聊聊",
+    "谈谈",
+  ];
+  for (const prefix of prefixes) {
+    if (normalized.startsWith(prefix)) {
+      return cleanConversationTopic(normalized.slice(prefix.length));
+    }
+  }
+  const lower = String(prompt || "").toLowerCase();
+  const marker = "поговорим о ";
+  const index = lower.indexOf(marker);
+  if (index >= 0) {
+    return cleanConversationTopic(lower.slice(index + marker.length));
+  }
+  return "";
+}
+
+function conversationTopicContent(topic, language) {
+  if (language === "ru") {
+    return `Можем. Тема: ${topic}. Я могу начать с краткого определения, контекста или конкретного вопроса; если веб-поиск доступен, публичные факты можно уточнить через внешний источник.`;
+  }
+  if (language === "hi") {
+    return `हम बात कर सकते हैं. विषय: ${topic}. मैं छोटी परिभाषा, संदर्भ, या किसी конкрет प्रश्न से शुरू कर सकता हूँ; web search उपलब्ध हो तो public facts बाहरी स्रोत से जाँचे जा सकते हैं.`;
+  }
+  if (language === "zh") {
+    return `可以聊。主题: ${topic}。我可以从简短定义、上下文或具体问题开始; 如果 web search 可用, 公开事实可以通过外部来源核对。`;
+  }
+  return `We can talk about ${topic}. I can start with a short definition, context, or a specific question; when web search is available, public facts can be checked against an external source.`;
+}
+
 function isKnownFactQuery(normalized) {
   if (isSelfFactQuery(normalized)) return false;
   const english =
@@ -3110,6 +3161,17 @@ function tryBehaviorRules(prompt, normalized, history, preferences) {
       content: renderKnownFacts(language),
       confidence: 1.0,
       evidence: ["known_facts:list", "formal-ai", `language:${language}`],
+    };
+  }
+
+  const topic = conversationTopic(prompt, normalized);
+  if (topic) {
+    const language = selfAwarenessLanguage(prompt, normalized);
+    return {
+      intent: "conversation_topic",
+      content: conversationTopicContent(topic, language),
+      confidence: 0.75,
+      evidence: [`conversation_topic:${topic}`, `language:${language}`],
     };
   }
 

@@ -79,6 +79,89 @@ pub fn try_brainstorming_request(
     ))
 }
 
+pub fn try_conversation_topic_request(
+    prompt: &str,
+    normalized: &str,
+    log: &mut EventLog,
+) -> Option<SymbolicAnswer> {
+    let topic = conversation_topic(prompt, normalized)?;
+    let language = detect_language(prompt).slug();
+    let body = match language {
+        "ru" => format!(
+            "Можем. Тема: {topic}. Я могу начать с краткого определения, \
+             контекста или конкретного вопроса; если веб-поиск доступен, \
+             публичные факты можно уточнить через внешний источник."
+        ),
+        "hi" => format!(
+            "हम बात कर सकते हैं. विषय: {topic}. मैं छोटी परिभाषा, संदर्भ, \
+             या किसी конкрет प्रश्न से शुरू कर सकता हूँ; web search उपलब्ध हो \
+             तो public facts बाहरी स्रोत से जाँचे जा सकते हैं."
+        ),
+        "zh" => format!(
+            "可以聊。主题: {topic}。我可以从简短定义、上下文或具体问题开始; \
+             如果 web search 可用, 公开事实可以通过外部来源核对。"
+        ),
+        _ => format!(
+            "We can talk about {topic}. I can start with a short definition, \
+             context, or a specific question; when web search is available, \
+             public facts can be checked against an external source."
+        ),
+    };
+
+    log.append("conversation_topic", topic);
+    Some(finalize_simple(
+        prompt,
+        log,
+        "conversation_topic",
+        "response:conversation_topic",
+        &body,
+        0.75,
+    ))
+}
+
+fn conversation_topic(prompt: &str, normalized: &str) -> Option<String> {
+    for prefix in [
+        "let's talk about ",
+        "lets talk about ",
+        "can we talk about ",
+        "talk about ",
+        "давай поговорим о ",
+        "давай поговорим об ",
+        "давайте поговорим о ",
+        "давайте поговорим об ",
+        "поговорим о ",
+        "поговорим об ",
+        "обсудим ",
+        "चलो बात करें ",
+        "बात करें ",
+        "聊聊",
+        "谈谈",
+    ] {
+        if let Some(topic) = normalized.strip_prefix(prefix) {
+            return clean_conversation_topic(topic);
+        }
+    }
+
+    let lower = prompt.to_lowercase();
+    lower
+        .split_once("поговорим о ")
+        .and_then(|(_, topic)| clean_conversation_topic(topic))
+}
+
+fn clean_conversation_topic(raw: &str) -> Option<String> {
+    let topic = raw
+        .trim()
+        .trim_matches(|ch: char| {
+            ch.is_whitespace()
+                || matches!(
+                    ch,
+                    '`' | '"' | '\'' | ':' | '-' | '_' | '.' | ',' | '?' | '!'
+                )
+        })
+        .to_owned();
+    (!topic.is_empty()).then_some(topic)
+}
+
 /// Parse the number of items the user asked for. Defaults to 5 when no
 /// explicit count is present. Recognises numeric and word forms in every
 /// supported language so the algorithm doesn't depend on English-only

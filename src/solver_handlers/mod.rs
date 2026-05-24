@@ -18,8 +18,8 @@ mod web_search_intent;
 
 pub use behavior_rules::try_behavior_rules;
 pub use benchmark_prompts::{
-    try_brainstorming_request, try_coreference_request, try_fact_lookup, try_roleplay_request,
-    try_summarization_request,
+    try_brainstorming_request, try_conversation_topic_request, try_coreference_request,
+    try_fact_lookup, try_roleplay_request, try_summarization_request,
 };
 pub use calendar::try_calendar_reasoning;
 pub use definition_merge::{try_definition_merge, try_definition_merge_by_default};

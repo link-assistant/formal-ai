@@ -168,6 +168,11 @@ fn reported_self_awareness_variations_stay_near_the_same_answers() {
             answer_fragment: "детерминирован",
         },
         Variation {
+            prompt: "Поговорим о бытие",
+            intent: "conversation_topic",
+            answer_fragment: "бытие",
+        },
+        Variation {
             prompt: "What do you know about the world?",
             intent: "known_facts",
             answer_fragment: "Internet",
