@@ -137,6 +137,26 @@ fn euclid_primes_proof_is_returned() {
 }
 
 #[test]
+fn russian_greeting_primes_prompt_returns_euclid_proof() {
+    // Issue #209: the real report included a greeting and the compact Russian
+    // wording "простых бесконечно". That must still resolve to the known
+    // theorem instead of falling back to a generic axiom-set plan.
+    let response = FormalAiEngine.answer("привет. докажи что простых бесконечно");
+    assert_eq!(response.intent, "proof_request");
+    assert!(
+        response.answer.contains("Простых чисел бесконечно много")
+            || response.answer.contains("p₁"),
+        "Russian prime-infinitude request should return Euclid's proof, got: {}",
+        response.answer
+    );
+    assert!(
+        !response.answer.contains("План доказательства"),
+        "known theorem should not return the generic proof plan, got: {}",
+        response.answer
+    );
+}
+
+#[test]
 fn fermat_little_proof_uses_induction() {
     let response = FormalAiEngine.answer("Give me a proof of Fermat's little theorem");
     assert_eq!(response.intent, "proof_request");

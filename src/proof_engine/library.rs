@@ -168,6 +168,10 @@ const EUCLID_INFINITUDE_OF_PRIMES: KnownTheoremEntry = KnownTheoremEntry {
         "infinitude of primes",
         "euclid",
         "бесконечно много прост",
+        "простых бесконечно",
+        "простых чисел бесконечно",
+        "простые бесконечны",
+        "бесконечны простые",
         "бесконечности прост",
         "евклид",
         "अनंत अभाज्य",
@@ -180,6 +184,27 @@ const EUCLID_INFINITUDE_OF_PRIMES: KnownTheoremEntry = KnownTheoremEntry {
     statement_hi: "अभाज्य संख्याएँ अनंत हैं।",
     statement_zh: "素数有无穷多个。",
     steps: &[
+        LocalizedStep {
+            kind: StepKind::Definition,
+            en: "Work in elementary number theory, formalizable in Peano arithmetic (PA): \
+                 a prime is an integer greater than 1 whose only positive divisors are 1 and \
+                 itself. The proof uses the PA theorem that every integer greater than 1 has a \
+                 prime divisor; this is the formal context for the relative-meta-logic \
+                 contradiction tactic.",
+            ru: "Работаем в элементарной теории чисел, формализуемой в арифметике Пеано (PA): \
+                 простое число — это целое число больше 1, положительные делители которого \
+                 только 1 и оно само. В доказательстве используется теорема PA: у каждого \
+                 целого числа больше 1 есть простой делитель; это формальный контекст для \
+                 тактики от противного в relative-meta-logic.",
+            hi: "हम प्राथमिक संख्या-सिद्धांत में काम करते हैं, जिसे Peano arithmetic (PA) में \
+                 औपचारिक किया जा सकता है: अभाज्य वह पूर्णांक है जो 1 से बड़ा है और जिसके \
+                 धनात्मक भाजक केवल 1 और वही संख्या हैं। प्रमाण PA के इस प्रमेय का उपयोग \
+                 करता है कि 1 से बड़े हर पूर्णांक का कोई अभाज्य भाजक होता है; यही \
+                 relative-meta-logic की contradiction युक्ति का औपचारिक संदर्भ है।",
+            zh: "在可由 Peano arithmetic (PA) 形式化的初等数论中工作:素数是大于 1 的整数,\
+                 其正因数只有 1 和自身。证明使用 PA 中的定理:每个大于 1 的整数都有素因数;\
+                 这就是 relative-meta-logic 反证策略的形式上下文。",
+        },
         LocalizedStep {
             kind: StepKind::Hypothesis,
             en: "Assume for contradiction that only finitely many primes exist; call them \
@@ -664,6 +689,12 @@ mod tests {
     fn euclid_primes_matches_english() {
         assert!(EUCLID_INFINITUDE_OF_PRIMES
             .matches("demonstrate that there are infinitely many primes"));
+    }
+
+    #[test]
+    fn euclid_primes_matches_compact_russian() {
+        assert!(EUCLID_INFINITUDE_OF_PRIMES.matches("простых бесконечно"));
+        assert!(EUCLID_INFINITUDE_OF_PRIMES.matches("простых чисел бесконечно много"));
     }
 
     #[test]
