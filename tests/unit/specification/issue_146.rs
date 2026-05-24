@@ -141,6 +141,7 @@ fn reported_self_awareness_prompts_are_supported() {
 #[test]
 fn reported_self_awareness_variations_stay_near_the_same_answers() {
     struct Variation {
+        language: &'static str,
         prompt: &'static str,
         intent: &'static str,
         answer_fragment: &'static str,
@@ -148,46 +149,61 @@ fn reported_self_awareness_variations_stay_near_the_same_answers() {
 
     let variations = [
         Variation {
+            language: "ru",
             prompt: "расскажи мне о себе",
             intent: "identity",
             answer_fragment: "formal-ai",
         },
         Variation {
+            language: "en",
             prompt: "Tell me about yourself",
             intent: "identity",
             answer_fragment: "formal-ai",
         },
         Variation {
+            language: "ru",
             prompt: "Приветы, расскажи о себе",
             intent: "identity",
             answer_fragment: "formal-ai",
         },
         Variation {
+            language: "ru",
             prompt: "В чём идея твоей разработки?",
             intent: "meta_explanation",
             answer_fragment: "детерминирован",
         },
         Variation {
+            language: "ru",
             prompt: "Поговорим о бытие",
             intent: "conversation_topic",
             answer_fragment: "бытие",
         },
         Variation {
+            language: "en",
+            prompt: "Let's talk about existence",
+            intent: "conversation_topic",
+            answer_fragment: "existence",
+        },
+        Variation {
+            language: "en",
             prompt: "What do you know about the world?",
             intent: "known_facts",
             answer_fragment: "Internet",
         },
         Variation {
+            language: "hi",
             prompt: "आप क्या जानते हैं?",
             intent: "known_facts",
             answer_fragment: "Internet",
         },
         Variation {
+            language: "zh",
             prompt: "你知道什么事实?",
             intent: "known_facts",
             answer_fragment: "Internet",
         },
         Variation {
+            language: "en",
             prompt: "What is your world model?",
             intent: "meta_explanation",
             answer_fragment: "deterministic solver",
@@ -203,7 +219,8 @@ fn reported_self_awareness_variations_stay_near_the_same_answers() {
         );
         assert!(
             response.answer.contains(variation.answer_fragment),
-            "variation {:?} answer should mention {:?}, got: {}",
+            "{} variation {:?} answer should mention {:?}, got: {}",
+            variation.language,
             variation.prompt,
             variation.answer_fragment,
             response.answer
