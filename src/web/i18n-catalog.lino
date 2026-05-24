@@ -8,6 +8,7 @@ en
     sourceCode "Source code"
     exportMemory "Export memory"
     importMemory "Import memory"
+    resetMemory "Reset memory"
     diagnostics "Diagnostics"
     diagnosticsOn "Diagnostics on"
     agent "Agent"
@@ -30,6 +31,9 @@ en
     """
     importMemory """
       Import memory - load a previous export. Accepts both the new full-memory bundle and the legacy demo_memory event-only log. Migration hints are shown next to this bar.
+    """
+    resetMemory """
+      Reset memory - permanently delete the local event log after an export warning and confirmation. The built-in seed remains available.
     """
     diagnosticsShow "Show reasoning trace, intent, evidence, and thinking-steps panels."
     diagnosticsHide "Hide reasoning trace, intent, evidence, and thinking-steps panels."
@@ -63,6 +67,9 @@ en
     messageCount "{count} msg"
     showDeleted "Show deleted conversations"
     delete "Delete conversation"
+    deletePermanent "Delete permanently"
+    purgeDeleted "Purge deleted"
+    purgeDeletedTitle "Permanently delete every event from deleted conversations."
   message
     author
       user "You"
@@ -96,6 +103,14 @@ en
   memory
     exportTriggered "Triggered Export memory. Your browser is downloading `formal-ai-memory.lino`."
     importTriggered "Triggered Import memory. Pick a `.lino` file in the open dialog to restore the saved memory."
+    resetCancelled "Reset memory cancelled."
+  confirm
+    resetMemoryExportFirst "Export memory first? OK exports a backup and cancels reset. Cancel continues to the irreversible confirmation."
+    resetMemory "Reset memory is irreversible and permanently deletes the local event log. Continue?"
+    purgeDeletedExportFirst "Export memory first? OK exports a backup and cancels permanent deletion. Cancel continues to the irreversible confirmation."
+    purgeDeleted "This irreversible action permanently deletes every event from deleted conversations. Continue?"
+    deleteConversationPermanentExportFirst "Export memory first? OK exports a backup and cancels permanent deletion. Cancel continues to the irreversible confirmation."
+    deleteConversationPermanent "This irreversible action permanently deletes this conversation from memory. Continue?"
   sidebar
     conversations "Conversations"
     menu "Menu"
@@ -163,9 +178,13 @@ en
     memoryExported "Exported full memory: {events} event(s) + {seedFiles} seed file(s)"
     memoryImportedBundle "Imported {inserted} event(s) from full bundle"
     memoryImportedEvents "Imported {inserted} events"
+    memoryReset "Reset memory: deleted {events} event(s)"
+    deletedConversationsPurged "Permanently deleted {events} event(s) from deleted conversations"
+    conversationPurged "Permanently deleted {events} event(s) from this conversation"
     migration "{headline}. Migration: {suggestions}"
     exportFailed "Export failed"
     importFailed "Import failed"
+    memoryResetFailed "Memory deletion failed"
     working "Working"
   toolMode
     agent "agent"
@@ -186,6 +205,7 @@ ru
     sourceCode "Исходный код"
     exportMemory "Экспорт памяти"
     importMemory "Импорт памяти"
+    resetMemory "Сброс памяти"
     diagnostics "Диагностика"
     diagnosticsOn "Диагностика включена"
     agent "Агент"
@@ -208,6 +228,9 @@ ru
     """
     importMemory """
       Импорт памяти - загружает предыдущий экспорт. Поддерживает новый полный bundle памяти и устаревший журнал demo_memory только с событиями. Подсказки миграции появятся рядом с панелью.
+    """
+    resetMemory """
+      Сброс памяти - навсегда удаляет локальный журнал событий после предупреждения об экспорте и подтверждения. Встроенный seed останется доступен.
     """
     diagnosticsShow "Показать диагностическую трассировку, намерение, доказательства и шаги рассуждения."
     diagnosticsHide "Скрыть диагностическую трассировку, намерение, доказательства и шаги рассуждения."
@@ -241,6 +264,9 @@ ru
     messageCount "{count} сообщ."
     showDeleted "Показать удаленные разговоры"
     delete "Удалить разговор"
+    deletePermanent "Удалить навсегда"
+    purgeDeleted "Очистить удаленные"
+    purgeDeletedTitle "Навсегда удалить все события из удаленных разговоров."
   message
     author
       user "Вы"
@@ -276,6 +302,14 @@ ru
     importTriggered """
       Запущен импорт памяти. Выберите файл `.lino` в открытом диалоге, чтобы восстановить сохраненную память.
     """
+    resetCancelled "Сброс памяти отменен."
+  confirm
+    resetMemoryExportFirst "Сначала экспортировать память? OK скачает резервную копию и отменит сброс. Отмена продолжит к необратимому подтверждению."
+    resetMemory "Сброс памяти необратим и навсегда удалит локальный журнал событий. Продолжить?"
+    purgeDeletedExportFirst "Сначала экспортировать память? OK скачает резервную копию и отменит удаление. Отмена продолжит к необратимому подтверждению."
+    purgeDeleted "Это необратимое действие навсегда удалит все события из удаленных разговоров. Продолжить?"
+    deleteConversationPermanentExportFirst "Сначала экспортировать память? OK скачает резервную копию и отменит удаление. Отмена продолжит к необратимому подтверждению."
+    deleteConversationPermanent "Это необратимое действие навсегда удалит этот разговор из памяти. Продолжить?"
   sidebar
     conversations "Разговоры"
     menu "Меню"
@@ -343,9 +377,13 @@ ru
     memoryExported "Полный экспорт памяти: {events} событ. + {seedFiles} seed-файл(ов)"
     memoryImportedBundle "Импортировано {inserted} событ. из полного bundle"
     memoryImportedEvents "Импортировано событий: {inserted}"
+    memoryReset "Память сброшена: удалено событий {events}"
+    deletedConversationsPurged "Навсегда удалено событий из удаленных разговоров: {events}"
+    conversationPurged "Навсегда удалено событий из разговора: {events}"
     migration "{headline}. Миграция: {suggestions}"
     exportFailed "Экспорт не удался"
     importFailed "Импорт не удался"
+    memoryResetFailed "Удаление памяти не удалось"
     working "В работе"
   toolMode
     agent "агент"
@@ -366,6 +404,7 @@ zh
     sourceCode "源代码"
     exportMemory "导出记忆"
     importMemory "导入记忆"
+    resetMemory "重置记忆"
     diagnostics "诊断"
     diagnosticsOn "诊断开启"
     agent "代理"
@@ -385,6 +424,7 @@ zh
       导出记忆 - 将完整代理状态保存为 formal-ai-memory.lino：全部 seed、UI 偏好、环境元数据和追加式事件日志。请参阅 docs/upload-memory.md，了解如何附加到 GitHub issue（Gist 或 .zip）。
     """
     importMemory "导入记忆 - 加载以前的导出。支持新的完整记忆 bundle 和旧版 demo_memory 事件日志。迁移提示会显示在此栏旁边。"
+    resetMemory "重置记忆 - 在导出提醒和确认后永久删除本地事件日志。内置 seed 仍然可用。"
     diagnosticsShow "显示推理跟踪、意图、证据和思考步骤面板。"
     diagnosticsHide "隐藏推理跟踪、意图、证据和思考步骤面板。"
     agentOn "代理模式已开启 - 切回单轮聊天。"
@@ -415,6 +455,9 @@ zh
     messageCount "{count} 条消息"
     showDeleted "显示已删除的对话"
     delete "删除对话"
+    deletePermanent "永久删除"
+    purgeDeleted "清除已删除"
+    purgeDeletedTitle "永久删除已删除对话中的所有事件。"
   message
     author
       user "你"
@@ -448,6 +491,14 @@ zh
   memory
     exportTriggered "已触发导出记忆。浏览器正在下载 `formal-ai-memory.lino`。"
     importTriggered "已触发导入记忆。请在打开的对话框中选择 `.lino` 文件来恢复保存的记忆。"
+    resetCancelled "重置记忆已取消。"
+  confirm
+    resetMemoryExportFirst "先导出记忆？按 OK 会导出备份并取消重置；按取消会继续到不可逆确认。"
+    resetMemory "重置记忆不可逆，会永久删除本地事件日志。继续？"
+    purgeDeletedExportFirst "先导出记忆？按 OK 会导出备份并取消永久删除；按取消会继续到不可逆确认。"
+    purgeDeleted "此不可逆操作会永久删除所有已删除对话中的事件。继续？"
+    deleteConversationPermanentExportFirst "先导出记忆？按 OK 会导出备份并取消永久删除；按取消会继续到不可逆确认。"
+    deleteConversationPermanent "此不可逆操作会从记忆中永久删除此对话。继续？"
   sidebar
     conversations "对话"
     menu "菜单"
@@ -515,9 +566,13 @@ zh
     memoryExported "已导出完整记忆：{events} 个事件 + {seedFiles} 个 seed 文件"
     memoryImportedBundle "已从完整 bundle 导入 {inserted} 个事件"
     memoryImportedEvents "已导入 {inserted} 个事件"
+    memoryReset "已重置记忆：删除 {events} 个事件"
+    deletedConversationsPurged "已从已删除对话中永久删除 {events} 个事件"
+    conversationPurged "已从此对话中永久删除 {events} 个事件"
     migration "{headline}。迁移：{suggestions}"
     exportFailed "导出失败"
     importFailed "导入失败"
+    memoryResetFailed "记忆删除失败"
     working "工作中"
   toolMode
     agent "代理"
@@ -538,6 +593,7 @@ hi
     sourceCode "स्रोत कोड"
     exportMemory "स्मृति निर्यात करें"
     importMemory "स्मृति आयात करें"
+    resetMemory "स्मृति रीसेट करें"
     diagnostics "निदान"
     diagnosticsOn "निदान चालू"
     agent "एजेंट"
@@ -560,6 +616,9 @@ hi
     """
     importMemory """
       स्मृति आयात करें - पिछला export load करें। नया full-memory bundle और legacy demo_memory event-only log दोनों स्वीकार हैं। Migration hints इसी bar के पास दिखेंगे।
+    """
+    resetMemory """
+      स्मृति रीसेट करें - export warning और confirmation के बाद local event log को स्थायी रूप से हटाता है। Built-in seed उपलब्ध रहता है।
     """
     diagnosticsShow "reasoning trace, intent, evidence, और thinking-steps panels दिखाएं।"
     diagnosticsHide "reasoning trace, intent, evidence, और thinking-steps panels छिपाएं।"
@@ -591,6 +650,9 @@ hi
     messageCount "{count} संदेश"
     showDeleted "Deleted बातचीत दिखाएं"
     delete "बातचीत हटाएं"
+    deletePermanent "स्थायी रूप से हटाएं"
+    purgeDeleted "Deleted हटाएं"
+    purgeDeletedTitle "Deleted बातचीत के सभी events स्थायी रूप से हटाएं।"
   message
     author
       user "आप"
@@ -624,6 +686,14 @@ hi
   memory
     exportTriggered "स्मृति निर्यात शुरू हुआ। आपका browser `formal-ai-memory.lino` डाउनलोड कर रहा है।"
     importTriggered "स्मृति आयात शुरू हुआ। saved memory restore करने के लिए खुले dialog में `.lino` file चुनें।"
+    resetCancelled "स्मृति रीसेट रद्द हुआ।"
+  confirm
+    resetMemoryExportFirst "पहले स्मृति export करें? OK backup export करके reset रद्द करेगा। Cancel irreversible confirmation पर जाएगा।"
+    resetMemory "स्मृति रीसेट irreversible है और local event log को स्थायी रूप से हटाएगा। जारी रखें?"
+    purgeDeletedExportFirst "पहले स्मृति export करें? OK backup export करके deletion रद्द करेगा। Cancel irreversible confirmation पर जाएगा।"
+    purgeDeleted "यह irreversible action deleted बातचीत के सभी events स्थायी रूप से हटाएगा। जारी रखें?"
+    deleteConversationPermanentExportFirst "पहले स्मृति export करें? OK backup export करके deletion रद्द करेगा। Cancel irreversible confirmation पर जाएगा।"
+    deleteConversationPermanent "यह irreversible action इस बातचीत को memory से स्थायी रूप से हटाएगा। जारी रखें?"
   sidebar
     conversations "बातचीत"
     menu "मेन्यू"
@@ -691,9 +761,13 @@ hi
     memoryExported "पूरी स्मृति निर्यात हुई: {events} event(s) + {seedFiles} seed file(s)"
     memoryImportedBundle "full bundle से {inserted} event(s) आयात हुए"
     memoryImportedEvents "{inserted} events आयात हुए"
+    memoryReset "स्मृति रीसेट हुई: {events} event(s) हटे"
+    deletedConversationsPurged "Deleted बातचीत से {events} event(s) स्थायी रूप से हटे"
+    conversationPurged "इस बातचीत से {events} event(s) स्थायी रूप से हटे"
     migration "{headline}. Migration: {suggestions}"
     exportFailed "निर्यात विफल"
     importFailed "आयात विफल"
+    memoryResetFailed "स्मृति deletion विफल"
     working "काम जारी है"
   toolMode
     agent "एजेंट"

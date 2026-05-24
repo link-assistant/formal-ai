@@ -1,0 +1,20 @@
+393f9e2 (HEAD -> issue-196-baa4327fc44a, origin/issue-196-baa4327fc44a) Initial commit with task details
+188e0b0 (origin/main, origin/HEAD, main) Merge pull request #240 from link-assistant/issue-209-490a73a6457c
+57a86d5 (origin/issue-209-490a73a6457c) test: cover multilingual prime proofs
+038cd31 Merge remote-tracking branch 'origin/main' into issue-209-490a73a6457c
+e6808f7 fix: prove Russian prime infinitude prompt
+3b0642c (tag: v0.109.0) chore: release v0.109.0
+3725cbd Initial commit with task details
+1a3fdb7 Merge pull request #238 from link-assistant/issue-135-e32feaf9ccfd
+c3173b9 (origin/issue-135-e32feaf9ccfd) merge main into issue-135 branch
+6f90631 (tag: v0.108.0) chore: release v0.108.0
+e59107c Merge pull request #239 from link-assistant/issue-223-2a1e41a20542
+8b34510 Merge pull request #234 from link-assistant/issue-146-3f926558fe76
+fbf3996 (origin/issue-146-3f926558fe76) fix: make self-awareness answers environment-aware
+09c36e3 test: cover English conversation topic prompts
+5eff3ab fix: handle conversation topic prompts
+985d7a6 fix: expand self-awareness prompt coverage
+0a6597f Merge remote-tracking branch 'origin/main' into issue-146-3f926558fe76
+e1467d5 (tag: v0.107.0) chore: release v0.107.0
+9371716 Merge pull request #235 from link-assistant/issue-157-172082bc75f4
+a499986 (tag: v0.106.0) chore: release v0.106.0

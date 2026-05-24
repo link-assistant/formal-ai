@@ -1857,7 +1857,7 @@ test.describe('memory export/import', () => {
     await expect(page.locator('[data-testid="memory-status"]')).toContainText(/Migration: Seed version 0\.0\.1 →/);
   });
 
-  test('Memory module exposes no delete/forget operation', async ({ page }) => {
+  test('Memory module exposes explicit destructive operations only', async ({ page }) => {
     const api = await page.evaluate(() => Object.keys(window.FormalAiMemory || {}));
     expect(api).toContain('appendEvent');
     expect(api).toContain('listEvents');
@@ -1869,6 +1869,9 @@ test.describe('memory export/import', () => {
     expect(api).toContain('exportFullMemory');
     expect(api).toContain('importFullMemory');
     expect(api).toContain('suggestMigrations');
+    expect(api).toContain('purgeDeletedConversations');
+    expect(api).toContain('deleteEventsByConversationId');
+    expect(api).toContain('clearEvents');
     expect(api).not.toContain('delete');
     expect(api).not.toContain('deleteEvent');
     expect(api).not.toContain('forget');
@@ -1930,6 +1933,40 @@ test.describe('memory export/import', () => {
     const messages = page.locator('[data-testid="chat-message"]');
     await expect(messages.last()).toContainText('Triggered Import memory');
     await expect(page.locator('[data-testid="memory-import-input"]')).toHaveCount(1);
+  });
+
+  test('Issue #196: reset memory phrases are recognised in every supported language', async ({ page }) => {
+    const resetPromptCases = [
+      { language: 'en', phrase: 'Reset memory' },
+      { language: 'ru', phrase: 'сбросить память' },
+      { language: 'hi', phrase: 'स्मृति रीसेट करें' },
+      { language: 'zh', phrase: '重置记忆' },
+    ];
+    const dialogs = [];
+    page.on('dialog', async (dialog) => {
+      dialogs.push(dialog.message());
+      if (dialogs.length % 2 === 1) {
+        await dialog.dismiss();
+      } else {
+        await dialog.accept();
+      }
+    });
+
+    for (const { language, phrase } of resetPromptCases) {
+      await sendPrompt(page, `Memory reset seed ${language}`);
+      const input = page.locator('[data-testid="chat-composer-input"]');
+      await expect(input).toBeEnabled({ timeout: 5_000 });
+      await input.fill(phrase);
+      await page.locator('[data-testid="chat-composer-submit"]').click();
+      await expect(page.locator('[data-testid="chat-message"]')).toHaveCount(0);
+      await expect.poll(() =>
+        page.evaluate(() =>
+          window.FormalAiMemory.listEvents().then((events) => events.length),
+        ),
+      ).toBe(0);
+    }
+
+    expect(dialogs.length).toBe(resetPromptCases.length * 2);
   });
 
   test('Report issue link is present in the topbar and links to the upload-memory guide (R112 + issue #78)', async ({ page }) => {
@@ -2345,6 +2382,89 @@ test.describe('Issue #27: conversations sidebar', () => {
     await deletedEntry.locator('.conversation-entry-button').click();
     await expect(messages).toHaveCount(2, { timeout: 5_000 });
     await expect(messages.first()).toContainText('Hello to delete');
+  });
+
+  test('Issue #196: deleted conversations can be permanently removed after export warning and confirmation', async ({ page }) => {
+    const messages = page.locator('[data-testid="chat-message"]');
+    await sendPrompt(page, 'Hello to purge');
+    await expect(messages).toHaveCount(2);
+
+    await page.locator('[data-testid="conversation-delete"]').first().click();
+    await expect(messages).toHaveCount(0);
+
+    const showDeleted = page.locator('[data-testid="conversation-show-deleted"]');
+    await showDeleted.check();
+    const deletedEntry = page.locator('[data-testid="conversation-entries"] li', {
+      hasText: 'Hello to purge',
+    });
+    await expect(deletedEntry).toBeVisible();
+    const purgedConversationId = await deletedEntry
+      .locator('.conversation-entry-button')
+      .getAttribute('data-conversation-id');
+    expect(purgedConversationId).toBeTruthy();
+
+    const dialogs = [];
+    page.on('dialog', async (dialog) => {
+      dialogs.push(dialog.message());
+      if (dialogs.length === 1) {
+        await dialog.dismiss();
+      } else {
+        await dialog.accept();
+      }
+    });
+    await page.locator('[data-testid="conversation-purge-deleted"]').click();
+    await expect(page.locator('[data-testid="memory-status"]')).toContainText(
+      'Permanently deleted',
+    );
+
+    expect(dialogs.length).toBe(2);
+    expect(dialogs[0]).toContain('Export memory first');
+    expect(dialogs[1]).toContain('irreversible');
+
+    await expect(
+      page.locator('[data-testid="conversation-entries"] li', {
+        hasText: 'Hello to purge',
+      }),
+    ).toHaveCount(0);
+
+    const remainingEvents = await page.evaluate(
+      (conversationId) =>
+        window.FormalAiMemory.listEvents().then((events) =>
+          events.filter((event) => event.conversationId === conversationId),
+        ),
+      purgedConversationId,
+    );
+    expect(remainingEvents).toEqual([]);
+  });
+
+  test('Issue #196: reset memory clears all browser events after export warning and confirmation', async ({ page }) => {
+    await sendPrompt(page, 'Hello before reset');
+    await expect(page.locator('[data-testid="conversation-entries"] li').first()).toContainText(
+      'Hello before reset',
+    );
+
+    let dialogCount = 0;
+    page.on('dialog', async (dialog) => {
+      dialogCount += 1;
+      if (dialogCount === 1) {
+        await dialog.dismiss();
+      } else {
+        await dialog.accept();
+      }
+    });
+    await page.locator('[data-testid="memory-reset"]').click();
+
+    await expect(page.locator('[data-testid="memory-status"]')).toContainText(
+      'Reset memory: deleted',
+    );
+    expect(dialogCount).toBe(2);
+    await expect(page.locator('[data-testid="chat-message"]')).toHaveCount(0);
+    await expect(page.locator('[data-testid="conversation-entries"] li')).toHaveCount(0);
+
+    const eventCount = await page.evaluate(() =>
+      window.FormalAiMemory.listEvents().then((events) => events.length),
+    );
+    expect(eventCount).toBe(0);
   });
 });
 

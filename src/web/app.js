@@ -112,6 +112,7 @@ const DEMO_GREETING_LABELS = new Set([
   "Greeting (zh)",
 ]);
 const DEMO_EXCLUDED_LABELS = new Set(["Export memory", "Import memory"]);
+const pendingMemoryWrites = new Set();
 
 function demoGreetings() {
   return EXAMPLE_PROMPTS.filter((entry) => DEMO_GREETING_LABELS.has(entry.label));
@@ -131,11 +132,11 @@ function demoFeaturePrompts() {
 let demoGreetingCursor = 0;
 let demoFeatureCursor = 0;
 
-// Issue #27: typing "Export memory" / "Export your memory" (or a translation)
-// in the chat input should trigger the Export memory button so the deterministic
-// chat surface stays in sync with the toolbar. Same for Import memory. Each
-// phrase is normalised to lower-case ASCII spaces so punctuation and casing
-// differences do not break the trigger.
+// Issue #27 / #196: typing "Export memory", "Import memory", or "Reset
+// memory" (or a translation) in the chat input should trigger the matching
+// toolbar action so the deterministic chat surface stays in sync with the UI.
+// Each phrase is normalised to lower-case ASCII spaces so punctuation and
+// casing differences do not break the trigger.
 const MEMORY_ACTION_PHRASES = {
   export: [
     "export memory",
@@ -168,6 +169,22 @@ const MEMORY_ACTION_PHRASES = {
     "导入新记忆",
     "导入你的新记忆",
   ],
+  reset: [
+    "reset memory",
+    "clear memory",
+    "reset your memory",
+    "clear your memory",
+    "сброс памяти",
+    "сбросить память",
+    "очистить память",
+    "сбрось память",
+    "स्मृति रीसेट करें",
+    "स्मृति साफ करें",
+    "अपनी स्मृति रीसेट करें",
+    "重置记忆",
+    "清空记忆",
+    "重置你的记忆",
+  ],
 };
 
 function normalizeMemoryPrompt(text) {
@@ -186,6 +203,9 @@ function recognizeMemoryAction(text) {
   }
   if (MEMORY_ACTION_PHRASES.import.some((phrase) => normalized === phrase)) {
     return "import";
+  }
+  if (MEMORY_ACTION_PHRASES.reset.some((phrase) => normalized === phrase)) {
+    return "reset";
   }
   return null;
 }
@@ -1015,10 +1035,21 @@ function recordMemoryEvent(payload) {
     return Promise.resolve(null);
   }
   try {
-    return window.FormalAiMemory.appendEvent(payload).catch(() => null);
+    const write = window.FormalAiMemory.appendEvent(payload).catch(() => null);
+    pendingMemoryWrites.add(write);
+    return write.finally(() => {
+      pendingMemoryWrites.delete(write);
+    });
   } catch (_error) {
     return Promise.resolve(null);
   }
+}
+
+function waitForMemoryWrites() {
+  if (pendingMemoryWrites.size === 0) {
+    return Promise.resolve();
+  }
+  return Promise.allSettled(Array.from(pendingMemoryWrites)).then(() => null);
 }
 
 function downloadTextFile(filename, text) {
@@ -4087,6 +4118,7 @@ function App() {
       return;
     }
     try {
+      await waitForMemoryWrites();
       const events = await window.FormalAiMemory.listEvents();
       const preferences = loadPreferences();
       const text = window.FormalAiMemory.exportFullMemory({
@@ -4157,6 +4189,113 @@ function App() {
       importInputRef.current.click();
     }
   }, []);
+
+  const confirmDangerousMemoryAction = useCallback(
+    async (exportPrompt, confirmPrompt) => {
+      if (typeof window === "undefined" || typeof window.confirm !== "function") {
+        return true;
+      }
+      if (window.confirm(exportPrompt)) {
+        await handleExportMemory();
+        return false;
+      }
+      return window.confirm(confirmPrompt);
+    },
+    [handleExportMemory],
+  );
+
+  const handleResetMemory = useCallback(async () => {
+    if (typeof window === "undefined" || !window.FormalAiMemory) {
+      setMemoryStatus(t("status.memoryUnavailable"));
+      return { cancelled: true, removed: 0 };
+    }
+    const proceed = await confirmDangerousMemoryAction(
+      t("confirm.resetMemoryExportFirst"),
+      t("confirm.resetMemory"),
+    );
+    if (!proceed) {
+      return { cancelled: true, removed: 0 };
+    }
+    try {
+      await waitForMemoryWrites();
+      const removed = await window.FormalAiMemory.clearEvents();
+      currentConversationRef.current = "";
+      setCurrentConversationId("");
+      setMessages([]);
+      setPrompt("");
+      setShowDeletedConversations(false);
+      await refreshConversations(false);
+      setMemoryStatus(t("status.memoryReset", { events: removed }));
+      return { cancelled: false, removed };
+    } catch (_error) {
+      setMemoryStatus(t("status.memoryResetFailed"));
+      return { cancelled: true, removed: 0 };
+    }
+  }, [confirmDangerousMemoryAction, refreshConversations, t]);
+
+  const handlePurgeDeletedConversations = useCallback(async () => {
+    if (typeof window === "undefined" || !window.FormalAiMemory) {
+      setMemoryStatus(t("status.memoryUnavailable"));
+      return;
+    }
+    const proceed = await confirmDangerousMemoryAction(
+      t("confirm.purgeDeletedExportFirst"),
+      t("confirm.purgeDeleted"),
+    );
+    if (!proceed) {
+      return;
+    }
+    try {
+      await waitForMemoryWrites();
+      const events = await window.FormalAiMemory.listEvents();
+      const deletedIds = new Set(
+        groupConversations(events, { showDeleted: true }).map((entry) => entry.id),
+      );
+      const removed = await window.FormalAiMemory.purgeDeletedConversations();
+      if (deletedIds.has(currentConversationRef.current)) {
+        currentConversationRef.current = "";
+        setCurrentConversationId("");
+        setMessages([]);
+        setPrompt("");
+      }
+      setShowDeletedConversations(true);
+      await refreshConversations(true);
+      setMemoryStatus(t("status.deletedConversationsPurged", { events: removed }));
+    } catch (_error) {
+      setMemoryStatus(t("status.memoryResetFailed"));
+    }
+  }, [confirmDangerousMemoryAction, refreshConversations, t]);
+
+  const handlePurgeConversation = useCallback(
+    async (entry) => {
+      if (!entry || !entry.id || typeof window === "undefined" || !window.FormalAiMemory) {
+        return;
+      }
+      const proceed = await confirmDangerousMemoryAction(
+        t("confirm.deleteConversationPermanentExportFirst"),
+        t("confirm.deleteConversationPermanent"),
+      );
+      if (!proceed) {
+        return;
+      }
+      try {
+        await waitForMemoryWrites();
+        const removed = await window.FormalAiMemory.deleteEventsByConversationId(entry.id);
+        if (entry.id === currentConversationRef.current) {
+          currentConversationRef.current = "";
+          setCurrentConversationId("");
+          setMessages([]);
+          setPrompt("");
+        }
+        setShowDeletedConversations(true);
+        await refreshConversations(true);
+        setMemoryStatus(t("status.conversationPurged", { events: removed }));
+      } catch (_error) {
+        setMemoryStatus(t("status.memoryResetFailed"));
+      }
+    },
+    [confirmDangerousMemoryAction, refreshConversations, t],
+  );
 
   const triggerAttachFiles = useCallback(() => {
     if (attachmentInputRef.current) {
@@ -4838,6 +4977,29 @@ function App() {
       setPending(false);
       return;
     }
+    if (memoryAction === "reset") {
+      const result = await handleResetMemory();
+      if (!result.cancelled) {
+        setPending(false);
+        return;
+      }
+      appendAssistantMessage({
+        intent: "memory_reset",
+        content: t("memory.resetCancelled"),
+        confidence: 1.0,
+        evidence: ["rule:memory_reset"],
+        steps: [{ step: "trigger_button", detail: "memory-reset" }],
+        toolCalls: [
+          {
+            tool: "reset_memory",
+            inputs: { prompt: displayText },
+            outputs: { intent: "memory_reset", events: result.removed },
+          },
+        ],
+      });
+      setPending(false);
+      return;
+    }
 
     const interfaceCommand = hasAttachments ? null : recognizeInterfaceCommand(displayText);
     if (interfaceCommand) {
@@ -5186,6 +5348,20 @@ function App() {
           h("span", { className: "btn-icon", "aria-hidden": "true" }, "📥"),
           h("span", { className: "btn-label" }, t("buttons.importMemory")),
         ),
+        h(
+          "button",
+          {
+            type: "button",
+            className: "memory-button memory-reset-button",
+            "data-testid": "memory-reset",
+            "data-menu-priority": "6",
+            onClick: handleResetMemory,
+            title: t("titles.resetMemory"),
+            "aria-label": t("buttons.resetMemory"),
+          },
+          h("span", { className: "btn-icon", "aria-hidden": "true" }, "🧹"),
+          h("span", { className: "btn-label" }, t("buttons.resetMemory")),
+        ),
         h("input", {
           ref: importInputRef,
           type: "file",
@@ -5383,6 +5559,17 @@ function App() {
               {
                 type: "button",
                 className: "drawer-action",
+                "data-testid": "drawer-memory-reset",
+                onClick: handleResetMemory,
+              },
+              h("span", { className: "btn-icon", "aria-hidden": "true" }, "🧹"),
+              h("span", null, t("buttons.resetMemory")),
+            ),
+            h(
+              "button",
+              {
+                type: "button",
+                className: "drawer-action",
                 "aria-pressed": diagnosticsMode,
                 onClick: () => setDiagnosticsMode((value) => !value),
               },
@@ -5452,6 +5639,20 @@ function App() {
               }),
               h("span", null, t("conversation.showDeleted")),
             ),
+            showDeletedConversations
+              ? h(
+                  "button",
+                  {
+                    type: "button",
+                    className: "conversation-purge-deleted",
+                    "data-testid": "conversation-purge-deleted",
+                    disabled: conversations.length === 0,
+                    onClick: handlePurgeDeletedConversations,
+                    title: t("conversation.purgeDeletedTitle"),
+                  },
+                  t("conversation.purgeDeleted"),
+                )
+              : null,
             conversations.length === 0
               ? h(
                   "p",
@@ -5520,7 +5721,18 @@ function App() {
                           ),
                         ),
                         entry.deleted
-                          ? null
+                          ? h(
+                              "button",
+                              {
+                                type: "button",
+                                className: "conversation-delete conversation-permanent-delete",
+                                "data-testid": "conversation-purge-one",
+                                "aria-label": t("conversation.deletePermanent"),
+                                title: t("conversation.deletePermanent"),
+                                onClick: () => handlePurgeConversation(entry),
+                              },
+                              "!",
+                            )
                           : h(
                               "button",
                               {
