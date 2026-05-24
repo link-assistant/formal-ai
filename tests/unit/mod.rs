@@ -6,6 +6,7 @@ mod docs_requirements;
 mod formal_ai;
 mod github_logs;
 mod multilingual_variations;
+mod playwright_script;
 mod proof_request;
 mod proof_request_config;
 mod software_project;

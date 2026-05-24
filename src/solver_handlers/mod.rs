@@ -10,6 +10,7 @@ mod calendar;
 mod definition_merge;
 mod feature_capability;
 mod meta_explanation;
+mod playwright_script;
 mod self_awareness;
 mod software_project;
 mod software_project_code;
@@ -26,6 +27,7 @@ pub use calendar::try_calendar_reasoning;
 pub use definition_merge::{try_definition_merge, try_definition_merge_by_default};
 pub use feature_capability::{try_feature_capability, CapabilityRuntime};
 pub use meta_explanation::{try_meta_explanation, try_meta_explanation_with_runtime};
+pub use playwright_script::try_playwright_script;
 pub use self_awareness::SelfAwarenessRuntime;
 pub use software_project::try_software_project_request;
 pub use user_intent::{
