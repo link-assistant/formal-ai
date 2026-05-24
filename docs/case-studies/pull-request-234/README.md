@@ -29,6 +29,10 @@ reviewable Markdown next to the raw GitHub API data.
   over issues #137, #139, #141, #142, #146, #147, #148, #155, and #237, with
   raw evidence, a case study, prompt variations next to expected answers, and
   configurable self-awareness such as assistant-name status.
+- 2026-05-24: follow-up PR comments required exact answer examples instead of
+  fragments, environment-aware self-awareness answers for each runtime surface,
+  a CI-covered guard against fragment-only self-awareness specs, and PR close
+  syntax using `Fixes https://github.com/link-assistant/formal-ai/issues/...`.
 
 ## Requirements Matrix
 
@@ -60,6 +64,10 @@ The failures were not one bug. They were a routing coverage cluster:
    as English because the Latin token dominated the character count.
 6. Self-facts described model/rules/memory but did not expose assistant-name
    configuration status, even though the web app already supports that setting.
+7. The first PR draft made browser-specific claims from Rust/library answers,
+   so self-awareness needed to know whether it was running as the Rust library,
+   CLI, HTTP server, browser worker/fallback, Telegram bot, or deployment
+   container.
 
 ## Solution Plan
 
@@ -68,7 +76,9 @@ the same predicates in Rust, the web worker, and the React-only local fallback.
 
 - Add table-driven unit tests in `tests/unit/specification/issue_146.rs` where
   each reported prompt and nearby variation sits next to the expected intent and
-  answer fragments.
+  exact answer text or deterministic exact answer pool.
+- Add a unit-test guard in the same spec so self-awareness tests cannot regress
+  to fragment-only answer checks such as answer substring assertions.
 - Route self-introduction before self-facts, known-facts, runtime behavior
   rules, and browser Wikipedia article lookup.
 - Broaden known-facts predicates to general knowledge/world prompts in English,
@@ -79,6 +89,25 @@ the same predicates in Rust, the web worker, and the React-only local fallback.
   other supported scripts with Latin technical tokens.
 - Expose assistant-name status in `self_facts` and add `rule_assistant_name` to
   the behavior-rule catalog.
+- Thread an execution-surface setting through Rust, CLI, HTTP server, Telegram,
+  and browser fallback/worker responses so answers only claim capabilities that
+  exist in the current environment.
+
+## CI Investigation
+
+The previously failing CI runs were on older commits, not the current local
+state:
+
+- Run `26359508579`, created 2026-05-24T11:04:36Z for SHA `985d7a6`, failed
+  `check:language-test-coverage` because the changed self-awareness tests
+  covered `ru`, `hi`, and `zh` but not `en`.
+- Run `26359647338`, created 2026-05-24T11:11:44Z for SHA `5eff3ab`, failed
+  the same language coverage guard for the same reason.
+- Run `26359769100`, created 2026-05-24T11:17:46Z for SHA `09c36e3`, passed
+  before this follow-up implementation.
+
+The current spec includes explicit `language: "en"` coverage and the local
+language-coverage guard passes.
 
 ## External Research
 
@@ -101,8 +130,20 @@ The minimum verification for this cluster is the focused Rust unit spec:
 cargo test issue_146 --test unit
 ```
 
-The broader PR checks should also include formatting, JavaScript syntax checks,
-the full Rust unit suite, file-size/changelog guards, and CI after pushing.
+The broader PR checks used for this follow-up are:
+
+```sh
+cargo fmt --all -- --check
+node --check src/web/app.js
+node --check src/web/formal_ai_worker.js
+RUSTFLAGS=-Dwarnings cargo clippy --all-targets --all-features
+RUSTFLAGS=-Dwarnings cargo test --all-features --verbose
+rust-script scripts/check-file-size.rs
+npm run --prefix tests/e2e check:language-test-coverage
+npm run --prefix tests/e2e check:language-parity
+npm run --prefix tests/e2e check:intent-coverage
+git diff --check
+```
 
 No external upstream issue is required: the observed failures are local routing
 and fallback-ordering defects in this repository.

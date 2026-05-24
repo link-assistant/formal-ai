@@ -14,13 +14,13 @@ use std::collections::BTreeMap;
 
 use crate::engine::{
     farewell_answer, greeting_answer, identity_answer, normalize_prompt, stable_id, unknown_answer,
-    SymbolicAnswer, DEFAULT_MODEL, HELLO_WORLD_PROGRAMS,
+    SymbolicAnswer, HELLO_WORLD_PROGRAMS,
 };
 use crate::event_log::EventLog;
-use crate::language::detect as detect_language;
 use crate::seed;
 
 use super::finalize_simple;
+use super::self_awareness::{try_self_awareness, SelfAwarenessRuntime};
 
 #[derive(Debug, Clone)]
 struct BehaviorRuleRecord {
@@ -41,10 +41,11 @@ struct RuntimeBehaviorRule {
     answer: String,
 }
 
-pub fn try_behavior_rules(
+pub fn try_behavior_rules_with_runtime(
     prompt: &str,
     normalized: &str,
     log: &mut EventLog,
+    runtime: SelfAwarenessRuntime,
 ) -> Option<SymbolicAnswer> {
     if let Some(rule) = runtime_rule_from_text(prompt) {
         log.append("behavior_rule:update", rule.id.clone());
@@ -88,45 +89,8 @@ pub fn try_behavior_rules(
         }
     }
 
-    if is_self_introduction_query(normalized) {
-        log.append("identity:self_introduction", "formal-ai".to_owned());
-        let language = self_awareness_language(prompt, normalized);
-        let body = identity_body(language);
-        return Some(finalize_simple(
-            prompt,
-            log,
-            "identity",
-            "response:identity",
-            &body,
-            1.0,
-        ));
-    }
-
-    if is_self_fact_query(normalized) {
-        log.append("self_facts:list", "formal-ai".to_owned());
-        let body = render_self_facts();
-        return Some(finalize_simple(
-            prompt,
-            log,
-            "self_facts",
-            "response:self_facts",
-            &body,
-            1.0,
-        ));
-    }
-
-    if is_known_fact_query(normalized) {
-        log.append("known_facts:list", "formal-ai".to_owned());
-        let language = self_awareness_language(prompt, normalized);
-        let body = render_known_facts(language);
-        return Some(finalize_simple(
-            prompt,
-            log,
-            "known_facts",
-            "response:known_facts",
-            &body,
-            1.0,
-        ));
+    if let Some(answer) = try_self_awareness(prompt, normalized, log, runtime) {
+        return Some(answer);
     }
 
     if let Some(rule) = runtime_rule_for_prompt(prompt, log) {
@@ -382,117 +346,6 @@ fn render_behavior_rule_detail(rule: &BehaviorRuleRecord) -> String {
     )
 }
 
-fn render_self_facts() -> String {
-    format!(
-        concat!(
-            "Facts I know about myself:\n\n",
-            "```links\n",
-            "self_fact_model\n",
-            "  subject \"formal-ai\"\n",
-            "  relation \"model\"\n",
-            "  object \"{}\"\n",
-            "self_fact_policy\n",
-            "  subject \"formal-ai\"\n",
-            "  relation \"policy\"\n",
-            "  object \"deterministic symbolic AI; no neural network inference\"\n",
-            "self_fact_rules\n",
-            "  subject \"formal-ai\"\n",
-            "  relation \"answer_source\"\n",
-            "  object \"local Links Notation rules\"\n",
-            "self_fact_memory\n",
-            "  subject \"formal-ai\"\n",
-            "  relation \"memory\"\n",
-            "  object \"append-only dialog events plus seed files in Links Notation\"\n",
-            "self_fact_assistant_name\n",
-            "  subject \"formal-ai\"\n",
-            "  relation \"assistant_name\"\n",
-            "  object \"not_configured_by_cli_or_library\"\n",
-            "```\n\n",
-            "Read behavior with `List behavior rules`; teach one with ",
-            "When `prompt` then `answer` (or When I say `prompt`, answer `answer`)."
-        ),
-        DEFAULT_MODEL
-    )
-}
-
-fn render_known_facts(language: &str) -> String {
-    let links = concat!(
-        "```links\n",
-        "known_fact_local_seed\n",
-        "  source \"local_links_notation_seed\"\n",
-        "  scope \"built-in rules, concepts, facts, tools, and response templates\"\n",
-        "known_fact_internet\n",
-        "  source \"internet_search\"\n",
-        "  scope \"public facts reachable through DuckDuckGo, Wikipedia, and Wikidata when online\"\n",
-        "known_fact_memory\n",
-        "  source \"conversation_memory\"\n",
-        "  scope \"facts the user contributed in the current dialog or imported memory\"\n",
-        "known_fact_self\n",
-        "  subject \"formal-ai\"\n",
-        "  relation \"model\"\n",
-        "  object \"formal-symbolic-production\"\n",
-        "known_fact_assistant_name\n",
-        "  subject \"formal-ai\"\n",
-        "  relation \"assistant_name_setting\"\n",
-        "  object \"not_configured_by_cli_or_library\"\n",
-        "```"
-    );
-    match language {
-        "ru" => [
-            "Я могу использовать несколько классов фактов:",
-            "",
-            "- **Локальные факты и правила**: встроенный seed Links Notation, включая правила, понятия, инструменты и ответы.",
-            "- **Интернет**: когда веб-поиск доступен, я могу искать публичные факты через DuckDuckGo, Wikipedia и Wikidata. Интернет не загружен в локальную память целиком.",
-            "- **Память диалога**: факты, которые вы сообщили в этом разговоре или импортировали через память, доступны как события памяти.",
-            "- **Факты о себе**: модель, политика исполнения и источники ответов.",
-            "",
-            links,
-            "",
-            "Если нужен конкретный факт, задайте прямой вопрос; я сначала проверю локальные правила и память, а затем при необходимости использую веб-поиск.",
-        ]
-        .join("\n"),
-        "hi" => [
-            "मैं इन स्रोतों से तथ्य इस्तेमाल कर सकता हूँ:",
-            "",
-            "- **स्थानीय तथ्य और नियम**: Links Notation seed में बने नियम, concepts, tools और responses.",
-            "- **Internet**: online होने पर DuckDuckGo, Wikipedia और Wikidata से public facts खोज सकता हूँ; पूरा internet local memory में preload नहीं है.",
-            "- **Conversation memory**: इस बातचीत या imported memory में दिए गए facts events के रूप में उपलब्ध रहते हैं.",
-            "- **Self facts**: मेरा model, execution policy और answer sources.",
-            "",
-            links,
-            "",
-            "किसी खास fact के लिए सीधे पूछें; मैं local rules और memory पहले देखता हूँ, फिर जरूरत होने पर web search इस्तेमाल करता हूँ.",
-        ]
-        .join("\n"),
-        "zh" => [
-            "我可以使用几类事实来源:",
-            "",
-            "- **本地事实和规则**: Links Notation seed 中的规则、概念、工具和回复模板。",
-            "- **Internet**: 在线且搜索可用时, 我可以通过 DuckDuckGo、Wikipedia 和 Wikidata 查找公开事实; 整个互联网不会预加载到本地记忆中。",
-            "- **Conversation memory**: 你在当前对话或导入记忆中提供的事实会作为记忆事件使用。",
-            "- **Self facts**: 我的模型、执行策略和回答来源。",
-            "",
-            links,
-            "",
-            "如果需要某个具体事实, 请直接提问; 我会先检查本地规则和记忆, 必要时再使用 web search。",
-        ]
-        .join("\n"),
-        _ => [
-            "I can use several classes of facts:",
-            "",
-            "- **Local facts and rules**: built-in Links Notation seed data, including rules, concepts, tools, and response templates.",
-            "- **Internet**: when web search is available, I can look up public facts through DuckDuckGo, Wikipedia, and Wikidata. The whole internet is not preloaded into local memory.",
-            "- **Conversation memory**: facts you contribute in this dialog, or import through memory, are available as memory events.",
-            "- **Self facts**: my model, execution policy, and answer sources.",
-            "",
-            links,
-            "",
-            "Ask for a specific fact directly; I check local rules and memory first, then use web search when needed.",
-        ]
-        .join("\n"),
-    }
-}
-
 fn render_runtime_rule_update(rule: &RuntimeBehaviorRule) -> String {
     format!(
         concat!(
@@ -633,150 +486,6 @@ fn is_chinese_behavior_rules_list_query(normalized: &str) -> bool {
         || normalized.contains("規則列表");
 
     mentions_rules && asks_to_list && points_at_assistant_rules
-}
-
-fn is_self_fact_query(normalized: &str) -> bool {
-    normalized.contains("facts you know about yourself")
-        || normalized.contains("facts about yourself")
-        || normalized.contains("self facts")
-        || normalized.contains("list all facts you know about yourself")
-        || normalized.contains("какие факты ты знаешь о себе")
-        || normalized.contains("факты о себе")
-        || normalized.contains("अपने बारे में तथ्य")
-        || normalized.contains("स्वयं के बारे में तथ्य")
-        || normalized.contains("关于你自己的事实")
-        || normalized.contains("自我事实")
-}
-
-fn is_self_introduction_query(normalized: &str) -> bool {
-    let cleaned = normalize_prompt(normalized);
-    if cleaned.is_empty() || is_self_fact_query(&cleaned) {
-        return false;
-    }
-
-    cleaned == "tell me about yourself"
-        || cleaned == "introduce yourself"
-        || cleaned.contains("tell me about yourself")
-        || cleaned.contains("introduce yourself")
-        || cleaned.contains("расскажи о себе")
-        || cleaned.contains("расскажи мне о себе")
-        || cleaned.contains("расскажи про себя")
-        || cleaned.contains("опиши себя")
-        || cleaned.contains("представься")
-        || cleaned.contains("अपने बारे में बताओ")
-        || cleaned.contains("अपना परिचय दो")
-        || cleaned.contains("介绍一下你自己")
-        || cleaned.contains("告诉我你自己")
-        || cleaned.contains("介紹一下你自己")
-        || cleaned.contains("告訴我你自己")
-}
-
-fn self_awareness_language(prompt: &str, normalized: &str) -> &'static str {
-    let lower = format!("{} {}", prompt.to_lowercase(), normalized);
-    if has_char_in_range(&lower, '\u{0400}', '\u{04ff}')
-        || contains_any(
-            &lower,
-            &["ты", "теб", "твоя", "твой", "вы", "вас", "у тебя"],
-        )
-    {
-        return "ru";
-    }
-    if has_char_in_range(&lower, '\u{0900}', '\u{097f}') {
-        return "hi";
-    }
-    if has_char_in_range(&lower, '\u{4e00}', '\u{9fff}') {
-        return "zh";
-    }
-    detect_language(prompt).slug()
-}
-
-fn has_char_in_range(text: &str, start: char, end: char) -> bool {
-    text.chars().any(|ch| (start..=end).contains(&ch))
-}
-
-fn identity_body(language: &str) -> String {
-    seed::response_for("identity", language)
-        .or_else(|| seed::response_for("identity", "en"))
-        .unwrap_or_else(|| identity_answer().to_owned())
-}
-
-fn contains_any(normalized: &str, needles: &[&str]) -> bool {
-    needles.iter().any(|needle| normalized.contains(needle))
-}
-
-fn is_known_fact_query(normalized: &str) -> bool {
-    if is_self_fact_query(normalized) {
-        return false;
-    }
-
-    let english = (normalized.contains("facts")
-        && contains_any(normalized, &["what", "which", "list", "show"])
-        && contains_any(
-            normalized,
-            &[
-                "you know",
-                "do you know",
-                "you have",
-                "available to you",
-                "in your knowledge",
-                "known to you",
-            ],
-        ))
-        || contains_any(
-            normalized,
-            &[
-                "what do you know in general",
-                "what do you know about the world",
-                "what is known to you",
-                "what knowledge do you have",
-            ],
-        );
-    let russian = (normalized.contains("факт")
-        && contains_any(
-            normalized,
-            &["какие", "что", "перечисли", "покажи", "назови"],
-        )
-        && contains_any(
-            normalized,
-            &[
-                "ты знаешь",
-                "знаешь",
-                "тебе извест",
-                "у тебя есть",
-                "твои знания",
-                "что ты знаешь",
-            ],
-        ))
-        || contains_any(
-            normalized,
-            &[
-                "что тебе вообще известно",
-                "что тебе известно",
-                "что ты вообще знаешь",
-                "что ты знаешь об окружающем мире",
-                "известно об окружающем мире",
-                "знаешь про окружающий мир",
-                "знаешь об окружающем мире",
-            ],
-        );
-    let hindi = (normalized.contains("तथ्य")
-        && contains_any(
-            normalized,
-            &["कौन", "क्या", "सूची", "सूचीबद्ध", "बताओ", "दिखाओ"],
-        )
-        && contains_any(normalized, &["तुम", "आप", "जानते", "जानती", "आपके", "तुम्हारे"]))
-        || contains_any(
-            normalized,
-            &["आप क्या जानते हैं", "तुम क्या जानते हो", "आपको क्या पता है"],
-        );
-    let chinese = ((normalized.contains("事实") || normalized.contains("事實"))
-        && contains_any(
-            normalized,
-            &["你知道", "您知道", "你有", "您有", "哪些", "什么", "什麼"],
-        ))
-        || contains_any(normalized, &["你知道什么", "您知道什么", "你知道哪些"]);
-
-    english || russian || hindi || chinese
 }
 
 fn detail_query(prompt: &str) -> Option<String> {

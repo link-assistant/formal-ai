@@ -2507,13 +2507,40 @@ function assistantNameStatus(preferences) {
   const name = normalizeAssistantNamePreference(
     preferences && preferences.assistantName,
   );
-  return name ? `configured:${name}` : "not_configured";
+  return name ? `configured:${name}` : "browser_preference_when_set_else_not_configured";
+}
+
+const BROWSER_SURFACE = {
+  slug: "browser",
+  label: "browser demo with JavaScript and WebAssembly worker",
+  runtime: "JavaScript UI plus a WebAssembly worker mirror of the solver",
+  memory: "browser IndexedDB/local storage plus worker state and imported memory",
+  webSearch: "available through browser CORS-readable providers when online and not blocked",
+  limits: "browser settings, import/export controls, and IndexedDB-backed memory belong to this surface",
+};
+
+function modeStatus(enabled) {
+  return enabled ? "enabled" : "disabled";
+}
+
+function definitionFusionStatus(preferences) {
+  return preferences && preferences.definitionFusion === "auto"
+    ? "enabled_by_default"
+    : "explicit_only";
 }
 
 function renderSelfFacts(preferences) {
   const assistantName = assistantNameStatus(preferences);
+  const surface = BROWSER_SURFACE;
   return [
-    "Facts I know about myself:",
+    "Facts I know about myself in this environment:",
+    "",
+    `- **Execution surface**: ${surface.label} (\`${surface.slug}\`).`,
+    `- **Runtime**: ${surface.runtime}.`,
+    `- **Memory**: ${surface.memory}.`,
+    `- **Web search**: ${surface.webSearch}.`,
+    `- **Surface limits**: ${surface.limits}.`,
+    "- **Local rules**: local Links Notation rules and seed facts are checked first.",
     "",
     "```links",
     "self_fact_model",
@@ -2524,95 +2551,132 @@ function renderSelfFacts(preferences) {
     '  subject "formal-ai"',
     '  relation "policy"',
     '  object "deterministic symbolic AI; no neural network inference"',
-    "self_fact_rules",
+    "self_fact_environment",
     '  subject "formal-ai"',
-    '  relation "answer_source"',
-    '  object "local Links Notation rules"',
+    '  relation "execution_surface"',
+    `  object "${surface.slug}"`,
+    "self_fact_runtime",
+    '  subject "formal-ai"',
+    '  relation "runtime"',
+    `  object "${escapeBehaviorRuleValue(surface.runtime)}"`,
     "self_fact_memory",
     '  subject "formal-ai"',
     '  relation "memory"',
-    '  object "append-only dialog events plus seed files in Links Notation"',
+    `  object "${escapeBehaviorRuleValue(surface.memory)}"`,
+    "self_fact_web_search",
+    '  subject "formal-ai"',
+    '  relation "web_search"',
+    `  object "${escapeBehaviorRuleValue(surface.webSearch)}"`,
     "self_fact_assistant_name",
     '  subject "formal-ai"',
     '  relation "assistant_name"',
     `  object "${escapeBehaviorRuleValue(assistantName)}"`,
+    "self_fact_agent_mode",
+    '  subject "formal-ai"',
+    '  relation "agent_mode"',
+    `  object "${modeStatus(preferences && preferences.agentMode)}"`,
+    "self_fact_diagnostics",
+    '  subject "formal-ai"',
+    '  relation "diagnostic_mode"',
+    `  object "${modeStatus(preferences && preferences.diagnosticsMode)}"`,
+    "self_fact_definition_fusion",
+    '  subject "formal-ai"',
+    '  relation "definition_fusion"',
+    `  object "${definitionFusionStatus(preferences)}"`,
     "```",
     "",
     "Read behavior with `List behavior rules`; teach one with When `prompt` then `answer` (or When I say `prompt`, answer `answer`).",
   ].join("\n");
 }
 
-function renderKnownFacts(language) {
+function renderKnownFacts(language, preferences) {
+  const surface = BROWSER_SURFACE;
+  const assistantName = assistantNameStatus(preferences);
   const links = [
     "```links",
     "known_fact_local_seed",
     '  source "local_links_notation_seed"',
     '  scope "built-in rules, concepts, facts, tools, and response templates"',
     "known_fact_internet",
-    '  source "internet_search"',
-    '  scope "public facts reachable through DuckDuckGo, Wikipedia, and Wikidata when online"',
+    '  source "environment_aware_web_search"',
+    `  scope "${escapeBehaviorRuleValue(surface.webSearch)}"`,
     "known_fact_memory",
     '  source "conversation_memory"',
-    '  scope "facts the user contributed in the current dialog or imported memory"',
+    `  scope "${escapeBehaviorRuleValue(surface.memory)}"`,
+    "known_fact_environment",
+    '  subject "formal-ai"',
+    '  relation "execution_surface"',
+    `  object "${surface.slug}"`,
     "known_fact_self",
     '  subject "formal-ai"',
     '  relation "model"',
     `  object "${escapeBehaviorRuleValue(AGENT_INFO.model || "formal-symbolic-production")}"`,
+    "known_fact_assistant_name",
+    '  subject "formal-ai"',
+    '  relation "assistant_name_setting"',
+    `  object "${escapeBehaviorRuleValue(assistantName)}"`,
+    "known_fact_surface_limits",
+    '  source "environment_directory"',
+    `  scope "${escapeBehaviorRuleValue(surface.limits)}"`,
     "```",
   ].join("\n");
   if (language === "ru") {
     return [
-      "Я могу использовать несколько классов фактов:",
+      `Я могу использовать несколько классов фактов в текущей среде \`${surface.slug}\`:`,
       "",
       "- **Локальные факты и правила**: встроенный seed Links Notation, включая правила, понятия, инструменты и ответы.",
-      "- **Интернет**: когда веб-поиск доступен, я могу искать публичные факты через DuckDuckGo, Wikipedia и Wikidata. Интернет не загружен в локальную память целиком.",
-      "- **Память диалога**: факты, которые вы сообщили в этом разговоре или импортировали через память, доступны как события памяти.",
-      "- **Факты о себе**: модель, политика исполнения и источники ответов.",
+      `- **Интернет**: ${surface.webSearch}; это не означает, что весь интернет предзагружен в локальную память.`,
+      `- **Память диалога**: ${surface.memory}.`,
+      "- **Факты о себе**: модель `formal-symbolic-production`, политика исполнения, поверхность и источники ответов.",
+      `- **Ограничения среды**: ${surface.limits}.`,
       "",
       links,
       "",
-      "Если нужен конкретный факт, задайте прямой вопрос; я сначала проверю локальные правила и память, а затем при необходимости использую веб-поиск.",
+      "Для конкретного факта задайте прямой вопрос; порядок проверки: локальные правила, память, затем веб-поиск, если он доступен в этой среде.",
     ].join("\n");
   }
   if (language === "hi") {
     return [
-      "मैं इन स्रोतों से तथ्य इस्तेमाल कर सकता हूँ:",
+      `मैं current \`${surface.slug}\` environment में इन fact sources का उपयोग कर सकता हूँ:`,
       "",
-      "- **स्थानीय तथ्य और नियम**: Links Notation seed में बने नियम, concepts, tools और responses.",
-      "- **Internet**: online होने पर DuckDuckGo, Wikipedia और Wikidata से public facts खोज सकता हूँ; पूरा internet local memory में preload नहीं है.",
-      "- **Conversation memory**: इस बातचीत या imported memory में दिए गए facts events के रूप में उपलब्ध रहते हैं.",
-      "- **Self facts**: मेरा model, execution policy और answer sources.",
+      "- **Local facts and rules**: Links Notation seed में rules, concepts, tools और response templates.",
+      `- **Internet**: ${surface.webSearch}; पूरा internet local memory में preload नहीं है.`,
+      `- **Conversation memory**: ${surface.memory}.`,
+      "- **Self facts**: model `formal-symbolic-production`, execution surface और answer sources.",
+      `- **Surface limits**: ${surface.limits}.`,
       "",
       links,
       "",
-      "किसी खास fact के लिए सीधे पूछें; मैं local rules और memory पहले देखता हूँ, फिर जरूरत होने पर web search इस्तेमाल करता हूँ.",
+      "किसी खास fact के लिए सीधे पूछें; मैं local rules और memory पहले देखता हूँ, फिर environment अनुमति दे तो web search इस्तेमाल करता हूँ.",
     ].join("\n");
   }
   if (language === "zh") {
     return [
-      "我可以使用几类事实来源:",
+      `在当前 \`${surface.slug}\` 环境中, 我可以使用这些事实来源:`,
       "",
       "- **本地事实和规则**: Links Notation seed 中的规则、概念、工具和回复模板。",
-      "- **Internet**: 在线且搜索可用时, 我可以通过 DuckDuckGo、Wikipedia 和 Wikidata 查找公开事实; 整个互联网不会预加载到本地记忆中。",
-      "- **Conversation memory**: 你在当前对话或导入记忆中提供的事实会作为记忆事件使用。",
-      "- **Self facts**: 我的模型、执行策略和回答来源。",
+      `- **Internet**: ${surface.webSearch}; 整个互联网不会预加载到本地记忆中。`,
+      `- **Conversation memory**: ${surface.memory}。`,
+      "- **Self facts**: model `formal-symbolic-production`, execution surface 和 answer sources。",
+      `- **Surface limits**: ${surface.limits}。`,
       "",
       links,
       "",
-      "如果需要某个具体事实, 请直接提问; 我会先检查本地规则和记忆, 必要时再使用 web search。",
+      "如果需要某个具体事实, 请直接提问; 我会先检查本地规则和记忆, 环境允许时再使用 web search。",
     ].join("\n");
   }
   return [
-    "I can use several classes of facts:",
+    `I can use several classes of facts in the current \`${surface.slug}\` environment:`,
     "",
     "- **Local facts and rules**: built-in Links Notation seed data, including rules, concepts, tools, and response templates.",
-    "- **Internet**: when web search is available, I can look up public facts through DuckDuckGo, Wikipedia, and Wikidata. The whole internet is not preloaded into local memory.",
-    "- **Conversation memory**: facts you contribute in this dialog, or import through memory, are available as memory events.",
-    "- **Self facts**: my model, execution policy, and answer sources.",
+    `- **Internet**: ${surface.webSearch}; the whole internet is not preloaded into local memory.`,
+    `- **Conversation memory**: ${surface.memory}.`,
+    "- **Self facts**: model `formal-symbolic-production`, execution policy, active surface, and answer sources.",
+    `- **Surface limits**: ${surface.limits}.`,
     "",
     links,
     "",
-    "Ask for a specific fact directly; I check local rules and memory first, then use web search when needed.",
+    "Ask for a specific fact directly; I check local rules and memory first, then use web search only when this environment allows it.",
   ].join("\n");
 }
 
@@ -3158,7 +3222,7 @@ function tryBehaviorRules(prompt, normalized, history, preferences) {
     const language = selfAwarenessLanguage(prompt, normalized);
     return {
       intent: "known_facts",
-      content: renderKnownFacts(language),
+      content: renderKnownFacts(language, preferences),
       confidence: 1.0,
       evidence: ["known_facts:list", "formal-ai", `language:${language}`],
     };
@@ -3863,16 +3927,17 @@ function architectureLanguage(prompt, normalized) {
 }
 
 function architectureExplanationContent(language) {
+  const surface = BROWSER_SURFACE;
   if (language === "ru") {
-    return "Я не LLM-рантайм в этой демонстрации и не выполняю нейросетевой инференс. У проекта есть OpenAI-совместимые API-форматы, но ответы строит детерминированный solver: сначала он проверяет локальный seed Links Notation, правила и память диалога; затем, когда веб-поиск доступен, может искать публичные факты через DuckDuckGo, Wikipedia и Wikidata. Память хранит факты, которые вы сообщили в этом разговоре или импортировали; весь интернет не загружен в локальные правила целиком.";
+    return `Я не LLM-рантайм и не выполняю нейросетевой инференс. Текущая среда: ${surface.label} (\`${surface.slug}\`). Рантайм: ${surface.runtime}. У проекта есть OpenAI-совместимые API-форматы, но ответы строит детерминированный solver: сначала он проверяет локальный seed Links Notation, правила и память (${surface.memory}); затем веб-поиск используется только с учетом среды: ${surface.webSearch}. Весь интернет не загружен в локальные правила целиком.`;
   }
   if (language === "hi") {
-    return "इस demo में मैं LLM runtime नहीं हूँ और neural inference नहीं चलाता. Project OpenAI-compatible API shapes देता है, लेकिन जवाब deterministic solver बनाता है: पहले local Links Notation seed, rules और conversation memory देखता है; फिर web search उपलब्ध हो तो DuckDuckGo, Wikipedia और Wikidata से public facts खोजता है. Memory में वे facts रहते हैं जो आपने इस conversation या imported memory में दिए हैं.";
+    return `मैं LLM runtime नहीं हूँ और neural inference नहीं चलाता. Current environment: ${surface.label} (\`${surface.slug}\`). Runtime: ${surface.runtime}. Project OpenAI-compatible API shapes देता है, लेकिन जवाब deterministic solver बनाता है: पहले local Links Notation seed, rules और memory (${surface.memory}) देखता है; फिर web search केवल environment अनुमति दे तो उपयोग करता है: ${surface.webSearch}. पूरा internet local rules में preload नहीं है.`;
   }
   if (language === "zh") {
-    return "在这个演示中我不是 LLM runtime, 也不执行神经网络推理。项目提供 OpenAI-compatible API 形状, 但回答由确定性的 solver 生成: 先检查本地 Links Notation seed、规则和对话记忆; 当 web search 可用时, 再通过 DuckDuckGo、Wikipedia 和 Wikidata 查找公开事实。记忆保存的是你在本对话或导入记忆中提供的事实, 并不是把整个互联网预加载到本地规则中。";
+    return `我不是 LLM runtime, 也不执行神经网络推理。当前环境: ${surface.label} (\`${surface.slug}\`)。Runtime: ${surface.runtime}。项目提供 OpenAI-compatible API 形状, 但回答由确定性的 solver 生成: 先检查本地 Links Notation seed、规则和记忆 (${surface.memory}); 然后只在当前环境允许时使用 web search: ${surface.webSearch}。整个互联网不会预加载到本地规则中。`;
   }
-  return "In this demo I am not an LLM runtime and I do not perform neural inference. The project exposes OpenAI-compatible API shapes, but answers come from a deterministic solver: it checks the local Links Notation seed, rules, and conversation memory first; when web search is available, it can look up public facts through DuckDuckGo, Wikipedia, and Wikidata. Memory stores facts you contributed in this conversation or imported memory; the whole internet is not preloaded into local rules.";
+  return `I am not an LLM runtime and I do not perform neural inference. Current environment: ${surface.label} (\`${surface.slug}\`). Runtime: ${surface.runtime}. The project exposes OpenAI-compatible API shapes, but answers come from a deterministic solver: it checks the local Links Notation seed, rules, and memory (${surface.memory}) first; web search is used only when this environment allows it: ${surface.webSearch}. The whole internet is not preloaded into local rules.`;
 }
 
 function tryArchitectureExplanation(prompt, normalized) {

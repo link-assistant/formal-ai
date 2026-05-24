@@ -3,7 +3,7 @@ use std::fmt::{Display, Formatter, Write};
 
 use serde::{Deserialize, Serialize};
 
-use crate::engine::FormalAiEngine;
+use crate::solver::{ExecutionSurface, SolverConfig, UniversalSolver};
 
 const TEXT_ONLY_MESSAGE: &str = "I can only process Telegram text messages in this implementation. Send a text prompt or a message caption.";
 const DEFAULT_API_BASE: &str = "https://api.telegram.org";
@@ -161,7 +161,7 @@ fn reply_for_message(message: &TelegramMessage) -> TelegramWebhookReply {
             if is_version_command(trimmed) {
                 return (version_reply_text(), None);
             }
-            let symbolic = FormalAiEngine.answer(trimmed);
+            let symbolic = telegram_solver().solve(trimmed);
             let trace = symbolic
                 .evidence_links
                 .iter()
@@ -185,6 +185,12 @@ fn reply_for_message(message: &TelegramMessage) -> TelegramWebhookReply {
             message_id: message.message_id,
         },
     }
+}
+
+fn telegram_solver() -> UniversalSolver {
+    let mut config = SolverConfig::from_env();
+    config.execution_surface = ExecutionSurface::Telegram;
+    UniversalSolver::new(config)
 }
 
 fn is_version_command(text: &str) -> bool {

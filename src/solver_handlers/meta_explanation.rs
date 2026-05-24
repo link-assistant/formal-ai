@@ -4,11 +4,23 @@ use crate::language::detect as detect_language;
 use crate::seed::response_for;
 
 use super::finalize_simple;
+use super::self_awareness::{
+    surface_label, surface_memory, surface_runtime, surface_web_search, SelfAwarenessRuntime,
+};
 
 pub fn try_meta_explanation(
     prompt: &str,
     normalized: &str,
     log: &mut EventLog,
+) -> Option<SymbolicAnswer> {
+    try_meta_explanation_with_runtime(prompt, normalized, log, SelfAwarenessRuntime::default())
+}
+
+pub fn try_meta_explanation_with_runtime(
+    prompt: &str,
+    normalized: &str,
+    log: &mut EventLog,
+    runtime: SelfAwarenessRuntime,
 ) -> Option<SymbolicAnswer> {
     let is_why_question = normalized.starts_with("why ")
         || normalized.starts_with("why did")
@@ -57,7 +69,7 @@ pub fn try_meta_explanation(
                 )
             })
     } else if is_architecture_question {
-        architecture_explanation_body(language)
+        architecture_explanation_body(language, runtime)
     } else {
         response_for("meta_explanation", language)
             .or_else(|| response_for("meta_explanation", "en"))
@@ -168,38 +180,55 @@ fn is_architecture_question(normalized: &str) -> bool {
     )
 }
 
-fn architecture_explanation_body(language: &str) -> String {
+fn architecture_explanation_body(language: &str, runtime: SelfAwarenessRuntime) -> String {
     match language {
-        "ru" => String::from(
-            "Я не LLM-рантайм в этой демонстрации и не выполняю нейросетевой инференс. \
-             У проекта есть OpenAI-совместимые API-форматы, но ответы строит \
-             детерминированный solver: сначала он проверяет локальный seed Links Notation, \
-             правила и память диалога; затем, когда веб-поиск доступен, может искать \
-             публичные факты через DuckDuckGo, Wikipedia и Wikidata. Память хранит факты, \
-             которые вы сообщили в этом разговоре или импортировали; весь интернет не \
+        "ru" => format!(
+            "Я не LLM-рантайм и не выполняю нейросетевой инференс. \
+             Текущая среда: {} (`{}`). Рантайм: {}. У проекта есть \
+             OpenAI-совместимые API-форматы, но ответы строит детерминированный solver: \
+             сначала он проверяет локальный seed Links Notation, правила и память ({}); \
+             затем веб-поиск используется только с учетом среды: {}. Весь интернет не \
              загружен в локальные правила целиком.",
+            surface_label(runtime),
+            runtime.surface.slug(),
+            surface_runtime(runtime),
+            surface_memory(runtime),
+            surface_web_search(runtime)
         ),
-        "hi" => String::from(
-            "इस demo में मैं LLM runtime नहीं हूँ और neural inference नहीं चलाता. \
-             Project OpenAI-compatible API shapes देता है, लेकिन जवाब deterministic solver \
-             बनाता है: पहले local Links Notation seed, rules और conversation memory देखता है; \
-             फिर web search उपलब्ध हो तो DuckDuckGo, Wikipedia और Wikidata से public facts खोजता है. \
-             Memory में वे facts रहते हैं जो आपने इस conversation या imported memory में दिए हैं.",
+        "hi" => format!(
+            "मैं LLM runtime नहीं हूँ और neural inference नहीं चलाता. Current environment: {} (`{}`). \
+             Runtime: {}. Project OpenAI-compatible API shapes देता है, लेकिन जवाब deterministic solver \
+             बनाता है: पहले local Links Notation seed, rules और memory ({}) देखता है; फिर web search \
+             केवल environment अनुमति दे तो उपयोग करता है: {}. पूरा internet local rules में preload नहीं है.",
+            surface_label(runtime),
+            runtime.surface.slug(),
+            surface_runtime(runtime),
+            surface_memory(runtime),
+            surface_web_search(runtime)
         ),
-        "zh" => String::from(
-            "在这个演示中我不是 LLM runtime, 也不执行神经网络推理。项目提供 OpenAI-compatible API 形状, \
-             但回答由确定性的 solver 生成: 先检查本地 Links Notation seed、规则和对话记忆; \
-             当 web search 可用时, 再通过 DuckDuckGo、Wikipedia 和 Wikidata 查找公开事实。\
-             记忆保存的是你在本对话或导入记忆中提供的事实, 并不是把整个互联网预加载到本地规则中。",
+        "zh" => format!(
+            "我不是 LLM runtime, 也不执行神经网络推理。当前环境: {} (`{}`)。Runtime: {}。\
+             项目提供 OpenAI-compatible API 形状, 但回答由确定性的 solver 生成: 先检查本地 \
+             Links Notation seed、规则和记忆 ({}); 然后只在当前环境允许时使用 web search: {}。\
+             整个互联网不会预加载到本地规则中。",
+            surface_label(runtime),
+            runtime.surface.slug(),
+            surface_runtime(runtime),
+            surface_memory(runtime),
+            surface_web_search(runtime)
         ),
-        _ => String::from(
-            "In this demo I am not an LLM runtime and I do not perform neural inference. \
-             The project exposes OpenAI-compatible API shapes, but answers come from a \
-             deterministic solver: it checks the local Links Notation seed, rules, and \
-             conversation memory first; when web search is available, it can look up public \
-             facts through DuckDuckGo, Wikipedia, and Wikidata. Memory stores facts you \
-             contributed in this conversation or imported memory; the whole internet is not \
-             preloaded into local rules.",
+        _ => format!(
+            "I am not an LLM runtime and I do not perform neural inference. \
+             Current environment: {} (`{}`). Runtime: {}. The project exposes \
+             OpenAI-compatible API shapes, but answers come from a deterministic solver: \
+             it checks the local Links Notation seed, rules, and memory ({}) first; \
+             web search is used only when this environment allows it: {}. The whole \
+             internet is not preloaded into local rules.",
+            surface_label(runtime),
+            runtime.surface.slug(),
+            surface_runtime(runtime),
+            surface_memory(runtime),
+            surface_web_search(runtime)
         ),
     }
 }

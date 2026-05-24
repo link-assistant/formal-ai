@@ -6,8 +6,10 @@ use serde_json::json;
 
 use crate::engine::{is_known_trace_id, knowledge_graph, knowledge_graph_dot, DEFAULT_MODEL};
 use crate::protocol::{
-    create_chat_completion, create_response, ChatCompletionRequest, ResponsesRequest,
+    create_chat_completion_with_solver, create_response_with_solver, ChatCompletionRequest,
+    ResponsesRequest,
 };
+use crate::solver::{ExecutionSurface, SolverConfig, UniversalSolver};
 use crate::telegram::handle_telegram_webhook;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -55,17 +57,21 @@ pub fn handle_api_request(method: &str, path: &str, body: &str) -> ApiHttpRespon
         ("POST", "/v1/chat/completions") => {
             match serde_json::from_str::<ChatCompletionRequest>(body) {
                 Ok(request) => {
+                    let solver = http_solver();
                     if request.stream {
-                        sse_response(&create_chat_completion(&request))
+                        sse_response(&create_chat_completion_with_solver(&request, &solver))
                     } else {
-                        json_response(200, &create_chat_completion(&request))
+                        json_response(200, &create_chat_completion_with_solver(&request, &solver))
                     }
                 }
                 Err(error) => error_response(400, &format!("invalid chat request: {error}")),
             }
         }
         ("POST", "/v1/responses") => match serde_json::from_str::<ResponsesRequest>(body) {
-            Ok(request) => json_response(200, &create_response(&request)),
+            Ok(request) => {
+                let solver = http_solver();
+                json_response(200, &create_response_with_solver(&request, &solver))
+            }
             Err(error) => error_response(400, &format!("invalid responses request: {error}")),
         },
         ("POST", "/telegram/webhook") => match handle_telegram_webhook(body) {
@@ -79,6 +85,12 @@ pub fn handle_api_request(method: &str, path: &str, body: &str) -> ApiHttpRespon
         },
         _ => error_response(404, "route not found"),
     }
+}
+
+fn http_solver() -> UniversalSolver {
+    let mut config = SolverConfig::from_env();
+    config.execution_surface = ExecutionSurface::HttpServer;
+    UniversalSolver::new(config)
 }
 
 fn handle_graph_request(query: &str) -> ApiHttpResponse {

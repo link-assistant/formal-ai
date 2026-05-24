@@ -10,13 +10,14 @@ mod calendar;
 mod definition_merge;
 mod feature_capability;
 mod meta_explanation;
+mod self_awareness;
 mod software_project;
 mod software_project_code;
 mod user_intent;
 mod web_requests;
 mod web_search_intent;
 
-pub use behavior_rules::try_behavior_rules;
+pub use behavior_rules::try_behavior_rules_with_runtime;
 pub use benchmark_prompts::{
     try_brainstorming_request, try_conversation_topic_request, try_coreference_request,
     try_fact_lookup, try_roleplay_request, try_summarization_request,
@@ -24,7 +25,8 @@ pub use benchmark_prompts::{
 pub use calendar::try_calendar_reasoning;
 pub use definition_merge::{try_definition_merge, try_definition_merge_by_default};
 pub use feature_capability::{try_feature_capability, CapabilityRuntime};
-pub use meta_explanation::try_meta_explanation;
+pub use meta_explanation::{try_meta_explanation, try_meta_explanation_with_runtime};
+pub use self_awareness::SelfAwarenessRuntime;
 pub use software_project::try_software_project_request;
 pub use user_intent::{
     try_capabilities, try_clarification, try_ill_formed, try_opinion_question, try_proof_request,
