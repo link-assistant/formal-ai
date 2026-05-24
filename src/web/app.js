@@ -28,6 +28,8 @@ const UNKNOWN_ANSWER =
   "I don't know how to answer that yet. I cannot answer that from local Links Notation rules yet. To inspect what I can do, send `List behavior rules`, then `Show behavior rule unknown`. To teach this dialog a response, send: When I say `your prompt`, answer `your answer`. To make it durable, export memory or use Report issue so developers can add the fact or rule to the seed.";
 const IDENTITY_ANSWER =
   "I am formal-ai, a deterministic symbolic AI implementation that answers from local Links Notation rules and OpenAI-compatible API shapes. I do not perform neural inference in this demo.";
+const ASSISTANT_NAME_ANSWER =
+  "I'm formal AI, and currently I don't have a name. But you can name me as you like.";
 const COURTESY_ACKNOWLEDGEMENTS = [
   "Glad to hear it.",
   "You're welcome.",
@@ -308,9 +310,72 @@ function commandNumberValue(normalized, terms) {
   return clampNumber(raw, 0, 1, 0);
 }
 
+function sanitizeAssistantNameInput(value) {
+  return String(value || "")
+    .replace(/[\r\n\t]+/g, " ")
+    .slice(0, 64);
+}
+
+function normalizeAssistantName(value) {
+  return sanitizeAssistantNameInput(value)
+    .replace(/\s+/g, " ")
+    .trim()
+    .replace(/^[`"']+|[`"']+$/g, "")
+    .trim();
+}
+
+function extractAssistantNameCommand(text, normalized) {
+  const clearPhrases = [
+    "clear assistant name",
+    "reset assistant name",
+    "remove assistant name",
+    "очисти имя ассистента",
+    "сбрось имя ассистента",
+    "убери имя ассистента",
+    "清除助手名字",
+    "重置助手名字",
+    "सहायक नाम हटाएं",
+  ];
+  if (clearPhrases.includes(normalized)) {
+    return {
+      kind: "set_preference",
+      key: "assistantName",
+      value: "",
+      intent: "configure_assistant_name",
+      label: "Assistant name",
+    };
+  }
+
+  const raw = String(text || "").trim();
+  const patterns = [
+    /^(?:set|change|configure)\s+(?:the\s+)?(?:assistant|your)\s+name\s+(?:to|as)\s+(.+)$/iu,
+    /^(?:assistant\s+name|your\s+name)\s*(?:=|:|is)\s*(.+)$/iu,
+    /^(?:call|name)\s+(?:yourself|you)\s+(.+)$/iu,
+    /^(?:назови|зови)\s+себя\s+(.+)$/iu,
+    /^(?:тебя\s+зовут|тво[её]\s+имя|имя\s+ассистента)\s*(?:=|:)?\s*(.+)$/iu,
+    /^(?:你的名字|助手名字|助理名字)\s*(?:设为|设置为|叫|=|:)\s*(.+)$/u,
+    /^(?:अपना नाम|सहायक नाम)\s*(?:रखो|सेट करो|=|:)?\s*(.+)$/u,
+  ];
+  for (const pattern of patterns) {
+    const match = raw.match(pattern);
+    if (!match) continue;
+    const value = normalizeAssistantName(match[1]);
+    if (!value) continue;
+    return {
+      kind: "set_preference",
+      key: "assistantName",
+      value,
+      intent: "configure_assistant_name",
+      label: "Assistant name",
+    };
+  }
+  return null;
+}
+
 function commandValueLabel(command) {
   if (command.kind === "report_issue") return command.label;
   if (command.kind === "trigger") return command.label;
+  if (command.key === "assistantName" && !command.value) return "not set";
   if (typeof command.value === "boolean") return command.value ? "on" : "off";
   if (typeof command.value === "number") return command.value.toFixed(2);
   return String(command.value);
@@ -355,6 +420,11 @@ function recognizeInterfaceCommand(text) {
   ];
   if (attachPhrases.some((phrase) => normalized === phrase || normalized.includes(phrase))) {
     return { kind: "trigger", action: "attach_files", intent: "attach_files", label: "Attach files" };
+  }
+
+  const assistantName = extractAssistantNameCommand(text, normalized);
+  if (assistantName) {
+    return assistantName;
   }
 
   const diagnostics = detectToggleCommand(normalized, [
@@ -893,6 +963,7 @@ const PREFERENCE_DEFAULTS = {
   associativeProjectPromotion: true,
   theme: "auto",
   location: "",
+  assistantName: "",
   // Issue #27: id of the conversation the user last typed in; on reload the
   // demo restores its event log into the main transcript. Empty string means
   // "no conversation yet — start a fresh one on first user input".
@@ -1240,6 +1311,7 @@ function collectUserContext({
   composerStyle,
   composerAction,
   locationPreference,
+  assistantName,
   guessProbability,
   temperature,
   followUpProbability,
@@ -1277,6 +1349,7 @@ function collectUserContext({
       "",
     online: typeof nav.onLine === "boolean" ? (nav.onLine ? "yes" : "no") : "",
     preferredLocation: locationPreference || "",
+    assistantName: normalizeAssistantName(assistantName) || "not set",
     guessProbability: formatSliderValue(guessProbability),
     temperature: String(normalizeSliderPreference(temperature, 0)),
     followUpProbability: formatSliderValue(followUpProbability),
@@ -1768,6 +1841,11 @@ function isIdentityPrompt(normalized) {
       "introduce yourself",
       "кто ты",
       "что ты",
+      "расскажи о себе",
+      "расскажи мне о себе",
+      "расскажи про себя",
+      "опиши себя",
+      "представься",
       "你是谁",
     ].includes(normalized) ||
     (has("who") && has("you")) ||
@@ -1776,8 +1854,65 @@ function isIdentityPrompt(normalized) {
     (has("tell") && has("yourself")) ||
     (has("introduce") && has("yourself")) ||
     (has("кто") && has("ты")) ||
-    (has("что") && has("ты"))
+    (has("что") && has("ты")) ||
+    (has("расскажи") && has("себе")) ||
+    (has("опиши") && has("себя"))
   );
+}
+
+function isAssistantNamePrompt(normalized) {
+  const tokens = normalized ? normalized.split(/\s+/) : [];
+  const has = (token) => tokens.includes(token);
+  return (
+    [
+      "what is your name",
+      "what s your name",
+      "what's your name",
+      "do you have a name",
+      "what should i call you",
+      "как твое имя",
+      "как твоё имя",
+      "как тебя зовут",
+      "у тебя есть имя",
+      "आपका नाम क्या है",
+      "तुम्हारा नाम क्या है",
+      "你叫什么名字",
+      "您叫什么名字",
+      "你的名字是什么",
+      "你有名字吗",
+    ].includes(normalized) ||
+    (has("what") && has("your") && has("name")) ||
+    (has("you") && has("have") && has("name")) ||
+    (has("call") && has("you")) ||
+    (has("как") && has("тебя") && has("зовут"))
+  );
+}
+
+function localAssistantNameAnswer(prompt, preferences = {}) {
+  const name = normalizeAssistantName(preferences.assistantName);
+  const raw = String(prompt || "");
+  if (name && /[а-яё]/iu.test(raw)) {
+    return `Меня зовут ${name}. Я formal AI.`;
+  }
+  if (name && /[\u0900-\u097f]/u.test(raw)) {
+    return `मेरा नाम ${name} है। मैं formal AI हूँ।`;
+  }
+  if (name && /[\u3400-\u9fff]/u.test(raw)) {
+    return `我的名字是 ${name}。我是 formal AI。`;
+  }
+  if (name) {
+    return `My name is ${name}. I'm formal AI.`;
+  }
+  if (/[а-яё]/iu.test(raw)) {
+    return "Я formal AI, и сейчас у меня нет имени. Но вы можете назвать меня как хотите.";
+  }
+  if (/[\u0900-\u097f]/u.test(raw)) {
+    return "मैं formal AI हूँ, और अभी मेरा कोई नाम नहीं है। लेकिन आप मुझे अपनी पसंद का नाम दे सकते हैं।";
+  }
+  if (/[\u3400-\u9fff]/u.test(raw)) {
+    return "我是 formal AI,目前还没有名字。不过您可以按自己的喜好给我起名。";
+  }
+  return ASSISTANT_NAME_ANSWER;
 }
 
 function localBehaviorRuleId(value) {
@@ -1884,6 +2019,17 @@ function localBehaviorRuleRecords() {
       whenThen: `When the user asks \`Who are you?\` or \`Кто ты?\` then respond with the identity answer.`,
     },
     {
+      id: "rule_assistant_name",
+      topic: "assistant_name",
+      intent: "assistant_name",
+      label: "Assistant name rule",
+      matches: "`What is your name?`, `Как твое имя?`, and equivalent name prompts",
+      response: ASSISTANT_NAME_ANSWER,
+      source: "local fallback",
+      whenThen:
+        "When the user asks `What is your name?` or `Как твое имя?` then respond with the assistant-name answer, unless the assistant name setting is configured.",
+    },
+    {
       id: "rule_unknown",
       topic: "unknown_fallback",
       intent: "unknown",
@@ -1900,10 +2046,16 @@ function localBehaviorRuleRecords() {
 const LOCAL_BEHAVIOR_RULE_TOPIC_LABELS = {
   greetings: "Greetings",
   identity: "Identity",
+  assistant_name: "Assistant name",
   unknown_fallback: "Unknown fallback",
 };
 
-const LOCAL_BEHAVIOR_RULE_TOPIC_ORDER = ["greetings", "identity", "unknown_fallback"];
+const LOCAL_BEHAVIOR_RULE_TOPIC_ORDER = [
+  "greetings",
+  "identity",
+  "assistant_name",
+  "unknown_fallback",
+];
 
 function localBehaviorRulesList(runtimeRules) {
   const lines = [
@@ -1968,23 +2120,347 @@ function localBehaviorRuleDetail(rule) {
   ].join("\n");
 }
 
-function localSelfFacts() {
+function localAssistantNameStatus(preferences = {}) {
+  const name = normalizeAssistantName(preferences.assistantName);
+  return name ? `configured:${name}` : "browser_preference_when_set_else_not_configured";
+}
+
+function localLinoEscape(value) {
+  return String(value || "").replaceAll("\\", "\\\\").replaceAll('"', '\\"').replaceAll("\n", "\\n");
+}
+
+const LOCAL_BROWSER_SURFACE = {
+  slug: "browser",
+  label: "browser demo with JavaScript and WebAssembly worker",
+  runtime: "JavaScript UI plus a WebAssembly worker mirror of the solver",
+  memory: "browser IndexedDB/local storage plus worker state and imported memory",
+  webSearch: "available through browser CORS-readable providers when online and not blocked",
+  limits: "browser settings, import/export controls, and IndexedDB-backed memory belong to this surface",
+};
+
+function localModeStatus(enabled) {
+  return enabled ? "enabled" : "disabled";
+}
+
+function localDefinitionFusionStatus(preferences = {}) {
+  return preferences.definitionFusion === "auto" ? "enabled_by_default" : "explicit_only";
+}
+
+function localSelfFacts(preferences = {}) {
+  const assistantName = localAssistantNameStatus(preferences);
+  const surface = LOCAL_BROWSER_SURFACE;
   return [
-    "Facts I know about myself:",
+    "Facts I know about myself in this environment:",
+    "",
+    `- **Execution surface**: ${surface.label} (\`${surface.slug}\`).`,
+    `- **Runtime**: ${surface.runtime}.`,
+    `- **Memory**: ${surface.memory}.`,
+    `- **Web search**: ${surface.webSearch}.`,
+    `- **Surface limits**: ${surface.limits}.`,
+    "- **Local rules**: local Links Notation rules and seed facts are checked first.",
     "",
     "```links",
     "self_fact_model",
     '  subject "formal-ai"',
     '  relation "model"',
     '  object "formal-symbolic-production"',
-    "self_fact_rules",
+    "self_fact_policy",
     '  subject "formal-ai"',
-    '  relation "answer_source"',
-    '  object "local Links Notation rules"',
+    '  relation "policy"',
+    '  object "deterministic symbolic AI; no neural network inference"',
+    "self_fact_environment",
+    '  subject "formal-ai"',
+    '  relation "execution_surface"',
+    `  object "${surface.slug}"`,
+    "self_fact_runtime",
+    '  subject "formal-ai"',
+    '  relation "runtime"',
+    `  object "${localLinoEscape(surface.runtime)}"`,
+    "self_fact_memory",
+    '  subject "formal-ai"',
+    '  relation "memory"',
+    `  object "${localLinoEscape(surface.memory)}"`,
+    "self_fact_web_search",
+    '  subject "formal-ai"',
+    '  relation "web_search"',
+    `  object "${localLinoEscape(surface.webSearch)}"`,
+    "self_fact_assistant_name",
+    '  subject "formal-ai"',
+    '  relation "assistant_name"',
+    `  object "${localLinoEscape(assistantName)}"`,
+    "self_fact_agent_mode",
+    '  subject "formal-ai"',
+    '  relation "agent_mode"',
+    `  object "${localModeStatus(preferences.agentMode)}"`,
+    "self_fact_diagnostics",
+    '  subject "formal-ai"',
+    '  relation "diagnostic_mode"',
+    `  object "${localModeStatus(preferences.diagnosticsMode)}"`,
+    "self_fact_definition_fusion",
+    '  subject "formal-ai"',
+    '  relation "definition_fusion"',
+    `  object "${localDefinitionFusionStatus(preferences)}"`,
     "```",
     "",
-    "Read behavior with `List behavior rules`; teach one with When I say `prompt`, answer `answer`.",
+    "Read behavior with `List behavior rules`; teach one with When `prompt` then `answer` (or When I say `prompt`, answer `answer`).",
   ].join("\n");
+}
+
+function localKnownFacts(language, preferences = {}) {
+  const surface = LOCAL_BROWSER_SURFACE;
+  const assistantName = localAssistantNameStatus(preferences);
+  const links = [
+    "```links",
+    "known_fact_local_seed",
+    '  source "local_links_notation_seed"',
+    '  scope "built-in rules, concepts, facts, tools, and response templates"',
+    "known_fact_internet",
+    '  source "environment_aware_web_search"',
+    `  scope "${localLinoEscape(surface.webSearch)}"`,
+    "known_fact_memory",
+    '  source "conversation_memory"',
+    `  scope "${localLinoEscape(surface.memory)}"`,
+    "known_fact_environment",
+    '  subject "formal-ai"',
+    '  relation "execution_surface"',
+    `  object "${surface.slug}"`,
+    "known_fact_self",
+    '  subject "formal-ai"',
+    '  relation "model"',
+    '  object "formal-symbolic-production"',
+    "known_fact_assistant_name",
+    '  subject "formal-ai"',
+    '  relation "assistant_name_setting"',
+    `  object "${localLinoEscape(assistantName)}"`,
+    "known_fact_surface_limits",
+    '  source "environment_directory"',
+    `  scope "${localLinoEscape(surface.limits)}"`,
+    "```",
+  ].join("\n");
+  if (language === "ru") {
+    return [
+      `Я могу использовать несколько классов фактов в текущей среде \`${surface.slug}\`:`,
+      "",
+      "- **Локальные факты и правила**: встроенный seed Links Notation, включая правила, понятия, инструменты и ответы.",
+      `- **Интернет**: ${surface.webSearch}; это не означает, что весь интернет предзагружен в локальную память.`,
+      `- **Память диалога**: ${surface.memory}.`,
+      "- **Факты о себе**: модель `formal-symbolic-production`, политика исполнения, поверхность и источники ответов.",
+      `- **Ограничения среды**: ${surface.limits}.`,
+      "",
+      links,
+      "",
+      "Для конкретного факта задайте прямой вопрос; порядок проверки: локальные правила, память, затем веб-поиск, если он доступен в этой среде.",
+    ].join("\n");
+  }
+  return [
+    `I can use several classes of facts in the current \`${surface.slug}\` environment:`,
+    "",
+    "- **Local facts and rules**: built-in Links Notation seed data, including rules, concepts, tools, and response templates.",
+    `- **Internet**: ${surface.webSearch}; the whole internet is not preloaded into local memory.`,
+    `- **Conversation memory**: ${surface.memory}.`,
+    "- **Self facts**: model `formal-symbolic-production`, execution policy, active surface, and answer sources.",
+    `- **Surface limits**: ${surface.limits}.`,
+    "",
+    links,
+    "",
+    "Ask for a specific fact directly; I check local rules and memory first, then use web search only when this environment allows it.",
+  ].join("\n");
+}
+
+function localContainsAny(normalized, needles) {
+  return needles.some((needle) => normalized.includes(needle));
+}
+
+function localIsSelfFactQuery(normalized) {
+  return (
+    normalized.includes("facts you know about yourself") ||
+    normalized.includes("self facts") ||
+    normalized.includes("факты о себе") ||
+    normalized.includes("какие факты ты знаешь о себе")
+  );
+}
+
+function localIsSelfIntroductionQuery(normalized) {
+  const cleaned = normalizePrompt(normalized);
+  if (!cleaned || localIsSelfFactQuery(cleaned)) return false;
+  return (
+    cleaned === "tell me about yourself" ||
+    cleaned === "introduce yourself" ||
+    cleaned.includes("tell me about yourself") ||
+    cleaned.includes("introduce yourself") ||
+    cleaned.includes("расскажи о себе") ||
+    cleaned.includes("расскажи мне о себе") ||
+    cleaned.includes("расскажи про себя") ||
+    cleaned.includes("опиши себя") ||
+    cleaned.includes("представься")
+  );
+}
+
+function localSelfAwarenessLanguage(prompt, normalized) {
+  const text = `${String(prompt || "").toLowerCase()} ${String(normalized || "")}`;
+  if (/[\u0400-\u04ff]/u.test(text) || localContainsAny(text, ["ты", "теб", "у тебя"])) {
+    return "ru";
+  }
+  if (/[\u0900-\u097f]/u.test(text)) return "hi";
+  if (/[\u4e00-\u9fff]/u.test(text)) return "zh";
+  return "en";
+}
+
+function localSelfIntroductionContent(language, preferences = {}) {
+  const identity = IDENTITY_ANSWER;
+  const name = normalizeAssistantName(preferences.assistantName);
+  if (!name) return identity;
+  if (language === "ru") return `Меня зовут ${name}. ${identity}`;
+  if (language === "hi") return `मेरा नाम ${name} है। ${identity}`;
+  if (language === "zh") return `我的名字是 ${name}。${identity}`;
+  return `My name is ${name}. ${identity}`;
+}
+
+function localCleanConversationTopic(raw) {
+  return String(raw || "")
+    .trim()
+    .replace(/^[`"':._,\-\s!?]+|[`"':._,\-\s!?]+$/gu, "");
+}
+
+function localConversationTopic(prompt, normalized) {
+  const source = String(prompt || "");
+  const lower = source.toLowerCase();
+  for (const prefix of [
+    "let's talk about ",
+    "lets talk about ",
+    "can we talk about ",
+    "talk about ",
+    "давай поговорим о ",
+    "давай поговорим об ",
+    "давайте поговорим о ",
+    "давайте поговорим об ",
+    "поговорим о ",
+    "поговорим об ",
+    "обсудим ",
+    "चलो बात करें ",
+    "बात करें ",
+    "聊聊",
+    "谈谈",
+  ]) {
+    if (String(normalized || "").startsWith(prefix)) {
+      return localCleanConversationTopic(String(normalized || "").slice(prefix.length));
+    }
+  }
+  const marker = "поговорим о ";
+  const index = lower.indexOf(marker);
+  if (index >= 0) return localCleanConversationTopic(lower.slice(index + marker.length));
+  return "";
+}
+
+function localConversationTopicContent(topic, language) {
+  if (language === "ru") {
+    return `Можем. Тема: ${topic}. Я могу начать с краткого определения, контекста или конкретного вопроса; если веб-поиск доступен, публичные факты можно уточнить через внешний источник.`;
+  }
+  if (language === "hi") {
+    return `हम बात कर सकते हैं. विषय: ${topic}. मैं छोटी परिभाषा, संदर्भ, या किसी конкрет प्रश्न से शुरू कर सकता हूँ; web search उपलब्ध हो तो public facts बाहरी स्रोत से जाँचे जा सकते हैं.`;
+  }
+  if (language === "zh") {
+    return `可以聊。主题: ${topic}。我可以从简短定义、上下文或具体问题开始; 如果 web search 可用, 公开事实可以通过外部来源核对。`;
+  }
+  return `We can talk about ${topic}. I can start with a short definition, context, or a specific question; when web search is available, public facts can be checked against an external source.`;
+}
+
+function localIsKnownFactQuery(normalized) {
+  const english =
+    (normalized.includes("facts") &&
+      localContainsAny(normalized, ["what", "which", "list", "show"]) &&
+      localContainsAny(normalized, [
+        "you know",
+        "do you know",
+        "you have",
+        "available to you",
+        "in your knowledge",
+        "known to you",
+      ])) ||
+    localContainsAny(normalized, [
+      "what do you know in general",
+      "what do you know about the world",
+      "what is known to you",
+      "what knowledge do you have",
+    ]);
+  const russian =
+    (normalized.includes("факт") &&
+      localContainsAny(normalized, ["какие", "что", "перечисли", "покажи", "назови"]) &&
+      localContainsAny(normalized, [
+        "ты знаешь",
+        "знаешь",
+        "тебе извест",
+        "у тебя есть",
+        "твои знания",
+        "что ты знаешь",
+      ])) ||
+    localContainsAny(normalized, [
+      "что тебе вообще известно",
+      "что тебе известно",
+      "что ты вообще знаешь",
+      "что ты знаешь об окружающем мире",
+      "известно об окружающем мире",
+      "знаешь про окружающий мир",
+      "знаешь об окружающем мире",
+    ]);
+  const hindi = localContainsAny(normalized, [
+    "आप क्या जानते हैं",
+    "तुम क्या जानते हो",
+    "आपको क्या पता है",
+  ]);
+  const chinese = localContainsAny(normalized, ["你知道什么", "您知道什么", "你知道哪些"]);
+  return english || russian || hindi || chinese;
+}
+
+function localIsArchitectureQuestion(normalized) {
+  const mentionsAssistant = localContainsAny(normalized, [
+    "you",
+    "your",
+    "formal ai",
+    "ты",
+    "теб",
+    "твоя",
+    "твой",
+    "тво",
+    "вы",
+  ]);
+  if (!mentionsAssistant) return false;
+  return localContainsAny(normalized, [
+    "llm",
+    "large language model",
+    "language model",
+    "openai api",
+    "openai",
+    "neural inference",
+    "neural network",
+    "links notation rules",
+    "local rules",
+    "world model",
+    "model of the world",
+    "бям",
+    "языковая модель",
+    "языковой моделью",
+    "нейросет",
+    "нейрон",
+    "локальных правил",
+    "локальных правилах",
+    "область знаний",
+    "модель окружающего мира",
+    "модель мира",
+    "принцип работы",
+    "идея твоей разработки",
+    "идея твоего проекта",
+    "зачем тебя разработ",
+    "ссылк",
+  ]);
+}
+
+function localArchitectureExplanation(language) {
+  const surface = LOCAL_BROWSER_SURFACE;
+  if (language === "ru") {
+    return `Я не LLM-рантайм и не выполняю нейросетевой инференс. Текущая среда: ${surface.label} (\`${surface.slug}\`). Рантайм: ${surface.runtime}. У проекта есть OpenAI-совместимые API-форматы, но ответы строит детерминированный solver: сначала он проверяет локальный seed Links Notation, правила и память (${surface.memory}); затем веб-поиск используется только с учетом среды: ${surface.webSearch}. Весь интернет не загружен в локальные правила целиком.`;
+  }
+  return `I am not an LLM runtime and I do not perform neural inference. Current environment: ${surface.label} (\`${surface.slug}\`). Runtime: ${surface.runtime}. The project exposes OpenAI-compatible API shapes, but answers come from a deterministic solver: it checks the local Links Notation seed, rules, and memory (${surface.memory}) first; web search is used only when this environment allows it: ${surface.webSearch}. The whole internet is not preloaded into local rules.`;
 }
 
 function localCleanRuleQuery(raw) {
@@ -2031,7 +2507,7 @@ function localRuntimeRuleForPrompt(prompt, history) {
   return null;
 }
 
-function tryLocalBehaviorRules(prompt, normalized, history) {
+function tryLocalBehaviorRules(prompt, normalized, history, preferences = {}) {
   const updateRule = localRuntimeRuleFromText(prompt);
   if (updateRule) {
     return {
@@ -2068,12 +2544,24 @@ function tryLocalBehaviorRules(prompt, normalized, history) {
       return { intent: "behavior_rule_detail", content: localBehaviorRuleDetail(rule) };
     }
   }
-  if (
-    normalized.includes("facts you know about yourself") ||
-    normalized.includes("self facts") ||
-    normalized.includes("факты о себе")
-  ) {
-    return { intent: "self_facts", content: localSelfFacts() };
+  if (localIsSelfIntroductionQuery(normalized)) {
+    const language = localSelfAwarenessLanguage(prompt, normalized);
+    return {
+      intent: "identity",
+      content: localSelfIntroductionContent(language, preferences),
+    };
+  }
+  if (localIsSelfFactQuery(normalized)) {
+    return { intent: "self_facts", content: localSelfFacts(preferences) };
+  }
+  if (localIsKnownFactQuery(normalized)) {
+    const language = localSelfAwarenessLanguage(prompt, normalized);
+    return { intent: "known_facts", content: localKnownFacts(language, preferences) };
+  }
+  const topic = localConversationTopic(prompt, normalized);
+  if (topic) {
+    const language = localSelfAwarenessLanguage(prompt, normalized);
+    return { intent: "conversation_topic", content: localConversationTopicContent(topic, language) };
   }
   const runtimeRule = localRuntimeRuleForPrompt(prompt, history);
   if (runtimeRule) {
@@ -2221,9 +2709,13 @@ function courtesyResponseContent(preferences = {}) {
 
 function localFallbackAnswer(prompt, history = [], preferences = {}) {
   const normalized = normalizePrompt(prompt);
-  const behaviorRule = tryLocalBehaviorRules(prompt, normalized, history);
+  const behaviorRule = tryLocalBehaviorRules(prompt, normalized, history, preferences);
   if (behaviorRule) {
     return behaviorRule;
+  }
+  if (localIsArchitectureQuestion(normalized)) {
+    const language = /[\u0400-\u04ff]/u.test(String(prompt || "")) ? "ru" : "en";
+    return { intent: "meta_explanation", content: localArchitectureExplanation(language) };
   }
   if (["hi", "hello", "hey"].includes(normalized)) {
     return {
@@ -2244,6 +2736,13 @@ function localFallbackAnswer(prompt, history = [], preferences = {}) {
     return {
       intent: "courtesy_response",
       content: courtesyResponseContent(preferences),
+    };
+  }
+
+  if (isAssistantNamePrompt(normalized)) {
+    return {
+      intent: "assistant_name",
+      content: localAssistantNameAnswer(prompt, preferences),
     };
   }
 
@@ -3323,6 +3822,9 @@ function App() {
   const [locationPreference, setLocationPreference] = useState(
     String(initialPreferences.current.location || ""),
   );
+  const [assistantName, setAssistantName] = useState(
+    normalizeAssistantName(initialPreferences.current.assistantName),
+  );
   // Issue #27: agent mode runs the user's prompt as a multi-step plan instead
   // of a single Q&A. Persisted across reloads via preferences.
   const [agentMode, setAgentMode] = useState(
@@ -3492,6 +3994,7 @@ function App() {
         composerStyle,
         composerAction,
         locationPreference,
+        assistantName,
         guessProbability,
         temperature,
         followUpProbability,
@@ -3507,6 +4010,7 @@ function App() {
       composerStyle,
       composerAction,
       locationPreference,
+      assistantName,
       guessProbability,
       temperature,
       followUpProbability,
@@ -3814,6 +4318,7 @@ function App() {
       composerStyle,
       composerAction,
       location: locationPreference,
+      assistantName: normalizeAssistantName(assistantName),
       currentConversationId,
       agentMode,
       uiLanguage: uiLanguagePreference,
@@ -3843,6 +4348,7 @@ function App() {
     composerStyle,
     composerAction,
     locationPreference,
+    assistantName,
     currentConversationId,
     agentMode,
     uiLanguagePreference,
@@ -3961,6 +4467,11 @@ function App() {
     locationPreferenceRef.current = locationPreference;
   }, [locationPreference]);
 
+  const assistantNameRef = useRef(assistantName);
+  useEffect(() => {
+    assistantNameRef.current = assistantName;
+  }, [assistantName]);
+
   const requestAnswer = useCallback((text, history = []) => {
     const worker = workerRef.current;
     const prefs = {
@@ -3981,6 +4492,7 @@ function App() {
       composerStyle: composerStyleRef.current,
       composerAction: composerActionRef.current,
       location: locationPreferenceRef.current,
+      assistantName: normalizeAssistantName(assistantNameRef.current),
     };
     if (!worker) {
       return Promise.resolve(localFallbackAnswer(text, history, prefs));
@@ -4195,6 +4707,9 @@ function App() {
           break;
         case "location":
           setLocationPreference(String(command.value || "").slice(0, 80));
+          break;
+        case "assistantName":
+          setAssistantName(normalizeAssistantName(command.value));
           break;
         case "sidebarCollapsed":
           setSidebarCollapsed(Boolean(command.value));
@@ -5301,6 +5816,20 @@ function App() {
                 h("option", { value: "attach" }, t("settings.composerAction.attach")),
                 h("option", { value: "plus" }, t("settings.composerAction.plus")),
               ),
+            ),
+            h(
+              "label",
+              { className: "setting-row" },
+              h("span", null, t("settings.assistantName")),
+              h("input", {
+                "data-testid": "setting-assistant-name",
+                type: "text",
+                value: assistantName,
+                maxLength: 64,
+                placeholder: t("settings.assistantName.placeholder"),
+                onChange: (event) =>
+                  setAssistantName(sanitizeAssistantNameInput(event.target.value)),
+              }),
             ),
             h(
               "label",

@@ -9,22 +9,26 @@ mod benchmark_prompts;
 mod calendar;
 mod definition_merge;
 mod feature_capability;
+mod meta_explanation;
 mod playwright_script;
+mod self_awareness;
 mod software_project;
 mod software_project_code;
 mod user_intent;
 mod web_requests;
 mod web_search_intent;
 
-pub use behavior_rules::try_behavior_rules;
+pub use behavior_rules::try_behavior_rules_with_runtime;
 pub use benchmark_prompts::{
-    try_brainstorming_request, try_coreference_request, try_fact_lookup, try_roleplay_request,
-    try_summarization_request,
+    try_brainstorming_request, try_conversation_topic_request, try_coreference_request,
+    try_fact_lookup, try_roleplay_request, try_summarization_request,
 };
 pub use calendar::try_calendar_reasoning;
 pub use definition_merge::{try_definition_merge, try_definition_merge_by_default};
 pub use feature_capability::{try_feature_capability, CapabilityRuntime};
+pub use meta_explanation::{try_meta_explanation, try_meta_explanation_with_runtime};
 pub use playwright_script::try_playwright_script;
+pub use self_awareness::SelfAwarenessRuntime;
 pub use software_project::try_software_project_request;
 pub use user_intent::{
     try_capabilities, try_clarification, try_ill_formed, try_opinion_question, try_proof_request,
@@ -472,67 +476,6 @@ pub fn try_javascript_execution(prompt: &str, log: &mut EventLog) -> Option<Symb
         "response:javascript_execution_unavailable",
         &body,
         0.6,
-    ))
-}
-
-pub fn try_meta_explanation(
-    prompt: &str,
-    normalized: &str,
-    log: &mut EventLog,
-) -> Option<SymbolicAnswer> {
-    let is_why_question = normalized.starts_with("why ")
-        || normalized.starts_with("why did")
-        || normalized.starts_with("why do you")
-        || normalized.contains("why did you answer");
-    let is_how_you_work = normalized.contains("how do you work")
-        || normalized.contains("how does this work")
-        || normalized.contains("how does it work")
-        || normalized.contains("show me how you work")
-        || normalized.contains("explain how you work")
-        // Russian
-        || normalized.contains("как ты работаешь")
-        || normalized.contains("покажи как ты работаешь")
-        || normalized.contains("расскажи как ты работаешь")
-        || normalized.contains("объясни как ты работаешь")
-        || normalized.contains("как ты устроен")
-        || normalized.contains("покажи как ты устроен")
-        // Hindi
-        || normalized.contains("तुम कैसे काम करते हो")
-        || normalized.contains("आप कैसे काम करते हैं")
-        // Chinese
-        || normalized.contains("你是怎么工作的")
-        || normalized.contains("你怎么运作");
-    if !is_why_question && !is_how_you_work {
-        return None;
-    }
-    let language = detect_language(prompt).slug();
-    let body = if is_why_question {
-        response_for("meta_explanation", language)
-            .or_else(|| response_for("meta_explanation", "en"))
-            .unwrap_or_else(|| String::from(
-                "I answered that way because the prompt matched a deterministic Links Notation rule. \
-                 The evidence and trace events are appended to the log; see the trace link for the \
-                 full chain.",
-            ))
-    } else {
-        response_for("meta_explanation", language)
-            .or_else(|| response_for("meta_explanation", "en"))
-            .unwrap_or_else(|| {
-                String::from(
-                "I work by matching your prompt against deterministic Links Notation rules stored \
-                 in memory. Each rule maps a recognized pattern to a fixed response. When no rule \
-                 matches, I report intent: unknown. There is no neural inference — every answer is \
-                 fully traceable to a symbolic rule.",
-            )
-            })
-    };
-    Some(finalize_simple(
-        prompt,
-        log,
-        "meta_explanation",
-        "response:meta_explanation",
-        &body,
-        1.0,
     ))
 }
 

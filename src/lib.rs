@@ -4,6 +4,7 @@ pub mod arithmetic;
 pub(crate) mod calculation;
 pub(crate) mod concepts;
 pub mod engine;
+pub(crate) mod engine_assistant_name;
 pub(crate) mod engine_hello_world;
 pub mod event_log;
 pub(crate) mod fuzzy;
@@ -15,6 +16,7 @@ pub mod protocol;
 pub mod seed;
 pub mod server;
 pub mod solver;
+pub(crate) mod solver_handler_docs;
 pub(crate) mod solver_handler_how;
 pub(crate) mod solver_handler_units;
 pub(crate) mod solver_handlers;
@@ -58,7 +60,8 @@ pub use seed::{
 };
 pub use server::{handle_api_request, serve, ApiHttpResponse};
 pub use solver::{
-    solve, solve_with_history, ConversationRole, ConversationTurn, SolverConfig, UniversalSolver,
+    solve, solve_with_history, ConversationRole, ConversationTurn, ExecutionSurface, SolverConfig,
+    UniversalSolver,
 };
 pub use solver_helpers::humanize_url;
 pub use summarization::{

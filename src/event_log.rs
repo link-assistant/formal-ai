@@ -135,6 +135,13 @@ pub fn build_evidence_links(prompt: &str, log: &EventLog, response_link: &str) -
             "web_search:fused" => format!("web_search:fused:{}", event.payload),
             "web_search:disabled" => format!("web_search:disabled:{}", event.payload),
             "http_fetch:request" => format!("http_fetch:request:{}", event.payload),
+            "docs_method:request" => format!("docs_method:request:{}", event.id),
+            "docs_method:project" => format!("docs_method:project:{}", event.payload),
+            "docs_method:method" => format!("docs_method:method:{}", event.payload),
+            "docs_method:source_kind" => {
+                format!("docs_method:source_kind:{}", event.payload)
+            }
+            "docs_method:source" => format!("source:{}", event.payload),
             "project:promoted" => format!("project:promoted:{}", event.payload),
             "project_lookup:promotion" => {
                 format!("project_lookup:promotion:{}", event.payload)

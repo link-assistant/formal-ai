@@ -43,6 +43,9 @@ let mode = "wasm worker";
 const FALLBACK_IDENTITY_ANSWER =
   "I am formal-ai, a deterministic symbolic AI implementation that answers from local Links Notation rules and OpenAI-compatible API shapes. I do not perform neural inference in this demo.";
 
+const FALLBACK_ASSISTANT_NAME_ANSWER =
+  "I'm formal AI, and currently I don't have a name. But you can name me as you like.";
+
 const FALLBACK_GREETING_ANSWER = "Hi, how may I help you?";
 
 const FALLBACK_TEST_STATUS_ANSWER = "Test passed. I'm here.";
@@ -88,6 +91,12 @@ let MULTILINGUAL_ANSWERS = {
   },
   identity: {
     en: { text: FALLBACK_IDENTITY_ANSWER, variants: [FALLBACK_IDENTITY_ANSWER] },
+  },
+  assistant_name: {
+    en: {
+      text: FALLBACK_ASSISTANT_NAME_ANSWER,
+      variants: [FALLBACK_ASSISTANT_NAME_ANSWER],
+    },
   },
   clarification: {
     en: {
@@ -348,6 +357,36 @@ let INTENT_ROUTING = {
       ],
     },
     {
+      id: "intent_assistant_name",
+      slug: "assistant_name",
+      responseLink: "response:assistant_name",
+      keywords: [],
+      phrases: [
+        "what is your name",
+        "what s your name",
+        "what's your name",
+        "do you have a name",
+        "what should i call you",
+        "как твое имя",
+        "как твоё имя",
+        "как тебя зовут",
+        "у тебя есть имя",
+        "आपका नाम क्या है",
+        "तुम्हारा नाम क्या है",
+        "你叫什么名字",
+        "您叫什么名字",
+        "你的名字是什么",
+        "你有名字吗",
+      ],
+      tokens: [],
+      combos: [
+        ["what", "your", "name"],
+        ["you", "have", "name"],
+        ["call", "you"],
+        ["как", "тебя", "зовут"],
+      ],
+    },
+    {
       id: "intent_identity",
       slug: "identity",
       responseLink: "response:identity",
@@ -363,6 +402,11 @@ let INTENT_ROUTING = {
         "introduce yourself",
         "кто ты",
         "что ты",
+        "расскажи о себе",
+        "расскажи мне о себе",
+        "расскажи про себя",
+        "опиши себя",
+        "представься",
         "तुम कौन हो",
         "तू कौन है",
         "आप कौन हैं",
@@ -383,6 +427,8 @@ let INTENT_ROUTING = {
         ["introduce", "yourself"],
         ["кто", "ты"],
         ["что", "ты"],
+        ["расскажи", "себе"],
+        ["опиши", "себя"],
         ["who", "formal", "ai"],
         ["what", "formal", "ai"],
       ],
@@ -406,6 +452,12 @@ function fallbackEntry(intent) {
   }
   if (intent === "identity") {
     return { text: FALLBACK_IDENTITY_ANSWER, variants: [FALLBACK_IDENTITY_ANSWER] };
+  }
+  if (intent === "assistant_name") {
+    return {
+      text: FALLBACK_ASSISTANT_NAME_ANSWER,
+      variants: [FALLBACK_ASSISTANT_NAME_ANSWER],
+    };
   }
   if (intent === "test_status") {
     return { text: FALLBACK_TEST_STATUS_ANSWER, variants: [FALLBACK_TEST_STATUS_ANSWER] };
@@ -463,6 +515,33 @@ function answerFor(intent, language, options) {
     return entry.variants[idx] || entry.text;
   }
   return entry.text;
+}
+
+function normalizeAssistantNamePreference(value) {
+  return String(value || "")
+    .replace(/[\r\n\t]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .replace(/^[`"']+|[`"']+$/g, "")
+    .trim()
+    .slice(0, 64);
+}
+
+function assistantNameAnswer(language, preferences) {
+  const name = normalizeAssistantNamePreference(
+    preferences && preferences.assistantName,
+  );
+  if (!name) return answerFor("assistant_name", language);
+  if (language === "ru") {
+    return `Меня зовут ${name}. Я formal AI.`;
+  }
+  if (language === "hi") {
+    return `मेरा नाम ${name} है। मैं formal AI हूँ।`;
+  }
+  if (language === "zh") {
+    return `我的名字是 ${name}。我是 formal AI。`;
+  }
+  return `My name is ${name}. I'm formal AI.`;
 }
 
 // Mirrors `src/engine.rs::UNKNOWN_OPENERS_*`. The first entry of each pool
@@ -2042,6 +2121,10 @@ function isIdentityPrompt(normalized, rawPrompt) {
   return matchesIntentRoute(normalized, rawPrompt, "intent_identity");
 }
 
+function isAssistantNamePrompt(normalized, rawPrompt) {
+  return matchesIntentRoute(normalized, rawPrompt, "intent_assistant_name");
+}
+
 function isGreetingPrompt(normalized, rawPrompt) {
   return matchesIntentRoute(normalized, rawPrompt, "intent_greeting");
 }
@@ -2194,6 +2277,7 @@ function behaviorRuleRecords() {
   const greeting = answerFor("greeting", "en");
   const farewell = answerFor("farewell", "en");
   const identity = answerFor("identity", "en");
+  const assistantName = answerFor("assistant_name", "en");
   return [
     {
       id: "rule_greeting",
@@ -2224,6 +2308,16 @@ function behaviorRuleRecords() {
       response: identity,
       source: "data/seed/identity.lino + multilingual responses",
       whenThen: `When the user asks \`Who are you?\` or \`Кто ты?\` then respond with \`${identity}\`.`,
+    },
+    {
+      id: "rule_assistant_name",
+      topic: "assistant_name",
+      intent: "assistant_name",
+      label: "Assistant name rule",
+      matches: "`What is your name?`, `Как твое имя?`, and equivalent name prompts",
+      response: assistantName,
+      source: "data/seed/intent-routing.lino + multilingual responses",
+      whenThen: `When the user asks \`What is your name?\` or \`Как твое имя?\` then respond with \`${assistantName}\`, unless the assistant name setting is configured.`,
     },
     {
       id: "rule_capabilities",
@@ -2320,6 +2414,7 @@ const BEHAVIOR_RULE_TOPIC_LABELS = {
   greetings: "Greetings",
   farewells: "Farewells",
   identity: "Identity",
+  assistant_name: "Assistant name",
   capabilities: "Capabilities",
   hello_world: "Hello-world programs",
   unknown_fallback: "Unknown fallback",
@@ -2329,6 +2424,7 @@ const BEHAVIOR_RULE_TOPIC_ORDER = [
   "greetings",
   "farewells",
   "identity",
+  "assistant_name",
   "capabilities",
   "hello_world",
   "unknown_fallback",
@@ -2407,9 +2503,44 @@ function renderBehaviorRuleDetail(rule) {
   ].join("\n");
 }
 
-function renderSelfFacts() {
+function assistantNameStatus(preferences) {
+  const name = normalizeAssistantNamePreference(
+    preferences && preferences.assistantName,
+  );
+  return name ? `configured:${name}` : "browser_preference_when_set_else_not_configured";
+}
+
+const BROWSER_SURFACE = {
+  slug: "browser",
+  label: "browser demo with JavaScript and WebAssembly worker",
+  runtime: "JavaScript UI plus a WebAssembly worker mirror of the solver",
+  memory: "browser IndexedDB/local storage plus worker state and imported memory",
+  webSearch: "available through browser CORS-readable providers when online and not blocked",
+  limits: "browser settings, import/export controls, and IndexedDB-backed memory belong to this surface",
+};
+
+function modeStatus(enabled) {
+  return enabled ? "enabled" : "disabled";
+}
+
+function definitionFusionStatus(preferences) {
+  return preferences && preferences.definitionFusion === "auto"
+    ? "enabled_by_default"
+    : "explicit_only";
+}
+
+function renderSelfFacts(preferences) {
+  const assistantName = assistantNameStatus(preferences);
+  const surface = BROWSER_SURFACE;
   return [
-    "Facts I know about myself:",
+    "Facts I know about myself in this environment:",
+    "",
+    `- **Execution surface**: ${surface.label} (\`${surface.slug}\`).`,
+    `- **Runtime**: ${surface.runtime}.`,
+    `- **Memory**: ${surface.memory}.`,
+    `- **Web search**: ${surface.webSearch}.`,
+    `- **Surface limits**: ${surface.limits}.`,
+    "- **Local rules**: local Links Notation rules and seed facts are checked first.",
     "",
     "```links",
     "self_fact_model",
@@ -2420,17 +2551,132 @@ function renderSelfFacts() {
     '  subject "formal-ai"',
     '  relation "policy"',
     '  object "deterministic symbolic AI; no neural network inference"',
-    "self_fact_rules",
+    "self_fact_environment",
     '  subject "formal-ai"',
-    '  relation "answer_source"',
-    '  object "local Links Notation rules"',
+    '  relation "execution_surface"',
+    `  object "${surface.slug}"`,
+    "self_fact_runtime",
+    '  subject "formal-ai"',
+    '  relation "runtime"',
+    `  object "${escapeBehaviorRuleValue(surface.runtime)}"`,
     "self_fact_memory",
     '  subject "formal-ai"',
     '  relation "memory"',
-    '  object "append-only dialog events plus seed files in Links Notation"',
+    `  object "${escapeBehaviorRuleValue(surface.memory)}"`,
+    "self_fact_web_search",
+    '  subject "formal-ai"',
+    '  relation "web_search"',
+    `  object "${escapeBehaviorRuleValue(surface.webSearch)}"`,
+    "self_fact_assistant_name",
+    '  subject "formal-ai"',
+    '  relation "assistant_name"',
+    `  object "${escapeBehaviorRuleValue(assistantName)}"`,
+    "self_fact_agent_mode",
+    '  subject "formal-ai"',
+    '  relation "agent_mode"',
+    `  object "${modeStatus(preferences && preferences.agentMode)}"`,
+    "self_fact_diagnostics",
+    '  subject "formal-ai"',
+    '  relation "diagnostic_mode"',
+    `  object "${modeStatus(preferences && preferences.diagnosticsMode)}"`,
+    "self_fact_definition_fusion",
+    '  subject "formal-ai"',
+    '  relation "definition_fusion"',
+    `  object "${definitionFusionStatus(preferences)}"`,
     "```",
     "",
     "Read behavior with `List behavior rules`; teach one with When `prompt` then `answer` (or When I say `prompt`, answer `answer`).",
+  ].join("\n");
+}
+
+function renderKnownFacts(language, preferences) {
+  const surface = BROWSER_SURFACE;
+  const assistantName = assistantNameStatus(preferences);
+  const links = [
+    "```links",
+    "known_fact_local_seed",
+    '  source "local_links_notation_seed"',
+    '  scope "built-in rules, concepts, facts, tools, and response templates"',
+    "known_fact_internet",
+    '  source "environment_aware_web_search"',
+    `  scope "${escapeBehaviorRuleValue(surface.webSearch)}"`,
+    "known_fact_memory",
+    '  source "conversation_memory"',
+    `  scope "${escapeBehaviorRuleValue(surface.memory)}"`,
+    "known_fact_environment",
+    '  subject "formal-ai"',
+    '  relation "execution_surface"',
+    `  object "${surface.slug}"`,
+    "known_fact_self",
+    '  subject "formal-ai"',
+    '  relation "model"',
+    `  object "${escapeBehaviorRuleValue(AGENT_INFO.model || "formal-symbolic-production")}"`,
+    "known_fact_assistant_name",
+    '  subject "formal-ai"',
+    '  relation "assistant_name_setting"',
+    `  object "${escapeBehaviorRuleValue(assistantName)}"`,
+    "known_fact_surface_limits",
+    '  source "environment_directory"',
+    `  scope "${escapeBehaviorRuleValue(surface.limits)}"`,
+    "```",
+  ].join("\n");
+  if (language === "ru") {
+    return [
+      `Я могу использовать несколько классов фактов в текущей среде \`${surface.slug}\`:`,
+      "",
+      "- **Локальные факты и правила**: встроенный seed Links Notation, включая правила, понятия, инструменты и ответы.",
+      `- **Интернет**: ${surface.webSearch}; это не означает, что весь интернет предзагружен в локальную память.`,
+      `- **Память диалога**: ${surface.memory}.`,
+      "- **Факты о себе**: модель `formal-symbolic-production`, политика исполнения, поверхность и источники ответов.",
+      `- **Ограничения среды**: ${surface.limits}.`,
+      "",
+      links,
+      "",
+      "Для конкретного факта задайте прямой вопрос; порядок проверки: локальные правила, память, затем веб-поиск, если он доступен в этой среде.",
+    ].join("\n");
+  }
+  if (language === "hi") {
+    return [
+      `मैं current \`${surface.slug}\` environment में इन fact sources का उपयोग कर सकता हूँ:`,
+      "",
+      "- **Local facts and rules**: Links Notation seed में rules, concepts, tools और response templates.",
+      `- **Internet**: ${surface.webSearch}; पूरा internet local memory में preload नहीं है.`,
+      `- **Conversation memory**: ${surface.memory}.`,
+      "- **Self facts**: model `formal-symbolic-production`, execution surface और answer sources.",
+      `- **Surface limits**: ${surface.limits}.`,
+      "",
+      links,
+      "",
+      "किसी खास fact के लिए सीधे पूछें; मैं local rules और memory पहले देखता हूँ, फिर environment अनुमति दे तो web search इस्तेमाल करता हूँ.",
+    ].join("\n");
+  }
+  if (language === "zh") {
+    return [
+      `在当前 \`${surface.slug}\` 环境中, 我可以使用这些事实来源:`,
+      "",
+      "- **本地事实和规则**: Links Notation seed 中的规则、概念、工具和回复模板。",
+      `- **Internet**: ${surface.webSearch}; 整个互联网不会预加载到本地记忆中。`,
+      `- **Conversation memory**: ${surface.memory}。`,
+      "- **Self facts**: model `formal-symbolic-production`, execution surface 和 answer sources。",
+      `- **Surface limits**: ${surface.limits}。`,
+      "",
+      links,
+      "",
+      "如果需要某个具体事实, 请直接提问; 我会先检查本地规则和记忆, 环境允许时再使用 web search。",
+    ].join("\n");
+  }
+  return [
+    `I can use several classes of facts in the current \`${surface.slug}\` environment:`,
+    "",
+    "- **Local facts and rules**: built-in Links Notation seed data, including rules, concepts, tools, and response templates.",
+    `- **Internet**: ${surface.webSearch}; the whole internet is not preloaded into local memory.`,
+    `- **Conversation memory**: ${surface.memory}.`,
+    "- **Self facts**: model `formal-symbolic-production`, execution policy, active surface, and answer sources.",
+    `- **Surface limits**: ${surface.limits}.`,
+    "",
+    links,
+    "",
+    "Ask for a specific fact directly; I check local rules and memory first, then use web search only when this environment allows it.",
   ].join("\n");
 }
 
@@ -2598,6 +2844,160 @@ function isSelfFactQuery(normalized) {
   );
 }
 
+function isSelfIntroductionQuery(normalized) {
+  const cleaned = normalizePrompt(normalized);
+  if (!cleaned || isSelfFactQuery(cleaned)) return false;
+  return (
+    cleaned === "tell me about yourself" ||
+    cleaned === "introduce yourself" ||
+    cleaned.includes("tell me about yourself") ||
+    cleaned.includes("introduce yourself") ||
+    cleaned.includes("расскажи о себе") ||
+    cleaned.includes("расскажи мне о себе") ||
+    cleaned.includes("расскажи про себя") ||
+    cleaned.includes("опиши себя") ||
+    cleaned.includes("представься") ||
+    cleaned.includes("अपने बारे में बताओ") ||
+    cleaned.includes("अपना परिचय दो") ||
+    cleaned.includes("介绍一下你自己") ||
+    cleaned.includes("告诉我你自己") ||
+    cleaned.includes("介紹一下你自己") ||
+    cleaned.includes("告訴我你自己")
+  );
+}
+
+function selfAwarenessLanguage(prompt, normalized) {
+  const text = `${String(prompt || "").toLowerCase()} ${String(normalized || "")}`;
+  if (
+    /[\u0400-\u04ff]/u.test(text) ||
+    containsAny(text, ["ты", "теб", "твоя", "твой", "вы", "вас", "у тебя"])
+  ) {
+    return "ru";
+  }
+  if (/[\u0900-\u097f]/u.test(text)) return "hi";
+  if (/[\u4e00-\u9fff]/u.test(text)) return "zh";
+  return detectLanguage(prompt);
+}
+
+function selfIntroductionContent(language, preferences) {
+  const identity = answerFor("identity", language);
+  const name = normalizeAssistantNamePreference(
+    preferences && preferences.assistantName,
+  );
+  if (!name) return identity;
+  if (language === "ru") return `Меня зовут ${name}. ${identity}`;
+  if (language === "hi") return `मेरा नाम ${name} है। ${identity}`;
+  if (language === "zh") return `我的名字是 ${name}。${identity}`;
+  return `My name is ${name}. ${identity}`;
+}
+
+function cleanConversationTopic(raw) {
+  return String(raw || "")
+    .trim()
+    .replace(/^[`"':._,\-\s!?]+|[`"':._,\-\s!?]+$/gu, "");
+}
+
+function conversationTopic(prompt, normalized) {
+  const prefixes = [
+    "let's talk about ",
+    "lets talk about ",
+    "can we talk about ",
+    "talk about ",
+    "давай поговорим о ",
+    "давай поговорим об ",
+    "давайте поговорим о ",
+    "давайте поговорим об ",
+    "поговорим о ",
+    "поговорим об ",
+    "обсудим ",
+    "चलो बात करें ",
+    "बात करें ",
+    "聊聊",
+    "谈谈",
+  ];
+  for (const prefix of prefixes) {
+    if (normalized.startsWith(prefix)) {
+      return cleanConversationTopic(normalized.slice(prefix.length));
+    }
+  }
+  const lower = String(prompt || "").toLowerCase();
+  const marker = "поговорим о ";
+  const index = lower.indexOf(marker);
+  if (index >= 0) {
+    return cleanConversationTopic(lower.slice(index + marker.length));
+  }
+  return "";
+}
+
+function conversationTopicContent(topic, language) {
+  if (language === "ru") {
+    return `Можем. Тема: ${topic}. Я могу начать с краткого определения, контекста или конкретного вопроса; если веб-поиск доступен, публичные факты можно уточнить через внешний источник.`;
+  }
+  if (language === "hi") {
+    return `हम बात कर सकते हैं. विषय: ${topic}. मैं छोटी परिभाषा, संदर्भ, या किसी конкрет प्रश्न से शुरू कर सकता हूँ; web search उपलब्ध हो तो public facts बाहरी स्रोत से जाँचे जा सकते हैं.`;
+  }
+  if (language === "zh") {
+    return `可以聊。主题: ${topic}。我可以从简短定义、上下文或具体问题开始; 如果 web search 可用, 公开事实可以通过外部来源核对。`;
+  }
+  return `We can talk about ${topic}. I can start with a short definition, context, or a specific question; when web search is available, public facts can be checked against an external source.`;
+}
+
+function isKnownFactQuery(normalized) {
+  if (isSelfFactQuery(normalized)) return false;
+  const english =
+    (normalized.includes("facts") &&
+      containsAny(normalized, ["what", "which", "list", "show"]) &&
+      containsAny(normalized, [
+        "you know",
+        "do you know",
+        "you have",
+        "available to you",
+        "in your knowledge",
+        "known to you",
+      ])) ||
+    containsAny(normalized, [
+      "what do you know in general",
+      "what do you know about the world",
+      "what is known to you",
+      "what knowledge do you have",
+    ]);
+  const russian =
+    (normalized.includes("факт") &&
+      containsAny(normalized, ["какие", "что", "перечисли", "покажи", "назови"]) &&
+      containsAny(normalized, [
+        "ты знаешь",
+        "знаешь",
+        "тебе извест",
+        "у тебя есть",
+        "твои знания",
+        "что ты знаешь",
+      ])) ||
+    containsAny(normalized, [
+      "что тебе вообще известно",
+      "что тебе известно",
+      "что ты вообще знаешь",
+      "что ты знаешь об окружающем мире",
+      "известно об окружающем мире",
+      "знаешь про окружающий мир",
+      "знаешь об окружающем мире",
+    ]);
+  const hindi =
+    (normalized.includes("तथ्य") &&
+      containsAny(normalized, ["कौन", "क्या", "सूची", "सूचीबद्ध", "बताओ", "दिखाओ"]) &&
+      containsAny(normalized, ["तुम", "आप", "जानते", "जानती", "आपके", "तुम्हारे"])) ||
+    containsAny(normalized, [
+      "आप क्या जानते हैं",
+      "तुम क्या जानते हो",
+      "आपको क्या पता है",
+    ]);
+  const chinese =
+    ((normalized.includes("事实") || normalized.includes("事實")) &&
+      containsAny(normalized, ["你知道", "您知道", "你有", "您有", "哪些", "什么", "什麼"])) ||
+    containsAny(normalized, ["你知道什么", "您知道什么", "你知道哪些"]);
+
+  return english || russian || hindi || chinese;
+}
+
 function cleanRuleQuery(raw) {
   return String(raw || "")
     .trim()
@@ -2748,7 +3148,7 @@ function collectRuntimeRules(history) {
   return rules;
 }
 
-function tryBehaviorRules(prompt, normalized, history) {
+function tryBehaviorRules(prompt, normalized, history, preferences) {
   const updateRule = runtimeRuleFromText(prompt);
   if (updateRule) {
     return {
@@ -2781,12 +3181,61 @@ function tryBehaviorRules(prompt, normalized, history) {
     }
   }
 
+  if (isSelfIntroductionQuery(normalized)) {
+    const language = selfAwarenessLanguage(prompt, normalized);
+    return {
+      intent: "identity",
+      content: selfIntroductionContent(language, preferences),
+      confidence: 1.0,
+      evidence: [
+        "identity:self_introduction",
+        `language:${language}`,
+        `assistant_name:${assistantNameStatus(preferences)}`,
+      ],
+    };
+  }
+
+  if (isArchitectureQuestion(normalized)) {
+    const language = architectureLanguage(prompt, normalized);
+    return {
+      intent: "meta_explanation",
+      content: architectureExplanationContent(language),
+      confidence: 1.0,
+      evidence: [
+        "response:meta_explanation",
+        "meta_explanation:self_awareness",
+        `language:${language}`,
+      ],
+    };
+  }
+
   if (isSelfFactQuery(normalized)) {
     return {
       intent: "self_facts",
-      content: renderSelfFacts(),
+      content: renderSelfFacts(preferences),
       confidence: 1.0,
       evidence: ["self_facts:list", "formal-ai"],
+    };
+  }
+
+  if (isKnownFactQuery(normalized)) {
+    const language = selfAwarenessLanguage(prompt, normalized);
+    return {
+      intent: "known_facts",
+      content: renderKnownFacts(language, preferences),
+      confidence: 1.0,
+      evidence: ["known_facts:list", "formal-ai", `language:${language}`],
+    };
+  }
+
+  const topic = conversationTopic(prompt, normalized);
+  if (topic) {
+    const language = selfAwarenessLanguage(prompt, normalized);
+    return {
+      intent: "conversation_topic",
+      content: conversationTopicContent(topic, language),
+      confidence: 0.75,
+      evidence: [`conversation_topic:${topic}`, `language:${language}`],
     };
   }
 
@@ -3419,6 +3868,87 @@ function additionalCapabilitiesContent(language) {
     return "Кроме уже названных возможностей, могу ещё:\n\n- **Арифметика**: вычислять выражения вроде «Сколько будет 2 + 2?»\n- **Перевод**: переводить короткие фразы между поддерживаемыми языками.\n- **Поиск понятий**: объяснять термины, например «Что такое Википедия?»\n- **Hello World**: генерировать минимальные программы на Rust, Python, JavaScript, Go, C и других языках.\n- **Память диалога**: использовать предыдущие сообщения текущей сессии.\n- **Правила поведения**: показывать встроенные правила через `List behavior rules` и `Show behavior rule unknown`.\n- **Настройки и действия**: включать диагностику/демо/agent mode, менять тему, язык, стиль чата, экспортировать и импортировать память.";
   }
   return "Beyond the capability already discussed, I can also:\n\n- **Arithmetic**: evaluate expressions like `2 + 2`.\n- **Translation**: translate short phrases between supported languages.\n- **Concept lookup**: explain terms such as `What is Wikipedia?`.\n- **Hello World**: generate small programs in Rust, Python, JavaScript, Go, C, and more.\n- **Conversation memory**: use earlier messages from the current session.\n- **Behavior rules**: show built-in rules with `List behavior rules` and `Show behavior rule unknown`.\n- **Settings and actions**: configure diagnostics, demo mode, agent mode, theme, language, chat style, and memory import/export.";
+}
+
+function isArchitectureQuestion(normalized) {
+  const mentionsAssistant = containsAny(normalized, [
+    "you",
+    "your",
+    "formal ai",
+    "ты",
+    "теб",
+    "твоя",
+    "твой",
+    "тво",
+    "вы",
+    "आप",
+    "तुम",
+    "你",
+    "您",
+  ]);
+  if (!mentionsAssistant) return false;
+  return containsAny(normalized, [
+    "llm",
+    "large language model",
+    "language model",
+    "openai api",
+    "openai",
+    "neural inference",
+    "neural network",
+    "links notation rules",
+    "local rules",
+    "world model",
+    "model of the world",
+    "бям",
+    "языковая модель",
+    "языковой моделью",
+    "нейросет",
+    "нейрон",
+    "локальных правил",
+    "локальных правилах",
+    "область знаний",
+    "модель окружающего мира",
+    "модель мира",
+    "принцип работы",
+    "идея твоей разработки",
+    "идея твоего проекта",
+    "зачем тебя разработ",
+    "ссылк",
+    "न्यूरल",
+    "भाषा मॉडल",
+    "神经",
+    "語言模型",
+    "语言模型",
+  ]);
+}
+
+function architectureLanguage(prompt, normalized) {
+  return selfAwarenessLanguage(prompt, normalized);
+}
+
+function architectureExplanationContent(language) {
+  const surface = BROWSER_SURFACE;
+  if (language === "ru") {
+    return `Я не LLM-рантайм и не выполняю нейросетевой инференс. Текущая среда: ${surface.label} (\`${surface.slug}\`). Рантайм: ${surface.runtime}. У проекта есть OpenAI-совместимые API-форматы, но ответы строит детерминированный solver: сначала он проверяет локальный seed Links Notation, правила и память (${surface.memory}); затем веб-поиск используется только с учетом среды: ${surface.webSearch}. Весь интернет не загружен в локальные правила целиком.`;
+  }
+  if (language === "hi") {
+    return `मैं LLM runtime नहीं हूँ और neural inference नहीं चलाता. Current environment: ${surface.label} (\`${surface.slug}\`). Runtime: ${surface.runtime}. Project OpenAI-compatible API shapes देता है, लेकिन जवाब deterministic solver बनाता है: पहले local Links Notation seed, rules और memory (${surface.memory}) देखता है; फिर web search केवल environment अनुमति दे तो उपयोग करता है: ${surface.webSearch}. पूरा internet local rules में preload नहीं है.`;
+  }
+  if (language === "zh") {
+    return `我不是 LLM runtime, 也不执行神经网络推理。当前环境: ${surface.label} (\`${surface.slug}\`)。Runtime: ${surface.runtime}。项目提供 OpenAI-compatible API 形状, 但回答由确定性的 solver 生成: 先检查本地 Links Notation seed、规则和记忆 (${surface.memory}); 然后只在当前环境允许时使用 web search: ${surface.webSearch}。整个互联网不会预加载到本地规则中。`;
+  }
+  return `I am not an LLM runtime and I do not perform neural inference. Current environment: ${surface.label} (\`${surface.slug}\`). Runtime: ${surface.runtime}. The project exposes OpenAI-compatible API shapes, but answers come from a deterministic solver: it checks the local Links Notation seed, rules, and memory (${surface.memory}) first; web search is used only when this environment allows it: ${surface.webSearch}. The whole internet is not preloaded into local rules.`;
+}
+
+function tryArchitectureExplanation(prompt, normalized) {
+  if (!isArchitectureQuestion(normalized)) return null;
+  const language = architectureLanguage(prompt, normalized);
+  return {
+    intent: "meta_explanation",
+    content: architectureExplanationContent(language),
+    confidence: 1.0,
+    evidence: ["response:meta_explanation", "meta_explanation:architecture", `language:${language}`],
+  };
 }
 
 function tryCapabilities(prompt, normalized, preferences, history) {
@@ -9433,6 +9963,126 @@ function appendUniqueEvidence(target, source) {
   }
 }
 
+const PANDAS_DATAFRAME_JOIN_DOCS_URL =
+  "https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.join.html";
+
+function hasNormalizedWord(normalized, word) {
+  return String(normalized || "")
+    .split(/\s+/)
+    .some((token) => token === word);
+}
+
+function isExplicitWebSearchPrompt(normalized) {
+  const text = String(normalized || "");
+  const requestsSearch =
+    text.startsWith("search ") ||
+    text.startsWith("find ") ||
+    text.startsWith("look up ") ||
+    text.startsWith("lookup ");
+  return (
+    requestsSearch &&
+    (hasNormalizedWord(text, "web") ||
+      hasNormalizedWord(text, "internet") ||
+      hasNormalizedWord(text, "online"))
+  );
+}
+
+function isExplanationRequest(normalized) {
+  const text = String(normalized || "");
+  return (
+    text.startsWith("how ") ||
+    text.includes(" how ") ||
+    text.startsWith("explain ") ||
+    text.startsWith("describe ") ||
+    text.startsWith("what does ") ||
+    text.startsWith("what is ") ||
+    text.startsWith("tell me about ") ||
+    text.startsWith("how to use ") ||
+    text.startsWith("как ") ||
+    text.includes(" как ") ||
+    text.startsWith("объясни ") ||
+    text.startsWith("расскажи ") ||
+    text.startsWith("что такое ") ||
+    text.includes("कैसे काम") ||
+    text.startsWith("समझाओ") ||
+    text.startsWith("क्या है ") ||
+    text.includes("如何工作") ||
+    text.includes("怎么工作") ||
+    text.startsWith("解释") ||
+    text.includes("是什么")
+  );
+}
+
+function isPandasDataFrameJoinPrompt(prompt, normalized) {
+  const lower = String(prompt || "").toLowerCase();
+  const text = String(normalized || "").trim();
+  if (isExplicitWebSearchPrompt(text)) return false;
+  if (!hasNormalizedWord(text, "pandas")) return false;
+  if (!isExplanationRequest(text)) return false;
+  return (
+    lower.includes("dataframe.join") ||
+    lower.includes("df.join") ||
+    text.includes("join method") ||
+    text.includes("method join") ||
+    (hasNormalizedWord(text, "join") && hasNormalizedWord(text, "метод")) ||
+    (hasNormalizedWord(text, "join") && text.includes("विधि")) ||
+    (hasNormalizedWord(text, "join") && text.includes("方法")) ||
+    (hasNormalizedWord(text, "join") &&
+      (hasNormalizedWord(text, "method") || hasNormalizedWord(text, "dataframe")))
+  );
+}
+
+function docsMethodContent(language) {
+  if (language === "ru") {
+    return [
+      "pandas `DataFrame.join` добавляет столбцы из `other` DataFrame или именованной Series к вызывающему DataFrame и возвращает новый DataFrame.",
+      "В рамках этого метода: по умолчанию это left join по индексу вызывающего DataFrame. Если задан `on`, pandas сопоставляет этот столбец или уровень индекса с индексом объекта `other`. Параметр `how` управляет объединением ключей (`left`, `right`, `outer`, `inner`, `cross`, `left_anti` или `right_anti`). `lsuffix` и `rsuffix` нужны при совпадающих именах столбцов, `sort` сортирует ключи join, а `validate` проверяет связи one-to-one, one-to-many, many-to-one или many-to-many. Для join столбец-к-столбцу документация pandas указывает на `DataFrame.merge`.",
+      `Источник: [pandas.DataFrame.join](${PANDAS_DATAFRAME_JOIN_DOCS_URL}) (официальная документация pandas).`,
+    ].join("\n\n");
+  }
+
+  if (language === "hi") {
+    return [
+      "pandas `DataFrame.join` कॉल करने वाले DataFrame में `other` DataFrame या named Series के columns जोड़ता है और नया DataFrame लौटाता है.",
+      "इस method के दायरे में: default रूप से यह caller के index पर left join करता है. `on` देने पर pandas caller के उस column या index level को `other` object के index से मिलाता है. `how` parameter keys को मिलाने का तरीका चुनता है (`left`, `right`, `outer`, `inner`, `cross`, `left_anti`, या `right_anti`). Column नाम टकराने पर `lsuffix` और `rsuffix`, join keys को sort करने के लिए `sort`, और one-to-one, one-to-many, many-to-one, या many-to-many संबंध जांचने के लिए `validate` इस्तेमाल करें. Column-on-column joins के लिए pandas docs `DataFrame.merge` की ओर भेजते हैं.",
+      `Source: [pandas.DataFrame.join](${PANDAS_DATAFRAME_JOIN_DOCS_URL}) (official pandas docs).`,
+    ].join("\n\n");
+  }
+
+  if (language === "zh") {
+    return [
+      "pandas `DataFrame.join` 会把 `other` DataFrame 或具名 Series 的列加入调用方，并返回新的 DataFrame。",
+      "只看这个方法：默认情况下，它使用调用方的 index 执行 left join。设置 `on` 时，pandas 会把调用方的列或索引层级与 `other` 对象的 index 匹配。`how` 参数控制键的组合方式（`left`、`right`、`outer`、`inner`、`cross`、`left_anti` 或 `right_anti`）。列名冲突时使用 `lsuffix` 和 `rsuffix`，用 `sort` 排序 join keys，用 `validate` 检查 one-to-one、one-to-many、many-to-one 或 many-to-many 关系。对于列到列的 join，pandas 文档指向 `DataFrame.merge`。",
+      `Source: [pandas.DataFrame.join](${PANDAS_DATAFRAME_JOIN_DOCS_URL}) (official pandas docs).`,
+    ].join("\n\n");
+  }
+
+  return [
+    "pandas `DataFrame.join` joins columns from the `other` DataFrame or named Series into the caller and returns a new DataFrame.",
+    "Scoped to this method: by default, it performs a left join using the caller's index. If `on` is set, pandas matches that caller column or index level against the `other` object's index. The `how` parameter controls key handling (`left`, `right`, `outer`, `inner`, `cross`, `left_anti`, or `right_anti`). Use `lsuffix` and `rsuffix` when column names overlap, `sort` to order join keys, and `validate` to check one-to-one, one-to-many, many-to-one, or many-to-many relationships. For column-on-column joins, the pandas docs point to `DataFrame.merge`.",
+    `Source: [pandas.DataFrame.join](${PANDAS_DATAFRAME_JOIN_DOCS_URL}) (official pandas docs).`,
+  ].join("\n\n");
+}
+
+function tryDocsMethodExplanation(prompt, language) {
+  const normalized = normalizePrompt(prompt);
+  if (!isPandasDataFrameJoinPrompt(prompt, normalized)) return null;
+
+  return {
+    intent: "docs_method_explanation",
+    content: docsMethodContent(language),
+    confidence: 0.92,
+    evidence: [
+      "docs_method:project:pandas",
+      "docs_method:method:pandas.DataFrame.join",
+      "docs_method:source_kind:official-docs",
+      `source:${PANDAS_DATAFRAME_JOIN_DOCS_URL}`,
+      `language:${language}`,
+    ],
+    formalizedObject: "pandas.DataFrame.join",
+  };
+}
+
 async function tryProceduralHowTo(prompt, language) {
   const normalized = normalizePrompt(prompt);
   const task = extractProceduralHowToTask(normalized);
@@ -11829,7 +12479,7 @@ async function solve(prompt, history, prefs, userContext = {}) {
     }, formalizationContext);
   }
 
-  const behaviorRule = tryBehaviorRules(prompt, normalized, history);
+  const behaviorRule = tryBehaviorRules(prompt, normalized, history, preferences);
   if (behaviorRule) {
     events.push(`handler:${behaviorRule.intent}`);
     steps.push({ step: "dispatch_handler", detail: "tryBehaviorRules" });
@@ -11901,6 +12551,13 @@ async function solve(prompt, history, prefs, userContext = {}) {
     return finalize(events, steps, toolCalls, capabilities, formalizationContext);
   }
 
+  const architecture = tryArchitectureExplanation(prompt, normalized);
+  if (architecture) {
+    events.push("handler:meta_explanation");
+    steps.push({ step: "dispatch_handler", detail: "tryArchitectureExplanation" });
+    return finalize(events, steps, toolCalls, architecture, formalizationContext);
+  }
+
   if (isGreetingPrompt(normalized, prompt)) {
     events.push("rule:greeting");
     steps.push({ step: "match_rule", detail: "greeting" });
@@ -11955,6 +12612,21 @@ async function solve(prompt, history, prefs, userContext = {}) {
         `follow_up:${courtesy.followUpIncluded ? "included" : "omitted"}`,
       ],
     });
+  }
+  if (isAssistantNamePrompt(normalized, prompt)) {
+    events.push("rule:assistant_name");
+    steps.push({ step: "match_rule", detail: "assistant_name" });
+    const configuredName = normalizeAssistantNamePreference(preferences.assistantName);
+    return finalize(events, steps, toolCalls, {
+      intent: "assistant_name",
+      content: assistantNameAnswer(language, preferences),
+      confidence: 1.0,
+      evidence: [
+        "rule:assistant_name",
+        `language:${language}`,
+        `assistant_name:${configuredName ? "configured" : "not_set"}`,
+      ],
+    }, formalizationContext);
   }
   if (isIdentityPrompt(normalized, prompt)) {
     events.push("rule:identity");
@@ -12090,6 +12762,23 @@ async function solve(prompt, history, prefs, userContext = {}) {
       outputs: { intent: navigated.intent, confidence: navigated.confidence, iframeUrl: navigated.iframeUrl || null },
     });
     return finalize(events, steps, toolCalls, navigated, formalizationContext);
+  }
+
+  steps.push({ step: "invoke_tool", detail: "docs_method_explanation" });
+  const docsMethod = tryDocsMethodExplanation(prompt, language);
+  if (docsMethod) {
+    events.push(`handler:${docsMethod.intent}`);
+    steps.push({ step: "dispatch_handler", detail: "tryDocsMethodExplanation" });
+    toolCalls.push({
+      tool: "docs_method_explanation",
+      inputs: { prompt, language, project: "pandas", method: "DataFrame.join" },
+      outputs: {
+        intent: docsMethod.intent,
+        confidence: docsMethod.confidence,
+        formalizedObject: docsMethod.formalizedObject || "",
+      },
+    });
+    return finalize(events, steps, toolCalls, docsMethod, formalizationContext);
   }
 
   steps.push({ step: "invoke_tool", detail: "procedural_how_to" });

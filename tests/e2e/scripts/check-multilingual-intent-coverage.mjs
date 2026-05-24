@@ -752,6 +752,7 @@ const requiredLocalizedResponseIntents = [
   'courtesy_response',
   'test_status',
   'identity',
+  'assistant_name',
   'clarification',
   'unknown',
   'meta_explanation',

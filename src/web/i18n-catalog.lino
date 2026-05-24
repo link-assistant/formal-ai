@@ -149,6 +149,9 @@ en
       label "Input action"
       attach "Attach"
       plus "Plus"
+    assistantName
+      label "Assistant name"
+      placeholder "Not set"
     location
       label "Location"
       placeholder "City or region"
@@ -326,6 +329,9 @@ ru
       label "Действие ввода"
       attach "Скрепка"
       plus "Плюс"
+    assistantName
+      label "Имя ассистента"
+      placeholder "Не задано"
     location
       label "Местоположение"
       placeholder "Город или регион"
@@ -495,6 +501,9 @@ zh
       label "输入操作"
       attach "附件"
       plus "加号"
+    assistantName
+      label "助手名称"
+      placeholder "未设置"
     location
       label "位置"
       placeholder "城市或地区"
@@ -668,6 +677,9 @@ hi
       label "इनपुट action"
       attach "अटैच"
       plus "प्लस"
+    assistantName
+      label "सहायक नाम"
+      placeholder "सेट नहीं"
     location
       label "स्थान"
       placeholder "शहर या क्षेत्र"
