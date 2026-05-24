@@ -1841,6 +1841,11 @@ function isIdentityPrompt(normalized) {
       "introduce yourself",
       "кто ты",
       "что ты",
+      "расскажи о себе",
+      "расскажи мне о себе",
+      "расскажи про себя",
+      "опиши себя",
+      "представься",
       "你是谁",
     ].includes(normalized) ||
     (has("who") && has("you")) ||
@@ -1849,7 +1854,9 @@ function isIdentityPrompt(normalized) {
     (has("tell") && has("yourself")) ||
     (has("introduce") && has("yourself")) ||
     (has("кто") && has("ты")) ||
-    (has("что") && has("ты"))
+    (has("что") && has("ты")) ||
+    (has("расскажи") && has("себе")) ||
+    (has("опиши") && has("себя"))
   );
 }
 
@@ -2113,7 +2120,13 @@ function localBehaviorRuleDetail(rule) {
   ].join("\n");
 }
 
-function localSelfFacts() {
+function localAssistantNameStatus(preferences = {}) {
+  const name = normalizeAssistantName(preferences.assistantName);
+  return name ? `configured:${name}` : "not_configured";
+}
+
+function localSelfFacts(preferences = {}) {
+  const assistantName = localAssistantNameStatus(preferences);
   return [
     "Facts I know about myself:",
     "",
@@ -2126,6 +2139,10 @@ function localSelfFacts() {
     '  subject "formal-ai"',
     '  relation "answer_source"',
     '  object "local Links Notation rules"',
+    "self_fact_assistant_name",
+    '  subject "formal-ai"',
+    '  relation "assistant_name"',
+    `  object "${assistantName.replaceAll('"', '\\"')}"`,
     "```",
     "",
     "Read behavior with `List behavior rules`; teach one with When I say `prompt`, answer `answer`.",
@@ -2182,30 +2199,96 @@ function localContainsAny(normalized, needles) {
   return needles.some((needle) => normalized.includes(needle));
 }
 
+function localIsSelfFactQuery(normalized) {
+  return (
+    normalized.includes("facts you know about yourself") ||
+    normalized.includes("self facts") ||
+    normalized.includes("факты о себе") ||
+    normalized.includes("какие факты ты знаешь о себе")
+  );
+}
+
+function localIsSelfIntroductionQuery(normalized) {
+  const cleaned = normalizePrompt(normalized);
+  if (!cleaned || localIsSelfFactQuery(cleaned)) return false;
+  return (
+    cleaned === "tell me about yourself" ||
+    cleaned === "introduce yourself" ||
+    cleaned.includes("tell me about yourself") ||
+    cleaned.includes("introduce yourself") ||
+    cleaned.includes("расскажи о себе") ||
+    cleaned.includes("расскажи мне о себе") ||
+    cleaned.includes("расскажи про себя") ||
+    cleaned.includes("опиши себя") ||
+    cleaned.includes("представься")
+  );
+}
+
+function localSelfAwarenessLanguage(prompt, normalized) {
+  const text = `${String(prompt || "").toLowerCase()} ${String(normalized || "")}`;
+  if (/[\u0400-\u04ff]/u.test(text) || localContainsAny(text, ["ты", "теб", "у тебя"])) {
+    return "ru";
+  }
+  if (/[\u0900-\u097f]/u.test(text)) return "hi";
+  if (/[\u4e00-\u9fff]/u.test(text)) return "zh";
+  return "en";
+}
+
+function localSelfIntroductionContent(language, preferences = {}) {
+  const identity = IDENTITY_ANSWER;
+  const name = normalizeAssistantName(preferences.assistantName);
+  if (!name) return identity;
+  if (language === "ru") return `Меня зовут ${name}. ${identity}`;
+  if (language === "hi") return `मेरा नाम ${name} है। ${identity}`;
+  if (language === "zh") return `我的名字是 ${name}。${identity}`;
+  return `My name is ${name}. ${identity}`;
+}
+
 function localIsKnownFactQuery(normalized) {
   const english =
-    normalized.includes("facts") &&
-    localContainsAny(normalized, ["what", "which", "list", "show"]) &&
+    (normalized.includes("facts") &&
+      localContainsAny(normalized, ["what", "which", "list", "show"]) &&
+      localContainsAny(normalized, [
+        "you know",
+        "do you know",
+        "you have",
+        "available to you",
+        "in your knowledge",
+        "known to you",
+      ])) ||
     localContainsAny(normalized, [
-      "you know",
-      "do you know",
-      "you have",
-      "available to you",
-      "in your knowledge",
-      "known to you",
+      "what do you know in general",
+      "what do you know about the world",
+      "what is known to you",
+      "what knowledge do you have",
     ]);
   const russian =
-    normalized.includes("факт") &&
-    localContainsAny(normalized, ["какие", "что", "перечисли", "покажи", "назови"]) &&
+    (normalized.includes("факт") &&
+      localContainsAny(normalized, ["какие", "что", "перечисли", "покажи", "назови"]) &&
+      localContainsAny(normalized, [
+        "ты знаешь",
+        "знаешь",
+        "тебе извест",
+        "у тебя есть",
+        "твои знания",
+        "что ты знаешь",
+      ])) ||
     localContainsAny(normalized, [
-      "ты знаешь",
-      "знаешь",
-      "тебе извест",
-      "у тебя есть",
-      "твои знания",
-      "что ты знаешь",
+      "что тебе вообще известно",
+      "что тебе известно",
+      "что ты вообще знаешь",
+      "что ты знаешь об окружающем мире",
+      "известно об окружающем мире",
+      "знаешь про окружающий мир",
+      "знаешь об окружающем мире",
     ]);
-  return english || russian;
+  const hindi = localContainsAny(normalized, [
+    "आप क्या जानते हैं",
+    "तुम क्या जानते हो",
+    "आपको क्या पता है",
+  ]);
+  const chinese = localContainsAny(normalized, ["你知道什么", "您知道什么", "你知道哪些"]);
+  return english || russian || hindi || chinese;
 }
 
 function localIsArchitectureQuestion(normalized) {
@@ -2217,6 +2300,7 @@ function localIsArchitectureQuestion(normalized) {
     "теб",
     "твоя",
     "твой",
+    "тво",
     "вы",
   ]);
   if (!mentionsAssistant) return false;
@@ -2230,6 +2314,8 @@ function localIsArchitectureQuestion(normalized) {
     "neural network",
     "links notation rules",
     "local rules",
+    "world model",
+    "model of the world",
     "бям",
     "языковая модель",
     "языковой моделью",
@@ -2238,6 +2324,12 @@ function localIsArchitectureQuestion(normalized) {
     "локальных правил",
     "локальных правилах",
     "область знаний",
+    "модель окружающего мира",
+    "модель мира",
+    "принцип работы",
+    "идея твоей разработки",
+    "идея твоего проекта",
+    "зачем тебя разработ",
     "ссылк",
   ]);
 }
@@ -2293,7 +2385,7 @@ function localRuntimeRuleForPrompt(prompt, history) {
   return null;
 }
 
-function tryLocalBehaviorRules(prompt, normalized, history) {
+function tryLocalBehaviorRules(prompt, normalized, history, preferences = {}) {
   const updateRule = localRuntimeRuleFromText(prompt);
   if (updateRule) {
     return {
@@ -2330,15 +2422,18 @@ function tryLocalBehaviorRules(prompt, normalized, history) {
       return { intent: "behavior_rule_detail", content: localBehaviorRuleDetail(rule) };
     }
   }
-  if (
-    normalized.includes("facts you know about yourself") ||
-    normalized.includes("self facts") ||
-    normalized.includes("факты о себе")
-  ) {
-    return { intent: "self_facts", content: localSelfFacts() };
+  if (localIsSelfIntroductionQuery(normalized)) {
+    const language = localSelfAwarenessLanguage(prompt, normalized);
+    return {
+      intent: "identity",
+      content: localSelfIntroductionContent(language, preferences),
+    };
+  }
+  if (localIsSelfFactQuery(normalized)) {
+    return { intent: "self_facts", content: localSelfFacts(preferences) };
   }
   if (localIsKnownFactQuery(normalized)) {
-    const language = /[\u0400-\u04ff]/u.test(String(prompt || "")) ? "ru" : "en";
+    const language = localSelfAwarenessLanguage(prompt, normalized);
     return { intent: "known_facts", content: localKnownFacts(language) };
   }
   const runtimeRule = localRuntimeRuleForPrompt(prompt, history);
@@ -2487,7 +2582,7 @@ function courtesyResponseContent(preferences = {}) {
 
 function localFallbackAnswer(prompt, history = [], preferences = {}) {
   const normalized = normalizePrompt(prompt);
-  const behaviorRule = tryLocalBehaviorRules(prompt, normalized, history);
+  const behaviorRule = tryLocalBehaviorRules(prompt, normalized, history, preferences);
   if (behaviorRule) {
     return behaviorRule;
   }

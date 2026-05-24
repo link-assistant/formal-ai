@@ -88,6 +88,20 @@ pub fn try_behavior_rules(
         }
     }
 
+    if is_self_introduction_query(normalized) {
+        log.append("identity:self_introduction", "formal-ai".to_owned());
+        let language = self_awareness_language(prompt, normalized);
+        let body = identity_body(language);
+        return Some(finalize_simple(
+            prompt,
+            log,
+            "identity",
+            "response:identity",
+            &body,
+            1.0,
+        ));
+    }
+
     if is_self_fact_query(normalized) {
         log.append("self_facts:list", "formal-ai".to_owned());
         let body = render_self_facts();
@@ -103,8 +117,8 @@ pub fn try_behavior_rules(
 
     if is_known_fact_query(normalized) {
         log.append("known_facts:list", "formal-ai".to_owned());
-        let language = detect_language(prompt);
-        let body = render_known_facts(language.slug());
+        let language = self_awareness_language(prompt, normalized);
+        let body = render_known_facts(language);
         return Some(finalize_simple(
             prompt,
             log,
@@ -173,6 +187,22 @@ fn behavior_rule_records() -> Vec<BehaviorRuleRecord> {
             ),
         },
         BehaviorRuleRecord {
+            id: "rule_assistant_name".to_owned(),
+            topic: "assistant_name",
+            intent: "assistant_name".to_owned(),
+            label: "Assistant name rule".to_owned(),
+            matches: "`What is your name?`, `Как тебя зовут?`, and equivalent name prompts"
+                .to_owned(),
+            response: "Returns the assistant-name answer; browser surfaces can override it from \
+                 the assistant name setting."
+                .to_owned(),
+            source: "data/seed/intent-routing.lino + browser preferences".to_owned(),
+            when_then: "When the user asks `What is your name?` or `Как тебя зовут?` then \
+                 respond with the assistant-name answer; if a surface has an assistant-name \
+                 setting, include that configured name."
+                .to_owned(),
+        },
+        BehaviorRuleRecord {
             id: "rule_capabilities".to_owned(),
             topic: "capabilities",
             intent: "capabilities".to_owned(),
@@ -234,6 +264,7 @@ fn topic_label(topic: &str) -> &'static str {
         "greetings" => "Greetings",
         "farewells" => "Farewells",
         "identity" => "Identity",
+        "assistant_name" => "Assistant name",
         "capabilities" => "Capabilities",
         "hello_world" => "Hello-world programs",
         "unknown_fallback" => "Unknown fallback",
@@ -246,10 +277,11 @@ fn topic_order(topic: &str) -> u8 {
         "greetings" => 0,
         "farewells" => 1,
         "identity" => 2,
-        "capabilities" => 3,
-        "hello_world" => 4,
-        "unknown_fallback" => 5,
-        _ => 6,
+        "assistant_name" => 3,
+        "capabilities" => 4,
+        "hello_world" => 5,
+        "unknown_fallback" => 6,
+        _ => 7,
     }
 }
 
@@ -371,6 +403,10 @@ fn render_self_facts() -> String {
             "  subject \"formal-ai\"\n",
             "  relation \"memory\"\n",
             "  object \"append-only dialog events plus seed files in Links Notation\"\n",
+            "self_fact_assistant_name\n",
+            "  subject \"formal-ai\"\n",
+            "  relation \"assistant_name\"\n",
+            "  object \"not_configured_by_cli_or_library\"\n",
             "```\n\n",
             "Read behavior with `List behavior rules`; teach one with ",
             "When `prompt` then `answer` (or When I say `prompt`, answer `answer`)."
@@ -395,6 +431,10 @@ fn render_known_facts(language: &str) -> String {
         "  subject \"formal-ai\"\n",
         "  relation \"model\"\n",
         "  object \"formal-symbolic-production\"\n",
+        "known_fact_assistant_name\n",
+        "  subject \"formal-ai\"\n",
+        "  relation \"assistant_name_setting\"\n",
+        "  object \"not_configured_by_cli_or_library\"\n",
         "```"
     );
     match language {
@@ -608,6 +648,58 @@ fn is_self_fact_query(normalized: &str) -> bool {
         || normalized.contains("自我事实")
 }
 
+fn is_self_introduction_query(normalized: &str) -> bool {
+    let cleaned = normalize_prompt(normalized);
+    if cleaned.is_empty() || is_self_fact_query(&cleaned) {
+        return false;
+    }
+
+    cleaned == "tell me about yourself"
+        || cleaned == "introduce yourself"
+        || cleaned.contains("tell me about yourself")
+        || cleaned.contains("introduce yourself")
+        || cleaned.contains("расскажи о себе")
+        || cleaned.contains("расскажи мне о себе")
+        || cleaned.contains("расскажи про себя")
+        || cleaned.contains("опиши себя")
+        || cleaned.contains("представься")
+        || cleaned.contains("अपने बारे में बताओ")
+        || cleaned.contains("अपना परिचय दो")
+        || cleaned.contains("介绍一下你自己")
+        || cleaned.contains("告诉我你自己")
+        || cleaned.contains("介紹一下你自己")
+        || cleaned.contains("告訴我你自己")
+}
+
+fn self_awareness_language(prompt: &str, normalized: &str) -> &'static str {
+    let lower = format!("{} {}", prompt.to_lowercase(), normalized);
+    if has_char_in_range(&lower, '\u{0400}', '\u{04ff}')
+        || contains_any(
+            &lower,
+            &["ты", "теб", "твоя", "твой", "вы", "вас", "у тебя"],
+        )
+    {
+        return "ru";
+    }
+    if has_char_in_range(&lower, '\u{0900}', '\u{097f}') {
+        return "hi";
+    }
+    if has_char_in_range(&lower, '\u{4e00}', '\u{9fff}') {
+        return "zh";
+    }
+    detect_language(prompt).slug()
+}
+
+fn has_char_in_range(text: &str, start: char, end: char) -> bool {
+    text.chars().any(|ch| (start..=end).contains(&ch))
+}
+
+fn identity_body(language: &str) -> String {
+    seed::response_for("identity", language)
+        .or_else(|| seed::response_for("identity", "en"))
+        .unwrap_or_else(|| identity_answer().to_owned())
+}
+
 fn contains_any(normalized: &str, needles: &[&str]) -> bool {
     needles.iter().any(|needle| normalized.contains(needle))
 }
@@ -617,7 +709,7 @@ fn is_known_fact_query(normalized: &str) -> bool {
         return false;
     }
 
-    let english = normalized.contains("facts")
+    let english = (normalized.contains("facts")
         && contains_any(normalized, &["what", "which", "list", "show"])
         && contains_any(
             normalized,
@@ -629,8 +721,17 @@ fn is_known_fact_query(normalized: &str) -> bool {
                 "in your knowledge",
                 "known to you",
             ],
+        ))
+        || contains_any(
+            normalized,
+            &[
+                "what do you know in general",
+                "what do you know about the world",
+                "what is known to you",
+                "what knowledge do you have",
+            ],
         );
-    let russian = normalized.contains("факт")
+    let russian = (normalized.contains("факт")
         && contains_any(
             normalized,
             &["какие", "что", "перечисли", "покажи", "назови"],
@@ -645,18 +746,35 @@ fn is_known_fact_query(normalized: &str) -> bool {
                 "твои знания",
                 "что ты знаешь",
             ],
+        ))
+        || contains_any(
+            normalized,
+            &[
+                "что тебе вообще известно",
+                "что тебе известно",
+                "что ты вообще знаешь",
+                "что ты знаешь об окружающем мире",
+                "известно об окружающем мире",
+                "знаешь про окружающий мир",
+                "знаешь об окружающем мире",
+            ],
         );
-    let hindi = normalized.contains("तथ्य")
+    let hindi = (normalized.contains("तथ्य")
         && contains_any(
             normalized,
             &["कौन", "क्या", "सूची", "सूचीबद्ध", "बताओ", "दिखाओ"],
         )
-        && contains_any(normalized, &["तुम", "आप", "जानते", "जानती", "आपके", "तुम्हारे"]);
-    let chinese = (normalized.contains("事实") || normalized.contains("事實"))
+        && contains_any(normalized, &["तुम", "आप", "जानते", "जानती", "आपके", "तुम्हारे"]))
+        || contains_any(
+            normalized,
+            &["आप क्या जानते हैं", "तुम क्या जानते हो", "आपको क्या पता है"],
+        );
+    let chinese = ((normalized.contains("事实") || normalized.contains("事實"))
         && contains_any(
             normalized,
             &["你知道", "您知道", "你有", "您有", "哪些", "什么", "什麼"],
-        );
+        ))
+        || contains_any(normalized, &["你知道什么", "您知道什么", "你知道哪些"]);
 
     english || russian || hindi || chinese
 }

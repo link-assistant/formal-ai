@@ -402,6 +402,11 @@ let INTENT_ROUTING = {
         "introduce yourself",
         "кто ты",
         "что ты",
+        "расскажи о себе",
+        "расскажи мне о себе",
+        "расскажи про себя",
+        "опиши себя",
+        "представься",
         "तुम कौन हो",
         "तू कौन है",
         "आप कौन हैं",
@@ -422,6 +427,8 @@ let INTENT_ROUTING = {
         ["introduce", "yourself"],
         ["кто", "ты"],
         ["что", "ты"],
+        ["расскажи", "себе"],
+        ["опиши", "себя"],
         ["who", "formal", "ai"],
         ["what", "formal", "ai"],
       ],
@@ -2496,7 +2503,15 @@ function renderBehaviorRuleDetail(rule) {
   ].join("\n");
 }
 
-function renderSelfFacts() {
+function assistantNameStatus(preferences) {
+  const name = normalizeAssistantNamePreference(
+    preferences && preferences.assistantName,
+  );
+  return name ? `configured:${name}` : "not_configured";
+}
+
+function renderSelfFacts(preferences) {
+  const assistantName = assistantNameStatus(preferences);
   return [
     "Facts I know about myself:",
     "",
@@ -2517,6 +2532,10 @@ function renderSelfFacts() {
     '  subject "formal-ai"',
     '  relation "memory"',
     '  object "append-only dialog events plus seed files in Links Notation"',
+    "self_fact_assistant_name",
+    '  subject "formal-ai"',
+    '  relation "assistant_name"',
+    `  object "${escapeBehaviorRuleValue(assistantName)}"`,
     "```",
     "",
     "Read behavior with `List behavior rules`; teach one with When `prompt` then `answer` (or When I say `prompt`, answer `answer`).",
@@ -2761,37 +2780,105 @@ function isSelfFactQuery(normalized) {
   );
 }
 
+function isSelfIntroductionQuery(normalized) {
+  const cleaned = normalizePrompt(normalized);
+  if (!cleaned || isSelfFactQuery(cleaned)) return false;
+  return (
+    cleaned === "tell me about yourself" ||
+    cleaned === "introduce yourself" ||
+    cleaned.includes("tell me about yourself") ||
+    cleaned.includes("introduce yourself") ||
+    cleaned.includes("расскажи о себе") ||
+    cleaned.includes("расскажи мне о себе") ||
+    cleaned.includes("расскажи про себя") ||
+    cleaned.includes("опиши себя") ||
+    cleaned.includes("представься") ||
+    cleaned.includes("अपने बारे में बताओ") ||
+    cleaned.includes("अपना परिचय दो") ||
+    cleaned.includes("介绍一下你自己") ||
+    cleaned.includes("告诉我你自己") ||
+    cleaned.includes("介紹一下你自己") ||
+    cleaned.includes("告訴我你自己")
+  );
+}
+
+function selfAwarenessLanguage(prompt, normalized) {
+  const text = `${String(prompt || "").toLowerCase()} ${String(normalized || "")}`;
+  if (
+    /[\u0400-\u04ff]/u.test(text) ||
+    containsAny(text, ["ты", "теб", "твоя", "твой", "вы", "вас", "у тебя"])
+  ) {
+    return "ru";
+  }
+  if (/[\u0900-\u097f]/u.test(text)) return "hi";
+  if (/[\u4e00-\u9fff]/u.test(text)) return "zh";
+  return detectLanguage(prompt);
+}
+
+function selfIntroductionContent(language, preferences) {
+  const identity = answerFor("identity", language);
+  const name = normalizeAssistantNamePreference(
+    preferences && preferences.assistantName,
+  );
+  if (!name) return identity;
+  if (language === "ru") return `Меня зовут ${name}. ${identity}`;
+  if (language === "hi") return `मेरा नाम ${name} है। ${identity}`;
+  if (language === "zh") return `我的名字是 ${name}。${identity}`;
+  return `My name is ${name}. ${identity}`;
+}
+
 function isKnownFactQuery(normalized) {
   if (isSelfFactQuery(normalized)) return false;
   const english =
-    normalized.includes("facts") &&
-    containsAny(normalized, ["what", "which", "list", "show"]) &&
+    (normalized.includes("facts") &&
+      containsAny(normalized, ["what", "which", "list", "show"]) &&
+      containsAny(normalized, [
+        "you know",
+        "do you know",
+        "you have",
+        "available to you",
+        "in your knowledge",
+        "known to you",
+      ])) ||
     containsAny(normalized, [
-      "you know",
-      "do you know",
-      "you have",
-      "available to you",
-      "in your knowledge",
-      "known to you",
+      "what do you know in general",
+      "what do you know about the world",
+      "what is known to you",
+      "what knowledge do you have",
     ]);
   const russian =
-    normalized.includes("факт") &&
-    containsAny(normalized, ["какие", "что", "перечисли", "покажи", "назови"]) &&
+    (normalized.includes("факт") &&
+      containsAny(normalized, ["какие", "что", "перечисли", "покажи", "назови"]) &&
+      containsAny(normalized, [
+        "ты знаешь",
+        "знаешь",
+        "тебе извест",
+        "у тебя есть",
+        "твои знания",
+        "что ты знаешь",
+      ])) ||
     containsAny(normalized, [
-      "ты знаешь",
-      "знаешь",
-      "тебе извест",
-      "у тебя есть",
-      "твои знания",
-      "что ты знаешь",
+      "что тебе вообще известно",
+      "что тебе известно",
+      "что ты вообще знаешь",
+      "что ты знаешь об окружающем мире",
+      "известно об окружающем мире",
+      "знаешь про окружающий мир",
+      "знаешь об окружающем мире",
     ]);
   const hindi =
-    normalized.includes("तथ्य") &&
-    containsAny(normalized, ["कौन", "क्या", "सूची", "सूचीबद्ध", "बताओ", "दिखाओ"]) &&
-    containsAny(normalized, ["तुम", "आप", "जानते", "जानती", "आपके", "तुम्हारे"]);
+    (normalized.includes("तथ्य") &&
+      containsAny(normalized, ["कौन", "क्या", "सूची", "सूचीबद्ध", "बताओ", "दिखाओ"]) &&
+      containsAny(normalized, ["तुम", "आप", "जानते", "जानती", "आपके", "तुम्हारे"])) ||
+    containsAny(normalized, [
+      "आप क्या जानते हैं",
+      "तुम क्या जानते हो",
+      "आपको क्या पता है",
+    ]);
   const chinese =
-    (normalized.includes("事实") || normalized.includes("事實")) &&
-    containsAny(normalized, ["你知道", "您知道", "你有", "您有", "哪些", "什么", "什麼"]);
+    ((normalized.includes("事实") || normalized.includes("事實")) &&
+      containsAny(normalized, ["你知道", "您知道", "你有", "您有", "哪些", "什么", "什麼"])) ||
+    containsAny(normalized, ["你知道什么", "您知道什么", "你知道哪些"]);
 
   return english || russian || hindi || chinese;
 }
@@ -2946,7 +3033,7 @@ function collectRuntimeRules(history) {
   return rules;
 }
 
-function tryBehaviorRules(prompt, normalized, history) {
+function tryBehaviorRules(prompt, normalized, history, preferences) {
   const updateRule = runtimeRuleFromText(prompt);
   if (updateRule) {
     return {
@@ -2979,17 +3066,45 @@ function tryBehaviorRules(prompt, normalized, history) {
     }
   }
 
+  if (isSelfIntroductionQuery(normalized)) {
+    const language = selfAwarenessLanguage(prompt, normalized);
+    return {
+      intent: "identity",
+      content: selfIntroductionContent(language, preferences),
+      confidence: 1.0,
+      evidence: [
+        "identity:self_introduction",
+        `language:${language}`,
+        `assistant_name:${assistantNameStatus(preferences)}`,
+      ],
+    };
+  }
+
+  if (isArchitectureQuestion(normalized)) {
+    const language = architectureLanguage(prompt, normalized);
+    return {
+      intent: "meta_explanation",
+      content: architectureExplanationContent(language),
+      confidence: 1.0,
+      evidence: [
+        "response:meta_explanation",
+        "meta_explanation:self_awareness",
+        `language:${language}`,
+      ],
+    };
+  }
+
   if (isSelfFactQuery(normalized)) {
     return {
       intent: "self_facts",
-      content: renderSelfFacts(),
+      content: renderSelfFacts(preferences),
       confidence: 1.0,
       evidence: ["self_facts:list", "formal-ai"],
     };
   }
 
   if (isKnownFactQuery(normalized)) {
-    const language = detectLanguage(prompt);
+    const language = selfAwarenessLanguage(prompt, normalized);
     return {
       intent: "known_facts",
       content: renderKnownFacts(language),
@@ -3638,6 +3753,7 @@ function isArchitectureQuestion(normalized) {
     "теб",
     "твоя",
     "твой",
+    "тво",
     "вы",
     "आप",
     "तुम",
@@ -3655,6 +3771,8 @@ function isArchitectureQuestion(normalized) {
     "neural network",
     "links notation rules",
     "local rules",
+    "world model",
+    "model of the world",
     "бям",
     "языковая модель",
     "языковой моделью",
@@ -3663,6 +3781,12 @@ function isArchitectureQuestion(normalized) {
     "локальных правил",
     "локальных правилах",
     "область знаний",
+    "модель окружающего мира",
+    "модель мира",
+    "принцип работы",
+    "идея твоей разработки",
+    "идея твоего проекта",
+    "зачем тебя разработ",
     "ссылк",
     "न्यूरल",
     "भाषा मॉडल",
@@ -3670,6 +3794,10 @@ function isArchitectureQuestion(normalized) {
     "語言模型",
     "语言模型",
   ]);
+}
+
+function architectureLanguage(prompt, normalized) {
+  return selfAwarenessLanguage(prompt, normalized);
 }
 
 function architectureExplanationContent(language) {
@@ -3687,7 +3815,7 @@ function architectureExplanationContent(language) {
 
 function tryArchitectureExplanation(prompt, normalized) {
   if (!isArchitectureQuestion(normalized)) return null;
-  const language = detectLanguage(prompt);
+  const language = architectureLanguage(prompt, normalized);
   return {
     intent: "meta_explanation",
     content: architectureExplanationContent(language),
@@ -11971,7 +12099,7 @@ async function solve(prompt, history, prefs, userContext = {}) {
     }, formalizationContext);
   }
 
-  const behaviorRule = tryBehaviorRules(prompt, normalized, history);
+  const behaviorRule = tryBehaviorRules(prompt, normalized, history, preferences);
   if (behaviorRule) {
     events.push(`handler:${behaviorRule.intent}`);
     steps.push({ step: "dispatch_handler", detail: "tryBehaviorRules" });
