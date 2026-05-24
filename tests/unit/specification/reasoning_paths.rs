@@ -558,6 +558,97 @@ fn russian_how_known_concept_works_resolves_concept_lookup() {
 }
 
 // ---------------------------------------------------------------------------
+// Issue #223: project-method documentation prompts should answer from the
+// project's own docs, scoped to the named method.
+// ---------------------------------------------------------------------------
+
+#[test]
+fn pandas_join_method_question_uses_official_docs_summary() {
+    let response = answer("how the join method works in pandas");
+    assert_eq!(
+        response.intent, "docs_method_explanation",
+        "pandas join method question must route to official-docs summary; answer={}",
+        response.answer,
+    );
+
+    let answer = response.answer.to_lowercase();
+    for expected in ["dataframe.join", "index", "other", "how"] {
+        assert!(
+            answer.contains(expected),
+            "answer should mention {expected:?}; answer={}",
+            response.answer,
+        );
+    }
+
+    for expected in [
+        "docs_method:project:pandas",
+        "docs_method:method:pandas.DataFrame.join",
+        "docs_method:source_kind:official-docs",
+        "source:https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.join.html",
+    ] {
+        assert!(
+            has_evidence(&response, expected),
+            "missing evidence prefix {expected:?}: {:?}",
+            response.evidence_links,
+        );
+    }
+}
+
+#[test]
+fn pandas_join_method_docs_prompt_covers_supported_languages() {
+    struct DocsMethodCase {
+        language: &'static str,
+        prompt: &'static str,
+    }
+
+    let cases = [
+        DocsMethodCase {
+            language: "en",
+            prompt: "how the join method works in pandas",
+        },
+        DocsMethodCase {
+            language: "ru",
+            prompt: "объясни как работает метод join в pandas",
+        },
+        DocsMethodCase {
+            language: "hi",
+            prompt: "समझाओ pandas में join विधि कैसे काम करती है",
+        },
+        DocsMethodCase {
+            language: "zh",
+            prompt: "请解释 pandas 中的 join 方法如何工作 以及它如何使用索引",
+        },
+    ];
+
+    for case in cases {
+        let response = answer(case.prompt);
+        assert_eq!(
+            response.intent, "docs_method_explanation",
+            "{} pandas join docs prompt must resolve; answer={}",
+            case.language, response.answer,
+        );
+        assert!(
+            response.answer.contains("DataFrame.join"),
+            "answer should remain scoped to pandas.DataFrame.join for {}: {}",
+            case.language,
+            response.answer,
+        );
+        assert!(
+            has_evidence(&response, &format!("language:{}", case.language)),
+            "missing language evidence for {}: {:?}",
+            case.language,
+            response.evidence_links,
+        );
+        assert!(
+            has_evidence(&response, "docs_method:method:pandas.DataFrame.join"),
+            "missing docs-method evidence for {}: {:?}",
+            case.language,
+            response.evidence_links,
+        );
+    }
+}
+
+// ---------------------------------------------------------------------------
 // Issue #172: procedural "how to X Y" prompts should discover source-backed
 // procedure steps instead of returning the unknown fallback.
 // ---------------------------------------------------------------------------
