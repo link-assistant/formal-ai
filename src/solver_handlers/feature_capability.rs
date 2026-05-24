@@ -218,7 +218,7 @@ fn is_feature_capability_question(normalized: &str, language: &str) -> bool {
             normalized,
             "можешь|умеешь|поддерживаешь|у тебя есть|есть ли|доступен|доступна|включен|включена|подключен|подключена|можно ли",
         ),
-        "zh" => contains_alias(normalized, "能|可以|支持|有|启用|可用"),
+        "zh" => contains_alias(normalized, "能|可以|支持|你有|您有|有没有|是否有|启用|可用"),
         "hi" => contains_alias(normalized, "क्या|सकते|सकती|समर्थन|उपलब्ध"),
         _ => contains_alias(
             normalized,

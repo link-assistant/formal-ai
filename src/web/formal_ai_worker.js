@@ -3656,7 +3656,7 @@ function isFeatureCapabilityQuestion(normalized, language) {
     ]);
   }
   if (language === "zh") {
-    return containsAny(normalized, ["能", "可以", "支持", "有", "启用", "可用"]);
+    return containsAny(normalized, ["能", "可以", "支持", "你有", "您有", "有没有", "是否有", "启用", "可用"]);
   }
   if (language === "hi") {
     return containsAny(normalized, ["क्या", "सकते", "सकती", "समर्थन", "उपलब्ध"]);
@@ -5206,13 +5206,25 @@ function matchesEuclidPrimeClaim(claim) {
   const lower = String(claim || "").toLowerCase();
   return (
     lower.includes("infinitely many primes") ||
+    lower.includes("infinitely many prime numbers") ||
     lower.includes("infinitude of primes") ||
+    lower.includes("prime numbers are infinite") ||
     lower.includes("euclid") ||
     lower.includes("евклид") ||
     (lower.includes("прост") && lower.includes("бесконеч")) ||
     lower.includes("अनंत अभाज्य") ||
+    lower.includes("अनन्त अभाज्य") ||
+    lower.includes("अभाज्य संख्याएँ अनंत") ||
+    lower.includes("अभाज्य संख्याएं अनंत") ||
+    lower.includes("अभाज्य संख्याएँ अनन्त") ||
+    lower.includes("अभाज्य संख्याएं अनन्त") ||
     lower.includes("无穷多素数") ||
+    lower.includes("无穷多个素数") ||
+    lower.includes("素数有无穷") ||
     lower.includes("素数无穷") ||
+    lower.includes("無窮多素數") ||
+    lower.includes("素數有無窮") ||
+    lower.includes("素數無窮") ||
     lower.includes("欧几里得")
   );
 }

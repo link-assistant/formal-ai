@@ -42,7 +42,7 @@ test.describe('Issue #209 prime proof prompts', () => {
     const cases = [
       {
         language: 'en',
-        prompt: 'Demonstrate that there are infinitely many primes',
+        prompt: 'Hello. Prove that there are infinitely many prime numbers',
         expected: /There are infinitely many prime numbers|p₁/u,
       },
       {
@@ -52,12 +52,12 @@ test.describe('Issue #209 prime proof prompts', () => {
       },
       {
         language: 'hi',
-        prompt: 'साबित करो कि अनंत अभाज्य हैं',
+        prompt: 'नमस्ते. साबित करो कि अभाज्य संख्याएँ अनंत हैं',
         expected: /अभाज्य संख्याएँ अनंत हैं|p₁/u,
       },
       {
         language: 'zh',
-        prompt: '证明无穷多素数',
+        prompt: '你好。证明素数有无穷多个',
         expected: /素数有无穷多个|p₁/u,
       },
     ];

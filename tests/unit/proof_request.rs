@@ -157,6 +157,66 @@ fn russian_greeting_primes_prompt_returns_euclid_proof() {
 }
 
 #[test]
+fn prime_infinitude_proofs_are_supported_for_every_language() {
+    // Issue #209 follow-up: the supported-language matrix must not only cover
+    // the reported Russian word order. Each supported language should recognize
+    // the theorem's natural localized statement and return Euclid's proof.
+    let cases = [
+        (
+            "en",
+            "Hello. Prove that there are infinitely many prime numbers",
+            "There are infinitely many prime numbers",
+            "Proof plan",
+        ),
+        (
+            "ru",
+            "привет. докажи что простых бесконечно",
+            "Простых чисел бесконечно много",
+            "План доказательства",
+        ),
+        (
+            "hi",
+            "नमस्ते. साबित करो कि अभाज्य संख्याएँ अनंत हैं",
+            "अभाज्य संख्याएँ अनंत हैं",
+            "प्रमाण योजना",
+        ),
+        (
+            "zh",
+            "你好。证明素数有无穷多个",
+            "素数有无穷多个",
+            "证明计划",
+        ),
+    ];
+
+    for (language, prompt, expected_statement, plan_heading) in cases {
+        let response = FormalAiEngine.answer(prompt);
+
+        assert_eq!(
+            response.intent, "proof_request",
+            "{language} prompt should resolve to proof_request, got {}",
+            response.intent
+        );
+        assert!(
+            response.answer.contains(expected_statement),
+            "{language} prime-infinitude request should return localized Euclid proof, got: {}",
+            response.answer
+        );
+        assert!(
+            response.answer.contains("relative-meta-logic")
+                || response.answer.contains("Peano")
+                || response.answer.contains("Пеано"),
+            "{language} proof should name the formal context, got: {}",
+            response.answer
+        );
+        assert!(
+            !response.answer.contains(plan_heading),
+            "{language} known theorem should not return a generic proof plan, got: {}",
+            response.answer
+        );
+    }
+}
+
+#[test]
 fn fermat_little_proof_uses_induction() {
     let response = FormalAiEngine.answer("Give me a proof of Fermat's little theorem");
     assert_eq!(response.intent, "proof_request");
