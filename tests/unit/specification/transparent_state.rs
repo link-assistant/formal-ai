@@ -87,6 +87,65 @@ fn why_meta_question_explains_previous_answer() {
 }
 
 #[test]
+fn why_meta_question_explains_previous_answer_in_supported_languages() {
+    struct Case {
+        language: &'static str,
+        prompt: &'static str,
+        expected_fragment: &'static str,
+    }
+
+    let cases = [
+        Case {
+            language: "en",
+            prompt: "Why did you answer that?",
+            expected_fragment: "because",
+        },
+        Case {
+            language: "ru",
+            prompt: "Почему ты так ответил?",
+            expected_fragment: "потому что",
+        },
+        Case {
+            language: "hi",
+            prompt: "तुमने ऐसा जवाब क्यों दिया?",
+            expected_fragment: "इसलिए",
+        },
+        Case {
+            language: "zh",
+            prompt: "你为什么这样回答?",
+            expected_fragment: "因为",
+        },
+    ];
+
+    for case in cases {
+        let response = answer(case.prompt);
+        assert_eq!(
+            response.intent, "meta_explanation",
+            "{} why-question should resolve to a meta-explanation intent",
+            case.language
+        );
+        assert!(
+            response
+                .answer
+                .to_lowercase()
+                .contains(case.expected_fragment),
+            "{} answer should include a causal explanation, got: {}",
+            case.language,
+            response.answer
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == &format!("language:{}", case.language)),
+            "{} answer should expose language evidence: {:?}",
+            case.language,
+            response.evidence_links
+        );
+    }
+}
+
+#[test]
 fn forget_request_requires_explicit_retraction_protocol() {
     let response = answer("Forget the greeting concept");
     assert!(

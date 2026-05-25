@@ -22,10 +22,7 @@ pub fn try_meta_explanation_with_runtime(
     log: &mut EventLog,
     runtime: SelfAwarenessRuntime,
 ) -> Option<SymbolicAnswer> {
-    let is_why_question = normalized.starts_with("why ")
-        || normalized.starts_with("why did")
-        || normalized.starts_with("why do you")
-        || normalized.contains("why did you answer");
+    let is_why_question = is_why_question(normalized);
     let is_how_you_work = normalized.contains("how do you work")
         || normalized.contains("how does this work")
         || normalized.contains("how does it work")
@@ -92,11 +89,11 @@ fn why_explanation_body(language: &str) -> String {
              всю цепочку.",
         ),
         "hi" => String::from(
-            "मैंने ऐसा जवाब इसलिए दिया because prompt deterministic Links Notation rule से मेल खाता था. \
+            "मैंने ऐसा जवाब इसलिए दिया क्योंकि prompt deterministic Links Notation rule से मेल खाता था. \
              evidence links और trace events log में जोड़े गए हैं; पूरी chain देखने के लिए trace link देखें.",
         ),
         "zh" => String::from(
-            "我这样回答 because 该提示匹配了确定性的 Links Notation 规则。evidence links 和 trace events \
+            "我这样回答是因为该提示匹配了确定性的 Links Notation 规则。evidence links 和 trace events \
              已追加到日志中; 可通过 trace link 检查完整链路。",
         ),
         _ => String::from(
@@ -105,6 +102,20 @@ fn why_explanation_body(language: &str) -> String {
              full chain.",
         ),
     }
+}
+
+fn is_why_question(normalized: &str) -> bool {
+    normalized.starts_with("why ")
+        || normalized.starts_with("why did")
+        || normalized.starts_with("why do you")
+        || normalized.contains("why did you answer")
+        || normalized.starts_with("почему ")
+        || normalized.contains("почему ты ответил")
+        || normalized.contains("почему ты так ответил")
+        || normalized.contains("почему вы ответили")
+        || (normalized.contains("क्यों")
+            && (normalized.contains("जवाब") || normalized.contains("उत्तर")))
+        || (normalized.contains("为什么") && normalized.contains("回答"))
 }
 
 fn meta_contains_any(normalized: &str, needles: &[&str]) -> bool {
