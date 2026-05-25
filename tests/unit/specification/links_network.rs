@@ -71,7 +71,6 @@ fn knowledge_export_uses_untyped_links_notation_only() {
 // ---------------------------------------------------------------------------
 
 #[test]
-#[ignore = "tracked requirement: every record in the network must be reducible to doublet links"]
 fn knowledge_export_is_reducible_to_doublet_links() {
     let notation = knowledge_links_notation();
     assert!(
@@ -91,7 +90,6 @@ fn dynamic_type_system_publishes_subtype_chains() {
 }
 
 #[test]
-#[ignore = "tracked requirement: each concept must be unique in the network and reused by reference"]
 fn concepts_are_unique_and_referenced_by_id() {
     let notation = knowledge_links_notation();
     let greeting_occurrences = notation.matches("intent: greeting").count();
@@ -102,7 +100,6 @@ fn concepts_are_unique_and_referenced_by_id() {
 }
 
 #[test]
-#[ignore = "tracked requirement: history must be append-only — earlier records cannot be mutated, only superseded"]
 fn history_is_append_only() {
     let before = knowledge_links_notation();
     let _ = answer("Hi");
@@ -151,7 +148,6 @@ fn trace_record_lists_ordered_reasoning_steps() {
 }
 
 #[test]
-#[ignore = "tracked requirement: knowledge dataset should declare a schema version link for migrations"]
 fn knowledge_dataset_declares_schema_version() {
     let notation = knowledge_links_notation();
     assert!(
@@ -161,7 +157,6 @@ fn knowledge_dataset_declares_schema_version() {
 }
 
 #[test]
-#[ignore = "tracked requirement: links network must support querying records via a stable id"]
 fn records_are_addressable_by_stable_id() {
     let response = answer("Hi");
     let (id, _root) = parse_indented(&response.links_notation).unwrap();
@@ -174,7 +169,6 @@ fn records_are_addressable_by_stable_id() {
 }
 
 #[test]
-#[ignore = "tracked requirement: the engine should reject ill-formed Links Notation submissions"]
 fn ill_formed_links_notation_input_is_rejected() {
     let response = answer("teach this fact: ((((((( unbalanced");
     assert_eq!(response.intent, "unknown");

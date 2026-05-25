@@ -9,6 +9,8 @@
 //! uses so identifiers stay stable across surfaces.
 
 use crate::engine::stable_id;
+use crate::link_store::{LinkStore, LinkStoreError};
+use crate::memory::MemoryEvent;
 
 /// A single event in the append-only log.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -88,6 +90,27 @@ impl EventLog {
             );
         }
         buffer
+    }
+
+    /// Replay every in-process event into a durable link store projection.
+    ///
+    /// This is additive: the original event log remains in-process, while
+    /// the target store receives memory records that can be exported as
+    /// `.lino` or reduced to doublets by the active backend.
+    pub fn append_to_link_store<S: LinkStore>(
+        &self,
+        store: &mut S,
+    ) -> Result<usize, LinkStoreError> {
+        for event in &self.events {
+            store.append_memory_event(MemoryEvent {
+                id: event.id.clone(),
+                kind: Some(event.kind.to_owned()),
+                content: Some(event.payload.clone()),
+                evidence: vec![format!("{}:{}", event.kind, event.id)],
+                ..MemoryEvent::default()
+            })?;
+        }
+        Ok(self.events.len())
     }
 }
 
@@ -243,6 +266,7 @@ fn sanitize_payload(value: &str) -> String {
 #[cfg(test)]
 mod tests {
     use super::EventLog;
+    use crate::memory::MemoryStore;
 
     #[test]
     fn append_returns_stable_ids_for_distinct_events() {
@@ -272,5 +296,16 @@ mod tests {
         let block = log.steps_block();
         assert!(block.contains("step_0 impulse x"));
         assert!(block.contains("step_1 trace y"));
+    }
+
+    #[test]
+    fn event_log_replays_into_link_store() {
+        let mut log = EventLog::new();
+        log.append("impulse", "hello");
+        let mut store = MemoryStore::new();
+        let inserted = log.append_to_link_store(&mut store).expect("replay");
+        assert_eq!(inserted, 1);
+        assert_eq!(store.events()[0].kind.as_deref(), Some("impulse"));
+        assert_eq!(store.link_records().len(), 1);
     }
 }

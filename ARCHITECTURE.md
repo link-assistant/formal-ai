@@ -229,14 +229,15 @@ canonical Links Notation format.
 
 Upstream references:
 
-- [`link-foundation/doublets-rs`](https://github.com/link-foundation/doublets-rs)
-- [`link-foundation/doublets-web`](https://github.com/link-foundation/doublets-web)
+- [`linksplatform/doublets-rs`](https://github.com/linksplatform/doublets-rs)
+- [`linksplatform/doublets-web`](https://github.com/linksplatform/doublets-web)
 
 Migration plan:
 
 1. Wrap the current `MemoryStore` in a trait so the active backend is
-   swappable.
-2. Add a `doublets-rs` backend behind a feature flag.
+   swappable (`link_store::LinkStore`).
+2. Add a `doublets-rs` backend behind a feature flag
+   (`doublets-native`).
 3. Mirror writes to `.lino` snapshots via `memory::export_links_notation`.
 4. Replace the per-surface tables with the unified doublets store.
 5. Add a `doublets-web` backend for the browser worker.
@@ -769,8 +770,9 @@ references here:
 2. The softmax temperature helper (Section 6) is not yet exposed; the knob
    lives on `SolverConfig` but the softmax + ε-comparison helper is the next
    slice of work.
-3. The doublets-rs backend (Section 4.2) is wrapped behind a trait but the
-   crate dependency is not yet pulled in.
+3. The doublets-rs backend (Section 4.2) is available behind
+   `doublets-native`; the remaining migration work is making it the default
+   physical store for every non-browser surface.
 4. Natural-language-skill compilation (Section 9 #5) is documented but the
    compiler is not implemented; today every skill is interpreted by the
    universal solver step by step.
@@ -786,8 +788,8 @@ the table in Section 2 and link the new module.
 - `GOALS.md` — what counts as success per surface.
 - `NON-GOALS.md` — what we explicitly do not build.
 - `REQUIREMENTS.md` — issue-by-issue implementation matrix (R1 … R149).
-- [`link-foundation/doublets-rs`](https://github.com/link-foundation/doublets-rs) — long-term storage backend.
-- [`link-foundation/doublets-web`](https://github.com/link-foundation/doublets-web) — browser-side mirror.
+- [`linksplatform/doublets-rs`](https://github.com/linksplatform/doublets-rs) — long-term storage backend.
+- [`linksplatform/doublets-web`](https://github.com/linksplatform/doublets-web) — browser-side mirror.
 - [`link-assistant/calculator`](https://github.com/link-assistant/calculator) — delegated calculator engine (`link-calculator` crate).
 - [`link-assistant/relative-meta-logic`](https://github.com/link-assistant/relative-meta-logic) — future formal-reasoning integration.
 - Wikidata (`https://www.wikidata.org/`) — public source of P/Q-ID anchors.
