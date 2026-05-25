@@ -59,15 +59,7 @@ pub fn try_meta_explanation_with_runtime(
     }
     let language = meta_language(prompt, normalized);
     let body = if is_why_question {
-        response_for("meta_explanation", language)
-            .or_else(|| response_for("meta_explanation", "en"))
-            .unwrap_or_else(|| {
-                String::from(
-                    "I answered that way because the prompt matched a deterministic Links Notation rule. \
-                     The evidence and trace events are appended to the log; see the trace link for the \
-                     full chain.",
-                )
-            })
+        why_explanation_body(language)
     } else if is_architecture_question {
         architecture_explanation_body(language, runtime)
     } else {
@@ -90,6 +82,29 @@ pub fn try_meta_explanation_with_runtime(
         &body,
         1.0,
     ))
+}
+
+fn why_explanation_body(language: &str) -> String {
+    match language {
+        "ru" => String::from(
+            "Я ответил так, потому что запрос совпал с детерминированным правилом Links Notation. \
+             Evidence-ссылки и trace-события добавлены в журнал; по trace-ссылке можно проверить \
+             всю цепочку.",
+        ),
+        "hi" => String::from(
+            "मैंने ऐसा जवाब इसलिए दिया because prompt deterministic Links Notation rule से मेल खाता था. \
+             evidence links और trace events log में जोड़े गए हैं; पूरी chain देखने के लिए trace link देखें.",
+        ),
+        "zh" => String::from(
+            "我这样回答 because 该提示匹配了确定性的 Links Notation 规则。evidence links 和 trace events \
+             已追加到日志中; 可通过 trace link 检查完整链路。",
+        ),
+        _ => String::from(
+            "I answered that way because the prompt matched a deterministic Links Notation rule. \
+             The evidence links and trace events are appended to the log; see the trace link for the \
+             full chain.",
+        ),
+    }
 }
 
 fn meta_contains_any(normalized: &str, needles: &[&str]) -> bool {
