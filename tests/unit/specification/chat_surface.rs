@@ -623,6 +623,40 @@ fn unknown_answer_mentions_report_issue_in_russian() {
 }
 
 #[test]
+fn unknown_answer_explains_seed_extension_for_supported_languages() {
+    let cases = [
+        (
+            "English",
+            "en",
+            "This synthetic zzz123 request has no rule.",
+            "add a fact",
+        ),
+        (
+            "Russian",
+            "ru",
+            "Какая у тебя модель личности?",
+            "добавили факт или правило",
+        ),
+        ("Hindi", "hi", "अदृश्य zzz123 अनुरोध", "fact या rule"),
+        ("Chinese", "zh", "未知 zzz123 请求", "添加事实或规则"),
+    ];
+
+    for (label, language, prompt, expected_extension_text) in cases {
+        let response = answer(prompt);
+        assert_eq!(
+            response.intent, "unknown",
+            "{label} prompt should stay unknown"
+        );
+        assert!(
+            response.answer.contains(expected_extension_text)
+                && response.answer.contains("Links Notation"),
+            "{label} (language: {language}) unknown answer must explain seed extension, got: {}",
+            response.answer
+        );
+    }
+}
+
+#[test]
 fn unknown_answer_is_strict_superset_of_seed_opener() {
     use formal_ai::unknown_answer_variation_for;
     // The first opener of the English pool is "I don't know how to answer that yet."

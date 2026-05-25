@@ -61,7 +61,7 @@ const FALLBACK_COURTESY_FOLLOW_UPS = [
 ];
 
 const FALLBACK_UNKNOWN_ANSWER =
-  "I don't know how to answer that yet. I cannot answer that from local Links Notation rules yet. To inspect what I can do, send `List behavior rules`, then `Show behavior rule unknown`. To teach this dialog a response, send: When I say `your prompt`, answer `your answer`. To make it durable, export memory or use Report issue so developers can add the fact or rule to the seed.";
+  "I don't know how to answer that yet. I cannot answer that from local Links Notation rules yet. To inspect what I can do, send `List behavior rules`, then `Show behavior rule unknown`. To teach this dialog a response, send: When I say `your prompt`, answer `your answer`. To make it durable, export memory or use Report issue so developers can add a fact or add a rule in Links Notation seed data.";
 
 const FALLBACK_CLARIFICATION_ANSWER =
   "I'm sorry for the confusion. I am formal-ai, a deterministic symbolic AI. I can answer greetings, identity questions, concept lookups (what is X?), arithmetic, and Hello World programs. If you'd like to ask about something specific, try one of those or add a fact in Links Notation.";
