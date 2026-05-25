@@ -101,24 +101,35 @@ impl<'a, T: HttpClient + ?Sized> TranslationPipeline<'a, T> {
             "translate",
             &format!("start surface={surface:?} {source_lang}->{target_lang}"),
         );
+        let mut provenance: Vec<String> = Vec::new();
+        let page_title = normalize_page_title(surface);
+        translation_debug("translate", &format!("page_title={page_title:?}"));
+
         if source_lang == target_lang {
             translation_debug("translate", "identity (source==target)");
+            let mut candidates = vec![WiktionaryCandidate {
+                surface: surface.to_owned(),
+                qualifier: None,
+            }];
+            provenance.push("identity".to_owned());
+            let meaning = upgrade_meaning_via_wikidata(
+                self.http,
+                &page_title,
+                source_lang,
+                target_lang,
+                &mut provenance,
+                &mut candidates,
+            )
+            .unwrap_or_else(|| MeaningId::from_wiktionary_page(source_lang, &page_title));
             return Ok(Translation {
                 source_surface: surface.to_owned(),
                 source_lang: source_lang.to_owned(),
                 target_lang: target_lang.to_owned(),
-                meaning: MeaningId::from_wiktionary_page(source_lang, surface),
-                candidates: vec![WiktionaryCandidate {
-                    surface: surface.to_owned(),
-                    qualifier: None,
-                }],
-                provenance: vec!["identity".to_owned()],
+                meaning,
+                candidates,
+                provenance,
             });
         }
-
-        let mut provenance: Vec<String> = Vec::new();
-        let page_title = normalize_page_title(surface);
-        translation_debug("translate", &format!("page_title={page_title:?}"));
 
         // Stage 1: formalize — fetch the source-edition Wiktionary page.
         // This single fetch usually carries translations for every target
@@ -453,11 +464,21 @@ fn upgrade_meaning_via_wikidata<T: HttpClient + ?Sized>(
     };
     let first = hits.first()?;
     provenance.push(format!("wikidata:lexeme:{}", first.id));
+    let mut meaning = MeaningId::from_sense(first.id.clone());
     let lemmas = match wikidata.lexeme_translations(&first.id, target_lang) {
         Ok(rows) => rows,
         Err(error) => {
             provenance.push(format!("wikidata:sparql->error({error})"));
-            return Some(MeaningId::from_sense(first.id.clone()));
+            if let Some(canonical) = canonical_target_english_meaning(
+                &wikidata,
+                source_lang,
+                target_lang,
+                candidates,
+                provenance,
+            ) {
+                meaning = canonical;
+            }
+            return Some(meaning);
         }
     };
     if !lemmas.is_empty() {
@@ -477,7 +498,47 @@ fn upgrade_meaning_via_wikidata<T: HttpClient + ?Sized>(
             candidates.push(candidate);
         }
     }
-    Some(MeaningId::from_sense(first.id.clone()))
+    if let Some(canonical) = canonical_target_english_meaning(
+        &wikidata,
+        source_lang,
+        target_lang,
+        candidates,
+        provenance,
+    ) {
+        meaning = canonical;
+    }
+    Some(meaning)
+}
+
+fn canonical_target_english_meaning<T: HttpClient + ?Sized>(
+    wikidata: &Wikidata<'_, T>,
+    source_lang: &str,
+    target_lang: &str,
+    candidates: &[WiktionaryCandidate],
+    provenance: &mut Vec<String>,
+) -> Option<MeaningId> {
+    if source_lang.eq_ignore_ascii_case("en") || !target_lang.eq_ignore_ascii_case("en") {
+        return None;
+    }
+    let candidate = candidates
+        .iter()
+        .find(|candidate| candidate.qualifier.is_none())
+        .or_else(|| candidates.first())?;
+    let lemma = normalize_page_title(&candidate.surface);
+    if lemma.is_empty() {
+        return None;
+    }
+    match wikidata.search_lexeme(&lemma, "en") {
+        Ok(hits) => {
+            let first = hits.first()?;
+            provenance.push(format!("wikidata:canonical_lexeme:{}", first.id));
+            Some(MeaningId::from_sense(first.id.clone()))
+        }
+        Err(error) => {
+            provenance.push(format!("wikidata:canonical_search->error({error})"));
+            None
+        }
+    }
 }
 
 fn compositional_candidates(
@@ -731,7 +792,66 @@ mod tests {
         let pipeline = TranslationPipeline::new(&http);
         let translation = pipeline.translate("hello", "en", "en").unwrap();
         assert_eq!(translation.primary_surface(), Some("hello"));
-        assert_eq!(translation.provenance, vec!["identity".to_owned()]);
+        assert!(translation
+            .provenance
+            .iter()
+            .any(|entry| entry == "identity"));
+        assert_eq!(translation.meaning.slug(), "wiktionary:en:hello");
+    }
+
+    #[test]
+    fn translate_identity_upgrades_to_wikidata_meaning_when_available() {
+        let search_url = "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=hello&language=en&type=lexeme&format=json&uselang=en&limit=5";
+        let http = StubHttp::new(&[(search_url, r#"{"search":[{"id":"L8885","label":"hello"}]}"#)]);
+        let pipeline = TranslationPipeline::new(&http);
+
+        let translation = pipeline.translate("hello", "en", "en").unwrap();
+
+        assert_eq!(translation.primary_surface(), Some("hello"));
+        assert_eq!(translation.meaning.slug(), "wikidata-sense:L8885");
+        assert!(translation
+            .provenance
+            .iter()
+            .any(|entry| entry == "wikidata:lexeme:L8885"));
+    }
+
+    #[test]
+    fn wikidata_upgrade_canonicalizes_target_english_meaning() {
+        let russian_search_url = "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=%D0%BF%D1%80%D0%B8%D0%B2%D0%B5%D1%82&language=ru&type=lexeme&format=json&uselang=ru&limit=5";
+        let english_search_url = "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=hello&language=en&type=lexeme&format=json&uselang=en&limit=5";
+        let http = StubHttp::new(&[
+            (
+                russian_search_url,
+                r#"{"search":[{"id":"L150880","label":"привет"}]}"#,
+            ),
+            (
+                english_search_url,
+                r#"{"search":[{"id":"L8885","label":"hello"}]}"#,
+            ),
+        ]);
+        let mut candidates = vec![WiktionaryCandidate {
+            surface: "hello".to_owned(),
+            qualifier: None,
+        }];
+        let mut provenance = Vec::new();
+
+        let meaning = upgrade_meaning_via_wikidata(
+            &http,
+            "привет",
+            "ru",
+            "en",
+            &mut provenance,
+            &mut candidates,
+        )
+        .expect("wikidata search should produce a meaning");
+
+        assert_eq!(meaning.slug(), "wikidata-sense:L8885");
+        assert!(provenance
+            .iter()
+            .any(|entry| entry == "wikidata:lexeme:L150880"));
+        assert!(provenance
+            .iter()
+            .any(|entry| entry == "wikidata:canonical_lexeme:L8885"));
     }
 
     #[test]
