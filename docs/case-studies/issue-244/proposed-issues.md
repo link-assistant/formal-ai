@@ -5,6 +5,22 @@ vision" (issue #244). They are drafted here first so the plan is reviewable in
 one place, then opened in the repository. Each issue links back to #244 as its
 parent and is labeled `enhancement`.
 
+**Opened issues (2026-05-25):** E1 → [#246](https://github.com/link-assistant/formal-ai/issues/246),
+E2 → [#247](https://github.com/link-assistant/formal-ai/issues/247),
+E3 → [#248](https://github.com/link-assistant/formal-ai/issues/248),
+E4 → [#249](https://github.com/link-assistant/formal-ai/issues/249),
+E5 → [#250](https://github.com/link-assistant/formal-ai/issues/250),
+E6 → [#251](https://github.com/link-assistant/formal-ai/issues/251),
+E7 → [#252](https://github.com/link-assistant/formal-ai/issues/252),
+E8 → [#253](https://github.com/link-assistant/formal-ai/issues/253),
+E9 → [#254](https://github.com/link-assistant/formal-ai/issues/254),
+E10 → [#255](https://github.com/link-assistant/formal-ai/issues/255),
+E11 → [#256](https://github.com/link-assistant/formal-ai/issues/256),
+E12 → [#257](https://github.com/link-assistant/formal-ai/issues/257),
+E13 → [#258](https://github.com/link-assistant/formal-ai/issues/258),
+E14 → [#259](https://github.com/link-assistant/formal-ai/issues/259).
+See `ROADMAP.md` §5 for titles and dependency order.
+
 **Design rules that bind every epic** (from `../README.md`):
 
 - **Foundation first (Q13).** E1 and E2 are blockers; the rest build on them.

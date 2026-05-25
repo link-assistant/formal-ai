@@ -124,20 +124,20 @@ E1 ──► E2 ──► E3 ──► E6, E10
 
 | Epic | Title | Issue |
 | --- | --- | --- |
-| E1 | Unified doublet-links store (doublets-rs + doublets-web) | #__ |
-| E2 | Make the universal reasoning loop the only entry path | #__ |
-| E3 | Full Wikidata P/Q-id formalization engine | #__ |
-| E4 | Temperature-based interpretation selection + clarify-vs-guess | #__ |
-| E5 | Public-knowledge source cache with provenance | #__ |
-| E6 | Translation via link-native meanings | #__ |
-| E7 | Code generation & cross-language translation | #__ |
-| E8 | Formal reasoning engine (relative-meta-logic / SMT) | #__ |
-| E9 | Chat-over-experience queries | #__ |
-| E10 | Links-network invariants & dynamic type system | #__ |
-| E11 | Agent mode with isolated execution | #__ |
-| E12 | Authenticated API + tool-call gating | #__ |
-| E13 | Network visualization + trace links on every surface | #__ |
-| E14 | Natural-language skill compilation | #__ |
+| E1 | Unified doublet-links store (doublets-rs + doublets-web) | [#246](https://github.com/link-assistant/formal-ai/issues/246) |
+| E2 | Make the universal reasoning loop the only entry path | [#247](https://github.com/link-assistant/formal-ai/issues/247) |
+| E3 | Full Wikidata P/Q-id formalization engine | [#248](https://github.com/link-assistant/formal-ai/issues/248) |
+| E4 | Temperature-based interpretation selection + clarify-vs-guess | [#249](https://github.com/link-assistant/formal-ai/issues/249) |
+| E5 | Public-knowledge source cache with provenance | [#250](https://github.com/link-assistant/formal-ai/issues/250) |
+| E6 | Translation via link-native meanings | [#251](https://github.com/link-assistant/formal-ai/issues/251) |
+| E7 | Code generation & cross-language translation | [#252](https://github.com/link-assistant/formal-ai/issues/252) |
+| E8 | Formal reasoning engine (relative-meta-logic / SMT) | [#253](https://github.com/link-assistant/formal-ai/issues/253) |
+| E9 | Chat-over-experience queries | [#254](https://github.com/link-assistant/formal-ai/issues/254) |
+| E10 | Links-network invariants & dynamic type system | [#255](https://github.com/link-assistant/formal-ai/issues/255) |
+| E11 | Agent mode with isolated execution | [#256](https://github.com/link-assistant/formal-ai/issues/256) |
+| E12 | Authenticated API + tool-call gating | [#257](https://github.com/link-assistant/formal-ai/issues/257) |
+| E13 | Network visualization + trace links on every surface | [#258](https://github.com/link-assistant/formal-ai/issues/258) |
+| E14 | Natural-language skill compilation | [#259](https://github.com/link-assistant/formal-ai/issues/259) |
 
-> Issue numbers are filled in once the planning issues are opened (see
-> `docs/case-studies/issue-244/proposed-issues.md` for the full body of each).
+> See `docs/case-studies/issue-244/proposed-issues.md` for the full body of each
+> planning issue.

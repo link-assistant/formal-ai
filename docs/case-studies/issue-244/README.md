@@ -205,25 +205,26 @@ Reused or referenced (details and citations in `online-research.md`):
 
 ## Created Planning Issues
 
-> Filled in after the issues are created. See `proposed-issues.md` for the full
-> body of each.
+The 14 epics below were opened against this repository on 2026-05-25. See
+`proposed-issues.md` for the full body of each and `ROADMAP.md` §5 for the
+titles and dependency order.
 
 | Epic | Issue |
 | --- | --- |
-| E1 | #__ |
-| E2 | #__ |
-| E3 | #__ |
-| E4 | #__ |
-| E5 | #__ |
-| E6 | #__ |
-| E7 | #__ |
-| E8 | #__ |
-| E9 | #__ |
-| E10 | #__ |
-| E11 | #__ |
-| E12 | #__ |
-| E13 | #__ |
-| E14 | #__ |
+| E1 | [#246](https://github.com/link-assistant/formal-ai/issues/246) |
+| E2 | [#247](https://github.com/link-assistant/formal-ai/issues/247) |
+| E3 | [#248](https://github.com/link-assistant/formal-ai/issues/248) |
+| E4 | [#249](https://github.com/link-assistant/formal-ai/issues/249) |
+| E5 | [#250](https://github.com/link-assistant/formal-ai/issues/250) |
+| E6 | [#251](https://github.com/link-assistant/formal-ai/issues/251) |
+| E7 | [#252](https://github.com/link-assistant/formal-ai/issues/252) |
+| E8 | [#253](https://github.com/link-assistant/formal-ai/issues/253) |
+| E9 | [#254](https://github.com/link-assistant/formal-ai/issues/254) |
+| E10 | [#255](https://github.com/link-assistant/formal-ai/issues/255) |
+| E11 | [#256](https://github.com/link-assistant/formal-ai/issues/256) |
+| E12 | [#257](https://github.com/link-assistant/formal-ai/issues/257) |
+| E13 | [#258](https://github.com/link-assistant/formal-ai/issues/258) |
+| E14 | [#259](https://github.com/link-assistant/formal-ai/issues/259) |
 
 ## Verification
 
