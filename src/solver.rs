@@ -528,6 +528,12 @@ impl UniversalSolver {
         record_candidates(&mut log, prompt, &intent);
 
         let validation_choice = record_validation(&mut log, prompt);
+        if validation_choice.is_none() && log.first_of("validation").is_none() {
+            log.append(
+                "validation",
+                "accepted_without_extra_constraints".to_owned(),
+            );
+        }
 
         let answer = match (&validation_choice, &rule) {
             (Some(choice), SelectedRule::Unknown) => choice.answer.clone(),

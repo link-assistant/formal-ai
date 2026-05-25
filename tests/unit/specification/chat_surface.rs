@@ -462,7 +462,6 @@ fn diagnostics_are_excluded_from_default_user_facing_answers() {
 }
 
 #[test]
-#[ignore = "tracked requirement: assistant should record the user message as an `impulse` link before answering"]
 fn user_messages_are_recorded_as_impulse_events() {
     let response = answer("Hello there");
     assert!(
@@ -475,7 +474,6 @@ fn user_messages_are_recorded_as_impulse_events() {
 }
 
 #[test]
-#[ignore = "tracked requirement: chat answers should expose a trace link the user can follow"]
 fn every_answer_exposes_a_trace_link_for_inspection() {
     let response = answer("Hi");
     assert!(
@@ -488,7 +486,6 @@ fn every_answer_exposes_a_trace_link_for_inspection() {
 }
 
 #[test]
-#[ignore = "tracked requirement: unknown intents should propose a follow-up that creates a Links Notation seed"]
 fn unknown_intent_offers_a_path_to_extend_the_network() {
     let response = answer("Some unseen request");
     assert_eq!(response.intent, "unknown");
@@ -623,6 +620,40 @@ fn unknown_answer_mentions_report_issue_in_russian() {
         "Russian unknown answer must surface Report issue path; got: {}",
         response.answer
     );
+}
+
+#[test]
+fn unknown_answer_explains_seed_extension_for_supported_languages() {
+    let cases = [
+        (
+            "English",
+            "en",
+            "This synthetic zzz123 request has no rule.",
+            "add a fact",
+        ),
+        (
+            "Russian",
+            "ru",
+            "Какая у тебя модель личности?",
+            "добавили факт или правило",
+        ),
+        ("Hindi", "hi", "अदृश्य zzz123 अनुरोध", "fact या rule"),
+        ("Chinese", "zh", "未知 zzz123 请求", "添加事实或规则"),
+    ];
+
+    for (label, language, prompt, expected_extension_text) in cases {
+        let response = answer(prompt);
+        assert_eq!(
+            response.intent, "unknown",
+            "{label} prompt should stay unknown"
+        );
+        assert!(
+            response.answer.contains(expected_extension_text)
+                && response.answer.contains("Links Notation"),
+            "{label} (language: {language}) unknown answer must explain seed extension, got: {}",
+            response.answer
+        );
+    }
 }
 
 #[test]
