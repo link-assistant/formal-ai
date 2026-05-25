@@ -462,7 +462,6 @@ fn diagnostics_are_excluded_from_default_user_facing_answers() {
 }
 
 #[test]
-#[ignore = "tracked requirement: assistant should record the user message as an `impulse` link before answering"]
 fn user_messages_are_recorded_as_impulse_events() {
     let response = answer("Hello there");
     assert!(
@@ -475,7 +474,6 @@ fn user_messages_are_recorded_as_impulse_events() {
 }
 
 #[test]
-#[ignore = "tracked requirement: chat answers should expose a trace link the user can follow"]
 fn every_answer_exposes_a_trace_link_for_inspection() {
     let response = answer("Hi");
     assert!(
@@ -488,7 +486,6 @@ fn every_answer_exposes_a_trace_link_for_inspection() {
 }
 
 #[test]
-#[ignore = "tracked requirement: unknown intents should propose a follow-up that creates a Links Notation seed"]
 fn unknown_intent_offers_a_path_to_extend_the_network() {
     let response = answer("Some unseen request");
     assert_eq!(response.intent, "unknown");
