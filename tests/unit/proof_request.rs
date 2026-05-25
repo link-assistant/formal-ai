@@ -99,6 +99,73 @@ fn arithmetic_disproof_reports_counterexample() {
 }
 
 #[test]
+fn decision_procedure_proves_tautology_outside_theorem_registry() {
+    let response = FormalAiEngine.answer("Prove that p or not p");
+    assert_eq!(response.intent, "proof_request");
+    assert!(
+        response.answer.contains("decision procedure") || response.answer.contains("truth table"),
+        "tautology should be discharged by the delegated decision procedure, got: {}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains("p = false") && response.answer.contains("p = true"),
+        "truth-table trace should enumerate the boolean cases, got: {}",
+        response.answer
+    );
+    assert!(response.answer.contains("∎"));
+}
+
+#[test]
+fn decision_procedure_proves_symbolic_linear_identity() {
+    let response = FormalAiEngine.answer("Prove that 2 * (x + 3) = 2 * x + 6");
+    assert_eq!(response.intent, "proof_request");
+    assert!(
+        response.answer.contains("linear real arithmetic")
+            || response.answer.contains("affine normal form"),
+        "symbolic linear identity should be proved by normalization, got: {}",
+        response.answer
+    );
+    assert!(response.answer.contains('0'));
+    assert!(response.answer.contains("∎"));
+}
+
+#[test]
+fn decision_procedure_proves_linear_constraint_entailment() {
+    let response = FormalAiEngine.answer("Prove that if x > 3 and x < 5 then x > 2");
+    assert_eq!(response.intent, "proof_request");
+    assert!(
+        response.answer.contains("linear real arithmetic")
+            || response.answer.contains("SMT")
+            || response.answer.contains("decision procedure"),
+        "linear constraint entailment should be delegated to the decision procedure, got: {}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains("x > 2"),
+        "proof should restate the entailed constraint, got: {}",
+        response.answer
+    );
+    assert!(response.answer.contains("∎"));
+}
+
+#[test]
+fn decision_procedure_disproves_linear_constraint_entailment() {
+    let response = FormalAiEngine.answer("Prove that if x > 3 and x < 5 then x > 4");
+    assert_eq!(response.intent, "proof_request");
+    assert!(
+        response.answer.to_lowercase().contains("counterexample")
+            || response.answer.to_lowercase().contains("disproof"),
+        "non-entailed linear constraint should return a counterexample, got: {}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains("x = 4"),
+        "counterexample should include x = 4, got: {}",
+        response.answer
+    );
+}
+
+#[test]
 fn pythagorean_request_contains_textbook_proof() {
     let response = FormalAiEngine.answer("Can you prove the Pythagorean theorem?");
     assert_eq!(response.intent, "proof_request");
