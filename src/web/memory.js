@@ -1,11 +1,12 @@
 // Append-only Links Notation event log for the demo.
 //
 // The browser demo records every user/assistant turn as an Event in an
-// IndexedDB object store. The store is treated as append-only: writes can only
-// add new records, and the public API does not expose a "forget" operation.
-// Users can export the full log as Links Notation text and import a previous
-// log into a new browser session — Links Notation is the portable format
-// shared with the Rust solver and the seed data under `data/`.
+// IndexedDB object store. Normal writes are append-only; irreversible cleanup
+// is exposed only through explicit purge/reset helpers that the UI guards with
+// export prompts and confirmations. Users can export the full log as Links
+// Notation text and import a previous log into a new browser session — Links
+// Notation is the portable format shared with the Rust solver and the seed data
+// under `data/`.
 //
 // Storage layout:
 //
@@ -315,6 +316,89 @@
     });
   }
 
+  function deleteWhere(predicate) {
+    if (typeof predicate !== "function") return Promise.resolve(0);
+    return withStore("readwrite", function (store, setResult) {
+      var removed = 0;
+      var request = store.openCursor();
+      request.onsuccess = function () {
+        var cursor = request.result;
+        if (!cursor) {
+          setResult(removed);
+          return;
+        }
+        var value = cursor.value || {};
+        if (!predicate(value)) {
+          cursor.continue();
+          return;
+        }
+        var deleteRequest = cursor.delete();
+        deleteRequest.onsuccess = function () {
+          removed += 1;
+          cursor.continue();
+        };
+        deleteRequest.onerror = function () {
+          cursor.continue();
+        };
+      };
+      request.onerror = function () {
+        setResult(removed);
+      };
+    }).then(function (value) {
+      return typeof value === "number" ? value : 0;
+    });
+  }
+
+  function deleteEventsByConversationId(conversationId) {
+    var id = String(conversationId || "");
+    if (!id) return Promise.resolve(0);
+    return deleteWhere(function (event) {
+      return event && event.conversationId === id;
+    });
+  }
+
+  function purgeDeletedConversations() {
+    return listEvents().then(function (events) {
+      var deletedIds = {};
+      events.forEach(function (event) {
+        if (
+          event &&
+          event.kind === "conversation_deleted" &&
+          event.conversationId
+        ) {
+          deletedIds[event.conversationId] = true;
+        }
+      });
+      var ids = Object.keys(deletedIds);
+      if (ids.length === 0) return 0;
+      return deleteWhere(function (event) {
+        return event && event.conversationId && deletedIds[event.conversationId];
+      });
+    });
+  }
+
+  function clearEvents() {
+    return withStore("readwrite", function (store, setResult) {
+      var removed = 0;
+      var countRequest = store.count();
+      countRequest.onsuccess = function () {
+        removed = Number(countRequest.result) || 0;
+        var clearRequest = store.clear();
+        clearRequest.onsuccess = function () {
+          setResult(removed);
+        };
+        clearRequest.onerror = function () {
+          setResult(0);
+        };
+      };
+      countRequest.onerror = function () {
+        setResult(0);
+      };
+    }).then(function (value) {
+      return typeof value === "number" ? value : 0;
+    });
+  }
+
   function indentBlock(text, indent) {
     var prefix = indent || "  ";
     return String(text || "")
@@ -614,6 +698,9 @@
     appendEvent: appendEvent,
     listEvents: listEvents,
     importEvents: importEvents,
+    deleteEventsByConversationId: deleteEventsByConversationId,
+    purgeDeletedConversations: purgeDeletedConversations,
+    clearEvents: clearEvents,
     exportLinksNotation: exportLinksNotation,
     exportBundle: exportBundle,
     exportFullMemory: exportFullMemory,

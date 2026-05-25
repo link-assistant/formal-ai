@@ -203,10 +203,20 @@ Memory has three layers:
 
 ### 4.1 Local in-process event log
 
-Implemented today by `src/event_log.rs` and `src/memory.rs`. Every event is
+Implemented today by `src/event_log.rs` and `src/memory.rs`. Normal writes are
 content-addressed (FNV-1a 64-bit) and appended. The log is exposed through
 `SymbolicAnswer::evidence_links` (short, user-visible) and
 `SymbolicAnswer::links_notation` (full trace).
+
+Issue #196 adds explicit destructive maintenance paths on top of that normal
+append-only model. `MemoryStore::purge_deleted_conversations` physically
+removes events for conversations that already have a `conversation_deleted`
+marker, `MemoryStore::purge_conversation` removes one conversation by id, and
+`MemoryStore::reset` clears the dynamic event log. Browser IndexedDB mirrors
+the same split with selected cursor deletion and full object-store `clear()`.
+User-facing surfaces guard these operations with an export-first path and an
+irreversible confirmation, while the CLI requires `--confirm` and can write a
+full-bundle `--backup` before modifying the memory file.
 
 ### 4.2 Durable doublets-rs / doublets-web store
 
@@ -669,7 +679,8 @@ projection. The Links Notation trace is the canonical export form.
 `memory::export_full_memory` exports the full bundle (seed + events +
 preferences + environment metadata) as one `formal_ai_bundle` Links Notation
 file. `memory::import_full_memory` round-trips it back, including known
-migrations.
+migrations. Destructive memory maintenance commands reuse the same full-bundle
+format for backups before physical deletion or reset.
 
 ---
 

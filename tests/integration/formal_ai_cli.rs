@@ -294,6 +294,125 @@ fn cli_memory_export_import_show_round_trips_events() {
 }
 
 #[test]
+fn cli_memory_purge_deleted_requires_confirmation_and_can_backup() {
+    let dir = tmpdir();
+    let memory_path = dir.join("memory.lino");
+    let backup_path = dir.join("backup.lino");
+    std::fs::write(
+        &memory_path,
+        "demo_memory\n\
+         \x20\x20event \"1\"\n\
+         \x20\x20\x20\x20kind \"message\"\n\
+         \x20\x20\x20\x20role \"user\"\n\
+         \x20\x20\x20\x20content \"keep me\"\n\
+         \x20\x20\x20\x20conversationId \"conv-keep\"\n\
+         \x20\x20event \"2\"\n\
+         \x20\x20\x20\x20kind \"message\"\n\
+         \x20\x20\x20\x20role \"user\"\n\
+         \x20\x20\x20\x20content \"delete me\"\n\
+         \x20\x20\x20\x20conversationId \"conv-delete\"\n\
+         \x20\x20event \"3\"\n\
+         \x20\x20\x20\x20kind \"conversation_deleted\"\n\
+         \x20\x20\x20\x20role \"system\"\n\
+         \x20\x20\x20\x20content \"Conversation deleted: delete me\"\n\
+         \x20\x20\x20\x20conversationId \"conv-delete\"\n\
+         \x20\x20\x20\x20conversationTitle \"delete me\"\n",
+    )
+    .expect("seed memory");
+
+    let refused = Command::new(env!("CARGO_BIN_EXE_formal-ai"))
+        .args([
+            "memory",
+            "purge-deleted",
+            "--path",
+            memory_path.to_str().unwrap(),
+        ])
+        .output()
+        .expect("memory purge-deleted without confirmation");
+    assert!(!refused.status.success());
+    assert!(
+        String::from_utf8_lossy(&refused.stderr).contains("irreversible"),
+        "stderr: {}",
+        String::from_utf8_lossy(&refused.stderr)
+    );
+
+    let purge = Command::new(env!("CARGO_BIN_EXE_formal-ai"))
+        .args([
+            "memory",
+            "purge-deleted",
+            "--path",
+            memory_path.to_str().unwrap(),
+            "--backup",
+            backup_path.to_str().unwrap(),
+            "--confirm",
+        ])
+        .output()
+        .expect("memory purge-deleted");
+    assert!(
+        purge.status.success(),
+        "stderr: {}",
+        String::from_utf8_lossy(&purge.stderr)
+    );
+    let text = std::fs::read_to_string(&memory_path).expect("read purged");
+    assert!(text.contains("keep me"));
+    assert!(!text.contains("delete me"));
+    let backup = std::fs::read_to_string(&backup_path).expect("read backup");
+    assert!(backup.starts_with("formal_ai_bundle\n"));
+    assert!(backup.contains("delete me"));
+    let _ = std::fs::remove_dir_all(&dir);
+}
+
+#[test]
+fn cli_memory_reset_requires_confirmation_and_can_backup() {
+    let dir = tmpdir();
+    let memory_path = dir.join("memory.lino");
+    let backup_path = dir.join("reset-backup.lino");
+    std::fs::write(
+        &memory_path,
+        "demo_memory\n\
+         \x20\x20event \"1\"\n\
+         \x20\x20\x20\x20role \"user\"\n\
+         \x20\x20\x20\x20content \"start over\"\n",
+    )
+    .expect("seed memory");
+
+    let refused = Command::new(env!("CARGO_BIN_EXE_formal-ai"))
+        .args(["memory", "reset", "--path", memory_path.to_str().unwrap()])
+        .output()
+        .expect("memory reset without confirmation");
+    assert!(!refused.status.success());
+    assert!(
+        String::from_utf8_lossy(&refused.stderr).contains("irreversible"),
+        "stderr: {}",
+        String::from_utf8_lossy(&refused.stderr)
+    );
+
+    let reset = Command::new(env!("CARGO_BIN_EXE_formal-ai"))
+        .args([
+            "memory",
+            "reset",
+            "--path",
+            memory_path.to_str().unwrap(),
+            "--backup",
+            backup_path.to_str().unwrap(),
+            "--confirm",
+        ])
+        .output()
+        .expect("memory reset");
+    assert!(
+        reset.status.success(),
+        "stderr: {}",
+        String::from_utf8_lossy(&reset.stderr)
+    );
+    let text = std::fs::read_to_string(&memory_path).expect("read reset");
+    assert_eq!(text, "demo_memory\n");
+    let backup = std::fs::read_to_string(&backup_path).expect("read backup");
+    assert!(backup.starts_with("formal_ai_bundle\n"));
+    assert!(backup.contains("start over"));
+    let _ = std::fs::remove_dir_all(&dir);
+}
+
+#[test]
 fn cli_bundle_export_includes_seed_and_memory() {
     // R107: `bundle export` writes a `formal_ai_bundle` document the
     // browser can re-import. The exported file must list every seed file

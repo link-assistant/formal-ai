@@ -167,6 +167,44 @@ enum MemoryAction {
         )]
         path: PathBuf,
     },
+    /// Permanently remove every event attached to conversations that were
+    /// already soft-deleted in the browser conversation list. Irreversible:
+    /// pass `--confirm`, and use `--backup` to export a full bundle first.
+    PurgeDeleted {
+        #[arg(
+            long,
+            env = "FORMAL_AI_MEMORY_PATH",
+            default_value = "formal-ai-memory.lino"
+        )]
+        path: PathBuf,
+
+        /// Optional full-memory backup written before deletion.
+        #[arg(long)]
+        backup: Option<PathBuf>,
+
+        /// Required acknowledgement for this irreversible operation.
+        #[arg(long, default_value_t = false)]
+        confirm: bool,
+    },
+    /// Permanently clear the dynamic event log so the agent starts from the
+    /// built-in seed again. Irreversible: pass `--confirm`, and use
+    /// `--backup` to export a full bundle first.
+    Reset {
+        #[arg(
+            long,
+            env = "FORMAL_AI_MEMORY_PATH",
+            default_value = "formal-ai-memory.lino"
+        )]
+        path: PathBuf,
+
+        /// Optional full-memory backup written before deletion.
+        #[arg(long)]
+        backup: Option<PathBuf>,
+
+        /// Required acknowledgement for this irreversible operation.
+        #[arg(long, default_value_t = false)]
+        confirm: bool,
+    },
 }
 
 #[derive(Debug, Subcommand)]
@@ -510,6 +548,50 @@ fn run_memory(action: MemoryAction) -> Result<(), Box<dyn Error>> {
                 println!("{index:>3}. [{role}] {intent:<12} {stamp}  {content}");
             }
         }
+        MemoryAction::PurgeDeleted {
+            path,
+            backup,
+            confirm,
+        } => {
+            require_destructive_confirmation(confirm, "purge deleted conversations from memory")?;
+            let mut store = load_memory_or_empty(&path)?;
+            if let Some(backup_path) = backup.as_deref() {
+                write_full_memory_backup(backup_path, &store)?;
+            } else {
+                eprintln!(
+                    "Warning: no --backup path was provided; run `formal-ai memory export --from {} --path backup.lino` first if you need a copy.",
+                    path.display()
+                );
+            }
+            let removed = store.purge_deleted_conversations();
+            store.save_to_file(&path)?;
+            eprintln!(
+                "Permanently deleted {removed} event(s) from deleted conversation(s) in {}.",
+                path.display()
+            );
+        }
+        MemoryAction::Reset {
+            path,
+            backup,
+            confirm,
+        } => {
+            require_destructive_confirmation(confirm, "reset memory")?;
+            let mut store = load_memory_or_empty(&path)?;
+            if let Some(backup_path) = backup.as_deref() {
+                write_full_memory_backup(backup_path, &store)?;
+            } else {
+                eprintln!(
+                    "Warning: no --backup path was provided; run `formal-ai memory export --from {} --path backup.lino` first if you need a copy.",
+                    path.display()
+                );
+            }
+            let removed = store.reset();
+            store.save_to_file(&path)?;
+            eprintln!(
+                "Reset memory at {}; permanently deleted {removed} event(s).",
+                path.display()
+            );
+        }
     }
     Ok(())
 }
@@ -590,6 +672,40 @@ fn load_memory_or_empty(path: &std::path::Path) -> Result<MemoryStore, Box<dyn E
         return Ok(MemoryStore::new());
     }
     Ok(MemoryStore::load_from_file(path)?)
+}
+
+fn require_destructive_confirmation(confirm: bool, action: &str) -> Result<(), Box<dyn Error>> {
+    if confirm {
+        return Ok(());
+    }
+    Err(format!(
+        "Refusing to {action} because this operation is irreversible. Export memory first or pass --backup, then rerun with --confirm."
+    )
+    .into())
+}
+
+fn write_full_memory_backup(
+    path: &std::path::Path,
+    store: &MemoryStore,
+) -> Result<(), Box<dyn Error>> {
+    let seed = seed_files();
+    let info = BundleInfo {
+        version: agent_info().get("version").cloned(),
+        ..BundleInfo::default()
+    };
+    let text = export_memory_full(&seed, store.events(), &[], &info);
+    if let Some(parent) = path.parent() {
+        if !parent.as_os_str().is_empty() {
+            std::fs::create_dir_all(parent)?;
+        }
+    }
+    std::fs::write(path, text)?;
+    eprintln!(
+        "Wrote full-memory backup with {} event(s) to {}.",
+        store.len(),
+        path.display()
+    );
+    Ok(())
 }
 
 fn read_input(path: &std::path::Path) -> Result<String, Box<dyn Error>> {

@@ -66,6 +66,7 @@
 .ui-skin-contrast .composer-menu-item,
 .ui-skin-contrast .prompt-list button,
 .ui-skin-contrast .conversation-new,
+.ui-skin-contrast .conversation-purge-deleted,
 .ui-skin-contrast .conversation-entry-button,
 .ui-skin-contrast .conversation-delete,
 .ui-skin-contrast textarea,
@@ -749,6 +750,28 @@ body.is-resizing-context {
   width: 16px;
   height: 16px;
   accent-color: #175f4f;
+}
+
+.conversation-purge-deleted {
+  min-height: 34px;
+  padding: 7px 10px;
+  border: 1px solid #d8a2a2;
+  border-radius: 6px;
+  background: #fff7f7;
+  color: #8b2f2f;
+  font-size: 12px;
+  font-weight: 800;
+  text-align: left;
+}
+
+.conversation-purge-deleted:hover:not(:disabled) {
+  border-color: #8b2f2f;
+  background: #fff0f0;
+}
+
+.conversation-purge-deleted:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
 }
 
 .conversation-empty {
@@ -2198,6 +2221,7 @@ textarea:disabled {
 :root[data-theme="dark"] .composer-menu-item,
 :root[data-theme="dark"] .prompt-list button,
 :root[data-theme="dark"] .conversation-new,
+:root[data-theme="dark"] .conversation-purge-deleted,
 :root[data-theme="dark"] .conversation-entry-button,
 :root[data-theme="dark"] .conversation-delete,
 :root[data-theme="dark"] .fetch-iframe-control,
@@ -2219,6 +2243,7 @@ textarea:disabled {
 }
 
 :root[data-theme="dark"] .conversation-new:hover,
+:root[data-theme="dark"] .conversation-purge-deleted:hover:not(:disabled),
 :root[data-theme="dark"] .conversation-entry-button:hover,
 :root[data-theme="dark"] .conversation-delete:hover,
 :root[data-theme="dark"] .prompt-list button:hover,
@@ -2525,6 +2550,7 @@ textarea:disabled {
   :root:not([data-theme="light"]) .composer-menu-item,
   :root:not([data-theme="light"]) .prompt-list button,
   :root:not([data-theme="light"]) .conversation-new,
+  :root:not([data-theme="light"]) .conversation-purge-deleted,
   :root:not([data-theme="light"]) .conversation-entry-button,
   :root:not([data-theme="light"]) .conversation-delete,
   :root:not([data-theme="light"]) .fetch-iframe-control,
@@ -2539,6 +2565,7 @@ textarea:disabled {
   }
 
   :root:not([data-theme="light"]) .conversation-new:hover,
+  :root:not([data-theme="light"]) .conversation-purge-deleted:hover:not(:disabled),
   :root:not([data-theme="light"]) .conversation-entry-button:hover,
   :root:not([data-theme="light"]) .conversation-delete:hover,
   :root:not([data-theme="light"]) .prompt-list button:hover,

@@ -19,10 +19,12 @@
 //!     sentAt "2026-05-15T12:00:01.000Z"
 //! ```
 //!
-//! The store is **append-only by design**: there is no public delete, forget,
-//! or clear path. Older logs without the optional `kind`/`tool`/`inputs`/
-//! `outputs` fields still parse as plain user/assistant turns, so the format
-//! is forward-compatible.
+//! The store is append-only for normal writes. Destructive paths are explicit
+//! user-initiated maintenance operations: purge already-deleted conversations
+//! or reset the dynamic event log after the caller has handled confirmation /
+//! backup. Older logs without the optional `kind`/`tool`/`inputs`/`outputs`
+//! fields still parse as plain user/assistant turns, so the format is
+//! forward-compatible.
 //!
 //! Full-memory bundles (`formal_ai_bundle`) — seed files + UI preferences +
 //! environment metadata + the entire event log in a single document — live in
@@ -33,6 +35,7 @@
 //! dynamic memory log, and `VISION.md` (Single-File Reproducibility) for the
 //! reasoning behind the unified format.
 
+use std::collections::BTreeSet;
 use std::fs;
 use std::io;
 use std::path::Path;
@@ -64,6 +67,8 @@ pub struct MemoryEvent {
     pub content: Option<String>,
     pub sent_at: Option<String>,
     pub demo_label: Option<String>,
+    pub conversation_id: Option<String>,
+    pub conversation_title: Option<String>,
     pub evidence: Vec<String>,
 }
 
@@ -87,8 +92,8 @@ impl MemoryEvent {
     }
 }
 
-/// Append-only memory log. The struct deliberately exposes no removal
-/// operation; the only way to forget a record is to never append it.
+/// Memory log for dynamic events. Normal writes append records; explicit purge
+/// and reset methods exist for irreversible user-requested cleanup.
 #[derive(Debug, Default, Clone)]
 pub struct MemoryStore {
     events: Vec<MemoryEvent>,
@@ -117,6 +122,47 @@ impl MemoryStore {
         let initial = self.events.len();
         self.events.extend_from_slice(other);
         self.events.len() - initial
+    }
+
+    /// Permanently remove all events that belong to conversations already
+    /// marked with a `conversation_deleted` event.
+    pub fn purge_deleted_conversations(&mut self) -> usize {
+        let deleted_ids: BTreeSet<String> = self
+            .events
+            .iter()
+            .filter(|event| event.kind.as_deref() == Some("conversation_deleted"))
+            .filter_map(|event| event.conversation_id.as_deref())
+            .map(ToOwned::to_owned)
+            .collect();
+        if deleted_ids.is_empty() {
+            return 0;
+        }
+        let initial = self.events.len();
+        self.events.retain(|event| {
+            event
+                .conversation_id
+                .as_deref()
+                .map_or(true, |id| !deleted_ids.contains(id))
+        });
+        initial - self.events.len()
+    }
+
+    /// Permanently remove all events attributed to a single conversation id.
+    pub fn purge_conversation(&mut self, conversation_id: &str) -> usize {
+        if conversation_id.is_empty() {
+            return 0;
+        }
+        let initial = self.events.len();
+        self.events
+            .retain(|event| event.conversation_id.as_deref() != Some(conversation_id));
+        initial - self.events.len()
+    }
+
+    /// Clear every dynamic memory event while keeping the static seed intact.
+    pub fn reset(&mut self) -> usize {
+        let initial = self.events.len();
+        self.events.clear();
+        initial
     }
 
     #[must_use]
@@ -160,7 +206,7 @@ impl MemoryStore {
             return Ok(Self::new());
         }
         let text = fs::read_to_string(path)?;
-        Ok(Self::from_events(parse_links_notation(&text)))
+        Ok(Self::from_events(import_full_memory(&text).events))
     }
 
     /// Persist the full store back to a file on disk. Creates parent
@@ -191,7 +237,7 @@ pub(crate) fn format_event_into(event: &MemoryEvent, out: &mut String) {
     out.push_str("  event \"");
     out.push_str(&escape_value(&event.id));
     out.push_str("\"\n");
-    let pairs: [(&str, Option<&str>); 9] = [
+    let pairs: [(&str, Option<&str>); 11] = [
         ("kind", event.kind.as_deref()),
         ("role", event.role.as_deref()),
         ("intent", event.intent.as_deref()),
@@ -201,6 +247,8 @@ pub(crate) fn format_event_into(event: &MemoryEvent, out: &mut String) {
         ("content", event.content.as_deref()),
         ("sentAt", event.sent_at.as_deref()),
         ("demoLabel", event.demo_label.as_deref()),
+        ("conversationId", event.conversation_id.as_deref()),
+        ("conversationTitle", event.conversation_title.as_deref()),
     ];
     for (key, value) in pairs {
         let Some(value) = value else { continue };
@@ -280,6 +328,8 @@ pub fn parse_links_notation(text: &str) -> Vec<MemoryEvent> {
                 "content" => current.content = Some(value),
                 "sentAt" => current.sent_at = Some(value),
                 "demoLabel" => current.demo_label = Some(value),
+                "conversationId" => current.conversation_id = Some(value),
+                "conversationTitle" => current.conversation_title = Some(value),
                 "evidence" => {
                     current.evidence = value
                         .split('|')

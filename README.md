@@ -86,9 +86,20 @@ Every interface produces the same self-contained Links Notation document by defa
 cargo run -- memory export --from memory.lino --path full.lino           # default: full bundle
 cargo run -- memory export --from memory.lino --path events.lino --events-only  # legacy demo_memory
 cargo run -- memory import --path full.lino --into memory.lino           # accepts either format
+cargo run -- memory purge-deleted --path memory.lino --backup before-purge.lino --confirm
+cargo run -- memory reset --path memory.lino --backup before-reset.lino --confirm
 cargo run -- bundle export --path bundle.lino --memory memory.lino
 cargo run -- bundle import --path bundle.lino --into memory.lino
 ```
+
+Memory normally remains append-only: deleting a conversation first records a
+`conversation_deleted` event and hides the thread. The explicit
+`purge-deleted` maintenance action physically removes every event for those
+soft-deleted conversations, and `reset` clears the event log completely. Both
+browser actions show an export-first prompt and then an irreversible
+confirmation prompt. The CLI refuses both destructive commands unless
+`--confirm` is present, and `--backup` writes a full `formal_ai_bundle` before
+the memory file is changed.
 
 The Rust library re-exports the same helpers — `export_memory_full`, `import_memory_full`, `suggest_memory_migrations`, `BundleInfo`, `ParsedBundle` — so embedders writing their own surface get the same defaults. The prefilled **Report issue** link records the dialog as a single compact `U:`/`A:` code block and points to [`docs/upload-memory.md`](docs/upload-memory.md) for attaching the full memory export (GitHub Gist or `.zip` workflow, plus redaction reminders) instead of repeating those instructions inline.
 
