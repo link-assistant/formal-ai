@@ -32,6 +32,7 @@ mod capabilities;
 mod chat_surface;
 mod code_generation;
 mod definition_fusion;
+mod formalization;
 mod issue_146;
 mod links_network;
 mod multilingual;

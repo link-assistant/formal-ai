@@ -51,6 +51,7 @@
 use std::sync::OnceLock;
 
 pub mod cache;
+pub mod formalization;
 pub mod formatting;
 pub mod http;
 mod language_markers;
@@ -61,6 +62,10 @@ pub mod wikidata;
 pub mod wiktionary;
 
 pub use cache::CachedHttpClient;
+pub use formalization::{
+    formalize_prompt, FormalizationAnchor, FormalizationAnchorKind, FormalizationCandidate,
+    FormalizationRole, FormalizationSlot,
+};
 pub use formatting::match_source_formatting;
 pub use http::{CurlClient, HttpError};
 pub(crate) use language_markers::{detect_source_language, detect_target_language};

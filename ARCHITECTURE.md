@@ -336,11 +336,19 @@ Where a P/Q-id does not yet resolve, the formalizer falls back to a
 The formalizer is deliberately allowed to emit **multiple** interpretations
 per phrase. Selection happens in step 6.
 
-The current implementation implements alias-based formalization in
-`src/concepts.rs` (the `aliases` field on every concept record). The full
-P/Q-id pipeline is scheduled in `tests/unit/specification/multilingual.rs` under
-`russian_iir_evidence_includes_wikidata_anchor` (already active for the IIR
-case study); broader coverage is tracked as a requirement.
+The current implementation has two cooperating formalization layers:
+
+- `src/concepts.rs` handles seed concept lookup through explicit aliases and
+  context hints.
+- `src/translation/formalization.rs` handles arbitrary prompt fragments with
+  a deterministic multilingual label table, concept-seed Q-id reuse, scored
+  Wikidata P/Q anchors, and explicit Wikipedia/Wiktionary/raw fallbacks.
+
+`src/solver.rs` records the selected formalization as `formalization:*`
+events before local search, including typed links such as
+`formalization:predicate_p:wikidata:P31`,
+`formalization:subject_q:wikidata:Q89`, and
+`formalization_unresolved:<surface>` for later translation-gap handling.
 
 ---
 
@@ -384,7 +392,7 @@ The solver follows the universal loop documented in `VISION.md` (Section
 `src/solver.rs`:
 
 1. **Impulse** — `Event::Impulse` is appended.
-2. **Formalization** — alias resolution + (future) P/Q-id lookup.
+2. **Formalization** — alias resolution plus P/Q-id lookup with fallbacks.
 3. **Context and domain data** — language detection, surface, mode flags.
 4. **History lookup** — search local doublets first; record `cache_hit`
    on success.
@@ -763,17 +771,13 @@ adds one file (or extends one matrix) without touching the rest.
 These items are tracked as requirements today and as architecture
 references here:
 
-1. The full Wikidata P-ID / Q-ID formalization (Section 5) is partially
-   implemented in `src/concepts.rs` (aliases). Full extraction over arbitrary
-   prompts needs a wikidata cache, a multilingual labels table, and a
-   per-language morphology hint.
-2. The softmax temperature helper (Section 6) is not yet exposed; the knob
+1. The softmax temperature helper (Section 6) is not yet exposed; the knob
    lives on `SolverConfig` but the softmax + ε-comparison helper is the next
    slice of work.
-3. The doublets-rs backend (Section 4.2) is available behind
+2. The doublets-rs backend (Section 4.2) is available behind
    `doublets-native`; the remaining migration work is making it the default
    physical store for every non-browser surface.
-4. Natural-language-skill compilation (Section 9 #5) is documented but the
+3. Natural-language-skill compilation (Section 9 #5) is documented but the
    compiler is not implemented; today every skill is interpreted by the
    universal solver step by step.
 
