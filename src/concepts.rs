@@ -468,4 +468,19 @@ mod tests {
             assert_eq!(query.term, expected);
         }
     }
+
+    #[test]
+    fn supported_language_meaning_prompts_extract_dictionary_terms() {
+        for (language, prompt) in [
+            ("en", "what do flibbertigibbet mean?"),
+            ("ru", "что означает слово flibbertigibbet?"),
+            ("hi", "flibbertigibbet का अर्थ बताओ"),
+            ("zh", "flibbertigibbet是什么意思?"),
+        ] {
+            let query = extract_concept_query(prompt).unwrap_or_else(|| {
+                panic!("expected {language} meaning prompt to extract a concept query")
+            });
+            assert_eq!(query.term, "flibbertigibbet", "{language}");
+        }
+    }
 }

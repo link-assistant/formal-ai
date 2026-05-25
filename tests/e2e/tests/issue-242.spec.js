@@ -116,7 +116,7 @@ test.describe('Issue #242 dictionary lookup prompt recovery', () => {
     await expect(reply).not.toContainText(UNKNOWN_ANSWER_MARKER);
   });
 
-  test('supported-language definition prompts still reach dictionary fallback', async ({ page }) => {
+  test('supported-language meaning prompts still reach dictionary fallback', async ({ page }) => {
     await routeDictionaryFallback(page, {
       flibbertigibbet: {
         description: 'a flighty or excessively talkative person',
@@ -125,10 +125,10 @@ test.describe('Issue #242 dictionary lookup prompt recovery', () => {
     });
 
     for (const { language, prompt } of [
-      { language: 'en', prompt: 'what does flibbertigibbet mean?' },
-      { language: 'ru', prompt: 'что такое flibbertigibbet?' },
-      { language: 'hi', prompt: 'flibbertigibbet क्या है?' },
-      { language: 'zh', prompt: 'flibbertigibbet 是什么?' },
+      { language: 'en', prompt: 'what do flibbertigibbet mean?' },
+      { language: 'ru', prompt: 'что означает слово flibbertigibbet?' },
+      { language: 'hi', prompt: 'flibbertigibbet का अर्थ बताओ' },
+      { language: 'zh', prompt: 'flibbertigibbet是什么意思?' },
     ]) {
       const reply = await sendPrompt(page, prompt);
       await expect(reply, language).toContainText('flibbertigibbet');

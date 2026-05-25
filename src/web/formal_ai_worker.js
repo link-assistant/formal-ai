@@ -881,10 +881,13 @@ function lookupConcept(term) {
 // Default concept-lookup patterns when seed/prompt-patterns.lino is missing.
 // Sorted longest-first so "what is a " beats "what is " when both match.
 const DEFAULT_CONCEPT_SUFFIXES = [
+  " का अर्थ बताओ",
   " क्या होता है",
   " क्या है",
   " कौन हैं",
   " कौन है",
+  "的意思是什么",
+  "是什么意思",
   "是甚麼",
   "是什么",
   "是誰",
@@ -899,6 +902,7 @@ const DEFAULT_CONCEPT_PREFIXES = [
   "what's an ",
   "what's the ",
   "what's ",
+  "what do ",
   "what does ",
   "tell me about ",
   "tell me what ",
@@ -909,6 +913,7 @@ const DEFAULT_CONCEPT_PREFIXES = [
   "who was ",
   "что такое ",
   "что это ",
+  "что означает слово ",
   "кто такой ",
   "кто такая ",
   "кто это ",
