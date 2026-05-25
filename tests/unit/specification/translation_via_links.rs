@@ -670,7 +670,6 @@ fn issue_221_unquoted_common_noun_works_in_all_languages() {
 // ---------------------------------------------------------------------------
 
 #[test]
-#[ignore = "tracked requirement: translation between human languages should preserve the meaning link id"]
 fn translation_preserves_meaning_id_across_languages() {
     let english = answer("Translate 'Hello, how are you?' to Russian");
     let russian = answer("Переведи 'Hello, how are you?' на русский");
@@ -690,7 +689,6 @@ fn translation_preserves_meaning_id_across_languages() {
 }
 
 #[test]
-#[ignore = "tracked requirement: translation request must return the target-language surface form"]
 fn translation_request_returns_target_surface_form() {
     let response = answer("Translate 'Hello' to Russian");
     assert!(
@@ -701,7 +699,6 @@ fn translation_request_returns_target_surface_form() {
 }
 
 #[test]
-#[ignore = "tracked requirement: synonyms across languages should hash to the same meaning link"]
 fn synonyms_across_languages_share_meaning() {
     let a = answer("Define 'hello' as a Links Notation record");
     let b = answer("Опиши 'привет' как запись Links Notation");
@@ -720,7 +717,6 @@ fn synonyms_across_languages_share_meaning() {
 }
 
 #[test]
-#[ignore = "tracked requirement: translation must declare both source and target language tags"]
 fn translation_declares_source_and_target_language_tags() {
     let response = answer("Translate 'Hello' from English to Russian");
     assert!(response
@@ -734,7 +730,6 @@ fn translation_declares_source_and_target_language_tags() {
 }
 
 #[test]
-#[ignore = "tracked requirement: translation traces must include the intermediate Links Notation meaning record"]
 fn translation_trace_includes_intermediate_meaning() {
     let response = answer("Translate 'Hello' to Russian");
     assert!(
@@ -744,7 +739,6 @@ fn translation_trace_includes_intermediate_meaning() {
 }
 
 #[test]
-#[ignore = "tracked requirement: cross-language code translation must preserve runnable semantics"]
 fn cross_language_code_translation_preserves_semantics() {
     let response = answer("Translate `def add(a, b): return a + b` from Python to Rust");
     assert!(response.intent.starts_with("translate_"));
@@ -753,7 +747,6 @@ fn cross_language_code_translation_preserves_semantics() {
 }
 
 #[test]
-#[ignore = "tracked requirement: untranslatable concepts must be flagged rather than approximated silently"]
 fn untranslatable_concepts_are_flagged() {
     let response = answer("Translate 'тоска' to English in one word");
     assert!(

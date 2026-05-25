@@ -636,6 +636,7 @@ pub fn try_translation(
         |raw_target| {
             let translated_surface =
                 crate::translation::match_source_formatting(&raw_target, &surface);
+            log.append("surface", translated_surface.clone());
             if surface.is_empty() {
                 translated_surface
             } else {
