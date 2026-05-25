@@ -60,25 +60,53 @@ fn action_prompt_maps_translation_verb_to_wikidata_property() {
 }
 
 #[test]
-fn multilingual_prompt_maps_local_surface_to_same_language_independent_ids() {
-    let candidate = formalize_prompt("переведи яблоко на английский", "ru");
+fn supported_language_prompts_map_local_surfaces_to_same_language_independent_ids() {
+    struct Case {
+        language: &'static str,
+        prompt: &'static str,
+    }
 
-    assert_eq!(
-        candidate
-            .slot(FormalizationRole::Predicate)
-            .expect("predicate slot")
-            .anchor
-            .id,
-        "wikidata:P5972"
-    );
-    assert_eq!(
-        candidate
-            .slot(FormalizationRole::Object)
-            .expect("object slot")
-            .anchor
-            .id,
-        "wikidata:Q89"
-    );
+    let cases = [
+        Case {
+            language: "en",
+            prompt: "translate apple to Russian",
+        },
+        Case {
+            language: "ru",
+            prompt: "переведи яблоко на английский",
+        },
+        Case {
+            language: "hi",
+            prompt: "सेब का हिंदी में अनुवाद करो",
+        },
+        Case {
+            language: "zh",
+            prompt: "把 苹果 翻译成中文",
+        },
+    ];
+
+    for Case { language, prompt } in cases {
+        let candidate = formalize_prompt(prompt, language);
+
+        assert_eq!(
+            candidate
+                .slot(FormalizationRole::Predicate)
+                .expect("predicate slot")
+                .anchor
+                .id,
+            "wikidata:P5972",
+            "{language} prompt should map the translation verb to P5972",
+        );
+        assert_eq!(
+            candidate
+                .slot(FormalizationRole::Object)
+                .expect("object slot")
+                .anchor
+                .id,
+            "wikidata:Q89",
+            "{language} prompt should map the translated surface to Q89",
+        );
+    }
 }
 
 #[test]
