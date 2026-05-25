@@ -262,6 +262,11 @@ pub fn build_evidence_links(prompt: &str, log: &EventLog, response_link: &str) -
                 String::from("policy:cache_flush_requires_confirmation")
             }
             "policy:inappropriate_content" => String::from("policy:inappropriate_content"),
+            "policy:temperature_selection" => {
+                format!("policy:temperature_selection:{}", event.id)
+            }
+            "policy:guessed_under_ambiguity" => String::from("policy:guessed_under_ambiguity"),
+            "policy:clarify_under_ambiguity" => String::from("policy:clarify_under_ambiguity"),
             "error" => format!("error:{}", event.id),
             "filter:user" => format!("filter:user:{}", event.payload),
             "diagnostic_mode" => format!("diagnostic_mode:{}", event.payload),

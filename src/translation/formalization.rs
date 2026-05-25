@@ -345,14 +345,30 @@ const PROPERTY_PATTERNS: &[PredicatePattern] = &[
     },
 ];
 
-/// Formalize a natural-language prompt into a single scored meaning candidate.
+/// Formalize a natural-language prompt into the highest-scored meaning
+/// candidate.
+///
+/// Use [`formalize_prompt_candidates`] when the caller needs to inspect or
+/// select among competing interpretations.
+#[must_use]
+pub fn formalize_prompt(prompt: &str, language: &str) -> FormalizationCandidate {
+    formalize_prompt_candidates(prompt, language)
+        .into_iter()
+        .next()
+        .unwrap_or_else(|| {
+            let language = normalize_language(language);
+            build_candidate(prompt, &language, Vec::new())
+        })
+}
+
+/// Formalize a natural-language prompt into one or more scored candidates.
 ///
 /// The current engine is deliberately deterministic and offline-friendly. It
 /// first checks explicit concept-question/action/relation shapes, then tries a
-/// standalone surface as a last resort. Callers that need competing readings
-/// can rank multiple candidates on top of this structure later.
+/// standalone surface as a last resort. Ambiguous relation phrasing emits the
+/// plausible alternatives so the temperature selector can choose or ask.
 #[must_use]
-pub fn formalize_prompt(prompt: &str, language: &str) -> FormalizationCandidate {
+pub fn formalize_prompt_candidates(prompt: &str, language: &str) -> Vec<FormalizationCandidate> {
     let language = normalize_language(language);
     let mut slots = Vec::new();
 
@@ -366,7 +382,7 @@ pub fn formalize_prompt(prompt: &str, language: &str) -> FormalizationCandidate 
         if let Some(context) = query.context {
             push_item_slot(&mut slots, FormalizationRole::Object, &context, &language);
         }
-        return build_candidate(prompt, &language, slots);
+        return vec![build_candidate(prompt, &language, slots)];
     }
 
     if let Some(object) = parse_translation_object(prompt) {
@@ -377,33 +393,32 @@ pub fn formalize_prompt(prompt: &str, language: &str) -> FormalizationCandidate 
             anchor: property_anchor(predicate, predicate.label, "label:property", 980),
         });
         push_item_slot(&mut slots, FormalizationRole::Object, &object, &language);
-        return build_candidate(prompt, &language, slots);
+        return vec![build_candidate(prompt, &language, slots)];
     }
 
     if let Some(relation) = parse_binary_relation(prompt) {
-        push_item_slot(
-            &mut slots,
-            FormalizationRole::Subject,
+        let mut candidates = vec![build_relation_candidate(
+            prompt,
+            &language,
             &relation.subject,
-            &language,
-        );
-        slots.push(FormalizationSlot {
-            role: FormalizationRole::Predicate,
-            surface: relation.predicate_surface,
-            anchor: property_anchor(
-                relation.predicate,
-                relation.predicate.label,
-                "label:property",
-                970,
-            ),
-        });
-        push_item_slot(
-            &mut slots,
-            FormalizationRole::Object,
+            relation.predicate,
+            &relation.predicate_surface,
             &relation.object,
-            &language,
-        );
-        return build_candidate(prompt, &language, slots);
+            970,
+        )];
+        for (predicate, score) in ambiguous_relation_alternatives(&relation) {
+            candidates.push(build_relation_candidate(
+                prompt,
+                &language,
+                &relation.subject,
+                predicate,
+                predicate.label,
+                &relation.object,
+                score,
+            ));
+        }
+        sort_candidates(&mut candidates);
+        return candidates;
     }
 
     let standalone = clean_argument(prompt);
@@ -415,7 +430,61 @@ pub fn formalize_prompt(prompt: &str, language: &str) -> FormalizationCandidate 
             &language,
         );
     }
-    build_candidate(prompt, &language, slots)
+    vec![build_candidate(prompt, &language, slots)]
+}
+
+fn build_relation_candidate(
+    prompt: &str,
+    language: &str,
+    subject: &str,
+    predicate: PredicatePattern,
+    predicate_surface: &str,
+    object: &str,
+    predicate_score: u16,
+) -> FormalizationCandidate {
+    let mut slots = Vec::new();
+    push_item_slot(&mut slots, FormalizationRole::Subject, subject, language);
+    slots.push(FormalizationSlot {
+        role: FormalizationRole::Predicate,
+        surface: predicate_surface.to_owned(),
+        anchor: property_anchor(
+            predicate,
+            predicate.label,
+            "label:property",
+            predicate_score,
+        ),
+    });
+    push_item_slot(&mut slots, FormalizationRole::Object, object, language);
+    build_candidate(prompt, language, slots)
+}
+
+fn ambiguous_relation_alternatives(relation: &ParsedRelation) -> Vec<(PredicatePattern, u16)> {
+    let surface = normalize_lookup(&relation.predicate_surface);
+    if relation.predicate.id == "P31"
+        && matches!(surface.as_str(), "is a" | "is an" | "are a" | "are an")
+    {
+        if let Some(predicate) = property_pattern_by_id("P279") {
+            return vec![(predicate, 955)];
+        }
+    }
+    Vec::new()
+}
+
+fn property_pattern_by_id(id: &str) -> Option<PredicatePattern> {
+    PROPERTY_PATTERNS
+        .iter()
+        .find(|predicate| predicate.id == id)
+        .copied()
+}
+
+fn sort_candidates(candidates: &mut Vec<FormalizationCandidate>) {
+    candidates.sort_by(|left, right| {
+        right
+            .score
+            .cmp(&left.score)
+            .then_with(|| left.compact_summary().cmp(&right.compact_summary()))
+    });
+    candidates.dedup_by(|left, right| left.compact_summary() == right.compact_summary());
 }
 
 fn build_candidate(

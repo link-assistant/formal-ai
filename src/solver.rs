@@ -54,7 +54,9 @@ use crate::solver_helpers::{
     record_candidates, record_decomposition, record_validation, requires_external_lookup,
 };
 use crate::translation::{
-    formalize_prompt, FormalizationAnchorKind, FormalizationCandidate, FormalizationRole,
+    formalize_prompt_candidates, select_formalization_candidate, FormalizationAnchorKind,
+    FormalizationCandidate, FormalizationDecision, FormalizationRole, FormalizationSelection,
+    FormalizationSelectionConfig, FormalizationSelectionReason,
 };
 
 fn is_inappropriate_content(normalized: &str) -> bool {
@@ -492,6 +494,71 @@ fn record_formalization(log: &mut EventLog, candidate: &FormalizationCandidate) 
     }
 }
 
+fn record_formalization_selection(log: &mut EventLog, selection: &FormalizationSelection) {
+    for (index, candidate) in selection.candidates.iter().enumerate() {
+        let probability = selection.probabilities.get(index).copied().unwrap_or(0.0);
+        log.append(
+            "candidate",
+            format!(
+                "formalization:{index} score={} probability={probability:.6} {}",
+                candidate.score,
+                candidate.compact_summary()
+            ),
+        );
+    }
+
+    match &selection.decision {
+        FormalizationDecision::NoCandidate => {
+            log.append("policy:temperature_selection", "no_candidate".to_owned());
+        }
+        FormalizationDecision::Selected {
+            index,
+            probability,
+            margin,
+            epsilon,
+            reason,
+        } => {
+            log.append(
+                "policy:temperature_selection",
+                format!(
+                    "selected=formalization:{index} probability={probability:.6} \
+                     margin={margin:.6} epsilon={epsilon:.6} reason={}",
+                    selection_reason_slug(*reason)
+                ),
+            );
+            if *reason == FormalizationSelectionReason::GuessedUnderAmbiguity {
+                log.append(
+                    "policy:guessed_under_ambiguity",
+                    format!("selected=formalization:{index}"),
+                );
+            }
+        }
+        FormalizationDecision::Clarify {
+            top_index,
+            runner_up_index,
+            margin,
+            epsilon,
+            ..
+        } => {
+            log.append(
+                "policy:clarify_under_ambiguity",
+                format!(
+                    "top=formalization:{top_index} runner_up=formalization:{runner_up_index} \
+                     margin={margin:.6} epsilon={epsilon:.6}"
+                ),
+            );
+        }
+    }
+}
+
+const fn selection_reason_slug(reason: FormalizationSelectionReason) -> &'static str {
+    match reason {
+        FormalizationSelectionReason::OnlyCandidate => "only_candidate",
+        FormalizationSelectionReason::ClearlyBest => "clearly_best",
+        FormalizationSelectionReason::GuessedUnderAmbiguity => "guessed_under_ambiguity",
+    }
+}
+
 impl UniversalSolver {
     /// Construct a solver with an explicit configuration.
     #[must_use]
@@ -529,8 +596,30 @@ impl UniversalSolver {
         let language = detect_language(prompt);
         log.append("language", language.slug().to_owned());
 
-        let formalization = formalize_prompt(prompt, language.slug());
-        record_formalization(&mut log, &formalization);
+        let formalization_candidates = formalize_prompt_candidates(prompt, language.slug());
+        let formalization_selection = select_formalization_candidate(
+            &formalization_candidates,
+            FormalizationSelectionConfig {
+                temperature: self.config.temperature,
+                guess_probability: self.config.guess_probability,
+                questioning_rigor: self.config.questioning_rigor,
+            },
+            prompt,
+        );
+        record_formalization_selection(&mut log, &formalization_selection);
+        if let FormalizationDecision::Clarify { question, .. } = &formalization_selection.decision {
+            return finalize_simple(
+                prompt,
+                &mut log,
+                "clarify_interpretation",
+                "response:clarify_interpretation",
+                question,
+                0.5,
+            );
+        }
+        if let Some(candidate) = formalization_selection.selected_candidate() {
+            record_formalization(&mut log, candidate);
+        }
 
         log.append("search:local", prompt.to_owned());
 

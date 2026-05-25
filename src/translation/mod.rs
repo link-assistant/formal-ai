@@ -58,19 +58,24 @@ mod language_markers;
 pub mod meaning;
 pub mod pipeline;
 pub mod prompt;
+pub mod selection;
 pub mod wikidata;
 pub mod wiktionary;
 
 pub use cache::CachedHttpClient;
 pub use formalization::{
-    formalize_prompt, FormalizationAnchor, FormalizationAnchorKind, FormalizationCandidate,
-    FormalizationRole, FormalizationSlot,
+    formalize_prompt, formalize_prompt_candidates, FormalizationAnchor, FormalizationAnchorKind,
+    FormalizationCandidate, FormalizationRole, FormalizationSlot,
 };
 pub use formatting::match_source_formatting;
 pub use http::{CurlClient, HttpError};
 pub(crate) use language_markers::{detect_source_language, detect_target_language};
 pub use pipeline::{Translation, TranslationPipeline};
 pub use prompt::extract_unquoted_translation_surface;
+pub use selection::{
+    select_formalization_candidate, softmax_formalization_scores, FormalizationDecision,
+    FormalizationSelection, FormalizationSelectionConfig, FormalizationSelectionReason,
+};
 
 /// Process-wide cached HTTP client used by the default pipeline.
 ///

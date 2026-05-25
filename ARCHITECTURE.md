@@ -147,8 +147,8 @@ following Rust modules:
 | 1. Input | `src/engine.rs::FormalAiEngine::answer` and `solve_with_history` in `src/solver.rs` | Implemented |
 | 2. Translate to Links Notation | `event_log::Event::Impulse` in `src/event_log.rs` | Implemented |
 | 3. Record in memory | `MemoryStore::append` in `src/memory.rs` | Implemented |
-| 4. Formalization | `concepts::lookup_concept` in `src/concepts.rs` (today: aliases). Future: P/Q-ID extraction with wikidata cache | Partial (alias resolution today; P/Q-ID extraction tracked as a requirement) |
-| 5. Temperature interpretation selection | `SolverConfig::guess_probability` already lives in `src/solver.rs`; the scoring/softmax helper is the next implementation step | Knob present; softmax pending |
+| 4. Formalization | `src/concepts.rs` plus `src/translation/formalization.rs` for scored P/Q-id, Wikipedia, Wiktionary, and raw fallback anchors | Implemented |
+| 5. Temperature interpretation selection | `src/translation/selection.rs` plus `SolverConfig::{temperature, guess_probability, questioning_rigor}` in `src/solver.rs` | Implemented |
 | 6. Universal solver | `UniversalSolver` in `src/solver.rs` | Implemented |
 | 7. Append to memory | `event_log::EventLog`, `memory::export_full_memory` | Implemented |
 | 8. Render user-facing answer | `SymbolicAnswer` projection in `src/engine.rs` | Implemented |
@@ -362,26 +362,26 @@ network would use:
 P(c_i) = exp(score_i / T) / Σ exp(score_j / T)
 ```
 
-- `T → 0`  → deterministic; the highest-scored candidate always wins.
-- `T = 1`  → proportional to the raw scores.
-- `T → ∞`  → uniform; any candidate is equally likely.
+- `T = 0`  → deterministic; the highest-scored candidate always wins.
+- `T = 1`  → maximum configured exploration across the scored candidates.
 
-The temperature is sourced from `SolverConfig`. Today we expose a
-deterministic default; the softmax helper and a `solver_config.temperature`
-field are the next slice of implementation work.
+The temperature is sourced from `SolverConfig`. `src/translation/selection.rs`
+normalizes 0..1000 formalization scores to 0.0..1.0, applies a stable
+softmax, and uses a content-hash-seeded draw whenever the solver must guess
+under ambiguity. This keeps the same prompt + same config deterministic.
 
 If the top-two probabilities are within ε (configurable through
 `SolverConfig.questioning_rigor`), the solver:
 
-- if `guess_probability` is high, picks the higher-scored candidate and
-  records a `policy:guessed_under_ambiguity` event so the trace is
-  honest;
+- if the configuration permits guessing, samples from the softmax distribution
+  with the impulse hash as a seed and records a
+  `policy:guessed_under_ambiguity` event so the trace is honest;
 - otherwise, emits a clarifying-question intent (the smallest question that
   separates the candidates) and stops the pipeline until the user replies.
 
-The seeded-from-impulse-hash RNG (`src/solver.rs::Rng`) keeps the random
-guessing deterministic per prompt, so the same input + same config produces
-the same answer.
+The seeded-from-impulse-hash draw in `src/translation/selection.rs` keeps
+guessing deterministic per prompt, so the same input + same config produces the
+same answer.
 
 ---
 
@@ -654,15 +654,15 @@ session. The knobs:
 
 | Knob | Type | Default | Effect |
 | --- | --- | --- | --- |
-| `guess_probability` | f32 in `[0, 1]` | `0.5` | 0 = always ask a clarifying question, 1 = always guess. |
-| `context_sensitivity` | f32 in `[0, 1]` | `0.7` | how strongly recent messages bias formalization. |
-| `questioning_rigor` | f32 in `[0, 1]` | `0.5` | how strict the clarifying question is. |
-| `max_decomposition_depth` | usize | `6` | bound on recursive decomposition. |
+| `guess_probability` | f32 in `[0, 1]` | `0.8` | 0 = strongly prefer asking under ambiguity, 1 = always guess. |
+| `context_sensitivity` | f32 in `[0, 1]` | `0.6` | how strongly recent messages bias formalization. |
+| `questioning_rigor` | f32 in `[0, 1]` | `0.4` | how strict the clarifying question is. |
+| `max_decomposition_depth` | usize | `4` | bound on recursive decomposition. |
 | `agent_mode` | bool | `false` | unlock destructive / autonomous actions. |
 | `diagnostic_mode` | bool | `false` | include trace/intent/evidence chips in the answer prose. |
 | `offline` | bool | `false` | refuse external lookups (also `FORMAL_AI_OFFLINE`). |
 | `cache_ttl_seconds` | u64 | `5_184_000` | TTL for `source_cache` entries (≈ 60 days). |
-| `temperature` *(planned)* | f32 | `1.0` | softmax temperature for interpretation selection. |
+| `temperature` | f32 in `[0, 1]` | `0.7` | softmax temperature for interpretation selection. |
 
 The same prompt + same config produces the same answer. Random choices are
 seeded from the impulse content hash.
@@ -771,13 +771,10 @@ adds one file (or extends one matrix) without touching the rest.
 These items are tracked as requirements today and as architecture
 references here:
 
-1. The softmax temperature helper (Section 6) is not yet exposed; the knob
-   lives on `SolverConfig` but the softmax + ε-comparison helper is the next
-   slice of work.
-2. The doublets-rs backend (Section 4.2) is available behind
+1. The doublets-rs backend (Section 4.2) is available behind
    `doublets-native`; the remaining migration work is making it the default
    physical store for every non-browser surface.
-3. Natural-language-skill compilation (Section 9 #5) is documented but the
+2. Natural-language-skill compilation (Section 9 #5) is documented but the
    compiler is not implemented; today every skill is interpreted by the
    universal solver step by step.
 
