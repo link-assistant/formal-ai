@@ -1,0 +1,12 @@
+HTTP/2 200
+content-type: text/html; charset=utf-8
+date: Mon, 25 May 2026 14:28:36 GMT
+x-rid: 0deefd9e-922a-4229-a9bf-7d816090e0f5
+server: nginx
+cache-control: max-age=601
+vary: Accept-Encoding
+x-cache: Miss from cloudfront
+via: 1.1 f580bae666598e3f09a5ffd24b286bae.cloudfront.net (CloudFront)
+x-amz-cf-pop: AMS58-P1
+alt-svc: h3=":443"; ma=86400
+x-amz-cf-id: T3CYZdyLfl7AQ2eMaClDQ6WeJBCKt6X6JophXUvOxfBEMDCi8bNZzA==

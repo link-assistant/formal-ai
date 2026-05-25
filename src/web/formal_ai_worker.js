@@ -881,10 +881,13 @@ function lookupConcept(term) {
 // Default concept-lookup patterns when seed/prompt-patterns.lino is missing.
 // Sorted longest-first so "what is a " beats "what is " when both match.
 const DEFAULT_CONCEPT_SUFFIXES = [
+  " का अर्थ बताओ",
   " क्या होता है",
   " क्या है",
   " कौन हैं",
   " कौन है",
+  "的意思是什么",
+  "是什么意思",
   "是甚麼",
   "是什么",
   "是誰",
@@ -899,6 +902,7 @@ const DEFAULT_CONCEPT_PREFIXES = [
   "what's an ",
   "what's the ",
   "what's ",
+  "what do ",
   "what does ",
   "tell me about ",
   "tell me what ",
@@ -909,6 +913,7 @@ const DEFAULT_CONCEPT_PREFIXES = [
   "who was ",
   "что такое ",
   "что это ",
+  "что означает слово ",
   "кто такой ",
   "кто такая ",
   "кто это ",
@@ -1156,6 +1161,53 @@ function extractHowItWorksSubject(input, lowerInput) {
   return null;
 }
 
+function cleanMeaningCandidate(value) {
+  const cleaned = String(value || "")
+    .trim()
+    .replace(/^[«»"“”‘’'`]+|[«»"“”‘’'`]+$/gu, "")
+    .trim();
+  if (!cleaned) return null;
+  if (/^(?:it|that|this|word|the word|mean|means|meaning|i)$/iu.test(cleaned)) {
+    return null;
+  }
+  return cleaned;
+}
+
+function extractMeaningQuestionBody(original, lower) {
+  for (const prefix of [
+    "what is the meaning of ",
+    "what's the meaning of ",
+    "what is meaning of ",
+    "meaning of ",
+  ]) {
+    if (lower.startsWith(prefix)) {
+      return cleanMeaningCandidate(original.slice(prefix.length));
+    }
+  }
+
+  for (const suffix of [" mean", " means", " meaning"]) {
+    if (!lower.endsWith(suffix)) continue;
+    const stem = original.slice(0, -suffix.length).trim();
+    const stemLower = stem.toLowerCase();
+    for (const prefix of [
+      "what does the word ",
+      "what does ",
+      "what do ",
+      "what did ",
+      "what is the word ",
+      "what is ",
+      "what's ",
+      "what i ",
+    ]) {
+      if (stemLower.startsWith(prefix)) {
+        return cleanMeaningCandidate(stem.slice(prefix.length));
+      }
+    }
+  }
+
+  return null;
+}
+
 function extractConceptQuery(prompt) {
   let trimmedRaw = String(prompt || "")
     .trim()
@@ -1174,6 +1226,9 @@ function extractConceptQuery(prompt) {
   }
 
   const lower = trimmedRaw.toLowerCase();
+  const meaningBody = extractMeaningQuestionBody(trimmedRaw, lower);
+  if (meaningBody) return finalizeConceptBody(meaningBody);
+
   const invertedWhoBody = extractInvertedWhoIs(trimmedRaw, lower);
   if (invertedWhoBody) return finalizeConceptBody(invertedWhoBody);
 

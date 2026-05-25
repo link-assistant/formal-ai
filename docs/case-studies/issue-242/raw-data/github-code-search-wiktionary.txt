@@ -1,0 +1,4 @@
+link-assistant/meta-expression:docs/FORMALIZE.md: Pluggable resolvers for Wikidata, WordNet (Wiktionary opensearch), and Fandom wikis. `parseSourceSpec` accepts the human-readable spec used by the CLI / web UI.
+link-assistant/formal-ai:src/web_search_core.rs: label: "Wiktionary opensearch",
+link-assistant/meta-expression:scripts/generate-formalize-docs.mjs: 'Pluggable resolvers for Wikidata, WordNet (Wiktionary opensearch), and Fandom wikis. `parseSourceSpec` accepts the human-readable spec used by the CLI / web UI.',
+link-assistant/formal-ai:docs/case-studies/issue-180/README.md: - Wiktionary OpenSearch:

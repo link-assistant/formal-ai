@@ -1,0 +1,9 @@
+[2m[WebServer] [22m(node:198207) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 1 worker
+
+  ✓  1 [chromium] › tests/issue-242.spec.js:104:3 › Issue #242 dictionary lookup prompt recovery › malformed meaning question extracts the term and falls back to Wiktionary (607ms)
+  ✓  2 [chromium] › tests/issue-242.spec.js:119:3 › Issue #242 dictionary lookup prompt recovery › supported-language meaning prompts still reach dictionary fallback (1.0s)
+
+  2 passed (3.6s)

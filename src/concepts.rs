@@ -121,6 +121,10 @@ pub fn extract_concept_query(prompt: &str) -> Option<ConceptQuery> {
     }
 
     let lower = trimmed.to_lowercase();
+    if let Some(body) = strip_meaning_question_body(trimmed, &lower) {
+        return finalize_concept_query(body);
+    }
+
     if let Some(body) = strip_inverted_who_is(trimmed, &lower) {
         return finalize_concept_query(body);
     }
@@ -165,6 +169,61 @@ fn strip_inverted_who_is<'a>(input: &'a str, lower: &str) -> Option<&'a str> {
     let body_end = body_start + body_lower.len();
     let body = input[body_start..body_end].trim();
     if body.is_empty() || matches!(body.to_lowercase().as_str(), "is" | "was" | "are") {
+        return None;
+    }
+    Some(body)
+}
+
+fn strip_meaning_question_body<'a>(input: &'a str, lower: &str) -> Option<&'a str> {
+    for prefix in [
+        "what is the meaning of ",
+        "what's the meaning of ",
+        "what is meaning of ",
+        "meaning of ",
+    ] {
+        if lower.starts_with(prefix) {
+            return clean_meaning_candidate(&input[prefix.len()..]);
+        }
+    }
+
+    for suffix in [" mean", " means", " meaning"] {
+        if !lower.ends_with(suffix) {
+            continue;
+        }
+        let stem = input[..input.len() - suffix.len()].trim();
+        let stem_lower = stem.to_lowercase();
+        for prefix in [
+            "what does the word ",
+            "what does ",
+            "what do ",
+            "what did ",
+            "what is the word ",
+            "what is ",
+            "what's ",
+            "what i ",
+        ] {
+            if stem_lower.starts_with(prefix) {
+                return clean_meaning_candidate(&stem[prefix.len()..]);
+            }
+        }
+    }
+
+    None
+}
+
+fn clean_meaning_candidate(value: &str) -> Option<&str> {
+    let body = value
+        .trim()
+        .trim_matches(['"', '\'', '`', '“', '”', '‘', '’'])
+        .trim();
+    if body.is_empty() {
+        return None;
+    }
+    let lower = body.to_lowercase();
+    if matches!(
+        lower.as_str(),
+        "it" | "that" | "this" | "word" | "the word" | "mean" | "means" | "meaning" | "i"
+    ) {
         return None;
     }
     Some(body)
@@ -381,4 +440,47 @@ fn normalize_concept_term(value: &str) -> String {
         .trim_end_matches(['?', '.', '!', ',', ';', ':'])
         .trim()
         .to_owned()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn issue_242_definition_prompt_typo_extracts_dictionary_term() {
+        let query = extract_concept_query("what i digress mean?")
+            .expect("definition typo should still route to concept lookup");
+        assert_eq!(query.term, "digress");
+        assert_eq!(query.context, None);
+    }
+
+    #[test]
+    fn meaning_question_variants_extract_dictionary_terms() {
+        for (prompt, expected) in [
+            ("what does digress mean?", "digress"),
+            ("what do digress mean?", "digress"),
+            ("what is digress meaning?", "digress"),
+            ("what is the meaning of digress?", "digress"),
+            ("what does the word \"digress\" mean?", "digress"),
+        ] {
+            let query = extract_concept_query(prompt)
+                .unwrap_or_else(|| panic!("expected concept query for `{prompt}`"));
+            assert_eq!(query.term, expected);
+        }
+    }
+
+    #[test]
+    fn supported_language_meaning_prompts_extract_dictionary_terms() {
+        for (language, prompt) in [
+            ("en", "what do flibbertigibbet mean?"),
+            ("ru", "что означает слово flibbertigibbet?"),
+            ("hi", "flibbertigibbet का अर्थ बताओ"),
+            ("zh", "flibbertigibbet是什么意思?"),
+        ] {
+            let query = extract_concept_query(prompt).unwrap_or_else(|| {
+                panic!("expected {language} meaning prompt to extract a concept query")
+            });
+            assert_eq!(query.term, "flibbertigibbet", "{language}");
+        }
+    }
 }

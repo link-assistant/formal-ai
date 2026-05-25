@@ -1,0 +1,91 @@
+   Compiling proc-macro2 v1.0.103
+   Compiling unicode-ident v1.0.22
+   Compiling quote v1.0.42
+   Compiling wasm-bindgen-shared v0.2.121
+   Compiling serde_core v1.0.228
+   Compiling rustversion v1.0.22
+   Compiling autocfg v1.5.0
+   Compiling bumpalo v3.20.2
+   Compiling serde v1.0.228
+   Compiling num-traits v0.2.19
+   Compiling memchr v2.8.0
+   Compiling once_cell v1.21.4
+   Compiling cfg-if v1.0.4
+   Compiling futures-task v0.3.32
+   Compiling wasm-bindgen v0.2.121
+   Compiling syn v2.0.111
+   Compiling pin-project-lite v0.2.17
+   Compiling futures-core v0.3.32
+   Compiling slab v0.4.12
+   Compiling utf8parse v0.2.2
+   Compiling anstyle v1.0.14
+   Compiling futures-util v0.3.32
+   Compiling anstyle-parse v0.2.7
+   Compiling thiserror v1.0.69
+   Compiling anstyle-query v1.1.5
+   Compiling zmij v1.0.21
+   Compiling is_terminal_polyfill v1.70.2
+   Compiling colorchoice v1.0.5
+   Compiling anstream v0.6.21
+   Compiling num-integer v0.1.46
+   Compiling aho-corasick v1.1.4
+   Compiling strsim v0.11.1
+   Compiling heck v0.5.0
+   Compiling regex-syntax v0.8.10
+   Compiling rust_decimal v1.42.0
+   Compiling clap_lex v1.1.0
+   Compiling dtor-proc-macro v0.0.5
+   Compiling serde_json v1.0.149
+   Compiling clap_builder v4.5.60
+   Compiling dtor v0.0.6
+   Compiling nom v8.0.0
+   Compiling itoa v1.0.18
+   Compiling iana-time-zone v0.1.65
+   Compiling ctor-proc-macro v0.0.6
+   Compiling regex-automata v0.4.14
+   Compiling wasm-bindgen-macro-support v0.2.121
+   Compiling arrayvec v0.7.6
+   Compiling ctor v0.4.3
+   Compiling serde_derive v1.0.228
+   Compiling thiserror-impl v1.0.69
+   Compiling clap_derive v4.5.55
+   Compiling regex v1.12.3
+   Compiling links-notation v0.13.0
+   Compiling base64 v0.22.1
+   Compiling wasm-bindgen-macro v0.2.121
+   Compiling lino-env v0.1.0
+   Compiling formal-ai v0.111.0 (/tmp/gh-issue-solver-1779721723263)
+   Compiling lazy_static v1.5.0
+   Compiling dotenvy v0.15.7
+   Compiling lino-objects-codec v0.2.1
+   Compiling clap v4.5.60
+   Compiling same-file v1.0.6
+   Compiling walkdir v2.5.0
+   Compiling num-bigint v0.4.6
+   Compiling chrono v0.4.44
+   Compiling lino-arguments v0.3.0
+   Compiling js-sys v0.3.98
+   Compiling console_error_panic_hook v0.1.7
+   Compiling num-rational v0.4.2
+   Compiling web-sys v0.3.98
+   Compiling serde-wasm-bindgen v0.6.5
+   Compiling wasm-bindgen-futures v0.4.71
+   Compiling link-calculator v0.17.2
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 23.17s
+     Running unittests src/lib.rs (target/debug/deps/formal_ai-eecebe9438702178)
+
+running 1 test
+
+thread 'concepts::tests::supported_language_meaning_prompts_extract_dictionary_terms' (196366) panicked at src/concepts.rs:481:17:
+expected ru meaning prompt to extract a concept query
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test concepts::tests::supported_language_meaning_prompts_extract_dictionary_terms ... FAILED
+
+failures:
+
+failures:
+    concepts::tests::supported_language_meaning_prompts_extract_dictionary_terms
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 233 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `--lib`
