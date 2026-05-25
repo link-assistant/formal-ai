@@ -785,7 +785,8 @@ the table in Section 2 and link the new module.
 - `VISION.md` — values, product story, north-star user experience.
 - `GOALS.md` — what counts as success per surface.
 - `NON-GOALS.md` — what we explicitly do not build.
-- `REQUIREMENTS.md` — issue-by-issue implementation matrix (R1 … R149).
+- `REQUIREMENTS.md` — issue-by-issue implementation matrix (R1 … R236).
+- `ROADMAP.md` — implementation-progress tracker mapping each `VISION.md` pillar to its real code status, the tracked `#[ignore]` specification tests, and the planning epic that closes the gap.
 - [`link-foundation/doublets-rs`](https://github.com/link-foundation/doublets-rs) — long-term storage backend.
 - [`link-foundation/doublets-web`](https://github.com/link-foundation/doublets-web) — browser-side mirror.
 - [`link-assistant/calculator`](https://github.com/link-assistant/calculator) — delegated calculator engine (`link-calculator` crate).

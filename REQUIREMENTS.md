@@ -511,3 +511,24 @@ supported language, and a dedicated repository case study.
 | R228 | Destructive memory actions must require irreversible confirmation and provide a backup/export path first. | Browser purge/reset/permanent-delete actions first offer the existing full-memory export and then ask for irreversible confirmation. CLI purge/reset commands fail without `--confirm` and can write a full `formal_ai_bundle` through `--backup` before modifying the memory file. |
 | R229 | Reset and deletion UX must be localized for every supported language. | New labels, titles, confirmation prompts, statuses, and reset phrases are present for English, Russian, Hindi, and Chinese in `src/web/i18n-catalog.lino`; catalog and multilingual coverage scripts guard the keys and language matrix. |
 | R230 | Issue research, requirements, and solution planning must be preserved under `docs/case-studies/issue-196`. | Implemented with issue/PR snapshots, branch/CI snapshots, online research notes, requirement table, existing-component analysis, solution plan, and verification plan. |
+
+## Issue #244 Vision Implementation Planning
+
+Issue [#244](https://github.com/link-assistant/formal-ai/issues/244) is a
+meta-planning issue: before any new feature code, it requires the documentation
+to **fully track implementation progress** and stay **in sync with the actual
+state of the code**, and then for the GitHub issues that fully implement the
+vision to be created from a deep case study (with online research, every
+requirement listed, and a solution plan per requirement that checks existing
+components). The deliverables of this requirement are documentation and planning
+artifacts, not feature code; the feature work itself is tracked by the created
+planning issues (epics E1–E14).
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R231 | Documentation must fully track the implementation progress of every vision pillar and stay in sync with the actual code. | Implemented by adding `ROADMAP.md`, the implementation-progress tracker that maps each `VISION.md` pillar to its real `src/` status, the 69 `#[ignore]` tracked-requirement tests, and the planning epic that closes the gap. |
+| R232 | Stale documentation references must be reconciled with the real state of the code. | Implemented by correcting `ARCHITECTURE.md` §17 (the `REQUIREMENTS.md` matrix range now reads R1 … R236, matching the real count) and grounding every `ROADMAP.md`/case-study status in `docs/case-studies/issue-244/raw-data/code-audit.md`. |
+| R233 | Issue data must be collected under `docs/case-studies/issue-244` and supplemented with online research. | Implemented with `raw-data/` snapshots (issue/PR/comments/CI/all-issues JSON) and `raw-data/online-research.md` (Abstract Wikipedia/Wikifunctions, OpenCog AtomSpace/Hyperon, Lean/Z3, neuro-symbolic KG surveys), summarized and cited per `NON-GOALS.md`. |
+| R234 | A deep case study must list each and all requirements from the issue and propose a solution plan per requirement, checking existing components/libraries. | Implemented by `docs/case-studies/issue-244/README.md` (requirements Q1–Q16, vision→gap→plan, existing components) and `docs/case-studies/issue-244/proposed-issues.md` (full body and acceptance criteria of every epic). |
+| R235 | Critical problems that block the vision must be planned to be fixed first, on a solid foundation. | Implemented by marking E1 (unified doublet store) and E2 (universal loop as the only entry path) as blockers and sequencing them first in `ROADMAP.md` §4. |
+| R236 | All the issues needed to fully implement the vision must be created and recorded. | Implemented by opening the E1–E14 planning issues (each linked to #244, labeled `enhancement`) and recording their numbers in `ROADMAP.md` §5 and the case-study "Created Planning Issues" table. |
