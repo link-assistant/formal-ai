@@ -10,6 +10,7 @@ pub mod event_log;
 pub(crate) mod fuzzy;
 pub mod github_logs;
 pub mod language;
+pub mod link_store;
 pub mod memory;
 pub mod proof_engine;
 pub mod protocol;
@@ -38,6 +39,13 @@ pub use github_logs::{
     GithubLogCollectorConfig,
 };
 pub use language::{detect as detect_language, Language};
+#[cfg(feature = "doublets-native")]
+pub use link_store::DoubletsLinkStore;
+pub use link_store::{
+    memory_event_to_link_record, memory_events_to_link_records, selected_link_store_backend,
+    validate_memory_links_notation, DoubletLink, LinkRecord, LinkStore, LinkStoreBackend,
+    LinkStoreError,
+};
 pub use memory::{
     export_bundle as export_memory_bundle, export_full_memory as export_memory_full,
     export_links_notation as export_memory_links_notation, extract_memory_from_bundle,
