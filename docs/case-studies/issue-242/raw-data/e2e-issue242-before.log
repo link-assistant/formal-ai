@@ -1,0 +1,83 @@
+[2m[WebServer] [22m(node:122259) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+  ✘  1 [chromium] › tests/issue-242.spec.js:64:3 › Issue #242 dictionary lookup prompt recovery › malformed meaning question extracts the term and falls back to Wiktionary (5.6s)
+  ✘  2 [chromium] › tests/issue-242.spec.js:64:3 › Issue #242 dictionary lookup prompt recovery › malformed meaning question extracts the term and falls back to Wiktionary (retry #1) (5.8s)
+
+
+  1) [chromium] › tests/issue-242.spec.js:64:3 › Issue #242 dictionary lookup prompt recovery › malformed meaning question extracts the term and falls back to Wiktionary
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoContainText[2m([22m[32mexpected[39m[2m)[22m failed
+
+    Locator: locator('[data-testid="chat-message"]').last().locator('.markdown-body')
+    Timeout: 5000ms
+    [32m- Expected substring  - 1[39m
+    [31m+ Received string     + 2[39m
+
+    [32m- digress[39m
+    [31m+ I didn't understand you. I cannot answer that from local Links Notation rules yet. To inspect what I can do, send List behavior rules, then Show behavior rule unknown. To teach this dialog a response, send: When I say your prompt, answer your answer. To make it durable, export memory or use Report issue so developers can add the fact or rule to the seed.[39m
+    [31m+[39m
+
+    Call log:
+    [2m  - Expect "toContainText" with timeout 5000ms[22m
+    [2m  - waiting for locator('[data-testid="chat-message"]').last().locator('.markdown-body')[22m
+    [2m    14 × locator resolved to <div class="markdown-body">…</div>[22m
+    [2m       - unexpected value "I didn't understand you. I cannot answer that from local Links Notation rules yet. To inspect what I can do, send List behavior rules, then Show behavior rule unknown. To teach this dialog a response, send: When I say your prompt, answer your answer. To make it durable, export memory or use Report issue so developers can add the fact or rule to the seed.[22m
+    [2m"[22m
+
+
+      100 |
+      101 |     const reply = await sendPrompt(page, 'what i digress mean?');
+    > 102 |     await expect(reply).toContainText('digress');
+          |                         ^
+      103 |     await expect(reply).toContainText(/main subject|writing|speaking/i);
+      104 |     await expect(reply).toContainText('wiktionary.org');
+      105 |     await expect(reply).not.toContainText(UNKNOWN_ANSWER_MARKER);
+        at /tmp/gh-issue-solver-1779718358240/tests/e2e/tests/issue-242.spec.js:102:25
+
+    Error Context: test-results/issue-242-Issue-242-dictio-331ef-nd-falls-back-to-Wiktionary-chromium/error-context.md
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoContainText[2m([22m[32mexpected[39m[2m)[22m failed
+
+    Locator: locator('[data-testid="chat-message"]').last().locator('.markdown-body')
+    Timeout: 5000ms
+    [32m- Expected substring  - 1[39m
+    [31m+ Received string     + 2[39m
+
+    [32m- digress[39m
+    [31m+ I didn't understand you. I cannot answer that from local Links Notation rules yet. To inspect what I can do, send List behavior rules, then Show behavior rule unknown. To teach this dialog a response, send: When I say your prompt, answer your answer. To make it durable, export memory or use Report issue so developers can add the fact or rule to the seed.[39m
+    [31m+[39m
+
+    Call log:
+    [2m  - Expect "toContainText" with timeout 5000ms[22m
+    [2m  - waiting for locator('[data-testid="chat-message"]').last().locator('.markdown-body')[22m
+    [2m    14 × locator resolved to <div class="markdown-body">…</div>[22m
+    [2m       - unexpected value "I didn't understand you. I cannot answer that from local Links Notation rules yet. To inspect what I can do, send List behavior rules, then Show behavior rule unknown. To teach this dialog a response, send: When I say your prompt, answer your answer. To make it durable, export memory or use Report issue so developers can add the fact or rule to the seed.[22m
+    [2m"[22m
+
+
+      100 |
+      101 |     const reply = await sendPrompt(page, 'what i digress mean?');
+    > 102 |     await expect(reply).toContainText('digress');
+          |                         ^
+      103 |     await expect(reply).toContainText(/main subject|writing|speaking/i);
+      104 |     await expect(reply).toContainText('wiktionary.org');
+      105 |     await expect(reply).not.toContainText(UNKNOWN_ANSWER_MARKER);
+        at /tmp/gh-issue-solver-1779718358240/tests/e2e/tests/issue-242.spec.js:102:25
+
+    Error Context: test-results/issue-242-Issue-242-dictio-331ef-nd-falls-back-to-Wiktionary-chromium-retry1/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/issue-242-Issue-242-dictio-331ef-nd-falls-back-to-Wiktionary-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/issue-242-Issue-242-dictio-331ef-nd-falls-back-to-Wiktionary-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [chromium] › tests/issue-242.spec.js:64:3 › Issue #242 dictionary lookup prompt recovery › malformed meaning question extracts the term and falls back to Wiktionary

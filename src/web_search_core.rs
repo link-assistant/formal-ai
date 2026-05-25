@@ -173,6 +173,34 @@ pub const WEB_SEARCH_PROVIDER_REGISTRY: &[ProviderSpec] = &[
         default_for_category: false,
     },
     ProviderSpec {
+        id: "cambridge-dictionary",
+        label: "Cambridge Dictionary",
+        category: ProviderCategory::Knowledge,
+        cors_readable: false,
+        default_for_category: false,
+    },
+    ProviderSpec {
+        id: "merriam-webster",
+        label: "Merriam-Webster Dictionary",
+        category: ProviderCategory::Knowledge,
+        cors_readable: false,
+        default_for_category: false,
+    },
+    ProviderSpec {
+        id: "dictionary-com",
+        label: "Dictionary.com",
+        category: ProviderCategory::Knowledge,
+        cors_readable: false,
+        default_for_category: false,
+    },
+    ProviderSpec {
+        id: "collins-dictionary",
+        label: "Collins English Dictionary",
+        category: ProviderCategory::Knowledge,
+        cors_readable: false,
+        default_for_category: false,
+    },
+    ProviderSpec {
         id: "internet-archive",
         label: "Internet Archive (archive.org)",
         category: ProviderCategory::Knowledge,
@@ -728,6 +756,39 @@ mod tests {
             "internet-archive must stay CORS-readable so the demo browser can call it directly"
         );
         assert!(matches!(spec.category, ProviderCategory::Knowledge));
+    }
+
+    /// Issue #242: dictionary pages such as Cambridge Dictionary are useful
+    /// evidence sources, but they do not expose unauthenticated CORS-readable
+    /// JSON endpoints. Keep them in the registry for diagnostics/proxy checks
+    /// without adding them to the live browser default plan.
+    #[test]
+    fn dictionary_sources_are_non_cors_knowledge_providers() {
+        let plan = default_search_plan_ids();
+        for id in [
+            "cambridge-dictionary",
+            "merriam-webster",
+            "dictionary-com",
+            "collins-dictionary",
+        ] {
+            let spec = WEB_SEARCH_PROVIDER_REGISTRY
+                .iter()
+                .find(|spec| spec.id == id)
+                .unwrap_or_else(|| panic!("dictionary provider `{id}` missing from registry"));
+            assert!(matches!(spec.category, ProviderCategory::Knowledge));
+            assert!(
+                !spec.cors_readable,
+                "dictionary page provider `{id}` must stay proxy/diagnostics-only"
+            );
+            assert!(
+                !spec.default_for_category,
+                "dictionary page provider `{id}` must not replace the live CORS default"
+            );
+            assert!(
+                !plan.contains(&id.to_string()),
+                "dictionary page provider `{id}` must not enter the default CORS plan"
+            );
+        }
     }
 
     /// Issue #180: rendering depends on a stable RRF-tied score. Pin the

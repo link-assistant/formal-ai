@@ -26,10 +26,28 @@ test.describe('formal-ai connectivity diagnostics', () => {
       'brave-web',
       'wikipedia-api',
       'wikidata-api',
+      'wiktionary-api',
+      'cambridge-dictionary',
+      'merriam-webster-dictionary',
       'openlibrary-api',
       'openalex-api',
     ]) {
       await expect(page.locator(`[data-testid="service-${serviceId}"]`)).toBeVisible();
+    }
+  });
+
+  test('lists dictionary page sources for proxy-based connectivity checks', async ({ page }) => {
+    for (const serviceId of [
+      'cambridge-dictionary',
+      'merriam-webster-dictionary',
+      'dictionary-com',
+      'collins-dictionary',
+    ]) {
+      const row = page.locator(`[data-testid="service-${serviceId}"]`);
+      await expect(row).toBeVisible();
+      await expect(row.locator('[data-testid="api-status"]')).toContainText('No API');
+      await expect(row.locator('[data-testid="run-api-fetch"]')).toBeDisabled();
+      await expect(row.locator('.target-line').first()).toContainText(/digress/i);
     }
   });
 

@@ -1,0 +1,8 @@
+[2m[WebServer] [22m(node:125610) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+  ✓  1 [chromium] › tests/connectivity.spec.js:39:3 › formal-ai connectivity diagnostics › lists dictionary page sources for proxy-based connectivity checks (414ms)
+
+  1 passed (2.6s)

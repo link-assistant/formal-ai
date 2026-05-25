@@ -46,6 +46,46 @@ source_wikipedia
   license "external data; preserve attribution and license metadata"
   conversion "chunk pages into document, paragraph, sentence, and phrase links"
 
+source_wiktionary
+  title "Wiktionary entries"
+  kind "dictionary"
+  source_url "https://www.wiktionary.org/"
+  download "https://en.wiktionary.org/w/api.php?action=opensearch&search=digress&limit=3&format=json&origin=*"
+  license "external dictionary; preserve attribution and license metadata"
+  conversion "use CORS-readable opensearch summaries as live dictionary fallback records"
+
+source_cambridge_dictionary
+  title "Cambridge Dictionary"
+  kind "dictionary"
+  source_url "https://dictionary.cambridge.org/us/dictionary/english/digress"
+  download "connectivity dashboard page/proxy capture"
+  license "external dictionary; preserve attribution; do not vendor page text"
+  conversion "use as a dictionary reference source and connectivity target"
+
+source_merriam_webster_dictionary
+  title "Merriam-Webster Dictionary"
+  kind "dictionary"
+  source_url "https://www.merriam-webster.com/dictionary/digress"
+  download "connectivity dashboard page/proxy capture"
+  license "external dictionary; preserve attribution; do not vendor page text"
+  conversion "use as a dictionary reference source and connectivity target"
+
+source_dictionary_com
+  title "Dictionary.com"
+  kind "dictionary"
+  source_url "https://www.dictionary.com/browse/digress"
+  download "connectivity dashboard page/proxy capture"
+  license "external dictionary; preserve attribution; do not vendor page text"
+  conversion "use as a dictionary reference source and connectivity target"
+
+source_collins_dictionary
+  title "Collins English Dictionary"
+  kind "dictionary"
+  source_url "https://www.collinsdictionary.com/dictionary/english/digress"
+  download "connectivity dashboard page/proxy capture"
+  license "external dictionary; preserve attribution; do not vendor page text"
+  conversion "use as a dictionary reference source and connectivity target"
+
 source_rosetta_code
   title "Rosetta Code tasks"
   kind "code-corpus"

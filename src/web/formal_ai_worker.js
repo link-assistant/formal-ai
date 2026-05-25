@@ -1156,6 +1156,53 @@ function extractHowItWorksSubject(input, lowerInput) {
   return null;
 }
 
+function cleanMeaningCandidate(value) {
+  const cleaned = String(value || "")
+    .trim()
+    .replace(/^[«»"“”‘’'`]+|[«»"“”‘’'`]+$/gu, "")
+    .trim();
+  if (!cleaned) return null;
+  if (/^(?:it|that|this|word|the word|mean|means|meaning|i)$/iu.test(cleaned)) {
+    return null;
+  }
+  return cleaned;
+}
+
+function extractMeaningQuestionBody(original, lower) {
+  for (const prefix of [
+    "what is the meaning of ",
+    "what's the meaning of ",
+    "what is meaning of ",
+    "meaning of ",
+  ]) {
+    if (lower.startsWith(prefix)) {
+      return cleanMeaningCandidate(original.slice(prefix.length));
+    }
+  }
+
+  for (const suffix of [" mean", " means", " meaning"]) {
+    if (!lower.endsWith(suffix)) continue;
+    const stem = original.slice(0, -suffix.length).trim();
+    const stemLower = stem.toLowerCase();
+    for (const prefix of [
+      "what does the word ",
+      "what does ",
+      "what do ",
+      "what did ",
+      "what is the word ",
+      "what is ",
+      "what's ",
+      "what i ",
+    ]) {
+      if (stemLower.startsWith(prefix)) {
+        return cleanMeaningCandidate(stem.slice(prefix.length));
+      }
+    }
+  }
+
+  return null;
+}
+
 function extractConceptQuery(prompt) {
   let trimmedRaw = String(prompt || "")
     .trim()
@@ -1174,6 +1221,9 @@ function extractConceptQuery(prompt) {
   }
 
   const lower = trimmedRaw.toLowerCase();
+  const meaningBody = extractMeaningQuestionBody(trimmedRaw, lower);
+  if (meaningBody) return finalizeConceptBody(meaningBody);
+
   const invertedWhoBody = extractInvertedWhoIs(trimmedRaw, lower);
   if (invertedWhoBody) return finalizeConceptBody(invertedWhoBody);
 

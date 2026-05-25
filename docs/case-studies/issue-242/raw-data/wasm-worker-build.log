@@ -1,0 +1,37 @@
+warning: unused import: `ArithmeticError`
+  --> src/web/wasm-worker/src/../../../web_engine_core.rs:22:58
+   |
+22 | pub use super::arithmetic::{evaluate_fallback_formatted, ArithmeticError};
+   |                                                          ^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `slug` is never used
+  --> src/web/wasm-worker/src/../../../language.rs:21:18
+   |
+19 | impl Language {
+   | ------------- method in this implementation
+20 |     #[must_use]
+21 |     pub const fn slug(self) -> &'static str {
+   |                  ^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: variant `Calculator` is never constructed
+  --> src/web/wasm-worker/src/../../../arithmetic.rs:35:5
+   |
+29 | pub enum ArithmeticError {
+   |          --------------- variant in this enum
+...
+35 |     Calculator(String),
+   |     ^^^^^^^^^^
+   |
+   = note: `ArithmeticError` has derived impls for the traits `Clone` and `Debug`, but these are intentionally ignored during dead code analysis
+
+warning: function `tokenize_prompt` is never used
+  --> src/web/wasm-worker/src/../../../web_engine_core.rs:63:8
+   |
+63 | pub fn tokenize_prompt(prompt: &str) -> Vec<String> {
+   |        ^^^^^^^^^^^^^^^
+
+warning: 4 warnings emitted
