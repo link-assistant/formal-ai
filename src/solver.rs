@@ -53,6 +53,9 @@ use crate::solver_helpers::{
     is_destructive_action, is_forget_request, is_unbounded_autonomy, is_unbounded_loop,
     record_candidates, record_decomposition, record_validation, requires_external_lookup,
 };
+use crate::translation::{
+    formalize_prompt, FormalizationAnchorKind, FormalizationCandidate, FormalizationRole,
+};
 
 fn is_inappropriate_content(normalized: &str) -> bool {
     // Russian vulgar/obscene words (mat) — normalized lowercase Cyrillic.
@@ -457,6 +460,38 @@ const SPECIALIZED_HANDLERS: &[(&str, SpecializedHandler)] = &[
     ("incompatible_units", try_incompatible_units),
 ];
 
+fn record_formalization(log: &mut EventLog, candidate: &FormalizationCandidate) {
+    if candidate.slots.is_empty() {
+        return;
+    }
+    log.append("formalization", candidate.compact_summary());
+    for slot in &candidate.slots {
+        let kind = match (slot.role, slot.anchor.kind) {
+            (FormalizationRole::Subject, FormalizationAnchorKind::WikidataItem) => {
+                "formalization:subject_q"
+            }
+            (FormalizationRole::Predicate, FormalizationAnchorKind::WikidataProperty) => {
+                "formalization:predicate_p"
+            }
+            (FormalizationRole::Object, FormalizationAnchorKind::WikidataItem) => {
+                "formalization:object_q"
+            }
+            (_, FormalizationAnchorKind::WikidataItem) => "formalization:item_q",
+            (_, FormalizationAnchorKind::WikidataProperty) => "formalization:property_p",
+            (
+                _,
+                FormalizationAnchorKind::WikipediaArticle
+                | FormalizationAnchorKind::WiktionaryEntry,
+            ) => "formalization:fallback",
+            (_, FormalizationAnchorKind::RawText) => "formalization:raw",
+        };
+        log.append(kind, slot.anchor.id.clone());
+    }
+    for term in &candidate.unresolved_terms {
+        log.append("formalization_unresolved", term.clone());
+    }
+}
+
 impl UniversalSolver {
     /// Construct a solver with an explicit configuration.
     #[must_use]
@@ -493,6 +528,9 @@ impl UniversalSolver {
 
         let language = detect_language(prompt);
         log.append("language", language.slug().to_owned());
+
+        let formalization = formalize_prompt(prompt, language.slug());
+        record_formalization(&mut log, &formalization);
 
         log.append("search:local", prompt.to_owned());
 

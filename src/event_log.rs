@@ -132,6 +132,27 @@ pub fn build_evidence_links(prompt: &str, log: &EventLog, response_link: &str) -
             "meaning" => format!("meaning:{}", event.payload),
             "translation_gap" => format!("translation_gap:{}", event.payload),
             "wikidata" => format!("wikidata:{}", event.payload),
+            "formalization" => format!("formalization:{}", event.id),
+            "formalization:subject_q" => {
+                format!("formalization:subject_q:{}", event.payload)
+            }
+            "formalization:predicate_p" => {
+                format!("formalization:predicate_p:{}", event.payload)
+            }
+            "formalization:object_q" => {
+                format!("formalization:object_q:{}", event.payload)
+            }
+            "formalization:item_q" => format!("formalization:item_q:{}", event.payload),
+            "formalization:property_p" => {
+                format!("formalization:property_p:{}", event.payload)
+            }
+            "formalization:fallback" => {
+                format!("formalization:fallback:{}", event.payload)
+            }
+            "formalization:raw" => format!("formalization:raw:{}", event.payload),
+            "formalization_unresolved" => {
+                format!("formalization_unresolved:{}", event.payload)
+            }
             // Structured fact_query trace events (Issue #127): preserve the
             // payload verbatim so memory consumers can render the parsed
             // relation, subject, and cache decision (rather than a hash id).
