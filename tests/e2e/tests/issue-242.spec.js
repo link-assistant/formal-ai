@@ -53,6 +53,46 @@ async function sendPrompt(page, text) {
   return body;
 }
 
+async function routeDictionaryFallback(page, entriesByTerm) {
+  await page.route('**/api/rest_v1/page/summary/**', async (route) => {
+    await route.fulfill({
+      status: 404,
+      contentType: 'application/json',
+      body: JSON.stringify({ httpCode: 404, httpReason: 'Not Found' }),
+    });
+  });
+  await page.route('**/rest.php/v1/search/page**', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ pages: [] }),
+    });
+  });
+  await page.route('**://*.wikidata.org/w/api.php**', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ search: [] }),
+    });
+  });
+  await page.route('**://*.wiktionary.org/w/api.php**', async (route) => {
+    const url = new URL(route.request().url());
+    const term = url.searchParams.get('search') || '';
+    const entry = entriesByTerm[term];
+    expect(entry, `unexpected Wiktionary search term: ${term}`).toBeTruthy();
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify([
+        term,
+        [term],
+        [entry.description],
+        [entry.url],
+      ]),
+    });
+  });
+}
+
 test.describe('Issue #242 dictionary lookup prompt recovery', () => {
   test.beforeEach(async ({ page }) => {
     await disableGreetingVariations(page);
@@ -62,40 +102,11 @@ test.describe('Issue #242 dictionary lookup prompt recovery', () => {
   });
 
   test('malformed meaning question extracts the term and falls back to Wiktionary', async ({ page }) => {
-    await page.route('**/api/rest_v1/page/summary/**', async (route) => {
-      await route.fulfill({
-        status: 404,
-        contentType: 'application/json',
-        body: JSON.stringify({ httpCode: 404, httpReason: 'Not Found' }),
-      });
-    });
-    await page.route('**/rest.php/v1/search/page**', async (route) => {
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({ pages: [] }),
-      });
-    });
-    await page.route('**://*.wikidata.org/w/api.php**', async (route) => {
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({ search: [] }),
-      });
-    });
-    await page.route('**://*.wiktionary.org/w/api.php**', async (route) => {
-      const url = new URL(route.request().url());
-      expect(url.searchParams.get('search')).toBe('digress');
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify([
-          'digress',
-          ['digress'],
-          ['to turn aside, especially from the main subject in writing or speaking'],
-          ['https://en.wiktionary.org/wiki/digress'],
-        ]),
-      });
+    await routeDictionaryFallback(page, {
+      digress: {
+        description: 'to turn aside, especially from the main subject in writing or speaking',
+        url: 'https://en.wiktionary.org/wiki/digress',
+      },
     });
 
     const reply = await sendPrompt(page, 'what i digress mean?');
@@ -103,5 +114,27 @@ test.describe('Issue #242 dictionary lookup prompt recovery', () => {
     await expect(reply).toContainText(/main subject|writing|speaking/i);
     await expect(reply).toContainText('wiktionary.org');
     await expect(reply).not.toContainText(UNKNOWN_ANSWER_MARKER);
+  });
+
+  test('supported-language definition prompts still reach dictionary fallback', async ({ page }) => {
+    await routeDictionaryFallback(page, {
+      flibbertigibbet: {
+        description: 'a flighty or excessively talkative person',
+        url: 'https://en.wiktionary.org/wiki/flibbertigibbet',
+      },
+    });
+
+    for (const { language, prompt } of [
+      { language: 'en', prompt: 'what does flibbertigibbet mean?' },
+      { language: 'ru', prompt: 'что такое flibbertigibbet?' },
+      { language: 'hi', prompt: 'flibbertigibbet क्या है?' },
+      { language: 'zh', prompt: 'flibbertigibbet 是什么?' },
+    ]) {
+      const reply = await sendPrompt(page, prompt);
+      await expect(reply, language).toContainText('flibbertigibbet');
+      await expect(reply, language).toContainText(/flighty|talkative/i);
+      await expect(reply, language).toContainText('wiktionary.org');
+      await expect(reply, language).not.toContainText(UNKNOWN_ANSWER_MARKER);
+    }
   });
 });
