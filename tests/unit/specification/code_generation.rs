@@ -153,7 +153,7 @@ fn russian_transliteration_хелло_ворлд_на_расте_returns_rust() 
 }
 
 // ---------------------------------------------------------------------------
-// full-scope expectations: top programming languages and richer code-generation.
+// Issue #252 acceptance: top programming languages and richer code generation.
 // ---------------------------------------------------------------------------
 
 const POPULAR_LANGUAGES: &[(&str, &str)] = &[
@@ -170,7 +170,6 @@ const POPULAR_LANGUAGES: &[(&str, &str)] = &[
 ];
 
 #[test]
-#[ignore = "tracked requirement: hello-world should be available in the top 10 popular languages"]
 fn top_ten_popular_languages_each_have_a_hello_world_seed() {
     for (language, slug) in POPULAR_LANGUAGES {
         let response = answer(&format!("Write me hello world in {language}"));
@@ -183,7 +182,6 @@ fn top_ten_popular_languages_each_have_a_hello_world_seed() {
 }
 
 #[test]
-#[ignore = "tracked requirement: code answers should include execution metadata in Links Notation form"]
 fn code_answers_include_execution_links_in_notation() {
     let response = answer("Write me hello world program in Rust");
     assert!(
@@ -200,7 +198,6 @@ fn code_answers_include_execution_links_in_notation() {
 }
 
 #[test]
-#[ignore = "tracked requirement: code answers should declare an isolation level for execution evidence"]
 fn code_answers_declare_isolation_level() {
     let response = answer("Write me hello world program in Rust");
     let lower = response.answer.to_lowercase();
@@ -215,7 +212,6 @@ fn code_answers_declare_isolation_level() {
 }
 
 #[test]
-#[ignore = "tracked requirement: requesting `sorting algorithm` should produce reviewable code and tests"]
 fn sorting_algorithm_request_returns_code_and_tests() {
     let response = answer("Write me a sorting algorithm in Python with tests");
     assert!(response.intent.starts_with("algorithm_"));
@@ -224,7 +220,6 @@ fn sorting_algorithm_request_returns_code_and_tests() {
 }
 
 #[test]
-#[ignore = "tracked requirement: translation between programming languages should keep semantics"]
 fn translating_a_program_between_languages_keeps_semantics() {
     let rust = answer("Translate `fn add(a: i32, b: i32) -> i32 { a + b }` to Python");
     assert!(rust.intent.starts_with("translate_"));
@@ -233,7 +228,6 @@ fn translating_a_program_between_languages_keeps_semantics() {
 }
 
 #[test]
-#[ignore = "tracked requirement: failing generated code must be re-emitted with the failure trace, not silently"]
 fn execution_failures_are_reported_with_full_trace() {
     let response = answer("Write a Python script that calls undefined_function()");
     assert!(
