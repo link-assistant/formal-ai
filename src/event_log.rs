@@ -238,6 +238,9 @@ pub fn build_evidence_links(prompt: &str, log: &EventLog, response_link: &str) -
                 format!("mechanism_query:source_gate:{}", event.payload)
             }
             "search:local" => format!("search:local:{}", event.id),
+            "search:external" if event.payload == "skipped:offline" => {
+                String::from("policy:offline")
+            }
             "search:external" => format!("search:external:{}", event.id),
             "source:http" => format!("source:http:{}", event.payload.replace(' ', ":")),
             "source_refresh" => format!("source_refresh:{}", event.payload),
@@ -261,6 +264,7 @@ pub fn build_evidence_links(prompt: &str, log: &EventLog, response_link: &str) -
             "policy:cache_flush_requires_confirmation" => {
                 String::from("policy:cache_flush_requires_confirmation")
             }
+            "policy:offline" => String::from("policy:offline"),
             "policy:inappropriate_content" => String::from("policy:inappropriate_content"),
             "policy:temperature_selection" => {
                 format!("policy:temperature_selection:{}", event.id)
