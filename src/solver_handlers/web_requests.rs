@@ -1,7 +1,7 @@
 //! URL fetch, URL navigation, and browser-search handlers.
 
 use crate::concepts::extract_concept_query;
-use crate::engine::{normalize_prompt, select_rule_for, SelectedRule, SymbolicAnswer};
+use crate::engine::{normalize_prompt, SymbolicAnswer};
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
 use crate::seed::{projects_registry, ProjectRecord};
@@ -297,6 +297,7 @@ pub fn try_project_lookup(
     _normalized: &str,
     log: &mut EventLog,
     promote_associative_repositories: bool,
+    suppress_identity_route: bool,
 ) -> Option<SymbolicAnswer> {
     if let Some(repo) = repository_from_prompt(prompt) {
         if promote_associative_repositories {
@@ -311,7 +312,7 @@ pub fn try_project_lookup(
             promote_associative_repositories,
         ));
     }
-    if matches!(select_rule_for(prompt), SelectedRule::Identity) {
+    if suppress_identity_route {
         return None;
     }
 
