@@ -19,10 +19,75 @@ pub struct ApiHttpResponse {
     pub body: String,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Default)]
+pub struct ApiAuthConfig {
+    pub bearer_token: Option<String>,
+}
+
+struct ParsedHttpRequest {
+    method: String,
+    path: String,
+    headers: Vec<(String, String)>,
+    body: String,
+}
+
+impl ApiAuthConfig {
+    #[must_use]
+    pub fn bearer_token(token: impl Into<String>) -> Self {
+        Self {
+            bearer_token: Some(token.into()),
+        }
+    }
+
+    #[must_use]
+    pub fn from_env() -> Self {
+        Self {
+            bearer_token: first_non_empty_env(&[
+                "FORMAL_AI_API_BEARER_TOKEN",
+                "FORMAL_AI_HTTP_BEARER_TOKEN",
+                "FORMAL_AI_API_TOKEN",
+            ]),
+        }
+    }
+
+    #[must_use]
+    pub fn allows(&self, headers: &[(&str, &str)]) -> bool {
+        let Some(expected) = self.bearer_token.as_deref() else {
+            return true;
+        };
+        bearer_token_from_headers(headers).is_some_and(|actual| actual == expected)
+    }
+}
+
 #[must_use]
 pub fn handle_api_request(method: &str, path: &str, body: &str) -> ApiHttpResponse {
+    handle_api_request_with_auth(method, path, &[], body, &ApiAuthConfig::from_env())
+}
+
+#[must_use]
+pub fn handle_api_request_with_headers(
+    method: &str,
+    path: &str,
+    headers: &[(&str, &str)],
+    body: &str,
+) -> ApiHttpResponse {
+    handle_api_request_with_auth(method, path, headers, body, &ApiAuthConfig::from_env())
+}
+
+#[must_use]
+pub fn handle_api_request_with_auth(
+    method: &str,
+    path: &str,
+    headers: &[(&str, &str)],
+    body: &str,
+    auth: &ApiAuthConfig,
+) -> ApiHttpResponse {
     let normalized_path = path.split('?').next().unwrap_or(path);
     let query = path.split_once('?').map_or("", |(_, q)| q);
+
+    if requires_bearer_auth(method, normalized_path) && !auth.allows(headers) {
+        return error_response(401, "missing or invalid bearer token");
+    }
 
     match (method, normalized_path) {
         ("OPTIONS", _) => ApiHttpResponse {
@@ -85,6 +150,42 @@ pub fn handle_api_request(method: &str, path: &str, body: &str) -> ApiHttpRespon
         },
         _ => error_response(404, "route not found"),
     }
+}
+
+fn requires_bearer_auth(method: &str, normalized_path: &str) -> bool {
+    method != "OPTIONS" && normalized_path.starts_with("/v1/")
+}
+
+fn first_non_empty_env(names: &[&str]) -> Option<String> {
+    names.iter().find_map(|name| {
+        let value = std::env::var(name).ok()?;
+        let trimmed = value.trim();
+        if trimmed.is_empty() {
+            None
+        } else {
+            Some(trimmed.to_owned())
+        }
+    })
+}
+
+fn bearer_token_from_headers<'a>(headers: &'a [(&str, &str)]) -> Option<&'a str> {
+    headers.iter().find_map(|(name, value)| {
+        if name.eq_ignore_ascii_case("authorization") {
+            parse_bearer_token(value)
+        } else {
+            None
+        }
+    })
+}
+
+fn parse_bearer_token(value: &str) -> Option<&str> {
+    let mut parts = value.split_whitespace();
+    let scheme = parts.next()?;
+    let token = parts.next()?;
+    if parts.next().is_some() || !scheme.eq_ignore_ascii_case("bearer") {
+        return None;
+    }
+    Some(token)
 }
 
 fn http_solver() -> UniversalSolver {
@@ -152,14 +253,20 @@ pub fn serve(address: &str) -> std::io::Result<()> {
 }
 
 fn handle_connection(stream: &mut TcpStream) -> std::io::Result<()> {
-    let Some((method, path, body)) = read_request(stream)? else {
+    let Some(request) = read_request(stream)? else {
         return Ok(());
     };
-    let response = handle_api_request(&method, &path, &body);
+    let headers = request
+        .headers
+        .iter()
+        .map(|(name, value)| (name.as_str(), value.as_str()))
+        .collect::<Vec<_>>();
+    let response =
+        handle_api_request_with_headers(&request.method, &request.path, &headers, &request.body);
     write_response(stream, &response)
 }
 
-fn read_request(stream: &mut TcpStream) -> std::io::Result<Option<(String, String, String)>> {
+fn read_request(stream: &mut TcpStream) -> std::io::Result<Option<ParsedHttpRequest>> {
     let mut buffer = [0_u8; 8192];
     let bytes_read = stream.read(&mut buffer)?;
     if bytes_read == 0 {
@@ -194,12 +301,18 @@ fn read_request(stream: &mut TcpStream) -> std::io::Result<Option<(String, Strin
     let mut request_parts = request_line.split_whitespace();
     let method = request_parts.next().unwrap_or_default().to_owned();
     let path = request_parts.next().unwrap_or_default().to_owned();
+    let headers = request_headers(&header_text);
     let body_end = body_start
         .saturating_add(content_length)
         .min(request_bytes.len());
     let body = String::from_utf8_lossy(&request_bytes[body_start..body_end]).to_string();
 
-    Ok(Some((method, path, body)))
+    Ok(Some(ParsedHttpRequest {
+        method,
+        path,
+        headers,
+        body,
+    }))
 }
 
 fn write_response(stream: &mut TcpStream, response: &ApiHttpResponse) -> std::io::Result<()> {
@@ -207,6 +320,7 @@ fn write_response(stream: &mut TcpStream, response: &ApiHttpResponse) -> std::io
         200 => "200 OK",
         204 => "204 No Content",
         400 => "400 Bad Request",
+        401 => "401 Unauthorized",
         404 => "404 Not Found",
         _ => "500 Internal Server Error",
     };
@@ -254,6 +368,17 @@ fn error_response(status_code: u16, message: &str) -> ApiHttpResponse {
 
 fn find_header_end(bytes: &[u8]) -> Option<usize> {
     bytes.windows(4).position(|window| window == b"\r\n\r\n")
+}
+
+fn request_headers(headers: &str) -> Vec<(String, String)> {
+    headers
+        .lines()
+        .skip(1)
+        .filter_map(|line| {
+            let (name, value) = line.split_once(':')?;
+            Some((name.trim().to_owned(), value.trim().to_owned()))
+        })
+        .collect()
 }
 
 fn content_length(headers: &str) -> usize {

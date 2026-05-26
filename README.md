@@ -38,6 +38,16 @@ curl -s http://127.0.0.1:8080/v1/chat/completions \
   -d '{"model":"formal-symbolic-production","messages":[{"role":"user","content":"Hi"}]}'
 ```
 
+To require bearer authentication on `/v1/*` routes, set
+`FORMAL_AI_API_BEARER_TOKEN` before starting the server and send the matching
+header:
+
+```bash
+FORMAL_AI_API_BEARER_TOKEN=local-test-token cargo run -- serve --host 127.0.0.1 --port 8080
+curl -s http://127.0.0.1:8080/v1/models \
+  -H 'authorization: Bearer local-test-token'
+```
+
 Example Telegram webhook update:
 
 ```bash
