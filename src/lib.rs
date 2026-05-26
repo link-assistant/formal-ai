@@ -30,6 +30,7 @@ pub(crate) mod solver_handlers;
 pub(crate) mod solver_handlers_policy;
 pub(crate) mod solver_helpers;
 pub(crate) mod solver_unknown_reasoning;
+pub mod substitution;
 pub mod summarization;
 pub mod telegram;
 pub mod telegram_runtime;
@@ -101,6 +102,11 @@ pub use solver::{
     UniversalSolver,
 };
 pub use solver_helpers::humanize_url;
+pub use substitution::{
+    CrudEvent, LinkPattern, SubstitutionAction, SubstitutionGraph, SubstitutionLink,
+    SubstitutionRule, SubstitutionRuleError, SubstitutionRuleSet, SubstitutionTrace,
+    SubstitutionTraceReport,
+};
 pub use summarization::{
     apply_compound_words, apply_semantic_primes, classify_sentence, deformalize, describe_project,
     describe_readme, formalize, formalize_dialog, formalize_markdown, generate_chat_title,
