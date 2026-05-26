@@ -49,6 +49,51 @@ fn prompt_formalizes_to_intent_links_with_kind_knowns_and_relevants() {
 }
 
 #[test]
+fn write_program_formalization_records_language_and_task_parameters() {
+    let intent = formalize_intent("Write a Python program that counts to three", "en", None);
+
+    assert_eq!(intent.kind, IntentKind::Task);
+    assert_eq!(intent.route.as_deref(), Some("write_program"));
+    assert_eq!(
+        intent.parameters.get("language").map(String::as_str),
+        Some("python")
+    );
+    assert_eq!(
+        intent.parameters.get("task").map(String::as_str),
+        Some("count_to_three")
+    );
+    assert!(
+        intent
+            .knowns
+            .iter()
+            .any(|known| known == "parameter:language:python"),
+        "{intent:?}",
+    );
+    assert!(
+        intent
+            .knowns
+            .iter()
+            .any(|known| known == "parameter:task:count_to_three"),
+        "{intent:?}",
+    );
+
+    let lino = intent.to_links_notation();
+    assert!(lino.contains("parameter \"language=python\""), "{lino}");
+    assert!(lino.contains("parameter \"task=count_to_three\""), "{lino}");
+
+    let response = UniversalSolver::default().solve("Write a Python program that counts to three");
+    assert_eq!(response.intent, "write_program");
+    assert!(response
+        .evidence_links
+        .iter()
+        .any(|link| link == "program_parameter:language:python"));
+    assert!(response
+        .evidence_links
+        .iter()
+        .any(|link| link == "program_parameter:task:count_to_three"));
+}
+
+#[test]
 fn repeated_prompt_hits_intent_formalization_cache() {
     let solver = UniversalSolver::default();
     let mut cache = IntentFormalizationCache::new();

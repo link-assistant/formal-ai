@@ -8,7 +8,7 @@
 //! concept knowledge base lives in [`crate::concepts`]; this module
 //! re-exports nothing — callers import those modules directly.
 
-use crate::engine::{ExecutionStatus, HelloWorldProgram, SelectedRule};
+use crate::engine::{ExecutionStatus, ProgramSpec, SelectedRule};
 use crate::event_log::EventLog;
 use crate::language::{detect as detect_language, Language};
 
@@ -18,6 +18,7 @@ pub const fn confidence_for(rule: &SelectedRule, validation: Option<&ValidationC
     }
     match rule {
         SelectedRule::Unknown => 0.0,
+        SelectedRule::UnsupportedWriteProgram { .. } => 0.4,
         _ => 1.0,
     }
 }
@@ -557,26 +558,25 @@ pub fn extract_fenced_block(text: &str, languages: &[&str]) -> Option<String> {
     None
 }
 
-/// Return true when the normalized prompt is a "write a script/program in
+/// Return true when the normalized prompt is a "write a script/code in
 /// <language>" request in English, Russian, Hindi, or Chinese.
 ///
-/// Excludes "hello world" prompts — those are already handled by the
-/// hello-world rule in the symbolic engine.
+/// Excludes "write a program(language, task)" prompts, which are routed by
+/// the parametric write-program formalization.
 pub fn is_write_script_request(normalized: &str) -> bool {
-    // Exclude hello-world prompts so the existing rule keeps its intent.
+    // Exclude hello-world prompts so the parametric write-program route keeps its intent.
     if normalized.contains("hello") && normalized.contains("world") {
         return false;
     }
-    // English: "write a script", "write a program", "write me a script", etc.
+    if normalized.contains("program") {
+        return false;
+    }
+    // English: "write a script", "write me some code", etc.
     let en_write = normalized.contains("write")
-        && (normalized.contains("script")
-            || normalized.contains("program")
-            || normalized.contains("code"));
-    // Russian: "напиши скрипт", "напиши программу", "напиши код", "написать скрипт"
+        && (normalized.contains("script") || normalized.contains("code"));
+    // Russian: "напиши скрипт", "напиши код", "написать скрипт"
     let ru_write = (normalized.contains("напиши") || normalized.contains("написать"))
-        && (normalized.contains("скрипт")
-            || normalized.contains("программ")
-            || normalized.contains("код"));
+        && (normalized.contains("скрипт") || normalized.contains("код"));
     // Hindi: "script likhो", "code likhо"
     let hi_write = normalized.contains("लिखो") || normalized.contains("लिखें");
     // Chinese: "写一个" (write one), "帮我写" (help me write)
@@ -584,29 +584,30 @@ pub fn is_write_script_request(normalized: &str) -> bool {
     en_write || ru_write || hi_write || zh_write
 }
 
-pub fn format_write_script_execution(program: &HelloWorldProgram) -> String {
-    let cmd = program.execution.check_command.map_or_else(
-        || format!("Run command: `{}`", program.execution.run_command),
+pub fn format_write_script_execution(program: ProgramSpec) -> String {
+    let execution = &program.language.execution;
+    let cmd = execution.check_command.map_or_else(
+        || format!("Run command: `{}`", execution.run_command),
         |check| {
             format!(
                 "Check command: `{check}`\nRun command: `{}`",
-                program.execution.run_command
+                execution.run_command
             )
         },
     );
-    let output_label = if matches!(program.execution.status, ExecutionStatus::Verified) {
+    let output_label = if matches!(execution.status, ExecutionStatus::Verified) {
         "Output"
     } else {
         "Expected output after verification"
     };
     format!(
         "Execution status: {} in {}.\n{}\n{}:\n```text\n{}\n```\n{}",
-        program.execution.status.label(),
-        program.execution.environment,
+        execution.status.label(),
+        execution.environment,
         cmd,
         output_label,
-        program.execution.output,
-        program.execution.notes
+        program.task.output,
+        execution.notes
     )
 }
 
@@ -668,11 +669,7 @@ mod tests {
             "answer was: {}",
             response.answer
         );
-        assert!(
-            response.intent.starts_with("hello_world"),
-            "expected hello_world intent, got {}",
-            response.intent
-        );
+        assert_eq!(response.intent, "write_program");
         assert!(
             response.answer.to_lowercase().contains("rust"),
             "expected Rust hello world, got: {}",

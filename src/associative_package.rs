@@ -582,7 +582,10 @@ pub fn default_associative_packages() -> Vec<AssociativePackage> {
     ))
     .with_permission("tool:calculator", "local deterministic calculator tool")
     .with_permission("tool:concept_lookup", "seed-backed concept lookup")
-    .with_permission("tool:hello_world", "seed-backed hello-world renderer")]
+    .with_permission(
+        "tool:write_program",
+        "seed-backed program template renderer",
+    )]
 }
 
 #[must_use]

@@ -8,13 +8,42 @@ fn answer(prompt: &str) -> SymbolicAnswer {
 }
 
 // ---------------------------------------------------------------------------
-// Active expectations: implementation hello-world seeds.
+// Active expectations: parameterized write_program templates.
 // ---------------------------------------------------------------------------
+
+fn assert_write_program_parameters(response: &SymbolicAnswer, language: &str, task: &str) {
+    assert_eq!(response.intent, "write_program");
+    assert!(
+        response
+            .links_notation
+            .contains(&format!("program_parameter:language {language}")),
+        "Links Notation trace should include language={language}, got: {}",
+        response.links_notation
+    );
+    assert!(
+        response
+            .links_notation
+            .contains(&format!("program_parameter:task {task}")),
+        "Links Notation trace should include task={task}, got: {}",
+        response.links_notation
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| { link == &format!("response:write_program:{task}:{language}") }),
+        "evidence links should include the parameterized response link, got: {:?}",
+        response.evidence_links
+    );
+}
 
 #[test]
 fn rust_hello_world_seed_compiles_and_runs() {
     let response = answer("Write me hello world program in Rust");
-    assert_eq!(response.intent, "hello_world_rust");
+    assert_write_program_parameters(&response, "rust", "hello_world");
+    assert!(response
+        .links_notation
+        .contains("legacy_intent hello_world_rust"));
     assert!(response.answer.contains("```rust"));
     assert!(response.answer.contains("fn main()"));
     assert!(response
@@ -28,7 +57,7 @@ fn rust_hello_world_seed_compiles_and_runs() {
 #[test]
 fn python_hello_world_seed_runs() {
     let response = answer("Write hello world in Python");
-    assert_eq!(response.intent, "hello_world_python");
+    assert_write_program_parameters(&response, "python", "hello_world");
     assert!(response.answer.contains("```python"));
     assert!(response.answer.contains("print(\"Hello, world!\")"));
     assert!(response
@@ -40,7 +69,7 @@ fn python_hello_world_seed_runs() {
 #[test]
 fn javascript_hello_world_seed_runs() {
     let response = answer("Show me hello world in JavaScript");
-    assert_eq!(response.intent, "hello_world_javascript");
+    assert_write_program_parameters(&response, "javascript", "hello_world");
     assert!(response.answer.contains("```javascript"));
     assert!(response.answer.contains("console.log(\"Hello, world!\");"));
     assert!(response.answer.contains("node"));
@@ -49,7 +78,7 @@ fn javascript_hello_world_seed_runs() {
 #[test]
 fn go_hello_world_seed_runs() {
     let response = answer("hello world in Go");
-    assert_eq!(response.intent, "hello_world_go");
+    assert_write_program_parameters(&response, "go", "hello_world");
     assert!(response.answer.contains("```go"));
     assert!(response.answer.contains("fmt.Println"));
     assert!(response
@@ -60,7 +89,7 @@ fn go_hello_world_seed_runs() {
 #[test]
 fn c_hello_world_seed_compiles_and_runs() {
     let response = answer("hello world in C");
-    assert_eq!(response.intent, "hello_world_c");
+    assert_write_program_parameters(&response, "c", "hello_world");
     assert!(response.answer.contains("```c"));
     assert!(response.answer.contains("#include <stdio.h>"));
     assert!(response
@@ -71,7 +100,7 @@ fn c_hello_world_seed_compiles_and_runs() {
 #[test]
 fn typescript_hello_world_seed_reports_unavailable_execution() {
     let response = answer("hello world in TypeScript");
-    assert_eq!(response.intent, "hello_world_typescript");
+    assert_write_program_parameters(&response, "typescript", "hello_world");
     assert!(response.answer.contains("```typescript"));
     assert!(response
         .answer
@@ -84,31 +113,34 @@ fn typescript_hello_world_seed_reports_unavailable_execution() {
 #[test]
 fn rust_alias_rs_is_supported() {
     let response = answer("hello world in rs");
-    assert_eq!(response.intent, "hello_world_rust");
+    assert_write_program_parameters(&response, "rust", "hello_world");
 }
 
 #[test]
 fn javascript_alias_node_is_supported() {
     let response = answer("hello world in node");
-    assert_eq!(response.intent, "hello_world_javascript");
+    assert_write_program_parameters(&response, "javascript", "hello_world");
 }
 
 #[test]
 fn python_alias_py_is_supported() {
     let response = answer("hello world in py");
-    assert_eq!(response.intent, "hello_world_python");
+    assert_write_program_parameters(&response, "python", "hello_world");
 }
 
 #[test]
 fn go_alias_golang_is_supported() {
     let response = answer("hello world in golang");
-    assert_eq!(response.intent, "hello_world_go");
+    assert_write_program_parameters(&response, "go", "hello_world");
 }
 
 #[test]
-fn hello_world_without_recognized_language_falls_back_to_unknown() {
+fn hello_world_without_recognized_language_returns_unsupported_parameters() {
     let response = answer("hello world in elvish");
-    assert_eq!(response.intent, "unknown");
+    assert_eq!(response.intent, "write_program_unsupported");
+    assert!(response.answer.contains("language `elvish`"));
+    assert!(response.answer.contains("task `hello_world`"));
+    assert!(response.answer.contains("Supported languages:"));
 }
 
 // ---------------------------------------------------------------------------
@@ -120,8 +152,9 @@ fn hello_world_without_recognized_language_falls_back_to_unknown() {
 fn russian_transliteration_хелло_ворлд_питоне_returns_python() {
     // The exact prompt from the reported issue.
     let response = answer("Напиши хелло ворлд на питоне");
+    assert_write_program_parameters(&response, "python", "hello_world");
     assert_eq!(
-        response.intent, "hello_world_python",
+        response.intent, "write_program",
         "Russian-transliterated hello world in Python should resolve, got: {}",
         response.intent
     );
@@ -135,8 +168,9 @@ fn russian_transliteration_хелло_ворлд_питоне_returns_python() {
 #[test]
 fn russian_transliteration_хелло_ворлд_на_джаваскрипт_returns_javascript() {
     let response = answer("хелло ворлд на джаваскрипт");
+    assert_write_program_parameters(&response, "javascript", "hello_world");
     assert_eq!(
-        response.intent, "hello_world_javascript",
+        response.intent, "write_program",
         "Russian-transliterated hello world in JavaScript should resolve, got: {}",
         response.intent
     );
@@ -145,8 +179,9 @@ fn russian_transliteration_хелло_ворлд_на_джаваскрипт_ret
 #[test]
 fn russian_transliteration_хелло_ворлд_на_расте_returns_rust() {
     let response = answer("хелло ворлд на расте");
+    assert_write_program_parameters(&response, "rust", "hello_world");
     assert_eq!(
-        response.intent, "hello_world_rust",
+        response.intent, "write_program",
         "Russian-transliterated hello world in Rust should resolve, got: {}",
         response.intent
     );
@@ -156,27 +191,28 @@ fn russian_transliteration_хелло_ворлд_на_расте_returns_rust() 
 // Issue #252 acceptance: top programming languages and richer code generation.
 // ---------------------------------------------------------------------------
 
-const POPULAR_LANGUAGES: &[(&str, &str)] = &[
-    ("Rust", "rust"),
-    ("Python", "python"),
-    ("JavaScript", "javascript"),
-    ("TypeScript", "typescript"),
-    ("Go", "go"),
-    ("C", "c"),
-    ("C++", "cpp"),
-    ("Java", "java"),
-    ("C#", "csharp"),
-    ("Ruby", "ruby"),
+const POPULAR_LANGUAGES: &[(&str, &str, &str)] = &[
+    ("Rust", "rust", "```rust"),
+    ("Python", "python", "```python"),
+    ("JavaScript", "javascript", "```javascript"),
+    ("TypeScript", "typescript", "```typescript"),
+    ("Go", "go", "```go"),
+    ("C", "c", "```c"),
+    ("C++", "cpp", "```cpp"),
+    ("Java", "java", "```java"),
+    ("C#", "csharp", "```csharp"),
+    ("Ruby", "ruby", "```ruby"),
 ];
 
 #[test]
-fn top_ten_popular_languages_each_have_a_hello_world_seed() {
-    for (language, slug) in POPULAR_LANGUAGES {
+fn top_ten_popular_languages_each_use_the_write_program_intent() {
+    for (language, slug, fence) in POPULAR_LANGUAGES {
         let response = answer(&format!("Write me hello world in {language}"));
-        let expected_intent = format!("hello_world_{slug}");
-        assert_eq!(
-            response.intent, expected_intent,
-            "missing hello-world seed for {language}"
+        assert_write_program_parameters(&response, slug, "hello_world");
+        assert!(
+            response.answer.contains(fence),
+            "missing hello-world template for {language}: {}",
+            response.answer
         );
     }
 }
@@ -242,4 +278,26 @@ fn execution_failures_are_reported_with_full_trace() {
             .any(|link| link.starts_with("trace:execution_failure")),
         "failed runs must expose a trace link"
     );
+}
+
+#[test]
+fn parametric_write_program_handles_new_task_for_supported_language() {
+    let response = answer("Write a Python program that counts to three");
+    assert_write_program_parameters(&response, "python", "count_to_three");
+    assert!(response.answer.contains("```python"));
+    assert!(response.answer.contains("range(1, 4)"));
+    assert!(
+        !response.answer.contains("Hello, world!"),
+        "new write-program tasks must not be routed through the legacy hello-world shortcut: {}",
+        response.answer
+    );
+}
+
+#[test]
+fn supported_language_with_missing_template_returns_unsupported_parameters() {
+    let response = answer("Write a Ruby program that counts to three");
+    assert_eq!(response.intent, "write_program_unsupported");
+    assert!(response.answer.contains("language `ruby`"));
+    assert!(response.answer.contains("task `count_to_three`"));
+    assert!(response.answer.contains("Supported tasks:"));
 }

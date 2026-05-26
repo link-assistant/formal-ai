@@ -175,7 +175,13 @@ fn how_you_work_prompts_return_meta_explanation() {
 fn rust_hello_world_prompt_returns_code_block() {
     let response = FormalAiEngine.answer("Write me hello world program in Rust");
 
-    assert_eq!(response.intent, "hello_world_rust");
+    assert_eq!(response.intent, "write_program");
+    assert!(response
+        .links_notation
+        .contains("program_parameter:language rust"));
+    assert!(response
+        .links_notation
+        .contains("program_parameter:task hello_world"));
     assert!(response.answer.contains("```rust"));
     assert!(response.answer.contains("fn main()"));
     assert!(response.answer.contains("println!(\"Hello, world!\");"));
@@ -227,23 +233,26 @@ fn kiss_in_programming_context_returns_design_principle_not_band() {
 #[test]
 fn hello_world_prompt_supports_multiple_programming_languages() {
     let cases = [
-        (
-            "Write hello world in Python",
-            "hello_world_python",
-            "```python",
-        ),
+        ("Write hello world in Python", "python", "```python"),
         (
             "Create a hello world example in JavaScript",
-            "hello_world_javascript",
+            "javascript",
             "```javascript",
         ),
-        ("hello world in Go", "hello_world_go", "```go"),
+        ("hello world in Go", "go", "```go"),
     ];
 
-    for (prompt, intent, code_fence) in cases {
+    for (prompt, language, code_fence) in cases {
         let response = FormalAiEngine.answer(prompt);
 
-        assert_eq!(response.intent, intent);
+        assert_eq!(response.intent, "write_program");
+        assert!(
+            response
+                .links_notation
+                .contains(&format!("program_parameter:language {language}")),
+            "prompt: {prompt:?} — missing language parameter in trace: {}",
+            response.links_notation
+        );
         assert!(response.answer.contains(code_fence));
         assert!(response.answer.contains("Hello, world!"));
     }
@@ -264,7 +273,7 @@ fn write_script_prompt_returns_code_block() {
             "write_script_python",
             "```python",
         ),
-        ("Write a program in Rust", "write_script_rust", "```rust"),
+        ("Write a script in Rust", "write_script_rust", "```rust"),
         (
             "Write me some code in JavaScript",
             "write_script_javascript",
@@ -443,7 +452,8 @@ fn knowledge_export_is_valid_links_notation() {
             return false;
         };
 
-        parsed.get("intent").map(String::as_str) == Some("hello_world_rust")
+        parsed.get("intent").map(String::as_str) == Some("write_program")
+            && parsed.get("parameters").map(String::as_str) == Some("language, task")
     }));
     assert!(!notation.contains("(str "));
 }

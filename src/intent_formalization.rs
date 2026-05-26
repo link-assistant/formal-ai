@@ -9,7 +9,8 @@ use std::collections::BTreeMap;
 use std::fmt::Write as _;
 
 use crate::engine::{
-    normalize_prompt, stable_id, HelloWorldProgram, SelectedRule, HELLO_WORLD_PROGRAMS,
+    normalize_prompt, program_language_by_alias, program_spec, stable_id, SelectedRule,
+    WRITE_PROGRAM_INTENT,
 };
 use crate::event_log::EventLog;
 use crate::link_store::{LinkStore, LinkStoreError};
@@ -52,6 +53,7 @@ pub struct IntentFormalization {
     pub kind: IntentKind,
     pub knowns: Vec<String>,
     pub relevants: Vec<String>,
+    pub parameters: BTreeMap<String, String>,
     pub route: Option<String>,
     pub response_link: Option<String>,
 }
@@ -88,6 +90,14 @@ impl IntentFormalization {
                 out,
                 "  response_link \"{}\"",
                 escape_lino_value(response_link)
+            );
+        }
+        for (name, value) in &self.parameters {
+            let _ = writeln!(
+                out,
+                "  parameter \"{}={}\"",
+                escape_lino_value(name),
+                escape_lino_value(value)
             );
         }
         for known in &self.knowns {
@@ -212,6 +222,7 @@ pub fn formalize_intent(
 ) -> IntentFormalization {
     let normalized = normalize_prompt(prompt);
     let route = route_for_prompt(&normalized);
+    let parameters = write_program_parameters(&normalized).unwrap_or_default();
     let mut knowns = vec![
         format!("impulse:{}", impulse_id_for(prompt)),
         format!("language:{language}"),
@@ -220,6 +231,9 @@ pub fn formalize_intent(
 
     if let Some(candidate) = candidate {
         append_candidate_knowns(candidate, &mut knowns, &mut relevants);
+    }
+    for (name, value) in &parameters {
+        push_unique(&mut knowns, format!("parameter:{name}:{value}"));
     }
     append_prompt_relevants(prompt, &normalized, &mut relevants);
 
@@ -242,6 +256,7 @@ pub fn formalize_intent(
         kind: infer_kind(prompt, &normalized, route_slug.as_deref(), candidate),
         knowns,
         relevants,
+        parameters,
         response_link: route.map(|matched| matched.response_link),
         route: route_slug,
     }
@@ -286,8 +301,7 @@ pub(crate) fn select_rule_for_intent(intent: &IntentFormalization) -> SelectedRu
         Some("courtesy_response") => SelectedRule::CourtesyResponse,
         Some("assistant_name") => SelectedRule::AssistantName,
         Some("identity") => SelectedRule::Identity,
-        Some("hello_world") => hello_world_program_for_intent(&intent.normalized_text)
-            .map_or(SelectedRule::Unknown, SelectedRule::HelloWorld),
+        Some(WRITE_PROGRAM_INTENT) => write_program_rule_for_intent(intent),
         _ => SelectedRule::Unknown,
     }
 }
@@ -324,10 +338,10 @@ struct MatchedRoute {
 }
 
 fn route_for_prompt(normalized: &str) -> Option<MatchedRoute> {
-    if is_hello_world_prompt(normalized) && hello_world_program_for_intent(normalized).is_some() {
+    if write_program_parameters(normalized).is_some() {
         return Some(MatchedRoute {
-            slug: String::from("hello_world"),
-            response_link: String::from("response:hello_world"),
+            slug: String::from(WRITE_PROGRAM_INTENT),
+            response_link: String::from("response:write_program"),
         });
     }
     seed::intent_routing()
@@ -352,23 +366,62 @@ fn matches_route(normalized: &str, route: &seed::IntentRoute) -> bool {
         })
 }
 
-fn is_hello_world_prompt(normalized: &str) -> bool {
-    let has_hello = contains_token(normalized, "hello") || contains_token(normalized, "хелло");
-    let has_world = contains_token(normalized, "world") || contains_token(normalized, "ворлд");
-    has_hello && has_world
-}
-
-fn hello_world_program_for_intent(normalized: &str) -> Option<&'static HelloWorldProgram> {
-    HELLO_WORLD_PROGRAMS.iter().find(|program| {
-        program
-            .aliases
-            .iter()
-            .any(|alias| contains_token(normalized, alias))
-    })
-}
-
 fn contains_token(normalized: &str, expected: &str) -> bool {
     normalized.split_whitespace().any(|token| token == expected)
+}
+
+fn write_program_rule_for_intent(intent: &IntentFormalization) -> SelectedRule {
+    let task = intent.parameters.get("task").cloned();
+    let language = intent.parameters.get("language").cloned();
+    if let (Some(task_slug), Some(language_slug)) = (task.as_deref(), language.as_deref()) {
+        if let Some(spec) = program_spec(task_slug, language_slug) {
+            return SelectedRule::WriteProgram(spec);
+        }
+    }
+    SelectedRule::UnsupportedWriteProgram { task, language }
+}
+
+fn write_program_parameters(normalized: &str) -> Option<BTreeMap<String, String>> {
+    let task = crate::engine_hello_world::program_task_by_alias(normalized);
+    let language = requested_program_language(normalized);
+    let asks_for_program = contains_token(normalized, "program")
+        && (contains_token(normalized, "write")
+            || contains_token(normalized, "create")
+            || contains_token(normalized, "show"));
+    if task.is_none() && !asks_for_program {
+        return None;
+    }
+    let mut parameters = BTreeMap::new();
+    if let Some(task) = task {
+        parameters.insert(String::from("task"), String::from(task.slug));
+    }
+    if let Some(language) = language {
+        parameters.insert(String::from("language"), language);
+    }
+    Some(parameters)
+}
+
+fn requested_program_language(normalized: &str) -> Option<String> {
+    if let Some(language) = program_language_by_alias(normalized) {
+        return Some(String::from(language.slug));
+    }
+    let tokens = normalized.split_whitespace().collect::<Vec<_>>();
+    for (index, token) in tokens.iter().enumerate() {
+        if !matches!(*token, "in" | "на") {
+            continue;
+        }
+        let Some(next) = tokens.get(index + 1) else {
+            continue;
+        };
+        if matches!(*next, "language" | "языке") {
+            if let Some(after_language_word) = tokens.get(index + 2) {
+                return Some((*after_language_word).to_owned());
+            }
+            continue;
+        }
+        return Some((*next).to_owned());
+    }
+    None
 }
 
 fn append_candidate_knowns(
@@ -441,7 +494,11 @@ fn append_prompt_relevants(prompt: &str, normalized: &str, relevants: &mut Vec<S
         ),
         (
             "handler:write_script",
-            has_any_token(normalized, &["script", "program"]),
+            has_any_token(normalized, &["script", "code"]),
+        ),
+        (
+            "handler:write_program",
+            write_program_parameters(normalized).is_some(),
         ),
         (
             "handler:software_project",
@@ -514,6 +571,7 @@ fn infer_kind(
         Some(
             "translation"
             | "algorithm"
+            | "write_program"
             | "software_project_plan"
             | "software_project_implementation",
         ) => IntentKind::Task,

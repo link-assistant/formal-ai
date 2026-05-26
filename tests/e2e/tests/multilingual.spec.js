@@ -2040,7 +2040,7 @@ test.describe('memory export/import', () => {
       'tool_import_memory',
       'tool_conversation_recall',
       'tool_concept_lookup',
-      'tool_hello_world',
+      'tool_write_program',
       'tool_intent_routing',
       'tool_fact_lookup',
       'tool_summarize_conversation',

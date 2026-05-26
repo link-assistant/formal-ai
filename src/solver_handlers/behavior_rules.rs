@@ -13,8 +13,8 @@
 use std::collections::BTreeMap;
 
 use crate::engine::{
-    farewell_answer, greeting_answer, identity_answer, normalize_prompt, unknown_answer,
-    SymbolicAnswer, HELLO_WORLD_PROGRAMS,
+    farewell_answer, greeting_answer, identity_answer, normalize_prompt,
+    supported_program_languages, supported_program_tasks, unknown_answer, SymbolicAnswer,
 };
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
@@ -185,30 +185,23 @@ fn behavior_rule_records() -> Vec<BehaviorRuleRecord> {
         },
     ];
 
-    records.extend(
-        HELLO_WORLD_PROGRAMS
-            .iter()
-            .map(|program| BehaviorRuleRecord {
-                id: format!("rule_hello_world_{}", program.slug),
-                topic: "hello_world",
-                intent: format!("hello_world_{}", program.slug),
-                label: format!("Hello-world rule ({})", program.language),
-                matches: format!(
-                    "`hello world` plus one of these aliases: {}",
-                    program.aliases.join(", ")
-                ),
-                response: format!(
-                    "Returns a minimal {} hello-world program.",
-                    program.language
-                ),
-                source: program.source.to_owned(),
-                when_then: format!(
-                    "When the user requests a `hello world` program with alias `{}` then respond \
-                     with a minimal {} hello-world program.",
-                    program.slug, program.language,
-                ),
-            }),
-    );
+    records.push(BehaviorRuleRecord {
+        id: "rule_write_program".to_owned(),
+        topic: "write_program",
+        intent: "write_program".to_owned(),
+        label: "Write-program rule".to_owned(),
+        matches: format!(
+            "`write_program(language, task)` with languages [{}] and tasks [{}]",
+            supported_program_languages(),
+            supported_program_tasks()
+        ),
+        response: "Returns a minimal program from the parameterized template catalog.".to_owned(),
+        source: "data/seed/hello-world-programs.lino + src/engine_hello_world.rs".to_owned(),
+        when_then: "When the user requests a program with a supported `language` and `task`, \
+             resolve those parameters and render the matching template through the single \
+             `write_program` intent."
+            .to_owned(),
+    });
 
     records.push(BehaviorRuleRecord {
         id: "rule_unknown".to_owned(),
@@ -234,7 +227,7 @@ fn topic_order(topic: &str) -> u8 {
         "identity" => 2,
         "assistant_name" => 3,
         "capabilities" => 4,
-        "hello_world" => 5,
+        "write_program" => 5,
         "unknown_fallback" => 6,
         _ => 7,
     }
@@ -268,12 +261,12 @@ fn topic_label(topic: &str, language: &str) -> &'static str {
             "助手名称",
         ),
         "capabilities" => localized_text(language, "Capabilities", "Возможности", "क्षमताएँ", "能力"),
-        "hello_world" => localized_text(
+        "write_program" => localized_text(
             language,
-            "Hello-world programs",
-            "Программы Hello World",
-            "Hello World प्रोग्राम",
-            "Hello World 程序",
+            "Program templates",
+            "Шаблоны программ",
+            "Program templates",
+            "程序模板",
         ),
         "unknown_fallback" => localized_text(
             language,
@@ -413,12 +406,11 @@ fn localized_response(intent: &str, language: &str, fallback: &str) -> String {
 }
 
 fn rule_label(rule: &BehaviorRuleRecord, language: &str) -> String {
-    if rule.id.starts_with("rule_hello_world_") {
-        let program_language = program_language(rule);
+    if rule.id == "rule_write_program" {
         return match language {
-            "ru" => format!("Правило Hello World ({program_language})"),
-            "hi" => format!("Hello World नियम ({program_language})"),
-            "zh" => format!("Hello World 规则（{program_language}）"),
+            "ru" => "Правило write-program".to_owned(),
+            "hi" => "Write-program नियम".to_owned(),
+            "zh" => "Write-program 规则".to_owned(),
             _ => rule.label.clone(),
         };
     }
@@ -472,15 +464,11 @@ fn rule_label(rule: &BehaviorRuleRecord, language: &str) -> String {
 }
 
 fn rule_matches(rule: &BehaviorRuleRecord, language: &str) -> String {
-    if rule.id.starts_with("rule_hello_world_") {
-        let aliases = rule
-            .matches
-            .strip_prefix("`hello world` plus one of these aliases: ")
-            .unwrap_or(&rule.matches);
+    if rule.id == "rule_write_program" {
         return match language {
-            "ru" => format!("`hello world` и один из псевдонимов: {aliases}"),
-            "hi" => format!("`hello world` और इनमें से कोई alias: {aliases}"),
-            "zh" => format!("`hello world` 加以下任一别名：{aliases}"),
+            "ru" => format!("Параметры `language` и `task`: {}", rule.matches),
+            "hi" => format!("`language` और `task` parameter: {}", rule.matches),
+            "zh" => format!("`language` 和 `task` 参数：{}", rule.matches),
             _ => rule.matches.clone(),
         };
     }
@@ -534,14 +522,12 @@ fn rule_matches(rule: &BehaviorRuleRecord, language: &str) -> String {
 }
 
 fn rule_response(rule: &BehaviorRuleRecord, language: &str) -> String {
-    if rule.id.starts_with("rule_hello_world_") {
-        let program_language = program_language(rule);
+    if rule.id == "rule_write_program" {
         return match language {
-            "ru" => {
-                format!("Возвращает минимальную программу Hello World на языке {program_language}.")
-            }
-            "hi" => format!("{program_language} में न्यूनतम Hello World प्रोग्राम लौटाता है."),
-            "zh" => format!("返回一个最小的 {program_language} Hello World 程序。"),
+            "ru" => "Возвращает минимальную программу из параметризованного каталога шаблонов."
+                .to_owned(),
+            "hi" => "Parameterized template catalog से न्यूनतम program लौटाता है.".to_owned(),
+            "zh" => "从参数化模板目录返回一个最小程序。".to_owned(),
             _ => rule.response.clone(),
         };
     }
@@ -572,19 +558,11 @@ fn rule_response(rule: &BehaviorRuleRecord, language: &str) -> String {
 }
 
 fn rule_when_then(rule: &BehaviorRuleRecord, language: &str) -> String {
-    if rule.id.starts_with("rule_hello_world_") {
-        let slug = program_slug(rule);
-        let program_language = program_language(rule);
+    if rule.id == "rule_write_program" {
         return match language {
-            "ru" => format!(
-                "Когда пользователь просит программу `hello world` с псевдонимом `{slug}`, ответь минимальной программой Hello World на языке {program_language}."
-            ),
-            "hi" => format!(
-                "जब उपयोगकर्ता `{slug}` alias के साथ `hello world` प्रोग्राम माँगे, तब {program_language} का न्यूनतम Hello World प्रोग्राम दें."
-            ),
-            "zh" => format!(
-                "当用户用别名 `{slug}` 请求 `hello world` 程序时，回答一个最小的 {program_language} Hello World 程序。"
-            ),
+            "ru" => "Когда пользователь просит программу с поддерживаемыми параметрами `language` и `task`, выбери соответствующий шаблон через единое намерение `write_program`.".to_owned(),
+            "hi" => "जब उपयोगकर्ता supported `language` और `task` parameter वाला program माँगे, तब single `write_program` intent से matching template दें.".to_owned(),
+            "zh" => "当用户请求带受支持 `language` 和 `task` 参数的程序时，通过单个 `write_program` 意图选择匹配模板。".to_owned(),
             _ => rule.when_then.clone(),
         };
     }
@@ -673,19 +651,6 @@ fn runtime_rule_when_then(rule: &CompiledSkillPackage, language: &str) -> String
             rule.trigger, rule.response
         ),
     }
-}
-
-fn program_slug(rule: &BehaviorRuleRecord) -> &str {
-    rule.intent
-        .strip_prefix("hello_world_")
-        .unwrap_or(&rule.intent)
-}
-
-fn program_language(rule: &BehaviorRuleRecord) -> &str {
-    rule.label
-        .strip_prefix("Hello-world rule (")
-        .and_then(|value| value.strip_suffix(')'))
-        .unwrap_or("requested language")
 }
 
 fn collect_runtime_rules(log: &EventLog) -> Vec<CompiledSkillPackage> {
