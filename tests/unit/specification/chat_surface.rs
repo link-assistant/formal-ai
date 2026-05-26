@@ -4,7 +4,7 @@
 //! API, Telegram, web demo) is expected to share. They cover both the active
 //! implementation and the full-scope scope from `VISION.md`/`GOALS.md`.
 
-use formal_ai::{agent_info, ConversationTurn, FormalAiEngine, SymbolicAnswer, UniversalSolver};
+use formal_ai::{ConversationTurn, FormalAiEngine, SymbolicAnswer, UniversalSolver};
 
 fn answer(prompt: &str) -> SymbolicAnswer {
     FormalAiEngine.answer(prompt)
@@ -188,41 +188,6 @@ fn behavior_rules_list_works_for_russian_speakers() {
         assert_eq!(
             response.intent, "behavior_rules_list",
             "expected behavior_rules_list for {prompt:?}, got {}",
-            response.intent
-        );
-        assert!(response.answer.contains("rule_greeting"));
-        assert!(response.answer.contains("rule_unknown"));
-    }
-}
-
-#[test]
-fn behavior_rules_list_possessive_list_phrase_covers_supported_languages() {
-    let cases = [
-        ("en", "Show list of your rules"),
-        ("ru", "Покажи список своих правил"),
-        ("hi", "अपने नियमों की सूची दिखाओ"),
-        ("zh", "显示你的规则列表"),
-    ];
-    let info = agent_info();
-    let supported_languages = info
-        .get("supported_languages")
-        .expect("agent-info must define supported_languages");
-
-    for language in supported_languages
-        .split('|')
-        .filter(|lang| !lang.is_empty())
-    {
-        assert!(
-            cases.iter().any(|(case_language, _)| *case_language == language),
-            "missing behavior_rules_list possessive-list regression case for supported language {language}"
-        );
-    }
-
-    for (language, prompt) in cases {
-        let response = answer(prompt);
-        assert_eq!(
-            response.intent, "behavior_rules_list",
-            "expected behavior_rules_list for {language} prompt {prompt:?}, got {}",
             response.intent
         );
         assert!(response.answer.contains("rule_greeting"));

@@ -310,6 +310,20 @@ test.describe('multilingual chat surface', () => {
     }
   });
 
+  test('reported Russian behavior-rule list is localized and markdown-safe', async ({ page }) => {
+    const last = await sendPrompt(page, 'Перечисли свои правила');
+    const body = last.locator('.markdown-body');
+    await expect(last).toHaveClass(/assistant/);
+    await expect(body).toContainText('Правила поведения, которые я могу показать');
+    await expect(body).toContainText('rule_greeting');
+    await expect(body).toContainText('rule_unknown');
+    await expect(body).not.toContainText('Behavior rules I can inspect');
+    await expect(body.locator('h1')).toHaveCount(0);
+
+    const text = (await body.textContent()) || '';
+    expect(text).not.toContain('\\`');
+  });
+
   test('Hindi greeting replies in Hindi', async ({ page }) => {
     const last = await sendPrompt(page, 'नमस्ते');
     await expect(last).toHaveClass(/assistant/);

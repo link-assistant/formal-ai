@@ -30,6 +30,7 @@
 
 mod agent_isolation;
 mod associative_packages;
+mod behavior_rules;
 mod calculator_delegation;
 mod capabilities;
 mod chat_surface;
