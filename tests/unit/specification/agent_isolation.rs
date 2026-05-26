@@ -59,6 +59,28 @@ fn agent_mode_opt_in_is_explicit_and_logged() {
 }
 
 #[test]
+fn agent_mode_opt_in_is_logged_across_supported_languages() {
+    let prompts = [
+        "[agent] English request to run in agent mode",
+        "[agent] Русский запрос на agent mode",
+        "[agent] हिंदी अनुरोध agent mode के लिए",
+        "[agent] 中文 agent mode 请求",
+    ];
+
+    for prompt in prompts {
+        let response = answer(prompt);
+
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link.starts_with("agent_mode:opted_in")),
+            "agent mode opt-in must be logged for prompt: {prompt}"
+        );
+    }
+}
+
+#[test]
 fn agent_execution_runs_in_isolated_environment() {
     let response = answer("[agent] Run my Python script and report the output");
     let lower = response.answer.to_lowercase();
