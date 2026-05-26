@@ -94,6 +94,46 @@ source_rosetta_code
   license "external data; transform and retain source/license fields"
   conversion "convert task, language, solution, and test intent records"
 
+source_humaneval
+  title "HumanEval"
+  kind "programming-benchmark"
+  source_url "https://github.com/openai/human-eval"
+  download "https://raw.githubusercontent.com/openai/human-eval/6d43fb980f9fee3c892a914eda09951f772ad10d/data/HumanEval.jsonl.gz"
+  license "MIT; source revision 6d43fb980f9fee3c892a914eda09951f772ad10d"
+  conversion "import selected prompt/test expectations as deterministic benchmark_case records"
+
+source_mbpp
+  title "Mostly Basic Python Problems"
+  kind "programming-benchmark"
+  source_url "https://github.com/google-research/google-research/tree/master/mbpp"
+  download "https://raw.githubusercontent.com/google-research/google-research/1fa17414f56c3703d5adb3818338b6e35e0fd550/mbpp/mbpp.jsonl"
+  license "Apache-2.0; source revision 1fa17414f56c3703d5adb3818338b6e35e0fd550"
+  conversion "import selected prompt/test expectations as deterministic benchmark_case records"
+
+source_gsm8k
+  title "GSM8K"
+  kind "problem-solving-benchmark"
+  source_url "https://github.com/openai/grade-school-math"
+  download "https://raw.githubusercontent.com/openai/grade-school-math/3101c7d5072418e28b9008a6636bde82a006892c/grade_school_math/data/test.jsonl"
+  license "MIT; source revision 3101c7d5072418e28b9008a6636bde82a006892c"
+  conversion "import selected word-problem prompts and numeric answer checks as deterministic benchmark_case records"
+
+source_math_dataset
+  title "MATH"
+  kind "math-benchmark"
+  source_url "https://huggingface.co/datasets/qwedsacf/competition_math"
+  download "https://huggingface.co/datasets/qwedsacf/competition_math/resolve/e839825f9ec5c6cfa585c654a59610969ec13993/data/train-00000-of-00001-7320a6f3aba8ebd2.parquet"
+  license "MIT; Hugging Face revision e839825f9ec5c6cfa585c654a59610969ec13993"
+  conversion "import selected competition-math prompt and final-answer check as deterministic benchmark_case records"
+
+source_bigbench_object_counting
+  title "BIG-bench object_counting"
+  kind "general-problem-solving-benchmark"
+  source_url "https://github.com/google/BIG-bench/tree/main/bigbench/benchmark_tasks/object_counting"
+  download "https://raw.githubusercontent.com/google/BIG-bench/092b196c1f8f14a54bbc62f24759d43bde46dd3b/bigbench/benchmark_tasks/object_counting/task.json"
+  license "Apache-2.0; source revision 092b196c1f8f14a54bbc62f24759d43bde46dd3b"
+  conversion "import selected exact-match target as a deterministic benchmark_case record"
+
 source_wikifunctions
   title "Wikifunctions"
   kind "function-corpus"

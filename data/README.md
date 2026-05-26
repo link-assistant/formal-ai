@@ -1,6 +1,8 @@
 # formal-ai data
 
 This directory stores reviewable Links Notation seed data for issue #1.
+`data/benchmarks/` stores curated benchmark fixtures with source revisions and
+license provenance for deterministic regression and gap-reporting suites.
 
 Generate or refresh the checked-in `.lino` files with:
 
