@@ -38,6 +38,7 @@ mod code_generation;
 mod definition_fusion;
 mod desktop_surface;
 mod formalization;
+mod intent_formalization;
 mod issue_146;
 mod links_network;
 mod multilingual;

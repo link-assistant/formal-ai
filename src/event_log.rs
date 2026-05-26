@@ -153,6 +153,22 @@ pub fn build_evidence_links(prompt: &str, log: &EventLog, response_link: &str) -
             "formalization_unresolved" => {
                 format!("formalization_unresolved:{}", event.payload)
             }
+            "intent_formalization" => format!("intent_formalization:{}", event.id),
+            "intent_formalization_cache" => {
+                format!(
+                    "intent_formalization_cache:{}",
+                    event.payload.replace(' ', ":")
+                )
+            }
+            "intent_formalization:kind" => {
+                format!("intent_formalization:kind:{}", event.payload)
+            }
+            "intent_formalization:route" => {
+                format!("intent_formalization:route:{}", event.payload)
+            }
+            "intent_formalization:relevant" => {
+                format!("intent_formalization:relevant:{}", event.payload)
+            }
             // Structured fact_query trace events (Issue #127): preserve the
             // payload verbatim so memory consumers can render the parsed
             // relation, subject, and cache decision (rather than a hash id).

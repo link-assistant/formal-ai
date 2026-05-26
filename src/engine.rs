@@ -1,10 +1,9 @@
 //! Deterministic symbolic engine and Links-Notation knowledge dataset.
 //!
-//! This module hosts the rule-matching primitives (`select_rule_for`,
-//! `intent_for_rule`, `language_aware_answer_for`, …) used by the universal
-//! solver. Callers should not invoke `FormalAiEngine::answer` to bypass the
-//! solver — it delegates to [`crate::solver::UniversalSolver::solve`] so every
-//! request walks the same 11-step loop documented in `VISION.md`.
+//! This module hosts the deterministic answer projection primitives used by the
+//! universal solver. Callers should not invoke `FormalAiEngine::answer` to
+//! bypass the solver — it delegates to [`crate::solver::UniversalSolver::solve`]
+//! so every request walks the same 11-step loop documented in `VISION.md`.
 
 pub(crate) use crate::engine_hello_world::{
     ExecutionStatus, HelloWorldProgram, ProgramExecution, HELLO_WORLD_PROGRAMS,
@@ -667,27 +666,6 @@ impl SelectedRule {
     }
 }
 
-pub(crate) fn select_rule_for(prompt: &str) -> SelectedRule {
-    let normalized = normalize_prompt(prompt);
-    if is_greeting(&normalized) {
-        SelectedRule::Greeting
-    } else if is_farewell(&normalized) {
-        SelectedRule::Farewell
-    } else if is_test_status(&normalized) {
-        SelectedRule::TestStatus
-    } else if is_courtesy_response(&normalized) {
-        SelectedRule::CourtesyResponse
-    } else if is_assistant_name_question(&normalized) {
-        SelectedRule::AssistantName
-    } else if is_identity_question(&normalized) {
-        SelectedRule::Identity
-    } else if let Some(program) = hello_world_program(&normalized) {
-        SelectedRule::HelloWorld(program)
-    } else {
-        SelectedRule::Unknown
-    }
-}
-
 pub(crate) fn language_aware_intent_for(rule: &SelectedRule, _language: Language) -> String {
     rule.intent()
 }
@@ -739,86 +717,6 @@ pub(crate) fn response_link_for_intent(rule: &SelectedRule, _intent: &str) -> St
     String::from(rule.response_link())
 }
 
-fn intent_route(id: &str) -> Option<&'static seed::IntentRoute> {
-    static CELL: OnceLock<Vec<seed::IntentRoute>> = OnceLock::new();
-    let routes = CELL.get_or_init(|| seed::intent_routing().intents);
-    routes.iter().find(|route| route.id == id)
-}
-
-fn matches_intent_route(normalized_prompt: &str, id: &str) -> bool {
-    let Some(route) = intent_route(id) else {
-        return false;
-    };
-    if route
-        .keywords
-        .iter()
-        .any(|kw| normalized_prompt == kw.as_str())
-    {
-        return true;
-    }
-    if route
-        .phrases
-        .iter()
-        .any(|phrase| normalized_prompt == phrase.as_str())
-    {
-        return true;
-    }
-    if route
-        .tokens
-        .iter()
-        .any(|token| contains_token(normalized_prompt, token))
-    {
-        return true;
-    }
-    route.combos.iter().any(|combo| {
-        !combo.is_empty()
-            && combo
-                .iter()
-                .all(|token| contains_token(normalized_prompt, token))
-    })
-}
-
-fn is_greeting(normalized_prompt: &str) -> bool {
-    matches_intent_route(normalized_prompt, "intent_greeting")
-}
-
-fn is_farewell(normalized_prompt: &str) -> bool {
-    matches_intent_route(normalized_prompt, "intent_farewell")
-}
-
-fn is_test_status(normalized_prompt: &str) -> bool {
-    matches_intent_route(normalized_prompt, "intent_test_status")
-}
-
-fn is_courtesy_response(normalized_prompt: &str) -> bool {
-    matches_intent_route(normalized_prompt, "intent_courtesy_response")
-}
-
-fn is_assistant_name_question(normalized_prompt: &str) -> bool {
-    matches_intent_route(normalized_prompt, "intent_assistant_name")
-}
-
-fn is_identity_question(normalized_prompt: &str) -> bool {
-    matches_intent_route(normalized_prompt, "intent_identity")
-}
-
-fn hello_world_program(normalized_prompt: &str) -> Option<&'static HelloWorldProgram> {
-    let has_hello =
-        contains_token(normalized_prompt, "hello") || contains_token(normalized_prompt, "хелло");
-    let has_world =
-        contains_token(normalized_prompt, "world") || contains_token(normalized_prompt, "ворлд");
-    if !has_hello || !has_world {
-        return None;
-    }
-
-    HELLO_WORLD_PROGRAMS.iter().find(|program| {
-        program
-            .aliases
-            .iter()
-            .any(|alias| contains_token(normalized_prompt, alias))
-    })
-}
-
 /// Match a program from the catalog by language alias or Russian colloquial name.
 pub(crate) fn hello_world_program_by_alias(normalized: &str) -> Option<&'static HelloWorldProgram> {
     const RU: &[(&str, &str)] = &[
@@ -840,12 +738,6 @@ pub(crate) fn hello_world_program_by_alias(normalized: &str) -> Option<&'static 
     HELLO_WORLD_PROGRAMS
         .iter()
         .find(|p| p.aliases.iter().any(|a| normalized.contains(a)))
-}
-
-fn contains_token(normalized_prompt: &str, expected: &str) -> bool {
-    normalized_prompt
-        .split_whitespace()
-        .any(|token| token == expected)
 }
 
 pub(crate) fn normalize_prompt(prompt: &str) -> String {

@@ -10,6 +10,7 @@ pub(crate) mod engine_hello_world;
 pub mod event_log;
 pub(crate) mod fuzzy;
 pub mod github_logs;
+pub mod intent_formalization;
 pub mod language;
 pub mod link_store;
 pub(crate) mod links_format;
@@ -48,6 +49,10 @@ pub use github_logs::{
     collect_github_logs, collect_github_logs_with_runner, github_log_capture_plan,
     render_github_log_plan, GithubLogCapture, GithubLogCapturedFile, GithubLogCollectionSummary,
     GithubLogCollectorConfig,
+};
+pub use intent_formalization::{
+    formalize_intent, impulse_id_for, IntentFormalization, IntentFormalizationCache,
+    IntentFormalizationCacheEntry, IntentKind,
 };
 pub use language::{detect as detect_language, Language};
 #[cfg(feature = "doublets-native")]
