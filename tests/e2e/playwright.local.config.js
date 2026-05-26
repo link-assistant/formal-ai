@@ -25,6 +25,7 @@ module.exports = defineConfig({
     '**/issue-280.spec.js',
     '**/issue-282.spec.js',
     '**/issue-286.spec.js',
+    '**/issue-288.spec.js',
   ],
   timeout: 30_000,
   retries: 1,
