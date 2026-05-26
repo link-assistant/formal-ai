@@ -598,13 +598,19 @@ order from "lowest privilege" to "highest privilege":
    four representations: a data rule, a Rust handler stub, a JS handler
    stub, or an interpreted sequence of solver steps.
 
-`src/skill_compiler.rs` implements the first deterministic compiler path:
-`When ... answer ...` skills are lowered into a `CompiledSkillPackage` with a
-trigger rule, a deterministic compiled handler, an E1-style `LinkRecord`
-projection, and a Links Notation export. The solver scans dialog history for
-these packages before falling back to behavior-rule re-derivation; a replay
-appends `compiled_skill:replay` and `cache_hit:<compiled_skill_id>` to the
-trace.
+`src/skill_compiler.rs` implements the deterministic compiler subset. The
+legacy `When ... answer ...` form still lowers into a `CompiledSkillPackage`
+with a trigger rule, a deterministic compiled handler, an E1-style
+`LinkRecord` projection, and a Links Notation export. The structured subset
+adds reviewable `Skill`, typed `Input`, `Precondition`, ordered `Step`,
+`Effect`, `Expected test`, `Permission`, `Tool`, and `Target` records. Expected
+tests become deterministic replay fixtures, and `Target` records produce
+inspectable Rust/JavaScript/native handler stubs rather than executable code.
+The compiler refuses unsupported or nondeterministic instructions and requires
+explicit `Permission` records for package/tool capabilities such as
+`tool:local_shell`. The solver scans dialog history for compiled packages
+before falling back to behavior-rule re-derivation; a replay appends
+`compiled_skill:replay` and `cache_hit:<compiled_skill_id>` to the trace.
 
 `src/associative_package.rs` is the R65 package boundary. It models
 Deep.Foundation-inspired packages in the local doublet architecture with
@@ -613,9 +619,11 @@ explicit permission grants. A package can be exported/imported as Links
 Notation, installed only after dependencies validate, replayed through its
 trigger/handler links, and queried by the tool-call gate for capabilities such
 as `tool:calculator`. Compiled skills can be wrapped as packages and imported
-back without hand-editing Rust code. The `/v1/graph` projection includes the
-package, handler, trigger, and permission links so the permission path is
-inspectable alongside ordinary rules.
+back without hand-editing Rust code; structured expected tests become package
+triggers/handlers and structured permissions become package permission grants.
+The `/v1/graph` projection includes the package, handler, trigger, and
+permission links so the permission path is inspectable alongside ordinary
+rules.
 
 The compilation chain (NL → code → binary) is the long-term path. The
 runtime never *requires* compilation: a natural-language skill can be
@@ -867,11 +875,14 @@ adds one file (or extends one matrix) without touching the rest.
 These items are tracked as requirements today and as architecture
 references here:
 
-1. Natural-language-skill compilation now has a deterministic
-   trigger/response compiler in `src/skill_compiler.rs`, and compiled skills
-   can be wrapped as associative packages by `src/associative_package.rs`.
-   Future work is broadening the compiler beyond exact normalized-prompt
-   replay and into native Rust/JS lowering.
+1. Natural-language-skill compilation now supports both exact
+   trigger/response rules and the structured deterministic subset in
+   `src/skill_compiler.rs`: typed inputs, preconditions, ordered steps,
+   effects, generated expected tests, explicit permissions, and
+   Rust/JavaScript/native handler stubs. Compiled skills can be wrapped as
+   associative packages by `src/associative_package.rs`. Future work is
+   executing reviewed generated stubs in sandboxed runtimes; arbitrary
+   natural-language programming remains outside the current supported subset.
 
 Pull requests that close any of these should update the corresponding row in
 the table in Section 2 and link the new module.

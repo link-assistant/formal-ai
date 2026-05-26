@@ -10,6 +10,17 @@ use lino_objects_codec::format::parse_indented;
 const SKILL: &str = "When the user says `checksum status`, answer `checksum cache is valid.`";
 const TRIGGER: &str = "checksum status";
 const RESPONSE: &str = "checksum cache is valid.";
+const TYPED_PROCEDURE_SKILL: &str = r"
+Skill `triage escalation`
+Input `ticket_id`: text
+Input `severity`: enum(low,normal,urgent)
+Precondition `ticket_id is not empty`
+Step `validate ticket_id`
+Step `classify severity`
+Effect `return a deterministic triage summary`
+Expected test `triage TCK-7 urgent` -> `TCK-7 requires urgent triage.`
+Target `rust`
+";
 
 #[test]
 fn natural_language_skill_compiles_to_reusable_package() {
@@ -87,6 +98,92 @@ fn compiled_package_replays_deterministically_and_exports_links_notation() {
     parse_indented(&notation).expect("compiled skill package must be valid Links Notation");
     assert!(notation.contains("source_description"));
     assert!(notation.contains("replay_mode"));
+}
+
+#[test]
+fn typed_procedure_skill_compiles_steps_tests_and_handler_stub() {
+    let package =
+        compile_natural_language_skill(TYPED_PROCEDURE_SKILL).expect("typed skill should compile");
+
+    assert_eq!(package.inputs.len(), 2);
+    assert_eq!(package.inputs[0].name, "ticket_id");
+    assert_eq!(package.inputs[0].value_type, "text");
+    assert_eq!(package.inputs[1].name, "severity");
+    assert_eq!(package.inputs[1].value_type, "enum(low,normal,urgent)");
+    assert_eq!(package.preconditions.len(), 1);
+    assert_eq!(package.steps.len(), 2);
+    assert_eq!(package.effects.len(), 1);
+    assert_eq!(package.expected_tests.len(), 1);
+    assert_eq!(package.handler_stubs[0].target, "rust");
+
+    let replay = package
+        .replay("Triage TCK-7 urgent")
+        .expect("generated expected test should replay");
+    assert_eq!(replay.answer, "TCK-7 requires urgent triage.");
+
+    let notation = package.links_notation();
+    parse_indented(&notation).expect("typed compiled skill must export Links Notation");
+    assert!(notation.contains("input \"ticket_id\""));
+    assert!(notation.contains("step \""));
+    assert!(notation.contains("expected_test \""));
+    assert!(notation.contains("handler_stub \""));
+    assert!(notation.contains("target \"rust\""));
+}
+
+#[test]
+fn permissioned_skill_requires_explicit_package_permission() {
+    let missing_permission = r"
+Skill `filesystem audit`
+Input `path`: path
+Tool `local_shell`
+Step `run local_shell to list files`
+Expected test `audit /tmp` -> `filesystem audit requires shell permission.`
+";
+
+    let err = compile_natural_language_skill(missing_permission)
+        .expect_err("permissioned skill should require an explicit permission grant");
+    assert!(
+        matches!(
+            err,
+            formal_ai::SkillCompileError::PermissionRequired { ref capability } if capability == "tool:local_shell"
+        ),
+        "unexpected error: {err:?}"
+    );
+
+    let granted_permission = r"
+Skill `filesystem audit`
+Input `path`: path
+Tool `local_shell`
+Permission `tool:local_shell`: user-approved shell runner
+Step `run local_shell to list files`
+Expected test `audit /tmp` -> `filesystem audit requires shell permission.`
+";
+    let package = compile_natural_language_skill(granted_permission)
+        .expect("explicit package permission should allow compilation");
+    assert!(package
+        .required_permissions
+        .iter()
+        .any(|permission| permission.capability == "tool:local_shell"));
+}
+
+#[test]
+fn unsupported_instruction_is_refused() {
+    let err = compile_natural_language_skill(
+        r"
+Skill `pick winner`
+Input `candidate`: text
+Step `choose a random winner`
+Expected test `pick ada` -> `ada wins.`
+",
+    )
+    .expect_err("nondeterministic instructions must not compile silently");
+    assert!(
+        matches!(
+            err,
+            formal_ai::SkillCompileError::UnsupportedInstruction { .. }
+        ),
+        "unexpected error: {err:?}"
+    );
 }
 
 #[test]

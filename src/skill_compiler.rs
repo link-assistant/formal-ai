@@ -13,6 +13,13 @@ use crate::engine::{normalize_prompt, stable_id, KNOWLEDGE_SCHEMA_VERSION};
 use crate::link_store::{DoubletLink, LinkRecord};
 use crate::links_format::format_lino_record;
 
+mod structured;
+
+use structured::{
+    handler_signature, handler_stub_source, parse_structured_skill, structured_canonical,
+    StructuredSkillSpec,
+};
+
 /// A reusable, reviewable package compiled from one natural-language skill.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct CompiledSkillPackage {
@@ -32,6 +39,80 @@ pub struct CompiledSkillPackage {
     pub rule_id: String,
     /// Stable id of the generated compiled handler.
     pub handler_id: String,
+    /// Human-readable skill name from the structured definition, when present.
+    pub skill_name: String,
+    /// Typed arguments accepted by the compiled skill subset.
+    pub inputs: Vec<CompiledSkillInput>,
+    /// Preconditions checked before a generated handler is considered valid.
+    pub preconditions: Vec<CompiledSkillPrecondition>,
+    /// Ordered procedure steps lowered from the skill definition.
+    pub steps: Vec<CompiledSkillStep>,
+    /// Declared deterministic effects of the procedure.
+    pub effects: Vec<CompiledSkillEffect>,
+    /// Generated replay tests used both as examples and deterministic fixtures.
+    pub expected_tests: Vec<CompiledSkillExpectedTest>,
+    /// Explicit package/tool permissions required by the compiled skill.
+    pub required_permissions: Vec<CompiledSkillPermission>,
+    /// Target-specific handler stubs that can be reviewed before implementation.
+    pub handler_stubs: Vec<CompiledSkillHandlerStub>,
+}
+
+/// Typed argument accepted by the structured skill subset.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct CompiledSkillInput {
+    pub id: String,
+    pub name: String,
+    pub value_type: String,
+}
+
+/// Deterministic precondition from a structured skill definition.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct CompiledSkillPrecondition {
+    pub id: String,
+    pub description: String,
+}
+
+/// Ordered procedure step from a structured skill definition.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct CompiledSkillStep {
+    pub id: String,
+    pub order: usize,
+    pub description: String,
+}
+
+/// Declared effect of a structured skill definition.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct CompiledSkillEffect {
+    pub id: String,
+    pub description: String,
+}
+
+/// Generated expected test for deterministic replay.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct CompiledSkillExpectedTest {
+    pub id: String,
+    pub input: String,
+    pub normalized_input: String,
+    pub expected_output: String,
+    pub trigger_id: String,
+    pub handler_id: String,
+}
+
+/// Explicit package/tool permission required by a structured skill.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct CompiledSkillPermission {
+    pub id: String,
+    pub capability: String,
+    pub description: String,
+}
+
+/// Reviewable generated handler placeholder for a target runtime.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct CompiledSkillHandlerStub {
+    pub id: String,
+    pub target: String,
+    pub signature: String,
+    pub source: String,
 }
 
 /// Deterministic replay result from a compiled package.
@@ -54,6 +135,10 @@ pub struct CompiledSkillReplay {
 pub enum SkillCompileError {
     /// The text did not match a supported deterministic skill shape.
     UnsupportedShape,
+    /// The skill asks for nondeterministic or otherwise unsupported behavior.
+    UnsupportedInstruction { reason: String },
+    /// The skill names a permissioned tool/action without an explicit grant.
+    PermissionRequired { capability: String },
 }
 
 impl fmt::Display for SkillCompileError {
@@ -61,6 +146,15 @@ impl fmt::Display for SkillCompileError {
         match self {
             Self::UnsupportedShape => {
                 write!(formatter, "unsupported natural-language skill shape")
+            }
+            Self::UnsupportedInstruction { reason } => {
+                write!(
+                    formatter,
+                    "unsupported natural-language instruction: {reason}"
+                )
+            }
+            Self::PermissionRequired { capability } => {
+                write!(formatter, "skill requires explicit permission {capability}")
             }
         }
     }
@@ -76,6 +170,9 @@ impl Error for SkillCompileError {}
 pub fn compile_natural_language_skill(
     description: &str,
 ) -> Result<CompiledSkillPackage, SkillCompileError> {
+    if let Some(spec) = parse_structured_skill(description)? {
+        return CompiledSkillPackage::from_structured(description, spec);
+    }
     let Some((trigger, response)) = extract_trigger_response(description) else {
         return Err(SkillCompileError::UnsupportedShape);
     };
@@ -126,13 +223,176 @@ impl CompiledSkillPackage {
             response: response.to_owned(),
             rule_id,
             handler_id,
+            skill_name: String::from("trigger_response_skill"),
+            inputs: Vec::new(),
+            preconditions: Vec::new(),
+            steps: Vec::new(),
+            effects: Vec::new(),
+            expected_tests: Vec::new(),
+            required_permissions: Vec::new(),
+            handler_stubs: Vec::new(),
         }
+    }
+
+    fn from_structured(
+        source_description: &str,
+        spec: StructuredSkillSpec,
+    ) -> Result<Self, SkillCompileError> {
+        let Some(primary) = spec.primary_replay() else {
+            return Err(SkillCompileError::UnsupportedShape);
+        };
+        let normalized_trigger = normalize_prompt(&primary.trigger);
+        let canonical = structured_canonical(source_description, &spec, &primary);
+        let id = stable_id("compiled_skill", &canonical);
+        let rule_id = stable_id(
+            "compiled_skill_rule",
+            &format!("{id}:rule:{normalized_trigger}"),
+        );
+        let handler_id = stable_id(
+            "compiled_skill_handler",
+            &format!("{id}:handler:{}", primary.response),
+        );
+        let legacy_behavior_rule_id = stable_id(
+            "behavior_rule_runtime",
+            &format!("{}\n{}", primary.trigger, primary.response),
+        );
+        let inputs = spec
+            .inputs
+            .into_iter()
+            .map(|input| {
+                let record_id = stable_id("compiled_skill_input", &format!("{id}:{}", input.name));
+                CompiledSkillInput {
+                    id: record_id,
+                    name: input.name,
+                    value_type: input.value_type,
+                }
+            })
+            .collect::<Vec<_>>();
+        let preconditions = spec
+            .preconditions
+            .into_iter()
+            .map(|description| CompiledSkillPrecondition {
+                id: stable_id(
+                    "compiled_skill_precondition",
+                    &format!("{id}:{description}"),
+                ),
+                description,
+            })
+            .collect();
+        let steps = spec
+            .steps
+            .into_iter()
+            .enumerate()
+            .map(|(index, description)| CompiledSkillStep {
+                id: stable_id(
+                    "compiled_skill_step",
+                    &format!("{id}:{}:{description}", index + 1),
+                ),
+                order: index + 1,
+                description,
+            })
+            .collect::<Vec<_>>();
+        let effects = spec
+            .effects
+            .into_iter()
+            .map(|description| CompiledSkillEffect {
+                id: stable_id("compiled_skill_effect", &format!("{id}:{description}")),
+                description,
+            })
+            .collect();
+        let expected_tests = spec
+            .expected_tests
+            .into_iter()
+            .map(|test| {
+                let normalized_input = normalize_prompt(&test.input);
+                let test_id = stable_id(
+                    "compiled_skill_test",
+                    &format!("{id}:{normalized_input}:{}", test.expected_output),
+                );
+                CompiledSkillExpectedTest {
+                    id: test_id,
+                    trigger_id: stable_id(
+                        "compiled_skill_rule",
+                        &format!("{id}:test_rule:{normalized_input}"),
+                    ),
+                    handler_id: stable_id(
+                        "compiled_skill_handler",
+                        &format!(
+                            "{id}:test_handler:{normalized_input}:{}",
+                            test.expected_output
+                        ),
+                    ),
+                    input: test.input,
+                    normalized_input,
+                    expected_output: test.expected_output,
+                }
+            })
+            .collect::<Vec<_>>();
+        let required_permissions = spec
+            .permissions
+            .into_iter()
+            .map(|permission| CompiledSkillPermission {
+                id: stable_id(
+                    "compiled_skill_permission",
+                    &format!("{id}:{}:{}", permission.capability, permission.description),
+                ),
+                capability: permission.capability,
+                description: permission.description,
+            })
+            .collect::<Vec<_>>();
+        let skill_name = spec.name.clone();
+        let handler_stubs = spec
+            .targets
+            .into_iter()
+            .map(|target| {
+                let signature = handler_signature(&skill_name, &inputs);
+                let source = handler_stub_source(&target, &skill_name, &inputs, &steps, &primary);
+                CompiledSkillHandlerStub {
+                    id: stable_id("compiled_skill_handler_stub", &format!("{id}:{target}")),
+                    target,
+                    signature,
+                    source,
+                }
+            })
+            .collect();
+        Ok(Self {
+            id,
+            legacy_behavior_rule_id,
+            source_description: source_description.to_owned(),
+            trigger: primary.trigger,
+            normalized_trigger,
+            response: primary.response,
+            rule_id,
+            handler_id,
+            skill_name,
+            inputs,
+            preconditions,
+            steps,
+            effects,
+            expected_tests,
+            required_permissions,
+            handler_stubs,
+        })
     }
 
     /// Replay the package when `prompt` matches the compiled trigger.
     #[must_use]
     pub fn replay(&self, prompt: &str) -> Option<CompiledSkillReplay> {
-        if normalize_prompt(prompt) != self.normalized_trigger {
+        let normalized = normalize_prompt(prompt);
+        if let Some(test) = self
+            .expected_tests
+            .iter()
+            .find(|test| test.normalized_input == normalized)
+        {
+            return Some(CompiledSkillReplay {
+                package_id: self.id.clone(),
+                rule_id: test.trigger_id.clone(),
+                handler_id: test.handler_id.clone(),
+                answer: test.expected_output.clone(),
+                cache_hit: self.id.clone(),
+            });
+        }
+        if normalized != self.normalized_trigger {
             return None;
         }
         Some(CompiledSkillReplay {
@@ -147,33 +407,92 @@ impl CompiledSkillPackage {
     /// Export the compiled package as reviewable Links Notation.
     #[must_use]
     pub fn links_notation(&self) -> String {
-        format_lino_record(
-            &self.id,
-            &[
-                ("type", String::from("compiled_skill_package")),
-                ("schema_version", String::from(KNOWLEDGE_SCHEMA_VERSION)),
-                ("package_kind", String::from("associative_package")),
-                ("source", String::from("natural_language_skill")),
-                ("source_description", self.source_description.clone()),
-                ("trigger_rule", self.rule_id.clone()),
-                ("trigger", self.trigger.clone()),
-                ("normalized_trigger", self.normalized_trigger.clone()),
-                ("compiled_handler", self.handler_id.clone()),
-                ("handler_kind", String::from("deterministic_response")),
-                ("response", self.response.clone()),
-                ("replay_mode", String::from("exact_normalized_prompt")),
-                (
-                    "legacy_behavior_rule_id",
-                    self.legacy_behavior_rule_id.clone(),
-                ),
-            ],
-        )
+        let mut out = String::new();
+        push_lino_node(&mut out, 0, &self.id, None);
+        push_lino_node(&mut out, 2, "type", Some("compiled_skill_package"));
+        push_lino_node(
+            &mut out,
+            2,
+            "schema_version",
+            Some(KNOWLEDGE_SCHEMA_VERSION),
+        );
+        push_lino_node(&mut out, 2, "package_kind", Some("associative_package"));
+        push_lino_node(&mut out, 2, "source", Some("natural_language_skill"));
+        push_lino_node(
+            &mut out,
+            2,
+            "source_description",
+            Some(&self.source_description),
+        );
+        push_lino_node(&mut out, 2, "skill_name", Some(&self.skill_name));
+        push_lino_node(&mut out, 2, "trigger_rule", Some(&self.rule_id));
+        push_lino_node(&mut out, 2, "trigger", Some(&self.trigger));
+        push_lino_node(
+            &mut out,
+            2,
+            "normalized_trigger",
+            Some(&self.normalized_trigger),
+        );
+        push_lino_node(&mut out, 2, "compiled_handler", Some(&self.handler_id));
+        push_lino_node(&mut out, 2, "handler_kind", Some("deterministic_response"));
+        push_lino_node(&mut out, 2, "response", Some(&self.response));
+        push_lino_node(&mut out, 2, "replay_mode", Some("exact_normalized_prompt"));
+        push_lino_node(
+            &mut out,
+            2,
+            "legacy_behavior_rule_id",
+            Some(&self.legacy_behavior_rule_id),
+        );
+        for input in &self.inputs {
+            push_lino_node(&mut out, 2, "input", Some(&input.name));
+            push_lino_node(&mut out, 4, "id", Some(&input.id));
+            push_lino_node(&mut out, 4, "type", Some(&input.value_type));
+        }
+        for precondition in &self.preconditions {
+            push_lino_node(&mut out, 2, "precondition", Some(&precondition.id));
+            push_lino_node(&mut out, 4, "description", Some(&precondition.description));
+        }
+        for step in &self.steps {
+            let order = step.order.to_string();
+            push_lino_node(&mut out, 2, "step", Some(&step.id));
+            push_lino_node(&mut out, 4, "order", Some(&order));
+            push_lino_node(&mut out, 4, "description", Some(&step.description));
+        }
+        for effect in &self.effects {
+            push_lino_node(&mut out, 2, "effect", Some(&effect.id));
+            push_lino_node(&mut out, 4, "description", Some(&effect.description));
+        }
+        for test in &self.expected_tests {
+            push_lino_node(&mut out, 2, "expected_test", Some(&test.id));
+            push_lino_node(&mut out, 4, "input", Some(&test.input));
+            push_lino_node(
+                &mut out,
+                4,
+                "normalized_input",
+                Some(&test.normalized_input),
+            );
+            push_lino_node(&mut out, 4, "expected_output", Some(&test.expected_output));
+            push_lino_node(&mut out, 4, "trigger_rule", Some(&test.trigger_id));
+            push_lino_node(&mut out, 4, "compiled_handler", Some(&test.handler_id));
+        }
+        for permission in &self.required_permissions {
+            push_lino_node(&mut out, 2, "permission", Some(&permission.id));
+            push_lino_node(&mut out, 4, "capability", Some(&permission.capability));
+            push_lino_node(&mut out, 4, "description", Some(&permission.description));
+        }
+        for stub in &self.handler_stubs {
+            push_lino_node(&mut out, 2, "handler_stub", Some(&stub.id));
+            push_lino_node(&mut out, 4, "target", Some(&stub.target));
+            push_lino_node(&mut out, 4, "signature", Some(&stub.signature));
+            push_lino_node(&mut out, 4, "source_code", Some(&stub.source));
+        }
+        out.trim_end().to_owned()
     }
 
     /// Project the package, trigger rule, and handler to E1-style link records.
     #[must_use]
     pub fn link_records(&self) -> Vec<LinkRecord> {
-        vec![
+        let mut records = vec![
             link_record(
                 &self.id,
                 "CompiledSkillPackage",
@@ -181,6 +500,7 @@ impl CompiledSkillPackage {
                 &stable_id("natural_language_skill", &self.source_description),
                 &[
                     ("source_description", self.source_description.as_str()),
+                    ("skill_name", self.skill_name.as_str()),
                     ("trigger_rule", self.rule_id.as_str()),
                     ("compiled_handler", self.handler_id.as_str()),
                     ("replay_mode", "exact_normalized_prompt"),
@@ -207,7 +527,90 @@ impl CompiledSkillPackage {
                     ("response", self.response.as_str()),
                 ],
             ),
-        ]
+        ];
+        for input in &self.inputs {
+            records.push(link_record(
+                &input.id,
+                "CompiledSkillInput",
+                "typed_input",
+                &self.id,
+                &[
+                    ("name", input.name.as_str()),
+                    ("type", input.value_type.as_str()),
+                ],
+            ));
+        }
+        for precondition in &self.preconditions {
+            records.push(link_record(
+                &precondition.id,
+                "CompiledSkillPrecondition",
+                "precondition",
+                &self.id,
+                &[("description", precondition.description.as_str())],
+            ));
+        }
+        for step in &self.steps {
+            let order = step.order.to_string();
+            records.push(link_record(
+                &step.id,
+                "CompiledSkillStep",
+                "procedure_step",
+                &self.id,
+                &[
+                    ("order", order.as_str()),
+                    ("description", step.description.as_str()),
+                ],
+            ));
+        }
+        for effect in &self.effects {
+            records.push(link_record(
+                &effect.id,
+                "CompiledSkillEffect",
+                "declared_effect",
+                &self.id,
+                &[("description", effect.description.as_str())],
+            ));
+        }
+        for test in &self.expected_tests {
+            records.push(link_record(
+                &test.id,
+                "CompiledSkillExpectedTest",
+                "generated_test",
+                &self.id,
+                &[
+                    ("input", test.input.as_str()),
+                    ("expected_output", test.expected_output.as_str()),
+                    ("trigger_rule", test.trigger_id.as_str()),
+                    ("compiled_handler", test.handler_id.as_str()),
+                ],
+            ));
+        }
+        for permission in &self.required_permissions {
+            records.push(link_record(
+                &permission.id,
+                "CompiledSkillPermission",
+                "permission_grant",
+                &self.id,
+                &[
+                    ("capability", permission.capability.as_str()),
+                    ("description", permission.description.as_str()),
+                ],
+            ));
+        }
+        for stub in &self.handler_stubs {
+            records.push(link_record(
+                &stub.id,
+                "CompiledSkillHandlerStub",
+                "generated_handler_stub",
+                &self.id,
+                &[
+                    ("target", stub.target.as_str()),
+                    ("signature", stub.signature.as_str()),
+                    ("source_code", stub.source.as_str()),
+                ],
+            ));
+        }
+        records
     }
 }
 
@@ -341,6 +744,25 @@ fn push_doublet(links: &mut Vec<DoubletLink>, from: &str, to: &str) {
         from: from.to_owned(),
         to: to.to_owned(),
     });
+}
+
+fn push_lino_node(out: &mut String, indent: usize, name: &str, value: Option<&str>) {
+    out.push_str(&" ".repeat(indent));
+    out.push_str(name);
+    if let Some(value) = value {
+        out.push_str(" \"");
+        out.push_str(&escape_lino_value(value));
+        out.push('"');
+    }
+    out.push('\n');
+}
+
+fn escape_lino_value(value: &str) -> String {
+    value
+        .replace('\\', "\\\\")
+        .replace('"', "\\\"")
+        .replace('\r', "\\r")
+        .replace('\n', "\\n")
 }
 
 #[cfg(test)]
