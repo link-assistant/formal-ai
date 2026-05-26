@@ -66,7 +66,10 @@ pub use seed::{
     EnvironmentRecord, IntentRouting, LocalizedProject, MigrationFlow, ProjectRecord,
     ProjectStatement, ProjectsRegistry,
 };
-pub use server::{handle_api_request, serve, ApiHttpResponse};
+pub use server::{
+    handle_api_request, handle_api_request_with_auth, handle_api_request_with_headers, serve,
+    ApiAuthConfig, ApiHttpResponse,
+};
 pub use solver::{
     solve, solve_with_history, ConversationRole, ConversationTurn, ExecutionSurface, SolverConfig,
     UniversalSolver,

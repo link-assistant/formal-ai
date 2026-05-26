@@ -452,6 +452,10 @@ fn run_chat(
                 }],
                 temperature: None,
                 stream: false,
+                tools: Vec::new(),
+                tool_choice: None,
+                functions: Vec::new(),
+                function_call: None,
             };
             println!(
                 "{}",

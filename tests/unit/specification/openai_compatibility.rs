@@ -6,8 +6,8 @@
 //! drop-in symbolic engine.
 
 use formal_ai::{
-    create_chat_completion, create_response, handle_api_request, ChatCompletionRequest,
-    ChatMessage, MessageContent, ResponsesRequest,
+    create_chat_completion, create_response, handle_api_request, handle_api_request_with_auth,
+    ApiAuthConfig, ChatCompletionRequest, ChatMessage, MessageContent, ResponsesRequest,
 };
 
 // ---------------------------------------------------------------------------
@@ -24,6 +24,10 @@ fn chat_completion_round_trips_user_prompt_to_assistant_response() {
         }],
         temperature: Some(0.0),
         stream: false,
+        tools: Vec::new(),
+        tool_choice: None,
+        functions: Vec::new(),
+        function_call: None,
     };
 
     let completion = create_chat_completion(&request);
@@ -51,6 +55,10 @@ fn chat_completion_accepts_multipart_content() {
         }],
         temperature: None,
         stream: false,
+        tools: Vec::new(),
+        tool_choice: None,
+        functions: Vec::new(),
+        function_call: None,
     };
 
     let completion = create_chat_completion(&request);
@@ -71,6 +79,10 @@ fn chat_completion_reports_token_usage() {
         }],
         temperature: None,
         stream: false,
+        tools: Vec::new(),
+        tool_choice: None,
+        functions: Vec::new(),
+        function_call: None,
     };
     let completion = create_chat_completion(&request);
     assert!(completion.usage.prompt_tokens > 0);
@@ -205,6 +217,10 @@ fn chat_completion_supports_multi_turn_conversation() {
         ],
         temperature: None,
         stream: false,
+        tools: Vec::new(),
+        tool_choice: None,
+        functions: Vec::new(),
+        function_call: None,
     };
     let completion = create_chat_completion(&request);
     assert!(
@@ -244,6 +260,10 @@ fn chat_completion_applies_behavior_rule_from_prior_messages() {
         ],
         temperature: None,
         stream: false,
+        tools: Vec::new(),
+        tool_choice: None,
+        functions: Vec::new(),
+        function_call: None,
     };
 
     let completion = create_chat_completion(&request);
@@ -272,11 +292,36 @@ fn streaming_chat_completion_emits_server_sent_events() {
 }
 
 #[test]
-#[ignore = "tracked requirement: an authenticated API surface should accept Bearer tokens"]
 fn authenticated_routes_accept_bearer_token() {
-    let body = serde_json::json!({"model":"formal-symbolic-production","messages":[{"role":"user","content":"Hi"}]}).to_string();
-    let response = handle_api_request("POST", "/v1/chat/completions", &body);
-    assert!(response.status_code != 401);
+    let body = serde_json::json!({
+        "model": "formal-symbolic-production",
+        "messages": [{"role": "user", "content": "Hi"}]
+    })
+    .to_string();
+    let auth = ApiAuthConfig::bearer_token("local-test-token");
+    let response = handle_api_request_with_auth(
+        "POST",
+        "/v1/chat/completions",
+        &[("Authorization", "Bearer local-test-token")],
+        &body,
+        &auth,
+    );
+    assert_eq!(response.status_code, 200);
+    let json: serde_json::Value = serde_json::from_str(&response.body).unwrap();
+    assert_eq!(json["object"], "chat.completion");
+}
+
+#[test]
+fn authenticated_routes_reject_missing_bearer_token() {
+    let body = serde_json::json!({
+        "model": "formal-symbolic-production",
+        "messages": [{"role": "user", "content": "Hi"}]
+    })
+    .to_string();
+    let auth = ApiAuthConfig::bearer_token("local-test-token");
+    let response = handle_api_request_with_auth("POST", "/v1/chat/completions", &[], &body, &auth);
+    assert_eq!(response.status_code, 401);
+    assert!(response.body.to_lowercase().contains("bearer"));
 }
 
 #[test]
@@ -306,23 +351,68 @@ fn responses_api_attaches_trace_link() {
 }
 
 #[test]
-#[ignore = "tracked requirement: chat completions should refuse to call shell tools unless agent mode is opted in"]
 fn chat_completion_refuses_tool_call_without_agent_mode() {
-    let request = ChatCompletionRequest {
-        model: None,
-        messages: vec![ChatMessage {
-            role: String::from("user"),
-            content: MessageContent::Text(String::from(
-                "Run `rm -rf /tmp/foo` on my behalf right now",
-            )),
+    let request: ChatCompletionRequest = serde_json::from_value(serde_json::json!({
+        "model": "formal-symbolic-production",
+        "messages": [{
+            "role": "user",
+            "content": "Use the provided local_shell tool to list the working directory"
         }],
-        temperature: None,
-        stream: false,
-    };
+        "tools": [{
+            "type": "function",
+            "function": {
+                "name": "local_shell",
+                "description": "Run a shell command on the host",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "command": {"type": "string"}
+                    }
+                }
+            }
+        }],
+        "tool_choice": {
+            "type": "function",
+            "function": {"name": "local_shell"}
+        }
+    }))
+    .unwrap();
     let completion = create_chat_completion(&request);
     let body = completion.choices[0].message.content.plain_text();
     assert!(
         body.to_lowercase().contains("agent mode") || body.to_lowercase().contains("not allowed"),
         "chat surface must refuse autonomous shell execution by default, got: {body}"
+    );
+}
+
+#[test]
+fn chat_completion_allows_declared_tools_when_tool_choice_is_none() {
+    let request: ChatCompletionRequest = serde_json::from_value(serde_json::json!({
+        "model": "formal-symbolic-production",
+        "messages": [{
+            "role": "user",
+            "content": "Say hello"
+        }],
+        "tools": [{
+            "type": "function",
+            "function": {
+                "name": "local_shell",
+                "description": "Run a shell command on the host",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "command": {"type": "string"}
+                    }
+                }
+            }
+        }],
+        "tool_choice": "none"
+    }))
+    .unwrap();
+    let completion = create_chat_completion(&request);
+    let body = completion.choices[0].message.content.plain_text();
+    assert!(
+        !body.to_lowercase().contains("agent mode"),
+        "declared tools with tool_choice=none should remain a normal chat request, got: {body}"
     );
 }

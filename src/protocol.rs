@@ -14,6 +14,43 @@ pub struct ChatCompletionRequest {
     pub temperature: Option<f32>,
     #[serde(default)]
     pub stream: bool,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub tools: Vec<Value>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tool_choice: Option<Value>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub functions: Vec<Value>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub function_call: Option<Value>,
+}
+
+impl ChatCompletionRequest {
+    #[must_use]
+    pub fn requests_tool_execution(&self) -> bool {
+        if self
+            .tool_choice
+            .as_ref()
+            .is_some_and(is_tool_choice_request)
+            || self
+                .function_call
+                .as_ref()
+                .is_some_and(is_tool_choice_request)
+        {
+            return true;
+        }
+
+        let tool_calls_disabled = self
+            .tool_choice
+            .as_ref()
+            .is_some_and(matches_tool_choice_none);
+        let function_calls_disabled = self
+            .function_call
+            .as_ref()
+            .is_some_and(matches_tool_choice_none);
+
+        (!self.tools.is_empty() && !tool_calls_disabled)
+            || (!self.functions.is_empty() && !function_calls_disabled)
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -127,9 +164,7 @@ pub struct ResponseUsage {
 
 #[must_use]
 pub fn create_chat_completion(request: &ChatCompletionRequest) -> ChatCompletion {
-    let (prompt, history) = chat_prompt_and_history(&request.messages);
-    let symbolic_answer = UniversalSolver::default().solve_with_history(&prompt, &history);
-    chat_completion_from_symbolic(request, &prompt, symbolic_answer)
+    create_chat_completion_with_solver(request, &UniversalSolver::default())
 }
 
 #[must_use]
@@ -138,7 +173,11 @@ pub fn create_chat_completion_with_solver(
     solver: &UniversalSolver,
 ) -> ChatCompletion {
     let (prompt, history) = chat_prompt_and_history(&request.messages);
-    let symbolic_answer = solver.solve_with_history(&prompt, &history);
+    let symbolic_answer = if request.requests_tool_execution() && !solver.config.agent_mode {
+        tool_call_refusal_answer()
+    } else {
+        solver.solve_with_history(&prompt, &history)
+    };
     chat_completion_from_symbolic(request, &prompt, symbolic_answer)
 }
 
@@ -256,6 +295,37 @@ fn chat_message_to_turn(message: &ChatMessage) -> Option<ConversationTurn> {
         return Some(ConversationTurn::assistant(content));
     }
     None
+}
+
+fn tool_call_refusal_answer() -> SymbolicAnswer {
+    SymbolicAnswer {
+        intent: String::from("tool_call_refused"),
+        answer: String::from(
+            "Tool calls and function execution are not allowed without explicit agent mode. \
+             Enable agent mode only for an isolated execution environment.",
+        ),
+        confidence: 1.0,
+        evidence_links: vec![String::from("policy:agent_mode_required_for_tools")],
+        links_notation: String::from(
+            "tool_call_refusal\n  policy \"agent_mode_required_for_tools\"\n",
+        ),
+    }
+}
+
+fn is_tool_choice_request(value: &Value) -> bool {
+    !matches_tool_choice_none(value)
+}
+
+fn matches_tool_choice_none(value: &Value) -> bool {
+    match value {
+        Value::Null => true,
+        Value::String(choice) => choice.eq_ignore_ascii_case("none"),
+        Value::Object(object) => object
+            .get("type")
+            .and_then(Value::as_str)
+            .is_some_and(|kind| kind.eq_ignore_ascii_case("none")),
+        _ => false,
+    }
 }
 
 fn response_prompt(request: &ResponsesRequest) -> String {
