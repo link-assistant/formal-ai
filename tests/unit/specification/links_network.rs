@@ -80,7 +80,6 @@ fn knowledge_export_is_reducible_to_doublet_links() {
 }
 
 #[test]
-#[ignore = "tracked requirement: dynamic type system should publish Type -> SubType chains in the network"]
 fn dynamic_type_system_publishes_subtype_chains() {
     let notation = knowledge_links_notation();
     assert!(
@@ -111,7 +110,6 @@ fn history_is_append_only() {
 }
 
 #[test]
-#[ignore = "tracked requirement: facts should be recorded with the source link that introduced them"]
 fn every_fact_carries_a_source_link() {
     let notation = knowledge_links_notation();
     for record in notation.split("\n\n").filter(|chunk| !chunk.is_empty()) {
@@ -125,7 +123,6 @@ fn every_fact_carries_a_source_link() {
 }
 
 #[test]
-#[ignore = "tracked requirement: every answer must publish a trace link pointing to a reasoning record"]
 fn every_answer_has_a_trace_link_pointer() {
     let response = answer("Hi");
     assert!(
@@ -138,7 +135,6 @@ fn every_answer_has_a_trace_link_pointer() {
 }
 
 #[test]
-#[ignore = "tracked requirement: trace records must list ordered reasoning steps in Links Notation"]
 fn trace_record_lists_ordered_reasoning_steps() {
     let response = answer("Write me hello world program in Rust");
     assert!(
