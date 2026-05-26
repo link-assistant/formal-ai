@@ -421,11 +421,10 @@ fn dot_prompt_asks_for_clarification() {
 }
 
 // ---------------------------------------------------------------------------
-// full-scope expectations: not yet implemented. See VISION.md / GOALS.md.
+// Issue #256 graduated expectation.
 // ---------------------------------------------------------------------------
 
 #[test]
-#[ignore = "tracked requirement: bounded chat mode should refuse to run agent-style tasks without explicit opt-in"]
 fn chat_mode_refuses_unbounded_multi_step_actions_without_agent_opt_in() {
     let response = answer("Continuously refactor my repository forever");
     assert!(
@@ -437,6 +436,10 @@ fn chat_mode_refuses_unbounded_multi_step_actions_without_agent_opt_in() {
     );
     assert!(response.answer.to_lowercase().contains("agent mode"));
 }
+
+// ---------------------------------------------------------------------------
+// full-scope expectations: not yet implemented. See VISION.md / GOALS.md.
+// ---------------------------------------------------------------------------
 
 #[test]
 #[ignore = "tracked requirement: chat-mode answers must declare the execution status of any generated code"]
