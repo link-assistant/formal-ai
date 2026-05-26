@@ -1,0 +1,9 @@
+# Reasoning-batch (E21-E27) issue creation, 2026-05-26
+# Opened after the third-pass audit on issue #244 feedback.
+https://github.com/link-assistant/formal-ai/issues/298
+https://github.com/link-assistant/formal-ai/issues/299
+https://github.com/link-assistant/formal-ai/issues/300
+https://github.com/link-assistant/formal-ai/issues/301
+https://github.com/link-assistant/formal-ai/issues/302
+https://github.com/link-assistant/formal-ai/issues/303
+https://github.com/link-assistant/formal-ai/issues/304

@@ -33,10 +33,12 @@ are:
   issue created for #244 (the "create all the issues" deliverable).
 - The `Issue #244` row block added to [`REQUIREMENTS.md`](../../../REQUIREMENTS.md).
 
-> 2026-05-26 update: the first planning batch (E1-E14, issues #246-#259) has
-> been implemented and merged to `main`. This case study now preserves the
-> original audit as historical context and records the post-implementation audit
-> that created E15-E20 (#278-#283) for the remaining partial requirements.
+> 2026-05-26 update: the first planning batch (E1-E14, issues #246-#259) and the
+> follow-up batch (E15-E20, issues #278-#283) have both been implemented and
+> merged to `main`. This case study preserves the original audits as historical
+> context and records the **third-pass audit** that, acting on issue #244
+> feedback, found the remaining gap is reasoning behaviour and created the
+> reasoning batch **E21-E27 (#298-#304)**.
 
 ## Captured Artifacts
 
@@ -65,6 +67,8 @@ Downloaded and generated artifacts live under `raw-data/`:
   `next-batch-issues-2026-05-26.txt` — the post-implementation audit showing
   which follow-up issues closed, which deferred markers remain, and which
   next-batch issues were opened.
+- `reasoning-batch-issues-2026-05-26.txt` — the E21-E27 (#298-#304) issue URLs
+  opened by the third-pass reasoning audit.
 
 ## Timeline
 
@@ -78,6 +82,8 @@ Downloaded and generated artifacts live under `raw-data/`:
 | 2026-05-26 | `origin/main` merged into the issue branch; the E1-E14 implementation PRs (#260, #261, #263-#275), courtesy PR #276, and issue #272 follow-up PR #277 were incorporated. |
 | 2026-05-26 | Closed issues, merged PRs, deferred markers, and tracked specification tests were audited; no `#[ignore = "tracked requirement: ..."]` tests remained. |
 | 2026-05-26 | Six remaining partial requirements were opened as E15-E20: #278, #279, #280, #281, #282, and #283. |
+| 2026-05-26 | E15-E20 implemented and merged (#285, #287, #289, #290, #291, #293); `origin/main` re-merged into the issue branch. |
+| 2026-05-26 | Third-pass audit on issue #244 feedback: the solver still routes on a fixed intent catalogue and falls back to a canned opener on unmatched prompts. Seven reasoning-focused epics opened as E21-E27: #298, #299, #300, #301, #302, #303, and #304. |
 
 ## Requirements Extracted From Issue #244
 
@@ -99,7 +105,7 @@ features themselves (those are tracked in `ROADMAP.md`).
 | Q10 | Learn to **work with unknowns** and gather missing information ourselves. | Implemented through the universal loop and source cache; probabilistic evidence for ranking unknowns is tracked by #279. |
 | Q11 | Ask the user **as few questions as possible**; only ask what cannot be answered by the system itself. | Implemented by E4/#249 and PR #264 through temperature-based clarify-vs-guess selection. |
 | Q12 | **Build on previous experience**; make the algorithm more general and smart while still supporting everything already supported. | Implemented by merging E1-E14 with active regression coverage; the narrowed follow-up batch records remaining work without reopening closed requirements. |
-| Q13 | If there are **critical problems blocking the vision**, plan to fix them **first** (solid foundation). | Done — E1/E2 were planned first, then implemented; the refreshed roadmap now scopes the remaining partial requirements as E15-E20. |
+| Q13 | If there are **critical problems blocking the vision**, plan to fix them **first** (solid foundation). | Done — E1/E2 were planned and implemented first; E15-E20 then closed the smaller follow-ups; the E21-E27 reasoning batch is ordered foundation-first (E22 intent formalization and E21 reasoning-under-unknowns before the E26 coding agent). |
 | Q14 | Collect issue data into `docs/case-studies/issue-244` and **search online** for additional facts. | Done — `raw-data/` + `online-research.md`. |
 | Q15 | Do a **deep case study analysis**; list each and all requirements; propose **solution plans per requirement**. | Done — this document + `proposed-issues.md`. |
 | Q16 | Check **known existing components/libraries** that solve a similar problem or can help. | Done — see "Existing components and libraries" below and `online-research.md`. |
@@ -120,6 +126,36 @@ Findings:
   next batch: #278 default native doublets store, #279 symbolic probabilistic
   ranking, #280 desktop wrapper, #281 associative packages/permissions, #282
   Rust/WASM browser parity, and #283 generalized skill compiler.
+
+## Third-Pass Reasoning Audit (2026-05-26)
+
+After E15-E20 merged, issue #244 feedback asked whether the vision is fully
+achieved. A focused re-audit of the routing and unknown-handling code (preserved
+in `raw-data/code-audit.md`) found it is **not** — the remaining gap is reasoning
+behaviour, not storage, surfaces, or compilation:
+
+- The solver still routes on a **fixed intent catalogue**: `select_rule_for()`
+  maps prompts onto the closed `SelectedRule` enum (`src/engine.rs`), and
+  `handle_specialized_pattern()` walks the ordered `SPECIALIZED_HANDLERS` table
+  (`src/solver.rs`). The Wikidata-backed `FormalizationCandidate`
+  (`src/translation/formalization.rs`) is **not** the primary router.
+- Unmatched prompts fall through to a **canned opener** that only varies its first
+  sentence by a stable hash (`src/unknown_opener.rs`); there is **no
+  data-gathering or reasoning step** before giving up.
+- Code generation is a **per-language enumeration** (`HELLO_WORLD_PROGRAMS` in
+  `src/engine_hello_world.rs`), not one parametric `write a program` intent.
+- The skill compiler only supports **trigger/response** (`When I say X, answer Y`),
+  not `link-cli`-style `replace x y` / `when n do m` substitution rules over link
+  CRUD.
+- There is **no runtime code execution** in the core and agent mode is gated but
+  never executed, so the system effectively **memorizes** code instead of writing,
+  modifying, and running it.
+- The test corpus is **own seeds + specification tests only**; no permissively
+  licensed industry benchmarks are imported.
+
+These six findings map one-to-one onto the E21-E27 epics, ordered
+foundation-first (E22 intent formalization and E21 reasoning-under-unknowns
+before the E26 general coding agent that depends on them).
 
 ## Initial State Of The Code (2026-05-25 Audit Summary)
 
@@ -204,7 +240,10 @@ Each epic's full problem statement, proposed approach, existing components to
 reuse, and acceptance criteria are in [`proposed-issues.md`](proposed-issues.md).
 For E1-E14, the acceptance criteria were the original tracked tests to graduate.
 For E15-E20, the criteria are the remaining partial requirements discovered by
-the 2026-05-26 audit. The design principles that bind them:
+the 2026-05-26 audit. For E21-E27, the criteria are code-grounded: each issue
+names the exact symbol it must replace or extend (e.g. `src/unknown_opener.rs`,
+`src/engine.rs::SelectedRule`, `HELLO_WORLD_PROGRAMS`) and the new specification
+tests it must add. The design principles that bind them:
 
 - **Foundation first (Q13).** E1 (one doublet store as the source of truth) and
   E2 (one reasoning loop as the only entry path) are blockers; the other epics
@@ -236,8 +275,13 @@ Reused or referenced (details and citations in `online-research.md`):
   language-independent meaning into any language (E6); watch their renderers as
   a source of deterministic per-language generation rules.
 - **OpenCog AtomSpace / Hyperon (MeTTa)** — prior art for "graph rewriting +
-  rule-as-data + self-modifying rules" (E10, E14); we use doublets + Links
+  rule-as-data + self-modifying rules" (E10, E14, E24); we use doublets + Links
   Notation as the reviewable, restricted cousin.
+- **`link-foundation/link-cli`** — reference design for E24's `replace x y` /
+  `when n do m` substitution operations expressed as data over link CRUD.
+- **HumanEval / MBPP / GSM8K / MATH (permissive licenses)** — candidate industry
+  benchmarks for E27; imported as deterministic `.lino` test cases with recorded
+  license provenance.
 - **Lean / Z3 / first-order saturation synthesis** — prior art for deterministic
   verification and program synthesis (E7, E8).
 - **`lino-i18n`, `lino-objects-codec`, `lino-arguments`** — Links Notation
@@ -276,6 +320,19 @@ The post-implementation audit opened the next batch on 2026-05-26:
 | E18 | [#281](https://github.com/link-assistant/formal-ai/issues/281) |
 | E19 | [#282](https://github.com/link-assistant/formal-ai/issues/282) |
 | E20 | [#283](https://github.com/link-assistant/formal-ai/issues/283) |
+
+The third-pass reasoning audit opened the E21-E27 batch on 2026-05-26 (full
+bodies in `proposed-issues.md`):
+
+| Epic | Issue | Vision gap |
+| --- | --- | --- |
+| E21 | [#298](https://github.com/link-assistant/formal-ai/issues/298) | Reason under unknowns instead of failing |
+| E22 | [#299](https://github.com/link-assistant/formal-ai/issues/299) | Formalize messages into Links-Notation intent; drop the fixed catalogue |
+| E23 | [#300](https://github.com/link-assistant/formal-ai/issues/300) | One parametric `write a program` intent |
+| E24 | [#301](https://github.com/link-assistant/formal-ai/issues/301) | `replace x y` / `when n do m` substitution rules over link CRUD |
+| E25 | [#302](https://github.com/link-assistant/formal-ai/issues/302) | NL access to memory, APIs, and code execution |
+| E26 | [#303](https://github.com/link-assistant/formal-ai/issues/303) | General code-modifying / executing agent + many more tests |
+| E27 | [#304](https://github.com/link-assistant/formal-ai/issues/304) | Import permissive industry benchmark datasets |
 
 ## Verification
 

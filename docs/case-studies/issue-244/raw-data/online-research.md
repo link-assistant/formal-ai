@@ -87,6 +87,41 @@ points toward integrating a real decision procedure (the repo already references
 `link-assistant/relative-meta-logic`) and/or an SMT backend for arithmetic and
 constraint checks, rather than expanding a hand-written theorem table.
 
+## 4b. Substitution / rewrite systems as data (E24)
+
+For the "behaviour as `replace x y` / `when n do m` rules over link CRUD" goal,
+the reference design is `link-foundation/link-cli`: substitution operations where
+both sides are link patterns, composed into conditional rewrites. The wider
+lineage is term/graph rewriting (confluence + termination as the correctness
+properties) and OpenCog AtomSpace's rule engine (rule-as-data, §3). Takeaway:
+treat rules as inspectable Links Notation data attached to CRUD events, evaluated
+deterministically with an explicit termination guard — not as opaque code.
+
+- `link-foundation/link-cli` — <https://github.com/link-foundation/link-cli>
+
+## 4c. Industry benchmark datasets under permissive licenses (E27)
+
+The issue asks to "double check industry leading datasets … available in
+permissible licenses" and import them as test cases. The survey below records the
+license of each candidate (verified at the source repository) so E27 can import
+only permissively-licensed data. Licenses must be re-checked at import time
+against the exact source commit; this table is the starting point, not a waiver.
+
+| Dataset | Domain | License | Source | Why it fits |
+| --- | --- | --- | --- | --- |
+| HumanEval | Programming (function synthesis from docstring + unit tests) | MIT | `openai/human-eval` | Deterministic unit-test grading matches our generate-then-verify loop. |
+| MBPP (Mostly Basic Python Problems) | Programming (short tasks + tests) | CC-BY-4.0 | `google-research/google-research` (`mbpp`) | Broad, small tasks good for the parametric `write a program` intent. |
+| GSM8K | Grade-school math word problems | MIT | `openai/grade-school-math` | Multi-step arithmetic reasoning, checkable final answer. |
+| MATH (Hendrycks) | Competition math | MIT | `hendrycks/math` | Harder symbolic/algebraic reasoning with exact-answer checking. |
+
+Takeaway: all four are permissively licensed (MIT or CC-BY-4.0) and grade by an
+exact/unit-test check, which suits a deterministic symbolic solver — there is no
+need for a learned scorer. They become deterministic `.lino` test cases; the
+benchmark suite is allowed to start mostly red because it measures the gap the
+general coding agent (E26) must close, not the current seed coverage. Avoid
+copying any prose beyond the licensed dataset content itself, and vendor the
+upstream license file alongside imported data.
+
 ## 5. Repository-internal references (the building blocks we already cite)
 
 - `link-foundation/doublets-rs` — long-term doublet store backend (planned, not yet a dependency).
@@ -94,6 +129,7 @@ constraint checks, rather than expanding a hand-written theorem table.
 - `link-assistant/calculator` (`link-calculator` crate) — already integrated for arithmetic.
 - `link-assistant/relative-meta-logic` — future formal-reasoning integration point.
 - `link-foundation/lino-i18n`, `lino-objects-codec`, `lino-arguments` — Links Notation tooling already in use.
+- `link-foundation/link-cli` — reference for substitution-rule operations over links (E24).
 
 ## Summary of how the prior art shapes the plan
 
@@ -104,3 +140,5 @@ constraint checks, rather than expanding a hand-written theorem table.
 | Universal problem-solving loop | GPS, Soar, ACT-R | Adopt one domain-agnostic recognize→decide→act loop; keep it deterministic + traceable. |
 | Formal reasoning over test cases | Lean / Z3 / saturation synthesis | Integrate a real decision procedure (relative-meta-logic / SMT) instead of a fixed theorem table. |
 | Reasoning without neural nets | Symbolic-only branch of NeSy surveys | Keep the whole loop symbolic and inspectable; use the web (Wikidata/Wikipedia/Wiktionary) as a cache, not a teacher. |
+| Behaviour as substitution rules (E24) | link-cli / term-graph rewriting / AtomSpace rule engine | Adopt `replace x y` / `when n do m` as inspectable Links Notation data on CRUD; keep deterministic with a termination guard. |
+| Measuring "can code / solve anything" (E27) | HumanEval, MBPP, GSM8K, MATH | Import permissively-licensed (MIT/CC-BY) benchmarks graded by exact/unit-test checks as `.lino` test cases; no learned scorer. |

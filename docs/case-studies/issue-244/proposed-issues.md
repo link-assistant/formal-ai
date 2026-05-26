@@ -7,7 +7,9 @@ parent and is labeled `enhancement`.
 
 The 2026-05-25 batch (E1-E14) is now closed on `main`. The 2026-05-26
 post-implementation audit opened a narrower follow-up batch (E15-E20) for the
-requirements that remained partial after those merges.
+requirements that remained partial after those merges, and that batch is now
+closed too. A third-pass audit (acting on issue #244 feedback) opened the
+reasoning-focused batch E21-E27, whose full bodies are at the end of this file.
 
 **Opened issues (2026-05-25):** E1 → [#246](https://github.com/link-assistant/formal-ai/issues/246),
 E2 → [#247](https://github.com/link-assistant/formal-ai/issues/247),
@@ -31,6 +33,14 @@ E17 → [#280](https://github.com/link-assistant/formal-ai/issues/280),
 E18 → [#281](https://github.com/link-assistant/formal-ai/issues/281),
 E19 → [#282](https://github.com/link-assistant/formal-ai/issues/282),
 E20 → [#283](https://github.com/link-assistant/formal-ai/issues/283).
+
+**Opened issues (2026-05-26, reasoning batch):** E21 → [#298](https://github.com/link-assistant/formal-ai/issues/298),
+E22 → [#299](https://github.com/link-assistant/formal-ai/issues/299),
+E23 → [#300](https://github.com/link-assistant/formal-ai/issues/300),
+E24 → [#301](https://github.com/link-assistant/formal-ai/issues/301),
+E25 → [#302](https://github.com/link-assistant/formal-ai/issues/302),
+E26 → [#303](https://github.com/link-assistant/formal-ai/issues/303),
+E27 → [#304](https://github.com/link-assistant/formal-ai/issues/304).
 
 **Design rules that bind every epic** (from `../README.md`):
 
@@ -704,5 +714,205 @@ tracked-requirement tests was assigned to exactly one epic:
 | **Total** | **69** | |
 
 The 2026-05-26 audit confirmed that no tracked ignored tests remain under
-`tests/unit/specification/`. The remaining architecture and requirement gaps are
-now tracked by E15-E20.
+`tests/unit/specification/`. The E15-E20 batch then closed the smaller follow-up
+requirements. The remaining gap — reasoning behaviour rather than storage,
+surfaces, or compilation — is now tracked by the E21-E27 batch below.
+
+---
+
+## Reasoning Batch (E21-E27)
+
+The third-pass 2026-05-26 audit, acting on issue #244 feedback, found that the
+solver still routes on a fixed intent catalogue and falls back to a canned opener
+on unmatched prompts instead of reasoning under unknowns. These seven epics move
+the assistant from intent-matching to reasoning. They are ordered
+foundation-first: E22 (intent formalization) and E21 (reasoning under unknowns)
+underpin E23-E26, and E27 supplies the unseen-task corpus E26 is measured on.
+Each epic names the exact code symbol it must replace or extend.
+
+### E21 — Reasoning under unknowns instead of failing — [#298](https://github.com/link-assistant/formal-ai/issues/298)
+
+**Problem.** On an unmatched prompt the solver emits a canned "I can't answer
+that" opener. `language_aware_unknown_answer()` in `src/unknown_opener.rs` only
+swaps the opener of a fixed teaching message by a stable hash; it performs no
+reasoning. `handle_specialized_pattern()` (`src/solver.rs`) gives up when no
+`SPECIALIZED_HANDLERS` entry matches. This contradicts VISION.md ("work with
+unknowns by reasoning and gathering the missing data").
+
+**Scope.** On an unmatched prompt, run real reasoning steps before giving up:
+identify knowns, identify what is missing, choose an accessible source (link
+memory, public-knowledge cache, allowed API), attempt to gather it, and record
+each step as links. Ask at most one minimal clarifying question only after
+exhausting reachable options.
+
+**Existing components to reuse.** `src/event_log.rs` reasoning-step event kinds;
+`src/solver.rs` universal-loop scaffolding and `SolverConfig`
+(`questioning_rigor`, `offline`, `cache_ttl_seconds`); the E5 source cache.
+
+**Acceptance criteria.** Reasoning-step trace emitted (not a single sentence);
+reachable missing facts retrieved and answered; minimal-question path; canned
+fallback used only as a recorded last resort; new specification tests for each
+path.
+
+**Requirement links.** Issue #244 reasoning-under-unknowns feedback; VISION.md
+universal problem-solving loop; `src/unknown_opener.rs`.
+
+### E22 — Intent formalization as Links Notation — [#299](https://github.com/link-assistant/formal-ai/issues/299)
+
+**Problem.** Routing is driven by a fixed catalogue: `select_rule_for()` maps
+prompts onto the closed `SelectedRule` enum (`src/engine.rs`) and
+`SPECIALIZED_HANDLERS` (`src/solver.rs`) is an ordered keyword table. The
+Wikidata-backed `FormalizationCandidate` (`src/translation/formalization.rs`) is
+not the primary router. VISION.md asks for intent as Links Notation / binary
+links, with prior reasoning cached.
+
+**Scope.** Formalize every message into a `.lino` intent (kind, knowns,
+relevants) before routing; route from the formalized intent; cache prior
+formalizations keyed by content-addressed impulse id so repeated messages are not
+re-reasoned.
+
+**Existing components to reuse.** `src/translation/formalization.rs`;
+`src/concepts.rs` alias fallback; `src/memory.rs` `.lino` store; Links Notation
+tooling (`lino-objects-codec`, `lino-arguments`).
+
+**Acceptance criteria.** Prompt → intent links recorded; routing derived from the
+intent links; cache hit on repeated messages; `FormalizationCandidate` wired into
+routing or explicitly superseded; new specification tests.
+
+**Requirement links.** Issue #244 "formalize the messages of the user" feedback;
+ARCH §5 formalization.
+
+### E23 — Generalized parametric intents — [#300](https://github.com/link-assistant/formal-ai/issues/300)
+
+**Problem.** Code generation is a per-language enumeration: `HELLO_WORLD_PROGRAMS`
+(`src/engine_hello_world.rs`) lists ~10 languages, each effectively its own
+intent. Issue #244: "we should have `write a program` intent with parameters."
+Depends on E22.
+
+**Scope.** Collapse per-language intents into one parametric
+`write a program(language, task)` intent resolved from the formalized intent;
+remove or data-drive `HELLO_WORLD_PROGRAMS`; handle an unlisted supported language
+through the same path without new routing code.
+
+**Existing components to reuse.** E22 formalized intent; E7 code generation
+(`code_generation.rs`); `src/engine_hello_world.rs` templates as seed data.
+
+**Acceptance criteria.** One parametric intent serves all current hello-world
+languages from parameters; no per-language routing branch; unlisted supported
+combination handled; existing tests pass; graceful rejection of unsupported
+parameters.
+
+**Requirement links.** Issue #244 parametric-intent feedback; E7.
+
+### E24 — Substitution-rule handlers over link CRUD — [#301](https://github.com/link-assistant/formal-ai/issues/301)
+
+**Problem.** Behaviour is only Rust functions plus the narrow
+`When I say "X", answer "Y"` shape in `src/skill_compiler.rs`. There is no general
+`replace x y` over patterns and no composition into `when n do m`. Issue #244 asks
+for `link-cli`-style substitution operations as data on link CRUD.
+
+**Scope.** Add a `replace x y` pattern-substitution primitive over link patterns
+(with variable binding), composable into conditional `when … do …` rules,
+attachable to link CRUD events, deterministic, and inspectable as Links Notation —
+alongside the existing Rust handlers.
+
+**Existing components to reuse.** `link-foundation/link-cli` semantics;
+`src/skill_compiler.rs` / `src/associative_package.rs` for rule-as-data lowering;
+`src/memory.rs` CRUD path; `src/event_log.rs` trace links.
+
+**Acceptance criteria.** Single `replace`; composed `when n do m`; CRUD-attached
+rule firing; determinism/termination guard; a behaviour previously needing a Rust
+handler expressed purely as rule data; new specification tests.
+
+**Requirement links.** Issue #244 substitution-rule feedback; ARCH §16; OpenCog
+AtomSpace/MeTTa prior art (`raw-data/online-research.md` §3).
+
+### E25 — Natural-language access to memory, APIs, and code execution — [#302](https://github.com/link-assistant/formal-ai/issues/302)
+
+**Problem.** NL cannot yet drive the three core capabilities generally: memory
+queries are not answerable from arbitrary prompts; only a few specialized API
+handlers exist (`http_fetch`, `web_search` in `SPECIALIZED_HANDLERS`); there is no
+runtime code execution in the core. Depends on E22 and the E12/E18 permission
+model.
+
+**Scope.** From the formalized intent, query the link memory, select and call an
+allowed API, and execute code — all gated by the permission model and recorded as
+trace links with declared execution status.
+
+**Existing components to reuse.** `SPECIALIZED_HANDLERS` http/web/exec stubs; E12
+auth + tool-call gating; E18 package permissions; `transparent_state.rs`,
+`chat_surface.rs`, `openai_compatibility.rs` specs.
+
+**Acceptance criteria.** NL memory queries answered from the link store; NL API
+call gated and recorded; NL code execution only when permitted; execution status
+declared; permission-denied path tested.
+
+**Requirement links.** Issue #244 "use natural language to query memory / access
+APIs / execute code" feedback; E12/E18.
+
+### E26 — General code-modifying / executing agent — [#303](https://github.com/link-assistant/formal-ai/issues/303)
+
+**Problem.** The system memorizes code (`HELLO_WORLD_PROGRAMS`) and agent mode is
+gated but never executes (no sandbox, action log, terminal actions). Issue #244:
+"our goal is to have an AI system that actually can code anything … write, modify,
+execute, and run terminal actions … proven by a much larger automated test
+suite." Depends on E23, E24, E25, and E11 isolation.
+
+**Scope.** A general coding agent that writes, modifies, executes, and runs
+terminal actions in the E11 isolated workspace with action log, confirmation,
+time budget, secret guard, and revocation; correctness proven by a substantially
+larger test suite (including unseen E27 tasks), not by seed matching.
+
+**Existing components to reuse.** E11 agent isolation (`agent_isolation.rs`); E25
+execution path; E23 parametric intent; E7 code generation; E27 benchmarks.
+
+**Acceptance criteria.** Isolated file create/modify/delete + terminal commands
+with action log; unseen coding tasks solved by iterate-not-lookup; sandbox /
+confirmation / time budget / secret guard / revocation enforced and tested; test
+suite grows substantially; regression floor intact; execution status surfaced.
+
+**Requirement links.** Issue #244 general-coding-agent feedback; E11; NON-GOALS.md
+isolation requirement.
+
+### E27 — Industry benchmark datasets — [#304](https://github.com/link-assistant/formal-ai/issues/304)
+
+**Problem.** The corpus is own seeds + specification tests only; no industry
+benchmarks. Without them, "can code anything / solve problems" is only measured
+against memorizable prompts. Issue #244: "double check industry leading datasets …
+available in permissible licenses … import as test cases."
+
+**Scope.** Import permissively-licensed programming, problem-solving, and math
+benchmarks as deterministic `.lino` test cases with recorded license provenance;
+wire them into the harness as a benchmark suite that forces generalization over
+seed memorization.
+
+**Candidate datasets (verify license before import).** HumanEval (MIT), MBPP
+(CC-BY-4.0/Apache-2.0), GSM8K (MIT), MATH (MIT). Document the exact license and
+source for whatever is imported; reject non-permissive or unclear sources.
+
+**Existing components to reuse.** `tests/unit/specification/` harness and `.lino`
+fixtures; `raw-data/online-research.md` for the license/provenance survey.
+
+**Acceptance criteria.** At least one programming, one math, and one
+problem-solving benchmark imported with recorded permissive license + provenance;
+each represented as deterministic `.lino` test cases in a runnable benchmark
+suite reporting pass/fail; a research note listing each dataset, license, size,
+and selection rationale; no verbatim copying beyond licensed dataset content.
+
+**Requirement links.** Issue #244 industry-dataset feedback; program-synthesis /
+theorem-proving evaluation framing (`raw-data/online-research.md` §4).
+
+## Reasoning-batch coverage check
+
+Each E21-E27 epic maps to exactly one of the six third-pass audit findings (plus
+E27 as the measurement corpus):
+
+| Audit finding (code anchor) | Epic |
+| --- | --- |
+| Canned unknown fallback (`src/unknown_opener.rs`) | E21 |
+| Fixed intent catalogue (`SelectedRule`, `SPECIALIZED_HANDLERS`) | E22 |
+| Per-language enumeration (`HELLO_WORLD_PROGRAMS`) | E23 |
+| Trigger/response only (`src/skill_compiler.rs`) | E24 |
+| No NL memory/API/exec path; no runtime execution | E25 |
+| Memorized code; agent gated-but-unexecuted | E26 |
+| Own seeds only; no industry benchmarks | E27 |
