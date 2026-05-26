@@ -42,6 +42,7 @@ mod intent_formalization;
 mod issue_146;
 mod links_network;
 mod multilingual;
+mod natural_language_access;
 mod natural_language_skill_compilation;
 mod network_visualization;
 mod openai_compatibility;
