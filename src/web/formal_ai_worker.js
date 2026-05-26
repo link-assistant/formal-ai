@@ -589,6 +589,8 @@ function unknownOpenersFor(language) {
 }
 
 function selectUnknownOpener(prompt, language) {
+  const fromWasm = wasmSelectUnknownOpener(prompt, language);
+  if (fromWasm) return fromWasm;
   const pool = unknownOpenersFor(language);
   const trimmed = String(prompt || "").trim();
   if (trimmed === "") return pool[0];
@@ -2148,6 +2150,8 @@ function tokenContains(normalized, expected) {
 function matchesIntentRoute(normalized, rawPrompt, id) {
   const route = findIntentRoute(id);
   if (!route) return false;
+  const fromWasm = wasmMatchIntentRoute(normalized, rawPrompt, route);
+  if (fromWasm !== null) return fromWasm;
   const raw = String(rawPrompt || "")
     .toLowerCase()
     .replace(/[?。.!!,,;:]+$/g, "")
@@ -2206,13 +2210,15 @@ function isPunctuationOnlyPrompt(prompt) {
 }
 
 function stableBehaviorRuleId(prefix, value) {
+  const fromWasm = wasmStableId(prefix, value);
+  if (fromWasm) return fromWasm;
   let hash = 0xcbf29ce484222325n;
-  const source = String(value || "");
-  for (let index = 0; index < source.length; index += 1) {
-    hash ^= BigInt(source.charCodeAt(index));
+  const sourceBytes = new TextEncoder().encode(String(value || ""));
+  for (const byte of sourceBytes) {
+    hash ^= BigInt(byte);
     hash = BigInt.asUintN(64, hash * 0x100000001b3n);
   }
-  return `${prefix}_${hash.toString(16)}`;
+  return `${prefix}_${hash.toString(16).padStart(16, "0")}`;
 }
 
 function extractQuotedPhrase(text) {
@@ -11065,6 +11071,52 @@ function wasmEvaluateArithmetic(expression) {
     return { ok: false, error: text.slice(4) };
   }
   return { ok: true, value: text };
+}
+
+function wasmStableId(prefix, value) {
+  if (!wasm || typeof wasm.engine_stable_id !== "function") return null;
+  const payload = `${String(prefix || "")}\n${String(value || "")}`;
+  const length = wasmWriteInput(payload);
+  if (length < 0) return null;
+  const written = wasm.engine_stable_id(length) >>> 0;
+  return wasmReadOutput(written) || null;
+}
+
+function wasmSelectUnknownOpener(prompt, language) {
+  if (!wasm || typeof wasm.engine_select_unknown_opener !== "function") return null;
+  const payload = `${String(language || "")}\n${String(prompt || "")}`;
+  const length = wasmWriteInput(payload);
+  if (length < 0) return null;
+  const written = wasm.engine_select_unknown_opener(length) >>> 0;
+  return wasmReadOutput(written) || null;
+}
+
+function serializeIntentRouteForWasm(normalized, rawPrompt, route) {
+  const lines = [String(normalized || ""), String(rawPrompt || "")];
+  const append = (kind, value) => {
+    const text = String(value || "");
+    if (text && !/[\t\r\n]/.test(text)) lines.push(`${kind}\t${text}`);
+  };
+  for (const value of route.keywords || []) append("K", value);
+  for (const value of route.phrases || []) append("P", value);
+  for (const value of route.tokens || []) append("T", value);
+  for (const combo of route.combos || []) {
+    if (!Array.isArray(combo) || combo.length === 0) continue;
+    const fields = combo
+      .map((value) => String(value || ""))
+      .filter((value) => value && !/[\t\r\n]/.test(value));
+    if (fields.length > 0) lines.push(`C\t${fields.join("\t")}`);
+  }
+  return lines.join("\n");
+}
+
+function wasmMatchIntentRoute(normalized, rawPrompt, route) {
+  if (!wasm || typeof wasm.engine_match_intent_route !== "function") return null;
+  const length = wasmWriteInput(
+    serializeIntentRouteForWasm(normalized, rawPrompt, route),
+  );
+  if (length < 0) return null;
+  return (wasm.engine_match_intent_route(length) >>> 0) === 1;
 }
 
 // Delegates to `web_search_request_evidence` when the WASM core is loaded;
