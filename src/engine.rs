@@ -801,9 +801,10 @@ pub(crate) fn answer_links_notation(
 }
 
 fn format_write_program_rule_record() -> String {
-    let sample = program_spec("hello_world", "rust")
-        .map(write_program_answer)
-        .unwrap_or_else(|| String::from("Write-program template catalog is unavailable."));
+    let sample = program_spec("hello_world", "rust").map_or_else(
+        || String::from("Write-program template catalog is unavailable."),
+        write_program_answer,
+    );
     format_lino_record(
         "rule_write_program",
         &[

@@ -337,22 +337,22 @@ class Program {
     ProgramTemplate {
         task_slug: "count_to_three",
         language_slug: "python",
-        code: r#"for number in range(1, 4):
-    print(number)"#,
+        code: r"for number in range(1, 4):
+    print(number)",
     },
     ProgramTemplate {
         task_slug: "count_to_three",
         language_slug: "javascript",
-        code: r#"for (let number = 1; number <= 3; number += 1) {
+        code: r"for (let number = 1; number <= 3; number += 1) {
     console.log(number);
-}"#,
+}",
     },
     ProgramTemplate {
         task_slug: "count_to_three",
         language_slug: "typescript",
-        code: r#"for (let number = 1; number <= 3; number += 1) {
+        code: r"for (let number = 1; number <= 3; number += 1) {
     console.log(number);
-}"#,
+}",
     },
     ProgramTemplate {
         task_slug: "count_to_three",

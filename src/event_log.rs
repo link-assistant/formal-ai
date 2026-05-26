@@ -278,7 +278,7 @@ pub fn build_evidence_links(prompt: &str, log: &EventLog, response_link: &str) -
             "program_parameters" => {
                 format!(
                     "program_parameters:{}",
-                    event.payload.replace(' ', ":").replace(',', ":")
+                    event.payload.replace([' ', ','], ":")
                 )
             }
             "legacy_intent" => format!("legacy_intent:{}", event.payload),

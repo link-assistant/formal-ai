@@ -532,7 +532,7 @@ test.describe('formal-ai demo UI', () => {
 
     const lastMsg = messages.last();
     await expect(lastMsg).toHaveClass(/assistant/);
-    await expect(lastMsg).toContainText('rust hello world');
+    await expect(lastMsg).toContainText('Rust hello world');
     await expect(lastMsg).toContainText('Execution status:');
   });
 
