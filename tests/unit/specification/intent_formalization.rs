@@ -106,6 +106,51 @@ fn legacy_greeting_route_is_derived_from_formalized_intent() {
 }
 
 #[test]
+fn supported_language_greetings_route_through_intent_formalization() {
+    struct Case {
+        language: &'static str,
+        prompt: &'static str,
+    }
+
+    let cases = [
+        Case {
+            language: "en",
+            prompt: "Hi",
+        },
+        Case {
+            language: "ru",
+            prompt: "Привет",
+        },
+        Case {
+            language: "hi",
+            prompt: "नमस्ते",
+        },
+        Case {
+            language: "zh",
+            prompt: "你好",
+        },
+    ];
+
+    for case in cases {
+        let intent = formalize_intent(case.prompt, case.language, None);
+        assert_eq!(intent.language, case.language);
+        assert_eq!(intent.kind, IntentKind::Courtesy);
+        assert_eq!(intent.route.as_deref(), Some("greeting"), "{intent:?}");
+
+        let response = UniversalSolver::default().solve(case.prompt);
+        assert_eq!(response.intent, "greeting");
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == "intent_formalization:route:greeting"),
+            "{:?}",
+            response.evidence_links,
+        );
+    }
+}
+
+#[test]
 fn intent_formalization_cache_exports_to_durable_links_store() {
     let mut cache = IntentFormalizationCache::new();
     let candidate = formalize_prompt("translate apple to Russian", "en");
