@@ -4,6 +4,9 @@
 //! module normalizes them to 0.0..1.0 before applying softmax so the public
 //! `SolverConfig::temperature` range stays useful.
 
+use crate::probability::{
+    rank_probability_candidates, ProbabilityCandidate, ProbabilityRankingConfig, ProbabilityStore,
+};
 use crate::translation::{FormalizationCandidate, FormalizationRole};
 
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -120,6 +123,66 @@ pub fn select_formalization_candidate(
     let config = config.normalized();
     let candidates = candidates.to_vec();
     let probabilities = softmax_formalization_scores(&candidates, config.temperature);
+    select_from_probabilities(candidates, probabilities, config, impulse, "")
+}
+
+#[must_use]
+pub fn select_formalization_candidate_with_probability_store(
+    candidates: &[FormalizationCandidate],
+    config: FormalizationSelectionConfig,
+    impulse: &str,
+    probability_store: &ProbabilityStore,
+    offline: bool,
+) -> FormalizationSelection {
+    let config = config.normalized();
+    let candidates = candidates.to_vec();
+    let probability_candidates = candidates
+        .iter()
+        .map(|candidate| {
+            ProbabilityCandidate::new(
+                formalization_probability_target(candidate),
+                f32::from(candidate.score) / 1000.0,
+            )
+        })
+        .collect::<Vec<_>>();
+    let ranking = rank_probability_candidates(
+        &probability_candidates,
+        probability_store,
+        ProbabilityRankingConfig {
+            temperature: config.temperature,
+            offline,
+            markov_from: None,
+        },
+    );
+    let probabilities = candidates
+        .iter()
+        .map(|candidate| {
+            ranking
+                .probability_for(&formalization_probability_target(candidate))
+                .unwrap_or(0.0)
+        })
+        .collect::<Vec<_>>();
+    select_from_probabilities(
+        candidates,
+        probabilities,
+        config,
+        impulse,
+        &ranking.trace_summary(),
+    )
+}
+
+#[must_use]
+pub fn formalization_probability_target(candidate: &FormalizationCandidate) -> String {
+    format!("formalization:{}", candidate.compact_summary())
+}
+
+fn select_from_probabilities(
+    candidates: Vec<FormalizationCandidate>,
+    probabilities: Vec<f32>,
+    config: FormalizationSelectionConfig,
+    impulse: &str,
+    salt_suffix: &str,
+) -> FormalizationSelection {
     if candidates.is_empty() {
         return FormalizationSelection {
             candidates,
@@ -179,7 +242,7 @@ pub fn select_formalization_candidate(
     let index = sample_index(
         &probabilities,
         impulse,
-        &selection_salt(&candidates, config),
+        &selection_salt(&candidates, config, salt_suffix),
     );
     let probability = probabilities[index];
     FormalizationSelection {
@@ -245,6 +308,7 @@ fn sample_index(probabilities: &[f32], impulse: &str, salt: &str) -> usize {
 fn selection_salt(
     candidates: &[FormalizationCandidate],
     config: FormalizationSelectionConfig,
+    suffix: &str,
 ) -> String {
     let summaries = candidates
         .iter()
@@ -252,7 +316,7 @@ fn selection_salt(
         .collect::<Vec<_>>()
         .join("|");
     format!(
-        "temperature={:.4};guess={:.4};rigor={:.4};{summaries}",
+        "temperature={:.4};guess={:.4};rigor={:.4};{summaries};{suffix}",
         config.temperature, config.guess_probability, config.questioning_rigor
     )
 }

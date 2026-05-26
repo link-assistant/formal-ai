@@ -39,6 +39,7 @@ mod multilingual;
 mod natural_language_skill_compilation;
 mod network_visualization;
 mod openai_compatibility;
+mod probabilistic_reasoning;
 mod project_lookups;
 mod prompt_variations;
 mod reasoning_loop;

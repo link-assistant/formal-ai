@@ -62,6 +62,8 @@ The Rust types involved:
 - `formal_ai::ConversationTurn` and `formal_ai::ConversationRole` —
   conversation history.
 - `formal_ai::MemoryStore` and `formal_ai::MemoryEvent` — durable memory.
+- `formal_ai::ProbabilityStore` and `formal_ai::ProbabilityEvidence` —
+  append-only symbolic probability evidence with provenance.
 - `formal_ai::SolverConfig` — tunable knobs (`guess_probability`,
   `context_sensitivity`, `questioning_rigor`, `max_decomposition_depth`,
   `agent_mode`, `diagnostic_mode`, `offline`, `cache_ttl_seconds`).
@@ -109,7 +111,8 @@ prompt arrived.
                        v
 +-----------------------------------------------------------+
 |       5. TEMPERATURE-BASED INTERPRETATION SELECTION        |
-|  rank candidates by score; apply temperature softmax       |
+|  rank candidates by score + probability evidence           |
+|  apply temperature softmax                                 |
 |  if top two are close:                                     |
 |    - guess (when guess_probability is high), OR            |
 |    - ask the smallest clarifying question                  |
@@ -148,7 +151,7 @@ following Rust modules:
 | 2. Translate to Links Notation | `event_log::Event::Impulse` in `src/event_log.rs` | Implemented |
 | 3. Record in memory | `MemoryStore::append` in `src/memory.rs` | Implemented |
 | 4. Formalization | `src/concepts.rs` plus `src/translation/formalization.rs` for scored P/Q-id, Wikipedia, Wiktionary, and raw fallback anchors | Implemented |
-| 5. Temperature interpretation selection | `src/translation/selection.rs` plus `SolverConfig::{temperature, guess_probability, questioning_rigor}` in `src/solver.rs` | Implemented |
+| 5. Temperature interpretation selection | `src/translation/selection.rs`, `src/probability.rs`, plus `SolverConfig::{temperature, guess_probability, questioning_rigor}` in `src/solver.rs` | Implemented |
 | 6. Universal solver | `UniversalSolver` in `src/solver.rs` | Implemented |
 | 7. Append to memory | `event_log::EventLog`, `memory::export_full_memory` | Implemented |
 | 8. Render user-facing answer | `SymbolicAnswer` projection in `src/engine.rs` | Implemented |
@@ -404,6 +407,44 @@ If the top-two probabilities are within ε (configurable through
 The seeded-from-impulse-hash draw in `src/translation/selection.rs` keeps
 guessing deterministic per prompt, so the same input + same config produces the
 same answer.
+
+---
+
+## 6.1 Symbolic Probability Evidence
+
+Issue #279 adds a narrow probabilistic layer without changing the project's
+non-neural boundary. `src/probability.rs` stores evidence as ordinary
+append-only records:
+
+```text
+probability_evidence
+  id "probability_..."
+  target "formalization:subject=wikidata:Q89 predicate=wikidata:P279 object=wikidata:Q3314483"
+  observation "taxonomy_context_prefers_subclass"
+  weight "1.000000"
+  model "bayesian_evidence"
+  provenance "source:seed:test"
+  recorded_at "2026-05-26T00:00:00Z"
+```
+
+The current supported models are deliberately small:
+
+- `bayesian_evidence` adds independent symbolic evidence weights to a
+  candidate's prior score before temperature softmax.
+- `markov_transition` applies a weight only when the previous symbolic state
+  matches `ProbabilityRankingConfig::markov_from`.
+
+Both models operate on symbolic target IDs, not neural logits. The selector
+still produces a deterministic `FormalizationSelection`: the same prompt, same
+probability store, same config, and same impulse hash produce the same selected
+candidate. Evidence records can carry `source_url`, `fetched_at`, `sha256`, and
+`cached` fields; offline mode ignores live-only evidence, preserves cached
+source provenance, and emits `policy:offline` for skipped live evidence.
+
+The solver exposes `UniversalSolver::solve_with_probability_store` for callers
+that have a probability store. The default `FormalAiEngine::answer` path uses
+an empty store, so existing deterministic behavior is unchanged until evidence
+is explicitly supplied.
 
 ---
 

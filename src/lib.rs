@@ -13,12 +13,14 @@ pub mod language;
 pub mod link_store;
 pub(crate) mod links_format;
 pub mod memory;
+pub mod probability;
 pub mod proof_engine;
 pub mod protocol;
 pub mod seed;
 pub mod server;
 pub mod skill_compiler;
 pub mod solver;
+pub(crate) mod solver_formalization;
 pub(crate) mod solver_handler_docs;
 pub(crate) mod solver_handler_how;
 pub(crate) mod solver_handler_units;
@@ -54,6 +56,11 @@ pub use memory::{
     import_full_memory as import_memory_full, parse_links_notation as parse_memory_links_notation,
     suggest_migrations as suggest_memory_migrations, BundleInfo, MemoryEvent, MemoryStore,
     ParsedBundle,
+};
+pub use probability::{
+    rank_probability_candidates, ProbabilityCandidate, ProbabilityEvidence, ProbabilityModel,
+    ProbabilityRanking, ProbabilityRankingConfig, ProbabilitySourceProvenance, ProbabilityStore,
+    RankedProbabilityCandidate,
 };
 pub use protocol::{
     create_chat_completion, create_chat_completion_with_solver, create_response,
