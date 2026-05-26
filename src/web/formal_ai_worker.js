@@ -589,6 +589,8 @@ function unknownOpenersFor(language) {
 }
 
 function selectUnknownOpener(prompt, language) {
+  const fromWasm = wasmSelectUnknownOpener(prompt, language);
+  if (fromWasm) return fromWasm;
   const pool = unknownOpenersFor(language);
   const trimmed = String(prompt || "").trim();
   if (trimmed === "") return pool[0];
@@ -2148,6 +2150,8 @@ function tokenContains(normalized, expected) {
 function matchesIntentRoute(normalized, rawPrompt, id) {
   const route = findIntentRoute(id);
   if (!route) return false;
+  const fromWasm = wasmMatchIntentRoute(normalized, rawPrompt, route);
+  if (fromWasm !== null) return fromWasm;
   const raw = String(rawPrompt || "")
     .toLowerCase()
     .replace(/[?。.!!,,;:]+$/g, "")
@@ -2206,13 +2210,15 @@ function isPunctuationOnlyPrompt(prompt) {
 }
 
 function stableBehaviorRuleId(prefix, value) {
+  const fromWasm = wasmStableId(prefix, value);
+  if (fromWasm) return fromWasm;
   let hash = 0xcbf29ce484222325n;
-  const source = String(value || "");
-  for (let index = 0; index < source.length; index += 1) {
-    hash ^= BigInt(source.charCodeAt(index));
+  const sourceBytes = new TextEncoder().encode(String(value || ""));
+  for (const byte of sourceBytes) {
+    hash ^= BigInt(byte);
     hash = BigInt.asUintN(64, hash * 0x100000001b3n);
   }
-  return `${prefix}_${hash.toString(16)}`;
+  return `${prefix}_${hash.toString(16).padStart(16, "0")}`;
 }
 
 function extractQuotedPhrase(text) {
@@ -2469,16 +2475,6 @@ function behaviorRuleRecords() {
   ];
 }
 
-const BEHAVIOR_RULE_TOPIC_LABELS = {
-  greetings: "Greetings",
-  farewells: "Farewells",
-  identity: "Identity",
-  assistant_name: "Assistant name",
-  capabilities: "Capabilities",
-  hello_world: "Hello-world programs",
-  unknown_fallback: "Unknown fallback",
-};
-
 const BEHAVIOR_RULE_TOPIC_ORDER = [
   "greetings",
   "farewells",
@@ -2489,8 +2485,69 @@ const BEHAVIOR_RULE_TOPIC_ORDER = [
   "unknown_fallback",
 ];
 
-function behaviorRuleTopicLabel(topic) {
-  return BEHAVIOR_RULE_TOPIC_LABELS[topic] || "Other";
+function localizedText(language, values) {
+  return values[language] || values.en;
+}
+
+function behaviorRuleTopicLabel(topic, language) {
+  switch (topic) {
+    case "greetings":
+      return localizedText(language, {
+        en: "Greetings",
+        ru: "Приветствия",
+        hi: "अभिवादन",
+        zh: "问候",
+      });
+    case "farewells":
+      return localizedText(language, {
+        en: "Farewells",
+        ru: "Прощания",
+        hi: "विदाई",
+        zh: "告别",
+      });
+    case "identity":
+      return localizedText(language, {
+        en: "Identity",
+        ru: "Идентичность",
+        hi: "पहचान",
+        zh: "身份",
+      });
+    case "assistant_name":
+      return localizedText(language, {
+        en: "Assistant name",
+        ru: "Имя ассистента",
+        hi: "सहायक का नाम",
+        zh: "助手名称",
+      });
+    case "capabilities":
+      return localizedText(language, {
+        en: "Capabilities",
+        ru: "Возможности",
+        hi: "क्षमताएँ",
+        zh: "能力",
+      });
+    case "hello_world":
+      return localizedText(language, {
+        en: "Hello-world programs",
+        ru: "Программы Hello World",
+        hi: "Hello World प्रोग्राम",
+        zh: "Hello World 程序",
+      });
+    case "unknown_fallback":
+      return localizedText(language, {
+        en: "Unknown fallback",
+        ru: "Резервный ответ",
+        hi: "अज्ञात अनुरोध का वैकल्पिक उत्तर",
+        zh: "未知请求回退",
+      });
+    default:
+      return localizedText(language, {
+        en: "Other",
+        ru: "Другое",
+        hi: "अन्य",
+        zh: "其他",
+      });
+  }
 }
 
 function behaviorRuleTopicOrder(topic) {
@@ -2498,67 +2555,332 @@ function behaviorRuleTopicOrder(topic) {
   return index === -1 ? BEHAVIOR_RULE_TOPIC_ORDER.length : index;
 }
 
-function renderBehaviorRuleList(runtimeRules) {
-  const lines = [
-    "Behavior rules I can inspect in this dialog (grouped by topic, each shown as a `When X then Y` statement):",
+function behaviorRuleListIntro(language) {
+  return localizedText(language, {
+    en: "Behavior rules I can inspect in this dialog (grouped by topic, each shown as a `When X then Y` statement):",
+    ru: "Правила поведения, которые я могу показать в этом диалоге (сгруппированы по темам; каждое показано как инструкция `Когда X тогда Y`):",
+    hi: "व्यवहार नियम जिन्हें मैं इस संवाद में दिखा सकता हूँ (विषय के अनुसार समूहित; हर नियम `जब X तब Y` कथन के रूप में है):",
+    zh: "我可以查看的行为规则（按主题分组；每条都显示为 `当 X 时 Y` 语句）：",
+  });
+}
+
+function runtimeRulesHeading(language) {
+  return localizedText(language, {
+    en: "Dialog-local rules taught in this conversation",
+    ru: "Правила, изученные в этом диалоге",
+    hi: "इस संवाद में सिखाए गए स्थानीय नियम",
+    zh: "本对话中学到的局部规则",
+  });
+}
+
+function behaviorRuleListFooter(language) {
+  if (language === "ru") {
+    return [
+      "",
+      "Прочитать одно правило можно командой `Покажи правило unknown` или `Покажи правило rule_greeting`.",
+      "Научить этот диалог можно так: ``Когда `ваш запрос` тогда `ваш ответ` ``. Другие формы: ``Когда я скажу `ваш запрос`, ответь `ваш ответ` ``; ``Если я спрошу `ваш запрос`, ответь `ваш ответ` ``; ``Когда `ваш запрос` делай `ваш ответ` ``.",
+      "Многоязычные формы: английская ``When `X` then `Y` ``, хинди ``जब `X` तब `Y` ``, китайская ``当 `X` 时 `Y` ``.",
+      "Запись добавляется только в конец: экспортируйте память, чтобы сохранить сообщение с правилом вместе с диалогом.",
+    ];
+  }
+  if (language === "hi") {
+    return [
+      "",
+      "एक नियम पढ़ने के लिए `Show behavior rule unknown` या `Show behavior rule rule_greeting` भेजें.",
+      "इस संवाद को सिखाएँ: ``जब `आपका प्रश्न` तब `आपका उत्तर` ``. अन्य रूप: ``When I say `your prompt`, answer `your answer` ``; ``If I ask `your prompt`, reply `your answer` ``; ``जब `आपका प्रश्न` तो `आपका उत्तर` ``.",
+      "बहुभाषी रूप: रूसी ``Когда `X` тогда `Y` ``, अंग्रेज़ी ``When `X` then `Y` ``, चीनी ``当 `X` 时 `Y` ``.",
+      "लेखन केवल append-only है: नियम संदेश को संवाद के साथ रखने के लिए memory export करें.",
+    ];
+  }
+  if (language === "zh") {
+    return [
+      "",
+      "要读取一条规则，请发送 `Show behavior rule unknown` 或 `Show behavior rule rule_greeting`。",
+      "可以这样教当前对话：``当 `你的提示` 时 `你的回答` ``。等价形式：``When I say `your prompt`, answer `your answer` ``；``If I ask `your prompt`, reply `your answer` ``；``当 `你的提示` 则 `你的回答` ``。",
+      "多语言形式：俄语 ``Когда `X` тогда `Y` ``，印地语 ``जब `X` तब `Y` ``，英语 ``When `X` then `Y` ``。",
+      "写入是 append-only：导出 memory 可把这条规则消息随对话一起保存。",
+    ];
+  }
+  return [
     "",
+    "Read one with `Show behavior rule unknown` or `Show behavior rule rule_greeting`.",
+    "Teach this dialog with: ``When `your prompt` then `your answer` ``. Equivalent forms: ``When I say `your prompt`, answer `your answer` ``; ``If I ask `your prompt`, reply `your answer` ``; ``When `your prompt` do `your answer` ``.",
+    "Multilingual forms: Russian ``Когда `X` тогда `Y` `` / ``Когда `X` делай `Y` ``, Hindi ``जब `X` तब `Y` ``, Chinese ``当 `X` 时 `Y` ``.",
+    "The write is append-only: export memory to preserve the rule message with the dialog.",
   ];
+}
+
+function behaviorRuleProgramSlug(rule) {
+  return String(rule.intent || "").replace(/^hello_world_/, "");
+}
+
+function behaviorRuleProgramLanguage(rule) {
+  const match = /\(([^)]+)\)$/.exec(String(rule.label || ""));
+  return match ? match[1] : "requested language";
+}
+
+function localizedRuleResponse(rule, language) {
+  if (String(rule.id || "").startsWith("rule_hello_world_")) {
+    const programLanguage = behaviorRuleProgramLanguage(rule);
+    if (language === "ru") {
+      return `Возвращает минимальную программу Hello World на языке ${programLanguage}.`;
+    }
+    if (language === "hi") {
+      return `${programLanguage} में न्यूनतम Hello World प्रोग्राम लौटाता है.`;
+    }
+    if (language === "zh") {
+      return `返回一个最小的 ${programLanguage} Hello World 程序。`;
+    }
+    return rule.response;
+  }
+  switch (rule.id) {
+    case "rule_greeting":
+      return answerFor("greeting", language);
+    case "rule_farewell":
+      return answerFor("farewell", language);
+    case "rule_identity":
+      return answerFor("identity", language);
+    case "rule_assistant_name":
+      return localizedText(language, {
+        en: "Returns the assistant-name answer; browser surfaces can override it from the assistant name setting.",
+        ru: "Возвращает ответ об имени ассистента; браузерные поверхности могут переопределить его настройкой имени ассистента.",
+        hi: "assistant-name उत्तर लौटाता है; browser surfaces assistant name setting से इसे बदल सकते हैं.",
+        zh: "返回助手名称回答；浏览器界面可通过助手名称设置覆盖它。",
+      });
+    case "rule_capabilities":
+      return localizedText(language, {
+        en: "Lists the supported symbolic chat capabilities.",
+        ru: "Перечисляет поддерживаемые возможности символьного чата.",
+        hi: "समर्थित symbolic chat क्षमताओं को सूचीबद्ध करता है.",
+        zh: "列出支持的符号聊天能力。",
+      });
+    case "rule_unknown":
+      return answerFor("unknown", language);
+    default:
+      return rule.response;
+  }
+}
+
+function localizedRuleLabel(rule, language) {
+  if (String(rule.id || "").startsWith("rule_hello_world_")) {
+    const programLanguage = behaviorRuleProgramLanguage(rule);
+    if (language === "ru") return `Правило Hello World (${programLanguage})`;
+    if (language === "hi") return `Hello World नियम (${programLanguage})`;
+    if (language === "zh") return `Hello World 规则（${programLanguage}）`;
+    return rule.label;
+  }
+  const labels = {
+    rule_greeting: {
+      en: "Greeting rule",
+      ru: "Правило приветствия",
+      hi: "अभिवादन नियम",
+      zh: "问候规则",
+    },
+    rule_farewell: {
+      en: "Farewell rule",
+      ru: "Правило прощания",
+      hi: "विदाई नियम",
+      zh: "告别规则",
+    },
+    rule_identity: {
+      en: "Identity rule",
+      ru: "Правило идентичности",
+      hi: "पहचान नियम",
+      zh: "身份规则",
+    },
+    rule_assistant_name: {
+      en: "Assistant name rule",
+      ru: "Правило имени ассистента",
+      hi: "सहायक नाम नियम",
+      zh: "助手名称规则",
+    },
+    rule_capabilities: {
+      en: "Capabilities rule",
+      ru: "Правило возможностей",
+      hi: "क्षमता नियम",
+      zh: "能力规则",
+    },
+    rule_unknown: {
+      en: "Unknown fallback rule",
+      ru: "Резервное правило для неизвестного запроса",
+      hi: "अज्ञात अनुरोध का वैकल्पिक नियम",
+      zh: "未知请求回退规则",
+    },
+  };
+  return labels[rule.id] ? localizedText(language, labels[rule.id]) : rule.label;
+}
+
+function localizedRuleMatches(rule, language) {
+  if (String(rule.id || "").startsWith("rule_hello_world_")) {
+    const aliases = String(rule.matches || "").replace(
+      /^`hello world` plus (one of these )?aliases: /,
+      "",
+    );
+    if (language === "ru") return `\`hello world\` и один из псевдонимов: ${aliases}`;
+    if (language === "hi") return `\`hello world\` और इनमें से कोई alias: ${aliases}`;
+    if (language === "zh") return `\`hello world\` 加以下任一别名：${aliases}`;
+    return rule.matches;
+  }
+  const matches = {
+    rule_greeting: {
+      en: "`Hi`, `Hello`, `Hey`, and multilingual greeting seed phrases",
+      ru: "`Hi`, `Hello`, `Hey` и многоязычные seed-фразы приветствия",
+      hi: "`Hi`, `Hello`, `Hey` और बहुभाषी greeting seed phrases",
+      zh: "`Hi`、`Hello`、`Hey` 以及多语言问候 seed 短语",
+    },
+    rule_farewell: {
+      en: "`bye`, `goodbye`, `poka`, and multilingual farewell seed phrases",
+      ru: "`bye`, `goodbye`, `poka` и многоязычные seed-фразы прощания",
+      hi: "`bye`, `goodbye`, `poka` और बहुभाषी farewell seed phrases",
+      zh: "`bye`、`goodbye`、`poka` 以及多语言告别 seed 短语",
+    },
+    rule_identity: {
+      en: "`Who are you?`, `Кто ты?`, and equivalent identity prompts",
+      ru: "`Who are you?`, `Кто ты?` и равнозначные вопросы об идентичности",
+      hi: "`Who are you?`, `Кто ты?` और समान identity prompts",
+      zh: "`Who are you?`、`Кто ты?` 以及等价身份提示",
+    },
+    rule_assistant_name: {
+      en: "`What is your name?`, `Как тебя зовут?`, and equivalent name prompts",
+      ru: "`What is your name?`, `Как тебя зовут?` и равнозначные вопросы об имени",
+      hi: "`What is your name?`, `Как тебя зовут?` और समान name prompts",
+      zh: "`What is your name?`、`Как тебя зовут?` 以及等价名称提示",
+    },
+    rule_capabilities: {
+      en: "`What can you do?`, `Что ты умеешь?`, and equivalent capability prompts",
+      ru: "`What can you do?`, `Что ты умеешь?` и равнозначные вопросы о возможностях",
+      hi: "`What can you do?`, `Что ты умеешь?` और समान capability prompts",
+      zh: "`What can you do?`、`Что ты умеешь?` 以及等价能力提示",
+    },
+    rule_unknown: {
+      en: "Any prompt that no earlier rule or handler can answer",
+      ru: "Любой запрос, на который не ответило более раннее правило или обработчик",
+      hi: "कोई भी prompt जिसका उत्तर पहले का rule या handler नहीं दे सकता",
+      zh: "任何前面的规则或处理器无法回答的提示",
+    },
+  };
+  return matches[rule.id] ? localizedText(language, matches[rule.id]) : rule.matches;
+}
+
+function localizedRuleWhenThen(rule, language) {
+  if (String(rule.id || "").startsWith("rule_hello_world_")) {
+    const slug = behaviorRuleProgramSlug(rule);
+    const programLanguage = behaviorRuleProgramLanguage(rule);
+    if (language === "ru") {
+      return `Когда пользователь просит программу \`hello world\` с псевдонимом \`${slug}\`, ответь минимальной программой Hello World на языке ${programLanguage}.`;
+    }
+    if (language === "hi") {
+      return `जब उपयोगकर्ता \`${slug}\` alias के साथ \`hello world\` प्रोग्राम माँगे, तब ${programLanguage} का न्यूनतम Hello World प्रोग्राम दें.`;
+    }
+    if (language === "zh") {
+      return `当用户用别名 \`${slug}\` 请求 \`hello world\` 程序时，回答一个最小的 ${programLanguage} Hello World 程序。`;
+    }
+    return rule.whenThen;
+  }
+  const response = localizedRuleResponse(rule, language);
+  if (rule.id === "rule_greeting") {
+    if (language === "ru") return `Когда пользователь говорит \`Hi\`, \`Hello\`, \`Hey\` или многоязычную фразу приветствия, ответь \`${response}\`.`;
+    if (language === "hi") return `जब उपयोगकर्ता \`Hi\`, \`Hello\`, \`Hey\` या बहुभाषी greeting phrase कहे, तब \`${response}\` उत्तर दें.`;
+    if (language === "zh") return `当用户说 \`Hi\`、\`Hello\`、\`Hey\` 或多语言问候短语时，回答 \`${response}\`。`;
+  }
+  if (rule.id === "rule_farewell") {
+    if (language === "ru") return `Когда пользователь говорит \`bye\`, \`goodbye\`, \`poka\` или многоязычную фразу прощания, ответь \`${response}\`.`;
+    if (language === "hi") return `जब उपयोगकर्ता \`bye\`, \`goodbye\`, \`poka\` या बहुभाषी farewell phrase कहे, तब \`${response}\` उत्तर दें.`;
+    if (language === "zh") return `当用户说 \`bye\`、\`goodbye\`、\`poka\` 或多语言告别短语时，回答 \`${response}\`。`;
+  }
+  if (rule.id === "rule_identity") {
+    if (language === "ru") return `Когда пользователь спрашивает \`Who are you?\` или \`Кто ты?\`, ответь \`${response}\`.`;
+    if (language === "hi") return `जब उपयोगकर्ता \`Who are you?\` या \`Кто ты?\` पूछे, तब \`${response}\` उत्तर दें.`;
+    if (language === "zh") return `当用户问 \`Who are you?\` 或 \`Кто ты?\` 时，回答 \`${response}\`。`;
+  }
+  if (rule.id === "rule_assistant_name") {
+    if (language === "ru") return "Когда пользователь спрашивает `What is your name?` или `Как тебя зовут?`, ответь сообщением об имени ассистента; если поверхность поддерживает настройку имени, включи настроенное имя.";
+    if (language === "hi") return "जब उपयोगकर्ता `What is your name?` या `Как тебя зовут?` पूछे, तब assistant-name उत्तर दें; अगर surface में assistant-name setting है, तो configured name शामिल करें.";
+    if (language === "zh") return "当用户问 `What is your name?` 或 `Как тебя зовут?` 时，回答助手名称；如果界面有助手名称设置，则包含配置的名称。";
+  }
+  if (rule.id === "rule_capabilities") {
+    if (language === "ru") return "Когда пользователь спрашивает `What can you do?` или `Что ты умеешь?`, ответь многоязычным списком возможностей.";
+    if (language === "hi") return "जब उपयोगकर्ता `What can you do?` या `Что ты умеешь?` पूछे, तब बहुभाषी capability listing दें.";
+    if (language === "zh") return "当用户问 `What can you do?` 或 `Что ты умеешь?` 时，回答多语言能力列表。";
+  }
+  if (rule.id === "rule_unknown") {
+    if (language === "ru") return "Когда ни одно более раннее правило или обработчик не подходит к запросу, ответь многоязычной подсказкой для неизвестного намерения (`Покажи правила`, `Покажи правило`, `Когда ... тогда ...`, `Сообщить о проблеме`, `Экспорт памяти`).";
+    if (language === "hi") return "जब कोई पहले का rule या handler prompt से मेल न खाए, तब unknown-intent guide दें (`नियम दिखाएँ`, `rule दिखाएँ`, `जब ... तब ...`, `Report issue`, `Export memory`).";
+    if (language === "zh") return "当前面的规则或处理器都不匹配提示时，回答未知意图指南（`显示规则`、`显示规则详情`、`当 ... 时 ...`、`报告问题`、`导出 memory`）。";
+  }
+  return rule.whenThen;
+}
+
+function runtimeRuleWhenThen(rule, language) {
+  if (language === "ru") {
+    return `Когда пользователь говорит \`${rule.trigger}\`, ответь \`${rule.answer}\`.`;
+  }
+  if (language === "hi") {
+    return `जब उपयोगकर्ता \`${rule.trigger}\` कहे, तब \`${rule.answer}\` उत्तर दें.`;
+  }
+  if (language === "zh") {
+    return `当用户说 \`${rule.trigger}\` 时，回答 \`${rule.answer}\`。`;
+  }
+  return `When the user says \`${rule.trigger}\` then respond with \`${rule.answer}\`.`;
+}
+
+function renderBehaviorRuleList(runtimeRules, language = "en") {
+  const lines = [behaviorRuleListIntro(language), ""];
   const groups = new Map();
   for (const rule of behaviorRuleRecords()) {
     const order = behaviorRuleTopicOrder(rule.topic);
     if (!groups.has(order)) {
-      groups.set(order, { label: behaviorRuleTopicLabel(rule.topic), rules: [] });
+      groups.set(order, { label: behaviorRuleTopicLabel(rule.topic, language), rules: [] });
     }
     groups.get(order).rules.push(rule);
   }
   const ordered = Array.from(groups.entries()).sort((a, b) => a[0] - b[0]);
   ordered.forEach(([, group], index) => {
-    lines.push(`# ${group.label}`);
+    lines.push(`### ${group.label}`);
     for (const rule of group.rules) {
-      lines.push(`- \`${rule.id}\` -> ${rule.whenThen}`);
+      lines.push(`- \`${rule.id}\` -> ${localizedRuleWhenThen(rule, language)}`);
     }
     if (index + 1 < ordered.length) lines.push("");
   });
   if (Array.isArray(runtimeRules) && runtimeRules.length > 0) {
-    lines.push("", "# Dialog-local rules taught in this conversation");
+    lines.push("", `### ${runtimeRulesHeading(language)}`);
     for (const rule of runtimeRules) {
       lines.push(
-        `- \`${rule.id}\` -> When the user says \`${rule.trigger}\` then respond with \`${rule.answer}\`.`,
+        `- \`${rule.id}\` -> ${runtimeRuleWhenThen(rule, language)}`,
       );
     }
   }
-  lines.push(
-    "",
-    "Read one with `Show behavior rule unknown` or `Show behavior rule rule_greeting`.",
-    "Teach this dialog with: When `your prompt` then `your answer`. " +
-      "Equivalent forms: When I say `your prompt`, answer `your answer`; " +
-      "If I ask `your prompt`, reply `your answer`; " +
-      "When `your prompt` do `your answer`.",
-    "Multilingual forms: Russian `Когда \\`X\\` тогда \\`Y\\`` / `Когда \\`X\\` делай \\`Y\\``, " +
-      "Hindi `जब \\`X\\` तब \\`Y\\``, Chinese `当 \\`X\\` 时 \\`Y\\``.",
-    "The write is append-only: export memory to preserve the rule message with the dialog.",
-  );
+  lines.push(...behaviorRuleListFooter(language));
   return lines.join("\n");
 }
 
-function renderBehaviorRuleDetail(rule) {
+function renderBehaviorRuleDetail(rule, language = "en") {
+  const label = localizedRuleLabel(rule, language);
+  const whenThen = localizedRuleWhenThen(rule, language);
+  const matches = localizedRuleMatches(rule, language);
+  const response = localizedRuleResponse(rule, language);
+  const changeHint = localizedText(language, {
+    en: "To change this behavior in the current dialog, send: ``When `your prompt` then `your answer` ``. Equivalent: ``When I say `your prompt`, answer `your answer` ``.",
+    ru: "Чтобы изменить это поведение в текущем диалоге, отправьте: ``Когда `ваш запрос` тогда `ваш ответ` ``. Также можно: ``Когда я скажу `ваш запрос`, ответь `ваш ответ` ``.",
+    hi: "इस व्यवहार को वर्तमान संवाद में बदलने के लिए भेजें: ``जब `आपका प्रश्न` तब `आपका उत्तर` ``. दूसरा रूप: ``When I say `your prompt`, answer `your answer` ``.",
+    zh: "要在当前对话中改变此行为，请发送：``当 `你的提示` 时 `你的回答` ``。也可以发送：``When I say `your prompt`, answer `your answer` ``。",
+  });
   return [
-    rule.label,
+    label,
     "",
-    rule.whenThen,
+    whenThen,
     "",
     "```links",
     rule.id,
     `  topic "${escapeBehaviorRuleValue(rule.topic)}"`,
     `  intent "${escapeBehaviorRuleValue(rule.intent)}"`,
-    `  matches "${escapeBehaviorRuleValue(rule.matches)}"`,
-    `  response "${escapeBehaviorRuleValue(rule.response)}"`,
+    `  matches "${escapeBehaviorRuleValue(matches)}"`,
+    `  response "${escapeBehaviorRuleValue(response)}"`,
     `  source "${escapeBehaviorRuleValue(rule.source)}"`,
-    `  when_then "${escapeBehaviorRuleValue(rule.whenThen)}"`,
+    `  when_then "${escapeBehaviorRuleValue(whenThen)}"`,
     "```",
     "",
-    "To change this behavior in the current dialog, send: When `your prompt` then `your answer`. " +
-      "Equivalent: When I say `your prompt`, answer `your answer`.",
+    changeHint,
   ].join("\n");
 }
 
@@ -2739,10 +3061,24 @@ function renderKnownFacts(language, preferences) {
   ].join("\n");
 }
 
-function renderRuntimeRuleUpdate(rule) {
-  const whenThenText = `When the user says \`${rule.trigger}\` then respond with \`${rule.answer}\`.`;
+function renderRuntimeRuleUpdate(rule, language = "en") {
+  const whenThenText = runtimeRuleWhenThen(rule, language);
+  const title = localizedText(language, {
+    en: "Behavior rule recorded for this dialog.",
+    ru: "Правило поведения записано для этого диалога.",
+    hi: "इस संवाद के लिए व्यवहार नियम record किया गया.",
+    zh: "已为本对话记录行为规则。",
+  });
+  const sendHint =
+    language === "ru"
+      ? `Отправьте \`${rule.trigger}\` сейчас, и я отвечу настроенным ответом. Экспортируйте память, чтобы сохранить это правило вместе с диалогом.`
+      : language === "hi"
+        ? `\`${rule.trigger}\` अभी भेजें और मैं configured response से उत्तर दूँगा. इस rule message को dialog के साथ रखने के लिए memory export करें.`
+        : language === "zh"
+          ? `现在发送 \`${rule.trigger}\`，我会使用配置的回答。导出 memory 可把这条规则消息随对话一起保存。`
+          : `Send \`${rule.trigger}\` now and I will answer with the configured response. Export memory to keep this rule message with the dialog.`;
   return [
-    "Behavior rule recorded for this dialog.",
+    title,
     "",
     whenThenText,
     "",
@@ -2755,7 +3091,7 @@ function renderRuntimeRuleUpdate(rule) {
     '  source "user_message"',
     "```",
     "",
-    `Send \`${rule.trigger}\` now and I will answer with the configured response. Export memory to keep this rule message with the dialog.`,
+    sendHint,
   ].join("\n");
 }
 
@@ -2856,6 +3192,7 @@ function isHindiBehaviorRulesListQuery(normalized) {
     normalized.includes("दिखाओ") ||
     normalized.includes("दिखाएं") ||
     normalized.includes("बताओ") ||
+    normalized.includes("गिनाओ") ||
     normalized.includes("कौन");
   const pointsAtAssistantRules =
     normalized.includes("व्यवहार") ||
@@ -3208,11 +3545,12 @@ function collectRuntimeRules(history) {
 }
 
 function tryBehaviorRules(prompt, normalized, history, preferences) {
+  const language = detectLanguage(prompt);
   const updateRule = runtimeRuleFromText(prompt);
   if (updateRule) {
     return {
       intent: "behavior_rule_update",
-      content: renderRuntimeRuleUpdate(updateRule),
+      content: renderRuntimeRuleUpdate(updateRule, language),
       confidence: 1.0,
       evidence: ["behavior_rule:update", updateRule.id],
     };
@@ -3221,7 +3559,7 @@ function tryBehaviorRules(prompt, normalized, history, preferences) {
   if (isBehaviorRulesList(normalized)) {
     return {
       intent: "behavior_rules_list",
-      content: renderBehaviorRuleList(collectRuntimeRules(history)),
+      content: renderBehaviorRuleList(collectRuntimeRules(history), language),
       confidence: 1.0,
       evidence: ["behavior_rules:list", "all"],
     };
@@ -3233,7 +3571,7 @@ function tryBehaviorRules(prompt, normalized, history, preferences) {
     if (rule) {
       return {
         intent: "behavior_rule_detail",
-        content: renderBehaviorRuleDetail(rule),
+        content: renderBehaviorRuleDetail(rule, language),
         confidence: 1.0,
         evidence: ["behavior_rule:read", rule.id],
       };
@@ -11065,6 +11403,52 @@ function wasmEvaluateArithmetic(expression) {
     return { ok: false, error: text.slice(4) };
   }
   return { ok: true, value: text };
+}
+
+function wasmStableId(prefix, value) {
+  if (!wasm || typeof wasm.engine_stable_id !== "function") return null;
+  const payload = `${String(prefix || "")}\n${String(value || "")}`;
+  const length = wasmWriteInput(payload);
+  if (length < 0) return null;
+  const written = wasm.engine_stable_id(length) >>> 0;
+  return wasmReadOutput(written) || null;
+}
+
+function wasmSelectUnknownOpener(prompt, language) {
+  if (!wasm || typeof wasm.engine_select_unknown_opener !== "function") return null;
+  const payload = `${String(language || "")}\n${String(prompt || "")}`;
+  const length = wasmWriteInput(payload);
+  if (length < 0) return null;
+  const written = wasm.engine_select_unknown_opener(length) >>> 0;
+  return wasmReadOutput(written) || null;
+}
+
+function serializeIntentRouteForWasm(normalized, rawPrompt, route) {
+  const lines = [String(normalized || ""), String(rawPrompt || "")];
+  const append = (kind, value) => {
+    const text = String(value || "");
+    if (text && !/[\t\r\n]/.test(text)) lines.push(`${kind}\t${text}`);
+  };
+  for (const value of route.keywords || []) append("K", value);
+  for (const value of route.phrases || []) append("P", value);
+  for (const value of route.tokens || []) append("T", value);
+  for (const combo of route.combos || []) {
+    if (!Array.isArray(combo) || combo.length === 0) continue;
+    const fields = combo
+      .map((value) => String(value || ""))
+      .filter((value) => value && !/[\t\r\n]/.test(value));
+    if (fields.length > 0) lines.push(`C\t${fields.join("\t")}`);
+  }
+  return lines.join("\n");
+}
+
+function wasmMatchIntentRoute(normalized, rawPrompt, route) {
+  if (!wasm || typeof wasm.engine_match_intent_route !== "function") return null;
+  const length = wasmWriteInput(
+    serializeIntentRouteForWasm(normalized, rawPrompt, route),
+  );
+  if (length < 0) return null;
+  return (wasm.engine_match_intent_route(length) >>> 0) === 1;
 }
 
 // Delegates to `web_search_request_evidence` when the WASM core is loaded;

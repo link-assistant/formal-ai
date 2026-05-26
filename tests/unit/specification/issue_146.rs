@@ -587,7 +587,7 @@ fn assistant_name_rule_detail() -> String {
         "  when_then \"When the user asks `What is your name?` or `Как тебя зовут?` then respond with the assistant-name answer; if a surface has an assistant-name setting, include that configured name.\"",
         "```",
         "",
-        "To change this behavior in the current dialog, send: When `your prompt` then `your answer`. Equivalent: When I say `your prompt`, answer `your answer`.",
+        "To change this behavior in the current dialog, send: ``When `your prompt` then `your answer` ``. Equivalent: ``When I say `your prompt`, answer `your answer` ``.",
     ]
     .join("\n")
 }

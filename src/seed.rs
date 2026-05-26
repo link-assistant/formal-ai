@@ -24,7 +24,7 @@
 mod brainstorm;
 mod coreference;
 mod facts;
-mod parser;
+pub(crate) mod parser;
 mod personas;
 mod projects;
 mod summary_topics;
@@ -615,7 +615,7 @@ pub fn prompt_patterns() -> Vec<PromptPattern> {
 /// One self-describing entry from `environments.lino`.
 ///
 /// The seed declares every supported surface (browser demo, Rust library,
-/// CLI, HTTP server, Telegram bot, Docker microservice) and how memory
+/// CLI, HTTP server, desktop shell, Telegram bot, Docker microservice) and how memory
 /// migrates between them. The AI itself can therefore answer "where can I
 /// run?" and "how do I move my memory from CLI to web?" from data rather
 /// than from hardcoded strings.
@@ -629,6 +629,8 @@ pub struct EnvironmentRecord {
     pub memory_export_command: String,
     pub bundle_export_command: String,
     pub bundle_import_command: String,
+    pub start_command: String,
+    pub package_command: String,
     pub tools: Vec<String>,
 }
 
@@ -680,6 +682,8 @@ pub fn environment_directory() -> EnvironmentDirectory {
                         bundle_import_command: entry
                             .find_child_value("bundle_import_command")
                             .to_string(),
+                        start_command: entry.find_child_value("start_command").to_string(),
+                        package_command: entry.find_child_value("package_command").to_string(),
                         tools,
                     });
                 }

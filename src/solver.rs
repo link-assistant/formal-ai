@@ -29,8 +29,10 @@ use crate::engine::{
 };
 use crate::event_log::{build_evidence_links, EventLog};
 use crate::language::{detect as detect_language, Language};
+use crate::probability::ProbabilityStore;
 use crate::proof_engine::ProofRenderConfig;
 use crate::seed;
+use crate::solver_formalization::{record_formalization, record_formalization_selection};
 use crate::solver_handler_docs::try_docs_method_explanation;
 use crate::solver_handler_how::{try_how_it_works, try_how_to_procedure};
 use crate::solver_handler_units::try_incompatible_units;
@@ -54,9 +56,8 @@ use crate::solver_helpers::{
     record_candidates, record_decomposition, record_validation, requires_external_lookup,
 };
 use crate::translation::{
-    formalize_prompt_candidates, select_formalization_candidate, FormalizationAnchorKind,
-    FormalizationCandidate, FormalizationDecision, FormalizationRole, FormalizationSelection,
-    FormalizationSelectionConfig, FormalizationSelectionReason,
+    formalize_prompt_candidates, select_formalization_candidate_with_probability_store,
+    FormalizationDecision, FormalizationSelectionConfig,
 };
 
 fn is_inappropriate_content(normalized: &str) -> bool {
@@ -462,103 +463,6 @@ const SPECIALIZED_HANDLERS: &[(&str, SpecializedHandler)] = &[
     ("incompatible_units", try_incompatible_units),
 ];
 
-fn record_formalization(log: &mut EventLog, candidate: &FormalizationCandidate) {
-    if candidate.slots.is_empty() {
-        return;
-    }
-    log.append("formalization", candidate.compact_summary());
-    for slot in &candidate.slots {
-        let kind = match (slot.role, slot.anchor.kind) {
-            (FormalizationRole::Subject, FormalizationAnchorKind::WikidataItem) => {
-                "formalization:subject_q"
-            }
-            (FormalizationRole::Predicate, FormalizationAnchorKind::WikidataProperty) => {
-                "formalization:predicate_p"
-            }
-            (FormalizationRole::Object, FormalizationAnchorKind::WikidataItem) => {
-                "formalization:object_q"
-            }
-            (_, FormalizationAnchorKind::WikidataItem) => "formalization:item_q",
-            (_, FormalizationAnchorKind::WikidataProperty) => "formalization:property_p",
-            (
-                _,
-                FormalizationAnchorKind::WikipediaArticle
-                | FormalizationAnchorKind::WiktionaryEntry,
-            ) => "formalization:fallback",
-            (_, FormalizationAnchorKind::RawText) => "formalization:raw",
-        };
-        log.append(kind, slot.anchor.id.clone());
-    }
-    for term in &candidate.unresolved_terms {
-        log.append("formalization_unresolved", term.clone());
-    }
-}
-
-fn record_formalization_selection(log: &mut EventLog, selection: &FormalizationSelection) {
-    for (index, candidate) in selection.candidates.iter().enumerate() {
-        let probability = selection.probabilities.get(index).copied().unwrap_or(0.0);
-        log.append(
-            "candidate",
-            format!(
-                "formalization:{index} score={} probability={probability:.6} {}",
-                candidate.score,
-                candidate.compact_summary()
-            ),
-        );
-    }
-
-    match &selection.decision {
-        FormalizationDecision::NoCandidate => {
-            log.append("policy:temperature_selection", "no_candidate".to_owned());
-        }
-        FormalizationDecision::Selected {
-            index,
-            probability,
-            margin,
-            epsilon,
-            reason,
-        } => {
-            log.append(
-                "policy:temperature_selection",
-                format!(
-                    "selected=formalization:{index} probability={probability:.6} \
-                     margin={margin:.6} epsilon={epsilon:.6} reason={}",
-                    selection_reason_slug(*reason)
-                ),
-            );
-            if *reason == FormalizationSelectionReason::GuessedUnderAmbiguity {
-                log.append(
-                    "policy:guessed_under_ambiguity",
-                    format!("selected=formalization:{index}"),
-                );
-            }
-        }
-        FormalizationDecision::Clarify {
-            top_index,
-            runner_up_index,
-            margin,
-            epsilon,
-            ..
-        } => {
-            log.append(
-                "policy:clarify_under_ambiguity",
-                format!(
-                    "top=formalization:{top_index} runner_up=formalization:{runner_up_index} \
-                     margin={margin:.6} epsilon={epsilon:.6}"
-                ),
-            );
-        }
-    }
-}
-
-const fn selection_reason_slug(reason: FormalizationSelectionReason) -> &'static str {
-    match reason {
-        FormalizationSelectionReason::OnlyCandidate => "only_candidate",
-        FormalizationSelectionReason::ClearlyBest => "clearly_best",
-        FormalizationSelectionReason::GuessedUnderAmbiguity => "guessed_under_ambiguity",
-    }
-}
-
 impl UniversalSolver {
     /// Construct a solver with an explicit configuration.
     #[must_use]
@@ -581,6 +485,25 @@ impl UniversalSolver {
     /// log instead of holding implicit state.
     #[must_use]
     pub fn solve_with_history(&self, prompt: &str, history: &[ConversationTurn]) -> SymbolicAnswer {
+        self.solve_with_history_and_probability_store(prompt, history, &ProbabilityStore::new())
+    }
+
+    #[must_use]
+    pub fn solve_with_probability_store(
+        &self,
+        prompt: &str,
+        probability_store: &ProbabilityStore,
+    ) -> SymbolicAnswer {
+        self.solve_with_history_and_probability_store(prompt, &[], probability_store)
+    }
+
+    #[must_use]
+    pub fn solve_with_history_and_probability_store(
+        &self,
+        prompt: &str,
+        history: &[ConversationTurn],
+        probability_store: &ProbabilityStore,
+    ) -> SymbolicAnswer {
         let mut log = EventLog::new();
 
         for turn in history {
@@ -595,9 +518,10 @@ impl UniversalSolver {
 
         let language = detect_language(prompt);
         log.append("language", language.slug().to_owned());
+        probability_store.replay_into_event_log(&mut log, self.config.offline);
 
         let formalization_candidates = formalize_prompt_candidates(prompt, language.slug());
-        let formalization_selection = select_formalization_candidate(
+        let formalization_selection = select_formalization_candidate_with_probability_store(
             &formalization_candidates,
             FormalizationSelectionConfig {
                 temperature: self.config.temperature,
@@ -605,6 +529,8 @@ impl UniversalSolver {
                 questioning_rigor: self.config.questioning_rigor,
             },
             prompt,
+            probability_store,
+            self.config.offline,
         );
         record_formalization_selection(&mut log, &formalization_selection);
         if let FormalizationDecision::Clarify { question, .. } = &formalization_selection.decision {

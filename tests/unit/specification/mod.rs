@@ -23,15 +23,20 @@
 //! - `agent_isolation`: chat vs agent autonomy and isolated execution.
 //! - `translation_via_links`: links notation as the language of meaning.
 //! - `network_visualization`: optional link-graph view alongside chat.
+//! - `desktop_surface`: packaged desktop shell around the shared HTTP/web
+//!   boundary.
 //! - `transparent_state`: querying the network through chat without leaking
 //!   internal state by default.
 
 mod agent_isolation;
+mod associative_packages;
+mod behavior_rules;
 mod calculator_delegation;
 mod capabilities;
 mod chat_surface;
 mod code_generation;
 mod definition_fusion;
+mod desktop_surface;
 mod formalization;
 mod issue_146;
 mod links_network;
@@ -39,6 +44,7 @@ mod multilingual;
 mod natural_language_skill_compilation;
 mod network_visualization;
 mod openai_compatibility;
+mod probabilistic_reasoning;
 mod project_lookups;
 mod prompt_variations;
 mod reasoning_loop;

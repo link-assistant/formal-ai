@@ -62,6 +62,8 @@ The Rust types involved:
 - `formal_ai::ConversationTurn` and `formal_ai::ConversationRole` —
   conversation history.
 - `formal_ai::MemoryStore` and `formal_ai::MemoryEvent` — durable memory.
+- `formal_ai::ProbabilityStore` and `formal_ai::ProbabilityEvidence` —
+  append-only symbolic probability evidence with provenance.
 - `formal_ai::SolverConfig` — tunable knobs (`guess_probability`,
   `context_sensitivity`, `questioning_rigor`, `max_decomposition_depth`,
   `agent_mode`, `diagnostic_mode`, `offline`, `cache_ttl_seconds`).
@@ -109,7 +111,8 @@ prompt arrived.
                        v
 +-----------------------------------------------------------+
 |       5. TEMPERATURE-BASED INTERPRETATION SELECTION        |
-|  rank candidates by score; apply temperature softmax       |
+|  rank candidates by score + probability evidence           |
+|  apply temperature softmax                                 |
 |  if top two are close:                                     |
 |    - guess (when guess_probability is high), OR            |
 |    - ask the smallest clarifying question                  |
@@ -148,7 +151,7 @@ following Rust modules:
 | 2. Translate to Links Notation | `event_log::Event::Impulse` in `src/event_log.rs` | Implemented |
 | 3. Record in memory | `MemoryStore::append` in `src/memory.rs` | Implemented |
 | 4. Formalization | `src/concepts.rs` plus `src/translation/formalization.rs` for scored P/Q-id, Wikipedia, Wiktionary, and raw fallback anchors | Implemented |
-| 5. Temperature interpretation selection | `src/translation/selection.rs` plus `SolverConfig::{temperature, guess_probability, questioning_rigor}` in `src/solver.rs` | Implemented |
+| 5. Temperature interpretation selection | `src/translation/selection.rs`, `src/probability.rs`, plus `SolverConfig::{temperature, guess_probability, questioning_rigor}` in `src/solver.rs` | Implemented |
 | 6. Universal solver | `UniversalSolver` in `src/solver.rs` | Implemented |
 | 7. Append to memory | `event_log::EventLog`, `memory::export_full_memory` | Implemented |
 | 8. Render user-facing answer | `SymbolicAnswer` projection in `src/engine.rs` | Implemented |
@@ -219,29 +222,50 @@ User-facing surfaces guard these operations with an export-first path and an
 irreversible confirmation, while the CLI requires `--confirm` and can write a
 full-bundle `--backup` before modifying the memory file.
 
-### 4.2 Durable doublets-rs / doublets-web store
+### 4.2 Default native doublets-rs / doublets-web store
 
-This is the long-term direction (see `VISION.md` "Current Direction"). The
-in-process log will be projected into the doublet links store on a regular
-cadence; the doublet store will then be the single physical representation
-of the network. Browser storage (`localStorage`, IndexedDB) holds a mirror
-for offline-first chat; the disk-side backup writes `.lino` snapshots in the
-canonical Links Notation format.
+Native Rust builds select `LinkStoreBackend::DoubletsRs` by default because
+Cargo's default feature set enables `doublets-native`. The library exposes
+`link_store::DefaultNativeLinkStore` and `default_native_link_store()` so
+embedders can construct the active native backend without checking feature
+flags themselves. Compiling with `--no-default-features` keeps the explicit
+`MemoryStore` / `.lino` projection fallback for small builds and recovery
+tools.
+
+The native backend mirrors each `MemoryEvent` into a `doublets-rs` graph using
+the `Type -> SubType -> Value` reduction in `src/link_store.rs`. Links
+Notation remains the deterministic projection for inspection, backup,
+recovery, and migration: `import_memory_links_notation` accepts both legacy
+`demo_memory` files and full `formal_ai_bundle` exports, while malformed
+documents are rejected before the store is mutated. Exporting the native
+store writes the same stable `.lino` event log that the CLI, HTTP, Telegram,
+and browser surfaces use for portability.
+
+Browser storage remains compatible with `doublets-web`: `src/web/memory.js`
+uses IndexedDB for the event object store, reports `doublets-web` when a
+browser doublets implementation is available, and otherwise keeps the
+`indexeddb-lino-mirror` fallback. The browser and native stores therefore
+share Links Notation import/export semantics even though their physical
+storage engines are different.
 
 Upstream references:
 
 - [`linksplatform/doublets-rs`](https://github.com/linksplatform/doublets-rs)
 - [`linksplatform/doublets-web`](https://github.com/linksplatform/doublets-web)
 
-Migration plan:
+Implemented migration surface:
 
-1. Wrap the current `MemoryStore` in a trait so the active backend is
+1. Wrap the current memory projection in a trait so the active backend is
    swappable (`link_store::LinkStore`).
-2. Add a `doublets-rs` backend behind a feature flag
-   (`doublets-native`).
-3. Mirror writes to `.lino` snapshots via `memory::export_links_notation`.
-4. Replace the per-surface tables with the unified doublets store.
-5. Add a `doublets-web` backend for the browser worker.
+2. Enable the `doublets-rs` backend by default for native builds through
+   `doublets-native`.
+3. Preserve `--no-default-features` as the explicit `.lino` projection
+   fallback.
+4. Mirror native writes to `.lino` snapshots via
+   `memory::export_links_notation`.
+5. Accept existing `.lino` memory files and full bundles as migration input.
+6. Keep the browser IndexedDB/doublets-web mirror on the same projection
+   contract.
 
 ### 4.3 Public-knowledge cache
 
@@ -383,6 +407,44 @@ If the top-two probabilities are within ε (configurable through
 The seeded-from-impulse-hash draw in `src/translation/selection.rs` keeps
 guessing deterministic per prompt, so the same input + same config produces the
 same answer.
+
+---
+
+## 6.1 Symbolic Probability Evidence
+
+Issue #279 adds a narrow probabilistic layer without changing the project's
+non-neural boundary. `src/probability.rs` stores evidence as ordinary
+append-only records:
+
+```text
+probability_evidence
+  id "probability_..."
+  target "formalization:subject=wikidata:Q89 predicate=wikidata:P279 object=wikidata:Q3314483"
+  observation "taxonomy_context_prefers_subclass"
+  weight "1.000000"
+  model "bayesian_evidence"
+  provenance "source:seed:test"
+  recorded_at "2026-05-26T00:00:00Z"
+```
+
+The current supported models are deliberately small:
+
+- `bayesian_evidence` adds independent symbolic evidence weights to a
+  candidate's prior score before temperature softmax.
+- `markov_transition` applies a weight only when the previous symbolic state
+  matches `ProbabilityRankingConfig::markov_from`.
+
+Both models operate on symbolic target IDs, not neural logits. The selector
+still produces a deterministic `FormalizationSelection`: the same prompt, same
+probability store, same config, and same impulse hash produce the same selected
+candidate. Evidence records can carry `source_url`, `fetched_at`, `sha256`, and
+`cached` fields; offline mode ignores live-only evidence, preserves cached
+source provenance, and emits `policy:offline` for skipped live evidence.
+
+The solver exposes `UniversalSolver::solve_with_probability_store` for callers
+that have a probability store. The default `FormalAiEngine::answer` path uses
+an empty store, so existing deterministic behavior is unchanged until evidence
+is explicitly supplied.
 
 ---
 
@@ -536,13 +598,32 @@ order from "lowest privilege" to "highest privilege":
    four representations: a data rule, a Rust handler stub, a JS handler
    stub, or an interpreted sequence of solver steps.
 
-`src/skill_compiler.rs` implements the first deterministic compiler path:
-`When ... answer ...` skills are lowered into a `CompiledSkillPackage` with a
-trigger rule, a deterministic compiled handler, an E1-style `LinkRecord`
-projection, and a Links Notation export. The solver scans dialog history for
-these packages before falling back to behavior-rule re-derivation; a replay
-appends `compiled_skill:replay` and `cache_hit:<compiled_skill_id>` to the
-trace.
+`src/skill_compiler.rs` implements the deterministic compiler subset. The
+legacy `When ... answer ...` form still lowers into a `CompiledSkillPackage`
+with a trigger rule, a deterministic compiled handler, an E1-style
+`LinkRecord` projection, and a Links Notation export. The structured subset
+adds reviewable `Skill`, typed `Input`, `Precondition`, ordered `Step`,
+`Effect`, `Expected test`, `Permission`, `Tool`, and `Target` records. Expected
+tests become deterministic replay fixtures, and `Target` records produce
+inspectable Rust/JavaScript/native handler stubs rather than executable code.
+The compiler refuses unsupported or nondeterministic instructions and requires
+explicit `Permission` records for package/tool capabilities such as
+`tool:local_shell`. The solver scans dialog history for compiled packages
+before falling back to behavior-rule re-derivation; a replay appends
+`compiled_skill:replay` and `cache_hit:<compiled_skill_id>` to the trace.
+
+`src/associative_package.rs` is the R65 package boundary. It models
+Deep.Foundation-inspired packages in the local doublet architecture with
+package metadata, dependency links, handler records, trigger records, and
+explicit permission grants. A package can be exported/imported as Links
+Notation, installed only after dependencies validate, replayed through its
+trigger/handler links, and queried by the tool-call gate for capabilities such
+as `tool:calculator`. Compiled skills can be wrapped as packages and imported
+back without hand-editing Rust code; structured expected tests become package
+triggers/handlers and structured permissions become package permission grants.
+The `/v1/graph` projection includes the package, handler, trigger, and
+permission links so the permission path is inspectable alongside ordinary
+rules.
 
 The compilation chain (NL → code → binary) is the long-term path. The
 runtime never *requires* compilation: a natural-language skill can be
@@ -714,6 +795,9 @@ The same `FormalAiEngine` answers prompts in every surface:
 - **HTTP server** — `POST /v1/chat/completions`, `POST /v1/responses`,
   `GET /health`, `GET /v1/graph` (with `?trace=` filter and
   `?format=dot`).
+- **Desktop shell** — `desktop/main.cjs` starts the same local
+  `formal-ai serve` API on loopback, serves the existing `src/web` chat, and
+  exposes a preload bridge for API, graph, full-memory, and permission status.
 - **Telegram bot** — `POST /telegram/webhook` (webhook) or
   `formal-ai telegram` (long polling).
 - **Docker-in-Docker Telegram image** — the root `Dockerfile` builds the
@@ -726,8 +810,19 @@ The same `FormalAiEngine` answers prompts in every surface:
 - **Browser demo** — `src/web/formal_ai_worker.js` plus the WebAssembly
   worker built from `src/web/wasm-worker/src/lib.rs`.
 
+The browser boundary is intentionally narrow. Rust/WASM owns deterministic
+domain primitives that must match the native solver byte-for-byte: prompt
+normalization, language detection, arithmetic evaluation, stable FNV-1a ids,
+unknown-answer opener selection, intent-route matching semantics, web-search
+provider constants, request evidence, and reciprocal-rank fusion. JavaScript
+keeps the browser-only responsibilities: UI state, seed-file fetch/parsing,
+network/CORS orchestration, DOM integration, and compatibility fallbacks when
+WASM cannot be instantiated.
+
 Each surface assembles the same `Context` shape so the pipeline answers
-identically.
+identically. The desktop app intentionally stays a wrapper: it sends prompts
+through `/v1/chat/completions`, links graph inspection to `/v1/graph`, and uses
+the browser memory import/export path for `formal_ai_bundle` round-trips.
 
 ---
 
@@ -777,32 +872,46 @@ adds one file (or extends one matrix) without touching the rest.
 
 ## 16. Open Questions
 
-The original issue #244 architecture questions are mostly implemented. The
-remaining items are tracked as the second planning batch:
+The original issue #244 architecture questions and the E1-E20 follow-up batches
+are merged. The 2026-05-26 audit (issue #244, third pass) found that the largest
+remaining gap is reasoning behaviour, not storage or surfaces. The open
+questions tracked by the next batch (E21-E27) are:
 
-1. The doublets-rs backend (Section 4.2) is available behind
-   `doublets-native`; the remaining migration work is making it the default
-   physical store for every non-browser surface. Tracked by
-   [#278](https://github.com/link-assistant/formal-ai/issues/278).
-2. Natural-language-skill compilation now has a deterministic
-   trigger/response compiler in `src/skill_compiler.rs`; future work is
-   broadening the compiler beyond exact normalized-prompt replay and into
-   native Rust/JS lowering. Tracked by
-   [#283](https://github.com/link-assistant/formal-ai/issues/283).
-3. Rust/WebAssembly browser parity is partial: `src/web_engine_core.rs` owns
-   reusable browser-domain operations, but additional worker logic still lives
-   in JavaScript. Tracked by
-   [#282](https://github.com/link-assistant/formal-ai/issues/282).
-4. The solver has deterministic temperature selection but no link-native
-   Bayesian/Markov-style evidence layer. Tracked by
-   [#279](https://github.com/link-assistant/formal-ai/issues/279).
-5. Associative packages and permission records are represented by separate
-   skill, handler, and tool-gating pieces, not one install/export/replay package
-   model. Tracked by
-   [#281](https://github.com/link-assistant/formal-ai/issues/281).
-6. A desktop application wrapper around the existing library/HTTP/web surfaces
-   is still open. Tracked by
-   [#280](https://github.com/link-assistant/formal-ai/issues/280).
+1. **Reasoning under unknowns (E21, [#298](https://github.com/link-assistant/formal-ai/issues/298)).**
+   The solver still tends to emit an "I can't answer that" opener whenever a
+   prompt does not match a known route. Instead it should reason about what is
+   knowable, what data is missing, and which accessible source could supply it,
+   recording each reasoning step as links before giving up.
+2. **Intent formalization as Links Notation (E22, [#299](https://github.com/link-assistant/formal-ai/issues/299)).**
+   Routing is driven by a fixed intent catalogue. Every message should first be
+   formalized into a Links-Notation / binary-links intent (task, question,
+   requirement) that records what is known and what is relevant, with previous
+   reasoning cached so repeated messages are not re-reasoned from scratch.
+3. **Generalized parametric intents (E23, [#300](https://github.com/link-assistant/formal-ai/issues/300)).**
+   Narrow per-language intents (`hello world rust`, `hello world js`) should
+   collapse into one parametric intent (`write a program` with language/task
+   parameters) resolved from the formalized intent rather than enumerated.
+4. **Substitution-rule handlers over link CRUD (E24, [#301](https://github.com/link-assistant/formal-ai/issues/301)).**
+   Handlers today are Rust functions attached to events. We also want
+   `link-cli`-style substitution operations — `replace x y` where `x` and `y`
+   are patterns, composable into `when n do m` rules — so behaviour can be
+   defined as data attached to CRUD operations of links.
+5. **Natural-language access to memory, APIs, and code execution (E25, [#302](https://github.com/link-assistant/formal-ai/issues/302)).**
+   Natural language should be able to query the link memory, call accessible
+   APIs directly, and execute code, all gated by the existing permission model.
+6. **General code-modifying / executing agent (E26, [#303](https://github.com/link-assistant/formal-ai/issues/303)).**
+   The goal is not a narrow agent that memorizes code but a system that can
+   write, modify, execute, and run terminal actions on arbitrary code, proven by
+   a much larger automated test suite.
+7. **Industry benchmark datasets (E27, [#304](https://github.com/link-assistant/formal-ai/issues/304)).**
+   Import permissively-licensed programming, problem-solving, and math
+   benchmarks (e.g. HumanEval/MBPP-style, GSM8K/MATH-style) as `.lino` test
+   cases that force the most general algorithm rather than seed memorization.
+
+A still-open lower-priority question carried over from the E20 batch: arbitrary
+natural-language programming (executing reviewed generated stubs in sandboxed
+runtimes) remains outside the current supported subset of
+`src/skill_compiler.rs` and is folded into E25/E26 above.
 
 Pull requests that close any of these should update the corresponding row in
 the table in Section 2 and link the new module.
@@ -814,9 +923,9 @@ the table in Section 2 and link the new module.
 - `VISION.md` — values, product story, north-star user experience.
 - `GOALS.md` — what counts as success per surface.
 - `NON-GOALS.md` — what we explicitly do not build.
-- `REQUIREMENTS.md` — issue-by-issue implementation matrix (R1 … R236).
+- `REQUIREMENTS.md` — issue-by-issue implementation matrix (R1 … R251).
 - `ROADMAP.md` — implementation-progress tracker mapping each `VISION.md` pillar to its real code status, closed planning batches, and remaining follow-up gaps.
-- [`linksplatform/doublets-rs`](https://github.com/linksplatform/doublets-rs) — long-term storage backend.
+- [`linksplatform/doublets-rs`](https://github.com/linksplatform/doublets-rs) — default native storage backend.
 - [`linksplatform/doublets-web`](https://github.com/linksplatform/doublets-web) — browser-side mirror.
 - [`link-assistant/calculator`](https://github.com/link-assistant/calculator) — delegated calculator engine (`link-calculator` crate).
 - [`link-assistant/relative-meta-logic`](https://github.com/link-assistant/relative-meta-logic) — future formal-reasoning integration.

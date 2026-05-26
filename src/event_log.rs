@@ -274,6 +274,9 @@ pub fn build_evidence_links(prompt: &str, log: &EventLog, response_link: &str) -
             }
             "policy:guessed_under_ambiguity" => String::from("policy:guessed_under_ambiguity"),
             "policy:clarify_under_ambiguity" => String::from("policy:clarify_under_ambiguity"),
+            "probability:evidence" => format!("probability:evidence:{}", event.id),
+            "probability:model" => format!("probability:model:{}", event.payload),
+            "probability:ranking" => format!("probability:ranking:{}", event.id),
             "error" => format!("error:{}", event.id),
             "filter:user" => format!("filter:user:{}", event.payload),
             "diagnostic_mode" => format!("diagnostic_mode:{}", event.payload),

@@ -372,7 +372,7 @@ function extractAssistantNameCommand(text, normalized) {
     /^(?:assistant\s+name|your\s+name)\s*(?:=|:|is)\s*(.+)$/iu,
     /^(?:call|name)\s+(?:yourself|you)\s+(.+)$/iu,
     /^(?:назови|зови)\s+себя\s+(.+)$/iu,
-    /^(?:тебя\s+зовут|тво[её]\s+имя|имя\s+ассистента)\s*(?:=|:)?\s*(.+)$/iu,
+    /^(?:теперь\s+)?(?:тебя\s+зовут|тво[её]\s+имя|имя\s+ассистента)\s*(?:=|:)?\s*(.+)$/iu,
     /^(?:你的名字|助手名字|助理名字)\s*(?:设为|设置为|叫|=|:)\s*(.+)$/u,
     /^(?:अपना नाम|सहायक नाम)\s*(?:रखो|सेट करो|=|:)?\s*(.+)$/u,
   ];
@@ -2074,13 +2074,6 @@ function localBehaviorRuleRecords() {
   ];
 }
 
-const LOCAL_BEHAVIOR_RULE_TOPIC_LABELS = {
-  greetings: "Greetings",
-  identity: "Identity",
-  assistant_name: "Assistant name",
-  unknown_fallback: "Unknown fallback",
-};
-
 const LOCAL_BEHAVIOR_RULE_TOPIC_ORDER = [
   "greetings",
   "identity",
@@ -2088,18 +2081,199 @@ const LOCAL_BEHAVIOR_RULE_TOPIC_ORDER = [
   "unknown_fallback",
 ];
 
-function localBehaviorRulesList(runtimeRules) {
-  const lines = [
-    "Behavior rules I can inspect in this dialog (grouped by topic, each shown as a `When X then Y` statement):",
+function localLocalizedText(language, values) {
+  return values[language] || values.en;
+}
+
+function localBehaviorRuleTopicLabel(topic, language) {
+  const labels = {
+    greetings: { en: "Greetings", ru: "Приветствия", hi: "अभिवादन", zh: "问候" },
+    identity: { en: "Identity", ru: "Идентичность", hi: "पहचान", zh: "身份" },
+    assistant_name: {
+      en: "Assistant name",
+      ru: "Имя ассистента",
+      hi: "सहायक का नाम",
+      zh: "助手名称",
+    },
+    unknown_fallback: {
+      en: "Unknown fallback",
+      ru: "Резервный ответ",
+      hi: "अज्ञात अनुरोध का वैकल्पिक उत्तर",
+      zh: "未知请求回退",
+    },
+  };
+  return localLocalizedText(language, labels[topic] || {
+    en: "Other",
+    ru: "Другое",
+    hi: "अन्य",
+    zh: "其他",
+  });
+}
+
+function localBehaviorRuleListIntro(language) {
+  return localLocalizedText(language, {
+    en: "Behavior rules I can inspect in this dialog (grouped by topic, each shown as a `When X then Y` statement):",
+    ru: "Правила поведения, которые я могу показать в этом диалоге (сгруппированы по темам; каждое показано как инструкция `Когда X тогда Y`):",
+    hi: "व्यवहार नियम जिन्हें मैं इस संवाद में दिखा सकता हूँ (विषय के अनुसार समूहित; हर नियम `जब X तब Y` कथन के रूप में है):",
+    zh: "我可以查看的行为规则（按主题分组；每条都显示为 `当 X 时 Y` 语句）：",
+  });
+}
+
+function localRuntimeRuleWhenThen(rule, language) {
+  if (language === "ru") return `Когда пользователь говорит \`${rule.trigger}\`, ответь \`${rule.answer}\`.`;
+  if (language === "hi") return `जब उपयोगकर्ता \`${rule.trigger}\` कहे, तब \`${rule.answer}\` उत्तर दें.`;
+  if (language === "zh") return `当用户说 \`${rule.trigger}\` 时，回答 \`${rule.answer}\`。`;
+  return `When the user says \`${rule.trigger}\` then respond with \`${rule.answer}\`.`;
+}
+
+function localRuleResponse(rule, language) {
+  if (rule.id === "rule_greeting") {
+    if (language === "ru") return "Здравствуйте! Чем могу помочь?";
+    if (language === "hi") return "नमस्ते! मैं आपकी क्या मदद कर सकता हूँ?";
+    if (language === "zh") return "你好，请问我可以帮你什么？";
+  }
+  if (rule.id === "rule_assistant_name") {
+    return localLocalizedText(language, {
+      en: "Returns the assistant-name answer; browser surfaces can override it from the assistant name setting.",
+      ru: "Возвращает ответ об имени ассистента; браузерные поверхности могут переопределить его настройкой имени ассистента.",
+      hi: "assistant-name उत्तर लौटाता है; browser surfaces assistant name setting से इसे बदल सकते हैं.",
+      zh: "返回助手名称回答；浏览器界面可通过助手名称设置覆盖它。",
+    });
+  }
+  return rule.response;
+}
+
+function localRuleLabel(rule, language) {
+  const labels = {
+    rule_greeting: {
+      en: "Greeting rule",
+      ru: "Правило приветствия",
+      hi: "अभिवादन नियम",
+      zh: "问候规则",
+    },
+    rule_identity: {
+      en: "Identity rule",
+      ru: "Правило идентичности",
+      hi: "पहचान नियम",
+      zh: "身份规则",
+    },
+    rule_assistant_name: {
+      en: "Assistant name rule",
+      ru: "Правило имени ассистента",
+      hi: "सहायक नाम नियम",
+      zh: "助手名称规则",
+    },
+    rule_unknown: {
+      en: "Unknown fallback rule",
+      ru: "Резервное правило для неизвестного запроса",
+      hi: "अज्ञात अनुरोध का वैकल्पिक नियम",
+      zh: "未知请求回退规则",
+    },
+  };
+  return labels[rule.id] ? localLocalizedText(language, labels[rule.id]) : rule.label;
+}
+
+function localRuleMatches(rule, language) {
+  const matches = {
+    rule_greeting: {
+      en: "`Hi`, `Hello`, and `Hey`",
+      ru: "`Hi`, `Hello`, `Hey` и многоязычные seed-фразы приветствия",
+      hi: "`Hi`, `Hello`, `Hey` और बहुभाषी greeting seed phrases",
+      zh: "`Hi`、`Hello`、`Hey` 以及多语言问候 seed 短语",
+    },
+    rule_identity: {
+      en: "`Who are you?`, `Кто ты?`, and equivalent identity prompts",
+      ru: "`Who are you?`, `Кто ты?` и равнозначные вопросы об идентичности",
+      hi: "`Who are you?`, `Кто ты?` और समान identity prompts",
+      zh: "`Who are you?`、`Кто ты?` 以及等价身份提示",
+    },
+    rule_assistant_name: {
+      en: "`What is your name?`, `Как твое имя?`, and equivalent name prompts",
+      ru: "`What is your name?`, `Как твое имя?` и равнозначные вопросы об имени",
+      hi: "`What is your name?`, `Как твое имя?` और समान name prompts",
+      zh: "`What is your name?`、`Как твое имя?` 以及等价名称提示",
+    },
+    rule_unknown: {
+      en: "Any prompt that no earlier rule can answer",
+      ru: "Любой запрос, на который не ответило более раннее правило",
+      hi: "कोई भी prompt जिसका उत्तर पहले का rule नहीं दे सकता",
+      zh: "任何前面的规则无法回答的提示",
+    },
+  };
+  return matches[rule.id] ? localLocalizedText(language, matches[rule.id]) : rule.matches;
+}
+
+function localRuleWhenThen(rule, language) {
+  const response = localRuleResponse(rule, language);
+  if (rule.id === "rule_greeting") {
+    if (language === "ru") return `Когда пользователь говорит \`Hi\`, \`Hello\`, \`Hey\` или многоязычную фразу приветствия, ответь \`${response}\`.`;
+    if (language === "hi") return `जब उपयोगकर्ता \`Hi\`, \`Hello\`, \`Hey\` या बहुभाषी greeting phrase कहे, तब \`${response}\` उत्तर दें.`;
+    if (language === "zh") return `当用户说 \`Hi\`、\`Hello\`、\`Hey\` 或多语言问候短语时，回答 \`${response}\`。`;
+  }
+  if (rule.id === "rule_identity") {
+    if (language === "ru") return "Когда пользователь спрашивает `Who are you?` или `Кто ты?`, ответь сообщением об идентичности.";
+    if (language === "hi") return "जब उपयोगकर्ता `Who are you?` या `Кто ты?` पूछे, तब identity answer दें.";
+    if (language === "zh") return "当用户问 `Who are you?` 或 `Кто ты?` 时，回答身份说明。";
+  }
+  if (rule.id === "rule_assistant_name") {
+    if (language === "ru") return "Когда пользователь спрашивает `What is your name?` или `Как твое имя?`, ответь сообщением об имени ассистента; если настройка имени есть, включи настроенное имя.";
+    if (language === "hi") return "जब उपयोगकर्ता `What is your name?` या `Как твое имя?` पूछे, तब assistant-name उत्तर दें; अगर setting है, तो configured name शामिल करें.";
+    if (language === "zh") return "当用户问 `What is your name?` 或 `Как твое имя?` 时，回答助手名称；如果有名称设置，则包含配置的名称。";
+  }
+  if (rule.id === "rule_unknown") {
+    if (language === "ru") return "Когда ни одно более раннее правило не подходит к запросу, ответь подсказкой для неизвестного намерения.";
+    if (language === "hi") return "जब कोई पहले का rule prompt से मेल न खाए, तब unknown-intent guide दें.";
+    if (language === "zh") return "当前面的规则都不匹配提示时，回答未知意图指南。";
+  }
+  return rule.whenThen;
+}
+
+function localBehaviorRuleListFooter(language) {
+  if (language === "ru") {
+    return [
+      "",
+      "Прочитать одно правило можно командой `Покажи правило unknown`.",
+      "Научить этот диалог можно так: ``Когда `ваш запрос` тогда `ваш ответ` ``. Также можно: ``Когда я скажу `ваш запрос`, ответь `ваш ответ` ``.",
+      "Многоязычные формы: английская ``When `X` then `Y` ``, хинди ``जब `X` तब `Y` ``, китайская ``当 `X` 时 `Y` ``.",
+      "Запись добавляется только в конец: экспортируйте память, чтобы сохранить сообщение с правилом вместе с диалогом.",
+    ];
+  }
+  if (language === "hi") {
+    return [
+      "",
+      "एक नियम पढ़ने के लिए `Show behavior rule unknown` भेजें.",
+      "इस संवाद को सिखाएँ: ``जब `आपका प्रश्न` तब `आपका उत्तर` ``. दूसरा रूप: ``When I say `your prompt`, answer `your answer` ``.",
+      "बहुभाषी रूप: रूसी ``Когда `X` тогда `Y` ``, अंग्रेज़ी ``When `X` then `Y` ``, चीनी ``当 `X` 时 `Y` ``.",
+      "लेखन केवल append-only है: नियम संदेश को संवाद के साथ रखने के लिए memory export करें.",
+    ];
+  }
+  if (language === "zh") {
+    return [
+      "",
+      "要读取一条规则，请发送 `Show behavior rule unknown`。",
+      "可以这样教当前对话：``当 `你的提示` 时 `你的回答` ``。也可以发送：``When I say `your prompt`, answer `your answer` ``。",
+      "多语言形式：俄语 ``Когда `X` тогда `Y` ``，印地语 ``जब `X` तब `Y` ``，英语 ``When `X` then `Y` ``。",
+      "写入是 append-only：导出 memory 可把这条规则消息随对话一起保存。",
+    ];
+  }
+  return [
     "",
+    "Read one with `Show behavior rule unknown`.",
+    "Teach this dialog with: ``When `your prompt` then `your answer` ``. Equivalent: ``When I say `your prompt`, answer `your answer` ``.",
+    "Multilingual forms: Russian ``Когда `X` тогда `Y` ``, Hindi ``जब `X` तब `Y` ``, Chinese ``当 `X` 时 `Y` ``.",
+    "The write is append-only: export memory to preserve the rule message with the dialog.",
   ];
+}
+
+function localBehaviorRulesList(runtimeRules, language = "en") {
+  const lines = [localBehaviorRuleListIntro(language), ""];
   const groups = new Map();
   for (const rule of localBehaviorRuleRecords()) {
     const order = LOCAL_BEHAVIOR_RULE_TOPIC_ORDER.indexOf(rule.topic);
     const safeOrder = order === -1 ? LOCAL_BEHAVIOR_RULE_TOPIC_ORDER.length : order;
     if (!groups.has(safeOrder)) {
       groups.set(safeOrder, {
-        label: LOCAL_BEHAVIOR_RULE_TOPIC_LABELS[rule.topic] || "Other",
+        label: localBehaviorRuleTopicLabel(rule.topic, language),
         rules: [],
       });
     }
@@ -2107,47 +2281,54 @@ function localBehaviorRulesList(runtimeRules) {
   }
   const ordered = Array.from(groups.entries()).sort((a, b) => a[0] - b[0]);
   ordered.forEach(([, group], index) => {
-    lines.push(`# ${group.label}`);
+    lines.push(`### ${group.label}`);
     for (const rule of group.rules) {
-      lines.push(`- \`${rule.id}\` -> ${rule.whenThen}`);
+      lines.push(`- \`${rule.id}\` -> ${localRuleWhenThen(rule, language)}`);
     }
     if (index + 1 < ordered.length) lines.push("");
   });
   if (Array.isArray(runtimeRules) && runtimeRules.length > 0) {
-    lines.push("", "# Dialog-local rules taught in this conversation");
+    lines.push("", `### ${localLocalizedText(language, {
+      en: "Dialog-local rules taught in this conversation",
+      ru: "Правила, изученные в этом диалоге",
+      hi: "इस संवाद में सिखाए गए स्थानीय नियम",
+      zh: "本对话中学到的局部规则",
+    })}`);
     for (const rule of runtimeRules) {
-      lines.push(
-        `- \`${rule.id}\` -> When the user says \`${rule.trigger}\` then respond with \`${rule.answer}\`.`,
-      );
+      lines.push(`- \`${rule.id}\` -> ${localRuntimeRuleWhenThen(rule, language)}`);
     }
   }
-  lines.push(
-    "",
-    "Read one with `Show behavior rule unknown`.",
-    "Teach this dialog with: When `your prompt` then `your answer`. Equivalent: When I say `your prompt`, answer `your answer`.",
-    "Multilingual forms: Russian `Когда \\`X\\` тогда \\`Y\\``, Hindi `जब \\`X\\` तब \\`Y\\``, Chinese `当 \\`X\\` 时 \\`Y\\``.",
-    "The write is append-only: export memory to preserve the rule message with the dialog.",
-  );
+  lines.push(...localBehaviorRuleListFooter(language));
   return lines.join("\n");
 }
 
-function localBehaviorRuleDetail(rule) {
+function localBehaviorRuleDetail(rule, language = "en") {
+  const label = localRuleLabel(rule, language);
+  const whenThen = localRuleWhenThen(rule, language);
+  const matches = localRuleMatches(rule, language);
+  const response = localRuleResponse(rule, language);
+  const changeHint = localLocalizedText(language, {
+    en: "To change this behavior in the current dialog, send: ``When `your prompt` then `your answer` ``. Equivalent: ``When I say `your prompt`, answer `your answer` ``.",
+    ru: "Чтобы изменить это поведение в текущем диалоге, отправьте: ``Когда `ваш запрос` тогда `ваш ответ` ``. Также можно: ``Когда я скажу `ваш запрос`, ответь `ваш ответ` ``.",
+    hi: "इस व्यवहार को वर्तमान संवाद में बदलने के लिए भेजें: ``जब `आपका प्रश्न` तब `आपका उत्तर` ``. दूसरा रूप: ``When I say `your prompt`, answer `your answer` ``.",
+    zh: "要在当前对话中改变此行为，请发送：``当 `你的提示` 时 `你的回答` ``。也可以发送：``When I say `your prompt`, answer `your answer` ``。",
+  });
   return [
-    rule.label,
+    label,
     "",
-    rule.whenThen || "",
+    whenThen || "",
     "",
     "```links",
     rule.id,
     `  topic "${(rule.topic || "").replaceAll('"', '\\"')}"`,
     `  intent "${rule.intent}"`,
-    `  matches "${rule.matches.replaceAll('"', '\\"')}"`,
-    `  response "${rule.response.replaceAll('"', '\\"')}"`,
+    `  matches "${matches.replaceAll('"', '\\"')}"`,
+    `  response "${response.replaceAll('"', '\\"')}"`,
     `  source "${rule.source}"`,
-    `  when_then "${(rule.whenThen || "").replaceAll('"', '\\"')}"`,
+    `  when_then "${(whenThen || "").replaceAll('"', '\\"')}"`,
     "```",
     "",
-    "To change this behavior in the current dialog, send: When `your prompt` then `your answer`. Equivalent: When I say `your prompt`, answer `your answer`.",
+    changeHint,
   ].join("\n");
 }
 
@@ -2539,22 +2720,41 @@ function localRuntimeRuleForPrompt(prompt, history) {
 }
 
 function tryLocalBehaviorRules(prompt, normalized, history, preferences = {}) {
+  const language = localSelfAwarenessLanguage(prompt, normalized);
   const updateRule = localRuntimeRuleFromText(prompt);
   if (updateRule) {
+    const whenThen = localRuntimeRuleWhenThen(updateRule, language);
+    const title = localLocalizedText(language, {
+      en: "Behavior rule recorded for this dialog.",
+      ru: "Правило поведения записано для этого диалога.",
+      hi: "इस संवाद के लिए व्यवहार नियम record किया गया.",
+      zh: "已为本对话记录行为规则。",
+    });
+    const sendHint =
+      language === "ru"
+        ? `Отправьте \`${updateRule.trigger}\` сейчас, и я отвечу настроенным ответом. Экспортируйте память, чтобы сохранить это правило вместе с диалогом.`
+        : language === "hi"
+          ? `\`${updateRule.trigger}\` अभी भेजें और मैं configured response से उत्तर दूँगा. इस rule message को dialog के साथ रखने के लिए memory export करें.`
+          : language === "zh"
+            ? `现在发送 \`${updateRule.trigger}\`，我会使用配置的回答。导出 memory 可把这条规则消息随对话一起保存。`
+            : `Send \`${updateRule.trigger}\` now and I will answer with the configured response. Export memory to keep this rule message with the dialog.`;
     return {
       intent: "behavior_rule_update",
       content: [
-        "Behavior rule recorded for this dialog.",
+        title,
+        "",
+        whenThen,
         "",
         "```links",
         updateRule.id,
         '  type "behavior_rule_runtime"',
         `  match_prompt "${updateRule.trigger.replaceAll('"', '\\"')}"`,
         `  answer "${updateRule.answer.replaceAll('"', '\\"')}"`,
+        `  when_then "${whenThen.replaceAll('"', '\\"')}"`,
         '  source "user_message"',
         "```",
         "",
-        `Send \`${updateRule.trigger}\` now and I will answer with the configured response. Export memory to keep this rule message with the dialog.`,
+        sendHint,
       ].join("\n"),
     };
   }
@@ -2566,13 +2766,13 @@ function tryLocalBehaviorRules(prompt, normalized, history, preferences = {}) {
     isSupportedLanguageBehaviorRulesListQuery(normalized) ||
     normalized.includes("список правил поведения")
   ) {
-    return { intent: "behavior_rules_list", content: localBehaviorRulesList() };
+    return { intent: "behavior_rules_list", content: localBehaviorRulesList([], language) };
   }
   const query = localDetailQuery(prompt);
   if (query) {
     const rule = localFindBehaviorRule(query);
     if (rule) {
-      return { intent: "behavior_rule_detail", content: localBehaviorRuleDetail(rule) };
+      return { intent: "behavior_rule_detail", content: localBehaviorRuleDetail(rule, language) };
     }
   }
   if (localIsSelfIntroductionQuery(normalized)) {
@@ -2604,12 +2804,16 @@ function tryLocalBehaviorRules(prompt, normalized, history, preferences = {}) {
 const LOCAL_BEHAVIOR_RULES_LIST_PATTERNS = [
   "show behavior rules",
   "show list of your rules",
+  "list your rules",
   "покажи правила поведения",
   "покажи список своих правил",
+  "перечисли свои правила",
   "व्यवहार के नियम सूचीबद्ध करें",
   "अपने नियमों की सूची दिखाओ",
+  "अपने नियम गिनाओ",
   "列出行为规则",
   "显示你的规则列表",
+  "列出你的规则",
 ];
 
 function matchesLocalBehaviorRulesListPattern(normalized) {
@@ -2675,6 +2879,7 @@ function isHindiBehaviorRulesListQuery(normalized) {
     normalized.includes("दिखाओ") ||
     normalized.includes("दिखाएं") ||
     normalized.includes("बताओ") ||
+    normalized.includes("गिनाओ") ||
     normalized.includes("कौन");
   const pointsAtAssistantRules =
     normalized.includes("व्यवहार") ||
@@ -2736,6 +2941,135 @@ function courtesyResponseContent(preferences = {}) {
   }
   const followUp = chooseVariant(COURTESY_FOLLOW_UPS, randomize);
   return `${acknowledgement} ${followUp}`;
+}
+
+function desktopBridge() {
+  if (typeof window === "undefined" || !window.FormalAiDesktop) {
+    return null;
+  }
+  return window.FormalAiDesktop;
+}
+
+function normalizeDesktopStatus(status) {
+  if (!status || typeof status !== "object") {
+    return null;
+  }
+  const apiBase = String(status.apiBase || "").replace(/\/+$/, "");
+  return {
+    shell: String(status.shell || "Electron"),
+    apiBase,
+    staticBase: String(status.staticBase || ""),
+    graphUrl: String(status.graphUrl || (apiBase ? `${apiBase}/v1/graph` : "")),
+    traceUrl: String(status.traceUrl || (apiBase ? `${apiBase}/v1/graph?trace=answer_greeting_hi` : "")),
+    memory: String(status.memory || "formal_ai_bundle"),
+    agentModeDefault: Boolean(status.agentModeDefault),
+    toolCallPolicy: String(status.toolCallPolicy || "explicit-permission"),
+    apiReady: status.apiReady !== false && Boolean(apiBase),
+    apiError: String(status.apiError || ""),
+  };
+}
+
+function compactUrl(value) {
+  if (!value) {
+    return "unavailable";
+  }
+  try {
+    const parsed = new URL(value);
+    const pathName = parsed.pathname === "/" ? "" : parsed.pathname;
+    return `${parsed.host}${pathName}`;
+  } catch (_error) {
+    return String(value);
+  }
+}
+
+function desktopStatusLabel(status, agentMode) {
+  if (!status) {
+    return "";
+  }
+  const api = status.apiReady ? "API local" : "API unavailable";
+  const agent = agentMode ? "agent opted in" : "agent permission off";
+  return `Desktop - ${api} - ${agent}`;
+}
+
+function desktopMessages(history, text) {
+  const messages = [];
+  for (const entry of Array.isArray(history) ? history : []) {
+    if (!entry || !["user", "assistant"].includes(entry.role)) {
+      continue;
+    }
+    const content = typeof entry.content === "string" ? entry.content : "";
+    if (content.trim()) {
+      messages.push({ role: entry.role, content });
+    }
+  }
+  messages.push({ role: "user", content: String(text || "") });
+  return messages;
+}
+
+async function requestDesktopAnswer(text, history, desktopStatus, preferences = {}) {
+  const apiBase = desktopStatus && desktopStatus.apiBase;
+  if (!apiBase) {
+    throw new Error("desktop API is unavailable");
+  }
+
+  const endpoint = `${apiBase}/v1/chat/completions`;
+  const response = await fetch(endpoint, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({
+      model: "formal-symbolic-production",
+      messages: desktopMessages(history, text),
+      temperature: normalizeSliderPreference(preferences.temperature, 0),
+      stream: false,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`desktop API returned ${response.status}`);
+  }
+
+  const payload = await response.json();
+  const answerText =
+    payload &&
+    payload.choices &&
+    payload.choices[0] &&
+    payload.choices[0].message
+      ? String(payload.choices[0].message.content || "")
+      : "";
+
+  return {
+    intent: "desktop_http_chat",
+    content: answerText || UNKNOWN_ANSWER,
+    source: "desktop_http",
+    evidence: [
+      "surface:desktop",
+      "api:/v1/chat/completions",
+      desktopStatus.graphUrl ? "network:/v1/graph" : "",
+    ].filter(Boolean),
+    steps: [
+      { step: "desktop_shell", detail: "Electron preload bridge supplied local API status" },
+      { step: "http_chat", detail: "POST /v1/chat/completions on the local Rust server" },
+      { step: "memory", detail: "UI import/export stays on formal_ai_bundle" },
+    ],
+    diagnostics: {
+      providers: [
+        {
+          id: "formal_ai_desktop_http",
+          status: "ok",
+          endpoint,
+        },
+      ],
+      http: [
+        {
+          provider: "formal_ai_desktop_http",
+          url: endpoint,
+          method: "POST",
+          status: response.status,
+          ok: response.ok,
+        },
+      ],
+    },
+  };
 }
 
 function localFallbackAnswer(prompt, history = [], preferences = {}) {
@@ -3784,6 +4118,7 @@ function App() {
   const [sidebarMenuCollapsed, setSidebarMenuCollapsed] = useState(
     initialPreferences.current.sidebarMenuCollapsed,
   );
+  const [sidebarDesktopCollapsed, setSidebarDesktopCollapsed] = useState(false);
   const [sidebarPromptsCollapsed, setSidebarPromptsCollapsed] = useState(
     initialPreferences.current.sidebarPromptsCollapsed,
   );
@@ -3860,6 +4195,7 @@ function App() {
   const [assistantName, setAssistantName] = useState(
     normalizeAssistantName(initialPreferences.current.assistantName),
   );
+  const [desktopStatus, setDesktopStatus] = useState(null);
   // Issue #27: agent mode runs the user's prompt as a multi-step plan instead
   // of a single Q&A. Persisted across reloads via preferences.
   const [agentMode, setAgentMode] = useState(
@@ -4013,6 +4349,35 @@ function App() {
   useEffect(() => {
     currentConversationRef.current = currentConversationId;
   }, [currentConversationId]);
+
+  useEffect(() => {
+    const bridge = desktopBridge();
+    if (!bridge || typeof bridge.getStatus !== "function") {
+      return undefined;
+    }
+    let cancelled = false;
+    bridge
+      .getStatus()
+      .then((status) => {
+        if (!cancelled) {
+          setDesktopStatus(normalizeDesktopStatus(status));
+        }
+      })
+      .catch((error) => {
+        if (!cancelled) {
+          setDesktopStatus(
+            normalizeDesktopStatus({
+              shell: "Electron",
+              apiError: error && error.message ? error.message : String(error),
+              apiReady: false,
+            }),
+          );
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     showDeletedConversationsRef.current = showDeletedConversations;
@@ -4615,6 +4980,11 @@ function App() {
     assistantNameRef.current = assistantName;
   }, [assistantName]);
 
+  const desktopStatusRef = useRef(desktopStatus);
+  useEffect(() => {
+    desktopStatusRef.current = desktopStatus;
+  }, [desktopStatus]);
+
   const requestAnswer = useCallback((text, history = []) => {
     const worker = workerRef.current;
     const prefs = {
@@ -4637,6 +5007,25 @@ function App() {
       location: locationPreferenceRef.current,
       assistantName: normalizeAssistantName(assistantNameRef.current),
     };
+    const currentDesktopStatus = desktopStatusRef.current;
+    if (currentDesktopStatus && currentDesktopStatus.apiReady && currentDesktopStatus.apiBase) {
+      return requestDesktopAnswer(text, history, currentDesktopStatus, prefs).catch(() => {
+        if (!worker) {
+          return localFallbackAnswer(text, history, prefs);
+        }
+        return new Promise((resolve) => {
+          const requestId = `request-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+          pendingResponses.current.set(requestId, resolve);
+          worker.postMessage({
+            prompt: text,
+            requestId,
+            history,
+            prefs,
+            userContext: userContextRef.current,
+          });
+        });
+      });
+    }
     if (!worker) {
       return Promise.resolve(localFallbackAnswer(text, history, prefs));
     }
@@ -4699,7 +5088,7 @@ function App() {
   }, [ensureConversation]);
 
   const appendAssistantMessage = useCallback((answer) => {
-    const source = workerRef.current ? "worker" : "fallback";
+    const source = answer.source || (workerRef.current ? "worker" : "fallback");
     const solverEvidence = Array.isArray(answer.evidence) ? answer.evidence : [];
     const evidence = answer.intent
       ? [`intent:${answer.intent}`, `source:${source}`, ...solverEvidence]
@@ -5228,11 +5617,23 @@ function App() {
     attachments.length > 0
       ? t("composer.attachments", { count: attachments.length })
       : "";
+  const desktopStatusText = desktopStatusLabel(desktopStatus, agentMode);
+  const desktopAgentPermission = agentMode ? "Opted in" : "Off";
+  const desktopToolPermission =
+    desktopStatus && agentMode
+      ? "Agent tools visible"
+      : "Permission gated";
 
   return h(
     "main",
     {
-      className: `app ui-skin-${uiSkin} chat-style-${chatStyle} composer-style-${composerStyle}`,
+      className: [
+        "app",
+        `ui-skin-${uiSkin}`,
+        `chat-style-${chatStyle}`,
+        `composer-style-${composerStyle}`,
+        desktopStatus ? "desktop-shell" : "",
+      ].filter(Boolean).join(" "),
     },
     h(
       "header",
@@ -5281,6 +5682,19 @@ function App() {
       h(
         "div",
         { className: "topbar-actions" },
+        desktopStatus
+          ? h(
+              "span",
+              {
+                className: "desktop-status",
+                "data-testid": "desktop-shell-status",
+                "data-menu-priority": "7",
+                role: "status",
+                title: desktopStatus.apiError || desktopStatusText,
+              },
+              desktopStatusText,
+            )
+          : null,
         h(
           "span",
           {
@@ -5604,6 +6018,80 @@ function App() {
             ),
           ),
         }),
+        desktopStatus
+          ? h(CollapsibleSection, {
+              title: "Desktop",
+              testId: "sidebar-desktop",
+              collapsed: sidebarDesktopCollapsed,
+              onToggle: () => setSidebarDesktopCollapsed((value) => !value),
+              className: "desktop-shell-section",
+              children: h(
+                "dl",
+                { className: "desktop-shell-panel", "data-testid": "desktop-shell-panel" },
+                h(
+                  "div",
+                  null,
+                  h("dt", null, "Shell"),
+                  h("dd", null, desktopStatus.shell),
+                ),
+                h(
+                  "div",
+                  null,
+                  h("dt", null, "API"),
+                  h(
+                    "dd",
+                    { "data-testid": "desktop-api-base" },
+                    compactUrl(desktopStatus.apiBase),
+                  ),
+                ),
+                h(
+                  "div",
+                  null,
+                  h("dt", null, "Network"),
+                  h(
+                    "dd",
+                    null,
+                    h(
+                      "a",
+                      {
+                        href: desktopStatus.graphUrl || "#",
+                        target: "_blank",
+                        rel: "noopener noreferrer",
+                        "data-testid": "desktop-network-link",
+                      },
+                      compactUrl(desktopStatus.graphUrl),
+                    ),
+                  ),
+                ),
+                h(
+                  "div",
+                  null,
+                  h("dt", null, "Memory"),
+                  h("dd", { "data-testid": "desktop-memory-bundle" }, desktopStatus.memory),
+                ),
+                h(
+                  "div",
+                  null,
+                  h("dt", null, "Agent"),
+                  h(
+                    "dd",
+                    { "data-testid": "desktop-agent-permission" },
+                    desktopAgentPermission,
+                  ),
+                ),
+                h(
+                  "div",
+                  null,
+                  h("dt", null, "Tool calls"),
+                  h(
+                    "dd",
+                    { "data-testid": "desktop-tool-permission" },
+                    desktopToolPermission,
+                  ),
+                ),
+              ),
+            })
+          : null,
         h(CollapsibleSection, {
           title: t("sidebar.conversations"),
           testId: "sidebar-conversations",

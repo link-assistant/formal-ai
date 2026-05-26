@@ -1,6 +1,7 @@
 extern crate alloc;
 
 pub mod arithmetic;
+pub mod associative_package;
 pub(crate) mod calculation;
 pub(crate) mod concepts;
 pub mod engine;
@@ -13,12 +14,14 @@ pub mod language;
 pub mod link_store;
 pub(crate) mod links_format;
 pub mod memory;
+pub mod probability;
 pub mod proof_engine;
 pub mod protocol;
 pub mod seed;
 pub mod server;
 pub mod skill_compiler;
 pub mod solver;
+pub(crate) mod solver_formalization;
 pub(crate) mod solver_handler_docs;
 pub(crate) mod solver_handler_how;
 pub(crate) mod solver_handler_units;
@@ -33,6 +36,11 @@ pub(crate) mod unknown_opener;
 pub mod web_engine_core;
 pub mod web_search_core;
 
+pub use associative_package::{
+    default_associative_packages, default_package_store, AssociativePackage, PackageDependency,
+    PackageHandler, PackageImportError, PackageInstallError, PackagePermission,
+    PackagePermissionDecision, PackageReplay, PackageStore, PackageTrigger,
+};
 pub use engine::{knowledge_links_notation, FormalAiEngine, SymbolicAnswer, DEFAULT_MODEL};
 pub use event_log::{Event, EventLog};
 pub use github_logs::{
@@ -44,9 +52,9 @@ pub use language::{detect as detect_language, Language};
 #[cfg(feature = "doublets-native")]
 pub use link_store::DoubletsLinkStore;
 pub use link_store::{
-    memory_event_to_link_record, memory_events_to_link_records, selected_link_store_backend,
-    validate_memory_links_notation, DoubletLink, LinkRecord, LinkStore, LinkStoreBackend,
-    LinkStoreError,
+    default_native_link_store, memory_event_to_link_record, memory_events_to_link_records,
+    selected_link_store_backend, validate_memory_links_notation, DefaultNativeLinkStore,
+    DoubletLink, LinkRecord, LinkStore, LinkStoreBackend, LinkStoreError,
 };
 pub use memory::{
     export_bundle as export_memory_bundle, export_full_memory as export_memory_full,
@@ -54,6 +62,11 @@ pub use memory::{
     import_full_memory as import_memory_full, parse_links_notation as parse_memory_links_notation,
     suggest_migrations as suggest_memory_migrations, BundleInfo, MemoryEvent, MemoryStore,
     ParsedBundle,
+};
+pub use probability::{
+    rank_probability_candidates, ProbabilityCandidate, ProbabilityEvidence, ProbabilityModel,
+    ProbabilityRanking, ProbabilityRankingConfig, ProbabilitySourceProvenance, ProbabilityStore,
+    RankedProbabilityCandidate,
 };
 pub use protocol::{
     create_chat_completion, create_chat_completion_with_solver, create_response,
@@ -73,7 +86,9 @@ pub use server::{
     ApiAuthConfig, ApiHttpResponse,
 };
 pub use skill_compiler::{
-    compile_natural_language_skill, CompiledSkillPackage, CompiledSkillReplay, SkillCompileError,
+    compile_natural_language_skill, CompiledSkillEffect, CompiledSkillExpectedTest,
+    CompiledSkillHandlerStub, CompiledSkillInput, CompiledSkillPackage, CompiledSkillPermission,
+    CompiledSkillPrecondition, CompiledSkillReplay, CompiledSkillStep, SkillCompileError,
 };
 pub use solver::{
     solve, solve_with_history, ConversationRole, ConversationTurn, ExecutionSurface, SolverConfig,
