@@ -315,6 +315,7 @@ const ENGLISH_CAPABILITIES: &[&str] = &["what can you do?", "what can you do", "
 const RUSSIAN_CAPABILITIES: &[&str] = &[
     "что ты умеешь?",
     "что ты умеешь",
+    "А в чём ты можешь быть полезен",
     // Issue #49 covered the slang follow-up: "что за дичь?" maps to
     // capabilities too, as a frustrated form of the same question.
     "что за дичь?",
