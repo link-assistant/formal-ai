@@ -376,11 +376,9 @@ fn prior_turns_appear_in_evidence_log() {
 fn javascript_request_returns_explicit_unavailability() {
     let prompt = "Please run this javascript:\n```js\nconsole.log(1 + 2);\n```";
     let response = answer(prompt);
-    assert_eq!(response.intent, "javascript_execution_unavailable");
-    assert!(response
-        .answer
-        .to_lowercase()
-        .contains("do not embed a javascript"));
+    assert_eq!(response.intent, "tool_call_refused");
+    assert!(response.answer.contains("Execution status: refused"));
+    assert!(response.answer.contains("agent mode"));
     assert!(response.answer.contains("console.log(1 + 2);"));
 }
 

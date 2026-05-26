@@ -217,6 +217,12 @@ pub fn build_evidence_links(prompt: &str, log: &EventLog, response_link: &str) -
             }
             "url_navigate:request" => format!("url_navigate:request:{}", event.payload),
             "url_preview:iframe" => format!("url_preview:iframe:{}", event.payload),
+            "tool_call" => format!("tool_call:{}", event.payload),
+            "tool_parameter" => format!("tool_parameter:{}", event.payload.replace(' ', ":")),
+            "tool_result" => format!("tool_result:{}", event.payload.replace(' ', ":")),
+            "tool_permission" => {
+                format!("tool_permission:{}", event.payload.replace(' ', ":"))
+            }
             "procedural_how_to:request" => {
                 format!("procedural_how_to:request:{}", event.payload)
             }
@@ -296,6 +302,12 @@ pub fn build_evidence_links(prompt: &str, log: &EventLog, response_link: &str) -
             }
             "policy:offline" => String::from("policy:offline"),
             "policy:inappropriate_content" => String::from("policy:inappropriate_content"),
+            "policy:agent_mode_required_for_tools" => {
+                format!("policy:agent_mode_required_for_tools:{}", event.payload)
+            }
+            "policy:package_permission_required" => {
+                format!("policy:package_permission_required:{}", event.payload)
+            }
             "policy:temperature_selection" => {
                 format!("policy:temperature_selection:{}", event.id)
             }

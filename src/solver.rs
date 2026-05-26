@@ -47,11 +47,12 @@ use crate::solver_handlers::{
     try_coreference_request, try_definition_merge, try_definition_merge_by_default,
     try_execution_failure, try_fact_lookup, try_feature_capability, try_http_fetch, try_ill_formed,
     try_javascript_execution, try_meta_explanation, try_meta_explanation_with_runtime,
-    try_network_query, try_opinion_question, try_playwright_script, try_project_lookup,
-    try_proof_request, try_proof_request_with_config, try_punctuation_only_prompt,
-    try_roleplay_request, try_shell_refusal, try_software_project_request, try_source_conflict,
-    try_source_refresh, try_summarization_request, try_translation, try_url_navigate,
-    try_web_search, try_who_is_question, try_write_script, CapabilityRuntime, SelfAwarenessRuntime,
+    try_natural_language_tool_request, try_network_query, try_opinion_question,
+    try_playwright_script, try_project_lookup, try_proof_request, try_proof_request_with_config,
+    try_punctuation_only_prompt, try_roleplay_request, try_shell_refusal,
+    try_software_project_request, try_source_conflict, try_source_refresh,
+    try_summarization_request, try_translation, try_url_navigate, try_web_search,
+    try_who_is_question, try_write_script, CapabilityRuntime, SelfAwarenessRuntime,
 };
 use crate::solver_handlers_policy::{try_kupi_slona, try_physical_action_question};
 use crate::solver_helpers::{
@@ -687,10 +688,13 @@ impl UniversalSolver {
     ) -> Option<SymbolicAnswer> {
         let normalized = prompt.to_lowercase();
 
-        // `try_diagnostic` needs `&self` to construct an inner solver, so it
-        // stays outside the registry. Every other specialized handler is a
-        // plain function and runs through `SPECIALIZED_HANDLERS` below.
         if let Some(answer) = self.try_diagnostic(prompt, &normalized, log) {
+            return Some(answer);
+        }
+        if let Some(answer) =
+            try_natural_language_tool_request(prompt, &normalized, log, self.config.agent_mode)
+        {
+            log.append("specialized_handler", "nl_tool".to_owned());
             return Some(answer);
         }
         let capability_runtime = CapabilityRuntime::new(
