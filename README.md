@@ -92,6 +92,13 @@ The static demo lives in `src/web/index.html`. Serve it from a local web server 
 
 Every interface produces the same self-contained Links Notation document by default. In the browser, the **Export memory** topbar button writes `formal-ai-memory.lino` as a complete `formal_ai_bundle` — the entire seed (rules, concepts, tools, multilingual responses), UI preferences, environment metadata, and the full append-only event log — so a single click is enough to reconstitute the session. **Import memory** auto-detects bundle vs legacy `demo_memory` files and surfaces migration suggestions when the imported seed version differs from the running app's. The CLI matches:
 
+Native Rust builds now select `doublets-rs` by default through the
+`doublets-native` feature. Links Notation stays the recovery and migration
+projection: existing `demo_memory` logs and full `formal_ai_bundle` exports
+import into the native store, export back to deterministic `.lino`, and can
+still be handled by compiling with `--no-default-features` when a pure
+`MemoryStore` projection is needed.
+
 ```bash
 cargo run -- memory export --from memory.lino --path full.lino           # default: full bundle
 cargo run -- memory export --from memory.lino --path events.lino --events-only  # legacy demo_memory

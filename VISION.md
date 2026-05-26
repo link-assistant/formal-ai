@@ -8,9 +8,10 @@ The associative network is the AI. The runtime should activate, extend, query, a
 
 The system should prefer deep understanding of user needs, intent, context, and available evidence over answer memoization. A prompt should trigger enough data collection and reasoning to justify the response for that prompt. What the system learns along the way should remain available as reviewable knowledge, with source links and execution traces attached.
 
-The long-term store should be link-native:
+The default native store is link-native:
 
-- Links Data Store is the operational database for meanings, history, rules, traces, and executable associations.
+- `doublets-rs` is the default native Links Data Store for meanings, history, rules, traces, and executable associations.
+- `doublets-web` / IndexedDB is the browser-side storage shape.
 - Links Notation is the reviewable text format for seed data, portable packages, traces, and repository data.
 - Doublet links are the primitive storage model for this project.
 - `lino-objects-codec` remains useful for converting structured objects into reviewable Links Notation during the transition.
@@ -96,7 +97,7 @@ The full pipeline is documented in [`ARCHITECTURE.md`](ARCHITECTURE.md).
 
 ## Growable Memory And Public Knowledge As Cache
 
-Memory should grow with use, not just with prompts. Every reasoning step, every internal decision, every external request, and every response is appended to the same log so the next similar request can reuse the prior work in part or in full. The long-term store is doublets-rs in the library, CLI, server, and Telegram surfaces, with doublets-web (IndexedDB / `localStorage`) on the browser; backups are written as `.lino` files representing Links Notation, both to disk and to additional persistent storage (browser IndexedDB, future cloud sync).
+Memory should grow with use, not just with prompts. Every reasoning step, every internal decision, every external request, and every response is appended to the same log so the next similar request can reuse the prior work in part or in full. The default native store is doublets-rs in the library, CLI, server, and Telegram surfaces, with doublets-web (IndexedDB / `localStorage`) on the browser; backups are written as `.lino` files representing Links Notation, both to disk and to additional persistent storage (browser IndexedDB, future cloud sync).
 
 Treating the internet (Wikipedia, Wikidata, Wiktionary, Wikifunctions, Rosetta Code, public APIs) as a public database and the local doublets store as a cache for that database substitutes deterministic reasoning over reviewable links for opaque GPU-backed inference. The same caching pattern carries `source:`, `fetched_at`, and `sha256` metadata per the existing `cache_ttl_seconds` policy; offline mode refuses external lookups and emits a `policy:offline` event instead of synthesizing facts.
 
@@ -166,4 +167,4 @@ Every capability the CLI or HTTP server exposes is also reachable from the `form
 
 The current repository is a deterministic symbolic implementation. It already has deterministic rules, Links Notation seed files, OpenAI-shaped API responses, a static web demo, Telegram support, execution metadata for simple code examples, and case-study documentation. Every interface now reads its multilingual responses, concept table, tool registry, language-detection rules, prompt patterns, and intent-routing rule book from the shared `data/seed/` directory through `src/seed.rs` (Rust) and `src/web/seed_loader.js` (browser). Reasoning steps and tool invocations land in the append-only memory log on the web side; the merged seed bundle round-trips through one `formal_ai_seed_bundle` Links Notation file via `seed::merged_bundle()` / `seed::parse_bundle()`.
 
-The next step is to keep the implemented surfaces small while moving more of the assistant's behavior into explicit links: requirements, source facts, traces, prompts, handlers, permissions, tests, and reusable problem-solving procedures. The CLI, server, and Telegram bot should expose the same bundle-export and simplified-issue-reporting actions the web demo offers, the append-only memory log should be unified across surfaces, and the long-term store should migrate from per-surface tables to a unified doublets-rs/doublets-web links store.
+The next step is to keep the implemented surfaces small while moving more of the assistant's behavior into explicit links: requirements, source facts, traces, prompts, handlers, permissions, tests, and reusable problem-solving procedures. The CLI, server, and Telegram bot should expose the same bundle-export and simplified-issue-reporting actions the web demo offers while preserving the unified doublets-rs/doublets-web store and Links Notation migration surface across interfaces.

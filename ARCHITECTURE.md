@@ -219,29 +219,50 @@ User-facing surfaces guard these operations with an export-first path and an
 irreversible confirmation, while the CLI requires `--confirm` and can write a
 full-bundle `--backup` before modifying the memory file.
 
-### 4.2 Durable doublets-rs / doublets-web store
+### 4.2 Default native doublets-rs / doublets-web store
 
-This is the long-term direction (see `VISION.md` "Current Direction"). The
-in-process log will be projected into the doublet links store on a regular
-cadence; the doublet store will then be the single physical representation
-of the network. Browser storage (`localStorage`, IndexedDB) holds a mirror
-for offline-first chat; the disk-side backup writes `.lino` snapshots in the
-canonical Links Notation format.
+Native Rust builds select `LinkStoreBackend::DoubletsRs` by default because
+Cargo's default feature set enables `doublets-native`. The library exposes
+`link_store::DefaultNativeLinkStore` and `default_native_link_store()` so
+embedders can construct the active native backend without checking feature
+flags themselves. Compiling with `--no-default-features` keeps the explicit
+`MemoryStore` / `.lino` projection fallback for small builds and recovery
+tools.
+
+The native backend mirrors each `MemoryEvent` into a `doublets-rs` graph using
+the `Type -> SubType -> Value` reduction in `src/link_store.rs`. Links
+Notation remains the deterministic projection for inspection, backup,
+recovery, and migration: `import_memory_links_notation` accepts both legacy
+`demo_memory` files and full `formal_ai_bundle` exports, while malformed
+documents are rejected before the store is mutated. Exporting the native
+store writes the same stable `.lino` event log that the CLI, HTTP, Telegram,
+and browser surfaces use for portability.
+
+Browser storage remains compatible with `doublets-web`: `src/web/memory.js`
+uses IndexedDB for the event object store, reports `doublets-web` when a
+browser doublets implementation is available, and otherwise keeps the
+`indexeddb-lino-mirror` fallback. The browser and native stores therefore
+share Links Notation import/export semantics even though their physical
+storage engines are different.
 
 Upstream references:
 
 - [`linksplatform/doublets-rs`](https://github.com/linksplatform/doublets-rs)
 - [`linksplatform/doublets-web`](https://github.com/linksplatform/doublets-web)
 
-Migration plan:
+Implemented migration surface:
 
-1. Wrap the current `MemoryStore` in a trait so the active backend is
+1. Wrap the current memory projection in a trait so the active backend is
    swappable (`link_store::LinkStore`).
-2. Add a `doublets-rs` backend behind a feature flag
-   (`doublets-native`).
-3. Mirror writes to `.lino` snapshots via `memory::export_links_notation`.
-4. Replace the per-surface tables with the unified doublets store.
-5. Add a `doublets-web` backend for the browser worker.
+2. Enable the `doublets-rs` backend by default for native builds through
+   `doublets-native`.
+3. Preserve `--no-default-features` as the explicit `.lino` projection
+   fallback.
+4. Mirror native writes to `.lino` snapshots via
+   `memory::export_links_notation`.
+5. Accept existing `.lino` memory files and full bundles as migration input.
+6. Keep the browser IndexedDB/doublets-web mirror on the same projection
+   contract.
 
 ### 4.3 Public-knowledge cache
 
@@ -780,10 +801,7 @@ adds one file (or extends one matrix) without touching the rest.
 These items are tracked as requirements today and as architecture
 references here:
 
-1. The doublets-rs backend (Section 4.2) is available behind
-   `doublets-native`; the remaining migration work is making it the default
-   physical store for every non-browser surface.
-2. Natural-language-skill compilation now has a deterministic
+1. Natural-language-skill compilation now has a deterministic
    trigger/response compiler in `src/skill_compiler.rs`; future work is
    broadening the compiler beyond exact normalized-prompt replay and into
    native Rust/JS lowering.
@@ -798,8 +816,8 @@ the table in Section 2 and link the new module.
 - `VISION.md` — values, product story, north-star user experience.
 - `GOALS.md` — what counts as success per surface.
 - `NON-GOALS.md` — what we explicitly do not build.
-- `REQUIREMENTS.md` — issue-by-issue implementation matrix (R1 … R149).
-- [`linksplatform/doublets-rs`](https://github.com/linksplatform/doublets-rs) — long-term storage backend.
+- `REQUIREMENTS.md` — issue-by-issue implementation matrix (R1 … R236).
+- [`linksplatform/doublets-rs`](https://github.com/linksplatform/doublets-rs) — default native storage backend.
 - [`linksplatform/doublets-web`](https://github.com/linksplatform/doublets-web) — browser-side mirror.
 - [`link-assistant/calculator`](https://github.com/link-assistant/calculator) — delegated calculator engine (`link-calculator` crate).
 - [`link-assistant/relative-meta-logic`](https://github.com/link-assistant/relative-meta-logic) — future formal-reasoning integration.

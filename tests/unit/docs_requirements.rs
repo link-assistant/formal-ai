@@ -527,6 +527,99 @@ fn issue_195_dind_telegram_runtime_documents_are_present_and_traceable() {
 }
 
 #[test]
+fn issue_278_default_native_doublets_store_is_traceable() {
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+
+    let requirements = read(root.join("REQUIREMENTS.md"));
+    assert_contains_all(
+        "REQUIREMENTS.md",
+        &requirements,
+        &[
+            "Issue #278 Native Doublets Store Default Requirements",
+            "| R231 ",
+            "| R232 ",
+            "| R233 ",
+            "| R234 ",
+            "| R235 ",
+            "| R236 ",
+            "doublets-rs as the native default",
+        ],
+    );
+
+    let cargo = read(root.join("Cargo.toml"));
+    assert_contains_all(
+        "Cargo.toml",
+        &cargo,
+        &["default = [\"doublets-native\"]", "dep:doublets", "dep:mem"],
+    );
+
+    let link_store = read(root.join("src/link_store.rs"));
+    assert_contains_all(
+        "src/link_store.rs",
+        &link_store,
+        &[
+            "default_native_link_store",
+            "DefaultNativeLinkStore",
+            "from_links_notation",
+            "native_default_build_selects_doublets_rs_backend",
+            "native_without_default_features_falls_back_to_lino_projection",
+            "doublets_default_imports_full_lino_bundle_and_exports_deterministically",
+        ],
+    );
+
+    let architecture = read(root.join("ARCHITECTURE.md"));
+    assert_contains_all(
+        "ARCHITECTURE.md",
+        &architecture,
+        &[
+            "Default native doublets-rs",
+            "--no-default-features",
+            "formal_ai_bundle",
+            "indexeddb-lino-mirror",
+        ],
+    );
+
+    let readme = read(root.join("README.md"));
+    assert_contains_all(
+        "README.md",
+        &readme,
+        &[
+            "Native Rust builds now select `doublets-rs`",
+            "`doublets-native` feature",
+            "`--no-default-features`",
+        ],
+    );
+
+    let environments = read(root.join("data/seed/environments.lino"));
+    assert_contains_all(
+        "data/seed/environments.lino",
+        &environments,
+        &[
+            "default native doublets-rs link store",
+            "default_native_link_store()?.import_memory_links_notation",
+        ],
+    );
+
+    let agent_info = read(root.join("data/seed/agent-info.lino"));
+    assert_contains_all(
+        "data/seed/agent-info.lino",
+        &agent_info,
+        &["field \"supported_languages\"", "value \"en|ru|hi|zh\""],
+    );
+    for (language_marker, code) in [
+        ("language: \"en\" English", "en"),
+        ("language: \"ru\" Russian", "ru"),
+        ("language: \"hi\" Hindi", "hi"),
+        ("language: \"zh\" Chinese", "zh"),
+    ] {
+        assert!(
+            agent_info.contains(code),
+            "missing issue #278 coverage for {language_marker}"
+        );
+    }
+}
+
+#[test]
 fn repository_text_avoids_deferred_labels_requested_by_issue_103() {
     let root = Path::new(env!("CARGO_MANIFEST_DIR"));
     let phrase_space = ["proof", " of ", "concept"].concat();
