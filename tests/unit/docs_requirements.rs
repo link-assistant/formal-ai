@@ -599,6 +599,24 @@ fn issue_278_default_native_doublets_store_is_traceable() {
             "default_native_link_store()?.import_memory_links_notation",
         ],
     );
+
+    let agent_info = read(root.join("data/seed/agent-info.lino"));
+    assert_contains_all(
+        "data/seed/agent-info.lino",
+        &agent_info,
+        &["field \"supported_languages\"", "value \"en|ru|hi|zh\""],
+    );
+    for (language_marker, code) in [
+        ("language: \"en\" English", "en"),
+        ("language: \"ru\" Russian", "ru"),
+        ("language: \"hi\" Hindi", "hi"),
+        ("language: \"zh\" Chinese", "zh"),
+    ] {
+        assert!(
+            agent_info.contains(code),
+            "missing issue #278 coverage for {language_marker}"
+        );
+    }
 }
 
 #[test]
