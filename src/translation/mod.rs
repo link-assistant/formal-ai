@@ -73,8 +73,10 @@ pub(crate) use language_markers::{detect_source_language, detect_target_language
 pub use pipeline::{Translation, TranslationPipeline};
 pub use prompt::extract_unquoted_translation_surface;
 pub use selection::{
-    select_formalization_candidate, softmax_formalization_scores, FormalizationDecision,
-    FormalizationSelection, FormalizationSelectionConfig, FormalizationSelectionReason,
+    formalization_probability_target, select_formalization_candidate,
+    select_formalization_candidate_with_probability_store, softmax_formalization_scores,
+    FormalizationDecision, FormalizationSelection, FormalizationSelectionConfig,
+    FormalizationSelectionReason,
 };
 
 /// Process-wide cached HTTP client used by the default pipeline.

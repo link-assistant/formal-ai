@@ -203,7 +203,9 @@ assert_eq!(
 
 ## Current Symbolic Behavior
 
-The engine normalizes a prompt, selects a deterministic symbolic rule, and returns the rule output with evidence link identifiers and indented Links Notation. Seed rules currently cover:
+The engine normalizes a prompt, selects a deterministic symbolic rule, and returns the rule output with evidence link identifiers and indented Links Notation. It can also consume an explicit `ProbabilityStore`: append-only Bayesian-style evidence and Markov transition evidence rank symbolic candidate IDs before the temperature / clarify-vs-guess policy runs. This stays non-neural; evidence is Links Notation data with provenance, timestamps, cached-source fingerprints, and deterministic replay.
+
+Seed rules currently cover:
 
 - greetings and polite follow-ups: `Hi`, `Hello`, `Hey`, `I am fine, thank you`, `thanks`
 - hello world requests for Rust, Python, JavaScript, TypeScript, Go, and C
