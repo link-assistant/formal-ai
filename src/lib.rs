@@ -44,9 +44,9 @@ pub use language::{detect as detect_language, Language};
 #[cfg(feature = "doublets-native")]
 pub use link_store::DoubletsLinkStore;
 pub use link_store::{
-    memory_event_to_link_record, memory_events_to_link_records, selected_link_store_backend,
-    validate_memory_links_notation, DoubletLink, LinkRecord, LinkStore, LinkStoreBackend,
-    LinkStoreError,
+    default_native_link_store, memory_event_to_link_record, memory_events_to_link_records,
+    selected_link_store_backend, validate_memory_links_notation, DefaultNativeLinkStore,
+    DoubletLink, LinkRecord, LinkStore, LinkStoreBackend, LinkStoreError,
 };
 pub use memory::{
     export_bundle as export_memory_bundle, export_full_memory as export_memory_full,

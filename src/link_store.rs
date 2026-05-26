@@ -1,12 +1,12 @@
 //! Swappable Links Notation and doublet-links storage boundary.
 //!
-//! The current durable store is still the human-reviewable `.lino`
-//! projection in [`crate::memory::MemoryStore`]. This module defines the
-//! backend trait that lets solver traces and memory events be reduced to
-//! doublets without forcing every surface to share the same physical store
-//! yet. Native builds can opt into the `doublets-native` feature to mirror
-//! writes into the `doublets` crate; browser builds expose the same shape via
-//! the `IndexedDB` mirror in `src/web/memory.js`.
+//! Default native builds use the `doublets-rs` backend through the
+//! `doublets-native` feature. The human-reviewable `.lino` memory and bundle
+//! formats remain the deterministic export/import projection, and native
+//! callers can still compile with `--no-default-features` to use the
+//! [`crate::memory::MemoryStore`] Links Notation projection directly. Browser
+//! builds expose the same shape via the `IndexedDB` mirror in
+//! `src/web/memory.js`.
 
 use std::collections::BTreeMap;
 use std::error::Error;
@@ -91,6 +91,28 @@ pub const fn selected_link_store_backend() -> LinkStoreBackend {
         LinkStoreBackend::DoubletsRs
     } else {
         LinkStoreBackend::LinoProjection
+    }
+}
+
+#[cfg(all(not(target_arch = "wasm32"), feature = "doublets-native"))]
+pub type DefaultNativeLinkStore = DoubletsLinkStore;
+
+#[cfg(any(target_arch = "wasm32", not(feature = "doublets-native")))]
+pub type DefaultNativeLinkStore = MemoryStore;
+
+/// Create the default Rust-side link store for this build.
+///
+/// Native default builds return [`DoubletsLinkStore`]. Builds compiled with
+/// `--no-default-features` keep the explicit `.lino` projection fallback.
+pub fn default_native_link_store() -> Result<DefaultNativeLinkStore, LinkStoreError> {
+    #[cfg(all(not(target_arch = "wasm32"), feature = "doublets-native"))]
+    {
+        DoubletsLinkStore::new()
+    }
+
+    #[cfg(any(target_arch = "wasm32", not(feature = "doublets-native")))]
+    {
+        Ok(MemoryStore::new())
     }
 }
 
@@ -278,6 +300,31 @@ impl DoubletsLinkStore {
             nodes: BTreeMap::new(),
             native,
         })
+    }
+
+    /// Build a native doublets store from a `.lino` memory or bundle document.
+    pub fn from_links_notation(text: &str) -> Result<Self, LinkStoreError> {
+        let mut store = Self::new()?;
+        store.import_memory_links_notation(text)?;
+        Ok(store)
+    }
+
+    /// Return the imported or appended memory events in append order.
+    #[must_use]
+    pub fn events(&self) -> &[MemoryEvent] {
+        &self.events
+    }
+
+    /// Number of memory events mirrored into native doublets.
+    #[must_use]
+    pub fn len(&self) -> usize {
+        self.events.len()
+    }
+
+    /// Whether this native store currently has no memory events.
+    #[must_use]
+    pub fn is_empty(&self) -> bool {
+        self.events.is_empty()
     }
 
     /// Number of raw native doublets links, including point nodes.
@@ -515,8 +562,8 @@ fn push_doublet(links: &mut Vec<DoubletLink>, from: &str, to: &str) {
 #[cfg(test)]
 mod tests {
     use super::{
-        memory_event_to_link_record, validate_memory_links_notation, LinkStore, LinkStoreBackend,
-        LinkStoreError,
+        default_native_link_store, memory_event_to_link_record, selected_link_store_backend,
+        validate_memory_links_notation, LinkStore, LinkStoreBackend, LinkStoreError,
     };
     use crate::memory::{export_links_notation, MemoryEvent, MemoryStore};
 
@@ -536,6 +583,34 @@ mod tests {
             .links
             .iter()
             .any(|link| link.from == "field:content" && link.to == "value:hello"));
+    }
+
+    #[cfg(all(not(target_arch = "wasm32"), feature = "doublets-native"))]
+    #[test]
+    fn native_default_build_selects_doublets_rs_backend() {
+        assert_eq!(selected_link_store_backend(), LinkStoreBackend::DoubletsRs);
+    }
+
+    #[cfg(all(not(target_arch = "wasm32"), not(feature = "doublets-native")))]
+    #[test]
+    fn native_without_default_features_falls_back_to_lino_projection() {
+        assert_eq!(
+            selected_link_store_backend(),
+            LinkStoreBackend::LinoProjection
+        );
+    }
+
+    #[cfg(not(target_arch = "wasm32"))]
+    #[test]
+    fn default_native_link_store_matches_selected_backend() {
+        let mut store = default_native_link_store().expect("default link store");
+        assert_eq!(store.backend(), selected_link_store_backend());
+        let id = store
+            .append_memory_event(MemoryEvent::user("hello from default store"))
+            .expect("append");
+        assert!(id.starts_with("memory_event_"));
+        assert_eq!(store.records().len(), 1);
+        assert!(store.export_memory_links_notation().contains("demo_memory"));
     }
 
     #[test]
@@ -572,6 +647,84 @@ mod tests {
         let inserted = store.try_import_links_notation(&text).expect("import");
         assert_eq!(inserted, 1);
         assert_eq!(store.events()[0].id, "event_1");
+    }
+
+    #[cfg(feature = "doublets-native")]
+    #[test]
+    fn doublets_default_imports_full_lino_bundle_and_exports_deterministically() {
+        use crate::memory::{export_full_memory, BundleInfo};
+
+        let events = vec![
+            MemoryEvent {
+                id: String::from("legacy_user_1"),
+                role: Some(String::from("user")),
+                content: Some(String::from("Hi from an existing bundle")),
+                sent_at: Some(String::from("2026-05-26T00:00:00.000Z")),
+                ..MemoryEvent::default()
+            },
+            MemoryEvent {
+                id: String::from("legacy_assistant_1"),
+                role: Some(String::from("assistant")),
+                intent: Some(String::from("greeting")),
+                content: Some(String::from("Hi, how may I help you?")),
+                sent_at: Some(String::from("2026-05-26T00:00:01.000Z")),
+                evidence: vec![String::from("intent:greeting")],
+                ..MemoryEvent::default()
+            },
+        ];
+        let seed = [(
+            "data/seed/agent-info.lino",
+            "agent_info\n  version \"0.1.0\"\n",
+        )];
+        let bundle = export_full_memory(
+            &seed,
+            &events,
+            &[],
+            &BundleInfo {
+                exported_at: Some(String::from("2026-05-26T00:00:02.000Z")),
+                version: Some(String::from("0.1.0")),
+                ..BundleInfo::default()
+            },
+        );
+
+        let mut store = default_native_link_store().expect("default native store");
+        assert_eq!(store.backend(), LinkStoreBackend::DoubletsRs);
+
+        let imported = store
+            .import_memory_links_notation(&bundle)
+            .expect("import existing bundle");
+
+        assert_eq!(imported, events.len());
+        assert_eq!(store.records().len(), events.len());
+        assert_eq!(store.records()[0].source_id, "legacy_user_1");
+        assert_eq!(store.records()[1].source_id, "legacy_assistant_1");
+        assert!(
+            store.native_link_count() > store.records()[0].links.len(),
+            "imported bundle should be mirrored into raw native doublets"
+        );
+        assert_eq!(
+            store.export_memory_links_notation(),
+            export_links_notation(&events)
+        );
+    }
+
+    #[cfg(feature = "doublets-native")]
+    #[test]
+    fn doublets_default_rejects_malformed_import_without_mutation() {
+        let mut store = default_native_link_store().expect("default native store");
+        store
+            .append_memory_event(MemoryEvent::user("kept"))
+            .expect("append");
+        let before_export = store.export_memory_links_notation();
+        let before_records = store.records();
+
+        let err = store
+            .import_memory_links_notation("demo_memory\n  event \"unterminated\n")
+            .expect_err("malformed import must fail");
+
+        assert!(matches!(err, LinkStoreError::IllFormedLinksNotation(_)));
+        assert_eq!(store.records(), before_records);
+        assert_eq!(store.export_memory_links_notation(), before_export);
     }
 
     #[cfg(feature = "doublets-native")]
