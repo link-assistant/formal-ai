@@ -95,6 +95,43 @@ fn natural_language_code_execution_requires_agent_mode() {
 }
 
 #[test]
+fn natural_language_code_execution_gate_is_stable_across_supported_language_contexts() {
+    let prompts = [
+        r#"language: "en" English
+Please execute this javascript:
+```js
+console.log(1 + 2);
+```"#,
+        r#"language: "ru" Russian
+Please execute this javascript:
+```js
+console.log(1 + 2);
+```"#,
+        r#"language: "hi" Hindi
+Please execute this javascript:
+```js
+console.log(1 + 2);
+```"#,
+        r#"language: "zh" Chinese
+Please execute this javascript:
+```js
+console.log(1 + 2);
+```"#,
+    ];
+
+    for prompt in prompts {
+        let response = answer(prompt);
+
+        assert_eq!(response.intent, "tool_call_refused");
+        assert!(response.answer.contains("Execution status: refused"));
+        assert!(response
+            .evidence_links
+            .iter()
+            .any(|link| link == "policy:agent_mode_required_for_tools:tool:javascript_execution"));
+    }
+}
+
+#[test]
 fn natural_language_code_execution_runs_bounded_javascript_when_allowed() {
     let response = agent_answer("Please execute this javascript:\n```js\nconsole.log(1 + 2);\n```");
 
