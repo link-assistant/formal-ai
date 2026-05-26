@@ -2738,6 +2738,135 @@ function courtesyResponseContent(preferences = {}) {
   return `${acknowledgement} ${followUp}`;
 }
 
+function desktopBridge() {
+  if (typeof window === "undefined" || !window.FormalAiDesktop) {
+    return null;
+  }
+  return window.FormalAiDesktop;
+}
+
+function normalizeDesktopStatus(status) {
+  if (!status || typeof status !== "object") {
+    return null;
+  }
+  const apiBase = String(status.apiBase || "").replace(/\/+$/, "");
+  return {
+    shell: String(status.shell || "Electron"),
+    apiBase,
+    staticBase: String(status.staticBase || ""),
+    graphUrl: String(status.graphUrl || (apiBase ? `${apiBase}/v1/graph` : "")),
+    traceUrl: String(status.traceUrl || (apiBase ? `${apiBase}/v1/graph?trace=answer_greeting_hi` : "")),
+    memory: String(status.memory || "formal_ai_bundle"),
+    agentModeDefault: Boolean(status.agentModeDefault),
+    toolCallPolicy: String(status.toolCallPolicy || "explicit-permission"),
+    apiReady: status.apiReady !== false && Boolean(apiBase),
+    apiError: String(status.apiError || ""),
+  };
+}
+
+function compactUrl(value) {
+  if (!value) {
+    return "unavailable";
+  }
+  try {
+    const parsed = new URL(value);
+    const pathName = parsed.pathname === "/" ? "" : parsed.pathname;
+    return `${parsed.host}${pathName}`;
+  } catch (_error) {
+    return String(value);
+  }
+}
+
+function desktopStatusLabel(status, agentMode) {
+  if (!status) {
+    return "";
+  }
+  const api = status.apiReady ? "API local" : "API unavailable";
+  const agent = agentMode ? "agent opted in" : "agent permission off";
+  return `Desktop - ${api} - ${agent}`;
+}
+
+function desktopMessages(history, text) {
+  const messages = [];
+  for (const entry of Array.isArray(history) ? history : []) {
+    if (!entry || !["user", "assistant"].includes(entry.role)) {
+      continue;
+    }
+    const content = typeof entry.content === "string" ? entry.content : "";
+    if (content.trim()) {
+      messages.push({ role: entry.role, content });
+    }
+  }
+  messages.push({ role: "user", content: String(text || "") });
+  return messages;
+}
+
+async function requestDesktopAnswer(text, history, desktopStatus, preferences = {}) {
+  const apiBase = desktopStatus && desktopStatus.apiBase;
+  if (!apiBase) {
+    throw new Error("desktop API is unavailable");
+  }
+
+  const endpoint = `${apiBase}/v1/chat/completions`;
+  const response = await fetch(endpoint, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({
+      model: "formal-symbolic-production",
+      messages: desktopMessages(history, text),
+      temperature: normalizeSliderPreference(preferences.temperature, 0),
+      stream: false,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`desktop API returned ${response.status}`);
+  }
+
+  const payload = await response.json();
+  const answerText =
+    payload &&
+    payload.choices &&
+    payload.choices[0] &&
+    payload.choices[0].message
+      ? String(payload.choices[0].message.content || "")
+      : "";
+
+  return {
+    intent: "desktop_http_chat",
+    content: answerText || UNKNOWN_ANSWER,
+    source: "desktop_http",
+    evidence: [
+      "surface:desktop",
+      "api:/v1/chat/completions",
+      desktopStatus.graphUrl ? "network:/v1/graph" : "",
+    ].filter(Boolean),
+    steps: [
+      { step: "desktop_shell", detail: "Electron preload bridge supplied local API status" },
+      { step: "http_chat", detail: "POST /v1/chat/completions on the local Rust server" },
+      { step: "memory", detail: "UI import/export stays on formal_ai_bundle" },
+    ],
+    diagnostics: {
+      providers: [
+        {
+          id: "formal_ai_desktop_http",
+          status: "ok",
+          endpoint,
+        },
+      ],
+      http: [
+        {
+          provider: "formal_ai_desktop_http",
+          url: endpoint,
+          method: "POST",
+          status: response.status,
+          ok: response.ok,
+        },
+      ],
+    },
+  };
+}
+
 function localFallbackAnswer(prompt, history = [], preferences = {}) {
   const normalized = normalizePrompt(prompt);
   const behaviorRule = tryLocalBehaviorRules(prompt, normalized, history, preferences);
@@ -3784,6 +3913,7 @@ function App() {
   const [sidebarMenuCollapsed, setSidebarMenuCollapsed] = useState(
     initialPreferences.current.sidebarMenuCollapsed,
   );
+  const [sidebarDesktopCollapsed, setSidebarDesktopCollapsed] = useState(false);
   const [sidebarPromptsCollapsed, setSidebarPromptsCollapsed] = useState(
     initialPreferences.current.sidebarPromptsCollapsed,
   );
@@ -3860,6 +3990,7 @@ function App() {
   const [assistantName, setAssistantName] = useState(
     normalizeAssistantName(initialPreferences.current.assistantName),
   );
+  const [desktopStatus, setDesktopStatus] = useState(null);
   // Issue #27: agent mode runs the user's prompt as a multi-step plan instead
   // of a single Q&A. Persisted across reloads via preferences.
   const [agentMode, setAgentMode] = useState(
@@ -4013,6 +4144,35 @@ function App() {
   useEffect(() => {
     currentConversationRef.current = currentConversationId;
   }, [currentConversationId]);
+
+  useEffect(() => {
+    const bridge = desktopBridge();
+    if (!bridge || typeof bridge.getStatus !== "function") {
+      return undefined;
+    }
+    let cancelled = false;
+    bridge
+      .getStatus()
+      .then((status) => {
+        if (!cancelled) {
+          setDesktopStatus(normalizeDesktopStatus(status));
+        }
+      })
+      .catch((error) => {
+        if (!cancelled) {
+          setDesktopStatus(
+            normalizeDesktopStatus({
+              shell: "Electron",
+              apiError: error && error.message ? error.message : String(error),
+              apiReady: false,
+            }),
+          );
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     showDeletedConversationsRef.current = showDeletedConversations;
@@ -4615,6 +4775,11 @@ function App() {
     assistantNameRef.current = assistantName;
   }, [assistantName]);
 
+  const desktopStatusRef = useRef(desktopStatus);
+  useEffect(() => {
+    desktopStatusRef.current = desktopStatus;
+  }, [desktopStatus]);
+
   const requestAnswer = useCallback((text, history = []) => {
     const worker = workerRef.current;
     const prefs = {
@@ -4637,6 +4802,25 @@ function App() {
       location: locationPreferenceRef.current,
       assistantName: normalizeAssistantName(assistantNameRef.current),
     };
+    const currentDesktopStatus = desktopStatusRef.current;
+    if (currentDesktopStatus && currentDesktopStatus.apiReady && currentDesktopStatus.apiBase) {
+      return requestDesktopAnswer(text, history, currentDesktopStatus, prefs).catch(() => {
+        if (!worker) {
+          return localFallbackAnswer(text, history, prefs);
+        }
+        return new Promise((resolve) => {
+          const requestId = `request-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+          pendingResponses.current.set(requestId, resolve);
+          worker.postMessage({
+            prompt: text,
+            requestId,
+            history,
+            prefs,
+            userContext: userContextRef.current,
+          });
+        });
+      });
+    }
     if (!worker) {
       return Promise.resolve(localFallbackAnswer(text, history, prefs));
     }
@@ -4699,7 +4883,7 @@ function App() {
   }, [ensureConversation]);
 
   const appendAssistantMessage = useCallback((answer) => {
-    const source = workerRef.current ? "worker" : "fallback";
+    const source = answer.source || (workerRef.current ? "worker" : "fallback");
     const solverEvidence = Array.isArray(answer.evidence) ? answer.evidence : [];
     const evidence = answer.intent
       ? [`intent:${answer.intent}`, `source:${source}`, ...solverEvidence]
@@ -5228,11 +5412,23 @@ function App() {
     attachments.length > 0
       ? t("composer.attachments", { count: attachments.length })
       : "";
+  const desktopStatusText = desktopStatusLabel(desktopStatus, agentMode);
+  const desktopAgentPermission = agentMode ? "Opted in" : "Off";
+  const desktopToolPermission =
+    desktopStatus && agentMode
+      ? "Agent tools visible"
+      : "Permission gated";
 
   return h(
     "main",
     {
-      className: `app ui-skin-${uiSkin} chat-style-${chatStyle} composer-style-${composerStyle}`,
+      className: [
+        "app",
+        `ui-skin-${uiSkin}`,
+        `chat-style-${chatStyle}`,
+        `composer-style-${composerStyle}`,
+        desktopStatus ? "desktop-shell" : "",
+      ].filter(Boolean).join(" "),
     },
     h(
       "header",
@@ -5281,6 +5477,19 @@ function App() {
       h(
         "div",
         { className: "topbar-actions" },
+        desktopStatus
+          ? h(
+              "span",
+              {
+                className: "desktop-status",
+                "data-testid": "desktop-shell-status",
+                "data-menu-priority": "7",
+                role: "status",
+                title: desktopStatus.apiError || desktopStatusText,
+              },
+              desktopStatusText,
+            )
+          : null,
         h(
           "span",
           {
@@ -5604,6 +5813,80 @@ function App() {
             ),
           ),
         }),
+        desktopStatus
+          ? h(CollapsibleSection, {
+              title: "Desktop",
+              testId: "sidebar-desktop",
+              collapsed: sidebarDesktopCollapsed,
+              onToggle: () => setSidebarDesktopCollapsed((value) => !value),
+              className: "desktop-shell-section",
+              children: h(
+                "dl",
+                { className: "desktop-shell-panel", "data-testid": "desktop-shell-panel" },
+                h(
+                  "div",
+                  null,
+                  h("dt", null, "Shell"),
+                  h("dd", null, desktopStatus.shell),
+                ),
+                h(
+                  "div",
+                  null,
+                  h("dt", null, "API"),
+                  h(
+                    "dd",
+                    { "data-testid": "desktop-api-base" },
+                    compactUrl(desktopStatus.apiBase),
+                  ),
+                ),
+                h(
+                  "div",
+                  null,
+                  h("dt", null, "Network"),
+                  h(
+                    "dd",
+                    null,
+                    h(
+                      "a",
+                      {
+                        href: desktopStatus.graphUrl || "#",
+                        target: "_blank",
+                        rel: "noopener noreferrer",
+                        "data-testid": "desktop-network-link",
+                      },
+                      compactUrl(desktopStatus.graphUrl),
+                    ),
+                  ),
+                ),
+                h(
+                  "div",
+                  null,
+                  h("dt", null, "Memory"),
+                  h("dd", { "data-testid": "desktop-memory-bundle" }, desktopStatus.memory),
+                ),
+                h(
+                  "div",
+                  null,
+                  h("dt", null, "Agent"),
+                  h(
+                    "dd",
+                    { "data-testid": "desktop-agent-permission" },
+                    desktopAgentPermission,
+                  ),
+                ),
+                h(
+                  "div",
+                  null,
+                  h("dt", null, "Tool calls"),
+                  h(
+                    "dd",
+                    { "data-testid": "desktop-tool-permission" },
+                    desktopToolPermission,
+                  ),
+                ),
+              ),
+            })
+          : null,
         h(CollapsibleSection, {
           title: t("sidebar.conversations"),
           testId: "sidebar-conversations",

@@ -13,6 +13,7 @@
 .ui-skin-glass .sidebar-section-body,
 .ui-skin-glass .message-body,
 .ui-skin-glass .trace-list div,
+.ui-skin-glass .desktop-shell-panel div,
 .ui-skin-glass .tool,
 .ui-skin-glass .fetch-iframe-container {
   background: rgba(251, 252, 253, 0.78);
@@ -39,6 +40,7 @@
 .ui-skin-contrast .composer,
 .ui-skin-contrast .message-body,
 .ui-skin-contrast .trace-list div,
+.ui-skin-contrast .desktop-shell-panel div,
 .ui-skin-contrast .tool {
   border-color: #25313a;
 }
@@ -122,6 +124,7 @@
 :root[data-theme="dark"] .ui-skin-glass .sidebar-section-body,
 :root[data-theme="dark"] .ui-skin-glass .message-body,
 :root[data-theme="dark"] .ui-skin-glass .trace-list div,
+:root[data-theme="dark"] .ui-skin-glass .desktop-shell-panel div,
 :root[data-theme="dark"] .ui-skin-glass .tool,
 :root[data-theme="dark"] .ui-skin-glass .fetch-iframe-container {
   background: rgba(29, 32, 31, 0.78);
@@ -144,6 +147,7 @@
 :root[data-theme="dark"] .ui-skin-contrast .composer,
 :root[data-theme="dark"] .ui-skin-contrast .message-body,
 :root[data-theme="dark"] .ui-skin-contrast .trace-list div,
+:root[data-theme="dark"] .ui-skin-contrast .desktop-shell-panel div,
 :root[data-theme="dark"] .ui-skin-contrast .tool,
 :root[data-theme="dark"] .ui-skin-contrast .mode-toggle,
 :root[data-theme="dark"] .ui-skin-contrast .diagnostics-toggle,
@@ -182,6 +186,7 @@
   :root:not([data-theme="light"]) .ui-skin-glass .sidebar-section-body,
   :root:not([data-theme="light"]) .ui-skin-glass .message-body,
   :root:not([data-theme="light"]) .ui-skin-glass .trace-list div,
+  :root:not([data-theme="light"]) .ui-skin-glass .desktop-shell-panel div,
   :root:not([data-theme="light"]) .ui-skin-glass .tool,
   :root:not([data-theme="light"]) .ui-skin-glass .fetch-iframe-container {
     background: rgba(29, 32, 31, 0.78);
@@ -204,6 +209,7 @@
   :root:not([data-theme="light"]) .ui-skin-contrast .composer,
   :root:not([data-theme="light"]) .ui-skin-contrast .message-body,
   :root:not([data-theme="light"]) .ui-skin-contrast .trace-list div,
+  :root:not([data-theme="light"]) .ui-skin-contrast .desktop-shell-panel div,
   :root:not([data-theme="light"]) .ui-skin-contrast .tool,
   :root:not([data-theme="light"]) .ui-skin-contrast .mode-toggle,
   :root:not([data-theme="light"]) .ui-skin-contrast .diagnostics-toggle,
@@ -355,6 +361,21 @@ button {
   font-weight: 700;
   white-space: nowrap;
   flex: 0 0 auto;
+}
+
+.desktop-status {
+  flex: 0 1 auto;
+  max-width: min(360px, 38vw);
+  padding: 6px 8px;
+  border: 1px solid #b9d8cf;
+  border-radius: 8px;
+  background: #edf6f3;
+  color: #175f4f;
+  font-size: 12px;
+  font-weight: 800;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .mode-toggle,
@@ -960,13 +981,15 @@ body.is-resizing-context {
   line-height: 1.4;
 }
 
-.trace-list {
+.trace-list,
+.desktop-shell-panel {
   display: grid;
   gap: 8px;
   margin: 0;
 }
 
-.trace-list div {
+.trace-list div,
+.desktop-shell-panel div {
   display: grid;
   gap: 2px;
   border: 1px solid #d6dde1;
@@ -975,17 +998,24 @@ body.is-resizing-context {
   background: #ffffff;
 }
 
-.trace-list dt {
+.trace-list dt,
+.desktop-shell-panel dt {
   color: #657584;
   font-size: 12px;
   font-weight: 800;
   text-transform: uppercase;
 }
 
-.trace-list dd {
+.trace-list dd,
+.desktop-shell-panel dd {
   margin: 0;
   font-size: 14px;
   overflow-wrap: anywhere;
+}
+
+.desktop-shell-panel a {
+  color: #175f4f;
+  font-weight: 700;
 }
 
 .chat-panel {
@@ -1795,6 +1825,7 @@ textarea:disabled {
   }
 
   .demo-status,
+  .desktop-status,
   .memory-status {
     display: none;
   }
@@ -1830,6 +1861,7 @@ textarea:disabled {
   }
 
   .demo-status,
+  .desktop-status,
   .topbar-actions [data-menu-priority="4"],
   .topbar-actions [data-menu-priority="5"],
   .topbar-actions [data-menu-priority="6"],
@@ -2199,6 +2231,7 @@ textarea:disabled {
 
 :root[data-theme="dark"] .context-panel h2,
 :root[data-theme="dark"] .demo-status,
+:root[data-theme="dark"] .desktop-status,
 :root[data-theme="dark"] .memory-status,
 :root[data-theme="dark"] .status,
 :root[data-theme="dark"] .brand-version,
@@ -2259,6 +2292,7 @@ textarea:disabled {
 :root[data-theme="dark"] .conversation-deleted-toggle,
 :root[data-theme="dark"] .message-meta,
 :root[data-theme="dark"] .trace-list dt,
+:root[data-theme="dark"] .desktop-shell-panel dt,
 :root[data-theme="dark"] .setting-row,
 :root[data-theme="dark"] .setting-row label,
 :root[data-theme="dark"] .setting-row > span,
@@ -2285,9 +2319,20 @@ textarea:disabled {
 
 :root[data-theme="dark"] .message-body,
 :root[data-theme="dark"] .trace-list div,
+:root[data-theme="dark"] .desktop-shell-panel div,
 :root[data-theme="dark"] .tool {
   border-color: #343a3d;
   background: #202322;
+}
+
+:root[data-theme="dark"] .desktop-status {
+  border-color: #2f5d52;
+  background: #20322d;
+  color: #8ed9bf;
+}
+
+:root[data-theme="dark"] .desktop-shell-panel a {
+  color: #8ed9bf;
 }
 
 :root[data-theme="dark"] .message.user .message-body {
@@ -2528,6 +2573,7 @@ textarea:disabled {
 
   :root:not([data-theme="light"]) .context-panel h2,
   :root:not([data-theme="light"]) .demo-status,
+  :root:not([data-theme="light"]) .desktop-status,
   :root:not([data-theme="light"]) .memory-status,
   :root:not([data-theme="light"]) .status,
   :root:not([data-theme="light"]) .brand-version,
@@ -2584,6 +2630,7 @@ textarea:disabled {
   :root:not([data-theme="light"]) .conversation-deleted-toggle,
   :root:not([data-theme="light"]) .message-meta,
   :root:not([data-theme="light"]) .trace-list dt,
+  :root:not([data-theme="light"]) .desktop-shell-panel dt,
   :root:not([data-theme="light"]) .setting-row,
   :root:not([data-theme="light"]) .setting-row label,
   :root:not([data-theme="light"]) .setting-row > span,
@@ -2610,9 +2657,20 @@ textarea:disabled {
 
   :root:not([data-theme="light"]) .message-body,
   :root:not([data-theme="light"]) .trace-list div,
+  :root:not([data-theme="light"]) .desktop-shell-panel div,
   :root:not([data-theme="light"]) .tool {
     border-color: #343a3d;
     background: #202322;
+  }
+
+  :root:not([data-theme="light"]) .desktop-status {
+    border-color: #2f5d52;
+    background: #20322d;
+    color: #8ed9bf;
+  }
+
+  :root:not([data-theme="light"]) .desktop-shell-panel a {
+    color: #8ed9bf;
   }
 
   :root:not([data-theme="light"]) .message.user .message-body {
