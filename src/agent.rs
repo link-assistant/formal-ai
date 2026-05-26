@@ -292,12 +292,15 @@ impl AgentWorkspace {
         let Some((program, args)) = parts.split_first() else {
             return Err(AgentError::EmptyCommand);
         };
-        let program_path = resolve_allowed_program(program)?;
         for argument in args {
             if looks_like_workspace_path(argument) {
                 self.workspace_path(argument)?;
             }
         }
+        if let Some(result) = self.run_builtin_command(command_line, program, args)? {
+            return Ok(result);
+        }
+        let program_path = resolve_allowed_program(program)?;
         let mut child = Command::new(program_path)
             .args(args)
             .current_dir(&self.root)
@@ -325,6 +328,58 @@ impl AgentWorkspace {
             stderr: String::from_utf8_lossy(&output.stderr).to_string(),
             timed_out,
         })
+    }
+
+    fn run_builtin_command(
+        &self,
+        command_line: &str,
+        program: &str,
+        args: &[String],
+    ) -> Result<Option<AgentCommandResult>, AgentError> {
+        let stdout = match program {
+            "env" => String::new(),
+            "cat" if cfg!(windows) => self.read_command_files(args)?,
+            "ls" if cfg!(windows) => self.list_command_directory(args)?,
+            "printf" if cfg!(windows) => args.join(" "),
+            _ => return Ok(None),
+        };
+        Ok(Some(AgentCommandResult {
+            command: command_line.to_owned(),
+            status_code: Some(0),
+            stdout,
+            stderr: String::new(),
+            timed_out: false,
+        }))
+    }
+
+    fn read_command_files(&self, args: &[String]) -> Result<String, AgentError> {
+        let mut output = String::new();
+        for argument in args {
+            if argument.starts_with('-') {
+                continue;
+            }
+            output.push_str(&fs::read_to_string(self.workspace_path(argument)?)?);
+        }
+        Ok(output)
+    }
+
+    fn list_command_directory(&self, args: &[String]) -> Result<String, AgentError> {
+        let directory = args
+            .iter()
+            .find(|argument| !argument.starts_with('-'))
+            .map_or_else(
+                || Ok(self.root.clone()),
+                |argument| self.workspace_path(argument),
+            )?;
+        let mut entries = fs::read_dir(directory)?
+            .map(|entry| entry.map(|entry| entry.file_name().to_string_lossy().into_owned()))
+            .collect::<Result<Vec<_>, _>>()?;
+        entries.sort();
+        let mut output = entries.join("\n");
+        if !output.is_empty() {
+            output.push('\n');
+        }
+        Ok(output)
     }
 }
 
