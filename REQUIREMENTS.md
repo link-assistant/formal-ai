@@ -100,7 +100,7 @@ Issue [#12](https://github.com/link-assistant/formal-ai/issues/12) collects the 
 | R62 | Make every step, command, decision, source access, and answer traceable. | Documented as transparent reasoning and future trace-link work. |
 | R63 | Keep chat as the default interface while offering link-network visualization on demand. | Documented as product direction. |
 | R64 | Separate bounded chat mode from explicit agent mode with isolated execution. | Documented in vision, goals, and non-goals. |
-| R65 | Reuse Deep.Foundation ideas for associative packages, handlers, permissions, and trigger-style computation in a local Rust/browser architecture. | Documented with current source research and marked as future implementation work. |
+| R65 | Reuse Deep.Foundation ideas for associative packages, handlers, permissions, and trigger-style computation in a local Rust/browser architecture. | Implemented by `src/associative_package.rs`: packages export/import Links Notation, validate dependencies on install, carry handlers/triggers/permissions, replay deterministic trigger handlers, gate tool calls through explicit package permissions, and appear in `/v1/graph`. |
 | R66 | Develop a universal problem-solving loop based on decomposition, failing tests, implementation, execution, learning, and documentation. | Documented as the target reasoning loop. |
 | R67 | Search external sources when local links are insufficient and cache accesses with provenance and refresh policy. | Documented as a reasoning goal. |
 | R68 | Translate between natural languages, programming languages, and Links Notation as an intermediate language of meaning. | Documented in `VISION.md`. |

@@ -24,7 +24,7 @@
 mod brainstorm;
 mod coreference;
 mod facts;
-mod parser;
+pub(crate) mod parser;
 mod personas;
 mod projects;
 mod summary_topics;

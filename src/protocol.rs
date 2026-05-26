@@ -1,6 +1,7 @@
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
+use crate::associative_package::{default_package_store, PackagePermissionDecision};
 use crate::engine::{estimate_tokens, stable_id, FormalAiEngine, SymbolicAnswer, DEFAULT_MODEL};
 use crate::solver::{ConversationTurn, UniversalSolver};
 
@@ -50,6 +51,41 @@ impl ChatCompletionRequest {
 
         (!self.tools.is_empty() && !tool_calls_disabled)
             || (!self.functions.is_empty() && !function_calls_disabled)
+    }
+
+    fn requested_tool_names(&self) -> Vec<String> {
+        let mut names = Vec::new();
+        if let Some(name) = self
+            .tool_choice
+            .as_ref()
+            .and_then(tool_choice_function_name)
+        {
+            names.push(name);
+        }
+        if let Some(name) = self
+            .function_call
+            .as_ref()
+            .and_then(tool_choice_function_name)
+        {
+            names.push(name);
+        }
+        if !self
+            .tool_choice
+            .as_ref()
+            .is_some_and(matches_tool_choice_none)
+        {
+            names.extend(self.tools.iter().filter_map(tool_definition_name));
+        }
+        if !self
+            .function_call
+            .as_ref()
+            .is_some_and(matches_tool_choice_none)
+        {
+            names.extend(self.functions.iter().filter_map(tool_definition_name));
+        }
+        names.sort();
+        names.dedup();
+        names
     }
 }
 
@@ -173,8 +209,14 @@ pub fn create_chat_completion_with_solver(
     solver: &UniversalSolver,
 ) -> ChatCompletion {
     let (prompt, history) = chat_prompt_and_history(&request.messages);
-    let symbolic_answer = if request.requests_tool_execution() && !solver.config.agent_mode {
-        tool_call_refusal_answer()
+    let symbolic_answer = if request.requests_tool_execution() {
+        if !solver.config.agent_mode {
+            tool_call_refusal_answer()
+        } else if let Some(denial) = first_tool_permission_denial(request) {
+            tool_permission_refusal_answer(&denial)
+        } else {
+            solver.solve_with_history(&prompt, &history)
+        }
     } else {
         solver.solve_with_history(&prompt, &history)
     };
@@ -312,8 +354,65 @@ fn tool_call_refusal_answer() -> SymbolicAnswer {
     }
 }
 
+fn tool_permission_refusal_answer(decision: &PackagePermissionDecision) -> SymbolicAnswer {
+    let PackagePermissionDecision::Denied { capability, reason } = decision else {
+        return tool_call_refusal_answer();
+    };
+    SymbolicAnswer {
+        intent: String::from("tool_call_refused"),
+        answer: format!(
+            "Tool calls are not allowed for `{capability}`: {reason}. Install or import an \
+             associative package that grants this capability before enabling the tool."
+        ),
+        confidence: 1.0,
+        evidence_links: vec![format!("policy:package_permission_required:{capability}")],
+        links_notation: format!(
+            "tool_call_refusal\n  policy \"package_permission_required\"\n  capability \"{capability}\"\n"
+        ),
+    }
+}
+
+fn first_tool_permission_denial(
+    request: &ChatCompletionRequest,
+) -> Option<PackagePermissionDecision> {
+    let store = default_package_store();
+    let names = request.requested_tool_names();
+    if names.is_empty() {
+        let decision = store.permission_for_capability("tool:*");
+        return matches!(decision, PackagePermissionDecision::Denied { .. }).then_some(decision);
+    }
+    names.into_iter().find_map(|name| {
+        let decision = store.permission_for_tool(&name);
+        matches!(decision, PackagePermissionDecision::Denied { .. }).then_some(decision)
+    })
+}
+
 fn is_tool_choice_request(value: &Value) -> bool {
     !matches_tool_choice_none(value)
+}
+
+fn tool_choice_function_name(value: &Value) -> Option<String> {
+    match value {
+        Value::Object(object) => object
+            .get("function")
+            .and_then(|function| function.get("name"))
+            .or_else(|| object.get("name"))
+            .and_then(Value::as_str)
+            .map(ToOwned::to_owned),
+        _ => None,
+    }
+}
+
+fn tool_definition_name(value: &Value) -> Option<String> {
+    match value {
+        Value::Object(object) => object
+            .get("function")
+            .and_then(|function| function.get("name"))
+            .or_else(|| object.get("name"))
+            .and_then(Value::as_str)
+            .map(ToOwned::to_owned),
+        _ => None,
+    }
 }
 
 fn matches_tool_choice_none(value: &Value) -> bool {
