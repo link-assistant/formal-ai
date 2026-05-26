@@ -365,6 +365,11 @@ test.describe('formal-ai demo UI', () => {
     await expect(moreCapabilities).not.toContainText('интернете');
     await expect(moreCapabilities).not.toContainText(UNKNOWN_ANSWER_MARKER);
 
+    const reportedCapabilities = await sendPrompt(page, 'А в чём ты можешь быть полезен');
+    await expect(reportedCapabilities).toContainText('Я formal-ai');
+    await expect(reportedCapabilities).toContainText('Вот что я умею');
+    await expect(reportedCapabilities).not.toContainText(UNKNOWN_ANSWER_MARKER);
+
     const arithmeticCapability = await sendPrompt(page, 'Can you do arithmetic?');
     await expect(arithmeticCapability).toContainText('Yes');
     await expect(arithmeticCapability).toContainText('arithmetic');

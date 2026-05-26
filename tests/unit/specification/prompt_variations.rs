@@ -310,26 +310,51 @@ fn concept_lookup_matrix_is_classified_as_concept_lookup_across_languages() {
 // model").
 // ---------------------------------------------------------------------------
 
-const ENGLISH_CAPABILITIES: &[&str] = &["what can you do?", "what can you do", "what you can do?"];
+const ENGLISH_CAPABILITIES: &[&str] = &[
+    "what can you do?",
+    "what can you do",
+    "what you can do?",
+    "what are your capabilities",
+];
 
 const RUSSIAN_CAPABILITIES: &[&str] = &[
     "что ты умеешь?",
     "что ты умеешь",
+    "А в чём ты можешь быть полезен",
     // Issue #49 covered the slang follow-up: "что за дичь?" maps to
     // capabilities too, as a frustrated form of the same question.
     "что за дичь?",
 ];
 
+const HINDI_CAPABILITIES: &[&str] = &[
+    "आप क्या कर सकते हैं?",
+    "तुम क्या कर सकते हो?",
+    "क्या क्या कर सकते हो?",
+];
+
+const CHINESE_CAPABILITIES: &[&str] =
+    &["你能做什么?", "你会做什么?", "你有什么功能?", "你能干什么?"];
+
 #[test]
 fn capabilities_matrix_is_classified_as_capabilities_across_languages() {
-    for prompts in [ENGLISH_CAPABILITIES, RUSSIAN_CAPABILITIES] {
+    for prompts in [
+        ENGLISH_CAPABILITIES,
+        RUSSIAN_CAPABILITIES,
+        HINDI_CAPABILITIES,
+        CHINESE_CAPABILITIES,
+    ] {
         assert_intent_for_each(prompts, "capabilities");
     }
 }
 
 #[test]
 fn capabilities_matrix_never_falls_through_to_unknown() {
-    for prompts in [ENGLISH_CAPABILITIES, RUSSIAN_CAPABILITIES] {
+    for prompts in [
+        ENGLISH_CAPABILITIES,
+        RUSSIAN_CAPABILITIES,
+        HINDI_CAPABILITIES,
+        CHINESE_CAPABILITIES,
+    ] {
         assert_intent_not(prompts, "unknown");
     }
 }

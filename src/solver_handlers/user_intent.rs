@@ -186,9 +186,12 @@ pub fn try_capabilities(
             more_capabilities
                 || normalized.contains("что ты умеешь")
                 || normalized.contains("чем ты можешь")
+                || normalized.contains("чём ты можешь")
                 || normalized.contains("что ты можешь")
                 || normalized.contains("что умеет")
                 || normalized.contains("что можешь")
+                || normalized.contains("в чем ты можешь быть полезен")
+                || normalized.contains("в чём ты можешь быть полезен")
                 || normalized.contains("твои возможности")
                 || normalized.contains("что за дичь")
                 || normalized.contains("что это такое")
