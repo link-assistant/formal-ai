@@ -7,17 +7,18 @@
 //! Issue #144: behavior rules are surfaced to the user as a series of
 //! `When X then Y` (or `When X do Y`) statements grouped by topic so the same
 //! grammar that lists the catalog can also teach new dialog-local rules. The
-//! grammar is recognized in English, Russian, Hindi, and Chinese; see the
-//! `looks_like_runtime_rule_update` keyword table below.
+//! grammar is recognized in English, Russian, Hindi, and Chinese by
+//! `skill_compiler`.
 
 use std::collections::BTreeMap;
 
 use crate::engine::{
-    farewell_answer, greeting_answer, identity_answer, normalize_prompt, stable_id, unknown_answer,
+    farewell_answer, greeting_answer, identity_answer, normalize_prompt, unknown_answer,
     SymbolicAnswer, HELLO_WORLD_PROGRAMS,
 };
 use crate::event_log::EventLog;
 use crate::seed;
+use crate::skill_compiler::{compile_natural_language_skill, CompiledSkillPackage};
 
 use super::finalize_simple;
 use super::self_awareness::{try_self_awareness, SelfAwarenessRuntime};
@@ -34,22 +35,19 @@ struct BehaviorRuleRecord {
     when_then: String,
 }
 
-#[derive(Debug, Clone)]
-struct RuntimeBehaviorRule {
-    id: String,
-    trigger: String,
-    answer: String,
-}
-
 pub fn try_behavior_rules_with_runtime(
     prompt: &str,
     normalized: &str,
     log: &mut EventLog,
     runtime: SelfAwarenessRuntime,
 ) -> Option<SymbolicAnswer> {
-    if let Some(rule) = runtime_rule_from_text(prompt) {
-        log.append("behavior_rule:update", rule.id.clone());
-        let body = render_runtime_rule_update(&rule);
+    if let Ok(package) = compile_natural_language_skill(prompt) {
+        log.append("skill_compile:package", package.id.clone());
+        log.append(
+            "behavior_rule:update",
+            package.legacy_behavior_rule_id.clone(),
+        );
+        let body = render_runtime_rule_update(&package);
         return Some(finalize_simple(
             prompt,
             log,
@@ -93,15 +91,17 @@ pub fn try_behavior_rules_with_runtime(
         return Some(answer);
     }
 
-    if let Some(rule) = runtime_rule_for_prompt(prompt, log) {
-        log.append("behavior_rule:match", rule.id.clone());
-        let response_link = format!("response:{}", rule.id);
+    if let Some((package, replay)) = runtime_rule_for_prompt(prompt, log) {
+        log.append("compiled_skill:package", package.links_notation());
+        log.append("compiled_skill:replay", replay.rule_id.clone());
+        log.append("cache_hit", replay.cache_hit);
+        let response_link = format!("response:{}", package.id);
         return Some(finalize_simple(
             prompt,
             log,
             "behavior_rule_custom",
             &response_link,
-            &rule.answer,
+            &replay.answer,
             1.0,
         ));
     }
@@ -249,7 +249,7 @@ fn topic_order(topic: &str) -> u8 {
     }
 }
 
-fn render_behavior_rule_list(runtime_rules: &[RuntimeBehaviorRule]) -> String {
+fn render_behavior_rule_list(runtime_rules: &[CompiledSkillPackage]) -> String {
     let mut lines = vec![
         "Behavior rules I can inspect in this dialog (grouped by topic, each shown as a \
          `When X then Y` statement):"
@@ -280,8 +280,8 @@ fn render_behavior_rule_list(runtime_rules: &[RuntimeBehaviorRule]) -> String {
         ]);
         for rule in runtime_rules {
             lines.push(format!(
-                "- `{}` -> When the user says `{}` then respond with `{}`.",
-                rule.id, rule.trigger, rule.answer
+                "- `{}` (`{}`) -> When the user says `{}` then respond with `{}`.",
+                rule.id, rule.legacy_behavior_rule_id, rule.trigger, rule.response
             ));
         }
     }
@@ -303,11 +303,11 @@ fn render_behavior_rule_list(runtime_rules: &[RuntimeBehaviorRule]) -> String {
     lines.join("\n")
 }
 
-fn collect_runtime_rules(log: &EventLog) -> Vec<RuntimeBehaviorRule> {
+fn collect_runtime_rules(log: &EventLog) -> Vec<CompiledSkillPackage> {
     let mut seen = std::collections::HashSet::new();
     let mut rules = Vec::new();
     for event in log.events().iter().filter(|e| e.kind == "prior_turn:user") {
-        if let Some(rule) = runtime_rule_from_text(&event.payload) {
+        if let Ok(rule) = compile_natural_language_skill(&event.payload) {
             if seen.insert(rule.id.clone()) {
                 rules.push(rule);
             }
@@ -346,31 +346,36 @@ fn render_behavior_rule_detail(rule: &BehaviorRuleRecord) -> String {
     )
 }
 
-fn render_runtime_rule_update(rule: &RuntimeBehaviorRule) -> String {
+fn render_runtime_rule_update(rule: &CompiledSkillPackage) -> String {
     format!(
         concat!(
-            "Behavior rule recorded for this dialog.\n\n",
+            "Behavior rule compiled for this dialog.\n\n",
             "When the user says `{}` then respond with `{}`.\n\n",
             "```links\n",
             "{}\n",
-            "  type \"behavior_rule_runtime\"\n",
+            "  type \"compiled_skill_package\"\n",
+            "  legacy_behavior_rule_id \"{}\"\n",
             "  match_prompt \"{}\"\n",
             "  answer \"{}\"\n",
             "  when_then \"{}\"\n",
+            "  compiled_handler \"{}\"\n",
+            "  replay_mode \"exact_normalized_prompt\"\n",
             "  source \"user_message\"\n",
             "```\n\n",
             "Send `{}` now and I will answer with the configured response. ",
             "Export memory to keep this rule message with the dialog."
         ),
         rule.trigger,
-        rule.answer,
+        rule.response,
         rule.id,
+        rule.legacy_behavior_rule_id,
         escape_lino_value(&rule.trigger),
-        escape_lino_value(&rule.answer),
+        escape_lino_value(&rule.response),
         escape_lino_value(&format!(
             "When the user says `{}` then respond with `{}`.",
-            rule.trigger, rule.answer
+            rule.trigger, rule.response
         )),
+        rule.handler_id,
         rule.trigger,
     )
 }
@@ -536,110 +541,19 @@ fn find_behavior_rule(query: &str) -> Option<BehaviorRuleRecord> {
     })
 }
 
-fn runtime_rule_for_prompt(prompt: &str, log: &EventLog) -> Option<RuntimeBehaviorRule> {
-    let normalized_prompt = normalize_prompt(prompt);
+fn runtime_rule_for_prompt(
+    prompt: &str,
+    log: &EventLog,
+) -> Option<(
+    CompiledSkillPackage,
+    crate::skill_compiler::CompiledSkillReplay,
+)> {
     log.events()
         .iter()
         .rev()
         .filter(|event| event.kind == "prior_turn:user")
-        .filter_map(|event| runtime_rule_from_text(&event.payload))
-        .find(|rule| normalize_prompt(&rule.trigger) == normalized_prompt)
-}
-
-fn runtime_rule_from_text(text: &str) -> Option<RuntimeBehaviorRule> {
-    if !looks_like_runtime_rule_update(text) {
-        return None;
-    }
-    let spans = code_spans(text);
-    if spans.len() < 2 {
-        return None;
-    }
-    let trigger = spans[0].trim();
-    let answer = spans[1].trim();
-    if trigger.is_empty() || answer.is_empty() {
-        return None;
-    }
-    let id = stable_id("behavior_rule_runtime", &format!("{trigger}\n{answer}"));
-    Some(RuntimeBehaviorRule {
-        id,
-        trigger: trigger.to_owned(),
-        answer: answer.to_owned(),
-    })
-}
-
-/// Issue #144: recognize behavior-rule updates expressed as `When X then Y`
-/// (and its translations) in addition to the explicit `When I say … answer …`
-/// grammar. Each pair in `WHEN_THEN_KEYWORD_PAIRS` is a (head, link) tuple:
-/// the head keyword introduces the trigger, the link keyword connects to the
-/// answer. All checks are case-insensitive against `lower`; the runtime
-/// extractor always relies on two backtick-delimited spans to disambiguate
-/// the trigger from the answer regardless of which grammar matched.
-const WHEN_THEN_KEYWORD_PAIRS: &[(&str, &str)] = &[
-    // English
-    ("when ", " then "),
-    ("when ", " do "),
-    // Russian
-    ("когда ", " тогда "),
-    ("когда ", " делай "),
-    ("когда ", " сделай "),
-    ("когда ", " отвечай "),
-    ("когда ", " отвечать "),
-    ("если ", " то "),
-    // Hindi
-    ("जब ", " तब "),
-    ("जब ", " तो "),
-    // Chinese
-    ("当 ", " 时 "),
-    ("当 ", " 则 "),
-    ("当 ", " 回答 "),
-    ("当 ", "时回答 "),
-    ("当 ", "则回答 "),
-];
-
-fn looks_like_runtime_rule_update(text: &str) -> bool {
-    let lower = text.to_lowercase();
-
-    if (lower.contains("when i say") && (lower.contains("answer") || lower.contains("reply")))
-        || (lower.contains("if i ask") && (lower.contains("answer") || lower.contains("reply")))
-        || lower.contains("add behavior rule")
-        || lower.contains("update behavior rule")
-        || (lower.contains("когда я скажу") && lower.contains("ответ"))
-        || (lower.contains("если я спрошу") && lower.contains("ответ"))
-        || lower.contains("добавь правило поведения")
-        || lower.contains("обнови правило поведения")
-    {
-        return true;
-    }
-
-    for (head, link) in WHEN_THEN_KEYWORD_PAIRS {
-        if let Some(head_pos) = lower.find(head) {
-            if let Some(link_pos) = lower[head_pos + head.len()..].find(link) {
-                // Require backticked spans on both sides so we can extract the
-                // trigger and the answer deterministically.
-                let absolute_link_pos = head_pos + head.len() + link_pos;
-                let before_link = &text[head_pos..absolute_link_pos];
-                let after_link = &text[absolute_link_pos + link.len()..];
-                if before_link.contains('`') && after_link.contains('`') {
-                    return true;
-                }
-            }
-        }
-    }
-    false
-}
-
-fn code_spans(text: &str) -> Vec<String> {
-    text.split('`')
-        .enumerate()
-        .filter_map(|(index, part)| {
-            let trimmed = part.trim();
-            if index % 2 == 1 && !trimmed.is_empty() {
-                Some(trimmed.to_owned())
-            } else {
-                None
-            }
-        })
-        .collect()
+        .filter_map(|event| compile_natural_language_skill(&event.payload).ok())
+        .find_map(|package| package.replay(prompt).map(|replay| (package, replay)))
 }
 
 fn escape_lino_value(value: &str) -> String {

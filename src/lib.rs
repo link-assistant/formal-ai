@@ -11,11 +11,13 @@ pub(crate) mod fuzzy;
 pub mod github_logs;
 pub mod language;
 pub mod link_store;
+pub(crate) mod links_format;
 pub mod memory;
 pub mod proof_engine;
 pub mod protocol;
 pub mod seed;
 pub mod server;
+pub mod skill_compiler;
 pub mod solver;
 pub(crate) mod solver_handler_docs;
 pub(crate) mod solver_handler_how;
@@ -69,6 +71,9 @@ pub use seed::{
 pub use server::{
     handle_api_request, handle_api_request_with_auth, handle_api_request_with_headers, serve,
     ApiAuthConfig, ApiHttpResponse,
+};
+pub use skill_compiler::{
+    compile_natural_language_skill, CompiledSkillPackage, CompiledSkillReplay, SkillCompileError,
 };
 pub use solver::{
     solve, solve_with_history, ConversationRole, ConversationTurn, ExecutionSurface, SolverConfig,

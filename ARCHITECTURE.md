@@ -152,6 +152,7 @@ following Rust modules:
 | 6. Universal solver | `UniversalSolver` in `src/solver.rs` | Implemented |
 | 7. Append to memory | `event_log::EventLog`, `memory::export_full_memory` | Implemented |
 | 8. Render user-facing answer | `SymbolicAnswer` projection in `src/engine.rs` | Implemented |
+| 9. Natural-language skill compilation | `src/skill_compiler.rs` plus the `behavior_rules` replay bridge | Implemented for deterministic trigger/response skill packages |
 
 The pipeline runs the same way for every prompt — greetings, identity,
 concept lookup, math, code generation, idioms, refusals, agent actions —
@@ -535,6 +536,14 @@ order from "lowest privilege" to "highest privilege":
    four representations: a data rule, a Rust handler stub, a JS handler
    stub, or an interpreted sequence of solver steps.
 
+`src/skill_compiler.rs` implements the first deterministic compiler path:
+`When ... answer ...` skills are lowered into a `CompiledSkillPackage` with a
+trigger rule, a deterministic compiled handler, an E1-style `LinkRecord`
+projection, and a Links Notation export. The solver scans dialog history for
+these packages before falling back to behavior-rule re-derivation; a replay
+appends `compiled_skill:replay` and `cache_hit:<compiled_skill_id>` to the
+trace.
+
 The compilation chain (NL → code → binary) is the long-term path. The
 runtime never *requires* compilation: a natural-language skill can be
 interpreted one step at a time without ever being lowered to Rust/JS.
@@ -774,9 +783,10 @@ references here:
 1. The doublets-rs backend (Section 4.2) is available behind
    `doublets-native`; the remaining migration work is making it the default
    physical store for every non-browser surface.
-2. Natural-language-skill compilation (Section 9 #5) is documented but the
-   compiler is not implemented; today every skill is interpreted by the
-   universal solver step by step.
+2. Natural-language-skill compilation now has a deterministic
+   trigger/response compiler in `src/skill_compiler.rs`; future work is
+   broadening the compiler beyond exact normalized-prompt replay and into
+   native Rust/JS lowering.
 
 Pull requests that close any of these should update the corresponding row in
 the table in Section 2 and link the new module.
