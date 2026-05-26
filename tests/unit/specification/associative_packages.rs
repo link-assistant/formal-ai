@@ -12,6 +12,14 @@ use formal_ai::{
 use lino_objects_codec::format::parse_indented;
 
 const SKILL: &str = "When the user says `checksum status`, answer `checksum cache is valid.`";
+const PERMISSIONED_PROCEDURE_SKILL: &str = r"
+Skill `filesystem audit`
+Input `path`: path
+Tool `local_shell`
+Permission `tool:local_shell`: user-approved shell runner
+Step `run local_shell to list files`
+Expected test `audit /tmp` -> `filesystem audit requires shell permission.`
+";
 
 #[test]
 fn package_definition_exports_handlers_triggers_and_permissions() {
@@ -77,6 +85,32 @@ fn imported_compiled_skill_package_replays_without_rust_edits() {
     assert_eq!(replay.answer, "checksum cache is valid.");
     assert!(replay.trigger_id.starts_with("compiled_skill_rule_"));
     assert!(replay.handler_id.starts_with("compiled_skill_handler_"));
+}
+
+#[test]
+fn generalized_compiled_skill_package_carries_generated_tests_and_permissions() {
+    let skill =
+        compile_natural_language_skill(PERMISSIONED_PROCEDURE_SKILL).expect("skill should compile");
+    let package = AssociativePackage::from_compiled_skill(
+        "pkg_filesystem_audit",
+        "Filesystem audit package",
+        "1.0.0",
+        &skill,
+    );
+    let notation = package.links_notation();
+    parse_indented(&notation).expect("package export must be valid Links Notation");
+
+    assert!(package
+        .permissions
+        .iter()
+        .any(|permission| permission.capability == "tool:local_shell"));
+    assert!(notation.contains("permission"));
+    assert!(notation.contains("tool:local_shell"));
+
+    let replay = package
+        .replay("Audit /tmp")
+        .expect("generated expected test trigger should replay");
+    assert_eq!(replay.answer, "filesystem audit requires shell permission.");
 }
 
 #[test]

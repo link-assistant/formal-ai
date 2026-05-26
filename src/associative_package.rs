@@ -211,7 +211,7 @@ impl AssociativePackage {
         version: &str,
         skill: &CompiledSkillPackage,
     ) -> Self {
-        Self::new(id, name, version)
+        let mut package = Self::new(id, name, version)
             .with_handler(
                 PackageHandler::new(
                     &skill.handler_id,
@@ -226,7 +226,34 @@ impl AssociativePackage {
                 match_prompt: skill.trigger.clone(),
                 normalized_match: skill.normalized_trigger.clone(),
                 handler_id: skill.handler_id.clone(),
-            })
+            });
+        for test in &skill.expected_tests {
+            if test.normalized_input == skill.normalized_trigger
+                && test.expected_output == skill.response
+            {
+                continue;
+            }
+            package = package
+                .with_handler(
+                    PackageHandler::new(
+                        &test.handler_id,
+                        "deterministic_response",
+                        &format!("handler:{}", test.handler_id),
+                    )
+                    .with_response(&test.expected_output),
+                )
+                .with_trigger(PackageTrigger {
+                    id: test.trigger_id.clone(),
+                    kind: String::from("exact_normalized_prompt"),
+                    match_prompt: test.input.clone(),
+                    normalized_match: test.normalized_input.clone(),
+                    handler_id: test.handler_id.clone(),
+                });
+        }
+        for permission in &skill.required_permissions {
+            package = package.with_permission(&permission.capability, &permission.description);
+        }
+        package
     }
 
     #[must_use]

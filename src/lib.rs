@@ -86,7 +86,9 @@ pub use server::{
     ApiAuthConfig, ApiHttpResponse,
 };
 pub use skill_compiler::{
-    compile_natural_language_skill, CompiledSkillPackage, CompiledSkillReplay, SkillCompileError,
+    compile_natural_language_skill, CompiledSkillEffect, CompiledSkillExpectedTest,
+    CompiledSkillHandlerStub, CompiledSkillInput, CompiledSkillPackage, CompiledSkillPermission,
+    CompiledSkillPrecondition, CompiledSkillReplay, CompiledSkillStep, SkillCompileError,
 };
 pub use solver::{
     solve, solve_with_history, ConversationRole, ConversationTurn, ExecutionSurface, SolverConfig,
