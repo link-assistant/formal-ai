@@ -82,6 +82,34 @@ fn unknown_reasoning_uses_one_minimal_question_when_unreachable() {
 }
 
 #[test]
+fn unknown_reasoning_records_trace_for_every_supported_language() {
+    let cases = [
+        ("English", "snorflax silent teal weather without rules"),
+        ("Russian", "снорфлакс тихая бирюзовая погода без правила"),
+        ("Hindi", "स्नोरफ्लैक्स शांत नीला मौसम बिना नियम"),
+        ("Chinese", "斯诺弗拉克斯 安静 蓝绿色 天气 无规则"),
+    ];
+
+    for (language, prompt) in cases {
+        let response = answer(prompt);
+        assert_eq!(
+            response.intent, "unknown",
+            "{language} prompt should stay on the unknown reasoning path"
+        );
+        assert!(
+            has_evidence(&response, "reasoning:known:"),
+            "{language} prompt should record known reasoning evidence: {:?}",
+            response.evidence_links,
+        );
+        assert!(
+            has_evidence(&response, "reasoning:unknown:"),
+            "{language} prompt should record the missing unknown: {:?}",
+            response.evidence_links,
+        );
+    }
+}
+
+#[test]
 fn unknown_reasoning_answers_from_link_memory() {
     let solver = UniversalSolver::new(SolverConfig {
         questioning_rigor: 0.8,
