@@ -438,11 +438,10 @@ fn chat_mode_refuses_unbounded_multi_step_actions_without_agent_opt_in() {
 }
 
 // ---------------------------------------------------------------------------
-// full-scope expectations: not yet implemented. See VISION.md / GOALS.md.
+// Issue #258 graduated expectations.
 // ---------------------------------------------------------------------------
 
 #[test]
-#[ignore = "tracked requirement: chat-mode answers must declare the execution status of any generated code"]
 fn every_code_answer_declares_execution_status_or_unavailability() {
     let response = answer("Write me a sorting algorithm in Rust");
     assert!(
@@ -454,7 +453,6 @@ fn every_code_answer_declares_execution_status_or_unavailability() {
 }
 
 #[test]
-#[ignore = "tracked requirement: diagnostics-off-by-default should also be expressed at the engine level"]
 fn diagnostics_are_excluded_from_default_user_facing_answers() {
     let response = answer("Hi");
     let lower = response.answer.to_lowercase();
