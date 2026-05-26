@@ -253,7 +253,6 @@ fn telegram_version_command_with_bot_suffix_still_replies() {
 }
 
 #[test]
-#[ignore = "tracked requirement: Telegram answers should include a trace link the user can tap to inspect"]
 fn telegram_answers_include_trace_link() {
     let json = webhook(&serde_json::json!({
         "update_id": 15,

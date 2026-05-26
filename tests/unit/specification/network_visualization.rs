@@ -22,7 +22,7 @@ fn answers_already_carry_links_notation_for_visualization() {
 }
 
 // ---------------------------------------------------------------------------
-// full-scope expectations.
+// Issue #258 graduated expectations.
 // ---------------------------------------------------------------------------
 
 #[test]
@@ -67,7 +67,6 @@ fn graph_endpoint_returns_404_for_unknown_trace() {
 }
 
 #[test]
-#[ignore = "tracked requirement: web demo must render the graph alongside chat but never block chat replies"]
 fn web_demo_chat_works_even_when_graph_is_disabled() {
     std::env::set_var("FORMAL_AI_DISABLE_GRAPH", "1");
     let response = answer("Hi");

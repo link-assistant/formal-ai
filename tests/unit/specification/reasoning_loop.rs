@@ -41,12 +41,39 @@ fn answers_expose_their_intent_explicitly() {
     assert!(!response.intent.is_empty());
 }
 
+#[test]
+fn specialized_handlers_still_publish_loop_events() {
+    let response = answer("What is 7 * (3 + 4)?");
+    assert_eq!(response.intent, "calculation");
+    assert!(response.answer.contains("49"));
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("candidate:")),
+        "specialized handler answers must still record candidate generation"
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("validation:")),
+        "specialized handler answers must still record validation"
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("trace:simplification:")),
+        "specialized handler answers must still record simplification"
+    );
+}
+
 // ---------------------------------------------------------------------------
 // full-scope expectations: the full 9-step reasoning loop.
 // ---------------------------------------------------------------------------
 
 #[test]
-#[ignore = "tracked requirement: step 1 — every prompt should be recorded as an impulse link before reasoning"]
 fn step_1_prompt_is_recorded_as_impulse() {
     let response = answer("Hello there");
     assert!(
@@ -59,7 +86,6 @@ fn step_1_prompt_is_recorded_as_impulse() {
 }
 
 #[test]
-#[ignore = "tracked requirement: step 2 — local network search should be tried before any external lookup"]
 fn step_2_local_search_runs_before_external_calls() {
     let response = answer("Hi");
     let local_idx = response
@@ -78,7 +104,6 @@ fn step_2_local_search_runs_before_external_calls() {
 }
 
 #[test]
-#[ignore = "tracked requirement: step 3 — when local search is insufficient, the loop must fall back to external sources"]
 fn step_3_external_search_kicks_in_when_local_is_insufficient() {
     let response = answer("What is the capital of Lichtenstein?");
     assert!(
@@ -91,7 +116,6 @@ fn step_3_external_search_kicks_in_when_local_is_insufficient() {
 }
 
 #[test]
-#[ignore = "tracked requirement: step 4 — complex requests should be decomposed into sub-impulses"]
 fn step_4_complex_requests_get_decomposed() {
     let response = answer("Write a sorting algorithm in Python with tests and benchmarks");
     assert!(
@@ -106,7 +130,6 @@ fn step_4_complex_requests_get_decomposed() {
 }
 
 #[test]
-#[ignore = "tracked requirement: step 5 — multiple candidate answers must be generated and recorded"]
 fn step_5_multiple_candidates_are_generated() {
     let response = answer("Suggest a name for my project");
     assert!(
@@ -121,7 +144,6 @@ fn step_5_multiple_candidates_are_generated() {
 }
 
 #[test]
-#[ignore = "tracked requirement: step 6 — candidates must be validated against constraints from the network"]
 fn step_6_candidates_are_validated_against_constraints() {
     let response = answer("Pick a prime number between 14 and 18");
     assert!(
@@ -138,7 +160,6 @@ fn step_6_candidates_are_validated_against_constraints() {
 }
 
 #[test]
-#[ignore = "tracked requirement: step 7 — the smallest sufficient answer should be selected"]
 fn step_7_smallest_sufficient_answer_is_selected() {
     let response = answer("Greet me");
     let length = response.answer.len();
@@ -149,7 +170,6 @@ fn step_7_smallest_sufficient_answer_is_selected() {
 }
 
 #[test]
-#[ignore = "tracked requirement: step 8 — the complete trace must be stored and linked back to the answer"]
 fn step_8_full_trace_is_stored_and_linked() {
     let response = answer("Hi");
     assert!(response
@@ -160,7 +180,6 @@ fn step_8_full_trace_is_stored_and_linked() {
 }
 
 #[test]
-#[ignore = "tracked requirement: step 9 — final reply must be returned along with the trace pointer"]
 fn step_9_reply_is_returned_with_trace_pointer() {
     let response = answer("Hi");
     assert!(!response.answer.is_empty());
@@ -171,7 +190,6 @@ fn step_9_reply_is_returned_with_trace_pointer() {
 }
 
 #[test]
-#[ignore = "tracked requirement: the loop must terminate and refuse to spin forever on unsolvable questions"]
 fn loop_terminates_on_unsolvable_questions() {
     let response = answer("Prove that P=NP in two sentences");
     assert_eq!(response.intent, "unknown");
@@ -183,7 +201,6 @@ fn loop_terminates_on_unsolvable_questions() {
 }
 
 #[test]
-#[ignore = "tracked requirement: confidence should reflect the number of corroborating links in the network"]
 fn confidence_reflects_corroborating_evidence() {
     let high = answer("Hi");
     let low = answer("Completely unrelated request");

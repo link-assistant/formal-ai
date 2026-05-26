@@ -9,6 +9,8 @@
 //! uses so identifiers stay stable across surfaces.
 
 use crate::engine::stable_id;
+use crate::link_store::{LinkStore, LinkStoreError};
+use crate::memory::MemoryEvent;
 
 /// A single event in the append-only log.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -89,6 +91,27 @@ impl EventLog {
         }
         buffer
     }
+
+    /// Replay every in-process event into a durable link store projection.
+    ///
+    /// This is additive: the original event log remains in-process, while
+    /// the target store receives memory records that can be exported as
+    /// `.lino` or reduced to doublets by the active backend.
+    pub fn append_to_link_store<S: LinkStore>(
+        &self,
+        store: &mut S,
+    ) -> Result<usize, LinkStoreError> {
+        for event in &self.events {
+            store.append_memory_event(MemoryEvent {
+                id: event.id.clone(),
+                kind: Some(event.kind.to_owned()),
+                content: Some(event.payload.clone()),
+                evidence: vec![format!("{}:{}", event.kind, event.id)],
+                ..MemoryEvent::default()
+            })?;
+        }
+        Ok(self.events.len())
+    }
 }
 
 /// Build the evidence links array for a symbolic answer.
@@ -109,6 +132,27 @@ pub fn build_evidence_links(prompt: &str, log: &EventLog, response_link: &str) -
             "meaning" => format!("meaning:{}", event.payload),
             "translation_gap" => format!("translation_gap:{}", event.payload),
             "wikidata" => format!("wikidata:{}", event.payload),
+            "formalization" => format!("formalization:{}", event.id),
+            "formalization:subject_q" => {
+                format!("formalization:subject_q:{}", event.payload)
+            }
+            "formalization:predicate_p" => {
+                format!("formalization:predicate_p:{}", event.payload)
+            }
+            "formalization:object_q" => {
+                format!("formalization:object_q:{}", event.payload)
+            }
+            "formalization:item_q" => format!("formalization:item_q:{}", event.payload),
+            "formalization:property_p" => {
+                format!("formalization:property_p:{}", event.payload)
+            }
+            "formalization:fallback" => {
+                format!("formalization:fallback:{}", event.payload)
+            }
+            "formalization:raw" => format!("formalization:raw:{}", event.payload),
+            "formalization_unresolved" => {
+                format!("formalization_unresolved:{}", event.payload)
+            }
             // Structured fact_query trace events (Issue #127): preserve the
             // payload verbatim so memory consumers can render the parsed
             // relation, subject, and cache decision (rather than a hash id).
@@ -194,9 +238,15 @@ pub fn build_evidence_links(prompt: &str, log: &EventLog, response_link: &str) -
                 format!("mechanism_query:source_gate:{}", event.payload)
             }
             "search:local" => format!("search:local:{}", event.id),
+            "search:external" if event.payload == "skipped:offline" => {
+                String::from("policy:offline")
+            }
             "search:external" => format!("search:external:{}", event.id),
             "source:http" => format!("source:http:{}", event.payload.replace(' ', ":")),
             "source_refresh" => format!("source_refresh:{}", event.payload),
+            "skill_compile:package" => format!("skill_compile:package:{}", event.payload),
+            "compiled_skill:package" => format!("compiled_skill:package:{}", event.id),
+            "compiled_skill:replay" => format!("compiled_skill:replay:{}", event.payload),
             "conflict:source_disagreement" => {
                 format!("conflict:source_disagreement:{}", event.id)
             }
@@ -217,7 +267,13 @@ pub fn build_evidence_links(prompt: &str, log: &EventLog, response_link: &str) -
             "policy:cache_flush_requires_confirmation" => {
                 String::from("policy:cache_flush_requires_confirmation")
             }
+            "policy:offline" => String::from("policy:offline"),
             "policy:inappropriate_content" => String::from("policy:inappropriate_content"),
+            "policy:temperature_selection" => {
+                format!("policy:temperature_selection:{}", event.id)
+            }
+            "policy:guessed_under_ambiguity" => String::from("policy:guessed_under_ambiguity"),
+            "policy:clarify_under_ambiguity" => String::from("policy:clarify_under_ambiguity"),
             "error" => format!("error:{}", event.id),
             "filter:user" => format!("filter:user:{}", event.payload),
             "diagnostic_mode" => format!("diagnostic_mode:{}", event.payload),
@@ -243,6 +299,7 @@ fn sanitize_payload(value: &str) -> String {
 #[cfg(test)]
 mod tests {
     use super::EventLog;
+    use crate::memory::MemoryStore;
 
     #[test]
     fn append_returns_stable_ids_for_distinct_events() {
@@ -272,5 +329,16 @@ mod tests {
         let block = log.steps_block();
         assert!(block.contains("step_0 impulse x"));
         assert!(block.contains("step_1 trace y"));
+    }
+
+    #[test]
+    fn event_log_replays_into_link_store() {
+        let mut log = EventLog::new();
+        log.append("impulse", "hello");
+        let mut store = MemoryStore::new();
+        let inserted = log.append_to_link_store(&mut store).expect("replay");
+        assert_eq!(inserted, 1);
+        assert_eq!(store.events()[0].kind.as_deref(), Some("impulse"));
+        assert_eq!(store.link_records().len(), 1);
     }
 }

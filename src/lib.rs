@@ -10,11 +10,14 @@ pub mod event_log;
 pub(crate) mod fuzzy;
 pub mod github_logs;
 pub mod language;
+pub mod link_store;
+pub(crate) mod links_format;
 pub mod memory;
 pub mod proof_engine;
 pub mod protocol;
 pub mod seed;
 pub mod server;
+pub mod skill_compiler;
 pub mod solver;
 pub(crate) mod solver_handler_docs;
 pub(crate) mod solver_handler_how;
@@ -38,6 +41,13 @@ pub use github_logs::{
     GithubLogCollectorConfig,
 };
 pub use language::{detect as detect_language, Language};
+#[cfg(feature = "doublets-native")]
+pub use link_store::DoubletsLinkStore;
+pub use link_store::{
+    memory_event_to_link_record, memory_events_to_link_records, selected_link_store_backend,
+    validate_memory_links_notation, DoubletLink, LinkRecord, LinkStore, LinkStoreBackend,
+    LinkStoreError,
+};
 pub use memory::{
     export_bundle as export_memory_bundle, export_full_memory as export_memory_full,
     export_links_notation as export_memory_links_notation, extract_memory_from_bundle,
@@ -58,7 +68,13 @@ pub use seed::{
     EnvironmentRecord, IntentRouting, LocalizedProject, MigrationFlow, ProjectRecord,
     ProjectStatement, ProjectsRegistry,
 };
-pub use server::{handle_api_request, serve, ApiHttpResponse};
+pub use server::{
+    handle_api_request, handle_api_request_with_auth, handle_api_request_with_headers, serve,
+    ApiAuthConfig, ApiHttpResponse,
+};
+pub use skill_compiler::{
+    compile_natural_language_skill, CompiledSkillPackage, CompiledSkillReplay, SkillCompileError,
+};
 pub use solver::{
     solve, solve_with_history, ConversationRole, ConversationTurn, ExecutionSurface, SolverConfig,
     UniversalSolver,

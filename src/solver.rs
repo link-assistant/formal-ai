@@ -53,6 +53,11 @@ use crate::solver_helpers::{
     is_destructive_action, is_forget_request, is_unbounded_autonomy, is_unbounded_loop,
     record_candidates, record_decomposition, record_validation, requires_external_lookup,
 };
+use crate::translation::{
+    formalize_prompt_candidates, select_formalization_candidate, FormalizationAnchorKind,
+    FormalizationCandidate, FormalizationDecision, FormalizationRole, FormalizationSelection,
+    FormalizationSelectionConfig, FormalizationSelectionReason,
+};
 
 fn is_inappropriate_content(normalized: &str) -> bool {
     // Russian vulgar/obscene words (mat) — normalized lowercase Cyrillic.
@@ -457,6 +462,103 @@ const SPECIALIZED_HANDLERS: &[(&str, SpecializedHandler)] = &[
     ("incompatible_units", try_incompatible_units),
 ];
 
+fn record_formalization(log: &mut EventLog, candidate: &FormalizationCandidate) {
+    if candidate.slots.is_empty() {
+        return;
+    }
+    log.append("formalization", candidate.compact_summary());
+    for slot in &candidate.slots {
+        let kind = match (slot.role, slot.anchor.kind) {
+            (FormalizationRole::Subject, FormalizationAnchorKind::WikidataItem) => {
+                "formalization:subject_q"
+            }
+            (FormalizationRole::Predicate, FormalizationAnchorKind::WikidataProperty) => {
+                "formalization:predicate_p"
+            }
+            (FormalizationRole::Object, FormalizationAnchorKind::WikidataItem) => {
+                "formalization:object_q"
+            }
+            (_, FormalizationAnchorKind::WikidataItem) => "formalization:item_q",
+            (_, FormalizationAnchorKind::WikidataProperty) => "formalization:property_p",
+            (
+                _,
+                FormalizationAnchorKind::WikipediaArticle
+                | FormalizationAnchorKind::WiktionaryEntry,
+            ) => "formalization:fallback",
+            (_, FormalizationAnchorKind::RawText) => "formalization:raw",
+        };
+        log.append(kind, slot.anchor.id.clone());
+    }
+    for term in &candidate.unresolved_terms {
+        log.append("formalization_unresolved", term.clone());
+    }
+}
+
+fn record_formalization_selection(log: &mut EventLog, selection: &FormalizationSelection) {
+    for (index, candidate) in selection.candidates.iter().enumerate() {
+        let probability = selection.probabilities.get(index).copied().unwrap_or(0.0);
+        log.append(
+            "candidate",
+            format!(
+                "formalization:{index} score={} probability={probability:.6} {}",
+                candidate.score,
+                candidate.compact_summary()
+            ),
+        );
+    }
+
+    match &selection.decision {
+        FormalizationDecision::NoCandidate => {
+            log.append("policy:temperature_selection", "no_candidate".to_owned());
+        }
+        FormalizationDecision::Selected {
+            index,
+            probability,
+            margin,
+            epsilon,
+            reason,
+        } => {
+            log.append(
+                "policy:temperature_selection",
+                format!(
+                    "selected=formalization:{index} probability={probability:.6} \
+                     margin={margin:.6} epsilon={epsilon:.6} reason={}",
+                    selection_reason_slug(*reason)
+                ),
+            );
+            if *reason == FormalizationSelectionReason::GuessedUnderAmbiguity {
+                log.append(
+                    "policy:guessed_under_ambiguity",
+                    format!("selected=formalization:{index}"),
+                );
+            }
+        }
+        FormalizationDecision::Clarify {
+            top_index,
+            runner_up_index,
+            margin,
+            epsilon,
+            ..
+        } => {
+            log.append(
+                "policy:clarify_under_ambiguity",
+                format!(
+                    "top=formalization:{top_index} runner_up=formalization:{runner_up_index} \
+                     margin={margin:.6} epsilon={epsilon:.6}"
+                ),
+            );
+        }
+    }
+}
+
+const fn selection_reason_slug(reason: FormalizationSelectionReason) -> &'static str {
+    match reason {
+        FormalizationSelectionReason::OnlyCandidate => "only_candidate",
+        FormalizationSelectionReason::ClearlyBest => "clearly_best",
+        FormalizationSelectionReason::GuessedUnderAmbiguity => "guessed_under_ambiguity",
+    }
+}
+
 impl UniversalSolver {
     /// Construct a solver with an explicit configuration.
     #[must_use]
@@ -494,6 +596,31 @@ impl UniversalSolver {
         let language = detect_language(prompt);
         log.append("language", language.slug().to_owned());
 
+        let formalization_candidates = formalize_prompt_candidates(prompt, language.slug());
+        let formalization_selection = select_formalization_candidate(
+            &formalization_candidates,
+            FormalizationSelectionConfig {
+                temperature: self.config.temperature,
+                guess_probability: self.config.guess_probability,
+                questioning_rigor: self.config.questioning_rigor,
+            },
+            prompt,
+        );
+        record_formalization_selection(&mut log, &formalization_selection);
+        if let FormalizationDecision::Clarify { question, .. } = &formalization_selection.decision {
+            return finalize_simple(
+                prompt,
+                &mut log,
+                "clarify_interpretation",
+                "response:clarify_interpretation",
+                question,
+                0.5,
+            );
+        }
+        if let Some(candidate) = formalization_selection.selected_candidate() {
+            record_formalization(&mut log, candidate);
+        }
+
         log.append("search:local", prompt.to_owned());
 
         record_decomposition(&mut log, prompt, self.config.max_decomposition_depth);
@@ -528,6 +655,12 @@ impl UniversalSolver {
         record_candidates(&mut log, prompt, &intent);
 
         let validation_choice = record_validation(&mut log, prompt);
+        if validation_choice.is_none() && log.first_of("validation").is_none() {
+            log.append(
+                "validation",
+                "accepted_without_extra_constraints".to_owned(),
+            );
+        }
 
         let answer = match (&validation_choice, &rule) {
             (Some(choice), SelectedRule::Unknown) => choice.answer.clone(),

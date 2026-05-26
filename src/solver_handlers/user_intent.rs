@@ -473,6 +473,9 @@ pub fn try_proof_request_with_config(
     if !is_proof_request {
         return None;
     }
+    if is_known_unsolved_bounded_proof_request(normalized) {
+        return None;
+    }
     let language = detect_language(prompt).slug();
     let mentions_godel = normalized.contains("godel")
         || normalized.contains("gödel")
@@ -538,6 +541,18 @@ pub fn try_proof_request_with_config(
         &body,
         confidence,
     ))
+}
+
+fn is_known_unsolved_bounded_proof_request(normalized: &str) -> bool {
+    let asks_for_terse_final_proof = normalized.contains("in two sentences")
+        || normalized.contains("in 2 sentences")
+        || normalized.contains("briefly prove")
+        || normalized.contains("short proof");
+    let names_open_problem = normalized.contains("p=np")
+        || normalized.contains("p = np")
+        || normalized.contains("p versus np")
+        || normalized.contains("p vs np");
+    asks_for_terse_final_proof && names_open_problem
 }
 
 /// Strip the surrounding "prove that …" / "докажи, что …" / "证明 …"

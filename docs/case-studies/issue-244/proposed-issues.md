@@ -5,6 +5,10 @@ vision" (issue #244). They are drafted here first so the plan is reviewable in
 one place, then opened in the repository. Each issue links back to #244 as its
 parent and is labeled `enhancement`.
 
+The 2026-05-25 batch (E1-E14) is now closed on `main`. The 2026-05-26
+post-implementation audit opened a narrower follow-up batch (E15-E20) for the
+requirements that remained partial after those merges.
+
 **Opened issues (2026-05-25):** E1 → [#246](https://github.com/link-assistant/formal-ai/issues/246),
 E2 → [#247](https://github.com/link-assistant/formal-ai/issues/247),
 E3 → [#248](https://github.com/link-assistant/formal-ai/issues/248),
@@ -19,7 +23,14 @@ E11 → [#256](https://github.com/link-assistant/formal-ai/issues/256),
 E12 → [#257](https://github.com/link-assistant/formal-ai/issues/257),
 E13 → [#258](https://github.com/link-assistant/formal-ai/issues/258),
 E14 → [#259](https://github.com/link-assistant/formal-ai/issues/259).
-See `ROADMAP.md` §5 for titles and dependency order.
+See `ROADMAP.md` for current status and dependency notes.
+
+**Opened issues (2026-05-26):** E15 → [#278](https://github.com/link-assistant/formal-ai/issues/278),
+E16 → [#279](https://github.com/link-assistant/formal-ai/issues/279),
+E17 → [#280](https://github.com/link-assistant/formal-ai/issues/280),
+E18 → [#281](https://github.com/link-assistant/formal-ai/issues/281),
+E19 → [#282](https://github.com/link-assistant/formal-ai/issues/282),
+E20 → [#283](https://github.com/link-assistant/formal-ai/issues/283).
 
 **Design rules that bind every epic** (from `../README.md`):
 
@@ -28,20 +39,21 @@ See `ROADMAP.md` §5 for titles and dependency order.
   behavior. The currently-green spec files (`capabilities.rs`, `multilingual.rs`,
   `prompt_variations.rs`, `reasoning_paths.rs`, `definition_fusion.rs`,
   `issue_146.rs`, `calculator_delegation.rs`, `project_lookups.rs`,
-  `summarization_pipeline.rs`) must stay green; epics only graduate `#[ignore]`
-  tests, never delete passing ones.
+  `summarization_pipeline.rs`) must stay green; the first batch graduated
+  tracked tests, and follow-up work must add or narrow tests instead of deleting
+  passing ones.
 - **Determinism and traceability (Q8).** Same prompt + same `SolverConfig` ⇒ same
   event log and answer; randomness seeded from the impulse hash; every answer
   carries an inspectable `trace:` pointer.
 - **Web as cache, not teacher (Q10).** External knowledge is cached with
   provenance (E5); offline mode refuses lookups; nothing is learned into weights.
 
-**Acceptance-criteria convention.** Each epic lists the exact `#[ignore]`
-"tracked requirement" tests it must graduate (remove the `#[ignore]` attribute
-and make them pass) under `tests/unit/specification/`. Every one of the 69
-tracked tests is assigned to **exactly one** epic; the four epics with no tracked
-test (E3, E4, E8, E14) close an `ARCHITECTURE.md` §16 open question and/or a new
-capability and must add their own tests.
+**Acceptance-criteria convention.** E1-E14 list the exact original `#[ignore]`
+"tracked requirement" tests they had to graduate under
+`tests/unit/specification/`. The post-implementation audit confirmed that zero
+tracked ignored tests remain. E15-E20 list the smaller remaining requirements
+found in stale deferred markers, architecture open questions, and partially
+implemented requirement rows.
 
 ---
 
@@ -454,10 +466,227 @@ is preferred (recorded as `cache_hit:`) over re-deriving. Depends on: E2, E10.
 
 ---
 
+## E15 — Make doublets-rs the default native physical store — [#278](https://github.com/link-assistant/formal-ai/issues/278)
+
+**Problem.** Issue #246 introduced the `LinkStore` boundary and doublet
+projections, but the native durable store is still the reviewable `.lino`
+projection unless a feature-backed implementation is selected.
+`ARCHITECTURE.md` still lists the native physical-store migration as a remaining
+question, and `src/link_store.rs` explicitly keeps the `.lino` implementation as
+the current default.
+
+The vision says the associative network is the AI. That requires the native
+runtime to use `doublets-rs` as the default physical store, while keeping Links
+Notation as the auditable export/import projection.
+
+**Scope.**
+- Make `doublets-rs` the default native physical backend for persisted link
+  records.
+- Preserve `.lino` export/import as the human-reviewable projection and migration
+  format.
+- Keep browser storage compatible with `doublets-web`/IndexedDB expectations.
+- Add migration coverage from existing `.lino` bundles into the default native
+  store.
+- Document how to recover, inspect, and export the store.
+
+**Acceptance criteria.**
+- A default native build persists link records through `doublets-rs` without
+  requiring an opt-in feature for the primary store path.
+- Existing `.lino` memory bundles import into the native store and export back to
+  deterministic Links Notation.
+- CLI, HTTP, library, and Telegram surfaces continue to share the same store
+  semantics.
+- Tests cover migration, stable IDs, append-only history, malformed import
+  rejection, and feature/fallback behavior.
+- `ARCHITECTURE.md`, `ROADMAP.md`, and `REQUIREMENTS.md` no longer describe the
+  native doublets store as future work.
+
+**Requirement links.** `REQUIREMENTS.md` R60, `ARCHITECTURE.md` section 16,
+follow-up from #246.
+
+---
+
+## E16 — Symbolic probabilistic reasoning over Links Notation — [#279](https://github.com/link-assistant/formal-ai/issues/279)
+
+**Problem.** `REQUIREMENTS.md` R6 asks us to explore Bayesian networks, Markov
+chains, and similar symbolic/probabilistic methods. The current implementation
+has deterministic rules and the new temperature-based selection path, but it
+does not yet store or update probabilistic evidence over the Links Notation
+graph.
+
+We need a symbolic probabilistic layer that helps rank interpretations and
+candidate answers without using neural-network inference for reasoning.
+
+**Scope.**
+- Represent probabilistic evidence as link-native records, with provenance and
+  timestamps.
+- Add Bayesian/Markov-style ranking helpers over candidate formalizations or
+  answer candidates.
+- Integrate ranking with the existing temperature/clarify-vs-guess selection
+  policy.
+- Keep deterministic replay: same prompt, same store, same config, and same
+  impulse hash must produce the same selected candidate.
+- Surface probability evidence in traces so users can inspect why a candidate
+  outranked another.
+
+**Acceptance criteria.**
+- Tests demonstrate link-native probabilistic evidence creation, update, and
+  replay.
+- Candidate ranking changes when new symbolic evidence is added, without
+  modifying neural weights or calling neural inference.
+- The clarify-vs-guess policy can consume the probability margin between top
+  candidates.
+- Offline mode and cached-source provenance remain respected.
+- Documentation explains the supported probabilistic model and its non-neural
+  boundary.
+
+**Requirement links.** `REQUIREMENTS.md` R6, `VISION.md` universal
+problem-solving and no-neural-reasoning constraints.
+
+---
+
+## E17 — Desktop application wrapper for formal-ai — [#280](https://github.com/link-assistant/formal-ai/issues/280)
+
+**Problem.** `REQUIREMENTS.md` R17 calls for a desktop application path similar
+to `vk-bot-desktop`. The repository now has CLI, HTTP, library, Telegram, and
+browser/WASM surfaces, but no packaged desktop shell that reuses those surfaces
+for local users.
+
+**Scope.**
+- Package a desktop application wrapper around the existing web/chat/network
+  surfaces.
+- Reuse the library/HTTP API instead of forking solver behavior.
+- Support local memory bundle import/export and inspectable trace/network views.
+- Document development, packaging, and release steps for the desktop app.
+- Keep secrets, agent mode, and tool-call permissions explicit in the desktop UI.
+
+**Acceptance criteria.**
+- A developer can run the desktop app locally from documented commands.
+- The desktop app can send prompts, show answers, inspect traces/network links,
+  and import/export memory bundles.
+- Desktop behavior is covered by at least one smoke/integration test or
+  documented manual verification script.
+- Agent mode and tool-call actions remain opt-in and permission-gated.
+- `REQUIREMENTS.md` R17 is updated from future work to implemented or explicitly
+  scoped to any remaining sub-issues.
+
+**Requirement links.** `REQUIREMENTS.md` R17, related prior art:
+`vk-bot-desktop`.
+
+---
+
+## E18 — Reusable associative packages and permission model — [#281](https://github.com/link-assistant/formal-ai/issues/281)
+
+**Problem.** Issue #259 added deterministic natural-language skill compilation,
+and issue #257 added API authentication/tool-call gating. `REQUIREMENTS.md` R65
+still points to a broader Deep.Foundation-style model: associative packages,
+handlers, permissions, and trigger-style computation represented as reusable
+link-native data.
+
+The current implementation has pieces of that model, but not a complete
+package/permission system that can install, export, import, replay, and gate
+reusable associative packages.
+
+**Scope.**
+- Define package metadata, dependency links, exported handlers, permissions, and
+  trigger records in Links Notation.
+- Allow compiled skills and handler registrations to belong to packages.
+- Require explicit permissions for package-provided tools or actions.
+- Support deterministic install/export/import/replay of packages.
+- Surface package and permission records in traces and network visualization.
+
+**Acceptance criteria.**
+- Tests cover package definition, dependency validation, install, export/import,
+  replay, and permission denial.
+- A compiled skill can be packaged and imported without hand-editing Rust code.
+- Tool-call gating can identify whether a package grants the required
+  capability.
+- The network view exposes package, handler, trigger, and permission links.
+- Documentation maps this design back to R65 and the Deep.Foundation-inspired
+  requirement.
+
+**Requirement links.** `REQUIREMENTS.md` R65, follow-up from #257 and #259.
+
+---
+
+## E19 — Complete Rust-to-WebAssembly solver parity for the browser worker — [#282](https://github.com/link-assistant/formal-ai/issues/282)
+
+**Problem.** `REQUIREMENTS.md` R194 asks for as much logic as possible to be
+compiled from Rust to WebAssembly, with JavaScript reserved for UI. The browser
+worker now delegates several core operations to Rust/WASM through
+`web_engine_core`, but significant browser-worker behavior remains in
+JavaScript.
+
+We need a parity effort that moves remaining solver/domain logic into Rust/WASM
+while keeping JavaScript as UI, fetch, and integration glue.
+
+**Scope.**
+- Inventory browser-worker logic and classify it as domain logic vs UI/fetch
+  glue.
+- Move remaining reusable solver/domain logic into Rust/WASM modules.
+- Keep JavaScript fallbacks only where needed for compatibility, with explicit
+  tests.
+- Add parity tests that compare native Rust and browser/WASM behavior for
+  representative prompts and memory operations.
+- Update documentation with the Rust/WASM boundary.
+
+**Acceptance criteria.**
+- Browser answers for selected prompts match native Rust behavior for normalized
+  output, traces, and evidence records.
+- JavaScript worker code no longer owns reusable domain decisions that can live
+  in Rust.
+- WASM build and browser tests cover the moved behavior.
+- Documentation describes the remaining JavaScript responsibilities as
+  UI/fetch/integration glue.
+- `REQUIREMENTS.md` R194 reflects the completed boundary or lists any
+  intentionally retained JS exceptions.
+
+**Requirement links.** `REQUIREMENTS.md` R194, follow-up from the browser/WASM
+work in issues #246-#259.
+
+---
+
+## E20 — Generalized natural-language skill compiler beyond trigger/response — [#283](https://github.com/link-assistant/formal-ai/issues/283)
+
+**Problem.** Issue #259 implemented a deterministic natural-language skill
+compiler for trigger/response rules. `ARCHITECTURE.md` still calls out the next
+step: broader lowering of natural-language skill definitions into executable
+Rust/JavaScript/native handlers and package data.
+
+The current compiler is useful, but it does not yet cover typed arguments,
+multi-step procedures, validations, generated tests, or target-specific handler
+lowering.
+
+**Scope.**
+- Extend the skill language beyond trigger/response into typed inputs,
+  preconditions, steps, effects, and expected tests.
+- Lower compatible skills into package records and, where appropriate, generated
+  Rust/JavaScript/native handler stubs.
+- Keep generated behavior deterministic and traceable.
+- Refuse or mark unsupported natural-language instructions instead of silently
+  compiling unsafe behavior.
+- Integrate with package/permission records from the associative-package
+  follow-up.
+
+**Acceptance criteria.**
+- Tests cover typed skill definitions, multi-step procedures, generated tests,
+  unsupported-instruction refusal, and deterministic replay.
+- Generated handlers or package records can be inspected as Links Notation.
+- Unsafe or permissioned actions require explicit package/tool permissions.
+- Documentation distinguishes the supported skill subset from future
+  natural-language programming goals.
+- `ARCHITECTURE.md` no longer lists skill compilation as only trigger/response
+  work.
+
+**Requirement links.** `ARCHITECTURE.md` section 16, `REQUIREMENTS.md` R65, and
+the issue #244 skill/learning requirements; follow-up from #259.
+
+---
+
 ## Coverage check
 
-Every one of the 69 `#[ignore]` tracked-requirement tests is assigned to exactly
-one epic:
+In the original 2026-05-25 plan, every one of the 69 `#[ignore]`
+tracked-requirement tests was assigned to exactly one epic:
 
 | Spec file | Tests | Epic(s) |
 | --- | --- | --- |
@@ -474,5 +703,6 @@ one epic:
 | `network_visualization.rs` | 1 | E13 |
 | **Total** | **69** | |
 
-`ARCHITECTURE.md` §16 open questions: §16.1 → E3, §16.2 → E4, §16.3 → E1,
-§16.4 → E14. New-capability epics with their own new tests: E3, E4, E8, E14.
+The 2026-05-26 audit confirmed that no tracked ignored tests remain under
+`tests/unit/specification/`. The remaining architecture and requirement gaps are
+now tracked by E15-E20.

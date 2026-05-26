@@ -636,6 +636,7 @@ pub fn try_translation(
         |raw_target| {
             let translated_surface =
                 crate::translation::match_source_formatting(&raw_target, &surface);
+            log.append("surface", translated_surface.clone());
             if surface.is_empty() {
                 translated_surface
             } else {
@@ -824,7 +825,19 @@ pub fn finalize_simple(
     confidence: f32,
 ) -> SymbolicAnswer {
     log.append("intent", intent.to_owned());
+    if log.first_of("candidate").is_none() {
+        log.append("candidate", intent.to_owned());
+    }
+    if log.first_of("validation").is_none() {
+        log.append(
+            "validation",
+            "accepted_without_extra_constraints".to_owned(),
+        );
+    }
     log.append("response", response_link.to_owned());
+    if log.first_of("trace:simplification").is_none() {
+        log.append("trace:simplification", "smallest_sufficient".to_owned());
+    }
     let trace_id = log.append("trace", intent.to_owned());
     let evidence_links = build_evidence_links(prompt, log, response_link);
     let links_notation = answer_links_notation(prompt, intent, body, log, &trace_id);

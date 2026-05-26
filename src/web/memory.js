@@ -32,6 +32,7 @@
   var STORE_NAME = "events";
   var ROOT_HEADER = "demo_memory";
   var BUNDLE_HEADER = "formal_ai_bundle";
+  var LINK_STORE_SCHEMA_VERSION = "0.2.0";
   // Schema is intentionally additive. Older logs without "kind" still parse
   // as plain user/assistant turns. New "kind" values record reasoning steps,
   // tool invocations, decisions, and other internal events so the log is a
@@ -172,6 +173,94 @@
     return events;
   }
 
+  function selectedLinkStoreBackend() {
+    if (
+      typeof global.DoubletsWeb !== "undefined" ||
+      typeof global.createDoubletsStore === "function"
+    ) {
+      return "doublets-web";
+    }
+    return "indexeddb-lino-mirror";
+  }
+
+  function stableId(prefix, text) {
+    var hash = 2166136261;
+    var input = String(text || "");
+    for (var index = 0; index < input.length; index += 1) {
+      hash ^= input.charCodeAt(index);
+      hash = Math.imul(hash, 16777619);
+    }
+    return prefix + "_" + ("00000000" + (hash >>> 0).toString(16)).slice(-8);
+  }
+
+  function canonicalEvent(event) {
+    var fields = ["id"].concat(EXPORT_FIELDS);
+    var parts = [];
+    fields.forEach(function (key) {
+      var raw = event ? event[key] : undefined;
+      if (raw === undefined || raw === null || raw === "") return;
+      var value = key === "evidence" ? serializeEvidence(raw) : String(raw);
+      if (!value) return;
+      parts.push(key + "=" + value.length + ":" + value);
+    });
+    return parts.sort().join(";");
+  }
+
+  function pushDoublet(links, from, to) {
+    links.push({
+      index: stableId("doublet", from + "->" + to),
+      from: String(from),
+      to: String(to),
+    });
+  }
+
+  function pushDoubletField(links, recordId, key, value) {
+    if (value === undefined || value === null || value === "") return;
+    var field = "field:" + key;
+    var fieldValue = "value:" + String(value);
+    pushDoublet(links, recordId, field);
+    pushDoublet(links, field, fieldValue);
+  }
+
+  function reduceEventToDoublets(event, index) {
+    var safe = event && typeof event === "object" ? event : {};
+    var canonical = canonicalEvent(safe);
+    var sourceId = safe.id
+      ? String(safe.id)
+      : stableId("memory_event", String(index) + ":" + canonical);
+    var recordId = stableId(
+      "memory_event",
+      String(index) + ":" + sourceId + ":" + canonical,
+    );
+    var subtype = safe.kind || safe.role || safe.intent || "memory_event";
+    var links = [];
+    pushDoublet(links, recordId, "Type");
+    pushDoublet(links, "Type", "MemoryEvent");
+    pushDoublet(links, "MemoryEvent", "SubType");
+    pushDoublet(links, "SubType", subtype);
+    pushDoublet(links, subtype, "Value");
+    pushDoublet(links, recordId, sourceId);
+    pushDoublet(links, recordId, "schema_version:" + LINK_STORE_SCHEMA_VERSION);
+    pushDoubletField(links, recordId, "id", sourceId);
+    EXPORT_FIELDS.forEach(function (key) {
+      var value = key === "evidence" ? serializeEvidence(safe[key]) : safe[key];
+      pushDoubletField(links, recordId, key, value);
+    });
+    return {
+      stableId: recordId,
+      schemaVersion: LINK_STORE_SCHEMA_VERSION,
+      recordType: "MemoryEvent",
+      sourceId: sourceId,
+      links: links,
+    };
+  }
+
+  function reduceEventsToDoublets(events) {
+    return (Array.isArray(events) ? events : []).map(function (event, index) {
+      return reduceEventToDoublets(event, index);
+    });
+  }
+
   function withStore(mode, action) {
     return openDatabase().then(function (db) {
       if (!db) return null;
@@ -248,6 +337,12 @@
       };
     }).then(function (value) {
       return Array.isArray(value) ? value : [];
+    });
+  }
+
+  function listDoubletRecords() {
+    return listEvents().then(function (events) {
+      return reduceEventsToDoublets(events);
     });
   }
 
@@ -429,7 +524,10 @@
     var settings = options || {};
     var seed = settings.seed || {};
     var events = Array.isArray(settings.events) ? settings.events : [];
-    var info = settings.info || {};
+    var info = Object.assign(
+      { linkStoreBackend: selectedLinkStoreBackend() },
+      settings.info || {},
+    );
     var preferences = settings.preferences || null;
     var lines = ["formal_ai_bundle"];
     lines.push('  exported_at "' + escapeValue(new Date().toISOString()) + '"');
@@ -439,6 +537,7 @@
       "userAgent",
       "workerState",
       "mode",
+      "linkStoreBackend",
       "uiLanguage",
       "uiLanguagePreference",
       "browserLanguage",
@@ -697,6 +796,7 @@
   global.FormalAiMemory = {
     appendEvent: appendEvent,
     listEvents: listEvents,
+    listDoubletRecords: listDoubletRecords,
     importEvents: importEvents,
     deleteEventsByConversationId: deleteEventsByConversationId,
     purgeDeletedConversations: purgeDeletedConversations,
@@ -707,6 +807,9 @@
     importFullMemory: importFullMemory,
     suggestMigrations: suggestMigrations,
     parseLinksNotation: parseLinksNotation,
+    selectedLinkStoreBackend: selectedLinkStoreBackend,
+    reduceEventToDoublets: reduceEventToDoublets,
+    reduceEventsToDoublets: reduceEventsToDoublets,
     parseBundleDocument: parseBundleDocument,
     parseAgentInfo: parseAgentInfo,
     formatEvent: formatEvent,
@@ -714,5 +817,6 @@
     STORE_NAME: STORE_NAME,
     ROOT: ROOT_HEADER,
     BUNDLE_ROOT: BUNDLE_HEADER,
+    LINK_STORE_SCHEMA_VERSION: LINK_STORE_SCHEMA_VERSION,
   };
 })(typeof window !== "undefined" ? window : globalThis);

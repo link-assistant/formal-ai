@@ -82,7 +82,7 @@ The universal algorithm should be controlled by a small, explicit, persistable `
 - `diagnostic_mode` — whether diagnostic links are echoed in the user-facing reply.
 - `offline` — whether external lookups are allowed (also honored from the `FORMAL_AI_OFFLINE` environment variable).
 - `cache_ttl_seconds` — TTL for cached external sources (default ≈ two months).
-- `temperature` *(planned)* — controls how aggressively the formalization step collapses multiple candidate interpretations into one. Lower values bias the solver toward the highest-scoring interpretation; higher values keep more interpretations alive and trigger clarifying questions or guesses, depending on `guess_probability`. Modelled on the softmax-temperature pattern used by neural networks, but applied to discrete Wikidata-anchored interpretations rather than logits.
+- `temperature` — controls how aggressively the formalization step collapses multiple candidate interpretations into one. Lower values bias the solver toward the highest-scoring interpretation; higher values keep more interpretations alive and trigger clarifying questions or guesses, depending on `guess_probability`. Modelled on the softmax-temperature pattern used by neural networks, but applied to discrete Wikidata-anchored interpretations rather than logits.
 
 These knobs are deterministic: the same prompt with the same config produces the same answer. "Random guessing" is seeded from the impulse content hash so reproducibility is preserved.
 
@@ -96,7 +96,7 @@ The full pipeline is documented in [`ARCHITECTURE.md`](ARCHITECTURE.md).
 
 ## Growable Memory And Public Knowledge As Cache
 
-Memory should grow with use, not just with prompts. Every reasoning step, every internal decision, every external request, and every response is appended to the same log so the next similar request can reuse the prior work in part or in full. The long-term store is doublets-rs in the library, CLI, server, and Telegram surfaces, with doublets-web (IndexedDB / `localStorage`) on the browser; backups are written as `.lino` files representing Links Notation, both to disk and to additional persistent storage (browser IndexedDB, future cloud sync).
+Memory should grow with use, not just with prompts. Every reasoning step, every internal decision, every external request, and every response is appended to the same log so the next similar request can reuse the prior work in part or in full. The long-term target store is doublets-rs in the library, CLI, server, and Telegram surfaces, with doublets-web (IndexedDB / `localStorage`) on the browser; issue [#278](https://github.com/link-assistant/formal-ai/issues/278) tracks making doublets-rs the default native physical store. Backups are written as `.lino` files representing Links Notation, both to disk and to additional persistent storage (browser IndexedDB, future cloud sync).
 
 Treating the internet (Wikipedia, Wikidata, Wiktionary, Wikifunctions, Rosetta Code, public APIs) as a public database and the local doublets store as a cache for that database substitutes deterministic reasoning over reviewable links for opaque GPU-backed inference. The same caching pattern carries `source:`, `fetched_at`, and `sha256` metadata per the existing `cache_ttl_seconds` policy; offline mode refuses external lookups and emits a `policy:offline` event instead of synthesizing facts.
 
@@ -132,7 +132,7 @@ The same symbolic core should be available through:
 - Docker-ready microservice.
 - GitHub Pages chat demo backed by a Rust WebAssembly worker.
 - Telegram private and public chat surfaces.
-- Future desktop and embedded agent modes.
+- Desktop and embedded agent modes share the same library boundary; the desktop wrapper is tracked by issue [#280](https://github.com/link-assistant/formal-ai/issues/280).
 
 Code-generation tasks should be a first focus area. The assistant should generate algorithms in popular languages, compile or run generated code when the environment supports it, report execution limits honestly, and preserve logs for failed reasoning or failed execution. Browser-only mode can start with JavaScript evaluation and later experiment with WebVM.
 
@@ -166,4 +166,4 @@ Every capability the CLI or HTTP server exposes is also reachable from the `form
 
 The current repository is a deterministic symbolic implementation. It already has deterministic rules, Links Notation seed files, OpenAI-shaped API responses, a static web demo, Telegram support, execution metadata for simple code examples, and case-study documentation. Every interface now reads its multilingual responses, concept table, tool registry, language-detection rules, prompt patterns, and intent-routing rule book from the shared `data/seed/` directory through `src/seed.rs` (Rust) and `src/web/seed_loader.js` (browser). Reasoning steps and tool invocations land in the append-only memory log on the web side; the merged seed bundle round-trips through one `formal_ai_seed_bundle` Links Notation file via `seed::merged_bundle()` / `seed::parse_bundle()`.
 
-The next step is to keep the implemented surfaces small while moving more of the assistant's behavior into explicit links: requirements, source facts, traces, prompts, handlers, permissions, tests, and reusable problem-solving procedures. The CLI, server, and Telegram bot should expose the same bundle-export and simplified-issue-reporting actions the web demo offers, the append-only memory log should be unified across surfaces, and the long-term store should migrate from per-surface tables to a unified doublets-rs/doublets-web links store.
+The next step is to keep the implemented surfaces small while moving more of the assistant's behavior into explicit links: requirements, source facts, traces, prompts, handlers, permissions, tests, and reusable problem-solving procedures. The current follow-up batch tracks the remaining major gaps: default native doublets storage ([#278](https://github.com/link-assistant/formal-ai/issues/278)), symbolic probabilistic ranking ([#279](https://github.com/link-assistant/formal-ai/issues/279)), the desktop wrapper ([#280](https://github.com/link-assistant/formal-ai/issues/280)), associative packages and permissions ([#281](https://github.com/link-assistant/formal-ai/issues/281)), Rust/WASM parity ([#282](https://github.com/link-assistant/formal-ai/issues/282)), and generalized skill compilation ([#283](https://github.com/link-assistant/formal-ai/issues/283)).

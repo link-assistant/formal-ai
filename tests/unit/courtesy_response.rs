@@ -13,6 +13,8 @@ const RUSSIAN_COURTESY_RESPONSES: &[&str] = &[
     "у меня все хорошо спасибо",
     "всё хорошо спасибо",
     "хорошо спасибо",
+    "ого, чето начал соображать:)",
+    "ого, что-то начал соображать",
 ];
 const HINDI_COURTESY_RESPONSES: &[&str] = &[
     "धन्यवाद",
@@ -23,6 +25,15 @@ const HINDI_COURTESY_RESPONSES: &[&str] = &[
 ];
 const CHINESE_COURTESY_RESPONSES: &[&str] =
     &["谢谢", "我很好谢谢", "我很好 谢谢", "好的谢谢", "好的 谢谢"];
+
+const fn language_courtesy_response_fixtures() -> [(&'static str, &'static [&'static str]); 4] {
+    [
+        ("English", ENGLISH_COURTESY_RESPONSES),
+        ("Russian", RUSSIAN_COURTESY_RESPONSES),
+        ("Hindi", HINDI_COURTESY_RESPONSES),
+        ("Chinese", CHINESE_COURTESY_RESPONSES),
+    ]
+}
 
 // Issue #160: a polite small-talk follow-up after the assistant greeting was
 // falling through to the learnable-rule fallback.
@@ -49,26 +60,23 @@ fn courteous_follow_up_is_recognized() {
 
 #[test]
 fn courtesy_response_matrix_is_classified_across_languages() {
-    for prompts in [
-        ENGLISH_COURTESY_RESPONSES,
-        RUSSIAN_COURTESY_RESPONSES,
-        HINDI_COURTESY_RESPONSES,
-        CHINESE_COURTESY_RESPONSES,
-    ] {
+    for (_language, prompts) in language_courtesy_response_fixtures() {
         assert_intent_for_each(prompts, "courtesy_response");
     }
 }
 
 #[test]
 fn courtesy_response_matrix_never_falls_through_to_unknown() {
-    for prompts in [
-        ENGLISH_COURTESY_RESPONSES,
-        RUSSIAN_COURTESY_RESPONSES,
-        HINDI_COURTESY_RESPONSES,
-        CHINESE_COURTESY_RESPONSES,
-    ] {
+    for (_language, prompts) in language_courtesy_response_fixtures() {
         assert_intent_not(prompts, "unknown");
     }
+}
+
+// Issue #262: a Russian praise/acknowledgement after a correct answer should
+// keep the same courtesy flow as the existing multilingual follow-ups.
+#[test]
+fn reported_russian_praise_is_a_courtesy_response() {
+    assert_intent_for_each(&["ого, чето начал соображать:)"], "courtesy_response");
 }
 
 fn assert_intent_for_each(prompts: &[&str], expected_intent: &str) {

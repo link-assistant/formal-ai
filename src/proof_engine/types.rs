@@ -30,6 +30,8 @@ pub enum ProofMethod {
     AxiomReduction,
     /// Enumerate every assignment / configuration over a finite domain.
     Tautology,
+    /// Delegate to the relative-meta-logic / SMT-style decision procedure.
+    DecisionProcedure,
 }
 
 impl ProofMethod {
@@ -47,6 +49,7 @@ impl ProofMethod {
             Self::KnownTheorem => "known_theorem",
             Self::AxiomReduction => "axiom_reduction",
             Self::Tautology => "tautology",
+            Self::DecisionProcedure => "decision_procedure",
         }
     }
 
@@ -90,6 +93,10 @@ impl ProofMethod {
             (Self::Tautology, "zh") => "重言式",
             (Self::Tautology, "hi") => "तथ्यात्मक",
             (Self::Tautology, _) => "tautology check",
+            (Self::DecisionProcedure, "ru") => "процедура разрешения relative-meta-logic / SMT",
+            (Self::DecisionProcedure, "zh") => "relative-meta-logic / SMT 判定过程",
+            (Self::DecisionProcedure, "hi") => "relative-meta-logic / SMT निर्णय प्रक्रिया",
+            (Self::DecisionProcedure, _) => "relative-meta-logic / SMT decision procedure",
         }
     }
 }

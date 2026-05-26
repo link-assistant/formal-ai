@@ -147,11 +147,12 @@ following Rust modules:
 | 1. Input | `src/engine.rs::FormalAiEngine::answer` and `solve_with_history` in `src/solver.rs` | Implemented |
 | 2. Translate to Links Notation | `event_log::Event::Impulse` in `src/event_log.rs` | Implemented |
 | 3. Record in memory | `MemoryStore::append` in `src/memory.rs` | Implemented |
-| 4. Formalization | `concepts::lookup_concept` in `src/concepts.rs` (today: aliases). Future: P/Q-ID extraction with wikidata cache | Partial (alias resolution today; P/Q-ID extraction tracked as a requirement) |
-| 5. Temperature interpretation selection | `SolverConfig::guess_probability` already lives in `src/solver.rs`; the scoring/softmax helper is the next implementation step | Knob present; softmax pending |
+| 4. Formalization | `src/concepts.rs` plus `src/translation/formalization.rs` for scored P/Q-id, Wikipedia, Wiktionary, and raw fallback anchors | Implemented |
+| 5. Temperature interpretation selection | `src/translation/selection.rs` plus `SolverConfig::{temperature, guess_probability, questioning_rigor}` in `src/solver.rs` | Implemented |
 | 6. Universal solver | `UniversalSolver` in `src/solver.rs` | Implemented |
 | 7. Append to memory | `event_log::EventLog`, `memory::export_full_memory` | Implemented |
 | 8. Render user-facing answer | `SymbolicAnswer` projection in `src/engine.rs` | Implemented |
+| 9. Natural-language skill compilation | `src/skill_compiler.rs` plus the `behavior_rules` replay bridge | Implemented for deterministic trigger/response skill packages |
 
 The pipeline runs the same way for every prompt — greetings, identity,
 concept lookup, math, code generation, idioms, refusals, agent actions —
@@ -229,14 +230,15 @@ canonical Links Notation format.
 
 Upstream references:
 
-- [`link-foundation/doublets-rs`](https://github.com/link-foundation/doublets-rs)
-- [`link-foundation/doublets-web`](https://github.com/link-foundation/doublets-web)
+- [`linksplatform/doublets-rs`](https://github.com/linksplatform/doublets-rs)
+- [`linksplatform/doublets-web`](https://github.com/linksplatform/doublets-web)
 
 Migration plan:
 
 1. Wrap the current `MemoryStore` in a trait so the active backend is
-   swappable.
-2. Add a `doublets-rs` backend behind a feature flag.
+   swappable (`link_store::LinkStore`).
+2. Add a `doublets-rs` backend behind a feature flag
+   (`doublets-native`).
 3. Mirror writes to `.lino` snapshots via `memory::export_links_notation`.
 4. Replace the per-surface tables with the unified doublets store.
 5. Add a `doublets-web` backend for the browser worker.
@@ -335,11 +337,19 @@ Where a P/Q-id does not yet resolve, the formalizer falls back to a
 The formalizer is deliberately allowed to emit **multiple** interpretations
 per phrase. Selection happens in step 6.
 
-The current implementation implements alias-based formalization in
-`src/concepts.rs` (the `aliases` field on every concept record). The full
-P/Q-id pipeline is scheduled in `tests/unit/specification/multilingual.rs` under
-`russian_iir_evidence_includes_wikidata_anchor` (already active for the IIR
-case study); broader coverage is tracked as a requirement.
+The current implementation has two cooperating formalization layers:
+
+- `src/concepts.rs` handles seed concept lookup through explicit aliases and
+  context hints.
+- `src/translation/formalization.rs` handles arbitrary prompt fragments with
+  a deterministic multilingual label table, concept-seed Q-id reuse, scored
+  Wikidata P/Q anchors, and explicit Wikipedia/Wiktionary/raw fallbacks.
+
+`src/solver.rs` records the selected formalization as `formalization:*`
+events before local search, including typed links such as
+`formalization:predicate_p:wikidata:P31`,
+`formalization:subject_q:wikidata:Q89`, and
+`formalization_unresolved:<surface>` for later translation-gap handling.
 
 ---
 
@@ -353,26 +363,26 @@ network would use:
 P(c_i) = exp(score_i / T) / Σ exp(score_j / T)
 ```
 
-- `T → 0`  → deterministic; the highest-scored candidate always wins.
-- `T = 1`  → proportional to the raw scores.
-- `T → ∞`  → uniform; any candidate is equally likely.
+- `T = 0`  → deterministic; the highest-scored candidate always wins.
+- `T = 1`  → maximum configured exploration across the scored candidates.
 
-The temperature is sourced from `SolverConfig`. Today we expose a
-deterministic default; the softmax helper and a `solver_config.temperature`
-field are the next slice of implementation work.
+The temperature is sourced from `SolverConfig`. `src/translation/selection.rs`
+normalizes 0..1000 formalization scores to 0.0..1.0, applies a stable
+softmax, and uses a content-hash-seeded draw whenever the solver must guess
+under ambiguity. This keeps the same prompt + same config deterministic.
 
 If the top-two probabilities are within ε (configurable through
 `SolverConfig.questioning_rigor`), the solver:
 
-- if `guess_probability` is high, picks the higher-scored candidate and
-  records a `policy:guessed_under_ambiguity` event so the trace is
-  honest;
+- if the configuration permits guessing, samples from the softmax distribution
+  with the impulse hash as a seed and records a
+  `policy:guessed_under_ambiguity` event so the trace is honest;
 - otherwise, emits a clarifying-question intent (the smallest question that
   separates the candidates) and stops the pipeline until the user replies.
 
-The seeded-from-impulse-hash RNG (`src/solver.rs::Rng`) keeps the random
-guessing deterministic per prompt, so the same input + same config produces
-the same answer.
+The seeded-from-impulse-hash draw in `src/translation/selection.rs` keeps
+guessing deterministic per prompt, so the same input + same config produces the
+same answer.
 
 ---
 
@@ -383,7 +393,7 @@ The solver follows the universal loop documented in `VISION.md` (Section
 `src/solver.rs`:
 
 1. **Impulse** — `Event::Impulse` is appended.
-2. **Formalization** — alias resolution + (future) P/Q-id lookup.
+2. **Formalization** — alias resolution plus P/Q-id lookup with fallbacks.
 3. **Context and domain data** — language detection, surface, mode flags.
 4. **History lookup** — search local doublets first; record `cache_hit`
    on success.
@@ -526,6 +536,14 @@ order from "lowest privilege" to "highest privilege":
    four representations: a data rule, a Rust handler stub, a JS handler
    stub, or an interpreted sequence of solver steps.
 
+`src/skill_compiler.rs` implements the first deterministic compiler path:
+`When ... answer ...` skills are lowered into a `CompiledSkillPackage` with a
+trigger rule, a deterministic compiled handler, an E1-style `LinkRecord`
+projection, and a Links Notation export. The solver scans dialog history for
+these packages before falling back to behavior-rule re-derivation; a replay
+appends `compiled_skill:replay` and `cache_hit:<compiled_skill_id>` to the
+trace.
+
 The compilation chain (NL → code → binary) is the long-term path. The
 runtime never *requires* compilation: a natural-language skill can be
 interpreted one step at a time without ever being lowered to Rust/JS.
@@ -645,15 +663,15 @@ session. The knobs:
 
 | Knob | Type | Default | Effect |
 | --- | --- | --- | --- |
-| `guess_probability` | f32 in `[0, 1]` | `0.5` | 0 = always ask a clarifying question, 1 = always guess. |
-| `context_sensitivity` | f32 in `[0, 1]` | `0.7` | how strongly recent messages bias formalization. |
-| `questioning_rigor` | f32 in `[0, 1]` | `0.5` | how strict the clarifying question is. |
-| `max_decomposition_depth` | usize | `6` | bound on recursive decomposition. |
+| `guess_probability` | f32 in `[0, 1]` | `0.8` | 0 = strongly prefer asking under ambiguity, 1 = always guess. |
+| `context_sensitivity` | f32 in `[0, 1]` | `0.6` | how strongly recent messages bias formalization. |
+| `questioning_rigor` | f32 in `[0, 1]` | `0.4` | how strict the clarifying question is. |
+| `max_decomposition_depth` | usize | `4` | bound on recursive decomposition. |
 | `agent_mode` | bool | `false` | unlock destructive / autonomous actions. |
 | `diagnostic_mode` | bool | `false` | include trace/intent/evidence chips in the answer prose. |
 | `offline` | bool | `false` | refuse external lookups (also `FORMAL_AI_OFFLINE`). |
 | `cache_ttl_seconds` | u64 | `5_184_000` | TTL for `source_cache` entries (≈ 60 days). |
-| `temperature` *(planned)* | f32 | `1.0` | softmax temperature for interpretation selection. |
+| `temperature` | f32 in `[0, 1]` | `0.7` | softmax temperature for interpretation selection. |
 
 The same prompt + same config produces the same answer. Random choices are
 seeded from the impulse content hash.
@@ -759,21 +777,32 @@ adds one file (or extends one matrix) without touching the rest.
 
 ## 16. Open Questions
 
-These items are tracked as requirements today and as architecture
-references here:
+The original issue #244 architecture questions are mostly implemented. The
+remaining items are tracked as the second planning batch:
 
-1. The full Wikidata P-ID / Q-ID formalization (Section 5) is partially
-   implemented in `src/concepts.rs` (aliases). Full extraction over arbitrary
-   prompts needs a wikidata cache, a multilingual labels table, and a
-   per-language morphology hint.
-2. The softmax temperature helper (Section 6) is not yet exposed; the knob
-   lives on `SolverConfig` but the softmax + ε-comparison helper is the next
-   slice of work.
-3. The doublets-rs backend (Section 4.2) is wrapped behind a trait but the
-   crate dependency is not yet pulled in.
-4. Natural-language-skill compilation (Section 9 #5) is documented but the
-   compiler is not implemented; today every skill is interpreted by the
-   universal solver step by step.
+1. The doublets-rs backend (Section 4.2) is available behind
+   `doublets-native`; the remaining migration work is making it the default
+   physical store for every non-browser surface. Tracked by
+   [#278](https://github.com/link-assistant/formal-ai/issues/278).
+2. Natural-language-skill compilation now has a deterministic
+   trigger/response compiler in `src/skill_compiler.rs`; future work is
+   broadening the compiler beyond exact normalized-prompt replay and into
+   native Rust/JS lowering. Tracked by
+   [#283](https://github.com/link-assistant/formal-ai/issues/283).
+3. Rust/WebAssembly browser parity is partial: `src/web_engine_core.rs` owns
+   reusable browser-domain operations, but additional worker logic still lives
+   in JavaScript. Tracked by
+   [#282](https://github.com/link-assistant/formal-ai/issues/282).
+4. The solver has deterministic temperature selection but no link-native
+   Bayesian/Markov-style evidence layer. Tracked by
+   [#279](https://github.com/link-assistant/formal-ai/issues/279).
+5. Associative packages and permission records are represented by separate
+   skill, handler, and tool-gating pieces, not one install/export/replay package
+   model. Tracked by
+   [#281](https://github.com/link-assistant/formal-ai/issues/281).
+6. A desktop application wrapper around the existing library/HTTP/web surfaces
+   is still open. Tracked by
+   [#280](https://github.com/link-assistant/formal-ai/issues/280).
 
 Pull requests that close any of these should update the corresponding row in
 the table in Section 2 and link the new module.
@@ -786,9 +815,9 @@ the table in Section 2 and link the new module.
 - `GOALS.md` — what counts as success per surface.
 - `NON-GOALS.md` — what we explicitly do not build.
 - `REQUIREMENTS.md` — issue-by-issue implementation matrix (R1 … R236).
-- `ROADMAP.md` — implementation-progress tracker mapping each `VISION.md` pillar to its real code status, the tracked `#[ignore]` specification tests, and the planning epic that closes the gap.
-- [`link-foundation/doublets-rs`](https://github.com/link-foundation/doublets-rs) — long-term storage backend.
-- [`link-foundation/doublets-web`](https://github.com/link-foundation/doublets-web) — browser-side mirror.
+- `ROADMAP.md` — implementation-progress tracker mapping each `VISION.md` pillar to its real code status, closed planning batches, and remaining follow-up gaps.
+- [`linksplatform/doublets-rs`](https://github.com/linksplatform/doublets-rs) — long-term storage backend.
+- [`linksplatform/doublets-web`](https://github.com/linksplatform/doublets-web) — browser-side mirror.
 - [`link-assistant/calculator`](https://github.com/link-assistant/calculator) — delegated calculator engine (`link-calculator` crate).
 - [`link-assistant/relative-meta-logic`](https://github.com/link-assistant/relative-meta-logic) — future formal-reasoning integration.
 - Wikidata (`https://www.wikidata.org/`) — public source of P/Q-ID anchors.

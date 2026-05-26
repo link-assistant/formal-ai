@@ -25,7 +25,7 @@ const ISSUE_REPOSITORY = "link-assistant/formal-ai";
 const ISSUE_LABELS = "bug";
 const SOURCE_CODE_URL = `https://github.com/${ISSUE_REPOSITORY}`;
 const UNKNOWN_ANSWER =
-  "I don't know how to answer that yet. I cannot answer that from local Links Notation rules yet. To inspect what I can do, send `List behavior rules`, then `Show behavior rule unknown`. To teach this dialog a response, send: When I say `your prompt`, answer `your answer`. To make it durable, export memory or use Report issue so developers can add the fact or rule to the seed.";
+  "I don't know how to answer that yet. I cannot answer that from local Links Notation rules yet. To inspect what I can do, send `List behavior rules`, then `Show behavior rule unknown`. To teach this dialog a response, send: When I say `your prompt`, answer `your answer`. To make it durable, export memory or use Report issue so developers can add a fact or add a rule in Links Notation seed data.";
 const IDENTITY_ANSWER =
   "I am formal-ai, a deterministic symbolic AI implementation that answers from local Links Notation rules and OpenAI-compatible API shapes. I do not perform neural inference in this demo.";
 const ASSISTANT_NAME_ANSWER =
@@ -2762,6 +2762,10 @@ function localFallbackAnswer(prompt, history = [], preferences = {}) {
     "i am fine thanks",
     "i m fine thank you",
     "i m fine thanks",
+    "ого чето начал соображать",
+    "ого чёто начал соображать",
+    "ого чё то начал соображать",
+    "ого что то начал соображать",
   ]);
   if (courtesyResponses.has(normalized)) {
     return {

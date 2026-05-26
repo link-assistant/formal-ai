@@ -1,9 +1,10 @@
 //! Universal proof / disproof engine.
 //!
-//! The engine takes a free-form claim, decides whether it is an arithmetic
-//! equality, a classical theorem the engine knows by name, or a more
-//! general assertion that needs a `PartialPlan`, and produces a
-//! [`ProofOutcome`] that the surface presenter can render to the user.
+//! The engine takes a free-form claim, decides whether it can be discharged
+//! by a delegated decision procedure, arithmetic calculation, a classical
+//! theorem the engine knows by name, or a more general assertion that needs a
+//! `PartialPlan`, and produces a [`ProofOutcome`] that the surface presenter
+//! can render to the user.
 //!
 //! The public contract is intentionally narrow:
 //!
@@ -17,6 +18,7 @@
 //! plan and lists the missing inputs.
 
 pub mod arithmetic;
+pub mod decision;
 pub mod library;
 pub mod presenter;
 pub mod types;
@@ -71,12 +73,19 @@ pub fn attempt_proof_with_config(
     mentions_determinism: bool,
     config: ProofRenderConfig,
 ) -> ProofOutcome {
-    // 1. Arithmetic equality / inequality — direct calculation.
+    // 1. Delegated relative-meta-logic / SMT-style decision procedure for
+    //    finite propositional tautologies and quantifier-free linear real
+    //    arithmetic.
+    if let Some(outcome) = decision::attempt_decision_procedure(claim, language) {
+        return outcome;
+    }
+
+    // 2. Arithmetic equality / inequality — direct calculation.
     if let Some(outcome) = arithmetic::attempt_arithmetic_claim(claim) {
         return outcome;
     }
 
-    // 2. Classical-theorem library lookup (Pythagoras, Euclid primes,
+    // 3. Classical-theorem library lookup (Pythagoras, Euclid primes,
     //    √2 irrationality, Fermat's little theorem, Gödel's first
     //    incompleteness, Laplacian determinism).
     if let Some(entry) = library::REGISTRY.iter().find(|e| e.matches(claim)) {
@@ -90,7 +99,7 @@ pub fn attempt_proof_with_config(
         return ProofOutcome::Proven { proof };
     }
 
-    // 3. Gödel + determinism combo without a direct library hit still
+    // 4. Gödel + determinism combo without a direct library hit still
     //    deserves the structured "axiom set needed" walkthrough.
     if mentions_godel && mentions_determinism {
         let mut outcome = godel_determinism_partial_plan(language);
@@ -100,7 +109,7 @@ pub fn attempt_proof_with_config(
         return outcome;
     }
 
-    // 4. Fallback: produce a proof plan that asks the user for an axiom
+    // 5. Fallback: produce a proof plan that asks the user for an axiom
     //    set / definitions. This is never a refusal — it's an honest
     //    description of what the engine would do with the missing inputs.
     let mut outcome = generic_partial_plan(prompt, language);

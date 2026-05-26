@@ -33,15 +33,21 @@ are:
   issue created for #244 (the "create all the issues" deliverable).
 - The `Issue #244` row block added to [`REQUIREMENTS.md`](../../../REQUIREMENTS.md).
 
+> 2026-05-26 update: the first planning batch (E1-E14, issues #246-#259) has
+> been implemented and merged to `main`. This case study now preserves the
+> original audit as historical context and records the post-implementation audit
+> that created E15-E20 (#278-#283) for the remaining partial requirements.
+
 ## Captured Artifacts
 
 Downloaded and generated artifacts live under `raw-data/`:
 
 - `issue-244.json`, `issue-244-comments.json` — the issue body and comments
   (no comments at collection time).
-- `issue-survey.md` — the conclusions of the all-issues survey (127 issues,
-  #244 the only open one ⇒ no duplicate planning issue). The full machine dump
-  is intentionally not vendored; the per-issue history lives in
+- `issue-survey.md` — the conclusions of the initial all-issues survey
+  (127 issues, #244 the only open one at collection time, so no duplicate
+  planning issue existed). The full machine dump is intentionally not vendored;
+  the per-issue history lives in
   `REQUIREMENTS.md`, and reproducing every historical title verbatim trips the
   repository-hygiene guard.
 - `pr-245.json`, `pr-245-comments.json`, `pr-245-review-comments.json` — the
@@ -53,6 +59,12 @@ Downloaded and generated artifacts live under `raw-data/`:
   Lean/Z3/program synthesis) with citations.
 - `code-audit.md` — the structured audit of the actual implemented state of
   `src/`, the seed, and the test suite that this plan is built on.
+- `closed-issues-2026-05-26.json`, `merged-prs-2026-05-26.json`,
+  `deferred-marker-search-2026-05-26.txt`,
+  `ignored-tracked-tests-2026-05-26.txt`, and
+  `next-batch-issues-2026-05-26.txt` — the post-implementation audit showing
+  which follow-up issues closed, which deferred markers remain, and which
+  next-batch issues were opened.
 
 ## Timeline
 
@@ -63,6 +75,9 @@ Downloaded and generated artifacts live under `raw-data/`:
 | 2026-05-25 | Codebase audit completed: 11-step solver loop exists but routing is still keyword/intent based; 69 `#[ignore]`-tagged "tracked requirement" tests enumerate the vision gaps; `ARCHITECTURE.md` §16 lists four architecture open questions. |
 | 2026-05-25 | Online research collected: Abstract Wikipedia/Wikifunctions, OpenCog AtomSpace/Hyperon, Lean/Z3 confirmed as the closest prior art for the meaning-anchored translation, associative store, and deterministic verification pillars. |
 | 2026-05-25 | `ROADMAP.md` written, planning issues drafted in `proposed-issues.md`, and the issues created in the repository. |
+| 2026-05-26 | `origin/main` merged into the issue branch; the E1-E14 implementation PRs (#260, #261, #263-#275) and the courtesy PR #276 were incorporated. |
+| 2026-05-26 | Closed issues, merged PRs, deferred markers, and tracked specification tests were audited; no `#[ignore = "tracked requirement: ..."]` tests remained. |
+| 2026-05-26 | Six remaining partial requirements were opened as E15-E20: #278, #279, #280, #281, #282, and #283. |
 
 ## Requirements Extracted From Issue #244
 
@@ -76,20 +91,40 @@ features themselves (those are tracked in `ROADMAP.md`).
 | Q2 | First update documentation to **fully track the progress** of implementation of all requirements. | Done — `ROADMAP.md` added as the progress tracker; `REQUIREMENTS.md` and `ARCHITECTURE.md` references reconciled. |
 | Q3 | Ensure **everything in docs is in sync with the actual state of the code**. | Done — `ROADMAP.md` is grounded in `raw-data/code-audit.md`; overstated/stale references corrected. |
 | Q4 | Create **all the issues** needed to fully implement the vision. | Done — see `proposed-issues.md` and the created issues listed below. |
-| Q5 | Enable the system to learn the **universal problem solving algorithm**. | Planned — epic on making the universal loop the only entry path (E2). |
-| Q6 | Truly solve **translation between languages (natural and formal)**. | Planned — formalization epic (E3) + translation-via-meanings epic (E6) + code-translation epic (E7). |
-| Q7 | Keep a **minimum core of algorithms and a data seed** with enough metadata to problem-solve like people do. | Planned — seed/metadata work folded into formalization (E3), links-network invariants (E10), and skill compilation (E14). |
-| Q8 | Problem-solve **like people do**, in the way expected from AI, but **without neural networks for the reasoning itself**. | Planned — symbolic universal loop (E2) + formal-reasoning engine (E8); reinforced as a NON-GOAL. |
-| Q9 | Provide **formal reasoning** that covers all current test cases **and much more**. | Planned — formal-reasoning engine epic (E8). |
-| Q10 | Learn to **work with unknowns** and gather missing information ourselves. | Planned — reasoning loop search/decomposition steps (E2) + source cache (E5). |
-| Q11 | Ask the user **as few questions as possible**; only ask what cannot be answered by the system itself. | Planned — temperature/clarify-vs-guess epic (E4). |
-| Q12 | **Build on previous experience**; make the algorithm more general and smart while still supporting everything already supported. | Planned — reasoning loop reuses prior traces (E2, `cache_hit`); ROADMAP records existing capabilities as the regression floor. |
-| Q13 | If there are **critical problems blocking the vision**, plan to fix them **first** (solid foundation). | Done — the two foundation epics (E1 unified doublet store, E2 universal loop) are marked as blockers and ordered first in `ROADMAP.md`. |
+| Q5 | Enable the system to learn the **universal problem solving algorithm**. | Implemented for the first batch by E2/#247 and PR #261; further learning/package work is tracked by #279, #281, and #283. |
+| Q6 | Truly solve **translation between languages (natural and formal)**. | Implemented for the first batch by E3/#248, E6/#251, and E7/#252; broader skill/code lowering continues in #283. |
+| Q7 | Keep a **minimum core of algorithms and a data seed** with enough metadata to problem-solve like people do. | Partially implemented through seed files, cache/formalization, link-store projection, and skill compilation; remaining native store and package work is tracked by #278 and #281. |
+| Q8 | Problem-solve **like people do**, in the way expected from AI, but **without neural networks for the reasoning itself**. | Implemented by the symbolic universal loop and formal decision procedure; symbolic probabilistic ranking is tracked by #279. |
+| Q9 | Provide **formal reasoning** that covers all current test cases **and much more**. | Implemented by E8/#253 and PR #268 with decision-procedure modules under `src/proof_engine/decision.rs`. |
+| Q10 | Learn to **work with unknowns** and gather missing information ourselves. | Implemented through the universal loop and source cache; probabilistic evidence for ranking unknowns is tracked by #279. |
+| Q11 | Ask the user **as few questions as possible**; only ask what cannot be answered by the system itself. | Implemented by E4/#249 and PR #264 through temperature-based clarify-vs-guess selection. |
+| Q12 | **Build on previous experience**; make the algorithm more general and smart while still supporting everything already supported. | Implemented by merging E1-E14 with active regression coverage; the narrowed follow-up batch records remaining work without reopening closed requirements. |
+| Q13 | If there are **critical problems blocking the vision**, plan to fix them **first** (solid foundation). | Done — E1/E2 were planned first, then implemented; the refreshed roadmap now scopes the remaining partial requirements as E15-E20. |
 | Q14 | Collect issue data into `docs/case-studies/issue-244` and **search online** for additional facts. | Done — `raw-data/` + `online-research.md`. |
 | Q15 | Do a **deep case study analysis**; list each and all requirements; propose **solution plans per requirement**. | Done — this document + `proposed-issues.md`. |
 | Q16 | Check **known existing components/libraries** that solve a similar problem or can help. | Done — see "Existing components and libraries" below and `online-research.md`. |
 
-## Current State Of The Code (Audit Summary)
+## Post-Implementation Audit (2026-05-26)
+
+The 2026-05-26 audit checked all closed issues, merged PRs, stale deferred
+markers, and tracked specification tests after merging `origin/main`.
+
+Findings:
+
+- E1-E14 (#246-#259) are closed and backed by merged PRs #260, #261, and
+  #263-#275.
+- Issue #262 is also closed by PR #276.
+- `tests/unit/specification/` no longer contains `#[ignore = "tracked requirement: ..."]`
+  tests.
+- Six remaining requirements were still partial or open and were created as the
+  next batch: #278 default native doublets store, #279 symbolic probabilistic
+  ranking, #280 desktop wrapper, #281 associative packages/permissions, #282
+  Rust/WASM browser parity, and #283 generalized skill compiler.
+
+## Initial State Of The Code (2026-05-25 Audit Summary)
+
+This section is preserved as the initial planning snapshot. It no longer
+describes the current `main` state after E1-E14 were merged.
 
 The full audit is in `raw-data/code-audit.md`. Headlines:
 
@@ -160,21 +195,24 @@ closes it. The full matrix lives in `ROADMAP.md`; the planning issues are:
 | E13 | Network visualization + trace links on every surface | `network_visualization`; `telegram_surface`; `chat_surface` execution-status + diagnostics-off | — |
 | E14 | Natural-language skill compilation | ARCH §16.4; VISION computation model | — |
 
-The created issue numbers are filled in below and in `ROADMAP.md` once the
-issues are opened.
+This table is the initial E1-E14 plan. Those issues are now closed; the current
+status and the E15-E20 follow-up batch live in `ROADMAP.md`.
 
 ## Solution Plans Per Requirement
 
 Each epic's full problem statement, proposed approach, existing components to
-reuse, and acceptance criteria (the exact `#[ignore]` tests to graduate) are in
-[`proposed-issues.md`](proposed-issues.md). The design principles that bind them:
+reuse, and acceptance criteria are in [`proposed-issues.md`](proposed-issues.md).
+For E1-E14, the acceptance criteria were the original tracked tests to graduate.
+For E15-E20, the criteria are the remaining partial requirements discovered by
+the 2026-05-26 audit. The design principles that bind them:
 
 - **Foundation first (Q13).** E1 (one doublet store as the source of truth) and
   E2 (one reasoning loop as the only entry path) are blockers; the other epics
   build on them. This is the "solid foundation" the issue asks for.
 - **Keep the regression floor (Q12).** No epic may remove an already-supported
-  behavior. The existing green tests are the floor; epics only graduate
-  `#[ignore]` tests, never delete passing ones.
+  behavior. The existing green tests are the floor; the first batch graduated
+  tracked tests, and follow-up work must add or narrow tests instead of deleting
+  passing ones.
 - **Determinism and traceability (Q8).** Every epic preserves "same prompt +
   same config ⇒ same answer", seeded randomness from the impulse hash, and a
   `trace:` pointer the user can inspect.
@@ -185,9 +223,11 @@ reuse, and acceptance criteria (the exact `#[ignore]` tests to graduate) are in
 
 Reused or referenced (details and citations in `online-research.md`):
 
-- **`link-foundation/doublets-rs` / `doublets-web`** — the long-term doublet
-  store for E1; already named in `ARCHITECTURE.md` §17 but not yet a dependency.
-- **`link-assistant/relative-meta-logic`** — formal-reasoning integration for E8.
+- **`linksplatform/doublets-rs` / `doublets-web`** — the long-term doublet
+  store family; E1 added the boundary/projection, and #278 tracks making
+  `doublets-rs` the default native physical store.
+- **`link-assistant/relative-meta-logic`** — optional future backend candidate
+  for formal reasoning; E8/#253 added the current decision-procedure layer.
 - **`link-assistant/calculator` (`link-calculator`)** — already integrated;
   the model for delegating a hard sub-problem to a verified engine.
 - **Wikidata / Wikipedia / Wiktionary** — meaning anchors and per-language
@@ -205,9 +245,9 @@ Reused or referenced (details and citations in `online-research.md`):
 
 ## Created Planning Issues
 
-The 14 epics below were opened against this repository on 2026-05-25. See
-`proposed-issues.md` for the full body of each and `ROADMAP.md` §5 for the
-titles and dependency order.
+The first 14 epics below were opened against this repository on 2026-05-25. See
+`proposed-issues.md` for the full body of each and `ROADMAP.md` for the current
+status.
 
 | Epic | Issue |
 | --- | --- |
@@ -226,6 +266,17 @@ titles and dependency order.
 | E13 | [#258](https://github.com/link-assistant/formal-ai/issues/258) |
 | E14 | [#259](https://github.com/link-assistant/formal-ai/issues/259) |
 
+The post-implementation audit opened the next batch on 2026-05-26:
+
+| Epic | Issue |
+| --- | --- |
+| E15 | [#278](https://github.com/link-assistant/formal-ai/issues/278) |
+| E16 | [#279](https://github.com/link-assistant/formal-ai/issues/279) |
+| E17 | [#280](https://github.com/link-assistant/formal-ai/issues/280) |
+| E18 | [#281](https://github.com/link-assistant/formal-ai/issues/281) |
+| E19 | [#282](https://github.com/link-assistant/formal-ai/issues/282) |
+| E20 | [#283](https://github.com/link-assistant/formal-ai/issues/283) |
+
 ## Verification
 
 This is a documentation + planning PR. Verification:
@@ -236,6 +287,8 @@ This is a documentation + planning PR. Verification:
 - Release guard checks pass with PR-like env:
   `rust-script scripts/check-changelog-fragment.rs`,
   `rust-script scripts/check-version-modification.rs`.
-- The plan is internally consistent: every `#[ignore]` "tracked requirement"
-  test and every `ARCHITECTURE.md` §16 open question is assigned to exactly one
-  epic, and every epic lists the tests it must graduate.
+- The initial plan was internally consistent: every original `#[ignore]`
+  "tracked requirement" test and every `ARCHITECTURE.md` §16 open question was
+  assigned to exactly one E1-E14 epic. The post-implementation audit confirmed
+  zero tracked ignored tests remain and assigned the remaining partial
+  requirements to E15-E20.

@@ -1,6 +1,6 @@
 [package]
 name = "formal-ai"
-version = "0.112.0"
+version = "0.127.0"
 edition = "2021"
 description = "Formal symbolic AI implementation with OpenAI-compatible APIs"
 readme = "README.md"
@@ -31,12 +31,18 @@ path = "src/main.rs"
 
 [dependencies]
 clap = { version = "4.4", features = ["derive", "env"] }
+doublets = { version = "0.3.0", optional = true }
 lino-arguments = "0.3"
 lino-objects-codec = "0.2.1"
 link-calculator = "0.17.2"
+mem = { package = "platform-mem", version = "0.3.0", optional = true }
 nom = "8"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
+
+[features]
+default = []
+doublets-native = ["dep:doublets", "dep:mem"]
 
 [dev-dependencies]
 regex = "1"

@@ -12,7 +12,6 @@ pub(crate) use crate::engine_hello_world::{
 
 use std::sync::OnceLock;
 
-use lino_objects_codec::format::format_indented_ordered;
 use serde::{Deserialize, Serialize};
 
 use crate::engine_assistant_name::{
@@ -21,6 +20,7 @@ use crate::engine_assistant_name::{
 };
 use crate::event_log::EventLog;
 use crate::language::Language;
+use crate::links_format::{format_lino_record, sanitize_lino_value};
 use crate::seed;
 
 pub const DEFAULT_MODEL: &str = "formal-symbolic-production";
@@ -33,7 +33,7 @@ const FALLBACK_FAREWELL_ANSWER: &str = "Goodbye! Feel free to return any time.";
 const FALLBACK_TEST_STATUS_ANSWER: &str = "Test passed. I'm here.";
 const FALLBACK_COURTESY_RESPONSE_ANSWER: &str = "Glad to hear it. What would you like to do next?";
 const FALLBACK_IDENTITY_ANSWER: &str = "I am formal-ai, a deterministic symbolic AI implementation that answers from local Links Notation rules and OpenAI-compatible API shapes. I do not perform neural inference in this demo.";
-const FALLBACK_UNKNOWN_ANSWER: &str = "I don't know how to answer that yet. I cannot answer that from local Links Notation rules yet. To inspect what I can do, send `List behavior rules`, then `Show behavior rule unknown`. To teach this dialog a response, send: When I say `your prompt`, answer `your answer`. To make it durable, export memory or use Report issue so developers can add the fact or rule to the seed.";
+const FALLBACK_UNKNOWN_ANSWER: &str = "I don't know how to answer that yet. I cannot answer that from local Links Notation rules yet. To inspect what I can do, send `List behavior rules`, then `Show behavior rule unknown`. To teach this dialog a response, send: When I say `your prompt`, answer `your answer`. To make it durable, export memory or use Report issue so developers can add a fact or add a rule in Links Notation seed data.";
 const FALLBACK_UNKNOWN_LANGUAGE_ANSWER: &str = concat!(
     "I detected an unsupported language. Falling back to English: I cannot ",
     "answer that from local Links Notation rules yet. Please add a fact or ",
@@ -254,6 +254,7 @@ pub fn knowledge_links_notation() -> String {
         format_concept_index_record(),
         format_type_system_record(),
         format_doublet_reduction_record(),
+        crate::skill_compiler::natural_language_skill_compiler_record(),
         format_lino_record(
             "rule_greeting",
             &[
@@ -363,6 +364,10 @@ fn format_type_system_record() -> String {
             ("SubType_program", String::from("Concept -> Program")),
             ("SubType_meaning", String::from("Concept -> Meaning")),
             ("SubType_trace", String::from("Concept -> Trace")),
+            (
+                "SubType_skill_package",
+                String::from("Concept -> CompiledSkillPackage"),
+            ),
             (
                 "Value_example",
                 String::from("Type Concept; SubType Intent; Value greeting"),
@@ -975,25 +980,4 @@ fn execution_command_lines(execution: &ProgramExecution) -> String {
             )
         },
     )
-}
-
-fn format_lino_record(id: &str, pairs: &[(&str, String)]) -> String {
-    let sanitized = pairs
-        .iter()
-        .map(|(key, value)| (*key, sanitize_lino_value(value)))
-        .collect::<Vec<_>>();
-    let borrowed = sanitized
-        .iter()
-        .map(|(key, value)| (*key, value.as_str()))
-        .collect::<Vec<_>>();
-
-    format_indented_ordered(id, &borrowed, "  ")
-        .expect("static Links Notation records should be valid")
-}
-
-fn sanitize_lino_value(value: &str) -> String {
-    value
-        .replace('\r', "\\r")
-        .replace('\n', "\\n")
-        .replace('\t', "\\t")
 }
