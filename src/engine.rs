@@ -255,6 +255,13 @@ pub fn knowledge_links_notation() -> String {
         format_type_system_record(),
         format_doublet_reduction_record(),
         crate::skill_compiler::natural_language_skill_compiler_record(),
+    ];
+    records.extend(
+        crate::associative_package::default_associative_packages()
+            .into_iter()
+            .map(|package| package.links_notation()),
+    );
+    records.extend([
         format_lino_record(
             "rule_greeting",
             &[
@@ -305,7 +312,7 @@ pub fn knowledge_links_notation() -> String {
                 ("source", String::from("local symbolic seed set")),
             ],
         ),
-    ];
+    ]);
 
     records.extend(
         HELLO_WORLD_PROGRAMS
@@ -577,6 +584,10 @@ pub fn knowledge_graph() -> KnowledgeGraph {
             role: String::from("response_link"),
         });
     }
+    let (package_nodes, package_edges) =
+        crate::associative_package::default_package_graph_projection();
+    nodes.extend(package_nodes);
+    edges.extend(package_edges);
     KnowledgeGraph { nodes, edges }
 }
 

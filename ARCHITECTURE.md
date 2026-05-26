@@ -606,6 +606,17 @@ these packages before falling back to behavior-rule re-derivation; a replay
 appends `compiled_skill:replay` and `cache_hit:<compiled_skill_id>` to the
 trace.
 
+`src/associative_package.rs` is the R65 package boundary. It models
+Deep.Foundation-inspired packages in the local doublet architecture with
+package metadata, dependency links, handler records, trigger records, and
+explicit permission grants. A package can be exported/imported as Links
+Notation, installed only after dependencies validate, replayed through its
+trigger/handler links, and queried by the tool-call gate for capabilities such
+as `tool:calculator`. Compiled skills can be wrapped as packages and imported
+back without hand-editing Rust code. The `/v1/graph` projection includes the
+package, handler, trigger, and permission links so the permission path is
+inspectable alongside ordinary rules.
+
 The compilation chain (NL → code → binary) is the long-term path. The
 runtime never *requires* compilation: a natural-language skill can be
 interpreted one step at a time without ever being lowered to Rust/JS.
@@ -848,9 +859,10 @@ These items are tracked as requirements today and as architecture
 references here:
 
 1. Natural-language-skill compilation now has a deterministic
-   trigger/response compiler in `src/skill_compiler.rs`; future work is
-   broadening the compiler beyond exact normalized-prompt replay and into
-   native Rust/JS lowering.
+   trigger/response compiler in `src/skill_compiler.rs`, and compiled skills
+   can be wrapped as associative packages by `src/associative_package.rs`.
+   Future work is broadening the compiler beyond exact normalized-prompt
+   replay and into native Rust/JS lowering.
 
 Pull requests that close any of these should update the corresponding row in
 the table in Section 2 and link the new module.
