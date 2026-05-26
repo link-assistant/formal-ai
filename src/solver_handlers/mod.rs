@@ -4,6 +4,7 @@
 //! takes the prompt (and pre-lowercased `normalized` view) plus a mutable
 //! event log, and returns `Some(SymbolicAnswer)` when it claims the impulse.
 
+mod agent_workspace;
 mod behavior_rules;
 mod benchmark_prompts;
 mod calendar;
@@ -19,6 +20,7 @@ mod user_intent;
 mod web_requests;
 mod web_search_intent;
 
+pub use agent_workspace::try_agent_workspace_task;
 pub use behavior_rules::try_behavior_rules_with_runtime;
 pub use benchmark_prompts::{
     try_brainstorming_request, try_conversation_topic_request, try_coreference_request,

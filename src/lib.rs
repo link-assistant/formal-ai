@@ -1,5 +1,6 @@
 extern crate alloc;
 
+pub mod agent;
 pub mod arithmetic;
 pub mod associative_package;
 pub(crate) mod calculation;
@@ -39,6 +40,11 @@ pub(crate) mod unknown_opener;
 pub mod web_engine_core;
 pub mod web_search_core;
 
+pub use agent::{
+    parse_agent_plan, run_agent_plan, AgentAction, AgentActionKind, AgentActionStatus,
+    AgentCommandResult, AgentError, AgentRun, AgentRunStatus, AgentWorkspace, AgentWorkspaceConfig,
+    PlannedAgentAction,
+};
 pub use associative_package::{
     default_associative_packages, default_package_store, AssociativePackage, PackageDependency,
     PackageHandler, PackageImportError, PackageInstallError, PackagePermission,

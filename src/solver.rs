@@ -41,18 +41,18 @@ use crate::solver_handler_docs::try_docs_method_explanation;
 use crate::solver_handler_how::{try_how_it_works, try_how_to_procedure};
 use crate::solver_handler_units::try_incompatible_units;
 use crate::solver_handlers::{
-    finalize_simple, try_algorithm, try_arithmetic, try_behavior_rules_with_runtime,
-    try_brainstorming_request, try_calendar_reasoning, try_capabilities, try_clarification,
-    try_concept_lookup, try_conversation_memory, try_conversation_topic_request,
-    try_coreference_request, try_definition_merge, try_definition_merge_by_default,
-    try_execution_failure, try_fact_lookup, try_feature_capability, try_http_fetch, try_ill_formed,
-    try_javascript_execution, try_meta_explanation, try_meta_explanation_with_runtime,
-    try_natural_language_tool_request, try_network_query, try_opinion_question,
-    try_playwright_script, try_project_lookup, try_proof_request, try_proof_request_with_config,
-    try_punctuation_only_prompt, try_roleplay_request, try_shell_refusal,
-    try_software_project_request, try_source_conflict, try_source_refresh,
-    try_summarization_request, try_translation, try_url_navigate, try_web_search,
-    try_who_is_question, try_write_script, CapabilityRuntime, SelfAwarenessRuntime,
+    finalize_simple, try_agent_workspace_task, try_algorithm, try_arithmetic,
+    try_behavior_rules_with_runtime, try_brainstorming_request, try_calendar_reasoning,
+    try_capabilities, try_clarification, try_concept_lookup, try_conversation_memory,
+    try_conversation_topic_request, try_coreference_request, try_definition_merge,
+    try_definition_merge_by_default, try_execution_failure, try_fact_lookup,
+    try_feature_capability, try_http_fetch, try_ill_formed, try_javascript_execution,
+    try_meta_explanation, try_meta_explanation_with_runtime, try_natural_language_tool_request,
+    try_network_query, try_opinion_question, try_playwright_script, try_project_lookup,
+    try_proof_request, try_proof_request_with_config, try_punctuation_only_prompt,
+    try_roleplay_request, try_shell_refusal, try_software_project_request, try_source_conflict,
+    try_source_refresh, try_summarization_request, try_translation, try_url_navigate,
+    try_web_search, try_who_is_question, try_write_script, CapabilityRuntime, SelfAwarenessRuntime,
 };
 use crate::solver_handlers_policy::{try_kupi_slona, try_physical_action_question};
 use crate::solver_helpers::{
@@ -932,6 +932,9 @@ impl UniversalSolver {
         }
 
         if is_agent_request(&normalized) {
+            if let Some(answer) = try_agent_workspace_task(prompt, &normalized, log) {
+                return Some(answer);
+            }
             log.append("agent_mode:opted_in", prompt.to_owned());
             log.append("agent_mode:active", prompt.to_owned());
             log.append("action_log", prompt.to_owned());
