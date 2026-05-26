@@ -664,6 +664,12 @@ fn run_environments() {
         println!("  memory_export: {}", record.memory_export_command);
         println!("  bundle_export: {}", record.bundle_export_command);
         println!("  bundle_import: {}", record.bundle_import_command);
+        if !record.start_command.is_empty() {
+            println!("  start: {}", record.start_command);
+        }
+        if !record.package_command.is_empty() {
+            println!("  package: {}", record.package_command);
+        }
         if !record.tools.is_empty() {
             println!("  tools: {}", record.tools.join(", "));
         }

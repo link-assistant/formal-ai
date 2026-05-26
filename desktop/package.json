@@ -1,0 +1,64 @@
+{
+  "name": "formal-ai-desktop",
+  "version": "0.129.0",
+  "private": true,
+  "description": "Cross-platform desktop wrapper for formal-ai",
+  "main": "main.cjs",
+  "scripts": {
+    "dev": "electron .",
+    "prebuild": "node scripts/prepare-resources.mjs",
+    "build": "electron-builder --config package.json",
+    "build:linux": "electron-builder --linux --config package.json",
+    "build:mac": "electron-builder --mac --config package.json",
+    "build:win": "electron-builder --win --config package.json",
+    "smoke": "node scripts/smoke.mjs"
+  },
+  "devDependencies": {
+    "electron": "^31.7.7",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "ai.formal.desktop",
+    "productName": "formal-ai Desktop",
+    "asar": true,
+    "files": [
+      "main.cjs",
+      "preload.cjs",
+      "package.json",
+      "dist-web/**"
+    ],
+    "extraResources": [
+      {
+        "from": "bin",
+        "to": "bin",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
+    "directories": {
+      "output": "release"
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb",
+        "tar.gz"
+      ],
+      "category": "Utility"
+    },
+    "mac": {
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "category": "public.app-category.productivity"
+    },
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ]
+    }
+  }
+}

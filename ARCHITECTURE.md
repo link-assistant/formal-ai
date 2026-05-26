@@ -776,6 +776,9 @@ The same `FormalAiEngine` answers prompts in every surface:
 - **HTTP server** — `POST /v1/chat/completions`, `POST /v1/responses`,
   `GET /health`, `GET /v1/graph` (with `?trace=` filter and
   `?format=dot`).
+- **Desktop shell** — `desktop/main.cjs` starts the same local
+  `formal-ai serve` API on loopback, serves the existing `src/web` chat, and
+  exposes a preload bridge for API, graph, full-memory, and permission status.
 - **Telegram bot** — `POST /telegram/webhook` (webhook) or
   `formal-ai telegram` (long polling).
 - **Docker-in-Docker Telegram image** — the root `Dockerfile` builds the
@@ -789,7 +792,9 @@ The same `FormalAiEngine` answers prompts in every surface:
   worker built from `src/web/wasm-worker/src/lib.rs`.
 
 Each surface assembles the same `Context` shape so the pipeline answers
-identically.
+identically. The desktop app intentionally stays a wrapper: it sends prompts
+through `/v1/chat/completions`, links graph inspection to `/v1/graph`, and uses
+the browser memory import/export path for `formal_ai_bundle` round-trips.
 
 ---
 

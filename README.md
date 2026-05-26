@@ -11,6 +11,7 @@ The current implementation covers the surface area requested in issue #1:
 - human-readable Links Notation knowledge and dataset export through `lino-objects-codec`
 - Docker-in-Docker Telegram bot image based on `konard/box-dind:2.1.1`
 - GitHub Pages markdown chat demo backed by a Rust-generated WebAssembly worker
+- Electron desktop shell that starts the local Rust HTTP API and reuses the web chat
 
 Project direction is tracked in [VISION.md](VISION.md), [GOALS.md](GOALS.md), and [NON-GOALS.md](NON-GOALS.md). The issue #12 synthesis is in [docs/case-studies/issue-12/README.md](docs/case-studies/issue-12/README.md).
 
@@ -24,6 +25,8 @@ cargo run -- chat --prompt "Посчитай 1000 рублей в доллара
 cargo run -- dataset
 rust-script scripts/mine-hive-mind-dataset.rs --plan
 cargo run -- serve --host 127.0.0.1 --port 8080
+npm install --prefix desktop
+npm run desktop:dev
 TELEGRAM_BOT_TOKEN=123:abc cargo run -- telegram                       # long polling (default)
 cargo run -- telegram --mode webhook --host 127.0.0.1 --port 8080      # webhook server (opt-in)
 rust-script scripts/download-datasets.rs
@@ -87,6 +90,28 @@ docker run --rm --privileged formal-ai bash -lc \
 ```
 
 The static demo lives in `src/web/index.html`. Serve it from a local web server or GitHub Pages so the WebAssembly worker can be fetched by the browser. The demo starts with a user greeting, renders markdown in messages, previews markdown input, and includes a randomized dialog mode for hello-world prompts across several programming languages. Browser JavaScript dependencies are prebundled with Bun into `src/web/vendor.bundle.js`; run `bun install` once and `bun run build:web` after changing web dependencies. The companion connectivity diagnostics page lives in `src/web/tests/index.html` and is deployed at `/formal-ai/tests/`; it checks direct browser fetches, public knowledge APIs, iframe embeddability, and a configurable local `web-capture` proxy.
+
+### Desktop app
+
+The desktop app lives in [`desktop/`](desktop/) and follows the same boundary as the browser and HTTP server. Electron starts a loopback `formal-ai serve` process, serves `src/web/` from a local static server, and loads the existing chat UI with a preload bridge that reports the API, graph, memory, and permission status.
+
+```bash
+npm install --prefix desktop
+cargo build
+npm run desktop:dev
+npm run desktop:smoke
+```
+
+In desktop mode, prompt sends use `POST /v1/chat/completions` on the local Rust API, and the network link points to `GET /v1/graph`. The same **Export memory** and **Import memory** controls read and write the full `formal_ai_bundle`; no separate desktop memory format exists. Agent mode remains off by default, and the desktop sidebar shows whether agent/tool-call actions are permission-gated or explicitly opted in.
+
+Packaging starts from the same shell:
+
+```bash
+cargo build --release
+npm --prefix desktop run build
+```
+
+Set `FORMAL_AI_DESKTOP_BINARY=/path/to/formal-ai` before packaging to bundle a specific binary. Release builds copy the web assets and seed mirror into `desktop/dist-web/`, copy the binary into `desktop/bin/` when available, and produce OS artifacts under `desktop/release/`.
 
 ### Full-memory export and import
 

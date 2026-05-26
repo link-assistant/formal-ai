@@ -3,7 +3,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build:web": "bun build ./src/web/vendor-entry.js --outfile ./src/web/vendor.bundle.js --target browser --format iife --production --minify && bun build ./src/web/ocr-entry.js --outfile ./src/web/ocr.bundle.js --target browser --format iife --production --minify"
+    "build:web": "bun build ./src/web/vendor-entry.js --outfile ./src/web/vendor.bundle.js --target browser --format iife --production --minify && bun build ./src/web/ocr-entry.js --outfile ./src/web/ocr.bundle.js --target browser --format iife --production --minify",
+    "desktop:dev": "npm --prefix desktop run dev",
+    "desktop:build": "npm --prefix desktop run build",
+    "desktop:smoke": "npm --prefix desktop run smoke"
   },
   "dependencies": {
     "dompurify": "3.3.0",
