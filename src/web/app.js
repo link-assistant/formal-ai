@@ -2762,6 +2762,10 @@ function localFallbackAnswer(prompt, history = [], preferences = {}) {
     "i am fine thanks",
     "i m fine thank you",
     "i m fine thanks",
+    "ого чето начал соображать",
+    "ого чёто начал соображать",
+    "ого чё то начал соображать",
+    "ого что то начал соображать",
   ]);
   if (courtesyResponses.has(normalized)) {
     return {
