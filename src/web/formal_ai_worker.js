@@ -4020,9 +4020,12 @@ function tryCapabilities(prompt, normalized, preferences, history) {
       ? moreCapabilities ||
         normalized.includes("что ты умеешь") ||
         normalized.includes("чем ты можешь") ||
+        normalized.includes("чём ты можешь") ||
         normalized.includes("что ты можешь") ||
         normalized.includes("что умеет") ||
         normalized.includes("что можешь") ||
+        normalized.includes("в чем ты можешь быть полезен") ||
+        normalized.includes("в чём ты можешь быть полезен") ||
         normalized.includes("твои возможности") ||
         normalized.includes("что за дичь") ||
         normalized.includes("что это такое") ||
