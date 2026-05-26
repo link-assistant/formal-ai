@@ -12,7 +12,6 @@ pub(crate) use crate::engine_hello_world::{
 
 use std::sync::OnceLock;
 
-use lino_objects_codec::format::format_indented_ordered;
 use serde::{Deserialize, Serialize};
 
 use crate::engine_assistant_name::{
@@ -21,6 +20,7 @@ use crate::engine_assistant_name::{
 };
 use crate::event_log::EventLog;
 use crate::language::Language;
+use crate::links_format::{format_lino_record, sanitize_lino_value};
 use crate::seed;
 
 pub const DEFAULT_MODEL: &str = "formal-symbolic-production";
@@ -254,6 +254,7 @@ pub fn knowledge_links_notation() -> String {
         format_concept_index_record(),
         format_type_system_record(),
         format_doublet_reduction_record(),
+        crate::skill_compiler::natural_language_skill_compiler_record(),
         format_lino_record(
             "rule_greeting",
             &[
@@ -363,6 +364,10 @@ fn format_type_system_record() -> String {
             ("SubType_program", String::from("Concept -> Program")),
             ("SubType_meaning", String::from("Concept -> Meaning")),
             ("SubType_trace", String::from("Concept -> Trace")),
+            (
+                "SubType_skill_package",
+                String::from("Concept -> CompiledSkillPackage"),
+            ),
             (
                 "Value_example",
                 String::from("Type Concept; SubType Intent; Value greeting"),
@@ -975,25 +980,4 @@ fn execution_command_lines(execution: &ProgramExecution) -> String {
             )
         },
     )
-}
-
-fn format_lino_record(id: &str, pairs: &[(&str, String)]) -> String {
-    let sanitized = pairs
-        .iter()
-        .map(|(key, value)| (*key, sanitize_lino_value(value)))
-        .collect::<Vec<_>>();
-    let borrowed = sanitized
-        .iter()
-        .map(|(key, value)| (*key, value.as_str()))
-        .collect::<Vec<_>>();
-
-    format_indented_ordered(id, &borrowed, "  ")
-        .expect("static Links Notation records should be valid")
-}
-
-fn sanitize_lino_value(value: &str) -> String {
-    value
-        .replace('\r', "\\r")
-        .replace('\n', "\\n")
-        .replace('\t', "\\t")
 }

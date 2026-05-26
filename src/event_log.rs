@@ -244,6 +244,9 @@ pub fn build_evidence_links(prompt: &str, log: &EventLog, response_link: &str) -
             "search:external" => format!("search:external:{}", event.id),
             "source:http" => format!("source:http:{}", event.payload.replace(' ', ":")),
             "source_refresh" => format!("source_refresh:{}", event.payload),
+            "skill_compile:package" => format!("skill_compile:package:{}", event.payload),
+            "compiled_skill:package" => format!("compiled_skill:package:{}", event.id),
+            "compiled_skill:replay" => format!("compiled_skill:replay:{}", event.payload),
             "conflict:source_disagreement" => {
                 format!("conflict:source_disagreement:{}", event.id)
             }
