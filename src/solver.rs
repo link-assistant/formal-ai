@@ -55,6 +55,7 @@ use crate::solver_helpers::{
     is_destructive_action, is_forget_request, is_unbounded_autonomy, is_unbounded_loop,
     record_candidates, record_decomposition, record_validation, requires_external_lookup,
 };
+use crate::solver_unknown_reasoning::{answer_unknown_prompt, UnknownReasoningConfig};
 use crate::translation::{
     formalize_prompt_candidates, select_formalization_candidate_with_probability_store,
     FormalizationDecision, FormalizationSelectionConfig,
@@ -560,6 +561,34 @@ impl UniversalSolver {
         }
 
         let rule = select_rule_for(prompt);
+        if matches!(rule, SelectedRule::Unknown) {
+            let intent = language_aware_intent_for(&rule, language);
+            record_candidates(&mut log, prompt, &intent);
+            if let Some(choice) = record_validation(&mut log, prompt) {
+                let response_link = response_link_for_intent(&rule, &intent);
+                return finalize_simple(
+                    prompt,
+                    &mut log,
+                    &intent,
+                    &response_link,
+                    &choice.answer,
+                    1.0,
+                );
+            }
+            if requires_external_lookup(prompt) {
+                self.record_external_search(&mut log, prompt);
+            }
+            return answer_unknown_prompt(
+                prompt,
+                language,
+                &mut log,
+                UnknownReasoningConfig {
+                    questioning_rigor: self.config.questioning_rigor,
+                    offline: self.config.offline,
+                },
+            );
+        }
+
         let intent = language_aware_intent_for(&rule, language);
         log.append("intent", intent.clone());
 
@@ -572,10 +601,6 @@ impl UniversalSolver {
                 "execution_environment",
                 program.execution.environment.to_owned(),
             );
-        }
-
-        if matches!(rule, SelectedRule::Unknown) && requires_external_lookup(prompt) {
-            self.record_external_search(&mut log, prompt);
         }
 
         record_candidates(&mut log, prompt, &intent);
