@@ -144,6 +144,29 @@ fn russian_concept_question_returns_concept_lookup_intent() {
     );
 }
 
+#[test]
+fn russian_antiregime_question_returns_seeded_concept_lookup() {
+    let response = answer("Что такое антирежим?");
+    assert_eq!(
+        response.intent, "concept_lookup",
+        "reported prompt should resolve from the seed, got {} -> {}",
+        response.intent, response.answer
+    );
+    assert!(
+        response.answer.contains("режим"),
+        "Russian answer should define the reported term, got: {}",
+        response.answer
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link == "concept_lookup:hit:concept_antiregime"),
+        "answer should cite the antiregime seed record, got {:?}",
+        response.evidence_links
+    );
+}
+
 // Issue #161: graph prompts should be answered from the local concept seed in
 // every supported language. With associative project promotion enabled by
 // default, each localized answer explains graphs through the Link Foundation
