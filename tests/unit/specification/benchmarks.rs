@@ -97,6 +97,19 @@ fn issue_304_benchmark_research_note_records_provenance() {
     }
 }
 
+#[test]
+fn issue_304_benchmark_fixture_parses_with_windows_line_endings() {
+    let text = fs::read_to_string(repo_root().join(BENCHMARK_FIXTURE)).expect("benchmark fixture");
+    let windows_text = text.replace('\n', "\r\n");
+
+    validate_lino_syntax(&windows_text);
+    let suite = parse_suite(&windows_text);
+
+    assert_eq!(suite.cases.len(), 5);
+    assert_required_domains_are_covered(&suite);
+    assert_every_case_has_a_permissive_source(&suite);
+}
+
 fn load_suite() -> BenchmarkSuite {
     let text = fs::read_to_string(repo_root().join(BENCHMARK_FIXTURE)).expect("benchmark fixture");
     validate_lino_syntax(&text);
@@ -108,12 +121,8 @@ fn repo_root() -> &'static Path {
 }
 
 fn validate_lino_syntax(text: &str) {
-    for record in text
-        .split("\n\n")
-        .map(str::trim)
-        .filter(|record| !record.is_empty())
-    {
-        parse_indented(record).expect("benchmark record should be valid Links Notation");
+    for record in split_records(text) {
+        parse_indented(&record).expect("benchmark record should be valid Links Notation");
     }
 }
 
@@ -147,11 +156,29 @@ fn parse_suite(text: &str) -> BenchmarkSuite {
 }
 
 fn parse_records(text: &str) -> Vec<LinoRecord> {
-    text.split("\n\n")
-        .map(str::trim)
-        .filter(|record| !record.is_empty())
-        .map(parse_record)
+    split_records(text)
+        .into_iter()
+        .map(|record| parse_record(&record))
         .collect()
+}
+
+fn split_records(text: &str) -> Vec<String> {
+    let mut records = Vec::new();
+    let mut current = Vec::new();
+    for line in text.lines() {
+        if line.trim().is_empty() {
+            if !current.is_empty() {
+                records.push(current.join("\n"));
+                current.clear();
+            }
+        } else {
+            current.push(line.trim_end().to_owned());
+        }
+    }
+    if !current.is_empty() {
+        records.push(current.join("\n"));
+    }
+    records
 }
 
 fn parse_record(block: &str) -> LinoRecord {
