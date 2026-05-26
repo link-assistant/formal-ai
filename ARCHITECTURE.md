@@ -802,6 +802,15 @@ The same `FormalAiEngine` answers prompts in every surface:
 - **Browser demo** — `src/web/formal_ai_worker.js` plus the WebAssembly
   worker built from `src/web/wasm-worker/src/lib.rs`.
 
+The browser boundary is intentionally narrow. Rust/WASM owns deterministic
+domain primitives that must match the native solver byte-for-byte: prompt
+normalization, language detection, arithmetic evaluation, stable FNV-1a ids,
+unknown-answer opener selection, intent-route matching semantics, web-search
+provider constants, request evidence, and reciprocal-rank fusion. JavaScript
+keeps the browser-only responsibilities: UI state, seed-file fetch/parsing,
+network/CORS orchestration, DOM integration, and compatibility fallbacks when
+WASM cannot be instantiated.
+
 Each surface assembles the same `Context` shape so the pipeline answers
 identically. The desktop app intentionally stays a wrapper: it sends prompts
 through `/v1/chat/completions`, links graph inspection to `/v1/graph`, and uses

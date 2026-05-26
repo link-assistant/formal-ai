@@ -612,13 +612,7 @@ pub fn knowledge_graph_dot() -> String {
 
 #[must_use]
 pub fn stable_id(prefix: &str, text: &str) -> String {
-    let mut hash = 0xcbf2_9ce4_8422_2325_u64;
-    for byte in text.as_bytes() {
-        hash ^= u64::from(*byte);
-        hash = hash.wrapping_mul(0x0000_0100_0000_01b3);
-    }
-
-    format!("{prefix}_{hash:016x}")
+    crate::web_engine_core::stable_id(prefix, text)
 }
 
 pub(crate) enum SelectedRule {

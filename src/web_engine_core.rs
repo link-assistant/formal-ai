@@ -16,10 +16,12 @@
 
 #![allow(clippy::module_name_repetitions)]
 
+use alloc::format;
 use alloc::string::{String, ToString};
 use alloc::vec::Vec;
+use core::convert::TryFrom;
 
-pub use super::arithmetic::{evaluate_fallback_formatted, ArithmeticError};
+pub use super::arithmetic::evaluate_fallback_formatted;
 pub use super::language::{detect as detect_language, Language};
 
 /// Normalize an arbitrary prompt to a lowercase, single-space-delimited stream.
@@ -78,6 +80,185 @@ pub fn tokenize_prompt(prompt: &str) -> Vec<String> {
 /// the error reason from `ArithmeticError::Display`.
 pub fn evaluate_arithmetic_expression(expression: &str) -> Result<String, String> {
     evaluate_fallback_formatted(expression).map_err(|err| err.to_string())
+}
+
+/// Stable FNV-1a 64-bit id used by Rust answers and browser-worker memory.
+///
+/// JavaScript strings are UTF-16 internally, so the browser worker must call
+/// this WASM export or use an explicit UTF-8 byte fallback. Hashing UTF-16 code
+/// units changes non-ASCII ids and breaks parity for multilingual prompts.
+#[must_use]
+pub fn stable_id(prefix: &str, text: &str) -> String {
+    let mut hash = 0xcbf2_9ce4_8422_2325_u64;
+    for byte in text.as_bytes() {
+        hash ^= u64::from(*byte);
+        hash = hash.wrapping_mul(0x0000_0100_0000_01b3);
+    }
+
+    format!("{prefix}_{hash:016x}")
+}
+
+const UNKNOWN_OPENERS_EN: &[&str] = &[
+    "I don't know how to answer that yet.",
+    "I didn't understand you.",
+    "I'm not sure how to respond to that yet.",
+    "I haven't learned to answer that yet.",
+    "That one is new to me.",
+];
+const UNKNOWN_OPENERS_RU: &[&str] = &[
+    "Я пока не знаю, как ответить на это.",
+    "Я тебя не понял.",
+    "Я не уверен, как на это ответить.",
+    "Я ещё не научился отвечать на это.",
+    "Это для меня новое.",
+];
+const UNKNOWN_OPENERS_HI: &[&str] = &[
+    "मुझे अभी इसका उत्तर देना नहीं आता।",
+    "मैं समझ नहीं पाया।",
+    "मुझे यकीन नहीं है कि कैसे उत्तर दूँ।",
+    "मैंने अभी तक यह उत्तर देना नहीं सीखा।",
+    "यह मेरे लिए नया है।",
+];
+const UNKNOWN_OPENERS_ZH: &[&str] = &[
+    "我还不知道如何回答这个问题。",
+    "我不太明白你说的意思。",
+    "我不确定该如何回答。",
+    "我还没有学会回答这个问题。",
+    "这对我来说是新的。",
+];
+
+#[must_use]
+pub fn unknown_openers_for(language: &str) -> &'static [&'static str] {
+    match language {
+        "ru" => UNKNOWN_OPENERS_RU,
+        "hi" => UNKNOWN_OPENERS_HI,
+        "zh" => UNKNOWN_OPENERS_ZH,
+        _ => UNKNOWN_OPENERS_EN,
+    }
+}
+
+/// Pick the deterministic unknown-answer opener for a prompt/language pair.
+#[must_use]
+pub fn select_unknown_opener(prompt: &str, language: &str) -> &'static str {
+    let pool = unknown_openers_for(language);
+    debug_assert!(!pool.is_empty(), "unknown opener pool must be non-empty");
+    let trimmed = prompt.trim();
+    if trimmed.is_empty() {
+        return pool[0];
+    }
+    let id = stable_id("unknown_opener", trimmed);
+    let hex = id.rsplit('_').next().unwrap_or("0");
+    let value = u64::from_str_radix(hex, 16).unwrap_or(0);
+    let pool_len = pool.len() as u64;
+    let index = usize::try_from(value % pool_len).unwrap_or(0);
+    pool[index]
+}
+
+/// Match a prompt against intent-route fields using the browser/Rust route
+/// semantics: exact keyword/phrase match, token match, or all-token combo.
+#[must_use]
+pub fn matches_intent_route_parts(
+    normalized_prompt: &str,
+    raw_prompt: &str,
+    keywords: &[String],
+    phrases: &[String],
+    tokens: &[String],
+    combos: &[Vec<String>],
+) -> bool {
+    if keywords
+        .iter()
+        .any(|keyword| normalized_prompt == keyword || raw_prompt == keyword)
+    {
+        return true;
+    }
+    if phrases
+        .iter()
+        .any(|phrase| normalized_prompt == phrase || raw_prompt == phrase)
+    {
+        return true;
+    }
+    if tokens
+        .iter()
+        .any(|token| contains_route_token(normalized_prompt, token))
+    {
+        return true;
+    }
+    combos.iter().any(|combo| {
+        !combo.is_empty()
+            && combo
+                .iter()
+                .all(|token| contains_route_token(normalized_prompt, token))
+    })
+}
+
+/// Parse the line protocol used by the JS→WASM route matcher and return the
+/// canonical match result.
+///
+/// Format:
+/// `normalized\nraw\nK\tkeyword\nP\tphrase\nT\ttoken\nC\ttoken1\ttoken2...`
+#[must_use]
+pub fn matches_intent_route_payload(payload: &str) -> bool {
+    let mut lines = payload.lines();
+    let normalized = lines.next().unwrap_or("");
+    let raw = normalize_route_raw_prompt(lines.next().unwrap_or(""));
+    let mut keywords = Vec::new();
+    let mut phrases = Vec::new();
+    let mut tokens = Vec::new();
+    let mut combos = Vec::new();
+
+    for line in lines {
+        let mut fields = line.split('\t');
+        let Some(kind) = fields.next() else {
+            continue;
+        };
+        match kind {
+            "K" => {
+                if let Some(value) = fields.next() {
+                    keywords.push(value.to_string());
+                }
+            }
+            "P" => {
+                if let Some(value) = fields.next() {
+                    phrases.push(value.to_string());
+                }
+            }
+            "T" => {
+                if let Some(value) = fields.next() {
+                    tokens.push(value.to_string());
+                }
+            }
+            "C" => {
+                let combo = fields
+                    .filter(|value| !value.is_empty())
+                    .map(ToString::to_string)
+                    .collect::<Vec<_>>();
+                if !combo.is_empty() {
+                    combos.push(combo);
+                }
+            }
+            _ => {}
+        }
+    }
+
+    matches_intent_route_parts(normalized, &raw, &keywords, &phrases, &tokens, &combos)
+}
+
+fn contains_route_token(normalized_prompt: &str, expected: &str) -> bool {
+    normalized_prompt
+        .split_whitespace()
+        .any(|token| token == expected)
+}
+
+fn normalize_route_raw_prompt(prompt: &str) -> String {
+    let mut out = String::with_capacity(prompt.len());
+    for ch in prompt.chars() {
+        for lower in ch.to_lowercase() {
+            out.push(lower);
+        }
+    }
+    let trimmed = out.trim();
+    let trimmed = trimmed.trim_end_matches(['?', '。', '.', '!', ',', ';', ':']);
+    trimmed.trim().to_string()
 }
 
 fn is_unicode_letter_or_digit(ch: char) -> bool {
@@ -182,5 +363,58 @@ mod tests {
     fn evaluate_arithmetic_returns_localizable_errors() {
         assert!(evaluate_arithmetic_expression("1 / 0").is_err());
         assert!(evaluate_arithmetic_expression("").is_err());
+    }
+
+    #[test]
+    fn stable_id_hashes_utf8_bytes_for_non_ascii_prompts() {
+        assert_eq!(
+            stable_id("unknown_opener", "неведомослово"),
+            "unknown_opener_3f0af77ee5085861"
+        );
+    }
+
+    #[test]
+    fn unknown_opener_selection_matches_native_solver_for_russian() {
+        assert_eq!(
+            select_unknown_opener("неведомослово", "ru"),
+            "Я ещё не научился отвечать на это."
+        );
+    }
+
+    #[test]
+    fn route_parts_match_keywords_tokens_and_combos() {
+        let keywords = vec!["hello".to_string()];
+        let phrases = vec!["what s your name".to_string()];
+        let tokens = vec!["greet".to_string()];
+        let combos = vec![vec!["who".to_string(), "you".to_string()]];
+
+        assert!(matches_intent_route_parts(
+            "hello", "hello", &keywords, &phrases, &tokens, &combos
+        ));
+        assert!(matches_intent_route_parts(
+            "please greet",
+            "please greet",
+            &keywords,
+            &phrases,
+            &tokens,
+            &combos
+        ));
+        assert!(matches_intent_route_parts(
+            "who are you",
+            "who are you",
+            &keywords,
+            &phrases,
+            &tokens,
+            &combos
+        ));
+        assert!(!matches_intent_route_parts(
+            "world", "world", &keywords, &phrases, &tokens, &combos
+        ));
+    }
+
+    #[test]
+    fn route_payload_parser_preserves_raw_phrase_compatibility() {
+        let payload = "what s your name\nWhat's your name?\nP\twhat's your name";
+        assert!(matches_intent_route_payload(payload));
     }
 }

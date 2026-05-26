@@ -22,7 +22,8 @@ mod web_engine_core;
 mod web_search_core;
 
 use web_engine_core::{
-    detect_language, evaluate_arithmetic_expression, normalize_prompt, Language,
+    detect_language, evaluate_arithmetic_expression, matches_intent_route_payload,
+    normalize_prompt, select_unknown_opener, stable_id, Language,
 };
 use web_search_core::{
     build_request_evidence, default_search_plan_ids, parse_rrf_input, reciprocal_rank_fusion,
@@ -422,6 +423,63 @@ pub extern "C" fn engine_evaluate_arithmetic(input_length: usize) -> usize {
             write_output(buffer.as_bytes())
         }
     }
+}
+
+/// Build a stable FNV-1a id. `INPUT` contains `prefix\ntext`; `OUTPUT`
+/// receives `prefix_<hash>`.
+#[no_mangle]
+pub extern "C" fn engine_stable_id(input_length: usize) -> usize {
+    reset_bump();
+    let bytes = unsafe {
+        core::slice::from_raw_parts(
+            core::ptr::addr_of!(INPUT).cast::<u8>(),
+            min(input_length, INPUT_CAPACITY),
+        )
+    };
+    let Ok(text) = core::str::from_utf8(bytes) else {
+        return 0;
+    };
+    let mut parts = text.splitn(2, '\n');
+    let prefix = parts.next().unwrap_or("");
+    let value = parts.next().unwrap_or("");
+    let id = stable_id(prefix, value);
+    write_output(id.as_bytes())
+}
+
+/// Select the deterministic unknown-answer opener. `INPUT` contains
+/// `language\nprompt`; `OUTPUT` receives the opener text.
+#[no_mangle]
+pub extern "C" fn engine_select_unknown_opener(input_length: usize) -> usize {
+    reset_bump();
+    let bytes = unsafe {
+        core::slice::from_raw_parts(
+            core::ptr::addr_of!(INPUT).cast::<u8>(),
+            min(input_length, INPUT_CAPACITY),
+        )
+    };
+    let Ok(text) = core::str::from_utf8(bytes) else {
+        return 0;
+    };
+    let mut parts = text.splitn(2, '\n');
+    let language = parts.next().unwrap_or("");
+    let prompt = parts.next().unwrap_or("");
+    write_output(select_unknown_opener(prompt, language).as_bytes())
+}
+
+/// Return 1 when the serialized route payload matches, else 0.
+#[no_mangle]
+pub extern "C" fn engine_match_intent_route(input_length: usize) -> u32 {
+    reset_bump();
+    let bytes = unsafe {
+        core::slice::from_raw_parts(
+            core::ptr::addr_of!(INPUT).cast::<u8>(),
+            min(input_length, INPUT_CAPACITY),
+        )
+    };
+    let Ok(text) = core::str::from_utf8(bytes) else {
+        return 0;
+    };
+    u32::from(matches_intent_route_payload(text))
 }
 
 /// Write the registry as `id\tlabel\tcategory\tcors_readable\tdefault\n…`.
