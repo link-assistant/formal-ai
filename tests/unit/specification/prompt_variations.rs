@@ -360,66 +360,70 @@ fn capabilities_matrix_never_falls_through_to_unknown() {
 }
 
 // ---------------------------------------------------------------------------
-// Hello-world code-generation matrix.
+// Parametric write-program code-generation matrix.
 //
-// The hello-world seeds cover Rust, Python, JavaScript, Go, C, and
-// TypeScript. We re-pin them here as a single block so adding new
-// languages or aliases only requires extending the tuples.
+// The hello-world templates cover Rust, Python, JavaScript, Go, C, and
+// TypeScript through one `write_program(language, task)` intent. We re-pin
+// them here as a single block so adding new languages or aliases only
+// requires extending the tuples.
 // ---------------------------------------------------------------------------
 
-const HELLO_WORLD_VARIATIONS: &[(&str, &str)] = &[
+const HELLO_WORLD_VARIATIONS: &[(&str, &str, &str)] = &[
     // English natural language.
-    ("Write me hello world program in Rust", "hello_world_rust"),
-    ("Write hello world in Python", "hello_world_python"),
+    ("Write me hello world program in Rust", "rust", "```rust"),
+    ("Write hello world in Python", "python", "```python"),
     (
         "Show me hello world in JavaScript",
-        "hello_world_javascript",
+        "javascript",
+        "```javascript",
     ),
-    ("hello world in Go", "hello_world_go"),
-    ("hello world in C", "hello_world_c"),
-    ("hello world in TypeScript", "hello_world_typescript"),
+    ("hello world in Go", "go", "```go"),
+    ("hello world in C", "c", "```c"),
+    ("hello world in TypeScript", "typescript", "```typescript"),
     // English-language aliases.
-    ("hello world in rs", "hello_world_rust"),
-    ("hello world in node", "hello_world_javascript"),
-    ("hello world in py", "hello_world_python"),
-    ("hello world in golang", "hello_world_go"),
+    ("hello world in rs", "rust", "```rust"),
+    ("hello world in node", "javascript", "```javascript"),
+    ("hello world in py", "python", "```python"),
+    ("hello world in golang", "go", "```go"),
     // Russian transliteration (issue #53).
-    ("Напиши хелло ворлд на питоне", "hello_world_python"),
-    ("хелло ворлд на джаваскрипт", "hello_world_javascript"),
-    ("хелло ворлд на расте", "hello_world_rust"),
+    ("Напиши хелло ворлд на питоне", "python", "```python"),
+    ("хелло ворлд на джаваскрипт", "javascript", "```javascript"),
+    ("хелло ворлд на расте", "rust", "```rust"),
 ];
 
 #[test]
-fn hello_world_matrix_routes_to_per_language_intent() {
-    for (prompt, expected_intent) in HELLO_WORLD_VARIATIONS {
+fn hello_world_matrix_routes_to_parametric_write_program_intent() {
+    for (prompt, expected_language, _expected_fence) in HELLO_WORLD_VARIATIONS {
         let response = answer(prompt);
         assert_eq!(
-            response.intent, *expected_intent,
-            "prompt {prompt:?} should yield intent {expected_intent:?}, got intent={} answer={}",
+            response.intent, "write_program",
+            "prompt {prompt:?} should yield write_program, got intent={} answer={}",
             response.intent, response.answer,
+        );
+        assert!(
+            response
+                .links_notation
+                .contains(&format!("program_parameter:language {expected_language}")),
+            "prompt {prompt:?} should include language={expected_language}, got: {}",
+            response.links_notation
+        );
+        assert!(
+            response
+                .links_notation
+                .contains("program_parameter:task hello_world"),
+            "prompt {prompt:?} should include task=hello_world, got: {}",
+            response.links_notation
         );
     }
 }
 
 #[test]
 fn hello_world_matrix_emits_a_code_block_per_language() {
-    let fence_for_intent = |intent: &str| -> &'static str {
-        match intent {
-            "hello_world_rust" => "```rust",
-            "hello_world_python" => "```python",
-            "hello_world_javascript" => "```javascript",
-            "hello_world_go" => "```go",
-            "hello_world_c" => "```c",
-            "hello_world_typescript" => "```typescript",
-            other => panic!("unexpected hello-world intent {other:?}"),
-        }
-    };
-    for (prompt, expected_intent) in HELLO_WORLD_VARIATIONS {
+    for (prompt, _expected_language, fence) in HELLO_WORLD_VARIATIONS {
         let response = answer(prompt);
-        let fence = fence_for_intent(expected_intent);
         assert!(
             response.answer.contains(fence),
-            "prompt {prompt:?} (intent {expected_intent}) should include {fence} fence, got: {}",
+            "prompt {prompt:?} should include {fence} fence, got: {}",
             response.answer,
         );
     }

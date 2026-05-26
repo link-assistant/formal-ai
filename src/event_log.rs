@@ -271,6 +271,17 @@ pub fn build_evidence_links(prompt: &str, log: &EventLog, response_link: &str) -
             "calculation:engine" => format!("calculation:engine:{}", event.payload),
             "calculation:lino" => format!("calculation:lino:{}", event.payload),
             "intent" => format!("intent:{}", event.payload),
+            "program_parameter:language" => {
+                format!("program_parameter:language:{}", event.payload)
+            }
+            "program_parameter:task" => format!("program_parameter:task:{}", event.payload),
+            "program_parameters" => {
+                format!(
+                    "program_parameters:{}",
+                    event.payload.replace([' ', ','], ":")
+                )
+            }
+            "legacy_intent" => format!("legacy_intent:{}", event.payload),
             "response" => event.payload.clone(),
             "agent_mode:opted_in" => format!("agent_mode:opted_in:{}", event.id),
             "agent_mode:active" => format!("agent_mode:active:{}", event.id),

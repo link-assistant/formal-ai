@@ -630,15 +630,19 @@ impl UniversalSolver {
         let intent = language_aware_intent_for(&rule, language);
         log.append("intent", intent.clone());
 
-        if let SelectedRule::HelloWorld(program) = &rule {
+        if let SelectedRule::WriteProgram(spec) = &rule {
             log.append(
                 "execution_status",
-                program.execution.status.label().to_owned(),
+                spec.language.execution.status.label().to_owned(),
             );
             log.append(
                 "execution_environment",
-                program.execution.environment.to_owned(),
+                spec.language.execution.environment.to_owned(),
             );
+            log.append("program_parameter:language", spec.language.slug.to_owned());
+            log.append("program_parameter:task", spec.task.slug.to_owned());
+            log.append("program_parameters", spec.parameter_summary());
+            log.append("legacy_intent", spec.legacy_intent());
         }
 
         record_candidates(&mut log, prompt, &intent);

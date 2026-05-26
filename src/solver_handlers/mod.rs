@@ -680,25 +680,28 @@ pub fn try_write_script(
     let program = hello_world_program_by_alias(normalized)?;
     let body = format!(
         "Here is a minimal {} script:\n\n```{}\n{}\n```\n\n{}",
-        program.language,
-        program.code_fence,
-        program.code,
+        program.language.name,
+        program.language.code_fence,
+        program.template.code,
         format_write_script_execution(program)
     );
-    let intent = format!("write_script_{}", program.slug);
+    let intent = format!("write_script_{}", program.language.slug);
     log.append(
         "execution_status",
-        program.execution.status.label().to_owned(),
+        program.language.execution.status.label().to_owned(),
     );
     log.append(
         "execution_environment",
-        program.execution.environment.to_owned(),
+        program.language.execution.environment.to_owned(),
     );
     Some(finalize_simple(
         prompt,
         log,
         &intent,
-        &format!("response:hello_world:{}", program.slug),
+        &format!(
+            "response:write_program:hello_world:{}",
+            program.language.slug
+        ),
         &body,
         1.0,
     ))

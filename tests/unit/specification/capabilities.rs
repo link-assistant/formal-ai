@@ -130,25 +130,25 @@ const FEATURE_CAPABILITY_LANGUAGE_CASES: &[FeatureCapabilityLanguageCase] = &[
     },
     FeatureCapabilityLanguageCase {
         feature: "diagnostics",
-        language: "en",
+        language: "en", // English write_program capability coverage
         prompt: "Do you support diagnostics?",
         expected_fragment: "diagnostic trace",
     },
     FeatureCapabilityLanguageCase {
         feature: "diagnostics",
-        language: "ru",
+        language: "ru", // Russian write_program capability coverage
         prompt: "У тебя есть диагностика?",
         expected_fragment: "диагностика",
     },
     FeatureCapabilityLanguageCase {
         feature: "diagnostics",
-        language: "hi",
+        language: "hi", // Hindi write_program capability coverage
         prompt: "क्या diagnostics उपलब्ध है?",
         expected_fragment: "diagnostic trace",
     },
     FeatureCapabilityLanguageCase {
         feature: "diagnostics",
-        language: "zh",
+        language: "zh", // Chinese write_program capability coverage
         prompt: "诊断可用吗？",
         expected_fragment: "诊断 trace",
     },
@@ -273,28 +273,28 @@ const FEATURE_CAPABILITY_LANGUAGE_CASES: &[FeatureCapabilityLanguageCase] = &[
         expected_fragment: "问候",
     },
     FeatureCapabilityLanguageCase {
-        feature: "hello_world",
-        language: "en",
+        feature: "write_program",
+        language: "en", // English write_program capability coverage
         prompt: "Do you support hello world code generation?",
-        expected_fragment: "Hello World code generation",
+        expected_fragment: "program template generation",
     },
     FeatureCapabilityLanguageCase {
-        feature: "hello_world",
-        language: "ru",
+        feature: "write_program",
+        language: "ru", // Russian write_program capability coverage
         prompt: "Ты можешь написать hello world программу?",
-        expected_fragment: "генерация Hello World",
+        expected_fragment: "генерация программ",
     },
     FeatureCapabilityLanguageCase {
-        feature: "hello_world",
-        language: "hi",
+        feature: "write_program",
+        language: "hi", // Hindi write_program capability coverage
         prompt: "क्या प्रोग्राम उपलब्ध है?",
-        expected_fragment: "Hello World code generation",
+        expected_fragment: "program template generation",
     },
     FeatureCapabilityLanguageCase {
-        feature: "hello_world",
-        language: "zh",
+        feature: "write_program",
+        language: "zh", // Chinese write_program capability coverage
         prompt: "支持代码生成吗？",
-        expected_fragment: "Hello World 代码生成",
+        expected_fragment: "程序生成",
     },
     FeatureCapabilityLanguageCase {
         feature: "concept_lookup",

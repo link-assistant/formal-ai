@@ -6,7 +6,9 @@
 //! so every request walks the same 11-step loop documented in `VISION.md`.
 
 pub(crate) use crate::engine_hello_world::{
-    ExecutionStatus, HelloWorldProgram, ProgramExecution, HELLO_WORLD_PROGRAMS,
+    program_language_by_alias, program_spec, supported_program_languages, supported_program_tasks,
+    ExecutionStatus, ProgramExecution, ProgramSpec, PROGRAM_LANGUAGES, PROGRAM_TEMPLATES,
+    WRITE_PROGRAM_INTENT,
 };
 
 use std::sync::OnceLock;
@@ -247,7 +249,7 @@ pub fn knowledge_links_notation() -> String {
                         "untyped indented Links Notation via lino-objects-codec format helpers",
                     ),
                 ),
-                ("rule_count", (HELLO_WORLD_PROGRAMS.len() + 6).to_string()),
+                ("rule_count", (1 + 6).to_string()),
             ],
         ),
         format_concept_index_record(),
@@ -313,11 +315,7 @@ pub fn knowledge_links_notation() -> String {
         ),
     ]);
 
-    records.extend(
-        HELLO_WORLD_PROGRAMS
-            .iter()
-            .map(format_hello_world_rule_record),
-    );
+    records.push(format_write_program_rule_record());
     records.push(format_lino_record(
         "rule_unknown",
         &[
@@ -348,7 +346,7 @@ fn format_concept_index_record() -> String {
             ),
             ("identity", String::from("intent: identity")),
             ("assistant_name", String::from("intent: assistant_name")),
-            ("hello_world", String::from("intent: hello_world")),
+            ("write_program", String::from("intent: write_program")),
             ("translation", String::from("intent: translation")),
             ("algorithm", String::from("intent: algorithm")),
             ("meta_explanation", String::from("intent: meta_explanation")),
@@ -565,24 +563,25 @@ pub fn knowledge_graph() -> KnowledgeGraph {
             role: String::from("response_link"),
         },
     ];
-    for program in HELLO_WORLD_PROGRAMS {
-        let rule_id = format!("rule_hello_world_{}", program.slug);
-        nodes.push(GraphNode {
-            id: rule_id.clone(),
-            label: format!("Hello-world rule ({})", program.language),
-            links_notation: format!("{rule_id} language={}", program.language),
-        });
-        edges.push(GraphEdge {
-            from: String::from("formal_ai_knowledge"),
-            to: rule_id.clone(),
-            role: String::from("contains"),
-        });
-        edges.push(GraphEdge {
-            from: rule_id,
-            to: String::from(program.response_link),
-            role: String::from("response_link"),
-        });
-    }
+    nodes.push(GraphNode {
+        id: String::from("rule_write_program"),
+        label: String::from("Write-program rule"),
+        links_notation: format!(
+            "rule_write_program parameters=language,task languages={} tasks={}",
+            supported_program_languages(),
+            supported_program_tasks()
+        ),
+    });
+    edges.push(GraphEdge {
+        from: String::from("formal_ai_knowledge"),
+        to: String::from("rule_write_program"),
+        role: String::from("contains"),
+    });
+    edges.push(GraphEdge {
+        from: String::from("rule_write_program"),
+        to: String::from("response:write_program"),
+        role: String::from("response_link"),
+    });
     let (package_nodes, package_edges) =
         crate::associative_package::default_package_graph_projection();
     nodes.extend(package_nodes);
@@ -621,7 +620,11 @@ pub(crate) enum SelectedRule {
     CourtesyResponse,
     Identity,
     AssistantName,
-    HelloWorld(&'static HelloWorldProgram),
+    WriteProgram(ProgramSpec),
+    UnsupportedWriteProgram {
+        task: Option<String>,
+        language: Option<String>,
+    },
     Unknown,
 }
 
@@ -634,21 +637,25 @@ impl SelectedRule {
             Self::CourtesyResponse => String::from("courtesy_response"),
             Self::Identity => String::from("identity"),
             Self::AssistantName => String::from("assistant_name"),
-            Self::HelloWorld(program) => format!("hello_world_{}", program.slug),
+            Self::WriteProgram(_) => String::from(WRITE_PROGRAM_INTENT),
+            Self::UnsupportedWriteProgram { .. } => String::from("write_program_unsupported"),
             Self::Unknown => String::from("unknown"),
         }
     }
 
-    pub(crate) const fn response_link(&self) -> &'static str {
+    pub(crate) fn response_link(&self) -> String {
         match self {
-            Self::Greeting => "response:greeting",
-            Self::Farewell => "response:farewell",
-            Self::TestStatus => "response:test_status",
-            Self::CourtesyResponse => "response:courtesy_response",
-            Self::Identity => "response:identity",
-            Self::AssistantName => "response:assistant_name",
-            Self::HelloWorld(program) => program.response_link,
-            Self::Unknown => "response:unknown",
+            Self::Greeting => String::from("response:greeting"),
+            Self::Farewell => String::from("response:farewell"),
+            Self::TestStatus => String::from("response:test_status"),
+            Self::CourtesyResponse => String::from("response:courtesy_response"),
+            Self::Identity => String::from("response:identity"),
+            Self::AssistantName => String::from("response:assistant_name"),
+            Self::WriteProgram(spec) => spec.response_link(),
+            Self::UnsupportedWriteProgram { .. } => {
+                String::from("response:write_program:unsupported")
+            }
+            Self::Unknown => String::from("response:unknown"),
         }
     }
 
@@ -660,7 +667,10 @@ impl SelectedRule {
             Self::CourtesyResponse => String::from(courtesy_response_answer()),
             Self::Identity => String::from(identity_answer()),
             Self::AssistantName => String::from(assistant_name_answer()),
-            Self::HelloWorld(program) => hello_world_answer(program),
+            Self::WriteProgram(spec) => write_program_answer(*spec),
+            Self::UnsupportedWriteProgram { task, language } => {
+                unsupported_write_program_answer(task.as_deref(), language.as_deref())
+            }
             Self::Unknown => String::from(unknown_answer()),
         }
     }
@@ -714,30 +724,13 @@ pub(crate) fn language_aware_answer_for(
 }
 
 pub(crate) fn response_link_for_intent(rule: &SelectedRule, _intent: &str) -> String {
-    String::from(rule.response_link())
+    rule.response_link()
 }
 
-/// Match a program from the catalog by language alias or Russian colloquial name.
-pub(crate) fn hello_world_program_by_alias(normalized: &str) -> Option<&'static HelloWorldProgram> {
-    const RU: &[(&str, &str)] = &[
-        ("питоне", "python"),
-        ("питон", "python"),
-        ("расте", "rust"),
-        ("раст", "rust"),
-        ("джаваскрипт", "javascript"),
-        ("тайпскрипт", "typescript"),
-        ("джава", "java"),
-        ("руби", "ruby"),
-        ("го ", "go"),
-    ];
-    for (ru, slug) in RU {
-        if normalized.contains(ru) {
-            return HELLO_WORLD_PROGRAMS.iter().find(|p| p.slug == *slug);
-        }
-    }
-    HELLO_WORLD_PROGRAMS
-        .iter()
-        .find(|p| p.aliases.iter().any(|a| normalized.contains(a)))
+/// Match a default hello-world program from the catalog by language alias.
+pub(crate) fn hello_world_program_by_alias(normalized: &str) -> Option<ProgramSpec> {
+    let language = program_language_by_alias(normalized)?;
+    program_spec("hello_world", language.slug)
 }
 
 pub(crate) fn normalize_prompt(prompt: &str) -> String {
@@ -807,48 +800,65 @@ pub(crate) fn answer_links_notation(
     )
 }
 
-fn format_hello_world_rule_record(program: &HelloWorldProgram) -> String {
-    let answer = hello_world_answer(program);
+fn format_write_program_rule_record() -> String {
+    let sample = program_spec("hello_world", "rust").map_or_else(
+        || String::from("Write-program template catalog is unavailable."),
+        write_program_answer,
+    );
     format_lino_record(
-        &format!("rule_hello_world_{}", program.slug),
+        "rule_write_program",
         &[
-            ("intent", format!("hello_world_{}", program.slug)),
-            ("language", String::from(program.language)),
-            ("aliases", program.aliases.join(", ")),
-            ("response_link", String::from(program.response_link)),
-            ("answer", answer),
-            (
-                "execution_status",
-                String::from(program.execution.status.label()),
-            ),
-            (
-                "execution_environment",
-                String::from(program.execution.environment),
-            ),
-            ("execution_output", String::from(program.execution.output)),
+            ("intent", String::from(WRITE_PROGRAM_INTENT)),
+            ("parameters", String::from("language, task")),
+            ("languages", supported_program_languages()),
+            ("tasks", supported_program_tasks()),
+            ("template_count", PROGRAM_TEMPLATES.len().to_string()),
+            ("response_link", String::from("response:write_program")),
+            ("answer", sample),
             (
                 "examples",
-                format!(
-                    "Write me hello world program in {}; hello world in {}",
-                    program.language, program.language
+                String::from(
+                    "Write me hello world program in Rust; Write a Python program that counts to three",
                 ),
             ),
-            ("source", String::from(program.source)),
+            ("source", program_template_sources()),
         ],
     )
 }
 
-fn hello_world_answer(program: &HelloWorldProgram) -> String {
+fn program_template_sources() -> String {
+    let mut sources = Vec::new();
+    for language in PROGRAM_LANGUAGES {
+        if !sources.contains(&language.source) {
+            sources.push(language.source);
+        }
+    }
+    sources.join(", ")
+}
+
+fn write_program_answer(spec: ProgramSpec) -> String {
     format!(
-        "Here is a minimal {} hello world program:\n\n```{}\n{}\n```\n\n{}",
-        program.language,
-        program.code_fence,
-        program.code,
-        execution_report(&program.execution)
+        "Here is a minimal {} {} program:\n\n```{}\n{}\n```\n\n{}",
+        spec.language.name,
+        spec.task.label,
+        spec.language.code_fence,
+        spec.template.code,
+        execution_report(&spec.language.execution, spec.task.output)
     )
 }
 
-fn execution_report(execution: &ProgramExecution) -> String {
+fn unsupported_write_program_answer(task: Option<&str>, language: Option<&str>) -> String {
+    let task = task.unwrap_or("missing");
+    let language = language.unwrap_or("missing");
+    format!(
+        "I can route `write_program(language, task)`, but I do not have a template for \
+         language `{language}` and task `{task}`. Supported languages: {}. Supported tasks: {}.",
+        supported_program_languages(),
+        supported_program_tasks()
+    )
+}
+
+fn execution_report(execution: &ProgramExecution, output: &str) -> String {
     let command_lines = execution_command_lines(execution);
     let output_label = if matches!(execution.status, ExecutionStatus::Verified) {
         "Output"
@@ -862,7 +872,7 @@ fn execution_report(execution: &ProgramExecution) -> String {
         execution.environment,
         command_lines,
         output_label,
-        execution.output,
+        output,
         execution.notes
     )
 }

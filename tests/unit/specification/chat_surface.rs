@@ -750,7 +750,7 @@ fn behavior_rule_listing_renders_when_then_statements_grouped_by_topic() {
         "# Farewells",
         "# Identity",
         "# Capabilities",
-        "# Hello-world programs",
+        "# Program templates",
         "# Unknown fallback",
     ] {
         assert!(

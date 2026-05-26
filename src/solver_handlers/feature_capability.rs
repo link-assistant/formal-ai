@@ -402,11 +402,11 @@ const FEATURE_CAPABILITIES: &[FeatureCapability] = &[
         examples: text("Hi", "Привет", "नमस्ते", "你好"),
     },
     FeatureCapability {
-        slug: "hello_world",
+        slug: "write_program",
         state: FeatureState::Always,
-        labels: text("Hello World code generation", "генерация Hello World", "Hello World code generation", "Hello World 代码生成"),
-        aliases: text("hello world|write code|generate code|program", "hello world|код|программу|программа", "hello world|code|program|प्रोग्राम", "hello world|代码|程序"),
-        examples: text("Write hello world in Rust", "Напиши hello world на Rust", "Write hello world in Rust", "Write hello world in Rust"),
+        labels: text("program template generation", "генерация программ", "program template generation", "程序生成"),
+        aliases: text("hello world|write code|generate code|write program|program", "hello world|код|программу|программа", "hello world|code|program|प्रोग्राम", "hello world|代码|程序"),
+        examples: text("Write a Python program that counts to three", "Напиши hello world на Rust", "Write a Python program that counts to three", "Write a Python program that counts to three"),
     },
     FeatureCapability {
         slug: "concept_lookup",
