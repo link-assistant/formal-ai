@@ -12,7 +12,7 @@ fn answer(prompt: &str) -> SymbolicAnswer {
 }
 
 // ---------------------------------------------------------------------------
-// Active expectations: implementation is chat-only and never executes user code.
+// Active expectations: chat mode stays bounded; agent execution is explicit.
 // ---------------------------------------------------------------------------
 
 #[test]
@@ -59,6 +59,28 @@ fn agent_mode_opt_in_is_explicit_and_logged() {
 }
 
 #[test]
+fn agent_mode_opt_in_is_logged_across_supported_languages() {
+    let prompts = [
+        "[agent] English request to run in agent mode",
+        "[agent] Русский запрос на agent mode",
+        "[agent] हिंदी अनुरोध agent mode के लिए",
+        "[agent] 中文 agent mode 请求",
+    ];
+
+    for prompt in prompts {
+        let response = answer(prompt);
+
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link.starts_with("agent_mode:opted_in")),
+            "agent mode opt-in must be logged for prompt: {prompt}"
+        );
+    }
+}
+
+#[test]
 fn agent_execution_runs_in_isolated_environment() {
     let response = answer("[agent] Run my Python script and report the output");
     let lower = response.answer.to_lowercase();
@@ -84,6 +106,39 @@ fn agent_actions_are_appended_to_visible_log() {
             >= 1,
         "every agent action must produce at least one action_log link"
     );
+}
+
+#[test]
+fn agent_mode_creates_modifies_deletes_files_and_runs_terminal_command() {
+    let response = answer(
+        "[agent] In the isolated workspace, create file report.txt with `alpha`, \
+         modify report.txt to `beta`, create file scratch.tmp with `remove me`, \
+         delete scratch.tmp, and run command `cat report.txt`",
+    );
+
+    assert_eq!(response.intent, "agent_workspace_task");
+    assert!(response.answer.contains("Workspace isolation:"));
+    assert!(response.answer.contains("created report.txt"));
+    assert!(response.answer.contains("modified report.txt"));
+    assert!(response.answer.contains("deleted scratch.tmp"));
+    assert!(response.answer.contains("Command: `cat report.txt`"));
+    assert!(response.answer.contains("Output:\n```text\nbeta"));
+    assert!(response
+        .evidence_links
+        .iter()
+        .any(|link| link.starts_with("action_log:create_file:")));
+    assert!(response
+        .evidence_links
+        .iter()
+        .any(|link| link.starts_with("action_log:modify_file:")));
+    assert!(response
+        .evidence_links
+        .iter()
+        .any(|link| link.starts_with("action_log:delete_file:")));
+    assert!(response
+        .evidence_links
+        .iter()
+        .any(|link| link.starts_with("action_log:run_command:")));
 }
 
 #[test]
