@@ -167,6 +167,56 @@ fn russian_antiregime_question_returns_seeded_concept_lookup() {
     );
 }
 
+#[test]
+fn false_totality_questions_resolve_across_supported_languages() {
+    let cases = [
+        (
+            "english",
+            "What is false totality?",
+            "False totality",
+            "language:en",
+        ),
+        (
+            "russian",
+            "Что такое ложная тотальность?",
+            "Ложная тотальность",
+            "language:ru",
+        ),
+        ("hindi", "झूठी समग्रता क्या है", "झूठी समग्रता", "language:hi"),
+        ("chinese", "虚假总体性是什么", "虚假总体性", "language:zh"),
+    ];
+
+    for (language_name, prompt, expected_term, language_link) in cases {
+        let response = answer(prompt);
+        assert_eq!(
+            response.intent, "concept_lookup",
+            "{language_name} prompt should resolve from the false totality seed, got {} -> {}",
+            response.intent, response.answer
+        );
+        assert!(
+            response.answer.contains(expected_term),
+            "{language_name} answer should use the localized term {expected_term:?}, got: {}",
+            response.answer
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == "concept_lookup:hit:concept_false_totality"),
+            "{language_name} answer should cite the false totality seed record, got {:?}",
+            response.evidence_links
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == language_link),
+            "{language_name} answer should declare {language_link}, got {:?}",
+            response.evidence_links
+        );
+    }
+}
+
 // Issue #161: graph prompts should be answered from the local concept seed in
 // every supported language. With associative project promotion enabled by
 // default, each localized answer explains graphs through the Link Foundation
