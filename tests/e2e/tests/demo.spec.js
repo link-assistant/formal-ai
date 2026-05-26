@@ -286,6 +286,15 @@ test.describe('formal-ai demo UI', () => {
     lastMsg = await sendPrompt(page, 'What is your name?');
     await expect(lastMsg).toContainText('Vega');
     await expect(lastMsg).not.toContainText(UNKNOWN_ANSWER_MARKER);
+
+    lastMsg = await sendPrompt(page, 'Теперь тебя зовут Алексей');
+    await expect(lastMsg).toContainText('Assistant name');
+    await expect(lastMsg).toContainText('Алексей');
+    await expect(lastMsg).not.toContainText(UNKNOWN_ANSWER_MARKER);
+
+    lastMsg = await sendPrompt(page, 'Как тебя зовут?');
+    await expect(lastMsg).toContainText('Алексей');
+    await expect(lastMsg).not.toContainText(UNKNOWN_ANSWER_MARKER);
   });
 
   test('polite small-talk follow-up does not fall through to unknown', async ({ page }) => {
