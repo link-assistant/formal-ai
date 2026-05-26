@@ -1,5 +1,19 @@
 [
   {
+    "number": 277,
+    "title": "fix: handle Russian usefulness capability prompt",
+    "mergedAt": "2026-05-26T06:32:04Z",
+    "headRefName": "issue-272-faddf6c692f2",
+    "url": "https://github.com/link-assistant/formal-ai/pull/277",
+    "closingIssuesReferences": [
+      {
+        "number": 272,
+        "title": "",
+        "url": "https://github.com/link-assistant/formal-ai/issues/272"
+      }
+    ]
+  },
+  {
     "number": 276,
     "title": "fix: recognize Russian courtesy acknowledgement",
     "mergedAt": "2026-05-26T06:00:43Z",
@@ -8,6 +22,7 @@
     "closingIssuesReferences": [
       {
         "number": 262,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/262"
       }
     ]
@@ -21,6 +36,7 @@
     "closingIssuesReferences": [
       {
         "number": 259,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/259"
       }
     ]
@@ -34,6 +50,7 @@
     "closingIssuesReferences": [
       {
         "number": 258,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/258"
       }
     ]
@@ -47,6 +64,7 @@
     "closingIssuesReferences": [
       {
         "number": 257,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/257"
       }
     ]
@@ -60,6 +78,7 @@
     "closingIssuesReferences": [
       {
         "number": 256,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/256"
       }
     ]
@@ -73,6 +92,7 @@
     "closingIssuesReferences": [
       {
         "number": 255,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/255"
       }
     ]
@@ -86,6 +106,7 @@
     "closingIssuesReferences": [
       {
         "number": 254,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/254"
       }
     ]
@@ -99,6 +120,7 @@
     "closingIssuesReferences": [
       {
         "number": 253,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/253"
       }
     ]
@@ -112,6 +134,7 @@
     "closingIssuesReferences": [
       {
         "number": 252,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/252"
       }
     ]
@@ -125,6 +148,7 @@
     "closingIssuesReferences": [
       {
         "number": 251,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/251"
       }
     ]
@@ -138,6 +162,7 @@
     "closingIssuesReferences": [
       {
         "number": 250,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/250"
       }
     ]
@@ -151,6 +176,7 @@
     "closingIssuesReferences": [
       {
         "number": 249,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/249"
       }
     ]
@@ -164,6 +190,7 @@
     "closingIssuesReferences": [
       {
         "number": 248,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/248"
       }
     ]
@@ -177,6 +204,7 @@
     "closingIssuesReferences": [
       {
         "number": 247,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/247"
       }
     ]
@@ -190,6 +218,7 @@
     "closingIssuesReferences": [
       {
         "number": 246,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/246"
       }
     ]
@@ -203,6 +232,7 @@
     "closingIssuesReferences": [
       {
         "number": 242,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/242"
       }
     ]
@@ -216,6 +246,7 @@
     "closingIssuesReferences": [
       {
         "number": 196,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/196"
       }
     ]
@@ -229,6 +260,7 @@
     "closingIssuesReferences": [
       {
         "number": 209,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/209"
       }
     ]
@@ -242,6 +274,7 @@
     "closingIssuesReferences": [
       {
         "number": 223,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/223"
       }
     ]
@@ -255,6 +288,7 @@
     "closingIssuesReferences": [
       {
         "number": 135,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/135"
       }
     ]
@@ -268,6 +302,7 @@
     "closingIssuesReferences": [
       {
         "number": 156,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/156"
       }
     ]
@@ -281,6 +316,7 @@
     "closingIssuesReferences": [
       {
         "number": 157,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/157"
       }
     ]
@@ -294,38 +330,47 @@
     "closingIssuesReferences": [
       {
         "number": 137,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/137"
       },
       {
         "number": 139,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/139"
       },
       {
         "number": 141,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/141"
       },
       {
         "number": 142,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/142"
       },
       {
         "number": 146,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/146"
       },
       {
         "number": 147,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/147"
       },
       {
         "number": 148,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/148"
       },
       {
         "number": 155,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/155"
       },
       {
         "number": 237,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/237"
       }
     ]
@@ -339,6 +384,7 @@
     "closingIssuesReferences": [
       {
         "number": 232,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/232"
       }
     ]
@@ -352,6 +398,7 @@
     "closingIssuesReferences": [
       {
         "number": 230,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/230"
       }
     ]
@@ -365,6 +412,7 @@
     "closingIssuesReferences": [
       {
         "number": 228,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/228"
       }
     ]
@@ -378,6 +426,7 @@
     "closingIssuesReferences": [
       {
         "number": 226,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/226"
       }
     ]
@@ -391,6 +440,7 @@
     "closingIssuesReferences": [
       {
         "number": 224,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/224"
       }
     ]
@@ -404,6 +454,7 @@
     "closingIssuesReferences": [
       {
         "number": 221,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/221"
       }
     ]
@@ -417,6 +468,7 @@
     "closingIssuesReferences": [
       {
         "number": 195,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/195"
       }
     ]
@@ -430,14 +482,17 @@
     "closingIssuesReferences": [
       {
         "number": 216,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/216"
       },
       {
         "number": 217,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/217"
       },
       {
         "number": 218,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/218"
       }
     ]
@@ -451,6 +506,7 @@
     "closingIssuesReferences": [
       {
         "number": 212,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/212"
       }
     ]
@@ -464,6 +520,7 @@
     "closingIssuesReferences": [
       {
         "number": 213,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/213"
       }
     ]
@@ -477,6 +534,7 @@
     "closingIssuesReferences": [
       {
         "number": 210,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/210"
       }
     ]
@@ -490,6 +548,7 @@
     "closingIssuesReferences": [
       {
         "number": 207,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/207"
       }
     ]
@@ -503,6 +562,7 @@
     "closingIssuesReferences": [
       {
         "number": 205,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/205"
       }
     ]
@@ -516,6 +576,7 @@
     "closingIssuesReferences": [
       {
         "number": 165,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/165"
       }
     ]
@@ -529,6 +590,7 @@
     "closingIssuesReferences": [
       {
         "number": 183,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/183"
       }
     ]
@@ -542,6 +604,7 @@
     "closingIssuesReferences": [
       {
         "number": 161,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/161"
       }
     ]
@@ -555,6 +618,7 @@
     "closingIssuesReferences": [
       {
         "number": 182,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/182"
       }
     ]
@@ -568,6 +632,7 @@
     "closingIssuesReferences": [
       {
         "number": 184,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/184"
       }
     ]
@@ -581,6 +646,7 @@
     "closingIssuesReferences": [
       {
         "number": 185,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/185"
       }
     ]
@@ -594,6 +660,7 @@
     "closingIssuesReferences": [
       {
         "number": 187,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/187"
       }
     ]
@@ -607,6 +674,7 @@
     "closingIssuesReferences": [
       {
         "number": 192,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/192"
       }
     ]
@@ -620,6 +688,7 @@
     "closingIssuesReferences": [
       {
         "number": 193,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/193"
       }
     ]
@@ -633,6 +702,7 @@
     "closingIssuesReferences": [
       {
         "number": 190,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/190"
       }
     ]
@@ -646,6 +716,7 @@
     "closingIssuesReferences": [
       {
         "number": 162,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/162"
       }
     ]
@@ -659,6 +730,7 @@
     "closingIssuesReferences": [
       {
         "number": 164,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/164"
       }
     ]
@@ -672,6 +744,7 @@
     "closingIssuesReferences": [
       {
         "number": 172,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/172"
       }
     ]
@@ -685,6 +758,7 @@
     "closingIssuesReferences": [
       {
         "number": 180,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/180"
       }
     ]
@@ -698,6 +772,7 @@
     "closingIssuesReferences": [
       {
         "number": 144,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/144"
       }
     ]
@@ -711,6 +786,7 @@
     "closingIssuesReferences": [
       {
         "number": 145,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/145"
       }
     ]
@@ -724,6 +800,7 @@
     "closingIssuesReferences": [
       {
         "number": 149,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/149"
       }
     ]
@@ -737,6 +814,7 @@
     "closingIssuesReferences": [
       {
         "number": 160,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/160"
       }
     ]
@@ -750,6 +828,7 @@
     "closingIssuesReferences": [
       {
         "number": 152,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/152"
       }
     ]
@@ -763,6 +842,7 @@
     "closingIssuesReferences": [
       {
         "number": 159,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/159"
       }
     ]
@@ -776,6 +856,7 @@
     "closingIssuesReferences": [
       {
         "number": 163,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/163"
       }
     ]
@@ -789,6 +870,7 @@
     "closingIssuesReferences": [
       {
         "number": 169,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/169"
       }
     ]
@@ -802,6 +884,7 @@
     "closingIssuesReferences": [
       {
         "number": 168,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/168"
       }
     ]
@@ -815,6 +898,7 @@
     "closingIssuesReferences": [
       {
         "number": 140,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/140"
       }
     ]
@@ -828,6 +912,7 @@
     "closingIssuesReferences": [
       {
         "number": 153,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/153"
       }
     ]
@@ -841,6 +926,7 @@
     "closingIssuesReferences": [
       {
         "number": 136,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/136"
       }
     ]
@@ -854,6 +940,7 @@
     "closingIssuesReferences": [
       {
         "number": 133,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/133"
       }
     ]
@@ -867,6 +954,7 @@
     "closingIssuesReferences": [
       {
         "number": 127,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/127"
       }
     ]
@@ -880,6 +968,7 @@
     "closingIssuesReferences": [
       {
         "number": 125,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/125"
       }
     ]
@@ -893,6 +982,7 @@
     "closingIssuesReferences": [
       {
         "number": 129,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/129"
       }
     ]
@@ -906,6 +996,7 @@
     "closingIssuesReferences": [
       {
         "number": 127,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/127"
       }
     ]
@@ -919,6 +1010,7 @@
     "closingIssuesReferences": [
       {
         "number": 125,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/125"
       }
     ]
@@ -932,6 +1024,7 @@
     "closingIssuesReferences": [
       {
         "number": 123,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/123"
       }
     ]
@@ -945,6 +1038,7 @@
     "closingIssuesReferences": [
       {
         "number": 121,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/121"
       }
     ]
@@ -958,6 +1052,7 @@
     "closingIssuesReferences": [
       {
         "number": 63,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/63"
       }
     ]
@@ -971,6 +1066,7 @@
     "closingIssuesReferences": [
       {
         "number": 80,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/80"
       }
     ]
@@ -984,6 +1080,7 @@
     "closingIssuesReferences": [
       {
         "number": 117,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/117"
       }
     ]
@@ -997,6 +1094,7 @@
     "closingIssuesReferences": [
       {
         "number": 115,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/115"
       }
     ]
@@ -1010,6 +1108,7 @@
     "closingIssuesReferences": [
       {
         "number": 107,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/107"
       }
     ]
@@ -1023,6 +1122,7 @@
     "closingIssuesReferences": [
       {
         "number": 112,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/112"
       }
     ]
@@ -1036,6 +1136,7 @@
     "closingIssuesReferences": [
       {
         "number": 110,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/110"
       }
     ]
@@ -1049,6 +1150,7 @@
     "closingIssuesReferences": [
       {
         "number": 108,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/108"
       }
     ]
@@ -1062,6 +1164,7 @@
     "closingIssuesReferences": [
       {
         "number": 105,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/105"
       }
     ]
@@ -1075,6 +1178,7 @@
     "closingIssuesReferences": [
       {
         "number": 103,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/103"
       }
     ]
@@ -1088,6 +1192,7 @@
     "closingIssuesReferences": [
       {
         "number": 82,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/82"
       }
     ]
@@ -1101,6 +1206,7 @@
     "closingIssuesReferences": [
       {
         "number": 64,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/64"
       }
     ]
@@ -1114,6 +1220,7 @@
     "closingIssuesReferences": [
       {
         "number": 93,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/93"
       }
     ]
@@ -1127,6 +1234,7 @@
     "closingIssuesReferences": [
       {
         "number": 68,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/68"
       }
     ]
@@ -1140,6 +1248,7 @@
     "closingIssuesReferences": [
       {
         "number": 81,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/81"
       }
     ]
@@ -1153,6 +1262,7 @@
     "closingIssuesReferences": [
       {
         "number": 96,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/96"
       }
     ]
@@ -1166,6 +1276,7 @@
     "closingIssuesReferences": [
       {
         "number": 94,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/94"
       }
     ]
@@ -1179,6 +1290,7 @@
     "closingIssuesReferences": [
       {
         "number": 73,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/73"
       }
     ]
@@ -1192,6 +1304,7 @@
     "closingIssuesReferences": [
       {
         "number": 65,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/65"
       }
     ]
@@ -1205,6 +1318,7 @@
     "closingIssuesReferences": [
       {
         "number": 79,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/79"
       }
     ]
@@ -1218,6 +1332,7 @@
     "closingIssuesReferences": [
       {
         "number": 67,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/67"
       }
     ]
@@ -1231,6 +1346,7 @@
     "closingIssuesReferences": [
       {
         "number": 71,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/71"
       }
     ]
@@ -1244,6 +1360,7 @@
     "closingIssuesReferences": [
       {
         "number": 78,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/78"
       }
     ]
@@ -1257,6 +1374,7 @@
     "closingIssuesReferences": [
       {
         "number": 84,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/84"
       }
     ]
@@ -1270,6 +1388,7 @@
     "closingIssuesReferences": [
       {
         "number": 84,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/84"
       }
     ]
@@ -1283,6 +1402,7 @@
     "closingIssuesReferences": [
       {
         "number": 66,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/66"
       }
     ]
@@ -1296,6 +1416,7 @@
     "closingIssuesReferences": [
       {
         "number": 72,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/72"
       }
     ]
@@ -1309,6 +1430,7 @@
     "closingIssuesReferences": [
       {
         "number": 39,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/39"
       }
     ]
@@ -1322,6 +1444,7 @@
     "closingIssuesReferences": [
       {
         "number": 70,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/70"
       }
     ]
@@ -1335,6 +1458,7 @@
     "closingIssuesReferences": [
       {
         "number": 69,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/69"
       }
     ]
@@ -1348,6 +1472,7 @@
     "closingIssuesReferences": [
       {
         "number": 55,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/55"
       }
     ]
@@ -1361,6 +1486,7 @@
     "closingIssuesReferences": [
       {
         "number": 53,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/53"
       }
     ]
@@ -1374,6 +1500,7 @@
     "closingIssuesReferences": [
       {
         "number": 52,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/52"
       }
     ]
@@ -1387,6 +1514,7 @@
     "closingIssuesReferences": [
       {
         "number": 50,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/50"
       }
     ]
@@ -1400,6 +1528,7 @@
     "closingIssuesReferences": [
       {
         "number": 44,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/44"
       }
     ]
@@ -1413,6 +1542,7 @@
     "closingIssuesReferences": [
       {
         "number": 51,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/51"
       }
     ]
@@ -1426,6 +1556,7 @@
     "closingIssuesReferences": [
       {
         "number": 49,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/49"
       }
     ]
@@ -1439,6 +1570,7 @@
     "closingIssuesReferences": [
       {
         "number": 43,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/43"
       }
     ]
@@ -1452,6 +1584,7 @@
     "closingIssuesReferences": [
       {
         "number": 39,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/39"
       }
     ]
@@ -1465,6 +1598,7 @@
     "closingIssuesReferences": [
       {
         "number": 41,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/41"
       }
     ]
@@ -1478,6 +1612,7 @@
     "closingIssuesReferences": [
       {
         "number": 42,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/42"
       }
     ]
@@ -1491,6 +1626,7 @@
     "closingIssuesReferences": [
       {
         "number": 40,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/40"
       }
     ]
@@ -1504,6 +1640,7 @@
     "closingIssuesReferences": [
       {
         "number": 37,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/37"
       }
     ]
@@ -1517,6 +1654,7 @@
     "closingIssuesReferences": [
       {
         "number": 35,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/35"
       }
     ]
@@ -1530,6 +1668,7 @@
     "closingIssuesReferences": [
       {
         "number": 31,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/31"
       }
     ]
@@ -1543,6 +1682,7 @@
     "closingIssuesReferences": [
       {
         "number": 29,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/29"
       }
     ]
@@ -1556,6 +1696,7 @@
     "closingIssuesReferences": [
       {
         "number": 30,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/30"
       }
     ]
@@ -1569,6 +1710,7 @@
     "closingIssuesReferences": [
       {
         "number": 27,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/27"
       }
     ]
@@ -1582,6 +1724,7 @@
     "closingIssuesReferences": [
       {
         "number": 24,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/24"
       }
     ]
@@ -1595,6 +1738,7 @@
     "closingIssuesReferences": [
       {
         "number": 24,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/24"
       }
     ]
@@ -1608,6 +1752,7 @@
     "closingIssuesReferences": [
       {
         "number": 21,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/21"
       }
     ]
@@ -1621,6 +1766,7 @@
     "closingIssuesReferences": [
       {
         "number": 20,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/20"
       }
     ]
@@ -1634,6 +1780,7 @@
     "closingIssuesReferences": [
       {
         "number": 18,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/18"
       }
     ]
@@ -1647,6 +1794,7 @@
     "closingIssuesReferences": [
       {
         "number": 16,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/16"
       }
     ]
@@ -1660,6 +1808,7 @@
     "closingIssuesReferences": [
       {
         "number": 14,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/14"
       }
     ]
@@ -1673,6 +1822,7 @@
     "closingIssuesReferences": [
       {
         "number": 12,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/12"
       }
     ]
@@ -1686,6 +1836,7 @@
     "closingIssuesReferences": [
       {
         "number": 10,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/10"
       }
     ]
@@ -1699,6 +1850,7 @@
     "closingIssuesReferences": [
       {
         "number": 8,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/8"
       }
     ]
@@ -1712,6 +1864,7 @@
     "closingIssuesReferences": [
       {
         "number": 6,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/6"
       }
     ]
@@ -1725,6 +1878,7 @@
     "closingIssuesReferences": [
       {
         "number": 4,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/4"
       }
     ]
@@ -1738,6 +1892,7 @@
     "closingIssuesReferences": [
       {
         "number": 1,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/1"
       }
     ]
@@ -1751,6 +1906,7 @@
     "closingIssuesReferences": [
       {
         "number": 1,
+        "title": "",
         "url": "https://github.com/link-assistant/formal-ai/issues/1"
       }
     ]

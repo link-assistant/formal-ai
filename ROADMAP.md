@@ -19,12 +19,13 @@ It complements the existing docs rather than replacing them:
 The original issue #244 plan created E1-E14 as issues
 [#246](https://github.com/link-assistant/formal-ai/issues/246) through
 [#259](https://github.com/link-assistant/formal-ai/issues/259). All fourteen are
-now closed by merged PRs on `main`, and the follow-up courtesy issue
-[#262](https://github.com/link-assistant/formal-ai/issues/262) is also closed.
+now closed by merged PRs on `main`, and the follow-up issues
+[#262](https://github.com/link-assistant/formal-ai/issues/262) and
+[#272](https://github.com/link-assistant/formal-ai/issues/272) are also closed.
 
 The post-merge audit found:
 
-- 141 closed issues surveyed from GitHub on 2026-05-26.
+- 142 closed issues surveyed from GitHub on 2026-05-26.
 - The E1-E14 planning issues are closed and backed by merged PRs #260, #261, and
   #263 through #275.
 - `tests/unit/specification/` now has zero `#[ignore = "tracked requirement: ..."]`
@@ -96,8 +97,10 @@ Status legend:
 | E13 | [#258](https://github.com/link-assistant/formal-ai/issues/258) | [#274](https://github.com/link-assistant/formal-ai/pull/274) | Added network visualization and trace surfaces. |
 | E14 | [#259](https://github.com/link-assistant/formal-ai/issues/259) | [#275](https://github.com/link-assistant/formal-ai/pull/275) | Added deterministic natural-language trigger/response skill compilation. |
 
-Issue [#262](https://github.com/link-assistant/formal-ai/issues/262) was closed
-by [#276](https://github.com/link-assistant/formal-ai/pull/276) and is outside
+Issues [#262](https://github.com/link-assistant/formal-ai/issues/262) and
+[#272](https://github.com/link-assistant/formal-ai/issues/272) were closed by
+[#276](https://github.com/link-assistant/formal-ai/pull/276) and
+[#277](https://github.com/link-assistant/formal-ai/pull/277). They are outside
 the E1-E14 vision batch.
 
 ## Next Planning Batch

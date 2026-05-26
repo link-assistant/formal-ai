@@ -75,7 +75,7 @@ Downloaded and generated artifacts live under `raw-data/`:
 | 2026-05-25 | Codebase audit completed: 11-step solver loop exists but routing is still keyword/intent based; 69 `#[ignore]`-tagged "tracked requirement" tests enumerate the vision gaps; `ARCHITECTURE.md` §16 lists four architecture open questions. |
 | 2026-05-25 | Online research collected: Abstract Wikipedia/Wikifunctions, OpenCog AtomSpace/Hyperon, Lean/Z3 confirmed as the closest prior art for the meaning-anchored translation, associative store, and deterministic verification pillars. |
 | 2026-05-25 | `ROADMAP.md` written, planning issues drafted in `proposed-issues.md`, and the issues created in the repository. |
-| 2026-05-26 | `origin/main` merged into the issue branch; the E1-E14 implementation PRs (#260, #261, #263-#275) and the courtesy PR #276 were incorporated. |
+| 2026-05-26 | `origin/main` merged into the issue branch; the E1-E14 implementation PRs (#260, #261, #263-#275), courtesy PR #276, and issue #272 follow-up PR #277 were incorporated. |
 | 2026-05-26 | Closed issues, merged PRs, deferred markers, and tracked specification tests were audited; no `#[ignore = "tracked requirement: ..."]` tests remained. |
 | 2026-05-26 | Six remaining partial requirements were opened as E15-E20: #278, #279, #280, #281, #282, and #283. |
 
@@ -113,7 +113,7 @@ Findings:
 
 - E1-E14 (#246-#259) are closed and backed by merged PRs #260, #261, and
   #263-#275.
-- Issue #262 is also closed by PR #276.
+- Issues #262 and #272 are also closed by PRs #276 and #277.
 - `tests/unit/specification/` no longer contains `#[ignore = "tracked requirement: ..."]`
   tests.
 - Six remaining requirements were still partial or open and were created as the
