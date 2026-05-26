@@ -37,6 +37,7 @@ pub(super) fn extract_web_search_request(
     if normalized_words.starts_with("search conversations ")
         || normalized_words.starts_with("search my conversations ")
         || normalized_words.starts_with("search my chats ")
+        || is_personal_fact_filter_request(&normalized_words)
     {
         return None;
     }
@@ -74,6 +75,13 @@ pub(super) fn extract_web_search_request(
         query,
         kind: WebSearchQueryKind::ImplicitResearchQuestion,
     })
+}
+
+fn is_personal_fact_filter_request(normalized: &str) -> bool {
+    normalized.contains("facts i have contributed")
+        || normalized.contains("facts ive contributed")
+        || normalized.contains("facts i contributed")
+        || normalized.contains("my facts")
 }
 
 fn clean_search_query(value: &str) -> String {
