@@ -1,7 +1,7 @@
 write_program
   intent "write_program"
   parameters "language, task"
-  tasks "hello_world|count_to_three"
+  tasks "hello_world|count_to_three|list_files"
   languages "rust|python|javascript|typescript|go|c|cpp|java|csharp|ruby"
   source "local public-domain seed templates"
 
@@ -14,6 +14,11 @@ task_count_to_three
   task "count_to_three"
   aliases "count to three, count to 3, counts to three, counts to 3"
   output "1\n2\n3"
+
+task_list_files
+  task "list_files"
+  aliases "list files in the current directory, list files in current directory, list files, lists files, files in the current directory, список файлов в текущей директории, выдаёт список файлов, выводит список файлов, список файлов, файлы в текущей директории, फ़ाइलों की सूची, फाइलों की सूची, वर्तमान निर्देशिका की फ़ाइलें, 列出当前目录中的文件, 列出当前目录中文件, 列出当前目录的文件, 列出文件"
+  output "Cargo.toml\nREADME.md\nmain.rs"
 
 template_hello_world_rust
   intent "write_program"
@@ -126,3 +131,73 @@ template_count_to_three_c
   task "count_to_three"
   code_fence "c"
   code '#include <stdio.h>\n\nint main(void) {\n    for (int number = 1; number <= 3; number++) {\n        printf("%d\\n", number);\n    }\n    return 0;\n}'
+
+template_list_files_rust
+  intent "write_program"
+  language "rust"
+  task "list_files"
+  code_fence "rust"
+  code 'use std::fs;\n\nfn main() -> std::io::Result<()> {\n    let mut names: Vec<String> = fs::read_dir(".")?\n        .filter_map(Result::ok)\n        .filter(|entry| entry.path().is_file())\n        .map(|entry| entry.file_name().to_string_lossy().into_owned())\n        .collect();\n    names.sort();\n    for name in names {\n        println!("{name}");\n    }\n    Ok(())\n}'
+
+template_list_files_python
+  intent "write_program"
+  language "python"
+  task "list_files"
+  code_fence "python"
+  code 'import os\n\nnames = sorted(name for name in os.listdir(".") if os.path.isfile(name))\nfor name in names:\n    print(name)'
+
+template_list_files_javascript
+  intent "write_program"
+  language "javascript"
+  task "list_files"
+  code_fence "javascript"
+  code 'const fs = require("fs");\n\nconst names = fs\n  .readdirSync(".")\n  .filter((name) => fs.statSync(name).isFile())\n  .sort();\n\nfor (const name of names) {\n  console.log(name);\n}'
+
+template_list_files_typescript
+  intent "write_program"
+  language "typescript"
+  task "list_files"
+  code_fence "typescript"
+  code 'import * as fs from "fs";\n\nconst names: string[] = fs\n  .readdirSync(".")\n  .filter((name) => fs.statSync(name).isFile())\n  .sort();\n\nfor (const name of names) {\n  console.log(name);\n}'
+
+template_list_files_go
+  intent "write_program"
+  language "go"
+  task "list_files"
+  code_fence "go"
+  code 'package main\n\nimport (\n    "fmt"\n    "os"\n    "sort"\n)\n\nfunc main() {\n    entries, err := os.ReadDir(".")\n    if err != nil {\n        panic(err)\n    }\n    var names []string\n    for _, entry := range entries {\n        if !entry.IsDir() {\n            names = append(names, entry.Name())\n        }\n    }\n    sort.Strings(names)\n    for _, name := range names {\n        fmt.Println(name)\n    }\n}'
+
+template_list_files_c
+  intent "write_program"
+  language "c"
+  task "list_files"
+  code_fence "c"
+  code '#include <dirent.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n#include <sys/stat.h>\n\nstatic int compare(const void *a, const void *b) {\n    return strcmp(*(const char *const *)a, *(const char *const *)b);\n}\n\nint main(void) {\n    DIR *dir = opendir(".");\n    if (dir == NULL) {\n        return 1;\n    }\n    char *names[1024];\n    size_t count = 0;\n    struct dirent *entry;\n    while ((entry = readdir(dir)) != NULL && count < 1024) {\n        struct stat info;\n        if (stat(entry->d_name, &info) == 0 && S_ISREG(info.st_mode)) {\n            names[count++] = strdup(entry->d_name);\n        }\n    }\n    closedir(dir);\n    qsort(names, count, sizeof(char *), compare);\n    for (size_t i = 0; i < count; i++) {\n        printf("%s\\n", names[i]);\n        free(names[i]);\n    }\n    return 0;\n}'
+
+template_list_files_cpp
+  intent "write_program"
+  language "cpp"
+  task "list_files"
+  code_fence "cpp"
+  code '#include <algorithm>\n#include <filesystem>\n#include <iostream>\n#include <string>\n#include <vector>\n\nint main() {\n    namespace fs = std::filesystem;\n    std::vector<std::string> names;\n    for (const auto &entry : fs::directory_iterator(".")) {\n        if (entry.is_regular_file()) {\n            names.push_back(entry.path().filename().string());\n        }\n    }\n    std::sort(names.begin(), names.end());\n    for (const auto &name : names) {\n        std::cout << name << \x27\\n\x27;\n    }\n}'
+
+template_list_files_java
+  intent "write_program"
+  language "java"
+  task "list_files"
+  code_fence "java"
+  code 'import java.io.File;\nimport java.util.Arrays;\n\npublic class Main {\n    public static void main(String[] args) {\n        File[] entries = new File(".").listFiles();\n        if (entries == null) {\n            return;\n        }\n        String[] names = Arrays.stream(entries)\n            .filter(File::isFile)\n            .map(File::getName)\n            .sorted()\n            .toArray(String[]::new);\n        for (String name : names) {\n            System.out.println(name);\n        }\n    }\n}'
+
+template_list_files_csharp
+  intent "write_program"
+  language "csharp"
+  task "list_files"
+  code_fence "csharp"
+  code 'using System;\nusing System.IO;\nusing System.Linq;\n\nclass Program {\n    static void Main() {\n        var names = Directory.GetFiles(".")\n            .Select(Path.GetFileName)\n            .OrderBy(name => name, StringComparer.Ordinal);\n        foreach (var name in names) {\n            Console.WriteLine(name);\n        }\n    }\n}'
+
+template_list_files_ruby
+  intent "write_program"
+  language "ruby"
+  task "list_files"
+  code_fence "ruby"
+  code 'names = Dir.entries(".").select { |name| File.file?(name) }.sort\nnames.each { |name| puts name }'

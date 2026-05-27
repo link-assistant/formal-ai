@@ -76,6 +76,53 @@ pub fn is_unbounded_loop(normalized: &str) -> bool {
         || normalized.contains("forever")
 }
 
+pub fn is_inappropriate_content(normalized: &str) -> bool {
+    // Russian vulgar/obscene words (mat) — normalized lowercase Cyrillic.
+    let ru_vulgar: &[&str] = &[
+        "ебать",
+        "ебёт",
+        "ебал",
+        "ёб",
+        "еблан",
+        "пизда",
+        "пиздец",
+        "пиздёж",
+        "хуй",
+        "хуёв",
+        "хуйня",
+        "блядь",
+        "блядство",
+        "залупа",
+        "мудак",
+        "мудила",
+        "шлюха",
+        "проститутка",
+        "ублюдок",
+        "сука",
+        "пидор",
+        "пидорас",
+    ];
+    if ru_vulgar.iter().any(|w| normalized.contains(w)) {
+        return true;
+    }
+    // English profanity / NSFW triggers.
+    let en_vulgar: &[&str] = &[
+        "fuck you",
+        "fuckyou",
+        "suck my",
+        "suck my dick",
+        "suck my cock",
+        "you suck",
+        "eat shit",
+        "go to hell",
+        "asshole",
+        "motherfucker",
+        "you fucking",
+        "piece of shit",
+    ];
+    en_vulgar.iter().any(|w| normalized.contains(w))
+}
+
 pub fn requires_external_lookup(prompt: &str) -> bool {
     let lower = prompt.to_lowercase();
     lower.contains("capital of")

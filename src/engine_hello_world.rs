@@ -244,6 +244,58 @@ pub const PROGRAM_TASKS: &[ProgramTask] = &[
         ],
         output: "1\n2\n3",
     },
+    ProgramTask {
+        slug: "list_files",
+        label: "list files in the current directory",
+        // English, Russian, Hindi and Chinese phrasings of "list the files in
+        // the current directory" (issue #312). The Russian reporter wrote
+        // "выдаёт список файлов в текущей директории"; competitors answered with
+        // full code. Every supported prompt language (en, ru, hi, zh) is covered
+        // so the whole class of list-files requests resolves, not just Russian.
+        aliases: &[
+            "list files in the current directory",
+            "list files in current directory",
+            "list files in the directory",
+            "list the files in the current directory",
+            "lists files in the current directory",
+            "lists the files in the current directory",
+            "list files in a directory",
+            "list directory files",
+            "list files",
+            "lists files",
+            "files in the current directory",
+            "files in current directory",
+            "список файлов в текущей директории",
+            "список файлов в текущем каталоге",
+            "список файлов в директории",
+            "список файлов в каталоге",
+            "выдаёт список файлов",
+            "выдает список файлов",
+            "выводит список файлов",
+            "вывести список файлов",
+            "вывод списка файлов",
+            "список файлов",
+            "файлы в текущей директории",
+            "файлы в текущем каталоге",
+            // Hindi: "list of files (in the current directory)".
+            "फ़ाइलों की सूची",
+            "फाइलों की सूची",
+            "वर्तमान निर्देशिका की फ़ाइलें",
+            "वर्तमान निर्देशिका की फाइलें",
+            "निर्देशिका की फ़ाइलें",
+            // Chinese: "list the files in the current directory".
+            "列出当前目录中的文件",
+            "列出当前目录中文件",
+            "列出当前目录的文件",
+            "列出当前目录文件",
+            "列出目录中的文件",
+            "列出文件",
+        ],
+        // Verified output for the documented sample directory containing exactly
+        // `Cargo.toml`, `README.md`, and `main.rs`. Every template sorts names in
+        // byte order, so the output is identical across languages.
+        output: "Cargo.toml\nREADME.md\nmain.rs",
+    },
 ];
 
 pub const PROGRAM_TEMPLATES: &[ProgramTemplate] = &[
@@ -379,6 +431,195 @@ int main(void) {
     return 0;
 }"#,
     },
+    ProgramTemplate {
+        task_slug: "list_files",
+        language_slug: "rust",
+        code: r#"use std::fs;
+
+fn main() -> std::io::Result<()> {
+    let mut names: Vec<String> = fs::read_dir(".")?
+        .filter_map(Result::ok)
+        .filter(|entry| entry.path().is_file())
+        .map(|entry| entry.file_name().to_string_lossy().into_owned())
+        .collect();
+    names.sort();
+    for name in names {
+        println!("{name}");
+    }
+    Ok(())
+}"#,
+    },
+    ProgramTemplate {
+        task_slug: "list_files",
+        language_slug: "python",
+        code: r#"import os
+
+names = sorted(name for name in os.listdir(".") if os.path.isfile(name))
+for name in names:
+    print(name)"#,
+    },
+    ProgramTemplate {
+        task_slug: "list_files",
+        language_slug: "javascript",
+        code: r#"const fs = require("fs");
+
+const names = fs
+  .readdirSync(".")
+  .filter((name) => fs.statSync(name).isFile())
+  .sort();
+
+for (const name of names) {
+  console.log(name);
+}"#,
+    },
+    ProgramTemplate {
+        task_slug: "list_files",
+        language_slug: "typescript",
+        code: r#"import * as fs from "fs";
+
+const names: string[] = fs
+  .readdirSync(".")
+  .filter((name) => fs.statSync(name).isFile())
+  .sort();
+
+for (const name of names) {
+  console.log(name);
+}"#,
+    },
+    ProgramTemplate {
+        task_slug: "list_files",
+        language_slug: "go",
+        code: r#"package main
+
+import (
+    "fmt"
+    "os"
+    "sort"
+)
+
+func main() {
+    entries, err := os.ReadDir(".")
+    if err != nil {
+        panic(err)
+    }
+    var names []string
+    for _, entry := range entries {
+        if !entry.IsDir() {
+            names = append(names, entry.Name())
+        }
+    }
+    sort.Strings(names)
+    for _, name := range names {
+        fmt.Println(name)
+    }
+}"#,
+    },
+    ProgramTemplate {
+        task_slug: "list_files",
+        language_slug: "c",
+        code: r#"#include <dirent.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/stat.h>
+
+static int compare(const void *a, const void *b) {
+    return strcmp(*(const char *const *)a, *(const char *const *)b);
+}
+
+int main(void) {
+    DIR *dir = opendir(".");
+    if (dir == NULL) {
+        return 1;
+    }
+    char *names[1024];
+    size_t count = 0;
+    struct dirent *entry;
+    while ((entry = readdir(dir)) != NULL && count < 1024) {
+        struct stat info;
+        if (stat(entry->d_name, &info) == 0 && S_ISREG(info.st_mode)) {
+            names[count++] = strdup(entry->d_name);
+        }
+    }
+    closedir(dir);
+    qsort(names, count, sizeof(char *), compare);
+    for (size_t i = 0; i < count; i++) {
+        printf("%s\n", names[i]);
+        free(names[i]);
+    }
+    return 0;
+}"#,
+    },
+    ProgramTemplate {
+        task_slug: "list_files",
+        language_slug: "cpp",
+        code: r#"#include <algorithm>
+#include <filesystem>
+#include <iostream>
+#include <string>
+#include <vector>
+
+int main() {
+    namespace fs = std::filesystem;
+    std::vector<std::string> names;
+    for (const auto &entry : fs::directory_iterator(".")) {
+        if (entry.is_regular_file()) {
+            names.push_back(entry.path().filename().string());
+        }
+    }
+    std::sort(names.begin(), names.end());
+    for (const auto &name : names) {
+        std::cout << name << '\n';
+    }
+}"#,
+    },
+    ProgramTemplate {
+        task_slug: "list_files",
+        language_slug: "java",
+        code: r#"import java.io.File;
+import java.util.Arrays;
+
+public class Main {
+    public static void main(String[] args) {
+        File[] entries = new File(".").listFiles();
+        if (entries == null) {
+            return;
+        }
+        String[] names = Arrays.stream(entries)
+            .filter(File::isFile)
+            .map(File::getName)
+            .sorted()
+            .toArray(String[]::new);
+        for (String name : names) {
+            System.out.println(name);
+        }
+    }
+}"#,
+    },
+    ProgramTemplate {
+        task_slug: "list_files",
+        language_slug: "csharp",
+        code: r#"using System;
+using System.IO;
+using System.Linq;
+
+class Program {
+    static void Main() {
+        var names = Directory.GetFiles(".")
+            .Select(Path.GetFileName)
+            .OrderBy(name => name, StringComparer.Ordinal);
+        foreach (var name in names) {
+            Console.WriteLine(name);
+        }
+    }
+}"#,
+    },
+    ProgramTemplate {
+        task_slug: "list_files",
+        language_slug: "ruby",
+        code: r#"names = Dir.entries(".").select { |name| File.file?(name) }.sort
+names.each { |name| puts name }"#,
+    },
 ];
 
 #[must_use]
@@ -446,11 +687,34 @@ pub fn supported_program_tasks() -> String {
         .join(", ")
 }
 
+/// Chinese (and other CJK) text is written without spaces between words, so the
+/// whitespace-based token/phrase matchers below never see an isolated word. When
+/// the expected alias itself contains a CJK ideograph we fall back to a plain
+/// substring test, which is what "token boundaries" effectively mean for those
+/// scripts. Latin and Cyrillic aliases keep strict boundary matching so short
+/// tokens like `rust` never match inside `trust`.
+pub fn contains_cjk(text: &str) -> bool {
+    text.chars().any(|ch| {
+        let cp = ch as u32;
+        (0x3400..=0x4DBF).contains(&cp)
+            || (0x4E00..=0x9FFF).contains(&cp)
+            || (0xF900..=0xFAFF).contains(&cp)
+            || (0x3040..=0x30FF).contains(&cp)
+            || (0x3100..=0x312F).contains(&cp)
+    })
+}
+
 fn contains_token(normalized: &str, expected: &str) -> bool {
+    if contains_cjk(expected) {
+        return normalized.contains(expected);
+    }
     normalized.split_whitespace().any(|token| token == expected)
 }
 
 fn contains_phrase(normalized: &str, expected: &str) -> bool {
+    if contains_cjk(expected) {
+        return normalized.contains(expected);
+    }
     normalized == expected
         || normalized.starts_with(&format!("{expected} "))
         || normalized.ends_with(&format!(" {expected}"))

@@ -301,3 +301,113 @@ fn supported_language_with_missing_template_returns_unsupported_parameters() {
     assert!(response.answer.contains("task `count_to_three`"));
     assert!(response.answer.contains("Supported tasks:"));
 }
+
+// ---------------------------------------------------------------------------
+// Issue #312: "Напиши мне программу на Rust, которая выдаёт список файлов в
+// текущей директории" returned "unknown" (the WASM worker) or a Rust concept
+// definition (the CLI). The class of code-generation prompts that ask, in any
+// supported language, for a program that lists files in the current directory
+// must resolve through the parameterized write_program intent.
+// ---------------------------------------------------------------------------
+
+#[test]
+fn russian_list_files_in_rust_returns_program() {
+    // The exact prompt from the reported issue.
+    let response =
+        answer("Напиши мне программу на Rust, которая выдаёт список файлов в текущей директории");
+    assert_write_program_parameters(&response, "rust", "list_files");
+    assert_eq!(
+        response.intent, "write_program",
+        "Russian list-files request in Rust should resolve to write_program, got: {}",
+        response.intent
+    );
+    assert!(
+        response.answer.contains("```rust"),
+        "answer should include a Rust code block, got: {}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains("read_dir"),
+        "Rust list-files template should read the directory, got: {}",
+        response.answer
+    );
+    assert!(response
+        .answer
+        .contains("Execution status: compiled and ran"));
+}
+
+#[test]
+fn english_list_files_in_python_returns_program() {
+    let response = answer("Write me a Python program that lists files in the current directory");
+    assert_write_program_parameters(&response, "python", "list_files");
+    assert!(response.answer.contains("```python"));
+    assert!(response.answer.contains("listdir"));
+    assert!(response
+        .answer
+        .contains("Execution status: compiled and ran"));
+}
+
+#[test]
+fn list_files_supported_for_every_popular_language() {
+    for (language, slug, fence) in POPULAR_LANGUAGES {
+        let response = answer(&format!(
+            "Write me a program in {language} that lists files in the current directory"
+        ));
+        assert_write_program_parameters(&response, slug, "list_files");
+        assert!(
+            response.answer.contains(fence),
+            "missing list-files template for {language}: {}",
+            response.answer
+        );
+    }
+}
+
+#[test]
+fn hindi_list_files_in_rust_returns_program() {
+    // Hindi: "Write a program in Rust that shows the list of files".
+    let response = answer("Rust में फ़ाइलों की सूची दिखाने वाला प्रोग्राम लिखो");
+    assert_write_program_parameters(&response, "rust", "list_files");
+    assert_eq!(
+        response.intent, "write_program",
+        "Hindi list-files request in Rust should resolve to write_program, got: {}",
+        response.intent
+    );
+    assert!(
+        response.answer.contains("```rust"),
+        "answer should include a Rust code block, got: {}",
+        response.answer
+    );
+    assert!(response.answer.contains("read_dir"));
+}
+
+#[test]
+fn chinese_list_files_in_rust_returns_program() {
+    // Chinese: "Write a program in Rust that lists files in the current directory".
+    let response = answer("用 Rust 编写一个列出当前目录中文件的程序");
+    assert_write_program_parameters(&response, "rust", "list_files");
+    assert_eq!(
+        response.intent, "write_program",
+        "Chinese list-files request in Rust should resolve to write_program, got: {}",
+        response.intent
+    );
+    assert!(
+        response.answer.contains("```rust"),
+        "answer should include a Rust code block, got: {}",
+        response.answer
+    );
+    assert!(response.answer.contains("read_dir"));
+}
+
+#[test]
+fn russian_program_request_with_unknown_task_is_not_unknown() {
+    // The whole class: a Russian "write a program in <lang>" request whose task
+    // is not in the catalog must still be recognized as a (currently
+    // unsupported) write_program request instead of falling through to unknown.
+    let response = answer("Напиши программу на Python, которая вычисляет факториал числа");
+    assert_eq!(
+        response.intent, "write_program_unsupported",
+        "Russian program request should be recognized as write_program, got: {}",
+        response.intent
+    );
+    assert!(response.answer.contains("language `python`"));
+}
