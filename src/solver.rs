@@ -57,61 +57,15 @@ use crate::solver_handlers::{
 use crate::solver_handlers_policy::{try_kupi_slona, try_physical_action_question};
 use crate::solver_helpers::{
     confidence_for, is_agent_opt_in, is_agent_request, is_cache_flush_request,
-    is_destructive_action, is_forget_request, is_unbounded_autonomy, is_unbounded_loop,
-    record_candidates, record_decomposition, record_validation, requires_external_lookup,
+    is_destructive_action, is_forget_request, is_inappropriate_content, is_unbounded_autonomy,
+    is_unbounded_loop, record_candidates, record_decomposition, record_validation,
+    requires_external_lookup,
 };
 use crate::solver_unknown_reasoning::{answer_unknown_prompt, UnknownReasoningConfig};
 use crate::translation::{
     formalize_prompt_candidates, select_formalization_candidate_with_probability_store,
     FormalizationDecision, FormalizationSelectionConfig,
 };
-
-fn is_inappropriate_content(normalized: &str) -> bool {
-    // Russian vulgar/obscene words (mat) — normalized lowercase Cyrillic.
-    let ru_vulgar: &[&str] = &[
-        "ебать",
-        "ебёт",
-        "ебал",
-        "ёб",
-        "еблан",
-        "пизда",
-        "пиздец",
-        "пиздёж",
-        "хуй",
-        "хуёв",
-        "хуйня",
-        "блядь",
-        "блядство",
-        "залупа",
-        "мудак",
-        "мудила",
-        "шлюха",
-        "проститутка",
-        "ублюдок",
-        "сука",
-        "пидор",
-        "пидорас",
-    ];
-    if ru_vulgar.iter().any(|w| normalized.contains(w)) {
-        return true;
-    }
-    // English profanity / NSFW triggers.
-    let en_vulgar: &[&str] = &[
-        "fuck you",
-        "fuckyou",
-        "suck my",
-        "suck my dick",
-        "suck my cock",
-        "you suck",
-        "eat shit",
-        "go to hell",
-        "asshole",
-        "motherfucker",
-        "you fucking",
-        "piece of shit",
-    ];
-    en_vulgar.iter().any(|w| normalized.contains(w))
-}
 
 /// Runtime surface where the solver is embedded.
 ///
@@ -589,17 +543,26 @@ impl UniversalSolver {
 
         record_decomposition(&mut log, prompt, self.config.max_decomposition_depth);
 
-        if let Some(answer) =
-            self.handle_specialized_pattern(prompt, &intent_formalization, &mut log)
-        {
-            return answer;
+        let rule = select_rule_for_intent(&intent_formalization);
+
+        // Issue #312: a concrete write_program request (recognized task and
+        // language with a matching template) must take precedence over the
+        // specialized handlers. Otherwise concept_lookup answers the language
+        // name ("Rust") as an encyclopedia definition instead of returning the
+        // requested program. Policy guards still run for these prompts below.
+        let is_concrete_write_program = matches!(rule, SelectedRule::WriteProgram(_));
+        if !is_concrete_write_program {
+            if let Some(answer) =
+                self.handle_specialized_pattern(prompt, &intent_formalization, &mut log)
+            {
+                return answer;
+            }
         }
 
         if let Some(answer) = Self::handle_policy(prompt, &mut log, language) {
             return answer;
         }
 
-        let rule = select_rule_for_intent(&intent_formalization);
         if matches!(rule, SelectedRule::Unknown) {
             let intent = language_aware_intent_for(&rule, language);
             record_candidates(&mut log, prompt, &intent);

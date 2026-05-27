@@ -367,6 +367,12 @@ fn matches_route(normalized: &str, route: &seed::IntentRoute) -> bool {
 }
 
 fn contains_token(normalized: &str, expected: &str) -> bool {
+    // CJK scripts have no inter-word spaces, so match those aliases by substring
+    // (see `engine_hello_world::contains_cjk`). Latin/Cyrillic keep strict
+    // whitespace boundaries so short tokens never match inside larger words.
+    if crate::engine_hello_world::contains_cjk(expected) {
+        return normalized.contains(expected);
+    }
     normalized.split_whitespace().any(|token| token == expected)
 }
 
@@ -381,13 +387,79 @@ fn write_program_rule_for_intent(intent: &IntentFormalization) -> SelectedRule {
     SelectedRule::UnsupportedWriteProgram { task, language }
 }
 
+/// Words that name the artefact the user wants generated ("program", "script",
+/// "code") across the supported prompt languages.
+const PROGRAM_NOUNS: &[&str] = &[
+    "program",
+    "programme",
+    "script",
+    "code",
+    // Russian: программа / программу / программе / программы, скрипт, код.
+    "программа",
+    "программу",
+    "программе",
+    "программы",
+    "программку",
+    "скрипт",
+    "код",
+    // Hindi: प्रोग्राम (program), स्क्रिप्ट (script), कोड (code).
+    "प्रोग्राम",
+    "स्क्रिप्ट",
+    "कोड",
+    // Chinese: 程序 (program), 脚本 (script), 代码 (code).
+    "程序",
+    "脚本",
+    "代码",
+];
+
+/// Verbs that request the artefact be produced ("write", "create", "show", …)
+/// across the supported prompt languages.
+const PROGRAM_VERBS: &[&str] = &[
+    "write",
+    "create",
+    "show",
+    "generate",
+    "make",
+    "build",
+    // Russian imperative forms of написать / создать / сделать / показать /
+    // выдать / сгенерировать / написать.
+    "напиши",
+    "напишите",
+    "создай",
+    "создайте",
+    "сделай",
+    "сделайте",
+    "покажи",
+    "покажите",
+    "сгенерируй",
+    "сгенерируйте",
+    // Hindi imperatives: लिखो / लिखें (write), बनाओ / बनाएं (make/create),
+    // दिखाओ / दिखाएं (show).
+    "लिखो",
+    "लिखें",
+    "बनाओ",
+    "बनाएं",
+    "दिखाओ",
+    "दिखाएं",
+    // Chinese verbs: 编写 / 写 (write), 创建 (create), 生成 (generate),
+    // 制作 (make), 显示 (show).
+    "编写",
+    "写",
+    "创建",
+    "生成",
+    "制作",
+    "显示",
+];
+
 fn write_program_parameters(normalized: &str) -> Option<BTreeMap<String, String>> {
     let task = crate::engine_hello_world::program_task_by_alias(normalized);
     let language = requested_program_language(normalized);
-    let asks_for_program = contains_token(normalized, "program")
-        && (contains_token(normalized, "write")
-            || contains_token(normalized, "create")
-            || contains_token(normalized, "show"));
+    let asks_for_program = PROGRAM_NOUNS
+        .iter()
+        .any(|noun| contains_token(normalized, noun))
+        && PROGRAM_VERBS
+            .iter()
+            .any(|verb| contains_token(normalized, verb));
     if task.is_none() && !asks_for_program {
         return None;
     }

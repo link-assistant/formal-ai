@@ -725,9 +725,14 @@ function normalizePrompt(prompt) {
   const text = String(prompt || "");
   const fromWasm = wasmNormalizePrompt(text);
   if (fromWasm !== null) return fromWasm;
+  // Keep the whole Devanagari block (U+0900–U+097F), not just \p{L}: matras,
+  // the nukta and the virama are Unicode marks (category M), so a bare
+  // \p{L}\p{N} filter would strip them and corrupt Hindi words, breaking parity
+  // with the Rust `normalize_prompt` (which keeps the entire block). Without
+  // this, raw Hindi aliases never match the normalized prompt (issue #312).
   return text
     .toLowerCase()
-    .replace(/[^\p{L}\p{N}]+/gu, " ")
+    .replace(/[^\p{L}\p{N}ऀ-ॿ]+/gu, " ")
     .trim();
 }
 
@@ -9327,6 +9332,38 @@ const WRITE_PROGRAM_TASKS = {
     output: "1\n2\n3",
     aliases: ["count to three", "count to 3", "counts to three", "counts to 3"],
   },
+  list_files: {
+    label: "list files in the current directory",
+    // Verified output for the documented sample directory containing exactly
+    // `Cargo.toml`, `README.md`, and `main.rs`. Every template sorts names in
+    // byte order, so the output is identical across languages (issue #312).
+    output: "Cargo.toml\nREADME.md\nmain.rs",
+    // English, Russian, Hindi and Chinese phrasings of "list the files in the
+    // current directory". The issue reporter wrote "выдаёт список файлов в
+    // текущей директории"; competitors answered with full code. Every supported
+    // prompt language (en, ru, hi, zh) is covered (issue #312).
+    aliases: [
+      "list files in the current directory",
+      "list files in current directory",
+      "list files",
+      "lists files",
+      "files in the current directory",
+      "список файлов в текущей директории",
+      "выдаёт список файлов",
+      "выводит список файлов",
+      "список файлов",
+      "файлы в текущей директории",
+      // Hindi: "list of files (in the current directory)".
+      "फ़ाइलों की सूची",
+      "फाइलों की सूची",
+      "वर्तमान निर्देशिका की फ़ाइलें",
+      // Chinese: "list the files in the current directory".
+      "列出当前目录中的文件",
+      "列出当前目录中文件",
+      "列出当前目录的文件",
+      "列出文件",
+    ],
+  },
 };
 
 const WRITE_PROGRAM_TEMPLATES = {
@@ -9356,13 +9393,53 @@ const WRITE_PROGRAM_TEMPLATES = {
     c:
       '#include <stdio.h>\n\nint main(void) {\n    for (int number = 1; number <= 3; number++) {\n        printf("%d\\n", number);\n    }\n    return 0;\n}',
   },
+  list_files: {
+    rust:
+      'use std::fs;\n\nfn main() -> std::io::Result<()> {\n    let mut names: Vec<String> = fs::read_dir(".")?\n        .filter_map(Result::ok)\n        .filter(|entry| entry.path().is_file())\n        .map(|entry| entry.file_name().to_string_lossy().into_owned())\n        .collect();\n    names.sort();\n    for name in names {\n        println!("{name}");\n    }\n    Ok(())\n}',
+    python:
+      'import os\n\nnames = sorted(name for name in os.listdir(".") if os.path.isfile(name))\nfor name in names:\n    print(name)',
+    javascript:
+      'const fs = require("fs");\n\nconst names = fs\n  .readdirSync(".")\n  .filter((name) => fs.statSync(name).isFile())\n  .sort();\n\nfor (const name of names) {\n  console.log(name);\n}',
+    typescript:
+      'import * as fs from "fs";\n\nconst names: string[] = fs\n  .readdirSync(".")\n  .filter((name) => fs.statSync(name).isFile())\n  .sort();\n\nfor (const name of names) {\n  console.log(name);\n}',
+    go:
+      'package main\n\nimport (\n    "fmt"\n    "os"\n    "sort"\n)\n\nfunc main() {\n    entries, err := os.ReadDir(".")\n    if err != nil {\n        panic(err)\n    }\n    var names []string\n    for _, entry := range entries {\n        if !entry.IsDir() {\n            names = append(names, entry.Name())\n        }\n    }\n    sort.Strings(names)\n    for _, name := range names {\n        fmt.Println(name)\n    }\n}',
+    c:
+      '#include <dirent.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n#include <sys/stat.h>\n\nstatic int compare(const void *a, const void *b) {\n    return strcmp(*(const char *const *)a, *(const char *const *)b);\n}\n\nint main(void) {\n    DIR *dir = opendir(".");\n    if (dir == NULL) {\n        return 1;\n    }\n    char *names[1024];\n    size_t count = 0;\n    struct dirent *entry;\n    while ((entry = readdir(dir)) != NULL && count < 1024) {\n        struct stat info;\n        if (stat(entry->d_name, &info) == 0 && S_ISREG(info.st_mode)) {\n            names[count++] = strdup(entry->d_name);\n        }\n    }\n    closedir(dir);\n    qsort(names, count, sizeof(char *), compare);\n    for (size_t i = 0; i < count; i++) {\n        printf("%s\\n", names[i]);\n        free(names[i]);\n    }\n    return 0;\n}',
+    cpp:
+      "#include <algorithm>\n#include <filesystem>\n#include <iostream>\n#include <string>\n#include <vector>\n\nint main() {\n    namespace fs = std::filesystem;\n    std::vector<std::string> names;\n    for (const auto &entry : fs::directory_iterator(\".\")) {\n        if (entry.is_regular_file()) {\n            names.push_back(entry.path().filename().string());\n        }\n    }\n    std::sort(names.begin(), names.end());\n    for (const auto &name : names) {\n        std::cout << name << '\\n';\n    }\n}",
+    java:
+      'import java.io.File;\nimport java.util.Arrays;\n\npublic class Main {\n    public static void main(String[] args) {\n        File[] entries = new File(".").listFiles();\n        if (entries == null) {\n            return;\n        }\n        String[] names = Arrays.stream(entries)\n            .filter(File::isFile)\n            .map(File::getName)\n            .sorted()\n            .toArray(String[]::new);\n        for (String name : names) {\n            System.out.println(name);\n        }\n    }\n}',
+    csharp:
+      'using System;\nusing System.IO;\nusing System.Linq;\n\nclass Program {\n    static void Main() {\n        var names = Directory.GetFiles(".")\n            .Select(Path.GetFileName)\n            .OrderBy(name => name, StringComparer.Ordinal);\n        foreach (var name in names) {\n            Console.WriteLine(name);\n        }\n    }\n}',
+    ruby:
+      'names = Dir.entries(".").select { |name| File.file?(name) }.sort\nnames.each { |name| puts name }',
+  },
 };
 
 function normalizeProgramPrompt(prompt) {
   return normalizePrompt(String(prompt || "").replace(/c\+\+/gi, " cpp ").replace(/c#/gi, " csharp "));
 }
 
+// CJK scripts have no inter-word spaces, so the whitespace-based phrase/token
+// matchers never isolate a CJK word. When the expected alias itself contains a
+// CJK ideograph we fall back to a substring test (issue #312). Mirrors
+// `engine_hello_world::contains_cjk` on the Rust side.
+function containsCjk(text) {
+  return /[㐀-䶿一-鿿豈-﫿぀-ヿ㄀-ㄯ]/.test(
+    String(text || ""),
+  );
+}
+
+function containsProgramToken(normalized, token) {
+  if (containsCjk(token)) return String(normalized || "").includes(token);
+  return String(normalized || "")
+    .split(/\s+/)
+    .includes(token);
+}
+
 function containsProgramPhrase(normalized, phrase) {
+  if (containsCjk(phrase)) return normalized.includes(phrase);
   return (
     normalized === phrase ||
     normalized.startsWith(`${phrase} `) ||
@@ -9392,20 +9469,84 @@ function programLanguageFromPrompt(normalized) {
   return null;
 }
 
+// Issue #312: the Russian reporter wrote "Напиши мне программу на Rust, которая
+// выдаёт список файлов...". English-only trigger words made the worker return
+// "unknown". These mirror `PROGRAM_NOUNS`/`PROGRAM_VERBS` in
+// `src/intent_formalization.rs` so both engine surfaces detect the same
+// multilingual "write a <noun>" phrasings.
+const PROGRAM_NOUNS = [
+  "program",
+  "programme",
+  "script",
+  "code",
+  "программа",
+  "программу",
+  "программе",
+  "программы",
+  "программку",
+  "скрипт",
+  "код",
+  // Hindi: प्रोग्राम (program), स्क्रिप्ट (script), कोड (code).
+  "प्रोग्राम",
+  "स्क्रिप्ट",
+  "कोड",
+  // Chinese: 程序 (program), 脚本 (script), 代码 (code).
+  "程序",
+  "脚本",
+  "代码",
+];
+const PROGRAM_VERBS = [
+  "write",
+  "create",
+  "show",
+  "generate",
+  "make",
+  "build",
+  "напиши",
+  "напишите",
+  "создай",
+  "создайте",
+  "сделай",
+  "сделайте",
+  "покажи",
+  "покажите",
+  "сгенерируй",
+  "сгенерируйте",
+  // Hindi imperatives: लिखो / लिखें (write), बनाओ / बनाएं (make), दिखाओ / दिखाएं (show).
+  "लिखो",
+  "लिखें",
+  "बनाओ",
+  "बनाएं",
+  "दिखाओ",
+  "दिखाएं",
+  // Chinese verbs: 编写 / 写 (write), 创建 (create), 生成 (generate), 制作 (make), 显示 (show).
+  "编写",
+  "写",
+  "创建",
+  "生成",
+  "制作",
+  "显示",
+];
+
 function writeProgramParameters(prompt) {
   const normalized = normalizeProgramPrompt(prompt);
-  const tokens = normalized.split(/\s+/).filter(Boolean);
   const task = programTaskFromPrompt(normalized);
   const language = programLanguageFromPrompt(normalized);
   const asksForProgram =
-    tokens.includes("program") &&
-    ["write", "create", "show"].some((verb) => tokens.includes(verb));
+    PROGRAM_NOUNS.some((noun) => containsProgramToken(normalized, noun)) &&
+    PROGRAM_VERBS.some((verb) => containsProgramToken(normalized, verb));
   if (!task && !asksForProgram) return null;
   return { language, task };
 }
 
-function writeProgramExecutionLines(language, code, output) {
-  if (language === "javascript") {
+function writeProgramExecutionLines(language, task, code, output) {
+  // Issue #312: the list-files snippet reads the real filesystem through Node's
+  // `fs`/`require`, which the browser Web Worker sandbox does not provide, and
+  // its output depends on the directory contents. Never claim it "ran" here -
+  // detect the Node API use and report the documented sample-directory output
+  // instead, so the demo stays honest.
+  const needsNodeApis = /\brequire\s*\(|\bimport\b/.test(code);
+  if (language === "javascript" && !needsNodeApis) {
     const logs = [];
     try {
       const runner = new Function("console", `"use strict"; ${code}`);
@@ -9421,13 +9562,23 @@ function writeProgramExecutionLines(language, code, output) {
       return [`Execution status: failed in sandbox - ${error.message || String(error)}.`];
     }
   }
-  return [
-    `Execution status: not run - the browser sandbox cannot invoke a ${language} toolchain. Copy the snippet into a ${language} environment to verify.`,
-    "Expected output after verification:",
-    "```text",
-    output,
-    "```",
+  const reason =
+    language === "javascript"
+      ? `the browser sandbox has no filesystem access for this ${language} program`
+      : `the browser sandbox cannot invoke a ${language} toolchain`;
+  const lines = [
+    `Execution status: not run - ${reason}. Copy the snippet into a ${language} environment to verify.`,
   ];
+  if (task === "list_files") {
+    lines.push(
+      "The output depends on the directory; for a sample directory holding " +
+        "exactly `Cargo.toml`, `README.md`, and `main.rs` it is:",
+    );
+  } else {
+    lines.push("Expected output after verification:");
+  }
+  lines.push("```text", output, "```");
+  return lines;
 }
 
 function tryWriteProgram(prompt) {
@@ -9453,6 +9604,10 @@ function tryWriteProgram(prompt) {
   }
   const languageInfo = WRITE_PROGRAM_LANGUAGES[language];
   const taskInfo = WRITE_PROGRAM_TASKS[task];
+  // The sandbox can only execute self-contained JavaScript; a snippet that pulls
+  // in Node APIs (e.g. the list-files `require("fs")`) cannot run here (#312).
+  const ranInSandbox =
+    language === "javascript" && !/\brequire\s*\(|\bimport\b/.test(template);
   const lines = [];
   lines.push(`Here is a minimal ${languageInfo.name} ${taskInfo.label} program:`);
   lines.push("");
@@ -9460,7 +9615,7 @@ function tryWriteProgram(prompt) {
   lines.push(template);
   lines.push("```");
   lines.push("");
-  lines.push(...writeProgramExecutionLines(language, template, taskInfo.output));
+  lines.push(...writeProgramExecutionLines(language, task, template, taskInfo.output));
   return {
     intent: "write_program",
     content: lines.join("\n"),
@@ -9473,7 +9628,7 @@ function tryWriteProgram(prompt) {
       task === "hello_world"
         ? `legacy_intent:hello_world_${language}`
         : `legacy_intent:write_program_${task}_${language}`,
-      `execution_status:${language}:${language === "javascript" ? "ran" : "unavailable"}`,
+      `execution_status:${language}:${ranInSandbox ? "ran" : "unavailable"}`,
     ],
   };
 }
@@ -13412,6 +13567,17 @@ async function solve(prompt, history, prefs, userContext = {}) {
     }, formalizationContext);
   }
 
+  // Issue #312: compute the write-program result once so a concrete program
+  // request (a known language + task with a template) can take precedence over
+  // the concept lookup, while the "unsupported" variant still falls back after
+  // the definition/concept handlers. This mirrors the Rust solver, where
+  // `SelectedRule::WriteProgram` is promoted above `handle_specialized_pattern`
+  // so "напиши программу на Rust" is not answered as a "Rust" encyclopedia entry.
+  let writeProgramResult;
+  const writeProgram = () => {
+    if (writeProgramResult === undefined) writeProgramResult = tryWriteProgram(prompt);
+    return writeProgramResult;
+  };
   const syncHandlers = [
     { name: "tryHistorical", run: () => tryHistorical(prompt, history) },
     { name: "tryBrainstormingRequest", run: () => tryBrainstormingRequest(prompt, normalized) },
@@ -13428,11 +13594,18 @@ async function solve(prompt, history, prefs, userContext = {}) {
     { name: "tryArithmetic", run: () => tryArithmetic(prompt) },
     { name: "tryJavaScriptExecution", run: () => tryJavaScriptExecution(prompt) },
     {
+      name: "tryWriteProgramConcrete",
+      run: () => {
+        const hit = writeProgram();
+        return hit && hit.intent === "write_program" ? hit : null;
+      },
+    },
+    {
       name: "tryDefinitionMerge",
       run: () => tryDefinitionMerge(prompt, { allowPlainConcept: autoDefinitionFusion }),
     },
     { name: "tryConceptLookup", run: () => tryConceptLookup(prompt) },
-    { name: "tryWriteProgram", run: () => tryWriteProgram(prompt) },
+    { name: "tryWriteProgram", run: () => writeProgram() },
     {
       name: "tryPlaywrightScript",
       run: () => tryPlaywrightScript(prompt, preferences, language),
