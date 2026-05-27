@@ -564,17 +564,23 @@ artifacts, not feature code; the feature work itself is tracked by the created
 planning issues. The first foundation batch (E1-E14, [#246](https://github.com/link-assistant/formal-ai/issues/246)-[#259](https://github.com/link-assistant/formal-ai/issues/259))
 and the second follow-up batch (E15-E20, [#278](https://github.com/link-assistant/formal-ai/issues/278)-[#283](https://github.com/link-assistant/formal-ai/issues/283))
 are all closed and merged. A third audit (2026-05-26) re-read the closed issues
-against the vision and identified the remaining gaps tracked by the next batch
-(E21-E27): reasoning under unknowns, intent formalization in Links Notation,
-generalized parametric intents, substitution-rule (`replace`/`when … do …`)
-handlers over link CRUD, natural-language access to memory/APIs/code execution,
-a general code-modifying/executing agent, and industry benchmark datasets.
+against the vision and opened the reasoning batch E21-E27 ([#298](https://github.com/link-assistant/formal-ai/issues/298)-[#304](https://github.com/link-assistant/formal-ai/issues/304)):
+reasoning under unknowns, intent formalization in Links Notation, generalized
+parametric intents, substitution-rule (`replace`/`when … do …`) handlers over
+link CRUD, natural-language access to memory/APIs/code execution, a general
+code-modifying/executing agent, and industry benchmark datasets — **now all
+closed and merged** (PRs #305-#311). A fourth audit (2026-05-27) found the
+remaining gap is the **generality of the synthesis step** (the imported industry
+benchmark suite passes 0/5) and opened the synthesis batch E28-E32 ([#313](https://github.com/link-assistant/formal-ai/issues/313)-[#317](https://github.com/link-assistant/formal-ai/issues/317)):
+a general link-native synthesis substrate, computed math/word-problem and
+counting answers, general program synthesis from spec+tests, general text
+manipulation, and a grown/ratcheted benchmark suite.
 
 | ID | Requirement | Status |
 | --- | --- | --- |
-| R246 | Documentation must fully track the implementation progress of every vision pillar and stay in sync with the actual code. | Implemented by adding and then refreshing `ROADMAP.md`: the 2026-05-26 audit records that E1-E20 closed, zero tracked `#[ignore]` specification tests remain, and the new E21-E27 batch owns the remaining vision gaps. |
+| R246 | Documentation must fully track the implementation progress of every vision pillar and stay in sync with the actual code. | Implemented by adding and then refreshing `ROADMAP.md`: the 2026-05-27 audit records that E1-E27 closed, zero tracked `#[ignore]` specification tests remain, and the new E28-E32 batch owns the remaining vision gap (general synthesis; benchmark suite 0/5). |
 | R247 | Stale documentation references must be reconciled with the real state of the code. | Implemented by reconciling `ARCHITECTURE.md` §16/§17, `REQUIREMENTS.md`, `VISION.md`, and the replaced pre-implementation roadmap, and grounding the post-merge status in `docs/case-studies/issue-244/raw-data/*`. |
 | R248 | Issue data must be collected under `docs/case-studies/issue-244` and supplemented with online research. | Implemented with `raw-data/` snapshots (issue/PR/comments/CI and `raw-data/issue-survey.md`) and `raw-data/online-research.md` (Abstract Wikipedia/Wikifunctions, OpenCog AtomSpace/Hyperon, Lean/Z3, neuro-symbolic KG surveys, SWE-bench/HumanEval/MBPP/GSM8K/MATH dataset licensing), summarized and cited per `NON-GOALS.md`. |
-| R249 | A deep case study must list each and all requirements from the issue and propose a solution plan per requirement, checking existing components/libraries. | Implemented by `docs/case-studies/issue-244/README.md` and `proposed-issues.md`; both cover the E1-E14, E15-E20, and E21-E27 batches with per-requirement plans and existing-component checks. |
-| R250 | Critical problems that block the vision must be planned to be fixed first, on a solid foundation. | Implemented by the completed foundation batches E1-E20 and refreshed by the E21-E27 sequence, which is ordered foundation-first (intent formalization and reasoning-under-unknowns before the general coding agent). |
-| R251 | All the issues needed to fully implement the vision must be created and recorded. | Implemented by opening E1-E14 ([#246](https://github.com/link-assistant/formal-ai/issues/246)-[#259](https://github.com/link-assistant/formal-ai/issues/259)), E15-E20 ([#278](https://github.com/link-assistant/formal-ai/issues/278)-[#283](https://github.com/link-assistant/formal-ai/issues/283)), and the E21-E27 follow-up batch recorded in `docs/case-studies/issue-244/proposed-issues.md` and opened on GitHub. |
+| R249 | A deep case study must list each and all requirements from the issue and propose a solution plan per requirement, checking existing components/libraries. | Implemented by `docs/case-studies/issue-244/README.md` and `proposed-issues.md`; both cover the E1-E14, E15-E20, E21-E27, and E28-E32 batches with per-requirement plans and existing-component checks. |
+| R250 | Critical problems that block the vision must be planned to be fixed first, on a solid foundation. | Implemented by the completed foundation batches E1-E27 and refreshed by the E28-E32 synthesis sequence, which is ordered foundation-first (the general link-native synthesis substrate before the per-domain math, program, and text synthesis that build on it). |
+| R251 | All the issues needed to fully implement the vision must be created and recorded. | Implemented by opening E1-E14 ([#246](https://github.com/link-assistant/formal-ai/issues/246)-[#259](https://github.com/link-assistant/formal-ai/issues/259)), E15-E20 ([#278](https://github.com/link-assistant/formal-ai/issues/278)-[#283](https://github.com/link-assistant/formal-ai/issues/283)), the E21-E27 reasoning batch ([#298](https://github.com/link-assistant/formal-ai/issues/298)-[#304](https://github.com/link-assistant/formal-ai/issues/304), closed by PRs #305-#311), and the E28-E32 synthesis batch ([#313](https://github.com/link-assistant/formal-ai/issues/313)-[#317](https://github.com/link-assistant/formal-ai/issues/317)), all recorded in `docs/case-studies/issue-244/proposed-issues.md` and opened on GitHub. |

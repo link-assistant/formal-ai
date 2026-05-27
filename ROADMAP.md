@@ -3,9 +3,12 @@
 This file is the single source of truth for how much of `VISION.md` is actually
 built. It was introduced for issue
 [#244](https://github.com/link-assistant/formal-ai/issues/244) and refreshed on
-2026-05-26 in three passes: after the first planning batch (E1-E14) merged to
-`main`, after the follow-up batch (E15-E20) merged, and again when the
-reasoning-focused batch (E21-E27) was opened.
+2026-05-26 in three passes (after the first planning batch E1-E14 merged to
+`main`, after the follow-up batch E15-E20 merged, and again when the
+reasoning-focused batch E21-E27 was opened) and on 2026-05-27 for a fourth pass:
+the E21-E27 reasoning batch is now also closed and merged, so this file records
+the next gap — **generality of the synthesis step**, surfaced by the imported
+industry-benchmark suite passing 0/5.
 
 It complements the existing docs rather than replacing them:
 
@@ -39,12 +42,27 @@ The post-merge audit found:
   E18 [#281](https://github.com/link-assistant/formal-ai/issues/281) → #290,
   E19 [#282](https://github.com/link-assistant/formal-ai/issues/282) → #291,
   E20 [#283](https://github.com/link-assistant/formal-ai/issues/283) → #293.
-- The remaining gap is no longer storage, surfaces, or compilation. The
-  2026-05-26 third-pass audit (driven by issue #244 feedback) found that the
-  solver still leans on a **fixed intent catalogue** and tends to fall back to an
-  "I can't answer that" opener on anything unmatched, instead of reasoning under
-  unknowns. That reasoning gap is owned by the new batch **E21-E27**
-  ([#298](https://github.com/link-assistant/formal-ai/issues/298)-[#304](https://github.com/link-assistant/formal-ai/issues/304)).
+- The 2026-05-26 third-pass audit (driven by issue #244 feedback) found that the
+  solver still leaned on a **fixed intent catalogue** and tended to fall back to
+  an "I can't answer that" opener on anything unmatched, instead of reasoning
+  under unknowns. That reasoning batch **E21-E27**
+  ([#298](https://github.com/link-assistant/formal-ai/issues/298)-[#304](https://github.com/link-assistant/formal-ai/issues/304))
+  is **now closed** by merged PRs #305-#311 (see the Completed Planning Batch
+  table). Every message is now formalized into a Links-Notation intent
+  (`src/intent_formalization.rs`), unmatched prompts run a reasoning-under-unknowns
+  loop (`src/solver_unknown_reasoning.rs`) instead of a canned opener, `write a
+  program` is one parametric intent, substitution rules (`src/substitution.rs`)
+  run over link CRUD, and a permissive industry-benchmark slice is imported
+  (`data/benchmarks/industry-suite.lino`).
+- The 2026-05-27 fourth-pass audit found the next gap is the **generality of the
+  synthesis step itself**. The universal 11-step loop is the main path for every
+  prompt (verified in `src/solver.rs::solve_with_history_probability_store_and_intent_cache`),
+  but the candidate-synthesis step still resolves answers from seeded handlers
+  rather than deriving them. The imported industry benchmark suite makes this
+  concrete: it currently passes **0/5** — the solver cannot yet write the
+  HumanEval/MBPP Python functions or compute the GSM8K (`18`), MATH (`11`), and
+  BIG-bench object-counting (`3`) answers. Closing that gap is the next batch
+  **E28-E32** (see the Next Planning Batch table).
 
 The raw audit data is preserved under
 `docs/case-studies/issue-244/raw-data/`:
@@ -85,13 +103,14 @@ Status legend:
 | 16 | Desktop application path | Built | `desktop/` Electron shell | Packaged by [#280](https://github.com/link-assistant/formal-ai/issues/280) (PR #289). |
 | 17 | Reusable associative packages, handlers, permissions, triggers | Built | `src/associative_package.rs`, handler registry, tool-call gating | Unified by [#281](https://github.com/link-assistant/formal-ai/issues/281) (PR #290). |
 | 18 | Rust-to-WebAssembly parity with JavaScript reserved for UI/glue | Built | `src/web_engine_core.rs` plus the browser worker | Worker logic moved into Rust/WASM by [#282](https://github.com/link-assistant/formal-ai/issues/282) (PR #291). |
-| 19 | Reasoning under unknowns rather than a canned fallback | Open | `src/unknown_opener.rs` only varies a canned opener; no data-gathering or reasoning steps | Implement reasoning-under-unknowns in E21 [#298](https://github.com/link-assistant/formal-ai/issues/298). |
-| 20 | Routing by formalized intent, not a fixed catalogue | Open | `src/engine.rs::select_rule_for` / `SelectedRule`, `src/solver.rs::SPECIALIZED_HANDLERS` are hardcoded; `FormalizationCandidate` is not the router | Formalize every message into a Links-Notation intent and cache prior reasoning in E22 [#299](https://github.com/link-assistant/formal-ai/issues/299). |
-| 21 | Parametric intents instead of one intent per language | Open | `src/engine_hello_world.rs::HELLO_WORLD_PROGRAMS` enumerates ~10 languages | Collapse into a `write a program(language, task)` intent in E23 [#300](https://github.com/link-assistant/formal-ai/issues/300). |
-| 22 | Substitution-rule handlers over link CRUD | Open | Handlers are Rust functions; skill compiler only does trigger/response | Add `link-cli`-style `replace x y` / `when n do m` rules as data on link CRUD in E24 [#301](https://github.com/link-assistant/formal-ai/issues/301). |
-| 23 | Natural-language access to memory, APIs, and code execution | Open | A few specialized handlers exist; no general NL → query/call/execute path; no runtime code execution in core | Implement permissioned NL access in E25 [#302](https://github.com/link-assistant/formal-ai/issues/302). |
-| 24 | General code-modifying / executing agent (not a memorizer) | Open | Agent mode is gated but never executes; programs are memorized seeds | Build the general coding agent with expanded tests in E26 [#303](https://github.com/link-assistant/formal-ai/issues/303). |
-| 25 | Measured against industry benchmark datasets | Open | Only own seeds and specification tests; no external benchmarks | Import permissive programming/math/problem-solving benchmarks in E27 [#304](https://github.com/link-assistant/formal-ai/issues/304). |
+| 19 | Reasoning under unknowns rather than a canned fallback | Built | `src/solver_unknown_reasoning.rs`, active `unknown_reasoning` specs record `reasoning:known:` / `reasoning:unknown:` / `reasoning:candidate_source:` / `reasoning:gather_attempt:` and ask at most one minimal question | Implemented by E21 [#298](https://github.com/link-assistant/formal-ai/issues/298) (PR #305). The synthesis it falls into is still seeded — see pillar 26. |
+| 20 | Routing by formalized intent, not a fixed catalogue | Built | `src/intent_formalization.rs`, `src/solver_formalization.rs`, active `intent_formalization` specs; every prompt is formalized into a Links-Notation intent and prior reasoning is cached | Implemented by E22 [#299](https://github.com/link-assistant/formal-ai/issues/299) (PR #306). `SPECIALIZED_HANDLERS` remain as a precedence table behind the formalized router. |
+| 21 | Parametric intents instead of one intent per language | Built | `SelectedRule::WriteProgram` with `program_parameter:language` / `program_parameter:task`, active `code_generation` specs | Implemented by E23 [#300](https://github.com/link-assistant/formal-ai/issues/300) (PR #307). |
+| 22 | Substitution-rule handlers over link CRUD | Built | `src/substitution.rs`, active `substitution_rules` specs (`replace x y`, `when n do m` over link CRUD) | Implemented by E24 [#301](https://github.com/link-assistant/formal-ai/issues/301) (PR #308). |
+| 23 | Natural-language access to memory, APIs, and code execution | Built | `src/solver_handlers/`, active `natural_language_access` specs; permission-gated NL → query/call/execute paths | Implemented by E25 [#302](https://github.com/link-assistant/formal-ai/issues/302) (PR #309). |
+| 24 | General code-modifying / executing agent (not a memorizer) | Partial | `src/agent.rs` bounded/isolated workspace runs allowlisted commands, active `agent_isolation` specs | Workspace execution built by E26 [#303](https://github.com/link-assistant/formal-ai/issues/303) (PR #310). The agent can run a verified candidate, but does not yet **synthesize** a novel program from scratch — see pillar 26. |
+| 25 | Measured against industry benchmark datasets | Built | `data/benchmarks/industry-suite.lino`, `tests/unit/specification/benchmarks.rs`; HumanEval/MBPP/GSM8K/MATH/BIG-bench slice runs deterministically in CI | Imported by E27 [#304](https://github.com/link-assistant/formal-ai/issues/304) (PR #311). The suite currently reports **0/5 passing**, which defines pillar 26. |
+| 26 | General synthesis: derive solutions for the benchmark domains instead of seeding them | Open | The benchmark suite passes 0/5; `record_candidates` resolves answers from seeded handlers, so general program synthesis, math word problems, and general counting are not yet solved | Make the universal loop's synthesis step general in E28-E32 ([#313](https://github.com/link-assistant/formal-ai/issues/313)-[#317](https://github.com/link-assistant/formal-ai/issues/317)); success = benchmark suite passes increase without per-case memorization. |
 
 ## Completed Planning Batch
 
@@ -117,6 +136,13 @@ Status legend:
 | E18 | [#281](https://github.com/link-assistant/formal-ai/issues/281) | [#290](https://github.com/link-assistant/formal-ai/pull/290) | Unified reusable associative packages and the permission model. |
 | E19 | [#282](https://github.com/link-assistant/formal-ai/issues/282) | [#291](https://github.com/link-assistant/formal-ai/pull/291) | Completed Rust-to-WebAssembly solver parity for the browser worker. |
 | E20 | [#283](https://github.com/link-assistant/formal-ai/issues/283) | [#293](https://github.com/link-assistant/formal-ai/pull/293) | Generalized the skill compiler beyond trigger/response. |
+| E21 | [#298](https://github.com/link-assistant/formal-ai/issues/298) | [#305](https://github.com/link-assistant/formal-ai/pull/305) | Reason under unknowns (state known/unknown, gather, ask one minimal question) instead of a canned fallback. |
+| E22 | [#299](https://github.com/link-assistant/formal-ai/issues/299) | [#306](https://github.com/link-assistant/formal-ai/pull/306) | Formalize every message into a Links-Notation intent and cache prior reasoning. |
+| E23 | [#300](https://github.com/link-assistant/formal-ai/issues/300) | [#307](https://github.com/link-assistant/formal-ai/pull/307) | Collapse per-language program intents into one parametric `write a program` intent. |
+| E24 | [#301](https://github.com/link-assistant/formal-ai/issues/301) | [#308](https://github.com/link-assistant/formal-ai/pull/308) | Add `link-cli`-style `replace x y` / `when n do m` substitution rules over link CRUD. |
+| E25 | [#302](https://github.com/link-assistant/formal-ai/issues/302) | [#309](https://github.com/link-assistant/formal-ai/pull/309) | Gate natural-language access to memory, APIs, and code execution. |
+| E26 | [#303](https://github.com/link-assistant/formal-ai/issues/303) | [#310](https://github.com/link-assistant/formal-ai/pull/310) | Add the bounded, isolated agent workspace that runs allowlisted commands. |
+| E27 | [#304](https://github.com/link-assistant/formal-ai/issues/304) | [#311](https://github.com/link-assistant/formal-ai/pull/311) | Import a permissive industry-benchmark slice (HumanEval/MBPP/GSM8K/MATH/BIG-bench). |
 
 Issues [#262](https://github.com/link-assistant/formal-ai/issues/262) and
 [#272](https://github.com/link-assistant/formal-ai/issues/272) were closed by
@@ -126,24 +152,33 @@ the E1-E14 vision batch.
 
 ## Next Planning Batch
 
-The third-pass 2026-05-26 audit (issue #244 feedback) found the remaining gap is
-**reasoning behaviour**, not storage or surfaces: the solver still routes on a
-fixed intent catalogue and falls back to a canned opener on anything unmatched.
-The E21-E27 batch moves the assistant from intent-matching toward reasoning. It
-is ordered foundation-first — intent formalization and reasoning-under-unknowns
-come before the general coding agent that depends on them. Each issue lists its
-code-grounded acceptance criteria; the deep per-requirement plan lives in
+The fourth-pass 2026-05-27 audit (issue #244 feedback) found the remaining gap is
+**the generality of the synthesis step**, not storage, surfaces, routing, or
+reasoning scaffolding. The universal 11-step loop is the main path for every
+prompt and the E21-E27 batch made it formalize intents, reason under unknowns,
+and run substitution rules and a bounded agent. But the synthesis step
+(`record_candidates`) still resolves answers from seeded handlers, so the
+imported industry benchmark suite passes **0/5**: the solver cannot yet write the
+HumanEval/MBPP Python functions or compute the GSM8K (`18`), MATH (`11`), and
+BIG-bench object-counting (`3`) answers.
+
+The E28-E32 batch makes the synthesis step **derive** solutions over the links
+network instead of looking them up, one benchmark domain at a time, with the
+benchmark pass count as the objective metric. It is ordered foundation-first —
+the general link-native synthesis substrate and arithmetic evaluation come
+before the program-synthesis and natural-language reasoning that build on them.
+Each issue must move benchmark cases from failing to passing **without
+per-case memorization** (no answer string keyed on the prompt). Each issue lists
+its code-grounded acceptance criteria; the deep per-requirement plan lives in
 `docs/case-studies/issue-244/proposed-issues.md`.
 
 | Epic | Issue | Vision gap | Code anchor it must replace/extend |
 | --- | --- | --- | --- |
-| E21 | [#298](https://github.com/link-assistant/formal-ai/issues/298) | Reason under unknowns; gather missing data instead of failing | `src/unknown_opener.rs` canned fallback |
-| E22 | [#299](https://github.com/link-assistant/formal-ai/issues/299) | Formalize every message into a Links-Notation intent; cache prior reasoning | `src/engine.rs::SelectedRule` / `src/solver.rs::SPECIALIZED_HANDLERS` |
-| E23 | [#300](https://github.com/link-assistant/formal-ai/issues/300) | One parametric `write a program` intent, not one per language | `src/engine_hello_world.rs::HELLO_WORLD_PROGRAMS` |
-| E24 | [#301](https://github.com/link-assistant/formal-ai/issues/301) | `link-cli`-style `replace x y` / `when n do m` rules over link CRUD | `src/skill_compiler.rs` trigger/response only |
-| E25 | [#302](https://github.com/link-assistant/formal-ai/issues/302) | NL to query memory, call APIs, execute code (permissioned) | `SPECIALIZED_HANDLERS` http/web/exec stubs |
-| E26 | [#303](https://github.com/link-assistant/formal-ai/issues/303) | General code-writing/modifying/executing agent + many more tests | gated-but-unexecuted agent mode |
-| E27 | [#304](https://github.com/link-assistant/formal-ai/issues/304) | Import permissive programming/math/problem-solving benchmarks | own seeds + specification tests only |
+| E28 | [#313](https://github.com/link-assistant/formal-ai/issues/313) | General link-native synthesis substrate: `record_candidates` derives candidates by composing decomposed sub-results over the links network instead of returning seeded answers | `src/solver.rs::record_candidates` / `src/solver_helpers.rs` |
+| E29 | [#314](https://github.com/link-assistant/formal-ai/issues/314) | Deterministic arithmetic/word-problem reasoning so GSM8K (`18`) and MATH (`11`) are computed, not seeded | `src/proof_engine/` + math handlers; BIG-bench counting (`3`) as general counting |
+| E30 | [#315](https://github.com/link-assistant/formal-ai/issues/315) | General program synthesis from spec+tests so HumanEval/MBPP functions are derived and verified by the agent, not memorized | `SelectedRule::WriteProgram` seeds + `src/agent.rs` execution |
+| E31 | [#316](https://github.com/link-assistant/formal-ai/issues/316) | General text-manipulation over arbitrary user input (transform/extract/count/rewrite) routed through substitution rules | `src/substitution.rs` + text handlers |
+| E32 | [#317](https://github.com/link-assistant/formal-ai/issues/317) | Grow the benchmark suite past the 5-case slice and gate progress on rising pass counts (anti-memorization held-out checks) | `data/benchmarks/industry-suite.lino` + `tests/unit/specification/benchmarks.rs` |
 
 ## Verification Contract
 

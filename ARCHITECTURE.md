@@ -872,46 +872,50 @@ adds one file (or extends one matrix) without touching the rest.
 
 ## 16. Open Questions
 
-The original issue #244 architecture questions and the E1-E20 follow-up batches
-are merged. The 2026-05-26 audit (issue #244, third pass) found that the largest
-remaining gap is reasoning behaviour, not storage or surfaces. The open
-questions tracked by the next batch (E21-E27) are:
+The original issue #244 architecture questions, the E1-E20 follow-up batches,
+and the reasoning batch E21-E27 are merged (PRs #305-#311). Every message is now
+formalized into a Links-Notation intent before routing (`src/intent_formalization.rs`),
+unmatched prompts run a reasoning-under-unknowns loop (`src/solver_unknown_reasoning.rs`)
+instead of a canned opener, per-language program intents collapse into a parametric
+`SelectedRule::WriteProgram`, substitution rules run over link CRUD (`src/substitution.rs`),
+natural language can query memory / call APIs / execute code under the permission
+model (`src/solver_handlers/`), a bounded isolated agent runs allowlisted commands
+(`src/agent.rs`), and a permissive industry benchmark slice is imported
+(`data/benchmarks/industry-suite.lino`).
 
-1. **Reasoning under unknowns (E21, [#298](https://github.com/link-assistant/formal-ai/issues/298)).**
-   The solver still tends to emit an "I can't answer that" opener whenever a
-   prompt does not match a known route. Instead it should reason about what is
-   knowable, what data is missing, and which accessible source could supply it,
-   recording each reasoning step as links before giving up.
-2. **Intent formalization as Links Notation (E22, [#299](https://github.com/link-assistant/formal-ai/issues/299)).**
-   Routing is driven by a fixed intent catalogue. Every message should first be
-   formalized into a Links-Notation / binary-links intent (task, question,
-   requirement) that records what is known and what is relevant, with previous
-   reasoning cached so repeated messages are not re-reasoned from scratch.
-3. **Generalized parametric intents (E23, [#300](https://github.com/link-assistant/formal-ai/issues/300)).**
-   Narrow per-language intents (`hello world rust`, `hello world js`) should
-   collapse into one parametric intent (`write a program` with language/task
-   parameters) resolved from the formalized intent rather than enumerated.
-4. **Substitution-rule handlers over link CRUD (E24, [#301](https://github.com/link-assistant/formal-ai/issues/301)).**
-   Handlers today are Rust functions attached to events. We also want
-   `link-cli`-style substitution operations — `replace x y` where `x` and `y`
-   are patterns, composable into `when n do m` rules — so behaviour can be
-   defined as data attached to CRUD operations of links.
-5. **Natural-language access to memory, APIs, and code execution (E25, [#302](https://github.com/link-assistant/formal-ai/issues/302)).**
-   Natural language should be able to query the link memory, call accessible
-   APIs directly, and execute code, all gated by the existing permission model.
-6. **General code-modifying / executing agent (E26, [#303](https://github.com/link-assistant/formal-ai/issues/303)).**
-   The goal is not a narrow agent that memorizes code but a system that can
-   write, modify, execute, and run terminal actions on arbitrary code, proven by
-   a much larger automated test suite.
-7. **Industry benchmark datasets (E27, [#304](https://github.com/link-assistant/formal-ai/issues/304)).**
-   Import permissively-licensed programming, problem-solving, and math
-   benchmarks (e.g. HumanEval/MBPP-style, GSM8K/MATH-style) as `.lino` test
-   cases that force the most general algorithm rather than seed memorization.
+The 2026-05-27 audit (issue #244, fourth pass) found that the largest remaining
+gap is the **generality of the synthesis step**, not storage, surfaces, routing,
+or reasoning scaffolding. The universal 11-step loop is the main path for every
+prompt (`src/solver.rs::solve_with_history_probability_store_and_intent_cache`),
+but the synthesis step (`record_candidates`) still resolves answers from seeded
+handlers rather than deriving them — the imported benchmark suite passes **0/5**.
+The open questions tracked by the next batch (E28-E32) are:
+
+1. **General link-native synthesis substrate (E28, [#313](https://github.com/link-assistant/formal-ai/issues/313)).**
+   `record_candidates` should build candidates by composing decomposed
+   sub-results over the links network (the answer is a projection of solved
+   sub-links) instead of returning a seed keyed on the prompt. Foundation for the
+   rest of the batch.
+2. **Computed math / word-problem and counting answers (E29, [#314](https://github.com/link-assistant/formal-ai/issues/314)).**
+   GSM8K (`18`), MATH (`11`), and BIG-bench object-counting (`3`) must be
+   computed by the decision/arithmetic procedure over the decomposed problem, not
+   seeded.
+3. **General program synthesis from spec + tests (E30, [#315](https://github.com/link-assistant/formal-ai/issues/315)).**
+   HumanEval/MBPP functions (and issue #312's "list files" program) must be
+   derived from the spec and verified by executing the candidate against tests in
+   the bounded agent workspace, not memorized.
+4. **General text manipulation over arbitrary input (E31, [#316](https://github.com/link-assistant/formal-ai/issues/316)).**
+   Transform/extract/count/rewrite requests on arbitrary user text should be
+   solved through composed substitution rules over the parsed text links.
+5. **Grow and ratchet the benchmark suite (E32, [#317](https://github.com/link-assistant/formal-ai/issues/317)).**
+   Expand the suite past the 5-case slice with held-out/paraphrased variants and
+   gate CI on a rising pass-count floor so synthesis gains stick and memorization
+   cannot pass.
 
 A still-open lower-priority question carried over from the E20 batch: arbitrary
 natural-language programming (executing reviewed generated stubs in sandboxed
 runtimes) remains outside the current supported subset of
-`src/skill_compiler.rs` and is folded into E25/E26 above.
+`src/skill_compiler.rs` and is folded into E30 above.
 
 Pull requests that close any of these should update the corresponding row in
 the table in Section 2 and link the new module.

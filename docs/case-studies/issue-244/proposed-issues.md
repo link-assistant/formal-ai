@@ -9,7 +9,11 @@ The 2026-05-25 batch (E1-E14) is now closed on `main`. The 2026-05-26
 post-implementation audit opened a narrower follow-up batch (E15-E20) for the
 requirements that remained partial after those merges, and that batch is now
 closed too. A third-pass audit (acting on issue #244 feedback) opened the
-reasoning-focused batch E21-E27, whose full bodies are at the end of this file.
+reasoning-focused batch E21-E27 — **now also closed** by merged PRs #305-#311.
+A fourth-pass audit (2026-05-27) found the remaining gap is the **generality of
+the synthesis step** (the imported industry benchmark suite passes 0/5) and
+opened the synthesis batch E28-E32, whose full bodies are at the end of this
+file.
 
 **Opened issues (2026-05-25):** E1 → [#246](https://github.com/link-assistant/formal-ai/issues/246),
 E2 → [#247](https://github.com/link-assistant/formal-ai/issues/247),
@@ -41,6 +45,13 @@ E24 → [#301](https://github.com/link-assistant/formal-ai/issues/301),
 E25 → [#302](https://github.com/link-assistant/formal-ai/issues/302),
 E26 → [#303](https://github.com/link-assistant/formal-ai/issues/303),
 E27 → [#304](https://github.com/link-assistant/formal-ai/issues/304).
+All closed by merged PRs #305-#311.
+
+**Opened issues (2026-05-27, synthesis batch):** E28 → [#313](https://github.com/link-assistant/formal-ai/issues/313),
+E29 → [#314](https://github.com/link-assistant/formal-ai/issues/314),
+E30 → [#315](https://github.com/link-assistant/formal-ai/issues/315),
+E31 → [#316](https://github.com/link-assistant/formal-ai/issues/316),
+E32 → [#317](https://github.com/link-assistant/formal-ai/issues/317).
 
 **Design rules that bind every epic** (from `../README.md`):
 
@@ -916,3 +927,167 @@ E27 as the measurement corpus):
 | No NL memory/API/exec path; no runtime execution | E25 |
 | Memorized code; agent gated-but-unexecuted | E26 |
 | Own seeds only; no industry benchmarks | E27 |
+
+---
+
+## Synthesis Batch (E28-E32)
+
+The fourth-pass 2026-05-27 audit, acting on issue #244 feedback, found that the
+universal 11-step loop is the main path for every prompt and the E21-E27 batch
+made it formalize intents, reason under unknowns, run substitution rules, and
+drive a bounded agent — but the synthesis step (`record_candidates`) still
+resolves answers from seeded handlers rather than deriving them. The imported
+industry benchmark suite makes this concrete: it passes **0/5**. These five epics
+make the synthesis step **derive** solutions over the links network, one
+benchmark domain at a time, with the benchmark pass count as the objective metric
+and an anti-memorization rule binding every epic (no answer string keyed on the
+prompt; paraphrased/renumbered held-out variants must pass only via derivation).
+They are ordered foundation-first: E28 is the general synthesis substrate that
+E29-E31 build on, and E32 grows and ratchets the measurement corpus.
+
+The full bodies opened in the repository are reproduced below.
+
+## E28 — General link-native synthesis substrate (derive candidates, don't seed them) — FOUNDATION/BLOCKER
+
+Parent: #244. Part of the **synthesis batch (E28-E32)** opened by the 2026-05-27 fourth-pass audit.
+
+**Problem.** The universal 11-step loop is the main path for every prompt (`src/solver.rs::solve_with_history_probability_store_and_intent_cache`), and the E21-E27 batch made it formalize intents, reason under unknowns, run substitution rules, and drive a bounded agent. But the synthesis step still *looks up* answers: `record_candidates` (`src/solver.rs`, `src/solver_helpers.rs`) and the `SPECIALIZED_HANDLERS` precedence table resolve a prompt to a seeded handler output rather than **deriving** a result by composing the decomposed sub-problems over the links network. The concrete symptom is that the imported industry benchmark suite (`tests/unit/specification/benchmarks.rs`, `data/benchmarks/industry-suite.lino`) passes **0/5**.
+
+This contradicts VISION.md's "doublet links let us see any data and knowledge as links, so we can have truly universal algorithms that operate directly on links" — the synthesis step must compose sub-results over the links network, not return a memorized string keyed on the prompt.
+
+**Scope.**
+1. Make `record_decomposition` produce sub-impulses that the synthesis step actually consumes: each sub-impulse is solved (recursively, bounded by `max_decomposition_depth`) and recorded as a link.
+2. Make `record_candidates` build candidates by **composing** the sub-results over the links network (a candidate is a composition of solved sub-links), so the answer is a projection of the recorded sub-solutions, never a seed lookup.
+3. Keep the existing handlers as **candidate generators** inside synthesis (their outputs become scored candidates), not as the routing decision — preserving the green regression floor.
+4. Record every composition step as a link so "why did you answer that?" replays the actual derivation.
+
+**Existing components to reuse.** `src/solver.rs` loop (`record_decomposition`, `record_candidates`, `record_validation`), `src/solver_helpers.rs`, `src/event_log.rs`, the E22 formalized intent, the E16 probabilistic ranking for candidate selection.
+
+**Acceptance criteria.**
+- Decomposed sub-impulses are solved and recorded as links, and the final answer is built by composing those sub-result links (assert the trace contains the sub-result links the answer is composed from).
+- At least one benchmark domain moves from failing toward passing purely through composition, **without** adding a per-case answer string keyed on the prompt (anti-memorization: a paraphrased prompt with the same structure must reach the same derivation).
+- Determinism preserved: same prompt + same `SolverConfig` ⇒ same composition trace and answer.
+- Regression floor intact: the currently-green spec files stay green; handlers now win as scored candidates.
+- New specification tests in a `synthesis.rs` (or extended `reasoning_loop.rs`) covering decompose→solve-subparts→compose.
+
+**Requirement links.** Issue #244 "general algorithm for everything, operating directly on links"; `ROADMAP.md` pillar 26. Blocks: E29, E30, E31.
+
+---
+
+## E29 — Compute math/word-problem and counting answers (don't seed them) — [GSM8K, MATH, BIG-bench]
+
+Parent: #244. Part of the **synthesis batch (E28-E32)**.
+
+**Problem.** Three of the five failing benchmark cases are numeric reasoning the solver should *compute*, not look up:
+- `gsm8k_test_0_duck_eggs` expects `18` (a multi-step arithmetic word problem),
+- `math_train_7_algebra_substitution` expects `11` (algebraic substitution),
+- `bigbench_object_counting_instruments` expects `3` (count items of a category from a list).
+
+Today `record_candidates` resolves these from seeded handlers, so the suite reports them as failing (`benchmark pass/fail counts: passed=0 failed=5`). VISION.md forbids neural inference for reasoning; the answer must come from a deterministic decision/arithmetic procedure over the formalized, decomposed problem.
+
+**Scope.**
+1. Word-problem arithmetic: decompose a GSM8K-style prompt into its quantities and operations (via E28 decomposition), evaluate them deterministically through `src/proof_engine/` / the calculator delegation path, and compose the numeric result.
+2. Algebraic substitution: extend the decision procedure to substitute and evaluate the MATH-style expression to a closed value.
+3. General counting/aggregation: count items of a requested category from an enumerated list (BIG-bench object_counting) as a general links-aggregation over the parsed entities, not a per-prompt seed.
+4. Surface the computation in the trace (the steps, not just the number), and declare the result with a `trace:` pointer.
+
+**Existing components to reuse.** `src/proof_engine/decision.rs` (boolean/linear decision modules), `calculator_delegation.rs` model, E28 decomposition/composition, `src/intent_formalization.rs` for extracting quantities and the target.
+
+**Acceptance criteria.**
+- `gsm8k_test_0_duck_eggs`, `math_train_7_algebra_substitution`, and `bigbench_object_counting_instruments` pass, with the answer computed from the decomposed problem (assert the trace shows the intermediate quantities/steps).
+- Anti-memorization: changing the numbers in a structurally identical prompt yields the correctly recomputed answer (add at least one paraphrased/renumbered held-out case per domain).
+- Deterministic and offline-safe; no neural inference used for the reasoning.
+- The benchmark suite's reported pass count rises accordingly; regression floor intact.
+
+**Requirement links.** Issue #244 "do everything as humans do, but algorithmically"; `ROADMAP.md` pillar 26; depends on E28.
+
+---
+
+## E30 — General program synthesis from spec + tests (derive and verify, don't memorize) — [HumanEval, MBPP]
+
+Parent: #244. Part of the **synthesis batch (E28-E32)**.
+
+**Problem.** Two failing benchmark cases require writing a program from a specification:
+- `humaneval_0_has_close_elements` expects ```` ```python ```` and `def has_close_elements`,
+- `mbpp_2_similar_elements` expects ```` ```python ````, `def similar_elements`, and `set`.
+
+Today `SelectedRule::WriteProgram` resolves these from seed templates (`src/seed.rs` / `engine_hello_world.rs`), so they fail when the requested function is not a seeded hello-world. The bounded agent built in E26 (`src/agent.rs`) can run allowlisted commands in an isolated workspace, but the loop does not yet **synthesize** a novel function from the spec and **verify** it against the provided tests. Issue #312 ("Напиши мне программу на Rust, которая выдаёт список файлов в текущей директории") is a concrete real-world instance of the same gap.
+
+**Scope.**
+1. Treat a `write a program` request as a synthesis sub-task: from the formalized intent + the provided/derived tests, derive a candidate function body (composing known link-native code fragments via E28), not a seed lookup.
+2. Verify each candidate by executing it (and its tests) in the E26 bounded agent workspace; iterate on failures (TDD step) rather than returning the first guess.
+3. Return the first candidate that passes the tests, with the execution status and the test outcome recorded in the trace.
+4. Keep memorized seeds only as one candidate generator among others; a previously-seeded program must still be reproducible, but unseen specs must be solved by derive-and-verify.
+
+**Existing components to reuse.** `SelectedRule::WriteProgram` (`src/solver.rs`), `src/agent.rs` bounded workspace, E25 permissioned execution path, E28 composition, `code_generation.rs` and `agent_isolation.rs` specs.
+
+**Acceptance criteria.**
+- `humaneval_0_has_close_elements` and `mbpp_2_similar_elements` pass by deriving the function and verifying it against tests in the isolated workspace (assert the trace records candidate execution + test pass, not a seed hit).
+- Anti-memorization: at least one additional unseen HumanEval/MBPP-style function (not present as a seed) is solved by the same path.
+- Issue #312's "list files" program is produced and (where the surface allows) executed, with declared execution status.
+- Sandbox/time-budget/secret-guard from E26 enforced; deterministic where execution is deterministic; regression floor intact.
+
+**Requirement links.** Issue #244 "write programs, algorithms as asked … change code"; issue #312; `ROADMAP.md` pillar 26; depends on E28, E26.
+
+---
+
+## E31 — General text manipulation over arbitrary user input (transform / extract / count / rewrite)
+
+Parent: #244. Part of the **synthesis batch (E28-E32)**.
+
+**Problem.** Issue #244 asks that we "do any text manipulation task on any text input the user will give us." Today text operations are handled by a scattered set of specialized handlers; there is no general path that treats an arbitrary "do X to this text" request as a composition of substitution rules over the links network. The E24 substitution engine (`src/substitution.rs`, `replace x y` / `when n do m`) exists but is not yet the general route for user-supplied text transforms.
+
+**Scope.**
+1. Route a "transform/extract/count/rewrite this text" request through the formalized intent into a composition of E24 substitution rules over the parsed text links (uppercase/lowercase, replace, reverse words, extract matches, count occurrences, deduplicate, sort lines, etc.).
+2. Operate on the user-supplied input directly (collect only the minimum required data — the text and the requested operation — no memoized per-input answers).
+3. Record the rule chain in the trace so the transformation is inspectable and replayable as Links Notation.
+4. Compose multiple operations ("lowercase then count unique words") via E28 composition rather than a dedicated handler per combination.
+
+**Existing components to reuse.** `src/substitution.rs` (E24), `substitution_rules.rs` spec, E22 formalized intent, E28 composition, `src/event_log.rs` trace links.
+
+**Acceptance criteria.**
+- A representative set of text-manipulation requests (transform, extract, count, rewrite, and at least one composed multi-step) is solved over arbitrary user-supplied input through composed substitution rules, with the rule chain recorded in the trace.
+- Anti-memorization: the same operation on different input text produces the correctly recomputed result (no per-input seed).
+- Deterministic; minimum-data (only the supplied text + operation are consumed); regression floor intact.
+- New specification tests covering each operation class plus a composed case.
+
+**Requirement links.** Issue #244 "any text manipulation task on any text input"; `ROADMAP.md` pillar 26; depends on E28, E24.
+
+---
+
+## E32 — Grow the benchmark suite and gate progress on rising pass counts (anti-memorization)
+
+Parent: #244. Part of the **synthesis batch (E28-E32)**.
+
+**Problem.** The E27 import (`data/benchmarks/industry-suite.lino`, `tests/unit/specification/benchmarks.rs`) is a deliberately small 5-case slice, and every case is `allow_current_failure` so the suite reports `passed=0 failed=5` without failing CI. That is the right starting contract, but it does not yet (a) measure generalization on held-out cases, or (b) ratchet: nothing prevents a future regression from silently dropping the pass count, and nothing forces E29-E31 progress to stick.
+
+**Scope.**
+1. Grow the suite beyond 5 cases per the upstream permissive licenses already documented in `data/benchmarks/LICENSES.md` (more HumanEval/MBPP/GSM8K/MATH/BIG-bench cases), keeping provenance and `source_ref` per source.
+2. Add **held-out / paraphrased** variants (renumbered word problems, paraphrased specs, different input text) that share structure with seeded examples, so a memorized answer cannot pass them — the anti-memorization guard for E29-E31.
+3. Add a monotonic **pass-count floor**: a recorded baseline pass count that CI asserts the suite meets or exceeds, so E29-E31 gains cannot silently regress, while `allow_current_failure` still keeps unmet cases from breaking CI.
+4. Keep the report deterministic and offline-safe; surface the pass/fail breakdown for reviewers.
+
+**Existing components to reuse.** `tests/unit/specification/benchmarks.rs`, `data/benchmarks/industry-suite.lino`, `data/benchmarks/LICENSES.md`, `docs/case-studies/issue-244/raw-data/online-research.md` provenance notes.
+
+**Acceptance criteria.**
+- The suite contains more than 5 cases with held-out/paraphrased variants, each with recorded permissive license + `source_ref`.
+- CI asserts a recorded minimum pass count (ratchet) that rises as E29-E31 land, and fails if the pass count drops below the recorded floor.
+- A held-out variant of each solved domain passes only via derivation (proving no per-case memorization).
+- No verbatim copying beyond licensed dataset content; provenance note updated.
+
+**Requirement links.** Issue #244 "solid verification using test coverage that we really can solve these"; `ROADMAP.md` pillar 26; depends on E29, E30, E31.
+
+---
+
+## Synthesis-batch coverage check
+
+Each E28-E32 epic maps to a concrete failing benchmark case (or the substrate /
+measurement they depend on):
+
+| Failing benchmark case (expected) | Epic |
+| --- | --- |
+| (substrate for all five) `record_candidates` derives instead of seeds | E28 |
+| `gsm8k_test_0_duck_eggs` (`18`), `math_train_7_algebra_substitution` (`11`), `bigbench_object_counting_instruments` (`3`) | E29 |
+| `humaneval_0_has_close_elements`, `mbpp_2_similar_elements` | E30 |
+| general text manipulation on arbitrary input (issue #244 requirement, not yet a benchmark case) | E31 |
+| grow the suite past 5 cases + ratchet pass count (anti-memorization) | E32 |

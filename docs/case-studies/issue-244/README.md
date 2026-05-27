@@ -33,12 +33,15 @@ are:
   issue created for #244 (the "create all the issues" deliverable).
 - The `Issue #244` row block added to [`REQUIREMENTS.md`](../../../REQUIREMENTS.md).
 
-> 2026-05-26 update: the first planning batch (E1-E14, issues #246-#259) and the
-> follow-up batch (E15-E20, issues #278-#283) have both been implemented and
-> merged to `main`. This case study preserves the original audits as historical
-> context and records the **third-pass audit** that, acting on issue #244
-> feedback, found the remaining gap is reasoning behaviour and created the
-> reasoning batch **E21-E27 (#298-#304)**.
+> 2026-05-27 update: the first planning batch (E1-E14, issues #246-#259), the
+> follow-up batch (E15-E20, issues #278-#283), and the reasoning batch (E21-E27,
+> issues #298-#304, closed by PRs #305-#311) have all been implemented and merged
+> to `main`. This case study preserves the original audits as historical context
+> and records the **fourth-pass audit** that, acting on issue #244 feedback,
+> confirmed the architecture uses the universal 11-step loop but found the
+> remaining gap is the **generality of the synthesis step** (the imported industry
+> benchmark suite passes 0/5) and created the synthesis batch
+> **E28-E32 (#313-#317)**.
 
 ## Captured Artifacts
 
@@ -84,6 +87,8 @@ Downloaded and generated artifacts live under `raw-data/`:
 | 2026-05-26 | Six remaining partial requirements were opened as E15-E20: #278, #279, #280, #281, #282, and #283. |
 | 2026-05-26 | E15-E20 implemented and merged (#285, #287, #289, #290, #291, #293); `origin/main` re-merged into the issue branch. |
 | 2026-05-26 | Third-pass audit on issue #244 feedback: the solver still routes on a fixed intent catalogue and falls back to a canned opener on unmatched prompts. Seven reasoning-focused epics opened as E21-E27: #298, #299, #300, #301, #302, #303, and #304. |
+| 2026-05-26/27 | E21-E27 implemented and merged (PRs #305-#311); `origin/main` re-merged into the issue branch. |
+| 2026-05-27 | Fourth-pass audit on issue #244 feedback: the universal 11-step loop is the main path, but the synthesis step still resolves seeded answers — the imported industry benchmark suite passes 0/5. Five synthesis-focused epics opened as E28-E32: #313, #314, #315, #316, and #317. The universal problem-solving algorithm diagram was added to `README.md`. |
 
 ## Requirements Extracted From Issue #244
 
@@ -156,6 +161,50 @@ behaviour, not storage, surfaces, or compilation:
 These six findings map one-to-one onto the E21-E27 epics, ordered
 foundation-first (E22 intent formalization and E21 reasoning-under-unknowns
 before the E26 general coding agent that depends on them).
+
+## Fourth-Pass Synthesis Audit (2026-05-27)
+
+After E21-E27 merged (PRs #305-#311), issue #244 feedback again asked whether the
+vision is fully achieved: "do we really [are we] ready to universally solve any
+problem and write any program, do any scientific research using our universal
+problem solving algorithm?" A re-audit confirmed:
+
+- **The architecture genuinely uses the universal algorithm.** Every prompt walks
+  the same 11-step loop in `src/solver.rs::solve_with_history_probability_store_and_intent_cache`:
+  impulse → language → **intent formalization to Links Notation**
+  (`src/intent_formalization.rs`) → context/history → **decomposition**
+  (`record_decomposition`) → specialized/unknown-reasoning/rule →
+  **candidate synthesis** (`record_candidates`) → **TDD-style validation**
+  (`record_validation`) → **simplification** (`trace:simplification`) →
+  **documentation** (`trace`). Unmatched prompts run the reasoning-under-unknowns
+  loop (`src/solver_unknown_reasoning.rs`) instead of a canned opener. The
+  diagram of this loop is now embedded in the repository `README.md`.
+- **But the synthesis step is not yet general.** `record_candidates` resolves
+  answers from seeded handlers rather than **deriving** them by composing
+  decomposed sub-results over the links network. The honest readiness answer is
+  therefore **no, not yet**: the E27 industry benchmark suite
+  (`tests/unit/specification/benchmarks.rs`, `data/benchmarks/industry-suite.lino`)
+  reports `benchmark pass/fail counts: passed=0 failed=5`. The solver cannot yet
+  write the HumanEval `has_close_elements` / MBPP `similar_elements` Python
+  functions or compute the GSM8K (`18`), MATH (`11`), and BIG-bench
+  object-counting (`3`) answers.
+
+This single finding — the generality of the synthesis step — is owned by the
+five E28-E32 epics, ordered foundation-first (E28 general link-native synthesis
+substrate before the per-domain E29 math, E30 program, and E31 text synthesis
+that build on it; E32 grows and ratchets the benchmark measurement):
+
+| Fourth-pass finding (code anchor) | Epic |
+| --- | --- |
+| `record_candidates` seeds instead of deriving over the links network | E28 (#313) |
+| GSM8K/MATH/BIG-bench answers seeded, not computed | E29 (#314) |
+| HumanEval/MBPP functions seeded, not derived+verified | E30 (#315) |
+| no general text manipulation over arbitrary input | E31 (#316) |
+| benchmark suite is a 5-case slice with no ratchet | E32 (#317) |
+
+The acceptance criterion that binds the whole batch: benchmark pass counts must
+rise **without per-case memorization** (no answer string keyed on the prompt;
+paraphrased/renumbered held-out variants must pass only via derivation).
 
 ## Initial State Of The Code (2026-05-25 Audit Summary)
 
@@ -243,7 +292,12 @@ For E15-E20, the criteria are the remaining partial requirements discovered by
 the 2026-05-26 audit. For E21-E27, the criteria are code-grounded: each issue
 names the exact symbol it must replace or extend (e.g. `src/unknown_opener.rs`,
 `src/engine.rs::SelectedRule`, `HELLO_WORLD_PROGRAMS`) and the new specification
-tests it must add. The design principles that bind them:
+tests it must add. For E28-E32, each issue is anchored to a concrete failing
+benchmark case (e.g. `humaneval_0_has_close_elements`, `gsm8k_test_0_duck_eggs`)
+and the synthesis symbol it must generalize (`src/solver.rs::record_candidates`,
+`src/proof_engine/`, `SelectedRule::WriteProgram`, `src/substitution.rs`), with a
+shared anti-memorization rule: pass counts must rise via derivation, not seeded
+answers. The design principles that bind them:
 
 - **Foundation first (Q13).** E1 (one doublet store as the source of truth) and
   E2 (one reasoning loop as the only entry path) are blockers; the other epics
@@ -333,6 +387,25 @@ bodies in `proposed-issues.md`):
 | E25 | [#302](https://github.com/link-assistant/formal-ai/issues/302) | NL access to memory, APIs, and code execution |
 | E26 | [#303](https://github.com/link-assistant/formal-ai/issues/303) | General code-modifying / executing agent + many more tests |
 | E27 | [#304](https://github.com/link-assistant/formal-ai/issues/304) | Import permissive industry benchmark datasets |
+
+E21-E27 merged via PRs #305-#311. The fourth-pass synthesis audit
+(2026-05-27) confirmed the universal 11-step loop is the verified single main
+path but the synthesis step still resolves seeded answers instead of deriving
+them by composing decomposed sub-results over the links network — the imported
+industry benchmark suite (E27/#304) passes 0/5. That gap opened the E28-E32
+synthesis batch (full bodies in `proposed-issues.md`):
+
+| Epic | Issue | Vision gap |
+| --- | --- | --- |
+| E28 | [#313](https://github.com/link-assistant/formal-ai/issues/313) | General link-native synthesis substrate (derive, don't seed) |
+| E29 | [#314](https://github.com/link-assistant/formal-ai/issues/314) | Compute math / word-problem & counting answers from structure |
+| E30 | [#315](https://github.com/link-assistant/formal-ai/issues/315) | General program synthesis from spec + tests |
+| E31 | [#316](https://github.com/link-assistant/formal-ai/issues/316) | General text manipulation over link structure |
+| E32 | [#317](https://github.com/link-assistant/formal-ai/issues/317) | Grow / ratchet the benchmark suite (derivation, not memorization) |
+
+Every E28-E32 epic carries an anti-memorization rule: pass counts must rise via
+derivation, and paraphrased / renumbered held-out variants must pass only when
+the answer is composed from sub-results, never recalled from a seeded table.
 
 ## Verification
 
