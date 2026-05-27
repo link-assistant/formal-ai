@@ -4,12 +4,14 @@
 //! takes the prompt (and pre-lowercased `normalized` view) plus a mutable
 //! event log, and returns `Some(SymbolicAnswer)` when it claims the impulse.
 
+mod agent_workspace;
 mod behavior_rules;
 mod benchmark_prompts;
 mod calendar;
 mod definition_merge;
 mod feature_capability;
 mod meta_explanation;
+mod natural_language_tools;
 mod playwright_script;
 mod self_awareness;
 mod software_project;
@@ -18,6 +20,7 @@ mod user_intent;
 mod web_requests;
 mod web_search_intent;
 
+pub use agent_workspace::try_agent_workspace_task;
 pub use behavior_rules::try_behavior_rules_with_runtime;
 pub use benchmark_prompts::{
     try_brainstorming_request, try_conversation_topic_request, try_coreference_request,
@@ -27,6 +30,7 @@ pub use calendar::try_calendar_reasoning;
 pub use definition_merge::{try_definition_merge, try_definition_merge_by_default};
 pub use feature_capability::{try_feature_capability, CapabilityRuntime};
 pub use meta_explanation::{try_meta_explanation, try_meta_explanation_with_runtime};
+pub use natural_language_tools::try_natural_language_tool_request;
 pub use playwright_script::try_playwright_script;
 pub use self_awareness::SelfAwarenessRuntime;
 pub use software_project::try_software_project_request;
@@ -680,25 +684,28 @@ pub fn try_write_script(
     let program = hello_world_program_by_alias(normalized)?;
     let body = format!(
         "Here is a minimal {} script:\n\n```{}\n{}\n```\n\n{}",
-        program.language,
-        program.code_fence,
-        program.code,
+        program.language.name,
+        program.language.code_fence,
+        program.template.code,
         format_write_script_execution(program)
     );
-    let intent = format!("write_script_{}", program.slug);
+    let intent = format!("write_script_{}", program.language.slug);
     log.append(
         "execution_status",
-        program.execution.status.label().to_owned(),
+        program.language.execution.status.label().to_owned(),
     );
     log.append(
         "execution_environment",
-        program.execution.environment.to_owned(),
+        program.language.execution.environment.to_owned(),
     );
     Some(finalize_simple(
         prompt,
         log,
         &intent,
-        &format!("response:hello_world:{}", program.slug),
+        &format!(
+            "response:write_program:hello_world:{}",
+            program.language.slug
+        ),
         &body,
         1.0,
     ))

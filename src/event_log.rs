@@ -153,6 +153,22 @@ pub fn build_evidence_links(prompt: &str, log: &EventLog, response_link: &str) -
             "formalization_unresolved" => {
                 format!("formalization_unresolved:{}", event.payload)
             }
+            "intent_formalization" => format!("intent_formalization:{}", event.id),
+            "intent_formalization_cache" => {
+                format!(
+                    "intent_formalization_cache:{}",
+                    event.payload.replace(' ', ":")
+                )
+            }
+            "intent_formalization:kind" => {
+                format!("intent_formalization:kind:{}", event.payload)
+            }
+            "intent_formalization:route" => {
+                format!("intent_formalization:route:{}", event.payload)
+            }
+            "intent_formalization:relevant" => {
+                format!("intent_formalization:relevant:{}", event.payload)
+            }
             // Structured fact_query trace events (Issue #127): preserve the
             // payload verbatim so memory consumers can render the parsed
             // relation, subject, and cache decision (rather than a hash id).
@@ -201,6 +217,12 @@ pub fn build_evidence_links(prompt: &str, log: &EventLog, response_link: &str) -
             }
             "url_navigate:request" => format!("url_navigate:request:{}", event.payload),
             "url_preview:iframe" => format!("url_preview:iframe:{}", event.payload),
+            "tool_call" => format!("tool_call:{}", event.payload),
+            "tool_parameter" => format!("tool_parameter:{}", event.payload.replace(' ', ":")),
+            "tool_result" => format!("tool_result:{}", event.payload.replace(' ', ":")),
+            "tool_permission" => {
+                format!("tool_permission:{}", event.payload.replace(' ', ":"))
+            }
             "procedural_how_to:request" => {
                 format!("procedural_how_to:request:{}", event.payload)
             }
@@ -255,6 +277,17 @@ pub fn build_evidence_links(prompt: &str, log: &EventLog, response_link: &str) -
             "calculation:engine" => format!("calculation:engine:{}", event.payload),
             "calculation:lino" => format!("calculation:lino:{}", event.payload),
             "intent" => format!("intent:{}", event.payload),
+            "program_parameter:language" => {
+                format!("program_parameter:language:{}", event.payload)
+            }
+            "program_parameter:task" => format!("program_parameter:task:{}", event.payload),
+            "program_parameters" => {
+                format!(
+                    "program_parameters:{}",
+                    event.payload.replace([' ', ','], ":")
+                )
+            }
+            "legacy_intent" => format!("legacy_intent:{}", event.payload),
             "response" => event.payload.clone(),
             "agent_mode:opted_in" => format!("agent_mode:opted_in:{}", event.id),
             "agent_mode:active" => format!("agent_mode:active:{}", event.id),
@@ -269,6 +302,12 @@ pub fn build_evidence_links(prompt: &str, log: &EventLog, response_link: &str) -
             }
             "policy:offline" => String::from("policy:offline"),
             "policy:inappropriate_content" => String::from("policy:inappropriate_content"),
+            "policy:agent_mode_required_for_tools" => {
+                format!("policy:agent_mode_required_for_tools:{}", event.payload)
+            }
+            "policy:package_permission_required" => {
+                format!("policy:package_permission_required:{}", event.payload)
+            }
             "policy:temperature_selection" => {
                 format!("policy:temperature_selection:{}", event.id)
             }

@@ -1,5 +1,6 @@
 extern crate alloc;
 
+pub mod agent;
 pub mod arithmetic;
 pub mod associative_package;
 pub(crate) mod calculation;
@@ -10,6 +11,7 @@ pub(crate) mod engine_hello_world;
 pub mod event_log;
 pub(crate) mod fuzzy;
 pub mod github_logs;
+pub mod intent_formalization;
 pub mod language;
 pub mod link_store;
 pub(crate) mod links_format;
@@ -28,6 +30,8 @@ pub(crate) mod solver_handler_units;
 pub(crate) mod solver_handlers;
 pub(crate) mod solver_handlers_policy;
 pub(crate) mod solver_helpers;
+pub(crate) mod solver_unknown_reasoning;
+pub mod substitution;
 pub mod summarization;
 pub mod telegram;
 pub mod telegram_runtime;
@@ -36,6 +40,11 @@ pub(crate) mod unknown_opener;
 pub mod web_engine_core;
 pub mod web_search_core;
 
+pub use agent::{
+    parse_agent_plan, run_agent_plan, AgentAction, AgentActionKind, AgentActionStatus,
+    AgentCommandResult, AgentError, AgentRun, AgentRunStatus, AgentWorkspace, AgentWorkspaceConfig,
+    PlannedAgentAction,
+};
 pub use associative_package::{
     default_associative_packages, default_package_store, AssociativePackage, PackageDependency,
     PackageHandler, PackageImportError, PackageInstallError, PackagePermission,
@@ -47,6 +56,10 @@ pub use github_logs::{
     collect_github_logs, collect_github_logs_with_runner, github_log_capture_plan,
     render_github_log_plan, GithubLogCapture, GithubLogCapturedFile, GithubLogCollectionSummary,
     GithubLogCollectorConfig,
+};
+pub use intent_formalization::{
+    formalize_intent, impulse_id_for, IntentFormalization, IntentFormalizationCache,
+    IntentFormalizationCacheEntry, IntentKind,
 };
 pub use language::{detect as detect_language, Language};
 #[cfg(feature = "doublets-native")]
@@ -95,6 +108,11 @@ pub use solver::{
     UniversalSolver,
 };
 pub use solver_helpers::humanize_url;
+pub use substitution::{
+    CrudEvent, LinkPattern, SubstitutionAction, SubstitutionGraph, SubstitutionLink,
+    SubstitutionRule, SubstitutionRuleError, SubstitutionRuleSet, SubstitutionTrace,
+    SubstitutionTraceReport,
+};
 pub use summarization::{
     apply_compound_words, apply_semantic_primes, classify_sentence, deformalize, describe_project,
     describe_readme, formalize, formalize_dialog, formalize_markdown, generate_chat_title,

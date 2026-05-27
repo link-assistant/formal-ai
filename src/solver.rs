@@ -25,9 +25,13 @@ use std::fmt::Write as _;
 
 use crate::engine::{
     answer_links_notation, language_aware_answer_for, language_aware_intent_for,
-    response_link_for_intent, select_rule_for, stable_id, SelectedRule, SymbolicAnswer,
+    response_link_for_intent, stable_id, SelectedRule, SymbolicAnswer,
 };
 use crate::event_log::{build_evidence_links, EventLog};
+use crate::intent_formalization::{
+    ordered_handler_names, record_intent_formalization, select_rule_for_intent,
+    IntentFormalization, IntentFormalizationCache, IntentFormalizationCacheEntry,
+};
 use crate::language::{detect as detect_language, Language};
 use crate::probability::ProbabilityStore;
 use crate::proof_engine::ProofRenderConfig;
@@ -37,12 +41,13 @@ use crate::solver_handler_docs::try_docs_method_explanation;
 use crate::solver_handler_how::{try_how_it_works, try_how_to_procedure};
 use crate::solver_handler_units::try_incompatible_units;
 use crate::solver_handlers::{
-    finalize_simple, try_algorithm, try_arithmetic, try_behavior_rules_with_runtime,
-    try_brainstorming_request, try_calendar_reasoning, try_capabilities, try_clarification,
-    try_concept_lookup, try_conversation_memory, try_conversation_topic_request,
-    try_coreference_request, try_definition_merge, try_definition_merge_by_default,
-    try_execution_failure, try_fact_lookup, try_feature_capability, try_http_fetch, try_ill_formed,
-    try_javascript_execution, try_meta_explanation, try_meta_explanation_with_runtime,
+    finalize_simple, try_agent_workspace_task, try_algorithm, try_arithmetic,
+    try_behavior_rules_with_runtime, try_brainstorming_request, try_calendar_reasoning,
+    try_capabilities, try_clarification, try_concept_lookup, try_conversation_memory,
+    try_conversation_topic_request, try_coreference_request, try_definition_merge,
+    try_definition_merge_by_default, try_execution_failure, try_fact_lookup,
+    try_feature_capability, try_http_fetch, try_ill_formed, try_javascript_execution,
+    try_meta_explanation, try_meta_explanation_with_runtime, try_natural_language_tool_request,
     try_network_query, try_opinion_question, try_playwright_script, try_project_lookup,
     try_proof_request, try_proof_request_with_config, try_punctuation_only_prompt,
     try_roleplay_request, try_shell_refusal, try_software_project_request, try_source_conflict,
@@ -55,6 +60,7 @@ use crate::solver_helpers::{
     is_destructive_action, is_forget_request, is_unbounded_autonomy, is_unbounded_loop,
     record_candidates, record_decomposition, record_validation, requires_external_lookup,
 };
+use crate::solver_unknown_reasoning::{answer_unknown_prompt, UnknownReasoningConfig};
 use crate::translation::{
     formalize_prompt_candidates, select_formalization_candidate_with_probability_store,
     FormalizationDecision, FormalizationSelectionConfig,
@@ -504,6 +510,22 @@ impl UniversalSolver {
         history: &[ConversationTurn],
         probability_store: &ProbabilityStore,
     ) -> SymbolicAnswer {
+        let mut intent_cache = IntentFormalizationCache::new();
+        self.solve_with_history_probability_store_and_intent_cache(
+            prompt,
+            history,
+            probability_store,
+            &mut intent_cache,
+        )
+    }
+
+    pub(crate) fn solve_with_history_probability_store_and_intent_cache(
+        &self,
+        prompt: &str,
+        history: &[ConversationTurn],
+        probability_store: &ProbabilityStore,
+        intent_cache: &mut IntentFormalizationCache,
+    ) -> SymbolicAnswer {
         let mut log = EventLog::new();
 
         for turn in history {
@@ -520,38 +542,56 @@ impl UniversalSolver {
         log.append("language", language.slug().to_owned());
         probability_store.replay_into_event_log(&mut log, self.config.offline);
 
-        let formalization_candidates = formalize_prompt_candidates(prompt, language.slug());
-        let formalization_selection = select_formalization_candidate_with_probability_store(
-            &formalization_candidates,
-            FormalizationSelectionConfig {
-                temperature: self.config.temperature,
-                guess_probability: self.config.guess_probability,
-                questioning_rigor: self.config.questioning_rigor,
-            },
-            prompt,
-            probability_store,
-            self.config.offline,
-        );
-        record_formalization_selection(&mut log, &formalization_selection);
-        if let FormalizationDecision::Clarify { question, .. } = &formalization_selection.decision {
-            return finalize_simple(
+        let intent_entry = if let Some(formalization) = intent_cache.get(prompt).cloned() {
+            IntentFormalizationCacheEntry {
+                formalization,
+                cache_hit: true,
+            }
+        } else {
+            let formalization_candidates = formalize_prompt_candidates(prompt, language.slug());
+            let formalization_selection = select_formalization_candidate_with_probability_store(
+                &formalization_candidates,
+                FormalizationSelectionConfig {
+                    temperature: self.config.temperature,
+                    guess_probability: self.config.guess_probability,
+                    questioning_rigor: self.config.questioning_rigor,
+                },
                 prompt,
-                &mut log,
-                "clarify_interpretation",
-                "response:clarify_interpretation",
-                question,
-                0.5,
+                probability_store,
+                self.config.offline,
             );
-        }
-        if let Some(candidate) = formalization_selection.selected_candidate() {
-            record_formalization(&mut log, candidate);
-        }
+            record_formalization_selection(&mut log, &formalization_selection);
+            if let FormalizationDecision::Clarify { question, .. } =
+                &formalization_selection.decision
+            {
+                return finalize_simple(
+                    prompt,
+                    &mut log,
+                    "clarify_interpretation",
+                    "response:clarify_interpretation",
+                    question,
+                    0.5,
+                );
+            }
+            if let Some(candidate) = formalization_selection.selected_candidate() {
+                record_formalization(&mut log, candidate);
+            }
+            intent_cache.formalize_or_insert(
+                prompt,
+                language.slug(),
+                formalization_selection.selected_candidate(),
+            )
+        };
+        record_intent_formalization(&mut log, &intent_entry);
+        let intent_formalization = intent_entry.formalization;
 
         log.append("search:local", prompt.to_owned());
 
         record_decomposition(&mut log, prompt, self.config.max_decomposition_depth);
 
-        if let Some(answer) = self.handle_specialized_pattern(prompt, &mut log) {
+        if let Some(answer) =
+            self.handle_specialized_pattern(prompt, &intent_formalization, &mut log)
+        {
             return answer;
         }
 
@@ -559,23 +599,51 @@ impl UniversalSolver {
             return answer;
         }
 
-        let rule = select_rule_for(prompt);
-        let intent = language_aware_intent_for(&rule, language);
-        log.append("intent", intent.clone());
-
-        if let SelectedRule::HelloWorld(program) = &rule {
-            log.append(
-                "execution_status",
-                program.execution.status.label().to_owned(),
-            );
-            log.append(
-                "execution_environment",
-                program.execution.environment.to_owned(),
+        let rule = select_rule_for_intent(&intent_formalization);
+        if matches!(rule, SelectedRule::Unknown) {
+            let intent = language_aware_intent_for(&rule, language);
+            record_candidates(&mut log, prompt, &intent);
+            if let Some(choice) = record_validation(&mut log, prompt) {
+                let response_link = response_link_for_intent(&rule, &intent);
+                return finalize_simple(
+                    prompt,
+                    &mut log,
+                    &intent,
+                    &response_link,
+                    &choice.answer,
+                    1.0,
+                );
+            }
+            if requires_external_lookup(prompt) {
+                self.record_external_search(&mut log, prompt);
+            }
+            return answer_unknown_prompt(
+                prompt,
+                language,
+                &mut log,
+                UnknownReasoningConfig {
+                    questioning_rigor: self.config.questioning_rigor,
+                    offline: self.config.offline,
+                },
             );
         }
 
-        if matches!(rule, SelectedRule::Unknown) && requires_external_lookup(prompt) {
-            self.record_external_search(&mut log, prompt);
+        let intent = language_aware_intent_for(&rule, language);
+        log.append("intent", intent.clone());
+
+        if let SelectedRule::WriteProgram(spec) = &rule {
+            log.append(
+                "execution_status",
+                spec.language.execution.status.label().to_owned(),
+            );
+            log.append(
+                "execution_environment",
+                spec.language.execution.environment.to_owned(),
+            );
+            log.append("program_parameter:language", spec.language.slug.to_owned());
+            log.append("program_parameter:task", spec.task.slug.to_owned());
+            log.append("program_parameters", spec.parameter_summary());
+            log.append("legacy_intent", spec.legacy_intent());
         }
 
         record_candidates(&mut log, prompt, &intent);
@@ -615,14 +683,18 @@ impl UniversalSolver {
     fn handle_specialized_pattern(
         &self,
         prompt: &str,
+        intent_formalization: &IntentFormalization,
         log: &mut EventLog,
     ) -> Option<SymbolicAnswer> {
         let normalized = prompt.to_lowercase();
 
-        // `try_diagnostic` needs `&self` to construct an inner solver, so it
-        // stays outside the registry. Every other specialized handler is a
-        // plain function and runs through `SPECIALIZED_HANDLERS` below.
         if let Some(answer) = self.try_diagnostic(prompt, &normalized, log) {
+            return Some(answer);
+        }
+        if let Some(answer) =
+            try_natural_language_tool_request(prompt, &normalized, log, self.config.agent_mode)
+        {
+            log.append("specialized_handler", "nl_tool".to_owned());
             return Some(answer);
         }
         let capability_runtime = CapabilityRuntime::new(
@@ -658,8 +730,18 @@ impl UniversalSolver {
             guess_probability: self.config.guess_probability,
             follow_up_probability: self.config.follow_up_probability,
         };
-        for (name, handler) in SPECIALIZED_HANDLERS {
-            if self.config.definition_fusion_by_default && *name == "concept_lookup" {
+        let handler_names = ordered_handler_names(
+            intent_formalization,
+            SPECIALIZED_HANDLERS.iter().map(|(name, _)| *name),
+        );
+        for name in handler_names {
+            let Some((_, handler)) = SPECIALIZED_HANDLERS
+                .iter()
+                .find(|(candidate, _)| *candidate == name)
+            else {
+                continue;
+            };
+            if self.config.definition_fusion_by_default && name == "concept_lookup" {
                 if let Some(answer) = try_definition_merge_by_default(prompt, log) {
                     log.append(
                         "specialized_handler",
@@ -674,7 +756,7 @@ impl UniversalSolver {
             // entry stays in `SPECIALIZED_HANDLERS` so the precedence order
             // (and the existing default-config fallback) remains documented
             // in one place.
-            if *name == "proof_request" {
+            if name == "proof_request" {
                 if let Some(answer) =
                     try_proof_request_with_config(prompt, &normalized, log, proof_render_config)
                 {
@@ -683,7 +765,7 @@ impl UniversalSolver {
                 }
                 continue;
             }
-            if *name == "meta_explanation" {
+            if name == "meta_explanation" {
                 if let Some(answer) = try_meta_explanation_with_runtime(
                     prompt,
                     &normalized,
@@ -696,15 +778,16 @@ impl UniversalSolver {
                 continue;
             }
             if let Some(answer) = handler(prompt, &normalized, log) {
-                log.append("specialized_handler", (*name).to_owned());
+                log.append("specialized_handler", name.to_owned());
                 return Some(answer);
             }
-            if *name == "concept_lookup" {
+            if name == "concept_lookup" {
                 if let Some(answer) = try_project_lookup(
                     prompt,
                     &normalized,
                     log,
                     self.config.associative_project_promotion,
+                    intent_formalization.route.as_deref() == Some("identity"),
                 ) {
                     log.append("specialized_handler", "project_lookup".to_owned());
                     return Some(answer);
@@ -849,6 +932,9 @@ impl UniversalSolver {
         }
 
         if is_agent_request(&normalized) {
+            if let Some(answer) = try_agent_workspace_task(prompt, &normalized, log) {
+                return Some(answer);
+            }
             log.append("agent_mode:opted_in", prompt.to_owned());
             log.append("agent_mode:active", prompt.to_owned());
             log.append("action_log", prompt.to_owned());

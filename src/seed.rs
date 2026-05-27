@@ -839,7 +839,7 @@ mod tests {
             "intent_assistant_name",
             "intent_identity",
             "intent_unknown",
-            "intent_hello_world",
+            "intent_write_program",
             "intent_concept_lookup",
         ] {
             assert!(ids.contains(expected), "missing intent {expected}");

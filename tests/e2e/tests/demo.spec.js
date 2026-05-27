@@ -240,7 +240,7 @@ test.describe('formal-ai demo UI', () => {
     expect(url.searchParams.get('title')).toContain('Issue with dialog');
     expect(url.searchParams.get('title')).toContain('TypeScript');
     // The reported message must carry both its intent and the "reported" marker.
-    expect(body).toMatch(/A \(intent: hello_world_typescript, reported\):/);
+    expect(body).toMatch(/A \(intent: write_program, reported\):/);
     // The dialog must not accidentally annotate user messages.
     expect(body).not.toMatch(/U \(.*reported.*\):/);
   });
@@ -532,7 +532,7 @@ test.describe('formal-ai demo UI', () => {
 
     const lastMsg = messages.last();
     await expect(lastMsg).toHaveClass(/assistant/);
-    await expect(lastMsg).toContainText('rust hello world');
+    await expect(lastMsg).toContainText('Rust hello world');
     await expect(lastMsg).toContainText('Execution status:');
   });
 

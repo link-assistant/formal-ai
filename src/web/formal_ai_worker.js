@@ -64,7 +64,7 @@ const FALLBACK_UNKNOWN_ANSWER =
   "I don't know how to answer that yet. I cannot answer that from local Links Notation rules yet. To inspect what I can do, send `List behavior rules`, then `Show behavior rule unknown`. To teach this dialog a response, send: When I say `your prompt`, answer `your answer`. To make it durable, export memory or use Report issue so developers can add a fact or add a rule in Links Notation seed data.";
 
 const FALLBACK_CLARIFICATION_ANSWER =
-  "I'm sorry for the confusion. I am formal-ai, a deterministic symbolic AI. I can answer greetings, identity questions, concept lookups (what is X?), arithmetic, and Hello World programs. If you'd like to ask about something specific, try one of those or add a fact in Links Notation.";
+  "I'm sorry for the confusion. I am formal-ai, a deterministic symbolic AI. I can answer greetings, identity questions, concept lookups (what is X?), arithmetic, and parameterized program templates. If you'd like to ask about something specific, try one of those or add a fact in Links Notation.";
 
 // Mutable runtime tables — populated from seed at init(). Each entry is
 // `{ text, variants }` so the worker can return either the canonical phrase
@@ -2396,70 +2396,16 @@ function behaviorRuleRecords() {
         "When the user asks `What can you do?` or `Что ты умеешь?` then respond with the multilingual capability listing.",
     },
     {
-      id: "rule_hello_world_rust",
-      topic: "hello_world",
-      intent: "hello_world_rust",
-      label: "Hello-world rule (Rust)",
-      matches: "`hello world` plus aliases: rust, rs",
-      response: "Returns a minimal Rust hello-world program.",
-      source: "data/seed/hello-world-programs.lino",
+      id: "rule_write_program",
+      topic: "write_program",
+      intent: "write_program",
+      label: "Program template rule",
+      matches:
+        "`write_program(language, task)` with languages rust, python, javascript, typescript, go, c, cpp, java, csharp, ruby and tasks hello_world, count_to_three",
+      response: "Returns a minimal program from the parameterized template catalog.",
+      source: "data/seed/hello-world-programs.lino + src/engine_hello_world.rs",
       whenThen:
-        "When the user requests a `hello world` program with alias `rust` then respond with a minimal Rust hello-world program.",
-    },
-    {
-      id: "rule_hello_world_python",
-      topic: "hello_world",
-      intent: "hello_world_python",
-      label: "Hello-world rule (Python)",
-      matches: "`hello world` plus aliases: python, py",
-      response: "Returns a minimal Python hello-world program.",
-      source: "data/seed/hello-world-programs.lino",
-      whenThen:
-        "When the user requests a `hello world` program with alias `python` then respond with a minimal Python hello-world program.",
-    },
-    {
-      id: "rule_hello_world_javascript",
-      topic: "hello_world",
-      intent: "hello_world_javascript",
-      label: "Hello-world rule (JavaScript)",
-      matches: "`hello world` plus aliases: javascript, js, node",
-      response: "Returns a minimal JavaScript hello-world program.",
-      source: "data/seed/hello-world-programs.lino",
-      whenThen:
-        "When the user requests a `hello world` program with alias `javascript` then respond with a minimal JavaScript hello-world program.",
-    },
-    {
-      id: "rule_hello_world_typescript",
-      topic: "hello_world",
-      intent: "hello_world_typescript",
-      label: "Hello-world rule (TypeScript)",
-      matches: "`hello world` plus aliases: typescript, ts",
-      response: "Returns a minimal TypeScript hello-world program.",
-      source: "data/seed/hello-world-programs.lino",
-      whenThen:
-        "When the user requests a `hello world` program with alias `typescript` then respond with a minimal TypeScript hello-world program.",
-    },
-    {
-      id: "rule_hello_world_go",
-      topic: "hello_world",
-      intent: "hello_world_go",
-      label: "Hello-world rule (Go)",
-      matches: "`hello world` plus aliases: go, golang",
-      response: "Returns a minimal Go hello-world program.",
-      source: "data/seed/hello-world-programs.lino",
-      whenThen:
-        "When the user requests a `hello world` program with alias `go` then respond with a minimal Go hello-world program.",
-    },
-    {
-      id: "rule_hello_world_c",
-      topic: "hello_world",
-      intent: "hello_world_c",
-      label: "Hello-world rule (C)",
-      matches: "`hello world` plus aliases: c",
-      response: "Returns a minimal C hello-world program.",
-      source: "data/seed/hello-world-programs.lino",
-      whenThen:
-        "When the user requests a `hello world` program with alias `c` then respond with a minimal C hello-world program.",
+        "When the user requests a program with supported `language` and `task` parameters then respond with the matching template through the single `write_program` intent.",
     },
     {
       id: "rule_unknown",
@@ -2481,7 +2427,7 @@ const BEHAVIOR_RULE_TOPIC_ORDER = [
   "identity",
   "assistant_name",
   "capabilities",
-  "hello_world",
+  "write_program",
   "unknown_fallback",
 ];
 
@@ -2526,12 +2472,12 @@ function behaviorRuleTopicLabel(topic, language) {
         hi: "क्षमताएँ",
         zh: "能力",
       });
-    case "hello_world":
+    case "write_program":
       return localizedText(language, {
-        en: "Hello-world programs",
-        ru: "Программы Hello World",
-        hi: "Hello World प्रोग्राम",
-        zh: "Hello World 程序",
+        en: "Program templates",
+        ru: "Шаблоны программ",
+        hi: "Program templates",
+        zh: "程序模板",
       });
     case "unknown_fallback":
       return localizedText(language, {
@@ -2610,28 +2556,14 @@ function behaviorRuleListFooter(language) {
   ];
 }
 
-function behaviorRuleProgramSlug(rule) {
-  return String(rule.intent || "").replace(/^hello_world_/, "");
-}
-
-function behaviorRuleProgramLanguage(rule) {
-  const match = /\(([^)]+)\)$/.exec(String(rule.label || ""));
-  return match ? match[1] : "requested language";
-}
-
 function localizedRuleResponse(rule, language) {
-  if (String(rule.id || "").startsWith("rule_hello_world_")) {
-    const programLanguage = behaviorRuleProgramLanguage(rule);
-    if (language === "ru") {
-      return `Возвращает минимальную программу Hello World на языке ${programLanguage}.`;
-    }
-    if (language === "hi") {
-      return `${programLanguage} में न्यूनतम Hello World प्रोग्राम लौटाता है.`;
-    }
-    if (language === "zh") {
-      return `返回一个最小的 ${programLanguage} Hello World 程序。`;
-    }
-    return rule.response;
+  if (rule.id === "rule_write_program") {
+    return localizedText(language, {
+      en: "Returns a minimal program from the parameterized template catalog.",
+      ru: "Возвращает минимальную программу из параметризованного каталога шаблонов.",
+      hi: "parameterized template catalog से minimal program लौटाता है.",
+      zh: "从参数化模板目录返回一个最小程序。",
+    });
   }
   switch (rule.id) {
     case "rule_greeting":
@@ -2662,12 +2594,13 @@ function localizedRuleResponse(rule, language) {
 }
 
 function localizedRuleLabel(rule, language) {
-  if (String(rule.id || "").startsWith("rule_hello_world_")) {
-    const programLanguage = behaviorRuleProgramLanguage(rule);
-    if (language === "ru") return `Правило Hello World (${programLanguage})`;
-    if (language === "hi") return `Hello World नियम (${programLanguage})`;
-    if (language === "zh") return `Hello World 规则（${programLanguage}）`;
-    return rule.label;
+  if (rule.id === "rule_write_program") {
+    return localizedText(language, {
+      en: "Program template rule",
+      ru: "Правило шаблона программы",
+      hi: "Program template rule",
+      zh: "程序模板规则",
+    });
   }
   const labels = {
     rule_greeting: {
@@ -2711,15 +2644,13 @@ function localizedRuleLabel(rule, language) {
 }
 
 function localizedRuleMatches(rule, language) {
-  if (String(rule.id || "").startsWith("rule_hello_world_")) {
-    const aliases = String(rule.matches || "").replace(
-      /^`hello world` plus (one of these )?aliases: /,
-      "",
-    );
-    if (language === "ru") return `\`hello world\` и один из псевдонимов: ${aliases}`;
-    if (language === "hi") return `\`hello world\` और इनमें से कोई alias: ${aliases}`;
-    if (language === "zh") return `\`hello world\` 加以下任一别名：${aliases}`;
-    return rule.matches;
+  if (rule.id === "rule_write_program") {
+    return localizedText(language, {
+      en: "`write_program(language, task)` with supported languages and tasks",
+      ru: "`write_program(language, task)` с поддерживаемыми языками и задачами",
+      hi: "supported languages और tasks वाला `write_program(language, task)`",
+      zh: "带受支持语言和任务的 `write_program(language, task)`",
+    });
   }
   const matches = {
     rule_greeting: {
@@ -2763,17 +2694,15 @@ function localizedRuleMatches(rule, language) {
 }
 
 function localizedRuleWhenThen(rule, language) {
-  if (String(rule.id || "").startsWith("rule_hello_world_")) {
-    const slug = behaviorRuleProgramSlug(rule);
-    const programLanguage = behaviorRuleProgramLanguage(rule);
+  if (rule.id === "rule_write_program") {
     if (language === "ru") {
-      return `Когда пользователь просит программу \`hello world\` с псевдонимом \`${slug}\`, ответь минимальной программой Hello World на языке ${programLanguage}.`;
+      return "Когда пользователь просит программу с поддерживаемыми параметрами `language` и `task`, ответь соответствующим шаблоном через единое намерение `write_program`.";
     }
     if (language === "hi") {
-      return `जब उपयोगकर्ता \`${slug}\` alias के साथ \`hello world\` प्रोग्राम माँगे, तब ${programLanguage} का न्यूनतम Hello World प्रोग्राम दें.`;
+      return "जब उपयोगकर्ता supported `language` और `task` parameters वाला program माँगे, तब single `write_program` intent से matching template दें.";
     }
     if (language === "zh") {
-      return `当用户用别名 \`${slug}\` 请求 \`hello world\` 程序时，回答一个最小的 ${programLanguage} Hello World 程序。`;
+      return "当用户请求带受支持 `language` 和 `task` 参数的程序时，通过单个 `write_program` 意图选择匹配模板。";
     }
     return rule.whenThen;
   }
@@ -3842,25 +3771,25 @@ const FEATURE_CAPABILITIES = [
     examples: { en: "Hello", ru: "Привет", hi: "नमस्ते", zh: "你好" },
   },
   {
-    slug: "hello_world",
+    slug: "write_program",
     state: "always",
     labels: {
-      en: "Hello World code generation",
-      ru: "генерация Hello World",
-      hi: "Hello World code generation",
-      zh: "Hello World 代码生成",
+      en: "program template generation",
+      ru: "генерация программ",
+      hi: "program template generation",
+      zh: "程序生成",
     },
     aliases: {
-      en: ["hello world", "write code", "generate code", "program"],
+      en: ["hello world", "write code", "generate code", "write program", "program"],
       ru: ["hello world", "код", "программу", "программа"],
       hi: ["hello world", "code", "program", "प्रोग्राम"],
       zh: ["hello world", "代码", "程序"],
     },
     examples: {
-      en: "Write hello world in Rust",
+      en: "Write a Python program that counts to three",
       ru: "Напиши hello world на Rust",
-      hi: "Write hello world in Rust",
-      zh: "Write hello world in Rust",
+      hi: "Write a Python program that counts to three",
+      zh: "Write a Python program that counts to three",
     },
   },
   {
@@ -5353,7 +5282,7 @@ function trySummarizeConversation(history) {
   const languages = new Map();
   const concepts = new Set();
   const calculations = [];
-  const helloWorlds = new Set();
+  const programTemplates = new Set();
   const unanswered = [];
   let lastUser = null;
 
@@ -5375,8 +5304,24 @@ function trySummarizeConversation(history) {
         const match = turn.content.match(/^([^=]+=\s*[^\n]+)/);
         if (match) calculations.push(match[1].trim());
       }
+      if (intent === "write_program") {
+        const evidence = Array.isArray(turn.evidence) ? turn.evidence : [];
+        const languageEvidence = evidence.find((item) =>
+          String(item || "").startsWith("program_parameter:language:"),
+        );
+        const taskEvidence = evidence.find((item) =>
+          String(item || "").startsWith("program_parameter:task:"),
+        );
+        const generatedLanguage = languageEvidence
+          ? String(languageEvidence).slice("program_parameter:language:".length)
+          : "unknown";
+        const generatedTask = taskEvidence
+          ? String(taskEvidence).slice("program_parameter:task:".length)
+          : "program";
+        programTemplates.add(`${generatedTask}/${generatedLanguage}`);
+      }
       if (intent.startsWith("hello_world_")) {
-        helloWorlds.add(intent.slice("hello_world_".length));
+        programTemplates.add(`hello_world/${intent.slice("hello_world_".length)}`);
       }
       if (intent.startsWith("concept_lookup")) {
         const evidence = Array.isArray(turn.evidence) ? turn.evidence : [];
@@ -5418,9 +5363,9 @@ function trySummarizeConversation(history) {
   if (calculations.length > 0) {
     lines.push(`- Calculations: ${calculations.join("; ")}`);
   }
-  if (helloWorlds.size > 0) {
+  if (programTemplates.size > 0) {
     lines.push(
-      `- Hello-world programs generated for: ${Array.from(helloWorlds).join(", ")}`,
+      `- Program templates generated: ${Array.from(programTemplates).join(", ")}`,
     );
   }
   if (unanswered.length > 0) {
@@ -9346,92 +9291,188 @@ function tryJavaScriptExecution(prompt) {
   };
 }
 
-function helloWorldLanguage(prompt) {
-  const tokens = normalizePrompt(prompt).split(/\s+/);
-  if (!(tokens.includes("hello") && tokens.includes("world"))) return null;
-  if (tokens.includes("rust") || tokens.includes("rs")) return "rust";
-  if (tokens.includes("python") || tokens.includes("py")) return "python";
-  if (tokens.includes("typescript") || tokens.includes("ts"))
-    return "typescript";
-  if (
-    tokens.includes("javascript") ||
-    tokens.includes("js") ||
-    tokens.includes("node")
-  )
-    return "javascript";
-  if (tokens.includes("go") || tokens.includes("golang")) return "go";
-  if (tokens.includes("c")) return "c";
+const WRITE_PROGRAM_LANGUAGES = {
+  rust: { name: "Rust", fence: "rust", aliases: ["rust", "rs", "раст", "расте"] },
+  python: {
+    name: "Python",
+    fence: "python",
+    aliases: ["python", "py", "питон", "питоне"],
+  },
+  javascript: {
+    name: "JavaScript",
+    fence: "javascript",
+    aliases: ["javascript", "js", "node", "джаваскрипт"],
+  },
+  typescript: {
+    name: "TypeScript",
+    fence: "typescript",
+    aliases: ["typescript", "ts", "тайпскрипт"],
+  },
+  go: { name: "Go", fence: "go", aliases: ["go", "golang", "го"] },
+  c: { name: "C", fence: "c", aliases: ["c"] },
+  cpp: { name: "C++", fence: "cpp", aliases: ["cpp", "cplusplus"] },
+  java: { name: "Java", fence: "java", aliases: ["java", "джава"] },
+  csharp: { name: "C#", fence: "csharp", aliases: ["csharp", "cs", "dotnet"] },
+  ruby: { name: "Ruby", fence: "ruby", aliases: ["ruby", "rb", "руби"] },
+};
+
+const WRITE_PROGRAM_TASKS = {
+  hello_world: {
+    label: "hello world",
+    output: "Hello, world!",
+    aliases: ["hello world", "хелло ворлд"],
+  },
+  count_to_three: {
+    label: "count to three",
+    output: "1\n2\n3",
+    aliases: ["count to three", "count to 3", "counts to three", "counts to 3"],
+  },
+};
+
+const WRITE_PROGRAM_TEMPLATES = {
+  hello_world: {
+    rust: 'fn main() {\n    println!("Hello, world!");\n}',
+    python: 'print("Hello, world!")',
+    javascript: 'console.log("Hello, world!");',
+    typescript: 'console.log("Hello, world!");',
+    go: 'package main\n\nimport "fmt"\n\nfunc main() {\n    fmt.Println("Hello, world!")\n}',
+    c: '#include <stdio.h>\n\nint main(void) {\n    puts("Hello, world!");\n    return 0;\n}',
+    cpp: '#include <iostream>\n\nint main() {\n    std::cout << "Hello, world!" << std::endl;\n    return 0;\n}',
+    java: 'public class Main {\n    public static void main(String[] args) {\n        System.out.println("Hello, world!");\n    }\n}',
+    csharp:
+      'using System;\n\nclass Program {\n    static void Main() {\n        Console.WriteLine("Hello, world!");\n    }\n}',
+    ruby: 'puts "Hello, world!"',
+  },
+  count_to_three: {
+    rust:
+      'fn main() {\n    for number in 1..=3 {\n        println!("{number}");\n    }\n}',
+    python: "for number in range(1, 4):\n    print(number)",
+    javascript:
+      "for (let number = 1; number <= 3; number += 1) {\n    console.log(number);\n}",
+    typescript:
+      "for (let number = 1; number <= 3; number += 1) {\n    console.log(number);\n}",
+    go:
+      'package main\n\nimport "fmt"\n\nfunc main() {\n    for number := 1; number <= 3; number++ {\n        fmt.Println(number)\n    }\n}',
+    c:
+      '#include <stdio.h>\n\nint main(void) {\n    for (int number = 1; number <= 3; number++) {\n        printf("%d\\n", number);\n    }\n    return 0;\n}',
+  },
+};
+
+function normalizeProgramPrompt(prompt) {
+  return normalizePrompt(String(prompt || "").replace(/c\+\+/gi, " cpp ").replace(/c#/gi, " csharp "));
+}
+
+function containsProgramPhrase(normalized, phrase) {
+  return (
+    normalized === phrase ||
+    normalized.startsWith(`${phrase} `) ||
+    normalized.endsWith(` ${phrase}`) ||
+    normalized.includes(` ${phrase} `)
+  );
+}
+
+function programTaskFromPrompt(normalized) {
+  return Object.entries(WRITE_PROGRAM_TASKS).find(([, task]) =>
+    task.aliases.some((alias) => containsProgramPhrase(normalized, alias)),
+  )?.[0] || null;
+}
+
+function programLanguageFromPrompt(normalized) {
+  const tokens = normalized.split(/\s+/).filter(Boolean);
+  for (const [slug, language] of Object.entries(WRITE_PROGRAM_LANGUAGES)) {
+    if (language.aliases.some((alias) => tokens.includes(alias))) return slug;
+  }
+  for (let index = 0; index < tokens.length - 1; index += 1) {
+    if (tokens[index] !== "in" && tokens[index] !== "на") continue;
+    if (tokens[index + 1] === "language" || tokens[index + 1] === "языке") {
+      return tokens[index + 2] || null;
+    }
+    return tokens[index + 1];
+  }
   return null;
 }
 
-function tryHelloWorld(prompt) {
-  const language = helloWorldLanguage(prompt);
-  if (!language) return null;
-  const seeds = {
-    rust: {
-      fence: "rust",
-      code: 'fn main() {\n    println!("Hello, world!");\n}',
-    },
-    python: {
-      fence: "python",
-      code: 'print("Hello, world!")',
-    },
-    javascript: {
-      fence: "javascript",
-      code: 'console.log("Hello, world!");',
-    },
-    typescript: {
-      fence: "typescript",
-      code: 'console.log("Hello, world!");',
-    },
-    go: {
-      fence: "go",
-      code:
-        'package main\n\nimport "fmt"\n\nfunc main() {\n    fmt.Println("Hello, world!")\n}',
-    },
-    c: {
-      fence: "c",
-      code:
-        '#include <stdio.h>\n\nint main(void) {\n    puts("Hello, world!");\n    return 0;\n}',
-    },
-  };
-  const { fence, code } = seeds[language];
-  const lines = [];
-  lines.push(`Here is a minimal ${language} hello world program:`);
-  lines.push("");
-  lines.push("```" + fence);
-  lines.push(code);
-  lines.push("```");
-  lines.push("");
+function writeProgramParameters(prompt) {
+  const normalized = normalizeProgramPrompt(prompt);
+  const tokens = normalized.split(/\s+/).filter(Boolean);
+  const task = programTaskFromPrompt(normalized);
+  const language = programLanguageFromPrompt(normalized);
+  const asksForProgram =
+    tokens.includes("program") &&
+    ["write", "create", "show"].some((verb) => tokens.includes(verb));
+  if (!task && !asksForProgram) return null;
+  return { language, task };
+}
+
+function writeProgramExecutionLines(language, code, output) {
   if (language === "javascript") {
     const logs = [];
     try {
-      const runner = new Function(
-        "console",
-        `"use strict"; ${code}`,
-      );
+      const runner = new Function("console", `"use strict"; ${code}`);
       runner({ log: (...args) => logs.push(args.join(" ")) });
-      lines.push("Execution status: ran in the demo's Web Worker sandbox.");
-      lines.push("Output:");
-      lines.push("```text");
-      lines.push(logs.join("\n") || "(no output)");
-      lines.push("```");
+      return [
+        "Execution status: ran in the demo's Web Worker sandbox.",
+        "Output:",
+        "```text",
+        logs.join("\n") || "(no output)",
+        "```",
+      ];
     } catch (error) {
-      lines.push(
-        `Execution status: failed in sandbox — ${error.message || String(error)}.`,
-      );
+      return [`Execution status: failed in sandbox - ${error.message || String(error)}.`];
     }
-  } else {
-    lines.push(
-      `Execution status: not run — the browser sandbox cannot invoke a ${language} toolchain. Copy the snippet into a ${language} environment to verify.`,
-    );
   }
+  return [
+    `Execution status: not run - the browser sandbox cannot invoke a ${language} toolchain. Copy the snippet into a ${language} environment to verify.`,
+    "Expected output after verification:",
+    "```text",
+    output,
+    "```",
+  ];
+}
+
+function tryWriteProgram(prompt) {
+  const parameters = writeProgramParameters(prompt);
+  if (!parameters) return null;
+  const { language, task } = parameters;
+  const template = language && task ? WRITE_PROGRAM_TEMPLATES[task]?.[language] : null;
+  if (!template) {
+    return {
+      intent: "write_program_unsupported",
+      content:
+        `I can route \`write_program(language, task)\`, but I do not have a template for ` +
+        `language \`${language || "missing"}\` and task \`${task || "missing"}\`. ` +
+        `Supported languages: ${Object.keys(WRITE_PROGRAM_LANGUAGES).join(", ")}. ` +
+        `Supported tasks: ${Object.keys(WRITE_PROGRAM_TASKS).join(", ")}.`,
+      confidence: 0.4,
+      evidence: [
+        "response:write_program:unsupported",
+        `program_parameter:language:${language || "missing"}`,
+        `program_parameter:task:${task || "missing"}`,
+      ],
+    };
+  }
+  const languageInfo = WRITE_PROGRAM_LANGUAGES[language];
+  const taskInfo = WRITE_PROGRAM_TASKS[task];
+  const lines = [];
+  lines.push(`Here is a minimal ${languageInfo.name} ${taskInfo.label} program:`);
+  lines.push("");
+  lines.push("```" + languageInfo.fence);
+  lines.push(template);
+  lines.push("```");
+  lines.push("");
+  lines.push(...writeProgramExecutionLines(language, template, taskInfo.output));
   return {
-    intent: `hello_world_${language}`,
+    intent: "write_program",
     content: lines.join("\n"),
     confidence: 0.9,
     evidence: [
-      `hello_world:${language}`,
+      `response:write_program:${task}:${language}`,
+      `program_parameter:language:${language}`,
+      `program_parameter:task:${task}`,
+      `program_parameters:write_program(language=${language}:task=${task})`,
+      task === "hello_world"
+        ? `legacy_intent:hello_world_${language}`
+        : `legacy_intent:write_program_${task}_${language}`,
       `execution_status:${language}:${language === "javascript" ? "ran" : "unavailable"}`,
     ],
   };
@@ -13391,7 +13432,7 @@ async function solve(prompt, history, prefs, userContext = {}) {
       run: () => tryDefinitionMerge(prompt, { allowPlainConcept: autoDefinitionFusion }),
     },
     { name: "tryConceptLookup", run: () => tryConceptLookup(prompt) },
-    { name: "tryHelloWorld", run: () => tryHelloWorld(prompt) },
+    { name: "tryWriteProgram", run: () => tryWriteProgram(prompt) },
     {
       name: "tryPlaywrightScript",
       run: () => tryPlaywrightScript(prompt, preferences, language),

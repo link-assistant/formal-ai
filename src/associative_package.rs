@@ -580,9 +580,39 @@ pub fn default_associative_packages() -> Vec<AssociativePackage> {
         "calculator",
         "handler_calculator",
     ))
+    .with_handler(PackageHandler::new(
+        "handler_web_search",
+        "rust_handler",
+        "tool:web_search",
+    ))
+    .with_trigger(PackageTrigger::new(
+        "trigger_web_search_tool_call",
+        "tool_invocation",
+        "web_search",
+        "handler_web_search",
+    ))
+    .with_handler(PackageHandler::new(
+        "handler_javascript_execution",
+        "rust_handler",
+        "tool:javascript_execution",
+    ))
+    .with_trigger(PackageTrigger::new(
+        "trigger_javascript_execution_tool_call",
+        "tool_invocation",
+        "javascript_execution",
+        "handler_javascript_execution",
+    ))
     .with_permission("tool:calculator", "local deterministic calculator tool")
+    .with_permission("tool:web_search", "browser-backed web search API")
+    .with_permission(
+        "tool:javascript_execution",
+        "bounded deterministic JavaScript expression execution",
+    )
     .with_permission("tool:concept_lookup", "seed-backed concept lookup")
-    .with_permission("tool:hello_world", "seed-backed hello-world renderer")]
+    .with_permission(
+        "tool:write_program",
+        "seed-backed program template renderer",
+    )]
 }
 
 #[must_use]
