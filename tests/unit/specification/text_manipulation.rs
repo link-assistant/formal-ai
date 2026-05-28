@@ -108,3 +108,46 @@ fn reverse_deduplicate_and_sort_text_operations_are_rule_backed() {
         .contains("rule_deduplicate_lines"));
     assert!(sorted.links_notation.contains("rule_sort_lines"));
 }
+
+#[test]
+fn text_manipulation_accepts_supported_language_wrappers() {
+    struct Case {
+        language: &'static str,
+        prompt: &'static str,
+    }
+
+    let solver = text_solver();
+    let cases = [
+        Case {
+            language: "en",
+            prompt: "English request: Uppercase this text: \"Ada\"",
+        },
+        Case {
+            language: "ru",
+            prompt: "Русский запрос: Uppercase this text: \"Ada\"",
+        },
+        Case {
+            language: "hi",
+            prompt: "हिंदी अनुरोध: Uppercase this text: \"Ada\"",
+        },
+        Case {
+            language: "zh",
+            prompt: "中文请求: Uppercase this text: \"Ada\"",
+        },
+    ];
+
+    for case in cases {
+        let response = solver.solve(case.prompt);
+        assert_eq!(
+            response.intent, "text_manipulation",
+            "{} wrapper should still route to text manipulation",
+            case.language
+        );
+        assert_eq!(response.answer, "ADA");
+        assert!(
+            response.links_notation.contains("rule_uppercase"),
+            "{} wrapper should record the applied text substitution rule",
+            case.language
+        );
+    }
+}
