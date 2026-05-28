@@ -30,6 +30,7 @@ pub(crate) mod solver_handler_units;
 pub(crate) mod solver_handlers;
 pub(crate) mod solver_handlers_policy;
 pub(crate) mod solver_helpers;
+pub(crate) mod solver_synthesis;
 pub(crate) mod solver_unknown_reasoning;
 pub mod substitution;
 pub mod summarization;

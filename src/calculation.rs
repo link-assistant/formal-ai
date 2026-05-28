@@ -602,11 +602,20 @@ fn has_calculation_signal(expression: &str, explicit: bool) -> bool {
         return false;
     }
     let has_letter = expression.chars().any(char::is_alphabetic);
-    let has_strong_symbol = expression.contains([
-        '+', '*', '/', '%', '^', '=', '×', '·', '÷', '−', '$', '€', '¥', '₹', '₽',
-    ]) || (!has_letter && expression.contains('-'));
-    if has_strong_symbol || contains_word_operator(expression) {
+    let has_operator_symbol = expression
+        .contains(['+', '*', '/', '%', '^', '=', '×', '·', '÷', '−'])
+        || (!has_letter && expression.contains('-'));
+    let has_word_operator = contains_word_operator(expression);
+    if has_operator_symbol || has_word_operator {
         return true;
+    }
+    let has_currency_symbol = expression.contains(['$', '€', '¥', '₹', '₽']);
+    let looks_like_conversion = lower.contains(" to ")
+        || lower.contains(" into ")
+        || lower.contains(" convert ")
+        || lower.contains(" exchange ");
+    if has_currency_symbol && has_letter && !explicit && !looks_like_conversion {
+        return false;
     }
     let has_known_calculator_word = [
         " sqrt",

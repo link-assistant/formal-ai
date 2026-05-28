@@ -12,6 +12,12 @@ use crate::engine::{ExecutionStatus, ProgramSpec, SelectedRule};
 use crate::event_log::EventLog;
 use crate::language::{detect as detect_language, Language};
 
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct DecomposedSubImpulse {
+    pub id: String,
+    pub text: String,
+}
+
 pub const fn confidence_for(rule: &SelectedRule, validation: Option<&ValidationChoice>) -> f32 {
     if validation.is_some() {
         return 1.0;
@@ -132,14 +138,18 @@ pub fn requires_external_lookup(prompt: &str) -> bool {
         || lower.contains("born in")
 }
 
-pub fn record_decomposition(log: &mut EventLog, prompt: &str, max_depth: u8) {
+pub fn record_decomposition(
+    log: &mut EventLog,
+    prompt: &str,
+    max_depth: u8,
+) -> Vec<DecomposedSubImpulse> {
     if max_depth == 0 {
-        return;
+        return Vec::new();
     }
     let lower = prompt.to_lowercase();
     let triggers = [" and ", " with tests", " with benchmarks", "; "];
     if !triggers.iter().any(|trigger| lower.contains(trigger)) {
-        return;
+        return Vec::new();
     }
 
     let parts: Vec<&str> = prompt
@@ -149,9 +159,15 @@ pub fn record_decomposition(log: &mut EventLog, prompt: &str, max_depth: u8) {
         .map(str::trim)
         .filter(|chunk| !chunk.is_empty())
         .collect();
+    let mut sub_impulses = Vec::new();
     for sub_impulse in parts {
-        log.append("sub_impulse", sub_impulse.to_owned());
+        let id = log.append("sub_impulse", sub_impulse.to_owned());
+        sub_impulses.push(DecomposedSubImpulse {
+            id,
+            text: sub_impulse.to_owned(),
+        });
     }
+    sub_impulses
 }
 
 pub fn record_candidates(log: &mut EventLog, prompt: &str, intent: &str) {

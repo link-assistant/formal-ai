@@ -61,6 +61,7 @@ use crate::solver_helpers::{
     is_unbounded_loop, record_candidates, record_decomposition, record_validation,
     requires_external_lookup,
 };
+use crate::solver_synthesis::try_synthesize_from_sub_results;
 use crate::solver_unknown_reasoning::{answer_unknown_prompt, UnknownReasoningConfig};
 use crate::translation::{
     formalize_prompt_candidates, select_formalization_candidate_with_probability_store,
@@ -541,9 +542,22 @@ impl UniversalSolver {
 
         log.append("search:local", prompt.to_owned());
 
-        record_decomposition(&mut log, prompt, self.config.max_decomposition_depth);
+        let sub_impulses =
+            record_decomposition(&mut log, prompt, self.config.max_decomposition_depth);
+        let sub_results =
+            self.solve_sub_impulses(&mut log, &sub_impulses, probability_store, intent_cache);
 
         let rule = select_rule_for_intent(&intent_formalization);
+
+        if let Some(answer) = try_synthesize_from_sub_results(
+            prompt,
+            &mut log,
+            &sub_results,
+            probability_store,
+            self.config,
+        ) {
+            return answer;
+        }
 
         // Issue #312: a concrete write_program request (recognized task and
         // language with a matching template) must take precedence over the
