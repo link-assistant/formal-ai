@@ -581,13 +581,40 @@ fn resolve_allowed_program(program: &str) -> Result<PathBuf, AgentError> {
         "ls" => &["/bin/ls", "/usr/bin/ls"],
         "printf" => &["/usr/bin/printf", "/bin/printf"],
         "env" => &["/usr/bin/env", "/bin/env"],
+        "python3" => &["/usr/bin/python3", "/bin/python3", "/usr/local/bin/python3"],
         other => return Err(AgentError::UnsupportedCommand(other.to_owned())),
     };
     candidates
         .iter()
         .map(PathBuf::from)
-        .find(|path| path.exists())
+        .find(|path| path.is_file())
+        .or_else(|| resolve_allowed_program_from_path(program))
         .ok_or_else(|| AgentError::UnsupportedCommand(program.to_owned()))
+}
+
+fn resolve_allowed_program_from_path(program: &str) -> Option<PathBuf> {
+    let names = path_search_names(program)?;
+    let path = std::env::var_os("PATH")?;
+    std::env::split_paths(&path)
+        .filter(|directory| directory.is_absolute())
+        .flat_map(|directory| names.iter().map(move |name| directory.join(name)))
+        .find(|candidate| candidate.is_file() && !is_blocked_execution_alias(candidate))
+}
+
+fn path_search_names(program: &str) -> Option<&'static [&'static str]> {
+    match program {
+        "python3" if cfg!(windows) => Some(&["python3.exe", "python.exe", "py.exe"]),
+        "python3" => Some(&["python3"]),
+        _ => None,
+    }
+}
+
+fn is_blocked_execution_alias(candidate: &Path) -> bool {
+    cfg!(windows)
+        && candidate
+            .to_string_lossy()
+            .to_ascii_lowercase()
+            .contains(r"\microsoft\windowsapps\")
 }
 
 fn looks_like_workspace_path(argument: &str) -> bool {
@@ -603,11 +630,15 @@ mod tests {
     use super::*;
 
     fn config(name: &str) -> AgentWorkspaceConfig {
+        config_with_budget(name, Duration::from_secs(1))
+    }
+
+    fn config_with_budget(name: &str, time_budget: Duration) -> AgentWorkspaceConfig {
         AgentWorkspaceConfig {
             base_dir: std::env::temp_dir()
                 .join("formal-ai-agent-tests")
                 .join(name),
-            time_budget: Duration::from_secs(1),
+            time_budget,
         }
     }
 
@@ -659,5 +690,32 @@ mod tests {
 
         assert_eq!(run.status, AgentRunStatus::Completed);
         assert!(!run.command_results[0].stdout.contains("do-not-leak"));
+    }
+
+    #[test]
+    fn python3_command_runs_from_allowlisted_resolved_path() {
+        let prompt = "[agent] create file script.py with `print(\"agent_python_ok\")`, \
+                      and run command `python3 script.py`";
+        let run = run_agent_plan(
+            prompt,
+            &config_with_budget("python3_command", Duration::from_secs(5)),
+        )
+        .unwrap();
+
+        assert_eq!(run.status, AgentRunStatus::Completed, "{run:#?}");
+        assert_eq!(run.command_results[0].stdout.trim(), "agent_python_ok");
+    }
+
+    #[test]
+    fn unsupported_commands_are_rejected() {
+        let prompt = "[agent] run command `sh -c echo blocked`";
+        let run = run_agent_plan(prompt, &config("unsupported_command")).unwrap();
+
+        assert_eq!(run.status, AgentRunStatus::Failed);
+        assert!(run.command_results.is_empty());
+        assert_eq!(run.actions[0].status, AgentActionStatus::Failed);
+        assert!(run.actions[0]
+            .detail
+            .contains("unsupported sandbox command"));
     }
 }

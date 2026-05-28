@@ -142,6 +142,142 @@ fn issue_314_numeric_benchmark_cases_compute_with_trace() {
 }
 
 #[test]
+fn issue_315_programming_benchmark_cases_synthesize_and_verify() {
+    let suite = load_suite();
+    let solver = benchmark_solver();
+    let cases = [
+        (
+            "humaneval_0_has_close_elements",
+            &[
+                "```python",
+                "def has_close_elements",
+                "return False",
+                "Execution status: tests passed",
+            ][..],
+        ),
+        (
+            "mbpp_2_similar_elements",
+            &[
+                "```python",
+                "def similar_elements",
+                "set",
+                "Execution status: tests passed",
+            ][..],
+        ),
+    ];
+
+    for (case_id, expected_fragments) in cases {
+        let case = suite
+            .cases
+            .iter()
+            .find(|case| case.id == case_id)
+            .unwrap_or_else(|| panic!("missing benchmark case {case_id}"));
+        let response = solver.solve(&case.prompt);
+        assert_eq!(response.intent, "write_program");
+        for expected in expected_fragments {
+            assert!(
+                response.answer.contains(expected),
+                "{} should contain {expected:?}, got {}",
+                case.id,
+                response.answer
+            );
+        }
+        for expected in [
+            "synthesis:candidate",
+            "synthesis:candidate_execution",
+            "synthesis:verification tests_passed",
+            "action_log:run_command",
+        ] {
+            assert!(
+                response.links_notation.contains(expected),
+                "{} should record {expected:?} in the trace, got {}",
+                case.id,
+                response.links_notation
+            );
+        }
+        assert!(
+            !response.links_notation.contains("legacy_intent"),
+            "{} must not be satisfied by the hello-world seed path: {}",
+            case.id,
+            response.links_notation
+        );
+    }
+}
+
+#[test]
+fn issue_315_unseen_python_function_synthesizes_without_seed_hit() {
+    let solver = benchmark_solver();
+    let response = solver.solve(
+        "Implement Python function count_vowels(text: str) -> int. Return the number of vowels in the text.",
+    );
+
+    assert_eq!(response.intent, "write_program");
+    assert!(response.answer.contains("```python"));
+    assert!(response.answer.contains("def count_vowels"));
+    assert!(response.answer.contains("sum("));
+    assert!(response.answer.contains("Execution status: tests passed"));
+    assert!(response
+        .links_notation
+        .contains("synthesis:verification tests_passed"));
+    assert!(
+        !response.links_notation.contains("legacy_intent"),
+        "unseen synthesis must not be recorded as a seed hit: {}",
+        response.links_notation
+    );
+}
+
+#[test]
+fn issue_315_program_synthesis_accepts_supported_language_wrappers() {
+    struct Case {
+        language: &'static str,
+        prompt: &'static str,
+    }
+
+    let solver = benchmark_solver();
+    let cases = [
+        Case {
+            language: "en",
+            prompt: "English request: Implement Python function count_vowels(text: str) -> int. Return the number of vowels in the text.",
+        },
+        Case {
+            language: "ru",
+            prompt: "Русский запрос: Implement Python function count_vowels(text: str) -> int. Return the number of vowels in the text.",
+        },
+        Case {
+            language: "hi",
+            prompt: "हिंदी अनुरोध: Implement Python function count_vowels(text: str) -> int. Return the number of vowels in the text.",
+        },
+        Case {
+            language: "zh",
+            prompt: "中文请求: Implement Python function count_vowels(text: str) -> int. Return the number of vowels in the text.",
+        },
+    ];
+
+    for case in cases {
+        let response = solver.solve(case.prompt);
+        assert_eq!(
+            response.intent, "write_program",
+            "{} wrapper should still route to synthesis",
+            case.language
+        );
+        assert!(
+            response.answer.contains("def count_vowels"),
+            "{} wrapper should synthesize the expected function, got {}",
+            case.language,
+            response.answer
+        );
+        assert!(
+            response
+                .links_notation
+                .contains("synthesis:verification tests_passed"),
+            "{} wrapper should verify the synthesized candidate, got {}",
+            case.language,
+            response.links_notation
+        );
+    }
+}
+
+#[test]
 fn issue_304_benchmark_research_note_records_provenance() {
     let root = repo_root();
     let fixture = fs::read_to_string(root.join(BENCHMARK_FIXTURE)).expect("benchmark fixture");

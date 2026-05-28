@@ -573,6 +573,10 @@ fn append_prompt_relevants(prompt: &str, normalized: &str, relevants: &mut Vec<S
             write_program_parameters(normalized).is_some(),
         ),
         (
+            "handler:program_synthesis",
+            looks_like_program_synthesis(normalized),
+        ),
+        (
             "handler:software_project",
             has_any_token(normalized, &["build", "create", "implement", "develop"]),
         ),
@@ -598,6 +602,13 @@ fn looks_arithmetic(prompt: &str, normalized: &str) -> bool {
         && ["+", "-", "*", "/", "plus", "minus", "times", "divided"]
             .iter()
             .any(|operator| raw.contains(operator) || normalized.contains(operator))
+}
+
+fn looks_like_program_synthesis(normalized: &str) -> bool {
+    contains_token(normalized, "function")
+        && (has_any_token(normalized, &["python", "tuple", "numbers", "vowels"])
+            || normalized.contains("similar elements"))
+        && has_any_token(normalized, &["implement", "write", "return"])
 }
 
 fn has_any_token(normalized: &str, tokens: &[&str]) -> bool {
