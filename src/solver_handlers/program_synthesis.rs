@@ -1,4 +1,5 @@
 use std::fmt::Write as _;
+use std::time::Duration;
 
 use crate::agent::{AgentRun, AgentRunStatus, AgentWorkspace, AgentWorkspaceConfig};
 use crate::engine::SymbolicAnswer;
@@ -52,7 +53,7 @@ pub fn try_program_synthesis(
     log.append("execution_status", "tests passed".to_owned());
     log.append(
         "execution_environment",
-        "isolated bounded agent workspace; env cleared; 2 second command budget".to_owned(),
+        "isolated bounded agent workspace; env cleared; 5 second command budget".to_owned(),
     );
 
     let body = render_python_answer(&candidate);
@@ -200,7 +201,10 @@ fn render_python_function(signature: &str, body_lines: &[&str]) -> String {
 }
 
 fn verify_python_candidate(prompt: &str, candidate: &PythonCandidate) -> Option<AgentRun> {
-    let config = AgentWorkspaceConfig::default();
+    let config = AgentWorkspaceConfig {
+        time_budget: Duration::from_secs(5),
+        ..AgentWorkspaceConfig::default()
+    };
     let mut workspace = AgentWorkspace::for_prompt(
         &format!("program_synthesis:{prompt}:{}", candidate.id),
         &config,
@@ -249,7 +253,7 @@ fn append_agent_run(log: &mut EventLog, run: &AgentRun) {
 
 fn render_python_answer(candidate: &PythonCandidate) -> String {
     format!(
-        "Here is a derived Python function synthesized from the specification and verified in an isolated workspace:\n\n```python\n{}```\n\nExecution status: tests passed in isolated bounded agent workspace.\nCheck command: `python3 solution.py`\nTest outcome: {}/{} assertions passed.\nWorkspace isolation: temporary agent workspace with environment cleared and a 2 second command budget.",
+        "Here is a derived Python function synthesized from the specification and verified in an isolated workspace:\n\n```python\n{}```\n\nExecution status: tests passed in isolated bounded agent workspace.\nCheck command: `python3 solution.py`\nTest outcome: {}/{} assertions passed.\nWorkspace isolation: temporary agent workspace with environment cleared and a 5 second command budget.",
         candidate.code,
         candidate.tests.len(),
         candidate.tests.len()

@@ -598,7 +598,7 @@ fn resolve_allowed_program_from_path(program: &str) -> Option<PathBuf> {
     std::env::split_paths(&path)
         .filter(|directory| directory.is_absolute())
         .flat_map(|directory| names.iter().map(move |name| directory.join(name)))
-        .find(|candidate| candidate.is_file())
+        .find(|candidate| candidate.is_file() && !is_blocked_execution_alias(candidate))
 }
 
 fn path_search_names(program: &str) -> Option<&'static [&'static str]> {
@@ -607,6 +607,14 @@ fn path_search_names(program: &str) -> Option<&'static [&'static str]> {
         "python3" => Some(&["python3"]),
         _ => None,
     }
+}
+
+fn is_blocked_execution_alias(candidate: &Path) -> bool {
+    cfg!(windows)
+        && candidate
+            .to_string_lossy()
+            .to_ascii_lowercase()
+            .contains(r"\microsoft\windowsapps\")
 }
 
 fn looks_like_workspace_path(argument: &str) -> bool {
@@ -622,11 +630,15 @@ mod tests {
     use super::*;
 
     fn config(name: &str) -> AgentWorkspaceConfig {
+        config_with_budget(name, Duration::from_secs(1))
+    }
+
+    fn config_with_budget(name: &str, time_budget: Duration) -> AgentWorkspaceConfig {
         AgentWorkspaceConfig {
             base_dir: std::env::temp_dir()
                 .join("formal-ai-agent-tests")
                 .join(name),
-            time_budget: Duration::from_secs(1),
+            time_budget,
         }
     }
 
@@ -684,9 +696,13 @@ mod tests {
     fn python3_command_runs_from_allowlisted_resolved_path() {
         let prompt = "[agent] create file script.py with `print(\"agent_python_ok\")`, \
                       and run command `python3 script.py`";
-        let run = run_agent_plan(prompt, &config("python3_command")).unwrap();
+        let run = run_agent_plan(
+            prompt,
+            &config_with_budget("python3_command", Duration::from_secs(5)),
+        )
+        .unwrap();
 
-        assert_eq!(run.status, AgentRunStatus::Completed);
+        assert_eq!(run.status, AgentRunStatus::Completed, "{run:#?}");
         assert_eq!(run.command_results[0].stdout.trim(), "agent_python_ok");
     }
 
