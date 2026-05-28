@@ -55,6 +55,7 @@ mod reasoning_paths;
 mod source_cache;
 mod substitution_rules;
 mod summarization_pipeline;
+mod synthesis;
 mod telegram_surface;
 mod translation_via_links;
 mod transparent_state;
