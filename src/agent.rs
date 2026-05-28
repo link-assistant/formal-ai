@@ -581,6 +581,7 @@ fn resolve_allowed_program(program: &str) -> Result<PathBuf, AgentError> {
         "ls" => &["/bin/ls", "/usr/bin/ls"],
         "printf" => &["/usr/bin/printf", "/bin/printf"],
         "env" => &["/usr/bin/env", "/bin/env"],
+        "python3" => &["/usr/bin/python3", "/bin/python3", "/usr/local/bin/python3"],
         other => return Err(AgentError::UnsupportedCommand(other.to_owned())),
     };
     candidates
