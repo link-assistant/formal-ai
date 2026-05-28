@@ -72,6 +72,76 @@ fn issue_304_benchmark_suite_reports_pass_fail_counts() {
 }
 
 #[test]
+fn issue_314_numeric_benchmark_cases_compute_with_trace() {
+    let suite = load_suite();
+    let solver = benchmark_solver();
+    let cases = [
+        (
+            "gsm8k_test_0_duck_eggs",
+            "18",
+            &[
+                "sub_result:",
+                "composition:remainder:",
+                "composition:evaluation:",
+                "trace:",
+            ][..],
+        ),
+        (
+            "math_train_7_algebra_substitution",
+            "11",
+            &[
+                "sub_result:",
+                "composition:substitution:",
+                "composition:evaluation:",
+                "trace:",
+            ][..],
+        ),
+        (
+            "bigbench_object_counting_instruments",
+            "3",
+            &[
+                "sub_result:",
+                "composition:category:",
+                "composition:count:",
+                "trace:",
+            ][..],
+        ),
+    ];
+
+    for (case_id, expected, required_prefixes) in cases {
+        let case = suite
+            .cases
+            .iter()
+            .find(|case| case.id == case_id)
+            .unwrap_or_else(|| panic!("missing benchmark case {case_id}"));
+        let response = solver.solve(&case.prompt);
+        assert!(
+            response.answer.contains(expected),
+            "{} should contain {expected:?}, got {}",
+            case.id,
+            response.answer
+        );
+        for prefix in required_prefixes {
+            assert!(
+                response
+                    .evidence_links
+                    .iter()
+                    .any(|link| link.starts_with(prefix)),
+                "{} missing trace prefix {prefix:?}: {:?}",
+                case.id,
+                response.evidence_links
+            );
+        }
+        assert!(
+            response.links_notation.contains("composition:"),
+            "{} should serialize composition steps: {}",
+            case.id,
+            response.links_notation
+        );
+    }
+}
+
+#[test]
 fn issue_304_benchmark_research_note_records_provenance() {
     let root = repo_root();
     let fixture = fs::read_to_string(root.join(BENCHMARK_FIXTURE)).expect("benchmark fixture");

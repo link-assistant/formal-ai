@@ -183,6 +183,10 @@ fn compose_algebra_substitution(
         "composition:evaluation",
         format!("{} = {}", substituted.trim(), evaluation.formatted),
     );
+    log.append("composition:engine", evaluation.engine.slug());
+    if !evaluation.steps.is_empty() {
+        log.append("composition:steps", evaluation.steps.len().to_string());
+    }
 
     Some(candidate(
         "algebra_substitution",
@@ -197,7 +201,7 @@ fn compose_remainder_sale(
     log: &mut EventLog,
     sub_results: &[SolvedSubImpulse],
 ) -> Option<ComposedCandidate> {
-    let lower = prompt.to_lowercase();
+    let lower = prompt.to_ascii_lowercase();
     if !(lower.contains("remainder") && lower.contains("sell")) {
         return None;
     }
@@ -209,18 +213,23 @@ fn compose_remainder_sale(
     let price = *quantities.last()?;
     let consumed = quantities[1..quantities.len() - 1].iter().sum::<i64>();
     let remainder = total.checked_sub(consumed)?;
-    let revenue = remainder.checked_mul(price)?;
+    let expression = format!("({total} - {consumed}) * {price}");
+    let evaluation = evaluate_calculation(&expression).ok()?;
     log.append(
         "composition:remainder",
-        format!("total={total} consumed={consumed} remainder={remainder}"),
+        format!("total={total} consumed={consumed} remainder={remainder} price={price}"),
     );
     log.append(
         "composition:evaluation",
-        format!("{remainder} * {price} = {revenue}"),
+        format!("{expression} = {}", evaluation.formatted),
     );
+    log.append("composition:engine", evaluation.engine.slug());
+    if !evaluation.steps.is_empty() {
+        log.append("composition:steps", evaluation.steps.len().to_string());
+    }
     Some(candidate(
         "arithmetic_word_problem",
-        revenue.to_string(),
+        evaluation.formatted,
         1.05,
         sub_results,
     ))
@@ -249,10 +258,29 @@ fn compose_object_count(
     if items.len() < 2 {
         return None;
     }
-    let count = items.len();
+    let category_label = extract_count_category(&prompt[question_start..])
+        .unwrap_or_else(|| String::from("listed objects"));
+    let category = find_object_category(&category_label);
+    let (matched_items, ignored_items) = partition_counted_items_by_category(&items, category);
+    let count = matched_items.len();
+    let category_trace = category.map_or_else(
+        || format!("category={category_label} rule=all_listed_items"),
+        |matched_category| {
+            format!(
+                "category={category_label} rule={}",
+                matched_category.canonical
+            )
+        },
+    );
+    log.append("composition:category", category_trace);
     log.append(
         "composition:count",
-        format!("items={} count={count}", items.join("|")),
+        format!(
+            "items={} matched={} ignored={} count={count}",
+            items.join("|"),
+            matched_items.join("|"),
+            ignored_items.join("|")
+        ),
     );
     Some(candidate(
         "object_counting",
@@ -260,6 +288,192 @@ fn compose_object_count(
         1.0,
         sub_results,
     ))
+}
+
+#[derive(Debug)]
+struct ObjectCategory {
+    canonical: &'static str,
+    aliases: &'static [&'static str],
+    items: &'static [&'static str],
+}
+
+const OBJECT_CATEGORIES: &[ObjectCategory] = &[
+    ObjectCategory {
+        canonical: "musical instruments",
+        aliases: &[
+            "musical instrument",
+            "musical instruments",
+            "instrument",
+            "instruments",
+        ],
+        items: &[
+            "accordion",
+            "banjo",
+            "bassoon",
+            "cello",
+            "clarinet",
+            "drum",
+            "flute",
+            "guitar",
+            "harmonica",
+            "harp",
+            "oboe",
+            "piano",
+            "recorder",
+            "saxophone",
+            "trombone",
+            "trumpet",
+            "tuba",
+            "viola",
+            "violin",
+        ],
+    },
+    ObjectCategory {
+        canonical: "fruit",
+        aliases: &["fruit", "fruits"],
+        items: &[
+            "apple",
+            "banana",
+            "blueberry",
+            "grape",
+            "lemon",
+            "lime",
+            "mango",
+            "orange",
+            "peach",
+            "pear",
+            "pineapple",
+            "plum",
+            "strawberry",
+            "watermelon",
+        ],
+    },
+    ObjectCategory {
+        canonical: "vegetables",
+        aliases: &["vegetable", "vegetables"],
+        items: &[
+            "broccoli", "carrot", "cucumber", "lettuce", "onion", "pepper", "potato", "spinach",
+            "tomato",
+        ],
+    },
+    ObjectCategory {
+        canonical: "animals",
+        aliases: &["animal", "animals"],
+        items: &[
+            "bird", "cat", "chicken", "cow", "dog", "duck", "fish", "goat", "horse", "pig",
+            "rabbit", "sheep",
+        ],
+    },
+    ObjectCategory {
+        canonical: "vehicles",
+        aliases: &["vehicle", "vehicles"],
+        items: &[
+            "airplane",
+            "bicycle",
+            "bike",
+            "boat",
+            "bus",
+            "car",
+            "motorcycle",
+            "plane",
+            "scooter",
+            "train",
+            "truck",
+        ],
+    },
+    ObjectCategory {
+        canonical: "tools",
+        aliases: &["tool", "tools"],
+        items: &["drill", "hammer", "pliers", "saw", "screwdriver", "wrench"],
+    },
+    ObjectCategory {
+        canonical: "utensils",
+        aliases: &["utensil", "utensils", "kitchen utensil", "kitchen utensils"],
+        items: &[
+            "fork", "knife", "ladle", "spatula", "spoon", "tongs", "whisk",
+        ],
+    },
+    ObjectCategory {
+        canonical: "furniture",
+        aliases: &["furniture", "furnishing", "furnishings"],
+        items: &[
+            "bed", "cabinet", "chair", "couch", "desk", "dresser", "sofa", "table",
+        ],
+    },
+    ObjectCategory {
+        canonical: "clothing",
+        aliases: &["clothing", "clothes", "garment", "garments"],
+        items: &[
+            "coat", "dress", "hat", "jacket", "pants", "shirt", "shoe", "sock",
+        ],
+    },
+];
+
+fn extract_count_category(question: &str) -> Option<String> {
+    let lower = question.to_ascii_lowercase();
+    let start = lower.find("how many")? + "how many".len();
+    let raw_after = question[start..].trim_start();
+    let lower_after = lower[start..].trim_start();
+    let mut end = raw_after.len();
+    for marker in [
+        " do i have",
+        " do we have",
+        " did i have",
+        " are there",
+        " are in",
+        " were there",
+        "?",
+        ".",
+    ] {
+        if let Some(index) = lower_after.find(marker) {
+            end = end.min(index);
+        }
+    }
+    let category = raw_after[..end]
+        .trim()
+        .trim_matches(|ch: char| ch.is_ascii_punctuation() || ch.is_whitespace())
+        .to_ascii_lowercase();
+    (!category.is_empty()).then_some(category)
+}
+
+fn find_object_category(label: &str) -> Option<&'static ObjectCategory> {
+    let normalized = normalize_count_phrase(label);
+    OBJECT_CATEGORIES.iter().find(|category| {
+        category
+            .aliases
+            .iter()
+            .any(|alias| normalize_count_phrase(alias) == normalized)
+    })
+}
+
+fn partition_counted_items_by_category(
+    items: &[String],
+    category: Option<&ObjectCategory>,
+) -> (Vec<String>, Vec<String>) {
+    let Some(category) = category else {
+        return (items.to_vec(), Vec::new());
+    };
+    let mut matched = Vec::new();
+    let mut ignored = Vec::new();
+    for item in items {
+        if item_matches_category(item, category) {
+            matched.push(item.clone());
+        } else {
+            ignored.push(item.clone());
+        }
+    }
+    (matched, ignored)
+}
+
+fn item_matches_category(item: &str, category: &ObjectCategory) -> bool {
+    let normalized = normalize_count_phrase(item);
+    category.items.iter().any(|candidate| {
+        let normalized_candidate = normalize_count_phrase(candidate);
+        normalized == normalized_candidate
+            || normalized
+                .strip_suffix(normalized_candidate.as_str())
+                .is_some_and(|prefix| prefix.ends_with(' '))
+    })
 }
 
 fn candidate(
@@ -521,6 +735,29 @@ fn clean_counted_item(raw: &str) -> String {
         }
     }
     item.to_owned()
+}
+
+fn normalize_count_phrase(value: &str) -> String {
+    value
+        .to_ascii_lowercase()
+        .split(|ch: char| !ch.is_ascii_alphanumeric())
+        .filter(|token| !token.is_empty())
+        .filter(|token| !matches!(*token, "a" | "an" | "the" | "of"))
+        .map(singularize_count_token)
+        .collect::<Vec<_>>()
+        .join(" ")
+}
+
+fn singularize_count_token(token: &str) -> String {
+    if token.len() > 4 {
+        if let Some(stem) = token.strip_suffix("ies") {
+            return format!("{stem}y");
+        }
+    }
+    if token.len() > 3 && token.ends_with('s') && !token.ends_with("ss") {
+        return token[..token.len() - 1].to_owned();
+    }
+    token.to_owned()
 }
 
 fn truncate_for_trace(value: &str, limit: usize) -> String {
