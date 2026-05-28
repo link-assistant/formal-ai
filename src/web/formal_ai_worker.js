@@ -719,6 +719,41 @@ function detectLanguage(prompt) {
   return AGENT_INFO.default_language || "en";
 }
 
+// Issue #324: the user can choose which language drives responses. The default
+// ("last_message") answers in the detected language of the current message
+// (fixing the Russian-prompt/English-answer bug). "preferred" pins responses to
+// an explicitly selected language and "ui" follows the UI-language preference.
+// Both fall back to the detected language when their source is "auto"/unset so
+// the deterministic default behavior is never lost.
+const RESPONSE_LANGUAGE_MODES = ["last_message", "preferred", "ui"];
+
+function isKnownResponseLanguage(slug) {
+  return slug === "en" || slug === "ru" || slug === "hi" || slug === "zh";
+}
+
+function responseLanguageFor(detected, preferences, userContext) {
+  const prefs = preferences || {};
+  const mode = RESPONSE_LANGUAGE_MODES.includes(prefs.responseLanguage)
+    ? prefs.responseLanguage
+    : "last_message";
+  if (mode === "preferred" && isKnownResponseLanguage(prefs.preferredLanguage)) {
+    return prefs.preferredLanguage;
+  }
+  if (mode === "ui") {
+    if (isKnownResponseLanguage(prefs.uiLanguage)) return prefs.uiLanguage;
+    // "auto" UI language follows the browser; fall back to the detected
+    // message language when no concrete browser language is supplied.
+    const browser = userContext && Array.isArray(userContext.browserLanguages)
+      ? userContext.browserLanguages
+      : [];
+    for (const tag of browser) {
+      const slug = String(tag || "").slice(0, 2).toLowerCase();
+      if (isKnownResponseLanguage(slug)) return slug;
+    }
+  }
+  return detected;
+}
+
 // CONCEPTS is populated from `seed/concepts.lino` at init() time.
 
 function normalizePrompt(prompt) {
@@ -9364,6 +9399,31 @@ const WRITE_PROGRAM_TASKS = {
       "列出文件",
     ],
   },
+  list_files_arg: {
+    label: "list files in the directory given as a path argument",
+    // Issue #324 follow-up: "Сделай так, чтобы программа принимала путь как
+    // аргумент" (make the program accept a path as an argument). This is the
+    // path-argument variant of `list_files`; conversation context maps a bare
+    // "accept a path argument" modification onto it (see
+    // `programPathArgumentModifier`). Mirrors the Rust `list_files_arg` task.
+    output: "Cargo.toml\nREADME.md\nmain.rs",
+    aliases: [
+      "list files in the directory given as a path argument",
+      "list files in a directory given as an argument",
+      "list files in the directory passed as an argument",
+      "list files in a path argument",
+      "list files with a path argument",
+      "list files accepting a path argument",
+      "список файлов в каталоге переданном как аргумент",
+      "список файлов в директории переданной как аргумент",
+      "список файлов по пути из аргумента",
+      // Hindi: "list of files in the directory given as a path argument".
+      "पथ तर्क के रूप में दी गई निर्देशिका की फ़ाइलों की सूची",
+      // Chinese: "list the files in the directory given as a path argument".
+      "列出作为路径参数给出的目录中的文件",
+      "列出路径参数指定目录中的文件",
+    ],
+  },
 };
 
 const WRITE_PROGRAM_TEMPLATES = {
@@ -9414,6 +9474,31 @@ const WRITE_PROGRAM_TEMPLATES = {
       'using System;\nusing System.IO;\nusing System.Linq;\n\nclass Program {\n    static void Main() {\n        var names = Directory.GetFiles(".")\n            .Select(Path.GetFileName)\n            .OrderBy(name => name, StringComparer.Ordinal);\n        foreach (var name in names) {\n            Console.WriteLine(name);\n        }\n    }\n}',
     ruby:
       'names = Dir.entries(".").select { |name| File.file?(name) }.sort\nnames.each { |name| puts name }',
+  },
+  // Issue #324 follow-up: list files in the directory passed as the first
+  // command-line argument, defaulting to "." when none is supplied. Mirrors the
+  // Rust `list_files_arg` templates.
+  list_files_arg: {
+    rust:
+      'use std::env;\nuse std::fs;\n\nfn main() {\n    let path = env::args().nth(1).unwrap_or_else(|| String::from("."));\n    let mut names: Vec<String> = fs::read_dir(&path)\n        .expect("failed to read directory")\n        .filter_map(|entry| entry.ok())\n        .filter(|entry| entry.path().is_file())\n        .map(|entry| entry.file_name().to_string_lossy().into_owned())\n        .collect();\n    names.sort();\n    for name in names {\n        println!("{name}");\n    }\n}',
+    python:
+      'import os\nimport sys\n\npath = sys.argv[1] if len(sys.argv) > 1 else "."\nnames = sorted(\n    name for name in os.listdir(path) if os.path.isfile(os.path.join(path, name))\n)\nfor name in names:\n    print(name)',
+    javascript:
+      'const fs = require("fs");\nconst path = require("path");\n\nconst dir = process.argv[2] || ".";\nconst names = fs\n  .readdirSync(dir)\n  .filter((name) => fs.statSync(path.join(dir, name)).isFile())\n  .sort();\n\nfor (const name of names) {\n  console.log(name);\n}',
+    typescript:
+      'import * as fs from "fs";\nimport * as path from "path";\n\nconst dir: string = process.argv[2] ?? ".";\nconst names: string[] = fs\n  .readdirSync(dir)\n  .filter((name) => fs.statSync(path.join(dir, name)).isFile())\n  .sort();\n\nfor (const name of names) {\n  console.log(name);\n}',
+    go:
+      'package main\n\nimport (\n    "fmt"\n    "os"\n    "sort"\n)\n\nfunc main() {\n    dir := "."\n    if len(os.Args) > 1 {\n        dir = os.Args[1]\n    }\n    entries, err := os.ReadDir(dir)\n    if err != nil {\n        panic(err)\n    }\n    var names []string\n    for _, entry := range entries {\n        if !entry.IsDir() {\n            names = append(names, entry.Name())\n        }\n    }\n    sort.Strings(names)\n    for _, name := range names {\n        fmt.Println(name)\n    }\n}',
+    c:
+      '#include <dirent.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n#include <sys/stat.h>\n\nstatic int compare(const void *a, const void *b) {\n    return strcmp(*(const char *const *)a, *(const char *const *)b);\n}\n\nint main(int argc, char *argv[]) {\n    const char *path = argc > 1 ? argv[1] : ".";\n    DIR *dir = opendir(path);\n    if (dir == NULL) {\n        return 1;\n    }\n    char *names[1024];\n    size_t count = 0;\n    struct dirent *entry;\n    while ((entry = readdir(dir)) != NULL && count < 1024) {\n        char full[4096];\n        snprintf(full, sizeof(full), "%s/%s", path, entry->d_name);\n        struct stat info;\n        if (stat(full, &info) == 0 && S_ISREG(info.st_mode)) {\n            names[count++] = strdup(entry->d_name);\n        }\n    }\n    closedir(dir);\n    qsort(names, count, sizeof(char *), compare);\n    for (size_t i = 0; i < count; i++) {\n        printf("%s\\n", names[i]);\n        free(names[i]);\n    }\n    return 0;\n}',
+    cpp:
+      "#include <algorithm>\n#include <filesystem>\n#include <iostream>\n#include <string>\n#include <vector>\n\nint main(int argc, char *argv[]) {\n    namespace fs = std::filesystem;\n    std::string path = argc > 1 ? argv[1] : \".\";\n    std::vector<std::string> names;\n    for (const auto &entry : fs::directory_iterator(path)) {\n        if (entry.is_regular_file()) {\n            names.push_back(entry.path().filename().string());\n        }\n    }\n    std::sort(names.begin(), names.end());\n    for (const auto &name : names) {\n        std::cout << name << '\\n';\n    }\n}",
+    java:
+      'import java.io.File;\nimport java.util.Arrays;\n\npublic class Main {\n    public static void main(String[] args) {\n        String path = args.length > 0 ? args[0] : ".";\n        File[] entries = new File(path).listFiles();\n        if (entries == null) {\n            return;\n        }\n        String[] names = Arrays.stream(entries)\n            .filter(File::isFile)\n            .map(File::getName)\n            .sorted()\n            .toArray(String[]::new);\n        for (String name : names) {\n            System.out.println(name);\n        }\n    }\n}',
+    csharp:
+      'using System;\nusing System.IO;\nusing System.Linq;\n\nclass Program {\n    static void Main(string[] args) {\n        var path = args.Length > 0 ? args[0] : ".";\n        var names = Directory.GetFiles(path)\n            .Select(Path.GetFileName)\n            .OrderBy(name => name, StringComparer.Ordinal);\n        foreach (var name in names) {\n            Console.WriteLine(name);\n        }\n    }\n}',
+    ruby:
+      'path = ARGV[0] || "."\nnames = Dir.entries(path).select { |name| File.file?(File.join(path, name)) }.sort\nnames.each { |name| puts name }',
   },
 };
 
@@ -9528,18 +9613,169 @@ const PROGRAM_VERBS = [
   "显示",
 ];
 
+// Issue #324: token groups that signal "accept a path as a (command-line)
+// argument" across the supported prompt languages. Mirrors
+// `PATH_ARGUMENT_MODIFIER_TOKENS` in `src/intent_formalization.rs`.
+const PATH_ARGUMENT_MODIFIER_TOKENS = [
+  ["path", "argument"],
+  // Russian: путь (path) + аргумент/аргумента/аргументом (argument).
+  ["путь", "аргумент"],
+  ["путь", "аргумента"],
+  ["путь", "аргументом"],
+  // Hindi: पथ (path) + तर्क (argument).
+  ["पथ", "तर्क"],
+  // Chinese: 路径 (path) + 参数 (argument).
+  ["路径", "参数"],
+];
+
+function programPathArgumentModifier(normalized) {
+  return PATH_ARGUMENT_MODIFIER_TOKENS.some((group) =>
+    group.every((token) => containsProgramToken(normalized, token)),
+  );
+}
+
+function pathArgumentTaskVariant(baseTask) {
+  if (baseTask === "list_files" || baseTask === "list_files_arg") return "list_files_arg";
+  return null;
+}
+
 function writeProgramParameters(prompt) {
   const normalized = normalizeProgramPrompt(prompt);
-  const task = programTaskFromPrompt(normalized);
+  let task = programTaskFromPrompt(normalized);
   const language = programLanguageFromPrompt(normalized);
   const asksForProgram =
     PROGRAM_NOUNS.some((noun) => containsProgramToken(normalized, noun)) &&
     PROGRAM_VERBS.some((verb) => containsProgramToken(normalized, verb));
   if (!task && !asksForProgram) return null;
+  // Issue #324: a path-argument modification in the same turn upgrades the base
+  // task to its `_arg` variant (e.g. list_files -> list_files_arg).
+  if (task && programPathArgumentModifier(normalized)) {
+    task = pathArgumentTaskVariant(task) || task;
+  }
   return { language, task };
 }
 
-function writeProgramExecutionLines(language, task, code, output) {
+// Issue #324: a follow-up such as "Сделай так, чтобы программа принимала путь
+// как аргумент" routes to write_program but names neither a task nor a
+// language - both came from a previous turn. Recover the missing parameters
+// from the most recent prior turn that named them and apply any path-argument
+// modifier present in the follow-up. Mirrors `recover_write_program_rule` in
+// `src/intent_formalization.rs`.
+function recoverWriteProgramParameters(parameters, prompt, history) {
+  let task = parameters.task || null;
+  let language = parameters.language || null;
+  if ((!task || !language) && Array.isArray(history)) {
+    for (let index = history.length - 1; index >= 0; index -= 1) {
+      const turn = history[index];
+      const content = turn && (turn.content || turn.text || turn.message);
+      if (!content) continue;
+      const prior = writeProgramParameters(content);
+      if (!prior) continue;
+      if (!task && prior.task) task = prior.task;
+      if (!language && prior.language) language = prior.language;
+      if (task && language) break;
+    }
+  }
+  const normalized = normalizeProgramPrompt(prompt);
+  if (task && programPathArgumentModifier(normalized)) {
+    task = pathArgumentTaskVariant(task) || task;
+  }
+  return { task, language };
+}
+
+// Issue #324: a request in a given language must be answered in that language.
+// These mirror the localized framing produced by the Rust engine
+// (`write_program_intro`, `unsupported_write_program_answer`,
+// `execution_report`). Only the natural-language prose is localized; the code
+// and the Links Notation trace stay canonical. `en` is the fallback.
+const WRITE_PROGRAM_I18N = {
+  en: {
+    intro: (name, label) => `Here is a minimal ${name} ${label} program:`,
+    unsupported: (language, task, languages, tasks) =>
+      `I can route \`write_program(language, task)\`, but I do not have a template for ` +
+      `language \`${language}\` and task \`${task}\`. ` +
+      `Supported languages: ${languages}. Supported tasks: ${tasks}.`,
+    ranInSandbox: "Execution status: ran in the demo's Web Worker sandbox.",
+    outputLabel: "Output:",
+    noOutput: "(no output)",
+    sandboxFailed: (message) => `Execution status: failed in sandbox - ${message}.`,
+    notRun: (language, reason) =>
+      `Execution status: not run - ${reason}. Copy the snippet into a ${language} environment to verify.`,
+    noFilesystem: (language) =>
+      `the browser sandbox has no filesystem access for this ${language} program`,
+    noToolchain: (language) => `the browser sandbox cannot invoke a ${language} toolchain`,
+    sampleDirectory:
+      "The output depends on the directory; for a sample directory holding " +
+      "exactly `Cargo.toml`, `README.md`, and `main.rs` it is:",
+    expectedOutput: "Expected output after verification:",
+  },
+  ru: {
+    intro: (name, label) => `Вот минимальная программа на языке ${name} (${label}):`,
+    unsupported: (language, task, languages, tasks) =>
+      `Я могу выполнить \`write_program(language, task)\`, но у меня нет шаблона для ` +
+      `языка \`${language}\` и задачи \`${task}\`. ` +
+      `Поддерживаемые языки: ${languages}. Поддерживаемые задачи: ${tasks}.`,
+    ranInSandbox: "Статус выполнения: запущено в песочнице Web Worker демо.",
+    outputLabel: "Вывод:",
+    noOutput: "(нет вывода)",
+    sandboxFailed: (message) => `Статус выполнения: сбой в песочнице - ${message}.`,
+    notRun: (language, reason) =>
+      `Статус выполнения: не запущено - ${reason}. Скопируйте фрагмент в среду ${language}, чтобы проверить.`,
+    noFilesystem: (language) =>
+      `у браузерной песочницы нет доступа к файловой системе для этой программы на ${language}`,
+    noToolchain: (language) =>
+      `браузерная песочница не может вызвать инструментарий ${language}`,
+    sampleDirectory:
+      "Вывод зависит от каталога; для образца каталога, содержащего ровно " +
+      "`Cargo.toml`, `README.md` и `main.rs`, он такой:",
+    expectedOutput: "Ожидаемый вывод после проверки:",
+  },
+  hi: {
+    intro: (name, label) => `यहाँ ${name} में एक न्यूनतम प्रोग्राम है (${label}):`,
+    unsupported: (language, task, languages, tasks) =>
+      `मैं \`write_program(language, task)\` रूट कर सकता हूँ, लेकिन भाषा \`${language}\` और ` +
+      `कार्य \`${task}\` के लिए मेरे पास कोई टेम्पलेट नहीं है। ` +
+      `समर्थित भाषाएँ: ${languages}. समर्थित कार्य: ${tasks}.`,
+    ranInSandbox: "निष्पादन स्थिति: डेमो के Web Worker सैंडबॉक्स में चला।",
+    outputLabel: "आउटपुट:",
+    noOutput: "(कोई आउटपुट नहीं)",
+    sandboxFailed: (message) => `निष्पादन स्थिति: सैंडबॉक्स में विफल - ${message}.`,
+    notRun: (language, reason) =>
+      `निष्पादन स्थिति: नहीं चला - ${reason}. सत्यापित करने के लिए स्निपेट को ${language} वातावरण में कॉपी करें।`,
+    noFilesystem: (language) =>
+      `इस ${language} प्रोग्राम के लिए ब्राउज़र सैंडबॉक्स में फ़ाइल सिस्टम तक पहुँच नहीं है`,
+    noToolchain: (language) =>
+      `ब्राउज़र सैंडबॉक्स ${language} टूलचेन को आमंत्रित नहीं कर सकता`,
+    sampleDirectory:
+      "आउटपुट निर्देशिका पर निर्भर करता है; ठीक `Cargo.toml`, `README.md` और " +
+      "`main.rs` रखने वाली एक नमूना निर्देशिका के लिए यह है:",
+    expectedOutput: "सत्यापन के बाद अपेक्षित आउटपुट:",
+  },
+  zh: {
+    intro: (name, label) => `这是一个最小的 ${name} 程序（${label}）：`,
+    unsupported: (language, task, languages, tasks) =>
+      `我可以路由 \`write_program(language, task)\`，但我没有语言 \`${language}\` 和任务 ` +
+      `\`${task}\` 的模板。支持的语言：${languages}。支持的任务：${tasks}。`,
+    ranInSandbox: "执行状态：已在演示的 Web Worker 沙箱中运行。",
+    outputLabel: "输出：",
+    noOutput: "（无输出）",
+    sandboxFailed: (message) => `执行状态：沙箱中失败 - ${message}。`,
+    notRun: (language, reason) =>
+      `执行状态：未运行 - ${reason}。将代码片段复制到 ${language} 环境中以验证。`,
+    noFilesystem: (language) => `浏览器沙箱无法为此 ${language} 程序访问文件系统`,
+    noToolchain: (language) => `浏览器沙箱无法调用 ${language} 工具链`,
+    sampleDirectory:
+      "输出取决于目录；对于恰好包含 `Cargo.toml`、`README.md` 和 `main.rs` 的示例目录，它是：",
+    expectedOutput: "验证后的预期输出：",
+  },
+};
+
+function writeProgramStrings(language) {
+  return WRITE_PROGRAM_I18N[language] || WRITE_PROGRAM_I18N.en;
+}
+
+function writeProgramExecutionLines(language, task, code, output, strings) {
+  const i18n = strings || WRITE_PROGRAM_I18N.en;
   // Issue #312: the list-files snippet reads the real filesystem through Node's
   // `fs`/`require`, which the browser Web Worker sandbox does not provide, and
   // its output depends on the directory contents. Never claim it "ran" here -
@@ -9552,48 +9788,46 @@ function writeProgramExecutionLines(language, task, code, output) {
       const runner = new Function("console", `"use strict"; ${code}`);
       runner({ log: (...args) => logs.push(args.join(" ")) });
       return [
-        "Execution status: ran in the demo's Web Worker sandbox.",
-        "Output:",
+        i18n.ranInSandbox,
+        i18n.outputLabel,
         "```text",
-        logs.join("\n") || "(no output)",
+        logs.join("\n") || i18n.noOutput,
         "```",
       ];
     } catch (error) {
-      return [`Execution status: failed in sandbox - ${error.message || String(error)}.`];
+      return [i18n.sandboxFailed(error.message || String(error))];
     }
   }
   const reason =
-    language === "javascript"
-      ? `the browser sandbox has no filesystem access for this ${language} program`
-      : `the browser sandbox cannot invoke a ${language} toolchain`;
-  const lines = [
-    `Execution status: not run - ${reason}. Copy the snippet into a ${language} environment to verify.`,
-  ];
-  if (task === "list_files") {
-    lines.push(
-      "The output depends on the directory; for a sample directory holding " +
-        "exactly `Cargo.toml`, `README.md`, and `main.rs` it is:",
-    );
+    language === "javascript" ? i18n.noFilesystem(language) : i18n.noToolchain(language);
+  const lines = [i18n.notRun(language, reason)];
+  if (task === "list_files" || task === "list_files_arg") {
+    lines.push(i18n.sampleDirectory);
   } else {
-    lines.push("Expected output after verification:");
+    lines.push(i18n.expectedOutput);
   }
   lines.push("```text", output, "```");
   return lines;
 }
 
-function tryWriteProgram(prompt) {
-  const parameters = writeProgramParameters(prompt);
-  if (!parameters) return null;
-  const { language, task } = parameters;
+function tryWriteProgram(prompt, history, responseLanguage) {
+  const detected = writeProgramParameters(prompt);
+  if (!detected) return null;
+  // Issue #324: recover task/language from the conversation when a follow-up
+  // modification names neither (and apply any path-argument modifier).
+  const { language, task } = recoverWriteProgramParameters(detected, prompt, history);
+  // Issue #324: answer in the language of the request (falls back to en).
+  const i18n = writeProgramStrings(responseLanguage);
   const template = language && task ? WRITE_PROGRAM_TEMPLATES[task]?.[language] : null;
   if (!template) {
     return {
       intent: "write_program_unsupported",
-      content:
-        `I can route \`write_program(language, task)\`, but I do not have a template for ` +
-        `language \`${language || "missing"}\` and task \`${task || "missing"}\`. ` +
-        `Supported languages: ${Object.keys(WRITE_PROGRAM_LANGUAGES).join(", ")}. ` +
-        `Supported tasks: ${Object.keys(WRITE_PROGRAM_TASKS).join(", ")}.`,
+      content: i18n.unsupported(
+        language || "missing",
+        task || "missing",
+        Object.keys(WRITE_PROGRAM_LANGUAGES).join(", "),
+        Object.keys(WRITE_PROGRAM_TASKS).join(", "),
+      ),
       confidence: 0.4,
       evidence: [
         "response:write_program:unsupported",
@@ -9609,13 +9843,15 @@ function tryWriteProgram(prompt) {
   const ranInSandbox =
     language === "javascript" && !/\brequire\s*\(|\bimport\b/.test(template);
   const lines = [];
-  lines.push(`Here is a minimal ${languageInfo.name} ${taskInfo.label} program:`);
+  lines.push(i18n.intro(languageInfo.name, taskInfo.label));
   lines.push("");
   lines.push("```" + languageInfo.fence);
   lines.push(template);
   lines.push("```");
   lines.push("");
-  lines.push(...writeProgramExecutionLines(language, task, template, taskInfo.output));
+  lines.push(
+    ...writeProgramExecutionLines(language, task, template, taskInfo.output, i18n),
+  );
   return {
     intent: "write_program",
     content: lines.join("\n"),
@@ -13381,6 +13617,13 @@ async function solve(prompt, history, prefs, userContext = {}) {
   const language = detectLanguage(prompt);
   events.push(`language:${language}`);
   steps.push({ step: "detect_language", detail: language });
+  // Issue #324: resolve which language should drive natural-language responses
+  // (defaults to the detected message language).
+  const responseLanguage = responseLanguageFor(language, preferences, userContext);
+  if (responseLanguage !== language) {
+    events.push(`response_language:${responseLanguage}`);
+    steps.push({ step: "resolve_response_language", detail: responseLanguage });
+  }
 
   // Issue #180: bundle the per-turn formalization context so every
   // handler hit can fold a resolved entity id back into the tuple and
@@ -13575,7 +13818,9 @@ async function solve(prompt, history, prefs, userContext = {}) {
   // so "напиши программу на Rust" is not answered as a "Rust" encyclopedia entry.
   let writeProgramResult;
   const writeProgram = () => {
-    if (writeProgramResult === undefined) writeProgramResult = tryWriteProgram(prompt);
+    if (writeProgramResult === undefined) {
+      writeProgramResult = tryWriteProgram(prompt, history, responseLanguage);
+    }
     return writeProgramResult;
   };
   const syncHandlers = [
