@@ -29,8 +29,9 @@ use crate::engine::{
 };
 use crate::event_log::{build_evidence_links, EventLog};
 use crate::intent_formalization::{
-    ordered_handler_names, record_intent_formalization, select_rule_for_intent,
-    IntentFormalization, IntentFormalizationCache, IntentFormalizationCacheEntry,
+    ordered_handler_names, record_intent_formalization, recover_write_program_rule,
+    select_rule_for_intent, IntentFormalization, IntentFormalizationCache,
+    IntentFormalizationCacheEntry,
 };
 use crate::language::{detect as detect_language, Language};
 use crate::probability::ProbabilityStore;
@@ -551,6 +552,21 @@ impl UniversalSolver {
             self.solve_sub_impulses(&mut log, &sub_impulses, probability_store, intent_cache);
 
         let rule = select_rule_for_intent(&intent_formalization);
+
+        // Issue #324: a follow-up modification ("make the program accept a path
+        // argument") routes to write_program but names no concrete task or
+        // language — they came from the previous turn. Recover the missing
+        // parameters from the conversation so the request completes instead of
+        // surfacing the "language `missing` and task `missing`" error.
+        let rule = if matches!(rule, SelectedRule::UnsupportedWriteProgram { .. }) {
+            let recovery = recover_write_program_rule(rule, prompt, history);
+            if let Some(trace) = recovery.trace {
+                log.append("write_program_context_recovery", trace);
+            }
+            recovery.rule
+        } else {
+            rule
+        };
 
         if let Some(answer) = try_synthesize_from_sub_results(
             prompt,

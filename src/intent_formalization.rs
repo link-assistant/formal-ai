@@ -17,7 +17,7 @@ use crate::link_store::{LinkStore, LinkStoreError};
 use crate::memory::MemoryEvent;
 use crate::probability::ProbabilityStore;
 use crate::seed;
-use crate::solver::UniversalSolver;
+use crate::solver::{ConversationTurn, UniversalSolver};
 use crate::translation::{FormalizationAnchorKind, FormalizationCandidate, FormalizationRole};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -387,6 +387,122 @@ fn write_program_rule_for_intent(intent: &IntentFormalization) -> SelectedRule {
     SelectedRule::UnsupportedWriteProgram { task, language }
 }
 
+/// Outcome of trying to complete a follow-up `write_program` request from the
+/// conversation so far (issue #324).
+pub(crate) struct WriteProgramRecovery {
+    /// The rule after recovery — upgraded to [`SelectedRule::WriteProgram`] when
+    /// enough context was found, otherwise the original unsupported rule with any
+    /// parameters we managed to fill in.
+    pub rule: SelectedRule,
+    /// A short trace describing what was carried over, for the event log. `None`
+    /// when nothing was recovered.
+    pub trace: Option<String>,
+}
+
+/// Issue #324: a follow-up such as "Сделай так, чтобы программа принимала путь
+/// как аргумент" ("make the program accept a path as an argument") routes to
+/// `write_program` because it pairs a program noun with an imperative verb, yet
+/// it names neither a concrete task nor a language — both came from the previous
+/// turn. Without conversation context this surfaced the user-reported error
+/// ("I do not have a template for language `missing` and task `missing`").
+///
+/// When the selected rule is [`SelectedRule::UnsupportedWriteProgram`] we recover
+/// the missing task and language from the most recent prior turn that named them
+/// and apply any modification modifier present in the follow-up (currently
+/// "accept a path argument", which maps `list_files` onto `list_files_arg`). If
+/// the recovered `(task, language)` pair has a template we upgrade the rule to a
+/// concrete program; otherwise we return the rule with whatever we could fill in
+/// so the unsupported message is still as specific as possible.
+#[must_use]
+pub(crate) fn recover_write_program_rule(
+    rule: SelectedRule,
+    follow_up: &str,
+    history: &[ConversationTurn],
+) -> WriteProgramRecovery {
+    let SelectedRule::UnsupportedWriteProgram { task, language } = &rule else {
+        return WriteProgramRecovery { rule, trace: None };
+    };
+
+    let mut recovered_task = task.clone();
+    let mut recovered_language = language.clone();
+
+    if recovered_task.is_none() || recovered_language.is_none() {
+        for turn in history.iter().rev() {
+            let normalized = normalize_prompt(&turn.content);
+            let Some(parameters) = write_program_parameters(&normalized) else {
+                continue;
+            };
+            if recovered_task.is_none() {
+                recovered_task = parameters.get("task").cloned();
+            }
+            if recovered_language.is_none() {
+                recovered_language = parameters.get("language").cloned();
+            }
+            if recovered_task.is_some() && recovered_language.is_some() {
+                break;
+            }
+        }
+    }
+
+    // A path-argument modification turns the base task into its `_arg` variant.
+    let normalized_follow_up = normalize_prompt(follow_up);
+    if program_path_argument_modifier(&normalized_follow_up) {
+        if let Some(base) = recovered_task.as_deref() {
+            if let Some(modified) = path_argument_task_variant(base) {
+                recovered_task = Some(modified.to_owned());
+            }
+        }
+    }
+
+    if let (Some(task_slug), Some(language_slug)) =
+        (recovered_task.as_deref(), recovered_language.as_deref())
+    {
+        if let Some(spec) = program_spec(task_slug, language_slug) {
+            let trace = format!("write_program task={task_slug} language={language_slug}");
+            return WriteProgramRecovery {
+                rule: SelectedRule::WriteProgram(spec),
+                trace: Some(trace),
+            };
+        }
+    }
+
+    WriteProgramRecovery {
+        rule: SelectedRule::UnsupportedWriteProgram {
+            task: recovered_task,
+            language: recovered_language,
+        },
+        trace: None,
+    }
+}
+
+/// Token groups that signal "accept a path as a (command-line) argument" across
+/// the supported prompt languages. Each inner slice must match in full.
+const PATH_ARGUMENT_MODIFIER_TOKENS: &[&[&str]] = &[
+    &["path", "argument"],
+    // Russian: путь (path) + аргумент/аргумента/аргументом (argument).
+    &["путь", "аргумент"],
+    &["путь", "аргумента"],
+    &["путь", "аргументом"],
+    // Hindi: पथ (path) + तर्क (argument).
+    &["पथ", "तर्क"],
+    // Chinese: 路径 (path) + 参数 (argument).
+    &["路径", "参数"],
+];
+
+fn program_path_argument_modifier(normalized: &str) -> bool {
+    PATH_ARGUMENT_MODIFIER_TOKENS
+        .iter()
+        .any(|group| group.iter().all(|token| contains_token(normalized, token)))
+}
+
+/// Maps a base task onto its path-argument variant, when one exists.
+fn path_argument_task_variant(base_task: &str) -> Option<&'static str> {
+    match base_task {
+        "list_files" | "list_files_arg" => Some("list_files_arg"),
+        _ => None,
+    }
+}
+
 /// Words that name the artefact the user wants generated ("program", "script",
 /// "code") across the supported prompt languages.
 const PROGRAM_NOUNS: &[&str] = &[
@@ -465,7 +581,15 @@ fn write_program_parameters(normalized: &str) -> Option<BTreeMap<String, String>
     }
     let mut parameters = BTreeMap::new();
     if let Some(task) = task {
-        parameters.insert(String::from("task"), String::from(task.slug));
+        // Issue #324: a path-argument modification in the same turn upgrades the
+        // base task to its `_arg` variant (e.g. list_files -> list_files_arg) so
+        // an explicit "list files with a path argument" resolves directly.
+        let task_slug = if program_path_argument_modifier(normalized) {
+            path_argument_task_variant(task.slug).unwrap_or(task.slug)
+        } else {
+            task.slug
+        };
+        parameters.insert(String::from("task"), String::from(task_slug));
     }
     if let Some(language) = language {
         parameters.insert(String::from("language"), language);
