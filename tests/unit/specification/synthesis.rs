@@ -110,6 +110,74 @@ fn benchmark_object_counting_passes_by_composing_listed_sub_results() {
 }
 
 #[test]
+fn renumbered_word_problem_recomputes_from_quantities() {
+    let prompt = "Marisol's hens lay 24 eggs per day. She eats five for breakfast every morning and bakes cakes for her neighbors every day with seven. She sells the remainder at the market daily for $3 per fresh egg. How much in dollars does she make every day at the market?";
+    let response = synthesis_solver().solve(prompt);
+
+    assert_eq!(response.intent, "arithmetic_word_problem");
+    assert!(response.answer.contains("36"), "{}", response.answer);
+    assert!(
+        !response.answer.contains("18"),
+        "renumbered prompt must not reuse the fixture answer: {}",
+        response.answer
+    );
+    assert!(response
+        .evidence_links
+        .iter()
+        .any(|link| link.starts_with("composition:remainder:")));
+    assert!(response
+        .evidence_links
+        .iter()
+        .any(|link| link.starts_with("composition:evaluation:")));
+    assert!(response
+        .evidence_links
+        .iter()
+        .any(|link| link.starts_with("trace:")));
+    assert!(response.links_notation.contains("(24 - 12) * 3 = 36"));
+}
+
+#[test]
+fn renumbered_algebra_substitution_recomputes_closed_value() {
+    let response = synthesis_solver().solve("Given y = 4 and x = 3, evaluate (x^2 + 2y).");
+
+    assert_eq!(response.intent, "algebra_substitution");
+    assert!(response.answer.contains("17"), "{}", response.answer);
+    assert!(response
+        .evidence_links
+        .iter()
+        .any(|link| link.starts_with("composition:substitution:")));
+    assert!(response
+        .evidence_links
+        .iter()
+        .any(|link| link.starts_with("composition:evaluation:")));
+    assert!(response
+        .evidence_links
+        .iter()
+        .any(|link| link.starts_with("trace:")));
+}
+
+#[test]
+fn object_counting_filters_items_by_requested_category() {
+    let response = synthesis_solver().solve(
+        "I have a clarinet, a spoon, a violin, and a flute. How many musical instruments do I have?",
+    );
+
+    assert_eq!(response.intent, "object_counting");
+    assert!(response.answer.contains('3'), "{}", response.answer);
+    assert!(
+        !response.answer.contains('4'),
+        "mixed list must count only requested category matches: {}",
+        response.answer
+    );
+    assert!(response
+        .links_notation
+        .contains("category=musical instruments"));
+    assert!(response
+        .links_notation
+        .contains("matched=clarinet|violin|flute"));
+}
+
+#[test]
 fn composition_trace_is_deterministic() {
     let solver = synthesis_solver();
     let prompt = "Janet's ducks lay 16 eggs per day. She eats three for breakfast every morning and bakes muffins for her friends every day with four. She sells the remainder at the farmers' market daily for $2 per fresh duck egg. How much in dollars does she make every day at the farmers' market?";
