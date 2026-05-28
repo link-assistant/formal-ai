@@ -563,6 +563,9 @@ impl UniversalSolver {
             if let Some(trace) = recovery.trace {
                 log.append("write_program_context_recovery", trace);
             }
+            if let Some(plan) = recovery.plan {
+                log.append("write_program_plan", plan);
+            }
             recovery.rule
         } else {
             rule

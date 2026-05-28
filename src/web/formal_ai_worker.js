@@ -9618,30 +9618,411 @@ const PROGRAM_VERBS = [
   "显示",
 ];
 
-// Issue #324: token groups that signal "accept a path as a (command-line)
-// argument" across the supported prompt languages. Mirrors
-// `PATH_ARGUMENT_MODIFIER_TOKENS` in `src/intent_formalization.rs`.
-const PATH_ARGUMENT_MODIFIER_TOKENS = [
-  ["path", "argument"],
-  // Russian: путь (path) + аргумент/аргумента/аргументом (argument).
-  ["путь", "аргумент"],
-  ["путь", "аргумента"],
-  ["путь", "аргументом"],
-  // Hindi: पथ (path) + तर्क (argument).
-  ["पथ", "तर्क"],
-  // Chinese: 路径 (path) + 参数 (argument).
-  ["路径", "参数"],
+// ---------------------------------------------------------------------------
+// Issue #324 R4/R7: the program-modification step as a data-driven Links
+// Notation substitution pipeline. This mirrors `src/program_plan.rs` (the
+// pipeline) and `src/substitution.rs` (the engine). The rule text below is
+// byte-identical to `data/seed/program-plan-rules.lino`; the parity experiment
+// (`experiments/issue-324-js-worker.mjs`) keeps the two copies in lockstep.
+//
+// Adding a new modification (e.g. "sort descending", "count instead of list")
+// becomes *data* — a new rule in the `.lino` text — not new control flow.
+// ---------------------------------------------------------------------------
+
+const PROGRAM_PLAN_RULES_LINO = [
+  "substitution_rules",
+  '  id "program_plan_rules"',
+  '  rule "path_argument_list_files"',
+  '    order "1"',
+  '    event "manual"',
+  '    when "request:modifier -> path_argument"',
+  '    replace "request:task -> list_files"',
+  '      with "request:task -> list_files_arg"',
+  "",
+].join("\n");
+
+const TASK_NODE = "request:task";
+const MODIFIER_NODE = "request:modifier";
+
+// Issue #324: modifier slugs detected from request prose, mirroring
+// `PROGRAM_MODIFIERS` in `src/intent_formalization.rs`. Detection (token ->
+// slug) stays in code; the *transformation* (slug -> task variant) is data.
+const PROGRAM_MODIFIERS = [
+  {
+    slug: "path_argument",
+    tokenGroups: [
+      ["path", "argument"],
+      // Russian: путь (path) + аргумент/аргумента/аргументом (argument).
+      ["путь", "аргумент"],
+      ["путь", "аргумента"],
+      ["путь", "аргументом"],
+      // Hindi: पथ (path) + तर्क (argument).
+      ["पथ", "तर्क"],
+      // Chinese: 路径 (path) + 参数 (argument).
+      ["路径", "参数"],
+    ],
+  },
 ];
 
-function programPathArgumentModifier(normalized) {
-  return PATH_ARGUMENT_MODIFIER_TOKENS.some((group) =>
-    group.every((token) => containsProgramToken(normalized, token)),
+function detectedProgramModifiers(normalized) {
+  const slugs = [];
+  for (const modifier of PROGRAM_MODIFIERS) {
+    const matched = modifier.tokenGroups.some((group) =>
+      group.every((token) => containsProgramToken(normalized, token)),
+    );
+    if (matched) slugs.push(modifier.slug);
+  }
+  return slugs;
+}
+
+// --- Substitution engine (mirror of src/substitution.rs) -------------------
+
+function unescapeLinoValue(value) {
+  let out = "";
+  for (let index = 0; index < value.length; index += 1) {
+    const ch = value[index];
+    if (ch === "\\" && index + 1 < value.length) {
+      const next = value[index + 1];
+      if (next === "n") {
+        out += "\n";
+        index += 1;
+        continue;
+      }
+      if (next === '"' || next === "\\") {
+        out += next;
+        index += 1;
+        continue;
+      }
+    }
+    out += ch;
+  }
+  return out;
+}
+
+function parseLinoValue(raw) {
+  const trimmed = raw.trim();
+  if (trimmed.length >= 2 && trimmed.startsWith('"') && trimmed.endsWith('"')) {
+    return unescapeLinoValue(trimmed.slice(1, -1));
+  }
+  return trimmed;
+}
+
+function parseLinoTree(text) {
+  const root = { name: "", value: "", depth: -1, children: [] };
+  const stack = [root];
+  for (const line of text.split("\n")) {
+    if (!line.trim()) continue;
+    const indent = line.length - line.trimStart().length;
+    const depth = indent / 2;
+    const rest = line.trim();
+    const spaceIndex = rest.indexOf(" ");
+    const name = spaceIndex === -1 ? rest : rest.slice(0, spaceIndex);
+    const value = spaceIndex === -1 ? "" : parseLinoValue(rest.slice(spaceIndex + 1));
+    const node = { name, value, depth, children: [] };
+    while (stack.length && stack[stack.length - 1].depth >= depth) stack.pop();
+    stack[stack.length - 1].children.push(node);
+    stack.push(node);
+  }
+  return root;
+}
+
+function parsePatternNode(text) {
+  if (!text) throw new Error("pattern node is empty");
+  if (text.startsWith("$")) return { kind: "variable", variable: text.slice(1) };
+  const dollar = text.indexOf("$");
+  if (dollar !== -1) {
+    return { kind: "prefix", prefix: text.slice(0, dollar), variable: text.slice(dollar + 1) };
+  }
+  return { kind: "literal", value: text };
+}
+
+function parseLinkPattern(text) {
+  const index = text.indexOf("->");
+  if (index === -1) throw new Error(`expected \`from -> to\`, got \`${text}\``);
+  return {
+    from: parsePatternNode(text.slice(0, index).trim()),
+    to: parsePatternNode(text.slice(index + 2).trim()),
+  };
+}
+
+function parseCrudEvent(value) {
+  const map = {
+    manual: "manual",
+    apply: "manual",
+    create: "create",
+    created: "create",
+    read: "read",
+    select: "read",
+    query: "read",
+    update: "update",
+    updated: "update",
+    delete: "delete",
+    deleted: "delete",
+  };
+  const key = String(value).trim().toLowerCase();
+  if (!map[key]) throw new Error(`invalid CRUD event: ${value}`);
+  return map[key];
+}
+
+function parseSubstitutionRule(node) {
+  const rule = { id: node.value, order: 0, events: [], conditions: [], actions: [] };
+  for (const child of node.children) {
+    switch (child.name) {
+      case "order": {
+        const parsed = parseInt(child.value, 10);
+        rule.order = Number.isNaN(parsed) ? 0 : parsed;
+        break;
+      }
+      case "event":
+        rule.events.push(parseCrudEvent(child.value));
+        break;
+      case "when":
+        rule.conditions.push(parseLinkPattern(child.value));
+        break;
+      case "replace": {
+        const add = child.children
+          .filter((grandchild) => grandchild.name === "with")
+          .map((grandchild) => parseLinkPattern(grandchild.value));
+        rule.actions.push({ remove: parseLinkPattern(child.value), add });
+        break;
+      }
+      default:
+        break;
+    }
+  }
+  return rule;
+}
+
+function parseSubstitutionRules(text) {
+  const tree = parseLinoTree(text.trim());
+  const root = tree.children[0];
+  if (!root || root.name !== "substitution_rules") {
+    throw new Error("not a substitution_rules document");
+  }
+  const idNode = root.children.find((child) => child.name === "id");
+  const id = idNode ? idNode.value : "";
+  const rules = root.children
+    .filter((child) => child.name === "rule")
+    .map(parseSubstitutionRule);
+  rules.sort((left, right) =>
+    left.order - right.order ||
+    (left.id < right.id ? -1 : left.id > right.id ? 1 : 0),
+  );
+  return { id, rules };
+}
+
+const LINK_KEY_SEPARATOR = " ";
+const linkKey = (link) => `${link.from}${LINK_KEY_SEPARATOR}${link.to}`;
+const linkFromKey = (key) => {
+  const [from, to] = key.split(LINK_KEY_SEPARATOR);
+  return { from, to };
+};
+
+function sortedLinksFromSet(linkSet) {
+  return Array.from(linkSet, linkFromKey).sort((left, right) =>
+    left.from < right.from
+      ? -1
+      : left.from > right.from
+        ? 1
+        : left.to < right.to
+          ? -1
+          : left.to > right.to
+            ? 1
+            : 0,
   );
 }
 
-function pathArgumentTaskVariant(baseTask) {
-  if (baseTask === "list_files" || baseTask === "list_files_arg") return "list_files_arg";
+function bindVariable(bindings, variable, value) {
+  if (Object.prototype.hasOwnProperty.call(bindings, variable)) {
+    return bindings[variable] === value;
+  }
+  bindings[variable] = value;
+  return true;
+}
+
+function nodeMatches(pattern, value, bindings) {
+  if (pattern.kind === "literal") return pattern.value === value;
+  if (pattern.kind === "variable") return bindVariable(bindings, pattern.variable, value);
+  if (!value.startsWith(pattern.prefix)) return false;
+  return bindVariable(bindings, pattern.variable, value.slice(pattern.prefix.length));
+}
+
+function patternMatchesLink(pattern, link, bindings) {
+  return (
+    nodeMatches(pattern.from, link.from, bindings) &&
+    nodeMatches(pattern.to, link.to, bindings)
+  );
+}
+
+function instantiateNode(node, bindings) {
+  if (node.kind === "literal") return node.value;
+  if (node.kind === "variable") {
+    return Object.prototype.hasOwnProperty.call(bindings, node.variable)
+      ? bindings[node.variable]
+      : null;
+  }
+  const value = bindings[node.variable];
+  return value === undefined ? null : node.prefix + value;
+}
+
+function instantiatePattern(pattern, bindings) {
+  const from = instantiateNode(pattern.from, bindings);
+  const to = instantiateNode(pattern.to, bindings);
+  if (from === null || to === null) return null;
+  return { from, to };
+}
+
+function findBindings(links, patterns, index, bindings) {
+  if (index >= patterns.length) return bindings;
+  const pattern = patterns[index];
+  for (const link of links) {
+    const candidate = Object.assign({}, bindings);
+    if (patternMatchesLink(pattern, link, candidate)) {
+      const found = findBindings(links, patterns, index + 1, candidate);
+      if (found) return found;
+    }
+  }
   return null;
+}
+
+function applySubstitutionRule(linkSet, rule, event, sequence) {
+  if (!rule.events.includes(event)) return null;
+  const required = rule.conditions.slice();
+  for (const action of rule.actions) required.push(action.remove);
+  const links = sortedLinksFromSet(linkSet);
+  const bindings = findBindings(links, required, 0, {});
+  if (!bindings) return null;
+  // Pre-instantiate every mutation so a partial rewrite never mutates the set.
+  const ops = [];
+  for (const action of rule.actions) {
+    const remove = instantiatePattern(action.remove, bindings);
+    if (remove === null) return null;
+    const adds = [];
+    for (const addPattern of action.add) {
+      const add = instantiatePattern(addPattern, bindings);
+      if (add === null) return null;
+      adds.push(add);
+    }
+    ops.push({ remove, adds });
+  }
+  const before = new Set(linkSet);
+  const removed = [];
+  const added = [];
+  for (const op of ops) {
+    const removeKey = linkKey(op.remove);
+    if (linkSet.has(removeKey)) {
+      linkSet.delete(removeKey);
+      removed.push(op.remove);
+    }
+    for (const add of op.adds) {
+      const addKey = linkKey(add);
+      if (!linkSet.has(addKey)) {
+        linkSet.add(addKey);
+        added.push(add);
+      }
+    }
+  }
+  if (linkSet.size === before.size && [...linkSet].every((key) => before.has(key))) {
+    return null;
+  }
+  return { sequence, ruleId: rule.id, event, bindings, removed, added };
+}
+
+function applyFirstSubstitutionRule(linkSet, ruleSet, event, sequence) {
+  for (const rule of ruleSet.rules) {
+    if (!rule.events.includes(event)) continue;
+    const trace = applySubstitutionRule(linkSet, rule, event, sequence);
+    if (trace) return trace;
+  }
+  return null;
+}
+
+const DEFAULT_MAX_SUBSTITUTIONS = 64;
+
+function applySubstitutionRules(initialLinks, ruleSet, event, maxApplications) {
+  const limit = maxApplications || DEFAULT_MAX_SUBSTITUTIONS;
+  const linkSet = new Set(initialLinks.map(linkKey));
+  const traces = [];
+  let terminatedByGuard = false;
+  while (traces.length < limit) {
+    const trace = applyFirstSubstitutionRule(linkSet, ruleSet, event, traces.length);
+    if (!trace) {
+      return { links: sortedLinksFromSet(linkSet), traces, terminatedByGuard };
+    }
+    traces.push(trace);
+  }
+  const probe = new Set(linkSet);
+  terminatedByGuard =
+    applyFirstSubstitutionRule(probe, ruleSet, event, traces.length) !== null;
+  return { links: sortedLinksFromSet(linkSet), traces, terminatedByGuard };
+}
+
+// --- Program-plan pipeline (mirror of src/program_plan.rs) ------------------
+
+let cachedProgramPlanRules = null;
+function programPlanRules() {
+  if (!cachedProgramPlanRules) {
+    cachedProgramPlanRules = parseSubstitutionRules(PROGRAM_PLAN_RULES_LINO);
+  }
+  return cachedProgramPlanRules;
+}
+
+function lowerProgramPlanWithRules(ruleSet, baseTask, modifiers) {
+  const initial = [{ from: TASK_NODE, to: baseTask }];
+  for (const modifier of modifiers) initial.push({ from: MODIFIER_NODE, to: modifier });
+  const { links, traces, terminatedByGuard } = applySubstitutionRules(
+    initial,
+    ruleSet,
+    "manual",
+  );
+  const resolvedLink = links.find((link) => link.from === TASK_NODE);
+  const resolvedTask = resolvedLink ? resolvedLink.to : baseTask;
+  return {
+    baseTask,
+    modifiers: modifiers.slice(),
+    resolvedTask,
+    links,
+    traces,
+    terminatedByGuard,
+  };
+}
+
+function lowerProgramPlan(baseTask, modifiers) {
+  return lowerProgramPlanWithRules(programPlanRules(), baseTask, modifiers);
+}
+
+function resolveProgramTask(baseTask, modifiers) {
+  return lowerProgramPlan(baseTask, modifiers).resolvedTask;
+}
+
+function programPlanWasModified(plan) {
+  return plan.resolvedTask !== plan.baseTask;
+}
+
+// Render the plan graph and its substitution trace as Links Notation so the
+// worker can surface the reasoning transparently (issue #324 R6), mirroring
+// `ProgramPlan::links_notation` in `src/program_plan.rs`.
+function programPlanLinksNotation(plan) {
+  const lines = ["program_plan"];
+  lines.push(`  base_task ${plan.baseTask}`);
+  lines.push(`  resolved_task ${plan.resolvedTask}`);
+  for (const modifier of plan.modifiers) lines.push(`  modifier ${modifier}`);
+  lines.push("  substitution_graph");
+  for (const link of plan.links) lines.push(`    link ${link.from} -> ${link.to}`);
+  lines.push("  substitution_trace_report");
+  lines.push("    event manual");
+  lines.push(`    terminated_by_guard ${plan.terminatedByGuard ? "true" : "false"}`);
+  for (const trace of plan.traces) {
+    lines.push(`    trace ${trace.ruleId}`);
+    lines.push(`      sequence ${trace.sequence}`);
+    lines.push(`      rule_id ${trace.ruleId}`);
+    for (const name of Object.keys(trace.bindings).sort()) {
+      lines.push(`      binding ${name}=${trace.bindings[name]}`);
+    }
+    for (const link of trace.removed) lines.push(`      removed ${link.from} -> ${link.to}`);
+    for (const link of trace.added) lines.push(`      added ${link.from} -> ${link.to}`);
+  }
+  return lines.join("\n");
 }
 
 function writeProgramParameters(prompt) {
@@ -9652,10 +10033,12 @@ function writeProgramParameters(prompt) {
     PROGRAM_NOUNS.some((noun) => containsProgramToken(normalized, noun)) &&
     PROGRAM_VERBS.some((verb) => containsProgramToken(normalized, verb));
   if (!task && !asksForProgram) return null;
-  // Issue #324: a path-argument modification in the same turn upgrades the base
-  // task to its `_arg` variant (e.g. list_files -> list_files_arg).
-  if (task && programPathArgumentModifier(normalized)) {
-    task = pathArgumentTaskVariant(task) || task;
+  // Issue #324: a modification in the same turn (e.g. "with a path argument")
+  // lowers the base task through the substitution pipeline, upgrading
+  // list_files -> list_files_arg via the `path_argument` rule.
+  if (task) {
+    const modifiers = detectedProgramModifiers(normalized);
+    task = resolveProgramTask(task, modifiers);
   }
   return { language, task };
 }
@@ -9682,10 +10065,20 @@ function recoverWriteProgramParameters(parameters, prompt, history) {
     }
   }
   const normalized = normalizeProgramPrompt(prompt);
-  if (task && programPathArgumentModifier(normalized)) {
-    task = pathArgumentTaskVariant(task) || task;
+  // Issue #324 R4/R6: lower the recovered task through the substitution
+  // pipeline when the follow-up carries a modifier, and surface the resulting
+  // plan as Links Notation (mirrors `recover_write_program_rule` in
+  // `src/intent_formalization.rs`, which sets `WriteProgramRecovery::plan`).
+  let plan = null;
+  if (task) {
+    const modifiers = detectedProgramModifiers(normalized);
+    if (modifiers.length) {
+      const lowered = lowerProgramPlan(task, modifiers);
+      if (programPlanWasModified(lowered)) plan = programPlanLinksNotation(lowered);
+      task = lowered.resolvedTask;
+    }
   }
-  return { task, language };
+  return { task, language, plan };
 }
 
 // Issue #324: a request in a given language must be answered in that language.
@@ -9820,7 +10213,7 @@ function tryWriteProgram(prompt, history, responseLanguage) {
   if (!detected) return null;
   // Issue #324: recover task/language from the conversation when a follow-up
   // modification names neither (and apply any path-argument modifier).
-  const { language, task } = recoverWriteProgramParameters(detected, prompt, history);
+  const { language, task, plan } = recoverWriteProgramParameters(detected, prompt, history);
   // Issue #324: answer in the language of the request (falls back to en).
   const i18n = writeProgramStrings(responseLanguage);
   const template = language && task ? WRITE_PROGRAM_TEMPLATES[task]?.[language] : null;
@@ -9870,6 +10263,10 @@ function tryWriteProgram(prompt, history, responseLanguage) {
         ? `legacy_intent:hello_world_${language}`
         : `legacy_intent:write_program_${task}_${language}`,
       `execution_status:${language}:${ranInSandbox ? "ran" : "unavailable"}`,
+      // Issue #324 R4/R6: surface the substitution plan when a follow-up
+      // modification rewrote the task (mirrors the Rust `write_program_plan`
+      // event in `src/solver.rs`).
+      ...(plan ? [`write_program_plan:${task}`] : []),
     ],
   };
 }

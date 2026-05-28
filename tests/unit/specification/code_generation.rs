@@ -610,3 +610,38 @@ fn explicit_list_files_with_path_argument_is_supported() {
     assert!(response.answer.contains("```rust"));
     assert!(response.answer.contains("env::args"));
 }
+
+#[test]
+fn english_follow_up_modification_emits_substitution_plan_trace() {
+    // Issue #324 R4/R6: the follow-up modification is lowered through the Links
+    // Notation substitution pipeline, and the plan is surfaced as an inspectable
+    // `write_program_plan` evidence link so the reasoning is transparent.
+    let solver = UniversalSolver::default();
+    let first = "Write me a Rust program that lists the files in the current directory";
+    let plan = solver.solve(first);
+    assert_eq!(plan.intent, "write_program");
+
+    let history = [
+        ConversationTurn::user(first),
+        ConversationTurn::assistant(plan.answer),
+    ];
+    let response =
+        solver.solve_with_history("Make the program accept a path as an argument", &history);
+
+    assert_eq!(response.intent, "write_program");
+    assert!(
+        response
+            .links_notation
+            .contains("program_parameter:task list_files_arg"),
+        "English follow-up should resolve to list_files_arg, got: {}",
+        response.links_notation
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("write_program_plan:")),
+        "the substitution plan should be surfaced as an evidence link, got: {:?}",
+        response.evidence_links
+    );
+}

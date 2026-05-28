@@ -8,9 +8,12 @@
 >
 > This document records that vision as a staged roadmap and maps each stage onto
 > components that already exist, so future work has a concrete starting point.
-> **Nothing here changes runtime behavior in PR #325** — the shipped fix uses
-> the deterministic template catalog (the honest baseline). This is the plan for
-> growing beyond it.
+> **PR #325 implements the lowering stage** (Stages 2–3 below): the
+> program-modification step now runs through a data-driven Links Notation
+> substitution pipeline (`src/program_plan.rs` + `data/seed/program-plan-rules.lino`,
+> mirrored in the JS worker). Stages 4–5 (compile arbitrary plans to fresh
+> Rust/WASM and execute) remain future work; the deterministic template catalog
+> stays the honest baseline for tasks no rule yet lowers.
 
 ## Where we are today (the baseline)
 
@@ -24,7 +27,9 @@ programs per requests and make changes to code by request").
 
 The path-argument modifier added in this PR (`list_files` → `list_files_arg`) is
 a first, deliberately small step toward *transforming* a known solution rather
-than memorizing a new one. The roadmap generalizes that step.
+than memorizing a new one — and it is now wired through the real Links Notation
+substitution pipeline (Stages 2–3), not a hard-coded branch. The roadmap
+generalizes that step.
 
 ## Target pipeline
 
@@ -54,21 +59,32 @@ answer (localized — see Issue #324 R1)
   novel tasks ("read a CSV and print column 2") produce a *plan* rather than an
   `unsupported` rule.
 
-### Stage 2 — Plan as Links Notation (foundation exists)
+### Stage 2 — Plan as Links Notation (implemented for program modification)
 - **Have:** Links Notation is the project's native knowledge format; the engine
   already emits Links Notation traces (`program_parameter:task …`,
-  `language:ru`, etc.).
-- **Next:** represent the *solution plan itself* as links — a small graph of
-  sub-goals ("open dir", "filter files", "sort", "print") that downstream stages
-  can rewrite. The trace format is the natural carrier.
+  `language:ru`, etc.). **PR #325** now also represents the *solution plan
+  itself* as links: `src/program_plan.rs` builds a `request:task -> <task>` /
+  `request:modifier -> <modifier>` graph and emits an inspectable
+  `program_plan` notation (with `resolved_task` and the applied trace).
+- **Next:** grow the plan beyond a single task/modifier node into a multi-node
+  sub-goal graph ("open dir", "filter files", "sort", "print") that downstream
+  stages can rewrite. The current graph is the seed of that carrier.
 
-### Stage 3 — Plan → substitution rules (design needed)
+### Stage 3 — Plan → substitution rules (implemented for program modification)
 - **Reference:** [`link-foundation/link-cli`](https://github.com/link-foundation/link-cli)
   `--always` triggers / substitution actions are the cited model for
   Turing-complete rewriting over links.
-- **Next:** define a rule schema that maps plan-node patterns to code-fragment
-  rewrites, and a fixpoint driver that applies `--always`-style triggers until
-  the plan is fully lowered. This is the largest unbuilt piece.
+- **Have:** **PR #325** lowers the plan with the project's substitution engine
+  (`src/substitution.rs`, issue #301). The rule schema lives as data in
+  `data/seed/program-plan-rules.lino` (`path_argument_list_files`: rewrite
+  `request:task -> list_files` to `request:task -> list_files_arg` when
+  `request:modifier -> path_argument` is present), and a fixpoint driver applies
+  it until the plan stops changing. The JS worker carries a faithful mirror of
+  the same engine and reads the same canonical `.lino`, so the two cannot drift.
+  Adding a new `(modifier → task-variant)` rewrite is pure rule data — verified
+  by the `pipeline_is_data_driven` test (Rust) and its JS-worker counterpart.
+- **Next:** generalize rules from task-slug rewrites to code-fragment rewrites
+  so a lowered plan emits source, not just a resolved task slug.
 
 ### Stage 4 — Rules → Rust → WASM (infra exists)
 - **Have:** the engine is already a `no_std` Rust core compiled to WebAssembly
@@ -96,11 +112,14 @@ answer (localized — see Issue #324 R1)
    worker (Issue #324 R7).
 4. **Localization** — answers follow the resolved response language (R1/R2).
 
-## Suggested first increment (smallest useful step beyond this PR)
+## First increment — shipped in PR #325
 
-Generalize the path-argument modifier into a tiny **rule table**: a set of
-`(modifier-pattern → task-variant)` rewrites expressed as links, applied by a
-fixpoint loop. `list_files → list_files_arg` becomes the first entry; adding
-"sort descending", "count instead of list", etc. becomes data, not new code.
-This validates Stages 2–3 end-to-end on a constrained vocabulary before tackling
-open-ended program synthesis.
+The smallest useful step beyond a hard-coded branch was a tiny **rule table**: a
+set of `(modifier-pattern → task-variant)` rewrites expressed as links, applied
+by a fixpoint loop. **This is now implemented.** `list_files → list_files_arg`
+is the first entry (`data/seed/program-plan-rules.lino`), and the tests prove
+that adding "sort descending", "count instead of list", etc. is pure data, not
+new code (the `count_only → count_files` case in both the Rust and JS-worker
+data-driven tests). This validates Stages 2–3 end-to-end on a constrained
+vocabulary; the next increment tackles open-ended program synthesis (Stages
+4–5).

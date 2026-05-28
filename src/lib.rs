@@ -17,6 +17,7 @@ pub mod link_store;
 pub(crate) mod links_format;
 pub mod memory;
 pub mod probability;
+pub mod program_plan;
 pub mod proof_engine;
 pub mod protocol;
 pub mod seed;

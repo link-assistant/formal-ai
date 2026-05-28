@@ -397,6 +397,10 @@ pub(crate) struct WriteProgramRecovery {
     /// A short trace describing what was carried over, for the event log. `None`
     /// when nothing was recovered.
     pub trace: Option<String>,
+    /// The program-modification plan as Links Notation, surfaced when a modifier
+    /// rewrote the task via the substitution pipeline (issue #324 R4/R6). `None`
+    /// when no modification rule fired.
+    pub plan: Option<String>,
 }
 
 /// Issue #324: a follow-up such as "Сделай так, чтобы программа принимала путь
@@ -420,7 +424,11 @@ pub(crate) fn recover_write_program_rule(
     history: &[ConversationTurn],
 ) -> WriteProgramRecovery {
     let SelectedRule::UnsupportedWriteProgram { task, language } = &rule else {
-        return WriteProgramRecovery { rule, trace: None };
+        return WriteProgramRecovery {
+            rule,
+            trace: None,
+            plan: None,
+        };
     };
 
     let mut recovered_task = task.clone();
@@ -444,13 +452,20 @@ pub(crate) fn recover_write_program_rule(
         }
     }
 
-    // A path-argument modification turns the base task into its `_arg` variant.
+    // A modification follow-up (currently "accept a path argument") lowers the
+    // recovered base task through the Links Notation substitution pipeline,
+    // which rewrites e.g. `list_files -> list_files_arg`. The plan is captured
+    // as Links Notation for transparent tracing (issue #324 R4/R6).
     let normalized_follow_up = normalize_prompt(follow_up);
-    if program_path_argument_modifier(&normalized_follow_up) {
+    let modifiers = detected_program_modifiers(&normalized_follow_up);
+    let mut plan = None;
+    if !modifiers.is_empty() {
         if let Some(base) = recovered_task.as_deref() {
-            if let Some(modified) = path_argument_task_variant(base) {
-                recovered_task = Some(modified.to_owned());
+            let lowered = crate::program_plan::lower(base, &modifiers);
+            if lowered.was_modified() {
+                plan = Some(lowered.links_notation());
             }
+            recovered_task = Some(lowered.resolved_task);
         }
     }
 
@@ -462,6 +477,7 @@ pub(crate) fn recover_write_program_rule(
             return WriteProgramRecovery {
                 rule: SelectedRule::WriteProgram(spec),
                 trace: Some(trace),
+                plan,
             };
         }
     }
@@ -472,35 +488,51 @@ pub(crate) fn recover_write_program_rule(
             language: recovered_language,
         },
         trace: None,
+        plan,
     }
 }
 
-/// Token groups that signal "accept a path as a (command-line) argument" across
-/// the supported prompt languages. Each inner slice must match in full.
-const PATH_ARGUMENT_MODIFIER_TOKENS: &[&[&str]] = &[
-    &["path", "argument"],
-    // Russian: путь (path) + аргумент/аргумента/аргументом (argument).
-    &["путь", "аргумент"],
-    &["путь", "аргумента"],
-    &["путь", "аргументом"],
-    // Hindi: पथ (path) + तर्क (argument).
-    &["पथ", "तर्क"],
-    // Chinese: 路径 (path) + 参数 (argument).
-    &["路径", "参数"],
-];
+/// A program-modification modifier: a slug plus the multilingual token groups
+/// that signal it. Each inner slice must match in full for the group to count.
+struct ProgramModifier {
+    slug: &'static str,
+    token_groups: &'static [&'static [&'static str]],
+}
 
-fn program_path_argument_modifier(normalized: &str) -> bool {
-    PATH_ARGUMENT_MODIFIER_TOKENS
+/// The modifiers the formalizer can detect in request prose. The slug is what
+/// the substitution pipeline (`data/seed/program-plan-rules.lino`) keys on; the
+/// token groups are the natural-language surface forms across supported
+/// languages. Adding a new *modification* is data here plus a rule in the seed.
+const PROGRAM_MODIFIERS: &[ProgramModifier] = &[ProgramModifier {
+    slug: "path_argument",
+    // "accept a path as a (command-line) argument" across supported languages.
+    token_groups: &[
+        &["path", "argument"],
+        // Russian: путь (path) + аргумент/аргумента/аргументом (argument).
+        &["путь", "аргумент"],
+        &["путь", "аргумента"],
+        &["путь", "аргументом"],
+        // Hindi: पथ (path) + तर्क (argument).
+        &["पथ", "तर्क"],
+        // Chinese: 路径 (path) + 参数 (argument).
+        &["路径", "参数"],
+    ],
+}];
+
+/// Detect the modification modifiers present in a (normalized) request, returned
+/// as the slugs the substitution pipeline keys on. The order follows
+/// [`PROGRAM_MODIFIERS`] so lowering is deterministic.
+fn detected_program_modifiers(normalized: &str) -> Vec<String> {
+    PROGRAM_MODIFIERS
         .iter()
-        .any(|group| group.iter().all(|token| contains_token(normalized, token)))
-}
-
-/// Maps a base task onto its path-argument variant, when one exists.
-fn path_argument_task_variant(base_task: &str) -> Option<&'static str> {
-    match base_task {
-        "list_files" | "list_files_arg" => Some("list_files_arg"),
-        _ => None,
-    }
+        .filter(|modifier| {
+            modifier
+                .token_groups
+                .iter()
+                .any(|group| group.iter().all(|token| contains_token(normalized, token)))
+        })
+        .map(|modifier| modifier.slug.to_owned())
+        .collect()
 }
 
 /// Words that name the artefact the user wants generated ("program", "script",
@@ -581,15 +613,12 @@ fn write_program_parameters(normalized: &str) -> Option<BTreeMap<String, String>
     }
     let mut parameters = BTreeMap::new();
     if let Some(task) = task {
-        // Issue #324: a path-argument modification in the same turn upgrades the
-        // base task to its `_arg` variant (e.g. list_files -> list_files_arg) so
-        // an explicit "list files with a path argument" resolves directly.
-        let task_slug = if program_path_argument_modifier(normalized) {
-            path_argument_task_variant(task.slug).unwrap_or(task.slug)
-        } else {
-            task.slug
-        };
-        parameters.insert(String::from("task"), String::from(task_slug));
+        // Issue #324: a modification in the same turn (e.g. "list files with a
+        // path argument") lowers the base task through the substitution pipeline
+        // — `list_files -> list_files_arg` — so it resolves directly.
+        let modifiers = detected_program_modifiers(normalized);
+        let task_slug = crate::program_plan::resolve_task(task.slug, &modifiers);
+        parameters.insert(String::from("task"), task_slug);
     }
     if let Some(language) = language {
         parameters.insert(String::from("language"), language);
