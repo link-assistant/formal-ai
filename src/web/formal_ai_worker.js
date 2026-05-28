@@ -743,9 +743,14 @@ function responseLanguageFor(detected, preferences, userContext) {
     if (isKnownResponseLanguage(prefs.uiLanguage)) return prefs.uiLanguage;
     // "auto" UI language follows the browser; fall back to the detected
     // message language when no concrete browser language is supplied.
-    const browser = userContext && Array.isArray(userContext.browserLanguages)
-      ? userContext.browserLanguages
-      : [];
+    // `browserLanguages` may arrive as an array or a comma-joined string
+    // (see `collectUserContext` in app.js).
+    const raw = userContext ? userContext.browserLanguages : null;
+    const browser = Array.isArray(raw)
+      ? raw
+      : typeof raw === "string"
+        ? raw.split(",")
+        : [];
     for (const tag of browser) {
       const slug = String(tag || "").slice(0, 2).toLowerCase();
       if (isKnownResponseLanguage(slug)) return slug;

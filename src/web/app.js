@@ -997,6 +997,16 @@ const PREFERENCE_DEFAULTS = {
   // Issue #94: "auto" follows navigator.languages; explicit values use the
   // supported UI language catalog.
   uiLanguage: "auto",
+  // Issue #324: which language drives the assistant's responses.
+  //   "last_message" (default) — answer in the detected language of the prompt;
+  //   "preferred"             — pin responses to `preferredLanguage`;
+  //   "ui"                    — follow the UI-language preference.
+  // The default reproduces the deterministic "reply in the message's language"
+  // behavior, so a Russian prompt is answered in Russian.
+  responseLanguage: "last_message",
+  // Issue #324: the explicit language used when `responseLanguage` is
+  // "preferred". One of the supported response languages (en/ru/hi/zh).
+  preferredLanguage: "en",
   // Issues #108/#110: UI, chat, and input surfaces are configurable while the
   // defaults stay flat and cheap to render.
   uiSkin: "flat",
@@ -1010,6 +1020,10 @@ const CHAT_STYLES = ["cards", "compact", "bubbles"];
 const COMPOSER_STYLES = ["flat", "glass-soft", "glass-clear", "bubble"];
 const COMPOSER_ACTIONS = ["attach", "plus"];
 const DEFINITION_FUSION_MODES = ["explicit", "auto"];
+// Issue #324: source that drives the assistant's response language.
+const RESPONSE_LANGUAGE_MODES = ["last_message", "preferred", "ui"];
+// Issue #324: languages the assistant can be pinned to via `preferredLanguage`.
+const PREFERRED_RESPONSE_LANGUAGES = ["en", "ru", "hi", "zh"];
 const CONTEXT_PANEL_MIN_WIDTH = 220;
 const CONTEXT_PANEL_MAX_WIDTH = 560;
 const CONTEXT_PANEL_MIN_CHAT_WIDTH = 360;
@@ -1264,6 +1278,18 @@ function normalizeDefinitionFusion(value) {
   return DEFINITION_FUSION_MODES.includes(value)
     ? value
     : PREFERENCE_DEFAULTS.definitionFusion;
+}
+
+function normalizeResponseLanguageMode(value) {
+  return RESPONSE_LANGUAGE_MODES.includes(value)
+    ? value
+    : PREFERENCE_DEFAULTS.responseLanguage;
+}
+
+function normalizePreferredLanguage(value) {
+  return PREFERRED_RESPONSE_LANGUAGES.includes(value)
+    ? value
+    : PREFERENCE_DEFAULTS.preferredLanguage;
 }
 
 function i18nApi() {
@@ -4099,6 +4125,14 @@ function App() {
   const [uiLanguagePreference, setUiLanguagePreference] = useState(
     normalizeUiLanguagePreference(initialPreferences.current.uiLanguage),
   );
+  // Issue #324: which language drives responses, and the pinned language used
+  // when the mode is "preferred".
+  const [responseLanguage, setResponseLanguage] = useState(
+    normalizeResponseLanguageMode(initialPreferences.current.responseLanguage),
+  );
+  const [preferredLanguage, setPreferredLanguage] = useState(
+    normalizePreferredLanguage(initialPreferences.current.preferredLanguage),
+  );
   const [i18nRuntimeTick, setI18nRuntimeTick] = useState(0);
   const uiLanguage = detectUiLanguage(uiLanguagePreference);
   const t = useCallback(
@@ -4830,6 +4864,8 @@ function App() {
       currentConversationId,
       agentMode,
       uiLanguage: uiLanguagePreference,
+      responseLanguage,
+      preferredLanguage,
     });
   }, [
     demoMode,
@@ -4860,6 +4896,8 @@ function App() {
     currentConversationId,
     agentMode,
     uiLanguagePreference,
+    responseLanguage,
+    preferredLanguage,
   ]);
 
   useEffect(() => {
@@ -4950,6 +4988,16 @@ function App() {
     uiLanguagePreferenceRef.current = uiLanguagePreference;
   }, [uiLanguagePreference]);
 
+  const responseLanguageRef = useRef(responseLanguage);
+  useEffect(() => {
+    responseLanguageRef.current = responseLanguage;
+  }, [responseLanguage]);
+
+  const preferredLanguageRef = useRef(preferredLanguage);
+  useEffect(() => {
+    preferredLanguageRef.current = preferredLanguage;
+  }, [preferredLanguage]);
+
   const uiSkinRef = useRef(uiSkin);
   useEffect(() => {
     uiSkinRef.current = uiSkin;
@@ -5000,6 +5048,8 @@ function App() {
       agentMode: agentModeRef.current,
       theme: themePreferenceRef.current,
       uiLanguage: uiLanguagePreferenceRef.current,
+      responseLanguage: responseLanguageRef.current,
+      preferredLanguage: preferredLanguageRef.current,
       uiSkin: uiSkinRef.current,
       chatStyle: chatStyleRef.current,
       composerStyle: composerStyleRef.current,
@@ -5211,6 +5261,12 @@ function App() {
           break;
         case "uiLanguage":
           setUiLanguagePreference(normalizeUiLanguagePreference(command.value));
+          break;
+        case "responseLanguage":
+          setResponseLanguage(normalizeResponseLanguageMode(command.value));
+          break;
+        case "preferredLanguage":
+          setPreferredLanguage(normalizePreferredLanguage(command.value));
           break;
         case "uiSkin":
           setUiSkin(normalizeUiSkin(command.value));
@@ -6434,6 +6490,55 @@ function App() {
                 h("option", { value: "hi" }, "हिन्दी"),
               ),
             ),
+            h(
+              "label",
+              { className: "setting-row" },
+              h("span", null, t("settings.responseLanguage")),
+              h(
+                "select",
+                {
+                  "data-testid": "setting-response-language",
+                  value: responseLanguage,
+                  onChange: (event) =>
+                    setResponseLanguage(
+                      normalizeResponseLanguageMode(event.target.value),
+                    ),
+                },
+                h(
+                  "option",
+                  { value: "last_message" },
+                  t("settings.responseLanguage.lastMessage"),
+                ),
+                h(
+                  "option",
+                  { value: "preferred" },
+                  t("settings.responseLanguage.preferred"),
+                ),
+                h("option", { value: "ui" }, t("settings.responseLanguage.ui")),
+              ),
+            ),
+            responseLanguage === "preferred"
+              ? h(
+                  "label",
+                  { className: "setting-row" },
+                  h("span", null, t("settings.preferredLanguage")),
+                  h(
+                    "select",
+                    {
+                      "data-testid": "setting-preferred-language",
+                      value: preferredLanguage,
+                      onChange: (event) =>
+                        setPreferredLanguage(
+                          normalizePreferredLanguage(event.target.value),
+                        ),
+                    },
+                    h("option", { value: "en" }, "English"),
+                    h("option", { value: "ru" }, "Русский"),
+                    h("option", { value: "zh" }, "中文"),
+                    h("option", { value: "hi" }, "हिन्दी"),
+                  ),
+                )
+              : null,
             h(
               "label",
               { className: "setting-row" },
