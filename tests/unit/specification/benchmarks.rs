@@ -227,6 +227,57 @@ fn issue_315_unseen_python_function_synthesizes_without_seed_hit() {
 }
 
 #[test]
+fn issue_315_program_synthesis_accepts_supported_language_wrappers() {
+    struct Case {
+        language: &'static str,
+        prompt: &'static str,
+    }
+
+    let solver = benchmark_solver();
+    let cases = [
+        Case {
+            language: "en",
+            prompt: "English request: Implement Python function count_vowels(text: str) -> int. Return the number of vowels in the text.",
+        },
+        Case {
+            language: "ru",
+            prompt: "Русский запрос: Implement Python function count_vowels(text: str) -> int. Return the number of vowels in the text.",
+        },
+        Case {
+            language: "hi",
+            prompt: "हिंदी अनुरोध: Implement Python function count_vowels(text: str) -> int. Return the number of vowels in the text.",
+        },
+        Case {
+            language: "zh",
+            prompt: "中文请求: Implement Python function count_vowels(text: str) -> int. Return the number of vowels in the text.",
+        },
+    ];
+
+    for case in cases {
+        let response = solver.solve(case.prompt);
+        assert_eq!(
+            response.intent, "write_program",
+            "{} wrapper should still route to synthesis",
+            case.language
+        );
+        assert!(
+            response.answer.contains("def count_vowels"),
+            "{} wrapper should synthesize the expected function, got {}",
+            case.language,
+            response.answer
+        );
+        assert!(
+            response
+                .links_notation
+                .contains("synthesis:verification tests_passed"),
+            "{} wrapper should verify the synthesized candidate, got {}",
+            case.language,
+            response.links_notation
+        );
+    }
+}
+
+#[test]
 fn issue_304_benchmark_research_note_records_provenance() {
     let root = repo_root();
     let fixture = fs::read_to_string(root.join(BENCHMARK_FIXTURE)).expect("benchmark fixture");
