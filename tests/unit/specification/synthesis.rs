@@ -4,7 +4,7 @@
 //! recorded as links, and composed into answer candidates without adding a
 //! whole-prompt answer lookup.
 
-use formal_ai::{ExecutionSurface, SolverConfig, UniversalSolver};
+use formal_ai::{detect_language, ExecutionSurface, Language, SolverConfig, UniversalSolver};
 
 fn synthesis_solver() -> UniversalSolver {
     UniversalSolver::new(SolverConfig {
@@ -13,6 +13,47 @@ fn synthesis_solver() -> UniversalSolver {
         temperature: 0.0,
         ..SolverConfig::default()
     })
+}
+
+#[test]
+fn synthesis_change_preserves_supported_language_detection_contract() {
+    struct Case {
+        language: &'static str,
+        prompt: &'static str,
+        expected: Language,
+    }
+
+    let cases = [
+        Case {
+            language: "en", // English
+            prompt: "What is formal-ai?",
+            expected: Language::English,
+        },
+        Case {
+            language: "ru", // Russian
+            prompt: "Что такое formal-ai?",
+            expected: Language::Russian,
+        },
+        Case {
+            language: "hi", // Hindi
+            prompt: "यह क्या है?",
+            expected: Language::Hindi,
+        },
+        Case {
+            language: "zh", // Chinese
+            prompt: "这是什么?",
+            expected: Language::Chinese,
+        },
+    ];
+
+    for case in cases {
+        assert_eq!(
+            detect_language(case.prompt),
+            case.expected,
+            "{}",
+            case.language
+        );
+    }
 }
 
 #[test]
