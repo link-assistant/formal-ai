@@ -522,6 +522,87 @@ fn russian_follow_up_path_argument_modification_reuses_context() {
 }
 
 #[test]
+fn hindi_follow_up_path_argument_modification_reuses_context() {
+    let solver = UniversalSolver::default();
+    let first = "Rust में फ़ाइलों की सूची दिखाने वाला प्रोग्राम लिखो";
+    let plan = solver.solve(first);
+    assert_eq!(plan.intent, "write_program");
+
+    let history = [
+        ConversationTurn::user(first),
+        ConversationTurn::assistant(plan.answer),
+    ];
+    // Hindi: "make it so the program accepts a path as an argument".
+    let response = solver.solve_with_history(
+        "इसे ऐसा बनाओ कि प्रोग्राम पथ को तर्क के रूप में स्वीकार करे",
+        &history,
+    );
+
+    assert_eq!(response.intent, "write_program");
+    assert!(
+        response
+            .links_notation
+            .contains("program_parameter:task list_files_arg"),
+        "Hindi follow-up should resolve to list_files_arg, got: {}",
+        response.links_notation
+    );
+    assert!(
+        response
+            .links_notation
+            .contains("program_parameter:language rust"),
+        "Hindi follow-up should reuse Rust from context, got: {}",
+        response.links_notation
+    );
+    assert!(response.answer.contains("env::args"));
+    // The conversation is in Hindi, so the framing must be Hindi.
+    assert!(
+        response.answer.contains("में एक न्यूनतम प्रोग्राम है"),
+        "Hindi follow-up answer should be framed in Hindi, got: {}",
+        response.answer
+    );
+    assert!(!response.answer.contains("missing"));
+}
+
+#[test]
+fn chinese_follow_up_path_argument_modification_reuses_context() {
+    let solver = UniversalSolver::default();
+    let first = "用 Rust 编写一个列出当前目录中文件的程序";
+    let plan = solver.solve(first);
+    assert_eq!(plan.intent, "write_program");
+
+    let history = [
+        ConversationTurn::user(first),
+        ConversationTurn::assistant(plan.answer),
+    ];
+    // Chinese: "make the program accept a path as an argument".
+    let response = solver.solve_with_history("制作程序，使其接受路径作为参数", &history);
+
+    assert_eq!(response.intent, "write_program");
+    assert!(
+        response
+            .links_notation
+            .contains("program_parameter:task list_files_arg"),
+        "Chinese follow-up should resolve to list_files_arg, got: {}",
+        response.links_notation
+    );
+    assert!(
+        response
+            .links_notation
+            .contains("program_parameter:language rust"),
+        "Chinese follow-up should reuse Rust from context, got: {}",
+        response.links_notation
+    );
+    assert!(response.answer.contains("env::args"));
+    // The conversation is in Chinese, so the framing must be Chinese.
+    assert!(
+        response.answer.contains("这是一个最小的"),
+        "Chinese follow-up answer should be framed in Chinese, got: {}",
+        response.answer
+    );
+    assert!(!response.answer.contains("missing"));
+}
+
+#[test]
 fn explicit_list_files_with_path_argument_is_supported() {
     // The path-argument variant is also reachable directly in a single turn.
     let response = answer("Write me a Rust program that lists files with a path argument");

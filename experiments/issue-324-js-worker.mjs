@@ -73,6 +73,44 @@ if (res) {
   check("follow-up no missing", !res.content.includes("missing"));
 }
 
+// 4b. tryWriteProgram follow-up in Chinese
+const zhHistory = [
+  { role: "user", content: "用 Rust 编写一个列出当前目录中文件的程序" },
+  { role: "assistant", content: "这是一个最小的 Rust 程序（..." },
+];
+const zhRes = sandbox.tryWriteProgram(
+  "制作程序，使其接受路径作为参数",
+  zhHistory,
+  "zh"
+);
+console.log("\n=== tryWriteProgram follow-up (zh) ===");
+console.log("intent:", zhRes && zhRes.intent);
+if (zhRes) {
+  check("zh follow-up intent write_program", zhRes.intent === "write_program", zhRes.intent);
+  check("zh follow-up has rust fence", zhRes.content.includes("```rust"));
+  check("zh follow-up has env::args", zhRes.content.includes("env::args"));
+  check("zh follow-up no missing", !zhRes.content.includes("missing"));
+}
+
+// 4c. tryWriteProgram follow-up in Hindi
+const hiHistory = [
+  { role: "user", content: "Rust में फ़ाइलों की सूची दिखाने वाला प्रोग्राम लिखो" },
+  { role: "assistant", content: "यहाँ Rust में एक न्यूनतम प्रोग्राम है (..." },
+];
+const hiRes = sandbox.tryWriteProgram(
+  "इसे ऐसा बनाओ कि प्रोग्राम पथ को तर्क के रूप में स्वीकार करे",
+  hiHistory,
+  "hi"
+);
+console.log("\n=== tryWriteProgram follow-up (hi) ===");
+console.log("intent:", hiRes && hiRes.intent);
+if (hiRes) {
+  check("hi follow-up intent write_program", hiRes.intent === "write_program", hiRes.intent);
+  check("hi follow-up has rust fence", hiRes.content.includes("```rust"));
+  check("hi follow-up has env::args", hiRes.content.includes("env::args"));
+  check("hi follow-up no missing", !hiRes.content.includes("missing"));
+}
+
 // 5. responseLanguageFor
 check("respLang default last_message", sandbox.responseLanguageFor("ru", {}, {}) === "ru");
 check("respLang preferred", sandbox.responseLanguageFor("ru", { responseLanguage: "preferred", preferredLanguage: "en" }, {}) === "en");
