@@ -57,6 +57,7 @@ mod substitution_rules;
 mod summarization_pipeline;
 mod synthesis;
 mod telegram_surface;
+mod text_manipulation;
 mod translation_via_links;
 mod transparent_state;
 mod unknown_reasoning;

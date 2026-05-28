@@ -17,6 +17,7 @@ mod program_synthesis;
 mod self_awareness;
 mod software_project;
 mod software_project_code;
+mod text_manipulation;
 mod user_intent;
 mod web_requests;
 mod web_search_intent;
@@ -36,6 +37,7 @@ pub use playwright_script::try_playwright_script;
 pub use program_synthesis::try_program_synthesis;
 pub use self_awareness::SelfAwarenessRuntime;
 pub use software_project::try_software_project_request;
+pub use text_manipulation::try_text_manipulation;
 pub use user_intent::{
     try_capabilities, try_clarification, try_ill_formed, try_opinion_question, try_proof_request,
     try_proof_request_with_config, try_punctuation_only_prompt, try_shell_refusal,

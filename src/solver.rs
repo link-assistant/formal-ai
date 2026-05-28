@@ -52,8 +52,8 @@ use crate::solver_handlers::{
     try_project_lookup, try_proof_request, try_proof_request_with_config,
     try_punctuation_only_prompt, try_roleplay_request, try_shell_refusal,
     try_software_project_request, try_source_conflict, try_source_refresh,
-    try_summarization_request, try_translation, try_url_navigate, try_web_search,
-    try_who_is_question, try_write_script, CapabilityRuntime, SelfAwarenessRuntime,
+    try_summarization_request, try_text_manipulation, try_translation, try_url_navigate,
+    try_web_search, try_who_is_question, try_write_script, CapabilityRuntime, SelfAwarenessRuntime,
 };
 use crate::solver_handlers_policy::{try_kupi_slona, try_physical_action_question};
 use crate::solver_helpers::{
@@ -385,6 +385,7 @@ const SPECIALIZED_HANDLERS: &[(&str, SpecializedHandler)] = &[
     ("procedural_how_to", try_how_to_procedure),
     ("conversation_memory", try_conversation_memory),
     ("summarization", try_summarization_request),
+    ("text_manipulation", try_text_manipulation),
     ("brainstorming", try_brainstorming_request),
     ("conversation_topic", try_conversation_topic_request),
     ("fact_lookup", try_fact_lookup),

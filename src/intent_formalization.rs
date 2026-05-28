@@ -577,6 +577,10 @@ fn append_prompt_relevants(prompt: &str, normalized: &str, relevants: &mut Vec<S
             looks_like_program_synthesis(normalized),
         ),
         (
+            "handler:text_manipulation",
+            looks_like_text_manipulation(normalized),
+        ),
+        (
             "handler:software_project",
             has_any_token(normalized, &["build", "create", "implement", "develop"]),
         ),
@@ -609,6 +613,26 @@ fn looks_like_program_synthesis(normalized: &str) -> bool {
         && (has_any_token(normalized, &["python", "tuple", "numbers", "vowels"])
             || normalized.contains("similar elements"))
         && has_any_token(normalized, &["implement", "write", "return"])
+}
+
+fn looks_like_text_manipulation(normalized: &str) -> bool {
+    let names_text_input = normalized.contains("this text")
+        || normalized.contains("the text")
+        || normalized.contains("these lines");
+    names_text_input
+        && (normalized.contains("uppercase")
+            || normalized.contains("upper case")
+            || normalized.contains("lowercase")
+            || normalized.contains("lower case")
+            || normalized.contains("replace")
+            || normalized.contains("extract")
+            || normalized.contains("count occurrences")
+            || normalized.contains("count unique words")
+            || normalized.contains("count distinct words")
+            || normalized.contains("deduplicate")
+            || normalized.contains("dedupe")
+            || normalized.contains("sort lines")
+            || normalized.contains("reverse words"))
 }
 
 fn has_any_token(normalized: &str, tokens: &[&str]) -> bool {
@@ -655,6 +679,7 @@ fn infer_kind(
             "translation"
             | "algorithm"
             | "write_program"
+            | "text_manipulation"
             | "software_project_plan"
             | "software_project_implementation",
         ) => IntentKind::Task,
