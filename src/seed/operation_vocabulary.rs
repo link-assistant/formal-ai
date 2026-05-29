@@ -1,40 +1,20 @@
 //! Multilingual operation vocabulary loaded from
 //! `data/seed/operation-vocabulary.lino`.
-//!
-//! A single shared, data-driven table so every reasoning handler recognises an
-//! operation request equally in any supported language (`en|ru|hi|zh`) instead
-//! of matching hardcoded English literals. Adding a new surface form — or a new
-//! language — is a data edit, never a code change, which is what keeps "all
-//! languages supported equally" a property of the seed rather than of scattered
-//! `if prompt.contains("…")` branches.
+
+use std::collections::BTreeMap;
 
 use super::parser::parse_lino;
 use super::OPERATION_VOCABULARY_LINO;
 
-/// One canonical operation token plus the multilingual phrasing that
-/// triggers it, parsed from `data/seed/operation-vocabulary.lino`.
-///
-/// Match semantics (mirrored wherever this table is consumed):
-/// - `phrases`: the value is a substring of the normalized prompt.
-/// - `combos`: every token (originally joined by `+` in the seed) is,
-///   independently, a substring of the normalized prompt — order-free
-///   "verb + object" triggers such as `extract + email`.
-///
-/// Prompts are expected to already be passed through
-/// [`crate::engine::normalize_prompt`] (lower-cased, punctuation collapsed to
-/// spaces, Unicode letters preserved) so Cyrillic, Devanagari, and CJK
-/// synonyms match by substring exactly like ASCII ones.
+/// Localized surface forms for one operation in one supported language.
 #[derive(Debug, Clone, Default)]
-pub struct OperationTrigger {
-    pub canonical: String,
+pub struct OperationLanguageForms {
     pub phrases: Vec<String>,
     pub combos: Vec<Vec<String>>,
 }
 
-impl OperationTrigger {
-    /// Does any phrase or combo for this operation appear in `normalized`?
-    #[must_use]
-    pub fn matches(&self, normalized: &str) -> bool {
+impl OperationLanguageForms {
+    fn matches(&self, normalized: &str) -> bool {
         self.phrases
             .iter()
             .any(|phrase| normalized.contains(phrase.as_str()))
@@ -47,20 +27,32 @@ impl OperationTrigger {
     }
 }
 
+/// One canonical operation token plus localized trigger phrases.
+#[derive(Debug, Clone, Default)]
+pub struct OperationTrigger {
+    pub canonical: String,
+    pub languages: BTreeMap<String, OperationLanguageForms>,
+}
+
+impl OperationTrigger {
+    /// Does any phrase or combo for this operation appear in `normalized`?
+    #[must_use]
+    pub fn matches(&self, normalized: &str) -> bool {
+        self.languages
+            .values()
+            .any(|forms| forms.matches(normalized))
+    }
+}
+
 /// The full multilingual operation vocabulary.
-///
-/// A single shared, data-driven table so every reasoning handler recognises
-/// an operation request equally in any supported language (`en|ru|hi|zh`)
-/// instead of matching hardcoded English literals. See
-/// `data/seed/operation-vocabulary.lino`.
 #[derive(Debug, Clone, Default)]
 pub struct OperationVocabulary {
     pub operations: Vec<OperationTrigger>,
 }
 
 impl OperationVocabulary {
-    /// Returns `true` when the operation with this canonical token is
-    /// requested by the normalized prompt in any supported language.
+    /// Returns `true` when the operation with this canonical token is requested
+    /// by the normalized prompt in any supported language.
     #[must_use]
     pub fn matches(&self, canonical: &str, normalized: &str) -> bool {
         self.operations
@@ -68,8 +60,8 @@ impl OperationVocabulary {
             .any(|op| op.canonical == canonical && op.matches(normalized))
     }
 
-    /// Every canonical operation token whose phrasing appears in the
-    /// normalized prompt, in declaration order.
+    /// Every canonical operation token whose phrasing appears in the normalized
+    /// prompt, in declaration order.
     #[must_use]
     pub fn detect(&self, normalized: &str) -> Vec<String> {
         self.operations
@@ -78,6 +70,30 @@ impl OperationVocabulary {
             .map(|op| op.canonical.clone())
             .collect()
     }
+
+    /// Append canonical English operation tokens to a normalized prompt.
+    ///
+    /// Handlers can keep their canonical matching logic while accepting native
+    /// verbs from `operation-vocabulary.lino`.
+    #[must_use]
+    pub fn canonicalized_prompt(&self, normalized: &str) -> String {
+        let detected = self.detect(normalized);
+        if detected.is_empty() {
+            return normalized.to_owned();
+        }
+
+        let mut out = String::from(normalized);
+        for canonical in detected {
+            out.push(' ');
+            out.push_str(&canonical);
+            let phrase = canonical.replace('_', " ");
+            if phrase != canonical {
+                out.push(' ');
+                out.push_str(&phrase);
+            }
+        }
+        out
+    }
 }
 
 #[must_use]
@@ -85,42 +101,59 @@ pub fn operation_vocabulary() -> OperationVocabulary {
     let tree = parse_lino(OPERATION_VOCABULARY_LINO);
     let mut vocabulary = OperationVocabulary::default();
     if let Some(root) = tree.children.first() {
-        for child in root.children.iter().filter(|c| c.name == "operation") {
-            let mut phrases = Vec::new();
-            let mut combos = Vec::new();
-            for entry in &child.children {
-                match entry.name.as_str() {
-                    "phrase" => phrases.push(entry.id.clone()),
-                    "combo" => combos.push(
-                        entry
-                            .id
-                            .split('+')
-                            .map(str::trim)
-                            .filter(|s| !s.is_empty())
-                            .map(ToOwned::to_owned)
-                            .collect(),
-                    ),
-                    _ => {}
+        for operation_node in root.children.iter().filter(|c| c.name == "operation") {
+            let mut languages = BTreeMap::new();
+            for language_node in operation_node
+                .children
+                .iter()
+                .filter(|c| c.name == "language")
+            {
+                let mut forms = OperationLanguageForms::default();
+                for entry in &language_node.children {
+                    match entry.name.as_str() {
+                        "phrase" => forms.phrases.push(entry.id.clone()),
+                        "combo" => forms.combos.push(split_combo(&entry.id)),
+                        _ => {}
+                    }
                 }
+                languages.insert(language_node.id.clone(), forms);
             }
             vocabulary.operations.push(OperationTrigger {
-                canonical: child.id.clone(),
-                phrases,
-                combos,
+                canonical: operation_node.id.clone(),
+                languages,
             });
         }
     }
     vocabulary
 }
 
+fn split_combo(raw: &str) -> Vec<String> {
+    raw.split('+')
+        .map(str::trim)
+        .filter(|s| !s.is_empty())
+        .map(ToOwned::to_owned)
+        .collect()
+}
+
 #[cfg(test)]
 mod tests {
+    use std::collections::BTreeSet;
+
     use super::operation_vocabulary;
+
+    fn supported_languages() -> BTreeSet<String> {
+        crate::seed::agent_info()
+            .get("supported_languages")
+            .expect("agent-info must define supported_languages")
+            .split('|')
+            .map(ToOwned::to_owned)
+            .collect()
+    }
 
     #[test]
     fn operation_vocabulary_loads_every_canonical_operation() {
         let vocabulary = operation_vocabulary();
-        let canonicals: std::collections::BTreeSet<String> = vocabulary
+        let canonicals: BTreeSet<String> = vocabulary
             .operations
             .iter()
             .map(|op| op.canonical.clone())
@@ -135,6 +168,18 @@ mod tests {
             "count_unique_words",
             "deduplicate_lines",
             "sort_lines",
+            "function",
+            "implement",
+            "write",
+            "return",
+            "tuple",
+            "numbers",
+            "vowels",
+            "count_vowels",
+            "similar_elements",
+            "distinct_numbers",
+            "differ",
+            "threshold",
         ] {
             assert!(
                 canonicals.contains(expected),
@@ -144,28 +189,60 @@ mod tests {
     }
 
     #[test]
-    fn operation_vocabulary_matches_each_supported_language() {
+    fn operation_vocabulary_covers_every_supported_language_per_operation() {
+        let supported = supported_languages();
         let vocabulary = operation_vocabulary();
-        // English literal, Russian, Hindi, and Chinese must all canonicalise
-        // to the same `uppercase` operation so every supported language is
-        // recognised equally (see agent-info.lino `supported_languages`).
-        for normalized in [
-            "uppercase this text",
-            "переведи в верхний регистр",
-            "इस पाठ को बड़े अक्षर में",
-            "把文本转为大写",
-        ] {
-            assert!(
-                vocabulary.matches("uppercase", normalized),
-                "uppercase should match {normalized:?}",
+        for operation in vocabulary.operations {
+            let languages = operation.languages.keys().cloned().collect::<BTreeSet<_>>();
+            assert_eq!(
+                languages, supported,
+                "{} must define synonyms for every supported language",
+                operation.canonical
             );
+        }
+    }
+
+    #[test]
+    fn operation_vocabulary_canonicalizes_native_verbs() {
+        let vocabulary = operation_vocabulary();
+        let uppercase = vocabulary.canonicalized_prompt("переведи в верхний регистр");
+        assert!(uppercase.contains("uppercase"), "{uppercase}");
+
+        let synthesis =
+            vocabulary.canonicalized_prompt("реализуй python функцию count_vowels верни гласных");
+        for expected in [
+            "implement",
+            "function",
+            "count_vowels",
+            "count vowels",
+            "return",
+        ] {
+            assert!(synthesis.contains(expected), "{synthesis}");
+        }
+    }
+
+    #[test]
+    fn operation_vocabulary_canonicalizes_hindi_program_prompt() {
+        let vocabulary = operation_vocabulary();
+        let synthesis = vocabulary.canonicalized_prompt(
+            "python फ़ंक्शन count_vowels(text: str) -> int लागू करें। पाठ में स्वरों की संख्या लौटाएँ।",
+        );
+
+        for expected in [
+            "function",
+            "implement",
+            "return",
+            "vowels",
+            "count_vowels",
+            "count vowels",
+        ] {
+            assert!(synthesis.contains(expected), "{synthesis}");
         }
     }
 
     #[test]
     fn operation_vocabulary_combos_require_every_token() {
         let vocabulary = operation_vocabulary();
-        // "extract + email" is order-free but needs both tokens present.
         assert!(vocabulary.matches("extract_email", "please extract the email here"));
         assert!(!vocabulary.matches("extract_email", "extract the phone number"));
     }

@@ -1,0 +1,77 @@
+[
+  {
+    "id": "e34_algebra_substitution",
+    "prompt": "Given y = 4 and x = 3, evaluate (x^2 + 2y).",
+    "expectedIntent": "algebra_substitution",
+    "expectedAnswerFragments": ["17"],
+    "forbiddenAnswerFragments": [],
+    "expectedEvidencePrefixes": [
+      "sub_result:",
+      "composition:substitution:",
+      "composition:evaluation:",
+      "trace:"
+    ],
+    "expectedTraceFragments": ["composition:evaluation"]
+  },
+  {
+    "id": "e34_numeric_word_problem_renumbered",
+    "prompt": "Marisol's hens lay 24 eggs per day. She eats five for breakfast every morning and bakes cakes for her neighbors every day with seven. She sells the remainder at the market daily for $3 per fresh egg. How much in dollars does she make every day at the market?",
+    "expectedIntent": "arithmetic_word_problem",
+    "expectedAnswerFragments": ["36"],
+    "forbiddenAnswerFragments": ["18"],
+    "expectedEvidencePrefixes": [
+      "sub_result:",
+      "composition:remainder:",
+      "composition:evaluation:",
+      "trace:"
+    ],
+    "expectedTraceFragments": ["composition:remainder", "composition:evaluation"]
+  },
+  {
+    "id": "e34_object_counting_filtered_category",
+    "prompt": "I have a clarinet, a spoon, a violin, and a flute. How many musical instruments do I have?",
+    "expectedIntent": "object_counting",
+    "expectedAnswerFragments": ["3"],
+    "forbiddenAnswerFragments": ["4"],
+    "expectedEvidencePrefixes": [
+      "sub_result:",
+      "composition:category:",
+      "composition:count:",
+      "trace:"
+    ],
+    "expectedTraceFragments": ["category=musical instruments", "matched=clarinet|violin|flute"]
+  },
+  {
+    "id": "e34_program_synthesis_unseen_count_vowels",
+    "prompt": "Implement Python function count_vowels(text: str) -> int. Return the number of vowels in the text.",
+    "expectedIntent": "write_program",
+    "expectedAnswerFragments": [
+      "```python",
+      "def count_vowels",
+      "sum(",
+      "Execution status: tests passed"
+    ],
+    "forbiddenAnswerFragments": ["legacy_intent"],
+    "expectedEvidencePrefixes": [
+      "synthesis:candidate:",
+      "synthesis:verification:",
+      "action_log:run_command:",
+      "trace:"
+    ],
+    "expectedTraceFragments": ["synthesis:verification tests_passed"]
+  },
+  {
+    "id": "e34_text_manipulation_chain",
+    "prompt": "Uppercase and reverse words: 'links notation rules'",
+    "expectedIntent": "text_manipulation",
+    "expectedAnswerFragments": ["RULES NOTATION LINKS"],
+    "forbiddenAnswerFragments": [],
+    "expectedEvidencePrefixes": [
+      "text_operation:uppercase",
+      "text_operation:reverse_words",
+      "text_substitution_trace:",
+      "trace:"
+    ],
+    "expectedTraceFragments": ["text_substitution_trace"]
+  }
+]

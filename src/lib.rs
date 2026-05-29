@@ -91,10 +91,11 @@ pub use protocol::{
 };
 pub use seed::{
     agent_info, concepts as seed_concepts, environment_directory, environment_records,
-    intent_routing, language_rules, merged_bundle, multilingual_responses, parse_bundle,
-    projects_registry, prompt_patterns, response_for, seed_files, EnvironmentDirectory,
-    EnvironmentRecord, IntentRouting, LocalizedProject, MigrationFlow, ProjectRecord,
-    ProjectStatement, ProjectsRegistry,
+    intent_routing, language_rules, merged_bundle, multilingual_responses, operation_vocabulary,
+    parse_bundle, projects_registry, prompt_patterns, response_for, seed_files,
+    EnvironmentDirectory, EnvironmentRecord, IntentRouting, LocalizedProject, MigrationFlow,
+    OperationLanguageForms, OperationTrigger, OperationVocabulary, ProjectRecord, ProjectStatement,
+    ProjectsRegistry,
 };
 pub use server::{
     handle_api_request, handle_api_request_with_auth, handle_api_request_with_headers, serve,

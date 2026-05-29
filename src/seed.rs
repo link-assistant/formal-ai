@@ -40,7 +40,9 @@ use parser::{
 pub use brainstorm::{brainstorm_seeds, BrainstormCategory, BrainstormSeeds};
 pub use coreference::{coreference_seeds, Antecedent, CoreferenceSeeds, Pronoun};
 pub use facts::{facts, FactRecord, LocalizedFact};
-pub use operation_vocabulary::{operation_vocabulary, OperationTrigger, OperationVocabulary};
+pub use operation_vocabulary::{
+    operation_vocabulary, OperationLanguageForms, OperationTrigger, OperationVocabulary,
+};
 pub use personas::{persona_seeds, Persona, PersonaSeeds, PersonaTopic};
 pub use projects::{
     projects_registry, LocalizedProject, ProjectRecord, ProjectStatement, ProjectsRegistry,
