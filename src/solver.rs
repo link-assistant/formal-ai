@@ -29,8 +29,9 @@ use crate::engine::{
 };
 use crate::event_log::{build_evidence_links, EventLog};
 use crate::intent_formalization::{
-    ordered_handler_names, record_intent_formalization, select_rule_for_intent,
-    IntentFormalization, IntentFormalizationCache, IntentFormalizationCacheEntry,
+    ordered_handler_names, record_intent_formalization, recover_write_program_rule,
+    select_rule_for_intent, IntentFormalization, IntentFormalizationCache,
+    IntentFormalizationCacheEntry,
 };
 use crate::language::{detect as detect_language, Language};
 use crate::probability::ProbabilityStore;
@@ -48,70 +49,26 @@ use crate::solver_handlers::{
     try_definition_merge_by_default, try_execution_failure, try_fact_lookup,
     try_feature_capability, try_http_fetch, try_ill_formed, try_javascript_execution,
     try_meta_explanation, try_meta_explanation_with_runtime, try_natural_language_tool_request,
-    try_network_query, try_opinion_question, try_playwright_script, try_project_lookup,
-    try_proof_request, try_proof_request_with_config, try_punctuation_only_prompt,
-    try_roleplay_request, try_shell_refusal, try_software_project_request, try_source_conflict,
-    try_source_refresh, try_summarization_request, try_translation, try_url_navigate,
+    try_network_query, try_opinion_question, try_playwright_script, try_program_synthesis,
+    try_project_lookup, try_proof_request, try_proof_request_with_config,
+    try_punctuation_only_prompt, try_roleplay_request, try_shell_refusal,
+    try_software_project_request, try_source_conflict, try_source_refresh,
+    try_summarization_request, try_text_manipulation, try_translation, try_url_navigate,
     try_web_search, try_who_is_question, try_write_script, CapabilityRuntime, SelfAwarenessRuntime,
 };
 use crate::solver_handlers_policy::{try_kupi_slona, try_physical_action_question};
 use crate::solver_helpers::{
     confidence_for, is_agent_opt_in, is_agent_request, is_cache_flush_request,
-    is_destructive_action, is_forget_request, is_unbounded_autonomy, is_unbounded_loop,
-    record_candidates, record_decomposition, record_validation, requires_external_lookup,
+    is_destructive_action, is_forget_request, is_inappropriate_content, is_unbounded_autonomy,
+    is_unbounded_loop, record_candidates, record_decomposition, record_validation,
+    requires_external_lookup,
 };
+use crate::solver_synthesis::try_synthesize_from_sub_results;
 use crate::solver_unknown_reasoning::{answer_unknown_prompt, UnknownReasoningConfig};
 use crate::translation::{
     formalize_prompt_candidates, select_formalization_candidate_with_probability_store,
     FormalizationDecision, FormalizationSelectionConfig,
 };
-
-fn is_inappropriate_content(normalized: &str) -> bool {
-    // Russian vulgar/obscene words (mat) — normalized lowercase Cyrillic.
-    let ru_vulgar: &[&str] = &[
-        "ебать",
-        "ебёт",
-        "ебал",
-        "ёб",
-        "еблан",
-        "пизда",
-        "пиздец",
-        "пиздёж",
-        "хуй",
-        "хуёв",
-        "хуйня",
-        "блядь",
-        "блядство",
-        "залупа",
-        "мудак",
-        "мудила",
-        "шлюха",
-        "проститутка",
-        "ублюдок",
-        "сука",
-        "пидор",
-        "пидорас",
-    ];
-    if ru_vulgar.iter().any(|w| normalized.contains(w)) {
-        return true;
-    }
-    // English profanity / NSFW triggers.
-    let en_vulgar: &[&str] = &[
-        "fuck you",
-        "fuckyou",
-        "suck my",
-        "suck my dick",
-        "suck my cock",
-        "you suck",
-        "eat shit",
-        "go to hell",
-        "asshole",
-        "motherfucker",
-        "you fucking",
-        "piece of shit",
-    ];
-    en_vulgar.iter().any(|w| normalized.contains(w))
-}
 
 /// Runtime surface where the solver is embedded.
 ///
@@ -429,6 +386,7 @@ const SPECIALIZED_HANDLERS: &[(&str, SpecializedHandler)] = &[
     ("procedural_how_to", try_how_to_procedure),
     ("conversation_memory", try_conversation_memory),
     ("summarization", try_summarization_request),
+    ("text_manipulation", try_text_manipulation),
     ("brainstorming", try_brainstorming_request),
     ("conversation_topic", try_conversation_topic_request),
     ("fact_lookup", try_fact_lookup),
@@ -451,6 +409,7 @@ const SPECIALIZED_HANDLERS: &[(&str, SpecializedHandler)] = &[
     // hello-world snippet.
     ("execution_failure", try_execution_failure),
     ("write_script", try_write_script),
+    ("program_synthesis", try_program_synthesis),
     ("software_project", try_software_project_request),
     ("algorithm", try_algorithm),
     ("source_refresh", try_source_refresh),
@@ -587,19 +546,59 @@ impl UniversalSolver {
 
         log.append("search:local", prompt.to_owned());
 
-        record_decomposition(&mut log, prompt, self.config.max_decomposition_depth);
+        let sub_impulses =
+            record_decomposition(&mut log, prompt, self.config.max_decomposition_depth);
+        let sub_results =
+            self.solve_sub_impulses(&mut log, &sub_impulses, probability_store, intent_cache);
 
-        if let Some(answer) =
-            self.handle_specialized_pattern(prompt, &intent_formalization, &mut log)
-        {
+        let rule = select_rule_for_intent(&intent_formalization);
+
+        // Issue #324: a follow-up modification ("make the program accept a path
+        // argument") routes to write_program but names no concrete task or
+        // language — they came from the previous turn. Recover the missing
+        // parameters from the conversation so the request completes instead of
+        // surfacing the "language `missing` and task `missing`" error.
+        let rule = if matches!(rule, SelectedRule::UnsupportedWriteProgram { .. }) {
+            let recovery = recover_write_program_rule(rule, prompt, history);
+            if let Some(trace) = recovery.trace {
+                log.append("write_program_context_recovery", trace);
+            }
+            if let Some(plan) = recovery.plan {
+                log.append("write_program_plan", plan);
+            }
+            recovery.rule
+        } else {
+            rule
+        };
+
+        if let Some(answer) = try_synthesize_from_sub_results(
+            prompt,
+            &mut log,
+            &sub_results,
+            probability_store,
+            self.config,
+        ) {
             return answer;
+        }
+
+        // Issue #312: a concrete write_program request (recognized task and
+        // language with a matching template) must take precedence over the
+        // specialized handlers. Otherwise concept_lookup answers the language
+        // name ("Rust") as an encyclopedia definition instead of returning the
+        // requested program. Policy guards still run for these prompts below.
+        let is_concrete_write_program = matches!(rule, SelectedRule::WriteProgram(_));
+        if !is_concrete_write_program {
+            if let Some(answer) =
+                self.handle_specialized_pattern(prompt, &intent_formalization, &mut log)
+            {
+                return answer;
+            }
         }
 
         if let Some(answer) = Self::handle_policy(prompt, &mut log, language) {
             return answer;
         }
 
-        let rule = select_rule_for_intent(&intent_formalization);
         if matches!(rule, SelectedRule::Unknown) {
             let intent = language_aware_intent_for(&rule, language);
             record_candidates(&mut log, prompt, &intent);

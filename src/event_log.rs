@@ -223,6 +223,13 @@ pub fn build_evidence_links(prompt: &str, log: &EventLog, response_link: &str) -
             "tool_permission" => {
                 format!("tool_permission:{}", event.payload.replace(' ', ":"))
             }
+            "text_operation" => format!("text_operation:{}", event.payload),
+            "text_rule" => format!("text_rule:{}", event.payload),
+            "text_rule_chain" => format!("text_rule_chain:{}", event.payload),
+            "text_result" => format!("text_result:{}", event.id),
+            "text_substitution_rules" => format!("text_substitution_rules:{}", event.id),
+            "text_substitution_trace" => format!("text_substitution_trace:{}", event.id),
+            "text_substitution_graph" => format!("text_substitution_graph:{}", event.id),
             "procedural_how_to:request" => {
                 format!("procedural_how_to:request:{}", event.payload)
             }

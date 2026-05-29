@@ -4,8 +4,12 @@ benchmark_suite_issue_304_industry_permissive_slice
   title "Permissive industry benchmark slice"
   purpose "Deterministic unseen-task benchmark cases for programming, math, and general problem-solving."
   runner "cargo test --test unit issue_304_benchmark_suite_reports_pass_fail_counts -- --nocapture"
-  report_mode "Pass/fail counts are reported; failing benchmark cases document capability gaps instead of failing CI."
+  report_mode "Pass/fail counts are reported; failing benchmark cases document capability gaps unless the pass-count floor regresses."
+  minimum_pass_count "10"
+  ratchet_policy "CI asserts passed >= minimum_pass_count so solved benchmark progress cannot silently regress."
+  held_out_policy "Each source has one self-authored held-out or paraphrased variant that changes wording, numbers, or distractors while preserving the source task structure."
   imported_at "2026-05-26"
+  updated_at "2026-05-28"
 
 benchmark_source_humaneval
   record_type "benchmark_source"
@@ -19,6 +23,8 @@ benchmark_source_humaneval
   dataset_path "data/HumanEval.jsonl.gz"
   original_size "164 tasks"
   imported_cases "1"
+  suite_cases "2"
+  held_out_variants "1"
 
 benchmark_source_mbpp
   record_type "benchmark_source"
@@ -32,6 +38,8 @@ benchmark_source_mbpp
   dataset_path "mbpp/mbpp.jsonl"
   original_size "974 tasks; 427 sanitized tasks"
   imported_cases "1"
+  suite_cases "2"
+  held_out_variants "1"
 
 benchmark_source_gsm8k
   record_type "benchmark_source"
@@ -45,6 +53,8 @@ benchmark_source_gsm8k
   dataset_path "grade_school_math/data/test.jsonl"
   original_size "7473 train tasks; 1319 test tasks"
   imported_cases "1"
+  suite_cases "2"
+  held_out_variants "1"
 
 benchmark_source_math
   record_type "benchmark_source"
@@ -58,6 +68,8 @@ benchmark_source_math
   dataset_path "data/train-00000-of-00001-7320a6f3aba8ebd2.parquet"
   original_size "12500 competition-math problems"
   imported_cases "1"
+  suite_cases "2"
+  held_out_variants "1"
 
 benchmark_source_bigbench_object_counting
   record_type "benchmark_source"
@@ -71,6 +83,8 @@ benchmark_source_bigbench_object_counting
   dataset_path "bigbench/benchmark_tasks/object_counting/task.json"
   original_size "1000 examples"
   imported_cases "1"
+  suite_cases "2"
+  held_out_variants "1"
 
 benchmark_case_humaneval_0_has_close_elements
   record_type "benchmark_case"
@@ -85,6 +99,22 @@ benchmark_case_humaneval_0_has_close_elements
   expected_contains "return False"
   expected_answer "Python function satisfying HumanEval/0 tests"
   verification "static response contains the function name, a Python fence, and an explicit false branch"
+  allow_current_failure "true"
+
+benchmark_case_humaneval_0_has_close_elements_paraphrase
+  record_type "benchmark_case"
+  id "humaneval_0_has_close_elements_paraphrase"
+  source "humaneval"
+  domain "programming"
+  upstream_id "held_out_paraphrase:HumanEval/0"
+  variant "held_out"
+  prompt "Write Python function has_close_elements(numbers: list[float], threshold: float) -> bool. Inspect every distinct pair of numbers; return True if any absolute difference is less than threshold, otherwise return False."
+  check "contains_all"
+  expected_contains "```python"
+  expected_contains "def has_close_elements"
+  expected_contains "Execution status: tests passed"
+  expected_answer "Python function satisfying paraphrased HumanEval/0-style tests"
+  verification "derived synthesis must emit the function name, a Python fence, and a verified execution status"
   allow_current_failure "true"
 
 benchmark_case_mbpp_2_similar_elements
@@ -102,6 +132,22 @@ benchmark_case_mbpp_2_similar_elements
   verification "static response contains the function name, a Python fence, and set/intersection logic"
   allow_current_failure "true"
 
+benchmark_case_mbpp_2_similar_elements_paraphrase
+  record_type "benchmark_case"
+  id "mbpp_2_similar_elements_paraphrase"
+  source "mbpp"
+  domain "programming"
+  upstream_id "held_out_paraphrase:MBPP/2"
+  variant "held_out"
+  prompt "Implement Python function similar_elements(test_tup1, test_tup2). Return the values that occur in both tuples as a sorted tuple."
+  check "contains_all"
+  expected_contains "```python"
+  expected_contains "def similar_elements"
+  expected_contains "Execution status: tests passed"
+  expected_answer "Python function returning the deterministic tuple intersection"
+  verification "derived synthesis must emit the function name, a Python fence, and a verified execution status"
+  allow_current_failure "true"
+
 benchmark_case_gsm8k_test_0_duck_eggs
   record_type "benchmark_case"
   id "gsm8k_test_0_duck_eggs"
@@ -113,6 +159,20 @@ benchmark_case_gsm8k_test_0_duck_eggs
   expected_contains "18"
   expected_answer "18"
   verification "final answer contains the GSM8K numeric answer"
+  allow_current_failure "true"
+
+benchmark_case_gsm8k_held_out_hen_eggs
+  record_type "benchmark_case"
+  id "gsm8k_held_out_hen_eggs"
+  source "gsm8k"
+  domain "general_problem_solving"
+  upstream_id "held_out_renumbered:test.jsonl line 1"
+  variant "held_out"
+  prompt "Marisol's hens lay 24 eggs per day. She eats five for breakfast every morning and bakes cakes for her neighbors every day with seven. She sells the remainder at the market daily for $3 per fresh egg. How much in dollars does she make every day at the market?"
+  check "contains_all"
+  expected_contains "36"
+  expected_answer "36"
+  verification "renumbered variant must recompute the remainder sale instead of reusing the seed answer"
   allow_current_failure "true"
 
 benchmark_case_math_train_7_algebra_substitution
@@ -128,6 +188,20 @@ benchmark_case_math_train_7_algebra_substitution
   verification "final answer contains the evaluated integer"
   allow_current_failure "true"
 
+benchmark_case_math_held_out_algebra_substitution
+  record_type "benchmark_case"
+  id "math_held_out_algebra_substitution"
+  source "math"
+  domain "math"
+  upstream_id "held_out_renumbered:train row 7"
+  variant "held_out"
+  prompt "Given y = 4 and x = 3, evaluate (x^2 + 2y)."
+  check "contains_all"
+  expected_contains "17"
+  expected_answer "17"
+  verification "renumbered variant must substitute variables and evaluate the changed expression"
+  allow_current_failure "true"
+
 benchmark_case_bigbench_object_counting_instruments
   record_type "benchmark_case"
   id "bigbench_object_counting_instruments"
@@ -139,4 +213,18 @@ benchmark_case_bigbench_object_counting_instruments
   expected_contains "3"
   expected_answer "3"
   verification "exact string target from BIG-bench object_counting must appear in the answer"
+  allow_current_failure "true"
+
+benchmark_case_bigbench_held_out_object_counting_instruments
+  record_type "benchmark_case"
+  id "bigbench_held_out_object_counting_instruments"
+  source "bigbench_object_counting"
+  domain "general_problem_solving"
+  upstream_id "held_out_paraphrase:task.json examples[0]"
+  variant "held_out"
+  prompt "I have a clarinet, a spoon, a violin, and a flute. How many musical instruments do I have?"
+  check "contains_all"
+  expected_contains "3"
+  expected_answer "3"
+  verification "held-out variant must ignore the utensil distractor and count only requested category matches"
   allow_current_failure "true"

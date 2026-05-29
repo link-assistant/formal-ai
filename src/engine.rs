@@ -667,10 +667,12 @@ impl SelectedRule {
             Self::CourtesyResponse => String::from(courtesy_response_answer()),
             Self::Identity => String::from(identity_answer()),
             Self::AssistantName => String::from(assistant_name_answer()),
-            Self::WriteProgram(spec) => write_program_answer(*spec),
-            Self::UnsupportedWriteProgram { task, language } => {
-                unsupported_write_program_answer(task.as_deref(), language.as_deref())
-            }
+            Self::WriteProgram(spec) => write_program_answer(*spec, Language::English),
+            Self::UnsupportedWriteProgram { task, language } => unsupported_write_program_answer(
+                task.as_deref(),
+                language.as_deref(),
+                Language::English,
+            ),
             Self::Unknown => String::from(unknown_answer()),
         }
     }
@@ -715,6 +717,16 @@ pub(crate) fn language_aware_answer_for(
         }
         (SelectedRule::AssistantName, Language::Chinese) => {
             String::from(chinese_assistant_name_answer())
+        }
+        (SelectedRule::WriteProgram(spec), language) => write_program_answer(*spec, language),
+        (
+            SelectedRule::UnsupportedWriteProgram {
+                task,
+                language: program_language,
+            },
+            language,
+        ) => {
+            unsupported_write_program_answer(task.as_deref(), program_language.as_deref(), language)
         }
         (SelectedRule::Unknown, _) => {
             crate::unknown_opener::language_aware_unknown_answer(prompt, language)
@@ -803,7 +815,7 @@ pub(crate) fn answer_links_notation(
 fn format_write_program_rule_record() -> String {
     let sample = program_spec("hello_world", "rust").map_or_else(
         || String::from("Write-program template catalog is unavailable."),
-        write_program_answer,
+        |spec| write_program_answer(spec, Language::English),
     );
     format_lino_record(
         "rule_write_program",
@@ -836,45 +848,118 @@ fn program_template_sources() -> String {
     sources.join(", ")
 }
 
-fn write_program_answer(spec: ProgramSpec) -> String {
+fn write_program_answer(spec: ProgramSpec, language: Language) -> String {
+    // Issue #324: the natural-language framing around the generated program is
+    // localized to the detected (or preferred) response language so a Russian,
+    // Hindi, or Chinese request no longer receives an all-English reply. The
+    // code itself and the literal shell commands stay in their canonical form
+    // because they are the requested artefact, not prose.
     format!(
-        "Here is a minimal {} {} program:\n\n```{}\n{}\n```\n\n{}",
-        spec.language.name,
-        spec.task.label,
+        "{}\n\n```{}\n{}\n```\n\n{}",
+        write_program_intro(spec.language.name, spec.task.label, language),
         spec.language.code_fence,
         spec.template.code,
-        execution_report(&spec.language.execution, spec.task.output)
+        execution_report(&spec.language.execution, spec.task.output, language)
     )
 }
 
-fn unsupported_write_program_answer(task: Option<&str>, language: Option<&str>) -> String {
+fn write_program_intro(language_name: &str, task_label: &str, language: Language) -> String {
+    match language {
+        Language::Russian => {
+            format!("Вот минимальная программа на языке {language_name} ({task_label}):")
+        }
+        Language::Hindi => {
+            format!("यहाँ {language_name} में एक न्यूनतम प्रोग्राम है ({task_label}):")
+        }
+        Language::Chinese => format!("这是一个最小的 {language_name} 程序（{task_label}）："),
+        _ => format!("Here is a minimal {language_name} {task_label} program:"),
+    }
+}
+
+fn unsupported_write_program_answer(
+    task: Option<&str>,
+    language: Option<&str>,
+    response_language: Language,
+) -> String {
     let task = task.unwrap_or("missing");
     let language = language.unwrap_or("missing");
-    format!(
-        "I can route `write_program(language, task)`, but I do not have a template for \
-         language `{language}` and task `{task}`. Supported languages: {}. Supported tasks: {}.",
-        supported_program_languages(),
-        supported_program_tasks()
-    )
+    let languages = supported_program_languages();
+    let tasks = supported_program_tasks();
+    match response_language {
+        Language::Russian => format!(
+            "Я могу выполнить `write_program(language, task)`, но у меня нет шаблона для \
+             языка `{language}` и задачи `{task}`. Поддерживаемые языки: {languages}. \
+             Поддерживаемые задачи: {tasks}."
+        ),
+        Language::Hindi => format!(
+            "मैं `write_program(language, task)` रूट कर सकता हूँ, लेकिन भाषा `{language}` और \
+             कार्य `{task}` के लिए मेरे पास कोई टेम्पलेट नहीं है। समर्थित भाषाएँ: {languages}. \
+             समर्थित कार्य: {tasks}."
+        ),
+        Language::Chinese => format!(
+            "我可以路由 `write_program(language, task)`，但我没有语言 `{language}` 和任务 \
+             `{task}` 的模板。支持的语言：{languages}。支持的任务：{tasks}。"
+        ),
+        _ => format!(
+            "I can route `write_program(language, task)`, but I do not have a template for \
+             language `{language}` and task `{task}`. Supported languages: {languages}. \
+             Supported tasks: {tasks}."
+        ),
+    }
 }
 
-fn execution_report(execution: &ProgramExecution, output: &str) -> String {
+fn execution_report(execution: &ProgramExecution, output: &str, language: Language) -> String {
     let command_lines = execution_command_lines(execution);
-    let output_label = if matches!(execution.status, ExecutionStatus::Verified) {
-        "Output"
-    } else {
-        "Expected output after verification"
+    let verified = matches!(execution.status, ExecutionStatus::Verified);
+    let status_phrase = execution_status_phrase(execution.status, language);
+    let output_label = execution_output_label(verified, language);
+    let status_line = match language {
+        Language::Russian => format!(
+            "Статус выполнения: {status_phrase} в среде «{}».",
+            execution.environment
+        ),
+        Language::Hindi => format!(
+            "निष्पादन स्थिति: {status_phrase} ({} में)।",
+            execution.environment
+        ),
+        Language::Chinese => {
+            format!("执行状态：{status_phrase}（{}）。", execution.environment)
+        }
+        _ => format!(
+            "Execution status: {status_phrase} in {}.",
+            execution.environment
+        ),
     };
 
     format!(
-        "Execution status: {} in {}.\n{}\n{}:\n```text\n{}\n```\n{}",
-        execution.status.label(),
-        execution.environment,
-        command_lines,
-        output_label,
-        output,
+        "{status_line}\n{command_lines}\n{output_label}:\n```text\n{output}\n```\n{}",
         execution.notes
     )
+}
+
+const fn execution_status_phrase(status: ExecutionStatus, language: Language) -> &'static str {
+    match (status, language) {
+        (ExecutionStatus::Verified, Language::Russian) => "скомпилировано и запущено",
+        (ExecutionStatus::Verified, Language::Hindi) => "संकलित और चलाया गया",
+        (ExecutionStatus::Verified, Language::Chinese) => "已编译并运行",
+        (ExecutionStatus::Unavailable, Language::Russian) => "не скомпилировано и не запущено",
+        (ExecutionStatus::Unavailable, Language::Hindi) => "संकलित या चलाया नहीं गया",
+        (ExecutionStatus::Unavailable, Language::Chinese) => "未编译或运行",
+        (status, _) => status.label(),
+    }
+}
+
+const fn execution_output_label(verified: bool, language: Language) -> &'static str {
+    match (verified, language) {
+        (true, Language::Russian) => "Вывод",
+        (false, Language::Russian) => "Ожидаемый вывод после проверки",
+        (true, Language::Hindi) => "आउटपुट",
+        (false, Language::Hindi) => "सत्यापन के बाद अपेक्षित आउटपुट",
+        (true, Language::Chinese) => "输出",
+        (false, Language::Chinese) => "验证后的预期输出",
+        (true, _) => "Output",
+        (false, _) => "Expected output after verification",
+    }
 }
 
 fn execution_command_lines(execution: &ProgramExecution) -> String {

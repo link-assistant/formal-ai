@@ -2,11 +2,12 @@
 //!
 //! The imported fixtures are allowed to expose current capability gaps. This
 //! test keeps the suite deterministic and runnable while reporting the pass
-//! and fail counts for reviewers and future E26 work.
+//! and fail counts for reviewers and future synthesis work.
 
 use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
 use std::path::Path;
+use std::sync::{Mutex, MutexGuard, OnceLock};
 
 use formal_ai::{ExecutionSurface, SolverConfig, UniversalSolver};
 use lino_objects_codec::format::parse_indented;
@@ -16,6 +17,7 @@ const LICENSE_NOTE: &str = "data/benchmarks/LICENSES.md";
 const RESEARCH_NOTE: &str = "docs/case-studies/issue-244/raw-data/online-research.md";
 const REQUIRED_DOMAINS: [&str; 3] = ["general_problem_solving", "math", "programming"];
 const PERMISSIVE_LICENSES: [&str; 3] = ["Apache-2.0", "CC-BY-4.0", "MIT"];
+const HELD_OUT_VARIANT: &str = "held_out";
 
 #[derive(Debug)]
 struct LinoRecord {
@@ -40,35 +42,301 @@ struct BenchmarkCase {
     prompt: String,
     expected_contains: Vec<String>,
     allow_current_failure: bool,
+    variant: String,
 }
 
 #[derive(Debug)]
 struct BenchmarkSuite {
     sources: BTreeMap<String, BenchmarkSource>,
     cases: Vec<BenchmarkCase>,
+    minimum_pass_count: usize,
 }
 
 #[derive(Debug, PartialEq, Eq)]
 struct BenchmarkReport {
     passed: usize,
     failed: usize,
+    minimum_pass_count: usize,
     failures: Vec<String>,
 }
 
 #[test]
 fn issue_304_benchmark_suite_reports_pass_fail_counts() {
+    let _solver_guard = benchmark_solver_lock();
     let suite = load_suite();
 
-    assert_eq!(suite.cases.len(), 5, "the initial imported slice is small");
+    assert!(
+        suite.cases.len() >= 5,
+        "the imported benchmark slice should remain populated",
+    );
     assert_required_domains_are_covered(&suite);
     assert_every_case_has_a_permissive_source(&suite);
 
-    let report = run_suite(&suite.cases);
+    let report = run_suite(&suite);
     assert_eq!(report.passed + report.failed, suite.cases.len());
+    assert_pass_count_floor_is_met(&report);
 
     let rendered = render_report(&report);
     println!("{rendered}");
     assert!(rendered.contains("benchmark pass/fail counts"));
+    assert!(rendered.contains("minimum_pass_count"));
+}
+
+#[test]
+fn issue_317_benchmark_suite_grows_with_held_out_ratchet() {
+    let suite = load_suite();
+
+    assert!(
+        suite.cases.len() > 5,
+        "issue 317 requires the benchmark suite to grow beyond the issue 304 five-case seed",
+    );
+    assert_pass_count_floor_is_recorded(&suite);
+    assert_held_out_variants_are_covered(&suite);
+}
+
+#[test]
+fn issue_317_held_out_benchmark_variants_pass_by_derivation() {
+    let _solver_guard = benchmark_solver_lock();
+    let suite = load_suite();
+    let solver = benchmark_solver();
+    let held_out_cases = suite
+        .cases
+        .iter()
+        .filter(|case| case.variant == HELD_OUT_VARIANT)
+        .collect::<Vec<_>>();
+
+    assert!(
+        !held_out_cases.is_empty(),
+        "issue 317 requires held-out/paraphrased benchmark variants",
+    );
+
+    for case in held_out_cases {
+        let response = solver.solve(&case.prompt);
+        let missing = case
+            .expected_contains
+            .iter()
+            .filter(|expected| !response.answer.contains(expected.as_str()))
+            .cloned()
+            .collect::<Vec<_>>();
+        assert!(
+            missing.is_empty(),
+            "{} should pass deterministic checks, missing {:?}; answer: {}",
+            case.id,
+            missing,
+            response.answer,
+        );
+        assert_case_passes_by_derivation(case, &response.links_notation);
+    }
+}
+
+#[test]
+fn issue_314_numeric_benchmark_cases_compute_with_trace() {
+    let _solver_guard = benchmark_solver_lock();
+    let suite = load_suite();
+    let solver = benchmark_solver();
+    let cases = [
+        (
+            "gsm8k_test_0_duck_eggs",
+            "18",
+            &[
+                "sub_result:",
+                "composition:remainder:",
+                "composition:evaluation:",
+                "trace:",
+            ][..],
+        ),
+        (
+            "math_train_7_algebra_substitution",
+            "11",
+            &[
+                "sub_result:",
+                "composition:substitution:",
+                "composition:evaluation:",
+                "trace:",
+            ][..],
+        ),
+        (
+            "bigbench_object_counting_instruments",
+            "3",
+            &[
+                "sub_result:",
+                "composition:category:",
+                "composition:count:",
+                "trace:",
+            ][..],
+        ),
+    ];
+
+    for (case_id, expected, required_prefixes) in cases {
+        let case = suite
+            .cases
+            .iter()
+            .find(|case| case.id == case_id)
+            .unwrap_or_else(|| panic!("missing benchmark case {case_id}"));
+        let response = solver.solve(&case.prompt);
+        assert!(
+            response.answer.contains(expected),
+            "{} should contain {expected:?}, got {}",
+            case.id,
+            response.answer
+        );
+        for prefix in required_prefixes {
+            assert!(
+                response
+                    .evidence_links
+                    .iter()
+                    .any(|link| link.starts_with(prefix)),
+                "{} missing trace prefix {prefix:?}: {:?}",
+                case.id,
+                response.evidence_links
+            );
+        }
+        assert!(
+            response.links_notation.contains("composition:"),
+            "{} should serialize composition steps: {}",
+            case.id,
+            response.links_notation
+        );
+    }
+}
+
+#[test]
+fn issue_315_programming_benchmark_cases_synthesize_and_verify() {
+    let _solver_guard = benchmark_solver_lock();
+    let suite = load_suite();
+    let solver = benchmark_solver();
+    let cases = [
+        (
+            "humaneval_0_has_close_elements",
+            &[
+                "```python",
+                "def has_close_elements",
+                "return False",
+                "Execution status: tests passed",
+            ][..],
+        ),
+        (
+            "mbpp_2_similar_elements",
+            &[
+                "```python",
+                "def similar_elements",
+                "set",
+                "Execution status: tests passed",
+            ][..],
+        ),
+    ];
+
+    for (case_id, expected_fragments) in cases {
+        let case = suite
+            .cases
+            .iter()
+            .find(|case| case.id == case_id)
+            .unwrap_or_else(|| panic!("missing benchmark case {case_id}"));
+        let response = solver.solve(&case.prompt);
+        assert_eq!(response.intent, "write_program");
+        for expected in expected_fragments {
+            assert!(
+                response.answer.contains(expected),
+                "{} should contain {expected:?}, got {}",
+                case.id,
+                response.answer
+            );
+        }
+        for expected in [
+            "synthesis:candidate",
+            "synthesis:candidate_execution",
+            "synthesis:verification tests_passed",
+            "action_log:run_command",
+        ] {
+            assert!(
+                response.links_notation.contains(expected),
+                "{} should record {expected:?} in the trace, got {}",
+                case.id,
+                response.links_notation
+            );
+        }
+        assert!(
+            !response.links_notation.contains("legacy_intent"),
+            "{} must not be satisfied by the hello-world seed path: {}",
+            case.id,
+            response.links_notation
+        );
+    }
+}
+
+#[test]
+fn issue_315_unseen_python_function_synthesizes_without_seed_hit() {
+    let _solver_guard = benchmark_solver_lock();
+    let solver = benchmark_solver();
+    let response = solver.solve(
+        "Implement Python function count_vowels(text: str) -> int. Return the number of vowels in the text.",
+    );
+
+    assert_eq!(response.intent, "write_program");
+    assert!(response.answer.contains("```python"));
+    assert!(response.answer.contains("def count_vowels"));
+    assert!(response.answer.contains("sum("));
+    assert!(response.answer.contains("Execution status: tests passed"));
+    assert!(response
+        .links_notation
+        .contains("synthesis:verification tests_passed"));
+    assert!(
+        !response.links_notation.contains("legacy_intent"),
+        "unseen synthesis must not be recorded as a seed hit: {}",
+        response.links_notation
+    );
+}
+
+#[test]
+fn issue_315_program_synthesis_accepts_supported_language_wrappers() {
+    struct Case {
+        language: &'static str,
+        prompt: &'static str,
+    }
+
+    let _solver_guard = benchmark_solver_lock();
+    let solver = benchmark_solver();
+    let cases = [
+        Case {
+            language: "en",
+            prompt: "English request: Implement Python function count_vowels(text: str) -> int. Return the number of vowels in the text.",
+        },
+        Case {
+            language: "ru",
+            prompt: "Русский запрос: Implement Python function count_vowels(text: str) -> int. Return the number of vowels in the text.",
+        },
+        Case {
+            language: "hi",
+            prompt: "हिंदी अनुरोध: Implement Python function count_vowels(text: str) -> int. Return the number of vowels in the text.",
+        },
+        Case {
+            language: "zh",
+            prompt: "中文请求: Implement Python function count_vowels(text: str) -> int. Return the number of vowels in the text.",
+        },
+    ];
+
+    for case in cases {
+        let response = solver.solve(case.prompt);
+        assert_eq!(
+            response.intent, "write_program",
+            "{} wrapper should still route to synthesis",
+            case.language
+        );
+        assert!(
+            response.answer.contains("def count_vowels"),
+            "{} wrapper should synthesize the expected function, got {}",
+            case.language,
+            response.answer
+        );
+        assert!(
+            response
+                .links_notation
+                .contains("synthesis:verification tests_passed"),
+            "{} wrapper should verify the synthesized candidate, got {}",
+            case.language,
+            response.links_notation
+        );
+    }
 }
 
 #[test]
@@ -105,9 +373,11 @@ fn issue_304_benchmark_fixture_parses_with_windows_line_endings() {
     validate_lino_syntax(&windows_text);
     let suite = parse_suite(&windows_text);
 
-    assert_eq!(suite.cases.len(), 5);
+    assert!(suite.cases.len() > 5);
+    assert_pass_count_floor_is_recorded(&suite);
     assert_required_domains_are_covered(&suite);
     assert_every_case_has_a_permissive_source(&suite);
+    assert_held_out_variants_are_covered(&suite);
 }
 
 fn load_suite() -> BenchmarkSuite {
@@ -129,8 +399,17 @@ fn validate_lino_syntax(text: &str) {
 fn parse_suite(text: &str) -> BenchmarkSuite {
     let mut sources = BTreeMap::new();
     let mut cases = Vec::new();
+    let mut minimum_pass_count = 0;
     for record in parse_records(text) {
         match record.kind.as_str() {
+            "benchmark_suite" => {
+                let raw_floor = field_value(&record.fields, "minimum_pass_count");
+                if !raw_floor.is_empty() {
+                    minimum_pass_count = raw_floor.parse::<usize>().unwrap_or_else(|err| {
+                        panic!("invalid minimum_pass_count `{raw_floor}`: {err}")
+                    });
+                }
+            }
             "benchmark_source" => {
                 let source = BenchmarkSource {
                     id: record.id,
@@ -148,11 +427,16 @@ fn parse_suite(text: &str) -> BenchmarkSuite {
                 expected_contains: field_values(&record.fields, "expected_contains"),
                 allow_current_failure: field_value(&record.fields, "allow_current_failure")
                     == "true",
+                variant: field_value(&record.fields, "variant"),
             }),
             _ => {}
         }
     }
-    BenchmarkSuite { sources, cases }
+    BenchmarkSuite {
+        sources,
+        cases,
+        minimum_pass_count,
+    }
 }
 
 fn parse_records(text: &str) -> Vec<LinoRecord> {
@@ -293,11 +577,72 @@ fn assert_every_case_has_a_permissive_source(suite: &BenchmarkSuite) {
     }
 }
 
-fn run_suite(cases: &[BenchmarkCase]) -> BenchmarkReport {
+fn assert_pass_count_floor_is_recorded(suite: &BenchmarkSuite) {
+    assert!(
+        suite.minimum_pass_count > 0,
+        "benchmark suite must record a monotonic minimum_pass_count",
+    );
+    assert!(
+        suite.minimum_pass_count <= suite.cases.len(),
+        "minimum_pass_count={} cannot exceed suite size {}",
+        suite.minimum_pass_count,
+        suite.cases.len(),
+    );
+}
+
+fn assert_pass_count_floor_is_met(report: &BenchmarkReport) {
+    assert!(
+        report.passed >= report.minimum_pass_count,
+        "benchmark pass-count floor dropped: passed={} minimum_pass_count={}\n{}",
+        report.passed,
+        report.minimum_pass_count,
+        render_report(report),
+    );
+}
+
+fn assert_held_out_variants_are_covered(suite: &BenchmarkSuite) {
+    let expected_sources = suite.sources.keys().cloned().collect::<BTreeSet<_>>();
+    let held_out_sources = suite
+        .cases
+        .iter()
+        .filter(|case| case.variant == HELD_OUT_VARIANT)
+        .map(|case| case.source.clone())
+        .collect::<BTreeSet<_>>();
+
+    assert_eq!(
+        held_out_sources, expected_sources,
+        "each benchmark source needs a held-out/paraphrased anti-memorization variant",
+    );
+}
+
+fn assert_case_passes_by_derivation(case: &BenchmarkCase, links_notation: &str) {
+    let required_marker = match case.source.as_str() {
+        "humaneval" | "mbpp" => "synthesis:verification tests_passed",
+        "gsm8k" => "composition:remainder",
+        "math" => "composition:substitution",
+        "bigbench_object_counting" => "composition:count",
+        source => panic!("missing derivation marker rule for benchmark source {source}"),
+    };
+    assert!(
+        links_notation.contains(required_marker),
+        "{} should pass via derivation marker `{}`; links:\n{}",
+        case.id,
+        required_marker,
+        links_notation,
+    );
+    assert!(
+        !links_notation.contains("legacy_intent"),
+        "{} should not be satisfied by a legacy seed lookup; links:\n{}",
+        case.id,
+        links_notation,
+    );
+}
+
+fn run_suite(suite: &BenchmarkSuite) -> BenchmarkReport {
     let solver = benchmark_solver();
     let mut passed = 0;
     let mut failures = Vec::new();
-    for case in cases {
+    for case in &suite.cases {
         let response = solver.solve(&case.prompt);
         let missing = case
             .expected_contains
@@ -313,7 +658,8 @@ fn run_suite(cases: &[BenchmarkCase]) -> BenchmarkReport {
     }
     BenchmarkReport {
         passed,
-        failed: cases.len() - passed,
+        failed: suite.cases.len() - passed,
+        minimum_pass_count: suite.minimum_pass_count,
         failures,
     }
 }
@@ -327,12 +673,20 @@ fn benchmark_solver() -> UniversalSolver {
     })
 }
 
+fn benchmark_solver_lock() -> MutexGuard<'static, ()> {
+    static LOCK: OnceLock<Mutex<()>> = OnceLock::new();
+    LOCK.get_or_init(|| Mutex::new(()))
+        .lock()
+        .expect("benchmark solver lock should not be poisoned")
+}
+
 fn render_report(report: &BenchmarkReport) -> String {
     let mut out = format!(
-        "benchmark pass/fail counts: passed={} failed={} total={}\n",
+        "benchmark pass/fail counts: passed={} failed={} total={} minimum_pass_count={}\n",
         report.passed,
         report.failed,
         report.passed + report.failed,
+        report.minimum_pass_count,
     );
     for failure in &report.failures {
         out.push_str("FAIL ");
