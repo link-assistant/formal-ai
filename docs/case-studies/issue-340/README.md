@@ -182,6 +182,12 @@ self-facts inventory as `relation "blueprint_composition"` with the active slug 
 so the toggle is observable in all three self-facts renderers (Rust
 `render_self_facts`, worker `renderSelfFacts`, the app.js local fallback).
 
+![The "Program composition" dropdown in the demo settings panel](https://github.com/link-assistant/formal-ai/blob/issue-340-dbe3f3891f1b/docs/case-studies/issue-340/screenshots/program-composition-setting.png?raw=true)
+
+*The setting renders in the demo settings panel (default `Composed (projected)`),
+persists to `formal-ai.preferences.v1` as `blueprintComposition`, and is forwarded
+to the worker `prefs` — verified live with Playwright.*
+
 The behavior is unit-tested in `src/coding/blueprint_tests.rs` (mounted into the
 implementation module with `#[path]` so `blueprint.rs` stays under the 1000-line
 file-size limit)
