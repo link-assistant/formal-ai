@@ -368,9 +368,9 @@ fn matches_route(normalized: &str, route: &seed::IntentRoute) -> bool {
 
 fn contains_token(normalized: &str, expected: &str) -> bool {
     // CJK scripts have no inter-word spaces, so match those aliases by substring
-    // (see `engine_hello_world::contains_cjk`). Latin/Cyrillic keep strict
+    // (see `coding::catalog::contains_cjk`). Latin/Cyrillic keep strict
     // whitespace boundaries so short tokens never match inside larger words.
-    if crate::engine_hello_world::contains_cjk(expected) {
+    if crate::coding::contains_cjk(expected) {
         return normalized.contains(expected);
     }
     normalized.split_whitespace().any(|token| token == expected)
@@ -600,7 +600,7 @@ const PROGRAM_VERBS: &[&str] = &[
 ];
 
 fn write_program_parameters(normalized: &str) -> Option<BTreeMap<String, String>> {
-    let task = crate::engine_hello_world::program_task_by_alias(normalized);
+    let task = crate::coding::program_task_by_alias(normalized);
     let language = requested_program_language(normalized);
     let asks_for_program = PROGRAM_NOUNS
         .iter()

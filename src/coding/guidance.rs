@@ -3,10 +3,11 @@
 //! A code answer must *teach* a novice, so each `write_program` response is
 //! followed by a plain-language "How it works" explanation and step-by-step
 //! "How to test it yourself" instructions. Both are localized for every
-//! supported response language. These builders are split out of `engine.rs` to
-//! keep that module under the repository's per-file line-count limit.
+//! supported response language. These builders live alongside the coding
+//! [`catalog`](crate::coding::catalog) and are kept out of `engine.rs` so that
+//! module stays under the repository's per-file line-count limit.
 
-use crate::engine_hello_world::ProgramSpec;
+use crate::coding::catalog::ProgramSpec;
 use crate::language::Language;
 use crate::solver::{ConversationRole, ConversationTurn};
 

@@ -55,6 +55,15 @@ requirement comes from the issue body.
 8. **R8 — Single PR.** Plan and execute everything in PR #331 until every
    requirement is fully addressed.
 
+### From the PR review
+9. **R9 — Code answers must teach a novice.** Every code answer must include the
+   code, a "How it works" explanation, and exact "How to test it" instructions;
+   omit the setup steps when the dialog already covered them. See §8.
+10. **R10 — Clear naming and code organization.** Rename the misleading
+    `engine_hello_world` module and reorganize file naming / code structure to
+    follow the [code-architecture-principles](https://github.com/link-foundation/code-architecture-principles),
+    signalling support for general coding tasks rather than hello-world. See §10.
+
 ---
 
 ## 3. Root-cause analysis
@@ -268,7 +277,7 @@ instead of one, all localized for the four supported response languages
    expected-output section shown above.
 
 Two new fields back this on the per-language catalog in
-`src/engine_hello_world.rs`: `save_as` (e.g. `main.rs`, `Main.java`,
+`src/coding/catalog.rs`: `save_as` (e.g. `main.rs`, `Main.java`,
 `Program.cs`) and `setup_hint` (a short, novice-friendly pointer to the
 toolchain installer). They are populated for all 11 catalog languages.
 
@@ -291,7 +300,7 @@ turn keeps the full instructions.
 | File | Change |
 | --- | --- |
 | `src/engine.rs` | `write_program_answer` gains a `prior_code_response` flag and appends `program_explanation_section` + `program_test_instructions`; new localized explanation/instruction builders. |
-| `src/engine_hello_world.rs` | `save_as` + `setup_hint` fields added to `ProgramLanguage` and populated for all 11 languages. |
+| `src/coding/catalog.rs` | `save_as` + `setup_hint` fields added to `ProgramLanguage` and populated for all 11 languages. |
 | `src/solver.rs` | Detects a prior assistant code block in `history` and threads `prior_code_response` into the answer builder. |
 | `tests/unit/specification/code_generation.rs` | 7 new tests across all languages + history-aware behavior. |
 
@@ -319,3 +328,34 @@ The R9 work above deliberately scopes to what is testable and directly serves a
 novice today — *code + explanation + test instructions* — and leaves the
 execution-sandbox vision to follow-up issues so each can be designed and
 reviewed on its own merits.
+
+---
+
+## 10. Module reorganization (R10 — from the PR review)
+
+A follow-up PR review observed that `src/engine_hello_world.rs` was a misleading
+name: the module had grown to support **general coding tasks** (`hello_world`,
+`count_to_three`, `list_files`, `list_files_arg`) across 11 languages, not just
+hello-world. The reviewer asked for a clearer name (e.g. `coding.rs`) and for the
+file naming / code organization to follow the
+[code-architecture-principles](https://github.com/link-foundation/code-architecture-principles)
+(modularity, high cohesion, clear naming via ubiquitous language, small focused
+units).
+
+Resolution — a cohesive `src/coding/` module replaces the two `engine_*` files:
+
+| Before | After | Responsibility |
+| --- | --- | --- |
+| `src/engine_hello_world.rs` | `src/coding/catalog.rs` | The catalog of programming languages, coding tasks, per-language templates, and the alias-matching lookups that resolve a prompt to a `ProgramSpec`. |
+| `src/engine_program_guidance.rs` | `src/coding/guidance.rs` | The novice "How it works" explanation and "How to test it yourself" instructions (R9). |
+| — | `src/coding/mod.rs` | Module doc; re-exports catalog items at `crate::coding::*` so callers stay decoupled from the submodule layout. |
+
+Why this naming: *coding* is the activity the module supports; *program* stays as
+the ubiquitous-language noun for the generated artifact (`write_program` intent,
+`ProgramSpec`), so the catalog and guidance read consistently. All call sites
+(`engine.rs`, `solver.rs`, `intent_formalization.rs`, `solver_handlers/`), the JS
+worker mirror (`src/web/formal_ai_worker.js`), and the behavior-rule provenance
+string were updated in lockstep. No behavior changed — all 680 Rust unit tests,
+clippy, and fmt stay green — this is a pure structural rename for clarity and to
+signal that the module is the home for general coding-task support, not a
+hello-world special case.

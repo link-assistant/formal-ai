@@ -2461,7 +2461,7 @@ function behaviorRuleRecords() {
       matches:
         "`write_program(language, task)` with languages rust, python, javascript, typescript, go, c, cpp, java, csharp, ruby and tasks hello_world, count_to_three",
       response: "Returns a minimal program from the parameterized template catalog.",
-      source: "data/seed/hello-world-programs.lino + src/engine_hello_world.rs",
+      source: "data/seed/hello-world-programs.lino + src/coding/catalog.rs",
       whenThen:
         "When the user requests a program with supported `language` and `task` parameters then respond with the matching template through the single `write_program` intent.",
     },
@@ -10311,7 +10311,7 @@ function normalizeProgramPrompt(prompt) {
 // CJK scripts have no inter-word spaces, so the whitespace-based phrase/token
 // matchers never isolate a CJK word. When the expected alias itself contains a
 // CJK ideograph we fall back to a substring test (issue #312). Mirrors
-// `engine_hello_world::contains_cjk` on the Rust side.
+// `coding::catalog::contains_cjk` on the Rust side.
 function containsCjk(text) {
   return /[㐀-䶿一-鿿豈-﫿぀-ヿ㄀-ㄯ]/.test(
     String(text || ""),

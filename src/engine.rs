@@ -5,7 +5,7 @@
 //! bypass the solver — it delegates to [`crate::solver::UniversalSolver::solve`]
 //! so every request walks the same 11-step loop documented in `VISION.md`.
 
-pub(crate) use crate::engine_hello_world::{
+pub(crate) use crate::coding::{
     program_language_by_alias, program_spec, supported_program_languages, supported_program_tasks,
     ExecutionStatus, ProgramExecution, ProgramSpec, PROGRAM_LANGUAGES, PROGRAM_TEMPLATES,
     WRITE_PROGRAM_INTENT,
@@ -15,11 +15,11 @@ use std::sync::OnceLock;
 
 use serde::{Deserialize, Serialize};
 
+use crate::coding::guidance::{program_explanation_section, program_test_instructions};
 use crate::engine_assistant_name::{
     assistant_name_answer, chinese_assistant_name_answer, hindi_assistant_name_answer,
     russian_assistant_name_answer, ASSISTANT_NAME_EXAMPLES,
 };
-use crate::engine_program_guidance::{program_explanation_section, program_test_instructions};
 use crate::event_log::EventLog;
 use crate::language::Language;
 use crate::links_format::{format_lino_record, sanitize_lino_value};

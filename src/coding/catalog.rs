@@ -1,3 +1,14 @@
+//! Catalog of supported coding tasks, programming languages, and the code
+//! templates that realize each task in each language.
+//!
+//! A `write_program` request is answered by resolving the prompt to a
+//! [`ProgramSpec`] — a `(task, language, template)` triple — via the
+//! alias-matching helpers below. The catalog is plain data: adding a language or
+//! a task is a matter of extending [`PROGRAM_LANGUAGES`] / [`PROGRAM_TASKS`] and
+//! supplying the matching [`PROGRAM_TEMPLATES`], so coverage grows without the
+//! engine changing. The matchers are script-aware (Latin/Cyrillic token
+//! boundaries, CJK substring) so prompts in every supported language resolve.
+
 #[derive(Clone, Copy)]
 pub struct ProgramLanguage {
     pub slug: &'static str,

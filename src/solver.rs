@@ -23,11 +23,11 @@
 
 use std::fmt::Write as _;
 
+use crate::coding::guidance as coding_guidance;
 use crate::engine::{
     answer_links_notation, language_aware_answer_for, language_aware_intent_for,
     response_link_for_intent, stable_id, SelectedRule, SymbolicAnswer,
 };
-use crate::engine_program_guidance;
 use crate::event_log::{build_evidence_links, EventLog};
 use crate::intent_formalization::{
     ordered_handler_names, record_intent_formalization, recover_write_program_rule,
@@ -655,7 +655,7 @@ impl UniversalSolver {
                 "accepted_without_extra_constraints".to_owned(),
             );
         }
-        let prior = engine_program_guidance::history_has_prior_code(history);
+        let prior = coding_guidance::history_has_prior_code(history);
         let answer = match (&validation_choice, &rule) {
             (Some(choice), SelectedRule::Unknown) => choice.answer.clone(),
             _ => language_aware_answer_for(&rule, language, prompt, prior),
