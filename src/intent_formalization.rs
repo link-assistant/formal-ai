@@ -698,6 +698,7 @@ fn slot_known_link(role: FormalizationRole, kind: FormalizationAnchorKind, id: &
 
 fn append_prompt_relevants(prompt: &str, normalized: &str, relevants: &mut Vec<String>) {
     let lower_prompt = prompt.to_ascii_lowercase();
+    let operation_view = seed::operation_vocabulary().canonicalized_prompt(normalized);
     let handlers = [
         (
             "handler:execution_failure",
@@ -727,11 +728,11 @@ fn append_prompt_relevants(prompt: &str, normalized: &str, relevants: &mut Vec<S
         ),
         (
             "handler:program_synthesis",
-            looks_like_program_synthesis(normalized),
+            looks_like_program_synthesis(&operation_view),
         ),
         (
             "handler:text_manipulation",
-            looks_like_text_manipulation(normalized),
+            looks_like_text_manipulation(&operation_view),
         ),
         (
             "handler:software_project",
@@ -769,23 +770,19 @@ fn looks_like_program_synthesis(normalized: &str) -> bool {
 }
 
 fn looks_like_text_manipulation(normalized: &str) -> bool {
-    let names_text_input = normalized.contains("this text")
-        || normalized.contains("the text")
-        || normalized.contains("these lines");
-    names_text_input
-        && (normalized.contains("uppercase")
-            || normalized.contains("upper case")
-            || normalized.contains("lowercase")
-            || normalized.contains("lower case")
-            || normalized.contains("replace")
-            || normalized.contains("extract")
-            || normalized.contains("count occurrences")
-            || normalized.contains("count unique words")
-            || normalized.contains("count distinct words")
-            || normalized.contains("deduplicate")
-            || normalized.contains("dedupe")
-            || normalized.contains("sort lines")
-            || normalized.contains("reverse words"))
+    [
+        "uppercase",
+        "lowercase",
+        "replace",
+        "extract email",
+        "count occurrences",
+        "count unique words",
+        "deduplicate lines",
+        "sort lines",
+        "reverse words",
+    ]
+    .iter()
+    .any(|operation| normalized.contains(operation))
 }
 
 fn has_any_token(normalized: &str, tokens: &[&str]) -> bool {

@@ -19,12 +19,13 @@ pub fn try_program_synthesis(
     normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
-    if !looks_like_python_function_request(prompt, normalized) {
+    let canonical = crate::seed::operation_vocabulary().canonicalized_prompt(normalized);
+    if !looks_like_python_function_request(prompt, &canonical) {
         return None;
     }
 
-    let function_name = extract_function_name(prompt, normalized)?;
-    let candidate = synthesize_python_candidate(prompt, normalized, &function_name)?;
+    let function_name = extract_function_name(prompt, &canonical)?;
+    let candidate = synthesize_python_candidate(prompt, &canonical, &function_name)?;
     log.append(
         "synthesis:spec",
         format!("language=python function={function_name}"),
@@ -81,6 +82,9 @@ fn looks_like_python_function_request(prompt: &str, normalized: &str) -> bool {
 }
 
 fn extract_function_name(prompt: &str, normalized: &str) -> Option<String> {
+    if let Some(name) = declared_function_name_from_signature(prompt) {
+        return Some(name);
+    }
     if normalized.contains("similar elements") {
         return Some(String::from("similar_elements"));
     }
@@ -93,6 +97,64 @@ fn extract_function_name(prompt: &str, normalized: &str) -> Option<String> {
         }
     }
     None
+}
+
+fn declared_function_name_from_signature(prompt: &str) -> Option<String> {
+    let bytes = prompt.as_bytes();
+    let mut index = 0;
+    while index < bytes.len() {
+        if !is_ascii_identifier_start(bytes[index]) {
+            index += 1;
+            continue;
+        }
+        let start = index;
+        index += 1;
+        while index < bytes.len() && is_ascii_identifier_continue(bytes[index]) {
+            index += 1;
+        }
+        let identifier = &prompt[start..index];
+        let mut cursor = index;
+        while cursor < bytes.len() && bytes[cursor].is_ascii_whitespace() {
+            cursor += 1;
+        }
+        if cursor < bytes.len()
+            && bytes[cursor] == b'('
+            && !is_reserved_python_identifier(identifier)
+        {
+            return Some(identifier.to_owned());
+        }
+    }
+    None
+}
+
+const fn is_ascii_identifier_start(byte: u8) -> bool {
+    byte == b'_' || byte.is_ascii_alphabetic()
+}
+
+const fn is_ascii_identifier_continue(byte: u8) -> bool {
+    byte == b'_' || byte.is_ascii_alphanumeric()
+}
+
+fn is_reserved_python_identifier(identifier: &str) -> bool {
+    matches!(
+        identifier,
+        "if" | "for"
+            | "while"
+            | "return"
+            | "def"
+            | "list"
+            | "tuple"
+            | "set"
+            | "dict"
+            | "str"
+            | "int"
+            | "float"
+            | "bool"
+            | "sum"
+            | "abs"
+            | "range"
+            | "print"
+    )
 }
 
 fn synthesize_python_candidate(
@@ -289,14 +351,56 @@ fn declared_signature(prompt: &str, function_name: &str) -> Option<String> {
     let trimmed = tail.trim_start();
     if trimmed.starts_with("->") {
         let return_start = end + (tail.len() - trimmed.len());
-        end = prompt[return_start..]
-            .char_indices()
-            .find_map(|(offset, character)| {
-                matches!(character, '.' | ';' | '\n').then_some(return_start + offset)
-            })
-            .unwrap_or(prompt.len());
+        end = return_annotation_end(prompt, return_start).unwrap_or(end);
     }
     Some(prompt[start..end].trim().trim_end_matches('.').to_owned())
+}
+
+fn return_annotation_end(prompt: &str, arrow_start: usize) -> Option<usize> {
+    let arrow_end = arrow_start + "->".len();
+    let mut seen_annotation = false;
+    let mut last_annotation_end = None;
+    let mut cursor = arrow_end;
+
+    while cursor < prompt.len() {
+        let character = prompt[cursor..].chars().next()?;
+        let next = cursor + character.len_utf8();
+        if character.is_whitespace() {
+            if seen_annotation
+                && next_non_whitespace(prompt, next).is_some_and(is_return_annotation_char)
+            {
+                cursor = next;
+                continue;
+            }
+            if seen_annotation {
+                break;
+            }
+            cursor = next;
+            continue;
+        }
+        if !is_return_annotation_char(character) {
+            break;
+        }
+        seen_annotation = true;
+        last_annotation_end = Some(next);
+        cursor = next;
+    }
+
+    last_annotation_end
+}
+
+fn next_non_whitespace(prompt: &str, start: usize) -> Option<char> {
+    prompt[start..]
+        .chars()
+        .find(|character| !character.is_whitespace())
+}
+
+const fn is_return_annotation_char(character: char) -> bool {
+    character.is_ascii_alphanumeric()
+        || matches!(
+            character,
+            '_' | '[' | ']' | '(' | ')' | ',' | '\'' | '"' | '|'
+        )
 }
 
 fn matching_close_paren(prompt: &str, open_index: usize) -> Option<usize> {
@@ -314,4 +418,40 @@ fn matching_close_paren(prompt: &str, open_index: usize) -> Option<usize> {
         }
     }
     None
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::event_log::EventLog;
+
+    use super::try_program_synthesis;
+
+    #[test]
+    fn program_synthesis_accepts_hindi_count_vowels_operation_verbs() {
+        let prompt = "Python फ़ंक्शन count_vowels(text: str) -> int लागू करें। पाठ में स्वरों की संख्या लौटाएँ।";
+        let mut log = EventLog::new();
+        let response = try_program_synthesis(prompt, &prompt.to_lowercase(), &mut log)
+            .expect("Hindi count_vowels prompt should synthesize a Python function");
+
+        assert_eq!(response.intent, "write_program");
+        assert!(response.answer.contains("def count_vowels"));
+        assert!(response
+            .links_notation
+            .contains("synthesis:verification tests_passed"));
+    }
+
+    #[test]
+    fn declared_signature_stops_at_supported_language_sentence_marks() {
+        let hindi = "Python फ़ंक्शन count_vowels(text: str) -> int लागू करें। पाठ में स्वरों की संख्या लौटाएँ।";
+        let chinese = "实现 Python 函数 count_vowels(text: str) -> int。返回文本中的元音数量。";
+
+        assert_eq!(
+            super::declared_signature(hindi, "count_vowels").as_deref(),
+            Some("count_vowels(text: str) -> int")
+        );
+        assert_eq!(
+            super::declared_signature(chinese, "count_vowels").as_deref(),
+            Some("count_vowels(text: str) -> int")
+        );
+    }
 }
