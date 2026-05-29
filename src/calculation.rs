@@ -65,7 +65,7 @@ pub struct PromptInterpretation {
 /// anything else falls through to the local fallback evaluator, which rejects
 /// it with a clean `Unparseable` error instead of crashing.
 ///
-/// Reported upstream: <https://github.com/link-assistant/calculator/issues>.
+/// Reported upstream: <https://github.com/link-assistant/calculator/issues/168>.
 fn has_bare_dot(expression: &str) -> bool {
     let bytes = expression.as_bytes();
     bytes.iter().enumerate().any(|(index, &byte)| {

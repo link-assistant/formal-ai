@@ -167,8 +167,8 @@ diagnostics envelope in the issue plus the e2e trace ("agent_2_dispatch_handler:
 tryArithmetic → calculation_error: unparseable") pinpointed the WASM evaluator
 without new tracing.
 
-### R8 — upstream report · **prepared** (see §5): the bare-dot OOM in
-`link-assistant/calculator` with a reproducer, workaround (the bare-dot guard in
+### R8 — upstream report · **done** ([link-assistant/calculator#168](https://github.com/link-assistant/calculator/issues/168)):
+the bare-dot OOM filed with a reproducer, the workaround (the bare-dot guard in
 `src/calculation.rs`), and a suggested fix.
 
 ### R9 — entire codebase · **done**: all four catalog mirrors, all three
@@ -182,7 +182,7 @@ arithmetic backends (CLI fallback, WASM, JS), plus the rebuilt WASM binary.
 
 | Component | Role here | Verdict |
 | --- | --- | --- |
-| [`link-calculator`](https://github.com/link-assistant/calculator) | The native CLI's primary arithmetic backend; already evaluates `55 * 8% of 500` = 2200. | Keep on the native path. **Not** available in the `no_std` WASM worker (no Cargo deps), so the shared evaluator had to learn `% of` itself. **Bug found & to be reported:** the input `2. 3` triggers an unbounded `decimal_places` allocation → OOM. Reproducer: feed `"2. 3"` to the rational parser. Workaround shipped here: the bare-dot guard in `src/calculation.rs` keeps such candidates away from `link-calculator`. Suggested fix: validate/cap `decimal_places` in `src/types/rational.rs`. |
+| [`link-calculator`](https://github.com/link-assistant/calculator) | The native CLI's primary arithmetic backend; already evaluates `55 * 8% of 500` = 2200. | Keep on the native path. **Not** available in the `no_std` WASM worker (no Cargo deps), so the shared evaluator had to learn `% of` itself. **Bug found & reported upstream — [link-assistant/calculator#168](https://github.com/link-assistant/calculator/issues/168):** the input `2. 3` triggers an unbounded `decimal_places` allocation (~2.25 GiB → `SIGABRT`, confirmed under a `ulimit -v` cap). Workaround shipped here: the bare-dot guard in `src/calculation.rs` keeps such candidates away from `link-calculator`. Suggested fix: validate/cap `decimal_places` in `from_decimal` (`src/types/rational.rs:134-138`). |
 | Hand-written recursive-descent evaluator (`src/arithmetic.rs`) | The `no_std` fallback shared by CLI, WASM and JS. | Extended with `rewrite_percent_of`; arbitrary-precision integers keep `N * M` exact before the `/ 100`. |
 | Word-problem / NLP-to-math libraries (e.g. `nltk`, `quantulum3`, `sympy.parsing`) | Could parse free-text math. | Rejected: heavyweight, non-deterministic, and impossible in a `no_std`/WASM target. A small deterministic normalizer matches the project's symbolic vision. |
 | Syntax-highlight / code-block presentation (issue #330) | Renders the generated program. | Reused as-is; this issue only needed the program to be *generated*. |
