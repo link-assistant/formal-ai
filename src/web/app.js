@@ -5945,6 +5945,19 @@ function App() {
         h(
           "a",
           {
+            className: "download-button",
+            "data-testid": "download-link",
+            "data-menu-priority": "5",
+            href: "download/",
+            title: t("titles.download"),
+            "aria-label": t("buttons.download"),
+          },
+          h("span", { className: "btn-icon", "aria-hidden": "true" }, "⬇️"),
+          h("span", { className: "btn-label" }, t("buttons.download")),
+        ),
+        h(
+          "a",
+          {
             className: "report-button",
             "data-testid": "report-issue",
             "data-menu-priority": "1",
