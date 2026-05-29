@@ -919,6 +919,37 @@ fn chinese_sum_to_ten_in_go_returns_program() {
 }
 
 #[test]
+fn english_recursive_fibonacci_in_python_returns_program() {
+    // Issue #334 step 1: the website demo asked to "Write a Python function
+    // that calculates the Fibonacci sequence recursively." Before the catalog
+    // gained a Fibonacci task this answered "I didn't understand you". The
+    // recursive template defines `fibonacci`, calls itself, and prints the 10th
+    // term (F(1)=F(2)=1 -> F(10)=55).
+    let response =
+        answer("Write a Python function that calculates the Fibonacci sequence recursively.");
+    assert_write_program_parameters(&response, "python", "fibonacci");
+    assert!(response.answer.contains("```python"));
+    assert!(
+        response.answer.contains("def fibonacci"),
+        "Python Fibonacci template should define a fibonacci function, got: {}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains("fibonacci(n - 1)")
+            && response.answer.contains("fibonacci(n - 2)"),
+        "Fibonacci template should recurse on n-1 and n-2, got: {}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains("How it works:"),
+        "Fibonacci answer should explain how it works, got: {}",
+        response.answer
+    );
+    // The verified deterministic output for the 10th term is surfaced.
+    assert!(response.answer.contains("55"));
+}
+
+#[test]
 fn fizzbuzz_supported_for_every_popular_language() {
     for (language, slug, fence) in POPULAR_LANGUAGES {
         let response = answer(&format!("Write me a FizzBuzz program in {language}"));

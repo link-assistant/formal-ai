@@ -1,7 +1,7 @@
 write_program
   intent "write_program"
   parameters "language, task"
-  tasks "hello_world|count_to_three|list_files|list_files_arg|fizzbuzz|factorial|reverse_string|sum_to_ten"
+  tasks "hello_world|count_to_three|list_files|list_files_arg|fizzbuzz|factorial|reverse_string|sum_to_ten|fibonacci"
   languages "rust|python|javascript|typescript|go|c|cpp|java|csharp|ruby"
   source "local public-domain seed templates"
 
@@ -43,6 +43,11 @@ task_reverse_string
 task_sum_to_ten
   task "sum_to_ten"
   aliases "sum of 1 to 10, sum from 1 to 10, sum the numbers 1 to 10, sum of numbers from 1 to 10, sum 1 to 10, sum to ten, сумма от 1 до 10, сумма чисел от 1 до 10, сумма чисел от одного до десяти, 1 से 10 तक का योग, 1 से 10 तक योग, 1到10的和, 1到10求和, 求1到10的和"
+  output "55"
+
+task_fibonacci
+  task "fibonacci"
+  aliases "fibonacci sequence recursively, fibonacci sequence, recursive fibonacci, fibonacci recursively, fibonacci function, fibonacci numbers, fibonacci number, 10th fibonacci number, the 10th fibonacci number, tenth fibonacci number, nth fibonacci number, последовательность фибоначчи, числа фибоначчи, число фибоначчи, рекурсивный фибоначчи, фибоначчи рекурсивно, 10-е число фибоначчи, десятое число фибоначчи, फ़िबोनाची अनुक्रम, फिबोनाची अनुक्रम, फ़िबोनाची संख्या, फिबोनाची संख्या, 斐波那契数列, 斐波那契序列, 斐波那契数, 递归斐波那契"
   output "55"
 
 template_hello_world_rust
@@ -576,3 +581,73 @@ template_sum_to_ten_ruby
   task "sum_to_ten"
   code_fence "ruby"
   code 'total = (1..10).sum\nputs total'
+
+template_fibonacci_rust
+  intent "write_program"
+  language "rust"
+  task "fibonacci"
+  code_fence "rust"
+  code 'fn fibonacci(n: u64) -> u64 {\n    if n <= 2 {\n        1\n    } else {\n        fibonacci(n - 1) + fibonacci(n - 2)\n    }\n}\n\nfn main() {\n    println!("{}", fibonacci(10));\n}'
+
+template_fibonacci_python
+  intent "write_program"
+  language "python"
+  task "fibonacci"
+  code_fence "python"
+  code 'def fibonacci(n):\n    if n <= 2:\n        return 1\n    return fibonacci(n - 1) + fibonacci(n - 2)\n\n\nprint(fibonacci(10))'
+
+template_fibonacci_javascript
+  intent "write_program"
+  language "javascript"
+  task "fibonacci"
+  code_fence "javascript"
+  code 'function fibonacci(n) {\n  if (n <= 2) {\n    return 1;\n  }\n  return fibonacci(n - 1) + fibonacci(n - 2);\n}\n\nconsole.log(fibonacci(10));'
+
+template_fibonacci_typescript
+  intent "write_program"
+  language "typescript"
+  task "fibonacci"
+  code_fence "typescript"
+  code 'function fibonacci(n: number): number {\n  if (n <= 2) {\n    return 1;\n  }\n  return fibonacci(n - 1) + fibonacci(n - 2);\n}\n\nconsole.log(fibonacci(10));'
+
+template_fibonacci_go
+  intent "write_program"
+  language "go"
+  task "fibonacci"
+  code_fence "go"
+  code 'package main\n\nimport "fmt"\n\nfunc fibonacci(n int) int {\n    if n <= 2 {\n        return 1\n    }\n    return fibonacci(n-1) + fibonacci(n-2)\n}\n\nfunc main() {\n    fmt.Println(fibonacci(10))\n}'
+
+template_fibonacci_c
+  intent "write_program"
+  language "c"
+  task "fibonacci"
+  code_fence "c"
+  code '#include <stdio.h>\n\nunsigned long long fibonacci(int n) {\n    if (n <= 2) {\n        return 1;\n    }\n    return fibonacci(n - 1) + fibonacci(n - 2);\n}\n\nint main(void) {\n    printf("%llu\\n", fibonacci(10));\n    return 0;\n}'
+
+template_fibonacci_cpp
+  intent "write_program"
+  language "cpp"
+  task "fibonacci"
+  code_fence "cpp"
+  code '#include <iostream>\n\nunsigned long long fibonacci(int n) {\n    if (n <= 2) {\n        return 1;\n    }\n    return fibonacci(n - 1) + fibonacci(n - 2);\n}\n\nint main() {\n    std::cout << fibonacci(10) << \x27\\n\x27;\n}'
+
+template_fibonacci_java
+  intent "write_program"
+  language "java"
+  task "fibonacci"
+  code_fence "java"
+  code 'public class Main {\n    static long fibonacci(int n) {\n        if (n <= 2) {\n            return 1;\n        }\n        return fibonacci(n - 1) + fibonacci(n - 2);\n    }\n\n    public static void main(String[] args) {\n        System.out.println(fibonacci(10));\n    }\n}'
+
+template_fibonacci_csharp
+  intent "write_program"
+  language "csharp"
+  task "fibonacci"
+  code_fence "csharp"
+  code 'using System;\n\nclass Program {\n    static long Fibonacci(int n) {\n        if (n <= 2) {\n            return 1;\n        }\n        return Fibonacci(n - 1) + Fibonacci(n - 2);\n    }\n\n    static void Main() {\n        Console.WriteLine(Fibonacci(10));\n    }\n}'
+
+template_fibonacci_ruby
+  intent "write_program"
+  language "ruby"
+  task "fibonacci"
+  code_fence "ruby"
+  code 'def fibonacci(n)\n  return 1 if n <= 2\n\n  fibonacci(n - 1) + fibonacci(n - 2)\nend\n\nputs fibonacci(10)'

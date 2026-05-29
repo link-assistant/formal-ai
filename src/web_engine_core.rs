@@ -360,6 +360,25 @@ mod tests {
     }
 
     #[test]
+    fn evaluate_arithmetic_handles_percent_of_word_problems() {
+        // Issue #334 step 2: the WASM worker must evaluate the reduced
+        // "55 * 8% of 500" word problem to 2200 (8% of 500 = 40, 55 * 40).
+        assert_eq!(
+            evaluate_arithmetic_expression("55 * 8% of 500"),
+            Ok("2200".to_string())
+        );
+        assert_eq!(
+            evaluate_arithmetic_expression("8% of 500"),
+            Ok("40".to_string())
+        );
+        // A bare `%` not followed by `of` still means modulo.
+        assert_eq!(
+            evaluate_arithmetic_expression("10 % 3"),
+            Ok("1".to_string())
+        );
+    }
+
+    #[test]
     fn evaluate_arithmetic_returns_localizable_errors() {
         assert!(evaluate_arithmetic_expression("1 / 0").is_err());
         assert!(evaluate_arithmetic_expression("").is_err());

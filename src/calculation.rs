@@ -5,6 +5,7 @@
 //! local arithmetic evaluator for syntax the upstream crate does not support yet.
 
 use crate::arithmetic::{evaluate_fallback_formatted, ArithmeticError};
+use crate::calculation_word_problem::normalize_word_problem;
 use crate::fuzzy::is_close_token_typo;
 
 /// Engine that produced a calculation result.
@@ -50,9 +51,42 @@ pub struct PromptInterpretation {
     pub corrected: String,
 }
 
+/// Issue #334: `link-calculator` (≤ 0.17.2) attempts a multi-gigabyte
+/// allocation and aborts the whole process when handed an expression that
+/// contains a *bare* period — a `.` that is not a decimal point flanked by
+/// digits on both sides. The prompt "What is 2+2. What is 3+3." reduces to the
+/// expression `2+2. 3+3` after the "what is" wrapper is stripped, and the
+/// minimal trigger is as small as `2. 3`. A Rust allocation failure aborts via
+/// `SIGABRT`/`SIGKILL` and cannot be caught with `catch_unwind`, so the only
+/// safe option is to never hand such an expression to the upstream parser.
+///
+/// Genuine decimals (`3.14`), thousands/date dot groups (`1.000.000`,
+/// `2024.01.01`) keep every `.` between two digits and stay on the fast path;
+/// anything else falls through to the local fallback evaluator, which rejects
+/// it with a clean `Unparseable` error instead of crashing.
+///
+/// Reported upstream: <https://github.com/link-assistant/calculator/issues/168>.
+fn has_bare_dot(expression: &str) -> bool {
+    let bytes = expression.as_bytes();
+    bytes.iter().enumerate().any(|(index, &byte)| {
+        if byte != b'.' {
+            return false;
+        }
+        let prev_is_digit = index
+            .checked_sub(1)
+            .and_then(|i| bytes.get(i))
+            .is_some_and(u8::is_ascii_digit);
+        let next_is_digit = bytes.get(index + 1).is_some_and(u8::is_ascii_digit);
+        !(prev_is_digit && next_is_digit)
+    })
+}
+
 fn evaluate_with_link_calculator(
     expression: &str,
 ) -> Result<CalculationEvaluation, ArithmeticError> {
+    if has_bare_dot(expression) {
+        return Err(ArithmeticError::Unparseable);
+    }
     let mut calculator = link_calculator::Calculator::new();
     let (_expression, value, steps, lino) = calculator
         .calculate_with_value(expression)
@@ -737,10 +771,26 @@ pub fn calculation_expression_candidates(prompt: &str) -> Vec<CalculationCandida
     let mut candidates = Vec::new();
     if !stripped.is_empty() && has_calculation_signal(&stripped, explicit) {
         candidates.push(CalculationCandidate {
-            expression: stripped,
+            expression: stripped.clone(),
             explicit,
-            interpretations,
+            interpretations: interpretations.clone(),
         });
+    }
+    // Issue #334 step 2: rewrite a natural-language word problem ("the 10th
+    // Fibonacci number and multiply it by 8% of 500. Show me the code ...") into
+    // a calculator expression and offer it as an additional candidate.
+    if let Some(normalized) = normalize_word_problem(&stripped) {
+        if has_calculation_signal(&normalized, explicit)
+            && !candidates
+                .iter()
+                .any(|candidate| candidate.expression == normalized)
+        {
+            candidates.push(CalculationCandidate {
+                expression: normalized,
+                explicit,
+                interpretations,
+            });
+        }
     }
     if trimmed
         != candidates
@@ -756,4 +806,37 @@ pub fn calculation_expression_candidates(prompt: &str) -> Vec<CalculationCandida
         });
     }
     candidates
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn bare_dot_is_detected_only_for_non_decimal_periods() {
+        // Issue #334 OOM triggers: a `.` that is not flanked by digits.
+        for unsafe_expr in ["2. 3", "2+2. 3+3", "5. 5", ".5", "5.", "2 .3", "a.b"] {
+            assert!(
+                has_bare_dot(unsafe_expr),
+                "{unsafe_expr:?} contains a bare dot and must be rejected"
+            );
+        }
+        // Genuine decimals / dot-grouped digits stay on the link-calculator path.
+        for safe_expr in ["3.14", "3.14 + 2.5", "1.000.000", "2024.01.01", "8% of 500"] {
+            assert!(
+                !has_bare_dot(safe_expr),
+                "{safe_expr:?} is a valid decimal expression and must stay safe"
+            );
+        }
+    }
+
+    #[test]
+    fn link_calculator_path_is_skipped_for_bare_dot_expressions() {
+        // Before the guard this aborted the process with a multi-GB allocation.
+        assert!(evaluate_with_link_calculator("2. 3").is_err());
+        assert!(evaluate_with_link_calculator("2+2. 3+3").is_err());
+        // Real decimals still reach the upstream calculator and evaluate.
+        let evaluation = evaluate_with_link_calculator("3.14 + 2.5").expect("decimal evaluates");
+        assert_eq!(evaluation.engine, CalculationEngine::LinkCalculator);
+    }
 }

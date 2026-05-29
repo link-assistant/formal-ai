@@ -169,6 +169,25 @@ fn program_explanation(task_slug: &str, language: Language) -> &'static str {
             "The program adds together the integers from 1 to 10 (1 + 2 + … + 10) and prints \
              the total, 55."
         }
+        ("fibonacci", Language::Russian) => {
+            "Программа определяет рекурсивную функцию `fibonacci`: F(1) и F(2) равны 1, а каждый \
+             следующий член равен сумме двух предыдущих (F(n) = F(n-1) + F(n-2)). Она вычисляет \
+             10-й член последовательности и печатает результат — 55."
+        }
+        ("fibonacci", Language::Hindi) => {
+            "प्रोग्राम एक पुनरावर्ती `fibonacci` फ़ंक्शन परिभाषित करता है: F(1) और F(2) का मान 1 है, और हर \
+             अगला पद पिछले दो पदों के योग के बराबर होता है (F(n) = F(n-1) + F(n-2))। यह अनुक्रम का 10वाँ \
+             पद निकालता है और परिणाम 55 छापता है।"
+        }
+        ("fibonacci", Language::Chinese) => {
+            "程序定义了一个递归的 `fibonacci` 函数：F(1) 和 F(2) 等于 1，之后每一项等于前两项之和\
+             （F(n) = F(n-1) + F(n-2)）。它计算数列的第 10 项并打印结果 55。"
+        }
+        ("fibonacci", _) => {
+            "The program defines a recursive `fibonacci` function: F(1) and F(2) equal 1, and \
+             every later term is the sum of the two preceding terms (F(n) = F(n-1) + F(n-2)). It \
+             computes the 10th term of the sequence and prints the result, 55."
+        }
         // Neutral fallback for any task that has no bespoke explanation yet; it
         // avoids claiming behaviour the program may not have.
         (_, Language::Russian) => {
