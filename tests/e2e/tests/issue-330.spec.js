@@ -103,4 +103,50 @@ test.describe('Issue #330 — code highlighting and copy buttons', () => {
       ).toBeVisible();
     }
   });
+
+  // The highlighting + copy chrome is language-agnostic: a Rust `list_files`
+  // program asked for in any supported UI language must render the same
+  // `.code-block` shell with a highlighted, copyable `code.hljs`. This pins the
+  // behavior for every supported language (en, ru, hi, zh), not just Russian.
+  test('highlights and offers copy across every supported language', async ({ page }) => {
+    const cases = [
+      {
+        language: 'en',
+        prompt: 'Write me a Rust program that lists files in the current directory',
+      },
+      {
+        language: 'ru',
+        prompt:
+          'Напиши мне программу на Rust, которая выдаёт список файлов в текущей директории',
+      },
+      {
+        language: 'hi',
+        prompt: 'Rust में वर्तमान निर्देशिका की फ़ाइलों की सूची देने वाला प्रोग्राम लिखो',
+      },
+      {
+        language: 'zh',
+        prompt: '用 Rust 写一个列出当前目录中的文件的程序',
+      },
+    ];
+
+    for (const { language, prompt } of cases) {
+      const message = await sendPrompt(page, prompt);
+
+      const codeBlock = message.locator('.markdown-body .code-block').first();
+      await expect(codeBlock, language).toBeVisible();
+      await expect(codeBlock.locator('.code-block-lang'), language).toHaveText('rust');
+
+      const code = codeBlock.locator('code.hljs');
+      await expect(code, language).toBeVisible();
+      await expect(code.locator('.hljs-keyword').first(), language).toBeVisible();
+
+      const copyButton = codeBlock.locator('[data-testid="code-copy-button"]');
+      await copyButton.click();
+      await expect(copyButton, language).toHaveAttribute('data-copied', 'true');
+
+      const clipboard = await page.evaluate(() => navigator.clipboard.readText());
+      expect(clipboard, language).toContain('fn main');
+      expect(clipboard, language).not.toContain('```');
+    }
+  });
 });
