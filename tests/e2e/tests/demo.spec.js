@@ -536,6 +536,36 @@ test.describe('formal-ai demo UI', () => {
     await expect(lastMsg).toContainText('Execution status:');
   });
 
+  // Issue #330 (R11): the catalog supports a wider range of coding tasks than
+  // hello-world, and the JS worker mirrors the Rust engine — including the R9
+  // novice guidance. A FizzBuzz request must return the code, its verified
+  // output, and the localized "How it works" / "How to test" sections.
+  test('sending a FizzBuzz request returns code, output and novice guidance', async ({
+    page,
+  }) => {
+    await switchToManualMode(page);
+
+    const input = page.locator('[data-testid="chat-composer-input"]');
+    await input.fill('Write me a FizzBuzz program in Rust');
+
+    const messages = page.locator('[data-testid="chat-message"]');
+    const initialCount = await messages.count();
+
+    const sendBtn = page.locator('[data-testid="chat-composer-submit"]');
+    await sendBtn.click();
+
+    await expect(messages).toHaveCount(initialCount + 2, { timeout: 15_000 });
+
+    const lastMsg = messages.last();
+    await expect(lastMsg).toHaveClass(/assistant/);
+    await expect(lastMsg).toContainText('Rust FizzBuzz');
+    // The verified deterministic output is shown for the novice to compare.
+    await expect(lastMsg).toContainText('FizzBuzz');
+    // R9 novice guidance mirrored from the Rust engine.
+    await expect(lastMsg).toContainText('How it works:');
+    await expect(lastMsg).toContainText('How to test it yourself:');
+  });
+
   test('pressing Enter submits the message', async ({ page }) => {
     await switchToManualMode(page);
 

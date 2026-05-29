@@ -645,3 +645,325 @@ fn english_follow_up_modification_emits_substitution_plan_trace() {
         response.evidence_links
     );
 }
+
+// ---------------------------------------------------------------------------
+// Issue #330: a code answer must teach a novice — every generated program is
+// accompanied by a plain-language "how it works" explanation and step-by-step
+// testing instructions, localized for every supported response language. When
+// the dialog already walked the user through running code, a follow-up edit
+// omits the verbose setup steps and shows a concise "test it the same way"
+// note instead.
+// ---------------------------------------------------------------------------
+
+#[test]
+fn english_code_answer_explains_and_instructs() {
+    let response = answer("Write me a Rust program that lists files in the current directory");
+    assert_write_program_parameters(&response, "rust", "list_files");
+    let text = &response.answer;
+    assert!(
+        text.contains("How it works:"),
+        "English code answer should explain how it works, got: {text}"
+    );
+    assert!(
+        text.contains("sorts the list alphabetically"),
+        "English explanation should describe the algorithm, got: {text}"
+    );
+    assert!(
+        text.contains("How to test it yourself:"),
+        "English code answer should give test instructions, got: {text}"
+    );
+    assert!(
+        text.contains("Install the Rust toolchain from https://rustup.rs"),
+        "English instructions should include the toolchain setup, got: {text}"
+    );
+    assert!(
+        text.contains("Save the code above to a file named `main.rs`"),
+        "English instructions should tell the user where to save the code, got: {text}"
+    );
+    assert!(
+        text.contains("Run it: `./main`"),
+        "English instructions should include the run command, got: {text}"
+    );
+}
+
+#[test]
+fn russian_code_answer_explains_and_instructs() {
+    let response =
+        answer("Напиши мне программу на Rust, которая выдаёт список файлов в текущей директории");
+    assert_write_program_parameters(&response, "rust", "list_files");
+    let text = &response.answer;
+    assert!(
+        text.contains("Как это работает:"),
+        "Russian code answer should explain how it works, got: {text}"
+    );
+    assert!(
+        text.contains("Как проверить это самостоятельно:"),
+        "Russian code answer should give test instructions, got: {text}"
+    );
+    assert!(
+        text.contains("Сохраните приведённый выше код в файл `main.rs`"),
+        "Russian instructions should tell the user where to save the code, got: {text}"
+    );
+    assert!(
+        text.contains("Запустите программу: `./main`"),
+        "Russian instructions should include the run command, got: {text}"
+    );
+}
+
+#[test]
+fn hindi_code_answer_explains_and_instructs() {
+    let response = answer("Rust में फ़ाइलों की सूची दिखाने वाला प्रोग्राम लिखो");
+    assert_write_program_parameters(&response, "rust", "list_files");
+    let text = &response.answer;
+    assert!(
+        text.contains("यह कैसे काम करता है:"),
+        "Hindi code answer should explain how it works, got: {text}"
+    );
+    assert!(
+        text.contains("इसे स्वयं कैसे जाँचें:"),
+        "Hindi code answer should give test instructions, got: {text}"
+    );
+    assert!(
+        text.contains("`main.rs`"),
+        "Hindi instructions should reference the file name, got: {text}"
+    );
+}
+
+#[test]
+fn chinese_code_answer_explains_and_instructs() {
+    let response = answer("用 Rust 编写一个列出当前目录中文件的程序");
+    assert_write_program_parameters(&response, "rust", "list_files");
+    let text = &response.answer;
+    assert!(
+        text.contains("工作原理："),
+        "Chinese code answer should explain how it works, got: {text}"
+    );
+    assert!(
+        text.contains("如何自行测试："),
+        "Chinese code answer should give test instructions, got: {text}"
+    );
+    assert!(
+        text.contains("`main.rs`"),
+        "Chinese instructions should reference the file name, got: {text}"
+    );
+}
+
+#[test]
+fn unavailable_language_explains_and_instructs() {
+    // Ruby's toolchain is "Unavailable" in this runtime, but a novice still
+    // needs the explanation and the setup/run steps.
+    let response = answer("Write me a Ruby program that lists files in the current directory");
+    assert_write_program_parameters(&response, "ruby", "list_files");
+    let text = &response.answer;
+    assert!(
+        text.contains("How it works:"),
+        "Ruby code answer should explain how it works, got: {text}"
+    );
+    assert!(
+        text.contains("Install Ruby from https://www.ruby-lang.org/en/downloads/"),
+        "Ruby instructions should include the toolchain setup, got: {text}"
+    );
+    assert!(
+        text.contains("Save the code above to a file named `main.rb`"),
+        "Ruby instructions should tell the user where to save the code, got: {text}"
+    );
+    assert!(
+        text.contains("Run it: `ruby main.rb`"),
+        "Ruby instructions should include the run command, got: {text}"
+    );
+}
+
+#[test]
+fn follow_up_code_edit_omits_setup_steps() {
+    let solver = UniversalSolver::default();
+    let first = "Напиши мне программу на Rust, которая выдаёт список файлов в текущей директории";
+    let plan = solver.solve(first);
+    let history = [
+        ConversationTurn::user(first),
+        ConversationTurn::assistant(plan.answer),
+    ];
+    let response = solver.solve_with_history(
+        "Сделай так, чтобы программа принимала путь как аргумент",
+        &history,
+    );
+    let text = &response.answer;
+    // The verbose setup walkthrough is replaced by a concise reminder.
+    assert!(
+        !text.contains("Как проверить это самостоятельно:"),
+        "follow-up edit should omit the verbose setup steps, got: {text}"
+    );
+    assert!(
+        text.contains("Проверьте обновлённую программу так же, как и раньше:"),
+        "follow-up edit should keep a concise test reminder, got: {text}"
+    );
+    assert!(
+        text.contains("`./main`"),
+        "follow-up reminder should still include the run command, got: {text}"
+    );
+    // The explanation of the (now changed) program is still present.
+    assert!(
+        text.contains("Как это работает:"),
+        "follow-up edit should still explain how the updated program works, got: {text}"
+    );
+}
+
+#[test]
+fn first_turn_without_prior_code_keeps_full_instructions() {
+    // A first turn that happens to carry unrelated history (no prior code
+    // block) must still receive the full novice instructions.
+    let solver = UniversalSolver::default();
+    let history = [
+        ConversationTurn::user("Hello"),
+        ConversationTurn::assistant("Hi! How can I help?".to_owned()),
+    ];
+    let response = solver.solve_with_history(
+        "Write me a Rust program that lists files in the current directory",
+        &history,
+    );
+    assert!(
+        response.answer.contains("How to test it yourself:"),
+        "a first code answer should include full instructions, got: {}",
+        response.answer
+    );
+}
+
+// ---------------------------------------------------------------------------
+// Issue #330: the catalog must support a wider range of coding tasks than just
+// hello-world. The classic deterministic exercises below (FizzBuzz, factorial,
+// string reversal, sum 1..=10) each resolve through the parameterized
+// write_program intent, carry a verified output, and are reachable in every
+// supported prompt language (English, Russian, Hindi, Chinese). The JavaScript
+// worker (`src/web/formal_ai_worker.js`) mirrors the same catalog, so the
+// per-language coverage here keeps the Rust and JS engines in lockstep.
+// ---------------------------------------------------------------------------
+
+#[test]
+fn english_fizzbuzz_in_rust_returns_program() {
+    let response = answer("Write me a FizzBuzz program in Rust");
+    assert_write_program_parameters(&response, "rust", "fizzbuzz");
+    assert!(response.answer.contains("```rust"));
+    assert!(response.answer.contains("% 15 == 0"));
+    // The verified deterministic output is surfaced for the novice to compare.
+    assert!(response.answer.contains("FizzBuzz"));
+    assert!(
+        response.answer.contains("How it works:"),
+        "FizzBuzz answer should explain how it works, got: {}",
+        response.answer
+    );
+    assert!(
+        !response.answer.contains("Hello, world!"),
+        "FizzBuzz must not be routed through the legacy hello-world shortcut: {}",
+        response.answer
+    );
+}
+
+#[test]
+fn russian_factorial_of_five_in_python_returns_program() {
+    // Russian: "factorial of 5 in Python" (питоне = Python).
+    let response = answer("Напиши факториал 5 на питоне");
+    assert_write_program_parameters(&response, "python", "factorial");
+    assert!(response.answer.contains("```python"));
+    assert!(
+        response.answer.contains("range(1, 6)"),
+        "factorial template should multiply 1..=5, got: {}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains("Как это работает:"),
+        "Russian factorial answer should explain how it works, got: {}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains("факториал 5"),
+        "Russian explanation should describe the factorial, got: {}",
+        response.answer
+    );
+}
+
+#[test]
+fn hindi_reverse_string_in_rust_returns_program() {
+    // Hindi: "reverse the string, write in Rust".
+    let response = answer("Rust में स्ट्रिंग को उलटें");
+    assert_write_program_parameters(&response, "rust", "reverse_string");
+    assert!(response.answer.contains("```rust"));
+    assert!(
+        response.answer.contains(".rev()"),
+        "Rust reverse template should reverse the characters, got: {}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains("यह कैसे काम करता है:"),
+        "Hindi reverse answer should explain how it works, got: {}",
+        response.answer
+    );
+}
+
+#[test]
+fn chinese_sum_to_ten_in_go_returns_program() {
+    // Chinese: "write a program in Go that sums 1 to 10".
+    let response = answer("用 Go 写 1到10的和 的程序");
+    assert_write_program_parameters(&response, "go", "sum_to_ten");
+    assert!(response.answer.contains("```go"));
+    assert!(
+        response.answer.contains("total"),
+        "Go sum template should accumulate a total, got: {}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains("工作原理："),
+        "Chinese sum answer should explain how it works, got: {}",
+        response.answer
+    );
+    // The verified deterministic output (55) is shown for comparison.
+    assert!(response.answer.contains("55"));
+}
+
+#[test]
+fn fizzbuzz_supported_for_every_popular_language() {
+    for (language, slug, fence) in POPULAR_LANGUAGES {
+        let response = answer(&format!("Write me a FizzBuzz program in {language}"));
+        assert_write_program_parameters(&response, slug, "fizzbuzz");
+        assert!(
+            response.answer.contains(fence),
+            "missing FizzBuzz template for {language}: {}",
+            response.answer
+        );
+    }
+}
+
+#[test]
+fn new_coding_tasks_are_each_supported_in_a_popular_language() {
+    // factorial, reverse_string and sum_to_ten round out the wider-range catalog
+    // alongside FizzBuzz; each resolves with its verified deterministic output.
+    let cases: &[(&str, &str, &str)] = &[
+        (
+            "Write me a Python program for the factorial of 5",
+            "factorial",
+            "120",
+        ),
+        (
+            "Write me a Python program to reverse the string hello",
+            "reverse_string",
+            "olleh",
+        ),
+        (
+            "Write me a Python program for the sum from 1 to 10",
+            "sum_to_ten",
+            "55",
+        ),
+    ];
+    for (prompt, task, expected_output) in cases {
+        let response = answer(prompt);
+        assert_write_program_parameters(&response, "python", task);
+        assert!(
+            response.answer.contains("```python"),
+            "{task} answer should include a Python code block, got: {}",
+            response.answer
+        );
+        assert!(
+            response.answer.contains(expected_output),
+            "{task} answer should surface the verified output {expected_output}, got: {}",
+            response.answer
+        );
+    }
+}

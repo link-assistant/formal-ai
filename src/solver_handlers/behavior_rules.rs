@@ -196,7 +196,7 @@ fn behavior_rule_records() -> Vec<BehaviorRuleRecord> {
             supported_program_tasks()
         ),
         response: "Returns a minimal program from the parameterized template catalog.".to_owned(),
-        source: "data/seed/hello-world-programs.lino + src/engine_hello_world.rs".to_owned(),
+        source: "data/seed/hello-world-programs.lino + src/coding/catalog/".to_owned(),
         when_then: "When the user requests a program with a supported `language` and `task`, \
              resolve those parameters and render the matching template through the single \
              `write_program` intent."

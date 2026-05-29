@@ -5,9 +5,9 @@
 //! bypass the solver — it delegates to [`crate::solver::UniversalSolver::solve`]
 //! so every request walks the same 11-step loop documented in `VISION.md`.
 
-pub(crate) use crate::engine_hello_world::{
-    program_language_by_alias, program_spec, supported_program_languages, supported_program_tasks,
-    ExecutionStatus, ProgramExecution, ProgramSpec, PROGRAM_LANGUAGES, PROGRAM_TEMPLATES,
+pub(crate) use crate::coding::{
+    program_language_by_alias, program_spec, program_template_count, supported_program_languages,
+    supported_program_tasks, ExecutionStatus, ProgramExecution, ProgramSpec, PROGRAM_LANGUAGES,
     WRITE_PROGRAM_INTENT,
 };
 
@@ -15,6 +15,7 @@ use std::sync::OnceLock;
 
 use serde::{Deserialize, Serialize};
 
+use crate::coding::guidance::{program_explanation_section, program_test_instructions};
 use crate::engine_assistant_name::{
     assistant_name_answer, chinese_assistant_name_answer, hindi_assistant_name_answer,
     russian_assistant_name_answer, ASSISTANT_NAME_EXAMPLES,
@@ -667,7 +668,7 @@ impl SelectedRule {
             Self::CourtesyResponse => String::from(courtesy_response_answer()),
             Self::Identity => String::from(identity_answer()),
             Self::AssistantName => String::from(assistant_name_answer()),
-            Self::WriteProgram(spec) => write_program_answer(*spec, Language::English),
+            Self::WriteProgram(spec) => write_program_answer(*spec, Language::English, false),
             Self::UnsupportedWriteProgram { task, language } => unsupported_write_program_answer(
                 task.as_deref(),
                 language.as_deref(),
@@ -686,6 +687,7 @@ pub(crate) fn language_aware_answer_for(
     rule: &SelectedRule,
     language: Language,
     prompt: &str,
+    prior_code_response: bool,
 ) -> String {
     match (rule, language) {
         (SelectedRule::Greeting, Language::Russian) => String::from(russian_greeting_answer()),
@@ -718,7 +720,9 @@ pub(crate) fn language_aware_answer_for(
         (SelectedRule::AssistantName, Language::Chinese) => {
             String::from(chinese_assistant_name_answer())
         }
-        (SelectedRule::WriteProgram(spec), language) => write_program_answer(*spec, language),
+        (SelectedRule::WriteProgram(spec), language) => {
+            write_program_answer(*spec, language, prior_code_response)
+        }
         (
             SelectedRule::UnsupportedWriteProgram {
                 task,
@@ -815,7 +819,7 @@ pub(crate) fn answer_links_notation(
 fn format_write_program_rule_record() -> String {
     let sample = program_spec("hello_world", "rust").map_or_else(
         || String::from("Write-program template catalog is unavailable."),
-        |spec| write_program_answer(spec, Language::English),
+        |spec| write_program_answer(spec, Language::English, false),
     );
     format_lino_record(
         "rule_write_program",
@@ -824,7 +828,7 @@ fn format_write_program_rule_record() -> String {
             ("parameters", String::from("language, task")),
             ("languages", supported_program_languages()),
             ("tasks", supported_program_tasks()),
-            ("template_count", PROGRAM_TEMPLATES.len().to_string()),
+            ("template_count", program_template_count().to_string()),
             ("response_link", String::from("response:write_program")),
             ("answer", sample),
             (
@@ -848,18 +852,31 @@ fn program_template_sources() -> String {
     sources.join(", ")
 }
 
-fn write_program_answer(spec: ProgramSpec, language: Language) -> String {
+fn write_program_answer(
+    spec: ProgramSpec,
+    language: Language,
+    prior_code_response: bool,
+) -> String {
     // Issue #324: the natural-language framing around the generated program is
     // localized to the detected (or preferred) response language so a Russian,
     // Hindi, or Chinese request no longer receives an all-English reply. The
     // code itself and the literal shell commands stay in their canonical form
     // because they are the requested artefact, not prose.
+    //
+    // Issue #330: a code answer must teach a novice — so the program is always
+    // accompanied by a plain-language explanation of *how it works* and
+    // step-by-step instructions for testing it. When the dialog already walked
+    // the user through running code (`prior_code_response`), the verbose setup
+    // steps are omitted and replaced by a short "test it the same way" note so
+    // follow-up edits stay concise.
     format!(
-        "{}\n\n```{}\n{}\n```\n\n{}",
+        "{}\n\n```{}\n{}\n```\n\n{}\n\n{}\n\n{}",
         write_program_intro(spec.language.name, spec.task.label, language),
         spec.language.code_fence,
         spec.template.code,
-        execution_report(&spec.language.execution, spec.task.output, language)
+        execution_report(&spec.language.execution, spec.task.output, language),
+        program_explanation_section(spec, language),
+        program_test_instructions(spec, language, prior_code_response),
     )
 }
 

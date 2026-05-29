@@ -1876,6 +1876,134 @@ function markdownHtml(value) {
   return { __html: escapeHtml(text).replaceAll("\n", "<br>") };
 }
 
+// Issue #330: copy helper shared by the per-code-block and per-message copy
+// buttons. Prefers the async Clipboard API and falls back to a hidden textarea
+// + execCommand so the feature still works in the Playwright/file:// contexts
+// where the Clipboard API may be unavailable or permission-gated.
+async function copyTextToClipboard(text) {
+  const value = String(text ?? "");
+  if (
+    typeof navigator !== "undefined" &&
+    navigator.clipboard &&
+    typeof navigator.clipboard.writeText === "function"
+  ) {
+    try {
+      await navigator.clipboard.writeText(value);
+      return true;
+    } catch (_error) {
+      // Fall through to the legacy path below.
+    }
+  }
+  if (typeof document === "undefined") return false;
+  try {
+    const textarea = document.createElement("textarea");
+    textarea.value = value;
+    textarea.setAttribute("readonly", "");
+    textarea.style.position = "fixed";
+    textarea.style.top = "-1000px";
+    textarea.style.opacity = "0";
+    document.body.appendChild(textarea);
+    textarea.select();
+    const ok = document.execCommand("copy");
+    document.body.removeChild(textarea);
+    return ok;
+  } catch (_error) {
+    return false;
+  }
+}
+
+// Flash a transient "Copied!" label on a button, then restore the original.
+function flashCopied(button, copiedLabel, restoreLabel) {
+  if (!button) return;
+  button.classList.add("is-copied");
+  button.setAttribute("data-copied", "true");
+  const labelNode = button.querySelector(".copy-button-label") || button;
+  labelNode.textContent = copiedLabel;
+  if (button._copyResetTimer) {
+    clearTimeout(button._copyResetTimer);
+  }
+  button._copyResetTimer = setTimeout(() => {
+    button.classList.remove("is-copied");
+    button.removeAttribute("data-copied");
+    labelNode.textContent = restoreLabel;
+    button._copyResetTimer = null;
+  }, 1600);
+}
+
+// Issue #330: progressively enhance the code fences rendered by marked. Each
+// `<pre><code class="language-xxx">` is syntax-highlighted in place and wrapped
+// in a `.code-block` shell carrying a language label and a per-block copy
+// button. The function is idempotent so it can run on every effect pass without
+// double-wrapping existing blocks.
+function enhanceCodeBlocks(root, t) {
+  if (!root || typeof document === "undefined") return;
+  const highlighter =
+    typeof window !== "undefined" ? window.FormalAiHighlight : null;
+  const copyLabel = t ? t("message.copyCode") : "Copy";
+  const copiedLabel = t ? t("message.copyCodeDone") : "Copied!";
+  const copyTitle = t ? t("message.copyCodeTitle") : copyLabel;
+
+  const blocks = root.querySelectorAll("pre > code");
+  blocks.forEach((code) => {
+    const pre = code.parentElement;
+    if (!pre || pre.parentElement?.classList.contains("code-block")) {
+      return; // already enhanced
+    }
+
+    const rawCode = code.textContent ?? "";
+    const className = code.getAttribute("class") || "";
+    const match = /language-([\w+#-]+)/i.exec(className);
+    const requested = match ? match[1] : "";
+
+    if (highlighter && typeof highlighter.highlight === "function") {
+      const { value, language } = highlighter.highlight(rawCode, requested);
+      code.innerHTML = value;
+      code.classList.add("hljs");
+      if (language) {
+        code.setAttribute("data-language", language);
+      }
+    }
+
+    const wrapper = document.createElement("div");
+    wrapper.className = "code-block";
+
+    const header = document.createElement("div");
+    header.className = "code-block-header";
+
+    const langLabel = document.createElement("span");
+    langLabel.className = "code-block-lang";
+    const resolved =
+      highlighter && typeof highlighter.resolveLanguage === "function"
+        ? highlighter.resolveLanguage(requested)
+        : null;
+    langLabel.textContent = (resolved || requested || "text").toLowerCase();
+
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "code-copy-button";
+    button.setAttribute("data-testid", "code-copy-button");
+    button.setAttribute("aria-label", copyTitle);
+    button.setAttribute("title", copyTitle);
+    const buttonLabel = document.createElement("span");
+    buttonLabel.className = "copy-button-label";
+    buttonLabel.textContent = copyLabel;
+    button.appendChild(buttonLabel);
+    button.addEventListener("click", async () => {
+      const ok = await copyTextToClipboard(rawCode);
+      if (ok) {
+        flashCopied(button, copiedLabel, copyLabel);
+      }
+    });
+
+    header.appendChild(langLabel);
+    header.appendChild(button);
+
+    pre.parentElement.insertBefore(wrapper, pre);
+    wrapper.appendChild(header);
+    wrapper.appendChild(pre);
+  });
+}
+
 function normalizePrompt(prompt) {
   return String(prompt || "")
     .toLowerCase()
@@ -3742,6 +3870,9 @@ function Message({ message, diagnosticsMode, reportIssueUrl, t }) {
       ? t("buttons.reportMissingRule")
       : t("buttons.reportIssue");
   const [iframeFullscreen, setIframeFullscreen] = useState(false);
+  // Issue #330: progressive syntax highlighting + per-code-block copy buttons.
+  const markdownRef = useRef(null);
+  const [markdownCopied, setMarkdownCopied] = useState(false);
 
   useEffect(() => {
     if (!iframeFullscreen) {
@@ -3755,6 +3886,20 @@ function Message({ message, diagnosticsMode, reportIssueUrl, t }) {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [iframeFullscreen]);
+
+  // Highlight and wrap code fences after marked renders the message body. The
+  // enhancement is idempotent, so re-running it on content changes is safe.
+  useEffect(() => {
+    enhanceCodeBlocks(markdownRef.current, t);
+  }, [message.content, t]);
+
+  const handleCopyMarkdown = useCallback(async () => {
+    const ok = await copyTextToClipboard(message.content);
+    if (ok) {
+      setMarkdownCopied(true);
+      setTimeout(() => setMarkdownCopied(false), 1600);
+    }
+  }, [message.content]);
 
   return h(
     "article",
@@ -3779,8 +3924,26 @@ function Message({ message, diagnosticsMode, reportIssueUrl, t }) {
         diagnosticsMode && message.intent
           ? h("span", { className: "intent" }, `intent:${message.intent}`)
           : null,
+        h(
+          "button",
+          {
+            type: "button",
+            className: `message-copy-button${markdownCopied ? " is-copied" : ""}`,
+            "data-testid": "copy-markdown-button",
+            "data-copied": markdownCopied ? "true" : null,
+            onClick: handleCopyMarkdown,
+            "aria-label": t("message.copyMarkdownTitle"),
+            title: t("message.copyMarkdownTitle"),
+          },
+          h(
+            "span",
+            { className: "copy-button-label" },
+            markdownCopied ? t("message.copyMarkdownDone") : t("message.copyMarkdown"),
+          ),
+        ),
       ),
       h("div", {
+        ref: markdownRef,
         className: "markdown-body",
         dangerouslySetInnerHTML: markdownHtml(message.content),
       }),
