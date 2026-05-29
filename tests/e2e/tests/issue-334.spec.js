@@ -98,4 +98,52 @@ test.describe('Issue #334 — Fibonacci agent plan', () => {
     await expect(last).not.toContainText("I didn't understand you");
     await expect(last).not.toContainText('unparseable');
   });
+
+  // Issue #334 was reported with the UI in Russian (`ru`/`ru-RU`), but the
+  // recursive-Fibonacci task and its aliases live in the catalog for every
+  // supported language. A "Write a Python Fibonacci function recursively"
+  // prompt asked for in any supported UI language must resolve to the same
+  // verified program (F(10) = 55), not "I didn't understand you". This pins
+  // the fix for every supported language (en, ru, hi, zh), not just Russian.
+  test('generates the recursive Fibonacci program across every supported language', async ({
+    page,
+  }) => {
+    const cases = [
+      {
+        language: 'en',
+        prompt:
+          'Write a Python function that calculates the Fibonacci sequence recursively.',
+      },
+      {
+        language: 'ru',
+        prompt:
+          'Напиши на Python функцию, которая вычисляет последовательность Фибоначчи рекурсивно.',
+      },
+      {
+        language: 'hi',
+        prompt:
+          'Python में फ़िबोनाची अनुक्रम की पुनरावर्ती गणना करने वाला फ़ंक्शन लिखो।',
+      },
+      {
+        language: 'zh',
+        prompt: '用 Python 写一个递归计算斐波那契数列的函数。',
+      },
+    ];
+
+    for (const { language, prompt } of cases) {
+      const message = await sendPrompt(page, prompt);
+
+      const codeBlock = message.locator('.markdown-body .code-block').first();
+      await expect(codeBlock, language).toBeVisible();
+      await expect(codeBlock.locator('.code-block-lang'), language).toHaveText('python');
+
+      const code = codeBlock.locator('code.hljs');
+      await expect(code, language).toContainText('def fibonacci');
+      await expect(code, language).toContainText('fibonacci(n - 1)');
+
+      // The verified run prints F(10) = 55, regardless of UI language.
+      await expect(message, language).toContainText('55');
+      await expect(message, language).not.toContainText("I didn't understand you");
+    }
+  });
 });
