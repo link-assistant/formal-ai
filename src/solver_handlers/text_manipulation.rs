@@ -62,32 +62,50 @@ struct TextRequest {
 
 impl TextRequest {
     fn parse(prompt: &str, normalized: &str) -> Option<Self> {
+        // The operation a prompt requests is recognised by canonicalising it
+        // against the shared multilingual vocabulary
+        // (`data/seed/operation-vocabulary.lino`), so a request triggers
+        // equally in any supported language rather than matching hardcoded
+        // English literals. Operands (quoted segments, text after a colon)
+        // are language-neutral and parsed directly from the raw prompt.
+        //
+        // The two-operand operations (replace, count occurrences) only claim
+        // the prompt when the required quoted operands are present; otherwise
+        // an ambiguous verb (for example a word that overlaps "replace" in
+        // one language) falls through to the simple-operation pass instead of
+        // failing the whole handler.
+        let vocabulary = crate::seed::operation_vocabulary();
         let quoted = quoted_segments(prompt);
-        let mut operations = Vec::new();
-        let input = if normalized.contains("replace") {
-            let from = quoted.first()?.clone();
-            let to = quoted.get(1)?.clone();
-            operations.push(TextOperation::Replace { from, to });
-            quoted
+
+        if vocabulary.matches("replace", normalized) && quoted.len() >= 2 {
+            let from = quoted[0].clone();
+            let to = quoted[1].clone();
+            let input = quoted
                 .get(2)
                 .cloned()
-                .or_else(|| text_after_colon(prompt))?
-        } else if normalized.contains("count occurrences") {
-            let needle = quoted.first()?.clone();
-            operations.push(TextOperation::CountOccurrences { needle });
-            quoted
+                .or_else(|| text_after_colon(prompt))?;
+            return Self::build(input, vec![TextOperation::Replace { from, to }]);
+        }
+
+        if vocabulary.matches("count_occurrences", normalized) && !quoted.is_empty() {
+            let needle = quoted[0].clone();
+            let input = quoted
                 .get(1)
                 .cloned()
-                .or_else(|| text_after_colon(prompt))?
-        } else {
-            let input = quoted
-                .first()
-                .cloned()
                 .or_else(|| text_after_colon(prompt))?;
-            append_simple_operations(normalized, &mut operations);
-            input
-        };
+            return Self::build(input, vec![TextOperation::CountOccurrences { needle }]);
+        }
 
+        let input = quoted
+            .first()
+            .cloned()
+            .or_else(|| text_after_colon(prompt))?;
+        let mut operations = Vec::new();
+        append_simple_operations(&vocabulary, normalized, &mut operations);
+        Self::build(input, operations)
+    }
+
+    fn build(input: String, operations: Vec<TextOperation>) -> Option<Self> {
         if operations.is_empty() || input.is_empty() {
             return None;
         }
@@ -95,34 +113,30 @@ impl TextRequest {
     }
 }
 
-fn append_simple_operations(normalized: &str, operations: &mut Vec<TextOperation>) {
-    if normalized.contains("lowercase") || normalized.contains("lower case") {
+fn append_simple_operations(
+    vocabulary: &crate::seed::OperationVocabulary,
+    normalized: &str,
+    operations: &mut Vec<TextOperation>,
+) {
+    if vocabulary.matches("lowercase", normalized) {
         operations.push(TextOperation::Lowercase);
-    } else if normalized.contains("uppercase") || normalized.contains("upper case") {
+    } else if vocabulary.matches("uppercase", normalized) {
         operations.push(TextOperation::Uppercase);
     }
 
-    if normalized.contains("reverse words") || normalized.contains("reverse the words") {
+    if vocabulary.matches("reverse_words", normalized) {
         operations.push(TextOperation::ReverseWords);
     }
-    if normalized.contains("extract")
-        && (normalized.contains("email") || normalized.contains("e-mail"))
-    {
+    if vocabulary.matches("extract_email", normalized) {
         operations.push(TextOperation::ExtractEmails);
     }
-    if normalized.contains("deduplicate lines")
-        || normalized.contains("dedupe lines")
-        || (normalized.contains("deduplicate") && normalized.contains("line"))
-    {
+    if vocabulary.matches("deduplicate_lines", normalized) {
         operations.push(TextOperation::DeduplicateLines);
     }
-    if normalized.contains("sort lines")
-        || normalized.contains("sort the lines")
-        || (normalized.contains("sort") && normalized.contains("line"))
-    {
+    if vocabulary.matches("sort_lines", normalized) {
         operations.push(TextOperation::SortLines);
     }
-    if normalized.contains("count unique words") || normalized.contains("count distinct words") {
+    if vocabulary.matches("count_unique_words", normalized) {
         operations.push(TextOperation::CountUniqueWords);
     }
 }

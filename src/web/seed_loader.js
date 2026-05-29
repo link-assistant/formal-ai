@@ -33,6 +33,7 @@
     "seed/language-detection.lino",
     "seed/prompt-patterns.lino",
     "seed/intent-routing.lino",
+    "seed/operation-vocabulary.lino",
     "seed/greetings.lino",
     "seed/identity.lino",
     "seed/hello-world-programs.lino",
