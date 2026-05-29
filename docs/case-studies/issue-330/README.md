@@ -232,3 +232,90 @@ Sources:
 - `npx playwright test --config tests/e2e/playwright.local.config.js issue-330` →
   3/3 pass.
 - Visual evidence: [`docs/screenshots/issue-330-message.png`](../../screenshots/issue-330-message.png).
+
+---
+
+## 8. Follow-up from the PR review — teach the novice (R9)
+
+After the presentation-layer work landed, the reviewer expanded the scope in a
+PR comment. The concrete, directly-actionable part:
+
+> We need to give all the exact instructions on how to test the code snippet.
+> If the message contains code, by default we should assume a novice user. We
+> should also explain how the code works. So the code, the explanation, and the
+> instructions on how to test it should all be provided when working with code.
+> If we already provided instructions earlier in the dialog, we can omit them
+> when only code changes are requested.
+
+### R9 — Code answers must explain and instruct · **done**
+
+The `write_program` answer in `src/engine.rs` now renders **three** parts
+instead of one, all localized for the four supported response languages
+(en/ru/hi/zh):
+
+1. **The code** — the fenced program (unchanged) plus the existing localized
+   execution report.
+2. **"How it works"** — `program_explanation_section` / `program_explanation`
+   give a plain-language description of the algorithm for each task
+   (`hello_world`, `count_to_three`, `list_files`, `list_files_arg`). This is
+   *reasoned from the task*, not memorized per sample: every language's template
+   implements the same algorithm, so one localized explanation per task covers
+   all of them (satisfies R6's "general, not hard-coded" requirement).
+3. **"How to test it yourself"** — `program_test_instructions` emits numbered,
+   novice-friendly steps: install the toolchain (`setup_hint`), save the snippet
+   to the conventional file name (`save_as`), compile it (when the language has a
+   `check_command`), run it (`run_command`), and compare the output against the
+   expected-output section shown above.
+
+Two new fields back this on the per-language catalog in
+`src/engine_hello_world.rs`: `save_as` (e.g. `main.rs`, `Main.java`,
+`Program.cs`) and `setup_hint` (a short, novice-friendly pointer to the
+toolchain installer). They are populated for all 11 catalog languages.
+
+**History-aware brevity.** `src/solver.rs` inspects the conversation history: if
+an earlier *assistant* turn already presented a fenced code block, the answer is
+built with `prior_code_response = true` and the verbose setup steps collapse to
+a single concise note — e.g. *"Test the updated program the same way as before:
+save the code to `main.rs` and run `…` again."* This implements the reviewer's
+"if we already provided instructions earlier, we can omit them when code changes
+are requested." It is detected from the dialog, not hard-coded to a turn number.
+
+Seven unit tests in `tests/unit/specification/code_generation.rs` pin the
+behavior: each of en/ru/hi/zh asserts both the explanation heading and the
+test-instruction steps appear; one covers an unavailable-language path (Ruby);
+one asserts a follow-up edit omits the setup steps; and one asserts the first
+turn keeps the full instructions.
+
+### Files changed (R9)
+
+| File | Change |
+| --- | --- |
+| `src/engine.rs` | `write_program_answer` gains a `prior_code_response` flag and appends `program_explanation_section` + `program_test_instructions`; new localized explanation/instruction builders. |
+| `src/engine_hello_world.rs` | `save_as` + `setup_hint` fields added to `ProgramLanguage` and populated for all 11 languages. |
+| `src/solver.rs` | Detects a prior assistant code block in `history` and threads `prior_code_response` into the answer builder. |
+| `tests/unit/specification/code_generation.rs` | 7 new tests across all languages + history-aware behavior. |
+
+---
+
+## 9. Deferred large-vision items from the PR comment (honest scope note)
+
+The same PR comment also sketched a much larger, multi-month architectural
+vision. These are **not** implemented in PR #331 — recording them here honestly
+rather than claiming false completeness. They belong to dedicated issues:
+
+- **Reasoning expressed as link-substitution rules over `doublets-rs`**, with a
+  Turing-complete substitution-rule layer convertible to Rust / JS / WASM.
+- **Isolated JavaScript evaluation** of generated snippets in the browser.
+- **In-browser Rust → WASM compilation** to actually run generated Rust.
+- **A Linux VM in the browser** via `link-foundation/rust-web-box`.
+- **Dockerized execution** via `link-foundation/box` / `link-foundation/start`
+  with detached containers, snapshots, command replay, and zip-archive
+  restoration by default.
+- **Actually executing the generated tests** to display real (not described)
+  output, plus integration tests and coding / Q&A benchmarks that measure
+  *reasoning* rather than memorization.
+
+The R9 work above deliberately scopes to what is testable and directly serves a
+novice today — *code + explanation + test instructions* — and leaves the
+execution-sandbox vision to follow-up issues so each can be designed and
+reviewed on its own merits.

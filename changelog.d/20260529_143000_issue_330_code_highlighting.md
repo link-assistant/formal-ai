@@ -9,3 +9,5 @@ bump: minor
 - Localized strings for the new copy buttons in all four locales (en/ru/zh/hi).
 - End-to-end Playwright tests proving highlighting renders and both copy buttons work against a freshly built `src/web`.
 - Runnable example (`examples/issue-330-code-highlighting/`) with run/test instructions and a deep case study in `docs/case-studies/issue-330/`.
+- Code answers now teach a novice: every generated program is followed by a localized "How it works" explanation and step-by-step "How to test it yourself" instructions (install the toolchain, save the file, compile, run, compare the output) in en/ru/hi/zh (issue #330).
+- When the dialog already walked the user through running code, a follow-up code edit omits the verbose setup steps and shows a concise "test it the same way" note instead, detected from prior assistant turns in the conversation history.
