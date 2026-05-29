@@ -8,6 +8,7 @@ pub(crate) mod concepts;
 pub mod engine;
 pub(crate) mod engine_assistant_name;
 pub(crate) mod engine_hello_world;
+pub(crate) mod engine_program_guidance;
 pub mod event_log;
 pub(crate) mod fuzzy;
 pub mod github_logs;
