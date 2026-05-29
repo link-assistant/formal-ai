@@ -5,10 +5,15 @@ built. It was introduced for issue
 [#244](https://github.com/link-assistant/formal-ai/issues/244) and refreshed on
 2026-05-26 in three passes (after the first planning batch E1-E14 merged to
 `main`, after the follow-up batch E15-E20 merged, and again when the
-reasoning-focused batch E21-E27 was opened) and on 2026-05-27 for a fourth pass:
-the E21-E27 reasoning batch is now also closed and merged, so this file records
-the next gap — **generality of the synthesis step**, surfaced by the imported
-industry-benchmark suite passing 0/5.
+reasoning-focused batch E21-E27 was opened), on 2026-05-27 for a fourth pass
+(the E21-E27 reasoning batch closed, exposing the synthesis-generality gap), and
+on 2026-05-29 for a fifth pass: the synthesis batch **E28-E32** is now also
+closed and merged, the synthesis step **derives** answers instead of seeding
+them, and the imported industry-benchmark suite passes **10/10** with a ratchet
+floor. This pass records the next gap — **cross-runtime and cross-language
+parity** (the Rust core's newest reasoning capabilities are not yet mirrored in
+the JavaScript browser worker, and several handlers trigger only on English
+keywords).
 
 It complements the existing docs rather than replacing them:
 
@@ -54,15 +59,26 @@ The post-merge audit found:
   program` is one parametric intent, substitution rules (`src/substitution.rs`)
   run over link CRUD, and a permissive industry-benchmark slice is imported
   (`data/benchmarks/industry-suite.lino`).
-- The 2026-05-27 fourth-pass audit found the next gap is the **generality of the
+- The 2026-05-27 fourth-pass audit found the next gap was the **generality of the
   synthesis step itself**. The universal 11-step loop is the main path for every
   prompt (verified in `src/solver.rs::solve_with_history_probability_store_and_intent_cache`),
-  but the candidate-synthesis step still resolves answers from seeded handlers
-  rather than deriving them. The imported industry benchmark suite makes this
-  concrete: it currently passes **0/5** — the solver cannot yet write the
-  HumanEval/MBPP Python functions or compute the GSM8K (`18`), MATH (`11`), and
-  BIG-bench object-counting (`3`) answers. Closing that gap is the next batch
-  **E28-E32** (see the Next Planning Batch table).
+  but the candidate-synthesis step still resolved answers from seeded handlers
+  rather than deriving them. That defined the **E28-E32** synthesis batch.
+- The 2026-05-29 fifth-pass audit found the **E28-E32** synthesis batch
+  ([#313](https://github.com/link-assistant/formal-ai/issues/313)-[#317](https://github.com/link-assistant/formal-ai/issues/317))
+  is **now closed** by merged PRs #319-#323 (see the Completed Planning Batch
+  table). The synthesis step now derives candidates by composing decomposed
+  sub-results over the links network, arithmetic/word-problem and counting
+  answers are computed, Python functions are synthesized from spec + tests and
+  verified in the bounded agent workspace, and the benchmark suite grew from a
+  5-case to a 10-case slice that passes **10/10** with a `minimum_pass_count`
+  ratchet (verified by `cargo test issue_304_benchmark_suite_reports_pass_fail_counts`
+  → `passed=10 failed=0 total=10 minimum_pass_count=10`). The next gap is
+  **cross-runtime and cross-language parity**: the JavaScript browser worker
+  (`src/web/formal_ai_worker.js`) has not yet absorbed the E28-E31 reasoning
+  capabilities present in the Rust core, and the program-synthesis and
+  text-manipulation handlers trigger only on English keywords. Closing that gap
+  is the next batch (see the Next Planning Batch table).
 
 The raw audit data is preserved under
 `docs/case-studies/issue-244/raw-data/`:
@@ -108,9 +124,9 @@ Status legend:
 | 21 | Parametric intents instead of one intent per language | Built | `SelectedRule::WriteProgram` with `program_parameter:language` / `program_parameter:task`, active `code_generation` specs | Implemented by E23 [#300](https://github.com/link-assistant/formal-ai/issues/300) (PR #307). |
 | 22 | Substitution-rule handlers over link CRUD | Built | `src/substitution.rs`, active `substitution_rules` specs (`replace x y`, `when n do m` over link CRUD) | Implemented by E24 [#301](https://github.com/link-assistant/formal-ai/issues/301) (PR #308). |
 | 23 | Natural-language access to memory, APIs, and code execution | Built | `src/solver_handlers/`, active `natural_language_access` specs; permission-gated NL → query/call/execute paths | Implemented by E25 [#302](https://github.com/link-assistant/formal-ai/issues/302) (PR #309). |
-| 24 | General code-modifying / executing agent (not a memorizer) | Partial | `src/agent.rs` bounded/isolated workspace runs allowlisted commands, active `agent_isolation` specs | Workspace execution built by E26 [#303](https://github.com/link-assistant/formal-ai/issues/303) (PR #310). The agent can run a verified candidate, but does not yet **synthesize** a novel program from scratch — see pillar 26. |
-| 25 | Measured against industry benchmark datasets | Built | `data/benchmarks/industry-suite.lino`, `tests/unit/specification/benchmarks.rs`; HumanEval/MBPP/GSM8K/MATH/BIG-bench slice runs deterministically in CI | Imported by E27 [#304](https://github.com/link-assistant/formal-ai/issues/304) (PR #311). The suite currently reports **0/5 passing**, which defines pillar 26. |
-| 26 | General synthesis: derive solutions for the benchmark domains instead of seeding them | Open | The benchmark suite passes 0/5; `record_candidates` resolves answers from seeded handlers, so general program synthesis, math word problems, and general counting are not yet solved | Make the universal loop's synthesis step general in E28-E32 ([#313](https://github.com/link-assistant/formal-ai/issues/313)-[#317](https://github.com/link-assistant/formal-ai/issues/317)); success = benchmark suite passes increase without per-case memorization. |
+| 24 | General code-modifying / executing agent (not a memorizer) | Built | `src/agent.rs` bounded/isolated workspace runs allowlisted commands; `src/solver_handlers/program_synthesis.rs` synthesizes a Python function from the spec, then verifies it by executing the assertions in the workspace | Workspace execution built by E26 [#303](https://github.com/link-assistant/formal-ai/issues/303) (PR #310); spec-driven synthesis + verification added by E30 [#315](https://github.com/link-assistant/formal-ai/issues/315) (PR #321). Triggering is still English-keyword gated — see the Next Planning Batch (language parity). |
+| 25 | Measured against industry benchmark datasets | Built | `data/benchmarks/industry-suite.lino`, `tests/unit/specification/benchmarks.rs`; HumanEval/MBPP/GSM8K/MATH/BIG-bench slice runs deterministically in CI | Imported by E27 [#304](https://github.com/link-assistant/formal-ai/issues/304) (PR #311); grown to a 10-case slice and gated on a rising pass count by E32 [#317](https://github.com/link-assistant/formal-ai/issues/317) (PR #323). The suite now reports **10/10 passing** with a `minimum_pass_count` ratchet so progress cannot silently regress. |
+| 26 | General synthesis: derive solutions for the benchmark domains instead of seeding them | Built | The benchmark suite passes 10/10; `record_candidates` composes decomposed sub-results over the links network (E28), arithmetic/word-problem and counting answers are computed (E29), and Python functions are synthesized and verified (E30) rather than keyed on the prompt | Made general by E28-E32 ([#313](https://github.com/link-assistant/formal-ai/issues/313)-[#317](https://github.com/link-assistant/formal-ai/issues/317)) (PRs #319-#323). Held-out paraphrased variants guard against per-case memorization. |
 
 ## Completed Planning Batch
 
@@ -143,6 +159,11 @@ Status legend:
 | E25 | [#302](https://github.com/link-assistant/formal-ai/issues/302) | [#309](https://github.com/link-assistant/formal-ai/pull/309) | Gate natural-language access to memory, APIs, and code execution. |
 | E26 | [#303](https://github.com/link-assistant/formal-ai/issues/303) | [#310](https://github.com/link-assistant/formal-ai/pull/310) | Add the bounded, isolated agent workspace that runs allowlisted commands. |
 | E27 | [#304](https://github.com/link-assistant/formal-ai/issues/304) | [#311](https://github.com/link-assistant/formal-ai/pull/311) | Import a permissive industry-benchmark slice (HumanEval/MBPP/GSM8K/MATH/BIG-bench). |
+| E28 | [#313](https://github.com/link-assistant/formal-ai/issues/313) | [#319](https://github.com/link-assistant/formal-ai/pull/319) | Derive synthesis candidates by composing decomposed sub-results over the links network instead of returning seeded answers. |
+| E29 | [#314](https://github.com/link-assistant/formal-ai/issues/314) | [#320](https://github.com/link-assistant/formal-ai/pull/320) | Compute math/word-problem and counting answers (GSM8K, MATH, BIG-bench) deterministically rather than seeding them. |
+| E30 | [#315](https://github.com/link-assistant/formal-ai/issues/315) | [#321](https://github.com/link-assistant/formal-ai/pull/321) | Synthesize HumanEval/MBPP Python functions from spec + tests and verify them in the bounded agent workspace. |
+| E31 | [#316](https://github.com/link-assistant/formal-ai/issues/316) | [#322](https://github.com/link-assistant/formal-ai/pull/322) | Generalize text manipulation over arbitrary user input (transform/extract/count/rewrite). |
+| E32 | [#317](https://github.com/link-assistant/formal-ai/issues/317) | [#323](https://github.com/link-assistant/formal-ai/pull/323) | Grow the benchmark suite to 10 cases and gate progress on a rising pass-count ratchet with held-out variants. |
 
 Issues [#262](https://github.com/link-assistant/formal-ai/issues/262) and
 [#272](https://github.com/link-assistant/formal-ai/issues/272) were closed by
@@ -152,33 +173,38 @@ the E1-E14 vision batch.
 
 ## Next Planning Batch
 
-The fourth-pass 2026-05-27 audit (issue #244 feedback) found the remaining gap is
-**the generality of the synthesis step**, not storage, surfaces, routing, or
-reasoning scaffolding. The universal 11-step loop is the main path for every
-prompt and the E21-E27 batch made it formalize intents, reason under unknowns,
-and run substitution rules and a bounded agent. But the synthesis step
-(`record_candidates`) still resolves answers from seeded handlers, so the
-imported industry benchmark suite passes **0/5**: the solver cannot yet write the
-HumanEval/MBPP Python functions or compute the GSM8K (`18`), MATH (`11`), and
-BIG-bench object-counting (`3`) answers.
+The fifth-pass 2026-05-29 audit (issue #244 PR feedback) found that storage,
+surfaces, routing, reasoning scaffolding, and synthesis generality are all built
+and the benchmark suite passes 10/10. The remaining gap is **parity** — the
+explicit ask that "all Rust and JavaScript logic are in sync" and "all languages
+are supported equally". Two concrete sub-gaps:
 
-The E28-E32 batch makes the synthesis step **derive** solutions over the links
-network instead of looking them up, one benchmark domain at a time, with the
-benchmark pass count as the objective metric. It is ordered foundation-first —
-the general link-native synthesis substrate and arithmetic evaluation come
-before the program-synthesis and natural-language reasoning that build on them.
-Each issue must move benchmark cases from failing to passing **without
-per-case memorization** (no answer string keyed on the prompt). Each issue lists
-its code-grounded acceptance criteria; the deep per-requirement plan lives in
+1. **Cross-language parity.** Several reasoning handlers trigger only on English
+   keywords even though the agent advertises `en|ru|hi|zh`
+   (`data/seed/agent-info.lino`). The operands these handlers consume are already
+   language-neutral (quoted segments, text after a colon, code identifiers), so
+   only the trigger/operation **verbs** need localizing. This batch closes the
+   gap the same way the rest of the system already works: a single shared,
+   data-driven multilingual vocabulary (mirroring `data/seed/intent-routing.lino`)
+   rather than per-handler, per-language literals — keeping it "general, not
+   specific". A first increment lands in this PR (E33); the broader sweep across
+   every remaining English-only handler is tracked.
+2. **Cross-runtime parity.** The JavaScript browser worker
+   (`src/web/formal_ai_worker.js`) has not yet absorbed the E28-E31 reasoning
+   capabilities (general link-native synthesis, numeric/word-problem reasoning,
+   program synthesis, generalized text manipulation) that now exist in the Rust
+   core. This mirrors the precedent of E19 [#282](https://github.com/link-assistant/formal-ai/issues/282),
+   which was a dedicated epic for browser-worker parity.
+
+Each issue lists code-grounded acceptance criteria and must preserve the
+anti-memorization rule (no answer string keyed on the prompt) and the benchmark
+ratchet. The deep per-requirement plan lives in
 `docs/case-studies/issue-244/proposed-issues.md`.
 
 | Epic | Issue | Vision gap | Code anchor it must replace/extend |
 | --- | --- | --- | --- |
-| E28 | [#313](https://github.com/link-assistant/formal-ai/issues/313) | General link-native synthesis substrate: `record_candidates` derives candidates by composing decomposed sub-results over the links network instead of returning seeded answers | `src/solver.rs::record_candidates` / `src/solver_helpers.rs` |
-| E29 | [#314](https://github.com/link-assistant/formal-ai/issues/314) | Deterministic arithmetic/word-problem reasoning so GSM8K (`18`) and MATH (`11`) are computed, not seeded | `src/proof_engine/` + math handlers; BIG-bench counting (`3`) as general counting |
-| E30 | [#315](https://github.com/link-assistant/formal-ai/issues/315) | General program synthesis from spec+tests so HumanEval/MBPP functions are derived and verified by the agent, not memorized | `SelectedRule::WriteProgram` seeds + `src/agent.rs` execution |
-| E31 | [#316](https://github.com/link-assistant/formal-ai/issues/316) | General text-manipulation over arbitrary user input (transform/extract/count/rewrite) routed through substitution rules | `src/substitution.rs` + text handlers |
-| E32 | [#317](https://github.com/link-assistant/formal-ai/issues/317) | Grow the benchmark suite past the 5-case slice and gate progress on rising pass counts (anti-memorization held-out checks) | `data/benchmarks/industry-suite.lino` + `tests/unit/specification/benchmarks.rs` |
+| E33 | [#326](https://github.com/link-assistant/formal-ai/issues/326) | Universal multilingual operation vocabulary: every reasoning handler triggers equally in `en\|ru\|hi\|zh` via one shared data-driven vocabulary, not per-handler English literals | `data/seed/operation-vocabulary.lino` + `src/solver_handlers/` (text manipulation, program synthesis, counting) |
+| E34 | [#327](https://github.com/link-assistant/formal-ai/issues/327) | Cross-runtime parity: the JS browser worker derives synthesis/numeric/program/text answers exactly as the Rust core does (E28-E31), verified by shared parity tests | `src/web/formal_ai_worker.js` mirroring `src/solver.rs` + `src/solver_handlers/` |
 
 ## Verification Contract
 

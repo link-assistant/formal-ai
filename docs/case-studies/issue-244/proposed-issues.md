@@ -10,10 +10,13 @@ post-implementation audit opened a narrower follow-up batch (E15-E20) for the
 requirements that remained partial after those merges, and that batch is now
 closed too. A third-pass audit (acting on issue #244 feedback) opened the
 reasoning-focused batch E21-E27 — **now also closed** by merged PRs #305-#311.
-A fourth-pass audit (2026-05-27) found the remaining gap is the **generality of
-the synthesis step** (the imported industry benchmark suite passes 0/5) and
-opened the synthesis batch E28-E32, whose full bodies are at the end of this
-file.
+A fourth-pass audit (2026-05-27) found the remaining gap was the **generality of
+the synthesis step** and opened the synthesis batch E28-E32 — **now also closed**
+by merged PRs #319-#323; the synthesis step derives answers and the benchmark
+suite passes 10/10. A fifth-pass audit (2026-05-29, PR #245 feedback) found the
+remaining gap is **parity** ("all Rust and JavaScript logic in sync", "all
+languages supported equally") and opened the parity batch E33-E34. The full
+bodies of E28-E32 and E33-E34 are at the end of this file.
 
 **Opened issues (2026-05-25):** E1 → [#246](https://github.com/link-assistant/formal-ai/issues/246),
 E2 → [#247](https://github.com/link-assistant/formal-ai/issues/247),
@@ -930,20 +933,24 @@ E27 as the measurement corpus):
 
 ---
 
-## Synthesis Batch (E28-E32)
+## Synthesis Batch (E28-E32) — CLOSED (PRs #319-#323)
 
 The fourth-pass 2026-05-27 audit, acting on issue #244 feedback, found that the
 universal 11-step loop is the main path for every prompt and the E21-E27 batch
 made it formalize intents, reason under unknowns, run substitution rules, and
 drive a bounded agent — but the synthesis step (`record_candidates`) still
-resolves answers from seeded handlers rather than deriving them. The imported
-industry benchmark suite makes this concrete: it passes **0/5**. These five epics
-make the synthesis step **derive** solutions over the links network, one
+resolved answers from seeded handlers rather than deriving them. The imported
+industry benchmark suite made this concrete: it passed **0/5**. These five epics
+made the synthesis step **derive** solutions over the links network, one
 benchmark domain at a time, with the benchmark pass count as the objective metric
 and an anti-memorization rule binding every epic (no answer string keyed on the
 prompt; paraphrased/renumbered held-out variants must pass only via derivation).
 They are ordered foundation-first: E28 is the general synthesis substrate that
 E29-E31 build on, and E32 grows and ratchets the measurement corpus.
+
+**Outcome (2026-05-29):** the batch is merged (PRs #319-#323). The synthesis step
+now derives answers and the benchmark suite grew to a 10-case slice that passes
+**10/10** with a `minimum_pass_count` ratchet.
 
 The full bodies opened in the repository are reproduced below.
 
@@ -1091,3 +1098,99 @@ measurement they depend on):
 | `humaneval_0_has_close_elements`, `mbpp_2_similar_elements` | E30 |
 | general text manipulation on arbitrary input (issue #244 requirement, not yet a benchmark case) | E31 |
 | grow the suite past 5 cases + ratchet pass count (anti-memorization) | E32 |
+
+---
+
+## Parity Batch (E33-E34)
+
+The fifth-pass 2026-05-29 audit, acting on the issue #244 PR (#245) feedback,
+confirmed synthesis generality is built (benchmark suite passes 10/10) and found
+the remaining gap is **parity**: "all Rust and JavaScript logic are in sync" and
+"all languages are supported equally". These two epics close it without
+re-implementing the now-general synthesis step — they generalize *how it is
+triggered* (any supported language) and *where it runs* (Rust core and JS
+worker), preserving the anti-memorization rule and the benchmark ratchet.
+
+## E33 — Universal multilingual operation vocabulary (every handler triggers equally in en|ru|hi|zh) — [#326](https://github.com/link-assistant/formal-ai/issues/326)
+
+Parent: #244. Part of the **parity batch (E33-E34)**.
+
+**Problem.** Several reasoning handlers trigger only on English keywords even
+though the agent advertises `supported_languages = en|ru|hi|zh`
+(`data/seed/agent-info.lino`). `src/solver_handlers/text_manipulation.rs` matches
+`uppercase`/`lowercase`/`reverse words`/`replace`/`sort lines`/`deduplicate
+lines`/`count occurrences`/`count unique words`/`extract emails`, and
+`src/solver_handlers/program_synthesis.rs` matches
+`function`/`write`/`implement`/`return`/`count vowels`/`similar elements` — all
+English-only. The operands these handlers consume are already language-neutral
+(quoted segments, text after a colon, code identifiers), so only the operation
+**verbs** are gated on English.
+
+**Proposed approach.** Add a single shared, data-driven multilingual vocabulary
+`data/seed/operation-vocabulary.lino` mapping each canonical operation token to
+its localized synonyms for `en|ru|hi|zh`, mirroring how
+`data/seed/intent-routing.lino` already carries multilingual keywords/phrases per
+intent. Add a `seed::operation_vocabulary()` accessor and a canonicalization
+helper that rewrites a normalized prompt's localized verbs to canonical English
+tokens before the handlers match. This keeps the design **general, not specific**
+— one vocabulary, many languages, extensible by editing data — instead of
+per-handler, per-language literals. Mirror the seed into `src/web/seed/` via
+`scripts/sync-seed.sh` so the browser shares the same data.
+
+**Existing components to reuse.** `src/seed.rs` parser + `include_str!` registry;
+`intent_routing()` as the structural model; the `supported_languages` test
+pattern.
+
+**Acceptance criteria.**
+- `data/seed/operation-vocabulary.lino` exists with canonical → localized synonym
+  entries for every supported language.
+- `text_manipulation` and `program_synthesis` match on the canonicalized view;
+  existing English specs are unchanged (no regression).
+- Specification tests iterate `supported_languages` and assert each operation
+  triggers in every supported language.
+- No per-case memorization; operands remain derived from the prompt.
+- Seed mirrored to `src/web/seed/`.
+
+**Requirement links.** Issue #244 "all languages supported equally"; PR #245
+feedback; `ROADMAP.md` Next Planning Batch (E33). A first increment lands in
+PR #245; the full sweep across remaining English-only handlers is tracked here.
+
+## E34 — Cross-runtime parity: JS browser worker mirrors Rust core synthesis (E28-E31) — [#327](https://github.com/link-assistant/formal-ai/issues/327)
+
+Parent: #244. Part of the **parity batch (E33-E34)**.
+
+**Problem.** The synthesis batch E28-E31 (#313-#316) added derivation paths to the
+Rust core (general link-native synthesis, computed numeric/word-problem and
+counting answers, program synthesis from spec + tests, generalized text
+manipulation) that the JavaScript browser worker `src/web/formal_ai_worker.js`
+has not yet absorbed. So the same prompt can be solved by derivation in Rust but
+fall back to a weaker path in the browser, breaking "all Rust and JavaScript
+logic are in sync" (vision pillar 18).
+
+**Proposed approach.** Port the E28-E31 derivation paths into the worker so it
+composes decomposed sub-results the same way the Rust core does, keeping
+WebAssembly as the bridge for shared primitives and JavaScript as UI/glue. Add a
+shared parity fixture set asserting both runtimes produce equivalent answers,
+extending the E19 (#282) parity harness if present.
+
+**Existing components to reuse.** `src/web/formal_ai_worker.js` solve pipeline and
+WASM wrappers; the Rust `record_candidates` / handler logic as the reference; the
+E19 #282 browser-worker parity work.
+
+**Acceptance criteria.**
+- The worker derives synthesis/numeric/program/text answers with the same
+  algorithm shape as the Rust core.
+- Shared parity tests assert equivalent answers from both runtimes.
+- The anti-memorization rule and benchmark ratchet hold on the JS side.
+- WebAssembly stays the primitive bridge; JavaScript stays UI/glue per pillar 18.
+
+**Requirement links.** Issue #244 "all Rust and JavaScript logic in sync"; PR #245
+feedback; `ROADMAP.md` Next Planning Batch (E34); vision pillar 18; mirrors E19
+#282.
+
+## Parity-batch coverage check
+
+| Parity gap (code anchor) | Epic |
+| --- | --- |
+| English-only handlers (`text_manipulation.rs`, `program_synthesis.rs`) + new `operation-vocabulary.lino` | E33 |
+| JS worker (`formal_ai_worker.js`) lacks E28-E31 derivation paths | E34 |

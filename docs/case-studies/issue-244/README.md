@@ -33,15 +33,17 @@ are:
   issue created for #244 (the "create all the issues" deliverable).
 - The `Issue #244` row block added to [`REQUIREMENTS.md`](../../../REQUIREMENTS.md).
 
-> 2026-05-27 update: the first planning batch (E1-E14, issues #246-#259), the
-> follow-up batch (E15-E20, issues #278-#283), and the reasoning batch (E21-E27,
-> issues #298-#304, closed by PRs #305-#311) have all been implemented and merged
+> 2026-05-29 update: the first planning batch (E1-E14, issues #246-#259), the
+> follow-up batch (E15-E20, issues #278-#283), the reasoning batch (E21-E27,
+> issues #298-#304, closed by PRs #305-#311), and the synthesis batch (E28-E32,
+> issues #313-#317, closed by PRs #319-#323) have all been implemented and merged
 > to `main`. This case study preserves the original audits as historical context
-> and records the **fourth-pass audit** that, acting on issue #244 feedback,
-> confirmed the architecture uses the universal 11-step loop but found the
-> remaining gap is the **generality of the synthesis step** (the imported industry
-> benchmark suite passes 0/5) and created the synthesis batch
-> **E28-E32 (#313-#317)**.
+> and records the **fifth-pass audit** that, acting on issue #244 PR feedback,
+> confirmed the synthesis step now **derives** answers (the imported industry
+> benchmark suite passes **10/10** with a ratchet floor) and found the remaining
+> gap is **parity** — "all Rust and JavaScript logic are in sync" and "all
+> languages are supported equally" — and created the parity batch
+> **E33-E34 (#326-#327)**.
 
 ## Captured Artifacts
 
@@ -89,6 +91,8 @@ Downloaded and generated artifacts live under `raw-data/`:
 | 2026-05-26 | Third-pass audit on issue #244 feedback: the solver still routes on a fixed intent catalogue and falls back to a canned opener on unmatched prompts. Seven reasoning-focused epics opened as E21-E27: #298, #299, #300, #301, #302, #303, and #304. |
 | 2026-05-26/27 | E21-E27 implemented and merged (PRs #305-#311); `origin/main` re-merged into the issue branch. |
 | 2026-05-27 | Fourth-pass audit on issue #244 feedback: the universal 11-step loop is the main path, but the synthesis step still resolves seeded answers — the imported industry benchmark suite passes 0/5. Five synthesis-focused epics opened as E28-E32: #313, #314, #315, #316, and #317. The universal problem-solving algorithm diagram was added to `README.md`. |
+| 2026-05-28/29 | E28-E32 implemented and merged (PRs #319-#323); the synthesis step now derives answers and the benchmark suite grew to 10 cases passing 10/10 with a ratchet floor; `origin/main` re-merged into the issue branch. |
+| 2026-05-29 | Fifth-pass audit on issue #244 PR feedback ("all Rust and JavaScript logic in sync", "all languages supported equally"): synthesis generality confirmed built, remaining gap is parity. Two parity epics opened as E33-E34: #326 (universal multilingual operation vocabulary) and #327 (JS↔Rust cross-runtime parity). A first multilingual increment landed in PR #245. |
 
 ## Requirements Extracted From Issue #244
 
@@ -206,6 +210,54 @@ The acceptance criterion that binds the whole batch: benchmark pass counts must
 rise **without per-case memorization** (no answer string keyed on the prompt;
 paraphrased/renumbered held-out variants must pass only via derivation).
 
+> **Resolved (2026-05-29).** E28-E32 (#313-#317) are merged (PRs #319-#323). The
+> synthesis step now derives answers, and `cargo test
+> issue_304_benchmark_suite_reports_pass_fail_counts` reports
+> `passed=10 failed=0 total=10 minimum_pass_count=10` — the suite grew to a
+> 10-case slice and passes 10/10 with a ratchet floor, so the fourth-pass finding
+> above is closed. It is retained as historical context.
+
+## Fifth-Pass Parity Audit (2026-05-29)
+
+After E28-E32 merged, the issue #244 PR (#245) feedback asked to "check everything
+for consistency and correctness, make sure file names correctly correspond to the
+content, all Rust and JavaScript logic are in sync. All languages are supported
+equally … convert any specific algorithms to more general thinking based ones."
+A re-audit confirmed:
+
+- **Synthesis generality is genuinely built.** The 11-step loop is still the main
+  path for every prompt, and the synthesis step now derives rather than seeds:
+  arithmetic/word-problem and counting answers are computed, Python functions are
+  synthesized from spec + tests and verified in the bounded agent workspace
+  (`src/solver_handlers/program_synthesis.rs`), and the benchmark suite passes
+  **10/10** with a `minimum_pass_count` ratchet.
+- **The remaining gap is parity, in two dimensions:**
+  - *Cross-language.* `src/solver_handlers/text_manipulation.rs` and
+    `program_synthesis.rs` trigger only on **English** keywords, although the
+    agent advertises `supported_languages = en|ru|hi|zh`
+    (`data/seed/agent-info.lino`). The operands are already language-neutral
+    (quoted segments, text after a colon, code identifiers), so only the
+    operation **verbs** need localizing. The fix matches the rest of the system:
+    one shared, data-driven multilingual vocabulary
+    (`data/seed/operation-vocabulary.lino`), mirroring `intent-routing.lino` —
+    "general, not specific". This is the down-payment landed in PR #245 and
+    tracked in full by E33 (#326).
+  - *Cross-runtime.* The JavaScript browser worker
+    (`src/web/formal_ai_worker.js`) has not yet absorbed the E28-E31 reasoning
+    capabilities present in the Rust core, so the two runtimes can diverge on the
+    same prompt. Tracked by E34 (#327), mirroring the E19 (#282) browser-worker
+    parity precedent.
+
+| Fifth-pass finding (code anchor) | Epic |
+| --- | --- |
+| handlers trigger only on English keywords (`text_manipulation.rs`, `program_synthesis.rs`) | E33 (#326) |
+| JS worker (`formal_ai_worker.js`) lacks the E28-E31 derivation paths | E34 (#327) |
+
+The binding acceptance criterion carries over: parity must hold **without
+per-case memorization** and without regressing the benchmark ratchet, and a
+multilingual handler must derive its answer from language-neutral operands rather
+than seeding a per-language answer string.
+
 ## Initial State Of The Code (2026-05-25 Audit Summary)
 
 This section is preserved as the initial planning snapshot. It no longer
@@ -292,12 +344,18 @@ For E15-E20, the criteria are the remaining partial requirements discovered by
 the 2026-05-26 audit. For E21-E27, the criteria are code-grounded: each issue
 names the exact symbol it must replace or extend (e.g. `src/unknown_opener.rs`,
 `src/engine.rs::SelectedRule`, `HELLO_WORLD_PROGRAMS`) and the new specification
-tests it must add. For E28-E32, each issue is anchored to a concrete failing
+tests it must add. For E28-E32 (now merged), each issue was anchored to a concrete failing
 benchmark case (e.g. `humaneval_0_has_close_elements`, `gsm8k_test_0_duck_eggs`)
-and the synthesis symbol it must generalize (`src/solver.rs::record_candidates`,
+and the synthesis symbol it generalized (`src/solver.rs::record_candidates`,
 `src/proof_engine/`, `SelectedRule::WriteProgram`, `src/substitution.rs`), with a
 shared anti-memorization rule: pass counts must rise via derivation, not seeded
-answers. The design principles that bind them:
+answers. For E33-E34 (the parity batch), each issue is anchored to the parity
+gap it closes — E33 to the English-only handlers
+(`src/solver_handlers/text_manipulation.rs`, `program_synthesis.rs`) plus the new
+shared `data/seed/operation-vocabulary.lino`, and E34 to the JS browser worker
+(`src/web/formal_ai_worker.js`) mirroring the Rust core — preserving the same
+anti-memorization rule and benchmark ratchet. The design principles that bind
+them:
 
 - **Foundation first (Q13).** E1 (one doublet store as the source of truth) and
   E2 (one reasoning loop as the only entry path) are blockers; the other epics
@@ -390,20 +448,30 @@ bodies in `proposed-issues.md`):
 
 E21-E27 merged via PRs #305-#311. The fourth-pass synthesis audit
 (2026-05-27) confirmed the universal 11-step loop is the verified single main
-path but the synthesis step still resolves seeded answers instead of deriving
-them by composing decomposed sub-results over the links network — the imported
-industry benchmark suite (E27/#304) passes 0/5. That gap opened the E28-E32
-synthesis batch (full bodies in `proposed-issues.md`):
+path but the synthesis step still resolved seeded answers instead of deriving
+them. That gap opened the E28-E32 synthesis batch (full bodies in
+`proposed-issues.md`):
+
+| Epic | Issue | Vision gap | Closing PR |
+| --- | --- | --- | --- |
+| E28 | [#313](https://github.com/link-assistant/formal-ai/issues/313) | General link-native synthesis substrate (derive, don't seed) | #319 |
+| E29 | [#314](https://github.com/link-assistant/formal-ai/issues/314) | Compute math / word-problem & counting answers from structure | #320 |
+| E30 | [#315](https://github.com/link-assistant/formal-ai/issues/315) | General program synthesis from spec + tests | #321 |
+| E31 | [#316](https://github.com/link-assistant/formal-ai/issues/316) | General text manipulation over link structure | #322 |
+| E32 | [#317](https://github.com/link-assistant/formal-ai/issues/317) | Grow / ratchet the benchmark suite (derivation, not memorization) | #323 |
+
+E28-E32 merged via PRs #319-#323; the synthesis step now derives answers and the
+benchmark suite passes **10/10** with a `minimum_pass_count` ratchet. The
+fifth-pass parity audit (2026-05-29, PR #245 feedback) confirmed synthesis
+generality is built and found the remaining gap is **parity**, which opened the
+E33-E34 batch (full bodies in `proposed-issues.md`):
 
 | Epic | Issue | Vision gap |
 | --- | --- | --- |
-| E28 | [#313](https://github.com/link-assistant/formal-ai/issues/313) | General link-native synthesis substrate (derive, don't seed) |
-| E29 | [#314](https://github.com/link-assistant/formal-ai/issues/314) | Compute math / word-problem & counting answers from structure |
-| E30 | [#315](https://github.com/link-assistant/formal-ai/issues/315) | General program synthesis from spec + tests |
-| E31 | [#316](https://github.com/link-assistant/formal-ai/issues/316) | General text manipulation over link structure |
-| E32 | [#317](https://github.com/link-assistant/formal-ai/issues/317) | Grow / ratchet the benchmark suite (derivation, not memorization) |
+| E33 | [#326](https://github.com/link-assistant/formal-ai/issues/326) | Universal multilingual operation vocabulary (every handler triggers equally in `en\|ru\|hi\|zh`) |
+| E34 | [#327](https://github.com/link-assistant/formal-ai/issues/327) | Cross-runtime parity (JS browser worker mirrors Rust core synthesis) |
 
-Every E28-E32 epic carries an anti-memorization rule: pass counts must rise via
+Every E28-E34 epic carries an anti-memorization rule: pass counts must rise via
 derivation, and paraphrased / renumbered held-out variants must pass only when
 the answer is composed from sub-results, never recalled from a seeded table.
 
