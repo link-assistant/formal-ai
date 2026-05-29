@@ -73,6 +73,12 @@ en
   message
     author
       user "You"
+    copyCode "Copy"
+    copyCodeDone "Copied!"
+    copyCodeTitle "Copy code to clipboard"
+    copyMarkdown "Copy as Markdown"
+    copyMarkdownDone "Copied!"
+    copyMarkdownTitle "Copy the whole message as Markdown"
     thinking "Thinking"
     diagnosticsSteps "Reasoning steps"
     diagnosticsTools "Tool calls"
@@ -277,6 +283,12 @@ ru
   message
     author
       user "Вы"
+    copyCode "Копировать"
+    copyCodeDone "Скопировано!"
+    copyCodeTitle "Скопировать код в буфер обмена"
+    copyMarkdown "Скопировать как Markdown"
+    copyMarkdownDone "Скопировано!"
+    copyMarkdownTitle "Скопировать всё сообщение как Markdown"
     thinking "Мышление"
     diagnosticsSteps "Шаги рассуждения"
     diagnosticsTools "Вызовы инструментов"
@@ -475,6 +487,12 @@ zh
   message
     author
       user "你"
+    copyCode "复制"
+    copyCodeDone "已复制！"
+    copyCodeTitle "将代码复制到剪贴板"
+    copyMarkdown "复制为 Markdown"
+    copyMarkdownDone "已复制！"
+    copyMarkdownTitle "将整条消息复制为 Markdown"
     thinking "思考"
     diagnosticsSteps "推理步骤"
     diagnosticsTools "工具调用"
@@ -677,6 +695,12 @@ hi
   message
     author
       user "आप"
+    copyCode "कॉपी करें"
+    copyCodeDone "कॉपी हो गया!"
+    copyCodeTitle "कोड को क्लिपबोर्ड पर कॉपी करें"
+    copyMarkdown "Markdown के रूप में कॉपी करें"
+    copyMarkdownDone "कॉपी हो गया!"
+    copyMarkdownTitle "पूरे संदेश को Markdown के रूप में कॉपी करें"
     thinking "सोच"
     diagnosticsSteps "तर्क के चरण"
     diagnosticsTools "Tool calls"
