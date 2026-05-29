@@ -5,6 +5,22 @@
 //! whole-prompt answer lookup.
 
 use formal_ai::{detect_language, ExecutionSurface, Language, SolverConfig, UniversalSolver};
+use serde::Deserialize;
+
+const CROSS_RUNTIME_SYNTHESIS_FIXTURE: &str =
+    include_str!("../../../data/parity/cross-runtime-synthesis.json");
+
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct CrossRuntimeParityCase {
+    id: String,
+    prompt: String,
+    expected_intent: String,
+    expected_answer_fragments: Vec<String>,
+    forbidden_answer_fragments: Vec<String>,
+    expected_evidence_prefixes: Vec<String>,
+    expected_trace_fragments: Vec<String>,
+}
 
 fn synthesis_solver() -> UniversalSolver {
     UniversalSolver::new(SolverConfig {
@@ -13,6 +29,57 @@ fn synthesis_solver() -> UniversalSolver {
         temperature: 0.0,
         ..SolverConfig::default()
     })
+}
+
+#[test]
+fn shared_cross_runtime_synthesis_fixture_matches_rust_solver() {
+    let cases: Vec<CrossRuntimeParityCase> =
+        serde_json::from_str(CROSS_RUNTIME_SYNTHESIS_FIXTURE).expect("parity fixture parses");
+    let solver = synthesis_solver();
+
+    for case in cases {
+        let response = solver.solve(&case.prompt);
+        assert_eq!(
+            response.intent, case.expected_intent,
+            "{} should preserve the expected Rust intent; answer: {}",
+            case.id, response.answer
+        );
+        for expected in &case.expected_answer_fragments {
+            assert!(
+                response.answer.contains(expected),
+                "{} should contain answer fragment {expected:?}, got {}",
+                case.id,
+                response.answer
+            );
+        }
+        for forbidden in &case.forbidden_answer_fragments {
+            assert!(
+                !response.answer.contains(forbidden),
+                "{} should not contain anti-memorization fragment {forbidden:?}, got {}",
+                case.id,
+                response.answer
+            );
+        }
+        for prefix in &case.expected_evidence_prefixes {
+            assert!(
+                response
+                    .evidence_links
+                    .iter()
+                    .any(|link| link.starts_with(prefix)),
+                "{} missing evidence prefix {prefix:?}: {:?}",
+                case.id,
+                response.evidence_links
+            );
+        }
+        for trace in &case.expected_trace_fragments {
+            assert!(
+                response.links_notation.contains(trace),
+                "{} missing trace fragment {trace:?}: {}",
+                case.id,
+                response.links_notation
+            );
+        }
+    }
 }
 
 #[test]
