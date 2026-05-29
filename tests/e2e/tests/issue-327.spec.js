@@ -56,4 +56,34 @@ test.describe('Issue #327 cross-runtime synthesis parity', () => {
       }
     });
   }
+
+  test('text synthesis route accepts supported-language wrappers', async ({ page }) => {
+    for (const { language, prompt } of [
+      {
+        language: 'en',
+        prompt: "English request: Uppercase and reverse words: 'links notation rules'",
+      },
+      {
+        language: 'ru',
+        prompt: "Русский запрос: Uppercase and reverse words: 'links notation rules'",
+      },
+      {
+        language: 'hi',
+        prompt: "हिंदी अनुरोध: Uppercase and reverse words: 'links notation rules'",
+      },
+      {
+        language: 'zh',
+        prompt: "中文请求: Uppercase and reverse words: 'links notation rules'",
+      },
+    ]) {
+      const message = await sendPrompt(page, prompt);
+      await expect(message, language).toContainText('intent:text_manipulation');
+      await expect(message.locator('.markdown-body'), language).toContainText(
+        'RULES NOTATION LINKS',
+      );
+      await expect(message.locator('.evidence-list'), language).toContainText(
+        'text_operation:reverse_words',
+      );
+    }
+  });
 });
