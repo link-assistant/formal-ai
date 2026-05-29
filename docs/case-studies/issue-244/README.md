@@ -43,7 +43,12 @@ are:
 > benchmark suite passes **10/10** with a ratchet floor) and found the remaining
 > gap is **parity** — "all Rust and JavaScript logic are in sync" and "all
 > languages are supported equally" — and created the parity batch
-> **E33-E34 (#326-#327)**.
+> **E33-E34 (#326-#327)**. A **sixth-pass audit** (2026-05-29) records that the
+> parity batch is **now also closed and merged** (PRs #328-#329): the
+> text-manipulation handler triggers from one shared data-driven multilingual
+> operation vocabulary, and the JS browser worker derives the same
+> synthesis/numeric/program/text answers as the Rust core. With E1-E34 all
+> merged, **no vision-planning epic remains open** for issue #244.
 
 ## Captured Artifacts
 
@@ -93,6 +98,8 @@ Downloaded and generated artifacts live under `raw-data/`:
 | 2026-05-27 | Fourth-pass audit on issue #244 feedback: the universal 11-step loop is the main path, but the synthesis step still resolves seeded answers — the imported industry benchmark suite passes 0/5. Five synthesis-focused epics opened as E28-E32: #313, #314, #315, #316, and #317. The universal problem-solving algorithm diagram was added to `README.md`. |
 | 2026-05-28/29 | E28-E32 implemented and merged (PRs #319-#323); the synthesis step now derives answers and the benchmark suite grew to 10 cases passing 10/10 with a ratchet floor; `origin/main` re-merged into the issue branch. |
 | 2026-05-29 | Fifth-pass audit on issue #244 PR feedback ("all Rust and JavaScript logic in sync", "all languages supported equally"): synthesis generality confirmed built, remaining gap is parity. Two parity epics opened as E33-E34: #326 (universal multilingual operation vocabulary) and #327 (JS↔Rust cross-runtime parity). A first multilingual increment landed in PR #245. |
+| 2026-05-29 | E33-E34 implemented and merged (PRs #328-#329): the text-manipulation handler triggers from one shared data-driven multilingual operation vocabulary, and the JS browser worker derives the same synthesis/numeric/program/text answers as the Rust core (shared fixture `data/parity/cross-runtime-synthesis.json`). `origin/main` re-merged into the issue branch. |
+| 2026-05-29 | Sixth-pass audit: with E1-E34 all closed and merged, no vision-planning epic remains open for issue #244; docs (`ROADMAP.md`, `REQUIREMENTS.md`, this case study) synced to that state. |
 
 ## Requirements Extracted From Issue #244
 
@@ -231,27 +238,29 @@ A re-audit confirmed:
   synthesized from spec + tests and verified in the bounded agent workspace
   (`src/solver_handlers/program_synthesis.rs`), and the benchmark suite passes
   **10/10** with a `minimum_pass_count` ratchet.
-- **The remaining gap is parity, in two dimensions:**
-  - *Cross-language.* `src/solver_handlers/text_manipulation.rs` and
-    `program_synthesis.rs` trigger only on **English** keywords, although the
-    agent advertises `supported_languages = en|ru|hi|zh`
-    (`data/seed/agent-info.lino`). The operands are already language-neutral
-    (quoted segments, text after a colon, code identifiers), so only the
-    operation **verbs** need localizing. The fix matches the rest of the system:
+- **The remaining gap was parity, in two dimensions — both now closed and merged
+  (sixth-pass audit, 2026-05-29):**
+  - *Cross-language — closed by E33 ([#326](https://github.com/link-assistant/formal-ai/issues/326), PR #328).*
+    `src/solver_handlers/text_manipulation.rs` no longer triggers on **English**
+    literals. Every operation is recognised by canonicalising the prompt against
     one shared, data-driven multilingual vocabulary
-    (`data/seed/operation-vocabulary.lino`), mirroring `intent-routing.lino` —
-    "general, not specific". This is the down-payment landed in PR #245 and
-    tracked in full by E33 (#326).
-  - *Cross-runtime.* The JavaScript browser worker
-    (`src/web/formal_ai_worker.js`) has not yet absorbed the E28-E31 reasoning
-    capabilities present in the Rust core, so the two runtimes can diverge on the
-    same prompt. Tracked by E34 (#327), mirroring the E19 (#282) browser-worker
-    parity precedent.
+    (`data/seed/operation-vocabulary.lino`) that lists each operation's surface
+    forms per supported language (`en|ru|hi|zh`), mirroring `intent-routing.lino`
+    — "general, not specific". Adding a surface form or a whole language is a
+    seed-data edit, not a code change.
+  - *Cross-runtime — closed by E34 ([#327](https://github.com/link-assistant/formal-ai/issues/327), PR #329).*
+    The JavaScript browser worker (`src/web/formal_ai_worker.js`) now routes
+    synthesis prompts through `tryLinkNativeSynthesis`, `tryProgramSynthesis`, and
+    `tryTextManipulation`, deriving the same synthesis/numeric/program/text
+    answers as the Rust core. Parity is pinned by the shared fixture
+    `data/parity/cross-runtime-synthesis.json`, the Rust test
+    `shared_cross_runtime_synthesis_fixture_matches_rust_solver`, and the browser
+    e2e `tests/e2e/tests/issue-327.spec.js`.
 
-| Fifth-pass finding (code anchor) | Epic |
-| --- | --- |
-| handlers trigger only on English keywords (`text_manipulation.rs`, `program_synthesis.rs`) | E33 (#326) |
-| JS worker (`formal_ai_worker.js`) lacks the E28-E31 derivation paths | E34 (#327) |
+| Fifth-pass finding (code anchor) | Epic | Status |
+| --- | --- | --- |
+| handlers trigger only on English keywords (`text_manipulation.rs`) | E33 (#326) | Closed / merged (PR #328) |
+| JS worker (`formal_ai_worker.js`) lacks the E28-E31 derivation paths | E34 (#327) | Closed / merged (PR #329) |
 
 The binding acceptance criterion carries over: parity must hold **without
 per-case memorization** and without regressing the benchmark ratchet, and a

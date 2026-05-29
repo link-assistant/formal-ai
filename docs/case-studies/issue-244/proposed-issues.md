@@ -15,7 +15,11 @@ the synthesis step** and opened the synthesis batch E28-E32 — **now also close
 by merged PRs #319-#323; the synthesis step derives answers and the benchmark
 suite passes 10/10. A fifth-pass audit (2026-05-29, PR #245 feedback) found the
 remaining gap is **parity** ("all Rust and JavaScript logic in sync", "all
-languages supported equally") and opened the parity batch E33-E34. The full
+languages supported equally") and opened the parity batch E33-E34 — **now also
+closed** by merged PRs #328-#329: the text-manipulation handler triggers from one
+shared data-driven multilingual operation vocabulary, and the JS browser worker
+derives the same synthesis/numeric/program/text answers as the Rust core. With
+E1-E34 all merged, no vision-planning epic remains open for issue #244. The full
 bodies of E28-E32 and E33-E34 are at the end of this file.
 
 **Opened issues (2026-05-25):** E1 → [#246](https://github.com/link-assistant/formal-ai/issues/246),
@@ -1113,7 +1117,7 @@ worker), preserving the anti-memorization rule and the benchmark ratchet.
 
 ## E33 — Universal multilingual operation vocabulary (every handler triggers equally in en|ru|hi|zh) — [#326](https://github.com/link-assistant/formal-ai/issues/326)
 
-Parent: #244. Part of the **parity batch (E33-E34)**.
+Parent: #244. Part of the **parity batch (E33-E34)**. **Status: closed / merged (PR #328).**
 
 **Problem.** Several reasoning handlers trigger only on English keywords even
 though the agent advertises `supported_languages = en|ru|hi|zh`
@@ -1157,7 +1161,7 @@ PR #245; the full sweep across remaining English-only handlers is tracked here.
 
 ## E34 — Cross-runtime parity: JS browser worker mirrors Rust core synthesis (E28-E31) — [#327](https://github.com/link-assistant/formal-ai/issues/327)
 
-Parent: #244. Part of the **parity batch (E33-E34)**.
+Parent: #244. Part of the **parity batch (E33-E34)**. **Status: closed / merged (PR #329).**
 
 **Problem.** The synthesis batch E28-E31 (#313-#316) added derivation paths to the
 Rust core (general link-native synthesis, computed numeric/word-problem and

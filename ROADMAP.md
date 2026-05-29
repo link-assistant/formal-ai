@@ -10,10 +10,15 @@ reasoning-focused batch E21-E27 was opened), on 2026-05-27 for a fourth pass
 on 2026-05-29 for a fifth pass: the synthesis batch **E28-E32** is now also
 closed and merged, the synthesis step **derives** answers instead of seeding
 them, and the imported industry-benchmark suite passes **10/10** with a ratchet
-floor. This pass records the next gap — **cross-runtime and cross-language
-parity** (the Rust core's newest reasoning capabilities are not yet mirrored in
-the JavaScript browser worker, and several handlers trigger only on English
-keywords).
+floor. The fifth pass recorded the next gap — **cross-runtime and cross-language
+parity**. A sixth pass on 2026-05-29 records that the parity batch **E33-E34**
+is now **also closed and merged** (PRs [#328](https://github.com/link-assistant/formal-ai/pull/328)
+and [#329](https://github.com/link-assistant/formal-ai/pull/329)): the
+text-manipulation handler triggers from a single shared, data-driven
+multilingual operation vocabulary in every supported language, and the
+JavaScript browser worker derives the same synthesis/numeric/program/text
+answers as the Rust core, verified by a shared cross-runtime fixture. With
+E1-E34 all merged, **no vision-planning epic remains open** for issue #244.
 
 It complements the existing docs rather than replacing them:
 
@@ -73,12 +78,14 @@ The post-merge audit found:
   verified in the bounded agent workspace, and the benchmark suite grew from a
   5-case to a 10-case slice that passes **10/10** with a `minimum_pass_count`
   ratchet (verified by `cargo test issue_304_benchmark_suite_reports_pass_fail_counts`
-  → `passed=10 failed=0 total=10 minimum_pass_count=10`). The next gap is
-  **cross-runtime and cross-language parity**: the JavaScript browser worker
-  (`src/web/formal_ai_worker.js`) has not yet absorbed the E28-E31 reasoning
-  capabilities present in the Rust core, and the program-synthesis and
-  text-manipulation handlers trigger only on English keywords. Closing that gap
-  is the next batch (see the Next Planning Batch table).
+  → `passed=10 failed=0 total=10 minimum_pass_count=10`). The fifth-pass audit
+  recorded the next gap as **cross-runtime and cross-language parity**: at that
+  time the JavaScript browser worker (`src/web/formal_ai_worker.js`) had not yet
+  absorbed the E28-E31 reasoning capabilities present in the Rust core, and the
+  program-synthesis and text-manipulation handlers triggered only on English
+  keywords. That gap became the **E33-E34** parity batch, which the sixth pass
+  records as **now closed and merged** (PRs #328-#329 — see the Parity Batch
+  table below).
 
 The raw audit data is preserved under
 `docs/case-studies/issue-244/raw-data/`:
@@ -171,40 +178,41 @@ Issues [#262](https://github.com/link-assistant/formal-ai/issues/262) and
 [#277](https://github.com/link-assistant/formal-ai/pull/277). They are outside
 the E1-E14 vision batch.
 
-## Next Planning Batch
+## Parity Batch (E33-E34) — closed and merged
 
 The fifth-pass 2026-05-29 audit (issue #244 PR feedback) found that storage,
 surfaces, routing, reasoning scaffolding, and synthesis generality are all built
-and the benchmark suite passes 10/10. The remaining gap is **parity** — the
+and the benchmark suite passes 10/10. The remaining gap was **parity** — the
 explicit ask that "all Rust and JavaScript logic are in sync" and "all languages
-are supported equally". Two concrete sub-gaps:
+are supported equally". The sixth-pass audit (also 2026-05-29) records that both
+sub-gaps are now **closed and merged**:
 
-1. **Cross-language parity.** Several reasoning handlers trigger only on English
-   keywords even though the agent advertises `en|ru|hi|zh`
-   (`data/seed/agent-info.lino`). The operands these handlers consume are already
-   language-neutral (quoted segments, text after a colon, code identifiers), so
-   only the trigger/operation **verbs** need localizing. This batch closes the
-   gap the same way the rest of the system already works: a single shared,
-   data-driven multilingual vocabulary (mirroring `data/seed/intent-routing.lino`)
-   rather than per-handler, per-language literals — keeping it "general, not
-   specific". A first increment lands in this PR (E33); the broader sweep across
-   every remaining English-only handler is tracked.
-2. **Cross-runtime parity.** The JavaScript browser worker
-   (`src/web/formal_ai_worker.js`) has not yet absorbed the E28-E31 reasoning
-   capabilities (general link-native synthesis, numeric/word-problem reasoning,
-   program synthesis, generalized text manipulation) that now exist in the Rust
-   core. This mirrors the precedent of E19 [#282](https://github.com/link-assistant/formal-ai/issues/282),
-   which was a dedicated epic for browser-worker parity.
+1. **Cross-language parity — closed by E33 ([#326](https://github.com/link-assistant/formal-ai/issues/326), PR [#328](https://github.com/link-assistant/formal-ai/pull/328)).**
+   The text-manipulation handler no longer triggers on English literals. Every
+   operation is recognised by canonicalising the prompt against one shared,
+   data-driven table (`data/seed/operation-vocabulary.lino`) that lists each
+   operation's surface forms per supported language (`en|ru|hi|zh`). Adding a
+   surface form — or a whole new language — is a **seed-data edit, not a code
+   change**. The Rust core loads it via `seed::operation_vocabulary()`; the
+   browser worker loads the same file via `src/web/seed_loader.js`.
+2. **Cross-runtime parity — closed by E34 ([#327](https://github.com/link-assistant/formal-ai/issues/327), PR [#329](https://github.com/link-assistant/formal-ai/pull/329)).**
+   The JavaScript browser worker (`src/web/formal_ai_worker.js`) now routes
+   synthesis prompts through `tryLinkNativeSynthesis`, `tryProgramSynthesis`, and
+   `tryTextManipulation`, deriving the same synthesis/numeric/program/text
+   answers as the Rust core. Parity is pinned by the shared fixture
+   `data/parity/cross-runtime-synthesis.json`, the Rust test
+   `shared_cross_runtime_synthesis_fixture_matches_rust_solver`, and the browser
+   e2e `tests/e2e/tests/issue-327.spec.js`, all of which enforce the
+   anti-memorization rule (forbidden literal answers must not appear).
 
-Each issue lists code-grounded acceptance criteria and must preserve the
-anti-memorization rule (no answer string keyed on the prompt) and the benchmark
-ratchet. The deep per-requirement plan lives in
+With E1-E34 all closed and merged, **no vision-planning epic remains open** for
+issue #244. The deep per-requirement plan lives in
 `docs/case-studies/issue-244/proposed-issues.md`.
 
-| Epic | Issue | Vision gap | Code anchor it must replace/extend |
+| Epic | Issue | Vision gap | Status |
 | --- | --- | --- | --- |
-| E33 | [#326](https://github.com/link-assistant/formal-ai/issues/326) | Universal multilingual operation vocabulary: every reasoning handler triggers equally in `en\|ru\|hi\|zh` via one shared data-driven vocabulary, not per-handler English literals | `data/seed/operation-vocabulary.lino` + `src/solver_handlers/` (text manipulation, program synthesis, counting) |
-| E34 | [#327](https://github.com/link-assistant/formal-ai/issues/327) | Cross-runtime parity: the JS browser worker derives synthesis/numeric/program/text answers exactly as the Rust core does (E28-E31), verified by shared parity tests | `src/web/formal_ai_worker.js` mirroring `src/solver.rs` + `src/solver_handlers/` |
+| E33 | [#326](https://github.com/link-assistant/formal-ai/issues/326) | Universal multilingual operation vocabulary: every reasoning handler triggers equally in `en\|ru\|hi\|zh` via one shared data-driven vocabulary, not per-handler English literals | Closed / merged (PR [#328](https://github.com/link-assistant/formal-ai/pull/328)) |
+| E34 | [#327](https://github.com/link-assistant/formal-ai/issues/327) | Cross-runtime parity: the JS browser worker derives synthesis/numeric/program/text answers exactly as the Rust core does (E28-E31), verified by shared parity tests | Closed / merged (PR [#329](https://github.com/link-assistant/formal-ai/pull/329)) |
 
 ## Verification Contract
 

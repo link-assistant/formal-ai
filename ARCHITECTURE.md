@@ -899,23 +899,30 @@ generalized over arbitrary input, and the imported benchmark suite grew to a
 
 The 2026-05-29 audit (issue #244, fifth pass) found the next gap is **parity**,
 per the PR #245 feedback ("all Rust and JavaScript logic are in sync", "all
-languages are supported equally"). The open questions tracked by the next batch
-are:
+languages are supported equally"). The sixth-pass audit (also 2026-05-29) records
+that the parity batch is **now closed and merged**:
 
-1. **Universal multilingual operation vocabulary (E33, [#326](https://github.com/link-assistant/formal-ai/issues/326)).**
-   Several handlers (`src/solver_handlers/text_manipulation.rs`,
-   `program_synthesis.rs`) trigger only on English keywords even though the agent
-   advertises `en|ru|hi|zh`. Their operands are already language-neutral, so the
-   verbs are localized through one shared data-driven vocabulary
-   (`data/seed/operation-vocabulary.lino`), mirroring how `intent-routing.lino`
-   already works — general, not per-handler literals. A first increment lands in
-   this PR; the full sweep is tracked.
-2. **Cross-runtime parity (E34, [#327](https://github.com/link-assistant/formal-ai/issues/327)).**
-   The JavaScript browser worker (`src/web/formal_ai_worker.js`) must absorb the
-   E28-E31 reasoning capabilities so it derives the same answers as the Rust core,
-   verified by shared parity tests. Mirrors the E19 [#282](https://github.com/link-assistant/formal-ai/issues/282)
+1. **Universal multilingual operation vocabulary (E33, [#326](https://github.com/link-assistant/formal-ai/issues/326), PR #328).**
+   `src/solver_handlers/text_manipulation.rs` no longer triggers on English
+   literals. Every operation is recognised by canonicalising the prompt against
+   one shared data-driven vocabulary (`data/seed/operation-vocabulary.lino`) that
+   lists each operation's surface forms per supported language (`en|ru|hi|zh`),
+   mirroring how `intent-routing.lino` already works — general, not per-handler
+   literals. Adding a surface form or a whole language is a seed-data edit, not a
+   code change. The Rust core loads it via `seed::operation_vocabulary()`; the
+   browser worker loads the same file via `src/web/seed_loader.js`.
+2. **Cross-runtime parity (E34, [#327](https://github.com/link-assistant/formal-ai/issues/327), PR #329).**
+   The JavaScript browser worker (`src/web/formal_ai_worker.js`) now routes
+   synthesis prompts through `tryLinkNativeSynthesis`, `tryProgramSynthesis`, and
+   `tryTextManipulation`, deriving the same synthesis/numeric/program/text answers
+   as the Rust core, verified by the shared fixture
+   `data/parity/cross-runtime-synthesis.json`, the Rust test
+   `shared_cross_runtime_synthesis_fixture_matches_rust_solver`, and
+   `tests/e2e/tests/issue-327.spec.js`. Mirrors the E19 [#282](https://github.com/link-assistant/formal-ai/issues/282)
    browser-worker parity precedent; WebAssembly stays the bridge for shared
    primitives and JavaScript stays UI/glue per pillar 18.
+
+With E1-E34 all merged, no vision-planning epic remains open for issue #244.
 
 A still-open lower-priority question carried over from the E20 batch: arbitrary
 natural-language programming (executing reviewed generated stubs in sandboxed
