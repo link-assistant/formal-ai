@@ -246,6 +246,101 @@ fn english_http_json_statistics_request_records_blueprint_capabilities() {
     }
 }
 
+/// Pull the body out of the first fenced code block of a rendered answer.
+fn fenced_code(answer: &str) -> &str {
+    let after_open = answer
+        .split_once("```")
+        .map(|(_, rest)| rest)
+        .expect("answer has an opening fence");
+    let body = after_open
+        .split_once('\n')
+        .map(|(_, rest)| rest)
+        .expect("fence has a body");
+    body.split("```")
+        .next()
+        .expect("answer has a closing fence")
+}
+
+#[test]
+fn comments_capability_composes_the_emitted_program_end_to_end() {
+    // The same `http_json_stats` recipe must emit two *different* programs
+    // depending on whether the decomposition contains the `comments` capability,
+    // proving the program is assembled from the request (composition) rather than
+    // recalled verbatim from a table (NON-GOALS.md forbids a memoized answer
+    // cache). This exercises the full public engine path, not just the module.
+    let documented = answer(
+        "Write a Rust program that makes an HTTP GET request to a URL, parses the JSON response, \
+         calculates the mean and median, outputs the results, with error handling and comments.",
+    );
+    let stripped = answer(
+        "Write a Rust program that makes an HTTP GET request to a URL, parses the JSON response, \
+         calculates the mean and median, and outputs the results.",
+    );
+    assert_eq!(documented.intent, "write_program");
+    assert_eq!(stripped.intent, "write_program");
+
+    let documented_code = fenced_code(&documented.answer);
+    let stripped_code = fenced_code(&stripped.answer);
+
+    // With comments requested, the documentation is present.
+    assert!(
+        documented_code
+            .lines()
+            .any(|line| line.trim_start().starts_with("//")),
+        "documented program should keep whole-line comments, got: {documented_code}"
+    );
+    // Without comments, every whole-line comment is gone...
+    assert!(
+        !stripped_code
+            .lines()
+            .any(|line| line.trim_start().starts_with("//")),
+        "stripped program must drop whole-line comments, got: {stripped_code}"
+    );
+    // ...but the core logic (a different, still-valid program) is preserved...
+    assert!(
+        stripped_code.contains("reqwest::blocking::get")
+            && stripped_code.contains("fn median(")
+            && stripped_code.contains("fn mean("),
+        "stripped program must keep the core logic, got: {stripped_code}"
+    );
+    // ...with no leftover blank-line runs from the removed comment blocks...
+    assert!(
+        !stripped_code.contains("\n\n\n"),
+        "stripped program must not leave blank-line runs, got: {stripped_code}"
+    );
+    // ...and the stripped program is genuinely smaller than the documented one.
+    assert!(
+        stripped_code.len() < documented_code.len(),
+        "stripped program should be smaller ({} vs {} bytes)",
+        stripped_code.len(),
+        documented_code.len()
+    );
+}
+
+#[test]
+fn python_comments_omitted_drops_docstring_and_hash_comments_end_to_end() {
+    // The Python projection drops the module docstring and `#` comment lines when
+    // comments are not requested, while keeping the import and computation.
+    let stripped = answer(
+        "Write a Python program that makes an HTTP GET request to a URL, parses the JSON \
+         response, and calculates the mean and median.",
+    );
+    assert_eq!(stripped.intent, "write_program");
+    let code = fenced_code(&stripped.answer);
+    assert!(
+        !code.contains("\"\"\""),
+        "stripped python must drop the docstring, got: {code}"
+    );
+    assert!(
+        !code.lines().any(|line| line.trim_start().starts_with('#')),
+        "stripped python must drop whole-line # comments, got: {code}"
+    );
+    assert!(
+        code.contains("requests.get") && code.contains("statistics.median"),
+        "stripped python must keep the core logic, got: {code}"
+    );
+}
+
 #[test]
 fn partial_composite_request_without_statistics_stays_unsupported() {
     // http + json but NO statistics -> no recipe matches, so the honest
