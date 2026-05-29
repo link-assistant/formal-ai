@@ -226,3 +226,32 @@ fn calculator_extraction_does_not_steal_named_entities_with_digits() {
         );
     }
 }
+
+#[test]
+fn bare_dot_calculation_candidates_do_not_crash_the_process() {
+    // Issue #334: these prompts reduce to calculator candidates that contain a
+    // "bare" period (`2. 3`). `link-calculator` (<= 0.17.2) attempts a multi-
+    // gigabyte allocation and aborts the whole process on such input, so the
+    // dialog "Write a Python function ... Then calculate the 10th Fibonacci
+    // number and multiply it by 8% of 500 ..." used to crash with SIGKILL.
+    // After the guard the engine returns a normal answer for every prompt — the
+    // test reaching its assertions at all proves the process did not abort.
+    for prompt in [
+        "What is 2+2. What is 3+3.",
+        "calculate 8% of 500. Show me the code and the final result.",
+        "What is 2. 3",
+        "Then calculate the 10th Fibonacci number and multiply it by 8% of 500. Show me the code and the final result.",
+    ] {
+        let response = answer(prompt);
+        assert!(
+            !response.answer.trim().is_empty(),
+            "prompt {prompt:?} should return a graceful answer instead of crashing"
+        );
+        assert!(
+            !response.answer.contains("4831838208")
+                && !response.answer.to_lowercase().contains("memory allocation"),
+            "prompt {prompt:?} must not surface an allocation failure: {}",
+            response.answer,
+        );
+    }
+}
