@@ -2007,6 +2007,160 @@ function hasSpelledArithmetic(expression) {
   return hasNumberWord && hasArithmeticWordOperator(expression);
 }
 
+// Issue #334 step 2: the website demo's second agent step was "calculate the
+// 10th Fibonacci number and multiply it by 8% of 500. Show me the code and the
+// final result." It is not a calculator expression, but it reduces to one once
+// the symbolic Fibonacci reference is resolved (F(10) = 55), the spelled-out
+// operator is rewritten to `*`, and the trailing instruction sentence is
+// dropped — yielding `55 * 8% of 500` = 2200. The helpers below mirror
+// `fibonacci_value`, `parse_ordinal`, `bare_word`, `resolve_fibonacci_references`,
+// `split_sentences` and `normalize_word_problem` in `src/calculation.rs`.
+function fibonacciValue(n) {
+  if (n === 0) return 0;
+  let previous = 0;
+  let current = 1;
+  for (let step = 1; step < n; step += 1) {
+    const next = previous + current;
+    previous = current;
+    current = next;
+  }
+  return current;
+}
+
+const ORDINAL_WORDS = {
+  first: 1,
+  second: 2,
+  third: 3,
+  fourth: 4,
+  fifth: 5,
+  sixth: 6,
+  seventh: 7,
+  eighth: 8,
+  ninth: 9,
+  tenth: 10,
+};
+
+// Lowercased, punctuation-trimmed view of a token for keyword comparisons.
+function trimNonAlnum(token) {
+  return String(token || "")
+    .replace(/^[^\p{L}\p{N}]+/u, "")
+    .replace(/[^\p{L}\p{N}]+$/u, "");
+}
+
+function bareWord(token) {
+  return trimNonAlnum(token).toLowerCase();
+}
+
+// Parse a leading ordinal/cardinal token such as "10th", "10", "3rd" or the
+// spelled-out "tenth" into its numeric value. Returns null for anything else.
+function parseOrdinal(token) {
+  const trimmed = trimNonAlnum(token);
+  if (!trimmed) return null;
+  const digits = (trimmed.match(/^[0-9]+/) || [""])[0];
+  if (digits) {
+    const suffix = trimmed.slice(digits.length);
+    if (suffix === "" || ["st", "nd", "rd", "th"].includes(suffix)) {
+      return Number.parseInt(digits, 10);
+    }
+    return null;
+  }
+  const value = ORDINAL_WORDS[trimmed.toLowerCase()];
+  return value === undefined ? null : value;
+}
+
+// Replace "(the) N-th Fibonacci number" references with their numeric value.
+function resolveFibonacciReferences(text) {
+  if (!text.toLowerCase().includes("fibonacci")) return text;
+  const tokens = text.split(/\s+/).filter(Boolean);
+  const out = [];
+  let index = 0;
+  while (index < tokens.length) {
+    const n = parseOrdinal(tokens[index]);
+    if (
+      n !== null &&
+      tokens[index + 1] !== undefined &&
+      bareWord(tokens[index + 1]) === "fibonacci"
+    ) {
+      // Drop a determiner we already emitted ("the 10th" -> "55").
+      if (out.length > 0 && bareWord(out[out.length - 1]) === "the") {
+        out.pop();
+      }
+      out.push(String(fibonacciValue(n)));
+      index += 2;
+      // Absorb a trailing "number" / "term" / "sequence" noun.
+      const noun = tokens[index] !== undefined ? bareWord(tokens[index]) : "";
+      if (noun === "number" || noun === "term" || noun === "sequence") {
+        index += 1;
+      }
+      continue;
+    }
+    out.push(tokens[index]);
+    index += 1;
+  }
+  return out.join(" ");
+}
+
+// Split text into sentences on a period that ends a sentence (followed by
+// whitespace or the end of the string). A period flanked by digits ("3.14") is
+// kept inside its sentence so decimals are never broken apart.
+function splitSentences(text) {
+  const chars = Array.from(String(text || ""));
+  const sentences = [];
+  let current = "";
+  for (let i = 0; i < chars.length; i += 1) {
+    const ch = chars[i];
+    const next = chars[i + 1];
+    if (ch === "." && (next === undefined || /\s/.test(next))) {
+      const sentence = current.trim();
+      if (sentence) sentences.push(sentence);
+      current = "";
+      continue;
+    }
+    current += ch;
+  }
+  const last = current.trim();
+  if (last) sentences.push(last);
+  return sentences;
+}
+
+// Rewrite a natural-language "word problem" into a calculator expression, or
+// return null when no rewrite applies so callers fall through unchanged.
+function normalizeWordProblem(expression) {
+  const trimmed = String(expression || "").trim();
+  if (!trimmed) return null;
+  // Keep only sentence fragments that carry arithmetic content, dropping pure
+  // instruction clauses such as "Show me the code and the final result".
+  const arithmetic = splitSentences(trimmed).filter(
+    (sentence) => sentence && (/[0-9]/.test(sentence) || sentence.includes("%")),
+  );
+  if (arithmetic.length === 0) return null;
+  let working = resolveFibonacciReferences(arithmetic.join(". "));
+  // Rewrite spelled-out operators the calculator does not accept. Longer phrases
+  // come first so "and multiply it by" wins over "multiply by".
+  const operatorPhrases = [
+    [" and multiply it by ", " * "],
+    [" and multiply by ", " * "],
+    [" multiply it by ", " * "],
+    [" multiplied by ", " * "],
+    [" multiply by ", " * "],
+    [" and divide it by ", " / "],
+    [" and divide by ", " / "],
+    [" divide it by ", " / "],
+    [" divided by ", " / "],
+    [" divide by ", " / "],
+  ];
+  for (const [phrase, symbol] of operatorPhrases) {
+    const position = working.toLowerCase().indexOf(phrase);
+    if (position !== -1) {
+      working =
+        working.slice(0, position) + symbol + working.slice(position + phrase.length);
+    }
+  }
+  working = working.split(/\s+/).filter(Boolean).join(" ");
+  if (!working || working.toLowerCase() === trimmed.toLowerCase()) return null;
+  return working;
+}
+
 function extractArithmeticExpression(prompt) {
   const trimmed = String(prompt || "").trim();
   if (!trimmed) return null;
@@ -2079,6 +2233,13 @@ function extractArithmeticExpression(prompt) {
     }
   }
   if (!working) return null;
+  // Issue #334 step 2: rewrite a natural-language word problem into a calculator
+  // expression ("the 10th Fibonacci number and multiply it by 8% of 500. Show me
+  // the code ..." -> "55 * 8% of 500") before the symbolic checks below run.
+  const wordProblem = normalizeWordProblem(working);
+  if (wordProblem) {
+    working = wordProblem;
+  }
   const workingLower = working.toLowerCase();
   const hasLetter = /\p{L}/u.test(working);
   const hasSymbolic = /[+*/%^=×·÷−$€¥₹₽]/.test(working) || (!hasLetter && /-/.test(working));
@@ -10382,6 +10543,41 @@ const WRITE_PROGRAM_TASKS = {
       "求1到10的和",
     ],
   },
+  // Issue #334: a recursive `fibonacci` function evaluated at the 10th term
+  // (F(1)=F(2)=1 -> F(10)=55). Mirrors the Rust `fibonacci` task; fixed index so
+  // the output is verifiable.
+  fibonacci: {
+    label: "recursive Fibonacci",
+    output: "55",
+    aliases: [
+      "fibonacci sequence recursively",
+      "fibonacci sequence",
+      "recursive fibonacci",
+      "fibonacci recursively",
+      "fibonacci function",
+      "fibonacci numbers",
+      "fibonacci number",
+      "10th fibonacci number",
+      "the 10th fibonacci number",
+      "tenth fibonacci number",
+      "nth fibonacci number",
+      "последовательность фибоначчи",
+      "числа фибоначчи",
+      "число фибоначчи",
+      "рекурсивный фибоначчи",
+      "фибоначчи рекурсивно",
+      "10-е число фибоначчи",
+      "десятое число фибоначчи",
+      "फ़िबोनाची अनुक्रम",
+      "फिबोनाची अनुक्रम",
+      "फ़िबोनाची संख्या",
+      "फिबोनाची संख्या",
+      "斐波那契数列",
+      "斐波那契序列",
+      "斐波那契数",
+      "递归斐波那契",
+    ],
+  },
 };
 
 const WRITE_PROGRAM_TEMPLATES = {
@@ -10546,6 +10742,29 @@ const WRITE_PROGRAM_TEMPLATES = {
     ruby:
       "total = (1..10).sum\nputs total",
   },
+  // Issue #334: recursive `fibonacci` function evaluated at the 10th term (55).
+  fibonacci: {
+    rust:
+      "fn fibonacci(n: u64) -> u64 {\n    if n <= 2 {\n        1\n    } else {\n        fibonacci(n - 1) + fibonacci(n - 2)\n    }\n}\n\nfn main() {\n    println!(\"{}\", fibonacci(10));\n}",
+    python:
+      "def fibonacci(n):\n    if n <= 2:\n        return 1\n    return fibonacci(n - 1) + fibonacci(n - 2)\n\n\nprint(fibonacci(10))",
+    javascript:
+      "function fibonacci(n) {\n  if (n <= 2) {\n    return 1;\n  }\n  return fibonacci(n - 1) + fibonacci(n - 2);\n}\n\nconsole.log(fibonacci(10));",
+    typescript:
+      "function fibonacci(n: number): number {\n  if (n <= 2) {\n    return 1;\n  }\n  return fibonacci(n - 1) + fibonacci(n - 2);\n}\n\nconsole.log(fibonacci(10));",
+    go:
+      "package main\n\nimport \"fmt\"\n\nfunc fibonacci(n int) int {\n    if n <= 2 {\n        return 1\n    }\n    return fibonacci(n-1) + fibonacci(n-2)\n}\n\nfunc main() {\n    fmt.Println(fibonacci(10))\n}",
+    c:
+      "#include <stdio.h>\n\nunsigned long long fibonacci(int n) {\n    if (n <= 2) {\n        return 1;\n    }\n    return fibonacci(n - 1) + fibonacci(n - 2);\n}\n\nint main(void) {\n    printf(\"%llu\\n\", fibonacci(10));\n    return 0;\n}",
+    cpp:
+      "#include <iostream>\n\nunsigned long long fibonacci(int n) {\n    if (n <= 2) {\n        return 1;\n    }\n    return fibonacci(n - 1) + fibonacci(n - 2);\n}\n\nint main() {\n    std::cout << fibonacci(10) << '\\n';\n}",
+    java:
+      "public class Main {\n    static long fibonacci(int n) {\n        if (n <= 2) {\n            return 1;\n        }\n        return fibonacci(n - 1) + fibonacci(n - 2);\n    }\n\n    public static void main(String[] args) {\n        System.out.println(fibonacci(10));\n    }\n}",
+    csharp:
+      "using System;\n\nclass Program {\n    static long Fibonacci(int n) {\n        if (n <= 2) {\n            return 1;\n        }\n        return Fibonacci(n - 1) + Fibonacci(n - 2);\n    }\n\n    static void Main() {\n        Console.WriteLine(Fibonacci(10));\n    }\n}",
+    ruby:
+      "def fibonacci(n)\n  return 1 if n <= 2\n\n  fibonacci(n - 1) + fibonacci(n - 2)\nend\n\nputs fibonacci(10)",
+  },
 };
 
 function normalizeProgramPrompt(prompt) {
@@ -10610,6 +10829,10 @@ const PROGRAM_NOUNS = [
   "programme",
   "script",
   "code",
+  // Issue #334: "Write a Python function that ..." — a requested function is a
+  // program artefact too.
+  "function",
+  "func",
   "программа",
   "программу",
   "программе",
@@ -10617,14 +10840,21 @@ const PROGRAM_NOUNS = [
   "программку",
   "скрипт",
   "код",
-  // Hindi: प्रोग्राम (program), स्क्रिप्ट (script), कोड (code).
+  // Russian: функция / функцию (function).
+  "функция",
+  "функцию",
+  // Hindi: प्रोग्राम (program), स्क्रिप्ट (script), कोड (code),
+  // फ़ंक्शन / फंक्शन (function).
   "प्रोग्राम",
   "स्क्रिप्ट",
   "कोड",
-  // Chinese: 程序 (program), 脚本 (script), 代码 (code).
+  "फ़ंक्शन",
+  "फंक्शन",
+  // Chinese: 程序 (program), 脚本 (script), 代码 (code), 函数 (function).
   "程序",
   "脚本",
   "代码",
+  "函数",
 ];
 const PROGRAM_VERBS = [
   "write",
@@ -11350,6 +11580,14 @@ const PROGRAM_EXPLANATIONS = {
     ru: "Программа складывает целые числа от 1 до 10 (1 + 2 + … + 10) и печатает сумму — 55.",
     hi: "प्रोग्राम 1 से 10 तक के पूर्णांकों को जोड़ता है (1 + 2 + … + 10) और कुल योग 55 छापता है।",
     zh: "程序将 1 到 10 的整数相加（1 + 2 + … + 10），并打印总和 55。",
+  },
+  fibonacci: {
+    en:
+      "The program defines a recursive `fibonacci` function (F(1)=F(2)=1, " +
+      "F(n)=F(n-1)+F(n-2)) and prints the 10th term, 55.",
+    ru: "Программа определяет рекурсивную функцию `fibonacci` (F(1)=F(2)=1, F(n)=F(n-1)+F(n-2)) и печатает 10-й член — 55.",
+    hi: "प्रोग्राम एक पुनरावर्ती `fibonacci` फ़ंक्शन परिभाषित करता है (F(1)=F(2)=1, F(n)=F(n-1)+F(n-2)) और 10वाँ पद 55 छापता है।",
+    zh: "程序定义了一个递归的 `fibonacci` 函数（F(1)=F(2)=1，F(n)=F(n-1)+F(n-2)），并打印第 10 项 55。",
   },
   __fallback: {
     en: "The program performs the requested task and prints its result to standard output.",

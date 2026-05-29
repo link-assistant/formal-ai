@@ -228,6 +228,44 @@ fn calculator_extraction_does_not_steal_named_entities_with_digits() {
 }
 
 #[test]
+fn fibonacci_word_problem_reduces_to_calculator_expression() {
+    // Issue #334 step 2: the website demo asked to "calculate the 10th
+    // Fibonacci number and multiply it by 8% of 500. Show me the code and the
+    // final result." This reduces to `55 * 8% of 500` (F(10) = 55, 8% of 500 =
+    // 40, 55 * 40 = 2200) once the Fibonacci reference is resolved, the
+    // spelled-out operator is rewritten, and the trailing instruction sentence
+    // is dropped.
+    assert_calculation(
+        "calculate the 10th Fibonacci number and multiply it by 8% of 500. Show me the code and the final result.",
+        &["2200"],
+    );
+    // The cardinal-word spelling and the bare "multiplied by" connector resolve
+    // the same way (F(5) = 5, 5 * 10 = 50).
+    assert_calculation("the fifth Fibonacci number multiplied by 10", &["50"]);
+}
+
+#[test]
+fn program_request_is_not_misread_as_unit_incompatibility() {
+    // Issue #334: "Write a program that computes the 10th Fibonacci number"
+    // used to answer with a length/mass unit-incompatibility refusal because a
+    // plain substring match found "mb" inside "nu*mb*er" and "gram" inside
+    // "pro*gram*". A standalone-word match keeps coding prompts away from the
+    // unit handler.
+    for prompt in [
+        "Write a program that computes the 10th Fibonacci number",
+        "Show me a program in Python",
+        "How many grams are in a number?",
+    ] {
+        let response = answer(prompt);
+        assert_ne!(
+            response.intent, "unit_incompatibility",
+            "prompt {prompt:?} must not be misread as a unit conversion: {}",
+            response.answer,
+        );
+    }
+}
+
+#[test]
 fn bare_dot_calculation_candidates_do_not_crash_the_process() {
     // Issue #334: these prompts reduce to calculator candidates that contain a
     // "bare" period (`2. 3`). `link-calculator` (<= 0.17.2) attempts a multi-

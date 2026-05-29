@@ -542,6 +542,10 @@ const PROGRAM_NOUNS: &[&str] = &[
     "programme",
     "script",
     "code",
+    // Issue #334: "Write a Python function that ..." — a requested function is a
+    // program artefact too, so it pairs with a program verb to ask for code.
+    "function",
+    "func",
     // Russian: программа / программу / программе / программы, скрипт, код.
     "программа",
     "программу",
@@ -550,14 +554,21 @@ const PROGRAM_NOUNS: &[&str] = &[
     "программку",
     "скрипт",
     "код",
-    // Hindi: प्रोग्राम (program), स्क्रिप्ट (script), कोड (code).
+    // Russian: функция / функцию (function).
+    "функция",
+    "функцию",
+    // Hindi: प्रोग्राम (program), स्क्रिप्ट (script), कोड (code),
+    // फ़ंक्शन / फंक्शन (function).
     "प्रोग्राम",
     "स्क्रिप्ट",
     "कोड",
-    // Chinese: 程序 (program), 脚本 (script), 代码 (code).
+    "फ़ंक्शन",
+    "फंक्शन",
+    // Chinese: 程序 (program), 脚本 (script), 代码 (code), 函数 (function).
     "程序",
     "脚本",
     "代码",
+    "函数",
 ];
 
 /// Verbs that request the artefact be produced ("write", "create", "show", …)

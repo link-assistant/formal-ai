@@ -150,6 +150,45 @@ fn dimension_of(unit: &str) -> &'static str {
     "unknown"
 }
 
+/// Whether `unit` appears in `normalized` as a standalone word rather than as a
+/// fragment of a larger word.
+///
+/// Issue #334: a plain `normalized.contains(unit)` matched "mb" inside
+/// "nu**mb**er" and "gram" inside "pro**gram**", so the coding prompt "Write a
+/// program that computes the 10th Fibonacci number" was misread as a
+/// length/mass conversion and answered with a unit-incompatibility refusal. A
+/// unit token only counts when both of its neighbouring characters are
+/// non-alphabetic (string edge, whitespace, punctuation, or a digit such as the
+/// "500" in "500mb"), so genuine units still match while embedded fragments do
+/// not.
+fn contains_unit_word(normalized: &str, unit: &str) -> bool {
+    // Inflected languages (Russian "килобайт" -> "килобайте") and space-less
+    // scripts (CJK) attach suffixes directly to the unit, so a strict word
+    // boundary would reject legitimate forms. The substring false positives
+    // that motivated this guard ("mb" in "number", "gram" in "program") are all
+    // ASCII, so the boundary check only applies to ASCII units; non-ASCII units
+    // keep the original permissive substring match.
+    if !unit.is_ascii() {
+        return normalized.contains(unit);
+    }
+    let boundary_ok = |ch: Option<char>| ch.map_or(true, |c| !c.is_alphabetic());
+    let mut search_from = 0;
+    while let Some(offset) = normalized[search_from..].find(unit) {
+        let start = search_from + offset;
+        let end = start + unit.len();
+        let before = normalized[..start].chars().next_back();
+        let after = normalized[end..].chars().next();
+        if boundary_ok(before) && boundary_ok(after) {
+            return true;
+        }
+        // Advance past this occurrence. `end` is always a char boundary (the
+        // unit matched there), whereas `start + 1` could land inside a
+        // multi-byte UTF-8 character and panic when sliced.
+        search_from = end;
+    }
+    false
+}
+
 /// Return two unit tokens from `normalized` that belong to different dimensions,
 /// or `None` if no incompatible pair is found.
 fn detect_incompatible_unit_pair(normalized: &str) -> Option<(&'static str, &'static str)> {
@@ -164,7 +203,7 @@ fn detect_incompatible_unit_pair(normalized: &str) -> Option<(&'static str, &'st
     let mut found: Vec<(&'static str, &'static str)> = Vec::new();
     for (units, dim) in all_units {
         for unit in *units {
-            if normalized.contains(unit) && !found.iter().any(|(_, d)| d == dim) {
+            if contains_unit_word(normalized, unit) && !found.iter().any(|(_, d)| d == dim) {
                 found.push((unit, dim));
             }
         }

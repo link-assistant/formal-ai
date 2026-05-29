@@ -5,6 +5,7 @@
 //! local arithmetic evaluator for syntax the upstream crate does not support yet.
 
 use crate::arithmetic::{evaluate_fallback_formatted, ArithmeticError};
+use crate::calculation_word_problem::normalize_word_problem;
 use crate::fuzzy::is_close_token_typo;
 
 /// Engine that produced a calculation result.
@@ -770,10 +771,26 @@ pub fn calculation_expression_candidates(prompt: &str) -> Vec<CalculationCandida
     let mut candidates = Vec::new();
     if !stripped.is_empty() && has_calculation_signal(&stripped, explicit) {
         candidates.push(CalculationCandidate {
-            expression: stripped,
+            expression: stripped.clone(),
             explicit,
-            interpretations,
+            interpretations: interpretations.clone(),
         });
+    }
+    // Issue #334 step 2: rewrite a natural-language word problem ("the 10th
+    // Fibonacci number and multiply it by 8% of 500. Show me the code ...") into
+    // a calculator expression and offer it as an additional candidate.
+    if let Some(normalized) = normalize_word_problem(&stripped) {
+        if has_calculation_signal(&normalized, explicit)
+            && !candidates
+                .iter()
+                .any(|candidate| candidate.expression == normalized)
+        {
+            candidates.push(CalculationCandidate {
+                expression: normalized,
+                explicit,
+                interpretations,
+            });
+        }
     }
     if trimmed
         != candidates
