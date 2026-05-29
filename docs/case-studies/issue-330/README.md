@@ -304,7 +304,7 @@ turn keeps the full instructions.
 | File | Change |
 | --- | --- |
 | `src/engine.rs` | `write_program_answer` gains a `prior_code_response` flag and appends `program_explanation_section` + `program_test_instructions`; new localized explanation/instruction builders. |
-| `src/coding/catalog/` | `save_as` + `setup_hint` fields added to `ProgramLanguage` (`types.rs`) and populated for all 11 languages (`languages.rs`). |
+| `src/coding/catalog/` | `save_as` + `setup_hint` fields added to `ProgramLanguage` (`types.rs`) and populated for all 10 languages (`languages.rs`). |
 | `src/solver.rs` | Detects a prior assistant code block in `history` and threads `prior_code_response` into the answer builder. |
 | `tests/unit/specification/code_generation.rs` | 7 new tests across all languages + history-aware behavior. |
 
@@ -339,7 +339,7 @@ reviewed on its own merits.
 
 A follow-up PR review observed that `src/engine_hello_world.rs` was a misleading
 name: the module had grown to support **general coding tasks** (`hello_world`,
-`count_to_three`, `list_files`, `list_files_arg`) across 11 languages, not just
+`count_to_three`, `list_files`, `list_files_arg`) across 10 languages, not just
 hello-world. The reviewer asked for a clearer name (e.g. `coding.rs`) and for the
 file naming / code organization to follow the
 [code-architecture-principles](https://github.com/link-foundation/code-architecture-principles)
@@ -414,6 +414,24 @@ to parity in the same PR:
   instead of a hardcoded `hello_world, count_to_three` string, so it can never
   drift from the supported set.
 
+**(c) Portable knowledge-seed parity.** `data/seed/hello-world-programs.lino` is
+the third mirror of the catalog — the human-readable Links Notation bundle the
+browser can download as the AI's static knowledge surface. Auditing it for this
+PR surfaced a pre-existing gap: `list_files_arg` (issue #324) had been added to
+the Rust catalog but never mirrored into the seed. Per the "apply every change
+in all places" rule, the seed was brought to **full** parity — all eight tasks
+and their 76 templates — and the gap was permanently closed with a parity test:
+
+- The seed blocks are generated mechanically from the Rust source by
+  `experiments/issue-330-coding-tasks/generate_lino.py`, so the single-quoted
+  `code '…'` escaping (`\` → `\\`, newline → `\n`, `'` → `\x27`, e.g. the C++
+  `'\n'` char literal → `\x27\\n\x27`) is byte-faithful rather than
+  hand-transcribed.
+- Three new `#[cfg(test)] mod lino_parity` tests in `src/coding/catalog/mod.rs`
+  assert the seed's `tasks` line lists every catalog task, every catalog
+  template's escaped code appears in the seed, and the seed holds no extra
+  templates (count matches `program_template_count()`). Drift now fails CI.
+
 ### Files changed (R11)
 
 | File | Change |
@@ -421,8 +439,10 @@ to parity in the same PR:
 | `src/coding/catalog/` | Four new `ProgramTask`s (`tasks.rs`) + 40 `ProgramTemplate`s, one per language (`templates_extended.rs`). |
 | `src/coding/guidance.rs` | Accurate per-task `program_explanation` arms (fizzbuzz / factorial / reverse_string / sum_to_ten + explicit list-files arms) with a neutral fallback. |
 | `src/web/formal_ai_worker.js` | Tasks, templates, extended language metadata, and the full R9 explanation/test-instruction port wired into `tryWriteProgram`. |
+| `data/seed/hello-world-programs.lino` | Brought to full catalog parity — all eight tasks and 76 templates, including the previously-missing `list_files_arg` (issue #324). |
+| `src/coding/catalog/mod.rs` | Three `lino_parity` tests locking the `.lino` seed to the catalog (tasks line, every template's escaped code, no extras). |
 | `tests/unit/specification/code_generation.rs` | Per-task tests across en/ru/hi/zh and an "every popular language" sweep for FizzBuzz. |
-| `experiments/issue-330-coding-tasks/` | `templates.py` + `verify.sh` (authoritative, compiler-verified template source) and a `smoke_worker.cjs` harness that exercises the JS worker's localized answers. |
+| `experiments/issue-330-coding-tasks/` | `templates.py` + `verify.sh` (authoritative, compiler-verified template source), a `smoke_worker.cjs` harness that exercises the JS worker's localized answers, and `generate_lino.py` (regenerates the `.lino` seed blocks from the Rust catalog). |
 
 The wider catalog pushed the single `catalog.rs` over the repository's
 1000-line-per-file limit (a hard CI failure on the "Check file size limit" job),
