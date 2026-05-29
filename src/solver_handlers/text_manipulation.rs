@@ -62,18 +62,6 @@ struct TextRequest {
 
 impl TextRequest {
     fn parse(prompt: &str, normalized: &str) -> Option<Self> {
-        // The operation a prompt requests is recognised by canonicalising it
-        // against the shared multilingual vocabulary
-        // (`data/seed/operation-vocabulary.lino`), so a request triggers
-        // equally in any supported language rather than matching hardcoded
-        // English literals. Operands (quoted segments, text after a colon)
-        // are language-neutral and parsed directly from the raw prompt.
-        //
-        // The two-operand operations (replace, count occurrences) only claim
-        // the prompt when the required quoted operands are present; otherwise
-        // an ambiguous verb (for example a word that overlaps "replace" in
-        // one language) falls through to the simple-operation pass instead of
-        // failing the whole handler.
         let vocabulary = crate::seed::operation_vocabulary();
         let quoted = quoted_segments(prompt);
 
