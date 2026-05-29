@@ -1711,6 +1711,44 @@ function evaluateCurrencyConversionExpression(expression) {
   return `${formatArithmeticResult(amount * rate)} ${to}`;
 }
 
+// Rewrite "N% of M" percentage-of phrases into explicit arithmetic the parser
+// can evaluate: "8% of 500" -> "( 8 * 500 / 100 )". Mirrors the Rust
+// `rewrite_percent_of` helper so the JS fallback agrees with the WASM worker:
+// "55 * 8% of 500" evaluates to 2200 (issue #334). A bare `%` not followed by
+// "of" is left untouched so it still parses as the modulo operator.
+function rewritePercentOf(expression) {
+  const isNumber = (token) => token.length > 0 && /^[0-9.]+$/.test(token);
+  const tokens = String(expression).split(/\s+/).filter(Boolean);
+  const out = [];
+  let index = 0;
+  while (index < tokens.length) {
+    let percent = null;
+    let consumed = 0;
+    const token = tokens[index];
+    if (token.endsWith("%") && isNumber(token.slice(0, -1))) {
+      percent = token.slice(0, -1);
+      consumed = 1;
+    } else if (isNumber(token) && tokens[index + 1] === "%") {
+      percent = token;
+      consumed = 2;
+    }
+    const after = index + consumed;
+    if (
+      percent !== null &&
+      tokens[after] === "of" &&
+      tokens[after + 1] !== undefined &&
+      isNumber(tokens[after + 1])
+    ) {
+      out.push("(", percent, "*", tokens[after + 1], "/", "100", ")");
+      index = after + 2;
+      continue;
+    }
+    out.push(token);
+    index += 1;
+  }
+  return out.join(" ");
+}
+
 function normalizeArithmeticWords(expression) {
   const lower = String(expression).toLowerCase();
   const normalizedPhrases = lower
@@ -1719,11 +1757,12 @@ function normalizeArithmeticWords(expression) {
     .replace(/\s+умножить на\s+/g, " * ")
     .replace(/\s+разделить на\s+/g, " / ")
     .replace(/\s+делить на\s+/g, " / ");
-  return normalizedPhrases
+  const mapped = normalizedPhrases
     .split(/\s+/)
     .filter(Boolean)
     .map((token) => ARITHMETIC_WORD_TOKENS.get(token) || token)
     .join(" ");
+  return rewritePercentOf(mapped);
 }
 
 function evaluateArithmetic(expression) {

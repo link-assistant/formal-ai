@@ -14,6 +14,12 @@ bump: minor
   = 2200 (issue #334).
 
 ### Fixed
+- The shared `no_std` arithmetic evaluator (used by the CLI fallback, the
+  compiled WASM worker, and the JS worker fallback) now understands "N% of M"
+  percentage-of phrases, rewriting `8% of 500` to `( 8 * 500 / 100 )` so the
+  GitHub Pages WASM demo evaluates `55 * 8% of 500` to 2200 instead of returning
+  "unparseable". A bare `%` not followed by "of" still parses as modulo
+  (issue #334).
 - Coding prompts containing "number" or "program" are no longer misread as a
   unit-incompatibility conversion: unit tokens such as "mb" and "gram" now match
   only on word boundaries instead of as substrings of "nu**mb**er" /
