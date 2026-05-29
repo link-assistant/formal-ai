@@ -1,6 +1,6 @@
 {
   "name": "formal-ai-desktop",
-  "version": "0.129.0",
+  "version": "0.152.0",
   "private": true,
   "description": "Cross-platform desktop wrapper for formal-ai",
   "main": "main.cjs",
@@ -45,20 +45,28 @@
         "deb",
         "tar.gz"
       ],
-      "category": "Utility"
+      "category": "Utility",
+      "artifactName": "formal-ai-desktop-linux-${arch}-${version}.${ext}"
     },
     "mac": {
       "target": [
         "dmg",
         "zip"
       ],
-      "category": "public.app-category.productivity"
+      "category": "public.app-category.productivity",
+      "artifactName": "formal-ai-desktop-macos-${arch}-${version}.${ext}"
     },
     "win": {
       "target": [
         "nsis",
         "portable"
       ]
+    },
+    "nsis": {
+      "artifactName": "formal-ai-desktop-windows-installer-${arch}-${version}.${ext}"
+    },
+    "portable": {
+      "artifactName": "formal-ai-desktop-windows-portable-${arch}-${version}.${ext}"
     }
   }
 }
