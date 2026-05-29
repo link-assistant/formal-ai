@@ -38,6 +38,7 @@ use crate::language::{detect as detect_language, Language};
 use crate::probability::ProbabilityStore;
 use crate::proof_engine::ProofRenderConfig;
 use crate::seed;
+use crate::solver_dispatch::SPECIALIZED_HANDLERS;
 use crate::solver_formalization::{record_formalization, record_formalization_selection};
 use crate::solver_handlers::{
     finalize_simple, try_agent_workspace_task, try_behavior_rules_with_runtime,
@@ -51,7 +52,6 @@ use crate::solver_helpers::{
     is_unbounded_loop, record_candidates, record_decomposition, record_validation,
     requires_external_lookup,
 };
-use crate::solver_specialized_registry::SPECIALIZED_HANDLERS;
 use crate::solver_synthesis::try_synthesize_from_sub_results;
 use crate::solver_unknown_reasoning::{answer_unknown_prompt, UnknownReasoningConfig};
 use crate::translation::{

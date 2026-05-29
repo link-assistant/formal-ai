@@ -203,4 +203,51 @@ pub const PROGRAM_TASKS: &[ProgramTask] = &[
         ],
         output: "55",
     },
+    // Issue #334: the website demo asked for "a Python function that calculates
+    // the Fibonacci sequence recursively" and then "the 10th Fibonacci number".
+    // The catalog had no Fibonacci entry, so step one resolved to "I didn't
+    // understand you". This task defines a recursive `fibonacci` function and
+    // prints the 10th term (F(1)=F(2)=1 -> F(10)=55), so the scenario is fixed
+    // and the verified output is unambiguous. Every supported prompt language
+    // (en, ru, hi, zh) is covered, including the explicit "recursive" /
+    // "function" phrasings from the report.
+    ProgramTask {
+        slug: "fibonacci",
+        label: "recursive Fibonacci",
+        aliases: &[
+            "fibonacci sequence recursively",
+            "fibonacci sequence",
+            "recursive fibonacci",
+            "fibonacci recursively",
+            "fibonacci function",
+            "fibonacci numbers",
+            "fibonacci number",
+            "10th fibonacci number",
+            "the 10th fibonacci number",
+            "tenth fibonacci number",
+            "nth fibonacci number",
+            // Russian: "Fibonacci sequence" / "recursive Fibonacci" / "10th
+            // Fibonacci number" (последовательность Фибоначчи, числа Фибоначчи).
+            "последовательность фибоначчи",
+            "числа фибоначчи",
+            "число фибоначчи",
+            "рекурсивный фибоначчи",
+            "фибоначчи рекурсивно",
+            "10-е число фибоначчи",
+            "десятое число фибоначчи",
+            // Hindi: "Fibonacci sequence" / "Fibonacci number" (फ़िबोनाची /
+            // फिबोनाची अनुक्रम / संख्या).
+            "फ़िबोनाची अनुक्रम",
+            "फिबोनाची अनुक्रम",
+            "फ़िबोनाची संख्या",
+            "फिबोनाची संख्या",
+            // Chinese: "Fibonacci sequence" / "Fibonacci number" (斐波那契数列 /
+            // 斐波那契数).
+            "斐波那契数列",
+            "斐波那契序列",
+            "斐波那契数",
+            "递归斐波那契",
+        ],
+        output: "55",
+    },
 ];

@@ -19,7 +19,7 @@
 #![allow(clippy::module_name_repetitions)]
 
 use alloc::format;
-use alloc::string::String;
+use alloc::string::{String, ToString};
 use alloc::vec;
 use alloc::vec::Vec;
 
@@ -562,11 +562,68 @@ fn normalize_expression(expression: &str) -> String {
     .fold(format!(" {lower} "), |current, (from, to)| {
         current.replace(from, to)
     });
-    normalized_phrases
+    let mapped = normalized_phrases
         .split_whitespace()
         .map(|token| normalize_word_token(token).unwrap_or(token))
         .collect::<Vec<_>>()
-        .join(" ")
+        .join(" ");
+    rewrite_percent_of(&mapped)
+}
+
+/// True when `token` is a bare decimal number (digits with an optional dot).
+fn is_number_token(token: &str) -> bool {
+    !token.is_empty() && token.chars().all(|c| c.is_ascii_digit() || c == '.')
+}
+
+/// Recognise a percentage value at `index`, returning its numeric text and the
+/// number of tokens it spans. Handles both the glued `8%` form and the spaced
+/// `8 %` form. Returns `None` when `index` is not a percentage value.
+fn match_percent_value(tokens: &[&str], index: usize) -> Option<(String, usize)> {
+    let token = *tokens.get(index)?;
+    if let Some(prefix) = token.strip_suffix('%') {
+        if is_number_token(prefix) {
+            return Some((prefix.to_string(), 1));
+        }
+    }
+    if is_number_token(token) && tokens.get(index + 1).copied() == Some("%") {
+        return Some((token.to_string(), 2));
+    }
+    None
+}
+
+/// Rewrite "N% of M" percentage-of phrases into explicit arithmetic the
+/// recursive-descent parser can evaluate: `8% of 500` becomes `( 8 * 500 / 100 )`.
+///
+/// This mirrors the link-calculator semantics used on the native CLI path, where
+/// "55 * 8% of 500" evaluates to 2200 (issue #334). A bare `%` that is *not*
+/// followed by `of` is left untouched so it still parses as the modulo operator.
+fn rewrite_percent_of(expression: &str) -> String {
+    let tokens: Vec<&str> = expression.split_whitespace().collect();
+    let mut out: Vec<String> = Vec::new();
+    let mut index = 0;
+    while index < tokens.len() {
+        if let Some((percent, consumed)) = match_percent_value(&tokens, index) {
+            let after = index + consumed;
+            if tokens.get(after).copied() == Some("of") {
+                if let Some(base) = tokens.get(after + 1) {
+                    if is_number_token(base) {
+                        out.push("(".to_string());
+                        out.push(percent);
+                        out.push("*".to_string());
+                        out.push((*base).to_string());
+                        out.push("/".to_string());
+                        out.push("100".to_string());
+                        out.push(")".to_string());
+                        index = after + 2;
+                        continue;
+                    }
+                }
+            }
+        }
+        out.push(tokens[index].to_string());
+        index += 1;
+    }
+    out.join(" ")
 }
 
 fn normalize_word_token(token: &str) -> Option<&'static str> {

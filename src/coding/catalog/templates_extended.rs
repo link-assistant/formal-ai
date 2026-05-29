@@ -514,4 +514,154 @@ class Program {
         code: r"total = (1..10).sum
 puts total",
     },
+    // Issue #334: a recursive `fibonacci` function evaluated at the 10th term.
+    // With F(1)=F(2)=1 the recurrence gives F(10)=55. Every template defines the
+    // recursive function and prints `fibonacci(10)`. Outputs were compiled and
+    // run locally (experiments/issue-334).
+    ProgramTemplate {
+        task_slug: "fibonacci",
+        language_slug: "rust",
+        code: r#"fn fibonacci(n: u64) -> u64 {
+    if n <= 2 {
+        1
+    } else {
+        fibonacci(n - 1) + fibonacci(n - 2)
+    }
+}
+
+fn main() {
+    println!("{}", fibonacci(10));
+}"#,
+    },
+    ProgramTemplate {
+        task_slug: "fibonacci",
+        language_slug: "python",
+        code: r"def fibonacci(n):
+    if n <= 2:
+        return 1
+    return fibonacci(n - 1) + fibonacci(n - 2)
+
+
+print(fibonacci(10))",
+    },
+    ProgramTemplate {
+        task_slug: "fibonacci",
+        language_slug: "javascript",
+        code: r"function fibonacci(n) {
+  if (n <= 2) {
+    return 1;
+  }
+  return fibonacci(n - 1) + fibonacci(n - 2);
+}
+
+console.log(fibonacci(10));",
+    },
+    ProgramTemplate {
+        task_slug: "fibonacci",
+        language_slug: "typescript",
+        code: r"function fibonacci(n: number): number {
+  if (n <= 2) {
+    return 1;
+  }
+  return fibonacci(n - 1) + fibonacci(n - 2);
+}
+
+console.log(fibonacci(10));",
+    },
+    ProgramTemplate {
+        task_slug: "fibonacci",
+        language_slug: "go",
+        code: r#"package main
+
+import "fmt"
+
+func fibonacci(n int) int {
+    if n <= 2 {
+        return 1
+    }
+    return fibonacci(n-1) + fibonacci(n-2)
+}
+
+func main() {
+    fmt.Println(fibonacci(10))
+}"#,
+    },
+    ProgramTemplate {
+        task_slug: "fibonacci",
+        language_slug: "c",
+        code: r#"#include <stdio.h>
+
+unsigned long long fibonacci(int n) {
+    if (n <= 2) {
+        return 1;
+    }
+    return fibonacci(n - 1) + fibonacci(n - 2);
+}
+
+int main(void) {
+    printf("%llu\n", fibonacci(10));
+    return 0;
+}"#,
+    },
+    ProgramTemplate {
+        task_slug: "fibonacci",
+        language_slug: "cpp",
+        code: r"#include <iostream>
+
+unsigned long long fibonacci(int n) {
+    if (n <= 2) {
+        return 1;
+    }
+    return fibonacci(n - 1) + fibonacci(n - 2);
+}
+
+int main() {
+    std::cout << fibonacci(10) << '\n';
+}",
+    },
+    ProgramTemplate {
+        task_slug: "fibonacci",
+        language_slug: "java",
+        code: r"public class Main {
+    static long fibonacci(int n) {
+        if (n <= 2) {
+            return 1;
+        }
+        return fibonacci(n - 1) + fibonacci(n - 2);
+    }
+
+    public static void main(String[] args) {
+        System.out.println(fibonacci(10));
+    }
+}",
+    },
+    ProgramTemplate {
+        task_slug: "fibonacci",
+        language_slug: "csharp",
+        code: r"using System;
+
+class Program {
+    static long Fibonacci(int n) {
+        if (n <= 2) {
+            return 1;
+        }
+        return Fibonacci(n - 1) + Fibonacci(n - 2);
+    }
+
+    static void Main() {
+        Console.WriteLine(Fibonacci(10));
+    }
+}",
+    },
+    ProgramTemplate {
+        task_slug: "fibonacci",
+        language_slug: "ruby",
+        code: r"def fibonacci(n)
+  return 1 if n <= 2
+
+  fibonacci(n - 1) + fibonacci(n - 2)
+end
+
+puts fibonacci(10)",
+    },
 ];

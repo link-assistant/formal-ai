@@ -18,6 +18,7 @@ mod program_synthesis;
 mod self_awareness;
 mod software_project;
 mod software_project_code;
+mod software_project_followup;
 mod text_manipulation;
 mod user_intent;
 mod web_requests;
@@ -39,6 +40,7 @@ pub use program_blueprint::try_program_blueprint;
 pub use program_synthesis::try_program_synthesis;
 pub use self_awareness::SelfAwarenessRuntime;
 pub use software_project::try_software_project_request;
+pub use software_project_followup::try_software_project_followup;
 pub use text_manipulation::try_text_manipulation;
 pub use user_intent::{
     try_capabilities, try_clarification, try_ill_formed, try_opinion_question, try_proof_request,

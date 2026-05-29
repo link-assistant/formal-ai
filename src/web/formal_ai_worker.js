@@ -1711,6 +1711,44 @@ function evaluateCurrencyConversionExpression(expression) {
   return `${formatArithmeticResult(amount * rate)} ${to}`;
 }
 
+// Rewrite "N% of M" percentage-of phrases into explicit arithmetic the parser
+// can evaluate: "8% of 500" -> "( 8 * 500 / 100 )". Mirrors the Rust
+// `rewrite_percent_of` helper so the JS fallback agrees with the WASM worker:
+// "55 * 8% of 500" evaluates to 2200 (issue #334). A bare `%` not followed by
+// "of" is left untouched so it still parses as the modulo operator.
+function rewritePercentOf(expression) {
+  const isNumber = (token) => token.length > 0 && /^[0-9.]+$/.test(token);
+  const tokens = String(expression).split(/\s+/).filter(Boolean);
+  const out = [];
+  let index = 0;
+  while (index < tokens.length) {
+    let percent = null;
+    let consumed = 0;
+    const token = tokens[index];
+    if (token.endsWith("%") && isNumber(token.slice(0, -1))) {
+      percent = token.slice(0, -1);
+      consumed = 1;
+    } else if (isNumber(token) && tokens[index + 1] === "%") {
+      percent = token;
+      consumed = 2;
+    }
+    const after = index + consumed;
+    if (
+      percent !== null &&
+      tokens[after] === "of" &&
+      tokens[after + 1] !== undefined &&
+      isNumber(tokens[after + 1])
+    ) {
+      out.push("(", percent, "*", tokens[after + 1], "/", "100", ")");
+      index = after + 2;
+      continue;
+    }
+    out.push(token);
+    index += 1;
+  }
+  return out.join(" ");
+}
+
 function normalizeArithmeticWords(expression) {
   const lower = String(expression).toLowerCase();
   const normalizedPhrases = lower
@@ -1719,11 +1757,12 @@ function normalizeArithmeticWords(expression) {
     .replace(/\s+умножить на\s+/g, " * ")
     .replace(/\s+разделить на\s+/g, " / ")
     .replace(/\s+делить на\s+/g, " / ");
-  return normalizedPhrases
+  const mapped = normalizedPhrases
     .split(/\s+/)
     .filter(Boolean)
     .map((token) => ARITHMETIC_WORD_TOKENS.get(token) || token)
     .join(" ");
+  return rewritePercentOf(mapped);
 }
 
 function evaluateArithmetic(expression) {
@@ -2007,6 +2046,160 @@ function hasSpelledArithmetic(expression) {
   return hasNumberWord && hasArithmeticWordOperator(expression);
 }
 
+// Issue #334 step 2: the website demo's second agent step was "calculate the
+// 10th Fibonacci number and multiply it by 8% of 500. Show me the code and the
+// final result." It is not a calculator expression, but it reduces to one once
+// the symbolic Fibonacci reference is resolved (F(10) = 55), the spelled-out
+// operator is rewritten to `*`, and the trailing instruction sentence is
+// dropped — yielding `55 * 8% of 500` = 2200. The helpers below mirror
+// `fibonacci_value`, `parse_ordinal`, `bare_word`, `resolve_fibonacci_references`,
+// `split_sentences` and `normalize_word_problem` in `src/calculation.rs`.
+function fibonacciValue(n) {
+  if (n === 0) return 0;
+  let previous = 0;
+  let current = 1;
+  for (let step = 1; step < n; step += 1) {
+    const next = previous + current;
+    previous = current;
+    current = next;
+  }
+  return current;
+}
+
+const ORDINAL_WORDS = {
+  first: 1,
+  second: 2,
+  third: 3,
+  fourth: 4,
+  fifth: 5,
+  sixth: 6,
+  seventh: 7,
+  eighth: 8,
+  ninth: 9,
+  tenth: 10,
+};
+
+// Lowercased, punctuation-trimmed view of a token for keyword comparisons.
+function trimNonAlnum(token) {
+  return String(token || "")
+    .replace(/^[^\p{L}\p{N}]+/u, "")
+    .replace(/[^\p{L}\p{N}]+$/u, "");
+}
+
+function bareWord(token) {
+  return trimNonAlnum(token).toLowerCase();
+}
+
+// Parse a leading ordinal/cardinal token such as "10th", "10", "3rd" or the
+// spelled-out "tenth" into its numeric value. Returns null for anything else.
+function parseOrdinal(token) {
+  const trimmed = trimNonAlnum(token);
+  if (!trimmed) return null;
+  const digits = (trimmed.match(/^[0-9]+/) || [""])[0];
+  if (digits) {
+    const suffix = trimmed.slice(digits.length);
+    if (suffix === "" || ["st", "nd", "rd", "th"].includes(suffix)) {
+      return Number.parseInt(digits, 10);
+    }
+    return null;
+  }
+  const value = ORDINAL_WORDS[trimmed.toLowerCase()];
+  return value === undefined ? null : value;
+}
+
+// Replace "(the) N-th Fibonacci number" references with their numeric value.
+function resolveFibonacciReferences(text) {
+  if (!text.toLowerCase().includes("fibonacci")) return text;
+  const tokens = text.split(/\s+/).filter(Boolean);
+  const out = [];
+  let index = 0;
+  while (index < tokens.length) {
+    const n = parseOrdinal(tokens[index]);
+    if (
+      n !== null &&
+      tokens[index + 1] !== undefined &&
+      bareWord(tokens[index + 1]) === "fibonacci"
+    ) {
+      // Drop a determiner we already emitted ("the 10th" -> "55").
+      if (out.length > 0 && bareWord(out[out.length - 1]) === "the") {
+        out.pop();
+      }
+      out.push(String(fibonacciValue(n)));
+      index += 2;
+      // Absorb a trailing "number" / "term" / "sequence" noun.
+      const noun = tokens[index] !== undefined ? bareWord(tokens[index]) : "";
+      if (noun === "number" || noun === "term" || noun === "sequence") {
+        index += 1;
+      }
+      continue;
+    }
+    out.push(tokens[index]);
+    index += 1;
+  }
+  return out.join(" ");
+}
+
+// Split text into sentences on a period that ends a sentence (followed by
+// whitespace or the end of the string). A period flanked by digits ("3.14") is
+// kept inside its sentence so decimals are never broken apart.
+function splitSentences(text) {
+  const chars = Array.from(String(text || ""));
+  const sentences = [];
+  let current = "";
+  for (let i = 0; i < chars.length; i += 1) {
+    const ch = chars[i];
+    const next = chars[i + 1];
+    if (ch === "." && (next === undefined || /\s/.test(next))) {
+      const sentence = current.trim();
+      if (sentence) sentences.push(sentence);
+      current = "";
+      continue;
+    }
+    current += ch;
+  }
+  const last = current.trim();
+  if (last) sentences.push(last);
+  return sentences;
+}
+
+// Rewrite a natural-language "word problem" into a calculator expression, or
+// return null when no rewrite applies so callers fall through unchanged.
+function normalizeWordProblem(expression) {
+  const trimmed = String(expression || "").trim();
+  if (!trimmed) return null;
+  // Keep only sentence fragments that carry arithmetic content, dropping pure
+  // instruction clauses such as "Show me the code and the final result".
+  const arithmetic = splitSentences(trimmed).filter(
+    (sentence) => sentence && (/[0-9]/.test(sentence) || sentence.includes("%")),
+  );
+  if (arithmetic.length === 0) return null;
+  let working = resolveFibonacciReferences(arithmetic.join(". "));
+  // Rewrite spelled-out operators the calculator does not accept. Longer phrases
+  // come first so "and multiply it by" wins over "multiply by".
+  const operatorPhrases = [
+    [" and multiply it by ", " * "],
+    [" and multiply by ", " * "],
+    [" multiply it by ", " * "],
+    [" multiplied by ", " * "],
+    [" multiply by ", " * "],
+    [" and divide it by ", " / "],
+    [" and divide by ", " / "],
+    [" divide it by ", " / "],
+    [" divided by ", " / "],
+    [" divide by ", " / "],
+  ];
+  for (const [phrase, symbol] of operatorPhrases) {
+    const position = working.toLowerCase().indexOf(phrase);
+    if (position !== -1) {
+      working =
+        working.slice(0, position) + symbol + working.slice(position + phrase.length);
+    }
+  }
+  working = working.split(/\s+/).filter(Boolean).join(" ");
+  if (!working || working.toLowerCase() === trimmed.toLowerCase()) return null;
+  return working;
+}
+
 function extractArithmeticExpression(prompt) {
   const trimmed = String(prompt || "").trim();
   if (!trimmed) return null;
@@ -2079,6 +2272,13 @@ function extractArithmeticExpression(prompt) {
     }
   }
   if (!working) return null;
+  // Issue #334 step 2: rewrite a natural-language word problem into a calculator
+  // expression ("the 10th Fibonacci number and multiply it by 8% of 500. Show me
+  // the code ..." -> "55 * 8% of 500") before the symbolic checks below run.
+  const wordProblem = normalizeWordProblem(working);
+  if (wordProblem) {
+    working = wordProblem;
+  }
   const workingLower = working.toLowerCase();
   const hasLetter = /\p{L}/u.test(working);
   const hasSymbolic = /[+*/%^=×·÷−$€¥₹₽]/.test(working) || (!hasLetter && /-/.test(working));
@@ -10072,6 +10272,280 @@ function trySoftwareProjectRequest(prompt, history = []) {
   };
 }
 
+// Phrases that, while a software-project dialogue is active, signal a request to
+// exercise the just-designed artifact rather than start a fresh fact lookup.
+// Carries the supported languages (en, ru, hi, zh) so a multilingual user who
+// designs in one language and then says "now test it" in another stays inside
+// the project dialogue. Mirrors `FOLLOW_UP_MARKERS` in
+// src/solver_handlers/software_project.rs (verification precedes execution and
+// demonstration so a combined phrasing records the stronger goal).
+const SOFTWARE_FOLLOW_UP_MARKERS = [
+  // Verification — en
+  ["test it", "verification"],
+  ["test the", "verification"],
+  ["test this", "verification"],
+  ["verify", "verification"],
+  ["check it", "verification"],
+  ["check that", "verification"],
+  ["run the tests", "verification"],
+  // Verification — ru / zh / hi
+  ["протестируй", "verification"],
+  ["протестировать", "verification"],
+  ["проверь", "verification"],
+  ["тестируй", "verification"],
+  ["测试", "verification"],
+  ["检验", "verification"],
+  ["检查", "verification"],
+  ["परीक्षण", "verification"],
+  ["जाँच", "verification"],
+  ["जांच", "verification"],
+  // Execution — en
+  ["run it", "execution"],
+  ["run this", "execution"],
+  ["run the", "execution"],
+  ["execute it", "execution"],
+  ["execute the", "execution"],
+  ["try it", "execution"],
+  // Execution — ru / zh / hi
+  ["запусти", "execution"],
+  ["выполни", "execution"],
+  ["运行", "execution"],
+  ["执行", "execution"],
+  ["चलाओ", "execution"],
+  ["निष्पादित", "execution"],
+  // Demonstration — en
+  ["demo it", "demonstration"],
+  ["show me", "demonstration"],
+  ["show the", "demonstration"],
+  ["print the", "demonstration"],
+  // Demonstration — ru / zh / hi
+  ["покажи", "demonstration"],
+  ["显示", "demonstration"],
+  ["展示", "demonstration"],
+  ["दिखाओ", "demonstration"],
+];
+
+const SOFTWARE_FOLLOW_UP_ACTIONS = {
+  verification: "test",
+  execution: "run",
+  demonstration: "show",
+};
+
+const SOFTWARE_FOLLOW_UP_GATES = ["generated_code", "test_execution", "network_access"];
+
+// Recover the active software-project dialogue from history regardless of
+// whether the plan was approved. Mirrors `prior_software_project_dialogue`.
+function priorSoftwareProjectDialogue(history) {
+  const assistant = lastHistoryTurn(history, "assistant");
+  if (!assistant || !assistant.includes("software_project_request")) {
+    return null;
+  }
+  const approved = assistant.includes("approval_state approved");
+  const user = lastHistoryTurn(history, "user");
+  const meaning = user ? formalizeSoftwareProjectRequest(user) : null;
+  return meaning ? { meaning, approved } : null;
+}
+
+// Pull the first domain-like token (e.g. `wikipedia.org`) out of the prompt.
+function extractFollowUpTargetSite(prompt) {
+  for (const raw of String(prompt || "").split(/\s+/)) {
+    const token = raw.replace(/^[^A-Za-z0-9]+|[^A-Za-z0-9]+$/g, "");
+    if (!token.includes(".")) continue;
+    const lastDot = token.lastIndexOf(".");
+    const host = token.slice(0, lastDot);
+    const tld = token.slice(lastDot + 1);
+    if (
+      tld.length >= 2 &&
+      /^[A-Za-z]+$/.test(tld) &&
+      /[A-Za-z]/.test(host)
+    ) {
+      return token.toLowerCase();
+    }
+  }
+  return null;
+}
+
+// Capture the clause after "show me"/"show"/"print"/"display" (capped at 12
+// words) so the follow-up records what the user wants surfaced.
+function extractFollowUpExpectedOutput(prompt) {
+  const source = String(prompt || "");
+  const lower = source.toLowerCase();
+  for (const marker of ["show me ", "show ", "print ", "display "]) {
+    const found = lower.indexOf(marker);
+    if (found < 0) continue;
+    const start = found + marker.length;
+    const tail = source.slice(start);
+    const stopMatch = tail.match(/[.?\n;]/);
+    const stop = stopMatch ? stopMatch.index : tail.length;
+    const clause = tail
+      .slice(0, stop)
+      .split(/\s+/)
+      .filter(Boolean)
+      .slice(0, 12)
+      .join(" ");
+    if (clause) return clause;
+  }
+  return null;
+}
+
+function detectSoftwareFollowUp(prompt, normalized) {
+  const found = SOFTWARE_FOLLOW_UP_MARKERS.find(([marker]) =>
+    normalized.includes(marker),
+  );
+  if (!found) return null;
+  return {
+    kind: found[1],
+    action: SOFTWARE_FOLLOW_UP_ACTIONS[found[1]],
+    targetSite: extractFollowUpTargetSite(prompt),
+    expectedOutput: extractFollowUpExpectedOutput(prompt),
+  };
+}
+
+function followUpMeaningId(meaning, followUp) {
+  const key = [
+    `parent=${stableSoftwareMeaningId(meaning)}`,
+    `kind=${followUp.kind}`,
+    `site=${followUp.targetSite || ""}`,
+    `output=${followUp.expectedOutput || ""}`,
+  ].join(";");
+  return stableBehaviorRuleId("software_project_followup", key);
+}
+
+function followUpReasoningSteps(meaning, followUp) {
+  const steps = [
+    `Recognize "${followUp.action}" as a ${followUp.kind} request that exercises the ${meaning.artifact} from the active plan, not a fact lookup.`,
+  ];
+  if (followUp.targetSite) {
+    steps.push(
+      `Bind the test target to ${followUp.targetSite} and keep live fetches behind the network_access gate.`,
+    );
+  }
+  if (followUp.expectedOutput) {
+    steps.push(
+      `Record the expected output as "${followUp.expectedOutput}" so the test harness can assert it.`,
+    );
+  }
+  steps.push(
+    "Drive the artifact through a deterministic fixture before any host API or network call.",
+  );
+  steps.push(
+    "Keep code execution behind approval gates because the sandbox cannot run untrusted code.",
+  );
+  return steps;
+}
+
+function followUpPlanSteps(meaning, followUp) {
+  const site = followUp.targetSite || "the requested target";
+  const steps = [
+    `Generate the ${meaning.artifact} core plus a deterministic test harness with a captured ${site} fixture.`,
+    "Assert each requirement (parsing, extraction, counting, summary) against the fixture.",
+  ];
+  if (followUp.expectedOutput) {
+    steps.push(`Surface ${followUp.expectedOutput} from the fixture run.`);
+  }
+  steps.push(
+    `Run the ${meaning.implementationLanguage} test command once the generated_code gate is approved.`,
+  );
+  steps.push(
+    `Promote the run to live ${site} only after the test_execution and network_access gates pass.`,
+  );
+  return steps;
+}
+
+function followUpEvidence(meaning, followUp, approved) {
+  const evidence = [
+    "formalization:text_to_links_notation",
+    `meaning:${followUpMeaningId(meaning, followUp)}`,
+    `software_project:parent:${stableSoftwareMeaningId(meaning)}`,
+    `software_project:follow_up_kind:${followUp.kind}`,
+  ];
+  if (followUp.targetSite) {
+    evidence.push(`software_project:target_site:${followUp.targetSite}`);
+  }
+  if (followUp.expectedOutput) {
+    evidence.push(`software_project:expected_output:${followUp.expectedOutput}`);
+  }
+  evidence.push(`approval_state:${softwareApprovalLabel(approved)}`);
+  for (const gate of SOFTWARE_FOLLOW_UP_GATES) {
+    evidence.push(`approval_gate:${gate}`);
+  }
+  return evidence;
+}
+
+function renderSoftwareProjectFollowUp(meaning, followUp, approved) {
+  const lines = [];
+  lines.push(
+    `Recorded a ${followUp.kind} follow-up for the ${meaning.artifact} from the active plan.`,
+  );
+  lines.push("");
+  lines.push("Formalized meaning:");
+  lines.push("```lino");
+  lines.push("software_project_followup");
+  lines.push(`  parent_request ${linoString(stableSoftwareMeaningId(meaning))}`);
+  lines.push(`  parent_artifact ${linoString(meaning.artifact)}`);
+  lines.push(`  action ${linoString(followUp.action)}`);
+  lines.push(`  follow_up_kind ${followUp.kind}`);
+  if (followUp.targetSite) {
+    lines.push(`  target_site ${linoString(followUp.targetSite)}`);
+  }
+  if (followUp.expectedOutput) {
+    lines.push(`  expected_output ${linoString(followUp.expectedOutput)}`);
+  }
+  lines.push(`  delivery_mode ${meaning.deliveryMode}`);
+  lines.push(`  implementation_language ${linoString(meaning.implementationLanguage)}`);
+  lines.push(`  approval_state ${softwareApprovalLabel(approved)}`);
+  lines.push("  approval_required true");
+  for (const gate of SOFTWARE_FOLLOW_UP_GATES) {
+    lines.push(`  approval_gate ${linoString(gate)}`);
+  }
+  lines.push("```");
+  lines.push("");
+  lines.push("Reasoning steps:");
+  followUpReasoningSteps(meaning, followUp).forEach((step, index) => {
+    lines.push(`${index + 1}. ${step}`);
+  });
+  lines.push("");
+  lines.push("Verification plan:");
+  followUpPlanSteps(meaning, followUp).forEach((step, index) => {
+    lines.push(`${index + 1}. ${step}`);
+  });
+  lines.push("");
+  if (approved) {
+    lines.push(
+      "The plan is approved, so the generated starter already includes this test harness. " +
+        "Running it live needs the test_execution and network_access gates.",
+    );
+  } else {
+    lines.push(
+      "Reply `approve plan` to generate the artifact plus this test harness. Running it live " +
+        "against the target needs the test_execution and network_access gates.",
+    );
+  }
+  return lines.join("\n");
+}
+
+// Follow-up handler for an active software-project dialogue (issue #341). Runs
+// before `tryConceptLookup` so a decomposed step like "test it by scraping
+// wikipedia.org and show me the top 10 most frequent words" stays bound to the
+// project instead of resolving the `wikipedia` concept or falling to the
+// unknown opener. Mirrors `try_software_project_followup` in the Rust solver.
+function trySoftwareProjectFollowup(prompt, history = []) {
+  const normalized = normalizePrompt(prompt);
+  // Approval prompts stay with the main request handler, which advances to the
+  // implementation starter.
+  if (isSoftwareApprovalPrompt(normalized)) return null;
+  const dialogue = priorSoftwareProjectDialogue(history);
+  if (!dialogue) return null;
+  const followUp = detectSoftwareFollowUp(prompt, normalized);
+  if (!followUp) return null;
+  return {
+    intent: "software_project_followup",
+    content: renderSoftwareProjectFollowUp(dialogue.meaning, followUp, dialogue.approved),
+    confidence: 0.74,
+    evidence: followUpEvidence(dialogue.meaning, followUp, dialogue.approved),
+  };
+}
+
 function tryJavaScriptExecution(prompt) {
   const program = extractJavaScriptProgram(prompt);
   if (program === null) return null;
@@ -10382,6 +10856,41 @@ const WRITE_PROGRAM_TASKS = {
       "求1到10的和",
     ],
   },
+  // Issue #334: a recursive `fibonacci` function evaluated at the 10th term
+  // (F(1)=F(2)=1 -> F(10)=55). Mirrors the Rust `fibonacci` task; fixed index so
+  // the output is verifiable.
+  fibonacci: {
+    label: "recursive Fibonacci",
+    output: "55",
+    aliases: [
+      "fibonacci sequence recursively",
+      "fibonacci sequence",
+      "recursive fibonacci",
+      "fibonacci recursively",
+      "fibonacci function",
+      "fibonacci numbers",
+      "fibonacci number",
+      "10th fibonacci number",
+      "the 10th fibonacci number",
+      "tenth fibonacci number",
+      "nth fibonacci number",
+      "последовательность фибоначчи",
+      "числа фибоначчи",
+      "число фибоначчи",
+      "рекурсивный фибоначчи",
+      "фибоначчи рекурсивно",
+      "10-е число фибоначчи",
+      "десятое число фибоначчи",
+      "फ़िबोनाची अनुक्रम",
+      "फिबोनाची अनुक्रम",
+      "फ़िबोनाची संख्या",
+      "फिबोनाची संख्या",
+      "斐波那契数列",
+      "斐波那契序列",
+      "斐波那契数",
+      "递归斐波那契",
+    ],
+  },
 };
 
 const WRITE_PROGRAM_TEMPLATES = {
@@ -10546,6 +11055,29 @@ const WRITE_PROGRAM_TEMPLATES = {
     ruby:
       "total = (1..10).sum\nputs total",
   },
+  // Issue #334: recursive `fibonacci` function evaluated at the 10th term (55).
+  fibonacci: {
+    rust:
+      "fn fibonacci(n: u64) -> u64 {\n    if n <= 2 {\n        1\n    } else {\n        fibonacci(n - 1) + fibonacci(n - 2)\n    }\n}\n\nfn main() {\n    println!(\"{}\", fibonacci(10));\n}",
+    python:
+      "def fibonacci(n):\n    if n <= 2:\n        return 1\n    return fibonacci(n - 1) + fibonacci(n - 2)\n\n\nprint(fibonacci(10))",
+    javascript:
+      "function fibonacci(n) {\n  if (n <= 2) {\n    return 1;\n  }\n  return fibonacci(n - 1) + fibonacci(n - 2);\n}\n\nconsole.log(fibonacci(10));",
+    typescript:
+      "function fibonacci(n: number): number {\n  if (n <= 2) {\n    return 1;\n  }\n  return fibonacci(n - 1) + fibonacci(n - 2);\n}\n\nconsole.log(fibonacci(10));",
+    go:
+      "package main\n\nimport \"fmt\"\n\nfunc fibonacci(n int) int {\n    if n <= 2 {\n        return 1\n    }\n    return fibonacci(n-1) + fibonacci(n-2)\n}\n\nfunc main() {\n    fmt.Println(fibonacci(10))\n}",
+    c:
+      "#include <stdio.h>\n\nunsigned long long fibonacci(int n) {\n    if (n <= 2) {\n        return 1;\n    }\n    return fibonacci(n - 1) + fibonacci(n - 2);\n}\n\nint main(void) {\n    printf(\"%llu\\n\", fibonacci(10));\n    return 0;\n}",
+    cpp:
+      "#include <iostream>\n\nunsigned long long fibonacci(int n) {\n    if (n <= 2) {\n        return 1;\n    }\n    return fibonacci(n - 1) + fibonacci(n - 2);\n}\n\nint main() {\n    std::cout << fibonacci(10) << '\\n';\n}",
+    java:
+      "public class Main {\n    static long fibonacci(int n) {\n        if (n <= 2) {\n            return 1;\n        }\n        return fibonacci(n - 1) + fibonacci(n - 2);\n    }\n\n    public static void main(String[] args) {\n        System.out.println(fibonacci(10));\n    }\n}",
+    csharp:
+      "using System;\n\nclass Program {\n    static long Fibonacci(int n) {\n        if (n <= 2) {\n            return 1;\n        }\n        return Fibonacci(n - 1) + Fibonacci(n - 2);\n    }\n\n    static void Main() {\n        Console.WriteLine(Fibonacci(10));\n    }\n}",
+    ruby:
+      "def fibonacci(n)\n  return 1 if n <= 2\n\n  fibonacci(n - 1) + fibonacci(n - 2)\nend\n\nputs fibonacci(10)",
+  },
 };
 
 function normalizeProgramPrompt(prompt) {
@@ -10610,6 +11142,10 @@ const PROGRAM_NOUNS = [
   "programme",
   "script",
   "code",
+  // Issue #334: "Write a Python function that ..." — a requested function is a
+  // program artefact too.
+  "function",
+  "func",
   "программа",
   "программу",
   "программе",
@@ -10617,14 +11153,21 @@ const PROGRAM_NOUNS = [
   "программку",
   "скрипт",
   "код",
-  // Hindi: प्रोग्राम (program), स्क्रिप्ट (script), कोड (code).
+  // Russian: функция / функцию (function).
+  "функция",
+  "функцию",
+  // Hindi: प्रोग्राम (program), स्क्रिप्ट (script), कोड (code),
+  // फ़ंक्शन / फंक्शन (function).
   "प्रोग्राम",
   "स्क्रिप्ट",
   "कोड",
-  // Chinese: 程序 (program), 脚本 (script), 代码 (code).
+  "फ़ंक्शन",
+  "फंक्शन",
+  // Chinese: 程序 (program), 脚本 (script), 代码 (code), 函数 (function).
   "程序",
   "脚本",
   "代码",
+  "函数",
 ];
 const PROGRAM_VERBS = [
   "write",
@@ -11350,6 +11893,14 @@ const PROGRAM_EXPLANATIONS = {
     ru: "Программа складывает целые числа от 1 до 10 (1 + 2 + … + 10) и печатает сумму — 55.",
     hi: "प्रोग्राम 1 से 10 तक के पूर्णांकों को जोड़ता है (1 + 2 + … + 10) और कुल योग 55 छापता है।",
     zh: "程序将 1 到 10 的整数相加（1 + 2 + … + 10），并打印总和 55。",
+  },
+  fibonacci: {
+    en:
+      "The program defines a recursive `fibonacci` function (F(1)=F(2)=1, " +
+      "F(n)=F(n-1)+F(n-2)) and prints the 10th term, 55.",
+    ru: "Программа определяет рекурсивную функцию `fibonacci` (F(1)=F(2)=1, F(n)=F(n-1)+F(n-2)) и печатает 10-й член — 55.",
+    hi: "प्रोग्राम एक पुनरावर्ती `fibonacci` फ़ंक्शन परिभाषित करता है (F(1)=F(2)=1, F(n)=F(n-1)+F(n-2)) और 10वाँ पद 55 छापता है।",
+    zh: "程序定义了一个递归的 `fibonacci` 函数（F(1)=F(2)=1，F(n)=F(n-1)+F(n-2)），并打印第 10 项 55。",
   },
   __fallback: {
     en: "The program performs the requested task and prints its result to standard output.",
@@ -16046,6 +16597,13 @@ async function solve(prompt, history, prefs, userContext = {}) {
     {
       name: "tryDefinitionMerge",
       run: () => tryDefinitionMerge(prompt, { allowPlainConcept: autoDefinitionFusion }),
+    },
+    // Issue #341: keep a "test it / run it / show me" step inside the active
+    // software-project dialogue instead of letting it resolve as a concept
+    // lookup. Must run before tryConceptLookup and trySoftwareProjectRequest.
+    {
+      name: "trySoftwareProjectFollowup",
+      run: () => trySoftwareProjectFollowup(prompt, history),
     },
     { name: "tryConceptLookup", run: () => tryConceptLookup(prompt) },
     { name: "tryWriteProgram", run: () => writeProgram() },

@@ -94,15 +94,15 @@ const ARTIFACT_MATCHES: &[(&str, &str)] = &[
 ];
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-struct SoftwareProjectMeaning {
+pub(super) struct SoftwareProjectMeaning {
     action: &'static str,
     artifact_surface: &'static str,
-    artifact: &'static str,
+    pub(super) artifact: &'static str,
     target: String,
     requirements: Vec<String>,
     subtasks: Vec<SoftwareSubtask>,
     delivery_mode: DeliveryMode,
-    implementation_language: &'static str,
+    pub(super) implementation_language: &'static str,
     approval_gates: Vec<&'static str>,
     game_tracker: bool,
 }
@@ -149,7 +149,7 @@ impl ApprovalState {
 }
 
 impl SoftwareProjectMeaning {
-    fn from_prompt(prompt: &str, normalized: &str) -> Option<Self> {
+    pub(super) fn from_prompt(prompt: &str, normalized: &str) -> Option<Self> {
         if normalized.contains("hello") && normalized.contains("world") {
             return None;
         }
@@ -198,8 +198,14 @@ impl SoftwareProjectMeaning {
         key
     }
 
-    fn meaning_id(&self) -> String {
+    pub(super) fn meaning_id(&self) -> String {
         stable_id("software_project_request", &self.canonical_key())
+    }
+
+    /// Expose the delivery-mode label to the follow-up module without leaking
+    /// the private [`DeliveryMode`] enum or its backing field.
+    pub(super) const fn delivery_mode_label(&self) -> &'static str {
+        self.delivery_mode.label()
     }
 
     const fn domain_label(&self) -> &'static str {
@@ -662,7 +668,7 @@ fn is_game_unit_tracker(normalized: &str) -> bool {
     domain && mechanics
 }
 
-fn is_approval_prompt(normalized: &str) -> bool {
+pub(super) fn is_approval_prompt(normalized: &str) -> bool {
     let compact = normalized
         .trim()
         .trim_matches(|character: char| !character.is_ascii_alphanumeric())
@@ -842,7 +848,7 @@ fn render_implementation_response(meaning: &SoftwareProjectMeaning) -> String {
     body
 }
 
-fn lino_string(value: &str) -> String {
+pub(super) fn lino_string(value: &str) -> String {
     let escaped = value
         .replace('\\', "\\\\")
         .replace('"', "\\\"")
