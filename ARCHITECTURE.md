@@ -872,17 +872,63 @@ adds one file (or extends one matrix) without touching the rest.
 
 ## 16. Open Questions
 
-These items are tracked as requirements today and as architecture
-references here:
+The original issue #244 architecture questions, the E1-E20 follow-up batches,
+and the reasoning batch E21-E27 are merged (PRs #305-#311). Every message is now
+formalized into a Links-Notation intent before routing (`src/intent_formalization.rs`),
+unmatched prompts run a reasoning-under-unknowns loop (`src/solver_unknown_reasoning.rs`)
+instead of a canned opener, per-language program intents collapse into a parametric
+`SelectedRule::WriteProgram`, substitution rules run over link CRUD (`src/substitution.rs`),
+natural language can query memory / call APIs / execute code under the permission
+model (`src/solver_handlers/`), a bounded isolated agent runs allowlisted commands
+(`src/agent.rs`), and a permissive industry benchmark slice is imported
+(`data/benchmarks/industry-suite.lino`).
 
-1. Natural-language-skill compilation now supports both exact
-   trigger/response rules and the structured deterministic subset in
-   `src/skill_compiler.rs`: typed inputs, preconditions, ordered steps,
-   effects, generated expected tests, explicit permissions, and
-   Rust/JavaScript/native handler stubs. Compiled skills can be wrapped as
-   associative packages by `src/associative_package.rs`. Future work is
-   executing reviewed generated stubs in sandboxed runtimes; arbitrary
-   natural-language programming remains outside the current supported subset.
+The 2026-05-27 audit (issue #244, fourth pass) found that the largest remaining
+gap was the **generality of the synthesis step**. That gap is now closed: the
+synthesis batch **E28-E32** ([#313](https://github.com/link-assistant/formal-ai/issues/313)-[#317](https://github.com/link-assistant/formal-ai/issues/317))
+is merged (PRs #319-#323). The universal 11-step loop is still the main path for
+every prompt (`src/solver.rs::solve_with_history_probability_store_and_intent_cache`),
+but the synthesis step (`record_candidates`) now **derives** answers by composing
+decomposed sub-results over the links network instead of returning a seed keyed
+on the prompt: arithmetic/word-problem and counting answers are computed, Python
+functions are synthesized from spec + tests and verified in the bounded agent
+workspace (`src/solver_handlers/program_synthesis.rs`), text manipulation is
+generalized over arbitrary input, and the imported benchmark suite grew to a
+10-case slice that passes **10/10** with a `minimum_pass_count` ratchet
+(`tests/unit/specification/benchmarks.rs`).
+
+The 2026-05-29 audit (issue #244, fifth pass) found the next gap is **parity**,
+per the PR #245 feedback ("all Rust and JavaScript logic are in sync", "all
+languages are supported equally"). The sixth-pass audit (also 2026-05-29) records
+that the parity batch is **now closed and merged**:
+
+1. **Universal multilingual operation vocabulary (E33, [#326](https://github.com/link-assistant/formal-ai/issues/326), PR #328).**
+   `src/solver_handlers/text_manipulation.rs` no longer triggers on English
+   literals. Every operation is recognised by canonicalising the prompt against
+   one shared data-driven vocabulary (`data/seed/operation-vocabulary.lino`) that
+   lists each operation's surface forms per supported language (`en|ru|hi|zh`),
+   mirroring how `intent-routing.lino` already works — general, not per-handler
+   literals. Adding a surface form or a whole language is a seed-data edit, not a
+   code change. The Rust core loads it via `seed::operation_vocabulary()`; the
+   browser worker loads the same file via `src/web/seed_loader.js`.
+2. **Cross-runtime parity (E34, [#327](https://github.com/link-assistant/formal-ai/issues/327), PR #329).**
+   The JavaScript browser worker (`src/web/formal_ai_worker.js`) now routes
+   synthesis prompts through `tryLinkNativeSynthesis`, `tryProgramSynthesis`, and
+   `tryTextManipulation`, deriving the same synthesis/numeric/program/text answers
+   as the Rust core, verified by the shared fixture
+   `data/parity/cross-runtime-synthesis.json`, the Rust test
+   `shared_cross_runtime_synthesis_fixture_matches_rust_solver`, and
+   `tests/e2e/tests/issue-327.spec.js`. Mirrors the E19 [#282](https://github.com/link-assistant/formal-ai/issues/282)
+   browser-worker parity precedent; WebAssembly stays the bridge for shared
+   primitives and JavaScript stays UI/glue per pillar 18.
+
+With E1-E34 all merged, no vision-planning epic remains open for issue #244.
+
+A still-open lower-priority question carried over from the E20 batch: arbitrary
+natural-language programming (executing reviewed generated stubs in sandboxed
+runtimes) remains outside the current supported subset of
+`src/skill_compiler.rs`; the spec-driven, test-verified slice of it is built by
+E30 above.
 
 Pull requests that close any of these should update the corresponding row in
 the table in Section 2 and link the new module.
@@ -894,7 +940,8 @@ the table in Section 2 and link the new module.
 - `VISION.md` — values, product story, north-star user experience.
 - `GOALS.md` — what counts as success per surface.
 - `NON-GOALS.md` — what we explicitly do not build.
-- `REQUIREMENTS.md` — issue-by-issue implementation matrix (R1 … R236).
+- `REQUIREMENTS.md` — issue-by-issue implementation matrix (R1 … R255).
+- `ROADMAP.md` — implementation-progress tracker mapping each `VISION.md` pillar to its real code status, closed planning batches, and remaining follow-up gaps.
 - [`linksplatform/doublets-rs`](https://github.com/linksplatform/doublets-rs) — default native storage backend.
 - [`linksplatform/doublets-web`](https://github.com/linksplatform/doublets-web) — browser-side mirror.
 - [`link-assistant/calculator`](https://github.com/link-assistant/calculator) — delegated calculator engine (`link-calculator` crate).

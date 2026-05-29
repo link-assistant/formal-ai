@@ -1,0 +1,854 @@
+[
+  {
+    "number": 272,
+    "title": "в чём ты можешь быть полезен?",
+    "closedAt": "2026-05-26T06:32:05Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/272"
+  },
+  {
+    "number": 262,
+    "title": "Unknown prompt: ого, чето начал соображать:)",
+    "closedAt": "2026-05-26T06:00:45Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/262"
+  },
+  {
+    "number": 259,
+    "title": "E14: Natural-language skill compilation",
+    "closedAt": "2026-05-26T05:33:09Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/259"
+  },
+  {
+    "number": 258,
+    "title": "E13: Network visualization + trace links on every surface",
+    "closedAt": "2026-05-26T04:56:19Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/258"
+  },
+  {
+    "number": 257,
+    "title": "E12: Authenticated API + tool-call gating",
+    "closedAt": "2026-05-26T04:39:25Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/257"
+  },
+  {
+    "number": 256,
+    "title": "E11: Agent mode with isolated execution",
+    "closedAt": "2026-05-26T00:37:32Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/256"
+  },
+  {
+    "number": 255,
+    "title": "E10: Links-network invariants & dynamic type system",
+    "closedAt": "2026-05-26T00:19:10Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/255"
+  },
+  {
+    "number": 254,
+    "title": "E9: Chat-over-experience queries",
+    "closedAt": "2026-05-26T00:03:36Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/254"
+  },
+  {
+    "number": 253,
+    "title": "E8: Formal reasoning engine (relative-meta-logic / SMT)",
+    "closedAt": "2026-05-25T23:36:35Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/253"
+  },
+  {
+    "number": 252,
+    "title": "E7: Code generation & cross-language translation",
+    "closedAt": "2026-05-25T23:03:14Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/252"
+  },
+  {
+    "number": 251,
+    "title": "E6: Translation via link-native meanings",
+    "closedAt": "2026-05-25T22:04:03Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/251"
+  },
+  {
+    "number": 250,
+    "title": "E5: Public-knowledge source cache with provenance",
+    "closedAt": "2026-05-25T21:40:47Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/250"
+  },
+  {
+    "number": 249,
+    "title": "E4: Temperature-based interpretation selection + clarify-vs-guess",
+    "closedAt": "2026-05-25T21:19:42Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/249"
+  },
+  {
+    "number": 248,
+    "title": "E3: Full Wikidata P/Q-id formalization engine",
+    "closedAt": "2026-05-25T20:52:48Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/248"
+  },
+  {
+    "number": 247,
+    "title": "E2: Make the universal reasoning loop the only entry path",
+    "closedAt": "2026-05-25T20:07:35Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/247"
+  },
+  {
+    "number": 246,
+    "title": "E1: Unified doublet-links store (doublets-rs + doublets-web)",
+    "closedAt": "2026-05-25T19:37:48Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/246"
+  },
+  {
+    "number": 242,
+    "title": "Unknown prompt: what i digress mean?",
+    "closedAt": "2026-05-25T15:39:20Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/242"
+  },
+  {
+    "number": 237,
+    "title": "Unknown prompt: Привет, расскажи о себе.",
+    "closedAt": "2026-05-24T12:55:22Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/237"
+  },
+  {
+    "number": 232,
+    "title": "Issue with dialog: Что такое существо?",
+    "closedAt": "2026-05-22T21:15:52Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/232"
+  },
+  {
+    "number": 230,
+    "title": "Issue with dialog: Переведи \"Найти синонимы или примеры согласования\" на английский",
+    "closedAt": "2026-05-22T21:15:34Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/230"
+  },
+  {
+    "number": 228,
+    "title": "Unknown prompt: list all genshin characters with off-field DMG",
+    "closedAt": "2026-05-22T17:28:29Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/228"
+  },
+  {
+    "number": 226,
+    "title": "Unknown prompt: согласованность в предложении - есть такая статья в википедии?",
+    "closedAt": "2026-05-22T15:54:47Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/226"
+  },
+  {
+    "number": 224,
+    "title": "Unknown prompt: What is the most popular dataset for translation quality validation?",
+    "closedAt": "2026-05-22T12:06:40Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/224"
+  },
+  {
+    "number": 223,
+    "title": "Unknown prompt: how the join method works in pandas",
+    "closedAt": "2026-05-24T12:56:10Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/223"
+  },
+  {
+    "number": 221,
+    "title": "Issue with dialog: Переведи \"помидор\" на английский.",
+    "closedAt": "2026-05-22T14:38:38Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/221"
+  },
+  {
+    "number": 218,
+    "title": "Translation issues",
+    "closedAt": "2026-05-21T22:52:47Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/218"
+  },
+  {
+    "number": 217,
+    "title": "Issue with dialog: переведи «яблоко» на английский",
+    "closedAt": "2026-05-21T22:52:47Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/217"
+  },
+  {
+    "number": 216,
+    "title": "Issue with dialog: translate apple to russian",
+    "closedAt": "2026-05-21T22:52:47Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/216"
+  },
+  {
+    "number": 213,
+    "title": "Unknown prompt: Покажи список своих правил",
+    "closedAt": "2026-05-21T21:41:43Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/213"
+  },
+  {
+    "number": 212,
+    "title": "Unknown prompt: Найди яблоко в интернете",
+    "closedAt": "2026-05-21T20:28:02Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/212"
+  },
+  {
+    "number": 210,
+    "title": "Issue with dialog: Переведи \"доброе яблоко\" на английский.",
+    "closedAt": "2026-05-21T18:32:23Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/210"
+  },
+  {
+    "number": 209,
+    "title": "Unknown prompt: привет. докажи что простых бесконечно",
+    "closedAt": "2026-05-24T18:02:30Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/209"
+  },
+  {
+    "number": 207,
+    "title": "Issue with dialog: Переведи \"как у тебя дела?\" на английский.",
+    "closedAt": "2026-05-21T16:18:13Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/207"
+  },
+  {
+    "number": 205,
+    "title": "Add optional experimental support for https://github.com/naptha/tesseract.js",
+    "closedAt": "2026-05-21T14:37:54Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/205"
+  },
+  {
+    "number": 196,
+    "title": "Support permanent deletion of \"deleted\" conversations and the entire memory",
+    "closedAt": "2026-05-25T14:06:49Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/196"
+  },
+  {
+    "number": 195,
+    "title": "Make sure everything ready to run our AI system in docker in docker",
+    "closedAt": "2026-05-21T23:06:14Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/195"
+  },
+  {
+    "number": 193,
+    "title": "We need to prebundle everything using `bun bundle` if possible",
+    "closedAt": "2026-05-20T19:21:15Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/193"
+  },
+  {
+    "number": 192,
+    "title": "Issue with dialog: Calcualte 2+5050",
+    "closedAt": "2026-05-21T17:58:49Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/192"
+  },
+  {
+    "number": 190,
+    "title": "Unknown prompt: Переведи \"как у тебя дела?\" на английский.",
+    "closedAt": "2026-05-20T18:52:00Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/190"
+  },
+  {
+    "number": 187,
+    "title": "Unknown prompt: Какой сегодня день?",
+    "closedAt": "2026-05-21T22:23:57Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/187"
+  },
+  {
+    "number": 185,
+    "title": "Unknown prompt: Prove determinism the way logic can handle paradoxes like Godel's math incomp...",
+    "closedAt": "2026-05-21T17:41:16Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/185"
+  },
+  {
+    "number": 184,
+    "title": "Unknown prompt: что такое OpenStreerMap",
+    "closedAt": "2026-05-21T22:43:35Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/184"
+  },
+  {
+    "number": 183,
+    "title": "Unknown prompt: как устроен AUR",
+    "closedAt": "2026-05-21T15:21:15Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/183"
+  },
+  {
+    "number": 182,
+    "title": "Issue with dialog: что такое порты в bsd",
+    "closedAt": "2026-05-21T22:17:17Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/182"
+  },
+  {
+    "number": 180,
+    "title": "Issue with dialog: Найди в интернете яблоко",
+    "closedAt": "2026-05-20T08:53:45Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/180"
+  },
+  {
+    "number": 172,
+    "title": "`How to X Y`",
+    "closedAt": "2026-05-20T13:01:32Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/172"
+  },
+  {
+    "number": 169,
+    "title": "Issue with dialog: Navigate to github.com",
+    "closedAt": "2026-05-20T12:04:09Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/169"
+  },
+  {
+    "number": 168,
+    "title": "Issue with dialog: What is 8% of $50?",
+    "closedAt": "2026-05-19T21:55:41Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/168"
+  },
+  {
+    "number": 167,
+    "title": "Unknown prompt: как курить канабис",
+    "closedAt": "2026-05-19T21:14:49Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/167"
+  },
+  {
+    "number": 166,
+    "title": "Unknown prompt: как приготовить взрывчатое вещество",
+    "closedAt": "2026-05-19T21:15:03Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/166"
+  },
+  {
+    "number": 165,
+    "title": "Unknown prompt: Найди информацию о Rust программировании",
+    "closedAt": "2026-05-21T20:03:50Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/165"
+  },
+  {
+    "number": 164,
+    "title": "Unknown prompt: Посчитай 1000 рублей в долларах",
+    "closedAt": "2026-05-20T17:53:57Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/164"
+  },
+  {
+    "number": 163,
+    "title": "Issue with dialog: что такое что",
+    "closedAt": "2026-05-19T21:59:44Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/163"
+  },
+  {
+    "number": 162,
+    "title": "Unknown prompt: какой день недели наступает после вторника",
+    "closedAt": "2026-05-20T17:24:27Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/162"
+  },
+  {
+    "number": 161,
+    "title": "Unknown prompt: что такое граф",
+    "closedAt": "2026-05-21T18:33:44Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/161"
+  },
+  {
+    "number": 160,
+    "title": "Unknown prompt: I am fine, thank you",
+    "closedAt": "2026-05-19T22:46:31Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/160"
+  },
+  {
+    "number": 159,
+    "title": "Issue with dialog: Что такое Hive Mind?",
+    "closedAt": "2026-05-20T15:19:19Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/159"
+  },
+  {
+    "number": 157,
+    "title": "Unknown prompt: кто тебя создал?",
+    "closedAt": "2026-05-23T22:56:48Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/157"
+  },
+  {
+    "number": 156,
+    "title": "Unknown prompt: Как твое имя?",
+    "closedAt": "2026-05-23T22:33:09Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/156"
+  },
+  {
+    "number": 155,
+    "title": "Unknown prompt: какой принцип работы у тебя",
+    "closedAt": "2026-05-24T12:55:22Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/155"
+  },
+  {
+    "number": 153,
+    "title": "Better search support and diagnostics UI/UX improvements",
+    "closedAt": "2026-05-19T21:47:37Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/153"
+  },
+  {
+    "number": 152,
+    "title": "Unknown prompt: Как твои дела?",
+    "closedAt": "2026-05-19T22:34:36Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/152"
+  },
+  {
+    "number": 150,
+    "title": "Привет Костя. что то нихрена не работает",
+    "closedAt": "2026-05-23T21:30:21Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/150"
+  },
+  {
+    "number": 149,
+    "title": "Unknown prompt: Test",
+    "closedAt": "2026-05-20T11:12:33Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/149"
+  },
+  {
+    "number": 148,
+    "title": "То есть ты не используешь OpenAI api? И вся твоя область знаний лежит в локальных правилах - ссылках? По запросу пользователя ты ищешь подходящую ссылку в интернете?",
+    "closedAt": "2026-05-24T12:55:22Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/148"
+  },
+  {
+    "number": 147,
+    "title": "Ты LLM?",
+    "closedAt": "2026-05-24T12:55:21Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/147"
+  },
+  {
+    "number": 146,
+    "title": "какие факты ты знаешь?",
+    "closedAt": "2026-05-24T12:55:21Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/146"
+  },
+  {
+    "number": 145,
+    "title": "Unknown prompt: Ты можешь искать в интернете?",
+    "closedAt": "2026-05-20T10:54:30Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/145"
+  },
+  {
+    "number": 144,
+    "title": "Unknown prompt: Какая у тебя модель личности?",
+    "closedAt": "2026-05-20T13:50:19Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/144"
+  },
+  {
+    "number": 143,
+    "title": "Unknown prompt: Какая у тебя модель личности?",
+    "closedAt": "2026-05-19T21:27:54Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/143"
+  },
+  {
+    "number": 142,
+    "title": "Unknown prompt: Какая у тебя модель окружающего мира?",
+    "closedAt": "2026-05-24T12:55:21Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/142"
+  },
+  {
+    "number": 141,
+    "title": "Unknown prompt: Расскажи что тебе известно об окружающем мире",
+    "closedAt": "2026-05-24T12:55:20Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/141"
+  },
+  {
+    "number": 140,
+    "title": "formal-ai demo issue report",
+    "closedAt": "2026-05-19T18:47:20Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/140"
+  },
+  {
+    "number": 139,
+    "title": "Unknown prompt: Что тебе вообще известно?",
+    "closedAt": "2026-05-24T12:55:20Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/139"
+  },
+  {
+    "number": 138,
+    "title": "Unknown prompt: Тест",
+    "closedAt": "2026-05-23T21:28:36Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/138"
+  },
+  {
+    "number": 137,
+    "title": "Unknown prompt: Привет, расскажи о себе.",
+    "closedAt": "2026-05-24T12:55:20Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/137"
+  },
+  {
+    "number": 136,
+    "title": "formal-ai demo issue report",
+    "closedAt": "2026-05-19T16:49:07Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/136"
+  },
+  {
+    "number": 135,
+    "title": "Unknown prompt: Можешь написать мне Playright скрипт?",
+    "closedAt": "2026-05-24T14:45:20Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/135"
+  },
+  {
+    "number": 133,
+    "title": "Continue to expand on our vision with focus on search, questions, coding using web search providers, databases providers and code hosting providers",
+    "closedAt": "2026-05-19T16:56:24Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/133"
+  },
+  {
+    "number": 129,
+    "title": "https://link-assistant.github.io/formal-ai/tests is broken",
+    "closedAt": "2026-05-19T12:38:18Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/129"
+  },
+  {
+    "number": 127,
+    "title": "Unknown prompt: столица россии",
+    "closedAt": "2026-05-19T13:56:50Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/127"
+  },
+  {
+    "number": 125,
+    "title": "Unknown prompt: Navigate to github.com",
+    "closedAt": "2026-05-19T13:12:28Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/125"
+  },
+  {
+    "number": 123,
+    "title": "Unknown prompt: Купи слона",
+    "closedAt": "2026-05-19T09:50:01Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/123"
+  },
+  {
+    "number": 121,
+    "title": "Fix CI/CD",
+    "closedAt": "2026-05-19T05:36:49Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/121"
+  },
+  {
+    "number": 117,
+    "title": "Instead of our own implementation of i18n, we should use https://github.com/link-foundation/lino-i18n",
+    "closedAt": "2026-05-19T04:33:18Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/117"
+  },
+  {
+    "number": 115,
+    "title": "We need to continue on fully implementing our vision",
+    "closedAt": "2026-05-19T05:37:38Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/115"
+  },
+  {
+    "number": 112,
+    "title": "We need to continue to do better UI/UX of mobile version",
+    "closedAt": "2026-05-18T18:08:09Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/112"
+  },
+  {
+    "number": 110,
+    "title": "Mobile UI is broken now but in a different way",
+    "closedAt": "2026-05-18T10:48:19Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/110"
+  },
+  {
+    "number": 108,
+    "title": "We need better UI/UX on mobile with configuration options",
+    "closedAt": "2026-05-18T09:36:25Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/108"
+  },
+  {
+    "number": 107,
+    "title": "Unknown prompt: Сделай запрос к google.com",
+    "closedAt": "2026-05-18T21:39:06Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/107"
+  },
+  {
+    "number": 105,
+    "title": "Unknown prompt: Сколько будет два плюс два?",
+    "closedAt": "2026-05-17T20:22:09Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/105"
+  },
+  {
+    "number": 103,
+    "title": "Expand on test cases",
+    "closedAt": "2026-05-17T19:59:19Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/103"
+  },
+  {
+    "number": 96,
+    "title": "Add support for https://github.com/link-assistant/calculator as a library and calculator tool",
+    "closedAt": "2026-05-17T09:32:49Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/96"
+  },
+  {
+    "number": 94,
+    "title": "UI/UX improvements",
+    "closedAt": "2026-05-16T23:10:15Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/94"
+  },
+  {
+    "number": 93,
+    "title": "Unknown prompt: Привет. ты кто?",
+    "closedAt": "2026-05-17T09:53:15Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/93"
+  },
+  {
+    "number": 84,
+    "title": "CI/CD needs fixing",
+    "closedAt": "2026-05-16T13:10:41Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/84"
+  },
+  {
+    "number": 82,
+    "title": "Unknown prompt: что такое граматика",
+    "closedAt": "2026-05-17T11:29:04Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/82"
+  },
+  {
+    "number": 81,
+    "title": "Unknown prompt: 2*2+2=?",
+    "closedAt": "2026-05-17T09:47:48Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/81"
+  },
+  {
+    "number": 80,
+    "title": "Unknown prompt: Hi, can you write for me extension for owlbear? I am currently leading some d...",
+    "closedAt": "2026-05-19T07:39:15Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/80"
+  },
+  {
+    "number": 79,
+    "title": "Unknown prompt: Tell me, who is Trump",
+    "closedAt": "2026-05-16T14:58:05Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/79"
+  },
+  {
+    "number": 78,
+    "title": "We need to make our issue reporting shorter",
+    "closedAt": "2026-05-16T15:56:36Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/78"
+  },
+  {
+    "number": 73,
+    "title": "Issue with dialog: Write hello world in TypeScript",
+    "closedAt": "2026-05-16T16:45:07Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/73"
+  },
+  {
+    "number": 72,
+    "title": "old version 0.16 on github pages website",
+    "closedAt": "2026-05-16T11:12:38Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/72"
+  },
+  {
+    "number": 71,
+    "title": "Unknown prompt: fetch google.com",
+    "closedAt": "2026-05-16T15:07:08Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/71"
+  },
+  {
+    "number": 70,
+    "title": "Unknown prompt: what is tesla",
+    "closedAt": "2026-05-16T10:42:08Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/70"
+  },
+  {
+    "number": 69,
+    "title": "Unknown prompt: who is elon mask",
+    "closedAt": "2026-05-16T10:51:04Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/69"
+  },
+  {
+    "number": 68,
+    "title": "Unknown prompt: x*2 = 123",
+    "closedAt": "2026-05-17T09:54:09Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/68"
+  },
+  {
+    "number": 67,
+    "title": "Unknown prompt: пока",
+    "closedAt": "2026-05-16T15:08:50Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/67"
+  },
+  {
+    "number": 66,
+    "title": "Unknown prompt: Расскажи за Telegram Ads",
+    "closedAt": "2026-05-16T11:35:46Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/66"
+  },
+  {
+    "number": 65,
+    "title": "Unknown prompt: .",
+    "closedAt": "2026-05-16T14:57:51Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/65"
+  },
+  {
+    "number": 64,
+    "title": "Unknown prompt: Расскажи о теории связей",
+    "closedAt": "2026-05-17T11:07:09Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/64"
+  },
+  {
+    "number": 63,
+    "title": "Be better than wikipedia, by merging multiple translations of definitions",
+    "closedAt": "2026-05-19T07:00:32Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/63"
+  },
+  {
+    "number": 55,
+    "title": "Issue with dialog: 123123980921093128 * 2348023048230429324 * 123123980921093128 * 2348023048230...",
+    "closedAt": "2026-05-15T21:41:51Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/55"
+  },
+  {
+    "number": 53,
+    "title": "Unknown prompt: Где живут зелёные человеки?",
+    "closedAt": "2026-05-15T23:49:04Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/53"
+  },
+  {
+    "number": 52,
+    "title": "Unknown prompt: how it works?",
+    "closedAt": "2026-05-15T22:05:24Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/52"
+  },
+  {
+    "number": 51,
+    "title": "Issue with dialog: покажи как ты работаешь?",
+    "closedAt": "2026-05-16T00:23:07Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/51"
+  },
+  {
+    "number": 50,
+    "title": "Issue with dialog: шабат шалом!",
+    "closedAt": "2026-05-16T00:25:17Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/50"
+  },
+  {
+    "number": 49,
+    "title": "Issue with dialog: что за дичь?",
+    "closedAt": "2026-05-16T00:45:54Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/49"
+  },
+  {
+    "number": 44,
+    "title": "Issue with dialog: Стоит четырёхэтажный дом, в каждом этаже по восьми окон, на крыше — два слухо...",
+    "closedAt": "2026-05-16T00:15:36Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/44"
+  },
+  {
+    "number": 43,
+    "title": "Issue with dialog: Сколько метров в килобайте?",
+    "closedAt": "2026-05-16T00:35:57Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/43"
+  },
+  {
+    "number": 42,
+    "title": "Issue with dialog: Do you think space is continuous or discrete",
+    "closedAt": "2026-05-16T00:20:41Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/42"
+  },
+  {
+    "number": 41,
+    "title": "Unknown prompt: Купи слона",
+    "closedAt": "2026-05-16T00:48:17Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/41"
+  },
+  {
+    "number": 40,
+    "title": "Issue in android Google chrome input field",
+    "closedAt": "2026-05-15T21:09:36Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/40"
+  },
+  {
+    "number": 39,
+    "title": "Issue with dialog: Сосал?",
+    "closedAt": "2026-05-16T10:58:15Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/39"
+  },
+  {
+    "number": 37,
+    "title": "Issue with dialog: О чём мы разговаривали?",
+    "closedAt": "2026-05-15T20:47:14Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/37"
+  },
+  {
+    "number": 35,
+    "title": "Unknown prompt: Напиши скрипт на питоне",
+    "closedAt": "2026-05-16T01:06:22Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/35"
+  },
+  {
+    "number": 31,
+    "title": "Issue with dialog: что такое Kiss в рамках програмирования",
+    "closedAt": "2026-05-15T20:57:33Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/31"
+  },
+  {
+    "number": 30,
+    "title": "Unknown prompt: назови цвет",
+    "closedAt": "2026-05-16T00:15:20Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/30"
+  },
+  {
+    "number": 29,
+    "title": "Issue with dialog: не понял",
+    "closedAt": "2026-05-15T21:03:32Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/29"
+  },
+  {
+    "number": 27,
+    "title": "Fixes and improvements",
+    "closedAt": "2026-05-15T19:49:26Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/27"
+  },
+  {
+    "number": 24,
+    "title": "CI/CD failed, needs fixing",
+    "closedAt": "2026-05-15T15:21:49Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/24"
+  },
+  {
+    "number": 21,
+    "title": "Support multilinqual urls in all places",
+    "closedAt": "2026-05-15T15:55:14Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/21"
+  },
+  {
+    "number": 20,
+    "title": "Unknown prompt: что такое iir в ml",
+    "closedAt": "2026-05-15T16:40:08Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/20"
+  },
+  {
+    "number": 18,
+    "title": "Export/import should always contain full memory of AI agent",
+    "closedAt": "2026-05-15T13:29:10Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/18"
+  },
+  {
+    "number": 16,
+    "title": "Continue working on our vision",
+    "closedAt": "2026-05-15T12:20:12Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/16"
+  },
+  {
+    "number": 14,
+    "title": "GitHub pages demo and documentation should be updated",
+    "closedAt": "2026-05-15T00:31:12Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/14"
+  },
+  {
+    "number": 12,
+    "title": "We need to continue to execute on our vision",
+    "closedAt": "2026-05-14T23:15:02Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/12"
+  },
+  {
+    "number": 10,
+    "title": "UI/UX improvements",
+    "closedAt": "2026-05-12T19:53:20Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/10"
+  },
+  {
+    "number": 8,
+    "title": "Make a simple Telegram bot to use this",
+    "closedAt": "2026-05-12T20:30:19Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/8"
+  },
+  {
+    "number": 6,
+    "title": "Improvements to UI/UX",
+    "closedAt": "2026-05-12T18:35:47Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/6"
+  },
+  {
+    "number": 4,
+    "title": "GitHub Pages deploy failed, yet reported false positive, and e2e tests clearly show it as well",
+    "closedAt": "2026-05-12T17:12:51Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/4"
+  },
+  {
+    "number": 1,
+    "title": "initial prototype",
+    "closedAt": "2026-05-12T16:09:56Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/1"
+  }
+]

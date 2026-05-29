@@ -1,0 +1,7 @@
+# Next-batch issue creation, 2026-05-26
+https://github.com/link-assistant/formal-ai/issues/278
+https://github.com/link-assistant/formal-ai/issues/279
+https://github.com/link-assistant/formal-ai/issues/280
+https://github.com/link-assistant/formal-ai/issues/281
+https://github.com/link-assistant/formal-ai/issues/282
+https://github.com/link-assistant/formal-ai/issues/283

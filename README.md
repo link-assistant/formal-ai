@@ -13,7 +13,38 @@ The current implementation covers the surface area requested in issue #1:
 - GitHub Pages markdown chat demo backed by a Rust-generated WebAssembly worker
 - Electron desktop shell that starts the local Rust HTTP API and reuses the web chat
 
-Project direction is tracked in [VISION.md](VISION.md), [GOALS.md](GOALS.md), and [NON-GOALS.md](NON-GOALS.md). The issue #12 synthesis is in [docs/case-studies/issue-12/README.md](docs/case-studies/issue-12/README.md).
+Project direction is tracked in [VISION.md](VISION.md), [GOALS.md](GOALS.md), and [NON-GOALS.md](NON-GOALS.md). Implementation progress against the vision is tracked in [ROADMAP.md](ROADMAP.md). The issue #12 synthesis is in [docs/case-studies/issue-12/README.md](docs/case-studies/issue-12/README.md).
+
+## Universal Problem-Solving Algorithm
+
+Every prompt — a greeting, a math question, a translation, a "write a program"
+request, an agent action, or something the assistant has never seen — walks the
+same loop. The skeleton is **decompose the problem into tasks, derive a test
+(experiment) for each task, draft candidate solutions, select the smallest
+sufficient draft, and compose the drafts back into one solution**:
+
+![Universal Problem Solving Algorithm: a problem fans out into tasks, each task into tests, each test into candidate drafts, and the selected drafts compose back into a single solution](docs/assets/universal-problem-solving-algorithm.jpg)
+
+This is not a separate subsystem bolted onto a catalogue of intents — it is the
+main solver path. `src/solver.rs::UniversalSolver` runs the same 11-step loop
+for every impulse:
+
+| Diagram stage | Loop steps in `src/solver.rs` |
+| --- | --- |
+| `Problem` | 1. Impulse, 2. Formalization (Links-Notation intent), 3. Context, 4. History lookup |
+| `decomposition → tasks` | 5. Decomposition into sub-impulses (`record_decomposition`) |
+| `experiment → tests` | 6. TDD-style validation (`record_validation`) |
+| `selection → drafts` | 7. Solution synthesis (`record_candidates`), 8. Combination of the smallest sufficient candidate |
+| `composition → solutions → Solution` | 9. Verification, 10. Simplification, 11. Documentation with a `trace:` pointer |
+
+Every step appends its own event to the append-only log, so the chat can answer
+"why did you do that?" from the recorded experience. The full algorithm,
+including the reasoning-under-unknowns path (`src/solver_unknown_reasoning.rs`)
+and intent formalization (`src/intent_formalization.rs`), is documented in
+[VISION.md](VISION.md#universal-problem-solving-algorithm) and
+[ARCHITECTURE.md](ARCHITECTURE.md). How much of the vision is built versus still
+planned — including the open industry-benchmark coverage gap — is tracked in
+[ROADMAP.md](ROADMAP.md).
 
 ## Quick Start
 
