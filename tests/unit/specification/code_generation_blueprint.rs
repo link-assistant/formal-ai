@@ -171,6 +171,82 @@ fn russian_http_json_statistics_request_returns_blueprint_in_russian() {
 }
 
 #[test]
+fn hindi_http_json_statistics_request_returns_blueprint_in_hindi() {
+    // Hindi (हिंदी) composite request for a Python program. The capability
+    // keywords are matched in Devanagari, and the execution report is localized.
+    let response = answer(
+        "Python में एक प्रोग्राम लिखो जो http अनुरोध करे, json पार्स करे और औसत और माध्यिका की गणना करे।",
+    );
+    assert_eq!(response.intent, "write_program", "got: {}", response.intent);
+    assert!(
+        response.answer.contains("```python"),
+        "got: {}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains("निष्पादन स्थिति"),
+        "execution report should be localized to Hindi, got: {}",
+        response.answer
+    );
+    assert!(
+        !response.answer.contains("I do not have a template"),
+        "must not surface the unsupported dead-end, got: {}",
+        response.answer
+    );
+}
+
+#[test]
+fn chinese_http_json_statistics_request_returns_blueprint_in_chinese() {
+    // Chinese (中文) composite request for a JavaScript program. CJK keywords
+    // are matched by substring and the execution report is localized.
+    let response =
+        answer("用 JavaScript 编写一个程序，发起 http 请求，解析 json，并计算平均值和中位数。");
+    assert_eq!(response.intent, "write_program", "got: {}", response.intent);
+    assert!(
+        response.answer.contains("```javascript") || response.answer.contains("```js"),
+        "got: {}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains("执行状态"),
+        "execution report should be localized to Chinese, got: {}",
+        response.answer
+    );
+    assert!(
+        !response.answer.contains("I do not have a template"),
+        "must not surface the unsupported dead-end, got: {}",
+        response.answer
+    );
+}
+
+#[test]
+fn english_http_json_statistics_request_records_blueprint_capabilities() {
+    // English (language: "en") composite request: assert the full capability
+    // decomposition is recorded in the trace so the blueprint is auditable.
+    let response = answer(
+        "Write a Rust program that makes an HTTP GET request, parses the JSON, computes the \
+         mean and median, outputs the results, with error handling and comments.",
+    );
+    assert_eq!(response.intent, "write_program", "got: {}", response.intent);
+    for capability in [
+        "http_request",
+        "json_parse",
+        "statistics",
+        "output_results",
+        "error_handling",
+        "comments",
+    ] {
+        assert!(
+            response
+                .links_notation
+                .contains(&format!("program_blueprint:capability {capability}")),
+            "trace should record the {capability} capability, got: {}",
+            response.links_notation
+        );
+    }
+}
+
+#[test]
 fn partial_composite_request_without_statistics_stays_unsupported() {
     // http + json but NO statistics -> no recipe matches, so the honest
     // unsupported answer is preserved (we do not fabricate a program).
