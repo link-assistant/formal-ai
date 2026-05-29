@@ -15,5 +15,5 @@ bump: minor
 - The JavaScript demo worker (`src/web/formal_ai_worker.js`) now mirrors the full Rust catalog (the four new tasks, all ten languages with their setup/run/check metadata) and the novice "How it works"/"How to test" guidance, keeping the in-browser engine in lockstep with the Rust engine.
 
 ### Changed
-- Reorganized the coding-task support into a cohesive `src/coding/` module (`catalog.rs` for the language/task/template catalog and lookups, `guidance.rs` for the novice "How it works"/"How to test" guidance), replacing the misleadingly named `src/engine_hello_world.rs` and `src/engine_program_guidance.rs`. The module covers general coding tasks across 11 languages, not only hello-world (issue #330).
+- Reorganized the coding-task support into a cohesive `src/coding/` module — a `catalog/` submodule (`types.rs` for the records, `languages.rs`/`tasks.rs` for the catalog tables, `templates_core.rs`/`templates_extended.rs` for the per-language templates, and `mod.rs` for the lookups) plus `guidance.rs` for the novice "How it works"/"How to test" guidance — replacing the misleadingly named `src/engine_hello_world.rs` and `src/engine_program_guidance.rs`. The module covers general coding tasks across 11 languages, not only hello-world, and every file stays well under the repository's per-file line limit (issue #330).
 

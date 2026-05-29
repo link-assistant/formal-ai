@@ -281,7 +281,7 @@ instead of one, all localized for the four supported response languages
    expected-output section shown above.
 
 Two new fields back this on the per-language catalog in
-`src/coding/catalog.rs`: `save_as` (e.g. `main.rs`, `Main.java`,
+`src/coding/catalog/languages.rs`: `save_as` (e.g. `main.rs`, `Main.java`,
 `Program.cs`) and `setup_hint` (a short, novice-friendly pointer to the
 toolchain installer). They are populated for all 11 catalog languages.
 
@@ -304,7 +304,7 @@ turn keeps the full instructions.
 | File | Change |
 | --- | --- |
 | `src/engine.rs` | `write_program_answer` gains a `prior_code_response` flag and appends `program_explanation_section` + `program_test_instructions`; new localized explanation/instruction builders. |
-| `src/coding/catalog.rs` | `save_as` + `setup_hint` fields added to `ProgramLanguage` and populated for all 11 languages. |
+| `src/coding/catalog/` | `save_as` + `setup_hint` fields added to `ProgramLanguage` (`types.rs`) and populated for all 11 languages (`languages.rs`). |
 | `src/solver.rs` | Detects a prior assistant code block in `history` and threads `prior_code_response` into the answer builder. |
 | `tests/unit/specification/code_generation.rs` | 7 new tests across all languages + history-aware behavior. |
 
@@ -350,7 +350,7 @@ Resolution — a cohesive `src/coding/` module replaces the two `engine_*` files
 
 | Before | After | Responsibility |
 | --- | --- | --- |
-| `src/engine_hello_world.rs` | `src/coding/catalog.rs` | The catalog of programming languages, coding tasks, per-language templates, and the alias-matching lookups that resolve a prompt to a `ProgramSpec`. |
+| `src/engine_hello_world.rs` | `src/coding/catalog/` | The catalog of programming languages, coding tasks, per-language templates, and the alias-matching lookups that resolve a prompt to a `ProgramSpec` — itself split into focused files (`types.rs`, `languages.rs`, `tasks.rs`, `templates_core.rs`, `templates_extended.rs`, `mod.rs`) so no file approaches the per-file line limit. |
 | `src/engine_program_guidance.rs` | `src/coding/guidance.rs` | The novice "How it works" explanation and "How to test it yourself" instructions (R9). |
 | — | `src/coding/mod.rs` | Module doc; re-exports catalog items at `crate::coding::*` so callers stay decoupled from the submodule layout. |
 
@@ -359,7 +359,7 @@ the ubiquitous-language noun for the generated artifact (`write_program` intent,
 `ProgramSpec`), so the catalog and guidance read consistently. All call sites
 (`engine.rs`, `solver.rs`, `intent_formalization.rs`, `solver_handlers/`), the JS
 worker mirror (`src/web/formal_ai_worker.js`), and the behavior-rule provenance
-string were updated in lockstep. No behavior changed — all 680 Rust unit tests,
+string were updated in lockstep. No behavior changed — all Rust unit tests,
 clippy, and fmt stay green — this is a pure structural rename for clarity and to
 signal that the module is the home for general coding-task support, not a
 hello-world special case.
@@ -392,7 +392,7 @@ so a request resolves through the same parameterized `write_program(language,
 task)` route — no per-task special-casing. The 40 templates are not assumed
 correct: `experiments/issue-330-coding-tasks/templates.py` is the authoritative
 source and `verify.sh` compiles/runs each one and diffs it against the expected
-output before the value is baked into `src/coding/catalog.rs`.
+output before the value is baked into `src/coding/catalog/templates_extended.rs`.
 
 **(b) Full JavaScript-worker parity.** `src/web/formal_ai_worker.js` is the
 in-browser twin of the Rust engine and must stay byte-faithful to it. The R9
@@ -418,11 +418,20 @@ to parity in the same PR:
 
 | File | Change |
 | --- | --- |
-| `src/coding/catalog.rs` | Four new `ProgramTask`s + 40 `ProgramTemplate`s (one per language). |
+| `src/coding/catalog/` | Four new `ProgramTask`s (`tasks.rs`) + 40 `ProgramTemplate`s, one per language (`templates_extended.rs`). |
 | `src/coding/guidance.rs` | Accurate per-task `program_explanation` arms (fizzbuzz / factorial / reverse_string / sum_to_ten + explicit list-files arms) with a neutral fallback. |
 | `src/web/formal_ai_worker.js` | Tasks, templates, extended language metadata, and the full R9 explanation/test-instruction port wired into `tryWriteProgram`. |
 | `tests/unit/specification/code_generation.rs` | Per-task tests across en/ru/hi/zh and an "every popular language" sweep for FizzBuzz. |
 | `experiments/issue-330-coding-tasks/` | `templates.py` + `verify.sh` (authoritative, compiler-verified template source) and a `smoke_worker.cjs` harness that exercises the JS worker's localized answers. |
+
+The wider catalog pushed the single `catalog.rs` over the repository's
+1000-line-per-file limit (a hard CI failure on the "Check file size limit" job),
+so it was split into the focused `src/coding/catalog/` module described in §10 —
+`types.rs`, `languages.rs`, `tasks.rs`, `templates_core.rs`,
+`templates_extended.rs`, and `mod.rs`, each well under the limit (largest 545
+lines). The flat `PROGRAM_TEMPLATES` slice became `program_templates()` /
+`program_template_count()` over grouped sub-slices; template data is unchanged
+(76 entries), so parity and verified outputs hold.
 
 Verification: `cargo build`/`fmt`/`clippy`/`test` (686 unit tests) all green, the
 JS worker passes `node --check` and the `smoke_worker.cjs` localized-output

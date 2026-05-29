@@ -68,7 +68,8 @@ At v0.141.0 the `write_program` catalog only knew two tasks:
 `grep -c list_files` returns **0** in all three source-of-truth implementations
 at `main`:
 
-- `src/engine_hello_world.rs` (Rust `PROGRAM_TASKS` / `PROGRAM_TEMPLATES`),
+- `src/engine_hello_world.rs` (Rust `PROGRAM_TASKS` / `PROGRAM_TEMPLATES`; since
+  reorganized into `src/coding/catalog/` — see the issue #330 case study),
 - `data/seed/hello-world-programs.lino` (Links Notation seed),
 - `src/web/formal_ai_worker.js` (browser worker fallback).
 
