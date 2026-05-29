@@ -88,25 +88,96 @@ fn program_explanation(task_slug: &str, language: Language) -> &'static str {
              directory's entries, keeps only the regular files, sorts their names \
              alphabetically, and prints each name on its own line."
         }
-        // `list_files` and any future directory task share the current-directory wording.
-        (_, Language::Russian) => {
+        ("list_files", Language::Russian) => {
             "Программа читает содержимое текущего каталога, оставляет только обычные файлы, \
              собирает их имена в список, сортирует список по алфавиту и печатает каждое имя \
              на отдельной строке."
         }
-        (_, Language::Hindi) => {
+        ("list_files", Language::Hindi) => {
             "प्रोग्राम वर्तमान निर्देशिका की प्रविष्टियाँ पढ़ता है, केवल सामान्य फ़ाइलें रखता है, उनके \
              नाम एक सूची में एकत्र करता है, सूची को वर्णानुक्रम में क्रमबद्ध करता है, और हर नाम को \
              अलग पंक्ति में छापता है।"
         }
-        (_, Language::Chinese) => {
+        ("list_files", Language::Chinese) => {
             "程序读取当前目录的条目，只保留普通文件，将它们的名称收集到一个列表中，\
              按字母顺序排序，然后将每个名称打印在单独一行。"
         }
-        (_, _) => {
+        ("list_files", _) => {
             "The program reads the entries of the current directory, keeps only the regular \
              files, collects their names into a list, sorts the list alphabetically, and \
              prints each name on its own line."
+        }
+        ("fizzbuzz", Language::Russian) => {
+            "Программа перебирает числа от 1 до 15. Для каждого числа она печатает `FizzBuzz`, \
+             если оно делится и на 3, и на 5; `Fizz`, если делится на 3; `Buzz`, если делится \
+             на 5; иначе само число — каждое на отдельной строке."
+        }
+        ("fizzbuzz", Language::Hindi) => {
+            "प्रोग्राम 1 से 15 तक की संख्याओं पर लूप करता है। हर संख्या के लिए वह `FizzBuzz` छापता है \
+             जब वह 3 और 5 दोनों से विभाज्य हो, `Fizz` जब वह 3 से विभाज्य हो, `Buzz` जब वह 5 से \
+             विभाज्य हो, अन्यथा स्वयं संख्या — हर एक अलग पंक्ति में।"
+        }
+        ("fizzbuzz", Language::Chinese) => {
+            "程序遍历数字 1 到 15。对于每个数字，当它同时能被 3 和 5 整除时打印 `FizzBuzz`，\
+             能被 3 整除时打印 `Fizz`，能被 5 整除时打印 `Buzz`，否则打印数字本身 —— 每个单独一行。"
+        }
+        ("fizzbuzz", _) => {
+            "The program loops over the numbers 1 to 15. For each number it prints `FizzBuzz` \
+             when the number is divisible by both 3 and 5, `Fizz` when it is divisible by 3, \
+             `Buzz` when it is divisible by 5, and otherwise the number itself — each on its \
+             own line."
+        }
+        ("factorial", Language::Russian) => {
+            "Программа перемножает числа от 1 до 5 (1×2×3×4×5) — это факториал 5 — и печатает \
+             результат, 120."
+        }
+        ("factorial", Language::Hindi) => {
+            "प्रोग्राम 1 से 5 तक की संख्याओं को आपस में गुणा करता है (1×2×3×4×5), जो 5 का फैक्टोरियल \
+             है, और परिणाम 120 छापता है।"
+        }
+        ("factorial", Language::Chinese) => {
+            "程序将 1 到 5 的数字相乘（1×2×3×4×5），这就是 5 的阶乘，并打印结果 120。"
+        }
+        ("factorial", _) => {
+            "The program multiplies together the numbers 1 through 5 (1×2×3×4×5), which is the \
+             factorial of 5, and prints the result, 120."
+        }
+        ("reverse_string", Language::Russian) => {
+            "Программа берёт строку `hello`, переставляет её символы в обратном порядке и \
+             печатает результат — `olleh`."
+        }
+        ("reverse_string", Language::Hindi) => {
+            "प्रोग्राम स्ट्रिंग `hello` लेता है, उसके अक्षरों का क्रम उलटता है, और परिणाम `olleh` छापता है।"
+        }
+        ("reverse_string", Language::Chinese) => {
+            "程序取字符串 `hello`，将其字符顺序反转，并打印结果 `olleh`。"
+        }
+        ("reverse_string", _) => {
+            "The program takes the string `hello`, reverses the order of its characters, and \
+             prints the result, `olleh`."
+        }
+        ("sum_to_ten", Language::Russian) => {
+            "Программа складывает целые числа от 1 до 10 (1 + 2 + … + 10) и печатает сумму — 55."
+        }
+        ("sum_to_ten", Language::Hindi) => {
+            "प्रोग्राम 1 से 10 तक के पूर्णांकों को जोड़ता है (1 + 2 + … + 10) और कुल योग 55 छापता है।"
+        }
+        ("sum_to_ten", Language::Chinese) => {
+            "程序将 1 到 10 的整数相加（1 + 2 + … + 10），并打印总和 55。"
+        }
+        ("sum_to_ten", _) => {
+            "The program adds together the integers from 1 to 10 (1 + 2 + … + 10) and prints \
+             the total, 55."
+        }
+        // Neutral fallback for any task that has no bespoke explanation yet; it
+        // avoids claiming behaviour the program may not have.
+        (_, Language::Russian) => {
+            "Программа выполняет запрошенную задачу и печатает результат в стандартный вывод."
+        }
+        (_, Language::Hindi) => "प्रोग्राम अनुरोधित कार्य करता है और परिणाम को मानक आउटपुट पर छापता है।",
+        (_, Language::Chinese) => "程序执行所请求的任务，并将结果打印到标准输出。",
+        (_, _) => {
+            "The program performs the requested task and prints its result to standard output."
         }
     }
 }

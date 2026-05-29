@@ -63,6 +63,10 @@ requirement comes from the issue body.
     `engine_hello_world` module and reorganize file naming / code structure to
     follow the [code-architecture-principles](https://github.com/link-foundation/code-architecture-principles),
     signalling support for general coding tasks rather than hello-world. See §10.
+11. **R11 — Support a wider range of cases.** Rethink the architecture so the
+    catalog covers more than hello-world / list-files, and apply *every* change
+    in lockstep across the codebase and docs — including the JavaScript worker
+    mirror. See §11.
 
 ---
 
@@ -359,3 +363,68 @@ string were updated in lockstep. No behavior changed — all 680 Rust unit tests
 clippy, and fmt stay green — this is a pure structural rename for clarity and to
 signal that the module is the home for general coding-task support, not a
 hello-world special case.
+
+---
+
+## 11. Wider-range catalog + full JS parity (R11 — from the PR review)
+
+The reviewer asked to *"rethink the architecture and make much more changes, to
+ensure we will have support [for a] wider range of cases for the users"* and
+stressed that *"every change in one place should also be applied in all places
+in the codebase and docs."* Two concrete deliverables followed.
+
+**(a) Four new deterministic coding tasks.** The catalog now answers four
+classic exercises in addition to hello-world / count-to-three / list-files. Each
+is tied to a *fixed, self-describing scenario* so its output is unambiguous and
+verifiable — the same philosophy as the hello-world seed — rather than an
+open-ended prompt an LLM would guess at:
+
+| Task slug | Label | Verified output | Exercises |
+| --- | --- | --- | --- |
+| `fizzbuzz` | FizzBuzz | `1⏎2⏎Fizz⏎4⏎Buzz⏎…⏎FizzBuzz` (1–15) | branching / modulo control flow |
+| `factorial` | factorial of 5 | `120` | iterative multiplication |
+| `reverse_string` | string reversal | `olleh` (reverses `hello`) | string / sequence handling |
+| `sum_to_ten` | sum from 1 to 10 | `55` | accumulation |
+
+Every task ships a template for **all ten** supported languages (rust, python,
+javascript, typescript, go, c, cpp, java, csharp, ruby) and en/ru/hi/zh aliases,
+so a request resolves through the same parameterized `write_program(language,
+task)` route — no per-task special-casing. The 40 templates are not assumed
+correct: `experiments/issue-330-coding-tasks/templates.py` is the authoritative
+source and `verify.sh` compiles/runs each one and diffs it against the expected
+output before the value is baked into `src/coding/catalog.rs`.
+
+**(b) Full JavaScript-worker parity.** `src/web/formal_ai_worker.js` is the
+in-browser twin of the Rust engine and must stay byte-faithful to it. The R9
+"teach a novice" feature had been added only to Rust, so the worker was brought
+to parity in the same PR:
+
+- The four tasks and their 40 templates were mirrored verbatim (a parity test
+  diffs the worker's templates against `templates.py` — all match).
+- Each `WRITE_PROGRAM_LANGUAGES` entry gained `saveAs` / `setupHint` /
+  `checkCommand` / `runCommand`, copied from the Rust `PROGRAM_LANGUAGES`
+  catalog, so the worker can build the same setup/run/check steps.
+- `programExplanation` / `programExplanationSection` and
+  `programTestInstructions` were ported from `src/coding/guidance.rs` (en/ru/hi/zh,
+  including the neutral fallback and the concise "test it the same way" branch for
+  follow-up edits), then wired into `tryWriteProgram` so the worker's answer now
+  ends with the same "How it works" + "How to test" sections in the same order as
+  the Rust `write_program_answer`.
+- The intent-rule `matches` description is now derived from the live catalog keys
+  instead of a hardcoded `hello_world, count_to_three` string, so it can never
+  drift from the supported set.
+
+### Files changed (R11)
+
+| File | Change |
+| --- | --- |
+| `src/coding/catalog.rs` | Four new `ProgramTask`s + 40 `ProgramTemplate`s (one per language). |
+| `src/coding/guidance.rs` | Accurate per-task `program_explanation` arms (fizzbuzz / factorial / reverse_string / sum_to_ten + explicit list-files arms) with a neutral fallback. |
+| `src/web/formal_ai_worker.js` | Tasks, templates, extended language metadata, and the full R9 explanation/test-instruction port wired into `tryWriteProgram`. |
+| `tests/unit/specification/code_generation.rs` | Per-task tests across en/ru/hi/zh and an "every popular language" sweep for FizzBuzz. |
+| `experiments/issue-330-coding-tasks/` | `templates.py` + `verify.sh` (authoritative, compiler-verified template source) and a `smoke_worker.cjs` harness that exercises the JS worker's localized answers. |
+
+Verification: `cargo build`/`fmt`/`clippy`/`test` (686 unit tests) all green, the
+JS worker passes `node --check` and the `smoke_worker.cjs` localized-output
+harness, and the four e2e guards (`check:i18n`, `check:language-test-coverage`,
+`check:language-parity`, `check:intent-coverage`) all pass against `origin/main`.

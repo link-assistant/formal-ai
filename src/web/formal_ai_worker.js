@@ -2458,8 +2458,13 @@ function behaviorRuleRecords() {
       topic: "write_program",
       intent: "write_program",
       label: "Program template rule",
+      // Built from the live catalog so the advertised tasks stay in lock-step
+      // with `WRITE_PROGRAM_TASKS` (mirrors `supported_program_tasks` on the
+      // Rust side, issue #330).
       matches:
-        "`write_program(language, task)` with languages rust, python, javascript, typescript, go, c, cpp, java, csharp, ruby and tasks hello_world, count_to_three",
+        "`write_program(language, task)` with languages " +
+        `${Object.keys(WRITE_PROGRAM_LANGUAGES).join(", ")} and tasks ` +
+        `${Object.keys(WRITE_PROGRAM_TASKS).join(", ")}`,
       response: "Returns a minimal program from the parameterized template catalog.",
       source: "data/seed/hello-world-programs.lino + src/coding/catalog.rs",
       whenThen:
@@ -10133,29 +10138,103 @@ function tryJavaScriptExecution(prompt) {
   };
 }
 
+// `saveAs`, `setupHint`, `runCommand` and `checkCommand` mirror the same fields
+// on `coding::catalog::ProgramLanguage` so the demo's novice "How to test it
+// yourself" steps match the Rust engine exactly (issue #330).
 const WRITE_PROGRAM_LANGUAGES = {
-  rust: { name: "Rust", fence: "rust", aliases: ["rust", "rs", "раст", "расте"] },
+  rust: {
+    name: "Rust",
+    fence: "rust",
+    aliases: ["rust", "rs", "раст", "расте"],
+    saveAs: "main.rs",
+    setupHint: "the Rust toolchain from https://rustup.rs",
+    checkCommand: "rustc main.rs -o main",
+    runCommand: "./main",
+  },
   python: {
     name: "Python",
     fence: "python",
     aliases: ["python", "py", "питон", "питоне"],
+    saveAs: "main.py",
+    setupHint: "Python 3 from https://www.python.org/downloads/",
+    checkCommand: "python3 -m py_compile main.py",
+    runCommand: "python3 main.py",
   },
   javascript: {
     name: "JavaScript",
     fence: "javascript",
     aliases: ["javascript", "js", "node", "джаваскрипт"],
+    saveAs: "main.js",
+    setupHint: "Node.js from https://nodejs.org/",
+    checkCommand: "node --check main.js",
+    runCommand: "node main.js",
   },
   typescript: {
     name: "TypeScript",
     fence: "typescript",
     aliases: ["typescript", "ts", "тайпскрипт"],
+    saveAs: "hello.ts",
+    setupHint:
+      "Node.js from https://nodejs.org/ plus TypeScript via `npm install -g typescript`",
+    checkCommand: "tsc hello.ts",
+    runCommand: "node hello.js",
   },
-  go: { name: "Go", fence: "go", aliases: ["go", "golang", "го"] },
-  c: { name: "C", fence: "c", aliases: ["c"] },
-  cpp: { name: "C++", fence: "cpp", aliases: ["cpp", "cplusplus"] },
-  java: { name: "Java", fence: "java", aliases: ["java", "джава"] },
-  csharp: { name: "C#", fence: "csharp", aliases: ["csharp", "cs", "dotnet"] },
-  ruby: { name: "Ruby", fence: "ruby", aliases: ["ruby", "rb", "руби"] },
+  go: {
+    name: "Go",
+    fence: "go",
+    aliases: ["go", "golang", "го"],
+    saveAs: "main.go",
+    setupHint: "Go from https://go.dev/dl/",
+    checkCommand: null,
+    runCommand: "go run main.go",
+  },
+  c: {
+    name: "C",
+    fence: "c",
+    aliases: ["c"],
+    saveAs: "main.c",
+    setupHint:
+      "a C compiler such as GCC from https://gcc.gnu.org/ or your package manager",
+    checkCommand: "gcc main.c -o main",
+    runCommand: "./main",
+  },
+  cpp: {
+    name: "C++",
+    fence: "cpp",
+    aliases: ["cpp", "cplusplus"],
+    saveAs: "main.cpp",
+    setupHint:
+      "a C++ compiler such as g++ from https://gcc.gnu.org/ or your package manager",
+    checkCommand: "g++ main.cpp -o main",
+    runCommand: "./main",
+  },
+  java: {
+    name: "Java",
+    fence: "java",
+    aliases: ["java", "джава"],
+    saveAs: "Main.java",
+    setupHint: "a JDK from https://adoptium.net/",
+    checkCommand: "javac Main.java",
+    runCommand: "java Main",
+  },
+  csharp: {
+    name: "C#",
+    fence: "csharp",
+    aliases: ["csharp", "cs", "dotnet"],
+    saveAs: "Program.cs",
+    setupHint: "the .NET SDK from https://dotnet.microsoft.com/download",
+    checkCommand: "dotnet build",
+    runCommand: "dotnet run",
+  },
+  ruby: {
+    name: "Ruby",
+    fence: "ruby",
+    aliases: ["ruby", "rb", "руби"],
+    saveAs: "main.rb",
+    setupHint: "Ruby from https://www.ruby-lang.org/en/downloads/",
+    checkCommand: "ruby -c main.rb",
+    runCommand: "ruby main.rb",
+  },
 };
 
 const WRITE_PROGRAM_TASKS = {
@@ -10224,6 +10303,83 @@ const WRITE_PROGRAM_TASKS = {
       // Chinese: "list the files in the directory given as a path argument".
       "列出作为路径参数给出的目录中的文件",
       "列出路径参数指定目录中的文件",
+    ],
+  },
+  // Issue #330: classic branching/looping exercise over 1..=15. Mirrors the Rust
+  // `fizzbuzz` task; fixed range so the output is deterministic and verifiable.
+  fizzbuzz: {
+    label: "FizzBuzz",
+    output: "1\n2\nFizz\n4\nBuzz\nFizz\n7\n8\nFizz\nBuzz\n11\nFizz\n13\n14\nFizzBuzz",
+    aliases: [
+      "fizzbuzz",
+      "fizz buzz",
+      "физзбазз",
+      "физз базз",
+      "физбаз",
+      "फ़िज़बज़",
+      "फिज़बज़",
+      "菲茨巴兹",
+    ],
+  },
+  // Issue #330: fixed to 5! = 120 so the verified output is unambiguous (the
+  // aliases require the number 5). Mirrors the Rust `factorial` task.
+  factorial: {
+    label: "factorial of 5",
+    output: "120",
+    aliases: [
+      "factorial of 5",
+      "factorial of five",
+      "5 factorial",
+      "five factorial",
+      "факториал 5",
+      "факториал пяти",
+      "факториал числа 5",
+      "5 का फैक्टोरियल",
+      "पाँच का फैक्टोरियल",
+      "5的阶乘",
+      "五的阶乘",
+    ],
+  },
+  // Issue #330: reverses the literal string "hello" -> "olleh". Mirrors the Rust
+  // `reverse_string` task; fixed input keeps the output verifiable.
+  reverse_string: {
+    label: "string reversal",
+    output: "olleh",
+    aliases: [
+      "reverse a string",
+      "reverse the string hello",
+      "reverse hello",
+      "reverse string hello",
+      "reverse the word hello",
+      "перевернуть строку",
+      "перевернуть строку hello",
+      "развернуть строку",
+      "स्ट्रिंग को उलटें",
+      "स्ट्रिंग पलटें",
+      "反转字符串",
+      "翻转字符串",
+      "反转hello",
+    ],
+  },
+  // Issue #330: sums 1..=10 -> 55. Mirrors the Rust `sum_to_ten` task.
+  sum_to_ten: {
+    label: "sum from 1 to 10",
+    output: "55",
+    aliases: [
+      "sum of 1 to 10",
+      "sum from 1 to 10",
+      "sum the numbers 1 to 10",
+      "sum of numbers from 1 to 10",
+      "sum 1 to 10",
+      "sum to ten",
+      "сумма от 1 до 10",
+      "сумма чисел от 1 до 10",
+      "сумма чисел от одного до десяти",
+      "1 से 10 तक का योग",
+      "1 से 10 तक योग",
+      "1到10的和",
+      "1到10求和",
+      "求1到10的和",
     ],
   },
 };
@@ -10301,6 +10457,94 @@ const WRITE_PROGRAM_TEMPLATES = {
       'using System;\nusing System.IO;\nusing System.Linq;\n\nclass Program {\n    static void Main(string[] args) {\n        var path = args.Length > 0 ? args[0] : ".";\n        var names = Directory.GetFiles(path)\n            .Select(Path.GetFileName)\n            .OrderBy(name => name, StringComparer.Ordinal);\n        foreach (var name in names) {\n            Console.WriteLine(name);\n        }\n    }\n}',
     ruby:
       'path = ARGV[0] || "."\nnames = Dir.entries(path).select { |name| File.file?(File.join(path, name)) }.sort\nnames.each { |name| puts name }',
+  },
+  fizzbuzz: {
+    rust:
+      "fn main() {\n    for number in 1..=15 {\n        if number % 15 == 0 {\n            println!(\"FizzBuzz\");\n        } else if number % 3 == 0 {\n            println!(\"Fizz\");\n        } else if number % 5 == 0 {\n            println!(\"Buzz\");\n        } else {\n            println!(\"{number}\");\n        }\n    }\n}",
+    python:
+      "for number in range(1, 16):\n    if number % 15 == 0:\n        print(\"FizzBuzz\")\n    elif number % 3 == 0:\n        print(\"Fizz\")\n    elif number % 5 == 0:\n        print(\"Buzz\")\n    else:\n        print(number)",
+    javascript:
+      "for (let number = 1; number <= 15; number += 1) {\n  if (number % 15 === 0) {\n    console.log(\"FizzBuzz\");\n  } else if (number % 3 === 0) {\n    console.log(\"Fizz\");\n  } else if (number % 5 === 0) {\n    console.log(\"Buzz\");\n  } else {\n    console.log(number);\n  }\n}",
+    typescript:
+      "for (let number = 1; number <= 15; number += 1) {\n  if (number % 15 === 0) {\n    console.log(\"FizzBuzz\");\n  } else if (number % 3 === 0) {\n    console.log(\"Fizz\");\n  } else if (number % 5 === 0) {\n    console.log(\"Buzz\");\n  } else {\n    console.log(number);\n  }\n}",
+    go:
+      "package main\n\nimport \"fmt\"\n\nfunc main() {\n    for number := 1; number <= 15; number++ {\n        switch {\n        case number%15 == 0:\n            fmt.Println(\"FizzBuzz\")\n        case number%3 == 0:\n            fmt.Println(\"Fizz\")\n        case number%5 == 0:\n            fmt.Println(\"Buzz\")\n        default:\n            fmt.Println(number)\n        }\n    }\n}",
+    c:
+      "#include <stdio.h>\n\nint main(void) {\n    for (int number = 1; number <= 15; number++) {\n        if (number % 15 == 0) {\n            puts(\"FizzBuzz\");\n        } else if (number % 3 == 0) {\n            puts(\"Fizz\");\n        } else if (number % 5 == 0) {\n            puts(\"Buzz\");\n        } else {\n            printf(\"%d\\n\", number);\n        }\n    }\n    return 0;\n}",
+    cpp:
+      "#include <iostream>\n\nint main() {\n    for (int number = 1; number <= 15; number++) {\n        if (number % 15 == 0) {\n            std::cout << \"FizzBuzz\\n\";\n        } else if (number % 3 == 0) {\n            std::cout << \"Fizz\\n\";\n        } else if (number % 5 == 0) {\n            std::cout << \"Buzz\\n\";\n        } else {\n            std::cout << number << '\\n';\n        }\n    }\n}",
+    java:
+      "public class Main {\n    public static void main(String[] args) {\n        for (int number = 1; number <= 15; number++) {\n            if (number % 15 == 0) {\n                System.out.println(\"FizzBuzz\");\n            } else if (number % 3 == 0) {\n                System.out.println(\"Fizz\");\n            } else if (number % 5 == 0) {\n                System.out.println(\"Buzz\");\n            } else {\n                System.out.println(number);\n            }\n        }\n    }\n}",
+    csharp:
+      "using System;\n\nclass Program {\n    static void Main() {\n        for (int number = 1; number <= 15; number++) {\n            if (number % 15 == 0) {\n                Console.WriteLine(\"FizzBuzz\");\n            } else if (number % 3 == 0) {\n                Console.WriteLine(\"Fizz\");\n            } else if (number % 5 == 0) {\n                Console.WriteLine(\"Buzz\");\n            } else {\n                Console.WriteLine(number);\n            }\n        }\n    }\n}",
+    ruby:
+      "(1..15).each do |number|\n  if (number % 15).zero?\n    puts \"FizzBuzz\"\n  elsif (number % 3).zero?\n    puts \"Fizz\"\n  elsif (number % 5).zero?\n    puts \"Buzz\"\n  else\n    puts number\n  end\nend",
+  },
+  factorial: {
+    rust:
+      "fn main() {\n    let mut result: u64 = 1;\n    for number in 1..=5 {\n        result *= number;\n    }\n    println!(\"{result}\");\n}",
+    python:
+      "result = 1\nfor number in range(1, 6):\n    result *= number\nprint(result)",
+    javascript:
+      "let result = 1;\nfor (let number = 1; number <= 5; number += 1) {\n  result *= number;\n}\nconsole.log(result);",
+    typescript:
+      "let result = 1;\nfor (let number = 1; number <= 5; number += 1) {\n  result *= number;\n}\nconsole.log(result);",
+    go:
+      "package main\n\nimport \"fmt\"\n\nfunc main() {\n    result := 1\n    for number := 1; number <= 5; number++ {\n        result *= number\n    }\n    fmt.Println(result)\n}",
+    c:
+      "#include <stdio.h>\n\nint main(void) {\n    unsigned long long result = 1;\n    for (int number = 1; number <= 5; number++) {\n        result *= number;\n    }\n    printf(\"%llu\\n\", result);\n    return 0;\n}",
+    cpp:
+      "#include <iostream>\n\nint main() {\n    unsigned long long result = 1;\n    for (int number = 1; number <= 5; number++) {\n        result *= number;\n    }\n    std::cout << result << '\\n';\n}",
+    java:
+      "public class Main {\n    public static void main(String[] args) {\n        long result = 1;\n        for (int number = 1; number <= 5; number++) {\n            result *= number;\n        }\n        System.out.println(result);\n    }\n}",
+    csharp:
+      "using System;\n\nclass Program {\n    static void Main() {\n        long result = 1;\n        for (int number = 1; number <= 5; number++) {\n            result *= number;\n        }\n        Console.WriteLine(result);\n    }\n}",
+    ruby:
+      "result = (1..5).reduce(1, :*)\nputs result",
+  },
+  reverse_string: {
+    rust:
+      "fn main() {\n    let text = \"hello\";\n    let reversed: String = text.chars().rev().collect();\n    println!(\"{reversed}\");\n}",
+    python:
+      "text = \"hello\"\nprint(text[::-1])",
+    javascript:
+      "const text = \"hello\";\nconsole.log(text.split(\"\").reverse().join(\"\"));",
+    typescript:
+      "const text: string = \"hello\";\nconsole.log(text.split(\"\").reverse().join(\"\"));",
+    go:
+      "package main\n\nimport \"fmt\"\n\nfunc main() {\n    text := \"hello\"\n    runes := []rune(text)\n    for i, j := 0, len(runes)-1; i < j; i, j = i+1, j-1 {\n        runes[i], runes[j] = runes[j], runes[i]\n    }\n    fmt.Println(string(runes))\n}",
+    c:
+      "#include <stdio.h>\n#include <string.h>\n\nint main(void) {\n    char text[] = \"hello\";\n    size_t length = strlen(text);\n    for (size_t i = 0; i < length / 2; i++) {\n        char temp = text[i];\n        text[i] = text[length - 1 - i];\n        text[length - 1 - i] = temp;\n    }\n    puts(text);\n    return 0;\n}",
+    cpp:
+      "#include <algorithm>\n#include <iostream>\n#include <string>\n\nint main() {\n    std::string text = \"hello\";\n    std::reverse(text.begin(), text.end());\n    std::cout << text << '\\n';\n}",
+    java:
+      "public class Main {\n    public static void main(String[] args) {\n        String text = \"hello\";\n        System.out.println(new StringBuilder(text).reverse().toString());\n    }\n}",
+    csharp:
+      "using System;\n\nclass Program {\n    static void Main() {\n        var text = \"hello\".ToCharArray();\n        Array.Reverse(text);\n        Console.WriteLine(new string(text));\n    }\n}",
+    ruby:
+      "text = \"hello\"\nputs text.reverse",
+  },
+  sum_to_ten: {
+    rust:
+      "fn main() {\n    let total: u32 = (1..=10).sum();\n    println!(\"{total}\");\n}",
+    python:
+      "total = sum(range(1, 11))\nprint(total)",
+    javascript:
+      "let total = 0;\nfor (let number = 1; number <= 10; number += 1) {\n  total += number;\n}\nconsole.log(total);",
+    typescript:
+      "let total = 0;\nfor (let number = 1; number <= 10; number += 1) {\n  total += number;\n}\nconsole.log(total);",
+    go:
+      "package main\n\nimport \"fmt\"\n\nfunc main() {\n    total := 0\n    for number := 1; number <= 10; number++ {\n        total += number\n    }\n    fmt.Println(total)\n}",
+    c:
+      "#include <stdio.h>\n\nint main(void) {\n    int total = 0;\n    for (int number = 1; number <= 10; number++) {\n        total += number;\n    }\n    printf(\"%d\\n\", total);\n    return 0;\n}",
+    cpp:
+      "#include <iostream>\n\nint main() {\n    int total = 0;\n    for (int number = 1; number <= 10; number++) {\n        total += number;\n    }\n    std::cout << total << '\\n';\n}",
+    java:
+      "public class Main {\n    public static void main(String[] args) {\n        int total = 0;\n        for (int number = 1; number <= 10; number++) {\n            total += number;\n        }\n        System.out.println(total);\n    }\n}",
+    csharp:
+      "using System;\n\nclass Program {\n    static void Main() {\n        int total = 0;\n        for (int number = 1; number <= 10; number++) {\n            total += number;\n        }\n        Console.WriteLine(total);\n    }\n}",
+    ruby:
+      "total = (1..10).sum\nputs total",
   },
 };
 
@@ -11005,6 +11249,220 @@ function writeProgramExecutionLines(language, task, code, output, strings) {
   return lines;
 }
 
+// Issue #330 (R9): a localized plain-language "How it works" paragraph so the
+// demo teaches a novice instead of returning an unexplained snippet. Mirrors
+// `coding::guidance::program_explanation`; `__fallback` is the neutral wording
+// used for any task without a bespoke explanation yet.
+const PROGRAM_EXPLANATIONS = {
+  hello_world: {
+    en: "The program prints the text `Hello, world!` to standard output and then exits.",
+    ru: "Программа выводит текст `Hello, world!` в стандартный вывод и завершается.",
+    hi: "प्रोग्राम मानक आउटपुट पर `Hello, world!` टेक्स्ट छापता है और फिर समाप्त हो जाता है।",
+    zh: "程序将文本 `Hello, world!` 打印到标准输出，然后退出。",
+  },
+  count_to_three: {
+    en: "The program prints the numbers 1, 2, and 3 — each on its own line — and then exits.",
+    ru: "Программа выводит числа 1, 2 и 3 — каждое на отдельной строке — и завершается.",
+    hi: "प्रोग्राम संख्याएँ 1, 2 और 3 — हर एक अलग पंक्ति में — छापता है और फिर समाप्त हो जाता है।",
+    zh: "程序打印数字 1、2 和 3 —— 每个数字单独一行 —— 然后退出。",
+  },
+  list_files: {
+    en:
+      "The program reads the entries of the current directory, keeps only the regular " +
+      "files, collects their names into a list, sorts the list alphabetically, and " +
+      "prints each name on its own line.",
+    ru:
+      "Программа читает содержимое текущего каталога, оставляет только обычные файлы, " +
+      "собирает их имена в список, сортирует список по алфавиту и печатает каждое имя " +
+      "на отдельной строке.",
+    hi:
+      "प्रोग्राम वर्तमान निर्देशिका की प्रविष्टियाँ पढ़ता है, केवल सामान्य फ़ाइलें रखता है, उनके " +
+      "नाम एक सूची में एकत्र करता है, सूची को वर्णानुक्रम में क्रमबद्ध करता है, और हर नाम को " +
+      "अलग पंक्ति में छापता है।",
+    zh:
+      "程序读取当前目录的条目，只保留普通文件，将它们的名称收集到一个列表中，" +
+      "按字母顺序排序，然后将每个名称打印在单独一行。",
+  },
+  list_files_arg: {
+    en:
+      "The program takes the directory path from the first command-line argument " +
+      "(falling back to the current directory when none is given), reads that " +
+      "directory's entries, keeps only the regular files, sorts their names " +
+      "alphabetically, and prints each name on its own line.",
+    ru:
+      "Программа берёт путь к каталогу из первого аргумента командной строки (если " +
+      "аргумент не задан, используется текущий каталог), читает содержимое этого " +
+      "каталога, оставляет только обычные файлы, сортирует их имена по алфавиту и " +
+      "печатает каждое имя на отдельной строке.",
+    hi:
+      "प्रोग्राम पहले कमांड-लाइन तर्क से निर्देशिका पथ लेता है (कोई तर्क न होने पर वर्तमान " +
+      "निर्देशिका का उपयोग करता है), उस निर्देशिका की प्रविष्टियाँ पढ़ता है, केवल सामान्य " +
+      "फ़ाइलें रखता है, उनके नामों को वर्णानुक्रम में क्रमबद्ध करता है, और हर नाम को अलग पंक्ति " +
+      "में छापता है।",
+    zh:
+      "程序从第一个命令行参数获取目录路径（未提供参数时使用当前目录），读取该目录的条目，" +
+      "只保留普通文件，按字母顺序排序它们的名称，然后将每个名称打印在单独一行。",
+  },
+  fizzbuzz: {
+    en:
+      "The program loops over the numbers 1 to 15. For each number it prints `FizzBuzz` " +
+      "when the number is divisible by both 3 and 5, `Fizz` when it is divisible by 3, " +
+      "`Buzz` when it is divisible by 5, and otherwise the number itself — each on its " +
+      "own line.",
+    ru:
+      "Программа перебирает числа от 1 до 15. Для каждого числа она печатает `FizzBuzz`, " +
+      "если оно делится и на 3, и на 5; `Fizz`, если делится на 3; `Buzz`, если делится " +
+      "на 5; иначе само число — каждое на отдельной строке.",
+    hi:
+      "प्रोग्राम 1 से 15 तक की संख्याओं पर लूप करता है। हर संख्या के लिए वह `FizzBuzz` छापता है " +
+      "जब वह 3 और 5 दोनों से विभाज्य हो, `Fizz` जब वह 3 से विभाज्य हो, `Buzz` जब वह 5 से " +
+      "विभाज्य हो, अन्यथा स्वयं संख्या — हर एक अलग पंक्ति में।",
+    zh:
+      "程序遍历数字 1 到 15。对于每个数字，当它同时能被 3 和 5 整除时打印 `FizzBuzz`，" +
+      "能被 3 整除时打印 `Fizz`，能被 5 整除时打印 `Buzz`，否则打印数字本身 —— 每个单独一行。",
+  },
+  factorial: {
+    en:
+      "The program multiplies together the numbers 1 through 5 (1×2×3×4×5), which is the " +
+      "factorial of 5, and prints the result, 120.",
+    ru:
+      "Программа перемножает числа от 1 до 5 (1×2×3×4×5) — это факториал 5 — и печатает " +
+      "результат, 120.",
+    hi:
+      "प्रोग्राम 1 से 5 तक की संख्याओं को आपस में गुणा करता है (1×2×3×4×5), जो 5 का फैक्टोरियल " +
+      "है, और परिणाम 120 छापता है।",
+    zh: "程序将 1 到 5 的数字相乘（1×2×3×4×5），这就是 5 的阶乘，并打印结果 120。",
+  },
+  reverse_string: {
+    en:
+      "The program takes the string `hello`, reverses the order of its characters, and " +
+      "prints the result, `olleh`.",
+    ru:
+      "Программа берёт строку `hello`, переставляет её символы в обратном порядке и " +
+      "печатает результат — `olleh`.",
+    hi: "प्रोग्राम स्ट्रिंग `hello` लेता है, उसके अक्षरों का क्रम उलटता है, और परिणाम `olleh` छापता है।",
+    zh: "程序取字符串 `hello`，将其字符顺序反转，并打印结果 `olleh`。",
+  },
+  sum_to_ten: {
+    en:
+      "The program adds together the integers from 1 to 10 (1 + 2 + … + 10) and prints " +
+      "the total, 55.",
+    ru: "Программа складывает целые числа от 1 до 10 (1 + 2 + … + 10) и печатает сумму — 55.",
+    hi: "प्रोग्राम 1 से 10 तक के पूर्णांकों को जोड़ता है (1 + 2 + … + 10) और कुल योग 55 छापता है।",
+    zh: "程序将 1 到 10 的整数相加（1 + 2 + … + 10），并打印总和 55。",
+  },
+  __fallback: {
+    en: "The program performs the requested task and prints its result to standard output.",
+    ru: "Программа выполняет запрошенную задачу и печатает результат в стандартный вывод.",
+    hi: "प्रोग्राम अनुरोधित कार्य करता है और परिणाम को मानक आउटपुट पर छापता है।",
+    zh: "程序执行所请求的任务，并将结果打印到标准输出。",
+  },
+};
+
+function programExplanation(task, language) {
+  const byTask = PROGRAM_EXPLANATIONS[task] || PROGRAM_EXPLANATIONS.__fallback;
+  return byTask[language] || byTask.en;
+}
+
+function programExplanationSection(task, language) {
+  const heading =
+    { ru: "Как это работает:", hi: "यह कैसे काम करता है:", zh: "工作原理：" }[language] ||
+    "How it works:";
+  return `${heading}\n${programExplanation(task, language)}`;
+}
+
+// Issue #330 (R9): did an earlier assistant turn already present a fenced code
+// block? When it did, follow-up code edits omit the verbose setup steps and show
+// a concise "test it the same way" note instead. Mirrors
+// `coding::guidance::history_has_prior_code`.
+function historyHasPriorCode(history) {
+  return (Array.isArray(history) ? history : []).some(
+    (turn) =>
+      turn &&
+      String(turn.role || "").toLowerCase() === "assistant" &&
+      String(turn.content || "").includes("```"),
+  );
+}
+
+// Issue #330 (R9): step-by-step, novice-friendly instructions for testing the
+// program, localized for every response language. When the dialog already
+// walked the user through running code, the verbose setup is replaced by a
+// short "test it the same way" note. Mirrors
+// `coding::guidance::program_test_instructions`.
+function programTestInstructions(languageInfo, language, priorCodeResponse) {
+  const saveAs = languageInfo.saveAs;
+  const runCommand = languageInfo.runCommand;
+  const checkCommand = languageInfo.checkCommand;
+
+  if (priorCodeResponse) {
+    return (
+      {
+        ru:
+          `Проверьте обновлённую программу так же, как и раньше: сохраните код в файл ` +
+          `\`${saveAs}\` и снова выполните \`${runCommand}\`.`,
+        hi:
+          `अपडेट किए गए प्रोग्राम को पहले की तरह ही जाँचें: कोड को \`${saveAs}\` फ़ाइल में सहेजें ` +
+          `और फिर से \`${runCommand}\` चलाएँ।`,
+        zh:
+          `像之前一样测试更新后的程序：将代码保存到文件 \`${saveAs}\`，然后再次运行 ` +
+          `\`${runCommand}\`。`,
+      }[language] ||
+      `Test the updated program the same way as before: save the code to \`${saveAs}\` ` +
+        `and run \`${runCommand}\` again.`
+    );
+  }
+
+  const heading =
+    {
+      ru: "Как проверить это самостоятельно:",
+      hi: "इसे स्वयं कैसे जाँचें:",
+      zh: "如何自行测试：",
+    }[language] || "How to test it yourself:";
+
+  const setupHint = languageInfo.setupHint;
+  const steps = [];
+  steps.push(
+    {
+      ru: `Установите инструментарий: ${setupHint}.`,
+      hi: `टूलचेन इंस्टॉल करें: ${setupHint}।`,
+      zh: `安装工具链：${setupHint}。`,
+    }[language] || `Install ${setupHint}.`,
+  );
+  steps.push(
+    {
+      ru: `Сохраните приведённый выше код в файл \`${saveAs}\`.`,
+      hi: `ऊपर दिए गए कोड को \`${saveAs}\` फ़ाइल में सहेजें।`,
+      zh: `将上面的代码保存到文件 \`${saveAs}\`。`,
+    }[language] || `Save the code above to a file named \`${saveAs}\`.`,
+  );
+  if (checkCommand) {
+    steps.push(
+      {
+        ru: `Проверьте, что код компилируется: \`${checkCommand}\`.`,
+        hi: `जाँचें कि कोड संकलित होता है: \`${checkCommand}\`।`,
+        zh: `检查代码能否编译：\`${checkCommand}\`。`,
+      }[language] || `Check that it compiles: \`${checkCommand}\`.`,
+    );
+  }
+  steps.push(
+    {
+      ru: `Запустите программу: \`${runCommand}\`.`,
+      hi: `प्रोग्राम चलाएँ: \`${runCommand}\`।`,
+      zh: `运行程序：\`${runCommand}\`。`,
+    }[language] || `Run it: \`${runCommand}\`.`,
+  );
+  steps.push(
+    {
+      ru: "Сравните вывод с разделом ожидаемого вывода выше.",
+      hi: "आउटपुट की तुलना ऊपर दिए गए अपेक्षित आउटपुट से करें।",
+      zh: "将输出与上面的预期输出部分进行比较。",
+    }[language] || "Compare the output with the expected output shown above.",
+  );
+
+  const numbered = steps.map((step, index) => `${index + 1}. ${step}`).join("\n");
+  return `${heading}\n${numbered}`;
+}
+
 function tryWriteProgram(prompt, history, responseLanguage) {
   const detected = writeProgramParameters(prompt);
   if (!detected) return null;
@@ -11047,6 +11505,14 @@ function tryWriteProgram(prompt, history, responseLanguage) {
   lines.push(
     ...writeProgramExecutionLines(language, task, template, taskInfo.output, i18n),
   );
+  // Issue #330 (R9): teach a novice — append a plain-language explanation of how
+  // the code works, then step-by-step instructions for testing it. Follow-up
+  // edits (when the dialog already showed code) drop the verbose setup steps.
+  const priorCode = historyHasPriorCode(history);
+  lines.push("");
+  lines.push(programExplanationSection(task, responseLanguage));
+  lines.push("");
+  lines.push(programTestInstructions(languageInfo, responseLanguage, priorCode));
   return {
     intent: "write_program",
     content: lines.join("\n"),
