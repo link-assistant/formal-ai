@@ -44,7 +44,14 @@ function check(label, condition, detail) {
   }
 }
 
-const { tryWriteProgram, selectBlueprint, renderBlueprint } = sandbox;
+const {
+  tryWriteProgram,
+  selectBlueprint,
+  renderBlueprint,
+  composeBlueprintProgram,
+  normalizeBlueprintComposition,
+  renderSelfFacts,
+} = sandbox;
 
 // 1. The exact issue #340 prompt (English, Rust).
 const issuePrompt =
@@ -210,6 +217,101 @@ check(
     !pyCode.split("\n").some((line) => line.trimStart().startsWith("#")) &&
     pyCode.includes("requests.get"),
   pyCode,
+);
+
+// 8. Compositional `error_handling` axis: independent of `comments`, a request
+//    that asks for error handling keeps the empty-numbers guard; one that does
+//    not drops it (region body removed). Mirrors the Rust unit test
+//    `error_handling_axis_composes_independently`.
+const withErrors = tryWriteProgram(
+  "Write a Rust program that makes an HTTP GET request, parses JSON, computes mean and median, outputs the results, with error handling.",
+  [],
+  "en",
+);
+const withErrorsCode =
+  withErrors && withErrors.content.split("```rust\n")[1].split("\n```")[0];
+check(
+  "error handling requested keeps the empty-numbers guard",
+  withErrorsCode && withErrorsCode.includes("contained no numbers"),
+  withErrorsCode,
+);
+check(
+  "error handling region markers never reach the user",
+  withErrorsCode &&
+    !withErrorsCode.includes("region:error_handling") &&
+    !withErrorsCode.includes("endregion"),
+  withErrorsCode,
+);
+check(
+  "error handling omitted drops the guard body",
+  noCommentsCode && !noCommentsCode.includes("contained no numbers"),
+  noCommentsCode,
+);
+const pyWithErrors = tryWriteProgram(
+  "Write a Python program that makes an HTTP GET request, parses JSON, computes mean and median, with error handling.",
+  [],
+  "en",
+);
+const pyErrCode =
+  pyWithErrors && pyWithErrors.content.split("```python\n")[1].split("\n```")[0];
+check(
+  "python error handling requested keeps raise_for_status",
+  pyErrCode && pyErrCode.includes("raise_for_status"),
+  pyErrCode,
+);
+check(
+  "python error handling omitted drops raise_for_status",
+  pyCode && !pyCode.includes("raise_for_status"),
+  pyCode,
+);
+
+// 9. `documented` strategy: regardless of which capabilities the request named,
+//    the fully annotated program is emitted (every region present, comments
+//    kept). Region marker lines are still always stripped. Mirrors the Rust
+//    `region_directives_are_always_stripped_from_output` test and the
+//    BlueprintComposition::Documented behavior.
+const documented = renderBlueprint(bp, "en", "documented");
+const documentedCode = documented.split("```rust\n")[1].split("\n```")[0];
+check(
+  "documented strategy keeps the comments",
+  documentedCode.includes("// 1. Read the target URL"),
+  documentedCode,
+);
+check(
+  "documented strategy keeps every optional region body",
+  documentedCode.includes("contained no numbers"),
+  documentedCode,
+);
+check(
+  "documented strategy still strips region marker lines",
+  !documentedCode.includes("region:error_handling"),
+  documentedCode,
+);
+check(
+  "composeBlueprintProgram(documented) === renderable documented body",
+  composeBlueprintProgram(bp, "documented").includes("contained no numbers"),
+);
+check(
+  "normalizeBlueprintComposition maps aliases and defaults to composed",
+  normalizeBlueprintComposition("full") === "documented" &&
+    normalizeBlueprintComposition("verbatim") === "documented" &&
+    normalizeBlueprintComposition("composed") === "composed" &&
+    normalizeBlueprintComposition(undefined) === "composed" &&
+    normalizeBlueprintComposition("nonsense") === "composed",
+);
+
+// 10. The active composition strategy is reported in the self-facts inventory,
+//     mirroring the Rust `self_fact_blueprint_composition` line.
+const facts = renderSelfFacts({ blueprintComposition: "documented" });
+check(
+  "self-facts report the blueprint composition setting",
+  facts.includes('relation "blueprint_composition"') &&
+    facts.includes('object "documented"'),
+  facts,
+);
+check(
+  "self-facts default the blueprint composition to composed",
+  renderSelfFacts({}).includes('object "composed"'),
 );
 
 if (failures > 0) {

@@ -100,6 +100,61 @@ impl ExecutionSurface {
     }
 }
 
+/// How the composite-program [`blueprint`](crate::coding::blueprint) synthesizer
+/// turns its annotated recipe template into the program shown to the user.
+///
+/// Issue #340 asked the engine to "try all directions" of program synthesis and
+/// let the user switch between them. A blueprint recipe is stored as an annotated
+/// template whose optional sub-tasks (error handling, comments, …) are wrapped in
+/// `region:<capability>` markers; every emitted program is a *projection* of that
+/// template (never the raw, marker-bearing string — markers are always stripped).
+/// This knob selects which projection to emit:
+///
+/// - [`Composed`](Self::Composed) (default, the most promising direction): the
+///   program is assembled from exactly the capabilities the request decomposed
+///   into — optional regions whose capability the prompt did not ask for are
+///   dropped, and when comments were not requested the documentation is stripped
+///   too. The same recipe therefore yields genuinely different programs for
+///   different requests, which is the honest, anti-memoization demonstration that
+///   the code is composed from the decomposition (`NON-GOALS.md`).
+/// - [`Documented`](Self::Documented): always emit the fully documented program
+///   with every optional region present, regardless of which sub-tasks the
+///   request named. Useful as a stable reference and for users who want the
+///   maximal annotated program every time.
+#[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
+pub enum BlueprintComposition {
+    /// Project the program from the detected capabilities (default).
+    #[default]
+    Composed,
+    /// Always emit the fully documented program with every region present.
+    Documented,
+}
+
+impl BlueprintComposition {
+    /// Stable slug used in the event log and the demo preference value.
+    #[must_use]
+    pub const fn slug(self) -> &'static str {
+        match self {
+            Self::Composed => "composed",
+            Self::Documented => "documented",
+        }
+    }
+
+    /// Parse a configuration value (env var or demo preference). Accepts the
+    /// canonical slugs plus a few intuitive aliases; returns `None` for anything
+    /// unrecognized so callers keep the default.
+    #[must_use]
+    pub fn from_value(raw: &str) -> Option<Self> {
+        match raw.trim().to_ascii_lowercase().as_str() {
+            "composed" | "compose" | "projection" | "project" | "decomposed" => {
+                Some(Self::Composed)
+            }
+            "documented" | "document" | "full" | "verbatim" | "curated" => Some(Self::Documented),
+            _ => None,
+        }
+    }
+}
+
 /// Runtime configuration for the universal solver.
 ///
 /// These knobs control the universal loop's tradeoffs and let the same engine
@@ -149,6 +204,9 @@ pub struct SolverConfig {
     pub associative_project_promotion: bool,
     /// Embedding surface used for environment-aware self-description.
     pub execution_surface: ExecutionSurface,
+    /// How composite-program blueprints (issue #340) project their annotated
+    /// recipe template into the program shown to the user.
+    pub blueprint_composition: BlueprintComposition,
 }
 
 impl Default for SolverConfig {
@@ -167,6 +225,7 @@ impl Default for SolverConfig {
             definition_fusion_by_default: false,
             associative_project_promotion: true,
             execution_surface: ExecutionSurface::default(),
+            blueprint_composition: BlueprintComposition::default(),
         }
     }
 }
@@ -212,6 +271,13 @@ impl SolverConfig {
         if let Ok(value) = std::env::var("FORMAL_AI_CACHE_TTL_SECONDS") {
             if let Ok(parsed) = value.parse::<u64>() {
                 config.cache_ttl_seconds = parsed;
+            }
+        }
+        if let Ok(value) = std::env::var("FORMAL_AI_BLUEPRINT_COMPOSITION")
+            .or_else(|_| std::env::var("FORMAL_AI_PROGRAM_COMPOSITION"))
+        {
+            if let Some(mode) = BlueprintComposition::from_value(&value) {
+                config.blueprint_composition = mode;
             }
         }
         config
@@ -483,9 +549,13 @@ impl UniversalSolver {
         // is preserved.
         if let SelectedRule::UnsupportedWriteProgram { language, .. } = &rule {
             let normalized = normalize_prompt(prompt);
-            if let Some(answer) =
-                try_program_blueprint(prompt, &normalized, language.as_deref(), &mut log)
-            {
+            if let Some(answer) = try_program_blueprint(
+                prompt,
+                &normalized,
+                language.as_deref(),
+                self.config.blueprint_composition,
+                &mut log,
+            ) {
                 return answer;
             }
         }
@@ -626,6 +696,7 @@ impl UniversalSolver {
             self.config.agent_mode,
             self.config.diagnostic_mode,
             self.config.definition_fusion_by_default,
+            self.config.blueprint_composition,
         );
         if let Some(answer) =
             try_behavior_rules_with_runtime(prompt, &normalized, log, self_awareness_runtime)

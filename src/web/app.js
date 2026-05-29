@@ -520,6 +520,30 @@ function recognizeInterfaceCommand(text) {
     };
   }
 
+  // Issue #340: switch the composite-program blueprint between the projected
+  // ("composed", default) and fully annotated ("documented") strategies. The
+  // toggle reads naturally — "documented programs on" pins every optional
+  // region, "off" returns to projecting only the requested capabilities.
+  const blueprintComposition = detectToggleCommand(normalized, [
+    "documented programs",
+    "documented program",
+    "full programs",
+    "verbatim programs",
+    "program composition",
+    "документированные программы",
+    "完整程序",
+    "पूर्ण प्रोग्राम",
+  ]);
+  if (blueprintComposition !== null) {
+    return {
+      kind: "set_preference",
+      key: "blueprintComposition",
+      value: blueprintComposition ? "documented" : "composed",
+      intent: "configure_blueprint_composition",
+      label: "Program composition",
+    };
+  }
+
   const experimentalOcr = detectToggleCommand(normalized, [
     "ocr",
     "image text",
@@ -979,6 +1003,13 @@ const PREFERENCE_DEFAULTS = {
   // Issue #63: definition fusion remains explicit-only by default, with an
   // opt-in mode that treats plain "What is X?" prompts as merge requests.
   definitionFusion: "explicit",
+  // Issue #340: how composite-program blueprints project their annotated recipe
+  // template into the program shown to the user.
+  //   "composed" (default) — emit only the regions the request actually named,
+  //                          so the program is a projection of the decomposition;
+  //   "documented"         — always emit the fully documented program with every
+  //                          optional region (error handling, comments) present.
+  blueprintComposition: "composed",
   experimentalOcr: false,
   associativeProjectPromotion: true,
   theme: "auto",
@@ -1020,6 +1051,10 @@ const CHAT_STYLES = ["cards", "compact", "bubbles"];
 const COMPOSER_STYLES = ["flat", "glass-soft", "glass-clear", "bubble"];
 const COMPOSER_ACTIONS = ["attach", "plus"];
 const DEFINITION_FUSION_MODES = ["explicit", "auto"];
+// Issue #340: blueprint program-composition strategies. "composed" projects the
+// program from the detected capabilities; "documented" always emits the full
+// annotated program with every optional region present.
+const BLUEPRINT_COMPOSITION_MODES = ["composed", "documented"];
 // Issue #324: source that drives the assistant's response language.
 const RESPONSE_LANGUAGE_MODES = ["last_message", "preferred", "ui"];
 // Issue #324: languages the assistant can be pinned to via `preferredLanguage`.
@@ -1278,6 +1313,12 @@ function normalizeDefinitionFusion(value) {
   return DEFINITION_FUSION_MODES.includes(value)
     ? value
     : PREFERENCE_DEFAULTS.definitionFusion;
+}
+
+function normalizeBlueprintComposition(value) {
+  return BLUEPRINT_COMPOSITION_MODES.includes(value)
+    ? value
+    : PREFERENCE_DEFAULTS.blueprintComposition;
 }
 
 function normalizeResponseLanguageMode(value) {
@@ -2512,6 +2553,10 @@ function localDefinitionFusionStatus(preferences = {}) {
   return preferences.definitionFusion === "auto" ? "enabled_by_default" : "explicit_only";
 }
 
+function localBlueprintCompositionStatus(preferences = {}) {
+  return normalizeBlueprintComposition(preferences.blueprintComposition);
+}
+
 function localSelfFacts(preferences = {}) {
   const assistantName = localAssistantNameStatus(preferences);
   const surface = LOCAL_BROWSER_SURFACE;
@@ -2566,6 +2611,10 @@ function localSelfFacts(preferences = {}) {
     '  subject "formal-ai"',
     '  relation "definition_fusion"',
     `  object "${localDefinitionFusionStatus(preferences)}"`,
+    "self_fact_blueprint_composition",
+    '  subject "formal-ai"',
+    '  relation "blueprint_composition"',
+    `  object "${localBlueprintCompositionStatus(preferences)}"`,
     "```",
     "",
     "Read behavior with `List behavior rules`; teach one with When `prompt` then `answer` (or When I say `prompt`, answer `answer`).",
@@ -4365,6 +4414,9 @@ function App() {
   const [definitionFusion, setDefinitionFusion] = useState(
     normalizeDefinitionFusion(initialPreferences.current.definitionFusion),
   );
+  const [blueprintComposition, setBlueprintComposition] = useState(
+    normalizeBlueprintComposition(initialPreferences.current.blueprintComposition),
+  );
   const [experimentalOcr, setExperimentalOcr] = useState(
     Boolean(initialPreferences.current.experimentalOcr),
   );
@@ -5015,6 +5067,7 @@ function App() {
       temperature,
       followUpProbability,
       definitionFusion,
+      blueprintComposition,
       experimentalOcr,
       associativeProjectPromotion,
       theme: themePreference,
@@ -5047,6 +5100,7 @@ function App() {
     temperature,
     followUpProbability,
     definitionFusion,
+    blueprintComposition,
     experimentalOcr,
     associativeProjectPromotion,
     themePreference,
@@ -5125,6 +5179,11 @@ function App() {
   useEffect(() => {
     definitionFusionRef.current = definitionFusion;
   }, [definitionFusion]);
+
+  const blueprintCompositionRef = useRef(blueprintComposition);
+  useEffect(() => {
+    blueprintCompositionRef.current = blueprintComposition;
+  }, [blueprintComposition]);
 
   const experimentalOcrRef = useRef(experimentalOcr);
   useEffect(() => {
@@ -5206,6 +5265,7 @@ function App() {
       temperature: temperatureRef.current,
       followUpProbability: followUpProbabilityRef.current,
       definitionFusion: definitionFusionRef.current,
+      blueprintComposition: blueprintCompositionRef.current,
       experimentalOcr: experimentalOcrRef.current,
       associativeProjectPromotion: associativeProjectPromotionRef.current,
       agentMode: agentModeRef.current,
@@ -5412,6 +5472,11 @@ function App() {
           break;
         case "definitionFusion":
           setDefinitionFusion(normalizeDefinitionFusion(command.value));
+          break;
+        case "blueprintComposition":
+          setBlueprintComposition(
+            normalizeBlueprintComposition(command.value),
+          );
           break;
         case "experimentalOcr":
           setExperimentalOcr(Boolean(command.value));
@@ -6605,6 +6670,32 @@ function App() {
                   "option",
                   { value: "auto" },
                   t("settings.definitionFusion.auto"),
+                ),
+              ),
+            ),
+            h(
+              "label",
+              { className: "setting-row" },
+              h("span", null, t("settings.blueprintComposition")),
+              h(
+                "select",
+                {
+                  "data-testid": "setting-blueprint-composition",
+                  value: blueprintComposition,
+                  onChange: (event) =>
+                    setBlueprintComposition(
+                      normalizeBlueprintComposition(event.target.value),
+                    ),
+                },
+                h(
+                  "option",
+                  { value: "composed" },
+                  t("settings.blueprintComposition.composed"),
+                ),
+                h(
+                  "option",
+                  { value: "documented" },
+                  t("settings.blueprintComposition.documented"),
                 ),
               ),
             ),

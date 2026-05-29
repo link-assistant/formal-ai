@@ -109,8 +109,8 @@ pub use skill_compiler::{
     CompiledSkillPrecondition, CompiledSkillReplay, CompiledSkillStep, SkillCompileError,
 };
 pub use solver::{
-    solve, solve_with_history, ConversationRole, ConversationTurn, ExecutionSurface, SolverConfig,
-    UniversalSolver,
+    solve, solve_with_history, BlueprintComposition, ConversationRole, ConversationTurn,
+    ExecutionSurface, SolverConfig, UniversalSolver,
 };
 pub use solver_helpers::humanize_url;
 pub use substitution::{

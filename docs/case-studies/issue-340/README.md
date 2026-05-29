@@ -28,6 +28,7 @@
 | 2026-05-29 18:44:43 | Issue #340 is filed quoting the dialog. |
 | 2026-05-29 18:51:57 | Maintainer comment ([#issuecomment-4578776288](https://github.com/link-assistant/formal-ai/issues/340#issuecomment-4578776288)) adds the meta-instructions: increase generalization so users "can actually do all the programming tasks imaginable"; compile data + deep case study; add tracing if data is insufficient; report upstream if applicable; fix across the **entire** codebase (both engines); do everything in one PR. |
 | 2026-05-29 (this PR) | Composite-program **blueprint** synthesizer added to the Rust core and mirrored byte-for-byte in the JS worker; case study written; parity experiment + integration tests added. |
+| 2026-05-29 20:40 / 21:56 | Follow-up maintainer comments: "do as much generalization as possible … not just fake solutions by memoization … implement the most general solution possible"; then "try all directions, make sure to allow switching between them in settings, use the most promising by default. Do everything fully in this pull request". This drove the **two independent composition axes** (`comments`, `error_handling`) and the switchable **`BlueprintComposition`** setting (default `Composed`). |
 
 The issue body carries **one** comment (the maintainer meta-instructions); every
 requirement comes from the issue body and that comment.
@@ -125,35 +126,73 @@ real-world requests is answered.
   matching), and returns `None` when no recipe matches so unmatched requests
   keep the honest unsupported answer.
 
-#### Composition, not memoization — the `comments` axis
+#### Composition, not memoization — two independent projection axes
 
 The maintainer's standing directive is to "reason from first principles … not
-just fake solutions by memoization" and to "make the most general solution
-possible". A blueprint that always emitted one frozen string for `http_json_stats`
-would be exactly the memoized-answer table that `NON-GOALS.md` forbids ("A
-memoized answer cache is not a substitute for reasoning from source data and
-traceable steps"). To make the synthesis observably *compositional*, the
-`comments` capability is now a **projection axis** over the curated program
-rather than a label that is ignored:
+just fake solutions by memoization", to "make the most general solution
+possible", and — in the latest comment — to "try all directions, make sure to
+allow switching between them in settings, use the most promising by default". A
+blueprint that always emitted one frozen string for `http_json_stats` would be
+exactly the memoized-answer table that `NON-GOALS.md` forbids ("A memoized answer
+cache is not a substitute for reasoning from source data and traceable steps").
+To make the synthesis observably *compositional*, the curated program is now a
+*template* that two **independent** decomposed capabilities project over:
 
-- When the decomposition contains `comments`, the documented program is emitted
-  verbatim.
-- When it does **not**, `strip_comments` removes every whole-line comment and a
-  leading Python module docstring, then `collapse_blank_runs` tidies the blank
-  lines left behind. The result is a *different, smaller, still byte-for-byte
-  compilable* program (only non-semantic lines are dropped; inline trailing
-  comments are deliberately left untouched so the stripper can never cut a
-  `//`/`#` that lives inside a string literal).
+- **`comments` axis.** When the decomposition contains `comments`, whole-line
+  documentation is kept; otherwise `strip_comments` removes every whole-line
+  comment and a leading Python module docstring, and `collapse_blank_runs` tidies
+  the blank lines left behind. Inline trailing comments are deliberately left
+  untouched so the stripper can never cut a `//`/`#` that lives inside a string
+  literal.
+- **`error_handling` axis.** Optional defensive blocks are wrapped in
+  `// region:error_handling … // endregion:error_handling` markers (`#` for
+  Python/Ruby) inside the curated source — the Rust empty-numbers guard, the
+  Python `raise_for_status` + empty-list guard, the JavaScript `!response.ok`
+  check + empty-array guard. The **marker lines are always stripped** from user
+  output; when the decomposition omits `error_handling`, the region *body* is
+  dropped with them, yielding a leaner but still-valid program. When it is
+  present, the body is kept (markers gone).
 
-So the same recipe yields two genuinely different programs depending on the
-decomposed sub-tasks — the emitted code is a function of the capabilities the
-solver found, which is the smallest honest demonstration that the blueprint is
-assembled from the decomposition rather than recalled from a table. The behavior
-is unit-tested in `src/coding/blueprint.rs`
+The two axes are genuinely orthogonal, so one recipe yields the full
+cross-product of four distinct programs (`documented`, `comments_only`,
+`errors_only`, `stripped`) — the emitted code is a function of the capabilities
+the solver found, the smallest honest demonstration that the blueprint is
+assembled from the decomposition rather than recalled from a table.
+
+#### Switching directions — the `BlueprintComposition` setting
+
+"Try all directions … allow switching between them in settings, use the most
+promising by default" is satisfied by a first-class strategy knob,
+`BlueprintComposition`, that mirrors the existing `definitionFusion` analog
+end-to-end:
+
+- **`Composed` (default, the most promising):** the program is *projected* from
+  the decomposed capabilities exactly as above — the demonstration that synthesis
+  is compositional.
+- **`Documented`:** the fully annotated program is always emitted — every region
+  body present, all comments kept — regardless of which capabilities the request
+  named (marker lines are still stripped). Useful when the user wants the richest
+  reference version.
+
+The strategy is a `SolverConfig` field (`blueprint_composition`), exposed in the
+demo UI as the **"Program composition"** dropdown (`composed` / `documented`),
+toggleable by natural language ("documented programs", "полная документация", …),
+persisted in preferences, forwarded to the worker `prefs`, and reported in the
+self-facts inventory as `relation "blueprint_composition"` with the active slug —
+so the toggle is observable in all three self-facts renderers (Rust
+`render_self_facts`, worker `renderSelfFacts`, the app.js local fallback).
+
+The behavior is unit-tested in `src/coding/blueprint_tests.rs` (mounted into the
+implementation module with `#[path]` so `blueprint.rs` stays under the 1000-line
+file-size limit)
 (`comments_requested_keeps_the_documented_program`,
 `comments_omitted_strips_documentation_but_keeps_logic` across rust/python/js,
-`stripped_program_is_smaller_than_documented`), mirrored byte-for-byte in the JS
-worker, and the two variants per language are compile-checked offline by
+`stripped_program_is_smaller_than_documented`,
+`error_handling_axis_composes_independently`,
+`region_directives_are_always_stripped_from_output`,
+`documented_strategy_keeps_every_region_and_comment`), mirrored byte-for-byte in
+the JS worker (verified by `experiments/issue-340-worker-parity.mjs`), and all
+four projections per language are compile-checked offline by
 `examples/issue_340_emit_variants.rs`.
 
 ### R2 — Honest execution contract · **done**
@@ -211,13 +250,18 @@ issue was filed.
 
 ## 6. Verification
 
-- `cargo test` — **702 passed**; new integration tests in
+- `cargo test` — **all passed**; integration tests in
   `tests/unit/specification/code_generation_blueprint.rs`
   (`rust_/python_/javascript_http_json_statistics_request_returns_blueprint_program`,
   `russian_http_json_statistics_request_returns_blueprint_in_russian`,
   `partial_composite_request_without_statistics_stays_unsupported`) plus the
-  `src/coding/blueprint.rs` module unit tests (including the three `comments`
-  composition tests).
+  `src/coding/blueprint_tests.rs` module unit tests — both composition axes
+  (`comments_*`, `error_handling_axis_composes_independently`,
+  `region_directives_are_always_stripped_from_output`,
+  `documented_strategy_keeps_every_region_and_comment`,
+  `stripped_program_is_smaller_than_documented`) — and the self-facts inventory
+  fixture in `tests/unit/specification/issue_146.rs`, which now asserts the
+  `self_fact_blueprint_composition` line.
 - `cargo fmt --check` and `cargo clippy --all-targets -- -D warnings` — clean.
 - File-size guard `scripts/check-file-size.rs` — all files within the 1000-line
   Rust hard limit. After merging `main`, the blueprint hook's dispatch table is
@@ -225,13 +269,19 @@ issue was filed.
   carries issue #341's handler); the new integration tests live in
   `code_generation_blueprint.rs`.
 - JS parity: `node experiments/issue-340-worker-parity.mjs` — all checks pass
-  (English/Russian Rust, Python, JavaScript; the `comments` capability composes
-  identically in both engines; partial stays unsupported; Go stays unsupported;
-  `selectBlueprint`/`renderBlueprint` structural anchors).
+  (English/Russian Rust, Python, JavaScript; both the `comments` and
+  `error_handling` axes compose identically in both engines; the `Documented`
+  strategy keeps every region/comment; `normalizeBlueprintComposition` aliasing;
+  the self-facts report the active composition; partial stays unsupported; Go
+  stays unsupported; `selectBlueprint`/`renderBlueprint` structural anchors).
 - Compositional variants: `cargo run --example issue_340_emit_variants` writes
-  documented + stripped programs per language to `target/issue-340-variants/`;
-  the stripped Python passes `python3 -m py_compile` and the stripped JavaScript
-  passes `node --check`.
+  the four projections (`documented`, `comments_only`, `errors_only`, `stripped`)
+  per language to `target/issue-340-variants/`; each emitted Python passes
+  `python3 -m py_compile` and each emitted JavaScript passes `node --check`.
+- Settings parity: the `BlueprintComposition` strategy is exposed as the
+  "Program composition" dropdown in the demo UI, persisted, forwarded to the
+  worker, toggleable by natural language, and present in all four lino-i18n
+  locales (en/ru/hi/zh) — guarded by `tests/e2e/scripts/check-i18n-catalog.mjs`.
 - Cross-engine render parity: `examples/repro_issue_340.rs` and the parity
   experiment confirm the Rust core and JS worker produce byte-for-byte matching
   blueprints for all six localized cases.

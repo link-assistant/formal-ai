@@ -23,6 +23,7 @@ use crate::coding::WRITE_PROGRAM_INTENT;
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
+use crate::solver::BlueprintComposition;
 
 use super::finalize_simple;
 
@@ -37,6 +38,7 @@ pub fn try_program_blueprint(
     prompt: &str,
     normalized: &str,
     language_hint: Option<&str>,
+    composition: BlueprintComposition,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
     let language_slug = language_hint.map(str::to_owned).or_else(|| {
@@ -45,13 +47,17 @@ pub fn try_program_blueprint(
 
     let blueprint = select_blueprint(normalized, &language_slug)?;
     let response_language = detect_language(prompt);
-    let body = render(&blueprint, response_language);
+    let body = render(&blueprint, response_language, composition);
 
     // Evidence trail: record the resolved recipe, the decomposed capabilities,
     // the (language, task) parameters, and the honest execution status so the
     // diagnostic chips read the same way a catalog answer would — except the
     // status is explicitly "not run" rather than "compiled and ran".
     log.append("program_blueprint:recipe", blueprint.recipe.slug.to_owned());
+    log.append(
+        "program_blueprint:composition",
+        composition.slug().to_owned(),
+    );
     log.append("program_parameter:language", language_slug.clone());
     log.append(
         "program_parameter:task",

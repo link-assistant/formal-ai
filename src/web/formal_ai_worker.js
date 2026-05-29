@@ -3102,6 +3102,12 @@ function definitionFusionStatus(preferences) {
     : "explicit_only";
 }
 
+function blueprintCompositionStatus(preferences) {
+  return normalizeBlueprintComposition(
+    preferences && preferences.blueprintComposition,
+  );
+}
+
 function renderSelfFacts(preferences) {
   const assistantName = assistantNameStatus(preferences);
   const surface = BROWSER_SURFACE;
@@ -3156,6 +3162,10 @@ function renderSelfFacts(preferences) {
     '  subject "formal-ai"',
     '  relation "definition_fusion"',
     `  object "${definitionFusionStatus(preferences)}"`,
+    "self_fact_blueprint_composition",
+    '  subject "formal-ai"',
+    '  relation "blueprint_composition"',
+    `  object "${blueprintCompositionStatus(preferences)}"`,
     "```",
     "",
     "Read behavior with `List behavior rules`; teach one with When `prompt` then `answer` (or When I say `prompt`, answer `answer`).",
@@ -12198,12 +12208,15 @@ fn main() -> Result<(), Box<dyn Error>> {
     //    so \`?\` propagates any network or decoding error up to \`main\`.
     let document: Value = reqwest::blocking::get(&url)?.json()?;
 
-    // 3. Gather every number, then guard against an empty data set.
+    // 3. Gather every number from the decoded document.
     let mut numbers = Vec::new();
     collect_numbers(&document, &mut numbers);
+    // region:error_handling
+    // Guard against an empty data set before computing statistics.
     if numbers.is_empty() {
         return Err("the JSON response contained no numbers".into());
     }
+    // endregion:error_handling
 
     // 4. Compute and print the statistics.
     println!("count:  {}", numbers.len());
@@ -12244,16 +12257,20 @@ def main():
         raise SystemExit("usage: stats.py <url-returning-json>")
     url = sys.argv[1]
 
-    # 2. Make the HTTP GET request and parse the JSON body, turning any HTTP
-    #    error status into an exception before we try to decode it.
+    # 2. Make the HTTP GET request and parse the JSON body.
     response = requests.get(url, timeout=30)
+    # region:error_handling
+    # Turn any non-2xx HTTP status into an exception before decoding.
     response.raise_for_status()
+    # endregion:error_handling
     document = response.json()
 
-    # 3. Gather every number, then guard against an empty data set.
+    # 3. Gather every number from the decoded JSON.
     numbers = collect_numbers(document)
+    # region:error_handling
     if not numbers:
         raise SystemExit("the JSON response contained no numbers")
+    # endregion:error_handling
 
     # 4. Compute and print the statistics.
     print(f"count:  {len(numbers)}")
@@ -12298,19 +12315,23 @@ async function main() {
   const url = process.argv[2];
   if (!url) throw new Error("usage: node stats.js <url-returning-json>");
 
-  // 2. Make the HTTP GET request and parse the JSON body, failing fast on a
-  //    non-2xx status before we try to decode it.
+  // 2. Make the HTTP GET request and parse the JSON body.
   const response = await fetch(url);
+  // region:error_handling
+  // Fail fast on a non-2xx status before we try to decode the body.
   if (!response.ok) {
     throw new Error(\`HTTP \${response.status} \${response.statusText}\`);
   }
+  // endregion:error_handling
   const document = await response.json();
 
-  // 3. Gather every number, then guard against an empty data set.
+  // 3. Gather every number from the decoded JSON.
   const numbers = collectNumbers(document);
+  // region:error_handling
   if (numbers.length === 0) {
     throw new Error("the JSON response contained no numbers");
   }
+  // endregion:error_handling
 
   // 4. Compute and print the statistics.
   console.log(\`count:  \${numbers.length}\`);
@@ -12475,17 +12496,88 @@ function blueprintCommentMarker(languageSlug) {
   return languageSlug === "python" || languageSlug === "ruby" ? "#" : "//";
 }
 
-// Remove the documentation from a synthesized program when the request did not
-// ask for comments. Mirrors `strip_comments` in `src/coding/blueprint.rs`:
-// only whole-line comments and a leading Python module docstring are dropped
-// (both non-semantic, so the stripped program stays compilable), and inline
-// trailing comments are left untouched so a `//`/`#` inside a string literal is
-// never sliced.
-function stripBlueprintComments(code, languageSlug) {
+// Region directive prefixes. Mirrors `REGION_OPEN`/`REGION_CLOSE` in
+// `src/coding/blueprint.rs`.
+const BLUEPRINT_REGION_OPEN = "region:";
+const BLUEPRINT_REGION_CLOSE = "endregion:";
+
+// Normalize a composition strategy value to the canonical "composed" (default,
+// the most promising direction) or "documented". Mirrors
+// `BlueprintComposition::from_value`/`default` in `src/solver.rs`.
+function normalizeBlueprintComposition(value) {
+  switch (String(value || "").trim().toLowerCase()) {
+    case "documented":
+    case "document":
+    case "full":
+    case "verbatim":
+    case "curated":
+      return "documented";
+    default:
+      return "composed";
+  }
+}
+
+// If `trimmed` (leading whitespace already removed) is a region directive
+// comment, return `{ open, slug }`; otherwise null. Mirrors `region_directive`
+// in `src/coding/blueprint.rs`.
+function blueprintRegionDirective(trimmed, marker) {
+  if (!trimmed.startsWith(marker)) return null;
+  const rest = trimmed.slice(marker.length).replace(/^\s+/, "");
+  if (rest.startsWith(BLUEPRINT_REGION_CLOSE)) {
+    return { open: false, slug: rest.slice(BLUEPRINT_REGION_CLOSE.length).trim() };
+  }
+  if (rest.startsWith(BLUEPRINT_REGION_OPEN)) {
+    return { open: true, slug: rest.slice(BLUEPRINT_REGION_OPEN.length).trim() };
+  }
+  return null;
+}
+
+// Compose the program a blueprint emits from its annotated recipe template.
+// Byte-for-byte mirror of `compose_program` in `src/coding/blueprint.rs`: drop
+// every region directive line, and in the "composed" strategy drop the body of
+// any region whose capability the request did not name and strip whole-line
+// documentation when comments were not requested. The "documented" strategy
+// keeps every region and comment (only the internal directive lines go).
+function composeBlueprintProgram(blueprint, strategy) {
+  const languageSlug = blueprint.program.languageSlug;
+  const marker = blueprintCommentMarker(languageSlug);
+  const compose = strategy !== "documented";
+  const requested = (slug) =>
+    blueprint.capabilities.some((capability) => capability.slug === slug);
+
+  // Pass 1 — regions: drop every directive line, and when composing drop the
+  // body of any region whose capability was not requested.
+  const kept = [];
+  let skipping = false;
+  for (const line of blueprint.program.code.split("\n")) {
+    const trimmed = line.replace(/^\s+/, "");
+    const directive = blueprintRegionDirective(trimmed, marker);
+    if (directive) {
+      skipping = directive.open && compose && !requested(directive.slug);
+      continue;
+    }
+    if (!skipping) kept.push(line);
+  }
+
+  // Pass 2 — comments: strip documentation when composing a request that did
+  // not ask for it; otherwise keep the comments and just tidy blank runs.
+  if (compose && !blueprintWantsComments(blueprint)) {
+    return stripBlueprintCommentLines(kept, languageSlug);
+  }
+  return collapseBlueprintBlankRuns(kept);
+}
+
+// Remove the documentation from already region-filtered lines when the request
+// did not ask for comments. Mirrors `strip_comment_lines` in
+// `src/coding/blueprint.rs`: only whole-line comments and a leading Python
+// module docstring are dropped (both non-semantic, so the stripped program
+// stays compilable), and inline trailing comments are left untouched so a
+// `//`/`#` inside a string literal is never sliced.
+function stripBlueprintCommentLines(lines, languageSlug) {
   const marker = blueprintCommentMarker(languageSlug);
   const kept = [];
   let inDocstring = false;
-  for (const line of code.split("\n")) {
+  for (const line of lines) {
     const trimmed = line.replace(/^\s+/, "");
     if (languageSlug === "python") {
       if (inDocstring) {
@@ -12547,8 +12639,9 @@ function blueprintRecipeSummary(recipe, language) {
 
 // Render the complete localized blueprint answer — decomposition plan, the
 // curated program, its library prerequisites, and the honest execution report.
-// Byte-for-byte mirror of `render` in `src/coding/blueprint.rs`.
-function renderBlueprint(blueprint, language) {
+// Byte-for-byte mirror of `render` in `src/coding/blueprint.rs`. `composition`
+// selects which projection of the recipe template to emit (default "composed").
+function renderBlueprint(blueprint, language, composition) {
   const strings = BLUEPRINT_I18N[language] || BLUEPRINT_I18N.en;
   const languageInfo = WRITE_PROGRAM_LANGUAGES[blueprint.program.languageSlug];
   const name = languageInfo ? languageInfo.name : blueprint.program.languageSlug;
@@ -12560,13 +12653,14 @@ function renderBlueprint(blueprint, language) {
   blueprint.capabilities.forEach((capability, index) => {
     body += `${index + 1}. ${blueprintCapabilityLabel(capability, language)}\n`;
   });
-  // Compose the program from the decomposition: when `comments` was not one of
-  // the requested sub-tasks, emit the de-commented form (see
-  // `stripBlueprintComments`) so the blueprint is an honest projection of the
+  // Compose the program from the decomposition: filter optional capability
+  // regions and comments according to `composition` (see
+  // `composeBlueprintProgram`) so the blueprint is an honest projection of the
   // detected capabilities rather than a single frozen string.
-  const programCode = blueprintWantsComments(blueprint)
-    ? blueprint.program.code
-    : stripBlueprintComments(blueprint.program.code, blueprint.program.languageSlug);
+  const programCode = composeBlueprintProgram(
+    blueprint,
+    normalizeBlueprintComposition(composition),
+  );
   body += `\n\`\`\`${fence}\n${programCode}\n\`\`\`\n\n${strings.librariesHeading}\n`;
   for (const library of blueprint.program.libraries) {
     body += `- ${library}\n`;
@@ -12581,8 +12675,14 @@ function renderBlueprint(blueprint, language) {
 // mirrors the Rust handler's event log (`src/solver_handlers/program_blueprint.rs`):
 // the recipe, the decomposed capabilities, the (language, task) parameters, and
 // an honest "unavailable" execution status.
-function blueprintWriteProgramAnswer(blueprint, languageSlug, responseLanguage) {
-  const content = renderBlueprint(blueprint, responseLanguage || "en");
+function blueprintWriteProgramAnswer(
+  blueprint,
+  languageSlug,
+  responseLanguage,
+  composition,
+) {
+  const mode = normalizeBlueprintComposition(composition);
+  const content = renderBlueprint(blueprint, responseLanguage || "en", mode);
   return {
     intent: "write_program",
     content,
@@ -12592,6 +12692,7 @@ function blueprintWriteProgramAnswer(blueprint, languageSlug, responseLanguage) 
       `program_parameter:language:${languageSlug}`,
       `program_parameter:task:blueprint:${blueprint.recipe.slug}`,
       `program_blueprint:recipe:${blueprint.recipe.slug}`,
+      `program_blueprint:composition:${mode}`,
       ...blueprint.capabilities.map(
         (capability) => `program_blueprint:capability:${capability.slug}`,
       ),
@@ -12600,7 +12701,7 @@ function blueprintWriteProgramAnswer(blueprint, languageSlug, responseLanguage) 
   };
 }
 
-function tryWriteProgram(prompt, history, responseLanguage) {
+function tryWriteProgram(prompt, history, responseLanguage, composition) {
   const detected = writeProgramParameters(prompt);
   if (!detected) return null;
   // Issue #324: recover task/language from the conversation when a follow-up
@@ -12626,6 +12727,7 @@ function tryWriteProgram(prompt, history, responseLanguage) {
         blueprint,
         blueprintLanguage,
         responseLanguage,
+        composition,
       );
     }
     return {
@@ -16639,7 +16741,12 @@ async function solve(prompt, history, prefs, userContext = {}) {
   let writeProgramResult;
   const writeProgram = () => {
     if (writeProgramResult === undefined) {
-      writeProgramResult = tryWriteProgram(prompt, history, responseLanguage);
+      writeProgramResult = tryWriteProgram(
+        prompt,
+        history,
+        responseLanguage,
+        preferences.blueprintComposition,
+      );
     }
     return writeProgramResult;
   };

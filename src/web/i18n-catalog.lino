@@ -139,6 +139,10 @@ en
       label "Definition fusion"
       explicit "Explicit only"
       auto "Auto for definitions"
+    blueprintComposition
+      label "Program composition"
+      composed "Composed (projected)"
+      documented "Documented (full)"
     experimentalOcr
       label "Experimental OCR"
       warning "Downloads about 6 MB on first use: OCR wrapper, worker, WebAssembly core, and English traineddata."
@@ -351,6 +355,10 @@ ru
       label "Слияние определений"
       explicit "Только явно"
       auto "Авто для определений"
+    blueprintComposition
+      label "Состав программы"
+      composed "Сборка по запросу"
+      documented "Полная документация"
     experimentalOcr
       label "Экспериментальный OCR"
       warning "При первом использовании скачивается около 6 MB: оболочка OCR, worker, ядро WebAssembly и английские traineddata."
@@ -553,6 +561,10 @@ zh
       label "定义融合"
       explicit "仅显式"
       auto "定义自动"
+    blueprintComposition
+      label "程序组成"
+      composed "按需组合"
+      documented "完整文档"
     experimentalOcr
       label "实验性 OCR"
       warning "首次使用会下载约 6 MB：OCR 包装层、worker、WebAssembly 核心和英语训练数据。"
@@ -761,6 +773,10 @@ hi
       label "परिभाषा fusion"
       explicit "सिर्फ स्पष्ट"
       auto "definitions के लिए auto"
+    blueprintComposition
+      label "प्रोग्राम संरचना"
+      composed "संयोजित (प्रक्षेपित)"
+      documented "पूर्ण (दस्तावेज़ीकृत)"
     experimentalOcr
       label "Experimental OCR"
       warning "पहली बार इस्तेमाल पर लगभग 6 MB डाउनलोड होता है: OCR wrapper, worker, WebAssembly core, और English traineddata."
