@@ -53,9 +53,10 @@ use crate::solver_handlers::{
     try_network_query, try_opinion_question, try_playwright_script, try_program_synthesis,
     try_project_lookup, try_proof_request, try_proof_request_with_config,
     try_punctuation_only_prompt, try_roleplay_request, try_shell_refusal,
-    try_software_project_request, try_source_conflict, try_source_refresh,
-    try_summarization_request, try_text_manipulation, try_translation, try_url_navigate,
-    try_web_search, try_who_is_question, try_write_script, CapabilityRuntime, SelfAwarenessRuntime,
+    try_software_project_followup, try_software_project_request, try_source_conflict,
+    try_source_refresh, try_summarization_request, try_text_manipulation, try_translation,
+    try_url_navigate, try_web_search, try_who_is_question, try_write_script, CapabilityRuntime,
+    SelfAwarenessRuntime,
 };
 use crate::solver_handlers_policy::{try_kupi_slona, try_physical_action_question};
 use crate::solver_helpers::{
@@ -386,6 +387,13 @@ const SPECIALIZED_HANDLERS: &[(&str, SpecializedHandler)] = &[
     ("docs_method_explanation", try_docs_method_explanation),
     ("procedural_how_to", try_how_to_procedure),
     ("conversation_memory", try_conversation_memory),
+    // Issue #341: a decomposed agent step like "test it by scraping
+    // wikipedia.org and show me the top 10 most frequent words" must stay
+    // bound to the active software-project dialogue instead of resolving the
+    // `wikipedia` concept or hitting the unknown opener. The handler only
+    // fires when the previous assistant turn formalized a
+    // `software_project_request`, so it sits above the general lookups.
+    ("software_project_followup", try_software_project_followup),
     ("summarization", try_summarization_request),
     ("text_manipulation", try_text_manipulation),
     ("brainstorming", try_brainstorming_request),
