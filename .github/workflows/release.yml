@@ -753,6 +753,20 @@ jobs:
           path: tests/e2e/playwright-report/
           retention-days: 7
 
+      # The issue-347 spec regenerates the /download preview images and full-page
+      # captures on every run (proving the screenshots can be produced in CI).
+      # Publish them as an artifact so reviewers can compare against the committed
+      # baselines without running the suite locally.
+      - name: Upload generated /download screenshots
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: download-page-screenshots
+          path: |
+            docs/screenshots/issue-347/
+            src/web/download/assets/app-preview*.png
+          retention-days: 14
+
   # === DEPLOY DEMO ===
   # Deploy the React chat demo from src/web/ to GitHub Pages after a successful build.
   deploy-demo:

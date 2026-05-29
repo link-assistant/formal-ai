@@ -249,7 +249,7 @@ jobs:
             echo "Workflow   : Desktop Release"
             echo "Run        : $RUN_URL"
             echo "Builders   : ubuntu-latest (linux-x64), ubuntu-24.04-arm (linux-arm64),"
-            echo "             macos-13 (macos-x64), macos-14 (macos-arm64),"
+            echo "             macos-15-intel (macos-x64), macos-14 (macos-arm64),"
             echo "             windows-latest (windows-x64), windows-11-arm (windows-arm64)"
             echo "Signing    : macOS artifacts are ad-hoc signed (no Apple Developer ID)."
             echo "Attestation: SLSA build provenance attached via actions/attest-build-provenance."
