@@ -1,56 +1,37 @@
-# lino-rest-api
+# lino-rest-api — capture note
 
-[![Tests](https://github.com/link-foundation/lino-rest-api/actions/workflows/test.yml/badge.svg)](https://github.com/link-foundation/lino-rest-api/actions/workflows/test.yml)
+> **Not a verbatim mirror.** Unlike the sibling `*-readme.md` captures, this one
+> is paraphrased. The upstream README describes the project with a
+> deferred-status label that this repository's text policy (issue #103) forbids
+> anywhere in-tree — even inside quoted third-party material, because the
+> `repository_text_avoids_deferred_labels_requested_by_issue_103` test scans the
+> whole tree. So this file records the citable facts and links to the original
+> rather than mirroring it byte-for-byte.
+>
+> Verbatim source: <https://github.com/link-foundation/lino-rest-api#readme>
 
-REST API frameworks using Links Notation (LINO) instead of JSON.
+**Repository:** [link-foundation/lino-rest-api](https://github.com/link-foundation/lino-rest-api)
+**Self-description (repo metadata):** "Yet another REST API framework, using Links Notation instead of Json"
+**Language:** JavaScript · **Stars at capture:** 0 · **License:** Unlicense
 
-## Overview
+## What it is
 
-This repository provides proof-of-concept implementations of REST API frameworks that use [Links Notation](https://github.com/link-foundation/links-notation) for data serialization instead of JSON. Links Notation is a human-readable format for describing data using references and links.
+REST API frameworks that serialize with
+[Links Notation](https://github.com/link-foundation/links-notation) (LINO)
+instead of JSON. The repo ships two early-stage reference implementations:
 
-## Implementations
+- **JavaScript/Bun** — an Express.js-based `createLinoApp()`.
+- **Python** — a FastAPI-based `LinoAPI()`.
 
-- **[JavaScript/Bun](./js/)** - Express.js-based implementation for Node.js and Bun
-- **[Python](./python/)** - FastAPI-based implementation
+Both use `text/lino` as the request/response content type. Related upstream
+projects it points at: `links-notation` (core library),
+`link-notation-objects-codec` (object ↔ LINO encoding), and `test-anywhere`.
 
-## Quick Start
+## Why it matters for issue #347 (R6)
 
-### JavaScript (Express.js/Bun)
-
-```javascript
-import { createLinoApp } from "lino-rest-api";
-
-const app = createLinoApp();
-
-app.get("/hello", () => {
-  return { message: "Hello, Links Notation!" };
-});
-
-app.listen(3000);
-```
-
-### Python (FastAPI)
-
-```python
-from lino_rest_api import LinoAPI
-
-api = LinoAPI()
-
-@api.get("/hello")
-def hello():
-    return {"message": "Hello, Links Notation!"}
-```
-
-## Content Type
-
-LINO APIs use `text/lino` as the content type for requests and responses.
-
-## Related Projects
-
-- [links-notation](https://github.com/link-foundation/links-notation) - Core Links Notation library
-- [link-notation-objects-codec](https://github.com/link-foundation/link-notation-objects-codec) - Object encoding/decoding for Links Notation
-- [test-anywhere](https://github.com/link-foundation/test-anywhere) - Universal testing framework
-
-## License
-
-[Unlicense](LICENSE)
+`lino-rest-api` is the upstream prior art for the deferred R6 "Links-native
+REST" interface. Its object-codec dependency,
+[link-notation-objects-codec](https://github.com/link-foundation/link-notation-objects-codec),
+is what [`../ROADMAP.md`](../ROADMAP.md) §D3 proposes reusing rather than
+hand-rolling a Links Notation ↔ objects mapping. The project is an early-stage
+upstream experiment, which is part of why R6 is sequenced as deferred work.
