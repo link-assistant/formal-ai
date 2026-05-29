@@ -12226,7 +12226,8 @@ import requests
 
 def collect_numbers(value):
     """Recursively collect every int/float out of a decoded JSON value."""
-    if isinstance(value, bool):  # bool subclasses int, so skip it explicitly
+    # bool subclasses int, so skip it explicitly
+    if isinstance(value, bool):
         return []
     if isinstance(value, (int, float)):
         return [float(value)]
@@ -12467,6 +12468,72 @@ const BLUEPRINT_RECIPE_SUMMARIES = {
   "http_json_stats:zh": "通过 HTTP 获取 JSON 并报告其中数字的平均值和中位数",
 };
 
+// The line-comment marker for a program language. Mirrors `comment_marker` in
+// `src/coding/blueprint.rs`: hash-comment languages use `#`, everything else
+// uses `//` (which also covers Rust's `//!`/`///` doc lines).
+function blueprintCommentMarker(languageSlug) {
+  return languageSlug === "python" || languageSlug === "ruby" ? "#" : "//";
+}
+
+// Remove the documentation from a synthesized program when the request did not
+// ask for comments. Mirrors `strip_comments` in `src/coding/blueprint.rs`:
+// only whole-line comments and a leading Python module docstring are dropped
+// (both non-semantic, so the stripped program stays compilable), and inline
+// trailing comments are left untouched so a `//`/`#` inside a string literal is
+// never sliced.
+function stripBlueprintComments(code, languageSlug) {
+  const marker = blueprintCommentMarker(languageSlug);
+  const kept = [];
+  let inDocstring = false;
+  for (const line of code.split("\n")) {
+    const trimmed = line.replace(/^\s+/, "");
+    if (languageSlug === "python") {
+      if (inDocstring) {
+        if (trimmed.includes('"""')) inDocstring = false;
+        continue;
+      }
+      if (trimmed.startsWith('"""')) {
+        const rest = trimmed.slice(3);
+        if (!rest.includes('"""')) inDocstring = true;
+        continue;
+      }
+    }
+    if (trimmed.startsWith(marker)) continue;
+    kept.push(line);
+  }
+  return collapseBlueprintBlankRuns(kept);
+}
+
+// Join kept lines, dropping leading blanks and collapsing runs of two or more
+// blank lines (left after removing comment blocks) into one. Mirrors
+// `collapse_blank_runs` in `src/coding/blueprint.rs`.
+function collapseBlueprintBlankRuns(lines) {
+  const out = [];
+  let pendingBlank = false;
+  let wroteAny = false;
+  for (const line of lines) {
+    if (line.trim() === "") {
+      if (wroteAny) pendingBlank = true;
+      continue;
+    }
+    if (pendingBlank) {
+      out.push("");
+      pendingBlank = false;
+    }
+    out.push(line);
+    wroteAny = true;
+  }
+  return out.join("\n");
+}
+
+// Whether the decomposed request asked for the code to be commented. Mirrors
+// `wants_comments` in `src/coding/blueprint.rs`.
+function blueprintWantsComments(blueprint) {
+  return blueprint.capabilities.some(
+    (capability) => capability.slug === "comments",
+  );
+}
+
 function blueprintCapabilityLabel(capability, language) {
   return (
     BLUEPRINT_CAPABILITY_LABELS[`${capability.slug}:${language}`] ||
@@ -12493,7 +12560,14 @@ function renderBlueprint(blueprint, language) {
   blueprint.capabilities.forEach((capability, index) => {
     body += `${index + 1}. ${blueprintCapabilityLabel(capability, language)}\n`;
   });
-  body += `\n\`\`\`${fence}\n${blueprint.program.code}\n\`\`\`\n\n${strings.librariesHeading}\n`;
+  // Compose the program from the decomposition: when `comments` was not one of
+  // the requested sub-tasks, emit the de-commented form (see
+  // `stripBlueprintComments`) so the blueprint is an honest projection of the
+  // detected capabilities rather than a single frozen string.
+  const programCode = blueprintWantsComments(blueprint)
+    ? blueprint.program.code
+    : stripBlueprintComments(blueprint.program.code, blueprint.program.languageSlug);
+  body += `\n\`\`\`${fence}\n${programCode}\n\`\`\`\n\n${strings.librariesHeading}\n`;
   for (const library of blueprint.program.libraries) {
     body += `- ${library}\n`;
   }

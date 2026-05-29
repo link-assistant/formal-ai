@@ -314,7 +314,8 @@ import requests
 
 def collect_numbers(value):
     """Recursively collect every int/float out of a decoded JSON value."""
-    if isinstance(value, bool):  # bool subclasses int, so skip it explicitly
+    # bool subclasses int, so skip it explicitly
+    if isinstance(value, bool):
         return []
     if isinstance(value, (int, float)):
         return [float(value)]
@@ -465,6 +466,99 @@ fn contains_keyword(normalized: &str, keyword: &str) -> bool {
         .any(|token| token == keyword || (keyword.len() >= 4 && token.starts_with(keyword)))
 }
 
+/// The line-comment marker for a program language, used by [`strip_comments`].
+/// Hash-comment languages (`python`, `ruby`) use `#`; everything else in the
+/// catalog (`rust`, `javascript`, `typescript`, `go`, `c`, `cpp`, `java`,
+/// `csharp`) uses `//`, which also covers Rust's `//!`/`///` doc lines.
+fn comment_marker(language_slug: &str) -> &'static str {
+    match language_slug {
+        "python" | "ruby" => "#",
+        _ => "//",
+    }
+}
+
+/// Remove the *documentation* from a synthesized program when the request did
+/// not ask for comments.
+///
+/// This is what makes a blueprint a real *composition* of the decomposed
+/// capabilities rather than a frozen, memoized answer (which `NON-GOALS.md`
+/// forbids): the `comments` capability is one of the sub-tasks, so its presence
+/// or absence changes the emitted program. Only **whole-line** comments and a
+/// leading Python module docstring are dropped — both are non-semantic, so the
+/// stripped program stays byte-for-byte compilable in every supported language
+/// (verified offline in `experiments/issue-340-blueprint`). Inline trailing
+/// comments are intentionally left untouched so the stripper can never slice a
+/// `//`/`#` that lives inside a string literal.
+#[must_use]
+pub fn strip_comments(code: &str, language_slug: &str) -> String {
+    let marker = comment_marker(language_slug);
+    let mut kept: Vec<&str> = Vec::new();
+    let mut in_docstring = false;
+    for line in code.lines() {
+        let trimmed = line.trim_start();
+        if language_slug == "python" {
+            if in_docstring {
+                if trimmed.contains("\"\"\"") {
+                    in_docstring = false;
+                }
+                continue;
+            }
+            if let Some(rest) = trimmed.strip_prefix("\"\"\"") {
+                // A `"""…"""` docstring entirely on one line, or the opening
+                // line of a multi-line docstring block.
+                if !rest.contains("\"\"\"") {
+                    in_docstring = true;
+                }
+                continue;
+            }
+        }
+        if trimmed.starts_with(marker) {
+            continue;
+        }
+        kept.push(line);
+    }
+    collapse_blank_runs(&kept)
+}
+
+/// Join kept lines, dropping leading blank lines and collapsing any run of two
+/// or more blank lines (left behind after removing comment blocks) into one, so
+/// the de-commented program reads cleanly.
+fn collapse_blank_runs(lines: &[&str]) -> String {
+    let mut out = String::new();
+    let mut pending_blank = false;
+    let mut wrote_any = false;
+    for line in lines {
+        if line.trim().is_empty() {
+            if wrote_any {
+                pending_blank = true;
+            }
+            continue;
+        }
+        if pending_blank {
+            out.push('\n');
+            pending_blank = false;
+        }
+        out.push_str(line);
+        out.push('\n');
+        wrote_any = true;
+    }
+    // Drop the trailing newline so the caller controls fence spacing exactly as
+    // it does for the commented program.
+    if out.ends_with('\n') {
+        out.pop();
+    }
+    out
+}
+
+/// Whether the decomposed request asked for the code to be commented.
+#[must_use]
+pub fn wants_comments(blueprint: &Blueprint) -> bool {
+    blueprint
+        .capabilities
+        .iter()
+        .any(|capability| capability.slug == "comments")
+}
+
 /// Localized heading that introduces the generated blueprint program.
 #[must_use]
 pub fn blueprint_intro(language_name: &str, recipe_label: &str, language: Language) -> String {
@@ -609,10 +703,19 @@ pub fn render(blueprint: &Blueprint, language: Language) -> String {
         .expect("string write is infallible");
     }
 
+    // Compose the program from the decomposition: when `comments` was not one
+    // of the requested sub-tasks, emit the de-commented form. This keeps the
+    // blueprint an honest projection of the detected capabilities rather than a
+    // single frozen string (see `strip_comments`).
+    let program_code = if wants_comments(blueprint) {
+        blueprint.program.code.to_owned()
+    } else {
+        strip_comments(blueprint.program.code, blueprint.program.language_slug)
+    };
+
     write!(
         body,
-        "\n```{code_fence}\n{}\n```\n\n{}\n",
-        blueprint.program.code,
+        "\n```{code_fence}\n{program_code}\n```\n\n{}\n",
         libraries_heading(language)
     )
     .expect("string write is infallible");
@@ -740,5 +843,77 @@ mod tests {
         let rendered = render(&blueprint, Language::Russian);
         assert!(rendered.contains("Статус выполнения"), "{rendered}");
         assert!(rendered.contains("```python"), "{rendered}");
+    }
+
+    /// The composite request that *asks for comments* keeps the fully documented
+    /// program — byte-for-byte the curated source.
+    #[test]
+    fn comments_requested_keeps_the_documented_program() {
+        let prompt = "http get request parse json calculate mean median statistics \
+                      with comments";
+        let blueprint = select_blueprint(prompt, "rust").expect("blueprint resolves");
+        assert!(wants_comments(&blueprint), "comments capability detected");
+        let rendered = render(&blueprint, Language::English);
+        assert!(rendered.contains(blueprint.program.code), "{rendered}");
+        assert!(rendered.contains("// 1. Read the target URL"), "{rendered}");
+    }
+
+    /// A composite request that does *not* ask for comments synthesizes the same
+    /// logic with the documentation stripped — the program is composed from the
+    /// decomposition, not served as one frozen blob.
+    #[test]
+    fn comments_omitted_strips_documentation_but_keeps_logic() {
+        let prompt = "http get request parse json calculate mean median statistics";
+        for (slug, fence, logic) in [
+            ("rust", "//", "reqwest::blocking::get"),
+            ("python", "#", "requests.get"),
+            ("javascript", "//", "await fetch(url)"),
+        ] {
+            let blueprint = select_blueprint(prompt, slug).expect("blueprint resolves");
+            assert!(
+                !wants_comments(&blueprint),
+                "no comments capability for {slug}"
+            );
+            let rendered = render(&blueprint, Language::English);
+            let stripped = strip_comments(blueprint.program.code, slug);
+            assert!(
+                rendered.contains(&stripped),
+                "{slug}: rendered should embed stripped form"
+            );
+            // Core logic survives the strip.
+            assert!(stripped.contains(logic), "{slug}: logic lost: {stripped}");
+            assert!(stripped.contains("mean"), "{slug}: stats lost");
+            assert!(stripped.contains("median"), "{slug}: stats lost");
+            // No whole-line comments remain.
+            for line in stripped.lines() {
+                assert!(
+                    !line.trim_start().starts_with(fence),
+                    "{slug}: residual comment line: {line:?}"
+                );
+            }
+            // No leftover blank-line runs from removed comment blocks.
+            assert!(
+                !stripped.contains("\n\n\n"),
+                "{slug}: blank run left: {stripped:?}"
+            );
+            // Python docstring is gone.
+            if slug == "python" {
+                assert!(
+                    !stripped.contains("\"\"\""),
+                    "python docstring left: {stripped}"
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn stripped_program_is_smaller_than_documented() {
+        let prompt = "http get request parse json calculate mean median statistics";
+        let blueprint = select_blueprint(prompt, "rust").expect("blueprint resolves");
+        let stripped = strip_comments(blueprint.program.code, "rust");
+        assert!(
+            stripped.lines().count() < blueprint.program.code.lines().count(),
+            "stripping comments should shrink the program"
+        );
     }
 }

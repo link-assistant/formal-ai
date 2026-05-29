@@ -165,6 +165,53 @@ const rendered = renderBlueprint(bp, "en");
 check("render numbers the decomposition plan", rendered.includes("1. Make an HTTP request"));
 check("render localizes nothing in en intro", rendered.startsWith("Here is a Rust program"));
 
+// 7. Compositional `comments` axis: a request that asks for comments keeps the
+//    documented program; one that does not strips whole-line documentation, so
+//    the synthesized program is a projection of the decomposition (not a frozen
+//    string). Mirrors the Rust unit tests in `src/coding/blueprint.rs`.
+const withComments = tryWriteProgram(
+  "Write a Rust program that makes an HTTP GET request, parses JSON, computes mean and median, outputs the results, with comments.",
+  [],
+  "en",
+);
+check(
+  "comments requested keeps the documented program",
+  withComments && withComments.content.includes("// 1. Read the target URL"),
+);
+const noComments = tryWriteProgram(
+  "Write a Rust program that makes an HTTP GET request, parses JSON, computes mean and median, and outputs the results.",
+  [],
+  "en",
+);
+const noCommentsCode = noComments && noComments.content.split("```rust\n")[1].split("\n```")[0];
+check(
+  "comments omitted strips whole-line documentation",
+  noCommentsCode &&
+    !noCommentsCode.split("\n").some((line) => line.trimStart().startsWith("//")),
+  noCommentsCode,
+);
+check(
+  "comments omitted keeps the core logic",
+  noCommentsCode &&
+    noCommentsCode.includes("reqwest::blocking::get") &&
+    noCommentsCode.includes("fn median(") &&
+    !/\n\n\n/.test(noCommentsCode),
+);
+const pyNoComments = tryWriteProgram(
+  "Write a Python program that makes an HTTP GET request, parses JSON, and computes the mean and median.",
+  [],
+  "en",
+);
+const pyCode = pyNoComments && pyNoComments.content.split("```python\n")[1].split("\n```")[0];
+check(
+  "python comments omitted drops docstring and # lines",
+  pyCode &&
+    !pyCode.includes('"""') &&
+    !pyCode.split("\n").some((line) => line.trimStart().startsWith("#")) &&
+    pyCode.includes("requests.get"),
+  pyCode,
+);
+
 if (failures > 0) {
   console.error(`\n${failures} failure(s).`);
   process.exit(1);
