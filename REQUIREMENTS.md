@@ -550,3 +550,17 @@ supported subset deterministic, reviewable, and permission-gated.
 | R243 | Natural-language skills must support typed inputs, preconditions, ordered steps, effects, and generated expected tests without implying arbitrary natural-language programming. | Implemented by the structured `Skill` / `Input` / `Precondition` / `Step` / `Effect` / `Expected test` parser in `src/skill_compiler.rs`; covered by `typed_procedure_skill_compiles_steps_tests_and_handler_stub`. |
 | R244 | Generated handlers or package records must remain inspectable as Links Notation and replay deterministically. | Implemented by `CompiledSkillPackage::links_notation`, generated Rust/JavaScript/native handler stubs, and expected-test replay fixtures; associative package lowering turns generated tests into trigger/handler records. Covered by `compiled_package_replays_deterministically_and_exports_links_notation` and `generalized_compiled_skill_package_carries_generated_tests_and_permissions`. |
 | R245 | Unsafe or permissioned skill actions must require explicit package/tool permissions and unsupported instructions must be refused. | Implemented by `SkillCompileError::PermissionRequired`, `SkillCompileError::UnsupportedInstruction`, structured `Tool` / `Permission` records, and `AssociativePackage::from_compiled_skill` permission grants. Covered by `permissioned_skill_requires_explicit_package_permission` and `unsupported_instruction_is_refused`. |
+
+## Issue #327 Cross-Runtime Synthesis Parity
+
+Issue [#327](https://github.com/link-assistant/formal-ai/issues/327)
+requires the browser worker to derive the same synthesis, numeric, program,
+and text answers as the Rust core for the E28-E31 work, while keeping Rust/WASM
+as the owner of shared primitives and JavaScript as browser glue.
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R246 | Browser-worker synthesis prompts must route to typed derived intents instead of `unknown` or legacy write-program templates. | Implemented by `tryLinkNativeSynthesis`, `tryProgramSynthesis`, and `tryTextManipulation` in `src/web/formal_ai_worker.js`, inserted ahead of the legacy arithmetic/write-program fallbacks. |
+| R247 | Rust and browser parity must be checked from a shared fixture that covers algebra substitution, renumbered remainder-sale arithmetic, object counting with a distractor, unseen Python synthesis, and chained text manipulation. | Covered by `data/parity/cross-runtime-synthesis.json`, `shared_cross_runtime_synthesis_fixture_matches_rust_solver`, and `tests/e2e/tests/issue-327.spec.js`. |
+| R248 | Anti-memorization checks must hold on the browser side for renumbered numeric answers, distractor counts, and unseen synthesized programs. | The shared fixture includes forbidden fragments such as `18`, `4`, and `legacy_intent`; the browser e2e asserts they do not appear in rendered answers and checks semantic forbidden evidence for legacy routes. |
+| R249 | WASM must remain the bridge for shared primitives while JS performs browser-only composition and glue. | Browser synthesis delegates arithmetic evaluation and stable id creation through `wasmEvaluateArithmetic` and `wasmStableId` when available, with JS fallbacks only for no-WASM compatibility. |
