@@ -645,3 +645,184 @@ fn english_follow_up_modification_emits_substitution_plan_trace() {
         response.evidence_links
     );
 }
+
+// ---------------------------------------------------------------------------
+// Issue #330: a code answer must teach a novice — every generated program is
+// accompanied by a plain-language "how it works" explanation and step-by-step
+// testing instructions, localized for every supported response language. When
+// the dialog already walked the user through running code, a follow-up edit
+// omits the verbose setup steps and shows a concise "test it the same way"
+// note instead.
+// ---------------------------------------------------------------------------
+
+#[test]
+fn english_code_answer_explains_and_instructs() {
+    let response = answer("Write me a Rust program that lists files in the current directory");
+    assert_write_program_parameters(&response, "rust", "list_files");
+    let text = &response.answer;
+    assert!(
+        text.contains("How it works:"),
+        "English code answer should explain how it works, got: {text}"
+    );
+    assert!(
+        text.contains("sorts the list alphabetically"),
+        "English explanation should describe the algorithm, got: {text}"
+    );
+    assert!(
+        text.contains("How to test it yourself:"),
+        "English code answer should give test instructions, got: {text}"
+    );
+    assert!(
+        text.contains("Install the Rust toolchain from https://rustup.rs"),
+        "English instructions should include the toolchain setup, got: {text}"
+    );
+    assert!(
+        text.contains("Save the code above to a file named `main.rs`"),
+        "English instructions should tell the user where to save the code, got: {text}"
+    );
+    assert!(
+        text.contains("Run it: `./main`"),
+        "English instructions should include the run command, got: {text}"
+    );
+}
+
+#[test]
+fn russian_code_answer_explains_and_instructs() {
+    let response =
+        answer("Напиши мне программу на Rust, которая выдаёт список файлов в текущей директории");
+    assert_write_program_parameters(&response, "rust", "list_files");
+    let text = &response.answer;
+    assert!(
+        text.contains("Как это работает:"),
+        "Russian code answer should explain how it works, got: {text}"
+    );
+    assert!(
+        text.contains("Как проверить это самостоятельно:"),
+        "Russian code answer should give test instructions, got: {text}"
+    );
+    assert!(
+        text.contains("Сохраните приведённый выше код в файл `main.rs`"),
+        "Russian instructions should tell the user where to save the code, got: {text}"
+    );
+    assert!(
+        text.contains("Запустите программу: `./main`"),
+        "Russian instructions should include the run command, got: {text}"
+    );
+}
+
+#[test]
+fn hindi_code_answer_explains_and_instructs() {
+    let response = answer("Rust में फ़ाइलों की सूची दिखाने वाला प्रोग्राम लिखो");
+    assert_write_program_parameters(&response, "rust", "list_files");
+    let text = &response.answer;
+    assert!(
+        text.contains("यह कैसे काम करता है:"),
+        "Hindi code answer should explain how it works, got: {text}"
+    );
+    assert!(
+        text.contains("इसे स्वयं कैसे जाँचें:"),
+        "Hindi code answer should give test instructions, got: {text}"
+    );
+    assert!(
+        text.contains("`main.rs`"),
+        "Hindi instructions should reference the file name, got: {text}"
+    );
+}
+
+#[test]
+fn chinese_code_answer_explains_and_instructs() {
+    let response = answer("用 Rust 编写一个列出当前目录中文件的程序");
+    assert_write_program_parameters(&response, "rust", "list_files");
+    let text = &response.answer;
+    assert!(
+        text.contains("工作原理："),
+        "Chinese code answer should explain how it works, got: {text}"
+    );
+    assert!(
+        text.contains("如何自行测试："),
+        "Chinese code answer should give test instructions, got: {text}"
+    );
+    assert!(
+        text.contains("`main.rs`"),
+        "Chinese instructions should reference the file name, got: {text}"
+    );
+}
+
+#[test]
+fn unavailable_language_explains_and_instructs() {
+    // Ruby's toolchain is "Unavailable" in this runtime, but a novice still
+    // needs the explanation and the setup/run steps.
+    let response = answer("Write me a Ruby program that lists files in the current directory");
+    assert_write_program_parameters(&response, "ruby", "list_files");
+    let text = &response.answer;
+    assert!(
+        text.contains("How it works:"),
+        "Ruby code answer should explain how it works, got: {text}"
+    );
+    assert!(
+        text.contains("Install Ruby from https://www.ruby-lang.org/en/downloads/"),
+        "Ruby instructions should include the toolchain setup, got: {text}"
+    );
+    assert!(
+        text.contains("Save the code above to a file named `main.rb`"),
+        "Ruby instructions should tell the user where to save the code, got: {text}"
+    );
+    assert!(
+        text.contains("Run it: `ruby main.rb`"),
+        "Ruby instructions should include the run command, got: {text}"
+    );
+}
+
+#[test]
+fn follow_up_code_edit_omits_setup_steps() {
+    let solver = UniversalSolver::default();
+    let first = "Напиши мне программу на Rust, которая выдаёт список файлов в текущей директории";
+    let plan = solver.solve(first);
+    let history = [
+        ConversationTurn::user(first),
+        ConversationTurn::assistant(plan.answer),
+    ];
+    let response = solver.solve_with_history(
+        "Сделай так, чтобы программа принимала путь как аргумент",
+        &history,
+    );
+    let text = &response.answer;
+    // The verbose setup walkthrough is replaced by a concise reminder.
+    assert!(
+        !text.contains("Как проверить это самостоятельно:"),
+        "follow-up edit should omit the verbose setup steps, got: {text}"
+    );
+    assert!(
+        text.contains("Проверьте обновлённую программу так же, как и раньше:"),
+        "follow-up edit should keep a concise test reminder, got: {text}"
+    );
+    assert!(
+        text.contains("`./main`"),
+        "follow-up reminder should still include the run command, got: {text}"
+    );
+    // The explanation of the (now changed) program is still present.
+    assert!(
+        text.contains("Как это работает:"),
+        "follow-up edit should still explain how the updated program works, got: {text}"
+    );
+}
+
+#[test]
+fn first_turn_without_prior_code_keeps_full_instructions() {
+    // A first turn that happens to carry unrelated history (no prior code
+    // block) must still receive the full novice instructions.
+    let solver = UniversalSolver::default();
+    let history = [
+        ConversationTurn::user("Hello"),
+        ConversationTurn::assistant("Hi! How can I help?".to_owned()),
+    ];
+    let response = solver.solve_with_history(
+        "Write me a Rust program that lists files in the current directory",
+        &history,
+    );
+    assert!(
+        response.answer.contains("How to test it yourself:"),
+        "a first code answer should include full instructions, got: {}",
+        response.answer
+    );
+}

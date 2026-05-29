@@ -6,6 +6,13 @@ pub struct ProgramLanguage {
     pub code_fence: &'static str,
     pub execution: ProgramExecution,
     pub source: &'static str,
+    /// File name a novice should save the snippet as before running it (issue
+    /// #330). The check/run commands above already reference this name.
+    pub save_as: &'static str,
+    /// One-line, novice-friendly hint for installing the toolchain (issue
+    /// #330). URLs and shell commands stay canonical; only the surrounding
+    /// prose is localized in `program_test_instructions`.
+    pub setup_hint: &'static str,
 }
 
 #[derive(Clone, Copy)]
@@ -97,6 +104,8 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
             notes: "1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.",
         },
         source: "local Links Notation write-program seed",
+        save_as: "main.rs",
+        setup_hint: "the Rust toolchain from https://rustup.rs",
     },
     ProgramLanguage {
         slug: "python",
@@ -111,6 +120,8 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
             notes: "1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.",
         },
         source: "local Links Notation write-program seed",
+        save_as: "main.py",
+        setup_hint: "Python 3 from https://www.python.org/downloads/",
     },
     ProgramLanguage {
         slug: "javascript",
@@ -125,6 +136,8 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
             notes: "1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.",
         },
         source: "local Links Notation write-program seed",
+        save_as: "main.js",
+        setup_hint: "Node.js from https://nodejs.org/",
     },
     ProgramLanguage {
         slug: "typescript",
@@ -139,6 +152,8 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
             notes: "The TypeScript seed is returned with this warning until a tsc-backed execution profile is available.",
         },
         source: "local Links Notation write-program seed",
+        save_as: "hello.ts",
+        setup_hint: "Node.js from https://nodejs.org/ plus TypeScript via `npm install -g typescript`",
     },
     ProgramLanguage {
         slug: "go",
@@ -153,6 +168,8 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
             notes: "1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.",
         },
         source: "local Links Notation write-program seed",
+        save_as: "main.go",
+        setup_hint: "Go from https://go.dev/dl/",
     },
     ProgramLanguage {
         slug: "c",
@@ -167,6 +184,8 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
             notes: "1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.",
         },
         source: "local Links Notation write-program seed",
+        save_as: "main.c",
+        setup_hint: "a C compiler such as GCC from https://gcc.gnu.org/ or your package manager",
     },
     ProgramLanguage {
         slug: "cpp",
@@ -181,6 +200,8 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
             notes: "The C++ seed is returned with this warning until a g++-backed execution profile is available.",
         },
         source: "local Links Notation write-program seed",
+        save_as: "main.cpp",
+        setup_hint: "a C++ compiler such as g++ from https://gcc.gnu.org/ or your package manager",
     },
     ProgramLanguage {
         slug: "java",
@@ -195,6 +216,8 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
             notes: "The Java seed is returned with this warning until a javac-backed execution profile is available.",
         },
         source: "local Links Notation write-program seed",
+        save_as: "Main.java",
+        setup_hint: "a JDK from https://adoptium.net/",
     },
     ProgramLanguage {
         slug: "csharp",
@@ -209,6 +232,8 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
             notes: "The C# seed is returned with this warning until a dotnet-backed execution profile is available.",
         },
         source: "local Links Notation write-program seed",
+        save_as: "Program.cs",
+        setup_hint: "the .NET SDK from https://dotnet.microsoft.com/download",
     },
     ProgramLanguage {
         slug: "ruby",
@@ -223,6 +248,8 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
             notes: "The Ruby seed is returned with this warning until a ruby-backed execution profile is available.",
         },
         source: "local Links Notation write-program seed",
+        save_as: "main.rb",
+        setup_hint: "Ruby from https://www.ruby-lang.org/en/downloads/",
     },
 ];
 

@@ -655,9 +655,17 @@ impl UniversalSolver {
             );
         }
 
+        // Issue #330: when an earlier assistant turn already presented a code
+        // block (i.e. we already walked the user through running a program),
+        // a follow-up code edit omits the verbose setup steps and shows a
+        // concise "test it the same way" note instead.
+        let prior_code_response = history.iter().any(|turn| {
+            matches!(turn.role, ConversationRole::Assistant) && turn.content.contains("```")
+        });
+
         let answer = match (&validation_choice, &rule) {
             (Some(choice), SelectedRule::Unknown) => choice.answer.clone(),
-            _ => language_aware_answer_for(&rule, language, prompt),
+            _ => language_aware_answer_for(&rule, language, prompt, prior_code_response),
         };
 
         let response_link = response_link_for_intent(&rule, &intent);
