@@ -36,6 +36,7 @@ mod calculator_delegation;
 mod capabilities;
 mod chat_surface;
 mod code_generation;
+mod code_generation_blueprint;
 mod definition_fusion;
 mod desktop_surface;
 mod formalization;
