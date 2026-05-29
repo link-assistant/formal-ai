@@ -6,8 +6,8 @@
 //! so every request walks the same 11-step loop documented in `VISION.md`.
 
 pub(crate) use crate::coding::{
-    program_language_by_alias, program_spec, supported_program_languages, supported_program_tasks,
-    ExecutionStatus, ProgramExecution, ProgramSpec, PROGRAM_LANGUAGES, PROGRAM_TEMPLATES,
+    program_language_by_alias, program_spec, program_template_count, supported_program_languages,
+    supported_program_tasks, ExecutionStatus, ProgramExecution, ProgramSpec, PROGRAM_LANGUAGES,
     WRITE_PROGRAM_INTENT,
 };
 
@@ -828,7 +828,7 @@ fn format_write_program_rule_record() -> String {
             ("parameters", String::from("language, task")),
             ("languages", supported_program_languages()),
             ("tasks", supported_program_tasks()),
-            ("template_count", PROGRAM_TEMPLATES.len().to_string()),
+            ("template_count", program_template_count().to_string()),
             ("response_link", String::from("response:write_program")),
             ("answer", sample),
             (
