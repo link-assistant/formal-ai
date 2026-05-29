@@ -15,11 +15,26 @@ const API_AUTH_ENV_KEYS = [
   "FORMAL_AI_API_TOKEN",
 ];
 
+// R3/R4: by default the desktop runs the in-process reasoning agent (the same
+// in-browser engine the web demo uses) — no child server, nothing listening.
+// Starting the local OpenAI-compatible server is opt-in via this environment
+// variable, which is also what unlocks pointing the claude/codex/agent CLIs at
+// it. See docs/desktop/server-api.md.
+const SERVER_OPT_IN_ENV = "FORMAL_AI_DESKTOP_SERVER";
+
+function serverModeRequested() {
+  const raw = String(process.env[SERVER_OPT_IN_ENV] || "")
+    .trim()
+    .toLowerCase();
+  return raw === "1" || raw === "true" || raw === "yes" || raw === "on";
+}
+
 let mainWindow = null;
 let staticServer = null;
 let apiProcess = null;
 let desktopStatus = {
   shell: "Electron",
+  mode: "in-process",
   apiBase: "",
   staticBase: "",
   graphUrl: "",
@@ -249,27 +264,42 @@ async function createMainWindow() {
   const webRoot = resolveWebRoot();
   const staticPort = await findFreePort();
   staticServer = await startStaticServer(webRoot, staticPort);
-  const apiPort = await findFreePort();
-
   const staticBase = `http://127.0.0.1:${staticPort}`;
-  const apiBase = `http://127.0.0.1:${apiPort}`;
-  desktopStatus = {
-    ...desktopStatus,
-    apiBase,
-    staticBase,
-    chatUrl: `${apiBase}/v1/chat/completions`,
-    graphUrl: `${apiBase}/v1/graph`,
-    traceUrl: `${apiBase}/v1/graph?trace=answer_greeting_hi`,
-  };
 
-  try {
-    apiProcess = await startApiProcess(apiPort);
-    desktopStatus = { ...desktopStatus, apiReady: true, apiError: "" };
-  } catch (error) {
+  if (serverModeRequested()) {
+    // Opt-in: spawn the local OpenAI-compatible server on a free loopback port
+    // and route chat through it (`POST /v1/chat/completions`).
+    const apiPort = await findFreePort();
+    const apiBase = `http://127.0.0.1:${apiPort}`;
     desktopStatus = {
       ...desktopStatus,
+      mode: "server",
+      apiBase,
+      staticBase,
+      chatUrl: `${apiBase}/v1/chat/completions`,
+      graphUrl: `${apiBase}/v1/graph`,
+      traceUrl: `${apiBase}/v1/graph?trace=answer_greeting_hi`,
+    };
+
+    try {
+      apiProcess = await startApiProcess(apiPort);
+      desktopStatus = { ...desktopStatus, apiReady: true, apiError: "" };
+    } catch (error) {
+      desktopStatus = {
+        ...desktopStatus,
+        apiReady: false,
+        apiError: error && error.message ? error.message : String(error),
+      };
+    }
+  } else {
+    // Default: in-process agent only. The web app falls back to the in-browser
+    // engine when no `apiBase` is advertised (see app.js routing).
+    desktopStatus = {
+      ...desktopStatus,
+      mode: "in-process",
+      staticBase,
       apiReady: false,
-      apiError: error && error.message ? error.message : String(error),
+      apiError: "",
     };
   }
 
@@ -298,7 +328,10 @@ async function createMainWindow() {
     }
   });
 
-  await mainWindow.loadURL(`${staticBase}/index.html?desktop=1&api=${encodeURIComponent(apiBase)}`);
+  const apiQuery = desktopStatus.apiBase
+    ? `&api=${encodeURIComponent(desktopStatus.apiBase)}`
+    : "";
+  await mainWindow.loadURL(`${staticBase}/index.html?desktop=1${apiQuery}`);
 }
 
 async function shutdown() {

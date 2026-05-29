@@ -3111,6 +3111,7 @@ function normalizeDesktopStatus(status) {
   const apiBase = String(status.apiBase || "").replace(/\/+$/, "");
   return {
     shell: String(status.shell || "Electron"),
+    mode: String(status.mode || (apiBase ? "server" : "in-process")),
     apiBase,
     staticBase: String(status.staticBase || ""),
     graphUrl: String(status.graphUrl || (apiBase ? `${apiBase}/v1/graph` : "")),
@@ -3140,7 +3141,11 @@ function desktopStatusLabel(status, agentMode) {
   if (!status) {
     return "";
   }
-  const api = status.apiReady ? "API local" : "API unavailable";
+  const api = status.apiReady
+    ? "API local"
+    : status.apiError
+      ? "API unavailable"
+      : "in-process";
   const agent = agentMode ? "agent opted in" : "agent permission off";
   return `Desktop - ${api} - ${agent}`;
 }

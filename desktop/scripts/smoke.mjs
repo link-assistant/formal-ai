@@ -32,6 +32,9 @@ requireIncludes("main.cjs", read("main.cjs"), [
   "/v1/chat/completions",
   "/v1/graph",
   "formal-ai",
+  // R3/R4: the local server is opt-in (in-process is the default).
+  "FORMAL_AI_DESKTOP_SERVER",
+  "serverModeRequested",
 ]);
 requireIncludes("preload.cjs", read("preload.cjs"), [
   "contextBridge",
