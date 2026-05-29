@@ -93,8 +93,8 @@ Agent mode lives in the browser (`src/web/app.js`):
 
 Every step ends up in the Rust universal solver
 (`UniversalSolver::solve_with_history`), which walks an **ordered dispatch
-table** (`SPECIALIZED_HANDLERS` in `src/solver.rs`). The first handler that
-returns `Some` wins.
+table** (`SPECIALIZED_HANDLERS`, now in `src/solver_dispatch.rs`). The first
+handler that returns `Some` wins.
 
 ### Cause — there was no follow-up handler, and the project handler is gated and ordered late
 
@@ -129,9 +129,9 @@ gives it precedence over the general lookups while a project dialogue is active.
 ## 4. The fix
 
 A new handler `try_software_project_followup`
-(`src/solver_handlers/software_project.rs`), registered in `SPECIALIZED_HANDLERS`
-**immediately after `conversation_memory` and before `summarization` /
-`concept_lookup`**:
+(`src/solver_handlers/software_project_followup.rs`), registered in
+`SPECIALIZED_HANDLERS` (`src/solver_dispatch.rs`) **immediately after
+`conversation_memory` and before `summarization` / `concept_lookup`**:
 
 - Fires **only** when the previous assistant turn already formalized a
   `software_project_request` (recovered by `prior_software_project_dialogue`,
@@ -191,6 +191,13 @@ ordering trap. The fix was therefore mirrored:
 
 `decomposeAgentTask` in `src/web/app.js` is unchanged — the split itself is
 correct; only the per-step routing was wrong.
+
+> Housekeeping: adding the handler pushed `src/solver.rs` and
+> `src/solver_handlers/software_project.rs` over the repository's 1000-line
+> guard. The follow-up logic now lives in its own module
+> (`src/solver_handlers/software_project_followup.rs`), and the ordered
+> `SPECIALIZED_HANDLERS` table was extracted to `src/solver_dispatch.rs`, so
+> every touched file is back under the limit.
 
 ---
 
