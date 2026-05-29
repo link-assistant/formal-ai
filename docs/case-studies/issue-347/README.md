@@ -197,16 +197,20 @@ as the behavioural reference.
 ### R4 — opt-in server API + CLI config
 **Chosen:** a focused doc (`docs/desktop/server-api.md`) describing how to enable
 the local OpenAI-compatible server, the exact base URL / endpoint
-(`/v1/chat/completions`), and copy-paste environment configuration for the
-`claude`, `codex`, and `agent` CLIs (`OPENAI_BASE_URL` / `OPENAI_API_KEY`
-conventions). Default remains off.
+(`/v1/chat/completions`), and copy-paste configuration for each CLI: `codex` via
+its `~/.codex/config.toml` `model_providers` block (`wire_api = "chat"`), `agent`
+via the `OPENAI_BASE_URL` / `OPENAI_API_KEY` conventions, and `claude` via an
+Anthropic→OpenAI adapter (it speaks the Anthropic Messages protocol, not OpenAI,
+so it cannot target the endpoint directly). Default remains off.
 
 ### R5 — web↔desktop reuse, auto-detect, sync, routing
 - **5a reuse** — already satisfied (`main.cjs` serves `src/web`); documented.
-- **5b auto-detect** — small, shippable: a `local-server.js` probe the web app can
-  use to detect a local server (health ping to the loopback API) and surface
-  status, default-off and privacy-preserving (loopback only). Shipped behind a
-  preference.
+- **5b auto-detect** — shipped: the web app detects a running local server through
+  the Electron preload bridge (`window.FormalAiDesktop.getStatus()`), **not** a
+  network scan — the browser cannot probe loopback ports. When the bridge reports
+  `apiReady` + `apiBase` the chat routes to the local server; otherwise it stays
+  in-process. Loopback-only and privacy-preserving. See
+  [`../../desktop/server-api.md` §5b](../../desktop/server-api.md#5b-auto-detecting-the-local-server).
 - **5c DB sync** and **5d request/tool/code-exec routing to local app + Docker** —
   large; designed + roadmapped (§9, ROADMAP) with interface sketches. Not shipped
   half-built.
