@@ -1164,6 +1164,134 @@ body.is-resizing-context {
   background: #e9eef1;
 }
 
+/* Issue #330: code-block shell with a language label + per-block copy button. */
+.markdown-body .code-block {
+  position: relative;
+  margin: 8px 0;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #111827;
+}
+
+.markdown-body .code-block:first-child {
+  margin-top: 0;
+}
+
+.markdown-body .code-block:last-child {
+  margin-bottom: 0;
+}
+
+.markdown-body .code-block-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 10px;
+  background: #0b111d;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.22);
+  font-size: 12px;
+}
+
+.markdown-body .code-block-lang {
+  color: #9fb0c3;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.markdown-body .code-block > pre {
+  margin: 0;
+  border-radius: 0;
+}
+
+.code-copy-button,
+.message-copy-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  line-height: 1.2;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.code-copy-button {
+  padding: 3px 9px;
+  color: #cdd9e5;
+  background: rgba(148, 163, 184, 0.16);
+  border-color: rgba(148, 163, 184, 0.28);
+}
+
+.code-copy-button:hover {
+  background: rgba(148, 163, 184, 0.3);
+  color: #ffffff;
+}
+
+.code-copy-button.is-copied {
+  color: #d1fadf;
+  background: rgba(34, 197, 94, 0.28);
+  border-color: rgba(34, 197, 94, 0.5);
+}
+
+.message-copy-button {
+  padding: 1px 7px;
+  margin-left: 4px;
+  color: inherit;
+  opacity: 0.62;
+  background: transparent;
+  border-color: rgba(127, 140, 158, 0.32);
+}
+
+.message-copy-button:hover {
+  opacity: 1;
+  background: rgba(127, 140, 158, 0.14);
+}
+
+.message-copy-button.is-copied {
+  opacity: 1;
+  color: #137a45;
+  border-color: rgba(34, 197, 94, 0.5);
+  background: rgba(34, 197, 94, 0.16);
+}
+
+/* Syntax-highlight token palette. The code background is dark in both themes,
+   so a single palette tuned for the dark surface keeps contrast consistent. */
+.markdown-body code.hljs {
+  color: #e6edf3;
+}
+
+.markdown-body .hljs-comment {
+  color: #8b98a5;
+  font-style: italic;
+}
+
+.markdown-body .hljs-keyword {
+  color: #ff7b72;
+}
+
+.markdown-body .hljs-string {
+  color: #a5d6ff;
+}
+
+.markdown-body .hljs-number,
+.markdown-body .hljs-literal {
+  color: #f0b072;
+}
+
+.markdown-body .hljs-type {
+  color: #7ee787;
+}
+
+.markdown-body .hljs-title {
+  color: #d2a8ff;
+}
+
 .markdown-body a.external-link {
   color: #175f4f;
   text-decoration-thickness: 1px;
