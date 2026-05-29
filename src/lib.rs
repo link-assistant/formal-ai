@@ -25,6 +25,7 @@ pub mod seed;
 pub mod server;
 pub mod skill_compiler;
 pub mod solver;
+pub(crate) mod solver_dispatch;
 pub(crate) mod solver_formalization;
 pub(crate) mod solver_handler_docs;
 pub(crate) mod solver_handler_how;

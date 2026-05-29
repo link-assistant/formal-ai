@@ -10272,6 +10272,280 @@ function trySoftwareProjectRequest(prompt, history = []) {
   };
 }
 
+// Phrases that, while a software-project dialogue is active, signal a request to
+// exercise the just-designed artifact rather than start a fresh fact lookup.
+// Carries the supported languages (en, ru, hi, zh) so a multilingual user who
+// designs in one language and then says "now test it" in another stays inside
+// the project dialogue. Mirrors `FOLLOW_UP_MARKERS` in
+// src/solver_handlers/software_project.rs (verification precedes execution and
+// demonstration so a combined phrasing records the stronger goal).
+const SOFTWARE_FOLLOW_UP_MARKERS = [
+  // Verification — en
+  ["test it", "verification"],
+  ["test the", "verification"],
+  ["test this", "verification"],
+  ["verify", "verification"],
+  ["check it", "verification"],
+  ["check that", "verification"],
+  ["run the tests", "verification"],
+  // Verification — ru / zh / hi
+  ["протестируй", "verification"],
+  ["протестировать", "verification"],
+  ["проверь", "verification"],
+  ["тестируй", "verification"],
+  ["测试", "verification"],
+  ["检验", "verification"],
+  ["检查", "verification"],
+  ["परीक्षण", "verification"],
+  ["जाँच", "verification"],
+  ["जांच", "verification"],
+  // Execution — en
+  ["run it", "execution"],
+  ["run this", "execution"],
+  ["run the", "execution"],
+  ["execute it", "execution"],
+  ["execute the", "execution"],
+  ["try it", "execution"],
+  // Execution — ru / zh / hi
+  ["запусти", "execution"],
+  ["выполни", "execution"],
+  ["运行", "execution"],
+  ["执行", "execution"],
+  ["चलाओ", "execution"],
+  ["निष्पादित", "execution"],
+  // Demonstration — en
+  ["demo it", "demonstration"],
+  ["show me", "demonstration"],
+  ["show the", "demonstration"],
+  ["print the", "demonstration"],
+  // Demonstration — ru / zh / hi
+  ["покажи", "demonstration"],
+  ["显示", "demonstration"],
+  ["展示", "demonstration"],
+  ["दिखाओ", "demonstration"],
+];
+
+const SOFTWARE_FOLLOW_UP_ACTIONS = {
+  verification: "test",
+  execution: "run",
+  demonstration: "show",
+};
+
+const SOFTWARE_FOLLOW_UP_GATES = ["generated_code", "test_execution", "network_access"];
+
+// Recover the active software-project dialogue from history regardless of
+// whether the plan was approved. Mirrors `prior_software_project_dialogue`.
+function priorSoftwareProjectDialogue(history) {
+  const assistant = lastHistoryTurn(history, "assistant");
+  if (!assistant || !assistant.includes("software_project_request")) {
+    return null;
+  }
+  const approved = assistant.includes("approval_state approved");
+  const user = lastHistoryTurn(history, "user");
+  const meaning = user ? formalizeSoftwareProjectRequest(user) : null;
+  return meaning ? { meaning, approved } : null;
+}
+
+// Pull the first domain-like token (e.g. `wikipedia.org`) out of the prompt.
+function extractFollowUpTargetSite(prompt) {
+  for (const raw of String(prompt || "").split(/\s+/)) {
+    const token = raw.replace(/^[^A-Za-z0-9]+|[^A-Za-z0-9]+$/g, "");
+    if (!token.includes(".")) continue;
+    const lastDot = token.lastIndexOf(".");
+    const host = token.slice(0, lastDot);
+    const tld = token.slice(lastDot + 1);
+    if (
+      tld.length >= 2 &&
+      /^[A-Za-z]+$/.test(tld) &&
+      /[A-Za-z]/.test(host)
+    ) {
+      return token.toLowerCase();
+    }
+  }
+  return null;
+}
+
+// Capture the clause after "show me"/"show"/"print"/"display" (capped at 12
+// words) so the follow-up records what the user wants surfaced.
+function extractFollowUpExpectedOutput(prompt) {
+  const source = String(prompt || "");
+  const lower = source.toLowerCase();
+  for (const marker of ["show me ", "show ", "print ", "display "]) {
+    const found = lower.indexOf(marker);
+    if (found < 0) continue;
+    const start = found + marker.length;
+    const tail = source.slice(start);
+    const stopMatch = tail.match(/[.?\n;]/);
+    const stop = stopMatch ? stopMatch.index : tail.length;
+    const clause = tail
+      .slice(0, stop)
+      .split(/\s+/)
+      .filter(Boolean)
+      .slice(0, 12)
+      .join(" ");
+    if (clause) return clause;
+  }
+  return null;
+}
+
+function detectSoftwareFollowUp(prompt, normalized) {
+  const found = SOFTWARE_FOLLOW_UP_MARKERS.find(([marker]) =>
+    normalized.includes(marker),
+  );
+  if (!found) return null;
+  return {
+    kind: found[1],
+    action: SOFTWARE_FOLLOW_UP_ACTIONS[found[1]],
+    targetSite: extractFollowUpTargetSite(prompt),
+    expectedOutput: extractFollowUpExpectedOutput(prompt),
+  };
+}
+
+function followUpMeaningId(meaning, followUp) {
+  const key = [
+    `parent=${stableSoftwareMeaningId(meaning)}`,
+    `kind=${followUp.kind}`,
+    `site=${followUp.targetSite || ""}`,
+    `output=${followUp.expectedOutput || ""}`,
+  ].join(";");
+  return stableBehaviorRuleId("software_project_followup", key);
+}
+
+function followUpReasoningSteps(meaning, followUp) {
+  const steps = [
+    `Recognize "${followUp.action}" as a ${followUp.kind} request that exercises the ${meaning.artifact} from the active plan, not a fact lookup.`,
+  ];
+  if (followUp.targetSite) {
+    steps.push(
+      `Bind the test target to ${followUp.targetSite} and keep live fetches behind the network_access gate.`,
+    );
+  }
+  if (followUp.expectedOutput) {
+    steps.push(
+      `Record the expected output as "${followUp.expectedOutput}" so the test harness can assert it.`,
+    );
+  }
+  steps.push(
+    "Drive the artifact through a deterministic fixture before any host API or network call.",
+  );
+  steps.push(
+    "Keep code execution behind approval gates because the sandbox cannot run untrusted code.",
+  );
+  return steps;
+}
+
+function followUpPlanSteps(meaning, followUp) {
+  const site = followUp.targetSite || "the requested target";
+  const steps = [
+    `Generate the ${meaning.artifact} core plus a deterministic test harness with a captured ${site} fixture.`,
+    "Assert each requirement (parsing, extraction, counting, summary) against the fixture.",
+  ];
+  if (followUp.expectedOutput) {
+    steps.push(`Surface ${followUp.expectedOutput} from the fixture run.`);
+  }
+  steps.push(
+    `Run the ${meaning.implementationLanguage} test command once the generated_code gate is approved.`,
+  );
+  steps.push(
+    `Promote the run to live ${site} only after the test_execution and network_access gates pass.`,
+  );
+  return steps;
+}
+
+function followUpEvidence(meaning, followUp, approved) {
+  const evidence = [
+    "formalization:text_to_links_notation",
+    `meaning:${followUpMeaningId(meaning, followUp)}`,
+    `software_project:parent:${stableSoftwareMeaningId(meaning)}`,
+    `software_project:follow_up_kind:${followUp.kind}`,
+  ];
+  if (followUp.targetSite) {
+    evidence.push(`software_project:target_site:${followUp.targetSite}`);
+  }
+  if (followUp.expectedOutput) {
+    evidence.push(`software_project:expected_output:${followUp.expectedOutput}`);
+  }
+  evidence.push(`approval_state:${softwareApprovalLabel(approved)}`);
+  for (const gate of SOFTWARE_FOLLOW_UP_GATES) {
+    evidence.push(`approval_gate:${gate}`);
+  }
+  return evidence;
+}
+
+function renderSoftwareProjectFollowUp(meaning, followUp, approved) {
+  const lines = [];
+  lines.push(
+    `Recorded a ${followUp.kind} follow-up for the ${meaning.artifact} from the active plan.`,
+  );
+  lines.push("");
+  lines.push("Formalized meaning:");
+  lines.push("```lino");
+  lines.push("software_project_followup");
+  lines.push(`  parent_request ${linoString(stableSoftwareMeaningId(meaning))}`);
+  lines.push(`  parent_artifact ${linoString(meaning.artifact)}`);
+  lines.push(`  action ${linoString(followUp.action)}`);
+  lines.push(`  follow_up_kind ${followUp.kind}`);
+  if (followUp.targetSite) {
+    lines.push(`  target_site ${linoString(followUp.targetSite)}`);
+  }
+  if (followUp.expectedOutput) {
+    lines.push(`  expected_output ${linoString(followUp.expectedOutput)}`);
+  }
+  lines.push(`  delivery_mode ${meaning.deliveryMode}`);
+  lines.push(`  implementation_language ${linoString(meaning.implementationLanguage)}`);
+  lines.push(`  approval_state ${softwareApprovalLabel(approved)}`);
+  lines.push("  approval_required true");
+  for (const gate of SOFTWARE_FOLLOW_UP_GATES) {
+    lines.push(`  approval_gate ${linoString(gate)}`);
+  }
+  lines.push("```");
+  lines.push("");
+  lines.push("Reasoning steps:");
+  followUpReasoningSteps(meaning, followUp).forEach((step, index) => {
+    lines.push(`${index + 1}. ${step}`);
+  });
+  lines.push("");
+  lines.push("Verification plan:");
+  followUpPlanSteps(meaning, followUp).forEach((step, index) => {
+    lines.push(`${index + 1}. ${step}`);
+  });
+  lines.push("");
+  if (approved) {
+    lines.push(
+      "The plan is approved, so the generated starter already includes this test harness. " +
+        "Running it live needs the test_execution and network_access gates.",
+    );
+  } else {
+    lines.push(
+      "Reply `approve plan` to generate the artifact plus this test harness. Running it live " +
+        "against the target needs the test_execution and network_access gates.",
+    );
+  }
+  return lines.join("\n");
+}
+
+// Follow-up handler for an active software-project dialogue (issue #341). Runs
+// before `tryConceptLookup` so a decomposed step like "test it by scraping
+// wikipedia.org and show me the top 10 most frequent words" stays bound to the
+// project instead of resolving the `wikipedia` concept or falling to the
+// unknown opener. Mirrors `try_software_project_followup` in the Rust solver.
+function trySoftwareProjectFollowup(prompt, history = []) {
+  const normalized = normalizePrompt(prompt);
+  // Approval prompts stay with the main request handler, which advances to the
+  // implementation starter.
+  if (isSoftwareApprovalPrompt(normalized)) return null;
+  const dialogue = priorSoftwareProjectDialogue(history);
+  if (!dialogue) return null;
+  const followUp = detectSoftwareFollowUp(prompt, normalized);
+  if (!followUp) return null;
+  return {
+    intent: "software_project_followup",
+    content: renderSoftwareProjectFollowUp(dialogue.meaning, followUp, dialogue.approved),
+    confidence: 0.74,
+    evidence: followUpEvidence(dialogue.meaning, followUp, dialogue.approved),
+  };
+}
+
 function tryJavaScriptExecution(prompt) {
   const program = extractJavaScriptProgram(prompt);
   if (program === null) return null;
@@ -15793,6 +16067,13 @@ async function solve(prompt, history, prefs, userContext = {}) {
     {
       name: "tryDefinitionMerge",
       run: () => tryDefinitionMerge(prompt, { allowPlainConcept: autoDefinitionFusion }),
+    },
+    // Issue #341: keep a "test it / run it / show me" step inside the active
+    // software-project dialogue instead of letting it resolve as a concept
+    // lookup. Must run before tryConceptLookup and trySoftwareProjectRequest.
+    {
+      name: "trySoftwareProjectFollowup",
+      run: () => trySoftwareProjectFollowup(prompt, history),
     },
     { name: "tryConceptLookup", run: () => tryConceptLookup(prompt) },
     { name: "tryWriteProgram", run: () => writeProgram() },

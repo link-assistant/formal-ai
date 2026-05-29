@@ -83,6 +83,134 @@ fn popular_software_project_prompts_use_the_general_formalization_path() {
     }
 }
 
+// Issue #341: the second step of a decomposed agent plan ("test it by scraping
+// wikipedia.org and show me the top 10 most frequent words") used to fall
+// through to a `wikipedia` concept lookup (online) or the unknown opener
+// (offline). It must instead stay bound to the active software-project dialogue
+// and formalize a verification follow-up.
+#[test]
+fn software_project_followup_keeps_test_step_in_the_project_dialogue() {
+    let solver = UniversalSolver::default();
+    let plan_prompt = concat!(
+        "Design a simple web scraper in Python that:\n",
+        "1. Fetches a webpage\n",
+        "2. Extracts all headings (h1, h2, h3)\n",
+        "3. Counts word frequency\n",
+        "4. Generates a markdown summary"
+    );
+    let plan = solver.solve(plan_prompt);
+    assert_eq!(plan.intent, "software_project_plan");
+
+    let history = [
+        ConversationTurn::user(plan_prompt),
+        ConversationTurn::assistant(plan.answer),
+    ];
+    let follow_up = solver.solve_with_history(
+        "test it by scraping wikipedia.org and show me the top 10 most frequent words.",
+        &history,
+    );
+
+    assert_eq!(
+        follow_up.intent, "software_project_followup",
+        "follow-up returned {}: {}",
+        follow_up.intent, follow_up.answer
+    );
+    assert!(follow_up.answer.contains("software_project_followup"));
+    assert!(follow_up.answer.contains("follow_up_kind verification"));
+    assert!(follow_up.answer.contains("target_site \"wikipedia.org\""));
+    assert!(follow_up
+        .answer
+        .contains("expected_output \"the top 10 most frequent words\""));
+    assert!(follow_up.answer.contains("parent_artifact \"scraper\""));
+    assert!(follow_up
+        .answer
+        .contains("approval_gate \"test_execution\""));
+    assert!(follow_up
+        .answer
+        .contains("approval_gate \"network_access\""));
+    assert!(follow_up.answer.contains("Verification plan"));
+    // The misrouted answers we are guarding against:
+    assert!(!follow_up
+        .answer
+        .contains("free, multilingual online encyclopedia"));
+    assert!(!follow_up.answer.contains("cannot answer that from local"));
+}
+
+// The follow-up handler must only fire while a software-project dialogue is
+// active; otherwise "test it" with no prior plan stays a normal prompt.
+#[test]
+fn software_project_followup_requires_an_active_plan() {
+    let solver = UniversalSolver::default();
+    let answer = solver.solve("test it and show me the result");
+    assert_ne!(answer.intent, "software_project_followup");
+}
+
+// After approval the follow-up reports the approved state so the dialogue stays
+// consistent with the generated implementation starter.
+#[test]
+fn software_project_followup_reports_approved_state_after_implementation() {
+    let solver = UniversalSolver::default();
+    let plan_prompt = "Write a Python scraper that imports product prices and stores history";
+    let plan = solver.solve(plan_prompt);
+    let history = [
+        ConversationTurn::user(plan_prompt),
+        ConversationTurn::assistant(plan.answer),
+    ];
+    let implementation = solver.solve_with_history("approve plan", &history);
+    assert_eq!(implementation.intent, "software_project_implementation");
+
+    let history = [
+        ConversationTurn::user(plan_prompt),
+        ConversationTurn::assistant(implementation.answer),
+    ];
+    let follow_up = solver.solve_with_history("run it and verify the output", &history);
+    assert_eq!(follow_up.intent, "software_project_followup");
+    assert!(follow_up.answer.contains("approval_state approved"));
+    assert!(follow_up.answer.contains("The plan is approved"));
+}
+
+// Issue #341 + generalization (R5): a multi-step dialogue must stay inside the
+// project across every supported language. A user can design in English and
+// then ask to exercise the artifact in Russian, Hindi, or Chinese; each
+// follow-up verb has to route to `software_project_followup` instead of leaking
+// to a concept lookup or the unknown opener.
+#[test]
+fn software_project_followup_detects_verbs_across_supported_languages() {
+    let solver = UniversalSolver::default();
+    let plan_prompt = "Write a Python scraper that imports product prices and stores history";
+    let plan = solver.solve(plan_prompt);
+    assert_eq!(plan.intent, "software_project_plan");
+    let history = [
+        ConversationTurn::user(plan_prompt),
+        ConversationTurn::assistant(plan.answer),
+    ];
+
+    // (language tag, follow-up phrase, expected follow-up kind)
+    let cases = [
+        ("en english", "test it on wikipedia.org", "verification"),
+        (
+            "ru русский",
+            "теперь протестируй его на wikipedia.org",
+            "verification",
+        ),
+        ("hi हिंदी", "अब इसका परीक्षण करो", "verification"),
+        ("zh 中文", "现在测试它", "verification"),
+    ];
+    for (language, prompt, kind) in cases {
+        let follow_up = solver.solve_with_history(prompt, &history);
+        assert_eq!(
+            follow_up.intent, "software_project_followup",
+            "language {language} prompt {prompt:?} returned {}: {}",
+            follow_up.intent, follow_up.answer
+        );
+        assert!(
+            follow_up.answer.contains(&format!("follow_up_kind {kind}")),
+            "language {language} prompt {prompt:?} should record {kind}: {}",
+            follow_up.answer
+        );
+    }
+}
+
 #[test]
 fn approval_returns_language_aware_generated_code_surface() {
     let solver = UniversalSolver::default();
