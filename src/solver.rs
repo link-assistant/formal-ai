@@ -25,7 +25,7 @@ use std::fmt::Write as _;
 
 use crate::coding::guidance as coding_guidance;
 use crate::engine::{
-    answer_links_notation, language_aware_answer_for, language_aware_intent_for,
+    answer_links_notation, language_aware_answer_for, language_aware_intent_for, normalize_prompt,
     response_link_for_intent, stable_id, SelectedRule, SymbolicAnswer,
 };
 use crate::event_log::{build_evidence_links, EventLog};
@@ -50,8 +50,8 @@ use crate::solver_handlers::{
     try_definition_merge_by_default, try_execution_failure, try_fact_lookup,
     try_feature_capability, try_http_fetch, try_ill_formed, try_javascript_execution,
     try_meta_explanation, try_meta_explanation_with_runtime, try_natural_language_tool_request,
-    try_network_query, try_opinion_question, try_playwright_script, try_program_synthesis,
-    try_project_lookup, try_proof_request, try_proof_request_with_config,
+    try_network_query, try_opinion_question, try_playwright_script, try_program_blueprint,
+    try_program_synthesis, try_project_lookup, try_proof_request, try_proof_request_with_config,
     try_punctuation_only_prompt, try_roleplay_request, try_shell_refusal,
     try_software_project_request, try_source_conflict, try_source_refresh,
     try_summarization_request, try_text_manipulation, try_translation, try_url_navigate,
@@ -571,6 +571,23 @@ impl UniversalSolver {
         } else {
             rule
         };
+
+        // Issue #340: a `write_program` request can name a supported language but
+        // a composite task the verified catalog has no single template for
+        // (HTTP GET -> parse JSON -> compute mean/median -> output). Rather than
+        // dead-ending on `write_program_unsupported`, decompose the request into
+        // capabilities and, when they match a curated blueprint recipe, return a
+        // real, idiomatic program with an honest "not run" execution report. The
+        // verified catalog stays untouched, so its "compiled and ran" guarantee
+        // is preserved.
+        if let SelectedRule::UnsupportedWriteProgram { language, .. } = &rule {
+            let normalized = normalize_prompt(prompt);
+            if let Some(answer) =
+                try_program_blueprint(prompt, &normalized, language.as_deref(), &mut log)
+            {
+                return answer;
+            }
+        }
 
         if let Some(answer) = try_synthesize_from_sub_results(
             prompt,

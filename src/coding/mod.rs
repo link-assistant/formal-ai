@@ -18,6 +18,7 @@
 //! Catalog items are re-exported at the `coding` level so callers refer to them
 //! as `crate::coding::ProgramSpec` rather than reaching into the submodule.
 
+pub mod blueprint;
 pub mod catalog;
 pub mod guidance;
 
