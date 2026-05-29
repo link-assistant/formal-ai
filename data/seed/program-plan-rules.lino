@@ -1,0 +1,8 @@
+substitution_rules
+  id "program_plan_rules"
+  rule "path_argument_list_files"
+    order "1"
+    event "manual"
+    when "request:modifier -> path_argument"
+    replace "request:task -> list_files"
+      with "request:task -> list_files_arg"

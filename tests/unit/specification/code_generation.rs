@@ -1,7 +1,7 @@
 //! Code-generation tests covering the top programming languages and the
 //! execution-evidence requirements from issue #8.
 
-use formal_ai::{FormalAiEngine, SymbolicAnswer};
+use formal_ai::{ConversationTurn, FormalAiEngine, SymbolicAnswer, UniversalSolver};
 
 fn answer(prompt: &str) -> SymbolicAnswer {
     FormalAiEngine.answer(prompt)
@@ -331,9 +331,31 @@ fn russian_list_files_in_rust_returns_program() {
         "Rust list-files template should read the directory, got: {}",
         response.answer
     );
-    assert!(response
-        .answer
-        .contains("Execution status: compiled and ran"));
+    // Issue #324: a Russian request must be answered in Russian. The natural
+    // language framing (intro line and execution status) is localized while the
+    // code stays canonical. The English status text still appears in the
+    // language-independent Links Notation trace below.
+    assert!(
+        response
+            .answer
+            .contains("Статус выполнения: скомпилировано и запущено"),
+        "Russian request should yield a Russian execution status line, got: {}",
+        response.answer
+    );
+    assert!(
+        response
+            .answer
+            .contains("Вот минимальная программа на языке"),
+        "Russian request should yield a Russian intro line, got: {}",
+        response.answer
+    );
+    assert!(
+        response
+            .links_notation
+            .contains("execution_status compiled and ran"),
+        "Links Notation trace stays language-independent, got: {}",
+        response.links_notation
+    );
 }
 
 #[test]
@@ -409,5 +431,217 @@ fn russian_program_request_with_unknown_task_is_not_unknown() {
         "Russian program request should be recognized as write_program, got: {}",
         response.intent
     );
-    assert!(response.answer.contains("language `python`"));
+    // Issue #324: the unsupported message is localized to Russian, so assert on
+    // the backtick-quoted parameter (stable across languages) rather than the
+    // English word "language".
+    assert!(
+        response.answer.contains("`python`"),
+        "unsupported answer should name the extracted python parameter, got: {}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains("write_program(language, task)"),
+        "unsupported answer should reference the write_program route, got: {}",
+        response.answer
+    );
+}
+
+// ---------------------------------------------------------------------------
+// Issue #324: a follow-up modification request must reuse the conversation
+// context. The reporter first asked (in Russian) for a Rust program that lists
+// files, then asked "Сделай так, чтобы программа принимала путь как аргумент"
+// (make the program accept a path as an argument). That follow-up routes to
+// write_program but names neither a task nor a language, so before the fix it
+// failed with "I do not have a template for language `missing` and task
+// `missing`". It must now recover the task (list_files -> list_files_arg) and
+// language (rust) from the prior turns and answer in Russian.
+// ---------------------------------------------------------------------------
+
+#[test]
+fn russian_follow_up_path_argument_modification_reuses_context() {
+    let solver = UniversalSolver::default();
+    let first = "Напиши мне программу на Rust, которая выдаёт список файлов в текущей директории";
+    let plan = solver.solve(first);
+    assert_eq!(plan.intent, "write_program");
+
+    let history = [
+        ConversationTurn::user(first),
+        ConversationTurn::assistant(plan.answer),
+    ];
+    let response = solver.solve_with_history(
+        "Сделай так, чтобы программа принимала путь как аргумент",
+        &history,
+    );
+
+    assert_eq!(
+        response.intent, "write_program",
+        "follow-up modification should recover the write_program intent, got: {}",
+        response.intent
+    );
+    // The task is upgraded to the path-argument variant in the recovered Rust
+    // language.
+    assert!(
+        response
+            .links_notation
+            .contains("program_parameter:task list_files_arg"),
+        "follow-up should resolve to the list_files_arg task, got: {}",
+        response.links_notation
+    );
+    assert!(
+        response
+            .links_notation
+            .contains("program_parameter:language rust"),
+        "follow-up should reuse the Rust language from context, got: {}",
+        response.links_notation
+    );
+    assert!(
+        response.answer.contains("```rust"),
+        "follow-up answer should include a Rust code block, got: {}",
+        response.answer
+    );
+    // The generated program reads the path from the command-line arguments.
+    assert!(
+        response.answer.contains("env::args"),
+        "Rust path-argument template should read argv, got: {}",
+        response.answer
+    );
+    // The conversation is in Russian, so the framing must be Russian and the
+    // "missing template" error must be gone.
+    assert!(
+        response
+            .answer
+            .contains("Вот минимальная программа на языке"),
+        "follow-up answer should be framed in Russian, got: {}",
+        response.answer
+    );
+    assert!(
+        !response.answer.contains("missing"),
+        "follow-up must not surface the missing-template error, got: {}",
+        response.answer
+    );
+}
+
+#[test]
+fn hindi_follow_up_path_argument_modification_reuses_context() {
+    let solver = UniversalSolver::default();
+    let first = "Rust में फ़ाइलों की सूची दिखाने वाला प्रोग्राम लिखो";
+    let plan = solver.solve(first);
+    assert_eq!(plan.intent, "write_program");
+
+    let history = [
+        ConversationTurn::user(first),
+        ConversationTurn::assistant(plan.answer),
+    ];
+    // Hindi: "make it so the program accepts a path as an argument".
+    let response = solver.solve_with_history(
+        "इसे ऐसा बनाओ कि प्रोग्राम पथ को तर्क के रूप में स्वीकार करे",
+        &history,
+    );
+
+    assert_eq!(response.intent, "write_program");
+    assert!(
+        response
+            .links_notation
+            .contains("program_parameter:task list_files_arg"),
+        "Hindi follow-up should resolve to list_files_arg, got: {}",
+        response.links_notation
+    );
+    assert!(
+        response
+            .links_notation
+            .contains("program_parameter:language rust"),
+        "Hindi follow-up should reuse Rust from context, got: {}",
+        response.links_notation
+    );
+    assert!(response.answer.contains("env::args"));
+    // The conversation is in Hindi, so the framing must be Hindi.
+    assert!(
+        response.answer.contains("में एक न्यूनतम प्रोग्राम है"),
+        "Hindi follow-up answer should be framed in Hindi, got: {}",
+        response.answer
+    );
+    assert!(!response.answer.contains("missing"));
+}
+
+#[test]
+fn chinese_follow_up_path_argument_modification_reuses_context() {
+    let solver = UniversalSolver::default();
+    let first = "用 Rust 编写一个列出当前目录中文件的程序";
+    let plan = solver.solve(first);
+    assert_eq!(plan.intent, "write_program");
+
+    let history = [
+        ConversationTurn::user(first),
+        ConversationTurn::assistant(plan.answer),
+    ];
+    // Chinese: "make the program accept a path as an argument".
+    let response = solver.solve_with_history("制作程序，使其接受路径作为参数", &history);
+
+    assert_eq!(response.intent, "write_program");
+    assert!(
+        response
+            .links_notation
+            .contains("program_parameter:task list_files_arg"),
+        "Chinese follow-up should resolve to list_files_arg, got: {}",
+        response.links_notation
+    );
+    assert!(
+        response
+            .links_notation
+            .contains("program_parameter:language rust"),
+        "Chinese follow-up should reuse Rust from context, got: {}",
+        response.links_notation
+    );
+    assert!(response.answer.contains("env::args"));
+    // The conversation is in Chinese, so the framing must be Chinese.
+    assert!(
+        response.answer.contains("这是一个最小的"),
+        "Chinese follow-up answer should be framed in Chinese, got: {}",
+        response.answer
+    );
+    assert!(!response.answer.contains("missing"));
+}
+
+#[test]
+fn explicit_list_files_with_path_argument_is_supported() {
+    // The path-argument variant is also reachable directly in a single turn.
+    let response = answer("Write me a Rust program that lists files with a path argument");
+    assert_write_program_parameters(&response, "rust", "list_files_arg");
+    assert!(response.answer.contains("```rust"));
+    assert!(response.answer.contains("env::args"));
+}
+
+#[test]
+fn english_follow_up_modification_emits_substitution_plan_trace() {
+    // Issue #324 R4/R6: the follow-up modification is lowered through the Links
+    // Notation substitution pipeline, and the plan is surfaced as an inspectable
+    // `write_program_plan` evidence link so the reasoning is transparent.
+    let solver = UniversalSolver::default();
+    let first = "Write me a Rust program that lists the files in the current directory";
+    let plan = solver.solve(first);
+    assert_eq!(plan.intent, "write_program");
+
+    let history = [
+        ConversationTurn::user(first),
+        ConversationTurn::assistant(plan.answer),
+    ];
+    let response =
+        solver.solve_with_history("Make the program accept a path as an argument", &history);
+
+    assert_eq!(response.intent, "write_program");
+    assert!(
+        response
+            .links_notation
+            .contains("program_parameter:task list_files_arg"),
+        "English follow-up should resolve to list_files_arg, got: {}",
+        response.links_notation
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("write_program_plan:")),
+        "the substitution plan should be surfaced as an evidence link, got: {:?}",
+        response.evidence_links
+    );
 }

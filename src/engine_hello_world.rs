@@ -296,6 +296,36 @@ pub const PROGRAM_TASKS: &[ProgramTask] = &[
         // byte order, so the output is identical across languages.
         output: "Cargo.toml\nREADME.md\nmain.rs",
     },
+    ProgramTask {
+        slug: "list_files_arg",
+        label: "list files in the directory given as a path argument",
+        // Issue #324 follow-up: "Сделай так, чтобы программа принимала путь как
+        // аргумент" (make the program accept a path as an argument). This task is
+        // the path-argument variant of `list_files`; conversation context maps a
+        // bare "accept a path argument" modification onto it (see
+        // `program_path_argument_modifier`). Aliases let an explicit, single-turn
+        // request resolve here directly too. Every supported prompt language
+        // (en, ru, hi, zh) is covered.
+        aliases: &[
+            "list files in the directory given as a path argument",
+            "list files in a directory given as an argument",
+            "list files in the directory passed as an argument",
+            "list files in a path argument",
+            "list files with a path argument",
+            "list files accepting a path argument",
+            "список файлов в каталоге переданном как аргумент",
+            "список файлов в директории переданной как аргумент",
+            "список файлов по пути из аргумента",
+            // Hindi: "list of files in the directory given as a path argument".
+            "पथ तर्क के रूप में दी गई निर्देशिका की फ़ाइलों की सूची",
+            // Chinese: "list the files in the directory given as a path argument".
+            "列出作为路径参数给出的目录中的文件",
+            "列出路径参数指定目录中的文件",
+        ],
+        // When no argument is supplied the templates fall back to "." so the
+        // documented sample directory still produces the verified listing.
+        output: "Cargo.toml\nREADME.md\nmain.rs",
+    },
 ];
 
 pub const PROGRAM_TEMPLATES: &[ProgramTemplate] = &[
@@ -618,6 +648,220 @@ class Program {
         task_slug: "list_files",
         language_slug: "ruby",
         code: r#"names = Dir.entries(".").select { |name| File.file?(name) }.sort
+names.each { |name| puts name }"#,
+    },
+    // Issue #324 follow-up: list files in the directory passed as the first
+    // command-line argument, defaulting to "." when none is supplied. Each
+    // template sorts names in byte order, so the verified output matches
+    // `list_files` for the documented sample directory.
+    ProgramTemplate {
+        task_slug: "list_files_arg",
+        language_slug: "rust",
+        code: r#"use std::env;
+use std::fs;
+
+fn main() {
+    let path = env::args().nth(1).unwrap_or_else(|| String::from("."));
+    let mut names: Vec<String> = fs::read_dir(&path)
+        .expect("failed to read directory")
+        .filter_map(|entry| entry.ok())
+        .filter(|entry| entry.path().is_file())
+        .map(|entry| entry.file_name().to_string_lossy().into_owned())
+        .collect();
+    names.sort();
+    for name in names {
+        println!("{name}");
+    }
+}"#,
+    },
+    ProgramTemplate {
+        task_slug: "list_files_arg",
+        language_slug: "python",
+        code: r#"import os
+import sys
+
+path = sys.argv[1] if len(sys.argv) > 1 else "."
+names = sorted(
+    name for name in os.listdir(path) if os.path.isfile(os.path.join(path, name))
+)
+for name in names:
+    print(name)"#,
+    },
+    ProgramTemplate {
+        task_slug: "list_files_arg",
+        language_slug: "javascript",
+        code: r#"const fs = require("fs");
+const path = require("path");
+
+const dir = process.argv[2] || ".";
+const names = fs
+  .readdirSync(dir)
+  .filter((name) => fs.statSync(path.join(dir, name)).isFile())
+  .sort();
+
+for (const name of names) {
+  console.log(name);
+}"#,
+    },
+    ProgramTemplate {
+        task_slug: "list_files_arg",
+        language_slug: "typescript",
+        code: r#"import * as fs from "fs";
+import * as path from "path";
+
+const dir: string = process.argv[2] ?? ".";
+const names: string[] = fs
+  .readdirSync(dir)
+  .filter((name) => fs.statSync(path.join(dir, name)).isFile())
+  .sort();
+
+for (const name of names) {
+  console.log(name);
+}"#,
+    },
+    ProgramTemplate {
+        task_slug: "list_files_arg",
+        language_slug: "go",
+        code: r#"package main
+
+import (
+    "fmt"
+    "os"
+    "sort"
+)
+
+func main() {
+    dir := "."
+    if len(os.Args) > 1 {
+        dir = os.Args[1]
+    }
+    entries, err := os.ReadDir(dir)
+    if err != nil {
+        panic(err)
+    }
+    var names []string
+    for _, entry := range entries {
+        if !entry.IsDir() {
+            names = append(names, entry.Name())
+        }
+    }
+    sort.Strings(names)
+    for _, name := range names {
+        fmt.Println(name)
+    }
+}"#,
+    },
+    ProgramTemplate {
+        task_slug: "list_files_arg",
+        language_slug: "c",
+        code: r#"#include <dirent.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/stat.h>
+
+static int compare(const void *a, const void *b) {
+    return strcmp(*(const char *const *)a, *(const char *const *)b);
+}
+
+int main(int argc, char *argv[]) {
+    const char *path = argc > 1 ? argv[1] : ".";
+    DIR *dir = opendir(path);
+    if (dir == NULL) {
+        return 1;
+    }
+    char *names[1024];
+    size_t count = 0;
+    struct dirent *entry;
+    while ((entry = readdir(dir)) != NULL && count < 1024) {
+        char full[4096];
+        snprintf(full, sizeof(full), "%s/%s", path, entry->d_name);
+        struct stat info;
+        if (stat(full, &info) == 0 && S_ISREG(info.st_mode)) {
+            names[count++] = strdup(entry->d_name);
+        }
+    }
+    closedir(dir);
+    qsort(names, count, sizeof(char *), compare);
+    for (size_t i = 0; i < count; i++) {
+        printf("%s\n", names[i]);
+        free(names[i]);
+    }
+    return 0;
+}"#,
+    },
+    ProgramTemplate {
+        task_slug: "list_files_arg",
+        language_slug: "cpp",
+        code: r#"#include <algorithm>
+#include <filesystem>
+#include <iostream>
+#include <string>
+#include <vector>
+
+int main(int argc, char *argv[]) {
+    namespace fs = std::filesystem;
+    std::string path = argc > 1 ? argv[1] : ".";
+    std::vector<std::string> names;
+    for (const auto &entry : fs::directory_iterator(path)) {
+        if (entry.is_regular_file()) {
+            names.push_back(entry.path().filename().string());
+        }
+    }
+    std::sort(names.begin(), names.end());
+    for (const auto &name : names) {
+        std::cout << name << '\n';
+    }
+}"#,
+    },
+    ProgramTemplate {
+        task_slug: "list_files_arg",
+        language_slug: "java",
+        code: r#"import java.io.File;
+import java.util.Arrays;
+
+public class Main {
+    public static void main(String[] args) {
+        String path = args.length > 0 ? args[0] : ".";
+        File[] entries = new File(path).listFiles();
+        if (entries == null) {
+            return;
+        }
+        String[] names = Arrays.stream(entries)
+            .filter(File::isFile)
+            .map(File::getName)
+            .sorted()
+            .toArray(String[]::new);
+        for (String name : names) {
+            System.out.println(name);
+        }
+    }
+}"#,
+    },
+    ProgramTemplate {
+        task_slug: "list_files_arg",
+        language_slug: "csharp",
+        code: r#"using System;
+using System.IO;
+using System.Linq;
+
+class Program {
+    static void Main(string[] args) {
+        var path = args.Length > 0 ? args[0] : ".";
+        var names = Directory.GetFiles(path)
+            .Select(Path.GetFileName)
+            .OrderBy(name => name, StringComparer.Ordinal);
+        foreach (var name in names) {
+            Console.WriteLine(name);
+        }
+    }
+}"#,
+    },
+    ProgramTemplate {
+        task_slug: "list_files_arg",
+        language_slug: "ruby",
+        code: r#"path = ARGV[0] || "."
+names = Dir.entries(path).select { |name| File.file?(File.join(path, name)) }.sort
 names.each { |name| puts name }"#,
     },
 ];

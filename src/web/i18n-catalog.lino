@@ -139,6 +139,13 @@ en
     language
       label "Language"
       auto "Auto"
+    responseLanguage
+      label "Response language"
+      lastMessage "Last message language"
+      preferred "Preferred language"
+      ui "UI language"
+    preferredLanguage
+      label "Preferred language"
     theme
       label "Theme"
       auto "Auto"
@@ -338,6 +345,13 @@ ru
     language
       label "Язык"
       auto "Авто"
+    responseLanguage
+      label "Язык ответов"
+      lastMessage "Язык последнего сообщения"
+      preferred "Предпочитаемый язык"
+      ui "Язык интерфейса"
+    preferredLanguage
+      label "Предпочитаемый язык"
     theme
       label "Тема"
       auto "Авто"
@@ -527,6 +541,13 @@ zh
     language
       label "语言"
       auto "自动"
+    responseLanguage
+      label "回复语言"
+      lastMessage "最后一条消息的语言"
+      preferred "首选语言"
+      ui "界面语言"
+    preferredLanguage
+      label "首选语言"
     theme
       label "主题"
       auto "自动"
@@ -722,6 +743,13 @@ hi
     language
       label "भाषा"
       auto "ऑटो"
+    responseLanguage
+      label "उत्तर की भाषा"
+      lastMessage "अंतिम संदेश की भाषा"
+      preferred "पसंदीदा भाषा"
+      ui "इंटरफ़ेस भाषा"
+    preferredLanguage
+      label "पसंदीदा भाषा"
     theme
       label "थीम"
       auto "ऑटो"

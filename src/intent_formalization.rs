@@ -17,7 +17,7 @@ use crate::link_store::{LinkStore, LinkStoreError};
 use crate::memory::MemoryEvent;
 use crate::probability::ProbabilityStore;
 use crate::seed;
-use crate::solver::UniversalSolver;
+use crate::solver::{ConversationTurn, UniversalSolver};
 use crate::translation::{FormalizationAnchorKind, FormalizationCandidate, FormalizationRole};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -387,6 +387,154 @@ fn write_program_rule_for_intent(intent: &IntentFormalization) -> SelectedRule {
     SelectedRule::UnsupportedWriteProgram { task, language }
 }
 
+/// Outcome of trying to complete a follow-up `write_program` request from the
+/// conversation so far (issue #324).
+pub(crate) struct WriteProgramRecovery {
+    /// The rule after recovery — upgraded to [`SelectedRule::WriteProgram`] when
+    /// enough context was found, otherwise the original unsupported rule with any
+    /// parameters we managed to fill in.
+    pub rule: SelectedRule,
+    /// A short trace describing what was carried over, for the event log. `None`
+    /// when nothing was recovered.
+    pub trace: Option<String>,
+    /// The program-modification plan as Links Notation, surfaced when a modifier
+    /// rewrote the task via the substitution pipeline (issue #324 R4/R6). `None`
+    /// when no modification rule fired.
+    pub plan: Option<String>,
+}
+
+/// Issue #324: a follow-up such as "Сделай так, чтобы программа принимала путь
+/// как аргумент" ("make the program accept a path as an argument") routes to
+/// `write_program` because it pairs a program noun with an imperative verb, yet
+/// it names neither a concrete task nor a language — both came from the previous
+/// turn. Without conversation context this surfaced the user-reported error
+/// ("I do not have a template for language `missing` and task `missing`").
+///
+/// When the selected rule is [`SelectedRule::UnsupportedWriteProgram`] we recover
+/// the missing task and language from the most recent prior turn that named them
+/// and apply any modification modifier present in the follow-up (currently
+/// "accept a path argument", which maps `list_files` onto `list_files_arg`). If
+/// the recovered `(task, language)` pair has a template we upgrade the rule to a
+/// concrete program; otherwise we return the rule with whatever we could fill in
+/// so the unsupported message is still as specific as possible.
+#[must_use]
+pub(crate) fn recover_write_program_rule(
+    rule: SelectedRule,
+    follow_up: &str,
+    history: &[ConversationTurn],
+) -> WriteProgramRecovery {
+    let SelectedRule::UnsupportedWriteProgram { task, language } = &rule else {
+        return WriteProgramRecovery {
+            rule,
+            trace: None,
+            plan: None,
+        };
+    };
+
+    let mut recovered_task = task.clone();
+    let mut recovered_language = language.clone();
+
+    if recovered_task.is_none() || recovered_language.is_none() {
+        for turn in history.iter().rev() {
+            let normalized = normalize_prompt(&turn.content);
+            let Some(parameters) = write_program_parameters(&normalized) else {
+                continue;
+            };
+            if recovered_task.is_none() {
+                recovered_task = parameters.get("task").cloned();
+            }
+            if recovered_language.is_none() {
+                recovered_language = parameters.get("language").cloned();
+            }
+            if recovered_task.is_some() && recovered_language.is_some() {
+                break;
+            }
+        }
+    }
+
+    // A modification follow-up (currently "accept a path argument") lowers the
+    // recovered base task through the Links Notation substitution pipeline,
+    // which rewrites e.g. `list_files -> list_files_arg`. The plan is captured
+    // as Links Notation for transparent tracing (issue #324 R4/R6).
+    let normalized_follow_up = normalize_prompt(follow_up);
+    let modifiers = detected_program_modifiers(&normalized_follow_up);
+    let mut plan = None;
+    if !modifiers.is_empty() {
+        if let Some(base) = recovered_task.as_deref() {
+            let lowered = crate::program_plan::lower(base, &modifiers);
+            if lowered.was_modified() {
+                plan = Some(lowered.links_notation());
+            }
+            recovered_task = Some(lowered.resolved_task);
+        }
+    }
+
+    if let (Some(task_slug), Some(language_slug)) =
+        (recovered_task.as_deref(), recovered_language.as_deref())
+    {
+        if let Some(spec) = program_spec(task_slug, language_slug) {
+            let trace = format!("write_program task={task_slug} language={language_slug}");
+            return WriteProgramRecovery {
+                rule: SelectedRule::WriteProgram(spec),
+                trace: Some(trace),
+                plan,
+            };
+        }
+    }
+
+    WriteProgramRecovery {
+        rule: SelectedRule::UnsupportedWriteProgram {
+            task: recovered_task,
+            language: recovered_language,
+        },
+        trace: None,
+        plan,
+    }
+}
+
+/// A program-modification modifier: a slug plus the multilingual token groups
+/// that signal it. Each inner slice must match in full for the group to count.
+struct ProgramModifier {
+    slug: &'static str,
+    token_groups: &'static [&'static [&'static str]],
+}
+
+/// The modifiers the formalizer can detect in request prose. The slug is what
+/// the substitution pipeline (`data/seed/program-plan-rules.lino`) keys on; the
+/// token groups are the natural-language surface forms across supported
+/// languages. Adding a new *modification* is data here plus a rule in the seed.
+const PROGRAM_MODIFIERS: &[ProgramModifier] = &[ProgramModifier {
+    slug: "path_argument",
+    // "accept a path as a (command-line) argument" across supported languages.
+    token_groups: &[
+        &["path", "argument"],
+        // Russian: путь (path) + аргумент/аргумента/аргументом (argument).
+        &["путь", "аргумент"],
+        &["путь", "аргумента"],
+        &["путь", "аргументом"],
+        // Hindi: पथ (path) + तर्क (argument).
+        &["पथ", "तर्क"],
+        // Chinese: 路径 (path) + 参数 (argument).
+        &["路径", "参数"],
+    ],
+}];
+
+/// Detect the modification modifiers present in a (normalized) request, returned
+/// as the slugs the substitution pipeline keys on. The order follows
+/// [`PROGRAM_MODIFIERS`] so lowering is deterministic.
+fn detected_program_modifiers(normalized: &str) -> Vec<String> {
+    PROGRAM_MODIFIERS
+        .iter()
+        .filter(|modifier| {
+            modifier
+                .token_groups
+                .iter()
+                .any(|group| group.iter().all(|token| contains_token(normalized, token)))
+        })
+        .map(|modifier| modifier.slug.to_owned())
+        .collect()
+}
+
 /// Words that name the artefact the user wants generated ("program", "script",
 /// "code") across the supported prompt languages.
 const PROGRAM_NOUNS: &[&str] = &[
@@ -465,7 +613,12 @@ fn write_program_parameters(normalized: &str) -> Option<BTreeMap<String, String>
     }
     let mut parameters = BTreeMap::new();
     if let Some(task) = task {
-        parameters.insert(String::from("task"), String::from(task.slug));
+        // Issue #324: a modification in the same turn (e.g. "list files with a
+        // path argument") lowers the base task through the substitution pipeline
+        // — `list_files -> list_files_arg` — so it resolves directly.
+        let modifiers = detected_program_modifiers(normalized);
+        let task_slug = crate::program_plan::resolve_task(task.slug, &modifiers);
+        parameters.insert(String::from("task"), task_slug);
     }
     if let Some(language) = language {
         parameters.insert(String::from("language"), language);
