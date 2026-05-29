@@ -340,6 +340,118 @@ fn issue_315_program_synthesis_accepts_supported_language_wrappers() {
 }
 
 #[test]
+fn issue_326_program_synthesis_accepts_native_operation_verbs() {
+    struct Case {
+        language: &'static str,
+        prompt: &'static str,
+        expected_function: &'static str,
+        expected_fragment: &'static str,
+    }
+
+    let supported = formal_ai::seed::agent_info()
+        .get("supported_languages")
+        .expect("agent-info must define supported_languages")
+        .split('|')
+        .map(ToOwned::to_owned)
+        .collect::<BTreeSet<_>>();
+    let cases = [
+        Case {
+            language: "en",
+            prompt: "Implement Python function count_vowels(text: str) -> int. Return the number of vowels in the text.",
+            expected_function: "def count_vowels",
+            expected_fragment: "aggregation:sum_generator",
+        },
+        Case {
+            language: "ru",
+            prompt: "Реализуй Python функцию count_vowels(text: str) -> int. Верни количество гласных в тексте.",
+            expected_function: "def count_vowels",
+            expected_fragment: "aggregation:sum_generator",
+        },
+        Case {
+            language: "hi",
+            prompt: "Python फ़ंक्शन count_vowels(text: str) -> int लागू करें। पाठ में स्वरों की संख्या लौटाएँ।",
+            expected_function: "def count_vowels",
+            expected_fragment: "aggregation:sum_generator",
+        },
+        Case {
+            language: "zh",
+            prompt: "实现 Python 函数 count_vowels(text: str) -> int。返回文本中的元音数量。",
+            expected_function: "def count_vowels",
+            expected_fragment: "aggregation:sum_generator",
+        },
+        Case {
+            language: "en",
+            prompt: "Write Python function similar_elements(test_tup1, test_tup2). Return similar elements from both tuples.",
+            expected_function: "def similar_elements",
+            expected_fragment: "collection:set_intersection",
+        },
+        Case {
+            language: "ru",
+            prompt: "Напиши Python функцию similar_elements(test_tup1, test_tup2). Верни общие элементы из обоих кортежей.",
+            expected_function: "def similar_elements",
+            expected_fragment: "collection:set_intersection",
+        },
+        Case {
+            language: "hi",
+            prompt: "Python फ़ंक्शन similar_elements(test_tup1, test_tup2) लिखें। दोनों टपल से समान तत्व लौटाएँ।",
+            expected_function: "def similar_elements",
+            expected_fragment: "collection:set_intersection",
+        },
+        Case {
+            language: "zh",
+            prompt: "编写 Python 函数 similar_elements(test_tup1, test_tup2)。返回两个元组中的相同元素。",
+            expected_function: "def similar_elements",
+            expected_fragment: "collection:set_intersection",
+        },
+    ];
+
+    for expected_function in ["def count_vowels", "def similar_elements"] {
+        let covered = cases
+            .iter()
+            .filter(|case| case.expected_function == expected_function)
+            .map(|case| case.language.to_owned())
+            .collect::<BTreeSet<_>>();
+        assert_eq!(
+            covered, supported,
+            "{expected_function} synthesis must have one prompt per supported language"
+        );
+    }
+
+    let _solver_guard = benchmark_solver_lock();
+    let solver = benchmark_solver();
+    for case in cases {
+        let response = solver.solve(case.prompt);
+        assert_eq!(
+            response.intent, "write_program",
+            "{} prompt should route to program synthesis, got {} with answer {}",
+            case.language, response.intent, response.answer
+        );
+        assert!(
+            response.answer.contains(case.expected_function),
+            "{} prompt should synthesize {}, got {}",
+            case.language,
+            case.expected_function,
+            response.answer
+        );
+        assert!(
+            response.links_notation.contains(case.expected_fragment),
+            "{} prompt should record composed fragment {}, got {}",
+            case.language,
+            case.expected_fragment,
+            response.links_notation
+        );
+        assert!(
+            response
+                .links_notation
+                .contains("synthesis:verification tests_passed"),
+            "{} prompt should verify synthesized code, got {}",
+            case.language,
+            response.links_notation
+        );
+    }
+}
+
+#[test]
 fn issue_304_benchmark_research_note_records_provenance() {
     let root = repo_root();
     let fixture = fs::read_to_string(root.join(BENCHMARK_FIXTURE)).expect("benchmark fixture");
