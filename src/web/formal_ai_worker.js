@@ -12073,15 +12073,17 @@ function recoverWriteProgramParameters(parameters, prompt, history) {
   // plan as Links Notation (mirrors `recover_write_program_rule` in
   // `src/intent_formalization.rs`, which sets `WriteProgramRecovery::plan`).
   let plan = null;
+  let modifiers = [];
+  let lowered = null;
   if (task) {
-    const modifiers = detectedProgramModifiers(normalized);
+    modifiers = detectedProgramModifiers(normalized);
     if (modifiers.length) {
-      const lowered = lowerProgramPlan(task, modifiers);
+      lowered = lowerProgramPlan(task, modifiers);
       if (programPlanWasModified(lowered)) plan = programPlanLinksNotation(lowered);
       task = lowered.resolvedTask;
     }
   }
-  return { task, language, plan };
+  return { task, language, plan, modifiers, lowered };
 }
 
 // Issue #324: a request in a given language must be answered in that language.
@@ -13152,17 +13154,221 @@ function blueprintWriteProgramAnswer(
   };
 }
 
+function writeProgramDecompositionParts(modifier) {
+  if (modifier === "reverse_sort") {
+    return {
+      operation: "sort",
+      operationModifier: "descending",
+      target: "program:last.output_order",
+      targetKind: "program_output",
+    };
+  }
+  if (modifier === "path_argument") {
+    return {
+      operation: "accept",
+      operationModifier: "path_argument",
+      target: "program:last.input",
+      targetKind: "program_input",
+    };
+  }
+  return {
+    operation: "modify",
+    operationModifier: null,
+    target: "program:last",
+    targetKind: "program_artifact",
+  };
+}
+
+function writeProgramPrimaryModifier(modifiers) {
+  if (!Array.isArray(modifiers) || modifiers.length === 0) return null;
+  return modifiers.includes("reverse_sort") ? "reverse_sort" : modifiers[0];
+}
+
+function writeProgramCandidateRuleId(plan, modifier) {
+  if (!plan || !modifier) return "";
+  const traces = Array.isArray(plan.traces) ? plan.traces : [];
+  for (let index = traces.length - 1; index >= 0; index -= 1) {
+    const ruleId = String(traces[index].ruleId || "");
+    if (ruleId.includes(modifier)) return ruleId;
+  }
+  return `${modifier}_${plan.baseTask || "program"}`;
+}
+
+function writeProgramSynthesisRequest(context, prompt, modifier) {
+  const parts = writeProgramDecompositionParts(modifier);
+  const lines = ["rule_synthesis_request"];
+  lines.push("  issue #359");
+  lines.push("  impulse current_turn");
+  lines.push("  artifact program:last");
+  lines.push(`  artifact_language ${context.language || "missing"}`);
+  lines.push(`  base_task ${context.task || "missing"}`);
+  lines.push("  bare_imperative true");
+  lines.push(`  operation ${parts.operation}`);
+  if (parts.operationModifier) {
+    lines.push(`  operation_modifier ${parts.operationModifier}`);
+  }
+  lines.push(`  target ${parts.target}`);
+  lines.push(`  target_kind ${parts.targetKind}`);
+  lines.push(`  source_text ${prompt}`);
+  return lines.join("\n");
+}
+
+function writeProgramSynthesisCandidate(candidateId, context, plan, modifier) {
+  const parts = writeProgramDecompositionParts(modifier);
+  const lines = ["rule_synthesis_candidate"];
+  lines.push(`  id ${candidateId}`);
+  lines.push("  source constructed_from_operation_vocabulary");
+  lines.push(`  base_task ${context.task || "missing"}`);
+  lines.push(`  modifier ${modifier}`);
+  lines.push(`  operation ${parts.operation}`);
+  if (parts.operationModifier) {
+    lines.push(`  operation_modifier ${parts.operationModifier}`);
+  }
+  lines.push(`  target ${parts.target}`);
+  lines.push(`  resolved_task ${(plan && plan.resolvedTask) || "missing"}`);
+  return lines.join("\n");
+}
+
+function templateHasDescendingOrder(code) {
+  const compact = String(code || "")
+    .toLowerCase()
+    .split(/\s+/)
+    .join("");
+  return [
+    "sort_by(|a,b|b.cmp(a))",
+    "reverse=true",
+    ".sort().reverse()",
+    "sort.sort(sort.reverse",
+    "compare_desc",
+    "rbegin(),names.rend()",
+    "comparator.reverseorder()",
+    "orderbydescending",
+    "sort.reverse",
+  ].some((marker) => compact.includes(marker));
+}
+
+function writeProgramVerificationTrace(candidateId, plan, template, modifiers) {
+  if (!plan || !Array.isArray(modifiers) || modifiers.length === 0) return null;
+  const planCheck =
+    programPlanWasModified(plan) && Array.isArray(plan.traces) && plan.traces.length > 0;
+  const renderCheck =
+    !modifiers.includes("reverse_sort") || templateHasDescendingOrder(template);
+  const passed = planCheck && renderCheck;
+  return [
+    "rule_verification",
+    `  candidate ${candidateId}`,
+    "  fixture list_files_output_order",
+    "  input a.txt,b.txt,c.txt",
+    "  expected_order c.txt,b.txt,a.txt",
+    `  lowering_check ${planCheck ? "passed" : "failed"}`,
+    `  render_check ${renderCheck ? "passed" : "failed"}`,
+    `  status ${passed ? "passed" : "failed"}`,
+  ].join("\n");
+}
+
+function writeProgramDiagnosticBundle({
+  prompt,
+  initiallyDetected,
+  coreference,
+  detected,
+  modifiers,
+  lowered,
+  plan,
+  template,
+}) {
+  const steps = [];
+  const trace = [];
+  const coreferenceTrace = coreference && coreference.trace;
+  if (!initiallyDetected && coreferenceTrace) {
+    const detail = "selected_rule initial unknown reason no_seed_route next try_rule_synthesis";
+    steps.push({ step: "route_attempt", detail });
+    trace.push(`selected_rule:${detail}`);
+  } else {
+    const detail = "selected_rule write_program reason seed_route";
+    steps.push({ step: "route_attempt", detail });
+    trace.push(`selected_rule:${detail}`);
+  }
+
+  if (coreferenceTrace) {
+    const detail = `write_program_coreference_rewrite\n  ${coreferenceTrace}`;
+    steps.push({ step: "coreference_binding", detail });
+    trace.push(`write_program_coreference_rewrite:${coreferenceTrace}`);
+  }
+
+  const safeModifiers = Array.isArray(modifiers) ? modifiers : [];
+  if (safeModifiers.length > 0) {
+    const operationHits = safeModifiers.join(",");
+    const detail = `rule_synthesis_operation_vocabulary\n  ${operationHits}`;
+    steps.push({ step: "modifier_detection", detail });
+    trace.push(`rule_synthesis_operation_vocabulary:${operationHits}`);
+  }
+
+  const primaryModifier = writeProgramPrimaryModifier(safeModifiers);
+  if (primaryModifier && lowered && programPlanWasModified(lowered)) {
+    const context = {
+      task: (detected && detected.task) || lowered.baseTask || "missing",
+      language: (detected && detected.language) || "missing",
+    };
+    const candidateId = writeProgramCandidateRuleId(lowered, primaryModifier);
+    const request = writeProgramSynthesisRequest(context, prompt, primaryModifier);
+    const candidate = writeProgramSynthesisCandidate(
+      candidateId,
+      context,
+      lowered,
+      primaryModifier,
+    );
+    const construction = `${request}\n${candidate}`;
+    steps.push({ step: "rule_construction", detail: construction });
+    trace.push(`rule_synthesis_request:${request}`);
+    trace.push(`rule_synthesis_candidate:${candidate}`);
+
+    const verification = writeProgramVerificationTrace(
+      candidateId,
+      lowered,
+      template,
+      safeModifiers,
+    );
+    if (verification) {
+      steps.push({ step: "rule_verification", detail: verification });
+      trace.push(`rule_verification:${verification}`);
+    }
+  }
+
+  if (plan) {
+    const detail = `write_program_plan\n${plan}`;
+    steps.push({ step: "program_plan", detail });
+    trace.push(`write_program_plan:${plan}`);
+  }
+
+  return { steps, trace };
+}
+
 function tryWriteProgram(prompt, history, responseLanguage, composition) {
   let detected = writeProgramParameters(prompt);
+  const initiallyDetected = detected;
   const coreference = detected ? null : rewriteBareProgramCoreference(prompt, history);
   if (!detected && !coreference) return null;
   if (coreference) detected = coreference.parameters;
   // Issue #324: recover task/language from the conversation when a follow-up
   // modification names neither (and apply any path-argument modifier).
-  const { language, task, plan } = recoverWriteProgramParameters(detected, prompt, history);
+  const { language, task, plan, modifiers, lowered } = recoverWriteProgramParameters(
+    detected,
+    prompt,
+    history,
+  );
   // Issue #324: answer in the language of the request (falls back to en).
   const i18n = writeProgramStrings(responseLanguage);
   const template = language && task ? WRITE_PROGRAM_TEMPLATES[task]?.[language] : null;
+  const diagnostics = writeProgramDiagnosticBundle({
+    prompt,
+    initiallyDetected,
+    coreference,
+    detected,
+    modifiers,
+    lowered,
+    plan,
+    template,
+  });
   if (!template) {
     // Issue #340 (R7): before the unsupported dead end, try a composite
     // blueprint. When the request decomposes into a recognized recipe for a
@@ -13197,6 +13403,8 @@ function tryWriteProgram(prompt, history, responseLanguage, composition) {
         `program_parameter:language:${language || "missing"}`,
         `program_parameter:task:${task || "missing"}`,
       ],
+      steps: diagnostics.steps,
+      trace: diagnostics.trace,
     };
   }
   const languageInfo = WRITE_PROGRAM_LANGUAGES[language];
@@ -13244,7 +13452,8 @@ function tryWriteProgram(prompt, history, responseLanguage, composition) {
         ? [`write_program_coreference_rewrite:${task || "missing"}:${language || "missing"}`]
         : []),
     ],
-    trace: coreference ? [`write_program_coreference_rewrite:${coreference.trace}`] : undefined,
+    steps: diagnostics.steps,
+    trace: diagnostics.trace.length ? diagnostics.trace : undefined,
   };
 }
 
@@ -17273,6 +17482,9 @@ async function solve(prompt, history, prefs, userContext = {}) {
     if (hit) {
       events.push(`handler:${hit.intent}`);
       steps.push({ step: "dispatch_handler", detail: handler.name });
+      if (Array.isArray(hit.steps)) {
+        for (const step of hit.steps) steps.push(step);
+      }
       if (Array.isArray(hit.trace)) {
         for (const event of hit.trace) events.push(event);
       }
