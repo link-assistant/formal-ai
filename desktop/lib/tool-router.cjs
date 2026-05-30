@@ -15,6 +15,8 @@
 // daemon. Per R7 the wire payloads between renderer and main stay Links-Notation
 // friendly (plain structured objects), and no new external REST surface is added.
 
+const path = require("node:path");
+
 const SANDBOX_IMAGE = "konard/box-dind:2.1.1";
 
 // The tool vocabulary mirrors the browser environment (see app.js); each maps to
@@ -115,9 +117,15 @@ function createToolRouter(options = {}) {
     if (!requested) {
       return failure(tool, "invalid_input", "read_local_file requires a path");
     }
-    // Confine reads to an allowed root when one is configured.
-    if (allowedReadRoot && !requested.startsWith(allowedReadRoot)) {
-      return failure(tool, "forbidden", "path is outside the allowed root");
+    // Confine reads to an allowed root when one is configured. Use a relative
+    // containment check (not a raw string prefix) so a sibling directory whose
+    // name merely starts with the root — e.g. `/repo-evil` vs `/repo` — cannot
+    // slip through.
+    if (allowedReadRoot) {
+      const relative = path.relative(allowedReadRoot, requested);
+      if (relative.startsWith("..") || path.isAbsolute(relative)) {
+        return failure(tool, "forbidden", "path is outside the allowed root");
+      }
     }
     try {
       const body = await readFile(requested);

@@ -95,6 +95,23 @@ test("read_local_file is confined to the allowed root", async () => {
   assert.equal(inside.body, "secret");
 });
 
+test("read_local_file rejects a sibling directory that shares the root prefix", async () => {
+  // `/repo-evil` starts with the string `/repo` but is not inside it; a raw
+  // prefix check would wrongly allow it, a containment check must refuse.
+  const router = createToolRouter({
+    readFile: async () => "secret",
+    allowedReadRoot: "/repo",
+    resolvePath: (value) => (value.startsWith("/") ? value : `/repo/${value}`),
+  });
+  router.setGrants({ read_local_file: true });
+  const sibling = await router.invoke({
+    tool: "read_local_file",
+    input: { path: "/repo-evil/secret" },
+  });
+  assert.equal(sibling.ok, false);
+  assert.equal(sibling.status, "forbidden");
+});
+
 test("unknown tools are rejected without executing", async () => {
   const router = createToolRouter();
   router.setGrants({ all: true });
