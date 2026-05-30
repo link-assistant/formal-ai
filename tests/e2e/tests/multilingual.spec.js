@@ -388,6 +388,30 @@ test.describe('multilingual chat surface', () => {
     await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
   });
 
+  test('exchange-rate basis prompts resolve as calculations across supported languages', async ({ page }) => {
+    const cases = [
+      {
+        language: 'en',
+        prompt: 'what dollar exchange rate do you use for calculations?',
+      },
+      { language: 'ru', prompt: 'какой курс долора у тебя при расчетах?' },
+      {
+        language: 'hi',
+        prompt: 'गणना में आप डॉलर का कौन सा विनिमय दर उपयोग करते हैं?',
+      },
+      { language: 'zh', prompt: '你计算时使用什么美元汇率?' },
+    ];
+
+    for (const { language, prompt } of cases) {
+      const last = await sendPrompt(page, prompt);
+      await expect(last, `${language} reply`).toHaveClass(/assistant/);
+      await expect(last, `${language} calculator`).toContainText('link-calculator');
+      await expect(last, `${language} rate`).toContainText('1 USD in RUB = 89.5 RUB');
+      await expect(last, `${language} detail`).toContainText('Exchange rate: 1 USD = 89.5 RUB');
+      await expect(last, `${language} unknown`).not.toContainText(UNKNOWN_ANSWER_MARKER);
+    }
+  });
+
   test('Russian weekday relation resolves through calendar reasoning', async ({ page }) => {
     const last = await sendPrompt(page, 'какой день недели наступает после вторника');
     await expect(last).toHaveClass(/assistant/);

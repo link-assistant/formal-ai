@@ -1633,6 +1633,8 @@ const DEFAULT_CURRENCY_RATES = new Map([
   ["GBP:EUR", 1.16],
 ]);
 
+const USD_RUB_RATE_EXPRESSION = "1 USD in RUB";
+
 function currencyCodeFromWord(value) {
   const lower = String(value || "").toLowerCase();
   if (
@@ -1731,6 +1733,125 @@ function evaluateCurrencyConversionExpression(expression) {
   const rate = defaultCurrencyRate(from, to);
   if (!rate) return null;
   return `${formatArithmeticResult(amount * rate)} ${to}`;
+}
+
+function usdRubRateDetail() {
+  const rate = defaultCurrencyRate("USD", "RUB");
+  if (!rate) return "";
+  return `Exchange rate: 1 USD = ${formatArithmeticResult(rate)} RUB (source: default (hardcoded), date: unknown)`;
+}
+
+function evaluateUsdRubRateBasis() {
+  const wasmResult = wasmEvaluateArithmetic(USD_RUB_RATE_EXPRESSION);
+  if (wasmResult && wasmResult.ok) {
+    return {
+      formatted: wasmResult.value,
+      backend: "wasm",
+      detail: usdRubRateDetail(),
+    };
+  }
+  const currencyConversionResult = evaluateCurrencyConversionExpression(
+    USD_RUB_RATE_EXPRESSION,
+  );
+  if (currencyConversionResult === null) return null;
+  return {
+    formatted: currencyConversionResult,
+    backend: "js-currency",
+    detail: usdRubRateDetail(),
+  };
+}
+
+function mentionsUsdRate(normalized) {
+  return (
+    normalized.includes("курс") ||
+    normalized.includes("exchange rate") ||
+    normalized.includes("currency rate") ||
+    normalized.includes("विनिमय दर") ||
+    normalized.includes("汇率")
+  ) && (
+    normalized.includes("usd") ||
+    normalized.includes("dollar") ||
+    normalized.includes("доллар") ||
+    normalized.includes("долар") ||
+    normalized.includes("долор") ||
+    normalized.includes("डॉलर") ||
+    normalized.includes("美元")
+  );
+}
+
+function mentionsRateCalculationBasis(normalized) {
+  return (
+    normalized.includes("при расчет") ||
+    normalized.includes("при расчёт") ||
+    normalized.includes("в расчет") ||
+    normalized.includes("в расчёт") ||
+    normalized.includes("для расчет") ||
+    normalized.includes("для расчёт") ||
+    normalized.includes("у тебя") ||
+    normalized.includes("использ") ||
+    normalized.includes("берешь") ||
+    normalized.includes("берёшь") ||
+    normalized.includes("примен") ||
+    normalized.includes("calculation") ||
+    normalized.includes("do you use") ||
+    normalized.includes("used for") ||
+    normalized.includes("your rate") ||
+    normalized.includes("गणना") ||
+    normalized.includes("उपयोग") ||
+    normalized.includes("计算") ||
+    normalized.includes("使用")
+  );
+}
+
+function tryCalculatorRateBasis(normalized, language) {
+  if (!mentionsUsdRate(normalized) || !mentionsRateCalculationBasis(normalized)) {
+    return null;
+  }
+  const evaluation = evaluateUsdRubRateBasis();
+  if (!evaluation) {
+    const content =
+      language === "ru"
+        ? "Я распознал вопрос о курсе USD/RUB для расчетов, но калькулятор не смог его вычислить."
+        : "I recognized this as a question about the USD/RUB rate used for calculations, but the calculator could not evaluate it.";
+    return {
+      intent: "calculation_error",
+      content,
+      confidence: 0.3,
+      evidence: ["calculation_error:USD/RUB"],
+    };
+  }
+  const calculationBody = `${USD_RUB_RATE_EXPRESSION} = ${evaluation.formatted}`;
+  let content;
+  if (language === "ru") {
+    content = `При расчетах валюты я использую link-calculator. Для USD/RUB он возвращает: ${calculationBody}.`;
+  } else if (language === "hi") {
+    content = `मुद्रा गणनाओं के लिए मैं link-calculator का उपयोग करता हूं। USD/RUB के लिए वह लौटाता है: ${calculationBody}.`;
+  } else if (language === "zh") {
+    content = `货币计算时我使用 link-calculator。USD/RUB 返回: ${calculationBody}.`;
+  } else {
+    content = `For currency calculations I use link-calculator. For USD/RUB it returns: ${calculationBody}.`;
+  }
+  if (evaluation.detail) {
+    let details = "Calculator rate details";
+    if (language === "ru") {
+      details = "Детали курса от калькулятора";
+    } else if (language === "hi") {
+      details = "कैलकुलेटर दर विवरण";
+    } else if (language === "zh") {
+      details = "计算器汇率详情";
+    }
+    content += `\n\n${details}: ${evaluation.detail}`;
+  }
+  return {
+    intent: "calculation",
+    content,
+    confidence: 1.0,
+    evidence: [
+      `calculation:${calculationBody}`,
+      `calculation_backend:${evaluation.backend}`,
+      "calculation_rate_basis:USD/RUB",
+    ],
+  };
 }
 
 // Rewrite "N% of M" percentage-of phrases into explicit arithmetic the parser
@@ -16740,6 +16861,12 @@ async function solve(prompt, history, prefs, userContext = {}) {
         `follow_up:${courtesy.followUpIncluded ? "included" : "omitted"}`,
       ],
     });
+  }
+  const calculatorRateBasis = tryCalculatorRateBasis(normalized, language);
+  if (calculatorRateBasis) {
+    events.push(`handler:${calculatorRateBasis.intent}`);
+    steps.push({ step: "dispatch_handler", detail: "tryCalculatorRateBasis" });
+    return finalize(events, steps, toolCalls, calculatorRateBasis, formalizationContext);
   }
   if (isAssistantNamePrompt(normalized, prompt)) {
     events.push("rule:assistant_name");
