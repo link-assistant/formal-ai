@@ -1,0 +1,11 @@
+.gitignore
+.vscode
+.vscodeignore
+README.md
+cat.jpeg
+demo.png
+eslint.config.mjs
+package-lock.json
+package.json
+src
+tsconfig.json
