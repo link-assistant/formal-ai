@@ -21,6 +21,11 @@ This folder holds the raw evidence (`raw-data/`), the captured failure log of th
 (`raw-data/reproduction-output.txt`), and the GitHub-issue roadmap that operationalises the fix
 ([`ROADMAP.md`](./ROADMAP.md)).
 
+The roadmap has been created as live, dependency-linked GitHub issues
+[#355–#364](https://github.com/link-assistant/formal-ai/issues/355) under epic
+[#365](https://github.com/link-assistant/formal-ai/issues/365), wired with `blocked_by` edges via the GitHub
+issue dependencies API. The logical→GitHub id mapping is in [`ROADMAP.md`](./ROADMAP.md#created-issues-logical-id--github-issue).
+
 ---
 
 ## 1. Timeline / sequence of events
