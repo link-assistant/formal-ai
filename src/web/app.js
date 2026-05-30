@@ -4695,15 +4695,6 @@ function App() {
   }, []);
 
   useEffect(() => {
-    // R5c: keep the native store in step with the browser log after each turn
-    // while the local server is the active surface.
-    if (!desktopStatus || !desktopStatus.apiReady) {
-      return;
-    }
-    syncDesktopMemoryNow();
-  }, [messages, desktopStatus, syncDesktopMemoryNow]);
-
-  useEffect(() => {
     showDeletedConversationsRef.current = showDeletedConversations;
   }, [showDeletedConversations]);
 
@@ -4868,6 +4859,16 @@ function App() {
       return null;
     }
   }, []);
+
+  useEffect(() => {
+    // R5c: keep the native store in step with the browser log after each turn
+    // while the local server is the active surface. Declared after
+    // `syncDesktopMemoryNow` so the dependency reference is initialized.
+    if (!desktopStatus || !desktopStatus.apiReady) {
+      return;
+    }
+    syncDesktopMemoryNow();
+  }, [messages, desktopStatus, syncDesktopMemoryNow]);
 
   const handleImportMemory = useCallback(async (event) => {
     const file = event.target.files && event.target.files[0];
