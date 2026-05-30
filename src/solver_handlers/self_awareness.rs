@@ -4,7 +4,7 @@ use crate::engine::{identity_answer, normalize_prompt, stable_id, SymbolicAnswer
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
 use crate::seed;
-use crate::solver::ExecutionSurface;
+use crate::solver::{BlueprintComposition, ExecutionSurface};
 
 use super::finalize_simple;
 
@@ -16,6 +16,7 @@ pub struct SelfAwarenessRuntime {
     pub agent_mode: bool,
     pub diagnostic_mode: bool,
     pub definition_fusion_by_default: bool,
+    pub blueprint_composition: BlueprintComposition,
 }
 
 impl SelfAwarenessRuntime {
@@ -27,6 +28,7 @@ impl SelfAwarenessRuntime {
         agent_mode: bool,
         diagnostic_mode: bool,
         definition_fusion_by_default: bool,
+        blueprint_composition: BlueprintComposition,
     ) -> Self {
         Self {
             surface,
@@ -34,13 +36,21 @@ impl SelfAwarenessRuntime {
             agent_mode,
             diagnostic_mode,
             definition_fusion_by_default,
+            blueprint_composition,
         }
     }
 }
 
 impl Default for SelfAwarenessRuntime {
     fn default() -> Self {
-        Self::new(ExecutionSurface::default(), false, false, false, false)
+        Self::new(
+            ExecutionSurface::default(),
+            false,
+            false,
+            false,
+            false,
+            BlueprintComposition::Composed,
+        )
     }
 }
 
@@ -236,6 +246,10 @@ fn render_self_facts(runtime: SelfAwarenessRuntime) -> String {
             "  subject \"formal-ai\"\n",
             "  relation \"definition_fusion\"\n",
             "  object \"{}\"\n",
+            "self_fact_blueprint_composition\n",
+            "  subject \"formal-ai\"\n",
+            "  relation \"blueprint_composition\"\n",
+            "  object \"{}\"\n",
             "```\n\n",
             "Read behavior with `List behavior rules`; teach one with ",
             "When `prompt` then `answer` (or When I say `prompt`, answer `answer`)."
@@ -258,7 +272,8 @@ fn render_self_facts(runtime: SelfAwarenessRuntime) -> String {
             "enabled_by_default"
         } else {
             "explicit_only"
-        }
+        },
+        runtime.blueprint_composition.slug()
     )
 }
 

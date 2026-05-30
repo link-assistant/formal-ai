@@ -348,6 +348,10 @@ fn self_facts(surface: ExpectedSurface) -> String {
             "  subject \"formal-ai\"\n",
             "  relation \"definition_fusion\"\n",
             "  object \"explicit_only\"\n",
+            "self_fact_blueprint_composition\n",
+            "  subject \"formal-ai\"\n",
+            "  relation \"blueprint_composition\"\n",
+            "  object \"composed\"\n",
             "```\n\n",
             "Read behavior with `List behavior rules`; teach one with ",
             "When `prompt` then `answer` (or When I say `prompt`, answer `answer`)."
