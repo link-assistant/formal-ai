@@ -3186,6 +3186,14 @@ function compactUrl(value) {
   }
 }
 
+// Issue #353: the same chat UI now also runs inside a VS Code Webview. Label the
+// host surface from the bridge's shell string ("VS Code" / "VS Code Web" from the
+// extension; "Electron" from the desktop shell) so the status line and sidebar
+// read correctly in either embedder.
+function desktopSurfaceLabel(status) {
+  return /code/i.test(String((status && status.shell) || "")) ? "VS Code" : "Desktop";
+}
+
 function desktopStatusLabel(status, agentMode) {
   if (!status) {
     return "";
@@ -3196,7 +3204,7 @@ function desktopStatusLabel(status, agentMode) {
       ? "API unavailable"
       : "in-process";
   const agent = agentMode ? "agent opted in" : "agent permission off";
-  return `Desktop - ${api} - ${agent}`;
+  return `${desktopSurfaceLabel(status)} - ${api} - ${agent}`;
 }
 
 function desktopMessages(history, text) {
@@ -6422,7 +6430,7 @@ function App() {
         }),
         desktopStatus
           ? h(CollapsibleSection, {
-              title: "Desktop",
+              title: desktopSurfaceLabel(desktopStatus),
               testId: "sidebar-desktop",
               collapsed: sidebarDesktopCollapsed,
               onToggle: () => setSidebarDesktopCollapsed((value) => !value),
