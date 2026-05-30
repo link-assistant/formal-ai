@@ -25,6 +25,7 @@ pub(crate) mod program_coreference;
 pub mod program_plan;
 pub mod proof_engine;
 pub mod protocol;
+pub(crate) mod rule_synthesis;
 pub mod seed;
 pub mod server;
 pub mod skill_compiler;

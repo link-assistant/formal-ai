@@ -130,6 +130,79 @@ fn bare_imperative_results_follow_ups_bind_active_program_in_all_languages() {
     }
 }
 
+#[test]
+fn unknown_bare_program_modifier_constructs_and_verifies_a_rule() {
+    let solver = UniversalSolver::default();
+    let cases = [
+        ProgramFollowUpCase {
+            name: "English",
+            initial: "Write me a Rust program that lists the files in the current directory",
+            path_argument_follow_up: "Make the program accept a path as an argument",
+            bare_results_follow_up: "Sort the results in reverse order",
+        },
+        ProgramFollowUpCase {
+            name: "Russian",
+            initial:
+                "Напиши мне программу на Rust, которая выдаёт список файлов в текущей директории",
+            path_argument_follow_up: "Сделай так, чтобы программа принимала путь как аргумент",
+            bare_results_follow_up: "Сделай сортировку результатов в обратном порядке",
+        },
+        ProgramFollowUpCase {
+            name: "Hindi",
+            initial: "Rust में फ़ाइलों की सूची दिखाने वाला प्रोग्राम लिखो",
+            path_argument_follow_up: "इसे ऐसा बनाओ कि प्रोग्राम पथ को तर्क के रूप में स्वीकार करे",
+            bare_results_follow_up: "परिणामों को उल्टे क्रम में क्रमबद्ध करो",
+        },
+        ProgramFollowUpCase {
+            name: "Chinese",
+            initial: "用 Rust 编写一个列出当前目录中文件的程序",
+            path_argument_follow_up: "制作程序，使其接受路径作为参数",
+            bare_results_follow_up: "把结果按相反顺序排序",
+        },
+    ];
+
+    for case in cases {
+        let response = solve_bare_results_follow_up(&solver, &case);
+
+        assert_eq!(response.intent, "write_program");
+        assert!(
+            response.links_notation.contains(
+                "selected_rule initial unknown reason no_seed_route next try_rule_synthesis"
+            ),
+            "{} trace should show unknown routing entering rule synthesis, got: {}",
+            case.name,
+            response.links_notation
+        );
+        for expected in [
+            "rule_synthesis_request",
+            "operation sort",
+            "operation_modifier descending",
+            "target program:last.output_order",
+            "rule_synthesis_candidate",
+            "modifier reverse_sort",
+            "rule_verification",
+            "fixture list_files_output_order",
+            "status passed",
+        ] {
+            assert!(
+                response.links_notation.contains(expected),
+                "{} missing `{expected}` in rule-synthesis trace: {}",
+                case.name,
+                response.links_notation
+            );
+        }
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link.starts_with("rule_verification:")),
+            "{} verification should be exposed as evidence, got: {:?}",
+            case.name,
+            response.evidence_links
+        );
+    }
+}
+
 fn answer_reverses_sort(answer: &str) -> bool {
     let compact = answer
         .to_ascii_lowercase()
