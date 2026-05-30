@@ -2065,6 +2065,10 @@ function isIdentityPrompt(normalized) {
       "what is formalai",
       "tell me about yourself",
       "introduce yourself",
+      "let s get acquainted",
+      "lets get acquainted",
+      "let us get acquainted",
+      "let s get to know each other",
       "кто ты",
       "что ты",
       "расскажи о себе",
@@ -2072,17 +2076,35 @@ function isIdentityPrompt(normalized) {
       "расскажи про себя",
       "опиши себя",
       "представься",
+      "давай знакомиться",
+      "давай познакомимся",
+      "давайте познакомимся",
+      "चलो परिचय करते हैं",
+      "आइए परिचय करें",
+      "चलो एक दूसरे को जानें",
       "你是谁",
+      "我们认识一下吧",
+      "认识一下吧",
+      "让我们认识一下",
     ].includes(normalized) ||
     (has("who") && has("you")) ||
     (has("what") && has("you")) ||
     ((has("who") || has("what")) && has("formal") && has("ai")) ||
     (has("tell") && has("yourself")) ||
     (has("introduce") && has("yourself")) ||
+    (has("let") && has("s") && has("acquainted")) ||
+    (has("lets") && has("acquainted")) ||
+    (has("let") && has("us") && has("acquainted")) ||
+    (has("know") && has("each") && has("other")) ||
     (has("кто") && has("ты")) ||
     (has("что") && has("ты")) ||
     (has("расскажи") && has("себе")) ||
-    (has("опиши") && has("себя"))
+    (has("опиши") && has("себя")) ||
+    (has("давай") && has("знакомиться")) ||
+    (has("давай") && has("познакомимся")) ||
+    (has("давайте") && has("познакомимся")) ||
+    (has("चलो") && has("परिचय")) ||
+    (has("आइए") && has("परिचय"))
   );
 }
 
@@ -2703,11 +2725,24 @@ function localIsSelfIntroductionQuery(normalized) {
     cleaned === "introduce yourself" ||
     cleaned.includes("tell me about yourself") ||
     cleaned.includes("introduce yourself") ||
+    cleaned.includes("let s get acquainted") ||
+    cleaned.includes("lets get acquainted") ||
+    cleaned.includes("let us get acquainted") ||
+    cleaned.includes("let s get to know each other") ||
     cleaned.includes("расскажи о себе") ||
     cleaned.includes("расскажи мне о себе") ||
     cleaned.includes("расскажи про себя") ||
     cleaned.includes("опиши себя") ||
-    cleaned.includes("представься")
+    cleaned.includes("представься") ||
+    cleaned.includes("давай знакомиться") ||
+    cleaned.includes("давай познакомимся") ||
+    cleaned.includes("давайте познакомимся") ||
+    cleaned.includes("चलो परिचय करते हैं") ||
+    cleaned.includes("आइए परिचय करें") ||
+    cleaned.includes("चलो एक दूसरे को जानें") ||
+    cleaned.includes("我们认识一下") ||
+    cleaned.includes("认识一下吧") ||
+    cleaned.includes("让我们认识一下")
   );
 }
 
