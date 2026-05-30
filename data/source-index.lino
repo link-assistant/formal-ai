@@ -134,6 +134,38 @@ source_bigbench_object_counting
   license "Apache-2.0; source revision 092b196c1f8f14a54bbc62f24759d43bde46dd3b"
   conversion "import selected exact-match target as a deterministic benchmark_case record"
 
+source_canitedit
+  title "CanItEdit"
+  kind "coding-modification-benchmark"
+  source_url "https://github.com/nuprl/CanItEdit"
+  download "https://huggingface.co/datasets/nuprl/CanItEdit/resolve/main/data/test-00000-of-00001.parquet"
+  license "MIT; GitHub revision 74d15ea7e6207cb9fdeeecd761907371d4cc2e26; Hugging Face revision 3c07f38b1f9385f3214fcea94d4664c79df0d36a"
+  conversion "download external parquet at test time and use as instructed code-editing benchmark provenance"
+
+source_humanevalfix
+  title "HumanEvalFix from HumanEvalPack"
+  kind "coding-modification-benchmark"
+  source_url "https://github.com/bigcode-project/octopack"
+  download "https://huggingface.co/datasets/bigcode/humanevalpack/resolve/main/python/test-00000-of-00001.parquet"
+  license "MIT; GitHub revision e17a8f6470264286bc6a52eb8263582083bf3bf6; Hugging Face revision 9a41762f73a8cb23bb5811b73d5aab164efcf378"
+  conversion "download external parquet at test time and use as program-repair benchmark provenance"
+
+source_editbench
+  title "EDIT-Bench"
+  kind "coding-modification-benchmark"
+  source_url "https://github.com/waynchi/editbench"
+  download "https://huggingface.co/datasets/copilot-arena/editbench/resolve/main/data/test-00000-of-00001.parquet"
+  license "Apache-2.0; GitHub revision 2ecd13159711d2d5bbdf36700119b4278f387dc0; Hugging Face revision 0d41afafcfe7c759adcd2eaceabfa486ab6eb0e2"
+  conversion "download external parquet at test time and use as real-world instructed code-editing benchmark provenance"
+
+source_edit_but_verify
+  title "Edit, But Verify"
+  kind "benchmark-audit"
+  source_url "https://arxiv.org/abs/2604.05100"
+  download "https://arxiv.org/html/2604.05100"
+  license "CC BY-NC-ND 4.0 arXiv paper; reference only"
+  conversion "record audit caveats for code-editing benchmark representativeness and oracle strength"
+
 source_wikifunctions
   title "Wikifunctions"
   kind "function-corpus"
