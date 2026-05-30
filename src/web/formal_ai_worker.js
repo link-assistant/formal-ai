@@ -11414,6 +11414,75 @@ const PROGRAM_MODIFIERS = [
   },
 ];
 
+const PROGRAM_FOLLOW_UP_REFERENTS = [
+  "result",
+  "results",
+  "output",
+  "program",
+  "programme",
+  "script",
+  "code",
+  "результат",
+  "результата",
+  "результаты",
+  "результатов",
+  "вывод",
+  "программа",
+  "программу",
+  "программы",
+  "скрипт",
+  "код",
+  "परिणाम",
+  "परिणामों",
+  "नतीजा",
+  "नतीजे",
+  "आउटपुट",
+  "प्रोग्राम",
+  "कोड",
+  "结果",
+  "输出",
+  "程序",
+  "代码",
+];
+
+const PROGRAM_FOLLOW_UP_ACTIONS = [
+  "sort",
+  "sorted",
+  "reverse",
+  "reorder",
+  "order",
+  "change",
+  "modify",
+  "update",
+  "make",
+  "сделай",
+  "сделайте",
+  "сортировка",
+  "сортировку",
+  "сортировать",
+  "отсортируй",
+  "отсортируйте",
+  "обратном",
+  "обратный",
+  "измени",
+  "изменить",
+  "обнови",
+  "क्रमबद्ध",
+  "उल्टे",
+  "उल्टा",
+  "बनाओ",
+  "बदलें",
+  "बदलो",
+  "अपडेट",
+  "排序",
+  "反向",
+  "相反",
+  "倒序",
+  "修改",
+  "改",
+  "更新",
+];
+
 function detectedProgramModifiers(normalized) {
   const slugs = [];
   for (const modifier of PROGRAM_MODIFIERS) {
@@ -11791,6 +11860,45 @@ function writeProgramParameters(prompt) {
     task = resolveProgramTask(task, modifiers);
   }
   return { language, task };
+}
+
+function hasAnyProgramToken(normalized, tokens) {
+  return tokens.some((token) => containsProgramToken(normalized, token));
+}
+
+function looksLikeBareProgramArtifactFollowUp(normalized) {
+  return (
+    hasAnyProgramToken(normalized, PROGRAM_FOLLOW_UP_REFERENTS) &&
+    hasAnyProgramToken(normalized, PROGRAM_FOLLOW_UP_ACTIONS)
+  );
+}
+
+function activeProgramContext(history) {
+  let task = null;
+  let language = null;
+  if (!Array.isArray(history)) return null;
+  for (let index = history.length - 1; index >= 0; index -= 1) {
+    const turn = history[index];
+    const content = turn && (turn.content || turn.text || turn.message);
+    if (!content) continue;
+    const prior = writeProgramParameters(content);
+    if (!prior) continue;
+    if (!task && prior.task) task = prior.task;
+    if (!language && prior.language) language = prior.language;
+    if (task && language) return { task, language };
+  }
+  return null;
+}
+
+function rewriteBareProgramCoreference(prompt, history) {
+  const normalized = normalizeProgramPrompt(prompt);
+  if (!looksLikeBareProgramArtifactFollowUp(normalized)) return null;
+  const context = activeProgramContext(history);
+  if (!context) return null;
+  return {
+    parameters: { task: context.task, language: context.language },
+    trace: `referent=active_program_artifact task=${context.task} language=${context.language}`,
+  };
 }
 
 // Issue #324: a follow-up such as "Сделай так, чтобы программа принимала путь
@@ -12858,8 +12966,10 @@ function blueprintWriteProgramAnswer(
 }
 
 function tryWriteProgram(prompt, history, responseLanguage, composition) {
-  const detected = writeProgramParameters(prompt);
-  if (!detected) return null;
+  let detected = writeProgramParameters(prompt);
+  const coreference = detected ? null : rewriteBareProgramCoreference(prompt, history);
+  if (!detected && !coreference) return null;
+  if (coreference) detected = coreference.parameters;
   // Issue #324: recover task/language from the conversation when a follow-up
   // modification names neither (and apply any path-argument modifier).
   const { language, task, plan } = recoverWriteProgramParameters(detected, prompt, history);
@@ -12943,7 +13053,11 @@ function tryWriteProgram(prompt, history, responseLanguage, composition) {
       // modification rewrote the task (mirrors the Rust `write_program_plan`
       // event in `src/solver.rs`).
       ...(plan ? [`write_program_plan:${task}`] : []),
+      ...(coreference
+        ? [`write_program_coreference_rewrite:${task || "missing"}:${language || "missing"}`]
+        : []),
     ],
+    trace: coreference ? [`write_program_coreference_rewrite:${coreference.trace}`] : undefined,
   };
 }
 
@@ -16925,6 +17039,17 @@ async function solve(prompt, history, prefs, userContext = {}) {
     {
       name: "tryProofRequest",
       run: () => tryProofRequest(prompt, normalized, language),
+    },
+    {
+      name: "tryWriteProgramCoreference",
+      run: () => {
+        const hit = writeProgram();
+        return hit &&
+          hit.intent === "write_program" &&
+          hit.evidence?.some((link) => link.startsWith("write_program_coreference_rewrite:"))
+          ? hit
+          : null;
+      },
     },
     { name: "tryTextManipulation", run: () => tryTextManipulation(prompt, normalized) },
     { name: "tryProgramSynthesis", run: () => tryProgramSynthesis(prompt, normalized) },

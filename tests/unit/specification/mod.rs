@@ -39,6 +39,7 @@ mod capabilities;
 mod chat_surface;
 mod code_generation;
 mod code_generation_blueprint;
+mod code_generation_coreference;
 mod definition_fusion;
 mod desktop_surface;
 mod formalization;

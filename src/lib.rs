@@ -21,6 +21,7 @@ pub mod links_query;
 pub mod memory;
 pub mod memory_sync;
 pub mod probability;
+pub(crate) mod program_coreference;
 pub mod program_plan;
 pub mod proof_engine;
 pub mod protocol;
