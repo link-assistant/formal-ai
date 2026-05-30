@@ -12,6 +12,7 @@ The current implementation covers the surface area requested in issue #1:
 - Docker-in-Docker Telegram bot image based on `konard/box-dind:2.1.1`
 - GitHub Pages markdown chat demo backed by a Rust-generated WebAssembly worker
 - Electron desktop shell that starts the local Rust HTTP API and reuses the web chat
+- VS Code extension (desktop **and** web/`vscode.dev`) that embeds the same chat in a Webview around the same HTTP/web boundary
 
 Project direction is tracked in [VISION.md](VISION.md), [GOALS.md](GOALS.md), and [NON-GOALS.md](NON-GOALS.md). Implementation progress against the vision is tracked in [ROADMAP.md](ROADMAP.md). The issue #12 synthesis is in [docs/case-studies/issue-12/README.md](docs/case-studies/issue-12/README.md).
 
@@ -58,6 +59,8 @@ rust-script scripts/mine-hive-mind-dataset.rs --plan
 cargo run -- serve --host 127.0.0.1 --port 8080
 npm install --prefix desktop
 npm run desktop:dev
+npm run vscode:test                                                    # VS Code extension node tests
+npm run vscode:dev                                                     # run the extension in a web host (vscode-test-web)
 TELEGRAM_BOT_TOKEN=123:abc cargo run -- telegram                       # long polling (default)
 cargo run -- telegram --mode webhook --host 127.0.0.1 --port 8080      # webhook server (opt-in)
 rust-script scripts/download-datasets.rs
@@ -143,6 +146,24 @@ npm --prefix desktop run build
 ```
 
 Set `FORMAL_AI_DESKTOP_BINARY=/path/to/formal-ai` before packaging to bundle a specific binary. Release builds copy the web assets and seed mirror into `desktop/dist-web/`, copy the binary into `desktop/bin/` when available, and produce OS artifacts under `desktop/release/`.
+
+### VS Code extension
+
+The VS Code extension lives in [`vscode/`](vscode/) and embeds the same web chat in a Webview around the same HTTP/web boundary as the browser, the HTTP server, and the desktop shell. It ships **two hosts from one manifest** so the same extension runs on the desktop and in the browser:
+
+- **Desktop / remote (Node) host** — [`src/extension.node.cjs`](vscode/src/extension.node.cjs) reports `shell: "VS Code"`. With the opt-in `formal-ai.server.enabled` setting it starts a loopback `formal-ai serve` process and routes prompt sends through `POST /v1/chat/completions`, just like the desktop shell; it can also drive Docker code execution (`formal-ai.docker.image`). It reuses the desktop tool-router and memory-sync helpers.
+- **Web (Web Worker) host** — [`src/extension.web.cjs`](vscode/src/extension.web.cjs) reports `shell: "VS Code Web"` and runs on `vscode.dev` / `github.dev`. The Web Worker host cannot spawn a process, open a socket, or touch `child_process`/`fs`, so it stays on the in-process WebAssembly symbolic engine — no local server, no Docker — while exposing the same chat, network, memory, and permission surfaces.
+
+```bash
+npm run vscode:test     # node:test unit suite + static smoke check (no install needed)
+npm run vscode:dev      # launch in a browser host via @vscode/test-web
+npm run vscode:smoke    # static manifest/contract smoke check
+npm run vscode:package  # produce a .vsix (runs prepare-resources first)
+```
+
+The web app labels both hosts **"VS Code"** in the status line and sidebar, and only routes to the local server when it is genuinely ready (`apiReady && apiBase`); otherwise it falls back to the in-process engine and reads `VS Code - in-process`. The same **Export memory** / **Import memory** controls read and write the full `formal_ai_bundle`; agent mode is off by default and tool calls are permission-gated until the user opts in. Settings (`formal-ai.server.*`, `formal-ai.docker.image`, `formal-ai.tools.allowByDefault`, `formal-ai.agent.defaultOn`) map directly onto that status shape.
+
+Packaging mirrors the desktop flow: `prepare-resources` copies `src/web/` into `vscode/dist-web/` (with the seed mirror at `vscode/dist-web/seed/`) and the desktop `lib/` helpers into `vscode/src/lib/vendor/`; both generated trees are git-ignored. See [docs/vscode/extension.md](docs/vscode/extension.md) for the full architecture, the Webview sandbox reconciliation (CSP nonce, same-origin Worker bootstrap, seed rebasing), and the honest list of what is and isn't verifiable inside the test sandbox.
 
 ### Full-memory export and import
 

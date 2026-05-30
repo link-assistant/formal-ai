@@ -1,0 +1,8 @@
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Symbolic graph: three linked nodes, themed by the activity bar. -->
+  <path d="M6 6.5 L12 12 M12 12 L18 17.5 M12 12 L18 6.5" stroke="#C5C5C5" stroke-width="1.6" stroke-linecap="round"/>
+  <circle cx="6" cy="6.5" r="2.4" fill="#C5C5C5"/>
+  <circle cx="12" cy="12" r="2.4" fill="#C5C5C5"/>
+  <circle cx="18" cy="6.5" r="2.4" fill="#C5C5C5"/>
+  <circle cx="18" cy="17.5" r="2.4" fill="#C5C5C5"/>
+</svg>

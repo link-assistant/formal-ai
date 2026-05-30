@@ -1,0 +1,8 @@
+# Files excluded from the packaged .vsix (dev/test artifacts only).
+.vscode/**
+scripts/**
+**/*.test.mjs
+**/*.map
+.gitignore
+.vscodeignore
+tsconfig.json

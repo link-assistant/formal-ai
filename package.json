@@ -6,7 +6,11 @@
     "build:web": "bun build ./src/web/vendor-entry.js --outfile ./src/web/vendor.bundle.js --target browser --format iife --production --minify && bun build ./src/web/ocr-entry.js --outfile ./src/web/ocr.bundle.js --target browser --format iife --production --minify",
     "desktop:dev": "npm --prefix desktop run dev",
     "desktop:build": "npm --prefix desktop run build",
-    "desktop:smoke": "npm --prefix desktop run smoke"
+    "desktop:smoke": "npm --prefix desktop run smoke",
+    "vscode:dev": "npm --prefix vscode run dev",
+    "vscode:package": "npm --prefix vscode run package",
+    "vscode:smoke": "npm --prefix vscode run smoke",
+    "vscode:test": "npm --prefix vscode run test"
   },
   "dependencies": {
     "dompurify": "3.3.0",

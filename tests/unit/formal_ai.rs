@@ -549,6 +549,8 @@ fn environment_directory_declares_every_supported_surface() {
         "rust_library",
         "cli",
         "http_server",
+        "desktop",
+        "vscode",
         "telegram",
         "docker_microservice",
     ] {
