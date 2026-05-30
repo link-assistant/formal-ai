@@ -23,10 +23,12 @@
 //!    catalog (`program_spec`), which the engine renders and reports honestly.
 //!
 //! Adding a new modification (e.g. "sort descending", "count instead of list")
-//! becomes *data* — a new rule in the `.lino` file — not new control flow. The
-//! whole transformation is inspectable as Links Notation via
+//! becomes *data* — operation-vocabulary triggers plus a rule in the `.lino`
+//! file — not new control flow. The whole transformation is inspectable as Links
+//! Notation via
 //! [`ProgramPlan::links_notation`].
 
+use std::collections::BTreeSet;
 use std::fmt::Write as _;
 use std::sync::OnceLock;
 
@@ -52,6 +54,27 @@ pub fn rules() -> &'static SubstitutionRuleSet {
     RULES.get_or_init(|| {
         SubstitutionRuleSet::from_links_notation(PROGRAM_PLAN_RULES_LINO)
             .expect("embedded program-plan rules must parse")
+    })
+}
+
+/// Program-modifier slugs declared by the rule data.
+///
+/// A slug is considered a program modifier when a program-plan rule has a
+/// literal `request:modifier -> <slug>` condition. Intent recognition combines
+/// this set with `data/seed/operation-vocabulary.lino`, so adding a modifier is
+/// seed data plus a substitution rule rather than a Rust allowlist entry.
+#[must_use]
+pub(crate) fn modifier_slugs() -> &'static BTreeSet<String> {
+    static MODIFIER_SLUGS: OnceLock<BTreeSet<String>> = OnceLock::new();
+    MODIFIER_SLUGS.get_or_init(|| {
+        rules()
+            .rules
+            .iter()
+            .flat_map(|rule| &rule.conditions)
+            .filter_map(|condition| condition.literal_pair())
+            .filter(|(from, _)| *from == MODIFIER_NODE)
+            .map(|(_, to)| to.to_owned())
+            .collect()
     })
 }
 
@@ -162,8 +185,15 @@ mod tests {
     fn embedded_rules_parse() {
         let parsed = rules();
         assert_eq!(parsed.id, "program_plan_rules");
-        assert_eq!(parsed.rules.len(), 1);
+        assert_eq!(parsed.rules.len(), 4);
         assert_eq!(parsed.rules[0].id, "path_argument_list_files");
+    }
+
+    #[test]
+    fn modifier_slugs_are_discovered_from_rule_conditions() {
+        let slugs = modifier_slugs();
+        assert!(slugs.contains("path_argument"));
+        assert!(slugs.contains("reverse_sort"));
     }
 
     #[test]
@@ -174,6 +204,46 @@ mod tests {
         assert_eq!(plan.report.applied_count(), 1);
         assert!(plan.graph.contains_link(TASK_NODE, "list_files_arg"));
         assert!(!plan.graph.contains_link(TASK_NODE, "list_files"));
+    }
+
+    #[test]
+    fn reverse_sort_upgrades_list_files() {
+        let plan = lower("list_files", &modifiers(&["reverse_sort"]));
+        assert_eq!(plan.resolved_task, "list_files_reverse_sort");
+        assert!(plan.was_modified());
+        assert_eq!(plan.report.applied_count(), 1);
+        assert!(plan
+            .graph
+            .contains_link(TASK_NODE, "list_files_reverse_sort"));
+        assert!(!plan.graph.contains_link(TASK_NODE, "list_files"));
+    }
+
+    #[test]
+    fn path_argument_and_reverse_sort_compose() {
+        let plan = lower("list_files", &modifiers(&["path_argument", "reverse_sort"]));
+        assert_eq!(plan.resolved_task, "list_files_arg_reverse_sort");
+        assert!(plan.was_modified());
+        assert_eq!(plan.report.applied_count(), 2);
+        assert!(plan
+            .graph
+            .contains_link(TASK_NODE, "list_files_arg_reverse_sort"));
+        assert!(!plan.graph.contains_link(TASK_NODE, "list_files"));
+    }
+
+    #[test]
+    fn reverse_sort_composes_with_existing_path_argument_variant() {
+        let plan = lower("list_files_arg", &modifiers(&["reverse_sort"]));
+        assert_eq!(plan.resolved_task, "list_files_arg_reverse_sort");
+        assert!(plan.was_modified());
+        assert_eq!(plan.report.applied_count(), 1);
+    }
+
+    #[test]
+    fn path_argument_composes_with_existing_reverse_sort_variant() {
+        let plan = lower("list_files_reverse_sort", &modifiers(&["path_argument"]));
+        assert_eq!(plan.resolved_task, "list_files_arg_reverse_sort");
+        assert!(plan.was_modified());
+        assert_eq!(plan.report.applied_count(), 1);
     }
 
     #[test]
@@ -223,13 +293,15 @@ mod tests {
 
     #[test]
     fn links_notation_surfaces_plan_and_trace() {
-        let plan = lower("list_files", &modifiers(&["path_argument"]));
+        let plan = lower("list_files", &modifiers(&["path_argument", "reverse_sort"]));
         let notation = plan.links_notation();
         assert!(notation.contains("program_plan"));
         assert!(notation.contains("base_task list_files"));
-        assert!(notation.contains("resolved_task list_files_arg"));
+        assert!(notation.contains("resolved_task list_files_arg_reverse_sort"));
         assert!(notation.contains("modifier path_argument"));
+        assert!(notation.contains("modifier reverse_sort"));
         // The rewrite trace is embedded so the reasoning is inspectable.
         assert!(notation.contains("path_argument_list_files"));
+        assert!(notation.contains("reverse_sort_list_files_arg"));
     }
 }

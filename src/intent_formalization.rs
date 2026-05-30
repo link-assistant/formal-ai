@@ -7,6 +7,7 @@
 
 use std::collections::BTreeMap;
 use std::fmt::Write as _;
+use std::sync::OnceLock;
 
 use crate::engine::{
     normalize_prompt, program_language_by_alias, program_spec, stable_id, SelectedRule,
@@ -487,11 +488,10 @@ fn active_program_context(history: &[ConversationTurn]) -> Option<ActiveProgramC
 ///
 /// When the selected rule is [`SelectedRule::UnsupportedWriteProgram`] we recover
 /// the missing task and language from the most recent prior turn that named them
-/// and apply any modification modifier present in the follow-up (currently
-/// "accept a path argument", which maps `list_files` onto `list_files_arg`). If
-/// the recovered `(task, language)` pair has a template we upgrade the rule to a
-/// concrete program; otherwise we return the rule with whatever we could fill in
-/// so the unsupported message is still as specific as possible.
+/// and apply any data-defined modification modifier present in the follow-up.
+/// If the recovered `(task, language)` pair has a template we upgrade the rule
+/// to a concrete program; otherwise we return the rule with whatever we could
+/// fill in so the unsupported message is still as specific as possible.
 #[must_use]
 pub(crate) fn recover_write_program_rule(
     rule: SelectedRule,
@@ -527,10 +527,10 @@ pub(crate) fn recover_write_program_rule(
         }
     }
 
-    // A modification follow-up (currently "accept a path argument") lowers the
-    // recovered base task through the Links Notation substitution pipeline,
-    // which rewrites e.g. `list_files -> list_files_arg`. The plan is captured
-    // as Links Notation for transparent tracing (issue #324 R4/R6).
+    // A modification follow-up lowers the recovered base task through the Links
+    // Notation substitution pipeline, which rewrites e.g. `list_files ->
+    // list_files_arg` or `list_files_arg -> list_files_arg_reverse_sort`. The
+    // plan is captured as Links Notation for transparent tracing.
     let normalized_follow_up = normalize_prompt(follow_up);
     let modifiers = detected_program_modifiers(&normalized_follow_up);
     let mut plan = None;
@@ -567,46 +567,24 @@ pub(crate) fn recover_write_program_rule(
     }
 }
 
-/// A program-modification modifier: a slug plus the multilingual token groups
-/// that signal it. Each inner slice must match in full for the group to count.
-struct ProgramModifier {
-    slug: &'static str,
-    token_groups: &'static [&'static [&'static str]],
+fn operation_vocabulary() -> &'static seed::OperationVocabulary {
+    static VOCABULARY: OnceLock<seed::OperationVocabulary> = OnceLock::new();
+    VOCABULARY.get_or_init(seed::operation_vocabulary)
 }
 
-/// The modifiers the formalizer can detect in request prose. The slug is what
-/// the substitution pipeline (`data/seed/program-plan-rules.lino`) keys on; the
-/// token groups are the natural-language surface forms across supported
-/// languages. Adding a new *modification* is data here plus a rule in the seed.
-const PROGRAM_MODIFIERS: &[ProgramModifier] = &[ProgramModifier {
-    slug: "path_argument",
-    // "accept a path as a (command-line) argument" across supported languages.
-    token_groups: &[
-        &["path", "argument"],
-        // Russian: путь (path) + аргумент/аргумента/аргументом (argument).
-        &["путь", "аргумент"],
-        &["путь", "аргумента"],
-        &["путь", "аргументом"],
-        // Hindi: पथ (path) + तर्क (argument).
-        &["पथ", "तर्क"],
-        // Chinese: 路径 (path) + 参数 (argument).
-        &["路径", "参数"],
-    ],
-}];
-
 /// Detect the modification modifiers present in a (normalized) request, returned
-/// as the slugs the substitution pipeline keys on. The order follows
-/// [`PROGRAM_MODIFIERS`] so lowering is deterministic.
+/// as the slugs the substitution pipeline keys on.
+///
+/// Recognition is data-driven in two stages: `operation-vocabulary.lino` owns
+/// natural-language trigger phrases, and `program-plan-rules.lino` decides which
+/// operation slugs are valid program modifiers by declaring
+/// `request:modifier -> <slug>` conditions.
 fn detected_program_modifiers(normalized: &str) -> Vec<String> {
-    PROGRAM_MODIFIERS
-        .iter()
-        .filter(|modifier| {
-            modifier
-                .token_groups
-                .iter()
-                .any(|group| group.iter().all(|token| contains_token(normalized, token)))
-        })
-        .map(|modifier| modifier.slug.to_owned())
+    let program_modifiers = crate::program_plan::modifier_slugs();
+    operation_vocabulary()
+        .detect(normalized)
+        .into_iter()
+        .filter(|slug| program_modifiers.contains(slug.as_str()))
         .collect()
 }
 
@@ -699,9 +677,9 @@ fn write_program_parameters(normalized: &str) -> Option<BTreeMap<String, String>
     }
     let mut parameters = BTreeMap::new();
     if let Some(task) = task {
-        // Issue #324: a modification in the same turn (e.g. "list files with a
-        // path argument") lowers the base task through the substitution pipeline
-        // — `list_files -> list_files_arg` — so it resolves directly.
+        // Issue #358: modification phrases in the same turn lower the base task
+        // through the data-backed substitution pipeline so composed requests can
+        // resolve directly.
         let modifiers = detected_program_modifiers(normalized);
         let task_slug = crate::program_plan::resolve_task(task.slug, &modifiers);
         parameters.insert(String::from("task"), task_slug);

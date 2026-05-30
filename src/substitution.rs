@@ -100,6 +100,14 @@ impl LinkPattern {
         Ok(Self { from, to })
     }
 
+    #[must_use]
+    pub fn literal_pair(&self) -> Option<(&str, &str)> {
+        match (&self.from, &self.to) {
+            (PatternNode::Literal(from), PatternNode::Literal(to)) => Some((from, to)),
+            _ => None,
+        }
+    }
+
     fn instantiate(&self, bindings: &BTreeMap<String, String>) -> Option<SubstitutionLink> {
         Some(SubstitutionLink {
             from: self.from.instantiate(bindings)?,

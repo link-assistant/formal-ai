@@ -81,10 +81,10 @@ pub const PROGRAM_TASKS: &[ProgramTask] = &[
         // Issue #324 follow-up: "Сделай так, чтобы программа принимала путь как
         // аргумент" (make the program accept a path as an argument). This task is
         // the path-argument variant of `list_files`; conversation context maps a
-        // bare "accept a path argument" modification onto it (see
-        // `program_path_argument_modifier`). Aliases let an explicit, single-turn
-        // request resolve here directly too. Every supported prompt language
-        // (en, ru, hi, zh) is covered.
+        // bare "accept a path argument" modification onto it through the
+        // program-plan rules. Aliases let an explicit, single-turn request
+        // resolve here directly too. Every supported prompt language (en, ru,
+        // hi, zh) is covered.
         aliases: &[
             "list files in the directory given as a path argument",
             "list files in a directory given as an argument",
@@ -104,6 +104,40 @@ pub const PROGRAM_TASKS: &[ProgramTask] = &[
         // When no argument is supplied the templates fall back to "." so the
         // documented sample directory still produces the verified listing.
         output: "Cargo.toml\nREADME.md\nmain.rs",
+    },
+    ProgramTask {
+        slug: "list_files_reverse_sort",
+        label: "list files in the current directory in reverse-sorted order",
+        aliases: &[
+            "list files in reverse order",
+            "list files sorted in reverse order",
+            "list files in descending order",
+            "reverse sorted list files",
+            "список файлов в обратном порядке",
+            "список файлов с обратной сортировкой",
+            "फ़ाइलों की सूची उल्टे क्रम में",
+            "फ़ाइलों को उल्टे क्रम में सूचीबद्ध करें",
+            "按相反顺序列出文件",
+            "倒序列出文件",
+        ],
+        output: "main.rs\nREADME.md\nCargo.toml",
+    },
+    ProgramTask {
+        slug: "list_files_arg_reverse_sort",
+        label: "list files from a path argument in reverse-sorted order",
+        aliases: &[
+            "list files from a path argument in reverse order",
+            "list files with a path argument in reverse order",
+            "list files with a path argument sorted descending",
+            "reverse sorted list files with a path argument",
+            "список файлов по пути из аргумента в обратном порядке",
+            "список файлов из аргумента с обратной сортировкой",
+            "पथ तर्क से फ़ाइलों की सूची उल्टे क्रम में",
+            "पथ तर्क वाली फ़ाइलों को उल्टे क्रम में सूचीबद्ध करें",
+            "按相反顺序列出路径参数中的文件",
+            "倒序列出路径参数指定目录中的文件",
+        ],
+        output: "main.rs\nREADME.md\nCargo.toml",
     },
     // Issue #330: the catalog supports general coding tasks, not only
     // hello-world. The tasks below are classic, deterministic exercises that
