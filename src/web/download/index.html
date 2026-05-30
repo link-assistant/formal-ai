@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Download formal-ai Desktop for macOS, Windows, and Linux. A local, in-process reasoning agent with an optional OpenAI-compatible server."
+    />
+    <!--
+      Strict Content-Security-Policy mirroring the vk-bot-desktop reference page.
+      The only cross-origin connection the page makes is to the GitHub Releases
+      API (to resolve the latest release assets); everything else is same-origin.
+      `img-src` allows data: (inline icons) and https: so release-hosted preview
+      art still renders if ever referenced. Per issue #347 R7, the only REST API
+      the page speaks is the OpenAI-/GitHub-shaped HTTPS endpoint below; all
+      internal state is persisted as Links Notation via ../preferences.js.
+    -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; connect-src https://api.github.com; img-src 'self' data: https:; script-src 'self'; style-src 'self'; base-uri 'self'; form-action 'self';"
+    />
+    <title>Download formal-ai Desktop</title>
+    <link rel="icon" href="data:," />
+    <link rel="preload" href="assets/app-preview.png" as="image" />
+    <link rel="stylesheet" href="download.css" />
+  </head>
+  <body>
+    <main id="download-app" class="page-shell" data-testid="download-app">
+      <noscript>
+        <section class="hero">
+          <div class="hero-copy">
+            <h1>formal-ai Desktop</h1>
+            <p class="summary">
+              Download formal-ai Desktop for macOS, Windows, and Linux from the
+              <a href="https://github.com/link-assistant/formal-ai/releases/latest"
+                >latest GitHub release</a
+              >.
+            </p>
+          </div>
+        </section>
+      </noscript>
+    </main>
+
+    <!--
+      preferences.js exposes window.FormalAiPreferences (the same
+      Links-Notation-backed localStorage the chat app uses). The download page
+      reuses it so the theme/locale a visitor picks here is shared with the main
+      app and vice versa. download.js renders the page into #download-app.
+    -->
+    <script src="../preferences.js"></script>
+    <script src="download.js"></script>
+  </body>
+</html>

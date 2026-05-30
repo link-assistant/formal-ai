@@ -11,6 +11,33 @@ const outputWeb = path.join(desktopDir, "dist-web");
 const outputSeed = path.join(outputWeb, "seed");
 const outputBin = path.join(desktopDir, "bin");
 
+// Keep the desktop wrapper version in lockstep with the Rust crate so the
+// release assets (and the /download page links) always match Cargo.toml, the
+// single source of truth for the formal-ai version.
+function syncDesktopVersion() {
+  const cargoTomlPath = path.join(repoRoot, "Cargo.toml");
+  const desktopPackagePath = path.join(desktopDir, "package.json");
+  const cargoToml = fs.readFileSync(cargoTomlPath, "utf8");
+  const packageSection = cargoToml.split(/^\[/m).find((s) => s.startsWith("package]"));
+  const versionMatch = packageSection && packageSection.match(/^\s*version\s*=\s*"([^"]+)"/m);
+  if (!versionMatch) {
+    console.warn("Could not read [package] version from Cargo.toml; leaving desktop version unchanged.");
+    return;
+  }
+  const cargoVersion = versionMatch[1];
+  const desktopPackage = JSON.parse(fs.readFileSync(desktopPackagePath, "utf8"));
+  if (desktopPackage.version === cargoVersion) {
+    console.log(`Desktop version already in sync with Cargo.toml: ${cargoVersion}`);
+    return;
+  }
+  const previous = desktopPackage.version;
+  desktopPackage.version = cargoVersion;
+  fs.writeFileSync(desktopPackagePath, `${JSON.stringify(desktopPackage, null, 2)}\n`);
+  console.log(`Synced desktop version ${previous} -> ${cargoVersion} (from Cargo.toml)`);
+}
+
+syncDesktopVersion();
+
 function copyDirectory(from, to) {
   fs.rmSync(to, { recursive: true, force: true });
   fs.mkdirSync(path.dirname(to), { recursive: true });

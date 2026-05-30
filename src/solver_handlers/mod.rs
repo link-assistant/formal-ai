@@ -7,6 +7,7 @@
 mod agent_workspace;
 mod behavior_rules;
 mod benchmark_prompts;
+mod calculator_rate;
 mod calendar;
 mod definition_merge;
 mod feature_capability;
@@ -222,6 +223,10 @@ fn try_summarize_conversation(
 }
 
 pub fn try_arithmetic(prompt: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {
+    if let Some(answer) = calculator_rate::try_calculator_rate_basis(prompt, log) {
+        return Some(answer);
+    }
+
     let candidates = calculation_expression_candidates(prompt);
     let mut first_explicit_error: Option<(String, String, Vec<PromptInterpretation>)> = None;
     for candidate in candidates {

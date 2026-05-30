@@ -167,11 +167,17 @@ const ENGLISH_IDENTITY: &[&str] = &[
     "what are you",
     "Tell me about yourself",
     "Introduce yourself",
+    "Let's get acquainted",
     "What is formal-ai?",
     "What is formalai?",
 ];
 
-const RUSSIAN_IDENTITY: &[&str] = &["Кто ты?", "что ты", "Привет. ты кто?"];
+const RUSSIAN_IDENTITY: &[&str] = &[
+    "Кто ты?",
+    "что ты",
+    "Привет. ты кто?",
+    "Привет давай знакомиться!",
+];
 
 const HINDI_IDENTITY: &[&str] = &[
     "तुम कौन हो?",
@@ -179,6 +185,7 @@ const HINDI_IDENTITY: &[&str] = &[
     "तू कौन है?",
     "अपना परिचय दो",
     "अपने बारे में बताओ",
+    "चलो परिचय करते हैं",
 ];
 
 const CHINESE_IDENTITY: &[&str] = &[
@@ -187,6 +194,7 @@ const CHINESE_IDENTITY: &[&str] = &[
     "你是什么?",
     "介绍一下你自己",
     "告诉我你自己",
+    "我们认识一下吧",
 ];
 
 #[test]

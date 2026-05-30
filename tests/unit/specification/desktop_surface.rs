@@ -62,6 +62,33 @@ fn desktop_shell_uses_electron_with_hardened_preload_bridge() {
 }
 
 #[test]
+fn desktop_runs_in_process_by_default_with_opt_in_server() {
+    // R3: the desktop defaults to the in-process reasoning agent.
+    // R4: the local OpenAI-compatible server is off by default and only starts
+    // when the user opts in via FORMAL_AI_DESKTOP_SERVER. The /download page
+    // copy promises exactly this, so the shell must honour it.
+    assert!(
+        DESKTOP_MAIN.contains("FORMAL_AI_DESKTOP_SERVER"),
+        "main.cjs must gate the local server behind FORMAL_AI_DESKTOP_SERVER"
+    );
+    assert!(
+        DESKTOP_MAIN.contains("serverModeRequested()"),
+        "main.cjs must only start the server when explicitly requested"
+    );
+    assert!(
+        DESKTOP_MAIN.contains(r#"mode: "in-process""#),
+        "main.cjs default desktop status must report in-process mode"
+    );
+
+    // The web surface must keep an in-process path that does not depend on the
+    // server: it only routes to the API when both apiReady and apiBase are set.
+    assert!(
+        WEB_APP.contains("currentDesktopStatus.apiReady && currentDesktopStatus.apiBase"),
+        "app.js must only call the desktop server when it is ready, else stay in-process"
+    );
+}
+
+#[test]
 fn desktop_web_surface_exposes_status_permissions_and_http_chat_path() {
     for expected in [
         "FormalAiDesktop",

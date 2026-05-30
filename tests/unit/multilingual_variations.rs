@@ -176,7 +176,7 @@ fn farewell_chinese_variations_match() {
 }
 
 // -----------------------------------------------------------------------------
-// Identity questions — 8-9 variants per language.
+// Identity questions — 8-10 variants per language.
 // -----------------------------------------------------------------------------
 
 #[test]
@@ -190,6 +190,8 @@ fn identity_english_variations_match() {
         "Tell me about yourself.",
         "introduce yourself",
         "Introduce yourself!",
+        // English get-acquainted phrasing should use the same identity reply.
+        "Let's get acquainted!",
         "what is formal-ai?",
     ];
     assert_intent(&prompts, "identity", "response:identity");
@@ -206,6 +208,7 @@ fn identity_russian_variations_match() {
         "кто ты такая",
         "кто ты, ассистент?",
         "что ты, formal-ai?",
+        "Привет давай знакомиться!",
     ];
     assert_intent(&prompts, "identity", "response:identity");
 }
@@ -225,6 +228,7 @@ fn identity_hindi_variations_match() {
         "अपना परिचय दो।",
         "अपने बारे में बताओ",
         "अपने बारे में बताओ।",
+        "चलो परिचय करते हैं।",
     ];
     assert_intent(&prompts, "identity", "response:identity");
 }
@@ -243,6 +247,7 @@ fn identity_chinese_variations_match() {
         "介绍一下你自己。",
         "告诉我你自己",
         "告诉我你自己。",
+        "我们认识一下吧。",
     ];
     assert_intent(&prompts, "identity", "response:identity");
 }

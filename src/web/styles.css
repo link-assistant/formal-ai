@@ -387,6 +387,7 @@ button {
 .drawer-action,
 .report-button,
 .source-code-button,
+.download-button,
 .memory-button,
 .send-button,
 .prompt-list button {
@@ -404,6 +405,7 @@ button {
 .sidebar-toggle,
 .report-button,
 .source-code-button,
+.download-button,
 .memory-button {
   display: inline-flex;
   align-items: center;
@@ -561,7 +563,8 @@ button {
 }
 
 .report-button,
-.source-code-button {
+.source-code-button,
+.download-button {
   display: inline-flex;
   align-items: center;
   text-decoration: none;
@@ -1962,6 +1965,7 @@ textarea:disabled {
   .topbar-actions .agent-toggle,
   .topbar-actions .report-button,
   .topbar-actions .source-code-button,
+  .topbar-actions .download-button,
   .topbar-actions .memory-button {
     min-width: 0;
     padding: 0 10px;
@@ -2034,6 +2038,7 @@ textarea:disabled {
   .topbar-actions .agent-toggle,
   .topbar-actions .report-button,
   .topbar-actions .source-code-button,
+  .topbar-actions .download-button,
   .topbar-actions .memory-button {
     min-width: 0;
     padding: 0 10px;
@@ -2394,6 +2399,7 @@ textarea:disabled {
 :root[data-theme="dark"] .mobile-menu-toggle,
 :root[data-theme="dark"] .sidebar-toggle,
 :root[data-theme="dark"] .source-code-button,
+:root[data-theme="dark"] .download-button,
 :root[data-theme="dark"] .drawer-close,
 :root[data-theme="dark"] .drawer-action,
 :root[data-theme="dark"] .report-button,
@@ -2415,6 +2421,7 @@ textarea:disabled {
 
 :root[data-theme="dark"] .sidebar-toggle:hover,
 :root[data-theme="dark"] .source-code-button:hover,
+:root[data-theme="dark"] .download-button:hover,
 :root[data-theme="dark"] .sidebar-section-collapse:hover {
   border-color: #6cc5a6;
   background: #28332f;
@@ -2736,6 +2743,7 @@ textarea:disabled {
   :root:not([data-theme="light"]) .mobile-menu-toggle,
   :root:not([data-theme="light"]) .sidebar-toggle,
   :root:not([data-theme="light"]) .source-code-button,
+  :root:not([data-theme="light"]) .download-button,
   :root:not([data-theme="light"]) .drawer-close,
   :root:not([data-theme="light"]) .drawer-action,
   :root:not([data-theme="light"]) .report-button,
@@ -2769,6 +2777,7 @@ textarea:disabled {
   :root:not([data-theme="light"]) .fetch-iframe-control:hover,
   :root:not([data-theme="light"]) .sidebar-toggle:hover,
   :root:not([data-theme="light"]) .source-code-button:hover,
+  :root:not([data-theme="light"]) .download-button:hover,
   :root:not([data-theme="light"]) .sidebar-section-collapse:hover {
     border-color: #6cc5a6;
     background: #28332f;

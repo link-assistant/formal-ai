@@ -114,6 +114,30 @@ fn calculator_handles_russian_variations() {
 }
 
 #[test]
+fn calculator_explains_usd_rate_basis_prompts() {
+    for (language, prompt) in [
+        (
+            "en",
+            "what dollar exchange rate do you use for calculations?",
+        ),
+        ("ru", "какой курс долора у тебя при расчетах?"),
+        ("ru", "какой курс доллара у тебя при расчётах?"),
+        ("hi", "गणना में आप डॉलर का कौन सा विनिमय दर उपयोग करते हैं?"),
+        ("zh", "你计算时使用什么美元汇率?"),
+    ] {
+        let response = assert_calculation(prompt, &["link-calculator", "1 USD in RUB = 89.5 RUB"]);
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == "calculation:engine:link-calculator"),
+            "{language} rate-basis answers should be delegated to link-calculator: {:?}",
+            response.evidence_links,
+        );
+    }
+}
+
+#[test]
 fn calculator_handles_chinese_variations() {
     for (prompt, expected) in [
         ("计算 2 + 2", &["4"][..]),

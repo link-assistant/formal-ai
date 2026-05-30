@@ -6,6 +6,7 @@ en
     reportIssue "Report issue"
     reportMissingRule "Report missing rule"
     sourceCode "Source code"
+    download "Download"
     exportMemory "Export memory"
     importMemory "Import memory"
     resetMemory "Reset memory"
@@ -26,6 +27,7 @@ en
       Report issue - open a pre-filled GitHub issue with the current session transcript. See docs/upload-memory.md for how to attach the full memory export (Gist or .zip).
     """
     sourceCode "Open the formal-ai source code on GitHub."
+    download "Download formal-ai Desktop for macOS, Windows, and Linux."
     exportMemory """
       Export memory - save the full agent state to formal-ai-memory.lino: the entire seed, UI preferences, environment metadata, and the append-only event log. See docs/upload-memory.md for attaching it to a GitHub issue (Gist or .zip).
     """
@@ -220,6 +222,7 @@ ru
     reportIssue "Сообщить о проблеме"
     reportMissingRule "Сообщить о недостающем правиле"
     sourceCode "Исходный код"
+    download "Скачать"
     exportMemory "Экспорт памяти"
     importMemory "Импорт памяти"
     resetMemory "Сброс памяти"
@@ -240,6 +243,7 @@ ru
       Сообщить о проблеме - откроет заранее заполненный GitHub issue с текущим диалогом. См. docs/upload-memory.md, чтобы прикрепить полный экспорт памяти (Gist или .zip).
     """
     sourceCode "Открыть исходный код formal-ai на GitHub."
+    download "Скачать formal-ai Desktop для macOS, Windows и Linux."
     exportMemory """
       Экспорт памяти - сохраняет полное состояние агента в formal-ai-memory.lino: весь seed, настройки UI, метаданные окружения и append-only журнал событий. См. docs/upload-memory.md, чтобы прикрепить экспорт к GitHub issue (Gist или .zip).
     """
@@ -436,6 +440,7 @@ zh
     reportIssue "报告问题"
     reportMissingRule "报告缺失规则"
     sourceCode "源代码"
+    download "下载"
     exportMemory "导出记忆"
     importMemory "导入记忆"
     resetMemory "重置记忆"
@@ -454,6 +459,7 @@ zh
   titles
     reportIssue "报告问题 - 打开已预填当前会话记录的 GitHub issue。请参阅 docs/upload-memory.md，了解如何附加完整记忆导出（Gist 或 .zip）。"
     sourceCode "在 GitHub 上查看 formal-ai 的源代码。"
+    download "下载适用于 macOS、Windows 和 Linux 的 formal-ai 桌面版。"
     exportMemory """
       导出记忆 - 将完整代理状态保存为 formal-ai-memory.lino：全部 seed、UI 偏好、环境元数据和追加式事件日志。请参阅 docs/upload-memory.md，了解如何附加到 GitHub issue（Gist 或 .zip）。
     """
@@ -642,6 +648,7 @@ hi
     reportIssue "समस्या रिपोर्ट करें"
     reportMissingRule "छूटा नियम रिपोर्ट करें"
     sourceCode "स्रोत कोड"
+    download "डाउनलोड"
     exportMemory "स्मृति निर्यात करें"
     importMemory "स्मृति आयात करें"
     resetMemory "स्मृति रीसेट करें"
@@ -662,6 +669,7 @@ hi
       समस्या रिपोर्ट करें - वर्तमान सत्र transcript के साथ पहले से भरा GitHub issue खोलें। पूरा memory export जोड़ने के लिए docs/upload-memory.md देखें (Gist या .zip)।
     """
     sourceCode "GitHub पर formal-ai का source code खोलें।"
+    download "macOS, Windows और Linux के लिए formal-ai डेस्कटॉप डाउनलोड करें।"
     exportMemory """
       स्मृति निर्यात करें - पूरे agent state को formal-ai-memory.lino में सेव करें: पूरा seed, UI preferences, environment metadata, और append-only event log. GitHub issue में जोड़ने के लिए docs/upload-memory.md देखें (Gist या .zip)।
     """

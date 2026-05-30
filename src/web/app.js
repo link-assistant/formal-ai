@@ -2065,6 +2065,10 @@ function isIdentityPrompt(normalized) {
       "what is formalai",
       "tell me about yourself",
       "introduce yourself",
+      "let s get acquainted",
+      "lets get acquainted",
+      "let us get acquainted",
+      "let s get to know each other",
       "кто ты",
       "что ты",
       "расскажи о себе",
@@ -2072,17 +2076,35 @@ function isIdentityPrompt(normalized) {
       "расскажи про себя",
       "опиши себя",
       "представься",
+      "давай знакомиться",
+      "давай познакомимся",
+      "давайте познакомимся",
+      "चलो परिचय करते हैं",
+      "आइए परिचय करें",
+      "चलो एक दूसरे को जानें",
       "你是谁",
+      "我们认识一下吧",
+      "认识一下吧",
+      "让我们认识一下",
     ].includes(normalized) ||
     (has("who") && has("you")) ||
     (has("what") && has("you")) ||
     ((has("who") || has("what")) && has("formal") && has("ai")) ||
     (has("tell") && has("yourself")) ||
     (has("introduce") && has("yourself")) ||
+    (has("let") && has("s") && has("acquainted")) ||
+    (has("lets") && has("acquainted")) ||
+    (has("let") && has("us") && has("acquainted")) ||
+    (has("know") && has("each") && has("other")) ||
     (has("кто") && has("ты")) ||
     (has("что") && has("ты")) ||
     (has("расскажи") && has("себе")) ||
-    (has("опиши") && has("себя"))
+    (has("опиши") && has("себя")) ||
+    (has("давай") && has("знакомиться")) ||
+    (has("давай") && has("познакомимся")) ||
+    (has("давайте") && has("познакомимся")) ||
+    (has("चलो") && has("परिचय")) ||
+    (has("आइए") && has("परिचय"))
   );
 }
 
@@ -2703,11 +2725,24 @@ function localIsSelfIntroductionQuery(normalized) {
     cleaned === "introduce yourself" ||
     cleaned.includes("tell me about yourself") ||
     cleaned.includes("introduce yourself") ||
+    cleaned.includes("let s get acquainted") ||
+    cleaned.includes("lets get acquainted") ||
+    cleaned.includes("let us get acquainted") ||
+    cleaned.includes("let s get to know each other") ||
     cleaned.includes("расскажи о себе") ||
     cleaned.includes("расскажи мне о себе") ||
     cleaned.includes("расскажи про себя") ||
     cleaned.includes("опиши себя") ||
-    cleaned.includes("представься")
+    cleaned.includes("представься") ||
+    cleaned.includes("давай знакомиться") ||
+    cleaned.includes("давай познакомимся") ||
+    cleaned.includes("давайте познакомимся") ||
+    cleaned.includes("चलो परिचय करते हैं") ||
+    cleaned.includes("आइए परिचय करें") ||
+    cleaned.includes("चलो एक दूसरे को जानें") ||
+    cleaned.includes("我们认识一下") ||
+    cleaned.includes("认识一下吧") ||
+    cleaned.includes("让我们认识一下")
   );
 }
 
@@ -3160,6 +3195,7 @@ function normalizeDesktopStatus(status) {
   const apiBase = String(status.apiBase || "").replace(/\/+$/, "");
   return {
     shell: String(status.shell || "Electron"),
+    mode: String(status.mode || (apiBase ? "server" : "in-process")),
     apiBase,
     staticBase: String(status.staticBase || ""),
     graphUrl: String(status.graphUrl || (apiBase ? `${apiBase}/v1/graph` : "")),
@@ -3189,7 +3225,11 @@ function desktopStatusLabel(status, agentMode) {
   if (!status) {
     return "";
   }
-  const api = status.apiReady ? "API local" : "API unavailable";
+  const api = status.apiReady
+    ? "API local"
+    : status.apiError
+      ? "API unavailable"
+      : "in-process";
   const agent = agentMode ? "agent opted in" : "agent permission off";
   return `Desktop - ${api} - ${agent}`;
 }
@@ -3207,6 +3247,47 @@ function desktopMessages(history, text) {
   }
   messages.push({ role: "user", content: String(text || "") });
   return messages;
+}
+
+// R5d: the agent-permission toggle is the explicit opt-in for the local tool
+// router (default-deny). When the user opts in, the main process is allowed to
+// run permitted tools through the local app / Docker sandbox; when off, every
+// tool call is refused before anything executes.
+function syncDesktopToolGrants(bridge, agentMode) {
+  if (!bridge || typeof bridge.setToolGrants !== "function") {
+    return;
+  }
+  Promise.resolve(bridge.setToolGrants({ all: Boolean(agentMode) })).catch(() => {});
+}
+
+// Route a single tool call through the desktop bridge to the local process /
+// Docker sandbox. Returns a structured refusal when the bridge is unavailable so
+// callers never silently fall back to executing in the browser.
+async function requestDesktopToolCall(bridge, tool, input = {}) {
+  if (!bridge || typeof bridge.invokeTool !== "function") {
+    return {
+      ok: false,
+      tool: String(tool || ""),
+      status: "unavailable",
+      executed: false,
+      reason: "desktop tool router is unavailable",
+    };
+  }
+  return bridge.invokeTool({ tool: String(tool || ""), input: input || {} });
+}
+
+// R5c: reconcile the browser (IndexedDB) memory log with the native store over
+// the local server's Links-Notation memory endpoints. Best-effort: a failed sync
+// never blocks the conversation.
+async function syncDesktopMemory(bridge, lino) {
+  if (!bridge || typeof bridge.syncMemory !== "function") {
+    return null;
+  }
+  try {
+    return await bridge.syncMemory({ lino: String(lino || "") });
+  } catch (_error) {
+    return null;
+  }
 }
 
 async function requestDesktopAnswer(text, history, desktopStatus, preferences = {}) {
@@ -4629,6 +4710,26 @@ function App() {
   }, []);
 
   useEffect(() => {
+    // Push the explicit-permission state to the local tool router whenever the
+    // agent-permission toggle changes (default-deny until opted in).
+    syncDesktopToolGrants(desktopBridge(), agentMode);
+  }, [agentMode, desktopStatus]);
+
+  useEffect(() => {
+    // R5d: expose a thin hook so the local tool router (and the desktop e2e
+    // suite) can route a tool call through the bridge to the local process /
+    // Docker sandbox. The gate still applies — denied calls return a refusal.
+    if (typeof window === "undefined") {
+      return undefined;
+    }
+    window.formalAiDesktopToolCall = (tool, input) =>
+      requestDesktopToolCall(desktopBridge(), tool, input);
+    return () => {
+      delete window.formalAiDesktopToolCall;
+    };
+  }, []);
+
+  useEffect(() => {
     showDeletedConversationsRef.current = showDeletedConversations;
   }, [showDeletedConversations]);
 
@@ -4764,6 +4865,45 @@ function App() {
       setMemoryStatus(t("status.exportFailed"));
     }
   }, [seed, workerState, demoMode, userContext, t]);
+
+  // R5c (D1): reconcile the browser (IndexedDB) memory log with the native store
+  // via the desktop bridge. Pushes the current `demo_memory` event log to the
+  // local server and folds any pulled delta back into IndexedDB. Best-effort.
+  const syncDesktopMemoryNow = useCallback(async () => {
+    const bridge = desktopBridge();
+    if (!bridge || typeof bridge.syncMemory !== "function") {
+      return null;
+    }
+    if (typeof window === "undefined" || !window.FormalAiMemory) {
+      return null;
+    }
+    try {
+      await waitForMemoryWrites();
+      const events = await window.FormalAiMemory.listEvents();
+      const lino = window.FormalAiMemory.exportLinksNotation(events);
+      const result = await syncDesktopMemory(bridge, lino);
+      const delta = result && result.pulled ? result.pulled.delta : "";
+      if (delta && delta.trim()) {
+        const imported = window.FormalAiMemory.importFullMemory(delta);
+        if (imported && Array.isArray(imported.events) && imported.events.length > 0) {
+          await window.FormalAiMemory.importEvents(imported.events);
+        }
+      }
+      return result;
+    } catch (_error) {
+      return null;
+    }
+  }, []);
+
+  useEffect(() => {
+    // R5c: keep the native store in step with the browser log after each turn
+    // while the local server is the active surface. Declared after
+    // `syncDesktopMemoryNow` so the dependency reference is initialized.
+    if (!desktopStatus || !desktopStatus.apiReady) {
+      return;
+    }
+    syncDesktopMemoryNow();
+  }, [messages, desktopStatus, syncDesktopMemoryNow]);
 
   const handleImportMemory = useCallback(async (event) => {
     const file = event.target.files && event.target.files[0];
@@ -6006,6 +6146,19 @@ function App() {
           },
           h("span", { className: "btn-icon", "aria-hidden": "true" }, "💻"),
           h("span", { className: "btn-label" }, t("buttons.sourceCode")),
+        ),
+        h(
+          "a",
+          {
+            className: "download-button",
+            "data-testid": "download-link",
+            "data-menu-priority": "5",
+            href: "download/",
+            title: t("titles.download"),
+            "aria-label": t("buttons.download"),
+          },
+          h("span", { className: "btn-icon", "aria-hidden": "true" }, "⬇️"),
+          h("span", { className: "btn-label" }, t("buttons.download")),
         ),
         h(
           "a",

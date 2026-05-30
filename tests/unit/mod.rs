@@ -5,6 +5,7 @@ mod docker_runtime;
 mod docs_requirements;
 mod formal_ai;
 mod github_logs;
+mod local_surface;
 mod memory_maintenance;
 mod multilingual_variations;
 mod playwright_script;
