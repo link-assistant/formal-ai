@@ -697,6 +697,12 @@ fn is_skipped_tree(root: &Path, entry: &DirEntry) -> bool {
             | "data/wiktionary-cache"
             | "data/http-cache"
             | "data/seed/api-cache"
+            // Git-ignored generated mirrors of already-scanned source: the
+            // VS Code packaging step copies src/web -> vscode/dist-web (with
+            // data/seed -> vscode/dist-web/seed) and desktop/lib helpers ->
+            // vscode/src/lib/vendor. Scanning the originals is enough.
+            | "vscode/dist-web"
+            | "vscode/src/lib/vendor"
     )
 }
 
