@@ -257,7 +257,7 @@ pub fn try_capabilities(
              - **Правила поведения**: отправьте `List behavior rules`, чтобы увидеть встроенные правила, и `Show behavior rule unknown`, чтобы прочитать одно правило.\n\
              - **Обучение в диалоге**: отправьте «When I say \\`ваш запрос\\`, answer \\`ваш ответ\\`», чтобы добавить правило, действующее только в этом диалоге.\n\
              - **Факты о себе**: отправьте `List all facts you know about yourself`, чтобы увидеть, что я знаю о себе.\n\
-             - **Сообщение об ошибке**: используйте кнопку «Report issue» сверху или ссылку на странице сообщения, чтобы попросить разработчиков добавить встроенное правило.\n\
+             - **Сообщение об ошибке**: используйте кнопку «Report issue» сверху; для неизвестных запросов ссылка в сообщении добавит diagnostic trace.\n\
              - **Настройки и действия**: через сообщения можно включать диагностику/демо/agent mode, менять тему, язык, стиль чата и экспортировать или импортировать память.\n\
              \n\
              Я работаю на основе локальных символьных правил, без нейросетевого инференса.",
@@ -275,7 +275,7 @@ pub fn try_capabilities(
              - **行为规则**：发送 `List behavior rules` 查看内置规则，并发送 `Show behavior rule unknown` 阅读某条规则。\n\
              - **对话内教学**：发送「When I say \\`prompt\\`, answer \\`answer\\`」可以在本轮对话中添加一条本地规则。\n\
              - **自我事实**：发送 `List all facts you know about yourself` 查看我知道的关于自己的事实。\n\
-             - **问题反馈**：使用顶部的 「Report issue」按钮或消息中的链接,请开发者把规则加入种子文件。\n\
+             - **问题反馈**：使用顶部的 「Report issue」按钮；未知请求的消息链接会带上 diagnostic trace。\n\
              - **设置和操作**：可通过消息开启诊断、演示、agent mode，切换主题、语言、聊天样式，并导出或导入记忆。\n\
              \n\
              我基于本地符号规则运行，不进行神经网络推理。",
@@ -293,7 +293,7 @@ pub fn try_capabilities(
              - **व्यवहार नियम**: `List behavior rules` भेजकर अंतर्निहित नियम देखें और `Show behavior rule unknown` से कोई नियम पढ़ें।\n\
              - **संवाद-स्तर पर सिखाना**: «When I say \\`prompt\\`, answer \\`answer\\`» भेजकर इस संवाद के लिए स्थानीय नियम जोड़ें।\n\
              - **स्व-तथ्य**: `List all facts you know about yourself` भेजें ताकि मैं अपने बारे में जो जानता हूँ वह सूचीबद्ध करूँ।\n\
-             - **समस्या रिपोर्ट**: ऊपर के «Report issue» बटन या मैसेज लिंक का उपयोग करके डेवलपर्स से built-in नियम जोड़वा सकते हैं।\n\
+             - **समस्या रिपोर्ट**: ऊपर के «Report issue» बटन का उपयोग करें; unknown prompts के message link में diagnostic trace शामिल होता है।\n\
              - **Settings और actions**: messages से diagnostics/demo/agent mode बदलना, theme/language/chat style बदलना, और memory export/import करना।\n\
              \n\
              मैं स्थानीय प्रतीकात्मक नियमों पर चलता हूँ, कोई न्यूरल इन्फेरेन्स नहीं।",
@@ -311,7 +311,7 @@ pub fn try_capabilities(
              - **Behavior rules**: send `List behavior rules` to see the built-in routing rules, and `Show behavior rule unknown` to read one in Links Notation.\n\
              - **Teach this dialog**: send «When I say \\`your prompt\\`, answer \\`your answer\\`» to add a dialog-local rule for the current conversation.\n\
              - **Self facts**: send `List all facts you know about yourself` to see what I know about myself.\n\
-             - **Report a missing rule**: use the top-bar **Report issue** button or any message's Report issue link to ask developers to add a built-in rule.\n\
+             - **Report a missing rule**: use the top-bar **Report issue** button; unknown-prompt message links include the diagnostic trace for maintainers.\n\
              - **Settings and actions**: configure diagnostics, demo mode, agent mode, theme, language, chat style, and memory import/export from messages.\n\
              \n\
              I run on local symbolic rules, without any neural network inference.",

@@ -166,7 +166,7 @@ test.describe('formal-ai demo UI', () => {
     await expect(lastMsg).toContainText('Hi');
   });
 
-  test('known assistant dialogs include a prefilled issue report link', async ({ page }) => {
+  test('known assistant dialogs keep report issue in the topbar only', async ({ page }) => {
     await switchToManualMode(page);
 
     const input = page.locator('[data-testid="chat-composer-input"]');
@@ -180,9 +180,10 @@ test.describe('formal-ai demo UI', () => {
 
     const lastMsg = messages.last();
     await expect(lastMsg).toHaveClass(/assistant/);
+    await expect(lastMsg.locator('.message-actions a')).toHaveCount(0);
 
-    const reportLink = lastMsg.locator('.message-actions a');
-    await expect(reportLink).toHaveText('Report issue');
+    const reportLink = page.locator('[data-testid="report-issue"]');
+    await expect(reportLink).toHaveText(/Report issue/);
 
     const href = await reportLink.getAttribute('href');
     expect(href).toBeTruthy();
@@ -202,17 +203,14 @@ test.describe('formal-ai demo UI', () => {
     // `A:` line prefixes instead of one Markdown subsection per message.
     expect(body).toContain('Legend: `U` = user, `A` = agent.');
     expect(body).toContain('U: Hello');
-    // Issue #73: the reported assistant message must be annotated with its
-    // intent and a "reported" marker even when the intent is not "unknown".
-    expect(body).toMatch(/A \(intent: [^,)]+, reported\):/);
+    expect(body).toContain('A: Hi');
+    expect(body).not.toContain('reported');
     // The verbose per-message subsections must be gone.
     expect(body).not.toMatch(/^### \d+\. /m);
     expect(body).not.toContain('- **Role**:');
   });
 
-  // Issue #73: clicking "Report issue" on a TypeScript hello-world response
-  // must include the intent and "reported" annotation in the dialog block.
-  test('reporting a TypeScript hello world dialog annotates the message with intent and reported', async ({ page }) => {
+  test('known TypeScript hello world response does not surface a response-level report link', async ({ page }) => {
     await switchToManualMode(page);
 
     const input = page.locator('[data-testid="chat-composer-input"]');
@@ -228,9 +226,9 @@ test.describe('formal-ai demo UI', () => {
     await expect(lastMsg).toHaveClass(/assistant/);
     await expect(lastMsg).toContainText('typescript');
 
-    const reportLink = lastMsg.locator('.message-actions a');
-    await expect(reportLink).toHaveText('Report issue');
+    await expect(lastMsg.locator('.message-actions a')).toHaveCount(0);
 
+    const reportLink = page.locator('[data-testid="report-issue"]');
     const href = await reportLink.getAttribute('href');
     expect(href).toBeTruthy();
 
@@ -239,8 +237,8 @@ test.describe('formal-ai demo UI', () => {
 
     expect(url.searchParams.get('title')).toContain('Issue with dialog');
     expect(url.searchParams.get('title')).toContain('TypeScript');
-    // The reported message must carry both its intent and the "reported" marker.
-    expect(body).toMatch(/A \(intent: write_program, reported\):/);
+    expect(body).toContain('U: Write hello world in TypeScript');
+    expect(body).not.toContain('reported');
     // The dialog must not accidentally annotate user messages.
     expect(body).not.toMatch(/U \(.*reported.*\):/);
   });
@@ -478,6 +476,8 @@ test.describe('formal-ai demo UI', () => {
     expect(body).toMatch(/\*\*UI\*\*:.* browser/);
     expect(body).toContain('## Reproduction of dialog');
     expect(body).toContain(prompt);
+    expect(body).toContain('## Reasoning Trace');
+    expect(body).toContain('diagnostics_steps:');
     // Issue #78: intent now appears inline next to the assistant turn marker
     // ("A (intent: unknown, reported): ...") inside the dialog code block.
     expect(body).toMatch(/A \(intent: unknown[^)]*\):/);

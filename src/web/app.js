@@ -25,7 +25,7 @@ const ISSUE_REPOSITORY = "link-assistant/formal-ai";
 const ISSUE_LABELS = "bug";
 const SOURCE_CODE_URL = `https://github.com/${ISSUE_REPOSITORY}`;
 const UNKNOWN_ANSWER =
-  "I don't know how to answer that yet. I cannot answer that from local Links Notation rules yet. To inspect what I can do, send `List behavior rules`, then `Show behavior rule unknown`. To teach this dialog a response, send: When I say `your prompt`, answer `your answer`. To make it durable, export memory or use Report issue so developers can add a fact or add a rule in Links Notation seed data.";
+  "I don't know how to answer that yet. I cannot answer that from local Links Notation rules yet. To inspect what I can do, send `List behavior rules`, then `Show behavior rule unknown`. To teach this dialog a response, send: When I say `your prompt`, answer `your answer`. If this still needs a shared Links Notation seed fact or rule after those checks, use Report issue with the reasoning trace, or export memory to keep a dialog-local rule durable.";
 const IDENTITY_ANSWER =
   "I am formal-ai, a deterministic symbolic AI implementation that answers from local Links Notation rules and OpenAI-compatible API shapes. I do not perform neural inference in this demo.";
 const ASSISTANT_NAME_ANSWER =
@@ -3574,6 +3574,100 @@ function truncateMessageContent(content, maxChars) {
   return truncateSingleLine(str, maxChars);
 }
 
+const REPORT_TRACE_MAX_CHARS = 2400;
+const REPORT_TRACE_ITEM_LIMIT = 20;
+
+function compactReportTraceValue(value, limit = 180) {
+  const raw =
+    value !== null && typeof value === "object"
+      ? formatDiagnosticPayload(value)
+      : String(value ?? "");
+  const compact = raw.replace(/\s+/g, " ").trim();
+  return truncateSingleLine(compact, limit);
+}
+
+function appendLimitedTraceItems(lines, items, formatter) {
+  const safeItems = Array.isArray(items) ? items : [];
+  if (safeItems.length <= REPORT_TRACE_ITEM_LIMIT) {
+    safeItems.forEach((item) => {
+      lines.push(formatter(item));
+    });
+    return;
+  }
+
+  const headCount = Math.ceil(REPORT_TRACE_ITEM_LIMIT / 2);
+  const tailCount = REPORT_TRACE_ITEM_LIMIT - headCount;
+  safeItems.slice(0, headCount).forEach((item) => {
+    lines.push(formatter(item));
+  });
+  lines.push(`- ... omitted ${safeItems.length - REPORT_TRACE_ITEM_LIMIT} middle trace items ...`);
+  safeItems.slice(safeItems.length - tailCount).forEach((item) => {
+    lines.push(formatter(item));
+  });
+}
+
+function appendReasoningTraceBlock(lines, focusMessage) {
+  if (!focusMessage || focusMessage.role !== "assistant") return;
+
+  const trace = [];
+  if (focusMessage.intent) {
+    trace.push(`intent: ${focusMessage.intent}`);
+  }
+
+  if (Array.isArray(focusMessage.evidence) && focusMessage.evidence.length > 0) {
+    trace.push("evidence:");
+    appendLimitedTraceItems(
+      trace,
+      focusMessage.evidence,
+      (item) => `- ${compactReportTraceValue(item)}`,
+    );
+  }
+
+  if (
+    Array.isArray(focusMessage.diagnosticsSteps) &&
+    focusMessage.diagnosticsSteps.length > 0
+  ) {
+    trace.push("diagnostics_steps:");
+    appendLimitedTraceItems(trace, focusMessage.diagnosticsSteps, (entry) => {
+      const step = compactReportTraceValue(entry?.step || "step", 80);
+      const detail = entry?.formalization?.tuple || entry?.detail || "";
+      return `- ${step}: ${compactReportTraceValue(detail)}`;
+    });
+  } else if (
+    Array.isArray(focusMessage.thinkingSteps) &&
+    focusMessage.thinkingSteps.length > 0
+  ) {
+    trace.push("thinking_steps:");
+    appendLimitedTraceItems(
+      trace,
+      focusMessage.thinkingSteps,
+      (item) => `- ${compactReportTraceValue(item)}`,
+    );
+  }
+
+  if (
+    Array.isArray(focusMessage.diagnosticsToolCalls) &&
+    focusMessage.diagnosticsToolCalls.length > 0
+  ) {
+    trace.push("tool_calls:");
+    appendLimitedTraceItems(trace, focusMessage.diagnosticsToolCalls, (call) => {
+      const tool = compactReportTraceValue(call?.tool || "tool", 80);
+      const summary = summarizeToolCall(call || {});
+      return `- ${tool}: ${compactReportTraceValue(summary)}`;
+    });
+  }
+
+  if (trace.length === 0) return;
+
+  lines.push("");
+  lines.push("## Reasoning Trace");
+  lines.push("");
+  lines.push("Focused assistant turn:");
+  lines.push("");
+  appendCodeBlock(lines, truncateMessageContent(trace.join("\n"), REPORT_TRACE_MAX_CHARS));
+  lines.push("");
+}
+
 function buildIssueUrl(title, body, labels) {
   const params = new URLSearchParams({ title, body, labels });
   return `https://github.com/${ISSUE_REPOSITORY}/issues/new?${params.toString()}`;
@@ -3764,6 +3858,8 @@ function createIssueReportBody({
 
   appendDialogBlock(lines, messages, effectiveFocus, { earlierOmitted });
 
+  appendReasoningTraceBlock(lines, effectiveFocus);
+
   lines.push("");
   lines.push("## Description");
   lines.push("");
@@ -3781,6 +3877,10 @@ function createIssueReportBody({
 
 function createIssueUrl(context) {
   return fitIssueUrl(context, (effectiveContext) => createIssueReportBody(effectiveContext));
+}
+
+function shouldOfferMessageReport(message) {
+  return message?.role === "assistant" && message.intent === "unknown";
 }
 
 // Issue #180: format the unified link-notation projection for an HTTP
@@ -7207,7 +7307,7 @@ function App() {
               diagnosticsMode,
               t,
               reportIssueUrl:
-                message.role === "assistant"
+                shouldOfferMessageReport(message)
                   ? createIssueUrl({ ...reportContext, focusMessage: message })
                   : null,
             }),
