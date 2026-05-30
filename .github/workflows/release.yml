@@ -215,6 +215,9 @@ jobs:
       - name: Check multilingual intent coverage
         run: npm run --prefix tests/e2e check:intent-coverage
 
+      - name: Check web app for hook TDZ ordering bugs
+        run: npm run --prefix tests/e2e check:web-tdz
+
   # === TEST ===
   # Test runs independently of changelog check
   test:

@@ -7,6 +7,7 @@
     "check:language-test-coverage": "node scripts/check-language-test-coverage.mjs",
     "check:language-parity": "node scripts/check-language-change-parity.mjs",
     "check:intent-coverage": "node scripts/check-multilingual-intent-coverage.mjs",
+    "check:web-tdz": "node scripts/check-web-tdz.mjs",
     "test:local": "playwright test --config=playwright.local.config.js",
     "test:pages": "playwright test --config=playwright.pages.config.js"
   },
