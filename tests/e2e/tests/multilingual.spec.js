@@ -287,10 +287,12 @@ test.describe('multilingual chat surface', () => {
   });
 
   test('Russian combined greeting and identity question replies with identity', async ({ page }) => {
-    const last = await sendPrompt(page, 'Привет. ты кто?');
-    await expect(last).toHaveClass(/assistant/);
-    await expect(last).toContainText('formal-ai');
-    await expect(last).toContainText(/символьный|детерминированный/);
+    for (const prompt of ['Привет. ты кто?', 'Привет давай знакомиться!']) {
+      const last = await sendPrompt(page, prompt);
+      await expect(last).toHaveClass(/assistant/);
+      await expect(last).toContainText('formal-ai');
+      await expect(last).toContainText(/символьный|детерминированный/);
+    }
   });
 
   test('behavior-rule list possessive phrasing shows rules across supported languages', async ({ page }) => {

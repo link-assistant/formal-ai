@@ -404,6 +404,10 @@ let INTENT_ROUTING = {
         "what is formalai",
         "tell me about yourself",
         "introduce yourself",
+        "let s get acquainted",
+        "lets get acquainted",
+        "let us get acquainted",
+        "let s get to know each other",
         "кто ты",
         "что ты",
         "расскажи о себе",
@@ -411,17 +415,26 @@ let INTENT_ROUTING = {
         "расскажи про себя",
         "опиши себя",
         "представься",
+        "давай знакомиться",
+        "давай познакомимся",
+        "давайте познакомимся",
         "तुम कौन हो",
         "तू कौन है",
         "आप कौन हैं",
         "अपना परिचय दो",
         "अपने बारे में बताओ",
+        "चलो परिचय करते हैं",
+        "आइए परिचय करें",
+        "चलो एक दूसरे को जानें",
         "你是谁",
         "您是谁",
         "你是什么",
         "介绍一下你自己",
         "告诉我你自己",
         "你是誰",
+        "我们认识一下吧",
+        "认识一下吧",
+        "让我们认识一下",
       ],
       tokens: [],
       combos: [
@@ -429,10 +442,19 @@ let INTENT_ROUTING = {
         ["what", "you"],
         ["tell", "yourself"],
         ["introduce", "yourself"],
+        ["let", "s", "acquainted"],
+        ["lets", "acquainted"],
+        ["let", "us", "acquainted"],
+        ["know", "each", "other"],
         ["кто", "ты"],
         ["что", "ты"],
         ["расскажи", "себе"],
         ["опиши", "себя"],
+        ["давай", "знакомиться"],
+        ["давай", "познакомимся"],
+        ["давайте", "познакомимся"],
+        ["चलो", "परिचय"],
+        ["आइए", "परिचय"],
         ["who", "formal", "ai"],
         ["what", "formal", "ai"],
       ],
@@ -3571,17 +3593,30 @@ function isSelfIntroductionQuery(normalized) {
     cleaned === "introduce yourself" ||
     cleaned.includes("tell me about yourself") ||
     cleaned.includes("introduce yourself") ||
+    cleaned.includes("let s get acquainted") ||
+    cleaned.includes("lets get acquainted") ||
+    cleaned.includes("let us get acquainted") ||
+    cleaned.includes("let s get to know each other") ||
     cleaned.includes("расскажи о себе") ||
     cleaned.includes("расскажи мне о себе") ||
     cleaned.includes("расскажи про себя") ||
     cleaned.includes("опиши себя") ||
     cleaned.includes("представься") ||
+    cleaned.includes("давай знакомиться") ||
+    cleaned.includes("давай познакомимся") ||
+    cleaned.includes("давайте познакомимся") ||
     cleaned.includes("अपने बारे में बताओ") ||
     cleaned.includes("अपना परिचय दो") ||
+    cleaned.includes("चलो परिचय करते हैं") ||
+    cleaned.includes("आइए परिचय करें") ||
+    cleaned.includes("चलो एक दूसरे को जानें") ||
     cleaned.includes("介绍一下你自己") ||
     cleaned.includes("告诉我你自己") ||
     cleaned.includes("介紹一下你自己") ||
-    cleaned.includes("告訴我你自己")
+    cleaned.includes("告訴我你自己") ||
+    cleaned.includes("我们认识一下") ||
+    cleaned.includes("认识一下吧") ||
+    cleaned.includes("让我们认识一下")
   );
 }
 
