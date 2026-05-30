@@ -190,19 +190,34 @@ test.describe('Issue #347 — /download page', () => {
     expect(stored).toContain('theme "light"');
   });
 
-  test('localizes the UI and persists the language choice (R2)', async ({ page }) => {
+  test('localizes the UI across every supported language and persists the choice (R2)', async ({
+    page,
+  }) => {
     const html = page.locator('html');
+    const downloadsTitle = page.locator('#downloads-title');
+    // Seeded as English.
     await expect(html).toHaveAttribute('lang', 'en');
+    await expect(downloadsTitle).toHaveText('Latest release');
 
-    await page.locator('.locale-switch button[data-value="ru"]').click();
-    await expect(html).toHaveAttribute('lang', 'ru');
-    // Russian copy for the "Latest release" heading differs from English.
-    await expect(page.locator('#downloads-title')).not.toHaveText('Latest release');
-
-    const stored = await page.evaluate(() =>
-      window.localStorage.getItem('formal-ai.preferences.v1'),
-    );
-    expect(stored).toContain('uiLanguage "ru"');
+    // Switching the UI language localizes the "Latest release" heading and the
+    // <html lang> attribute, and persists the choice to the shared preference
+    // store. Asserting each native heading pins every non-English language so a
+    // fix can't regress one of them silently: Russian (Cyrillic),
+    // Chinese (Han), and Hindi (Devanagari).
+    const localeCases = [
+      { locale: 'ru', heading: 'Последний релиз' }, // Russian
+      { locale: 'zh', heading: '最新版本' }, // Chinese
+      { locale: 'hi', heading: 'नवीनतम रिलीज़' }, // Hindi
+    ];
+    for (const { locale, heading } of localeCases) {
+      await page.locator('.locale-switch button[data-value="' + locale + '"]').click();
+      await expect(html).toHaveAttribute('lang', locale);
+      await expect(downloadsTitle).toHaveText(heading);
+      const stored = await page.evaluate(() =>
+        window.localStorage.getItem('formal-ai.preferences.v1'),
+      );
+      expect(stored).toContain('uiLanguage "' + locale + '"');
+    }
   });
 
   test('verifies a matching SHA-256 checksum offline', async ({ page }) => {
