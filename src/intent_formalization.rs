@@ -450,12 +450,12 @@ pub(crate) fn rewrite_bare_program_coreference_rule(
     })
 }
 
-struct ActiveProgramContext {
-    task: String,
-    language: String,
+pub(crate) struct ActiveProgramContext {
+    pub(crate) task: String,
+    pub(crate) language: String,
 }
 
-fn active_program_context(history: &[ConversationTurn]) -> Option<ActiveProgramContext> {
+pub(crate) fn active_program_context(history: &[ConversationTurn]) -> Option<ActiveProgramContext> {
     let mut task = None;
     let mut language = None;
     for turn in history.iter().rev() {
@@ -579,7 +579,7 @@ fn operation_vocabulary() -> &'static seed::OperationVocabulary {
 /// natural-language trigger phrases, and `program-plan-rules.lino` decides which
 /// operation slugs are valid program modifiers by declaring
 /// `request:modifier -> <slug>` conditions.
-fn detected_program_modifiers(normalized: &str) -> Vec<String> {
+pub(crate) fn detected_program_modifiers(normalized: &str) -> Vec<String> {
     let program_modifiers = crate::program_plan::modifier_slugs();
     operation_vocabulary()
         .detect(normalized)

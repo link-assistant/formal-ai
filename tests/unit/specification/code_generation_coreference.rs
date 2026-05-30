@@ -130,6 +130,53 @@ fn bare_imperative_results_follow_ups_bind_active_program_in_all_languages() {
     }
 }
 
+#[test]
+fn unknown_bare_program_modifier_constructs_and_verifies_a_rule() {
+    let solver = UniversalSolver::default();
+    let case = ProgramFollowUpCase {
+        name: "English",
+        initial: "Write me a Rust program that lists the files in the current directory",
+        path_argument_follow_up: "Make the program accept a path as an argument",
+        bare_results_follow_up: "Sort the results in reverse order",
+    };
+
+    let response = solve_bare_results_follow_up(&solver, &case);
+
+    assert_eq!(response.intent, "write_program");
+    assert!(
+        response
+            .links_notation
+            .contains("selected_rule initial unknown reason no_seed_route next try_rule_synthesis"),
+        "the trace should show unknown routing entering rule synthesis, got: {}",
+        response.links_notation
+    );
+    for expected in [
+        "rule_synthesis_request",
+        "operation sort",
+        "operation_modifier descending",
+        "target program:last.output_order",
+        "rule_synthesis_candidate",
+        "modifier reverse_sort",
+        "rule_verification",
+        "fixture list_files_output_order",
+        "status passed",
+    ] {
+        assert!(
+            response.links_notation.contains(expected),
+            "missing `{expected}` in rule-synthesis trace: {}",
+            response.links_notation
+        );
+    }
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("rule_verification:")),
+        "verification should be exposed as evidence, got: {:?}",
+        response.evidence_links
+    );
+}
+
 fn answer_reverses_sort(answer: &str) -> bool {
     let compact = answer
         .to_ascii_lowercase()
