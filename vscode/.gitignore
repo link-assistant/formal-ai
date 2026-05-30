@@ -1,0 +1,11 @@
+# Generated at package time by scripts/prepare-resources.mjs (copied from
+# ../../src/web, ../../data/seed, and ../../desktop/lib). Dev mode resolves these
+# from the repo directly, so they are not committed.
+dist-web/
+src/lib/vendor/
+
+# Packaged extension bundle.
+*.vsix
+
+# Dependencies.
+node_modules/

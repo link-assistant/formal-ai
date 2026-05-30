@@ -126,9 +126,11 @@
   },
   "scripts": {
     "dev": "vscode-test-web --browserType=chromium --extensionDevelopmentPath=.",
+    "prepare-resources": "node scripts/prepare-resources.mjs",
+    "vscode:prepublish": "node scripts/prepare-resources.mjs",
     "package": "vsce package",
     "smoke": "node scripts/smoke.mjs",
-    "test": "node --test scripts/config.test.mjs scripts/bridge.test.mjs scripts/webview-html.test.mjs && node scripts/smoke.mjs"
+    "test": "node --test scripts/config.test.mjs scripts/bridge.test.mjs scripts/webview-html.test.mjs scripts/chat-view.test.mjs scripts/server-process.test.mjs && node scripts/smoke.mjs"
   },
   "devDependencies": {
     "@vscode/test-web": "^0.0.56",

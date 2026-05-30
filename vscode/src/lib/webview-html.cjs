@@ -71,6 +71,41 @@ function bridgeShimSource(webRootUri, seedRootUri, status) {
   var SEED_BASE = ${seedBase};
   var INITIAL_STATUS = ${initialStatus};
 
+  // Re-base a relative URL onto the asset (or seed) resource origin. Absolute
+  // URLs, protocol-relative URLs, and data:/blob: URIs pass through untouched, so
+  // the absolute local-server chat endpoint is never rewritten. Paths under
+  // \`seed/\` go to the seed origin (which is a *different* tree than the web root
+  // in a dev checkout: src/web vs data/seed); everything else goes to the asset
+  // origin.
+  function rebaseUrl(u, assetBase, seedBase) {
+    try {
+      var s = String(u);
+      if (/^[a-z]+:/i.test(s) || s.indexOf("//") === 0 || s.indexOf("data:") === 0 || s.indexOf("blob:") === 0) {
+        return s;
+      }
+      var base = s.indexOf("seed/") === 0 ? seedBase : assetBase;
+      return new URL(s, base).href;
+    } catch (err) {
+      return u;
+    }
+  }
+
+  // --- Main-thread fetch rebasing ----------------------------------------
+  // \`seed_loader.js\` runs on the main thread too (the chat UI hydrates the
+  // concept / environment surfaces via \`FormalAiSeed.loadAll()\`), fetching
+  // relative \`seed/*.lino\` paths. \`<base>\` alone would resolve those under the
+  // web root; in a dev checkout the seeds live in data/seed instead, so we
+  // rebase here.
+  if (typeof window.fetch === "function") {
+    var _nativeFetch = window.fetch.bind(window);
+    window.fetch = function (input, init) {
+      if (typeof input === "string") {
+        return _nativeFetch(rebaseUrl(input, ASSET_BASE, SEED_BASE), init);
+      }
+      return _nativeFetch(input, init);
+    };
+  }
+
   // --- Same-origin Worker shim -------------------------------------------
   var NativeWorker = window.Worker;
   if (typeof NativeWorker === "function") {
