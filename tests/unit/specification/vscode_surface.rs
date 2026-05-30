@@ -99,37 +99,38 @@ fn vscode_manifest_declares_dual_host_commands_and_settings() {
 }
 
 #[test]
-fn vscode_version_tracks_the_rust_crate() {
-    // The Marketplace listing must match Cargo.toml, the single source of truth.
+fn vscode_version_syncs_from_the_rust_crate() {
+    // vscode/package.json carries a committed baseline version; the published
+    // .vsix is stamped from Cargo.toml (the single source of truth) by the
+    // package step, exactly like desktop/package.json. We pin the *sync
+    // mechanism* rather than the committed value: the release pipeline
+    // (scripts/version-and-commit.rs) bumps Cargo.toml without touching any
+    // package.json, so a strict equality assertion here would break main on
+    // the very next release.
     let manifest: serde_json::Value = serde_json::from_str(VSCODE_PACKAGE).unwrap();
-    let cargo_toml = include_str!("../../../Cargo.toml");
-    let after_header = cargo_toml
-        .split("[package]")
-        .nth(1)
-        .expect("[package] section in Cargo.toml");
-    let package_section = after_header.split("\n[").next().unwrap_or(after_header);
-    let crate_version = package_section
-        .lines()
-        .find_map(|line| {
-            let trimmed = line.trim();
-            trimmed
-                .strip_prefix("version")
-                .map(str::trim)
-                .and_then(|rest| rest.strip_prefix('='))
-                .map(str::trim)
-                .map(|value| value.trim_matches('"'))
-        })
-        .expect("version in [package]");
-    assert_eq!(
-        manifest["version"], crate_version,
-        "vscode/package.json version must match the Rust crate version"
+    let version = manifest["version"]
+        .as_str()
+        .expect("vscode/package.json version must be a string");
+    let parts: Vec<&str> = version.split('.').collect();
+    assert!(
+        parts.len() == 3
+            && parts
+                .iter()
+                .all(|part| !part.is_empty() && part.bytes().all(|b| b.is_ascii_digit())),
+        "vscode/package.json version must be semver MAJOR.MINOR.PATCH, got {version:?}"
     );
 
-    // The package step keeps them in lockstep automatically.
+    // The package step stamps the extension version from Cargo.toml's
+    // [package] version so the published listing always matches the crate,
+    // even when the committed baseline lags between releases.
     assert!(
-        PREPARE_RESOURCES.contains("syncExtensionVersion")
-            && PREPARE_RESOURCES.contains("Cargo.toml"),
-        "prepare-resources must sync the extension version from Cargo.toml"
+        PREPARE_RESOURCES.contains("syncExtensionVersion"),
+        "prepare-resources must define syncExtensionVersion"
+    );
+    assert!(
+        PREPARE_RESOURCES.contains("Cargo.toml")
+            && PREPARE_RESOURCES.contains("vscodePackage.version = cargoVersion"),
+        "syncExtensionVersion must stamp package.json version from Cargo.toml's [package] version"
     );
 }
 
@@ -202,7 +203,7 @@ fn vscode_webview_html_reconciles_the_sandbox() {
     // strict nonce CSP, the same-origin Worker shim (so the WASM engine loads),
     // and the FormalAiDesktop postMessage bridge — without forking the web app.
     for expected in [
-        r#"<base href="#,
+        r"<base href=",
         "Content-Security-Policy",
         "wasm-unsafe-eval",
         "window.Worker = function",
