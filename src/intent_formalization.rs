@@ -403,6 +403,81 @@ pub(crate) struct WriteProgramRecovery {
     pub plan: Option<String>,
 }
 
+/// Outcome of recognizing a bare imperative as a follow-up that refers to the
+/// active program artifact rather than a standalone algorithm/text request.
+pub(crate) struct ProgramCoreferenceRewrite {
+    pub rule: SelectedRule,
+    pub trace: String,
+}
+
+/// Issue #357: after a program has been generated, users often ask bare
+/// imperative follow-ups such as "Sort the results in reverse order" or
+/// "Сделай сортировку результатов..." without repeating "program". Those turns
+/// may route to another handler (or to unknown) even though "results" refers to
+/// the active program artifact. Reclassify only that narrow shape as an
+/// unsupported `write_program` request, then let the existing context recovery
+/// bind the concrete task and language.
+#[must_use]
+pub(crate) fn rewrite_bare_program_coreference_rule(
+    rule: &SelectedRule,
+    follow_up: &str,
+    history: &[ConversationTurn],
+) -> Option<ProgramCoreferenceRewrite> {
+    if matches!(
+        rule,
+        SelectedRule::WriteProgram(_) | SelectedRule::UnsupportedWriteProgram { .. }
+    ) {
+        return None;
+    }
+
+    let normalized = normalize_prompt(follow_up);
+    if !crate::program_coreference::looks_like_bare_program_artifact_follow_up(&normalized) {
+        return None;
+    }
+
+    let context = active_program_context(history)?;
+    let trace = format!(
+        "referent=active_program_artifact task={} language={}",
+        context.task, context.language
+    );
+    Some(ProgramCoreferenceRewrite {
+        rule: SelectedRule::UnsupportedWriteProgram {
+            task: Some(context.task),
+            language: Some(context.language),
+        },
+        trace,
+    })
+}
+
+struct ActiveProgramContext {
+    task: String,
+    language: String,
+}
+
+fn active_program_context(history: &[ConversationTurn]) -> Option<ActiveProgramContext> {
+    let mut task = None;
+    let mut language = None;
+    for turn in history.iter().rev() {
+        let normalized = normalize_prompt(&turn.content);
+        let Some(parameters) = write_program_parameters(&normalized) else {
+            continue;
+        };
+        if task.is_none() {
+            task = parameters.get("task").cloned();
+        }
+        if language.is_none() {
+            language = parameters.get("language").cloned();
+        }
+        if task.is_some() && language.is_some() {
+            break;
+        }
+    }
+    Some(ActiveProgramContext {
+        task: task?,
+        language: language?,
+    })
+}
+
 /// Issue #324: a follow-up such as "Сделай так, чтобы программа принимала путь
 /// как аргумент" ("make the program accept a path as an argument") routes to
 /// `write_program` because it pairs a program noun with an imperative verb, yet

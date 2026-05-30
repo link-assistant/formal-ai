@@ -31,8 +31,8 @@ use crate::engine::{
 use crate::event_log::{build_evidence_links, EventLog};
 use crate::intent_formalization::{
     ordered_handler_names, record_intent_formalization, recover_write_program_rule,
-    select_rule_for_intent, IntentFormalization, IntentFormalizationCache,
-    IntentFormalizationCacheEntry,
+    rewrite_bare_program_coreference_rule, select_rule_for_intent, IntentFormalization,
+    IntentFormalizationCache, IntentFormalizationCacheEntry,
 };
 use crate::language::{detect as detect_language, Language};
 use crate::probability::ProbabilityStore;
@@ -520,6 +520,13 @@ impl UniversalSolver {
             self.solve_sub_impulses(&mut log, &sub_impulses, probability_store, intent_cache);
 
         let rule = select_rule_for_intent(&intent_formalization);
+        let rule =
+            if let Some(rewrite) = rewrite_bare_program_coreference_rule(&rule, prompt, history) {
+                log.append("write_program_coreference_rewrite", rewrite.trace);
+                rewrite.rule
+            } else {
+                rule
+            };
 
         // Issue #324: a follow-up modification ("make the program accept a path
         // argument") routes to write_program but names no concrete task or
