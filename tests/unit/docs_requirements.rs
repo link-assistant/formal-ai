@@ -620,6 +620,34 @@ fn issue_278_default_native_doublets_store_is_traceable() {
 }
 
 #[test]
+fn issue_356_rule_synthesis_design_is_traceable() {
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+
+    let design = read(root.join("docs/design/rule-synthesis.md"));
+    assert_contains_all(
+        "docs/design/rule-synthesis.md",
+        &design,
+        &[
+            "# Rule Synthesis Over Links Notation",
+            "Issue #356",
+            "bare imperative",
+            "(operation, target)",
+            "data/seed/operation-vocabulary.lino",
+            "candidate substitution rule",
+            "TDD verification",
+            "coreference",
+            "#357",
+            "#358",
+            "#359",
+            "Keep",
+            "Replace",
+            "symbolic substitution engine",
+            "PROGRAM_MODIFIERS",
+        ],
+    );
+}
+
+#[test]
 fn repository_text_avoids_deferred_labels_requested_by_issue_103() {
     let root = Path::new(env!("CARGO_MANIFEST_DIR"));
     let phrase_space = ["proof", " of ", "concept"].concat();
