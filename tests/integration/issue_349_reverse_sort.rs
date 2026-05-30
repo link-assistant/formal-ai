@@ -48,6 +48,11 @@ fn issue_349_reverse_sort_follow_up_must_not_be_unknown() {
         "turn 5 answer must reverse the file-name sort order, got: {}",
         response.answer
     );
+    assert!(
+        !response.answer.contains("Report issue"),
+        "resolvable modifications should answer with the modification, not a report prompt: {}",
+        response.answer
+    );
 }
 
 #[test]
