@@ -211,16 +211,24 @@ so it cannot target the endpoint directly). Default remains off.
   `apiReady` + `apiBase` the chat routes to the local server; otherwise it stays
   in-process. Loopback-only and privacy-preserving. See
   [`../../desktop/server-api.md` §5b](../../desktop/server-api.md#5b-auto-detecting-the-local-server).
-- **5c DB sync** and **5d request/tool/code-exec routing to local app + Docker** —
-  large; designed + roadmapped (§9, ROADMAP) with interface sketches. Not shipped
-  half-built.
+- **5c DB sync** — shipped: `src/memory_sync.rs` (`SyncStore` + union-by-id merge)
+  with `GET /v1/memory/since` + `POST /v1/memory/import`, reconciled from the
+  desktop by `desktop/lib/memory-sync.cjs`. See [§9](#9-execution-plan-for-pr-348)
+  and [ROADMAP D1](./ROADMAP.md#d1--r5c-local-database-sync-).
+- **5d request/tool/code-exec routing to local app + Docker** — shipped:
+  `desktop/lib/tool-router.cjs` is a default-deny dispatcher that serves
+  `http_fetch` / `read_local_file` from the local process and routes
+  `code_exec` / `shell` into `konard/box-dind:2.1.1`. See
+  [ROADMAP D2](./ROADMAP.md#d2--r5d-route-http-requests-tool-calls-and-code-execution-to-the-local-app--docker-).
 
 ### R6 — lino-rest-api + LinksQL
-**Stretch / design-only this PR.** Survey ([§6](#6-prior-art--library-survey))
-shows `lino-rest-api` is an early-stage Deno/TypeScript project and `link-cli`
-lives at **link-foundation** (not link-assistant). Plan: specify a Links-Notation
-request/response envelope and a LinksQL grammar (link pattern + GraphQL-style
-field selection) in the case study + ROADMAP; defer implementation.
+**Shipped.** Survey ([§6](#6-prior-art--library-survey)) shows `lino-rest-api` is
+an early-stage Deno/TypeScript project and `link-cli` lives at **link-foundation**
+(not link-assistant). This PR implements a Links-Notation request/response
+envelope (`GET /v1/bundle`, `GET /v1/links`, `POST /v1/links/query`) and a LinksQL
+grammar (link pattern + GraphQL-style field selection) in `src/links_query.rs`,
+evaluated against the knowledge-graph projection. See
+[ROADMAP D3](./ROADMAP.md#d3--r6-lino-rest-api--universal-linksql-).
 
 ### R7 — OpenAI-only REST, Links Notation elsewhere
 **Chosen:** a documented constraint/ADR. The page itself honours it: the only
@@ -310,9 +318,11 @@ gaps are fixed here without upstream noise. Any filed issue is linked here.
 
 ---
 
-## 9. Execution plan for PR #348 — delivered vs. deferred
+## 9. Execution plan for PR #348
 
-**Delivered in this PR (shippable + testable):**
+Every requirement (R1–R10) is implemented and tested in this PR.
+
+**Delivered in this PR (shippable + tested):**
 
 - ✅ **R2** `/download` page (F1–F17), themed + theme/locale switching, en/ru/zh/hi,
   in-browser checksum verification, provenance + macOS Gatekeeper guidance, CSP.
@@ -321,24 +331,28 @@ gaps are fixed here without upstream noise. Any filed issue is linked here.
   `desktop-release.yml` (release/dispatch-gated) with `SHA256SUMS.txt`,
   `BUILD-PROVENANCE.txt`, attestation, and release upload.
 - ✅ **R3** in-process-agent-default documented + verified.
-- ✅ **R4** opt-in server API doc + claude/codex/agent CLI configuration.
+- ✅ **R4** opt-in server API doc + claude/codex/agent CLI configuration, including
+  the first-party Anthropic→OpenAI adapter (`POST /v1/messages`,
+  `src/anthropic.rs`) so `claude` needs no third-party proxy.
 - ✅ **R5a** documented web reuse; **R5b** web-app local-server auto-detect (opt-in,
   loopback-only).
-- ✅ **R7** OpenAI-only-REST constraint documented; page honours it.
+- ✅ **R5c** local-database sync — `src/memory_sync.rs` (`SyncStore` + union-by-id
+  merge) over `GET /v1/memory/since` + `POST /v1/memory/import`, reconciled from
+  the desktop by `desktop/lib/memory-sync.cjs`.
+- ✅ **R5d** HTTP/tool/code-exec routing to the local app + Docker —
+  `desktop/lib/tool-router.cjs`, a default-deny dispatcher that serves
+  `http_fetch` / `read_local_file` locally and routes `code_exec` / `shell` into
+  `konard/box-dind:2.1.1`; denied calls return a structured refusal.
+- ✅ **R6** `lino-rest-api`-style Links-Notation REST envelopes
+  (`GET /v1/bundle`, `GET /v1/links`, `POST /v1/links/query`) + the LinksQL query
+  language (`src/links_query.rs`).
+- ✅ **R7** OpenAI-only-REST constraint documented and honoured; all new internal
+  interfaces speak Links Notation.
 - ✅ **R8** template comparison (§7) + any upstream issues linked.
 - ✅ **R9/R10** this case study; everything in the one PR.
 
-**Designed + roadmapped (deferred, with rationale):**
-
-- **R5c** local-database sync, **R5d** HTTP/tool/code-exec routing to local app +
-  Docker — multi-subsystem efforts needing their own design + test rigs; shipping
-  them half-built would be unverifiable. Interface sketches + ROADMAP entries are
-  provided.
-- **R6** `lino-rest-api` implementation + LinksQL — research-stage upstream + a new
-  query language; specified here and in ROADMAP, implementation deferred.
-
-Each deferral is recorded in `ROADMAP.md` with a pointer back to this section so
-the remaining scope is tracked rather than dropped.
+Each item is detailed in [`ROADMAP.md`](./ROADMAP.md) with its delivered code and
+the acceptance test that verifies it.
 
 ---
 

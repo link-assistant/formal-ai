@@ -11,7 +11,8 @@
     "build:linux": "electron-builder --linux --config package.json",
     "build:mac": "electron-builder --mac --config package.json",
     "build:win": "electron-builder --win --config package.json",
-    "smoke": "node scripts/smoke.mjs"
+    "smoke": "node scripts/smoke.mjs",
+    "test": "node --test scripts/tool-router.test.mjs scripts/memory-sync.test.mjs && node scripts/smoke.mjs"
   },
   "devDependencies": {
     "electron": "^31.7.7",
@@ -24,6 +25,7 @@
     "files": [
       "main.cjs",
       "preload.cjs",
+      "lib/**",
       "package.json",
       "dist-web/**"
     ],

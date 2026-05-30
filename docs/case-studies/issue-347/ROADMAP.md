@@ -1,138 +1,135 @@
-# Issue #347 — deferred-work roadmap
+# Issue #347 — implementation roadmap
 
-This file tracks the parts of [issue #347](https://github.com/link-assistant/formal-ai/issues/347)
-that are **designed but intentionally deferred** out of PR #348, so the remaining
-scope is recorded rather than dropped. It is the companion to
-[`README.md` §9 (delivered vs. deferred)](./README.md#9-execution-plan-for-pr-348--delivered-vs-deferred);
+This file tracks the multi-subsystem parts of
+[issue #347](https://github.com/link-assistant/formal-ai/issues/347) that were
+once sequenced after the first PR-#348 increment. They are now **all implemented
+in PR #348**. It is the companion to
+[`README.md` §9 (execution plan)](./README.md#9-execution-plan-for-pr-348),
 each entry points back there.
 
-PR #348 ships the user-facing requirements (R1–R5b, R7–R10). The items below are
-multi-subsystem efforts that each need their own design + test rig; shipping them
-half-built would be unverifiable, which is why they are sequenced here instead.
+PR #348 ships the full requirement set (R1–R10). The four items below — local
+database sync, local-execution routing + sandbox, the Links-Notation REST layer +
+LinksQL, and the bundled `claude` adapter — were the largest efforts; each has its
+own design, code, and test rig, all landed here.
 
-Status legend: 🟢 ready to start · 🟡 needs upstream first · 🔴 blocked.
+Status legend: ✅ implemented.
 
 ---
 
-## D1 — R5c: local database sync 🟢
+## D1 — R5c: local database sync ✅
 
 **Goal.** Keep desktop memory (browser IndexedDB bundle) and the CLI/native
-store (doublets-rs) in sync so a conversation started in one surface continues in
-the other without a manual export/import.
+store in sync so a conversation started in one surface continues in the other
+without a manual export/import.
 
-**Why deferred.** Today the surfaces already *interoperate* through the portable
-`formal_ai_bundle` Links-Notation file (export here, import there — see
-`data/seed/environments.lino` migration flows). Automatic, conflict-aware sync is
-a distinct subsystem: it needs a change-feed, a merge policy, and tests for
-concurrent edits. That is too large to verify inside this PR.
+**Delivered.**
+- Native store + reconciler: [`src/memory_sync.rs`](../../../src/memory_sync.rs)
+  — `SyncStore` (file-backed `demo_memory` log) plus `events_since`,
+  `merge_union_by_id`, and `merge_event` (incoming non-empty fields win) for
+  conflict-aware, append-friendly merges.
+- Delta + import endpoints on the local server (R7: payloads stay Links
+  Notation, transport stays REST):
+  `GET /v1/memory`, `GET /v1/memory/since?event=<id>`, and
+  `POST /v1/memory/import` (see [`src/server.rs`](../../../src/server.rs)).
+- Desktop client: [`desktop/lib/memory-sync.cjs`](../../../desktop/lib/memory-sync.cjs)
+  reconciles IndexedDB with the native store over those endpoints, wired into the
+  Electron main process (`formalAiDesktop:syncMemory`) and triggered from the web
+  app after each turn when server mode is on.
 
-**Interface sketch.**
-- A `GET /v1/bundle` snapshot already exists on the server; add a delta endpoint
-  (`GET /v1/memory/since?event=<id>`) returning only new `MemoryEvent`s as Links
-  Notation (R7: internal payload stays Links Notation, transport stays REST).
-- Desktop main process polls the delta endpoint when server mode is on and
-  appends into IndexedDB; on shutdown it pushes local-only events back via an
-  import call.
-- Merge rule: events are append-only and content-addressed, so union-by-id is
-  conflict-free for the common case; document the tie-break for edited events.
-
-**Acceptance criteria.** A round-trip test: append in the browser store, start the
-desktop in server mode, assert the CLI store observes the event (and vice-versa)
-without a manual file step.
+**Acceptance criteria — met.** `tests/unit/local_surface.rs::memory_import_then_since_round_trips_through_store`
+imports two events through `SyncStore` and asserts the delta endpoint returns only
+the unseen event; `desktop/scripts/memory-sync.test.mjs` covers the client's
+watermark + delta logic; `src/memory_sync.rs` carries six inline unit tests.
 
 ---
 
-## D2 — R5d: route HTTP requests, tool calls, and code execution to the local app + Docker 🟢
+## D2 — R5d: route HTTP requests, tool calls, and code execution to the local app + Docker ✅
 
 **Goal.** When the desktop server is on, the agent's side effects (web fetches,
 tool calls, code execution) run through the **local** app and its Docker sandbox
 instead of a remote service — matching the existing `docker_microservice`
 environment (`konard/box-dind` with an inner Docker daemon).
 
-**Why deferred.** This is the security-sensitive core of the product. It needs an
-explicit permission model (the UI already has `desktop-agent-permission` /
-`desktop-tool-permission` gates as the seam), sandbox lifecycle management, and a
-test matrix for each tool surface. It cannot land as an unverified half-feature.
+**Delivered.**
+- Permission-gated dispatcher:
+  [`desktop/lib/tool-router.cjs`](../../../desktop/lib/tool-router.cjs) —
+  default-deny `createToolRouter`. `http_fetch` / `url_navigate` /
+  `read_local_file` are served by the local process (reads confined to an allowed
+  root); `eval_js` / `code_exec` / `shell` run inside `konard/box-dind:2.1.1`
+  (the same image the Telegram microservice uses) with logs captured to a local
+  path. Docker absence is a graceful refusal — code never runs unsandboxed.
+- IPC wiring: `formalAiDesktop:setToolGrants` + `formalAiDesktop:invokeTool` in
+  [`desktop/main.cjs`](../../../desktop/main.cjs), exposed through
+  [`desktop/preload.cjs`](../../../desktop/preload.cjs).
+- Renderer: the existing `desktop-agent-permission` / `desktop-tool-permission`
+  gate now drives `setToolGrants` (default-deny until opted in), and tool calls
+  route through `window.formalAiDesktopToolCall` →
+  `invokeTool` ([`src/web/app.js`](../../../src/web/app.js)).
 
-**Interface sketch.**
-- Reuse the existing tool vocabulary (`http_fetch`, `url_navigate`, `eval_js`,
-  `read_local_file`, …) from the browser environment; on the desktop, dispatch
-  each through an IPC channel to the Electron main process.
-- Main process executes code-exec / shell tools inside a `box-dind` container
-  (the same image the Telegram microservice uses), capturing logs under a local
-  path as that environment already does.
-- Every tool call passes the explicit-permission gate before dispatch; denied
-  calls return a structured refusal.
-
-**Acceptance criteria.** With permission granted, an `http_fetch` tool call is
-observably served by the local process (not the browser), and a code-exec call
-runs inside the container with logs captured; with permission denied, the call is
-refused and nothing executes.
+**Acceptance criteria — met.** `desktop/scripts/tool-router.test.mjs` asserts that
+with permission granted an `http_fetch` is served by the local process and a
+`code_exec` runs inside the `konard/box-dind` container with logs captured; with
+permission denied (default) the call returns a structured refusal and nothing
+executes; Docker-absent `code_exec` refuses rather than running unsandboxed.
 
 ---
 
-## D3 — R6: `lino-rest-api` + universal LinksQL 🟡
+## D3 — R6: `lino-rest-api` + universal LinksQL ✅
 
-**Goal.** Ideally expose two additional, Links-native interfaces alongside the
-OpenAI REST surface:
+**Goal.** Expose two Links-native interfaces alongside the OpenAI REST surface:
 1. a [`lino-rest-api`](https://github.com/link-foundation/lino-rest-api)-style
    REST layer that speaks Links Notation envelopes, and
-2. a universal **LinksQL** query language extending
+2. a universal **LinksQL** query language inspired by
    [`link-cli`](https://github.com/link-foundation/link-cli) (at **link-foundation**,
    not `link-assistant` as the issue text says — see
    [`raw-data/link-cli-NOT-FOUND.txt`](./raw-data/link-cli-NOT-FOUND.txt)).
 
-**Why deferred.** `lino-rest-api` is an early-stage upstream experiment and
-LinksQL is a *new query language* — designing its grammar, evaluator, and tests
-is a project in itself. R7 also constrains us: the **only** REST we expose
-externally is OpenAI-compatible; a Links-Notation REST layer is therefore an
-*internal/adjacent* interface, which raises the design bar rather than lowering
-it.
+**Delivered.**
+- Links-Notation REST envelopes: `GET /v1/bundle` (full `formal_ai_bundle`),
+  `GET /v1/links` (the knowledge graph as a `knowledge_graph` document via
+  `KnowledgeGraph::to_links_notation`), and `POST /v1/links/query` returning a
+  `links_query_result` envelope (R7: Links Notation in, Links Notation out).
+- LinksQL evaluator: [`src/links_query.rs`](../../../src/links_query.rs) — a
+  read-only `MATCH (a)-[r]->(b) WHERE … RETURN …` selector over the knowledge
+  graph projection, accepting a JSON `{"query":…}` body or a Links-Notation
+  `query "…"` body.
 
-**Interface sketch.**
-- Encode requests/responses with
-  [`lino-objects-codec`](https://github.com/link-foundation/lino-objects-codec)
-  so objects ↔ Links Notation is a library call, not bespoke parsing.
-- Prototype LinksQL as a read-only selector over the seed/memory link store
-  (`MATCH (a)-[:rel]->(b)` style), evaluated against doublets-rs, before any
-  write semantics.
-
-**Acceptance criteria.** A LinksQL query returns the same nodes/edges as the
-existing `/v1/graph` trace for a known prompt, proving the query layer is
-consistent with the engine — and any reusable defect found in the upstream
-libraries is filed there (per R8).
+**Acceptance criteria — met.** `tests/unit/local_surface.rs::links_query_route_filters_edges_by_role`
+proves a role-filtered LinksQL result equals the `/v1/graph` edges carrying that
+role; nine inline unit tests in `src/links_query.rs` cover the grammar. Writing
+those tests surfaced a real parser defect — the operator scanner matched the
+`CONTAINS` keyword inside a quoted value — fixed by `find_operator` (scans outside
+quotes) with a dedicated regression test. No external library defect was found, so
+no upstream filing was required (R8).
 
 ---
 
-## D4 — First-party Anthropic → OpenAI adapter for `claude` 🟢
+## D4 — First-party Anthropic → OpenAI adapter for `claude` ✅
 
 **Goal.** Let [`claude`](https://github.com/anthropics/claude-code) target the
 local server without a third-party proxy.
 
-**Why deferred.** `claude` speaks the Anthropic Messages protocol, not OpenAI
-Chat Completions (see [`../../desktop/server-api.md` §4c](../../desktop/server-api.md#4c-claude-anthropic-claude-code--needs-an-adapter)).
-PR #348 documents the working path today — run a translating proxy such as
-LiteLLM or `anthropic-proxy`. A bundled adapter is a convenience, not a blocker,
-so it is sequenced after the core routing work (D2).
+**Delivered.** [`src/anthropic.rs`](../../../src/anthropic.rs) — a
+`POST /v1/messages` shim that flattens Anthropic message/system blocks into an
+OpenAI chat request, calls the existing solver, and re-wraps the result as an
+Anthropic response, including the full SSE event sequence for streaming. It rides
+the same `FORMAL_AI_DESKTOP_SERVER` opt-in, so the default stays in-process.
 
-**Interface sketch.**
-- A small `POST /v1/messages` shim that converts Anthropic message blocks to an
-  OpenAI `ChatCompletionRequest`, calls the existing solver, and re-wraps the
-  result as an Anthropic response (including SSE for streaming).
-- Ship it behind the same `FORMAL_AI_DESKTOP_SERVER` opt-in so the default stays
-  in-process.
-
-**Acceptance criteria.** `ANTHROPIC_BASE_URL` pointed at the shim lets `claude`
-complete a turn end-to-end, verified by a request/response fixture test.
+**Acceptance criteria — met.** `tests/unit/local_surface.rs` drives
+`POST /v1/messages` and asserts the Anthropic envelope (`type: "message"`, text
+block, `stop_reason`) and the streamed `message_start` → `content_block_delta` →
+`message_stop` sequence; seven inline unit tests in `src/anthropic.rs` cover block
+flattening, the system prompt, and the SSE stream. Point `ANTHROPIC_BASE_URL` at
+the local server and `claude` completes a turn end-to-end.
 
 ---
 
-## Sequencing
+## Sequencing (as delivered)
 
 ```
 D2 (routing + sandbox + permissions)  ──►  D1 (sync)  ──►  D4 (claude adapter)
-                                       └─►  D3 (lino-rest-api + LinksQL, after upstream)
+                                       └─►  D3 (lino-rest-api + LinksQL)
 ```
 
-D2 establishes the local-execution seam the rest build on. D3 can proceed in
-parallel once its upstream dependencies stabilise (🟡).
+D2 established the local-execution seam; D1, D3, and D4 build on the same opt-in
+local server. All four are implemented and tested in this PR.

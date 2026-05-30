@@ -5,8 +5,12 @@ const childProcess = require("node:child_process");
 const fs = require("node:fs");
 const http = require("node:http");
 const net = require("node:net");
+const os = require("node:os");
 const path = require("node:path");
 const { URL } = require("node:url");
+
+const { createToolRouter } = require("./lib/tool-router.cjs");
+const { createMemorySync } = require("./lib/memory-sync.cjs");
 
 const REPO_ROOT = path.resolve(__dirname, "..");
 const API_AUTH_ENV_KEYS = [
@@ -344,6 +348,99 @@ async function shutdown() {
     apiProcess = null;
   }
 }
+
+// R5d (ROADMAP D2): route the agent's side effects through the local process and
+// its Docker sandbox behind an explicit-permission gate. Docker availability is
+// probed once and cached; code-exec / shell tools run inside `konard/box-dind`
+// (the same image the Telegram microservice uses) and never run unsandboxed.
+let dockerProbe = null;
+function dockerIsAvailable() {
+  if (dockerProbe === null) {
+    try {
+      const result = childProcess.spawnSync("docker", ["version", "--format", "{{.Server.Version}}"], {
+        stdio: ["ignore", "pipe", "pipe"],
+        timeout: 5000,
+      });
+      dockerProbe = result.status === 0;
+    } catch (_error) {
+      dockerProbe = false;
+    }
+  }
+  return dockerProbe;
+}
+
+function runInSandbox({ image, tool, command }) {
+  return new Promise((resolve, reject) => {
+    const logPath = path.join(os.tmpdir(), `formal-ai-${tool}-${process.pid}-${Date.now()}.log`);
+    const child = childProcess.spawn("docker", ["run", "--rm", image, "sh", "-c", command], {
+      stdio: ["ignore", "pipe", "pipe"],
+    });
+    let output = "";
+    child.stdout.on("data", (chunk) => {
+      output += chunk;
+    });
+    child.stderr.on("data", (chunk) => {
+      output += chunk;
+    });
+    child.once("error", reject);
+    child.once("exit", (code) => {
+      try {
+        fs.writeFileSync(logPath, output);
+      } catch (_error) {
+        /* best-effort log capture */
+      }
+      resolve({ exitCode: typeof code === "number" ? code : 0, output, logPath });
+    });
+  });
+}
+
+const toolRouter = createToolRouter({
+  fetchImpl: globalThis.fetch,
+  readFile: (filePath) => fs.promises.readFile(filePath, "utf8"),
+  allowedReadRoot: REPO_ROOT,
+  resolvePath: (value) => path.resolve(REPO_ROOT, value),
+  dockerAvailable: dockerIsAvailable,
+  runInSandbox,
+});
+
+// The renderer's permission toggles (desktop-tool-permission / -agent-permission)
+// drive the default-deny grant map. Until the user opts in, every tool call is
+// refused and nothing executes.
+ipcMain.handle("formalAiDesktop:setToolGrants", (_event, grants) => toolRouter.setGrants(grants));
+ipcMain.handle("formalAiDesktop:invokeTool", async (_event, request) => {
+  // Server mode is required: tool routing only makes sense once the local app is
+  // the execution surface. In-process mode keeps the browser sandbox.
+  if (!serverModeRequested()) {
+    return {
+      ok: false,
+      tool: request && request.tool ? String(request.tool) : "",
+      status: "refused",
+      executed: false,
+      reason: "tool routing requires FORMAL_AI_DESKTOP_SERVER",
+    };
+  }
+  return toolRouter.invoke(request);
+});
+
+// R5c (ROADMAP D1): reconcile the browser (IndexedDB) memory log with the native
+// store over the local server's Links-Notation memory endpoints.
+let memorySync = null;
+ipcMain.handle("formalAiDesktop:syncMemory", async (_event, payload) => {
+  if (!serverModeRequested() || !desktopStatus.apiBase) {
+    return { ok: false, status: "unavailable", reason: "memory sync requires the local server" };
+  }
+  if (!memorySync) {
+    memorySync = createMemorySync({ apiBase: desktopStatus.apiBase, fetchImpl: globalThis.fetch });
+  }
+  try {
+    const outbound = payload && typeof payload.lino === "string" ? payload.lino : "";
+    const pushed = outbound.trim() ? await memorySync.push(outbound) : { added: 0, total: 0 };
+    const pulled = await memorySync.pull();
+    return { ok: true, status: "ok", pushed, pulled };
+  } catch (error) {
+    return { ok: false, status: "error", reason: error && error.message ? error.message : String(error) };
+  }
+});
 
 ipcMain.handle("formalAiDesktop:getStatus", () => desktopStatus);
 ipcMain.handle("formalAiDesktop:openExternal", async (_event, url) => {
