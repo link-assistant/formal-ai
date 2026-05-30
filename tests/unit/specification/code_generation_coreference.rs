@@ -90,8 +90,8 @@ fn bare_imperative_results_follow_ups_bind_active_program_in_all_languages() {
         assert!(
             response
                 .links_notation
-                .contains("program_parameter:task list_files_arg"),
-            "{} bare follow-up should bind the active program task, got: {}",
+                .contains("program_parameter:task list_files_arg_reverse_sort"),
+            "{} bare follow-up should apply reverse_sort to the active program task, got: {}",
             case.name,
             response.links_notation
         );
@@ -112,7 +112,34 @@ fn bare_imperative_results_follow_ups_bind_active_program_in_all_languages() {
             case.name,
             response.evidence_links
         );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link.starts_with("write_program_plan:")),
+            "{} bare follow-up should expose the program-plan rewrite, got: {:?}",
+            case.name,
+            response.evidence_links
+        );
+        assert!(
+            answer_reverses_sort(&response.answer),
+            "{} bare follow-up should reverse the file-name sort order, got: {}",
+            case.name,
+            response.answer
+        );
     }
+}
+
+fn answer_reverses_sort(answer: &str) -> bool {
+    let compact = answer
+        .to_ascii_lowercase()
+        .split_whitespace()
+        .collect::<String>();
+
+    compact.contains("names.sort_by(")
+        || compact.contains(".sort().reverse()")
+        || compact.contains("reverse=true")
+        || compact.contains("sort.reverse")
 }
 
 #[test]

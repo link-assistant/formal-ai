@@ -33,7 +33,6 @@ fn issue_349_history(solver: &UniversalSolver) -> [ConversationTurn; 4] {
 }
 
 #[test]
-#[ignore = "tracks #349/#355 until #358/#359 implement reverse-sort program modifications"]
 fn issue_349_reverse_sort_follow_up_must_not_be_unknown() {
     let solver = UniversalSolver::default();
     let history = issue_349_history(&solver);

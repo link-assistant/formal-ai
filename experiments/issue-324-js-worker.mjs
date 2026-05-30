@@ -138,21 +138,50 @@ const customPlan = sandbox.lowerProgramPlanWithRules(customRules, "list_files", 
 check("data-driven custom rule rewrites task", customPlan.resolvedTask === "count_files", customPlan.resolvedTask);
 check("data-driven custom rule reports modification", sandbox.programPlanWasModified(customPlan) === true);
 
-// 4e. The embedded program-plan rules parse and the path_argument rule lowers
-// list_files -> list_files_arg, leaving unknown tasks untouched.
+// 4e. The embedded program-plan rules parse and modifiers compose through
+// rule data: path_argument and reverse_sort can both lower list_files.
 const embedded = sandbox.programPlanRules();
 check("embedded rules id", embedded.id === "program_plan_rules", embedded.id);
-check("embedded rules count", embedded.rules.length === 1, String(embedded.rules.length));
+check("embedded rules count", embedded.rules.length === 4, String(embedded.rules.length));
 const upgraded = sandbox.lowerProgramPlan("list_files", ["path_argument"]);
 check("path_argument upgrades list_files", upgraded.resolvedTask === "list_files_arg", upgraded.resolvedTask);
 check("plan trace records one application", upgraded.traces.length === 1, String(upgraded.traces.length));
+const reversed = sandbox.lowerProgramPlan("list_files", ["reverse_sort"]);
+check("reverse_sort upgrades list_files", reversed.resolvedTask === "list_files_reverse_sort", reversed.resolvedTask);
+const composed = sandbox.lowerProgramPlan("list_files", ["path_argument", "reverse_sort"]);
+check("composed modifiers upgrade list_files", composed.resolvedTask === "list_files_arg_reverse_sort", composed.resolvedTask);
+check("composed plan records two applications", composed.traces.length === 2, String(composed.traces.length));
+const reversedExisting = sandbox.lowerProgramPlan("list_files_arg", ["reverse_sort"]);
+check(
+  "reverse_sort upgrades existing path variant",
+  reversedExisting.resolvedTask === "list_files_arg_reverse_sort",
+  reversedExisting.resolvedTask,
+);
 const noModifier = sandbox.lowerProgramPlan("list_files", []);
 check("no modifier leaves task unchanged", noModifier.resolvedTask === "list_files" && !sandbox.programPlanWasModified(noModifier));
 const unknown = sandbox.lowerProgramPlan("hello_world", ["path_argument"]);
 check("unknown task with modifier is unchanged", unknown.resolvedTask === "hello_world" && !sandbox.programPlanWasModified(unknown));
-const planNotation = sandbox.programPlanLinksNotation(upgraded);
-check("plan notation surfaces program_plan + trace", planNotation.includes("program_plan") && planNotation.includes("resolved_task list_files_arg") && planNotation.includes("path_argument_list_files"), planNotation);
-check("detectedProgramModifiers finds path_argument (zh)", JSON.stringify(sandbox.detectedProgramModifiers(sandbox.normalizeProgramPrompt("制作程序，使其接受路径作为参数"))) === '["path_argument"]');
+const planNotation = sandbox.programPlanLinksNotation(composed);
+check(
+  "plan notation surfaces program_plan + trace",
+  planNotation.includes("program_plan") &&
+    planNotation.includes("resolved_task list_files_arg_reverse_sort") &&
+    planNotation.includes("path_argument_list_files") &&
+    planNotation.includes("reverse_sort_list_files_arg"),
+  planNotation,
+);
+check(
+  "detectedProgramModifiers finds path_argument (zh)",
+  JSON.stringify(
+    sandbox.detectedProgramModifiers(sandbox.normalizeProgramPrompt("制作程序，使其接受路径作为参数")),
+  ) === '["path_argument"]',
+);
+check(
+  "detectedProgramModifiers finds reverse_sort (ru)",
+  JSON.stringify(
+    sandbox.detectedProgramModifiers(sandbox.normalizeProgramPrompt("отсортируй результаты в обратном порядке")),
+  ) === '["reverse_sort"]',
+);
 
 // 4f. The worker's parser reads the canonical seed file to the *same* ruleset
 // as its embedded copy — so the two cannot drift semantically. (The embedded

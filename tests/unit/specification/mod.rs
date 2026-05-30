@@ -40,6 +40,7 @@ mod chat_surface;
 mod code_generation;
 mod code_generation_blueprint;
 mod code_generation_coreference;
+mod code_generation_program_modifiers;
 mod definition_fusion;
 mod desktop_surface;
 mod formalization;

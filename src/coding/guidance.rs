@@ -66,6 +66,28 @@ fn program_explanation(task_slug: &str, language: Language) -> &'static str {
         ("count_to_three", _) => {
             "The program prints the numbers 1, 2, and 3 — each on its own line — and then exits."
         }
+        ("list_files_arg_reverse_sort", Language::Russian) => {
+            "Программа берёт путь к каталогу из первого аргумента командной строки (если \
+             аргумент не задан, используется текущий каталог), читает содержимое этого \
+             каталога, оставляет только обычные файлы, сортирует их имена в обратном \
+             алфавитном порядке и печатает каждое имя на отдельной строке."
+        }
+        ("list_files_arg_reverse_sort", Language::Hindi) => {
+            "प्रोग्राम पहले कमांड-लाइन तर्क से निर्देशिका पथ लेता है (कोई तर्क न होने पर वर्तमान \
+             निर्देशिका का उपयोग करता है), उस निर्देशिका की प्रविष्टियाँ पढ़ता है, केवल सामान्य \
+             फ़ाइलें रखता है, उनके नामों को उल्टे वर्णानुक्रम में क्रमबद्ध करता है, और हर नाम को \
+             अलग पंक्ति में छापता है।"
+        }
+        ("list_files_arg_reverse_sort", Language::Chinese) => {
+            "程序从第一个命令行参数获取目录路径（未提供参数时使用当前目录），读取该目录的条目，\
+             只保留普通文件，按反向字母顺序排序它们的名称，然后将每个名称打印在单独一行。"
+        }
+        ("list_files_arg_reverse_sort", _) => {
+            "The program takes the directory path from the first command-line argument \
+             (falling back to the current directory when none is given), reads that \
+             directory's entries, keeps only the regular files, sorts their names in \
+             reverse alphabetical order, and prints each name on its own line."
+        }
         ("list_files_arg", Language::Russian) => {
             "Программа берёт путь к каталогу из первого аргумента командной строки (если \
              аргумент не задан, используется текущий каталог), читает содержимое этого \
@@ -87,6 +109,25 @@ fn program_explanation(task_slug: &str, language: Language) -> &'static str {
              (falling back to the current directory when none is given), reads that \
              directory's entries, keeps only the regular files, sorts their names \
              alphabetically, and prints each name on its own line."
+        }
+        ("list_files_reverse_sort", Language::Russian) => {
+            "Программа читает содержимое текущего каталога, оставляет только обычные файлы, \
+             собирает их имена в список, сортирует список в обратном алфавитном порядке и \
+             печатает каждое имя на отдельной строке."
+        }
+        ("list_files_reverse_sort", Language::Hindi) => {
+            "प्रोग्राम वर्तमान निर्देशिका की प्रविष्टियाँ पढ़ता है, केवल सामान्य फ़ाइलें रखता है, उनके \
+             नाम एक सूची में एकत्र करता है, सूची को उल्टे वर्णानुक्रम में क्रमबद्ध करता है, और हर नाम \
+             को अलग पंक्ति में छापता है।"
+        }
+        ("list_files_reverse_sort", Language::Chinese) => {
+            "程序读取当前目录的条目，只保留普通文件，将它们的名称收集到一个列表中，\
+             按反向字母顺序排序，然后将每个名称打印在单独一行。"
+        }
+        ("list_files_reverse_sort", _) => {
+            "The program reads the entries of the current directory, keeps only the regular \
+             files, collects their names into a list, sorts the list in reverse alphabetical \
+             order, and prints each name on its own line."
         }
         ("list_files", Language::Russian) => {
             "Программа читает содержимое текущего каталога, оставляет только обычные файлы, \

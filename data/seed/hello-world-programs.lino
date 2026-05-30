@@ -1,7 +1,7 @@
 write_program
   intent "write_program"
   parameters "language, task"
-  tasks "hello_world|count_to_three|list_files|list_files_arg|fizzbuzz|factorial|reverse_string|sum_to_ten|fibonacci"
+  tasks "hello_world|count_to_three|list_files|list_files_arg|list_files_reverse_sort|list_files_arg_reverse_sort|fizzbuzz|factorial|reverse_string|sum_to_ten|fibonacci"
   languages "rust|python|javascript|typescript|go|c|cpp|java|csharp|ruby"
   source "local public-domain seed templates"
 
@@ -24,6 +24,16 @@ task_list_files_arg
   task "list_files_arg"
   aliases "list files in the directory given as a path argument, list files in a directory given as an argument, list files in the directory passed as an argument, list files in a path argument, list files with a path argument, list files accepting a path argument, список файлов в каталоге переданном как аргумент, список файлов в директории переданной как аргумент, список файлов по пути из аргумента, पथ तर्क के रूप में दी गई निर्देशिका की फ़ाइलों की सूची, 列出作为路径参数给出的目录中的文件, 列出路径参数指定目录中的文件"
   output "Cargo.toml\nREADME.md\nmain.rs"
+
+task_list_files_reverse_sort
+  task "list_files_reverse_sort"
+  aliases "list files in reverse order, list files sorted in reverse order, list files in descending order, reverse sorted list files, список файлов в обратном порядке, список файлов с обратной сортировкой, फ़ाइलों की सूची उल्टे क्रम में, फ़ाइलों को उल्टे क्रम में सूचीबद्ध करें, 按相反顺序列出文件, 倒序列出文件"
+  output "main.rs\nREADME.md\nCargo.toml"
+
+task_list_files_arg_reverse_sort
+  task "list_files_arg_reverse_sort"
+  aliases "list files from a path argument in reverse order, list files with a path argument in reverse order, list files with a path argument sorted descending, reverse sorted list files with a path argument, список файлов по пути из аргумента в обратном порядке, список файлов из аргумента с обратной сортировкой, पथ तर्क से फ़ाइलों की सूची उल्टे क्रम में, पथ तर्क वाली फ़ाइलों को उल्टे क्रम में सूचीबद्ध करें, 按相反顺序列出路径参数中的文件, 倒序列出路径参数指定目录中的文件"
+  output "main.rs\nREADME.md\nCargo.toml"
 
 task_fizzbuzz
   task "fizzbuzz"
@@ -301,6 +311,146 @@ template_list_files_arg_ruby
   task "list_files_arg"
   code_fence "ruby"
   code 'path = ARGV[0] || "."\nnames = Dir.entries(path).select { |name| File.file?(File.join(path, name)) }.sort\nnames.each { |name| puts name }'
+
+template_list_files_reverse_sort_rust
+  intent "write_program"
+  language "rust"
+  task "list_files_reverse_sort"
+  code_fence "rust"
+  code 'use std::fs;\n\nfn main() -> std::io::Result<()> {\n    let mut names: Vec<String> = fs::read_dir(".")?\n        .filter_map(Result::ok)\n        .filter(|entry| entry.path().is_file())\n        .map(|entry| entry.file_name().to_string_lossy().into_owned())\n        .collect();\n    names.sort_by(|a, b| b.cmp(a));\n    for name in names {\n        println!("{name}");\n    }\n    Ok(())\n}'
+
+template_list_files_reverse_sort_python
+  intent "write_program"
+  language "python"
+  task "list_files_reverse_sort"
+  code_fence "python"
+  code 'import os\n\nnames = sorted(\n    (name for name in os.listdir(".") if os.path.isfile(name)),\n    reverse=True,\n)\nfor name in names:\n    print(name)'
+
+template_list_files_reverse_sort_javascript
+  intent "write_program"
+  language "javascript"
+  task "list_files_reverse_sort"
+  code_fence "javascript"
+  code 'const fs = require("fs");\n\nconst names = fs\n  .readdirSync(".")\n  .filter((name) => fs.statSync(name).isFile())\n  .sort()\n  .reverse();\n\nfor (const name of names) {\n  console.log(name);\n}'
+
+template_list_files_reverse_sort_typescript
+  intent "write_program"
+  language "typescript"
+  task "list_files_reverse_sort"
+  code_fence "typescript"
+  code 'import * as fs from "fs";\n\nconst names: string[] = fs\n  .readdirSync(".")\n  .filter((name) => fs.statSync(name).isFile())\n  .sort()\n  .reverse();\n\nfor (const name of names) {\n  console.log(name);\n}'
+
+template_list_files_reverse_sort_go
+  intent "write_program"
+  language "go"
+  task "list_files_reverse_sort"
+  code_fence "go"
+  code 'package main\n\nimport (\n    "fmt"\n    "os"\n    "sort"\n)\n\nfunc main() {\n    entries, err := os.ReadDir(".")\n    if err != nil {\n        panic(err)\n    }\n    var names []string\n    for _, entry := range entries {\n        if !entry.IsDir() {\n            names = append(names, entry.Name())\n        }\n    }\n    sort.Sort(sort.Reverse(sort.StringSlice(names)))\n    for _, name := range names {\n        fmt.Println(name)\n    }\n}'
+
+template_list_files_reverse_sort_c
+  intent "write_program"
+  language "c"
+  task "list_files_reverse_sort"
+  code_fence "c"
+  code '#include <dirent.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n#include <sys/stat.h>\n\nstatic int compare_desc(const void *a, const void *b) {\n    return strcmp(*(const char *const *)b, *(const char *const *)a);\n}\n\nint main(void) {\n    DIR *dir = opendir(".");\n    if (dir == NULL) {\n        return 1;\n    }\n    char *names[1024];\n    size_t count = 0;\n    struct dirent *entry;\n    while ((entry = readdir(dir)) != NULL && count < 1024) {\n        struct stat info;\n        if (stat(entry->d_name, &info) == 0 && S_ISREG(info.st_mode)) {\n            names[count++] = strdup(entry->d_name);\n        }\n    }\n    closedir(dir);\n    qsort(names, count, sizeof(char *), compare_desc);\n    for (size_t i = 0; i < count; i++) {\n        printf("%s\\n", names[i]);\n        free(names[i]);\n    }\n    return 0;\n}'
+
+template_list_files_reverse_sort_cpp
+  intent "write_program"
+  language "cpp"
+  task "list_files_reverse_sort"
+  code_fence "cpp"
+  code '#include <algorithm>\n#include <filesystem>\n#include <iostream>\n#include <string>\n#include <vector>\n\nint main() {\n    namespace fs = std::filesystem;\n    std::vector<std::string> names;\n    for (const auto &entry : fs::directory_iterator(".")) {\n        if (entry.is_regular_file()) {\n            names.push_back(entry.path().filename().string());\n        }\n    }\n    std::sort(names.rbegin(), names.rend());\n    for (const auto &name : names) {\n        std::cout << name << \x27\\n\x27;\n    }\n}'
+
+template_list_files_reverse_sort_java
+  intent "write_program"
+  language "java"
+  task "list_files_reverse_sort"
+  code_fence "java"
+  code 'import java.io.File;\nimport java.util.Arrays;\nimport java.util.Comparator;\n\npublic class Main {\n    public static void main(String[] args) {\n        File[] entries = new File(".").listFiles();\n        if (entries == null) {\n            return;\n        }\n        String[] names = Arrays.stream(entries)\n            .filter(File::isFile)\n            .map(File::getName)\n            .sorted(Comparator.reverseOrder())\n            .toArray(String[]::new);\n        for (String name : names) {\n            System.out.println(name);\n        }\n    }\n}'
+
+template_list_files_reverse_sort_csharp
+  intent "write_program"
+  language "csharp"
+  task "list_files_reverse_sort"
+  code_fence "csharp"
+  code 'using System;\nusing System.IO;\nusing System.Linq;\n\nclass Program {\n    static void Main() {\n        var names = Directory.GetFiles(".")\n            .Select(Path.GetFileName)\n            .OrderByDescending(name => name, StringComparer.Ordinal);\n        foreach (var name in names) {\n            Console.WriteLine(name);\n        }\n    }\n}'
+
+template_list_files_reverse_sort_ruby
+  intent "write_program"
+  language "ruby"
+  task "list_files_reverse_sort"
+  code_fence "ruby"
+  code 'names = Dir.entries(".").select { |name| File.file?(name) }.sort.reverse\nnames.each { |name| puts name }'
+
+template_list_files_arg_reverse_sort_rust
+  intent "write_program"
+  language "rust"
+  task "list_files_arg_reverse_sort"
+  code_fence "rust"
+  code 'use std::env;\nuse std::fs;\n\nfn main() {\n    let path = env::args().nth(1).unwrap_or_else(|| String::from("."));\n    let mut names: Vec<String> = fs::read_dir(&path)\n        .expect("failed to read directory")\n        .filter_map(|entry| entry.ok())\n        .filter(|entry| entry.path().is_file())\n        .map(|entry| entry.file_name().to_string_lossy().into_owned())\n        .collect();\n    names.sort_by(|a, b| b.cmp(a));\n    for name in names {\n        println!("{name}");\n    }\n}'
+
+template_list_files_arg_reverse_sort_python
+  intent "write_program"
+  language "python"
+  task "list_files_arg_reverse_sort"
+  code_fence "python"
+  code 'import os\nimport sys\n\npath = sys.argv[1] if len(sys.argv) > 1 else "."\nnames = sorted(\n    (\n        name\n        for name in os.listdir(path)\n        if os.path.isfile(os.path.join(path, name))\n    ),\n    reverse=True,\n)\nfor name in names:\n    print(name)'
+
+template_list_files_arg_reverse_sort_javascript
+  intent "write_program"
+  language "javascript"
+  task "list_files_arg_reverse_sort"
+  code_fence "javascript"
+  code 'const fs = require("fs");\nconst path = require("path");\n\nconst dir = process.argv[2] || ".";\nconst names = fs\n  .readdirSync(dir)\n  .filter((name) => fs.statSync(path.join(dir, name)).isFile())\n  .sort()\n  .reverse();\n\nfor (const name of names) {\n  console.log(name);\n}'
+
+template_list_files_arg_reverse_sort_typescript
+  intent "write_program"
+  language "typescript"
+  task "list_files_arg_reverse_sort"
+  code_fence "typescript"
+  code 'import * as fs from "fs";\nimport * as path from "path";\n\nconst dir: string = process.argv[2] ?? ".";\nconst names: string[] = fs\n  .readdirSync(dir)\n  .filter((name) => fs.statSync(path.join(dir, name)).isFile())\n  .sort()\n  .reverse();\n\nfor (const name of names) {\n  console.log(name);\n}'
+
+template_list_files_arg_reverse_sort_go
+  intent "write_program"
+  language "go"
+  task "list_files_arg_reverse_sort"
+  code_fence "go"
+  code 'package main\n\nimport (\n    "fmt"\n    "os"\n    "sort"\n)\n\nfunc main() {\n    dir := "."\n    if len(os.Args) > 1 {\n        dir = os.Args[1]\n    }\n    entries, err := os.ReadDir(dir)\n    if err != nil {\n        panic(err)\n    }\n    var names []string\n    for _, entry := range entries {\n        if !entry.IsDir() {\n            names = append(names, entry.Name())\n        }\n    }\n    sort.Sort(sort.Reverse(sort.StringSlice(names)))\n    for _, name := range names {\n        fmt.Println(name)\n    }\n}'
+
+template_list_files_arg_reverse_sort_c
+  intent "write_program"
+  language "c"
+  task "list_files_arg_reverse_sort"
+  code_fence "c"
+  code '#include <dirent.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n#include <sys/stat.h>\n\nstatic int compare_desc(const void *a, const void *b) {\n    return strcmp(*(const char *const *)b, *(const char *const *)a);\n}\n\nint main(int argc, char *argv[]) {\n    const char *path = argc > 1 ? argv[1] : ".";\n    DIR *dir = opendir(path);\n    if (dir == NULL) {\n        return 1;\n    }\n    char *names[1024];\n    size_t count = 0;\n    struct dirent *entry;\n    while ((entry = readdir(dir)) != NULL && count < 1024) {\n        char full[4096];\n        snprintf(full, sizeof(full), "%s/%s", path, entry->d_name);\n        struct stat info;\n        if (stat(full, &info) == 0 && S_ISREG(info.st_mode)) {\n            names[count++] = strdup(entry->d_name);\n        }\n    }\n    closedir(dir);\n    qsort(names, count, sizeof(char *), compare_desc);\n    for (size_t i = 0; i < count; i++) {\n        printf("%s\\n", names[i]);\n        free(names[i]);\n    }\n    return 0;\n}'
+
+template_list_files_arg_reverse_sort_cpp
+  intent "write_program"
+  language "cpp"
+  task "list_files_arg_reverse_sort"
+  code_fence "cpp"
+  code '#include <algorithm>\n#include <filesystem>\n#include <iostream>\n#include <string>\n#include <vector>\n\nint main(int argc, char *argv[]) {\n    namespace fs = std::filesystem;\n    std::string path = argc > 1 ? argv[1] : ".";\n    std::vector<std::string> names;\n    for (const auto &entry : fs::directory_iterator(path)) {\n        if (entry.is_regular_file()) {\n            names.push_back(entry.path().filename().string());\n        }\n    }\n    std::sort(names.rbegin(), names.rend());\n    for (const auto &name : names) {\n        std::cout << name << \x27\\n\x27;\n    }\n}'
+
+template_list_files_arg_reverse_sort_java
+  intent "write_program"
+  language "java"
+  task "list_files_arg_reverse_sort"
+  code_fence "java"
+  code 'import java.io.File;\nimport java.util.Arrays;\nimport java.util.Comparator;\n\npublic class Main {\n    public static void main(String[] args) {\n        String path = args.length > 0 ? args[0] : ".";\n        File[] entries = new File(path).listFiles();\n        if (entries == null) {\n            return;\n        }\n        String[] names = Arrays.stream(entries)\n            .filter(File::isFile)\n            .map(File::getName)\n            .sorted(Comparator.reverseOrder())\n            .toArray(String[]::new);\n        for (String name : names) {\n            System.out.println(name);\n        }\n    }\n}'
+
+template_list_files_arg_reverse_sort_csharp
+  intent "write_program"
+  language "csharp"
+  task "list_files_arg_reverse_sort"
+  code_fence "csharp"
+  code 'using System;\nusing System.IO;\nusing System.Linq;\n\nclass Program {\n    static void Main(string[] args) {\n        var path = args.Length > 0 ? args[0] : ".";\n        var names = Directory.GetFiles(path)\n            .Select(Path.GetFileName)\n            .OrderByDescending(name => name, StringComparer.Ordinal);\n        foreach (var name in names) {\n            Console.WriteLine(name);\n        }\n    }\n}'
+
+template_list_files_arg_reverse_sort_ruby
+  intent "write_program"
+  language "ruby"
+  task "list_files_arg_reverse_sort"
+  code_fence "ruby"
+  code 'path = ARGV[0] || "."\nnames = Dir.entries(path).select { |name| File.file?(File.join(path, name)) }.sort.reverse\nnames.each { |name| puts name }'
 
 template_fizzbuzz_rust
   intent "write_program"

@@ -10925,8 +10925,8 @@ const WRITE_PROGRAM_TASKS = {
     // Issue #324 follow-up: "Сделай так, чтобы программа принимала путь как
     // аргумент" (make the program accept a path as an argument). This is the
     // path-argument variant of `list_files`; conversation context maps a bare
-    // "accept a path argument" modification onto it (see
-    // `programPathArgumentModifier`). Mirrors the Rust `list_files_arg` task.
+    // "accept a path argument" modification onto it through the program-plan
+    // rules. Mirrors the Rust `list_files_arg` task.
     output: "Cargo.toml\nREADME.md\nmain.rs",
     aliases: [
       "list files in the directory given as a path argument",
@@ -10943,6 +10943,38 @@ const WRITE_PROGRAM_TASKS = {
       // Chinese: "list the files in the directory given as a path argument".
       "列出作为路径参数给出的目录中的文件",
       "列出路径参数指定目录中的文件",
+    ],
+  },
+  list_files_reverse_sort: {
+    label: "list files in the current directory in reverse-sorted order",
+    output: "main.rs\nREADME.md\nCargo.toml",
+    aliases: [
+      "list files in reverse order",
+      "list files sorted in reverse order",
+      "list files in descending order",
+      "reverse sorted list files",
+      "список файлов в обратном порядке",
+      "список файлов с обратной сортировкой",
+      "फ़ाइलों की सूची उल्टे क्रम में",
+      "फ़ाइलों को उल्टे क्रम में सूचीबद्ध करें",
+      "按相反顺序列出文件",
+      "倒序列出文件",
+    ],
+  },
+  list_files_arg_reverse_sort: {
+    label: "list files from a path argument in reverse-sorted order",
+    output: "main.rs\nREADME.md\nCargo.toml",
+    aliases: [
+      "list files from a path argument in reverse order",
+      "list files with a path argument in reverse order",
+      "list files with a path argument sorted descending",
+      "reverse sorted list files with a path argument",
+      "список файлов по пути из аргумента в обратном порядке",
+      "список файлов из аргумента с обратной сортировкой",
+      "पथ तर्क से फ़ाइलों की सूची उल्टे क्रम में",
+      "पथ तर्क वाली फ़ाइलों को उल्टे क्रम में सूचीबद्ध करें",
+      "按相反顺序列出路径参数中的文件",
+      "倒序列出路径参数指定目录中的文件",
     ],
   },
   // Issue #330: classic branching/looping exercise over 1..=15. Mirrors the Rust
@@ -11132,6 +11164,50 @@ const WRITE_PROGRAM_TEMPLATES = {
       'using System;\nusing System.IO;\nusing System.Linq;\n\nclass Program {\n    static void Main(string[] args) {\n        var path = args.Length > 0 ? args[0] : ".";\n        var names = Directory.GetFiles(path)\n            .Select(Path.GetFileName)\n            .OrderBy(name => name, StringComparer.Ordinal);\n        foreach (var name in names) {\n            Console.WriteLine(name);\n        }\n    }\n}',
     ruby:
       'path = ARGV[0] || "."\nnames = Dir.entries(path).select { |name| File.file?(File.join(path, name)) }.sort\nnames.each { |name| puts name }',
+  },
+  list_files_reverse_sort: {
+    rust:
+      'use std::fs;\n\nfn main() -> std::io::Result<()> {\n    let mut names: Vec<String> = fs::read_dir(".")?\n        .filter_map(Result::ok)\n        .filter(|entry| entry.path().is_file())\n        .map(|entry| entry.file_name().to_string_lossy().into_owned())\n        .collect();\n    names.sort_by(|a, b| b.cmp(a));\n    for name in names {\n        println!("{name}");\n    }\n    Ok(())\n}',
+    python:
+      'import os\n\nnames = sorted(\n    (name for name in os.listdir(".") if os.path.isfile(name)),\n    reverse=True,\n)\nfor name in names:\n    print(name)',
+    javascript:
+      'const fs = require("fs");\n\nconst names = fs\n  .readdirSync(".")\n  .filter((name) => fs.statSync(name).isFile())\n  .sort()\n  .reverse();\n\nfor (const name of names) {\n  console.log(name);\n}',
+    typescript:
+      'import * as fs from "fs";\n\nconst names: string[] = fs\n  .readdirSync(".")\n  .filter((name) => fs.statSync(name).isFile())\n  .sort()\n  .reverse();\n\nfor (const name of names) {\n  console.log(name);\n}',
+    go:
+      'package main\n\nimport (\n    "fmt"\n    "os"\n    "sort"\n)\n\nfunc main() {\n    entries, err := os.ReadDir(".")\n    if err != nil {\n        panic(err)\n    }\n    var names []string\n    for _, entry := range entries {\n        if !entry.IsDir() {\n            names = append(names, entry.Name())\n        }\n    }\n    sort.Sort(sort.Reverse(sort.StringSlice(names)))\n    for _, name := range names {\n        fmt.Println(name)\n    }\n}',
+    c:
+      '#include <dirent.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n#include <sys/stat.h>\n\nstatic int compare_desc(const void *a, const void *b) {\n    return strcmp(*(const char *const *)b, *(const char *const *)a);\n}\n\nint main(void) {\n    DIR *dir = opendir(".");\n    if (dir == NULL) {\n        return 1;\n    }\n    char *names[1024];\n    size_t count = 0;\n    struct dirent *entry;\n    while ((entry = readdir(dir)) != NULL && count < 1024) {\n        struct stat info;\n        if (stat(entry->d_name, &info) == 0 && S_ISREG(info.st_mode)) {\n            names[count++] = strdup(entry->d_name);\n        }\n    }\n    closedir(dir);\n    qsort(names, count, sizeof(char *), compare_desc);\n    for (size_t i = 0; i < count; i++) {\n        printf("%s\\n", names[i]);\n        free(names[i]);\n    }\n    return 0;\n}',
+    cpp:
+      "#include <algorithm>\n#include <filesystem>\n#include <iostream>\n#include <string>\n#include <vector>\n\nint main() {\n    namespace fs = std::filesystem;\n    std::vector<std::string> names;\n    for (const auto &entry : fs::directory_iterator(\".\")) {\n        if (entry.is_regular_file()) {\n            names.push_back(entry.path().filename().string());\n        }\n    }\n    std::sort(names.rbegin(), names.rend());\n    for (const auto &name : names) {\n        std::cout << name << '\\n';\n    }\n}",
+    java:
+      'import java.io.File;\nimport java.util.Arrays;\nimport java.util.Comparator;\n\npublic class Main {\n    public static void main(String[] args) {\n        File[] entries = new File(".").listFiles();\n        if (entries == null) {\n            return;\n        }\n        String[] names = Arrays.stream(entries)\n            .filter(File::isFile)\n            .map(File::getName)\n            .sorted(Comparator.reverseOrder())\n            .toArray(String[]::new);\n        for (String name : names) {\n            System.out.println(name);\n        }\n    }\n}',
+    csharp:
+      'using System;\nusing System.IO;\nusing System.Linq;\n\nclass Program {\n    static void Main() {\n        var names = Directory.GetFiles(".")\n            .Select(Path.GetFileName)\n            .OrderByDescending(name => name, StringComparer.Ordinal);\n        foreach (var name in names) {\n            Console.WriteLine(name);\n        }\n    }\n}',
+    ruby:
+      'names = Dir.entries(".").select { |name| File.file?(name) }.sort.reverse\nnames.each { |name| puts name }',
+  },
+  list_files_arg_reverse_sort: {
+    rust:
+      'use std::env;\nuse std::fs;\n\nfn main() {\n    let path = env::args().nth(1).unwrap_or_else(|| String::from("."));\n    let mut names: Vec<String> = fs::read_dir(&path)\n        .expect("failed to read directory")\n        .filter_map(|entry| entry.ok())\n        .filter(|entry| entry.path().is_file())\n        .map(|entry| entry.file_name().to_string_lossy().into_owned())\n        .collect();\n    names.sort_by(|a, b| b.cmp(a));\n    for name in names {\n        println!("{name}");\n    }\n}',
+    python:
+      'import os\nimport sys\n\npath = sys.argv[1] if len(sys.argv) > 1 else "."\nnames = sorted(\n    (\n        name\n        for name in os.listdir(path)\n        if os.path.isfile(os.path.join(path, name))\n    ),\n    reverse=True,\n)\nfor name in names:\n    print(name)',
+    javascript:
+      'const fs = require("fs");\nconst path = require("path");\n\nconst dir = process.argv[2] || ".";\nconst names = fs\n  .readdirSync(dir)\n  .filter((name) => fs.statSync(path.join(dir, name)).isFile())\n  .sort()\n  .reverse();\n\nfor (const name of names) {\n  console.log(name);\n}',
+    typescript:
+      'import * as fs from "fs";\nimport * as path from "path";\n\nconst dir: string = process.argv[2] ?? ".";\nconst names: string[] = fs\n  .readdirSync(dir)\n  .filter((name) => fs.statSync(path.join(dir, name)).isFile())\n  .sort()\n  .reverse();\n\nfor (const name of names) {\n  console.log(name);\n}',
+    go:
+      'package main\n\nimport (\n    "fmt"\n    "os"\n    "sort"\n)\n\nfunc main() {\n    dir := "."\n    if len(os.Args) > 1 {\n        dir = os.Args[1]\n    }\n    entries, err := os.ReadDir(dir)\n    if err != nil {\n        panic(err)\n    }\n    var names []string\n    for _, entry := range entries {\n        if !entry.IsDir() {\n            names = append(names, entry.Name())\n        }\n    }\n    sort.Sort(sort.Reverse(sort.StringSlice(names)))\n    for _, name := range names {\n        fmt.Println(name)\n    }\n}',
+    c:
+      '#include <dirent.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n#include <sys/stat.h>\n\nstatic int compare_desc(const void *a, const void *b) {\n    return strcmp(*(const char *const *)b, *(const char *const *)a);\n}\n\nint main(int argc, char *argv[]) {\n    const char *path = argc > 1 ? argv[1] : ".";\n    DIR *dir = opendir(path);\n    if (dir == NULL) {\n        return 1;\n    }\n    char *names[1024];\n    size_t count = 0;\n    struct dirent *entry;\n    while ((entry = readdir(dir)) != NULL && count < 1024) {\n        char full[4096];\n        snprintf(full, sizeof(full), "%s/%s", path, entry->d_name);\n        struct stat info;\n        if (stat(full, &info) == 0 && S_ISREG(info.st_mode)) {\n            names[count++] = strdup(entry->d_name);\n        }\n    }\n    closedir(dir);\n    qsort(names, count, sizeof(char *), compare_desc);\n    for (size_t i = 0; i < count; i++) {\n        printf("%s\\n", names[i]);\n        free(names[i]);\n    }\n    return 0;\n}',
+    cpp:
+      "#include <algorithm>\n#include <filesystem>\n#include <iostream>\n#include <string>\n#include <vector>\n\nint main(int argc, char *argv[]) {\n    namespace fs = std::filesystem;\n    std::string path = argc > 1 ? argv[1] : \".\";\n    std::vector<std::string> names;\n    for (const auto &entry : fs::directory_iterator(path)) {\n        if (entry.is_regular_file()) {\n            names.push_back(entry.path().filename().string());\n        }\n    }\n    std::sort(names.rbegin(), names.rend());\n    for (const auto &name : names) {\n        std::cout << name << '\\n';\n    }\n}",
+    java:
+      'import java.io.File;\nimport java.util.Arrays;\nimport java.util.Comparator;\n\npublic class Main {\n    public static void main(String[] args) {\n        String path = args.length > 0 ? args[0] : ".";\n        File[] entries = new File(path).listFiles();\n        if (entries == null) {\n            return;\n        }\n        String[] names = Arrays.stream(entries)\n            .filter(File::isFile)\n            .map(File::getName)\n            .sorted(Comparator.reverseOrder())\n            .toArray(String[]::new);\n        for (String name : names) {\n            System.out.println(name);\n        }\n    }\n}',
+    csharp:
+      'using System;\nusing System.IO;\nusing System.Linq;\n\nclass Program {\n    static void Main(string[] args) {\n        var path = args.Length > 0 ? args[0] : ".";\n        var names = Directory.GetFiles(path)\n            .Select(Path.GetFileName)\n            .OrderByDescending(name => name, StringComparer.Ordinal);\n        foreach (var name in names) {\n            Console.WriteLine(name);\n        }\n    }\n}',
+    ruby:
+      'path = ARGV[0] || "."\nnames = Dir.entries(path).select { |name| File.file?(File.join(path, name)) }.sort.reverse\nnames.each { |name| puts name }',
   },
   fizzbuzz: {
     rust:
@@ -11375,44 +11451,114 @@ const PROGRAM_VERBS = [
 // byte-identical to `data/seed/program-plan-rules.lino`; the parity experiment
 // (`experiments/issue-324-js-worker.mjs`) keeps the two copies in lockstep.
 //
-// Adding a new modification (e.g. "sort descending", "count instead of list")
-// becomes *data* — a new rule in the `.lino` text — not new control flow.
+// Adding a new modifier transform is rule data; recognition is constrained by
+// the operation slugs declared in that rule data.
 // ---------------------------------------------------------------------------
 
 const PROGRAM_PLAN_RULES_LINO = [
   "substitution_rules",
   '  id "program_plan_rules"',
   '  rule "path_argument_list_files"',
-  '    order "1"',
+  '    order "10"',
   '    event "manual"',
   '    when "request:modifier -> path_argument"',
   '    replace "request:task -> list_files"',
   '      with "request:task -> list_files_arg"',
+  '  rule "path_argument_list_files_reverse_sort"',
+  '    order "10"',
+  '    event "manual"',
+  '    when "request:modifier -> path_argument"',
+  '    replace "request:task -> list_files_reverse_sort"',
+  '      with "request:task -> list_files_arg_reverse_sort"',
+  '  rule "reverse_sort_list_files"',
+  '    order "20"',
+  '    event "manual"',
+  '    when "request:modifier -> reverse_sort"',
+  '    replace "request:task -> list_files"',
+  '      with "request:task -> list_files_reverse_sort"',
+  '  rule "reverse_sort_list_files_arg"',
+  '    order "20"',
+  '    event "manual"',
+  '    when "request:modifier -> reverse_sort"',
+  '    replace "request:task -> list_files_arg"',
+  '      with "request:task -> list_files_arg_reverse_sort"',
   "",
 ].join("\n");
 
 const TASK_NODE = "request:task";
 const MODIFIER_NODE = "request:modifier";
 
-// Issue #324: modifier slugs detected from request prose, mirroring
-// `PROGRAM_MODIFIERS` in `src/intent_formalization.rs`. Detection (token ->
-// slug) stays in code; the *transformation* (slug -> task variant) is data.
-const PROGRAM_MODIFIERS = [
+// Issue #358: program modifier recognition mirrors the Rust path: operation
+// vocabulary trigger phrases provide natural-language evidence, and
+// `program-plan-rules.lino` decides which operation slugs are valid modifiers.
+const PROGRAM_MODIFIER_OPERATIONS = [
   {
     slug: "path_argument",
-    tokenGroups: [
+    phrases: ["path argument", "path as an argument", "पथ को तर्क", "路径作为参数"],
+    combos: [
       ["path", "argument"],
-      // Russian: путь (path) + аргумент/аргумента/аргументом (argument).
       ["путь", "аргумент"],
       ["путь", "аргумента"],
       ["путь", "аргументом"],
-      // Hindi: पथ (path) + तर्क (argument).
       ["पथ", "तर्क"],
-      // Chinese: 路径 (path) + 参数 (argument).
       ["路径", "参数"],
     ],
   },
+  {
+    slug: "reverse_sort",
+    phrases: [
+      "reverse sort",
+      "reverse sorted",
+      "sort in reverse order",
+      "sort the results in reverse order",
+      "reverse order",
+      "descending order",
+      "в обратном порядке",
+      "उल्टे क्रम",
+      "相反顺序排序",
+    ],
+    combos: [
+      ["sort", "reverse"],
+      ["sort", "descending"],
+      ["сортиров", "обратн"],
+      ["отсортир", "обратн"],
+      ["क्रमबद्ध", "उल्टे"],
+      ["क्रमबद्ध", "उल्टा"],
+      ["排序", "相反"],
+      ["排序", "反向"],
+      ["排序", "倒序"],
+    ],
+  },
 ];
+
+let cachedProgramModifierSlugs = null;
+function literalPatternValue(node) {
+  return node && node.kind === "literal" ? node.value : null;
+}
+
+function programModifierSlugs() {
+  if (cachedProgramModifierSlugs) return cachedProgramModifierSlugs;
+  const slugs = new Set();
+  for (const rule of programPlanRules().rules) {
+    for (const condition of rule.conditions || []) {
+      const from = literalPatternValue(condition.from);
+      const to = literalPatternValue(condition.to);
+      if (from === MODIFIER_NODE && to) slugs.add(to);
+    }
+  }
+  cachedProgramModifierSlugs = slugs;
+  return slugs;
+}
+
+function operationFormMatches(normalized, operation) {
+  const source = String(normalized || "");
+  return (
+    (operation.phrases || []).some((phrase) => source.includes(phrase)) ||
+    (operation.combos || []).some((combo) =>
+      combo.every((token) => source.includes(String(token || ""))),
+    )
+  );
+}
 
 const PROGRAM_FOLLOW_UP_REFERENTS = [
   "result",
@@ -11485,11 +11631,11 @@ const PROGRAM_FOLLOW_UP_ACTIONS = [
 
 function detectedProgramModifiers(normalized) {
   const slugs = [];
-  for (const modifier of PROGRAM_MODIFIERS) {
-    const matched = modifier.tokenGroups.some((group) =>
-      group.every((token) => containsProgramToken(normalized, token)),
-    );
-    if (matched) slugs.push(modifier.slug);
+  const validModifiers = programModifierSlugs();
+  for (const operation of PROGRAM_MODIFIER_OPERATIONS) {
+    if (validModifiers.has(operation.slug) && operationFormMatches(normalized, operation)) {
+      slugs.push(operation.slug);
+    }
   }
   return slugs;
 }
@@ -11852,9 +11998,8 @@ function writeProgramParameters(prompt) {
     PROGRAM_NOUNS.some((noun) => containsProgramToken(normalized, noun)) &&
     PROGRAM_VERBS.some((verb) => containsProgramToken(normalized, verb));
   if (!task && !asksForProgram) return null;
-  // Issue #324: a modification in the same turn (e.g. "with a path argument")
-  // lowers the base task through the substitution pipeline, upgrading
-  // list_files -> list_files_arg via the `path_argument` rule.
+  // Issue #358: modification phrases in the same turn lower the base task
+  // through the data-backed substitution pipeline.
   if (task) {
     const modifiers = detectedProgramModifiers(normalized);
     task = resolveProgramTask(task, modifiers);
@@ -11904,7 +12049,7 @@ function rewriteBareProgramCoreference(prompt, history) {
 // Issue #324: a follow-up such as "Сделай так, чтобы программа принимала путь
 // как аргумент" routes to write_program but names neither a task nor a
 // language - both came from a previous turn. Recover the missing parameters
-// from the most recent prior turn that named them and apply any path-argument
+// from the most recent prior turn that named them and apply any data-defined
 // modifier present in the follow-up. Mirrors `recover_write_program_rule` in
 // `src/intent_formalization.rs`.
 function recoverWriteProgramParameters(parameters, prompt, history) {
@@ -12057,7 +12202,12 @@ function writeProgramExecutionLines(language, task, code, output, strings) {
   const reason =
     language === "javascript" ? i18n.noFilesystem(language) : i18n.noToolchain(language);
   const lines = [i18n.notRun(language, reason)];
-  if (task === "list_files" || task === "list_files_arg") {
+  if (
+    task === "list_files" ||
+    task === "list_files_arg" ||
+    task === "list_files_reverse_sort" ||
+    task === "list_files_arg_reverse_sort"
+  ) {
     lines.push(i18n.sampleDirectory);
   } else {
     lines.push(i18n.expectedOutput);
@@ -12119,6 +12269,43 @@ const PROGRAM_EXPLANATIONS = {
     zh:
       "程序从第一个命令行参数获取目录路径（未提供参数时使用当前目录），读取该目录的条目，" +
       "只保留普通文件，按字母顺序排序它们的名称，然后将每个名称打印在单独一行。",
+  },
+  list_files_reverse_sort: {
+    en:
+      "The program reads the entries of the current directory, keeps only the regular " +
+      "files, collects their names into a list, sorts the list in reverse alphabetical " +
+      "order, and prints each name on its own line.",
+    ru:
+      "Программа читает содержимое текущего каталога, оставляет только обычные файлы, " +
+      "собирает их имена в список, сортирует список в обратном алфавитном порядке и " +
+      "печатает каждое имя на отдельной строке.",
+    hi:
+      "प्रोग्राम वर्तमान निर्देशिका की प्रविष्टियाँ पढ़ता है, केवल सामान्य फ़ाइलें रखता है, उनके " +
+      "नाम एक सूची में एकत्र करता है, सूची को उल्टे वर्णानुक्रम में क्रमबद्ध करता है, और हर नाम " +
+      "को अलग पंक्ति में छापता है।",
+    zh:
+      "程序读取当前目录的条目，只保留普通文件，将它们的名称收集到一个列表中，" +
+      "按反向字母顺序排序，然后将每个名称打印在单独一行。",
+  },
+  list_files_arg_reverse_sort: {
+    en:
+      "The program takes the directory path from the first command-line argument " +
+      "(falling back to the current directory when none is given), reads that " +
+      "directory's entries, keeps only the regular files, sorts their names in " +
+      "reverse alphabetical order, and prints each name on its own line.",
+    ru:
+      "Программа берёт путь к каталогу из первого аргумента командной строки (если " +
+      "аргумент не задан, используется текущий каталог), читает содержимое этого " +
+      "каталога, оставляет только обычные файлы, сортирует их имена в обратном " +
+      "алфавитном порядке и печатает каждое имя на отдельной строке.",
+    hi:
+      "प्रोग्राम पहले कमांड-लाइन तर्क से निर्देशिका पथ लेता है (कोई तर्क न होने पर वर्तमान " +
+      "निर्देशिका का उपयोग करता है), उस निर्देशिका की प्रविष्टियाँ पढ़ता है, केवल सामान्य " +
+      "फ़ाइलें रखता है, उनके नामों को उल्टे वर्णानुक्रम में क्रमबद्ध करता है, और हर नाम को " +
+      "अलग पंक्ति में छापता है।",
+    zh:
+      "程序从第一个命令行参数获取目录路径（未提供参数时使用当前目录），读取该目录的条目，" +
+      "只保留普通文件，按反向字母顺序排序它们的名称，然后将每个名称打印在单独一行。",
   },
   fizzbuzz: {
     en:
