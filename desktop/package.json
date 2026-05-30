@@ -1,6 +1,6 @@
 {
   "name": "formal-ai-desktop",
-  "version": "0.152.0",
+  "version": "0.153.0",
   "private": true,
   "description": "Cross-platform desktop wrapper for formal-ai",
   "main": "main.cjs",
