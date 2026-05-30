@@ -1,3 +1,6 @@
 node_modules/
 playwright-report/
 test-results/
+# This project pins dependencies with npm (package-lock.json); ignore stray
+# lockfiles from other package managers used during local runs.
+bun.lock

@@ -1,0 +1,272 @@
+# Cross-platform desktop release (Linux, Windows, macOS) for formal-ai.
+#
+# Produces the exact assets the /download page (src/web/download) resolves from
+# the GitHub Releases API:
+#   formal-ai-desktop-macos-<arch>-<version>.{dmg,zip}
+#   formal-ai-desktop-windows-installer-<arch>-<version>.exe
+#   formal-ai-desktop-windows-portable-<arch>-<version>.exe
+#   formal-ai-desktop-linux-<arch>-<version>.{AppImage,deb,tar.gz}
+# plus a consolidated SHA256SUMS.txt and BUILD-PROVENANCE.txt, and SLSA build
+# provenance attestations (verifiable with `gh attestation verify`).
+#
+# Triggers:
+#   * release: published     - fires for releases published manually (UI) or via
+#                              a PAT. NOTE: the automated `[Rust] x.y.z` releases
+#                              created by the CI/CD Pipeline use GITHUB_TOKEN, so
+#                              GitHub suppresses the `release` event for them
+#                              (recursion guard). The workflow_run trigger below
+#                              covers that case automatically.
+#   * workflow_run           - after the "CI/CD Pipeline" completes successfully
+#                              on main, build desktop assets for the latest
+#                              release if it does not already have them
+#                              (idempotent: skips when assets already exist).
+#   * workflow_dispatch      - manual rebuild for a specific (or latest) tag.
+name: Desktop Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag to build (e.g. v0.152.0). Leave blank for the latest release."
+        required: false
+        default: ""
+  release:
+    types: [published]
+  workflow_run:
+    workflows: ["CI/CD Pipeline"]
+    types: [completed]
+
+permissions:
+  contents: write
+  id-token: write
+  attestations: write
+
+concurrency:
+  group: desktop-release-${{ github.event.release.tag_name || github.event.inputs.tag || github.run_id }}
+  cancel-in-progress: false
+
+jobs:
+  resolve:
+    name: Resolve target release
+    runs-on: ubuntu-latest
+    # For workflow_run, only continue after a successful main-branch pipeline.
+    if: >-
+      github.event_name != 'workflow_run' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.head_branch == 'main')
+    outputs:
+      tag: ${{ steps.pick.outputs.tag }}
+      should_build: ${{ steps.pick.outputs.should_build }}
+    steps:
+      - name: Resolve tag and whether desktop assets are needed
+        id: pick
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EVENT: ${{ github.event_name }}
+          INPUT_TAG: ${{ github.event.inputs.tag }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          tag=""
+          case "$EVENT" in
+            release) tag="$RELEASE_TAG" ;;
+            workflow_dispatch) tag="${INPUT_TAG:-}" ;;
+          esac
+          if [ -z "$tag" ]; then
+            tag="$(gh release view --repo "$REPO" --json tagName --jq .tagName)"
+          fi
+          echo "Resolved release tag: $tag"
+          existing="$(gh release view "$tag" --repo "$REPO" --json assets \
+            --jq '[.assets[].name | select(startswith("formal-ai-desktop-"))] | length' || echo 0)"
+          should_build=true
+          if [ "$EVENT" = "workflow_run" ] && [ "${existing:-0}" -gt 0 ]; then
+            should_build=false
+            echo "Release $tag already has $existing desktop assets; skipping automatic build."
+          fi
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          echo "should_build=$should_build" >> "$GITHUB_OUTPUT"
+
+  build:
+    name: Build ${{ matrix.label }}
+    needs: resolve
+    if: needs.resolve.outputs.should_build == 'true'
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: ubuntu-latest,    ebflag: "--linux", label: "linux-x64",     binext: "" }
+          - { os: ubuntu-24.04-arm, ebflag: "--linux", label: "linux-arm64",   binext: "" }
+          - { os: macos-15-intel,   ebflag: "--mac",   label: "macos-x64",     binext: "" }
+          - { os: macos-14,         ebflag: "--mac",   label: "macos-arm64",   binext: "" }
+          - { os: windows-latest,   ebflag: "--win",   label: "windows-x64",   binext: ".exe" }
+          - { os: windows-11-arm,   ebflag: "--win",   label: "windows-arm64", binext: ".exe" }
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ needs.resolve.outputs.tag }}
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache cargo
+        uses: actions/cache@v5
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: desktop-${{ matrix.label }}-cargo-${{ hashFiles('Cargo.lock', 'Cargo.toml') }}
+
+      - name: Build formal-ai binary (release)
+        run: cargo build --release --bin formal-ai
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - name: Install desktop dependencies
+        working-directory: desktop
+        run: npm install --no-audit --no-fund
+
+      - name: Prepare desktop resources (web + bundled binary + version sync)
+        working-directory: desktop
+        run: node scripts/prepare-resources.mjs
+
+      - name: Package desktop app
+        working-directory: desktop
+        env:
+          # Ad-hoc signing only (no Apple Developer ID); matches the /download
+          # page guidance about the first-launch Gatekeeper prompt on macOS.
+          CSC_IDENTITY_AUTO_DISCOVERY: "false"
+        run: npx --no-install electron-builder ${{ matrix.ebflag }} --config package.json --publish never
+
+      - name: Collect artifacts and checksums
+        id: collect
+        working-directory: desktop
+        run: |
+          set -euo pipefail
+          files=()
+          for f in release/formal-ai-desktop-*; do
+            case "$f" in
+              *.blockmap|*.yml) continue ;;
+              *.dmg|*.zip|*.exe|*.AppImage|*.deb|*.tar.gz) files+=("$f") ;;
+            esac
+          done
+          if [ ${#files[@]} -eq 0 ]; then
+            echo "No desktop artifacts produced for ${{ matrix.label }}" >&2
+            exit 1
+          fi
+          printf 'Artifacts:\n'; printf '  %s\n' "${files[@]}"
+          # Standard `sha256sum`-format lines with bare filenames so the
+          # in-browser verifier on the /download page can match by name.
+          node -e '
+            const fs = require("fs"); const cp = require("crypto"); const path = require("path");
+            const dir = "release";
+            const re = /^formal-ai-desktop-.*\.(dmg|zip|exe|AppImage|deb|tar\.gz)$/;
+            const names = fs.readdirSync(dir).filter((n) => re.test(n)).sort();
+            for (const n of names) {
+              const hash = cp.createHash("sha256").update(fs.readFileSync(path.join(dir, n))).digest("hex");
+              process.stdout.write(hash + "  " + n + "\n");
+            }
+          ' > "release/SHA256SUMS-${{ matrix.label }}.partial"
+          cat "release/SHA256SUMS-${{ matrix.label }}.partial"
+
+      - name: Upload assets to release
+        working-directory: desktop
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          TAG: ${{ needs.resolve.outputs.tag }}
+        run: |
+          set -euo pipefail
+          files=()
+          for f in release/formal-ai-desktop-*; do
+            case "$f" in
+              *.blockmap|*.yml) continue ;;
+              *.dmg|*.zip|*.exe|*.AppImage|*.deb|*.tar.gz) files+=("$f") ;;
+            esac
+          done
+          gh release upload "$TAG" "${files[@]}" --repo "$REPO" --clobber
+
+      - name: Attest build provenance
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-checksums: desktop/release/SHA256SUMS-${{ matrix.label }}.partial
+
+      - name: Upload checksum fragment
+        uses: actions/upload-artifact@v7
+        with:
+          name: checksums-${{ matrix.label }}
+          path: desktop/release/SHA256SUMS-${{ matrix.label }}.partial
+          retention-days: 7
+
+  finalize:
+    name: Publish SHA256SUMS.txt + provenance
+    needs: [resolve, build]
+    # always() so a partial matrix (one arch failing under fail-fast:false) still
+    # publishes checksums for the arches that did build.
+    if: ${{ always() && needs.resolve.outputs.should_build == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download checksum fragments
+        uses: actions/download-artifact@v7
+        with:
+          pattern: checksums-*
+          path: fragments
+          merge-multiple: true
+
+      - name: Build consolidated SHA256SUMS.txt and BUILD-PROVENANCE.txt
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          TAG: ${{ needs.resolve.outputs.tag }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          parts=(fragments/*.partial)
+          if [ ${#parts[@]} -eq 0 ]; then
+            echo "No checksum fragments were produced; nothing to finalize." >&2
+            exit 1
+          fi
+          # Deterministic order: concatenate fragments, sort by filename (field 2).
+          cat "${parts[@]}" | sort -k2 > SHA256SUMS.txt
+          echo "=== SHA256SUMS.txt ==="
+          cat SHA256SUMS.txt
+          commit="$(gh release view "$TAG" --repo "$REPO" --json targetCommitish --jq .targetCommitish || echo unknown)"
+          {
+            echo "formal-ai Desktop build provenance"
+            echo "=================================="
+            echo "Repository : $REPO"
+            echo "Release tag: $TAG"
+            echo "Commitish  : $commit"
+            echo "Workflow   : Desktop Release"
+            echo "Run        : $RUN_URL"
+            echo "Builders   : ubuntu-latest (linux-x64), ubuntu-24.04-arm (linux-arm64),"
+            echo "             macos-15-intel (macos-x64), macos-14 (macos-arm64),"
+            echo "             windows-latest (windows-x64), windows-11-arm (windows-arm64)"
+            echo "Signing    : macOS artifacts are ad-hoc signed (no Apple Developer ID)."
+            echo "Attestation: SLSA build provenance attached via actions/attest-build-provenance."
+            echo "             Verify with: gh attestation verify <file> --repo $REPO"
+            echo ""
+            echo "SHA-256 checksums (see SHA256SUMS.txt for the authoritative copy):"
+            echo ""
+            cat SHA256SUMS.txt
+          } > BUILD-PROVENANCE.txt
+          echo "=== BUILD-PROVENANCE.txt ==="
+          cat BUILD-PROVENANCE.txt
+
+      - name: Upload SHA256SUMS.txt and BUILD-PROVENANCE.txt to release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          TAG: ${{ needs.resolve.outputs.tag }}
+        run: |
+          set -euo pipefail
+          gh release upload "$TAG" SHA256SUMS.txt BUILD-PROVENANCE.txt --repo "$REPO" --clobber

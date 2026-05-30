@@ -1,6 +1,7 @@
 extern crate alloc;
 
 pub mod agent;
+pub mod anthropic;
 pub mod arithmetic;
 pub mod associative_package;
 pub(crate) mod calculation;
@@ -16,7 +17,9 @@ pub mod intent_formalization;
 pub mod language;
 pub mod link_store;
 pub(crate) mod links_format;
+pub mod links_query;
 pub mod memory;
+pub mod memory_sync;
 pub mod probability;
 pub mod program_plan;
 pub mod proof_engine;
@@ -49,6 +52,10 @@ pub use agent::{
     AgentCommandResult, AgentError, AgentRun, AgentRunStatus, AgentWorkspace, AgentWorkspaceConfig,
     PlannedAgentAction,
 };
+pub use anthropic::{
+    anthropic_message_sse, create_anthropic_message_with_solver, AnthropicMessage,
+    AnthropicMessageInput, AnthropicMessagesRequest, AnthropicTextBlock, AnthropicUsage,
+};
 pub use associative_package::{
     default_associative_packages, default_package_store, AssociativePackage, PackageDependency,
     PackageHandler, PackageImportError, PackageInstallError, PackagePermission,
@@ -73,12 +80,19 @@ pub use link_store::{
     selected_link_store_backend, validate_memory_links_notation, DefaultNativeLinkStore,
     DoubletLink, LinkRecord, LinkStore, LinkStoreBackend, LinkStoreError,
 };
+pub use links_query::{
+    parse_links_query, run_links_query, run_links_query_against, EdgePattern, Field, Filter,
+    FilterOp, LinksQuery, LinksQueryError, LinksQueryResult, NodePattern,
+};
 pub use memory::{
     export_bundle as export_memory_bundle, export_full_memory as export_memory_full,
     export_links_notation as export_memory_links_notation, extract_memory_from_bundle,
     import_full_memory as import_memory_full, parse_links_notation as parse_memory_links_notation,
     suggest_migrations as suggest_memory_migrations, BundleInfo, MemoryEvent, MemoryStore,
     ParsedBundle,
+};
+pub use memory_sync::{
+    configured_memory_path, events_since, merge_event, merge_union_by_id, SyncStore,
 };
 pub use probability::{
     rank_probability_candidates, ProbabilityCandidate, ProbabilityEvidence, ProbabilityModel,

@@ -1,0 +1,9 @@
+The repository referenced in issue #347 as https://github.com/link-assistant/link-cli
+returns HTTP 404 (Not Found) under the link-assistant owner.
+
+However, a repository named "link-cli" DOES exist under the link-foundation owner:
+  https://github.com/link-foundation/link-cli
+
+Data for the existing link-foundation/link-cli repo has been collected into:
+  link-cli-meta.json, link-cli-readme.md, link-cli-tree.txt
+(these reflect link-foundation/link-cli, NOT link-assistant/link-cli).

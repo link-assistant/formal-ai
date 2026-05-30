@@ -4,11 +4,17 @@ use std::net::{TcpListener, TcpStream};
 use serde::Serialize;
 use serde_json::json;
 
+use crate::anthropic::{
+    anthropic_message_sse, create_anthropic_message_with_solver, AnthropicMessagesRequest,
+};
 use crate::engine::{is_known_trace_id, knowledge_graph, knowledge_graph_dot, DEFAULT_MODEL};
+use crate::links_query::run_links_query;
+use crate::memory_sync::SyncStore;
 use crate::protocol::{
     create_chat_completion_with_solver, create_response_with_solver, ChatCompletionRequest,
     ResponsesRequest,
 };
+use crate::seed::merged_bundle;
 use crate::solver::{ExecutionSurface, SolverConfig, UniversalSolver};
 use crate::telegram::handle_telegram_webhook;
 
@@ -119,6 +125,15 @@ pub fn handle_api_request_with_auth(
             }),
         ),
         ("GET", "/v1/graph") => handle_graph_request(query),
+        ("GET", "/v1/bundle") => links_notation_response(200, merged_bundle()),
+        ("GET", "/v1/links") => links_notation_response(200, knowledge_graph().to_links_notation()),
+        ("POST", "/v1/links/query") => handle_links_query_request(body),
+        ("GET", "/v1/memory") => {
+            links_notation_response(200, SyncStore::open().to_links_notation())
+        }
+        ("GET", "/v1/memory/since") => handle_memory_since_request(query),
+        ("POST", "/v1/memory/import") => handle_memory_import_request(body),
+        ("POST", "/v1/messages") => handle_anthropic_messages_request(body),
         ("POST", "/v1/chat/completions") => {
             match serde_json::from_str::<ChatCompletionRequest>(body) {
                 Ok(request) => {
@@ -230,6 +245,107 @@ fn sse_response<T: Serialize>(value: &T) -> ApiHttpResponse {
     ApiHttpResponse {
         status_code: 200,
         content_type: "text/event-stream",
+        body,
+    }
+}
+
+/// Translate an Anthropic Messages request (`POST /v1/messages`) so the `claude`
+/// CLI can target the local server directly (R4 / ROADMAP D4). The underlying
+/// reasoning is the same OpenAI-compatible solver (R7); only the envelope is
+/// translated, plus an Anthropic SSE stream when `stream: true`.
+fn handle_anthropic_messages_request(body: &str) -> ApiHttpResponse {
+    match serde_json::from_str::<AnthropicMessagesRequest>(body) {
+        Ok(request) => {
+            let solver = http_solver();
+            let message = create_anthropic_message_with_solver(&request, &solver);
+            if request.stream {
+                ApiHttpResponse {
+                    status_code: 200,
+                    content_type: "text/event-stream",
+                    body: anthropic_message_sse(&message),
+                }
+            } else {
+                json_response(200, &message)
+            }
+        }
+        Err(error) => error_response(400, &format!("invalid messages request: {error}")),
+    }
+}
+
+/// Evaluate a LinksQL query (`POST /v1/links/query`, ROADMAP D3 / R6). The body
+/// is a Links-Notation envelope carrying the query string; the response is the
+/// matched nodes/edges as a Links-Notation envelope (R7 keeps this internal
+/// channel Links-native rather than introducing a non-OpenAI JSON REST surface).
+fn handle_links_query_request(body: &str) -> ApiHttpResponse {
+    let Some(query) = parse_links_query_body(body) else {
+        return error_response(400, "request must provide a `query` string");
+    };
+    match run_links_query(&query) {
+        Ok(result) => links_notation_response(200, result.to_links_notation()),
+        Err(error) => error_response(400, &format!("invalid LinksQL query: {error}")),
+    }
+}
+
+/// Extract the LinksQL query string from a request body. Accepts either a JSON
+/// object (`{"query": "..."}`, for tooling convenience) or a Links-Notation
+/// envelope (`links_query`\n`  query "..."`).
+fn parse_links_query_body(body: &str) -> Option<String> {
+    if let Ok(value) = serde_json::from_str::<serde_json::Value>(body) {
+        if let Some(query) = value.get("query").and_then(|item| item.as_str()) {
+            return Some(query.to_owned());
+        }
+    }
+    for line in body.lines() {
+        let trimmed = line.trim();
+        if let Some(rest) = trimmed.strip_prefix("query ") {
+            let unquoted = rest.trim().trim_matches('"');
+            if !unquoted.is_empty() {
+                return Some(unquoted.replace("\\\"", "\""));
+            }
+        }
+    }
+    None
+}
+
+/// Return the memory delta after a given event id (`GET /v1/memory/since?event=<id>`,
+/// ROADMAP D1 / R5c). The payload is `demo_memory` Links Notation (R7).
+fn handle_memory_since_request(query: &str) -> ApiHttpResponse {
+    let last_seen = query_param(query, "event");
+    let store = SyncStore::open();
+    links_notation_response(200, store.delta_links_notation(last_seen.as_deref()))
+}
+
+/// Merge an inbound `demo_memory` document into the shared store
+/// (`POST /v1/memory/import`, ROADMAP D1 / R5c).
+fn handle_memory_import_request(body: &str) -> ApiHttpResponse {
+    let mut store = SyncStore::open();
+    match store.import_links_notation(body) {
+        Ok(added) => json_response(
+            200,
+            &json!({
+                "object": "memory.import",
+                "added": added,
+                "total": store.events().len(),
+            }),
+        ),
+        Err(error) => error_response(500, &format!("failed to persist memory: {error}")),
+    }
+}
+
+fn query_param(query: &str, key: &str) -> Option<String> {
+    query
+        .split('&')
+        .filter(|part| !part.is_empty())
+        .find_map(|pair| {
+            let (name, value) = pair.split_once('=')?;
+            (name == key).then(|| value.to_owned())
+        })
+}
+
+const fn links_notation_response(status_code: u16, body: String) -> ApiHttpResponse {
+    ApiHttpResponse {
+        status_code,
+        content_type: "text/plain",
         body,
     }
 }

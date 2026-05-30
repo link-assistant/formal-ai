@@ -1,6 +1,6 @@
 {
   "name": "formal-ai-desktop",
-  "version": "0.129.0",
+  "version": "0.153.0",
   "private": true,
   "description": "Cross-platform desktop wrapper for formal-ai",
   "main": "main.cjs",
@@ -11,7 +11,8 @@
     "build:linux": "electron-builder --linux --config package.json",
     "build:mac": "electron-builder --mac --config package.json",
     "build:win": "electron-builder --win --config package.json",
-    "smoke": "node scripts/smoke.mjs"
+    "smoke": "node scripts/smoke.mjs",
+    "test": "node --test scripts/tool-router.test.mjs scripts/memory-sync.test.mjs && node scripts/smoke.mjs"
   },
   "devDependencies": {
     "electron": "^31.7.7",
@@ -24,6 +25,7 @@
     "files": [
       "main.cjs",
       "preload.cjs",
+      "lib/**",
       "package.json",
       "dist-web/**"
     ],
@@ -45,20 +47,28 @@
         "deb",
         "tar.gz"
       ],
-      "category": "Utility"
+      "category": "Utility",
+      "artifactName": "formal-ai-desktop-linux-${arch}-${version}.${ext}"
     },
     "mac": {
       "target": [
         "dmg",
         "zip"
       ],
-      "category": "public.app-category.productivity"
+      "category": "public.app-category.productivity",
+      "artifactName": "formal-ai-desktop-macos-${arch}-${version}.${ext}"
     },
     "win": {
       "target": [
         "nsis",
         "portable"
       ]
+    },
+    "nsis": {
+      "artifactName": "formal-ai-desktop-windows-installer-${arch}-${version}.${ext}"
+    },
+    "portable": {
+      "artifactName": "formal-ai-desktop-windows-portable-${arch}-${version}.${ext}"
     }
   }
 }
