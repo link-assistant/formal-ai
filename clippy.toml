@@ -1,0 +1,4 @@
+# Product, protocol, and technology names that are valid in documentation prose
+# without backticks. `..` appends to clippy's built-in doc-valid-idents list
+# rather than replacing it.
+doc-valid-idents = ["OpenAI", "LinksQL", "LiteLLM", "IndexedDB", ".."]
