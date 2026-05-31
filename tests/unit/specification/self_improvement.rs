@@ -7,7 +7,7 @@ use formal_ai::{
 };
 use lino_objects_codec::format::parse_indented;
 
-fn verified_reverse_sort_unknown_trace() -> UnknownTrace {
+fn verified_reverse_sort_event_log() -> EventLog {
     let mut log = EventLog::new();
     log.append(
         "selected_rule",
@@ -25,7 +25,11 @@ fn verified_reverse_sort_unknown_trace() -> UnknownTrace {
         "write_program_plan",
         "program_plan\n  base_task list_files\n  resolved_task list_files_reverse_sort\n  modifier reverse_sort",
     );
+    log
+}
 
+fn verified_reverse_sort_unknown_trace() -> UnknownTrace {
+    let log = verified_reverse_sort_event_log();
     UnknownTrace::from_event_log("Sort the results in reverse order", "write_program", &log)
         .expect("selected_rule initial unknown should be accumulated")
 }
@@ -59,6 +63,46 @@ fn self_improvement_proposes_human_readable_seed_rule_from_verified_unknown_trac
     assert!(run_lino.contains("self_improvement_run"));
     assert!(run_lino.contains("adoption \"adoptable\""));
     assert!(run_lino.contains("seed_rule"));
+}
+
+#[test]
+fn self_improvement_trace_accumulation_covers_supported_languages() {
+    struct LanguageCase {
+        language: &'static str,
+        prompt: &'static str,
+    }
+
+    let cases = [
+        LanguageCase {
+            language: "en",
+            prompt: "Sort the results in reverse order",
+        },
+        LanguageCase {
+            language: "ru",
+            prompt: "Отсортируй результаты в обратном порядке",
+        },
+        LanguageCase {
+            language: "hi",
+            prompt: "परिणामों को उल्टे क्रम में छांटो",
+        },
+        LanguageCase {
+            language: "zh",
+            prompt: "按相反顺序排列结果",
+        },
+    ];
+
+    for case in cases {
+        let log = verified_reverse_sort_event_log();
+        let trace = UnknownTrace::from_event_log(case.prompt, "write_program", &log)
+            .expect("selected_rule initial unknown should be accumulated");
+
+        assert_eq!(trace.prompt, case.prompt);
+        assert!(["en", "ru", "hi", "zh"].contains(&case.language));
+        assert!(trace
+            .events
+            .iter()
+            .any(|event| event.kind == "rule_synthesis_candidate"));
+    }
 }
 
 #[test]
