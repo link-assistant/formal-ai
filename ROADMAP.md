@@ -18,7 +18,12 @@ text-manipulation handler triggers from a single shared, data-driven
 multilingual operation vocabulary in every supported language, and the
 JavaScript browser worker derives the same synthesis/numeric/program/text
 answers as the Rust core, verified by a shared cross-runtime fixture. With
-E1-E34 all merged, **no vision-planning epic remains open** for issue #244.
+E1-E34 all merged, **no vision-planning epic remains open** for issue #244. A
+seventh pass on 2026-05-31 records the separate issue #349 reverse-sort roadmap:
+issues [#355](https://github.com/link-assistant/formal-ai/issues/355)-[#364](https://github.com/link-assistant/formal-ai/issues/364)
+are closed and merged, and the epic [#365](https://github.com/link-assistant/formal-ai/issues/365)
+is closed by the final verification report in PR
+[#377](https://github.com/link-assistant/formal-ai/pull/377).
 
 It complements the existing docs rather than replacing them:
 
@@ -213,6 +218,33 @@ issue #244. The deep per-requirement plan lives in
 | --- | --- | --- | --- |
 | E33 | [#326](https://github.com/link-assistant/formal-ai/issues/326) | Universal multilingual operation vocabulary: every reasoning handler triggers equally in `en\|ru\|hi\|zh` via one shared data-driven vocabulary, not per-handler English literals | Closed / merged (PR [#328](https://github.com/link-assistant/formal-ai/pull/328)) |
 | E34 | [#327](https://github.com/link-assistant/formal-ai/issues/327) | Cross-runtime parity: the JS browser worker derives synthesis/numeric/program/text answers exactly as the Rust core does (E28-E31), verified by shared parity tests | Closed / merged (PR [#329](https://github.com/link-assistant/formal-ai/pull/329)) |
+
+## Issue #349 Reverse-Sort Roadmap - closed and merged
+
+The issue #349 roadmap fixed the reported multi-turn Russian coding dialog:
+after the assistant wrote a Rust file-listing program and modified it to accept
+a path argument, the follow-up "Сделай сортировку результатов в обратном
+порядке" must produce a reverse-sorted program modification instead of
+`intent: unknown`.
+
+Issue [#365](https://github.com/link-assistant/formal-ai/issues/365) is the
+final tracker for this roadmap. Its blockers are all closed, and the closure
+evidence is recorded in
+[`docs/case-studies/issue-365/README.md`](docs/case-studies/issue-365/README.md).
+
+| Issue | Closing PR | Result |
+| --- | --- | --- |
+| [#355](https://github.com/link-assistant/formal-ai/issues/355) | [#366](https://github.com/link-assistant/formal-ai/pull/366) | Active #349 reverse-sort integration reproduction. |
+| [#356](https://github.com/link-assistant/formal-ai/issues/356) | [#367](https://github.com/link-assistant/formal-ai/pull/367) | Rule-synthesis design over Links Notation. |
+| [#357](https://github.com/link-assistant/formal-ai/issues/357) | [#369](https://github.com/link-assistant/formal-ai/pull/369) | Active-program coreference for bare program-result follow-ups. |
+| [#358](https://github.com/link-assistant/formal-ai/issues/358) | [#370](https://github.com/link-assistant/formal-ai/pull/370) | Composable program modifiers, including `reverse_sort`. |
+| [#359](https://github.com/link-assistant/formal-ai/issues/359) | [#371](https://github.com/link-assistant/formal-ai/pull/371) | Rule construction for unknown program follow-ups. |
+| [#360](https://github.com/link-assistant/formal-ai/issues/360) | [#372](https://github.com/link-assistant/formal-ai/pull/372) | Default-off diagnostics for the full write-program reasoning chain. |
+| [#361](https://github.com/link-assistant/formal-ai/issues/361) | [#373](https://github.com/link-assistant/formal-ai/pull/373) | Rust/browser-worker parity for the #349 flow. |
+| [#362](https://github.com/link-assistant/formal-ai/issues/362) | [#374](https://github.com/link-assistant/formal-ai/pull/374) | Multilingual coding-modification benchmark ratchet. |
+| [#363](https://github.com/link-assistant/formal-ai/issues/363) | [#375](https://github.com/link-assistant/formal-ai/pull/375) | Reasoning-first report behavior. |
+| [#364](https://github.com/link-assistant/formal-ai/issues/364) | [#376](https://github.com/link-assistant/formal-ai/pull/376) | White-box unknown-trace self-improvement loop. |
+| [#365](https://github.com/link-assistant/formal-ai/issues/365) | [#377](https://github.com/link-assistant/formal-ai/pull/377) | Final closure report and verification map. |
 
 ## Verification Contract
 
