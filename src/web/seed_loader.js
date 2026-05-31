@@ -37,6 +37,7 @@
     "seed/greetings.lino",
     "seed/identity.lino",
     "seed/hello-world-programs.lino",
+    "seed/self-improvement-loop.lino",
     "seed/demo-dialogs.lino",
     "seed/environments.lino",
   ];

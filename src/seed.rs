@@ -81,6 +81,10 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
             HELLO_WORLD_PROGRAMS_LINO,
         ),
         ("data/seed/program-plan-rules.lino", PROGRAM_PLAN_RULES_LINO),
+        (
+            "data/seed/self-improvement-loop.lino",
+            SELF_IMPROVEMENT_LOOP_LINO,
+        ),
         ("data/seed/demo-dialogs.lino", DEMO_DIALOGS_LINO),
         ("data/seed/environments.lino", ENVIRONMENTS_LINO),
         ("data/seed/projects.lino", PROJECTS_LINO),
@@ -741,6 +745,8 @@ pub const GREETINGS_LINO: &str = include_str!("../data/seed/greetings.lino");
 pub const IDENTITY_LINO: &str = include_str!("../data/seed/identity.lino");
 pub const HELLO_WORLD_PROGRAMS_LINO: &str = include_str!("../data/seed/hello-world-programs.lino");
 pub const PROGRAM_PLAN_RULES_LINO: &str = include_str!("../data/seed/program-plan-rules.lino");
+pub const SELF_IMPROVEMENT_LOOP_LINO: &str =
+    include_str!("../data/seed/self-improvement-loop.lino");
 pub const DEMO_DIALOGS_LINO: &str = include_str!("../data/seed/demo-dialogs.lino");
 pub const ENVIRONMENTS_LINO: &str = include_str!("../data/seed/environments.lino");
 pub const PROJECTS_LINO: &str = include_str!("../data/seed/projects.lino");
