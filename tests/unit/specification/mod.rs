@@ -58,6 +58,7 @@ mod project_lookups;
 mod prompt_variations;
 mod reasoning_loop;
 mod reasoning_paths;
+mod self_improvement;
 mod source_cache;
 mod substitution_rules;
 mod summarization_pipeline;
