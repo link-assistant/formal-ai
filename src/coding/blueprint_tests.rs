@@ -41,6 +41,18 @@ fn selects_rust_http_json_stats_blueprint() {
 }
 
 #[test]
+fn selects_python_personal_budget_report_blueprint() {
+    let prompt = "search average living costs in moscow berlin and new york write a python \
+                  program with monthly income 50/30/20 budget rule annual return 10 years \
+                  comparison table markdown report with sources";
+    let blueprint = select_blueprint(prompt, "python").expect("budget blueprint resolves");
+    assert_eq!(blueprint.recipe.slug, "personal_budget_report");
+    assert_eq!(blueprint.program.language_slug, "python");
+    assert!(blueprint.program.code.contains("budget_50_30_20"));
+    assert!(blueprint.program.code.contains("budget_report.md"));
+}
+
+#[test]
 fn missing_statistics_capability_does_not_match_recipe() {
     // http + json but no statistics -> the recipe's required capabilities are
     // not all present, so no blueprint (honest unsupported fallback kept).

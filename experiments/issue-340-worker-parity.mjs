@@ -100,6 +100,99 @@ check(
   hit && hit.evidence.includes("execution_status:rust:unavailable"),
 );
 
+// 1b. Issue #342: a budget-calculator request includes web research, Python
+// code, 50/30/20 budgeting, compound savings, a city comparison table, and a
+// Markdown report. It must route to a Python blueprint before the generic web
+// search handler can collapse the request to only "search".
+const budgetPrompt =
+  "I want to build a budget calculator. Here's what I need:\n\n" +
+  "1. Search for average living costs in Moscow, Berlin, and New York\n" +
+  "2. Write a Python program that takes monthly income as input, calculates " +
+  "50/30/20 budget rule, and shows how much can be saved in each city\n" +
+  "3. Calculate: If I save 20% of $3000 monthly at 8% annual return for " +
+  "10 years, how much will I have?\n" +
+  "4. Create a comparison table with city name, average rent, remaining " +
+  "budget after expenses, and years to save $100,000\n" +
+  "5. Export all this as a formatted markdown report with sources.";
+const budget = tryWriteProgram(budgetPrompt, [], "en");
+check(
+  "budget request routes to write_program blueprint",
+  budget && budget.intent === "write_program",
+  budget && budget.intent,
+);
+check(
+  "budget blueprint embeds Python report generator",
+  budget &&
+    budget.content.includes("```python") &&
+    budget.content.includes("budget_50_30_20") &&
+    budget.content.includes("budget_report.md"),
+  budget && budget.content,
+);
+check(
+  "budget blueprint covers cities and sources",
+  budget &&
+    budget.content.includes("Moscow") &&
+    budget.content.includes("Berlin") &&
+    budget.content.includes("New York") &&
+    budget.content.includes("## Sources"),
+  budget && budget.content,
+);
+check(
+  "budget blueprint evidence link is present",
+  budget &&
+    budget.evidence.includes(
+      "response:write_program:blueprint:personal_budget_report:python",
+    ),
+  budget && JSON.stringify(budget.evidence),
+);
+check(
+  "budget blueprint records the recipe",
+  budget &&
+    budget.evidence.includes("program_blueprint:recipe:personal_budget_report"),
+  budget && JSON.stringify(budget.evidence),
+);
+for (const { language, prompt, statusLabel } of [
+  {
+    language: "ru",
+    prompt:
+      "Найди источники по средней стоимости жизни и аренде в Москве, Берлине и Нью-Йорке. " +
+      "Напиши программу на Python, которая принимает месячный доход, применяет правило " +
+      "бюджета 50/30/20, считает накопить 20% от $3000, создает таблицу сравнения и " +
+      "экспортирует markdown отчёт с источниками.",
+    statusLabel: "Статус выполнения",
+  },
+  {
+    language: "hi",
+    prompt:
+      "मास्को, बर्लिन और न्यूयॉर्क में औसत जीवन यापन लागत और किराया के स्रोत खोजो। " +
+      "Python प्रोग्राम लिखो जो मासिक आय ले, 50/30/20 बजट नियम लगाए, $3000 का 20% " +
+      "8% वार्षिक रिटर्न पर 10 साल बचत की गणना करे, तुलना तालिका बनाए और स्रोतों के " +
+      "साथ मार्कडाउन रिपोर्ट निर्यात करे।",
+    statusLabel: "निष्पादन स्थिति",
+  },
+  {
+    language: "zh",
+    prompt:
+      "搜索莫斯科、柏林和纽约的平均生活成本和租金来源。编写 Python 程序，输入月收入，应用 " +
+      "50/30/20 预算规则，计算每月存 $3000 的 20% 按 8% 年收益 10 年，创建比较表格，" +
+      "并导出带来源的 Markdown 报告。",
+    statusLabel: "执行状态",
+  },
+]) {
+  const localizedBudget = tryWriteProgram(prompt, [], language);
+  check(
+    `budget request routes in ${language}`,
+    localizedBudget &&
+      localizedBudget.intent === "write_program" &&
+      localizedBudget.content.includes(statusLabel) &&
+      localizedBudget.evidence.includes(
+        "program_blueprint:recipe:personal_budget_report",
+      ),
+    localizedBudget &&
+      `${localizedBudget.intent} :: ${(localizedBudget.content || "").slice(0, 120)}`,
+  );
+}
+
 // 2. Python and JavaScript variants resolve too.
 const py = tryWriteProgram(
   "Write a Python program that makes an HTTP GET request, parses the JSON, and computes the mean and median.",

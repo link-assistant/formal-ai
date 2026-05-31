@@ -19,6 +19,7 @@
 //! as `crate::coding::ProgramSpec` rather than reaching into the submodule.
 
 pub mod blueprint;
+mod blueprint_programs;
 pub mod catalog;
 pub mod guidance;
 
