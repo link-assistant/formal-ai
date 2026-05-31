@@ -1,6 +1,6 @@
 use std::collections::{BTreeMap, BTreeSet};
 
-use formal_ai::{agent_info, FormalAiEngine};
+use formal_ai::{agent_info, ConversationTurn, FormalAiEngine, UniversalSolver};
 
 const WEB_SEARCH_SOURCE_MARKER_CASES: &[(&str, &str, &str)] = &[
     ("en", "Find apple on the internet", "apple"),
@@ -250,6 +250,50 @@ fn information_search_variants_route_to_web_search_handler() {
             response.answer,
         );
     }
+}
+
+#[test]
+fn research_comparison_table_followup_uses_prior_search_topics() {
+    let solver = UniversalSolver::default();
+    let search_prompt = "Search for information about:\n\
+                         1. Machine learning algorithms\n\
+                         2. Deep learning vs traditional ML\n\
+                         3. Neural networks basics";
+    let search_response = solver.solve(search_prompt);
+    assert_eq!(search_response.intent, "web_search");
+
+    let history = [
+        ConversationTurn::user(search_prompt),
+        ConversationTurn::assistant(search_response.answer),
+    ];
+    let response = solver.solve_with_history(
+        "create a comparison table showing:\n\
+         - Key differences\n\
+         - Use cases for each\n\
+         - Advantages and disadvantages",
+        &history,
+    );
+
+    assert_eq!(
+        response.intent, "research_comparison_table",
+        "agent follow-up should create a comparison table instead of falling through, got {} with answer {}",
+        response.intent, response.answer,
+    );
+    assert!(response
+        .answer
+        .contains("| Topic | Key differences | Use cases | Advantages | Disadvantages |"));
+    assert!(response.answer.contains("Machine learning algorithms"));
+    assert!(response.answer.contains("Deep learning vs traditional ML"));
+    assert!(response.answer.contains("Neural networks basics"));
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("research_table:prior_search:")),
+        "comparison table should record the prior search it reused: {:?}",
+        response.evidence_links,
+    );
+    assert_ne!(response.intent, "unknown");
 }
 
 #[test]
