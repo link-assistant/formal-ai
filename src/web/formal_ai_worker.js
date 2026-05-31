@@ -12604,6 +12604,121 @@ const BLUEPRINT_CAPABILITIES = [
       "评论",
     ],
   },
+  {
+    slug: "web_research",
+    label: "Research current source data",
+    keywords: [
+      "search",
+      "research",
+      "sources",
+      "source",
+      "look up",
+      "current",
+      "average",
+      "поиск",
+      "источник",
+      "источники",
+      "искать",
+      "खोज",
+      "स्रोत",
+      "वर्तमान",
+      "搜索",
+      "来源",
+    ],
+  },
+  {
+    slug: "city_costs",
+    label: "Compare city living costs",
+    keywords: [
+      "living costs",
+      "cost of living",
+      "average rent",
+      "rent",
+      "moscow",
+      "berlin",
+      "new york",
+      "city",
+      "cities",
+      "аренда",
+      "стоимость жизни",
+      "москва",
+      "берлин",
+      "нью-йорк",
+      "जीवन यापन",
+      "लागत",
+      "किराया",
+      "मास्को",
+      "बर्लिन",
+      "न्यूयॉर्क",
+      "租金",
+      "生活成本",
+    ],
+  },
+  {
+    slug: "budget_rule",
+    label: "Apply the 50/30/20 budget rule",
+    keywords: [
+      "50/30/20",
+      "budget rule",
+      "monthly income",
+      "income",
+      "needs",
+      "wants",
+      "savings",
+      "бюджет",
+      "доход",
+      "сбереж",
+      "बजट",
+      "आय",
+      "बचत",
+      "预算",
+      "收入",
+    ],
+  },
+  {
+    slug: "compound_savings",
+    label: "Project compound savings",
+    keywords: [
+      "annual return",
+      "return",
+      "8%",
+      "10 years",
+      "$3000",
+      "100,000",
+      "100000",
+      "years to save",
+      "накопить",
+      "доходность",
+      "वार्षिक रिटर्न",
+      "रिटर्न",
+      "साल",
+      "收益",
+      "年",
+    ],
+  },
+  {
+    slug: "markdown_report",
+    label: "Export a Markdown comparison report",
+    keywords: [
+      "markdown",
+      "formatted markdown",
+      "report",
+      "comparison table",
+      "table",
+      "export",
+      "отчет",
+      "отчёт",
+      "таблица",
+      "экспорт",
+      "मार्कडाउन",
+      "रिपोर्ट",
+      "तालिका",
+      "निर्यात",
+      "报告",
+      "表格",
+      "导出",
+    ],
+  },
 ];
 
 // Curated programs (verbatim copies of the Rust raw-string consts). They are
@@ -12798,6 +12913,129 @@ main().catch((error) => {
 });
 `;
 
+const BLUEPRINT_PYTHON_PERSONAL_BUDGET_REPORT = `from dataclasses import dataclass
+from math import log
+from pathlib import Path
+
+
+@dataclass(frozen=True)
+class CityCost:
+    city: str
+    average_rent: float
+    living_cost_ex_rent: float
+    source: str
+
+
+CITY_COSTS = [
+    CityCost('Moscow', 950.0, 850.0, 'https://www.numbeo.com/cost-of-living/in/Moscow'),
+    CityCost('Berlin', 1550.0, 1250.0, 'https://www.numbeo.com/cost-of-living/in/Berlin'),
+    CityCost('New York', 3600.0, 1850.0, 'https://www.numbeo.com/cost-of-living/in/New-York'),
+]
+ANNUAL_RETURN = 0.08
+GOAL = 100_000.0
+
+
+def budget_50_30_20(monthly_income):
+    return {
+        'needs': monthly_income * 0.50,
+        'wants': monthly_income * 0.30,
+        'savings': monthly_income * 0.20,
+    }
+
+
+def future_value(monthly_contribution, annual_return, years):
+    monthly_rate = annual_return / 12
+    months = years * 12
+    return monthly_contribution * (((1 + monthly_rate) ** months - 1) / monthly_rate)
+
+
+def years_to_goal(monthly_savings, goal=GOAL, annual_return=ANNUAL_RETURN):
+    if monthly_savings <= 0:
+        return None
+    monthly_rate = annual_return / 12
+    months = log(1 + goal * monthly_rate / monthly_savings) / log(1 + monthly_rate)
+    return months / 12
+
+
+def money(value):
+    return f'$\{value:,.0f}'
+
+
+def years(value):
+    return 'not reachable' if value is None else f'\{value:.1f}'
+
+
+def comparison_rows(monthly_income):
+    plan = budget_50_30_20(monthly_income)
+    rows = []
+    for cost in CITY_COSTS:
+        expenses = cost.average_rent + cost.living_cost_ex_rent
+        remaining = monthly_income - expenses
+        monthly_savings = max(0.0, min(plan['savings'], remaining))
+        rows.append({
+            'city': cost.city,
+            'rent': cost.average_rent,
+            'remaining': remaining,
+            'monthly_savings': monthly_savings,
+            'years_to_100k': years_to_goal(monthly_savings),
+            'source': cost.source,
+        })
+    return rows
+
+
+def render_markdown(monthly_income):
+    plan = budget_50_30_20(monthly_income)
+    scenario_savings = 3000.0 * 0.20
+    scenario_future = future_value(scenario_savings, ANNUAL_RETURN, 10)
+    lines = [
+        '# Budget Calculator Report',
+        '',
+        '## 50/30/20 Budget',
+        f'- Monthly income: \{money(monthly_income)}',
+        f'- Needs (50%): \{money(plan["needs"])}',
+        f'- Wants (30%): \{money(plan["wants"])}',
+        f'- Savings (20%): \{money(plan["savings"])}',
+        '',
+        '## Investment Scenario',
+        f'- 20% of $3000 monthly: \{money(scenario_savings)}',
+        f'- Future value after 10 years at 8% annual return: \{money(scenario_future)}',
+        '',
+        '## City Comparison',
+        '| City | Average rent | Remaining budget after expenses | Years to save $100,000 |',
+        '| --- | ---: | ---: | ---: |',
+    ]
+    for row in comparison_rows(monthly_income):
+        lines.append(
+            f'| \{row["city"]} | \{money(row["rent"])} | '
+            f'\{money(row["remaining"])} | \{years(row["years_to_100k"])} |'
+        )
+    lines.extend(['', '## Sources'])
+    for cost in CITY_COSTS:
+        lines.append(f'- \{cost.city}: \{cost.source}')
+    lines.append('')
+    lines.append('Review and update the city-cost values after checking the source pages.')
+    return '\\n'.join(lines)
+
+
+def read_income():
+    try:
+        raw = input('Monthly income in USD [3000]: ').strip()
+    except EOFError:
+        raw = ''
+    return float(raw or '3000')
+
+
+def main():
+    report = render_markdown(read_income())
+    Path('budget_report.md').write_text(report, encoding='utf-8')
+    print(report)
+    print('\\nMarkdown report written to budget_report.md')
+
+
+if __name__ == '__main__':
+    main()
+`;
+
 // Curated composite recipes. Mirrors `RECIPES` in `src/coding/blueprint.rs`.
 const BLUEPRINT_RECIPES = [
   {
@@ -12809,32 +13047,55 @@ const BLUEPRINT_RECIPES = [
         languageSlug: "rust",
         libraries: ["reqwest (blocking, json)", "serde_json"],
         runCommand: "cargo run -- <url-returning-json>",
+        execution: "external_libraries_and_network",
         code: BLUEPRINT_RUST_HTTP_JSON_STATS,
       },
       {
         languageSlug: "python",
         libraries: ["requests"],
         runCommand: "python stats.py <url-returning-json>",
+        execution: "external_libraries_and_network",
         code: BLUEPRINT_PYTHON_HTTP_JSON_STATS,
       },
       {
         languageSlug: "javascript",
         libraries: ["Node.js 18+ (built-in global fetch; no extra packages)"],
         runCommand: "node stats.js <url-returning-json>",
+        execution: "external_libraries_and_network",
         code: BLUEPRINT_JAVASCRIPT_HTTP_JSON_STATS,
+      },
+    ],
+  },
+  {
+    slug: "personal_budget_report",
+    label: "build a sourced 50/30/20 city budget calculator and Markdown report",
+    requiredCapabilities: [
+      "web_research",
+      "city_costs",
+      "budget_rule",
+      "compound_savings",
+      "markdown_report",
+    ],
+    programs: [
+      {
+        languageSlug: "python",
+        libraries: ["Python 3 standard library only"],
+        runCommand: "python budget_report.py",
+        execution: "review_data_assumptions",
+        code: BLUEPRINT_PYTHON_PERSONAL_BUDGET_REPORT,
       },
     ],
   },
 ];
 
 // Mirror of `contains_keyword` in `src/coding/blueprint.rs`: CJK keywords match
-// by substring; multi-word phrases match by substring; single Latin/Cyrillic
-// words match on token boundaries, allowing a stem prefix when len >= 4.
+// by substring; multi-word phrases match by substring; single words match on
+// token boundaries, allowing a stem prefix when len >= 4.
 function blueprintContainsKeyword(normalized, keyword) {
   if (containsCjk(keyword)) return normalized.includes(keyword);
   if (keyword.includes(" ")) return normalized.includes(keyword);
   return normalized
-    .split(/[^\p{L}\p{N}]+/u)
+    .split(/[^\p{L}\p{N}\p{M}]+/u)
     .some(
       (token) =>
         token === keyword || (keyword.length >= 4 && token.startsWith(keyword)),
@@ -12881,32 +13142,40 @@ const BLUEPRINT_I18N = {
       `Here is a ${name} program for the requested composite task (${label}). I decomposed your request into these sub-tasks:`,
     librariesHeading: "Required libraries:",
     howToRunHeading: "How to run it yourself:",
-    executionReport: (runCommand) =>
-      `Execution status: not run — this program needs external libraries and network access, so the offline sandbox does not execute it. The code is provided for review. Run it yourself: \`${runCommand}\`.`,
+    executionReport: (runCommand, execution) =>
+      execution === "review_data_assumptions"
+        ? `Execution status: not run — this report blueprint was not executed in the offline sandbox, and the city-cost assumptions should be reviewed against the listed sources before use. The code is provided for review. Run it yourself: \`${runCommand}\`.`
+        : `Execution status: not run — this program needs external libraries and network access, so the offline sandbox does not execute it. The code is provided for review. Run it yourself: \`${runCommand}\`.`,
   },
   ru: {
     intro: (name, label) =>
       `Вот программа на языке ${name}, которая решает составную задачу (${label}). Я разбил ваш запрос на следующие подзадачи:`,
     librariesHeading: "Необходимые библиотеки:",
     howToRunHeading: "Как запустить самостоятельно:",
-    executionReport: (runCommand) =>
-      `Статус выполнения: не запускалось — программе нужны внешние библиотеки и доступ к сети, поэтому офлайн-песочница её не выполняет. Код приведён для проверки. Запустить самостоятельно: \`${runCommand}\`.`,
+    executionReport: (runCommand, execution) =>
+      execution === "review_data_assumptions"
+        ? `Статус выполнения: не запускалось — этот отчёт не выполнялся в офлайн-песочнице, а допущения о стоимости жизни нужно сверить с указанными источниками. Код приведён для проверки. Запустить самостоятельно: \`${runCommand}\`.`
+        : `Статус выполнения: не запускалось — программе нужны внешние библиотеки и доступ к сети, поэтому офлайн-песочница её не выполняет. Код приведён для проверки. Запустить самостоятельно: \`${runCommand}\`.`,
   },
   hi: {
     intro: (name, label) =>
       `यहाँ ${name} में एक प्रोग्राम है जो इस संयुक्त कार्य को हल करता है (${label})। मैंने आपके अनुरोध को इन उप-कार्यों में विभाजित किया है:`,
     librariesHeading: "आवश्यक लाइब्रेरियाँ:",
     howToRunHeading: "इसे स्वयं कैसे चलाएँ:",
-    executionReport: (runCommand) =>
-      `निष्पादन स्थिति: नहीं चलाया गया — प्रोग्राम को बाहरी लाइब्रेरियों और नेटवर्क पहुँच की आवश्यकता है, इसलिए ऑफ़लाइन सैंडबॉक्स इसे नहीं चलाता। कोड समीक्षा के लिए दिया गया है। स्वयं चलाएँ: \`${runCommand}\`।`,
+    executionReport: (runCommand, execution) =>
+      execution === "review_data_assumptions"
+        ? `निष्पादन स्थिति: नहीं चलाया गया — यह रिपोर्ट ऑफ़लाइन सैंडबॉक्स में नहीं चली, और शहर-लागत मानों को दिए गए स्रोतों से जाँचना चाहिए। कोड समीक्षा के लिए दिया गया है। स्वयं चलाएँ: \`${runCommand}\`।`
+        : `निष्पादन स्थिति: नहीं चलाया गया — प्रोग्राम को बाहरी लाइब्रेरियों और नेटवर्क पहुँच की आवश्यकता है, इसलिए ऑफ़लाइन सैंडबॉक्स इसे नहीं चलाता। कोड समीक्षा के लिए दिया गया है। स्वयं चलाएँ: \`${runCommand}\`।`,
   },
   zh: {
     intro: (name, label) =>
       `这是一个解决该复合任务的 ${name} 程序（${label}）。我已将您的请求分解为以下子任务：`,
     librariesHeading: "所需的库：",
     howToRunHeading: "如何自行运行：",
-    executionReport: (runCommand) =>
-      `执行状态：未运行 —— 该程序需要外部库和网络访问，因此离线沙箱不会执行它。代码仅供审阅。自行运行：\`${runCommand}\`。`,
+    executionReport: (runCommand, execution) =>
+      execution === "review_data_assumptions"
+        ? `执行状态：未运行 —— 该报告未在离线沙箱中执行，城市成本假设应先按列出的来源核对。代码仅供审阅。自行运行：\`${runCommand}\`。`
+        : `执行状态：未运行 —— 该程序需要外部库和网络访问，因此离线沙箱不会执行它。代码仅供审阅。自行运行：\`${runCommand}\`。`,
   },
 };
 
@@ -12931,6 +13200,21 @@ const BLUEPRINT_CAPABILITY_LABELS = {
   "comments:ru": "Снабдить код комментариями",
   "comments:hi": "कोड में टिप्पणियाँ जोड़ें",
   "comments:zh": "为代码添加注释",
+  "web_research:ru": "Найти актуальные исходные данные",
+  "web_research:hi": "वर्तमान स्रोत डेटा खोजें",
+  "web_research:zh": "检索当前来源数据",
+  "city_costs:ru": "Сравнить стоимость жизни по городам",
+  "city_costs:hi": "शहरों की जीवन-यापन लागत की तुलना करें",
+  "city_costs:zh": "比较城市生活成本",
+  "budget_rule:ru": "Применить правило бюджета 50/30/20",
+  "budget_rule:hi": "50/30/20 बजट नियम लागू करें",
+  "budget_rule:zh": "应用 50/30/20 预算规则",
+  "compound_savings:ru": "Рассчитать накопления со сложным процентом",
+  "compound_savings:hi": "चक्रवृद्धि बचत का अनुमान लगाएँ",
+  "compound_savings:zh": "预测复利储蓄",
+  "markdown_report:ru": "Экспортировать Markdown-отчёт со сравнением",
+  "markdown_report:hi": "Markdown तुलना रिपोर्ट निर्यात करें",
+  "markdown_report:zh": "导出 Markdown 比较报告",
 };
 
 // Localized one-line recipe summaries keyed by `${slug}:${language}`; English
@@ -12940,6 +13224,12 @@ const BLUEPRINT_RECIPE_SUMMARIES = {
   "http_json_stats:hi":
     "HTTP के माध्यम से JSON प्राप्त करें और उसकी संख्याओं का औसत और माध्यिका दिखाएँ",
   "http_json_stats:zh": "通过 HTTP 获取 JSON 并报告其中数字的平均值和中位数",
+  "personal_budget_report:ru":
+    "собрать бюджетный калькулятор 50/30/20 с городскими расходами, источниками и Markdown-отчётом",
+  "personal_budget_report:hi":
+    "स्रोतों सहित 50/30/20 शहर बजट कैलकुलेटर और Markdown रिपोर्ट बनाएँ",
+  "personal_budget_report:zh":
+    "生成带来源的 50/30/20 城市预算计算器和 Markdown 报告",
 };
 
 // The line-comment marker for a program language. Mirrors `comment_marker` in
@@ -13120,6 +13410,7 @@ function renderBlueprint(blueprint, language, composition) {
   }
   body += `\n${strings.howToRunHeading}\n\n${strings.executionReport(
     blueprint.program.runCommand,
+    blueprint.program.execution,
   )}`;
   return body;
 }

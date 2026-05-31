@@ -35,6 +35,10 @@
 
 use std::fmt::Write as _;
 
+use crate::coding::blueprint_programs::{
+    JAVASCRIPT_HTTP_JSON_STATS, PYTHON_HTTP_JSON_STATS, PYTHON_PERSONAL_BUDGET_REPORT,
+    RUST_HTTP_JSON_STATS,
+};
 use crate::language::Language;
 use crate::solver::BlueprintComposition;
 
@@ -61,7 +65,15 @@ pub struct RecipeProgram {
     /// The command a user runs to execute the program once dependencies are
     /// installed. Canonical (not localized) — it is a literal shell command.
     pub run_command: &'static str,
+    pub execution: BlueprintExecution,
     pub code: &'static str,
+}
+
+/// Why a blueprint program is returned with an honest "not run" status.
+#[derive(Clone, Copy)]
+pub enum BlueprintExecution {
+    ExternalLibrariesAndNetwork,
+    ReviewDataAssumptions,
 }
 
 /// A composite program recipe: a recognizable multi-step task that needs
@@ -203,226 +215,175 @@ pub const CAPABILITIES: &[Capability] = &[
             "评论",
         ],
     },
+    Capability {
+        slug: "web_research",
+        label: "Research current source data",
+        keywords: &[
+            "search",
+            "research",
+            "sources",
+            "source",
+            "look up",
+            "current",
+            "average",
+            "поиск",
+            "источник",
+            "источники",
+            "искать",
+            "खोज",
+            "स्रोत",
+            "वर्तमान",
+            "搜索",
+            "来源",
+        ],
+    },
+    Capability {
+        slug: "city_costs",
+        label: "Compare city living costs",
+        keywords: &[
+            "living costs",
+            "cost of living",
+            "average rent",
+            "rent",
+            "moscow",
+            "berlin",
+            "new york",
+            "city",
+            "cities",
+            "аренда",
+            "стоимость жизни",
+            "москва",
+            "берлин",
+            "нью-йорк",
+            "जीवन यापन",
+            "लागत",
+            "किराया",
+            "मास्को",
+            "बर्लिन",
+            "न्यूयॉर्क",
+            "租金",
+            "生活成本",
+        ],
+    },
+    Capability {
+        slug: "budget_rule",
+        label: "Apply the 50/30/20 budget rule",
+        keywords: &[
+            "50/30/20",
+            "budget rule",
+            "monthly income",
+            "income",
+            "needs",
+            "wants",
+            "savings",
+            "бюджет",
+            "доход",
+            "сбереж",
+            "बजट",
+            "आय",
+            "बचत",
+            "预算",
+            "收入",
+        ],
+    },
+    Capability {
+        slug: "compound_savings",
+        label: "Project compound savings",
+        keywords: &[
+            "annual return",
+            "return",
+            "8%",
+            "10 years",
+            "$3000",
+            "100,000",
+            "100000",
+            "years to save",
+            "накопить",
+            "доходность",
+            "वार्षिक रिटर्न",
+            "रिटर्न",
+            "साल",
+            "收益",
+            "年",
+        ],
+    },
+    Capability {
+        slug: "markdown_report",
+        label: "Export a Markdown comparison report",
+        keywords: &[
+            "markdown",
+            "formatted markdown",
+            "report",
+            "comparison table",
+            "table",
+            "export",
+            "отчет",
+            "отчёт",
+            "таблица",
+            "экспорт",
+            "मार्कडाउन",
+            "रिपोर्ट",
+            "तालिका",
+            "निर्यात",
+            "报告",
+            "表格",
+            "导出",
+        ],
+    },
 ];
 
 /// Curated composite recipes. Programs are hand-written, idiomatic, and reviewed
 /// (not sandbox-executed, by design — they need network access / external
 /// libraries). Each was checked for syntax with its toolchain offline; see
 /// `experiments/issue-340-blueprint`.
-pub const RECIPES: &[BlueprintRecipe] = &[BlueprintRecipe {
-    slug: "http_json_stats",
-    label: "fetch JSON over HTTP and report the mean and median of its numbers",
-    required_capabilities: &["http_request", "json_parse", "statistics"],
-    programs: &[
-        RecipeProgram {
-            language_slug: "rust",
-            libraries: &["reqwest (blocking, json)", "serde_json"],
-            run_command: "cargo run -- <url-returning-json>",
-            code: RUST_HTTP_JSON_STATS,
-        },
-        RecipeProgram {
+pub const RECIPES: &[BlueprintRecipe] = &[
+    BlueprintRecipe {
+        slug: "http_json_stats",
+        label: "fetch JSON over HTTP and report the mean and median of its numbers",
+        required_capabilities: &["http_request", "json_parse", "statistics"],
+        programs: &[
+            RecipeProgram {
+                language_slug: "rust",
+                libraries: &["reqwest (blocking, json)", "serde_json"],
+                run_command: "cargo run -- <url-returning-json>",
+                execution: BlueprintExecution::ExternalLibrariesAndNetwork,
+                code: RUST_HTTP_JSON_STATS,
+            },
+            RecipeProgram {
+                language_slug: "python",
+                libraries: &["requests"],
+                run_command: "python stats.py <url-returning-json>",
+                execution: BlueprintExecution::ExternalLibrariesAndNetwork,
+                code: PYTHON_HTTP_JSON_STATS,
+            },
+            RecipeProgram {
+                language_slug: "javascript",
+                libraries: &["Node.js 18+ (built-in global fetch; no extra packages)"],
+                run_command: "node stats.js <url-returning-json>",
+                execution: BlueprintExecution::ExternalLibrariesAndNetwork,
+                code: JAVASCRIPT_HTTP_JSON_STATS,
+            },
+        ],
+    },
+    BlueprintRecipe {
+        slug: "personal_budget_report",
+        label: "build a sourced 50/30/20 city budget calculator and Markdown report",
+        required_capabilities: &[
+            "web_research",
+            "city_costs",
+            "budget_rule",
+            "compound_savings",
+            "markdown_report",
+        ],
+        programs: &[RecipeProgram {
             language_slug: "python",
-            libraries: &["requests"],
-            run_command: "python stats.py <url-returning-json>",
-            code: PYTHON_HTTP_JSON_STATS,
-        },
-        RecipeProgram {
-            language_slug: "javascript",
-            libraries: &["Node.js 18+ (built-in global fetch; no extra packages)"],
-            run_command: "node stats.js <url-returning-json>",
-            code: JAVASCRIPT_HTTP_JSON_STATS,
-        },
-    ],
-}];
-
-const RUST_HTTP_JSON_STATS: &str = r#"//! Fetch JSON from a URL and report the mean and median of every number in it.
-//!
-//! Cargo.toml dependencies:
-//!   reqwest = { version = "0.12", features = ["blocking", "json"] }
-//!   serde_json = "1"
-
-use std::env;
-use std::error::Error;
-
-use serde_json::Value;
-
-/// Recursively collect every numeric value out of a decoded JSON document,
-/// regardless of how deeply it is nested inside arrays or objects.
-fn collect_numbers(value: &Value, numbers: &mut Vec<f64>) {
-    match value {
-        Value::Number(number) => {
-            if let Some(as_float) = number.as_f64() {
-                numbers.push(as_float);
-            }
-        }
-        Value::Array(items) => items.iter().for_each(|item| collect_numbers(item, numbers)),
-        Value::Object(map) => map.values().for_each(|item| collect_numbers(item, numbers)),
-        _ => {}
-    }
-}
-
-/// Arithmetic mean of the samples (the caller guarantees a non-empty slice).
-fn mean(samples: &[f64]) -> f64 {
-    samples.iter().sum::<f64>() / samples.len() as f64
-}
-
-/// Median of the samples; averages the two middle values when the count is even.
-fn median(samples: &mut [f64]) -> f64 {
-    samples.sort_by(|left, right| left.partial_cmp(right).expect("no NaN in input"));
-    let middle = samples.len() / 2;
-    if samples.len() % 2 == 0 {
-        (samples[middle - 1] + samples[middle]) / 2.0
-    } else {
-        samples[middle]
-    }
-}
-
-fn main() -> Result<(), Box<dyn Error>> {
-    // 1. Read the target URL from the first command-line argument.
-    let url = env::args()
-        .nth(1)
-        .ok_or("usage: stats <url-returning-json>")?;
-
-    // 2. Make the HTTP GET request and parse the JSON body. Both steps can fail,
-    //    so `?` propagates any network or decoding error up to `main`.
-    let document: Value = reqwest::blocking::get(&url)?.json()?;
-
-    // 3. Gather every number from the decoded document.
-    let mut numbers = Vec::new();
-    collect_numbers(&document, &mut numbers);
-    // region:error_handling
-    // Guard against an empty data set before computing statistics.
-    if numbers.is_empty() {
-        return Err("the JSON response contained no numbers".into());
-    }
-    // endregion:error_handling
-
-    // 4. Compute and print the statistics.
-    println!("count:  {}", numbers.len());
-    println!("mean:   {:.4}", mean(&numbers));
-    println!("median: {:.4}", median(&mut numbers));
-    Ok(())
-}
-"#;
-
-const PYTHON_HTTP_JSON_STATS: &str = r#""""Fetch JSON from a URL and report the mean and median of every number in it.
-
-Dependencies:  pip install requests
-"""
-
-import statistics
-import sys
-
-import requests
-
-
-def collect_numbers(value):
-    """Recursively collect every int/float out of a decoded JSON value."""
-    # bool subclasses int, so skip it explicitly
-    if isinstance(value, bool):
-        return []
-    if isinstance(value, (int, float)):
-        return [float(value)]
-    if isinstance(value, list):
-        return [number for item in value for number in collect_numbers(item)]
-    if isinstance(value, dict):
-        return [number for item in value.values() for number in collect_numbers(item)]
-    return []
-
-
-def main():
-    # 1. Read the target URL from the first command-line argument.
-    if len(sys.argv) < 2:
-        raise SystemExit("usage: stats.py <url-returning-json>")
-    url = sys.argv[1]
-
-    # 2. Make the HTTP GET request and parse the JSON body.
-    response = requests.get(url, timeout=30)
-    # region:error_handling
-    # Turn any non-2xx HTTP status into an exception before decoding.
-    response.raise_for_status()
-    # endregion:error_handling
-    document = response.json()
-
-    # 3. Gather every number from the decoded JSON.
-    numbers = collect_numbers(document)
-    # region:error_handling
-    if not numbers:
-        raise SystemExit("the JSON response contained no numbers")
-    # endregion:error_handling
-
-    # 4. Compute and print the statistics.
-    print(f"count:  {len(numbers)}")
-    print(f"mean:   {statistics.mean(numbers):.4f}")
-    print(f"median: {statistics.median(numbers):.4f}")
-
-
-if __name__ == "__main__":
-    main()
-"#;
-
-const JAVASCRIPT_HTTP_JSON_STATS: &str = r#"// Fetch JSON from a URL and report the mean and median of every number in it.
-//
-// Requirements: Node.js 18+ (built-in global fetch; no extra packages).
-
-// Recursively collect every finite number out of a decoded JSON value.
-function collectNumbers(value) {
-  if (typeof value === "number" && Number.isFinite(value)) return [value];
-  if (Array.isArray(value)) return value.flatMap(collectNumbers);
-  if (value && typeof value === "object") {
-    return Object.values(value).flatMap(collectNumbers);
-  }
-  return [];
-}
-
-// Arithmetic mean of the samples (the caller guarantees a non-empty array).
-function mean(samples) {
-  return samples.reduce((total, sample) => total + sample, 0) / samples.length;
-}
-
-// Median of the samples; averages the two middle values for an even count.
-function median(samples) {
-  const sorted = [...samples].sort((left, right) => left - right);
-  const middle = Math.floor(sorted.length / 2);
-  return sorted.length % 2 === 0
-    ? (sorted[middle - 1] + sorted[middle]) / 2
-    : sorted[middle];
-}
-
-async function main() {
-  // 1. Read the target URL from the first command-line argument.
-  const url = process.argv[2];
-  if (!url) throw new Error("usage: node stats.js <url-returning-json>");
-
-  // 2. Make the HTTP GET request and parse the JSON body.
-  const response = await fetch(url);
-  // region:error_handling
-  // Fail fast on a non-2xx status before we try to decode the body.
-  if (!response.ok) {
-    throw new Error(`HTTP ${response.status} ${response.statusText}`);
-  }
-  // endregion:error_handling
-  const document = await response.json();
-
-  // 3. Gather every number from the decoded JSON.
-  const numbers = collectNumbers(document);
-  // region:error_handling
-  if (numbers.length === 0) {
-    throw new Error("the JSON response contained no numbers");
-  }
-  // endregion:error_handling
-
-  // 4. Compute and print the statistics.
-  console.log(`count:  ${numbers.length}`);
-  console.log(`mean:   ${mean(numbers).toFixed(4)}`);
-  console.log(`median: ${median(numbers).toFixed(4)}`);
-}
-
-main().catch((error) => {
-  console.error(error.message);
-  process.exitCode = 1;
-});
-"#;
+            libraries: &["Python 3 standard library only"],
+            run_command: "python budget_report.py",
+            execution: BlueprintExecution::ReviewDataAssumptions,
+            code: PYTHON_PERSONAL_BUDGET_REPORT,
+        }],
+    },
+];
 
 /// Detect which capabilities a normalized (lowercased) prompt requests, in
 /// catalog order so the decomposition plan reads top-to-bottom.
@@ -469,10 +430,10 @@ fn contains_keyword(normalized: &str, keyword: &str) -> bool {
     if keyword.contains(' ') {
         return normalized.contains(keyword);
     }
-    // Token-boundary match for single Latin/Cyrillic words, but allow a stem
-    // (e.g. "запрос" matching "запросы") by also accepting a prefix match on a
-    // token. This keeps short tokens from matching inside unrelated words while
-    // tolerating inflection in Russian/Hindi.
+    // Token-boundary match for single words, but allow a stem (e.g. "запрос"
+    // matching "запросы") by also accepting a prefix match on a token. This
+    // keeps short tokens from matching inside unrelated words while tolerating
+    // inflection in Russian/Hindi.
     normalized
         .split(|character: char| !character.is_alphanumeric())
         .any(|token| token == keyword || (keyword.len() >= 4 && token.starts_with(keyword)))
@@ -687,6 +648,21 @@ pub fn capability_label(capability: &Capability, language: Language) -> &'static
         ("comments", Language::Russian) => "Снабдить код комментариями",
         ("comments", Language::Hindi) => "कोड में टिप्पणियाँ जोड़ें",
         ("comments", Language::Chinese) => "为代码添加注释",
+        ("web_research", Language::Russian) => "Найти актуальные исходные данные",
+        ("web_research", Language::Hindi) => "वर्तमान स्रोत डेटा खोजें",
+        ("web_research", Language::Chinese) => "检索当前来源数据",
+        ("city_costs", Language::Russian) => "Сравнить стоимость жизни по городам",
+        ("city_costs", Language::Hindi) => "शहरों की जीवन-यापन लागत की तुलना करें",
+        ("city_costs", Language::Chinese) => "比较城市生活成本",
+        ("budget_rule", Language::Russian) => "Применить правило бюджета 50/30/20",
+        ("budget_rule", Language::Hindi) => "50/30/20 बजट नियम लागू करें",
+        ("budget_rule", Language::Chinese) => "应用 50/30/20 预算规则",
+        ("compound_savings", Language::Russian) => "Рассчитать накопления со сложным процентом",
+        ("compound_savings", Language::Hindi) => "चक्रवृद्धि बचत का अनुमान लगाएँ",
+        ("compound_savings", Language::Chinese) => "预测复利储蓄",
+        ("markdown_report", Language::Russian) => "Экспортировать Markdown-отчёт со сравнением",
+        ("markdown_report", Language::Hindi) => "Markdown तुलना रिपोर्ट निर्यात करें",
+        ("markdown_report", Language::Chinese) => "导出 Markdown 比较报告",
         _ => capability.label,
     }
 }
@@ -706,19 +682,43 @@ pub const fn libraries_heading(language: Language) -> &'static str {
 /// it depends on external libraries and/or network access the offline sandbox
 /// cannot provide. The run command stays canonical.
 #[must_use]
-pub fn blueprint_execution_report(run_command: &str, language: Language) -> String {
-    match language {
-        Language::Russian => format!(
+pub fn blueprint_execution_report(
+    run_command: &str,
+    execution: BlueprintExecution,
+    language: Language,
+) -> String {
+    match (execution, language) {
+        (BlueprintExecution::ReviewDataAssumptions, Language::Russian) => format!(
+            "Статус выполнения: не запускалось — этот отчёт не выполнялся в офлайн-песочнице, \
+             а допущения о стоимости жизни нужно сверить с указанными источниками. Код \
+             приведён для проверки. Запустить самостоятельно: `{run_command}`."
+        ),
+        (BlueprintExecution::ReviewDataAssumptions, Language::Hindi) => format!(
+            "निष्पादन स्थिति: नहीं चलाया गया — यह रिपोर्ट ऑफ़लाइन सैंडबॉक्स में नहीं चली, \
+             और शहर-लागत मानों को दिए गए स्रोतों से जाँचना चाहिए। कोड समीक्षा के लिए दिया \
+             गया है। स्वयं चलाएँ: `{run_command}`।"
+        ),
+        (BlueprintExecution::ReviewDataAssumptions, Language::Chinese) => format!(
+            "执行状态：未运行 —— 该报告未在离线沙箱中执行，城市成本假设应先按列出的来源核对。\
+             代码仅供审阅。自行运行：`{run_command}`。"
+        ),
+        (BlueprintExecution::ReviewDataAssumptions, _) => format!(
+            "Execution status: not run — this report blueprint was not executed in the \
+             offline sandbox, and the city-cost assumptions should be reviewed against the \
+             listed sources before use. The code is provided for review. Run it yourself: \
+             `{run_command}`."
+        ),
+        (_, Language::Russian) => format!(
             "Статус выполнения: не запускалось — программе нужны внешние библиотеки и \
              доступ к сети, поэтому офлайн-песочница её не выполняет. Код приведён для \
              проверки. Запустить самостоятельно: `{run_command}`."
         ),
-        Language::Hindi => format!(
+        (_, Language::Hindi) => format!(
             "निष्पादन स्थिति: नहीं चलाया गया — प्रोग्राम को बाहरी लाइब्रेरियों और नेटवर्क पहुँच \
              की आवश्यकता है, इसलिए ऑफ़लाइन सैंडबॉक्स इसे नहीं चलाता। कोड समीक्षा के लिए दिया \
              गया है। स्वयं चलाएँ: `{run_command}`।"
         ),
-        Language::Chinese => format!(
+        (_, Language::Chinese) => format!(
             "执行状态：未运行 —— 该程序需要外部库和网络访问，因此离线沙箱不会执行它。\
              代码仅供审阅。自行运行：`{run_command}`。"
         ),
@@ -743,6 +743,15 @@ pub fn recipe_summary(recipe: &BlueprintRecipe, language: Language) -> &'static 
         }
         ("http_json_stats", Language::Chinese) => {
             "通过 HTTP 获取 JSON 并报告其中数字的平均值和中位数"
+        }
+        ("personal_budget_report", Language::Russian) => {
+            "собрать бюджетный калькулятор 50/30/20 с городскими расходами, источниками и Markdown-отчётом"
+        }
+        ("personal_budget_report", Language::Hindi) => {
+            "स्रोतों सहित 50/30/20 शहर बजट कैलकुलेटर और Markdown रिपोर्ट बनाएँ"
+        }
+        ("personal_budget_report", Language::Chinese) => {
+            "生成带来源的 50/30/20 城市预算计算器和 Markdown 报告"
         }
         _ => recipe.label,
     }
@@ -806,7 +815,11 @@ pub fn render(blueprint: &Blueprint, language: Language, strategy: BlueprintComp
         body,
         "\n{}\n\n{}",
         how_to_run_heading(language),
-        blueprint_execution_report(blueprint.program.run_command, language)
+        blueprint_execution_report(
+            blueprint.program.run_command,
+            blueprint.program.execution,
+            language
+        )
     )
     .expect("string write is infallible");
 

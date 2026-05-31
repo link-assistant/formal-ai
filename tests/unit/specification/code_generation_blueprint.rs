@@ -123,6 +123,152 @@ fn python_http_json_statistics_request_returns_blueprint_program() {
 }
 
 #[test]
+fn budget_calculator_request_returns_python_blueprint_program() {
+    let response = answer(
+        "I want to build a budget calculator. Here's what I need:\n\
+         \n\
+         1. Search for average living costs in Moscow, Berlin, and New York\n\
+         2. Write a Python program that:\n\
+            - Takes monthly income as input\n\
+            - Calculates 50/30/20 budget rule (needs/wants/savings)\n\
+            - Shows how much can be saved in each city\n\
+         3. Calculate: If I save 20% of $3000 monthly at 8% annual return for 10 years, \
+            how much will I have?\n\
+         4. Create a comparison table showing:\n\
+            - City name\n\
+            - Average rent\n\
+            - Remaining budget after expenses\n\
+            - Years to save $100,000\n\
+         5. Export all this as a formatted markdown report with sources.",
+    );
+
+    assert_eq!(
+        response.intent, "write_program",
+        "budget calculator request should be answered, not dead-ended, got: {}",
+        response.intent
+    );
+    assert!(
+        !response.answer.contains("I do not have a template"),
+        "budget request must not surface the unsupported dead-end, got: {}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains("```python"),
+        "answer should include a Python code block, got: {}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains("50/30/20") || response.answer.contains("0.50"),
+        "program should calculate the 50/30/20 rule, got: {}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains("future_value")
+            && response.answer.contains("0.08")
+            && response.answer.contains("10"),
+        "program should calculate the requested 10-year future value, got: {}",
+        response.answer
+    );
+    for city in ["Moscow", "Berlin", "New York"] {
+        assert!(
+            response.answer.contains(city),
+            "program should compare {city}, got: {}",
+            response.answer
+        );
+    }
+    assert!(
+        response.answer.contains("markdown") || response.answer.contains(".md"),
+        "program should export a formatted markdown report, got: {}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains("Source") || response.answer.contains("sources"),
+        "program should include source metadata, got: {}",
+        response.answer
+    );
+    assert!(
+        response
+            .links_notation
+            .contains("program_blueprint:recipe personal_budget_report"),
+        "trace should record the resolved budget recipe, got: {}",
+        response.links_notation
+    );
+    assert!(
+        response.evidence_links.iter().any(|link| {
+            link == "response:write_program:blueprint:personal_budget_report:python"
+        }),
+        "evidence links should include the budget blueprint response link, got: {:?}",
+        response.evidence_links
+    );
+}
+
+#[test]
+fn budget_calculator_blueprint_covers_supported_prompt_languages() {
+    struct Case {
+        language: &'static str,
+        prompt: &'static str,
+        localized_status: &'static str,
+    }
+
+    let cases = [
+        Case {
+            language: "en",
+            prompt: "Search sources for average living costs and rent in Moscow, Berlin, and New York. \
+                     Write a Python program that takes monthly income, applies the 50/30/20 budget rule, \
+                     calculates saving 20% of $3000 monthly at 8% annual return for 10 years, creates a \
+                     comparison table, and exports a markdown report with sources.",
+            localized_status: "Execution status",
+        },
+        Case {
+            language: "ru",
+            prompt: "Найди источники по средней стоимости жизни и аренде в Москве, Берлине и Нью-Йорке. \
+                     Напиши программу на Python, которая принимает месячный доход, применяет правило \
+                     бюджета 50/30/20, считает накопить 20% от $3000, создает таблицу сравнения и \
+                     экспортирует markdown отчёт с источниками.",
+            localized_status: "Статус выполнения",
+        },
+        Case {
+            language: "hi",
+            prompt: "मास्को, बर्लिन और न्यूयॉर्क में औसत जीवन यापन लागत और किराया के स्रोत खोजो। \
+                     Python प्रोग्राम लिखो जो मासिक आय ले, 50/30/20 बजट नियम लगाए, $3000 का 20% \
+                     8% वार्षिक रिटर्न पर 10 साल बचत की गणना करे, तुलना तालिका बनाए और स्रोतों के \
+                     साथ मार्कडाउन रिपोर्ट निर्यात करे।",
+            localized_status: "निष्पादन स्थिति",
+        },
+        Case {
+            language: "zh",
+            prompt: "搜索莫斯科、柏林和纽约的平均生活成本和租金来源。编写 Python 程序，输入月收入，应用 \
+                     50/30/20 预算规则，计算每月存 $3000 的 20% 按 8% 年收益 10 年，创建比较表格，\
+                     并导出带来源的 Markdown 报告。",
+            localized_status: "执行状态",
+        },
+    ];
+
+    for case in cases {
+        let response = answer(case.prompt);
+        assert_eq!(
+            response.intent, "write_program",
+            "language {} should route to budget blueprint, got: {}",
+            case.language, response.intent
+        );
+        assert!(
+            response.answer.contains(case.localized_status),
+            "language {} should receive localized execution status, got: {}",
+            case.language,
+            response.answer
+        );
+        assert!(
+            response
+                .links_notation
+                .contains("program_blueprint:recipe personal_budget_report"),
+            "language {} should record budget recipe, got: {}",
+            case.language,
+            response.links_notation
+        );
+    }
+}
+
+#[test]
 fn javascript_http_json_statistics_request_returns_blueprint_program() {
     let response = answer(
         "Write a JavaScript program that fetches JSON from a URL via an HTTP GET request, \
