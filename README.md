@@ -85,6 +85,132 @@ curl -s http://127.0.0.1:8080/v1/models \
   -H 'authorization: Bearer local-test-token'
 ```
 
+## Agentic AI Tools
+
+Run the local HTTP server before connecting terminal agents. The server binds
+to loopback in these examples and exposes the same symbolic engine through the
+OpenAI Chat Completions, OpenAI Responses, and Anthropic Messages envelopes:
+
+```bash
+cargo run -- serve --host 127.0.0.1 --port 8080
+curl -s http://127.0.0.1:8080/health
+curl -s http://127.0.0.1:8080/v1/models
+```
+
+If you enabled bearer auth, export the same value for the CLI you connect:
+
+```bash
+export FORMAL_AI_API_KEY="local-test-token"
+```
+
+When no bearer token is configured, any non-empty API key value is enough for
+clients that require one. Keep the server on `127.0.0.1` unless you are
+deliberately exposing it behind your own authentication boundary.
+
+### Codex CLI
+
+Codex custom providers use the Responses wire API, so point Codex at the
+server's `/v1` base URL and keep `wire_api = "responses"` in
+`~/.codex/config.toml`:
+
+```toml
+model_provider = "formal-ai"
+model = "formal-symbolic-production"
+
+[model_providers.formal-ai]
+name = "formal-ai local server"
+base_url = "http://127.0.0.1:8080/v1"
+env_key = "FORMAL_AI_API_KEY"
+wire_api = "responses"
+```
+
+```bash
+codex "summarize the local reasoning trace"
+```
+
+### Claude Code
+
+Claude Code talks to the Anthropic Messages API. formal-ai serves that adapter
+at `/v1/messages`, so use the server root as `ANTHROPIC_BASE_URL`:
+
+```bash
+export ANTHROPIC_BASE_URL="http://127.0.0.1:8080"
+export ANTHROPIC_API_KEY="${FORMAL_AI_API_KEY:-local-test-token}"
+claude
+```
+
+### OpenCode
+
+OpenCode can call formal-ai through its OpenAI-compatible provider package,
+which targets `/v1/chat/completions`. Add a local provider in
+`~/.config/opencode/opencode.json`:
+
+```json
+{
+  "$schema": "https://opencode.ai/config.json",
+  "provider": {
+    "formal-ai": {
+      "name": "formal-ai local server",
+      "npm": "@ai-sdk/openai-compatible",
+      "options": {
+        "baseURL": "http://127.0.0.1:8080/v1",
+        "apiKey": "{env:FORMAL_AI_API_KEY}"
+      },
+      "models": {
+        "formal-symbolic-production": {
+          "name": "formal-symbolic-production"
+        }
+      }
+    }
+  },
+  "model": "formal-ai/formal-symbolic-production"
+}
+```
+
+```bash
+opencode
+opencode run --model formal-ai/formal-symbolic-production --format json \
+  "summarize the local graph"
+```
+
+### Link Assistant Agent CLI
+
+The Link Assistant Agent CLI accepts OpenCode-style provider/model selection.
+Use the same OpenAI-compatible provider shape in
+`~/.config/link-assistant-agent/opencode.json`, then select the
+`formal-ai/formal-symbolic-production` model:
+
+```json
+{
+  "$schema": "https://opencode.ai/config.json",
+  "provider": {
+    "formal-ai": {
+      "name": "formal-ai local server",
+      "npm": "@ai-sdk/openai-compatible",
+      "options": {
+        "baseURL": "http://127.0.0.1:8080/v1",
+        "apiKey": "{env:FORMAL_AI_API_KEY}"
+      },
+      "models": {
+        "formal-symbolic-production": {
+          "name": "formal-symbolic-production"
+        }
+      }
+    }
+  },
+  "model": "formal-ai/formal-symbolic-production"
+}
+```
+
+```bash
+agent --model formal-ai/formal-symbolic-production -p \
+  "explain the last formal-ai trace"
+```
+
+Run autonomous coding CLIs only in a repository, VM, or container where their
+file and shell actions are acceptable. formal-ai's local server answers model
+requests; it does not sandbox the client process that is driving tools.
+
 Example Telegram webhook update:
 
 ```bash
