@@ -5818,6 +5818,362 @@ function trySummarizeConversation(history) {
   };
 }
 
+function tryCompoundInterest(prompt, normalized, history) {
+  const request = parseCompoundInterestRequest(prompt, normalized);
+  if (request) return answerCompoundInterest(request);
+
+  const conversion = parseFinalAmountConversionRequest(normalized, history);
+  if (conversion) return answerFinalAmountConversion(conversion);
+
+  return null;
+}
+
+function answerCompoundInterest(request) {
+  const annualRate = request.annualRatePercent / 100;
+  const periodsPerYear = request.compoundsPerYear;
+  const periodicRate = annualRate / periodsPerYear;
+  const periods = periodsPerYear * request.years;
+  const finalAmount =
+    request.principal * Math.pow(1 + periodicRate, periods);
+
+  const evidence = [
+    `calculation:compound_interest:P=${formatCompoundNumber(request.principal)};r=${formatCompoundRate(annualRate)};n=${periodsPerYear};t=${formatCompoundNumber(request.years)}`,
+    "calculation:formula:A=P(1+r/n)^(n*t)",
+  ];
+  const lines = [
+    "Compound interest calculation",
+    "",
+    "Formula: A = P(1 + r/n)^(n*t)",
+    `P = ${formatCompoundNumber(request.principal)} USD`,
+    `r = ${formatCompoundRate(annualRate)} (${formatCompoundNumber(request.annualRatePercent)}% annual)`,
+    `n = ${periodsPerYear} (${compoundLabel(periodsPerYear)})`,
+    `t = ${formatCompoundNumber(request.years)} years`,
+    "",
+    `Step 1: periodic rate = r/n = ${formatCompoundRate(annualRate)}/${periodsPerYear} = ${formatCompoundRate(periodicRate)}`,
+    `Step 2: number of periods = n*t = ${periodsPerYear}*${formatCompoundNumber(request.years)} = ${formatCompoundNumber(periods)}`,
+    `Step 3: A = ${formatCompoundNumber(request.principal)} * (1 + ${formatCompoundRate(periodicRate)})^${formatCompoundNumber(periods)}`,
+    `Final amount: ${formatCompoundMoney(finalAmount)} USD`,
+  ];
+
+  if (request.targetCurrency) {
+    appendCompoundConversionLines(
+      lines,
+      evidence,
+      finalAmount,
+      "USD",
+      request.targetCurrency,
+      request.asksForWebRate,
+    );
+  }
+
+  return {
+    intent: "calculation",
+    content: lines.join("\n"),
+    confidence: 1.0,
+    evidence,
+  };
+}
+
+function answerFinalAmountConversion(conversion) {
+  const evidence = ["calculation:final_amount_conversion"];
+  const lines = [
+    "Final amount conversion",
+    `Source amount: ${formatCompoundMoney(conversion.amount)} ${conversion.sourceCurrency}`,
+  ];
+  appendCompoundConversionLines(
+    lines,
+    evidence,
+    conversion.amount,
+    conversion.sourceCurrency,
+    conversion.targetCurrency,
+    conversion.asksForWebRate,
+  );
+  return {
+    intent: "calculation",
+    content: lines.join("\n"),
+    confidence: 1.0,
+    evidence,
+  };
+}
+
+function appendCompoundConversionLines(
+  lines,
+  evidence,
+  amount,
+  sourceCurrency,
+  targetCurrency,
+  asksForWebRate,
+) {
+  const rate = compoundCurrencyRate(sourceCurrency, targetCurrency);
+  if (!rate) {
+    evidence.push(`calculation:currency_conversion:error:${sourceCurrency}->${targetCurrency}`);
+    lines.push("");
+    lines.push(
+      `I calculated the USD amount, but no ${sourceCurrency}->${targetCurrency} exchange rate is available locally.`,
+    );
+    return;
+  }
+
+  const displayedAmount = roundCompoundMoney(amount);
+  const converted = displayedAmount * rate.rate;
+  evidence.push(
+    `calculation:currency_conversion:${formatCompoundMoney(displayedAmount)} ${sourceCurrency} to ${targetCurrency} at ${formatCompoundRate(rate.rate)}`,
+  );
+  lines.push("");
+  lines.push(`Conversion: ${sourceCurrency} -> ${targetCurrency}`);
+  lines.push(`${rate.expression} = ${rate.formatted}`);
+  lines.push(
+    `${formatCompoundMoney(displayedAmount)} ${sourceCurrency} * ${formatCompoundRate(rate.rate)} = ${formatCompoundMoney(converted)} ${targetCurrency}`,
+  );
+  if (rate.sourceDetail) {
+    lines.push(`Rate detail: ${rate.sourceDetail}`);
+  }
+  if (asksForWebRate) {
+    lines.push(
+      "Live web freshness is not independently verified here; this uses the exchange-rate source available through the local calculator.",
+    );
+  }
+}
+
+function parseCompoundInterestRequest(prompt, normalized) {
+  if (
+    !(normalized.includes("invest") || normalized.includes("investment")) ||
+    !normalized.includes("interest") ||
+    !normalized.includes("compound")
+  ) {
+    return null;
+  }
+  const principal = parseCompoundCurrencyAmount(prompt);
+  const annualRatePercent = parseCompoundPercentBeforeSymbol(prompt);
+  const compoundsPerYear = parseCompoundsPerYear(normalized);
+  const years = parseCompoundNumberBeforeKeyword(normalized, "year");
+  if (
+    principal === null ||
+    annualRatePercent === null ||
+    compoundsPerYear === null ||
+    years === null
+  ) {
+    return null;
+  }
+  return {
+    principal,
+    annualRatePercent,
+    compoundsPerYear,
+    years,
+    targetCurrency: targetCurrencyFromText(normalized),
+    asksForWebRate: asksForWebRate(normalized),
+  };
+}
+
+function parseFinalAmountConversionRequest(normalized, history) {
+  if (!normalized.includes("convert") || !normalized.includes("final amount")) {
+    return null;
+  }
+  const targetCurrency = targetCurrencyFromText(normalized);
+  if (!targetCurrency) return null;
+  const prior = priorFinalAmount(history);
+  if (!prior) return null;
+  return {
+    amount: prior.amount,
+    sourceCurrency: prior.currency,
+    targetCurrency,
+    asksForWebRate: asksForWebRate(normalized),
+  };
+}
+
+function priorFinalAmount(history) {
+  if (!Array.isArray(history)) return null;
+  for (let index = history.length - 1; index >= 0; index -= 1) {
+    const turn = history[index];
+    if (!turn || turn.role !== "assistant") continue;
+    const parsed = parseFinalAmountFromText(String(turn.content || ""));
+    if (parsed) return parsed;
+  }
+  return null;
+}
+
+function parseFinalAmountFromText(text) {
+  const match = /final amount:\s*([+-]?\d[\d,.]*)\s*([A-Za-z]{3}|dollars?|euros?|rubles?)/i.exec(
+    text,
+  );
+  if (!match) return null;
+  const amount = parseCompoundNumberText(match[1]);
+  const currency = currencyCodeFromWord(match[2]);
+  if (amount === null || !currency) return null;
+  return { amount, currency };
+}
+
+function parseCompoundCurrencyAmount(prompt) {
+  const text = String(prompt || "");
+  const dollarIndex = text.indexOf("$");
+  if (dollarIndex >= 0) {
+    return parseCompoundNumberRight(text, dollarIndex + 1);
+  }
+  const match = /([+-]?\d[\d,.]*)\s*(?:usd|dollars?)/i.exec(text);
+  return match ? parseCompoundNumberText(match[1]) : null;
+}
+
+function parseCompoundPercentBeforeSymbol(prompt) {
+  const text = String(prompt || "");
+  const percentIndex = text.indexOf("%");
+  return percentIndex >= 0 ? parseCompoundNumberLeft(text, percentIndex) : null;
+}
+
+function parseCompoundNumberBeforeKeyword(text, keyword) {
+  const index = String(text || "").indexOf(keyword);
+  return index >= 0 ? parseCompoundNumberLeft(text, index) : null;
+}
+
+function parseCompoundsPerYear(normalized) {
+  if (normalized.includes("monthly")) return 12;
+  if (normalized.includes("quarterly")) return 4;
+  if (normalized.includes("weekly")) return 52;
+  if (normalized.includes("daily")) return 365;
+  if (normalized.includes("annually") || normalized.includes("yearly")) return 1;
+  return null;
+}
+
+function targetCurrencyFromText(normalized) {
+  const padded = ` ${normalized} `;
+  if (
+    padded.includes(" eur ") ||
+    padded.includes(" euro ") ||
+    padded.includes(" euros ") ||
+    normalized.includes("€")
+  ) {
+    return "EUR";
+  }
+  if (
+    padded.includes(" usd ") ||
+    padded.includes(" dollar ") ||
+    padded.includes(" dollars ")
+  ) {
+    return "USD";
+  }
+  if (
+    padded.includes(" rub ") ||
+    padded.includes(" ruble ") ||
+    padded.includes(" rubles ")
+  ) {
+    return "RUB";
+  }
+  return "";
+}
+
+function asksForWebRate(normalized) {
+  return (
+    normalized.includes("web") ||
+    normalized.includes("current exchange") ||
+    normalized.includes("current rate") ||
+    normalized.includes("exchange rate")
+  );
+}
+
+function compoundCurrencyRate(sourceCurrency, targetCurrency) {
+  const expression = `1 ${sourceCurrency} in ${targetCurrency}`;
+  if (sourceCurrency === targetCurrency) {
+    return {
+      rate: 1,
+      expression,
+      formatted: `1 ${targetCurrency}`,
+      sourceDetail: "",
+    };
+  }
+
+  const wasmResult = wasmEvaluateArithmetic(expression);
+  if (wasmResult && wasmResult.ok) {
+    const rate = parseCompoundLeadingNumber(wasmResult.value);
+    if (rate !== null) {
+      return {
+        rate,
+        expression,
+        formatted: wasmResult.value,
+        sourceDetail: `Exchange rate: 1 ${sourceCurrency} = ${formatCompoundRate(rate)} ${targetCurrency} (source: calculator)`,
+      };
+    }
+  }
+
+  const rate = defaultCurrencyRate(sourceCurrency, targetCurrency);
+  if (!rate) return null;
+  return {
+    rate,
+    expression,
+    formatted: `${formatCompoundRate(rate)} ${targetCurrency}`,
+    sourceDetail: `Exchange rate: 1 ${sourceCurrency} = ${formatCompoundRate(rate)} ${targetCurrency} (source: default (hardcoded))`,
+  };
+}
+
+function parseCompoundNumberLeft(text, end) {
+  const before = String(text || "").slice(0, end);
+  const match = /([+-]?\d[\d,.]*)\s*$/.exec(before);
+  return match ? parseCompoundNumberText(match[1]) : null;
+}
+
+function parseCompoundNumberRight(text, start) {
+  const after = String(text || "").slice(start);
+  const match = /^\s*([+-]?\d[\d,.]*)/.exec(after);
+  return match ? parseCompoundNumberText(match[1]) : null;
+}
+
+function parseCompoundLeadingNumber(text) {
+  const match = /([+-]?\d[\d,.]*)/.exec(String(text || ""));
+  return match ? parseCompoundNumberText(match[1]) : null;
+}
+
+function parseCompoundNumberText(value) {
+  let cleaned = String(value || "").trim();
+  if (!/\d/.test(cleaned)) return null;
+  if (cleaned.includes(",") && !cleaned.includes(".")) {
+    const parts = cleaned.split(",");
+    cleaned =
+      parts.length === 2 && parts[1].length <= 2
+        ? `${parts[0]}.${parts[1]}`
+        : parts.join("");
+  } else {
+    cleaned = cleaned.replace(/,/g, "");
+  }
+  const parsed = Number(cleaned);
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
+function compoundLabel(compoundsPerYear) {
+  switch (compoundsPerYear) {
+    case 1:
+      return "annually";
+    case 4:
+      return "quarterly";
+    case 12:
+      return "monthly";
+    case 52:
+      return "weekly";
+    case 365:
+      return "daily";
+    default:
+      return "times per year";
+  }
+}
+
+function formatCompoundNumber(value) {
+  if (Math.abs(value % 1) < 1e-10) return value.toFixed(0);
+  return trimCompoundDecimal(value.toFixed(10));
+}
+
+function formatCompoundMoney(value) {
+  return value.toFixed(2);
+}
+
+function roundCompoundMoney(value) {
+  return Math.round(value * 100) / 100;
+}
+
+function formatCompoundRate(value) {
+  return trimCompoundDecimal(value.toFixed(15));
+}
+
+function trimCompoundDecimal(value) {
+  return String(value).replace(/0+$/, "").replace(/\.$/, "");
+}
+
 function tryArithmetic(prompt) {
   const extracted = extractArithmeticExpression(prompt);
   if (!extracted) return null;
@@ -18030,6 +18386,10 @@ async function solve(prompt, history, prefs, userContext = {}) {
     },
     { name: "tryTextManipulation", run: () => tryTextManipulation(prompt, normalized) },
     { name: "tryProgramSynthesis", run: () => tryProgramSynthesis(prompt, normalized) },
+    {
+      name: "tryCompoundInterest",
+      run: () => tryCompoundInterest(prompt, normalized, history),
+    },
     { name: "tryArithmetic", run: () => tryArithmetic(prompt) },
     { name: "tryJavaScriptExecution", run: () => tryJavaScriptExecution(prompt) },
     {
