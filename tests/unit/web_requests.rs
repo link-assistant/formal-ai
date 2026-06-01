@@ -297,6 +297,25 @@ fn research_comparison_table_followup_uses_prior_search_topics() {
 }
 
 #[test]
+fn research_comparison_table_change_preserves_supported_language_web_search_routing() {
+    let solver = UniversalSolver::default();
+    let cases = [
+        ("English", WEB_SEARCH_SOURCE_MARKER_CASES[0].1),
+        ("Russian", WEB_SEARCH_SOURCE_MARKER_CASES[1].1),
+        ("Hindi", WEB_SEARCH_SOURCE_MARKER_CASES[2].1),
+        ("Chinese", WEB_SEARCH_SOURCE_MARKER_CASES[3].1),
+    ];
+
+    for (language, prompt) in cases {
+        let response = solver.solve(prompt);
+        assert_eq!(
+            response.intent, "web_search",
+            "{language} web-search routing should remain ahead of the research table follow-up handler for prompt {prompt:?}",
+        );
+    }
+}
+
+#[test]
 fn implicit_research_question_routes_to_web_search_handler() {
     let prompt = "What is the most popular dataset for translation quality validation?";
     let response = FormalAiEngine.answer(prompt);
