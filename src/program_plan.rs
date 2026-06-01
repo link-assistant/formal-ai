@@ -6,7 +6,7 @@
 //! execute*. This module implements the first runtime increment of that
 //! pipeline: instead of hard-coding "a path-argument follow-up upgrades
 //! `list_files` to `list_files_arg`" as a `match` arm, the upgrade is expressed
-//! as a [`crate::substitution`] rule in [`data/seed/program-plan-rules.lino`].
+//! as a [`crate::substitution`] rule in `data/seed/program-plan-rules.lino`.
 //!
 //! The flow is:
 //!
