@@ -1,54 +1,55 @@
 //! Live reproduction for issue #349.
 //!
-//! Multi-turn Russian coding dialog:
-//!   1. (user)      write a Rust program that lists files in the current dir
-//!   2. (assistant) <program>
-//!   3. (user)      make the program accept a path as an argument   <-- WORKS
-//!   4. (assistant) <updated program>
-//!   5. (user)      sort the results in reverse order               <-- BUG: "unknown"
+//! Run with:
 //!
-//! Run: `cargo run --example repro_issue_349`
-use formal_ai::{solve_with_history, ConversationTurn};
+//! ```sh
+//! cargo run --example repro_issue_349
+//! ```
 
-fn show(label: &str, prompt: &str, history: &[ConversationTurn]) {
-    let answer = solve_with_history(prompt, history);
+use formal_ai::{ConversationTurn, SymbolicAnswer, UniversalSolver};
+
+const FIRST_PROMPT: &str =
+    "Напиши мне программу на Rust, которая выдаёт список файлов в текущей директории";
+const PATH_ARGUMENT_PROMPT: &str = "Сделай так, чтобы программа принимала путь как аргумент";
+const REVERSE_SORT_PROMPT: &str = "Сделай сортировку результатов в обратном порядке";
+
+fn show(label: &str, prompt: &str, answer: &SymbolicAnswer) {
     println!("================================================================");
     println!("{label}");
     println!("PROMPT : {prompt}");
     println!("INTENT : {}", answer.intent);
     println!("CONF   : {:.2}", answer.confidence);
-    let body = answer.answer.replace('\n', "\n         ");
-    println!("ANSWER : {body}");
+    println!("ANSWER : {}", answer.answer.replace('\n', "\n         "));
     println!();
 }
 
 fn main() {
-    let u1 = ConversationTurn::user(
-        "Напиши мне программу на Rust, которая выдаёт список файлов в текущей директории",
-    );
-    let a1 = ConversationTurn::assistant(
-        "Вот минимальная программа на языке Rust (list files in the current directory): \
-         fn main() { /* read_dir, sort, print */ }",
-    );
-    let u2 = ConversationTurn::user("Сделай так, чтобы программа принимала путь как аргумент");
-    let a2 = ConversationTurn::assistant(
-        "Вот минимальная программа на языке Rust (list files in the directory given as a \
-         path argument): fn main() { /* args, read_dir, sort, print */ }",
+    let solver = UniversalSolver::default();
+
+    let first = solver.solve(FIRST_PROMPT);
+    show("TURN 1 (initial list-files program)", FIRST_PROMPT, &first);
+
+    let first_history = [
+        ConversationTurn::user(FIRST_PROMPT),
+        ConversationTurn::assistant(first.answer.clone()),
+    ];
+    let path_argument = solver.solve_with_history(PATH_ARGUMENT_PROMPT, &first_history);
+    show(
+        "TURN 3 (path-argument modifier - currently handled)",
+        PATH_ARGUMENT_PROMPT,
+        &path_argument,
     );
 
-    // Turn 3 — the path-argument modifier follow-up. This WORKS today because
-    // `path_argument` is the one hard-coded entry in PROGRAM_MODIFIERS.
+    let full_history = [
+        ConversationTurn::user(FIRST_PROMPT),
+        ConversationTurn::assistant(first.answer),
+        ConversationTurn::user(PATH_ARGUMENT_PROMPT),
+        ConversationTurn::assistant(path_argument.answer),
+    ];
+    let reverse_sort = solver.solve_with_history(REVERSE_SORT_PROMPT, &full_history);
     show(
-        "TURN 3 (path-argument modifier — handled by the hard-coded allowlist)",
-        "Сделай так, чтобы программа принимала путь как аргумент",
-        &[u1.clone(), a1.clone()],
-    );
-
-    // Turn 5 — the reverse-sort modifier follow-up. This is the BUG: it has no
-    // program-noun, never routes to write_program, and matches no rule => unknown.
-    show(
-        "TURN 5 (reverse-sort modifier — the issue #349 bug)",
-        "Сделай сортировку результатов в обратном порядке",
-        &[u1, a1, u2, a2],
+        "TURN 5 (reverse-sort modifier - issue #349)",
+        REVERSE_SORT_PROMPT,
+        &reverse_sort,
     );
 }

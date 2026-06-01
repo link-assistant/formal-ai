@@ -64,19 +64,23 @@ These issues were created on GitHub and wired with `blocked_by` edges via the de
 **logical** ids above map to the **actual** GitHub issue numbers below; the epic is
 [#365](https://github.com/link-assistant/formal-ai/issues/365).
 
-| Logical | GitHub | Title |
-|---|---|---|
-| #1 | [#355](https://github.com/link-assistant/formal-ai/issues/355) | Reproduce & lock issue #349 with a failing test + diagnostics fixture |
-| #2 | [#356](https://github.com/link-assistant/formal-ai/issues/356) | Design: general rule-synthesis over links notation |
-| #3 | [#357](https://github.com/link-assistant/formal-ai/issues/357) | Coreference: bind bare-imperative follow-ups to the active program artifact |
-| #4 | [#358](https://github.com/link-assistant/formal-ai/issues/358) | General program-modification model (remove the hard-coded allowlist) |
-| #5 | [#359](https://github.com/link-assistant/formal-ai/issues/359) | Reasoned rule construction on unknown |
-| #6 | [#360](https://github.com/link-assistant/formal-ai/issues/360) | Diagnostics / verbose mode for every reasoning step |
-| #7 | [#361](https://github.com/link-assistant/formal-ai/issues/361) | Cross-runtime parity (Rust + JS worker + wasm worker + seed) |
-| #8 | [#362](https://github.com/link-assistant/formal-ai/issues/362) | Bulk multilingual multi-turn coding-modification benchmark + ratchet |
-| #9 | [#363](https://github.com/link-assistant/formal-ai/issues/363) | Reduce "Report issue" pressure |
-| #10 | [#364](https://github.com/link-assistant/formal-ai/issues/364) | Self-improvement: learn rules from accumulated unknown-traces |
-| #11 | [#365](https://github.com/link-assistant/formal-ai/issues/365) | Epic / tracking issue for #349 |
+> **Status: all CLOSED.** The entire roadmap was implemented and merged into `main`; the originally-reported
+> failure no longer reproduces (case study [§0](./README.md#0-resolution-status)). Regression lock:
+> `tests/integration/issue_349_reverse_sort.rs`.
+
+| Logical | GitHub | Title | Status |
+|---|---|---|---|
+| #1 | [#355](https://github.com/link-assistant/formal-ai/issues/355) | Reproduce & lock issue #349 with a failing test + diagnostics fixture | ✅ closed |
+| #2 | [#356](https://github.com/link-assistant/formal-ai/issues/356) | Design: general rule-synthesis over links notation | ✅ closed |
+| #3 | [#357](https://github.com/link-assistant/formal-ai/issues/357) | Coreference: bind bare-imperative follow-ups to the active program artifact | ✅ closed |
+| #4 | [#358](https://github.com/link-assistant/formal-ai/issues/358) | General program-modification model (remove the hard-coded allowlist) | ✅ closed |
+| #5 | [#359](https://github.com/link-assistant/formal-ai/issues/359) | Reasoned rule construction on unknown | ✅ closed |
+| #6 | [#360](https://github.com/link-assistant/formal-ai/issues/360) | Diagnostics / verbose mode for every reasoning step | ✅ closed |
+| #7 | [#361](https://github.com/link-assistant/formal-ai/issues/361) | Cross-runtime parity (Rust + JS worker + wasm worker + seed) | ✅ closed |
+| #8 | [#362](https://github.com/link-assistant/formal-ai/issues/362) | Bulk multilingual multi-turn coding-modification benchmark + ratchet | ✅ closed |
+| #9 | [#363](https://github.com/link-assistant/formal-ai/issues/363) | Reduce "Report issue" pressure | ✅ closed |
+| #10 | [#364](https://github.com/link-assistant/formal-ai/issues/364) | Self-improvement: learn rules from accumulated unknown-traces | ✅ closed |
+| #11 | [#365](https://github.com/link-assistant/formal-ai/issues/365) | Epic / tracking issue for #349 | ✅ closed |
 
 ---
 

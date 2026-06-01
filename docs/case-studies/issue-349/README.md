@@ -14,7 +14,49 @@
 | **Opened** | 2026-05-30T09:48:59Z (last edited 10:01:07Z) |
 | **Pull request** | [#350](https://github.com/link-assistant/formal-ai/pull/350) (draft, `issue-349-4243100887a0` → `main`, opened 2026-05-30T10:02:06Z) |
 | **Product version at report time** | 0.152.0 (deployed at <https://link-assistant.github.io/formal-ai/>, wasm worker, manual mode, diagnostics off) |
-| **Code version analysed** | 0.156.0 (`Cargo.toml`) |
+| **Code version analysed (at report time)** | 0.156.0 (`Cargo.toml`) |
+| **Status** | ✅ **Resolved** — the whole roadmap (#355–#365) is merged into `main` and the bug is fixed across all supported languages. See [§0](#0-resolution-status). |
+
+> **⚠️ Reading note.** Sections 1–6 are preserved as the *original report-time* analysis (product
+> `v0.152.0`, code `v0.156.0`), written while the bug was live. They describe the failure and the plan in the
+> present tense. **[§0](#0-resolution-status)** records what actually shipped and **[§7](#7-verification-status)**
+> shows the post-fix verification. The captured transcript in `raw-data/reproduction-output.txt` has been
+> regenerated against the fixed library and now shows turn 5 succeeding.
+
+## 0. Resolution status
+
+The 11-issue roadmap below was executed in full and merged into `main`; **all of #355–#365 are CLOSED** and
+the originally-reported failure no longer reproduces.
+
+```
+TURN 3  Сделай так, чтобы программа принимала путь как аргумент   → write_program  conf 1.00 ✅
+TURN 5  Сделай сортировку результатов в обратном порядке          → write_program  conf 1.00 ✅  (was: unknown 0.00)
+```
+
+What landed, mapped to the root causes in [§3](#3-root-cause-analysis):
+
+| Root cause (report time) | Resolution in `main` | Where |
+|---|---|---|
+| **B/D** — no coreference for a bare imperative follow-up | `looks_like_bare_program_artifact_follow_up` binds the active program artifact | `src/program_coreference.rs`, `data/seed/coreference.lino` |
+| **A** — routing is literal-match only, no reasoning fallback | unknown now triggers a rule-construction fallback before reporting | `src/rule_synthesis.rs`, `src/solver_unknown_reasoning.rs` |
+| **C** — one-entry hard-coded modification allowlist | data-driven program-plan lowering; modifiers discovered from rule conditions + operation vocabulary | `src/program_plan.rs`, `data/seed/program-plan-rules.lino`, `data/seed/operation-vocabulary.lino` |
+| **R3/R4** — white-box diagnostics | `SolverConfig::diagnostic_mode` emits the full route → coreference → decomposition → candidate → verification trace | `src/solver_diagnostics.rs`, regression test below |
+
+Regression locks (in `main`, all green on this branch after merge):
+
+- `tests/integration/issue_349_reverse_sort.rs` — the exact 5-turn Russian dialog: turn 5 must not be
+  `unknown`, must reverse the sort, must not contain "Report issue"; plus a diagnostic-mode trace assertion
+  and a multi-language (en/ru/hi/zh) variant.
+- `tests/unit/specification/coding_modification_benchmarks.rs` — bulk multilingual modification benchmark (R6).
+- `tests/unit/specification/code_generation_coreference.rs`, `code_generation_program_modifiers.rs`,
+  `self_improvement.rs` — coreference (#357), modification model (#358), self-improvement (#364).
+- `tests/e2e/tests/issue-360.spec.js`, `issue-363.spec.js` — diagnostics mode and reasoning-first/less-report.
+
+**Reproduction (post-fix):** `cargo run --example repro_issue_349` (the example now ships in `main`); archived
+beside this study as `raw-data/repro_issue_349.rs` and captured verbatim in `raw-data/reproduction-output.txt`.
+The original report-time analysis (why it failed) is unchanged below.
+
+---
 
 This folder holds the raw evidence (`raw-data/`), the captured failure log of the *prior* solver session
 (`logs/`), a runnable reproduction (`raw-data/repro_issue_349.rs`), the live reproduction transcript
@@ -51,11 +93,12 @@ All timestamps UTC, taken from `raw-data/issue-349.json`, `raw-data/pr-350.json`
 | 2 | assistant | *(program)* | — |
 | 3 | user | `Сделай так, чтобы программа принимала путь как аргумент` | updated Rust program with `env::args().nth(1)`; still `names.sort();` ✅ |
 | 4 | assistant | *(updated program)* | — |
-| 5 | user | `Сделай сортировку результатов в обратном порядке` | **`intent: unknown`** — *"Я не уверен, как на это ответить … use Report issue …"* ❌ |
+| 5 | user | `Сделай сортировку результатов в обратном порядке` | **report time:** `intent: unknown` — *"Я не уверен, как на это ответить … use Report issue …"* ❌ · **now (post-fix):** `intent: write_program`, reverse-sorted program ✅ |
 
-Turn 3 ("accept a path as argument") is answered correctly. Turn 5 ("sort the results in reverse order")
-— a *structurally identical* program-modification follow-up — falls through to the `unknown` intent. That
-asymmetry is the bug, and §3 explains exactly why it happens.
+Turn 3 ("accept a path as argument") is answered correctly. At report time turn 5 ("sort the results in
+reverse order") — a *structurally identical* program-modification follow-up — fell through to the `unknown`
+intent. That asymmetry was the bug, and §3 explains exactly why it happened; [§0](#0-resolution-status)
+records how the merged roadmap fixed it.
 
 ### 1.2 Prior solver session (the failure we are recovering from)
 
@@ -100,15 +143,16 @@ that owns the work (see [`ROADMAP.md`](./ROADMAP.md)).
 
 ## 3. Root-cause analysis
 
-**Root-cause claim, reproduced live** (`raw-data/reproduction-output.txt`, generated by
-`raw-data/repro_issue_349.rs` against the current library):
+**Root-cause claim, as reproduced live at report time** (against code `v0.156.0`, before the roadmap fix —
+the current transcript in `raw-data/reproduction-output.txt` has since been regenerated and shows turn 5
+succeeding, see [§0](#0-resolution-status)):
 
 ```
 TURN 3  PROMPT: Сделай так, чтобы программа принимала путь как аргумент
         INTENT: write_program   CONF: 1.00   → full Rust program ✅
 
 TURN 5  PROMPT: Сделай сортировку результатов в обратном порядке
-        INTENT: unknown          CONF: 0.00   → "Я не смог определить … Report issue." ❌
+        INTENT: unknown          CONF: 0.00   → "Я не смог определить … Report issue." ❌  (report time)
 ```
 
 Why turn 3 works and turn 5 does not decomposes into four independent defects, **A–D**. *All four* must be
@@ -321,8 +365,8 @@ when no seed rule matches — verified against a TDD test before it is offered, 
 | `raw-data/issue-349-comments.json` | issue comments (empty — none posted) |
 | `raw-data/pr-350.json`, `pr-350-comments.json`, `pr-350-review-comments.json` | PR metadata + comments |
 | `raw-data/prior-session-salvaged-summary.txt` | salvaged analysis from the failed session |
-| `raw-data/repro_issue_349.rs` | runnable reproduction (see §6.3) |
-| `raw-data/reproduction-output.txt` | captured live transcript proving the bug |
+| `raw-data/repro_issue_349.rs` | archived copy of `examples/repro_issue_349.rs` (see §6.3) |
+| `raw-data/reproduction-output.txt` | captured live transcript — regenerated post-fix (turn 5 now ✅) |
 
 ### 6.2 Source files implicated (root-cause evidence)
 
@@ -333,20 +377,24 @@ path + diagnostics), `src/solver_unknown_reasoning.rs`, `src/unknown_opener.rs`,
 `multilingual-responses.lino`; runtime mirrors `src/web/app.js`, `src/web/formal_ai_worker.js`,
 `src/web/wasm-worker/src/lib.rs`, `src/web/seed_loader.js`. Exact line numbers are cited inline in §3.
 
-### 6.3 Reproducing the bug
+### 6.3 Reproducing the dialog (now a resolved demonstration)
 
-`raw-data/repro_issue_349.rs` uses the public API `formal_ai::{solve_with_history, ConversationTurn}` to
-replay the 5-turn dialog. It is intentionally kept under `raw-data/` (not `examples/`) so the PR stays
-docs-only and triggers no release. To run it as a throwaway example:
+The runnable reproduction now ships in `main` as `examples/repro_issue_349.rs` (added by the roadmap fix,
+issue #355). It drives the public API `formal_ai::{UniversalSolver, ConversationTurn, SymbolicAnswer}` to
+replay the 5-turn dialog. Run it directly:
 
 ```sh
-cp docs/case-studies/issue-349/raw-data/repro_issue_349.rs examples/repro_issue_349.rs
 cargo run --example repro_issue_349
-rm examples/repro_issue_349.rs
 ```
 
-Expected: turn 3 → `intent: write_program, conf 1.00`; turn 5 → `intent: unknown, conf 0.00` (the bug). The
-captured output is in `raw-data/reproduction-output.txt`.
+`raw-data/repro_issue_349.rs` is a byte-for-byte archived copy of that example, kept beside this case study so
+the captured transcript stays self-contained. Post-fix expected output (current `main`): turn 1 →
+`intent: write_program, conf 1.00`; turn 3 → `intent: write_program, conf 1.00`; turn 5 →
+`intent: write_program, conf 1.00` with a reverse-sorted program (`names.sort_by(|a, b| b.cmp(a));`). The
+captured transcript is in `raw-data/reproduction-output.txt`, regenerated verbatim from the example above. The
+permanent regression lock is `tests/integration/issue_349_reverse_sort.rs` (run with
+`cargo test --test integration issue_349`). At report time turn 5 returned `intent: unknown, conf 0.00` — that
+is the bug this case study documents.
 
 ### 6.4 Other repositories (R11)
 
@@ -359,19 +407,34 @@ implementation, the owning issue will file it then.
 
 ## 7. Verification status
 
+### 7.1 Report-time claims (before the fix, code `v0.156.0`)
+
 | Claim | How verified | Result |
 |---|---|---|
-| Turn 3 works, turn 5 returns `unknown` | live run of `repro_issue_349.rs` against current lib | ✅ `reproduction-output.txt` |
-| `PROGRAM_MODIFIERS` has exactly one entry | read `intent_formalization.rs:506-520` | ✅ only `path_argument` |
-| Only `path_argument` substitution rule exists | read `program-plan-rules.lino` | ✅ single rule |
-| Coreference handles only "it"→Rust | read `coreference.lino` | ✅ 1 pronoun, 1 antecedent |
+| Turn 3 works, turn 5 returns `unknown` | live run of `repro_issue_349.rs` against the report-time lib | ✅ documented |
+| `PROGRAM_MODIFIERS` had exactly one entry | read `intent_formalization.rs:506-520` | ✅ only `path_argument` |
+| Only `path_argument` substitution rule existed | read `program-plan-rules.lino` | ✅ single rule |
+| Coreference handled only "it"→Rust | read `coreference.lino` | ✅ 1 pronoun, 1 antecedent |
 | Multiple distinct unknown-answer exits exist | read 6 sites in §3 | ✅ |
 | GitHub dependencies API works on this repo | `GET .../issues/{n}/dependencies/blocked_by` | ✅ returned `[]` |
 | Prior session produced zero product work | salvaged log summary | ✅ `prior-session-salvaged-summary.txt` |
 
-**Bottom line.** The `unknown` answer in #349 is not a missing keyword — it is the visible symptom of a
-**memorised-rule architecture** (root causes A–D). Turn 3 only works because the `path_argument` modifier, its
-seed substitution, and the `list_files_arg` task were all pre-written by hand; turn 5 has no such pre-written
-support and the system has no way to *reason* one into existence. The roadmap (#1–#11) replaces that with a
-white-box, reasoned, data-driven, multilingually-tested modification pipeline — and fixes the defect in **all**
-runtime surfaces, per R5.
+### 7.2 Post-fix claims (current `main`, merged into this branch)
+
+| Claim | How verified | Result |
+|---|---|---|
+| Turn 5 no longer returns `unknown` (reverse-sorted program) | `raw-data/reproduction-output.txt` regenerated; `cargo test --test integration issue_349` | ✅ `write_program, conf 1.00` |
+| Works across all supported languages (en/ru/hi/zh) | `issue_349_reverse_sort.rs` multi-language variant | ✅ all `write_program` |
+| Diagnostics mode surfaces the full reasoning chain | `issue_349_diagnostic_mode_emits_full_turn_5_reasoning_chain` | ✅ trace asserted |
+| Bare-imperative coreference + data-driven modifiers + rule-construction fallback shipped | `src/program_coreference.rs`, `program_plan.rs`, `rule_synthesis.rs` + unit specs | ✅ in `main` |
+| All 11 roadmap issues closed | `gh issue view 355…365` | ✅ #355–#365 CLOSED |
+
+**Bottom line.** The `unknown` answer in #349 was not a missing keyword — it was the visible symptom of a
+**memorised-rule architecture** (root causes A–D). At report time turn 3 only worked because the
+`path_argument` modifier, its seed substitution, and the `list_files_arg` task were all pre-written by hand,
+while turn 5 had no such support and the system had no way to *reason* one into existence. The roadmap
+(#355–#365) replaced that with a white-box, reasoned, data-driven, multilingually-tested modification
+pipeline — bare-imperative coreference binding, data-driven program-plan lowering, and a rule-construction
+fallback on unknown — and is now merged into `main`. Turn 5 routes to `write_program` and reverse-sorts the
+output across all supported languages, locked by `tests/integration/issue_349_reverse_sort.rs`. **Issue #349
+is resolved.**
