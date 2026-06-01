@@ -12117,6 +12117,59 @@ const PROGRAM_MODIFIER_OPERATIONS = [
       ["排序", "倒序"],
     ],
   },
+  // Issue #386: the subtractive inverse of reverse_sort. `inverse` mirrors the
+  // `inverse "reverse_sort"` declaration in `data/seed/operation-vocabulary.lino`;
+  // the program-plan rules that undo the sort are *derived* from it below
+  // (`deriveInverseRules`), never hand-written here.
+  {
+    slug: "cancel_reverse_sort",
+    inverse: "reverse_sort",
+    phrases: [
+      "cancel sort",
+      "cancel the sort",
+      "cancel sorting",
+      "cancel the sorting",
+      "undo sort",
+      "undo the sort",
+      "undo sorting",
+      "undo the sorting",
+      "remove sort",
+      "remove the sort",
+      "remove sorting",
+      "remove the sorting",
+      "no sorting",
+      "without sorting",
+      "отмени сортировку",
+      "отмените сортировку",
+      "убери сортировку",
+      "уберите сортировку",
+      "без сортировки",
+      "सॉर्ट हटाओ",
+      "क्रम हटाओ",
+      "सॉर्ट रद्द करो",
+      "取消排序",
+      "撤销排序",
+      "去掉排序",
+      "取消排序顺序",
+    ],
+    combos: [
+      ["cancel", "sort"],
+      ["undo", "sort"],
+      ["remove", "sort"],
+      ["отмени", "сортиров"],
+      ["отмените", "сортиров"],
+      ["отменить", "сортиров"],
+      ["убери", "сортиров"],
+      ["уберите", "сортиров"],
+      ["убрать", "сортиров"],
+      ["без", "сортиров"],
+      ["सॉर्ट", "हटा"],
+      ["क्रमबद्ध", "हटा"],
+      ["सॉर्ट", "रद्द"],
+      ["取消", "排序"],
+      ["撤销", "排序"],
+    ],
+  },
 ];
 
 let cachedProgramModifierSlugs = null;
@@ -12156,6 +12209,10 @@ const PROGRAM_FOLLOW_UP_REFERENTS = [
   "programme",
   "script",
   "code",
+  // Issue #386: a sort/ordering is itself a program aspect a follow-up can
+  // refer to ("undo the sort", "cancel the sorting").
+  "sort",
+  "sorting",
   "результат",
   "результата",
   "результаты",
@@ -12166,6 +12223,11 @@ const PROGRAM_FOLLOW_UP_REFERENTS = [
   "программы",
   "скрипт",
   "код",
+  "сортировка",
+  "сортировку",
+  "сортировки",
+  "сортировке",
+  "сортировкой",
   "परिणाम",
   "परिणामों",
   "नतीजा",
@@ -12173,10 +12235,14 @@ const PROGRAM_FOLLOW_UP_REFERENTS = [
   "आउटपुट",
   "प्रोग्राम",
   "कोड",
+  "सॉर्ट",
+  "क्रम",
   "结果",
   "输出",
   "程序",
   "代码",
+  "排序",
+  "顺序",
 ];
 
 const PROGRAM_FOLLOW_UP_ACTIONS = [
@@ -12189,6 +12255,12 @@ const PROGRAM_FOLLOW_UP_ACTIONS = [
   "modify",
   "update",
   "make",
+  // Issue #386: subtractive ("cancel/undo") verbs are first-class program
+  // follow-up actions, mirroring the additive verbs above.
+  "cancel",
+  "undo",
+  "remove",
+  "revert",
   "сделай",
   "сделайте",
   "сортировка",
@@ -12201,6 +12273,12 @@ const PROGRAM_FOLLOW_UP_ACTIONS = [
   "измени",
   "изменить",
   "обнови",
+  "отмени",
+  "отмените",
+  "отменить",
+  "убери",
+  "уберите",
+  "убрать",
   "क्रमबद्ध",
   "उल्टे",
   "उल्टा",
@@ -12208,6 +12286,10 @@ const PROGRAM_FOLLOW_UP_ACTIONS = [
   "बदलें",
   "बदलो",
   "अपडेट",
+  "रद्द",
+  "हटाओ",
+  "हटाएं",
+  "हटा",
   "排序",
   "反向",
   "相反",
@@ -12215,6 +12297,10 @@ const PROGRAM_FOLLOW_UP_ACTIONS = [
   "修改",
   "改",
   "更新",
+  "取消",
+  "撤销",
+  "去掉",
+  "去除",
 ];
 
 function detectedProgramModifiers(normalized) {
@@ -12512,10 +12598,74 @@ function applySubstitutionRules(initialLinks, ruleSet, event, maxApplications) {
 
 // --- Program-plan pipeline (mirror of src/program_plan.rs) ------------------
 
+// Issue #386: every declared (cancelOp, baseOp) inverse relationship, taken
+// from the `inverse` field on a modifier operation. Mirrors
+// `OperationVocabulary::inverse_pairs` in `src/seed/operation_vocabulary.rs`.
+function inversePairsFromOperations() {
+  const pairs = [];
+  for (const operation of PROGRAM_MODIFIER_OPERATIONS) {
+    if (operation.inverse) pairs.push([operation.slug, operation.inverse]);
+  }
+  return pairs;
+}
+
+function cloneLinkPattern(pattern) {
+  return {
+    from: Object.assign({}, pattern.from),
+    to: Object.assign({}, pattern.to),
+  };
+}
+
+// Issue #386: derive subtractive ("cancel") rules from the additive base rules
+// plus the declared (cancelOp, baseOp) inverse pairs — the JS mirror of
+// `derive_inverse_rules` in `src/program_plan.rs`. For every base rule that
+// fires on `request:modifier -> baseOp` with a single-link task rewrite, emit
+// its inverse: fire on `request:modifier -> cancelOp` and swap the rewrite's
+// removed and added task links. "Cancel the sort" becomes the exact,
+// automatically-maintained inverse of "sort" — pure data, no new control flow.
+function deriveInverseRules(baseRules, inversePairs) {
+  const derived = [];
+  for (const [cancelOp, baseOp] of inversePairs) {
+    for (const rule of baseRules) {
+      const conditionIndex = rule.conditions.findIndex(
+        (condition) =>
+          literalPatternValue(condition.from) === MODIFIER_NODE &&
+          literalPatternValue(condition.to) === baseOp,
+      );
+      if (conditionIndex === -1) continue;
+      // A well-defined inverse exists only for a single-link additive rewrite.
+      if (rule.actions.length !== 1) continue;
+      const action = rule.actions[0];
+      if (!Array.isArray(action.add) || action.add.length !== 1) continue;
+      const added = action.add[0];
+      const conditions = rule.conditions.map((condition, index) =>
+        index === conditionIndex
+          ? parseLinkPattern(`${MODIFIER_NODE} -> ${cancelOp}`)
+          : cloneLinkPattern(condition),
+      );
+      derived.push({
+        id: `${cancelOp}__${rule.id}`,
+        order: rule.order,
+        events: rule.events.slice(),
+        conditions,
+        actions: [{ remove: cloneLinkPattern(added), add: [cloneLinkPattern(action.remove)] }],
+      });
+    }
+  }
+  return derived;
+}
+
 let cachedProgramPlanRules = null;
 function programPlanRules() {
   if (!cachedProgramPlanRules) {
-    cachedProgramPlanRules = parseSubstitutionRules(PROGRAM_PLAN_RULES_LINO);
+    const set = parseSubstitutionRules(PROGRAM_PLAN_RULES_LINO);
+    const derived = deriveInverseRules(set.rules, inversePairsFromOperations());
+    set.rules = set.rules.concat(derived);
+    set.rules.sort((left, right) =>
+      left.order - right.order ||
+      (left.id < right.id ? -1 : left.id > right.id ? 1 : 0),
+    );
+    cachedProgramPlanRules = set;
   }
   return cachedProgramPlanRules;
 }
@@ -14042,6 +14192,16 @@ function writeProgramDecompositionParts(modifier) {
       targetKind: "program_output",
     };
   }
+  if (modifier === "cancel_reverse_sort") {
+    // Issue #386: the inverse of reverse_sort — cancel the descending order
+    // over the same program-output target.
+    return {
+      operation: "cancel",
+      operationModifier: "reverse_sort",
+      target: "program:last.output_order",
+      targetKind: "program_output",
+    };
+  }
   if (modifier === "path_argument") {
     return {
       operation: "accept",
@@ -14130,15 +14290,22 @@ function writeProgramVerificationTrace(candidateId, plan, template, modifiers) {
   if (!plan || !Array.isArray(modifiers) || modifiers.length === 0) return null;
   const planCheck =
     programPlanWasModified(plan) && Array.isArray(plan.traces) && plan.traces.length > 0;
-  const renderCheck =
-    !modifiers.includes("reverse_sort") || templateHasDescendingOrder(template);
+  // Issue #386: verify the rendered program actually matches the operation. A
+  // reverse_sort must leave the output descending; its inverse,
+  // cancel_reverse_sort, must leave NO descending order — otherwise the cancel
+  // silently failed to remove the sort. Modifiers that touch no ordering pass.
+  const cancelsSort = modifiers.includes("cancel_reverse_sort");
+  const reversesSort = modifiers.includes("reverse_sort");
+  const descending = templateHasDescendingOrder(template);
+  const renderCheck = cancelsSort ? !descending : reversesSort ? descending : true;
   const passed = planCheck && renderCheck;
+  const expectedOrder = reversesSort && !cancelsSort ? "c.txt,b.txt,a.txt" : "a.txt,b.txt,c.txt";
   return [
     "rule_verification",
     `  candidate ${candidateId}`,
     "  fixture list_files_output_order",
     "  input a.txt,b.txt,c.txt",
-    "  expected_order c.txt,b.txt,a.txt",
+    `  expected_order ${expectedOrder}`,
     `  lowering_check ${planCheck ? "passed" : "failed"}`,
     `  render_check ${renderCheck ? "passed" : "failed"}`,
     `  status ${passed ? "passed" : "failed"}`,
