@@ -258,33 +258,37 @@ fn resolve_box_value(
     if stack.iter().any(|existing| existing == id) {
         return None;
     }
-    stack.push(id.to_owned());
     let rule = rules.get(id)?;
-    let value = match rule {
-        BoxRule::Known(value) => {
-            reasoning_steps.push(format!("Box {id} = {value} {result_label}."));
-            *value
-        }
-        BoxRule::Multiple { factor, source } => {
-            let source_value =
-                resolve_box_value(source, rules, memo, stack, reasoning_steps, result_label)?;
-            let value = source_value.checked_mul(*factor)?;
-            reasoning_steps.push(format!(
-                "Box {id} = {factor} * {source_value} = {value} {result_label}."
-            ));
-            value
-        }
-        BoxRule::Add { source, addend } => {
-            let source_value =
-                resolve_box_value(source, rules, memo, stack, reasoning_steps, result_label)?;
-            let value = source_value.checked_add(*addend)?;
-            reasoning_steps.push(format!(
-                "Box {id} = {source_value} + {addend} = {value} {result_label}."
-            ));
-            value
-        }
-    };
+    stack.push(id.to_owned());
+    let value =
+        match rule {
+            BoxRule::Known(value) => {
+                reasoning_steps.push(format!("Box {id} = {value} {result_label}."));
+                Some(*value)
+            }
+            BoxRule::Multiple { factor, source } => {
+                resolve_box_value(source, rules, memo, stack, reasoning_steps, result_label)
+                    .and_then(|source_value| {
+                        let value = source_value.checked_mul(*factor)?;
+                        reasoning_steps.push(format!(
+                            "Box {id} = {factor} * {source_value} = {value} {result_label}."
+                        ));
+                        Some(value)
+                    })
+            }
+            BoxRule::Add { source, addend } => {
+                resolve_box_value(source, rules, memo, stack, reasoning_steps, result_label)
+                    .and_then(|source_value| {
+                        let value = source_value.checked_add(*addend)?;
+                        reasoning_steps.push(format!(
+                            "Box {id} = {source_value} + {addend} = {value} {result_label}."
+                        ));
+                        Some(value)
+                    })
+            }
+        };
     stack.pop();
+    let value = value?;
     memo.insert(id.to_owned(), value);
     Some(value)
 }

@@ -2543,11 +2543,6 @@ function normalizeWordProblemDetailed(expression) {
   return { expression: working, reasoningSteps: [], resultLabel: "" };
 }
 
-function normalizeWordProblem(expression) {
-  const normalized = normalizeWordProblemDetailed(expression);
-  return normalized ? normalized.expression : null;
-}
-
 function extractArithmeticExpression(prompt) {
   const trimmed = String(prompt || "").trim();
   if (!trimmed) return null;
