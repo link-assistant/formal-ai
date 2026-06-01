@@ -168,12 +168,16 @@ manifests in three layers: the follow-up gate, the substitution-rule /
 in none of them.
 
 This is exactly the shape of the reverse-sort capability that took epic #349 ten
-child PRs (#355–#365) to land. A correct, regression-free "cancel sort" is the
-same size of work: a new subtractive-modifier concept in the vocabulary and
-rules, an accumulated multi-turn program-state model, a benchmark/ratchet, and
-cross-runtime (native + wasm) parity. It is therefore scoped here as a staged
-plan (§4 R-b-bug) rather than rushed into this PR, where a half-correct
-subtractive rule would risk regressing the additive pipeline that #349 hardened.
+child PRs (#355–#365) to land, so the risk was real: a hand-written subtractive
+rule could regress the additive pipeline #349 hardened. This PR removes that risk
+by **not hand-writing the subtractive rule at all**. The inverse rules are
+*derived* from the very additive rules they mirror (§4 R-b-bug), so they cannot
+drift from the additive behavior, and the additive pipeline runs unchanged. The
+accumulated multi-turn program state already exists (`active_program_context()`,
+above), so no new state model was needed. The fix is therefore **landed in this
+PR** — sort cancellation works natively and in the wasm worker — rather than
+deferred, and the combined additive + subtractive suite (including the four-turn
+Russian repro) guards against regression.
 
 ### 3.3 Why the architecture invites this class of bug (R-h)
 
@@ -288,14 +292,24 @@ cancel flow plus the inverse-rule reasoning chain rendered in the browser).
 
 ### R-g — Case study · **done** (this document + `raw-data/`).
 
-### R-h — Architecture rethink · **planned (vision, scoped to follow-up epics)**
-The full rethink (self-describing seed data, links-rooted meta-language,
-tree-sitter CST/AST, knowledge-API caches, virtual memory views, zero bare-text
-processing) is epic-scale and overlaps the existing vision track (issue #244,
-`../issue-244/README.md`). It is captured here as a gap analysis and staged plan
-rather than implemented wholesale, because landing it correctly without
-regressing the ~180 i18n keys and the existing reasoning pipeline requires
-decomposition into independently-verifiable child issues. See §6.
+### R-h — Architecture rethink · **first increment delivered; remainder is a staged roadmap (§6)**
+The rethink's governing principle — behavior **derived from self-describing seed
+data** instead of hardcoded control flow — is applied in this PR: the cancel-sort
+fix (§4 R-b-bug) is its first concrete, regression-free instance (operations
+declare an `inverse`; the subtractive rules are *derived*, never written). The
+remaining sub-systems — a fully links-rooted semantic meta-language, tree-sitter
+CST/AST, knowledge-API caches, multiple virtual memory views, adoption of
+`meta-expression` for translation, and zero bare-text processing end to end — are
+an ongoing program rather than a one-commit change. Several need a product /
+runtime decision before they can land safely: a native tree-sitter dependency
+cannot load in the wasm worker that serves the web/desktop/VS Code surfaces;
+live knowledge-API access and a web-search provider from the browser require an
+endpoint, credentials, and a cache-eviction policy; swapping the translation
+pipeline onto `meta-expression` changes an external dependency. Each must be
+decomposed into an independently-verifiable change so it cannot regress the ~180
+i18n keys or the reasoning pipeline. The full staged plan is §6, tracked on the
+vision track (issue #244, `../issue-244/README.md`); the principle itself now
+lives in the codebase rather than being deferred.
 
 ### R-i / R-l / R-m / R-n — satisfied by construction
 Defaults are read from the single `PREFERENCE_DEFAULTS` source (no hardcoded
@@ -343,7 +357,9 @@ integration, not a bug report, so no upstream issue is warranted at this stage.
 ## 6. Architecture gap analysis (R-h) — staged plan
 
 The vision is recorded here so it can be decomposed into child issues on the
-existing vision track (#244). Each is independently shippable and testable:
+existing vision track (#244). Item 4 (operations with inverses) is **delivered in
+this PR** for the sort operation; the rest is the staged roadmap. Each item is
+independently shippable and testable:
 
 1. **Self-describing seed data.** Every seed term defined via other terms (per
    `relative-meta-logic`), so the ontology is recursive and inspectable rather
