@@ -253,6 +253,74 @@ fn information_search_variants_route_to_web_search_handler() {
 }
 
 #[test]
+fn source_search_prompts_drop_follow_up_instruction_clauses() {
+    let cases = [
+        (
+            "Search Wikipedia for \"War of Currents\" and summarize who won and why",
+            "war of currents",
+        ),
+        (
+            "Search Wikipedia for Nikola Tesla and Thomas Edison. Compare their number of patents.",
+            "nikola tesla and thomas edison",
+        ),
+    ];
+
+    for (prompt, expected_query) in cases {
+        let response = FormalAiEngine.answer(prompt);
+
+        assert_eq!(
+            response.intent, "web_search",
+            "prompt {prompt:?} should route to web_search, got {} with answer {}",
+            response.intent, response.answer,
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == &format!("web_search:request:{expected_query}")),
+            "web_search should keep only the source query term {expected_query:?}: {:?}",
+            response.evidence_links,
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == "web_search:query_kind:explicit_prefix"),
+            "source-specific searches should record explicit-prefix routing: {:?}",
+            response.evidence_links,
+        );
+    }
+}
+
+#[test]
+fn source_search_prompts_still_cover_supported_languages() {
+    let cases = [
+        ("English", "Find information about Rust programming"),
+        (
+            "Russian",
+            "Поищи материалы по Rust программированию в Википедии",
+        ),
+        ("Hindi", "Rust programming के बारे में विकिपीडिया में खोजें"),
+        ("Chinese", "在维基百科上查一下 Rust 编程"),
+    ];
+
+    for (language, prompt) in cases {
+        let response = FormalAiEngine.answer(prompt);
+
+        assert_eq!(
+            response.intent, "web_search",
+            "{language} source-search prompt should still route to web_search, got {} with answer {}",
+            response.intent, response.answer,
+        );
+        assert!(
+            response.answer.to_lowercase().contains("rust"),
+            "{language} web-search answer should preserve the requested topic, got: {}",
+            response.answer,
+        );
+    }
+}
+
+#[test]
 fn implicit_research_question_routes_to_web_search_handler() {
     let prompt = "What is the most popular dataset for translation quality validation?";
     let response = FormalAiEngine.answer(prompt);

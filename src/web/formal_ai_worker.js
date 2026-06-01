@@ -14065,7 +14065,7 @@ function cleanSearchQuery(value) {
 function stripSearchPrefix(prompt, prefix) {
   const text = String(prompt || "").trim();
   if (text.toLowerCase().startsWith(prefix)) {
-    return cleanSearchQuery(text.slice(prefix.length));
+    return validSearchQuery(text.slice(prefix.length));
   }
   return "";
 }
@@ -14076,6 +14076,9 @@ const WEB_SEARCH_EXPLICIT_PREFIXES = [
   "search the internet for ",
   "search internet for ",
   "search online for ",
+  "search wikipedia for ",
+  "search wikidata for ",
+  "search wiktionary for ",
   "search for information about ",
   "search for information on ",
   "web search for ",
@@ -14444,6 +14447,11 @@ const SEARCH_QUERY_SOURCE_ONLY = [
   "維基百科",
 ];
 
+const SEARCH_QUERY_TRAILING_INSTRUCTION_PATTERNS = [
+  /[.?!;:]\s*(?:then\s+)?(?:compare|summarize|summarise|explain|describe|show|tell)\b[\s\S]*$/i,
+  /\s+and\s+(?:then\s+)?(?:summarize|summarise|compare|explain|describe|show|tell)\b[\s\S]*$/i,
+];
+
 const IMPLICIT_RESEARCH_QUESTION_PREFIXES = [
   "what is the ",
   "what is a ",
@@ -14617,8 +14625,16 @@ function stripSearchNoiseSuffix(value, suffix) {
     : text;
 }
 
+function truncateSearchInstructionTail(value) {
+  let query = String(value || "").trim();
+  for (const pattern of SEARCH_QUERY_TRAILING_INSTRUCTION_PATTERNS) {
+    query = query.replace(pattern, "").trim();
+  }
+  return query;
+}
+
 function cleanSemanticSearchQuery(value) {
-  let query = cleanSearchQuery(value);
+  let query = cleanSearchQuery(truncateSearchInstructionTail(value));
   while (true) {
     const before = query;
     for (const prefix of SEARCH_QUERY_LEADING_NOISE) {
