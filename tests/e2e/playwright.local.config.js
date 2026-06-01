@@ -29,6 +29,7 @@ module.exports = defineConfig({
     '**/issue-288.spec.js',
     '**/issue-330.spec.js',
     '**/issue-334.spec.js',
+    '**/issue-335.spec.js',
     '**/issue-336.spec.js',
     '**/issue-339.spec.js',
     '**/issue-347.spec.js',
