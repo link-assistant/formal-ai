@@ -32,6 +32,11 @@ impl OperationLanguageForms {
 pub struct OperationTrigger {
     pub canonical: String,
     pub languages: BTreeMap<String, OperationLanguageForms>,
+    /// The canonical operation this one undoes, when declared via an `inverse`
+    /// child in `operation-vocabulary.lino`. Subtractive program-plan rules are
+    /// *derived* from this declaration (issue #386), so adding a "cancel X"
+    /// operation stays pure seed data rather than new control flow.
+    pub inverse_of: Option<String>,
 }
 
 impl OperationTrigger {
@@ -94,6 +99,25 @@ impl OperationVocabulary {
         }
         out
     }
+
+    /// Every declared `(canonical, base)` inverse relationship, where `canonical`
+    /// is the operation that undoes `base` (e.g. `("cancel_reverse_sort",
+    /// "reverse_sort")`).
+    ///
+    /// The program-plan engine derives subtractive substitution rules from these
+    /// pairs (issue #386), so a new "cancel X" stays pure seed data instead of
+    /// requiring new branching logic.
+    #[must_use]
+    pub fn inverse_pairs(&self) -> Vec<(String, String)> {
+        self.operations
+            .iter()
+            .filter_map(|op| {
+                op.inverse_of
+                    .as_ref()
+                    .map(|base| (op.canonical.clone(), base.clone()))
+            })
+            .collect()
+    }
 }
 
 #[must_use]
@@ -118,9 +142,14 @@ pub fn operation_vocabulary() -> OperationVocabulary {
                 }
                 languages.insert(language_node.id.clone(), forms);
             }
+            let inverse_of = match operation_node.find_child_value("inverse") {
+                "" => None,
+                base => Some(base.to_owned()),
+            };
             vocabulary.operations.push(OperationTrigger {
                 canonical: operation_node.id.clone(),
                 languages,
+                inverse_of,
             });
         }
     }
@@ -170,6 +199,7 @@ mod tests {
             "sort_lines",
             "path_argument",
             "reverse_sort",
+            "cancel_reverse_sort",
             "function",
             "implement",
             "write",
@@ -247,5 +277,49 @@ mod tests {
         let vocabulary = operation_vocabulary();
         assert!(vocabulary.matches("extract_email", "please extract the email here"));
         assert!(!vocabulary.matches("extract_email", "extract the phone number"));
+    }
+
+    #[test]
+    fn operation_vocabulary_exposes_declared_inverse_pairs() {
+        let vocabulary = operation_vocabulary();
+        let pairs = vocabulary.inverse_pairs();
+        assert!(
+            pairs
+                .iter()
+                .any(|(canonical, base)| canonical == "cancel_reverse_sort"
+                    && base == "reverse_sort"),
+            "cancel_reverse_sort must declare reverse_sort as its inverse: {pairs:?}"
+        );
+
+        // Every base named by an inverse pair must itself be a real operation, so
+        // derived subtractive rules can never reference a phantom modifier.
+        let canonicals: BTreeSet<String> = vocabulary
+            .operations
+            .iter()
+            .map(|op| op.canonical.clone())
+            .collect();
+        for (canonical, base) in &pairs {
+            assert!(
+                canonicals.contains(base),
+                "{canonical} declares inverse {base}, which is not a known operation"
+            );
+        }
+    }
+
+    #[test]
+    fn operation_vocabulary_cancel_reverse_sort_matches_native_phrasings() {
+        let vocabulary = operation_vocabulary();
+        for prompt in [
+            "please cancel the sorting",
+            "отмени сортировку",
+            "убери сортировку",
+            "सॉर्ट हटाओ",
+            "取消排序",
+        ] {
+            assert!(
+                vocabulary.matches("cancel_reverse_sort", prompt),
+                "cancel_reverse_sort must match {prompt:?}"
+            );
+        }
     }
 }
