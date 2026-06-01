@@ -194,6 +194,14 @@ fn decomposition_parts(modifier: &str) -> DecompositionParts {
             target: "program:last.output_order",
             target_kind: "program_output",
         },
+        "cancel_reverse_sort" => DecompositionParts {
+            // Issue #386: the inverse of reverse_sort — cancel the descending
+            // order over the same program-output target.
+            operation: "cancel",
+            operation_modifier: Some("reverse_sort"),
+            target: "program:last.output_order",
+            target_kind: "program_output",
+        },
         "path_argument" => DecompositionParts {
             operation: "accept",
             operation_modifier: Some("path_argument"),
@@ -221,14 +229,33 @@ fn verification_trace(
     modifiers: &[String],
 ) -> VerificationTrace {
     let plan_check = plan.was_modified() && plan.report.applied_count() > 0;
-    let render_check = !modifiers.iter().any(|modifier| modifier == "reverse_sort")
-        || template_has_descending_order(spec.template.code);
+    let cancels_sort = modifiers
+        .iter()
+        .any(|modifier| modifier == "cancel_reverse_sort");
+    let reverses_sort = modifiers.iter().any(|modifier| modifier == "reverse_sort");
+    let descending = template_has_descending_order(spec.template.code);
+    // Issue #386: verify the rendered program actually matches the operation.
+    // A reverse_sort must leave the output descending; its inverse,
+    // cancel_reverse_sort, must leave NO descending order — otherwise the cancel
+    // silently failed to remove the sort. Modifiers that touch no ordering pass.
+    let render_check = if cancels_sort {
+        !descending
+    } else if reverses_sort {
+        descending
+    } else {
+        true
+    };
     let passed = plan_check && render_check;
+    let expected_order = if reverses_sort && !cancels_sort {
+        "c.txt,b.txt,a.txt"
+    } else {
+        "a.txt,b.txt,c.txt"
+    };
     let mut out = String::from("rule_verification\n");
     push_field(&mut out, "candidate", candidate_id);
     push_field(&mut out, "fixture", "list_files_output_order");
     push_field(&mut out, "input", "a.txt,b.txt,c.txt");
-    push_field(&mut out, "expected_order", "c.txt,b.txt,a.txt");
+    push_field(&mut out, "expected_order", expected_order);
     push_field(
         &mut out,
         "lowering_check",
