@@ -767,6 +767,65 @@ fn how_to_procedure_is_general_not_memoized_to_examples() {
     }
 }
 
+#[test]
+fn spec_driven_typo_how_to_prompts_cover_supported_languages() {
+    struct Case {
+        language: &'static str,
+        prompt: &'static str,
+    }
+
+    for case in [
+        Case {
+            language: "en",
+            prompt: "How to do SPEC dirven development step by step?",
+        },
+        Case {
+            language: "ru",
+            prompt: "как сделать SPEC dirven development? напиши по шагам",
+        },
+        Case {
+            language: "hi",
+            prompt: "कैसे करें SPEC dirven development? चरणों में बताओ",
+        },
+        Case {
+            language: "zh",
+            prompt: "如何做 SPEC dirven development？按步骤写",
+        },
+    ] {
+        let response = answer(case.prompt);
+        assert_eq!(
+            response.intent, "procedural_how_to",
+            "{} how-to prompt must not fall back to unknown; answer={}",
+            case.language, response.answer,
+        );
+
+        let answer = response.answer.to_lowercase();
+        for expected in ["spec driven development", "wikihow", "web search"] {
+            assert!(
+                answer.contains(expected),
+                "{} procedural answer should mention {expected:?}; answer={}",
+                case.language,
+                response.answer,
+            );
+        }
+
+        for expected in [
+            "procedural_how_to:request:spec driven development",
+            "procedural_how_to:action:do",
+            "procedural_how_to:object:spec driven development",
+            "spelling_correction:dirven->driven",
+            "web_search:request:how to spec driven development",
+        ] {
+            assert!(
+                has_evidence(&response, expected),
+                "{} missing evidence prefix {expected:?}: {:?}",
+                case.language,
+                response.evidence_links,
+            );
+        }
+    }
+}
+
 // ---------------------------------------------------------------------------
 // Cross-handler sanity: every reasoning path projects from a non-empty event
 // log, so the answer is never memoized.

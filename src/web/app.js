@@ -1694,9 +1694,9 @@ function localizeTool(tool, language) {
 // single-step task still runs through the same code path.
 const AGENT_STEP_SEPARATORS = [
   /\s*;\s+/,
-  /\s+then(?:\s*,)?\s+/i,
   /\s*,\s+(?:and\s+then|then|next)\s+/i,
   /\s*,\s+after\s+that\s+/i,
+  /\s+then(?:\s*,)?\s+/i,
   /\s+потом\s+/i,
   /\s+затем\s+/i,
   /\s+после\s+этого\s+/i,

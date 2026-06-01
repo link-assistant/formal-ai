@@ -17,6 +17,13 @@ struct ProceduralHowToTask {
     task: String,
     action: String,
     object: String,
+    corrections: Vec<SpellingCorrection>,
+}
+
+#[derive(Debug, Clone, Copy)]
+struct SpellingCorrection {
+    from: &'static str,
+    to: &'static str,
 }
 
 /// Handles source-backed procedural requests such as "How to make tea?" and
@@ -30,6 +37,12 @@ pub fn try_how_to_procedure(
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
     let task = extract_procedural_how_to_task(normalized)?;
+    for correction in &task.corrections {
+        log.append(
+            "spelling_correction",
+            format!("{}->{}", correction.from, correction.to),
+        );
+    }
     let query = format!("how to {}", task.task);
     let wikihow_candidate = wikihow_page_title(&task.task);
     let wikihow_api_url = format!(
@@ -66,25 +79,13 @@ pub fn try_how_to_procedure(
     );
 
     let provider_summary = WEB_SEARCH_PROVIDERS.join(", ");
-    let body = format!(
-        "Procedural discovery plan for `{}` (action `{}`, object `{}`).\n\n\
-         I do not answer this from a memoized recipe. The solver first checks \
-         Wikipedia for topic context and Wikidata for entity/action/object hints. \
-         It then tries wikiHow's CORS-readable MediaWiki parse API candidate \
-         `{}` via `{}`. If those sources do not expose usable steps, the fallback \
-         path runs web search for `{}` across {} and merges the top results with \
-         reciprocal rank fusion (k = {}). The final recursive fetch check only \
-         accepts pages that actually contain explicit ordered or instructional \
-         steps for `{}`.",
-        task.task,
-        task.action,
-        task.object,
-        wikihow_candidate,
-        wikihow_api_url,
-        query,
-        provider_summary,
-        WEB_SEARCH_RRF_K,
-        task.task,
+    let body = render_procedural_how_to_body(
+        &task,
+        &wikihow_candidate,
+        &wikihow_api_url,
+        &query,
+        &provider_summary,
+        detect_language(prompt),
     );
 
     Some(finalize_simple(
@@ -434,43 +435,70 @@ fn render_mechanism_discovery_answer(subject: &str, language: Language) -> Strin
 }
 
 fn extract_procedural_how_to_task(normalized: &str) -> Option<ProceduralHowToTask> {
-    const PREFIXES: &[&str] = &[
-        "please tell me how to ",
-        "please show me how to ",
-        "tell me how to ",
-        "show me how to ",
-        "what are the steps to ",
-        "what steps do i need to ",
-        "what steps do we need to ",
-        "how should i ",
-        "how should we ",
-        "how could i ",
-        "how could we ",
-        "how would i ",
-        "how would we ",
-        "how can i ",
-        "how can we ",
-        "how do i ",
-        "how do we ",
-        "how to ",
+    const PREFIXES: &[(&str, Option<&str>)] = &[
+        ("please tell me how to ", None),
+        ("please show me how to ", None),
+        ("tell me how to ", None),
+        ("show me how to ", None),
+        ("what are the steps to ", None),
+        ("what steps do i need to ", None),
+        ("what steps do we need to ", None),
+        ("how should i ", None),
+        ("how should we ", None),
+        ("how could i ", None),
+        ("how could we ", None),
+        ("how would i ", None),
+        ("how would we ", None),
+        ("how can i ", None),
+        ("how can we ", None),
+        ("how do i ", None),
+        ("how do we ", None),
+        ("how to do ", Some("do")),
+        ("how to ", None),
+        ("как сделать ", Some("do")),
+        ("как делать ", Some("do")),
+        ("как выполнить ", Some("perform")),
+        ("как реализовать ", Some("implement")),
+        ("как создать ", Some("create")),
+        ("как написать ", Some("write")),
+        ("कैसे करें ", Some("do")),
+        ("कैसे करे ", Some("do")),
+        ("कैसे लागू करें ", Some("implement")),
+        ("कैसे बनाएं ", Some("create")),
+        ("कैसे बनाएँ ", Some("create")),
+        ("कैसे लिखें ", Some("write")),
+        ("如何做 ", Some("do")),
+        ("怎么做 ", Some("do")),
+        ("如何实现 ", Some("implement")),
+        ("怎么实现 ", Some("implement")),
+        ("如何创建 ", Some("create")),
+        ("怎么创建 ", Some("create")),
+        ("如何写 ", Some("write")),
+        ("怎么写 ", Some("write")),
     ];
 
     let clean_prompt = clean_procedural_fragment(normalized);
-    for prefix in PREFIXES {
+    for (prefix, action_override) in PREFIXES {
         if let Some(rest) = clean_prompt.strip_prefix(prefix) {
-            return build_procedural_task(rest);
+            return build_procedural_task(rest, *action_override);
         }
     }
     None
 }
 
-fn build_procedural_task(raw_task: &str) -> Option<ProceduralHowToTask> {
+fn build_procedural_task(
+    raw_task: &str,
+    action_override: Option<&'static str>,
+) -> Option<ProceduralHowToTask> {
     let task = clean_procedural_fragment(raw_task);
     if task.is_empty() {
         return None;
     }
+    let (task, corrections) = correct_common_procedural_typos(&task);
 
-    let (action, object) = {
+    let (action, object) = if let Some(action) = action_override {
+        (action.to_owned(), task.clone())
+    } else {
         let mut parts = task.splitn(2, char::is_whitespace);
         let action = parts.next()?.trim();
         if action.is_empty() {
@@ -484,6 +512,7 @@ fn build_procedural_task(raw_task: &str) -> Option<ProceduralHowToTask> {
         task,
         action,
         object,
+        corrections,
     })
 }
 
@@ -501,6 +530,18 @@ fn clean_procedural_fragment(value: &str) -> String {
         " with steps",
         " for me",
         " please",
+        " напиши по шагам",
+        " по шагам",
+        " пошагово",
+        " пожалуйста",
+        " चरणों में लिखो",
+        " चरणों में बताओ",
+        " कदम दर कदम",
+        " कृपया",
+        " 按步骤写",
+        " 按步骤说明",
+        " 一步一步写",
+        " 请",
     ] {
         if let Some(stripped) = clean.strip_suffix(suffix) {
             clean = stripped.trim().to_owned();
@@ -510,12 +551,97 @@ fn clean_procedural_fragment(value: &str) -> String {
     clean
 }
 
+fn correct_common_procedural_typos(task: &str) -> (String, Vec<SpellingCorrection>) {
+    const COMMON_TYPOS: &[SpellingCorrection] = &[SpellingCorrection {
+        from: "dirven",
+        to: "driven",
+    }];
+
+    let mut corrections = Vec::new();
+    let corrected = task
+        .split_whitespace()
+        .map(|token| {
+            COMMON_TYPOS
+                .iter()
+                .find(|correction| token == correction.from)
+                .map_or_else(
+                    || token.to_owned(),
+                    |correction| {
+                        if !corrections
+                            .iter()
+                            .any(|seen: &SpellingCorrection| seen.from == correction.from)
+                        {
+                            corrections.push(*correction);
+                        }
+                        correction.to.to_owned()
+                    },
+                )
+        })
+        .collect::<Vec<_>>()
+        .join(" ");
+
+    (corrected, corrections)
+}
+
 fn wikihow_page_title(task: &str) -> String {
     task.split(|character: char| !character.is_alphanumeric())
         .filter(|word| !word.is_empty())
         .map(capitalize_word)
         .collect::<Vec<_>>()
         .join("-")
+}
+
+fn render_procedural_how_to_body(
+    task: &ProceduralHowToTask,
+    wikihow_candidate: &str,
+    wikihow_api_url: &str,
+    query: &str,
+    provider_summary: &str,
+    language: Language,
+) -> String {
+    if language == Language::Russian {
+        return format!(
+            "План поиска процедуры для `{}` (действие `{}`, объект `{}`).\n\n\
+             Я не отвечаю на это как на заученный рецепт. Сначала solver проверяет \
+             Wikipedia для контекста темы и Wikidata для подсказок сущности, действия \
+             и объекта. Затем он пробует CORS-readable MediaWiki parse API wikiHow \
+             для кандидата `{}` через `{}`. Если эти источники не дают пригодные шаги, \
+             fallback запускает web search по `{}` через {} и объединяет верхние \
+             результаты reciprocal rank fusion (k = {}). Финальная recursive fetch \
+             check принимает только страницы с явными упорядоченными или \
+             инструкционными шагами для `{}`.",
+            task.task,
+            task.action,
+            task.object,
+            wikihow_candidate,
+            wikihow_api_url,
+            query,
+            provider_summary,
+            WEB_SEARCH_RRF_K,
+            task.task,
+        );
+    }
+
+    format!(
+        "Procedural discovery plan for `{}` (action `{}`, object `{}`).\n\n\
+         I do not answer this from a memoized recipe. The solver first checks \
+         Wikipedia for topic context and Wikidata for entity/action/object hints. \
+         It then tries wikiHow's CORS-readable MediaWiki parse API candidate \
+         `{}` via `{}`. If those sources do not expose usable steps, the fallback \
+         path runs web search for `{}` across {} and merges the top results with \
+         reciprocal rank fusion (k = {}). The final recursive fetch check only \
+         accepts pages that actually contain explicit ordered or instructional \
+         steps for `{}`.",
+        task.task,
+        task.action,
+        task.object,
+        wikihow_candidate,
+        wikihow_api_url,
+        query,
+        provider_summary,
+        WEB_SEARCH_RRF_K,
+        task.task,
+    )
 }
 
 fn capitalize_word(word: &str) -> String {
