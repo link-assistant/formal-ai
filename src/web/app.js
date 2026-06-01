@@ -1059,6 +1059,18 @@ const DEFAULT_FOLLOW_UP_PROBABILITY_PERCENT = formatSliderValue(
   PREFERENCE_DEFAULTS.followUpProbability,
 );
 
+// Issue #386: the settings panel lets the user reset each setting (or all of
+// them) back to the shipped default. A setting is "modified" when its current
+// value differs from PREFERENCE_DEFAULTS; numeric sliders are compared
+// numerically so 0.8 and "0.8" are treated as equal.
+function settingIsDefault(key, value) {
+  const fallback = PREFERENCE_DEFAULTS[key];
+  if (typeof fallback === "number") {
+    return Number(value) === fallback;
+  }
+  return value === fallback;
+}
+
 const UI_SKINS = ["flat", "glass", "contrast"];
 const CHAT_STYLES = ["cards", "compact", "bubbles"];
 const COMPOSER_STYLES = ["flat", "glass-soft", "glass-clear", "bubble"];
@@ -6256,6 +6268,42 @@ function App() {
     userContext,
   };
   const currentReportUrl = createIssueUrl(reportContext);
+
+  // Issue #386: registry of user-facing settings so the panel can reset each
+  // one (or all of them) to its shipped default. Each entry pairs a
+  // PREFERENCE_DEFAULTS key with the live value, its setter, and the i18n key
+  // used as its label in the reset list.
+  const settingDescriptors = [
+    { key: "guessProbability", value: guessProbability, set: setGuessProbability, label: "settings.ambiguity" },
+    { key: "followUpProbability", value: followUpProbability, set: setFollowUpProbability, label: "settings.followUpInitiative" },
+    { key: "temperature", value: temperature, set: setTemperature, label: "settings.temperature" },
+    { key: "greetingVariations", value: greetingVariations, set: setGreetingVariations, label: "settings.variations" },
+    { key: "definitionFusion", value: definitionFusion, set: setDefinitionFusion, label: "settings.definitionFusion" },
+    { key: "blueprintComposition", value: blueprintComposition, set: setBlueprintComposition, label: "settings.blueprintComposition" },
+    { key: "experimentalOcr", value: experimentalOcr, set: setExperimentalOcr, label: "settings.experimentalOcr" },
+    { key: "uiLanguage", value: uiLanguagePreference, set: setUiLanguagePreference, label: "settings.language" },
+    { key: "responseLanguage", value: responseLanguage, set: setResponseLanguage, label: "settings.responseLanguage" },
+    { key: "preferredLanguage", value: preferredLanguage, set: setPreferredLanguage, label: "settings.preferredLanguage" },
+    { key: "theme", value: themePreference, set: setThemePreference, label: "settings.theme" },
+    { key: "uiSkin", value: uiSkin, set: setUiSkin, label: "settings.uiSkin" },
+    { key: "chatStyle", value: chatStyle, set: setChatStyle, label: "settings.chatStyle" },
+    { key: "composerStyle", value: composerStyle, set: setComposerStyle, label: "settings.composerStyle" },
+    { key: "composerAction", value: composerAction, set: setComposerAction, label: "settings.composerAction" },
+    { key: "assistantName", value: assistantName, set: setAssistantName, label: "settings.assistantName" },
+    { key: "location", value: locationPreference, set: setLocationPreference, label: "settings.location" },
+  ];
+  const modifiedSettings = settingDescriptors.filter(
+    (descriptor) => !settingIsDefault(descriptor.key, descriptor.value),
+  );
+  const resetSetting = (descriptor) => {
+    descriptor.set(PREFERENCE_DEFAULTS[descriptor.key]);
+  };
+  const resetAllSettings = () => {
+    for (const descriptor of modifiedSettings) {
+      resetSetting(descriptor);
+    }
+  };
+
   const composerActionIcon = composerAction === "plus" ? "+" : "📎";
   const attachmentStatus =
     attachments.length > 0
@@ -6908,6 +6956,71 @@ function App() {
           children: h(
             "div",
             { className: "settings-panel" },
+            // Issue #386: reset bar — reset every modified setting individually
+            // or all at once back to the shipped defaults.
+            h(
+              "div",
+              { className: "settings-reset", "data-testid": "settings-reset" },
+              h(
+                "div",
+                { className: "settings-reset-header" },
+                h(
+                  "span",
+                  { className: "settings-reset-title" },
+                  t("settings.resetHeading"),
+                ),
+                h(
+                  "button",
+                  {
+                    type: "button",
+                    className: "settings-reset-all",
+                    "data-testid": "settings-reset-all",
+                    disabled: modifiedSettings.length === 0,
+                    onClick: resetAllSettings,
+                    title: t("settings.resetAll"),
+                  },
+                  t("settings.resetAll"),
+                ),
+              ),
+              modifiedSettings.length === 0
+                ? h(
+                    "p",
+                    {
+                      className: "settings-reset-empty",
+                      "data-testid": "settings-reset-empty",
+                    },
+                    t("settings.resetNone"),
+                  )
+                : h(
+                    "ul",
+                    { className: "settings-reset-list" },
+                    modifiedSettings.map((descriptor) =>
+                      h(
+                        "li",
+                        {
+                          key: descriptor.key,
+                          className: "settings-reset-item",
+                        },
+                        h(
+                          "span",
+                          { className: "settings-reset-label" },
+                          t(descriptor.label),
+                        ),
+                        h(
+                          "button",
+                          {
+                            type: "button",
+                            className: "settings-reset-one",
+                            "data-testid": `settings-reset-${descriptor.key}`,
+                            onClick: () => resetSetting(descriptor),
+                            title: t("settings.resetOne"),
+                          },
+                          t("settings.resetOne"),
+                        ),
+                      ),
+                    ),
+                  ),
+            ),
             h(
               "div",
               { className: "setting-row setting-row-slider" },

@@ -909,6 +909,80 @@ body.is-resizing-context {
   gap: 12px;
 }
 
+/* Issue #386: reset-to-default bar at the top of the settings panel. */
+.settings-reset {
+  display: grid;
+  gap: 8px;
+  padding: 10px;
+  border: 1px solid #cdd8dc;
+  border-radius: 8px;
+  background: #f4f7f8;
+}
+
+.settings-reset-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.settings-reset-title {
+  color: #40515f;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.settings-reset-all,
+.settings-reset-one {
+  border: 1px solid #b9c6ca;
+  border-radius: 6px;
+  padding: 4px 10px;
+  background: #ffffff;
+  color: #1e252b;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.settings-reset-all:hover:not(:disabled),
+.settings-reset-one:hover {
+  border-color: #2d6cdf;
+}
+
+.settings-reset-all:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.settings-reset-list {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.settings-reset-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.settings-reset-label {
+  color: #40515f;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.settings-reset-empty {
+  margin: 0;
+  color: #657584;
+  font-size: 12px;
+  font-weight: 600;
+}
+
 .setting-row {
   display: grid;
   gap: 6px;
@@ -2465,6 +2539,27 @@ textarea:disabled {
 }
 
 :root[data-theme="dark"] .setting-row output {
+  color: #ece7df;
+}
+
+:root[data-theme="dark"] .settings-reset {
+  border-color: #343a3d;
+  background: #202322;
+}
+
+:root[data-theme="dark"] .settings-reset-title,
+:root[data-theme="dark"] .settings-reset-label {
+  color: #b7b0a7;
+}
+
+:root[data-theme="dark"] .settings-reset-empty {
+  color: #9aa39a;
+}
+
+:root[data-theme="dark"] .settings-reset-all,
+:root[data-theme="dark"] .settings-reset-one {
+  border-color: #3a4145;
+  background: #2a2e2d;
   color: #ece7df;
 }
 

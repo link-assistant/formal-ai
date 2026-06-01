@@ -40,6 +40,18 @@ async function reportBody(page, locator = '[data-testid="report-issue"]') {
   return { body: new URL(href || '').searchParams.get('body') || '', href };
 }
 
+async function setRangeValue(page, testId, value) {
+  await page.locator(`[data-testid="${testId}"]`).evaluate((node, nextValue) => {
+    const valueSetter = Object.getOwnPropertyDescriptor(
+      Object.getPrototypeOf(node),
+      'value',
+    )?.set;
+    valueSetter.call(node, String(nextValue));
+    node.dispatchEvent(new Event('input', { bubbles: true }));
+    node.dispatchEvent(new Event('change', { bubbles: true }));
+  }, value);
+}
+
 test.describe('Issue #386 - trimmed issue report', () => {
   test.beforeEach(async ({ page }) => {
     await disableGreetingVariations(page);
@@ -114,5 +126,89 @@ test.describe('Issue #386 - trimmed issue report', () => {
     // Earlier turns were omitted, so the trace must not appear.
     expect(body).toContain('omitted');
     expect(body).not.toContain('## Reasoning Trace');
+  });
+});
+
+test.describe('Issue #386 - reset settings to default', () => {
+  test.beforeEach(async ({ page }) => {
+    await disableGreetingVariations(page);
+    await page.goto('./');
+    await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
+    await switchToManualMode(page);
+  });
+
+  test('a fresh, default panel reports nothing to reset', async ({ page }) => {
+    const reset = page.locator('[data-testid="settings-reset"]');
+    await expect(reset).toBeVisible();
+    // "greetingVariations off" is the only seeded non-default; everything else
+    // is at its default, so only that one row may appear. The empty-state and
+    // the disabled all-button track whatever is left modified.
+    const empty = page.locator('[data-testid="settings-reset-empty"]');
+    const greeting = page.locator(
+      '[data-testid="settings-reset-greetingVariations"]',
+    );
+    await expect(greeting).toBeVisible();
+    await expect(empty).toHaveCount(0);
+
+    // Reset the one seeded change; the panel then declares everything default.
+    await greeting.click();
+    await expect(empty).toBeVisible();
+    await expect(
+      page.locator('[data-testid="settings-reset-all"]'),
+    ).toBeDisabled();
+  });
+
+  test('a changed setting can be reset individually and in bulk', async ({
+    page,
+  }) => {
+    // Clear the seeded greeting change so we start from a clean default panel.
+    await page.locator('[data-testid="settings-reset-greetingVariations"]').click();
+    await expect(
+      page.locator('[data-testid="settings-reset-empty"]'),
+    ).toBeVisible();
+
+    // Change three independent settings of different shapes (slider, select,
+    // text) and confirm each shows up as resettable.
+    await setRangeValue(page, 'setting-temperature', 0);
+    await page.locator('[data-testid="setting-theme"]').selectOption('dark');
+    await page.locator('[data-testid="setting-assistant-name"]').fill('Astra');
+
+    await expect(
+      page.locator('[data-testid="settings-reset-temperature"]'),
+    ).toBeVisible();
+    await expect(
+      page.locator('[data-testid="settings-reset-theme"]'),
+    ).toBeVisible();
+    await expect(
+      page.locator('[data-testid="settings-reset-assistantName"]'),
+    ).toBeVisible();
+
+    // Reset just the theme; the control returns to "auto" and the row vanishes.
+    await page.locator('[data-testid="settings-reset-theme"]').click();
+    await expect(page.locator('[data-testid="setting-theme"]')).toHaveValue(
+      'auto',
+    );
+    await expect(
+      page.locator('[data-testid="settings-reset-theme"]'),
+    ).toHaveCount(0);
+    // The other two changes survive a single-setting reset.
+    await expect(
+      page.locator('[data-testid="settings-reset-temperature"]'),
+    ).toBeVisible();
+    await expect(
+      page.locator('[data-testid="settings-reset-assistantName"]'),
+    ).toBeVisible();
+
+    // Reset-all clears everything that is left.
+    await page.locator('[data-testid="settings-reset-all"]').click();
+    await expect(
+      page.locator('[data-testid="settings-reset-empty"]'),
+    ).toBeVisible();
+    await expect(
+      page.locator('[data-testid="setting-assistant-name"]'),
+    ).toHaveValue('');
+    await expect(
+      page.locator('[data-testid="settings-reset-all"]'),
+    ).toBeDisabled();
   });
 });

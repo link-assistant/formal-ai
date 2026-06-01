@@ -189,6 +189,10 @@ en
     location
       label "Location"
       placeholder "City or region"
+    resetHeading "Reset settings"
+    resetAll "Reset all"
+    resetOne "Reset"
+    resetNone "All settings are at their defaults."
   status
     demoPlaying "Demo playing"
     manual "Manual mode"
@@ -407,6 +411,10 @@ ru
     location
       label "Местоположение"
       placeholder "Город или регион"
+    resetHeading "Сбросить настройки"
+    resetAll "Сбросить все"
+    resetOne "Сбросить"
+    resetNone "Все настройки имеют значения по умолчанию."
   status
     demoPlaying "Демо выполняется"
     manual "Ручной режим"
@@ -615,6 +623,10 @@ zh
     location
       label "位置"
       placeholder "城市或地区"
+    resetHeading "重置设置"
+    resetAll "全部重置"
+    resetOne "重置"
+    resetNone "所有设置均为默认值。"
   status
     demoPlaying "演示播放中"
     manual "手动模式"
@@ -829,6 +841,10 @@ hi
     location
       label "स्थान"
       placeholder "शहर या क्षेत्र"
+    resetHeading "सेटिंग्स रीसेट करें"
+    resetAll "सभी रीसेट करें"
+    resetOne "रीसेट"
+    resetNone "सभी सेटिंग्स अपने डिफ़ॉल्ट पर हैं।"
   status
     demoPlaying "डेमो चल रहा है"
     manual "मैनुअल मोड"
