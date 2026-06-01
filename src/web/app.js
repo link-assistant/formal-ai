@@ -1710,6 +1710,12 @@ const AGENT_STEP_SEPARATORS = [
 const AGENT_LEADING_CONJUNCTIONS =
   /^(?:and\s+then|then|next|after\s+that|потом|затем|после\s+этого|然后|接着)[\s,:]+/i;
 
+function isAgentFormattingDirective(segment) {
+  const normalized = normalizePrompt(segment);
+  if (!normalized) return false;
+  return /^(?:format|return|output|respond|write|show)\s+(?:(?:this|that|it|the result|the answer|the information|the output)\s+)?(?:as|in)\s+(?:a\s+|an\s+)?(?:json object|json|markdown table|table|csv|yaml|xml)$/.test(normalized);
+}
+
 function decomposeAgentTask(text) {
   const trimmed = String(text || "").trim();
   if (!trimmed) return [];
@@ -1725,9 +1731,19 @@ function decomposeAgentTask(text) {
     }
     segments = next;
   }
-  return segments.map((segment) =>
+  const cleanedSegments = segments.map((segment) =>
     segment.replace(AGENT_LEADING_CONJUNCTIONS, "").trim(),
   ).filter((segment) => segment.length > 0);
+  const mergedSegments = [];
+  for (const segment of cleanedSegments) {
+    if (isAgentFormattingDirective(segment) && mergedSegments.length > 0) {
+      const previous = mergedSegments[mergedSegments.length - 1].replace(/\s*[.。]\s*$/u, "");
+      mergedSegments[mergedSegments.length - 1] = `${previous}. Then ${segment}`;
+    } else {
+      mergedSegments.push(segment);
+    }
+  }
+  return mergedSegments;
 }
 
 function messagesForConversation(events, conversationId) {

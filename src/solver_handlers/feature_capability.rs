@@ -220,11 +220,24 @@ fn is_feature_capability_question(normalized: &str, language: &str) -> bool {
         ),
         "zh" => contains_alias(normalized, "能|可以|支持|你有|您有|有没有|是否有|启用|可用"),
         "hi" => contains_alias(normalized, "क्या|सकते|सकती|समर्थन|उपलब्ध"),
-        _ => contains_alias(
-            normalized,
-            "can you|can formal-ai|are you able|are you connected|do you support|do you have|enabled|available|can i",
-        ),
+        _ => {
+            contains_alias(
+                normalized,
+                "can you|can formal-ai|are you able|are you connected|do you support|do you have|can i",
+            ) || is_english_availability_question(normalized)
+        }
     }
+}
+
+fn is_english_availability_question(normalized: &str) -> bool {
+    let trimmed = normalized.trim_end_matches('?').trim();
+    if !(trimmed.contains(" enabled") || trimmed.contains(" available")) {
+        return false;
+    }
+    trimmed.starts_with("is ")
+        || trimmed.starts_with("are ")
+        || trimmed.contains(" is ")
+        || trimmed.contains(" are ")
 }
 
 fn is_feature_action_request(normalized: &str, feature: FeatureCapability) -> bool {

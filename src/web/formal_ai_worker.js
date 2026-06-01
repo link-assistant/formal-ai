@@ -4416,17 +4416,20 @@ function isFeatureCapabilityQuestion(normalized, language) {
   if (language === "hi") {
     return containsAny(normalized, ["क्या", "सकते", "सकती", "समर्थन", "उपलब्ध"]);
   }
-  return containsAny(normalized, [
+  if (containsAny(normalized, [
     "can you",
     "can formal-ai",
     "are you able",
     "are you connected",
     "do you support",
     "do you have",
-    "enabled",
-    "available",
     "can i",
-  ]);
+  ])) {
+    return true;
+  }
+  return /\b(?:is|are)\s+(?:your\s+|the\s+|this\s+|formal-ai\s+)?[\w\s/-]{1,80}\s+(?:enabled|available)\b/.test(
+    normalized,
+  );
 }
 
 function isFeatureActionRequest(normalized, feature) {
@@ -13856,12 +13859,15 @@ function normalizeUrlCandidate(candidate) {
   const text = String(candidate || "").trim();
   if (!text || /\s/.test(text) || text.includes("@")) return null;
   const lower = text.toLowerCase();
-  const url =
-    lower.startsWith("http://") || lower.startsWith("https://")
-      ? text
-      : lower.startsWith("www.") || looksLikeHostname(text)
-        ? `https://${text}`
-        : "";
+  let url = "";
+  if (lower.startsWith("http://") || lower.startsWith("https://")) {
+    url = text;
+  } else {
+    const hostCandidate = text.split(/[/?#]/, 1)[0] || "";
+    if (lower.startsWith("www.") || looksLikeHostname(hostCandidate)) {
+      url = `https://${text}`;
+    }
+  }
   if (!url) return null;
   let parsed;
   try {
@@ -17095,6 +17101,252 @@ function repositorySlug(repo) {
   return `${repo.owner}/${repo.name}`;
 }
 
+const GITHUB_README_KNOWN_TOOLS = [
+  "http_fetch",
+  "url_navigate",
+  "web_search",
+  "wikipedia_lookup",
+  "calculator",
+  "eval_js",
+  "read_local_file",
+  "append_memory",
+  "export_memory",
+  "import_memory",
+  "conversation_recall",
+  "concept_lookup",
+  "write_program",
+  "intent_routing",
+  "fact_lookup",
+  "summarize_conversation",
+  "brainstorm",
+  "coreference",
+  "roleplay",
+];
+
+function githubRepositoryInfoRequest(prompt, normalized) {
+  const repo = repositoryFromPrompt(prompt);
+  if (!repo || !repo.platform || repo.platform.slug !== "github") return null;
+  const markers = [
+    "extract information",
+    "main programming language",
+    "programming language",
+    "number of stars",
+    "star count",
+    "stars",
+    "last commit",
+    "readme",
+  ];
+  if (!containsAny(normalized, markers)) return null;
+  return repo;
+}
+
+function githubApiRepositoryUrl(repo, suffix) {
+  const owner = encodeURIComponent(repo.owner);
+  const name = encodeURIComponent(repo.name);
+  return `https://api.github.com/repos/${owner}/${name}${suffix || ""}`;
+}
+
+async function fetchGithubJson(url, label, diagnostics) {
+  if (typeof fetch !== "function") {
+    throw new Error("fetch unavailable");
+  }
+  const startedAt = Date.now();
+  const headers = { Accept: "application/vnd.github+json" };
+  const response = await fetch(url, { headers });
+  const text = await response.text();
+  const entry = {
+    providerId: "github",
+    url,
+    method: "GET",
+    requestHeaders: headers,
+    ok: Boolean(response && response.ok),
+    status: response ? response.status : 0,
+    statusText: response ? response.statusText : "",
+    elapsedMs: Date.now() - startedAt,
+    responseSnippet: text.slice(0, 1024),
+    unified: `github_api ${label}`,
+  };
+  if (Array.isArray(diagnostics)) diagnostics.push(entry);
+  if (!response || !response.ok) {
+    throw new Error(`HTTP ${entry.status} ${entry.statusText}`.trim());
+  }
+  try {
+    return text ? JSON.parse(text) : null;
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    throw new Error(`JSON parse failed: ${message}`);
+  }
+}
+
+function decodeGithubReadmeContent(readme) {
+  if (!readme || typeof readme !== "object") return "";
+  if (typeof readme.content === "string" && readme.encoding === "base64") {
+    const encoded = readme.content.replace(/\s+/g, "");
+    if (typeof atob !== "function") return "";
+    try {
+      const binary = atob(encoded);
+      const bytes = new Uint8Array(binary.length);
+      for (let index = 0; index < binary.length; index += 1) {
+        bytes[index] = binary.charCodeAt(index);
+      }
+      if (typeof TextDecoder === "function") {
+        return new TextDecoder("utf-8").decode(bytes);
+      }
+      let decoded = "";
+      for (let index = 0; index < binary.length; index += 1) {
+        decoded += String.fromCharCode(bytes[index]);
+      }
+      return decoded;
+    } catch (_error) {
+      return "";
+    }
+  }
+  return "";
+}
+
+function pushUniqueToolName(out, seen, name) {
+  const cleaned = String(name || "")
+    .trim()
+    .replace(/^[@#]+/u, "")
+    .replace(/[.,:;!?]+$/u, "");
+  if (!cleaned || cleaned.length > 48) return;
+  if (!/^[a-z][a-z0-9_-]*$/i.test(cleaned)) return;
+  const key = cleaned.toLowerCase();
+  if (seen.has(key)) return;
+  seen.add(key);
+  out.push(cleaned);
+}
+
+function pushUniqueToolDisplayName(out, seen, name) {
+  const cleaned = String(name || "")
+    .replace(/`+/gu, "")
+    .replace(/\*\*/gu, "")
+    .trim()
+    .replace(/[.,:;!?]+$/u, "")
+    .replace(/\s+/gu, " ");
+  if (!cleaned || cleaned.length > 80 || !/[A-Za-z]/u.test(cleaned)) return;
+  if (/\b(?:agentic|available|supported|search|execution|utility)\s+tools?\b/i.test(cleaned)) {
+    return;
+  }
+  const key = cleaned.toLowerCase();
+  if (seen.has(key)) return;
+  seen.add(key);
+  out.push(cleaned);
+}
+
+function extractReadmeTools(markdown) {
+  const text = String(markdown || "");
+  const lower = text.toLowerCase();
+  const out = [];
+  const seen = new Set();
+  for (const tool of GITHUB_README_KNOWN_TOOLS) {
+    if (lower.includes(tool.toLowerCase())) {
+      pushUniqueToolName(out, seen, tool);
+    }
+  }
+  const lines = text.split(/\r?\n/);
+  let inToolsSection = false;
+  let toolsSectionLevel = 0;
+  for (const line of lines) {
+    const heading = /^(\s{0,3})(#{1,6})\s+(.+?)\s*#*\s*$/u.exec(line);
+    if (heading) {
+      const level = heading[2].length;
+      const headingText = heading[3].trim();
+      if (/\btools?\b/i.test(headingText)) {
+        inToolsSection = true;
+        toolsSectionLevel = level;
+      } else if (inToolsSection && level > toolsSectionLevel) {
+        pushUniqueToolDisplayName(out, seen, headingText);
+      } else {
+        inToolsSection = false;
+        toolsSectionLevel = 0;
+      }
+      continue;
+    }
+    if (!inToolsSection) continue;
+    const bullet = /^\s*[-*+]\s+(?:`([^`]+)`|([A-Za-z][A-Za-z0-9_-]*))/u.exec(line);
+    if (bullet) {
+      pushUniqueToolName(out, seen, bullet[1] || bullet[2]);
+    }
+    const codeMatches = line.matchAll(/`([A-Za-z][A-Za-z0-9_-]*)`/gu);
+    for (const match of codeMatches) {
+      pushUniqueToolName(out, seen, match[1]);
+    }
+  }
+  return out;
+}
+
+function githubCommitDate(commits) {
+  if (!Array.isArray(commits) || commits.length === 0) return null;
+  const commit = commits[0] && commits[0].commit ? commits[0].commit : null;
+  return (
+    (commit && commit.committer && commit.committer.date) ||
+    (commit && commit.author && commit.author.date) ||
+    null
+  );
+}
+
+async function tryGithubRepositoryInfo(repo, language) {
+  const diagnostics = [];
+  const errors = [];
+  let repoData = null;
+  let commits = null;
+  let readme = null;
+
+  try {
+    repoData = await fetchGithubJson(githubApiRepositoryUrl(repo), "repository", diagnostics);
+  } catch (error) {
+    errors.push(`repository: ${error instanceof Error ? error.message : String(error)}`);
+  }
+  try {
+    commits = await fetchGithubJson(
+      githubApiRepositoryUrl(repo, "/commits?per_page=1"),
+      "commits",
+      diagnostics,
+    );
+  } catch (error) {
+    errors.push(`commits: ${error instanceof Error ? error.message : String(error)}`);
+  }
+  try {
+    readme = await fetchGithubJson(githubApiRepositoryUrl(repo, "/readme"), "readme", diagnostics);
+  } catch (error) {
+    errors.push(`readme: ${error instanceof Error ? error.message : String(error)}`);
+  }
+
+  const slug = repositorySlug(repo);
+  const readmeMarkdown = decodeGithubReadmeContent(readme);
+  const payload = {
+    repository: (repoData && repoData.full_name) || slug,
+    mainProgrammingLanguage: (repoData && repoData.language) || null,
+    stars:
+      repoData && Number.isFinite(Number(repoData.stargazers_count))
+        ? Number(repoData.stargazers_count)
+        : null,
+    lastCommitDate: githubCommitDate(commits) || null,
+    readmeTools: extractReadmeTools(readmeMarkdown),
+  };
+  if (errors.length > 0) {
+    payload.errors = errors;
+  }
+  const content = `\`\`\`json\n${JSON.stringify(payload, null, 2)}\n\`\`\``;
+  return {
+    intent: "github_repo_info",
+    content,
+    confidence: errors.length === 0 ? 0.92 : 0.55,
+    evidence: [
+      `github_repo_info:repository:${slug}`,
+      `source:${repo.url}`,
+      "source:https://api.github.com",
+      `language:${language}`,
+      ...(errors.length > 0 ? errors.map((error) => `github_repo_info:error:${error}`) : []),
+    ],
+    diagnostics: {
+      providers: [],
+      httpExchanges: diagnostics,
+    },
+  };
+}
+
 function genericProjectLookupAnswer(prompt, language, repo, promotionEnabled) {
   const evidence = [];
   if (!promotionEnabled) evidence.push("project_lookup:promotion:disabled");
@@ -17592,6 +17844,36 @@ async function solve(prompt, history, prefs, userContext = {}) {
       earlyWikiArticleQuestion,
       formalizationContext,
     );
+  }
+
+  const githubRepoInfoRequest = githubRepositoryInfoRequest(prompt, normalized);
+  if (githubRepoInfoRequest) {
+    steps.push({
+      step: "invoke_tool",
+      detail: `github_repo_info:${repositorySlug(githubRepoInfoRequest)}`,
+    });
+    const githubRepoInfo = await tryGithubRepositoryInfo(
+      githubRepoInfoRequest,
+      language,
+    );
+    events.push(`handler:${githubRepoInfo.intent}`);
+    steps.push({
+      step: "dispatch_handler",
+      detail: "tryGithubRepositoryInfo",
+    });
+    toolCalls.push({
+      tool: "github_repo_info",
+      inputs: {
+        prompt,
+        language,
+        repository: repositorySlug(githubRepoInfoRequest),
+      },
+      outputs: {
+        intent: githubRepoInfo.intent,
+        confidence: githubRepoInfo.confidence,
+      },
+    });
+    return finalize(events, steps, toolCalls, githubRepoInfo, formalizationContext);
   }
 
   const capabilities = tryCapabilities(prompt, normalized, preferences, history);
