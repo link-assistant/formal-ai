@@ -17,12 +17,17 @@ wasted its limited URL budget on settings that were already at their shipped
 default, repeated the worker on its own line, carried a multi-clause
 attach-memory walkthrough, and printed a Reasoning Trace even when the dialog
 above it had been trimmed to fit GitHub's URL cap. The deeper subject is the
-refusal itself: the program-modification pipeline only understands **additive**
+refusal itself: the program-modification pipeline only understood **additive**
 modifiers (add a path argument, add reverse-sort), so a **subtractive** request
-("cancel/undo the sort") matches no modifier and falls through to `unknown`.
-Around the bug the issue layers a large architecture-vision ask (self-describing
-seed data, a links-rooted semantic meta-language, tree-sitter CST/AST, multiple
-virtual views of memory, no bare-text processing in code).
+("cancel/undo the sort") matched no modifier and fell through to `unknown`. This
+PR fixes it with the architecture rethink the issue asked for (R-h): operations
+**declare their inverse** in the seed (`cancel_reverse_sort` carries
+`inverse "reverse_sort"`) and the subtractive substitution rules are **derived at
+runtime** by mirroring the additive ones, so "cancel X" is the data-defined
+inverse of "X" — no bespoke control flow, and the same fix lands natively and in
+the wasm worker. Around the bug the issue layers a large architecture-vision ask
+(self-describing seed data, a links-rooted semantic meta-language, tree-sitter
+CST/AST, multiple virtual views of memory, no bare-text processing in code).
 
 ## 1. Timeline / sequence of events
 
@@ -138,25 +143,29 @@ not code:
   (`src/intent_formalization.rs:582`) intersects the vocabulary detections with
   that set.
 
-So for "Отмени сортировку": the vocabulary may surface a `sort`-adjacent token,
-but no `cancel`/subtractive operation exists, the intersection with
-`modifier_slugs()` is empty, `recover_write_program_rule()`
-(`src/intent_formalization.rs:496`) finds `modifiers.is_empty()`, builds no plan,
-and the turn falls through to `unknown`. **Root cause #1: the modifier ontology
-is additive-only — there is no concept of a subtractive/cancel modifier, in
-neither the vocabulary nor the rules.**
+So for "Отмени сортировку": the vocabulary surfaces no `cancel`/subtractive
+operation, the intersection with `modifier_slugs()` is empty, and — one step
+earlier — the bare-follow-up gate `looks_like_bare_program_artifact_follow_up`
+(`src/program_coreference.rs`) lists only *additive* verbs and nouns, so the turn
+is not even recognized as a program follow-up. It clears no gate, surfaces no
+modifier, and falls through to `unknown`. **Root cause: the modifier ontology is
+additive-only — there is no concept of a subtractive/cancel operation, in neither
+the coreference gate, the vocabulary, nor the rules.**
 
-There is a second, compounding gap. Even if a `cancel_sort` modifier existed,
-`recover_write_program_rule` recovers the **base task** from history user turns
-(`src/intent_formalization.rs:512–528`) and then applies **only the current
-turn's** modifiers (`src/intent_formalization.rs:534–545`). It does not
-reconstruct the *accumulated* program state — i.e. "list_files_arg, currently
-reverse-sorted". "Cancel the sort" is meaningful only relative to that
-accumulated state: it must resolve to `list_files_arg_reverse_sort →
-list_files_arg`. With no accumulated state to subtract from, a cancel modifier
-would have nothing to act on. **Root cause #2: program state is not accumulated
-across turns; each follow-up re-derives a base task and applies a single turn's
-modifiers, so reversible (stateful) edits cannot be expressed.**
+One subtlety is worth recording, because the first draft of this study got it
+wrong: the program *does* already accumulate state across turns.
+`active_program_context()` (`src/intent_formalization.rs:458`, added for issue
+#357's bare-coreference follow-ups) walks the history in reverse and re-parses
+the most recent turn that `write_program_parameters()` recognizes — which is the
+previous **rendered assistant answer**. That answer's task slug already encodes
+the full accumulated program, so the recovered base task for the cancel turn is
+`list_files_arg_reverse_sort`, not a bare `list_files`; applying the current
+turn's modifier to it is sufficient. There is no missing "multi-turn state"
+model — the cancel turn simply never reached this recovery, because the
+additive-only ontology rejected it upstream. The single root cause therefore
+manifests in three layers: the follow-up gate, the substitution-rule /
+`modifier_slugs()` set, and rule-synthesis decomposition — "cancel X" had a home
+in none of them.
 
 This is exactly the shape of the reverse-sort capability that took epic #349 ten
 child PRs (#355–#365) to land. A correct, regression-free "cancel sort" is the
@@ -174,7 +183,11 @@ or **removal** of a previously-applied operation has no home in the current
 model, so it routes to `unknown`. The user's architecture ask (R-h) is the
 generalization of this observation: reasoning over a links-rooted semantic
 meta-language with explicit, self-describing operations (including inverses)
-would let "cancel X" be derived from "X" rather than separately enumerated.
+would let "cancel X" be derived from "X" rather than separately enumerated. This
+PR implements exactly that inverse-derivation for the sort operation (§4
+R-b-bug): the seed declares the inverse and the subtractive rules are derived,
+dissolving this specific instance of the bug class. The broader links-rooted
+meta-language remains the staged follow-up vision in §6.
 
 ## 4. Solution plans (per requirement) and what was implemented
 
@@ -229,22 +242,49 @@ diagnostics-off omit it. New i18n keys
 locales. Locked by the *"copy a conversation as Markdown"* describe (two tests:
 with/without diagnostics).
 
-### R-b-bug — Resolve "Отмени сортировку" · **planned (staged epic)**
-Scoped as a #349-shaped epic to avoid regressing the additive pipeline:
-1. **Repro + benchmark.** Add an ignored regression test + runnable example for
-   the Russian cancel-sort follow-up (mirrors #355's repro for #349).
-2. **Subtractive-modifier concept.** Introduce a `cancel`/`undo` operation in
-   `operation-vocabulary.lino` (en/ru/zh/hi triggers, incl. `отмени`,
-   `отменить`, `убери`, `без сортировки`) with a target-operation argument.
-3. **Accumulated program state.** Replace single-turn modifier application in
-   `recover_write_program_rule` with an accumulated program-state model that
-   threads the current task slug (e.g. `list_files_arg_reverse_sort`) across
-   turns, so a follow-up edits the live program rather than re-deriving a base.
-4. **Subtractive rules.** Add `program-plan-rules.lino` rules that downgrade
-   `*_reverse_sort → *` under a `request:modifier -> cancel(reverse_sort)`
-   condition; keep `modifier_slugs()` discovery data-driven.
-5. **Cross-runtime parity + ratchet.** Native and wasm parity, plus the
-   coding-modification benchmark ratchet (per #362).
+### R-b-bug — Resolve "Отмени сортировку" · **done**
+Implemented as the inverse-derivation architecture the issue asked for (R-h), not
+a hand-written special case. Each piece is pure data plus a generic mechanism:
+1. **Declare the inverse in seed data.** `data/seed/operation-vocabulary.lino`
+   gains a `cancel_reverse_sort` operation carrying `inverse "reverse_sort"` and
+   trigger phrases in all four languages (en `cancel/undo/remove the sorting`, ru
+   `отмени/убери/отмените сортировку`, `без сортировки`, hi `सॉर्ट हटाओ`,
+   `सॉर्ट रद्द करो`, zh `取消排序`, `撤销排序`, …). No code lists these phrases.
+2. **Parse the declaration.** `OperationTrigger.inverse_of` and
+   `OperationVocabulary::inverse_pairs()` (`src/seed/operation_vocabulary.rs`)
+   expose every declared `(cancel_op, base_op)` pair.
+3. **Derive the subtractive rules at runtime.** `derive_inverse_rules()`
+   (`src/program_plan.rs`) mirrors each additive base rule that fires on
+   `request:modifier -> reverse_sort` (single-link rewrite) into its inverse —
+   firing on `request:modifier -> cancel_reverse_sort` with the task add/remove
+   swapped. The four additive base rules yield two derived rules
+   (`cancel_reverse_sort__reverse_sort_list_files` and `…_list_files_arg`,
+   6 rules total), so `modifier_slugs()` now reports `cancel_reverse_sort` as a
+   first-class modifier. Adding a new cancellable operation is pure seed data —
+   no new control flow here (R-h/R-m).
+4. **Recognize the follow-up.** The bare-coreference gate
+   (`src/program_coreference.rs`) gains the sort nouns and the
+   cancel/undo/remove/revert verbs (+ ru/hi/zh forms), so "Отмени сортировку" is
+   recognized as a program follow-up and bound to the active artifact — whose
+   accumulated task, `list_files_arg_reverse_sort`, is recovered by re-parsing the
+   prior rendered answer (§3.2). Lowering it with `cancel_reverse_sort` resolves
+   to `list_files_arg` — sort removed, path argument kept.
+5. **Verify the cancel actually removes the sort.** Rule synthesis
+   (`src/rule_synthesis.rs`) decomposes `cancel_reverse_sort` as `operation
+   cancel` / `operation_modifier reverse_sort` and flips the render check: a
+   cancel must leave **no** descending order — the exact inverse of
+   reverse_sort's "must be descending" check — so a cancel that silently failed
+   to remove the sort fails verification.
+6. **Cross-runtime parity.** The same derivation is mirrored in the web worker
+   (`src/web/formal_ai_worker.js`); `experiments/issue-386-js-cancel-sort.mjs`
+   proves the four-turn Russian dialog yields the unsorted program in the wasm
+   runtime too.
+
+Locked by `tests/integration/issue_386_cancel_sort.rs` (the four-turn Russian
+repro, the full diagnostic reasoning chain, and the same flow across all four
+languages), the `program_plan` / `operation_vocabulary` / `program_coreference`
+unit tests added alongside the code, and `tests/e2e/tests/issue-386.spec.js` (the
+cancel flow plus the inverse-rule reasoning chain rendered in the browser).
 
 ### R-g — Case study · **done** (this document + `raw-data/`).
 
@@ -284,8 +324,9 @@ integration, not a bug report, so no upstream issue is warranted at this stage.
   the existing REQUIRED_KEYS contract.
 - **Program-modification pipeline (in-repo, epic #349 / #355–#365).** The
   data-driven `operation-vocabulary.lino` + `program-plan-rules.lino` +
-  `program_plan::modifier_slugs()` machinery is the template the cancel-sort
-  epic (R-b-bug) extends; reusing it keeps modifier discovery data-driven.
+  `program_plan::modifier_slugs()` machinery is the template the cancel-sort fix
+  (R-b-bug) mirrors: `derive_inverse_rules()` reuses the additive rules as the
+  source of their own inverses, keeping modifier discovery fully data-driven.
 - **[tree-sitter](https://tree-sitter.github.io/tree-sitter) (external, R-h).**
   Incremental parser producing concrete syntax trees; the Rust binding
   [`tree-sitter`](https://crates.io/crates/tree-sitter) plus grammar crates
@@ -314,7 +355,9 @@ existing vision track (#244). Each is independently shippable and testable:
    native Rust binding where available.
 4. **Operation ontology with inverses.** Operations carry their inverses, so
    "cancel X" is *derived* from "X" — directly dissolving the §3.2 root cause
-   instead of enumerating every negation.
+   instead of enumerating every negation. **Delivered for the sort operation by
+   this PR (§4 R-b-bug); the next step is to generalize the same `inverse`
+   declaration to every operation.**
 5. **Multiple virtual memory views** (meanings, words, symbols, letters, nouns,
    verbs, noun/verb phrases, SVO, statements) over the same links store.
 6. **Knowledge-API cache discipline.** Preserve all API requests; count accesses;
@@ -325,9 +368,20 @@ existing vision track (#244). Each is independently shippable and testable:
 
 ## 7. Verification
 
-- `node --check src/web/app.js` — passes.
-- `node tests/e2e/scripts/check-i18n-catalog.mjs` — passes (182 keys × 4 locales).
-- `node tests/e2e/scripts/check-web-tdz.mjs` — passes.
-- `tests/e2e/tests/issue-386.spec.js` — 7 tests across 3 describe blocks
-  (trimmed report, reset settings, copy conversation) — pass under
+- `cargo test --all-features` — the full suite passes, including
+  `tests/integration/issue_386_cancel_sort.rs` (four-turn Russian repro, the full
+  diagnostic reasoning chain, and the cancel flow across en/ru/hi/zh) and the new
+  `program_plan` / `seed::operation_vocabulary` / `program_coreference` unit tests
+  (inverse-pair exposure, derived-rule shape, round-trip inverse, gate
+  recognition in every language).
+- `cargo fmt --all -- --check` and `cargo clippy --all-targets --all-features
+  -- -D warnings` — clean.
+- `node experiments/issue-386-js-cancel-sort.mjs` — the web worker mirror yields
+  the unsorted program for the same four-turn dialog (cross-runtime parity).
+- `node tests/e2e/scripts/check-i18n-catalog.mjs`,
+  `check-language-test-coverage.mjs` (covers en/ru/hi/zh),
+  `check-language-change-parity.mjs`, `check-multilingual-intent-coverage.mjs`,
+  and `check-web-tdz.mjs` — pass.
+- `tests/e2e/tests/issue-386.spec.js` — four describe blocks (trimmed report,
+  reset settings, copy conversation, cancel a program modification) pass under
   `playwright.local.config.js`.
