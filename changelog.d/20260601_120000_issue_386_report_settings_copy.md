@@ -19,6 +19,11 @@ bump: minor
   data, a reconstructed timeline, the full requirements list, a corrected
   root-cause analysis of the "Отмени сортировку" refusal, and the implemented
   inverse-derivation fix.
+- Hardened the seed-mirror invariant so the cross-place fix can never silently
+  drift: a unit test now enforces that the browser demo's `src/web/seed/` is
+  byte-identical to the canonical `data/seed/` (the `scripts/sync-seed.sh
+  --check` contract), running in the PR-gated suite on every OS instead of only
+  via the deploy/E2E re-sync, which is skipped on docs-only commits (issue #386).
 
 ### Fixed
 - The follow-up "Отмени сортировку" ("cancel the sorting") no longer returns
