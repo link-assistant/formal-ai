@@ -1,7 +1,7 @@
 //! Dump the full diagnostic trace for issue #386 turn 7 ("Отмени сортировку")
 //! so the integration test asserts the real reasoning-chain strings.
 //!
-//! Run with: cargo run --example issue_386_diagnostic_trace
+//! Run with: `cargo run --example issue_386_diagnostic_trace`
 
 use formal_ai::{ConversationTurn, SolverConfig, UniversalSolver};
 
