@@ -25,6 +25,8 @@
 //! - `network_visualization`: optional link-graph view alongside chat.
 //! - `desktop_surface`: packaged desktop shell around the shared HTTP/web
 //!   boundary.
+//! - `vscode_surface`: dual-host VS Code extension (Node + Web Worker) embedding
+//!   the shared web chat around the same HTTP/web boundary.
 //! - `transparent_state`: querying the network through chat without leaking
 //!   internal state by default.
 
@@ -37,6 +39,9 @@ mod capabilities;
 mod chat_surface;
 mod code_generation;
 mod code_generation_blueprint;
+mod code_generation_coreference;
+mod code_generation_program_modifiers;
+mod coding_modification_benchmarks;
 mod definition_fusion;
 mod desktop_surface;
 mod formalization;
@@ -53,6 +58,7 @@ mod project_lookups;
 mod prompt_variations;
 mod reasoning_loop;
 mod reasoning_paths;
+mod self_improvement;
 mod source_cache;
 mod substitution_rules;
 mod summarization_pipeline;
@@ -62,3 +68,4 @@ mod text_manipulation;
 mod translation_via_links;
 mod transparent_state;
 mod unknown_reasoning;
+mod vscode_surface;

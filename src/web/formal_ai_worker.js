@@ -61,7 +61,7 @@ const FALLBACK_COURTESY_FOLLOW_UPS = [
 ];
 
 const FALLBACK_UNKNOWN_ANSWER =
-  "I don't know how to answer that yet. I cannot answer that from local Links Notation rules yet. To inspect what I can do, send `List behavior rules`, then `Show behavior rule unknown`. To teach this dialog a response, send: When I say `your prompt`, answer `your answer`. To make it durable, export memory or use Report issue so developers can add a fact or add a rule in Links Notation seed data.";
+  "I don't know how to answer that yet. I cannot answer that from local Links Notation rules yet. To inspect what I can do, send `List behavior rules`, then `Show behavior rule unknown`. To teach this dialog a response, send: When I say `your prompt`, answer `your answer`. If this still needs a shared Links Notation seed fact or rule after those checks, use Report issue with the reasoning trace, or export memory to keep a dialog-local rule durable.";
 
 const FALLBACK_CLARIFICATION_ANSWER =
   "I'm sorry for the confusion. I am formal-ai, a deterministic symbolic AI. I can answer greetings, identity questions, concept lookups (what is X?), arithmetic, and parameterized program templates. If you'd like to ask about something specific, try one of those or add a fact in Links Notation.";
@@ -2305,11 +2305,211 @@ function splitSentences(text) {
   return sentences;
 }
 
+function wordProblemWords(sentence) {
+  return String(sentence || "")
+    .split(/[^\p{L}\p{N}]+/u)
+    .filter(Boolean)
+    .map((token) => token.toLowerCase());
+}
+
+function parseWordProblemInteger(token) {
+  const text = String(token || "").toLowerCase();
+  if (/^[+-]?\d+$/.test(text)) return Number.parseInt(text, 10);
+  const numbers = {
+    zero: 0,
+    one: 1,
+    a: 1,
+    an: 1,
+    two: 2,
+    three: 3,
+    four: 4,
+    five: 5,
+    six: 6,
+    seven: 7,
+    eight: 8,
+    nine: 9,
+    ten: 10,
+    eleven: 11,
+    twelve: 12,
+    thirteen: 13,
+    fourteen: 14,
+    fifteen: 15,
+    sixteen: 16,
+    seventeen: 17,
+    eighteen: 18,
+    nineteen: 19,
+    twenty: 20,
+  };
+  return Object.prototype.hasOwnProperty.call(numbers, text) ? numbers[text] : null;
+}
+
+function canonicalBoxId(token) {
+  const cleaned = trimNonAlnum(token).toUpperCase();
+  return cleaned && cleaned.length <= 3 ? cleaned : "";
+}
+
+function parseDeclaredBoxCount(words) {
+  if (
+    words.length >= 4 &&
+    words[0] === "i" &&
+    words[1] === "have" &&
+    (words[3] === "box" || words[3] === "boxes")
+  ) {
+    const count = parseWordProblemInteger(words[2]);
+    return Number.isInteger(count) ? count : null;
+  }
+  return null;
+}
+
+function parseBoxRule(words) {
+  let index = words[0] === "if" ? 1 : 0;
+  if (words[index] !== "box" || words[index + 2] !== "has") return null;
+  const target = canonicalBoxId(words[index + 1]);
+  if (!target) return null;
+  index += 3;
+
+  if (
+    words[index] === "twice" &&
+    words[index + 1] === "as" &&
+    words[index + 2] === "many" &&
+    words[index + 4] === "as" &&
+    words[index + 5] === "box"
+  ) {
+    const source = canonicalBoxId(words[index + 6]);
+    if (!source) return null;
+    return {
+      target,
+      rule: { kind: "multiple", factor: 2, source },
+      item: words[index + 3] || "",
+    };
+  }
+
+  const value = parseWordProblemInteger(words[index]);
+  if (!Number.isInteger(value)) return null;
+  if (
+    words[index + 1] === "more" &&
+    words[index + 3] === "than" &&
+    words[index + 4] === "box"
+  ) {
+    const source = canonicalBoxId(words[index + 5]);
+    if (!source) return null;
+    return {
+      target,
+      rule: { kind: "add", source, addend: value },
+      item: words[index + 2] || "",
+    };
+  }
+
+  return {
+    target,
+    rule: { kind: "known", value },
+    item: words[index + 1] || "",
+  };
+}
+
+function resolveBoxValue(id, rules, memo, stack, reasoningSteps, resultLabel) {
+  if (memo.has(id)) return memo.get(id);
+  if (stack.includes(id)) return null;
+  const rule = rules.get(id);
+  if (!rule) return null;
+  stack.push(id);
+  let value = null;
+  if (rule.kind === "known") {
+    value = rule.value;
+    reasoningSteps.push(`Box ${id} = ${value} ${resultLabel}.`);
+  } else if (rule.kind === "multiple") {
+    const sourceValue = resolveBoxValue(
+      rule.source,
+      rules,
+      memo,
+      stack,
+      reasoningSteps,
+      resultLabel,
+    );
+    if (!Number.isFinite(sourceValue)) return null;
+    value = sourceValue * rule.factor;
+    reasoningSteps.push(
+      `Box ${id} = ${rule.factor} * ${sourceValue} = ${value} ${resultLabel}.`,
+    );
+  } else if (rule.kind === "add") {
+    const sourceValue = resolveBoxValue(
+      rule.source,
+      rules,
+      memo,
+      stack,
+      reasoningSteps,
+      resultLabel,
+    );
+    if (!Number.isFinite(sourceValue)) return null;
+    value = sourceValue + rule.addend;
+    reasoningSteps.push(
+      `Box ${id} = ${sourceValue} + ${rule.addend} = ${value} ${resultLabel}.`,
+    );
+  }
+  stack.pop();
+  if (!Number.isFinite(value)) return null;
+  memo.set(id, value);
+  return value;
+}
+
+function normalizeBoxTotalProblem(text) {
+  const lower = String(text || "").toLowerCase();
+  if (
+    !lower.includes("box") ||
+    !lower.includes("how many") ||
+    !lower.includes("total") ||
+    (!lower.includes("twice as many") &&
+      !(lower.includes("more") && lower.includes("than")))
+  ) {
+    return null;
+  }
+
+  let declaredCount = null;
+  let resultLabel = "";
+  const rules = new Map();
+  for (const sentence of splitSentences(text)) {
+    const words = wordProblemWords(sentence);
+    if (words.length === 0) continue;
+    if (declaredCount === null) {
+      declaredCount = parseDeclaredBoxCount(words);
+    }
+    const parsed = parseBoxRule(words);
+    if (!parsed) continue;
+    if (parsed.item && parsed.item !== "box" && parsed.item !== "boxes") {
+      resultLabel = parsed.item;
+    }
+    rules.set(parsed.target, parsed.rule);
+  }
+  if (rules.size < 2) return null;
+  if (declaredCount !== null && rules.size < declaredCount) return null;
+
+  const label = resultLabel || "items";
+  const memo = new Map();
+  const reasoningSteps = [];
+  const ids = Array.from(rules.keys()).sort();
+  for (const id of ids) {
+    if (
+      !Number.isFinite(
+        resolveBoxValue(id, rules, memo, [], reasoningSteps, label),
+      )
+    ) {
+      return null;
+    }
+  }
+  const values = ids.map((id) => memo.get(id));
+  if (values.some((value) => !Number.isFinite(value))) return null;
+  const expression = values.join(" + ");
+  reasoningSteps.push(`Total = ${expression} ${label}.`);
+  return { expression, reasoningSteps, resultLabel: label };
+}
+
 // Rewrite a natural-language "word problem" into a calculator expression, or
 // return null when no rewrite applies so callers fall through unchanged.
-function normalizeWordProblem(expression) {
+function normalizeWordProblemDetailed(expression) {
   const trimmed = String(expression || "").trim();
   if (!trimmed) return null;
+  const boxProblem = normalizeBoxTotalProblem(trimmed);
+  if (boxProblem) return boxProblem;
   // Keep only sentence fragments that carry arithmetic content, dropping pure
   // instruction clauses such as "Show me the code and the final result".
   const arithmetic = splitSentences(trimmed).filter(
@@ -2340,7 +2540,7 @@ function normalizeWordProblem(expression) {
   }
   working = working.split(/\s+/).filter(Boolean).join(" ");
   if (!working || working.toLowerCase() === trimmed.toLowerCase()) return null;
-  return working;
+  return { expression: working, reasoningSteps: [], resultLabel: "" };
 }
 
 function extractArithmeticExpression(prompt) {
@@ -2418,9 +2618,15 @@ function extractArithmeticExpression(prompt) {
   // Issue #334 step 2: rewrite a natural-language word problem into a calculator
   // expression ("the 10th Fibonacci number and multiply it by 8% of 500. Show me
   // the code ..." -> "55 * 8% of 500") before the symbolic checks below run.
-  const wordProblem = normalizeWordProblem(working);
+  const wordProblem = normalizeWordProblemDetailed(working);
+  let reasoningSteps = [];
+  let resultLabel = "";
   if (wordProblem) {
-    working = wordProblem;
+    working = wordProblem.expression;
+    reasoningSteps = Array.isArray(wordProblem.reasoningSteps)
+      ? wordProblem.reasoningSteps
+      : [];
+    resultLabel = wordProblem.resultLabel || "";
   }
   const workingLower = working.toLowerCase();
   const hasLetter = /\p{L}/u.test(working);
@@ -2474,13 +2680,14 @@ function extractArithmeticExpression(prompt) {
   const hasDigit = /[0-9]/.test(working);
   if (!hasDigit && !hasSpelled) return null;
   if (!hasSymbolic && !hasWord && hasLetter) return null;
-  if (hasPercentOf) return { expression: working, interpretations };
+  const extracted = { expression: working, interpretations, reasoningSteps, resultLabel };
+  if (hasPercentOf) return extracted;
   if (evaluateCurrencyConversionExpression(working) !== null) {
-    return { expression: working, interpretations };
+    return extracted;
   }
   const allowed = /^[0-9+\-*/%().=\s_×·÷−,a-zA-Z]+$/;
   if (!allowed.test(working) && !hasWordOperator) return null;
-  return { expression: working, interpretations };
+  return extracted;
 }
 
 function extractFencedBlock(text, languages) {
@@ -4416,17 +4623,20 @@ function isFeatureCapabilityQuestion(normalized, language) {
   if (language === "hi") {
     return containsAny(normalized, ["क्या", "सकते", "सकती", "समर्थन", "उपलब्ध"]);
   }
-  return containsAny(normalized, [
+  if (containsAny(normalized, [
     "can you",
     "can formal-ai",
     "are you able",
     "are you connected",
     "do you support",
     "do you have",
-    "enabled",
-    "available",
     "can i",
-  ]);
+  ])) {
+    return true;
+  }
+  return /\b(?:is|are)\s+(?:your\s+|the\s+|this\s+|formal-ai\s+)?[\w\s/-]{1,80}\s+(?:enabled|available)\b/.test(
+    normalized,
+  );
 }
 
 function isFeatureActionRequest(normalized, feature) {
@@ -5818,6 +6028,362 @@ function trySummarizeConversation(history) {
   };
 }
 
+function tryCompoundInterest(prompt, normalized, history) {
+  const request = parseCompoundInterestRequest(prompt, normalized);
+  if (request) return answerCompoundInterest(request);
+
+  const conversion = parseFinalAmountConversionRequest(normalized, history);
+  if (conversion) return answerFinalAmountConversion(conversion);
+
+  return null;
+}
+
+function answerCompoundInterest(request) {
+  const annualRate = request.annualRatePercent / 100;
+  const periodsPerYear = request.compoundsPerYear;
+  const periodicRate = annualRate / periodsPerYear;
+  const periods = periodsPerYear * request.years;
+  const finalAmount =
+    request.principal * Math.pow(1 + periodicRate, periods);
+
+  const evidence = [
+    `calculation:compound_interest:P=${formatCompoundNumber(request.principal)};r=${formatCompoundRate(annualRate)};n=${periodsPerYear};t=${formatCompoundNumber(request.years)}`,
+    "calculation:formula:A=P(1+r/n)^(n*t)",
+  ];
+  const lines = [
+    "Compound interest calculation",
+    "",
+    "Formula: A = P(1 + r/n)^(n*t)",
+    `P = ${formatCompoundNumber(request.principal)} USD`,
+    `r = ${formatCompoundRate(annualRate)} (${formatCompoundNumber(request.annualRatePercent)}% annual)`,
+    `n = ${periodsPerYear} (${compoundLabel(periodsPerYear)})`,
+    `t = ${formatCompoundNumber(request.years)} years`,
+    "",
+    `Step 1: periodic rate = r/n = ${formatCompoundRate(annualRate)}/${periodsPerYear} = ${formatCompoundRate(periodicRate)}`,
+    `Step 2: number of periods = n*t = ${periodsPerYear}*${formatCompoundNumber(request.years)} = ${formatCompoundNumber(periods)}`,
+    `Step 3: A = ${formatCompoundNumber(request.principal)} * (1 + ${formatCompoundRate(periodicRate)})^${formatCompoundNumber(periods)}`,
+    `Final amount: ${formatCompoundMoney(finalAmount)} USD`,
+  ];
+
+  if (request.targetCurrency) {
+    appendCompoundConversionLines(
+      lines,
+      evidence,
+      finalAmount,
+      "USD",
+      request.targetCurrency,
+      request.asksForWebRate,
+    );
+  }
+
+  return {
+    intent: "calculation",
+    content: lines.join("\n"),
+    confidence: 1.0,
+    evidence,
+  };
+}
+
+function answerFinalAmountConversion(conversion) {
+  const evidence = ["calculation:final_amount_conversion"];
+  const lines = [
+    "Final amount conversion",
+    `Source amount: ${formatCompoundMoney(conversion.amount)} ${conversion.sourceCurrency}`,
+  ];
+  appendCompoundConversionLines(
+    lines,
+    evidence,
+    conversion.amount,
+    conversion.sourceCurrency,
+    conversion.targetCurrency,
+    conversion.asksForWebRate,
+  );
+  return {
+    intent: "calculation",
+    content: lines.join("\n"),
+    confidence: 1.0,
+    evidence,
+  };
+}
+
+function appendCompoundConversionLines(
+  lines,
+  evidence,
+  amount,
+  sourceCurrency,
+  targetCurrency,
+  asksForWebRate,
+) {
+  const rate = compoundCurrencyRate(sourceCurrency, targetCurrency);
+  if (!rate) {
+    evidence.push(`calculation:currency_conversion:error:${sourceCurrency}->${targetCurrency}`);
+    lines.push("");
+    lines.push(
+      `I calculated the USD amount, but no ${sourceCurrency}->${targetCurrency} exchange rate is available locally.`,
+    );
+    return;
+  }
+
+  const displayedAmount = roundCompoundMoney(amount);
+  const converted = displayedAmount * rate.rate;
+  evidence.push(
+    `calculation:currency_conversion:${formatCompoundMoney(displayedAmount)} ${sourceCurrency} to ${targetCurrency} at ${formatCompoundRate(rate.rate)}`,
+  );
+  lines.push("");
+  lines.push(`Conversion: ${sourceCurrency} -> ${targetCurrency}`);
+  lines.push(`${rate.expression} = ${rate.formatted}`);
+  lines.push(
+    `${formatCompoundMoney(displayedAmount)} ${sourceCurrency} * ${formatCompoundRate(rate.rate)} = ${formatCompoundMoney(converted)} ${targetCurrency}`,
+  );
+  if (rate.sourceDetail) {
+    lines.push(`Rate detail: ${rate.sourceDetail}`);
+  }
+  if (asksForWebRate) {
+    lines.push(
+      "Live web freshness is not independently verified here; this uses the exchange-rate source available through the local calculator.",
+    );
+  }
+}
+
+function parseCompoundInterestRequest(prompt, normalized) {
+  if (
+    !(normalized.includes("invest") || normalized.includes("investment")) ||
+    !normalized.includes("interest") ||
+    !normalized.includes("compound")
+  ) {
+    return null;
+  }
+  const principal = parseCompoundCurrencyAmount(prompt);
+  const annualRatePercent = parseCompoundPercentBeforeSymbol(prompt);
+  const compoundsPerYear = parseCompoundsPerYear(normalized);
+  const years = parseCompoundNumberBeforeKeyword(normalized, "year");
+  if (
+    principal === null ||
+    annualRatePercent === null ||
+    compoundsPerYear === null ||
+    years === null
+  ) {
+    return null;
+  }
+  return {
+    principal,
+    annualRatePercent,
+    compoundsPerYear,
+    years,
+    targetCurrency: targetCurrencyFromText(normalized),
+    asksForWebRate: asksForWebRate(normalized),
+  };
+}
+
+function parseFinalAmountConversionRequest(normalized, history) {
+  if (!normalized.includes("convert") || !normalized.includes("final amount")) {
+    return null;
+  }
+  const targetCurrency = targetCurrencyFromText(normalized);
+  if (!targetCurrency) return null;
+  const prior = priorFinalAmount(history);
+  if (!prior) return null;
+  return {
+    amount: prior.amount,
+    sourceCurrency: prior.currency,
+    targetCurrency,
+    asksForWebRate: asksForWebRate(normalized),
+  };
+}
+
+function priorFinalAmount(history) {
+  if (!Array.isArray(history)) return null;
+  for (let index = history.length - 1; index >= 0; index -= 1) {
+    const turn = history[index];
+    if (!turn || turn.role !== "assistant") continue;
+    const parsed = parseFinalAmountFromText(String(turn.content || ""));
+    if (parsed) return parsed;
+  }
+  return null;
+}
+
+function parseFinalAmountFromText(text) {
+  const match = /final amount:\s*([+-]?\d[\d,.]*)\s*([A-Za-z]{3}|dollars?|euros?|rubles?)/i.exec(
+    text,
+  );
+  if (!match) return null;
+  const amount = parseCompoundNumberText(match[1]);
+  const currency = currencyCodeFromWord(match[2]);
+  if (amount === null || !currency) return null;
+  return { amount, currency };
+}
+
+function parseCompoundCurrencyAmount(prompt) {
+  const text = String(prompt || "");
+  const dollarIndex = text.indexOf("$");
+  if (dollarIndex >= 0) {
+    return parseCompoundNumberRight(text, dollarIndex + 1);
+  }
+  const match = /([+-]?\d[\d,.]*)\s*(?:usd|dollars?)/i.exec(text);
+  return match ? parseCompoundNumberText(match[1]) : null;
+}
+
+function parseCompoundPercentBeforeSymbol(prompt) {
+  const text = String(prompt || "");
+  const percentIndex = text.indexOf("%");
+  return percentIndex >= 0 ? parseCompoundNumberLeft(text, percentIndex) : null;
+}
+
+function parseCompoundNumberBeforeKeyword(text, keyword) {
+  const index = String(text || "").indexOf(keyword);
+  return index >= 0 ? parseCompoundNumberLeft(text, index) : null;
+}
+
+function parseCompoundsPerYear(normalized) {
+  if (normalized.includes("monthly")) return 12;
+  if (normalized.includes("quarterly")) return 4;
+  if (normalized.includes("weekly")) return 52;
+  if (normalized.includes("daily")) return 365;
+  if (normalized.includes("annually") || normalized.includes("yearly")) return 1;
+  return null;
+}
+
+function targetCurrencyFromText(normalized) {
+  const padded = ` ${normalized} `;
+  if (
+    padded.includes(" eur ") ||
+    padded.includes(" euro ") ||
+    padded.includes(" euros ") ||
+    normalized.includes("€")
+  ) {
+    return "EUR";
+  }
+  if (
+    padded.includes(" usd ") ||
+    padded.includes(" dollar ") ||
+    padded.includes(" dollars ")
+  ) {
+    return "USD";
+  }
+  if (
+    padded.includes(" rub ") ||
+    padded.includes(" ruble ") ||
+    padded.includes(" rubles ")
+  ) {
+    return "RUB";
+  }
+  return "";
+}
+
+function asksForWebRate(normalized) {
+  return (
+    normalized.includes("web") ||
+    normalized.includes("current exchange") ||
+    normalized.includes("current rate") ||
+    normalized.includes("exchange rate")
+  );
+}
+
+function compoundCurrencyRate(sourceCurrency, targetCurrency) {
+  const expression = `1 ${sourceCurrency} in ${targetCurrency}`;
+  if (sourceCurrency === targetCurrency) {
+    return {
+      rate: 1,
+      expression,
+      formatted: `1 ${targetCurrency}`,
+      sourceDetail: "",
+    };
+  }
+
+  const wasmResult = wasmEvaluateArithmetic(expression);
+  if (wasmResult && wasmResult.ok) {
+    const rate = parseCompoundLeadingNumber(wasmResult.value);
+    if (rate !== null) {
+      return {
+        rate,
+        expression,
+        formatted: wasmResult.value,
+        sourceDetail: `Exchange rate: 1 ${sourceCurrency} = ${formatCompoundRate(rate)} ${targetCurrency} (source: calculator)`,
+      };
+    }
+  }
+
+  const rate = defaultCurrencyRate(sourceCurrency, targetCurrency);
+  if (!rate) return null;
+  return {
+    rate,
+    expression,
+    formatted: `${formatCompoundRate(rate)} ${targetCurrency}`,
+    sourceDetail: `Exchange rate: 1 ${sourceCurrency} = ${formatCompoundRate(rate)} ${targetCurrency} (source: default (hardcoded))`,
+  };
+}
+
+function parseCompoundNumberLeft(text, end) {
+  const before = String(text || "").slice(0, end);
+  const match = /([+-]?\d[\d,.]*)\s*$/.exec(before);
+  return match ? parseCompoundNumberText(match[1]) : null;
+}
+
+function parseCompoundNumberRight(text, start) {
+  const after = String(text || "").slice(start);
+  const match = /^\s*([+-]?\d[\d,.]*)/.exec(after);
+  return match ? parseCompoundNumberText(match[1]) : null;
+}
+
+function parseCompoundLeadingNumber(text) {
+  const match = /([+-]?\d[\d,.]*)/.exec(String(text || ""));
+  return match ? parseCompoundNumberText(match[1]) : null;
+}
+
+function parseCompoundNumberText(value) {
+  let cleaned = String(value || "").trim();
+  if (!/\d/.test(cleaned)) return null;
+  if (cleaned.includes(",") && !cleaned.includes(".")) {
+    const parts = cleaned.split(",");
+    cleaned =
+      parts.length === 2 && parts[1].length <= 2
+        ? `${parts[0]}.${parts[1]}`
+        : parts.join("");
+  } else {
+    cleaned = cleaned.replace(/,/g, "");
+  }
+  const parsed = Number(cleaned);
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
+function compoundLabel(compoundsPerYear) {
+  switch (compoundsPerYear) {
+    case 1:
+      return "annually";
+    case 4:
+      return "quarterly";
+    case 12:
+      return "monthly";
+    case 52:
+      return "weekly";
+    case 365:
+      return "daily";
+    default:
+      return "times per year";
+  }
+}
+
+function formatCompoundNumber(value) {
+  if (Math.abs(value % 1) < 1e-10) return value.toFixed(0);
+  return trimCompoundDecimal(value.toFixed(10));
+}
+
+function formatCompoundMoney(value) {
+  return value.toFixed(2);
+}
+
+function roundCompoundMoney(value) {
+  return Math.round(value * 100) / 100;
+}
+
+function formatCompoundRate(value) {
+  return trimCompoundDecimal(value.toFixed(15));
+}
+
+function trimCompoundDecimal(value) {
+  return String(value).replace(/0+$/, "").replace(/\.$/, "");
+}
+
 function tryArithmetic(prompt) {
   const extracted = extractArithmeticExpression(prompt);
   if (!extracted) return null;
@@ -5825,6 +6391,10 @@ function tryArithmetic(prompt) {
   const interpretations = Array.isArray(extracted.interpretations)
     ? extracted.interpretations
     : [];
+  const reasoningSteps = Array.isArray(extracted.reasoningSteps)
+    ? extracted.reasoningSteps
+    : [];
+  const resultLabel = typeof extracted.resultLabel === "string" ? extracted.resultLabel : "";
   try {
     const isEquation = expression.includes("=");
     let formatted;
@@ -5848,17 +6418,35 @@ function tryArithmetic(prompt) {
         formatted = formatArithmeticResult(evaluateArithmetic(expression));
       }
     }
-    const content = isEquation
+    const calculationLine = isEquation
       ? `${expression.trim()} => ${formatted}`
       : `${expression.trim()} = ${formatted}`;
+    const sections = [];
+    if (reasoningSteps.length > 0) {
+      sections.push(
+        reasoningSteps
+          .map((step, index) => `Step ${index + 1}: ${step}`)
+          .join("\n"),
+      );
+    }
+    sections.push(calculationLine);
+    if (resultLabel) {
+      sections.push(`Therefore, there are ${formatted} ${resultLabel} in total.`);
+    }
+    const content = sections.join("\n\n");
+    const evidence = [
+      `calculation:${content}`,
+      `calculation_backend:${backend}`,
+    ];
+    if (reasoningSteps.length > 0) {
+      evidence.push(`calculation_reasoning_steps:${reasoningSteps.length}`);
+    }
+    if (resultLabel) evidence.push(`calculation_result_label:${resultLabel}`);
     return {
       intent: "calculation",
       content: content,
       confidence: 1.0,
-      evidence: [
-        `calculation:${content}`,
-        `calculation_backend:${backend}`,
-      ],
+      evidence,
       interpretations,
     };
   } catch (error) {
@@ -10925,8 +11513,8 @@ const WRITE_PROGRAM_TASKS = {
     // Issue #324 follow-up: "Сделай так, чтобы программа принимала путь как
     // аргумент" (make the program accept a path as an argument). This is the
     // path-argument variant of `list_files`; conversation context maps a bare
-    // "accept a path argument" modification onto it (see
-    // `programPathArgumentModifier`). Mirrors the Rust `list_files_arg` task.
+    // "accept a path argument" modification onto it through the program-plan
+    // rules. Mirrors the Rust `list_files_arg` task.
     output: "Cargo.toml\nREADME.md\nmain.rs",
     aliases: [
       "list files in the directory given as a path argument",
@@ -10943,6 +11531,38 @@ const WRITE_PROGRAM_TASKS = {
       // Chinese: "list the files in the directory given as a path argument".
       "列出作为路径参数给出的目录中的文件",
       "列出路径参数指定目录中的文件",
+    ],
+  },
+  list_files_reverse_sort: {
+    label: "list files in the current directory in reverse-sorted order",
+    output: "main.rs\nREADME.md\nCargo.toml",
+    aliases: [
+      "list files in reverse order",
+      "list files sorted in reverse order",
+      "list files in descending order",
+      "reverse sorted list files",
+      "список файлов в обратном порядке",
+      "список файлов с обратной сортировкой",
+      "फ़ाइलों की सूची उल्टे क्रम में",
+      "फ़ाइलों को उल्टे क्रम में सूचीबद्ध करें",
+      "按相反顺序列出文件",
+      "倒序列出文件",
+    ],
+  },
+  list_files_arg_reverse_sort: {
+    label: "list files from a path argument in reverse-sorted order",
+    output: "main.rs\nREADME.md\nCargo.toml",
+    aliases: [
+      "list files from a path argument in reverse order",
+      "list files with a path argument in reverse order",
+      "list files with a path argument sorted descending",
+      "reverse sorted list files with a path argument",
+      "список файлов по пути из аргумента в обратном порядке",
+      "список файлов из аргумента с обратной сортировкой",
+      "पथ तर्क से फ़ाइलों की सूची उल्टे क्रम में",
+      "पथ तर्क वाली फ़ाइलों को उल्टे क्रम में सूचीबद्ध करें",
+      "按相反顺序列出路径参数中的文件",
+      "倒序列出路径参数指定目录中的文件",
     ],
   },
   // Issue #330: classic branching/looping exercise over 1..=15. Mirrors the Rust
@@ -11132,6 +11752,50 @@ const WRITE_PROGRAM_TEMPLATES = {
       'using System;\nusing System.IO;\nusing System.Linq;\n\nclass Program {\n    static void Main(string[] args) {\n        var path = args.Length > 0 ? args[0] : ".";\n        var names = Directory.GetFiles(path)\n            .Select(Path.GetFileName)\n            .OrderBy(name => name, StringComparer.Ordinal);\n        foreach (var name in names) {\n            Console.WriteLine(name);\n        }\n    }\n}',
     ruby:
       'path = ARGV[0] || "."\nnames = Dir.entries(path).select { |name| File.file?(File.join(path, name)) }.sort\nnames.each { |name| puts name }',
+  },
+  list_files_reverse_sort: {
+    rust:
+      'use std::fs;\n\nfn main() -> std::io::Result<()> {\n    let mut names: Vec<String> = fs::read_dir(".")?\n        .filter_map(Result::ok)\n        .filter(|entry| entry.path().is_file())\n        .map(|entry| entry.file_name().to_string_lossy().into_owned())\n        .collect();\n    names.sort_by(|a, b| b.cmp(a));\n    for name in names {\n        println!("{name}");\n    }\n    Ok(())\n}',
+    python:
+      'import os\n\nnames = sorted(\n    (name for name in os.listdir(".") if os.path.isfile(name)),\n    reverse=True,\n)\nfor name in names:\n    print(name)',
+    javascript:
+      'const fs = require("fs");\n\nconst names = fs\n  .readdirSync(".")\n  .filter((name) => fs.statSync(name).isFile())\n  .sort()\n  .reverse();\n\nfor (const name of names) {\n  console.log(name);\n}',
+    typescript:
+      'import * as fs from "fs";\n\nconst names: string[] = fs\n  .readdirSync(".")\n  .filter((name) => fs.statSync(name).isFile())\n  .sort()\n  .reverse();\n\nfor (const name of names) {\n  console.log(name);\n}',
+    go:
+      'package main\n\nimport (\n    "fmt"\n    "os"\n    "sort"\n)\n\nfunc main() {\n    entries, err := os.ReadDir(".")\n    if err != nil {\n        panic(err)\n    }\n    var names []string\n    for _, entry := range entries {\n        if !entry.IsDir() {\n            names = append(names, entry.Name())\n        }\n    }\n    sort.Sort(sort.Reverse(sort.StringSlice(names)))\n    for _, name := range names {\n        fmt.Println(name)\n    }\n}',
+    c:
+      '#include <dirent.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n#include <sys/stat.h>\n\nstatic int compare_desc(const void *a, const void *b) {\n    return strcmp(*(const char *const *)b, *(const char *const *)a);\n}\n\nint main(void) {\n    DIR *dir = opendir(".");\n    if (dir == NULL) {\n        return 1;\n    }\n    char *names[1024];\n    size_t count = 0;\n    struct dirent *entry;\n    while ((entry = readdir(dir)) != NULL && count < 1024) {\n        struct stat info;\n        if (stat(entry->d_name, &info) == 0 && S_ISREG(info.st_mode)) {\n            names[count++] = strdup(entry->d_name);\n        }\n    }\n    closedir(dir);\n    qsort(names, count, sizeof(char *), compare_desc);\n    for (size_t i = 0; i < count; i++) {\n        printf("%s\\n", names[i]);\n        free(names[i]);\n    }\n    return 0;\n}',
+    cpp:
+      "#include <algorithm>\n#include <filesystem>\n#include <iostream>\n#include <string>\n#include <vector>\n\nint main() {\n    namespace fs = std::filesystem;\n    std::vector<std::string> names;\n    for (const auto &entry : fs::directory_iterator(\".\")) {\n        if (entry.is_regular_file()) {\n            names.push_back(entry.path().filename().string());\n        }\n    }\n    std::sort(names.rbegin(), names.rend());\n    for (const auto &name : names) {\n        std::cout << name << '\\n';\n    }\n}",
+    java:
+      'import java.io.File;\nimport java.util.Arrays;\nimport java.util.Comparator;\n\npublic class Main {\n    public static void main(String[] args) {\n        File[] entries = new File(".").listFiles();\n        if (entries == null) {\n            return;\n        }\n        String[] names = Arrays.stream(entries)\n            .filter(File::isFile)\n            .map(File::getName)\n            .sorted(Comparator.reverseOrder())\n            .toArray(String[]::new);\n        for (String name : names) {\n            System.out.println(name);\n        }\n    }\n}',
+    csharp:
+      'using System;\nusing System.IO;\nusing System.Linq;\n\nclass Program {\n    static void Main() {\n        var names = Directory.GetFiles(".")\n            .Select(Path.GetFileName)\n            .OrderByDescending(name => name, StringComparer.Ordinal);\n        foreach (var name in names) {\n            Console.WriteLine(name);\n        }\n    }\n}',
+    ruby:
+      'names = Dir.entries(".").select { |name| File.file?(name) }.sort.reverse\nnames.each { |name| puts name }',
+  },
+  list_files_arg_reverse_sort: {
+    rust:
+      'use std::env;\nuse std::fs;\n\nfn main() {\n    let path = env::args().nth(1).unwrap_or_else(|| String::from("."));\n    let mut names: Vec<String> = fs::read_dir(&path)\n        .expect("failed to read directory")\n        .filter_map(|entry| entry.ok())\n        .filter(|entry| entry.path().is_file())\n        .map(|entry| entry.file_name().to_string_lossy().into_owned())\n        .collect();\n    names.sort_by(|a, b| b.cmp(a));\n    for name in names {\n        println!("{name}");\n    }\n}',
+    python:
+      'import os\nimport sys\n\npath = sys.argv[1] if len(sys.argv) > 1 else "."\nnames = sorted(\n    (\n        name\n        for name in os.listdir(path)\n        if os.path.isfile(os.path.join(path, name))\n    ),\n    reverse=True,\n)\nfor name in names:\n    print(name)',
+    javascript:
+      'const fs = require("fs");\nconst path = require("path");\n\nconst dir = process.argv[2] || ".";\nconst names = fs\n  .readdirSync(dir)\n  .filter((name) => fs.statSync(path.join(dir, name)).isFile())\n  .sort()\n  .reverse();\n\nfor (const name of names) {\n  console.log(name);\n}',
+    typescript:
+      'import * as fs from "fs";\nimport * as path from "path";\n\nconst dir: string = process.argv[2] ?? ".";\nconst names: string[] = fs\n  .readdirSync(dir)\n  .filter((name) => fs.statSync(path.join(dir, name)).isFile())\n  .sort()\n  .reverse();\n\nfor (const name of names) {\n  console.log(name);\n}',
+    go:
+      'package main\n\nimport (\n    "fmt"\n    "os"\n    "sort"\n)\n\nfunc main() {\n    dir := "."\n    if len(os.Args) > 1 {\n        dir = os.Args[1]\n    }\n    entries, err := os.ReadDir(dir)\n    if err != nil {\n        panic(err)\n    }\n    var names []string\n    for _, entry := range entries {\n        if !entry.IsDir() {\n            names = append(names, entry.Name())\n        }\n    }\n    sort.Sort(sort.Reverse(sort.StringSlice(names)))\n    for _, name := range names {\n        fmt.Println(name)\n    }\n}',
+    c:
+      '#include <dirent.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n#include <sys/stat.h>\n\nstatic int compare_desc(const void *a, const void *b) {\n    return strcmp(*(const char *const *)b, *(const char *const *)a);\n}\n\nint main(int argc, char *argv[]) {\n    const char *path = argc > 1 ? argv[1] : ".";\n    DIR *dir = opendir(path);\n    if (dir == NULL) {\n        return 1;\n    }\n    char *names[1024];\n    size_t count = 0;\n    struct dirent *entry;\n    while ((entry = readdir(dir)) != NULL && count < 1024) {\n        char full[4096];\n        snprintf(full, sizeof(full), "%s/%s", path, entry->d_name);\n        struct stat info;\n        if (stat(full, &info) == 0 && S_ISREG(info.st_mode)) {\n            names[count++] = strdup(entry->d_name);\n        }\n    }\n    closedir(dir);\n    qsort(names, count, sizeof(char *), compare_desc);\n    for (size_t i = 0; i < count; i++) {\n        printf("%s\\n", names[i]);\n        free(names[i]);\n    }\n    return 0;\n}',
+    cpp:
+      "#include <algorithm>\n#include <filesystem>\n#include <iostream>\n#include <string>\n#include <vector>\n\nint main(int argc, char *argv[]) {\n    namespace fs = std::filesystem;\n    std::string path = argc > 1 ? argv[1] : \".\";\n    std::vector<std::string> names;\n    for (const auto &entry : fs::directory_iterator(path)) {\n        if (entry.is_regular_file()) {\n            names.push_back(entry.path().filename().string());\n        }\n    }\n    std::sort(names.rbegin(), names.rend());\n    for (const auto &name : names) {\n        std::cout << name << '\\n';\n    }\n}",
+    java:
+      'import java.io.File;\nimport java.util.Arrays;\nimport java.util.Comparator;\n\npublic class Main {\n    public static void main(String[] args) {\n        String path = args.length > 0 ? args[0] : ".";\n        File[] entries = new File(path).listFiles();\n        if (entries == null) {\n            return;\n        }\n        String[] names = Arrays.stream(entries)\n            .filter(File::isFile)\n            .map(File::getName)\n            .sorted(Comparator.reverseOrder())\n            .toArray(String[]::new);\n        for (String name : names) {\n            System.out.println(name);\n        }\n    }\n}',
+    csharp:
+      'using System;\nusing System.IO;\nusing System.Linq;\n\nclass Program {\n    static void Main(string[] args) {\n        var path = args.Length > 0 ? args[0] : ".";\n        var names = Directory.GetFiles(path)\n            .Select(Path.GetFileName)\n            .OrderByDescending(name => name, StringComparer.Ordinal);\n        foreach (var name in names) {\n            Console.WriteLine(name);\n        }\n    }\n}',
+    ruby:
+      'path = ARGV[0] || "."\nnames = Dir.entries(path).select { |name| File.file?(File.join(path, name)) }.sort.reverse\nnames.each { |name| puts name }',
   },
   fizzbuzz: {
     rust:
@@ -11375,52 +12039,191 @@ const PROGRAM_VERBS = [
 // byte-identical to `data/seed/program-plan-rules.lino`; the parity experiment
 // (`experiments/issue-324-js-worker.mjs`) keeps the two copies in lockstep.
 //
-// Adding a new modification (e.g. "sort descending", "count instead of list")
-// becomes *data* — a new rule in the `.lino` text — not new control flow.
+// Adding a new modifier transform is rule data; recognition is constrained by
+// the operation slugs declared in that rule data.
 // ---------------------------------------------------------------------------
 
 const PROGRAM_PLAN_RULES_LINO = [
   "substitution_rules",
   '  id "program_plan_rules"',
   '  rule "path_argument_list_files"',
-  '    order "1"',
+  '    order "10"',
   '    event "manual"',
   '    when "request:modifier -> path_argument"',
   '    replace "request:task -> list_files"',
   '      with "request:task -> list_files_arg"',
+  '  rule "path_argument_list_files_reverse_sort"',
+  '    order "10"',
+  '    event "manual"',
+  '    when "request:modifier -> path_argument"',
+  '    replace "request:task -> list_files_reverse_sort"',
+  '      with "request:task -> list_files_arg_reverse_sort"',
+  '  rule "reverse_sort_list_files"',
+  '    order "20"',
+  '    event "manual"',
+  '    when "request:modifier -> reverse_sort"',
+  '    replace "request:task -> list_files"',
+  '      with "request:task -> list_files_reverse_sort"',
+  '  rule "reverse_sort_list_files_arg"',
+  '    order "20"',
+  '    event "manual"',
+  '    when "request:modifier -> reverse_sort"',
+  '    replace "request:task -> list_files_arg"',
+  '      with "request:task -> list_files_arg_reverse_sort"',
   "",
 ].join("\n");
 
 const TASK_NODE = "request:task";
 const MODIFIER_NODE = "request:modifier";
 
-// Issue #324: modifier slugs detected from request prose, mirroring
-// `PROGRAM_MODIFIERS` in `src/intent_formalization.rs`. Detection (token ->
-// slug) stays in code; the *transformation* (slug -> task variant) is data.
-const PROGRAM_MODIFIERS = [
+// Issue #358: program modifier recognition mirrors the Rust path: operation
+// vocabulary trigger phrases provide natural-language evidence, and
+// `program-plan-rules.lino` decides which operation slugs are valid modifiers.
+const PROGRAM_MODIFIER_OPERATIONS = [
   {
     slug: "path_argument",
-    tokenGroups: [
+    phrases: ["path argument", "path as an argument", "पथ को तर्क", "路径作为参数"],
+    combos: [
       ["path", "argument"],
-      // Russian: путь (path) + аргумент/аргумента/аргументом (argument).
       ["путь", "аргумент"],
       ["путь", "аргумента"],
       ["путь", "аргументом"],
-      // Hindi: पथ (path) + तर्क (argument).
       ["पथ", "तर्क"],
-      // Chinese: 路径 (path) + 参数 (argument).
       ["路径", "参数"],
+    ],
+  },
+  {
+    slug: "reverse_sort",
+    phrases: [
+      "reverse sort",
+      "reverse sorted",
+      "sort in reverse order",
+      "sort the results in reverse order",
+      "reverse order",
+      "descending order",
+      "в обратном порядке",
+      "उल्टे क्रम",
+      "相反顺序排序",
+    ],
+    combos: [
+      ["sort", "reverse"],
+      ["sort", "descending"],
+      ["сортиров", "обратн"],
+      ["отсортир", "обратн"],
+      ["क्रमबद्ध", "उल्टे"],
+      ["क्रमबद्ध", "उल्टा"],
+      ["排序", "相反"],
+      ["排序", "反向"],
+      ["排序", "倒序"],
     ],
   },
 ];
 
+let cachedProgramModifierSlugs = null;
+function literalPatternValue(node) {
+  return node && node.kind === "literal" ? node.value : null;
+}
+
+function programModifierSlugs() {
+  if (cachedProgramModifierSlugs) return cachedProgramModifierSlugs;
+  const slugs = new Set();
+  for (const rule of programPlanRules().rules) {
+    for (const condition of rule.conditions || []) {
+      const from = literalPatternValue(condition.from);
+      const to = literalPatternValue(condition.to);
+      if (from === MODIFIER_NODE && to) slugs.add(to);
+    }
+  }
+  cachedProgramModifierSlugs = slugs;
+  return slugs;
+}
+
+function operationFormMatches(normalized, operation) {
+  const source = String(normalized || "");
+  return (
+    (operation.phrases || []).some((phrase) => source.includes(phrase)) ||
+    (operation.combos || []).some((combo) =>
+      combo.every((token) => source.includes(String(token || ""))),
+    )
+  );
+}
+
+const PROGRAM_FOLLOW_UP_REFERENTS = [
+  "result",
+  "results",
+  "output",
+  "program",
+  "programme",
+  "script",
+  "code",
+  "результат",
+  "результата",
+  "результаты",
+  "результатов",
+  "вывод",
+  "программа",
+  "программу",
+  "программы",
+  "скрипт",
+  "код",
+  "परिणाम",
+  "परिणामों",
+  "नतीजा",
+  "नतीजे",
+  "आउटपुट",
+  "प्रोग्राम",
+  "कोड",
+  "结果",
+  "输出",
+  "程序",
+  "代码",
+];
+
+const PROGRAM_FOLLOW_UP_ACTIONS = [
+  "sort",
+  "sorted",
+  "reverse",
+  "reorder",
+  "order",
+  "change",
+  "modify",
+  "update",
+  "make",
+  "сделай",
+  "сделайте",
+  "сортировка",
+  "сортировку",
+  "сортировать",
+  "отсортируй",
+  "отсортируйте",
+  "обратном",
+  "обратный",
+  "измени",
+  "изменить",
+  "обнови",
+  "क्रमबद्ध",
+  "उल्टे",
+  "उल्टा",
+  "बनाओ",
+  "बदलें",
+  "बदलो",
+  "अपडेट",
+  "排序",
+  "反向",
+  "相反",
+  "倒序",
+  "修改",
+  "改",
+  "更新",
+];
+
 function detectedProgramModifiers(normalized) {
   const slugs = [];
-  for (const modifier of PROGRAM_MODIFIERS) {
-    const matched = modifier.tokenGroups.some((group) =>
-      group.every((token) => containsProgramToken(normalized, token)),
-    );
-    if (matched) slugs.push(modifier.slug);
+  const validModifiers = programModifierSlugs();
+  for (const operation of PROGRAM_MODIFIER_OPERATIONS) {
+    if (validModifiers.has(operation.slug) && operationFormMatches(normalized, operation)) {
+      slugs.push(operation.slug);
+    }
   }
   return slugs;
 }
@@ -11783,9 +12586,8 @@ function writeProgramParameters(prompt) {
     PROGRAM_NOUNS.some((noun) => containsProgramToken(normalized, noun)) &&
     PROGRAM_VERBS.some((verb) => containsProgramToken(normalized, verb));
   if (!task && !asksForProgram) return null;
-  // Issue #324: a modification in the same turn (e.g. "with a path argument")
-  // lowers the base task through the substitution pipeline, upgrading
-  // list_files -> list_files_arg via the `path_argument` rule.
+  // Issue #358: modification phrases in the same turn lower the base task
+  // through the data-backed substitution pipeline.
   if (task) {
     const modifiers = detectedProgramModifiers(normalized);
     task = resolveProgramTask(task, modifiers);
@@ -11793,10 +12595,49 @@ function writeProgramParameters(prompt) {
   return { language, task };
 }
 
+function hasAnyProgramToken(normalized, tokens) {
+  return tokens.some((token) => containsProgramToken(normalized, token));
+}
+
+function looksLikeBareProgramArtifactFollowUp(normalized) {
+  return (
+    hasAnyProgramToken(normalized, PROGRAM_FOLLOW_UP_REFERENTS) &&
+    hasAnyProgramToken(normalized, PROGRAM_FOLLOW_UP_ACTIONS)
+  );
+}
+
+function activeProgramContext(history) {
+  let task = null;
+  let language = null;
+  if (!Array.isArray(history)) return null;
+  for (let index = history.length - 1; index >= 0; index -= 1) {
+    const turn = history[index];
+    const content = turn && (turn.content || turn.text || turn.message);
+    if (!content) continue;
+    const prior = writeProgramParameters(content);
+    if (!prior) continue;
+    if (!task && prior.task) task = prior.task;
+    if (!language && prior.language) language = prior.language;
+    if (task && language) return { task, language };
+  }
+  return null;
+}
+
+function rewriteBareProgramCoreference(prompt, history) {
+  const normalized = normalizeProgramPrompt(prompt);
+  if (!looksLikeBareProgramArtifactFollowUp(normalized)) return null;
+  const context = activeProgramContext(history);
+  if (!context) return null;
+  return {
+    parameters: { task: context.task, language: context.language },
+    trace: `referent=active_program_artifact task=${context.task} language=${context.language}`,
+  };
+}
+
 // Issue #324: a follow-up such as "Сделай так, чтобы программа принимала путь
 // как аргумент" routes to write_program but names neither a task nor a
 // language - both came from a previous turn. Recover the missing parameters
-// from the most recent prior turn that named them and apply any path-argument
+// from the most recent prior turn that named them and apply any data-defined
 // modifier present in the follow-up. Mirrors `recover_write_program_rule` in
 // `src/intent_formalization.rs`.
 function recoverWriteProgramParameters(parameters, prompt, history) {
@@ -11820,15 +12661,17 @@ function recoverWriteProgramParameters(parameters, prompt, history) {
   // plan as Links Notation (mirrors `recover_write_program_rule` in
   // `src/intent_formalization.rs`, which sets `WriteProgramRecovery::plan`).
   let plan = null;
+  let modifiers = [];
+  let lowered = null;
   if (task) {
-    const modifiers = detectedProgramModifiers(normalized);
+    modifiers = detectedProgramModifiers(normalized);
     if (modifiers.length) {
-      const lowered = lowerProgramPlan(task, modifiers);
+      lowered = lowerProgramPlan(task, modifiers);
       if (programPlanWasModified(lowered)) plan = programPlanLinksNotation(lowered);
       task = lowered.resolvedTask;
     }
   }
-  return { task, language, plan };
+  return { task, language, plan, modifiers, lowered };
 }
 
 // Issue #324: a request in a given language must be answered in that language.
@@ -11949,7 +12792,12 @@ function writeProgramExecutionLines(language, task, code, output, strings) {
   const reason =
     language === "javascript" ? i18n.noFilesystem(language) : i18n.noToolchain(language);
   const lines = [i18n.notRun(language, reason)];
-  if (task === "list_files" || task === "list_files_arg") {
+  if (
+    task === "list_files" ||
+    task === "list_files_arg" ||
+    task === "list_files_reverse_sort" ||
+    task === "list_files_arg_reverse_sort"
+  ) {
     lines.push(i18n.sampleDirectory);
   } else {
     lines.push(i18n.expectedOutput);
@@ -12011,6 +12859,43 @@ const PROGRAM_EXPLANATIONS = {
     zh:
       "程序从第一个命令行参数获取目录路径（未提供参数时使用当前目录），读取该目录的条目，" +
       "只保留普通文件，按字母顺序排序它们的名称，然后将每个名称打印在单独一行。",
+  },
+  list_files_reverse_sort: {
+    en:
+      "The program reads the entries of the current directory, keeps only the regular " +
+      "files, collects their names into a list, sorts the list in reverse alphabetical " +
+      "order, and prints each name on its own line.",
+    ru:
+      "Программа читает содержимое текущего каталога, оставляет только обычные файлы, " +
+      "собирает их имена в список, сортирует список в обратном алфавитном порядке и " +
+      "печатает каждое имя на отдельной строке.",
+    hi:
+      "प्रोग्राम वर्तमान निर्देशिका की प्रविष्टियाँ पढ़ता है, केवल सामान्य फ़ाइलें रखता है, उनके " +
+      "नाम एक सूची में एकत्र करता है, सूची को उल्टे वर्णानुक्रम में क्रमबद्ध करता है, और हर नाम " +
+      "को अलग पंक्ति में छापता है।",
+    zh:
+      "程序读取当前目录的条目，只保留普通文件，将它们的名称收集到一个列表中，" +
+      "按反向字母顺序排序，然后将每个名称打印在单独一行。",
+  },
+  list_files_arg_reverse_sort: {
+    en:
+      "The program takes the directory path from the first command-line argument " +
+      "(falling back to the current directory when none is given), reads that " +
+      "directory's entries, keeps only the regular files, sorts their names in " +
+      "reverse alphabetical order, and prints each name on its own line.",
+    ru:
+      "Программа берёт путь к каталогу из первого аргумента командной строки (если " +
+      "аргумент не задан, используется текущий каталог), читает содержимое этого " +
+      "каталога, оставляет только обычные файлы, сортирует их имена в обратном " +
+      "алфавитном порядке и печатает каждое имя на отдельной строке.",
+    hi:
+      "प्रोग्राम पहले कमांड-लाइन तर्क से निर्देशिका पथ लेता है (कोई तर्क न होने पर वर्तमान " +
+      "निर्देशिका का उपयोग करता है), उस निर्देशिका की प्रविष्टियाँ पढ़ता है, केवल सामान्य " +
+      "फ़ाइलें रखता है, उनके नामों को उल्टे वर्णानुक्रम में क्रमबद्ध करता है, और हर नाम को " +
+      "अलग पंक्ति में छापता है।",
+    zh:
+      "程序从第一个命令行参数获取目录路径（未提供参数时使用当前目录），读取该目录的条目，" +
+      "只保留普通文件，按反向字母顺序排序它们的名称，然后将每个名称打印在单独一行。",
   },
   fizzbuzz: {
     en:
@@ -12307,6 +13192,121 @@ const BLUEPRINT_CAPABILITIES = [
       "评论",
     ],
   },
+  {
+    slug: "web_research",
+    label: "Research current source data",
+    keywords: [
+      "search",
+      "research",
+      "sources",
+      "source",
+      "look up",
+      "current",
+      "average",
+      "поиск",
+      "источник",
+      "источники",
+      "искать",
+      "खोज",
+      "स्रोत",
+      "वर्तमान",
+      "搜索",
+      "来源",
+    ],
+  },
+  {
+    slug: "city_costs",
+    label: "Compare city living costs",
+    keywords: [
+      "living costs",
+      "cost of living",
+      "average rent",
+      "rent",
+      "moscow",
+      "berlin",
+      "new york",
+      "city",
+      "cities",
+      "аренда",
+      "стоимость жизни",
+      "москва",
+      "берлин",
+      "нью-йорк",
+      "जीवन यापन",
+      "लागत",
+      "किराया",
+      "मास्को",
+      "बर्लिन",
+      "न्यूयॉर्क",
+      "租金",
+      "生活成本",
+    ],
+  },
+  {
+    slug: "budget_rule",
+    label: "Apply the 50/30/20 budget rule",
+    keywords: [
+      "50/30/20",
+      "budget rule",
+      "monthly income",
+      "income",
+      "needs",
+      "wants",
+      "savings",
+      "бюджет",
+      "доход",
+      "сбереж",
+      "बजट",
+      "आय",
+      "बचत",
+      "预算",
+      "收入",
+    ],
+  },
+  {
+    slug: "compound_savings",
+    label: "Project compound savings",
+    keywords: [
+      "annual return",
+      "return",
+      "8%",
+      "10 years",
+      "$3000",
+      "100,000",
+      "100000",
+      "years to save",
+      "накопить",
+      "доходность",
+      "वार्षिक रिटर्न",
+      "रिटर्न",
+      "साल",
+      "收益",
+      "年",
+    ],
+  },
+  {
+    slug: "markdown_report",
+    label: "Export a Markdown comparison report",
+    keywords: [
+      "markdown",
+      "formatted markdown",
+      "report",
+      "comparison table",
+      "table",
+      "export",
+      "отчет",
+      "отчёт",
+      "таблица",
+      "экспорт",
+      "मार्कडाउन",
+      "रिपोर्ट",
+      "तालिका",
+      "निर्यात",
+      "报告",
+      "表格",
+      "导出",
+    ],
+  },
 ];
 
 // Curated programs (verbatim copies of the Rust raw-string consts). They are
@@ -12501,6 +13501,129 @@ main().catch((error) => {
 });
 `;
 
+const BLUEPRINT_PYTHON_PERSONAL_BUDGET_REPORT = `from dataclasses import dataclass
+from math import log
+from pathlib import Path
+
+
+@dataclass(frozen=True)
+class CityCost:
+    city: str
+    average_rent: float
+    living_cost_ex_rent: float
+    source: str
+
+
+CITY_COSTS = [
+    CityCost('Moscow', 950.0, 850.0, 'https://www.numbeo.com/cost-of-living/in/Moscow'),
+    CityCost('Berlin', 1550.0, 1250.0, 'https://www.numbeo.com/cost-of-living/in/Berlin'),
+    CityCost('New York', 3600.0, 1850.0, 'https://www.numbeo.com/cost-of-living/in/New-York'),
+]
+ANNUAL_RETURN = 0.08
+GOAL = 100_000.0
+
+
+def budget_50_30_20(monthly_income):
+    return {
+        'needs': monthly_income * 0.50,
+        'wants': monthly_income * 0.30,
+        'savings': monthly_income * 0.20,
+    }
+
+
+def future_value(monthly_contribution, annual_return, years):
+    monthly_rate = annual_return / 12
+    months = years * 12
+    return monthly_contribution * (((1 + monthly_rate) ** months - 1) / monthly_rate)
+
+
+def years_to_goal(monthly_savings, goal=GOAL, annual_return=ANNUAL_RETURN):
+    if monthly_savings <= 0:
+        return None
+    monthly_rate = annual_return / 12
+    months = log(1 + goal * monthly_rate / monthly_savings) / log(1 + monthly_rate)
+    return months / 12
+
+
+def money(value):
+    return f'$\{value:,.0f}'
+
+
+def years(value):
+    return 'not reachable' if value is None else f'\{value:.1f}'
+
+
+def comparison_rows(monthly_income):
+    plan = budget_50_30_20(monthly_income)
+    rows = []
+    for cost in CITY_COSTS:
+        expenses = cost.average_rent + cost.living_cost_ex_rent
+        remaining = monthly_income - expenses
+        monthly_savings = max(0.0, min(plan['savings'], remaining))
+        rows.append({
+            'city': cost.city,
+            'rent': cost.average_rent,
+            'remaining': remaining,
+            'monthly_savings': monthly_savings,
+            'years_to_100k': years_to_goal(monthly_savings),
+            'source': cost.source,
+        })
+    return rows
+
+
+def render_markdown(monthly_income):
+    plan = budget_50_30_20(monthly_income)
+    scenario_savings = 3000.0 * 0.20
+    scenario_future = future_value(scenario_savings, ANNUAL_RETURN, 10)
+    lines = [
+        '# Budget Calculator Report',
+        '',
+        '## 50/30/20 Budget',
+        f'- Monthly income: \{money(monthly_income)}',
+        f'- Needs (50%): \{money(plan["needs"])}',
+        f'- Wants (30%): \{money(plan["wants"])}',
+        f'- Savings (20%): \{money(plan["savings"])}',
+        '',
+        '## Investment Scenario',
+        f'- 20% of $3000 monthly: \{money(scenario_savings)}',
+        f'- Future value after 10 years at 8% annual return: \{money(scenario_future)}',
+        '',
+        '## City Comparison',
+        '| City | Average rent | Remaining budget after expenses | Years to save $100,000 |',
+        '| --- | ---: | ---: | ---: |',
+    ]
+    for row in comparison_rows(monthly_income):
+        lines.append(
+            f'| \{row["city"]} | \{money(row["rent"])} | '
+            f'\{money(row["remaining"])} | \{years(row["years_to_100k"])} |'
+        )
+    lines.extend(['', '## Sources'])
+    for cost in CITY_COSTS:
+        lines.append(f'- \{cost.city}: \{cost.source}')
+    lines.append('')
+    lines.append('Review and update the city-cost values after checking the source pages.')
+    return '\\n'.join(lines)
+
+
+def read_income():
+    try:
+        raw = input('Monthly income in USD [3000]: ').strip()
+    except EOFError:
+        raw = ''
+    return float(raw or '3000')
+
+
+def main():
+    report = render_markdown(read_income())
+    Path('budget_report.md').write_text(report, encoding='utf-8')
+    print(report)
+    print('\\nMarkdown report written to budget_report.md')
+
+
+if __name__ == '__main__':
+    main()
+`;
+
 // Curated composite recipes. Mirrors `RECIPES` in `src/coding/blueprint.rs`.
 const BLUEPRINT_RECIPES = [
   {
@@ -12512,32 +13635,55 @@ const BLUEPRINT_RECIPES = [
         languageSlug: "rust",
         libraries: ["reqwest (blocking, json)", "serde_json"],
         runCommand: "cargo run -- <url-returning-json>",
+        execution: "external_libraries_and_network",
         code: BLUEPRINT_RUST_HTTP_JSON_STATS,
       },
       {
         languageSlug: "python",
         libraries: ["requests"],
         runCommand: "python stats.py <url-returning-json>",
+        execution: "external_libraries_and_network",
         code: BLUEPRINT_PYTHON_HTTP_JSON_STATS,
       },
       {
         languageSlug: "javascript",
         libraries: ["Node.js 18+ (built-in global fetch; no extra packages)"],
         runCommand: "node stats.js <url-returning-json>",
+        execution: "external_libraries_and_network",
         code: BLUEPRINT_JAVASCRIPT_HTTP_JSON_STATS,
+      },
+    ],
+  },
+  {
+    slug: "personal_budget_report",
+    label: "build a sourced 50/30/20 city budget calculator and Markdown report",
+    requiredCapabilities: [
+      "web_research",
+      "city_costs",
+      "budget_rule",
+      "compound_savings",
+      "markdown_report",
+    ],
+    programs: [
+      {
+        languageSlug: "python",
+        libraries: ["Python 3 standard library only"],
+        runCommand: "python budget_report.py",
+        execution: "review_data_assumptions",
+        code: BLUEPRINT_PYTHON_PERSONAL_BUDGET_REPORT,
       },
     ],
   },
 ];
 
 // Mirror of `contains_keyword` in `src/coding/blueprint.rs`: CJK keywords match
-// by substring; multi-word phrases match by substring; single Latin/Cyrillic
-// words match on token boundaries, allowing a stem prefix when len >= 4.
+// by substring; multi-word phrases match by substring; single words match on
+// token boundaries, allowing a stem prefix when len >= 4.
 function blueprintContainsKeyword(normalized, keyword) {
   if (containsCjk(keyword)) return normalized.includes(keyword);
   if (keyword.includes(" ")) return normalized.includes(keyword);
   return normalized
-    .split(/[^\p{L}\p{N}]+/u)
+    .split(/[^\p{L}\p{N}\p{M}]+/u)
     .some(
       (token) =>
         token === keyword || (keyword.length >= 4 && token.startsWith(keyword)),
@@ -12584,32 +13730,40 @@ const BLUEPRINT_I18N = {
       `Here is a ${name} program for the requested composite task (${label}). I decomposed your request into these sub-tasks:`,
     librariesHeading: "Required libraries:",
     howToRunHeading: "How to run it yourself:",
-    executionReport: (runCommand) =>
-      `Execution status: not run — this program needs external libraries and network access, so the offline sandbox does not execute it. The code is provided for review. Run it yourself: \`${runCommand}\`.`,
+    executionReport: (runCommand, execution) =>
+      execution === "review_data_assumptions"
+        ? `Execution status: not run — this report blueprint was not executed in the offline sandbox, and the city-cost assumptions should be reviewed against the listed sources before use. The code is provided for review. Run it yourself: \`${runCommand}\`.`
+        : `Execution status: not run — this program needs external libraries and network access, so the offline sandbox does not execute it. The code is provided for review. Run it yourself: \`${runCommand}\`.`,
   },
   ru: {
     intro: (name, label) =>
       `Вот программа на языке ${name}, которая решает составную задачу (${label}). Я разбил ваш запрос на следующие подзадачи:`,
     librariesHeading: "Необходимые библиотеки:",
     howToRunHeading: "Как запустить самостоятельно:",
-    executionReport: (runCommand) =>
-      `Статус выполнения: не запускалось — программе нужны внешние библиотеки и доступ к сети, поэтому офлайн-песочница её не выполняет. Код приведён для проверки. Запустить самостоятельно: \`${runCommand}\`.`,
+    executionReport: (runCommand, execution) =>
+      execution === "review_data_assumptions"
+        ? `Статус выполнения: не запускалось — этот отчёт не выполнялся в офлайн-песочнице, а допущения о стоимости жизни нужно сверить с указанными источниками. Код приведён для проверки. Запустить самостоятельно: \`${runCommand}\`.`
+        : `Статус выполнения: не запускалось — программе нужны внешние библиотеки и доступ к сети, поэтому офлайн-песочница её не выполняет. Код приведён для проверки. Запустить самостоятельно: \`${runCommand}\`.`,
   },
   hi: {
     intro: (name, label) =>
       `यहाँ ${name} में एक प्रोग्राम है जो इस संयुक्त कार्य को हल करता है (${label})। मैंने आपके अनुरोध को इन उप-कार्यों में विभाजित किया है:`,
     librariesHeading: "आवश्यक लाइब्रेरियाँ:",
     howToRunHeading: "इसे स्वयं कैसे चलाएँ:",
-    executionReport: (runCommand) =>
-      `निष्पादन स्थिति: नहीं चलाया गया — प्रोग्राम को बाहरी लाइब्रेरियों और नेटवर्क पहुँच की आवश्यकता है, इसलिए ऑफ़लाइन सैंडबॉक्स इसे नहीं चलाता। कोड समीक्षा के लिए दिया गया है। स्वयं चलाएँ: \`${runCommand}\`।`,
+    executionReport: (runCommand, execution) =>
+      execution === "review_data_assumptions"
+        ? `निष्पादन स्थिति: नहीं चलाया गया — यह रिपोर्ट ऑफ़लाइन सैंडबॉक्स में नहीं चली, और शहर-लागत मानों को दिए गए स्रोतों से जाँचना चाहिए। कोड समीक्षा के लिए दिया गया है। स्वयं चलाएँ: \`${runCommand}\`।`
+        : `निष्पादन स्थिति: नहीं चलाया गया — प्रोग्राम को बाहरी लाइब्रेरियों और नेटवर्क पहुँच की आवश्यकता है, इसलिए ऑफ़लाइन सैंडबॉक्स इसे नहीं चलाता। कोड समीक्षा के लिए दिया गया है। स्वयं चलाएँ: \`${runCommand}\`।`,
   },
   zh: {
     intro: (name, label) =>
       `这是一个解决该复合任务的 ${name} 程序（${label}）。我已将您的请求分解为以下子任务：`,
     librariesHeading: "所需的库：",
     howToRunHeading: "如何自行运行：",
-    executionReport: (runCommand) =>
-      `执行状态：未运行 —— 该程序需要外部库和网络访问，因此离线沙箱不会执行它。代码仅供审阅。自行运行：\`${runCommand}\`。`,
+    executionReport: (runCommand, execution) =>
+      execution === "review_data_assumptions"
+        ? `执行状态：未运行 —— 该报告未在离线沙箱中执行，城市成本假设应先按列出的来源核对。代码仅供审阅。自行运行：\`${runCommand}\`。`
+        : `执行状态：未运行 —— 该程序需要外部库和网络访问，因此离线沙箱不会执行它。代码仅供审阅。自行运行：\`${runCommand}\`。`,
   },
 };
 
@@ -12634,6 +13788,21 @@ const BLUEPRINT_CAPABILITY_LABELS = {
   "comments:ru": "Снабдить код комментариями",
   "comments:hi": "कोड में टिप्पणियाँ जोड़ें",
   "comments:zh": "为代码添加注释",
+  "web_research:ru": "Найти актуальные исходные данные",
+  "web_research:hi": "वर्तमान स्रोत डेटा खोजें",
+  "web_research:zh": "检索当前来源数据",
+  "city_costs:ru": "Сравнить стоимость жизни по городам",
+  "city_costs:hi": "शहरों की जीवन-यापन लागत की तुलना करें",
+  "city_costs:zh": "比较城市生活成本",
+  "budget_rule:ru": "Применить правило бюджета 50/30/20",
+  "budget_rule:hi": "50/30/20 बजट नियम लागू करें",
+  "budget_rule:zh": "应用 50/30/20 预算规则",
+  "compound_savings:ru": "Рассчитать накопления со сложным процентом",
+  "compound_savings:hi": "चक्रवृद्धि बचत का अनुमान लगाएँ",
+  "compound_savings:zh": "预测复利储蓄",
+  "markdown_report:ru": "Экспортировать Markdown-отчёт со сравнением",
+  "markdown_report:hi": "Markdown तुलना रिपोर्ट निर्यात करें",
+  "markdown_report:zh": "导出 Markdown 比较报告",
 };
 
 // Localized one-line recipe summaries keyed by `${slug}:${language}`; English
@@ -12643,6 +13812,12 @@ const BLUEPRINT_RECIPE_SUMMARIES = {
   "http_json_stats:hi":
     "HTTP के माध्यम से JSON प्राप्त करें और उसकी संख्याओं का औसत और माध्यिका दिखाएँ",
   "http_json_stats:zh": "通过 HTTP 获取 JSON 并报告其中数字的平均值和中位数",
+  "personal_budget_report:ru":
+    "собрать бюджетный калькулятор 50/30/20 с городскими расходами, источниками и Markdown-отчётом",
+  "personal_budget_report:hi":
+    "स्रोतों सहित 50/30/20 शहर बजट कैलकुलेटर और Markdown रिपोर्ट बनाएँ",
+  "personal_budget_report:zh":
+    "生成带来源的 50/30/20 城市预算计算器和 Markdown 报告",
 };
 
 // The line-comment marker for a program language. Mirrors `comment_marker` in
@@ -12823,6 +13998,7 @@ function renderBlueprint(blueprint, language, composition) {
   }
   body += `\n${strings.howToRunHeading}\n\n${strings.executionReport(
     blueprint.program.runCommand,
+    blueprint.program.execution,
   )}`;
   return body;
 }
@@ -12857,15 +14033,221 @@ function blueprintWriteProgramAnswer(
   };
 }
 
+function writeProgramDecompositionParts(modifier) {
+  if (modifier === "reverse_sort") {
+    return {
+      operation: "sort",
+      operationModifier: "descending",
+      target: "program:last.output_order",
+      targetKind: "program_output",
+    };
+  }
+  if (modifier === "path_argument") {
+    return {
+      operation: "accept",
+      operationModifier: "path_argument",
+      target: "program:last.input",
+      targetKind: "program_input",
+    };
+  }
+  return {
+    operation: "modify",
+    operationModifier: null,
+    target: "program:last",
+    targetKind: "program_artifact",
+  };
+}
+
+function writeProgramPrimaryModifier(modifiers) {
+  if (!Array.isArray(modifiers) || modifiers.length === 0) return null;
+  return modifiers.includes("reverse_sort") ? "reverse_sort" : modifiers[0];
+}
+
+function writeProgramCandidateRuleId(plan, modifier) {
+  if (!plan || !modifier) return "";
+  const traces = Array.isArray(plan.traces) ? plan.traces : [];
+  for (let index = traces.length - 1; index >= 0; index -= 1) {
+    const ruleId = String(traces[index].ruleId || "");
+    if (ruleId.includes(modifier)) return ruleId;
+  }
+  return `${modifier}_${plan.baseTask || "program"}`;
+}
+
+function writeProgramSynthesisRequest(context, prompt, modifier) {
+  const parts = writeProgramDecompositionParts(modifier);
+  const lines = ["rule_synthesis_request"];
+  lines.push("  issue #359");
+  lines.push("  impulse current_turn");
+  lines.push("  artifact program:last");
+  lines.push(`  artifact_language ${context.language || "missing"}`);
+  lines.push(`  base_task ${context.task || "missing"}`);
+  lines.push("  bare_imperative true");
+  lines.push(`  operation ${parts.operation}`);
+  if (parts.operationModifier) {
+    lines.push(`  operation_modifier ${parts.operationModifier}`);
+  }
+  lines.push(`  target ${parts.target}`);
+  lines.push(`  target_kind ${parts.targetKind}`);
+  lines.push(`  source_text ${prompt}`);
+  return lines.join("\n");
+}
+
+function writeProgramSynthesisCandidate(candidateId, context, plan, modifier) {
+  const parts = writeProgramDecompositionParts(modifier);
+  const lines = ["rule_synthesis_candidate"];
+  lines.push(`  id ${candidateId}`);
+  lines.push("  source constructed_from_operation_vocabulary");
+  lines.push(`  base_task ${context.task || "missing"}`);
+  lines.push(`  modifier ${modifier}`);
+  lines.push(`  operation ${parts.operation}`);
+  if (parts.operationModifier) {
+    lines.push(`  operation_modifier ${parts.operationModifier}`);
+  }
+  lines.push(`  target ${parts.target}`);
+  lines.push(`  resolved_task ${(plan && plan.resolvedTask) || "missing"}`);
+  return lines.join("\n");
+}
+
+function templateHasDescendingOrder(code) {
+  const compact = String(code || "")
+    .toLowerCase()
+    .split(/\s+/)
+    .join("");
+  return [
+    "sort_by(|a,b|b.cmp(a))",
+    "reverse=true",
+    ".sort().reverse()",
+    "sort.sort(sort.reverse",
+    "compare_desc",
+    "rbegin(),names.rend()",
+    "comparator.reverseorder()",
+    "orderbydescending",
+    "sort.reverse",
+  ].some((marker) => compact.includes(marker));
+}
+
+function writeProgramVerificationTrace(candidateId, plan, template, modifiers) {
+  if (!plan || !Array.isArray(modifiers) || modifiers.length === 0) return null;
+  const planCheck =
+    programPlanWasModified(plan) && Array.isArray(plan.traces) && plan.traces.length > 0;
+  const renderCheck =
+    !modifiers.includes("reverse_sort") || templateHasDescendingOrder(template);
+  const passed = planCheck && renderCheck;
+  return [
+    "rule_verification",
+    `  candidate ${candidateId}`,
+    "  fixture list_files_output_order",
+    "  input a.txt,b.txt,c.txt",
+    "  expected_order c.txt,b.txt,a.txt",
+    `  lowering_check ${planCheck ? "passed" : "failed"}`,
+    `  render_check ${renderCheck ? "passed" : "failed"}`,
+    `  status ${passed ? "passed" : "failed"}`,
+  ].join("\n");
+}
+
+function writeProgramDiagnosticBundle({
+  prompt,
+  initiallyDetected,
+  coreference,
+  detected,
+  modifiers,
+  lowered,
+  plan,
+  template,
+}) {
+  const steps = [];
+  const trace = [];
+  const coreferenceTrace = coreference && coreference.trace;
+  if (!initiallyDetected && coreferenceTrace) {
+    const detail = "selected_rule initial unknown reason no_seed_route next try_rule_synthesis";
+    steps.push({ step: "route_attempt", detail });
+    trace.push(`selected_rule:${detail}`);
+  } else {
+    const detail = "selected_rule write_program reason seed_route";
+    steps.push({ step: "route_attempt", detail });
+    trace.push(`selected_rule:${detail}`);
+  }
+
+  if (coreferenceTrace) {
+    const detail = `write_program_coreference_rewrite\n  ${coreferenceTrace}`;
+    steps.push({ step: "coreference_binding", detail });
+    trace.push(`write_program_coreference_rewrite:${coreferenceTrace}`);
+  }
+
+  const safeModifiers = Array.isArray(modifiers) ? modifiers : [];
+  if (safeModifiers.length > 0) {
+    const operationHits = safeModifiers.join(",");
+    const detail = `rule_synthesis_operation_vocabulary\n  ${operationHits}`;
+    steps.push({ step: "modifier_detection", detail });
+    trace.push(`rule_synthesis_operation_vocabulary:${operationHits}`);
+  }
+
+  const primaryModifier = writeProgramPrimaryModifier(safeModifiers);
+  if (primaryModifier && lowered && programPlanWasModified(lowered)) {
+    const context = {
+      task: (detected && detected.task) || lowered.baseTask || "missing",
+      language: (detected && detected.language) || "missing",
+    };
+    const candidateId = writeProgramCandidateRuleId(lowered, primaryModifier);
+    const request = writeProgramSynthesisRequest(context, prompt, primaryModifier);
+    const candidate = writeProgramSynthesisCandidate(
+      candidateId,
+      context,
+      lowered,
+      primaryModifier,
+    );
+    const construction = `${request}\n${candidate}`;
+    steps.push({ step: "rule_construction", detail: construction });
+    trace.push(`rule_synthesis_request:${request}`);
+    trace.push(`rule_synthesis_candidate:${candidate}`);
+
+    const verification = writeProgramVerificationTrace(
+      candidateId,
+      lowered,
+      template,
+      safeModifiers,
+    );
+    if (verification) {
+      steps.push({ step: "rule_verification", detail: verification });
+      trace.push(`rule_verification:${verification}`);
+    }
+  }
+
+  if (plan) {
+    const detail = `write_program_plan\n${plan}`;
+    steps.push({ step: "program_plan", detail });
+    trace.push(`write_program_plan:${plan}`);
+  }
+
+  return { steps, trace };
+}
+
 function tryWriteProgram(prompt, history, responseLanguage, composition) {
-  const detected = writeProgramParameters(prompt);
-  if (!detected) return null;
+  let detected = writeProgramParameters(prompt);
+  const initiallyDetected = detected;
+  const coreference = detected ? null : rewriteBareProgramCoreference(prompt, history);
+  if (!detected && !coreference) return null;
+  if (coreference) detected = coreference.parameters;
   // Issue #324: recover task/language from the conversation when a follow-up
   // modification names neither (and apply any path-argument modifier).
-  const { language, task, plan } = recoverWriteProgramParameters(detected, prompt, history);
+  const { language, task, plan, modifiers, lowered } = recoverWriteProgramParameters(
+    detected,
+    prompt,
+    history,
+  );
   // Issue #324: answer in the language of the request (falls back to en).
   const i18n = writeProgramStrings(responseLanguage);
   const template = language && task ? WRITE_PROGRAM_TEMPLATES[task]?.[language] : null;
+  const diagnostics = writeProgramDiagnosticBundle({
+    prompt,
+    initiallyDetected,
+    coreference,
+    detected,
+    modifiers,
+    lowered,
+    plan,
+    template,
+  });
   if (!template) {
     // Issue #340 (R7): before the unsupported dead end, try a composite
     // blueprint. When the request decomposes into a recognized recipe for a
@@ -12900,6 +14282,8 @@ function tryWriteProgram(prompt, history, responseLanguage, composition) {
         `program_parameter:language:${language || "missing"}`,
         `program_parameter:task:${task || "missing"}`,
       ],
+      steps: diagnostics.steps,
+      trace: diagnostics.trace,
     };
   }
   const languageInfo = WRITE_PROGRAM_LANGUAGES[language];
@@ -12943,7 +14327,12 @@ function tryWriteProgram(prompt, history, responseLanguage, composition) {
       // modification rewrote the task (mirrors the Rust `write_program_plan`
       // event in `src/solver.rs`).
       ...(plan ? [`write_program_plan:${task}`] : []),
+      ...(coreference
+        ? [`write_program_coreference_rewrite:${task || "missing"}:${language || "missing"}`]
+        : []),
     ],
+    steps: diagnostics.steps,
+    trace: diagnostics.trace.length ? diagnostics.trace : undefined,
   };
 }
 
@@ -12967,6 +14356,211 @@ function tryHistorical(prompt, history) {
     return tryRecallLastQuestion(history);
   }
   return null;
+}
+
+function isComparisonTableRequest(normalized) {
+  const padded = ` ${normalized || ""} `;
+  return (
+    padded.includes(" comparison table ") ||
+    padded.includes(" compare ") ||
+    padded.includes(" comparing ") ||
+    (padded.includes(" table ") && padded.includes(" differences "))
+  );
+}
+
+function looksLikeResearchPrompt(prompt) {
+  const normalized = normalizePrompt(prompt);
+  return (
+    normalized.startsWith("search ") ||
+    normalized.startsWith("find information ") ||
+    normalized.startsWith("look up information ") ||
+    normalized.includes(" search for information ") ||
+    normalized.includes(" web search ") ||
+    normalized.includes(" research ")
+  );
+}
+
+function stripResearchListMarker(line) {
+  const value = String(line || "").trim();
+  if (!value) return "";
+  if (/^[-*+]\s+/u.test(value)) {
+    return value.replace(/^[-*+]\s+/u, "").trim();
+  }
+  if (/^\d+[.):]\s*/u.test(value)) {
+    return value.replace(/^\d+[.):]\s*/u, "").trim();
+  }
+  return "";
+}
+
+function cleanResearchText(value) {
+  return String(value || "")
+    .trim()
+    .replace(/^[`"':;,.?!\s]+/u, "")
+    .replace(/[`"':;,.?!\s]+$/u, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function extractResearchTopics(prompt) {
+  const topics = [];
+  for (const line of String(prompt || "").split(/\r?\n/u)) {
+    const item = cleanResearchText(stripResearchListMarker(line));
+    if (!item || looksLikeResearchPrompt(item)) continue;
+    if (!topics.some((topic) => topic.toLowerCase() === item.toLowerCase())) {
+      topics.push(item);
+    }
+    if (topics.length >= 8) break;
+  }
+  if (topics.length === 0 && String(prompt || "").includes(":")) {
+    const item = cleanResearchText(String(prompt).split(":").slice(1).join(":"));
+    if (item) topics.push(item);
+  }
+  return topics;
+}
+
+const RESEARCH_TABLE_DEFAULT_CRITERIA = [
+  "key_differences",
+  "use_cases",
+  "advantages",
+  "disadvantages",
+];
+
+const RESEARCH_TABLE_CRITERION_LABELS = {
+  key_differences: "Key differences",
+  use_cases: "Use cases",
+  advantages: "Advantages",
+  disadvantages: "Disadvantages",
+};
+
+function pushUniqueCriterion(criteria, criterion) {
+  if (!criteria.includes(criterion)) criteria.push(criterion);
+}
+
+function appendResearchCriteriaFromText(text, criteria) {
+  const normalized = normalizePrompt(text);
+  if (normalized.includes("key difference") || normalized.includes("difference")) {
+    pushUniqueCriterion(criteria, "key_differences");
+  }
+  if (normalized.includes("use case") || normalized.includes("application")) {
+    pushUniqueCriterion(criteria, "use_cases");
+  }
+  if (normalized.includes("advantage") || normalized.includes("pro ")) {
+    pushUniqueCriterion(criteria, "advantages");
+  }
+  if (normalized.includes("disadvantage") || normalized.includes(" con ")) {
+    pushUniqueCriterion(criteria, "disadvantages");
+  }
+}
+
+function extractResearchCriteria(prompt) {
+  const criteria = [];
+  for (const line of String(prompt || "").split(/\r?\n/u)) {
+    const item = stripResearchListMarker(line);
+    if (item) appendResearchCriteriaFromText(item, criteria);
+  }
+  if (criteria.length === 0) appendResearchCriteriaFromText(prompt, criteria);
+  return criteria.length > 0 ? criteria : RESEARCH_TABLE_DEFAULT_CRITERIA.slice();
+}
+
+function researchTableCell(topic, criterion) {
+  const normalized = normalizePrompt(topic);
+  if (normalized.includes("machine learning algorithm")) {
+    if (criterion === "key_differences") {
+      return "Broad family of data-driven methods; includes supervised, unsupervised, and reinforcement approaches.";
+    }
+    if (criterion === "use_cases") {
+      return "Classification, regression, clustering, recommendation, anomaly detection, and forecasting.";
+    }
+    if (criterion === "advantages") {
+      return "Flexible toolkit; often efficient on structured data; many models are easier to inspect than deep nets.";
+    }
+    if (criterion === "disadvantages") {
+      return "Model choice, preprocessing, and feature design can dominate results; overfitting remains a risk.";
+    }
+  }
+  if (normalized.includes("deep learning") && normalized.includes("traditional ml")) {
+    if (criterion === "key_differences") {
+      return "Deep learning learns layered representations; traditional ML often relies more on explicit feature engineering.";
+    }
+    if (criterion === "use_cases") {
+      return "Deep learning fits images, speech, and language at scale; traditional ML fits many tabular and smaller-data tasks.";
+    }
+    if (criterion === "advantages") {
+      return "Deep learning scales with data and reduces manual features; traditional ML is usually faster and more interpretable.";
+    }
+    if (criterion === "disadvantages") {
+      return "Deep learning needs more data/compute and is harder to explain; traditional ML may underfit unstructured signals.";
+    }
+  }
+  if (normalized.includes("neural network")) {
+    if (criterion === "key_differences") {
+      return "Built from weighted layers, activations, losses, and optimization; provides the base mechanism for deep learning.";
+    }
+    if (criterion === "use_cases") {
+      return "Pattern recognition, embeddings, sequence modeling, vision, speech, and nonlinear function approximation.";
+    }
+    if (criterion === "advantages") {
+      return "Captures nonlinear relationships and can be trained end-to-end for complex perception tasks.";
+    }
+    if (criterion === "disadvantages") {
+      return "Requires tuning and regularization; decisions can be opaque; training can be unstable on poor data.";
+    }
+  }
+  if (criterion === "key_differences") {
+    return "Use the prior search sources to identify what distinguishes this topic from the others.";
+  }
+  if (criterion === "use_cases") {
+    return "Summarize the practical settings where the Step 1 sources apply this topic.";
+  }
+  if (criterion === "advantages") {
+    return "Extract strengths reported by the prior search sources before treating them as verified.";
+  }
+  return "Extract limitations reported by the prior search sources before treating them as verified.";
+}
+
+function escapeResearchTableCell(value) {
+  return String(value || "").replace(/\|/g, "\\|").replace(/\n/g, " ");
+}
+
+function renderResearchComparisonTable(topics, criteria) {
+  const lines = [
+    "Research comparison table (draft; verify claims against the Step 1 source links).",
+    "",
+    `| Topic | ${criteria.map((criterion) => RESEARCH_TABLE_CRITERION_LABELS[criterion]).join(" | ")} |`,
+    `| --- | ${criteria.map(() => "---").join(" | ")} |`,
+  ];
+  for (const topic of topics) {
+    lines.push(
+      `| ${escapeResearchTableCell(topic)} | ${criteria
+        .map((criterion) => escapeResearchTableCell(researchTableCell(topic, criterion)))
+        .join(" | ")} |`,
+    );
+  }
+  return lines.join("\n");
+}
+
+function compactResearchLogValue(value) {
+  return String(value || "").split(/\s+/u).filter(Boolean).join(" ");
+}
+
+function tryResearchComparisonTable(prompt, normalized, history = []) {
+  if (!isComparisonTableRequest(normalized)) return null;
+  const priorSearch = lastHistoryTurn(history, "user");
+  if (!priorSearch || !looksLikeResearchPrompt(priorSearch)) return null;
+  const topics = extractResearchTopics(priorSearch);
+  if (topics.length < 2) return null;
+  const criteria = extractResearchCriteria(prompt);
+  if (criteria.length === 0) return null;
+  return {
+    intent: "research_comparison_table",
+    content: renderResearchComparisonTable(topics, criteria),
+    confidence: 0.78,
+    evidence: [
+      `research_table:prior_search:${compactResearchLogValue(priorSearch)}`,
+      ...topics.map((topic) => `research_table:topic:${topic}`),
+      ...criteria.map((criterion) => `research_table:criterion:${criterion}`),
+    ],
+  };
 }
 
 // Issue #27: trigger the summarize skill on a wide range of natural phrasings
@@ -13055,12 +14649,15 @@ function normalizeUrlCandidate(candidate) {
   const text = String(candidate || "").trim();
   if (!text || /\s/.test(text) || text.includes("@")) return null;
   const lower = text.toLowerCase();
-  const url =
-    lower.startsWith("http://") || lower.startsWith("https://")
-      ? text
-      : lower.startsWith("www.") || looksLikeHostname(text)
-        ? `https://${text}`
-        : "";
+  let url = "";
+  if (lower.startsWith("http://") || lower.startsWith("https://")) {
+    url = text;
+  } else {
+    const hostCandidate = text.split(/[/?#]/, 1)[0] || "";
+    if (lower.startsWith("www.") || looksLikeHostname(hostCandidate)) {
+      url = `https://${text}`;
+    }
+  }
   if (!url) return null;
   let parsed;
   try {
@@ -13264,7 +14861,7 @@ function cleanSearchQuery(value) {
 function stripSearchPrefix(prompt, prefix) {
   const text = String(prompt || "").trim();
   if (text.toLowerCase().startsWith(prefix)) {
-    return cleanSearchQuery(text.slice(prefix.length));
+    return validSearchQuery(text.slice(prefix.length));
   }
   return "";
 }
@@ -13275,6 +14872,9 @@ const WEB_SEARCH_EXPLICIT_PREFIXES = [
   "search the internet for ",
   "search internet for ",
   "search online for ",
+  "search wikipedia for ",
+  "search wikidata for ",
+  "search wiktionary for ",
   "search for information about ",
   "search for information on ",
   "web search for ",
@@ -13643,6 +15243,11 @@ const SEARCH_QUERY_SOURCE_ONLY = [
   "維基百科",
 ];
 
+const SEARCH_QUERY_TRAILING_INSTRUCTION_PATTERNS = [
+  /[.?!;:]\s*(?:then\s+)?(?:compare|summarize|summarise|explain|describe|show|tell)\b[\s\S]*$/i,
+  /\s+and\s+(?:then\s+)?(?:summarize|summarise|compare|explain|describe|show|tell)\b[\s\S]*$/i,
+];
+
 const IMPLICIT_RESEARCH_QUESTION_PREFIXES = [
   "what is the ",
   "what is a ",
@@ -13816,8 +15421,16 @@ function stripSearchNoiseSuffix(value, suffix) {
     : text;
 }
 
+function truncateSearchInstructionTail(value) {
+  let query = String(value || "").trim();
+  for (const pattern of SEARCH_QUERY_TRAILING_INSTRUCTION_PATTERNS) {
+    query = query.replace(pattern, "").trim();
+  }
+  return query;
+}
+
 function cleanSemanticSearchQuery(value) {
-  let query = cleanSearchQuery(value);
+  let query = cleanSearchQuery(truncateSearchInstructionTail(value));
   while (true) {
     const before = query;
     for (const prefix of SEARCH_QUERY_LEADING_NOISE) {
@@ -14003,6 +15616,18 @@ function cleanProceduralFragment(value) {
     " with steps",
     " for me",
     " please",
+    " напиши по шагам",
+    " по шагам",
+    " пошагово",
+    " пожалуйста",
+    " चरणों में लिखो",
+    " चरणों में बताओ",
+    " कदम दर कदम",
+    " कृपया",
+    " 按步骤写",
+    " 按步骤说明",
+    " 一步一步写",
+    " 请",
   ];
   for (const suffix of suffixes) {
     if (clean.endsWith(suffix)) {
@@ -14013,36 +15638,86 @@ function cleanProceduralFragment(value) {
   return clean;
 }
 
+function correctCommonProceduralTypos(task) {
+  const corrections = [];
+  const corrected = String(task || "")
+    .split(/\s+/u)
+    .filter(Boolean)
+    .map((token) => {
+      if (token === "dirven") {
+        if (!corrections.some((correction) => correction.from === "dirven")) {
+          corrections.push({ from: "dirven", to: "driven" });
+        }
+        return "driven";
+      }
+      return token;
+    })
+    .join(" ");
+  return { task: corrected, corrections };
+}
+
 function extractProceduralHowToTask(normalized) {
   const prefixes = [
-    "please tell me how to ",
-    "please show me how to ",
-    "tell me how to ",
-    "show me how to ",
-    "what are the steps to ",
-    "what steps do i need to ",
-    "what steps do we need to ",
-    "how should i ",
-    "how should we ",
-    "how could i ",
-    "how could we ",
-    "how would i ",
-    "how would we ",
-    "how can i ",
-    "how can we ",
-    "how do i ",
-    "how do we ",
-    "how to ",
+    ["please tell me how to ", null],
+    ["please show me how to ", null],
+    ["tell me how to ", null],
+    ["show me how to ", null],
+    ["what are the steps to ", null],
+    ["what steps do i need to ", null],
+    ["what steps do we need to ", null],
+    ["how should i ", null],
+    ["how should we ", null],
+    ["how could i ", null],
+    ["how could we ", null],
+    ["how would i ", null],
+    ["how would we ", null],
+    ["how can i ", null],
+    ["how can we ", null],
+    ["how do i ", null],
+    ["how do we ", null],
+    ["how to do ", "do"],
+    ["how to ", null],
+    ["как сделать ", "do"],
+    ["как делать ", "do"],
+    ["как выполнить ", "perform"],
+    ["как реализовать ", "implement"],
+    ["как создать ", "create"],
+    ["как написать ", "write"],
+    ["कैसे करें ", "do"],
+    ["कैसे करे ", "do"],
+    ["कैसे लागू करें ", "implement"],
+    ["कैसे बनाएं ", "create"],
+    ["कैसे बनाएँ ", "create"],
+    ["कैसे लिखें ", "write"],
+    ["如何做 ", "do"],
+    ["怎么做 ", "do"],
+    ["如何实现 ", "implement"],
+    ["怎么实现 ", "implement"],
+    ["如何创建 ", "create"],
+    ["怎么创建 ", "create"],
+    ["如何写 ", "write"],
+    ["怎么写 ", "write"],
   ];
   const clean = cleanProceduralFragment(normalized);
-  for (const prefix of prefixes) {
+  for (const [prefix, actionOverride] of prefixes) {
     if (!clean.startsWith(prefix)) continue;
-    const task = cleanProceduralFragment(clean.slice(prefix.length));
+    const correction = correctCommonProceduralTypos(
+      cleanProceduralFragment(clean.slice(prefix.length)),
+    );
+    const task = correction.task;
     if (!task) return null;
+    if (actionOverride) {
+      return {
+        task,
+        action: actionOverride,
+        object: task,
+        corrections: correction.corrections,
+      };
+    }
     const firstSpace = task.search(/\s/u);
     const action = firstSpace === -1 ? task : task.slice(0, firstSpace);
     const object = firstSpace === -1 ? "" : task.slice(firstSpace + 1).trim();
-    return { task, action, object };
+    return { task, action, object, corrections: correction.corrections };
   }
   return null;
 }
@@ -14297,6 +15972,9 @@ async function tryProceduralHowTo(prompt, language) {
     `procedural_how_to:wikihow_candidate:${pageTitle}`,
     `http_fetch:request:${apiUrl}`,
   ];
+  for (const correction of task.corrections || []) {
+    evidence.push(`spelling_correction:${correction.from}->${correction.to}`);
+  }
   if (task.object) {
     evidence.splice(2, 0, `procedural_how_to:object:${task.object}`);
   }
@@ -16294,6 +17972,252 @@ function repositorySlug(repo) {
   return `${repo.owner}/${repo.name}`;
 }
 
+const GITHUB_README_KNOWN_TOOLS = [
+  "http_fetch",
+  "url_navigate",
+  "web_search",
+  "wikipedia_lookup",
+  "calculator",
+  "eval_js",
+  "read_local_file",
+  "append_memory",
+  "export_memory",
+  "import_memory",
+  "conversation_recall",
+  "concept_lookup",
+  "write_program",
+  "intent_routing",
+  "fact_lookup",
+  "summarize_conversation",
+  "brainstorm",
+  "coreference",
+  "roleplay",
+];
+
+function githubRepositoryInfoRequest(prompt, normalized) {
+  const repo = repositoryFromPrompt(prompt);
+  if (!repo || !repo.platform || repo.platform.slug !== "github") return null;
+  const markers = [
+    "extract information",
+    "main programming language",
+    "programming language",
+    "number of stars",
+    "star count",
+    "stars",
+    "last commit",
+    "readme",
+  ];
+  if (!containsAny(normalized, markers)) return null;
+  return repo;
+}
+
+function githubApiRepositoryUrl(repo, suffix) {
+  const owner = encodeURIComponent(repo.owner);
+  const name = encodeURIComponent(repo.name);
+  return `https://api.github.com/repos/${owner}/${name}${suffix || ""}`;
+}
+
+async function fetchGithubJson(url, label, diagnostics) {
+  if (typeof fetch !== "function") {
+    throw new Error("fetch unavailable");
+  }
+  const startedAt = Date.now();
+  const headers = { Accept: "application/vnd.github+json" };
+  const response = await fetch(url, { headers });
+  const text = await response.text();
+  const entry = {
+    providerId: "github",
+    url,
+    method: "GET",
+    requestHeaders: headers,
+    ok: Boolean(response && response.ok),
+    status: response ? response.status : 0,
+    statusText: response ? response.statusText : "",
+    elapsedMs: Date.now() - startedAt,
+    responseSnippet: text.slice(0, 1024),
+    unified: `github_api ${label}`,
+  };
+  if (Array.isArray(diagnostics)) diagnostics.push(entry);
+  if (!response || !response.ok) {
+    throw new Error(`HTTP ${entry.status} ${entry.statusText}`.trim());
+  }
+  try {
+    return text ? JSON.parse(text) : null;
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    throw new Error(`JSON parse failed: ${message}`);
+  }
+}
+
+function decodeGithubReadmeContent(readme) {
+  if (!readme || typeof readme !== "object") return "";
+  if (typeof readme.content === "string" && readme.encoding === "base64") {
+    const encoded = readme.content.replace(/\s+/g, "");
+    if (typeof atob !== "function") return "";
+    try {
+      const binary = atob(encoded);
+      const bytes = new Uint8Array(binary.length);
+      for (let index = 0; index < binary.length; index += 1) {
+        bytes[index] = binary.charCodeAt(index);
+      }
+      if (typeof TextDecoder === "function") {
+        return new TextDecoder("utf-8").decode(bytes);
+      }
+      let decoded = "";
+      for (let index = 0; index < binary.length; index += 1) {
+        decoded += String.fromCharCode(bytes[index]);
+      }
+      return decoded;
+    } catch (_error) {
+      return "";
+    }
+  }
+  return "";
+}
+
+function pushUniqueToolName(out, seen, name) {
+  const cleaned = String(name || "")
+    .trim()
+    .replace(/^[@#]+/u, "")
+    .replace(/[.,:;!?]+$/u, "");
+  if (!cleaned || cleaned.length > 48) return;
+  if (!/^[a-z][a-z0-9_-]*$/i.test(cleaned)) return;
+  const key = cleaned.toLowerCase();
+  if (seen.has(key)) return;
+  seen.add(key);
+  out.push(cleaned);
+}
+
+function pushUniqueToolDisplayName(out, seen, name) {
+  const cleaned = String(name || "")
+    .replace(/`+/gu, "")
+    .replace(/\*\*/gu, "")
+    .trim()
+    .replace(/[.,:;!?]+$/u, "")
+    .replace(/\s+/gu, " ");
+  if (!cleaned || cleaned.length > 80 || !/[A-Za-z]/u.test(cleaned)) return;
+  if (/\b(?:agentic|available|supported|search|execution|utility)\s+tools?\b/i.test(cleaned)) {
+    return;
+  }
+  const key = cleaned.toLowerCase();
+  if (seen.has(key)) return;
+  seen.add(key);
+  out.push(cleaned);
+}
+
+function extractReadmeTools(markdown) {
+  const text = String(markdown || "");
+  const lower = text.toLowerCase();
+  const out = [];
+  const seen = new Set();
+  for (const tool of GITHUB_README_KNOWN_TOOLS) {
+    if (lower.includes(tool.toLowerCase())) {
+      pushUniqueToolName(out, seen, tool);
+    }
+  }
+  const lines = text.split(/\r?\n/);
+  let inToolsSection = false;
+  let toolsSectionLevel = 0;
+  for (const line of lines) {
+    const heading = /^(\s{0,3})(#{1,6})\s+(.+?)\s*#*\s*$/u.exec(line);
+    if (heading) {
+      const level = heading[2].length;
+      const headingText = heading[3].trim();
+      if (/\btools?\b/i.test(headingText)) {
+        inToolsSection = true;
+        toolsSectionLevel = level;
+      } else if (inToolsSection && level > toolsSectionLevel) {
+        pushUniqueToolDisplayName(out, seen, headingText);
+      } else {
+        inToolsSection = false;
+        toolsSectionLevel = 0;
+      }
+      continue;
+    }
+    if (!inToolsSection) continue;
+    const bullet = /^\s*[-*+]\s+(?:`([^`]+)`|([A-Za-z][A-Za-z0-9_-]*))/u.exec(line);
+    if (bullet) {
+      pushUniqueToolName(out, seen, bullet[1] || bullet[2]);
+    }
+    const codeMatches = line.matchAll(/`([A-Za-z][A-Za-z0-9_-]*)`/gu);
+    for (const match of codeMatches) {
+      pushUniqueToolName(out, seen, match[1]);
+    }
+  }
+  return out;
+}
+
+function githubCommitDate(commits) {
+  if (!Array.isArray(commits) || commits.length === 0) return null;
+  const commit = commits[0] && commits[0].commit ? commits[0].commit : null;
+  return (
+    (commit && commit.committer && commit.committer.date) ||
+    (commit && commit.author && commit.author.date) ||
+    null
+  );
+}
+
+async function tryGithubRepositoryInfo(repo, language) {
+  const diagnostics = [];
+  const errors = [];
+  let repoData = null;
+  let commits = null;
+  let readme = null;
+
+  try {
+    repoData = await fetchGithubJson(githubApiRepositoryUrl(repo), "repository", diagnostics);
+  } catch (error) {
+    errors.push(`repository: ${error instanceof Error ? error.message : String(error)}`);
+  }
+  try {
+    commits = await fetchGithubJson(
+      githubApiRepositoryUrl(repo, "/commits?per_page=1"),
+      "commits",
+      diagnostics,
+    );
+  } catch (error) {
+    errors.push(`commits: ${error instanceof Error ? error.message : String(error)}`);
+  }
+  try {
+    readme = await fetchGithubJson(githubApiRepositoryUrl(repo, "/readme"), "readme", diagnostics);
+  } catch (error) {
+    errors.push(`readme: ${error instanceof Error ? error.message : String(error)}`);
+  }
+
+  const slug = repositorySlug(repo);
+  const readmeMarkdown = decodeGithubReadmeContent(readme);
+  const payload = {
+    repository: (repoData && repoData.full_name) || slug,
+    mainProgrammingLanguage: (repoData && repoData.language) || null,
+    stars:
+      repoData && Number.isFinite(Number(repoData.stargazers_count))
+        ? Number(repoData.stargazers_count)
+        : null,
+    lastCommitDate: githubCommitDate(commits) || null,
+    readmeTools: extractReadmeTools(readmeMarkdown),
+  };
+  if (errors.length > 0) {
+    payload.errors = errors;
+  }
+  const content = `\`\`\`json\n${JSON.stringify(payload, null, 2)}\n\`\`\``;
+  return {
+    intent: "github_repo_info",
+    content,
+    confidence: errors.length === 0 ? 0.92 : 0.55,
+    evidence: [
+      `github_repo_info:repository:${slug}`,
+      `source:${repo.url}`,
+      "source:https://api.github.com",
+      `language:${language}`,
+      ...(errors.length > 0 ? errors.map((error) => `github_repo_info:error:${error}`) : []),
+    ],
+    diagnostics: {
+      providers: [],
+      httpExchanges: diagnostics,
+    },
+  };
+}
+
 function genericProjectLookupAnswer(prompt, language, repo, promotionEnabled) {
   const evidence = [];
   if (!promotionEnabled) evidence.push("project_lookup:promotion:disabled");
@@ -16793,6 +18717,36 @@ async function solve(prompt, history, prefs, userContext = {}) {
     );
   }
 
+  const githubRepoInfoRequest = githubRepositoryInfoRequest(prompt, normalized);
+  if (githubRepoInfoRequest) {
+    steps.push({
+      step: "invoke_tool",
+      detail: `github_repo_info:${repositorySlug(githubRepoInfoRequest)}`,
+    });
+    const githubRepoInfo = await tryGithubRepositoryInfo(
+      githubRepoInfoRequest,
+      language,
+    );
+    events.push(`handler:${githubRepoInfo.intent}`);
+    steps.push({
+      step: "dispatch_handler",
+      detail: "tryGithubRepositoryInfo",
+    });
+    toolCalls.push({
+      tool: "github_repo_info",
+      inputs: {
+        prompt,
+        language,
+        repository: repositorySlug(githubRepoInfoRequest),
+      },
+      outputs: {
+        intent: githubRepoInfo.intent,
+        confidence: githubRepoInfo.confidence,
+      },
+    });
+    return finalize(events, steps, toolCalls, githubRepoInfo, formalizationContext);
+  }
+
   const capabilities = tryCapabilities(prompt, normalized, preferences, history);
   if (capabilities) {
     events.push(`handler:${capabilities.intent}`);
@@ -16915,6 +18869,10 @@ async function solve(prompt, history, prefs, userContext = {}) {
   const syncHandlers = [
     { name: "tryLinkNativeSynthesis", run: () => tryLinkNativeSynthesis(prompt, normalized) },
     { name: "tryHistorical", run: () => tryHistorical(prompt, history) },
+    {
+      name: "tryResearchComparisonTable",
+      run: () => tryResearchComparisonTable(prompt, normalized, history),
+    },
     { name: "tryBrainstormingRequest", run: () => tryBrainstormingRequest(prompt, normalized) },
     { name: "tryRoleplayRequest", run: () => tryRoleplayRequest(prompt, normalized) },
     { name: "tryKupiSlona", run: () => tryKupiSlona(prompt, normalized) },
@@ -16926,8 +18884,23 @@ async function solve(prompt, history, prefs, userContext = {}) {
       name: "tryProofRequest",
       run: () => tryProofRequest(prompt, normalized, language),
     },
+    {
+      name: "tryWriteProgramCoreference",
+      run: () => {
+        const hit = writeProgram();
+        return hit &&
+          hit.intent === "write_program" &&
+          hit.evidence?.some((link) => link.startsWith("write_program_coreference_rewrite:"))
+          ? hit
+          : null;
+      },
+    },
     { name: "tryTextManipulation", run: () => tryTextManipulation(prompt, normalized) },
     { name: "tryProgramSynthesis", run: () => tryProgramSynthesis(prompt, normalized) },
+    {
+      name: "tryCompoundInterest",
+      run: () => tryCompoundInterest(prompt, normalized, history),
+    },
     { name: "tryArithmetic", run: () => tryArithmetic(prompt) },
     { name: "tryJavaScriptExecution", run: () => tryJavaScriptExecution(prompt) },
     {
@@ -16961,6 +18934,9 @@ async function solve(prompt, history, prefs, userContext = {}) {
     if (hit) {
       events.push(`handler:${hit.intent}`);
       steps.push({ step: "dispatch_handler", detail: handler.name });
+      if (Array.isArray(hit.steps)) {
+        for (const step of hit.steps) steps.push(step);
+      }
       if (Array.isArray(hit.trace)) {
         for (const event of hit.trace) events.push(event);
       }

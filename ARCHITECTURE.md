@@ -924,6 +924,15 @@ that the parity batch is **now closed and merged**:
 
 With E1-E34 all merged, no vision-planning epic remains open for issue #244.
 
+A later issue #349 roadmap closed the concrete program-modification gap that the
+parity batch exposed in a user dialog: after an active program artifact exists,
+bare follow-ups such as "sort the results in reverse order" are rewritten
+against conversation history, decomposed into program modifiers, lowered through
+`src/program_plan.rs`, and traced through default-off diagnostics. The #349 flow
+is guarded by `tests/integration/issue_349_reverse_sort.rs`, the browser-worker
+parity harness `experiments/issue-361-cross-runtime-parity.mjs`, the
+coding-modification benchmark ratchet, and the self-improvement specs.
+
 A still-open lower-priority question carried over from the E20 batch: arbitrary
 natural-language programming (executing reviewed generated stubs in sandboxed
 runtimes) remains outside the current supported subset of

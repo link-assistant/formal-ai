@@ -25,7 +25,7 @@ const ISSUE_REPOSITORY = "link-assistant/formal-ai";
 const ISSUE_LABELS = "bug";
 const SOURCE_CODE_URL = `https://github.com/${ISSUE_REPOSITORY}`;
 const UNKNOWN_ANSWER =
-  "I don't know how to answer that yet. I cannot answer that from local Links Notation rules yet. To inspect what I can do, send `List behavior rules`, then `Show behavior rule unknown`. To teach this dialog a response, send: When I say `your prompt`, answer `your answer`. To make it durable, export memory or use Report issue so developers can add a fact or add a rule in Links Notation seed data.";
+  "I don't know how to answer that yet. I cannot answer that from local Links Notation rules yet. To inspect what I can do, send `List behavior rules`, then `Show behavior rule unknown`. To teach this dialog a response, send: When I say `your prompt`, answer `your answer`. If this still needs a shared Links Notation seed fact or rule after those checks, use Report issue with the reasoning trace, or export memory to keep a dialog-local rule durable.";
 const IDENTITY_ANSWER =
   "I am formal-ai, a deterministic symbolic AI implementation that answers from local Links Notation rules and OpenAI-compatible API shapes. I do not perform neural inference in this demo.";
 const ASSISTANT_NAME_ANSWER =
@@ -1694,9 +1694,9 @@ function localizeTool(tool, language) {
 // single-step task still runs through the same code path.
 const AGENT_STEP_SEPARATORS = [
   /\s*;\s+/,
-  /\s+then(?:\s*,)?\s+/i,
   /\s*,\s+(?:and\s+then|then|next)\s+/i,
   /\s*,\s+after\s+that\s+/i,
+  /\s+then(?:\s*,)?\s+/i,
   /\s+потом\s+/i,
   /\s+затем\s+/i,
   /\s+после\s+этого\s+/i,
@@ -1709,6 +1709,66 @@ const AGENT_STEP_SEPARATORS = [
 // the task itself. Strip them so each split segment is a clean instruction.
 const AGENT_LEADING_CONJUNCTIONS =
   /^(?:and\s+then|then|next|after\s+that|потом|затем|после\s+этого|然后|接着)[\s,:]+/i;
+
+function isAgentFormattingDirective(segment) {
+  const normalized = normalizePrompt(segment);
+  if (!normalized) return false;
+  return /^(?:format|return|output|respond|write|show)\s+(?:(?:this|that|it|the result|the answer|the information|the output)\s+)?(?:as|in)\s+(?:a\s+|an\s+)?(?:json object|json|markdown table|table|csv|yaml|xml)$/.test(normalized);
+}
+
+const AGENT_QUOTED_PHRASE_PATTERN =
+  /"([^"]+)"|'([^']+)'|`([^`]+)`|“([^”]+)”|«([^»]+)»/g;
+
+function extractAgentQuotedPhrases(text) {
+  const phrases = [];
+  for (const match of String(text || "").matchAll(AGENT_QUOTED_PHRASE_PATTERN)) {
+    const phrase = (match.slice(1).find((value) => value !== undefined) || "").trim();
+    if (phrase) phrases.push(phrase);
+  }
+  return phrases;
+}
+
+function agentResearchCommandPrefix(segment) {
+  const text = String(segment || "").trim().toLowerCase();
+  if (!/^(?:search|find|look up|lookup|research)\b/.test(text)) return "";
+  if (/\bwikipedia\b/.test(text)) return "Search Wikipedia for";
+  if (/\bwikidata\b/.test(text)) return "Search Wikidata for";
+  if (/\bwiktionary\b/.test(text)) return "Search Wiktionary for";
+  return "Search the web for";
+}
+
+function agentComparisonFocus(segment) {
+  const text = String(segment || "");
+  if (!/\bcompare\b/i.test(text)) return "";
+  const numberedTarget = text.match(
+    /\bnumber\s+of\s+([A-Za-z][A-Za-z -]{0,40}?)(?:[.?!,;:]|$)/i,
+  );
+  if (numberedTarget) {
+    const focus = numberedTarget[1]
+      .replace(/\b(?:their|his|her|its|the)\b/gi, "")
+      .replace(/\s+/g, " ")
+      .trim();
+    if (focus) return focus;
+  }
+  if (/\bpatents?\b/i.test(text)) return "patents";
+  return "";
+}
+
+function expandAgentResearchStep(segment) {
+  const commandPrefix = agentResearchCommandPrefix(segment);
+  if (!commandPrefix) return [segment];
+  const quotedPhrases = extractAgentQuotedPhrases(segment);
+  if (quotedPhrases.length < 2) return [segment];
+  const focus = agentComparisonFocus(segment);
+  if (!focus) return [segment];
+  const focusKey = focus.toLowerCase();
+  return quotedPhrases.map((phrase) => {
+    const query = phrase.toLowerCase().includes(focusKey)
+      ? phrase
+      : `${phrase} ${focus}`;
+    return `${commandPrefix} "${query}"`;
+  });
+}
 
 function decomposeAgentTask(text) {
   const trimmed = String(text || "").trim();
@@ -1725,9 +1785,19 @@ function decomposeAgentTask(text) {
     }
     segments = next;
   }
-  return segments.map((segment) =>
+  const cleanedSegments = segments.map((segment) =>
     segment.replace(AGENT_LEADING_CONJUNCTIONS, "").trim(),
   ).filter((segment) => segment.length > 0);
+  const mergedSegments = [];
+  for (const segment of cleanedSegments) {
+    if (isAgentFormattingDirective(segment) && mergedSegments.length > 0) {
+      const previous = mergedSegments[mergedSegments.length - 1].replace(/\s*[.。]\s*$/u, "");
+      mergedSegments[mergedSegments.length - 1] = `${previous}. Then ${segment}`;
+    } else {
+      mergedSegments.push(segment);
+    }
+  }
+  return mergedSegments.flatMap((segment) => expandAgentResearchStep(segment));
 }
 
 function messagesForConversation(events, conversationId) {
@@ -3221,6 +3291,14 @@ function compactUrl(value) {
   }
 }
 
+// Issue #353: the same chat UI now also runs inside a VS Code Webview. Label the
+// host surface from the bridge's shell string ("VS Code" / "VS Code Web" from the
+// extension; "Electron" from the desktop shell) so the status line and sidebar
+// read correctly in either embedder.
+function desktopSurfaceLabel(status) {
+  return /code/i.test(String((status && status.shell) || "")) ? "VS Code" : "Desktop";
+}
+
 function desktopStatusLabel(status, agentMode) {
   if (!status) {
     return "";
@@ -3231,7 +3309,7 @@ function desktopStatusLabel(status, agentMode) {
       ? "API unavailable"
       : "in-process";
   const agent = agentMode ? "agent opted in" : "agent permission off";
-  return `Desktop - ${api} - ${agent}`;
+  return `${desktopSurfaceLabel(status)} - ${api} - ${agent}`;
 }
 
 function desktopMessages(history, text) {
@@ -3566,6 +3644,100 @@ function truncateMessageContent(content, maxChars) {
   return truncateSingleLine(str, maxChars);
 }
 
+const REPORT_TRACE_MAX_CHARS = 2400;
+const REPORT_TRACE_ITEM_LIMIT = 20;
+
+function compactReportTraceValue(value, limit = 180) {
+  const raw =
+    value !== null && typeof value === "object"
+      ? formatDiagnosticPayload(value)
+      : String(value ?? "");
+  const compact = raw.replace(/\s+/g, " ").trim();
+  return truncateSingleLine(compact, limit);
+}
+
+function appendLimitedTraceItems(lines, items, formatter) {
+  const safeItems = Array.isArray(items) ? items : [];
+  if (safeItems.length <= REPORT_TRACE_ITEM_LIMIT) {
+    safeItems.forEach((item) => {
+      lines.push(formatter(item));
+    });
+    return;
+  }
+
+  const headCount = Math.ceil(REPORT_TRACE_ITEM_LIMIT / 2);
+  const tailCount = REPORT_TRACE_ITEM_LIMIT - headCount;
+  safeItems.slice(0, headCount).forEach((item) => {
+    lines.push(formatter(item));
+  });
+  lines.push(`- ... omitted ${safeItems.length - REPORT_TRACE_ITEM_LIMIT} middle trace items ...`);
+  safeItems.slice(safeItems.length - tailCount).forEach((item) => {
+    lines.push(formatter(item));
+  });
+}
+
+function appendReasoningTraceBlock(lines, focusMessage) {
+  if (!focusMessage || focusMessage.role !== "assistant") return;
+
+  const trace = [];
+  if (focusMessage.intent) {
+    trace.push(`intent: ${focusMessage.intent}`);
+  }
+
+  if (Array.isArray(focusMessage.evidence) && focusMessage.evidence.length > 0) {
+    trace.push("evidence:");
+    appendLimitedTraceItems(
+      trace,
+      focusMessage.evidence,
+      (item) => `- ${compactReportTraceValue(item)}`,
+    );
+  }
+
+  if (
+    Array.isArray(focusMessage.diagnosticsSteps) &&
+    focusMessage.diagnosticsSteps.length > 0
+  ) {
+    trace.push("diagnostics_steps:");
+    appendLimitedTraceItems(trace, focusMessage.diagnosticsSteps, (entry) => {
+      const step = compactReportTraceValue(entry?.step || "step", 80);
+      const detail = entry?.formalization?.tuple || entry?.detail || "";
+      return `- ${step}: ${compactReportTraceValue(detail)}`;
+    });
+  } else if (
+    Array.isArray(focusMessage.thinkingSteps) &&
+    focusMessage.thinkingSteps.length > 0
+  ) {
+    trace.push("thinking_steps:");
+    appendLimitedTraceItems(
+      trace,
+      focusMessage.thinkingSteps,
+      (item) => `- ${compactReportTraceValue(item)}`,
+    );
+  }
+
+  if (
+    Array.isArray(focusMessage.diagnosticsToolCalls) &&
+    focusMessage.diagnosticsToolCalls.length > 0
+  ) {
+    trace.push("tool_calls:");
+    appendLimitedTraceItems(trace, focusMessage.diagnosticsToolCalls, (call) => {
+      const tool = compactReportTraceValue(call?.tool || "tool", 80);
+      const summary = summarizeToolCall(call || {});
+      return `- ${tool}: ${compactReportTraceValue(summary)}`;
+    });
+  }
+
+  if (trace.length === 0) return;
+
+  lines.push("");
+  lines.push("## Reasoning Trace");
+  lines.push("");
+  lines.push("Focused assistant turn:");
+  lines.push("");
+  appendCodeBlock(lines, truncateMessageContent(trace.join("\n"), REPORT_TRACE_MAX_CHARS));
+  lines.push("");
+}
+
 function buildIssueUrl(title, body, labels) {
   const params = new URLSearchParams({ title, body, labels });
   return `https://github.com/${ISSUE_REPOSITORY}/issues/new?${params.toString()}`;
@@ -3756,6 +3928,8 @@ function createIssueReportBody({
 
   appendDialogBlock(lines, messages, effectiveFocus, { earlierOmitted });
 
+  appendReasoningTraceBlock(lines, effectiveFocus);
+
   lines.push("");
   lines.push("## Description");
   lines.push("");
@@ -3773,6 +3947,10 @@ function createIssueReportBody({
 
 function createIssueUrl(context) {
   return fitIssueUrl(context, (effectiveContext) => createIssueReportBody(effectiveContext));
+}
+
+function shouldOfferMessageReport(message) {
+  return message?.role === "assistant" && message.intent === "unknown";
 }
 
 // Issue #180: format the unified link-notation projection for an HTTP
@@ -6457,7 +6635,7 @@ function App() {
         }),
         desktopStatus
           ? h(CollapsibleSection, {
-              title: "Desktop",
+              title: desktopSurfaceLabel(desktopStatus),
               testId: "sidebar-desktop",
               collapsed: sidebarDesktopCollapsed,
               onToggle: () => setSidebarDesktopCollapsed((value) => !value),
@@ -7199,7 +7377,7 @@ function App() {
               diagnosticsMode,
               t,
               reportIssueUrl:
-                message.role === "assistant"
+                shouldOfferMessageReport(message)
                   ? createIssueUrl({ ...reportContext, focusMessage: message })
                   : null,
             }),

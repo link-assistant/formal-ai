@@ -168,6 +168,8 @@ mod tests {
             "count_unique_words",
             "deduplicate_lines",
             "sort_lines",
+            "path_argument",
+            "reverse_sort",
             "function",
             "implement",
             "write",

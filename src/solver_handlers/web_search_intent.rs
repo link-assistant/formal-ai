@@ -111,6 +111,9 @@ const WEB_SEARCH_EXPLICIT_PREFIXES: &[&str] = &[
     "search the internet for ",
     "search internet for ",
     "search online for ",
+    "search wikipedia for ",
+    "search wikidata for ",
+    "search wiktionary for ",
     "search for information about ",
     "search for information on ",
     "web search for ",
@@ -479,6 +482,58 @@ const SEARCH_QUERY_SOURCE_ONLY: &[&str] = &[
     "維基百科",
 ];
 
+const SEARCH_QUERY_TRAILING_INSTRUCTION_MARKERS: &[&str] = &[
+    ". compare",
+    "? compare",
+    "! compare",
+    "; compare",
+    ": compare",
+    " and compare",
+    " and then compare",
+    " then compare",
+    " compare their ",
+    " compare his ",
+    " compare her ",
+    " compare its ",
+    " compare the ",
+    ". summarize",
+    "? summarize",
+    "! summarize",
+    "; summarize",
+    ": summarize",
+    " and summarize",
+    " and then summarize",
+    " then summarize",
+    " summarize who ",
+    " summarize why ",
+    ". summarise",
+    "? summarise",
+    "! summarise",
+    "; summarise",
+    ": summarise",
+    " and summarise",
+    " and then summarise",
+    " then summarise",
+    " summarise who ",
+    " summarise why ",
+    ". explain",
+    "? explain",
+    "! explain",
+    "; explain",
+    ": explain",
+    " and explain",
+    " and then explain",
+    " then explain",
+    ". describe",
+    "? describe",
+    "! describe",
+    "; describe",
+    ": describe",
+    " and describe",
+    " and then describe",
+    " then describe",
+];
+
 const IMPLICIT_RESEARCH_QUESTION_PREFIXES: &[&str] = &[
     "what is the ",
     "what is a ",
@@ -747,8 +802,18 @@ fn valid_search_query(value: &str) -> Option<String> {
     Some(query)
 }
 
+fn truncate_search_instruction_tail(value: &str) -> &str {
+    let lower = value.to_ascii_lowercase();
+    let cut = SEARCH_QUERY_TRAILING_INSTRUCTION_MARKERS
+        .iter()
+        .filter_map(|marker| lower.find(marker))
+        .min()
+        .unwrap_or(value.len());
+    value[..cut].trim()
+}
+
 fn clean_semantic_search_query(value: &str) -> String {
-    let mut query = clean_search_query(value);
+    let mut query = clean_search_query(truncate_search_instruction_tail(value));
     loop {
         let before = query.clone();
         for prefix in SEARCH_QUERY_LEADING_NOISE {

@@ -12,6 +12,7 @@ The current implementation covers the surface area requested in issue #1:
 - Docker-in-Docker Telegram bot image based on `konard/box-dind:2.1.1`
 - GitHub Pages markdown chat demo backed by a Rust-generated WebAssembly worker
 - Electron desktop shell that starts the local Rust HTTP API and reuses the web chat
+- VS Code extension (desktop **and** web/`vscode.dev`) that embeds the same chat in a Webview around the same HTTP/web boundary
 
 Project direction is tracked in [VISION.md](VISION.md), [GOALS.md](GOALS.md), and [NON-GOALS.md](NON-GOALS.md). Implementation progress against the vision is tracked in [ROADMAP.md](ROADMAP.md). The issue #12 synthesis is in [docs/case-studies/issue-12/README.md](docs/case-studies/issue-12/README.md).
 
@@ -58,6 +59,8 @@ rust-script scripts/mine-hive-mind-dataset.rs --plan
 cargo run -- serve --host 127.0.0.1 --port 8080
 npm install --prefix desktop
 npm run desktop:dev
+npm run vscode:test                                                    # VS Code extension node tests
+npm run vscode:dev                                                     # run the extension in a web host (vscode-test-web)
 TELEGRAM_BOT_TOKEN=123:abc cargo run -- telegram                       # long polling (default)
 cargo run -- telegram --mode webhook --host 127.0.0.1 --port 8080      # webhook server (opt-in)
 rust-script scripts/download-datasets.rs
@@ -81,6 +84,132 @@ FORMAL_AI_API_BEARER_TOKEN=local-test-token cargo run -- serve --host 127.0.0.1 
 curl -s http://127.0.0.1:8080/v1/models \
   -H 'authorization: Bearer local-test-token'
 ```
+
+## Agentic AI Tools
+
+Run the local HTTP server before connecting terminal agents. The server binds
+to loopback in these examples and exposes the same symbolic engine through the
+OpenAI Chat Completions, OpenAI Responses, and Anthropic Messages envelopes:
+
+```bash
+cargo run -- serve --host 127.0.0.1 --port 8080
+curl -s http://127.0.0.1:8080/health
+curl -s http://127.0.0.1:8080/v1/models
+```
+
+If you enabled bearer auth, export the same value for the CLI you connect:
+
+```bash
+export FORMAL_AI_API_KEY="local-test-token"
+```
+
+When no bearer token is configured, any non-empty API key value is enough for
+clients that require one. Keep the server on `127.0.0.1` unless you are
+deliberately exposing it behind your own authentication boundary.
+
+### Codex CLI
+
+Codex custom providers use the Responses wire API, so point Codex at the
+server's `/v1` base URL and keep `wire_api = "responses"` in
+`~/.codex/config.toml`:
+
+```toml
+model_provider = "formal-ai"
+model = "formal-symbolic-production"
+
+[model_providers.formal-ai]
+name = "formal-ai local server"
+base_url = "http://127.0.0.1:8080/v1"
+env_key = "FORMAL_AI_API_KEY"
+wire_api = "responses"
+```
+
+```bash
+codex "summarize the local reasoning trace"
+```
+
+### Claude Code
+
+Claude Code talks to the Anthropic Messages API. formal-ai serves that adapter
+at `/v1/messages`, so use the server root as `ANTHROPIC_BASE_URL`:
+
+```bash
+export ANTHROPIC_BASE_URL="http://127.0.0.1:8080"
+export ANTHROPIC_API_KEY="${FORMAL_AI_API_KEY:-local-test-token}"
+claude
+```
+
+### OpenCode
+
+OpenCode can call formal-ai through its OpenAI-compatible provider package,
+which targets `/v1/chat/completions`. Add a local provider in
+`~/.config/opencode/opencode.json`:
+
+```json
+{
+  "$schema": "https://opencode.ai/config.json",
+  "provider": {
+    "formal-ai": {
+      "name": "formal-ai local server",
+      "npm": "@ai-sdk/openai-compatible",
+      "options": {
+        "baseURL": "http://127.0.0.1:8080/v1",
+        "apiKey": "{env:FORMAL_AI_API_KEY}"
+      },
+      "models": {
+        "formal-symbolic-production": {
+          "name": "formal-symbolic-production"
+        }
+      }
+    }
+  },
+  "model": "formal-ai/formal-symbolic-production"
+}
+```
+
+```bash
+opencode
+opencode run --model formal-ai/formal-symbolic-production --format json \
+  "summarize the local graph"
+```
+
+### Link Assistant Agent CLI
+
+The Link Assistant Agent CLI accepts OpenCode-style provider/model selection.
+Use the same OpenAI-compatible provider shape in
+`~/.config/link-assistant-agent/opencode.json`, then select the
+`formal-ai/formal-symbolic-production` model:
+
+```json
+{
+  "$schema": "https://opencode.ai/config.json",
+  "provider": {
+    "formal-ai": {
+      "name": "formal-ai local server",
+      "npm": "@ai-sdk/openai-compatible",
+      "options": {
+        "baseURL": "http://127.0.0.1:8080/v1",
+        "apiKey": "{env:FORMAL_AI_API_KEY}"
+      },
+      "models": {
+        "formal-symbolic-production": {
+          "name": "formal-symbolic-production"
+        }
+      }
+    }
+  },
+  "model": "formal-ai/formal-symbolic-production"
+}
+```
+
+```bash
+agent --model formal-ai/formal-symbolic-production -p \
+  "explain the last formal-ai trace"
+```
+
+Run autonomous coding CLIs only in a repository, VM, or container where their
+file and shell actions are acceptable. formal-ai's local server answers model
+requests; it does not sandbox the client process that is driving tools.
 
 Example Telegram webhook update:
 
@@ -143,6 +272,24 @@ npm --prefix desktop run build
 ```
 
 Set `FORMAL_AI_DESKTOP_BINARY=/path/to/formal-ai` before packaging to bundle a specific binary. Release builds copy the web assets and seed mirror into `desktop/dist-web/`, copy the binary into `desktop/bin/` when available, and produce OS artifacts under `desktop/release/`.
+
+### VS Code extension
+
+The VS Code extension lives in [`vscode/`](vscode/) and embeds the same web chat in a Webview around the same HTTP/web boundary as the browser, the HTTP server, and the desktop shell. It ships **two hosts from one manifest** so the same extension runs on the desktop and in the browser:
+
+- **Desktop / remote (Node) host** — [`src/extension.node.cjs`](vscode/src/extension.node.cjs) reports `shell: "VS Code"`. With the opt-in `formal-ai.server.enabled` setting it starts a loopback `formal-ai serve` process and routes prompt sends through `POST /v1/chat/completions`, just like the desktop shell; it can also drive Docker code execution (`formal-ai.docker.image`). It reuses the desktop tool-router and memory-sync helpers.
+- **Web (Web Worker) host** — [`src/extension.web.cjs`](vscode/src/extension.web.cjs) reports `shell: "VS Code Web"` and runs on `vscode.dev` / `github.dev`. The Web Worker host cannot spawn a process, open a socket, or touch `child_process`/`fs`, so it stays on the in-process WebAssembly symbolic engine — no local server, no Docker — while exposing the same chat, network, memory, and permission surfaces.
+
+```bash
+npm run vscode:test     # node:test unit suite + static smoke check (no install needed)
+npm run vscode:dev      # launch in a browser host via @vscode/test-web
+npm run vscode:smoke    # static manifest/contract smoke check
+npm run vscode:package  # produce a .vsix (runs prepare-resources first)
+```
+
+The web app labels both hosts **"VS Code"** in the status line and sidebar, and only routes to the local server when it is genuinely ready (`apiReady && apiBase`); otherwise it falls back to the in-process engine and reads `VS Code - in-process`. The same **Export memory** / **Import memory** controls read and write the full `formal_ai_bundle`; agent mode is off by default and tool calls are permission-gated until the user opts in. Settings (`formal-ai.server.*`, `formal-ai.docker.image`, `formal-ai.tools.allowByDefault`, `formal-ai.agent.defaultOn`) map directly onto that status shape.
+
+Packaging mirrors the desktop flow: `prepare-resources` copies `src/web/` into `vscode/dist-web/` (with the seed mirror at `vscode/dist-web/seed/`) and the desktop `lib/` helpers into `vscode/src/lib/vendor/`; both generated trees are git-ignored. See [docs/vscode/extension.md](docs/vscode/extension.md) for the full architecture, the Webview sandbox reconciliation (CSP nonce, same-origin Worker bootstrap, seed rebasing), and the honest list of what is and isn't verifiable inside the test sandbox.
 
 ### Full-memory export and import
 

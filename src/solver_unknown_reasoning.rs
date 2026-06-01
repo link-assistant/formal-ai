@@ -370,24 +370,28 @@ fn render_unresolved_unknown(language: Language, focus: &str, questioning_rigor:
 const fn unknown_extension_hint(language: Language) -> &'static str {
     match language {
         Language::Russian => {
-            "Чтобы разработчики добавили факт или правило в Links Notation, используйте Report \
-             issue. Для этого диалога можно экспортировать память или обучить правило: `List \
-             behavior rules`, `Show behavior rule unknown`, `When I say ... answer ...`."
+            "Если после reasoning всё ещё нужен общий факт или правило Links Notation, \
+             используйте Report issue с trace. Для этого диалога можно экспортировать память \
+             или обучить правило: `List behavior rules`, `Show behavior rule unknown`, \
+             `When I say ... answer ...`."
         }
         Language::Hindi => {
-            "अगर fact या rule जोड़ना हो, तो Links Notation seed के लिए Report issue उपयोग करें. \
-             इस dialog को टिकाऊ बनाने के लिए memory export करें या `When I say ... answer ...` \
-             सिखाएँ; routes देखने के लिए `List behavior rules` और `Show behavior rule unknown`."
+            "अगर reasoning के बाद भी shared Links Notation seed fact या rule चाहिए, तो trace \
+             के साथ Report issue उपयोग करें. इस dialog को टिकाऊ बनाने के लिए memory export \
+             करें या `When I say ... answer ...` सिखाएँ; routes देखने के लिए `List behavior \
+             rules` और `Show behavior rule unknown`."
         }
         Language::Chinese => {
-            "要添加事实或规则到 Links Notation seed，请使用 Report issue。要让当前对话可持久化, \
-             可以 export memory，或用 `When I say ... answer ...` 教一条规则；也可查看 `List \
-             behavior rules` 和 `Show behavior rule unknown`。"
+            "如果 reasoning 之后仍需要共享的 Links Notation seed 事实或规则,请带上 trace 使用 \
+             Report issue。要让当前对话可持久化,可以 export memory，或用 `When I say ... \
+             answer ...` 教一条规则；也可查看 `List behavior rules` 和 `Show behavior rule \
+             unknown`。"
         }
         _ => {
-            "To add a fact or rule in Links Notation, use Report issue. To keep a dialog-local \
-             rule durable, export memory or teach it with `When I say ... answer ...`; inspect \
-             routes with `List behavior rules` and `Show behavior rule unknown`."
+            "If reasoning still cannot resolve this and a shared Links Notation seed fact or \
+             rule is needed, use Report issue with the trace. To keep a dialog-local rule \
+             durable, export memory or teach it with `When I say ... answer ...`; inspect routes \
+             with `List behavior rules` and `Show behavior rule unknown`."
         }
     }
 }

@@ -1,0 +1,139 @@
+{
+  "name": "formal-ai-vscode",
+  "displayName": "formal-ai",
+  "version": "0.154.0",
+  "private": true,
+  "description": "VS Code extension (desktop + web) embedding the formal-ai symbolic chat UI",
+  "publisher": "link-assistant",
+  "license": "Unlicense",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/link-assistant/formal-ai"
+  },
+  "engines": {
+    "vscode": "^1.84.0"
+  },
+  "categories": [
+    "Machine Learning",
+    "Chat",
+    "Other"
+  ],
+  "main": "./src/extension.node.cjs",
+  "browser": "./src/extension.web.cjs",
+  "activationEvents": [
+    "onView:formal-ai.chatView",
+    "onCommand:formal-ai.openChat"
+  ],
+  "capabilities": {
+    "virtualWorkspaces": true,
+    "untrustedWorkspaces": {
+      "supported": true,
+      "description": "The in-process symbolic agent is safe everywhere; the opt-in local server and Docker code execution only run in trusted desktop windows."
+    }
+  },
+  "contributes": {
+    "commands": [
+      {
+        "command": "formal-ai.openChat",
+        "title": "Open Chat",
+        "category": "formal-ai"
+      },
+      {
+        "command": "formal-ai.toggleServer",
+        "title": "Toggle Local Server",
+        "category": "formal-ai"
+      },
+      {
+        "command": "formal-ai.syncMemory",
+        "title": "Sync Memory",
+        "category": "formal-ai"
+      },
+      {
+        "command": "formal-ai.openNetworkView",
+        "title": "Open Network View",
+        "category": "formal-ai"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "formal-ai",
+          "title": "formal-ai",
+          "icon": "media/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "formal-ai": [
+        {
+          "type": "webview",
+          "id": "formal-ai.chatView",
+          "name": "Chat"
+        }
+      ]
+    },
+    "menus": {
+      "view/title": [
+        {
+          "command": "formal-ai.toggleServer",
+          "when": "view == formal-ai.chatView",
+          "group": "navigation@1"
+        },
+        {
+          "command": "formal-ai.openNetworkView",
+          "when": "view == formal-ai.chatView",
+          "group": "navigation@2"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "formal-ai",
+      "properties": {
+        "formal-ai.server.enabled": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "Start a local OpenAI-compatible `formal-ai serve` process and route chat through `POST /v1/chat/completions`. Desktop (Node) host only; ignored in the web host, which always runs the in-process symbolic agent."
+        },
+        "formal-ai.server.host": {
+          "type": "string",
+          "default": "127.0.0.1",
+          "description": "Loopback host the local server binds to (desktop host only)."
+        },
+        "formal-ai.server.port": {
+          "type": "number",
+          "default": 18080,
+          "minimum": 1,
+          "maximum": 65535,
+          "description": "Port the local server binds to (desktop host only)."
+        },
+        "formal-ai.docker.image": {
+          "type": "string",
+          "default": "konard/box-dind:2.1.1",
+          "description": "Docker image used to sandbox code-execution tool calls (desktop host only, when a permitted tool runs)."
+        },
+        "formal-ai.tools.allowByDefault": {
+          "type": "boolean",
+          "default": false,
+          "description": "Grant tool calls (http_fetch, read_local_file, and sandboxed code_exec/shell) by default. Off means default-deny until the user opts in."
+        },
+        "formal-ai.agent.defaultOn": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable agent mode (which drives tool grants) by default when the chat view opens."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "dev": "vscode-test-web --browserType=chromium --extensionDevelopmentPath=.",
+    "prepare-resources": "node scripts/prepare-resources.mjs",
+    "vscode:prepublish": "node scripts/prepare-resources.mjs",
+    "package": "vsce package",
+    "smoke": "node scripts/smoke.mjs",
+    "test": "node --test scripts/config.test.mjs scripts/bridge.test.mjs scripts/webview-html.test.mjs scripts/chat-view.test.mjs scripts/server-process.test.mjs && node scripts/smoke.mjs"
+  },
+  "devDependencies": {
+    "@vscode/test-web": "^0.0.56",
+    "@vscode/vsce": "^2.24.0"
+  }
+}

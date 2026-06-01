@@ -6,6 +6,7 @@
 //! variables, and records each step for projection into Links Notation.
 
 use std::error::Error;
+use std::ffi::OsString;
 use std::fmt;
 use std::fs;
 use std::io;
@@ -17,6 +18,7 @@ use std::time::{Duration, Instant};
 use crate::engine::stable_id;
 
 const DEFAULT_AGENT_TIME_BUDGET: Duration = Duration::from_secs(2);
+const WINDOWS_PYTHON_TIME_BUDGET_FLOOR: Duration = Duration::from_secs(15);
 
 #[derive(Debug, Clone)]
 pub struct AgentWorkspaceConfig {
@@ -300,6 +302,7 @@ impl AgentWorkspace {
         if let Some(result) = self.run_builtin_command(command_line, program, args)? {
             return Ok(result);
         }
+        let command_budget = effective_command_time_budget(program, self.time_budget);
         let program_path = resolve_allowed_program(program)?;
         let mut child = Command::new(program_path)
             .args(args)
@@ -314,7 +317,7 @@ impl AgentWorkspace {
             if child.try_wait()?.is_some() {
                 break false;
             }
-            if started.elapsed() >= self.time_budget {
+            if started.elapsed() >= command_budget {
                 child.kill()?;
                 break true;
             }
@@ -594,10 +597,21 @@ fn resolve_allowed_program(program: &str) -> Result<PathBuf, AgentError> {
 
 fn resolve_allowed_program_from_path(program: &str) -> Option<PathBuf> {
     let names = path_search_names(program)?;
-    let path = std::env::var_os("PATH")?;
-    std::env::split_paths(&path)
+    resolve_program_from_path_names(names, std::env::var_os("PATH"))
+}
+
+fn resolve_program_from_path_names(names: &[&str], path: Option<OsString>) -> Option<PathBuf> {
+    let path = path?;
+    let directories: Vec<_> = std::env::split_paths(&path)
         .filter(|directory| directory.is_absolute())
-        .flat_map(|directory| names.iter().map(move |name| directory.join(name)))
+        .collect();
+    names
+        .iter()
+        .flat_map(|name| {
+            directories
+                .iter()
+                .map(move |directory| directory.join(name))
+        })
         .find(|candidate| candidate.is_file() && !is_blocked_execution_alias(candidate))
 }
 
@@ -615,6 +629,14 @@ fn is_blocked_execution_alias(candidate: &Path) -> bool {
             .to_string_lossy()
             .to_ascii_lowercase()
             .contains(r"\microsoft\windowsapps\")
+}
+
+fn effective_command_time_budget(program: &str, configured: Duration) -> Duration {
+    if cfg!(windows) && program == "python3" && configured < WINDOWS_PYTHON_TIME_BUDGET_FLOOR {
+        WINDOWS_PYTHON_TIME_BUDGET_FLOOR
+    } else {
+        configured
+    }
 }
 
 fn looks_like_workspace_path(argument: &str) -> bool {
@@ -640,6 +662,38 @@ mod tests {
                 .join(name),
             time_budget,
         }
+    }
+
+    #[test]
+    fn python_path_resolution_prefers_interpreter_names_before_launcher() {
+        let root = std::env::temp_dir().join("formal-ai-agent-tests-python-path");
+        let early = root.join("early");
+        let late = root.join("late");
+        let _ = fs::remove_dir_all(&root);
+        fs::create_dir_all(&early).unwrap();
+        fs::create_dir_all(&late).unwrap();
+        fs::write(early.join("py.exe"), "").unwrap();
+        fs::write(late.join("python.exe"), "").unwrap();
+
+        let path = std::env::join_paths([early.as_path(), late.as_path()]).unwrap();
+        let resolved =
+            resolve_program_from_path_names(&["python3.exe", "python.exe", "py.exe"], Some(path))
+                .unwrap();
+
+        assert_eq!(resolved, late.join("python.exe"));
+    }
+
+    #[test]
+    fn windows_python_commands_have_platform_budget_floor() {
+        let configured = Duration::from_secs(5);
+        let effective = effective_command_time_budget("python3", configured);
+
+        if cfg!(windows) {
+            assert_eq!(effective, WINDOWS_PYTHON_TIME_BUDGET_FLOOR);
+        } else {
+            assert_eq!(effective, configured);
+        }
+        assert_eq!(effective_command_time_budget("cat", configured), configured);
     }
 
     #[test]

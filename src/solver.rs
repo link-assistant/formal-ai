@@ -31,13 +31,15 @@ use crate::engine::{
 use crate::event_log::{build_evidence_links, EventLog};
 use crate::intent_formalization::{
     ordered_handler_names, record_intent_formalization, recover_write_program_rule,
-    select_rule_for_intent, IntentFormalization, IntentFormalizationCache,
-    IntentFormalizationCacheEntry,
+    rewrite_bare_program_coreference_rule, select_rule_for_intent, IntentFormalization,
+    IntentFormalizationCache, IntentFormalizationCacheEntry,
 };
 use crate::language::{detect as detect_language, Language};
 use crate::probability::ProbabilityStore;
 use crate::proof_engine::ProofRenderConfig;
+use crate::rule_synthesis::try_construct_unknown_rule;
 use crate::seed;
+use crate::solver_diagnostics::append_diagnostic_trace;
 use crate::solver_dispatch::SPECIALIZED_HANDLERS;
 use crate::solver_formalization::{record_formalization, record_formalization_selection};
 use crate::solver_handlers::{
@@ -519,7 +521,15 @@ impl UniversalSolver {
         let sub_results =
             self.solve_sub_impulses(&mut log, &sub_impulses, probability_store, intent_cache);
 
-        let rule = select_rule_for_intent(&intent_formalization);
+        let selected_rule = select_rule_for_intent(&intent_formalization);
+        let rule = try_construct_unknown_rule(selected_rule, prompt, history, &mut log);
+        let rule =
+            if let Some(rewrite) = rewrite_bare_program_coreference_rule(&rule, prompt, history) {
+                log.append("write_program_coreference_rewrite", rewrite.trace);
+                rewrite.rule
+            } else {
+                rule
+            };
 
         // Issue #324: a follow-up modification ("make the program accept a path
         // argument") routes to write_program but names no concrete task or
@@ -644,7 +654,7 @@ impl UniversalSolver {
             );
         }
         let prior = coding_guidance::history_has_prior_code(history);
-        let answer = match (&validation_choice, &rule) {
+        let base_answer = match (&validation_choice, &rule) {
             (Some(choice), SelectedRule::Unknown) => choice.answer.clone(),
             _ => language_aware_answer_for(&rule, language, prompt, prior),
         };
@@ -656,7 +666,9 @@ impl UniversalSolver {
         let trace_id = log.append("trace", intent.clone());
 
         let evidence_links = build_evidence_links(prompt, &log, &response_link);
-        let links_notation = answer_links_notation(prompt, &intent, &answer, &log, &trace_id);
+        let links_notation = answer_links_notation(prompt, &intent, &base_answer, &log, &trace_id);
+        let answer =
+            append_diagnostic_trace(self.config.diagnostic_mode, base_answer, &links_notation);
 
         SymbolicAnswer {
             intent,
@@ -800,6 +812,8 @@ impl UniversalSolver {
         let inner = inner_solver.solve(&stripped);
         let mut decorated = inner.answer.clone();
         decorated.push_str("\n\n[diagnostic]\n");
+        decorated.push_str(inner.links_notation.trim_end());
+        decorated.push('\n');
         for link in &inner.evidence_links {
             let _ = writeln!(decorated, "evidence: {link}");
         }
@@ -979,9 +993,7 @@ pub fn solve(prompt: &str) -> SymbolicAnswer {
     UniversalSolver::default().solve(prompt)
 }
 
-/// Convenience entry point that mirrors [`UniversalSolver::solve_with_history`]
-/// using the environment-derived [`SolverConfig`]. The deterministic-projection
-/// guarantee from `NON-GOALS.md` is preserved.
+/// Convenience entry point that mirrors [`UniversalSolver::solve_with_history`].
 #[must_use]
 pub fn solve_with_history(prompt: &str, history: &[ConversationTurn]) -> SymbolicAnswer {
     UniversalSolver::default().solve_with_history(prompt, history)

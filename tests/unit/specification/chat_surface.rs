@@ -456,9 +456,12 @@ fn unknown_intent_offers_a_path_to_extend_the_network() {
     let response = answer("Some unseen request");
     assert_eq!(response.intent, "unknown");
     assert!(
-        response.answer.contains("add a fact")
-            || response.answer.contains("add a rule")
-            || response.answer.contains("add Links Notation"),
+        response
+            .answer
+            .contains("shared Links Notation seed fact or rule")
+            || response
+                .answer
+                .contains("shared Links Notation fact or rule"),
         "unknown answers should invite the user to extend the network"
     );
 }
@@ -590,33 +593,60 @@ fn unknown_answer_mentions_report_issue_in_russian() {
 
 #[test]
 fn unknown_answer_explains_seed_extension_for_supported_languages() {
+    struct Case {
+        label: &'static str,
+        language: &'static str,
+        prompt: &'static str,
+        expected_extension_text: &'static str,
+    }
+
     let cases = [
-        (
-            "English",
-            "en",
-            "This synthetic zzz123 request has no rule.",
-            "add a fact",
-        ),
-        (
-            "Russian",
-            "ru",
-            "Какая у тебя модель личности?",
-            "добавили факт или правило",
-        ),
-        ("Hindi", "hi", "अदृश्य zzz123 अनुरोध", "fact या rule"),
-        ("Chinese", "zh", "未知 zzz123 请求", "添加事实或规则"),
+        Case {
+            label: "English",
+            language: "en",
+            prompt: "This synthetic zzz123 request has no rule.",
+            expected_extension_text: "shared Links Notation seed fact or rule",
+        },
+        Case {
+            label: "Russian",
+            language: "ru",
+            prompt: "Какая у тебя модель личности?",
+            expected_extension_text: "общий факт или правило Links Notation",
+        },
+        Case {
+            label: "Hindi",
+            language: "hi",
+            prompt: "अदृश्य zzz123 अनुरोध",
+            expected_extension_text: "shared Links Notation seed fact या rule",
+        },
+        Case {
+            label: "Chinese",
+            language: "zh",
+            prompt: "未知 zzz123 请求",
+            expected_extension_text: "共享的 Links Notation seed 事实或规则",
+        },
     ];
 
-    for (label, language, prompt, expected_extension_text) in cases {
-        let response = answer(prompt);
+    for case in cases {
+        let response = answer(case.prompt);
         assert_eq!(
             response.intent, "unknown",
-            "{label} prompt should stay unknown"
+            "{} prompt should stay unknown",
+            case.label
         );
         assert!(
-            response.answer.contains(expected_extension_text)
+            response.answer.contains(case.expected_extension_text)
                 && response.answer.contains("Links Notation"),
-            "{label} (language: {language}) unknown answer must explain seed extension, got: {}",
+            "{} (language: {}) unknown answer must explain seed extension, got: {}",
+            case.label,
+            case.language,
+            response.answer
+        );
+        assert!(
+            response.answer.contains("Report issue") && response.answer.contains("trace"),
+            "{} (language: {}) unknown answer must frame reporting as a traced last resort, got: {}",
+            case.label,
+            case.language,
             response.answer
         );
     }

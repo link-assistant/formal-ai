@@ -647,10 +647,13 @@ pub(super) fn normalize_url_candidate(candidate: &str) -> Option<String> {
     let lower = candidate.to_lowercase();
     let url = if lower.starts_with("http://") || lower.starts_with("https://") {
         candidate.to_owned()
-    } else if lower.starts_with("www.") || looks_like_hostname(candidate) {
-        format!("https://{candidate}")
     } else {
-        return None;
+        let host_candidate = candidate.split(['/', '?', '#']).next().unwrap_or_default();
+        if lower.starts_with("www.") || looks_like_hostname(host_candidate) {
+            format!("https://{candidate}")
+        } else {
+            return None;
+        }
     };
     let after_scheme = url.split_once("://")?.1;
     let host_port = after_scheme

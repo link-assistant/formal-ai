@@ -620,6 +620,89 @@ fn issue_278_default_native_doublets_store_is_traceable() {
 }
 
 #[test]
+fn issue_356_rule_synthesis_design_is_traceable() {
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+
+    let design = read(root.join("docs/design/rule-synthesis.md"));
+    assert_contains_all(
+        "docs/design/rule-synthesis.md",
+        &design,
+        &[
+            "# Rule Synthesis Over Links Notation",
+            "Issue #356",
+            "bare imperative",
+            "(operation, target)",
+            "data/seed/operation-vocabulary.lino",
+            "candidate substitution rule",
+            "TDD verification",
+            "coreference",
+            "#357",
+            "#358",
+            "#359",
+            "Keep",
+            "Replace",
+            "symbolic substitution engine",
+            "PROGRAM_MODIFIERS",
+        ],
+    );
+}
+
+#[test]
+fn issue_368_readme_documents_agentic_cli_setup() {
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+
+    let readme = read(root.join("README.md"));
+    assert_contains_all(
+        "README.md",
+        &readme,
+        &[
+            "## Agentic AI Tools",
+            "cargo run -- serve --host 127.0.0.1 --port 8080",
+            "FORMAL_AI_API_BEARER_TOKEN",
+            "~/.codex/config.toml",
+            "wire_api = \"responses\"",
+            "ANTHROPIC_BASE_URL",
+            "/v1/messages",
+            "~/.config/opencode/opencode.json",
+            "@ai-sdk/openai-compatible",
+            "/v1/chat/completions",
+            "~/.config/link-assistant-agent/opencode.json",
+            "agent --model formal-ai/formal-symbolic-production -p",
+            "/v1/responses",
+        ],
+    );
+
+    let server_api = read(root.join("docs/desktop/server-api.md"));
+    assert_contains_all(
+        "docs/desktop/server-api.md",
+        &server_api,
+        &[
+            "POST /v1/responses",
+            "POST /v1/chat/completions",
+            "POST /v1/messages",
+            "~/.codex/config.toml",
+            "wire_api = \"responses\"",
+            "~/.config/opencode/opencode.json",
+            "~/.config/link-assistant-agent/opencode.json",
+            "@ai-sdk/openai-compatible",
+            "FORMAL_AI_API_KEY",
+            "ANTHROPIC_BASE_URL",
+            "Codex configuration reference",
+            "OpenCode provider documentation",
+            "link-assistant/agent",
+        ],
+    );
+    assert!(
+        !server_api.contains("wire_api = \"chat\""),
+        "Codex docs must stay on the Responses wire API"
+    );
+    assert!(
+        !server_api.contains("export OPENAI_BASE_URL=\"http://127.0.0.1:8080/v1\""),
+        "agent docs should use the supported OpenCode-style provider config"
+    );
+}
+
+#[test]
 fn repository_text_avoids_deferred_labels_requested_by_issue_103() {
     let root = Path::new(env!("CARGO_MANIFEST_DIR"));
     let phrase_space = ["proof", " of ", "concept"].concat();
@@ -697,6 +780,12 @@ fn is_skipped_tree(root: &Path, entry: &DirEntry) -> bool {
             | "data/wiktionary-cache"
             | "data/http-cache"
             | "data/seed/api-cache"
+            // Git-ignored generated mirrors of already-scanned source: the
+            // VS Code packaging step copies src/web -> vscode/dist-web (with
+            // data/seed -> vscode/dist-web/seed) and desktop/lib helpers ->
+            // vscode/src/lib/vendor. Scanning the originals is enough.
+            | "vscode/dist-web"
+            | "vscode/src/lib/vendor"
     )
 }
 

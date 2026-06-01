@@ -21,13 +21,17 @@ pub mod links_query;
 pub mod memory;
 pub mod memory_sync;
 pub mod probability;
+pub(crate) mod program_coreference;
 pub mod program_plan;
 pub mod proof_engine;
 pub mod protocol;
+pub(crate) mod rule_synthesis;
 pub mod seed;
+pub mod self_improvement;
 pub mod server;
 pub mod skill_compiler;
 pub mod solver;
+pub(crate) mod solver_diagnostics;
 pub(crate) mod solver_dispatch;
 pub(crate) mod solver_formalization;
 pub(crate) mod solver_handler_docs;
@@ -112,6 +116,10 @@ pub use seed::{
     EnvironmentDirectory, EnvironmentRecord, IntentRouting, LocalizedProject, MigrationFlow,
     OperationLanguageForms, OperationTrigger, OperationVocabulary, ProjectRecord, ProjectStatement,
     ProjectsRegistry,
+};
+pub use self_improvement::{
+    learn_rules_from_unknown_traces, BenchmarkGateReport, LearnedRuleAdoption, LearnedRuleProposal,
+    LearningRejection, LearningRun, UnknownTrace,
 };
 pub use server::{
     handle_api_request, handle_api_request_with_auth, handle_api_request_with_headers, serve,

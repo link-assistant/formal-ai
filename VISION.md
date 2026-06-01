@@ -176,3 +176,13 @@ The foundation batches E1-E20, the reasoning batch E21-E27, the synthesis batch 
 The synthesis step is now **general**: instead of resolving answers from seeded handlers, the universal 11-step loop **derives** them by composing decomposed sub-results over the links network. The benchmark suite makes this concrete — it grew to a 10-case slice and passes **10/10** with a `minimum_pass_count` ratchet: the solver writes the HumanEval/MBPP Python functions (synthesized from spec + tests, verified in the bounded agent workspace) and computes the GSM8K (`18`), MATH (`11`), and BIG-bench object-counting (`3`) answers, all **without per-case memorization** (each source carries a held-out paraphrased variant).
 
 The **parity** gap surfaced by the issue [#244](https://github.com/link-assistant/formal-ai/issues/244) PR feedback — "all Rust and JavaScript logic are in sync" and "all languages are supported equally" — is now **closed** by the merged parity batch (E33-E34): the text-manipulation handler triggers from a single shared, data-driven multilingual operation vocabulary (`data/seed/operation-vocabulary.lino`) so every operation is recognised equally in `en|ru|hi|zh`, and the JavaScript browser worker derives the same synthesis/numeric/program/text answers as the Rust core, pinned by the shared fixture `data/parity/cross-runtime-synthesis.json`. With E1-E34 all merged, no vision-planning epic remains open for issue #244. See [`ROADMAP.md`](ROADMAP.md) for the gap-by-gap record.
+
+The issue [#349](https://github.com/link-assistant/formal-ai/issues/349)
+reverse-sort roadmap is also closed: issues #355-#364 implemented the
+reproduction, rule-synthesis design, active-program coreference, composable
+program modifiers, rule construction for unknown program follow-ups, default-off
+diagnostics, Rust/browser-worker parity, a multilingual coding-modification
+ratchet, reasoning-first report behavior, and the white-box self-improvement
+loop. The final epic #365 records that the original Russian dialog now produces
+a `write_program` answer with reverse-sorted output instead of `unknown`, and
+that the behavior is covered across runtime and benchmark surfaces.

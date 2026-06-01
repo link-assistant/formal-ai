@@ -1,0 +1,10 @@
+.gitignore
+.vscode
+README.md
+build
+eslint.config.mjs
+package-lock.json
+package.json
+src
+tsconfig.json
+webpack.config.js

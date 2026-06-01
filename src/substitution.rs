@@ -42,7 +42,7 @@ impl CrudEvent {
 
     fn parse(value: &str) -> Result<Self, SubstitutionRuleError> {
         match value.trim().to_ascii_lowercase().as_str() {
-            "manual" | "apply" => Ok(Self::Manual),
+            "manual" | "apply" | "learned" => Ok(Self::Manual),
             "create" | "created" => Ok(Self::Create),
             "read" | "select" | "query" => Ok(Self::Read),
             "update" | "updated" => Ok(Self::Update),
@@ -98,6 +98,14 @@ impl LinkPattern {
         let from = PatternNode::parse(from.trim())?;
         let to = PatternNode::parse(to.trim())?;
         Ok(Self { from, to })
+    }
+
+    #[must_use]
+    pub fn literal_pair(&self) -> Option<(&str, &str)> {
+        match (&self.from, &self.to) {
+            (PatternNode::Literal(from), PatternNode::Literal(to)) => Some((from, to)),
+            _ => None,
+        }
     }
 
     fn instantiate(&self, bindings: &BTreeMap<String, String>) -> Option<SubstitutionLink> {

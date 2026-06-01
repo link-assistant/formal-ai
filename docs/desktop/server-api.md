@@ -149,18 +149,23 @@ curl http://127.0.0.1:8080/v1/models -H "Authorization: Bearer sk-local-demo"
 
 ## 4. Point coding CLIs at the local server
 
-`codex` and `agent` talk to `POST /v1/chat/completions`; `claude` talks to the
-built-in Anthropic adapter at `POST /v1/messages` ([§4c](#4c-claude-anthropic-claude-code--first-party-adapter)).
-Either way the same local server and engine answer. The examples assume the
-standalone server from [§2b](#2b-from-the-cli-standalone) at
-`http://127.0.0.1:8080`. If you set a bearer token, use it as the API key;
-otherwise any non-empty placeholder works because the loopback server ignores it.
+The same loopback server can answer several agentic terminal clients:
 
-### 4a. `codex` (OpenAI Codex CLI) — native, OpenAI-shaped
+- `codex` uses `POST /v1/responses` through the Responses wire API.
+- `opencode` and `agent` use `POST /v1/chat/completions` through
+  `@ai-sdk/openai-compatible`.
+- `claude` uses the built-in Anthropic adapter at `POST /v1/messages`.
 
-`codex` configures providers in `~/.codex/config.toml`. A provider needs a
-`base_url`, the env var that holds the key (`env_key`), and `wire_api = "chat"`
-for the Chat Completions protocol (which is what formal-ai exposes):
+The examples assume the standalone server from [§2b](#2b-from-the-cli-standalone)
+at `http://127.0.0.1:8080`. If you set a bearer token, use the same value as the
+API key; otherwise any non-empty placeholder works because the loopback server
+does not require a key.
+
+### 4a. `codex` (OpenAI Codex CLI) - Responses API
+
+`codex` configures providers in `~/.codex/config.toml`. Current Codex provider
+configuration supports the Responses wire API, so keep `wire_api = "responses"`
+and use the server's `/v1` base URL:
 
 ```toml
 # ~/.codex/config.toml
@@ -171,11 +176,11 @@ model = "formal-symbolic-production"
 name = "formal-ai local server"
 base_url = "http://127.0.0.1:8080/v1"
 env_key = "FORMAL_AI_API_KEY"
-wire_api = "chat"
+wire_api = "responses"
 ```
 
 ```bash
-export FORMAL_AI_API_KEY="sk-local-demo"   # match your bearer token, or any placeholder
+export FORMAL_AI_API_KEY="sk-local-demo"   # match your bearer token, or any non-empty value
 codex "summarise the reasoning graph for a greeting"
 ```
 
@@ -186,24 +191,86 @@ See the upstream
 [Codex configuration reference](https://developers.openai.com/codex/config-reference)
 for the full `model_providers` schema.
 
-### 4b. `agent` (link-assistant/agent) — OpenAI-compatible client
+### 4b. `opencode` - OpenAI-compatible provider
 
-[`agent`](https://github.com/link-assistant/agent) is an OpenAI-compatible
-coding agent. Point it at the local server using the standard OpenAI client
-environment variables, then select the formal-ai model:
+OpenCode supports custom providers in `~/.config/opencode/opencode.json`. Use
+`@ai-sdk/openai-compatible` because formal-ai exposes the Chat Completions
+endpoint at `/v1/chat/completions`:
+
+```json
+{
+  "$schema": "https://opencode.ai/config.json",
+  "provider": {
+    "formal-ai": {
+      "name": "formal-ai local server",
+      "npm": "@ai-sdk/openai-compatible",
+      "options": {
+        "baseURL": "http://127.0.0.1:8080/v1",
+        "apiKey": "{env:FORMAL_AI_API_KEY}"
+      },
+      "models": {
+        "formal-symbolic-production": {
+          "name": "formal-symbolic-production"
+        }
+      }
+    }
+  },
+  "model": "formal-ai/formal-symbolic-production"
+}
+```
 
 ```bash
-export OPENAI_BASE_URL="http://127.0.0.1:8080/v1"
-export OPENAI_API_KEY="sk-local-demo"       # match your bearer token, or any placeholder
-agent --model formal-symbolic-production "explain the last trace"
+export FORMAL_AI_API_KEY="sk-local-demo"   # match your bearer token, or any non-empty value
+opencode
+opencode run --model formal-ai/formal-symbolic-production --format json \
+  "summarise the reasoning graph for a greeting"
+```
+
+See the upstream [OpenCode provider documentation](https://opencode.ai/docs/providers/)
+for custom provider fields and the [OpenCode configuration reference](https://opencode.ai/docs/config/)
+for the `provider` and `model` options.
+
+### 4c. `agent` (link-assistant/agent) - OpenCode-compatible client
+
+[`agent`](https://github.com/link-assistant/agent) accepts OpenCode-style
+provider/model selection. Put the same provider record in
+`~/.config/link-assistant-agent/opencode.json`:
+
+```json
+{
+  "$schema": "https://opencode.ai/config.json",
+  "provider": {
+    "formal-ai": {
+      "name": "formal-ai local server",
+      "npm": "@ai-sdk/openai-compatible",
+      "options": {
+        "baseURL": "http://127.0.0.1:8080/v1",
+        "apiKey": "{env:FORMAL_AI_API_KEY}"
+      },
+      "models": {
+        "formal-symbolic-production": {
+          "name": "formal-symbolic-production"
+        }
+      }
+    }
+  },
+  "model": "formal-ai/formal-symbolic-production"
+}
+```
+
+```bash
+export FORMAL_AI_API_KEY="sk-local-demo"   # match your bearer token, or any non-empty value
+agent --model formal-ai/formal-symbolic-production -p "explain the last trace"
 ```
 
 `agent` documents its provider/model selection in
 [`MODELS.md`](https://github.com/link-assistant/agent/blob/main/MODELS.md) and
-its [README](https://github.com/link-assistant/agent#readme); consult those for
-the exact provider override syntax in your version.
+its [README](https://github.com/link-assistant/agent#readme). Run autonomous
+agent clients only in a workspace where their file and shell actions are
+acceptable; formal-ai serves model responses but does not sandbox the client
+process.
 
-### 4c. `claude` (Anthropic Claude Code) — first-party adapter
+### 4d. `claude` (Anthropic Claude Code) - first-party adapter
 
 [`claude`](https://github.com/anthropics/claude-code) speaks the **Anthropic
 Messages** protocol (`/v1/messages`), not OpenAI Chat Completions. Its
@@ -223,12 +290,13 @@ use, and re-wraps the result as an Anthropic response — including the full
 formal-ai serve --host 127.0.0.1 --port 8080
 # 2. point Claude Code at the same base URL — no proxy in between
 export ANTHROPIC_BASE_URL="http://127.0.0.1:8080"
-export ANTHROPIC_API_KEY="sk-local-demo"   # match your bearer token, or any placeholder
+export ANTHROPIC_API_KEY="sk-local-demo"   # match your bearer token, or any non-empty value
 claude
 ```
 
 If you set a bearer token (see [§3](#3-authentication)), `claude` sends it as the
-`ANTHROPIC_API_KEY`; on a loopback-only server any non-empty placeholder works.
+`ANTHROPIC_API_KEY`; on a loopback-only server any non-empty value works when no
+token is required.
 
 ---
 

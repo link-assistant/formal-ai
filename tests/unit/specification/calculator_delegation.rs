@@ -5,7 +5,7 @@
 //! expressions are handled by the upstream crate, and local arithmetic remains
 //! as a fallback for syntax that calculator does not support yet.
 
-use formal_ai::{FormalAiEngine, SymbolicAnswer};
+use formal_ai::{ConversationTurn, FormalAiEngine, SymbolicAnswer, UniversalSolver};
 
 fn answer(prompt: &str) -> SymbolicAnswer {
     FormalAiEngine.answer(prompt)
@@ -266,6 +266,75 @@ fn fibonacci_word_problem_reduces_to_calculator_expression() {
     // The cardinal-word spelling and the bare "multiplied by" connector resolve
     // the same way (F(5) = 5, 5 * 10 = 50).
     assert_calculation("the fifth Fibonacci number multiplied by 10", &["50"]);
+}
+
+#[test]
+fn box_relation_word_problem_resolves_total_with_reasoning() {
+    // Issue #338: the prompt is an arithmetic word problem expressed as object
+    // relations, not as a calculator expression. It should reduce the given
+    // facts (B = 10, A = 2 * B, C = A + 5) before summing the boxes.
+    assert_calculation(
+        "I have 3 boxes. Box A has twice as many apples as Box B. Box C has 5 more apples than Box A. If Box B has 10 apples, how many apples are there in total? Show your reasoning step by step.",
+        &[
+            "Step 1: Box B = 10 apples.",
+            "Step 2: Box A = 2 * 10 = 20 apples.",
+            "Step 3: Box C = 20 + 5 = 25 apples.",
+            "20 + 10 + 25 = 55",
+            "there are 55 apples in total",
+        ],
+    );
+}
+
+#[test]
+fn compound_interest_prompt_returns_formula_steps_and_eur_conversion() {
+    let response = assert_calculation(
+        "If I invest $1000 at 8% annual interest compounded monthly for 5 years, how much will I have? Show the formula, calculate step by step, and then convert the final amount to EUR using current exchange rates from the web.",
+        &[
+            "A = P(1 + r/n)^(n*t)",
+            "P = 1000 USD",
+            "r = 0.08",
+            "n = 12",
+            "t = 5",
+            "Final amount: 1489.85 USD",
+            "EUR",
+        ],
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("calculation:compound_interest")),
+        "compound-interest answers should expose calculation evidence: {:?}",
+        response.evidence_links,
+    );
+}
+
+#[test]
+fn final_amount_conversion_uses_prior_compound_interest_answer() {
+    let solver = UniversalSolver::default();
+    let first_prompt =
+        "If I invest $1000 at 8% annual interest compounded monthly for 5 years, how much will I have? Show the formula, calculate step by step, and";
+    let first = solver.solve(first_prompt);
+    assert_eq!(first.intent, "calculation");
+    assert!(first.answer.contains("Final amount: 1489.85 USD"));
+
+    let response = solver.solve_with_history(
+        "convert the final amount to EUR using current exchange rates from the web.",
+        &[
+            ConversationTurn::user(first_prompt),
+            ConversationTurn::assistant(first.answer),
+        ],
+    );
+    assert_eq!(response.intent, "calculation");
+    assert!(response.answer.contains("1489.85 USD"));
+    assert!(response.answer.contains("EUR"));
+    let lower_answer = response.answer.to_lowercase();
+    assert!(
+        !lower_answer.contains("i didn't understand")
+            && !lower_answer.contains("i'm not sure how to respond"),
+        "history-backed final amount conversion should not fall through: {}",
+        response.answer,
+    );
 }
 
 #[test]

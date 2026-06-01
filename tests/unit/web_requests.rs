@@ -1,6 +1,6 @@
 use std::collections::{BTreeMap, BTreeSet};
 
-use formal_ai::{agent_info, FormalAiEngine};
+use formal_ai::{agent_info, ConversationTurn, FormalAiEngine, UniversalSolver};
 
 const WEB_SEARCH_SOURCE_MARKER_CASES: &[(&str, &str, &str)] = &[
     ("en", "Find apple on the internet", "apple"),
@@ -248,6 +248,137 @@ fn information_search_variants_route_to_web_search_handler() {
             response.answer.to_lowercase().contains("rust"),
             "web search response should preserve the query, got {}",
             response.answer,
+        );
+    }
+}
+
+#[test]
+fn source_search_prompts_drop_follow_up_instruction_clauses() {
+    let cases = [
+        (
+            "Search Wikipedia for \"War of Currents\" and summarize who won and why",
+            "war of currents",
+        ),
+        (
+            "Search Wikipedia for Nikola Tesla and Thomas Edison. Compare their number of patents.",
+            "nikola tesla and thomas edison",
+        ),
+    ];
+
+    for (prompt, expected_query) in cases {
+        let response = FormalAiEngine.answer(prompt);
+
+        assert_eq!(
+            response.intent, "web_search",
+            "prompt {prompt:?} should route to web_search, got {} with answer {}",
+            response.intent, response.answer,
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == &format!("web_search:request:{expected_query}")),
+            "web_search should keep only the source query term {expected_query:?}: {:?}",
+            response.evidence_links,
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == "web_search:query_kind:explicit_prefix"),
+            "source-specific searches should record explicit-prefix routing: {:?}",
+            response.evidence_links,
+        );
+    }
+}
+
+#[test]
+fn source_search_prompts_still_cover_supported_languages() {
+    let cases = [
+        ("English", "Find information about Rust programming"),
+        (
+            "Russian",
+            "Поищи материалы по Rust программированию в Википедии",
+        ),
+        ("Hindi", "Rust programming के बारे में विकिपीडिया में खोजें"),
+        ("Chinese", "在维基百科上查一下 Rust 编程"),
+    ];
+
+    for (language, prompt) in cases {
+        let response = FormalAiEngine.answer(prompt);
+
+        assert_eq!(
+            response.intent, "web_search",
+            "{language} source-search prompt should still route to web_search, got {} with answer {}",
+            response.intent, response.answer,
+        );
+        assert!(
+            response.answer.to_lowercase().contains("rust"),
+            "{language} web-search answer should preserve the requested topic, got: {}",
+            response.answer,
+        );
+    }
+}
+
+#[test]
+fn research_comparison_table_followup_uses_prior_search_topics() {
+    let solver = UniversalSolver::default();
+    let search_prompt = "Search for information about:\n\
+                         1. Machine learning algorithms\n\
+                         2. Deep learning vs traditional ML\n\
+                         3. Neural networks basics";
+    let search_response = solver.solve(search_prompt);
+    assert_eq!(search_response.intent, "web_search");
+
+    let history = [
+        ConversationTurn::user(search_prompt),
+        ConversationTurn::assistant(search_response.answer),
+    ];
+    let response = solver.solve_with_history(
+        "create a comparison table showing:\n\
+         - Key differences\n\
+         - Use cases for each\n\
+         - Advantages and disadvantages",
+        &history,
+    );
+
+    assert_eq!(
+        response.intent, "research_comparison_table",
+        "agent follow-up should create a comparison table instead of falling through, got {} with answer {}",
+        response.intent, response.answer,
+    );
+    assert!(response
+        .answer
+        .contains("| Topic | Key differences | Use cases | Advantages | Disadvantages |"));
+    assert!(response.answer.contains("Machine learning algorithms"));
+    assert!(response.answer.contains("Deep learning vs traditional ML"));
+    assert!(response.answer.contains("Neural networks basics"));
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("research_table:prior_search:")),
+        "comparison table should record the prior search it reused: {:?}",
+        response.evidence_links,
+    );
+    assert_ne!(response.intent, "unknown");
+}
+
+#[test]
+fn research_comparison_table_change_preserves_supported_language_web_search_routing() {
+    let solver = UniversalSolver::default();
+    let cases = [
+        ("English", WEB_SEARCH_SOURCE_MARKER_CASES[0].1),
+        ("Russian", WEB_SEARCH_SOURCE_MARKER_CASES[1].1),
+        ("Hindi", WEB_SEARCH_SOURCE_MARKER_CASES[2].1),
+        ("Chinese", WEB_SEARCH_SOURCE_MARKER_CASES[3].1),
+    ];
+
+    for (language, prompt) in cases {
+        let response = solver.solve(prompt);
+        assert_eq!(
+            response.intent, "web_search",
+            "{language} web-search routing should remain ahead of the research table follow-up handler for prompt {prompt:?}",
         );
     }
 }
