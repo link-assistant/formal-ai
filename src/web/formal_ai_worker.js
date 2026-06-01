@@ -14276,7 +14276,7 @@ function cleanSearchQuery(value) {
 function stripSearchPrefix(prompt, prefix) {
   const text = String(prompt || "").trim();
   if (text.toLowerCase().startsWith(prefix)) {
-    return cleanSearchQuery(text.slice(prefix.length));
+    return validSearchQuery(text.slice(prefix.length));
   }
   return "";
 }
@@ -14287,6 +14287,9 @@ const WEB_SEARCH_EXPLICIT_PREFIXES = [
   "search the internet for ",
   "search internet for ",
   "search online for ",
+  "search wikipedia for ",
+  "search wikidata for ",
+  "search wiktionary for ",
   "search for information about ",
   "search for information on ",
   "web search for ",
@@ -14655,6 +14658,11 @@ const SEARCH_QUERY_SOURCE_ONLY = [
   "維基百科",
 ];
 
+const SEARCH_QUERY_TRAILING_INSTRUCTION_PATTERNS = [
+  /[.?!;:]\s*(?:then\s+)?(?:compare|summarize|summarise|explain|describe|show|tell)\b[\s\S]*$/i,
+  /\s+and\s+(?:then\s+)?(?:summarize|summarise|compare|explain|describe|show|tell)\b[\s\S]*$/i,
+];
+
 const IMPLICIT_RESEARCH_QUESTION_PREFIXES = [
   "what is the ",
   "what is a ",
@@ -14828,8 +14836,16 @@ function stripSearchNoiseSuffix(value, suffix) {
     : text;
 }
 
+function truncateSearchInstructionTail(value) {
+  let query = String(value || "").trim();
+  for (const pattern of SEARCH_QUERY_TRAILING_INSTRUCTION_PATTERNS) {
+    query = query.replace(pattern, "").trim();
+  }
+  return query;
+}
+
 function cleanSemanticSearchQuery(value) {
-  let query = cleanSearchQuery(value);
+  let query = cleanSearchQuery(truncateSearchInstructionTail(value));
   while (true) {
     const before = query;
     for (const prefix of SEARCH_QUERY_LEADING_NOISE) {
@@ -15015,6 +15031,18 @@ function cleanProceduralFragment(value) {
     " with steps",
     " for me",
     " please",
+    " напиши по шагам",
+    " по шагам",
+    " пошагово",
+    " пожалуйста",
+    " चरणों में लिखो",
+    " चरणों में बताओ",
+    " कदम दर कदम",
+    " कृपया",
+    " 按步骤写",
+    " 按步骤说明",
+    " 一步一步写",
+    " 请",
   ];
   for (const suffix of suffixes) {
     if (clean.endsWith(suffix)) {
@@ -15025,36 +15053,86 @@ function cleanProceduralFragment(value) {
   return clean;
 }
 
+function correctCommonProceduralTypos(task) {
+  const corrections = [];
+  const corrected = String(task || "")
+    .split(/\s+/u)
+    .filter(Boolean)
+    .map((token) => {
+      if (token === "dirven") {
+        if (!corrections.some((correction) => correction.from === "dirven")) {
+          corrections.push({ from: "dirven", to: "driven" });
+        }
+        return "driven";
+      }
+      return token;
+    })
+    .join(" ");
+  return { task: corrected, corrections };
+}
+
 function extractProceduralHowToTask(normalized) {
   const prefixes = [
-    "please tell me how to ",
-    "please show me how to ",
-    "tell me how to ",
-    "show me how to ",
-    "what are the steps to ",
-    "what steps do i need to ",
-    "what steps do we need to ",
-    "how should i ",
-    "how should we ",
-    "how could i ",
-    "how could we ",
-    "how would i ",
-    "how would we ",
-    "how can i ",
-    "how can we ",
-    "how do i ",
-    "how do we ",
-    "how to ",
+    ["please tell me how to ", null],
+    ["please show me how to ", null],
+    ["tell me how to ", null],
+    ["show me how to ", null],
+    ["what are the steps to ", null],
+    ["what steps do i need to ", null],
+    ["what steps do we need to ", null],
+    ["how should i ", null],
+    ["how should we ", null],
+    ["how could i ", null],
+    ["how could we ", null],
+    ["how would i ", null],
+    ["how would we ", null],
+    ["how can i ", null],
+    ["how can we ", null],
+    ["how do i ", null],
+    ["how do we ", null],
+    ["how to do ", "do"],
+    ["how to ", null],
+    ["как сделать ", "do"],
+    ["как делать ", "do"],
+    ["как выполнить ", "perform"],
+    ["как реализовать ", "implement"],
+    ["как создать ", "create"],
+    ["как написать ", "write"],
+    ["कैसे करें ", "do"],
+    ["कैसे करे ", "do"],
+    ["कैसे लागू करें ", "implement"],
+    ["कैसे बनाएं ", "create"],
+    ["कैसे बनाएँ ", "create"],
+    ["कैसे लिखें ", "write"],
+    ["如何做 ", "do"],
+    ["怎么做 ", "do"],
+    ["如何实现 ", "implement"],
+    ["怎么实现 ", "implement"],
+    ["如何创建 ", "create"],
+    ["怎么创建 ", "create"],
+    ["如何写 ", "write"],
+    ["怎么写 ", "write"],
   ];
   const clean = cleanProceduralFragment(normalized);
-  for (const prefix of prefixes) {
+  for (const [prefix, actionOverride] of prefixes) {
     if (!clean.startsWith(prefix)) continue;
-    const task = cleanProceduralFragment(clean.slice(prefix.length));
+    const correction = correctCommonProceduralTypos(
+      cleanProceduralFragment(clean.slice(prefix.length)),
+    );
+    const task = correction.task;
     if (!task) return null;
+    if (actionOverride) {
+      return {
+        task,
+        action: actionOverride,
+        object: task,
+        corrections: correction.corrections,
+      };
+    }
     const firstSpace = task.search(/\s/u);
     const action = firstSpace === -1 ? task : task.slice(0, firstSpace);
     const object = firstSpace === -1 ? "" : task.slice(firstSpace + 1).trim();
-    return { task, action, object };
+    return { task, action, object, corrections: correction.corrections };
   }
   return null;
 }
@@ -15309,6 +15387,9 @@ async function tryProceduralHowTo(prompt, language) {
     `procedural_how_to:wikihow_candidate:${pageTitle}`,
     `http_fetch:request:${apiUrl}`,
   ];
+  for (const correction of task.corrections || []) {
+    evidence.push(`spelling_correction:${correction.from}->${correction.to}`);
+  }
   if (task.object) {
     evidence.splice(2, 0, `procedural_how_to:object:${task.object}`);
   }
