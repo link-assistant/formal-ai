@@ -14126,6 +14126,211 @@ function tryHistorical(prompt, history) {
   return null;
 }
 
+function isComparisonTableRequest(normalized) {
+  const padded = ` ${normalized || ""} `;
+  return (
+    padded.includes(" comparison table ") ||
+    padded.includes(" compare ") ||
+    padded.includes(" comparing ") ||
+    (padded.includes(" table ") && padded.includes(" differences "))
+  );
+}
+
+function looksLikeResearchPrompt(prompt) {
+  const normalized = normalizePrompt(prompt);
+  return (
+    normalized.startsWith("search ") ||
+    normalized.startsWith("find information ") ||
+    normalized.startsWith("look up information ") ||
+    normalized.includes(" search for information ") ||
+    normalized.includes(" web search ") ||
+    normalized.includes(" research ")
+  );
+}
+
+function stripResearchListMarker(line) {
+  const value = String(line || "").trim();
+  if (!value) return "";
+  if (/^[-*+]\s+/u.test(value)) {
+    return value.replace(/^[-*+]\s+/u, "").trim();
+  }
+  if (/^\d+[.):]\s*/u.test(value)) {
+    return value.replace(/^\d+[.):]\s*/u, "").trim();
+  }
+  return "";
+}
+
+function cleanResearchText(value) {
+  return String(value || "")
+    .trim()
+    .replace(/^[`"':;,.?!\s]+/u, "")
+    .replace(/[`"':;,.?!\s]+$/u, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function extractResearchTopics(prompt) {
+  const topics = [];
+  for (const line of String(prompt || "").split(/\r?\n/u)) {
+    const item = cleanResearchText(stripResearchListMarker(line));
+    if (!item || looksLikeResearchPrompt(item)) continue;
+    if (!topics.some((topic) => topic.toLowerCase() === item.toLowerCase())) {
+      topics.push(item);
+    }
+    if (topics.length >= 8) break;
+  }
+  if (topics.length === 0 && String(prompt || "").includes(":")) {
+    const item = cleanResearchText(String(prompt).split(":").slice(1).join(":"));
+    if (item) topics.push(item);
+  }
+  return topics;
+}
+
+const RESEARCH_TABLE_DEFAULT_CRITERIA = [
+  "key_differences",
+  "use_cases",
+  "advantages",
+  "disadvantages",
+];
+
+const RESEARCH_TABLE_CRITERION_LABELS = {
+  key_differences: "Key differences",
+  use_cases: "Use cases",
+  advantages: "Advantages",
+  disadvantages: "Disadvantages",
+};
+
+function pushUniqueCriterion(criteria, criterion) {
+  if (!criteria.includes(criterion)) criteria.push(criterion);
+}
+
+function appendResearchCriteriaFromText(text, criteria) {
+  const normalized = normalizePrompt(text);
+  if (normalized.includes("key difference") || normalized.includes("difference")) {
+    pushUniqueCriterion(criteria, "key_differences");
+  }
+  if (normalized.includes("use case") || normalized.includes("application")) {
+    pushUniqueCriterion(criteria, "use_cases");
+  }
+  if (normalized.includes("advantage") || normalized.includes("pro ")) {
+    pushUniqueCriterion(criteria, "advantages");
+  }
+  if (normalized.includes("disadvantage") || normalized.includes(" con ")) {
+    pushUniqueCriterion(criteria, "disadvantages");
+  }
+}
+
+function extractResearchCriteria(prompt) {
+  const criteria = [];
+  for (const line of String(prompt || "").split(/\r?\n/u)) {
+    const item = stripResearchListMarker(line);
+    if (item) appendResearchCriteriaFromText(item, criteria);
+  }
+  if (criteria.length === 0) appendResearchCriteriaFromText(prompt, criteria);
+  return criteria.length > 0 ? criteria : RESEARCH_TABLE_DEFAULT_CRITERIA.slice();
+}
+
+function researchTableCell(topic, criterion) {
+  const normalized = normalizePrompt(topic);
+  if (normalized.includes("machine learning algorithm")) {
+    if (criterion === "key_differences") {
+      return "Broad family of data-driven methods; includes supervised, unsupervised, and reinforcement approaches.";
+    }
+    if (criterion === "use_cases") {
+      return "Classification, regression, clustering, recommendation, anomaly detection, and forecasting.";
+    }
+    if (criterion === "advantages") {
+      return "Flexible toolkit; often efficient on structured data; many models are easier to inspect than deep nets.";
+    }
+    if (criterion === "disadvantages") {
+      return "Model choice, preprocessing, and feature design can dominate results; overfitting remains a risk.";
+    }
+  }
+  if (normalized.includes("deep learning") && normalized.includes("traditional ml")) {
+    if (criterion === "key_differences") {
+      return "Deep learning learns layered representations; traditional ML often relies more on explicit feature engineering.";
+    }
+    if (criterion === "use_cases") {
+      return "Deep learning fits images, speech, and language at scale; traditional ML fits many tabular and smaller-data tasks.";
+    }
+    if (criterion === "advantages") {
+      return "Deep learning scales with data and reduces manual features; traditional ML is usually faster and more interpretable.";
+    }
+    if (criterion === "disadvantages") {
+      return "Deep learning needs more data/compute and is harder to explain; traditional ML may underfit unstructured signals.";
+    }
+  }
+  if (normalized.includes("neural network")) {
+    if (criterion === "key_differences") {
+      return "Built from weighted layers, activations, losses, and optimization; provides the base mechanism for deep learning.";
+    }
+    if (criterion === "use_cases") {
+      return "Pattern recognition, embeddings, sequence modeling, vision, speech, and nonlinear function approximation.";
+    }
+    if (criterion === "advantages") {
+      return "Captures nonlinear relationships and can be trained end-to-end for complex perception tasks.";
+    }
+    if (criterion === "disadvantages") {
+      return "Requires tuning and regularization; decisions can be opaque; training can be unstable on poor data.";
+    }
+  }
+  if (criterion === "key_differences") {
+    return "Use the prior search sources to identify what distinguishes this topic from the others.";
+  }
+  if (criterion === "use_cases") {
+    return "Summarize the practical settings where the Step 1 sources apply this topic.";
+  }
+  if (criterion === "advantages") {
+    return "Extract strengths reported by the prior search sources before treating them as verified.";
+  }
+  return "Extract limitations reported by the prior search sources before treating them as verified.";
+}
+
+function escapeResearchTableCell(value) {
+  return String(value || "").replace(/\|/g, "\\|").replace(/\n/g, " ");
+}
+
+function renderResearchComparisonTable(topics, criteria) {
+  const lines = [
+    "Research comparison table (draft; verify claims against the Step 1 source links).",
+    "",
+    `| Topic | ${criteria.map((criterion) => RESEARCH_TABLE_CRITERION_LABELS[criterion]).join(" | ")} |`,
+    `| --- | ${criteria.map(() => "---").join(" | ")} |`,
+  ];
+  for (const topic of topics) {
+    lines.push(
+      `| ${escapeResearchTableCell(topic)} | ${criteria
+        .map((criterion) => escapeResearchTableCell(researchTableCell(topic, criterion)))
+        .join(" | ")} |`,
+    );
+  }
+  return lines.join("\n");
+}
+
+function compactResearchLogValue(value) {
+  return String(value || "").split(/\s+/u).filter(Boolean).join(" ");
+}
+
+function tryResearchComparisonTable(prompt, normalized, history = []) {
+  if (!isComparisonTableRequest(normalized)) return null;
+  const priorSearch = lastHistoryTurn(history, "user");
+  if (!priorSearch || !looksLikeResearchPrompt(priorSearch)) return null;
+  const topics = extractResearchTopics(priorSearch);
+  if (topics.length < 2) return null;
+  const criteria = extractResearchCriteria(prompt);
+  if (criteria.length === 0) return null;
+  return {
+    intent: "research_comparison_table",
+    content: renderResearchComparisonTable(topics, criteria),
+    confidence: 0.78,
+    evidence: [
+      `research_table:prior_search:${compactResearchLogValue(priorSearch)}`,
+      ...topics.map((topic) => `research_table:topic:${topic}`),
+      ...criteria.map((criterion) => `research_table:criterion:${criterion}`),
+    ],
+  };
+}
+
 // Issue #27: trigger the summarize skill on a wide range of natural phrasings
 // (English/Russian/Hindi/Chinese), not just two literal sentences. We match on
 // the raw prompt for non-Latin scripts because normalizePrompt strips them.
@@ -18072,6 +18277,10 @@ async function solve(prompt, history, prefs, userContext = {}) {
   const syncHandlers = [
     { name: "tryLinkNativeSynthesis", run: () => tryLinkNativeSynthesis(prompt, normalized) },
     { name: "tryHistorical", run: () => tryHistorical(prompt, history) },
+    {
+      name: "tryResearchComparisonTable",
+      run: () => tryResearchComparisonTable(prompt, normalized, history),
+    },
     { name: "tryBrainstormingRequest", run: () => tryBrainstormingRequest(prompt, normalized) },
     { name: "tryRoleplayRequest", run: () => tryRoleplayRequest(prompt, normalized) },
     { name: "tryKupiSlona", run: () => tryKupiSlona(prompt, normalized) },
