@@ -1046,6 +1046,19 @@ const PREFERENCE_DEFAULTS = {
   composerAction: "attach",
 };
 
+// Issue #386: precompute the formatted default values so the issue report can
+// omit any User Context field that matches its shipped default. Keeping these
+// derived from PREFERENCE_DEFAULTS means they stay in sync if a default moves.
+const DEFAULT_GUESS_PROBABILITY_PERCENT = formatSliderValue(
+  PREFERENCE_DEFAULTS.guessProbability,
+);
+const DEFAULT_TEMPERATURE_TEXT = String(
+  normalizeSliderPreference(PREFERENCE_DEFAULTS.temperature, 0),
+);
+const DEFAULT_FOLLOW_UP_PROBABILITY_PERCENT = formatSliderValue(
+  PREFERENCE_DEFAULTS.followUpProbability,
+);
+
 const UI_SKINS = ["flat", "glass", "contrast"];
 const CHAT_STYLES = ["cards", "compact", "bubbles"];
 const COMPOSER_STYLES = ["flat", "glass-soft", "glass-clear", "bubble"];
@@ -1527,22 +1540,29 @@ function appendUserContextBlock(lines, context) {
   };
 
   push("UI languages", formatUiLanguagesField(safe.uiLanguage, safe.browserLanguages));
-  push("Theme", formatThemeField(safe));
+  // Issue #386: omit settings that are set exactly to their default so the
+  // report keeps space for the dialog itself. A field is reported only when it
+  // differs from the shipped default (or carries an explicit user value).
+  const themePreference = safe.themePreference || PREFERENCE_DEFAULTS.theme;
+  if (themePreference !== PREFERENCE_DEFAULTS.theme) {
+    push("Theme", formatThemeField(safe));
+  }
   push("UI", formatUiField(safe));
   push("Locale", formatLocaleField(safe));
   if (safe.preferredLocation) {
     push("Preferred location", safe.preferredLocation);
   }
-  push("Guess probability", `${safe.guessProbability || "unknown"}%`);
-  push("Temperature", safe.temperature);
-  push("Follow-up probability", `${safe.followUpProbability || "unknown"}%`);
-  if (safe.locationInference && !safe.preferredLocation) {
-    // Per issue #140 feedback: "We should just write to what it inferred to,
-    // and from which source. So it can be shorter." Reuse the inference
-    // sentence verbatim when there is no explicit preference; the original
-    // wording ("time zone / locale only; …") doubles as the source.
-    push("Location", `inferred from ${safe.locationInference.replace(/;.*$/, "").trim()}`);
+  if (safe.guessProbability !== DEFAULT_GUESS_PROBABILITY_PERCENT) {
+    push("Guess probability", `${safe.guessProbability || "unknown"}%`);
   }
+  if (safe.temperature !== DEFAULT_TEMPERATURE_TEXT) {
+    push("Temperature", safe.temperature);
+  }
+  if (safe.followUpProbability !== DEFAULT_FOLLOW_UP_PROBABILITY_PERCENT) {
+    push("Follow-up probability", `${safe.followUpProbability || "unknown"}%`);
+  }
+  // Issue #386: the inference-only location ("time zone / locale only") is the
+  // default, so it is omitted. An explicit preference is reported above.
 
   if (entries.length === 0) return;
   lines.push("## User Context");
@@ -3898,6 +3918,16 @@ function createIssueTitle(messages, focusMessage) {
   return "formal-ai demo issue report";
 }
 
+// Issue #386: the worker kind (`wasm worker`) used to occupy its own
+// Environment line. Folding it into the version (`0.174.0 (wasm)`) keeps the
+// header compact. The trailing " worker" word is redundant inside the parens.
+function formatVersionWithWorker(version, workerState) {
+  const worker = String(workerState || "").trim();
+  if (!worker) return version;
+  const short = worker.replace(/\s*workers?$/i, "").trim() || worker;
+  return `${version} (${short})`;
+}
+
 function createIssueReportBody({
   messages,
   focusMessage,
@@ -3909,18 +3939,25 @@ function createIssueReportBody({
   earlierOmitted = 0,
 }) {
   const effectiveFocus = focusMessage ?? lastUnknownAssistantMessage(messages);
+  // Issue #386: fold the worker into the version (`0.174.0 (wasm)`) and drop
+  // settings that sit at their default. Manual mode is the interactive default,
+  // so Mode/Status are only worth reporting while a demo is playing, and
+  // Diagnostics is only reported when it has been turned on.
   const lines = [
     "## Environment",
     "",
-    `- **Version**: ${APP_VERSION}`,
+    `- **Version**: ${formatVersionWithWorker(APP_VERSION, workerState)}`,
     `- **URL**: ${window.location.href}`,
-    `- **Worker**: ${workerState}`,
-    `- **Mode**: ${demoMode ? "demo" : "manual"}`,
-    `- **Status**: ${demoStatus}`,
-    `- **Diagnostics**: ${diagnosticsMode ? "on" : "off"}`,
-    `- **Timestamp**: ${new Date().toISOString()}`,
-    "",
   ];
+  if (demoMode) {
+    lines.push("- **Mode**: demo");
+    lines.push(`- **Status**: ${demoStatus}`);
+  }
+  if (diagnosticsMode) {
+    lines.push("- **Diagnostics**: on");
+  }
+  lines.push(`- **Timestamp**: ${new Date().toISOString()}`);
+  lines.push("");
 
   appendUserContextBlock(lines, userContext);
   lines.push("## Reproduction of dialog");
@@ -3928,7 +3965,12 @@ function createIssueReportBody({
 
   appendDialogBlock(lines, messages, effectiveFocus, { earlierOmitted });
 
-  appendReasoningTraceBlock(lines, effectiveFocus);
+  // Issue #386: the reasoning trace is only meaningful next to the full dialog.
+  // When earlier turns had to be dropped to fit GitHub's URL cap the dialog is
+  // no longer complete, so the trace is omitted to avoid misleading context.
+  if (earlierOmitted === 0) {
+    appendReasoningTraceBlock(lines, effectiveFocus);
+  }
 
   lines.push("");
   lines.push("## Description");
@@ -3938,7 +3980,7 @@ function createIssueReportBody({
   lines.push("## Attach full memory (optional)");
   lines.push("");
   lines.push(
-    "Click **Export memory** in the topbar to save `formal-ai-memory.lino`, then attach it as a [GitHub Gist](https://gist.github.com) or wrap it in a `.zip` first. Redact sensitive content before uploading. See the [upload-memory guide](https://github.com/link-assistant/formal-ai/blob/main/docs/upload-memory.md) for the full walkthrough.",
+    "Click **Export memory** to save `formal-ai-memory.lino`, redact it, and attach it (as a `.zip` if needed). See the [upload-memory guide](https://github.com/link-assistant/formal-ai/blob/main/docs/upload-memory.md).",
   );
   lines.push("");
 
