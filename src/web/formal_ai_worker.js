@@ -2305,11 +2305,211 @@ function splitSentences(text) {
   return sentences;
 }
 
+function wordProblemWords(sentence) {
+  return String(sentence || "")
+    .split(/[^\p{L}\p{N}]+/u)
+    .filter(Boolean)
+    .map((token) => token.toLowerCase());
+}
+
+function parseWordProblemInteger(token) {
+  const text = String(token || "").toLowerCase();
+  if (/^[+-]?\d+$/.test(text)) return Number.parseInt(text, 10);
+  const numbers = {
+    zero: 0,
+    one: 1,
+    a: 1,
+    an: 1,
+    two: 2,
+    three: 3,
+    four: 4,
+    five: 5,
+    six: 6,
+    seven: 7,
+    eight: 8,
+    nine: 9,
+    ten: 10,
+    eleven: 11,
+    twelve: 12,
+    thirteen: 13,
+    fourteen: 14,
+    fifteen: 15,
+    sixteen: 16,
+    seventeen: 17,
+    eighteen: 18,
+    nineteen: 19,
+    twenty: 20,
+  };
+  return Object.prototype.hasOwnProperty.call(numbers, text) ? numbers[text] : null;
+}
+
+function canonicalBoxId(token) {
+  const cleaned = trimNonAlnum(token).toUpperCase();
+  return cleaned && cleaned.length <= 3 ? cleaned : "";
+}
+
+function parseDeclaredBoxCount(words) {
+  if (
+    words.length >= 4 &&
+    words[0] === "i" &&
+    words[1] === "have" &&
+    (words[3] === "box" || words[3] === "boxes")
+  ) {
+    const count = parseWordProblemInteger(words[2]);
+    return Number.isInteger(count) ? count : null;
+  }
+  return null;
+}
+
+function parseBoxRule(words) {
+  let index = words[0] === "if" ? 1 : 0;
+  if (words[index] !== "box" || words[index + 2] !== "has") return null;
+  const target = canonicalBoxId(words[index + 1]);
+  if (!target) return null;
+  index += 3;
+
+  if (
+    words[index] === "twice" &&
+    words[index + 1] === "as" &&
+    words[index + 2] === "many" &&
+    words[index + 4] === "as" &&
+    words[index + 5] === "box"
+  ) {
+    const source = canonicalBoxId(words[index + 6]);
+    if (!source) return null;
+    return {
+      target,
+      rule: { kind: "multiple", factor: 2, source },
+      item: words[index + 3] || "",
+    };
+  }
+
+  const value = parseWordProblemInteger(words[index]);
+  if (!Number.isInteger(value)) return null;
+  if (
+    words[index + 1] === "more" &&
+    words[index + 3] === "than" &&
+    words[index + 4] === "box"
+  ) {
+    const source = canonicalBoxId(words[index + 5]);
+    if (!source) return null;
+    return {
+      target,
+      rule: { kind: "add", source, addend: value },
+      item: words[index + 2] || "",
+    };
+  }
+
+  return {
+    target,
+    rule: { kind: "known", value },
+    item: words[index + 1] || "",
+  };
+}
+
+function resolveBoxValue(id, rules, memo, stack, reasoningSteps, resultLabel) {
+  if (memo.has(id)) return memo.get(id);
+  if (stack.includes(id)) return null;
+  const rule = rules.get(id);
+  if (!rule) return null;
+  stack.push(id);
+  let value = null;
+  if (rule.kind === "known") {
+    value = rule.value;
+    reasoningSteps.push(`Box ${id} = ${value} ${resultLabel}.`);
+  } else if (rule.kind === "multiple") {
+    const sourceValue = resolveBoxValue(
+      rule.source,
+      rules,
+      memo,
+      stack,
+      reasoningSteps,
+      resultLabel,
+    );
+    if (!Number.isFinite(sourceValue)) return null;
+    value = sourceValue * rule.factor;
+    reasoningSteps.push(
+      `Box ${id} = ${rule.factor} * ${sourceValue} = ${value} ${resultLabel}.`,
+    );
+  } else if (rule.kind === "add") {
+    const sourceValue = resolveBoxValue(
+      rule.source,
+      rules,
+      memo,
+      stack,
+      reasoningSteps,
+      resultLabel,
+    );
+    if (!Number.isFinite(sourceValue)) return null;
+    value = sourceValue + rule.addend;
+    reasoningSteps.push(
+      `Box ${id} = ${sourceValue} + ${rule.addend} = ${value} ${resultLabel}.`,
+    );
+  }
+  stack.pop();
+  if (!Number.isFinite(value)) return null;
+  memo.set(id, value);
+  return value;
+}
+
+function normalizeBoxTotalProblem(text) {
+  const lower = String(text || "").toLowerCase();
+  if (
+    !lower.includes("box") ||
+    !lower.includes("how many") ||
+    !lower.includes("total") ||
+    (!lower.includes("twice as many") &&
+      !(lower.includes("more") && lower.includes("than")))
+  ) {
+    return null;
+  }
+
+  let declaredCount = null;
+  let resultLabel = "";
+  const rules = new Map();
+  for (const sentence of splitSentences(text)) {
+    const words = wordProblemWords(sentence);
+    if (words.length === 0) continue;
+    if (declaredCount === null) {
+      declaredCount = parseDeclaredBoxCount(words);
+    }
+    const parsed = parseBoxRule(words);
+    if (!parsed) continue;
+    if (parsed.item && parsed.item !== "box" && parsed.item !== "boxes") {
+      resultLabel = parsed.item;
+    }
+    rules.set(parsed.target, parsed.rule);
+  }
+  if (rules.size < 2) return null;
+  if (declaredCount !== null && rules.size < declaredCount) return null;
+
+  const label = resultLabel || "items";
+  const memo = new Map();
+  const reasoningSteps = [];
+  const ids = Array.from(rules.keys()).sort();
+  for (const id of ids) {
+    if (
+      !Number.isFinite(
+        resolveBoxValue(id, rules, memo, [], reasoningSteps, label),
+      )
+    ) {
+      return null;
+    }
+  }
+  const values = ids.map((id) => memo.get(id));
+  if (values.some((value) => !Number.isFinite(value))) return null;
+  const expression = values.join(" + ");
+  reasoningSteps.push(`Total = ${expression} ${label}.`);
+  return { expression, reasoningSteps, resultLabel: label };
+}
+
 // Rewrite a natural-language "word problem" into a calculator expression, or
 // return null when no rewrite applies so callers fall through unchanged.
-function normalizeWordProblem(expression) {
+function normalizeWordProblemDetailed(expression) {
   const trimmed = String(expression || "").trim();
   if (!trimmed) return null;
+  const boxProblem = normalizeBoxTotalProblem(trimmed);
+  if (boxProblem) return boxProblem;
   // Keep only sentence fragments that carry arithmetic content, dropping pure
   // instruction clauses such as "Show me the code and the final result".
   const arithmetic = splitSentences(trimmed).filter(
@@ -2340,7 +2540,7 @@ function normalizeWordProblem(expression) {
   }
   working = working.split(/\s+/).filter(Boolean).join(" ");
   if (!working || working.toLowerCase() === trimmed.toLowerCase()) return null;
-  return working;
+  return { expression: working, reasoningSteps: [], resultLabel: "" };
 }
 
 function extractArithmeticExpression(prompt) {
@@ -2418,9 +2618,15 @@ function extractArithmeticExpression(prompt) {
   // Issue #334 step 2: rewrite a natural-language word problem into a calculator
   // expression ("the 10th Fibonacci number and multiply it by 8% of 500. Show me
   // the code ..." -> "55 * 8% of 500") before the symbolic checks below run.
-  const wordProblem = normalizeWordProblem(working);
+  const wordProblem = normalizeWordProblemDetailed(working);
+  let reasoningSteps = [];
+  let resultLabel = "";
   if (wordProblem) {
-    working = wordProblem;
+    working = wordProblem.expression;
+    reasoningSteps = Array.isArray(wordProblem.reasoningSteps)
+      ? wordProblem.reasoningSteps
+      : [];
+    resultLabel = wordProblem.resultLabel || "";
   }
   const workingLower = working.toLowerCase();
   const hasLetter = /\p{L}/u.test(working);
@@ -2474,13 +2680,14 @@ function extractArithmeticExpression(prompt) {
   const hasDigit = /[0-9]/.test(working);
   if (!hasDigit && !hasSpelled) return null;
   if (!hasSymbolic && !hasWord && hasLetter) return null;
-  if (hasPercentOf) return { expression: working, interpretations };
+  const extracted = { expression: working, interpretations, reasoningSteps, resultLabel };
+  if (hasPercentOf) return extracted;
   if (evaluateCurrencyConversionExpression(working) !== null) {
-    return { expression: working, interpretations };
+    return extracted;
   }
   const allowed = /^[0-9+\-*/%().=\s_×·÷−,a-zA-Z]+$/;
   if (!allowed.test(working) && !hasWordOperator) return null;
-  return { expression: working, interpretations };
+  return extracted;
 }
 
 function extractFencedBlock(text, languages) {
@@ -6181,6 +6388,10 @@ function tryArithmetic(prompt) {
   const interpretations = Array.isArray(extracted.interpretations)
     ? extracted.interpretations
     : [];
+  const reasoningSteps = Array.isArray(extracted.reasoningSteps)
+    ? extracted.reasoningSteps
+    : [];
+  const resultLabel = typeof extracted.resultLabel === "string" ? extracted.resultLabel : "";
   try {
     const isEquation = expression.includes("=");
     let formatted;
@@ -6204,17 +6415,35 @@ function tryArithmetic(prompt) {
         formatted = formatArithmeticResult(evaluateArithmetic(expression));
       }
     }
-    const content = isEquation
+    const calculationLine = isEquation
       ? `${expression.trim()} => ${formatted}`
       : `${expression.trim()} = ${formatted}`;
+    const sections = [];
+    if (reasoningSteps.length > 0) {
+      sections.push(
+        reasoningSteps
+          .map((step, index) => `Step ${index + 1}: ${step}`)
+          .join("\n"),
+      );
+    }
+    sections.push(calculationLine);
+    if (resultLabel) {
+      sections.push(`Therefore, there are ${formatted} ${resultLabel} in total.`);
+    }
+    const content = sections.join("\n\n");
+    const evidence = [
+      `calculation:${content}`,
+      `calculation_backend:${backend}`,
+    ];
+    if (reasoningSteps.length > 0) {
+      evidence.push(`calculation_reasoning_steps:${reasoningSteps.length}`);
+    }
+    if (resultLabel) evidence.push(`calculation_result_label:${resultLabel}`);
     return {
       intent: "calculation",
       content: content,
       confidence: 1.0,
-      evidence: [
-        `calculation:${content}`,
-        `calculation_backend:${backend}`,
-      ],
+      evidence,
       interpretations,
     };
   } catch (error) {
