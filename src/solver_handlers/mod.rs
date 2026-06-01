@@ -232,6 +232,8 @@ pub fn try_arithmetic(prompt: &str, log: &mut EventLog) -> Option<SymbolicAnswer
     for candidate in candidates {
         let expression = candidate.expression;
         let interpretations = candidate.interpretations;
+        let reasoning_steps = candidate.reasoning_steps;
+        let result_label = candidate.result_label;
         log.append("calculation:request", expression.clone());
         match evaluate_calculation(&expression) {
             Ok(evaluation) => {
@@ -248,6 +250,15 @@ pub fn try_arithmetic(prompt: &str, log: &mut EventLog) -> Option<SymbolicAnswer
                 } else {
                     format!("{expression} = {formatted}")
                 };
+                if !reasoning_steps.is_empty() {
+                    log.append(
+                        "calculation:reasoning_steps",
+                        reasoning_steps.len().to_string(),
+                    );
+                }
+                if let Some(label) = result_label.as_deref() {
+                    log.append("calculation:result_label", label.to_owned());
+                }
                 for interpretation in &interpretations {
                     log.append(
                         "interpretation",
@@ -257,15 +268,27 @@ pub fn try_arithmetic(prompt: &str, log: &mut EventLog) -> Option<SymbolicAnswer
                         ),
                     );
                 }
-                let body = if interpretations.is_empty() {
-                    calculation_body
-                } else {
-                    format!(
-                        "{}\n\n{}",
-                        interpretation_statements(&interpretations),
-                        calculation_body
-                    )
-                };
+                let mut sections = Vec::new();
+                if !interpretations.is_empty() {
+                    sections.push(interpretation_statements(&interpretations));
+                }
+                if !reasoning_steps.is_empty() {
+                    sections.push(
+                        reasoning_steps
+                            .iter()
+                            .enumerate()
+                            .map(|(index, step)| format!("Step {}: {step}", index + 1))
+                            .collect::<Vec<_>>()
+                            .join("\n"),
+                    );
+                }
+                sections.push(calculation_body);
+                if let Some(label) = result_label {
+                    sections.push(format!(
+                        "Therefore, there are {formatted} {label} in total."
+                    ));
+                }
+                let body = sections.join("\n\n");
                 log.append("calculation", body.clone());
                 return Some(finalize_simple(
                     prompt,

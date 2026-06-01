@@ -269,6 +269,23 @@ fn fibonacci_word_problem_reduces_to_calculator_expression() {
 }
 
 #[test]
+fn box_relation_word_problem_resolves_total_with_reasoning() {
+    // Issue #338: the prompt is an arithmetic word problem expressed as object
+    // relations, not as a calculator expression. It should reduce the given
+    // facts (B = 10, A = 2 * B, C = A + 5) before summing the boxes.
+    assert_calculation(
+        "I have 3 boxes. Box A has twice as many apples as Box B. Box C has 5 more apples than Box A. If Box B has 10 apples, how many apples are there in total? Show your reasoning step by step.",
+        &[
+            "Step 1: Box B = 10 apples.",
+            "Step 2: Box A = 2 * 10 = 20 apples.",
+            "Step 3: Box C = 20 + 5 = 25 apples.",
+            "20 + 10 + 25 = 55",
+            "there are 55 apples in total",
+        ],
+    );
+}
+
+#[test]
 fn program_request_is_not_misread_as_unit_incompatibility() {
     // Issue #334: "Write a program that computes the 10th Fibonacci number"
     // used to answer with a length/mass unit-incompatibility refusal because a
