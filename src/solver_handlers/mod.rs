@@ -9,6 +9,7 @@ mod behavior_rules;
 mod benchmark_prompts;
 mod calculator_rate;
 mod calendar;
+mod compound_interest;
 mod definition_merge;
 mod feature_capability;
 mod meta_explanation;
@@ -32,6 +33,7 @@ pub use benchmark_prompts::{
     try_fact_lookup, try_roleplay_request, try_summarization_request,
 };
 pub use calendar::try_calendar_reasoning;
+pub use compound_interest::try_compound_interest;
 pub use definition_merge::{try_definition_merge, try_definition_merge_by_default};
 pub use feature_capability::{try_feature_capability, CapabilityRuntime};
 pub use meta_explanation::{try_meta_explanation, try_meta_explanation_with_runtime};
