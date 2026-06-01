@@ -319,7 +319,10 @@ mod tests {
         for base in ["list_files", "list_files_arg"] {
             let sorted = lower(base, &modifiers(&["reverse_sort"])).resolved_task;
             let restored = lower(&sorted, &modifiers(&["cancel_reverse_sort"])).resolved_task;
-            assert_eq!(restored, base, "round-trip through {sorted} must restore {base}");
+            assert_eq!(
+                restored, base,
+                "round-trip through {sorted} must restore {base}"
+            );
         }
     }
 

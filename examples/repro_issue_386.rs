@@ -40,7 +40,11 @@ fn main() {
         ConversationTurn::assistant(first.answer.clone()),
     ];
     let path_argument = solver.solve_with_history(PATH_ARGUMENT_PROMPT, &history_after_first);
-    show("TURN 3 (path-argument modifier)", PATH_ARGUMENT_PROMPT, &path_argument);
+    show(
+        "TURN 3 (path-argument modifier)",
+        PATH_ARGUMENT_PROMPT,
+        &path_argument,
+    );
 
     let history_after_path = [
         ConversationTurn::user(FIRST_PROMPT),
@@ -49,7 +53,11 @@ fn main() {
         ConversationTurn::assistant(path_argument.answer.clone()),
     ];
     let reverse_sort = solver.solve_with_history(REVERSE_SORT_PROMPT, &history_after_path);
-    show("TURN 5 (reverse-sort modifier - issue #349)", REVERSE_SORT_PROMPT, &reverse_sort);
+    show(
+        "TURN 5 (reverse-sort modifier - issue #349)",
+        REVERSE_SORT_PROMPT,
+        &reverse_sort,
+    );
 
     let history_after_reverse = [
         ConversationTurn::user(FIRST_PROMPT),
@@ -60,5 +68,9 @@ fn main() {
         ConversationTurn::assistant(reverse_sort.answer),
     ];
     let cancel_sort = solver.solve_with_history(CANCEL_SORT_PROMPT, &history_after_reverse);
-    show("TURN 7 (cancel-sort modifier - issue #386)", CANCEL_SORT_PROMPT, &cancel_sort);
+    show(
+        "TURN 7 (cancel-sort modifier - issue #386)",
+        CANCEL_SORT_PROMPT,
+        &cancel_sort,
+    );
 }
