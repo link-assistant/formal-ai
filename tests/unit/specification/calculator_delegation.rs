@@ -269,6 +269,23 @@ fn fibonacci_word_problem_reduces_to_calculator_expression() {
 }
 
 #[test]
+fn box_relation_word_problem_resolves_total_with_reasoning() {
+    // Issue #338: the prompt is an arithmetic word problem expressed as object
+    // relations, not as a calculator expression. It should reduce the given
+    // facts (B = 10, A = 2 * B, C = A + 5) before summing the boxes.
+    assert_calculation(
+        "I have 3 boxes. Box A has twice as many apples as Box B. Box C has 5 more apples than Box A. If Box B has 10 apples, how many apples are there in total? Show your reasoning step by step.",
+        &[
+            "Step 1: Box B = 10 apples.",
+            "Step 2: Box A = 2 * 10 = 20 apples.",
+            "Step 3: Box C = 20 + 5 = 25 apples.",
+            "20 + 10 + 25 = 55",
+            "there are 55 apples in total",
+        ],
+    );
+}
+
+#[test]
 fn compound_interest_prompt_returns_formula_steps_and_eur_conversion() {
     let response = assert_calculation(
         "If I invest $1000 at 8% annual interest compounded monthly for 5 years, how much will I have? Show the formula, calculate step by step, and then convert the final amount to EUR using current exchange rates from the web.",

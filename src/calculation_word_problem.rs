@@ -9,6 +9,23 @@
 //! rewritten to `*`, and the trailing instruction sentence is dropped — yielding
 //! `55 * 8% of 500`, which the calculator evaluates to 2200.
 
+use std::collections::BTreeMap;
+
+/// A normalized arithmetic word problem, ready for calculator evaluation.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct WordProblemNormalization {
+    pub expression: String,
+    pub reasoning_steps: Vec<String>,
+    pub result_label: Option<String>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+enum BoxRule {
+    Known(i64),
+    Multiple { factor: i64, source: String },
+    Add { source: String, addend: i64 },
+}
+
 /// The `n`-th Fibonacci number under the convention F(1) = F(2) = 1 used across
 /// the coding catalog (so F(10) = 55, matching the `fibonacci` program output).
 fn fibonacci_value(n: u32) -> u64 {
@@ -126,15 +143,238 @@ fn split_sentences(text: &str) -> Vec<String> {
     sentences
 }
 
+fn sentence_words(sentence: &str) -> Vec<String> {
+    sentence
+        .split(|ch: char| !ch.is_alphanumeric())
+        .filter(|token| !token.is_empty())
+        .map(str::to_lowercase)
+        .collect()
+}
+
+fn parse_int_token(token: &str) -> Option<i64> {
+    if let Ok(value) = token.parse::<i64>() {
+        return Some(value);
+    }
+    match token {
+        "zero" => Some(0),
+        "one" | "a" | "an" => Some(1),
+        "two" => Some(2),
+        "three" => Some(3),
+        "four" => Some(4),
+        "five" => Some(5),
+        "six" => Some(6),
+        "seven" => Some(7),
+        "eight" => Some(8),
+        "nine" => Some(9),
+        "ten" => Some(10),
+        "eleven" => Some(11),
+        "twelve" => Some(12),
+        "thirteen" => Some(13),
+        "fourteen" => Some(14),
+        "fifteen" => Some(15),
+        "sixteen" => Some(16),
+        "seventeen" => Some(17),
+        "eighteen" => Some(18),
+        "nineteen" => Some(19),
+        "twenty" => Some(20),
+        _ => None,
+    }
+}
+
+fn canonical_box_id(token: &str) -> Option<String> {
+    let cleaned = token
+        .trim_matches(|ch: char| !ch.is_alphanumeric())
+        .to_ascii_uppercase();
+    (!cleaned.is_empty() && cleaned.chars().count() <= 3).then_some(cleaned)
+}
+
+fn parse_declared_box_count(words: &[String]) -> Option<usize> {
+    if words.len() >= 4
+        && words[0] == "i"
+        && words[1] == "have"
+        && matches!(words[3].as_str(), "box" | "boxes")
+    {
+        let count = parse_int_token(&words[2])?;
+        usize::try_from(count).ok()
+    } else {
+        None
+    }
+}
+
+fn parse_box_rule(words: &[String]) -> Option<(String, BoxRule, Option<String>)> {
+    let mut index = usize::from(words.first().is_some_and(|word| word == "if"));
+    if words.get(index)? != "box" {
+        return None;
+    }
+    let target = canonical_box_id(words.get(index + 1)?)?;
+    if words.get(index + 2)? != "has" {
+        return None;
+    }
+    index += 3;
+
+    if words.get(index).is_some_and(|word| word == "twice")
+        && words.get(index + 1).is_some_and(|word| word == "as")
+        && words.get(index + 2).is_some_and(|word| word == "many")
+        && words.get(index + 4).is_some_and(|word| word == "as")
+        && words.get(index + 5).is_some_and(|word| word == "box")
+    {
+        let item = words.get(index + 3).cloned();
+        let source = canonical_box_id(words.get(index + 6)?)?;
+        return Some((target, BoxRule::Multiple { factor: 2, source }, item));
+    }
+
+    let value = parse_int_token(words.get(index)?)?;
+    if words.get(index + 1).is_some_and(|word| word == "more")
+        && words.get(index + 3).is_some_and(|word| word == "than")
+        && words.get(index + 4).is_some_and(|word| word == "box")
+    {
+        let item = words.get(index + 2).cloned();
+        let source = canonical_box_id(words.get(index + 5)?)?;
+        return Some((
+            target,
+            BoxRule::Add {
+                source,
+                addend: value,
+            },
+            item,
+        ));
+    }
+
+    let item = words.get(index + 1).cloned();
+    Some((target, BoxRule::Known(value), item))
+}
+
+fn resolve_box_value(
+    id: &str,
+    rules: &BTreeMap<String, BoxRule>,
+    memo: &mut BTreeMap<String, i64>,
+    stack: &mut Vec<String>,
+    reasoning_steps: &mut Vec<String>,
+    result_label: &str,
+) -> Option<i64> {
+    if let Some(value) = memo.get(id) {
+        return Some(*value);
+    }
+    if stack.iter().any(|existing| existing == id) {
+        return None;
+    }
+    let rule = rules.get(id)?;
+    stack.push(id.to_owned());
+    let value =
+        match rule {
+            BoxRule::Known(value) => {
+                reasoning_steps.push(format!("Box {id} = {value} {result_label}."));
+                Some(*value)
+            }
+            BoxRule::Multiple { factor, source } => {
+                resolve_box_value(source, rules, memo, stack, reasoning_steps, result_label)
+                    .and_then(|source_value| {
+                        let value = source_value.checked_mul(*factor)?;
+                        reasoning_steps.push(format!(
+                            "Box {id} = {factor} * {source_value} = {value} {result_label}."
+                        ));
+                        Some(value)
+                    })
+            }
+            BoxRule::Add { source, addend } => {
+                resolve_box_value(source, rules, memo, stack, reasoning_steps, result_label)
+                    .and_then(|source_value| {
+                        let value = source_value.checked_add(*addend)?;
+                        reasoning_steps.push(format!(
+                            "Box {id} = {source_value} + {addend} = {value} {result_label}."
+                        ));
+                        Some(value)
+                    })
+            }
+        };
+    stack.pop();
+    let value = value?;
+    memo.insert(id.to_owned(), value);
+    Some(value)
+}
+
+fn normalize_box_total_problem(text: &str) -> Option<WordProblemNormalization> {
+    let lower = text.to_lowercase();
+    if !(lower.contains("box")
+        && lower.contains("how many")
+        && lower.contains("total")
+        && (lower.contains("twice as many") || lower.contains("more") && lower.contains("than")))
+    {
+        return None;
+    }
+
+    let mut declared_count = None;
+    let mut rules = BTreeMap::new();
+    let mut result_label = None;
+    for sentence in split_sentences(text) {
+        let words = sentence_words(&sentence);
+        if words.is_empty() {
+            continue;
+        }
+        declared_count = declared_count.or_else(|| parse_declared_box_count(&words));
+        if let Some((target, rule, item)) = parse_box_rule(&words) {
+            if let Some(item) = item.filter(|value| !matches!(value.as_str(), "box" | "boxes")) {
+                result_label = Some(item);
+            }
+            rules.insert(target, rule);
+        }
+    }
+
+    if rules.len() < 2 {
+        return None;
+    }
+    if let Some(count) = declared_count {
+        if rules.len() < count {
+            return None;
+        }
+    }
+
+    let result_label = result_label.unwrap_or_else(|| String::from("items"));
+    let mut memo = BTreeMap::new();
+    let mut reasoning_steps = Vec::new();
+    let ids = rules.keys().cloned().collect::<Vec<_>>();
+    for id in &ids {
+        resolve_box_value(
+            id,
+            &rules,
+            &mut memo,
+            &mut Vec::new(),
+            &mut reasoning_steps,
+            &result_label,
+        )?;
+    }
+    let values = ids
+        .iter()
+        .map(|id| memo.get(id).copied())
+        .collect::<Option<Vec<_>>>()?;
+    if values.is_empty() {
+        return None;
+    }
+    let expression = values
+        .iter()
+        .map(ToString::to_string)
+        .collect::<Vec<_>>()
+        .join(" + ");
+    reasoning_steps.push(format!("Total = {expression} {result_label}."));
+    Some(WordProblemNormalization {
+        expression,
+        reasoning_steps,
+        result_label: Some(result_label),
+    })
+}
+
 /// Rewrite a natural-language "word problem" into a calculator expression.
 ///
 /// Issue #334 step 2: see the module-level documentation. Returns `None` when
 /// no rewrite applies so callers can fall through unchanged.
 #[must_use]
-pub fn normalize_word_problem(expression: &str) -> Option<String> {
+pub fn normalize_word_problem_detailed(expression: &str) -> Option<WordProblemNormalization> {
     let trimmed = expression.trim();
     if trimmed.is_empty() {
         return None;
+    }
+    if let Some(normalized) = normalize_box_total_problem(trimmed) {
+        return Some(normalized);
     }
     // Keep only sentence fragments that carry arithmetic content, dropping pure
     // instruction clauses such as "Show me the code and the final result". The
@@ -179,7 +419,17 @@ pub fn normalize_word_problem(expression: &str) -> Option<String> {
     if working.is_empty() || working.eq_ignore_ascii_case(trimmed) {
         return None;
     }
-    Some(working)
+    Some(WordProblemNormalization {
+        expression: working,
+        reasoning_steps: Vec::new(),
+        result_label: None,
+    })
+}
+
+#[must_use]
+#[cfg(test)]
+pub fn normalize_word_problem(expression: &str) -> Option<String> {
+    normalize_word_problem_detailed(expression).map(|normalization| normalization.expression)
 }
 
 #[cfg(test)]
@@ -211,6 +461,27 @@ mod tests {
             normalize_word_problem("the fifth Fibonacci number multiplied by 10").as_deref(),
             Some("5 * 10"),
         );
+    }
+
+    #[test]
+    fn resolves_box_relations_and_total() {
+        let normalized = normalize_word_problem_detailed(
+            "I have 3 boxes. Box A has twice as many apples as Box B. \
+             Box C has 5 more apples than Box A. If Box B has 10 apples, \
+             how many apples are there in total? Show your reasoning step by step.",
+        )
+        .expect("box total problem should normalize");
+        assert_eq!(normalized.expression, "20 + 10 + 25");
+        assert_eq!(
+            normalized.reasoning_steps,
+            vec![
+                "Box B = 10 apples.",
+                "Box A = 2 * 10 = 20 apples.",
+                "Box C = 20 + 5 = 25 apples.",
+                "Total = 20 + 10 + 25 apples.",
+            ],
+        );
+        assert_eq!(normalized.result_label.as_deref(), Some("apples"));
     }
 
     #[test]

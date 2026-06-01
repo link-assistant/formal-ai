@@ -5,7 +5,7 @@
 //! local arithmetic evaluator for syntax the upstream crate does not support yet.
 
 use crate::arithmetic::{evaluate_fallback_formatted, ArithmeticError};
-use crate::calculation_word_problem::normalize_word_problem;
+use crate::calculation_word_problem::normalize_word_problem_detailed;
 use crate::fuzzy::is_close_token_typo;
 
 /// Engine that produced a calculation result.
@@ -42,6 +42,8 @@ pub struct CalculationCandidate {
     pub expression: String,
     pub explicit: bool,
     pub interpretations: Vec<PromptInterpretation>,
+    pub reasoning_steps: Vec<String>,
+    pub result_label: Option<String>,
 }
 
 /// A visible interpretation applied while normalizing a user prompt.
@@ -774,21 +776,25 @@ pub fn calculation_expression_candidates(prompt: &str) -> Vec<CalculationCandida
             expression: stripped.clone(),
             explicit,
             interpretations: interpretations.clone(),
+            reasoning_steps: Vec::new(),
+            result_label: None,
         });
     }
     // Issue #334 step 2: rewrite a natural-language word problem ("the 10th
     // Fibonacci number and multiply it by 8% of 500. Show me the code ...") into
     // a calculator expression and offer it as an additional candidate.
-    if let Some(normalized) = normalize_word_problem(&stripped) {
-        if has_calculation_signal(&normalized, explicit)
+    if let Some(normalized) = normalize_word_problem_detailed(&stripped) {
+        if has_calculation_signal(&normalized.expression, explicit)
             && !candidates
                 .iter()
-                .any(|candidate| candidate.expression == normalized)
+                .any(|candidate| candidate.expression == normalized.expression)
         {
             candidates.push(CalculationCandidate {
-                expression: normalized,
+                expression: normalized.expression,
                 explicit,
                 interpretations,
+                reasoning_steps: normalized.reasoning_steps,
+                result_label: normalized.result_label,
             });
         }
     }
@@ -803,6 +809,8 @@ pub fn calculation_expression_candidates(prompt: &str) -> Vec<CalculationCandida
             expression: trimmed.to_owned(),
             explicit: false,
             interpretations: Vec::new(),
+            reasoning_steps: Vec::new(),
+            result_label: None,
         });
     }
     candidates
