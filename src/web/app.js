@@ -1710,6 +1710,60 @@ const AGENT_STEP_SEPARATORS = [
 const AGENT_LEADING_CONJUNCTIONS =
   /^(?:and\s+then|then|next|after\s+that|потом|затем|после\s+этого|然后|接着)[\s,:]+/i;
 
+const AGENT_QUOTED_PHRASE_PATTERN =
+  /"([^"]+)"|'([^']+)'|`([^`]+)`|“([^”]+)”|«([^»]+)»/g;
+
+function extractAgentQuotedPhrases(text) {
+  const phrases = [];
+  for (const match of String(text || "").matchAll(AGENT_QUOTED_PHRASE_PATTERN)) {
+    const phrase = (match.slice(1).find((value) => value !== undefined) || "").trim();
+    if (phrase) phrases.push(phrase);
+  }
+  return phrases;
+}
+
+function agentResearchCommandPrefix(segment) {
+  const text = String(segment || "").trim().toLowerCase();
+  if (!/^(?:search|find|look up|lookup|research)\b/.test(text)) return "";
+  if (/\bwikipedia\b/.test(text)) return "Search Wikipedia for";
+  if (/\bwikidata\b/.test(text)) return "Search Wikidata for";
+  if (/\bwiktionary\b/.test(text)) return "Search Wiktionary for";
+  return "Search the web for";
+}
+
+function agentComparisonFocus(segment) {
+  const text = String(segment || "");
+  if (!/\bcompare\b/i.test(text)) return "";
+  const numberedTarget = text.match(
+    /\bnumber\s+of\s+([A-Za-z][A-Za-z -]{0,40}?)(?:[.?!,;:]|$)/i,
+  );
+  if (numberedTarget) {
+    const focus = numberedTarget[1]
+      .replace(/\b(?:their|his|her|its|the)\b/gi, "")
+      .replace(/\s+/g, " ")
+      .trim();
+    if (focus) return focus;
+  }
+  if (/\bpatents?\b/i.test(text)) return "patents";
+  return "";
+}
+
+function expandAgentResearchStep(segment) {
+  const commandPrefix = agentResearchCommandPrefix(segment);
+  if (!commandPrefix) return [segment];
+  const quotedPhrases = extractAgentQuotedPhrases(segment);
+  if (quotedPhrases.length < 2) return [segment];
+  const focus = agentComparisonFocus(segment);
+  if (!focus) return [segment];
+  const focusKey = focus.toLowerCase();
+  return quotedPhrases.map((phrase) => {
+    const query = phrase.toLowerCase().includes(focusKey)
+      ? phrase
+      : `${phrase} ${focus}`;
+    return `${commandPrefix} "${query}"`;
+  });
+}
+
 function decomposeAgentTask(text) {
   const trimmed = String(text || "").trim();
   if (!trimmed) return [];
@@ -1725,9 +1779,10 @@ function decomposeAgentTask(text) {
     }
     segments = next;
   }
-  return segments.map((segment) =>
+  const cleaned = segments.map((segment) =>
     segment.replace(AGENT_LEADING_CONJUNCTIONS, "").trim(),
   ).filter((segment) => segment.length > 0);
+  return cleaned.flatMap((segment) => expandAgentResearchStep(segment));
 }
 
 function messagesForConversation(events, conversationId) {
