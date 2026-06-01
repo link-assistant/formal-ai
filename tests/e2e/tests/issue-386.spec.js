@@ -293,3 +293,136 @@ test.describe('Issue #386 - copy a conversation as Markdown', () => {
     expect(clipboard).not.toContain('#### ');
   });
 });
+
+test.describe('Issue #386 - cancel a program modification', () => {
+  // The original bug: after building a reverse-sorted, path-argument file
+  // lister, "Отмени сортировку" ("cancel the sorting") returned intent:unknown.
+  // The cancel verb must be the data-derived inverse of reverse_sort, restoring
+  // the ascending program while keeping the path argument.
+  const FIRST_PROMPT =
+    'Напиши мне программу на Rust, которая выдаёт список файлов в текущей директории';
+  const PATH_ARG_PROMPT = 'Сделай так, чтобы программа принимала путь как аргумент';
+  const REVERSE_SORT_PROMPT = 'Сделай сортировку результатов в обратном порядке';
+  const CANCEL_SORT_PROMPT = 'Отмени сортировку';
+
+  async function sendPrompt(page, text) {
+    const input = page.locator('[data-testid="chat-composer-input"]');
+    await expect(input).toBeEnabled({ timeout: 5_000 });
+    await input.fill(text);
+    const messages = page.locator('[data-testid="chat-message"]');
+    const initial = await messages.count();
+    await page.locator('[data-testid="chat-composer-submit"]').click();
+    await expect(messages).toHaveCount(initial + 2, { timeout: 20_000 });
+    return messages.last();
+  }
+
+  async function openAllDetails(messageLocator) {
+    await messageLocator.evaluate((node) => {
+      for (const det of node.querySelectorAll('details.diagnostics-detail')) {
+        det.open = true;
+      }
+    });
+  }
+
+  async function readStepNames(messageLocator) {
+    return await messageLocator
+      .locator('[data-testid="diagnostics-step"]')
+      .evaluateAll((nodes) =>
+        nodes.map((node) => node.getAttribute('data-step') || ''),
+      );
+  }
+
+  test.beforeEach(async ({ page }) => {
+    await disableGreetingVariations(page);
+    await page.goto('./');
+    await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
+    await switchToManualMode(page);
+  });
+
+  test('the cancel follow-up restores the ascending program (was: unknown)', async ({
+    page,
+  }) => {
+    await sendPrompt(page, FIRST_PROMPT);
+    await sendPrompt(page, PATH_ARG_PROMPT);
+    const reversed = await sendPrompt(page, REVERSE_SORT_PROMPT);
+    await expect(reversed.locator('.markdown-body')).toContainText('b.cmp(a)');
+
+    const cancelled = await sendPrompt(page, CANCEL_SORT_PROMPT);
+
+    // The follow-up answers with the program — never the "unknown" fallback
+    // ("Unknown prompt: Отмени сортировку"), which has no code block at all.
+    const body = cancelled.locator('.markdown-body');
+    await expect(body).not.toContainText('Unknown prompt');
+    // The reverse sort is removed: ascending sort, no descending comparator,
+    // no .rev(); the path argument survives the cancel.
+    await expect(body).toContainText('names.sort();');
+    await expect(body).not.toContainText('b.cmp(a)');
+    await expect(body).not.toContainText('.rev()');
+    await expect(body).toContainText('env::args');
+  });
+
+  test('the cancel follow-up exposes the inverse-rule reasoning chain', async ({
+    page,
+  }) => {
+    await page.locator('.diagnostics-toggle').click();
+
+    await sendPrompt(page, FIRST_PROMPT);
+    await sendPrompt(page, PATH_ARG_PROMPT);
+    await sendPrompt(page, REVERSE_SORT_PROMPT);
+    const cancelled = await sendPrompt(page, CANCEL_SORT_PROMPT);
+
+    await expect(cancelled.locator('.intent')).toContainText(
+      'intent:write_program',
+    );
+    await openAllDetails(cancelled);
+
+    const stepNames = await readStepNames(cancelled);
+    for (const expected of [
+      'route_attempt',
+      'coreference_binding',
+      'modifier_detection',
+      'rule_construction',
+      'rule_verification',
+      'program_plan',
+      'deformalize',
+    ]) {
+      expect(stepNames).toContain(expected);
+    }
+
+    await expect(
+      cancelled.locator(
+        '[data-testid="diagnostics-step"][data-step="route_attempt"]',
+      ),
+    ).toContainText('selected_rule initial unknown reason no_seed_route');
+    // The active artifact is the accumulated reverse-sorted variant.
+    await expect(
+      cancelled.locator(
+        '[data-testid="diagnostics-step"][data-step="coreference_binding"]',
+      ),
+    ).toContainText(
+      'referent=active_program_artifact task=list_files_arg_reverse_sort language=rust',
+    );
+    // The cancel verb is decomposed as the inverse of reverse_sort.
+    await expect(
+      cancelled.locator(
+        '[data-testid="diagnostics-step"][data-step="modifier_detection"]',
+      ),
+    ).toContainText('cancel_reverse_sort');
+    await expect(
+      cancelled.locator(
+        '[data-testid="diagnostics-step"][data-step="rule_construction"]',
+      ),
+    ).toContainText('cancel_reverse_sort__reverse_sort_list_files_arg');
+    await expect(
+      cancelled.locator(
+        '[data-testid="diagnostics-step"][data-step="rule_verification"]',
+      ),
+    ).toContainText('status passed');
+    // The plan lowers back to the unsorted path variant.
+    await expect(
+      cancelled.locator(
+        '[data-testid="diagnostics-step"][data-step="program_plan"]',
+      ),
+    ).toContainText('resolved_task list_files_arg');
+  });
+});
