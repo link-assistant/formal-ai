@@ -212,3 +212,84 @@ test.describe('Issue #386 - reset settings to default', () => {
     ).toBeDisabled();
   });
 });
+
+test.describe('Issue #386 - copy a conversation as Markdown', () => {
+  async function sendPrompt(page, text) {
+    const input = page.locator('[data-testid="chat-composer-input"]');
+    await expect(input).toBeEnabled({ timeout: 5_000 });
+    await input.fill(text);
+    const messages = page.locator('[data-testid="chat-message"]');
+    const count = await messages.count();
+    await page.locator('[data-testid="chat-composer-submit"]').click();
+    await expect(messages).toHaveCount(count + 2, { timeout: 20_000 });
+  }
+
+  test('the sidebar copies the full dialog, folding in reasoning under diagnostics', async ({
+    context,
+    page,
+  }) => {
+    await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+    // Diagnostics on so the export must fold reasoning in after the AI turn.
+    await page.addInitScript(() => {
+      window.localStorage.setItem(
+        'formal-ai.preferences.v1',
+        'demo_preferences\n  demoMode "off"\n  diagnosticsMode "on"\n  greetingVariations "off"',
+      );
+    });
+    await page.goto('./');
+    await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
+    await expect(page.locator('[data-testid="demo-status"]')).toHaveText(
+      'Manual mode',
+    );
+
+    await sendPrompt(page, 'What is recursion?');
+
+    const copy = page.locator('[data-testid="conversation-copy"]').first();
+    await expect(copy).toBeVisible();
+    await copy.click();
+    await expect(copy).toHaveAttribute('data-copied', 'true');
+
+    const clipboard = await page.evaluate(() =>
+      navigator.clipboard.readText(),
+    );
+    // The whole dialog is present: a user turn and an assistant turn.
+    expect(clipboard).toContain('### You');
+    expect(clipboard).toContain('What is recursion?');
+    // Diagnostics is on, so a reasoning section trails the AI message with a
+    // numbered step list.
+    expect(clipboard).toContain('#### ');
+    expect(clipboard).toMatch(/\n1\. /);
+  });
+
+  test('without diagnostics the copy omits the reasoning section', async ({
+    context,
+    page,
+  }) => {
+    await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+    await page.addInitScript(() => {
+      window.localStorage.setItem(
+        'formal-ai.preferences.v1',
+        'demo_preferences\n  demoMode "off"\n  diagnosticsMode "off"\n  greetingVariations "off"',
+      );
+    });
+    await page.goto('./');
+    await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
+    await expect(page.locator('[data-testid="demo-status"]')).toHaveText(
+      'Manual mode',
+    );
+
+    await sendPrompt(page, 'What is recursion?');
+
+    const copy = page.locator('[data-testid="conversation-copy"]').first();
+    await copy.click();
+    await expect(copy).toHaveAttribute('data-copied', 'true');
+
+    const clipboard = await page.evaluate(() =>
+      navigator.clipboard.readText(),
+    );
+    expect(clipboard).toContain('### You');
+    expect(clipboard).toContain('What is recursion?');
+    // Diagnostics is off, so no reasoning subsection is appended.
+    expect(clipboard).not.toContain('#### ');
+  });
+});

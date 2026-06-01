@@ -814,9 +814,35 @@ body.is-resizing-context {
 
 .conversation-entry-row {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) auto auto;
   gap: 4px;
   align-items: stretch;
+}
+
+/* Issue #386: copy the whole conversation as Markdown from the sidebar. */
+.conversation-copy {
+  min-height: 34px;
+  display: grid;
+  place-items: center;
+  padding: 0 8px;
+  border: 1px solid #d6dee2;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #40515f;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.conversation-copy:hover {
+  border-color: #175f4f;
+  background: #f1f6f4;
+}
+
+.conversation-copy.is-copied {
+  border-color: #175f4f;
+  color: #175f4f;
 }
 
 .conversation-entry-button {
@@ -2486,6 +2512,7 @@ textarea:disabled {
 :root[data-theme="dark"] .conversation-purge-deleted,
 :root[data-theme="dark"] .conversation-entry-button,
 :root[data-theme="dark"] .conversation-delete,
+:root[data-theme="dark"] .conversation-copy,
 :root[data-theme="dark"] .fetch-iframe-control,
 :root[data-theme="dark"] .sidebar-section-collapse {
   border-color: #4a524e;

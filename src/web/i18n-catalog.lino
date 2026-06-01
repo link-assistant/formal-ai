@@ -72,6 +72,9 @@ en
     deletePermanent "Delete permanently"
     purgeDeleted "Purge deleted"
     purgeDeletedTitle "Permanently delete every event from deleted conversations."
+    copyMarkdown "Copy"
+    copyMarkdownDone "Copied"
+    copyMarkdownTitle "Copy the whole conversation as Markdown"
   message
     author
       user "You"
@@ -292,6 +295,9 @@ ru
     deletePermanent "Удалить навсегда"
     purgeDeleted "Очистить удаленные"
     purgeDeletedTitle "Навсегда удалить все события из удаленных разговоров."
+    copyMarkdown "Копировать"
+    copyMarkdownDone "Скопировано"
+    copyMarkdownTitle "Копировать весь разговор в формате Markdown"
   message
     author
       user "Вы"
@@ -506,6 +512,9 @@ zh
     deletePermanent "永久删除"
     purgeDeleted "清除已删除"
     purgeDeletedTitle "永久删除已删除对话中的所有事件。"
+    copyMarkdown "复制"
+    copyMarkdownDone "已复制"
+    copyMarkdownTitle "将整个对话复制为 Markdown"
   message
     author
       user "你"
@@ -724,6 +733,9 @@ hi
     deletePermanent "स्थायी रूप से हटाएं"
     purgeDeleted "Deleted हटाएं"
     purgeDeletedTitle "Deleted बातचीत के सभी events स्थायी रूप से हटाएं।"
+    copyMarkdown "कॉपी"
+    copyMarkdownDone "कॉपी हो गया"
+    copyMarkdownTitle "पूरी बातचीत को Markdown के रूप में कॉपी करें"
   message
     author
       user "आप"

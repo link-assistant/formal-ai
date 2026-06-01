@@ -1854,6 +1854,51 @@ function messagesForConversation(events, conversationId) {
   return out;
 }
 
+// Issue #386: serialize a whole stored conversation to Markdown so it can be
+// copied from the conversations list. Each turn becomes a `### <author>`
+// section followed by the message body. When `includeReasoning` is set (the
+// diagnostics surface is on) the per-turn reasoning steps — persisted as
+// separate `reasoning` events recorded just before each assistant message —
+// are appended after that AI message as a Markdown ordered list, so the export
+// mirrors what the diagnostics panel shows on screen.
+function conversationToMarkdown(events, conversationId, options = {}) {
+  if (!conversationId) return "";
+  const includeReasoning = options.includeReasoning === true;
+  const userLabel = options.userLabel || "You";
+  const assistantLabel = options.assistantLabel || "formal-ai";
+  const reasoningLabel = options.reasoningLabel || "Reasoning";
+  const safe = Array.isArray(events) ? events : [];
+  const blocks = [];
+  const title = (options.title || "").trim();
+  if (title) {
+    blocks.push(`# ${title}`);
+  }
+  let pendingReasoning = [];
+  for (const event of safe) {
+    if (!event) continue;
+    if ((event.conversationId || "legacy") !== conversationId) continue;
+    const kind = event.kind || "message";
+    if (kind === "reasoning") {
+      const detail = String(event.content || "").trim();
+      if (detail) pendingReasoning.push(detail);
+      continue;
+    }
+    if (kind !== "message") continue;
+    const role = event.role || "assistant";
+    const label = role === "user" ? userLabel : assistantLabel;
+    const lines = [`### ${label}`, "", String(event.content || "")];
+    if (role === "assistant" && includeReasoning && pendingReasoning.length > 0) {
+      lines.push("", `#### ${reasoningLabel}`, "");
+      pendingReasoning.forEach((step, index) => {
+        lines.push(`${index + 1}. ${step}`);
+      });
+    }
+    blocks.push(lines.join("\n"));
+    pendingReasoning = [];
+  }
+  return blocks.join("\n\n");
+}
+
 function randomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -4776,6 +4821,9 @@ function App() {
     initialPreferences.current.currentConversationId || "",
   );
   const [conversations, setConversations] = useState([]);
+  // Issue #386: id of the conversation whose "copy as Markdown" button last
+  // succeeded, so the entry can flash a short confirmation label.
+  const [copiedConversationId, setCopiedConversationId] = useState("");
   const currentConversationRef = useRef(currentConversationId);
   const conversationTitlesRef = useRef(new Map());
 
@@ -5420,6 +5468,39 @@ function App() {
     setShowDeletedConversations(false);
     await refreshConversations(false);
   }, [refreshConversations]);
+
+  // Issue #386: copy a whole conversation to the clipboard as Markdown. When
+  // diagnostics mode is on, the persisted reasoning steps are folded in after
+  // each AI message so the copy matches the on-screen diagnostics surface.
+  const handleCopyConversation = useCallback(
+    async (entry) => {
+      if (!entry || !entry.id) return;
+      let events = [];
+      try {
+        events = await window.FormalAiMemory.listEvents();
+      } catch (_error) {
+        events = [];
+      }
+      const markdown = conversationToMarkdown(events, entry.id, {
+        title: entry.title || "",
+        userLabel: t("message.author.user"),
+        assistantLabel:
+          normalizeAssistantName(assistantNameRef.current) || "formal-ai",
+        reasoningLabel: t("message.diagnosticsSteps"),
+        includeReasoning: diagnosticsModeRef.current,
+      });
+      const ok = await copyTextToClipboard(markdown);
+      if (ok) {
+        setCopiedConversationId(entry.id);
+        setTimeout(() => {
+          setCopiedConversationId((current) =>
+            current === entry.id ? "" : current,
+          );
+        }, 1600);
+      }
+    },
+    [t],
+  );
 
   useEffect(() => {
     persistPreferences({
@@ -6916,6 +6997,27 @@ function App() {
                               count: entry.messageCount,
                             }),
                           ),
+                        ),
+                        h(
+                          "button",
+                          {
+                            type: "button",
+                            className: `conversation-copy${
+                              copiedConversationId === entry.id
+                                ? " is-copied"
+                                : ""
+                            }`,
+                            "data-testid": "conversation-copy",
+                            "data-conversation-id": entry.id,
+                            "data-copied":
+                              copiedConversationId === entry.id ? "true" : null,
+                            "aria-label": t("conversation.copyMarkdownTitle"),
+                            title: t("conversation.copyMarkdownTitle"),
+                            onClick: () => handleCopyConversation(entry),
+                          },
+                          copiedConversationId === entry.id
+                            ? t("conversation.copyMarkdownDone")
+                            : t("conversation.copyMarkdown"),
                         ),
                         entry.deleted
                           ? h(
