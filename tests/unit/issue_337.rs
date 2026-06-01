@@ -33,3 +33,40 @@ Then format this as a JSON object.";
         response.answer
     );
 }
+
+#[test]
+fn direct_feature_capability_questions_still_work_across_supported_languages() {
+    struct Case {
+        language: &'static str,
+        prompt: &'static str,
+    }
+
+    let cases = [
+        Case {
+            language: "en",
+            prompt: "Is configuration available?",
+        },
+        Case {
+            language: "ru",
+            prompt: "доступна ли настройка?",
+        },
+        Case {
+            language: "hi",
+            prompt: "क्या settings उपलब्ध हैं?",
+        },
+        Case {
+            language: "zh",
+            prompt: "设置可用吗?",
+        },
+    ];
+
+    for case in cases {
+        let response = FormalAiEngine.answer(case.prompt);
+
+        assert_eq!(
+            response.intent, "capabilities",
+            "{} feature capability prompt should still route to capabilities: {}",
+            case.language, response.answer
+        );
+    }
+}
