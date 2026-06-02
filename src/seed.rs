@@ -23,6 +23,7 @@
 
 mod brainstorm;
 mod coreference;
+mod embedded;
 mod facts;
 mod meanings;
 mod operation_vocabulary;
@@ -40,6 +41,15 @@ use parser::{
 
 pub use brainstorm::{brainstorm_seeds, BrainstormCategory, BrainstormSeeds};
 pub use coreference::{coreference_seeds, Antecedent, CoreferenceSeeds, Pronoun};
+pub use embedded::{
+    seed_files, AGENT_INFO_LINO, BRAINSTORM_SEEDS_LINO, CONCEPTS_LINO, CONCEPT_CONTEXTS_LINO,
+    COREFERENCE_LINO, DEMO_DIALOGS_LINO, ENVIRONMENTS_LINO, FACTS_LINO, GREETINGS_LINO,
+    HELLO_WORLD_PROGRAMS_LINO, IDENTITY_LINO, INTENT_ROUTING_LINO, LANGUAGE_DETECTION_LINO,
+    MEANINGS_CALENDAR_LINO, MEANINGS_LINO, MEANINGS_UNITS_LINO, MEANING_FILES,
+    MULTILINGUAL_RESPONSES_LINO, OPERATION_VOCABULARY_LINO, PERSONAS_LINO, PROGRAM_PLAN_RULES_LINO,
+    PROJECTS_LINO, PROMPT_PATTERNS_LINO, SELF_IMPROVEMENT_LOOP_LINO, SUMMARY_TOPICS_LINO,
+    TOOLS_LINO,
+};
 pub use facts::{facts, FactRecord, LocalizedFact};
 pub use meanings::{
     lexicon, Lexeme, Lexicon, Meaning, ROLE_CALENDAR_DAY_REFERENCE, ROLE_CALENDAR_DIRECTION_NEXT,
@@ -55,51 +65,6 @@ pub use projects::{
     projects_registry, LocalizedProject, ProjectRecord, ProjectStatement, ProjectsRegistry,
 };
 pub use summary_topics::{summary_topic_seeds, SummaryTopic, SummaryTopicSeeds};
-
-/// Embedded copy of every Links Notation seed file. Returned in declaration
-/// order so callers can render the merged bundle deterministically.
-#[must_use]
-pub fn seed_files() -> Vec<(&'static str, &'static str)> {
-    vec![
-        ("data/seed/agent-info.lino", AGENT_INFO_LINO),
-        (
-            "data/seed/multilingual-responses.lino",
-            MULTILINGUAL_RESPONSES_LINO,
-        ),
-        ("data/seed/concepts.lino", CONCEPTS_LINO),
-        ("data/seed/concept-contexts.lino", CONCEPT_CONTEXTS_LINO),
-        ("data/seed/facts.lino", FACTS_LINO),
-        ("data/seed/brainstorm-seeds.lino", BRAINSTORM_SEEDS_LINO),
-        ("data/seed/personas.lino", PERSONAS_LINO),
-        ("data/seed/summary-topics.lino", SUMMARY_TOPICS_LINO),
-        ("data/seed/coreference.lino", COREFERENCE_LINO),
-        ("data/seed/tools.lino", TOOLS_LINO),
-        ("data/seed/language-detection.lino", LANGUAGE_DETECTION_LINO),
-        ("data/seed/prompt-patterns.lino", PROMPT_PATTERNS_LINO),
-        ("data/seed/intent-routing.lino", INTENT_ROUTING_LINO),
-        (
-            "data/seed/operation-vocabulary.lino",
-            OPERATION_VOCABULARY_LINO,
-        ),
-        ("data/seed/meanings.lino", MEANINGS_LINO),
-        ("data/seed/meanings-units.lino", MEANINGS_UNITS_LINO),
-        ("data/seed/meanings-calendar.lino", MEANINGS_CALENDAR_LINO),
-        ("data/seed/greetings.lino", GREETINGS_LINO),
-        ("data/seed/identity.lino", IDENTITY_LINO),
-        (
-            "data/seed/hello-world-programs.lino",
-            HELLO_WORLD_PROGRAMS_LINO,
-        ),
-        ("data/seed/program-plan-rules.lino", PROGRAM_PLAN_RULES_LINO),
-        (
-            "data/seed/self-improvement-loop.lino",
-            SELF_IMPROVEMENT_LOOP_LINO,
-        ),
-        ("data/seed/demo-dialogs.lino", DEMO_DIALOGS_LINO),
-        ("data/seed/environments.lino", ENVIRONMENTS_LINO),
-        ("data/seed/projects.lino", PROJECTS_LINO),
-    ]
-}
 
 /// Merge every embedded seed file into a single Links Notation document.
 ///
@@ -734,40 +699,6 @@ pub fn environment_directory() -> EnvironmentDirectory {
 pub fn environment_records() -> Vec<EnvironmentRecord> {
     environment_directory().environments
 }
-
-/// Raw embedded contents (used by `merged_bundle` and by tests).
-pub const AGENT_INFO_LINO: &str = include_str!("../data/seed/agent-info.lino");
-pub const MULTILINGUAL_RESPONSES_LINO: &str =
-    include_str!("../data/seed/multilingual-responses.lino");
-pub const CONCEPTS_LINO: &str = include_str!("../data/seed/concepts.lino");
-pub const CONCEPT_CONTEXTS_LINO: &str = include_str!("../data/seed/concept-contexts.lino");
-pub const FACTS_LINO: &str = include_str!("../data/seed/facts.lino");
-pub const BRAINSTORM_SEEDS_LINO: &str = include_str!("../data/seed/brainstorm-seeds.lino");
-pub const PERSONAS_LINO: &str = include_str!("../data/seed/personas.lino");
-pub const SUMMARY_TOPICS_LINO: &str = include_str!("../data/seed/summary-topics.lino");
-pub const COREFERENCE_LINO: &str = include_str!("../data/seed/coreference.lino");
-pub const TOOLS_LINO: &str = include_str!("../data/seed/tools.lino");
-pub const LANGUAGE_DETECTION_LINO: &str = include_str!("../data/seed/language-detection.lino");
-pub const PROMPT_PATTERNS_LINO: &str = include_str!("../data/seed/prompt-patterns.lino");
-pub const INTENT_ROUTING_LINO: &str = include_str!("../data/seed/intent-routing.lino");
-pub const OPERATION_VOCABULARY_LINO: &str = include_str!("../data/seed/operation-vocabulary.lino");
-pub const MEANINGS_LINO: &str = include_str!("../data/seed/meanings.lino");
-pub const MEANINGS_UNITS_LINO: &str = include_str!("../data/seed/meanings-units.lino");
-pub const MEANINGS_CALENDAR_LINO: &str = include_str!("../data/seed/meanings-calendar.lino");
-pub const GREETINGS_LINO: &str = include_str!("../data/seed/greetings.lino");
-pub const IDENTITY_LINO: &str = include_str!("../data/seed/identity.lino");
-pub const HELLO_WORLD_PROGRAMS_LINO: &str = include_str!("../data/seed/hello-world-programs.lino");
-pub const PROGRAM_PLAN_RULES_LINO: &str = include_str!("../data/seed/program-plan-rules.lino");
-pub const SELF_IMPROVEMENT_LOOP_LINO: &str =
-    include_str!("../data/seed/self-improvement-loop.lino");
-pub const DEMO_DIALOGS_LINO: &str = include_str!("../data/seed/demo-dialogs.lino");
-pub const ENVIRONMENTS_LINO: &str = include_str!("../data/seed/environments.lino");
-pub const PROJECTS_LINO: &str = include_str!("../data/seed/projects.lino");
-
-/// The ordered set of meaning-lexicon files, concatenated by [`lexicon`]. Split
-/// across several `.lino` files so none breaches the seed file-size guard; each
-/// wraps its records under a top-level `meanings` node (the loader walks all).
-pub const MEANING_FILES: &[&str] = &[MEANINGS_LINO, MEANINGS_UNITS_LINO, MEANINGS_CALENDAR_LINO];
 
 #[cfg(test)]
 mod tests {
