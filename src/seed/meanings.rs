@@ -603,6 +603,25 @@ mod tests {
     }
 
     #[test]
+    fn descriptions_are_parsed_from_the_seed() {
+        // Proves the optional `description` child is actually read off the wire:
+        // at least one surface form must carry a non-empty self-describing note.
+        // (The whole-lexicon enforcement invariant lives in
+        // `every_word_form_is_described` once the backfill is complete.)
+        let lex = lexicon();
+        let described = lex
+            .meanings
+            .iter()
+            .flat_map(Meaning::word_forms)
+            .filter(|f| !f.description.trim().is_empty())
+            .count();
+        assert!(
+            described > 0,
+            "the parser must read `description` children off the seed"
+        );
+    }
+
+    #[test]
     fn program_roles_are_populated() {
         let lex = lexicon();
         assert!(
