@@ -191,6 +191,37 @@ bump: minor
   reproduces the canonical surface set with the expected per-slot bucket counts
   and returns byte-identical results to the pre-conversion logic across a
   multilingual prompt battery (issue #386).
+- The web-intent handlers (`src/solver_handlers/web_requests.rs` and their
+  `formal_ai_worker.js` mirror) are data-driven too. Three self-describing
+  meanings in `data/seed/meanings-web-navigation.lino` carry every surface the
+  two handlers used to hardcode in four inline arrays: `web_resource` (the
+  URL-identified thing both intents act on — url/site/page, `defined_by`
+  `entity`), `http_fetch` ("fetch …", "сделай запрос к …", "अनुरोध भेजें",
+  "发送请求"), and `url_navigate` ("go to …", "открой …", "पर जाएं", "打开"), the
+  two verbs each `defined_by` `inquiry` + `action` + `web_resource` and
+  lexicalised in every supported language. As in the how-cluster, each surface
+  marks its URL slot with the ellipsis marker `…` (U+2026): a trailing `…` is a
+  prefix surface ("fetch …" begins "fetch google.com") and no marker is a bare
+  phrase matched anywhere ("запрос к" appears inside "сделать запрос к
+  google.com"). A shared `role_evidences_web_intent` helper buckets a role's
+  forms by `WordForm::slot()` and matches each against the prompt, so
+  `is_http_fetch_prompt`/`is_url_navigate_prompt` ask the lexicon for the
+  `http_fetch`/`url_navigate` roles instead of carrying
+  `HTTP_FETCH_PREFIXES`/`HTTP_FETCH_MARKERS`/`URL_NAVIGATE_PREFIXES`/
+  `URL_NAVIGATE_MARKERS` — the code knows only the concepts "fetch a web
+  resource" and "navigate to a web resource". The protective URL gate
+  (`first_url_candidate`, which rejects `@`-bearing tokens so emails never
+  trigger) and the bare-URL navigation early-return are unchanged. Because the
+  verbs now exist in every language, Hindi and Chinese fetch/navigate requests
+  ("打开 https://…", "获取 https://…", "पर जाएं …") route correctly where the
+  former English/Russian-only arrays recognised nothing, with the fetch and
+  navigate verb sets staying disjoint. A parity harness
+  (`experiments/issue-386-js-web-navigation.mjs`) proves the worker reproduces
+  the canonical surface set (16 prefix + 25 bare http_fetch forms, 45 prefix + 27
+  bare url_navigate forms), routes 83 English/Russian probes byte-identically to
+  the pre-conversion logic through the real URL gate and fetch-before-navigate
+  precedence, and adds the Hindi/Chinese coverage the old arrays lacked (issue
+  #386).
 - Every meaning now descends from a single ontology root, so the lexicon is one
   connected graph rather than disjoint clusters. A new backbone
   (`data/seed/meanings-ontology.lino`) defines `link` as the self-rooted root of

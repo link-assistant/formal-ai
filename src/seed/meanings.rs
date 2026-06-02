@@ -194,6 +194,24 @@ pub const ROLE_MECHANISM_INQUIRY: &str = "mechanism_inquiry";
 /// "如何做 X", …). Every surface is a [`Slot::Prefix`] carrying the task after the
 /// slot; a surface may name the canonical operation in an `action` child.
 pub const ROLE_PROCEDURAL_REQUEST: &str = "procedural_request";
+/// Semantic role: a prompt asking to fetch a web resource over HTTP.
+///
+/// The retrieve-this-URL request ("fetch X", "сделай запрос к X", "अनुरोध भेजें",
+/// "获取", …). Surfaces split into [`Slot::Prefix`] forms (the literal precedes
+/// the URL — "fetch …") and [`Slot::Bare`] markers matched anywhere in the
+/// prompt; a separate URL gate means a surface only routes here when the prompt
+/// also carries a real URL. A meaning carrying this role is `defined_by` the
+/// `inquiry`, `action`, and `web_resource` concepts.
+pub const ROLE_HTTP_FETCH: &str = "http_fetch";
+/// Semantic role: a prompt asking to open or show a web resource.
+///
+/// The navigate-to-this-URL request ("open X", "перейди на X", "पर जाएं",
+/// "打开", …) — open the page rather than fetch its bytes. Surfaces split into
+/// [`Slot::Prefix`] forms (the literal precedes the URL — "open …") and
+/// [`Slot::Bare`] markers matched anywhere in the prompt; a bare URL on its own
+/// also counts. Like [`ROLE_HTTP_FETCH`] it is URL-gated and `defined_by` the
+/// `inquiry`, `action`, and `web_resource` concepts.
+pub const ROLE_URL_NAVIGATE: &str = "url_navigate";
 /// Semantic role: the single root of the merged ontology — the `link` meaning.
 ///
 /// Every other meaning descends from it through `defined_by` edges, so the whole
