@@ -181,6 +181,19 @@ pub const ROLE_SELF_FACT_QUERY: &str = "self_fact_query";
 /// "介绍一下你自己", …). Suppressed when a [`ROLE_SELF_FACT_QUERY`] surface
 /// also matches.
 pub const ROLE_SELF_INTRODUCTION_REQUEST: &str = "self_introduction_request";
+/// Semantic role: a prompt asking how something works.
+///
+/// An inquiry into a mechanism or operating principle ("how does X work",
+/// "как устроен X", "X कैसे काम करता है", "X 如何工作", …). Each surface marks the
+/// subject position with the ellipsis (U+2026) slot marker (see [`Slot`]); a
+/// meaning carrying this role is `defined_by` the `inquiry` and `action` concepts.
+pub const ROLE_MECHANISM_INQUIRY: &str = "mechanism_inquiry";
+/// Semantic role: a prompt requesting the ordered steps to accomplish a task.
+///
+/// The how-to-X procedure question ("how to X", "как сделать X", "कैसे करें X",
+/// "如何做 X", …). Every surface is a [`Slot::Prefix`] carrying the task after the
+/// slot; a surface may name the canonical operation in an `action` child.
+pub const ROLE_PROCEDURAL_REQUEST: &str = "procedural_request";
 /// Semantic role: the single root of the merged ontology — the `link` meaning.
 ///
 /// Every other meaning descends from it through `defined_by` edges, so the whole
@@ -200,6 +213,36 @@ pub const ROLE_ONTOLOGY_TYPE: &str = "ontology_type";
 /// up to the `link` root.
 pub const ROLE_ONTOLOGY_CATEGORY: &str = "ontology_category";
 
+/// Where a surface form positions the variable subject of a templated prompt.
+///
+/// A meaning's surface text may be a fixed phrase or a template with one open
+/// slot — the position a user fills with the concrete subject ("how does *X*
+/// work"). The slot is marked in the data with a single ellipsis `…` (U+2026,
+/// serializer-safe: not a quote or backslash), and its position classifies the
+/// form:
+///
+/// * [`Slot::Bare`] — no `…`: a fixed phrase carrying no subject ("how it works").
+/// * [`Slot::Prefix`] — trailing `…`: the literal precedes the subject, which
+///   follows ("how does …" → subject after).
+/// * [`Slot::Suffix`] — leading `…`: the subject precedes the literal ("… как
+///   работает" → subject before).
+/// * [`Slot::Circumfix`] — middle `…`: the subject sits between two literals
+///   ("how … works").
+///
+/// This lets recognition code derive an affix-matching strategy from the data
+/// rather than from a hardcoded per-language list (issue #386).
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Slot {
+    /// A fixed phrase with no open subject slot.
+    Bare,
+    /// The literal precedes the subject (trailing `…`).
+    Prefix,
+    /// The subject precedes the literal (leading `…`).
+    Suffix,
+    /// The subject sits between two literals (middle `…`).
+    Circumfix,
+}
+
 /// A single surface form together with a self-describing note.
 ///
 /// The data must "not just list" the word (issue #386): each form carries a
@@ -208,10 +251,54 @@ pub const ROLE_ONTOLOGY_CATEGORY: &str = "ontology_category";
 /// still matches on [`WordForm::text`]; the description makes the form usable
 /// for any purpose (diagnostics, learning, lexical grounding), not only the
 /// one parsing path baked into a handler.
+///
+/// A form may also carry an `action` — the canonical, language-independent
+/// operation it names when it stands in for a verb (e.g. the procedural surface
+/// "как сделать …" names the `do` action). Empty when the form does not fix an
+/// action (the operation is then read from the matched subject instead).
 #[derive(Debug, Clone)]
 pub struct WordForm {
     pub text: String,
     pub description: String,
+    pub action: String,
+}
+
+impl WordForm {
+    /// How this form positions its subject slot — derived from the position of
+    /// the `…` (U+2026) marker in [`WordForm::text`]. A form with no marker is
+    /// [`Slot::Bare`]; see [`Slot`] for the full classification.
+    #[must_use]
+    pub fn slot(&self) -> Slot {
+        match self.text.split_once('…') {
+            None => Slot::Bare,
+            Some((before, after)) => match (!before.is_empty(), !after.is_empty()) {
+                (true, true) => Slot::Circumfix,
+                (true, false) => Slot::Prefix,
+                (false, true) => Slot::Suffix,
+                (false, false) => Slot::Bare,
+            },
+        }
+    }
+
+    /// The literal text before the `…` slot marker (the whole text when there is
+    /// no marker). For a [`Slot::Prefix`] form this is the matchable prefix.
+    #[must_use]
+    pub fn before_slot(&self) -> &str {
+        match self.text.split_once('…') {
+            Some((before, _)) => before,
+            None => &self.text,
+        }
+    }
+
+    /// The literal text after the `…` slot marker (empty when there is no
+    /// marker). For a [`Slot::Suffix`] form this is the matchable suffix.
+    #[must_use]
+    pub fn after_slot(&self) -> &str {
+        match self.text.split_once('…') {
+            Some((_, after)) => after,
+            None => "",
+        }
+    }
 }
 
 /// Surface forms that evidence a meaning in one language.
@@ -305,6 +392,21 @@ impl Lexicon {
     /// naming the surface words — those live in the data.
     pub fn meanings_with_role<'a>(&'a self, role: &'a str) -> impl Iterator<Item = &'a Meaning> {
         self.meanings.iter().filter(move |m| m.has_role(role))
+    }
+
+    /// Every surface *form* (text, description, action, slot) contributed by
+    /// every meaning carrying `role`, in declaration order. Unlike
+    /// [`Lexicon::words_for_role`] this preserves each form's slot marker and
+    /// action, so a handler can derive an affix-matching strategy from the data:
+    /// it walks the forms, buckets them by [`WordForm::slot`], and matches each
+    /// against the prompt — never naming a surface word itself (issue #386).
+    #[must_use]
+    pub fn role_word_forms<'a>(&'a self, role: &str) -> Vec<&'a WordForm> {
+        self.meanings
+            .iter()
+            .filter(|meaning| meaning.has_role(role))
+            .flat_map(Meaning::word_forms)
+            .collect()
     }
 
     /// Distinct surface words contributed by every meaning carrying `role`,
@@ -469,6 +571,7 @@ fn parse_meaning(node: &LinoNode) -> Meaning {
                     .map(|w| WordForm {
                         text: w.id.clone(),
                         description: w.find_child_value("description").to_string(),
+                        action: w.find_child_value("action").to_string(),
                     })
                     .collect();
                 lexemes.push(Lexeme {
@@ -666,6 +769,105 @@ mod tests {
         assert!(
             !lex.words_for_role(ROLE_PROGRAM_MODIFICATION).is_empty(),
             "program_modification role must have surface words"
+        );
+    }
+
+    #[test]
+    fn word_form_slot_is_derived_from_the_ellipsis_marker() {
+        // The slot classification is purely a function of where the `…` (U+2026)
+        // marker sits in the surface text (issue #386): no marker is Bare, a
+        // trailing marker is Prefix, a leading marker is Suffix, and a middle
+        // marker is Circumfix. before_slot/after_slot expose the literals around
+        // the slot so a handler can match them without naming the surface.
+        let form = |text: &str| WordForm {
+            text: text.to_string(),
+            description: String::new(),
+            action: String::new(),
+        };
+
+        let bare = form("how it works");
+        assert_eq!(bare.slot(), Slot::Bare);
+        assert_eq!(bare.before_slot(), "how it works");
+        assert_eq!(bare.after_slot(), "");
+
+        let prefix = form("how does …");
+        assert_eq!(prefix.slot(), Slot::Prefix);
+        assert_eq!(prefix.before_slot(), "how does ");
+        assert_eq!(prefix.after_slot(), "");
+
+        let suffix = form("… как работает");
+        assert_eq!(suffix.slot(), Slot::Suffix);
+        assert_eq!(suffix.before_slot(), "");
+        assert_eq!(suffix.after_slot(), " как работает");
+
+        let circumfix = form("how … works");
+        assert_eq!(circumfix.slot(), Slot::Circumfix);
+        assert_eq!(circumfix.before_slot(), "how ");
+        assert_eq!(circumfix.after_slot(), " works");
+    }
+
+    #[test]
+    fn how_cluster_roles_populate_and_classify() {
+        let lex = lexicon();
+
+        // mechanism_inquiry surfaces span all four slot kinds; representative
+        // surfaces must land in the expected bucket with the expected literals.
+        let mech = lex.role_word_forms(ROLE_MECHANISM_INQUIRY);
+        assert!(
+            !mech.is_empty(),
+            "mechanism_inquiry must contribute surface forms"
+        );
+        assert!(mech.iter().any(|f| f.slot() == Slot::Bare));
+        assert!(mech.iter().any(|f| f.slot() == Slot::Prefix));
+        assert!(mech.iter().any(|f| f.slot() == Slot::Suffix));
+        assert!(mech.iter().any(|f| f.slot() == Slot::Circumfix));
+        assert!(
+            mech.iter()
+                .any(|f| f.slot() == Slot::Bare && f.text == "how it works"),
+            "the bare English how-it-works phrase must be present"
+        );
+        assert!(
+            mech.iter()
+                .any(|f| f.slot() == Slot::Prefix && f.before_slot() == "how does "),
+            "the `how does …` prefix surface must be present"
+        );
+        assert!(
+            mech.iter().any(|f| f.slot() == Slot::Circumfix
+                && f.before_slot() == "how "
+                && f.after_slot() == " works"),
+            "the `how … works` circumfix surface must be present"
+        );
+        assert!(
+            mech.iter()
+                .any(|f| f.slot() == Slot::Suffix && f.after_slot() == " как работает"),
+            "the `… как работает` suffix surface must be present"
+        );
+
+        // procedural_request surfaces are all prefixes; some name a canonical
+        // action, others leave the operation to the matched task's first word.
+        let proc = lex.role_word_forms(ROLE_PROCEDURAL_REQUEST);
+        assert!(
+            !proc.is_empty(),
+            "procedural_request must contribute surface forms"
+        );
+        assert!(
+            proc.iter().all(|f| f.slot() == Slot::Prefix),
+            "every procedural surface positions the task after the slot"
+        );
+        assert!(
+            proc.iter()
+                .any(|f| f.before_slot() == "how to do " && f.action == "do"),
+            "`how to do …` must name the do action explicitly"
+        );
+        assert!(
+            proc.iter()
+                .any(|f| f.before_slot() == "how to " && f.action.is_empty()),
+            "`how to …` must leave the action to the task"
+        );
+        assert!(
+            proc.iter()
+                .any(|f| f.before_slot() == "如何做 " && f.action == "do"),
+            "the Chinese `如何做 …` surface must carry its trailing space and do action"
         );
     }
 

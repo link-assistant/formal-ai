@@ -5,6 +5,7 @@ use crate::concepts::{extract_concept_query, lookup_concept_query};
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::language::{detect as detect_language, Language};
+use crate::seed;
 use crate::solver_handlers::{finalize_simple, try_concept_lookup};
 use crate::solver_helpers::last_assistant_turn;
 use crate::web_search_core::{WEB_SEARCH_PROVIDERS, WEB_SEARCH_RRF_K};
@@ -199,80 +200,63 @@ fn extract_how_it_works_query(prompt: &str, _normalized: &str) -> Option<HowItWo
     })
 }
 
+/// Is `lower` a bare "how it works" form — a fixed phrase carrying no subject?
+///
+/// The bare phrases are the [`seed::Slot::Bare`] word forms of the
+/// `mechanism_inquiry` meaning (issue #386): no hardcoded per-language list
+/// lives here, only the language-independent concept. A prompt is the bare form
+/// when it equals such a phrase or is that phrase followed by a space.
 fn is_bare_how_it_works(lower: &str) -> bool {
-    const BARE_PHRASES: &[&str] = &[
-        "how it works",
-        "how does it work",
-        "как это работает",
-        "как оно работает",
-        "यह कैसे काम करता है",
-        "यह कैसे काम करती है",
-        "यह कैसे काम करता",
-        "这是如何工作的",
-        "这是怎么工作的",
-        "这个如何工作",
-        "它如何工作",
-        "它是如何工作的",
-        "它怎么工作",
-    ];
-    BARE_PHRASES.iter().any(|phrase| {
-        lower == *phrase
-            || lower
-                .strip_prefix(*phrase)
-                .is_some_and(|rest| rest.starts_with(' '))
-    })
+    seed::lexicon()
+        .role_word_forms(seed::ROLE_MECHANISM_INQUIRY)
+        .into_iter()
+        .filter(|form| form.slot() == seed::Slot::Bare)
+        .any(|form| {
+            let phrase = form.text.as_str();
+            lower == phrase
+                || lower
+                    .strip_prefix(phrase)
+                    .is_some_and(|rest| rest.starts_with(' '))
+        })
 }
 
 /// Extract the explicit subject from multilingual "how X works?" prompts.
 /// Returns `None` when the prompt is the bare "how it works?" form.
+///
+/// The affixes are the slot-marked surface forms of the `mechanism_inquiry`
+/// meaning (issue #386): the position of the `…` (U+2026) marker classifies
+/// each form, so the matching strategy is derived from the data, not from a
+/// hardcoded per-language list. The mechanism order — prefix surfaces, then
+/// circumfix, then suffix — and the within-bucket declaration order are
+/// preserved so behaviour is identical to the prior inline arrays:
+/// * [`seed::Slot::Prefix`] (`how does …`): the literal precedes the subject;
+///   `strip_mechanism_tail` then trims a trailing verb, and we return its
+///   result even when it is `None` (an early commit, as before).
+/// * [`seed::Slot::Circumfix`] (`how … works`): the subject sits between the
+///   two literals.
+/// * [`seed::Slot::Suffix`] (`… как работает`): the subject precedes the
+///   literal. Suffix surfaces are end-anchored and script-disjoint across
+///   languages, so their relative order across languages does not change which
+///   one matches a given prompt.
 fn extract_how_it_works_subject(original: &str, lower: &str) -> Option<String> {
-    for prefix in [
-        "how does ",
-        "how do ",
-        "how did ",
-        "how is ",
-        "как устроен ",
-        "как устроена ",
-        "как устроено ",
-        "как устроены ",
-        "как работает ",
-        "как работают ",
-    ] {
-        if let Some(subject) = subject_after_prefix(original, lower, prefix) {
+    let forms = seed::lexicon().role_word_forms(seed::ROLE_MECHANISM_INQUIRY);
+
+    for form in forms.iter().filter(|f| f.slot() == seed::Slot::Prefix) {
+        if let Some(subject) = subject_after_prefix(original, lower, form.before_slot()) {
             return strip_mechanism_tail(&subject);
         }
     }
 
-    for (prefix, suffixes) in [
-        ("how ", &[" works", " work"] as &[_]),
-        ("как ", &[" работает", " работают"]),
-    ] {
-        if let Some(subject) = subject_between(original, lower, prefix, suffixes) {
+    for form in forms.iter().filter(|f| f.slot() == seed::Slot::Circumfix) {
+        if let Some(subject) =
+            subject_between(original, lower, form.before_slot(), &[form.after_slot()])
+        {
             return Some(subject);
         }
     }
 
-    for suffix in [
-        " कैसे काम करता है",
-        " कैसे काम करती है",
-        " कैसे काम करते हैं",
-        " कैसे काम करता",
-        " कैसे काम करती",
-        " कैसे काम करते",
-        " 是如何工作的",
-        "是如何工作的",
-        " 是怎么工作的",
-        "是怎么工作的",
-        " 如何工作",
-        "如何工作",
-        " 怎么工作",
-        "怎么工作",
-        " 的工作原理是什么",
-        "的工作原理是什么",
-        " как работает",
-        " как работают",
-    ] {
-        if let Some(subject) = subject_before_suffix(original, lower, suffix) {
+    for form in forms.iter().filter(|f| f.slot() == seed::Slot::Suffix) {
+        if let Some(subject) = subject_before_suffix(original, lower, form.after_slot()) {
             return Some(subject);
         }
     }
@@ -434,53 +418,21 @@ fn render_mechanism_discovery_answer(subject: &str, language: Language) -> Strin
     }
 }
 
+/// Detect a procedural "how to X" request and split it into task/action/object.
+///
+/// The prefixes are the slot-marked surface forms of the `procedural_request`
+/// meaning (issue #386): every form is a [`seed::Slot::Prefix`] whose literal
+/// (the text before the `…` marker) is the matchable prefix, in declaration
+/// order so "how to do " still precedes "how to ". A form may name the
+/// canonical operation in its `action` field (do, perform, implement, create,
+/// write); an empty action means the operation is taken from the task's first
+/// word. No per-language prefix list lives here — only the concept.
 fn extract_procedural_how_to_task(normalized: &str) -> Option<ProceduralHowToTask> {
-    const PREFIXES: &[(&str, Option<&str>)] = &[
-        ("please tell me how to ", None),
-        ("please show me how to ", None),
-        ("tell me how to ", None),
-        ("show me how to ", None),
-        ("what are the steps to ", None),
-        ("what steps do i need to ", None),
-        ("what steps do we need to ", None),
-        ("how should i ", None),
-        ("how should we ", None),
-        ("how could i ", None),
-        ("how could we ", None),
-        ("how would i ", None),
-        ("how would we ", None),
-        ("how can i ", None),
-        ("how can we ", None),
-        ("how do i ", None),
-        ("how do we ", None),
-        ("how to do ", Some("do")),
-        ("how to ", None),
-        ("как сделать ", Some("do")),
-        ("как делать ", Some("do")),
-        ("как выполнить ", Some("perform")),
-        ("как реализовать ", Some("implement")),
-        ("как создать ", Some("create")),
-        ("как написать ", Some("write")),
-        ("कैसे करें ", Some("do")),
-        ("कैसे करे ", Some("do")),
-        ("कैसे लागू करें ", Some("implement")),
-        ("कैसे बनाएं ", Some("create")),
-        ("कैसे बनाएँ ", Some("create")),
-        ("कैसे लिखें ", Some("write")),
-        ("如何做 ", Some("do")),
-        ("怎么做 ", Some("do")),
-        ("如何实现 ", Some("implement")),
-        ("怎么实现 ", Some("implement")),
-        ("如何创建 ", Some("create")),
-        ("怎么创建 ", Some("create")),
-        ("如何写 ", Some("write")),
-        ("怎么写 ", Some("write")),
-    ];
-
     let clean_prompt = clean_procedural_fragment(normalized);
-    for (prefix, action_override) in PREFIXES {
-        if let Some(rest) = clean_prompt.strip_prefix(prefix) {
-            return build_procedural_task(rest, *action_override);
+    for form in seed::lexicon().role_word_forms(seed::ROLE_PROCEDURAL_REQUEST) {
+        if let Some(rest) = clean_prompt.strip_prefix(form.before_slot()) {
+            let action_override = (!form.action.is_empty()).then_some(form.action.as_str());
+            return build_procedural_task(rest, action_override);
         }
     }
     None
@@ -488,7 +440,7 @@ fn extract_procedural_how_to_task(normalized: &str) -> Option<ProceduralHowToTas
 
 fn build_procedural_task(
     raw_task: &str,
-    action_override: Option<&'static str>,
+    action_override: Option<&str>,
 ) -> Option<ProceduralHowToTask> {
     let task = clean_procedural_fragment(raw_task);
     if task.is_empty() {

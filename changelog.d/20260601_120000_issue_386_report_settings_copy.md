@@ -162,6 +162,28 @@ bump: minor
   (`experiments/issue-386-js-intent-lexicon.mjs`) proves the worker's role →
   word-sets and its recognizers agree with the seed and the Rust handlers across
   all four languages (issue #386).
+- The "how does X work" / "how to X" handler (`src/solver_handler_how.rs`) is
+  data-driven too. Two self-describing meanings in `data/seed/meanings-how.lino`
+  carry every surface the handler used to hardcode: `mechanism_inquiry`
+  ("how does X work", "как устроен X", "X कैसे काम करता है", "X 如何工作") and
+  `procedural_request` ("how to X", "как сделать X", "कैसे करें X", "如何做 X"),
+  each `defined_by` the `inquiry` and `action` concepts and lexicalised in every
+  supported language. Rather than carry per-language prefix/circumfix/suffix
+  arrays, each surface word encodes the position of the subject (or task) slot
+  with an ellipsis marker `…` (U+2026): no marker is a bare phrase, a trailing
+  `…` is a prefix surface, a leading `…` is a suffix surface, and a `…` in the
+  middle is a circumfix surface. The handler derives its affix-matching strategy
+  by bucketing the forms by `WordForm::slot()` (a `Slot` computed from the
+  marker) and matching each against the prompt — so the code knows only the
+  concepts "an inquiry into a mechanism" and "a request for a procedure", never a
+  surface word. A procedural surface may name its canonical operation in an
+  `action` child (do/perform/implement/create/write); when it does not, the
+  operation is taken from the task's first word. Declaration and bucket order are
+  preserved so behaviour is identical to the former inline arrays, and the
+  existing multilingual reasoning-path tests still pin "how it works", "как
+  устроен AUR", "AUR कैसे काम करता है", "AUR 如何工作", and the procedural
+  "how to" cases. The `formal_ai_worker.js` mirror embeds the same meanings
+  (issue #386).
 - Every meaning now descends from a single ontology root, so the lexicon is one
   connected graph rather than disjoint clusters. A new backbone
   (`data/seed/meanings-ontology.lino`) defines `link` as the self-rooted root of
@@ -172,7 +194,7 @@ bump: minor
   into one of these categories (`program` → `entity`, `sort`/`modify` →
   `action`, `quantity` → `property`, `calendar_day` → `concept`,
   `knowledge_relation` → `relation`, the software-project genera → their
-  categories, …), so following `defined_by` from any of the 161 meanings reaches
+  categories, …), so following `defined_by` from any of the 163 meanings reaches
   `link`. A public ontology-reasoning API (`Lexicon::ontology_root`,
   `Lexicon::reaches_root`) and two invariants
   (`the_ontology_has_a_single_link_root`, `every_meaning_reaches_the_link_root`)

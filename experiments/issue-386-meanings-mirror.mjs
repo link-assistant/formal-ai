@@ -35,6 +35,7 @@ const MEANING_FILES = [
   "data/seed/meanings-software-project.lino",
   "data/seed/meanings-program-synthesis.lino",
   "data/seed/meanings-intent.lino",
+  "data/seed/meanings-how.lino",
 ];
 if (fs.existsSync(new URL("data/seed/meanings-ontology.lino", root))) {
   MEANING_FILES.push("data/seed/meanings-ontology.lino");

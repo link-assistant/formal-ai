@@ -26,6 +26,7 @@ const MEANING_FILES = [
   "data/seed/meanings-software-project.lino",
   "data/seed/meanings-program-synthesis.lino",
   "data/seed/meanings-intent.lino",
+  "data/seed/meanings-how.lino",
   "data/seed/meanings-ontology.lino",
 ];
 
