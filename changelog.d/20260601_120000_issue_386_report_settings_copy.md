@@ -76,7 +76,16 @@ bump: minor
   a regression that mislabelled a plain "write a program" request as a software
   project. Because the artifact words now exist in every language, "create a
   library"/"создай библиотеку"/"एक डैशबोर्ड बनाओ"/"开发一个网站" all resolve to
-  the same canonical artifact (issue #386).
+  the same canonical artifact. Feature-requirement detection and subtask
+  categorization are data-driven the same way: the seven requirement categories
+  (state tracking, data exchange, automation, validation, integration, user
+  interface, and a catch-all project behavior) are self-describing meanings
+  `defined_by` the `software_feature` genus and lexicalised in every supported
+  language. A clause is a requirement when it contains any
+  `software_requirement_category` word, and the first category (in declaration
+  order) whose word it contains classifies the resulting subtask, so the former
+  hardcoded `FEATURE_MARKERS` list and the seven-branch classifier are gone — the
+  code knows only the concept "a requirement has a category" (issue #386).
 - The prefilled "Report issue" body omits settings already at their shipped
   default (Mode, Status, Diagnostics, Theme, Guess/Follow-up probability,
   Temperature, inference-only Location), folds the worker into the version line

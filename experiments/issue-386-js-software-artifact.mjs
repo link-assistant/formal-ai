@@ -101,5 +101,35 @@ console.log("\n=== a full multilingual request still formalizes end to end ===")
 const ru = sandbox.formalizeSoftwareProjectRequest("создай расширение браузера для перевода страниц");
 check("ru browser extension formalizes", ru && ru.artifact === "browser extension" && ru.action === "create", ru ? `${ru.action}/${ru.artifact}` : "null");
 
+console.log("\n=== requirement category resolves from the lexicon, declaration order ===");
+// classifySoftwareRequirement walks the software_requirement_category meanings
+// in declaration order (state_tracking → … → project_behavior catch-all),
+// mirroring classify_requirement in src/solver_handlers/software_project.rs.
+const classify = (req, game = false) => sandbox.classifySoftwareRequirement(req, game);
+for (const [req, category] of [
+  ["track hp", "state_tracking"],
+  ["import csv", "data_exchange"],
+  ["send a weekly reminder", "automation"],
+  ["validate the input", "validation"],
+  ["discord integration", "integration"],
+  ["dashboard view", "user_interface"],
+  ["send invoice to customer", "project_behavior"],
+]) {
+  check(`classify: ${req}`, classify(req) === category, classify(req));
+}
+check("game tracker forces state_tracking", classify("send invoice to customer", true) === "state_tracking", classify("send invoice to customer", true));
+
+console.log("\n=== requirement markers come from the lexicon, not a hardcoded list ===");
+const features = sandbox.extractSoftwareFeatures(
+  "Add expense tracking, import CSV, and send weekly reminders.",
+);
+check("three feature clauses extracted", features.length === 3, JSON.stringify(features));
+const fallback = sandbox.extractSoftwareFeatures("Hello there friend.");
+check(
+  "no markers -> single fallback feature",
+  fallback.length === 1 && fallback[0].startsWith("Capture state"),
+  JSON.stringify(fallback),
+);
+
 console.log("\n" + (fail.length ? "FAILURES: " + fail.join(", ") : "ALL CHECKS PASSED"));
 process.exit(fail.length ? 1 : 0);

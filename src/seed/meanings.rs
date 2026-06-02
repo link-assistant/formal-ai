@@ -87,6 +87,14 @@ pub const ROLE_SOFTWARE_AUTHORING_ACTION: &str = "software_authoring_action";
 /// is `defined_by` the `software_artifact` genus; a handler resolves a matched
 /// lexeme back to its slug and maps the slug to a canonical English label.
 pub const ROLE_SOFTWARE_ARTIFACT_KIND: &str = "software_artifact_kind";
+/// Semantic role: a category a software feature requirement falls into.
+///
+/// Examples are state tracking, data exchange, automation, validation,
+/// integration, user interface, and a catch-all project behavior. The union of
+/// these meanings' words detects that a clause states a feature requirement;
+/// the first category (in declaration order) whose word appears classifies it,
+/// so the code knows only the concept "a requirement has a category".
+pub const ROLE_SOFTWARE_REQUIREMENT_CATEGORY: &str = "software_requirement_category";
 
 /// Surface words that evidence a meaning in one language.
 #[derive(Debug, Clone)]

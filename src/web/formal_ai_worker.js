@@ -10042,6 +10042,22 @@ async function tryWikipediaArticleQuestion(prompt, language, preferences) {
 // this module names no word in any single language.
 const ROLE_SOFTWARE_AUTHORING_ACTION = "software_authoring_action";
 const ROLE_SOFTWARE_ARTIFACT_KIND = "software_artifact_kind";
+const ROLE_SOFTWARE_REQUIREMENT_CATEGORY = "software_requirement_category";
+
+// Map a software-requirement-category meaning slug to its canonical category
+// label. Mirrors requirement_category_label in
+// src/solver_handlers/software_project.rs: recognition words live in the
+// lexicon; the canonical category label lives here. A slug absent here is
+// skipped rather than mislabelled.
+const SOFTWARE_REQUIREMENT_CATEGORY_LABELS = {
+  requirement_state_tracking: "state_tracking",
+  requirement_data_exchange: "data_exchange",
+  requirement_automation: "automation",
+  requirement_validation: "validation",
+  requirement_integration: "integration",
+  requirement_user_interface: "user_interface",
+  requirement_project_behavior: "project_behavior",
+};
 
 // Map a software-artifact-kind meaning slug to its canonical English label.
 // Mirrors artifact_label in src/solver_handlers/software_project.rs: the lexicon
@@ -10135,51 +10151,16 @@ function scanSoftwareSurface(normalized, table) {
   return null;
 }
 
-const SOFTWARE_FEATURE_MARKERS = [
-  "add",
-  "admin",
-  "audit",
-  "backup",
-  "calendar",
-  "chart",
-  "check",
-  "conflict",
-  "cooldown",
-  "csv",
-  "customer",
-  "damage",
-  "date",
-  "email",
-  "expense",
-  "export",
-  "file",
-  "filter",
-  "history",
-  "hp",
-  "import",
-  "invoice",
-  "log",
-  "maintenance",
-  "notification",
-  "payment",
-  "progress",
-  "protection",
-  "record",
-  "reminder",
-  "rename",
-  "report",
-  "resistance",
-  "retry",
-  "schedule",
-  "scrape",
-  "stack",
-  "status",
-  "sync",
-  "track",
-  "tracking",
-  "upload",
-  "validate",
-];
+// Lowercased union of every surface word (all languages) of the meanings that
+// carry ROLE_SOFTWARE_REQUIREMENT_CATEGORY. A clause containing any of them
+// states a feature requirement. Mirrors requirement_marker_words in
+// src/solver_handlers/software_project.rs — no hardcoded marker list; the
+// vocabulary lives in data/seed/meanings-software-project.lino.
+function requirementMarkerWords() {
+  return calendarWordsForRole(ROLE_SOFTWARE_REQUIREMENT_CATEGORY)
+    .filter((word) => word.length > 0)
+    .map((word) => word.toLowerCase());
+}
 
 const GAME_TRACKER_TYPESCRIPT = `type Cooldown = {
   name: string;
@@ -10571,6 +10552,7 @@ function sentenceCase(raw) {
 }
 
 function extractSoftwareFeatures(prompt) {
+  const markers = requirementMarkerWords();
   const features = [];
   const segments = String(prompt || "").split(/[.;\n]/);
   for (const segment of segments) {
@@ -10578,7 +10560,7 @@ function extractSoftwareFeatures(prompt) {
       const cleaned = clause.trim();
       if (!cleaned) continue;
       const lower = cleaned.toLowerCase();
-      if (!containsAnySubstring(lower, SOFTWARE_FEATURE_MARKERS)) continue;
+      if (!containsAnySubstring(lower, markers)) continue;
       const feature = sentenceCase(cleaned);
       if (feature && !features.includes(feature)) features.push(feature);
     }
@@ -10609,23 +10591,20 @@ function isGameUnitTracker(normalized) {
 
 function classifySoftwareRequirement(requirement, gameTracker) {
   const lower = String(requirement || "").toLowerCase();
-  if (gameTracker || containsAnySubstring(lower, ["track", "hp", "status", "damage", "cooldown"])) {
+  // A game unit tracker is state by construction, regardless of wording.
+  if (gameTracker) {
     return "state_tracking";
   }
-  if (containsAnySubstring(lower, ["import", "export", "csv", "backup", "report", "calendar"])) {
-    return "data_exchange";
-  }
-  if (containsAnySubstring(lower, ["reminder", "notification", "schedule", "weekly"])) {
-    return "automation";
-  }
-  if (containsAnySubstring(lower, ["validate", "check", "conflict", "audit"])) {
-    return "validation";
-  }
-  if (containsAnySubstring(lower, ["api", "discord", "telegram", "github", "browser"])) {
-    return "integration";
-  }
-  if (containsAnySubstring(lower, ["dashboard", "chart", "filter", "progress"])) {
-    return "user_interface";
+  // Walk the requirement-category meanings in declaration order; the first
+  // whose surface word appears classifies the clause. Mirrors
+  // classify_requirement in src/solver_handlers/software_project.rs. The
+  // catch-all project_behavior comes last, so it acts as the default.
+  for (const meaning of meaningsWithRole(ROLE_SOFTWARE_REQUIREMENT_CATEGORY)) {
+    const label = SOFTWARE_REQUIREMENT_CATEGORY_LABELS[meaning.slug];
+    if (!label) continue;
+    if (meaning.words.some((word) => lower.includes(word.toLowerCase()))) {
+      return label;
+    }
   }
   return "project_behavior";
 }
@@ -13770,6 +13749,197 @@ const MEANINGS_LINO = [
   '      word "मॉड"',
   '    lexeme "zh"',
   '      word "模组"',
+  '  meaning "software_feature"',
+  '    gloss "a capability a software request asks the artifact to have — the genus of the requirement categories below; a clause naming one is a feature requirement, and the category it names classifies the resulting subtask"',
+  '    wiktionary "feature"',
+  '    defined_by "requirement_state_tracking"',
+  '    defined_by "requirement_project_behavior"',
+  '    role "software_feature"',
+  '    lexeme "en"',
+  '      word "feature"',
+  '      word "requirement"',
+  '    lexeme "ru"',
+  '      word "функция"',
+  '      word "требование"',
+  '    lexeme "hi"',
+  '      word "सुविधा"',
+  '      word "आवश्यकता"',
+  '    lexeme "zh"',
+  '      word "功能"',
+  '      word "需求"',
+  '  meaning "requirement_state_tracking"',
+  '    gloss "a feature that tracks evolving state — counters, status, damage, cooldowns; canonical category `state_tracking`"',
+  '    wiktionary "state"',
+  '    defined_by "software_feature"',
+  '    role "software_requirement_category"',
+  '    lexeme "en"',
+  '      word "track"',
+  '      word "hp"',
+  '      word "status"',
+  '      word "damage"',
+  '      word "cooldown"',
+  '    lexeme "ru"',
+  '      word "состояние"',
+  '      word "урон"',
+  '      word "откат"',
+  '    lexeme "hi"',
+  '      word "स्थिति"',
+  '      word "क्षति"',
+  '    lexeme "zh"',
+  '      word "状态"',
+  '      word "伤害"',
+  '      word "冷却"',
+  '  meaning "requirement_data_exchange"',
+  '    gloss "a feature that moves data in or out — import, export, backups, reports; canonical category `data_exchange`"',
+  '    wiktionary "data"',
+  '    defined_by "software_feature"',
+  '    role "software_requirement_category"',
+  '    lexeme "en"',
+  '      word "import"',
+  '      word "export"',
+  '      word "csv"',
+  '      word "backup"',
+  '      word "report"',
+  '      word "calendar"',
+  '    lexeme "ru"',
+  '      word "импорт"',
+  '      word "экспорт"',
+  '      word "резервная копия"',
+  '      word "отчёт"',
+  '    lexeme "hi"',
+  '      word "आयात"',
+  '      word "निर्यात"',
+  '      word "रिपोर्ट"',
+  '    lexeme "zh"',
+  '      word "导入"',
+  '      word "导出"',
+  '      word "备份"',
+  '      word "报告"',
+  '  meaning "requirement_automation"',
+  '    gloss "a feature that runs on a schedule or trigger — reminders, notifications, jobs; canonical category `automation`"',
+  '    wiktionary "automation"',
+  '    defined_by "software_feature"',
+  '    role "software_requirement_category"',
+  '    lexeme "en"',
+  '      word "reminder"',
+  '      word "notification"',
+  '      word "schedule"',
+  '      word "weekly"',
+  '    lexeme "ru"',
+  '      word "напоминание"',
+  '      word "уведомление"',
+  '      word "расписание"',
+  '    lexeme "hi"',
+  '      word "अनुस्मारक"',
+  '      word "सूचना"',
+  '    lexeme "zh"',
+  '      word "提醒"',
+  '      word "通知"',
+  '      word "计划"',
+  '  meaning "requirement_validation"',
+  '    gloss "a feature that validates input or invariants — checks, conflicts, audits; canonical category `validation`"',
+  '    wiktionary "validation"',
+  '    defined_by "software_feature"',
+  '    role "software_requirement_category"',
+  '    lexeme "en"',
+  '      word "validate"',
+  '      word "check"',
+  '      word "conflict"',
+  '      word "audit"',
+  '    lexeme "ru"',
+  '      word "проверка"',
+  '      word "проверь"',
+  '      word "аудит"',
+  '    lexeme "hi"',
+  '      word "सत्यापन"',
+  '      word "जाँच"',
+  '    lexeme "zh"',
+  '      word "验证"',
+  '      word "检查"',
+  '      word "审计"',
+  '  meaning "requirement_integration"',
+  '    gloss "a feature that integrates with an external host — an API or third-party service; canonical category `integration`"',
+  '    wiktionary "integration"',
+  '    defined_by "software_feature"',
+  '    role "software_requirement_category"',
+  '    lexeme "en"',
+  '      word "api"',
+  '      word "discord"',
+  '      word "telegram"',
+  '      word "github"',
+  '      word "browser"',
+  '    lexeme "ru"',
+  '      word "интеграция"',
+  '      word "апи"',
+  '      word "браузер"',
+  '    lexeme "hi"',
+  '      word "एकीकरण"',
+  '      word "एपीआई"',
+  '    lexeme "zh"',
+  '      word "集成"',
+  '      word "接口"',
+  '      word "浏览器"',
+  '  meaning "requirement_user_interface"',
+  '    gloss "a feature that presents state to a person — dashboards, charts, filters; canonical category `user_interface`"',
+  '    wiktionary "interface"',
+  '    defined_by "software_feature"',
+  '    role "software_requirement_category"',
+  '    lexeme "en"',
+  '      word "dashboard"',
+  '      word "chart"',
+  '      word "filter"',
+  '      word "progress"',
+  '    lexeme "ru"',
+  '      word "панель"',
+  '      word "график"',
+  '      word "фильтр"',
+  '    lexeme "hi"',
+  '      word "डैशबोर्ड"',
+  '      word "चार्ट"',
+  '    lexeme "zh"',
+  '      word "仪表板"',
+  '      word "图表"',
+  '      word "筛选"',
+  '  meaning "requirement_project_behavior"',
+  '    gloss "a feature that adds general project behavior not covered by a more specific category — the catch-all classified last; canonical category `project_behavior`"',
+  '    wiktionary "behavior"',
+  '    defined_by "software_feature"',
+  '    role "software_requirement_category"',
+  '    lexeme "en"',
+  '      word "add"',
+  '      word "admin"',
+  '      word "customer"',
+  '      word "date"',
+  '      word "email"',
+  '      word "expense"',
+  '      word "file"',
+  '      word "history"',
+  '      word "invoice"',
+  '      word "log"',
+  '      word "maintenance"',
+  '      word "payment"',
+  '      word "protection"',
+  '      word "record"',
+  '      word "rename"',
+  '      word "resistance"',
+  '      word "retry"',
+  '      word "scrape"',
+  '      word "stack"',
+  '      word "sync"',
+  '      word "tracking"',
+  '      word "upload"',
+  '    lexeme "ru"',
+  '      word "добавить"',
+  '      word "клиент"',
+  '      word "файл"',
+  '      word "загрузка"',
+  '    lexeme "hi"',
+  '      word "जोड़ें"',
+  '      word "फ़ाइल"',
+  '    lexeme "zh"',
+  '      word "添加"',
+  '      word "文件"',
+  '      word "上传"',
 ].join("\n");
 
 // Semantic role: a thing a program produces that a later turn can refer back to

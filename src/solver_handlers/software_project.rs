@@ -15,52 +15,6 @@ use crate::solver_helpers::{last_assistant_turn, last_user_turn};
 
 use super::software_project_code::implementation_code;
 
-const FEATURE_MARKERS: &[&str] = &[
-    "add",
-    "admin",
-    "audit",
-    "backup",
-    "calendar",
-    "chart",
-    "check",
-    "conflict",
-    "cooldown",
-    "csv",
-    "customer",
-    "damage",
-    "date",
-    "email",
-    "expense",
-    "export",
-    "file",
-    "filter",
-    "history",
-    "hp",
-    "import",
-    "invoice",
-    "log",
-    "maintenance",
-    "notification",
-    "payment",
-    "progress",
-    "protection",
-    "record",
-    "reminder",
-    "rename",
-    "report",
-    "resistance",
-    "retry",
-    "schedule",
-    "scrape",
-    "stack",
-    "status",
-    "sync",
-    "track",
-    "tracking",
-    "upload",
-    "validate",
-];
-
 /// A matched software-artifact phrase: the surface word it was recognised by
 /// (used to locate the target text after it) and the canonical English label.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -569,7 +523,21 @@ fn capitalize_short_target(raw: &str) -> String {
     format!("{}{}", first.to_uppercase(), chars.collect::<String>())
 }
 
+/// Every requirement-marker word — the union of all `software_requirement_category`
+/// meanings' surface words, in every supported language, lowercased. A clause
+/// containing any of these states a feature requirement. The words live once in
+/// the lexicon; this code knows only the concept "a feature requirement".
+fn requirement_marker_words() -> Vec<String> {
+    seed::lexicon()
+        .words_for_role(seed::ROLE_SOFTWARE_REQUIREMENT_CATEGORY)
+        .into_iter()
+        .filter(|word| !word.is_empty())
+        .map(|word| word.to_lowercase())
+        .collect()
+}
+
 fn extract_requirements(prompt: &str) -> Vec<String> {
+    let markers = requirement_marker_words();
     let mut requirements = Vec::new();
     for segment in prompt.split(['.', ';', '\n']) {
         for clause in segment.split(',') {
@@ -578,7 +546,7 @@ fn extract_requirements(prompt: &str) -> Vec<String> {
                 continue;
             }
             let lower = cleaned.to_lowercase();
-            if contains_any(&lower, FEATURE_MARKERS) {
+            if markers.iter().any(|marker| lower.contains(marker.as_str())) {
                 push_unique(&mut requirements, sentence_case(cleaned));
             }
         }
@@ -606,26 +574,47 @@ fn derive_subtasks(requirements: &[String], game_tracker: bool) -> Vec<SoftwareS
         .collect()
 }
 
+/// Map a `software_requirement_category` meaning slug to its canonical category
+/// label — the slug `subtask_title` matches on and the meaning record emits.
+/// Recognition words live in the lexicon; the canonical label lives in code (the
+/// calendar `from_slug` precedent). Returns `None` for a slug this handler does
+/// not classify, so a future category is skipped rather than mislabelled.
+fn requirement_category_label(slug: &str) -> Option<&'static str> {
+    let label = match slug {
+        "requirement_state_tracking" => "state_tracking",
+        "requirement_data_exchange" => "data_exchange",
+        "requirement_automation" => "automation",
+        "requirement_validation" => "validation",
+        "requirement_integration" => "integration",
+        "requirement_user_interface" => "user_interface",
+        "requirement_project_behavior" => "project_behavior",
+        _ => return None,
+    };
+    Some(label)
+}
+
+/// Classify a requirement clause into its canonical category by walking the
+/// `software_requirement_category` meanings in declaration order and taking the
+/// first whose surface word appears in the clause. A game-unit tracker forces
+/// `state_tracking` (the first category, so the order is consistent). Falls back
+/// to `project_behavior` when no category matches.
 fn classify_requirement(requirement: &str, game_tracker: bool) -> &'static str {
     let lower = requirement.to_lowercase();
-    if game_tracker || contains_any(&lower, &["track", "hp", "status", "damage", "cooldown"]) {
-        "state_tracking"
-    } else if contains_any(
-        &lower,
-        &["import", "export", "csv", "backup", "report", "calendar"],
-    ) {
-        "data_exchange"
-    } else if contains_any(&lower, &["reminder", "notification", "schedule", "weekly"]) {
-        "automation"
-    } else if contains_any(&lower, &["validate", "check", "conflict", "audit"]) {
-        "validation"
-    } else if contains_any(&lower, &["api", "discord", "telegram", "github", "browser"]) {
-        "integration"
-    } else if contains_any(&lower, &["dashboard", "chart", "filter", "progress"]) {
-        "user_interface"
-    } else {
-        "project_behavior"
+    if game_tracker {
+        return "state_tracking";
     }
+    for meaning in seed::lexicon().meanings_with_role(seed::ROLE_SOFTWARE_REQUIREMENT_CATEGORY) {
+        let Some(label) = requirement_category_label(&meaning.slug) else {
+            continue;
+        };
+        if meaning
+            .words()
+            .any(|word| lower.contains(word.to_lowercase().as_str()))
+        {
+            return label;
+        }
+    }
+    "project_behavior"
 }
 
 fn subtask_title(category: &str, requirement: &str) -> String {
