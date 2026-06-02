@@ -29,6 +29,7 @@ const MEANING_FILES = [
   "data/seed/meanings-how.lino",
   "data/seed/meanings-web-navigation.lino",
   "data/seed/meanings-web-search.lino",
+  "data/seed/meanings-web-search-query.lino",
   "data/seed/meanings-ontology.lino",
 ];
 
