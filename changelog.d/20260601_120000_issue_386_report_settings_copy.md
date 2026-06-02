@@ -86,6 +86,27 @@ bump: minor
   order) whose word it contains classifies the resulting subtask, so the former
   hardcoded `FEATURE_MARKERS` list and the seven-branch classifier are gone — the
   code knows only the concept "a requirement has a category" (issue #386).
+- The remaining software-project request signals are lexicon-driven too. The
+  delivery mode (manual instructions, immediate execution, script generation, or
+  the default generated code), the implementation language (python, rust,
+  javascript, or the default typescript), the game-unit tracker (a request is one
+  only when it pairs a `game_tracker_domain` with a `game_tracker_mechanic`), the
+  step-granularity and shell/command approval gates, and the whole-prompt approval
+  trigger (approve/yes/proceed/…) are now self-describing meanings in
+  `data/seed/meanings-software-project.lino`, each `defined_by` the concepts it
+  builds on and lexicalised in every supported language. The detectors walk the
+  matching `software_delivery_mode`/`software_implementation_language`/
+  `game_tracker_*`/`software_step_granularity`/`software_bash_command`/
+  `software_approval_trigger` roles (delivery modes and languages in declaration
+  order, so the order encodes priority) and resolve a matched slug back to its
+  stable label, so the former hardcoded `contains_any`/`contains_word` keyword
+  lists are gone — the code knows only the concepts and the words live once in
+  data. The boundary-aware, now phrase-capable matcher (`surface_present`)
+  replaces raw substring scans, so a short surface like `hp` never matches inside
+  `php` and a multi-word go-ahead matches only on word boundaries; the
+  `formal_ai_worker.js` mirror walks the same embedded meanings, and all 22
+  dialogue examples classify identically in the Rust solver and the browser
+  worker (issue #386).
 - The prefilled "Report issue" body omits settings already at their shipped
   default (Mode, Status, Diagnostics, Theme, Guess/Follow-up probability,
   Temperature, inference-only Location), folds the worker into the version line

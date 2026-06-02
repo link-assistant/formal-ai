@@ -61,6 +61,18 @@ impl DeliveryMode {
             Self::ImmediateExecution => "immediate_execution",
         }
     }
+
+    /// Map a `software_delivery_mode` meaning slug to its delivery mode. The
+    /// default (code generation) has no slug — it is the fallback when no mode
+    /// meaning is evidenced — so this returns `None` for any other slug.
+    fn from_slug(slug: &str) -> Option<Self> {
+        match slug {
+            "delivery_manual_instructions" => Some(Self::ManualInstructions),
+            "delivery_immediate_execution" => Some(Self::ImmediateExecution),
+            "delivery_script_generation" => Some(Self::ScriptGeneration),
+            _ => None,
+        }
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -633,41 +645,48 @@ fn subtask_title(category: &str, requirement: &str) -> String {
     }
 }
 
+/// Pick the delivery mode by walking the `software_delivery_mode` meanings in
+/// declaration order (manual instructions → immediate execution → script
+/// generation — the order encodes priority) and taking the first one evidenced
+/// in the request. When none is, the default is generated code. The surface
+/// words live in the lexicon, so the code knows only the concept "a request can
+/// ask for a particular delivery mode".
 fn detect_delivery_mode(normalized: &str) -> DeliveryMode {
-    if contains_any(
-        normalized,
-        &["manual instruction", "instructions", "no code"],
-    ) {
-        DeliveryMode::ManualInstructions
-    } else if contains_any(normalized, &["execute", "run command", "run it", "webvm"]) {
-        DeliveryMode::ImmediateExecution
-    } else if contains_any(normalized, &["bash", "shell"])
-        || contains_word(normalized, &["script", "scripts", "commands"])
-    {
-        DeliveryMode::ScriptGeneration
-    } else {
-        DeliveryMode::CodeGeneration
-    }
+    seed::lexicon()
+        .first_role_match(seed::ROLE_SOFTWARE_DELIVERY_MODE, normalized)
+        .and_then(|meaning| DeliveryMode::from_slug(&meaning.slug))
+        .unwrap_or(DeliveryMode::CodeGeneration)
 }
 
+/// Resolve the target language by walking the `software_implementation_language`
+/// meanings in declaration order (python → rust → javascript) and taking the
+/// first one named in the request. The default is TypeScript.
 fn detect_implementation_language(normalized: &str) -> &'static str {
-    if contains_any(normalized, &["python", "django", "fastapi"]) {
-        "python"
-    } else if contains_any(normalized, &["rust", "cargo"]) {
-        "rust"
-    } else if contains_any(normalized, &["javascript", "node.js", "node "]) {
-        "javascript"
-    } else {
-        "typescript"
+    seed::lexicon()
+        .first_role_match(seed::ROLE_SOFTWARE_IMPLEMENTATION_LANGUAGE, normalized)
+        .and_then(|meaning| implementation_language_from_slug(&meaning.slug))
+        .unwrap_or("typescript")
+}
+
+/// Map a `software_implementation_language` meaning slug to its canonical target
+/// label. The recognition vocabulary lives in data while the rendered output
+/// label stays stable in code (the calendar `from_slug` precedent).
+fn implementation_language_from_slug(slug: &str) -> Option<&'static str> {
+    match slug {
+        "language_python" => Some("python"),
+        "language_rust" => Some("rust"),
+        "language_javascript" => Some("javascript"),
+        _ => None,
     }
 }
 
 fn approval_gates(normalized: &str, delivery_mode: DeliveryMode) -> Vec<&'static str> {
+    let lexicon = seed::lexicon();
     let mut gates = vec!["task_formalization", "implementation_plan"];
-    if normalized.contains("requirement") {
+    if lexicon.mentions_role(seed::ROLE_SOFTWARE_FEATURE, normalized) {
         gates.push("requirements");
     }
-    if contains_any(normalized, &["each step", "step by step"]) {
+    if lexicon.mentions_role(seed::ROLE_SOFTWARE_STEP_GRANULARITY, normalized) {
         gates.push("each_step");
     }
     match delivery_mode {
@@ -678,22 +697,12 @@ fn approval_gates(normalized: &str, delivery_mode: DeliveryMode) -> Vec<&'static
             gates.push("bash_command");
         }
     }
-    if contains_any(normalized, &["shell", "bash", "command", "docker", "webvm"]) {
+    if lexicon.mentions_role(seed::ROLE_SOFTWARE_BASH_COMMAND, normalized) {
         gates.push("bash_command");
     }
     gates.sort_unstable();
     gates.dedup();
     gates
-}
-
-fn contains_any(haystack: &str, needles: &[&str]) -> bool {
-    needles.iter().any(|needle| haystack.contains(needle))
-}
-
-fn contains_word(haystack: &str, words: &[&str]) -> bool {
-    haystack
-        .split_whitespace()
-        .any(|token| words.contains(&token))
 }
 
 fn push_unique(items: &mut Vec<String>, value: String) {
@@ -711,42 +720,31 @@ fn sentence_case(raw: &str) -> String {
     format!("{}{}", first.to_uppercase(), chars.collect::<String>())
 }
 
+/// A request is a game-unit tracker only when it pairs a game domain with a
+/// combat mechanic — both the `game_tracker_domain` and `game_tracker_mechanic`
+/// roles must be evidenced. The decomposition lives in the lexicon, so the code
+/// knows only the concept "a tracker needs both a domain and a mechanic".
 fn is_game_unit_tracker(normalized: &str) -> bool {
-    let domain = normalized.contains("dnd")
-        || normalized.contains("d&d")
-        || normalized.contains("wargame")
-        || normalized.contains("tabletop")
-        || normalized.contains("unit")
-        || normalized.contains("token")
-        || normalized.contains("owlbear");
-    let mechanics = normalized.contains("hp")
-        || normalized.contains("damage")
-        || normalized.contains("protection")
-        || normalized.contains("resistance")
-        || normalized.contains("cooldown");
-    domain && mechanics
+    let lexicon = seed::lexicon();
+    lexicon.mentions_role(seed::ROLE_GAME_TRACKER_DOMAIN, normalized)
+        && lexicon.mentions_role(seed::ROLE_GAME_TRACKER_MECHANIC, normalized)
 }
 
+/// Is the whole prompt a go-ahead that moves the dialogue from plan to
+/// implementation? Unlike the passing-mention roles, an approval trigger must
+/// match the *entire* compacted prompt (so "approve the validation step" is not
+/// an approval), so this compares the compacted prompt against each
+/// `software_approval_trigger` surface word. Compaction keeps Unicode letters
+/// and digits, so a non-Latin go-ahead works the same way as an English one.
 pub(super) fn is_approval_prompt(normalized: &str) -> bool {
     let compact = normalized
         .trim()
-        .trim_matches(|character: char| !character.is_ascii_alphanumeric())
+        .trim_matches(|character: char| !character.is_alphanumeric())
         .replace(['.', '!', ','], "");
-    matches!(
-        compact.as_str(),
-        "approve"
-            | "approved"
-            | "approve plan"
-            | "yes"
-            | "yes proceed"
-            | "proceed"
-            | "go ahead"
-            | "looks good"
-            | "do it"
-            | "start implementation"
-            | "generate code"
-            | "convert to code"
-    )
+    seed::lexicon()
+        .meanings_with_role(seed::ROLE_SOFTWARE_APPROVAL_TRIGGER)
+        .flat_map(seed::Meaning::words)
+        .any(|word| compact == word)
 }
 
 fn reasoning_steps(meaning: &SoftwareProjectMeaning) -> Vec<String> {

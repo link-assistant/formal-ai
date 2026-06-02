@@ -95,6 +95,43 @@ pub const ROLE_SOFTWARE_ARTIFACT_KIND: &str = "software_artifact_kind";
 /// the first category (in declaration order) whose word appears classifies it,
 /// so the code knows only the concept "a requirement has a category".
 pub const ROLE_SOFTWARE_REQUIREMENT_CATEGORY: &str = "software_requirement_category";
+/// Semantic role: the software-feature genus (feature, requirement, …). A
+/// prompt that mentions a feature/requirement earns the "requirements"
+/// approval gate.
+pub const ROLE_SOFTWARE_FEATURE: &str = "software_feature";
+/// Semantic role: how the assistant should deliver a software solution.
+///
+/// The non-default modes — manual instructions, immediate execution, script
+/// generation — each carry this role. A handler walks them in declaration
+/// order (so the order encodes priority) and selects the first evidenced in
+/// the prompt, falling back to code generation when none is.
+pub const ROLE_SOFTWARE_DELIVERY_MODE: &str = "software_delivery_mode";
+/// Semantic role: the programming language a software implementation targets.
+///
+/// python, rust, javascript, …. Walked in declaration order; the first
+/// evidenced language wins, else the default (typescript) is used.
+pub const ROLE_SOFTWARE_IMPLEMENTATION_LANGUAGE: &str = "software_implementation_language";
+/// Semantic role: a tabletop/RPG game domain.
+///
+/// A D&D unit, token, wargame piece, Owlbear scene, …. A request is a
+/// game-unit tracker only when it pairs a domain with a mechanic (see
+/// [`ROLE_GAME_TRACKER_MECHANIC`]).
+pub const ROLE_GAME_TRACKER_DOMAIN: &str = "game_tracker_domain";
+/// Semantic role: a combat mechanic a tabletop tracker follows — hit points,
+/// damage, protection, resistance, cooldowns. Pairs with the domain above.
+pub const ROLE_GAME_TRACKER_MECHANIC: &str = "game_tracker_mechanic";
+/// Semantic role: a request to approve the work step by step (each step, step
+/// by step, …) — adds the `each_step` approval gate.
+pub const ROLE_SOFTWARE_STEP_GRANULARITY: &str = "software_step_granularity";
+/// Semantic role: a shell or command-line surface (shell, bash, a command,
+/// docker, `WebVM`, …) — adds the `bash_command` approval gate.
+pub const ROLE_SOFTWARE_BASH_COMMAND: &str = "software_bash_command";
+/// Semantic role: a whole-prompt approval trigger (approve, yes, proceed, …).
+///
+/// Unlike the other roles this matches the *entire* compacted prompt, not a
+/// passing mention: a go-ahead like "approve plan" moves the dialogue from
+/// plan to implementation, while "approve the email validation step" does not.
+pub const ROLE_SOFTWARE_APPROVAL_TRIGGER: &str = "software_approval_trigger";
 
 /// Surface words that evidence a meaning in one language.
 #[derive(Debug, Clone)]
@@ -125,6 +162,15 @@ impl Meaning {
         self.lexemes
             .iter()
             .flat_map(|lexeme| lexeme.words.iter().map(String::as_str))
+    }
+
+    /// Is this meaning evidenced in `normalized` — does any of its surface
+    /// words (in any language) appear as a whole token or phrase? Matching is
+    /// not language-gated: an English proper noun (e.g. `python`) is evidence
+    /// in a prompt written in any language.
+    #[must_use]
+    pub fn evidenced_in(&self, normalized: &str) -> bool {
+        self.words().any(|word| surface_present(normalized, word))
     }
 
     /// The first surface word this meaning lexicalises in `language`, if any.
@@ -183,22 +229,43 @@ impl Lexicon {
     /// Mirrors the CJK-substring vs. whitespace-token contract used across the
     /// solver: CJK scripts have no inter-word spaces, so a CJK surface word is
     /// matched as a substring, while space-delimited scripts match a whole
-    /// whitespace token (see [`crate::coding::contains_cjk`]).
+    /// whitespace token or phrase (see [`crate::coding::contains_cjk`]).
     #[must_use]
     pub fn mentions_role(&self, role: &str, normalized: &str) -> bool {
+        self.meanings_with_role(role)
+            .any(|meaning| meaning.evidenced_in(normalized))
+    }
+
+    /// The first meaning carrying `role`, in declaration order, that is
+    /// evidenced in `normalized` — or `None`. Declaration order therefore
+    /// encodes priority (e.g. the first matching delivery mode wins).
+    #[must_use]
+    pub fn first_role_match(&self, role: &str, normalized: &str) -> Option<&Meaning> {
         self.meanings
             .iter()
-            .filter(|m| m.has_role(role))
-            .flat_map(Meaning::words)
-            .any(|word| token_present(normalized, word))
+            .filter(|meaning| meaning.has_role(role))
+            .find(|meaning| meaning.evidenced_in(normalized))
     }
 }
 
-fn token_present(normalized: &str, expected: &str) -> bool {
+/// Does the surface word/phrase `expected` appear in `normalized`?
+///
+/// CJK surfaces have no inter-word spaces, so they match as substrings.
+/// Space-delimited scripts match on whole-token boundaries — equal to the
+/// whole string, or bounded by spaces — so a multi-word phrase ("each step")
+/// matches as a unit and a short word ("api") never matches inside a longer
+/// one ("напиши"). An empty surface never matches.
+fn surface_present(normalized: &str, expected: &str) -> bool {
+    if expected.is_empty() {
+        return false;
+    }
     if crate::coding::contains_cjk(expected) {
         return normalized.contains(expected);
     }
-    normalized.split_whitespace().any(|token| token == expected)
+    normalized == expected
+        || normalized.starts_with(&format!("{expected} "))
+        || normalized.ends_with(&format!(" {expected}"))
+        || normalized.contains(&format!(" {expected} "))
 }
 
 fn parse_lexicon(text: &str) -> Lexicon {

@@ -10043,6 +10043,19 @@ async function tryWikipediaArticleQuestion(prompt, language, preferences) {
 const ROLE_SOFTWARE_AUTHORING_ACTION = "software_authoring_action";
 const ROLE_SOFTWARE_ARTIFACT_KIND = "software_artifact_kind";
 const ROLE_SOFTWARE_REQUIREMENT_CATEGORY = "software_requirement_category";
+// Issue #386 software-delivery / language / game-tracker / approval roles —
+// mirror the matching ROLE_* consts in src/seed/meanings.rs. Their surface
+// words (every supported language) live in
+// data/seed/meanings-software-project.lino (embedded in MEANINGS_LINO below);
+// this module names no word in any single language.
+const ROLE_SOFTWARE_FEATURE = "software_feature";
+const ROLE_SOFTWARE_DELIVERY_MODE = "software_delivery_mode";
+const ROLE_SOFTWARE_IMPLEMENTATION_LANGUAGE = "software_implementation_language";
+const ROLE_GAME_TRACKER_DOMAIN = "game_tracker_domain";
+const ROLE_GAME_TRACKER_MECHANIC = "game_tracker_mechanic";
+const ROLE_SOFTWARE_STEP_GRANULARITY = "software_step_granularity";
+const ROLE_SOFTWARE_BASH_COMMAND = "software_bash_command";
+const ROLE_SOFTWARE_APPROVAL_TRIGGER = "software_approval_trigger";
 
 // Map a software-requirement-category meaning slug to its canonical category
 // label. Mirrors requirement_category_label in
@@ -10057,6 +10070,26 @@ const SOFTWARE_REQUIREMENT_CATEGORY_LABELS = {
   requirement_integration: "integration",
   requirement_user_interface: "user_interface",
   requirement_project_behavior: "project_behavior",
+};
+
+// Map a software_delivery_mode meaning slug to its canonical delivery-mode
+// label. Mirrors DeliveryMode::from_slug in
+// src/solver_handlers/software_project.rs: the lexicon owns the surface words;
+// this resolver owns the slug→label mapping. The default (code_generation) has
+// no slug — it is the fallback when no mode meaning is evidenced.
+const SOFTWARE_DELIVERY_MODE_LABELS = {
+  delivery_manual_instructions: "manual_instructions",
+  delivery_immediate_execution: "immediate_execution",
+  delivery_script_generation: "script_generation",
+};
+
+// Map a software_implementation_language meaning slug to its canonical target
+// label. Mirrors implementation_language_from_slug in
+// src/solver_handlers/software_project.rs. The default (typescript) has no slug.
+const SOFTWARE_IMPLEMENTATION_LANGUAGE_LABELS = {
+  language_python: "python",
+  language_rust: "rust",
+  language_javascript: "javascript",
 };
 
 // Map a software-artifact-kind meaning slug to its canonical English label.
@@ -10365,12 +10398,6 @@ function containsToken(normalized, token) {
   return String(normalized || "").split(/\s+/).includes(token);
 }
 
-function containsAnyToken(normalized, tokens) {
-  return String(normalized || "")
-    .split(/\s+/)
-    .some((token) => tokens.includes(token));
-}
-
 function mentionsPlaywright(normalized) {
   return containsAnySubstring(normalized, [
     "playwright",
@@ -10571,22 +10598,16 @@ function extractSoftwareFeatures(prompt) {
   return features;
 }
 
+// A request is a game-unit tracker only when it pairs a game domain with a
+// combat mechanic — both the game_tracker_domain and game_tracker_mechanic
+// roles must be evidenced. Mirrors is_game_unit_tracker in
+// src/solver_handlers/software_project.rs; the decomposition lives in the
+// lexicon, so the code knows only "a tracker needs both a domain and a mechanic".
 function isGameUnitTracker(normalized) {
-  const domain =
-    normalized.includes("dnd") ||
-    normalized.includes("d d") ||
-    normalized.includes("wargame") ||
-    normalized.includes("tabletop") ||
-    normalized.includes("unit") ||
-    normalized.includes("token") ||
-    normalized.includes("owlbear");
-  const mechanics =
-    normalized.includes("hp") ||
-    normalized.includes("damage") ||
-    normalized.includes("protection") ||
-    normalized.includes("resistance") ||
-    normalized.includes("cooldown");
-  return domain && mechanics;
+  return (
+    lexiconMentionsRole(ROLE_GAME_TRACKER_DOMAIN, normalized) &&
+    lexiconMentionsRole(ROLE_GAME_TRACKER_MECHANIC, normalized)
+  );
 }
 
 function classifySoftwareRequirement(requirement, gameTracker) {
@@ -10639,33 +10660,33 @@ function deriveSoftwareSubtasks(requirements, gameTracker) {
   });
 }
 
+// Pick the delivery mode by walking the software_delivery_mode meanings in
+// declaration order (manual instructions → immediate execution → script
+// generation — the order encodes priority) and taking the first one evidenced
+// in the request; the default is generated code. Mirrors detect_delivery_mode
+// in src/solver_handlers/software_project.rs — the surface words live in the
+// lexicon, so the code knows only "a request can ask for a delivery mode".
 function detectSoftwareDeliveryMode(normalized) {
-  if (containsAnySubstring(normalized, ["manual instruction", "instructions", "no code"])) {
-    return "manual_instructions";
-  }
-  if (containsAnySubstring(normalized, ["execute", "run command", "run it", "webvm"])) {
-    return "immediate_execution";
-  }
-  if (
-    containsAnySubstring(normalized, ["bash", "shell"]) ||
-    containsAnyToken(normalized, ["script", "scripts", "commands"])
-  ) {
-    return "script_generation";
-  }
-  return "code_generation";
+  const meaning = firstRoleMatch(ROLE_SOFTWARE_DELIVERY_MODE, normalized);
+  return (meaning && SOFTWARE_DELIVERY_MODE_LABELS[meaning.slug]) || "code_generation";
 }
 
+// Resolve the target language by walking the software_implementation_language
+// meanings in declaration order (python → rust → javascript) and taking the
+// first one named in the request; the default is TypeScript. Mirrors
+// detect_implementation_language in src/solver_handlers/software_project.rs.
 function detectSoftwareImplementationLanguage(normalized) {
-  if (containsAnySubstring(normalized, ["python", "django", "fastapi"])) return "python";
-  if (containsAnySubstring(normalized, ["rust", "cargo"])) return "rust";
-  if (containsAnySubstring(normalized, ["javascript", "node.js", "node "])) return "javascript";
-  return "typescript";
+  const meaning = firstRoleMatch(ROLE_SOFTWARE_IMPLEMENTATION_LANGUAGE, normalized);
+  return (meaning && SOFTWARE_IMPLEMENTATION_LANGUAGE_LABELS[meaning.slug]) || "typescript";
 }
 
+// Mirrors approval_gates in src/solver_handlers/software_project.rs: the feature,
+// step-granularity, and bash-command gates are added when the lexicon evidences
+// the matching role, so the gate vocabulary lives once in data.
 function softwareApprovalGates(normalized, deliveryMode) {
   const gates = ["task_formalization", "implementation_plan"];
-  if (normalized.includes("requirement")) gates.push("requirements");
-  if (containsAnySubstring(normalized, ["each step", "step by step"])) gates.push("each_step");
+  if (lexiconMentionsRole(ROLE_SOFTWARE_FEATURE, normalized)) gates.push("requirements");
+  if (lexiconMentionsRole(ROLE_SOFTWARE_STEP_GRANULARITY, normalized)) gates.push("each_step");
   if (deliveryMode === "code_generation") {
     gates.push("generated_code");
   } else if (deliveryMode === "manual_instructions") {
@@ -10674,7 +10695,7 @@ function softwareApprovalGates(normalized, deliveryMode) {
     gates.push("generated_script");
     gates.push("bash_command");
   }
-  if (containsAnySubstring(normalized, ["shell", "bash", "command", "docker", "webvm"])) {
+  if (lexiconMentionsRole(ROLE_SOFTWARE_BASH_COMMAND, normalized)) {
     gates.push("bash_command");
   }
   return [...new Set(gates)].sort();
@@ -10951,22 +10972,19 @@ function renderSoftwareProjectImplementation(meaning) {
   return lines.join("\n");
 }
 
+// Mirror is_approval_prompt in src/solver_handlers/software_project.rs: strip
+// leading/trailing non-alphanumerics (Unicode-aware, so a non-Latin go-ahead
+// compacts the same way), drop interior sentence punctuation, then match the
+// whole compacted prompt against any approval-trigger surface word. The words
+// live in data/seed/meanings-software-project.lino, not in code.
 function isSoftwareApprovalPrompt(normalized) {
-  const compact = String(normalized || "").replace(/[.!?,]/g, "").trim();
-  return [
-    "approve",
-    "approved",
-    "approve plan",
-    "yes",
-    "yes proceed",
-    "proceed",
-    "go ahead",
-    "looks good",
-    "do it",
-    "start implementation",
-    "generate code",
-    "convert to code",
-  ].includes(compact);
+  const compact = String(normalized || "")
+    .trim()
+    .replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu, "")
+    .replace(/[.!,]/g, "");
+  return meaningsWithRole(ROLE_SOFTWARE_APPROVAL_TRIGGER).some((meaning) =>
+    meaning.words.some((word) => compact === word),
+  );
 }
 
 function lastHistoryTurn(history, role) {
@@ -13757,7 +13775,9 @@ const MEANINGS_LINO = [
   '    role "software_feature"',
   '    lexeme "en"',
   '      word "feature"',
+  '      word "features"',
   '      word "requirement"',
+  '      word "requirements"',
   '    lexeme "ru"',
   '      word "функция"',
   '      word "требование"',
@@ -13940,6 +13960,291 @@ const MEANINGS_LINO = [
   '      word "添加"',
   '      word "文件"',
   '      word "上传"',
+  '  meaning "software_delivery"',
+  '    gloss "how the assistant should deliver a software solution — the genus of the delivery modes below; the default is generated code, the others are selected only when their mode is evidenced in the request"',
+  '    wiktionary "delivery"',
+  '    defined_by "software_artifact"',
+  '    defined_by "delivery_manual_instructions"',
+  '    role "software_delivery"',
+  '    lexeme "en"',
+  '      word "delivery"',
+  '    lexeme "ru"',
+  '      word "доставка"',
+  '    lexeme "hi"',
+  '      word "वितरण"',
+  '    lexeme "zh"',
+  '      word "交付"',
+  '  meaning "delivery_manual_instructions"',
+  '    gloss "deliver step-by-step manual instructions for a person to follow instead of writing code; canonical mode `manual_instructions`"',
+  '    wiktionary "instruction"',
+  '    defined_by "software_delivery"',
+  '    role "software_delivery_mode"',
+  '    lexeme "en"',
+  '      word "manual instruction"',
+  '      word "manual instructions"',
+  '      word "instruction"',
+  '      word "instructions"',
+  '      word "no code"',
+  '    lexeme "ru"',
+  '      word "инструкция"',
+  '      word "инструкции"',
+  '      word "вручную"',
+  '    lexeme "hi"',
+  '      word "निर्देश"',
+  '      word "मैनुअल"',
+  '    lexeme "zh"',
+  '      word "手动说明"',
+  '      word "说明"',
+  '  meaning "delivery_immediate_execution"',
+  '    gloss "build the solution and run it immediately in the sandbox (WebVM) rather than handing back source; canonical mode `immediate_execution`"',
+  '    wiktionary "execute"',
+  '    defined_by "software_delivery"',
+  '    role "software_delivery_mode"',
+  '    lexeme "en"',
+  '      word "execute"',
+  '      word "run command"',
+  '      word "run commands"',
+  '      word "run it"',
+  '      word "webvm"',
+  '    lexeme "ru"',
+  '      word "выполни"',
+  '      word "запусти команду"',
+  '    lexeme "hi"',
+  '      word "निष्पादित करें"',
+  '      word "चलाएँ"',
+  '    lexeme "zh"',
+  '      word "立即运行"',
+  '      word "执行"',
+  '  meaning "delivery_script_generation"',
+  '    gloss "deliver an executable shell script or set of commands rather than application source; canonical mode `script_generation`"',
+  '    wiktionary "script"',
+  '    defined_by "software_delivery"',
+  '    role "software_delivery_mode"',
+  '    lexeme "en"',
+  '      word "bash"',
+  '      word "shell"',
+  '      word "script"',
+  '      word "scripts"',
+  '      word "commands"',
+  '    lexeme "ru"',
+  '      word "скрипт"',
+  '      word "оболочка"',
+  '      word "команды"',
+  '    lexeme "hi"',
+  '      word "स्क्रिप्ट"',
+  '      word "शेल"',
+  '    lexeme "zh"',
+  '      word "脚本"',
+  '      word "外壳脚本"',
+  '  meaning "software_language"',
+  '    gloss "the programming language a software implementation targets — the genus of the languages below; the default is TypeScript, the others are selected when the language is named in the request"',
+  '    wiktionary "programming language"',
+  '    defined_by "software_artifact"',
+  '    defined_by "language_python"',
+  '    role "software_language"',
+  '    lexeme "en"',
+  '      word "programming language"',
+  '    lexeme "ru"',
+  '      word "язык программирования"',
+  '    lexeme "hi"',
+  '      word "प्रोग्रामिंग भाषा"',
+  '    lexeme "zh"',
+  '      word "编程语言"',
+  '  meaning "language_python"',
+  '    gloss "the Python programming language and its web frameworks (Django, FastAPI); canonical target `python`"',
+  '    wiktionary "Python"',
+  '    defined_by "software_language"',
+  '    role "software_implementation_language"',
+  '    lexeme "en"',
+  '      word "python"',
+  '      word "django"',
+  '      word "fastapi"',
+  '    lexeme "ru"',
+  '      word "питон"',
+  '      word "пайтон"',
+  '    lexeme "hi"',
+  '      word "पायथन"',
+  '    lexeme "zh"',
+  '      word "python"',
+  '  meaning "language_rust"',
+  '    gloss "the Rust programming language and its Cargo toolchain; canonical target `rust`"',
+  '    wiktionary "Rust"',
+  '    defined_by "software_language"',
+  '    role "software_implementation_language"',
+  '    lexeme "en"',
+  '      word "rust"',
+  '      word "cargo"',
+  '    lexeme "ru"',
+  '      word "раст"',
+  '    lexeme "hi"',
+  '      word "रस्ट"',
+  '    lexeme "zh"',
+  '      word "rust"',
+  '  meaning "language_javascript"',
+  '    gloss "the JavaScript programming language and its Node.js runtime; canonical target `javascript`"',
+  '    wiktionary "JavaScript"',
+  '    defined_by "software_language"',
+  '    role "software_implementation_language"',
+  '    lexeme "en"',
+  '      word "javascript"',
+  '      word "node"',
+  '    lexeme "ru"',
+  '      word "джаваскрипт"',
+  '    lexeme "hi"',
+  '      word "जावास्क्रिप्ट"',
+  '    lexeme "zh"',
+  '      word "javascript"',
+  '  meaning "tabletop_game_tracker"',
+  "    gloss \"a request to track a tabletop/RPG game piece's combat state — the genus pairing a game domain with a combat mechanic; only when both appear is it a game-unit tracker (which forces state_tracking subtasks and a damage-mitigation surface)\"",
+  '    wiktionary "tabletop game"',
+  '    defined_by "game_tracker_domain"',
+  '    defined_by "game_tracker_mechanic"',
+  '    role "tabletop_game_tracker"',
+  '    lexeme "en"',
+  '      word "tabletop game tracker"',
+  '    lexeme "ru"',
+  '      word "трекер настольной игры"',
+  '    lexeme "hi"',
+  '      word "टेबलटॉप गेम ट्रैकर"',
+  '    lexeme "zh"',
+  '      word "桌游追踪器"',
+  '  meaning "game_tracker_domain"',
+  '    gloss "a tabletop/RPG game domain whose pieces carry combat state — a D&D unit, a token, a wargame piece, an Owlbear scene"',
+  '    wiktionary "tabletop game"',
+  '    defined_by "tabletop_game_tracker"',
+  '    role "game_tracker_domain"',
+  '    lexeme "en"',
+  '      word "dnd"',
+  '      word "wargame"',
+  '      word "tabletop"',
+  '      word "unit"',
+  '      word "token"',
+  '      word "owlbear"',
+  '    lexeme "ru"',
+  '      word "настольная игра"',
+  '      word "фишка"',
+  '      word "жетон"',
+  '    lexeme "hi"',
+  '      word "टेबलटॉप"',
+  '      word "मोहरा"',
+  '    lexeme "zh"',
+  '      word "桌游"',
+  '      word "棋子"',
+  '      word "战棋"',
+  '  meaning "game_tracker_mechanic"',
+  '    gloss "a combat mechanic a tabletop tracker follows — hit points, damage, protection, resistance, cooldowns; shares ground with the state_tracking requirement"',
+  '    wiktionary "hit points"',
+  '    defined_by "tabletop_game_tracker"',
+  '    defined_by "requirement_state_tracking"',
+  '    role "game_tracker_mechanic"',
+  '    lexeme "en"',
+  '      word "hp"',
+  '      word "damage"',
+  '      word "protection"',
+  '      word "resistance"',
+  '      word "cooldown"',
+  '      word "cooldowns"',
+  '    lexeme "ru"',
+  '      word "хп"',
+  '      word "урон"',
+  '      word "защита"',
+  '      word "сопротивление"',
+  '      word "откат"',
+  '    lexeme "hi"',
+  '      word "एचपी"',
+  '      word "क्षति"',
+  '      word "रक्षा"',
+  '    lexeme "zh"',
+  '      word "生命值"',
+  '      word "伤害"',
+  '      word "防护"',
+  '      word "抗性"',
+  '      word "冷却"',
+  '  meaning "software_approval"',
+  "    gloss \"the user's approval interaction in a software dialogue — the genus pairing a whole-prompt go-ahead with the granularity at which approval is requested\"",
+  '    wiktionary "approval"',
+  '    defined_by "software_approval_trigger"',
+  '    defined_by "software_step_granularity"',
+  '    role "software_approval"',
+  '    lexeme "en"',
+  '      word "approval"',
+  '    lexeme "ru"',
+  '      word "одобрение"',
+  '    lexeme "hi"',
+  '      word "अनुमोदन"',
+  '    lexeme "zh"',
+  '      word "批准"',
+  '  meaning "software_approval_trigger"',
+  '    gloss "a whole-prompt go-ahead that moves a software dialogue from plan to implementation — approve, yes, proceed, go ahead, do it; matched against the entire compacted prompt, not a passing mention"',
+  '    wiktionary "approve"',
+  '    defined_by "software_approval"',
+  '    role "software_approval_trigger"',
+  '    lexeme "en"',
+  '      word "approve"',
+  '      word "approved"',
+  '      word "approve plan"',
+  '      word "yes"',
+  '      word "yes proceed"',
+  '      word "proceed"',
+  '      word "go ahead"',
+  '      word "looks good"',
+  '      word "do it"',
+  '      word "start implementation"',
+  '      word "generate code"',
+  '      word "convert to code"',
+  '    lexeme "ru"',
+  '      word "одобряю"',
+  '      word "да"',
+  '      word "приступай"',
+  '      word "поехали"',
+  '    lexeme "hi"',
+  '      word "स्वीकृत"',
+  '      word "हाँ"',
+  '      word "आगे बढ़ो"',
+  '    lexeme "zh"',
+  '      word "批准"',
+  '      word "同意"',
+  '      word "开始"',
+  '  meaning "software_step_granularity"',
+  '    gloss "a request to approve the work step by step rather than all at once — adds the each_step approval gate"',
+  '    wiktionary "step"',
+  '    defined_by "software_approval"',
+  '    role "software_step_granularity"',
+  '    lexeme "en"',
+  '      word "each step"',
+  '      word "step by step"',
+  '    lexeme "ru"',
+  '      word "каждый шаг"',
+  '      word "пошагово"',
+  '    lexeme "hi"',
+  '      word "हर चरण"',
+  '      word "चरण दर चरण"',
+  '    lexeme "zh"',
+  '      word "每一步"',
+  '      word "逐步"',
+  '  meaning "software_bash_command"',
+  '    gloss "a shell or command-line surface the work touches — a shell, bash, a command, Docker, WebVM; adds the bash_command approval gate"',
+  '    wiktionary "shell"',
+  '    defined_by "software_delivery"',
+  '    role "software_bash_command"',
+  '    lexeme "en"',
+  '      word "shell"',
+  '      word "bash"',
+  '      word "command"',
+  '      word "commands"',
+  '      word "docker"',
+  '      word "webvm"',
+  '    lexeme "ru"',
+  '      word "оболочка"',
+  '      word "команда"',
+  '      word "команды"',
+  '    lexeme "hi"',
+  '      word "शेल"',
+  '      word "कमांड"',
+  '    lexeme "zh"',
+  '      word "外壳"',
+  '      word "命令"',
+  '      word "docker"',
 ].join("\n");
 
 // Semantic role: a thing a program produces that a later turn can refer back to
@@ -13989,14 +14294,42 @@ function meaningLexicon() {
   return cachedMeaningLexicon;
 }
 
-// Does `normalized` mention any surface word of any meaning carrying `role`?
-// Mirrors the CJK-substring vs. whitespace-token contract via containsProgramToken.
-function lexiconMentionsRole(role, normalized) {
-  return meaningLexicon().some(
-    (meaning) =>
-      meaning.roles.includes(role) &&
-      meaning.words.some((word) => containsProgramToken(normalized, word)),
+// Does `expected` (a surface word or multi-word phrase) appear in `normalized`?
+// CJK surfaces match as substrings; everything else matches on whitespace
+// boundaries (whole token or whole phrase). Mirrors surface_present in
+// src/seed/meanings.rs — stricter than a raw substring, so a short surface like
+// "hp" never matches inside "php" and a phrase like "each step" matches only on
+// word boundaries.
+function surfacePresent(normalized, expected) {
+  if (!expected) return false;
+  const text = String(normalized || "");
+  if (containsCjk(expected)) return text.includes(expected);
+  return (
+    text === expected ||
+    text.startsWith(`${expected} `) ||
+    text.endsWith(` ${expected}`) ||
+    text.includes(` ${expected} `)
   );
+}
+
+// Is any surface word (any language) of `meaning` evidenced in `normalized`?
+// Mirrors Meaning::evidenced_in in src/seed/meanings.rs.
+function meaningEvidencedIn(meaning, normalized) {
+  return meaning.words.some((word) => surfacePresent(normalized, word));
+}
+
+// Does `normalized` mention any surface word of any meaning carrying `role`?
+// Mirrors Lexicon::mentions_role in src/seed/meanings.rs — the boundary-aware,
+// phrase-capable surface_present contract (CJK substring vs. whitespace token).
+function lexiconMentionsRole(role, normalized) {
+  return meaningsWithRole(role).some((meaning) => meaningEvidencedIn(meaning, normalized));
+}
+
+// The first meaning (declaration order) carrying `role` that is evidenced in
+// `normalized`, or null. Declaration order encodes priority. Mirrors
+// Lexicon::first_role_match in src/seed/meanings.rs.
+function firstRoleMatch(role, normalized) {
+  return meaningsWithRole(role).find((meaning) => meaningEvidencedIn(meaning, normalized)) || null;
 }
 
 // Issue #386 calendar roles — mirror the ROLE_CALENDAR_* consts in
