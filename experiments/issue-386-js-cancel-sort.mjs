@@ -141,6 +141,31 @@ const wordsForRole = (role) => lexicon.filter((m) => m.roles.includes(role)).fla
 check("lexicon is non-empty and self-describing", lexicon.length >= 10, `${lexicon.length} meanings`);
 check("program_artifact role has surface words", wordsForRole("program_artifact").length > 0);
 check("program_modification role has surface words", wordsForRole("program_modification").length > 0);
+check("program_kind role has surface words", wordsForRole("program_kind").length > 0);
+check("program_request role has surface words", wordsForRole("program_request").length > 0);
+
+// Issue #386: the "write a <program>" gate must also reference *meanings* — a
+// program_kind artifact requested by a program_request verb — in every
+// supported language. Mirrors write_program_parameters in
+// src/intent_formalization.rs (program_kind && program_request).
+console.log("\n=== write-program gate (program_kind && program_request) ===");
+// The gate fires when a program_kind noun pairs with a program_request verb;
+// the intent then refines to a write_program* variant (no longer `unknown`,
+// which was the issue #386 bug). Naming no programming language yields the
+// `write_program_unsupported` refinement — still a recognised program request.
+for (const [lang, prompt] of [
+  ["en", "write a program that lists files in the current directory"],
+  ["ru", "напиши программу, которая выводит список файлов"],
+  ["hi", "वर्तमान निर्देशिका में फ़ाइलों की सूची दिखाने वाला प्रोग्राम लिखो"],
+  ["zh", "写一个程序来列出当前目录中的文件"],
+]) {
+  const r = sandbox.tryWriteProgram(prompt, [], lang);
+  check(
+    `write-a-program gate recognised, not unknown (${lang})`,
+    r && typeof r.intent === "string" && r.intent.startsWith("write_program"),
+    r && r.intent,
+  );
+}
 
 console.log("\n" + (fail.length ? "FAILURES: " + fail.join(", ") : "ALL CHECKS PASSED"));
 process.exit(fail.length ? 1 : 0);

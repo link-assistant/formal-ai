@@ -588,90 +588,18 @@ pub(crate) fn detected_program_modifiers(normalized: &str) -> Vec<String> {
         .collect()
 }
 
-/// Words that name the artefact the user wants generated ("program", "script",
-/// "code") across the supported prompt languages.
-const PROGRAM_NOUNS: &[&str] = &[
-    "program",
-    "programme",
-    "script",
-    "code",
-    // Issue #334: "Write a Python function that ..." — a requested function is a
-    // program artefact too, so it pairs with a program verb to ask for code.
-    "function",
-    "func",
-    // Russian: программа / программу / программе / программы, скрипт, код.
-    "программа",
-    "программу",
-    "программе",
-    "программы",
-    "программку",
-    "скрипт",
-    "код",
-    // Russian: функция / функцию (function).
-    "функция",
-    "функцию",
-    // Hindi: प्रोग्राम (program), स्क्रिप्ट (script), कोड (code),
-    // फ़ंक्शन / फंक्शन (function).
-    "प्रोग्राम",
-    "स्क्रिप्ट",
-    "कोड",
-    "फ़ंक्शन",
-    "फंक्शन",
-    // Chinese: 程序 (program), 脚本 (script), 代码 (code), 函数 (function).
-    "程序",
-    "脚本",
-    "代码",
-    "函数",
-];
-
-/// Verbs that request the artefact be produced ("write", "create", "show", …)
-/// across the supported prompt languages.
-const PROGRAM_VERBS: &[&str] = &[
-    "write",
-    "create",
-    "show",
-    "generate",
-    "make",
-    "build",
-    // Russian imperative forms of написать / создать / сделать / показать /
-    // выдать / сгенерировать / написать.
-    "напиши",
-    "напишите",
-    "создай",
-    "создайте",
-    "сделай",
-    "сделайте",
-    "покажи",
-    "покажите",
-    "сгенерируй",
-    "сгенерируйте",
-    // Hindi imperatives: लिखो / लिखें (write), बनाओ / बनाएं (make/create),
-    // दिखाओ / दिखाएं (show).
-    "लिखो",
-    "लिखें",
-    "बनाओ",
-    "बनाएं",
-    "दिखाओ",
-    "दिखाएं",
-    // Chinese verbs: 编写 / 写 (write), 创建 (create), 生成 (generate),
-    // 制作 (make), 显示 (show).
-    "编写",
-    "写",
-    "创建",
-    "生成",
-    "制作",
-    "显示",
-];
-
 fn write_program_parameters(normalized: &str) -> Option<BTreeMap<String, String>> {
     let task = crate::coding::program_task_by_alias(normalized);
     let language = requested_program_language(normalized);
-    let asks_for_program = PROGRAM_NOUNS
-        .iter()
-        .any(|noun| contains_token(normalized, noun))
-        && PROGRAM_VERBS
-            .iter()
-            .any(|verb| contains_token(normalized, verb));
+    // Issue #386: "write a <program>" is recognised by *meaning*, not a hardcoded
+    // per-language word list. The prompt asks for a program when it evidences a
+    // `program_kind` meaning (the artefact: program / script / code / function)
+    // *and* a `program_request` meaning (the verb: write / create / show /
+    // generate / make / build). The surface words for every language live once,
+    // in `data/seed/meanings.lino`; this code understands the concepts.
+    let lexicon = crate::seed::lexicon();
+    let asks_for_program = lexicon.mentions_role(crate::seed::ROLE_PROGRAM_KIND, normalized)
+        && lexicon.mentions_role(crate::seed::ROLE_PROGRAM_REQUEST, normalized);
     if task.is_none() && !asks_for_program {
         return None;
     }

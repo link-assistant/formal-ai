@@ -11962,76 +11962,6 @@ function programLanguageFromPrompt(normalized) {
   return null;
 }
 
-// Issue #312: the Russian reporter wrote "Напиши мне программу на Rust, которая
-// выдаёт список файлов...". English-only trigger words made the worker return
-// "unknown". These mirror `PROGRAM_NOUNS`/`PROGRAM_VERBS` in
-// `src/intent_formalization.rs` so both engine surfaces detect the same
-// multilingual "write a <noun>" phrasings.
-const PROGRAM_NOUNS = [
-  "program",
-  "programme",
-  "script",
-  "code",
-  // Issue #334: "Write a Python function that ..." — a requested function is a
-  // program artefact too.
-  "function",
-  "func",
-  "программа",
-  "программу",
-  "программе",
-  "программы",
-  "программку",
-  "скрипт",
-  "код",
-  // Russian: функция / функцию (function).
-  "функция",
-  "функцию",
-  // Hindi: प्रोग्राम (program), स्क्रिप्ट (script), कोड (code),
-  // फ़ंक्शन / फंक्शन (function).
-  "प्रोग्राम",
-  "स्क्रिप्ट",
-  "कोड",
-  "फ़ंक्शन",
-  "फंक्शन",
-  // Chinese: 程序 (program), 脚本 (script), 代码 (code), 函数 (function).
-  "程序",
-  "脚本",
-  "代码",
-  "函数",
-];
-const PROGRAM_VERBS = [
-  "write",
-  "create",
-  "show",
-  "generate",
-  "make",
-  "build",
-  "напиши",
-  "напишите",
-  "создай",
-  "создайте",
-  "сделай",
-  "сделайте",
-  "покажи",
-  "покажите",
-  "сгенерируй",
-  "сгенерируйте",
-  // Hindi imperatives: लिखो / लिखें (write), बनाओ / बनाएं (make), दिखाओ / दिखाएं (show).
-  "लिखो",
-  "लिखें",
-  "बनाओ",
-  "बनाएं",
-  "दिखाओ",
-  "दिखाएं",
-  // Chinese verbs: 编写 / 写 (write), 创建 (create), 生成 (generate), 制作 (make), 显示 (show).
-  "编写",
-  "写",
-  "创建",
-  "生成",
-  "制作",
-  "显示",
-];
-
 // ---------------------------------------------------------------------------
 // Issue #324 R4/R7: the program-modification step as a data-driven Links
 // Notation substitution pipeline. This mirrors `src/program_plan.rs` (the
@@ -12249,13 +12179,16 @@ const MEANINGS_LINO = [
   '    wiktionary "program"',
   '    defined_by "code"',
   '    role "program_artifact"',
+  '    role "program_kind"',
   '    lexeme "en"',
   '      word "program"',
   '      word "programme"',
   '    lexeme "ru"',
   '      word "программа"',
   '      word "программу"',
+  '      word "программе"',
   '      word "программы"',
+  '      word "программку"',
   '    lexeme "hi"',
   '      word "प्रोग्राम"',
   '    lexeme "zh"',
@@ -12266,6 +12199,7 @@ const MEANINGS_LINO = [
   '    defined_by "program"',
   '    defined_by "code"',
   '    role "program_artifact"',
+  '    role "program_kind"',
   '    lexeme "en"',
   '      word "script"',
   '    lexeme "ru"',
@@ -12279,6 +12213,7 @@ const MEANINGS_LINO = [
   '    wiktionary "code"',
   '    defined_by "program"',
   '    role "program_artifact"',
+  '    role "program_kind"',
   '    lexeme "en"',
   '      word "code"',
   '    lexeme "ru"',
@@ -12420,6 +12355,7 @@ const MEANINGS_LINO = [
   '    defined_by "program"',
   '    defined_by "output"',
   '    role "program_modification"',
+  '    role "program_request"',
   '    lexeme "en"',
   '      word "make"',
   '    lexeme "ru"',
@@ -12431,6 +12367,105 @@ const MEANINGS_LINO = [
   '      word "बनाएं"',
   '    lexeme "zh"',
   '      word "制作"',
+  '  meaning "function"',
+  '    gloss "a named, reusable block of program code that performs a task"',
+  '    wiktionary "function"',
+  '    defined_by "code"',
+  '    defined_by "program"',
+  '    role "program_artifact"',
+  '    role "program_kind"',
+  '    lexeme "en"',
+  '      word "function"',
+  '      word "func"',
+  '    lexeme "ru"',
+  '      word "функция"',
+  '      word "функцию"',
+  '    lexeme "hi"',
+  '      word "फ़ंक्शन"',
+  '      word "फंक्शन"',
+  '    lexeme "zh"',
+  '      word "函数"',
+  '  meaning "write"',
+  '    gloss "to author a program or its code"',
+  '    wiktionary "write"',
+  '    defined_by "code"',
+  '    defined_by "program"',
+  '    role "program_request"',
+  '    lexeme "en"',
+  '      word "write"',
+  '    lexeme "ru"',
+  '      word "напиши"',
+  '      word "напишите"',
+  '    lexeme "hi"',
+  '      word "लिखो"',
+  '      word "लिखें"',
+  '    lexeme "zh"',
+  '      word "编写"',
+  '      word "写"',
+  '  meaning "create"',
+  '    gloss "to bring a program or its artifact into existence"',
+  '    wiktionary "create"',
+  '    defined_by "make"',
+  '    defined_by "program"',
+  '    role "program_request"',
+  '    lexeme "en"',
+  '      word "create"',
+  '    lexeme "ru"',
+  '      word "создай"',
+  '      word "создайте"',
+  '    lexeme "hi"',
+  '      word "बनाओ"',
+  '      word "बनाएं"',
+  '    lexeme "zh"',
+  '      word "创建"',
+  '  meaning "show"',
+  "    gloss \"to display a program's output or result\"",
+  '    wiktionary "show"',
+  '    defined_by "output"',
+  '    defined_by "result"',
+  '    role "program_request"',
+  '    lexeme "en"',
+  '      word "show"',
+  '    lexeme "ru"',
+  '      word "покажи"',
+  '      word "покажите"',
+  '    lexeme "hi"',
+  '      word "दिखाओ"',
+  '      word "दिखाएं"',
+  '    lexeme "zh"',
+  '      word "显示"',
+  '  meaning "generate"',
+  '    gloss "to produce a program or output mechanically"',
+  '    wiktionary "generate"',
+  '    defined_by "output"',
+  '    defined_by "program"',
+  '    role "program_request"',
+  '    lexeme "en"',
+  '      word "generate"',
+  '    lexeme "ru"',
+  '      word "сгенерируй"',
+  '      word "сгенерируйте"',
+  '    lexeme "hi"',
+  '      word "उत्पन्न"',
+  '      word "जनरेट"',
+  '    lexeme "zh"',
+  '      word "生成"',
+  '  meaning "build"',
+  '    gloss "to assemble a program from its parts"',
+  '    wiktionary "build"',
+  '    defined_by "make"',
+  '    defined_by "program"',
+  '    role "program_request"',
+  '    lexeme "en"',
+  '      word "build"',
+  '    lexeme "ru"',
+  '      word "построй"',
+  '      word "собери"',
+  '    lexeme "hi"',
+  '      word "बनाओ"',
+  '      word "बनाएं"',
+  '    lexeme "zh"',
+  '      word "构建"',
 ].join("\n");
 
 // Semantic role: a thing a program produces that a later turn can refer back to
@@ -12439,6 +12474,12 @@ const ROLE_PROGRAM_ARTIFACT = "program_artifact";
 // Semantic role: an operation a follow-up turn can request against the active
 // program (sort, reverse, cancel, change, …) — additive or subtractive.
 const ROLE_PROGRAM_MODIFICATION = "program_modification";
+// Semantic role: a kind of program artifact a user can ask to be authored
+// (a program, a script, code, a function) — the noun side of "write a <kind>".
+const ROLE_PROGRAM_KIND = "program_kind";
+// Semantic role: a verb that requests a program artifact be produced (write,
+// create, show, generate, make, build) — the verb side of "write a <kind>".
+const ROLE_PROGRAM_REQUEST = "program_request";
 
 let cachedMeaningLexicon = null;
 // Parse the embedded lexicon once. Each meaning keeps the semantic roles it
@@ -12907,9 +12948,14 @@ function writeProgramParameters(prompt) {
   const normalized = normalizeProgramPrompt(prompt);
   let task = programTaskFromPrompt(normalized);
   const language = programLanguageFromPrompt(normalized);
+  // Issue #386: recognise "write a <program>" by *meaning*, not a hardcoded
+  // per-language word list — a program_kind artifact (program / script / code /
+  // function) requested by a program_request verb (write / create / … / build).
+  // The surface words live once in data/seed/meanings.lino; this code knows the
+  // concepts. Mirrors write_program_parameters in src/intent_formalization.rs.
   const asksForProgram =
-    PROGRAM_NOUNS.some((noun) => containsProgramToken(normalized, noun)) &&
-    PROGRAM_VERBS.some((verb) => containsProgramToken(normalized, verb));
+    lexiconMentionsRole(ROLE_PROGRAM_KIND, normalized) &&
+    lexiconMentionsRole(ROLE_PROGRAM_REQUEST, normalized);
   if (!task && !asksForProgram) return null;
   // Issue #358: modification phrases in the same turn lower the base task
   // through the data-backed substitution pipeline.

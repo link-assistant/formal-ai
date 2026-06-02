@@ -42,7 +42,8 @@ pub use brainstorm::{brainstorm_seeds, BrainstormCategory, BrainstormSeeds};
 pub use coreference::{coreference_seeds, Antecedent, CoreferenceSeeds, Pronoun};
 pub use facts::{facts, FactRecord, LocalizedFact};
 pub use meanings::{
-    lexicon, Lexeme, Lexicon, Meaning, ROLE_PROGRAM_ARTIFACT, ROLE_PROGRAM_MODIFICATION,
+    lexicon, Lexeme, Lexicon, Meaning, ROLE_PROGRAM_ARTIFACT, ROLE_PROGRAM_KIND,
+    ROLE_PROGRAM_MODIFICATION, ROLE_PROGRAM_REQUEST,
 };
 pub use operation_vocabulary::{
     operation_vocabulary, OperationLanguageForms, OperationTrigger, OperationVocabulary,

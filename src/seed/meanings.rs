@@ -26,6 +26,12 @@ pub const ROLE_PROGRAM_ARTIFACT: &str = "program_artifact";
 /// Semantic role: an operation a follow-up turn can request against the active
 /// program (sort, reverse, cancel, change, …) — additive or subtractive.
 pub const ROLE_PROGRAM_MODIFICATION: &str = "program_modification";
+/// Semantic role: a kind of program artifact a user can ask to be authored
+/// (a program, a script, code, a function). The noun side of "write a <kind>".
+pub const ROLE_PROGRAM_KIND: &str = "program_kind";
+/// Semantic role: a verb that requests a program artifact be produced (write,
+/// create, show, generate, make, build). The verb side of "write a <kind>".
+pub const ROLE_PROGRAM_REQUEST: &str = "program_request";
 
 /// Surface words that evidence a meaning in one language.
 #[derive(Debug, Clone)]
