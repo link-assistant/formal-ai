@@ -206,5 +206,53 @@ for (const p of SELF_INTRO_FALSE) {
   check(`isSelfIntroductionQuery rejects «${p}»`, sandbox.isSelfIntroductionQuery(p) === false);
 }
 
+// --- capability recognition: isCapabilityQuery / isMoreCapabilitiesPrompt ----
+// The exact prompts the Rust capabilities matrix feeds (mixed case + trailing
+// punctuation, the «что за дичь» slang, the zh/hi base phrases), so the worker
+// recognizers must agree with is_capability_query / is_more_capabilities_prompt
+// in src/solver_handlers/user_intent.rs after the meaning-role conversion. The
+// recognizers are language-agnostic: each phrase trips regardless of script.
+const CAPABILITY_TRUE = [
+  "what can you do?",
+  "what can you do",
+  "what you can do?",
+  "what are your capabilities",
+  "что ты умеешь?",
+  "что ты умеешь",
+  "А в чём ты можешь быть полезен",
+  "что за дичь?",
+  "आप क्या कर सकते हैं?",
+  "तुम क्या कर सकते हो?",
+  "क्या क्या कर सकते हो?",
+  "你能做什么?",
+  "你会做什么?",
+  "你有什么功能?",
+  "你能干什么?",
+];
+for (const p of CAPABILITY_TRUE) {
+  check(`isCapabilityQuery accepts «${p}»`, sandbox.isCapabilityQuery(p) === true);
+}
+const CAPABILITY_FALSE = ["what is the capital of france", "tell me about yourself", ""];
+for (const p of CAPABILITY_FALSE) {
+  check(`isCapabilityQuery rejects «${p}»`, sandbox.isCapabilityQuery(p) === false);
+}
+
+// The follow-up role is a strict subset: "what else…" trips both predicates,
+// while a base capability query trips isCapabilityQuery only.
+const MORE_TRUE = [
+  "what else can you do?",
+  "что ещё ты умеешь?",
+  "और क्या कर सकते हो?",
+  "你还能做什么?",
+];
+for (const p of MORE_TRUE) {
+  check(`isMoreCapabilitiesPrompt accepts «${p}»`, sandbox.isMoreCapabilitiesPrompt(p) === true);
+  check(`isCapabilityQuery accepts more «${p}»`, sandbox.isCapabilityQuery(p) === true);
+}
+const MORE_FALSE = ["what can you do", "что ты умеешь", "你能做什么", ""];
+for (const p of MORE_FALSE) {
+  check(`isMoreCapabilitiesPrompt rejects base «${p}»`, sandbox.isMoreCapabilitiesPrompt(p) === false);
+}
+
 console.log(fail.length ? `\nFAILED (${fail.length}): ${fail.join(", ")}` : "\nALL PASS");
 process.exit(fail.length ? 1 : 0);

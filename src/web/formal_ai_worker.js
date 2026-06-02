@@ -4774,21 +4774,28 @@ function tryFeatureCapabilityStatus(prompt, normalized, language, preferences) {
   };
 }
 
-function isMoreCapabilitiesPrompt(normalized, language) {
-  if (language === "ru") {
-    return (
-      normalized.includes("что ещё ты умеешь") ||
-      normalized.includes("что еще ты умеешь") ||
-      normalized.includes("что ещё можешь") ||
-      normalized.includes("что еще можешь") ||
-      normalized.includes("что ты ещё умеешь") ||
-      normalized.includes("что ты еще умеешь")
-    );
-  }
+// Issue #386: recognise "what else can you do" / "что ещё ты умеешь" /
+// "और क्या कर सकते" / "你还能做什么" by the capability_query_more meaning role
+// rather than a hardcoded per-language phrase list. Recognition is
+// language-agnostic because the surface words are script-specific; the response
+// body is still chosen by the caller from detectLanguage. The prompt is
+// re-normalised so trailing punctuation collapses to the canonical spacing the
+// seed stores. Mirror of is_more_capabilities_prompt in
+// src/solver_handlers/user_intent.rs.
+function isMoreCapabilitiesPrompt(normalized) {
+  return lexiconMentionsRole(ROLE_CAPABILITY_QUERY_MORE, normalizePrompt(normalized));
+}
+
+// Issue #386: recognise "what can you do" / "что ты умеешь" / "что за дичь" /
+// "आप क्या कर सकते" / "你能做什么" by the capability_query meaning role — plus
+// its follow-up capability_query_more, so "what else can you do" still counts —
+// rather than a hardcoded per-language phrase list. Mirror of
+// is_capability_query in src/solver_handlers/user_intent.rs.
+function isCapabilityQuery(normalized) {
+  const cleaned = normalizePrompt(normalized);
   return (
-    normalized.includes("what else can you do") ||
-    normalized.includes("what else do you do") ||
-    normalized.includes("what other things can you do")
+    lexiconMentionsRole(ROLE_CAPABILITY_QUERY, cleaned) ||
+    lexiconMentionsRole(ROLE_CAPABILITY_QUERY_MORE, cleaned)
   );
 }
 
@@ -4899,43 +4906,8 @@ function tryCapabilities(prompt, normalized, preferences, history) {
   const language = detectLanguage(prompt);
   const featureStatus = tryFeatureCapabilityStatus(prompt, normalized, language, preferences);
   if (featureStatus) return featureStatus;
-  const moreCapabilities = isMoreCapabilitiesPrompt(normalized, language);
-  const isCapabilities =
-    language === "ru"
-      ? moreCapabilities ||
-        normalized.includes("что ты умеешь") ||
-        normalized.includes("чем ты можешь") ||
-        normalized.includes("чём ты можешь") ||
-        normalized.includes("что ты можешь") ||
-        normalized.includes("что умеет") ||
-        normalized.includes("что можешь") ||
-        normalized.includes("в чем ты можешь быть полезен") ||
-        normalized.includes("в чём ты можешь быть полезен") ||
-        normalized.includes("твои возможности") ||
-        normalized.includes("что за дичь") ||
-        normalized.includes("что это такое") ||
-        normalized.includes("что происходит") ||
-        normalized.includes("что ты делаешь")
-      : language === "zh"
-        ? normalized.includes("你能做什么") ||
-          normalized.includes("你会做什么") ||
-          normalized.includes("你有什么功能") ||
-          normalized.includes("你能干什么")
-        : language === "hi"
-          ? normalized.includes("आप क्या कर सकते") ||
-            normalized.includes("तुम क्या कर सकते") ||
-            normalized.includes("क्या क्या कर सकते")
-          : moreCapabilities ||
-            normalized.includes("what can you do") ||
-            normalized.includes("what you can do") ||
-            normalized.includes("what are your capabilities") ||
-            normalized.includes("what are you capable of") ||
-            normalized.includes("what do you do") ||
-            normalized.includes("show me what you can do") ||
-            normalized.includes("what features do you have") ||
-            normalized.includes("how can you help") ||
-            normalized.includes("what are your features");
-  if (!isCapabilities) return null;
+  const moreCapabilities = isMoreCapabilitiesPrompt(normalized);
+  if (!isCapabilityQuery(normalized)) return null;
   if (moreCapabilities) {
     const priorSearch = historyMentionsWebSearch(history);
     return {

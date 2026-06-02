@@ -107,22 +107,37 @@ pub fn try_ill_formed(
     ))
 }
 
-fn is_more_capabilities_prompt(normalized: &str, language: &str) -> bool {
-    match language {
-        "ru" => {
-            normalized.contains("что ещё ты умеешь")
-                || normalized.contains("что еще ты умеешь")
-                || normalized.contains("что ещё можешь")
-                || normalized.contains("что еще можешь")
-                || normalized.contains("что ты ещё умеешь")
-                || normalized.contains("что ты еще умеешь")
-        }
-        _ => {
-            normalized.contains("what else can you do")
-                || normalized.contains("what else do you do")
-                || normalized.contains("what other things can you do")
-        }
-    }
+/// Is `normalized` a follow-up asking what *else* the assistant can do?
+///
+/// Issue #386: recognised by the `capability_query_more` meaning role rather
+/// than a hardcoded per-language phrase list — the surface words ("what else
+/// can you do", "что ещё ты умеешь", "और क्या कर सकते", "你还能做什么", …) live
+/// once in `data/seed/meanings-intent.lino`. Recognition is language-agnostic
+/// because the surface words are script-specific; the response body is still
+/// chosen by the caller from `detect_language`. The prompt is re-normalised so
+/// trailing punctuation collapses to the canonical spacing the seed stores.
+fn is_more_capabilities_prompt(normalized: &str) -> bool {
+    seed::lexicon().mentions_role(
+        seed::ROLE_CAPABILITY_QUERY_MORE,
+        &normalize_prompt(normalized),
+    )
+}
+
+/// Is `normalized` asking what the assistant is able to do?
+///
+/// Issue #386: recognised by the `capability_query` meaning role — plus its
+/// follow-up [`is_more_capabilities_prompt`], so "what else can you do" still
+/// counts as a capability query — rather than a hardcoded per-language phrase
+/// list. The surface words ("what can you do", "что ты умеешь", "что за дичь",
+/// "आप क्या कर सकते", "你能做什么", …) live once in
+/// `data/seed/meanings-intent.lino`. The prompt is re-normalised so trailing
+/// punctuation ("what can you do?", "你能做什么？") collapses to the canonical
+/// spacing the seed stores.
+fn is_capability_query(normalized: &str) -> bool {
+    let cleaned = normalize_prompt(normalized);
+    let lexicon = seed::lexicon();
+    lexicon.mentions_role(seed::ROLE_CAPABILITY_QUERY, &cleaned)
+        || lexicon.mentions_role(seed::ROLE_CAPABILITY_QUERY_MORE, &cleaned)
 }
 
 fn prior_history_mentions_web_search(log: &EventLog) -> bool {
@@ -174,49 +189,8 @@ pub fn try_capabilities(
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
     let language = detect_language(prompt);
-    let more_capabilities = is_more_capabilities_prompt(normalized, language.slug());
-    let is_capabilities = match language.slug() {
-        "ru" => {
-            more_capabilities
-                || normalized.contains("что ты умеешь")
-                || normalized.contains("чем ты можешь")
-                || normalized.contains("чём ты можешь")
-                || normalized.contains("что ты можешь")
-                || normalized.contains("что умеет")
-                || normalized.contains("что можешь")
-                || normalized.contains("в чем ты можешь быть полезен")
-                || normalized.contains("в чём ты можешь быть полезен")
-                || normalized.contains("твои возможности")
-                || normalized.contains("что за дичь")
-                || normalized.contains("что это такое")
-                || normalized.contains("что происходит")
-                || normalized.contains("что ты делаешь")
-        }
-        "zh" => {
-            normalized.contains("你能做什么")
-                || normalized.contains("你会做什么")
-                || normalized.contains("你有什么功能")
-                || normalized.contains("你能干什么")
-        }
-        "hi" => {
-            normalized.contains("आप क्या कर सकते")
-                || normalized.contains("तुम क्या कर सकते")
-                || normalized.contains("क्या क्या कर सकते")
-        }
-        _ => {
-            more_capabilities
-                || normalized.contains("what can you do")
-                || normalized.contains("what you can do")
-                || normalized.contains("what are your capabilities")
-                || normalized.contains("what are you capable of")
-                || normalized.contains("what do you do")
-                || normalized.contains("show me what you can do")
-                || normalized.contains("what features do you have")
-                || normalized.contains("how can you help")
-                || normalized.contains("what are your features")
-        }
-    };
-    if !is_capabilities {
+    let more_capabilities = is_more_capabilities_prompt(normalized);
+    if !is_capability_query(normalized) {
         return None;
     }
     if more_capabilities {

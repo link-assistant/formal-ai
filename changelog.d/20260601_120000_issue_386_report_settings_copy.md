@@ -136,6 +136,32 @@ bump: minor
   vocabulary now exists in every language, multilingual `count_vowels` and
   `similar_elements` requests in Russian, Hindi, and Chinese synthesize correctly
   in both the Rust solver and the browser worker — not only English (issue #386).
+- Conversational-intent recognition is data-driven too. A closed sub-graph of
+  conversational meanings (`data/seed/meanings-intent.lino`) defines the
+  assistant, user, inquiry, and answer plus the concepts they build on —
+  capability, knowledge, fact, introduction, clarification, understanding — each
+  `defined_by` the others (a closed graph in the spirit of relative-meta-logic)
+  and lexicalised in every supported language. Five role-bearing meanings carry
+  the surface words the handlers used to hardcode: `clarification_request`
+  ("I don't understand", "не понял", "समझ नहीं आया", "我不明白"),
+  `capability_query` ("what can you do", "что ты умеешь", the "что за дичь"
+  slang, "你能做什么"), its follow-up `capability_query_more` ("what else can you
+  do", "что ещё ты умеешь", "और क्या कर सकते", "你还能做什么"), `self_fact_query`,
+  and `self_introduction_request`. The clarification and capability gates
+  (`src/solver_handlers/user_intent.rs`) and the self-fact / self-introduction
+  gates (`src/solver_handlers/self_awareness.rs`) now ask the lexicon which role
+  a prompt evidences instead of matching per-language phrase arrays; each
+  re-normalises the prompt first so trailing punctuation ("what can you do?") and
+  apostrophes ("I don't understand") collapse to the canonical spacing the seed
+  stores. Recognition is language-agnostic — the surface words are
+  script-specific — while the per-language response bodies stay in code, so the
+  Chinese/Hindi "what else can you do" follow-ups ("你还能做什么", "और क्या कर
+  सकते") now reach the capabilities answer even though the former
+  Russian/English-only "more" check missed them. The `formal_ai_worker.js` mirror
+  queries the same embedded meanings, and a parity harness
+  (`experiments/issue-386-js-intent-lexicon.mjs`) proves the worker's role →
+  word-sets and its recognizers agree with the seed and the Rust handlers across
+  all four languages (issue #386).
 - The prefilled "Report issue" body omits settings already at their shipped
   default (Mode, Status, Diagnostics, Theme, Guess/Follow-up probability,
   Temperature, inference-only Location), folds the worker into the version line
