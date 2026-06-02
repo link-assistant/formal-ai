@@ -34,6 +34,7 @@ pub const MEANINGS_SOFTWARE_PROJECT_LINO: &str =
 pub const MEANINGS_PROGRAM_SYNTHESIS_LINO: &str =
     include_str!("../../data/seed/meanings-program-synthesis.lino");
 pub const MEANINGS_INTENT_LINO: &str = include_str!("../../data/seed/meanings-intent.lino");
+pub const MEANINGS_ONTOLOGY_LINO: &str = include_str!("../../data/seed/meanings-ontology.lino");
 pub const GREETINGS_LINO: &str = include_str!("../../data/seed/greetings.lino");
 pub const IDENTITY_LINO: &str = include_str!("../../data/seed/identity.lino");
 pub const HELLO_WORLD_PROGRAMS_LINO: &str =
@@ -83,6 +84,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
             MEANINGS_PROGRAM_SYNTHESIS_LINO,
         ),
         ("data/seed/meanings-intent.lino", MEANINGS_INTENT_LINO),
+        ("data/seed/meanings-ontology.lino", MEANINGS_ONTOLOGY_LINO),
         ("data/seed/greetings.lino", GREETINGS_LINO),
         ("data/seed/identity.lino", IDENTITY_LINO),
         (
@@ -112,4 +114,5 @@ pub const MEANING_FILES: &[&str] = &[
     MEANINGS_SOFTWARE_PROJECT_LINO,
     MEANINGS_PROGRAM_SYNTHESIS_LINO,
     MEANINGS_INTENT_LINO,
+    MEANINGS_ONTOLOGY_LINO,
 ];

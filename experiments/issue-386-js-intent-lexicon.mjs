@@ -108,6 +108,43 @@ for (const role of ROLES) {
   check("worker meaning graph is closed (every defined_by resolves)", closed, offender);
 }
 
+// --- the ontology root: every worker meaning reduces to the single link root -
+// Mirrors src/seed/meanings.rs `ontology_root` + `reaches_root`: the worker's
+// inline lexicon must form one connected ontology under a single `link` root,
+// not disjoint islands of vocabulary.
+{
+  const definedBy = new Map(lex.map((m) => [m.slug, m.definedBy]));
+  const roots = lex.filter((m) => m.roles.includes("ontology_root"));
+  check(
+    "worker ontology has exactly one root",
+    roots.length === 1,
+    `roots=${roots.map((m) => m.slug).join(",")}`,
+  );
+  check(
+    "worker ontology root is `link`",
+    roots.length === 1 && roots[0].slug === "link",
+    roots.length === 1 ? roots[0].slug : "",
+  );
+  const reachesRoot = (slug) => {
+    const seen = new Set();
+    const stack = [slug];
+    while (stack.length) {
+      const x = stack.pop();
+      if (x === "link") return true;
+      if (seen.has(x)) continue;
+      seen.add(x);
+      for (const t of definedBy.get(x) || []) stack.push(t);
+    }
+    return false;
+  };
+  const unreachable = lex.map((m) => m.slug).filter((s) => !reachesRoot(s));
+  check(
+    "every worker meaning reaches the `link` root via definedBy",
+    unreachable.length === 0,
+    unreachable.length ? unreachable.join(",") : `${lex.length} meanings`,
+  );
+}
+
 // --- boundary matcher accepts a representative phrase per language -----------
 // One surface per (role, language); these are exactly the strings the handlers
 // hardcode today, so the later commits can replace those checks with

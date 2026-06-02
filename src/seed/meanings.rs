@@ -181,6 +181,24 @@ pub const ROLE_SELF_FACT_QUERY: &str = "self_fact_query";
 /// "介绍一下你自己", …). Suppressed when a [`ROLE_SELF_FACT_QUERY`] surface
 /// also matches.
 pub const ROLE_SELF_INTRODUCTION_REQUEST: &str = "self_introduction_request";
+/// Semantic role: the single root of the merged ontology — the `link` meaning.
+///
+/// Every other meaning descends from it through `defined_by` edges, so the whole
+/// lexicon is one connected graph rooted at `link` (the relative-meta-logic
+/// "everything is a link" stance). Exactly one meaning carries this role.
+pub const ROLE_ONTOLOGY_ROOT: &str = "ontology_root";
+/// Semantic role: the root of the type-system sub-ontology — the `type` meaning.
+///
+/// A distinguished node directly under `link`; the broadest classifications
+/// (`entity`, `concept`) are `defined_by` it, giving a merged multi-root
+/// ontology whose roots all reduce to `link`.
+pub const ROLE_ONTOLOGY_TYPE: &str = "ontology_type";
+/// Semantic role: a top-level ontological category each domain genus roots in.
+///
+/// `entity`, `concept`, `relation`, `action`, `property` — the bridge meanings
+/// that connect every domain cluster (programs, calendars, facts, software, …)
+/// up to the `link` root.
+pub const ROLE_ONTOLOGY_CATEGORY: &str = "ontology_category";
 
 /// Surface words that evidence a meaning in one language.
 #[derive(Debug, Clone)]
@@ -294,6 +312,67 @@ impl Lexicon {
             .iter()
             .filter(|meaning| meaning.has_role(role))
             .find(|meaning| meaning.evidenced_in(normalized))
+    }
+
+    /// The single meaning that roots the merged ontology — the one carrying
+    /// [`ROLE_ONTOLOGY_ROOT`] (the `link` meaning), or `None` if absent.
+    #[must_use]
+    pub fn ontology_root(&self) -> Option<&Meaning> {
+        self.meanings
+            .iter()
+            .find(|m| m.has_role(ROLE_ONTOLOGY_ROOT))
+    }
+
+    /// Does `slug` reach the ontology root by following `defined_by` edges?
+    ///
+    /// A breadth-first walk of the `defined_by` graph that visits each meaning
+    /// at most once (cycles are expected). Every meaning must reach the root, so
+    /// the data forms one connected ontology rather than disjoint islands of
+    /// vocabulary — the universal "everything reduces to a link" stance.
+    #[must_use]
+    pub fn reaches_root(&self, slug: &str) -> bool {
+        let Some(root) = self.ontology_root() else {
+            return false;
+        };
+        let mut seen: BTreeSet<&str> = BTreeSet::new();
+        let mut stack: Vec<&str> = vec![slug];
+        while let Some(current) = stack.pop() {
+            if current == root.slug {
+                return true;
+            }
+            if !seen.insert(current) {
+                continue;
+            }
+            if let Some(meaning) = self.meaning(current) {
+                for target in &meaning.defined_by {
+                    stack.push(target.as_str());
+                }
+            }
+        }
+        false
+    }
+
+    /// The type-system sub-root of the ontology — the meaning carrying
+    /// [`ROLE_ONTOLOGY_TYPE`] (the `type` meaning), or `None` if absent.
+    ///
+    /// A distinguished node directly under the [`ontology_root`](Self::ontology_root):
+    /// the broadest classifications descend from it, so a reasoner can ask "what
+    /// kind of thing is this?" by walking up to the type sub-root.
+    #[must_use]
+    pub fn ontology_type_root(&self) -> Option<&Meaning> {
+        self.meanings
+            .iter()
+            .find(|m| m.has_role(ROLE_ONTOLOGY_TYPE))
+    }
+
+    /// The top-level ontological categories — every meaning carrying
+    /// [`ROLE_ONTOLOGY_CATEGORY`] (entity, concept, relation, action, property).
+    ///
+    /// These are the genera each domain cluster roots in, so generic reasoning
+    /// can classify any meaning into a small, fixed set of categories rather
+    /// than special-casing each domain.
+    pub fn ontology_categories(&self) -> impl Iterator<Item = &Meaning> {
+        self.meanings_with_role(ROLE_ONTOLOGY_CATEGORY)
     }
 }
 
@@ -486,5 +565,66 @@ mod tests {
         // CJK substring: matches inside a space-free run.
         assert!(lex.mentions_role(ROLE_PROGRAM_MODIFICATION, "取消排序"));
         assert!(lex.mentions_role(ROLE_PROGRAM_ARTIFACT, "取消排序"));
+    }
+
+    #[test]
+    fn the_ontology_has_a_single_link_root() {
+        // The merged ontology has exactly one root — the `link` meaning, which
+        // is defined_by itself. A type-system sub-root (`type`) sits under it,
+        // realising "Link should be the root of ontology, we can also have Type
+        // link, for type system ontology" (issue #386).
+        let lex = lexicon();
+        let roots: Vec<&Meaning> = lex.meanings_with_role(ROLE_ONTOLOGY_ROOT).collect();
+        assert_eq!(
+            roots.len(),
+            1,
+            "the merged ontology must have exactly one root, found {}",
+            roots.len()
+        );
+        let root = roots[0];
+        assert_eq!(root.slug, "link", "the ontology root must be `link`");
+        assert!(
+            root.defined_by.iter().any(|t| t == "link"),
+            "the root `link` must be defined by itself (self-rooted)"
+        );
+        let type_root = lex
+            .ontology_type_root()
+            .expect("a type-system sub-root (role ontology_type) must exist");
+        assert!(
+            lex.reaches_root(&type_root.slug),
+            "the type sub-root must reduce to the link root"
+        );
+        // The bridge categories (entity, concept, relation, action, property)
+        // each sit under the root too, so every domain genus has a category to
+        // root in.
+        let categories: Vec<&Meaning> = lex.ontology_categories().collect();
+        assert!(
+            categories.len() >= 2,
+            "the ontology must define top-level categories under the root, found {}",
+            categories.len()
+        );
+        for category in categories {
+            assert!(
+                lex.reaches_root(&category.slug),
+                "ontology category {} must reduce to the link root",
+                category.slug
+            );
+        }
+    }
+
+    #[test]
+    fn every_meaning_reaches_the_link_root() {
+        // The whole lexicon is one connected ontology: following `defined_by`
+        // from any meaning eventually arrives at the single `link` root. No
+        // meaning is an island of vocabulary disconnected from the root concept.
+        let lex = lexicon();
+        assert!(lex.ontology_root().is_some(), "an ontology root must exist");
+        for meaning in &lex.meanings {
+            assert!(
+                lex.reaches_root(&meaning.slug),
+                "{} does not reach the `link` ontology root via defined_by",
+                meaning.slug
+            );
+        }
     }
 }

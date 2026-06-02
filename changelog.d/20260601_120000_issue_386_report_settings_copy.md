@@ -162,6 +162,23 @@ bump: minor
   (`experiments/issue-386-js-intent-lexicon.mjs`) proves the worker's role →
   word-sets and its recognizers agree with the seed and the Rust handlers across
   all four languages (issue #386).
+- Every meaning now descends from a single ontology root, so the lexicon is one
+  connected graph rather than disjoint clusters. A new backbone
+  (`data/seed/meanings-ontology.lino`) defines `link` as the self-rooted root of
+  the merged ontology (the relative-meta-logic "everything is a link" stance),
+  `type` as a type-system sub-root directly under it, and
+  `entity`/`concept`/`relation`/`action`/`property` as the top-level categories
+  every domain genus roots in. Each existing cluster gains a `defined_by` edge up
+  into one of these categories (`program` → `entity`, `sort`/`modify` →
+  `action`, `quantity` → `property`, `calendar_day` → `concept`,
+  `knowledge_relation` → `relation`, the software-project genera → their
+  categories, …), so following `defined_by` from any of the 161 meanings reaches
+  `link`. A public ontology-reasoning API (`Lexicon::ontology_root`,
+  `Lexicon::reaches_root`) and two invariants
+  (`the_ontology_has_a_single_link_root`, `every_meaning_reaches_the_link_root`)
+  enforce it; the `formal_ai_worker.js` mirror carries the same backbone and the
+  parity harness proves the worker forms one connected ontology under the single
+  `link` root (issue #386).
 - The prefilled "Report issue" body omits settings already at their shipped
   default (Mode, Status, Diagnostics, Theme, Guess/Follow-up probability,
   Temperature, inference-only Location), folds the worker into the version line

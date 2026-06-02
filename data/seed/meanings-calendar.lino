@@ -140,6 +140,7 @@ meanings
     wiktionary "day"
     defined_by "calendar_week"
     defined_by "calendar_date"
+    defined_by "concept"
     role "calendar_day_reference"
     lexeme "en"
       word "day"
