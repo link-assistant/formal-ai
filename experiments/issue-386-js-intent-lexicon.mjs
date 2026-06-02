@@ -137,5 +137,44 @@ for (const role of ROLES) {
   );
 }
 
+// --- function-level parity: the worker recognizers vs. the Rust handlers -----
+// These are the exact prompts the Rust unit tests feed (mixed case + trailing
+// punctuation), so isSelfFactQuery / isSelfIntroductionQuery must agree with
+// is_self_fact_query / is_self_introduction_query in
+// src/solver_handlers/self_awareness.rs after the meaning-role conversion.
+const SELF_FACT_TRUE = [
+  "List all facts you know about yourself",
+  "Какие факты ты знаешь о себе?", // lowercase-only path keeps the "?"
+  "факты о себе",
+  "अपने बारे में तथ्य",
+  "关于你自己的事实",
+  "自我事实",
+];
+for (const p of SELF_FACT_TRUE) {
+  check(`isSelfFactQuery accepts «${p}»`, sandbox.isSelfFactQuery(p) === true);
+}
+const SELF_FACT_FALSE = ["tell me about yourself", "what is the capital of france", ""];
+for (const p of SELF_FACT_FALSE) {
+  check(`isSelfFactQuery rejects «${p}»`, sandbox.isSelfFactQuery(p) === false);
+}
+
+const SELF_INTRO_TRUE = [
+  "Tell me about yourself.",
+  "Introduce yourself!",
+  "Let's get acquainted!",
+  "Привет давай знакомиться!",
+  "अपना परिचय दो।",
+  "介绍一下你自己。",
+  "我们认识一下吧。",
+];
+for (const p of SELF_INTRO_TRUE) {
+  check(`isSelfIntroductionQuery accepts «${p}»`, sandbox.isSelfIntroductionQuery(p) === true);
+}
+// The self-fact guard must win: a self-fact prompt is NOT an introduction.
+const SELF_INTRO_FALSE = ["List all facts you know about yourself", "what is the capital of france", ""];
+for (const p of SELF_INTRO_FALSE) {
+  check(`isSelfIntroductionQuery rejects «${p}»`, sandbox.isSelfIntroductionQuery(p) === false);
+}
+
 console.log(fail.length ? `\nFAILED (${fail.length}): ${fail.join(", ")}` : "\nALL PASS");
 process.exit(fail.length ? 1 : 0);

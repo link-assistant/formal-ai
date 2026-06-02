@@ -463,53 +463,31 @@ fn known_facts_links(runtime: SelfAwarenessRuntime) -> String {
     )
 }
 
+// Issue #386: recognise a request to list the assistant's own facts by
+// *meaning*, not a hardcoded per-language phrase list. The self_fact_query
+// role gathers every surface ("facts about yourself" / "факты о себе" /
+// "अपने बारे में तथ्य" / "自我事实" …) from data/seed/meanings-intent.lino;
+// this code only knows the concept. The prompt is re-normalized first because
+// some solver paths pass a merely-lowercased string (trailing "?" intact), and
+// the boundary-aware matcher expects punctuation already collapsed to spaces.
 fn is_self_fact_query(normalized: &str) -> bool {
-    normalized.contains("facts you know about yourself")
-        || normalized.contains("facts about yourself")
-        || normalized.contains("self facts")
-        || normalized.contains("list all facts you know about yourself")
-        || normalized.contains("какие факты ты знаешь о себе")
-        || normalized.contains("факты о себе")
-        || normalized.contains("अपने बारे में तथ्य")
-        || normalized.contains("स्वयं के बारे में तथ्य")
-        || normalized.contains("关于你自己的事实")
-        || normalized.contains("自我事实")
+    let cleaned = normalize_prompt(normalized);
+    seed::lexicon().mentions_role(seed::ROLE_SELF_FACT_QUERY, &cleaned)
 }
 
+// Issue #386: recognise "introduce yourself" / "расскажи о себе" /
+// "अपना परिचय दो" / "介绍一下你自己" by the self_introduction_request meaning
+// role. The pre-check is preserved verbatim: an empty prompt, or one that is
+// really a self-fact query, must NOT be treated as an introduction request so
+// "list all facts you know about yourself" still routes to the self-fact
+// branch rather than the identity reply.
 fn is_self_introduction_query(normalized: &str) -> bool {
     let cleaned = normalize_prompt(normalized);
     if cleaned.is_empty() || is_self_fact_query(&cleaned) {
         return false;
     }
 
-    cleaned == "tell me about yourself"
-        || cleaned == "introduce yourself"
-        || cleaned.contains("tell me about yourself")
-        || cleaned.contains("introduce yourself")
-        || cleaned.contains("let s get acquainted")
-        || cleaned.contains("lets get acquainted")
-        || cleaned.contains("let us get acquainted")
-        || cleaned.contains("let s get to know each other")
-        || cleaned.contains("расскажи о себе")
-        || cleaned.contains("расскажи мне о себе")
-        || cleaned.contains("расскажи про себя")
-        || cleaned.contains("опиши себя")
-        || cleaned.contains("представься")
-        || cleaned.contains("давай знакомиться")
-        || cleaned.contains("давай познакомимся")
-        || cleaned.contains("давайте познакомимся")
-        || cleaned.contains("अपने बारे में बताओ")
-        || cleaned.contains("अपना परिचय दो")
-        || cleaned.contains("चलो परिचय करते हैं")
-        || cleaned.contains("आइए परिचय करें")
-        || cleaned.contains("चलो एक दूसरे को जानें")
-        || cleaned.contains("介绍一下你自己")
-        || cleaned.contains("告诉我你自己")
-        || cleaned.contains("介紹一下你自己")
-        || cleaned.contains("告訴我你自己")
-        || cleaned.contains("我们认识一下")
-        || cleaned.contains("认识一下吧")
-        || cleaned.contains("让我们认识一下")
+    seed::lexicon().mentions_role(seed::ROLE_SELF_INTRODUCTION_REQUEST, &cleaned)
 }
 
 fn self_awareness_language(prompt: &str, normalized: &str) -> &'static str {

@@ -787,14 +787,19 @@ function normalizePrompt(prompt) {
   const text = String(prompt || "");
   const fromWasm = wasmNormalizePrompt(text);
   if (fromWasm !== null) return fromWasm;
-  // Keep the whole Devanagari block (U+0900–U+097F), not just \p{L}: matras,
-  // the nukta and the virama are Unicode marks (category M), so a bare
-  // \p{L}\p{N} filter would strip them and corrupt Hindi words, breaking parity
-  // with the Rust `normalize_prompt` (which keeps the entire block). Without
-  // this, raw Hindi aliases never match the normalized prompt (issue #312).
+  // Keep letters, numbers and every Unicode mark (category M): Devanagari
+  // matras, the nukta and the virama are marks, so a bare \p{L}\p{N} filter
+  // would strip them and corrupt Hindi words (issue #312). Mark-awareness via
+  // \p{M} mirrors the Rust `normalize_prompt`, which keeps `is_alphanumeric()`
+  // characters plus its script-combining-mark ranges. Crucially it does NOT
+  // keep the whole U+0900–U+097F block: Indic punctuation such as the danda
+  // "।" (U+0964) is category Po, so both sides collapse it to a space. The
+  // boundary-aware role matcher (issue #386) depends on that parity — a
+  // retained danda would defeat the whole-token match for phrases like
+  // "अपना परिचय दो।".
   return text
     .toLowerCase()
-    .replace(/[^\p{L}\p{N}ऀ-ॿ]+/gu, " ")
+    .replace(/[^\p{L}\p{N}\p{M}]+/gu, " ")
     .trim();
 }
 
@@ -3777,54 +3782,28 @@ function isChineseBehaviorRulesListQuery(normalized) {
   return mentionsRules && asksToList && pointsAtAssistantRules;
 }
 
+// Issue #386: recognise a request to list the assistant's own facts by
+// *meaning*, not a hardcoded per-language phrase list. The self_fact_query role
+// gathers every surface from data/seed/meanings-intent.lino; mirror of
+// is_self_fact_query in src/solver_handlers/self_awareness.rs. The prompt is
+// re-normalized first because some call sites pass a merely-lowercased string
+// (trailing "?" intact) and the boundary-aware matcher expects punctuation
+// already collapsed to spaces.
 function isSelfFactQuery(normalized) {
-  return (
-    normalized.includes("facts you know about yourself") ||
-    normalized.includes("facts about yourself") ||
-    normalized.includes("self facts") ||
-    normalized.includes("list all facts you know about yourself") ||
-    normalized.includes("какие факты ты знаешь о себе") ||
-    normalized.includes("факты о себе") ||
-    normalized.includes("अपने बारे में तथ्य") ||
-    normalized.includes("स्वयं के बारे में तथ्य") ||
-    normalized.includes("关于你自己的事实") ||
-    normalized.includes("自我事实")
-  );
+  return lexiconMentionsRole(ROLE_SELF_FACT_QUERY, normalizePrompt(normalized));
 }
 
+// Issue #386: recognise "introduce yourself" / "расскажи о себе" /
+// "अपना परिचय दो" / "介绍一下你自己" by the self_introduction_request meaning
+// role. The pre-check is preserved verbatim: an empty prompt, or one that is
+// really a self-fact query, must not be treated as an introduction request, so
+// "list all facts you know about yourself" still routes to the self-fact
+// branch. Mirror of is_self_introduction_query in
+// src/solver_handlers/self_awareness.rs.
 function isSelfIntroductionQuery(normalized) {
   const cleaned = normalizePrompt(normalized);
   if (!cleaned || isSelfFactQuery(cleaned)) return false;
-  return (
-    cleaned === "tell me about yourself" ||
-    cleaned === "introduce yourself" ||
-    cleaned.includes("tell me about yourself") ||
-    cleaned.includes("introduce yourself") ||
-    cleaned.includes("let s get acquainted") ||
-    cleaned.includes("lets get acquainted") ||
-    cleaned.includes("let us get acquainted") ||
-    cleaned.includes("let s get to know each other") ||
-    cleaned.includes("расскажи о себе") ||
-    cleaned.includes("расскажи мне о себе") ||
-    cleaned.includes("расскажи про себя") ||
-    cleaned.includes("опиши себя") ||
-    cleaned.includes("представься") ||
-    cleaned.includes("давай знакомиться") ||
-    cleaned.includes("давай познакомимся") ||
-    cleaned.includes("давайте познакомимся") ||
-    cleaned.includes("अपने बारे में बताओ") ||
-    cleaned.includes("अपना परिचय दो") ||
-    cleaned.includes("चलो परिचय करते हैं") ||
-    cleaned.includes("आइए परिचय करें") ||
-    cleaned.includes("चलो एक दूसरे को जानें") ||
-    cleaned.includes("介绍一下你自己") ||
-    cleaned.includes("告诉我你自己") ||
-    cleaned.includes("介紹一下你自己") ||
-    cleaned.includes("告訴我你自己") ||
-    cleaned.includes("我们认识一下") ||
-    cleaned.includes("认识一下吧") ||
-    cleaned.includes("让我们认识一下")
-  );
+  return lexiconMentionsRole(ROLE_SELF_INTRODUCTION_REQUEST, cleaned);
 }
 
 function selfAwarenessLanguage(prompt, normalized) {
@@ -15281,6 +15260,16 @@ const ROLE_PROGRAM_SYNTHESIS_DOMAIN = "program_synthesis_domain";
 const ROLE_PROGRAM_SYNTHESIS_ACTION = "program_synthesis_action";
 const ROLE_PROGRAM_SYNTHESIS_SIGNAL = "program_synthesis_signal";
 const ROLE_PROGRAM_SYNTHESIS_TASK = "program_synthesis_task";
+// Issue #386 conversational-intent roles — mirror the ROLE_CLARIFICATION_REQUEST
+// / ROLE_CAPABILITY_QUERY* / ROLE_SELF_FACT_QUERY / ROLE_SELF_INTRODUCTION_REQUEST
+// consts in src/seed/meanings.rs. Their surface words live in
+// data/seed/meanings-intent.lino (embedded in MEANINGS_LINO above); the
+// recognizers below ask the lexicon by meaning instead of hardcoding phrases.
+const ROLE_CLARIFICATION_REQUEST = "clarification_request";
+const ROLE_CAPABILITY_QUERY = "capability_query";
+const ROLE_CAPABILITY_QUERY_MORE = "capability_query_more";
+const ROLE_SELF_FACT_QUERY = "self_fact_query";
+const ROLE_SELF_INTRODUCTION_REQUEST = "self_introduction_request";
 
 let cachedMeaningLexicon = null;
 // Parse the embedded lexicon once. Each meaning keeps the semantic roles it
