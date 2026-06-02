@@ -107,6 +107,35 @@ bump: minor
   `formal_ai_worker.js` mirror walks the same embedded meanings, and all 22
   dialogue examples classify identically in the Rust solver and the browser
   worker (issue #386).
+- Python program-synthesis recognition
+  (`src/solver_handlers/program_synthesis.rs`, the
+  `looks_like_program_synthesis` router in `src/intent_formalization.rs`, and the
+  `formal_ai_worker.js` mirror) is data-driven too. The request *subject* (the
+  function asked for), its *domain* signals (Python, or a data kind it works over
+  — tuple/numbers/vowels), the request *action* verbs (implement/write/return),
+  the per-task distinguishing *signals* (distinct numbers/differ/threshold/
+  similar elements/count vowels), and the synthesis *tasks* themselves
+  (`has_close_elements`, `similar_elements`, `count_vowels` — each slug *is* the
+  canonical Python function name) now live as self-describing meanings in
+  `data/seed/meanings-program-synthesis.lino`, each `defined_by` the concepts it
+  builds on and lexicalised in every supported language. The gate asks the
+  lexicon for the `program_synthesis_subject`/`_domain`/`_action` roles; task
+  selection walks every `program_synthesis_task` meaning in declaration order and
+  picks the first whose `defined_by` `program_synthesis_signal`s are all
+  evidenced, using its slug directly as the function name — so the former
+  hardcoded English-substring gate and the per-task phrase checks
+  (`"similar elements"`, `"count vowels"`, `"distinct numbers" && "differ" &&
+  "threshold"`) are gone. The browser worker additionally embeds the full
+  multilingual operation vocabulary inline (byte-identical to
+  `data/seed/operation-vocabulary.lino`) and runs `canonicalizedPrompt()` — the
+  JS mirror of `OperationVocabulary::canonicalized_prompt` — before gating,
+  replacing the hand-maintained three-operation `PROGRAM_MODIFIER_OPERATIONS`
+  subset it carried before; native operation verbs glued to sentence punctuation
+  (a Hindi `लिखें।`, a Chinese `编写`, a Russian `напиши`) now canonicalize to
+  their English tokens so the boundary-aware gate accepts them. Because the
+  vocabulary now exists in every language, multilingual `count_vowels` and
+  `similar_elements` requests in Russian, Hindi, and Chinese synthesize correctly
+  in both the Rust solver and the browser worker — not only English (issue #386).
 - The prefilled "Report issue" body omits settings already at their shipped
   default (Mode, Status, Diagnostics, Theme, Guess/Follow-up probability,
   Temperature, inference-only Location), folds the worker into the version line

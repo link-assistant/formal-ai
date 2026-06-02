@@ -132,6 +132,27 @@ pub const ROLE_SOFTWARE_BASH_COMMAND: &str = "software_bash_command";
 /// passing mention: a go-ahead like "approve plan" moves the dialogue from
 /// plan to implementation, while "approve the email validation step" does not.
 pub const ROLE_SOFTWARE_APPROVAL_TRIGGER: &str = "software_approval_trigger";
+/// Semantic role: the subject of a program-synthesis request — the *function*
+/// it asks to be written (the noun side of "implement a function …").
+pub const ROLE_PROGRAM_SYNTHESIS_SUBJECT: &str = "program_synthesis_subject";
+/// Semantic role: a domain signal of a program-synthesis request — the target
+/// language (Python) or a data kind it works over (tuple, numbers, vowels).
+pub const ROLE_PROGRAM_SYNTHESIS_DOMAIN: &str = "program_synthesis_domain";
+/// Semantic role: the request/specification verb of a program-synthesis
+/// request (implement, write, return). The verb side of "implement a function".
+pub const ROLE_PROGRAM_SYNTHESIS_ACTION: &str = "program_synthesis_action";
+/// Semantic role: a surface signal that distinguishes one synthesis task.
+///
+/// The "distinct numbers"/"differ"/"threshold"/"similar elements"/"count
+/// vowels" phrases. A task is `defined_by` the signals that evidence it.
+pub const ROLE_PROGRAM_SYNTHESIS_SIGNAL: &str = "program_synthesis_signal";
+/// Semantic role: a concrete synthesis task.
+///
+/// Its slug is the canonical Python function name (`has_close_elements`,
+/// `similar_elements`, `count_vowels`). Walked in declaration order; a task is
+/// selected when its name is declared or when every `program_synthesis_signal`
+/// it is `defined_by` is evidenced in the prompt.
+pub const ROLE_PROGRAM_SYNTHESIS_TASK: &str = "program_synthesis_task";
 
 /// Surface words that evidence a meaning in one language.
 #[derive(Debug, Clone)]

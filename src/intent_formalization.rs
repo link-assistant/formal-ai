@@ -755,10 +755,18 @@ fn looks_arithmetic(prompt: &str, normalized: &str) -> bool {
 }
 
 fn looks_like_program_synthesis(normalized: &str) -> bool {
-    contains_token(normalized, "function")
-        && (has_any_token(normalized, &["python", "tuple", "numbers", "vowels"])
-            || normalized.contains("similar elements"))
-        && has_any_token(normalized, &["implement", "write", "return"])
+    // Routing mirror of `crate::solver_handlers::program_synthesis`'s gate, over
+    // the canonicalized view: a function *subject*, a *domain* signal (Python or
+    // a data kind) or the similar-elements task signal, and a request *action*
+    // verb. Every surface word comes from the meaning lexicon, not from literals.
+    let lexicon = crate::seed::lexicon();
+    let similar_elements = lexicon
+        .meaning("signal_similar_elements")
+        .is_some_and(|signal| signal.evidenced_in(normalized));
+    lexicon.mentions_role(crate::seed::ROLE_PROGRAM_SYNTHESIS_SUBJECT, normalized)
+        && (lexicon.mentions_role(crate::seed::ROLE_PROGRAM_SYNTHESIS_DOMAIN, normalized)
+            || similar_elements)
+        && lexicon.mentions_role(crate::seed::ROLE_PROGRAM_SYNTHESIS_ACTION, normalized)
 }
 
 fn looks_like_text_manipulation(normalized: &str) -> bool {

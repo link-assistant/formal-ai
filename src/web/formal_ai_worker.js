@@ -6866,19 +6866,45 @@ function tryLinkNativeSynthesis(prompt) {
   );
 }
 
+// Does `normalized` read like a request to synthesise a Python function?
+// Mirrors looks_like_python_function_request in
+// src/solver_handlers/program_synthesis.rs: a function *subject*, a *domain*
+// signal (Python or a data kind), and an *action* verb — all supplied by the
+// meaning lexicon, never hardcoded. `def ` is Python syntax a user may paste,
+// so a literal signature satisfies both the subject and action sides.
 function looksLikePythonFunctionSynthesis(prompt, normalized) {
-  const lower = String(prompt || "").toLowerCase();
+  const hasDef = String(prompt || "").toLowerCase().includes("def ");
   return (
-    (normalized.includes("function") || lower.includes("def ")) &&
-    (lower.includes("python") ||
-      normalized.includes("tuple") ||
-      normalized.includes("numbers") ||
-      normalized.includes("vowels")) &&
-    (normalized.includes("implement") ||
-      normalized.includes("write") ||
-      normalized.includes("return") ||
-      lower.includes("def "))
+    (lexiconMentionsRole(ROLE_PROGRAM_SYNTHESIS_SUBJECT, normalized) || hasDef) &&
+    lexiconMentionsRole(ROLE_PROGRAM_SYNTHESIS_DOMAIN, normalized) &&
+    (lexiconMentionsRole(ROLE_PROGRAM_SYNTHESIS_ACTION, normalized) || hasDef)
   );
+}
+
+// Is `task` evidenced by its signals — is every `program_synthesis_signal`
+// meaning it is `defined_by` present in `normalized`? A task with no signal
+// definitions is never matched this way (it can still match by declared name).
+// Mirrors synthesis_task_evidenced in src/solver_handlers/program_synthesis.rs.
+function synthesisTaskEvidenced(task, normalized) {
+  let required = 0;
+  for (const target of task.definedBy) {
+    const signal = findMeaning(target);
+    if (!signal || !signal.roles.includes(ROLE_PROGRAM_SYNTHESIS_SIGNAL)) continue;
+    required += 1;
+    if (!meaningEvidencedIn(signal, normalized)) return false;
+  }
+  return required > 0;
+}
+
+// The canonical function name of the first synthesis task (declaration order)
+// whose signals are all evidenced in `normalized`, or "". The slug is the
+// Python function name. Mirrors match_synthesis_task in
+// src/solver_handlers/program_synthesis.rs.
+function matchSynthesisTask(normalized) {
+  const task = meaningsWithRole(ROLE_PROGRAM_SYNTHESIS_TASK).find((candidate) =>
+    synthesisTaskEvidenced(candidate, normalized),
+  );
+  return task ? task.slug : "";
 }
 
 function identifierAfterAsciiMarker(prompt, marker) {
@@ -6901,11 +6927,14 @@ function identifierAfterAsciiMarker(prompt, marker) {
   return name;
 }
 
+// The Python function name a prompt asks for: the matched task's slug (which
+// *is* its function name), else the identifier in a literal `function `/`def `
+// signature. Mirrors extract_function_name in
+// src/solver_handlers/program_synthesis.rs (the declared-signature scan there is
+// covered here by the marker fallbacks the worker has always used).
 function extractPythonFunctionName(prompt, normalized) {
-  if (normalized.includes("similar elements")) return "similar_elements";
-  if (normalized.includes("count vowels") || normalized.includes("number of vowels")) {
-    return "count_vowels";
-  }
+  const task = matchSynthesisTask(normalized);
+  if (task) return task;
   return (
     identifierAfterAsciiMarker(prompt, "function ") ||
     identifierAfterAsciiMarker(prompt, "def ")
@@ -6927,6 +6956,55 @@ function matchingCloseParen(text, openIndex) {
   return -1;
 }
 
+// A character that may appear inside a Python return annotation (`-> list[int]`).
+// A whitelist, mirroring is_return_annotation_char in
+// src/solver_handlers/program_synthesis.rs: this is what lets the annotation
+// scan stop at the first non-Latin character — Hindi/Chinese prose, the
+// Devanagari danda `।`, or the ideographic full stop `。` — instead of relying
+// on an ASCII-only `[.;\n]` terminator that those scripts never contain.
+function isReturnAnnotationChar(character) {
+  return /[A-Za-z0-9]/.test(character) || "_[](),'\"|".includes(character);
+}
+
+// The first non-whitespace character at or after `start`, or "".
+// Mirrors next_non_whitespace in src/solver_handlers/program_synthesis.rs.
+function nextNonWhitespace(text, start) {
+  for (let index = start; index < text.length; ) {
+    const character = String.fromCodePoint(text.codePointAt(index));
+    if (!/\s/.test(character)) return character;
+    index += character.length;
+  }
+  return "";
+}
+
+// The end index (exclusive) of a `->` return annotation that begins at
+// `arrowStart`, or -1 if none. Walks annotation characters, allowing internal
+// spaces (`-> dict[str, int]`) only while more annotation characters follow.
+// Mirrors return_annotation_end in src/solver_handlers/program_synthesis.rs.
+function returnAnnotationEnd(text, arrowStart) {
+  let cursor = arrowStart + "->".length;
+  let seenAnnotation = false;
+  let lastAnnotationEnd = -1;
+  while (cursor < text.length) {
+    const character = String.fromCodePoint(text.codePointAt(cursor));
+    const next = cursor + character.length;
+    if (/\s/.test(character)) {
+      if (seenAnnotation && isReturnAnnotationChar(nextNonWhitespace(text, next))) {
+        cursor = next;
+        continue;
+      }
+      if (seenAnnotation) break;
+      cursor = next;
+      continue;
+    }
+    if (!isReturnAnnotationChar(character)) break;
+    seenAnnotation = true;
+    lastAnnotationEnd = next;
+    cursor = next;
+  }
+  return lastAnnotationEnd;
+}
+
 function declaredPythonSignature(prompt, functionName) {
   const text = String(prompt || "");
   const marker = `${functionName}(`;
@@ -6938,12 +7016,10 @@ function declaredPythonSignature(prompt, functionName) {
   const trimmed = tail.trimStart();
   if (trimmed.startsWith("->")) {
     const returnStart = end + (tail.length - trimmed.length);
-    const terminator = text
-      .slice(returnStart)
-      .search(/[.;\n]/);
-    end = terminator >= 0 ? returnStart + terminator : text.length;
+    const annotationEnd = returnAnnotationEnd(text, returnStart);
+    if (annotationEnd >= 0) end = annotationEnd;
   }
-  return text.slice(start, end).trim().replace(/[.]$/g, "");
+  return text.slice(start, end).trim().replace(/\.+$/, "");
 }
 
 function renderPythonFunction(signature, bodyLines) {
@@ -6954,39 +7030,36 @@ function renderPythonFunction(signature, bodyLines) {
   return code;
 }
 
+// Build the Python candidate for whichever synthesis task the prompt names or
+// evidences. The task slug keys both the meaning lexicon and the verbatim
+// PYTHON_SYNTHESIS_CANDIDATES blueprint (function body, tests, fragments).
+// Mirrors synthesize_python_candidate in
+// src/solver_handlers/program_synthesis.rs.
 function synthesizePythonCandidate(prompt, normalized, functionName) {
-  let key = "";
-  if (
-    functionName === "has_close_elements" ||
-    (normalized.includes("distinct numbers") &&
-      normalized.includes("differ") &&
-      normalized.includes("threshold"))
-  ) {
-    key = "has_close_elements";
-  } else if (functionName === "similar_elements" || normalized.includes("similar elements")) {
-    key = "similar_elements";
-  } else if (
-    functionName === "count_vowels" ||
-    normalized.includes("count vowels") ||
-    normalized.includes("number of vowels")
-  ) {
-    key = "count_vowels";
-  }
-  const definition = PYTHON_SYNTHESIS_CANDIDATES[key];
+  const task = meaningsWithRole(ROLE_PROGRAM_SYNTHESIS_TASK).find(
+    (candidate) =>
+      functionName === candidate.slug || synthesisTaskEvidenced(candidate, normalized),
+  );
+  if (!task) return null;
+  const definition = PYTHON_SYNTHESIS_CANDIDATES[task.slug];
   if (!definition) return null;
   const signature =
     declaredPythonSignature(prompt, functionName) || definition.defaultSignature;
   return Object.assign({}, definition, {
-    functionName: key,
+    functionName: task.slug,
     code: renderPythonFunction(signature, definition.bodyLines),
   });
 }
 
 function tryProgramSynthesis(prompt, normalized) {
-  if (!looksLikePythonFunctionSynthesis(prompt, normalized)) return null;
-  const functionName = extractPythonFunctionName(prompt, normalized);
+  // Issue #386: canonicalize first so native operation verbs (write / implement /
+  // return …) in any supported language are recognised, exactly like
+  // try_program_synthesis in src/solver_handlers/program_synthesis.rs.
+  const canonical = canonicalizedPrompt(normalized);
+  if (!looksLikePythonFunctionSynthesis(prompt, canonical)) return null;
+  const functionName = extractPythonFunctionName(prompt, canonical);
   if (!functionName) return null;
-  const candidate = synthesizePythonCandidate(prompt, normalized, functionName);
+  const candidate = synthesizePythonCandidate(prompt, canonical, functionName);
   if (!candidate) return null;
   const assertionCount = candidate.tests.length;
   const evidence = [
@@ -11982,101 +12055,411 @@ const PROGRAM_PLAN_RULES_LINO = [
 const TASK_NODE = "request:task";
 const MODIFIER_NODE = "request:modifier";
 
-// Issue #358: program modifier recognition mirrors the Rust path: operation
-// vocabulary trigger phrases provide natural-language evidence, and
-// `program-plan-rules.lino` decides which operation slugs are valid modifiers.
-const PROGRAM_MODIFIER_OPERATIONS = [
-  {
-    slug: "path_argument",
-    phrases: ["path argument", "path as an argument", "पथ को तर्क", "路径作为参数"],
-    combos: [
-      ["path", "argument"],
-      ["путь", "аргумент"],
-      ["путь", "аргумента"],
-      ["путь", "аргументом"],
-      ["पथ", "तर्क"],
-      ["路径", "参数"],
-    ],
-  },
-  {
-    slug: "reverse_sort",
-    phrases: [
-      "reverse sort",
-      "reverse sorted",
-      "sort in reverse order",
-      "sort the results in reverse order",
-      "reverse order",
-      "descending order",
-      "в обратном порядке",
-      "उल्टे क्रम",
-      "相反顺序排序",
-    ],
-    combos: [
-      ["sort", "reverse"],
-      ["sort", "descending"],
-      ["сортиров", "обратн"],
-      ["отсортир", "обратн"],
-      ["क्रमबद्ध", "उल्टे"],
-      ["क्रमबद्ध", "उल्टा"],
-      ["排序", "相反"],
-      ["排序", "反向"],
-      ["排序", "倒序"],
-    ],
-  },
-  // Issue #386: the subtractive inverse of reverse_sort. `inverse` mirrors the
-  // `inverse "reverse_sort"` declaration in `data/seed/operation-vocabulary.lino`;
-  // the program-plan rules that undo the sort are *derived* from it below
-  // (`deriveInverseRules`), never hand-written here.
-  {
-    slug: "cancel_reverse_sort",
-    inverse: "reverse_sort",
-    phrases: [
-      "cancel sort",
-      "cancel the sort",
-      "cancel sorting",
-      "cancel the sorting",
-      "undo sort",
-      "undo the sort",
-      "undo sorting",
-      "undo the sorting",
-      "remove sort",
-      "remove the sort",
-      "remove sorting",
-      "remove the sorting",
-      "no sorting",
-      "without sorting",
-      "отмени сортировку",
-      "отмените сортировку",
-      "убери сортировку",
-      "уберите сортировку",
-      "без сортировки",
-      "सॉर्ट हटाओ",
-      "क्रम हटाओ",
-      "सॉर्ट रद्द करो",
-      "取消排序",
-      "撤销排序",
-      "去掉排序",
-      "取消排序顺序",
-    ],
-    combos: [
-      ["cancel", "sort"],
-      ["undo", "sort"],
-      ["remove", "sort"],
-      ["отмени", "сортиров"],
-      ["отмените", "сортиров"],
-      ["отменить", "сортиров"],
-      ["убери", "сортиров"],
-      ["уберите", "сортиров"],
-      ["убрать", "сортиров"],
-      ["без", "сортиров"],
-      ["सॉर्ट", "हटा"],
-      ["क्रमबद्ध", "हटा"],
-      ["सॉर्ट", "रद्द"],
-      ["取消", "排序"],
-      ["撤销", "排序"],
-    ],
-  },
-];
+// Issue #386: the FULL multilingual operation vocabulary, embedded inline and
+// byte-identical to data/seed/operation-vocabulary.lino (regenerated by
+// experiments/issue-386-sync-worker-lexicon.mjs). The JS mirror of
+// OperationVocabulary in src/seed/operation_vocabulary.rs: the CODE matches
+// canonical concept tokens (write / function / similar_elements / reverse_sort …),
+// while the per-language surface phrases live once here in the seed data — never
+// a hardcoded per-language word list in code.
+const OPERATION_VOCABULARY_LINO = [
+  "operation_vocabulary",
+  '  operation "uppercase"',
+  '    language "en"',
+  '      phrase "uppercase"',
+  '      phrase "upper case"',
+  '    language "ru"',
+  '      phrase "верхний регистр"',
+  '      phrase "заглавными буквами"',
+  '      phrase "прописными буквами"',
+  '      combo "верхний+регистр"',
+  '    language "hi"',
+  '      phrase "बड़े अक्षर"',
+  '      phrase "अपरकेस"',
+  '    language "zh"',
+  '      phrase "大写"',
+  '  operation "lowercase"',
+  '    language "en"',
+  '      phrase "lowercase"',
+  '      phrase "lower case"',
+  '    language "ru"',
+  '      phrase "нижний регистр"',
+  '      phrase "строчными буквами"',
+  '      combo "нижний+регистр"',
+  '    language "hi"',
+  '      phrase "छोटे अक्षर"',
+  '      phrase "लोअरकेस"',
+  '    language "zh"',
+  '      phrase "小写"',
+  '  operation "replace"',
+  '    language "en"',
+  '      phrase "replace"',
+  '    language "ru"',
+  '      phrase "замен"',
+  '    language "hi"',
+  '      phrase "बदल"',
+  '    language "zh"',
+  '      phrase "替换"',
+  '  operation "reverse_words"',
+  '    language "en"',
+  '      phrase "reverse words"',
+  '      phrase "reverse the words"',
+  '    language "ru"',
+  '      phrase "обратный порядок слов"',
+  '      combo "переверни+слова"',
+  '      combo "обрати+слова"',
+  '      combo "разверни+слова"',
+  '    language "hi"',
+  '      phrase "शब्दों को उल्टा"',
+  '      combo "शब्द+उल्टा"',
+  '    language "zh"',
+  '      phrase "反转单词"',
+  '      phrase "倒转单词"',
+  '      phrase "颠倒单词"',
+  '  operation "extract_email"',
+  '    language "en"',
+  '      combo "extract+email"',
+  '      combo "extract+e-mail"',
+  '    language "ru"',
+  '      combo "извлеки+имейл"',
+  '      combo "извлеки+почт"',
+  '      combo "извлечь+имейл"',
+  '      combo "найди+имейл"',
+  '    language "hi"',
+  '      combo "ईमेल+निकाल"',
+  '    language "zh"',
+  '      phrase "提取邮箱"',
+  '      phrase "提取电子邮件"',
+  '      phrase "提取邮件"',
+  '  operation "count_occurrences"',
+  '    language "en"',
+  '      phrase "count occurrences"',
+  '    language "ru"',
+  '      phrase "количество вхождений"',
+  '      combo "посчитай+вхождени"',
+  '      combo "подсчитай+вхождени"',
+  '      combo "сколько+раз"',
+  '    language "hi"',
+  '      phrase "कितनी बार"',
+  '      combo "बार+गिन"',
+  '    language "zh"',
+  '      phrase "出现次数"',
+  '      phrase "统计出现"',
+  '      phrase "计算出现"',
+  '  operation "count_unique_words"',
+  '    language "en"',
+  '      phrase "count unique words"',
+  '      phrase "count distinct words"',
+  '    language "ru"',
+  '      phrase "количество уникальных слов"',
+  '      combo "уникальн+слов"',
+  '      combo "различн+слов"',
+  '    language "hi"',
+  '      combo "अद्वितीय+शब्द"',
+  '      combo "विशिष्ट+शब्द"',
+  '    language "zh"',
+  '      phrase "唯一单词"',
+  '      phrase "不同单词"',
+  '      phrase "统计唯一"',
+  '  operation "deduplicate_lines"',
+  '    language "en"',
+  '      phrase "deduplicate lines"',
+  '      phrase "dedupe lines"',
+  '      combo "deduplicate+line"',
+  '    language "ru"',
+  '      combo "дубликат+строк"',
+  '      combo "дедупликац+строк"',
+  '    language "hi"',
+  '      combo "डुप्लिकेट+लाइन"',
+  '      combo "दोहराव+लाइन"',
+  '    language "zh"',
+  '      phrase "去重行"',
+  '      phrase "行去重"',
+  '      phrase "删除重复行"',
+  '  operation "sort_lines"',
+  '    language "en"',
+  '      phrase "sort lines"',
+  '      phrase "sort the lines"',
+  '      combo "sort+line"',
+  '    language "ru"',
+  '      combo "сортир+строк"',
+  '    language "hi"',
+  '      combo "लाइन+क्रमबद्ध"',
+  '      combo "लाइनों+क्रमबद्ध"',
+  '    language "zh"',
+  '      phrase "排序行"',
+  '      phrase "行排序"',
+  '      phrase "对行排序"',
+  '  operation "path_argument"',
+  '    language "en"',
+  '      phrase "path argument"',
+  '      phrase "path as an argument"',
+  '      combo "path+argument"',
+  '    language "ru"',
+  '      combo "путь+аргумент"',
+  '      combo "путь+аргумента"',
+  '      combo "путь+аргументом"',
+  '    language "hi"',
+  '      phrase "पथ को तर्क"',
+  '      combo "पथ+तर्क"',
+  '    language "zh"',
+  '      phrase "路径作为参数"',
+  '      combo "路径+参数"',
+  '  operation "reverse_sort"',
+  '    language "en"',
+  '      phrase "reverse sort"',
+  '      phrase "reverse sorted"',
+  '      phrase "sort in reverse order"',
+  '      phrase "sort the results in reverse order"',
+  '      phrase "reverse order"',
+  '      phrase "descending order"',
+  '      combo "sort+reverse"',
+  '      combo "sort+descending"',
+  '    language "ru"',
+  '      phrase "в обратном порядке"',
+  '      combo "сортиров+обратн"',
+  '      combo "отсортир+обратн"',
+  '    language "hi"',
+  '      phrase "उल्टे क्रम"',
+  '      combo "क्रमबद्ध+उल्टे"',
+  '      combo "क्रमबद्ध+उल्टा"',
+  '    language "zh"',
+  '      phrase "相反顺序排序"',
+  '      combo "排序+相反"',
+  '      combo "排序+反向"',
+  '      combo "排序+倒序"',
+  '  operation "cancel_reverse_sort"',
+  '    inverse "reverse_sort"',
+  '    language "en"',
+  '      phrase "cancel sort"',
+  '      phrase "cancel the sort"',
+  '      phrase "cancel sorting"',
+  '      phrase "cancel the sorting"',
+  '      phrase "undo sort"',
+  '      phrase "undo the sort"',
+  '      phrase "undo sorting"',
+  '      phrase "undo the sorting"',
+  '      phrase "remove sort"',
+  '      phrase "remove the sort"',
+  '      phrase "remove sorting"',
+  '      phrase "remove the sorting"',
+  '      phrase "no sorting"',
+  '      phrase "without sorting"',
+  '      combo "cancel+sort"',
+  '      combo "undo+sort"',
+  '      combo "remove+sort"',
+  '    language "ru"',
+  '      phrase "отмени сортировку"',
+  '      phrase "отмените сортировку"',
+  '      phrase "убери сортировку"',
+  '      phrase "уберите сортировку"',
+  '      phrase "без сортировки"',
+  '      combo "отмени+сортиров"',
+  '      combo "отмените+сортиров"',
+  '      combo "отменить+сортиров"',
+  '      combo "убери+сортиров"',
+  '      combo "уберите+сортиров"',
+  '      combo "убрать+сортиров"',
+  '      combo "без+сортиров"',
+  '    language "hi"',
+  '      phrase "सॉर्ट हटाओ"',
+  '      phrase "क्रम हटाओ"',
+  '      phrase "सॉर्ट रद्द करो"',
+  '      combo "सॉर्ट+हटा"',
+  '      combo "क्रमबद्ध+हटा"',
+  '      combo "सॉर्ट+रद्द"',
+  '    language "zh"',
+  '      phrase "取消排序"',
+  '      phrase "撤销排序"',
+  '      phrase "去掉排序"',
+  '      phrase "取消排序顺序"',
+  '      combo "取消+排序"',
+  '      combo "撤销+排序"',
+  '  operation "function"',
+  '    language "en"',
+  '      phrase "function"',
+  '    language "ru"',
+  '      phrase "функция"',
+  '      phrase "функцию"',
+  '      phrase "функции"',
+  '    language "hi"',
+  '      phrase "फ़ंक्शन"',
+  '      phrase "फंक्शन"',
+  '    language "zh"',
+  '      phrase "函数"',
+  '  operation "implement"',
+  '    language "en"',
+  '      phrase "implement"',
+  '    language "ru"',
+  '      phrase "реализуй"',
+  '      phrase "реализовать"',
+  '      phrase "реализуйте"',
+  '    language "hi"',
+  '      phrase "लागू करें"',
+  '      phrase "लागू करो"',
+  '    language "zh"',
+  '      phrase "实现"',
+  '  operation "write"',
+  '    language "en"',
+  '      phrase "write"',
+  '    language "ru"',
+  '      phrase "напиши"',
+  '      phrase "напишите"',
+  '      phrase "написать"',
+  '    language "hi"',
+  '      phrase "लिखें"',
+  '      phrase "लिखो"',
+  '    language "zh"',
+  '      phrase "编写"',
+  '      phrase "写"',
+  '  operation "return"',
+  '    language "en"',
+  '      phrase "return"',
+  '    language "ru"',
+  '      phrase "верни"',
+  '      phrase "верните"',
+  '      phrase "возвращает"',
+  '    language "hi"',
+  '      phrase "लौटाएँ"',
+  '      phrase "लौटाएं"',
+  '      phrase "वापस करें"',
+  '    language "zh"',
+  '      phrase "返回"',
+  '  operation "tuple"',
+  '    language "en"',
+  '      phrase "tuple"',
+  '    language "ru"',
+  '      phrase "кортеж"',
+  '    language "hi"',
+  '      phrase "टपल"',
+  '    language "zh"',
+  '      phrase "元组"',
+  '  operation "numbers"',
+  '    language "en"',
+  '      phrase "numbers"',
+  '      phrase "number"',
+  '    language "ru"',
+  '      phrase "числа"',
+  '      phrase "чисел"',
+  '    language "hi"',
+  '      phrase "संख्याएँ"',
+  '      phrase "संख्याएं"',
+  '      phrase "संख्या"',
+  '    language "zh"',
+  '      phrase "数字"',
+  '      phrase "数值"',
+  '  operation "vowels"',
+  '    language "en"',
+  '      phrase "vowels"',
+  '      phrase "vowel"',
+  '    language "ru"',
+  '      phrase "гласные"',
+  '      phrase "гласных"',
+  '    language "hi"',
+  '      phrase "स्वर"',
+  '      phrase "स्वरों"',
+  '    language "zh"',
+  '      phrase "元音"',
+  '  operation "count_vowels"',
+  '    language "en"',
+  '      phrase "count vowels"',
+  '      phrase "number of vowels"',
+  '      phrase "count_vowels"',
+  '    language "ru"',
+  '      phrase "посчитай гласные"',
+  '      phrase "количество гласных"',
+  '    language "hi"',
+  '      phrase "स्वर गिनें"',
+  '      phrase "स्वरों की संख्या"',
+  '    language "zh"',
+  '      phrase "统计元音"',
+  '      phrase "元音数量"',
+  '  operation "similar_elements"',
+  '    language "en"',
+  '      phrase "similar elements"',
+  '      phrase "similar_elements"',
+  '    language "ru"',
+  '      phrase "общие элементы"',
+  '      phrase "похожие элементы"',
+  '    language "hi"',
+  '      phrase "समान तत्व"',
+  '    language "zh"',
+  '      phrase "相同元素"',
+  '      phrase "相似元素"',
+  '  operation "distinct_numbers"',
+  '    language "en"',
+  '      phrase "distinct numbers"',
+  '    language "ru"',
+  '      phrase "различные числа"',
+  '      phrase "разных числа"',
+  '    language "hi"',
+  '      phrase "अलग संख्याएँ"',
+  '      phrase "अलग संख्याएं"',
+  '    language "zh"',
+  '      phrase "不同数字"',
+  '      phrase "不同数值"',
+  '  operation "differ"',
+  '    language "en"',
+  '      phrase "differ"',
+  '    language "ru"',
+  '      phrase "отличаются"',
+  '      phrase "разница"',
+  '    language "hi"',
+  '      phrase "अंतर"',
+  '    language "zh"',
+  '      phrase "相差"',
+  '      phrase "差"',
+  '  operation "threshold"',
+  '    language "en"',
+  '      phrase "threshold"',
+  '    language "ru"',
+  '      phrase "порог"',
+  '      phrase "порога"',
+  '    language "hi"',
+  '      phrase "सीमा"',
+  '    language "zh"',
+  '      phrase "阈值"',
+].join("\n");
+
+let cachedOperationVocabulary = null;
+// Parse the embedded operation vocabulary into language-pooled triggers
+// ({ slug, phrases, combos, inverse? }). Mirrors operation_vocabulary() in
+// src/seed/operation_vocabulary.rs; phrases/combos are pooled across every
+// language because operationFormMatches (below) is language-agnostic.
+function operationVocabulary() {
+  if (cachedOperationVocabulary) return cachedOperationVocabulary;
+  const root = parseLinoTree(OPERATION_VOCABULARY_LINO);
+  const container =
+    root.children.find((child) => child.name === "operation_vocabulary") || root;
+  const operations = [];
+  for (const operationNode of container.children) {
+    if (operationNode.name !== "operation") continue;
+    const phrases = [];
+    const combos = [];
+    let inverse = null;
+    for (const child of operationNode.children) {
+      if (child.name === "inverse") inverse = child.value;
+      else if (child.name === "language") {
+        for (const form of child.children) {
+          if (form.name === "phrase") phrases.push(form.value);
+          else if (form.name === "combo") {
+            combos.push(
+              form.value
+                .split("+")
+                .map((token) => token.trim())
+                .filter(Boolean),
+            );
+          }
+        }
+      }
+    }
+    const operation = { slug: operationNode.value, phrases, combos };
+    if (inverse) operation.inverse = inverse;
+    operations.push(operation);
+  }
+  cachedOperationVocabulary = operations;
+  return cachedOperationVocabulary;
+}
 
 let cachedProgramModifierSlugs = null;
 function literalPatternValue(node) {
@@ -12105,6 +12488,36 @@ function operationFormMatches(normalized, operation) {
       combo.every((token) => source.includes(String(token || ""))),
     )
   );
+}
+
+// Issue #386: every canonical operation token whose phrasing appears in
+// `normalized`, in declaration order. Mirrors OperationVocabulary::detect in
+// src/seed/operation_vocabulary.rs (substring match, so a native verb still
+// matches when punctuation such as the danda `।` is glued to it).
+function detectOperations(normalized) {
+  const detected = [];
+  for (const operation of operationVocabulary()) {
+    if (operationFormMatches(normalized, operation)) detected.push(operation.slug);
+  }
+  return detected;
+}
+
+// Issue #386: append canonical English operation tokens to a normalized prompt so
+// handlers keep matching canonical concepts while accepting native verbs from
+// data/seed/operation-vocabulary.lino. Mirrors
+// OperationVocabulary::canonicalized_prompt — additive (never removes text), so
+// English prompts are unchanged and multilingual prompts gain boundary-matchable
+// tokens (e.g. a Hindi "लिखें।" yields an appended " write").
+function canonicalizedPrompt(normalized) {
+  const detected = detectOperations(normalized);
+  if (!detected.length) return String(normalized || "");
+  let out = String(normalized || "");
+  for (const canonical of detected) {
+    out += ` ${canonical}`;
+    const phrase = canonical.replace(/_/g, " ");
+    if (phrase !== canonical) out += ` ${phrase}`;
+  }
+  return out;
 }
 
 // Issue #386: the language-independent *meaning* lexicon — the JS mirror of
@@ -14245,6 +14658,280 @@ const MEANINGS_LINO = [
   '      word "外壳"',
   '      word "命令"',
   '      word "docker"',
+  "meanings",
+  '  meaning "program_synthesis"',
+  '    gloss "deriving a small program — a function — from a specification and verifying it; the genus of the subject, domain, action, signal, and task meanings below"',
+  '    wiktionary "synthesis"',
+  '    defined_by "function"',
+  '    defined_by "code"',
+  '    defined_by "implement"',
+  '    role "program_synthesis"',
+  '    lexeme "en"',
+  '      word "program synthesis"',
+  '      word "function synthesis"',
+  '    lexeme "ru"',
+  '      word "синтез программ"',
+  '      word "синтез функции"',
+  '    lexeme "hi"',
+  '      word "प्रोग्राम संश्लेषण"',
+  '    lexeme "zh"',
+  '      word "程序合成"',
+  '  meaning "synthesis_subject_function"',
+  "    gloss \"the function a synthesis request asks to be written — the subject of 'implement a function …'\"",
+  '    wiktionary "function"',
+  '    defined_by "program_synthesis"',
+  '    defined_by "function"',
+  '    role "program_synthesis_subject"',
+  '    lexeme "en"',
+  '      word "function"',
+  '      word "func"',
+  '    lexeme "ru"',
+  '      word "функция"',
+  '      word "функцию"',
+  '    lexeme "hi"',
+  '      word "फ़ंक्शन"',
+  '      word "फंक्शन"',
+  '    lexeme "zh"',
+  '      word "函数"',
+  '  meaning "synthesis_domain_python"',
+  '    gloss "Python named as the target language of a synthesis request — a domain signal"',
+  '    wiktionary "Python"',
+  '    defined_by "program_synthesis"',
+  '    defined_by "language_python"',
+  '    role "program_synthesis_domain"',
+  '    lexeme "en"',
+  '      word "python"',
+  '    lexeme "ru"',
+  '      word "питон"',
+  '      word "пайтон"',
+  '    lexeme "hi"',
+  '      word "पायथन"',
+  '    lexeme "zh"',
+  '      word "python"',
+  '  meaning "synthesis_domain_tuple"',
+  '    gloss "a tuple — an immutable ordered sequence; a data-structure domain signal for synthesis"',
+  '    wiktionary "tuple"',
+  '    defined_by "program_synthesis"',
+  '    defined_by "code"',
+  '    role "program_synthesis_domain"',
+  '    lexeme "en"',
+  '      word "tuple"',
+  '      word "tuples"',
+  '    lexeme "ru"',
+  '      word "кортеж"',
+  '      word "кортежи"',
+  '    lexeme "hi"',
+  '      word "टपल"',
+  '    lexeme "zh"',
+  '      word "元组"',
+  '  meaning "synthesis_domain_numbers"',
+  '    gloss "the numbers a synthesized function operates over — a data domain signal"',
+  '    wiktionary "number"',
+  '    defined_by "program_synthesis"',
+  '    defined_by "result"',
+  '    role "program_synthesis_domain"',
+  '    lexeme "en"',
+  '      word "numbers"',
+  '    lexeme "ru"',
+  '      word "числа"',
+  '      word "чисел"',
+  '    lexeme "hi"',
+  '      word "संख्याएँ"',
+  '      word "संख्याओं"',
+  '    lexeme "zh"',
+  '      word "数字"',
+  '  meaning "synthesis_domain_vowels"',
+  '    gloss "the vowels a synthesized text function counts — a data domain signal"',
+  '    wiktionary "vowel"',
+  '    defined_by "program_synthesis"',
+  '    defined_by "result"',
+  '    role "program_synthesis_domain"',
+  '    lexeme "en"',
+  '      word "vowels"',
+  '      word "vowel"',
+  '    lexeme "ru"',
+  '      word "гласные"',
+  '      word "гласных"',
+  '    lexeme "hi"',
+  '      word "स्वर"',
+  '      word "स्वरों"',
+  '    lexeme "zh"',
+  '      word "元音"',
+  '  meaning "synthesis_action_implement"',
+  "    gloss \"the request verb 'implement' that asks a function be synthesized\"",
+  '    wiktionary "implement"',
+  '    defined_by "program_synthesis"',
+  '    defined_by "implement"',
+  '    role "program_synthesis_action"',
+  '    lexeme "en"',
+  '      word "implement"',
+  '    lexeme "ru"',
+  '      word "реализуй"',
+  '      word "реализовать"',
+  '    lexeme "hi"',
+  '      word "लागू"',
+  '    lexeme "zh"',
+  '      word "实现"',
+  '  meaning "synthesis_action_write"',
+  "    gloss \"the request verb 'write' that asks a function be synthesized\"",
+  '    wiktionary "write"',
+  '    defined_by "program_synthesis"',
+  '    defined_by "write"',
+  '    role "program_synthesis_action"',
+  '    lexeme "en"',
+  '      word "write"',
+  '    lexeme "ru"',
+  '      word "напиши"',
+  '      word "напишите"',
+  '    lexeme "hi"',
+  '      word "लिखो"',
+  '      word "लिखें"',
+  '    lexeme "zh"',
+  '      word "编写"',
+  '      word "写"',
+  '  meaning "synthesis_action_return"',
+  "    gloss \"the specification verb 'return' that states what a synthesized function yields\"",
+  '    wiktionary "return"',
+  '    defined_by "program_synthesis"',
+  '    defined_by "output"',
+  '    defined_by "result"',
+  '    role "program_synthesis_action"',
+  '    lexeme "en"',
+  '      word "return"',
+  '      word "returns"',
+  '    lexeme "ru"',
+  '      word "верни"',
+  '      word "вернуть"',
+  '      word "возврати"',
+  '    lexeme "hi"',
+  '      word "लौटाएँ"',
+  '      word "लौटाओ"',
+  '      word "लौटा"',
+  '    lexeme "zh"',
+  '      word "返回"',
+  '  meaning "signal_distinct_numbers"',
+  "    gloss \"the 'distinct numbers' phrase that signals the pairwise-threshold task\"",
+  '    wiktionary "distinct"',
+  '    defined_by "program_synthesis"',
+  '    defined_by "synthesis_domain_numbers"',
+  '    role "program_synthesis_signal"',
+  '    lexeme "en"',
+  '      word "distinct numbers"',
+  '    lexeme "ru"',
+  '      word "различные числа"',
+  '      word "разные числа"',
+  '    lexeme "hi"',
+  '      word "अलग संख्याएँ"',
+  '    lexeme "zh"',
+  '      word "不同的数字"',
+  '  meaning "signal_difference"',
+  "    gloss \"the 'differ' relation that signals comparing values in the pairwise-threshold task\"",
+  '    wiktionary "differ"',
+  '    defined_by "program_synthesis"',
+  '    role "program_synthesis_signal"',
+  '    lexeme "en"',
+  '      word "differ"',
+  '      word "differs"',
+  '      word "difference"',
+  '    lexeme "ru"',
+  '      word "отличаются"',
+  '      word "различаются"',
+  '      word "разница"',
+  '    lexeme "hi"',
+  '      word "भिन्न"',
+  '      word "अंतर"',
+  '    lexeme "zh"',
+  '      word "不同"',
+  '      word "差异"',
+  '  meaning "signal_threshold"',
+  "    gloss \"the 'threshold' bound that signals the pairwise-threshold task\"",
+  '    wiktionary "threshold"',
+  '    defined_by "program_synthesis"',
+  '    role "program_synthesis_signal"',
+  '    lexeme "en"',
+  '      word "threshold"',
+  '      word "thresholds"',
+  '    lexeme "ru"',
+  '      word "порог"',
+  '      word "порога"',
+  '    lexeme "hi"',
+  '      word "सीमा"',
+  '      word "थ्रेशोल्ड"',
+  '    lexeme "zh"',
+  '      word "阈值"',
+  '  meaning "signal_similar_elements"',
+  "    gloss \"the 'similar elements' phrase that signals the tuple-intersection task\"",
+  '    wiktionary "similar"',
+  '    defined_by "program_synthesis"',
+  '    defined_by "synthesis_subject_function"',
+  '    role "program_synthesis_signal"',
+  '    lexeme "en"',
+  '      word "similar elements"',
+  '    lexeme "ru"',
+  '      word "похожие элементы"',
+  '      word "одинаковые элементы"',
+  '    lexeme "hi"',
+  '      word "समान तत्व"',
+  '    lexeme "zh"',
+  '      word "相似元素"',
+  '  meaning "signal_count_vowels"',
+  "    gloss \"the 'count vowels' / 'number of vowels' phrases that signal the vowel-counting task\"",
+  '    wiktionary "vowel"',
+  '    defined_by "program_synthesis"',
+  '    defined_by "synthesis_domain_vowels"',
+  '    role "program_synthesis_signal"',
+  '    lexeme "en"',
+  '      word "count vowels"',
+  '      word "number of vowels"',
+  '    lexeme "ru"',
+  '      word "количество гласных"',
+  '      word "число гласных"',
+  '    lexeme "hi"',
+  '      word "स्वरों की संख्या"',
+  '    lexeme "zh"',
+  '      word "元音数量"',
+  '      word "元音的数量"',
+  '  meaning "has_close_elements"',
+  '    gloss "the HumanEval/0 task: true when any two distinct numbers are within a threshold — recognized by the distinct-numbers, difference, and threshold signals (its slug is the canonical function name)"',
+  '    wiktionary "close"',
+  '    defined_by "signal_distinct_numbers"',
+  '    defined_by "signal_difference"',
+  '    defined_by "signal_threshold"',
+  '    role "program_synthesis_task"',
+  '    lexeme "en"',
+  '      word "has_close_elements"',
+  '    lexeme "ru"',
+  '      word "has_close_elements"',
+  '    lexeme "hi"',
+  '      word "has_close_elements"',
+  '    lexeme "zh"',
+  '      word "has_close_elements"',
+  '  meaning "similar_elements"',
+  '    gloss "the MBPP/2 task: the intersection of two tuples in deterministic order — recognized by the similar-elements signal (its slug is the canonical function name)"',
+  '    wiktionary "similar"',
+  '    defined_by "signal_similar_elements"',
+  '    role "program_synthesis_task"',
+  '    lexeme "en"',
+  '      word "similar_elements"',
+  '    lexeme "ru"',
+  '      word "similar_elements"',
+  '    lexeme "hi"',
+  '      word "similar_elements"',
+  '    lexeme "zh"',
+  '      word "similar_elements"',
+  '  meaning "count_vowels"',
+  '    gloss "the vowel-counting task: how many vowels a text contains — recognized by the count-vowels signal (its slug is the canonical function name)"',
+  '    wiktionary "count"',
+  '    defined_by "signal_count_vowels"',
+  '    role "program_synthesis_task"',
+  '    lexeme "en"',
+  '      word "count_vowels"',
+  '    lexeme "ru"',
+  '      word "count_vowels"',
+  '    lexeme "hi"',
+  '      word "count_vowels"',
+  '    lexeme "zh"',
+  '      word "count_vowels"',
 ].join("\n");
 
 // Semantic role: a thing a program produces that a later turn can refer back to
@@ -14259,6 +14946,16 @@ const ROLE_PROGRAM_KIND = "program_kind";
 // Semantic role: a verb that requests a program artifact be produced (write,
 // create, show, generate, make, build) — the verb side of "write a <kind>".
 const ROLE_PROGRAM_REQUEST = "program_request";
+// Issue #386 program-synthesis roles — mirror the ROLE_PROGRAM_SYNTHESIS_*
+// consts in src/seed/meanings.rs. Their surface words live in
+// data/seed/meanings-program-synthesis.lino (embedded in MEANINGS_LINO above).
+// The subject/domain/action triple gates a synthesis request; signals
+// distinguish one task from another; a task's slug is the Python function name.
+const ROLE_PROGRAM_SYNTHESIS_SUBJECT = "program_synthesis_subject";
+const ROLE_PROGRAM_SYNTHESIS_DOMAIN = "program_synthesis_domain";
+const ROLE_PROGRAM_SYNTHESIS_ACTION = "program_synthesis_action";
+const ROLE_PROGRAM_SYNTHESIS_SIGNAL = "program_synthesis_signal";
+const ROLE_PROGRAM_SYNTHESIS_TASK = "program_synthesis_task";
 
 let cachedMeaningLexicon = null;
 // Parse the embedded lexicon once. Each meaning keeps the semantic roles it
@@ -14278,16 +14975,18 @@ function meaningLexicon() {
     for (const node of container.children) {
       if (node.name !== "meaning") continue;
       const roles = [];
+      const definedBy = [];
       const words = [];
       for (const child of node.children) {
         if (child.name === "role") roles.push(child.value);
+        else if (child.name === "defined_by") definedBy.push(child.value);
         else if (child.name === "lexeme") {
           for (const lexWord of child.children) {
             if (lexWord.name === "word") words.push(lexWord.value);
           }
         }
       }
-      meanings.push({ slug: node.value, roles, words });
+      meanings.push({ slug: node.value, roles, definedBy, words });
     }
   }
   cachedMeaningLexicon = meanings;
@@ -14350,6 +15049,12 @@ function meaningsWithRole(role) {
   return meaningLexicon().filter((meaning) => meaning.roles.includes(role));
 }
 
+// The meaning identified by `slug`, or null. Mirrors Lexicon::meaning in
+// src/seed/meanings.rs.
+function findMeaning(slug) {
+  return meaningLexicon().find((meaning) => meaning.slug === slug) || null;
+}
+
 // Distinct surface words (across all languages) for `role`, declaration order.
 // Mirrors Lexicon::words_for_role in src/seed/meanings.rs.
 function calendarWordsForRole(role) {
@@ -14392,7 +15097,7 @@ function lexiconMentionsRoleSubstring(role, normalized) {
 function detectedProgramModifiers(normalized) {
   const slugs = [];
   const validModifiers = programModifierSlugs();
-  for (const operation of PROGRAM_MODIFIER_OPERATIONS) {
+  for (const operation of operationVocabulary()) {
     if (validModifiers.has(operation.slug) && operationFormMatches(normalized, operation)) {
       slugs.push(operation.slug);
     }
@@ -14689,7 +15394,7 @@ function applySubstitutionRules(initialLinks, ruleSet, event, maxApplications) {
 // `OperationVocabulary::inverse_pairs` in `src/seed/operation_vocabulary.rs`.
 function inversePairsFromOperations() {
   const pairs = [];
-  for (const operation of PROGRAM_MODIFIER_OPERATIONS) {
+  for (const operation of operationVocabulary()) {
     if (operation.inverse) pairs.push([operation.slug, operation.inverse]);
   }
   return pairs;

@@ -27,6 +27,7 @@ const MEANING_FILES = [
   "data/seed/meanings-calendar.lino",
   "data/seed/meanings-facts.lino",
   "data/seed/meanings-software-project.lino",
+  "data/seed/meanings-program-synthesis.lino",
 ];
 const workerPath = new URL("src/web/formal_ai_worker.js", root);
 
@@ -53,6 +54,25 @@ const newBlock = `const MEANINGS_LINO = [\n${arrayBody},\n].join("\\n");`;
 const blockRe = /const MEANINGS_LINO = \[\n[\s\S]*?\n\]\.join\("\\n"\);/;
 if (!blockRe.test(worker)) throw new Error("anchor not found: MEANINGS_LINO inline block");
 worker = worker.replace(blockRe, newBlock);
+
+// --- 1b: regenerate the inline OPERATION_VOCABULARY_LINO array ---------------
+// The worker embeds the full operation vocabulary so tryProgramSynthesis can
+// canonicalize native operation verbs (write / implement / return …) in any
+// language exactly like try_program_synthesis in
+// src/solver_handlers/program_synthesis.rs. Keep it byte-identical to the
+// canonical seed; the structural code (operationVocabulary / detectOperations /
+// canonicalizedPrompt) is installed once by
+// experiments/issue-386-embed-operation-vocabulary.mjs.
+const vocabLino = fs
+  .readFileSync(new URL("data/seed/operation-vocabulary.lino", root), "utf8")
+  .replace(/\n+$/, "");
+const vocabLines = vocabLino.split("\n");
+while (vocabLines.length && vocabLines[vocabLines.length - 1] === "") vocabLines.pop();
+const vocabBody = vocabLines.map((l) => "  " + jsString(l)).join(",\n");
+const vocabBlock = `const OPERATION_VOCABULARY_LINO = [\n${vocabBody},\n].join("\\n");`;
+const vocabRe = /const OPERATION_VOCABULARY_LINO = \[\n[\s\S]*?\n\]\.join\("\\n"\);/;
+if (!vocabRe.test(worker)) throw new Error("anchor not found: OPERATION_VOCABULARY_LINO inline block");
+worker = worker.replace(vocabRe, vocabBlock);
 
 // --- 2: ensure the two new role constants exist ------------------------------
 const modConst = `const ROLE_PROGRAM_MODIFICATION = "program_modification";`;
@@ -96,7 +116,7 @@ if (worker.includes(gateOld)) {
 }
 
 // --- safety: the legacy identifiers must be fully gone -----------------------
-for (const dead of ["PROGRAM_NOUNS", "PROGRAM_VERBS"]) {
+for (const dead of ["PROGRAM_NOUNS", "PROGRAM_VERBS", "PROGRAM_MODIFIER_OPERATIONS"]) {
   if (worker.includes(dead)) throw new Error(`leftover reference to ${dead}`);
 }
 

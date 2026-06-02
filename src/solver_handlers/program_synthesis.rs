@@ -68,28 +68,64 @@ pub fn try_program_synthesis(
     ))
 }
 
+/// Does `normalized` read like a request to synthesise a Python function?
+///
+/// The three conjuncts are language-independent semantic roles, not hardcoded
+/// words: a *subject* (the function being asked for), a *domain* signal (Python
+/// or a data kind it works over), and an *action* verb (implement/write/return).
+/// `def ` is Python syntax the user may paste directly, so a literal signature
+/// satisfies both the subject and action sides regardless of prose language.
 fn looks_like_python_function_request(prompt: &str, normalized: &str) -> bool {
-    let lower = prompt.to_ascii_lowercase();
-    (normalized.contains("function") || lower.contains("def "))
-        && (lower.contains("python")
-            || normalized.contains("tuple")
-            || normalized.contains("numbers")
-            || normalized.contains("vowels"))
-        && (normalized.contains("implement")
-            || normalized.contains("write")
-            || normalized.contains("return")
-            || lower.contains("def "))
+    let lexicon = crate::seed::lexicon();
+    let has_def = prompt.to_ascii_lowercase().contains("def ");
+    (lexicon.mentions_role(crate::seed::ROLE_PROGRAM_SYNTHESIS_SUBJECT, normalized) || has_def)
+        && lexicon.mentions_role(crate::seed::ROLE_PROGRAM_SYNTHESIS_DOMAIN, normalized)
+        && (lexicon.mentions_role(crate::seed::ROLE_PROGRAM_SYNTHESIS_ACTION, normalized)
+            || has_def)
+}
+
+/// Is `task` evidenced by its signals — is every `program_synthesis_signal`
+/// meaning it is `defined_by` present in `normalized`? A task with no signal
+/// definitions is never matched this way (it can still match by declared name).
+/// This replaces the per-task hardcoded phrase checks: the signal words live in
+/// `data/seed/meanings-program-synthesis.lino`, translatable to any language.
+fn synthesis_task_evidenced(
+    lexicon: &crate::seed::Lexicon,
+    task: &crate::seed::Meaning,
+    normalized: &str,
+) -> bool {
+    let mut required = 0usize;
+    for target in &task.defined_by {
+        let Some(signal) = lexicon.meaning(target) else {
+            continue;
+        };
+        if !signal.has_role(crate::seed::ROLE_PROGRAM_SYNTHESIS_SIGNAL) {
+            continue;
+        }
+        required += 1;
+        if !signal.evidenced_in(normalized) {
+            return false;
+        }
+    }
+    required > 0
+}
+
+/// The canonical function name of the first synthesis task (declaration order)
+/// whose signals are all evidenced in `normalized`. The slug *is* the Python
+/// function name, so the caller can use it directly.
+fn match_synthesis_task(lexicon: &crate::seed::Lexicon, normalized: &str) -> Option<String> {
+    lexicon
+        .meanings_with_role(crate::seed::ROLE_PROGRAM_SYNTHESIS_TASK)
+        .find(|task| synthesis_task_evidenced(lexicon, task, normalized))
+        .map(|task| task.slug.clone())
 }
 
 fn extract_function_name(prompt: &str, normalized: &str) -> Option<String> {
     if let Some(name) = declared_function_name_from_signature(prompt) {
         return Some(name);
     }
-    if normalized.contains("similar elements") {
-        return Some(String::from("similar_elements"));
-    }
-    if normalized.contains("count vowels") || normalized.contains("number of vowels") {
-        return Some(String::from("count_vowels"));
+    if let Some(slug) = match_synthesis_task(crate::seed::lexicon(), normalized) {
+        return Some(slug);
     }
     for marker in ["function ", "def "] {
         if let Some(name) = identifier_after_ascii_marker(prompt, marker) {
@@ -162,11 +198,17 @@ fn synthesize_python_candidate(
     normalized: &str,
     function_name: &str,
 ) -> Option<PythonCandidate> {
-    if function_name == "has_close_elements"
-        || (normalized.contains("distinct numbers")
-            && normalized.contains("differ")
-            && normalized.contains("threshold"))
-    {
+    // Select the synthesis task by declared name or by evidenced signals, then
+    // dispatch on its slug. The slug is the canonical Python function name and
+    // the recognition lives entirely in the meaning lexicon — no prose here.
+    let lexicon = crate::seed::lexicon();
+    let task = lexicon
+        .meanings_with_role(crate::seed::ROLE_PROGRAM_SYNTHESIS_TASK)
+        .find(|task| {
+            function_name == task.slug || synthesis_task_evidenced(lexicon, task, normalized)
+        })?;
+
+    if task.slug == "has_close_elements" {
         let signature = declared_signature(prompt, function_name).unwrap_or_else(|| {
             String::from("has_close_elements(numbers: list[float], threshold: float) -> bool")
         });
@@ -197,7 +239,7 @@ fn synthesize_python_candidate(
         });
     }
 
-    if function_name == "similar_elements" || normalized.contains("similar elements") {
+    if task.slug == "similar_elements" {
         let signature = declared_signature(prompt, function_name)
             .unwrap_or_else(|| String::from("similar_elements(test_tup1, test_tup2)"));
         return Some(PythonCandidate {
@@ -219,10 +261,7 @@ fn synthesize_python_candidate(
         });
     }
 
-    if function_name == "count_vowels"
-        || normalized.contains("count vowels")
-        || normalized.contains("number of vowels")
-    {
+    if task.slug == "count_vowels" {
         let signature = declared_signature(prompt, function_name)
             .unwrap_or_else(|| String::from("count_vowels(text: str) -> int"));
         return Some(PythonCandidate {
