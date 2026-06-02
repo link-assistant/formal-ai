@@ -64,6 +64,15 @@ pub const ROLE_CALENDAR_QUESTION: &str = "calendar_question";
 /// meaning carrying this role, in declaration order; each is `defined_by` the
 /// `knowledge_relation` concept.
 pub const ROLE_FACT_RELATION: &str = "fact_relation";
+/// Semantic role: a follow-up that verifies an already-designed software
+/// artifact behaves correctly (test it, run the tests, протестируй, 测试, …).
+pub const ROLE_SOFTWARE_FOLLOWUP_VERIFICATION: &str = "software_followup_verification";
+/// Semantic role: a follow-up that runs or executes the designed artifact
+/// (run it, execute it, запусти, 运行, चलाओ, …).
+pub const ROLE_SOFTWARE_FOLLOWUP_EXECUTION: &str = "software_followup_execution";
+/// Semantic role: a follow-up that demonstrates the artifact's output
+/// (show me, demo it, покажи, 显示, दिखाओ, …).
+pub const ROLE_SOFTWARE_FOLLOWUP_DEMONSTRATION: &str = "software_followup_demonstration";
 
 /// Surface words that evidence a meaning in one language.
 #[derive(Debug, Clone)]

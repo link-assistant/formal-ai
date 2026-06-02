@@ -29,6 +29,8 @@ pub const MEANINGS_LINO: &str = include_str!("../../data/seed/meanings.lino");
 pub const MEANINGS_UNITS_LINO: &str = include_str!("../../data/seed/meanings-units.lino");
 pub const MEANINGS_CALENDAR_LINO: &str = include_str!("../../data/seed/meanings-calendar.lino");
 pub const MEANINGS_FACTS_LINO: &str = include_str!("../../data/seed/meanings-facts.lino");
+pub const MEANINGS_SOFTWARE_PROJECT_LINO: &str =
+    include_str!("../../data/seed/meanings-software-project.lino");
 pub const GREETINGS_LINO: &str = include_str!("../../data/seed/greetings.lino");
 pub const IDENTITY_LINO: &str = include_str!("../../data/seed/identity.lino");
 pub const HELLO_WORLD_PROGRAMS_LINO: &str =
@@ -69,6 +71,10 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/meanings-units.lino", MEANINGS_UNITS_LINO),
         ("data/seed/meanings-calendar.lino", MEANINGS_CALENDAR_LINO),
         ("data/seed/meanings-facts.lino", MEANINGS_FACTS_LINO),
+        (
+            "data/seed/meanings-software-project.lino",
+            MEANINGS_SOFTWARE_PROJECT_LINO,
+        ),
         ("data/seed/greetings.lino", GREETINGS_LINO),
         ("data/seed/identity.lino", IDENTITY_LINO),
         (
@@ -95,4 +101,5 @@ pub const MEANING_FILES: &[&str] = &[
     MEANINGS_UNITS_LINO,
     MEANINGS_CALENDAR_LINO,
     MEANINGS_FACTS_LINO,
+    MEANINGS_SOFTWARE_PROJECT_LINO,
 ];

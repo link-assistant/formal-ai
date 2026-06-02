@@ -10976,59 +10976,11 @@ function trySoftwareProjectRequest(prompt, history = []) {
   };
 }
 
-// Phrases that, while a software-project dialogue is active, signal a request to
-// exercise the just-designed artifact rather than start a fresh fact lookup.
-// Carries the supported languages (en, ru, hi, zh) so a multilingual user who
-// designs in one language and then says "now test it" in another stays inside
-// the project dialogue. Mirrors `FOLLOW_UP_MARKERS` in
-// src/solver_handlers/software_project.rs (verification precedes execution and
-// demonstration so a combined phrasing records the stronger goal).
-const SOFTWARE_FOLLOW_UP_MARKERS = [
-  // Verification — en
-  ["test it", "verification"],
-  ["test the", "verification"],
-  ["test this", "verification"],
-  ["verify", "verification"],
-  ["check it", "verification"],
-  ["check that", "verification"],
-  ["run the tests", "verification"],
-  // Verification — ru / zh / hi
-  ["протестируй", "verification"],
-  ["протестировать", "verification"],
-  ["проверь", "verification"],
-  ["тестируй", "verification"],
-  ["测试", "verification"],
-  ["检验", "verification"],
-  ["检查", "verification"],
-  ["परीक्षण", "verification"],
-  ["जाँच", "verification"],
-  ["जांच", "verification"],
-  // Execution — en
-  ["run it", "execution"],
-  ["run this", "execution"],
-  ["run the", "execution"],
-  ["execute it", "execution"],
-  ["execute the", "execution"],
-  ["try it", "execution"],
-  // Execution — ru / zh / hi
-  ["запусти", "execution"],
-  ["выполни", "execution"],
-  ["运行", "execution"],
-  ["执行", "execution"],
-  ["चलाओ", "execution"],
-  ["निष्पादित", "execution"],
-  // Demonstration — en
-  ["demo it", "demonstration"],
-  ["show me", "demonstration"],
-  ["show the", "demonstration"],
-  ["print the", "demonstration"],
-  // Demonstration — ru / zh / hi
-  ["покажи", "demonstration"],
-  ["显示", "demonstration"],
-  ["展示", "demonstration"],
-  ["दिखाओ", "demonstration"],
-];
-
+// Maps a follow-up kind to the imperative verb used when rendering it. Mirrors
+// `FollowUpKind::action` in src/solver_handlers/software_project_followup.rs.
+// The surface words that *recognise* each kind no longer live here — they are
+// self-describing meanings in data/seed/meanings-software-project.lino, queried
+// by detectSoftwareFollowUp via the software_followup_* roles (issue #386).
 const SOFTWARE_FOLLOW_UP_ACTIONS = {
   verification: "test",
   execution: "run",
@@ -11092,14 +11044,30 @@ function extractFollowUpExpectedOutput(prompt) {
   return null;
 }
 
+// Recognise which follow-up a prompt evidences by *meaning*, not a hardcoded
+// per-language marker table (issue #386). Each follow-up kind is a
+// self-describing meaning in data/seed/meanings-software-project.lino; its
+// surface words (every supported language) live there, while this code knows
+// only the concepts and their precedence — verification outranks execution
+// outranks demonstration, so a combined "test it and run it" records the
+// stronger goal. Mirrors follow_up_kind in
+// src/solver_handlers/software_project_followup.rs.
 function detectSoftwareFollowUp(prompt, normalized) {
-  const found = SOFTWARE_FOLLOW_UP_MARKERS.find(([marker]) =>
-    normalized.includes(marker),
-  );
-  if (!found) return null;
+  let kind = null;
+  for (const [role, candidate] of [
+    [ROLE_SOFTWARE_FOLLOWUP_VERIFICATION, "verification"],
+    [ROLE_SOFTWARE_FOLLOWUP_EXECUTION, "execution"],
+    [ROLE_SOFTWARE_FOLLOWUP_DEMONSTRATION, "demonstration"],
+  ]) {
+    if (lexiconMentionsRoleSubstring(role, normalized)) {
+      kind = candidate;
+      break;
+    }
+  }
+  if (!kind) return null;
   return {
-    kind: found[1],
-    action: SOFTWARE_FOLLOW_UP_ACTIONS[found[1]],
+    kind,
+    action: SOFTWARE_FOLLOW_UP_ACTIONS[kind],
     targetSite: extractFollowUpTargetSite(prompt),
     expectedOutput: extractFollowUpExpectedOutput(prompt),
   };
@@ -13317,6 +13285,90 @@ const MEANINGS_LINO = [
   '    lexeme "zh"',
   '      word "光速"',
   '      word "是多少"',
+  "meanings",
+  '  meaning "software_followup"',
+  '    gloss "exercising an already-designed software artifact — verifying, executing, or demonstrating it; the genus of the follow-up kinds below"',
+  '    wiktionary "follow-up"',
+  '    defined_by "software_followup_verification"',
+  '    defined_by "software_followup_execution"',
+  '    defined_by "software_followup_demonstration"',
+  '    role "software_followup"',
+  '    lexeme "en"',
+  '      word "follow-up"',
+  '      word "exercise"',
+  '    lexeme "ru"',
+  '      word "продолжение"',
+  '      word "отработка"',
+  '    lexeme "hi"',
+  '      word "अनुवर्ती"',
+  '      word "अभ्यास"',
+  '    lexeme "zh"',
+  '      word "后续"',
+  '      word "演练"',
+  '  meaning "software_followup_verification"',
+  '    gloss "a follow-up that verifies the just-designed artifact behaves correctly (test it, run the tests, …)"',
+  '    wiktionary "verification"',
+  '    defined_by "software_followup"',
+  '    role "software_followup_verification"',
+  '    lexeme "en"',
+  '      word "test it"',
+  '      word "test the"',
+  '      word "test this"',
+  '      word "verify"',
+  '      word "check it"',
+  '      word "check that"',
+  '      word "run the tests"',
+  '    lexeme "ru"',
+  '      word "протестируй"',
+  '      word "протестировать"',
+  '      word "проверь"',
+  '      word "тестируй"',
+  '    lexeme "hi"',
+  '      word "परीक्षण"',
+  '      word "जाँच"',
+  '      word "जांच"',
+  '    lexeme "zh"',
+  '      word "测试"',
+  '      word "检验"',
+  '      word "检查"',
+  '  meaning "software_followup_execution"',
+  '    gloss "a follow-up that runs or executes the just-designed artifact (run it, execute it, …)"',
+  '    wiktionary "execution"',
+  '    defined_by "software_followup"',
+  '    role "software_followup_execution"',
+  '    lexeme "en"',
+  '      word "run it"',
+  '      word "run this"',
+  '      word "run the"',
+  '      word "execute it"',
+  '      word "execute the"',
+  '      word "try it"',
+  '    lexeme "ru"',
+  '      word "запусти"',
+  '      word "выполни"',
+  '    lexeme "hi"',
+  '      word "चलाओ"',
+  '      word "निष्पादित"',
+  '    lexeme "zh"',
+  '      word "运行"',
+  '      word "执行"',
+  '  meaning "software_followup_demonstration"',
+  "    gloss \"a follow-up that demonstrates the just-designed artifact's output (show me, demo it, …)\"",
+  '    wiktionary "demonstration"',
+  '    defined_by "software_followup"',
+  '    role "software_followup_demonstration"',
+  '    lexeme "en"',
+  '      word "demo it"',
+  '      word "show me"',
+  '      word "show the"',
+  '      word "print the"',
+  '    lexeme "ru"',
+  '      word "покажи"',
+  '    lexeme "hi"',
+  '      word "दिखाओ"',
+  '    lexeme "zh"',
+  '      word "显示"',
+  '      word "展示"',
 ].join("\n");
 
 // Semantic role: a thing a program produces that a later turn can refer back to
@@ -13408,6 +13460,29 @@ function calendarWordsForRole(role) {
     }
   }
   return words;
+}
+
+// Issue #386 software-project follow-up roles — mirror the
+// ROLE_SOFTWARE_FOLLOWUP_* consts in src/seed/meanings.rs. Their surface words
+// live in data/seed/meanings-software-project.lino (embedded in MEANINGS_LINO
+// above). detectSoftwareFollowUp matches them as raw substrings (not whole
+// tokens), so they come with a dedicated accessor.
+const ROLE_SOFTWARE_FOLLOWUP_VERIFICATION = "software_followup_verification";
+const ROLE_SOFTWARE_FOLLOWUP_EXECUTION = "software_followup_execution";
+const ROLE_SOFTWARE_FOLLOWUP_DEMONSTRATION = "software_followup_demonstration";
+
+// Does `normalized` contain any surface word of any meaning carrying `role`,
+// matched as a raw substring? Unlike lexiconMentionsRole (whole-token, via
+// containsProgramToken), follow-up markers are multi-word phrases ("run the
+// tests", "show me"), so a token-boundary match would never find them. Mirrors
+// the raw `.contains()` in follow_up_kind
+// (src/solver_handlers/software_project_followup.rs).
+function lexiconMentionsRoleSubstring(role, normalized) {
+  return meaningLexicon().some(
+    (meaning) =>
+      meaning.roles.includes(role) &&
+      meaning.words.some((word) => word && normalized.includes(word)),
+  );
 }
 
 function detectedProgramModifiers(normalized) {

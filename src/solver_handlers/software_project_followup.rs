@@ -11,13 +11,14 @@ use std::fmt::Write as _;
 
 use crate::engine::{normalize_prompt, stable_id, SymbolicAnswer};
 use crate::event_log::EventLog;
+use crate::seed;
 use crate::solver_handlers::finalize_simple;
 use crate::solver_helpers::{last_assistant_turn, last_user_turn};
 
 use super::software_project::{is_approval_prompt, lino_string, SoftwareProjectMeaning};
 
 /// Kinds of follow-up that exercise an already-designed artifact. The order in
-/// [`detect_follow_up`] gives verification precedence over plain execution so a
+/// [`follow_up_kind`] gives verification precedence over plain execution so a
 /// "test it and run it" phrasing is recorded as the stronger verification goal.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 enum FollowUpKind {
@@ -50,61 +51,6 @@ struct SoftwareProjectFollowUp {
     target_site: Option<String>,
     expected_output: Option<String>,
 }
-
-/// Phrases that, while a software-project dialogue is active, signal a request
-/// to exercise the just-designed artifact rather than start a fresh fact
-/// lookup. Each marker is paired with the follow-up kind it implies. Markers
-/// are matched against the lowercased, script-preserving normalized prompt, so
-/// the table carries the supported languages (en, ru, hi, zh): a multilingual
-/// user who designs in one language and then says "now test it" in another
-/// (issue #341) still stays inside the project dialogue. Verification markers
-/// precede execution and demonstration so a combined phrasing records the
-/// stronger goal.
-const FOLLOW_UP_MARKERS: &[(&str, FollowUpKind)] = &[
-    // Verification — en
-    ("test it", FollowUpKind::Verification),
-    ("test the", FollowUpKind::Verification),
-    ("test this", FollowUpKind::Verification),
-    ("verify", FollowUpKind::Verification),
-    ("check it", FollowUpKind::Verification),
-    ("check that", FollowUpKind::Verification),
-    ("run the tests", FollowUpKind::Verification),
-    // Verification — ru / zh / hi
-    ("протестируй", FollowUpKind::Verification),
-    ("протестировать", FollowUpKind::Verification),
-    ("проверь", FollowUpKind::Verification),
-    ("тестируй", FollowUpKind::Verification),
-    ("测试", FollowUpKind::Verification),
-    ("检验", FollowUpKind::Verification),
-    ("检查", FollowUpKind::Verification),
-    ("परीक्षण", FollowUpKind::Verification),
-    ("जाँच", FollowUpKind::Verification),
-    ("जांच", FollowUpKind::Verification),
-    // Execution — en
-    ("run it", FollowUpKind::Execution),
-    ("run this", FollowUpKind::Execution),
-    ("run the", FollowUpKind::Execution),
-    ("execute it", FollowUpKind::Execution),
-    ("execute the", FollowUpKind::Execution),
-    ("try it", FollowUpKind::Execution),
-    // Execution — ru / zh / hi
-    ("запусти", FollowUpKind::Execution),
-    ("выполни", FollowUpKind::Execution),
-    ("运行", FollowUpKind::Execution),
-    ("执行", FollowUpKind::Execution),
-    ("चलाओ", FollowUpKind::Execution),
-    ("निष्पादित", FollowUpKind::Execution),
-    // Demonstration — en
-    ("demo it", FollowUpKind::Demonstration),
-    ("show me", FollowUpKind::Demonstration),
-    ("show the", FollowUpKind::Demonstration),
-    ("print the", FollowUpKind::Demonstration),
-    // Demonstration — ru / zh / hi
-    ("покажи", FollowUpKind::Demonstration),
-    ("显示", FollowUpKind::Demonstration),
-    ("展示", FollowUpKind::Demonstration),
-    ("दिखाओ", FollowUpKind::Demonstration),
-];
 
 /// Follow-up handler for an active software-project dialogue (issue #341).
 ///
@@ -146,15 +92,54 @@ pub fn try_software_project_followup(
 }
 
 fn detect_follow_up(prompt: &str, normalized: &str) -> Option<SoftwareProjectFollowUp> {
-    let kind = FOLLOW_UP_MARKERS
-        .iter()
-        .find(|(marker, _)| normalized.contains(marker))
-        .map(|(_, kind)| *kind)?;
+    let kind = follow_up_kind(normalized)?;
     Some(SoftwareProjectFollowUp {
         kind,
         target_site: extract_target_site(prompt),
         expected_output: extract_expected_output(prompt),
     })
+}
+
+/// Recognise which follow-up a prompt evidences by *meaning*, not a hardcoded
+/// per-language marker table (issue #386).
+///
+/// Each follow-up kind is a self-describing meaning in
+/// `data/seed/meanings-software-project.lino`; its surface words — in every
+/// supported language — live there, while this code knows only the concepts and
+/// their precedence. Verification outranks execution, which outranks
+/// demonstration, so a combined "test it and run it" records the stronger goal
+/// (preserving the former marker-table ordering). A multilingual user who
+/// designs in one language and then says "now test it" in another (issue #341)
+/// still stays inside the project dialogue.
+///
+/// Surface words are matched as raw substrings of the normalized prompt — not
+/// whole whitespace tokens — because many are multi-word phrases ("run the
+/// tests", "show me"); a token-boundary match would never find them.
+fn follow_up_kind(normalized: &str) -> Option<FollowUpKind> {
+    for (role, kind) in [
+        (
+            seed::ROLE_SOFTWARE_FOLLOWUP_VERIFICATION,
+            FollowUpKind::Verification,
+        ),
+        (
+            seed::ROLE_SOFTWARE_FOLLOWUP_EXECUTION,
+            FollowUpKind::Execution,
+        ),
+        (
+            seed::ROLE_SOFTWARE_FOLLOWUP_DEMONSTRATION,
+            FollowUpKind::Demonstration,
+        ),
+    ] {
+        let mentioned = seed::lexicon().meanings_with_role(role).any(|meaning| {
+            meaning
+                .words()
+                .any(|word| !word.is_empty() && normalized.contains(word))
+        });
+        if mentioned {
+            return Some(kind);
+        }
+    }
+    None
 }
 
 /// Pull the first domain-like token (e.g. `wikipedia.org`) out of the prompt so

@@ -26,6 +26,7 @@ const MEANING_FILES = [
   "data/seed/meanings-units.lino",
   "data/seed/meanings-calendar.lino",
   "data/seed/meanings-facts.lino",
+  "data/seed/meanings-software-project.lino",
 ];
 const workerPath = new URL("src/web/formal_ai_worker.js", root);
 
