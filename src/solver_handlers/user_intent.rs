@@ -3,14 +3,14 @@
 //! `solver_handlers/mod.rs` to keep individual files under 1000 lines.
 
 use crate::concepts::extract_concept_query;
-use crate::engine::SymbolicAnswer;
+use crate::engine::{normalize_prompt, SymbolicAnswer};
 use crate::event_log::EventLog;
 use crate::fuzzy::typo_distance;
 use crate::language::detect as detect_language;
 use crate::proof_engine::{
     attempt_proof_with_config, render_outcome_with_config, ProofOutcome, ProofRenderConfig,
 };
-use crate::seed::response_for;
+use crate::seed::{self, response_for};
 use crate::solver_handlers::finalize_simple;
 
 pub fn try_clarification(
@@ -18,29 +18,7 @@ pub fn try_clarification(
     normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
-    let is_clarification = normalized == "не понял"
-        || normalized == "не понимаю"
-        || normalized == "не поняла"
-        || normalized == "не понятно"
-        || normalized == "непонятно"
-        || normalized.contains("i don't understand")
-        || normalized.contains("i dont understand")
-        || normalized.contains("i didn't understand")
-        || normalized.contains("i didnt understand")
-        || normalized.contains("don't understand")
-        || normalized.contains("dont understand")
-        || normalized.contains("didn't understand")
-        || normalized.contains("didnt understand")
-        || normalized.contains("what do you mean")
-        || normalized.contains("i'm confused")
-        || normalized.contains("im confused")
-        || normalized.contains("i am confused")
-        || normalized.contains("समझ नहीं आया")
-        || normalized.contains("समझ नहीं आई")
-        || normalized.contains("我不明白")
-        || normalized.contains("我不懂")
-        || normalized.contains("听不懂");
-    if !is_clarification {
+    if !is_clarification_request(normalized) {
         return None;
     }
     let language = detect_language(prompt);
@@ -61,6 +39,22 @@ pub fn try_clarification(
         &body,
         0.9,
     ))
+}
+
+/// Does `normalized` signal the user did not understand and wants the prior
+/// answer made clear?
+///
+/// Issue #386: recognised by the `clarification_request` meaning role rather
+/// than a hardcoded per-language phrase list — the surface words ("i don t
+/// understand", "не понял", "समझ नहीं आया", "我不明白", …) live once in
+/// `data/seed/meanings-intent.lino`. The prompt is re-normalised so trailing
+/// punctuation ("what do you mean?") and apostrophes ("i don't understand")
+/// collapse to the same canonical spacing the seed stores.
+fn is_clarification_request(normalized: &str) -> bool {
+    seed::lexicon().mentions_role(
+        seed::ROLE_CLARIFICATION_REQUEST,
+        &normalize_prompt(normalized),
+    )
 }
 
 pub fn try_punctuation_only_prompt(

@@ -113,7 +113,7 @@ for (const role of ROLES) {
 // hardcode today, so the later commits can replace those checks with
 // lexiconMentionsRole(role, normalized) and stay green.
 const POSITIVE = {
-  clarification_request: ["i don't understand", "не понял", "समझ नहीं आया", "我不明白"],
+  clarification_request: ["i dont understand", "не понял", "समझ नहीं आया", "我不明白"],
   capability_query: ["what can you do", "что ты умеешь", "आप क्या कर सकते", "你能做什么"],
   capability_query_more: ["what else can you do", "что ещё ты умеешь", "और क्या कर सकते", "你还能做什么"],
   self_fact_query: ["facts about yourself", "факты о себе", "अपने बारे में तथ्य", "自我事实"],
@@ -134,6 +134,36 @@ for (const role of ROLES) {
   check(
     `lexiconMentionsRole("${role}") rejects unrelated «${NEG}»`,
     sandbox.lexiconMentionsRole(role, NEG) === false,
+  );
+}
+
+// --- clarification normalize-path: mirror Rust try_clarification -------------
+// The Rust handler re-normalizes before querying ROLE_CLARIFICATION_REQUEST, so
+// apostrophes ("I don't understand") and trailing punctuation ("What do you
+// mean?") collapse to the apostrophe-free surfaces the seed stores. There is no
+// standalone JS recognizer for clarification, so we exercise the same two-step
+// the Rust predicate performs: normalizePrompt(prompt) -> lexiconMentionsRole.
+const CLARIFY_TRUE = [
+  "I don't understand",
+  "I didn't understand",
+  "What do you mean?",
+  "I'm confused!",
+  "не понял.",
+  "समझ नहीं आया",
+  "我不明白",
+  "听不懂",
+];
+for (const p of CLARIFY_TRUE) {
+  check(
+    `clarification normalize-path accepts «${p}»`,
+    sandbox.lexiconMentionsRole("clarification_request", sandbox.normalizePrompt(p)) === true,
+  );
+}
+const CLARIFY_FALSE = ["what is the capital of france", "what can you do", ""];
+for (const p of CLARIFY_FALSE) {
+  check(
+    `clarification normalize-path rejects «${p}»`,
+    sandbox.lexiconMentionsRole("clarification_request", sandbox.normalizePrompt(p)) === false,
   );
 }
 
