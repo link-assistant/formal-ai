@@ -153,6 +153,34 @@ pub const ROLE_PROGRAM_SYNTHESIS_SIGNAL: &str = "program_synthesis_signal";
 /// selected when its name is declared or when every `program_synthesis_signal`
 /// it is `defined_by` is evidenced in the prompt.
 pub const ROLE_PROGRAM_SYNTHESIS_TASK: &str = "program_synthesis_task";
+/// Semantic role: the user signalling they did not understand the assistant.
+///
+/// Asks it to make a prior answer clear ("I don't understand", "не понял",
+/// "समझ नहीं आया", "我不明白", …). A meaning carrying this role is `defined_by`
+/// the `clarification` and `understanding` concepts.
+pub const ROLE_CLARIFICATION_REQUEST: &str = "clarification_request";
+/// Semantic role: the user asking what the assistant is able to do.
+///
+/// A request to enumerate its capabilities ("what can you do", "что ты умеешь",
+/// "你能做什么", …). Distinct from [`ROLE_CAPABILITY_QUERY_MORE`], the follow-up.
+pub const ROLE_CAPABILITY_QUERY: &str = "capability_query";
+/// Semantic role: the user asking what *else* the assistant can do.
+///
+/// A follow-up that requests capabilities beyond those already named ("what
+/// else can you do", "что ещё ты умеешь", …) — a superset signal layered over
+/// the base [`ROLE_CAPABILITY_QUERY`].
+pub const ROLE_CAPABILITY_QUERY_MORE: &str = "capability_query_more";
+/// Semantic role: the user asking the assistant to list facts about itself.
+///
+/// "facts about yourself", "факты о себе", "自我事实", …. Checked before the
+/// broader self-introduction and known-facts queries so it wins the overlap.
+pub const ROLE_SELF_FACT_QUERY: &str = "self_fact_query";
+/// Semantic role: the user asking the assistant to introduce itself.
+///
+/// A get-acquainted request ("tell me about yourself", "расскажи о себе",
+/// "介绍一下你自己", …). Suppressed when a [`ROLE_SELF_FACT_QUERY`] surface
+/// also matches.
+pub const ROLE_SELF_INTRODUCTION_REQUEST: &str = "self_introduction_request";
 
 /// Surface words that evidence a meaning in one language.
 #[derive(Debug, Clone)]
