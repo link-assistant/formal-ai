@@ -200,11 +200,25 @@ pub const ROLE_ONTOLOGY_TYPE: &str = "ontology_type";
 /// up to the `link` root.
 pub const ROLE_ONTOLOGY_CATEGORY: &str = "ontology_category";
 
-/// Surface words that evidence a meaning in one language.
+/// A single surface form together with a self-describing note.
+///
+/// The data must "not just list" the word (issue #386): each form carries a
+/// `description` — a concise human note of *that* form's sense and shape (its
+/// citation form, grammatical form, script, or romanisation). Recognition code
+/// still matches on [`WordForm::text`]; the description makes the form usable
+/// for any purpose (diagnostics, learning, lexical grounding), not only the
+/// one parsing path baked into a handler.
+#[derive(Debug, Clone)]
+pub struct WordForm {
+    pub text: String,
+    pub description: String,
+}
+
+/// Surface forms that evidence a meaning in one language.
 #[derive(Debug, Clone)]
 pub struct Lexeme {
     pub language: String,
-    pub words: Vec<String>,
+    pub words: Vec<WordForm>,
 }
 
 /// A language-independent meaning grounded in real lexical data.
@@ -228,7 +242,13 @@ impl Meaning {
     pub fn words(&self) -> impl Iterator<Item = &str> {
         self.lexemes
             .iter()
-            .flat_map(|lexeme| lexeme.words.iter().map(String::as_str))
+            .flat_map(|lexeme| lexeme.words.iter().map(|w| w.text.as_str()))
+    }
+
+    /// Every surface form (text plus its self-describing note) across every
+    /// language this meaning lexicalises, in declaration order.
+    pub fn word_forms(&self) -> impl Iterator<Item = &WordForm> {
+        self.lexemes.iter().flat_map(|lexeme| lexeme.words.iter())
     }
 
     /// Is this meaning evidenced in `normalized` — does any of its surface
@@ -247,7 +267,18 @@ impl Meaning {
         self.lexemes
             .iter()
             .find(|lexeme| lexeme.language == language)
-            .and_then(|lexeme| lexeme.words.first().map(String::as_str))
+            .and_then(|lexeme| lexeme.words.first().map(|w| w.text.as_str()))
+    }
+
+    /// The self-describing note for `word` (matched case-insensitively against
+    /// the stored surface text) in any language, if recorded. This is the live
+    /// reader that makes [`WordForm::description`] usable — the data describes
+    /// each form rather than merely listing it (issue #386).
+    #[must_use]
+    pub fn describe_word(&self, word: &str) -> Option<&str> {
+        self.word_forms()
+            .find(|form| form.text.eq_ignore_ascii_case(word))
+            .map(|form| form.description.as_str())
     }
 
     /// Languages this meaning is lexicalised in (used by coverage tests).
@@ -435,7 +466,10 @@ fn parse_meaning(node: &LinoNode) -> Meaning {
                     .children
                     .iter()
                     .filter(|w| w.name == "word")
-                    .map(|w| w.id.clone())
+                    .map(|w| WordForm {
+                        text: w.id.clone(),
+                        description: w.find_child_value("description").to_string(),
+                    })
                     .collect();
                 lexemes.push(Lexeme {
                     language: child.id.clone(),
@@ -540,6 +574,32 @@ mod tests {
                 );
             }
         }
+    }
+
+    #[test]
+    fn word_forms_round_trip_and_describe_word_resolves() {
+        // The surface text iterated by `words()` and the text carried by each
+        // `WordForm` must be the same set, and `describe_word` must resolve a
+        // recorded form (case-insensitively) while rejecting an unknown one.
+        let lex = lexicon();
+        let meaning = &lex.meanings[0];
+        let from_words: Vec<&str> = meaning.words().collect();
+        let from_forms: Vec<&str> = meaning.word_forms().map(|f| f.text.as_str()).collect();
+        assert_eq!(
+            from_words, from_forms,
+            "words() and word_forms() must enumerate the same surfaces in order"
+        );
+        let first = from_words[0];
+        assert!(
+            meaning.describe_word(first).is_some(),
+            "describe_word must resolve a recorded surface form"
+        );
+        assert!(
+            meaning
+                .describe_word("\u{0}-definitely-not-a-recorded-surface")
+                .is_none(),
+            "describe_word must return None for an unknown surface"
+        );
     }
 
     #[test]
