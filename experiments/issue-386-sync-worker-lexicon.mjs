@@ -21,7 +21,11 @@ const root = new URL("..", import.meta.url);
 // MEANING_FILES in src/seed.rs so the Rust loader and this JS mirror parse the
 // same input; each file wraps its records under a top-level `meanings` node and
 // meaningLexicon() in the worker walks every container.
-const MEANING_FILES = ["data/seed/meanings.lino", "data/seed/meanings-units.lino"];
+const MEANING_FILES = [
+  "data/seed/meanings.lino",
+  "data/seed/meanings-units.lino",
+  "data/seed/meanings-calendar.lino",
+];
 const workerPath = new URL("src/web/formal_ai_worker.js", root);
 
 const lino = MEANING_FILES.map((rel) =>

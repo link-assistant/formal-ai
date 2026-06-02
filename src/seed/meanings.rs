@@ -38,6 +38,25 @@ pub const ROLE_MEASUREMENT_UNIT: &str = "measurement_unit";
 /// Semantic role: a physical dimension (length, mass, time, …). Units that
 /// belong to different dimensions cannot be converted into one another.
 pub const ROLE_PHYSICAL_DIMENSION: &str = "physical_dimension";
+/// Semantic role: a named day of the week (Monday … Sunday). The meaning slug
+/// is the English weekday name so a handler can resolve a matched lexeme back
+/// to a position in the seven-day cycle.
+pub const ROLE_CALENDAR_WEEKDAY: &str = "calendar_weekday";
+/// Semantic role: the "comes after" relation between weekdays — a +1 step in
+/// the seven-day cycle (after, next day, после, के बाद, 之后, …).
+pub const ROLE_CALENDAR_DIRECTION_NEXT: &str = "calendar_direction_next";
+/// Semantic role: the "comes before" relation between weekdays — a -1 step in
+/// the seven-day cycle (before, previous day, перед, से पहले, 之前, …).
+pub const ROLE_CALENDAR_DIRECTION_PREVIOUS: &str = "calendar_direction_previous";
+/// Semantic role: the present day relative to the system clock (today,
+/// сегодня, आज, 今天). Distinguishes a "what day is it now?" query.
+pub const ROLE_CALENDAR_TODAY: &str = "calendar_today";
+/// Semantic role: a reference to a day, date, or week — the noun a calendar
+/// question is about (day, weekday, date, week, день, неделя, 星期, …).
+pub const ROLE_CALENDAR_DAY_REFERENCE: &str = "calendar_day_reference";
+/// Semantic role: an interrogative or imperative asking which day (what,
+/// which, какой, कौन, 什么, …). The question side of a calendar query.
+pub const ROLE_CALENDAR_QUESTION: &str = "calendar_question";
 
 /// Surface words that evidence a meaning in one language.
 #[derive(Debug, Clone)]

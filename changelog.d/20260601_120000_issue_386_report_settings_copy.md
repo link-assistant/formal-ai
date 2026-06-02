@@ -30,6 +30,18 @@ bump: minor
   by `MEANING_FILES`) so no single seed file breaches the file-size guard; the
   Rust loader and the `formal_ai_worker.js` mirror both walk every `meanings`
   container (issue #386).
+- Calendar weekday reasoning (`src/solver_handlers/calendar.rs` and its
+  `formal_ai_worker.js` mirror) is data-driven too. The seven weekdays, the
+  "day after"/"day before" relations, "today", the day/date/week references, and
+  the interrogatives that ask "which day" now live as self-describing meanings
+  in `data/seed/meanings-calendar.lino` — each `defined_by` the calendar
+  concepts it builds on and lexicalised in every supported language. The handler
+  detects the operation and weekday by querying the lexicon for the
+  `calendar_direction_next`/`calendar_direction_previous`/`calendar_weekday`/…
+  roles instead of matching hardcoded alias and marker arrays. Because the words
+  now exist in every language, weekday-relation answers work in Hindi and
+  Chinese as well as English and Russian — not only the originally supported
+  cases (issue #386).
 - The prefilled "Report issue" body omits settings already at their shipped
   default (Mode, Status, Diagnostics, Theme, Guess/Follow-up probability,
   Temperature, inference-only Location), folds the worker into the version line

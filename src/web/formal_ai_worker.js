@@ -7531,6 +7531,14 @@ function tryProofRequest(prompt, normalized, language) {
   };
 }
 
+// WEEKDAY_CYCLE keeps only the rendering surfaces (display names + Russian
+// case forms) used to phrase an answer. Issue #386: the *recognition* words
+// (the former `aliases`, plus the next/previous/today/day/question markers)
+// are no longer hardcoded here — they live as self-describing meanings in
+// data/seed/meanings-calendar.lino under the `calendar_*` roles, embedded
+// below in MEANINGS_LINO. The detection functions query the lexicon by role
+// and map a matched weekday slug back to its cycle entry; mirrors
+// src/solver_handlers/calendar.rs.
 const WEEKDAY_CYCLE = [
   {
     slug: "monday",
@@ -7540,7 +7548,6 @@ const WEEKDAY_CYCLE = [
     zh: "星期一",
     ruGenitive: "понедельника",
     ruInstrumental: "понедельником",
-    aliases: ["monday", "mon", "понедельника", "понедельником", "понедельнику", "понедельнике", "понедельник"],
   },
   {
     slug: "tuesday",
@@ -7550,7 +7557,6 @@ const WEEKDAY_CYCLE = [
     zh: "星期二",
     ruGenitive: "вторника",
     ruInstrumental: "вторником",
-    aliases: ["tuesday", "tue", "tues", "вторника", "вторником", "вторнику", "вторнике", "вторник"],
   },
   {
     slug: "wednesday",
@@ -7560,7 +7566,6 @@ const WEEKDAY_CYCLE = [
     zh: "星期三",
     ruGenitive: "среды",
     ruInstrumental: "средой",
-    aliases: ["wednesday", "wed", "средой", "среде", "среду", "среды", "среда"],
   },
   {
     slug: "thursday",
@@ -7570,7 +7575,6 @@ const WEEKDAY_CYCLE = [
     zh: "星期四",
     ruGenitive: "четверга",
     ruInstrumental: "четвергом",
-    aliases: ["thursday", "thu", "thur", "thurs", "четверга", "четвергом", "четвергу", "четверге", "четверг"],
   },
   {
     slug: "friday",
@@ -7580,7 +7584,6 @@ const WEEKDAY_CYCLE = [
     zh: "星期五",
     ruGenitive: "пятницы",
     ruInstrumental: "пятницей",
-    aliases: ["friday", "fri", "пятницей", "пятнице", "пятницу", "пятницы", "пятница"],
   },
   {
     slug: "saturday",
@@ -7590,7 +7593,6 @@ const WEEKDAY_CYCLE = [
     zh: "星期六",
     ruGenitive: "субботы",
     ruInstrumental: "субботой",
-    aliases: ["saturday", "sat", "субботой", "субботе", "субботу", "субботы", "суббота"],
   },
   {
     slug: "sunday",
@@ -7600,79 +7602,7 @@ const WEEKDAY_CYCLE = [
     zh: "星期日",
     ruGenitive: "воскресенья",
     ruInstrumental: "воскресеньем",
-    aliases: ["sunday", "sun", "воскресеньем", "воскресенью", "воскресенья", "воскресенье"],
   },
-];
-
-const CALENDAR_NEXT_MARKERS = [
-  "after",
-  "comes after",
-  "day after",
-  "next day",
-  "following day",
-  "following weekday",
-  "follows",
-  "после",
-  "наступает после",
-  "следующий день",
-  "следующая",
-  "следом за",
-];
-
-const CALENDAR_PREVIOUS_MARKERS = [
-  "before",
-  "comes before",
-  "day before",
-  "previous day",
-  "previous weekday",
-  "precedes",
-  "перед",
-  "предыдущий день",
-  "предыдущая",
-  "предшествует",
-];
-
-const CALENDAR_TODAY_MARKERS = ["today", "сегодня", "आज", "今天"];
-
-const CALENDAR_CURRENT_DAY_MARKERS = [
-  "day",
-  "weekday",
-  "week day",
-  "date",
-  "день",
-  "дня",
-  "дату",
-  "дата",
-  "число",
-  "दिन",
-  "तारीख",
-  "दिनांक",
-  "星期",
-  "星期几",
-  "日期",
-  "几号",
-  "日子",
-];
-
-const CALENDAR_CURRENT_DAY_QUESTION_MARKERS = [
-  "?",
-  "what",
-  "which",
-  "tell me",
-  "show",
-  "какой",
-  "какая",
-  "какое",
-  "скажи",
-  "покажи",
-  "कौन",
-  "क्या",
-  "बताओ",
-  "दिखाओ",
-  "什么",
-  "几",
-  "告诉",
-  "显示",
 ];
 
 function hasCalendarCjkCharacter(term) {
@@ -7702,41 +7632,49 @@ function containsCalendarTerm(text, term) {
   return false;
 }
 
+// Issue #386: calendar recognition is driven entirely by the self-describing
+// `calendar_*` meanings (see data/seed/meanings-calendar.lino, embedded in
+// MEANINGS_LINO). day-reference / today / weekday words match with the
+// boundary-aware containsCalendarTerm; direction and question words match as
+// loose substrings (parity with raw `str::contains` in calendar.rs). The
+// boundary vs. substring split per role mirrors the Rust handler exactly.
 function mentionsWeekdayContext(normalized) {
-  return (
-    ["day", "weekday", "week day", "день", "дня", "дни", "дней"].some((marker) =>
-      containsCalendarTerm(normalized, marker),
-    ) || normalized.includes("недел")
+  return calendarWordsForRole(ROLE_CALENDAR_DAY_REFERENCE).some((word) =>
+    containsCalendarTerm(normalized, word),
   );
 }
 
 function mentionsCurrentDayQuestion(normalized) {
-  const mentionsToday = CALENDAR_TODAY_MARKERS.some((marker) =>
-    containsCalendarTerm(normalized, marker),
+  const mentionsToday = calendarWordsForRole(ROLE_CALENDAR_TODAY).some((word) =>
+    containsCalendarTerm(normalized, word),
   );
   if (!mentionsToday) return false;
-  const asksForDay =
-    CALENDAR_CURRENT_DAY_MARKERS.some((marker) =>
-      containsCalendarTerm(normalized, marker),
-    ) || normalized.includes("недел");
-  const questionLike = CALENDAR_CURRENT_DAY_QUESTION_MARKERS.some((marker) =>
-    normalized.includes(marker),
+  const asksForDay = calendarWordsForRole(ROLE_CALENDAR_DAY_REFERENCE).some((word) =>
+    containsCalendarTerm(normalized, word),
+  );
+  const questionLike = calendarWordsForRole(ROLE_CALENDAR_QUESTION).some((word) =>
+    normalized.includes(word),
   );
   return asksForDay && questionLike;
 }
 
 function detectWeekdayOperation(normalized) {
-  const hasNext = CALENDAR_NEXT_MARKERS.some((marker) => normalized.includes(marker));
-  const hasPrevious = CALENDAR_PREVIOUS_MARKERS.some((marker) => normalized.includes(marker));
+  const hasNext = calendarWordsForRole(ROLE_CALENDAR_DIRECTION_NEXT).some((marker) =>
+    normalized.includes(marker),
+  );
+  const hasPrevious = calendarWordsForRole(ROLE_CALENDAR_DIRECTION_PREVIOUS).some(
+    (marker) => normalized.includes(marker),
+  );
   if (hasNext && !hasPrevious) return "next";
   if (hasPrevious && !hasNext) return "previous";
   return null;
 }
 
 function detectWeekday(normalized) {
-  for (const weekday of WEEKDAY_CYCLE) {
-    if (weekday.aliases.some((alias) => containsCalendarTerm(normalized, alias))) {
-      return weekday;
+  for (const meaning of calendarMeaningsWithRole(ROLE_CALENDAR_WEEKDAY)) {
+    if (meaning.words.some((word) => containsCalendarTerm(normalized, word))) {
+      const entry = WEEKDAY_CYCLE.find((weekday) => weekday.slug === meaning.slug);
+      if (entry) return entry;
     }
   }
   return null;
@@ -7819,6 +7757,18 @@ function renderWeekdayRelation(language, operation, source, result) {
       return `После ${source.ruGenitive} наступает ${result.ru}. Я сдвинул ${source.ru} на ${delta} в семидневном календарном цикле.`;
     }
     return `Перед ${source.ruInstrumental} идёт ${result.ru}. Я сдвинул ${source.ru} на ${delta} в семидневном календарном цикле.`;
+  }
+  if (language === "hi") {
+    if (operation === "next") {
+      return `${source.hi} के बाद ${result.hi} आता है। मैं सात दिनों के कैलेंडर चक्र में ${source.hi} को ${delta} दिन सरकाता हूँ।`;
+    }
+    return `${source.hi} से पहले ${result.hi} आता है। मैं सात दिनों के कैलेंडर चक्र में ${source.hi} को ${delta} दिन सरकाता हूँ।`;
+  }
+  if (language === "zh") {
+    if (operation === "next") {
+      return `${source.zh}之后是${result.zh}。我在七天的日历循环中将${source.zh}移动${delta}天。`;
+    }
+    return `${source.zh}之前是${result.zh}。我在七天的日历循环中将${source.zh}移动${delta}天。`;
   }
   if (operation === "next") {
     return `The day after ${source.en} is ${result.en}. I move ${source.en} by ${delta} in the seven-day calendar cycle.`;
@@ -12868,6 +12818,295 @@ const MEANINGS_LINO = [
   '      word "केल्विन"',
   '    lexeme "zh"',
   '      word "开尔文"',
+  "meanings",
+  '  meaning "monday"',
+  '    gloss "the first day of the working week in the ISO weekday cycle"',
+  '    wiktionary "Monday"',
+  '    defined_by "calendar_day"',
+  '    role "calendar_weekday"',
+  '    lexeme "en"',
+  '      word "monday"',
+  '      word "mon"',
+  '    lexeme "ru"',
+  '      word "понедельник"',
+  '      word "понедельника"',
+  '      word "понедельником"',
+  '      word "понедельнику"',
+  '      word "понедельнике"',
+  '    lexeme "hi"',
+  '      word "सोमवार"',
+  '    lexeme "zh"',
+  '      word "星期一"',
+  '      word "周一"',
+  '  meaning "tuesday"',
+  '    gloss "the second day of the ISO weekday cycle, after Monday"',
+  '    wiktionary "Tuesday"',
+  '    defined_by "calendar_day"',
+  '    role "calendar_weekday"',
+  '    lexeme "en"',
+  '      word "tuesday"',
+  '      word "tue"',
+  '      word "tues"',
+  '    lexeme "ru"',
+  '      word "вторник"',
+  '      word "вторника"',
+  '      word "вторником"',
+  '      word "вторнику"',
+  '      word "вторнике"',
+  '    lexeme "hi"',
+  '      word "मंगलवार"',
+  '    lexeme "zh"',
+  '      word "星期二"',
+  '      word "周二"',
+  '  meaning "wednesday"',
+  '    gloss "the third day of the ISO weekday cycle, after Tuesday"',
+  '    wiktionary "Wednesday"',
+  '    defined_by "calendar_day"',
+  '    role "calendar_weekday"',
+  '    lexeme "en"',
+  '      word "wednesday"',
+  '      word "wed"',
+  '    lexeme "ru"',
+  '      word "среда"',
+  '      word "среды"',
+  '      word "среде"',
+  '      word "среду"',
+  '      word "средой"',
+  '    lexeme "hi"',
+  '      word "बुधवार"',
+  '    lexeme "zh"',
+  '      word "星期三"',
+  '      word "周三"',
+  '  meaning "thursday"',
+  '    gloss "the fourth day of the ISO weekday cycle, after Wednesday"',
+  '    wiktionary "Thursday"',
+  '    defined_by "calendar_day"',
+  '    role "calendar_weekday"',
+  '    lexeme "en"',
+  '      word "thursday"',
+  '      word "thu"',
+  '      word "thur"',
+  '      word "thurs"',
+  '    lexeme "ru"',
+  '      word "четверг"',
+  '      word "четверга"',
+  '      word "четвергом"',
+  '      word "четвергу"',
+  '      word "четверге"',
+  '    lexeme "hi"',
+  '      word "गुरुवार"',
+  '    lexeme "zh"',
+  '      word "星期四"',
+  '      word "周四"',
+  '  meaning "friday"',
+  '    gloss "the fifth day of the ISO weekday cycle, after Thursday"',
+  '    wiktionary "Friday"',
+  '    defined_by "calendar_day"',
+  '    role "calendar_weekday"',
+  '    lexeme "en"',
+  '      word "friday"',
+  '      word "fri"',
+  '    lexeme "ru"',
+  '      word "пятница"',
+  '      word "пятницы"',
+  '      word "пятнице"',
+  '      word "пятницу"',
+  '      word "пятницей"',
+  '    lexeme "hi"',
+  '      word "शुक्रवार"',
+  '    lexeme "zh"',
+  '      word "星期五"',
+  '      word "周五"',
+  '  meaning "saturday"',
+  '    gloss "the sixth day of the ISO weekday cycle, after Friday"',
+  '    wiktionary "Saturday"',
+  '    defined_by "calendar_day"',
+  '    role "calendar_weekday"',
+  '    lexeme "en"',
+  '      word "saturday"',
+  '      word "sat"',
+  '    lexeme "ru"',
+  '      word "суббота"',
+  '      word "субботы"',
+  '      word "субботе"',
+  '      word "субботу"',
+  '      word "субботой"',
+  '    lexeme "hi"',
+  '      word "शनिवार"',
+  '    lexeme "zh"',
+  '      word "星期六"',
+  '      word "周六"',
+  '  meaning "sunday"',
+  '    gloss "the seventh day of the ISO weekday cycle, after Saturday"',
+  '    wiktionary "Sunday"',
+  '    defined_by "calendar_day"',
+  '    role "calendar_weekday"',
+  '    lexeme "en"',
+  '      word "sunday"',
+  '      word "sun"',
+  '    lexeme "ru"',
+  '      word "воскресенье"',
+  '      word "воскресенья"',
+  '      word "воскресенью"',
+  '      word "воскресеньем"',
+  '    lexeme "hi"',
+  '      word "रविवार"',
+  '    lexeme "zh"',
+  '      word "星期日"',
+  '      word "星期天"',
+  '      word "周日"',
+  '  meaning "calendar_day"',
+  '    gloss "a single named day; the unit a weekday-relation question asks about"',
+  '    wiktionary "day"',
+  '    defined_by "calendar_week"',
+  '    defined_by "calendar_date"',
+  '    role "calendar_day_reference"',
+  '    lexeme "en"',
+  '      word "day"',
+  '      word "weekday"',
+  '      word "week day"',
+  '    lexeme "ru"',
+  '      word "день"',
+  '      word "дня"',
+  '      word "дни"',
+  '      word "дней"',
+  '    lexeme "hi"',
+  '      word "दिन"',
+  '    lexeme "zh"',
+  '      word "星期几"',
+  '      word "日子"',
+  '  meaning "calendar_date"',
+  '    gloss "a calendar date — the year-month-day coordinate of a day"',
+  '    wiktionary "date"',
+  '    defined_by "calendar_day"',
+  '    role "calendar_day_reference"',
+  '    lexeme "en"',
+  '      word "date"',
+  '    lexeme "ru"',
+  '      word "дата"',
+  '      word "дату"',
+  '      word "число"',
+  '    lexeme "hi"',
+  '      word "तारीख"',
+  '      word "दिनांक"',
+  '    lexeme "zh"',
+  '      word "日期"',
+  '      word "几号"',
+  '  meaning "calendar_week"',
+  '    gloss "the seven-day cycle the weekdays belong to"',
+  '    wiktionary "week"',
+  '    defined_by "calendar_day"',
+  '    role "calendar_day_reference"',
+  '    lexeme "en"',
+  '      word "week"',
+  '    lexeme "ru"',
+  '      word "неделя"',
+  '      word "недели"',
+  '      word "неделе"',
+  '      word "неделю"',
+  '      word "неделей"',
+  '      word "недель"',
+  '    lexeme "hi"',
+  '      word "सप्ताह"',
+  '    lexeme "zh"',
+  '      word "星期"',
+  '      word "周"',
+  '  meaning "calendar_following"',
+  "    gloss \"the relation 'the day that comes after' — a +1 step in the weekday cycle\"",
+  '    wiktionary "after"',
+  '    defined_by "calendar_day"',
+  '    role "calendar_direction_next"',
+  '    lexeme "en"',
+  '      word "after"',
+  '      word "comes after"',
+  '      word "day after"',
+  '      word "next day"',
+  '      word "following day"',
+  '      word "following weekday"',
+  '      word "follows"',
+  '    lexeme "ru"',
+  '      word "после"',
+  '      word "наступает после"',
+  '      word "следующий день"',
+  '      word "следующая"',
+  '      word "следом за"',
+  '    lexeme "hi"',
+  '      word "के बाद"',
+  '      word "बाद"',
+  '      word "अगला"',
+  '      word "अगले"',
+  '    lexeme "zh"',
+  '      word "之后"',
+  '      word "后"',
+  '      word "下一个"',
+  '      word "下一天"',
+  '  meaning "calendar_preceding"',
+  "    gloss \"the relation 'the day that comes before' — a -1 step in the weekday cycle\"",
+  '    wiktionary "before"',
+  '    defined_by "calendar_day"',
+  '    role "calendar_direction_previous"',
+  '    lexeme "en"',
+  '      word "before"',
+  '      word "comes before"',
+  '      word "day before"',
+  '      word "previous day"',
+  '      word "previous weekday"',
+  '      word "precedes"',
+  '    lexeme "ru"',
+  '      word "перед"',
+  '      word "предыдущий день"',
+  '      word "предыдущая"',
+  '      word "предшествует"',
+  '    lexeme "hi"',
+  '      word "से पहले"',
+  '      word "के पहले"',
+  '      word "पहले"',
+  '      word "पिछला"',
+  '    lexeme "zh"',
+  '      word "之前"',
+  '      word "前"',
+  '      word "上一个"',
+  '      word "上一天"',
+  '  meaning "calendar_today"',
+  '    gloss "the present day relative to the system clock"',
+  '    wiktionary "today"',
+  '    defined_by "calendar_day"',
+  '    role "calendar_today"',
+  '    lexeme "en"',
+  '      word "today"',
+  '    lexeme "ru"',
+  '      word "сегодня"',
+  '    lexeme "hi"',
+  '      word "आज"',
+  '    lexeme "zh"',
+  '      word "今天"',
+  '  meaning "calendar_interrogative"',
+  '    gloss "an interrogative or imperative asking which day — the question side of a calendar query"',
+  '    wiktionary "what"',
+  '    defined_by "calendar_day"',
+  '    role "calendar_question"',
+  '    lexeme "en"',
+  '      word "what"',
+  '      word "which"',
+  '      word "tell me"',
+  '      word "show"',
+  '      word "?"',
+  '    lexeme "ru"',
+  '      word "какой"',
+  '      word "какая"',
+  '      word "какое"',
+  '      word "скажи"',
+  '      word "покажи"',
+  '    lexeme "hi"',
+  '      word "कौन"',
+  '      word "क्या"',
+  '      word "बताओ"',
+  '      word "दिखाओ"',
+  '    lexeme "zh"',
+  '      word "什么"',
+  '      word "几"',
+  '      word "告诉"',
+  '      word "显示"',
 ].join("\n");
 
 // Semantic role: a thing a program produces that a later turn can refer back to
@@ -12925,6 +13164,40 @@ function lexiconMentionsRole(role, normalized) {
       meaning.roles.includes(role) &&
       meaning.words.some((word) => containsProgramToken(normalized, word)),
   );
+}
+
+// Issue #386 calendar roles — mirror the ROLE_CALENDAR_* consts in
+// src/seed/meanings.rs. Their surface words live in
+// data/seed/meanings-calendar.lino (embedded in MEANINGS_LINO above). The
+// calendar handler uses its own boundary-aware matcher (containsCalendarTerm)
+// rather than lexiconMentionsRole, so these come with dedicated accessors.
+const ROLE_CALENDAR_WEEKDAY = "calendar_weekday";
+const ROLE_CALENDAR_DIRECTION_NEXT = "calendar_direction_next";
+const ROLE_CALENDAR_DIRECTION_PREVIOUS = "calendar_direction_previous";
+const ROLE_CALENDAR_TODAY = "calendar_today";
+const ROLE_CALENDAR_DAY_REFERENCE = "calendar_day_reference";
+const ROLE_CALENDAR_QUESTION = "calendar_question";
+
+// Every meaning carrying `role`, in lexicon (declaration) order. Mirrors
+// Lexicon::meanings_with_role in src/seed/meanings.rs.
+function calendarMeaningsWithRole(role) {
+  return meaningLexicon().filter((meaning) => meaning.roles.includes(role));
+}
+
+// Distinct surface words (across all languages) for `role`, declaration order.
+// Mirrors Lexicon::words_for_role in src/seed/meanings.rs.
+function calendarWordsForRole(role) {
+  const seen = new Set();
+  const words = [];
+  for (const meaning of calendarMeaningsWithRole(role)) {
+    for (const word of meaning.words) {
+      if (!seen.has(word)) {
+        seen.add(word);
+        words.push(word);
+      }
+    }
+  }
+  return words;
 }
 
 function detectedProgramModifiers(normalized) {

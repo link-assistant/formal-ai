@@ -201,6 +201,34 @@ fn calendar_reasoning_answers_weekday_predecessor_and_successor_variations() {
     }
 }
 
+#[test]
+fn calendar_reasoning_answers_weekday_relations_in_hindi_and_chinese() {
+    // Issue #386: the weekday names, directions, and day references now live as
+    // self-describing meanings in every supported language, so calendar
+    // reasoning works in Hindi and Chinese too — not just English and Russian.
+    // Each answer must also be localized in the asking language.
+    let cases = [
+        ("सोमवार के बाद कौन सा दिन आता है", "मंगलवार"), // after Monday → Tuesday
+        ("सोमवार से पहले कौन सा दिन आता है", "रविवार"), // before Monday → Sunday
+        ("星期一之后是星期几", "星期二"),            // after Monday → Tuesday
+        ("星期三之前是星期几", "星期二"),            // before Wednesday → Tuesday
+    ];
+
+    for (prompt, expected) in cases {
+        let response = answer(prompt);
+        assert_eq!(
+            response.intent, "calendar_weekday_relation",
+            "prompt {prompt:?} should route to calendar reasoning, got {}",
+            response.intent,
+        );
+        assert!(
+            response.answer.contains(expected),
+            "prompt {prompt:?} should mention {expected:?} (localized), got: {}",
+            response.answer,
+        );
+    }
+}
+
 // ---------------------------------------------------------------------------
 // R86: concept lookup against the offline seed.
 // ---------------------------------------------------------------------------
