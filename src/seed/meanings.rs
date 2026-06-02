@@ -604,10 +604,10 @@ mod tests {
 
     #[test]
     fn descriptions_are_parsed_from_the_seed() {
-        // Proves the optional `description` child is actually read off the wire:
+        // Proves the `description` child is actually read off the wire:
         // at least one surface form must carry a non-empty self-describing note.
         // (The whole-lexicon enforcement invariant lives in
-        // `every_word_form_is_described` once the backfill is complete.)
+        // `every_word_form_is_described`.)
         let lex = lexicon();
         let described = lex
             .meanings
@@ -618,6 +618,41 @@ mod tests {
         assert!(
             described > 0,
             "the parser must read `description` children off the seed"
+        );
+    }
+
+    #[test]
+    fn every_word_form_is_described() {
+        // The self-describing-data contract (issue #386): a meaning may not just
+        // *list* a surface form, it must *describe* it. Every `word` in every
+        // lexeme of every meaning carries a non-empty `description`, so the seed
+        // can be consumed for any purpose — not just the parsing order the code
+        // happens to use today. This is the permanent ratchet behind the
+        // per-language backfill; a new word with no description fails the build.
+        let lex = lexicon();
+        let mut missing: Vec<String> = Vec::new();
+        for meaning in &lex.meanings {
+            for lexeme in &meaning.lexemes {
+                for form in &lexeme.words {
+                    if form.description.trim().is_empty() {
+                        missing.push(format!(
+                            "{} / {} / {}",
+                            meaning.slug, lexeme.language, form.text
+                        ));
+                    }
+                }
+            }
+        }
+        assert!(
+            missing.is_empty(),
+            "{} word form(s) lack a description, e.g. {}",
+            missing.len(),
+            missing
+                .iter()
+                .take(5)
+                .cloned()
+                .collect::<Vec<_>>()
+                .join(" | ")
         );
     }
 

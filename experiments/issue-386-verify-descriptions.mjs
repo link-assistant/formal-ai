@@ -54,10 +54,13 @@ function parseRecords(text) {
       const ck = `${slug}\t${lang}\t${word}`;
       const ord = counts.get(ck) || 0;
       counts.set(ck, ord + 1);
-      pending = { key: `${ck}\t${ord}`, described: false };
+      pending = { key: `${ck}\t${ord}`, described: false, desc: "" };
       records.push(pending);
     } else if ((m = line.match(/^        description "(.*)"$/))) {
-      if (pending) pending.described = m[1].trim().length > 0;
+      if (pending) {
+        pending.described = m[1].trim().length > 0;
+        pending.desc = m[1];
+      }
     }
   }
   return records;
@@ -78,6 +81,18 @@ function verify(rel, baselineRef) {
   if (undescribed.length) {
     problems.push(
       `${undescribed.length} word(s) lack a non-empty description, e.g. ${undescribed
+        .slice(0, 5)
+        .join(" | ")}`,
+    );
+  }
+
+  // 1b) no forbidden characters inside a description value: a raw double-quote
+  // would truncate the Rust parser's value, and a backslash would corrupt the
+  // worker's single-quote-wrapped serialization. Both are banned.
+  const badChars = cur.filter((r) => /["\\]/.test(r.desc)).map((r) => r.key);
+  if (badChars.length) {
+    problems.push(
+      `${badChars.length} description(s) contain a raw '"' or '\\', e.g. ${badChars
         .slice(0, 5)
         .join(" | ")}`,
     );
