@@ -9,6 +9,16 @@ bump: minor
   mode on, reasoning steps are folded in after each AI message (issue #386).
 
 ### Changed
+- Prompt recognition references *meanings*, not hardcoded word lists. A new
+  canonical lexicon (`data/seed/meanings.lino`) defines language-independent,
+  self-describing meanings — each `defined_by` other meanings (a closed graph in
+  the spirit of relative-meta-logic), grounded in real lexical data
+  (`wiktionary`), tagged with the semantic `role`s it plays, and lexicalised in
+  every supported language. The program-artifact follow-up gate
+  (`src/program_coreference.rs` and its `formal_ai_worker.js` mirror) no longer
+  enumerates ~100 per-language words; it asks the lexicon which surface words
+  evidence a `program_artifact` and a `program_modification`, so the words live
+  once in data while the code understands the concepts (issue #386).
 - The prefilled "Report issue" body omits settings already at their shipped
   default (Mode, Status, Diagnostics, Theme, Guess/Follow-up probability,
   Temperature, inference-only Location), folds the worker into the version line

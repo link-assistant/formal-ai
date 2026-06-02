@@ -1,122 +1,24 @@
 //! Program-artifact coreference markers shared by write-program recovery.
+//!
+//! Issue #386: this gate used to enumerate ~100 per-language words in two
+//! hardcoded Rust arrays. It now references **meanings** instead. A bare
+//! follow-up looks like a program-artifact reference when the prompt mentions
+//! some meaning that plays the [`ROLE_PROGRAM_ARTIFACT`] role (a result, an
+//! output, the program/script/code itself, an ordering) *and* some meaning
+//! that plays the [`ROLE_PROGRAM_MODIFICATION`] role (sort/reverse/cancel/…).
+//! The surface words for every language live once, in `data/seed/meanings.lino`;
+//! this code understands the *concepts*, not the words.
 
-const PROGRAM_FOLLOW_UP_REFERENTS: &[&str] = &[
-    "result",
-    "results",
-    "output",
-    "program",
-    "programme",
-    "script",
-    "code",
-    // Issue #386: a sort/ordering is itself a program aspect a follow-up can
-    // refer to ("undo the sort", "cancel the sorting").
-    "sort",
-    "sorting",
-    "результат",
-    "результата",
-    "результаты",
-    "результатов",
-    "вывод",
-    "программа",
-    "программу",
-    "программы",
-    "скрипт",
-    "код",
-    "сортировка",
-    "сортировку",
-    "сортировки",
-    "сортировке",
-    "сортировкой",
-    "परिणाम",
-    "परिणामों",
-    "नतीजा",
-    "नतीजे",
-    "आउटपुट",
-    "प्रोग्राम",
-    "कोड",
-    "सॉर्ट",
-    "क्रम",
-    "结果",
-    "输出",
-    "程序",
-    "代码",
-    "排序",
-    "顺序",
-];
+use crate::seed::{lexicon, ROLE_PROGRAM_ARTIFACT, ROLE_PROGRAM_MODIFICATION};
 
-const PROGRAM_FOLLOW_UP_ACTIONS: &[&str] = &[
-    "sort",
-    "sorted",
-    "reverse",
-    "reorder",
-    "order",
-    "change",
-    "modify",
-    "update",
-    "make",
-    // Issue #386: subtractive ("cancel/undo") verbs are first-class program
-    // follow-up actions, mirroring the additive verbs above.
-    "cancel",
-    "undo",
-    "remove",
-    "revert",
-    "сделай",
-    "сделайте",
-    "сортировка",
-    "сортировку",
-    "сортировать",
-    "отсортируй",
-    "отсортируйте",
-    "обратном",
-    "обратный",
-    "измени",
-    "изменить",
-    "обнови",
-    "отмени",
-    "отмените",
-    "отменить",
-    "убери",
-    "уберите",
-    "убрать",
-    "क्रमबद्ध",
-    "उल्टे",
-    "उल्टा",
-    "बनाओ",
-    "बदलें",
-    "बदलो",
-    "अपडेट",
-    "रद्द",
-    "हटाओ",
-    "हटाएं",
-    "हटा",
-    "排序",
-    "反向",
-    "相反",
-    "倒序",
-    "修改",
-    "改",
-    "更新",
-    "取消",
-    "撤销",
-    "去掉",
-    "去除",
-];
-
+/// True when `normalized` reads like a bare follow-up that modifies an existing
+/// program artifact — e.g. "cancel the sorting", "Отмени сортировку",
+/// "对结果倒序排序" — in any supported language.
 #[must_use]
 pub fn looks_like_bare_program_artifact_follow_up(normalized: &str) -> bool {
-    has_any_token(normalized, PROGRAM_FOLLOW_UP_REFERENTS)
-        && has_any_token(normalized, PROGRAM_FOLLOW_UP_ACTIONS)
-}
-
-fn has_any_token(normalized: &str, tokens: &[&str]) -> bool {
-    tokens.iter().any(|token| contains_token(normalized, token))
-}
-
-fn contains_token(normalized: &str, expected: &str) -> bool {
-    if crate::coding::contains_cjk(expected) {
-        return normalized.contains(expected);
-    }
-    normalized.split_whitespace().any(|token| token == expected)
+    let lexicon = lexicon();
+    lexicon.mentions_role(ROLE_PROGRAM_ARTIFACT, normalized)
+        && lexicon.mentions_role(ROLE_PROGRAM_MODIFICATION, normalized)
 }
 
 #[cfg(test)]

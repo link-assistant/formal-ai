@@ -24,6 +24,7 @@
 mod brainstorm;
 mod coreference;
 mod facts;
+mod meanings;
 mod operation_vocabulary;
 pub(crate) mod parser;
 mod personas;
@@ -40,6 +41,9 @@ use parser::{
 pub use brainstorm::{brainstorm_seeds, BrainstormCategory, BrainstormSeeds};
 pub use coreference::{coreference_seeds, Antecedent, CoreferenceSeeds, Pronoun};
 pub use facts::{facts, FactRecord, LocalizedFact};
+pub use meanings::{
+    lexicon, Lexeme, Lexicon, Meaning, ROLE_PROGRAM_ARTIFACT, ROLE_PROGRAM_MODIFICATION,
+};
 pub use operation_vocabulary::{
     operation_vocabulary, OperationLanguageForms, OperationTrigger, OperationVocabulary,
 };
@@ -74,6 +78,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
             "data/seed/operation-vocabulary.lino",
             OPERATION_VOCABULARY_LINO,
         ),
+        ("data/seed/meanings.lino", MEANINGS_LINO),
         ("data/seed/greetings.lino", GREETINGS_LINO),
         ("data/seed/identity.lino", IDENTITY_LINO),
         (
@@ -741,6 +746,7 @@ pub const LANGUAGE_DETECTION_LINO: &str = include_str!("../data/seed/language-de
 pub const PROMPT_PATTERNS_LINO: &str = include_str!("../data/seed/prompt-patterns.lino");
 pub const INTENT_ROUTING_LINO: &str = include_str!("../data/seed/intent-routing.lino");
 pub const OPERATION_VOCABULARY_LINO: &str = include_str!("../data/seed/operation-vocabulary.lino");
+pub const MEANINGS_LINO: &str = include_str!("../data/seed/meanings.lino");
 pub const GREETINGS_LINO: &str = include_str!("../data/seed/greetings.lino");
 pub const IDENTITY_LINO: &str = include_str!("../data/seed/identity.lino");
 pub const HELLO_WORLD_PROGRAMS_LINO: &str = include_str!("../data/seed/hello-world-programs.lino");
