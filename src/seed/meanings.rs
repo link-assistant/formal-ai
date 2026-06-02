@@ -57,6 +57,13 @@ pub const ROLE_CALENDAR_DAY_REFERENCE: &str = "calendar_day_reference";
 /// Semantic role: an interrogative or imperative asking which day (what,
 /// which, какой, कौन, 什么, …). The question side of a calendar query.
 pub const ROLE_CALENDAR_QUESTION: &str = "calendar_question";
+/// Semantic role: a relation in the knowledge base that maps a subject to a
+/// value (capital, population, author, …).
+///
+/// A fact query detects which relation a prompt asks about by walking every
+/// meaning carrying this role, in declaration order; each is `defined_by` the
+/// `knowledge_relation` concept.
+pub const ROLE_FACT_RELATION: &str = "fact_relation";
 
 /// Surface words that evidence a meaning in one language.
 #[derive(Debug, Clone)]

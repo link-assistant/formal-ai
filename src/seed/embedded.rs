@@ -28,6 +28,7 @@ pub const OPERATION_VOCABULARY_LINO: &str =
 pub const MEANINGS_LINO: &str = include_str!("../../data/seed/meanings.lino");
 pub const MEANINGS_UNITS_LINO: &str = include_str!("../../data/seed/meanings-units.lino");
 pub const MEANINGS_CALENDAR_LINO: &str = include_str!("../../data/seed/meanings-calendar.lino");
+pub const MEANINGS_FACTS_LINO: &str = include_str!("../../data/seed/meanings-facts.lino");
 pub const GREETINGS_LINO: &str = include_str!("../../data/seed/greetings.lino");
 pub const IDENTITY_LINO: &str = include_str!("../../data/seed/identity.lino");
 pub const HELLO_WORLD_PROGRAMS_LINO: &str =
@@ -67,6 +68,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/meanings.lino", MEANINGS_LINO),
         ("data/seed/meanings-units.lino", MEANINGS_UNITS_LINO),
         ("data/seed/meanings-calendar.lino", MEANINGS_CALENDAR_LINO),
+        ("data/seed/meanings-facts.lino", MEANINGS_FACTS_LINO),
         ("data/seed/greetings.lino", GREETINGS_LINO),
         ("data/seed/identity.lino", IDENTITY_LINO),
         (
@@ -88,4 +90,9 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
 ///
 /// Split across several `.lino` files so none breaches the seed file-size guard;
 /// each wraps its records under a top-level `meanings` node (the loader walks all).
-pub const MEANING_FILES: &[&str] = &[MEANINGS_LINO, MEANINGS_UNITS_LINO, MEANINGS_CALENDAR_LINO];
+pub const MEANING_FILES: &[&str] = &[
+    MEANINGS_LINO,
+    MEANINGS_UNITS_LINO,
+    MEANINGS_CALENDAR_LINO,
+    MEANINGS_FACTS_LINO,
+];

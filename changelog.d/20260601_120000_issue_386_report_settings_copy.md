@@ -42,6 +42,22 @@ bump: minor
   now exist in every language, weekday-relation answers work in Hindi and
   Chinese as well as English and Russian — not only the originally supported
   cases (issue #386).
+- Knowledge-base fact-relation detection
+  (`src/solver_handlers/benchmark_prompts.rs`) is data-driven too. The nine
+  relations a fact query can ask about (capital, population, currency, official
+  language, continent, book author, painting painter, build year, physical
+  constant) and the surface words that evidence each one in every supported
+  language now live as self-describing meanings in
+  `data/seed/meanings-facts.lino` — each `defined_by` a `knowledge_relation`
+  concept that is in turn `defined_by` `knowledge_subject` and `knowledge_value`
+  (a closed cycle in the spirit of relative-meta-logic). `detect_relation` walks
+  every meaning carrying the `fact_relation` role in declaration order instead
+  of the former hardcoded per-language keyword table, so the code knows only the
+  concept "a relation maps a subject to a value" while the words live once in
+  data. Declaration order is preserved so the shared "написал" verb still
+  resolves to the book author before the painting painter, and the relation
+  slugs (hence the `fact_query:relation:*` reasoning trace) stay identical to the
+  browser worker (issue #386).
 - The prefilled "Report issue" body omits settings already at their shipped
   default (Mode, Status, Diagnostics, Theme, Guess/Follow-up probability,
   Temperature, inference-only Location), folds the worker into the version line
