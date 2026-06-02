@@ -17,8 +17,8 @@
 use std::collections::BTreeSet;
 use std::sync::OnceLock;
 
-use super::parser::parse_lino;
-use super::MEANINGS_LINO;
+use super::parser::{parse_lino, LinoNode};
+use super::MEANING_FILES;
 
 /// Semantic role: a thing a program produces that a later turn can refer back
 /// to (a result, an output, the program/script/code itself, an ordering).
@@ -32,6 +32,12 @@ pub const ROLE_PROGRAM_KIND: &str = "program_kind";
 /// Semantic role: a verb that requests a program artifact be produced (write,
 /// create, show, generate, make, build). The verb side of "write a <kind>".
 pub const ROLE_PROGRAM_REQUEST: &str = "program_request";
+/// Semantic role: a concrete unit of measurement (metre, byte, kilogram, …).
+/// Each such meaning is `defined_by` the [`ROLE_PHYSICAL_DIMENSION`] it measures.
+pub const ROLE_MEASUREMENT_UNIT: &str = "measurement_unit";
+/// Semantic role: a physical dimension (length, mass, time, …). Units that
+/// belong to different dimensions cannot be converted into one another.
+pub const ROLE_PHYSICAL_DIMENSION: &str = "physical_dimension";
 
 /// Surface words that evidence a meaning in one language.
 #[derive(Debug, Clone)]
@@ -64,6 +70,16 @@ impl Meaning {
             .flat_map(|lexeme| lexeme.words.iter().map(String::as_str))
     }
 
+    /// The first surface word this meaning lexicalises in `language`, if any.
+    /// Used to render a concept in a chosen language (e.g. a dimension label).
+    #[must_use]
+    pub fn word_in(&self, language: &str) -> Option<&str> {
+        self.lexemes
+            .iter()
+            .find(|lexeme| lexeme.language == language)
+            .and_then(|lexeme| lexeme.words.first().map(String::as_str))
+    }
+
     /// Languages this meaning is lexicalised in (used by coverage tests).
     #[must_use]
     pub fn languages(&self) -> BTreeSet<String> {
@@ -81,6 +97,13 @@ impl Lexicon {
     #[must_use]
     pub fn meaning(&self, slug: &str) -> Option<&Meaning> {
         self.meanings.iter().find(|m| m.slug == slug)
+    }
+
+    /// Every meaning carrying `role`, in declaration order. Lets recognition
+    /// code walk a semantic category (e.g. every measurement unit) without ever
+    /// naming the surface words — those live in the data.
+    pub fn meanings_with_role<'a>(&'a self, role: &'a str) -> impl Iterator<Item = &'a Meaning> {
+        self.meanings.iter().filter(move |m| m.has_role(role))
     }
 
     /// Distinct surface words contributed by every meaning carrying `role`,
@@ -123,47 +146,61 @@ fn token_present(normalized: &str, expected: &str) -> bool {
 
 fn parse_lexicon(text: &str) -> Lexicon {
     let root = parse_lino(text);
-    // `meanings.lino` wraps its records under a single top-level `meanings`
-    // node, so the records are its children (not the document root's).
-    let container = root
+    // The lexicon is split across several files (program, units, …), each
+    // wrapping its records under a top-level `meanings` node. When the files
+    // are concatenated the document therefore holds one-or-more `meanings`
+    // containers; collect the records from every one. If none is present the
+    // records sit at the document root (kept for robustness).
+    let mut meanings = Vec::new();
+    let containers: Vec<&LinoNode> = root
         .children
         .iter()
-        .find(|c| c.name == "meanings")
-        .unwrap_or(&root);
-    let mut meanings = Vec::new();
-    for node in container.children.iter().filter(|c| c.name == "meaning") {
-        let mut defined_by = Vec::new();
-        let mut roles = Vec::new();
-        let mut lexemes = Vec::new();
-        for child in &node.children {
-            match child.name.as_str() {
-                "defined_by" => defined_by.push(child.id.clone()),
-                "role" => roles.push(child.id.clone()),
-                "lexeme" => {
-                    let words = child
-                        .children
-                        .iter()
-                        .filter(|w| w.name == "word")
-                        .map(|w| w.id.clone())
-                        .collect();
-                    lexemes.push(Lexeme {
-                        language: child.id.clone(),
-                        words,
-                    });
-                }
-                _ => {}
-            }
+        .filter(|c| c.name == "meanings")
+        .collect();
+    let sources: Vec<&LinoNode> = if containers.is_empty() {
+        vec![&root]
+    } else {
+        containers
+    };
+    for container in sources {
+        for node in container.children.iter().filter(|c| c.name == "meaning") {
+            meanings.push(parse_meaning(node));
         }
-        meanings.push(Meaning {
-            slug: node.id.clone(),
-            gloss: node.find_child_value("gloss").to_string(),
-            wiktionary: node.find_child_value("wiktionary").to_string(),
-            defined_by,
-            roles,
-            lexemes,
-        });
     }
     Lexicon { meanings }
+}
+
+fn parse_meaning(node: &LinoNode) -> Meaning {
+    let mut defined_by = Vec::new();
+    let mut roles = Vec::new();
+    let mut lexemes = Vec::new();
+    for child in &node.children {
+        match child.name.as_str() {
+            "defined_by" => defined_by.push(child.id.clone()),
+            "role" => roles.push(child.id.clone()),
+            "lexeme" => {
+                let words = child
+                    .children
+                    .iter()
+                    .filter(|w| w.name == "word")
+                    .map(|w| w.id.clone())
+                    .collect();
+                lexemes.push(Lexeme {
+                    language: child.id.clone(),
+                    words,
+                });
+            }
+            _ => {}
+        }
+    }
+    Meaning {
+        slug: node.id.clone(),
+        gloss: node.find_child_value("gloss").to_string(),
+        wiktionary: node.find_child_value("wiktionary").to_string(),
+        defined_by,
+        roles,
+        lexemes,
+    }
 }
 
 /// The parsed meaning lexicon. Cached — the embedded data is immutable at
@@ -171,7 +208,7 @@ fn parse_lexicon(text: &str) -> Lexicon {
 #[must_use]
 pub fn lexicon() -> &'static Lexicon {
     static CACHE: OnceLock<Lexicon> = OnceLock::new();
-    CACHE.get_or_init(|| parse_lexicon(MEANINGS_LINO))
+    CACHE.get_or_init(|| parse_lexicon(&MEANING_FILES.join("\n")))
 }
 
 #[cfg(test)]

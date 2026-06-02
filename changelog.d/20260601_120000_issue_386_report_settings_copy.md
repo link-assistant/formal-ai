@@ -19,6 +19,17 @@ bump: minor
   enumerates ~100 per-language words; it asks the lexicon which surface words
   evidence a `program_artifact` and a `program_modification`, so the words live
   once in data while the code understands the concepts (issue #386).
+- Unit-incompatibility detection (`src/solver_handler_units.rs`) is now
+  data-driven too. The units, the physical dimensions they measure, and their
+  surface words in every supported language live in the lexicon
+  (`data/seed/meanings-units.lino`), where each unit meaning is `defined_by` the
+  dimension it measures. The handler walks every `measurement_unit` meaning and
+  resolves its dimension label through the `defined_by` graph, so the code knows
+  only the concepts "measurement unit" and "physical dimension" — no hardcoded
+  unit arrays remain. The lexicon is split across `meanings*.lino` files (listed
+  by `MEANING_FILES`) so no single seed file breaches the file-size guard; the
+  Rust loader and the `formal_ai_worker.js` mirror both walk every `meanings`
+  container (issue #386).
 - The prefilled "Report issue" body omits settings already at their shipped
   default (Mode, Status, Diagnostics, Theme, Guess/Follow-up probability,
   Temperature, inference-only Location), folds the worker into the version line

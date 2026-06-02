@@ -42,8 +42,8 @@ pub use brainstorm::{brainstorm_seeds, BrainstormCategory, BrainstormSeeds};
 pub use coreference::{coreference_seeds, Antecedent, CoreferenceSeeds, Pronoun};
 pub use facts::{facts, FactRecord, LocalizedFact};
 pub use meanings::{
-    lexicon, Lexeme, Lexicon, Meaning, ROLE_PROGRAM_ARTIFACT, ROLE_PROGRAM_KIND,
-    ROLE_PROGRAM_MODIFICATION, ROLE_PROGRAM_REQUEST,
+    lexicon, Lexeme, Lexicon, Meaning, ROLE_MEASUREMENT_UNIT, ROLE_PHYSICAL_DIMENSION,
+    ROLE_PROGRAM_ARTIFACT, ROLE_PROGRAM_KIND, ROLE_PROGRAM_MODIFICATION, ROLE_PROGRAM_REQUEST,
 };
 pub use operation_vocabulary::{
     operation_vocabulary, OperationLanguageForms, OperationTrigger, OperationVocabulary,
@@ -80,6 +80,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
             OPERATION_VOCABULARY_LINO,
         ),
         ("data/seed/meanings.lino", MEANINGS_LINO),
+        ("data/seed/meanings-units.lino", MEANINGS_UNITS_LINO),
         ("data/seed/greetings.lino", GREETINGS_LINO),
         ("data/seed/identity.lino", IDENTITY_LINO),
         (
@@ -748,6 +749,7 @@ pub const PROMPT_PATTERNS_LINO: &str = include_str!("../data/seed/prompt-pattern
 pub const INTENT_ROUTING_LINO: &str = include_str!("../data/seed/intent-routing.lino");
 pub const OPERATION_VOCABULARY_LINO: &str = include_str!("../data/seed/operation-vocabulary.lino");
 pub const MEANINGS_LINO: &str = include_str!("../data/seed/meanings.lino");
+pub const MEANINGS_UNITS_LINO: &str = include_str!("../data/seed/meanings-units.lino");
 pub const GREETINGS_LINO: &str = include_str!("../data/seed/greetings.lino");
 pub const IDENTITY_LINO: &str = include_str!("../data/seed/identity.lino");
 pub const HELLO_WORLD_PROGRAMS_LINO: &str = include_str!("../data/seed/hello-world-programs.lino");
@@ -757,6 +759,13 @@ pub const SELF_IMPROVEMENT_LOOP_LINO: &str =
 pub const DEMO_DIALOGS_LINO: &str = include_str!("../data/seed/demo-dialogs.lino");
 pub const ENVIRONMENTS_LINO: &str = include_str!("../data/seed/environments.lino");
 pub const PROJECTS_LINO: &str = include_str!("../data/seed/projects.lino");
+
+/// The ordered set of meaning-lexicon files, concatenated by [`lexicon`].
+///
+/// The lexicon is split across several `.lino` files (program clusters, units,
+/// …) so no single file breaches the seed file-size guard. Each file wraps its
+/// records under a top-level `meanings` node; the loader walks every container.
+pub const MEANING_FILES: &[&str] = &[MEANINGS_LINO, MEANINGS_UNITS_LINO];
 
 #[cfg(test)]
 mod tests {

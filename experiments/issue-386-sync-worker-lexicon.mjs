@@ -2,7 +2,8 @@
 // meaning lexicon and route the "write a <program>" gate through semantic roles.
 //
 // This supersedes the one-shot issue-386-apply-meanings-worker.mjs: it is
-// idempotent and re-runnable. Whenever data/seed/meanings.lino changes, run:
+// idempotent and re-runnable. Whenever any data/seed/meanings*.lino file
+// changes, run:
 //   node experiments/issue-386-sync-worker-lexicon.mjs
 // It (1) regenerates the inline MEANINGS_LINO array byte-identically from the
 // canonical seed (the PROGRAM_PLAN_RULES_LINO convention), (2) ensures the
@@ -15,10 +16,17 @@
 import fs from "node:fs";
 
 const root = new URL("..", import.meta.url);
-const linoPath = new URL("data/seed/meanings.lino", root);
+// The canonical lexicon is split across several files so no single .lino file
+// breaches the seed file-size guard. Concatenate them in the SAME order as
+// MEANING_FILES in src/seed.rs so the Rust loader and this JS mirror parse the
+// same input; each file wraps its records under a top-level `meanings` node and
+// meaningLexicon() in the worker walks every container.
+const MEANING_FILES = ["data/seed/meanings.lino", "data/seed/meanings-units.lino"];
 const workerPath = new URL("src/web/formal_ai_worker.js", root);
 
-const lino = fs.readFileSync(linoPath, "utf8");
+const lino = MEANING_FILES.map((rel) =>
+  fs.readFileSync(new URL(rel, root), "utf8").replace(/\n+$/, ""),
+).join("\n");
 let worker = fs.readFileSync(workerPath, "utf8");
 
 // --- 1: regenerate the inline MEANINGS_LINO array (byte-identical to seed) ----
@@ -87,5 +95,5 @@ for (const dead of ["PROGRAM_NOUNS", "PROGRAM_VERBS"]) {
 }
 
 fs.writeFileSync(workerPath, worker);
-console.log("synced formal_ai_worker.js to data/seed/meanings.lino");
+console.log(`synced formal_ai_worker.js to ${MEANING_FILES.join(" + ")}`);
 console.log(`MEANINGS_LINO inline array: ${lines.length} lines`);
