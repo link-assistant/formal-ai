@@ -1188,51 +1188,33 @@ function extractHowItWorksSubject(input, lowerInput) {
   const lower = cleanMechanismFragment(lowerInput || original.toLowerCase())
     .toLowerCase();
 
-  for (const prefix of [
-    "how does ",
-    "how do ",
-    "how did ",
-    "how is ",
-    "как устроен ",
-    "как устроена ",
-    "как устроено ",
-    "как устроены ",
-    "как работает ",
-    "как работают ",
-  ]) {
-    const subject = mechanismSubjectAfterPrefix(original, lower, prefix);
+  // The affixes are the slot-marked surface forms of the mechanism_inquiry
+  // meaning (data/seed/meanings-how.lino, embedded in MEANINGS_LINO): the
+  // position of the … marker classifies each form, so the matching strategy is
+  // derived from the data, not from a hardcoded per-language list. Bucket order
+  // — prefix, then circumfix, then suffix — and within-bucket declaration order
+  // mirror extract_how_it_works_subject in src/solver_handler_how.rs (#386).
+  // Suffix surfaces are end-anchored and script-disjoint across languages, so
+  // the cross-language declaration order does not change which one matches.
+  const forms = roleWordForms(ROLE_MECHANISM_INQUIRY);
+
+  for (const form of forms) {
+    if (form.slot !== "prefix") continue;
+    const subject = mechanismSubjectAfterPrefix(original, lower, form.before);
     if (subject) return stripMechanismTail(subject);
   }
 
-  for (const [prefix, suffixes] of [
-    ["how ", [" works", " work"]],
-    ["как ", [" работает", " работают"]],
-  ]) {
-    const subject = mechanismSubjectBetween(original, lower, prefix, suffixes);
+  for (const form of forms) {
+    if (form.slot !== "circumfix") continue;
+    const subject = mechanismSubjectBetween(original, lower, form.before, [
+      form.after,
+    ]);
     if (subject) return subject;
   }
 
-  for (const suffix of [
-    " कैसे काम करता है",
-    " कैसे काम करती है",
-    " कैसे काम करते हैं",
-    " कैसे काम करता",
-    " कैसे काम करती",
-    " कैसे काम करते",
-    " 是如何工作的",
-    "是如何工作的",
-    " 是怎么工作的",
-    "是怎么工作的",
-    " 如何工作",
-    "如何工作",
-    " 怎么工作",
-    "怎么工作",
-    " 的工作原理是什么",
-    "的工作原理是什么",
-    " как работает",
-    " как работают",
-  ]) {
-    const subject = mechanismSubjectBeforeSuffix(original, lower, suffix);
+  for (const form of forms) {
+    if (form.slot !== "suffix") continue;
+    const subject = mechanismSubjectBeforeSuffix(original, lower, form.after);
     if (subject) return subject;
   }
 
@@ -16890,10 +16872,58 @@ const ROLE_CAPABILITY_QUERY = "capability_query";
 const ROLE_CAPABILITY_QUERY_MORE = "capability_query_more";
 const ROLE_SELF_FACT_QUERY = "self_fact_query";
 const ROLE_SELF_INTRODUCTION_REQUEST = "self_introduction_request";
+// Issue #386 how-cluster roles — mirror the ROLE_MECHANISM_INQUIRY /
+// ROLE_PROCEDURAL_REQUEST consts in src/seed/meanings.rs. Their slot-marked
+// surface words live in data/seed/meanings-how.lino (embedded in MEANINGS_LINO
+// above); extractHowItWorksSubject / extractProceduralHowToTask ask the lexicon
+// for these forms by meaning instead of hardcoding per-language phrase arrays.
+const ROLE_MECHANISM_INQUIRY = "mechanism_inquiry";
+const ROLE_PROCEDURAL_REQUEST = "procedural_request";
+
+// Slot marker (U+2026 …) carried inside a surface word's text to mark the open
+// subject/task position. Mirrors the `split_once('…')` slot derivation on
+// WordForm in src/seed/meanings.rs (issue #386).
+const SLOT_MARKER = "…";
+
+// Build a surface form { text, action, description, slot, before, after } from a
+// raw surface word, its optional canonical action, and its self-describing note.
+// The slot classification and the literal text on either side are derived from
+// the position of the … marker, exactly as WordForm::slot/before_slot/after_slot
+// do in src/seed/meanings.rs: no marker = "bare"; trailing marker = "prefix";
+// leading marker = "suffix"; a marker with text on both sides = "circumfix".
+function makeWordForm(text, action, description) {
+  const idx = text.indexOf(SLOT_MARKER);
+  if (idx === -1) {
+    return {
+      text,
+      action: action || "",
+      description: description || "",
+      slot: "bare",
+      before: text,
+      after: "",
+    };
+  }
+  const before = text.slice(0, idx);
+  const after = text.slice(idx + SLOT_MARKER.length);
+  let slot = "bare";
+  if (before && after) slot = "circumfix";
+  else if (before) slot = "prefix";
+  else if (after) slot = "suffix";
+  return {
+    text,
+    action: action || "",
+    description: description || "",
+    slot,
+    before,
+    after,
+  };
+}
 
 let cachedMeaningLexicon = null;
 // Parse the embedded lexicon once. Each meaning keeps the semantic roles it
-// plays and the surface words (across every language) that evidence it.
+// plays, the surface words (across every language) that evidence it, and the
+// richer per-form data (action + self-describing note + derived slot) in
+// declaration order. Mirrors parse_lexicon in src/seed/meanings.rs.
 function meaningLexicon() {
   if (cachedMeaningLexicon) return cachedMeaningLexicon;
   const root = parseLinoTree(MEANINGS_LINO);
@@ -16911,16 +16941,25 @@ function meaningLexicon() {
       const roles = [];
       const definedBy = [];
       const words = [];
+      const wordForms = [];
       for (const child of node.children) {
         if (child.name === "role") roles.push(child.value);
         else if (child.name === "defined_by") definedBy.push(child.value);
         else if (child.name === "lexeme") {
           for (const lexWord of child.children) {
-            if (lexWord.name === "word") words.push(lexWord.value);
+            if (lexWord.name !== "word") continue;
+            words.push(lexWord.value);
+            let action = "";
+            let description = "";
+            for (const attr of lexWord.children) {
+              if (attr.name === "action") action = attr.value;
+              else if (attr.name === "description") description = attr.value;
+            }
+            wordForms.push(makeWordForm(lexWord.value, action, description));
           }
         }
       }
-      meanings.push({ slug: node.value, roles, definedBy, words });
+      meanings.push({ slug: node.value, roles, definedBy, words, wordForms });
     }
   }
   cachedMeaningLexicon = meanings;
@@ -16981,6 +17020,19 @@ const ROLE_CALENDAR_QUESTION = "calendar_question";
 // Lexicon::meanings_with_role in src/seed/meanings.rs.
 function meaningsWithRole(role) {
   return meaningLexicon().filter((meaning) => meaning.roles.includes(role));
+}
+
+// Every slot-marked surface form carrying `role`, flattened across all meanings
+// and languages in declaration order. Recognition code buckets the result by
+// form.slot ("bare" / "prefix" / "suffix" / "circumfix") to derive its
+// affix-matching strategy from the data. Mirrors Lexicon::role_word_forms in
+// src/seed/meanings.rs (issue #386).
+function roleWordForms(role) {
+  const forms = [];
+  for (const meaning of meaningsWithRole(role)) {
+    for (const form of meaning.wordForms) forms.push(form);
+  }
+  return forms;
 }
 
 // The meaning identified by `slug`, or null. Mirrors Lexicon::meaning in
@@ -20553,55 +20605,24 @@ function correctCommonProceduralTypos(task) {
 }
 
 function extractProceduralHowToTask(normalized) {
-  const prefixes = [
-    ["please tell me how to ", null],
-    ["please show me how to ", null],
-    ["tell me how to ", null],
-    ["show me how to ", null],
-    ["what are the steps to ", null],
-    ["what steps do i need to ", null],
-    ["what steps do we need to ", null],
-    ["how should i ", null],
-    ["how should we ", null],
-    ["how could i ", null],
-    ["how could we ", null],
-    ["how would i ", null],
-    ["how would we ", null],
-    ["how can i ", null],
-    ["how can we ", null],
-    ["how do i ", null],
-    ["how do we ", null],
-    ["how to do ", "do"],
-    ["how to ", null],
-    ["как сделать ", "do"],
-    ["как делать ", "do"],
-    ["как выполнить ", "perform"],
-    ["как реализовать ", "implement"],
-    ["как создать ", "create"],
-    ["как написать ", "write"],
-    ["कैसे करें ", "do"],
-    ["कैसे करे ", "do"],
-    ["कैसे लागू करें ", "implement"],
-    ["कैसे बनाएं ", "create"],
-    ["कैसे बनाएँ ", "create"],
-    ["कैसे लिखें ", "write"],
-    ["如何做 ", "do"],
-    ["怎么做 ", "do"],
-    ["如何实现 ", "implement"],
-    ["怎么实现 ", "implement"],
-    ["如何创建 ", "create"],
-    ["怎么创建 ", "create"],
-    ["如何写 ", "write"],
-    ["怎么写 ", "write"],
-  ];
+  // The prefixes are the slot-marked surface forms of the procedural_request
+  // meaning (data/seed/meanings-how.lino, embedded in MEANINGS_LINO): every
+  // form is a prefix whose literal before the … marker (form.before) is the
+  // matchable prefix, scanned in declaration order so "how to do " still
+  // precedes "how to ". A form may name the canonical operation in its action
+  // field (do / perform / implement / create / write); an empty action means
+  // the operation is taken from the task's first word. No per-language prefix
+  // list lives here — only the concept. Mirrors extract_procedural_how_to_task
+  // in src/solver_handler_how.rs (issue #386).
   const clean = cleanProceduralFragment(normalized);
-  for (const [prefix, actionOverride] of prefixes) {
-    if (!clean.startsWith(prefix)) continue;
+  for (const form of roleWordForms(ROLE_PROCEDURAL_REQUEST)) {
+    if (!clean.startsWith(form.before)) continue;
     const correction = correctCommonProceduralTypos(
-      cleanProceduralFragment(clean.slice(prefix.length)),
+      cleanProceduralFragment(clean.slice(form.before.length)),
     );
     const task = correction.task;
     if (!task) return null;
+    const actionOverride = form.action || null;
     if (actionOverride) {
       return {
         task,

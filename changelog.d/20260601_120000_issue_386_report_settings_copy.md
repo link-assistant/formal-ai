@@ -182,8 +182,15 @@ bump: minor
   preserved so behaviour is identical to the former inline arrays, and the
   existing multilingual reasoning-path tests still pin "how it works", "как
   устроен AUR", "AUR कैसे काम करता है", "AUR 如何工作", and the procedural
-  "how to" cases. The `formal_ai_worker.js` mirror embeds the same meanings
-  (issue #386).
+  "how to" cases. The `formal_ai_worker.js` mirror drives its
+  `extractHowItWorksSubject` / `extractProceduralHowToTask` recognisers from the
+  same embedded meanings — bucketing the slot-marked surfaces by position with a
+  shared `makeWordForm` helper exactly as the Rust handler does — instead of the
+  inline per-language prefix/circumfix/suffix arrays it carried before. A parity
+  harness (`experiments/issue-386-js-how-cluster.mjs`) proves the worker
+  reproduces the canonical surface set with the expected per-slot bucket counts
+  and returns byte-identical results to the pre-conversion logic across a
+  multilingual prompt battery (issue #386).
 - Every meaning now descends from a single ontology root, so the lexicon is one
   connected graph rather than disjoint clusters. A new backbone
   (`data/seed/meanings-ontology.lino`) defines `link` as the self-rooted root of
