@@ -73,6 +73,20 @@ pub const ROLE_SOFTWARE_FOLLOWUP_EXECUTION: &str = "software_followup_execution"
 /// Semantic role: a follow-up that demonstrates the artifact's output
 /// (show me, demo it, покажи, 显示, दिखाओ, …).
 pub const ROLE_SOFTWARE_FOLLOWUP_DEMONSTRATION: &str = "software_followup_demonstration";
+/// Semantic role: a verb that requests a software artifact be authored.
+///
+/// Surfaces include write, build, create, implement, develop, design, scaffold,
+/// … — the verb side of "build me a <artifact>". Distinct from
+/// `program_request`, which gates the narrower "write a <program>" synthesis
+/// path; the two overlap on the shared verbs, but a software-authoring verb
+/// need not trip program synthesis.
+pub const ROLE_SOFTWARE_AUTHORING_ACTION: &str = "software_authoring_action";
+/// Semantic role: a kind of software artifact an authoring request can ask for.
+///
+/// Examples are a web app, a CLI tool, a browser extension, a library, …. Each
+/// is `defined_by` the `software_artifact` genus; a handler resolves a matched
+/// lexeme back to its slug and maps the slug to a canonical English label.
+pub const ROLE_SOFTWARE_ARTIFACT_KIND: &str = "software_artifact_kind";
 
 /// Surface words that evidence a meaning in one language.
 #[derive(Debug, Clone)]

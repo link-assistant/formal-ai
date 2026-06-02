@@ -7671,7 +7671,7 @@ function detectWeekdayOperation(normalized) {
 }
 
 function detectWeekday(normalized) {
-  for (const meaning of calendarMeaningsWithRole(ROLE_CALENDAR_WEEKDAY)) {
+  for (const meaning of meaningsWithRole(ROLE_CALENDAR_WEEKDAY)) {
     if (meaning.words.some((word) => containsCalendarTerm(normalized, word))) {
       const entry = WEEKDAY_CYCLE.find((weekday) => weekday.slug === meaning.slug);
       if (entry) return entry;
@@ -10035,42 +10035,105 @@ async function tryWikipediaArticleQuestion(prompt, language, preferences) {
   };
 }
 
-const SOFTWARE_ACTION_WORDS = [
-  "write",
-  "build",
-  "create",
-  "implement",
-  "make",
-  "develop",
-  "generate",
-  "design",
-  "scaffold",
-];
+// Issue #386 software-authoring roles — mirror ROLE_SOFTWARE_AUTHORING_ACTION
+// and ROLE_SOFTWARE_ARTIFACT_KIND in src/seed/meanings.rs. The surface words (in
+// every supported language) live in data/seed/meanings.lino and
+// data/seed/meanings-software-project.lino (embedded in MEANINGS_LINO below);
+// this module names no word in any single language.
+const ROLE_SOFTWARE_AUTHORING_ACTION = "software_authoring_action";
+const ROLE_SOFTWARE_ARTIFACT_KIND = "software_artifact_kind";
 
-const SOFTWARE_ARTIFACTS = [
-  ["browser extension", "browser extension"],
-  ["command line tool", "command-line tool"],
-  ["github action", "action"],
-  ["mobile app", "mobile app"],
-  ["cli tool", "command-line tool"],
-  ["web app", "web app"],
-  ["application", "application"],
-  ["extension", "extension"],
-  ["dashboard", "dashboard"],
-  ["scraper", "scraper"],
-  ["library", "library"],
-  ["website", "website"],
-  ["plugin", "plugin"],
-  ["add on", "extension"],
-  ["addon", "extension"],
-  ["service", "service"],
-  ["bot", "bot"],
-  ["app", "app"],
-  ["api", "API"],
-  ["sdk", "SDK"],
-  ["tool", "tool"],
-  ["mod", "mod"],
-];
+// Map a software-artifact-kind meaning slug to its canonical English label.
+// Mirrors artifact_label in src/solver_handlers/software_project.rs: the lexicon
+// owns the surface words a prompt is matched against (every language); this
+// resolver owns only the stable slug→label mapping. A slug absent here is
+// skipped rather than mislabelled.
+const SOFTWARE_ARTIFACT_LABELS = {
+  artifact_browser_extension: "browser extension",
+  artifact_command_line_tool: "command-line tool",
+  artifact_github_action: "action",
+  artifact_mobile_app: "mobile app",
+  artifact_web_app: "web app",
+  artifact_application: "application",
+  artifact_extension: "extension",
+  artifact_dashboard: "dashboard",
+  artifact_scraper: "scraper",
+  artifact_library: "library",
+  artifact_website: "website",
+  artifact_plugin: "plugin",
+  artifact_service: "service",
+  artifact_bot: "bot",
+  artifact_app: "app",
+  artifact_api: "API",
+  artifact_sdk: "SDK",
+  artifact_tool: "tool",
+  artifact_mod: "mod",
+};
+
+// [surface, label] recognition table, sourced from the lexicon in declaration
+// order. Mirrors artifact_surface_table in
+// src/solver_handlers/software_project.rs.
+function softwareArtifactTable() {
+  const table = [];
+  for (const meaning of meaningsWithRole(ROLE_SOFTWARE_ARTIFACT_KIND)) {
+    const label = SOFTWARE_ARTIFACT_LABELS[meaning.slug];
+    if (!label) continue;
+    for (const surface of meaning.words) table.push([surface, label]);
+  }
+  return table;
+}
+
+// [surface, action-slug] recognition table for software-authoring verbs. The
+// matched slug is stored verbatim as the request's `action`, so the verb is
+// recognised in every language it is lexicalised in. Mirrors
+// action_surface_table in src/solver_handlers/software_project.rs.
+function softwareActionTable() {
+  const table = [];
+  for (const meaning of meaningsWithRole(ROLE_SOFTWARE_AUTHORING_ACTION)) {
+    for (const surface of meaning.words) table.push([surface, meaning.slug]);
+  }
+  return table;
+}
+
+// Whether `character` is a "word character" for the recognition scan:
+// alphanumeric but not CJK. Mirrors is_word_character in
+// src/solver_handlers/software_project.rs — CJK scripts have no inter-word
+// spaces so they match as substrings, while Latin/Cyrillic/Devanagari keep
+// whole-token boundaries so a short surface like `апи` never matches inside
+// `напиши`.
+function isSoftwareWordCharacter(character) {
+  return /[\p{Alphabetic}\p{Number}]/u.test(character) && !containsCjk(character);
+}
+
+function isSoftwareStartBoundary(value, index) {
+  if (index === 0) return true;
+  return !isSoftwareWordCharacter(value[index - 1]);
+}
+
+function isSoftwareEndBoundary(value, index) {
+  if (index >= value.length) return true;
+  return !isSoftwareWordCharacter(value[index]);
+}
+
+// Position-major scan: the surface appearing earliest in `normalized` wins,
+// ties at one position broken by table order (prefix collisions like app vs
+// application are resolved by the end-boundary check, not order). Returns the
+// matched { surface, payload } or null. Mirrors scan_match in
+// src/solver_handlers/software_project.rs.
+function scanSoftwareSurface(normalized, table) {
+  const text = String(normalized || "");
+  for (let index = 0; index < text.length; index += 1) {
+    if (!isSoftwareStartBoundary(text, index)) continue;
+    for (const [surface, payload] of table) {
+      if (surface && text.startsWith(surface, index)) {
+        if (isSoftwareEndBoundary(text, index + surface.length)) {
+          return { surface, payload };
+        }
+      }
+    }
+  }
+  return null;
+}
 
 const SOFTWARE_FEATURE_MARKERS = [
   "add",
@@ -10450,15 +10513,13 @@ function tryPlaywrightScript(prompt, preferences = {}, language = "en") {
 }
 
 function detectSoftwareAction(normalized) {
-  return SOFTWARE_ACTION_WORDS.find((word) => containsToken(normalized, word)) || null;
+  const match = scanSoftwareSurface(normalized, softwareActionTable());
+  return match ? match.payload : null;
 }
 
 function detectSoftwareArtifact(normalized) {
-  const match = SOFTWARE_ARTIFACTS.find(([needle]) => {
-    if (needle.includes(" ")) return normalized.includes(needle);
-    return containsToken(normalized, needle);
-  });
-  return match ? { surface: match[0], label: match[1] } : null;
+  const match = scanSoftwareSurface(normalized, softwareArtifactTable());
+  return match ? { surface: match.surface, label: match.payload } : null;
 }
 
 function extractSoftwareTarget(prompt, artifact) {
@@ -12274,6 +12335,7 @@ const MEANINGS_LINO = [
   '    defined_by "output"',
   '    role "program_modification"',
   '    role "program_request"',
+  '    role "software_authoring_action"',
   '    lexeme "en"',
   '      word "make"',
   '    lexeme "ru"',
@@ -12309,6 +12371,7 @@ const MEANINGS_LINO = [
   '    defined_by "code"',
   '    defined_by "program"',
   '    role "program_request"',
+  '    role "software_authoring_action"',
   '    lexeme "en"',
   '      word "write"',
   '    lexeme "ru"',
@@ -12326,6 +12389,7 @@ const MEANINGS_LINO = [
   '    defined_by "make"',
   '    defined_by "program"',
   '    role "program_request"',
+  '    role "software_authoring_action"',
   '    lexeme "en"',
   '      word "create"',
   '    lexeme "ru"',
@@ -12358,6 +12422,7 @@ const MEANINGS_LINO = [
   '    defined_by "output"',
   '    defined_by "program"',
   '    role "program_request"',
+  '    role "software_authoring_action"',
   '    lexeme "en"',
   '      word "generate"',
   '    lexeme "ru"',
@@ -12374,6 +12439,7 @@ const MEANINGS_LINO = [
   '    defined_by "make"',
   '    defined_by "program"',
   '    role "program_request"',
+  '    role "software_authoring_action"',
   '    lexeme "en"',
   '      word "build"',
   '    lexeme "ru"',
@@ -13369,6 +13435,341 @@ const MEANINGS_LINO = [
   '    lexeme "zh"',
   '      word "显示"',
   '      word "展示"',
+  '  meaning "implement"',
+  '    gloss "to author a software artifact by implementing it — an authoring action alongside write/build/create"',
+  '    wiktionary "implement"',
+  '    defined_by "code"',
+  '    defined_by "program"',
+  '    role "software_authoring_action"',
+  '    lexeme "en"',
+  '      word "implement"',
+  '    lexeme "ru"',
+  '      word "реализуй"',
+  '      word "реализовать"',
+  '    lexeme "hi"',
+  '      word "लागू"',
+  '    lexeme "zh"',
+  '      word "实现"',
+  '  meaning "develop"',
+  '    gloss "to author a software artifact by developing it over time — an authoring action"',
+  '    wiktionary "develop"',
+  '    defined_by "program"',
+  '    role "software_authoring_action"',
+  '    lexeme "en"',
+  '      word "develop"',
+  '    lexeme "ru"',
+  '      word "разработай"',
+  '      word "разработать"',
+  '    lexeme "hi"',
+  '      word "विकसित"',
+  '    lexeme "zh"',
+  '      word "开发"',
+  '  meaning "design"',
+  '    gloss "to author a software artifact by designing its shape — an authoring action"',
+  '    wiktionary "design"',
+  '    defined_by "program"',
+  '    role "software_authoring_action"',
+  '    lexeme "en"',
+  '      word "design"',
+  '    lexeme "ru"',
+  '      word "спроектируй"',
+  '      word "создай дизайн"',
+  '    lexeme "hi"',
+  '      word "डिज़ाइन"',
+  '    lexeme "zh"',
+  '      word "设计"',
+  '  meaning "scaffold"',
+  '    gloss "to author a software artifact by scaffolding its skeleton — an authoring action"',
+  '    wiktionary "scaffold"',
+  '    defined_by "code"',
+  '    defined_by "program"',
+  '    role "software_authoring_action"',
+  '    lexeme "en"',
+  '      word "scaffold"',
+  '    lexeme "ru"',
+  '      word "создай каркас"',
+  '      word "сгенерируй каркас"',
+  '    lexeme "hi"',
+  '      word "ढाँचा बनाओ"',
+  '    lexeme "zh"',
+  '      word "搭建"',
+  '  meaning "software_artifact"',
+  '    gloss "a thing software development produces that an authoring request can ask for — the genus of the artifact kinds below"',
+  '    wiktionary "artifact"',
+  '    defined_by "artifact_application"',
+  '    defined_by "artifact_tool"',
+  '    role "software_artifact"',
+  '    lexeme "en"',
+  '      word "software artifact"',
+  '      word "deliverable"',
+  '    lexeme "ru"',
+  '      word "программный продукт"',
+  '      word "артефакт"',
+  '    lexeme "hi"',
+  '      word "सॉफ़्टवेयर कलाकृति"',
+  '    lexeme "zh"',
+  '      word "软件制品"',
+  '  meaning "artifact_browser_extension"',
+  '    gloss "a browser extension — software that augments a web browser; canonical label `browser extension`"',
+  '    wiktionary "extension"',
+  '    defined_by "software_artifact"',
+  '    role "software_artifact_kind"',
+  '    lexeme "en"',
+  '      word "browser extension"',
+  '    lexeme "ru"',
+  '      word "расширение браузера"',
+  '    lexeme "hi"',
+  '      word "ब्राउज़र एक्सटेंशन"',
+  '    lexeme "zh"',
+  '      word "浏览器扩展"',
+  '  meaning "artifact_command_line_tool"',
+  '    gloss "a command-line tool driven from a terminal; canonical label `command-line tool`"',
+  '    wiktionary "command-line"',
+  '    defined_by "software_artifact"',
+  '    role "software_artifact_kind"',
+  '    lexeme "en"',
+  '      word "command line tool"',
+  '      word "cli tool"',
+  '    lexeme "ru"',
+  '      word "консольная утилита"',
+  '      word "утилита командной строки"',
+  '    lexeme "hi"',
+  '      word "कमांड लाइन टूल"',
+  '    lexeme "zh"',
+  '      word "命令行工具"',
+  '  meaning "artifact_github_action"',
+  '    gloss "a GitHub Action automation workflow; canonical label `action`"',
+  '    wiktionary "action"',
+  '    defined_by "software_artifact"',
+  '    role "software_artifact_kind"',
+  '    lexeme "en"',
+  '      word "github action"',
+  '    lexeme "ru"',
+  '      word "действие github"',
+  '    lexeme "hi"',
+  '      word "गिटहब एक्शन"',
+  '    lexeme "zh"',
+  '      word "github 操作"',
+  '  meaning "artifact_mobile_app"',
+  '    gloss "a mobile application for phones or tablets; canonical label `mobile app`"',
+  '    wiktionary "app"',
+  '    defined_by "software_artifact"',
+  '    role "software_artifact_kind"',
+  '    lexeme "en"',
+  '      word "mobile app"',
+  '    lexeme "ru"',
+  '      word "мобильное приложение"',
+  '    lexeme "hi"',
+  '      word "मोबाइल ऐप"',
+  '    lexeme "zh"',
+  '      word "移动应用"',
+  '  meaning "artifact_web_app"',
+  '    gloss "a web application served in a browser; canonical label `web app`"',
+  '    wiktionary "web"',
+  '    defined_by "software_artifact"',
+  '    role "software_artifact_kind"',
+  '    lexeme "en"',
+  '      word "web app"',
+  '    lexeme "ru"',
+  '      word "веб приложение"',
+  '    lexeme "hi"',
+  '      word "वेब ऐप"',
+  '    lexeme "zh"',
+  '      word "网页应用"',
+  '  meaning "artifact_application"',
+  '    gloss "a general software application; canonical label `application`"',
+  '    wiktionary "application"',
+  '    defined_by "software_artifact"',
+  '    role "software_artifact_kind"',
+  '    lexeme "en"',
+  '      word "application"',
+  '    lexeme "ru"',
+  '      word "приложение"',
+  '    lexeme "hi"',
+  '      word "एप्लिकेशन"',
+  '    lexeme "zh"',
+  '      word "应用程序"',
+  '  meaning "artifact_extension"',
+  '    gloss "an extension or add-on that augments a host program; canonical label `extension`"',
+  '    wiktionary "extension"',
+  '    defined_by "software_artifact"',
+  '    role "software_artifact_kind"',
+  '    lexeme "en"',
+  '      word "extension"',
+  '      word "add on"',
+  '      word "addon"',
+  '    lexeme "ru"',
+  '      word "расширение"',
+  '      word "дополнение"',
+  '    lexeme "hi"',
+  '      word "एक्सटेंशन"',
+  '      word "ऐड-ऑन"',
+  '    lexeme "zh"',
+  '      word "扩展"',
+  '      word "扩展程序"',
+  '  meaning "artifact_dashboard"',
+  '    gloss "a dashboard that visualises state at a glance; canonical label `dashboard`"',
+  '    wiktionary "dashboard"',
+  '    defined_by "software_artifact"',
+  '    role "software_artifact_kind"',
+  '    lexeme "en"',
+  '      word "dashboard"',
+  '    lexeme "ru"',
+  '      word "панель управления"',
+  '      word "дашборд"',
+  '    lexeme "hi"',
+  '      word "डैशबोर्ड"',
+  '    lexeme "zh"',
+  '      word "仪表板"',
+  '  meaning "artifact_scraper"',
+  '    gloss "a scraper that extracts data from pages or feeds; canonical label `scraper`"',
+  '    wiktionary "scraper"',
+  '    defined_by "software_artifact"',
+  '    role "software_artifact_kind"',
+  '    lexeme "en"',
+  '      word "scraper"',
+  '    lexeme "ru"',
+  '      word "скрапер"',
+  '      word "парсер"',
+  '    lexeme "hi"',
+  '      word "स्क्रैपर"',
+  '    lexeme "zh"',
+  '      word "爬虫"',
+  '  meaning "artifact_library"',
+  '    gloss "a reusable code library; canonical label `library`"',
+  '    wiktionary "library"',
+  '    defined_by "software_artifact"',
+  '    role "software_artifact_kind"',
+  '    lexeme "en"',
+  '      word "library"',
+  '    lexeme "ru"',
+  '      word "библиотека"',
+  '      word "библиотеку"',
+  '    lexeme "hi"',
+  '      word "लाइब्रेरी"',
+  '    lexeme "zh"',
+  '      word "库"',
+  '  meaning "artifact_website"',
+  '    gloss "a website of linked pages; canonical label `website`"',
+  '    wiktionary "website"',
+  '    defined_by "software_artifact"',
+  '    role "software_artifact_kind"',
+  '    lexeme "en"',
+  '      word "website"',
+  '    lexeme "ru"',
+  '      word "сайт"',
+  '      word "веб сайт"',
+  '    lexeme "hi"',
+  '      word "वेबसाइट"',
+  '    lexeme "zh"',
+  '      word "网站"',
+  '  meaning "artifact_plugin"',
+  '    gloss "a plugin that extends a host application; canonical label `plugin`"',
+  '    wiktionary "plugin"',
+  '    defined_by "software_artifact"',
+  '    role "software_artifact_kind"',
+  '    lexeme "en"',
+  '      word "plugin"',
+  '    lexeme "ru"',
+  '      word "плагин"',
+  '    lexeme "hi"',
+  '      word "प्लगइन"',
+  '    lexeme "zh"',
+  '      word "插件"',
+  '  meaning "artifact_service"',
+  '    gloss "a long-running service or daemon; canonical label `service`"',
+  '    wiktionary "service"',
+  '    defined_by "software_artifact"',
+  '    role "software_artifact_kind"',
+  '    lexeme "en"',
+  '      word "service"',
+  '    lexeme "ru"',
+  '      word "сервис"',
+  '      word "служба"',
+  '      word "службу"',
+  '    lexeme "hi"',
+  '      word "सेवा"',
+  '    lexeme "zh"',
+  '      word "服务"',
+  '  meaning "artifact_bot"',
+  '    gloss "a bot that automates a chat or task; canonical label `bot`"',
+  '    wiktionary "bot"',
+  '    defined_by "software_artifact"',
+  '    role "software_artifact_kind"',
+  '    lexeme "en"',
+  '      word "bot"',
+  '    lexeme "ru"',
+  '      word "бот"',
+  '    lexeme "hi"',
+  '      word "बॉट"',
+  '    lexeme "zh"',
+  '      word "机器人"',
+  '  meaning "artifact_app"',
+  '    gloss "an app — a generic application; canonical label `app`"',
+  '    wiktionary "app"',
+  '    defined_by "software_artifact"',
+  '    role "software_artifact_kind"',
+  '    lexeme "en"',
+  '      word "app"',
+  '    lexeme "ru"',
+  '      word "приложение"',
+  '    lexeme "hi"',
+  '      word "ऐप"',
+  '    lexeme "zh"',
+  '      word "应用"',
+  '  meaning "artifact_api"',
+  '    gloss "an API — a programmatic interface; canonical label `API`"',
+  '    wiktionary "API"',
+  '    defined_by "software_artifact"',
+  '    role "software_artifact_kind"',
+  '    lexeme "en"',
+  '      word "api"',
+  '    lexeme "ru"',
+  '      word "апи"',
+  '    lexeme "hi"',
+  '      word "एपीआई"',
+  '    lexeme "zh"',
+  '      word "接口"',
+  '  meaning "artifact_sdk"',
+  '    gloss "an SDK — a software development kit; canonical label `SDK`"',
+  '    wiktionary "SDK"',
+  '    defined_by "software_artifact"',
+  '    role "software_artifact_kind"',
+  '    lexeme "en"',
+  '      word "sdk"',
+  '    lexeme "ru"',
+  '      word "сдк"',
+  '    lexeme "hi"',
+  '      word "एसडीके"',
+  '    lexeme "zh"',
+  '      word "开发包"',
+  '  meaning "artifact_tool"',
+  '    gloss "a general tool or utility; canonical label `tool`"',
+  '    wiktionary "tool"',
+  '    defined_by "software_artifact"',
+  '    role "software_artifact_kind"',
+  '    lexeme "en"',
+  '      word "tool"',
+  '    lexeme "ru"',
+  '      word "инструмент"',
+  '    lexeme "hi"',
+  '      word "टूल"',
+  '      word "उपकरण"',
+  '    lexeme "zh"',
+  '      word "工具"',
+  '  meaning "artifact_mod"',
+  '    gloss "a mod that alters a game or program; canonical label `mod`"',
+  '    wiktionary "mod"',
+  '    defined_by "software_artifact"',
+  '    role "software_artifact_kind"',
+  '    lexeme "en"',
+  '      word "mod"',
+  '    lexeme "ru"',
+  '      word "мод"',
+  '    lexeme "hi"',
+  '      word "मॉड"',
+  '    lexeme "zh"',
+  '      word "模组"',
 ].join("\n");
 
 // Semantic role: a thing a program produces that a later turn can refer back to
@@ -13442,7 +13843,7 @@ const ROLE_CALENDAR_QUESTION = "calendar_question";
 
 // Every meaning carrying `role`, in lexicon (declaration) order. Mirrors
 // Lexicon::meanings_with_role in src/seed/meanings.rs.
-function calendarMeaningsWithRole(role) {
+function meaningsWithRole(role) {
   return meaningLexicon().filter((meaning) => meaning.roles.includes(role));
 }
 
@@ -13451,7 +13852,7 @@ function calendarMeaningsWithRole(role) {
 function calendarWordsForRole(role) {
   const seen = new Set();
   const words = [];
-  for (const meaning of calendarMeaningsWithRole(role)) {
+  for (const meaning of meaningsWithRole(role)) {
     for (const word of meaning.words) {
       if (!seen.has(word)) {
         seen.add(word);

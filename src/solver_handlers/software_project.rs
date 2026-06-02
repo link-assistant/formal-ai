@@ -7,10 +7,9 @@
 
 use std::fmt::Write as _;
 
-use nom::{branch::alt, bytes::complete::tag, combinator::value, IResult, Parser};
-
 use crate::engine::{normalize_prompt, stable_id, SymbolicAnswer};
 use crate::event_log::EventLog;
+use crate::seed;
 use crate::solver_handlers::finalize_simple;
 use crate::solver_helpers::{last_assistant_turn, last_user_turn};
 
@@ -62,36 +61,13 @@ const FEATURE_MARKERS: &[&str] = &[
     "validate",
 ];
 
+/// A matched software-artifact phrase: the surface word it was recognised by
+/// (used to locate the target text after it) and the canonical English label.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 struct ArtifactMatch {
     surface: &'static str,
     label: &'static str,
 }
-
-const ARTIFACT_MATCHES: &[(&str, &str)] = &[
-    ("browser extension", "browser extension"),
-    ("command line tool", "command-line tool"),
-    ("github action", "action"),
-    ("mobile app", "mobile app"),
-    ("cli tool", "command-line tool"),
-    ("web app", "web app"),
-    ("application", "application"),
-    ("extension", "extension"),
-    ("dashboard", "dashboard"),
-    ("scraper", "scraper"),
-    ("library", "library"),
-    ("website", "website"),
-    ("plugin", "plugin"),
-    ("add on", "extension"),
-    ("addon", "extension"),
-    ("service", "service"),
-    ("bot", "bot"),
-    ("app", "app"),
-    ("api", "API"),
-    ("sdk", "SDK"),
-    ("tool", "tool"),
-    ("mod", "mod"),
-];
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(super) struct SoftwareProjectMeaning {
@@ -154,8 +130,10 @@ impl SoftwareProjectMeaning {
             return None;
         }
 
-        let action = scan_parse(normalized, parse_action_word)?;
-        let artifact = scan_parse(normalized, parse_artifact_phrase)?;
+        let actions = action_surface_table();
+        let artifacts = artifact_surface_table();
+        let action = scan_match(normalized, |input| match_action(input, &actions))?;
+        let artifact = scan_match(normalized, |input| match_artifact(input, &artifacts))?;
         let target = extract_target(prompt, artifact);
         let requirements = extract_requirements(prompt);
         let game_tracker = is_game_unit_tracker(normalized);
@@ -380,41 +358,114 @@ fn record_meaning(
     }
 }
 
-fn parse_action_word(input: &str) -> IResult<&str, &'static str> {
-    alt((
-        value("write", tag("write")),
-        value("build", tag("build")),
-        value("create", tag("create")),
-        value("implement", tag("implement")),
-        value("make", tag("make")),
-        value("develop", tag("develop")),
-        value("generate", tag("generate")),
-        value("design", tag("design")),
-        value("scaffold", tag("scaffold")),
-    ))
-    .parse(input)
+/// Map a software-artifact-kind meaning slug to its canonical English label.
+///
+/// The lexicon owns the surface words a prompt is matched against (in every
+/// supported language); this resolver owns only the stable slug→label mapping,
+/// so adding a language never touches this code — exactly like
+/// [`crate::solver_handlers::calendar`]'s `Weekday::from_slug`. Recognition
+/// vocabulary lives in the data; the canonical output label lives in code.
+/// Returns `None` for a slug this handler does not render, so a future artifact
+/// kind in the lexicon is skipped here rather than silently mislabelled.
+fn artifact_label(slug: &str) -> Option<&'static str> {
+    let label = match slug {
+        "artifact_browser_extension" => "browser extension",
+        "artifact_command_line_tool" => "command-line tool",
+        "artifact_github_action" => "action",
+        "artifact_mobile_app" => "mobile app",
+        "artifact_web_app" => "web app",
+        "artifact_application" => "application",
+        "artifact_extension" => "extension",
+        "artifact_dashboard" => "dashboard",
+        "artifact_scraper" => "scraper",
+        "artifact_library" => "library",
+        "artifact_website" => "website",
+        "artifact_plugin" => "plugin",
+        "artifact_service" => "service",
+        "artifact_bot" => "bot",
+        "artifact_app" => "app",
+        "artifact_api" => "API",
+        "artifact_sdk" => "SDK",
+        "artifact_tool" => "tool",
+        "artifact_mod" => "mod",
+        _ => return None,
+    };
+    Some(label)
 }
 
-fn parse_artifact_phrase(input: &str) -> IResult<&str, ArtifactMatch> {
-    for &(surface, label) in ARTIFACT_MATCHES {
-        if let Some(remaining) = input.strip_prefix(surface) {
-            return Ok((remaining, ArtifactMatch { surface, label }));
+/// The (surface, label) recognition table for software artifacts, sourced from
+/// the lexicon: every `software_artifact_kind` meaning, in declaration order,
+/// flat-mapped over its surface words in every supported language. Declaration
+/// order preserves the specific-before-generic constraint [`scan_match`] relies
+/// on (e.g. `application` precedes `app`, so the longer phrase is taken first).
+fn artifact_surface_table() -> Vec<(&'static str, &'static str)> {
+    let mut table = Vec::new();
+    for meaning in seed::lexicon().meanings_with_role(seed::ROLE_SOFTWARE_ARTIFACT_KIND) {
+        let Some(label) = artifact_label(&meaning.slug) else {
+            continue;
+        };
+        for surface in meaning.words() {
+            table.push((surface, label));
         }
     }
-    Err(nom::Err::Error(nom::error::Error::new(
-        input,
-        nom::error::ErrorKind::Tag,
-    )))
+    table
 }
 
-fn scan_parse<T: Copy>(normalized: &str, parser: fn(&str) -> IResult<&str, T>) -> Option<T> {
+/// The (surface, action-slug) recognition table for software-authoring verbs,
+/// sourced from the lexicon: every `software_authoring_action` meaning, flat-
+/// mapped over its surface words. The matched slug is stored verbatim as the
+/// request's `action`, so the verb is recognised in every language it is
+/// lexicalised in without this code naming a single word.
+fn action_surface_table() -> Vec<(&'static str, &'static str)> {
+    let mut table = Vec::new();
+    for meaning in seed::lexicon().meanings_with_role(seed::ROLE_SOFTWARE_AUTHORING_ACTION) {
+        let slug = meaning.slug.as_str();
+        for surface in meaning.words() {
+            table.push((surface, slug));
+        }
+    }
+    table
+}
+
+/// Match a software-authoring verb at the start of `input`, returning the
+/// consumed byte length and the matched meaning's slug.
+fn match_action(
+    input: &str,
+    table: &[(&'static str, &'static str)],
+) -> Option<(usize, &'static str)> {
+    for &(surface, slug) in table {
+        if input.starts_with(surface) {
+            return Some((surface.len(), slug));
+        }
+    }
+    None
+}
+
+/// Match a software-artifact phrase at the start of `input`, returning the
+/// consumed byte length and the resolved [`ArtifactMatch`].
+fn match_artifact(
+    input: &str,
+    table: &[(&'static str, &'static str)],
+) -> Option<(usize, ArtifactMatch)> {
+    for &(surface, label) in table {
+        if input.starts_with(surface) {
+            return Some((surface.len(), ArtifactMatch { surface, label }));
+        }
+    }
+    None
+}
+
+/// Walk every word-boundary-aligned position in `normalized` left to right and
+/// return the first match the `matcher` accepts that also ends on a word
+/// boundary. Position-major: the surface appearing earliest in the prompt wins,
+/// independent of table order (ties at one position fall to the matcher's own
+/// first-match rule).
+fn scan_match<T>(normalized: &str, matcher: impl Fn(&str) -> Option<(usize, T)>) -> Option<T> {
     for (index, _) in normalized.char_indices() {
         if !is_start_boundary(normalized, index) {
             continue;
         }
-        let input = &normalized[index..];
-        if let Ok((remaining, value)) = parser(input) {
-            let consumed = input.len().saturating_sub(remaining.len());
+        if let Some((consumed, value)) = matcher(&normalized[index..]) {
             if consumed > 0 && is_end_boundary(normalized, index + consumed) {
                 return Some(value);
             }
@@ -443,8 +494,27 @@ fn is_end_boundary(value: &str, index: usize) -> bool {
         .is_some_and(|character| !is_word_character(character))
 }
 
-const fn is_word_character(character: char) -> bool {
-    character.is_ascii_alphanumeric()
+/// A "word character" for the recognition scan: an alphanumeric that is *not*
+/// CJK.
+///
+/// CJK scripts write without inter-word spaces, so a CJK surface must match as a
+/// substring (every CJK codepoint is its own boundary). Latin, Cyrillic, and
+/// Devanagari keep strict whole-token boundaries so a short surface like `апи`
+/// never matches inside `напиши`. This mirrors the substring-vs-token contract
+/// in [`crate::coding::contains_cjk`].
+fn is_word_character(character: char) -> bool {
+    character.is_alphanumeric() && !is_cjk_character(character)
+}
+
+/// Whether `character` belongs to a CJK script (per the codepoint ranges in
+/// [`crate::coding::contains_cjk`]), and so matches as a substring not a token.
+fn is_cjk_character(character: char) -> bool {
+    let codepoint = character as u32;
+    (0x3400..=0x4DBF).contains(&codepoint)
+        || (0x4E00..=0x9FFF).contains(&codepoint)
+        || (0xF900..=0xFAFF).contains(&codepoint)
+        || (0x3040..=0x30FF).contains(&codepoint)
+        || (0x3100..=0x312F).contains(&codepoint)
 }
 
 fn extract_target(prompt: &str, artifact: ArtifactMatch) -> String {

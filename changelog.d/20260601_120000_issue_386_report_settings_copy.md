@@ -58,6 +58,25 @@ bump: minor
   resolves to the book author before the painting painter, and the relation
   slugs (hence the `fact_query:relation:*` reasoning trace) stay identical to the
   browser worker (issue #386).
+- Software-project request recognition (`src/solver_handlers/software_project.rs`
+  and its `formal_ai_worker.js` mirror) is data-driven too. The authoring verbs
+  (write/build/create/implement/develop/design/scaffold) and the 19 artifact
+  kinds a request can ask for (web app, CLI tool, browser extension, library, …)
+  now live as self-describing meanings in
+  `data/seed/meanings-software-project.lino` — each artifact kind `defined_by`
+  the `software_artifact` genus and lexicalised in every supported language. The
+  handler builds its recognition tables by querying the lexicon for the
+  `software_authoring_action` and `software_artifact_kind` roles, resolving a
+  matched lexeme back to its stable slug; a small in-code resolver maps the slug
+  to its canonical English label (the calendar `from_slug` precedent), so
+  recognition vocabulary lives in data while the canonical output stays in code.
+  The word-boundary scan is now CJK-aware: CJK surfaces match as substrings while
+  Latin/Cyrillic/Devanagari keep whole-token boundaries, so a short surface like
+  `апи` (API) never matches inside the Cyrillic verb `напиши` ("write") — fixing
+  a regression that mislabelled a plain "write a program" request as a software
+  project. Because the artifact words now exist in every language, "create a
+  library"/"создай библиотеку"/"एक डैशबोर्ड बनाओ"/"开发一个网站" all resolve to
+  the same canonical artifact (issue #386).
 - The prefilled "Report issue" body omits settings already at their shipped
   default (Mode, Status, Diagnostics, Theme, Guess/Follow-up probability,
   Temperature, inference-only Location), folds the worker into the version line
