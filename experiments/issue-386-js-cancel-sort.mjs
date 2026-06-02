@@ -117,5 +117,30 @@ check(
   undoneBase.resolvedTask,
 );
 
+// Issue #386: the program-artifact follow-up gate must reference *meanings*, not
+// a hardcoded per-language word list. These mirror the Rust unit tests in
+// `src/program_coreference.rs` so the JS worker stays concept-driven and on par.
+console.log("\n=== meaning-lexicon gate (mirror of src/program_coreference.rs) ===");
+const norm = (p) => sandbox.normalizeProgramPrompt(p);
+for (const prompt of [
+  "sort the results in reverse order",
+  "сделай сортировку результатов в обратном порядке",
+  "परिणामों को उल्टे क्रम में क्रमबद्ध करो",
+  "对结果倒序排序",
+]) {
+  check(`additive follow-up recognized: ${prompt}`, sandbox.looksLikeBareProgramArtifactFollowUp(norm(prompt)));
+}
+for (const prompt of ["cancel the sorting", "undo the sort", "Отмени сортировку", "убери сортировку", "सॉर्ट हटाओ", "取消排序"]) {
+  check(`cancel follow-up recognized: ${prompt}`, sandbox.looksLikeBareProgramArtifactFollowUp(norm(prompt)));
+}
+for (const prompt of ["what is the capital of France", "напиши стихотворение про осень"]) {
+  check(`unrelated prompt does not trip the gate: ${prompt}`, !sandbox.looksLikeBareProgramArtifactFollowUp(norm(prompt)));
+}
+const lexicon = sandbox.meaningLexicon();
+const wordsForRole = (role) => lexicon.filter((m) => m.roles.includes(role)).flatMap((m) => m.words);
+check("lexicon is non-empty and self-describing", lexicon.length >= 10, `${lexicon.length} meanings`);
+check("program_artifact role has surface words", wordsForRole("program_artifact").length > 0);
+check("program_modification role has surface words", wordsForRole("program_modification").length > 0);
+
 console.log("\n" + (fail.length ? "FAILURES: " + fail.join(", ") : "ALL CHECKS PASSED"));
 process.exit(fail.length ? 1 : 0);

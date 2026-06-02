@@ -12201,107 +12201,282 @@ function operationFormMatches(normalized, operation) {
   );
 }
 
-const PROGRAM_FOLLOW_UP_REFERENTS = [
-  "result",
-  "results",
-  "output",
-  "program",
-  "programme",
-  "script",
-  "code",
-  // Issue #386: a sort/ordering is itself a program aspect a follow-up can
-  // refer to ("undo the sort", "cancel the sorting").
-  "sort",
-  "sorting",
-  "результат",
-  "результата",
-  "результаты",
-  "результатов",
-  "вывод",
-  "программа",
-  "программу",
-  "программы",
-  "скрипт",
-  "код",
-  "сортировка",
-  "сортировку",
-  "сортировки",
-  "сортировке",
-  "сортировкой",
-  "परिणाम",
-  "परिणामों",
-  "नतीजा",
-  "नतीजे",
-  "आउटपुट",
-  "प्रोग्राम",
-  "कोड",
-  "सॉर्ट",
-  "क्रम",
-  "结果",
-  "输出",
-  "程序",
-  "代码",
-  "排序",
-  "顺序",
-];
+// Issue #386: the language-independent *meaning* lexicon — the JS mirror of
+// `data/seed/meanings.lino` and `src/seed/meanings.rs`. Recognition references
+// semantic *roles* (which surface words evidence a program artifact / a program
+// modification, in any language), never a hardcoded per-language word list. This
+// is an inline, byte-identical copy of the canonical seed (the same convention
+// as PROGRAM_PLAN_RULES_LINO) so the worker stays self-contained when no seed has
+// been fetched; parity is guarded by `experiments/issue-386-js-cancel-sort.mjs`.
+const MEANINGS_LINO = [
+  "meanings",
+  '  meaning "result"',
+  '    gloss "the value or data a computation produces"',
+  '    wiktionary "result"',
+  '    defined_by "output"',
+  '    role "program_artifact"',
+  '    lexeme "en"',
+  '      word "result"',
+  '      word "results"',
+  '    lexeme "ru"',
+  '      word "результат"',
+  '      word "результата"',
+  '      word "результаты"',
+  '      word "результатов"',
+  '    lexeme "hi"',
+  '      word "परिणाम"',
+  '      word "परिणामों"',
+  '      word "नतीजा"',
+  '      word "नतीजे"',
+  '    lexeme "zh"',
+  '      word "结果"',
+  '  meaning "output"',
+  '    gloss "what a program emits — prints or returns — when it runs"',
+  '    wiktionary "output"',
+  '    defined_by "result"',
+  '    defined_by "program"',
+  '    role "program_artifact"',
+  '    lexeme "en"',
+  '      word "output"',
+  '    lexeme "ru"',
+  '      word "вывод"',
+  '    lexeme "hi"',
+  '      word "आउटपुट"',
+  '    lexeme "zh"',
+  '      word "输出"',
+  '  meaning "program"',
+  '    gloss "a set of instructions a computer executes"',
+  '    wiktionary "program"',
+  '    defined_by "code"',
+  '    role "program_artifact"',
+  '    lexeme "en"',
+  '      word "program"',
+  '      word "programme"',
+  '    lexeme "ru"',
+  '      word "программа"',
+  '      word "программу"',
+  '      word "программы"',
+  '    lexeme "hi"',
+  '      word "प्रोग्राम"',
+  '    lexeme "zh"',
+  '      word "程序"',
+  '  meaning "script"',
+  '    gloss "a short program, usually interpreted rather than compiled"',
+  '    wiktionary "script"',
+  '    defined_by "program"',
+  '    defined_by "code"',
+  '    role "program_artifact"',
+  '    lexeme "en"',
+  '      word "script"',
+  '    lexeme "ru"',
+  '      word "скрипт"',
+  '    lexeme "hi"',
+  '      word "स्क्रिप्ट"',
+  '    lexeme "zh"',
+  '      word "脚本"',
+  '  meaning "code"',
+  '    gloss "the text of a program, written in a programming language"',
+  '    wiktionary "code"',
+  '    defined_by "program"',
+  '    role "program_artifact"',
+  '    lexeme "en"',
+  '      word "code"',
+  '    lexeme "ru"',
+  '      word "код"',
+  '      word "кода"',
+  '      word "коде"',
+  '    lexeme "hi"',
+  '      word "कोड"',
+  '    lexeme "zh"',
+  '      word "代码"',
+  '  meaning "sort"',
+  '    gloss "to arrange items into an order; the resulting arrangement"',
+  '    wiktionary "sort"',
+  '    defined_by "order"',
+  '    role "program_artifact"',
+  '    role "program_modification"',
+  '    lexeme "en"',
+  '      word "sort"',
+  '      word "sorts"',
+  '      word "sorting"',
+  '      word "sorted"',
+  '    lexeme "ru"',
+  '      word "сортировка"',
+  '      word "сортировку"',
+  '      word "сортировки"',
+  '      word "сортировке"',
+  '      word "сортировкой"',
+  '      word "сортировать"',
+  '      word "отсортируй"',
+  '      word "отсортируйте"',
+  '      word "отсортировать"',
+  '    lexeme "hi"',
+  '      word "सॉर्ट"',
+  '      word "क्रमबद्ध"',
+  '    lexeme "zh"',
+  '      word "排序"',
+  '  meaning "order"',
+  '    gloss "an arrangement that follows a rule; to arrange so"',
+  '    wiktionary "order"',
+  '    defined_by "sort"',
+  '    role "program_artifact"',
+  '    role "program_modification"',
+  '    lexeme "en"',
+  '      word "order"',
+  '      word "ordering"',
+  '      word "reorder"',
+  '    lexeme "ru"',
+  '      word "порядок"',
+  '      word "упорядочи"',
+  '    lexeme "hi"',
+  '      word "क्रम"',
+  '    lexeme "zh"',
+  '      word "顺序"',
+  '  meaning "reverse"',
+  '    gloss "to put into the opposite order"',
+  '    wiktionary "reverse"',
+  '    defined_by "order"',
+  '    role "program_modification"',
+  '    lexeme "en"',
+  '      word "reverse"',
+  '      word "reversed"',
+  '    lexeme "ru"',
+  '      word "обратный"',
+  '      word "обратном"',
+  '      word "обратную"',
+  '      word "обратного"',
+  '    lexeme "hi"',
+  '      word "उल्टा"',
+  '      word "उल्टे"',
+  '    lexeme "zh"',
+  '      word "反向"',
+  '      word "相反"',
+  '      word "倒序"',
+  '  meaning "cancel"',
+  '    gloss "to undo or remove a previously applied modification"',
+  '    wiktionary "cancel"',
+  '    defined_by "reverse"',
+  '    defined_by "modify"',
+  '    role "program_modification"',
+  '    lexeme "en"',
+  '      word "cancel"',
+  '      word "undo"',
+  '      word "remove"',
+  '      word "revert"',
+  '    lexeme "ru"',
+  '      word "отмени"',
+  '      word "отмените"',
+  '      word "отменить"',
+  '      word "убери"',
+  '      word "уберите"',
+  '      word "убрать"',
+  '    lexeme "hi"',
+  '      word "रद्द"',
+  '      word "हटाओ"',
+  '      word "हटाएं"',
+  '      word "हटा"',
+  '    lexeme "zh"',
+  '      word "取消"',
+  '      word "撤销"',
+  '      word "去掉"',
+  '      word "去除"',
+  '  meaning "modify"',
+  '    gloss "to change an existing thing into a different state"',
+  '    wiktionary "modify"',
+  '    defined_by "update"',
+  '    role "program_modification"',
+  '    lexeme "en"',
+  '      word "change"',
+  '      word "modify"',
+  '      word "alter"',
+  '    lexeme "ru"',
+  '      word "измени"',
+  '      word "изменить"',
+  '      word "измените"',
+  '    lexeme "hi"',
+  '      word "बदलें"',
+  '      word "बदलो"',
+  '    lexeme "zh"',
+  '      word "修改"',
+  '      word "改"',
+  '  meaning "update"',
+  '    gloss "to bring something to a newer state"',
+  '    wiktionary "update"',
+  '    defined_by "modify"',
+  '    role "program_modification"',
+  '    lexeme "en"',
+  '      word "update"',
+  '    lexeme "ru"',
+  '      word "обнови"',
+  '      word "обновить"',
+  '      word "обновите"',
+  '    lexeme "hi"',
+  '      word "अपडेट"',
+  '    lexeme "zh"',
+  '      word "更新"',
+  '  meaning "make"',
+  '    gloss "to produce or build a program or its output"',
+  '    wiktionary "make"',
+  '    defined_by "program"',
+  '    defined_by "output"',
+  '    role "program_modification"',
+  '    lexeme "en"',
+  '      word "make"',
+  '    lexeme "ru"',
+  '      word "сделай"',
+  '      word "сделайте"',
+  '      word "сделать"',
+  '    lexeme "hi"',
+  '      word "बनाओ"',
+  '      word "बनाएं"',
+  '    lexeme "zh"',
+  '      word "制作"',
+].join("\n");
 
-const PROGRAM_FOLLOW_UP_ACTIONS = [
-  "sort",
-  "sorted",
-  "reverse",
-  "reorder",
-  "order",
-  "change",
-  "modify",
-  "update",
-  "make",
-  // Issue #386: subtractive ("cancel/undo") verbs are first-class program
-  // follow-up actions, mirroring the additive verbs above.
-  "cancel",
-  "undo",
-  "remove",
-  "revert",
-  "сделай",
-  "сделайте",
-  "сортировка",
-  "сортировку",
-  "сортировать",
-  "отсортируй",
-  "отсортируйте",
-  "обратном",
-  "обратный",
-  "измени",
-  "изменить",
-  "обнови",
-  "отмени",
-  "отмените",
-  "отменить",
-  "убери",
-  "уберите",
-  "убрать",
-  "क्रमबद्ध",
-  "उल्टे",
-  "उल्टा",
-  "बनाओ",
-  "बदलें",
-  "बदलो",
-  "अपडेट",
-  "रद्द",
-  "हटाओ",
-  "हटाएं",
-  "हटा",
-  "排序",
-  "反向",
-  "相反",
-  "倒序",
-  "修改",
-  "改",
-  "更新",
-  "取消",
-  "撤销",
-  "去掉",
-  "去除",
-];
+// Semantic role: a thing a program produces that a later turn can refer back to
+// (a result, an output, the program/script/code itself, an ordering).
+const ROLE_PROGRAM_ARTIFACT = "program_artifact";
+// Semantic role: an operation a follow-up turn can request against the active
+// program (sort, reverse, cancel, change, …) — additive or subtractive.
+const ROLE_PROGRAM_MODIFICATION = "program_modification";
+
+let cachedMeaningLexicon = null;
+// Parse the embedded lexicon once. Each meaning keeps the semantic roles it
+// plays and the surface words (across every language) that evidence it.
+function meaningLexicon() {
+  if (cachedMeaningLexicon) return cachedMeaningLexicon;
+  const root = parseLinoTree(MEANINGS_LINO);
+  // meanings.lino wraps its records under a single top-level `meanings` node,
+  // so the records are its children (not the document root's).
+  const container = root.children.find((child) => child.name === "meanings") || root;
+  const meanings = [];
+  for (const node of container.children) {
+    if (node.name !== "meaning") continue;
+    const roles = [];
+    const words = [];
+    for (const child of node.children) {
+      if (child.name === "role") roles.push(child.value);
+      else if (child.name === "lexeme") {
+        for (const lexWord of child.children) {
+          if (lexWord.name === "word") words.push(lexWord.value);
+        }
+      }
+    }
+    meanings.push({ slug: node.value, roles, words });
+  }
+  cachedMeaningLexicon = meanings;
+  return cachedMeaningLexicon;
+}
+
+// Does `normalized` mention any surface word of any meaning carrying `role`?
+// Mirrors the CJK-substring vs. whitespace-token contract via containsProgramToken.
+function lexiconMentionsRole(role, normalized) {
+  return meaningLexicon().some(
+    (meaning) =>
+      meaning.roles.includes(role) &&
+      meaning.words.some((word) => containsProgramToken(normalized, word)),
+  );
+}
 
 function detectedProgramModifiers(normalized) {
   const slugs = [];
@@ -12745,14 +12920,13 @@ function writeProgramParameters(prompt) {
   return { language, task };
 }
 
-function hasAnyProgramToken(normalized, tokens) {
-  return tokens.some((token) => containsProgramToken(normalized, token));
-}
-
 function looksLikeBareProgramArtifactFollowUp(normalized) {
+  // Issue #386: a bare follow-up modifies an existing program artifact when the
+  // prompt evidences a program_artifact meaning *and* a program_modification
+  // meaning. The surface words live once in the seed; this code knows concepts.
   return (
-    hasAnyProgramToken(normalized, PROGRAM_FOLLOW_UP_REFERENTS) &&
-    hasAnyProgramToken(normalized, PROGRAM_FOLLOW_UP_ACTIONS)
+    lexiconMentionsRole(ROLE_PROGRAM_ARTIFACT, normalized) &&
+    lexiconMentionsRole(ROLE_PROGRAM_MODIFICATION, normalized)
   );
 }
 
