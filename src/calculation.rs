@@ -387,25 +387,17 @@ fn evaluate_linear_equation(expression: &str) -> Result<CalculationEvaluation, A
 }
 
 fn contains_word_operator(expression: &str) -> bool {
-    let lower = format!(" {} ", expression.to_lowercase());
-    [
-        " plus ",
-        " minus ",
-        " times ",
-        " multiplied by ",
-        " divided by ",
-        " modulo ",
-        " mod ",
-        " плюс ",
-        " минус ",
-        " умножить ",
-        " умножь ",
-        " умножить на ",
-        " разделить на ",
-        " делить на ",
-    ]
-    .iter()
-    .any(|operator| lower.contains(operator))
+    // Issue #386: the spelled operator vocabulary lives in the
+    // `arithmetic_operation` meanings (addition, subtraction, multiplication,
+    // division, modulo), not a literal array. Each operator surface is matched
+    // as a whole token — CJK surfaces as a substring, since those scripts have
+    // no inter-word spaces — the same boundary contract the original
+    // space-padded `.contains` check enforced for the English and Russian
+    // operators, now extended to every language the meanings lexicalise.
+    seed::lexicon().mentions_role(
+        seed::ROLE_ARITHMETIC_OPERATOR_WORD,
+        &expression.to_lowercase(),
+    )
 }
 
 /// Evaluate an expression, delegating calculator-supported syntax to

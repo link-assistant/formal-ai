@@ -781,6 +781,21 @@ bump: minor
   and 14 RUB inputs, rejects the unrelated words, and still resolves the
   "1000 рублей в долларах" → USD capture pinned by the calculator delegation and
   multilingual e2e tests (issue #386).
+- The calculator's spelled-operator detector (`contains_word_operator` in
+  `src/calculation.rs`) no longer carries a 14-element array of operator words.
+  The spelled operators now live as their own ontology: an `arithmetic_operation`
+  genus (`defined_by "action"`) with five operations beneath it — `addition`,
+  `subtraction`, `multiplication`, `division`, `modulo` — each `defined_by` that
+  genus and carrying its operator surfaces in English, Russian, Hindi and Chinese
+  (`data/seed/meanings-calculator.lino`). A new role
+  `ROLE_ARITHMETIC_OPERATOR_WORD` (`src/seed/roles.rs`) marks those surfaces, and
+  the detector reads them through `Lexicon::mentions_role`, which matches each
+  operator as a whole token (and CJK surfaces as a substring) — the same boundary
+  contract the former space-padded `.contains` checks enforced for the English and
+  Russian operators, now extended to every language the meanings lexicalise. The
+  pinned spelled-operator delegations ("two plus two", "nine multiplied by nine",
+  "шесть умножить на семь", "the fifth Fibonacci number multiplied by 10", …) keep
+  resolving through the existing Rust unit suite (issue #386).
 
 ### Fixed
 - The follow-up "Отмени сортировку" ("cancel the sorting") no longer returns
