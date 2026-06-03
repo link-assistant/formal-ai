@@ -34,6 +34,8 @@ export const MEANING_FILES = [
   "data/seed/meanings-policy.lino",
   "data/seed/meanings-docs.lino",
   "data/seed/meanings-skill-compiler.lino",
+  "data/seed/meanings-finance.lino",
+  "data/seed/meanings-definition-merge.lino",
 ];
 
 // Authoritative per-line JS string serializer (house quote style, matching the

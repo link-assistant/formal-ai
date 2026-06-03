@@ -807,3 +807,139 @@ pub const ROLE_SHELL_CAPABILITY_CUE: &str = "shell_capability_cue";
 /// is a tool-namespace bridge that stays in code; the cue surfaces live in the data.
 /// Carried by `network_capability_need`; read by the Rust skill compiler.
 pub const ROLE_NETWORK_CAPABILITY_CUE: &str = "network_capability_cue";
+/// Semantic role: a cue that a prompt is an investment word problem.
+///
+/// A word naming investing or an investment ("invest", "investment", "инвестиц",
+/// "निवेश", "投资"). Matched as a raw substring through
+/// [`crate::seed::Lexicon::mentions_role_raw`] after the prompt is lower-cased.
+/// The compound-interest handler requires this together with
+/// [`ROLE_INTEREST_CUE`] and [`ROLE_COMPOUNDING_ACTION_CUE`] before it answers.
+/// Carried by `investment`; read by the Rust compound-interest handler and its
+/// JS worker mirror.
+pub const ROLE_INVESTMENT_CUE: &str = "investment_cue";
+/// Semantic role: a cue that a prompt concerns financial interest.
+///
+/// A word naming interest in the money sense ("interest", "процент", "ब्याज",
+/// "利息"). Matched as a raw substring through
+/// [`crate::seed::Lexicon::mentions_role_raw`] after the prompt is lower-cased.
+/// Required by the compound-interest handler together with
+/// [`ROLE_INVESTMENT_CUE`] and [`ROLE_COMPOUNDING_ACTION_CUE`]. Carried by
+/// `interest_finance`; read by the Rust compound-interest handler and its JS
+/// worker mirror.
+pub const ROLE_INTEREST_CUE: &str = "interest_cue";
+/// Semantic role: a cue that interest is compounded.
+///
+/// A word naming compounding ("compound", "сложный процент", "चक्रवृद्धि",
+/// "复利"). Matched as a raw substring through
+/// [`crate::seed::Lexicon::mentions_role_raw`] after the prompt is lower-cased.
+/// Required by the compound-interest handler together with
+/// [`ROLE_INVESTMENT_CUE`] and [`ROLE_INTEREST_CUE`]. Carried by `compounding`;
+/// read by the Rust compound-interest handler and its JS worker mirror.
+pub const ROLE_COMPOUNDING_ACTION_CUE: &str = "compounding_action_cue";
+/// Semantic role: how often interest compounds.
+///
+/// A word naming a compounding frequency ("monthly", "quarterly", "weekly",
+/// "daily", "annually", "yearly"). Matched as a raw substring through
+/// [`crate::seed::Lexicon::meanings_with_role`] in declaration order so the
+/// finer frequencies are tried before the annual fallback. Each carrying meaning
+/// maps to a fixed number of periods per year by slug (`compounding_monthly`,
+/// `compounding_quarterly`, `compounding_weekly`, `compounding_daily`,
+/// `compounding_annual`). Read by the Rust compound-interest handler and its JS
+/// worker mirror.
+pub const ROLE_COMPOUNDING_FREQUENCY_CUE: &str = "compounding_frequency_cue";
+/// Semantic role: a request for a live, web-sourced exchange rate.
+///
+/// A phrase asking for a current or web exchange rate ("web", "current
+/// exchange", "current rate", "exchange rate"). Matched as a raw substring
+/// through [`crate::seed::Lexicon::mentions_role_raw`] after the prompt is
+/// lower-cased. The compound-interest handler reads it to add a caveat that web
+/// freshness is not independently verified. Carried by `live_rate_freshness`;
+/// read by the Rust compound-interest handler and its JS worker mirror.
+pub const ROLE_LIVE_RATE_FRESHNESS_CUE: &str = "live_rate_freshness_cue";
+/// Semantic role: the unit of a compound-interest term, the year.
+///
+/// A word naming the time unit a term is measured in ("year", "год", "वर्ष",
+/// "年"). Located as a raw substring through
+/// [`crate::seed::Lexicon::words_for_role`] so the handler can read the number
+/// immediately before the earliest occurrence as the number of years. Carried by
+/// `year_period`; read by the Rust compound-interest handler and its JS worker
+/// mirror.
+pub const ROLE_YEAR_UNIT_CUE: &str = "year_unit_cue";
+/// Semantic role: a request to convert money between currencies.
+///
+/// A word naming a currency conversion ("convert", "конвертир", "परिवर्तित",
+/// "转换"). Matched as a raw substring through
+/// [`crate::seed::Lexicon::mentions_role_raw`] after the prompt is lower-cased.
+/// The compound-interest handler requires it together with
+/// [`ROLE_FINAL_AMOUNT_REFERENCE`] before it converts a previously computed final
+/// amount. Carried by `conversion_action`; read by the Rust compound-interest
+/// handler and its JS worker mirror.
+pub const ROLE_CONVERSION_ACTION_CUE: &str = "conversion_action_cue";
+/// Semantic role: a reference to a previously computed final amount.
+///
+/// A phrase naming the final amount of a calculation ("final amount", "итоговая
+/// сумма", "अंतिम राशि", "最终金额"). Matched as a raw substring through
+/// [`crate::seed::Lexicon::mentions_role_raw`] after the prompt is lower-cased.
+/// The compound-interest handler requires it together with
+/// [`ROLE_CONVERSION_ACTION_CUE`] before it converts the prior final amount.
+/// Carried by `final_amount`; read by the Rust compound-interest handler and its
+/// JS worker mirror.
+pub const ROLE_FINAL_AMOUNT_REFERENCE: &str = "final_amount_reference";
+/// Semantic role: a surface form naming the euro.
+///
+/// A word or code naming the euro ("eur", "euro", "euros", "евро", "यूरो",
+/// "欧元"). Matched as a whole token through
+/// [`crate::seed::Lexicon::mentions_role`] (and by prefix in `currency_after`) so
+/// the compound-interest handler can decide whether to convert a final amount
+/// into euros. The ISO code identifier "EUR" stays in code; the surfaces live in
+/// the data. Carried by `euro`; read by the Rust compound-interest handler, the
+/// calculation rate handlers, and the JS worker.
+pub const ROLE_CURRENCY_EUR_REFERENCE: &str = "currency_eur_reference";
+/// Semantic role: a surface form naming the Russian ruble.
+///
+/// A word or code naming the ruble ("rub", "ruble", "rubles", "рубль", "रूबल",
+/// "卢布"). Matched as a whole token through
+/// [`crate::seed::Lexicon::mentions_role`] so the calculation rate handlers and
+/// the compound-interest worker can recognise a ruble currency code. The ISO code
+/// identifier "RUB" stays in code; the surfaces live in the data. Carried by
+/// `ruble`; read by the calculation rate handlers and the JS worker.
+pub const ROLE_CURRENCY_RUB_REFERENCE: &str = "currency_rub_reference";
+/// Semantic role: a request to merge definitions.
+///
+/// A word asking to merge or combine ("merge", "merged", "combine", "combined",
+/// "fuse", "fusion", "объедин", "विलय", "合并"). Matched as a raw substring
+/// through [`crate::seed::Lexicon::mentions_role_raw`] after the prompt is
+/// lower-cased. The definition-merge handler requires it together with
+/// [`ROLE_DEFINITION_ARTIFACT_REQUEST`]. Carried by `definition_merge_action`;
+/// read by the Rust definition-merge handler and its JS worker mirror.
+pub const ROLE_DEFINITION_MERGE_ACTION: &str = "definition_merge_action";
+/// Semantic role: a request for a definition, translation, or encyclopedia entry.
+///
+/// A word naming such an artifact ("definition", "definitions", "translation",
+/// "translations", "translated", "wikipedia", "определени", "परिभाषा", "定义").
+/// Matched as a raw substring through
+/// [`crate::seed::Lexicon::mentions_role_raw`] after the prompt is lower-cased.
+/// The definition-merge handler requires it together with
+/// [`ROLE_DEFINITION_MERGE_ACTION`]. Carried by `definition_artifact_request`;
+/// read by the Rust definition-merge handler and its JS worker mirror.
+pub const ROLE_DEFINITION_ARTIFACT_REQUEST: &str = "definition_artifact_request";
+/// Semantic role: a phrase introducing the term whose definitions are merged.
+///
+/// A prefix phrase such as "definitions of" or "translation for", carried as a
+/// prefix word form whose text before the slot marker is the phrase to locate.
+/// The definition-merge handler scans the forms in declaration order through
+/// [`crate::seed::Lexicon::role_word_forms`], filters to the prefix slot, finds
+/// the first whose prefix appears in the prompt, and takes the text after it as
+/// the term. The English forms are ordered longest-first so specific phrases win.
+/// Carried by `definition_merge_marker`; read by the Rust definition-merge
+/// handler and its JS worker mirror.
+pub const ROLE_DEFINITION_MERGE_MARKER: &str = "definition_merge_marker";
+/// Semantic role: a word that ends the term in a definition-merge prompt.
+///
+/// A boundary word such as "from", "using", "with", "by", "into", or "across".
+/// Read through [`crate::seed::Lexicon::words_for_role`], reconstructed as a
+/// space-padded token, and used to cut the extracted term at the earliest
+/// boundary so the trailing source or method is trimmed away. Carried by
+/// `definition_merge_tail_boundary`; read by the Rust definition-merge handler
+/// and its JS worker mirror.
+pub const ROLE_DEFINITION_MERGE_TAIL_BOUNDARY: &str = "definition_merge_tail_boundary";

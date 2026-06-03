@@ -56,6 +56,9 @@ pub const MEANINGS_POLICY_LINO: &str = include_str!("../../data/seed/meanings-po
 pub const MEANINGS_DOCS_LINO: &str = include_str!("../../data/seed/meanings-docs.lino");
 pub const MEANINGS_SKILL_COMPILER_LINO: &str =
     include_str!("../../data/seed/meanings-skill-compiler.lino");
+pub const MEANINGS_FINANCE_LINO: &str = include_str!("../../data/seed/meanings-finance.lino");
+pub const MEANINGS_DEFINITION_MERGE_LINO: &str =
+    include_str!("../../data/seed/meanings-definition-merge.lino");
 pub const GREETINGS_LINO: &str = include_str!("../../data/seed/greetings.lino");
 pub const IDENTITY_LINO: &str = include_str!("../../data/seed/identity.lino");
 pub const HELLO_WORLD_PROGRAMS_LINO: &str =
@@ -147,6 +150,11 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
             "data/seed/meanings-skill-compiler.lino",
             MEANINGS_SKILL_COMPILER_LINO,
         ),
+        ("data/seed/meanings-finance.lino", MEANINGS_FINANCE_LINO),
+        (
+            "data/seed/meanings-definition-merge.lino",
+            MEANINGS_DEFINITION_MERGE_LINO,
+        ),
         ("data/seed/greetings.lino", GREETINGS_LINO),
         ("data/seed/identity.lino", IDENTITY_LINO),
         (
@@ -191,4 +199,6 @@ pub const MEANING_FILES: &[&str] = &[
     MEANINGS_POLICY_LINO,
     MEANINGS_DOCS_LINO,
     MEANINGS_SKILL_COMPILER_LINO,
+    MEANINGS_FINANCE_LINO,
+    MEANINGS_DEFINITION_MERGE_LINO,
 ];

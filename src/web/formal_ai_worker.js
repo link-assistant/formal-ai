@@ -5950,17 +5950,22 @@ function appendCompoundConversionLines(
 }
 
 function parseCompoundInterestRequest(prompt, normalized) {
+  // The investment / interest / compounding cues are language-independent
+  // meanings carried by the finance lexicon; we test the raw substring of the
+  // already-normalized prompt against every surface form (the English forms
+  // reproduce the original invest/interest/compound markers, the other
+  // languages broaden coverage). Mirrors parse_compound_interest_request.
   if (
-    !(normalized.includes("invest") || normalized.includes("investment")) ||
-    !normalized.includes("interest") ||
-    !normalized.includes("compound")
+    !lexiconMentionsRoleSubstring(ROLE_INVESTMENT_CUE, normalized) ||
+    !lexiconMentionsRoleSubstring(ROLE_INTEREST_CUE, normalized) ||
+    !lexiconMentionsRoleSubstring(ROLE_COMPOUNDING_ACTION_CUE, normalized)
   ) {
     return null;
   }
   const principal = parseCompoundCurrencyAmount(prompt);
   const annualRatePercent = parseCompoundPercentBeforeSymbol(prompt);
   const compoundsPerYear = parseCompoundsPerYear(normalized);
-  const years = parseCompoundNumberBeforeKeyword(normalized, "year");
+  const years = parseCompoundYears(normalized);
   if (
     principal === null ||
     annualRatePercent === null ||
@@ -5980,7 +5985,13 @@ function parseCompoundInterestRequest(prompt, normalized) {
 }
 
 function parseFinalAmountConversionRequest(normalized, history) {
-  if (!normalized.includes("convert") || !normalized.includes("final amount")) {
+  // "convert" and "final amount" are themselves meanings: a conversion action
+  // applied to the final-amount reference produced by a prior turn. Mirrors
+  // parse_final_amount_conversion_request.
+  if (
+    !lexiconMentionsRoleSubstring(ROLE_CONVERSION_ACTION_CUE, normalized) ||
+    !lexiconMentionsRoleSubstring(ROLE_FINAL_AMOUNT_REFERENCE, normalized)
+  ) {
     return null;
   }
   const targetCurrency = targetCurrencyFromText(normalized);
@@ -6023,7 +6034,15 @@ function parseCompoundCurrencyAmount(prompt) {
   if (dollarIndex >= 0) {
     return parseCompoundNumberRight(text, dollarIndex + 1);
   }
-  const match = /([+-]?\d[\d,.]*)\s*(?:usd|dollars?)/i.exec(text);
+  // The spelled-out US-dollar markers are language data: reconstruct the regex
+  // alternation from the currency_usd_reference English surface forms (usd,
+  // dollar, dollars) instead of hardcoding them. Mirrors parse_currency_amount,
+  // which scans the same forms; the `$` glyph stays in code as a symbol.
+  const usdWords = wordsForRoleInLanguages(ROLE_CURRENCY_USD_REFERENCE, ["en"]);
+  if (!usdWords.length) return null;
+  const alternation = usdWords.map((word) => escapeRegExp(word)).join("|");
+  const pattern = new RegExp(`([+-]?\\d[\\d,.]*)\\s*(?:${alternation})`, "i");
+  const match = pattern.exec(text);
   return match ? parseCompoundNumberText(match[1]) : null;
 }
 
@@ -6033,54 +6052,75 @@ function parseCompoundPercentBeforeSymbol(prompt) {
   return percentIndex >= 0 ? parseCompoundNumberLeft(text, percentIndex) : null;
 }
 
-function parseCompoundNumberBeforeKeyword(text, keyword) {
-  const index = String(text || "").indexOf(keyword);
-  return index >= 0 ? parseCompoundNumberLeft(text, index) : null;
+function parseCompoundYears(normalized) {
+  // The duration unit is a meaning (year_unit_cue); locate the earliest of its
+  // surface forms (English "year", plus the other languages) and read the
+  // number to its left. Mirrors years_in_prompt.
+  const text = String(normalized || "");
+  let earliest = -1;
+  for (const word of wordsForRole(ROLE_YEAR_UNIT_CUE)) {
+    const index = text.indexOf(word);
+    if (index >= 0 && (earliest < 0 || index < earliest)) earliest = index;
+  }
+  return earliest >= 0 ? parseCompoundNumberLeft(text, earliest) : null;
 }
 
 function parseCompoundsPerYear(normalized) {
-  if (normalized.includes("monthly")) return 12;
-  if (normalized.includes("quarterly")) return 4;
-  if (normalized.includes("weekly")) return 52;
-  if (normalized.includes("daily")) return 365;
-  if (normalized.includes("annually") || normalized.includes("yearly")) return 1;
-  return null;
+  // The compounding frequency is a cluster of meanings (monthly, quarterly,
+  // weekly, daily, annual), each carrying its surface forms and listed in
+  // priority order in the finance lexicon. Pick the first whose surface appears
+  // in the prompt and map its slug to the periods-per-year count. Mirrors
+  // parse_compounds_per_year.
+  const meaning = meaningsWithRole(ROLE_COMPOUNDING_FREQUENCY_CUE).find((candidate) =>
+    candidate.words.some((word) => normalized.includes(word)),
+  );
+  return meaning ? compoundsPerYearForSlug(meaning.slug) : null;
+}
+
+function compoundsPerYearForSlug(slug) {
+  switch (slug) {
+    case "compounding_monthly":
+      return 12;
+    case "compounding_quarterly":
+      return 4;
+    case "compounding_weekly":
+      return 52;
+    case "compounding_daily":
+      return 365;
+    case "compounding_annual":
+      return 1;
+    default:
+      return null;
+  }
 }
 
 function targetCurrencyFromText(normalized) {
-  const padded = ` ${normalized} `;
+  // The target currency is whichever currency meaning the prompt names as a
+  // whole token. EUR wins over USD wins over RUB to preserve the original
+  // priority; the € glyph stays in code as a symbol alongside the EUR meaning.
+  // Token-bounded matching mirrors target_currency / mentions_role on the Rust
+  // side, so a code like "eur" never fires inside another word.
   if (
-    padded.includes(" eur ") ||
-    padded.includes(" euro ") ||
-    padded.includes(" euros ") ||
+    lexiconMentionsRole(ROLE_CURRENCY_EUR_REFERENCE, normalized) ||
     normalized.includes("€")
   ) {
     return "EUR";
   }
-  if (
-    padded.includes(" usd ") ||
-    padded.includes(" dollar ") ||
-    padded.includes(" dollars ")
-  ) {
+  if (lexiconMentionsRole(ROLE_CURRENCY_USD_REFERENCE, normalized)) {
     return "USD";
   }
-  if (
-    padded.includes(" rub ") ||
-    padded.includes(" ruble ") ||
-    padded.includes(" rubles ")
-  ) {
+  if (lexiconMentionsRole(ROLE_CURRENCY_RUB_REFERENCE, normalized)) {
     return "RUB";
   }
   return "";
 }
 
 function asksForWebRate(normalized) {
-  return (
-    normalized.includes("web") ||
-    normalized.includes("current exchange") ||
-    normalized.includes("current rate") ||
-    normalized.includes("exchange rate")
-  );
+  // "fetch the live/current rate from the web" is the live_rate_freshness_cue
+  // meaning; its surface forms (web, current exchange, current rate, exchange
+  // rate) live in the finance lexicon. Matched as raw substrings to mirror
+  // asks_for_web_rate / mentions_role_raw on the Rust side.
+  return lexiconMentionsRoleSubstring(ROLE_LIVE_RATE_FRESHNESS_CUE, normalized);
 }
 
 function compoundCurrencyRate(sourceCurrency, targetCurrency) {
@@ -7748,22 +7788,19 @@ function tryConceptLookup(prompt) {
 }
 
 function extractDefinitionMergeTerm(prompt, allowPlainConcept) {
+  // The intent is two meanings together: a definition_merge_action ("merge",
+  // "combine", "fuse", …) applied to a definition_artifact_request
+  // ("definition", "translation", "wikipedia", …). Both are matched as raw
+  // substrings of the normalized prompt, so inflected forms in every supported
+  // language are caught with no per-word list in code. Mirrors
+  // extract_definition_merge_term in src/solver_handlers/definition_merge.rs.
   const text = String(prompt || "");
   const normalized = normalizePrompt(text);
-  const asksMerge =
-    normalized.includes("merge") ||
-    normalized.includes("merged") ||
-    normalized.includes("combine") ||
-    normalized.includes("combined") ||
-    normalized.includes("fuse") ||
-    normalized.includes("fusion");
-  const asksDefinition =
-    normalized.includes("definition") ||
-    normalized.includes("definitions") ||
-    normalized.includes("translation") ||
-    normalized.includes("translations") ||
-    normalized.includes("translated") ||
-    normalized.includes("wikipedia");
+  const asksMerge = lexiconMentionsRoleSubstring(ROLE_DEFINITION_MERGE_ACTION, normalized);
+  const asksDefinition = lexiconMentionsRoleSubstring(
+    ROLE_DEFINITION_ARTIFACT_REQUEST,
+    normalized,
+  );
   if (!asksMerge || !asksDefinition) {
     if (allowPlainConcept) {
       const query = extractConceptQuery(text);
@@ -7772,22 +7809,15 @@ function extractDefinitionMergeTerm(prompt, allowPlainConcept) {
     return null;
   }
 
+  // The introducing phrases ("definitions of", "translation for", …) are
+  // definition_merge_marker prefix word forms; the literal before each slot
+  // marker is the phrase to locate. They are declared in the lexicon in the
+  // original priority order, so the first prefix that appears in the prompt
+  // wins and the text after it becomes the term.
   const lower = text.toLowerCase();
-  const markers = [
-    "translated definitions for ",
-    "translated definitions of ",
-    "wikipedia definitions for ",
-    "wikipedia definitions of ",
-    "definitions for ",
-    "definitions of ",
-    "definition for ",
-    "definition of ",
-    "translations for ",
-    "translations of ",
-    "translation for ",
-    "translation of ",
-  ];
-  for (const marker of markers) {
+  for (const form of roleWordForms(ROLE_DEFINITION_MERGE_MARKER)) {
+    if (form.slot !== "prefix") continue;
+    const marker = form.before;
     const index = lower.indexOf(marker);
     if (index < 0) continue;
     const candidate = trimDefinitionMergeTail(text.slice(index + marker.length));
@@ -7798,11 +7828,20 @@ function extractDefinitionMergeTerm(prompt, allowPlainConcept) {
 }
 
 function trimDefinitionMergeTail(value) {
+  // The boundary words that end the term ("from", "using", "with", …) are
+  // definition_merge_tail_boundary meanings; we reconstruct each as a
+  // space-padded token and cut at the earliest one we find. Only the English
+  // surface forms are consulted here: this is an English-frame heuristic, and
+  // the term itself may be in any language (e.g. the Russian preposition "в" is
+  // part of the term "реклама в Telegram", not a boundary). The other languages
+  // remain in the seed so the meaning stays fully self-describing. The quote and
+  // punctuation trim sets are typographic and stay in code. Mirrors
+  // trim_definition_merge_tail in src/solver_handlers/definition_merge.rs.
   const text = String(value || "");
   const lower = text.toLowerCase();
   let end = text.length;
-  for (const delimiter of [" from ", " using ", " with ", " by ", " into ", " across "]) {
-    const index = lower.indexOf(delimiter);
+  for (const word of wordsForRoleInLanguages(ROLE_DEFINITION_MERGE_TAIL_BOUNDARY, ["en"])) {
+    const index = lower.indexOf(` ${word} `);
     if (index >= 0) end = Math.min(end, index);
   }
   return text
@@ -13860,6 +13899,8 @@ const MEANINGS_LINO = [
   '        description "English ISO 4217 code for the United States dollar; a currency_usd_reference matched as a raw substring."',
   '      word "dollar"',
   '        description "English noun for the United States dollar; a currency_usd_reference matched as a raw substring so dollars is also caught."',
+  '      word "dollars"',
+  "        description \"English plural of dollar; a currency_usd_reference matched as a raw substring, kept explicitly so the surface list mirrors the original recognizer's USD markers.\"",
   '    lexeme "ru"',
   '      word "доллар"',
   '        description "Russian noun (romanized dollar); a currency_usd_reference matched as a raw substring so доллара and долларах are caught."',
@@ -13873,6 +13914,52 @@ const MEANINGS_LINO = [
   '    lexeme "zh"',
   '      word "美元"',
   '        description "Chinese noun (pinyin meiyuan, US dollar); a currency_usd_reference matched as a raw substring."',
+  '  meaning "euro"',
+  '    gloss "the euro, the currency abbreviated EUR. The currency_eur_reference role marks the surface forms that name the euro; the compound-interest handler reads it as a whole token to decide whether to convert a final amount into euros, and the calculation rate handlers read it to recognise a euro currency code. Defined as a kind of money."',
+  '    wiktionary "euro"',
+  '    defined_by "money"',
+  '    role "currency_eur_reference"',
+  '    lexeme "en"',
+  '      word "eur"',
+  '        description "English ISO 4217 code for the euro; a currency_eur_reference matched as a token-bounded word."',
+  '      word "euro"',
+  '        description "English noun for the euro; a currency_eur_reference matched as a token-bounded word."',
+  '      word "euros"',
+  '        description "English plural of euro; a currency_eur_reference matched as a token-bounded word, kept explicitly because token-bounded matching does not derive the plural from the singular."',
+  '    lexeme "ru"',
+  '      word "евро"',
+  '        description "Russian noun (romanized evro, euro), indeclinable; a currency_eur_reference matched as a token-bounded word."',
+  '    lexeme "hi"',
+  '      word "यूरो"',
+  '        description "Hindi noun (romanized yuro, euro); a currency_eur_reference matched as a token-bounded word."',
+  '    lexeme "zh"',
+  '      word "欧元"',
+  '        description "Chinese noun (pinyin ouyuan, euro); a currency_eur_reference matched as a token-bounded word."',
+  '  meaning "ruble"',
+  '    gloss "the Russian ruble, the currency abbreviated RUB. The currency_rub_reference role marks the surface forms that name the ruble; the calculation rate handlers and the compound-interest worker read it as a whole token to recognise a ruble currency code. Defined as a kind of money."',
+  '    wiktionary "ruble"',
+  '    defined_by "money"',
+  '    role "currency_rub_reference"',
+  '    lexeme "en"',
+  '      word "rub"',
+  '        description "English ISO 4217 code for the Russian ruble; a currency_rub_reference matched as a token-bounded word."',
+  '      word "ruble"',
+  '        description "English noun for the Russian ruble; a currency_rub_reference matched as a token-bounded word."',
+  '      word "rubles"',
+  '        description "English plural of ruble; a currency_rub_reference matched as a token-bounded word, kept explicitly because token-bounded matching does not derive the plural from the singular."',
+  '    lexeme "ru"',
+  '      word "рубль"',
+  '        description "Russian noun (romanized rubl, ruble); a currency_rub_reference matched as a token-bounded word."',
+  '      word "рублей"',
+  '        description "Russian genitive-plural noun (romanized rubley, rubles), the form used after most numbers; a currency_rub_reference matched as a token-bounded word."',
+  '      word "руб"',
+  '        description "Russian abbreviation (romanized rub) of рубль; a currency_rub_reference matched as a token-bounded word."',
+  '    lexeme "hi"',
+  '      word "रूबल"',
+  '        description "Hindi noun (romanized rubal, ruble); a currency_rub_reference matched as a token-bounded word."',
+  '    lexeme "zh"',
+  '      word "卢布"',
+  '        description "Chinese noun (pinyin lubu, ruble); a currency_rub_reference matched as a token-bounded word."',
   '  meaning "calculation_basis"',
   '    gloss "a phrase asking which value, rate, or method the assistant uses, applies, or takes as the basis when it calculates — the question side of a prompt like which rate do you use for calculations. The calculation_basis_reference role marks these surface forms; the calculator rate-basis handler requires this together with an exchange_rate reference and a us_dollar reference before it answers with the rate the calculator uses for USD to RUB. The forms are inflectable stems and fixed phrases matched as raw substrings, so they are caught regardless of surrounding inflection in every supported language."',
   '    wiktionary "calculation"',
@@ -20442,6 +20529,388 @@ const MEANINGS_LINO = [
   '        description "Chinese phrase (pinyin wangluo qingqiu, network request) naming an outbound call; a Han substring marker."',
   '      word "获取"',
   '        description "Chinese verb (pinyin huoqu, fetch) naming a remote retrieval; a Han substring marker."',
+  "meanings",
+  '  meaning "investment"',
+  '    gloss "the act of investing money — committing a principal sum so it can earn a return. The investment_cue role marks the surface forms that signal a prompt is a compound-interest word problem; the compound-interest handler requires this together with an interest_cue and a compounding_action_cue before it extracts the principal, rate, frequency and term. Matched as raw substrings so inflected forms are caught in every supported language."',
+  '    wiktionary "investment"',
+  '    defined_by "money"',
+  '    defined_by "action"',
+  '    role "investment_cue"',
+  '    lexeme "en"',
+  '      word "invest"',
+  '        description "English verb for committing money to earn a return; an investment_cue matched as a raw substring so investing and invested are also caught."',
+  '      word "investment"',
+  "        description \"English noun for a committed sum of money; an investment_cue matched as a raw substring, kept explicitly so the surface list mirrors the original recognizer's disjunction.\"",
+  '    lexeme "ru"',
+  '      word "инвестир"',
+  '        description "Russian verb stem (romanized investir, of инвестировать, to invest); an investment_cue matched as a raw substring so инвестировать and инвестируй are caught."',
+  '      word "инвестиц"',
+  '        description "Russian noun stem (romanized investits, of инвестиция, investment); an investment_cue matched as a raw substring so инвестиция and инвестиции are caught."',
+  '    lexeme "hi"',
+  '      word "निवेश"',
+  '        description "Hindi noun (romanized nivesh, investment); an investment_cue matched as a raw substring."',
+  '    lexeme "zh"',
+  '      word "投资"',
+  '        description "Chinese verb (pinyin touzi, to invest); an investment_cue matched as a raw substring."',
+  '  meaning "interest_finance"',
+  '    gloss "interest in the financial sense — the charge paid for the use of money, expressed as a periodic rate on a principal. The interest_cue role marks the surface forms that signal a prompt is about interest; the compound-interest handler requires this together with an investment_cue and a compounding_action_cue before it answers. Matched as raw substrings so inflected forms are caught in every supported language."',
+  '    wiktionary "interest"',
+  '    defined_by "money"',
+  '    role "interest_cue"',
+  '    lexeme "en"',
+  '      word "interest"',
+  '        description "English noun for the financial charge on borrowed or invested money; an interest_cue matched as a raw substring."',
+  '    lexeme "ru"',
+  '      word "процент"',
+  '        description "Russian noun (romanized protsent, interest or percent); an interest_cue matched as a raw substring so проценты and процентов are caught."',
+  '    lexeme "hi"',
+  '      word "ब्याज"',
+  '        description "Hindi noun (romanized byaj, interest); an interest_cue matched as a raw substring."',
+  '    lexeme "zh"',
+  '      word "利息"',
+  '        description "Chinese noun (pinyin lixi, interest); an interest_cue matched as a raw substring."',
+  '  meaning "compounding"',
+  '    gloss "compounding — adding earned interest back to the principal so that it, in turn, earns further interest. The compounding_action_cue role marks the surface forms that signal a compound-interest problem; the compound-interest handler requires this together with an investment_cue and an interest_cue before it answers. Matched as raw substrings so inflected forms are caught in every supported language."',
+  '    wiktionary "compound interest"',
+  '    defined_by "action"',
+  '    defined_by "money"',
+  '    role "compounding_action_cue"',
+  '    lexeme "en"',
+  '      word "compound"',
+  '        description "English verb for adding interest to principal so it earns further interest; a compounding_action_cue matched as a raw substring so compounded and compounding are also caught."',
+  '    lexeme "ru"',
+  '      word "сложный процент"',
+  '        description "Russian phrase (romanized slozhnyy protsent, compound interest); a compounding_action_cue matched as a raw substring."',
+  '      word "капитализаци"',
+  '        description "Russian noun stem (romanized kapitalizatsi, of капитализация, capitalization of interest); a compounding_action_cue matched as a raw substring so капитализация and капитализации are caught."',
+  '    lexeme "hi"',
+  '      word "चक्रवृद्धि"',
+  '        description "Hindi noun (romanized chakravriddhi, compounding); a compounding_action_cue matched as a raw substring."',
+  '    lexeme "zh"',
+  '      word "复利"',
+  '        description "Chinese noun (pinyin fuli, compound interest); a compounding_action_cue matched as a raw substring."',
+  '  meaning "compounding_monthly"',
+  '    gloss "compounding once a month — twelve compounding periods per year. A specialization of compounding by frequency. The compounding_frequency_cue role marks the surface forms that signal how often interest compounds; the compound-interest handler reads the first frequency it finds, in declaration order, so monthly is tried before the rarer frequencies. Matched as raw substrings in every supported language."',
+  '    wiktionary "monthly"',
+  '    defined_by "compounding"',
+  '    role "compounding_frequency_cue"',
+  '    lexeme "en"',
+  '      word "monthly"',
+  '        description "English adverb for once a month; a compounding_frequency_cue matched as a raw substring, mapping to twelve compounding periods per year."',
+  '    lexeme "ru"',
+  '      word "ежемесячн"',
+  '        description "Russian adjective stem (romanized ezhemesyachn, of ежемесячный, monthly); a compounding_frequency_cue matched as a raw substring so ежемесячно and ежемесячное are caught."',
+  '    lexeme "hi"',
+  '      word "मासिक"',
+  '        description "Hindi adjective (romanized masik, monthly); a compounding_frequency_cue matched as a raw substring."',
+  '    lexeme "zh"',
+  '      word "每月"',
+  '        description "Chinese adverb (pinyin meiyue, every month); a compounding_frequency_cue matched as a raw substring."',
+  '  meaning "compounding_quarterly"',
+  '    gloss "compounding once a quarter — four compounding periods per year. A specialization of compounding by frequency. The compounding_frequency_cue role marks the surface forms; the compound-interest handler reads the first frequency it finds, in declaration order. Matched as raw substrings in every supported language."',
+  '    wiktionary "quarterly"',
+  '    defined_by "compounding"',
+  '    role "compounding_frequency_cue"',
+  '    lexeme "en"',
+  '      word "quarterly"',
+  '        description "English adverb for once a quarter; a compounding_frequency_cue matched as a raw substring, mapping to four compounding periods per year."',
+  '    lexeme "ru"',
+  '      word "ежеквартальн"',
+  '        description "Russian adjective stem (romanized ezhekvartaln, of ежеквартальный, quarterly); a compounding_frequency_cue matched as a raw substring so ежеквартально and ежеквартальное are caught."',
+  '    lexeme "hi"',
+  '      word "त्रैमासिक"',
+  '        description "Hindi adjective (romanized traimasik, quarterly); a compounding_frequency_cue matched as a raw substring."',
+  '    lexeme "zh"',
+  '      word "每季度"',
+  '        description "Chinese adverb (pinyin meijidu, every quarter); a compounding_frequency_cue matched as a raw substring."',
+  '  meaning "compounding_weekly"',
+  '    gloss "compounding once a week — fifty-two compounding periods per year. A specialization of compounding by frequency. The compounding_frequency_cue role marks the surface forms; the compound-interest handler reads the first frequency it finds, in declaration order. Matched as raw substrings in every supported language."',
+  '    wiktionary "weekly"',
+  '    defined_by "compounding"',
+  '    role "compounding_frequency_cue"',
+  '    lexeme "en"',
+  '      word "weekly"',
+  '        description "English adverb for once a week; a compounding_frequency_cue matched as a raw substring, mapping to fifty-two compounding periods per year."',
+  '    lexeme "ru"',
+  '      word "еженедельн"',
+  '        description "Russian adjective stem (romanized ezhenedeln, of еженедельный, weekly); a compounding_frequency_cue matched as a raw substring so еженедельно and еженедельное are caught."',
+  '    lexeme "hi"',
+  '      word "साप्ताहिक"',
+  '        description "Hindi adjective (romanized saptahik, weekly); a compounding_frequency_cue matched as a raw substring."',
+  '    lexeme "zh"',
+  '      word "每周"',
+  '        description "Chinese adverb (pinyin meizhou, every week); a compounding_frequency_cue matched as a raw substring."',
+  '  meaning "compounding_daily"',
+  '    gloss "compounding once a day — three hundred sixty-five compounding periods per year. A specialization of compounding by frequency. The compounding_frequency_cue role marks the surface forms; the compound-interest handler reads the first frequency it finds, in declaration order. Matched as raw substrings in every supported language."',
+  '    wiktionary "daily"',
+  '    defined_by "compounding"',
+  '    role "compounding_frequency_cue"',
+  '    lexeme "en"',
+  '      word "daily"',
+  '        description "English adverb for once a day; a compounding_frequency_cue matched as a raw substring, mapping to three hundred sixty-five compounding periods per year."',
+  '    lexeme "ru"',
+  '      word "ежедневн"',
+  '        description "Russian adjective stem (romanized ezhednevn, of ежедневный, daily); a compounding_frequency_cue matched as a raw substring so ежедневно and ежедневное are caught."',
+  '    lexeme "hi"',
+  '      word "दैनिक"',
+  '        description "Hindi adjective (romanized dainik, daily); a compounding_frequency_cue matched as a raw substring."',
+  '    lexeme "zh"',
+  '      word "每日"',
+  '        description "Chinese adverb (pinyin meiri, every day); a compounding_frequency_cue matched as a raw substring."',
+  '  meaning "compounding_annual"',
+  '    gloss "compounding once a year — a single compounding period per year. A specialization of compounding by frequency. The compounding_frequency_cue role marks the surface forms; the compound-interest handler reads the first frequency it finds, in declaration order, so this is the fallback when no finer frequency is named. Matched as raw substrings in every supported language."',
+  '    wiktionary "annually"',
+  '    defined_by "compounding"',
+  '    role "compounding_frequency_cue"',
+  '    lexeme "en"',
+  '      word "annually"',
+  '        description "English adverb for once a year; a compounding_frequency_cue matched as a raw substring, mapping to one compounding period per year."',
+  '      word "yearly"',
+  "        description \"English adverb for once a year, a synonym of annually; a compounding_frequency_cue matched as a raw substring, kept explicitly so the surface list mirrors the original recognizer's disjunction.\"",
+  '    lexeme "ru"',
+  '      word "ежегодн"',
+  '        description "Russian adjective stem (romanized ezhegodn, of ежегодный, annual); a compounding_frequency_cue matched as a raw substring so ежегодно and ежегодное are caught."',
+  '    lexeme "hi"',
+  '      word "वार्षिक"',
+  '        description "Hindi adjective (romanized varshik, annual); a compounding_frequency_cue matched as a raw substring."',
+  '    lexeme "zh"',
+  '      word "每年"',
+  '        description "Chinese adverb (pinyin meinian, every year); a compounding_frequency_cue matched as a raw substring."',
+  '  meaning "live_rate_freshness"',
+  '    gloss "a request for a live, web-sourced, up-to-the-minute exchange rate rather than a locally cached one. The live_rate_freshness_cue role marks the surface forms; the compound-interest handler reads it to add a caveat that web freshness is not independently verified, while still answering from the local calculator. A freshness qualifier on an exchange_rate. Matched as raw substrings so compound forms are caught in every supported language."',
+  '    wiktionary "exchange rate"',
+  '    defined_by "exchange_rate"',
+  '    defined_by "concept"',
+  '    role "live_rate_freshness_cue"',
+  '    lexeme "en"',
+  '      word "web"',
+  '        description "English noun for the World Wide Web as a live data source; a live_rate_freshness_cue matched as a raw substring."',
+  '      word "current exchange"',
+  '        description "English fragment asking for the current exchange of currencies; a live_rate_freshness_cue matched as a raw substring."',
+  '      word "current rate"',
+  '        description "English fragment asking for the current rate; a live_rate_freshness_cue matched as a raw substring."',
+  '      word "exchange rate"',
+  '        description "English compound noun for the price of one currency in another, read here as a request for its live value; a live_rate_freshness_cue matched as a raw substring."',
+  '    lexeme "ru"',
+  '      word "текущий курс"',
+  '        description "Russian phrase (romanized tekushchiy kurs, current rate); a live_rate_freshness_cue matched as a raw substring."',
+  '      word "актуальный курс"',
+  '        description "Russian phrase (romanized aktualnyy kurs, up-to-date rate); a live_rate_freshness_cue matched as a raw substring."',
+  '    lexeme "hi"',
+  '      word "वर्तमान दर"',
+  '        description "Hindi phrase (romanized vartaman dar, current rate); a live_rate_freshness_cue matched as a raw substring."',
+  '    lexeme "zh"',
+  '      word "实时汇率"',
+  '        description "Chinese phrase (pinyin shishi huilu, real-time exchange rate); a live_rate_freshness_cue matched as a raw substring."',
+  '  meaning "year_period"',
+  '    gloss "a year — the unit of time a compound-interest term is measured in. The year_unit_cue role marks the surface forms; the compound-interest handler locates the cue and reads the number immediately before it as the number of years. A time concept. Located as raw substrings in every supported language."',
+  '    wiktionary "year"',
+  '    defined_by "concept"',
+  '    role "year_unit_cue"',
+  '    lexeme "en"',
+  '      word "year"',
+  '        description "English noun for the time unit of a year; a year_unit_cue located as a raw substring so years is also caught and the preceding number can be read."',
+  '    lexeme "ru"',
+  '      word "год"',
+  '        description "Russian noun (romanized god, year); a year_unit_cue located as a raw substring so года and годов are caught."',
+  '      word "лет"',
+  '        description "Russian genitive-plural noun (romanized let, years); a year_unit_cue located as a raw substring, the form used after most numbers."',
+  '    lexeme "hi"',
+  '      word "वर्ष"',
+  '        description "Hindi noun (romanized varsh, year); a year_unit_cue located as a raw substring."',
+  '    lexeme "zh"',
+  '      word "年"',
+  '        description "Chinese noun (pinyin nian, year); a year_unit_cue located as a raw substring."',
+  '  meaning "conversion_action"',
+  '    gloss "converting an amount of money from one currency into another. The conversion_action_cue role marks the surface forms; the compound-interest handler requires it together with a final_amount_reference before it converts a previously computed final amount. Matched as raw substrings so inflected forms are caught in every supported language."',
+  '    wiktionary "convert"',
+  '    defined_by "action"',
+  '    defined_by "money"',
+  '    role "conversion_action_cue"',
+  '    lexeme "en"',
+  '      word "convert"',
+  '        description "English verb for changing one currency into another; a conversion_action_cue matched as a raw substring so converted and converting are also caught."',
+  '    lexeme "ru"',
+  '      word "конвертир"',
+  '        description "Russian verb stem (romanized konvertir, of конвертировать, to convert); a conversion_action_cue matched as a raw substring so конвертировать and конвертируй are caught."',
+  '    lexeme "hi"',
+  '      word "परिवर्तित"',
+  '        description "Hindi adjective (romanized parivartit, converted); a conversion_action_cue matched as a raw substring."',
+  '    lexeme "zh"',
+  '      word "转换"',
+  '        description "Chinese verb (pinyin zhuanhuan, to convert); a conversion_action_cue matched as a raw substring."',
+  '  meaning "final_amount"',
+  '    gloss "the final amount — the computed result of a compound-interest calculation that a follow-up turn may ask to convert. The final_amount_reference role marks the surface forms; the compound-interest handler requires it together with a conversion_action_cue before it reads the prior final amount and converts it. A kind of money. Matched as raw substrings so phrasings are caught in every supported language."',
+  '    wiktionary "amount"',
+  '    defined_by "money"',
+  '    role "final_amount_reference"',
+  '    lexeme "en"',
+  '      word "final amount"',
+  '        description "English compound noun for the computed result of the calculation; a final_amount_reference matched as a raw substring."',
+  '    lexeme "ru"',
+  '      word "итоговая сумма"',
+  '        description "Russian phrase (romanized itogovaya summa, final amount); a final_amount_reference matched as a raw substring."',
+  '    lexeme "hi"',
+  '      word "अंतिम राशि"',
+  '        description "Hindi phrase (romanized antim rashi, final amount); a final_amount_reference matched as a raw substring."',
+  '    lexeme "zh"',
+  '      word "最终金额"',
+  "        description \"Chinese phrase (pinyin zuizhong jin'e, final amount); a final_amount_reference matched as a raw substring.\"",
+  "meanings",
+  '  meaning "definition_merge_action"',
+  '    gloss "merging two or more definitions, translations, or encyclopedia entries into a single combined answer. The definition_merge_action role marks the surface forms that ask for such a merge; the definition-merge handler requires this together with a definition_artifact_request before it looks the term up and combines its definitions. Matched as raw substrings so inflected forms are caught in every supported language."',
+  '    wiktionary "merge"',
+  '    defined_by "action"',
+  '    role "definition_merge_action"',
+  '    lexeme "en"',
+  '      word "merge"',
+  '        description "English verb for combining things into one; a definition_merge_action matched as a raw substring so merges and merging are also caught."',
+  '      word "merged"',
+  "        description \"English past participle of merge; a definition_merge_action matched as a raw substring, kept explicitly so the surface list mirrors the original recognizer's disjunction.\"",
+  '      word "combine"',
+  '        description "English verb for joining things together; a definition_merge_action matched as a raw substring so combines and combining are also caught."',
+  '      word "combined"',
+  "        description \"English past participle of combine; a definition_merge_action matched as a raw substring, kept explicitly so the surface list mirrors the original recognizer's disjunction.\"",
+  '      word "fuse"',
+  '        description "English verb for blending things into one; a definition_merge_action matched as a raw substring so fuses and fusing are also caught."',
+  '      word "fusion"',
+  '        description "English noun for a blending into one; a definition_merge_action matched as a raw substring, kept explicitly because fuse is not a substring of fusion."',
+  '    lexeme "ru"',
+  '      word "объедин"',
+  '        description "Russian verb stem (romanized obyedin, of объединить, to merge or combine); a definition_merge_action matched as a raw substring so объедини and объединить are caught."',
+  '      word "слия"',
+  '        description "Russian noun stem (romanized sliya, of слияние, fusion); a definition_merge_action matched as a raw substring so слияние and слияния are caught."',
+  '    lexeme "hi"',
+  '      word "विलय"',
+  '        description "Hindi noun (romanized vilay, merger); a definition_merge_action matched as a raw substring."',
+  '      word "संयोजन"',
+  '        description "Hindi noun (romanized sanyojan, combination); a definition_merge_action matched as a raw substring."',
+  '    lexeme "zh"',
+  '      word "合并"',
+  '        description "Chinese verb (pinyin hebing, to merge); a definition_merge_action matched as a raw substring."',
+  '      word "融合"',
+  '        description "Chinese verb (pinyin ronghe, to fuse); a definition_merge_action matched as a raw substring."',
+  '  meaning "definition_artifact_request"',
+  '    gloss "a request for a definition, a translation, or a Wikipedia entry — the artifacts the definition-merge handler combines. The definition_artifact_request role marks these surface forms; the handler requires this together with a definition_merge_action before it merges definitions of a term. Matched as raw substrings so inflected forms are caught in every supported language."',
+  '    wiktionary "definition"',
+  '    defined_by "inquiry"',
+  '    role "definition_artifact_request"',
+  '    lexeme "en"',
+  '      word "definition"',
+  '        description "English noun for a statement of meaning; a definition_artifact_request matched as a raw substring so definitions is also caught."',
+  '      word "definitions"',
+  "        description \"English plural of definition; a definition_artifact_request matched as a raw substring, kept explicitly so the surface list mirrors the original recognizer's disjunction.\"",
+  '      word "translation"',
+  '        description "English noun for a rendering into another language; a definition_artifact_request matched as a raw substring so translations is also caught."',
+  '      word "translations"',
+  "        description \"English plural of translation; a definition_artifact_request matched as a raw substring, kept explicitly so the surface list mirrors the original recognizer's disjunction.\"",
+  '      word "translated"',
+  '        description "English past participle of translate; a definition_artifact_request matched as a raw substring."',
+  '      word "wikipedia"',
+  '        description "English proper noun for the Wikipedia encyclopedia, a source of definitions; a definition_artifact_request matched as a raw substring."',
+  '    lexeme "ru"',
+  '      word "определени"',
+  '        description "Russian noun stem (romanized opredeleni, of определение, definition); a definition_artifact_request matched as a raw substring so определение and определения are caught."',
+  '      word "перевод"',
+  '        description "Russian noun (romanized perevod, translation); a definition_artifact_request matched as a raw substring so перевода and переводы are caught."',
+  '      word "википеди"',
+  '        description "Russian noun stem (romanized vikipedi, of Википедия, Wikipedia); a definition_artifact_request matched as a raw substring so Википедия and Википедии are caught."',
+  '    lexeme "hi"',
+  '      word "परिभाषा"',
+  '        description "Hindi noun (romanized paribhasha, definition); a definition_artifact_request matched as a raw substring."',
+  '      word "अनुवाद"',
+  '        description "Hindi noun (romanized anuvad, translation); a definition_artifact_request matched as a raw substring."',
+  '    lexeme "zh"',
+  '      word "定义"',
+  '        description "Chinese noun (pinyin dingyi, definition); a definition_artifact_request matched as a raw substring."',
+  '      word "翻译"',
+  '        description "Chinese noun (pinyin fanyi, translation); a definition_artifact_request matched as a raw substring."',
+  '  meaning "definition_merge_marker"',
+  "    gloss \"a phrase that introduces the term whose definitions are to be merged — for example definitions of or translation for — immediately followed by the term itself. The definition_merge_marker role carries these as prefix word forms whose text before the slot marker is the phrase to locate; the definition-merge handler scans them in declaration order, finds the first whose prefix appears in the prompt, and takes the text after it as the term. The English forms are listed in the original recognizer's priority order so longer, more specific phrases win before shorter ones.\"",
+  '    wiktionary "definition"',
+  '    defined_by "inquiry"',
+  '    role "definition_merge_marker"',
+  '    lexeme "en"',
+  '      word "translated definitions for …"',
+  "        description \"English prefix 'translated definitions for'; a definition_merge_marker whose prefix before the slot is located and stripped to leave the term, tried first as the longest, most specific phrase.\"",
+  '      word "translated definitions of …"',
+  "        description \"English prefix 'translated definitions of'; a definition_merge_marker whose prefix before the slot is located and stripped to leave the term.\"",
+  '      word "wikipedia definitions for …"',
+  "        description \"English prefix 'wikipedia definitions for'; a definition_merge_marker whose prefix before the slot is located and stripped to leave the term.\"",
+  '      word "wikipedia definitions of …"',
+  "        description \"English prefix 'wikipedia definitions of'; a definition_merge_marker whose prefix before the slot is located and stripped to leave the term.\"",
+  '      word "definitions for …"',
+  "        description \"English prefix 'definitions for'; a definition_merge_marker whose prefix before the slot is located and stripped to leave the term.\"",
+  '      word "definitions of …"',
+  "        description \"English prefix 'definitions of'; a definition_merge_marker whose prefix before the slot is located and stripped to leave the term.\"",
+  '      word "definition for …"',
+  "        description \"English prefix 'definition for'; a definition_merge_marker whose prefix before the slot is located and stripped to leave the term.\"",
+  '      word "definition of …"',
+  "        description \"English prefix 'definition of'; a definition_merge_marker whose prefix before the slot is located and stripped to leave the term.\"",
+  '      word "translations for …"',
+  "        description \"English prefix 'translations for'; a definition_merge_marker whose prefix before the slot is located and stripped to leave the term.\"",
+  '      word "translations of …"',
+  "        description \"English prefix 'translations of'; a definition_merge_marker whose prefix before the slot is located and stripped to leave the term.\"",
+  '      word "translation for …"',
+  "        description \"English prefix 'translation for'; a definition_merge_marker whose prefix before the slot is located and stripped to leave the term.\"",
+  '      word "translation of …"',
+  "        description \"English prefix 'translation of'; a definition_merge_marker whose prefix before the slot is located and stripped to leave the term, tried last as the shortest phrase.\"",
+  '    lexeme "ru"',
+  '      word "переведенные определения для …"',
+  '        description "Russian prefix (romanized perevedennye opredeleniya dlya, translated definitions for); a definition_merge_marker whose prefix before the slot is located and stripped to leave the term."',
+  '      word "определения для …"',
+  '        description "Russian prefix (romanized opredeleniya dlya, definitions for); a definition_merge_marker whose prefix before the slot is located and stripped to leave the term."',
+  '      word "определение …"',
+  '        description "Russian prefix (romanized opredelenie, definition of); a definition_merge_marker whose prefix before the slot is located and stripped to leave the term that follows in the genitive."',
+  '      word "перевод …"',
+  '        description "Russian prefix (romanized perevod, translation of); a definition_merge_marker whose prefix before the slot is located and stripped to leave the term."',
+  '    lexeme "hi"',
+  '      word "की परिभाषाएँ …"',
+  '        description "Hindi best-effort prefix (romanized ki paribhashaen, definitions of); a definition_merge_marker whose prefix before the slot is located and stripped to leave the term."',
+  '      word "का अनुवाद …"',
+  '        description "Hindi best-effort prefix (romanized ka anuvad, translation of); a definition_merge_marker whose prefix before the slot is located and stripped to leave the term."',
+  '    lexeme "zh"',
+  '      word "的定义 …"',
+  "        description \"Chinese best-effort prefix (pinyin de dingyi, 's definition); a definition_merge_marker whose prefix before the slot is located and stripped to leave the term.\"",
+  '      word "的翻译 …"',
+  "        description \"Chinese best-effort prefix (pinyin de fanyi, 's translation); a definition_merge_marker whose prefix before the slot is located and stripped to leave the term.\"",
+  '  meaning "definition_merge_tail_boundary"',
+  '    gloss "a word that ends the term in a definition-merge prompt — once the term has been located, any text from the first such boundary word onward (the source, the method, the destination) is trimmed away. The definition_merge_tail_boundary role marks these forms; the handler reconstructs each as a space-padded token and cuts the extracted term at the earliest one it finds. Defined as a relation between the term and what follows it."',
+  '    wiktionary "from"',
+  '    defined_by "relation"',
+  '    role "definition_merge_tail_boundary"',
+  '    lexeme "en"',
+  '      word "from"',
+  '        description "English preposition introducing a source; a definition_merge_tail_boundary reconstructed as a space-padded token, marking where the term ends."',
+  '      word "using"',
+  '        description "English preposition introducing a method; a definition_merge_tail_boundary reconstructed as a space-padded token, marking where the term ends."',
+  '      word "with"',
+  '        description "English preposition introducing an accompaniment; a definition_merge_tail_boundary reconstructed as a space-padded token, marking where the term ends."',
+  '      word "by"',
+  '        description "English preposition introducing an agent or means; a definition_merge_tail_boundary reconstructed as a space-padded token, marking where the term ends."',
+  '      word "into"',
+  '        description "English preposition introducing a destination; a definition_merge_tail_boundary reconstructed as a space-padded token, marking where the term ends."',
+  '      word "across"',
+  '        description "English preposition introducing a span; a definition_merge_tail_boundary reconstructed as a space-padded token, marking where the term ends."',
+  '    lexeme "ru"',
+  '      word "из"',
+  '        description "Russian preposition (romanized iz, from) introducing a source; a definition_merge_tail_boundary reconstructed as a space-padded token, marking where the term ends."',
+  '      word "с"',
+  '        description "Russian preposition (romanized s, with or from) introducing an accompaniment or source; a definition_merge_tail_boundary reconstructed as a space-padded token, marking where the term ends."',
+  '      word "по"',
+  '        description "Russian preposition (romanized po, by) introducing a means; a definition_merge_tail_boundary reconstructed as a space-padded token, marking where the term ends."',
+  '      word "в"',
+  '        description "Russian preposition (romanized v, into) introducing a destination; a definition_merge_tail_boundary reconstructed as a space-padded token, marking where the term ends."',
+  '    lexeme "hi"',
+  '      word "से"',
+  '        description "Hindi postposition (romanized se, from) introducing a source; a definition_merge_tail_boundary reconstructed as a space-padded token, marking where the term ends."',
+  '      word "के साथ"',
+  '        description "Hindi postposition (romanized ke saath, with) introducing an accompaniment; a definition_merge_tail_boundary reconstructed as a space-padded token, marking where the term ends."',
+  '    lexeme "zh"',
+  '      word "从"',
+  '        description "Chinese preposition (pinyin cong, from) introducing a source; a definition_merge_tail_boundary reconstructed as a space-padded token, marking where the term ends."',
+  '      word "使用"',
+  '        description "Chinese verb (pinyin shiyong, using) introducing a method; a definition_merge_tail_boundary reconstructed as a space-padded token, marking where the term ends."',
 ].join("\n");
 
 // Semantic role: a thing a program produces that a later turn can refer back to
@@ -23433,6 +23902,40 @@ const ROLE_CIRCULAR_JOKE_PHRASE = "circular_joke_phrase";
 const ROLE_EXCHANGE_RATE_REFERENCE = "exchange_rate_reference";
 const ROLE_CURRENCY_USD_REFERENCE = "currency_usd_reference";
 const ROLE_CALCULATION_BASIS_REFERENCE = "calculation_basis_reference";
+
+// Issue #386 compound-interest / currency-conversion roles — mirror the
+// ROLE_INVESTMENT_CUE, ROLE_INTEREST_CUE, ROLE_COMPOUNDING_ACTION_CUE,
+// ROLE_COMPOUNDING_FREQUENCY_CUE, ROLE_LIVE_RATE_FRESHNESS_CUE,
+// ROLE_YEAR_UNIT_CUE, ROLE_CONVERSION_ACTION_CUE, ROLE_FINAL_AMOUNT_REFERENCE,
+// ROLE_CURRENCY_EUR_REFERENCE and ROLE_CURRENCY_RUB_REFERENCE consts in
+// src/seed/roles.rs. Surfaces live in data/seed/meanings-finance.lino (the
+// investment / interest / compounding / frequency / live-rate / year /
+// conversion / final-amount forms) and data/seed/meanings-calculator.lino (the
+// euro and ruble currency references), read by parseCompoundInterestRequest,
+// parseCompoundsPerYear, parseCompoundYears, targetCurrencyFromText,
+// asksForWebRate, parseFinalAmountConversionRequest and currencyCodeFromWord —
+// the JS mirror of the compound_interest.rs recognizers.
+const ROLE_INVESTMENT_CUE = "investment_cue";
+const ROLE_INTEREST_CUE = "interest_cue";
+const ROLE_COMPOUNDING_ACTION_CUE = "compounding_action_cue";
+const ROLE_COMPOUNDING_FREQUENCY_CUE = "compounding_frequency_cue";
+const ROLE_LIVE_RATE_FRESHNESS_CUE = "live_rate_freshness_cue";
+const ROLE_YEAR_UNIT_CUE = "year_unit_cue";
+const ROLE_CONVERSION_ACTION_CUE = "conversion_action_cue";
+const ROLE_FINAL_AMOUNT_REFERENCE = "final_amount_reference";
+const ROLE_CURRENCY_EUR_REFERENCE = "currency_eur_reference";
+const ROLE_CURRENCY_RUB_REFERENCE = "currency_rub_reference";
+
+// Issue #386 definition-merge roles — mirror the ROLE_DEFINITION_MERGE_ACTION,
+// ROLE_DEFINITION_ARTIFACT_REQUEST, ROLE_DEFINITION_MERGE_MARKER and
+// ROLE_DEFINITION_MERGE_TAIL_BOUNDARY consts in src/seed/roles.rs. Surfaces
+// live in data/seed/meanings-definition-merge.lino, read by
+// extractDefinitionMergeTerm and trimDefinitionMergeTail — the JS mirror of the
+// definition_merge.rs recognizers.
+const ROLE_DEFINITION_MERGE_ACTION = "definition_merge_action";
+const ROLE_DEFINITION_ARTIFACT_REQUEST = "definition_artifact_request";
+const ROLE_DEFINITION_MERGE_MARKER = "definition_merge_marker";
+const ROLE_DEFINITION_MERGE_TAIL_BOUNDARY = "definition_merge_tail_boundary";
 
 // Issue #386 meta-explanation roles — mirror ROLE_ASSISTANT_SELF_REFERENCE and
 // ROLE_ARCHITECTURE_CONCEPT in src/seed/roles.rs. Surfaces (the assistant's
