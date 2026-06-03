@@ -1523,51 +1523,16 @@ const ARITHMETIC_WORD_TOKENS = new Map([
   ["mod", "%"],
 ]);
 
-const ARITHMETIC_WORD_OPERATORS = [
-  " plus ",
-  " minus ",
-  " times ",
-  " multiplied by ",
-  " divided by ",
-  " modulo ",
-  " mod ",
-  " плюс ",
-  " минус ",
-  " умножить ",
-  " умножь ",
-  " умножить на ",
-  " разделить на ",
-  " делить на ",
-];
-
-const ARITHMETIC_NUMBER_WORDS = [
-  " zero ",
-  " one ",
-  " two ",
-  " three ",
-  " four ",
-  " five ",
-  " six ",
-  " seven ",
-  " eight ",
-  " nine ",
-  " ten ",
-  " ноль ",
-  " нуль ",
-  " один ",
-  " одна ",
-  " одно ",
-  " два ",
-  " две ",
-  " три ",
-  " четыре ",
-  " пять ",
-  " шесть ",
-  " семь ",
-  " восемь ",
-  " девять ",
-  " десять ",
-];
+// Issue #386: the spelled-operator and cardinal-number vocabularies are no
+// longer literal arrays here. They live in the seed meanings — the
+// arithmetic_operation operators (addition, subtraction, multiplication,
+// division, modulo) and the cardinal_number digits (zero, один, 三, …) — and
+// are read by role through the lexicon, exactly as the Rust solver does
+// (contains_word_operator / contains_spelled_arithmetic in src/calculation.rs).
+// These role names mirror the constants in src/seed/roles.rs.
+const ROLE_ARITHMETIC_OPERATOR_WORD = "arithmetic_operator_word";
+const ROLE_CARDINAL_NUMBER_WORD = "cardinal_number_word";
+const ROLE_CALCULATION_REQUEST_CUE = "calculation_request_cue";
 
 const PERCENT_OF_CURRENCY_CODES = new Map([
   ["$", "USD"],
@@ -2111,15 +2076,35 @@ function solveLinearEquation(expression) {
 }
 
 function hasArithmeticWordOperator(expression) {
-  const lower = ` ${String(expression).toLowerCase()} `;
-  return ARITHMETIC_WORD_OPERATORS.some((operator) => lower.includes(operator));
+  // Issue #386: the spelled operators come from the arithmetic_operation
+  // meanings (addition, subtraction, multiplication, division, modulo) by
+  // role, not a literal array. Each surface is matched as a whole token — CJK
+  // surfaces as a substring — the boundary contract the former space-padded
+  // `.includes` checks enforced, mirroring contains_word_operator in
+  // src/calculation.rs.
+  return lexiconMentionsRole(
+    ROLE_ARITHMETIC_OPERATOR_WORD,
+    String(expression).toLowerCase(),
+  );
 }
 
 function hasSpelledArithmetic(expression) {
+  // Issue #386: the cardinal number words come from the cardinal_number
+  // meanings by role, not a literal array. Pure-numeral surfaces ("10") are
+  // skipped — a bare digit run is handled by the numeric parser — and each
+  // spelled surface is matched as a space-bounded whole token, mirroring
+  // contains_spelled_arithmetic in src/calculation.rs.
   const lower = ` ${String(expression).toLowerCase()} `;
-  const hasNumberWord = ARITHMETIC_NUMBER_WORDS.some((number) =>
-    lower.includes(number),
-  );
+  const hasNumberWord = roleWordForms(ROLE_CARDINAL_NUMBER_WORD).some((form) => {
+    if (
+      [...form.text].every(
+        (character) => character >= "0" && character <= "9",
+      )
+    ) {
+      return false;
+    }
+    return lower.includes(` ${form.text} `);
+  });
   return hasNumberWord && hasArithmeticWordOperator(expression);
 }
 
@@ -2481,36 +2466,18 @@ function extractArithmeticExpression(prompt) {
   const trimmed = String(prompt || "").trim();
   if (!trimmed) return null;
   const interpretations = [];
-  const prefixes = [
-    "please calculate ",
-    "please compute ",
-    "can you calculate ",
-    "can you compute ",
-    "could you calculate ",
-    "could you compute ",
-    "what is ",
-    "what's ",
-    "what does ",
-    "calculate ",
-    "compute ",
-    "evaluate ",
-    "how much is ",
-    "solve ",
-    "сколько будет ",
-    "посчитай ",
-    "посчитайте ",
-    "вычисли ",
-    "вычислите ",
-    "рассчитай ",
-    "рассчитайте ",
-    "请计算",
-    "请算一下",
-    "计算一下",
-    "算一下",
-    "计算",
-    "कृपया गणना करें ",
-    "गणना करें ",
-  ];
+  // Issue #386: the leading calculation cues come from the calculation_request
+  // meaning by role, not a literal array. Each bare surface is rebuilt into a
+  // strip prefix following its script — space-delimited scripts gain a trailing
+  // space so a cue strips only on a word boundary ("calculate" never eats the
+  // start of "calculated"), while CJK surfaces strip as-is because those
+  // scripts have no inter-word spaces. wordsForRole preserves declaration
+  // order, and the Chinese cues are stored longest first, so a more specific
+  // cue strips before a shorter one it contains. Mirrors
+  // strip_calculation_wrappers in src/calculation.rs.
+  const prefixes = wordsForRole(ROLE_CALCULATION_REQUEST_CUE).map((surface) =>
+    containsCjk(surface) ? surface : `${surface} `,
+  );
   let working = trimmed;
   let changed = true;
   while (changed) {

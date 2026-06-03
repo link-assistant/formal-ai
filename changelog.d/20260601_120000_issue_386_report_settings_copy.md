@@ -812,6 +812,20 @@ bump: minor
   `words_for_role` preserves declaration order, so a more specific cue strips
   before a shorter one it contains. The pinned prompt-stripping delegations keep
   resolving through the existing Rust unit suite (issue #386).
+- The browser worker's calculation-signal recognizers (`src/web/formal_ai_worker.js`)
+  now read the same meanings as the Rust solver instead of carrying their own
+  literal arrays. `hasArithmeticWordOperator` reads `ROLE_ARITHMETIC_OPERATOR_WORD`
+  through `lexiconMentionsRole` (dropping the 14-element `ARITHMETIC_WORD_OPERATORS`),
+  `hasSpelledArithmetic` reads `ROLE_CARDINAL_NUMBER_WORD` through `roleWordForms`,
+  skipping pure-numeral surfaces (dropping the 26-element `ARITHMETIC_NUMBER_WORDS`),
+  and `extractArithmeticExpression` rebuilds its leading-cue prefixes from
+  `ROLE_CALCULATION_REQUEST_CUE` via `wordsForRole` (dropping the 28-element prefix
+  array). Each conversion is byte-faithful to the former arrays for every English
+  and Russian case and additionally recognises the Hindi and Chinese surfaces the
+  seed lexicalises, exactly mirroring the Rust `contains_word_operator` /
+  `contains_spelled_arithmetic` / `strip_calculation_wrappers` changes. A new
+  parity harness `experiments/issue-386-worker-calc-signal-parity.mjs` pins the
+  equivalence (issue #386).
 
 ### Fixed
 - The follow-up "Отмени сортировку" ("cancel the sorting") no longer returns
