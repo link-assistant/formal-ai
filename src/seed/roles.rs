@@ -23,6 +23,33 @@ pub const ROLE_PROGRAM_KIND: &str = "program_kind";
 /// Semantic role: a verb that requests a program artifact be produced (write,
 /// create, show, generate, make, build). The verb side of "write a <kind>".
 pub const ROLE_PROGRAM_REQUEST: &str = "program_request";
+/// Semantic role: the program *genus* itself — the broad "program" noun
+/// (program / программа / प्रोग्राम / 程序).
+///
+/// The script-authoring recognizer defers to the parametric write-program
+/// route whenever this appears, so a full "write a program" request keeps its
+/// richer formalization rather than collapsing to a bare script.
+pub const ROLE_PROGRAM_GENUS: &str = "program_genus";
+/// Semantic role: the author verb specifically used to request a script or
+/// code be composed (write / напиши / написать / लिखो / 编写).
+///
+/// The verb side of "write a script" — a strict subset of
+/// [`ROLE_PROGRAM_REQUEST`] that omits the show/create/generate verbs, which
+/// must not on their own trigger synthesis.
+pub const ROLE_SCRIPT_AUTHORING_VERB: &str = "script_authoring_verb";
+/// Semantic role: a script-or-code artifact noun (script / code / скрипт /
+/// код / स्क्रिप्ट / कोड / 脚本 / 代码).
+///
+/// The noun side of "write a script" — a strict subset of
+/// [`ROLE_PROGRAM_KIND`] that excludes the broad program genus and the
+/// function noun.
+pub const ROLE_SCRIPT_OR_CODE_ARTIFACT: &str = "script_or_code_artifact";
+/// Semantic role: a surface reference to the canonical hello-world archetype
+/// — the codebase's minimal first program.
+///
+/// The script-authoring recognizer defers to the program-synthesis route for
+/// these so the hello-world example keeps its dedicated handling.
+pub const ROLE_HELLO_WORLD_REFERENCE: &str = "hello_world_reference";
 /// Semantic role: a concrete unit of measurement (metre, byte, kilogram, …).
 /// Each such meaning is `defined_by` the [`ROLE_PHYSICAL_DIMENSION`] it measures.
 pub const ROLE_MEASUREMENT_UNIT: &str = "measurement_unit";

@@ -136,6 +136,32 @@ bump: minor
   vocabulary now exists in every language, multilingual `count_vowels` and
   `similar_elements` requests in Russian, Hindi, and Chinese synthesize correctly
   in both the Rust solver and the browser worker — not only English (issue #386).
+- Write-a-script recognition (`is_write_script_request` in
+  `src/solver_helpers.rs`, its single call site in
+  `src/solver_handlers/mod.rs`, and the `formal_ai_worker.js` mirror) is
+  data-driven too. Four new semantic roles in `src/seed/roles.rs` name the
+  concepts the recogniser reasons over — `program_genus` (the broad "program"
+  noun), `script_authoring_verb` (the write / напиши / написать / लिखो / 编写
+  author verb, a strict subset of `program_request` that omits
+  show/create/generate), `script_or_code_artifact` (the script / code / скрипт /
+  код / स्क्रिप्ट / कोड / 脚本 / 代码 noun, a strict subset of `program_kind`
+  that excludes the program genus and the function noun), and
+  `hello_world_reference` (the canonical hello-world archetype) — carried by the
+  `program`, `write`, `script`/`code` meanings and a new self-describing
+  `hello_world` meaning in `data/seed/meanings.lino`, each lexicalised in every
+  supported language. The recogniser steps aside for the broad program genus and
+  the hello-world archetype (which the parametric write-program and
+  program-synthesis routes own) and otherwise fires when a `script_authoring_verb`
+  meets a `script_or_code_artifact`, so the former hardcoded per-language
+  verb/noun substring lists are gone — the code knows only the concept "author a
+  script" and the two routes it defers to. Adding the `написать` infinitive to the
+  `write` meaning also makes it evidence `program_request` like its imperative
+  sibling `напиши`, so "написать код" now routes to the program path consistently
+  rather than falling through to `unknown`. The implementation file's unit tests
+  moved to a sibling `src/solver_helpers_tests.rs` mounted with `#[path]` (the
+  `blueprint_tests.rs` precedent) so the recogniser file stays under the
+  1000-line file-size guard, and the worker's embedded `MEANINGS_LINO`
+  regenerates byte-identically (issue #386).
 - Conversational-intent recognition is data-driven too. A closed sub-graph of
   conversational meanings (`data/seed/meanings-intent.lino`) defines the
   assistant, user, inquiry, and answer plus the concepts they build on —
