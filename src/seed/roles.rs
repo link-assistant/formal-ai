@@ -56,6 +56,11 @@ pub const ROLE_MEASUREMENT_UNIT: &str = "measurement_unit";
 /// Semantic role: a physical dimension (length, mass, time, …). Units that
 /// belong to different dimensions cannot be converted into one another.
 pub const ROLE_PHYSICAL_DIMENSION: &str = "physical_dimension";
+/// Semantic role: a cardinal counting number (zero, one, two … ten).
+///
+/// Each such meaning is `defined_by` the `cardinal_number` genus and carries
+/// spelled forms in every language plus the script-independent numeral surface.
+pub const ROLE_CARDINAL_NUMBER_WORD: &str = "cardinal_number_word";
 /// Semantic role: a named day of the week (Monday … Sunday). The meaning slug
 /// is the English weekday name so a handler can resolve a matched lexeme back
 /// to a position in the seven-day cycle.

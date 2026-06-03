@@ -738,6 +738,31 @@ bump: minor
   (`how_it_works_prior_reply_fallback_skips_function_words_case_insensitively`)
   pins the generalization while the mirror verifier reports parity across all
   twenty-nine meaning files (issue #386).
+- Counting numbers are a self-describing ontology too, so the code reads counts
+  from data instead of hardcoded number words. A new cardinal-number sub-graph
+  in `data/seed/meanings-units.lino` defines the `cardinal_number` genus
+  (`defined_by` the `quantity` property) and the leaves `zero`…`ten` (role
+  `cardinal_number_word`, each `defined_by` `cardinal_number`), lexicalised in
+  every supported language; each leaf's English lexeme carries both the spelled
+  word ("ten") and the script-independent numeral surface ("10"), from which the
+  cardinal's integer value is read. `contains_spelled_arithmetic`
+  (`src/calculation.rs`) now asks the lexicon for the `cardinal_number_word`
+  forms — skipping the pure-numeral surfaces the numeric parser already handles —
+  instead of the former twenty-six-entry English/Russian number-word table, and
+  the brainstorm-count recogniser (`requested_brainstorm_count` in
+  `src/solver_handlers/benchmark_prompts.rs` and the worker's
+  `requestedBrainstormCount`) derives the requested count from the `ten`
+  cardinal's own numeral surface via a new `cardinal_value` / `cardinalValue`
+  helper, replacing the hardcoded `TEN_HINTS` / `tenHints` literal. Matching is
+  the boundary-aware lexicon contract, so the spelled "ten" no longer false-
+  matches inside "often" and the Chinese 十 matches as a substring; because the
+  cardinals now exist in every language, "придумай десять идей" / "दस नाम सुझाओ" /
+  "给我十个想法" all resolve to ten where the former English-leaning table missed
+  them. A new role `ROLE_CARDINAL_NUMBER_WORD` (`src/seed/roles.rs`) names the
+  concept, and a vm parity harness
+  (`experiments/issue-386-worker-brainstorm-count-parity.mjs`) proves the worker
+  reads the count from the seed across the pinned English prompts, the
+  multilingual cardinal cases, and the "often" substring negative (issue #386).
 
 ### Fixed
 - The follow-up "Отмени сортировку" ("cancel the sorting") no longer returns

@@ -7,6 +7,7 @@
 use crate::arithmetic::{evaluate_fallback_formatted, ArithmeticError};
 use crate::calculation_word_problem::normalize_word_problem_detailed;
 use crate::fuzzy::is_close_token_typo;
+use crate::seed;
 
 /// Engine that produced a calculation result.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -727,36 +728,17 @@ fn has_calculation_signal(expression: &str, explicit: bool) -> bool {
 
 fn contains_spelled_arithmetic(expression: &str) -> bool {
     let lower = format!(" {} ", expression.to_lowercase());
-    let has_number_word = [
-        " zero ",
-        " one ",
-        " two ",
-        " three ",
-        " four ",
-        " five ",
-        " six ",
-        " seven ",
-        " eight ",
-        " nine ",
-        " ten ",
-        " ноль ",
-        " нуль ",
-        " один ",
-        " одна ",
-        " одно ",
-        " два ",
-        " две ",
-        " три ",
-        " четыре ",
-        " пять ",
-        " шесть ",
-        " семь ",
-        " восемь ",
-        " девять ",
-        " десять ",
-    ]
-    .iter()
-    .any(|number| lower.contains(number));
+    let forms = seed::lexicon().role_word_forms(seed::ROLE_CARDINAL_NUMBER_WORD);
+    let has_number_word = forms.iter().any(|form| {
+        // Skip pure-numeral surfaces (e.g. "10"): a bare digit run is handled by
+        // the numeric parser, so the spelled-arithmetic path only cares about
+        // word forms like "two", "два", or "三".
+        !form
+            .text
+            .chars()
+            .all(|character| character.is_ascii_digit())
+            && lower.contains(&format!(" {} ", form.text))
+    });
     has_number_word && contains_word_operator(expression)
 }
 

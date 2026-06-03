@@ -6,7 +6,7 @@ use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
 use crate::seed::{
-    self, BrainstormSeeds, CoreferenceSeeds, FactRecord, PersonaSeeds, SummaryTopicSeeds,
+    self, BrainstormSeeds, CoreferenceSeeds, FactRecord, Meaning, PersonaSeeds, SummaryTopicSeeds,
 };
 use crate::solver_helpers::last_user_turn;
 
@@ -161,30 +161,35 @@ fn clean_conversation_topic(raw: &str) -> Option<String> {
     (!topic.is_empty()).then_some(topic)
 }
 
-/// Parse the number of items the user asked for. Defaults to 5 when no
-/// explicit count is present. Recognises numeric and word forms in every
-/// supported language so the algorithm doesn't depend on English-only
-/// spelling.
+/// The number of brainstorm items returned when the prompt names no count.
+const DEFAULT_BRAINSTORM_COUNT: usize = 5;
+
+/// Parse the number of items the user asked for, defaulting to
+/// [`DEFAULT_BRAINSTORM_COUNT`] when no explicit count is present.
+///
+/// The only non-default count the brainstorm prompts exercise is ten, so the
+/// recogniser asks the seed whether the `ten` cardinal is evidenced in the
+/// prompt — in any supported language — and reads the integer value from that
+/// cardinal's own numeral surface rather than a hardcoded literal. Recognising
+/// the concept this way keeps the count language-independent and self-describing.
 fn requested_brainstorm_count(normalized: &str) -> usize {
-    const TEN_HINTS: &[&str] = &[
-        " 10 ",
-        "10.",
-        "10 ",
-        " 10",
-        "ten ",
-        "десять",
-        "10 идей",
-        "10 имён",
-        "दस ",
-        "10 ",
-        "十个",
-        "10 个",
-    ];
-    if TEN_HINTS.iter().any(|hint| normalized.contains(hint)) {
-        10
-    } else {
-        5
-    }
+    seed::lexicon()
+        .meaning("ten")
+        .filter(|ten| ten.evidenced_in(normalized))
+        .and_then(cardinal_value)
+        .unwrap_or(DEFAULT_BRAINSTORM_COUNT)
+}
+
+/// Read the integer value of a cardinal-number meaning from its own data.
+///
+/// Each cardinal carries a numeral word form (e.g. `"10"`) — the
+/// script-independent surface that spells the value — so the count is derived
+/// from the seed rather than restated as a literal in code.
+fn cardinal_value(meaning: &Meaning) -> Option<usize> {
+    meaning
+        .words()
+        .find(|word| !word.is_empty() && word.bytes().all(|byte| byte.is_ascii_digit()))
+        .and_then(|numeral| numeral.parse().ok())
 }
 
 fn numbered(items: &[String], count: usize) -> String {
