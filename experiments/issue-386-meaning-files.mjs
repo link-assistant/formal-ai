@@ -15,6 +15,7 @@ export const MEANING_FILES = [
   "data/seed/meanings.lino",
   "data/seed/meanings-units.lino",
   "data/seed/meanings-calendar.lino",
+  "data/seed/meanings-calculator.lino",
   "data/seed/meanings-facts.lino",
   "data/seed/meanings-software-project.lino",
   "data/seed/meanings-program-synthesis.lino",

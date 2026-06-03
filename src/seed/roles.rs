@@ -603,3 +603,29 @@ pub const ROLE_CIRCULAR_JOKE_PHRASE: &str = "circular_joke_phrase";
 /// worker has no content-policy handler, so the data is mirrored but unused
 /// there).
 pub const ROLE_VULGAR_CONTENT_MARKER: &str = "vulgar_content_marker";
+/// Semantic role: a surface form that signals a prompt is talking about the
+/// exchange rate between two currencies.
+///
+/// "exchange rate", "currency rate", "курс", "विनिमय दर", "汇率" — matched as
+/// raw substrings so inflected and compound forms are caught. Carried by
+/// `exchange_rate`; the calculator rate-basis handler requires it together with
+/// [`ROLE_CURRENCY_USD_REFERENCE`] and [`ROLE_CALCULATION_BASIS_REFERENCE`].
+/// Read by the Rust solver and the JS worker.
+pub const ROLE_EXCHANGE_RATE_REFERENCE: &str = "exchange_rate_reference";
+/// Semantic role: a surface form that signals a prompt mentions US dollars.
+///
+/// "usd", "dollar", "доллар" (and the misspellings "долар"/"долор"), "डॉलर",
+/// "美元" — matched as raw substrings. Carried by `us_dollar`; the calculator
+/// rate-basis handler requires it together with [`ROLE_EXCHANGE_RATE_REFERENCE`]
+/// and [`ROLE_CALCULATION_BASIS_REFERENCE`]. Read by the Rust solver and the JS
+/// worker.
+pub const ROLE_CURRENCY_USD_REFERENCE: &str = "currency_usd_reference";
+/// Semantic role: a phrase asking which value, rate, or method the assistant
+/// uses or applies as the basis when it calculates.
+///
+/// Inflectable stems ("при расчёт", "использ", "примен", "calculation", …) and
+/// fixed phrases ("do you use", "у тебя", "गणना", "计算", …) matched as raw
+/// substrings. Carried by `calculation_basis`; the calculator rate-basis handler
+/// requires it together with [`ROLE_EXCHANGE_RATE_REFERENCE`] and
+/// [`ROLE_CURRENCY_USD_REFERENCE`]. Read by the Rust solver and the JS worker.
+pub const ROLE_CALCULATION_BASIS_REFERENCE: &str = "calculation_basis_reference";

@@ -1748,46 +1748,26 @@ function evaluateUsdRubRateBasis() {
   };
 }
 
+// Issue #386: recognise the USD/RUB rate-basis question by *meaning*, not by a
+// hardcoded per-language word list. The surface forms live once in
+// data/seed/meanings-calculator.lino and are queried by semantic role, matched
+// as raw substrings — the JS mirror of mentions_role_raw and of
+// asks_for_usd_rate_basis in src/solver_handlers/calculator_rate.rs.
+//
+// A prompt references US dollars (an exchange_rate between currencies AND the
+// us_dollar currency) when both currency roles are present.
 function mentionsUsdRate(normalized) {
   return (
-    normalized.includes("курс") ||
-    normalized.includes("exchange rate") ||
-    normalized.includes("currency rate") ||
-    normalized.includes("विनिमय दर") ||
-    normalized.includes("汇率")
-  ) && (
-    normalized.includes("usd") ||
-    normalized.includes("dollar") ||
-    normalized.includes("доллар") ||
-    normalized.includes("долар") ||
-    normalized.includes("долор") ||
-    normalized.includes("डॉलर") ||
-    normalized.includes("美元")
+    lexiconMentionsRoleSubstring(ROLE_EXCHANGE_RATE_REFERENCE, normalized) &&
+    lexiconMentionsRoleSubstring(ROLE_CURRENCY_USD_REFERENCE, normalized)
   );
 }
 
+// A prompt asks what the assistant uses as the basis for a calculation when the
+// calculation_basis role is present (the question side of "which rate do you
+// use for calculations").
 function mentionsRateCalculationBasis(normalized) {
-  return (
-    normalized.includes("при расчет") ||
-    normalized.includes("при расчёт") ||
-    normalized.includes("в расчет") ||
-    normalized.includes("в расчёт") ||
-    normalized.includes("для расчет") ||
-    normalized.includes("для расчёт") ||
-    normalized.includes("у тебя") ||
-    normalized.includes("использ") ||
-    normalized.includes("берешь") ||
-    normalized.includes("берёшь") ||
-    normalized.includes("примен") ||
-    normalized.includes("calculation") ||
-    normalized.includes("do you use") ||
-    normalized.includes("used for") ||
-    normalized.includes("your rate") ||
-    normalized.includes("गणना") ||
-    normalized.includes("उपयोग") ||
-    normalized.includes("计算") ||
-    normalized.includes("使用")
-  );
+  return lexiconMentionsRoleSubstring(ROLE_CALCULATION_BASIS_REFERENCE, normalized);
 }
 
 function tryCalculatorRateBasis(normalized, language) {
@@ -13876,6 +13856,125 @@ const MEANINGS_LINO = [
   '      word "显示"',
   '        description "Chinese verb (pinyin xianshi) meaning show or display, requesting which day be displayed."',
   "meanings",
+  '  meaning "money"',
+  '    gloss "money or currency in general — a medium of exchange. This genus groups the currency-related meanings (the us_dollar currency and the exchange_rate between currencies) so they are built from a shared concept rather than listed independently. The monetary_concept role is structural: no handler queries it directly; it exists so the ontology records that these meanings are kinds of money."',
+  '    wiktionary "money"',
+  '    defined_by "concept"',
+  '    role "monetary_concept"',
+  '    lexeme "en"',
+  '      word "money"',
+  '        description "English noun for the medium of exchange; the monetary_concept genus lexicalized in English."',
+  '      word "currency"',
+  '        description "English noun for a system of money in circulation; the monetary_concept genus lexicalized in English."',
+  '    lexeme "ru"',
+  '      word "деньги"',
+  '        description "Russian noun (romanized dengi, money); the monetary_concept genus lexicalized in Russian."',
+  '      word "валюта"',
+  '        description "Russian noun (romanized valyuta, currency); the monetary_concept genus lexicalized in Russian."',
+  '    lexeme "hi"',
+  '      word "पैसा"',
+  '        description "Hindi noun (romanized paisa, money); the monetary_concept genus lexicalized in Hindi."',
+  '      word "मुद्रा"',
+  '        description "Hindi noun (romanized mudra, currency); the monetary_concept genus lexicalized in Hindi."',
+  '    lexeme "zh"',
+  '      word "货币"',
+  '        description "Chinese noun (pinyin huobi, currency); the monetary_concept genus lexicalized in Chinese."',
+  '      word "钱"',
+  '        description "Chinese noun (pinyin qian, money); the monetary_concept genus lexicalized in Chinese."',
+  '  meaning "exchange_rate"',
+  '    gloss "the exchange rate between two currencies — the price of one currency expressed in another, also called a currency rate. The exchange_rate_reference role marks the surface forms that signal a prompt is talking about a currency conversion rate; the calculator rate-basis handler requires this together with a us_dollar reference and a calculation_basis phrase before it answers with the rate the calculator uses for USD to RUB. Matched as raw substrings so inflected and compound forms are caught in every supported language."',
+  '    wiktionary "exchange rate"',
+  '    defined_by "money"',
+  '    defined_by "relation"',
+  '    role "exchange_rate_reference"',
+  '    lexeme "en"',
+  '      word "exchange rate"',
+  '        description "English compound noun for the price of one currency in another; an exchange_rate_reference matched as a raw substring."',
+  '      word "currency rate"',
+  '        description "English synonym for an exchange rate; an exchange_rate_reference matched as a raw substring."',
+  '    lexeme "ru"',
+  '      word "курс"',
+  '        description "Russian noun (romanized kurs, rate or exchange rate); an exchange_rate_reference matched as a raw substring so курс, курса and курсе are all caught."',
+  '    lexeme "hi"',
+  '      word "विनिमय दर"',
+  '        description "Hindi compound (romanized vinimay dar, exchange rate); an exchange_rate_reference matched as a raw substring."',
+  '    lexeme "zh"',
+  '      word "汇率"',
+  '        description "Chinese noun (pinyin huilu, exchange rate); an exchange_rate_reference matched as a raw substring."',
+  '  meaning "us_dollar"',
+  '    gloss "the United States dollar, the currency abbreviated USD. The currency_usd_reference role marks the surface forms — including two common Russian misspellings — that signal a prompt mentions US dollars; the calculator rate-basis handler requires this together with an exchange_rate reference and a calculation_basis phrase before it answers with the rate the calculator uses for USD to RUB. Matched as raw substrings so inflected forms are caught in every supported language."',
+  '    wiktionary "dollar"',
+  '    defined_by "money"',
+  '    role "currency_usd_reference"',
+  '    lexeme "en"',
+  '      word "usd"',
+  '        description "English ISO 4217 code for the United States dollar; a currency_usd_reference matched as a raw substring."',
+  '      word "dollar"',
+  '        description "English noun for the United States dollar; a currency_usd_reference matched as a raw substring so dollars is also caught."',
+  '    lexeme "ru"',
+  '      word "доллар"',
+  '        description "Russian noun (romanized dollar); a currency_usd_reference matched as a raw substring so доллара and долларах are caught."',
+  '      word "долар"',
+  '        description "Russian misspelling with one l (romanized dolar) of доллар; a currency_usd_reference matched as a raw substring so the typo is still recognised."',
+  '      word "долор"',
+  '        description "Russian misspelling (romanized dolor) of доллар; a currency_usd_reference matched as a raw substring so the typo is still recognised."',
+  '    lexeme "hi"',
+  '      word "डॉलर"',
+  '        description "Hindi noun (romanized dolar, dollar); a currency_usd_reference matched as a raw substring."',
+  '    lexeme "zh"',
+  '      word "美元"',
+  '        description "Chinese noun (pinyin meiyuan, US dollar); a currency_usd_reference matched as a raw substring."',
+  '  meaning "calculation_basis"',
+  '    gloss "a phrase asking which value, rate, or method the assistant uses, applies, or takes as the basis when it calculates — the question side of a prompt like which rate do you use for calculations. The calculation_basis_reference role marks these surface forms; the calculator rate-basis handler requires this together with an exchange_rate reference and a us_dollar reference before it answers with the rate the calculator uses for USD to RUB. The forms are inflectable stems and fixed phrases matched as raw substrings, so they are caught regardless of surrounding inflection in every supported language."',
+  '    wiktionary "calculation"',
+  '    defined_by "action"',
+  '    defined_by "inquiry"',
+  '    role "calculation_basis_reference"',
+  '    lexeme "en"',
+  '      word "calculation"',
+  '        description "English noun for the act of computing; a calculation_basis_reference matched as a raw substring so calculations is also caught."',
+  '      word "calculations"',
+  '        description "English plural of calculation; a calculation_basis_reference matched as a raw substring, kept explicitly so the surface list mirrors the original recognizer."',
+  '      word "do you use"',
+  '        description "English interrogative fragment asking which value the assistant uses; a calculation_basis_reference matched as a raw substring."',
+  '      word "used for"',
+  '        description "English fragment asking what a rate is used for; a calculation_basis_reference matched as a raw substring."',
+  '      word "your rate"',
+  "        description \"English fragment asking about the assistant's own rate; a calculation_basis_reference matched as a raw substring.\"",
+  '    lexeme "ru"',
+  '      word "при расчет"',
+  '        description "Russian fragment (romanized pri raschet, during calculation) without the ё; a calculation_basis_reference matched as a raw substring so при расчете and при расчетах are caught."',
+  '      word "при расчёт"',
+  '        description "Russian fragment (romanized pri raschyot, during calculation) with the ё; a calculation_basis_reference matched as a raw substring so при расчёте and при расчётах are caught."',
+  '      word "в расчет"',
+  '        description "Russian fragment (romanized v raschet, into the calculation) without the ё; a calculation_basis_reference matched as a raw substring."',
+  '      word "в расчёт"',
+  '        description "Russian fragment (romanized v raschyot, into the calculation) with the ё; a calculation_basis_reference matched as a raw substring."',
+  '      word "для расчет"',
+  '        description "Russian fragment (romanized dlya raschet, for the calculation) without the ё; a calculation_basis_reference matched as a raw substring."',
+  '      word "для расчёт"',
+  '        description "Russian fragment (romanized dlya raschyot, for the calculation) with the ё; a calculation_basis_reference matched as a raw substring."',
+  '      word "у тебя"',
+  '        description "Russian fragment (romanized u tebya, that you have or that you use); a calculation_basis_reference matched as a raw substring."',
+  '      word "использ"',
+  '        description "Russian verb stem (romanized ispolz, of использовать, to use); a calculation_basis_reference matched as a raw substring so используешь and используете are caught."',
+  '      word "берешь"',
+  '        description "Russian second-person verb (romanized beresh, you take) without the ё; a calculation_basis_reference matched as a raw substring."',
+  '      word "берёшь"',
+  '        description "Russian second-person verb (romanized beryosh, you take) with the ё; a calculation_basis_reference matched as a raw substring."',
+  '      word "примен"',
+  '        description "Russian verb stem (romanized primen, of применять, to apply); a calculation_basis_reference matched as a raw substring so применяешь and применяете are caught."',
+  '    lexeme "hi"',
+  '      word "गणना"',
+  '        description "Hindi noun (romanized ganana, calculation); a calculation_basis_reference matched as a raw substring."',
+  '      word "उपयोग"',
+  '        description "Hindi noun (romanized upayog, use); a calculation_basis_reference matched as a raw substring."',
+  '    lexeme "zh"',
+  '      word "计算"',
+  '        description "Chinese verb (pinyin jisuan, to calculate); a calculation_basis_reference matched as a raw substring."',
+  '      word "使用"',
+  '        description "Chinese verb (pinyin shiyong, to use); a calculation_basis_reference matched as a raw substring."',
+  "meanings",
   '  meaning "knowledge_relation"',
   '    gloss "a relation in the knowledge base that maps a subject to a value; the genus of every fact-query relation below"',
   '    wiktionary "relation"',
@@ -22834,6 +22933,16 @@ const ROLE_WHO_QUESTION_TAIL = "who_question_tail";
 // role in that file is read only by the Rust solver, which screens content
 // policy first; the worker has no such handler, so it is not mirrored.)
 const ROLE_CIRCULAR_JOKE_PHRASE = "circular_joke_phrase";
+
+// Issue #386 calculator-rate roles — mirror ROLE_EXCHANGE_RATE_REFERENCE,
+// ROLE_CURRENCY_USD_REFERENCE and ROLE_CALCULATION_BASIS_REFERENCE in
+// src/seed/roles.rs. Surfaces (exchange-rate, US-dollar and calculation-basis
+// forms in every supported language) live in
+// data/seed/meanings-calculator.lino, read here by tryCalculatorRateBasis as
+// raw substrings — the JS mirror of asks_for_usd_rate_basis.
+const ROLE_EXCHANGE_RATE_REFERENCE = "exchange_rate_reference";
+const ROLE_CURRENCY_USD_REFERENCE = "currency_usd_reference";
+const ROLE_CALCULATION_BASIS_REFERENCE = "calculation_basis_reference";
 
 // The literal lead-in (form.before, the text before the … slot) of every
 // prefix-slot form of a role, in lexicon declaration order. A meaning's roles

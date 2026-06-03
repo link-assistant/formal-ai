@@ -445,6 +445,30 @@ bump: minor
   recogniser and its embedded policy lexicon — including the
   Rust-only `vulgar_content_marker` and `physical_action_trigger` roles — stay on
   par across all four languages (issue #386).
+- The currency rate-basis handler (`src/solver_handlers/calculator_rate.rs` and
+  its `formal_ai_worker.js` mirror) is data-driven too. A new seed file
+  (`data/seed/meanings-calculator.lino`) defines four self-describing meanings,
+  each rooted in the `link` ontology and lexicalised in every supported language:
+  a `money` genus (`defined_by` `concept`, role `monetary_concept` — structural
+  only, no handler queries it) that groups the currency meanings so they build
+  from a shared concept, the `exchange_rate` between currencies (`defined_by`
+  `money` + `relation`, role `exchange_rate_reference`), the `us_dollar` currency
+  (`defined_by` `money`, role `currency_usd_reference` — including the two common
+  Russian misspellings долар/долор), and the `calculation_basis` question frame
+  (`defined_by` `action` + `inquiry`, role `calculation_basis_reference` — the
+  "do you use … for calculations" / "у тебя … при расчётах" side of the prompt).
+  `asks_for_usd_rate_basis` now composes the three queried roles as raw substrings
+  via `Lexicon::mentions_role_raw` — an `exchange_rate_reference` *and* a
+  `currency_usd_reference` *and* a `calculation_basis_reference` — instead of the
+  former three hardcoded per-language `contains` disjunctions, so the code knows
+  only the concepts while every surface lives once in data. The migration is
+  byte-faithful: the role surface sets equal the original recognizer lists exactly
+  (the worker even gains the "calculations" plural the Rust list always carried), so
+  the USD/RUB delegation is behaviour-neutral. A vm parity harness
+  (`experiments/issue-386-js-calculator-rate.mjs`) proves the worker routes the
+  five spec prompts to the calculator in all four languages, falls through on
+  currency prompts that miss one of the three concepts, and reproduces every role's
+  surface set byte-for-byte across en/ru/hi/zh (issue #386).
 
 ### Fixed
 - The follow-up "Отмени сортировку" ("cancel the sorting") no longer returns
