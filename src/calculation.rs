@@ -532,36 +532,27 @@ pub fn interpretation_statements(interpretations: &[PromptInterpretation]) -> St
 }
 
 fn strip_calculation_wrappers(prompt: &str) -> (String, bool, Vec<PromptInterpretation>) {
-    let prefixes = [
-        "please calculate ",
-        "please compute ",
-        "can you calculate ",
-        "can you compute ",
-        "could you calculate ",
-        "could you compute ",
-        "what is ",
-        "what's ",
-        "what does ",
-        "calculate ",
-        "compute ",
-        "evaluate ",
-        "how much is ",
-        "solve ",
-        "сколько будет ",
-        "посчитай ",
-        "посчитайте ",
-        "вычисли ",
-        "вычислите ",
-        "рассчитай ",
-        "рассчитайте ",
-        "请计算",
-        "请算一下",
-        "计算一下",
-        "算一下",
-        "计算",
-        "कृपया गणना करें ",
-        "गणना करें ",
-    ];
+    // Issue #386: the calculation request cues (imperatives like "calculate" /
+    // "посчитай" and question openers like "what is" / "сколько будет") live in
+    // the `calculation_request` meaning, not a literal array. Each surface is
+    // rebuilt into a strip prefix following its script: space-delimited scripts
+    // gain a trailing space so the cue strips only on a word boundary
+    // ("calculate " never eats the start of "calculated"), while CJK surfaces
+    // strip as-is because those scripts have no inter-word spaces. The seed
+    // lists the Chinese cues longest first, and `words_for_role` preserves that
+    // order, so a more specific cue strips before a shorter one it contains.
+    let cue_prefixes: Vec<String> = seed::lexicon()
+        .words_for_role(seed::ROLE_CALCULATION_REQUEST_CUE)
+        .into_iter()
+        .map(|surface| {
+            if crate::coding::contains_cjk(&surface) {
+                surface
+            } else {
+                format!("{surface} ")
+            }
+        })
+        .collect();
+    let prefixes: Vec<&str> = cue_prefixes.iter().map(String::as_str).collect();
     let suffixes = [
         " equal",
         " equals",

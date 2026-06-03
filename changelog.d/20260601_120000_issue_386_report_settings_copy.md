@@ -796,6 +796,22 @@ bump: minor
   pinned spelled-operator delegations ("two plus two", "nine multiplied by nine",
   "шесть умножить на семь", "the fifth Fibonacci number multiplied by 10", …) keep
   resolving through the existing Rust unit suite (issue #386).
+- The calculator's request-cue stripper (`strip_calculation_wrappers` in
+  `src/calculation.rs`) no longer carries a 28-element array of leading prompt
+  cues. Those cues — imperatives like "calculate" / "посчитай" / "गणना करें" and
+  question openers like "what is" / "сколько будет" / "请计算" — now live in a new
+  `calculation_request` meaning (`defined_by "action"` and `defined_by "inquiry"`)
+  with their surfaces in English, Russian, Hindi and Chinese
+  (`data/seed/meanings-calculator.lino`). A new role
+  `ROLE_CALCULATION_REQUEST_CUE` (`src/seed/roles.rs`) marks them, and the
+  stripper reads them through `Lexicon::words_for_role`, rebuilding each surface
+  into a strip prefix that follows its script: space-delimited scripts gain a
+  trailing space so a cue strips only on a word boundary ("calculate" never eats
+  the start of "calculated"), while CJK surfaces strip as-is because those scripts
+  have no inter-word spaces. The Chinese cues are stored longest first, and
+  `words_for_role` preserves declaration order, so a more specific cue strips
+  before a shorter one it contains. The pinned prompt-stripping delegations keep
+  resolving through the existing Rust unit suite (issue #386).
 
 ### Fixed
 - The follow-up "Отмени сортировку" ("cancel the sorting") no longer returns

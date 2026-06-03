@@ -717,6 +717,15 @@ pub const ROLE_CURRENCY_USD_REFERENCE: &str = "currency_usd_reference";
 /// requires it together with [`ROLE_EXCHANGE_RATE_REFERENCE`] and
 /// [`ROLE_CURRENCY_USD_REFERENCE`]. Read by the Rust solver and the JS worker.
 pub const ROLE_CALCULATION_BASIS_REFERENCE: &str = "calculation_basis_reference";
+/// Semantic role: a natural-language cue that requests an arithmetic calculation.
+///
+/// Imperatives ("calculate", "посчитай", "गणना करें") and question openers
+/// ("what is", "сколько будет", "请计算") carried by `calculation_request`.
+/// `strip_calculation_wrappers` rebuilds each surface into a strip prefix —
+/// space-delimited scripts gain a trailing space so the cue strips only on a
+/// word boundary, CJK surfaces strip as-is — and removes it from the front of a
+/// prompt. Read by the Rust solver and the JS worker.
+pub const ROLE_CALCULATION_REQUEST_CUE: &str = "calculation_request_cue";
 /// Semantic role: the interrogative word that asks for a cause or reason.
 ///
 /// "why", "почему", "क्यों", "为什么" — the bare cause-asking word, with no
