@@ -1,6 +1,35 @@
 //! Natural-language web-search intent recognition.
+//!
+//! Every surface cue this recogniser reasons about — the explicit command
+//! prefixes, the action verbs, the source/signal nouns, the topic connectives,
+//! the query noise, the follow-up instruction verbs and clause boundaries, and
+//! the research/enumeration vocabulary — is sourced from the language-independent
+//! meaning lexicon (`data/seed/meanings-web-search*.lino`,
+//! `meanings-web-research.lino`, `meanings-web-followup.lino`). The handler
+//! references those meanings by their semantic *role* (e.g.
+//! [`ROLE_WEB_SEARCH_EXPLICIT_PREFIX`], [`ROLE_FOLLOWUP_INSTRUCTION_VERB`]) and
+//! by the *slot* each word form occupies (prefix / suffix / bare), never by raw
+//! words baked into the code. Adding a language or a synonym is therefore a pure
+//! data edit: drop a `word`/`description` into the relevant meaning and this
+//! handler reasons about it automatically. The follow-up truncation in
+//! particular is a universal boundary algorithm — a follow-up clause is detected
+//! structurally (an instruction verb immediately preceded by sentence
+//! punctuation or a chained clause-continuation marker), not by memorising the
+//! handful of `". compare"`-style fragments the prompts happen to use.
 
+use std::sync::OnceLock;
+
+use crate::coding::contains_cjk;
 use crate::engine::normalize_prompt;
+use crate::seed::{
+    self, Slot, WordForm, ROLE_CLAUSE_CONTINUATION_MARKER, ROLE_ENUMERATION_CONSTRAINT,
+    ROLE_ENUMERATION_REQUEST_OPENER, ROLE_FOLLOWUP_INSTRUCTION_VERB,
+    ROLE_RESEARCH_EVALUATION_DOMAIN, ROLE_RESEARCH_EVIDENCE_DOMAIN, ROLE_RESEARCH_QUESTION_OPENER,
+    ROLE_RESEARCH_SUPERLATIVE_MODIFIER, ROLE_WEB_SEARCH_ACTION, ROLE_WEB_SEARCH_EXPLICIT_PREFIX,
+    ROLE_WEB_SEARCH_IMPERATIVE_LEAD, ROLE_WEB_SEARCH_QUERY_LEADING_NOISE,
+    ROLE_WEB_SEARCH_QUERY_TRAILING_NOISE, ROLE_WEB_SEARCH_SIGNAL, ROLE_WEB_SEARCH_SOURCE_ONLY,
+    ROLE_WEB_SEARCH_STRONG_ACTION, ROLE_WEB_SEARCH_TOPIC_MARKER,
+};
 
 use super::web_requests::normalize_url_candidate;
 
@@ -41,8 +70,14 @@ pub(super) fn extract_web_search_request(
     {
         return None;
     }
-    for prefix in WEB_SEARCH_EXPLICIT_PREFIXES {
-        if let Some(query) = normalized_words.strip_prefix(prefix) {
+    // Try the punctuation-preserving `normalized` first so the follow-up
+    // truncation downstream can see sentence boundaries (`normalize_prompt`
+    // strips punctuation, which would hide the period in
+    // "… Thomas Edison. Compare …"); fall back to the punctuation-stripped,
+    // whitespace-collapsed `normalized_words` for prompts whose leading layout
+    // only `normalize_prompt` cleans up.
+    for &prefix in &markers().explicit_prefixes {
+        if let Some(query) = normalized.strip_prefix(prefix) {
             if let Some(query) = valid_search_query(query) {
                 return Some(WebSearchRequest {
                     query,
@@ -50,7 +85,7 @@ pub(super) fn extract_web_search_request(
                 });
             }
         }
-        if let Some(query) = normalized.strip_prefix(prefix) {
+        if let Some(query) = normalized_words.strip_prefix(prefix) {
             if let Some(query) = valid_search_query(query) {
                 return Some(WebSearchRequest {
                     query,
@@ -105,593 +140,139 @@ const fn is_url_trailing_punctuation(character: char) -> bool {
     matches!(character, '.' | ',' | '!' | '?' | ';' | ':' | '…')
 }
 
-const WEB_SEARCH_EXPLICIT_PREFIXES: &[&str] = &[
-    "search the web for ",
-    "search web for ",
-    "search the internet for ",
-    "search internet for ",
-    "search online for ",
-    "search wikipedia for ",
-    "search wikidata for ",
-    "search wiktionary for ",
-    "search for information about ",
-    "search for information on ",
-    "web search for ",
-    "find on the internet ",
-    "find online ",
-    "find information about ",
-    "find information on ",
-    "find detailed information about ",
-    "find detailed information on ",
-    "find info about ",
-    "find info on ",
-    "look up information about ",
-    "look up information on ",
-    "look up info about ",
-    "look up info on ",
-    "look up online ",
-    "найди в интернете ",
-    "поищи в интернете ",
-    "поиск в интернете ",
-    "найди онлайн ",
-    "поищи онлайн ",
-    "найди в сети ",
-    "поищи в сети ",
-    "найди информацию в интернете о ",
-    "найди информацию в интернете об ",
-    "поищи информацию в интернете о ",
-    "поищи информацию в интернете об ",
-    "найди информацию о ",
-    "найди информацию об ",
-    "найди информацию про ",
-    "найди информацию по ",
-    "найти информацию о ",
-    "найти информацию об ",
-    "поищи информацию о ",
-    "поищи информацию об ",
-    "поищи информацию про ",
-    "поищи информацию по ",
-    "найди инфу о ",
-    "найди инфу об ",
-    "поищи инфу о ",
-    "поищи инфу об ",
-    "найди сведения о ",
-    "найди сведения об ",
-    "поищи сведения о ",
-    "поищи сведения об ",
-    "найди материалы о ",
-    "найди материалы об ",
-    "поищи материалы о ",
-    "поищи материалы об ",
-];
+/// Sentence-ending punctuation that can introduce a follow-up instruction
+/// clause. Universal across the supported languages — the ASCII marks plus the
+/// fullwidth/ideographic forms a CJK prompt would use.
+const fn is_sentence_boundary(character: char) -> bool {
+    matches!(
+        character,
+        '.' | '?' | '!' | ';' | ':' | '。' | '？' | '！' | '；' | '：'
+    )
+}
 
-const WEB_SEARCH_ACTION_MARKERS: &[&str] = &[
-    " search ",
-    " find ",
-    " look up ",
-    " lookup ",
-    " research ",
-    " investigate ",
-    " найди ",
-    " найти ",
-    " поищи ",
-    " поиск ",
-    " поискать ",
-    " ищи ",
-    " разыщи ",
-    " узнай ",
-    "खोज",
-    "ढूंढ",
-    "ढूँढ",
-    "搜索",
-    "查找",
-    "查询",
-    "檢索",
-    "检索",
-    "搜一下",
-    "查一下",
-];
+/// Every surface cue the web-search recogniser reasons about, projected out of
+/// the meaning lexicon by role and slot. Built once and cached: because
+/// [`seed::lexicon`] returns a `'static` reference, the projected literals are
+/// themselves `'static` and need no allocation beyond the backing vectors.
+struct WebSearchMarkers {
+    /// Lead-ins of an explicit "search X for …" command (prefix slot).
+    explicit_prefixes: Vec<&'static str>,
+    /// Bare search verbs that signal an action is requested.
+    action_markers: Vec<&'static str>,
+    /// The subset of action verbs strong enough to stand without a source noun.
+    strong_action_markers: Vec<&'static str>,
+    /// Source/topic nouns that corroborate a weak action verb.
+    signal_markers: Vec<&'static str>,
+    /// Topic connectives whose object follows them ("about …", "о …").
+    topic_after_markers: Vec<&'static str>,
+    /// Topic connectives whose object precedes them ("… के बारे में").
+    topic_before_markers: Vec<&'static str>,
+    /// Imperative search leads whose query follows them ("search for …").
+    imperative_lead_markers: Vec<&'static str>,
+    /// Politeness / determiner noise stripped from the front of a query.
+    leading_noise: Vec<&'static str>,
+    /// Source/medium noise stripped from the end of a query.
+    trailing_noise: Vec<&'static str>,
+    /// Bare source words that are not, on their own, a valid query.
+    source_only: Vec<String>,
+    /// Verbs that open a follow-up instruction clause ("compare", "summarize").
+    followup_verbs: Vec<&'static str>,
+    /// Conjunctions/adverbs that, like punctuation, mark a clause boundary.
+    continuation_markers: Vec<&'static str>,
+    /// Question openers of an implicit research request ("what is the …").
+    research_question_prefixes: Vec<&'static str>,
+    /// Superlative/recency modifiers that make a question researchable.
+    research_modifiers: Vec<&'static str>,
+    /// Evidence nouns (dataset, benchmark, paper …) of a research question.
+    research_evidence_domains: Vec<&'static str>,
+    /// Evaluation nouns (validation, quality, comparison …) of a question.
+    research_evaluation_domains: Vec<&'static str>,
+    /// Openers of an enumeration research request ("list all …").
+    enumeration_prefixes: Vec<&'static str>,
+    /// Constraint connectives that make an enumeration researchable.
+    enumeration_constraint_markers: Vec<&'static str>,
+}
 
-const WEB_SEARCH_STRONG_ACTION_MARKERS: &[&str] = &[
-    " search ",
-    " look up ",
-    " lookup ",
-    " research ",
-    " investigate ",
-    " поищи ",
-    " поиск ",
-    " поискать ",
-    " ищи ",
-    "खोज",
-    "ढूंढ",
-    "ढूँढ",
-    "搜索",
-    "查找",
-    "查询",
-    "檢索",
-    "检索",
-    "搜一下",
-    "查一下",
-];
+/// Build (once) the marker projection from the meaning lexicon.
+fn markers() -> &'static WebSearchMarkers {
+    static CACHE: OnceLock<WebSearchMarkers> = OnceLock::new();
+    CACHE.get_or_init(|| WebSearchMarkers {
+        explicit_prefixes: prefix_literals(ROLE_WEB_SEARCH_EXPLICIT_PREFIX),
+        action_markers: bare_literals(ROLE_WEB_SEARCH_ACTION),
+        strong_action_markers: bare_literals(ROLE_WEB_SEARCH_STRONG_ACTION),
+        signal_markers: bare_literals(ROLE_WEB_SEARCH_SIGNAL),
+        topic_after_markers: prefix_literals(ROLE_WEB_SEARCH_TOPIC_MARKER),
+        topic_before_markers: suffix_literals(ROLE_WEB_SEARCH_TOPIC_MARKER),
+        imperative_lead_markers: prefix_literals(ROLE_WEB_SEARCH_IMPERATIVE_LEAD),
+        leading_noise: prefix_literals(ROLE_WEB_SEARCH_QUERY_LEADING_NOISE),
+        trailing_noise: suffix_literals(ROLE_WEB_SEARCH_QUERY_TRAILING_NOISE),
+        source_only: source_literals(ROLE_WEB_SEARCH_SOURCE_ONLY),
+        followup_verbs: bare_literals(ROLE_FOLLOWUP_INSTRUCTION_VERB),
+        continuation_markers: bare_literals(ROLE_CLAUSE_CONTINUATION_MARKER),
+        research_question_prefixes: prefix_literals(ROLE_RESEARCH_QUESTION_OPENER),
+        research_modifiers: bare_literals(ROLE_RESEARCH_SUPERLATIVE_MODIFIER),
+        research_evidence_domains: bare_literals(ROLE_RESEARCH_EVIDENCE_DOMAIN),
+        research_evaluation_domains: bare_literals(ROLE_RESEARCH_EVALUATION_DOMAIN),
+        enumeration_prefixes: prefix_literals(ROLE_ENUMERATION_REQUEST_OPENER),
+        enumeration_constraint_markers: bare_literals(ROLE_ENUMERATION_CONSTRAINT),
+    })
+}
 
-const WEB_SEARCH_SIGNAL_MARKERS: &[&str] = &[
-    " web ",
-    " internet ",
-    " online ",
-    " wikipedia ",
-    " wikidata ",
-    " wiktionary ",
-    " information ",
-    " info ",
-    " details ",
-    " data ",
-    " material ",
-    " materials ",
-    " resource ",
-    " resources ",
-    " source ",
-    " sources ",
-    " article ",
-    " articles ",
-    " fact ",
-    " facts ",
-    " интернете ",
-    " интернет ",
-    " онлайн ",
-    " сети ",
-    " википед",
-    " викиданн",
-    " информац",
-    " инфу ",
-    " сведения ",
-    " материал",
-    " данные ",
-    " источник",
-    "जानकारी",
-    "सूचना",
-    "विवरण",
-    "सामग्री",
-    "स्रोत",
-    "लेख",
-    "इंटरनेट",
-    "ऑनलाइन",
-    "वेब",
-    "विकिपीडिया",
-    "विकिडाटा",
-    "信息",
-    "資料",
-    "资料",
-    "内容",
-    "來源",
-    "来源",
-    "资源",
-    "資源",
-    "文章",
-    "百科",
-    "维基百科",
-    "維基百科",
-    "维基数据",
-    "維基數據",
-    "网上",
-    "網上",
-    "在线",
-    "在線",
-    "互联网",
-    "網路",
-    "网络",
-];
+/// The literal lead-in (text before the `…` slot) of every prefix-slot form of
+/// a role, in lexicon declaration order.
+fn prefix_literals(role: &str) -> Vec<&'static str> {
+    seed::lexicon()
+        .role_word_forms(role)
+        .into_iter()
+        .filter(|form| form.slot() == Slot::Prefix)
+        .map(WordForm::before_slot)
+        .collect()
+}
 
-const SEARCH_QUERY_AFTER_MARKERS: &[&str] = &[
-    " about ",
-    " on ",
-    " regarding ",
-    " concerning ",
-    " for ",
-    " о ",
-    " об ",
-    " про ",
-    " по ",
-    " насчет ",
-    " относительно ",
-    "关于",
-    "關於",
-    "有关",
-    "有關",
-];
+/// The literal tail (text after the `…` slot) of every suffix-slot form of a
+/// role, in lexicon declaration order.
+fn suffix_literals(role: &str) -> Vec<&'static str> {
+    seed::lexicon()
+        .role_word_forms(role)
+        .into_iter()
+        .filter(|form| form.slot() == Slot::Suffix)
+        .map(WordForm::after_slot)
+        .collect()
+}
 
-const SEARCH_QUERY_BEFORE_MARKERS: &[&str] = &[
-    " के बारे में",
-    " के विषय में",
-    " से संबंधित",
-    " पर",
-    " की जानकारी",
-    " की सूचना",
-];
+/// The surface text of every bare-slot form of a role, in lexicon declaration
+/// order. A meaning's roles apply to all its forms, so we keep only the bare
+/// detection tokens and drop any prefix/suffix surfaces the meaning also owns.
+fn bare_literals(role: &str) -> Vec<&'static str> {
+    seed::lexicon()
+        .role_word_forms(role)
+        .into_iter()
+        .filter(|form| form.slot() == Slot::Bare)
+        .map(|form| form.text.as_str())
+        .collect()
+}
 
-const SEARCH_ACTION_AFTER_MARKERS: &[&str] = &[
-    "search for ",
-    "search ",
-    "find ",
-    "look up ",
-    "lookup ",
-    "research ",
-    "investigate ",
-    "найди ",
-    "найти ",
-    "поищи ",
-    "поискать ",
-    "ищи ",
-    "разыщи ",
-    "узнай ",
-    "खोजो ",
-    "खोजें ",
-    "खोजिए ",
-    "ढूंढो ",
-    "ढूँढो ",
-    "ढूंढें ",
-    "ढूँढें ",
-    "搜索",
-    "查找",
-    "查询",
-    "檢索",
-    "检索",
-    "搜一下",
-    "查一下",
-];
-
-const SEARCH_QUERY_LEADING_NOISE: &[&str] = &[
-    "please ",
-    "can you ",
-    "could you ",
-    "would you ",
-    "me ",
-    "the ",
-    "some ",
-    "detailed ",
-    "more ",
-    "current ",
-    "latest ",
-    "information about ",
-    "information on ",
-    "info about ",
-    "info on ",
-    "details about ",
-    "details on ",
-    "data about ",
-    "data on ",
-    "подробные ",
-    "информацию о ",
-    "информацию об ",
-    "инфу о ",
-    "инфу об ",
-    "сведения о ",
-    "сведения об ",
-    "материалы о ",
-    "материалы об ",
-    "материалы по ",
-    "данные о ",
-    "данные об ",
-    "о ",
-    "об ",
-    "про ",
-    "по ",
-    "कृपया ",
-    "जानकारी ",
-    "सूचना ",
-    "विवरण ",
-    "सामग्री ",
-    "关于",
-    "關於",
-    "有关",
-    "有關",
-];
-
-const SEARCH_QUERY_TRAILING_NOISE: &[&str] = &[
-    " online",
-    " on the internet",
-    " on the web",
-    " on wikipedia",
-    " in wikipedia",
-    " from wikipedia",
-    " information",
-    " info",
-    " details",
-    " data",
-    " material",
-    " materials",
-    " resources",
-    " sources",
-    " articles",
-    " facts",
-    " в интернете",
-    " онлайн",
-    " в сети",
-    " в википедии",
-    " википедии",
-    " информация",
-    " сведения",
-    " материалы",
-    " данные",
-    " के बारे में",
-    " के विषय में",
-    " से संबंधित",
-    " पर",
-    " की जानकारी",
-    " की सूचना",
-    " जानकारी",
-    " सूचना",
-    " विवरण",
-    " सामग्री",
-    " स्रोत",
-    " विकिपीडिया में",
-    " ऑनलाइन",
-    " इंटरनेट पर",
-    " खोजो",
-    " खोजें",
-    " खोजिए",
-    " ढूंढो",
-    " ढूँढो",
-    " ढूंढें",
-    " ढूँढें",
-    "的信息",
-    "的資料",
-    "的资料",
-    "信息",
-    "資料",
-    "资料",
-    "内容",
-    "文章",
-    "在维基百科上",
-    "在維基百科上",
-    "维基百科",
-    "維基百科",
-    "网上",
-    "網上",
-    "在线",
-    "在線",
-    "搜索",
-    "查找",
-    "查一下",
-    "搜一下",
-];
-
-const SEARCH_QUERY_SOURCE_ONLY: &[&str] = &[
-    "web",
-    "internet",
-    "online",
-    "wikipedia",
-    "wikidata",
-    "wiktionary",
-    "интернет",
-    "интернете",
-    "онлайн",
-    "сети",
-    "википедии",
-    "इंटरनेट",
-    "ऑनलाइन",
-    "वेब",
-    "विकिपीडिया",
-    "网上",
-    "網上",
-    "在线",
-    "在線",
-    "互联网",
-    "網路",
-    "网络",
-    "维基百科",
-    "維基百科",
-];
-
-const SEARCH_QUERY_TRAILING_INSTRUCTION_MARKERS: &[&str] = &[
-    ". compare",
-    "? compare",
-    "! compare",
-    "; compare",
-    ": compare",
-    " and compare",
-    " and then compare",
-    " then compare",
-    " compare their ",
-    " compare his ",
-    " compare her ",
-    " compare its ",
-    " compare the ",
-    ". summarize",
-    "? summarize",
-    "! summarize",
-    "; summarize",
-    ": summarize",
-    " and summarize",
-    " and then summarize",
-    " then summarize",
-    " summarize who ",
-    " summarize why ",
-    ". summarise",
-    "? summarise",
-    "! summarise",
-    "; summarise",
-    ": summarise",
-    " and summarise",
-    " and then summarise",
-    " then summarise",
-    " summarise who ",
-    " summarise why ",
-    ". explain",
-    "? explain",
-    "! explain",
-    "; explain",
-    ": explain",
-    " and explain",
-    " and then explain",
-    " then explain",
-    ". describe",
-    "? describe",
-    "! describe",
-    "; describe",
-    ": describe",
-    " and describe",
-    " and then describe",
-    " then describe",
-];
-
-const IMPLICIT_RESEARCH_QUESTION_PREFIXES: &[&str] = &[
-    "what is the ",
-    "what is a ",
-    "what is an ",
-    "what is ",
-    "what are the ",
-    "what are ",
-    "what s the ",
-    "what s a ",
-    "what s an ",
-    "what s ",
-    "which is the ",
-    "which is a ",
-    "which is an ",
-    "which are the ",
-    "which are ",
-    "which ",
-    "who is the ",
-    "who are the ",
-    "who ",
-    "where is the ",
-    "where are the ",
-    "where ",
-    "when is the ",
-    "when are the ",
-    "when ",
-    "why is the ",
-    "why are the ",
-    "why ",
-    "how is the ",
-    "how are the ",
-    "how ",
-    "can you tell me ",
-    "could you tell me ",
-    "do you know ",
-];
-
-const IMPLICIT_RESEARCH_MODIFIERS: &[&str] = &[
-    " most ",
-    " best ",
-    " top ",
-    " leading ",
-    " standard ",
-    " de facto ",
-    " widely used ",
-    " commonly used ",
-    " popular ",
-    " recommended ",
-    " current ",
-    " latest ",
-    " recent ",
-    " state of the art ",
-    " sota ",
-    " should i use ",
-    " should we use ",
-    " should be used ",
-];
-
-const IMPLICIT_RESEARCH_EVIDENCE_DOMAINS: &[&str] = &[
-    " dataset ",
-    " datasets ",
-    " benchmark ",
-    " benchmarks ",
-    " corpus ",
-    " corpora ",
-    " metric ",
-    " metrics ",
-    " framework ",
-    " frameworks ",
-    " paper ",
-    " papers ",
-    " study ",
-    " studies ",
-];
-
-const IMPLICIT_RESEARCH_EVALUATION_DOMAINS: &[&str] = &[
-    " evaluation ",
-    " evaluate ",
-    " validation ",
-    " validate ",
-    " quality ",
-    " translation ",
-    " compare ",
-    " comparison ",
-];
-
-const ENUMERATION_RESEARCH_PREFIXES: &[&str] = &[
-    "list all ",
-    "list every ",
-    "list the ",
-    "show all ",
-    "show me all ",
-    "show me the ",
-    "give me all ",
-    "name all ",
-    "enumerate all ",
-    "перечисли всех ",
-    "перечисли все ",
-    "список всех ",
-    "назови всех ",
-    "सभी ",
-    "हर ",
-    "列出所有 ",
-    "列出全部 ",
-    "显示所有 ",
-    "枚举所有 ",
-];
-
-const ENUMERATION_RESEARCH_CONSTRAINT_MARKERS: &[&str] = &[
-    " with ",
-    " that ",
-    " who ",
-    " whose ",
-    " where ",
-    " which ",
-    " having ",
-    " have ",
-    " has ",
-    " featuring ",
-    " capable of ",
-    " can ",
-    " for ",
-    " by ",
-    " in ",
-    " с ",
-    " у которых ",
-    " которые ",
-    " имеющие ",
-    " имеющих ",
-    " для ",
-    " в ",
-    " जिनके ",
-    " जिनमें ",
-    " जिसमें ",
-    " वाले ",
-    " के साथ ",
-    " के लिए ",
-    " में ",
-    " 具有 ",
-    " 有 ",
-    " 带有 ",
-    " 可以 ",
-    " 能 ",
-    " 在 ",
-    " 用于 ",
-];
+/// The distinct surface words of a role, normalised to a trimmed lowercase key
+/// for equality comparison against a cleaned query.
+fn source_literals(role: &str) -> Vec<String> {
+    seed::lexicon()
+        .words_for_role(role)
+        .iter()
+        .map(|word| word.trim().to_lowercase())
+        .collect()
+}
 
 fn extract_semantic_web_search_query(normalized: &str) -> Option<String> {
-    let has_action = contains_any_search_marker(normalized, WEB_SEARCH_ACTION_MARKERS);
+    let markers = markers();
+    let has_action = contains_any_search_marker(normalized, &markers.action_markers);
     if !has_action {
         return None;
     }
-    let has_strong_action =
-        contains_any_search_marker(normalized, WEB_SEARCH_STRONG_ACTION_MARKERS);
-    if !has_strong_action && !contains_any_search_marker(normalized, WEB_SEARCH_SIGNAL_MARKERS) {
+    let has_strong_action = contains_any_search_marker(normalized, &markers.strong_action_markers);
+    if !has_strong_action && !contains_any_search_marker(normalized, &markers.signal_markers) {
         return None;
     }
-    for marker in SEARCH_QUERY_AFTER_MARKERS {
+    for &marker in &markers.topic_after_markers {
         if let Some(index) = normalized.find(marker) {
             let start = index + marker.len();
             if let Some(query) = valid_search_query(&normalized[start..]) {
@@ -699,14 +280,14 @@ fn extract_semantic_web_search_query(normalized: &str) -> Option<String> {
             }
         }
     }
-    for marker in SEARCH_QUERY_BEFORE_MARKERS {
+    for &marker in &markers.topic_before_markers {
         if let Some(index) = normalized.find(marker) {
             if let Some(query) = valid_search_query(&normalized[..index]) {
                 return Some(query);
             }
         }
     }
-    for marker in SEARCH_ACTION_AFTER_MARKERS {
+    for &marker in &markers.imperative_lead_markers {
         if let Some(index) = normalized.find(marker) {
             let start = index + marker.len();
             if let Some(query) = valid_search_query(&normalized[start..]) {
@@ -718,17 +299,21 @@ fn extract_semantic_web_search_query(normalized: &str) -> Option<String> {
 }
 
 fn extract_implicit_research_question(normalized: &str) -> Option<String> {
-    if !starts_with_any(normalized, IMPLICIT_RESEARCH_QUESTION_PREFIXES) {
+    let markers = markers();
+    if !starts_with_any(normalized, &markers.research_question_prefixes) {
         return None;
     }
     let padded = format!(" {normalized} ");
-    let has_modifier = IMPLICIT_RESEARCH_MODIFIERS
+    let has_modifier = markers
+        .research_modifiers
         .iter()
         .any(|marker| padded.contains(marker));
-    let has_evidence_domain = IMPLICIT_RESEARCH_EVIDENCE_DOMAINS
+    let has_evidence_domain = markers
+        .research_evidence_domains
         .iter()
         .any(|marker| padded.contains(marker));
-    let has_evaluation_domain = IMPLICIT_RESEARCH_EVALUATION_DOMAINS
+    let has_evaluation_domain = markers
+        .research_evaluation_domains
         .iter()
         .any(|marker| padded.contains(marker));
     if !(has_modifier || has_evidence_domain && has_evaluation_domain) {
@@ -751,7 +336,7 @@ fn starts_with_any(value: &str, prefixes: &[&str]) -> bool {
 }
 
 fn strip_implicit_research_prefix(value: &str) -> &str {
-    for prefix in IMPLICIT_RESEARCH_QUESTION_PREFIXES {
+    for &prefix in &markers().research_question_prefixes {
         if let Some(stripped) = value.strip_prefix(prefix) {
             return stripped;
         }
@@ -760,7 +345,7 @@ fn strip_implicit_research_prefix(value: &str) -> &str {
 }
 
 fn strip_enumeration_research_prefix(value: &str) -> Option<&str> {
-    for prefix in ENUMERATION_RESEARCH_PREFIXES {
+    for &prefix in &markers().enumeration_prefixes {
         if let Some(stripped) = value.strip_prefix(prefix) {
             return Some(stripped);
         }
@@ -772,7 +357,7 @@ fn looks_like_enumeration_research_query(query: &str) -> bool {
     if query.split_whitespace().count() < 3 {
         return false;
     }
-    contains_any_search_marker(query, ENUMERATION_RESEARCH_CONSTRAINT_MARKERS)
+    contains_any_search_marker(query, &markers().enumeration_constraint_markers)
 }
 
 fn contains_any_search_marker(normalized: &str, markers: &[&str]) -> bool {
@@ -794,7 +379,7 @@ fn valid_search_query(value: &str) -> Option<String> {
     let query = clean_semantic_search_query(value);
     let query_key = query.to_lowercase();
     if query.is_empty()
-        || SEARCH_QUERY_SOURCE_ONLY.contains(&query_key.as_str())
+        || markers().source_only.iter().any(|word| word == &query_key)
         || normalize_url_candidate(&query).is_some()
     {
         return None;
@@ -802,26 +387,121 @@ fn valid_search_query(value: &str) -> Option<String> {
     Some(query)
 }
 
+/// Drop a trailing follow-up instruction clause ("… and summarize who won",
+/// "… . Compare their patents") from a query.
+///
+/// This is a universal boundary algorithm, not a list of memorised fragments: a
+/// follow-up clause is one of the lexicon's [`ROLE_FOLLOWUP_INSTRUCTION_VERB`]
+/// surfaces sitting immediately after a *boundary* — either sentence
+/// punctuation ([`is_sentence_boundary`]) or a run of
+/// [`ROLE_CLAUSE_CONTINUATION_MARKER`] words (and / then / and then, walked back
+/// so the compound needs no stored surface). The query is cut at the start of
+/// the earliest such boundary. A bare verb with no boundary before it is part of
+/// the topic and left untouched.
 fn truncate_search_instruction_tail(value: &str) -> &str {
+    let markers = markers();
+    // ASCII-lowercase keeps byte offsets identical to `value` (it only folds
+    // A–Z), so indices computed here slice `value` safely; the non-ASCII verbs
+    // are already lowercase in the lexicon and unaffected by the fold.
     let lower = value.to_ascii_lowercase();
-    let cut = SEARCH_QUERY_TRAILING_INSTRUCTION_MARKERS
-        .iter()
-        .filter_map(|marker| lower.find(marker))
-        .min()
-        .unwrap_or(value.len());
+    let mut cut = value.len();
+    for &verb in &markers.followup_verbs {
+        let cjk = contains_cjk(verb);
+        let mut from = 0;
+        while let Some(relative) = lower[from..].find(verb) {
+            let start = from + relative;
+            let end = start + verb.len();
+            from = end;
+            // Space-delimited scripts require a whole-token match; CJK verbs have
+            // no word boundaries and match as bare substrings.
+            if !cjk && (!is_token_start(&lower, start) || !is_token_end(&lower, end)) {
+                continue;
+            }
+            if let Some(boundary) = boundary_before(&lower, start, markers) {
+                cut = cut.min(boundary);
+            }
+        }
+    }
     value[..cut].trim()
 }
 
+/// Whether `index` begins a whitespace/punctuation-delimited token in `text`
+/// (the preceding char is non-alphanumeric, or there is none).
+fn is_token_start(text: &str, index: usize) -> bool {
+    !text[..index]
+        .chars()
+        .next_back()
+        .is_some_and(char::is_alphanumeric)
+}
+
+/// Whether `index` ends a whitespace/punctuation-delimited token in `text` (the
+/// following char is non-alphanumeric, or there is none).
+fn is_token_end(text: &str, index: usize) -> bool {
+    !text[index..]
+        .chars()
+        .next()
+        .is_some_and(char::is_alphanumeric)
+}
+
+/// If the text immediately before `verb_start` is a follow-up boundary, return
+/// the byte offset at which to cut (the start of the boundary run); otherwise
+/// `None`.
+fn boundary_before(text: &str, verb_start: usize, markers: &WebSearchMarkers) -> Option<usize> {
+    let head = text[..verb_start].trim_end();
+    if head.is_empty() {
+        // The verb opens the value — there is no preceding clause to split off.
+        return None;
+    }
+    if head.ends_with(is_sentence_boundary) {
+        return Some(head.len());
+    }
+    // Walk back over a run of clause-continuation markers ("and", "then",
+    // "and then"); the cut falls at the start of the run.
+    let mut cursor = head;
+    let mut matched = false;
+    loop {
+        let trimmed = cursor.trim_end();
+        let shortened = markers
+            .continuation_markers
+            .iter()
+            .find(|&&marker| ends_with_token(trimmed, marker))
+            .map(|&marker| &trimmed[..trimmed.len() - marker.len()]);
+        match shortened {
+            Some(rest) => {
+                cursor = rest;
+                matched = true;
+            }
+            None => break,
+        }
+    }
+    matched.then(|| cursor.trim_end().len())
+}
+
+/// Whether `haystack` ends with `marker` as a whole token. CJK markers match as
+/// bare substrings; space-delimited markers require a preceding whitespace (or
+/// for the whole string to be exactly the marker).
+fn ends_with_token(haystack: &str, marker: &str) -> bool {
+    if contains_cjk(marker) {
+        haystack.ends_with(marker)
+    } else {
+        haystack == marker
+            || haystack
+                .strip_suffix(marker)
+                .is_some_and(|head| head.ends_with(char::is_whitespace))
+    }
+}
+
 fn clean_semantic_search_query(value: &str) -> String {
+    let markers = markers();
     let mut query = clean_search_query(truncate_search_instruction_tail(value));
     loop {
         let before = query.clone();
-        for prefix in SEARCH_QUERY_LEADING_NOISE {
+        for &prefix in &markers.leading_noise {
             if let Some(stripped) = query.strip_prefix(prefix) {
                 query = clean_search_query(stripped);
             }
         }
-        for suffix in SEARCH_QUERY_TRAILING_NOISE {
+        for &suffix in &markers.trailing_noise {
             if let Some(stripped) = query.strip_suffix(suffix) {
                 query = clean_search_query(stripped);
             }

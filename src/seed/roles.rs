@@ -233,17 +233,16 @@ pub const ROLE_WEB_SEARCH_STRONG_ACTION: &str = "web_search_strong_action";
 /// reference work (" web ", " internet ", " wikipedia ", " information ",
 /// "信息", …). Pairs with a weak action verb to confirm web-search intent.
 pub const ROLE_WEB_SEARCH_SIGNAL: &str = "web_search_signal";
-/// Semantic role: a connective that introduces the search topic *after* it.
+/// Semantic role: a connective that delimits the search topic.
 ///
-/// "search X **about** Y" — the topic follows the marker (" about ", " on ",
-/// " о ", " про ", "关于", …). Used to peel the query off the tail of a prompt.
-pub const ROLE_WEB_SEARCH_TOPIC_AFTER: &str = "web_search_topic_after";
-/// Semantic role: a postposition that closes the search topic *before* it.
-///
-/// The mirror of [`ROLE_WEB_SEARCH_TOPIC_AFTER`] for head-final languages: the
-/// topic precedes the marker (Hindi " के बारे में", " की जानकारी", …). Used to
-/// peel the query off the head of a prompt.
-pub const ROLE_WEB_SEARCH_TOPIC_BEFORE: &str = "web_search_topic_before";
+/// Carried by a single meaning whose slot encodes the direction: a
+/// [`crate::seed::Slot::Prefix`] surface ("about …", "on …", "о …", "关于…")
+/// introduces the topic *after* the marker, while a [`crate::seed::Slot::Suffix`]
+/// surface ("… के बारे में", "… की जानकारी") closes the topic *before* the
+/// marker in head-final languages. Reading the slot off each word form lets one
+/// concept serve both head-initial and head-final word orders, so the recogniser
+/// peels the query off whichever side the connective sits on.
+pub const ROLE_WEB_SEARCH_TOPIC_MARKER: &str = "web_search_topic_marker";
 /// Semantic role: an imperative search verb that leads straight into the query.
 ///
 /// "search for X", "найди X", "खोजो X", "搜索X" — a [`crate::seed::Slot::Prefix`]
@@ -269,13 +268,24 @@ pub const ROLE_WEB_SEARCH_QUERY_TRAILING_NOISE: &str = "web_search_query_trailin
 /// cleaned query reduces to just a source word it carries no topic, so the
 /// recogniser rejects it.
 pub const ROLE_WEB_SEARCH_SOURCE_ONLY: &str = "web_search_source_only";
-/// Semantic role: a trailing instruction clause that is not part of the query.
+/// Semantic role: the predicate verb of a follow-up instruction clause.
 ///
-/// "search X **and then compare** …", "search X**. summarize** …" — a follow-up
-/// directive appended after the topic. The recogniser truncates the query at
-/// the earliest such marker so the instruction does not pollute the search
-/// terms.
-pub const ROLE_WEB_SEARCH_FOLLOWUP_INSTRUCTION: &str = "web_search_followup_instruction";
+/// "search X **and then compare** …", "search X**. summarize** …" — the verb
+/// (" compare ", " summarize ", " explain ", " сравни ", "比较", …) that opens a
+/// directive about what to do with the results. It is treated as a follow-up
+/// boundary (and triggers query truncation) only when it is immediately preceded
+/// by a boundary: sentence punctuation or a [`ROLE_CLAUSE_CONTINUATION_MARKER`].
+/// A bare verb with no preceding boundary stays part of the topic.
+pub const ROLE_FOLLOWUP_INSTRUCTION_VERB: &str = "followup_instruction_verb";
+/// Semantic role: a conjunction/sequencer that can open a new clause.
+///
+/// "and", "then", "и", "затем", "并", "然后", … — together with sentence
+/// punctuation these form the universal set of boundaries before which a
+/// [`ROLE_FOLLOWUP_INSTRUCTION_VERB`] counts as a follow-up directive. Modelling
+/// "and" and "then" separately lets the recogniser recognise the compound
+/// "and then" by walking back over consecutive markers, so no compound surface
+/// needs to be stored.
+pub const ROLE_CLAUSE_CONTINUATION_MARKER: &str = "clause_continuation_marker";
 /// Semantic role: an interrogative that opens an implicit research question.
 ///
 /// "what is the …", "which …", "who …", "how …" and their translations. A
