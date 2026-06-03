@@ -1035,6 +1035,31 @@ pub const ROLE_CURRENCY_EUR_REFERENCE: &str = "currency_eur_reference";
 /// identifier "RUB" stays in code; the surfaces live in the data. Carried by
 /// `ruble`; read by the calculation rate handlers and the JS worker.
 pub const ROLE_CURRENCY_RUB_REFERENCE: &str = "currency_rub_reference";
+/// Semantic role: a calculator-domain term that signals a calculation.
+///
+/// A currency, measurement unit, or other quantity word whose presence beside a
+/// number marks a prompt as arithmetic or a unit/currency conversion ("usd",
+/// "kg", "ms", "доллар", "公斤", "месяцев"). `has_calculation_signal` reads it to
+/// recognise a calculation when no operator symbol is present. ASCII surfaces
+/// (the three-letter codes and English unit words) are matched whole-token so a
+/// short code never fires inside a longer word; non-ASCII surfaces (Cyrillic
+/// stems, CJK, Devanagari) are matched as raw substrings so every inflected form
+/// is caught. Carried by the currency meanings (`us_dollar`, `euro`, `ruble`) and
+/// the calculator-relevant measurement units (`kilogram`, `gram`, `kilobyte`,
+/// `megabyte`, `second`, `minute`, `hour`, `millisecond`, `day`, `month`, `ton`);
+/// read by the Rust calculation router and the JS worker.
+pub const ROLE_CALCULATION_DOMAIN_TERM: &str = "calculation_domain_term";
+/// Semantic role: the name of a mathematical function.
+///
+/// A function name such as "sqrt", "sin", "cos", "tan", "log", or "ln" (with its
+/// translations). `has_calculation_signal` reads it so a prompt like "sqrt(16)"
+/// is recognised as a calculation. ASCII names are matched on a leading word
+/// boundary so they are caught even when they abut a parenthesis; non-ASCII names
+/// are matched as raw substrings. Carried by the function meanings under the
+/// `mathematical_function` genus (`square_root`, `sine`, `cosine`, `tangent`,
+/// `logarithm`, `natural_logarithm`); read by the Rust calculation router and the
+/// JS worker.
+pub const ROLE_MATH_FUNCTION_NAME: &str = "math_function_name";
 /// Semantic role: a request to merge definitions.
 ///
 /// A word asking to merge or combine ("merge", "merged", "combine", "combined",

@@ -885,6 +885,52 @@ bump: minor
   `MEANINGS_LINO` was re-synced byte-identically; a regression test
   (`calculator_currency_conversion_is_exempt_from_prose_rejection`) pins the
   English behaviour and the no-cue contrast (issue #386).
+- The calculator router's known-domain-word gate (`has_calculation_signal` in
+  `src/calculation.rs` and the `extractArithmeticExpression` gate in
+  `src/web/formal_ai_worker.js`) no longer carries a hardcoded signal array — the
+  62-entry Rust list and the worker's 39-entry list are both gone. The surfaces
+  whose presence beside a number marks a prompt as a calculation now live as
+  self-describing meanings read through three roles: `math_function_name` (a new
+  `mathematical_function` genus in `data/seed/meanings-calculator.lino` with
+  `square_root` / `sine` / `cosine` / `tangent` / `logarithm` /
+  `natural_logarithm` beneath it, each lexicalised in every supported language),
+  `calculation_domain_term` (carried by the currency meanings `us_dollar` /
+  `euro` / `ruble` and the calculator-relevant measurement units `kilobyte` /
+  `megabyte` / `kilogram` / `gram` / `ton` / `second` / `minute` / `hour` /
+  `millisecond` / `day` / `month` in `data/seed/meanings-units.lino`, each still
+  `defined_by` the dimension it measures), and the CJK members of the existing
+  `quantity_conversion_cue`. A shared `calculator_domain_signals` helper (its
+  worker twin `calculatorDomainSignals`, using a new `isAsciiText` mirror of
+  Rust's `str::is_ascii`) shapes each surface by script: a `math_function_name`
+  gains only a leading space so it still fires when glued to a parenthesis
+  ("sqrt(16)"); a `calculation_domain_term` is matched whole-token (leading and
+  trailing space) for ASCII so a short code never fires inside a longer word;
+  non-ASCII surfaces in both roles match as raw substrings so every inflected
+  form is caught; and only the CJK conversion verbs (转换 / 兑换 / 换成) become
+  signals — the Latin to/into are far too common to mark a calculation on their
+  own. Two new roles `ROLE_MATH_FUNCTION_NAME` / `ROLE_CALCULATION_DOMAIN_TERM`
+  (`src/seed/roles.rs`) name the concepts, so the code knows only "a mathematical
+  function" and "a calculator-domain term" while the words live once in data. The
+  conversion is byte-faithful to the former arrays for the whole-token currency
+  codes and units, and tightens the latent substring false positives the old
+  leading-space-only word forms allowed (for example "euro" inside "european" and
+  "dollar" inside "dollarized") now that ASCII domain terms match whole-token.
+  Because the surfaces now cover every language uniformly, the worker gains the
+  sin/cos/tan/log/ln math functions and the CJK/Devanagari unit surfaces it
+  lacked, and both engines drop the Russian and Hindi month *names* (феврал /
+  январ, फरवरी / जनवरी) the old arrays carried: those name calendar months, not
+  durations, and a genuine date-difference calculation still carries a duration
+  unit (месяцев / दिन / months) the domain-term role covers — while the Chinese
+  month names stay recognised because 二月 / 一月 embed the 月 month-unit ideograph
+  the role matches as a substring. A vm parity harness
+  (`experiments/issue-386-worker-calc-signal-parity.mjs`) reconstructs the
+  pre-conversion worker array and proves the new `calculatorDomainSignals` gate is
+  byte-identical across the agreement cases, documents the eight intended
+  differences (the month-name drops, the whole-token tightening, the
+  math-function adds, and the Chinese unit adds), and confirms
+  `extractArithmeticExpression` still routes "convert 10 tons to kg" and
+  "300000 ms in seconds" to the calculator while rejecting digit-free CJK prose
+  (issue #386).
 
 ### Fixed
 - The follow-up "Отмени сортировку" ("cancel the sorting") no longer returns
@@ -907,3 +953,15 @@ bump: minor
   (`experiments/issue-386-worker-playwright-dispatch.mjs`) asserting the
   Playwright handler wins for both languages while a bare "напиши программу"
   still reaches write-program (issue #386).
+- CJK prose no longer triggers a phantom unit-incompatibility refusal. The
+  unit-word boundary check (`contains_unit_word` in `src/solver_handler_units.rs`)
+  previously took the permissive substring path for every non-ASCII unit, so the
+  day unit "天" matched inside "天气" (weather) and the gram unit "克" inside the
+  transliteration "弗拉克斯", turning a units-free Chinese prompt into a bogus
+  time-vs-mass incompatibility answer. Because CJK ideographs are alphabetic to
+  `char::is_alphabetic` and the scripts have no inter-word spaces, the same
+  word-boundary rule already used for ASCII units now also applies to CJK units —
+  a unit glued inside a larger compound is rejected, while one next to a digit
+  ("7天", "5千克") or at a token edge still matches. Inflected alphabetic scripts
+  (Russian "килобайт" → "килобайте", Hindi "किलोबाइट") keep the permissive
+  substring path, since they attach suffixes directly to the unit (issue #386).

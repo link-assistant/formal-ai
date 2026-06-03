@@ -634,6 +634,55 @@ fn strip_calculation_wrappers(prompt: &str) -> (String, bool, Vec<PromptInterpre
     (working.trim().to_owned(), explicit, interpretations)
 }
 
+/// Surfaces whose presence beside a number marks a prompt as a calculation.
+///
+/// Issue #386: the former 62-entry signal array is rebuilt from three seed
+/// roles, so the calculator router reasons over the same self-describing
+/// lexicon every other handler reads instead of a private word list. Each
+/// surface is shaped into a match pattern by its script and role:
+///
+/// - `math_function_name` ("sqrt", "sin", "логарифм", "对数", …) — an ASCII name
+///   gains only a leading space so it still fires when glued to its argument's
+///   parenthesis ("sqrt(16)"); a non-ASCII name matches as a raw substring
+///   because those scripts have no inter-word spaces.
+/// - `calculation_domain_term` (currencies and measurement units: "usd", "kg",
+///   "ms", "доллар", "公斤", "месяцев", …) — an ASCII surface matches as a whole
+///   token (leading and trailing space) so a short code like "ms" never fires
+///   inside "items" nor "mb" inside "number"; a non-ASCII surface matches as a
+///   raw substring.
+/// - `quantity_conversion_cue`, CJK members only ("转换", "兑换", "换成") — the
+///   Chinese conversion verbs match as raw substrings, reproducing the former
+///   "换成"/"兑换成"/"转换为" entries (the seed's shorter "转换"/"兑换" are faithful
+///   substrings of those). The Latin cues ("to", "into") are deliberately
+///   excluded here: they are far too common to mark a calculation on their own.
+///
+/// The caller pads the lowercased expression with surrounding spaces and tests
+/// `contains` against each signal, so the set — not its order — decides.
+fn calculator_domain_signals() -> Vec<String> {
+    let lexicon = seed::lexicon();
+    let mut signals = Vec::new();
+    for surface in lexicon.words_for_role(seed::ROLE_MATH_FUNCTION_NAME) {
+        if surface.is_ascii() {
+            signals.push(format!(" {surface}"));
+        } else {
+            signals.push(surface);
+        }
+    }
+    for surface in lexicon.words_for_role(seed::ROLE_CALCULATION_DOMAIN_TERM) {
+        if surface.is_ascii() {
+            signals.push(format!(" {surface} "));
+        } else {
+            signals.push(surface);
+        }
+    }
+    for surface in lexicon.words_for_role(seed::ROLE_QUANTITY_CONVERSION_CUE) {
+        if crate::coding::contains_cjk(&surface) {
+            signals.push(surface);
+        }
+    }
+    signals
+}
+
 fn has_calculation_signal(expression: &str, explicit: bool) -> bool {
     let lower = format!(" {} ", expression.to_lowercase());
     let has_digit = expression.chars().any(|c| c.is_ascii_digit());
@@ -662,72 +711,9 @@ fn has_calculation_signal(expression: &str, explicit: bool) -> bool {
     if has_currency_symbol && has_letter && !explicit && !looks_like_conversion {
         return false;
     }
-    let has_known_calculator_word = [
-        " sqrt",
-        " sin",
-        " cos",
-        " tan",
-        " log",
-        " ln",
-        " usd ",
-        " eur ",
-        " rub ",
-        " dollars",
-        " dollar",
-        " euros",
-        " euro",
-        " rubles",
-        " ruble",
-        " kg ",
-        " kb ",
-        " mb ",
-        " ms ",
-        " seconds",
-        " second",
-        " minutes",
-        " minute",
-        " hours",
-        " hour",
-        " days",
-        " day",
-        " grams",
-        " gram",
-        " months",
-        " month",
-        " tons",
-        " ton",
-        "руб",
-        "доллар",
-        "евро",
-        "тонн",
-        "кг",
-        "феврал",
-        "январ",
-        "месяц",
-        "месяцев",
-        "день",
-        "дней",
-        "换成",
-        "兑换成",
-        "转换为",
-        "美元",
-        "欧元",
-        "公斤",
-        "二月",
-        "一月",
-        "个月",
-        "天",
-        "ग्राम",
-        "किलोग्राम",
-        "डॉलर",
-        "यूरो",
-        "फरवरी",
-        "जनवरी",
-        "महीने",
-        "दिन",
-    ]
-    .iter()
-    .any(|signal| lower.contains(signal));
+    let has_known_calculator_word = calculator_domain_signals()
+        .iter()
+        .any(|signal| lower.contains(signal.as_str()));
     if has_known_calculator_word {
         return true;
     }

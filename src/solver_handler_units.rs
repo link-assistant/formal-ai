@@ -71,13 +71,20 @@ fn dimension_label<'a>(lex: &'a Lexicon, unit: &'a Meaning) -> Option<&'a str> {
 /// "500" in "500mb"), so genuine units still match while embedded fragments do
 /// not.
 fn contains_unit_word(normalized: &str, unit: &str) -> bool {
-    // Inflected languages (Russian "килобайт" -> "килобайте") and space-less
-    // scripts (CJK) attach suffixes directly to the unit, so a strict word
-    // boundary would reject legitimate forms. The substring false positives
-    // that motivated this guard ("mb" in "number", "gram" in "program") are all
-    // ASCII, so the boundary check only applies to ASCII units; non-ASCII units
-    // keep the original permissive substring match.
-    if !unit.is_ascii() {
+    // Inflected alphabetic scripts (Russian "килобайт" -> "килобайте", Hindi
+    // "किलोबाइट") attach suffixes directly to the unit, so a strict word boundary
+    // would reject legitimate forms — those keep the permissive substring match.
+    //
+    // CJK is different: it has no inter-word spaces, so its ideographs glue into
+    // unrelated compounds. A bare-substring match read the day unit "天" inside
+    // "天气" (weather) and the gram unit "克" inside the transliteration "弗拉克斯",
+    // turning a units-free prompt into a phantom time-vs-mass incompatibility
+    // (issue #386). Ideographs are alphabetic to `char::is_alphabetic`, so the
+    // same boundary rule used for ASCII rejects a unit glued inside a larger
+    // compound while still matching one next to a digit ("7天", "5千克") or at a
+    // token edge. The boundary check therefore applies to ASCII and CJK units;
+    // only the inflected alphabetic scripts take the permissive path above.
+    if !unit.is_ascii() && !crate::coding::contains_cjk(unit) {
         return normalized.contains(unit);
     }
     let boundary_ok = |ch: Option<char>| ch.map_or(true, |c| !c.is_alphabetic());
