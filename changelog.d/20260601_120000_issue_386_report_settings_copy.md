@@ -715,6 +715,29 @@ bump: minor
   the four issue-#343 spec-driven prompts still reduce to "spec driven
   development" with a recorded dirven->driven fix — the mirror verifier reporting
   parity across all twenty-nine meaning files (issue #386).
+- The prior-reply topic scan (`extract_topic_from_prior_reply` in
+  `src/solver_handler_how.rs`) is data-driven too — closing out the how-cluster
+  conversion. When a "how does it work?" follow-up names no subject and the prior
+  assistant reply has no "Term (category):" header, the handler falls back to the
+  first capitalised token that is not a function word. That skip list was a
+  hardcoded English title-case array
+  (`["I", "The", "A", "An", "In", "To", "For", "Of", "And", "Or", "Source"]`); it
+  now lives as a self-describing `topic_scan_stop_word` meaning in
+  `data/seed/meanings-how.lino` (role `topic_scan_stop_word`, `defined_by` the
+  `concept` category — closed-class articles, prepositions, conjunctions and
+  pronouns plus the 'source' citation heading, lexicalised in every supported
+  language). The handler walks the role's `Slot::Bare` forms and compares them
+  case-insensitively, so the code knows only the concept "a function word that
+  names no topic". The case-insensitive match is a strict superset of the former
+  case-sensitive comparison: it reproduces the old behaviour for ordinary
+  title-case prose and additionally skips all-caps English function words and
+  capitalised Cyrillic ones that the English-only array left to be mis-read as the
+  topic. The extractor is Rust-only — the browser worker has no prior-reply topic
+  route — but its embedded `MEANINGS_LINO` mirrors the new meaning byte-identically
+  so the shared knowledge base stays complete, and a regression test
+  (`how_it_works_prior_reply_fallback_skips_function_words_case_insensitively`)
+  pins the generalization while the mirror verifier reports parity across all
+  twenty-nine meaning files (issue #386).
 
 ### Fixed
 - The follow-up "Отмени сортировку" ("cancel the sorting") no longer returns

@@ -340,6 +340,16 @@ pub const ROLE_PROCEDURAL_TASK_MODIFIER: &str = "procedural_task_modifier";
 /// example is the transposed "dirven" -> "driven"). A meaning carrying this role
 /// is `defined_by` the `relation` concept.
 pub const ROLE_COMMON_TYPO: &str = "common_typo";
+/// Semantic role: a closed-class function word or citation heading that names
+/// no subject.
+///
+/// An article, preposition, conjunction or pronoun, or a citation heading such
+/// as "source", that a scanner looking for the topic of a prior assistant reply
+/// skips. Every surface is a [`crate::seed::Slot::Bare`] word compared
+/// case-insensitively (after lowercasing) against a capitalised token from the
+/// reply; the first capitalised token that is not one of these is taken as the
+/// topic. A meaning carrying this role is `defined_by` the `concept` category.
+pub const ROLE_TOPIC_SCAN_STOP_WORD: &str = "topic_scan_stop_word";
 /// Semantic role: a prompt asking to fetch a web resource over HTTP.
 ///
 /// The retrieve-this-URL request ("fetch X", "сделай запрос к X", "अनुरोध भेजें",

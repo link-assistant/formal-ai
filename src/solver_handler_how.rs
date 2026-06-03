@@ -604,17 +604,20 @@ fn extract_topic_from_prior_reply(reply: &str) -> Option<String> {
             return Some(candidate.to_lowercase());
         }
     }
-    // Fallback: first capitalised word that is not a stop word.
-    let stop_words = [
-        "I", "The", "A", "An", "In", "To", "For", "Of", "And", "Or", "Source",
-    ];
+    // Fallback: first capitalised token that is not a function word. The skip
+    // list is the `topic_scan_stop_word` meaning's bare surface forms
+    // (data/seed/meanings-how.lino): closed-class words (articles, prepositions,
+    // conjunctions, pronouns) and the 'source' citation heading that name no
+    // subject, compared case-insensitively. No per-language word list lives here
+    // — only the concept "a function word that names no topic".
+    let stop_words = seed::lexicon().role_word_forms(seed::ROLE_TOPIC_SCAN_STOP_WORD);
     for word in reply.split_whitespace() {
         let clean = word.trim_matches(|c: char| !c.is_alphanumeric());
-        if clean.len() >= 2
-            && clean.chars().next().is_some_and(char::is_uppercase)
-            && !stop_words.contains(&clean)
-        {
-            return Some(clean.to_lowercase());
+        if clean.len() >= 2 && clean.chars().next().is_some_and(char::is_uppercase) {
+            let lowered = clean.to_lowercase();
+            if !stop_words.iter().any(|form| form.text == lowered) {
+                return Some(lowered);
+            }
         }
     }
     None

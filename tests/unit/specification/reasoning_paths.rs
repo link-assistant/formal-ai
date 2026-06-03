@@ -520,6 +520,38 @@ fn how_it_works_followup_records_followup_event_in_evidence() {
     );
 }
 
+#[test]
+fn how_it_works_prior_reply_fallback_skips_function_words_case_insensitively() {
+    // When the prior reply has no "Term (category):" header, topic extraction
+    // falls back to the first capitalised token that is not a
+    // `topic_scan_stop_word` (data/seed/meanings-how.lino). The skip list is
+    // matched case-insensitively, so the all-caps leading "THE" is skipped and
+    // the real subject "Widgetronics" is taken. A hardcoded title-case array
+    // (the pre-conversion behaviour) would have failed to match "THE" and
+    // mis-read the function word itself as the topic — this test guards that
+    // generalization.
+    let history = [
+        ConversationTurn::user("tell me about the gadget"),
+        ConversationTurn::assistant(
+            "THE Widgetronics core spins quietly without a category header.",
+        ),
+    ];
+    let response = solve_with_history("how it works?", &history);
+    assert!(
+        response.answer.to_lowercase().contains("widgetronics"),
+        "fallback topic scan must skip the all-caps function word and name \
+         'Widgetronics'; got intent={}, answer={}",
+        response.intent,
+        response.answer,
+    );
+    assert!(
+        !response.answer.to_lowercase().contains("how the works"),
+        "fallback topic scan must not treat the function word 'the' as the \
+         topic; got answer={}",
+        response.answer,
+    );
+}
+
 // ---------------------------------------------------------------------------
 // Issue #183: "how X works?" must support explicit subjects across languages.
 // ---------------------------------------------------------------------------
