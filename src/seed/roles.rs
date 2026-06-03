@@ -357,11 +357,11 @@ pub const ROLE_WEB_SEARCH_QUERY_TRAILING_NOISE: &str = "web_search_query_trailin
 pub const ROLE_WEB_SEARCH_SOURCE_ONLY: &str = "web_search_source_only";
 /// Semantic role: a sign that an earlier conversation turn performed a web search.
 ///
-/// "duckduckgo", "web search", "search the internet", "веб-поиск", "интернет", …
-/// matched as raw lowercased substrings against the text of a *prior* turn (not
-/// the normalised current prompt). Lets a terse follow-up ("search it") be read
-/// as referring back to a web search the assistant already offered. Carried by
-/// `web_search_mention`.
+/// "duckduckgo", "web search", "search the internet", "веб-поиск", "интернет",
+/// "वेब खोज", "网络搜索", … matched as raw lowercased substrings against the text of
+/// a *prior* turn (not the normalised current prompt). Lets a terse follow-up
+/// ("search it") be read as referring back to a web search the assistant already
+/// offered. Lexicalised in every supported language. Carried by `web_search_mention`.
 pub const ROLE_WEB_SEARCH_HISTORY_SIGNAL: &str = "web_search_history_signal";
 /// Semantic role: the predicate verb of a follow-up instruction clause.
 ///
@@ -529,12 +529,16 @@ pub const ROLE_RULE_LISTING_PHRASE: &str = "rule_listing_phrase";
 /// `prove` meaning; queried as bare literals. Hindi and Chinese carry no bare
 /// directive (their proof is caught by [`ROLE_PROOF_MARKER`]).
 pub const ROLE_PROOF_DIRECTIVE: &str = "proof_directive";
-/// Semantic role: a broader English request frame asking for a proof.
+/// Semantic role: a broad request frame asking for a proof, in any language.
 ///
 /// "can you prove", "please prove", "give me a proof", "show that ", "demonstrate
-/// that " — detected with a plain prefix match (no verb boundary, no claim
-/// extraction), so a proof request is recognised even without a following "that".
-/// Carried by `proof_request_frame`; queried as prefix literals.
+/// that ", and their Russian/Hindi/Chinese counterparts — detected with a plain
+/// prefix match (no verb boundary, no claim extraction), so a proof request is
+/// recognised even without a following "that". The non-English leads each embed a
+/// [`ROLE_PROOF_MARKER`] surface (so they also match mid-prompt); the English
+/// markers cover only "prove that"/"proof of", so the English leads are the sole
+/// surface for a polite English request. Carried by `proof_request_frame`; queried
+/// as prefix literals.
 pub const ROLE_PROOF_REQUEST_LEAD: &str = "proof_request_lead";
 /// Semantic role: a proof verb or noun appearing anywhere inside the prompt.
 ///

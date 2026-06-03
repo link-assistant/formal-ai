@@ -7209,9 +7209,9 @@ function hasProofRequestShape(normalized) {
   if (!text) return false;
   // A proof request is recognised structurally from the meaning lexicon, not
   // from words baked into this file: a clause-initial bare directive verb
-  // (proof_directive, with the verb-boundary check), an English request-frame
-  // lead that needs no `that` clause (proof_request_lead), or a mid-prompt proof
-  // assertion marker in any language (proof_marker).
+  // (proof_directive, with the verb-boundary check), a request-frame lead in any
+  // language that needs no `that` clause (proof_request_lead), or a mid-prompt
+  // proof assertion marker in any language (proof_marker).
   return (
     bareLiterals(ROLE_PROOF_DIRECTIVE).some((verb) => startsWithProofVerb(text, verb)) ||
     prefixLiterals(ROLE_PROOF_REQUEST_LEAD).some((lead) => text.startsWith(lead)) ||
@@ -17587,7 +17587,7 @@ const MEANINGS_LINO = [
   '      word "找到…"',
   '        description "Chinese imperative prefix surface (pinyin zhaodao); the query follows the verb."',
   '  meaning "web_search_mention"',
-  '    gloss "a mention of web search inside an earlier conversation turn — not the current prompt — used to decide whether a terse follow-up such as search it or найди это refers back to a web search the assistant already offered. Unlike the other web-search markers it is tested against the raw, lowercased text of a prior turn (not the normalised prompt), so each surface is stored exactly as it appears, including the hyphen in веб-поиск; all forms are bare substrings."',
+  '    gloss "a mention of web search inside an earlier conversation turn — not the current prompt — used to decide whether a terse follow-up such as search it or найди это refers back to a web search the assistant already offered. Unlike the other web-search markers it is tested against the raw, lowercased text of a prior turn (not the normalised prompt), so each surface is stored exactly as it appears, including the hyphen in веб-поиск; all forms are bare substrings. The signal is lexicalised in every supported language, so a Hindi or Chinese prior turn that searched the web is recognised just like an English or Russian one."',
   '    wiktionary "search"',
   '    defined_by "web_search"',
   '    role "web_search_history_signal"',
@@ -17605,6 +17605,22 @@ const MEANINGS_LINO = [
   '        description "Russian phrase (romanized veb poisk, web search), spaced; a raw lowercased substring signalling that a prior turn performed a web search."',
   '      word "интернет"',
   '        description "Russian noun (romanized internet); a raw lowercased substring signalling that a prior turn referenced the internet."',
+  '    lexeme "hi"',
+  '      word "वेब खोज"',
+  '        description "Hindi phrase (romanized veb khoj, web search); a raw lowercased substring signalling that a prior turn performed a web search."',
+  '      word "इंटरनेट पर खोज"',
+  '        description "Hindi phrase (romanized internet par khoj, search the internet); a raw lowercased substring signalling that a prior turn performed a web search."',
+  '      word "इंटरनेट"',
+  '        description "Hindi noun (romanized internet); a raw lowercased substring signalling that a prior turn referenced the internet."',
+  '    lexeme "zh"',
+  '      word "网络搜索"',
+  '        description "Chinese phrase (pinyin wangluo sousuo, web search) in simplified script; a raw lowercased substring signalling that a prior turn performed a web search."',
+  '      word "在网上搜索"',
+  '        description "Chinese phrase (pinyin zai wangshang sousuo, search on the web) in simplified script; a raw lowercased substring signalling that a prior turn performed a web search."',
+  '      word "互联网"',
+  '        description "Chinese noun (pinyin hulianwang, internet) in simplified script; a raw lowercased substring signalling that a prior turn referenced the internet."',
+  '      word "網路"',
+  '        description "Chinese noun (pinyin wanglu, network or internet) in traditional script; a raw lowercased substring signalling that a prior turn referenced the internet."',
   "meanings",
   '  meaning "explicit_web_search_command"',
   '    gloss "an explicit, fully spelled-out web-search command whose topic sits at the very end — search the web for X, find information about X, найди в интернете X. It is a specialisation of web_search in which the source and the act are stated outright, so the recogniser does not have to infer them: it strips the lead-in from the front of the prompt and keeps whatever follows as the query. Every surface is a prefix surface ending with the ellipsis … (U+2026); the literal before the slot is the lead-in to strip (it keeps its trailing space so the boundary is exact), and the remainder is the search topic. The longer, more specific lead-ins are written before the shorter ones so that, for example, find detailed information about … wins over find information about …. English and Russian carry the original lead-ins verbatim; Hindi and Chinese add natural verb-initial commands so the concept is complete in every supported language."',
@@ -19570,7 +19586,7 @@ const MEANINGS_LINO = [
   '      word "證明…"',
   '        description "Chinese verb (pinyin zhengming, to prove) in traditional script; scaffold prefix, the claim follows."',
   '  meaning "proof_request_frame"',
-  '    gloss "a broader English request frame that asks for a proof without naming the claim with a that clause — can you prove, please prove, give me a proof, show that, demonstrate that. These leads are detected by a plain starts_with (no verb boundary, no claim extraction), so a prompt like can you prove the riemann hypothesis is recognised even though it carries no that. Russian proof requests are caught by the prove directive verbs and Hindi/Chinese by the proof_assertion markers, so this frame is English-only on purpose; adding the other languages here would duplicate those surfaces."',
+  '    gloss "a broad request frame that asks for a proof without naming the claim with a that clause — can you prove, please prove, give me a proof, show that, demonstrate that, and their counterparts in every supported language. These leads are detected by a plain starts_with (no verb boundary, no claim extraction), so a prompt like can you prove the riemann hypothesis is recognised even though it carries no that. The Russian, Hindi and Chinese leads each embed a proof_assertion marker (доказать, सिद्ध, 证明, …), so a prompt that opens with one is already caught by that mid-prompt marker; they are lexicalised here too so the request-frame concept is complete in every language and so a lead that carries no claim is still recognised. In English the assertion markers cover only prove that and proof of, so the English leads are the sole surface that recognises a polite request such as can you prove the riemann hypothesis."',
   '    wiktionary "proof"',
   '    defined_by "inquiry"',
   '    defined_by "prove"',
@@ -19590,6 +19606,35 @@ const MEANINGS_LINO = [
   '        description "English request-frame lead; starts_with show that (with a trailing space)."',
   '      word "demonstrate that …"',
   '        description "English request-frame lead; starts_with demonstrate that (with a trailing space)."',
+  '    lexeme "ru"',
+  '      word "можешь доказать…"',
+  '        description "Russian polite request-frame lead (romanized mozhesh dokazat, can you prove); starts_with можешь доказать and embeds the доказать assertion marker."',
+  '      word "можете доказать…"',
+  '        description "Russian polite request-frame lead (romanized mozhete dokazat, can you prove); starts_with можете доказать and embeds the доказать assertion marker."',
+  '      word "сможешь доказать…"',
+  '        description "Russian polite request-frame lead (romanized smozhesh dokazat, could you prove); starts_with сможешь доказать and embeds the доказать assertion marker."',
+  '      word "пожалуйста докажи…"',
+  '        description "Russian polite request-frame lead (romanized pozhaluysta dokazhi, please prove); starts_with пожалуйста докажи and embeds the докажи assertion marker."',
+  '      word "пожалуйста докажите…"',
+  '        description "Russian polite request-frame lead (romanized pozhaluysta dokazhite, please prove); starts_with пожалуйста докажите and embeds the докажите assertion marker."',
+  '    lexeme "hi"',
+  '      word "क्या आप साबित कर सकते हैं…"',
+  '        description "Hindi polite request-frame lead (romanized kya aap sabit kar sakte hain, can you prove); starts_with the phrase and embeds the साबित कर assertion marker."',
+  '      word "क्या आप सिद्ध कर सकते हैं…"',
+  '        description "Hindi polite request-frame lead (romanized kya aap siddh kar sakte hain, can you prove); starts_with the phrase and embeds the सिद्ध कर assertion marker."',
+  '      word "कृपया सिद्ध कीजिए…"',
+  '        description "Hindi polite request-frame lead (romanized kripya siddh kijie, please prove); starts_with the phrase and embeds the सिद्ध कीजिए assertion marker."',
+  '      word "कृपया साबित कीजिए…"',
+  '        description "Hindi polite request-frame lead (romanized kripya sabit kijie, please prove); starts_with the phrase and embeds the साबित कीजिए assertion marker."',
+  '    lexeme "zh"',
+  '      word "你能证明…"',
+  '        description "Chinese polite request-frame lead (pinyin ni neng zhengming, can you prove) in simplified script; starts_with 你能证明 and embeds the 证明 assertion marker."',
+  '      word "你能證明…"',
+  '        description "Chinese polite request-frame lead (pinyin ni neng zhengming, can you prove) in traditional script; starts_with 你能證明 and embeds the 證明 assertion marker."',
+  '      word "请证明…"',
+  '        description "Chinese polite request-frame lead (pinyin qing zhengming, please prove) in simplified script; starts_with 请证明 and embeds the 证明 assertion marker."',
+  '      word "請證明…"',
+  '        description "Chinese polite request-frame lead (pinyin qing zhengming, please prove) in traditional script; starts_with 請證明 and embeds the 證明 assertion marker."',
   '  meaning "proof_assertion"',
   '    gloss "a proof verb or noun appearing anywhere inside a prompt, not just clause-initially — the mid-sentence assertion that a proof is wanted. Its surfaces are matched as raw substrings (not whole tokens), so the English and Russian forms are stored space-wrapped to enforce a word boundary while the Devanagari and Han forms match bare. The four Russian markers (докажи, докажите, доказать, доказательство) keep the Rust solver and the browser worker in lockstep."',
   '    wiktionary "proof"',
@@ -26306,6 +26351,18 @@ async function solve(prompt, history, prefs, userContext = {}) {
       name: "tryProofRequest",
       run: () => tryProofRequest(prompt, normalized, language),
     },
+    // Issue #135/#386: a Playwright-script request is more specific than the
+    // generalized write_program recognizer. Since #386 taught
+    // writeProgramParameters to recognize a program_kind ("скрипт"/"script")
+    // requested by a program_request verb ("написать"/"write"), a bare
+    // "напиши … playwright скрипт" now also looks like a write_program with no
+    // task — so the Playwright handler must win first. This mirrors the Rust
+    // dispatch, where try_playwright_script runs ahead of the SPECIALIZED_HANDLERS
+    // group that owns write_program (src/solver.rs).
+    {
+      name: "tryPlaywrightScript",
+      run: () => tryPlaywrightScript(prompt, preferences, language),
+    },
     {
       name: "tryWriteProgramCoreference",
       run: () => {
@@ -26345,10 +26402,6 @@ async function solve(prompt, history, prefs, userContext = {}) {
     },
     { name: "tryConceptLookup", run: () => tryConceptLookup(prompt) },
     { name: "tryWriteProgram", run: () => writeProgram() },
-    {
-      name: "tryPlaywrightScript",
-      run: () => tryPlaywrightScript(prompt, preferences, language),
-    },
     { name: "trySoftwareProjectRequest", run: () => trySoftwareProjectRequest(prompt, history) },
   ];
   for (const handler of syncHandlers) {

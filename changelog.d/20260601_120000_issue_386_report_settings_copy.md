@@ -410,6 +410,19 @@ bump: minor
   data, a reconstructed timeline, the full requirements list, a corrected
   root-cause analysis of the "Отмени сортировку" refusal, and the implemented
   inverse-derivation fix.
+- Every meaning in the lexicon now lexicalises *all* supported languages
+  (en/ru/hi/zh), enforced unconditionally by the
+  `every_meaning_covers_all_supported_languages` invariant. The two remaining
+  English-/Russian-only meanings were backfilled with genuine surfaces: the
+  broad proof request-frame (`proof_request_frame`, role `proof_request_lead`)
+  gained Russian, Hindi and Chinese leads — each embedding an existing
+  `proof_marker` substring (доказать / साबित / 证明 …) so recognition stays
+  behaviour-neutral while the request-frame concept is complete in every
+  language — and the prior-turn web-search signal (`web_search_mention`, role
+  `web_search_history_signal`) gained Hindi and Chinese surfaces. A
+  language-coverage audit (`experiments/issue-386-audit-language-coverage.mjs`)
+  and the 221-assertion parity harness confirm the backfill leaves every
+  recogniser byte-identical to its pre-backfill behaviour (issue #386).
 
 ### Fixed
 - The follow-up "Отмени сортировку" ("cancel the sorting") no longer returns
@@ -421,3 +434,14 @@ bump: minor
   argument. Adding a new cancellable operation is now pure seed data with no new
   control flow, and the behavior is covered across English, Russian, Hindi, and
   Chinese in both the Rust solver and the web worker (issue #386).
+- "Можешь написать мне Playwright скрипт?" (and its English counterpart) again
+  route to the Playwright starter-script handler instead of the generic
+  write-program clarification. The issue #386 generalisation of
+  `writeProgramParameters` made "написать … скрипт" look like a bare
+  write-program request, and the browser worker dispatched `tryWriteProgram`
+  ahead of `tryPlaywrightScript` — the reverse of the canonical Rust order where
+  `try_playwright_script` runs before the specialized-handler group. The worker
+  dispatch was reordered to mirror `src/solver.rs`, with a vm regression harness
+  (`experiments/issue-386-worker-playwright-dispatch.mjs`) asserting the
+  Playwright handler wins for both languages while a bare "напиши программу"
+  still reaches write-program (issue #386).

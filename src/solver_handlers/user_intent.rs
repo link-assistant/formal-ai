@@ -446,9 +446,9 @@ pub fn try_proof_request_with_config(
     };
     // A proof request is recognised structurally from the meaning lexicon, not
     // from words baked into this file: a clause-initial bare directive verb
-    // (`proof_directive`, with the verb-boundary check above), an English
-    // request-frame lead that needs no `that` clause (`proof_request_lead`), or
-    // a mid-prompt proof assertion marker in any language (`proof_marker`).
+    // (`proof_directive`, with the verb-boundary check above), a request-frame
+    // lead in any language that needs no `that` clause (`proof_request_lead`),
+    // or a mid-prompt proof assertion marker in any language (`proof_marker`).
     let is_proof_request = bare_literals(seed::ROLE_PROOF_DIRECTIVE)
         .iter()
         .any(|&verb| starts_with_verb(verb))
