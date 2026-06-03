@@ -295,6 +295,33 @@ pub const ROLE_MECHANISM_INQUIRY: &str = "mechanism_inquiry";
 /// task after the slot; a surface may name the canonical operation in an
 /// `action` child.
 pub const ROLE_PROCEDURAL_REQUEST: &str = "procedural_request";
+/// Semantic role: the predicate that completes a how-it-works clause.
+///
+/// The verb or participle stating that a subject operates, is structured, or is
+/// built ("work", "works", "structured", "built", …). Every surface is a
+/// [`crate::seed::Slot::Suffix`]; the text after the `…` slot is the predicate
+/// tail a mechanism-inquiry extractor strips so the bare subject remains. A
+/// meaning carrying this role is `defined_by` the `action` and
+/// `mechanism_inquiry` concepts.
+pub const ROLE_MECHANISM_PREDICATE: &str = "mechanism_predicate";
+/// Semantic role: an optional thoroughness or politeness modifier on a
+/// how-it-works question ("in detail", "internally", "please", …).
+///
+/// Every surface is a [`crate::seed::Slot::Suffix`]; the text after the `…` slot
+/// is the modifier tail a mechanism-inquiry extractor strips, in declaration
+/// order, so the bare subject remains. A meaning carrying this role is
+/// `defined_by` the `property` and `mechanism_inquiry` concepts.
+pub const ROLE_DETAIL_MODIFIER: &str = "detail_modifier";
+/// Semantic role: a subject candidate that names no real topic.
+///
+/// A pronoun or bare function word that points back at the surrounding context
+/// instead of introducing a subject ("it", "this", "does …", "to …", …), so a
+/// how-it-works extractor rejects it and falls back to the active topic.
+/// [`crate::seed::Slot::Bare`] surfaces match the whole candidate exactly;
+/// [`crate::seed::Slot::Prefix`] surfaces match when the candidate begins with
+/// the literal before the `…` slot. A meaning carrying this role is `defined_by`
+/// the `entity` and `mechanism_inquiry` concepts.
+pub const ROLE_NON_REFERENTIAL_SUBJECT: &str = "non_referential_subject";
 /// Semantic role: a prompt asking to fetch a web resource over HTTP.
 ///
 /// The retrieve-this-URL request ("fetch X", "сделай запрос к X", "अनुरोध भेजें",

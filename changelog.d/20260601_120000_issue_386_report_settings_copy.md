@@ -648,6 +648,42 @@ bump: minor
   — but its embedded `MEANINGS_LINO` mirrors the new meaning byte-identically so
   the shared knowledge base stays complete, with the mirror verifier reporting
   parity across all twenty-nine meaning files (issue #386).
+- The mechanism-inquiry subject cleanup (`strip_mechanism_tail` /
+  `clean_mechanism_subject` in `src/solver_handler_how.rs` and the
+  `formal_ai_worker.js` mirror) is data-driven too — completing the how-cluster
+  conversion. Three new self-describing meanings in `data/seed/meanings-how.lino`
+  carry the surfaces these helpers used to hardcode in three inline arrays:
+  `mechanism_predicate` (role `mechanism_predicate`, `defined_by` `action` +
+  `mechanism_inquiry` — the "… work" / "… works" / "… structured" / … predicate
+  tails a prefix match leaves behind), `detail_modifier` (role `detail_modifier`,
+  `defined_by` `property` + `mechanism_inquiry` — the "… in detail" / "…
+  internally" / "… please" / … thoroughness-or-politeness tails), and
+  `non_referential_subject` (role `non_referential_subject`, `defined_by`
+  `entity` + `mechanism_inquiry` — the pronouns and dangling function words "it" /
+  "this" / "does …" / "to …" / … that name no real topic). As in the rest of the
+  cluster each surface marks its slot with the ellipsis `…` (U+2026): the predicate
+  and detail tails are suffix surfaces whose text after the slot is the literal to
+  strip (tried in declaration order — the predicate by return-on-first-match, the
+  modifiers stripped together in one re-trimming pass), while the reject set mixes
+  bare surfaces matched against the whole candidate with prefix surfaces matched
+  against its start. `strip_mechanism_tail` walks the `mechanism_predicate` role
+  and `clean_mechanism_subject` walks `detail_modifier` then
+  `non_referential_subject`, so the former `[" work", …]` / `[" in detail", …]`
+  arrays and the nineteen-entry `PRONOUN_SUBJECTS` set with its four `starts_with`
+  checks are gone — the code knows only the concepts "the predicate that completes
+  a how-it-works clause", "an optional detail modifier", and "a subject that names
+  no real topic". Because the surfaces now cover every language, the ru/hi/zh
+  predicate tails and the hi/zh detail modifiers are stripped where the
+  English-/Russian-only arrays left them intact, while every English and Russian
+  case stays byte-identical. The `formal_ai_worker.js` mirror drives
+  `cleanMechanismSubject` / `stripMechanismTail` from the same embedded meanings,
+  and a differential parity harness
+  (`experiments/issue-386-js-mechanism-subject.mjs`) reconstructs the
+  pre-conversion arrays and proves the two functions are byte-identical to them
+  across forty-nine English/Russian probes, documents the ten intended
+  all-language generalizations, and confirms the issue-#386 reasoning paths — the
+  mirror verifier reporting parity across all twenty-nine meaning files (issue
+  #386).
 
 ### Fixed
 - The follow-up "Отмени сортировку" ("cancel the sorting") no longer returns

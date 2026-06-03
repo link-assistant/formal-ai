@@ -292,17 +292,18 @@ fn subject_between(original: &str, lower: &str, prefix: &str, suffixes: &[&str])
     None
 }
 
+/// Strip a trailing mechanism predicate ("work", "works", "structured", …) so a
+/// prefix match such as "how does X work" yields the bare subject "X".
+///
+/// The predicate tails carry the [`seed::ROLE_MECHANISM_PREDICATE`] role; each
+/// is a [`seed::Slot::Suffix`] whose text after the `…` slot is the literal to
+/// trim. They are tried in declaration order and the first match wins, mirroring
+/// the original return-on-first-match loop. No per-language tail list lives here.
 fn strip_mechanism_tail(subject: &str) -> Option<String> {
     let mut clean = clean_mechanism_subject(subject)?;
     let lower = clean.to_lowercase();
-    for suffix in [
-        " work",
-        " works",
-        " structured",
-        " organized",
-        " organised",
-        " built",
-    ] {
+    for form in &seed::lexicon().role_word_forms(seed::ROLE_MECHANISM_PREDICATE) {
+        let suffix = form.after_slot();
         if lower.ends_with(suffix) {
             let end = clean.len().checked_sub(suffix.len())?;
             clean.truncate(end);
@@ -326,22 +327,21 @@ fn clean_mechanism_fragment(value: &str) -> String {
         .to_owned()
 }
 
+/// Trim optional detail/politeness modifiers from a candidate subject and reject
+/// it outright when it is a non-referential subject (a pronoun or bare function
+/// word that names no real topic).
+///
+/// The modifier tails carry the [`seed::ROLE_DETAIL_MODIFIER`] role; each is a
+/// [`seed::Slot::Suffix`] stripped in declaration order, re-trimming after each,
+/// so several modifiers can fall away in one pass. The rejection set carries the
+/// [`seed::ROLE_NON_REFERENTIAL_SUBJECT`] role: [`seed::Slot::Bare`] surfaces
+/// match the whole candidate exactly and [`seed::Slot::Prefix`] surfaces match a
+/// candidate that begins with the literal before the `…` slot. No per-language
+/// modifier or pronoun list lives here.
 fn clean_mechanism_subject(value: &str) -> Option<String> {
-    const PRONOUN_SUBJECTS: &[&str] = &[
-        "it", "this", "that", "you", "yourself", "does", "do", "это", "оно", "он", "она", "они",
-        "ты", "вы", "यह", "ये", "这", "这个", "它",
-    ];
-
     let mut clean = clean_mechanism_fragment(value);
-    for suffix in [
-        " in detail",
-        " internally",
-        " exactly",
-        " please",
-        " подробнее",
-        " подробно",
-        " пожалуйста",
-    ] {
+    for form in &seed::lexicon().role_word_forms(seed::ROLE_DETAIL_MODIFIER) {
+        let suffix = form.after_slot();
         let lower = clean.to_lowercase();
         if lower.ends_with(suffix) {
             let end = clean.len().checked_sub(suffix.len())?;
@@ -350,13 +350,15 @@ fn clean_mechanism_subject(value: &str) -> Option<String> {
         }
     }
     let lower = clean.to_lowercase();
-    if clean.is_empty()
-        || PRONOUN_SUBJECTS.contains(&lower.as_str())
-        || lower.starts_with("does ")
-        || lower.starts_with("do ")
-        || lower.starts_with("to ")
-        || lower.starts_with("you ")
-    {
+    let non_referential = seed::lexicon()
+        .role_word_forms(seed::ROLE_NON_REFERENTIAL_SUBJECT)
+        .iter()
+        .any(|form| match form.slot() {
+            seed::Slot::Bare => lower == form.text,
+            seed::Slot::Prefix => lower.starts_with(form.before_slot()),
+            _ => false,
+        });
+    if clean.is_empty() || non_referential {
         return None;
     }
     Some(clean)

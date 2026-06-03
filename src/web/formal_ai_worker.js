@@ -1090,71 +1090,47 @@ function cleanMechanismFragment(value) {
     .trim();
 }
 
+// Trim optional detail/politeness modifiers from a candidate subject and reject
+// it outright when it is a non-referential subject. The modifier tails carry
+// ROLE_DETAIL_MODIFIER (suffix surfaces, stripped in declaration order); the
+// rejection set carries ROLE_NON_REFERENTIAL_SUBJECT (bare surfaces match the
+// whole candidate, prefix surfaces match a candidate that begins with the
+// literal before the … slot). Mirrors clean_mechanism_subject in
+// src/solver_handler_how.rs — no per-language modifier or pronoun array here.
 function cleanMechanismSubject(value) {
   let clean = cleanMechanismFragment(value);
-  for (const suffix of [
-    " in detail",
-    " internally",
-    " exactly",
-    " please",
-    " подробнее",
-    " подробно",
-    " пожалуйста",
-  ]) {
+  for (const form of roleWordForms(ROLE_DETAIL_MODIFIER)) {
+    const suffix = form.after;
     const lower = clean.toLowerCase();
     if (lower.endsWith(suffix)) {
-      clean = cleanMechanismFragment(clean.slice(0, -suffix.length));
+      clean = cleanMechanismFragment(clean.slice(0, clean.length - suffix.length));
     }
   }
   const lower = clean.toLowerCase();
-  const pronouns = new Set([
-    "it",
-    "this",
-    "that",
-    "you",
-    "yourself",
-    "does",
-    "do",
-    "это",
-    "оно",
-    "он",
-    "она",
-    "они",
-    "ты",
-    "вы",
-    "यह",
-    "ये",
-    "这",
-    "这个",
-    "它",
-  ]);
-  if (
-    !clean ||
-    pronouns.has(lower) ||
-    lower.startsWith("does ") ||
-    lower.startsWith("do ") ||
-    lower.startsWith("to ") ||
-    lower.startsWith("you ")
-  ) {
+  const nonReferential = roleWordForms(ROLE_NON_REFERENTIAL_SUBJECT).some((form) => {
+    if (form.slot === "bare") return lower === form.text;
+    if (form.slot === "prefix") return lower.startsWith(form.before);
+    return false;
+  });
+  if (!clean || nonReferential) {
     return null;
   }
   return clean;
 }
 
+// Strip a trailing mechanism predicate so a prefix match such as "how does X
+// work" yields the bare subject "X". The predicate tails carry
+// ROLE_MECHANISM_PREDICATE (suffix surfaces); they are tried in declaration
+// order and the first match wins. Mirrors strip_mechanism_tail in
+// src/solver_handler_how.rs — no per-language tail array here.
 function stripMechanismTail(subject) {
   let clean = cleanMechanismSubject(subject);
   if (!clean) return null;
   const lower = clean.toLowerCase();
-  for (const suffix of [
-    " work",
-    " works",
-    " structured",
-    " organized",
-    " organised",
-    " built",
-  ]) {
+  for (const form of roleWordForms(ROLE_MECHANISM_PREDICATE)) {
+    const suffix = form.after;
     if (lower.endsWith(suffix)) {
-      clean = cleanMechanismSubject(clean.slice(0, -suffix.length));
+      clean = cleanMechanismSubject(clean.slice(0, clean.length - suffix.length));
       break;
     }
   }
@@ -16993,6 +16969,128 @@ const MEANINGS_LINO = [
   '      word "怎么写 …"',
   '        action "write"',
   '        description "Chinese prefix surface (pinyin zenme xie) naming the write operation, with a trailing space; the task follows the … slot."',
+  '  meaning "mechanism_predicate"',
+  '    gloss "the predicate that completes a how-it-works clause — the verb or participle stating that a subject operates, is structured, or is built (work, works, structured, organized, organised, built, …). Each surface is a suffix carrying the … (U+2026) slot at the front; the text after the slot is the predicate tail a mechanism-inquiry extractor strips so the bare subject remains. The English surfaces are the ones an extractor removes after a how-does prefix match; the other languages name genuine predicates so every language is covered."',
+  '    wiktionary "work"',
+  '    defined_by "action"',
+  '    defined_by "mechanism_inquiry"',
+  '    role "mechanism_predicate"',
+  '    lexeme "en"',
+  '      word "… work"',
+  '        description "English plural-or-base predicate tail meaning operates; the text after the … slot is stripped to leave the subject."',
+  '      word "… works"',
+  '        description "English singular predicate tail meaning operates; the text after the … slot is stripped to leave the subject."',
+  '      word "… structured"',
+  '        description "English predicate tail meaning arranged; the text after the … slot is stripped to leave the subject."',
+  '      word "… organized"',
+  '        description "English predicate tail meaning arranged, American spelling; the text after the … slot is stripped to leave the subject."',
+  '      word "… organised"',
+  '        description "English predicate tail meaning arranged, British spelling; the text after the … slot is stripped to leave the subject."',
+  '      word "… built"',
+  '        description "English predicate tail meaning constructed; the text after the … slot is stripped to leave the subject."',
+  '    lexeme "ru"',
+  '      word "… работает"',
+  '        description "Russian singular predicate tail (romanized rabotaet) meaning works; a genuine mechanism predicate stripped when a subject ends with it after a prefix match."',
+  '      word "… устроен"',
+  '        description "Russian predicate tail (romanized ustroen) meaning is structured; a genuine mechanism predicate completing a how-it-works clause."',
+  '    lexeme "hi"',
+  '      word "… काम करता है"',
+  '        description "Hindi predicate tail (romanized kaam karta hai) meaning works; a genuine mechanism predicate completing a how-it-works clause."',
+  '      word "… बना है"',
+  '        description "Hindi predicate tail (romanized bana hai) meaning is built; a genuine mechanism predicate completing a how-it-works clause."',
+  '    lexeme "zh"',
+  '      word "…工作"',
+  '        description "Chinese predicate tail (pinyin gongzuo) meaning works, with no leading space; a genuine mechanism predicate completing a how-it-works clause."',
+  '      word "…构建"',
+  '        description "Chinese predicate tail (pinyin goujian) meaning is built, with no leading space; a genuine mechanism predicate completing a how-it-works clause."',
+  '  meaning "detail_modifier"',
+  '    gloss "an optional modifier appended to a how-it-works question asking for more thoroughness or politeness (in detail, internally, exactly, please, …) without naming the subject. Each surface is a suffix carrying the … (U+2026) slot at the front; the text after the slot is the modifier tail a mechanism-inquiry extractor strips so the bare subject remains. The extractor strips every matching modifier in declaration order, re-trimming after each."',
+  '    wiktionary "detail"',
+  '    defined_by "property"',
+  '    defined_by "mechanism_inquiry"',
+  '    role "detail_modifier"',
+  '    lexeme "en"',
+  '      word "… in detail"',
+  '        description "English modifier tail asking for a thorough explanation; the text after the … slot is stripped to leave the subject."',
+  '      word "… internally"',
+  '        description "English modifier tail asking about internal workings; the text after the … slot is stripped to leave the subject."',
+  '      word "… exactly"',
+  '        description "English modifier tail asking for precision; the text after the … slot is stripped to leave the subject."',
+  '      word "… please"',
+  '        description "English politeness modifier tail; the text after the … slot is stripped to leave the subject."',
+  '    lexeme "ru"',
+  '      word "… подробнее"',
+  '        description "Russian modifier tail (romanized podrobneye) meaning in more detail; the text after the … slot is stripped to leave the subject."',
+  '      word "… подробно"',
+  '        description "Russian modifier tail (romanized podrobno) meaning in detail; the text after the … slot is stripped to leave the subject."',
+  '      word "… пожалуйста"',
+  '        description "Russian politeness modifier tail (romanized pozhaluysta) meaning please; the text after the … slot is stripped to leave the subject."',
+  '    lexeme "hi"',
+  '      word "… विस्तार से"',
+  '        description "Hindi modifier tail (romanized vistaar se) meaning in detail; the text after the … slot is stripped to leave the subject."',
+  '      word "… कृपया"',
+  '        description "Hindi politeness modifier tail (romanized kripya) meaning please; the text after the … slot is stripped to leave the subject."',
+  '    lexeme "zh"',
+  '      word "…详细"',
+  '        description "Chinese modifier tail (pinyin xiangxi) meaning in detail, with no leading space; the text after the … slot is stripped to leave the subject."',
+  '      word "…请"',
+  '        description "Chinese politeness modifier tail (pinyin qing) meaning please, with no leading space; the text after the … slot is stripped to leave the subject."',
+  '  meaning "non_referential_subject"',
+  '    gloss "a subject candidate that names no real topic — a pronoun or bare function word that points back at the surrounding context instead of introducing a subject, so a how-it-works extractor rejects it and falls back to the active topic. Bare surfaces match the whole candidate exactly; prefix surfaces carry the … (U+2026) slot and match when the candidate begins with the literal before the slot."',
+  '    wiktionary "pronoun"',
+  '    defined_by "entity"',
+  '    defined_by "mechanism_inquiry"',
+  '    role "non_referential_subject"',
+  '    lexeme "en"',
+  '      word "it"',
+  '        description "English third-person pronoun referring back to context; rejected as a non-referential subject."',
+  '      word "this"',
+  '        description "English demonstrative pronoun pointing at context; rejected as a non-referential subject."',
+  '      word "that"',
+  '        description "English demonstrative pronoun pointing at context; rejected as a non-referential subject."',
+  '      word "you"',
+  '        description "English second-person pronoun addressing the assistant; rejected as a non-referential subject."',
+  '      word "yourself"',
+  '        description "English reflexive pronoun addressing the assistant; rejected as a non-referential subject."',
+  '      word "does"',
+  '        description "English auxiliary verb left over from a how-does question; rejected as a non-referential subject."',
+  '      word "do"',
+  '        description "English auxiliary verb left over from a how-do question; rejected as a non-referential subject."',
+  '      word "does …"',
+  "        description \"English prefix surface; a candidate beginning with 'does ' is a dangling auxiliary clause and is rejected as a non-referential subject.\"",
+  '      word "do …"',
+  "        description \"English prefix surface; a candidate beginning with 'do ' is a dangling auxiliary clause and is rejected as a non-referential subject.\"",
+  '      word "to …"',
+  "        description \"English prefix surface; a candidate beginning with 'to ' is an infinitive clause, not a subject, and is rejected.\"",
+  '      word "you …"',
+  "        description \"English prefix surface; a candidate beginning with 'you ' addresses the assistant and is rejected as a non-referential subject.\"",
+  '    lexeme "ru"',
+  '      word "это"',
+  '        description "Russian demonstrative pronoun (romanized eto) meaning this or it; rejected as a non-referential subject."',
+  '      word "оно"',
+  '        description "Russian neuter pronoun (romanized ono) meaning it; rejected as a non-referential subject."',
+  '      word "он"',
+  '        description "Russian masculine pronoun (romanized on) meaning he or it; rejected as a non-referential subject."',
+  '      word "она"',
+  '        description "Russian feminine pronoun (romanized ona) meaning she or it; rejected as a non-referential subject."',
+  '      word "они"',
+  '        description "Russian plural pronoun (romanized oni) meaning they; rejected as a non-referential subject."',
+  '      word "ты"',
+  '        description "Russian informal second-person pronoun (romanized ty) meaning you; rejected as a non-referential subject."',
+  '      word "вы"',
+  '        description "Russian formal or plural second-person pronoun (romanized vy) meaning you; rejected as a non-referential subject."',
+  '    lexeme "hi"',
+  '      word "यह"',
+  '        description "Hindi pronoun (romanized yah) meaning this or it; rejected as a non-referential subject."',
+  '      word "ये"',
+  '        description "Hindi pronoun (romanized ye) meaning these or this; rejected as a non-referential subject."',
+  '    lexeme "zh"',
+  '      word "这"',
+  '        description "Chinese demonstrative pronoun (pinyin zhe) meaning this; rejected as a non-referential subject."',
+  '      word "这个"',
+  '        description "Chinese demonstrative pronoun (pinyin zhege) meaning this one; rejected as a non-referential subject."',
+  '      word "它"',
+  '        description "Chinese third-person pronoun (pinyin ta) meaning it; rejected as a non-referential subject."',
   "meanings",
   '  meaning "causal_interrogative"',
   '    gloss "the interrogative word that asks for a cause or reason — why, почему, क्यों, 为什么. By itself it carries no answer reference; a why-did-you-answer question composes it with a prior-answer reference. Only the Hindi and Chinese surfaces are read by the recogniser, paired with prior_answer_reference within the same language to detect a head-final why-question; the English and Russian why-questions front the interrogative and are matched through answer_rationale_inquiry instead."',
@@ -22167,6 +22265,14 @@ const ROLE_CONVERSATION_TOPIC_OPENER = "conversation_topic_opener";
 // for these forms by meaning instead of hardcoding per-language phrase arrays.
 const ROLE_MECHANISM_INQUIRY = "mechanism_inquiry";
 const ROLE_PROCEDURAL_REQUEST = "procedural_request";
+// Issue #386 mechanism-subject cleanup roles — mirror the
+// ROLE_MECHANISM_PREDICATE / ROLE_DETAIL_MODIFIER / ROLE_NON_REFERENTIAL_SUBJECT
+// consts in src/seed/roles.rs. stripMechanismTail / cleanMechanismSubject ask
+// the lexicon for these forms by meaning instead of hardcoding per-language
+// predicate, modifier, and pronoun arrays.
+const ROLE_MECHANISM_PREDICATE = "mechanism_predicate";
+const ROLE_DETAIL_MODIFIER = "detail_modifier";
+const ROLE_NON_REFERENTIAL_SUBJECT = "non_referential_subject";
 
 // Slot marker (U+2026 …) carried inside a surface word's text to mark the open
 // subject/task position. Mirrors the `split_once('…')` slot derivation on
