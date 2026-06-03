@@ -763,6 +763,24 @@ bump: minor
   (`experiments/issue-386-worker-brainstorm-count-parity.mjs`) proves the worker
   reads the count from the seed across the pinned English prompts, the
   multilingual cardinal cases, and the "often" substring negative (issue #386).
+- The browser worker's `currencyCodeFromWord` no longer carries hand-written
+  Russian declension tables for the dollar and ruble. It now walks the
+  `currency_usd_reference`, `currency_eur_reference` and `currency_rub_reference`
+  roles (`data/seed/meanings-calculator.lino`) and returns the ISO 4217 code of
+  the first role a surface matches, with the canonical code mapped in a tiny
+  `currencyCodeForRole` resolver (the output stays in code; only the recognition
+  vocabulary lives in the seed). Matching follows each surface's script the same
+  way `surfacePresent` already splits CJK from the rest: Latin and CJK/Devanagari
+  surfaces match the whole token exactly — so unrelated words such as "rubbish"
+  or "european" are rejected just as the original exact-match list rejected them
+  — while Cyrillic surfaces are treated as stems and matched by prefix, so every
+  Russian declension (доллар…, руб…) is recognised from the доллар / руб stems
+  without enumerating each inflected form. A vm parity harness
+  (`experiments/issue-386-worker-currency-code-parity.mjs`) proves the seed-driven
+  walk returns byte-identical codes to the former tables across all 13 USD, 4 EUR
+  and 14 RUB inputs, rejects the unrelated words, and still resolves the
+  "1000 рублей в долларах" → USD capture pinned by the calculator delegation and
+  multilingual e2e tests (issue #386).
 
 ### Fixed
 - The follow-up "Отмени сортировку" ("cancel the sorting") no longer returns

@@ -1598,54 +1598,45 @@ const DEFAULT_CURRENCY_RATES = new Map([
 
 const USD_RUB_RATE_EXPRESSION = "1 USD in RUB";
 
+// Issue #386: the canonical ISO 4217 code is the recognizer's output, so it
+// stays in code; only the recognition vocabulary lives in the seed. Mirrors the
+// role -> code mapping the Rust calculator handlers resolve from the same roles.
+function currencyCodeForRole(role) {
+  if (role === ROLE_CURRENCY_USD_REFERENCE) return "USD";
+  if (role === ROLE_CURRENCY_EUR_REFERENCE) return "EUR";
+  if (role === ROLE_CURRENCY_RUB_REFERENCE) return "RUB";
+  return "";
+}
+
+// Issue #386: currency vocabulary is seed data, not a hardcoded declension list.
+// Walk the three currency reference roles (USD, then EUR, then RUB — the
+// original recognizer's priority) and return the ISO code of the first role a
+// surface matches. The matching strategy follows the surface's script, the same
+// split surfacePresent already makes: Latin surfaces (the ISO codes and English
+// terms, enumerated singular and plural) and CJK/Devanagari surfaces match the
+// whole token exactly, so unrelated words like "rubbish" are rejected just as
+// the original exact-match list rejected them; Cyrillic surfaces are stems
+// matched by prefix, so every Russian declension (доллар… , руб…) is caught
+// from доллар / руб without listing each inflected form. The calculator regexes
+// only ever feed this Latin or Cyrillic tokens.
 function currencyCodeFromWord(value) {
   const lower = String(value || "").toLowerCase();
-  if (
-    lower === "usd" ||
-    lower === "dollar" ||
-    lower === "dollars" ||
-    [
-      "доллар",
-      "доллара",
-      "долларе",
-      "доллары",
-      "долларов",
-      "долларам",
-      "доллару",
-      "долларом",
-      "долларами",
-      "долларах",
-    ].includes(lower)
-  ) {
-    return "USD";
-  }
-  if (
-    lower === "eur" ||
-    lower === "euro" ||
-    lower === "euros" ||
-    lower === "евро"
-  ) {
-    return "EUR";
-  }
-  if (
-    lower === "rub" ||
-    lower === "ruble" ||
-    lower === "rubles" ||
-    [
-      "рубль",
-      "рубля",
-      "рубле",
-      "рубли",
-      "рублей",
-      "рублям",
-      "рублю",
-      "рублём",
-      "рублем",
-      "рублями",
-      "рублях",
-    ].includes(lower)
-  ) {
-    return "RUB";
+  if (!lower) return "";
+  for (const role of [
+    ROLE_CURRENCY_USD_REFERENCE,
+    ROLE_CURRENCY_EUR_REFERENCE,
+    ROLE_CURRENCY_RUB_REFERENCE,
+  ]) {
+    for (const word of wordsForRole(role)) {
+      if (!word) continue;
+      // Cyrillic block is U+0400-U+04FF; Latin sorts below it and CJK/Devanagari
+      // above, so the first codepoint tells us which matching strategy to use.
+      const head = word.charCodeAt(0);
+      const isCyrillic = head >= 0x0400 && head <= 0x04ff;
+      if (isCyrillic ? lower.startsWith(word) : lower === word) {
+        return currencyCodeForRole(role);
+      }
+    }
   }
   return "";
 }
