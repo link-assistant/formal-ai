@@ -222,6 +222,49 @@ bump: minor
   the pre-conversion logic through the real URL gate and fetch-before-navigate
   precedence, and adds the Hindi/Chinese coverage the old arrays lacked (issue
   #386).
+- Web-search request recognition (`src/solver_handlers/web_search_intent.rs` and
+  its `formal_ai_worker.js` mirror) is data-driven too — the deepest of the web
+  clusters. Four self-describing seed files carry every surface the recogniser
+  used to hardcode in seventeen inline arrays: `meanings-web-search.lino` (the
+  `web_search_concept` backbone plus the `web_search_action`/`_strong_action`/
+  `_signal`/`_source_only`/`_imperative_lead` roles),
+  `meanings-web-search-query.lino` (`web_search_explicit_prefix`, the
+  `web_search_topic_marker` whose prefix and suffix forms split into the
+  before/after topic markers, and the leading/trailing query-noise roles),
+  `meanings-web-research.lino` (the `research_question_opener`/
+  `_superlative_modifier`/`research_evidence_domain`/`research_evaluation_domain`
+  and `enumeration_request_opener`/`enumeration_constraint` roles), and
+  `meanings-web-followup.lino` (`followup_instruction_verb`,
+  `clause_continuation_marker`) — each `defined_by` the concepts it builds on and
+  lexicalised in every supported language. As in the how- and navigation-clusters
+  each surface marks its query slot with the ellipsis marker `…` (U+2026), so the
+  recogniser buckets a role's forms by `WordForm::slot()` and matches prefixes,
+  suffixes, and bare phrases by position. A single `WebSearchMarkers` projection
+  (an 18-field struct on the Rust side, `webSearchMarkers()` memoised on the
+  worker) gathers the seventeen roles once — `web_search_topic_marker` feeding two
+  fields — and every detector (explicit-prefix stripping, semantic-action
+  extraction, enumeration-research and implicit-research-question gating,
+  source-only removal, and follow-up-clause truncation) reads from it instead of a
+  hardcoded array, so the code knows only the concepts "a web search", "its
+  query", "a research question", and "a follow-up instruction". Follow-up
+  truncation is now a single universal-boundary routine
+  (`truncate_search_instruction_tail`) that cuts the query at the first
+  `followup_instruction_verb` lying on a token or sentence boundary in any
+  language, replacing the per-language tail heuristics. A new
+  `is_personal_fact_filter_request` guard suppresses web search when the prompt
+  asks about the user's own contributed facts ("facts I have contributed", "my
+  facts"), fixing a leak where the pre-conversion worker returned a bogus
+  `{query:"my"}` search for "search my facts". Because the markers now exist in
+  every language, source-marker queries ("Find apple on the internet" / "Найди
+  яблоко в интернете" / "सेब के बारे में इंटरनेट पर खोजो" / "查找苹果网上信息"),
+  enumeration-research, and implicit research questions resolve in Hindi and
+  Chinese as well as English and Russian. A parity harness
+  (`experiments/issue-386-js-web-search.mjs`) proves the worker reproduces all
+  seventeen role word-sets from the seed, exposes the eighteen-field marker
+  projection memoised, reproduces a frozen 33-prompt golden of pre-conversion
+  behaviour byte-identically, and matches the Rust handler's multilingual
+  source-marker, enumeration, implicit-research, and follow-up-drop cases — 78
+  assertions, all green (issue #386).
 - Every meaning now descends from a single ontology root, so the lexicon is one
   connected graph rather than disjoint clusters. A new backbone
   (`data/seed/meanings-ontology.lino`) defines `link` as the self-rooted root of
