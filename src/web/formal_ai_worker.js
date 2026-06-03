@@ -10119,39 +10119,31 @@ function containsToken(normalized, token) {
   return String(normalized || "").split(/\s+/).includes(token);
 }
 
-function mentionsPlaywright(normalized) {
-  return containsAnySubstring(normalized, [
-    "playwright",
-    "playright",
-    "плейврайт",
-    "плейрайт",
-  ]);
-}
+// Issue #386 Playwright roles — mirror ROLE_PLAYWRIGHT_TOOL_NAME and
+// ROLE_PLAYWRIGHT_SCRIPT_CUE in src/seed/roles.rs. The tool name (with its
+// 'playright' misspelling, whose `action` names the canonical spelling) and the
+// script-authoring cues live in data/seed/meanings-playwright.lino (embedded in
+// MEANINGS_LINO above). isPlaywrightScriptRequest matches both roles as raw
+// substrings across every language, exactly like the Rust recogniser.
+const ROLE_PLAYWRIGHT_TOOL_NAME = "playwright_tool_name";
+const ROLE_PLAYWRIGHT_SCRIPT_CUE = "playwright_script_cue";
 
 function isPlaywrightScriptRequest(normalized) {
-  if (!mentionsPlaywright(normalized)) return false;
-  return containsAnySubstring(normalized, [
-    "script",
-    "test",
-    "spec",
-    "code",
-    "скрипт",
-    "сценар",
-    "тест",
-    "код",
-    "write",
-    "create",
-    "generate",
-    "make",
-    "build",
-    "can you",
-    "could you",
-    "напиши",
-    "написать",
-    "можешь",
-    "сделай",
-    "создай",
-  ]);
+  return (
+    lexiconMentionsRoleSubstring(ROLE_PLAYWRIGHT_TOOL_NAME, normalized) &&
+    lexiconMentionsRoleSubstring(ROLE_PLAYWRIGHT_SCRIPT_CUE, normalized)
+  );
+}
+
+// True when the prompt contains a misspelled form of the Playwright name — any
+// playwright_tool_name form whose `action` names the canonical spelling. The
+// misspelling and its correction live in the seed data, so the handler reports
+// the fix without naming either form here. Mirrors
+// mentions_playwright_misspelling in src/solver_handlers/playwright_script.rs.
+function mentionsPlaywrightMisspelling(normalized) {
+  return roleWordForms(ROLE_PLAYWRIGHT_TOOL_NAME)
+    .filter((form) => form.action)
+    .some((form) => normalized.includes(form.text));
 }
 
 function renderPlaywrightClarification(language) {
@@ -10221,7 +10213,7 @@ function tryPlaywrightScript(prompt, preferences = {}, language = "en") {
     `source:${PLAYWRIGHT_DOCS_URL}`,
     `guess_probability:${guessProbability.toFixed(2)}`,
   ];
-  const correctedSpelling = normalized.includes("playright");
+  const correctedSpelling = mentionsPlaywrightMisspelling(normalized);
   if (correctedSpelling) {
     evidence.push("spelling_correction:Playright->Playwright");
   }
@@ -21742,6 +21734,303 @@ const MEANINGS_LINO = [
   '    lexeme "zh"',
   '      word "你能总结"',
   "        description \"Chinese phrase '你能总结' (pinyin ni neng zongjie, can you summarize); a feature_action_planning form kept in the seed for self-description (only the English frames drive the action gate).\"",
+  "meanings",
+  '  meaning "playwright"',
+  "    gloss \"the Playwright browser-automation and end-to-end testing tool — the named entity a 'write me a Playwright script' request is about. The playwright-script handler asks whether the tool is named by walking this meaning's forms through mentions_role_raw (a raw substring check across every language), so the proper noun lives here, not in the code. One English form is the common misspelling 'playright'; it carries an action naming the canonical spelling 'playwright', and the handler reports a spelling correction when a form whose action is set occurs in the prompt — so the typo and its fix are data, not a literal in the code.\"",
+  '    wiktionary "playwright"',
+  '    defined_by "entity"',
+  '    role "playwright_tool_name"',
+  '    lexeme "en"',
+  '      word "playwright"',
+  '        description "English proper noun naming the Playwright automation tool; a playwright_tool_name matched as a raw substring of the normalized prompt."',
+  '      word "playright"',
+  "        description \"English misspelling of 'playwright' (the 'w' dropped); a playwright_tool_name matched as a raw substring. Its action names the canonical spelling, so the handler reports the correction without naming either form in the code.\"",
+  '        action "playwright"',
+  '    lexeme "ru"',
+  '      word "плейврайт"',
+  "        description \"Russian transliteration 'плейврайт' (romanized pleyvrayt) of the Playwright tool name; a playwright_tool_name matched as a raw substring.\"",
+  '      word "плейрайт"',
+  "        description \"Russian transliteration 'плейрайт' (romanized pleyrayt) of the common 'playright' misspelling; a playwright_tool_name matched as a raw substring.\"",
+  '    lexeme "hi"',
+  '      word "प्लेराइट"',
+  "        description \"Hindi transliteration 'प्लेराइट' (romanized pleraait) of the Playwright tool name; a playwright_tool_name matched as a raw substring.\"",
+  '    lexeme "zh"',
+  '      word "普莱赖特"',
+  "        description \"Chinese phonetic transliteration '普莱赖特' (pinyin pulailaite) of the Playwright tool name; a playwright_tool_name matched as a raw substring.\"",
+  '  meaning "playwright_script_request_cue"',
+  '    gloss "a cue that a prompt naming Playwright is asking for a script rather than discussing the tool — an artifact noun (script, test, spec, code) or an authoring frame (write, create, generate, make, build, can you, could you, and their other-language equivalents). The playwright-script handler routes only when a playwright_tool_name and one of these cues both occur, each checked through mentions_role_raw (a raw substring across every language), so the cue vocabulary lives in the data rather than in a hand-listed array in the code."',
+  '    wiktionary "script"',
+  '    defined_by "concept"',
+  '    role "playwright_script_cue"',
+  '    lexeme "en"',
+  '      word "script"',
+  "        description \"English noun 'script' naming the artifact to author; a playwright_script_cue matched as a raw substring of the normalized prompt.\"",
+  '      word "test"',
+  "        description \"English noun 'test' naming the artifact to author; a playwright_script_cue matched as a raw substring of the normalized prompt.\"",
+  '      word "spec"',
+  "        description \"English noun 'spec' (specification) naming the artifact to author; a playwright_script_cue matched as a raw substring of the normalized prompt.\"",
+  '      word "code"',
+  "        description \"English noun 'code' naming the artifact to author; a playwright_script_cue matched as a raw substring of the normalized prompt.\"",
+  '      word "write"',
+  "        description \"English verb 'write' opening an authoring request; a playwright_script_cue matched as a raw substring of the normalized prompt.\"",
+  '      word "create"',
+  "        description \"English verb 'create' opening an authoring request; a playwright_script_cue matched as a raw substring of the normalized prompt.\"",
+  '      word "generate"',
+  "        description \"English verb 'generate' opening an authoring request; a playwright_script_cue matched as a raw substring of the normalized prompt.\"",
+  '      word "make"',
+  "        description \"English verb 'make' opening an authoring request; a playwright_script_cue matched as a raw substring of the normalized prompt.\"",
+  '      word "build"',
+  "        description \"English verb 'build' opening an authoring request; a playwright_script_cue matched as a raw substring of the normalized prompt.\"",
+  '      word "can you"',
+  "        description \"English polite frame 'can you' opening an authoring request; a playwright_script_cue matched as a raw substring of the normalized prompt.\"",
+  '      word "could you"',
+  "        description \"English polite frame 'could you' opening an authoring request; a playwright_script_cue matched as a raw substring of the normalized prompt.\"",
+  '    lexeme "ru"',
+  '      word "скрипт"',
+  "        description \"Russian noun 'скрипт' (romanized skript, script) naming the artifact to author; a playwright_script_cue matched as a raw substring.\"",
+  '      word "сценар"',
+  "        description \"Russian stem 'сценар' (romanized stsenar) of 'сценарий' (scenario/script); a playwright_script_cue matched as a raw substring so the inflected forms are caught.\"",
+  '      word "тест"',
+  "        description \"Russian noun 'тест' (romanized test) naming the artifact to author; a playwright_script_cue matched as a raw substring.\"",
+  '      word "код"',
+  "        description \"Russian noun 'код' (romanized kod, code) naming the artifact to author; a playwright_script_cue matched as a raw substring.\"",
+  '      word "напиши"',
+  "        description \"Russian imperative 'напиши' (romanized napishi, write) opening an authoring request; a playwright_script_cue matched as a raw substring.\"",
+  '      word "написать"',
+  "        description \"Russian infinitive 'написать' (romanized napisat, to write) opening an authoring request; a playwright_script_cue matched as a raw substring.\"",
+  '      word "можешь"',
+  "        description \"Russian frame 'можешь' (romanized mozhesh, can you) opening an authoring request; a playwright_script_cue matched as a raw substring.\"",
+  '      word "сделай"',
+  "        description \"Russian imperative 'сделай' (romanized sdelay, make) opening an authoring request; a playwright_script_cue matched as a raw substring.\"",
+  '      word "создай"',
+  "        description \"Russian imperative 'создай' (romanized sozday, create) opening an authoring request; a playwright_script_cue matched as a raw substring.\"",
+  '    lexeme "hi"',
+  '      word "स्क्रिप्ट"',
+  "        description \"Hindi noun 'स्क्रिप्ट' (romanized skript, script) naming the artifact to author; a playwright_script_cue matched as a raw substring.\"",
+  '      word "टेस्ट"',
+  "        description \"Hindi noun 'टेस्ट' (romanized test) naming the artifact to author; a playwright_script_cue matched as a raw substring.\"",
+  '      word "कोड"',
+  "        description \"Hindi noun 'कोड' (romanized kod, code) naming the artifact to author; a playwright_script_cue matched as a raw substring.\"",
+  '      word "लिखो"',
+  "        description \"Hindi imperative 'लिखो' (romanized likho, write) opening an authoring request; a playwright_script_cue matched as a raw substring.\"",
+  '      word "बनाओ"',
+  "        description \"Hindi imperative 'बनाओ' (romanized banao, make/create) opening an authoring request; a playwright_script_cue matched as a raw substring.\"",
+  '    lexeme "zh"',
+  '      word "脚本"',
+  "        description \"Chinese noun '脚本' (pinyin jiaoben, script) naming the artifact to author; a playwright_script_cue matched as a raw substring.\"",
+  '      word "测试"',
+  "        description \"Chinese noun '测试' (pinyin ceshi, test) naming the artifact to author; a playwright_script_cue matched as a raw substring.\"",
+  '      word "代码"',
+  "        description \"Chinese noun '代码' (pinyin daima, code) naming the artifact to author; a playwright_script_cue matched as a raw substring.\"",
+  '      word "写"',
+  "        description \"Chinese verb '写' (pinyin xie, write) opening an authoring request; a playwright_script_cue matched as a raw substring.\"",
+  '      word "生成"',
+  "        description \"Chinese verb '生成' (pinyin shengcheng, generate) opening an authoring request; a playwright_script_cue matched as a raw substring.\"",
+  "meanings",
+  '  meaning "compare"',
+  "    gloss \"the act of comparing two or more topics, and the request for the comparison drawn as a table. The research comparison-table handler asks whether a follow-up prompt wants a table by checking these triggers token-bounded through mentions_role; a match alone opens the handler. The phrase 'comparison table' and the verbs 'compare'/'comparing' are the strong triggers, so the surface vocabulary lives here rather than in a padded-contains list in the code.\"",
+  '    wiktionary "compare"',
+  '    defined_by "action"',
+  '    role "comparison_table_trigger"',
+  '    lexeme "en"',
+  '      word "comparison table"',
+  "        description \"English phrase 'comparison table' naming the requested artifact; a comparison_table_trigger matched as a whole phrase (token-bounded).\"",
+  '      word "compare"',
+  "        description \"English verb 'compare' asking for a comparison; a comparison_table_trigger matched as a whole token.\"",
+  '      word "comparing"',
+  "        description \"English gerund 'comparing' asking for a comparison; a comparison_table_trigger matched as a whole token.\"",
+  '    lexeme "ru"',
+  '      word "сравнительная таблица"',
+  "        description \"Russian phrase 'сравнительная таблица' (romanized sravnitelnaya tablitsa, comparison table) naming the requested artifact; a comparison_table_trigger matched token-bounded.\"",
+  '      word "сравнить"',
+  "        description \"Russian infinitive 'сравнить' (romanized sravnit, to compare) asking for a comparison; a comparison_table_trigger matched token-bounded.\"",
+  '      word "сравнение"',
+  "        description \"Russian noun 'сравнение' (romanized sravnenie, comparison) asking for a comparison; a comparison_table_trigger matched token-bounded.\"",
+  '    lexeme "hi"',
+  '      word "तुलना तालिका"',
+  "        description \"Hindi phrase 'तुलना तालिका' (romanized tulna talika, comparison table) naming the requested artifact; a comparison_table_trigger matched token-bounded.\"",
+  '      word "तुलना"',
+  "        description \"Hindi noun 'तुलना' (romanized tulna, comparison) asking for a comparison; a comparison_table_trigger matched token-bounded.\"",
+  '    lexeme "zh"',
+  '      word "比较表"',
+  "        description \"Chinese phrase '比较表' (pinyin bijiaobiao, comparison table) naming the requested artifact; a comparison_table_trigger matched as a substring.\"",
+  '      word "比较"',
+  "        description \"Chinese verb '比较' (pinyin bijiao, compare) asking for a comparison; a comparison_table_trigger matched as a substring.\"",
+  '      word "对比"',
+  "        description \"Chinese verb '对比' (pinyin duibi, contrast/compare) asking for a comparison; a comparison_table_trigger matched as a substring.\"",
+  '  meaning "table"',
+  '    gloss "a table — a grid of rows and columns that lays values out for reading. The research comparison-table handler treats the bare noun as a weak signal: a table is requested only when the noun co-occurs with a difference cue, both checked token-bounded through mentions_role. The noun lives here so the weak-signal arm of the gate references the concept, not a literal word in the code."',
+  '    wiktionary "table"',
+  '    defined_by "concept"',
+  '    role "comparison_table_noun"',
+  '    lexeme "en"',
+  '      word "table"',
+  "        description \"English noun 'table' naming the grid artifact; a comparison_table_noun matched as a whole token.\"",
+  '    lexeme "ru"',
+  '      word "таблица"',
+  "        description \"Russian noun 'таблица' (romanized tablitsa, table) naming the grid artifact; a comparison_table_noun matched token-bounded.\"",
+  '    lexeme "hi"',
+  '      word "तालिका"',
+  "        description \"Hindi noun 'तालिका' (romanized talika, table) naming the grid artifact; a comparison_table_noun matched token-bounded.\"",
+  '    lexeme "zh"',
+  '      word "表格"',
+  "        description \"Chinese noun '表格' (pinyin biaoge, table) naming the grid artifact; a comparison_table_noun matched as a substring.\"",
+  '  meaning "differences"',
+  '    gloss "the differences between compared topics — the relation that a comparison surfaces. The research comparison-table handler treats this plural cue as the partner of the bare table noun: when both occur the weak-signal arm of the gate opens, each checked token-bounded through mentions_role. The cue lives here so the code references the relation rather than a padded-contains literal."',
+  '    wiktionary "difference"',
+  '    defined_by "relation"',
+  '    role "comparison_difference_cue"',
+  '    lexeme "en"',
+  '      word "differences"',
+  "        description \"English plural noun 'differences' naming the relation a comparison surfaces; a comparison_difference_cue matched as a whole token.\"",
+  '    lexeme "ru"',
+  '      word "различия"',
+  "        description \"Russian plural noun 'различия' (romanized razlichiya, differences) naming the relation a comparison surfaces; a comparison_difference_cue matched token-bounded.\"",
+  '      word "отличия"',
+  "        description \"Russian plural noun 'отличия' (romanized otlichiya, differences) naming the relation a comparison surfaces; a comparison_difference_cue matched token-bounded.\"",
+  '    lexeme "hi"',
+  '      word "अंतर"',
+  "        description \"Hindi noun 'अंतर' (romanized antar, difference) naming the relation a comparison surfaces; a comparison_difference_cue matched token-bounded.\"",
+  '    lexeme "zh"',
+  '      word "差异"',
+  "        description \"Chinese noun '差异' (pinyin chayi, difference) naming the relation a comparison surfaces; a comparison_difference_cue matched as a substring.\"",
+  '      word "区别"',
+  "        description \"Chinese noun '区别' (pinyin qubie, difference) naming the relation a comparison surfaces; a comparison_difference_cue matched as a substring.\"",
+  '  meaning "research_prompt_signal"',
+  "    gloss \"a signal that an earlier turn was a research request — the prior prompt the comparison-table follow-up reuses for its topics. Each surface marks its shape with the ellipsis … (U+2026): a trailing ellipsis is a prefix surface matched when the prompt starts with the literal before the slot; a surface with no ellipsis is a bare marker matched anywhere as a whole token. The handler reads the prefix surfaces' literals and the bare surfaces through the lexicon, so the research openers live in the data, not in a starts_with/contains list in the code.\"",
+  '    wiktionary "research"',
+  '    defined_by "concept"',
+  '    role "research_prompt_signal"',
+  '    lexeme "en"',
+  '      word "search …"',
+  "        description \"English prefix surface; the prompt opens with 'search ' before the query that follows the … slot (search X). A research_prompt_signal matched by prefix.\"",
+  '      word "find information …"',
+  "        description \"English prefix surface; the prompt opens with 'find information ' before the topic that follows the … slot. A research_prompt_signal matched by prefix.\"",
+  '      word "look up information …"',
+  "        description \"English prefix surface; the prompt opens with 'look up information ' before the topic that follows the … slot. A research_prompt_signal matched by prefix.\"",
+  '      word "search for information"',
+  "        description \"English bare marker 'search for information'; a research_prompt_signal matched anywhere as a whole phrase.\"",
+  '      word "web search"',
+  "        description \"English bare marker 'web search'; a research_prompt_signal matched anywhere as a whole phrase.\"",
+  '      word "research"',
+  "        description \"English bare marker 'research'; a research_prompt_signal matched anywhere as a whole token.\"",
+  '    lexeme "ru"',
+  '      word "поиск"',
+  "        description \"Russian noun 'поиск' (romanized poisk, search); a research_prompt_signal bare marker matched token-bounded.\"",
+  '      word "исследование"',
+  "        description \"Russian noun 'исследование' (romanized issledovanie, research); a research_prompt_signal bare marker matched token-bounded.\"",
+  '      word "веб-поиск"',
+  "        description \"Russian phrase 'веб-поиск' (romanized veb-poisk, web search); a research_prompt_signal bare marker matched token-bounded.\"",
+  '    lexeme "hi"',
+  '      word "खोज"',
+  "        description \"Hindi noun 'खोज' (romanized khoj, search); a research_prompt_signal bare marker matched token-bounded.\"",
+  '      word "अनुसंधान"',
+  "        description \"Hindi noun 'अनुसंधान' (romanized anusandhaan, research); a research_prompt_signal bare marker matched token-bounded.\"",
+  '    lexeme "zh"',
+  '      word "搜索"',
+  "        description \"Chinese verb '搜索' (pinyin sousuo, search); a research_prompt_signal bare marker matched as a substring.\"",
+  '      word "研究"',
+  "        description \"Chinese noun '研究' (pinyin yanjiu, research); a research_prompt_signal bare marker matched as a substring.\"",
+  '  meaning "key_differences"',
+  "    gloss \"the key-differences comparison criterion — the column asking what distinguishes each topic from the others. The comparison-table handler walks the research_criterion meanings in declaration order and, for each text fragment, adds the criterion when any of its surface words occurs as a raw substring; the matched meaning's slug keys the column. Declaration order is column order, so this meaning is listed first. Its English triggers 'key difference' and 'difference' live here, not in the code.\"",
+  '    wiktionary "difference"',
+  '    defined_by "relation"',
+  '    role "research_criterion"',
+  '    lexeme "en"',
+  '      word "key difference"',
+  "        description \"English phrase 'key difference' naming the key-differences criterion; a research_criterion matched as a raw substring.\"",
+  '      word "difference"',
+  "        description \"English noun 'difference' naming the differences criterion (also catches 'differences'); a research_criterion matched as a raw substring.\"",
+  '    lexeme "ru"',
+  '      word "ключевые различия"',
+  "        description \"Russian phrase 'ключевые различия' (romanized klyuchevye razlichiya, key differences) naming the criterion; a research_criterion matched as a raw substring.\"",
+  '      word "различия"',
+  "        description \"Russian noun 'различия' (romanized razlichiya, differences) naming the criterion; a research_criterion matched as a raw substring.\"",
+  '    lexeme "hi"',
+  '      word "मुख्य अंतर"',
+  "        description \"Hindi phrase 'मुख्य अंतर' (romanized mukhya antar, key differences) naming the criterion; a research_criterion matched as a raw substring.\"",
+  '      word "अंतर"',
+  "        description \"Hindi noun 'अंतर' (romanized antar, difference) naming the criterion; a research_criterion matched as a raw substring.\"",
+  '    lexeme "zh"',
+  '      word "主要区别"',
+  "        description \"Chinese phrase '主要区别' (pinyin zhuyao qubie, key differences) naming the criterion; a research_criterion matched as a substring.\"",
+  '      word "区别"',
+  "        description \"Chinese noun '区别' (pinyin qubie, difference) naming the criterion; a research_criterion matched as a substring.\"",
+  '  meaning "use_cases"',
+  "    gloss \"the use-cases comparison criterion — the column summarising where each topic applies in practice. The comparison-table handler adds this criterion when a text fragment contains one of its surface words as a raw substring; the slug 'use_cases' keys the column. Its English triggers 'use case' and 'application' live here, not in the code.\"",
+  '    wiktionary "use case"',
+  '    defined_by "concept"',
+  '    role "research_criterion"',
+  '    lexeme "en"',
+  '      word "use case"',
+  "        description \"English phrase 'use case' naming the use-cases criterion; a research_criterion matched as a raw substring.\"",
+  '      word "application"',
+  "        description \"English noun 'application' naming a practical use; a research_criterion matched as a raw substring.\"",
+  '    lexeme "ru"',
+  '      word "сценарии использования"',
+  "        description \"Russian phrase 'сценарии использования' (romanized stsenarii ispolzovaniya, use cases) naming the criterion; a research_criterion matched as a raw substring.\"",
+  '      word "применение"',
+  "        description \"Russian noun 'применение' (romanized primenenie, application) naming a practical use; a research_criterion matched as a raw substring.\"",
+  '    lexeme "hi"',
+  '      word "उपयोग के मामले"',
+  "        description \"Hindi phrase 'उपयोग के मामले' (romanized upyog ke maamle, use cases) naming the criterion; a research_criterion matched as a raw substring.\"",
+  '      word "अनुप्रयोग"',
+  "        description \"Hindi noun 'अनुप्रयोग' (romanized anuprayog, application) naming a practical use; a research_criterion matched as a raw substring.\"",
+  '    lexeme "zh"',
+  '      word "用例"',
+  "        description \"Chinese noun '用例' (pinyin yongli, use case) naming the criterion; a research_criterion matched as a substring.\"",
+  '      word "应用"',
+  "        description \"Chinese noun '应用' (pinyin yingyong, application) naming a practical use; a research_criterion matched as a substring.\"",
+  '  meaning "advantages"',
+  "    gloss \"the advantages comparison criterion — the column listing each topic's strengths. The comparison-table handler adds this criterion when a text fragment contains one of its surface words as a raw substring; the slug 'advantages' keys the column. Its English triggers are 'advantage' and 'pro ' (with the trailing space that keeps it from matching inside unrelated words); both live here, not in the code.\"",
+  '    wiktionary "advantage"',
+  '    defined_by "property"',
+  '    role "research_criterion"',
+  '    lexeme "en"',
+  '      word "advantage"',
+  "        description \"English noun 'advantage' naming the advantages criterion (also catches 'advantages'); a research_criterion matched as a raw substring.\"",
+  '      word "pro "',
+  "        description \"English noun 'pro' with a trailing space ('pro ') naming an advantage; a research_criterion matched as a raw substring, the space keeping it from matching inside words like 'process'.\"",
+  '    lexeme "ru"',
+  '      word "преимущества"',
+  "        description \"Russian plural noun 'преимущества' (romanized preimushchestva, advantages) naming the criterion; a research_criterion matched as a raw substring.\"",
+  '      word "плюсы"',
+  "        description \"Russian plural noun 'плюсы' (romanized plyusy, pros) naming advantages; a research_criterion matched as a raw substring.\"",
+  '    lexeme "hi"',
+  '      word "फायदे"',
+  "        description \"Hindi plural noun 'फायदे' (romanized faayde, advantages) naming the criterion; a research_criterion matched as a raw substring.\"",
+  '      word "लाभ"',
+  "        description \"Hindi noun 'लाभ' (romanized laabh, benefit) naming an advantage; a research_criterion matched as a raw substring.\"",
+  '    lexeme "zh"',
+  '      word "优点"',
+  "        description \"Chinese noun '优点' (pinyin youdian, advantages) naming the criterion; a research_criterion matched as a substring.\"",
+  '      word "优势"',
+  "        description \"Chinese noun '优势' (pinyin youshi, advantage) naming the criterion; a research_criterion matched as a substring.\"",
+  '  meaning "disadvantages"',
+  "    gloss \"the disadvantages comparison criterion — the column listing each topic's drawbacks. The comparison-table handler adds this criterion when a text fragment contains one of its surface words as a raw substring; the slug 'disadvantages' keys the column. Its English triggers are 'disadvantage' and ' con ' (with surrounding spaces that keep it from matching inside unrelated words); both live here, not in the code.\"",
+  '    wiktionary "disadvantage"',
+  '    defined_by "property"',
+  '    role "research_criterion"',
+  '    lexeme "en"',
+  '      word "disadvantage"',
+  "        description \"English noun 'disadvantage' naming the disadvantages criterion (also catches 'disadvantages'); a research_criterion matched as a raw substring.\"",
+  '      word " con "',
+  "        description \"English noun 'con' with surrounding spaces (' con ') naming a drawback; a research_criterion matched as a raw substring, the spaces keeping it from matching inside words like 'control'.\"",
+  '    lexeme "ru"',
+  '      word "недостатки"',
+  "        description \"Russian plural noun 'недостатки' (romanized nedostatki, disadvantages) naming the criterion; a research_criterion matched as a raw substring.\"",
+  '      word "минусы"',
+  "        description \"Russian plural noun 'минусы' (romanized minusy, cons) naming drawbacks; a research_criterion matched as a raw substring.\"",
+  '    lexeme "hi"',
+  '      word "नुकसान"',
+  "        description \"Hindi noun 'नुकसान' (romanized nuksaan, disadvantage/harm) naming the criterion; a research_criterion matched as a raw substring.\"",
+  '      word "हानि"',
+  "        description \"Hindi noun 'हानि' (romanized haani, harm) naming a drawback; a research_criterion matched as a raw substring.\"",
+  '    lexeme "zh"',
+  '      word "缺点"',
+  "        description \"Chinese noun '缺点' (pinyin quedian, disadvantages) naming the criterion; a research_criterion matched as a substring.\"",
+  '      word "劣势"',
+  "        description \"Chinese noun '劣势' (pinyin lieshi, disadvantage) naming the criterion; a research_criterion matched as a substring.\"",
 ].join("\n");
 
 // Semantic role: a thing a program produces that a later turn can refer back to
@@ -24325,26 +24614,43 @@ function tryHistorical(prompt, history) {
   return null;
 }
 
+// Issue #386 research comparison-table roles — mirror the ROLE_COMPARISON_*
+// and ROLE_RESEARCH_* consts in src/seed/roles.rs. The strong trigger, the weak
+// table-noun/difference-cue pair, the research-prompt signals (bare markers plus
+// prefix surfaces), and the per-column criterion words all live in
+// data/seed/meanings-research-table.lino (embedded in MEANINGS_LINO above), so
+// the handler references the concepts, not raw words in one language.
+const ROLE_COMPARISON_TABLE_TRIGGER = "comparison_table_trigger";
+const ROLE_COMPARISON_TABLE_NOUN = "comparison_table_noun";
+const ROLE_COMPARISON_DIFFERENCE_CUE = "comparison_difference_cue";
+const ROLE_RESEARCH_PROMPT_SIGNAL = "research_prompt_signal";
+const ROLE_RESEARCH_CRITERION = "research_criterion";
+
+// True when the prompt asks for a comparison drawn as a table: a strong
+// comparison_table_trigger, or the weak pair of a comparison_table_noun and a
+// comparison_difference_cue — each token-bounded across every supported
+// language. Mirrors is_comparison_table_request in
+// src/solver_handlers/research_table.rs.
 function isComparisonTableRequest(normalized) {
-  const padded = ` ${normalized || ""} `;
   return (
-    padded.includes(" comparison table ") ||
-    padded.includes(" compare ") ||
-    padded.includes(" comparing ") ||
-    (padded.includes(" table ") && padded.includes(" differences "))
+    lexiconMentionsRole(ROLE_COMPARISON_TABLE_TRIGGER, normalized) ||
+    (lexiconMentionsRole(ROLE_COMPARISON_TABLE_NOUN, normalized) &&
+      lexiconMentionsRole(ROLE_COMPARISON_DIFFERENCE_CUE, normalized))
   );
 }
 
+// True when `prompt` was itself a research request — the prior turn a
+// comparison-table follow-up reuses for its topics. research_prompt_signal
+// carries bare markers (matched token-bounded anywhere) and prefix surfaces
+// (matched when the prompt opens with the literal before the … slot); both live
+// in the seed data. Mirrors looks_like_research_prompt in
+// src/solver_handlers/research_table.rs.
 function looksLikeResearchPrompt(prompt) {
   const normalized = normalizePrompt(prompt);
-  return (
-    normalized.startsWith("search ") ||
-    normalized.startsWith("find information ") ||
-    normalized.startsWith("look up information ") ||
-    normalized.includes(" search for information ") ||
-    normalized.includes(" web search ") ||
-    normalized.includes(" research ")
-  );
+  if (lexiconMentionsRole(ROLE_RESEARCH_PROMPT_SIGNAL, normalized)) return true;
+  return roleWordForms(ROLE_RESEARCH_PROMPT_SIGNAL)
+    .filter((form) => form.slot === "prefix")
+    .some((form) => normalized.startsWith(form.before));
 }
 
 function stripResearchListMarker(line) {
@@ -24403,19 +24709,22 @@ function pushUniqueCriterion(criteria, criterion) {
   if (!criteria.includes(criterion)) criteria.push(criterion);
 }
 
+// Add every comparison column the text names. Walks the research_criterion
+// meanings in declaration order (which fixes the column order) and adds a
+// criterion when any of its surface words occurs as a raw substring — the same
+// substring contract the legacy code used, so space-guarded stems like 'pro '
+// and ' con ' still avoid matching inside 'process'/'control'. The trigger words
+// live in the seed data; only the language-independent slug keys each column.
+// Mirrors append_criteria_from_text in src/solver_handlers/research_table.rs.
 function appendResearchCriteriaFromText(text, criteria) {
   const normalized = normalizePrompt(text);
-  if (normalized.includes("key difference") || normalized.includes("difference")) {
-    pushUniqueCriterion(criteria, "key_differences");
-  }
-  if (normalized.includes("use case") || normalized.includes("application")) {
-    pushUniqueCriterion(criteria, "use_cases");
-  }
-  if (normalized.includes("advantage") || normalized.includes("pro ")) {
-    pushUniqueCriterion(criteria, "advantages");
-  }
-  if (normalized.includes("disadvantage") || normalized.includes(" con ")) {
-    pushUniqueCriterion(criteria, "disadvantages");
+  for (const meaning of meaningsWithRole(ROLE_RESEARCH_CRITERION)) {
+    if (
+      RESEARCH_TABLE_CRITERION_LABELS[meaning.slug] &&
+      meaning.words.some((word) => word && normalized.includes(word))
+    ) {
+      pushUniqueCriterion(criteria, meaning.slug);
+    }
   }
 }
 

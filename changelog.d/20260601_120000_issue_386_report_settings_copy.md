@@ -566,6 +566,49 @@ bump: minor
   the alias/action role separation, and the availability-frame fallback — 95
   assertions, all green — proving the worker's recogniser agrees with the Rust
   solver in every language (issue #386).
+- The Playwright starter-script recogniser
+  (`src/solver_handlers/playwright_script.rs` and its `formal_ai_worker.js`
+  mirror) is data-driven too. A new seed file (`data/seed/meanings-playwright.lino`)
+  defines two self-describing meanings rooted in the `link` ontology and
+  lexicalised in every supported language: `playwright` (role
+  `playwright_tool_name`, `defined_by` `entity` — the tool name plus its common
+  misspelling, whose `playright` word form carries `action "playwright"` naming
+  the canonical spelling) and `playwright_script_request_cue` (role
+  `playwright_script_cue`, `defined_by` `concept` — the script-authoring cues
+  *script* / *test* / *spec* / *code* / *write* / *create* / *generate* / *make* /
+  *build* / "can you" / "could you" and their ru/hi/zh equivalents).
+  `is_playwright_script_request` now gates on both roles via `mentions_role_raw`
+  (raw substring, byte-faithful to the former two `contains` pairs), and
+  `mentions_playwright_misspelling` resolves the misspelled form by its `action`,
+  so the handler still reports the `Playright -> Playwright` correction without
+  naming either spelling in code — the code knows only "the Playwright tool" and
+  "a request to author a script for it".
+- Research comparison-table recognition (`src/solver_handlers/research_table.rs`
+  and its `formal_ai_worker.js` mirror) is data-driven too. A new seed file
+  (`data/seed/meanings-research-table.lino`) defines eight self-describing
+  meanings rooted in the `link` ontology and lexicalised in every supported
+  language: the comparison trigger `compare` (role `comparison_table_trigger`),
+  the weak pair `table` (role `comparison_table_noun`) and `differences` (role
+  `comparison_difference_cue`), the `research_prompt_signal` meaning (role
+  `research_prompt_signal` — bare markers like 'web search' / 'research' plus
+  prefix surfaces 'search …' / 'find information …' whose `…` slot the code reads
+  as a `before_slot` opener), and four `research_criterion` meanings declared in
+  column order (`key_differences` / `use_cases` / `advantages` / `disadvantages`).
+  `is_comparison_table_request`, `looks_like_research_prompt`, and
+  `append_criteria_from_text` now ask the lexicon for those roles, and a new
+  `Criterion::from_slug` keys each column off the matched meaning's slug — so the
+  code names only the language-independent slug, never a surface word. Declaration
+  order fixes the K/U/A/D column order, and the space-guarded criterion stems
+  `pro ` and ` con ` keep their surrounding spaces (the criterion match stays a
+  raw `contains`) so they never match inside *process* / *control*. Because the
+  comparison gate is now token-bounded across en/ru/hi/zh, the apple-on-the-internet
+  web-search prompts (which name no comparison/table/difference surface in any
+  language) still route to web search rather than tripping the table follow-up.
+  The Rust lib and unit suites stay green — including the Playwright
+  clarification/starter and research comparison-table specifications — and the
+  worker's inline `MEANINGS_LINO` was regenerated so the mirror verifier
+  (`experiments/issue-386-meanings-mirror.mjs`) reports byte-identical parity
+  across all twenty-eight meaning files (issue #386).
 
 ### Fixed
 - The follow-up "Отмени сортировку" ("cancel the sorting") no longer returns

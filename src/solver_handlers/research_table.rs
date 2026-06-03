@@ -9,6 +9,7 @@ use std::fmt::Write as _;
 
 use crate::engine::{normalize_prompt, SymbolicAnswer};
 use crate::event_log::EventLog;
+use crate::seed;
 use crate::solver_helpers::last_user_turn;
 
 use super::finalize_simple;
@@ -37,6 +38,21 @@ impl Criterion {
             Self::UseCases => "use_cases",
             Self::Advantages => "advantages",
             Self::Disadvantages => "disadvantages",
+        }
+    }
+
+    /// The criterion whose [`slug`](Self::slug) equals `slug`, or `None`.
+    ///
+    /// The inverse of [`slug`](Self::slug): it keys a column off a
+    /// `research_criterion` meaning's slug, so the comparison-table handler turns
+    /// a matched meaning into its column without naming a surface word in code.
+    fn from_slug(slug: &str) -> Option<Self> {
+        match slug {
+            "key_differences" => Some(Self::KeyDifferences),
+            "use_cases" => Some(Self::UseCases),
+            "advantages" => Some(Self::Advantages),
+            "disadvantages" => Some(Self::Disadvantages),
+            _ => None,
         }
     }
 }
@@ -86,22 +102,34 @@ pub fn try_research_comparison_table(
     ))
 }
 
+/// True when the prompt asks for a comparison drawn as a table: either a strong
+/// `comparison_table_trigger` ('comparison table', 'compare', …) occurs, or the
+/// weak pair of a `comparison_table_noun` ('table') and a
+/// `comparison_difference_cue` ('differences') co-occur — each recognized
+/// token-bounded across every supported language via the seed lexicon.
 fn is_comparison_table_request(normalized: &str) -> bool {
-    let padded = format!(" {normalized} ");
-    padded.contains(" comparison table ")
-        || padded.contains(" compare ")
-        || padded.contains(" comparing ")
-        || (padded.contains(" table ") && padded.contains(" differences "))
+    let lexicon = seed::lexicon();
+    lexicon.mentions_role(seed::ROLE_COMPARISON_TABLE_TRIGGER, normalized)
+        || (lexicon.mentions_role(seed::ROLE_COMPARISON_TABLE_NOUN, normalized)
+            && lexicon.mentions_role(seed::ROLE_COMPARISON_DIFFERENCE_CUE, normalized))
 }
 
+/// True when `prompt` was itself a research request — the prior turn a
+/// comparison-table follow-up reuses for its topics. The `research_prompt_signal`
+/// meaning carries both bare markers ('web search', 'research', …), matched
+/// token-bounded anywhere, and prefix surfaces ('search …', 'find information …',
+/// …), matched when the prompt opens with the literal before the `…` slot. Both
+/// the markers and the prefixes live in the seed data, not in a
+/// `starts_with`/`contains` list in the code.
 fn looks_like_research_prompt(prompt: &str) -> bool {
     let normalized = normalize_prompt(prompt);
-    normalized.starts_with("search ")
-        || normalized.starts_with("find information ")
-        || normalized.starts_with("look up information ")
-        || normalized.contains(" search for information ")
-        || normalized.contains(" web search ")
-        || normalized.contains(" research ")
+    let lexicon = seed::lexicon();
+    lexicon.mentions_role(seed::ROLE_RESEARCH_PROMPT_SIGNAL, &normalized)
+        || lexicon
+            .role_word_forms(seed::ROLE_RESEARCH_PROMPT_SIGNAL)
+            .iter()
+            .filter(|form| form.slot() == seed::Slot::Prefix)
+            .any(|form| normalized.starts_with(form.before_slot()))
 }
 
 fn extract_research_topics(prompt: &str) -> Vec<String> {
@@ -198,19 +226,21 @@ fn extract_criteria(prompt: &str) -> Vec<Criterion> {
     criteria
 }
 
+/// Add every comparison column the text names. Walks the `research_criterion`
+/// meanings in declaration order (which fixes the column order) and adds a
+/// criterion when any of its surface words occurs as a raw substring — the same
+/// substring contract the legacy code used, so space-guarded stems like 'pro '
+/// and ' con ' still avoid matching inside 'process'/'control'. The trigger
+/// words live in the seed data; the code names only the language-independent
+/// slug that keys each column.
 fn append_criteria_from_text(text: &str, criteria: &mut Vec<Criterion>) {
     let normalized = normalize_prompt(text);
-    if normalized.contains("key difference") || normalized.contains("difference") {
-        push_unique(criteria, Criterion::KeyDifferences);
-    }
-    if normalized.contains("use case") || normalized.contains("application") {
-        push_unique(criteria, Criterion::UseCases);
-    }
-    if normalized.contains("advantage") || normalized.contains("pro ") {
-        push_unique(criteria, Criterion::Advantages);
-    }
-    if normalized.contains("disadvantage") || normalized.contains(" con ") {
-        push_unique(criteria, Criterion::Disadvantages);
+    for meaning in seed::lexicon().meanings_with_role(seed::ROLE_RESEARCH_CRITERION) {
+        if meaning.words().any(|word| normalized.contains(word)) {
+            if let Some(criterion) = Criterion::from_slug(&meaning.slug) {
+                push_unique(criteria, criterion);
+            }
+        }
     }
 }
 

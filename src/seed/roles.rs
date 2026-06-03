@@ -1033,3 +1033,74 @@ pub const ROLE_FEATURE_ACTION_ARITHMETIC: &str = "feature_action_arithmetic";
 /// self-description. Read by the Rust feature-capability handler and its JS
 /// worker mirror.
 pub const ROLE_FEATURE_ACTION_PLANNING: &str = "feature_action_planning";
+/// Semantic role: the proper noun naming the Playwright automation tool.
+///
+/// Carried by the `playwright` meaning. The playwright-script handler asks
+/// whether the tool is named by checking this role through
+/// [`crate::seed::Lexicon::mentions_role_raw`] (a raw substring across every
+/// language), so the proper noun and its common 'playright' misspelling live in
+/// the data. The misspelling form carries an `action` naming the canonical
+/// spelling; the handler walks [`crate::seed::Lexicon::role_word_forms`] for a
+/// form whose action is set and occurs in the prompt to report the spelling
+/// correction — the typo and its fix are data, not literals in the code. Read by
+/// the Rust playwright-script handler and its JS worker mirror.
+pub const ROLE_PLAYWRIGHT_TOOL_NAME: &str = "playwright_tool_name";
+/// Semantic role: a cue that a Playwright prompt is requesting a script.
+///
+/// Carried by the `playwright_script_request_cue` meaning, whose per-language
+/// lexemes hold the artifact nouns (script, test, spec, code) and authoring
+/// frames (write, create, generate, make, build, can you, could you, and their
+/// other-language equivalents). The playwright-script handler routes only when a
+/// `playwright_tool_name` and one of these cues both occur, each checked through
+/// [`crate::seed::Lexicon::mentions_role_raw`]. Read by the Rust playwright-script
+/// handler and its JS worker mirror.
+pub const ROLE_PLAYWRIGHT_SCRIPT_CUE: &str = "playwright_script_cue";
+/// Semantic role: a strong trigger requesting a comparison table.
+///
+/// Carried by the `compare` meaning, whose lexemes hold the phrase 'comparison
+/// table' and the verbs 'compare'/'comparing' (and their translations). The
+/// research comparison-table handler opens when this role is mentioned
+/// token-bounded via [`crate::seed::Lexicon::mentions_role`]; a match alone
+/// satisfies the gate. Read by the Rust research-table handler and its JS worker
+/// mirror.
+pub const ROLE_COMPARISON_TABLE_TRIGGER: &str = "comparison_table_trigger";
+/// Semantic role: the bare 'table' noun — the weak arm of the comparison gate.
+///
+/// Carried by the `table` meaning. On its own a table noun is too weak to open
+/// the comparison-table handler; it counts only when it co-occurs with a
+/// `comparison_difference_cue`, both checked token-bounded through
+/// [`crate::seed::Lexicon::mentions_role`]. Read by the Rust research-table
+/// handler and its JS worker mirror.
+pub const ROLE_COMPARISON_TABLE_NOUN: &str = "comparison_table_noun";
+/// Semantic role: a 'differences' cue — the partner of the bare table noun.
+///
+/// Carried by the `differences` meaning. When a `comparison_table_noun` and this
+/// cue both occur (each checked token-bounded via
+/// [`crate::seed::Lexicon::mentions_role`]) the weak arm of the comparison-table
+/// gate opens. Read by the Rust research-table handler and its JS worker mirror.
+pub const ROLE_COMPARISON_DIFFERENCE_CUE: &str = "comparison_difference_cue";
+/// Semantic role: a signal that an earlier turn was a research request.
+///
+/// Carried by the `research_prompt_signal` meaning, mixing prefix surfaces
+/// (`search …`, `find information …`, `look up information …` — matched when the
+/// prompt starts with the literal before the `…` slot) and bare markers (`search
+/// for information`, `web search`, `research` — matched token-bounded). The
+/// research comparison-table handler reuses the prior research prompt for its
+/// topics, reading the bare markers through
+/// [`crate::seed::Lexicon::mentions_role`] and the prefix surfaces through
+/// [`crate::seed::Lexicon::role_word_forms`] filtered to [`crate::seed::Slot::Prefix`]
+/// then matched against the prompt with `starts_with`. Read by the Rust
+/// research-table handler and its JS worker mirror.
+pub const ROLE_RESEARCH_PROMPT_SIGNAL: &str = "research_prompt_signal";
+/// Semantic role: a comparison-table column criterion.
+///
+/// Carried by the four criterion meanings `key_differences`, `use_cases`,
+/// `advantages`, and `disadvantages`, in that declaration order — declaration
+/// order is column order. The research comparison-table handler walks the
+/// meanings carrying this role through
+/// [`crate::seed::Lexicon::meanings_with_role`] and, for each text fragment, adds
+/// the criterion when any of its surface words occurs as a raw substring; the
+/// matched meaning's slug keys the column. The English triggers (including the
+/// space-guarded `pro ` and ` con `) live in the data. Read by the Rust
+/// research-table handler and its JS worker mirror.
+pub const ROLE_RESEARCH_CRITERION: &str = "research_criterion";

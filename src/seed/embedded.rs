@@ -63,6 +63,9 @@ pub const MEANINGS_TOOL_ACCESS_LINO: &str =
     include_str!("../../data/seed/meanings-tool-access.lino");
 pub const MEANINGS_FEATURE_CAPABILITY_LINO: &str =
     include_str!("../../data/seed/meanings-feature-capability.lino");
+pub const MEANINGS_PLAYWRIGHT_LINO: &str = include_str!("../../data/seed/meanings-playwright.lino");
+pub const MEANINGS_RESEARCH_TABLE_LINO: &str =
+    include_str!("../../data/seed/meanings-research-table.lino");
 pub const GREETINGS_LINO: &str = include_str!("../../data/seed/greetings.lino");
 pub const IDENTITY_LINO: &str = include_str!("../../data/seed/identity.lino");
 pub const HELLO_WORLD_PROGRAMS_LINO: &str =
@@ -167,6 +170,14 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
             "data/seed/meanings-feature-capability.lino",
             MEANINGS_FEATURE_CAPABILITY_LINO,
         ),
+        (
+            "data/seed/meanings-playwright.lino",
+            MEANINGS_PLAYWRIGHT_LINO,
+        ),
+        (
+            "data/seed/meanings-research-table.lino",
+            MEANINGS_RESEARCH_TABLE_LINO,
+        ),
         ("data/seed/greetings.lino", GREETINGS_LINO),
         ("data/seed/identity.lino", IDENTITY_LINO),
         (
@@ -215,4 +226,6 @@ pub const MEANING_FILES: &[&str] = &[
     MEANINGS_DEFINITION_MERGE_LINO,
     MEANINGS_TOOL_ACCESS_LINO,
     MEANINGS_FEATURE_CAPABILITY_LINO,
+    MEANINGS_PLAYWRIGHT_LINO,
+    MEANINGS_RESEARCH_TABLE_LINO,
 ];
