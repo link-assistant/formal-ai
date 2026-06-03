@@ -609,6 +609,25 @@ bump: minor
   worker's inline `MEANINGS_LINO` was regenerated so the mirror verifier
   (`experiments/issue-386-meanings-mirror.mjs`) reports byte-identical parity
   across all twenty-eight meaning files (issue #386).
+- Conversational-opener topic extraction (`conversation_topic` in
+  `src/solver_handlers/benchmark_prompts.rs` and its `formal_ai_worker.js`
+  mirror) is data-driven too. A new seed file
+  (`data/seed/meanings-conversation.lino`) defines the
+  `conversation_topic_opener` meaning (role `conversation_topic_opener`,
+  `defined_by` the `inquiry` and `action` concepts) rooted in the `link`
+  ontology and lexicalised in every supported language — the let-us-talk-about-X
+  phrasings ("let's talk about …", "давай поговорим о …", "चलो बात करें …",
+  "聊聊…"). Each surface marks the topic position with the ellipsis `…` (U+2026)
+  slot marker, so the recogniser walks the role's prefix forms in declaration
+  order and strips the opener via `before_slot()` instead of the former
+  fifteen-entry per-language prefix array. The single surface whose `action` is
+  `scan` ("поговорим о …") is additionally matched anywhere in the prompt,
+  preserving the old `split_once` fallback that catches an opener following a
+  greeting — so the code knows only the concept "an opener that proposes a
+  topic" while the surfaces live once in data. The `formal_ai_worker.js` mirror
+  queries the same embedded meanings and the mirror verifier
+  (`experiments/issue-386-meanings-mirror.mjs`) reports byte-identical parity
+  across all twenty-nine meaning files (issue #386).
 
 ### Fixed
 - The follow-up "Отмени сортировку" ("cancel the sorting") no longer returns

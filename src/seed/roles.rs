@@ -259,6 +259,16 @@ pub const ROLE_CONVERSATION_SUMMARY_PHRASE: &str = "conversation_summary_phrase"
 /// `inquiry` and `conversation_summary_directive` concepts, and matches on its
 /// own without the directive/reference conjunction.
 pub const ROLE_CONVERSATION_SUMMARY_COURTESY: &str = "conversation_summary_courtesy";
+/// Semantic role: a conversational opener that proposes a topic to discuss.
+///
+/// The let-us-talk-about-X phrasing that introduces a subject for open
+/// conversation ("let's talk about …", "давай поговорим о …", "चलो बात करें …",
+/// "聊聊…", …). Every surface is a [`crate::seed::Slot::Prefix`] carrying the
+/// topic after the ellipsis (U+2026) slot marker; a surface whose `action`
+/// child is `scan` is also matched anywhere in the prompt, not only at the
+/// start, so an opener that follows a greeting is still recognized. A meaning
+/// carrying this role is `defined_by` the `inquiry` and `action` concepts.
+pub const ROLE_CONVERSATION_TOPIC_OPENER: &str = "conversation_topic_opener";
 /// Semantic role: a prompt asking how something works.
 ///
 /// An inquiry into a mechanism or operating principle ("how does X work",

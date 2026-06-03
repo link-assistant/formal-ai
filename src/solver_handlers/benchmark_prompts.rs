@@ -119,33 +119,32 @@ pub fn try_conversation_topic_request(
     ))
 }
 
+/// Extract the topic the user proposed to discuss from a conversational opener.
+///
+/// The recognized surfaces — the let-us-talk-about-X phrasings in every
+/// supported language — carry the [`seed::ROLE_CONVERSATION_TOPIC_OPENER`] role;
+/// each is a prefix whose text before the `…` slot is the matchable opener, in
+/// declaration order. A form whose `action` field is `scan` is also matched
+/// anywhere in the prompt, not only at the start, so an opener that follows a
+/// greeting is still found. No per-language opener list lives here — only the
+/// concept; the surfaces come from `data/seed/meanings-conversation.lino`.
 fn conversation_topic(prompt: &str, normalized: &str) -> Option<String> {
-    for prefix in [
-        "let's talk about ",
-        "lets talk about ",
-        "can we talk about ",
-        "talk about ",
-        "давай поговорим о ",
-        "давай поговорим об ",
-        "давайте поговорим о ",
-        "давайте поговорим об ",
-        "поговорим о ",
-        "поговорим об ",
-        "обсудим ",
-        "चलो बात करें ",
-        "बात करें ",
-        "聊聊",
-        "谈谈",
-    ] {
-        if let Some(topic) = normalized.strip_prefix(prefix) {
+    let forms = seed::lexicon().role_word_forms(seed::ROLE_CONVERSATION_TOPIC_OPENER);
+    for form in &forms {
+        if let Some(topic) = normalized.strip_prefix(form.before_slot()) {
             return clean_conversation_topic(topic);
         }
     }
 
     let lower = prompt.to_lowercase();
-    lower
-        .split_once("поговорим о ")
-        .and_then(|(_, topic)| clean_conversation_topic(topic))
+    for form in &forms {
+        if form.action == "scan" {
+            if let Some((_, topic)) = lower.split_once(form.before_slot()) {
+                return clean_conversation_topic(topic);
+            }
+        }
+    }
+    None
 }
 
 fn clean_conversation_topic(raw: &str) -> Option<String> {

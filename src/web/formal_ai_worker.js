@@ -3836,33 +3836,26 @@ function cleanConversationTopic(raw) {
 }
 
 function conversationTopic(prompt, normalized) {
-  const prefixes = [
-    "let's talk about ",
-    "lets talk about ",
-    "can we talk about ",
-    "talk about ",
-    "давай поговорим о ",
-    "давай поговорим об ",
-    "давайте поговорим о ",
-    "давайте поговорим об ",
-    "поговорим о ",
-    "поговорим об ",
-    "обсудим ",
-    "चलो बात करें ",
-    "बात करें ",
-    "聊聊",
-    "谈谈",
-  ];
-  for (const prefix of prefixes) {
-    if (normalized.startsWith(prefix)) {
-      return cleanConversationTopic(normalized.slice(prefix.length));
+  // Recognized surfaces — the let-us-talk-about-X phrasings in every supported
+  // language — carry the conversation_topic_opener role; each is a prefix whose
+  // text before the … slot is the matchable opener, in declaration order. A
+  // form whose action is "scan" is also matched anywhere in the prompt, not only
+  // at the start, so an opener that follows a greeting is still found. No
+  // per-language opener list lives here — only the concept. Mirrors
+  // conversation_topic in src/solver_handlers/benchmark_prompts.rs (issue #386).
+  const forms = roleWordForms(ROLE_CONVERSATION_TOPIC_OPENER);
+  for (const form of forms) {
+    if (normalized.startsWith(form.before)) {
+      return cleanConversationTopic(normalized.slice(form.before.length));
     }
   }
   const lower = String(prompt || "").toLowerCase();
-  const marker = "поговорим о ";
-  const index = lower.indexOf(marker);
-  if (index >= 0) {
-    return cleanConversationTopic(lower.slice(index + marker.length));
+  for (const form of forms) {
+    if (form.action !== "scan") continue;
+    const index = lower.indexOf(form.before);
+    if (index >= 0) {
+      return cleanConversationTopic(lower.slice(index + form.before.length));
+    }
   }
   return "";
 }
@@ -22031,6 +22024,48 @@ const MEANINGS_LINO = [
   "        description \"Chinese noun '缺点' (pinyin quedian, disadvantages) naming the criterion; a research_criterion matched as a substring.\"",
   '      word "劣势"',
   "        description \"Chinese noun '劣势' (pinyin lieshi, disadvantage) naming the criterion; a research_criterion matched as a substring.\"",
+  "meanings",
+  '  meaning "conversation_topic_opener"',
+  "    gloss \"a conversational opener that proposes a topic to discuss — the let-us-talk-about-X phrasing that introduces a subject for open conversation, independent of the language used. Each surface is a prefix carrying the … (U+2026) slot at the end, where the topic follows. A surface whose action child is 'scan' is also matched when it occurs anywhere in the prompt, not only at the start, so an opener embedded after a greeting is still recognized.\"",
+  '    wiktionary "talk"',
+  '    defined_by "inquiry"',
+  '    defined_by "action"',
+  '    role "conversation_topic_opener"',
+  '    lexeme "en"',
+  "      word \"let's talk about …\"",
+  '        description "English conversational opener; the topic to discuss follows the … slot."',
+  '      word "lets talk about …"',
+  '        description "English conversational opener written without the apostrophe; the topic follows the … slot."',
+  '      word "can we talk about …"',
+  '        description "English conversational opener phrased as a question; the topic follows the … slot."',
+  '      word "talk about …"',
+  '        description "English bare conversational opener; the topic follows the … slot."',
+  '    lexeme "ru"',
+  '      word "давай поговорим о …"',
+  '        description "Russian conversational opener (romanized davaj pogovorim o, let us talk about); the topic follows the … slot."',
+  '      word "давай поговорим об …"',
+  '        description "Russian conversational opener before a vowel (romanized davaj pogovorim ob, let us talk about); the topic follows the … slot."',
+  '      word "давайте поговорим о …"',
+  '        description "Russian polite or plural conversational opener (romanized davajte pogovorim o, let us talk about); the topic follows the … slot."',
+  '      word "давайте поговорим об …"',
+  '        description "Russian polite or plural opener before a vowel (romanized davajte pogovorim ob, let us talk about); the topic follows the … slot."',
+  '      word "поговорим о …"',
+  '        action "scan"',
+  '        description "Russian conversational opener (romanized pogovorim o, let us talk about); the topic follows the … slot, and this surface is also scanned anywhere in the prompt because the bare verb often follows a greeting."',
+  '      word "поговорим об …"',
+  '        description "Russian conversational opener before a vowel (romanized pogovorim ob, let us talk about); the topic follows the … slot."',
+  '      word "обсудим …"',
+  '        description "Russian conversational opener (romanized obsudim, let us discuss); the topic follows the … slot."',
+  '    lexeme "hi"',
+  '      word "चलो बात करें …"',
+  '        description "Hindi conversational opener (romanized chalo baat karen, let us talk); the topic follows the … slot."',
+  '      word "बात करें …"',
+  '        description "Hindi conversational opener (romanized baat karen, let us talk); the topic follows the … slot."',
+  '    lexeme "zh"',
+  '      word "聊聊…"',
+  '        description "Chinese conversational opener (pinyin liaoliao, let us chat) with no trailing space; the topic follows the … slot."',
+  '      word "谈谈…"',
+  '        description "Chinese conversational opener (pinyin tantan, let us discuss) with no trailing space; the topic follows the … slot."',
 ].join("\n");
 
 // Semantic role: a thing a program produces that a later turn can refer back to
@@ -22087,6 +22122,12 @@ const ROLE_CONVERSATION_SUMMARY_DIRECTIVE = "conversation_summary_directive";
 const ROLE_CONVERSATION_REFERENCE = "conversation_reference";
 const ROLE_CONVERSATION_SUMMARY_PHRASE = "conversation_summary_phrase";
 const ROLE_CONVERSATION_SUMMARY_COURTESY = "conversation_summary_courtesy";
+// Issue #386 conversation-opener role — mirrors ROLE_CONVERSATION_TOPIC_OPENER
+// in src/seed/roles.rs. Its slot-marked surface words live in
+// data/seed/meanings-conversation.lino (embedded in MEANINGS_LINO above);
+// conversationTopic asks the lexicon for these forms by meaning instead of
+// hardcoding a per-language opener array.
+const ROLE_CONVERSATION_TOPIC_OPENER = "conversation_topic_opener";
 // Issue #386 how-cluster roles — mirror the ROLE_MECHANISM_INQUIRY /
 // ROLE_PROCEDURAL_REQUEST consts in src/seed/meanings.rs. Their slot-marked
 // surface words live in data/seed/meanings-how.lino (embedded in MEANINGS_LINO
