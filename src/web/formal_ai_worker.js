@@ -7588,30 +7588,30 @@ function containsCalendarTerm(text, term) {
 // loose substrings (parity with raw `str::contains` in calendar.rs). The
 // boundary vs. substring split per role mirrors the Rust handler exactly.
 function mentionsWeekdayContext(normalized) {
-  return calendarWordsForRole(ROLE_CALENDAR_DAY_REFERENCE).some((word) =>
+  return wordsForRole(ROLE_CALENDAR_DAY_REFERENCE).some((word) =>
     containsCalendarTerm(normalized, word),
   );
 }
 
 function mentionsCurrentDayQuestion(normalized) {
-  const mentionsToday = calendarWordsForRole(ROLE_CALENDAR_TODAY).some((word) =>
+  const mentionsToday = wordsForRole(ROLE_CALENDAR_TODAY).some((word) =>
     containsCalendarTerm(normalized, word),
   );
   if (!mentionsToday) return false;
-  const asksForDay = calendarWordsForRole(ROLE_CALENDAR_DAY_REFERENCE).some((word) =>
+  const asksForDay = wordsForRole(ROLE_CALENDAR_DAY_REFERENCE).some((word) =>
     containsCalendarTerm(normalized, word),
   );
-  const questionLike = calendarWordsForRole(ROLE_CALENDAR_QUESTION).some((word) =>
+  const questionLike = wordsForRole(ROLE_CALENDAR_QUESTION).some((word) =>
     normalized.includes(word),
   );
   return asksForDay && questionLike;
 }
 
 function detectWeekdayOperation(normalized) {
-  const hasNext = calendarWordsForRole(ROLE_CALENDAR_DIRECTION_NEXT).some((marker) =>
+  const hasNext = wordsForRole(ROLE_CALENDAR_DIRECTION_NEXT).some((marker) =>
     normalized.includes(marker),
   );
-  const hasPrevious = calendarWordsForRole(ROLE_CALENDAR_DIRECTION_PREVIOUS).some(
+  const hasPrevious = wordsForRole(ROLE_CALENDAR_DIRECTION_PREVIOUS).some(
     (marker) => normalized.includes(marker),
   );
   if (hasNext && !hasPrevious) return "next";
@@ -10139,7 +10139,7 @@ function scanSoftwareSurface(normalized, table) {
 // src/solver_handlers/software_project.rs — no hardcoded marker list; the
 // vocabulary lives in data/seed/meanings-software-project.lino.
 function requirementMarkerWords() {
-  return calendarWordsForRole(ROLE_SOFTWARE_REQUIREMENT_CATEGORY)
+  return wordsForRole(ROLE_SOFTWARE_REQUIREMENT_CATEGORY)
     .filter((word) => word.length > 0)
     .map((word) => word.toLowerCase());
 }
@@ -16593,6 +16593,208 @@ const MEANINGS_LINO = [
   '        description "Chinese phrase (pinyin renshi yixia ba) a speaker uses to suggest getting acquainted; a softer-particle surface for the self-introduction request."',
   '      word "让我们认识一下"',
   '        description "Chinese phrase (pinyin rang women renshi yixia) a speaker uses to propose let us get acquainted; a let-framed surface for the self-introduction request."',
+  '  meaning "conversation_summary_directive"',
+  '    gloss "the verb or noun that asks the assistant to condense the running dialogue into a short summary"',
+  '    wiktionary "summarize"',
+  '    defined_by "inquiry"',
+  '    defined_by "answer"',
+  '    role "conversation_summary_directive"',
+  '    lexeme "en"',
+  '      word "summarize"',
+  '        description "English verb asking for a condensed account; the canonical American-spelling surface for the conversation-summary directive."',
+  '      word "summarise"',
+  '        description "English verb asking for a condensed account; the British-spelling surface for the conversation-summary directive."',
+  '      word "summary"',
+  '        description "English noun naming the condensed account itself; the bare-noun surface for the conversation-summary directive."',
+  '    lexeme "ru"',
+  '      word "суммируй"',
+  '        description "Russian verb (romanized summiruy) asking the assistant to sum up the dialogue; the informal imperative surface for the conversation-summary directive."',
+  '      word "суммируйте"',
+  '        description "Russian verb (romanized summiruyte) asking the assistant to sum up the dialogue; the polite-plural imperative surface for the conversation-summary directive."',
+  '      word "резюмируй"',
+  '        description "Russian verb (romanized rezyumiruy) asking the assistant to summarize the dialogue; the informal imperative surface for the conversation-summary directive."',
+  '      word "резюмируйте"',
+  '        description "Russian verb (romanized rezyumiruyte) asking the assistant to summarize the dialogue; the polite-plural imperative surface for the conversation-summary directive."',
+  '      word "резюме"',
+  '        description "Russian noun (romanized rezyume) naming a summary; the bare-noun surface for the conversation-summary directive."',
+  '    lexeme "hi"',
+  '      word "सारांश"',
+  '        description "Hindi noun (romanized saaraansh) naming a summary; the bare-noun surface for the conversation-summary directive."',
+  '      word "संक्षेप"',
+  '        description "Hindi noun (romanized sankshep) naming a condensation or abstract; an alternative surface for the conversation-summary directive."',
+  '      word "सारांशित"',
+  '        description "Hindi verb stem (romanized saaraanshit) meaning summarized; the verb surface for the conversation-summary directive."',
+  '    lexeme "zh"',
+  '      word "总结"',
+  '        description "Chinese verb or noun (pinyin zongjie) meaning to summarize or a summary; the simplified-character surface for the conversation-summary directive."',
+  '      word "總結"',
+  '        description "Chinese verb or noun (pinyin zongjie) meaning to summarize or a summary; the traditional-character surface for the conversation-summary directive."',
+  '      word "概括"',
+  '        description "Chinese verb (pinyin gaikuo) meaning to sum up or generalize; an alternative surface for the conversation-summary directive."',
+  '      word "摘要"',
+  '        description "Chinese noun (pinyin zhaiyao) meaning an abstract or summary; an alternative surface for the conversation-summary directive."',
+  '      word "归纳"',
+  '        description "Chinese verb (pinyin guina) meaning to summarize or induce; the simplified-character surface for the conversation-summary directive."',
+  '      word "歸納"',
+  '        description "Chinese verb (pinyin guina) meaning to summarize or induce; the traditional-character surface for the conversation-summary directive."',
+  '  meaning "conversation_reference"',
+  '    gloss "the noun naming the running dialogue between the user and the assistant — the object a summary request points at"',
+  '    wiktionary "conversation"',
+  '    defined_by "inquiry"',
+  '    defined_by "answer"',
+  '    role "conversation_reference"',
+  '    lexeme "en"',
+  '      word "conversation"',
+  '        description "English noun for the running dialogue between the user and the assistant; the canonical object of a conversation-summary request."',
+  '      word "chat"',
+  '        description "English noun for an informal conversation; an alternative object surface for a conversation-summary request."',
+  '      word "dialogue"',
+  '        description "English noun for an exchange of turns between participants; an alternative object surface for a conversation-summary request."',
+  '      word "dialog"',
+  '        description "English noun for an exchange of turns; the American-spelling object surface for a conversation-summary request."',
+  '      word "discussion"',
+  '        description "English noun for a conversation about a topic; an alternative object surface for a conversation-summary request."',
+  '    lexeme "ru"',
+  '      word "беседа"',
+  '        description "Russian noun (romanized beseda) for a conversation; the nominative object surface for a conversation-summary request."',
+  '      word "беседы"',
+  '        description "Russian noun (romanized besedy) for a conversation; the genitive surface for a conversation-summary request."',
+  '      word "беседу"',
+  '        description "Russian noun (romanized besedu) for a conversation; the accusative surface for a conversation-summary request."',
+  '      word "беседе"',
+  '        description "Russian noun (romanized besede) for a conversation; the prepositional surface for a conversation-summary request."',
+  '      word "разговор"',
+  '        description "Russian noun (romanized razgovor) for a conversation; the nominative object surface for a conversation-summary request."',
+  '      word "разговора"',
+  '        description "Russian noun (romanized razgovora) for a conversation; the genitive surface for a conversation-summary request."',
+  '      word "разговоре"',
+  '        description "Russian noun (romanized razgovore) for a conversation; the prepositional surface for a conversation-summary request."',
+  '      word "разговором"',
+  '        description "Russian noun (romanized razgovorom) for a conversation; the instrumental surface for a conversation-summary request."',
+  '      word "чат"',
+  '        description "Russian noun (romanized chat) for an online chat; the nominative object surface for a conversation-summary request."',
+  '      word "чата"',
+  '        description "Russian noun (romanized chata) for an online chat; the genitive surface for a conversation-summary request."',
+  '      word "чате"',
+  '        description "Russian noun (romanized chate) for an online chat; the prepositional surface for a conversation-summary request."',
+  '      word "диалог"',
+  '        description "Russian noun (romanized dialog) for a dialogue; an alternative object surface for a conversation-summary request."',
+  '      word "диалога"',
+  '        description "Russian noun (romanized dialoga) for a dialogue; the genitive surface for a conversation-summary request."',
+  '    lexeme "hi"',
+  '      word "बातचीत"',
+  '        description "Hindi noun (romanized baatcheet) for a conversation; the canonical object surface for a conversation-summary request."',
+  '      word "संवाद"',
+  '        description "Hindi noun (romanized samvaad) for a dialogue; an alternative object surface for a conversation-summary request."',
+  '      word "वार्तालाप"',
+  '        description "Hindi noun (romanized vaartaalaap) for a conversation or discourse; an alternative object surface for a conversation-summary request."',
+  '    lexeme "zh"',
+  '      word "对话"',
+  '        description "Chinese noun (pinyin duihua) for a dialogue or conversation; the simplified-character object surface for a conversation-summary request."',
+  '      word "對話"',
+  '        description "Chinese noun (pinyin duihua) for a dialogue or conversation; the traditional-character object surface for a conversation-summary request."',
+  '      word "聊天"',
+  '        description "Chinese noun or verb (pinyin liaotian) for chatting; an informal object surface for a conversation-summary request."',
+  '      word "会话"',
+  '        description "Chinese noun (pinyin huihua) for a conversation or session; the simplified-character object surface for a conversation-summary request."',
+  '      word "會話"',
+  '        description "Chinese noun (pinyin huihua) for a conversation or session; the traditional-character object surface for a conversation-summary request."',
+  '      word "谈话"',
+  '        description "Chinese noun (pinyin tanhua) for a talk or conversation; the simplified-character object surface for a conversation-summary request."',
+  '      word "談話"',
+  '        description "Chinese noun (pinyin tanhua) for a talk or conversation; the traditional-character object surface for a conversation-summary request."',
+  '  meaning "conversation_summary_phrase"',
+  '    gloss "a complete standalone phrasing that asks the assistant to recount or summarize what the dialogue has covered"',
+  '    wiktionary "conversation"',
+  '    defined_by "inquiry"',
+  '    defined_by "conversation_reference"',
+  '    role "conversation_summary_phrase"',
+  '    lexeme "en"',
+  '      word "what have we talked about"',
+  '        description "English standalone phrasing asking the assistant to recall the topics of the running conversation."',
+  '      word "what did we talk about"',
+  '        description "English standalone phrasing asking the assistant to recall what the conversation covered."',
+  '      word "what have we discussed"',
+  '        description "English standalone phrasing asking the assistant to recall what has been discussed."',
+  '      word "summary of our chat"',
+  '        description "English standalone phrasing naming a summary of the running chat; matches even when it does not lead the prompt."',
+  '      word "summary of our conversation"',
+  '        description "English standalone phrasing naming a summary of the running conversation; matches even when it does not lead the prompt."',
+  '      word "summarize so far"',
+  '        description "English standalone phrasing asking the assistant to summarize the conversation up to this point (American spelling)."',
+  '      word "summarise so far"',
+  '        description "English standalone phrasing asking the assistant to summarize the conversation up to this point (British spelling)."',
+  '    lexeme "ru"',
+  '      word "о чём мы разговаривали"',
+  '        description "Russian standalone phrasing (romanized o chyom my razgovarivali) asking what the conversation was about; the yo-spelled surface."',
+  '      word "о чем мы разговаривали"',
+  '        description "Russian standalone phrasing (romanized o chem my razgovarivali) asking what the conversation was about; the ye-spelled surface."',
+  '      word "о чём мы говорили"',
+  '        description "Russian standalone phrasing (romanized o chyom my govorili) asking what we talked about; the yo-spelled surface."',
+  '      word "о чем мы говорили"',
+  '        description "Russian standalone phrasing (romanized o chem my govorili) asking what we talked about; the ye-spelled surface."',
+  '    lexeme "hi"',
+  '      word "हमने किस बारे में बात की"',
+  '        description "Hindi standalone phrasing (romanized humne kis baare mein baat ki) asking what the conversation was about."',
+  '      word "हमने क्या बात की"',
+  '        description "Hindi standalone phrasing (romanized humne kya baat ki) asking what we talked about."',
+  '    lexeme "zh"',
+  '      word "我们聊了什么"',
+  '        description "Chinese standalone phrasing (pinyin women liao le shenme) asking what the conversation covered; simplified surface."',
+  '      word "我们谈了什么"',
+  '        description "Chinese standalone phrasing (pinyin women tan le shenme) asking what we talked about; simplified surface."',
+  '      word "我们说了什么"',
+  '        description "Chinese standalone phrasing (pinyin women shuo le shenme) asking what we said; simplified surface."',
+  '      word "我們聊了什麼"',
+  '        description "Chinese standalone phrasing (pinyin women liao le shenme) asking what the conversation covered; traditional surface."',
+  '  meaning "conversation_summary_courtesy"',
+  '    gloss "a polite or elliptical frame that asks the assistant to summarize without naming the conversation object directly"',
+  '    wiktionary "summary"',
+  '    defined_by "inquiry"',
+  '    defined_by "conversation_summary_directive"',
+  '    role "conversation_summary_courtesy"',
+  '    lexeme "en"',
+  '      word "give me a summary"',
+  '        description "English polite frame asking the assistant to produce a summary; an objectless courtesy surface for the conversation-summary request."',
+  '      word "can you summarize"',
+  '        description "English polite frame asking whether the assistant can summarize; an objectless courtesy surface (American spelling)."',
+  '      word "can you summarise"',
+  '        description "English polite frame asking whether the assistant can summarize; an objectless courtesy surface (British spelling)."',
+  '      word "please summarize"',
+  '        description "English polite frame asking the assistant to summarize; an objectless courtesy surface (American spelling)."',
+  '      word "please summarise"',
+  '        description "English polite frame asking the assistant to summarize; an objectless courtesy surface (British spelling)."',
+  '    lexeme "ru"',
+  '      word "подведи итог"',
+  '        description "Russian polite frame (romanized podvedi itog) asking the assistant to sum up; an objectless courtesy surface for the conversation-summary request."',
+  '      word "подведи итоги"',
+  '        description "Russian polite frame (romanized podvedi itogi) asking the assistant to sum up the results; a plural-object courtesy surface."',
+  '      word "краткое резюме"',
+  '        description "Russian phrase (romanized kratkoye rezyume) asking for a brief summary; an objectless courtesy surface for the conversation-summary request."',
+  '      word "сделай резюме"',
+  '        description "Russian phrase (romanized sdelay rezyume) asking the assistant to make a summary; an objectless courtesy surface."',
+  '      word "краткое содержание"',
+  '        description "Russian phrase (romanized kratkoye soderzhaniye) asking for a brief account; an objectless courtesy surface for the conversation-summary request."',
+  '    lexeme "hi"',
+  '      word "सार दो"',
+  '        description "Hindi phrase (romanized saar do) asking the assistant to give the gist; an objectless courtesy surface for the conversation-summary request."',
+  '      word "सारांश दो"',
+  '        description "Hindi phrase (romanized saaraansh do) asking the assistant to give a summary; an objectless courtesy surface."',
+  '      word "संक्षेप में बताओ"',
+  '        description "Hindi phrase (romanized sankshep mein batao) asking the assistant to tell briefly; an objectless courtesy surface for the conversation-summary request."',
+  '    lexeme "zh"',
+  '      word "帮我总结"',
+  '        description "Chinese phrase (pinyin bang wo zongjie) asking the assistant to help summarize; an objectless courtesy surface; simplified surface."',
+  '      word "帮我概括"',
+  '        description "Chinese phrase (pinyin bang wo gaikuo) asking the assistant to help sum up; an objectless courtesy surface; simplified surface."',
+  '      word "请总结"',
+  '        description "Chinese phrase (pinyin qing zongjie) politely asking the assistant to summarize; an objectless courtesy surface; simplified surface."',
+  '      word "请概括"',
+  '        description "Chinese phrase (pinyin qing gaikuo) politely asking the assistant to sum up; an objectless courtesy surface; simplified surface."',
+  '      word "总结一下"',
+  '        description "Chinese phrase (pinyin zongjie yixia) asking the assistant to do a quick summary; an objectless courtesy surface; simplified surface."',
+  '      word "概括一下"',
+  '        description "Chinese phrase (pinyin gaikuo yixia) asking the assistant to do a quick sum-up; an objectless courtesy surface; simplified surface."',
   "meanings",
   '  meaning "mechanism_inquiry"',
   '    gloss "an inquiry into how something works — its internal mechanism or operating principle. The concept a how-it-works prompt expresses, independent of the language or phrasing used. Each surface marks the subject position with the ellipsis … (U+2026): no ellipsis is a bare phrase, a trailing ellipsis is a prefix surface, a leading ellipsis is a suffix surface, and a middle ellipsis is a circumfix surface."',
@@ -19333,6 +19535,18 @@ const ROLE_KNOWLEDGE_INVENTORY_NOUN = "knowledge_inventory_noun";
 const ROLE_KNOWLEDGE_INVENTORY_INTERROGATIVE = "knowledge_inventory_interrogative";
 const ROLE_KNOWLEDGE_POSSESSION = "knowledge_possession";
 const ROLE_KNOWLEDGE_INVENTORY_PHRASE = "knowledge_inventory_phrase";
+
+// Issue #386 conversation-summary roles — mirror the
+// ROLE_CONVERSATION_SUMMARY_DIRECTIVE / ROLE_CONVERSATION_REFERENCE /
+// ROLE_CONVERSATION_SUMMARY_PHRASE / ROLE_CONVERSATION_SUMMARY_COURTESY consts
+// in src/seed/roles.rs. Their per-language surface words live once in the
+// embedded MEANINGS_LINO above (data/seed/meanings-intent.lino); the
+// isSummarizePrompt recogniser composes these roles instead of hardcoding
+// per-language phrase / regex arrays.
+const ROLE_CONVERSATION_SUMMARY_DIRECTIVE = "conversation_summary_directive";
+const ROLE_CONVERSATION_REFERENCE = "conversation_reference";
+const ROLE_CONVERSATION_SUMMARY_PHRASE = "conversation_summary_phrase";
+const ROLE_CONVERSATION_SUMMARY_COURTESY = "conversation_summary_courtesy";
 // Issue #386 how-cluster roles — mirror the ROLE_MECHANISM_INQUIRY /
 // ROLE_PROCEDURAL_REQUEST consts in src/seed/meanings.rs. Their slot-marked
 // surface words live in data/seed/meanings-how.lino (embedded in MEANINGS_LINO
@@ -19512,7 +19726,7 @@ function findMeaning(slug) {
 
 // Distinct surface words (across all languages) for `role`, declaration order.
 // Mirrors Lexicon::words_for_role in src/seed/meanings.rs.
-function calendarWordsForRole(role) {
+function wordsForRole(role) {
   const seen = new Set();
   const words = [];
   for (const meaning of meaningsWithRole(role)) {
@@ -21806,9 +22020,10 @@ function tryWriteProgram(prompt, history, responseLanguage, composition) {
 
 function tryHistorical(prompt, history) {
   const normalized = normalizePrompt(prompt);
-  // Issue #27: summarize triggers can be in non-Latin scripts that normalize
-  // to an empty string, so test before bailing.
-  if (isSummarizePrompt(prompt, normalized)) {
+  // Issue #386: a conversation-summary request is recognised by composing
+  // meaning roles (see isSummarizePrompt) across every supported language, so
+  // we test it before the empty-normalized bail-out below.
+  if (isSummarizePrompt(normalized)) {
     return trySummarizeConversation(history);
   }
   if (!normalized) return null;
@@ -22031,58 +22246,37 @@ function tryResearchComparisonTable(prompt, normalized, history = []) {
   };
 }
 
-// Issue #27: trigger the summarize skill on a wide range of natural phrasings
-// (English/Russian/Hindi/Chinese), not just two literal sentences. We match on
-// the raw prompt for non-Latin scripts because normalizePrompt strips them.
-function isSummarizePrompt(prompt, normalized) {
-  const raw = String(prompt || "").trim().toLowerCase();
-  if (
-    normalized === "summarize" ||
-    normalized === "summarise" ||
-    normalized === "summarize chat" ||
-    normalized === "summarise chat" ||
-    normalized === "summarize so far" ||
-    normalized === "summarise so far" ||
-    normalized === "summary"
-  ) {
-    return true;
-  }
-  if (
-    normalized.startsWith("summarize the conversation") ||
-    normalized.startsWith("summarise the conversation") ||
-    normalized.startsWith("summarize this conversation") ||
-    normalized.startsWith("summarise this conversation") ||
-    normalized.startsWith("summarize our conversation") ||
-    normalized.startsWith("summarise our conversation") ||
-    normalized.startsWith("summarize the chat") ||
-    normalized.startsWith("summarise the chat") ||
-    normalized.startsWith("summarize this chat") ||
-    normalized.startsWith("summarise this chat") ||
-    normalized.startsWith("give me a summary") ||
-    normalized.startsWith("can you summarize") ||
-    normalized.startsWith("can you summarise") ||
-    normalized.startsWith("please summarize") ||
-    normalized.startsWith("please summarise")
-  ) {
-    return true;
-  }
-  // Russian: суммируй / резюмируй / подведи итог / краткое резюме
-  if (
-    /^(суммируй|резюмируй|подведи\s+итог|кратк(ое|ий)\s+резюме|сделай\s+резюме|резюме\s+(беседы|разговора|чата))/.test(
-      raw,
-    )
-  ) {
-    return true;
-  }
-  // Hindi: सारांश / सारांश दो / संक्षेप
-  if (/^(सारांश|संक्षेप|सार\s+दो|सारांश\s+दो)/.test(raw)) {
-    return true;
-  }
-  // Chinese (simplified + traditional): 总结 / 總結 / 概括
-  if (/^(总结|總結|概括|摘要)/.test(raw)) {
-    return true;
-  }
-  return false;
+// Issue #386: a conversation-summary request is recognised by composing
+// meaning roles, not by matching raw words per language. The universal
+// algorithm is identical for every language: the prompt either carries a
+// complete standalone conversation-summary phrasing, an objectless courtesy
+// frame ("can you summarize", "подведи итог"), a summary directive together
+// with an explicit conversation reference, or it is itself a bare summary
+// directive. The prompt is re-normalised first so the boundary-aware matcher
+// sees punctuation collapsed to spaces (idempotent here, since `normalized`
+// is already normalised). Mirror of asks_for_conversation_summary in
+// src/solver_handlers/mod.rs.
+function isSummarizePrompt(normalized) {
+  const cleaned = normalizePrompt(normalized);
+  return (
+    lexiconMentionsRole(ROLE_CONVERSATION_SUMMARY_PHRASE, cleaned) ||
+    lexiconMentionsRole(ROLE_CONVERSATION_SUMMARY_COURTESY, cleaned) ||
+    (lexiconMentionsRole(ROLE_CONVERSATION_SUMMARY_DIRECTIVE, cleaned) &&
+      lexiconMentionsRole(ROLE_CONVERSATION_REFERENCE, cleaned)) ||
+    summaryDirectiveLeads(cleaned)
+  );
+}
+
+// A bare summary directive standing alone is itself a request to summarize the
+// running conversation ("summarize", "резюме", "总结", ...). For whitespace-
+// delimited scripts the directive must be the whole prompt; for CJK (no word
+// spaces) a leading directive suffices, mirroring the historical `^总结`
+// anchor and keeping compounds like "工作总结" (a work summary) out. Mirror of
+// summary_directive_leads in src/solver_handlers/mod.rs.
+function summaryDirectiveLeads(cleaned) {
+  return wordsForRole(ROLE_CONVERSATION_SUMMARY_DIRECTIVE).some((word) =>
+    containsCjk(word) ? cleaned.startsWith(word) : cleaned === word,
+  );
 }
 
 function trimUrlToken(token) {

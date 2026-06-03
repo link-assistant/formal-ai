@@ -227,6 +227,38 @@ pub const ROLE_KNOWLEDGE_POSSESSION: &str = "knowledge_possession";
 /// the `knowledge` and `fact` concepts, and matches on its own without the
 /// noun/interrogative/possession conjunction.
 pub const ROLE_KNOWLEDGE_INVENTORY_PHRASE: &str = "knowledge_inventory_phrase";
+/// Semantic role: the verb or noun that asks for a condensed summary.
+///
+/// The "summarize / summary / резюмируй / резюме / 总结" surface that directs the
+/// assistant to condense discourse into its essence. A meaning carrying this
+/// role is `defined_by` the `inquiry` and `answer` concepts. Composed with
+/// [`ROLE_CONVERSATION_REFERENCE`] (or matched as a leading directive) to
+/// recognise a request to summarize the running conversation.
+pub const ROLE_CONVERSATION_SUMMARY_DIRECTIVE: &str = "conversation_summary_directive";
+/// Semantic role: the noun naming the running dialogue between user and assistant.
+///
+/// The object a summary request points at ("conversation", "беседа",
+/// "разговор", "对话", …). A meaning carrying this role is `defined_by` the
+/// `inquiry` and `answer` concepts. Conjoined with
+/// [`ROLE_CONVERSATION_SUMMARY_DIRECTIVE`] so "summarize the conversation"
+/// triggers while a bare "summarize X" leaves other objects to other handlers.
+pub const ROLE_CONVERSATION_REFERENCE: &str = "conversation_reference";
+/// Semantic role: a complete standalone phrasing asking what the dialogue covered.
+///
+/// A full surface that asks the assistant to recount the conversation even when
+/// no separate directive verb is present ("what have we talked about", "о чём мы
+/// разговаривали", "我们聊了什么", …). A meaning carrying this role is `defined_by`
+/// the `inquiry` and `conversation_reference` concepts, and matches on its own
+/// without the directive/reference conjunction.
+pub const ROLE_CONVERSATION_SUMMARY_PHRASE: &str = "conversation_summary_phrase";
+/// Semantic role: a polite or elliptical frame requesting a summary.
+///
+/// An objectless courtesy surface that asks for a summary without naming the
+/// conversation directly ("give me a summary", "can you summarize", "подведи
+/// итог", "总结一下", …). A meaning carrying this role is `defined_by` the
+/// `inquiry` and `conversation_summary_directive` concepts, and matches on its
+/// own without the directive/reference conjunction.
+pub const ROLE_CONVERSATION_SUMMARY_COURTESY: &str = "conversation_summary_courtesy";
 /// Semantic role: a prompt asking how something works.
 ///
 /// An inquiry into a mechanism or operating principle ("how does X work",

@@ -60,12 +60,13 @@ use crate::calculation::{
     calculation_expression_candidates, evaluate_calculation, interpretation_statements,
     PromptInterpretation,
 };
+use crate::coding::contains_cjk;
 use crate::concepts::{
     extract_concept_query, lookup_concept_query, resolve_context_label, ConceptRecord,
 };
 use crate::engine::{
-    answer_links_notation, hello_world_program_by_alias, knowledge_links_notation, stable_id,
-    ExecutionStatus, SymbolicAnswer,
+    answer_links_notation, hello_world_program_by_alias, knowledge_links_notation,
+    normalize_prompt, stable_id, ExecutionStatus, SymbolicAnswer,
 };
 use crate::event_log::{build_evidence_links, EventLog};
 use crate::language::detect as detect_language;
@@ -148,30 +149,55 @@ fn try_recall_last_question(
     ))
 }
 
+/// Recognise a request to summarize the running conversation by composing
+/// meaning roles rather than matching raw per-language phrases (issue #386).
+///
+/// The universal algorithm is identical for every language: the prompt either
+/// (a) carries a complete standalone conversation-summary phrasing, (b) carries
+/// an objectless courtesy frame asking for a summary, (c) names a summary
+/// directive *together with* a conversation reference, or (d) leads with a bare
+/// summary directive (`summarize`, `резюме`, `总结`, …). The prompt is
+/// re-normalised first so the boundary-aware matcher sees punctuation collapsed
+/// to spaces. Mirror of `asksForConversationSummary` in the browser worker.
+fn asks_for_conversation_summary(normalized: &str) -> bool {
+    let cleaned = normalize_prompt(normalized);
+    let lexicon = crate::seed::lexicon();
+    lexicon.mentions_role(crate::seed::ROLE_CONVERSATION_SUMMARY_PHRASE, &cleaned)
+        || lexicon.mentions_role(crate::seed::ROLE_CONVERSATION_SUMMARY_COURTESY, &cleaned)
+        || (lexicon.mentions_role(crate::seed::ROLE_CONVERSATION_SUMMARY_DIRECTIVE, &cleaned)
+            && lexicon.mentions_role(crate::seed::ROLE_CONVERSATION_REFERENCE, &cleaned))
+        || summary_directive_leads(&cleaned)
+}
+
+/// A bare summary directive standing alone is itself a request to summarize the
+/// running conversation ("summarize", "резюме", "总结", …).
+///
+/// For whitespace-delimited scripts the directive must be the *whole* prompt, so
+/// "summarize the article" is left for other handlers (a conversation object is
+/// required via the directive∧reference arm instead). For CJK (no word spaces) a
+/// leading substring suffices — mirroring the worker's historical `^总结` anchor
+/// — which also keeps compounds like "工作总结" (a *work* summary) from being
+/// mis-claimed. Surface words come from the `conversation_summary_directive`
+/// role in the seed lexicon.
+fn summary_directive_leads(cleaned: &str) -> bool {
+    crate::seed::lexicon()
+        .words_for_role(crate::seed::ROLE_CONVERSATION_SUMMARY_DIRECTIVE)
+        .iter()
+        .any(|word| {
+            if contains_cjk(word) {
+                cleaned.starts_with(word.as_str())
+            } else {
+                cleaned == word.as_str()
+            }
+        })
+}
+
 fn try_summarize_conversation(
     prompt: &str,
     normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
-    let asks = normalized.contains("summarize the conversation")
-        || normalized.contains("summarize our conversation")
-        || normalized.contains("summarize this conversation")
-        || normalized.contains("summary of our chat")
-        || normalized.contains("what have we talked about")
-        || normalized == "summarize"
-        // Russian
-        || normalized.contains("о чём мы разговаривали")
-        || normalized.contains("о чем мы разговаривали")
-        || normalized.contains("о чём мы говорили")
-        || normalized.contains("о чем мы говорили")
-        || normalized.contains("резюме беседы")
-        || normalized.contains("резюме разговора")
-        || normalized.contains("резюмируй разговор")
-        || normalized.contains("резюмируй беседу")
-        || normalized == "резюме"
-        // Chinese
-        || normalized.contains("总结");
-    if !asks {
+    if !asks_for_conversation_summary(normalized) {
         return None;
     }
     let turns: Vec<DialogTurn> = log

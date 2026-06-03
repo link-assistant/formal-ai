@@ -331,6 +331,41 @@ bump: minor
   Unicode script range (the Cyrillic range subsumes the former hardcoded
   second-person pronoun list), and the now-unused `contains_any` helper was
   removed (issue #386).
+- Conversation-summary recognition (`try_summarize_conversation` in
+  `src/solver_handlers/mod.rs` and its `formal_ai_worker.js` mirror) is
+  data-driven too. Four self-describing meanings in
+  `data/seed/meanings-intent.lino` carry every surface the recogniser used to
+  hardcode in an English exact-set, a fifteen-entry prefix set, and three
+  per-language anchored regexes: `conversation_summary_directive` (the summarize
+  / суммируй / резюме / सारांश / 总结 verb), `conversation_reference` (the
+  conversation / беседа / बातचीत / 对话 noun the directive can take as object),
+  `conversation_summary_phrase` (complete standalone phrasings such as "summarize
+  so far", "what have we talked about", "о чём мы разговаривали"), and
+  `conversation_summary_courtesy` (objectless courtesy frames such as "can you
+  summarize", "подведи итог", "सार दो"), each `defined_by` the `inquiry` concept
+  and the summary concepts it builds on, and lexicalised in every supported
+  language. `asks_for_conversation_summary` now composes those roles with one
+  universal algorithm for every language — a standalone phrase, a courtesy frame,
+  a directive together with a conversation reference, or a bare directive (the
+  whole prompt for whitespace-delimited scripts, a leading directive for CJK) —
+  instead of the former English exact-set / prefix lists and the
+  Russian/Hindi/Chinese anchored regexes. Two refinements follow from reasoning
+  over the concept rather than the raw words: the CJK bare directive now anchors
+  at the start (`总结…`) so a compound like "工作总结" (a *work* summary) no longer
+  mis-triggers — fixing a Rust `.contains("总结")` bug that the worker's `^总结`
+  regex never had — and the directive-plus-reference conjunction recognises any
+  conversation reference ("summarize our discussion", "резюме разговора"), not
+  only the handful of "the/this/our conversation/chat" prefixes the worker
+  enumerated. The generic `words_for_role` accessor the bare-directive check uses
+  is now named identically on both sides (the worker's misnamed-but-generic
+  `calendarWordsForRole`, already used for non-calendar roles, was renamed
+  `wordsForRole`). The `formal_ai_worker.js` mirror queries the same embedded
+  meanings, and a parity harness
+  (`experiments/issue-386-worker-summarize-parity.mjs`) proves the recogniser
+  fires on nineteen multilingual phrasings across all four composition arms,
+  rejects content-summary and unrelated prompts, routes the four pinned
+  with-history cases to `summarize_conversation`, and honours the empty-history
+  turn gate (issue #386).
 - The prefilled "Report issue" body omits settings already at their shipped
   default (Mode, Status, Diagnostics, Theme, Guess/Follow-up probability,
   Temperature, inference-only Location), folds the worker into the version line
