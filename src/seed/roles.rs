@@ -199,6 +199,34 @@ pub const ROLE_SELF_FACT_QUERY: &str = "self_fact_query";
 /// "介绍一下你自己", …). Suppressed when a [`ROLE_SELF_FACT_QUERY`] surface
 /// also matches.
 pub const ROLE_SELF_INTRODUCTION_REQUEST: &str = "self_introduction_request";
+/// Semantic role: the noun naming the items a known-facts inventory asks about.
+///
+/// The "facts" surface inside a known-facts question ("what *facts* do you
+/// know", "какие *факты* ты знаешь", "你知道什么*事实*", …). Carried by the shared
+/// `fact` meaning, which is `defined_by` the `knowledge` concept, so the noun is
+/// reused rather than duplicated. Composed with the interrogative and possession
+/// roles to recognise a known-facts query.
+pub const ROLE_KNOWLEDGE_INVENTORY_NOUN: &str = "knowledge_inventory_noun";
+/// Semantic role: the interrogative or enumerating cue of a known-facts query.
+///
+/// The "what / which / list / show" surface that asks the assistant to surface
+/// the items it holds ("какие", "перечисли", "哪些", …). A meaning carrying this
+/// role is `defined_by` the `inquiry` concept.
+pub const ROLE_KNOWLEDGE_INVENTORY_INTERROGATIVE: &str = "knowledge_inventory_interrogative";
+/// Semantic role: second-person attribution of knowing to the assistant.
+///
+/// The "you know / you have / known to you" surface that pins the knowledge to
+/// the assistant ("ты знаешь", "тебе известно", "你知道", …). A meaning carrying
+/// this role is `defined_by` the `knowledge` and `assistant` concepts.
+pub const ROLE_KNOWLEDGE_POSSESSION: &str = "knowledge_possession";
+/// Semantic role: a complete standalone phrasing of a known-facts query.
+///
+/// A full surface that asks what the assistant knows about the world even when
+/// the noun "facts" is absent ("what do you know about the world", "что тебе
+/// вообще известно", "你知道什么", …). A meaning carrying this role is `defined_by`
+/// the `knowledge` and `fact` concepts, and matches on its own without the
+/// noun/interrogative/possession conjunction.
+pub const ROLE_KNOWLEDGE_INVENTORY_PHRASE: &str = "knowledge_inventory_phrase";
 /// Semantic role: a prompt asking how something works.
 ///
 /// An inquiry into a mechanism or operating principle ("how does X work",

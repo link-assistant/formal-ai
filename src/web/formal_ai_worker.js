@@ -3825,13 +3825,13 @@ function isSelfIntroductionQuery(normalized) {
 }
 
 function selfAwarenessLanguage(prompt, normalized) {
+  // Issue #386: language is detected purely by Unicode script ranges. The
+  // Cyrillic range below already subsumes the former second-person pronoun
+  // list (ty/tebya/tvoy/vy/...), every member of which is Cyrillic, so no raw
+  // word list is needed -- the script range is the universal signal. Mirror of
+  // self_awareness_language in src/solver_handlers/self_awareness.rs.
   const text = `${String(prompt || "").toLowerCase()} ${String(normalized || "")}`;
-  if (
-    /[\u0400-\u04ff]/u.test(text) ||
-    containsAny(text, ["ты", "теб", "твоя", "твой", "вы", "вас", "у тебя"])
-  ) {
-    return "ru";
-  }
+  if (/[\u0400-\u04ff]/u.test(text)) return "ru";
   if (/[\u0900-\u097f]/u.test(text)) return "hi";
   if (/[\u4e00-\u9fff]/u.test(text)) return "zh";
   return detectLanguage(prompt);
@@ -3900,60 +3900,25 @@ function conversationTopicContent(topic, language) {
   return `We can talk about ${topic}. I can start with a short definition, context, or a specific question; when web search is available, public facts can be checked against an external source.`;
 }
 
+// Issue #386: a known-facts inventory query is recognised by composing meaning
+// roles, not by matching raw words per language. The universal algorithm is
+// identical for every language: the prompt either names the knowledge `fact`
+// noun together with an enumerating interrogative and a second-person
+// attribution of knowing, or it matches one of the complete standalone
+// phrasings that ask what the assistant knows even without the noun. The
+// prompt is re-normalised first so the boundary-aware matcher sees punctuation
+// collapsed to spaces. Mirror of is_known_fact_query in
+// src/solver_handlers/self_awareness.rs.
 function isKnownFactQuery(normalized) {
   if (isSelfFactQuery(normalized)) return false;
-  const english =
-    (normalized.includes("facts") &&
-      containsAny(normalized, ["what", "which", "list", "show"]) &&
-      containsAny(normalized, [
-        "you know",
-        "do you know",
-        "you have",
-        "available to you",
-        "in your knowledge",
-        "known to you",
-      ])) ||
-    containsAny(normalized, [
-      "what do you know in general",
-      "what do you know about the world",
-      "what is known to you",
-      "what knowledge do you have",
-    ]);
-  const russian =
-    (normalized.includes("факт") &&
-      containsAny(normalized, ["какие", "что", "перечисли", "покажи", "назови"]) &&
-      containsAny(normalized, [
-        "ты знаешь",
-        "знаешь",
-        "тебе извест",
-        "у тебя есть",
-        "твои знания",
-        "что ты знаешь",
-      ])) ||
-    containsAny(normalized, [
-      "что тебе вообще известно",
-      "что тебе известно",
-      "что ты вообще знаешь",
-      "что ты знаешь об окружающем мире",
-      "известно об окружающем мире",
-      "знаешь про окружающий мир",
-      "знаешь об окружающем мире",
-    ]);
-  const hindi =
-    (normalized.includes("तथ्य") &&
-      containsAny(normalized, ["कौन", "क्या", "सूची", "सूचीबद्ध", "बताओ", "दिखाओ"]) &&
-      containsAny(normalized, ["तुम", "आप", "जानते", "जानती", "आपके", "तुम्हारे"])) ||
-    containsAny(normalized, [
-      "आप क्या जानते हैं",
-      "तुम क्या जानते हो",
-      "आपको क्या पता है",
-    ]);
-  const chinese =
-    ((normalized.includes("事实") || normalized.includes("事實")) &&
-      containsAny(normalized, ["你知道", "您知道", "你有", "您有", "哪些", "什么", "什麼"])) ||
-    containsAny(normalized, ["你知道什么", "您知道什么", "你知道哪些"]);
-
-  return english || russian || hindi || chinese;
+  const cleaned = normalizePrompt(normalized);
+  const composed =
+    lexiconMentionsRole(ROLE_KNOWLEDGE_INVENTORY_NOUN, cleaned) &&
+    lexiconMentionsRole(ROLE_KNOWLEDGE_INVENTORY_INTERROGATIVE, cleaned) &&
+    lexiconMentionsRole(ROLE_KNOWLEDGE_POSSESSION, cleaned);
+  return (
+    composed || lexiconMentionsRole(ROLE_KNOWLEDGE_INVENTORY_PHRASE, cleaned)
+  );
 }
 
 function cleanRuleQuery(raw) {
@@ -16147,6 +16112,7 @@ const MEANINGS_LINO = [
   '    wiktionary "fact"',
   '    defined_by "knowledge"',
   '    role "conversational_concept"',
+  '    role "knowledge_inventory_noun"',
   '    lexeme "en"',
   '      word "fact"',
   '        description "English noun for a known true statement the assistant can recall; the singular surface for the fact concept."',
@@ -16162,7 +16128,164 @@ const MEANINGS_LINO = [
   '        description "Hindi noun (romanized tathya) for a fact; the Hindi surface for the fact concept."',
   '    lexeme "zh"',
   '      word "事实"',
-  '        description "Chinese noun (pinyin shishi) for a fact; the Chinese surface for the fact concept."',
+  '        description "Chinese noun (pinyin shishi) for a fact; the simplified Chinese surface for the fact concept."',
+  '      word "事實"',
+  '        description "Chinese noun (pinyin shishi) for a fact; the traditional Chinese surface for the fact concept."',
+  '  meaning "knowledge_inventory_probe"',
+  '    gloss "an interrogative or enumerating cue that asks the assistant to surface the items it holds"',
+  '    wiktionary "enumerate"',
+  '    defined_by "inquiry"',
+  '    role "knowledge_inventory_interrogative"',
+  '    lexeme "en"',
+  '      word "what"',
+  '        description "English interrogative pronoun opening a request to name the items the assistant holds."',
+  '      word "which"',
+  '        description "English interrogative determiner selecting among the items the assistant holds."',
+  '      word "list"',
+  '        description "English verb asking the assistant to enumerate the items it holds."',
+  '      word "show"',
+  '        description "English verb asking the assistant to display the items it holds."',
+  '    lexeme "ru"',
+  '      word "какие"',
+  '        description "Russian interrogative determiner (romanized kakie) asking which items the assistant holds."',
+  '      word "что"',
+  '        description "Russian interrogative pronoun (romanized chto) asking what the assistant holds."',
+  '      word "перечисли"',
+  '        description "Russian imperative verb (romanized perechisli) asking the assistant to enumerate the items it holds."',
+  '      word "покажи"',
+  '        description "Russian imperative verb (romanized pokazhi) asking the assistant to display the items it holds."',
+  '      word "назови"',
+  '        description "Russian imperative verb (romanized nazovi) asking the assistant to name the items it holds."',
+  '    lexeme "hi"',
+  '      word "कौन"',
+  '        description "Hindi interrogative (romanized kaun) asking which items the assistant holds."',
+  '      word "क्या"',
+  '        description "Hindi interrogative (romanized kya) asking what the assistant holds."',
+  '      word "सूची"',
+  '        description "Hindi noun (romanized soochee) for a list, asking the assistant to enumerate the items it holds."',
+  '      word "सूचीबद्ध"',
+  '        description "Hindi adjective (romanized soocheebaddh) meaning listed, asking the assistant to enumerate the items it holds."',
+  '      word "बताओ"',
+  '        description "Hindi imperative verb (romanized batao) asking the assistant to tell the items it holds."',
+  '      word "दिखाओ"',
+  '        description "Hindi imperative verb (romanized dikhao) asking the assistant to show the items it holds."',
+  '    lexeme "zh"',
+  '      word "哪些"',
+  '        description "Chinese interrogative (pinyin naxie) selecting which items the assistant holds."',
+  '      word "什么"',
+  '        description "Chinese interrogative (pinyin shenme) asking what the assistant holds; simplified surface."',
+  '      word "什麼"',
+  '        description "Chinese interrogative (pinyin shenme) asking what the assistant holds; traditional surface."',
+  '      word "你知道"',
+  '        description "Chinese phrase (pinyin ni zhidao) meaning you-know, asking what the assistant holds."',
+  '      word "您知道"',
+  '        description "Chinese phrase (pinyin nin zhidao) meaning you-know (polite), asking what the assistant holds."',
+  '      word "你有"',
+  '        description "Chinese phrase (pinyin ni you) meaning you-have, asking what the assistant holds."',
+  '      word "您有"',
+  '        description "Chinese phrase (pinyin nin you) meaning you-have (polite), asking what the assistant holds."',
+  '  meaning "assistant_knowing"',
+  '    gloss "second-person attribution of knowing or having — the assistant being the one that holds the knowledge"',
+  '    wiktionary "know"',
+  '    defined_by "knowledge"',
+  '    defined_by "assistant"',
+  '    role "knowledge_possession"',
+  '    lexeme "en"',
+  '      word "you know"',
+  '        description "English second-person phrase attributing the knowing to the assistant."',
+  '      word "do you know"',
+  '        description "English second-person interrogative phrase attributing the knowing to the assistant."',
+  '      word "you have"',
+  '        description "English second-person phrase attributing possession of the knowledge to the assistant."',
+  '      word "available to you"',
+  '        description "English phrase describing knowledge accessible to the assistant."',
+  '      word "in your knowledge"',
+  "        description \"English phrase locating the facts inside the assistant's knowledge.\"",
+  '      word "known to you"',
+  '        description "English phrase attributing the known facts to the assistant."',
+  '    lexeme "ru"',
+  '      word "ты знаешь"',
+  '        description "Russian second-person phrase (romanized ty znaesh) attributing the knowing to the assistant."',
+  '      word "знаешь"',
+  '        description "Russian second-person verb (romanized znaesh) attributing the knowing to the assistant."',
+  '      word "тебе известно"',
+  '        description "Russian phrase (romanized tebe izvestno) meaning it-is-known-to-you, attributing the knowing to the assistant."',
+  '      word "тебе известны"',
+  '        description "Russian phrase (romanized tebe izvestny) meaning they-are-known-to-you, attributing the knowing to the assistant."',
+  '      word "тебе известен"',
+  '        description "Russian phrase (romanized tebe izvesten) meaning it-is-known-to-you (masculine), attributing the knowing to the assistant."',
+  '      word "у тебя есть"',
+  '        description "Russian phrase (romanized u tebya est) meaning you-have, attributing possession to the assistant."',
+  '      word "твои знания"',
+  '        description "Russian phrase (romanized tvoi znaniya) meaning your-knowledge, attributing the knowledge to the assistant."',
+  '      word "что ты знаешь"',
+  '        description "Russian phrase (romanized chto ty znaesh) meaning what-you-know, attributing the knowing to the assistant."',
+  '    lexeme "hi"',
+  '      word "तुम"',
+  '        description "Hindi second-person pronoun (romanized tum) attributing the knowing to the assistant."',
+  '      word "आप"',
+  '        description "Hindi second-person pronoun (romanized aap, polite) attributing the knowing to the assistant."',
+  '      word "जानते"',
+  '        description "Hindi verb (romanized jaante) meaning know (masculine), attributing the knowing to the assistant."',
+  '      word "जानती"',
+  '        description "Hindi verb (romanized jaantee) meaning know (feminine), attributing the knowing to the assistant."',
+  '      word "आपके"',
+  '        description "Hindi possessive (romanized aapke) meaning your, attributing possession to the assistant."',
+  '      word "तुम्हारे"',
+  '        description "Hindi possessive (romanized tumhaare) meaning your, attributing possession to the assistant."',
+  '    lexeme "zh"',
+  '      word "你知道"',
+  '        description "Chinese phrase (pinyin ni zhidao) meaning you-know, attributing the knowing to the assistant."',
+  '      word "您知道"',
+  '        description "Chinese phrase (pinyin nin zhidao) meaning you-know (polite), attributing the knowing to the assistant."',
+  '      word "你有"',
+  '        description "Chinese phrase (pinyin ni you) meaning you-have, attributing possession to the assistant."',
+  '      word "您有"',
+  '        description "Chinese phrase (pinyin nin you) meaning you-have (polite), attributing possession to the assistant."',
+  '  meaning "knowledge_inventory_query"',
+  '    gloss "a complete standalone phrasing that asks the assistant what it knows about the world, even without the word fact"',
+  '    wiktionary "knowledge"',
+  '    defined_by "knowledge"',
+  '    defined_by "fact"',
+  '    role "knowledge_inventory_phrase"',
+  '    lexeme "en"',
+  '      word "what do you know in general"',
+  '        description "English standalone phrasing asking the assistant for its general knowledge inventory."',
+  '      word "what do you know about the world"',
+  '        description "English standalone phrasing asking the assistant for its knowledge about the world."',
+  '      word "what is known to you"',
+  '        description "English standalone phrasing asking the assistant for everything it knows."',
+  '      word "what knowledge do you have"',
+  '        description "English standalone phrasing asking the assistant to surface the knowledge it holds."',
+  '    lexeme "ru"',
+  '      word "что тебе вообще известно"',
+  '        description "Russian standalone phrasing (romanized chto tebe voobshche izvestno) asking the assistant for everything it knows."',
+  '      word "что тебе известно"',
+  '        description "Russian standalone phrasing (romanized chto tebe izvestno) asking the assistant what it knows."',
+  '      word "что ты вообще знаешь"',
+  '        description "Russian standalone phrasing (romanized chto ty voobshche znaesh) asking the assistant for its general knowledge."',
+  '      word "что ты знаешь об окружающем мире"',
+  '        description "Russian standalone phrasing (romanized chto ty znaesh ob okruzhayushchem mire) asking the assistant about the surrounding world."',
+  '      word "известно об окружающем мире"',
+  '        description "Russian standalone phrasing (romanized izvestno ob okruzhayushchem mire) asking what is known about the surrounding world."',
+  '      word "знаешь про окружающий мир"',
+  '        description "Russian standalone phrasing (romanized znaesh pro okruzhayushchiy mir) asking what the assistant knows about the surrounding world."',
+  '      word "знаешь об окружающем мире"',
+  '        description "Russian standalone phrasing (romanized znaesh ob okruzhayushchem mire) asking what the assistant knows about the surrounding world."',
+  '    lexeme "hi"',
+  '      word "आप क्या जानते हैं"',
+  '        description "Hindi standalone phrasing (romanized aap kya jaante hain) asking what the assistant knows."',
+  '      word "तुम क्या जानते हो"',
+  '        description "Hindi standalone phrasing (romanized tum kya jaante ho) asking what the assistant knows."',
+  '      word "आपको क्या पता है"',
+  '        description "Hindi standalone phrasing (romanized aapko kya pata hai) asking what is known to the assistant."',
+  '    lexeme "zh"',
+  '      word "你知道什么"',
+  '        description "Chinese standalone phrasing (pinyin ni zhidao shenme) asking what the assistant knows; simplified surface."',
+  '      word "您知道什么"',
+  '        description "Chinese standalone phrasing (pinyin nin zhidao shenme) asking what the assistant knows (polite); simplified surface."',
+  '      word "你知道哪些"',
+  '        description "Chinese standalone phrasing (pinyin ni zhidao naxie) asking which items the assistant knows."',
   '  meaning "introduction"',
   '    gloss "presenting who one is — the assistant describing itself in answer to a get-acquainted request"',
   '    wiktionary "introduction"',
@@ -19200,6 +19323,16 @@ const ROLE_CAPABILITY_QUERY = "capability_query";
 const ROLE_CAPABILITY_QUERY_MORE = "capability_query_more";
 const ROLE_SELF_FACT_QUERY = "self_fact_query";
 const ROLE_SELF_INTRODUCTION_REQUEST = "self_introduction_request";
+// Issue #386 known-facts inventory roles — mirror the ROLE_KNOWLEDGE_INVENTORY_*
+// / ROLE_KNOWLEDGE_POSSESSION consts in src/seed/roles.rs. Their surface words
+// live in data/seed/meanings-intent.lino (the shared `fact` noun plus the
+// knowledge_inventory_probe / assistant_knowing / knowledge_inventory_query
+// meanings, embedded in MEANINGS_LINO above); isKnownFactQuery composes these
+// roles instead of hardcoding per-language phrase arrays.
+const ROLE_KNOWLEDGE_INVENTORY_NOUN = "knowledge_inventory_noun";
+const ROLE_KNOWLEDGE_INVENTORY_INTERROGATIVE = "knowledge_inventory_interrogative";
+const ROLE_KNOWLEDGE_POSSESSION = "knowledge_possession";
+const ROLE_KNOWLEDGE_INVENTORY_PHRASE = "knowledge_inventory_phrase";
 // Issue #386 how-cluster roles — mirror the ROLE_MECHANISM_INQUIRY /
 // ROLE_PROCEDURAL_REQUEST consts in src/seed/meanings.rs. Their slot-marked
 // surface words live in data/seed/meanings-how.lino (embedded in MEANINGS_LINO

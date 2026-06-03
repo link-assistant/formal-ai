@@ -491,13 +491,12 @@ fn is_self_introduction_query(normalized: &str) -> bool {
 }
 
 fn self_awareness_language(prompt: &str, normalized: &str) -> &'static str {
+    // Issue #386: language is detected purely by Unicode script ranges. The
+    // Cyrillic range below already subsumes the former second-person pronoun
+    // list (ty/tebya/tvoy/vy/...), every member of which is Cyrillic, so no raw
+    // word list is needed -- the script range is the universal signal.
     let lower = format!("{} {}", prompt.to_lowercase(), normalized);
-    if has_char_in_range(&lower, '\u{0400}', '\u{04ff}')
-        || contains_any(
-            &lower,
-            &["ты", "теб", "твоя", "твой", "вы", "вас", "у тебя"],
-        )
-    {
+    if has_char_in_range(&lower, '\u{0400}', '\u{04ff}') {
         return "ru";
     }
     if has_char_in_range(&lower, '\u{0900}', '\u{097f}') {
@@ -519,83 +518,26 @@ fn identity_body(language: &str) -> String {
         .unwrap_or_else(|| identity_answer().to_owned())
 }
 
-fn contains_any(normalized: &str, needles: &[&str]) -> bool {
-    needles.iter().any(|needle| normalized.contains(needle))
-}
-
 fn is_known_fact_query(normalized: &str) -> bool {
     if is_self_fact_query(normalized) {
         return false;
     }
 
-    let english = (normalized.contains("facts")
-        && contains_any(normalized, &["what", "which", "list", "show"])
-        && contains_any(
-            normalized,
-            &[
-                "you know",
-                "do you know",
-                "you have",
-                "available to you",
-                "in your knowledge",
-                "known to you",
-            ],
-        ))
-        || contains_any(
-            normalized,
-            &[
-                "what do you know in general",
-                "what do you know about the world",
-                "what is known to you",
-                "what knowledge do you have",
-            ],
-        );
-    let russian = (normalized.contains("факт")
-        && contains_any(
-            normalized,
-            &["какие", "что", "перечисли", "покажи", "назови"],
-        )
-        && contains_any(
-            normalized,
-            &[
-                "ты знаешь",
-                "знаешь",
-                "тебе извест",
-                "у тебя есть",
-                "твои знания",
-                "что ты знаешь",
-            ],
-        ))
-        || contains_any(
-            normalized,
-            &[
-                "что тебе вообще известно",
-                "что тебе известно",
-                "что ты вообще знаешь",
-                "что ты знаешь об окружающем мире",
-                "известно об окружающем мире",
-                "знаешь про окружающий мир",
-                "знаешь об окружающем мире",
-            ],
-        );
-    let hindi = (normalized.contains("तथ्य")
-        && contains_any(
-            normalized,
-            &["कौन", "क्या", "सूची", "सूचीबद्ध", "बताओ", "दिखाओ"],
-        )
-        && contains_any(normalized, &["तुम", "आप", "जानते", "जानती", "आपके", "तुम्हारे"]))
-        || contains_any(
-            normalized,
-            &["आप क्या जानते हैं", "तुम क्या जानते हो", "आपको क्या पता है"],
-        );
-    let chinese = ((normalized.contains("事实") || normalized.contains("事實"))
-        && contains_any(
-            normalized,
-            &["你知道", "您知道", "你有", "您有", "哪些", "什么", "什麼"],
-        ))
-        || contains_any(normalized, &["你知道什么", "您知道什么", "你知道哪些"]);
+    // Issue #386: a known-facts inventory query is recognised by composing
+    // meaning roles, not by matching raw words per language. The universal
+    // algorithm is identical for every language: the prompt either names the
+    // knowledge `fact` noun together with an enumerating interrogative and a
+    // second-person attribution of knowing, or it matches one of the complete
+    // standalone phrasings that ask what the assistant knows even without the
+    // noun. The prompt is re-normalised first so the boundary-aware matcher
+    // sees punctuation collapsed to spaces.
+    let cleaned = normalize_prompt(normalized);
+    let lexicon = seed::lexicon();
+    let composed = lexicon.mentions_role(seed::ROLE_KNOWLEDGE_INVENTORY_NOUN, &cleaned)
+        && lexicon.mentions_role(seed::ROLE_KNOWLEDGE_INVENTORY_INTERROGATIVE, &cleaned)
+        && lexicon.mentions_role(seed::ROLE_KNOWLEDGE_POSSESSION, &cleaned);
 
-    english || russian || hindi || chinese
+    composed || lexicon.mentions_role(seed::ROLE_KNOWLEDGE_INVENTORY_PHRASE, &cleaned)
 }
 
 fn stable_variant_index(tag: &str, prompt: &str, count: usize) -> usize {

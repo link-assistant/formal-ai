@@ -308,6 +308,29 @@ bump: minor
   enforce it; the `formal_ai_worker.js` mirror carries the same backbone and the
   parity harness proves the worker forms one connected ontology under the single
   `link` root (issue #386).
+- Self-awareness known-facts recognition (`src/solver_handlers/self_awareness.rs`
+  and its `formal_ai_worker.js` mirror) is data-driven too. The "facts" noun, the
+  enumerating interrogatives (what/which/list/show), the second-person attribution
+  of knowing (you know / you have / тебе известно / 你知道 / …), and the complete
+  standalone phrasings that ask what the assistant knows now live as
+  self-describing meanings in `data/seed/meanings-intent.lino` — the shared `fact`
+  noun (reused through its `knowledge` definition rather than duplicated) plus the
+  new `knowledge_inventory_probe`, `assistant_knowing`, and
+  `knowledge_inventory_query` meanings, each `defined_by` the
+  `knowledge`/`inquiry`/`fact` concepts and lexicalised in every supported
+  language. `is_known_fact_query` now composes four semantic roles —
+  `knowledge_inventory_noun` ∧ `knowledge_inventory_interrogative` ∧
+  `knowledge_possession`, or the standalone `knowledge_inventory_phrase` — with one
+  universal algorithm for every language instead of four per-language word
+  conjunctions. Two deliberate consistency refinements follow: Chinese now also
+  requires an explicit second-person marker (你知道/您知道/你有/您有), so a bare
+  noun-only "哪些事实" falls through exactly as the English "which facts" does; and
+  the Russian noun matches clean citation forms (факт/факты) at token boundaries
+  like every other lexicon noun, rather than the former stem-fragment
+  `.contains("факт")`. `self_awareness_language` now detects the language purely by
+  Unicode script range (the Cyrillic range subsumes the former hardcoded
+  second-person pronoun list), and the now-unused `contains_any` helper was
+  removed (issue #386).
 - The prefilled "Report issue" body omits settings already at their shipped
   default (Mode, Status, Diagnostics, Theme, Guess/Follow-up probability,
   Temperature, inference-only Location), folds the worker into the version line
