@@ -826,6 +826,38 @@ bump: minor
   `contains_spelled_arithmetic` / `strip_calculation_wrappers` changes. A new
   parity harness `experiments/issue-386-worker-calc-signal-parity.mjs` pins the
   equivalence (issue #386).
+- The calculator's *trailing*-cue stripper no longer carries a hardcoded suffix
+  list either — completing `strip_calculation_wrappers` (`src/calculation.rs`)
+  and its worker twin `extractArithmeticExpression`
+  (`src/web/formal_ai_worker.js`). The trailing cues a calculation prompt may
+  carry split into two self-describing meanings in
+  `data/seed/meanings-calculator.lino`: `calculation_result_query`
+  (`defined_by` `action` + `inquiry`, role `calculation_result_query_cue` — the
+  equals word or sign, the how-much-is-it question, and the head-final
+  do-the-calculation imperative: equal / equals / = / равно / 是多少 / 等于多少 /
+  等于几 / कितना है / क्या है / की गणना करें) and `politeness` (`defined_by`
+  `property`, role `politeness_cue` — the courtesy tail that carries no task
+  content: please / for me / пожалуйста / कृपया / 请). A new
+  `calculation_wrapper_suffixes` helper walks the two roles via
+  `Lexicon::words_for_role` and rebuilds each surface into a strip suffix
+  following its script — CJK surfaces strip as-is (no inter-word spaces), a
+  pure-symbol surface like the equals sign strips both bare and on a word
+  boundary (so a compact `2*2+2=` is recognised), and every other surface gains
+  a leading space so the cue strips only on a word boundary — replacing the
+  former thirteen-element Rust array and the eleven-regex worker array (two new
+  roles `ROLE_CALCULATION_RESULT_QUERY_CUE` / `ROLE_POLITENESS_CUE` in
+  `src/seed/roles.rs` name the concepts). The conversion is byte-faithful to the
+  former arrays for every English and Russian case and adds the bare-`=` strip
+  to the worker so the two engines now agree on `2*2+2=` (the old worker left the
+  sign in place); because the cues now exist in every language, the new ru
+  `равно`, hi `कृपया` and zh `请` surfaces — needed for the every-language
+  invariant — strip where the old arrays left them, while the Hindi cues gain a
+  required leading space so they too strip only on a boundary. A vm parity
+  harness (`experiments/issue-386-worker-calc-suffix-parity.mjs`) reconstructs
+  the pre-conversion regexes and proves the worker is byte-identical to them
+  across the English/Russian/Chinese cases, applies the bare-`=` consistency fix
+  and the three multilingual generalizations, and composes prefix-plus-suffix
+  stripping — all green (issue #386).
 
 ### Fixed
 - The follow-up "Отмени сортировку" ("cancel the sorting") no longer returns

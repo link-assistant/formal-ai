@@ -726,6 +726,25 @@ pub const ROLE_CALCULATION_BASIS_REFERENCE: &str = "calculation_basis_reference"
 /// word boundary, CJK surfaces strip as-is — and removes it from the front of a
 /// prompt. Read by the Rust solver and the JS worker.
 pub const ROLE_CALCULATION_REQUEST_CUE: &str = "calculation_request_cue";
+/// Semantic role: a trailing cue that asks for the computed result of the
+/// preceding arithmetic expression.
+///
+/// An equals/how-much-is-it query ("equals", "=", "是多少", "कितना है", …) or a
+/// head-final "do the calculation" imperative ("की गणना करें") that trails the
+/// expression. `strip_calculation_wrappers` rebuilds each surface into a strip
+/// suffix — space-delimited scripts gain a leading space so the cue strips only
+/// on a word boundary, CJK surfaces strip as-is, and the bare equals sign also
+/// matches with no leading space — and removes it from the end of a prompt so the
+/// bare expression remains. Carried by `calculation_result_query`; read by the
+/// Rust solver and the JS worker.
+pub const ROLE_CALCULATION_RESULT_QUERY_CUE: &str = "calculation_result_query_cue";
+/// Semantic role: a politeness or courtesy marker that softens a request.
+///
+/// A please/for-me style tail ("please", "for me", "пожалуйста", "कृपया", "请")
+/// that carries no task content. `strip_calculation_wrappers` removes it from the
+/// end of a calculation prompt so the bare expression remains. Carried by
+/// `politeness`; read by the Rust solver and the JS worker.
+pub const ROLE_POLITENESS_CUE: &str = "politeness_cue";
 /// Semantic role: the interrogative word that asks for a cause or reason.
 ///
 /// "why", "почему", "क्यों", "为什么" — the bare cause-asking word, with no

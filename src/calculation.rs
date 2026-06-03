@@ -531,6 +531,40 @@ pub fn interpretation_statements(interpretations: &[PromptInterpretation]) -> St
         .join("\n")
 }
 
+/// Build the trailing strip suffixes for [`strip_calculation_wrappers`] from the
+/// seed.
+///
+/// Issue #386: the trailing cues a calculation prompt may carry — a result query
+/// ("equals", "=", "是多少", "की गणना करें") and a politeness marker ("please",
+/// "пожалуйста", "请") — live in the `calculation_result_query` and `politeness`
+/// meanings, not a literal array. Each surface is rebuilt into a strip suffix
+/// following its script: CJK surfaces strip as-is because those scripts have no
+/// inter-word spaces; a pure-symbol surface like the equals sign strips both bare
+/// and on a word boundary (so a compact `2*2+2=` is recognised); every other
+/// surface gains a leading space so the cue strips only on a word boundary. The
+/// suffix loop in [`strip_calculation_wrappers`] runs to a fixpoint, so the set —
+/// not its order — determines the result.
+fn calculation_wrapper_suffixes() -> Vec<String> {
+    let lexicon = seed::lexicon();
+    let mut suffixes = Vec::new();
+    for role in [
+        seed::ROLE_CALCULATION_RESULT_QUERY_CUE,
+        seed::ROLE_POLITENESS_CUE,
+    ] {
+        for surface in lexicon.words_for_role(role) {
+            if crate::coding::contains_cjk(&surface) {
+                suffixes.push(surface);
+            } else if !surface.chars().any(char::is_alphabetic) {
+                suffixes.push(format!(" {surface}"));
+                suffixes.push(surface);
+            } else {
+                suffixes.push(format!(" {surface}"));
+            }
+        }
+    }
+    suffixes
+}
+
 fn strip_calculation_wrappers(prompt: &str) -> (String, bool, Vec<PromptInterpretation>) {
     // Issue #386: the calculation request cues (imperatives like "calculate" /
     // "посчитай" and question openers like "what is" / "сколько будет") live in
@@ -553,21 +587,7 @@ fn strip_calculation_wrappers(prompt: &str) -> (String, bool, Vec<PromptInterpre
         })
         .collect();
     let prefixes: Vec<&str> = cue_prefixes.iter().map(String::as_str).collect();
-    let suffixes = [
-        " equal",
-        " equals",
-        " =",
-        "=",
-        " please",
-        " for me",
-        " пожалуйста",
-        "是多少",
-        "等于多少",
-        "等于几",
-        "कितना है",
-        "क्या है",
-        "की गणना करें",
-    ];
+    let suffixes = calculation_wrapper_suffixes();
 
     let mut working = trim_prompt_punctuation(prompt).to_owned();
     let mut explicit = false;

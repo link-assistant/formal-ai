@@ -1533,6 +1533,8 @@ const ARITHMETIC_WORD_TOKENS = new Map([
 const ROLE_ARITHMETIC_OPERATOR_WORD = "arithmetic_operator_word";
 const ROLE_CARDINAL_NUMBER_WORD = "cardinal_number_word";
 const ROLE_CALCULATION_REQUEST_CUE = "calculation_request_cue";
+const ROLE_CALCULATION_RESULT_QUERY_CUE = "calculation_result_query_cue";
+const ROLE_POLITENESS_CUE = "politeness_cue";
 
 const PERCENT_OF_CURRENCY_CODES = new Map([
   ["$", "USD"],
@@ -2490,26 +2492,35 @@ function extractArithmeticExpression(prompt) {
     }
   }
   working = working.replace(/[?.!]+$/g, "").trim();
-  const suffixes = [
-    /\s+equals?$/i,
-    /\s+=$/g,
-    /\s+please$/i,
-    /\s+for me$/i,
-    /\s+пожалуйста$/i,
-    /\s*是多少$/,
-    /\s*等于多少$/,
-    /\s*等于几$/,
-    /\s*कितना है$/,
-    /\s*क्या है$/,
-    /\s*की गणना करें$/,
-  ];
+  // Issue #386: the trailing calculation cues come from the
+  // calculation_result_query and politeness meanings by role, not a literal
+  // array of regexes. Each surface is rebuilt into a strip suffix following its
+  // script — CJK surfaces strip as-is because those scripts have no inter-word
+  // spaces; a pure-symbol surface like the equals sign strips both bare and on a
+  // word boundary (so a compact "2*2+2=" is recognised); every other surface
+  // gains a leading space so the cue strips only on a word boundary. Mirrors
+  // calculation_wrapper_suffixes in src/calculation.rs.
+  const suffixes = [];
+  for (const role of [ROLE_CALCULATION_RESULT_QUERY_CUE, ROLE_POLITENESS_CUE]) {
+    for (const surface of wordsForRole(role)) {
+      if (containsCjk(surface)) {
+        suffixes.push(surface);
+      } else if (!/\p{L}/u.test(surface)) {
+        suffixes.push(` ${surface}`);
+        suffixes.push(surface);
+      } else {
+        suffixes.push(` ${surface}`);
+      }
+    }
+  }
   changed = true;
   while (changed) {
     changed = false;
     for (const suffix of suffixes) {
-      const next = working.replace(suffix, "").trim();
-      if (next !== working) {
-        working = next;
+      // Mirror strip_suffix_case_insensitive in src/calculation.rs: a
+      // case-insensitive endsWith followed by trimming the trailing whitespace.
+      if (working.toLowerCase().endsWith(suffix)) {
+        working = working.slice(0, working.length - suffix.length).trim();
         changed = true;
         break;
       }
@@ -14217,6 +14228,55 @@ const MEANINGS_LINO = [
   '        description "Hindi polite imperative (romanized kripya ganana karen, please calculate); a calculation_request_cue stripped from the front of a prompt on a word boundary."',
   '      word "गणना करें"',
   '        description "Hindi imperative (romanized ganana karen, do the calculation); a calculation_request_cue stripped from the front of a prompt on a word boundary."',
+  '  meaning "politeness"',
+  '    gloss "a politeness or courtesy marker that softens a request without adding any task content, such as please, for me, пожалуйста, कृपया, or 请. strip_calculation_wrappers removes these markers from the end of a calculation prompt so the bare expression remains. Each surface is rebuilt into a strip suffix: space-delimited scripts gain a leading space so the cue strips only on a word boundary, while CJK surfaces strip as-is because those scripts have no inter-word spaces. Defined as a property of a request — a quality it carries rather than its content."',
+  '    wiktionary "politeness"',
+  '    defined_by "property"',
+  '    role "politeness_cue"',
+  '    lexeme "en"',
+  '      word "please"',
+  '        description "English courtesy word that softens a request; a politeness_cue stripped from the end of a prompt on a word boundary."',
+  '      word "for me"',
+  '        description "English courtesy phrase (do this for me) that softens a request; a politeness_cue stripped from the end of a prompt on a word boundary."',
+  '    lexeme "ru"',
+  '      word "пожалуйста"',
+  '        description "Russian courtesy word (romanized pozhaluysta, please); a politeness_cue stripped from the end of a prompt on a word boundary."',
+  '    lexeme "hi"',
+  '      word "कृपया"',
+  '        description "Hindi courtesy word (romanized kripya, please); a politeness_cue stripped from the end of a prompt on a word boundary."',
+  '    lexeme "zh"',
+  '      word "请"',
+  '        description "Chinese courtesy word (pinyin qing, please); a politeness_cue stripped from the end as a substring since Chinese has no inter-word spaces."',
+  '  meaning "calculation_result_query"',
+  '    gloss "a trailing cue that asks for the computed result of the preceding arithmetic expression, whether an equals word or sign (equal, equals, =, равно), a how-much-is-it question (是多少, 等于多少, कितना है, क्या है), or a head-final do-the-calculation imperative (की गणना करें). strip_calculation_wrappers removes these cues from the end of a prompt so the bare expression remains. Each surface is rebuilt into a strip suffix: space-delimited scripts gain a leading space so the cue strips only on a word boundary, the bare equals sign also strips with no leading space so a compact 2*2+2= is recognised, and CJK surfaces strip as-is because those scripts have no inter-word spaces. Defined as both an action and an inquiry — it both invokes the calculation and asks for its value."',
+  '    wiktionary "equal"',
+  '    defined_by "action"',
+  '    defined_by "inquiry"',
+  '    role "calculation_result_query_cue"',
+  '    lexeme "en"',
+  '      word "equal"',
+  '        description "English equals word asking for the value of the preceding expression; a calculation_result_query_cue stripped from the end of a prompt on a word boundary."',
+  '      word "equals"',
+  '        description "English equals word (third person) asking for the value of the preceding expression; a calculation_result_query_cue stripped from the end of a prompt on a word boundary."',
+  '      word "="',
+  '        description "The equals sign; the script-independent symbol surface that asks for the value of the preceding expression, a calculation_result_query_cue stripped from the end of a prompt both bare (so a compact 2*2+2= is recognised) and on a word boundary."',
+  '    lexeme "ru"',
+  '      word "равно"',
+  '        description "Russian equals word (romanized ravno, equals); a calculation_result_query_cue stripped from the end of a prompt on a word boundary."',
+  '    lexeme "zh"',
+  '      word "是多少"',
+  '        description "Chinese question tail (pinyin shi duoshao, is how much); a calculation_result_query_cue stripped from the end as a substring since Chinese has no inter-word spaces."',
+  '      word "等于多少"',
+  '        description "Chinese question tail (pinyin dengyu duoshao, equals how much); a calculation_result_query_cue stripped from the end as a substring since Chinese has no inter-word spaces."',
+  '      word "等于几"',
+  '        description "Chinese question tail (pinyin dengyu ji, equals how many); a calculation_result_query_cue stripped from the end as a substring since Chinese has no inter-word spaces."',
+  '    lexeme "hi"',
+  '      word "कितना है"',
+  '        description "Hindi question tail (romanized kitna hai, how much is it); a calculation_result_query_cue stripped from the end of a prompt on a word boundary."',
+  '      word "क्या है"',
+  '        description "Hindi question tail (romanized kya hai, what is it); a calculation_result_query_cue stripped from the end of a prompt on a word boundary."',
+  '      word "की गणना करें"',
+  '        description "Hindi head-final imperative (romanized ki ganana karen, do the calculation of); a calculation_result_query_cue stripped from the end of a prompt on a word boundary."',
   "meanings",
   '  meaning "knowledge_relation"',
   '    gloss "a relation in the knowledge base that maps a subject to a value; the genus of every fact-query relation below"',
