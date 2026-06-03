@@ -577,3 +577,19 @@ pub const ROLE_WHO_QUESTION_LEAD: &str = "who_question_lead";
 /// interrogative last, detected with a suffix match. Carried by
 /// `who_is_question`; queried as suffix literals.
 pub const ROLE_WHO_QUESTION_TAIL: &str = "who_question_tail";
+/// Semantic role: a crude taunt asking whether the assistant performed a bodily
+/// action it cannot perform.
+///
+/// Russian inflections of сосать, the English interrogative, and the Hindi and
+/// Chinese equivalents are matched as raw substrings. Content-policy screening
+/// refuses any surface that is also vulgar before this role is read; the rest
+/// receive a factual no-physical-body reply. Carried by `physical_action_query`;
+/// read by the Rust solver and the JS worker.
+pub const ROLE_PHYSICAL_ACTION_TRIGGER: &str = "physical_action_trigger";
+/// Semantic role: the opening line of the Russian circular-joke idiom.
+///
+/// The calque buy an elephant in every supported language is matched as a raw
+/// substring so the assistant recognises the idiom instead of returning an
+/// unknown prompt. Carried by `circular_joke_idiom`; read by the Rust solver and
+/// the JS worker.
+pub const ROLE_CIRCULAR_JOKE_PHRASE: &str = "circular_joke_phrase";
