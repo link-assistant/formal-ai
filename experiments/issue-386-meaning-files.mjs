@@ -28,6 +28,7 @@ export const MEANING_FILES = [
   "data/seed/meanings-translation.lino",
   "data/seed/meanings-ontology.lino",
   "data/seed/meanings-behavior-rules.lino",
+  "data/seed/meanings-proof.lino",
 ];
 
 // Authoritative per-line JS string serializer (house quote style, matching the

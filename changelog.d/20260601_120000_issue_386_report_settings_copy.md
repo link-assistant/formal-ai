@@ -366,6 +366,40 @@ bump: minor
   rejects content-summary and unrelated prompts, routes the four pinned
   with-history cases to `summarize_conversation`, and honours the empty-history
   turn gate (issue #386).
+- The remaining user-intent recognisers (`src/solver_handlers/user_intent.rs`
+  and its `formal_ai_worker.js` mirror) are data-driven too — proof requests,
+  who-is questions, and the prior-turn web-search signal. A new self-describing
+  seed file (`data/seed/meanings-proof.lino`) defines five meanings: `prove`
+  (carrying both the clause-initial `proof_directive` bare verbs — prove / proof
+  / докажи / доказать / … — and the `proof_claim_scaffold` prefixes that strip
+  the claim out of "prove that …" / "докажи что …" / "साबित करो कि …" / "证明…",
+  separated by slot within the one meaning), `proof_request_frame` (the English
+  `proof_request_lead` frames that need no *that* clause — "can you prove …",
+  "give me a proof of …"), `proof_assertion` (the mid-prompt `proof_marker`
+  substrings in every language), and the `godel` / `determinism` proof concepts
+  (`proof_concept_godel` / `proof_concept_determinism`); the who-is surfaces move
+  into a `who_is_question` meaning in `data/seed/meanings-intent.lino` (the
+  head-initial `who_question_lead` prefix — "who is …", "кто такой …" — and the
+  head-final `who_question_tail` suffix — "… कौन है", "…是谁"); and the
+  prior-turn signal becomes a `web_search_mention` meaning in
+  `data/seed/meanings-web-search.lino` carrying the raw `web_search_history_signal`
+  substrings. `is_proof_request`, `extract_claim_from_prompt`, `is_who_question`,
+  the Goedel/determinism guards, and `prior_history_mentions_web_search` now ask
+  the lexicon for those roles — bucketing each role's forms by `WordForm::slot()`
+  so the clause-initial verb-boundary check, the first-matching-prefix claim
+  extraction, and the head-initial/head-final who-is split are all derived from
+  the data — instead of the former hardcoded per-language word arrays; the four
+  generic affix helpers shared with the web-search cluster
+  (`search{Prefix,Suffix,Bare,Source}Literals`) are renamed to the
+  universal `{prefix,suffix,bare,source}Literals` now that proof and who-is reuse
+  them. Reasoning over the concept also unified the Rust proof-marker behaviour
+  with the worker's (it gained three Russian mid-sentence markers it had lacked),
+  with no test regressing. A parity harness
+  (`experiments/issue-386-worker-user-intent-parity.mjs`) loads the committed
+  baseline and the working-tree worker into separate sandboxes and proves the
+  four recognisers return byte-identical results across a 50-prompt multilingual
+  matrix — including the prover/proven/improve/approve boundary negatives and
+  claim extraction with leading noise — 221 assertions, all green (issue #386).
 - The prefilled "Report issue" body omits settings already at their shipped
   default (Mode, Status, Diagnostics, Theme, Guess/Follow-up probability,
   Temperature, inference-only Location), folds the worker into the version line

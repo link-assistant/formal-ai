@@ -4786,14 +4786,7 @@ function historyMentionsWebSearch(history) {
   if (!Array.isArray(history)) return false;
   return history.some((turn) => {
     const content = String(turn && turn.content ? turn.content : "").toLowerCase();
-    return (
-      content.includes("duckduckgo") ||
-      content.includes("web search") ||
-      content.includes("search the internet") ||
-      content.includes("веб-поиск") ||
-      content.includes("веб поиск") ||
-      content.includes("интернет")
-    );
+    return lexiconMentionsRoleSubstring(ROLE_WEB_SEARCH_HISTORY_SIGNAL, content);
   });
 }
 
@@ -7214,73 +7207,26 @@ function startsWithProofVerb(normalized, verb) {
 function hasProofRequestShape(normalized) {
   const text = String(normalized || "").trim();
   if (!text) return false;
+  // A proof request is recognised structurally from the meaning lexicon, not
+  // from words baked into this file: a clause-initial bare directive verb
+  // (proof_directive, with the verb-boundary check), an English request-frame
+  // lead that needs no `that` clause (proof_request_lead), or a mid-prompt proof
+  // assertion marker in any language (proof_marker).
   return (
-    startsWithProofVerb(text, "prove") ||
-    startsWithProofVerb(text, "proof") ||
-    text.startsWith("can you prove") ||
-    text.startsWith("could you prove") ||
-    text.startsWith("please prove") ||
-    text.startsWith("give me a proof") ||
-    text.startsWith("give a proof") ||
-    text.startsWith("show that ") ||
-    text.startsWith("demonstrate that ") ||
-    text.includes(" prove that ") ||
-    text.includes(" proof of ") ||
-    startsWithProofVerb(text, "докажи") ||
-    startsWithProofVerb(text, "докажите") ||
-    startsWithProofVerb(text, "доказать") ||
-    startsWithProofVerb(text, "доказательство") ||
-    text.includes(" докажи ") ||
-    text.includes(" докажите ") ||
-    text.includes(" доказать ") ||
-    text.includes(" доказательство ") ||
-    text.includes("साबित कर") ||
-    text.includes("साबित कीजिए") ||
-    text.includes("साबित कीजिये") ||
-    text.includes("सिद्ध कर") ||
-    text.includes("सिद्ध कीजिए") ||
-    text.includes("सिद्ध कीजिये") ||
-    text.includes("प्रमाण") ||
-    text.includes("证明") ||
-    text.includes("證明")
+    bareLiterals(ROLE_PROOF_DIRECTIVE).some((verb) => startsWithProofVerb(text, verb)) ||
+    prefixLiterals(ROLE_PROOF_REQUEST_LEAD).some((lead) => text.startsWith(lead)) ||
+    lexiconMentionsRoleSubstring(ROLE_PROOF_MARKER, text)
   );
 }
 
 function extractProofClaim(normalized) {
   const trimmed = String(normalized || "").trim();
-  const prefixes = [
-    "prove that ",
-    "prove ",
-    "proof of ",
-    "proof that ",
-    "show that ",
-    "demonstrate that ",
-    "demonstrate ",
-    "can you prove that ",
-    "can you prove ",
-    "could you prove that ",
-    "could you prove ",
-    "please prove that ",
-    "please prove ",
-    "give me a proof of ",
-    "give me a proof that ",
-    "give a proof of ",
-    "give a proof that ",
-    "докажи что ",
-    "докажите что ",
-    "доказать что ",
-    "докажите ",
-    "докажи ",
-    "доказать ",
-    "доказательство ",
-    "साबित करो कि ",
-    "साबित कीजिए कि ",
-    "साबित कर ",
-    "सिद्ध कीजिए कि ",
-    "सिद्ध करो कि ",
-    "证明",
-    "證明",
-  ];
+  // The claim scaffolds (each ending in the … slot) come from the
+  // proof_claim_scaffold role in declaration order, so the first matching
+  // prefix wins exactly as before — every that/что/कि variant is listed ahead
+  // of its shorter sibling in the lexicon. Comma variants are absent: the
+  // normaliser rewrites the comma to a space, making them unreachable here.
+  const prefixes = prefixLiterals(ROLE_PROOF_CLAIM_SCAFFOLD);
   for (const prefix of prefixes) {
     if (trimmed.startsWith(prefix)) {
       return stripProofClaimNoise(trimmed.slice(prefix.length));
@@ -8225,18 +8171,13 @@ function suggestNameCorrection(term) {
 }
 
 function isWhoIsPrompt(normalized) {
+  // "who is …" detection reasons over the who_question meaning: a language
+  // whose marker leads the name occupies the who_question_lead prefix slot
+  // (English who is …, Russian кто такой …), while one whose marker trails it
+  // occupies the who_question_tail suffix slot (Hindi … कौन है, Chinese …是谁).
   return (
-    normalized.startsWith("who is ") ||
-    normalized.startsWith("who was ") ||
-    normalized.startsWith("who are ") ||
-    normalized.startsWith("кто такой ") ||
-    normalized.startsWith("кто такая ") ||
-    normalized.startsWith("кто это ") ||
-    normalized.startsWith("кто ") ||
-    normalized.endsWith(" कौन है") ||
-    normalized.endsWith(" कौन हैं") ||
-    normalized.endsWith("是谁") ||
-    normalized.endsWith("是誰")
+    prefixLiterals(ROLE_WHO_QUESTION_LEAD).some((lead) => normalized.startsWith(lead)) ||
+    suffixLiterals(ROLE_WHO_QUESTION_TAIL).some((tail) => normalized.endsWith(tail))
   );
 }
 
@@ -16795,6 +16736,38 @@ const MEANINGS_LINO = [
   '        description "Chinese phrase (pinyin zongjie yixia) asking the assistant to do a quick summary; an objectless courtesy surface; simplified surface."',
   '      word "概括一下"',
   '        description "Chinese phrase (pinyin gaikuo yixia) asking the assistant to do a quick sum-up; an objectless courtesy surface; simplified surface."',
+  '  meaning "who_is_question"',
+  '    gloss "a who-is question about a person or named entity — who is X, кто такой X, X कौन है, X是谁. It is recognised so the assistant can report a knowledge-base miss and offer a typo correction instead of inventing a biography. Two roles split by slot encode the word order: who_question_lead fronts the interrogative (English and Russian, head-initial) and is detected with starts_with, while who_question_tail postposes it (Hindi and Chinese, head-final) and is detected with ends_with. The entity itself is pulled out separately by the concept-query extractor, so the order within each role does not matter — any matching lead or tail is enough."',
+  '    wiktionary "who"',
+  '    defined_by "inquiry"',
+  '    role "who_question_lead"',
+  '    role "who_question_tail"',
+  '    lexeme "en"',
+  '      word "who is …"',
+  '        description "English interrogative lead; starts_with who is (trailing space), the entity follows."',
+  '      word "who was …"',
+  '        description "English interrogative lead; starts_with who was (trailing space), the entity follows."',
+  '      word "who are …"',
+  '        description "English interrogative lead; starts_with who are (trailing space), the entity follows."',
+  '    lexeme "ru"',
+  '      word "кто такой …"',
+  '        description "Russian interrogative lead (romanized kto takoy); the masculine who-is frame, the entity follows."',
+  '      word "кто такая …"',
+  '        description "Russian interrogative lead (romanized kto takaya); the feminine who-is frame, the entity follows."',
+  '      word "кто это …"',
+  '        description "Russian interrogative lead (romanized kto eto, who is this); the entity follows."',
+  '      word "кто …"',
+  '        description "Russian bare interrogative lead (romanized kto, who); the entity follows."',
+  '    lexeme "hi"',
+  '      word "… कौन है"',
+  '        description "Hindi interrogative tail (romanized kaun hai, who is); head-final, the entity precedes; ends_with the tail (leading space)."',
+  '      word "… कौन हैं"',
+  '        description "Hindi polite interrogative tail (romanized kaun hain, who are); head-final, the entity precedes."',
+  '    lexeme "zh"',
+  '      word "…是谁"',
+  '        description "Chinese interrogative tail (pinyin shi shei, is who); head-final, the entity precedes; simplified surface."',
+  '      word "…是誰"',
+  '        description "Chinese interrogative tail (pinyin shi shei, is who); head-final, the entity precedes; traditional surface."',
   "meanings",
   '  meaning "mechanism_inquiry"',
   '    gloss "an inquiry into how something works — its internal mechanism or operating principle. The concept a how-it-works prompt expresses, independent of the language or phrasing used. Each surface marks the subject position with the ellipsis … (U+2026): no ellipsis is a bare phrase, a trailing ellipsis is a prefix surface, a leading ellipsis is a suffix surface, and a middle ellipsis is a circumfix surface."',
@@ -17613,6 +17586,25 @@ const MEANINGS_LINO = [
   '        description "Chinese verb (pinyin zhaodao, to find) as a bare substring marker detecting a weak search action that needs a reference-source signal."',
   '      word "找到…"',
   '        description "Chinese imperative prefix surface (pinyin zhaodao); the query follows the verb."',
+  '  meaning "web_search_mention"',
+  '    gloss "a mention of web search inside an earlier conversation turn — not the current prompt — used to decide whether a terse follow-up such as search it or найди это refers back to a web search the assistant already offered. Unlike the other web-search markers it is tested against the raw, lowercased text of a prior turn (not the normalised prompt), so each surface is stored exactly as it appears, including the hyphen in веб-поиск; all forms are bare substrings."',
+  '    wiktionary "search"',
+  '    defined_by "web_search"',
+  '    role "web_search_history_signal"',
+  '    lexeme "en"',
+  '      word "duckduckgo"',
+  '        description "English proper noun naming the DuckDuckGo search engine; a raw lowercased substring signalling that a prior turn performed a web search."',
+  '      word "web search"',
+  '        description "English phrase (web search); a raw lowercased substring signalling that a prior turn performed a web search."',
+  '      word "search the internet"',
+  '        description "English phrase (search the internet); a raw lowercased substring signalling that a prior turn performed a web search."',
+  '    lexeme "ru"',
+  '      word "веб-поиск"',
+  '        description "Russian compound (romanized veb-poisk, web search), hyphenated; a raw lowercased substring signalling that a prior turn performed a web search."',
+  '      word "веб поиск"',
+  '        description "Russian phrase (romanized veb poisk, web search), spaced; a raw lowercased substring signalling that a prior turn performed a web search."',
+  '      word "интернет"',
+  '        description "Russian noun (romanized internet); a raw lowercased substring signalling that a prior turn referenced the internet."',
   "meanings",
   '  meaning "explicit_web_search_command"',
   '    gloss "an explicit, fully spelled-out web-search command whose topic sits at the very end — search the web for X, find information about X, найди в интернете X. It is a specialisation of web_search in which the source and the act are stated outright, so the recogniser does not have to infer them: it strips the lead-in from the front of the prompt and keeps whatever follows as the query. Every surface is a prefix surface ending with the ellipsis … (U+2026); the literal before the slot is the lead-in to strip (it keeps its trailing space so the boundary is exact), and the remainder is the search topic. The longer, more specific lead-ins are written before the shorter ones so that, for example, find detailed information about … wins over find information about …. English and Russian carry the original lead-ins verbatim; Hindi and Chinese add natural verb-initial commands so the concept is complete in every supported language."',
@@ -19491,6 +19483,195 @@ const MEANINGS_LINO = [
   '        description "Chinese noun phrase (pinyin xingwei guize, behavior rules) — the bare compound recognised as a standing list request."',
   '      word "列出行为规则"',
   '        description "Chinese imperative phrase (pinyin liechu xingwei guize, list the behavior rules)."',
+  "meanings",
+  '  meaning "prove"',
+  '    gloss "the act of establishing a claim by formal argument — to prove, to demonstrate, or to give a proof. It is both an inquiry (the user asks the assistant to settle a truth) and an action (the assistant carries out a proof). Two roles share this meaning, separated by slot. The proof_directive bare forms are the imperative verbs (prove, докажи, …) detected clause-initially with a verb boundary, so prover and proven never false-match. The proof_claim_scaffold prefix forms end in … and are stripped to extract the claim the user wants proved; their declaration order is significant because the extractor takes the first matching prefix, so each that variant is listed before its shorter sibling. Hindi and Chinese carry no bare directive — their proof is detected by the proof_assertion substring markers — but they still carry claim scaffolds so extraction works in every language."',
+  '    wiktionary "prove"',
+  '    defined_by "inquiry"',
+  '    defined_by "action"',
+  '    role "proof_directive"',
+  '    role "proof_claim_scaffold"',
+  '    lexeme "en"',
+  '      word "prove"',
+  '        description "English verb (to prove); a bare proof directive detected clause-initially with a verb boundary so prover and proven do not match."',
+  '      word "proof"',
+  '        description "English noun (a proof); a bare proof directive detected clause-initially with a verb boundary."',
+  '      word "prove that …"',
+  '        description "English scaffold prefix; the claim follows prove that, listed before the shorter prove so that is not kept in the claim."',
+  '      word "prove …"',
+  '        description "English scaffold prefix; the claim follows the bare verb prove."',
+  '      word "proof of …"',
+  '        description "English scaffold prefix; the claim follows proof of."',
+  '      word "proof that …"',
+  '        description "English scaffold prefix; the claim follows proof that."',
+  '      word "show that …"',
+  '        description "English scaffold prefix; the claim follows show that."',
+  '      word "demonstrate that …"',
+  '        description "English scaffold prefix; the claim follows demonstrate that, listed before the shorter demonstrate."',
+  '      word "demonstrate …"',
+  '        description "English scaffold prefix; the claim follows the bare verb demonstrate."',
+  '      word "can you prove that …"',
+  '        description "English polite scaffold prefix; the claim follows can you prove that, listed before the shorter can you prove."',
+  '      word "can you prove …"',
+  '        description "English polite scaffold prefix; the claim follows can you prove."',
+  '      word "could you prove that …"',
+  '        description "English polite scaffold prefix; the claim follows could you prove that, before the shorter could you prove."',
+  '      word "could you prove …"',
+  '        description "English polite scaffold prefix; the claim follows could you prove."',
+  '      word "please prove that …"',
+  '        description "English polite scaffold prefix; the claim follows please prove that, before the shorter please prove."',
+  '      word "please prove …"',
+  '        description "English polite scaffold prefix; the claim follows please prove."',
+  '      word "give me a proof of …"',
+  '        description "English scaffold prefix; the claim follows give me a proof of."',
+  '      word "give me a proof that …"',
+  '        description "English scaffold prefix; the claim follows give me a proof that."',
+  '      word "give a proof of …"',
+  '        description "English scaffold prefix; the claim follows give a proof of."',
+  '      word "give a proof that …"',
+  '        description "English scaffold prefix; the claim follows give a proof that."',
+  '    lexeme "ru"',
+  '      word "докажи"',
+  '        description "Russian imperative (romanized dokazhi, prove); a bare proof directive detected clause-initially with a verb boundary."',
+  '      word "докажите"',
+  '        description "Russian polite imperative (romanized dokazhite, prove); a bare proof directive detected clause-initially."',
+  '      word "доказать"',
+  '        description "Russian infinitive (romanized dokazat, to prove); a bare proof directive detected clause-initially."',
+  '      word "доказательство"',
+  '        description "Russian noun (romanized dokazatelstvo, a proof); a bare proof directive detected clause-initially."',
+  '      word "докажи что …"',
+  '        description "Russian scaffold prefix (romanized dokazhi chto); the claim follows, listed before the shorter докажи."',
+  '      word "докажите что …"',
+  '        description "Russian scaffold prefix (romanized dokazhite chto); the claim follows, listed before the shorter докажите."',
+  '      word "доказать что …"',
+  '        description "Russian scaffold prefix (romanized dokazat chto); the claim follows, listed before the shorter доказать."',
+  '      word "докажите …"',
+  '        description "Russian scaffold prefix (romanized dokazhite); the claim follows the polite imperative."',
+  '      word "докажи …"',
+  '        description "Russian scaffold prefix (romanized dokazhi); the claim follows the imperative."',
+  '      word "доказать …"',
+  '        description "Russian scaffold prefix (romanized dokazat); the claim follows the infinitive."',
+  '      word "доказательство …"',
+  '        description "Russian scaffold prefix (romanized dokazatelstvo); the claim follows the noun."',
+  '    lexeme "hi"',
+  '      word "साबित करो कि …"',
+  '        description "Hindi scaffold prefix (romanized sabit karo ki); the claim follows."',
+  '      word "साबित कीजिए कि …"',
+  '        description "Hindi polite scaffold prefix (romanized sabit kijie ki); the claim follows."',
+  '      word "साबित कर …"',
+  '        description "Hindi scaffold prefix (romanized sabit kar); the claim follows the bare verb."',
+  '      word "सिद्ध कीजिए कि …"',
+  '        description "Hindi polite scaffold prefix (romanized siddh kijie ki); the claim follows."',
+  '      word "सिद्ध करो कि …"',
+  '        description "Hindi scaffold prefix (romanized siddh karo ki); the claim follows."',
+  '    lexeme "zh"',
+  '      word "证明…"',
+  '        description "Chinese verb (pinyin zhengming, to prove) in simplified script; scaffold prefix, the claim follows."',
+  '      word "證明…"',
+  '        description "Chinese verb (pinyin zhengming, to prove) in traditional script; scaffold prefix, the claim follows."',
+  '  meaning "proof_request_frame"',
+  '    gloss "a broader English request frame that asks for a proof without naming the claim with a that clause — can you prove, please prove, give me a proof, show that, demonstrate that. These leads are detected by a plain starts_with (no verb boundary, no claim extraction), so a prompt like can you prove the riemann hypothesis is recognised even though it carries no that. Russian proof requests are caught by the prove directive verbs and Hindi/Chinese by the proof_assertion markers, so this frame is English-only on purpose; adding the other languages here would duplicate those surfaces."',
+  '    wiktionary "proof"',
+  '    defined_by "inquiry"',
+  '    defined_by "prove"',
+  '    role "proof_request_lead"',
+  '    lexeme "en"',
+  '      word "can you prove…"',
+  '        description "English request-frame lead; starts_with can you prove (no trailing space) so it also fires without a following that."',
+  '      word "could you prove…"',
+  '        description "English request-frame lead; starts_with could you prove (no trailing space)."',
+  '      word "please prove…"',
+  '        description "English request-frame lead; starts_with please prove (no trailing space)."',
+  '      word "give me a proof…"',
+  '        description "English request-frame lead; starts_with give me a proof (no trailing space)."',
+  '      word "give a proof…"',
+  '        description "English request-frame lead; starts_with give a proof (no trailing space)."',
+  '      word "show that …"',
+  '        description "English request-frame lead; starts_with show that (with a trailing space)."',
+  '      word "demonstrate that …"',
+  '        description "English request-frame lead; starts_with demonstrate that (with a trailing space)."',
+  '  meaning "proof_assertion"',
+  '    gloss "a proof verb or noun appearing anywhere inside a prompt, not just clause-initially — the mid-sentence assertion that a proof is wanted. Its surfaces are matched as raw substrings (not whole tokens), so the English and Russian forms are stored space-wrapped to enforce a word boundary while the Devanagari and Han forms match bare. The four Russian markers (докажи, докажите, доказать, доказательство) keep the Rust solver and the browser worker in lockstep."',
+  '    wiktionary "proof"',
+  '    defined_by "inquiry"',
+  '    defined_by "prove"',
+  '    role "proof_marker"',
+  '    lexeme "en"',
+  '      word " prove that "',
+  '        description "English space-wrapped substring marker; a proof assertion appearing mid-prompt (… prove that …)."',
+  '      word " proof of "',
+  '        description "English space-wrapped substring marker; a proof assertion appearing mid-prompt (… proof of …)."',
+  '    lexeme "ru"',
+  '      word " докажи "',
+  '        description "Russian space-wrapped substring marker (romanized dokazhi); a proof assertion mid-prompt."',
+  '      word " докажите "',
+  '        description "Russian space-wrapped substring marker (romanized dokazhite); a proof assertion mid-prompt."',
+  '      word " доказать "',
+  '        description "Russian space-wrapped substring marker (romanized dokazat); a proof assertion mid-prompt."',
+  '      word " доказательство "',
+  '        description "Russian space-wrapped substring marker (romanized dokazatelstvo); a proof assertion mid-prompt."',
+  '    lexeme "hi"',
+  '      word "साबित कर"',
+  '        description "Hindi substring marker (romanized sabit kar, prove) matched bare across inflections."',
+  '      word "साबित कीजिए"',
+  '        description "Hindi polite substring marker (romanized sabit kijie, prove)."',
+  '      word "साबित कीजिये"',
+  '        description "Hindi polite substring marker (romanized sabit kijiye, prove), alternate spelling."',
+  '      word "सिद्ध कर"',
+  '        description "Hindi substring marker (romanized siddh kar, prove)."',
+  '      word "सिद्ध कीजिए"',
+  '        description "Hindi polite substring marker (romanized siddh kijie, prove)."',
+  '      word "सिद्ध कीजिये"',
+  '        description "Hindi polite substring marker (romanized siddh kijiye, prove), alternate spelling."',
+  '      word "प्रमाण"',
+  '        description "Hindi noun (romanized praman, proof) matched as a bare substring."',
+  '    lexeme "zh"',
+  '      word "证明"',
+  '        description "Chinese verb (pinyin zhengming, to prove) in simplified script, matched as a bare substring."',
+  '      word "證明"',
+  '        description "Chinese verb (pinyin zhengming, to prove) in traditional script, matched as a bare substring."',
+  '  meaning "godel"',
+  '    gloss "the surname Gödel (Kurt Gödel) and his incompleteness theorems, named inside a proof prompt. When present, the proof engine selects the incompleteness interpretation. Its surfaces are bare substring markers read by the Rust solver; the browser worker embeds the same data but its simpler proof engine does not branch on it."',
+  '    wiktionary "Gödel"',
+  '    defined_by "concept"',
+  '    role "proof_concept_godel"',
+  '    lexeme "en"',
+  '      word "godel"',
+  '        description "English transliteration of the surname Gödel; a bare substring marker steering the proof toward incompleteness."',
+  '      word "gödel"',
+  '        description "Umlaut spelling of the surname Gödel; a bare substring marker for the incompleteness concept."',
+  '    lexeme "ru"',
+  '      word "гёдел"',
+  '        description "Russian transliteration (romanized gyodel) of the surname Gödel; a bare substring marker."',
+  '      word "гёделя"',
+  '        description "Russian genitive (romanized gyodelya) of the surname Gödel; a bare substring marker."',
+  '      word "гедел"',
+  '        description "Russian transliteration without yo (romanized gedel) of the surname Gödel; a bare substring marker."',
+  '    lexeme "hi"',
+  '      word "गोडेल"',
+  '        description "Hindi transliteration (romanized godel) of the surname Gödel; a bare substring marker."',
+  '    lexeme "zh"',
+  '      word "哥德尔"',
+  '        description "Chinese transliteration (pinyin gedeer) of the surname Gödel; a bare substring marker."',
+  '  meaning "determinism"',
+  '    gloss "the concept of determinism — that every state is fixed by prior causes — named inside a proof prompt. When present, the proof engine selects the determinism interpretation. Its surfaces are bare substring markers read by the Rust solver; the browser worker embeds the same data but its simpler proof engine does not branch on it."',
+  '    wiktionary "determinism"',
+  '    defined_by "concept"',
+  '    role "proof_concept_determinism"',
+  '    lexeme "en"',
+  '      word "determinism"',
+  '        description "English noun for determinism; a bare substring marker steering the proof toward the determinism interpretation."',
+  '      word "deterministic"',
+  '        description "English adjective (deterministic); a bare substring marker for the determinism concept."',
+  '    lexeme "ru"',
+  '      word "детерминизм"',
+  '        description "Russian noun (romanized determinizm) for determinism; a bare substring marker."',
+  '    lexeme "hi"',
+  '      word "निर्धारणवाद"',
+  '        description "Hindi noun (romanized nirdharanvad) for determinism; a bare substring marker."',
+  '    lexeme "zh"',
+  '      word "决定论"',
+  '        description "Chinese noun (pinyin juedinglun) for determinism; a bare substring marker."',
 ].join("\n");
 
 // Semantic role: a thing a program produces that a later turn can refer back to
@@ -22439,6 +22620,10 @@ const ROLE_WEB_SEARCH_IMPERATIVE_LEAD = "web_search_imperative_lead";
 const ROLE_WEB_SEARCH_QUERY_LEADING_NOISE = "web_search_query_leading_noise";
 const ROLE_WEB_SEARCH_QUERY_TRAILING_NOISE = "web_search_query_trailing_noise";
 const ROLE_WEB_SEARCH_SOURCE_ONLY = "web_search_source_only";
+// Mention of web search inside a *prior* conversation turn (raw lowercased
+// substring of the turn text, not the normalised prompt). Mirrors
+// ROLE_WEB_SEARCH_HISTORY_SIGNAL in src/seed/roles.rs.
+const ROLE_WEB_SEARCH_HISTORY_SIGNAL = "web_search_history_signal";
 const ROLE_FOLLOWUP_INSTRUCTION_VERB = "followup_instruction_verb";
 const ROLE_CLAUSE_CONTINUATION_MARKER = "clause_continuation_marker";
 const ROLE_RESEARCH_QUESTION_OPENER = "research_question_opener";
@@ -22448,32 +22633,45 @@ const ROLE_RESEARCH_EVALUATION_DOMAIN = "research_evaluation_domain";
 const ROLE_ENUMERATION_REQUEST_OPENER = "enumeration_request_opener";
 const ROLE_ENUMERATION_CONSTRAINT = "enumeration_constraint";
 
+// Issue #386 proof + who-is roles — mirror ROLE_PROOF_* / ROLE_WHO_QUESTION_*
+// in src/seed/roles.rs. Surfaces live in data/seed/meanings-proof.lino and the
+// who_is_question meaning in data/seed/meanings-intent.lino. The proof_directive
+// bare verbs and proof_claim_scaffold prefixes share the `prove` meaning,
+// separated by slot. (The worker's proof engine does not branch on the
+// Goedel/determinism concepts, so those roles are referenced only by Rust.)
+const ROLE_PROOF_DIRECTIVE = "proof_directive";
+const ROLE_PROOF_REQUEST_LEAD = "proof_request_lead";
+const ROLE_PROOF_MARKER = "proof_marker";
+const ROLE_PROOF_CLAIM_SCAFFOLD = "proof_claim_scaffold";
+const ROLE_WHO_QUESTION_LEAD = "who_question_lead";
+const ROLE_WHO_QUESTION_TAIL = "who_question_tail";
+
 // The literal lead-in (form.before, the text before the … slot) of every
 // prefix-slot form of a role, in lexicon declaration order. A meaning's roles
 // apply to all its forms, so keep only the slot we asked for. Mirrors
 // prefix_literals.
-function searchPrefixLiterals(role) {
+function prefixLiterals(role) {
   return roleWordForms(role)
     .filter((form) => form.slot === "prefix")
     .map((form) => form.before);
 }
 // The literal tail (form.after) of every suffix-slot form of a role. Mirrors
 // suffix_literals.
-function searchSuffixLiterals(role) {
+function suffixLiterals(role) {
   return roleWordForms(role)
     .filter((form) => form.slot === "suffix")
     .map((form) => form.after);
 }
 // The surface text of every bare-slot form of a role (drop any prefix/suffix
 // surfaces the same meaning also owns). Mirrors bare_literals.
-function searchBareLiterals(role) {
+function bareLiterals(role) {
   return roleWordForms(role)
     .filter((form) => form.slot === "bare")
     .map((form) => form.text);
 }
 // The distinct surface words of a role, trimmed + lowercased for equality
 // comparison against a cleaned query. Mirrors source_literals (words_for_role).
-function searchSourceLiterals(role) {
+function sourceLiterals(role) {
   const seen = new Set();
   const out = [];
   for (const form of roleWordForms(role)) {
@@ -22492,24 +22690,24 @@ let WEB_SEARCH_MARKERS_CACHE = null;
 function webSearchMarkers() {
   if (WEB_SEARCH_MARKERS_CACHE) return WEB_SEARCH_MARKERS_CACHE;
   WEB_SEARCH_MARKERS_CACHE = {
-    explicitPrefixes: searchPrefixLiterals(ROLE_WEB_SEARCH_EXPLICIT_PREFIX),
-    actionMarkers: searchBareLiterals(ROLE_WEB_SEARCH_ACTION),
-    strongActionMarkers: searchBareLiterals(ROLE_WEB_SEARCH_STRONG_ACTION),
-    signalMarkers: searchBareLiterals(ROLE_WEB_SEARCH_SIGNAL),
-    topicAfterMarkers: searchPrefixLiterals(ROLE_WEB_SEARCH_TOPIC_MARKER),
-    topicBeforeMarkers: searchSuffixLiterals(ROLE_WEB_SEARCH_TOPIC_MARKER),
-    imperativeLeadMarkers: searchPrefixLiterals(ROLE_WEB_SEARCH_IMPERATIVE_LEAD),
-    leadingNoise: searchPrefixLiterals(ROLE_WEB_SEARCH_QUERY_LEADING_NOISE),
-    trailingNoise: searchSuffixLiterals(ROLE_WEB_SEARCH_QUERY_TRAILING_NOISE),
-    sourceOnly: searchSourceLiterals(ROLE_WEB_SEARCH_SOURCE_ONLY),
-    followupVerbs: searchBareLiterals(ROLE_FOLLOWUP_INSTRUCTION_VERB),
-    continuationMarkers: searchBareLiterals(ROLE_CLAUSE_CONTINUATION_MARKER),
-    researchQuestionPrefixes: searchPrefixLiterals(ROLE_RESEARCH_QUESTION_OPENER),
-    researchModifiers: searchBareLiterals(ROLE_RESEARCH_SUPERLATIVE_MODIFIER),
-    researchEvidenceDomains: searchBareLiterals(ROLE_RESEARCH_EVIDENCE_DOMAIN),
-    researchEvaluationDomains: searchBareLiterals(ROLE_RESEARCH_EVALUATION_DOMAIN),
-    enumerationPrefixes: searchPrefixLiterals(ROLE_ENUMERATION_REQUEST_OPENER),
-    enumerationConstraintMarkers: searchBareLiterals(ROLE_ENUMERATION_CONSTRAINT),
+    explicitPrefixes: prefixLiterals(ROLE_WEB_SEARCH_EXPLICIT_PREFIX),
+    actionMarkers: bareLiterals(ROLE_WEB_SEARCH_ACTION),
+    strongActionMarkers: bareLiterals(ROLE_WEB_SEARCH_STRONG_ACTION),
+    signalMarkers: bareLiterals(ROLE_WEB_SEARCH_SIGNAL),
+    topicAfterMarkers: prefixLiterals(ROLE_WEB_SEARCH_TOPIC_MARKER),
+    topicBeforeMarkers: suffixLiterals(ROLE_WEB_SEARCH_TOPIC_MARKER),
+    imperativeLeadMarkers: prefixLiterals(ROLE_WEB_SEARCH_IMPERATIVE_LEAD),
+    leadingNoise: prefixLiterals(ROLE_WEB_SEARCH_QUERY_LEADING_NOISE),
+    trailingNoise: suffixLiterals(ROLE_WEB_SEARCH_QUERY_TRAILING_NOISE),
+    sourceOnly: sourceLiterals(ROLE_WEB_SEARCH_SOURCE_ONLY),
+    followupVerbs: bareLiterals(ROLE_FOLLOWUP_INSTRUCTION_VERB),
+    continuationMarkers: bareLiterals(ROLE_CLAUSE_CONTINUATION_MARKER),
+    researchQuestionPrefixes: prefixLiterals(ROLE_RESEARCH_QUESTION_OPENER),
+    researchModifiers: bareLiterals(ROLE_RESEARCH_SUPERLATIVE_MODIFIER),
+    researchEvidenceDomains: bareLiterals(ROLE_RESEARCH_EVIDENCE_DOMAIN),
+    researchEvaluationDomains: bareLiterals(ROLE_RESEARCH_EVALUATION_DOMAIN),
+    enumerationPrefixes: prefixLiterals(ROLE_ENUMERATION_REQUEST_OPENER),
+    enumerationConstraintMarkers: bareLiterals(ROLE_ENUMERATION_CONSTRAINT),
   };
   return WEB_SEARCH_MARKERS_CACHE;
 }
