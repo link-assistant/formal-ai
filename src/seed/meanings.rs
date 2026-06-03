@@ -244,6 +244,24 @@ impl Lexicon {
             .any(|meaning| meaning.evidenced_in(normalized))
     }
 
+    /// Does `normalized` contain any surface word of any meaning in `role` as a
+    /// raw substring (`str::contains`), ignoring whitespace-token boundaries?
+    ///
+    /// This is the deliberately *looser* sibling of [`mentions_role`]. Many
+    /// legacy recognisers matched an inflectable stem — `правил` to catch
+    /// `правила`/`правило`/`правил`, `расчёт` to catch `при расчёте` — by raw
+    /// substring. Those stems are not whole tokens, so [`mentions_role`]'s
+    /// token-bounded contract would miss them. A meaning whose surface forms are
+    /// such stems (recorded as [`Slot::Bare`] words) is queried through this
+    /// method instead, preserving the original byte-faithful substring match
+    /// while still keeping the surface words in the data, not the code. Slot
+    /// markers are not stripped, so author stem roles as bare forms.
+    #[must_use]
+    pub fn mentions_role_raw(&self, role: &str, normalized: &str) -> bool {
+        self.meanings_with_role(role)
+            .any(|meaning| meaning.words().any(|word| normalized.contains(word)))
+    }
+
     /// The first meaning carrying `role`, in declaration order, that is
     /// evidenced in `normalized` — or `None`. Declaration order therefore
     /// encodes priority (e.g. the first matching delivery mode wins).
@@ -693,6 +711,22 @@ mod tests {
         // CJK substring: matches inside a space-free run.
         assert!(lex.mentions_role(ROLE_PROGRAM_MODIFICATION, "取消排序"));
         assert!(lex.mentions_role(ROLE_PROGRAM_ARTIFACT, "取消排序"));
+    }
+
+    #[test]
+    fn mentions_role_raw_matches_inflected_stems() {
+        // The raw sibling is the looser match a legacy stem recogniser needs: the
+        // bare imperative `отмени` is a substring of the longer word
+        // `отменительный`, so the raw query fires where the token-bounded one
+        // deliberately does not. This is the byte-faithful behaviour the old
+        // `normalized.contains("…")` disjunctions relied on.
+        let lex = lexicon();
+        assert!(lex.mentions_role_raw(ROLE_PROGRAM_MODIFICATION, "отменительный разговор"));
+        assert!(!lex.mentions_role(ROLE_PROGRAM_MODIFICATION, "отменительный разговор"));
+        // A whole-token surface still matches under the raw query.
+        assert!(lex.mentions_role_raw(ROLE_PROGRAM_MODIFICATION, "отмени сортировку"));
+        // A prompt with no modification word matches under neither query.
+        assert!(!lex.mentions_role_raw(ROLE_PROGRAM_MODIFICATION, "привет мир"));
     }
 
     #[test]
