@@ -21,10 +21,10 @@ struct ProceduralHowToTask {
     corrections: Vec<SpellingCorrection>,
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone)]
 struct SpellingCorrection {
-    from: &'static str,
-    to: &'static str,
+    from: String,
+    to: String,
 }
 
 /// Handles source-backed procedural requests such as "How to make tea?" and
@@ -478,26 +478,14 @@ fn clean_procedural_fragment(value: &str) -> String {
         .trim()
         .to_owned();
 
-    for suffix in [
-        " step by step",
-        " in steps",
-        " with steps",
-        " for me",
-        " please",
-        " напиши по шагам",
-        " по шагам",
-        " пошагово",
-        " пожалуйста",
-        " चरणों में लिखो",
-        " चरणों में बताओ",
-        " कदम दर कदम",
-        " कृपया",
-        " 按步骤写",
-        " 按步骤说明",
-        " 一步一步写",
-        " 请",
-    ] {
-        if let Some(stripped) = clean.strip_suffix(suffix) {
+    // The trailing "step by step" / politeness modifiers are the slot-marked
+    // surface forms of the `procedural_task_modifier` meaning
+    // (data/seed/meanings-how.lino): every form is a suffix whose text after the
+    // … marker (`after_slot`) is the tail to strip, scanned in declaration order
+    // so the longer Russian "напиши по шагам" still precedes its "по шагам" tail.
+    // No per-language modifier list lives here — only the concept.
+    for form in &seed::lexicon().role_word_forms(seed::ROLE_PROCEDURAL_TASK_MODIFIER) {
+        if let Some(stripped) = clean.strip_suffix(form.after_slot()) {
             clean = stripped.trim().to_owned();
             break;
         }
@@ -506,30 +494,29 @@ fn clean_procedural_fragment(value: &str) -> String {
 }
 
 fn correct_common_procedural_typos(task: &str) -> (String, Vec<SpellingCorrection>) {
-    const COMMON_TYPOS: &[SpellingCorrection] = &[SpellingCorrection {
-        from: "dirven",
-        to: "driven",
-    }];
+    // The misspelling -> correction pairs are the `common_typo` meaning's bare
+    // surface forms (data/seed/meanings-how.lino): each form's text is the
+    // misspelled token and its `action` child names the correct spelling. No
+    // per-language typo table lives here — only the concept.
+    let lexicon = seed::lexicon();
+    let typos = lexicon.role_word_forms(seed::ROLE_COMMON_TYPO);
 
-    let mut corrections = Vec::new();
+    let mut corrections: Vec<SpellingCorrection> = Vec::new();
     let corrected = task
         .split_whitespace()
         .map(|token| {
-            COMMON_TYPOS
-                .iter()
-                .find(|correction| token == correction.from)
-                .map_or_else(
-                    || token.to_owned(),
-                    |correction| {
-                        if !corrections
-                            .iter()
-                            .any(|seen: &SpellingCorrection| seen.from == correction.from)
-                        {
-                            corrections.push(*correction);
-                        }
-                        correction.to.to_owned()
-                    },
-                )
+            for form in &typos {
+                if token == form.text {
+                    if !corrections.iter().any(|seen| seen.from == form.text) {
+                        corrections.push(SpellingCorrection {
+                            from: form.text.clone(),
+                            to: form.action.clone(),
+                        });
+                    }
+                    return form.action.clone();
+                }
+            }
+            token.to_owned()
         })
         .collect::<Vec<_>>()
         .join(" ");

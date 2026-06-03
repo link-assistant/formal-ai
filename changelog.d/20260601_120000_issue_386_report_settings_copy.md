@@ -684,6 +684,37 @@ bump: minor
   all-language generalizations, and confirms the issue-#386 reasoning paths — the
   mirror verifier reporting parity across all twenty-nine meaning files (issue
   #386).
+- The procedural-task cleanup (`clean_procedural_fragment` /
+  `correct_common_procedural_typos` in `src/solver_handler_how.rs` and the
+  `formal_ai_worker.js` mirror) is data-driven too — finishing the how-cluster
+  conversion. Two new self-describing meanings in `data/seed/meanings-how.lino`
+  carry the surfaces these helpers used to hardcode in a seventeen-entry suffix
+  array and a single-entry typo table: `procedural_task_modifier` (role
+  `procedural_task_modifier`, `defined_by` `property` + `procedural_request` —
+  the trailing "step by step" / "in steps" / "for me" / "please" / … and their
+  ru/hi/zh equivalents that a procedural extractor strips from the end of the
+  task) and `common_typo` (role `common_typo`, `defined_by` `relation` — a
+  misspelling paired with its correction, the canonical case being the
+  transposed "dirven" -> "driven"). Each modifier surface is a `Slot::Suffix`
+  whose text after the ellipsis `…` (U+2026) is the literal tail to strip, walked
+  in declaration order with the first match winning, so the longer Russian
+  "напиши по шагам" is still tried before its "по шагам" tail; each typo surface
+  is a `Slot::Bare` whose `action` child names the correct spelling, so a task
+  token is repaired by data rather than a hardcoded `token == "dirven"` check.
+  The former inline suffix array and the one-branch typo table are gone — the
+  code knows only the concepts "a trailing step-by-step or politeness modifier"
+  and "a misspelling and its correction". Because the surfaces now cover every
+  language, the genuine ru/hi/zh typos (руский -> русский, वेबसाईट -> वेबसाइट,
+  登陆 -> 登录) are repaired where the English-only table did nothing, while every
+  pre-existing case stays byte-identical. A differential parity harness
+  (`experiments/issue-386-js-procedural-cluster.mjs`) reconstructs the
+  pre-conversion suffix array and typo table, proves the two functions are
+  byte-identical to them across thirty-two cleanup probes and six typo probes
+  (all four languages, order-sensitivity, punctuation and whitespace controls),
+  documents the three intended all-language typo generalizations, and confirms
+  the four issue-#343 spec-driven prompts still reduce to "spec driven
+  development" with a recorded dirven->driven fix — the mirror verifier reporting
+  parity across all twenty-nine meaning files (issue #386).
 
 ### Fixed
 - The follow-up "Отмени сортировку" ("cancel the sorting") no longer returns

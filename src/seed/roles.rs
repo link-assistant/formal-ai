@@ -322,6 +322,24 @@ pub const ROLE_DETAIL_MODIFIER: &str = "detail_modifier";
 /// the literal before the `…` slot. A meaning carrying this role is `defined_by`
 /// the `entity` and `mechanism_inquiry` concepts.
 pub const ROLE_NON_REFERENTIAL_SUBJECT: &str = "non_referential_subject";
+/// Semantic role: an optional step-by-step or politeness modifier trailing a
+/// procedural "how to X" task ("step by step", "in steps", "please", …).
+///
+/// Every surface is a [`crate::seed::Slot::Suffix`]; the text after the `…` slot
+/// is the modifier tail a procedural extractor strips from the end of the task,
+/// in declaration order with the first match winning, so a longer modifier such
+/// as the Russian "напиши по шагам" is tried before its "по шагам" tail. A
+/// meaning carrying this role is `defined_by` the `property` and
+/// `procedural_request` concepts.
+pub const ROLE_PROCEDURAL_TASK_MODIFIER: &str = "procedural_task_modifier";
+/// Semantic role: a common misspelling paired with its correction.
+///
+/// A [`crate::seed::Slot::Bare`] surface whose `text` is the misspelled token and
+/// whose `action` child names the correct spelling, so a procedural extractor can
+/// repair a task token by data rather than a hardcoded typo table (the canonical
+/// example is the transposed "dirven" -> "driven"). A meaning carrying this role
+/// is `defined_by` the `relation` concept.
+pub const ROLE_COMMON_TYPO: &str = "common_typo";
 /// Semantic role: a prompt asking to fetch a web resource over HTTP.
 ///
 /// The retrieve-this-URL request ("fetch X", "сделай запрос к X", "अनुरोध भेजें",

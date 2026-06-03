@@ -17091,6 +17091,71 @@ const MEANINGS_LINO = [
   '        description "Chinese demonstrative pronoun (pinyin zhege) meaning this one; rejected as a non-referential subject."',
   '      word "它"',
   '        description "Chinese third-person pronoun (pinyin ta) meaning it; rejected as a non-referential subject."',
+  '  meaning "procedural_task_modifier"',
+  "    gloss \"an optional modifier trailing a procedural how-to task that asks for step-by-step granularity or adds politeness (step by step, in steps, please, …) without naming part of the task itself. Each surface is a suffix carrying the … (U+2026) slot at the front; the text after the slot is the modifier tail a procedural extractor strips from the end of the task, scanning surfaces in declaration order and stopping at the first match, so the longer Russian 'напиши по шагам' is tried before its 'по шагам' tail.\"",
+  '    wiktionary "step"',
+  '    defined_by "property"',
+  '    defined_by "procedural_request"',
+  '    role "procedural_task_modifier"',
+  '    lexeme "en"',
+  '      word "… step by step"',
+  '        description "English modifier tail asking for incremental steps; the text after the … slot is stripped from the end of the task."',
+  '      word "… in steps"',
+  '        description "English modifier tail asking for the task broken into steps; the text after the … slot is stripped from the end of the task."',
+  '      word "… with steps"',
+  '        description "English modifier tail asking for accompanying steps; the text after the … slot is stripped from the end of the task."',
+  '      word "… for me"',
+  '        description "English modifier tail framing the request as personal; the text after the … slot is stripped from the end of the task."',
+  '      word "… please"',
+  '        description "English politeness modifier tail; the text after the … slot is stripped from the end of the task."',
+  '    lexeme "ru"',
+  '      word "… напиши по шагам"',
+  "        description \"Russian modifier tail (romanized napishi po shagam) meaning write it step by step; declared before its 'по шагам' tail so the longer surface matches first. The text after the … slot is stripped from the end of the task.\"",
+  '      word "… по шагам"',
+  '        description "Russian modifier tail (romanized po shagam) meaning step by step; the text after the … slot is stripped from the end of the task."',
+  '      word "… пошагово"',
+  '        description "Russian modifier tail (romanized poshagovo) meaning step-by-step; the text after the … slot is stripped from the end of the task."',
+  '      word "… пожалуйста"',
+  '        description "Russian politeness modifier tail (romanized pozhaluysta) meaning please; the text after the … slot is stripped from the end of the task."',
+  '    lexeme "hi"',
+  '      word "… चरणों में लिखो"',
+  '        description "Hindi modifier tail (romanized charanon mein likho) meaning write it in steps; the text after the … slot is stripped from the end of the task."',
+  '      word "… चरणों में बताओ"',
+  '        description "Hindi modifier tail (romanized charanon mein batao) meaning explain it in steps; the text after the … slot is stripped from the end of the task."',
+  '      word "… कदम दर कदम"',
+  '        description "Hindi modifier tail (romanized kadam dar kadam) meaning step by step; the text after the … slot is stripped from the end of the task."',
+  '      word "… कृपया"',
+  '        description "Hindi politeness modifier tail (romanized kripya) meaning please; the text after the … slot is stripped from the end of the task."',
+  '    lexeme "zh"',
+  '      word "… 按步骤写"',
+  '        description "Chinese modifier tail (pinyin an buzhou xie) meaning write by steps, with a leading space matching the task separator; the text after the … slot is stripped from the end of the task."',
+  '      word "… 按步骤说明"',
+  '        description "Chinese modifier tail (pinyin an buzhou shuoming) meaning explain by steps, with a leading space; the text after the … slot is stripped from the end of the task."',
+  '      word "… 一步一步写"',
+  '        description "Chinese modifier tail (pinyin yibu yibu xie) meaning write it step by step, with a leading space; the text after the … slot is stripped from the end of the task."',
+  '      word "… 请"',
+  '        description "Chinese politeness modifier tail (pinyin qing) meaning please, with a leading space; the text after the … slot is stripped from the end of the task."',
+  '  meaning "common_typo"',
+  "    gloss \"a common misspelling that can appear in a procedural how-to task, paired with its correction so an extractor can repair the token by data rather than a hardcoded table. Each surface is a bare word whose text is the misspelled token; its action child names the correct spelling that replaces the token, deduplicated per task by the misspelled form. The English 'dirven' for 'driven' is the canonical example; the other languages carry one genuine misspelling each so every supported language is covered.\"",
+  '    wiktionary "misspelling"',
+  '    defined_by "relation"',
+  '    role "common_typo"',
+  '    lexeme "en"',
+  '      word "dirven"',
+  '        action "driven"',
+  "        description \"English transposition misspelling of 'driven' (as in data-driven); replaced by its action correction when it appears as a task token.\"",
+  '    lexeme "ru"',
+  '      word "руский"',
+  '        action "русский"',
+  "        description \"Russian misspelling (romanized ruskiy) of 'русский' meaning Russian, dropping one с; replaced by its action correction when it appears as a task token.\"",
+  '    lexeme "hi"',
+  '      word "वेबसाईट"',
+  '        action "वेबसाइट"',
+  "        description \"Hindi misspelling (romanized vebsaait) of 'वेबसाइट' meaning website, with an extra long-i vowel sign; replaced by its action correction when it appears as a task token.\"",
+  '    lexeme "zh"',
+  '      word "登陆"',
+  '        action "登录"',
+  "        description \"Chinese misspelling (pinyin denglu) of '登录' meaning to log in, confusing 陆 'land' for 录 'record'; replaced by its action correction when it appears as a task token.\"",
   "meanings",
   '  meaning "causal_interrogative"',
   '    gloss "the interrogative word that asks for a cause or reason — why, почему, क्यों, 为什么. By itself it carries no answer reference; a why-did-you-answer question composes it with a prior-answer reference. Only the Hindi and Chinese surfaces are read by the recogniser, paired with prior_answer_reference within the same language to detect a head-final why-question; the English and Russian why-questions front the interrogative and are matched through answer_rationale_inquiry instead."',
@@ -22265,6 +22330,13 @@ const ROLE_CONVERSATION_TOPIC_OPENER = "conversation_topic_opener";
 // for these forms by meaning instead of hardcoding per-language phrase arrays.
 const ROLE_MECHANISM_INQUIRY = "mechanism_inquiry";
 const ROLE_PROCEDURAL_REQUEST = "procedural_request";
+// Issue #386 procedural-cluster cleanup roles — mirror the
+// ROLE_PROCEDURAL_TASK_MODIFIER / ROLE_COMMON_TYPO consts in src/seed/roles.rs.
+// cleanProceduralFragment / correctCommonProceduralTypos ask the lexicon for
+// these forms by meaning instead of hardcoding per-language modifier and typo
+// arrays.
+const ROLE_PROCEDURAL_TASK_MODIFIER = "procedural_task_modifier";
+const ROLE_COMMON_TYPO = "common_typo";
 // Issue #386 mechanism-subject cleanup roles — mirror the
 // ROLE_MECHANISM_PREDICATE / ROLE_DETAIL_MODIFIER / ROLE_NON_REFERENTIAL_SUBJECT
 // consts in src/seed/roles.rs. stripMechanismTail / cleanMechanismSubject ask
@@ -25730,28 +25802,17 @@ function cleanProceduralFragment(value) {
     .replace(/[?!.,;:]+$/u, "")
     .replace(/\s+/g, " ")
     .trim();
-  const suffixes = [
-    " step by step",
-    " in steps",
-    " with steps",
-    " for me",
-    " please",
-    " напиши по шагам",
-    " по шагам",
-    " пошагово",
-    " пожалуйста",
-    " चरणों में लिखो",
-    " चरणों में बताओ",
-    " कदम दर कदम",
-    " कृपया",
-    " 按步骤写",
-    " 按步骤说明",
-    " 一步一步写",
-    " 请",
-  ];
-  for (const suffix of suffixes) {
-    if (clean.endsWith(suffix)) {
-      clean = clean.slice(0, -suffix.length).trim();
+  // The trailing "step by step" / politeness modifiers are the slot-marked
+  // surface forms of the procedural_task_modifier meaning
+  // (data/seed/meanings-how.lino, embedded in MEANINGS_LINO above): every form
+  // is a suffix whose text after the … marker (form.after) is the tail to
+  // strip, scanned in declaration order so the longer Russian "напиши по шагам"
+  // still precedes its "по шагам" tail. No per-language modifier list lives
+  // here — only the concept. Mirrors clean_procedural_fragment in
+  // src/solver_handler_how.rs (issue #386).
+  for (const form of roleWordForms(ROLE_PROCEDURAL_TASK_MODIFIER)) {
+    if (clean.endsWith(form.after)) {
+      clean = clean.slice(0, clean.length - form.after.length).trim();
       break;
     }
   }
@@ -25759,16 +25820,25 @@ function cleanProceduralFragment(value) {
 }
 
 function correctCommonProceduralTypos(task) {
+  // The misspelling -> correction pairs are the common_typo meaning's bare
+  // surface forms (data/seed/meanings-how.lino, embedded in MEANINGS_LINO
+  // above): each form's text is the misspelled token and its action field names
+  // the correct spelling. No per-language typo table lives here — only the
+  // concept. Mirrors correct_common_procedural_typos in
+  // src/solver_handler_how.rs (issue #386).
+  const typos = roleWordForms(ROLE_COMMON_TYPO);
   const corrections = [];
   const corrected = String(task || "")
     .split(/\s+/u)
     .filter(Boolean)
     .map((token) => {
-      if (token === "dirven") {
-        if (!corrections.some((correction) => correction.from === "dirven")) {
-          corrections.push({ from: "dirven", to: "driven" });
+      for (const form of typos) {
+        if (token === form.text) {
+          if (!corrections.some((correction) => correction.from === form.text)) {
+            corrections.push({ from: form.text, to: form.action });
+          }
+          return form.action;
         }
-        return "driven";
       }
       return token;
     })
