@@ -697,3 +697,41 @@ pub const ROLE_OPERATING_PRINCIPLE: &str = "operating_principle";
 /// about how the assistant is built rather than a task request. Read by the Rust
 /// solver and the JS worker.
 pub const ROLE_ARCHITECTURE_CONCEPT: &str = "architecture_concept";
+/// Semantic role: the lead-in of a prompt asking for something to be explained.
+///
+/// Every interrogative or imperative that opens an explanation request lives here
+/// rather than in the documentation handler. Each surface marks the subject
+/// position with the ellipsis … (U+2026): a [`crate::seed::Slot::Prefix`] form
+/// ("how …", "explain …", "как …", "क्या है …", "解释…") is matched by the literal
+/// before the slot against the start of the prompt, while a bare form with no
+/// ellipsis ("how", "कैसे काम", "如何工作", …) is matched as a raw substring
+/// anywhere. A space-wrapped bare form (" how ", " как ") matches only on
+/// whole-word boundaries. Carried by `explanation_request`; read by the Rust
+/// solver and the JS worker so neither names an interrogative word in code.
+pub const ROLE_EXPLANATION_REQUEST_LEAD: &str = "explanation_request_lead";
+/// Semantic role: a noun naming the internet as the medium to search.
+///
+/// The same internet-naming surfaces that fill [`ROLE_WEB_SEARCH_SIGNAL`] and
+/// [`ROLE_WEB_SEARCH_SOURCE_ONLY`] (" web ", " internet ", " online ",
+/// " интернете ", "इंटरनेट", "网上", …), shared here so the documentation handler
+/// can confirm that a prompt paired with an imperative search verb explicitly
+/// asks to search the web — and screen such a prompt out of its method-question
+/// gate. The English/Russian surfaces are space-wrapped, so they are matched
+/// through the [`crate::seed::Lexicon::mentions_role_raw`] sibling convention used
+/// by the web-search recogniser: a `format!(" {normalized} ")` pad plus
+/// `contains`, giving a whole-token match that also catches a medium word at the
+/// very end of the prompt ("search the web"). Carried by `reference_internet`;
+/// read by the Rust solver and the JS worker.
+pub const ROLE_WEB_MEDIUM: &str = "web_medium";
+/// Semantic role: the noun "method" in the programming sense, in any language.
+///
+/// "method", "метод", "विधि", "方法" — the word a prompt uses to refer to a named
+/// operation defined on a type or object (such as the join method of a
+/// `DataFrame`). The documentation handler pairs this concept with the method's
+/// own API identifier — which is written the same in every language — to
+/// recognise a question about a specific method without naming the word "method"
+/// in code. The space-delimited surfaces are matched on whole-token boundaries
+/// through [`crate::seed::Lexicon::mentions_role`] (`surface_present`), while the
+/// Han surface matches as a substring. Carried by `code_method`; read by the Rust
+/// solver and the JS worker.
+pub const ROLE_CODE_METHOD_NOUN: &str = "code_method_noun";

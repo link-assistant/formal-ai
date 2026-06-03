@@ -3,6 +3,7 @@
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::language::{detect as detect_language, Language};
+use crate::seed::{self, Slot};
 use crate::solver_handlers::finalize_simple;
 
 const PANDAS_DATAFRAME_JOIN_DOCS_URL: &str =
@@ -37,6 +38,22 @@ pub fn try_docs_method_explanation(
     ))
 }
 
+/// True when the prompt asks how the pandas `DataFrame.join` method works.
+///
+/// The prompt must address pandas, read as an [`is_explanation_request`], and not
+/// be an [`is_explicit_web_search`]. The join itself is then recognised through
+/// two kinds of evidence:
+///
+/// * Code-resident API identifiers — `DataFrame.join`, `df.join`, and the
+///   `join`+`dataframe` pairing. These are written the same in every language
+///   (they are the library's own symbol names, not natural-language words), so
+///   they legitimately live in the handler rather than the lexicon: they are the
+///   bridge from a multilingual question to one specific documented API.
+/// * The translatable noun "method" — matched through the
+///   [`code_method_noun`](seed::ROLE_CODE_METHOD_NOUN) role rather than the four
+///   per-language words it used to hardcode, paired with the `join` identifier so
+///   "how the join method works", "метод join", "join विधि", "join 方法" all
+///   resolve without naming the word "method" in any language here.
 fn is_pandas_dataframe_join_prompt(prompt: &str, normalized: &str) -> bool {
     let lower = prompt.to_lowercase();
     let normalized = normalized.trim();
@@ -52,47 +69,67 @@ fn is_pandas_dataframe_join_prompt(prompt: &str, normalized: &str) -> bool {
 
     lower.contains("dataframe.join")
         || lower.contains("df.join")
-        || normalized.contains("join method")
-        || normalized.contains("method join")
-        || (has_word(normalized, "join") && has_word(normalized, "метод"))
-        || (has_word(normalized, "join") && normalized.contains("विधि"))
-        || (has_word(normalized, "join") && normalized.contains("方法"))
+        || (has_word(normalized, "join") && has_word(normalized, "dataframe"))
         || (has_word(normalized, "join")
-            && (has_word(normalized, "method") || has_word(normalized, "dataframe")))
+            && seed::lexicon().mentions_role(seed::ROLE_CODE_METHOD_NOUN, normalized))
 }
 
+/// True when the prompt opens with an imperative to search the web, so it should
+/// be answered by the web-search handler rather than this narrow docs handler.
+///
+/// Mirrors the original two-part screen by meaning. The search imperative is read
+/// from the [`web_search_imperative_lead`](seed::ROLE_WEB_SEARCH_IMPERATIVE_LEAD)
+/// role: only its [`Slot::Prefix`] forms are clause-initial leads, so the literal
+/// before each ellipsis ("search ", "look up ", "research ", "найди ", "搜索", …)
+/// is matched against the start of the prompt — exactly the original `starts_with`
+/// test, now covering every supported language. The medium is read from the
+/// [`web_medium`](seed::ROLE_WEB_MEDIUM) role; its surfaces are space-wrapped, so
+/// they are matched with the web-search recogniser's whole-token convention — pad
+/// the prompt with spaces and test `contains` — which also catches a medium word
+/// at the very end ("search the web").
 fn is_explicit_web_search(normalized: &str) -> bool {
-    let requests_search = normalized.starts_with("search ")
-        || normalized.starts_with("find ")
-        || normalized.starts_with("look up ")
-        || normalized.starts_with("lookup ");
-    requests_search
-        && (has_word(normalized, "web")
-            || has_word(normalized, "internet")
-            || has_word(normalized, "online"))
+    let lexicon = seed::lexicon();
+    let requests_search = lexicon
+        .role_word_forms(seed::ROLE_WEB_SEARCH_IMPERATIVE_LEAD)
+        .into_iter()
+        .filter(|form| form.slot() == Slot::Prefix)
+        .any(|form| normalized.starts_with(form.before_slot()));
+    if !requests_search {
+        return false;
+    }
+    let padded = format!(" {normalized} ");
+    lexicon
+        .role_word_forms(seed::ROLE_WEB_MEDIUM)
+        .into_iter()
+        .any(|form| {
+            let marker = form.text.as_str();
+            if marker.starts_with(' ') || marker.ends_with(' ') {
+                padded.contains(marker)
+            } else {
+                normalized.contains(marker)
+            }
+        })
 }
 
+/// True when the prompt is phrased as a request to have something explained.
+///
+/// Every interrogative and imperative lead-in lives in the
+/// [`explanation_request_lead`](seed::ROLE_EXPLANATION_REQUEST_LEAD) role rather
+/// than in this function, so no question word is hardcoded here. Each surface is
+/// matched by its slot, mirroring `meta_explanation`'s `is_why_question`: a
+/// [`Slot::Prefix`] form ("how …", "explain …", "как …", "क्या है …", "解释…") is
+/// matched by the literal before the ellipsis against the start of the prompt,
+/// while a bare form ("how", "कैसे काम", "如何工作", …) is matched as a raw
+/// substring anywhere. The space-wrapped bare forms (" how ", " как ") match only
+/// on whole-word boundaries.
 fn is_explanation_request(normalized: &str) -> bool {
-    normalized.starts_with("how ")
-        || normalized.contains(" how ")
-        || normalized.starts_with("explain ")
-        || normalized.starts_with("describe ")
-        || normalized.starts_with("what does ")
-        || normalized.starts_with("what is ")
-        || normalized.starts_with("tell me about ")
-        || normalized.starts_with("how to use ")
-        || normalized.starts_with("как ")
-        || normalized.contains(" как ")
-        || normalized.starts_with("объясни ")
-        || normalized.starts_with("расскажи ")
-        || normalized.starts_with("что такое ")
-        || normalized.contains("कैसे काम")
-        || normalized.starts_with("समझाओ")
-        || normalized.starts_with("क्या है ")
-        || normalized.contains("如何工作")
-        || normalized.contains("怎么工作")
-        || normalized.starts_with("解释")
-        || normalized.contains("是什么")
+    seed::lexicon()
+        .role_word_forms(seed::ROLE_EXPLANATION_REQUEST_LEAD)
+        .into_iter()
+        .any(|form| match form.slot() {
+            Slot::Prefix => normalized.starts_with(form.before_slot()),
+            _ => normalized.contains(form.text.as_str()),
+        })
 }
 
 fn has_word(normalized: &str, word: &str) -> bool {
