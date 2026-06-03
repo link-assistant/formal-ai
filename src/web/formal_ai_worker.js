@@ -17597,12 +17597,13 @@ const MEANINGS_LINO = [
   '      word "在网上搜索"',
   '        description "Chinese verb phrase (pinyin zai wangshang sousuo) for searching on the web."',
   '  meaning "reference_internet"',
-  '    gloss "the open internet seen as a place to look something up — the web, the net, the online world. As a web-search signal its surfaces are matched anywhere in the prompt (whole-token for the space-wrapped Latin and Cyrillic forms, substring for the Han forms) to confirm that a weak search verb is aimed at the web. The same concept also names a standalone source: a prompt whose whole extracted query is just the word internet (in any language) is rejected as a bare source rather than searched for, which is why this meaning also carries the source-only role. The handler reads the source-only words by trimming these signal surfaces."',
+  '    gloss "the open internet seen as a place to look something up — the web, the net, the online world. As a web-search signal its surfaces are matched anywhere in the prompt (whole-token for the space-wrapped Latin and Cyrillic forms, substring for the Han forms) to confirm that a weak search verb is aimed at the web. The same concept also names a standalone source: a prompt whose whole extracted query is just the word internet (in any language) is rejected as a bare source rather than searched for, which is why this meaning also carries the source-only role. The handler reads the source-only words by trimming these signal surfaces. The same internet-naming surfaces also fill the web_medium role: paired with a leading imperative search verb they confirm that a prompt explicitly asks to search the web, so a documentation handler can screen such a prompt out of its method-question gate."',
   '    wiktionary "internet"',
   '    defined_by "web_resource"',
   '    defined_by "entity"',
   '    role "web_search_signal"',
   '    role "web_search_source_only"',
+  '    role "web_medium"',
   '    lexeme "en"',
   '      word " web "',
   '        description "English noun (the web), space-wrapped so it matches only as a whole token; trimmed it is the bare source word web."',
@@ -20153,6 +20154,75 @@ const MEANINGS_LINO = [
   "        description \"Chinese obscenity (pinyin cao ni ma, a vulgar insult aimed at the listener's mother); a vulgar_content_marker matched as a raw substring.\"",
   '      word "傻逼"',
   '        description "Chinese vulgar insult (pinyin sha bi); a vulgar_content_marker matched as a raw substring."',
+  "meanings",
+  '  meaning "explanation_request"',
+  '    gloss "a request to have something explained — to be told how it works, what it is, or what it does. The concept an explanation prompt expresses, independent of the language or exact phrasing. Each lead marks the subject position with the ellipsis … (U+2026): a trailing ellipsis is a prefix surface matched against the start of the prompt by the literal before the slot, while a surface with no ellipsis is a bare phrase matched anywhere as a raw substring. A bare phrase written with surrounding spaces matches only on whole-word boundaries; one written without them folds its inflections. No interrogative word is named in the consuming code; every lead lives here in the data."',
+  '    wiktionary "explain"',
+  '    defined_by "inquiry"',
+  '    defined_by "action"',
+  '    role "explanation_request_lead"',
+  '    lexeme "en"',
+  '      word "how …"',
+  '        description "English prefix surface asking how something works or is done; matched by the literal how before the … slot at the start of the prompt."',
+  '      word " how "',
+  '        description "English bare interrogative how, space-wrapped so it matches only as a whole word anywhere inside the prompt."',
+  '      word "explain …"',
+  '        description "English prefix surface; the imperative explain leads a request to explain whatever follows the … slot."',
+  '      word "describe …"',
+  '        description "English prefix surface; the imperative describe leads a request to describe whatever follows the … slot."',
+  '      word "what does …"',
+  '        description "English prefix surface; the question what does leads an explanation request whose subject follows the … slot."',
+  '      word "what is …"',
+  '        description "English prefix surface; the question what is leads a definition request whose subject follows the … slot."',
+  '      word "tell me about …"',
+  '        description "English prefix surface; tell me about leads a request to explain the subject after the … slot."',
+  '      word "how to use …"',
+  '        description "English prefix surface; how to use leads a usage question whose subject follows the … slot, subsumed by the bare how lead but kept for the explicit usage phrasing."',
+  '    lexeme "ru"',
+  '      word "как …"',
+  '        description "Russian prefix surface (romanized kak); the interrogative how leads an explanation request whose subject follows the … slot."',
+  '      word " как "',
+  '        description "Russian bare interrogative how (romanized kak), space-wrapped so it matches only as a whole word anywhere inside the prompt."',
+  '      word "объясни …"',
+  '        description "Russian prefix surface (romanized obyasni); the imperative explain leads a request to explain whatever follows the … slot."',
+  '      word "расскажи …"',
+  '        description "Russian prefix surface (romanized rasskazhi); the imperative tell leads a request to describe whatever follows the … slot."',
+  '      word "что такое …"',
+  '        description "Russian prefix surface (romanized chto takoe); the question what is leads a definition request whose subject follows the … slot."',
+  '    lexeme "hi"',
+  '      word "कैसे काम"',
+  '        description "Hindi phrase (romanized kaise kaam, how it works) as a bare substring marking a how-it-works explanation request."',
+  '      word "समझाओ…"',
+  '        description "Hindi prefix surface (romanized samjhao, explain) matched by its literal start with no space before the … slot; the subject follows."',
+  '      word "क्या है …"',
+  '        description "Hindi prefix surface (romanized kya hai, what is) matched at the start of the prompt; the subject follows the … slot."',
+  '    lexeme "zh"',
+  '      word "如何工作"',
+  '        description "Chinese phrase (pinyin ruhe gongzuo, how it works) as a bare substring marking a how-it-works explanation request."',
+  '      word "怎么工作"',
+  '        description "Chinese phrase (pinyin zenme gongzuo, how it works) as a bare substring marking a how-it-works explanation request."',
+  '      word "解释…"',
+  '        description "Chinese prefix surface (pinyin jieshi, explain) matched by its literal start with no space before the … slot; the subject follows."',
+  '      word "是什么"',
+  '        description "Chinese phrase (pinyin shi shenme, is what) as a bare substring marking a definition request."',
+  '  meaning "code_method"',
+  "    gloss \"a method in the programming sense — a named operation or function defined on a type or object, such as the join method of a DataFrame. The word a prompt uses, in any language, to refer to such an operation when asking how it works. A handler pairs this concept with the method's own API identifier — which is written the same in every language — so it can recognise a question about a specific method without naming the word method in the code. Space-delimited surfaces match on whole-token boundaries; the Han surface matches as a substring.\"",
+  '    wiktionary "method"',
+  '    defined_by "action"',
+  '    defined_by "concept"',
+  '    role "code_method_noun"',
+  '    lexeme "en"',
+  '      word "method"',
+  '        description "English noun method, the word for a named operation on a type or object; matched as a whole token."',
+  '    lexeme "ru"',
+  '      word "метод"',
+  '        description "Russian noun (romanized metod) for a method; matched as a whole token."',
+  '    lexeme "hi"',
+  '      word "विधि"',
+  '        description "Hindi noun (romanized vidhi) for a method or procedure; matched as a whole token."',
+  '    lexeme "zh"',
+  '      word "方法"',
+  '        description "Chinese noun (pinyin fangfa) for a method; a Han substring marker for the method concept."',
 ].join("\n");
 
 // Semantic role: a thing a program produces that a later turn can refer back to
@@ -23158,6 +23228,17 @@ const ROLE_CALCULATION_BASIS_REFERENCE = "calculation_basis_reference";
 const ROLE_ASSISTANT_SELF_REFERENCE = "assistant_self_reference";
 const ROLE_ARCHITECTURE_CONCEPT = "architecture_concept";
 
+// Issue #386 documentation-handler roles — mirror ROLE_EXPLANATION_REQUEST_LEAD,
+// ROLE_WEB_MEDIUM and ROLE_CODE_METHOD_NOUN in src/seed/roles.rs. Their surfaces
+// live in data/seed/meanings-docs.lino (explanation leads, the method noun) and
+// data/seed/meanings-web-search.lino (the web_medium surfaces on
+// reference_internet). isExplanationRequest, isExplicitWebSearchPrompt and the
+// join+method branch of isPandasDataFrameJoinPrompt read them instead of naming
+// any interrogative, medium or per-language method word in code here.
+const ROLE_EXPLANATION_REQUEST_LEAD = "explanation_request_lead";
+const ROLE_WEB_MEDIUM = "web_medium";
+const ROLE_CODE_METHOD_NOUN = "code_method_noun";
+
 // The literal lead-in (form.before, the text before the … slot) of every
 // prefix-slot form of a role, in lexicon declaration order. A meaning's roles
 // apply to all its forms, so keep only the slot we asked for. Mirrors
@@ -23777,47 +23858,53 @@ function hasNormalizedWord(normalized, word) {
     .some((token) => token === word);
 }
 
+// True when the prompt opens with an imperative to search the web, so it should
+// be answered by the web-search handler rather than the narrow docs handler.
+// Mirrors is_explicit_web_search in src/solver_handler_docs.rs by meaning. The
+// search imperative is read from the web_search_imperative_lead role — only its
+// prefix forms are clause-initial leads, so the literal before each ellipsis
+// ("search ", "look up ", "найди ", "搜索", …) is matched against the start of
+// the prompt. The medium is read from the web_medium role; its surfaces are
+// space-wrapped, so containsSearchMarker matches them with the whole-token
+// padding convention (which also catches a medium word at the very end).
 function isExplicitWebSearchPrompt(normalized) {
   const text = String(normalized || "");
-  const requestsSearch =
-    text.startsWith("search ") ||
-    text.startsWith("find ") ||
-    text.startsWith("look up ") ||
-    text.startsWith("lookup ");
-  return (
-    requestsSearch &&
-    (hasNormalizedWord(text, "web") ||
-      hasNormalizedWord(text, "internet") ||
-      hasNormalizedWord(text, "online"))
+  const requestsSearch = roleWordForms(ROLE_WEB_SEARCH_IMPERATIVE_LEAD)
+    .filter((form) => form.slot === "prefix")
+    .some((form) => text.startsWith(form.before));
+  if (!requestsSearch) return false;
+  return roleWordForms(ROLE_WEB_MEDIUM).some((form) =>
+    containsSearchMarker(text, form.text),
   );
 }
 
+// True when the prompt is phrased as a request to have something explained.
+// Mirrors is_explanation_request in src/solver_handler_docs.rs: every
+// interrogative and imperative lead-in lives in the explanation_request_lead
+// role, so no question word is hardcoded here. Each surface is matched by its
+// slot — a prefix form ("how …", "explain …", "как …", "解释…") by the literal
+// before the ellipsis against the start of the prompt, a bare form (" how ",
+// "कैसे काम", "如何工作", …) as a raw substring anywhere (the space-wrapped bare
+// forms thus match only on whole-word boundaries).
 function isExplanationRequest(normalized) {
   const text = String(normalized || "");
-  return (
-    text.startsWith("how ") ||
-    text.includes(" how ") ||
-    text.startsWith("explain ") ||
-    text.startsWith("describe ") ||
-    text.startsWith("what does ") ||
-    text.startsWith("what is ") ||
-    text.startsWith("tell me about ") ||
-    text.startsWith("how to use ") ||
-    text.startsWith("как ") ||
-    text.includes(" как ") ||
-    text.startsWith("объясни ") ||
-    text.startsWith("расскажи ") ||
-    text.startsWith("что такое ") ||
-    text.includes("कैसे काम") ||
-    text.startsWith("समझाओ") ||
-    text.startsWith("क्या है ") ||
-    text.includes("如何工作") ||
-    text.includes("怎么工作") ||
-    text.startsWith("解释") ||
-    text.includes("是什么")
+  return roleWordForms(ROLE_EXPLANATION_REQUEST_LEAD).some((form) =>
+    form.slot === "prefix"
+      ? text.startsWith(form.before)
+      : text.includes(form.text),
   );
 }
 
+// True when the prompt asks how the pandas DataFrame.join method works. Mirrors
+// is_pandas_dataframe_join_prompt in src/solver_handler_docs.rs. The prompt must
+// address pandas, read as an explanation request, and not be an explicit web
+// search. The join is then recognised through two kinds of evidence: code-
+// resident API identifiers (DataFrame.join, df.join, the join+dataframe pairing)
+// — written the same in every language, so they legitimately live here as the
+// bridge from a multilingual question to one documented API — and the
+// translatable noun "method", matched through the code_method_noun role rather
+// than the four per-language words it used to hardcode, paired with the join
+// identifier.
 function isPandasDataFrameJoinPrompt(prompt, normalized) {
   const lower = String(prompt || "").toLowerCase();
   const text = String(normalized || "").trim();
@@ -23827,13 +23914,9 @@ function isPandasDataFrameJoinPrompt(prompt, normalized) {
   return (
     lower.includes("dataframe.join") ||
     lower.includes("df.join") ||
-    text.includes("join method") ||
-    text.includes("method join") ||
-    (hasNormalizedWord(text, "join") && hasNormalizedWord(text, "метод")) ||
-    (hasNormalizedWord(text, "join") && text.includes("विधि")) ||
-    (hasNormalizedWord(text, "join") && text.includes("方法")) ||
+    (hasNormalizedWord(text, "join") && hasNormalizedWord(text, "dataframe")) ||
     (hasNormalizedWord(text, "join") &&
-      (hasNormalizedWord(text, "method") || hasNormalizedWord(text, "dataframe")))
+      lexiconMentionsRole(ROLE_CODE_METHOD_NOUN, text))
   );
 }
 
