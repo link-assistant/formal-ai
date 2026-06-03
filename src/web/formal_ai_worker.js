@@ -2833,34 +2833,139 @@ function extractQuotedPhrase(text) {
   return null;
 }
 
+// Issue #386 translation roles — mirror the ROLE_TRANSLATION_* constants in
+// src/seed/roles.rs. Each role's slot-marked surface words live in
+// data/seed/meanings-translation.lino (embedded in MEANINGS_LINO above); the
+// detection and extraction helpers ask the lexicon for those forms by meaning,
+// slot, and script instead of hardcoding a per-language phrase list. This is
+// the JS mirror of src/translation/language_markers.rs and
+// src/translation/prompt.rs.
+const ROLE_TRANSLATION_SOURCE_MARKER = "translation_source_marker";
+const ROLE_TRANSLATION_TARGET_MARKER = "translation_target_marker";
+const ROLE_TRANSLATION_TARGET_DIRECTION = "translation_target_direction";
+const ROLE_TRANSLATION_UNQUOTED_FRAME = "translation_unquoted_frame";
+const ROLE_TRANSLATION_INTO_MARKER = "translation_into_marker";
+const ROLE_TRANSLATION_OBJECT_MARKER = "translation_object_marker";
+
+// The ISO 639-1 code of the language_* meaning that defines a marker. Mirrors
+// language_code in src/translation/language_markers.rs: the surface *names* of
+// each language live in the seed; only this slug -> code bridge stays in code.
+function translationLanguageCode(meaning) {
+  for (const slug of meaning.definedBy) {
+    if (slug === "language_english") return "en";
+    if (slug === "language_russian") return "ru";
+    if (slug === "language_hindi") return "hi";
+    if (slug === "language_chinese") return "zh";
+  }
+  return null;
+}
+
+// The first marker meaning of `role` (in declaration order) any of whose
+// surface words is a substring of `normalized` reports its language. Plain
+// substring matching — not the boundary-aware surfacePresent — is intentional
+// and mirrors detect_marker_language in src/translation/language_markers.rs: a
+// CJK marker like 从中文 has no word spaces, and a Cyrillic marker like
+// "с английского" must match inside a longer sentence.
+function detectTranslationMarkerLanguage(role, normalized) {
+  for (const meaning of meaningsWithRole(role)) {
+    if (meaning.words.some((word) => normalized.includes(word))) {
+      const code = translationLanguageCode(meaning);
+      if (code) return code;
+    }
+  }
+  return null;
+}
+
+let cachedTranslationMarkers = null;
+// Project the translation-extraction markers out of the meaning lexicon, once.
+// Each field is a semantic role narrowed to the slot and script its strategy
+// needs, in declaration order — the code names a role and a shape, never a
+// surface word. Mirrors markers() in src/translation/prompt.rs.
+function translationMarkers() {
+  if (cachedTranslationMarkers) return cachedTranslationMarkers;
+  const scriptForms = (role, script) =>
+    roleWordForms(role)
+      .filter((form) => script(form.text))
+      .map((form) => form.text);
+  const bareScriptForms = (role, script) =>
+    roleWordForms(role)
+      .filter((form) => form.slot === "bare" && script(form.text))
+      .map((form) => form.before);
+  cachedTranslationMarkers = {
+    circumfixFrames: roleWordForms(ROLE_TRANSLATION_UNQUOTED_FRAME)
+      .filter((form) => form.slot === "circumfix")
+      .map((form) => [form.before, form.after]),
+    hindiVerbStems: bareScriptForms(
+      ROLE_TRANSLATION_UNQUOTED_FRAME,
+      containsDevanagari,
+    ),
+    hindiTargetMarkers: scriptForms(
+      ROLE_TRANSLATION_INTO_MARKER,
+      containsDevanagari,
+    ),
+    hindiObjectMarkers: scriptForms(
+      ROLE_TRANSLATION_OBJECT_MARKER,
+      containsDevanagari,
+    ),
+    chineseCommandPrefixes: scriptForms(
+      ROLE_TRANSLATION_OBJECT_MARKER,
+      containsCjk,
+    ),
+    chineseCommandMarkers: scriptForms(
+      ROLE_TRANSLATION_INTO_MARKER,
+      containsCjk,
+    ),
+    chineseTranslatePrefixes: bareScriptForms(
+      ROLE_TRANSLATION_UNQUOTED_FRAME,
+      containsCjk,
+    ),
+    chineseTargetMarkers: scriptForms(
+      ROLE_TRANSLATION_TARGET_DIRECTION,
+      containsCjk,
+    ),
+  };
+  return cachedTranslationMarkers;
+}
+
 // Issue #216: extract the surface from unquoted translation prompts such as
 // `translate apple to russian`, `переведи яблоко на английский`,
 // `apple का हिंदी में अनुवाद करो`, or `把 apple 翻译成中文`. Returns null when
 // the prompt already contains a quoted fragment or does not match a supported
-// verb + target-marker pattern.
+// verb + target-marker pattern. Issue #386: every marker is now projected from
+// the lexicon by role/slot/script — translationMarkers() above — so this code
+// names the *shape* of each frame, never its words.
 function extractUnquotedTranslationSurface(text) {
   const source = String(text || "").trim();
   const trimmed = source.replace(/[.!?。]+$/u, "");
   const lower = trimmed.toLowerCase();
+  const markers = translationMarkers();
 
-  const extractBetween = (prefix, marker) => {
-    if (!lower.startsWith(prefix)) return null;
-    const afterPrefix = lower.slice(prefix.length);
-    const markerIndex = afterPrefix.indexOf(marker);
-    if (markerIndex === -1) return null;
-    return cleanUnquotedTranslationSurface(
-      trimmed.slice(prefix.length, prefix.length + markerIndex),
+  for (const [prefix, marker] of markers.circumfixFrames) {
+    const extracted = extractBetweenPrefixAndMarker(
+      trimmed,
+      lower,
+      prefix,
+      marker,
     );
-  };
-
-  const direct =
-    extractBetween("translate ", " to ") ||
-    extractBetween("переведи ", " на ");
-  if (direct) return direct;
+    if (extracted) return extracted;
+  }
 
   const hindi = extractHindiUnquotedTranslationSurface(trimmed, lower);
   if (hindi) return hindi;
   return extractChineseUnquotedTranslationSurface(trimmed, lower);
+}
+
+// The surface that sits between a circumfix frame's prefix and its trailing
+// marker (e.g. "translate " … " to "). Mirrors extract_between_prefix_and_marker
+// in src/translation/prompt.rs.
+function extractBetweenPrefixAndMarker(original, lower, prefix, marker) {
+  if (!lower.startsWith(prefix)) return null;
+  const afterPrefix = lower.slice(prefix.length);
+  const markerIndex = afterPrefix.indexOf(marker);
+  if (markerIndex === -1) return null;
+  return cleanUnquotedTranslationSurface(
+    original.slice(prefix.length, prefix.length + markerIndex),
+  );
 }
 
 function cleanUnquotedTranslationSurface(candidate) {
@@ -2869,13 +2974,18 @@ function cleanUnquotedTranslationSurface(candidate) {
   return cleaned;
 }
 
+// Head-final Hindi: "<surface> <object-marker> <target> में अनुवाद". Gated on a
+// Devanagari translate stem (अनुवाद); the target markers and object markers are
+// the Devanagari forms of the into-marker and object-marker roles. Mirrors
+// extract_hindi_unquoted_surface in src/translation/prompt.rs.
 function extractHindiUnquotedTranslationSurface(original, lower) {
-  if (!lower.includes("अनुवाद")) return null;
-  for (const targetMarker of [" में अनुवाद", " मे अनुवाद"]) {
+  const markers = translationMarkers();
+  if (!markers.hindiVerbStems.some((stem) => lower.includes(stem))) return null;
+  for (const targetMarker of markers.hindiTargetMarkers) {
     const targetIndex = lower.indexOf(targetMarker);
     if (targetIndex === -1) continue;
     const beforeTarget = lower.slice(0, targetIndex);
-    for (const surfaceMarker of [" का ", " को "]) {
+    for (const surfaceMarker of markers.hindiObjectMarkers) {
       const surfaceEnd = beforeTarget.lastIndexOf(surfaceMarker);
       if (surfaceEnd !== -1) {
         return cleanUnquotedTranslationSurface(original.slice(0, surfaceEnd));
@@ -2894,18 +3004,17 @@ function firstMarkerOffset(text, markers) {
   return best;
 }
 
+// Head-initial Chinese: a command prefix (把/将) + command marker (翻译成 …), or a
+// bare translate stem (翻译/翻譯) + target marker (成/为/到). Both prefix sets and
+// marker sets are the Han forms of the object-marker / into-marker / unquoted-
+// frame / target-direction roles. Mirrors extract_chinese_unquoted_surface in
+// src/translation/prompt.rs.
 function extractChineseUnquotedTranslationSurface(original, lower) {
-  for (const prefix of ["把", "将"]) {
+  const markers = translationMarkers();
+  for (const prefix of markers.chineseCommandPrefixes) {
     if (!lower.startsWith(prefix)) continue;
     const rest = lower.slice(prefix.length);
-    const markerIndex = firstMarkerOffset(rest, [
-      "翻译成",
-      "翻译为",
-      "翻译到",
-      "翻譯成",
-      "翻譯為",
-      "翻譯到",
-    ]);
+    const markerIndex = firstMarkerOffset(rest, markers.chineseCommandMarkers);
     if (markerIndex !== null) {
       return cleanUnquotedTranslationSurface(
         original.slice(prefix.length, prefix.length + markerIndex),
@@ -2913,10 +3022,10 @@ function extractChineseUnquotedTranslationSurface(original, lower) {
     }
   }
 
-  for (const prefix of ["翻译", "翻譯"]) {
+  for (const prefix of markers.chineseTranslatePrefixes) {
     if (!lower.startsWith(prefix)) continue;
     const rest = lower.slice(prefix.length);
-    const markerIndex = firstMarkerOffset(rest, ["成", "为", "為", "到"]);
+    const markerIndex = firstMarkerOffset(rest, markers.chineseTargetMarkers);
     if (markerIndex !== null) {
       return cleanUnquotedTranslationSurface(
         original.slice(prefix.length, prefix.length + markerIndex),
@@ -4920,93 +5029,25 @@ function tryCapabilities(prompt, normalized, preferences, history) {
   };
 }
 
+// Issue #386: the source/target language of a translation prompt is read from
+// the lexicon, not a hardcoded per-language phrase ladder. Each translation
+// source/target marker meaning enumerates its surfaces across all four
+// languages and is defined_by the language_* meaning it names; detection walks
+// those meanings in declaration order (en, ru, hi, zh) and resolves the code
+// through defined_by. Mirrors detect_source_language / detect_target_language
+// in src/translation/language_markers.rs.
 function detectTranslationSourceLanguage(normalized) {
-  if (
-    normalized.includes("from english") ||
-    normalized.includes("с английского") ||
-    normalized.includes("अंग्रेजी से") ||
-    normalized.includes("अंग्रेज़ी से") ||
-    normalized.includes("从英语") ||
-    normalized.includes("从英文")
-  ) return "en";
-  if (
-    normalized.includes("from russian") ||
-    normalized.includes("с русского") ||
-    normalized.includes("रूसी से") ||
-    normalized.includes("从俄语")
-  ) return "ru";
-  if (
-    normalized.includes("from hindi") ||
-    normalized.includes("हिंदी से") ||
-    normalized.includes("हिन्दी से") ||
-    normalized.includes("从印地语") ||
-    normalized.includes("从印地文")
-  ) return "hi";
-  if (
-    normalized.includes("from chinese") ||
-    normalized.includes("चीनी से") ||
-    normalized.includes("从中文") ||
-    normalized.includes("从汉语") ||
-    normalized.includes("从漢語")
-  ) return "zh";
-  return null;
+  return detectTranslationMarkerLanguage(
+    ROLE_TRANSLATION_SOURCE_MARKER,
+    normalized,
+  );
 }
 
 function detectTranslationTargetLanguage(normalized) {
-  if (
-    normalized.includes("to english") ||
-    normalized.includes("на английский") ||
-    normalized.includes("на английском") ||
-    normalized.includes("अंग्रेजी में") ||
-    normalized.includes("अंग्रेज़ी में") ||
-    ["成英文", "成英语", "为英文", "为英语", "為英文", "為英语", "到英文", "到英语"]
-      .some((marker) => normalized.includes(marker))
-  ) {
-    return "en";
-  }
-  if (
-    normalized.includes("to russian") ||
-    normalized.includes("на русский") ||
-    normalized.includes("रूसी में") ||
-    ["成俄语", "成俄語", "为俄语", "为俄語", "為俄语", "為俄語", "到俄语", "到俄語"]
-      .some((marker) => normalized.includes(marker))
-  ) return "ru";
-  if (
-    normalized.includes("to hindi") ||
-    normalized.includes("на хинди") ||
-    normalized.includes("हिंदी में") ||
-    normalized.includes("हिन्दी में") ||
-    [
-      "成印地语",
-      "成印地文",
-      "为印地语",
-      "为印地文",
-      "為印地语",
-      "為印地文",
-      "到印地语",
-      "到印地文",
-    ].some((marker) => normalized.includes(marker))
-  ) return "hi";
-  if (
-    normalized.includes("to chinese") ||
-    normalized.includes("на китайский") ||
-    normalized.includes("चीनी में") ||
-    [
-      "成中文",
-      "成汉语",
-      "成漢語",
-      "为中文",
-      "为汉语",
-      "为漢語",
-      "為中文",
-      "為汉语",
-      "為漢語",
-      "到中文",
-      "到汉语",
-      "到漢語",
-    ].some((marker) => normalized.includes(marker))
-  ) return "zh";
-  return null;
+  return detectTranslationMarkerLanguage(
+    ROLE_TRANSLATION_TARGET_MARKER,
+    normalized,
+  );
 }
 
 // Offline meaning registry for the browser worker.
@@ -11906,6 +11947,16 @@ function containsCjk(text) {
   );
 }
 
+// Devanagari (Hindi, …) is written without spaces between words, so the
+// whitespace-based phrase/token matchers never isolate a Devanagari word —
+// exactly as for CJK above. Mirrors `coding::catalog::contains_devanagari` on
+// the Rust side (range U+0900–U+097F): lets a handler split a role's word forms
+// by script (Devanagari vs. Han) straight from the seed, so the head-final
+// Hindi and Chinese extraction strategies never name a raw word (issue #386).
+function containsDevanagari(text) {
+  return /[ऀ-ॿ]/.test(String(text || ""));
+}
+
 function containsProgramToken(normalized, token) {
   if (containsCjk(token)) return String(normalized || "").includes(token);
   return String(normalized || "")
@@ -18331,6 +18382,460 @@ const MEANINGS_LINO = [
   '        description "Chinese sequencing adverb (pinyin ranhou, then); a clause boundary that can introduce a follow-up instruction."',
   '      word "接着"',
   '        description "Chinese sequencing adverb (pinyin jiezhe, next); a clause boundary that can introduce a follow-up instruction."',
+  "meanings",
+  '  meaning "human_language"',
+  "    gloss \"a natural human language — the kind of system a translation request names as its source or its target. It is the genus the four supported languages specialise: each language meaning is defined_by it, so the recogniser reads a marker's language by walking the marker's defined_by edges down to one of these language meanings. The ISO 639-1 code itself (en, ru, hi, zh) is an identifier fixed in code, not a surface word; what lives here is how each language is named, in every supported language.\"",
+  '    wiktionary "language"',
+  '    defined_by "concept"',
+  '    role "translation_language_genus"',
+  '    lexeme "en"',
+  '      word "language"',
+  '        description "English noun (language) naming the genus of natural human languages a translation runs between."',
+  '    lexeme "ru"',
+  '      word "язык"',
+  '        description "Russian noun (romanized yazyk, language) naming the genus of natural human languages."',
+  '    lexeme "hi"',
+  '      word "भाषा"',
+  '        description "Hindi noun (romanized bhasha, language) naming the genus of natural human languages."',
+  '    lexeme "zh"',
+  '      word "语言"',
+  '        description "Chinese noun (pinyin yuyan, language) naming the genus of natural human languages."',
+  '  meaning "language_english"',
+  "    gloss \"the English language — one of the four supported translation languages, ISO 639-1 code en. The code is fixed in the handler; this meaning records how English is named across the supported languages and is the language building block the from-English and into-English markers are defined_by, so detection resolves their language by reaching this meaning's slug.\"",
+  '    wiktionary "English"',
+  '    defined_by "human_language"',
+  '    role "translation_language"',
+  '    lexeme "en"',
+  '      word "english"',
+  '        description "English name of the English language (lowercased), code en."',
+  '    lexeme "ru"',
+  '      word "английский"',
+  '        description "Russian name of English (romanized angliyskiy), code en."',
+  '    lexeme "hi"',
+  '      word "अंग्रेज़ी"',
+  '        description "Hindi name of English (romanized angrezi, with nuqta), code en."',
+  '      word "अंग्रेजी"',
+  '        description "Hindi name of English (romanized angrezi, without nuqta), code en."',
+  '    lexeme "zh"',
+  '      word "英语"',
+  '        description "Chinese name of English (pinyin yingyu), code en."',
+  '      word "英文"',
+  '        description "Chinese name of English (pinyin yingwen, the written-language variant), code en."',
+  '  meaning "language_russian"',
+  '    gloss "the Russian language — one of the four supported translation languages, ISO 639-1 code ru. The code is fixed in the handler; this meaning records how Russian is named across the supported languages and is the language building block the from-Russian and into-Russian markers are defined_by."',
+  '    wiktionary "Russian"',
+  '    defined_by "human_language"',
+  '    role "translation_language"',
+  '    lexeme "en"',
+  '      word "russian"',
+  '        description "English name of the Russian language (lowercased), code ru."',
+  '    lexeme "ru"',
+  '      word "русский"',
+  '        description "Russian name of Russian (romanized russkiy), code ru."',
+  '    lexeme "hi"',
+  '      word "रूसी"',
+  '        description "Hindi name of Russian (romanized rusi), code ru."',
+  '    lexeme "zh"',
+  '      word "俄语"',
+  '        description "Chinese name of Russian (pinyin eyu), code ru."',
+  '  meaning "language_hindi"',
+  '    gloss "the Hindi language — one of the four supported translation languages, ISO 639-1 code hi. The code is fixed in the handler; this meaning records how Hindi is named across the supported languages and is the language building block the from-Hindi and into-Hindi markers are defined_by."',
+  '    wiktionary "Hindi"',
+  '    defined_by "human_language"',
+  '    role "translation_language"',
+  '    lexeme "en"',
+  '      word "hindi"',
+  '        description "English name of the Hindi language (lowercased), code hi."',
+  '    lexeme "ru"',
+  '      word "хинди"',
+  '        description "Russian name of Hindi (romanized khindi), code hi."',
+  '    lexeme "hi"',
+  '      word "हिंदी"',
+  '        description "Hindi name of Hindi (romanized hindi, anusvara spelling), code hi."',
+  '      word "हिन्दी"',
+  '        description "Hindi name of Hindi (romanized hindi, conjunct spelling), code hi."',
+  '    lexeme "zh"',
+  '      word "印地语"',
+  '        description "Chinese name of Hindi (pinyin yindiyu), code hi."',
+  '  meaning "language_chinese"',
+  '    gloss "the Chinese language — one of the four supported translation languages, ISO 639-1 code zh. The code is fixed in the handler; this meaning records how Chinese is named across the supported languages and is the language building block the from-Chinese and into-Chinese markers are defined_by."',
+  '    wiktionary "Chinese"',
+  '    defined_by "human_language"',
+  '    role "translation_language"',
+  '    lexeme "en"',
+  '      word "chinese"',
+  '        description "English name of the Chinese language (lowercased), code zh."',
+  '    lexeme "ru"',
+  '      word "китайский"',
+  '        description "Russian name of Chinese (romanized kitayskiy), code zh."',
+  '    lexeme "hi"',
+  '      word "चीनी"',
+  '        description "Hindi name of Chinese (romanized chini), code zh."',
+  '    lexeme "zh"',
+  '      word "中文"',
+  '        description "Chinese name of Chinese (pinyin zhongwen), code zh."',
+  '      word "汉语"',
+  '        description "Chinese name of Chinese (pinyin hanyu, simplified), code zh."',
+  '      word "漢語"',
+  '        description "Chinese name of Chinese (pinyin hanyu, traditional), code zh."',
+  '  meaning "translate"',
+  "    gloss \"the action of rendering a surface from one language into another — the verb every translation request realises. It is the genus the unquoted-frame and into-marker meanings specialise: its surfaces are the bare verb stems, used to detect a translation command in head-final Hindi (अनुवाद) and Chinese (翻译) where the verb is not bracketed by a circumfix. The English and Russian stems are recorded for completeness; those languages are recognised through the unquoted frame's circumfix instead.\"",
+  '    wiktionary "translate"',
+  '    defined_by "action"',
+  '    role "translation_action"',
+  '    lexeme "en"',
+  '      word "translate"',
+  '        description "English verb (translate) naming the translation action."',
+  '    lexeme "ru"',
+  '      word "перевести"',
+  '        description "Russian verb (romanized perevesti, to translate), the infinitive stem of the translation action."',
+  '      word "переведи"',
+  '        description "Russian verb (romanized perevedi, translate!), the imperative stem of the translation action."',
+  '    lexeme "hi"',
+  '      word "अनुवाद"',
+  '        description "Hindi noun (romanized anuvad, translation) used with करो/करें to form the translation command; scanned as the bare verb stem in Hindi prompts."',
+  '    lexeme "zh"',
+  '      word "翻译"',
+  '        description "Chinese verb (pinyin fanyi, translate, simplified), scanned as the bare verb stem in Chinese prompts."',
+  '      word "翻譯"',
+  '        description "Chinese verb (pinyin fanyi, translate, traditional), scanned as the bare verb stem in Chinese prompts."',
+  '  meaning "translation_direction_source"',
+  '    gloss "the source-direction relation in a translation — the from side that names the language a surface is translated out of. Its surfaces are the bare directional prepositions; the from-language markers are constructed from this relation plus a language meaning, so the recogniser never stores a glued from-language phrase as an atom — it is built from its parts."',
+  '    wiktionary "from"',
+  '    defined_by "relation"',
+  '    role "translation_source_direction"',
+  '    lexeme "en"',
+  '      word "from"',
+  '        description "English preposition (from) naming the source direction of a translation."',
+  '    lexeme "ru"',
+  '      word "с"',
+  '        description "Russian preposition (romanized s, from), naming the source direction (governs the genitive)."',
+  '    lexeme "hi"',
+  '      word "से"',
+  '        description "Hindi postposition (romanized se, from), naming the source direction."',
+  '    lexeme "zh"',
+  '      word "从"',
+  '        description "Chinese coverb (pinyin cong, from), naming the source direction."',
+  '  meaning "translation_direction_target"',
+  '    gloss "the target-direction relation in a translation — the into side that names the language a surface is translated toward. Its surfaces are the bare directional markers. In Chinese these bare markers (成, 为, 為, 到) are scanned directly: after a 翻译 verb the recogniser stops the surface at the first of them, so it reads the target boundary from this relation rather than from a hardcoded list. The into-language markers are constructed from this relation plus a language meaning."',
+  '    wiktionary "to"',
+  '    defined_by "relation"',
+  '    role "translation_target_direction"',
+  '    lexeme "en"',
+  '      word "to"',
+  '        description "English preposition (to) naming the target direction of a translation."',
+  '    lexeme "ru"',
+  '      word "на"',
+  '        description "Russian preposition (romanized na, to/onto), naming the target direction (governs the accusative)."',
+  '    lexeme "hi"',
+  '      word "में"',
+  '        description "Hindi postposition (romanized mein, in/into), naming the target direction."',
+  '    lexeme "zh"',
+  '      word "成"',
+  '        description "Chinese resultative (pinyin cheng, into), a bare target-direction marker after the verb."',
+  '      word "为"',
+  '        description "Chinese coverb (pinyin wei, into/as, simplified), a bare target-direction marker after the verb."',
+  '      word "為"',
+  '        description "Chinese coverb (pinyin wei, into/as, traditional), a bare target-direction marker after the verb."',
+  '      word "到"',
+  '        description "Chinese resultative (pinyin dao, to/until), a bare target-direction marker after the verb."',
+  '  meaning "translate_from_english"',
+  '    gloss "the marker that names English as the translation source — translate … from english, с английского, अंग्रेज़ी से, 从英语. It is constructed from language_english and the source-direction relation; when any of its surfaces appears in a prompt the recogniser reports the source language as English (en, read by walking defined_by to language_english). Surfaces are matched as raw substrings, exactly as the previous hardcoded list did."',
+  '    wiktionary "English"',
+  '    defined_by "language_english"',
+  '    defined_by "translation_direction_source"',
+  '    role "translation_source_marker"',
+  '    lexeme "en"',
+  '      word "from english"',
+  '        description "English source phrase (from + english); evidence the source language is English."',
+  '    lexeme "ru"',
+  '      word "с английского"',
+  '        description "Russian source phrase (romanized s angliyskogo, from English, genitive); evidence the source is English."',
+  '    lexeme "hi"',
+  '      word "अंग्रेजी से"',
+  '        description "Hindi source phrase (romanized angrezi se, from English, without nuqta); evidence the source is English."',
+  '      word "अंग्रेज़ी से"',
+  '        description "Hindi source phrase (romanized angrezi se, from English, with nuqta); evidence the source is English."',
+  '    lexeme "zh"',
+  '      word "从英语"',
+  '        description "Chinese source phrase (pinyin cong yingyu, from English); evidence the source is English."',
+  '      word "从英文"',
+  '        description "Chinese source phrase (pinyin cong yingwen, from English, written-language variant); evidence the source is English."',
+  '  meaning "translate_from_russian"',
+  '    gloss "the marker that names Russian as the translation source — translate … from russian, с русского, रूसी से, 从俄语. Constructed from language_russian and the source-direction relation; any surface reports the source language as Russian (ru)."',
+  '    wiktionary "Russian"',
+  '    defined_by "language_russian"',
+  '    defined_by "translation_direction_source"',
+  '    role "translation_source_marker"',
+  '    lexeme "en"',
+  '      word "from russian"',
+  '        description "English source phrase (from + russian); evidence the source language is Russian."',
+  '    lexeme "ru"',
+  '      word "с русского"',
+  '        description "Russian source phrase (romanized s russkogo, from Russian, genitive); evidence the source is Russian."',
+  '    lexeme "hi"',
+  '      word "रूसी से"',
+  '        description "Hindi source phrase (romanized rusi se, from Russian); evidence the source is Russian."',
+  '    lexeme "zh"',
+  '      word "从俄语"',
+  '        description "Chinese source phrase (pinyin cong eyu, from Russian); evidence the source is Russian."',
+  '  meaning "translate_from_hindi"',
+  '    gloss "the marker that names Hindi as the translation source — translate … from hindi, с хинди, हिंदी से, 从印地语. Constructed from language_hindi and the source-direction relation; any surface reports the source language as Hindi (hi). The Russian с хинди surface completes the four-language coverage the relative-meta-logic invariants require."',
+  '    wiktionary "Hindi"',
+  '    defined_by "language_hindi"',
+  '    defined_by "translation_direction_source"',
+  '    role "translation_source_marker"',
+  '    lexeme "en"',
+  '      word "from hindi"',
+  '        description "English source phrase (from + hindi); evidence the source language is Hindi."',
+  '    lexeme "ru"',
+  '      word "с хинди"',
+  '        description "Russian source phrase (romanized s khindi, from Hindi, genitive); evidence the source is Hindi."',
+  '    lexeme "hi"',
+  '      word "हिंदी से"',
+  '        description "Hindi source phrase (romanized hindi se, from Hindi, anusvara spelling); evidence the source is Hindi."',
+  '      word "हिन्दी से"',
+  '        description "Hindi source phrase (romanized hindi se, from Hindi, conjunct spelling); evidence the source is Hindi."',
+  '    lexeme "zh"',
+  '      word "从印地语"',
+  '        description "Chinese source phrase (pinyin cong yindiyu, from Hindi); evidence the source is Hindi."',
+  '      word "从印地文"',
+  '        description "Chinese source phrase (pinyin cong yindiwen, from Hindi, written-language variant); evidence the source is Hindi."',
+  '  meaning "translate_from_chinese"',
+  '    gloss "the marker that names Chinese as the translation source — translate … from chinese, с китайского, चीनी से, 从中文. Constructed from language_chinese and the source-direction relation; any surface reports the source language as Chinese (zh). The Russian с китайского surface completes the four-language coverage the relative-meta-logic invariants require."',
+  '    wiktionary "Chinese"',
+  '    defined_by "language_chinese"',
+  '    defined_by "translation_direction_source"',
+  '    role "translation_source_marker"',
+  '    lexeme "en"',
+  '      word "from chinese"',
+  '        description "English source phrase (from + chinese); evidence the source language is Chinese."',
+  '    lexeme "ru"',
+  '      word "с китайского"',
+  '        description "Russian source phrase (romanized s kitayskogo, from Chinese, genitive); evidence the source is Chinese."',
+  '    lexeme "hi"',
+  '      word "चीनी से"',
+  '        description "Hindi source phrase (romanized chini se, from Chinese); evidence the source is Chinese."',
+  '    lexeme "zh"',
+  '      word "从中文"',
+  '        description "Chinese source phrase (pinyin cong zhongwen, from Chinese); evidence the source is Chinese."',
+  '      word "从汉语"',
+  '        description "Chinese source phrase (pinyin cong hanyu, from Chinese, simplified); evidence the source is Chinese."',
+  '      word "从漢語"',
+  '        description "Chinese source phrase (pinyin cong hanyu, from Chinese, traditional); evidence the source is Chinese."',
+  '  meaning "translate_into_english"',
+  '    gloss "the marker that names English as the translation target — translate … to english, на английский, अंग्रेज़ी में, 成英文. Constructed from language_english and the target-direction relation; any surface reports the target language as English (en). The Chinese forms enumerate every target-direction marker (成/为/為/到) glued to each name of English, matched as raw substrings exactly as the previous hardcoded list did."',
+  '    wiktionary "English"',
+  '    defined_by "language_english"',
+  '    defined_by "translation_direction_target"',
+  '    role "translation_target_marker"',
+  '    lexeme "en"',
+  '      word "to english"',
+  '        description "English target phrase (to + english); evidence the target language is English."',
+  '    lexeme "ru"',
+  '      word "на английский"',
+  '        description "Russian target phrase (romanized na angliyskiy, into English, accusative); evidence the target is English."',
+  '      word "на английском"',
+  '        description "Russian target phrase (romanized na angliyskom, in English, prepositional); evidence the target is English."',
+  '    lexeme "hi"',
+  '      word "अंग्रेजी में"',
+  '        description "Hindi target phrase (romanized angrezi mein, into English, without nuqta); evidence the target is English."',
+  '      word "अंग्रेज़ी में"',
+  '        description "Hindi target phrase (romanized angrezi mein, into English, with nuqta); evidence the target is English."',
+  '    lexeme "zh"',
+  '      word "成英文"',
+  '        description "Chinese target phrase (pinyin cheng yingwen, into English); 成 + 英文."',
+  '      word "成英语"',
+  '        description "Chinese target phrase (pinyin cheng yingyu, into English); 成 + 英语."',
+  '      word "为英文"',
+  '        description "Chinese target phrase (pinyin wei yingwen, into English, simplified); 为 + 英文."',
+  '      word "为英语"',
+  '        description "Chinese target phrase (pinyin wei yingyu, into English, simplified); 为 + 英语."',
+  '      word "為英文"',
+  '        description "Chinese target phrase (pinyin wei yingwen, into English, traditional); 為 + 英文."',
+  '      word "為英语"',
+  '        description "Chinese target phrase (pinyin wei yingyu, into English, traditional 為 + simplified 英语); evidence the target is English."',
+  '      word "到英文"',
+  '        description "Chinese target phrase (pinyin dao yingwen, to English); 到 + 英文."',
+  '      word "到英语"',
+  '        description "Chinese target phrase (pinyin dao yingyu, to English); 到 + 英语."',
+  '  meaning "translate_into_russian"',
+  '    gloss "the marker that names Russian as the translation target — translate … to russian, на русский, रूसी में, 成俄语. Constructed from language_russian and the target-direction relation; any surface reports the target language as Russian (ru). The Chinese forms enumerate every target-direction marker glued to each name of Russian."',
+  '    wiktionary "Russian"',
+  '    defined_by "language_russian"',
+  '    defined_by "translation_direction_target"',
+  '    role "translation_target_marker"',
+  '    lexeme "en"',
+  '      word "to russian"',
+  '        description "English target phrase (to + russian); evidence the target language is Russian."',
+  '    lexeme "ru"',
+  '      word "на русский"',
+  '        description "Russian target phrase (romanized na russkiy, into Russian, accusative); evidence the target is Russian."',
+  '    lexeme "hi"',
+  '      word "रूसी में"',
+  '        description "Hindi target phrase (romanized rusi mein, into Russian); evidence the target is Russian."',
+  '    lexeme "zh"',
+  '      word "成俄语"',
+  '        description "Chinese target phrase (pinyin cheng eyu, into Russian, simplified); 成 + 俄语."',
+  '      word "成俄語"',
+  '        description "Chinese target phrase (pinyin cheng eyu, into Russian, traditional); 成 + 俄語."',
+  '      word "为俄语"',
+  '        description "Chinese target phrase (pinyin wei eyu, into Russian, simplified); 为 + 俄语."',
+  '      word "为俄語"',
+  '        description "Chinese target phrase (pinyin wei eyu, into Russian, simplified 为 + traditional 俄語); evidence the target is Russian."',
+  '      word "為俄语"',
+  '        description "Chinese target phrase (pinyin wei eyu, into Russian, traditional 為 + simplified 俄语); evidence the target is Russian."',
+  '      word "為俄語"',
+  '        description "Chinese target phrase (pinyin wei eyu, into Russian, traditional); 為 + 俄語."',
+  '      word "到俄语"',
+  '        description "Chinese target phrase (pinyin dao eyu, to Russian, simplified); 到 + 俄语."',
+  '      word "到俄語"',
+  '        description "Chinese target phrase (pinyin dao eyu, to Russian, traditional); 到 + 俄語."',
+  '  meaning "translate_into_hindi"',
+  '    gloss "the marker that names Hindi as the translation target — translate … to hindi, на хинди, हिंदी में, 成印地语. Constructed from language_hindi and the target-direction relation; any surface reports the target language as Hindi (hi). The Chinese forms enumerate every target-direction marker glued to each name of Hindi."',
+  '    wiktionary "Hindi"',
+  '    defined_by "language_hindi"',
+  '    defined_by "translation_direction_target"',
+  '    role "translation_target_marker"',
+  '    lexeme "en"',
+  '      word "to hindi"',
+  '        description "English target phrase (to + hindi); evidence the target language is Hindi."',
+  '    lexeme "ru"',
+  '      word "на хинди"',
+  '        description "Russian target phrase (romanized na khindi, into Hindi); evidence the target is Hindi."',
+  '    lexeme "hi"',
+  '      word "हिंदी में"',
+  '        description "Hindi target phrase (romanized hindi mein, into Hindi, anusvara spelling); evidence the target is Hindi."',
+  '      word "हिन्दी में"',
+  '        description "Hindi target phrase (romanized hindi mein, into Hindi, conjunct spelling); evidence the target is Hindi."',
+  '    lexeme "zh"',
+  '      word "成印地语"',
+  '        description "Chinese target phrase (pinyin cheng yindiyu, into Hindi); 成 + 印地语."',
+  '      word "成印地文"',
+  '        description "Chinese target phrase (pinyin cheng yindiwen, into Hindi, written-language variant); 成 + 印地文."',
+  '      word "为印地语"',
+  '        description "Chinese target phrase (pinyin wei yindiyu, into Hindi, simplified); 为 + 印地语."',
+  '      word "为印地文"',
+  '        description "Chinese target phrase (pinyin wei yindiwen, into Hindi, simplified); 为 + 印地文."',
+  '      word "為印地语"',
+  '        description "Chinese target phrase (pinyin wei yindiyu, into Hindi, traditional 為 + simplified 印地语); evidence the target is Hindi."',
+  '      word "為印地文"',
+  '        description "Chinese target phrase (pinyin wei yindiwen, into Hindi, traditional 為 + 印地文); evidence the target is Hindi."',
+  '      word "到印地语"',
+  '        description "Chinese target phrase (pinyin dao yindiyu, to Hindi); 到 + 印地语."',
+  '      word "到印地文"',
+  '        description "Chinese target phrase (pinyin dao yindiwen, to Hindi); 到 + 印地文."',
+  '  meaning "translate_into_chinese"',
+  '    gloss "the marker that names Chinese as the translation target — translate … to chinese, на китайский, चीनी में, 成中文. Constructed from language_chinese and the target-direction relation; any surface reports the target language as Chinese (zh). The Chinese forms enumerate every target-direction marker glued to each name of Chinese."',
+  '    wiktionary "Chinese"',
+  '    defined_by "language_chinese"',
+  '    defined_by "translation_direction_target"',
+  '    role "translation_target_marker"',
+  '    lexeme "en"',
+  '      word "to chinese"',
+  '        description "English target phrase (to + chinese); evidence the target language is Chinese."',
+  '    lexeme "ru"',
+  '      word "на китайский"',
+  '        description "Russian target phrase (romanized na kitayskiy, into Chinese, accusative); evidence the target is Chinese."',
+  '    lexeme "hi"',
+  '      word "चीनी में"',
+  '        description "Hindi target phrase (romanized chini mein, into Chinese); evidence the target is Chinese."',
+  '    lexeme "zh"',
+  '      word "成中文"',
+  '        description "Chinese target phrase (pinyin cheng zhongwen, into Chinese); 成 + 中文."',
+  '      word "成汉语"',
+  '        description "Chinese target phrase (pinyin cheng hanyu, into Chinese, simplified); 成 + 汉语."',
+  '      word "成漢語"',
+  '        description "Chinese target phrase (pinyin cheng hanyu, into Chinese, traditional); 成 + 漢語."',
+  '      word "为中文"',
+  '        description "Chinese target phrase (pinyin wei zhongwen, into Chinese, simplified); 为 + 中文."',
+  '      word "为汉语"',
+  '        description "Chinese target phrase (pinyin wei hanyu, into Chinese, simplified); 为 + 汉语."',
+  '      word "为漢語"',
+  '        description "Chinese target phrase (pinyin wei hanyu, into Chinese, simplified 为 + traditional 漢語); evidence the target is Chinese."',
+  '      word "為中文"',
+  '        description "Chinese target phrase (pinyin wei zhongwen, into Chinese, traditional 為 + 中文); evidence the target is Chinese."',
+  '      word "為汉语"',
+  '        description "Chinese target phrase (pinyin wei hanyu, into Chinese, traditional 為 + simplified 汉语); evidence the target is Chinese."',
+  '      word "為漢語"',
+  '        description "Chinese target phrase (pinyin wei hanyu, into Chinese, traditional); 為 + 漢語."',
+  '      word "到中文"',
+  '        description "Chinese target phrase (pinyin dao zhongwen, to Chinese); 到 + 中文."',
+  '      word "到汉语"',
+  '        description "Chinese target phrase (pinyin dao hanyu, to Chinese, simplified); 到 + 汉语."',
+  '      word "到漢語"',
+  '        description "Chinese target phrase (pinyin dao hanyu, to Chinese, traditional); 到 + 漢語."',
+  '  meaning "translation_unquoted_frame"',
+  '    gloss "the verb frame that brackets the surface to translate in an unquoted command, so an extractor can lift the surface out without quotes. Its forms split by word order, and the slot shape records the shape. In head-initial English and Russian the verb precedes the surface and the target preposition follows it, so the form is a circumfix surface (translate … to , переведи … на ) whose literal before the slot is stripped from the front and whose literal after the slot bounds the surface on the right. In head-final Hindi and Chinese the verb is not a bracket, so the form is a bare verb stem (अनुवाद, 翻译/翻譯) that gates the language-specific extractor. Constructed from the translate action and the target-direction relation."',
+  '    wiktionary "translate"',
+  '    defined_by "translate"',
+  '    defined_by "translation_direction_target"',
+  '    role "translation_unquoted_frame"',
+  '    lexeme "en"',
+  '      word "translate … to "',
+  '        description "English circumfix frame; before the slot the verb prefix translate (trailing space) is stripped, after the slot the target preposition  to  (space-wrapped) bounds the surface on the right."',
+  '    lexeme "ru"',
+  '      word "переведи … на "',
+  '        description "Russian circumfix frame (romanized perevedi … na, translate … to); before the slot the imperative verb is stripped, after the slot the target preposition  на  bounds the surface on the right."',
+  '    lexeme "hi"',
+  '      word "अनुवाद"',
+  '        description "Hindi bare verb stem (romanized anuvad, translation); its presence gates the Hindi unquoted extractor, which reads the surface from the object and into postpositions."',
+  '    lexeme "zh"',
+  '      word "翻译"',
+  '        description "Chinese bare verb stem (pinyin fanyi, translate, simplified); stripped from the front as a translate prefix when no disposal 把/将 opens the command."',
+  '      word "翻譯"',
+  '        description "Chinese bare verb stem (pinyin fanyi, translate, traditional); stripped from the front as a translate prefix when no disposal 把/将 opens the command."',
+  '  meaning "translation_into_marker"',
+  "    gloss \"the verb-and-target compound that introduces the target language right after the surface — translate-into. Languages glue the verb and the into-direction in opposite orders: head-final Hindi postposes the target marker onto the verb noun ( में अनुवाद,  मे अनुवाद), so the extractor finds it and takes the text before it; Chinese prefixes the into-direction onto the verb (翻译成, 翻译为, 翻译到 and traditional 翻譯…), so the extractor stops the surface at the first such compound. The English and Russian compounds (translate into, перевести на) are recorded for completeness; those languages are extracted through the unquoted frame's circumfix instead, so these full compounds are not separately scanned. Constructed from the translate action and the target-direction relation.\"",
+  '    wiktionary "into"',
+  '    defined_by "translate"',
+  '    defined_by "translation_direction_target"',
+  '    role "translation_into_marker"',
+  '    lexeme "en"',
+  '      word "translate into"',
+  '        description "English verb-and-target compound (translate + into); recorded for completeness — English is extracted through the unquoted frame, so this compound is not separately scanned."',
+  '    lexeme "ru"',
+  '      word "перевести на"',
+  '        description "Russian verb-and-target compound (romanized perevesti na, translate into); recorded for completeness — Russian is extracted through the unquoted frame, so this compound is not separately scanned."',
+  '    lexeme "hi"',
+  '      word " में अनुवाद"',
+  '        description "Hindi target-and-verb compound (romanized mein anuvad, into translation), space-led; the extractor finds it and keeps the text before it as the surface."',
+  '      word " मे अनुवाद"',
+  '        description "Hindi target-and-verb compound (romanized me anuvad, into translation, anusvara-dropped variant), space-led; the extractor finds it and keeps the text before it as the surface."',
+  '    lexeme "zh"',
+  '      word "翻译成"',
+  '        description "Chinese verb-and-target compound (pinyin fanyi cheng, translate into, simplified); the extractor stops the surface at it."',
+  '      word "翻译为"',
+  '        description "Chinese verb-and-target compound (pinyin fanyi wei, translate into, simplified); the extractor stops the surface at it."',
+  '      word "翻译到"',
+  '        description "Chinese verb-and-target compound (pinyin fanyi dao, translate to, simplified); the extractor stops the surface at it."',
+  '      word "翻譯成"',
+  '        description "Chinese verb-and-target compound (pinyin fanyi cheng, translate into, traditional); the extractor stops the surface at it."',
+  '      word "翻譯為"',
+  '        description "Chinese verb-and-target compound (pinyin fanyi wei, translate into, traditional); the extractor stops the surface at it."',
+  '      word "翻譯到"',
+  '        description "Chinese verb-and-target compound (pinyin fanyi dao, translate to, traditional); the extractor stops the surface at it."',
+  '  meaning "translation_object_marker"',
+  '    gloss "the particle that flags the noun phrase to be translated as the object, so an extractor can bound it. Word order decides the shape: head-final Hindi postposes the marker after the object (का genitive, को accusative), so the extractor uses it as a right boundary and keeps the text before it; Chinese prefixes a disposal particle before the object (把, 将), so the extractor strips it from the front and keeps the text after it. English and Russian mark the object by position and case rather than a dedicated particle, so their nearest realisations are recorded for completeness and are not scanned — only the Devanagari and Han forms are. Defined as a grammatical relation."',
+  '    wiktionary "of"',
+  '    defined_by "relation"',
+  '    role "translation_object_marker"',
+  '    lexeme "en"',
+  '      word "of"',
+  '        description "English genitive linker (of), as in the translation of X — the nearest realisation of Hindi का; recorded for completeness, not scanned (English marks the object positionally)."',
+  '    lexeme "ru"',
+  '      word "слова"',
+  '        description "Russian genitive noun (romanized slova, of the word), as in перевод слова X — the nearest realisation marking X as the object; recorded for completeness, not scanned (Russian marks the object by case)."',
+  '    lexeme "hi"',
+  '      word " का "',
+  '        description "Hindi genitive postposition (romanized ka, of), space-wrapped; used as a right boundary — the surface is the text before it."',
+  '      word " को "',
+  '        description "Hindi accusative postposition (romanized ko, the object marker), space-wrapped; used as a right boundary after का — the surface is the text before it."',
+  '    lexeme "zh"',
+  '      word "把"',
+  '        description "Chinese disposal particle (pinyin ba) fronting the object; stripped from the front so the surface is the text after it."',
+  '      word "将"',
+  '        description "Chinese disposal particle (pinyin jiang, formal variant of 把) fronting the object; stripped from the front so the surface is the text after it."',
   "meanings",
   '  meaning "link"',
   '    gloss "the root of the ontology — a connection between things. In Links Notation every meaning is itself a link, so the root link is defined by itself and every other meaning descends from it (a single merged root in the spirit of relative-meta-logic)."',

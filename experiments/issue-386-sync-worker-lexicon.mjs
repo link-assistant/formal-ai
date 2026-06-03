@@ -35,6 +35,7 @@ const MEANING_FILES = [
   "data/seed/meanings-web-search-query.lino",
   "data/seed/meanings-web-research.lino",
   "data/seed/meanings-web-followup.lino",
+  "data/seed/meanings-translation.lino",
   "data/seed/meanings-ontology.lino",
 ];
 const workerPath = new URL("src/web/formal_ai_worker.js", root);
