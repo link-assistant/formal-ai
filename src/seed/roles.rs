@@ -991,6 +991,21 @@ pub const ROLE_YEAR_UNIT_CUE: &str = "year_unit_cue";
 /// amount. Carried by `conversion_action`; read by the Rust compound-interest
 /// handler and its JS worker mirror.
 pub const ROLE_CONVERSION_ACTION_CUE: &str = "conversion_action_cue";
+/// Semantic role: a cue that a prompt converts one quantity into another.
+///
+/// A currency or unit conversion marker or verb (to, into, convert, exchange,
+/// конвертировать, обмен, बदलें, परिवर्तित, 转换, 兑换). Matched whole-token through
+/// [`crate::seed::Lexicon::mentions_role`] after the prompt is lower-cased, so the
+/// bare target markers to/into signal a conversion only on a word boundary, never
+/// as a substring of another word. `has_calculation_signal` reads it to exempt a
+/// currency-plus-letters prompt from the prose-rejection guard, because a
+/// conversion is itself a calculation. Distinct from
+/// [`ROLE_CONVERSION_ACTION_CUE`], the money-specific verb the compound-interest
+/// handler matches as a raw substring — this one is the calculator router's
+/// general conversion signal and must stay whole-token. Carried by
+/// `quantity_conversion`; read by the Rust calculation router (the JS worker
+/// rescues currency conversions through its own currency-conversion evaluator).
+pub const ROLE_QUANTITY_CONVERSION_CUE: &str = "quantity_conversion_cue";
 /// Semantic role: a reference to a previously computed final amount.
 ///
 /// A phrase naming the final amount of a calculation ("final amount", "итоговая

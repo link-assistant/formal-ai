@@ -858,6 +858,33 @@ bump: minor
   across the English/Russian/Chinese cases, applies the bare-`=` consistency fix
   and the three multilingual generalizations, and composes prefix-plus-suffix
   stripping — all green (issue #386).
+- The calculator router's currency-conversion exemption
+  (`has_calculation_signal` in `src/calculation.rs`) no longer hardcodes a
+  to/into/convert/exchange list. A prompt that pairs a currency symbol with
+  letters but is not an explicit `calculate` command is otherwise treated as
+  prose and rejected; a conversion is itself a calculation, so a conversion cue
+  must exempt it. Those cues now live in a new self-describing
+  `quantity_conversion` meaning (`defined_by` `action` + `relation`, role
+  `quantity_conversion_cue`) in `data/seed/meanings-calculator.lino`,
+  lexicalised in every supported language — the bare target markers to / into,
+  the verbs convert / exchange, and their ru/hi/zh equivalents (конвертировать /
+  обмен, बदलें / परिवर्तित, 转换 / 兑换). The guard reads them through
+  `Lexicon::mentions_role` (a new role `ROLE_QUANTITY_CONVERSION_CUE` in
+  `src/seed/roles.rs` names the concept), which matches each surface
+  whole-token in space-delimited scripts — byte-faithful to the former
+  `lower.contains(" to ")` so the markers to/into still count only on a word
+  boundary, never inside another word — and as a substring in Chinese. This is a
+  dedicated meaning rather than a reuse of `conversion_action` (the
+  money-specific verb the compound-interest handler matches as a raw substring):
+  adding the bare markers to/into there would match them everywhere, whereas the
+  router's general conversion signal must stay whole-token. The exemption is
+  strictly more permissive (it can only flip the prose-rejection guard from
+  reject to accept), so adding the multilingual surfaces leaves every existing
+  case byte-identical. The browser worker has no twin — its conversion rescue is
+  the separate `evaluateCurrencyConversionExpression` — so only its embedded
+  `MEANINGS_LINO` was re-synced byte-identically; a regression test
+  (`calculator_currency_conversion_is_exempt_from_prose_rejection`) pins the
+  English behaviour and the no-cue contrast (issue #386).
 
 ### Fixed
 - The follow-up "Отмени сортировку" ("cancel the sorting") no longer returns

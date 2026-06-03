@@ -650,10 +650,15 @@ fn has_calculation_signal(expression: &str, explicit: bool) -> bool {
         return true;
     }
     let has_currency_symbol = expression.contains(['$', '€', '¥', '₹', '₽']);
-    let looks_like_conversion = lower.contains(" to ")
-        || lower.contains(" into ")
-        || lower.contains(" convert ")
-        || lower.contains(" exchange ");
+    // A quantity_conversion_cue (currency/unit conversion marker or verb) exempts
+    // a currency-plus-letters prompt from the prose-rejection guard below, because
+    // a conversion is itself a calculation. Matched whole-token through the
+    // lexicon, so the bare target markers "to"/"into" only count on a word
+    // boundary — exactly what the former hardcoded `lower.contains(" to ")` did.
+    let looks_like_conversion = seed::lexicon().mentions_role(
+        seed::ROLE_QUANTITY_CONVERSION_CUE,
+        &expression.to_lowercase(),
+    );
     if has_currency_symbol && has_letter && !explicit && !looks_like_conversion {
         return false;
     }

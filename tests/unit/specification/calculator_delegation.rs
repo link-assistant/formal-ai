@@ -59,6 +59,28 @@ fn calculator_handles_english_variations() {
     }
 }
 
+// Issue #386 (38-C4): the currency-conversion exemption in `has_calculation_signal`
+// is driven by the `quantity_conversion` meaning (role `quantity_conversion_cue`)
+// rather than a hardcoded to/into/convert/exchange list. A prompt that pairs a
+// currency symbol with letters is otherwise treated as prose and rejected; a
+// quantity_conversion_cue exempts it, because a conversion is itself a calculation.
+#[test]
+fn calculator_currency_conversion_is_exempt_from_prose_rejection() {
+    // "to" is a quantity_conversion_cue (matched whole-token), so the currency
+    // conversion is recognised and delegated to the calculator.
+    assert_calculation("$100 to euros", &["EUR"]);
+
+    // With no conversion cue the same currency-plus-letters prompt is prose, so
+    // the guard rejects it and it is not delegated to the calculator.
+    let bare = answer("$100 euros");
+    assert_ne!(
+        bare.intent, "calculation",
+        "a currency-plus-letters prompt with no quantity_conversion_cue should not be \
+         treated as a calculation, got answer={}",
+        bare.answer,
+    );
+}
+
 #[test]
 fn calculator_explains_fuzzy_calculate_typo() {
     assert_calculation(
