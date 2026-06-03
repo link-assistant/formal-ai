@@ -129,6 +129,17 @@ pub fn contains_cjk(text: &str) -> bool {
     })
 }
 
+/// Devanagari text (Hindi, …) is written without spaces between words, so the
+/// whitespace-based matchers never isolate a single word — exactly as for CJK.
+/// When a surface form carries a Devanagari sign we fall back to a substring
+/// test. This mirrors [`contains_cjk`] and lets a handler partition a role's
+/// word forms by script (Devanagari vs. Han) straight from the seed, so the
+/// head-final Hindi and Chinese extraction strategies never name a raw word.
+pub fn contains_devanagari(text: &str) -> bool {
+    text.chars()
+        .any(|ch| (0x0900..=0x097F).contains(&(ch as u32)))
+}
+
 fn contains_token(normalized: &str, expected: &str) -> bool {
     if contains_cjk(expected) {
         return normalized.contains(expected);

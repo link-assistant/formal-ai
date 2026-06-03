@@ -1,118 +1,115 @@
+//! Translation source/target language detection.
+//!
+//! Neither routine matches a hardcoded natural-language phrase. Each asks the
+//! language-independent meaning lexicon (`data/seed/meanings-translation.lino`)
+//! "which surface forms evidence a translation *source* / *target* marker?" and
+//! resolves the marker's language by walking its `defined_by` edges down to one
+//! of the four `language_*` meanings. Adding a spelling variant, a synonym, or a
+//! whole new supported language is therefore a pure data edit: drop a
+//! `word`/`description` into the relevant marker meaning and this code reasons
+//! about it automatically.
+//!
+//! Surfaces are matched as raw substrings ([`str::contains`]), exactly as the
+//! previous hardcoded disjunction did, so detection stays byte-faithful — a
+//! Chinese marker like `从中文` has no inter-word spaces, and a Cyrillic marker
+//! like `с английского` must match inside a longer sentence. Marker meanings are
+//! walked in declaration order (English → Russian → Hindi → Chinese), which
+//! preserves the original first-match priority.
+
+use crate::seed::{self, Meaning, ROLE_TRANSLATION_SOURCE_MARKER, ROLE_TRANSLATION_TARGET_MARKER};
+
+/// Detect the language a translation reads *from*, or `None`.
+///
+/// Walks every meaning carrying [`ROLE_TRANSLATION_SOURCE_MARKER`] and returns
+/// the language of the first whose surface appears in `normalized`.
 pub fn detect_source_language(normalized: &str) -> Option<&'static str> {
-    if normalized.contains("from english")
-        || normalized.contains("с английского")
-        || normalized.contains("अंग्रेजी से")
-        || normalized.contains("अंग्रेज़ी से")
-        || normalized.contains("从英语")
-        || normalized.contains("从英文")
-    {
-        return Some("en");
-    }
-    if normalized.contains("from russian")
-        || normalized.contains("с русского")
-        || normalized.contains("रूसी से")
-        || normalized.contains("从俄语")
-    {
-        return Some("ru");
-    }
-    if normalized.contains("from hindi")
-        || normalized.contains("हिंदी से")
-        || normalized.contains("हिन्दी से")
-        || normalized.contains("从印地语")
-        || normalized.contains("从印地文")
-    {
-        return Some("hi");
-    }
-    if normalized.contains("from chinese")
-        || normalized.contains("चीनी से")
-        || normalized.contains("从中文")
-        || normalized.contains("从汉语")
-        || normalized.contains("从漢語")
-    {
-        return Some("zh");
-    }
-    None
+    detect_marker_language(ROLE_TRANSLATION_SOURCE_MARKER, normalized)
 }
 
+/// Detect the language a translation renders *into*, or `None`.
+///
+/// Walks every meaning carrying [`ROLE_TRANSLATION_TARGET_MARKER`] and returns
+/// the language of the first whose surface appears in `normalized`.
 pub fn detect_target_language(normalized: &str) -> Option<&'static str> {
-    if normalized.contains("to english")
-        || normalized.contains("на английский")
-        || normalized.contains("на английском")
-        || normalized.contains("अंग्रेजी में")
-        || normalized.contains("अंग्रेज़ी में")
-        || [
-            "成英文",
-            "成英语",
-            "为英文",
-            "为英语",
-            "為英文",
-            "為英语",
-            "到英文",
-            "到英语",
-        ]
+    detect_marker_language(ROLE_TRANSLATION_TARGET_MARKER, normalized)
+}
+
+/// The shared recogniser: the first marker meaning of `role` (in declaration
+/// order) whose any surface word is a substring of `normalized` reports its
+/// language, read off the `language_*` meaning it is `defined_by`.
+fn detect_marker_language(role: &str, normalized: &str) -> Option<&'static str> {
+    seed::lexicon()
+        .meanings_with_role(role)
+        .filter(|meaning| meaning.words().any(|word| normalized.contains(word)))
+        .find_map(language_code_of)
+}
+
+/// The ISO 639-1 code of the `language_*` meaning a marker is `defined_by`.
+fn language_code_of(meaning: &Meaning) -> Option<&'static str> {
+    meaning
+        .defined_by
         .iter()
-        .any(|marker| normalized.contains(marker))
-    {
-        return Some("en");
+        .find_map(|slug| language_code(slug))
+}
+
+/// Map a `language_*` meaning slug to its fixed ISO 639-1 code.
+///
+/// The code is the one identifier that stays in the handler: it is the key the
+/// [`crate::translation::TranslationPipeline`] and the Wiktionary client are
+/// addressed by, not a surface word. The surface *names* of each language live
+/// in the seed; only this slug → code bridge is code.
+fn language_code(slug: &str) -> Option<&'static str> {
+    match slug {
+        "language_english" => Some("en"),
+        "language_russian" => Some("ru"),
+        "language_hindi" => Some("hi"),
+        "language_chinese" => Some("zh"),
+        _ => None,
     }
-    if normalized.contains("to russian")
-        || normalized.contains("на русский")
-        || normalized.contains("रूसी में")
-        || [
-            "成俄语",
-            "成俄語",
-            "为俄语",
-            "为俄語",
-            "為俄语",
-            "為俄語",
-            "到俄语",
-            "到俄語",
-        ]
-        .iter()
-        .any(|marker| normalized.contains(marker))
-    {
-        return Some("ru");
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn detects_each_source_language() {
+        assert_eq!(
+            detect_source_language("translate apple from english"),
+            Some("en")
+        );
+        assert_eq!(detect_source_language("apple с русского"), Some("ru"));
+        assert_eq!(detect_source_language("apple हिंदी से"), Some("hi"));
+        assert_eq!(detect_source_language("从中文翻译 apple"), Some("zh"));
+        assert_eq!(detect_source_language("what is apple"), None);
     }
-    if normalized.contains("to hindi")
-        || normalized.contains("на хинди")
-        || normalized.contains("हिंदी में")
-        || normalized.contains("हिन्दी में")
-        || [
-            "成印地语",
-            "成印地文",
-            "为印地语",
-            "为印地文",
-            "為印地语",
-            "為印地文",
-            "到印地语",
-            "到印地文",
-        ]
-        .iter()
-        .any(|marker| normalized.contains(marker))
-    {
-        return Some("hi");
+
+    #[test]
+    fn detects_each_target_language() {
+        assert_eq!(
+            detect_target_language("translate apple to english"),
+            Some("en")
+        );
+        assert_eq!(detect_target_language("apple на русский"), Some("ru"));
+        assert_eq!(detect_target_language("apple हिंदी में"), Some("hi"));
+        assert_eq!(detect_target_language("apple 成中文"), Some("zh"));
+        assert_eq!(detect_target_language("what is apple"), None);
     }
-    if normalized.contains("to chinese")
-        || normalized.contains("на китайский")
-        || normalized.contains("चीनी में")
-        || [
-            "成中文",
-            "成汉语",
-            "成漢語",
-            "为中文",
-            "为汉语",
-            "为漢語",
-            "為中文",
-            "為汉语",
-            "為漢語",
-            "到中文",
-            "到汉语",
-            "到漢語",
-        ]
-        .iter()
-        .any(|marker| normalized.contains(marker))
-    {
-        return Some("zh");
+
+    #[test]
+    fn combined_prompt_reads_both_directions() {
+        let normalized = "translate apple from english to russian";
+        assert_eq!(detect_source_language(normalized), Some("en"));
+        assert_eq!(detect_target_language(normalized), Some("ru"));
     }
-    None
+
+    #[test]
+    fn source_language_names_do_not_leak_into_target() {
+        // "english to russian" must not register English as the *target*:
+        // "to english" is not a substring here.
+        assert_eq!(
+            detect_target_language("translate apple from english to russian"),
+            Some("ru")
+        );
+    }
 }

@@ -320,6 +320,53 @@ pub const ROLE_ENUMERATION_REQUEST_OPENER: &str = "enumeration_request_opener";
 /// that an enumeration request carries a filter (so it is a real research
 /// request, not a bare noun phrase).
 pub const ROLE_ENUMERATION_CONSTRAINT: &str = "enumeration_constraint";
+/// Semantic role: a marker that names the language a translation reads *from*.
+///
+/// "from english", "с русского", "हिंदी से", "从中文", …. Each such meaning is
+/// `defined_by` one `language_*` meaning and the source-direction relation, so a
+/// handler reads the source language by walking the marker's `defined_by` edges —
+/// never by matching a glued from-language phrase baked into the code.
+pub const ROLE_TRANSLATION_SOURCE_MARKER: &str = "translation_source_marker";
+/// Semantic role: a marker that names the language a translation renders *into*.
+///
+/// "to russian", "на английский", "अंग्रेजी में", "翻译成中文" → "成中文", …. Each
+/// such meaning is `defined_by` one `language_*` meaning and the target-direction
+/// relation; the handler resolves the target language the same way it resolves a
+/// source: by following `defined_by` to the language meaning.
+pub const ROLE_TRANSLATION_TARGET_MARKER: &str = "translation_target_marker";
+/// Semantic role: the target-direction relation of a translation (the "into" side).
+///
+/// Its surfaces are the bare directional markers ("to", "на", "में", and the
+/// Chinese resultatives 成/为/為/到). In Chinese these bare markers are scanned
+/// directly: after a 翻译 verb the extractor stops the surface at the first of
+/// them, so the boundary comes from this relation rather than a hardcoded list.
+pub const ROLE_TRANSLATION_TARGET_DIRECTION: &str = "translation_target_direction";
+/// Semantic role: the verb frame that brackets the surface to translate.
+///
+/// In head-initial English/Russian the form is a [`crate::seed::Slot::Circumfix`]
+/// ("translate … to ", "переведи … на ") whose before-slot prefix is stripped and
+/// after-slot marker bounds the surface; in head-final Hindi/Chinese the form is a
+/// [`crate::seed::Slot::Bare`] verb stem (अनुवाद, 翻译/翻譯) that gates the
+/// language-specific unquoted extractor. The extractor reads the slot to decide
+/// which strategy applies, so one role serves both word orders.
+pub const ROLE_TRANSLATION_UNQUOTED_FRAME: &str = "translation_unquoted_frame";
+/// Semantic role: the verb-and-target compound introducing the target right after
+/// the surface ("translate-into").
+///
+/// Head-final Hindi postposes the target onto the verb noun (" में अनुवाद"), so
+/// the extractor keeps the text before it; Chinese prefixes the direction onto the
+/// verb (翻译成, 翻译为, 翻译到, …), so the extractor stops the surface at the first
+/// such compound. The English/Russian compounds are recorded for completeness and
+/// are not separately scanned — those languages run through the circumfix frame.
+pub const ROLE_TRANSLATION_INTO_MARKER: &str = "translation_into_marker";
+/// Semantic role: the particle that flags the noun phrase to be translated.
+///
+/// Head-final Hindi postposes the marker after the object (का, को), used as a
+/// right boundary; Chinese fronts a disposal particle before the object (把, 将),
+/// stripped from the front. English/Russian mark the object positionally, so their
+/// nearest realisations are recorded for completeness and not scanned — only the
+/// Devanagari and Han forms are.
+pub const ROLE_TRANSLATION_OBJECT_MARKER: &str = "translation_object_marker";
 /// Semantic role: the single root of the merged ontology — the `link` meaning.
 ///
 /// Every other meaning descends from it through `defined_by` edges, so the whole
