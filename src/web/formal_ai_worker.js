@@ -3950,50 +3950,38 @@ function codeSpans(text) {
     .filter(Boolean);
 }
 
-// Issue #144: recognize behavior-rule updates expressed as `When X then Y`
-// (and translations) in addition to the explicit `When I say … answer …`
-// grammar. KEYWORD_PAIRS is a list of (head, link) tuples that bracket the
-// trigger and the answer; both must appear, head before link, and there must
-// be at least one backtick on each side so the runtime extractor can pull the
-// trigger and answer deterministically.
-const BEHAVIOR_RULE_KEYWORD_PAIRS = [
-  // English
-  ["when ", " then "],
-  ["when ", " do "],
-  // Russian
-  ["когда ", " тогда "],
-  ["когда ", " делай "],
-  ["когда ", " сделай "],
-  ["когда ", " отвечай "],
-  ["когда ", " отвечать "],
-  ["если ", " то "],
-  // Hindi
-  ["जब ", " तब "],
-  ["जब ", " तो "],
-  // Chinese
-  ["当 ", " 时 "],
-  ["当 ", " 则 "],
-  ["当 ", " 回答 "],
-  ["当 ", "时回答 "],
-  ["当 ", "则回答 "],
-];
+// Issue #144 / #386: recognize behavior-rule updates expressed as `When X then
+// Y` (and translations) in addition to the explicit `When I say … answer …`
+// grammar. No keyword is named here any more — every surface lives in the
+// embedded meaning lexicon (data/seed/meanings-skill-compiler.lino) and is read
+// by semantic role, mirroring explicit_teaching_form + looks_like_skill_description
+// in src/skill_compiler.rs:
+//   * a teaching trigger lead that co-occurs with a teaching response verb, or a
+//     standalone behaviour-rule edit directive (the explicit teaching form); and
+//   * a when-then frame whose circumfix surface brackets the trigger and answer —
+//     the literal before the … (U+2026) is the head, the literal after it is the
+//     link; both must appear, head before link, with at least one backtick on
+//     each side so the runtime extractor can pull the trigger and answer
+//     deterministically.
+const ROLE_SKILL_TEACHING_TRIGGER_LEAD = "skill_teaching_trigger_lead";
+const ROLE_SKILL_TEACHING_RESPONSE_VERB = "skill_teaching_response_verb";
+const ROLE_BEHAVIOR_RULE_EDIT_DIRECTIVE = "behavior_rule_edit_directive";
+const ROLE_SKILL_WHEN_THEN_PAIR = "skill_when_then_pair";
 
 function looksLikeRuntimeRuleUpdate(text) {
   const raw = String(text || "");
   const lower = raw.toLowerCase();
   if (
-    (lower.includes("when i say") && (lower.includes("answer") || lower.includes("reply"))) ||
-    (lower.includes("if i ask") && (lower.includes("answer") || lower.includes("reply"))) ||
-    lower.includes("add behavior rule") ||
-    lower.includes("update behavior rule") ||
-    (lower.includes("когда я скажу") && lower.includes("ответ")) ||
-    (lower.includes("если я спрошу") && lower.includes("ответ")) ||
-    lower.includes("добавь правило поведения") ||
-    lower.includes("обнови правило поведения")
+    (lexiconMentionsRoleSubstring(ROLE_SKILL_TEACHING_TRIGGER_LEAD, lower) &&
+      lexiconMentionsRoleSubstring(ROLE_SKILL_TEACHING_RESPONSE_VERB, lower)) ||
+    lexiconMentionsRoleSubstring(ROLE_BEHAVIOR_RULE_EDIT_DIRECTIVE, lower)
   ) {
     return true;
   }
-  for (const [head, link] of BEHAVIOR_RULE_KEYWORD_PAIRS) {
+  for (const form of roleWordForms(ROLE_SKILL_WHEN_THEN_PAIR)) {
+    if (form.slot !== "circumfix") continue;
+    const head = form.before;
+    const link = form.after;
     const headPos = lower.indexOf(head);
     if (headPos === -1) continue;
     const tail = lower.slice(headPos + head.length);
@@ -20223,6 +20211,237 @@ const MEANINGS_LINO = [
   '    lexeme "zh"',
   '      word "方法"',
   '        description "Chinese noun (pinyin fangfa) for a method; a Han substring marker for the method concept."',
+  "meanings",
+  '  meaning "skill_teaching_trigger"',
+  '    gloss "the opening clause of a natural-language skill that names the moment a taught behaviour should fire — the user saying or asking some phrase. The concept a teaching instruction expresses when it introduces its trigger, independent of language or exact wording. Each surface is a bare clause-initial lead matched as a raw substring (the consuming code lower-cases the description first), and a trigger lead only teaches a skill when it co-occurs with a response verb and the instruction also quotes a trigger and a reply in backticks. No trigger word is named in the compiler; every lead lives here in the data, so the same instruction can be recognised across languages."',
+  '    wiktionary "when"',
+  '    defined_by "relation"',
+  '    defined_by "inquiry"',
+  '    role "skill_teaching_trigger_lead"',
+  '    lexeme "en"',
+  '      word "when i say"',
+  '        description "English teaching lead introducing the phrase the user will say to trigger the skill; matched as a raw substring."',
+  '      word "when the user says"',
+  '        description "English teaching lead naming the user saying a trigger phrase; matched as a raw substring."',
+  '      word "when the user asks"',
+  '        description "English teaching lead naming the user asking a trigger phrase; matched as a raw substring."',
+  '      word "if i ask"',
+  '        description "English teaching lead introducing a conditional trigger phrased as a question; matched as a raw substring."',
+  '    lexeme "ru"',
+  '      word "когда я скажу"',
+  '        description "Russian teaching lead (romanized kogda ya skazhu, when I say) introducing the trigger phrase; matched as a raw substring."',
+  '      word "если я спрошу"',
+  '        description "Russian teaching lead (romanized esli ya sprošu, if I ask) introducing a conditional trigger; matched as a raw substring."',
+  '    lexeme "hi"',
+  '      word "जब मैं कहूँ"',
+  '        description "Hindi teaching lead (romanized jab main kahun, when I say) introducing the trigger phrase; matched as a raw substring."',
+  '      word "अगर मैं पूछूँ"',
+  '        description "Hindi teaching lead (romanized agar main puchun, if I ask) introducing a conditional trigger; matched as a raw substring."',
+  '    lexeme "zh"',
+  '      word "当我说"',
+  '        description "Chinese teaching lead (pinyin dang wo shuo, when I say) introducing the trigger phrase; a Han substring marker."',
+  '      word "当用户说"',
+  '        description "Chinese teaching lead (pinyin dang yonghu shuo, when the user says) naming the user saying a trigger; a Han substring marker."',
+  '      word "当用户问"',
+  '        description "Chinese teaching lead (pinyin dang yonghu wen, when the user asks) naming the user asking a trigger; a Han substring marker."',
+  '  meaning "skill_teaching_response"',
+  '    gloss "the verb that introduces the canned reply a taught skill should emit — to answer, reply, or respond with a phrase. The concept a teaching instruction expresses when it names the response side of a trigger-and-reply pair, independent of language. Each surface is matched as a raw substring, so an inflectable stem such as the Russian otvet folds its endings; a response verb only teaches a skill when it co-occurs with a trigger lead. No verb is named in the compiler; every form lives here in the data."',
+  '    wiktionary "answer"',
+  '    defined_by "action"',
+  '    defined_by "answer"',
+  '    role "skill_teaching_response_verb"',
+  '    lexeme "en"',
+  '      word "answer"',
+  '        description "English verb answer naming the reply a taught skill emits; matched as a raw substring."',
+  '      word "reply"',
+  '        description "English verb reply naming the response a taught skill emits; matched as a raw substring."',
+  '      word "respond"',
+  '        description "English verb respond naming the response a taught skill emits; matched as a raw substring."',
+  '    lexeme "ru"',
+  '      word "ответ"',
+  '        description "Russian stem (romanized otvet, answer) folding its inflections such as otvet/otveť/otvetit; matched as a raw substring."',
+  '    lexeme "hi"',
+  '      word "उत्तर"',
+  '        description "Hindi noun-verb (romanized uttar, answer) naming the reply a taught skill emits; matched as a raw substring."',
+  '      word "जवाब"',
+  '        description "Hindi noun-verb (romanized javab, reply) naming the response a taught skill emits; matched as a raw substring."',
+  '    lexeme "zh"',
+  '      word "回答"',
+  '        description "Chinese verb (pinyin huida, answer) naming the reply a taught skill emits; a Han substring marker."',
+  '      word "回复"',
+  '        description "Chinese verb (pinyin huifu, reply) naming the response a taught skill emits; a Han substring marker."',
+  '  meaning "behavior_rule_edit"',
+  '    gloss "a standalone imperative to add or update a behaviour rule in the assistant — a direct instruction to change runtime behaviour rather than a trigger-and-reply teaching pair. The concept such a directive expresses, independent of language. Each surface is matched as a raw substring and is recognised on its own, without needing a separate response verb, because the imperative already names both the act of editing and its object. No directive phrase is named in the compiler; every form lives here in the data."',
+  '    wiktionary "rule"',
+  '    defined_by "action"',
+  '    defined_by "knowledge"',
+  '    role "behavior_rule_edit_directive"',
+  '    lexeme "en"',
+  '      word "add behavior rule"',
+  '        description "English imperative to add a behaviour rule; matched as a raw substring and recognised on its own."',
+  '      word "update behavior rule"',
+  '        description "English imperative to update a behaviour rule; matched as a raw substring and recognised on its own."',
+  '    lexeme "ru"',
+  '      word "добавь правило поведения"',
+  '        description "Russian imperative (romanized dobav pravilo povedeniya, add a behaviour rule); matched as a raw substring and recognised on its own."',
+  '      word "обнови правило поведения"',
+  '        description "Russian imperative (romanized obnovi pravilo povedeniya, update a behaviour rule); matched as a raw substring and recognised on its own."',
+  '    lexeme "hi"',
+  '      word "व्यवहार नियम जोड़ो"',
+  '        description "Hindi imperative (romanized vyavhar niyam jodo, add a behaviour rule); matched as a raw substring and recognised on its own."',
+  '      word "व्यवहार नियम अपडेट करो"',
+  '        description "Hindi imperative (romanized vyavhar niyam update karo, update a behaviour rule); matched as a raw substring and recognised on its own."',
+  '    lexeme "zh"',
+  '      word "添加行为规则"',
+  '        description "Chinese imperative (pinyin tianjia xingwei guize, add a behaviour rule); a Han substring marker recognised on its own."',
+  '      word "更新行为规则"',
+  '        description "Chinese imperative (pinyin gengxin xingwei guize, update a behaviour rule); a Han substring marker recognised on its own."',
+  '  meaning "skill_when_then"',
+  '    gloss "the when-then frame of a conditional skill instruction — a head clause that opens the condition and a link clause that opens the consequence, with the trigger and the response quoted in backticks between and after them. The concept a when-then rule expresses, independent of language. Each surface is a circumfix: the literal before the ellipsis … (U+2026) is the head the instruction must contain, and the literal after it is the link that must follow the head; a skill is taught only when a backtick-quoted span sits between the head and the link and another follows the link. No keyword pair is named in the compiler; every head-and-link frame lives here in the data."',
+  '    wiktionary "then"',
+  '    defined_by "relation"',
+  '    defined_by "concept"',
+  '    role "skill_when_then_pair"',
+  '    lexeme "en"',
+  '      word "when … then "',
+  '        description "English when-then frame; the head when opens the condition and the link then opens the consequence around the … slot."',
+  '      word "when … do "',
+  '        description "English when-do frame; the head when opens the condition and the link do opens an imperative consequence around the … slot."',
+  '    lexeme "ru"',
+  '      word "когда … тогда "',
+  '        description "Russian when-then frame (romanized kogda … togda); the head opens the condition and the link opens the consequence around the … slot."',
+  '      word "когда … делай "',
+  '        description "Russian when-do frame (romanized kogda … delay); the head opens the condition and the link opens an imperative consequence around the … slot."',
+  '      word "когда … сделай "',
+  '        description "Russian when-do frame (romanized kogda … sdelay, perfective); the head opens the condition and the link opens the consequence around the … slot."',
+  '      word "когда … отвечай "',
+  '        description "Russian when-answer frame (romanized kogda … otvechay); the head opens the condition and the link names answering around the … slot."',
+  '      word "когда … отвечать "',
+  '        description "Russian when-answer frame (romanized kogda … otvechat, infinitive); the head opens the condition and the link names answering around the … slot."',
+  '      word "если … то "',
+  '        description "Russian if-then frame (romanized esli … to); the head opens the condition and the link opens the consequence around the … slot."',
+  '    lexeme "hi"',
+  '      word "जब … तब "',
+  '        description "Hindi when-then frame (romanized jab … tab); the head opens the condition and the link opens the consequence around the … slot."',
+  '      word "जब … तो "',
+  '        description "Hindi when-then frame (romanized jab … to); the head opens the condition and the link opens the consequence around the … slot."',
+  '    lexeme "zh"',
+  '      word "当 … 时 "',
+  '        description "Chinese when-then frame (pinyin dang … shi); the head opens the condition and the link closes it before the consequence around the … slot."',
+  '      word "当 … 则 "',
+  '        description "Chinese when-then frame (pinyin dang … ze); the head opens the condition and the link opens the consequence around the … slot."',
+  '      word "当 … 回答 "',
+  '        description "Chinese when-answer frame (pinyin dang … huida); the head opens the condition and the link names answering around the … slot."',
+  '      word "当 …时回答 "',
+  '        description "Chinese when-then-answer frame (pinyin dang … shi huida); the head opens the condition and the link closes it and names answering around the … slot."',
+  '      word "当 …则回答 "',
+  '        description "Chinese when-then-answer frame (pinyin dang … ze huida); the head opens the condition and the link opens the consequence and names answering around the … slot."',
+  '  meaning "nondeterministic_step"',
+  '    gloss "the property of a structured-skill step that makes it non-deterministic or otherwise unreviewable — randomness, non-determinism, or arbitrary code. The concept the compiler screens for so it can refuse such a step, because a compiled skill must be deterministic and reviewable. Each surface is matched as a raw substring after the step text is lower-cased. No marker word is named in the compiler; every form lives here in the data."',
+  '    wiktionary "random"',
+  '    defined_by "property"',
+  '    defined_by "concept"',
+  '    role "nondeterministic_marker"',
+  '    lexeme "en"',
+  '      word "random"',
+  '        description "English adjective random marking a non-deterministic step; matched as a raw substring."',
+  '      word "nondeterministic"',
+  '        description "English adjective nondeterministic marking an unreviewable step; matched as a raw substring."',
+  '      word "non-deterministic"',
+  '        description "English hyphenated spelling of nondeterministic; matched as a raw substring."',
+  '      word "arbitrary code"',
+  '        description "English phrase arbitrary code marking a step that runs unreviewable instructions; matched as a raw substring."',
+  '    lexeme "ru"',
+  '      word "случайный"',
+  '        description "Russian adjective (romanized sluchaynyy, random) marking a non-deterministic step; matched as a raw substring."',
+  '      word "недетерминированный"',
+  '        description "Russian adjective (romanized nedeterminirovannyy, nondeterministic) marking an unreviewable step; matched as a raw substring."',
+  '    lexeme "hi"',
+  '      word "यादृच्छिक"',
+  '        description "Hindi adjective (romanized yadrcchik, random) marking a non-deterministic step; matched as a raw substring."',
+  '      word "अनिश्चित"',
+  '        description "Hindi adjective (romanized anishchit, indeterminate) marking an unreviewable step; matched as a raw substring."',
+  '    lexeme "zh"',
+  '      word "随机"',
+  '        description "Chinese adjective (pinyin suiji, random) marking a non-deterministic step; a Han substring marker."',
+  '      word "不确定"',
+  '        description "Chinese adjective (pinyin buqueding, indeterminate) marking an unreviewable step; a Han substring marker."',
+  '  meaning "shell_capability_need"',
+  '    gloss "the property of a structured-skill step that implies it needs the local shell or filesystem capability — running a shell, listing files, or writing and deleting files. The concept the compiler reads so it can require an explicit tool:local_shell permission grant before the step is allowed. Each surface is matched as a raw substring after the step text is lower-cased, and this cue is checked before the network cue so a step that touches both is attributed to the shell. No cue word is named in the compiler; every form lives here in the data, and the formal capability identifier it implies stays in the code as a tool-namespace bridge."',
+  '    wiktionary "shell"',
+  '    defined_by "capability"',
+  '    defined_by "action"',
+  '    role "shell_capability_cue"',
+  '    lexeme "en"',
+  '      word "local_shell"',
+  '        description "English tool name local_shell naming the shell runner; matched as a raw substring."',
+  '      word "shell"',
+  '        description "English noun shell naming a command shell; matched as a raw substring."',
+  '      word "filesystem"',
+  '        description "English noun filesystem naming on-disk storage; matched as a raw substring."',
+  '      word "file system"',
+  '        description "English spaced spelling file system; matched as a raw substring."',
+  '      word "list files"',
+  '        description "English phrase list files naming a directory read; matched as a raw substring."',
+  '      word "write file"',
+  '        description "English phrase write file naming an on-disk write; matched as a raw substring."',
+  '      word "delete file"',
+  '        description "English phrase delete file naming an on-disk delete; matched as a raw substring."',
+  '    lexeme "ru"',
+  '      word "оболочка"',
+  '        description "Russian noun (romanized obolochka, shell) naming a command shell; matched as a raw substring."',
+  '      word "файловая система"',
+  '        description "Russian phrase (romanized faylovaya sistema, file system) naming on-disk storage; matched as a raw substring."',
+  '      word "список файлов"',
+  '        description "Russian phrase (romanized spisok faylov, list of files) naming a directory read; matched as a raw substring."',
+  '    lexeme "hi"',
+  '      word "शेल"',
+  '        description "Hindi noun (romanized shel, shell) naming a command shell; matched as a raw substring."',
+  '      word "फाइल सिस्टम"',
+  '        description "Hindi phrase (romanized phail sistam, file system) naming on-disk storage; matched as a raw substring."',
+  '      word "फाइलें सूचीबद्ध"',
+  '        description "Hindi phrase (romanized phailen suchibaddh, list files) naming a directory read; matched as a raw substring."',
+  '    lexeme "zh"',
+  '      word "外壳"',
+  '        description "Chinese noun (pinyin waike, shell) naming a command shell; a Han substring marker."',
+  '      word "文件系统"',
+  '        description "Chinese noun (pinyin wenjian xitong, file system) naming on-disk storage; a Han substring marker."',
+  '      word "列出文件"',
+  '        description "Chinese phrase (pinyin liechu wenjian, list files) naming a directory read; a Han substring marker."',
+  '  meaning "network_capability_need"',
+  '    gloss "the property of a structured-skill step that implies it needs the network or web-fetch capability — making an HTTP or web request, reaching the network, or fetching a remote resource. The concept the compiler reads so it can require an explicit tool:web_fetch permission grant before the step is allowed. Each surface is matched as a raw substring after the step text is lower-cased, and this cue is checked after the shell cue. No cue word is named in the compiler; every form lives here in the data, and the formal capability identifier it implies stays in the code as a tool-namespace bridge."',
+  '    wiktionary "network"',
+  '    defined_by "capability"',
+  '    defined_by "action"',
+  '    role "network_capability_cue"',
+  '    lexeme "en"',
+  '      word "http"',
+  '        description "English protocol name http naming a web request; matched as a raw substring."',
+  '      word "network"',
+  '        description "English noun network naming remote connectivity; matched as a raw substring."',
+  '      word "fetch"',
+  '        description "English verb fetch naming a remote retrieval; matched as a raw substring."',
+  '      word "web request"',
+  '        description "English phrase web request naming an outbound network call; matched as a raw substring."',
+  '    lexeme "ru"',
+  '      word "сеть"',
+  '        description "Russian noun (romanized set, network) naming remote connectivity; matched as a raw substring."',
+  '      word "веб-запрос"',
+  '        description "Russian phrase (romanized veb-zapros, web request) naming an outbound call; matched as a raw substring."',
+  '      word "сетевой запрос"',
+  '        description "Russian phrase (romanized setevoy zapros, network request) naming an outbound call; matched as a raw substring."',
+  '    lexeme "hi"',
+  '      word "नेटवर्क"',
+  '        description "Hindi noun (romanized netvark, network) naming remote connectivity; matched as a raw substring."',
+  '      word "वेब अनुरोध"',
+  '        description "Hindi phrase (romanized veb anurodh, web request) naming an outbound call; matched as a raw substring."',
+  '    lexeme "zh"',
+  '      word "网络"',
+  '        description "Chinese noun (pinyin wangluo, network) naming remote connectivity; a Han substring marker."',
+  '      word "网络请求"',
+  '        description "Chinese phrase (pinyin wangluo qingqiu, network request) naming an outbound call; a Han substring marker."',
+  '      word "获取"',
+  '        description "Chinese verb (pinyin huoqu, fetch) naming a remote retrieval; a Han substring marker."',
 ].join("\n");
 
 // Semantic role: a thing a program produces that a later turn can refer back to

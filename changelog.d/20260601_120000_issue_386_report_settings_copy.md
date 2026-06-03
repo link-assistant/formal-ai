@@ -469,6 +469,35 @@ bump: minor
   five spec prompts to the calculator in all four languages, falls through on
   currency prompts that miss one of the three concepts, and reproduces every role's
   surface set byte-for-byte across en/ru/hi/zh (issue #386).
+- Natural-language skill recognition (`src/skill_compiler.rs`, its
+  `structured.rs` permission/determinism screens, and the
+  `formal_ai_worker.js` mirror) is data-driven too. The trigger leads
+  ("when i say", "when the user says/asks", "if i ask"), the response verbs
+  (answer/reply/respond, the Russian stem "ответ", …), the standalone
+  behaviour-rule edit directives, and the conditional when-then frames now live
+  as self-describing meanings in `data/seed/meanings-skill-compiler.lino` — each
+  `defined_by` the concepts it builds on (a trigger lead `defined_by` `relation`
+  + `inquiry`, a when-then frame `defined_by` `relation` + `concept`, …) and
+  lexicalised in every supported language. The when-then frames are stored as
+  `Slot::Circumfix` word forms whose literal before the ellipsis … (U+2026) is
+  the head clause and whose literal after it is the link clause, so the head/link
+  keyword pairs that were hardcoded in both runtimes now live once in data.
+  `looks_like_skill_description` and `explicit_teaching_form` query the
+  `skill_teaching_trigger_lead`, `skill_teaching_response_verb`,
+  `behavior_rule_edit_directive`, and `skill_when_then_pair` roles via
+  `Lexicon::mentions_role_raw`/`role_word_forms` instead of the former inline
+  string lists and the `WHEN_THEN_KEYWORD_PAIRS` table. The structured-skill
+  determinism screen and the implicit-capability inference likewise read the
+  `nondeterministic_marker`, `shell_capability_cue`, and `network_capability_cue`
+  roles (shell checked before network so a step touching both is attributed to
+  the shell), while the formal `tool:local_shell`/`tool:web_fetch` identifiers
+  stay in code as a tool-namespace bridge. Because the surfaces now cover every
+  language uniformly, the browser worker gains the trigger leads it used to miss
+  ("when the user says"/"when the user asks") and the "respond" verb. A 28-case
+  truth table is shared, case for case, between the Rust inline test
+  (`skill_description_recogniser_reads_every_language_from_the_lexicon`) and a vm
+  parity harness (`experiments/issue-386-worker-skill-trigger-parity.mjs`) so the
+  two runtimes are proven to agree across en/ru/hi/zh (issue #386).
 
 ### Fixed
 - The follow-up "Отмени сортировку" ("cancel the sorting") no longer returns

@@ -12,6 +12,7 @@ use std::fmt;
 use crate::engine::{normalize_prompt, stable_id, KNOWLEDGE_SCHEMA_VERSION};
 use crate::link_store::{DoubletLink, LinkRecord};
 use crate::links_format::format_lino_record;
+use crate::seed::{self, Slot};
 
 mod structured;
 
@@ -630,57 +631,66 @@ fn extract_trigger_response(description: &str) -> Option<(String, String)> {
     Some((trigger.to_owned(), response.to_owned()))
 }
 
+/// True when `description` reads as a teachable skill — either an explicit
+/// teaching form or a conditional when-then frame that quotes a trigger and reply.
+///
+/// No keyword is named here. The explicit teaching form is read from the
+/// [`skill_teaching_trigger_lead`](seed::ROLE_SKILL_TEACHING_TRIGGER_LEAD),
+/// [`skill_teaching_response_verb`](seed::ROLE_SKILL_TEACHING_RESPONSE_VERB), and
+/// [`behavior_rule_edit_directive`](seed::ROLE_BEHAVIOR_RULE_EDIT_DIRECTIVE) roles;
+/// the when-then frames are read from the
+/// [`skill_when_then_pair`](seed::ROLE_SKILL_WHEN_THEN_PAIR) role. Each frame is a
+/// [`Slot::Circumfix`] surface whose literal before the ellipsis … (U+2026) is the
+/// head clause and whose literal after it is the link clause. A description teaches
+/// a skill when it contains a head, a link following that head, a backtick-quoted
+/// trigger between them, and a backtick-quoted reply after the link — the same
+/// byte test that once ran against a hardcoded keyword-pair table, now covering
+/// every supported language from the data.
 fn looks_like_skill_description(description: &str) -> bool {
     let lower = description.to_lowercase();
     if explicit_teaching_form(&lower) {
         return true;
     }
-    for (head, link) in WHEN_THEN_KEYWORD_PAIRS {
-        if let Some(head_pos) = lower.find(head) {
-            if let Some(link_pos) = lower[head_pos + head.len()..].find(link) {
-                let absolute_link_pos = head_pos + head.len() + link_pos;
-                let before_link = &description[head_pos..absolute_link_pos];
-                let after_link = &description[absolute_link_pos + link.len()..];
-                if before_link.contains('`') && after_link.contains('`') {
-                    return true;
-                }
-            }
-        }
-    }
-    false
+    seed::lexicon()
+        .role_word_forms(seed::ROLE_SKILL_WHEN_THEN_PAIR)
+        .into_iter()
+        .filter(|form| form.slot() == Slot::Circumfix)
+        .any(|form| {
+            let head = form.before_slot();
+            let link = form.after_slot();
+            let Some(head_pos) = lower.find(head) else {
+                return false;
+            };
+            let Some(link_pos) = lower[head_pos + head.len()..].find(link) else {
+                return false;
+            };
+            let absolute_link_pos = head_pos + head.len() + link_pos;
+            let before_link = &description[head_pos..absolute_link_pos];
+            let after_link = &description[absolute_link_pos + link.len()..];
+            before_link.contains('`') && after_link.contains('`')
+        })
 }
 
+/// True when `lower` (an already-lower-cased description) is an explicit teaching
+/// instruction — a trigger lead paired with a response verb, or a standalone
+/// behaviour-rule edit directive.
+///
+/// Every surface is read from the lexicon by meaning rather than named here. A
+/// trigger lead ([`ROLE_SKILL_TEACHING_TRIGGER_LEAD`](seed::ROLE_SKILL_TEACHING_TRIGGER_LEAD))
+/// teaches a skill only when it co-occurs with a response verb
+/// ([`ROLE_SKILL_TEACHING_RESPONSE_VERB`](seed::ROLE_SKILL_TEACHING_RESPONSE_VERB));
+/// an edit directive
+/// ([`ROLE_BEHAVIOR_RULE_EDIT_DIRECTIVE`](seed::ROLE_BEHAVIOR_RULE_EDIT_DIRECTIVE))
+/// is recognised on its own. Each role is matched as a raw substring through
+/// [`Lexicon::mentions_role_raw`](seed::Lexicon::mentions_role_raw) — the surfaces
+/// are stored lower-cased and the caller has already lower-cased the description,
+/// so an inflectable stem (the Russian "ответ") still folds its endings.
 fn explicit_teaching_form(lower: &str) -> bool {
-    ((lower.contains("when i say")
-        || lower.contains("when the user says")
-        || lower.contains("when the user asks")
-        || lower.contains("if i ask"))
-        && (lower.contains("answer") || lower.contains("reply") || lower.contains("respond")))
-        || lower.contains("add behavior rule")
-        || lower.contains("update behavior rule")
-        || (lower.contains("когда я скажу") && lower.contains("ответ"))
-        || (lower.contains("если я спрошу") && lower.contains("ответ"))
-        || lower.contains("добавь правило поведения")
-        || lower.contains("обнови правило поведения")
+    let lexicon = seed::lexicon();
+    (lexicon.mentions_role_raw(seed::ROLE_SKILL_TEACHING_TRIGGER_LEAD, lower)
+        && lexicon.mentions_role_raw(seed::ROLE_SKILL_TEACHING_RESPONSE_VERB, lower))
+        || lexicon.mentions_role_raw(seed::ROLE_BEHAVIOR_RULE_EDIT_DIRECTIVE, lower)
 }
-
-const WHEN_THEN_KEYWORD_PAIRS: &[(&str, &str)] = &[
-    ("when ", " then "),
-    ("when ", " do "),
-    ("когда ", " тогда "),
-    ("когда ", " делай "),
-    ("когда ", " сделай "),
-    ("когда ", " отвечай "),
-    ("когда ", " отвечать "),
-    ("если ", " то "),
-    ("जब ", " तब "),
-    ("जब ", " तो "),
-    ("当 ", " 时 "),
-    ("当 ", " 则 "),
-    ("当 ", " 回答 "),
-    ("当 ", "时回答 "),
-    ("当 ", "则回答 "),
-];
 
 fn code_spans(text: &str) -> Vec<String> {
     text.split('`')
@@ -767,12 +777,76 @@ fn escape_lino_value(value: &str) -> String {
 
 #[cfg(test)]
 mod tests {
-    use super::{compile_natural_language_skill, SkillCompileError};
+    use super::{compile_natural_language_skill, looks_like_skill_description, SkillCompileError};
 
     #[test]
     fn unsupported_shape_is_rejected() {
         let err = compile_natural_language_skill("This is only a note.")
             .expect_err("free text should not compile");
         assert_eq!(err, SkillCompileError::UnsupportedShape);
+    }
+
+    // This truth table is shared, case for case, with the browser-worker parity
+    // harness experiments/issue-386-worker-skill-trigger-parity.mjs. Both runtimes
+    // now read every trigger lead, response verb, edit directive, and when-then
+    // frame from the same embedded meaning lexicon
+    // (data/seed/meanings-skill-compiler.lino) by semantic role, so locking the
+    // Rust side here and the JS side there proves the conversion preserved the
+    // recogniser exactly — including the surfaces the worker used to miss
+    // ("when the user says", "when the user asks", "respond").
+    #[test]
+    fn skill_description_recogniser_reads_every_language_from_the_lexicon() {
+        // Explicit teaching form (trigger lead AND response verb) OR edit
+        // directive, plus when-then circumfix frames with backticks on each side.
+        let recognised = [
+            "When I say `checksum status`, answer `checksum cache is valid.`",
+            "When the user says `ping`, respond `pong`",
+            "When the user asks `status`, reply `all good`",
+            "If I ask `time`, answer `noon`",
+            "Add behavior rule: greet politely",
+            "Please update behavior rule for greetings",
+            "Когда я скажу `привет`, ответь `здравствуй`",
+            "Если я спрошу `время`, ответ `полдень`",
+            "Добавь правило поведения: будь вежлив",
+            "Обнови правило поведения для приветствий",
+            "जब मैं कहूँ `नमस्ते` तो उत्तर `नमस्कार`",
+            "व्यवहार नियम जोड़ो: विनम्र रहो",
+            "当我说`你好`，回答`您好`",
+            "添加行为规则：保持礼貌",
+            "When `status` then `ok`",
+            "When `status` do `report ok`",
+            "Когда `привет` тогда `здравствуй`",
+            "Если `привет` то `здравствуй`",
+            "जब `नमस्ते` तब `नमस्कार`",
+            "当 `状态` 时 `一切正常。`",
+            "当 `状态`时回答 `一切正常。`",
+        ];
+        for description in recognised {
+            assert!(
+                looks_like_skill_description(description),
+                "should recognise as a skill description: {description:?}"
+            );
+        }
+
+        let rejected = [
+            "This is only a note.",
+            "what is the capital of France",
+            // A response verb with no trigger lead and no when-then backticks.
+            "Please answer the question",
+            "reply to this email",
+            // A trigger lead with no response verb and no backticks.
+            "When I say hello to people",
+            // A when-then frame with NO backticks — structure present, quotes absent.
+            "when it rains then it pours",
+            // Chinese trigger lead "当我说" (no spaces) with no response verb and
+            // no when-then frame: the head "当 " needs a space after 当.
+            "当我说你好",
+        ];
+        for description in rejected {
+            assert!(
+                !looks_like_skill_description(description),
+                "should NOT recognise as a skill description: {description:?}"
+            );
+        }
     }
 }

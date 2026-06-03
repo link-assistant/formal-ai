@@ -735,3 +735,75 @@ pub const ROLE_WEB_MEDIUM: &str = "web_medium";
 /// Han surface matches as a substring. Carried by `code_method`; read by the Rust
 /// solver and the JS worker.
 pub const ROLE_CODE_METHOD_NOUN: &str = "code_method_noun";
+/// Semantic role: the opening clause of a taught skill that names its trigger.
+///
+/// The clause-initial lead a natural-language skill uses to introduce the phrase
+/// that should fire a taught behaviour ("when i say …", "when the user asks …",
+/// "когда я скажу …", "当用户说 …"). Every lead is a bare surface matched as a raw
+/// substring through [`crate::seed::Lexicon::mentions_role_raw`] after the
+/// description is lower-cased; a lead only teaches a skill when it co-occurs with a
+/// [`ROLE_SKILL_TEACHING_RESPONSE_VERB`] and the prose also quotes a trigger and a
+/// reply in backticks. Carried by `skill_teaching_trigger`; read by the Rust skill
+/// compiler and the JS worker so neither names a trigger word in code.
+pub const ROLE_SKILL_TEACHING_TRIGGER_LEAD: &str = "skill_teaching_trigger_lead";
+/// Semantic role: the verb introducing the reply a taught skill should emit.
+///
+/// The verb a natural-language skill uses to name its response side ("answer",
+/// "reply", "respond", the Russian stem "ответ", "回答"). Matched as a raw substring
+/// through [`crate::seed::Lexicon::mentions_role_raw`], so an inflectable stem folds
+/// its endings; a response verb only teaches a skill when paired with a
+/// [`ROLE_SKILL_TEACHING_TRIGGER_LEAD`]. Carried by `skill_teaching_response`; read
+/// by the Rust skill compiler and the JS worker so neither names a reply verb in
+/// code.
+pub const ROLE_SKILL_TEACHING_RESPONSE_VERB: &str = "skill_teaching_response_verb";
+/// Semantic role: a standalone imperative to add or update a behaviour rule.
+///
+/// A direct instruction to change runtime behaviour ("add behavior rule", "update
+/// behavior rule", "добавь правило поведения", "添加行为规则") rather than a
+/// trigger-and-reply teaching pair. Matched as a raw substring through
+/// [`crate::seed::Lexicon::mentions_role_raw`] and recognised on its own — without
+/// needing a separate response verb — because the imperative already names both the
+/// edit and its object. Carried by `behavior_rule_edit`; read by the Rust skill
+/// compiler and the JS worker.
+pub const ROLE_BEHAVIOR_RULE_EDIT_DIRECTIVE: &str = "behavior_rule_edit_directive";
+/// Semantic role: the when-then frame of a conditional skill instruction.
+///
+/// The head-and-link frame a conditional rule uses ("when … then ", "когда …
+/// тогда ", "जब … तब ", "当 …时回答 "). Each surface is a
+/// [`crate::seed::Slot::Circumfix`]: [`crate::seed::WordForm::before_slot`] is the
+/// head the instruction must contain and [`crate::seed::WordForm::after_slot`] is
+/// the link that must follow it. A skill is taught only when a backtick-quoted span
+/// sits between the head and the link and another follows the link. Carried by
+/// `skill_when_then`; read by the Rust skill compiler and the JS worker so neither
+/// names a keyword pair in code.
+pub const ROLE_SKILL_WHEN_THEN_PAIR: &str = "skill_when_then_pair";
+/// Semantic role: a marker that a structured-skill step is non-deterministic.
+///
+/// A word flagging a step as non-deterministic or otherwise unreviewable ("random",
+/// "nondeterministic", "non-deterministic", "arbitrary code", "случайный", "随机"),
+/// which the compiler refuses because a compiled skill must be deterministic and
+/// reviewable. Matched as a raw substring through
+/// [`crate::seed::Lexicon::mentions_role_raw`] after the step text is lower-cased.
+/// Carried by `nondeterministic_step`; read by the Rust skill compiler.
+pub const ROLE_NONDETERMINISTIC_MARKER: &str = "nondeterministic_marker";
+/// Semantic role: a cue that a structured-skill step needs the shell capability.
+///
+/// A word implying a step touches the local shell or filesystem (`local_shell`,
+/// "shell", "filesystem", "list files", "оболочка", "文件系统"), so the compiler
+/// requires an explicit `tool:local_shell` permission grant. Matched as a raw
+/// substring through [`crate::seed::Lexicon::mentions_role_raw`] after the step text
+/// is lower-cased, and checked before [`ROLE_NETWORK_CAPABILITY_CUE`] so a step that
+/// touches both is attributed to the shell. The `tool:local_shell` identifier is a
+/// tool-namespace bridge that stays in code; the cue surfaces live in the data.
+/// Carried by `shell_capability_need`; read by the Rust skill compiler.
+pub const ROLE_SHELL_CAPABILITY_CUE: &str = "shell_capability_cue";
+/// Semantic role: a cue that a structured-skill step needs network access.
+///
+/// A word implying a step reaches the network or fetches a remote resource ("http",
+/// "network", "fetch", "web request", "сеть", "网络请求"), so the compiler requires
+/// an explicit `tool:web_fetch` permission grant. Matched as a raw substring through
+/// [`crate::seed::Lexicon::mentions_role_raw`] after the step text is lower-cased,
+/// and checked after [`ROLE_SHELL_CAPABILITY_CUE`]. The `tool:web_fetch` identifier
+/// is a tool-namespace bridge that stays in code; the cue surfaces live in the data.
+/// Carried by `network_capability_need`; read by the Rust skill compiler.
+pub const ROLE_NETWORK_CAPABILITY_CUE: &str = "network_capability_cue";
