@@ -165,11 +165,22 @@ fn extract_target_site(prompt: &str) -> Option<String> {
     None
 }
 
-/// Capture the clause after "show me"/"show" so the follow-up records what the
-/// user wants surfaced (e.g. "the top 10 most frequent words").
+/// Capture the clause after a show-me/print/display opener so the follow-up
+/// records what the user wants surfaced (e.g. "the top 10 most frequent words").
+///
+/// The recognized openers carry the [`seed::ROLE_OUTPUT_DISPLAY_REQUEST`] role;
+/// each is a prefix whose text before the `…` slot is the marker, tried in
+/// declaration order so the longer "show me " wins over the bare "show ". A
+/// marker is matched anywhere in the prompt, and the clause that follows — read
+/// from the original-case prompt, stopped at the first sentence-ending
+/// punctuation and capped at twelve words — is returned. No per-language marker
+/// list lives here; the surfaces come from
+/// `data/seed/meanings-software-project.lino`.
 fn extract_expected_output(prompt: &str) -> Option<String> {
     let lower = prompt.to_lowercase();
-    for marker in ["show me ", "show ", "print ", "display "] {
+    let forms = seed::lexicon().role_word_forms(seed::ROLE_OUTPUT_DISPLAY_REQUEST);
+    for form in &forms {
+        let marker = form.before_slot();
         let Some(start) = lower.find(marker).map(|index| index + marker.len()) else {
             continue;
         };

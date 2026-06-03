@@ -91,6 +91,17 @@ pub const ROLE_SOFTWARE_FOLLOWUP_EXECUTION: &str = "software_followup_execution"
 /// Semantic role: a follow-up that demonstrates the artifact's output
 /// (show me, demo it, покажи, 显示, दिखाओ, …).
 pub const ROLE_SOFTWARE_FOLLOWUP_DEMONSTRATION: &str = "software_followup_demonstration";
+/// Semantic role: a request to display a named output ("show me …", "print …",
+/// "покажи мне …", "给我看…", …).
+///
+/// Each surface is a [`crate::seed::Slot::Prefix`] whose text before the
+/// ellipsis (U+2026) slot is the show-me/print/display opener; the clause after
+/// it — up to the first sentence-ending punctuation, capped at twelve words — is
+/// the expected output the user wants surfaced. The opener is matched anywhere
+/// in the prompt, not only at the start, so "test it and show me the result"
+/// still captures "the result". A meaning carrying this role is `defined_by`
+/// the `software_followup` and `action` concepts.
+pub const ROLE_OUTPUT_DISPLAY_REQUEST: &str = "output_display_request";
 /// Semantic role: a verb that requests a software artifact be authored.
 ///
 /// Surfaces include write, build, create, implement, develop, design, scaffold,

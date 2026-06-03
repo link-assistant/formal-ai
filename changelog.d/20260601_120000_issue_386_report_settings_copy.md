@@ -628,6 +628,26 @@ bump: minor
   queries the same embedded meanings and the mirror verifier
   (`experiments/issue-386-meanings-mirror.mjs`) reports byte-identical parity
   across all twenty-nine meaning files (issue #386).
+- Software-project follow-up output extraction (`extract_expected_output` in
+  `src/solver_handlers/software_project_followup.rs`) is data-driven too. A new
+  `output_display_request` meaning in `data/seed/meanings-software-project.lino`
+  (role `output_display_request`, `defined_by` the `software_followup` and
+  `action` concepts) carries the show-me/print/display openers that name what
+  the user wants surfaced ("show me …", "show …", "print …", "display …", plus
+  ru/hi/zh surfaces such as "покажи мне …" / "मुझे दिखाओ …" / "给我看…"). Each
+  surface marks the output position with the ellipsis `…` (U+2026) slot marker,
+  so the handler walks the role's forms in declaration order — the longer "show
+  me " tried before the bare "show " — strips the opener via `before_slot()`,
+  and reads the clause that follows from the original-case prompt (stopped at
+  the first sentence-ending punctuation, capped at twelve words) instead of the
+  former hardcoded four-marker array. The opener is still matched anywhere in
+  the prompt, so "test it and show me the result" keeps capturing "the result".
+  Because the openers now exist in every language, a Hindi or Chinese follow-up
+  records its expected output where the English-only array recognised nothing.
+  The extractor is Rust-only — the browser worker has no follow-up output route
+  — but its embedded `MEANINGS_LINO` mirrors the new meaning byte-identically so
+  the shared knowledge base stays complete, with the mirror verifier reporting
+  parity across all twenty-nine meaning files (issue #386).
 
 ### Fixed
 - The follow-up "Отмени сортировку" ("cancel the sorting") no longer returns
