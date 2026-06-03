@@ -83,50 +83,14 @@ pub fn is_unbounded_loop(normalized: &str) -> bool {
 }
 
 pub fn is_inappropriate_content(normalized: &str) -> bool {
-    // Russian vulgar/obscene words (mat) — normalized lowercase Cyrillic.
-    let ru_vulgar: &[&str] = &[
-        "ебать",
-        "ебёт",
-        "ебал",
-        "ёб",
-        "еблан",
-        "пизда",
-        "пиздец",
-        "пиздёж",
-        "хуй",
-        "хуёв",
-        "хуйня",
-        "блядь",
-        "блядство",
-        "залупа",
-        "мудак",
-        "мудила",
-        "шлюха",
-        "проститутка",
-        "ублюдок",
-        "сука",
-        "пидор",
-        "пидорас",
-    ];
-    if ru_vulgar.iter().any(|w| normalized.contains(w)) {
-        return true;
-    }
-    // English profanity / NSFW triggers.
-    let en_vulgar: &[&str] = &[
-        "fuck you",
-        "fuckyou",
-        "suck my",
-        "suck my dick",
-        "suck my cock",
-        "you suck",
-        "eat shit",
-        "go to hell",
-        "asshole",
-        "motherfucker",
-        "you fucking",
-        "piece of shit",
-    ];
-    en_vulgar.iter().any(|w| normalized.contains(w))
+    // The vulgar/obscene surfaces — Russian mat and English profanity migrated
+    // verbatim from the original hardcoded lists, plus Hindi and Chinese
+    // equivalents — live in `data/seed/meanings-policy.lino` under the
+    // [`vulgar_content_marker`](crate::seed::ROLE_VULGAR_CONTENT_MARKER) role.
+    // They are matched as raw substrings, so the screen stays language-
+    // independent and tolerant of inflection without listing any profanity in
+    // code.
+    crate::seed::lexicon().mentions_role_raw(crate::seed::ROLE_VULGAR_CONTENT_MARKER, normalized)
 }
 
 pub fn requires_external_lookup(prompt: &str) -> bool {

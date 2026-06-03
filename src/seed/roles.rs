@@ -593,3 +593,13 @@ pub const ROLE_PHYSICAL_ACTION_TRIGGER: &str = "physical_action_trigger";
 /// unknown prompt. Carried by `circular_joke_idiom`; read by the Rust solver and
 /// the JS worker.
 pub const ROLE_CIRCULAR_JOKE_PHRASE: &str = "circular_joke_phrase";
+/// Semantic role: a profanity or slur that flags a message as vulgar content.
+///
+/// The English and Russian forms are the original hardcoded refusal lists,
+/// migrated verbatim; Hindi and Chinese carry equivalent obscenities so the
+/// concept is lexicalized in every supported language. All forms are matched as
+/// raw substrings, so the screen is language-independent and tolerant of
+/// inflection. Carried by `vulgar_content`; read by the Rust solver only (the JS
+/// worker has no content-policy handler, so the data is mirrored but unused
+/// there).
+pub const ROLE_VULGAR_CONTENT_MARKER: &str = "vulgar_content_marker";

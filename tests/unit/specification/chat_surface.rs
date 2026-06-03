@@ -509,6 +509,19 @@ fn english_vulgar_prompt_is_refused_with_policy_intent() {
 }
 
 #[test]
+fn russian_vulgar_prompt_is_refused_with_policy_intent() {
+    // Locks the Russian mat surfaces migrated from the old hardcoded list into
+    // the vulgar_content_marker role: «мудак» (asshole) must still be refused
+    // by the now lexicon-driven is_inappropriate_content screen.
+    let response = answer("ты мудак");
+    assert_eq!(
+        response.intent, "policy_inappropriate_content",
+        "Russian vulgar prompt must be refused, got intent: {}",
+        response.intent
+    );
+}
+
+#[test]
 fn capabilities_answer_in_hindi_advertises_behavior_rule_commands() {
     let response = answer("तुम क्या कर सकते हो?");
     assert_eq!(response.intent, "capabilities");

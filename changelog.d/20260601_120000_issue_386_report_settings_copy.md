@@ -423,6 +423,28 @@ bump: minor
   language-coverage audit (`experiments/issue-386-audit-language-coverage.mjs`)
   and the 221-assertion parity harness confirm the backfill leaves every
   recogniser byte-identical to its pre-backfill behaviour (issue #386).
+- The policy and edge-case handlers (`src/solver_handlers_policy.rs`, the
+  `is_inappropriate_content` screen in `src/solver_helpers.rs`, and the
+  `formal_ai_worker.js` mirror) are data-driven too. A new seed file
+  (`data/seed/meanings-policy.lino`) defines three self-describing meanings, each
+  rooted in the `link` ontology and lexicalised in every supported language:
+  `physical_action_query` (role `physical_action_trigger` — the crude "did you
+  …" taunt the assistant answers factually because it has no physical body),
+  `circular_joke_idiom` (role `circular_joke_phrase` — «купи слона» and its
+  buy-an-elephant calque), and `vulgar_content` (role `vulgar_content_marker` —
+  the English profanity and Russian mat migrated verbatim from the old hardcoded
+  refusal lists, plus Hindi and Chinese equivalents). `try_physical_action_question`,
+  `try_kupi_slona`, and `is_inappropriate_content` now ask the lexicon for those
+  roles as raw substrings instead of carrying inline word arrays, so the code
+  knows only the concepts while the surfaces live once in data; the physical-
+  action and buy-elephant replies localise through `seed::response_for`. Because
+  the idiom is now lexicalised everywhere, the buy-an-elephant calque routes to
+  the same handler in every language, and the content screen generalises to
+  Hindi and Chinese obscenities it never covered before. A vm parity harness
+  (`experiments/issue-386-js-policy.mjs`) proves the worker's buy-elephant
+  recogniser and its embedded policy lexicon — including the
+  Rust-only `vulgar_content_marker` and `physical_action_trigger` roles — stay on
+  par across all four languages (issue #386).
 
 ### Fixed
 - The follow-up "Отмени сортировку" ("cancel the sorting") no longer returns

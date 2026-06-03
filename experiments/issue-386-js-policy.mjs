@@ -65,9 +65,10 @@ for (const prompt of ["what is the capital of France", "напиши прогр�
   check(`unrelated prompt falls through: ${prompt}`, kupi(prompt) === null);
 }
 
-// Data parity: the worker's embedded lexicon carries both policy roles with
-// surface words in all four languages — even the physical_action_trigger role,
-// which only the Rust solver reads (the worker screens no content policy).
+// Data parity: the worker's embedded lexicon carries every policy role with
+// surface words in all four languages — even physical_action_trigger and
+// vulgar_content_marker, which only the Rust solver reads (the worker screens
+// no content policy, so the data is mirrored but not acted on here).
 console.log("\n=== embedded lexicon carries the policy meanings ===");
 const lexicon = sandbox.meaningLexicon();
 const meaningsForRole = (role) => lexicon.filter((m) => m.roles.includes(role));
@@ -76,9 +77,17 @@ const langsForRole = (role) => {
   for (const m of meaningsForRole(role)) for (const lx of m.lexemes) if (lx.words.length) langs.add(lx.language);
   return [...langs].sort();
 };
-for (const role of ["circular_joke_phrase", "physical_action_trigger"]) {
+for (const role of ["circular_joke_phrase", "physical_action_trigger", "vulgar_content_marker"]) {
   check(`${role} present with surface words`, meaningsForRole(role).flatMap((m) => m.words).length > 0);
   check(`${role} covers all four languages`, JSON.stringify(langsForRole(role)) === '["en","hi","ru","zh"]', JSON.stringify(langsForRole(role)));
+}
+
+// The English profanity migrated verbatim from the original hardcoded list is
+// still present, so the Rust refusal contract (it drives is_inappropriate_content)
+// reads the same surfaces — confirmed here against the shared mirror.
+const vulgarWords = meaningsForRole("vulgar_content_marker").flatMap((m) => m.words);
+for (const surface of ["suck my dick", "fuck you", "you suck"]) {
+  check(`vulgar_content_marker carries the migrated English surface: ${surface}`, vulgarWords.includes(surface));
 }
 
 console.log("\n" + (fail.length ? "FAILURES: " + fail.join(", ") : "ALL CHECKS PASSED"));
