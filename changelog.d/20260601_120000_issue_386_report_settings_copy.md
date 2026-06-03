@@ -931,6 +931,43 @@ bump: minor
   `extractArithmeticExpression` still routes "convert 10 tons to kg" and
   "300000 ms in seconds" to the calculator while rejecting digit-free CJK prose
   (issue #386).
+- The arithmetic evaluator's spelled→symbolic rewrite (`normalize_expression` in
+  `src/arithmetic.rs` and its worker twin `normalizeArithmeticWords` in
+  `src/web/formal_ai_worker.js`) no longer carries a hardcoded word→value map —
+  the Rust `ARITHMETIC_WORD_TOKENS`/phrase pairs and the worker's five phrase
+  regexes plus its `ARITHMETIC_WORD_TOKENS` map are all gone. A spelled
+  expression ("two plus three", "пять умножить на два", "पाँच गुणा दो") is
+  rewritten into its symbolic form ("2 + 3", "5 * 2") from the seed: every
+  `cardinal_number_word` and `arithmetic_operator_word` meaning carries its
+  script-independent *value surface* — the word form with no alphabetic
+  character, the numeral "2" for the cardinal two, the symbol "+" for addition —
+  and each spelled surface maps onto it. The five operator meanings
+  (`data/seed/meanings-calculator.lino`) gained that symbol word form so an
+  operator is value-carrying exactly as a cardinal already was. A new
+  `Lexicon::arithmetic_normalization_tables` (`src/seed/meanings.rs`) derives the
+  `(tokens, phrases)` mapping — single words applied after tokenization, longest-
+  first multi-word phrases applied before it so "разделить на" rewrites before
+  the shorter "делить на" it contains — and `normalize_expression` folds the
+  phrases then maps the tokens. Because `arithmetic.rs` is compiled into the wasm
+  worker (`#![no_std]`, no `build.rs`) and cannot reach the seed at runtime, the
+  table is materialized at author time into the `no_std` static
+  `src/arithmetic_word_tables.rs` by `examples/issue_386_gen_arith_table.rs` and
+  pinned to the live seed by the `arithmetic_word_tables_match_seed` test
+  (`src/calculation.rs`), so a stale table fails CI. The worker's
+  `arithmeticNormalizationTables()` derives the same mapping from its inline
+  `MEANINGS_LINO`. The new symbol word forms are detection-neutral: a new
+  `Lexicon::mentions_role_spelled` (worker `lexiconMentionsRoleSpelled`) skips
+  value surfaces, so the spelled-operator gate (`contains_word_operator` /
+  `hasArithmeticWordOperator`) still keys only on the alphabetic operator words
+  and never treats a bare "+" as one. Because the mapping now spans every
+  language the meanings lexicalise, the worker gains the Hindi space-separated
+  ("पाँच गुणा दो" → "5 * 2") and the CJK/"по модулю" arithmetic the former
+  English/Russian-only map lacked. A vm parity harness
+  (`experiments/issue-386-worker-arith-normalize-parity.mjs`) proves the worker's
+  derived tables equal the Rust-generated static entry-for-entry (67 tokens, 6
+  phrases, order included) and that `normalizeArithmeticWords`/`evaluateArithmetic`
+  agree on en/ru/hi golden cases — so all three representations (the two language
+  builders and the materialized table) are proven identical (issue #386).
 
 ### Fixed
 - The follow-up "Отмени сортировку" ("cancel the sorting") no longer returns

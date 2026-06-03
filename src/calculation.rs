@@ -394,7 +394,12 @@ fn contains_word_operator(expression: &str) -> bool {
     // no inter-word spaces — the same boundary contract the original
     // space-padded `.contains` check enforced for the English and Russian
     // operators, now extended to every language the meanings lexicalise.
-    seed::lexicon().mentions_role(
+    //
+    // `mentions_role_spelled` skips each operator's script-independent value
+    // surface (the symbol "+", "-", "*", "/", "%" the normalizer reads): those
+    // are matched by the operator-*symbol* scan in `has_calculation_signal`, so
+    // counting them here as a spelled "word operator" would double-count them.
+    seed::lexicon().mentions_role_spelled(
         seed::ROLE_ARITHMETIC_OPERATOR_WORD,
         &expression.to_lowercase(),
     )
@@ -822,5 +827,32 @@ mod tests {
         // Real decimals still reach the upstream calculator and evaluate.
         let evaluation = evaluate_with_link_calculator("3.14 + 2.5").expect("decimal evaluates");
         assert_eq!(evaluation.engine, CalculationEngine::LinkCalculator);
+    }
+
+    #[test]
+    fn arithmetic_word_tables_match_seed() {
+        // src/arithmetic.rs is compiled into the wasm worker (no_std, no build.rs),
+        // so its spelled-word→value tables are materialized at author time into
+        // src/arithmetic_word_tables.rs by the issue_386_gen_arith_table example.
+        // This guard fails CI whenever that static drifts from the live seed.
+        let own = |table: &[(&'static str, &'static str)]| {
+            table
+                .iter()
+                .map(|(surface, value)| ((*surface).to_string(), (*value).to_string()))
+                .collect::<Vec<_>>()
+        };
+        let (seed_tokens, seed_phrases) = crate::seed::lexicon().arithmetic_normalization_tables();
+        assert_eq!(
+            own(crate::arithmetic::WORD_VALUE_TOKENS),
+            seed_tokens,
+            "src/arithmetic_word_tables.rs WORD_VALUE_TOKENS is stale; regenerate with \
+             `cargo run -p formal-ai --example issue_386_gen_arith_table`"
+        );
+        assert_eq!(
+            own(crate::arithmetic::WORD_VALUE_PHRASES),
+            seed_phrases,
+            "src/arithmetic_word_tables.rs WORD_VALUE_PHRASES is stale; regenerate with \
+             `cargo run -p formal-ai --example issue_386_gen_arith_table`"
+        );
     }
 }

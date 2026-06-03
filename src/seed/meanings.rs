@@ -202,6 +202,13 @@ impl Meaning {
     }
 }
 
+/// A spelled-surface → value-surface rewrite table: each entry maps a spelled
+/// surface (a word or, for [`WordValueTable`] phrases, a multi-word string) to
+/// the value surface of its meaning — the numeral or operator symbol carrying no
+/// alphabetic character. Both halves of the arithmetic normalization mapping
+/// returned by [`Lexicon::arithmetic_normalization_tables`] share this shape.
+pub type WordValueTable = Vec<(String, String)>;
+
 /// The parsed set of meanings.
 #[derive(Debug, Clone, Default)]
 pub struct Lexicon {
@@ -263,6 +270,27 @@ impl Lexicon {
             .any(|meaning| meaning.evidenced_in(normalized))
     }
 
+    /// Like [`mentions_role`](Self::mentions_role) but ignores a meaning's
+    /// script-independent *value surfaces* — word forms that carry no alphabetic
+    /// character, such as the operator symbol "+" or the numeral "10".
+    ///
+    /// Those forms exist so the arithmetic normalizer can read a meaning's
+    /// machine value (see
+    /// [`arithmetic_normalization_tables`](Self::arithmetic_normalization_tables));
+    /// they are not spelled words. Operator-*word* detection must therefore skip
+    /// them so a bare "+" is recognised as an operator *symbol* by the symbol
+    /// scan, not double-counted as a spelled word operator. This mirrors the
+    /// pure-numeral skip already applied to spelled-number detection.
+    #[must_use]
+    pub fn mentions_role_spelled(&self, role: &str, normalized: &str) -> bool {
+        self.meanings_with_role(role).any(|meaning| {
+            meaning
+                .words()
+                .filter(|word| word.chars().any(char::is_alphabetic))
+                .any(|word| surface_present(normalized, word))
+        })
+    }
+
     /// Does `normalized` contain any surface word of any meaning in `role` as a
     /// raw substring (`str::contains`), ignoring whitespace-token boundaries?
     ///
@@ -279,6 +307,66 @@ impl Lexicon {
     pub fn mentions_role_raw(&self, role: &str, normalized: &str) -> bool {
         self.meanings_with_role(role)
             .any(|meaning| meaning.words().any(|word| normalized.contains(word)))
+    }
+
+    /// Build the word→value tables the arithmetic evaluator uses to rewrite a
+    /// spelled expression into its symbolic form before tokenizing.
+    ///
+    /// "two plus three" becomes "2 + 3"; "пять умножить на два" becomes
+    /// "5 * 2". Returns `(tokens, phrases)`. Each entry maps a spelled surface to
+    /// the *value surface* of its meaning — the word form carrying no alphabetic
+    /// character: the numeral "2" for the cardinal two, the symbol "+" for the
+    /// addition operator. `tokens` are single words, applied after whitespace
+    /// tokenization; `phrases` are multi-word surfaces, applied (and so replaced)
+    /// before tokenization and ordered longest first so a phrase is rewritten
+    /// before any shorter phrase it contains — "разделить на" before "делить на".
+    /// Both lists are sorted deterministically so the generated mirror is stable.
+    ///
+    /// This is the single source of truth behind the generated `no_std` table in
+    /// `src/arithmetic_word_tables.rs`: the evaluator is compiled into the wasm
+    /// worker, which cannot reach the seed at runtime, so the table is
+    /// materialized at build time by `examples/issue_386_gen_arith_table.rs` and
+    /// checked against this builder by the `arithmetic_word_tables_match_seed`
+    /// test in `src/calculation.rs`.
+    #[must_use]
+    pub fn arithmetic_normalization_tables(&self) -> (WordValueTable, WordValueTable) {
+        let is_value_surface = |word: &str| !word.chars().any(char::is_alphabetic);
+        let mut tokens: WordValueTable = Vec::new();
+        let mut phrases: WordValueTable = Vec::new();
+        for role in [
+            super::roles::ROLE_CARDINAL_NUMBER_WORD,
+            super::roles::ROLE_ARITHMETIC_OPERATOR_WORD,
+        ] {
+            for meaning in self.meanings_with_role(role) {
+                // The value surface is the unique word form with no alphabetic
+                // character: the numeral for a cardinal, the symbol for an
+                // operator. Spelled surfaces in every language map onto it.
+                let Some(value) = meaning.words().find(|&word| is_value_surface(word)) else {
+                    continue;
+                };
+                for word in meaning.words() {
+                    if word == value || is_value_surface(word) {
+                        continue;
+                    }
+                    let entry = (word.to_string(), value.to_string());
+                    if word.chars().any(char::is_whitespace) {
+                        phrases.push(entry);
+                    } else {
+                        tokens.push(entry);
+                    }
+                }
+            }
+        }
+        tokens.sort();
+        tokens.dedup();
+        phrases.sort_by(|a, b| {
+            b.0.chars()
+                .count()
+                .cmp(&a.0.chars().count())
+                .then_with(|| a.0.cmp(&b.0))
+        });
+        phrases.dedup();
+        (tokens, phrases)
     }
 
     /// Distinct surface words contributed by every meaning carrying `role`,

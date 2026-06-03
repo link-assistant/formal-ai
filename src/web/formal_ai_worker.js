@@ -1485,44 +1485,6 @@ function tokenizeArithmetic(input) {
   return tokens;
 }
 
-const ARITHMETIC_WORD_TOKENS = new Map([
-  ["zero", "0"],
-  ["one", "1"],
-  ["two", "2"],
-  ["three", "3"],
-  ["four", "4"],
-  ["five", "5"],
-  ["six", "6"],
-  ["seven", "7"],
-  ["eight", "8"],
-  ["nine", "9"],
-  ["ten", "10"],
-  ["ноль", "0"],
-  ["нуль", "0"],
-  ["один", "1"],
-  ["одна", "1"],
-  ["одно", "1"],
-  ["два", "2"],
-  ["две", "2"],
-  ["три", "3"],
-  ["четыре", "4"],
-  ["пять", "5"],
-  ["шесть", "6"],
-  ["семь", "7"],
-  ["восемь", "8"],
-  ["девять", "9"],
-  ["десять", "10"],
-  ["plus", "+"],
-  ["плюс", "+"],
-  ["minus", "-"],
-  ["минус", "-"],
-  ["times", "*"],
-  ["умножить", "*"],
-  ["умножь", "*"],
-  ["modulo", "%"],
-  ["mod", "%"],
-]);
-
 // Issue #386: the spelled-operator and cardinal-number vocabularies are no
 // longer literal arrays here. They live in the seed meanings — the
 // arithmetic_operation operators (addition, subtraction, multiplication,
@@ -1538,6 +1500,56 @@ const ROLE_POLITENESS_CUE = "politeness_cue";
 const ROLE_QUANTITY_CONVERSION_CUE = "quantity_conversion_cue";
 const ROLE_CALCULATION_DOMAIN_TERM = "calculation_domain_term";
 const ROLE_MATH_FUNCTION_NAME = "math_function_name";
+
+// Issue #386: the spelled digit/operator → value normalization tables, derived
+// from the seed at runtime exactly as the Rust solver derives them
+// (Lexicon::arithmetic_normalization_tables in src/seed/meanings.rs, materialized
+// into src/arithmetic_word_tables.rs for the no_std wasm worker). A cardinal or
+// operator meaning carries its script-independent value surface as the one word
+// form with no alphabetic character — the numeral "2", the symbol "+" — and every
+// spelled surface (any language) maps onto it. Multi-word surfaces ("divided by",
+// "разделить на") are returned as `phrases`, rewritten before tokenization and
+// ordered longest-first so a phrase applies before any shorter phrase it
+// contains; single words ("two", "плюс") are returned as `tokens`, mapped after
+// the whitespace split. Cached because the lexicon never changes at runtime.
+let cachedArithmeticTables = null;
+function arithmeticNormalizationTables() {
+  if (cachedArithmeticTables) return cachedArithmeticTables;
+  const isValueSurface = (word) => !/\p{Alphabetic}/u.test(word);
+  const tokens = [];
+  const phrases = [];
+  for (const role of [ROLE_CARDINAL_NUMBER_WORD, ROLE_ARITHMETIC_OPERATOR_WORD]) {
+    for (const meaning of meaningsWithRole(role)) {
+      // The value surface is the one word form with no alphabetic character: the
+      // numeral for a cardinal, the symbol for an operator. Spelled surfaces in
+      // every language map onto it.
+      const value = meaning.words.find((word) => isValueSurface(word));
+      if (value === undefined) continue;
+      for (const word of meaning.words) {
+        if (word === value || isValueSurface(word)) continue;
+        const entry = [word, value];
+        if (/\s/u.test(word)) phrases.push(entry);
+        else tokens.push(entry);
+      }
+    }
+  }
+  const cmpStr = (a, b) => (a < b ? -1 : a > b ? 1 : 0);
+  const dedupe = (pairs) =>
+    pairs.filter(
+      (pair, index) =>
+        index === 0 ||
+        pair[0] !== pairs[index - 1][0] ||
+        pair[1] !== pairs[index - 1][1],
+    );
+  // tokens.sort() in Rust orders tuples by surface then value; phrases sort by
+  // descending code-point count (longest first), then surface ascending.
+  tokens.sort((a, b) => cmpStr(a[0], b[0]) || cmpStr(a[1], b[1]));
+  phrases.sort(
+    (a, b) => [...b[0]].length - [...a[0]].length || cmpStr(a[0], b[0]),
+  );
+  cachedArithmeticTables = { tokens: dedupe(tokens), phrases: dedupe(phrases) };
+  return cachedArithmeticTables;
+}
 
 const PERCENT_OF_CURRENCY_CODES = new Map([
   ["$", "USD"],
@@ -1797,17 +1809,20 @@ function rewritePercentOf(expression) {
 }
 
 function normalizeArithmeticWords(expression) {
+  const { tokens, phrases } = arithmeticNormalizationTables();
   const lower = String(expression).toLowerCase();
-  const normalizedPhrases = lower
-    .replace(/\s+multiplied by\s+/g, " * ")
-    .replace(/\s+divided by\s+/g, " / ")
-    .replace(/\s+умножить на\s+/g, " * ")
-    .replace(/\s+разделить на\s+/g, " / ")
-    .replace(/\s+делить на\s+/g, " / ");
-  const mapped = normalizedPhrases
+  // Multi-word operator phrases first, longest-first (the table is pre-sorted),
+  // each padded with spaces so it only rewrites on a token boundary — exactly as
+  // the Rust normalize_expression does before it splits on whitespace.
+  let padded = ` ${lower} `;
+  for (const [phrase, value] of phrases) {
+    padded = padded.replaceAll(` ${phrase} `, ` ${value} `);
+  }
+  const tokenMap = new Map(tokens);
+  const mapped = padded
     .split(/\s+/)
     .filter(Boolean)
-    .map((token) => ARITHMETIC_WORD_TOKENS.get(token) || token)
+    .map((token) => tokenMap.get(token) || token)
     .join(" ");
   return rewritePercentOf(mapped);
 }
@@ -2085,9 +2100,11 @@ function hasArithmeticWordOperator(expression) {
   // meanings (addition, subtraction, multiplication, division, modulo) by
   // role, not a literal array. Each surface is matched as a whole token — CJK
   // surfaces as a substring — the boundary contract the former space-padded
-  // `.includes` checks enforced, mirroring contains_word_operator in
+  // `.includes` checks enforced. The match goes through the *spelled* query so
+  // a meaning's value surface (the operator symbol "+") stays neutral here and
+  // is caught by the symbol parser instead, mirroring contains_word_operator in
   // src/calculation.rs.
-  return lexiconMentionsRole(
+  return lexiconMentionsRoleSpelled(
     ROLE_ARITHMETIC_OPERATOR_WORD,
     String(expression).toLowerCase(),
   );
@@ -14203,6 +14220,8 @@ const MEANINGS_LINO = [
   '    lexeme "en"',
   '      word "plus"',
   '        description "English spelled form of the addition operator; an arithmetic_operator_word matched as a token-bounded word."',
+  '      word "+"',
+  "        description \"ASCII plus sign for the addition operator; the script-independent operator surface the arithmetic evaluator consumes, from which the operation's machine symbol is read.\"",
   '    lexeme "ru"',
   '      word "плюс"',
   '        description "Russian spelled form (romanized plyus) of the addition operator; an arithmetic_operator_word matched as a token-bounded word."',
@@ -14220,6 +14239,8 @@ const MEANINGS_LINO = [
   '    lexeme "en"',
   '      word "minus"',
   '        description "English spelled form of the subtraction operator; an arithmetic_operator_word matched as a token-bounded word."',
+  '      word "-"',
+  "        description \"ASCII hyphen-minus for the subtraction operator; the script-independent operator surface the arithmetic evaluator consumes, from which the operation's machine symbol is read.\"",
   '    lexeme "ru"',
   '      word "минус"',
   '        description "Russian spelled form (romanized minus) of the subtraction operator; an arithmetic_operator_word matched as a token-bounded word."',
@@ -14239,6 +14260,8 @@ const MEANINGS_LINO = [
   '        description "English spelled form of the multiplication operator; an arithmetic_operator_word matched as a token-bounded word."',
   '      word "multiplied by"',
   '        description "English spelled phrase for the multiplication operator; an arithmetic_operator_word matched as a token-bounded phrase."',
+  '      word "*"',
+  "        description \"ASCII asterisk for the multiplication operator; the script-independent operator surface the arithmetic evaluator consumes, from which the operation's machine symbol is read.\"",
   '    lexeme "ru"',
   '      word "умножить"',
   '        description "Russian verb (romanized umnozhit, multiply); an arithmetic_operator_word matched as a token-bounded word."',
@@ -14260,6 +14283,8 @@ const MEANINGS_LINO = [
   '    lexeme "en"',
   '      word "divided by"',
   '        description "English spelled phrase for the division operator; an arithmetic_operator_word matched as a token-bounded phrase."',
+  '      word "/"',
+  "        description \"ASCII slash for the division operator; the script-independent operator surface the arithmetic evaluator consumes, from which the operation's machine symbol is read.\"",
   '    lexeme "ru"',
   '      word "разделить на"',
   '        description "Russian phrase (romanized razdelit na, divide by); an arithmetic_operator_word matched as a token-bounded phrase."',
@@ -14281,6 +14306,8 @@ const MEANINGS_LINO = [
   '        description "English spelled form of the modulo operator; an arithmetic_operator_word matched as a token-bounded word."',
   '      word "mod"',
   '        description "English abbreviation of modulo; an arithmetic_operator_word matched as a token-bounded word."',
+  '      word "%"',
+  "        description \"ASCII percent sign for the modulo operator; the script-independent operator surface the arithmetic evaluator consumes, from which the operation's machine symbol is read. The evaluator writes modulo as percent, matching rewrite_percent_of which leaves a bare percent not followed by of as the modulo operator.\"",
   '    lexeme "ru"',
   '      word "по модулю"',
   '        description "Russian phrase (romanized po modulyu, modulo) of the modulo operator; an arithmetic_operator_word matched as a token-bounded phrase."',
@@ -23280,6 +23307,21 @@ function meaningEvidencedIn(meaning, normalized) {
 // phrase-capable surface_present contract (CJK substring vs. whitespace token).
 function lexiconMentionsRole(role, normalized) {
   return meaningsWithRole(role).some((meaning) => meaningEvidencedIn(meaning, normalized));
+}
+
+// Like lexiconMentionsRole but ignores a meaning's script-independent *value
+// surfaces* — word forms with no alphabetic character, such as the operator
+// symbol "+" or the numeral "10". Those forms exist so the arithmetic normalizer
+// can read a meaning's machine value; they are not spelled words, so operator-
+// *word* detection skips them and a bare "+" is recognised as an operator symbol
+// by the symbol scan, not double-counted here. Mirrors Lexicon::mentions_role_spelled
+// in src/seed/meanings.rs.
+function lexiconMentionsRoleSpelled(role, normalized) {
+  return meaningsWithRole(role).some((meaning) =>
+    meaning.words
+      .filter((word) => /\p{Alphabetic}/u.test(word))
+      .some((word) => surfacePresent(normalized, word)),
+  );
 }
 
 // The first meaning (declaration order) carrying `role` that is evidenced in

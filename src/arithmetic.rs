@@ -23,6 +23,17 @@ use alloc::string::{String, ToString};
 use alloc::vec;
 use alloc::vec::Vec;
 
+// Issue #386: the spelled digit/operator → value mapping is derived from the
+// seed (the `cardinal_number` and `arithmetic_operation` meanings), not
+// hardcoded here. Because this module is compiled into the no_std wasm worker —
+// which cannot reach the seed loader at runtime and is built by plain `rustc`
+// with no `build.rs` — the tables are materialized into a no_std static at
+// author time and included here, exposing `WORD_VALUE_TOKENS` and
+// `WORD_VALUE_PHRASES`. Regenerate after editing the seed with
+// `cargo run -p formal-ai --example issue_386_gen_arith_table`;
+// `arithmetic_word_tables_match_seed` (src/calculation.rs) keeps them in parity.
+include!("arithmetic_word_tables.rs");
+
 /// Errors produced when a calculation evaluator cannot produce a numeric value
 /// for the requested expression.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -551,17 +562,15 @@ impl<'a> ArithmeticParser<'a> {
 
 fn normalize_expression(expression: &str) -> String {
     let lower = expression.to_lowercase();
-    let normalized_phrases = [
-        (" multiplied by ", " * "),
-        (" divided by ", " / "),
-        (" умножить на ", " * "),
-        (" разделить на ", " / "),
-        (" делить на ", " / "),
-    ]
-    .iter()
-    .fold(format!(" {lower} "), |current, (from, to)| {
-        current.replace(from, to)
-    });
+    // Multi-word operator phrases ("multiplied by", "разделить на") are rewritten
+    // first, longest-first, so a phrase is replaced before any shorter phrase it
+    // contains. Each is padded with spaces so it only matches on a token
+    // boundary, exactly as the former literal `" умножить на " -> " * "` map did.
+    let normalized_phrases = WORD_VALUE_PHRASES
+        .iter()
+        .fold(format!(" {lower} "), |current, (phrase, value)| {
+            current.replace(&format!(" {phrase} "), &format!(" {value} "))
+        });
     let mapped = normalized_phrases
         .split_whitespace()
         .map(|token| normalize_word_token(token).unwrap_or(token))
@@ -626,25 +635,15 @@ fn rewrite_percent_of(expression: &str) -> String {
     out.join(" ")
 }
 
+/// Map a single whitespace token to its value surface, or `None` if unknown.
+///
+/// A spelled digit maps to its numeral ("two" becomes "2") and a spelled
+/// operator to its symbol ("plus" becomes "+"). The map is derived from the seed
+/// cardinal and operator meanings; see the generated `arithmetic_word_tables.rs`.
 fn normalize_word_token(token: &str) -> Option<&'static str> {
-    match token {
-        "zero" | "ноль" | "нуль" => Some("0"),
-        "one" | "один" | "одна" | "одно" => Some("1"),
-        "two" | "два" | "две" => Some("2"),
-        "three" | "три" => Some("3"),
-        "four" | "четыре" => Some("4"),
-        "five" | "пять" => Some("5"),
-        "six" | "шесть" => Some("6"),
-        "seven" | "семь" => Some("7"),
-        "eight" | "восемь" => Some("8"),
-        "nine" | "девять" => Some("9"),
-        "ten" | "десять" => Some("10"),
-        "plus" | "плюс" => Some("+"),
-        "minus" | "минус" => Some("-"),
-        "times" | "умножить" | "умножь" => Some("*"),
-        "modulo" | "mod" => Some("%"),
-        _ => None,
-    }
+    WORD_VALUE_TOKENS
+        .iter()
+        .find_map(|&(surface, value)| (surface == token).then_some(value))
 }
 
 pub fn evaluate_fallback_formatted(expression: &str) -> Result<String, ArithmeticError> {
