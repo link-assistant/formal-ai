@@ -732,7 +732,7 @@ fn append_prompt_relevants(prompt: &str, normalized: &str, relevants: &mut Vec<S
         ),
         (
             "handler:meta_explanation",
-            normalized.contains("how you work") || normalized.contains("как ты работаешь"),
+            seed::lexicon().mentions_role_raw(seed::ROLE_ASSISTANT_MECHANISM_INQUIRY, normalized),
         ),
         (
             "handler:concept_lookup",

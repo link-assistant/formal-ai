@@ -1,7 +1,7 @@
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
-use crate::seed::response_for;
+use crate::seed::{self, response_for, Slot};
 
 use super::finalize_simple;
 use super::self_awareness::{
@@ -23,33 +23,7 @@ pub fn try_meta_explanation_with_runtime(
     runtime: SelfAwarenessRuntime,
 ) -> Option<SymbolicAnswer> {
     let is_why_question = is_why_question(normalized);
-    let is_how_you_work = normalized.contains("how do you work")
-        || normalized.contains("how does this work")
-        || normalized.contains("how does it work")
-        || normalized.contains("show me how you work")
-        || normalized.contains("explain how you work")
-        // Russian
-        || normalized.contains("как ты работаешь")
-        || normalized.contains("покажи как ты работаешь")
-        || normalized.contains("расскажи как ты работаешь")
-        || normalized.contains("объясни как ты работаешь")
-        || normalized.contains("как ты устроен")
-        || normalized.contains("покажи как ты устроен")
-        || normalized.contains("какой принцип работы у тебя")
-        || normalized.contains("принцип работы у тебя")
-        || (normalized.contains("принцип работы")
-            && meta_contains_any(normalized, &["ты", "теб", "твой", "твоя", "тво", "вы"]))
-        || normalized.contains("какая у тебя модель окружающего мира")
-        || normalized.contains("модель окружающего мира")
-        || normalized.contains("идея твоей разработки")
-        || normalized.contains("идея твоего проекта")
-        || normalized.contains("зачем тебя разработ")
-        // Hindi
-        || normalized.contains("तुम कैसे काम करते हो")
-        || normalized.contains("आप कैसे काम करते हैं")
-        // Chinese
-        || normalized.contains("你是怎么工作的")
-        || normalized.contains("你怎么运作");
+    let is_how_you_work = is_how_you_work(normalized);
     let is_architecture_question = is_architecture_question(normalized);
     if !is_why_question && !is_how_you_work && !is_architecture_question {
         return None;
@@ -104,32 +78,91 @@ fn why_explanation_body(language: &str) -> String {
     }
 }
 
+/// True when the prompt asks the assistant to justify its previous answer.
+///
+/// The English and Russian why-questions front the interrogative, so each
+/// [`answer_rationale_lead`](seed::ROLE_ANSWER_RATIONALE_LEAD) surface is matched
+/// directly — a [`Slot::Prefix`] form against the start of the prompt and a bare
+/// form anywhere in it. The Hindi and Chinese why-questions are head-final, so
+/// they are detected instead as a same-language pair of a
+/// [`causal_interrogative`](seed::ROLE_CAUSAL_INTERROGATIVE) and a
+/// [`prior_answer_reference`](seed::ROLE_PRIOR_ANSWER_REFERENCE); the Hindi and
+/// Chinese rationale surfaces are inert completeness forms, skipped here by the
+/// language filter. No question word is hardcoded in this function.
 fn is_why_question(normalized: &str) -> bool {
-    normalized.starts_with("why ")
-        || normalized.starts_with("why did")
-        || normalized.starts_with("why do you")
-        || normalized.contains("why did you answer")
-        || normalized.starts_with("почему ")
-        || normalized.contains("почему ты ответил")
-        || normalized.contains("почему ты так ответил")
-        || normalized.contains("почему вы ответили")
-        || (normalized.contains("क्यों")
-            && (normalized.contains("जवाब") || normalized.contains("उत्तर")))
-        || (normalized.contains("为什么") && normalized.contains("回答"))
+    let lexicon = seed::lexicon();
+    for meaning in lexicon.meanings_with_role(seed::ROLE_ANSWER_RATIONALE_LEAD) {
+        for lexeme in &meaning.lexemes {
+            if lexeme.language != "en" && lexeme.language != "ru" {
+                continue;
+            }
+            for form in &lexeme.words {
+                let matched = match form.slot() {
+                    Slot::Prefix => normalized.starts_with(form.before_slot()),
+                    _ => normalized.contains(form.text.as_str()),
+                };
+                if matched {
+                    return true;
+                }
+            }
+        }
+    }
+    ["hi", "zh"].into_iter().any(|language| {
+        let names_cause = lexicon
+            .words_for_role_in_languages(seed::ROLE_CAUSAL_INTERROGATIVE, &[language])
+            .iter()
+            .any(|word| normalized.contains(word.as_str()));
+        let names_prior_answer = lexicon
+            .words_for_role_in_languages(seed::ROLE_PRIOR_ANSWER_REFERENCE, &[language])
+            .iter()
+            .any(|word| normalized.contains(word.as_str()));
+        names_cause && names_prior_answer
+    })
 }
 
-fn meta_contains_any(normalized: &str, needles: &[&str]) -> bool {
-    needles.iter().any(|needle| normalized.contains(needle))
+/// True when the prompt asks the assistant to explain how it works.
+///
+/// Most phrasings are complete clauses carried by
+/// [`assistant_mechanism_inquiry`](seed::ROLE_ASSISTANT_MECHANISM_INQUIRY) and
+/// matched as raw substrings. The Russian principle-of-operation phrasing
+/// (принцип работы … тебя) is compositional, so it is recognised by requiring an
+/// [`operating_principle`](seed::ROLE_OPERATING_PRINCIPLE) surface together with
+/// an [`assistant_self_reference`](seed::ROLE_ASSISTANT_SELF_REFERENCE) surface,
+/// both read in Russian only.
+fn is_how_you_work(normalized: &str) -> bool {
+    let lexicon = seed::lexicon();
+    if lexicon.mentions_role_raw(seed::ROLE_ASSISTANT_MECHANISM_INQUIRY, normalized) {
+        return true;
+    }
+    let names_principle = lexicon
+        .words_for_role_in_languages(seed::ROLE_OPERATING_PRINCIPLE, &["ru"])
+        .iter()
+        .any(|word| normalized.contains(word.as_str()));
+    let addresses_assistant = lexicon
+        .words_for_role_in_languages(seed::ROLE_ASSISTANT_SELF_REFERENCE, &["ru"])
+        .iter()
+        .any(|word| normalized.contains(word.as_str()));
+    names_principle && addresses_assistant
+}
+
+/// True when the prompt asks how the assistant itself is built rather than
+/// requesting a task.
+///
+/// Decomposes exactly like the original two-list screen: the prompt must address
+/// the assistant — carry an
+/// [`assistant_self_reference`](seed::ROLE_ASSISTANT_SELF_REFERENCE) surface —
+/// *and* name an [`architecture_concept`](seed::ROLE_ARCHITECTURE_CONCEPT) such
+/// as a language model, neural network, or the project's local rules. Both are
+/// matched as raw substrings across all four languages.
+fn is_architecture_question(normalized: &str) -> bool {
+    let lexicon = seed::lexicon();
+    lexicon.mentions_role_raw(seed::ROLE_ASSISTANT_SELF_REFERENCE, normalized)
+        && lexicon.mentions_role_raw(seed::ROLE_ARCHITECTURE_CONCEPT, normalized)
 }
 
 fn meta_language(prompt: &str, normalized: &str) -> &'static str {
     let lower = format!("{} {}", prompt.to_lowercase(), normalized);
-    if meta_has_char_in_range(&lower, '\u{0400}', '\u{04ff}')
-        || meta_contains_any(
-            &lower,
-            &["ты", "теб", "твоя", "твой", "вы", "вас", "у тебя"],
-        )
-    {
+    if meta_has_char_in_range(&lower, '\u{0400}', '\u{04ff}') {
         return "ru";
     }
     if meta_has_char_in_range(&lower, '\u{0900}', '\u{097f}') {
@@ -143,67 +176,6 @@ fn meta_language(prompt: &str, normalized: &str) -> &'static str {
 
 fn meta_has_char_in_range(text: &str, start: char, end: char) -> bool {
     text.chars().any(|ch| (start..=end).contains(&ch))
-}
-
-fn is_architecture_question(normalized: &str) -> bool {
-    let mentions_assistant = meta_contains_any(
-        normalized,
-        &[
-            "you",
-            "your",
-            "formal ai",
-            "ты",
-            "теб",
-            "твоя",
-            "твой",
-            "тво",
-            "вы",
-            "आप",
-            "तुम",
-            "你",
-            "您",
-        ],
-    );
-    if !mentions_assistant {
-        return false;
-    }
-
-    meta_contains_any(
-        normalized,
-        &[
-            "llm",
-            "large language model",
-            "language model",
-            "openai api",
-            "openai",
-            "neural inference",
-            "neural network",
-            "links notation rules",
-            "local rules",
-            "world model",
-            "model of the world",
-            "бям",
-            "языковая модель",
-            "языковой моделью",
-            "нейросет",
-            "нейрон",
-            "локальных правил",
-            "локальных правилах",
-            "область знаний",
-            "модель окружающего мира",
-            "модель мира",
-            "принцип работы",
-            "идея твоей разработки",
-            "идея твоего проекта",
-            "зачем тебя разработ",
-            "ссылк",
-            "न्यूरल",
-            "भाषा मॉडल",
-            "神经",
-            "語言模型",
-            "语言模型",
-        ],
-    )
 }
 
 fn architecture_explanation_body(language: &str, runtime: SelfAwarenessRuntime) -> String {

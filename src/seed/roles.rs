@@ -629,3 +629,71 @@ pub const ROLE_CURRENCY_USD_REFERENCE: &str = "currency_usd_reference";
 /// requires it together with [`ROLE_EXCHANGE_RATE_REFERENCE`] and
 /// [`ROLE_CURRENCY_USD_REFERENCE`]. Read by the Rust solver and the JS worker.
 pub const ROLE_CALCULATION_BASIS_REFERENCE: &str = "calculation_basis_reference";
+/// Semantic role: the interrogative word that asks for a cause or reason.
+///
+/// "why", "почему", "क्यों", "为什么" — the bare cause-asking word, with no
+/// answer reference of its own. Carried by `causal_interrogative`; the
+/// meta-explanation why-recogniser reads only the Hindi and Chinese surfaces,
+/// pairing each with [`ROLE_PRIOR_ANSWER_REFERENCE`] in the same language to
+/// detect a head-final why-question (the English and Russian why-questions front
+/// the interrogative and are matched through [`ROLE_ANSWER_RATIONALE_LEAD`]).
+/// Read by the Rust solver only (the JS worker has no meta-explanation handler).
+pub const ROLE_CAUSAL_INTERROGATIVE: &str = "causal_interrogative";
+/// Semantic role: a reference to the answer the assistant previously gave.
+///
+/// "answer", "ответ", "जवाब"/"उत्तर", "回答" — the object a why-question points
+/// back at. Carried by `prior_answer_reference`; the meta-explanation
+/// why-recogniser reads only the Hindi and Chinese surfaces, pairing each with
+/// [`ROLE_CAUSAL_INTERROGATIVE`] in the same language. A dedicated reference (not
+/// the broader `answer` meaning) so its Chinese surface stays exactly 回答, as the
+/// original recogniser required. Read by the Rust solver only.
+pub const ROLE_PRIOR_ANSWER_REFERENCE: &str = "prior_answer_reference";
+/// Semantic role: the leading surface of a why-did-you-answer question.
+///
+/// The English and Russian why-questions front the interrogative, so they are
+/// matched directly: a prefix surface ("why …", "почему …") fires when the
+/// prompt opens with the literal, and a bare surface ("why did you answer",
+/// "почему ты ответил", …) matches anywhere. Carried by
+/// `answer_rationale_inquiry`; the meta-explanation why-recogniser iterates only
+/// the English and Russian forms (the Hindi and Chinese forms are inert
+/// completeness surfaces, handled instead by the per-language pairing of
+/// [`ROLE_CAUSAL_INTERROGATIVE`] and [`ROLE_PRIOR_ANSWER_REFERENCE`]). Read by the
+/// Rust solver only.
+pub const ROLE_ANSWER_RATIONALE_LEAD: &str = "answer_rationale_lead";
+/// Semantic role: a second-person reference to the assistant itself.
+///
+/// "you", "your", "formal ai", "ты", "вы", "आप", "तुम", "你", "您" and the
+/// Russian stems "теб"/"тво" — matched as raw substrings, marking that a prompt
+/// is addressed to the assistant. Carried by `assistant_self_reference`; the
+/// architecture recogniser requires it together with
+/// [`ROLE_ARCHITECTURE_CONCEPT`], and the how-you-work recogniser requires its
+/// Russian forms together with [`ROLE_OPERATING_PRINCIPLE`]. Read by the Rust
+/// solver and the JS worker.
+pub const ROLE_ASSISTANT_SELF_REFERENCE: &str = "assistant_self_reference";
+/// Semantic role: a complete how-do-you-work clause addressed to the assistant.
+///
+/// "how do you work", "как ты работаешь", "तुम कैसे काम करते हो",
+/// "你是怎么工作的" and their variants — each a full clause matched as a raw
+/// substring; the how-you-work recogniser fires when any one appears. Carried by
+/// `assistant_mechanism_inquiry`; the Russian principle-of-operation phrasing is
+/// handled separately by composing [`ROLE_OPERATING_PRINCIPLE`] with
+/// [`ROLE_ASSISTANT_SELF_REFERENCE`]. Read by the Rust solver only.
+pub const ROLE_ASSISTANT_MECHANISM_INQUIRY: &str = "assistant_mechanism_inquiry";
+/// Semantic role: the concept of a thing's operating principle.
+///
+/// "operating principle", "принцип работы", "कार्य सिद्धांत", "工作原理" — the
+/// how-you-work recogniser reads only the Russian surface, composing it with
+/// [`ROLE_ASSISTANT_SELF_REFERENCE`] to catch "принцип работы … тебя". Carried by
+/// `operating_principle`; the other languages are inert completeness forms. Read
+/// by the Rust solver only.
+pub const ROLE_OPERATING_PRINCIPLE: &str = "operating_principle";
+/// Semantic role: a term naming part of an AI system's architecture or internals.
+///
+/// "language model", "neural network", "openai api", "world model", "links
+/// notation rules", "бям", "нейросет", "ссылк", "神经", "语言模型" and the like —
+/// matched as raw substrings (several Russian forms are inflectable stems).
+/// Carried by `architecture_concept`; the architecture recogniser fires when one
+/// appears together with [`ROLE_ASSISTANT_SELF_REFERENCE`], marking a question
+/// about how the assistant is built rather than a task request. Read by the Rust
+/// solver and the JS worker.
+pub const ROLE_ARCHITECTURE_CONCEPT: &str = "architecture_concept";

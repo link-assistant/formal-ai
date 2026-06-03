@@ -36,6 +36,7 @@ pub const MEANINGS_PROGRAM_SYNTHESIS_LINO: &str =
     include_str!("../../data/seed/meanings-program-synthesis.lino");
 pub const MEANINGS_INTENT_LINO: &str = include_str!("../../data/seed/meanings-intent.lino");
 pub const MEANINGS_HOW_LINO: &str = include_str!("../../data/seed/meanings-how.lino");
+pub const MEANINGS_META_LINO: &str = include_str!("../../data/seed/meanings-meta.lino");
 pub const MEANINGS_WEB_NAVIGATION_LINO: &str =
     include_str!("../../data/seed/meanings-web-navigation.lino");
 pub const MEANINGS_WEB_SEARCH_LINO: &str = include_str!("../../data/seed/meanings-web-search.lino");
@@ -106,6 +107,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ),
         ("data/seed/meanings-intent.lino", MEANINGS_INTENT_LINO),
         ("data/seed/meanings-how.lino", MEANINGS_HOW_LINO),
+        ("data/seed/meanings-meta.lino", MEANINGS_META_LINO),
         (
             "data/seed/meanings-web-navigation.lino",
             MEANINGS_WEB_NAVIGATION_LINO,
@@ -168,6 +170,7 @@ pub const MEANING_FILES: &[&str] = &[
     MEANINGS_PROGRAM_SYNTHESIS_LINO,
     MEANINGS_INTENT_LINO,
     MEANINGS_HOW_LINO,
+    MEANINGS_META_LINO,
     MEANINGS_WEB_NAVIGATION_LINO,
     MEANINGS_WEB_SEARCH_LINO,
     MEANINGS_WEB_SEARCH_QUERY_LINO,
