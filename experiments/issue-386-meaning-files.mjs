@@ -29,6 +29,7 @@ export const MEANING_FILES = [
   "data/seed/meanings-ontology.lino",
   "data/seed/meanings-behavior-rules.lino",
   "data/seed/meanings-proof.lino",
+  "data/seed/meanings-policy.lino",
 ];
 
 // Authoritative per-line JS string serializer (house quote style, matching the

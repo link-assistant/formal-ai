@@ -5712,7 +5712,13 @@ function tryRoleplayRequest(prompt, normalized) {
 }
 
 function tryKupiSlona(prompt, normalized) {
-  if (!normalized.includes("купи слона")) return null;
+  // Recognition is data-driven: the idiom surfaces (the «купи слона» phrase and
+  // its buy-an-elephant calque in every supported language) live in
+  // data/seed/meanings-policy.lino under the circular_joke_phrase role, matched
+  // as raw substrings. The worker has no localized-response lookup, so the
+  // canonical Russian explanation stays inline (mirrors the Rust fallback).
+  if (!lexiconMentionsRoleSubstring(ROLE_CIRCULAR_JOKE_PHRASE, normalized))
+    return null;
   return {
     intent: "kupi_slona",
     content:
@@ -19717,6 +19723,51 @@ const MEANINGS_LINO = [
   '    lexeme "zh"',
   '      word "决定论"',
   '        description "Chinese noun (pinyin juedinglun) for determinism; a bare substring marker."',
+  "meanings",
+  '  meaning "physical_action_query"',
+  '    gloss "a question that asks whether the assistant performed a bodily action it cannot perform, because the assistant has no physical body. The physical_action_trigger forms are crude taunts matched as raw substrings, so recognition is language-independent and tolerant of inflection. Content-policy screening runs before this handler, so any surface that is also flagged as vulgar content is refused first; a surface that passes screening receives a factual reply stating the assistant has no physical body, localized to the language of the prompt. The Russian forms are inflections of the verb сосать; the other supported languages carry an equivalent interrogative so the concept is lexicalized everywhere."',
+  '    wiktionary "body"',
+  '    defined_by "inquiry"',
+  '    defined_by "action"',
+  '    role "physical_action_trigger"',
+  '    lexeme "en"',
+  '      word "did you suck"',
+  '        description "English interrogative; it contains the vulgar marker you suck, so content-policy screening refuses it before this handler runs and it never reaches the factual reply."',
+  '    lexeme "ru"',
+  '      word "сосал"',
+  '        description "Russian past-tense masculine (romanized sosal, sucked); a physical_action_trigger matched as a raw substring."',
+  '      word "сосала"',
+  '        description "Russian past-tense feminine (romanized sosala, sucked); a physical_action_trigger matched as a raw substring."',
+  '      word "сосёшь"',
+  '        description "Russian second-person present (romanized sosyosh, you suck); a physical_action_trigger matched as a raw substring."',
+  '      word "соси"',
+  '        description "Russian imperative (romanized sosi, suck); a physical_action_trigger matched as a raw substring."',
+  '      word "сосать"',
+  '        description "Russian infinitive (romanized sosat, to suck); a physical_action_trigger matched as a raw substring."',
+  '    lexeme "hi"',
+  '      word "क्या तुमने चूसा"',
+  '        description "Hindi interrogative (romanized kya tumne chusa, did you suck); a physical_action_trigger matched as a raw substring."',
+  '    lexeme "zh"',
+  '      word "你吸了吗"',
+  '        description "Chinese interrogative (pinyin ni xi le ma, did you suck); a physical_action_trigger matched as a raw substring."',
+  '  meaning "circular_joke_idiom"',
+  "    gloss \"«Купи слона» — a well-known Russian children's circular-joke idiom. The game works by repetition: whatever the listener replies, the speaker answers everyone says that, but you buy an elephant!, and the traditional winning reply is everyone has an elephant, but I do not. The circular_joke_phrase forms are matched as raw substrings so the assistant recognises the idiom instead of letting it fall through to an unknown prompt, and the localized reply explains the game in the language of the prompt. The phrase is lexicalized in every supported language as the calque buy an elephant.\"",
+  '    wiktionary "elephant"',
+  '    defined_by "inquiry"',
+  '    defined_by "concept"',
+  '    role "circular_joke_phrase"',
+  '    lexeme "en"',
+  '      word "buy an elephant"',
+  '        description "English calque of the Russian idiom; the concept lexicalized in English, matched as a raw substring."',
+  '    lexeme "ru"',
+  '      word "купи слона"',
+  '        description "Russian imperative phrase (romanized kupi slona, buy an elephant); the opening line of the circular-joke game, matched as a raw substring."',
+  '    lexeme "hi"',
+  '      word "हाथी खरीदो"',
+  '        description "Hindi calque (romanized haathi khareedo, buy an elephant); the concept lexicalized in Hindi, matched as a raw substring."',
+  '    lexeme "zh"',
+  '      word "买大象"',
+  '        description "Chinese calque (pinyin mai daxiang, buy an elephant); the concept lexicalized in Chinese, matched as a raw substring."',
 ].join("\n");
 
 // Semantic role: a thing a program produces that a later turn can refer back to
@@ -22690,6 +22741,14 @@ const ROLE_PROOF_MARKER = "proof_marker";
 const ROLE_PROOF_CLAIM_SCAFFOLD = "proof_claim_scaffold";
 const ROLE_WHO_QUESTION_LEAD = "who_question_lead";
 const ROLE_WHO_QUESTION_TAIL = "who_question_tail";
+
+// Issue #386 policy role — mirrors ROLE_CIRCULAR_JOKE_PHRASE in
+// src/seed/roles.rs. Surfaces (the «купи слона» idiom and its buy-an-elephant
+// calque in every supported language) live in data/seed/meanings-policy.lino,
+// read here by tryKupiSlona as raw substrings. (The physical_action_trigger
+// role in that file is read only by the Rust solver, which screens content
+// policy first; the worker has no such handler, so it is not mirrored.)
+const ROLE_CIRCULAR_JOKE_PHRASE = "circular_joke_phrase";
 
 // The literal lead-in (form.before, the text before the … slot) of every
 // prefix-slot form of a role, in lexicon declaration order. A meaning's roles
