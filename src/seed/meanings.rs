@@ -181,6 +181,25 @@ impl Meaning {
     pub fn languages(&self) -> BTreeSet<String> {
         self.lexemes.iter().map(|l| l.language.clone()).collect()
     }
+
+    /// Does any surface form this meaning lexicalises in one of `languages`
+    /// appear in `normalized` as a raw substring (`str::contains`)?
+    ///
+    /// The language-restricted, raw-substring sibling of [`Meaning::evidenced_in`].
+    /// Feature-capability recognition matches a feature's multilingual aliases by
+    /// raw substring — punctuation is preserved, so whole-token boundaries do not
+    /// hold — and only in the prompt's own language plus English, so it queries
+    /// this rather than the token-bounded [`evidenced_in`](Self::evidenced_in).
+    /// The surface words stay in the data; only the language codes (the legitimate
+    /// code-resident bridge) and the raw-substring contract live in the caller.
+    #[must_use]
+    pub fn mentions_in_languages_raw(&self, normalized: &str, languages: &[&str]) -> bool {
+        self.lexemes
+            .iter()
+            .filter(|lexeme| languages.contains(&lexeme.language.as_str()))
+            .flat_map(|lexeme| lexeme.words.iter())
+            .any(|word| !word.text.is_empty() && normalized.contains(word.text.as_str()))
+    }
 }
 
 /// The parsed set of meanings.
@@ -330,6 +349,45 @@ impl Lexicon {
             .iter()
             .filter(|meaning| meaning.has_role(role))
             .find(|meaning| meaning.evidenced_in(normalized))
+    }
+
+    /// The first meaning carrying `role`, in declaration order, that mentions one
+    /// of its `languages` surface forms in `normalized` as a raw substring — or
+    /// `None`.
+    ///
+    /// The raw-substring, language-restricted sibling of [`first_role_match`](Self::first_role_match).
+    /// Declaration order encodes priority, so the feature-capability recogniser
+    /// lists its alias meanings in the legacy table order and takes the first hit,
+    /// querying the prompt's own language plus English without ever naming a
+    /// surface word in code.
+    #[must_use]
+    pub fn first_role_match_in_languages_raw(
+        &self,
+        role: &str,
+        normalized: &str,
+        languages: &[&str],
+    ) -> Option<&Meaning> {
+        self.meanings
+            .iter()
+            .filter(|meaning| meaning.has_role(role))
+            .find(|meaning| meaning.mentions_in_languages_raw(normalized, languages))
+    }
+
+    /// Does any meaning carrying `role` mention one of its `languages` surface
+    /// forms in `normalized` as a raw substring?
+    ///
+    /// The boolean, language-restricted sibling of [`mentions_role_raw`](Self::mentions_role_raw).
+    /// The feature-capability question gate uses it to check each language's
+    /// interrogative cues only against prompts detected in that language.
+    #[must_use]
+    pub fn mentions_role_in_languages_raw(
+        &self,
+        role: &str,
+        normalized: &str,
+        languages: &[&str],
+    ) -> bool {
+        self.meanings_with_role(role)
+            .any(|meaning| meaning.mentions_in_languages_raw(normalized, languages))
     }
 
     /// The single meaning that roots the merged ontology — the one carrying

@@ -37,6 +37,7 @@ export const MEANING_FILES = [
   "data/seed/meanings-finance.lino",
   "data/seed/meanings-definition-merge.lino",
   "data/seed/meanings-tool-access.lino",
+  "data/seed/meanings-feature-capability.lino",
 ];
 
 // Authoritative per-line JS string serializer (house quote style, matching the

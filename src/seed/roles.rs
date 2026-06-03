@@ -989,3 +989,47 @@ pub const ROLE_LOCAL_SHELL_REQUEST_CUE: &str = "local_shell_request_cue";
 /// self-description. Carried by `tool_argument_marker`; read by the Rust
 /// natural-language-tool handler.
 pub const ROLE_TOOL_ARGUMENT_MARKER: &str = "tool_argument_marker";
+/// Semantic role: a surface alias naming a runtime feature capability.
+///
+/// Carried by the sixteen `feature_capability_*` meanings (for `web_search`,
+/// `diagnostics`, `agent_mode`, and so on), each lexicalising the multilingual
+/// phrases that name one feature. The feature-capability handler walks every
+/// meaning carrying this role in declaration order — declaration order is
+/// detection priority — and through
+/// [`crate::seed::Lexicon::first_role_match_in_languages_raw`] returns the first
+/// whose forms (in the prompt's language or English) occur as a raw substring.
+/// The matched meaning's slug, minus its `feature_capability_` prefix, keys the
+/// response table. Read by the Rust feature-capability handler and its JS worker
+/// mirror.
+pub const ROLE_FEATURE_CAPABILITY_ALIAS: &str = "feature_capability_alias";
+/// Semantic role: an interrogative cue that flags a capability question.
+///
+/// Carried by the `feature_capability_question` meaning, whose per-language
+/// lexemes hold cues such as "can you", "можешь", "能", and "क्या". The handler
+/// checks them through
+/// [`crate::seed::Lexicon::mentions_role_in_languages_raw`] against the prompt's
+/// own detected language (English prompts additionally accept a grammatical
+/// "is/are … enabled/available" frame computed in code) before it looks for a
+/// named feature. Read by the Rust feature-capability handler and its JS worker
+/// mirror.
+pub const ROLE_FEATURE_CAPABILITY_QUESTION: &str = "feature_capability_question";
+/// Semantic role: an action frame asking the assistant to perform arithmetic.
+///
+/// Carried by the `feature_action_arithmetic` meaning. When a capability
+/// question also opens with one of these English frames ("can you calculate",
+/// "can you compute"), reconstructed as a space-padded prefix, the handler steps
+/// aside so the arithmetic solver answers instead of reporting availability.
+/// Only the English frames drive the gate; the other languages stay in the seed
+/// for self-description. Read by the Rust feature-capability handler and its JS
+/// worker mirror.
+pub const ROLE_FEATURE_ACTION_ARITHMETIC: &str = "feature_action_arithmetic";
+/// Semantic role: an action frame asking the assistant to perform a planning task.
+///
+/// Carried by the `feature_action_planning` meaning. When a capability question
+/// also contains one of these English frames ("can you summarize", "can you
+/// brainstorm", "can you roleplay"), reconstructed as a space-padded token, the
+/// handler steps aside so the primary planning handler answers. Only the English
+/// frames drive the gate; the other languages stay in the seed for
+/// self-description. Read by the Rust feature-capability handler and its JS
+/// worker mirror.
+pub const ROLE_FEATURE_ACTION_PLANNING: &str = "feature_action_planning";

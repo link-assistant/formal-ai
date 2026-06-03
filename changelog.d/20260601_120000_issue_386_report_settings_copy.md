@@ -526,6 +526,46 @@ bump: minor
   self-description. The handler is Rust-only — the browser worker has no
   natural-language-tool route — but its embedded `MEANINGS_LINO` mirrors the new
   file byte-identically so the shared knowledge base stays complete (issue #386).
+- Feature-capability recognition (`src/solver_handlers/feature_capability.rs` and
+  its `formal_ai_worker.js` mirror) is data-driven too. A new seed file
+  (`data/seed/meanings-feature-capability.lino`) defines nineteen self-describing
+  meanings, each rooted in the `link` ontology and lexicalised in every supported
+  language: sixteen `feature_capability_*` alias meanings (role
+  `feature_capability_alias`, `defined_by` `concept` — the surface words that name
+  each of the sixteen advertised features: web search, diagnostics, agent mode,
+  definition fusion, configuration, memory actions, greeting, write program,
+  concept lookup, arithmetic, translation, memory, demo mode, http url, javascript
+  execution, planning), the `feature_capability_question` frame (role
+  `feature_capability_question`, `defined_by` `action`, grounded in *can* — the
+  "can you …" / "do you support …" / "умеешь ли …" / "你能…" availability question
+  the recogniser keys on), and the two action-request gates
+  `feature_action_arithmetic` and `feature_action_planning` (roles
+  `feature_action_arithmetic`/`feature_action_planning`, `defined_by` `action` —
+  the imperative "can you calculate …" / "can you summarize …" frames that must
+  route to the live arithmetic and planning handlers, not the capability answer).
+  `detect_feature_capability`, `is_feature_capability_question`, and
+  `is_feature_action_request` now ask the lexicon for those roles — resolving a
+  matched `feature_capability_alias` meaning back to its stable slug, gating on the
+  `feature_capability_question` frame (with the pre-existing English
+  "is/are … enabled/available" availability shape kept as a structural fallback),
+  and stepping aside when an arithmetic/planning *action* frame leads the prompt —
+  instead of the former per-feature alias arrays and the hardcoded
+  `WEB_SEARCH_CAPABILITY_PHRASES` / `featureAliases` lists, so the code knows only
+  the concepts "a feature", "a question about whether a feature is available", and
+  "an imperative that should run the feature instead". The migration is
+  byte-faithful to the alias/action split that origin/main relied on: the
+  arithmetic *alias* set stays `arithmetic` / `calculate` / `math` / `2 + 2`
+  (Russian `арифмет` / `считать` / `посчитать`, …) while `compute` lives only in
+  the `feature_action_arithmetic` *action* role, so a bare "Can you compute 7 * 6?"
+  detects no capability and falls through to the calculation handler exactly as
+  before. Because the alias words now exist in every language, feature-availability
+  questions resolve uniformly across en/ru/hi/zh. A vm parity harness
+  (`experiments/issue-386-js-feature-capability.mjs`) replays the sixty
+  feature×language rows and twenty web-search probes from the Rust battery in
+  `tests/unit/specification/capabilities.rs`, the arithmetic/planning action gates,
+  the alias/action role separation, and the availability-frame fallback — 95
+  assertions, all green — proving the worker's recogniser agrees with the Rust
+  solver in every language (issue #386).
 
 ### Fixed
 - The follow-up "Отмени сортировку" ("cancel the sorting") no longer returns
