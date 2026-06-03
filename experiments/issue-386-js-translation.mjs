@@ -209,6 +209,54 @@ for (const [prompt, source, target, surface] of BATTERY) {
 console.log(
   `\n${passed}/${BATTERY.length} translation rows match the frozen Rust battery (${BATTERY.length * 3} assertions).`,
 );
+
+// --- command recognition parity (#386) --------------------------------------
+// inferTranslationSource and the try_translation gate no longer hardcode the
+// command verbs; they read the translation_action role. Mirror the Rust unit
+// tests words_for_role_partition_by_language and
+// first_role_language_reads_the_command_language, then exercise the end-to-end
+// source inference and the gate predicate (reconstructed from the SAME helper
+// calls the worker's tryTranslation uses).
+const ROLE_TRANSLATION_ACTION = "translation_action";
+const headInitial = sandbox.wordsForRoleInLanguages(ROLE_TRANSLATION_ACTION, ["en", "ru"]);
+const headFinal = sandbox.wordsForRoleInLanguages(ROLE_TRANSLATION_ACTION, ["hi", "zh"]);
+check("partition en/ru has translate", headInitial.includes("translate"), true);
+check("partition en/ru has переведи", headInitial.includes("переведи"), true);
+check("partition en/ru has опиши", headInitial.includes("опиши"), true);
+check("partition en/ru excludes 翻译", headInitial.includes("翻译"), false);
+check("partition hi/zh has 翻译", headFinal.includes("翻译"), true);
+check("partition hi/zh has अनुवाद", headFinal.includes("अनुवाद"), true);
+check("partition hi/zh excludes translate", headFinal.includes("translate"), false);
+
+const PRIORITY = ["ru", "hi", "zh"];
+check("first-lang переведи -> ru", sandbox.firstRoleLanguage(ROLE_TRANSLATION_ACTION, "переведи apple", PRIORITY), "ru");
+check("first-lang का अनुवाद -> hi", sandbox.firstRoleLanguage(ROLE_TRANSLATION_ACTION, "apple का अनुवाद करो", PRIORITY), "hi");
+check("first-lang 翻译 -> zh", sandbox.firstRoleLanguage(ROLE_TRANSLATION_ACTION, "把 apple 翻译成中文", PRIORITY), "zh");
+check("first-lang none -> null", sandbox.firstRoleLanguage(ROLE_TRANSLATION_ACTION, "what is apple", PRIORITY), null);
+
+check("infer-source переведи -> ru", sandbox.inferTranslationSource("переведи apple"), "ru");
+check("infer-source опиши -> ru", sandbox.inferTranslationSource("опиши apple"), "ru");
+check("infer-source plain translate -> en", sandbox.inferTranslationSource("translate apple"), "en");
+
+// The gate predicate, reconstructed from the SAME helper calls the worker uses.
+function translationGate(normalized, targetHint) {
+  const headInitialCommand = headInitial.some((stem) => normalized.startsWith(stem));
+  const headFinalCommand =
+    Boolean(targetHint) && headFinal.some((stem) => normalized.includes(stem));
+  return headInitialCommand || headFinalCommand;
+}
+check("gate translate", translationGate("translate apple to russian", "ru"), true);
+check("gate переведи", translationGate("переведи apple", null), true);
+check("gate перевести (improvement)", translationGate("перевести apple", null), true);
+check("gate опиши", translationGate("опиши apple", null), true);
+check("gate 翻译 with target", translationGate("把 apple 翻译成中文", "zh"), true);
+check("gate 翻译 without target -> false", translationGate("apple 翻译", null), false);
+check("gate plain question -> false", translationGate("what is apple", null), false);
+
+console.log(
+  "command-recognition parity (inferTranslationSource + gate + helpers) checked.",
+);
+
 if (fail.length) {
   console.error(`\n${fail.length} assertion(s) FAILED — worker diverged from the Rust parity baseline.`);
   process.exit(1);

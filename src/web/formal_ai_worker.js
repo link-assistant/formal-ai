@@ -5509,10 +5509,14 @@ function inferTranslationSource(prompt) {
     const detected = detectLanguageSlug(surface);
     if (detected !== "unknown") return detected;
   }
-  if (lower.includes("переведи") || lower.includes("опиши")) return "ru";
-  if (lower.includes("अनुवाद")) return "hi";
-  if (lower.includes("翻译") || lower.includes("翻譯")) return "zh";
-  return "en";
+  // Issue #386: the source language of an un-annotated request is the language
+  // the user issued the *translation command* in. Ask the lexicon which
+  // language's command verb the prompt carries — the stems live once in the
+  // embedded translate meaning; this code knows only the concept and the
+  // language-code bridge. English is the default when no command verb is present.
+  return (
+    firstRoleLanguage(ROLE_TRANSLATION_ACTION, lower, ["ru", "hi", "zh"]) || "en"
+  );
 }
 
 // Live Wiktionary fallback (issue #221). When the offline meaning
@@ -5664,16 +5668,22 @@ function renderTranslationGap(surface, source, target) {
 
 async function tryTranslation(prompt, normalized) {
   const targetHint = detectTranslationTargetLanguage(normalized);
-  const isTranslationRequest =
-    normalized.startsWith("translate") ||
-    normalized.startsWith("переведи") ||
-    normalized.startsWith("опиши") ||
-    Boolean(
-      targetHint &&
-        (normalized.includes("अनुवाद") ||
-          normalized.includes("翻译") ||
-          normalized.includes("翻譯")),
+  // Issue #386: recognise a translation command by *meaning*, not by hardcoded
+  // verbs. The command stems live once in the embedded translate meaning; this
+  // code knows the concept and the head-initial/head-final typology. Clause-
+  // initial English/Russian commands are matched as a prefix; head-final
+  // Hindi/Chinese place the verb later, so they are matched anywhere but gated
+  // by a target marker to avoid firing on an incidental verb noun.
+  const headInitialCommand = wordsForRoleInLanguages(ROLE_TRANSLATION_ACTION, [
+    "en",
+    "ru",
+  ]).some((stem) => normalized.startsWith(stem));
+  const headFinalCommand =
+    Boolean(targetHint) &&
+    wordsForRoleInLanguages(ROLE_TRANSLATION_ACTION, ["hi", "zh"]).some((stem) =>
+      normalized.includes(stem),
     );
+  const isTranslationRequest = headInitialCommand || headFinalCommand;
   if (!isTranslationRequest) return null;
 
   // Issue #216: fall back to an unquoted surface (`translate apple to
@@ -18479,18 +18489,20 @@ const MEANINGS_LINO = [
   '      word "漢語"',
   '        description "Chinese name of Chinese (pinyin hanyu, traditional), code zh."',
   '  meaning "translate"',
-  "    gloss \"the action of rendering a surface from one language into another — the verb every translation request realises. It is the genus the unquoted-frame and into-marker meanings specialise: its surfaces are the bare verb stems, used to detect a translation command in head-final Hindi (अनुवाद) and Chinese (翻译) where the verb is not bracketed by a circumfix. The English and Russian stems are recorded for completeness; those languages are recognised through the unquoted frame's circumfix instead.\"",
+  "    gloss \"the action of rendering a surface from one language into another — the verb every translation request realises. It is the genus the unquoted-frame and into-marker meanings specialise: its surfaces are the bare verb stems, used to detect a translation command in head-final Hindi (अनुवाद) and Chinese (翻译) where the verb is not bracketed by a circumfix. The English and Russian stems are clause-initial: the request-gate (try_translation) recognises a command by a head-initial stem, and the source-inferencer (infer_source_from_prompt) reads the stem's language as the language the user issued the command in. The Russian describe-imperative (опиши) is recorded under this genus too — this solver routes a description request through the same translation/description pipeline, so it counts as a clause-initial command stem.\"",
   '    wiktionary "translate"',
   '    defined_by "action"',
   '    role "translation_action"',
   '    lexeme "en"',
   '      word "translate"',
-  '        description "English verb (translate) naming the translation action."',
+  '        description "English verb (translate) naming the translation action; clause-initial, so the request-gate matches it as a prefix."',
   '    lexeme "ru"',
   '      word "перевести"',
-  '        description "Russian verb (romanized perevesti, to translate), the infinitive stem of the translation action."',
+  '        description "Russian verb (romanized perevesti, to translate), the infinitive stem of the translation action; clause-initial."',
   '      word "переведи"',
-  '        description "Russian verb (romanized perevedi, translate!), the imperative stem of the translation action."',
+  '        description "Russian verb (romanized perevedi, translate!), the imperative stem of the translation action; clause-initial."',
+  '      word "опиши"',
+  '        description "Russian verb (romanized opishi, describe!), the imperative the Russian reporter used to request a rendering/description; this solver routes it through the same translation/description pipeline, so it is recorded as a clause-initial command stem of this genus."',
   '    lexeme "hi"',
   '      word "अनुवाद"',
   '        description "Hindi noun (romanized anuvad, translation) used with करो/करें to form the translation command; scanned as the bare verb stem in Hindi prompts."',
@@ -19116,13 +19128,20 @@ function meaningLexicon() {
       const definedBy = [];
       const words = [];
       const wordForms = [];
+      // Per-language word groups, so a handler can partition a role's vocabulary
+      // by language (e.g. head-initial vs. head-final translation verbs) without
+      // losing the language tag the flat `words` list drops. Mirrors the
+      // `lexemes` field on Meaning in src/seed/meanings.rs (issue #386).
+      const lexemes = [];
       for (const child of node.children) {
         if (child.name === "role") roles.push(child.value);
         else if (child.name === "defined_by") definedBy.push(child.value);
         else if (child.name === "lexeme") {
+          const lexemeWords = [];
           for (const lexWord of child.children) {
             if (lexWord.name !== "word") continue;
             words.push(lexWord.value);
+            lexemeWords.push(lexWord.value);
             let action = "";
             let description = "";
             for (const attr of lexWord.children) {
@@ -19131,9 +19150,10 @@ function meaningLexicon() {
             }
             wordForms.push(makeWordForm(lexWord.value, action, description));
           }
+          lexemes.push({ language: child.value, words: lexemeWords });
         }
       }
-      meanings.push({ slug: node.value, roles, definedBy, words, wordForms });
+      meanings.push({ slug: node.value, roles, definedBy, words, wordForms, lexemes });
     }
   }
   cachedMeaningLexicon = meanings;
@@ -19229,6 +19249,46 @@ function calendarWordsForRole(role) {
     }
   }
   return words;
+}
+
+// Issue #386 translation-command role — mirrors ROLE_TRANSLATION_ACTION in
+// src/seed/roles.rs. The per-language command verbs (translate, переведи/
+// перевести/опиши, अनुवाद, 翻译/翻譯) live once in the embedded MEANINGS_LINO
+// (data/seed/meanings-translation.lino) under the `translate` meaning; the gate
+// and source-inferencer reference the concept, not the raw words.
+const ROLE_TRANSLATION_ACTION = "translation_action";
+
+// Distinct surface words for `role` limited to `languages`, declaration order.
+// Mirrors Lexicon::words_for_role_in_languages in src/seed/meanings.rs (#386).
+function wordsForRoleInLanguages(role, languages) {
+  const out = [];
+  for (const meaning of meaningsWithRole(role)) {
+    for (const lexeme of meaning.lexemes) {
+      if (!languages.includes(lexeme.language)) continue;
+      for (const word of lexeme.words) {
+        if (!out.includes(word)) out.push(word);
+      }
+    }
+  }
+  return out;
+}
+
+// The first language in `priority` whose surface word for `role` appears in
+// `normalized` (raw substring), or null when none is present. Answers "which
+// language did the user issue this command in?". Mirrors
+// Lexicon::first_role_language in src/seed/meanings.rs (#386).
+function firstRoleLanguage(role, normalized, priority) {
+  for (const lang of priority) {
+    const present = meaningsWithRole(role).some((meaning) =>
+      meaning.lexemes.some(
+        (lexeme) =>
+          lexeme.language === lang &&
+          lexeme.words.some((word) => normalized.includes(word)),
+      ),
+    );
+    if (present) return lang;
+  }
+  return null;
 }
 
 // Issue #386 software-project follow-up roles — mirror the
