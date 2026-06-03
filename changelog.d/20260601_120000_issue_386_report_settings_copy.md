@@ -301,7 +301,7 @@ bump: minor
   into one of these categories (`program` → `entity`, `sort`/`modify` →
   `action`, `quantity` → `property`, `calendar_day` → `concept`,
   `knowledge_relation` → `relation`, the software-project genera → their
-  categories, …), so following `defined_by` from any of the 163 meanings reaches
+  categories, …), so following `defined_by` from any meaning reaches
   `link`. A public ontology-reasoning API (`Lexicon::ontology_root`,
   `Lexicon::reaches_root`) and two invariants
   (`the_ontology_has_a_single_link_root`, `every_meaning_reaches_the_link_root`)
@@ -498,6 +498,34 @@ bump: minor
   (`skill_description_recogniser_reads_every_language_from_the_lexicon`) and a vm
   parity harness (`experiments/issue-386-worker-skill-trigger-parity.mjs`) so the
   two runtimes are proven to agree across en/ru/hi/zh (issue #386).
+- Natural-language tool/API recognition
+  (`src/solver_handlers/natural_language_tools.rs`) is data-driven too. A new seed
+  file (`data/seed/meanings-tool-access.lino`) defines five self-describing
+  meanings, each rooted in the `link` ontology and lexicalised in every supported
+  language: `tool_invocation_cue` (role `tool_invocation_cue` — the call / invoke /
+  run / api / tool surfaces, `defined_by` `action`), `calculator_tool` (role
+  `calculator_tool_name`, `defined_by` `entity`), `web_search_tool` (role
+  `web_search_tool_name`, including the `web_search`/`web search`/`web-search`
+  spellings, `defined_by` `entity`), `local_shell_tool` (role
+  `local_shell_request_cue` — the whole request phrases such as "local shell tool"
+  and "invoke the shell tool", which bundle verb and tool name so the cue is
+  decisive on its own, `defined_by` `entity`), and `tool_argument_marker` (role
+  `tool_argument_marker` — the "with query" / "query" / "with" / "for" argument
+  introducers, `defined_by` `relation`). `is_explicit_tool_api_request` now asks
+  the lexicon whether a prompt evidences a named tool together with a
+  `tool_invocation_cue`, `is_explicit_local_shell_request` asks for the
+  `local_shell_request_cue` alone, and the fallback argument extractor walks the
+  English `tool_argument_marker` forms in declaration (priority) order, so the
+  former hardcoded alias slices, the space-padded cue substrings (`" api"`,
+  `"call "`, …), the local-shell phrase list, and the four `after_marker` calls
+  are gone — the code knows only the concepts "an explicit tool call", "the named
+  calculator/web-search/shell tool", and "the phrase that introduces a tool
+  argument". Matching is token-bounded (the CJK-substring / whole-token contract),
+  so a cue like "tool" no longer matches inside a larger word; the English forms
+  drive the argument heuristic while the other languages stay in the seed for
+  self-description. The handler is Rust-only — the browser worker has no
+  natural-language-tool route — but its embedded `MEANINGS_LINO` mirrors the new
+  file byte-identically so the shared knowledge base stays complete (issue #386).
 
 ### Fixed
 - The follow-up "Отмени сортировку" ("cancel the sorting") no longer returns

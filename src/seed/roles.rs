@@ -943,3 +943,49 @@ pub const ROLE_DEFINITION_MERGE_MARKER: &str = "definition_merge_marker";
 /// `definition_merge_tail_boundary`; read by the Rust definition-merge handler
 /// and its JS worker mirror.
 pub const ROLE_DEFINITION_MERGE_TAIL_BOUNDARY: &str = "definition_merge_tail_boundary";
+/// Semantic role: a cue that the prompt is an explicit tool or API call.
+///
+/// The verbs "call", "invoke", "run" and the nouns "api", "tool" (plus their
+/// translations). Read through [`crate::seed::Lexicon::mentions_role`] as whole
+/// tokens; the natural-language-tool handler requires one of these together with
+/// a named tool ([`ROLE_CALCULATOR_TOOL_NAME`] or [`ROLE_WEB_SEARCH_TOOL_NAME`])
+/// before it treats the prompt as a direct tool call. Carried by
+/// `tool_invocation_cue`; read by the Rust natural-language-tool handler.
+pub const ROLE_TOOL_INVOCATION_CUE: &str = "tool_invocation_cue";
+/// Semantic role: a surface word that names the calculator tool.
+///
+/// The English literal identifier `calculator` plus best-effort translations.
+/// Read through [`crate::seed::Lexicon::mentions_role`] as a whole token; with a
+/// co-occurring [`ROLE_TOOL_INVOCATION_CUE`] the natural-language-tool handler
+/// routes the prompt to the `tool:calculator` capability. Carried by
+/// `calculator_tool`; read by the Rust natural-language-tool handler.
+pub const ROLE_CALCULATOR_TOOL_NAME: &str = "calculator_tool_name";
+/// Semantic role: a surface word that names the web-search tool.
+///
+/// The English literal identifier `web_search` with its spaced and hyphenated
+/// spellings, plus best-effort translations. Read through
+/// [`crate::seed::Lexicon::mentions_role`] as a whole token; with a co-occurring
+/// [`ROLE_TOOL_INVOCATION_CUE`] the natural-language-tool handler routes the
+/// prompt to the `tool:web_search` capability. Carried by `web_search_tool`;
+/// read by the Rust natural-language-tool handler.
+pub const ROLE_WEB_SEARCH_TOOL_NAME: &str = "web_search_tool_name";
+/// Semantic role: an explicit request to invoke the `local_shell` tool.
+///
+/// Whole phrases that bundle the verb and the tool name (`local_shell`, "local
+/// shell tool", "invoke the shell tool", plus translations). Read through
+/// [`crate::seed::Lexicon::mentions_role`] as whole tokens; decisive on its own,
+/// so the handler does not also require a [`ROLE_TOOL_INVOCATION_CUE`] before it
+/// routes the prompt to the `tool:local_shell` capability. Carried by
+/// `local_shell_tool`; read by the Rust natural-language-tool handler.
+pub const ROLE_LOCAL_SHELL_REQUEST_CUE: &str = "local_shell_request_cue";
+/// Semantic role: a phrase introducing the argument of a tool call.
+///
+/// A marker such as "with query", "query", "with", or "for", carried in priority
+/// order (longest first). When the argument is not delimited by backticks or
+/// quotes, the handler reads the English forms through
+/// [`crate::seed::Lexicon::words_for_role_in_languages`], reconstructs each as a
+/// space-padded token, finds the first present in declaration order, and takes
+/// the text after it as the argument. The non-English forms stay in the seed for
+/// self-description. Carried by `tool_argument_marker`; read by the Rust
+/// natural-language-tool handler.
+pub const ROLE_TOOL_ARGUMENT_MARKER: &str = "tool_argument_marker";

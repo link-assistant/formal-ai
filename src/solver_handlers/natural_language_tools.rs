@@ -4,6 +4,7 @@ use crate::associative_package::{default_package_store, PackagePermissionDecisio
 use crate::calculation::evaluate_calculation;
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
+use crate::seed;
 use crate::solver_helpers::{
     extract_backticked, extract_javascript_program, extract_quoted_phrase,
 };
@@ -82,7 +83,7 @@ fn try_calculator_api_call(
     log: &mut EventLog,
     agent_mode: bool,
 ) -> Option<SymbolicAnswer> {
-    if !is_explicit_tool_api_request(normalized, &["calculator"]) {
+    if !is_explicit_tool_api_request(normalized, seed::ROLE_CALCULATOR_TOOL_NAME) {
         return None;
     }
     let expression = extract_argument(prompt, normalized)?;
@@ -142,7 +143,7 @@ fn try_web_search_api_call(
     log: &mut EventLog,
     agent_mode: bool,
 ) -> Option<SymbolicAnswer> {
-    if !is_explicit_tool_api_request(normalized, &["web_search", "web search", "web-search"]) {
+    if !is_explicit_tool_api_request(normalized, seed::ROLE_WEB_SEARCH_TOOL_NAME) {
         return None;
     }
     let query = extract_argument(prompt, normalized)?;
@@ -269,38 +270,50 @@ fn extract_console_log_expression(program: &str) -> Option<String> {
     Some(tail[..end].trim().to_owned())
 }
 
-fn is_explicit_tool_api_request(normalized: &str, aliases: &[&str]) -> bool {
-    let mentions_tool = aliases.iter().any(|alias| normalized.contains(alias));
-    mentions_tool
-        && (normalized.contains(" api")
-            || normalized.contains(" tool")
-            || normalized.contains("call ")
-            || normalized.contains("invoke ")
-            || normalized.contains("run "))
+fn is_explicit_tool_api_request(normalized: &str, tool_name_role: &str) -> bool {
+    // The intent is two meanings together: a named tool (the `tool_name_role`
+    // meaning — `calculator_tool` or `web_search_tool`) and a tool_invocation_cue
+    // ("call", "invoke", "run", "api", "tool"). Both are matched as whole tokens
+    // in every supported language through the lexicon, so no tool name or cue
+    // word is spelled out in this code.
+    let lexicon = seed::lexicon();
+    lexicon.mentions_role(tool_name_role, normalized)
+        && lexicon.mentions_role(seed::ROLE_TOOL_INVOCATION_CUE, normalized)
 }
 
 fn is_explicit_local_shell_request(normalized: &str) -> bool {
-    normalized.contains("local_shell")
-        || normalized.contains("local shell tool")
-        || normalized.contains("local shell api")
-        || normalized.contains("call the shell tool")
-        || normalized.contains("invoke the shell tool")
+    // The local-shell request forms bundle the verb and the tool name into whole
+    // phrases (e.g. "local shell tool", "invoke the shell tool"), so the
+    // local_shell_request_cue meaning is decisive on its own — unlike the
+    // calculator/web-search tools, no separate tool_invocation_cue is required.
+    seed::lexicon().mentions_role(seed::ROLE_LOCAL_SHELL_REQUEST_CUE, normalized)
 }
 
 fn extract_argument(prompt: &str, normalized: &str) -> Option<String> {
     extract_backticked(prompt)
         .or_else(|| extract_quoted_phrase(prompt))
-        .or_else(|| after_marker(normalized, " with query "))
-        .or_else(|| after_marker(normalized, " query "))
-        .or_else(|| after_marker(normalized, " with "))
-        .or_else(|| after_marker(normalized, " for "))
+        .or_else(|| after_argument_marker(normalized))
         .map(|value| clean_argument(&value))
         .filter(|value| !value.is_empty())
 }
 
-fn after_marker(normalized: &str, marker: &str) -> Option<String> {
-    let start = normalized.find(marker)? + marker.len();
-    Some(normalized[start..].to_owned())
+fn after_argument_marker(normalized: &str) -> Option<String> {
+    // When the argument is not already delimited by backticks or quotes, the
+    // phrases that introduce it ("with query", "query", "with", "for") are
+    // tool_argument_marker word forms. We reconstruct each English form as a
+    // space-padded token, find the first one present in the lexicon's
+    // declaration (priority) order — longer, more specific phrases first — and
+    // take the text after it. Only the English forms drive this English-frame
+    // heuristic; the other languages stay in the seed for self-description.
+    for marker in
+        seed::lexicon().words_for_role_in_languages(seed::ROLE_TOOL_ARGUMENT_MARKER, &["en"])
+    {
+        let delimiter = format!(" {marker} ");
+        if let Some(index) = normalized.find(&delimiter) {
+            return Some(normalized[index + delimiter.len()..].to_owned());
+        }
+    }
+    None
 }
 
 fn clean_argument(value: &str) -> String {
