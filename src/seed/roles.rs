@@ -399,3 +399,31 @@ pub const ROLE_ONTOLOGY_TYPE: &str = "ontology_type";
 /// that connect every domain cluster (programs, calendars, facts, software, …)
 /// up to the `link` root.
 pub const ROLE_ONTOLOGY_CATEGORY: &str = "ontology_category";
+/// Semantic role: the rule noun a behavior-rules-list request enumerates
+/// ("rules"/"rule list", "правил"/"правила", "नियम"/"नियमों", "规则"/"規則").
+///
+/// One of three compositional dimensions the behavior-rules-list recogniser ANDs
+/// together within a single language; carried by the `behavior_rule` meaning.
+pub const ROLE_RULE_LISTING_SUBJECT: &str = "rule_listing_subject";
+/// Semantic role: the enumerate request that asks the assistant to reveal a
+/// set's members — the list/show imperative or the which/what interrogative.
+///
+/// Surface cues "list"/"show"/"what", "покажи"/"какие", "दिखाओ"/"कौन",
+/// "列出"/"哪些"; the second compositional dimension, carried by
+/// `rule_enumeration_request`.
+pub const ROLE_RULE_LISTING_REQUEST: &str = "rule_listing_request";
+/// Semantic role: the cue scoping a rules-listing request to the assistant's
+/// own behavior.
+///
+/// The behaviour domain word, the second-person/own possessive, the existence
+/// deixis, and the bare rule-list compound. The third compositional dimension,
+/// carried by two meanings, `behavior_domain` and `assistant_own_ruleset`, whose
+/// union is the original scope vocabulary.
+pub const ROLE_RULE_LISTING_SCOPE: &str = "rule_listing_scope";
+/// Semantic role: a fixed phrase that names the behavior-rule set outright and is
+/// a standing list request without a separate verb ("existing behavior rules",
+/// "行为规则", "व्यवहार के नियम").
+///
+/// Matched as a raw substring, independent of the compositional dimensions;
+/// carried by `behavior_rule_set_phrase`.
+pub const ROLE_RULE_LISTING_PHRASE: &str = "rule_listing_phrase";

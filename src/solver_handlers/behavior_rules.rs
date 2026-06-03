@@ -768,20 +768,22 @@ fn render_runtime_rule_update(rule: &CompiledSkillPackage, language: &str) -> St
 
 fn is_behavior_rules_list(normalized: &str) -> bool {
     matches_behavior_rules_list_seed_pattern(normalized)
-        || normalized.contains("list behavior rules")
-        || normalized.contains("list all behavior rules")
-        || normalized.contains("show behavior rules")
-        || normalized.contains("show all behavior rules")
-        || normalized.contains("what behavior rules")
-        || normalized.contains("existing behavior rules")
+        || mentions_behavior_rule_set_phrase(normalized)
         || is_supported_language_behavior_rules_list_query(normalized)
-        || normalized.contains("список правил поведения")
-        || normalized.contains("покажи правила поведения")
-        || normalized.contains("какие правила поведения")
-        || normalized.contains("व्यवहार के नियम")
-        || normalized.contains("व्यवहार नियम सूचीबद्ध करें")
-        || normalized.contains("行为规则")
-        || normalized.contains("列出行为规则")
+}
+
+/// True when the prompt contains one of the fixed phrases that name the
+/// behavior-rule set outright (role [`seed::ROLE_RULE_LISTING_PHRASE`]) — e.g.
+/// the bare compound "behavior rules" / "行为规则" / "व्यवहार के नियम" recognised
+/// as a list request without a separate enumerate verb. The phrases live in
+/// `data/seed/meanings-behavior-rules.lino`, not in this code; raw `contains`
+/// (not the token-bounded [`seed::Lexicon::mentions_role`]) preserves the
+/// original substring match byte-for-byte.
+fn mentions_behavior_rule_set_phrase(normalized: &str) -> bool {
+    seed::lexicon()
+        .words_for_role(seed::ROLE_RULE_LISTING_PHRASE)
+        .iter()
+        .any(|phrase| normalized.contains(phrase.as_str()))
 }
 
 fn matches_behavior_rules_list_seed_pattern(normalized: &str) -> bool {
@@ -802,82 +804,33 @@ fn matches_behavior_rules_list_seed_pattern(normalized: &str) -> bool {
         })
 }
 
+/// True when the prompt, within one supported language's vocabulary, names the
+/// rule subject, asks to enumerate it, and scopes the request to the assistant's
+/// own behavior. The three compositional dimensions are read from the meaning
+/// lexicon (roles [`seed::ROLE_RULE_LISTING_SUBJECT`],
+/// [`seed::ROLE_RULE_LISTING_REQUEST`], [`seed::ROLE_RULE_LISTING_SCOPE`]) rather
+/// than hardcoded per-language word lists, so the English/Russian/Hindi/Chinese
+/// coverage now lives entirely in `data/seed/meanings-behavior-rules.lino`.
+///
+/// The per-language AND is preserved: every dimension must be evidenced *within
+/// the same language* ([`seed::Lexicon::words_for_role_in_languages`]), so an
+/// English verb cannot satisfy a Russian-scoped query. Matching uses raw
+/// `contains` to keep the legacy stem match (`правил` catching `правила`, `नियम`
+/// catching `नियमों`) byte-for-byte; the language codes are the legitimate
+/// code-resident bridge while every surface word stays in the seed.
 fn is_supported_language_behavior_rules_list_query(normalized: &str) -> bool {
-    is_english_behavior_rules_list_query(normalized)
-        || is_russian_behavior_rules_list_query(normalized)
-        || is_hindi_behavior_rules_list_query(normalized)
-        || is_chinese_behavior_rules_list_query(normalized)
-}
-
-fn is_english_behavior_rules_list_query(normalized: &str) -> bool {
-    let mentions_rules = normalized.contains("rules")
-        || normalized.contains("rule list")
-        || normalized.contains("rules list");
-    let asks_to_list = normalized.contains("list")
-        || normalized.contains("show")
-        || normalized.contains("what")
-        || normalized.contains("which");
-    let points_at_assistant_rules = normalized.contains("behavior")
-        || normalized.contains("your")
-        || normalized.contains("own")
-        || normalized.contains("current")
-        || normalized.contains("existing");
-
-    mentions_rules && asks_to_list && points_at_assistant_rules
-}
-
-fn is_russian_behavior_rules_list_query(normalized: &str) -> bool {
-    let mentions_rules = normalized.contains("правил") || normalized.contains("правила");
-    let asks_to_list = normalized.contains("список")
-        || normalized.contains("перечисли")
-        || normalized.contains("покажи")
-        || normalized.contains("какие");
-    let points_at_assistant_rules = normalized.contains("поведения")
-        || normalized.contains("своих")
-        || normalized.contains("свои")
-        || normalized.contains("твоих")
-        || normalized.contains("твои")
-        || normalized.contains("собственные")
-        || normalized.contains("список правил");
-
-    mentions_rules && asks_to_list && points_at_assistant_rules
-}
-
-fn is_hindi_behavior_rules_list_query(normalized: &str) -> bool {
-    let mentions_rules = normalized.contains("नियम") || normalized.contains("नियमों");
-    let asks_to_list = normalized.contains("सूची")
-        || normalized.contains("सूचीबद्ध")
-        || normalized.contains("दिखाओ")
-        || normalized.contains("दिखाएं")
-        || normalized.contains("बताओ")
-        || normalized.contains("गिनाओ")
-        || normalized.contains("कौन");
-    let points_at_assistant_rules = normalized.contains("व्यवहार")
-        || normalized.contains("अपने")
-        || normalized.contains("तुम्हारे")
-        || normalized.contains("आपके")
-        || normalized.contains("नियमों की सूची");
-
-    mentions_rules && asks_to_list && points_at_assistant_rules
-}
-
-fn is_chinese_behavior_rules_list_query(normalized: &str) -> bool {
-    let mentions_rules = normalized.contains("规则") || normalized.contains("規則");
-    let asks_to_list = normalized.contains("列出")
-        || normalized.contains("显示")
-        || normalized.contains("顯示")
-        || normalized.contains("展示")
-        || normalized.contains("哪些")
-        || normalized.contains("什么");
-    let points_at_assistant_rules = normalized.contains("行为")
-        || normalized.contains("行為")
-        || normalized.contains("你的")
-        || normalized.contains("您的")
-        || normalized.contains("自己")
-        || normalized.contains("规则列表")
-        || normalized.contains("規則列表");
-
-    mentions_rules && asks_to_list && points_at_assistant_rules
+    let lexicon = seed::lexicon();
+    let present = |role: &str, language: &str| {
+        lexicon
+            .words_for_role_in_languages(role, &[language])
+            .iter()
+            .any(|word| normalized.contains(word.as_str()))
+    };
+    ["en", "ru", "hi", "zh"].into_iter().any(|language| {
+        present(seed::ROLE_RULE_LISTING_SUBJECT, language)
+            && present(seed::ROLE_RULE_LISTING_REQUEST, language)
+            && present(seed::ROLE_RULE_LISTING_SCOPE, language)
+    })
 }
 
 fn detail_query(prompt: &str) -> Option<String> {

@@ -15,29 +15,16 @@
 
 import fs from "node:fs";
 
+import { MEANING_FILES, serializeMeaningLine } from "./issue-386-meaning-files.mjs";
+
 const root = new URL("..", import.meta.url);
 // The canonical lexicon is split across several files so no single .lino file
-// breaches the seed file-size guard. Concatenate them in the SAME order as
-// MEANING_FILES in src/seed.rs so the Rust loader and this JS mirror parse the
-// same input; each file wraps its records under a top-level `meanings` node and
-// meaningLexicon() in the worker walks every container.
-const MEANING_FILES = [
-  "data/seed/meanings.lino",
-  "data/seed/meanings-units.lino",
-  "data/seed/meanings-calendar.lino",
-  "data/seed/meanings-facts.lino",
-  "data/seed/meanings-software-project.lino",
-  "data/seed/meanings-program-synthesis.lino",
-  "data/seed/meanings-intent.lino",
-  "data/seed/meanings-how.lino",
-  "data/seed/meanings-web-navigation.lino",
-  "data/seed/meanings-web-search.lino",
-  "data/seed/meanings-web-search-query.lino",
-  "data/seed/meanings-web-research.lino",
-  "data/seed/meanings-web-followup.lino",
-  "data/seed/meanings-translation.lino",
-  "data/seed/meanings-ontology.lino",
-];
+// breaches the seed file-size guard. They are concatenated in the SAME order as
+// MEANING_FILES in src/seed/embedded.rs so the Rust loader and this JS mirror
+// parse the same input; each file wraps its records under a top-level `meanings`
+// node and meaningLexicon() in the worker walks every container. The file list
+// and the per-line serializer live in issue-386-meaning-files.mjs so the mirror
+// verifier (issue-386-meanings-mirror.mjs) shares one source of truth with us.
 const workerPath = new URL("src/web/formal_ai_worker.js", root);
 
 const lino = MEANING_FILES.map((rel) =>
@@ -46,15 +33,9 @@ const lino = MEANING_FILES.map((rel) =>
 let worker = fs.readFileSync(workerPath, "utf8");
 
 // --- 1: regenerate the inline MEANINGS_LINO array (byte-identical to seed) ----
-// House quote style (matches PROGRAM_PLAN_RULES_LINO): a line containing a
-// double-quote and neither a single-quote nor a backslash is wrapped in single
-// quotes; otherwise it is JSON.stringify'd.
-function jsString(line) {
-  if (line.includes('"') && !line.includes("'") && !line.includes("\\")) {
-    return "'" + line + "'";
-  }
-  return JSON.stringify(line);
-}
+// House quote style lives in issue-386-meaning-files.mjs (serializeMeaningLine)
+// so the worker sync and the mirror verifier serialize each line identically.
+const jsString = serializeMeaningLine;
 const lines = lino.split("\n");
 while (lines.length && lines[lines.length - 1] === "") lines.pop();
 const arrayBody = lines.map((l) => "  " + jsString(l)).join(",\n");

@@ -4,11 +4,10 @@
 // The Rust lexicon does `MEANING_FILES.join("\n")` (src/seed/meanings.rs). Both
 // parsers ignore blank lines, so the worker carries the same records inline but
 // WITHOUT the inter-file blank lines that join() introduces (and without the
-// trailing-newline empty line). Each record line is serialized as a JS string
-// literal:
-//   - a line containing an apostrophe  -> double-quote wrapper, inner `"` escaped
-//   - else a line containing a `"`      -> single-quote wrapper (no escaping)
-//   - else                              -> double-quote wrapper
+// trailing-newline empty line). Each record line is serialized by the shared
+// serializeMeaningLine (issue-386-meaning-files.mjs) — the SAME function the
+// worker sync uses to write the array — so check (2) below is a true tautology:
+// it passes iff the worker body is exactly what the sync would emit.
 //
 // This script proves, against the CURRENT tree, that:
 //   (1) the worker's line array equals the worker-style concatenation of the
@@ -23,23 +22,9 @@
 
 import fs from "node:fs";
 
-const root = new URL("..", import.meta.url);
+import { MEANING_FILES, serializeMeaningLine } from "./issue-386-meaning-files.mjs";
 
-// MEANING_FILES order, mirrored from src/seed/embedded.rs. meanings-ontology is
-// included automatically when present so --emit works after it is created.
-const MEANING_FILES = [
-  "data/seed/meanings.lino",
-  "data/seed/meanings-units.lino",
-  "data/seed/meanings-calendar.lino",
-  "data/seed/meanings-facts.lino",
-  "data/seed/meanings-software-project.lino",
-  "data/seed/meanings-program-synthesis.lino",
-  "data/seed/meanings-intent.lino",
-  "data/seed/meanings-how.lino",
-];
-if (fs.existsSync(new URL("data/seed/meanings-ontology.lino", root))) {
-  MEANING_FILES.push("data/seed/meanings-ontology.lino");
-}
+const root = new URL("..", import.meta.url);
 
 // Worker-style concatenation: each file's content lines, trailing empty dropped.
 function workerStyleLines() {
@@ -53,10 +38,10 @@ function workerStyleLines() {
   return out;
 }
 
+// Wrap the authoritative serializer (shared with the worker sync) as one inline
+// array entry: two-space indent + the JS string literal + trailing comma.
 function serializeLine(line) {
-  if (line.includes("'")) return `  "${line.replace(/"/g, '\\"')}",`;
-  if (line.includes('"')) return `  '${line}',`;
-  return `  "${line}",`;
+  return `  ${serializeMeaningLine(line)},`;
 }
 
 // --- extract the worker's MEANINGS_LINO array body ---------------------------
