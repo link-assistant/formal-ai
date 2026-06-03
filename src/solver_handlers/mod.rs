@@ -587,13 +587,25 @@ pub fn try_translation(
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
     let target = detect_target_language(normalized);
-    let is_translation_request = normalized.starts_with("translate")
-        || normalized.starts_with("переведи")
-        || normalized.starts_with("опиши")
-        || (target.is_some()
-            && (normalized.contains("अनुवाद")
-                || normalized.contains("翻译")
-                || normalized.contains("翻譯")))
+    // Issue #386: recognise a translation command by *meaning*, not by hardcoded
+    // verbs. The translation-action stems live once in
+    // data/seed/meanings-translation.lino; this code knows the concept and the
+    // head-initial/head-final typology the `translate` gloss documents.
+    // Clause-initial English/Russian commands are matched as a prefix; head-final
+    // Hindi/Chinese place the verb later, so they are matched anywhere but gated
+    // by a target marker (as before) to avoid firing on an incidental verb noun.
+    let lexicon = crate::seed::lexicon();
+    let head_initial_command = lexicon
+        .words_for_role_in_languages(crate::seed::ROLE_TRANSLATION_ACTION, &["en", "ru"])
+        .iter()
+        .any(|stem| normalized.starts_with(stem.as_str()));
+    let head_final_command = target.is_some()
+        && lexicon
+            .words_for_role_in_languages(crate::seed::ROLE_TRANSLATION_ACTION, &["hi", "zh"])
+            .iter()
+            .any(|stem| normalized.contains(stem.as_str()));
+    let is_translation_request = head_initial_command
+        || head_final_command
         || (normalized.starts_with("define ")
             && (extract_quoted_phrase(prompt).is_some() || extract_backticked(prompt).is_some())
             && (normalized.contains(" links notation") || normalized.contains(" в links")));

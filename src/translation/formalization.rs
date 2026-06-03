@@ -639,43 +639,65 @@ fn translation_predicate() -> PredicatePattern {
 }
 
 fn parse_translation_object(prompt: &str) -> Option<String> {
+    use crate::seed::ROLE_TRANSLATION_ACTION;
+
     let trimmed = prompt.trim();
     let lower = trimmed.to_lowercase();
+    // Issue #386: the translation command *verbs* are read from the lexicon
+    // (data/seed/meanings-translation.lino, role translation_action) rather than
+    // hardcoded per language. Only the closed-class grammatical particles that
+    // bound the surface — target prepositions and object/disposal markers —
+    // remain as structural delimiters here, the way an extractor's affix anchors
+    // do; they carry no translatable concept of their own.
+    let lexicon = crate::seed::lexicon();
 
-    for prefix in ["translate ", "please translate "] {
-        if lower.starts_with(prefix) {
-            let rest = trimmed.get(prefix.len()..)?.trim();
-            return clean_translation_surface(rest, &[" to ", " into ", " in "]);
+    // Clause-initial English commands, optionally behind a "please" politeness
+    // particle: strip the verb, read the surface up to the first target preposition.
+    for stem in lexicon.words_for_role_in_languages(ROLE_TRANSLATION_ACTION, &["en"]) {
+        for prefix in [format!("{stem} "), format!("please {stem} ")] {
+            if lower.starts_with(&prefix) {
+                let rest = trimmed.get(prefix.len()..)?.trim();
+                return clean_translation_surface(rest, &[" to ", " into ", " in "]);
+            }
         }
     }
 
-    for prefix in ["переведи ", "перевести "] {
-        if lower.starts_with(prefix) {
+    // Clause-initial Russian commands.
+    for stem in lexicon.words_for_role_in_languages(ROLE_TRANSLATION_ACTION, &["ru"]) {
+        let prefix = format!("{stem} ");
+        if lower.starts_with(&prefix) {
             let rest = trimmed.get(prefix.len()..)?.trim();
             return clean_translation_surface(rest, &[" на ", " в "]);
         }
     }
 
+    // Head-final Hindi: the object precedes the का object particle and the verb.
     if let Some(index) = lower.find(" का ") {
-        if lower.contains("अनुवाद") {
+        let has_verb = lexicon
+            .words_for_role_in_languages(ROLE_TRANSLATION_ACTION, &["hi"])
+            .iter()
+            .any(|verb| lower.contains(verb.as_str()));
+        if has_verb {
             return Some(clean_argument(&trimmed[..index]));
         }
     }
 
+    // Head-final Chinese: an optional 把 disposal particle fronts the object and
+    // the verb follows it; otherwise the verb fronts and the object follows.
+    let zh_verbs = lexicon.words_for_role_in_languages(ROLE_TRANSLATION_ACTION, &["zh"]);
     if let Some(rest_lower) = lower.strip_prefix("把 ") {
-        if let Some(index) = rest_lower.find(" 翻译") {
-            let start = trimmed.len() - rest_lower.len();
-            return Some(clean_argument(&trimmed[start..start + index]));
-        }
-        if let Some(index) = rest_lower.find(" 翻譯") {
-            let start = trimmed.len() - rest_lower.len();
-            return Some(clean_argument(&trimmed[start..start + index]));
+        for verb in &zh_verbs {
+            let needle = format!(" {verb}");
+            if let Some(index) = rest_lower.find(&needle) {
+                let start = trimmed.len() - rest_lower.len();
+                return Some(clean_argument(&trimmed[start..start + index]));
+            }
         }
     }
 
-    for marker in ["翻译", "翻譯"] {
-        if let Some(index) = lower.find(marker) {
-            let rest = trimmed[index + marker.len()..].trim();
+    for verb in &zh_verbs {
+        if let Some(index) = lower.find(verb.as_str()) {
+            let rest = trimmed[index + verb.len()..].trim();
             return clean_translation_surface(rest, &["成", "为", "為", " to "]);
         }
     }

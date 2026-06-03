@@ -401,16 +401,20 @@ pub fn infer_source_from_prompt(prompt: &str) -> &'static str {
             return language.slug();
         }
     }
-    if lower.contains("переведи") || lower.contains("опиши") {
-        return "ru";
-    }
-    if lower.contains("अनुवाद") {
-        return "hi";
-    }
-    if lower.contains("翻译") || lower.contains("翻譯") {
-        return "zh";
-    }
-    "en"
+    // Issue #386: the source language of an un-annotated request is the language
+    // the user issued the *translation command* in. Ask the lexicon which
+    // language's translation-action verb (переведи/опиши, अनुवाद, 翻译/翻譯…) the
+    // prompt carries — the per-language stems live once in
+    // data/seed/meanings-translation.lino under the `translate` meaning; this
+    // code knows only the concept and the language-code bridge. English is the
+    // default when no command verb is present.
+    crate::seed::lexicon()
+        .first_role_language(
+            crate::seed::ROLE_TRANSLATION_ACTION,
+            &lower,
+            &["ru", "hi", "zh"],
+        )
+        .unwrap_or("en")
 }
 
 pub fn infer_program_languages_from_code(

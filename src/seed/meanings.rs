@@ -262,6 +262,65 @@ impl Lexicon {
             .any(|meaning| meaning.words().any(|word| normalized.contains(word)))
     }
 
+    /// Distinct surface words contributed by every meaning carrying `role`,
+    /// limited to the given `languages`, in declaration order.
+    ///
+    /// Lets a handler partition a role's vocabulary by linguistic typology — for
+    /// the translation request-gate, the head-initial English/Russian command
+    /// stems (matched clause-initially) versus the head-final Hindi/Chinese stems
+    /// (matched anywhere, gated by a target marker) — while keeping every surface
+    /// word in the data. Language codes are the legitimate code-resident bridge
+    /// (see [`crate::translation::language_markers`]); the words stay in the seed.
+    #[must_use]
+    pub fn words_for_role_in_languages(&self, role: &str, languages: &[&str]) -> Vec<String> {
+        let mut out: Vec<String> = Vec::new();
+        for meaning in self.meanings_with_role(role) {
+            for lexeme in &meaning.lexemes {
+                if !languages.contains(&lexeme.language.as_str()) {
+                    continue;
+                }
+                for word in &lexeme.words {
+                    if !out.iter().any(|existing| existing == &word.text) {
+                        out.push(word.text.clone());
+                    }
+                }
+            }
+        }
+        out
+    }
+
+    /// The first language in `priority` whose surface word for `role` appears in
+    /// `normalized` (raw substring), or `None` when none is present.
+    ///
+    /// Answers "which language did the user issue this command in?" — the
+    /// source-inferencer reads a translation command's verb language as the
+    /// language of the prompt itself. Priority order resolves ties (a prompt that
+    /// happens to carry stems from several languages takes the first listed).
+    /// Language codes are the legitimate code-resident bridge; the surface words
+    /// stay in the data.
+    #[must_use]
+    pub fn first_role_language(
+        &self,
+        role: &str,
+        normalized: &str,
+        priority: &[&'static str],
+    ) -> Option<&'static str> {
+        priority.iter().copied().find(|&lang| {
+            self.meanings_with_role(role).any(|meaning| {
+                meaning
+                    .lexemes
+                    .iter()
+                    .filter(|lexeme| lexeme.language == lang)
+                    .any(|lexeme| {
+                        lexeme
+                            .words
+                            .iter()
+                            .any(|word| normalized.contains(word.text.as_str()))
+                    })
+            })
+        })
+    }
+
     /// The first meaning carrying `role`, in declaration order, that is
     /// evidenced in `normalized` — or `None`. Declaration order therefore
     /// encodes priority (e.g. the first matching delivery mode wins).
@@ -430,7 +489,7 @@ pub fn lexicon() -> &'static Lexicon {
 mod tests {
     use super::super::roles::{
         ROLE_MECHANISM_INQUIRY, ROLE_PROCEDURAL_REQUEST, ROLE_PROGRAM_ARTIFACT,
-        ROLE_PROGRAM_MODIFICATION,
+        ROLE_PROGRAM_MODIFICATION, ROLE_TRANSLATION_ACTION,
     };
     use super::*;
 
@@ -727,6 +786,48 @@ mod tests {
         assert!(lex.mentions_role_raw(ROLE_PROGRAM_MODIFICATION, "отмени сортировку"));
         // A prompt with no modification word matches under neither query.
         assert!(!lex.mentions_role_raw(ROLE_PROGRAM_MODIFICATION, "привет мир"));
+    }
+
+    #[test]
+    fn words_for_role_partition_by_language() {
+        // The translation-action stems split by linguistic typology: the
+        // clause-initial English/Russian command verbs versus the head-final
+        // Hindi/Chinese ones. Each partition draws only its own languages' words.
+        let lex = lexicon();
+        let head_initial = lex.words_for_role_in_languages(ROLE_TRANSLATION_ACTION, &["en", "ru"]);
+        assert!(head_initial.iter().any(|w| w == "translate"));
+        assert!(head_initial.iter().any(|w| w == "переведи"));
+        assert!(head_initial.iter().any(|w| w == "опиши"));
+        assert!(!head_initial.iter().any(|w| w == "翻译"));
+        let head_final = lex.words_for_role_in_languages(ROLE_TRANSLATION_ACTION, &["hi", "zh"]);
+        assert!(head_final.iter().any(|w| w == "翻译"));
+        assert!(head_final.iter().any(|w| w == "अनुवाद"));
+        assert!(!head_final.iter().any(|w| w == "translate"));
+    }
+
+    #[test]
+    fn first_role_language_reads_the_command_language() {
+        // The source-inferencer asks which language's translation verb a prompt
+        // carries; that language is the language the user wrote the command in.
+        let lex = lexicon();
+        let priority = ["ru", "hi", "zh"];
+        assert_eq!(
+            lex.first_role_language(ROLE_TRANSLATION_ACTION, "переведи apple", &priority),
+            Some("ru")
+        );
+        assert_eq!(
+            lex.first_role_language(ROLE_TRANSLATION_ACTION, "apple का अनुवाद करो", &priority),
+            Some("hi")
+        );
+        assert_eq!(
+            lex.first_role_language(ROLE_TRANSLATION_ACTION, "把 apple 翻译成中文", &priority),
+            Some("zh")
+        );
+        // No command verb present → no language inferred (caller defaults to en).
+        assert_eq!(
+            lex.first_role_language(ROLE_TRANSLATION_ACTION, "what is apple", &priority),
+            None
+        );
     }
 
     #[test]

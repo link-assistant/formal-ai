@@ -367,6 +367,20 @@ pub const ROLE_TRANSLATION_INTO_MARKER: &str = "translation_into_marker";
 /// nearest realisations are recorded for completeness and not scanned — only the
 /// Devanagari and Han forms are.
 pub const ROLE_TRANSLATION_OBJECT_MARKER: &str = "translation_object_marker";
+/// Semantic role: the translation/description command verb — the action a request
+/// realises ("translate", "переведи"/"перевести"/"опиши", "अनुवाद", "翻译"/"翻譯").
+///
+/// Three handlers read this role instead of hardcoding the verbs. The
+/// request-gate (`try_translation`) recognises a command by a *clause-initial*
+/// English/Russian stem (`starts_with`) or, in head-final Hindi/Chinese where the
+/// verb is not clause-initial, by the stem appearing anywhere together with a
+/// target marker. The source-inferencer (`infer_source_from_prompt`) reads which
+/// language's stem appears as the language the user issued the command in. The
+/// formalization object-parser anchors its surface extraction on the same stems.
+/// The per-language stems live once in `data/seed/meanings-translation.lino`; the
+/// head-initial/head-final split is the linguistic typology the `translate`
+/// meaning's gloss documents.
+pub const ROLE_TRANSLATION_ACTION: &str = "translation_action";
 /// Semantic role: the single root of the merged ontology — the `link` meaning.
 ///
 /// Every other meaning descends from it through `defined_by` edges, so the whole
