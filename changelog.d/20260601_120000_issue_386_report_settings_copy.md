@@ -1090,6 +1090,44 @@ bump: minor
   `experiments/issue-386-meanings-mirror.mjs`) so the shared knowledge base stays
   complete, and three locking tests pin the declaration-order scan, one surface
   per kind, and the language length-guard fall-through (issue #386).
+- The coding catalog (`src/coding/catalog/`) is data-driven too. Its two tables —
+  the ten supported languages (`languages.rs`) and the eleven coding tasks
+  (`tasks.rs`) — no longer carry inline `aliases` arrays naming the request
+  surfaces in raw words; the `aliases` field is gone from both `ProgramLanguage`
+  and `ProgramTask`. Those surfaces now live as self-describing meanings in a new
+  seed file (`data/seed/meanings-coding-catalog.lino`): a `program_language`
+  genus and a `program_task` genus (each `defined_by` `concept`, rooted through
+  it to the `link` ontology), with one `program_language_<slug>` leaf per
+  language and one `program_task_<slug>` leaf per task `defined_by` its genus and
+  lexicalised in every supported language — each leaf's slug naming the catalog
+  entry it lexicalises, so the table names only the language-independent concept
+  while the words live once in data. Two new roles in `src/seed/roles.rs` —
+  `program_language_alias` and `program_task_alias` — mark the surface-bearing
+  leaves; `program_language_by_alias` / `program_task_by_alias`
+  (`src/coding/catalog/mod.rs`) read their surfaces from the lexicon by slug
+  (`alias_surfaces("program_language_", slug)` / `"program_task_"`) instead of
+  the deleted inline arrays, so the code knows only "a programming language" and
+  "a coding task". Several leaves additionally `defined_by` the deeper meaning
+  they specialise — `program_language_rust`/`_python`/`_javascript` point at the
+  `language_*` meanings the formalizer already defines, `program_task_hello_world`
+  at the canonical `hello_world` archetype — so the catalog rejoins the rest of
+  the lexicon rather than standing apart. The seed surface set is a strict
+  superset of both engines' former arrays, so the migration loses no recognition:
+  every original Rust alias and every original worker alias still resolves
+  (pinned by `experiments/issue-386-worker-catalog-alias-parity.mjs` across all
+  ~29 legacy surfaces). Because the surfaces now cover every language uniformly,
+  the browser worker's `programLanguageFromPrompt` / `programTaskFromPrompt`
+  (rewired to read each slug's surfaces through a new `wordsForMeaning` helper,
+  with their inline `aliases` likewise deleted) converge onto the Rust catalog —
+  the worker gains the symbol spellings `c++` / `c#` the Rust table always carried
+  and the Hindi/Chinese surfaces (रस्ट, जावा, गो, …) neither engine had before.
+  Six lib tests (`seed_alias_coverage` in `src/coding/catalog/mod.rs`) enforce the
+  bidirectional drift guard — every catalog slug owns a role-bearing alias meaning
+  that lexicalises at least one surface, every alias meaning names a real catalog
+  slug, and every language/task resolves through its seed surfaces — and the
+  worker's embedded `MEANINGS_LINO` was re-synced byte-identically (31 meaning
+  files, 12222 lines, verified by `experiments/issue-386-meanings-mirror.mjs`)
+  (issue #386).
 
 ### Fixed
 - The follow-up "Отмени сортировку" ("cancel the sorting") no longer returns

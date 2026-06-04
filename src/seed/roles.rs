@@ -1347,3 +1347,32 @@ pub const ROLE_RESEARCH_CRITERION: &str = "research_criterion";
 /// additionally requires at most twelve whitespace words. Read only by the Rust
 /// summarization classifier (there is no JS worker mirror of that pipeline).
 pub const ROLE_SUMMARY_CLASSIFICATION_CUE: &str = "summary_classification_cue";
+/// Semantic role: a surface that names one coding-catalog target language.
+///
+/// Carried by the ten `program_language_<slug>` leaf meanings (rust, python,
+/// javascript, typescript, go, c, cpp, java, csharp, ruby), each a kind of the
+/// structural `program_language` genus and, where a canonical concept exists,
+/// also `defined_by` it (`program_language_rust` → `language_rust`, …). The
+/// coding catalog's `program_language_by_alias` walks `PROGRAM_LANGUAGES` in
+/// priority order and, for each, reads the surfaces of the meaning named
+/// `program_language_<slug>` through [`crate::seed::Lexicon::meaning`], matching
+/// a prompt token against them; the inline alias list it replaced is gone. A
+/// coverage guard asserts every catalog language slug owns a meaning carrying
+/// this role. Read by the Rust catalog matcher and its JS worker mirror
+/// (`programLanguageFromPrompt`).
+pub const ROLE_PROGRAM_LANGUAGE_ALIAS: &str = "program_language_alias";
+/// Semantic role: a surface that names one coding-catalog target task.
+///
+/// Carried by the eleven `program_task_<slug>` leaf meanings (`hello_world`,
+/// `count_to_three`, `list_files`, `list_files_arg`, `list_files_reverse_sort`,
+/// `list_files_arg_reverse_sort`, `fizzbuzz`, `factorial`, `reverse_string`,
+/// `sum_to_ten`, `fibonacci`), each a kind of the structural `program_task` genus
+/// and, where a canonical archetype exists, also `defined_by` it
+/// (`program_task_hello_world` → `hello_world`). The catalog's
+/// `program_task_by_alias` walks `PROGRAM_TASKS` in priority order and, for
+/// each, reads the surfaces of the meaning named `program_task_<slug>` through
+/// [`crate::seed::Lexicon::meaning`], matching a prompt phrase against them; the
+/// inline alias list it replaced is gone. A coverage guard asserts every catalog
+/// task slug owns a meaning carrying this role. Read by the Rust catalog matcher
+/// and its JS worker mirror (`programTaskFromPrompt`).
+pub const ROLE_PROGRAM_TASK_ALIAS: &str = "program_task_alias";

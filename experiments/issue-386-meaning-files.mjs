@@ -42,6 +42,7 @@ export const MEANING_FILES = [
   "data/seed/meanings-research-table.lino",
   "data/seed/meanings-conversation.lino",
   "data/seed/meanings-summary.lino",
+  "data/seed/meanings-coding-catalog.lino",
 ];
 
 // Authoritative per-line JS string serializer (house quote style, matching the

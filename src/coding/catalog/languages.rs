@@ -1,6 +1,8 @@
 //! The catalog of supported programming languages. Adding a language is a
-//! matter of extending [`PROGRAM_LANGUAGES`] with its fences, aliases, and
-//! verified execution metadata — the engine does not change.
+//! matter of extending [`PROGRAM_LANGUAGES`] with its fences and verified
+//! execution metadata, then declaring its `program_language_<slug>` meaning
+//! (with the alias surfaces, role `program_language_alias`) in the seed lexicon
+//! — the engine does not change.
 
 use super::types::{ExecutionStatus, ProgramExecution, ProgramLanguage};
 
@@ -8,7 +10,6 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
     ProgramLanguage {
         slug: "rust",
         name: "Rust",
-        aliases: &["rust", "rs", "раст", "расте"],
         code_fence: "rust",
         execution: ProgramExecution {
             status: ExecutionStatus::Verified,
@@ -24,7 +25,6 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
     ProgramLanguage {
         slug: "python",
         name: "Python",
-        aliases: &["python", "py", "питон", "питоне"],
         code_fence: "python",
         execution: ProgramExecution {
             status: ExecutionStatus::Verified,
@@ -40,7 +40,6 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
     ProgramLanguage {
         slug: "javascript",
         name: "JavaScript",
-        aliases: &["javascript", "js", "node", "джаваскрипт"],
         code_fence: "javascript",
         execution: ProgramExecution {
             status: ExecutionStatus::Verified,
@@ -56,7 +55,6 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
     ProgramLanguage {
         slug: "typescript",
         name: "TypeScript",
-        aliases: &["typescript", "ts", "тайпскрипт"],
         code_fence: "typescript",
         execution: ProgramExecution {
             status: ExecutionStatus::Unavailable,
@@ -72,7 +70,6 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
     ProgramLanguage {
         slug: "go",
         name: "Go",
-        aliases: &["go", "golang", "го"],
         code_fence: "go",
         execution: ProgramExecution {
             status: ExecutionStatus::Verified,
@@ -88,7 +85,6 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
     ProgramLanguage {
         slug: "c",
         name: "C",
-        aliases: &["c"],
         code_fence: "c",
         execution: ProgramExecution {
             status: ExecutionStatus::Verified,
@@ -104,7 +100,6 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
     ProgramLanguage {
         slug: "cpp",
         name: "C++",
-        aliases: &["cpp", "c++", "cplusplus"],
         code_fence: "cpp",
         execution: ProgramExecution {
             status: ExecutionStatus::Unavailable,
@@ -120,7 +115,6 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
     ProgramLanguage {
         slug: "java",
         name: "Java",
-        aliases: &["java", "джава"],
         code_fence: "java",
         execution: ProgramExecution {
             status: ExecutionStatus::Unavailable,
@@ -136,7 +130,6 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
     ProgramLanguage {
         slug: "csharp",
         name: "C#",
-        aliases: &["csharp", "c#", "cs", "dotnet"],
         code_fence: "csharp",
         execution: ProgramExecution {
             status: ExecutionStatus::Unavailable,
@@ -152,7 +145,6 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
     ProgramLanguage {
         slug: "ruby",
         name: "Ruby",
-        aliases: &["ruby", "rb", "руби"],
         code_fence: "ruby",
         execution: ProgramExecution {
             status: ExecutionStatus::Unavailable,
