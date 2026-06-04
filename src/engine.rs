@@ -35,10 +35,10 @@ const FALLBACK_FAREWELL_ANSWER: &str = "Goodbye! Feel free to return any time.";
 const FALLBACK_TEST_STATUS_ANSWER: &str = "Test passed. I'm here.";
 const FALLBACK_COURTESY_RESPONSE_ANSWER: &str = "Glad to hear it. What would you like to do next?";
 const FALLBACK_IDENTITY_ANSWER: &str = "I am formal-ai, a deterministic symbolic AI implementation that answers from local Links Notation rules and OpenAI-compatible API shapes. I do not perform neural inference in this demo.";
-const FALLBACK_UNKNOWN_ANSWER: &str = "I don't know how to answer that yet. I cannot answer that from local Links Notation rules yet. To inspect what I can do, send `List behavior rules`, then `Show behavior rule unknown`. To teach this dialog a response, send: When I say `your prompt`, answer `your answer`. If this still needs a shared Links Notation seed fact or rule after those checks, use Report issue with the reasoning trace, or export memory to keep a dialog-local rule durable.";
+const FALLBACK_UNKNOWN_ANSWER: &str = "I don't know how to answer that yet. I cannot answer that from local links rules yet. To inspect what I can do, send `List behavior rules`, then `Show behavior rule unknown`. To teach this dialog a response, send: When I say `your prompt`, answer `your answer`. If this still needs a shared Links Notation seed fact or links rule after those checks, use Report issue with the reasoning trace, or export memory to keep a dialog-local rule durable.";
 const FALLBACK_UNKNOWN_LANGUAGE_ANSWER: &str = concat!(
     "I detected an unsupported language. Falling back to English: I cannot ",
-    "answer that from local Links Notation rules yet. Please add a fact or ",
+    "answer that from local links rules yet. Please add a fact or ",
     "add a rule in Links Notation, then run the request again."
 );
 

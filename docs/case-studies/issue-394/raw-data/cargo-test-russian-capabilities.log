@@ -1,0 +1,32 @@
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on artifact directory
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.36s
+     Running unittests src/lib.rs (target/debug/deps/formal_ai-4a9b1acc50590c7c)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 378 filtered out; finished in 0.00s
+
+     Running unittests src/main.rs (target/debug/deps/formal_ai-3b4a1a291d7e3696)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/integration/mod.rs (target/debug/deps/integration-1e9f39a161cdad79)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 20 filtered out; finished in 0.00s
+
+     Running tests/unit/mod.rs (target/debug/deps/unit-7cba1ddcb13f470d)
+
+running 3 tests
+test specification::multilingual::russian_capabilities_question_returns_capabilities_intent ... ok
+test specification::multilingual::russian_capabilities_answer_is_in_russian ... ok
+test specification::multilingual::russian_capabilities_question_does_not_return_unknown ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 767 filtered out; finished in 0.07s
+

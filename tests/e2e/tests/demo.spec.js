@@ -1,7 +1,7 @@
 // @ts-check
 const { test, expect } = require('@playwright/test');
 
-const UNKNOWN_ANSWER_MARKER = 'cannot answer that from local Links Notation rules';
+const UNKNOWN_ANSWER_MARKER = 'cannot answer that from local links rules';
 
 async function switchToManualMode(page) {
   const demoToggle = page.locator('.mode-toggle');
@@ -508,7 +508,7 @@ test.describe('formal-ai demo UI', () => {
 
     lastMsg = await sendPrompt(page, 'List all facts you know about yourself');
     await expect(lastMsg).toContainText('self_fact_model');
-    await expect(lastMsg).toContainText('local Links Notation rules');
+    await expect(lastMsg).toContainText('local links rules');
 
     lastMsg = await sendPrompt(page, 'какие факты ты знаешь?');
     await expect(lastMsg).toContainText(/Интернет|Internet/);

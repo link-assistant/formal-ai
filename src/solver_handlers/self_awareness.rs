@@ -204,7 +204,7 @@ fn render_self_facts(runtime: SelfAwarenessRuntime) -> String {
             "- **Memory**: {}.\n",
             "- **Web search**: {}.\n",
             "- **Surface limits**: {}.\n",
-            "- **Local rules**: local Links Notation rules and seed facts are checked first.\n\n",
+            "- **Local rules**: local links rules and seed facts are checked first.\n\n",
             "```links\n",
             "self_fact_model\n",
             "  subject \"formal-ai\"\n",

@@ -25,7 +25,7 @@ const ISSUE_REPOSITORY = "link-assistant/formal-ai";
 const ISSUE_LABELS = "bug";
 const SOURCE_CODE_URL = `https://github.com/${ISSUE_REPOSITORY}`;
 const UNKNOWN_ANSWER =
-  "I don't know how to answer that yet. I cannot answer that from local Links Notation rules yet. To inspect what I can do, send `List behavior rules`, then `Show behavior rule unknown`. To teach this dialog a response, send: When I say `your prompt`, answer `your answer`. If this still needs a shared Links Notation seed fact or rule after those checks, use Report issue with the reasoning trace, or export memory to keep a dialog-local rule durable.";
+  "I don't know how to answer that yet. I cannot answer that from local links rules yet. To inspect what I can do, send `List behavior rules`, then `Show behavior rule unknown`. To teach this dialog a response, send: When I say `your prompt`, answer `your answer`. If this still needs a shared Links Notation seed fact or links rule after those checks, use Report issue with the reasoning trace, or export memory to keep a dialog-local rule durable.";
 const IDENTITY_ANSWER =
   "I am formal-ai, a deterministic symbolic AI implementation that answers from local Links Notation rules and OpenAI-compatible API shapes. I do not perform neural inference in this demo.";
 const ASSISTANT_NAME_ANSWER =
@@ -2737,7 +2737,7 @@ function localSelfFacts(preferences = {}) {
     `- **Memory**: ${surface.memory}.`,
     `- **Web search**: ${surface.webSearch}.`,
     `- **Surface limits**: ${surface.limits}.`,
-    "- **Local rules**: local Links Notation rules and seed facts are checked first.",
+    "- **Local rules**: local links rules and seed facts are checked first.",
     "",
     "```links",
     "self_fact_model",

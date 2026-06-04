@@ -849,7 +849,7 @@ fn opinion_questions_return_no_opinion_response() {
         assert!(
             !response
                 .answer
-                .contains("cannot answer that from local Links Notation rules"),
+                .contains("cannot answer that from local links rules"),
             "prompt {prompt:?} should not return the unknown-intent error"
         );
     }
@@ -877,7 +877,7 @@ fn who_is_question_does_not_return_unknown_intent() {
         assert!(
             !response
                 .answer
-                .contains("cannot answer that from local Links Notation rules"),
+                .contains("cannot answer that from local links rules"),
             "prompt {prompt:?} should not return the unknown-intent error"
         );
         if let Some(suggestion) = expected_suggestion {

@@ -110,6 +110,35 @@ fn unknown_reasoning_records_trace_for_every_supported_language() {
 }
 
 #[test]
+fn russian_unknown_reasoning_hint_uses_russian_rule_commands() {
+    let response = answer("снорфлакс тихая бирюзовая погода без правила");
+
+    assert_eq!(response.intent, "unknown");
+    assert!(
+        response.answer.contains("Покажи правила поведения"),
+        "Russian unknown-reasoning hint should list rules in Russian, got: {}",
+        response.answer,
+    );
+    assert!(
+        response.answer.contains("Покажи правило unknown"),
+        "Russian unknown-reasoning hint should inspect rules in Russian, got: {}",
+        response.answer,
+    );
+    assert!(
+        response.answer.contains("Когда я скажу"),
+        "Russian unknown-reasoning hint should teach dialog rules in Russian, got: {}",
+        response.answer,
+    );
+    assert!(
+        !response.answer.contains("List behavior rules")
+            && !response.answer.contains("Show behavior rule unknown")
+            && !response.answer.contains("When I say"),
+        "Russian unknown-reasoning hint should not switch to English command examples, got: {}",
+        response.answer,
+    );
+}
+
+#[test]
 fn unknown_reasoning_answers_from_link_memory() {
     let solver = UniversalSolver::new(SolverConfig {
         questioning_rigor: 0.8,

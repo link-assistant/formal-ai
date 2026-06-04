@@ -61,7 +61,7 @@ const FALLBACK_COURTESY_FOLLOW_UPS = [
 ];
 
 const FALLBACK_UNKNOWN_ANSWER =
-  "I don't know how to answer that yet. I cannot answer that from local Links Notation rules yet. To inspect what I can do, send `List behavior rules`, then `Show behavior rule unknown`. To teach this dialog a response, send: When I say `your prompt`, answer `your answer`. If this still needs a shared Links Notation seed fact or rule after those checks, use Report issue with the reasoning trace, or export memory to keep a dialog-local rule durable.";
+  "I don't know how to answer that yet. I cannot answer that from local links rules yet. To inspect what I can do, send `List behavior rules`, then `Show behavior rule unknown`. To teach this dialog a response, send: When I say `your prompt`, answer `your answer`. If this still needs a shared Links Notation seed fact or links rule after those checks, use Report issue with the reasoning trace, or export memory to keep a dialog-local rule durable.";
 
 const FALLBACK_CLARIFICATION_ANSWER =
   "I'm sorry for the confusion. I am formal-ai, a deterministic symbolic AI. I can answer greetings, identity questions, concept lookups (what is X?), arithmetic, and parameterized program templates. If you'd like to ask about something specific, try one of those or add a fact in Links Notation.";
@@ -3543,7 +3543,7 @@ function renderSelfFacts(preferences) {
     `- **Memory**: ${surface.memory}.`,
     `- **Web search**: ${surface.webSearch}.`,
     `- **Surface limits**: ${surface.limits}.`,
-    "- **Local rules**: local Links Notation rules and seed facts are checked first.",
+    "- **Local rules**: local links rules and seed facts are checked first.",
     "",
     "```links",
     "self_fact_model",
@@ -4608,7 +4608,7 @@ function historyMentionsWebSearch(history) {
 
 function additionalCapabilitiesContent(language) {
   if (language === "ru") {
-    return "Кроме уже названных возможностей, могу ещё:\n\n- **Арифметика**: вычислять выражения вроде «Сколько будет 2 + 2?»\n- **Перевод**: переводить короткие фразы между поддерживаемыми языками.\n- **Поиск понятий**: объяснять термины, например «Что такое Википедия?»\n- **Hello World**: генерировать минимальные программы на Rust, Python, JavaScript, Go, C и других языках.\n- **Память диалога**: использовать предыдущие сообщения текущей сессии.\n- **Правила поведения**: показывать встроенные правила через `List behavior rules` и `Show behavior rule unknown`.\n- **Настройки и действия**: включать диагностику/демо/agent mode, менять тему, язык, стиль чата, экспортировать и импортировать память.";
+    return "Кроме уже названных возможностей, могу ещё:\n\n- **Арифметика**: вычислять выражения вроде «Сколько будет 2 + 2?»\n- **Перевод**: переводить короткие фразы между поддерживаемыми языками.\n- **Поиск понятий**: объяснять термины, например «Что такое Википедия?»\n- **Hello World**: генерировать минимальные программы на Rust, Python, JavaScript, Go, C и других языках.\n- **Память диалога**: использовать предыдущие сообщения текущей сессии.\n- **Правила поведения**: показывать встроенные правила через `Покажи правила поведения` и `Покажи правило unknown`.\n- **Настройки и действия**: включать диагностику/демо/agent mode, менять тему, язык, стиль чата, экспортировать и импортировать память.";
   }
   return "Beyond the capability already discussed, I can also:\n\n- **Arithmetic**: evaluate expressions like `2 + 2`.\n- **Translation**: translate short phrases between supported languages.\n- **Concept lookup**: explain terms such as `What is Wikipedia?`.\n- **Hello World**: generate small programs in Rust, Python, JavaScript, Go, C, and more.\n- **Conversation memory**: use earlier messages from the current session.\n- **Behavior rules**: show built-in rules with `List behavior rules` and `Show behavior rule unknown`.\n- **Settings and actions**: configure diagnostics, demo mode, agent mode, theme, language, chat style, and memory import/export.";
 }
