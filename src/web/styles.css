@@ -289,6 +289,7 @@ button {
   width: 100%;
   min-width: 0;
   min-height: 64px;
+  container: formal-ai-topbar / inline-size;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -2047,6 +2048,30 @@ textarea:disabled {
   }
 }
 
+/* Issue #388: let the topbar's own measured width decide when labels leave the
+ * action row. This catches wide but crowded desktop shells such as browser
+ * chrome, embedded webviews, and sidebars before any action can be clipped. */
+@container formal-ai-topbar (max-width: 1900px) {
+  .topbar-actions {
+    gap: 8px;
+  }
+
+  .topbar-actions .btn-label {
+    display: none;
+  }
+
+  .topbar-actions .mode-toggle,
+  .topbar-actions .diagnostics-toggle,
+  .topbar-actions .agent-toggle,
+  .topbar-actions .report-button,
+  .topbar-actions .source-code-button,
+  .topbar-actions .download-button,
+  .topbar-actions .memory-button {
+    min-width: 0;
+    padding: 0 10px;
+  }
+}
+
 /* Issue #153: desktop overflow first keeps the canonical controls visible and
  * switches action labels to icon-only before any button can be clipped. The
  * mobile drawer carries the full action list once the topbar gets tight enough
@@ -2536,6 +2561,7 @@ textarea:disabled {
 :root[data-theme="dark"] .conversation-purge-deleted:hover:not(:disabled),
 :root[data-theme="dark"] .conversation-entry-button:hover,
 :root[data-theme="dark"] .conversation-delete:hover,
+:root[data-theme="dark"] .conversation-copy:hover,
 :root[data-theme="dark"] .prompt-list button:hover,
 :root[data-theme="dark"] .composer-action-button:hover,
 :root[data-theme="dark"] .composer-menu-item:hover,
@@ -2572,6 +2598,7 @@ textarea:disabled {
 :root[data-theme="dark"] .settings-reset {
   border-color: #343a3d;
   background: #202322;
+  color: #ece7df;
 }
 
 :root[data-theme="dark"] .settings-reset-title,
@@ -2588,6 +2615,11 @@ textarea:disabled {
   border-color: #3a4145;
   background: #2a2e2d;
   color: #ece7df;
+}
+
+:root[data-theme="dark"] .settings-reset-all:hover:not(:disabled),
+:root[data-theme="dark"] .settings-reset-one:hover {
+  border-color: #6cc5a6;
 }
 
 :root[data-theme="dark"] .conversation-entry.is-active .conversation-entry-button {
@@ -2637,6 +2669,52 @@ textarea:disabled {
 :root[data-theme="dark"] .evidence-list span {
   border-color: #4a524e;
   color: #c9c1b6;
+}
+
+:root[data-theme="dark"] .diagnostics-steps,
+:root[data-theme="dark"] .diagnostics-tools,
+:root[data-theme="dark"] .diagnostics-detail-body {
+  border-top-color: #343a3d;
+}
+
+:root[data-theme="dark"] .diagnostics-steps,
+:root[data-theme="dark"] .diagnostics-tools {
+  color: #c9c1b6;
+}
+
+:root[data-theme="dark"] .diagnostics-steps > strong,
+:root[data-theme="dark"] .diagnostics-tools > strong,
+:root[data-theme="dark"] .diagnostics-step-name,
+:root[data-theme="dark"] .diagnostics-tool-name {
+  color: #d8d0c4;
+}
+
+:root[data-theme="dark"] .diagnostics-detail {
+  border-color: #343a3d;
+  background: #202322;
+  color: #ece7df;
+}
+
+:root[data-theme="dark"] .diagnostics-detail > summary {
+  color: #ece7df;
+}
+
+:root[data-theme="dark"] .diagnostics-detail > summary::before,
+:root[data-theme="dark"] .diagnostics-step-summary,
+:root[data-theme="dark"] .diagnostics-tool-summary,
+:root[data-theme="dark"] .diagnostics-section-label {
+  color: #b7b0a7;
+}
+
+:root[data-theme="dark"] .diagnostics-detail-body {
+  background: #1d201f;
+}
+
+:root[data-theme="dark"] .diagnostics-payload,
+:root[data-theme="dark"] .diagnostics-tool-reasoning {
+  border-color: #343a3d;
+  background: #181a1b;
+  color: #d8d0c4;
 }
 
 /* Issue #180: dark theme parity for the new diagnostics-http panel. */
@@ -2878,6 +2956,7 @@ textarea:disabled {
   :root:not([data-theme="light"]) .conversation-purge-deleted,
   :root:not([data-theme="light"]) .conversation-entry-button,
   :root:not([data-theme="light"]) .conversation-delete,
+  :root:not([data-theme="light"]) .conversation-copy,
   :root:not([data-theme="light"]) .fetch-iframe-control,
   :root:not([data-theme="light"]) .sidebar-section-collapse {
     border-color: #4a524e;
@@ -2893,6 +2972,7 @@ textarea:disabled {
   :root:not([data-theme="light"]) .conversation-purge-deleted:hover:not(:disabled),
   :root:not([data-theme="light"]) .conversation-entry-button:hover,
   :root:not([data-theme="light"]) .conversation-delete:hover,
+  :root:not([data-theme="light"]) .conversation-copy:hover,
   :root:not([data-theme="light"]) .prompt-list button:hover,
   :root:not([data-theme="light"]) .composer-action-button:hover,
   :root:not([data-theme="light"]) .composer-menu-item:hover,
@@ -2928,6 +3008,33 @@ textarea:disabled {
 
   :root:not([data-theme="light"]) .setting-row output {
     color: #ece7df;
+  }
+
+  :root:not([data-theme="light"]) .settings-reset {
+    border-color: #343a3d;
+    background: #202322;
+    color: #ece7df;
+  }
+
+  :root:not([data-theme="light"]) .settings-reset-title,
+  :root:not([data-theme="light"]) .settings-reset-label {
+    color: #b7b0a7;
+  }
+
+  :root:not([data-theme="light"]) .settings-reset-empty {
+    color: #9aa39a;
+  }
+
+  :root:not([data-theme="light"]) .settings-reset-all,
+  :root:not([data-theme="light"]) .settings-reset-one {
+    border-color: #3a4145;
+    background: #2a2e2d;
+    color: #ece7df;
+  }
+
+  :root:not([data-theme="light"]) .settings-reset-all:hover:not(:disabled),
+  :root:not([data-theme="light"]) .settings-reset-one:hover {
+    border-color: #6cc5a6;
   }
 
   :root:not([data-theme="light"]) .conversation-entry.is-active .conversation-entry-button {
@@ -2977,6 +3084,52 @@ textarea:disabled {
   :root:not([data-theme="light"]) .evidence-list span {
     border-color: #4a524e;
     color: #c9c1b6;
+  }
+
+  :root:not([data-theme="light"]) .diagnostics-steps,
+  :root:not([data-theme="light"]) .diagnostics-tools,
+  :root:not([data-theme="light"]) .diagnostics-detail-body {
+    border-top-color: #343a3d;
+  }
+
+  :root:not([data-theme="light"]) .diagnostics-steps,
+  :root:not([data-theme="light"]) .diagnostics-tools {
+    color: #c9c1b6;
+  }
+
+  :root:not([data-theme="light"]) .diagnostics-steps > strong,
+  :root:not([data-theme="light"]) .diagnostics-tools > strong,
+  :root:not([data-theme="light"]) .diagnostics-step-name,
+  :root:not([data-theme="light"]) .diagnostics-tool-name {
+    color: #d8d0c4;
+  }
+
+  :root:not([data-theme="light"]) .diagnostics-detail {
+    border-color: #343a3d;
+    background: #202322;
+    color: #ece7df;
+  }
+
+  :root:not([data-theme="light"]) .diagnostics-detail > summary {
+    color: #ece7df;
+  }
+
+  :root:not([data-theme="light"]) .diagnostics-detail > summary::before,
+  :root:not([data-theme="light"]) .diagnostics-step-summary,
+  :root:not([data-theme="light"]) .diagnostics-tool-summary,
+  :root:not([data-theme="light"]) .diagnostics-section-label {
+    color: #b7b0a7;
+  }
+
+  :root:not([data-theme="light"]) .diagnostics-detail-body {
+    background: #1d201f;
+  }
+
+  :root:not([data-theme="light"]) .diagnostics-payload,
+  :root:not([data-theme="light"]) .diagnostics-tool-reasoning {
+    border-color: #343a3d;
+    background: #181a1b;
+    color: #d8d0c4;
   }
 
   :root:not([data-theme="light"]) .diagnostics-http {
