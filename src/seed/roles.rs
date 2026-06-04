@@ -1334,3 +1334,16 @@ pub const ROLE_RESEARCH_PROMPT_SIGNAL: &str = "research_prompt_signal";
 /// space-guarded `pro ` and ` con `) live in the data. Read by the Rust
 /// research-table handler and its JS worker mirror.
 pub const ROLE_RESEARCH_CRITERION: &str = "research_criterion";
+/// Semantic role: a cue that classifies a prose sentence during summarization.
+///
+/// Carried by the seven `summary_kind_*` leaf meanings (`summary_kind_install`,
+/// `summary_kind_example`, `summary_kind_language`, `summary_kind_stars`,
+/// `summary_kind_purpose`, `summary_kind_use_case`, `summary_kind_feature`) in
+/// that declaration order, each a kind of the structural `summary_statement_kind`
+/// genus. The project summarizer walks the meanings carrying this role through
+/// [`crate::seed::Lexicon::meanings_with_role`] and classifies a lowercased
+/// sentence as the first meaning whose surface fragments occur in it as a raw
+/// substring, mapping the matched slug to a `StatementKind`; the `language` kind
+/// additionally requires at most twelve whitespace words. Read only by the Rust
+/// summarization classifier (there is no JS worker mirror of that pipeline).
+pub const ROLE_SUMMARY_CLASSIFICATION_CUE: &str = "summary_classification_cue";

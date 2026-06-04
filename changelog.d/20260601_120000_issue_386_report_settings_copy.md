@@ -1057,6 +1057,39 @@ bump: minor
   still routes to the greeting detector first, unchanged). Because the surfaces now
   exist in every language, the compositional lemmas and phrases are complete in
   Hindi and Chinese as well as English and Russian (issue #386).
+- The README/prose summarizer's sentence classifier (`classify_sentence` in
+  `src/summarization/mod.rs`) is data-driven too. Its seven cue categories were
+  seven hardcoded mixed English/Russian substring arrays scanned in a fixed
+  priority order. Those surfaces now live as self-describing meanings in a new
+  seed file (`data/seed/meanings-summary.lino`): one structural
+  `summary_statement_kind` genus (`defined_by` `concept`, role
+  `summary_statement_kind` — structural only, no handler queries it) groups the
+  seven `summary_kind_*` leaf meanings (install, example, language, stars,
+  purpose, use case, feature), each `defined_by` that genus, carrying the
+  `summary_classification_cue` role, and lexicalised in every supported language
+  with a per-form description. `classify_sentence` now walks the meanings
+  carrying `ROLE_SUMMARY_CLASSIFICATION_CUE` in declaration order — which encodes
+  the original priority order — and returns the kind of the first meaning whose
+  surface fragments occur in the lowercased sentence as a raw substring, mapping
+  the matched slug to a `StatementKind` through a new `StatementKind::from_slug`
+  resolver, so the former seven `contains_any`-over-hardcoded-arrays blocks (and
+  the now-unused `contains_any` helper) are gone — the code knows only the
+  concept "a kind of summary statement" while every cue lives once in data. The
+  `language` kind keeps its length guard structurally: a sentence that contains a
+  language cue but runs past twelve whitespace words is not an identity line, so
+  the scan continues to a later kind exactly as the original `&& word_count <= 12`
+  arm did. The migration is byte-faithful — the per-kind surface sets equal the
+  original arrays exactly, including the significant leading/trailing spaces the
+  lino parser preserves (`" supports "`, `"$ "`, `"npm install"`) — every one of
+  the 48 original English/Russian cue surfaces survives in its original kind. And
+  because the cues now exist in every language — Hindi and Chinese throughout,
+  plus Russian for the install and use-case kinds the original arrays left
+  English-only — sentences classify where the former arrays recognised nothing. The summarizer is Rust-only — the browser worker has no
+  prose-classification route — but its embedded `MEANINGS_LINO` mirrors the new
+  file byte-identically (30 meaning files, verified by
+  `experiments/issue-386-meanings-mirror.mjs`) so the shared knowledge base stays
+  complete, and three locking tests pin the declaration-order scan, one surface
+  per kind, and the language length-guard fall-through (issue #386).
 
 ### Fixed
 - The follow-up "Отмени сортировку" ("cancel the sorting") no longer returns
