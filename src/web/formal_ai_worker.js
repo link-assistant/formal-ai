@@ -5031,71 +5031,18 @@ function normalizeComposableSurface(surface) {
     .join(" ");
 }
 
-const RU_EN_PHRASE_FALLBACKS = new Map([
-  ["кто ты", "Who are you?"],
-  ["кто ты такой", "Who are you?"],
-  ["кто ты такая", "Who are you?"],
-  ["кто вы", "Who are you?"],
-  ["кто вы такой", "Who are you?"],
-  ["кто вы такая", "Who are you?"],
-  ["что это", "What is this?"],
-  ["что это такое", "What is this?"],
-]);
-
-const RU_EN_WORD_FALLBACKS = new Map([
-  ["найди", "find"],
-  ["найдите", "find"],
-  ["найти", "find"],
-  ["синоним", "synonyms"],
-  ["синонимы", "synonyms"],
-  ["синонимов", "synonyms"],
-  ["или", "or"],
-  ["пример", "examples"],
-  ["примеры", "examples"],
-  ["примеров", "examples"],
-  ["согласование", "agreement"],
-  ["согласования", "agreement"],
-  ["согласованию", "agreement"],
-  ["согласованием", "agreement"],
-  ["согласовании", "agreement"],
-  ["доброе", "good"],
-  ["добрый", "good"],
-  ["добрая", "good"],
-  ["добрые", "good"],
-  ["доброго", "good"],
-  ["добрую", "good"],
-  ["добрым", "good"],
-  ["хорошее", "good"],
-  ["хороший", "good"],
-  ["хорошая", "good"],
-  ["хорошие", "good"],
-  ["хорошего", "good"],
-  ["хорошую", "good"],
-  ["хорошим", "good"],
-  ["яблоко", "apple"],
-  ["яблока", "apple"],
-  ["яблоку", "apple"],
-  ["яблоком", "apple"],
-  ["яблоке", "apple"],
-  ["яблоки", "apple"],
-  ["яблок", "apple"],
-  ["яблокам", "apple"],
-  ["яблоками", "apple"],
-  ["яблоках", "apple"],
-]);
-
-const RU_EN_GENITIVE_RELATION_HEADS = new Set([
-  "пример",
-  "примеры",
-  "примеров",
-  "синоним",
-  "синонимы",
-  "синонимов",
-]);
-
-const RU_EN_GENITIVE_NOUN_FALLBACKS = new Map([
-  ["согласования", "agreement"],
-]);
+// Issue #386 compositional-translation roles — mirror ROLE_COMPOSITIONAL_LEMMA,
+// ROLE_COMPOSITIONAL_PHRASE and ROLE_COMPOSITIONAL_GENITIVE_HEAD in
+// src/seed/roles.rs. The per-word lemma fallbacks, fixed phrases, genitive-
+// governing heads and the single genitive-tagged complement that used to be
+// hardcoded here all live in the embedded MEANINGS_LINO
+// (data/seed/meanings-translation.lino); the functions below name only the
+// semantic roles and the ru→en language pair, never the surface words. The
+// query helpers (roleSurfaceTranslation, roleListsSurface,
+// roleActionSurfaceTranslation, wordIn) are defined alongside meaningLexicon.
+const ROLE_COMPOSITIONAL_LEMMA = "compositional_lemma";
+const ROLE_COMPOSITIONAL_PHRASE = "compositional_phrase";
+const ROLE_COMPOSITIONAL_GENITIVE_HEAD = "compositional_genitive_head";
 
 function capitalizeAsciiFirst(surface) {
   const text = String(surface || "");
@@ -5110,18 +5057,18 @@ function translateRussianWordSequence(words) {
     const next = words[index + 1];
     if (
       next &&
-      RU_EN_GENITIVE_RELATION_HEADS.has(word) &&
-      RU_EN_GENITIVE_NOUN_FALLBACKS.has(next)
+      roleListsSurface(ROLE_COMPOSITIONAL_GENITIVE_HEAD, "ru", word) &&
+      roleActionSurfaceTranslation(ROLE_COMPOSITIONAL_LEMMA, "genitive", "ru", "en", next)
     ) {
       translated.push(
-        RU_EN_WORD_FALLBACKS.get(word),
+        roleSurfaceTranslation(ROLE_COMPOSITIONAL_LEMMA, "ru", "en", word),
         "of",
-        RU_EN_GENITIVE_NOUN_FALLBACKS.get(next),
+        roleActionSurfaceTranslation(ROLE_COMPOSITIONAL_LEMMA, "genitive", "ru", "en", next),
       );
       index += 1;
       continue;
     }
-    const surface = RU_EN_WORD_FALLBACKS.get(word);
+    const surface = roleSurfaceTranslation(ROLE_COMPOSITIONAL_LEMMA, "ru", "en", word);
     if (!surface) return null;
     translated.push(surface);
   }
@@ -5131,7 +5078,7 @@ function translateRussianWordSequence(words) {
 function translateCompositionalSurface(surface, source, target) {
   if (source !== "ru" || target !== "en") return null;
   const normalized = normalizeComposableSurface(surface);
-  const phrase = RU_EN_PHRASE_FALLBACKS.get(normalized);
+  const phrase = roleSurfaceTranslation(ROLE_COMPOSITIONAL_PHRASE, "ru", "en", normalized);
   if (phrase) return phrase;
 
   const words = normalized.split(/\s+/u).filter(Boolean);
@@ -20584,6 +20531,255 @@ const MEANINGS_LINO = [
   '    lexeme "zh"',
   '      word "链接表示法"',
   '        description "Chinese rendering (pinyin lianjie biaoshifa) of Links Notation; a completeness form for the links_notation_format concept, recorded but not scanned."',
+  '  meaning "apple"',
+  '    gloss "the fruit apple, a concrete entity the compositional ru-to-en translator renders when a multi-word title carries the Russian apple lemma in any case. It holds the compositional_lemma role; the per-word fallback resolves any listed Russian inflection to the English surface apple. Head-initial English and Russian are the consulted pair; Hindi and Chinese are carried so the concept is lexicalised in every supported language. Defined as an entity."',
+  '    wiktionary "apple"',
+  '    defined_by "entity"',
+  '    role "compositional_lemma"',
+  '    lexeme "en"',
+  '      word "apple"',
+  '        description "English noun (apple); the surface the compositional translator emits for the Russian apple lemma."',
+  '    lexeme "ru"',
+  '      word "яблоко"',
+  '        description "Russian noun (romanized yabloko, apple), nominative singular; a compositional_lemma form resolving to apple."',
+  '      word "яблока"',
+  '        description "Russian noun (romanized yabloka, apple), genitive singular; a compositional_lemma form resolving to apple."',
+  '      word "яблоку"',
+  '        description "Russian noun (romanized yabloku, apple), dative singular; a compositional_lemma form resolving to apple."',
+  '      word "яблоком"',
+  '        description "Russian noun (romanized yablokom, apple), instrumental singular; a compositional_lemma form resolving to apple."',
+  '      word "яблоке"',
+  '        description "Russian noun (romanized yabloke, apple), prepositional singular; a compositional_lemma form resolving to apple."',
+  '      word "яблоки"',
+  '        description "Russian noun (romanized yabloki, apple), nominative plural; a compositional_lemma form resolving to apple."',
+  '      word "яблок"',
+  '        description "Russian noun (romanized yablok, apple), genitive plural; a compositional_lemma form resolving to apple."',
+  '      word "яблокам"',
+  '        description "Russian noun (romanized yablokam, apple), dative plural; a compositional_lemma form resolving to apple."',
+  '      word "яблоками"',
+  '        description "Russian noun (romanized yablokami, apple), instrumental plural; a compositional_lemma form resolving to apple."',
+  '      word "яблоках"',
+  '        description "Russian noun (romanized yablokakh, apple), prepositional plural; a compositional_lemma form resolving to apple."',
+  '    lexeme "hi"',
+  '      word "सेब"',
+  '        description "Hindi noun (romanized seb, apple); a coverage form, not consulted by the head-initial ru-to-en scan."',
+  '    lexeme "zh"',
+  '      word "苹果"',
+  '        description "Chinese noun (pinyin pingguo, apple); a coverage form, not consulted by the head-initial ru-to-en scan."',
+  '  meaning "good"',
+  '    gloss "the quality good, a property the compositional ru-to-en translator renders when a multi-word title carries a Russian good or kind adjective in any gender, number or case. It holds the compositional_lemma role; the per-word fallback resolves any listed inflection of dobryy or khoroshiy to the English surface good. Head-initial English and Russian are the consulted pair; Hindi and Chinese are carried for coverage. Defined as a property."',
+  '    wiktionary "good"',
+  '    defined_by "property"',
+  '    role "compositional_lemma"',
+  '    lexeme "en"',
+  '      word "good"',
+  '        description "English adjective (good); the surface the compositional translator emits for a Russian good or kind adjective."',
+  '    lexeme "ru"',
+  '      word "доброе"',
+  '        description "Russian adjective (romanized dobroye, good or kind), neuter nominative singular; a compositional_lemma form resolving to good."',
+  '      word "добрый"',
+  '        description "Russian adjective (romanized dobryy, good or kind), masculine nominative singular; a compositional_lemma form resolving to good."',
+  '      word "добрая"',
+  '        description "Russian adjective (romanized dobraya, good or kind), feminine nominative singular; a compositional_lemma form resolving to good."',
+  '      word "добрые"',
+  '        description "Russian adjective (romanized dobryye, good or kind), nominative plural; a compositional_lemma form resolving to good."',
+  '      word "доброго"',
+  '        description "Russian adjective (romanized dobrogo, good or kind), masculine or neuter genitive singular; a compositional_lemma form resolving to good."',
+  '      word "добрую"',
+  '        description "Russian adjective (romanized dobruyu, good or kind), feminine accusative singular; a compositional_lemma form resolving to good."',
+  '      word "добрым"',
+  '        description "Russian adjective (romanized dobrym, good or kind), masculine or neuter instrumental singular; a compositional_lemma form resolving to good."',
+  '      word "хорошее"',
+  '        description "Russian adjective (romanized khorosheye, good), neuter nominative singular; a compositional_lemma form resolving to good."',
+  '      word "хороший"',
+  '        description "Russian adjective (romanized khoroshiy, good), masculine nominative singular; a compositional_lemma form resolving to good."',
+  '      word "хорошая"',
+  '        description "Russian adjective (romanized khoroshaya, good), feminine nominative singular; a compositional_lemma form resolving to good."',
+  '      word "хорошие"',
+  '        description "Russian adjective (romanized khoroshiye, good), nominative plural; a compositional_lemma form resolving to good."',
+  '      word "хорошего"',
+  '        description "Russian adjective (romanized khoroshego, good), masculine or neuter genitive singular; a compositional_lemma form resolving to good."',
+  '      word "хорошую"',
+  '        description "Russian adjective (romanized khoroshuyu, good), feminine accusative singular; a compositional_lemma form resolving to good."',
+  '      word "хорошим"',
+  '        description "Russian adjective (romanized khoroshim, good), masculine or neuter instrumental singular; a compositional_lemma form resolving to good."',
+  '    lexeme "hi"',
+  '      word "अच्छा"',
+  '        description "Hindi adjective (romanized achchha, good); a coverage form, not consulted by the head-initial ru-to-en scan."',
+  '    lexeme "zh"',
+  '      word "好"',
+  '        description "Chinese adjective (pinyin hao, good); a coverage form, not consulted by the head-initial ru-to-en scan."',
+  '  meaning "find"',
+  '    gloss "the action find, locating something; the verb the compositional ru-to-en translator renders when a Russian find imperative or infinitive opens a search request. It holds the compositional_lemma role; the per-word fallback resolves any listed Russian form to the English surface find. Head-initial English and Russian are the consulted pair; Hindi and Chinese are carried for coverage. Defined as an action."',
+  '    wiktionary "find"',
+  '    defined_by "action"',
+  '    role "compositional_lemma"',
+  '    lexeme "en"',
+  '      word "find"',
+  '        description "English verb (find); the surface the compositional translator emits for a Russian find imperative or infinitive."',
+  '    lexeme "ru"',
+  '      word "найди"',
+  '        description "Russian verb (romanized naydi, find), singular imperative; a compositional_lemma form resolving to find."',
+  '      word "найдите"',
+  '        description "Russian verb (romanized naydite, find), plural or polite imperative; a compositional_lemma form resolving to find."',
+  '      word "найти"',
+  '        description "Russian verb (romanized nayti, to find), infinitive; a compositional_lemma form resolving to find."',
+  '    lexeme "hi"',
+  '      word "खोजें"',
+  '        description "Hindi verb (romanized khojen, find or search); a coverage form, not consulted by the head-initial ru-to-en scan."',
+  '    lexeme "zh"',
+  '      word "查找"',
+  '        description "Chinese verb (pinyin chazhao, find or look up); a coverage form, not consulted by the head-initial ru-to-en scan."',
+  '  meaning "synonym"',
+  "    gloss \"the concept synonym, a word sharing another word's meaning; rendered by the compositional ru-to-en translator and, as a relation noun, able to govern a genitive complement, as in sinonimy soglasovaniya, synonyms of agreement. It holds compositional_lemma and compositional_genitive_head; the per-word fallback resolves any listed Russian form to the English plural surface synonyms, the form the original search-phrase mapping emits. Head-initial English and Russian are the consulted pair; Hindi and Chinese are carried for coverage. Defined as a concept.\"",
+  '    wiktionary "synonym"',
+  '    defined_by "concept"',
+  '    role "compositional_lemma"',
+  '    role "compositional_genitive_head"',
+  '    lexeme "en"',
+  '      word "synonyms"',
+  '        description "English noun (synonyms), plural; the surface the compositional translator emits for a Russian synonym form, matching the original search-phrase mapping."',
+  '    lexeme "ru"',
+  '      word "синоним"',
+  '        description "Russian noun (romanized sinonim, synonym), nominative singular; a compositional_lemma and genitive-head form resolving to synonyms."',
+  '      word "синонимы"',
+  '        description "Russian noun (romanized sinonimy, synonyms), nominative plural; a compositional_lemma and genitive-head form resolving to synonyms."',
+  '      word "синонимов"',
+  '        description "Russian noun (romanized sinonimov, synonyms), genitive plural; a compositional_lemma and genitive-head form resolving to synonyms."',
+  '    lexeme "hi"',
+  '      word "पर्यायवाची"',
+  '        description "Hindi noun (romanized paryayvachi, synonym); a coverage form, not consulted by the head-initial ru-to-en scan."',
+  '    lexeme "zh"',
+  '      word "同义词"',
+  '        description "Chinese noun (pinyin tongyici, synonym); a coverage form, not consulted by the head-initial ru-to-en scan."',
+  '  meaning "example"',
+  '    gloss "the concept example, an instance illustrating something; rendered by the compositional ru-to-en translator and, as a relation noun, able to govern a genitive complement, as in primery soglasovaniya, examples of agreement. It holds compositional_lemma and compositional_genitive_head; the per-word fallback resolves any listed Russian form to the English plural surface examples. Head-initial English and Russian are the consulted pair; Hindi and Chinese are carried for coverage. Defined as a concept."',
+  '    wiktionary "example"',
+  '    defined_by "concept"',
+  '    role "compositional_lemma"',
+  '    role "compositional_genitive_head"',
+  '    lexeme "en"',
+  '      word "examples"',
+  '        description "English noun (examples), plural; the surface the compositional translator emits for a Russian example form, matching the original search-phrase mapping."',
+  '    lexeme "ru"',
+  '      word "пример"',
+  '        description "Russian noun (romanized primer, example), nominative singular; a compositional_lemma and genitive-head form resolving to examples."',
+  '      word "примеры"',
+  '        description "Russian noun (romanized primery, examples), nominative plural; a compositional_lemma and genitive-head form resolving to examples."',
+  '      word "примеров"',
+  '        description "Russian noun (romanized primerov, examples), genitive plural; a compositional_lemma and genitive-head form resolving to examples."',
+  '    lexeme "hi"',
+  '      word "उदाहरण"',
+  '        description "Hindi noun (romanized udaharan, example); a coverage form, not consulted by the head-initial ru-to-en scan."',
+  '    lexeme "zh"',
+  '      word "例子"',
+  '        description "Chinese noun (pinyin lizi, example); a coverage form, not consulted by the head-initial ru-to-en scan."',
+  '  meaning "agreement"',
+  '    gloss "the concept agreement, grammatical concord; the genitive complement in the search phrase examples of agreement, rendered by the compositional ru-to-en translator. It holds the compositional_lemma role; the per-word fallback resolves any listed Russian form to the English surface agreement. The genitive-singular form soglasovaniya additionally carries action genitive so the genitive-of construction picks it as the complement of a relation head. Head-initial English and Russian are the consulted pair; Hindi and Chinese are carried for coverage. Defined as a concept."',
+  '    wiktionary "agreement"',
+  '    defined_by "concept"',
+  '    role "compositional_lemma"',
+  '    lexeme "en"',
+  '      word "agreement"',
+  '        description "English noun (agreement); the surface the compositional translator emits for a Russian agreement form, including the genitive complement of a relation head."',
+  '    lexeme "ru"',
+  '      word "согласование"',
+  '        description "Russian noun (romanized soglasovaniye, agreement), nominative singular; a compositional_lemma form resolving to agreement."',
+  '      word "согласования"',
+  '        action "genitive"',
+  '        description "Russian noun (romanized soglasovaniya, agreement), genitive singular; tagged genitive so the genitive-of construction reads it as the complement of a relation head, resolving to agreement."',
+  '      word "согласованию"',
+  '        description "Russian noun (romanized soglasovaniyu, agreement), dative singular; a compositional_lemma form resolving to agreement."',
+  '      word "согласованием"',
+  '        description "Russian noun (romanized soglasovaniyem, agreement), instrumental singular; a compositional_lemma form resolving to agreement."',
+  '      word "согласовании"',
+  '        description "Russian noun (romanized soglasovanii, agreement), prepositional singular; a compositional_lemma form resolving to agreement."',
+  '    lexeme "hi"',
+  '      word "सहमति"',
+  '        description "Hindi noun (romanized sahmati, agreement); a coverage form, not consulted by the head-initial ru-to-en scan."',
+  '    lexeme "zh"',
+  '      word "一致"',
+  '        description "Chinese noun (pinyin yizhi, agreement or concord); a coverage form, not consulted by the head-initial ru-to-en scan."',
+  '  meaning "conjunction_or"',
+  '    gloss "the relation or, the logical connective joining alternatives; rendered by the compositional ru-to-en translator when the Russian connective ili appears between search terms. It holds the compositional_lemma role; the per-word fallback resolves ili to the English surface or. Head-initial English and Russian are the consulted pair; Hindi and Chinese are carried for coverage. Defined as a relation."',
+  '    wiktionary "or"',
+  '    defined_by "relation"',
+  '    role "compositional_lemma"',
+  '    lexeme "en"',
+  '      word "or"',
+  '        description "English conjunction (or); the surface the compositional translator emits for the Russian connective ili."',
+  '    lexeme "ru"',
+  '      word "или"',
+  '        description "Russian conjunction (romanized ili, or); a compositional_lemma form resolving to or."',
+  '    lexeme "hi"',
+  '      word "या"',
+  '        description "Hindi conjunction (romanized ya, or); a coverage form, not consulted by the head-initial ru-to-en scan."',
+  '    lexeme "zh"',
+  '      word "或"',
+  '        description "Chinese conjunction (pinyin huo, or); a coverage form, not consulted by the head-initial ru-to-en scan."',
+  '  meaning "who_are_you"',
+  '    gloss "the fixed question who are you, a short Russian identity question that translates as a whole rather than word by word. It holds the compositional_phrase role; the compositional fallback looks the normalized title up among the phrase meanings before attempting composition and returns the English form verbatim, capitalization and terminal question mark included. Head-initial English and Russian are the consulted pair; Hindi and Chinese are carried for coverage. Defined as a concept."',
+  '    wiktionary "who"',
+  '    defined_by "concept"',
+  '    role "compositional_phrase"',
+  '    lexeme "en"',
+  '      word "Who are you?"',
+  '        description "English question (Who are you?); the verbatim rendering the compositional translator returns for the Russian identity question, capitalization and question mark included."',
+  '    lexeme "ru"',
+  '      word "кто ты"',
+  '        description "Russian question (romanized kto ty, who are you), informal; a compositional_phrase form resolving to Who are you."',
+  '      word "кто ты такой"',
+  '        description "Russian question (romanized kto ty takoy, who are you), informal masculine; a compositional_phrase form resolving to Who are you."',
+  '      word "кто ты такая"',
+  '        description "Russian question (romanized kto ty takaya, who are you), informal feminine; a compositional_phrase form resolving to Who are you."',
+  '      word "кто вы"',
+  '        description "Russian question (romanized kto vy, who are you), polite or plural; a compositional_phrase form resolving to Who are you."',
+  '      word "кто вы такой"',
+  '        description "Russian question (romanized kto vy takoy, who are you), polite masculine; a compositional_phrase form resolving to Who are you."',
+  '      word "кто вы такая"',
+  '        description "Russian question (romanized kto vy takaya, who are you), polite feminine; a compositional_phrase form resolving to Who are you."',
+  '    lexeme "hi"',
+  '      word "आप कौन हैं"',
+  '        description "Hindi question (romanized aap kaun hain, who are you); a coverage form, not consulted by the head-initial ru-to-en scan."',
+  '    lexeme "zh"',
+  '      word "你是谁"',
+  '        description "Chinese question (pinyin ni shi shei, who are you); a coverage form, not consulted by the head-initial ru-to-en scan."',
+  '  meaning "what_is_this"',
+  '    gloss "the fixed question what is this, a short Russian question that translates as a whole rather than word by word. It holds the compositional_phrase role; the compositional fallback looks the normalized title up among the phrase meanings before attempting composition and returns the English form verbatim, capitalization and terminal question mark included. Head-initial English and Russian are the consulted pair; Hindi and Chinese are carried for coverage. Defined as a concept."',
+  '    wiktionary "what"',
+  '    defined_by "concept"',
+  '    role "compositional_phrase"',
+  '    lexeme "en"',
+  '      word "What is this?"',
+  '        description "English question (What is this?); the verbatim rendering the compositional translator returns for the Russian what-is-this question, capitalization and question mark included."',
+  '    lexeme "ru"',
+  '      word "что это"',
+  '        description "Russian question (romanized chto eto, what is this); a compositional_phrase form resolving to What is this."',
+  '      word "что это такое"',
+  '        description "Russian question (romanized chto eto takoye, what is this), emphatic; a compositional_phrase form resolving to What is this."',
+  '    lexeme "hi"',
+  '      word "यह क्या है"',
+  '        description "Hindi question (romanized yah kya hai, what is this); a coverage form, not consulted by the head-initial ru-to-en scan."',
+  '    lexeme "zh"',
+  '      word "这是什么"',
+  '        description "Chinese question (pinyin zhe shi shenme, what is this); a coverage form, not consulted by the head-initial ru-to-en scan."',
+  '  meaning "how_are_you"',
+  '    gloss "the fixed greeting question how are you, a short Russian phrase that translates as a whole rather than word by word. It holds the compositional_phrase role; the compositional fallback returns the English form verbatim, lowercase and without terminal punctuation so a source that carries none keeps none. Head-initial English and Russian are the consulted pair; Hindi and Chinese are carried for coverage. Defined as a concept."',
+  '    wiktionary "how"',
+  '    defined_by "concept"',
+  '    role "compositional_phrase"',
+  '    lexeme "en"',
+  '      word "how are you"',
+  '        description "English greeting question (how are you), lowercase and unpunctuated; the verbatim rendering the compositional translator returns for the Russian greeting."',
+  '    lexeme "ru"',
+  '      word "как дела"',
+  '        description "Russian greeting question (romanized kak dela, how are you); a compositional_phrase form resolving to how are you."',
+  '    lexeme "hi"',
+  '      word "आप कैसे हैं"',
+  '        description "Hindi greeting question (romanized aap kaise hain, how are you); a coverage form, not consulted by the head-initial ru-to-en scan."',
+  '    lexeme "zh"',
+  '      word "你好吗"',
+  '        description "Chinese greeting question (pinyin ni hao ma, how are you); a coverage form, not consulted by the head-initial ru-to-en scan."',
   "meanings",
   '  meaning "link"',
   '    gloss "the root of the ontology — a connection between things. In Links Notation every meaning is itself a link, so the root link is defined by itself and every other meaning descends from it (a single merged root in the spirit of relative-meta-logic)."',
@@ -23609,6 +23805,61 @@ function firstRoleLanguage(role, normalized, priority) {
       ),
     );
     if (present) return lang;
+  }
+  return null;
+}
+
+// The first surface word `meaning` lexicalises in `language`, or null. Mirrors
+// Meaning::word_in in src/seed/meanings.rs (issue #386).
+function wordIn(meaning, language) {
+  for (const lexeme of meaning.lexemes) {
+    if (lexeme.language !== language) continue;
+    for (const word of lexeme.words) {
+      if (word) return word;
+    }
+  }
+  return null;
+}
+
+// Translate `surface` from `source` to `target` through the meaning carrying
+// `role` that lexicalises it: the first such meaning (declaration order) whose
+// `source` lexeme lists `surface`, returning its first `target` form, or null.
+// Mirrors Lexicon::role_surface_translation in src/seed/meanings.rs (issue #386).
+function roleSurfaceTranslation(role, source, target, surface) {
+  for (const meaning of meaningsWithRole(role)) {
+    const lists = meaning.lexemes.some(
+      (lexeme) => lexeme.language === source && lexeme.words.includes(surface),
+    );
+    if (lists) return wordIn(meaning, target);
+  }
+  return null;
+}
+
+// Does any meaning carrying `role` lexicalise `surface` in `language`? Mirrors
+// Lexicon::role_lists_surface in src/seed/meanings.rs (issue #386).
+function roleListsSurface(role, language, surface) {
+  return meaningsWithRole(role).some((meaning) =>
+    meaning.lexemes.some(
+      (lexeme) => lexeme.language === language && lexeme.words.includes(surface),
+    ),
+  );
+}
+
+// Like roleSurfaceTranslation but the `source` form must also carry the per-form
+// grammatical `action` tag (e.g. "genitive"). The worker keeps per-form action on
+// the flat wordForms array (no language) and raw strings on each lexeme, so a
+// form qualifies when the source lexeme lists `surface` and some wordForm has the
+// same text and `action`. Mirrors Lexicon::role_action_surface_translation in
+// src/seed/meanings.rs (issue #386).
+function roleActionSurfaceTranslation(role, action, source, target, surface) {
+  for (const meaning of meaningsWithRole(role)) {
+    const listsInSource = meaning.lexemes.some(
+      (lexeme) => lexeme.language === source && lexeme.words.includes(surface),
+    );
+    const tagged = meaning.wordForms.some(
+      (form) => form.text === surface && form.action === action,
+    );
+    if (listsInSource && tagged) return wordIn(meaning, target);
   }
   return null;
 }
