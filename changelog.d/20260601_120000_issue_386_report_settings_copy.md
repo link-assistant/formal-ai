@@ -1128,6 +1128,41 @@ bump: minor
   worker's embedded `MEANINGS_LINO` was re-synced byte-identically (31 meaning
   files, 12222 lines, verified by `experiments/issue-386-meanings-mirror.mjs`)
   (issue #386).
+- The translation formalizer no longer hardcodes its Wikidata vocabulary — the
+  last raw-word tables in the codebase. The `ITEM_LABELS` and `PROPERTY_PATTERNS`
+  arrays in `src/translation/formalization.rs` — the entity labels (apple/Q89,
+  fruit/Q3314483, sorting algorithm/Q181593, water, bread, carrot, …) and the
+  binary-relation and translation properties (instance-of/P31, subclass-of/P279,
+  part-of/P361, …) the formalizer matched against — are gone. They are now
+  projected once (cached in a `std::sync::OnceLock`, allowed here because
+  `formalization.rs` is not compiled into the wasm worker) from a new seed file
+  `data/seed/meanings-wikidata.lino`: nine `wikidata_item_*` meanings carry the
+  new `ROLE_WIKIDATA_ENTITY_ANCHOR`, seven `wikidata_property_*` meanings carry
+  `ROLE_BINARY_RELATION_PROPERTY`, and one carries `ROLE_TRANSLATION_PROPERTY`
+  (three new roles in `src/seed/roles.rs`). Each meaning records its
+  language-independent Q-id/P-id in a `wikidata` field, its canonical English
+  label as the first English word, and every multilingual surface as a described
+  word form — so the formalizer references the concept by role and
+  language-independent id, never by raw words in one language. The old hardcoded
+  `P31`→`P279` copular ambiguity (an `is a` form that can read as instance-of or
+  subclass-of) is data-driven too: the ambiguous form's `action` records the
+  alternative property's slug, which the parser follows. The seed surface set is
+  a strict superset of both former tables, so the migration loses no recognition;
+  the worker's embedded `MEANINGS_LINO` re-synced byte-identically to 32 meaning
+  files, 12625 lines (`experiments/issue-386-meanings-mirror.mjs`), and the full
+  `--lib` and `--test unit` suites stay green (issue #386).
+- Three source files that had grown past the 1000-line file-size guard
+  (`scripts/check-file-size.rs`) were split into focused modules with no
+  behaviour change. The seed loader `src/seed/meanings.rs` keeps only its parsing
+  and querying code, with its invariant tests moved to `src/seed/meanings/tests.rs`.
+  The role registry `src/seed/roles.rs` became a thin parent that re-exports five
+  topic submodules (`roles/{program,intent,language,reasoning,tooling}.rs`), so
+  every `ROLE_*` constant stays reachable at its existing
+  `crate::seed::roles::ROLE_*` path. The code-generation spec
+  `tests/unit/specification/code_generation.rs` became a directory module
+  (`code_generation/{mod,single_turn,follow_up,task_catalog}.rs`) sharing one
+  `POPULAR_LANGUAGES` table. All three pass the guard again, and the `--lib`
+  (378) and `--test unit` (760) suites are unchanged (issue #386).
 
 ### Fixed
 - The follow-up "Отмени сортировку" ("cancel the sorting") no longer returns

@@ -300,9 +300,12 @@ cancel-sort fix (§4 R-b-bug) is its first concrete, regression-free instance
 written); the same principle then drives a codebase-wide sweep that converts the
 hardcoded recognizers — calculation and currency cues, the translation and
 define-in-Links gates, unit and calendar vocabulary, the intent question/statement
-split, and the rest — into seed-defined meanings queried by semantic role, each
-conversion landed as its own commit and ledgered in `changelog.d` (R-m: hardcoded
-text now lives only in tests). The remaining sub-systems — a fully links-rooted
+split, the coding-catalog aliases, and finally the Wikidata entity/property tables
+the translation formalizer matched against (`ITEM_LABELS`/`PROPERTY_PATTERNS`, now
+projected from `data/seed/meanings-wikidata.lino` by semantic role) — into
+seed-defined meanings queried by semantic role, each conversion landed as its own
+commit and ledgered in `changelog.d` (R-m: the raw-word lookup tables this sweep
+targeted are gone from production code; hardcoded text now lives only in tests). The remaining sub-systems — a fully links-rooted
 semantic meta-language, tree-sitter CST/AST, knowledge-API caches, multiple
 virtual memory views, and adoption of `meta-expression` for translation — are an
 ongoing program rather than a one-commit change. Several need a product /
@@ -383,12 +386,17 @@ independently shippable and testable:
    verbs, noun/verb phrases, SVO, statements) over the same links store.
 6. **Knowledge-API cache discipline.** Preserve all API requests; count accesses;
    evict raw API responses first (restorable on demand) while preserving the
-   reasoning steps that formed the request and followed it.
+   reasoning steps that formed the request and followed it. **First down-payment
+   in this PR:** `data/seed/meanings-wikidata.lino` pre-caches the Wikidata
+   entity/property vocabulary the formalizer needs, each meaning rooted in the
+   external knowledge base through its language-independent Q-id/P-id, so the code
+   references the concept rather than a raw English word.
 7. **No bare-text processing in code.** Production code reasons in the
    meta-language; hardcoded text lives only in tests (R-m). **Delivered
    incrementally across this PR** by the seed-role sweep (§4 R-h): the
-   `changelog.d` ledger records each converted recognizer, the intent
-   question/statement split being the most recent.
+   `changelog.d` ledger records each converted recognizer, the translation
+   formalizer's Wikidata entity/property tables — the last raw-word lookup tables
+   in production code — being the deepest and most recent.
 
 ## 7. Verification
 
@@ -400,6 +408,18 @@ independently shippable and testable:
   recognition in every language).
 - `cargo fmt --all -- --check` and `cargo clippy --all-targets --all-features
   -- -D warnings` — clean.
+- `rust-script scripts/check-file-size.rs` — passes after the three oversized
+  files (`src/seed/meanings.rs`, `src/seed/roles.rs`, and
+  `tests/unit/specification/code_generation.rs`) were split under the 1000-line
+  guard. The seed-lexicon gates in `src/seed/meanings/tests.rs` (every meaning
+  self-describing, covering en/ru/hi/zh, every word form described, every meaning
+  reaching the `link` root) and the formalizer's seed projection
+  (`item_entries()` / `predicate_patterns()` over the Wikidata meanings) are part
+  of `cargo test -p formal-ai --lib` (378 tests).
+- `node experiments/issue-386-meanings-mirror.mjs` — the browser worker's
+  embedded `MEANINGS_LINO` is byte-identical to the 32 canonical seed files
+  (12625 lines), so the new Wikidata vocabulary and every other meaning reason the
+  same in Rust and JS.
 - `node experiments/issue-386-js-cancel-sort.mjs` — the web worker mirror yields
   the unsorted program for the same four-turn dialog (cross-runtime parity).
 - `node tests/e2e/scripts/check-i18n-catalog.mjs`,
