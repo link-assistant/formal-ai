@@ -23,6 +23,13 @@ for (const script of ["dev", "build", "build:linux", "build:mac", "build:win", "
     throw new Error(`desktop package is missing npm run ${script}`);
   }
 }
+for (const [script, command] of Object.entries(manifest.scripts || {})) {
+  if (command.includes("--config package.json")) {
+    throw new Error(
+      `desktop npm run ${script} must let electron-builder read the package.json build key`
+    );
+  }
+}
 if (!Array.isArray(manifest.build.files) || !manifest.build.files.includes("lib/**")) {
   throw new Error("desktop build must bundle lib/** (tool-router / memory-sync)");
 }

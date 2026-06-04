@@ -7,10 +7,10 @@
   "scripts": {
     "dev": "electron .",
     "prebuild": "node scripts/prepare-resources.mjs",
-    "build": "electron-builder --config package.json",
-    "build:linux": "electron-builder --linux --config package.json",
-    "build:mac": "electron-builder --mac --config package.json",
-    "build:win": "electron-builder --win --config package.json",
+    "build": "electron-builder",
+    "build:linux": "electron-builder --linux",
+    "build:mac": "electron-builder --mac",
+    "build:win": "electron-builder --win",
     "smoke": "node scripts/smoke.mjs",
     "test": "node --test scripts/tool-router.test.mjs scripts/memory-sync.test.mjs && node scripts/smoke.mjs"
   },
