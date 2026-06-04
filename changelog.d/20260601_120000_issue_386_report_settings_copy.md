@@ -968,6 +968,39 @@ bump: minor
   phrases, order included) and that `normalizeArithmeticWords`/`evaluateArithmetic`
   agree on en/ru/hi golden cases — so all three representations (the two language
   builders and the materialized table) are proven identical (issue #386).
+- The unknown-implementation-language extractor (`requested_program_language`
+  in `src/intent_formalization.rs` and the `programLanguageFromPrompt` mirror in
+  `formal_ai_worker.js`) no longer hardcodes the function words that introduce a
+  language name. Two new self-describing meanings —
+  `implementation_language_preposition` ("in"/"на") and
+  `implementation_language_noun` ("language"/"языке"), in
+  `data/seed/meanings-software-project.lino` — carry those surfaces in every
+  supported language; the positional scan reads the head-initial English/Russian
+  markers from the lexicon and returns the bare language name trailing them, so
+  an unknown target such as "write a program in Brainfuck" still resolves with no
+  literals in the parser. The catalog-driven resolution of *known* languages is
+  unchanged; worker parity with the Rust extractor is proven entry-for-entry by
+  `experiments/issue-386-worker-program-language-parity.mjs` (issue #386).
+- The translation handler's define-in-Links-Notation gate (`try_translation`
+  in `src/solver_handlers/mod.rs`) no longer keys on the literal verb `define `
+  or the format phrases ` links notation` / ` в links`. Two new meanings —
+  `definition_command` (the imperative verb) and `links_notation_format` (the
+  target-format name), in `data/seed/meanings-translation.lino` — carry those
+  surfaces in every supported language; the gate composes the head-initial
+  English verb with a quoted or backticked phrase and an English/Russian format
+  marker sourced from the lexicon, preserving the original recogniser exactly.
+  The scanned surface set is locked by the lib test
+  `define_in_links_roles_expose_the_scanned_surfaces` (`src/seed/meanings.rs`),
+  and a dispatch-level test documents that `concept_lookup` answers these prompts
+  first so the refactor changes nothing observable (issue #386).
+- The worker's `N% of M <currency>` recognizer (`formal_ai_worker.js`) no
+  longer hardcodes the `usd|eur|rub|dollars?|euros?|rubles?` alternation. A new
+  cached `percentOfExpressionRegex()` builds the trailing-currency alternation
+  from the same three currency-reference roles `currencyCodeFromWord` resolves,
+  so the recognizer captures exactly the ISO codes and the English/Cyrillic/CJK
+  /Devanagari names the resolver already understands — longest-first and
+  regex-escaped. Parity with the resolver is proven by
+  `experiments/issue-386-worker-percent-of-currency-parity.mjs` (issue #386).
 
 ### Fixed
 - The follow-up "Отмени сортировку" ("cancel the sorting") no longer returns

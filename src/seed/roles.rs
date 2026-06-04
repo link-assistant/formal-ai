@@ -152,6 +152,22 @@ pub const ROLE_SOFTWARE_DELIVERY_MODE: &str = "software_delivery_mode";
 /// python, rust, javascript, …. Walked in declaration order; the first
 /// evidenced language wins, else the default (typescript) is used.
 pub const ROLE_SOFTWARE_IMPLEMENTATION_LANGUAGE: &str = "software_implementation_language";
+/// Semantic role: the function word that marks which programming language an
+/// implementation should target — English "in", Russian "на" (and the
+/// head-final Hindi/Chinese forms, carried for completeness).
+///
+/// The unknown-language extractor reads the language name that *follows* this
+/// marker, so only the head-initial English/Russian surfaces are consulted for
+/// extraction. Known languages resolve through the catalog first; this marker
+/// is the fallback that names a language absent from the catalog ("in
+/// Brainfuck").
+pub const ROLE_IMPLEMENTATION_LANGUAGE_PREPOSITION: &str = "implementation_language_preposition";
+/// Semantic role: the head noun "language" ("language", Russian "языке", …).
+///
+/// It may sit between [`ROLE_IMPLEMENTATION_LANGUAGE_PREPOSITION`] and the
+/// language name ("in the language Brainfuck"). When it follows the marker the
+/// extractor skips it to read the name after it.
+pub const ROLE_IMPLEMENTATION_LANGUAGE_NOUN: &str = "implementation_language_noun";
 /// Semantic role: a tabletop/RPG game domain.
 ///
 /// A D&D unit, token, wargame piece, Owlbear scene, …. A request is a
@@ -564,6 +580,25 @@ pub const ROLE_TRANSLATION_OBJECT_MARKER: &str = "translation_object_marker";
 /// head-initial/head-final split is the linguistic typology the `translate`
 /// meaning's gloss documents.
 pub const ROLE_TRANSLATION_ACTION: &str = "translation_action";
+/// Semantic role: the imperative verb that asks for a phrase to be defined.
+///
+/// The `try_translation` request-gate reads this instead of a hardcoded verb to
+/// recognise a define-in-Links-Notation request. Only the English surface is
+/// scanned, as a clause-initial prefix with a trailing space (so `defined` and
+/// `definition` never trigger it); the Russian, Hindi and Chinese imperatives are
+/// carried for coverage but not consulted, mirroring the original recogniser which
+/// gated on the English verb alone. Carried by `definition_command` in
+/// `data/seed/meanings-translation.lino`.
+pub const ROLE_DEFINITION_COMMAND: &str = "definition_command";
+/// Semantic role: a phrase naming Links Notation as a render-target format.
+///
+/// The `try_translation` request-gate reads this instead of hardcoded format
+/// strings: the English `links notation` and the Russian code-switched `в links`
+/// are scanned as space-prefixed substrings, exactly the original recogniser's two
+/// literals; the Hindi and Chinese renderings are carried for coverage but not
+/// consulted. Carried by `links_notation_format` in
+/// `data/seed/meanings-translation.lino`.
+pub const ROLE_LINKS_NOTATION_FORMAT: &str = "links_notation_format";
 /// Semantic role: the single root of the merged ontology — the `link` meaning.
 ///
 /// Every other meaning descends from it through `defined_by` edges, so the whole

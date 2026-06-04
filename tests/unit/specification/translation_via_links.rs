@@ -757,3 +757,37 @@ fn untranslatable_concepts_are_flagged() {
         "translation gaps must be marked explicitly, not papered over"
     );
 }
+
+#[test]
+fn issue_386_define_in_links_notation_resolves_to_the_links_notation_concept() {
+    // Issue #386: the `try_translation` request-gate recognises a
+    // "define <phrase> in links notation" command from *meaning* — the
+    // `definition_command` verb and the `links_notation_format` markers seeded in
+    // data/seed/meanings-translation.lino — rather than the hardcoded literals it
+    // used before. The refactor is behaviour-preserving: across the full dispatch
+    // pipeline the `concept_lookup` handler answers these prompts first (the phrase
+    // "links notation" names a known concept), so the define-gate's routing never
+    // changes the observable answer. This test locks that public contract so a
+    // future dispatch-order change can't silently alter it; the seed→code wiring of
+    // the gate itself is locked by the lib test
+    // `define_in_links_roles_expose_the_scanned_surfaces` in src/seed/meanings.rs.
+    let cases: &[&str] = &[
+        "define `apple` in links notation",
+        "define \"apple\" in links notation",
+        "define `apple` в links notation",
+        "define apple in links notation",
+    ];
+    for prompt in cases {
+        let response = answer(prompt);
+        assert_eq!(
+            response.intent, "concept_lookup",
+            "define-in-links prompt should resolve to the Links Notation concept for {prompt:?}, got {}: {}",
+            response.intent, response.answer,
+        );
+        assert!(
+            response.answer.starts_with("Links Notation (data-format):"),
+            "expected the Links Notation concept definition for {prompt:?}, got: {}",
+            response.answer,
+        );
+    }
+}

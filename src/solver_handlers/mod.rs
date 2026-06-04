@@ -630,11 +630,26 @@ pub fn try_translation(
             .words_for_role_in_languages(crate::seed::ROLE_TRANSLATION_ACTION, &["hi", "zh"])
             .iter()
             .any(|stem| normalized.contains(stem.as_str()));
-    let is_translation_request = head_initial_command
-        || head_final_command
-        || (normalized.starts_with("define ")
+    // Issue #386: the define-in-Links-Notation request is recognised by *meaning*
+    // too, not by literal verbs and format strings. The imperative verb lives once
+    // as the `definition_command` meaning and the target-format phrases as
+    // `links_notation_format`, both in data/seed/meanings-translation.lino. Exactly
+    // as the original recogniser, only the English verb is scanned (a clause-initial
+    // prefix with a trailing space, so `defined`/`definition` never trigger it) and
+    // the English and Russian format markers are scanned as space-prefixed
+    // substrings; the Hindi and Chinese surfaces are carried for coverage only.
+    let is_define_in_links = || {
+        lexicon
+            .words_for_role_in_languages(crate::seed::ROLE_DEFINITION_COMMAND, &["en"])
+            .iter()
+            .any(|verb| normalized.starts_with(format!("{verb} ").as_str()))
             && (extract_quoted_phrase(prompt).is_some() || extract_backticked(prompt).is_some())
-            && (normalized.contains(" links notation") || normalized.contains(" в links")));
+            && lexicon
+                .words_for_role_in_languages(crate::seed::ROLE_LINKS_NOTATION_FORMAT, &["en", "ru"])
+                .iter()
+                .any(|marker| normalized.contains(format!(" {marker}").as_str()))
+    };
+    let is_translation_request = head_initial_command || head_final_command || is_define_in_links();
     if !is_translation_request {
         return None;
     }

@@ -622,15 +622,41 @@ fn requested_program_language(normalized: &str) -> Option<String> {
     if let Some(language) = program_language_by_alias(normalized) {
         return Some(String::from(language.slug));
     }
+    // Issue #386: the function words that introduce an *unknown* implementation
+    // language ("write a program in <name>", "на языке <name>") are seed data,
+    // not literals baked into the parser. Source the head-initial English/Russian
+    // surfaces of the target-preposition and "language" noun roles from the
+    // lexicon so this positional extractor reasons over the ontology instead of a
+    // hardcoded `matches!` list. The catalog-driven `program_language_by_alias`
+    // above already resolves every *known* language across all four supported
+    // languages; this fallback only reads the bare name trailing the marker, so
+    // it consults the two head-initial languages whose name follows the marker
+    // (the head-final Hindi/Chinese forms are carried in the seed for coverage
+    // but place the name before the marker, which this scan does not chase).
+    let lexicon = crate::seed::lexicon();
+    let preposition_surfaces = lexicon.words_for_role_in_languages(
+        crate::seed::ROLE_IMPLEMENTATION_LANGUAGE_PREPOSITION,
+        &["en", "ru"],
+    );
+    let language_noun_surfaces = lexicon.words_for_role_in_languages(
+        crate::seed::ROLE_IMPLEMENTATION_LANGUAGE_NOUN,
+        &["en", "ru"],
+    );
     let tokens = normalized.split_whitespace().collect::<Vec<_>>();
     for (index, token) in tokens.iter().enumerate() {
-        if !matches!(*token, "in" | "на") {
+        if !preposition_surfaces
+            .iter()
+            .any(|surface| surface.as_str() == *token)
+        {
             continue;
         }
         let Some(next) = tokens.get(index + 1) else {
             continue;
         };
-        if matches!(*next, "language" | "языке") {
+        if language_noun_surfaces
+            .iter()
+            .any(|surface| surface.as_str() == *next)
+        {
             if let Some(after_language_word) = tokens.get(index + 2) {
                 return Some((*after_language_word).to_owned());
             }

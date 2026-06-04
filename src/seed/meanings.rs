@@ -634,6 +634,8 @@ pub fn lexicon() -> &'static Lexicon {
 #[cfg(test)]
 mod tests {
     use super::super::roles::{
+        ROLE_DEFINITION_COMMAND, ROLE_IMPLEMENTATION_LANGUAGE_NOUN,
+        ROLE_IMPLEMENTATION_LANGUAGE_PREPOSITION, ROLE_LINKS_NOTATION_FORMAT,
         ROLE_MECHANISM_INQUIRY, ROLE_PROCEDURAL_REQUEST, ROLE_PROGRAM_ARTIFACT,
         ROLE_PROGRAM_MODIFICATION, ROLE_TRANSLATION_ACTION,
     };
@@ -949,6 +951,103 @@ mod tests {
         assert!(head_final.iter().any(|w| w == "翻译"));
         assert!(head_final.iter().any(|w| w == "अनुवाद"));
         assert!(!head_final.iter().any(|w| w == "translate"));
+    }
+
+    #[test]
+    fn implementation_language_marker_roles_expose_head_initial_surfaces() {
+        // Issue #386: the unknown-implementation-language extractor
+        // (`requested_program_language` in intent_formalization.rs and the JS
+        // worker's `programLanguageFromPrompt`) reads the language name that
+        // *follows* the target marker, so it consults only the head-initial
+        // English/Russian surfaces. This locks that seed->code contract: dropping
+        // "in"/"на" or "language"/"языке" from the seed would silently break the
+        // extractor, so assert the surfaces the code depends on are present and
+        // that the head-final Hindi/Chinese forms (carried for coverage) are not
+        // mixed into the head-initial partition the extractor reads.
+        let lex = lexicon();
+        let prepositions = lex
+            .words_for_role_in_languages(ROLE_IMPLEMENTATION_LANGUAGE_PREPOSITION, &["en", "ru"]);
+        assert!(
+            prepositions.iter().any(|w| w == "in"),
+            "English target preposition surface missing, got: {prepositions:?}"
+        );
+        assert!(
+            prepositions.iter().any(|w| w == "на"),
+            "Russian target preposition surface missing, got: {prepositions:?}"
+        );
+        let nouns =
+            lex.words_for_role_in_languages(ROLE_IMPLEMENTATION_LANGUAGE_NOUN, &["en", "ru"]);
+        assert!(
+            nouns.iter().any(|w| w == "language"),
+            "English language-noun surface missing, got: {nouns:?}"
+        );
+        assert!(
+            nouns.iter().any(|w| w == "языке"),
+            "Russian language-noun surface missing, got: {nouns:?}"
+        );
+        // Both new marker meanings reduce to the single `link` ontology root like
+        // every other meaning, so the data stays self-describing end to end.
+        for role in [
+            ROLE_IMPLEMENTATION_LANGUAGE_PREPOSITION,
+            ROLE_IMPLEMENTATION_LANGUAGE_NOUN,
+        ] {
+            let mut count = 0;
+            for meaning in lex.meanings_with_role(role) {
+                count += 1;
+                assert!(
+                    lex.reaches_root(&meaning.slug),
+                    "meaning {} (role {role}) must reduce to the link root",
+                    meaning.slug
+                );
+            }
+            assert_eq!(count, 1, "exactly one meaning should carry role {role}");
+        }
+    }
+
+    #[test]
+    fn define_in_links_roles_expose_the_scanned_surfaces() {
+        // Issue #386: the `try_translation` request-gate recognises a
+        // define-in-Links-Notation request from meaning, not literals. It scans
+        // only the English `definition_command` verb (a clause-initial prefix) and
+        // the English/Russian `links_notation_format` markers (space-prefixed
+        // substrings). This locks that seed->code contract: dropping any of those
+        // surfaces would silently break the gate. The Hindi/Chinese forms are
+        // carried for coverage and intentionally excluded from the scanned slice.
+        let lex = lexicon();
+        // The English `definition_command` slice must be *exactly* {"define"} and the
+        // English/Russian `links_notation_format` slice *exactly* {"links notation",
+        // "в links"} — the three literals the original gate scanned. Asserting the
+        // whole set (not just membership) locks behaviour preservation: silently
+        // adding a synonym would broaden the gate, and dropping one would break it.
+        let mut verbs = lex.words_for_role_in_languages(ROLE_DEFINITION_COMMAND, &["en"]);
+        verbs.sort();
+        assert_eq!(
+            verbs,
+            vec!["define".to_owned()],
+            "English define-command surface set drifted from the original gate"
+        );
+        let mut markers =
+            lex.words_for_role_in_languages(ROLE_LINKS_NOTATION_FORMAT, &["en", "ru"]);
+        markers.sort();
+        assert_eq!(
+            markers,
+            vec!["links notation".to_owned(), "в links".to_owned()],
+            "English/Russian links-notation marker set drifted from the original gate"
+        );
+        // Both new meanings reduce to the single `link` ontology root like every
+        // other meaning, so the data stays self-describing end to end.
+        for role in [ROLE_DEFINITION_COMMAND, ROLE_LINKS_NOTATION_FORMAT] {
+            let mut count = 0;
+            for meaning in lex.meanings_with_role(role) {
+                count += 1;
+                assert!(
+                    lex.reaches_root(&meaning.slug),
+                    "meaning {} (role {role}) must reduce to the link root",
+                    meaning.slug
+                );
+            }
+            assert_eq!(count, 1, "exactly one meaning should carry role {role}");
+        }
     }
 
     #[test]

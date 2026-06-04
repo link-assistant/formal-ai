@@ -1637,12 +1637,48 @@ function defaultCurrencyRate(from, to) {
   return null;
 }
 
+// Issue #386: the trailing currency word in an "N% of M <currency>" expression
+// is seed data, not a hardcoded English list. Build the alternation from the
+// same three currency reference roles currencyCodeFromWord resolves, so the
+// recognizer captures exactly what the resolver understands — the ISO codes,
+// the English singular/plural forms, and the Cyrillic/CJK/Devanagari names all
+// come straight from the seed instead of the old usd|eur|rub|dollars?… literal.
+// Longest-first under the trailing `$` anchor so "dollars" is preferred over
+// "dollar"; each surface is regex-escaped. Cached because the seed is immutable
+// for the worker's lifetime (matching the lazy, post-init access pattern
+// currencyCodeFromWord uses, which keeps the ROLE_* consts out of the TDZ).
+let percentOfExpressionRegexCache = null;
+function percentOfExpressionRegex() {
+  if (percentOfExpressionRegexCache) return percentOfExpressionRegexCache;
+  const surfaces = [];
+  const seen = new Set();
+  for (const role of [
+    ROLE_CURRENCY_USD_REFERENCE,
+    ROLE_CURRENCY_EUR_REFERENCE,
+    ROLE_CURRENCY_RUB_REFERENCE,
+  ]) {
+    for (const word of wordsForRole(role)) {
+      const surface = String(word || "").toLowerCase();
+      if (!surface || seen.has(surface)) continue;
+      seen.add(surface);
+      surfaces.push(surface);
+    }
+  }
+  surfaces.sort((a, b) => b.length - a.length || (a < b ? -1 : a > b ? 1 : 0));
+  const alternation = surfaces
+    .map((surface) => surface.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
+    .join("|");
+  percentOfExpressionRegexCache = new RegExp(
+    `^([+-]?\\d+(?:\\.\\d+)?)\\s*%\\s+of\\s+([$€¥₹₽])?\\s*([+-]?\\d+(?:\\.\\d+)?)(?:\\s*(${alternation}))?$`,
+    "i",
+  );
+  return percentOfExpressionRegexCache;
+}
+
 function evaluatePercentOfExpression(expression) {
   const match = String(expression || "")
     .trim()
-    .match(
-      /^([+-]?\d+(?:\.\d+)?)\s*%\s+of\s+([$€¥₹₽])?\s*([+-]?\d+(?:\.\d+)?)(?:\s*(usd|eur|rub|dollars?|euros?|rubles?))?$/i,
-    );
+    .match(percentOfExpressionRegex());
   if (!match) return null;
   const percent = Number(match[1]);
   const amount = Number(match[3]);
@@ -11624,14 +11660,36 @@ function programTaskFromPrompt(normalized) {
   )?.[0] || null;
 }
 
+// Issue #386: the function words that introduce an *unknown* implementation
+// language ("write a program in <name>", "на языке <name>") are seed data, not
+// literals baked into the worker. Mirror src/intent_formalization.rs by sourcing
+// the head-initial English/Russian surfaces of the target-preposition and
+// "language" noun roles from the lexicon. The WRITE_PROGRAM_LANGUAGES catalog
+// scan below already resolves every *known* language across all four supported
+// languages; this fallback only reads the bare name trailing the marker, so it
+// consults the two head-initial languages whose name follows the marker (the
+// head-final Hindi/Chinese surfaces are carried in the seed for coverage but
+// place the name before the marker, which this scan does not chase).
+const ROLE_IMPLEMENTATION_LANGUAGE_PREPOSITION =
+  "implementation_language_preposition";
+const ROLE_IMPLEMENTATION_LANGUAGE_NOUN = "implementation_language_noun";
+
 function programLanguageFromPrompt(normalized) {
   const tokens = normalized.split(/\s+/).filter(Boolean);
   for (const [slug, language] of Object.entries(WRITE_PROGRAM_LANGUAGES)) {
     if (language.aliases.some((alias) => tokens.includes(alias))) return slug;
   }
+  const prepositionSurfaces = wordsForRoleInLanguages(
+    ROLE_IMPLEMENTATION_LANGUAGE_PREPOSITION,
+    ["en", "ru"],
+  );
+  const languageNounSurfaces = wordsForRoleInLanguages(
+    ROLE_IMPLEMENTATION_LANGUAGE_NOUN,
+    ["en", "ru"],
+  );
   for (let index = 0; index < tokens.length - 1; index += 1) {
-    if (tokens[index] !== "in" && tokens[index] !== "на") continue;
-    if (tokens[index + 1] === "language" || tokens[index + 1] === "языке") {
+    if (!prepositionSurfaces.includes(tokens[index])) continue;
+    if (languageNounSurfaces.includes(tokens[index + 1])) {
       return tokens[index + 2] || null;
     }
     return tokens[index + 1];
@@ -16030,6 +16088,40 @@ const MEANINGS_LINO = [
   '    lexeme "zh"',
   '      word "javascript"',
   '        description "The Latin-script name JavaScript used in Chinese text for the JavaScript language; the Chinese surface for the JavaScript target."',
+  '  meaning "implementation_language_preposition"',
+  "    gloss \"the function word that marks which programming language an implementation should target — 'write a program in Rust', 'на Python'; the unknown-language extractor reads the language name that follows it. Head-initial English/Russian place the name after the marker (the only direction the positional extractor consults); the head-final Hindi/Chinese forms are described for completeness.\"",
+  '    wiktionary "in"',
+  '    defined_by "software_language"',
+  '    role "implementation_language_preposition"',
+  '    lexeme "en"',
+  '      word "in"',
+  "        description \"English preposition marking the target programming language, as in 'write it in <language>'; the language name follows it.\"",
+  '    lexeme "ru"',
+  '      word "на"',
+  "        description \"Russian preposition (romanized na) marking the target programming language, as in 'на <language>'; the language name follows it.\"",
+  '    lexeme "hi"',
+  '      word "में"',
+  "        description \"Hindi postposition (romanized mein) marking the target programming language; head-final Hindi places the language name before it ('<language> में').\"",
+  '    lexeme "zh"',
+  '      word "用"',
+  "        description \"Chinese coverb (pinyin yong, 'using') marking the target programming language, as in '用 <language> 写'; the language name follows it.\"",
+  '  meaning "implementation_language_noun"',
+  "    gloss \"the head noun 'language' that may sit between the target preposition and the language name — 'in the language Brainfuck', 'на языке Brainfuck'; when present the unknown-language extractor skips it to read the name that follows.\"",
+  '    wiktionary "language"',
+  '    defined_by "software_language"',
+  '    role "implementation_language_noun"',
+  '    lexeme "en"',
+  '      word "language"',
+  '        description "English noun naming the programming-language slot; when it follows the target preposition the language name comes after it."',
+  '    lexeme "ru"',
+  '      word "языке"',
+  '        description "Russian noun (romanized yazyke, the prepositional case of yazyk) naming the programming-language slot; the language name follows it."',
+  '    lexeme "hi"',
+  '      word "भाषा"',
+  '        description "Hindi noun (romanized bhasha) naming the programming-language slot; the language name accompanies it."',
+  '    lexeme "zh"',
+  '      word "语言"',
+  '        description "Chinese noun (pinyin yuyan) naming the programming-language slot; the language name accompanies it."',
   '  meaning "tabletop_game_tracker"',
   "    gloss \"a request to track a tabletop/RPG game piece's combat state — the genus pairing a game domain with a combat mechanic; only when both appear is it a game-unit tracker (which forces state_tracking subtasks and a damage-mitigation surface)\"",
   '    wiktionary "tabletop game"',
@@ -20395,6 +20487,40 @@ const MEANINGS_LINO = [
   '        description "Chinese disposal particle (pinyin ba) fronting the object; stripped from the front so the surface is the text after it."',
   '      word "将"',
   '        description "Chinese disposal particle (pinyin jiang, formal variant of 把) fronting the object; stripped from the front so the surface is the text after it."',
+  '  meaning "definition_command"',
+  '    gloss "an imperative verb asking the assistant to define a phrase — to render its meaning, here as a Links Notation definition. The definition_command role marks the clause-initial command; the translation handler recognises a define request by composing this verb with a quoted or backticked phrase and a links_notation_format marker, then renders the phrase as its formal definition. Only the English surface is scanned, matched as a clause-initial prefix with a trailing space exactly as the original recogniser required; the Russian, Hindi and Chinese imperatives are recorded for completeness so the concept is lexicalised in every supported language, mirroring the original handler which gated on the English verb alone. Defined as an action."',
+  '    wiktionary "define"',
+  '    defined_by "action"',
+  '    role "definition_command"',
+  '    lexeme "en"',
+  '      word "define"',
+  '        description "English imperative verb to define; the only scanned definition_command surface, matched as a clause-initial prefix with a trailing space so that defined and definition do not trigger it."',
+  '    lexeme "ru"',
+  '      word "определи"',
+  '        description "Russian imperative verb (romanized opredeli, of определить, to define); a completeness form for the definition_command concept, recorded but not scanned because the original recogniser gated on the English verb alone."',
+  '    lexeme "hi"',
+  '      word "परिभाषित करें"',
+  '        description "Hindi imperative phrase (romanized paribhashit karen, define); a completeness form for the definition_command concept, recorded but not scanned."',
+  '    lexeme "zh"',
+  '      word "定义"',
+  '        description "Chinese verb (pinyin dingyi, to define); a completeness form for the definition_command concept, recorded but not scanned."',
+  '  meaning "links_notation_format"',
+  "    gloss \"a phrase naming Links Notation — the indentation-based serialization format of the Deep Theory project — as the target a define request renders into. The links_notation_format role carries these surfaces; the translation handler reconstructs each as a space-prefixed token and treats a prompt as a define-in-Links request when one appears alongside a definition_command verb and a quoted or backticked phrase. The English phrase links notation and the Russian code-switched form are scanned, exactly the original recogniser's two substrings; the Hindi and Chinese renderings are recorded for completeness so the concept is lexicalised in every supported language. Defined as a concept.\"",
+  '    wiktionary "notation"',
+  '    defined_by "concept"',
+  '    role "links_notation_format"',
+  '    lexeme "en"',
+  '      word "links notation"',
+  '        description "English name of the Links Notation format; a links_notation_format surface scanned as a space-prefixed substring so it matches in links notation and to links notation without firing mid-word."',
+  '    lexeme "ru"',
+  '      word "в links"',
+  '        description "Russian code-switched phrase (romanized v links, in links) naming Links Notation as the target; a links_notation_format surface scanned as a space-prefixed substring that pairs the Russian preposition v with the format proper noun, exactly as the original recogniser did."',
+  '    lexeme "hi"',
+  '      word "लिंक्स नोटेशन"',
+  '        description "Hindi transliteration (romanized links noteshan) of Links Notation; a completeness form for the links_notation_format concept, recorded but not scanned."',
+  '    lexeme "zh"',
+  '      word "链接表示法"',
+  '        description "Chinese rendering (pinyin lianjie biaoshifa) of Links Notation; a completeness form for the links_notation_format concept, recorded but not scanned."',
   "meanings",
   '  meaning "link"',
   '    gloss "the root of the ontology — a connection between things. In Links Notation every meaning is itself a link, so the root link is defined by itself and every other meaning descends from it (a single merged root in the spirit of relative-meta-logic)."',

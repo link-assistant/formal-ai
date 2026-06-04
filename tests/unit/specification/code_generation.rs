@@ -446,6 +446,40 @@ fn russian_program_request_with_unknown_task_is_not_unknown() {
     );
 }
 
+#[test]
+fn unknown_language_after_the_language_noun_is_extracted_in_both_head_initial_languages() {
+    // Issue #386: the unknown-implementation-language fallback skips the head
+    // noun "language" ("in language <name>") / "языке" ("на языке <name>") to
+    // read the language name after it. Both the target preposition and the noun
+    // are seed data (roles implementation_language_preposition /
+    // implementation_language_noun, sourced via words_for_role_in_languages),
+    // not literals baked into the parser. This exercises the noun-skip path in
+    // both head-initial languages so the seed-driven extractor stays covered.
+    let english = answer("hello world in language elvish");
+    assert_eq!(
+        english.intent, "write_program_unsupported",
+        "English noun-skip request should be an unsupported write_program, got: {}",
+        english.intent
+    );
+    assert!(
+        english.answer.contains("`elvish`"),
+        "English noun-skip extraction should name the elvish parameter, got: {}",
+        english.answer
+    );
+
+    let russian = answer("хелло ворлд на языке elvish");
+    assert_eq!(
+        russian.intent, "write_program_unsupported",
+        "Russian noun-skip request should be an unsupported write_program, got: {}",
+        russian.intent
+    );
+    assert!(
+        russian.answer.contains("`elvish`"),
+        "Russian noun-skip extraction should name the elvish parameter, got: {}",
+        russian.answer
+    );
+}
+
 // ---------------------------------------------------------------------------
 // Issue #324: a follow-up modification request must reuse the conversation
 // context. The reporter first asked (in Russian) for a Rust program that lists
