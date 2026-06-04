@@ -1017,6 +1017,46 @@ bump: minor
   `fronted_interrogative_opener_classifies_prompt_as_question`
   (`tests/unit/specification/intent_formalization.rs`); the worker
   `MEANINGS_LINO` mirror was re-synced byte-identical (issue #386).
+- The ru→en compositional translator (`src/translation/pipeline.rs` and its
+  `formal_ai_worker.js` mirror) is data-driven too. Its lexicon was four
+  hardcoded dictionaries — phrase fallbacks, per-word lemma fallbacks,
+  genitive-governing relation heads, and the single genitive-tagged complement
+  (`RU_EN_PHRASE_FALLBACKS` / `RU_EN_WORD_FALLBACKS` /
+  `RU_EN_GENITIVE_RELATION_HEADS` / `RU_EN_GENITIVE_NOUN_FALLBACKS` on the worker
+  side). Those surfaces now live as ten self-describing meanings in
+  `data/seed/meanings-translation.lino`: seven compositional lemmas (apple, good,
+  find, synonym, example, agreement, conjunction *or*) and three fixed phrases
+  (who-are-you, what-is-this, how-are-you), each `defined_by` its natural genus
+  (`entity` / `property` / `action` / `concept` / `relation`) so every one roots
+  to `link`, each lexicalised in every supported language with a per-form
+  description. Three new roles in `src/seed/roles.rs` name the concepts the
+  translator reasons over — `compositional_lemma` (a single word it maps
+  word-for-word), `compositional_phrase` (a fixed multi-word phrase it maps
+  whole), and `compositional_genitive_head` (a noun that can govern a Russian
+  genitive-of complement, carried by `synonym` and `example`); agreement's
+  genitive-singular form `согласования` carries `action "genitive"` so the
+  genitive-of construction is recognised from the form's grammatical tag rather
+  than by naming the word in code. Three new `Lexicon` query methods in
+  `src/seed/meanings.rs` — `role_surface_translation` (translate a source surface
+  to the target language through the role's meaning that lists it),
+  `role_lists_surface` (a structural test by role), and
+  `role_action_surface_translation` (the same translation but the source form must
+  also carry a given grammatical `action` tag) — back the four pipeline functions
+  (`russian_phrase_to_english`, `russian_word_to_english`,
+  `russian_genitive_relation_head`, `russian_genitive_noun`), which now delegate to
+  `crate::seed::lexicon()` instead of matching hardcoded arms; the word-sequence
+  walker and the capitalizer are unchanged. The worker drops the four dictionaries
+  for the same three role consts and four mirror helpers (`wordIn`,
+  `roleSurfaceTranslation`, `roleListsSurface`, `roleActionSurfaceTranslation`),
+  and its embedded `MEANINGS_LINO` was re-synced byte-identically (11323 lines).
+  The conversion is behaviour-neutral on the pinned specs — "доброе яблоко" →
+  "Good apple", "что это такое?" → "What is this?", and issue #230's "Найти
+  синонимы или примеры согласования" → "Find synonyms or examples of agreement"
+  all stay green in both engines — and converges the worker with the Rust pipeline
+  on an explicit "как дела" → "how are you" translation request (a bare greeting
+  still routes to the greeting detector first, unchanged). Because the surfaces now
+  exist in every language, the compositional lemmas and phrases are complete in
+  Hindi and Chinese as well as English and Russian (issue #386).
 
 ### Fixed
 - The follow-up "Отмени сортировку" ("cancel the sorting") no longer returns
