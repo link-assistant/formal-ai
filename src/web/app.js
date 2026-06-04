@@ -4826,6 +4826,7 @@ function App() {
   const [copiedConversationId, setCopiedConversationId] = useState("");
   const currentConversationRef = useRef(currentConversationId);
   const conversationTitlesRef = useRef(new Map());
+  const conversationEventsRef = useRef([]);
 
   useEffect(() => {
     if (typeof document === "undefined") return;
@@ -5079,6 +5080,7 @@ function App() {
           ? showDeletedOverride
           : showDeletedConversationsRef.current;
       const events = await window.FormalAiMemory.listEvents();
+      conversationEventsRef.current = events;
       const list = groupConversations(events, {
         showDeleted: shouldShowDeleted,
       });
@@ -5090,6 +5092,7 @@ function App() {
       setConversations(list);
       return events;
     } catch (_error) {
+      conversationEventsRef.current = [];
       return [];
     }
   }, []);
@@ -5475,12 +5478,7 @@ function App() {
   const handleCopyConversation = useCallback(
     async (entry) => {
       if (!entry || !entry.id) return;
-      let events = [];
-      try {
-        events = await window.FormalAiMemory.listEvents();
-      } catch (_error) {
-        events = [];
-      }
+      const events = conversationEventsRef.current;
       const markdown = conversationToMarkdown(events, entry.id, {
         title: entry.title || "",
         userLabel: t("message.author.user"),
@@ -5492,6 +5490,7 @@ function App() {
       const ok = await copyTextToClipboard(markdown);
       if (ok) {
         setCopiedConversationId(entry.id);
+        refreshConversations();
         setTimeout(() => {
           setCopiedConversationId((current) =>
             current === entry.id ? "" : current,
@@ -5499,7 +5498,7 @@ function App() {
         }, 1600);
       }
     },
-    [t],
+    [refreshConversations, t],
   );
 
   useEffect(() => {
