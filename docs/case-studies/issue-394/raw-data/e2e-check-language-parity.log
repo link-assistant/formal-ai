@@ -1,0 +1,5 @@
+
+> formal-ai-e2e@1.0.0 check:language-parity
+> node scripts/check-language-change-parity.mjs
+
+Language change parity OK against origin/main for required locales en, ru, hi, zh.

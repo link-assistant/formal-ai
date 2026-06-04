@@ -74,7 +74,7 @@ fn test_status_matrix_is_classified_across_languages() {
             assert!(
                 !response
                     .answer
-                    .contains("cannot answer that from local Links Notation rules"),
+                    .contains("cannot answer that from local links rules"),
                 "prompt {prompt:?} should not return the unknown fallback: {}",
                 response.answer,
             );

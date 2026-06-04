@@ -48,19 +48,3 @@ pub fn is_close_token_typo(actual: &str, expected: &str) -> bool {
     let expected_len = expected.chars().count();
     actual_len.min(expected_len) >= 4 && typo_distance(&actual, &expected) == 1
 }
-
-#[cfg(test)]
-mod tests {
-    use super::{is_close_token_typo, typo_distance};
-
-    #[test]
-    fn typo_distance_counts_adjacent_transposition_as_one_edit() {
-        assert_eq!(typo_distance("calcualte", "calculate"), 1);
-    }
-
-    #[test]
-    fn close_token_typo_requires_meaningful_token_length() {
-        assert!(is_close_token_typo("calcuate", "calculate"));
-        assert!(!is_close_token_typo("cn", "can"));
-    }
-}

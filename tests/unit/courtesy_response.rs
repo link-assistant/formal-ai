@@ -52,7 +52,7 @@ fn courteous_follow_up_is_recognized() {
     assert!(
         !response
             .answer
-            .contains("cannot answer that from local Links Notation rules"),
+            .contains("cannot answer that from local links rules"),
         "courteous follow-up should not return the unknown fallback: {}",
         response.answer
     );

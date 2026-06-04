@@ -40,7 +40,7 @@ fn proof_requests_return_proof_response() {
         assert!(
             !response
                 .answer
-                .contains("cannot answer that from local Links Notation rules"),
+                .contains("cannot answer that from local links rules"),
             "prompt {prompt:?} should not return the unknown-intent error"
         );
         assert!(

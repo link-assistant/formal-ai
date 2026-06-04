@@ -629,6 +629,20 @@ fn russian_capabilities_answer_is_in_russian() {
         "Russian capabilities answer should contain Cyrillic text, got: {}",
         response.answer,
     );
+    assert!(
+        response.answer.contains("Покажи правила поведения")
+            && response.answer.contains("Покажи правило unknown")
+            && response.answer.contains("Когда я скажу"),
+        "Russian capabilities answer should show rule commands in Russian, got: {}",
+        response.answer,
+    );
+    assert!(
+        !response.answer.contains("List behavior rules")
+            && !response.answer.contains("Show behavior rule unknown")
+            && !response.answer.contains("When I say"),
+        "Russian capabilities answer should not switch to English rule commands, got: {}",
+        response.answer,
+    );
 }
 
 #[test]
@@ -768,6 +782,44 @@ fn russian_unknown_reply_is_in_russian() {
         response.answer.contains("символьного правила")
             || response.answer.contains("Links Notation"),
         "Russian unknown reply should be in Russian or reference Links Notation, got: {}",
+        response.answer
+    );
+}
+
+#[test]
+fn russian_unknown_reply_uses_russian_rule_configuration_examples() {
+    let response = answer(
+        "посмотри понял в чем смысл? если понял, то я тебе скину для теста \
+         следующим сообщением тестовую картинку",
+    );
+    assert_eq!(response.intent, "unknown");
+    assert!(
+        response.answer.contains("Покажи правила поведения"),
+        "Russian unknown reply should explain rule listing in Russian, got: {}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains("Покажи правило unknown"),
+        "Russian unknown reply should explain rule inspection in Russian, got: {}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains("Когда я скажу"),
+        "Russian unknown reply should explain dialog-local teaching in Russian, got: {}",
+        response.answer
+    );
+    assert!(
+        !response.answer.contains("List behavior rules")
+            && !response.answer.contains("Show behavior rule unknown")
+            && !response.answer.contains("When I say"),
+        "Russian unknown reply should not switch to English command examples, got: {}",
+        response.answer
+    );
+    assert!(
+        !response
+            .answer
+            .contains("локальным правилам Links Notation"),
+        "Unknown fallback should describe links rules rather than Links Notation rules, got: {}",
         response.answer
     );
 }

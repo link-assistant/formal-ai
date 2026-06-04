@@ -5,7 +5,7 @@ const { test, expect } = require('@playwright/test');
 // localized search-result templates. Each test mocks the three providers so
 // the assertions are hermetic.
 
-const UNKNOWN_ANSWER_MARKER = 'cannot answer that from local Links Notation rules';
+const UNKNOWN_ANSWER_MARKER = 'cannot answer that from local links rules';
 
 async function disableGreetingVariations(page) {
   await page.addInitScript(() => {
