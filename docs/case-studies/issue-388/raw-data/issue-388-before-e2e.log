@@ -1,0 +1,126 @@
+
+> formal-ai-e2e@1.0.0 test:local
+> playwright test --config=playwright.local.config.js --grep Issue #388
+
+[2m[WebServer] [22m(node:558001) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 1 worker
+
+  ✘  1 [chromium] › tests/issue-388.spec.js:117:3 › Issue #388 - adaptive header actions › desktop header switches to icon-only controls before the reported width clips (5.5s)
+  ✘  2 [chromium] › tests/issue-388.spec.js:117:3 › Issue #388 - adaptive header actions › desktop header switches to icon-only controls before the reported width clips (retry #1) (5.5s)
+  ✘  3 [chromium] › tests/issue-388.spec.js:183:3 › Issue #388 - dark theme surface parity › diagnostics, settings, and sidebar controls avoid light-only surfaces in dark mode (721ms)
+  ✘  4 [chromium] › tests/issue-388.spec.js:183:3 › Issue #388 - dark theme surface parity › diagnostics, settings, and sidebar controls avoid light-only surfaces in dark mode (retry #1) (1.1s)
+
+
+  1) [chromium] › tests/issue-388.spec.js:117:3 › Issue #388 - adaptive header actions › desktop header switches to icon-only controls before the reported width clips
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeHidden[2m([22m[2m)[22m failed
+
+    Locator:  locator('.topbar-actions .btn-label').first()
+    Expected: hidden
+    Received: visible
+    Timeout:  5000ms
+
+    Call log:
+    [2m  - Expect "toBeHidden" with timeout 5000ms[22m
+    [2m  - waiting for locator('.topbar-actions .btn-label').first()[22m
+    [2m    14 × locator resolved to <span class="btn-label">Source code</span>[22m
+    [2m       - unexpected value "visible"[22m
+
+
+      122 |
+      123 |     const labels = page.locator('.topbar-actions .btn-label');
+    > 124 |     await expect(labels.first()).toBeHidden();
+          |                                  ^
+      125 |
+      126 |     const layout = await page.locator('.topbar').evaluate((topbar) => {
+      127 |       const actions = topbar.querySelector('.topbar-actions');
+        at /tmp/gh-issue-solver-1780586312230/tests/e2e/tests/issue-388.spec.js:124:34
+
+    Error Context: test-results/issue-388-Issue-388---adap-8703e-re-the-reported-width-clips-chromium/error-context.md
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeHidden[2m([22m[2m)[22m failed
+
+    Locator:  locator('.topbar-actions .btn-label').first()
+    Expected: hidden
+    Received: visible
+    Timeout:  5000ms
+
+    Call log:
+    [2m  - Expect "toBeHidden" with timeout 5000ms[22m
+    [2m  - waiting for locator('.topbar-actions .btn-label').first()[22m
+    [2m    14 × locator resolved to <span class="btn-label">Source code</span>[22m
+    [2m       - unexpected value "visible"[22m
+
+
+      122 |
+      123 |     const labels = page.locator('.topbar-actions .btn-label');
+    > 124 |     await expect(labels.first()).toBeHidden();
+          |                                  ^
+      125 |
+      126 |     const layout = await page.locator('.topbar').evaluate((topbar) => {
+      127 |       const actions = topbar.querySelector('.topbar-actions');
+        at /tmp/gh-issue-solver-1780586312230/tests/e2e/tests/issue-388.spec.js:124:34
+
+    Error Context: test-results/issue-388-Issue-388---adap-8703e-re-the-reported-width-clips-chromium-retry1/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/issue-388-Issue-388---adap-8703e-re-the-reported-width-clips-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/issue-388-Issue-388---adap-8703e-re-the-reported-width-clips-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [chromium] › tests/issue-388.spec.js:183:3 › Issue #388 - dark theme surface parity › diagnostics, settings, and sidebar controls avoid light-only surfaces in dark mode
+
+    Error: settings-reset
+
+    [2mexpect([22m[31mreceived[39m[2m).[22mtoBeTruthy[2m()[22m
+
+    Received: [31mnull[39m
+
+      237 |       const foreground = parseRgb(target.color);
+      238 |       const background = parseRgb(target.backgroundColor);
+    > 239 |       expect(foreground, target.selector).toBeTruthy();
+          |                                           ^
+      240 |       expect(background, target.selector).toBeTruthy();
+      241 |       const bright = Math.max(luminance(foreground), luminance(background));
+      242 |       const dark = Math.min(luminance(foreground), luminance(background));
+        at /tmp/gh-issue-solver-1780586312230/tests/e2e/tests/issue-388.spec.js:239:43
+
+    Error Context: test-results/issue-388-Issue-388---dark-119b7--only-surfaces-in-dark-mode-chromium/error-context.md
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: settings-reset
+
+    [2mexpect([22m[31mreceived[39m[2m).[22mtoBeTruthy[2m()[22m
+
+    Received: [31mnull[39m
+
+      237 |       const foreground = parseRgb(target.color);
+      238 |       const background = parseRgb(target.backgroundColor);
+    > 239 |       expect(foreground, target.selector).toBeTruthy();
+          |                                           ^
+      240 |       expect(background, target.selector).toBeTruthy();
+      241 |       const bright = Math.max(luminance(foreground), luminance(background));
+      242 |       const dark = Math.min(luminance(foreground), luminance(background));
+        at /tmp/gh-issue-solver-1780586312230/tests/e2e/tests/issue-388.spec.js:239:43
+
+    Error Context: test-results/issue-388-Issue-388---dark-119b7--only-surfaces-in-dark-mode-chromium-retry1/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/issue-388-Issue-388---dark-119b7--only-surfaces-in-dark-mode-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/issue-388-Issue-388---dark-119b7--only-surfaces-in-dark-mode-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    [chromium] › tests/issue-388.spec.js:117:3 › Issue #388 - adaptive header actions › desktop header switches to icon-only controls before the reported width clips
+    [chromium] › tests/issue-388.spec.js:183:3 › Issue #388 - dark theme surface parity › diagnostics, settings, and sidebar controls avoid light-only surfaces in dark mode
