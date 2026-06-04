@@ -1,0 +1,376 @@
+{
+  "crate": {
+    "id": "formal-ai",
+    "name": "formal-ai",
+    "max_version": "0.177.0",
+    "newest_version": "0.177.0",
+    "updated_at": "2026-06-04T13:35:30.425976Z",
+    "created_at": "2026-05-12T15:02:39.698864Z",
+    "downloads": 2148,
+    "recent_downloads": 2148,
+    "repository": "https://github.com/link-assistant/formal-ai"
+  },
+  "num_versions": 153,
+  "recent_versions": [
+    {
+      "num": "0.177.0",
+      "created_at": "2026-06-04T13:35:30.425976Z",
+      "updated_at": "2026-06-04T13:35:30.425976Z",
+      "yanked": false,
+      "downloads": 0,
+      "crate_size": 2461790,
+      "license": "Unlicense"
+    },
+    {
+      "num": "0.176.0",
+      "created_at": "2026-06-01T19:35:51.808476Z",
+      "updated_at": "2026-06-01T19:35:51.808476Z",
+      "yanked": false,
+      "downloads": 11,
+      "crate_size": 2084854,
+      "license": "Unlicense"
+    },
+    {
+      "num": "0.175.0",
+      "created_at": "2026-06-01T02:06:46.753085Z",
+      "updated_at": "2026-06-01T02:06:46.753085Z",
+      "yanked": false,
+      "downloads": 17,
+      "crate_size": 2084859,
+      "license": "Unlicense"
+    },
+    {
+      "num": "0.174.0",
+      "created_at": "2026-06-01T01:35:51.604317Z",
+      "updated_at": "2026-06-01T01:35:51.604317Z",
+      "yanked": false,
+      "downloads": 13,
+      "crate_size": 2082291,
+      "license": "Unlicense"
+    },
+    {
+      "num": "0.173.0",
+      "created_at": "2026-06-01T01:08:03.610605Z",
+      "updated_at": "2026-06-01T01:08:03.610605Z",
+      "yanked": false,
+      "downloads": 13,
+      "crate_size": 2077244,
+      "license": "Unlicense"
+    },
+    {
+      "num": "0.172.0",
+      "created_at": "2026-06-01T00:51:46.697084Z",
+      "updated_at": "2026-06-01T00:51:46.697084Z",
+      "yanked": false,
+      "downloads": 14,
+      "crate_size": 2070625,
+      "license": "Unlicense"
+    },
+    {
+      "num": "0.171.0",
+      "created_at": "2026-06-01T00:24:30.453843Z",
+      "updated_at": "2026-06-01T00:24:30.453843Z",
+      "yanked": false,
+      "downloads": 18,
+      "crate_size": 2067963,
+      "license": "Unlicense"
+    },
+    {
+      "num": "0.170.0",
+      "created_at": "2026-05-31T22:10:32.358365Z",
+      "updated_at": "2026-05-31T22:10:32.358365Z",
+      "yanked": false,
+      "downloads": 14,
+      "crate_size": 2064367,
+      "license": "Unlicense"
+    },
+    {
+      "num": "0.169.0",
+      "created_at": "2026-05-31T21:52:55.410516Z",
+      "updated_at": "2026-05-31T21:52:55.410516Z",
+      "yanked": false,
+      "downloads": 18,
+      "crate_size": 2057822,
+      "license": "Unlicense"
+    },
+    {
+      "num": "0.168.0",
+      "created_at": "2026-05-31T20:57:46.603358Z",
+      "updated_at": "2026-05-31T20:57:46.603358Z",
+      "yanked": false,
+      "downloads": 15,
+      "crate_size": 2056957,
+      "license": "Unlicense"
+    },
+    {
+      "num": "0.167.0",
+      "created_at": "2026-05-31T20:28:18.423711Z",
+      "updated_at": "2026-05-31T20:28:18.423711Z",
+      "yanked": false,
+      "downloads": 16,
+      "crate_size": 2056962,
+      "license": "Unlicense"
+    },
+    {
+      "num": "0.166.0",
+      "created_at": "2026-05-30T22:45:18.799589Z",
+      "updated_at": "2026-05-30T22:45:18.799589Z",
+      "yanked": false,
+      "downloads": 18,
+      "crate_size": 2052538,
+      "license": "Unlicense"
+    },
+    {
+      "num": "0.165.0",
+      "created_at": "2026-05-30T22:23:43.160966Z",
+      "updated_at": "2026-05-30T22:23:43.160966Z",
+      "yanked": false,
+      "downloads": 16,
+      "crate_size": 2051797,
+      "license": "Unlicense"
+    },
+    {
+      "num": "0.164.0",
+      "created_at": "2026-05-30T22:10:26.922442Z",
+      "updated_at": "2026-05-30T22:10:26.922442Z",
+      "yanked": false,
+      "downloads": 13,
+      "crate_size": 2048665,
+      "license": "Unlicense"
+    },
+    {
+      "num": "0.163.0",
+      "created_at": "2026-05-30T19:47:36.746871Z",
+      "updated_at": "2026-05-30T19:47:36.746871Z",
+      "yanked": false,
+      "downloads": 14,
+      "crate_size": 2048670,
+      "license": "Unlicense"
+    },
+    {
+      "num": "0.162.0",
+      "created_at": "2026-05-30T18:55:10.688570Z",
+      "updated_at": "2026-05-30T18:55:10.688570Z",
+      "yanked": false,
+      "downloads": 13,
+      "crate_size": 2046519,
+      "license": "Unlicense"
+    },
+    {
+      "num": "0.161.0",
+      "created_at": "2026-05-30T18:19:29.340575Z",
+      "updated_at": "2026-05-30T18:19:29.340575Z",
+      "yanked": false,
+      "downloads": 15,
+      "crate_size": 2043743,
+      "license": "Unlicense"
+    },
+    {
+      "num": "0.160.0",
+      "created_at": "2026-05-30T16:46:38.798284Z",
+      "updated_at": "2026-05-30T16:46:38.798284Z",
+      "yanked": false,
+      "downloads": 15,
+      "crate_size": 2040710,
+      "license": "Unlicense"
+    },
+    {
+      "num": "0.159.0",
+      "created_at": "2026-05-30T14:00:08.917577Z",
+      "updated_at": "2026-05-30T14:00:08.917577Z",
+      "yanked": false,
+      "downloads": 15,
+      "crate_size": 2038132,
+      "license": "Unlicense"
+    },
+    {
+      "num": "0.158.0",
+      "created_at": "2026-05-30T13:29:43.021016Z",
+      "updated_at": "2026-05-30T13:29:43.021016Z",
+      "yanked": false,
+      "downloads": 16,
+      "crate_size": 2038123,
+      "license": "Unlicense"
+    },
+    {
+      "num": "0.157.0",
+      "created_at": "2026-05-30T13:10:59.869998Z",
+      "updated_at": "2026-05-30T13:10:59.869998Z",
+      "yanked": false,
+      "downloads": 17,
+      "crate_size": 2036241,
+      "license": "Unlicense"
+    },
+    {
+      "num": "0.156.0",
+      "created_at": "2026-05-30T10:59:57.883420Z",
+      "updated_at": "2026-05-30T10:59:57.883420Z",
+      "yanked": false,
+      "downloads": 14,
+      "crate_size": 2036228,
+      "license": "Unlicense"
+    },
+    {
+      "num": "0.155.0",
+      "created_at": "2026-05-30T10:48:31.182649Z",
+      "updated_at": "2026-05-30T10:48:31.182649Z",
+      "yanked": false,
+      "downloads": 14,
+      "crate_size": 2033343,
+      "license": "Unlicense"
+    },
+    {
+      "num": "0.154.0",
+      "created_at": "2026-05-30T10:14:42.657341Z",
+      "updated_at": "2026-05-30T10:14:42.657341Z",
+      "yanked": false,
+      "downloads": 16,
+      "crate_size": 2032252,
+      "license": "Unlicense"
+    },
+    {
+      "num": "0.153.0",
+      "created_at": "2026-05-29T23:57:25.790897Z",
+      "updated_at": "2026-05-29T23:57:25.790897Z",
+      "yanked": false,
+      "downloads": 15,
+      "crate_size": 1418160,
+      "license": "Unlicense"
+    },
+    {
+      "num": "0.152.0",
+      "created_at": "2026-05-29T20:36:17.706Z",
+      "updated_at": "2026-05-29T20:36:17.706Z",
+      "yanked": false,
+      "downloads": 13,
+      "crate_size": 1393973,
+      "license": "Unlicense"
+    },
+    {
+      "num": "0.151.0",
+      "created_at": "2026-05-29T18:58:18.922599Z",
+      "updated_at": "2026-05-29T18:58:18.922599Z",
+      "yanked": false,
+      "downloads": 14,
+      "crate_size": 1375990,
+      "license": "Unlicense"
+    },
+    {
+      "num": "0.150.0",
+      "created_at": "2026-05-29T12:56:02.799731Z",
+      "updated_at": "2026-05-29T12:56:02.799731Z",
+      "yanked": false,
+      "downloads": 14,
+      "crate_size": 1347473,
+      "license": "Unlicense"
+    },
+    {
+      "num": "0.149.0",
+      "created_at": "2026-05-29T12:09:04.784281Z",
+      "updated_at": "2026-05-29T12:09:04.784281Z",
+      "yanked": false,
+      "downloads": 14,
+      "crate_size": 1346551,
+      "license": "Unlicense"
+    },
+    {
+      "num": "0.148.0",
+      "created_at": "2026-05-29T08:07:10.144902Z",
+      "updated_at": "2026-05-29T08:07:10.144902Z",
+      "yanked": false,
+      "downloads": 15,
+      "crate_size": 1333925,
+      "license": "Unlicense"
+    },
+    {
+      "num": "0.147.0",
+      "created_at": "2026-05-28T13:35:50.094187Z",
+      "updated_at": "2026-05-28T13:35:50.094187Z",
+      "yanked": false,
+      "downloads": 13,
+      "crate_size": 1318159,
+      "license": "Unlicense"
+    },
+    {
+      "num": "0.146.0",
+      "created_at": "2026-05-28T13:06:15.965450Z",
+      "updated_at": "2026-05-28T13:06:15.965450Z",
+      "yanked": false,
+      "downloads": 14,
+      "crate_size": 1317341,
+      "license": "Unlicense"
+    },
+    {
+      "num": "0.145.0",
+      "created_at": "2026-05-28T12:26:06.495376Z",
+      "updated_at": "2026-05-28T12:26:06.495376Z",
+      "yanked": false,
+      "downloads": 13,
+      "crate_size": 1314163,
+      "license": "Unlicense"
+    },
+    {
+      "num": "0.144.0",
+      "created_at": "2026-05-28T11:34:28.681808Z",
+      "updated_at": "2026-05-28T11:34:28.681808Z",
+      "yanked": false,
+      "downloads": 16,
+      "crate_size": 1311227,
+      "license": "Unlicense"
+    },
+    {
+      "num": "0.143.0",
+      "created_at": "2026-05-28T11:03:11.261333Z",
+      "updated_at": "2026-05-28T11:03:11.261333Z",
+      "yanked": false,
+      "downloads": 15,
+      "crate_size": 1309524,
+      "license": "Unlicense"
+    },
+    {
+      "num": "0.142.0",
+      "created_at": "2026-05-27T15:15:45.188200Z",
+      "updated_at": "2026-05-27T15:15:45.188200Z",
+      "yanked": false,
+      "downloads": 16,
+      "crate_size": 1304672,
+      "license": "Unlicense"
+    },
+    {
+      "num": "0.141.0",
+      "created_at": "2026-05-26T23:43:36.402832Z",
+      "updated_at": "2026-05-26T23:43:36.402832Z",
+      "yanked": false,
+      "downloads": 16,
+      "crate_size": 1297479,
+      "license": "Unlicense"
+    },
+    {
+      "num": "0.140.0",
+      "created_at": "2026-05-26T23:06:42.361183Z",
+      "updated_at": "2026-05-26T23:06:42.361183Z",
+      "yanked": false,
+      "downloads": 17,
+      "crate_size": 1294256,
+      "license": "Unlicense"
+    },
+    {
+      "num": "0.139.0",
+      "created_at": "2026-05-26T22:32:27.994429Z",
+      "updated_at": "2026-05-26T22:32:27.994429Z",
+      "yanked": false,
+      "downloads": 14,
+      "crate_size": 1287830,
+      "license": "Unlicense"
+    },
+    {
+      "num": "0.138.0",
+      "created_at": "2026-05-26T21:59:25.949502Z",
+      "updated_at": "2026-05-26T21:59:25.949502Z",
+      "yanked": false,
+      "downloads": 14,
+      "crate_size": 1285428,
+      "license": "Unlicense"
+    }
+  ]
+}

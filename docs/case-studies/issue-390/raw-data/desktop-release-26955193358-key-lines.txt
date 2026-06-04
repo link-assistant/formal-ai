@@ -1,0 +1,103 @@
+    50	Resolve target release	UNKNOWN STEP	2026-06-04T13:35:54.1147717Z shell: /usr/bin/bash -e {0}
+    51	Resolve target release	UNKNOWN STEP	2026-06-04T13:35:54.1148679Z env:
+    52	Resolve target release	UNKNOWN STEP	2026-06-04T13:35:54.1154200Z   GH_TOKEN: ***
+    53	Resolve target release	UNKNOWN STEP	2026-06-04T13:35:54.1155032Z   EVENT: workflow_run
+    54	Resolve target release	UNKNOWN STEP	2026-06-04T13:35:54.1155567Z   INPUT_TAG:
+    55	Resolve target release	UNKNOWN STEP	2026-06-04T13:35:54.1156054Z   RELEASE_TAG:
+    56	Resolve target release	UNKNOWN STEP	2026-06-04T13:35:54.1156570Z   REPO: link-assistant/formal-ai
+    57	Resolve target release	UNKNOWN STEP	2026-06-04T13:35:54.1157148Z ##[endgroup]
+    58	Resolve target release	UNKNOWN STEP	2026-06-04T13:35:54.4711411Z Resolved release tag: v0.153.0
+    59	Resolve target release	UNKNOWN STEP	2026-06-04T13:35:54.8556462Z Evaluate and set job outputs
+    60	Resolve target release	UNKNOWN STEP	2026-06-04T13:35:54.8567437Z Set output 'tag'
+    61	Resolve target release	UNKNOWN STEP	2026-06-04T13:35:54.8570359Z Set output 'should_build'
+    62	Resolve target release	UNKNOWN STEP	2026-06-04T13:35:54.8572983Z Cleaning up orphan processes
+    63	Build windows-x64	UNKNOWN STEP	﻿2026-06-04T13:36:00.8520953Z Current runner version: '2.334.0'
+    64	Build windows-x64	UNKNOWN STEP	2026-06-04T13:36:00.8539360Z ##[group]Runner Image Provisioner
+    65	Build windows-x64	UNKNOWN STEP	2026-06-04T13:36:00.8539880Z Hosted Compute Agent
+    66	Build windows-x64	UNKNOWN STEP	2026-06-04T13:36:00.8540232Z Version: 20260520.533
+    67	Build windows-x64	UNKNOWN STEP	2026-06-04T13:36:00.8540620Z Commit: 189110e25284a9812c124fd27b339e2fb4f2f9db
+    68	Build windows-x64	UNKNOWN STEP	2026-06-04T13:36:00.8541021Z Build Date: 2026-05-20T17:44:04Z
+    69	Build windows-x64	UNKNOWN STEP	2026-06-04T13:36:00.8541399Z Worker ID: {da388052-a8ac-4866-9cab-57b20d695147}
+    70	Build windows-x64	UNKNOWN STEP	2026-06-04T13:36:00.8541804Z Azure Region: westus3
+    71	Build windows-x64	UNKNOWN STEP	2026-06-04T13:36:00.8542169Z ##[endgroup]
+    72	Build windows-x64	UNKNOWN STEP	2026-06-04T13:36:00.8543089Z ##[group]Operating System
+    73	Build windows-x64	UNKNOWN STEP	2026-06-04T13:36:00.8543503Z Microsoft Windows Server 2025
+    74	Build windows-x64	UNKNOWN STEP	2026-06-04T13:36:00.8543830Z 10.0.26100
+    75	Build windows-x64	UNKNOWN STEP	2026-06-04T13:36:00.8544133Z Datacenter
+    76	Build windows-x64	UNKNOWN STEP	2026-06-04T13:36:00.8544450Z ##[endgroup]
+    77	Build windows-x64	UNKNOWN STEP	2026-06-04T13:36:00.8544742Z ##[group]Runner Image
+    78	Build windows-x64	UNKNOWN STEP	2026-06-04T13:36:00.8545119Z Image: windows-2025
+    79	Build windows-x64	UNKNOWN STEP	2026-06-04T13:36:00.8545453Z Version: 20260525.149.1
+    80	Build windows-x64	UNKNOWN STEP	2026-06-04T13:36:00.8546311Z Included Software: https://github.com/actions/runner-images/blob/win25/20260525.149/images/windows/Windows2025-Readme.md
+    81	Build windows-x64	UNKNOWN STEP	2026-06-04T13:36:00.8547170Z Image Release: https://github.com/actions/runner-images/releases/tag/win25%2F20260525.149
+    82	Build windows-x64	UNKNOWN STEP	2026-06-04T13:36:00.8547730Z ##[endgroup]
+    83	Build windows-x64	UNKNOWN STEP	2026-06-04T13:36:00.8548435Z ##[group]GITHUB_TOKEN Permissions
+    84	Build windows-x64	UNKNOWN STEP	2026-06-04T13:36:00.8549570Z Attestations: write
+    85	Build windows-x64	UNKNOWN STEP	2026-06-04T13:36:00.8549916Z Contents: write
+    86	Build windows-x64	UNKNOWN STEP	2026-06-04T13:36:00.8550314Z Metadata: read
+    87	Build windows-x64	UNKNOWN STEP	2026-06-04T13:36:00.8550612Z ##[endgroup]
+    88	Build windows-x64	UNKNOWN STEP	2026-06-04T13:36:00.8551934Z Secret source: Actions
+    89	Build windows-x64	UNKNOWN STEP	2026-06-04T13:36:00.8552327Z Prepare workflow directory
+    90	Build windows-x64	UNKNOWN STEP	2026-06-04T13:36:00.8810895Z Prepare all required actions
+  3890	Build macos-x64	UNKNOWN STEP	2026-06-04T13:42:18.3079830Z ^[[36;1mnpx --no-install electron-builder --mac --config package.json --publish never^[[0m
+  3891	Build macos-x64	UNKNOWN STEP	2026-06-04T13:42:18.3174060Z shell: /bin/bash --noprofile --norc -e -o pipefail {0}
+  3892	Build macos-x64	UNKNOWN STEP	2026-06-04T13:42:18.3174990Z env:
+  3893	Build macos-x64	UNKNOWN STEP	2026-06-04T13:42:18.3175570Z   CARGO_HOME: /Users/runner/.cargo
+  3894	Build macos-x64	UNKNOWN STEP	2026-06-04T13:42:18.3176370Z   CARGO_INCREMENTAL: 0
+  3895	Build macos-x64	UNKNOWN STEP	2026-06-04T13:42:18.3177030Z   CARGO_TERM_COLOR: always
+  3896	Build macos-x64	UNKNOWN STEP	2026-06-04T13:42:18.3177800Z   CSC_IDENTITY_AUTO_DISCOVERY: false
+  3897	Build macos-x64	UNKNOWN STEP	2026-06-04T13:42:18.3178580Z ##[endgroup]
+  3898	Build macos-x64	UNKNOWN STEP	2026-06-04T13:42:20.5128070Z   • electron-builder  version=24.13.3 os=24.6.0
+  3899	Build macos-x64	UNKNOWN STEP	2026-06-04T13:42:20.5231770Z   • loaded configuration  file=/Users/runner/work/formal-ai/formal-ai/desktop/package.json
+  3900	Build macos-x64	UNKNOWN STEP	2026-06-04T13:42:20.5290920Z   • author is missed in the package.json  appPackageFile=/Users/runner/work/formal-ai/formal-ai/desktop/package.json
+  3901	Build macos-x64	UNKNOWN STEP	2026-06-04T13:42:20.8268980Z   ⨯ Invalid configuration object. electron-builder 24.13.3 has been initialized using a configuration object that does not match the API schema.
+  3902	Build macos-x64	UNKNOWN STEP	2026-06-04T13:42:20.8389850Z  - configuration has an unknown property 'build'. These properties are valid:
+  3903	Build macos-x64	UNKNOWN STEP	2026-06-04T13:42:20.8482530Z    object { afterAllArtifactBuild?, afterPack?, afterSign?, apk?, appId?, appImage?, appx?, appxManifestCreated?, artifactBuildCompleted?, artifactBuildStarted?, artifactName?, asar?, asarUnpack?, beforeBuild?, beforePack?, buildDependenciesFromSource?, buildNumber?, buildVersion?, compression?, copyright?, cscKeyPassword?, cscLink?, deb?, defaultArch?, detectUpdateChannel?, directories?, dmg?, downloadAlternateFFmpeg?, electronBranding?, electronCompile?, electronDist?, electronDownload?, electronLanguages?, electronUpdaterCompatibility?, electronVersion?, executableName?, extends?, extraFiles?, extraMetadata?, extraResources?, fileAssociations?, files?, flatpak?, forceCodeSigning?, framework?, freebsd?, generateUpdatesFilesForAllChannels?, icon?, includePdb?, includeSubNodeModules?, launchUiVersion?, linux?, mac?, mas?, masDev?, msi?, msiProjectCreated?, msiWrapped?, nodeGypRebuild?, nodeVersion?, npmArgs?, npmRebuild?, nsis?, nsisWeb?, onNodeModuleFile?, p5p?, pacman?, pkg?, portable?, productName?, protocols?, publish?, releaseInfo?, removePackageKeywords?, removePackageScripts?, rpm?, snap?, squirrelWindows?, target?, win?, $schema? }
+  3904	Build macos-x64	UNKNOWN STEP	2026-06-04T13:42:20.8499240Z    -> Configuration Options
+  3905	Build macos-x64	UNKNOWN STEP	2026-06-04T13:42:20.8536290Z      How to fix:
+  3906	Build macos-x64	UNKNOWN STEP	2026-06-04T13:42:20.8553560Z      1. Open https://www.electron.build/configuration/configuration
+  3907	Build macos-x64	UNKNOWN STEP	2026-06-04T13:42:20.8570080Z      2. Search the option name on the page (or type in into Search to find across the docs).
+  3908	Build macos-x64	UNKNOWN STEP	2026-06-04T13:42:20.8591050Z        * Not found? The option was deprecated or not exists (check spelling).
+  3909	Build macos-x64	UNKNOWN STEP	2026-06-04T13:42:20.8674000Z        * Found? Check that the option in the appropriate place. e.g. "title" only in the "dmg", not in the root.
+  3910	Build macos-x64	UNKNOWN STEP	2026-06-04T13:42:20.8700740Z   failedTask=build stackTrace=ValidationError: Invalid configuration object. electron-builder 24.13.3 has been initialized using a configuration object that does not match the API schema.
+  3911	Build macos-x64	UNKNOWN STEP	2026-06-04T13:42:20.8764120Z  - configuration has an unknown property 'build'. These properties are valid:
+  3912	Build macos-x64	UNKNOWN STEP	2026-06-04T13:42:20.8802680Z    object { afterAllArtifactBuild?, afterPack?, afterSign?, apk?, appId?, appImage?, appx?, appxManifestCreated?, artifactBuildCompleted?, artifactBuildStarted?, artifactName?, asar?, asarUnpack?, beforeBuild?, beforePack?, buildDependenciesFromSource?, buildNumber?, buildVersion?, compression?, copyright?, cscKeyPassword?, cscLink?, deb?, defaultArch?, detectUpdateChannel?, directories?, dmg?, downloadAlternateFFmpeg?, electronBranding?, electronCompile?, electronDist?, electronDownload?, electronLanguages?, electronUpdaterCompatibility?, electronVersion?, executableName?, extends?, extraFiles?, extraMetadata?, extraResources?, fileAssociations?, files?, flatpak?, forceCodeSigning?, framework?, freebsd?, generateUpdatesFilesForAllChannels?, icon?, includePdb?, includeSubNodeModules?, launchUiVersion?, linux?, mac?, mas?, masDev?, msi?, msiProjectCreated?, msiWrapped?, nodeGypRebuild?, nodeVersion?, npmArgs?, npmRebuild?, nsis?, nsisWeb?, onNodeModuleFile?, p5p?, pacman?, pkg?, portable?, productName?, protocols?, publish?, releaseInfo?, removePackageKeywords?, removePackageScripts?, rpm?, snap?, squirrelWindows?, target?, win?, $schema? }
+  3913	Build macos-x64	UNKNOWN STEP	2026-06-04T13:42:20.8816360Z    -> Configuration Options
+  3914	Build macos-x64	UNKNOWN STEP	2026-06-04T13:42:20.8832120Z      How to fix:
+  3915	Build macos-x64	UNKNOWN STEP	2026-06-04T13:42:20.8852850Z      1. Open https://www.electron.build/configuration/configuration
+  3916	Build macos-x64	UNKNOWN STEP	2026-06-04T13:42:20.8875530Z      2. Search the option name on the page (or type in into Search to find across the docs).
+  3917	Build macos-x64	UNKNOWN STEP	2026-06-04T13:42:20.8888220Z        * Not found? The option was deprecated or not exists (check spelling).
+  3918	Build macos-x64	UNKNOWN STEP	2026-06-04T13:42:20.8912310Z        * Found? Check that the option in the appropriate place. e.g. "title" only in the "dmg", not in the root.
+  3919	Build macos-x64	UNKNOWN STEP	2026-06-04T13:42:20.8937950Z                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           at validate (/Users/runner/work/formal-ai/formal-ai/desktop/node_modules/@develar/schema-utils/dist/validate.js:86:11)
+  3920	Build macos-x64	UNKNOWN STEP	2026-06-04T13:42:20.8948870Z     at validateConfig (/Users/runner/work/formal-ai/formal-ai/desktop/node_modules/app-builder-lib/src/util/config.ts:240:3)
+  3921	Build macos-x64	UNKNOWN STEP	2026-06-04T13:42:20.8987600Z     at Packager._build (/Users/runner/work/formal-ai/formal-ai/desktop/node_modules/app-builder-lib/src/packager.ts:345:5)
+  3922	Build macos-x64	UNKNOWN STEP	2026-06-04T13:42:20.9017830Z     at Packager.build (/Users/runner/work/formal-ai/formal-ai/desktop/node_modules/app-builder-lib/src/packager.ts:340:12)
+  3923	Build macos-x64	UNKNOWN STEP	2026-06-04T13:42:20.9020610Z     at executeFinally (/Users/runner/work/formal-ai/formal-ai/desktop/node_modules/builder-util/src/promise.ts:12:14)
+  3924	Build macos-x64	UNKNOWN STEP	2026-06-04T13:42:20.9446070Z ##[error]Process completed with exit code 1.
+  3925	Build macos-x64	UNKNOWN STEP	2026-06-04T13:42:20.9771760Z Post job cleanup.
+  3926	Build macos-x64	UNKNOWN STEP	2026-06-04T13:42:21.1989340Z [command]/usr/local/bin/git version
+  3927	Build macos-x64	UNKNOWN STEP	2026-06-04T13:42:21.2160650Z git version 2.54.0
+  3928	Build macos-x64	UNKNOWN STEP	2026-06-04T13:42:21.2582330Z Copying '/Users/runner/.gitconfig' to '/Users/runner/work/_temp/58b54a23-3ab3-446d-84c1-8987a458a115/.gitconfig'
+  3929	Build macos-x64	UNKNOWN STEP	2026-06-04T13:42:21.2631140Z Temporarily overriding HOME='/Users/runner/work/_temp/58b54a23-3ab3-446d-84c1-8987a458a115' before making global git config changes
+  3930	Build macos-x64	UNKNOWN STEP	2026-06-04T13:42:21.2661370Z Adding repository directory to the temporary git global config as a safe directory
+  3931	Build macos-x64	UNKNOWN STEP	2026-06-04T13:42:21.2691560Z [command]/usr/local/bin/git config --global --add safe.directory /Users/runner/work/formal-ai/formal-ai
+  3932	Build macos-x64	UNKNOWN STEP	2026-06-04T13:42:21.2788460Z Removing SSH command configuration
+  3933	Build macos-x64	UNKNOWN STEP	2026-06-04T13:42:21.2820040Z [command]/usr/local/bin/git config --local --name-only --get-regexp core\.sshCommand
+  3934	Build macos-x64	UNKNOWN STEP	2026-06-04T13:42:21.2884740Z [command]/usr/local/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+  3935	Build macos-x64	UNKNOWN STEP	2026-06-04T13:42:21.5458580Z Removing HTTP extra header
+  4030	Publish SHA256SUMS.txt + provenance	UNKNOWN STEP	2026-06-04T13:42:32.4510015Z ^[[36;1m  echo "SHA-256 checksums (see SHA256SUMS.txt for the authoritative copy):"^[[0m
+  4031	Publish SHA256SUMS.txt + provenance	UNKNOWN STEP	2026-06-04T13:42:32.4512085Z ^[[36;1m  echo ""^[[0m
+  4032	Publish SHA256SUMS.txt + provenance	UNKNOWN STEP	2026-06-04T13:42:32.4513031Z ^[[36;1m  cat SHA256SUMS.txt^[[0m
+  4033	Publish SHA256SUMS.txt + provenance	UNKNOWN STEP	2026-06-04T13:42:32.4514130Z ^[[36;1m} > BUILD-PROVENANCE.txt^[[0m
+  4034	Publish SHA256SUMS.txt + provenance	UNKNOWN STEP	2026-06-04T13:42:32.4515364Z ^[[36;1mecho "=== BUILD-PROVENANCE.txt ==="^[[0m
+  4035	Publish SHA256SUMS.txt + provenance	UNKNOWN STEP	2026-06-04T13:42:32.4516674Z ^[[36;1mcat BUILD-PROVENANCE.txt^[[0m
+  4036	Publish SHA256SUMS.txt + provenance	UNKNOWN STEP	2026-06-04T13:42:32.4549756Z shell: /usr/bin/bash -e {0}
+  4037	Publish SHA256SUMS.txt + provenance	UNKNOWN STEP	2026-06-04T13:42:32.4550819Z env:
+  4038	Publish SHA256SUMS.txt + provenance	UNKNOWN STEP	2026-06-04T13:42:32.4563414Z   GH_TOKEN: ***
+  4039	Publish SHA256SUMS.txt + provenance	UNKNOWN STEP	2026-06-04T13:42:32.4564356Z   REPO: link-assistant/formal-ai
+  4040	Publish SHA256SUMS.txt + provenance	UNKNOWN STEP	2026-06-04T13:42:32.4565450Z   TAG: v0.153.0
+  4041	Publish SHA256SUMS.txt + provenance	UNKNOWN STEP	2026-06-04T13:42:32.4566912Z   RUN_URL: https://github.com/link-assistant/formal-ai/actions/runs/26955193358
+  4042	Publish SHA256SUMS.txt + provenance	UNKNOWN STEP	2026-06-04T13:42:32.4568588Z ##[endgroup]
+  4043	Publish SHA256SUMS.txt + provenance	UNKNOWN STEP	2026-06-04T13:42:32.4652399Z No checksum fragments were produced; nothing to finalize.
+  4044	Publish SHA256SUMS.txt + provenance	UNKNOWN STEP	2026-06-04T13:42:32.4669412Z ##[error]Process completed with exit code 1.
+  4045	Publish SHA256SUMS.txt + provenance	UNKNOWN STEP	2026-06-04T13:42:32.4773228Z Cleaning up orphan processes

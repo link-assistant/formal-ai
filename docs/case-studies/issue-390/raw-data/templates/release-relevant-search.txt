@@ -1,0 +1,39 @@
+/tmp/issue-390-templates/csharp-ai-driven-development-pipeline-template/scripts/create-github-release.test.mjs:21:} from './create-github-release.mjs';
+/tmp/issue-390-templates/csharp-ai-driven-development-pipeline-template/scripts/create-github-release.test.mjs:23:describe('create-github-release helpers', () => {
+/tmp/issue-390-templates/csharp-ai-driven-development-pipeline-template/scripts/create-github-release.test.mjs:207:          return { status: 1, stderr: 'already_exists', stdout: '' };
+/tmp/issue-390-templates/csharp-ai-driven-development-pipeline-template/README.md:104:│   ├── create-github-release.mjs # GitHub release creation
+/tmp/issue-390-templates/js-ai-driven-development-pipeline-template/tests/create-github-release.test.js:2: * Tests for create-github-release.mjs CLI behavior.
+/tmp/issue-390-templates/js-ai-driven-development-pipeline-template/tests/create-github-release.test.js:25:} from '../scripts/create-github-release.mjs';
+/tmp/issue-390-templates/js-ai-driven-development-pipeline-template/tests/create-github-release.test.js:28:  new URL('../scripts/create-github-release.mjs', import.meta.url)
+/tmp/issue-390-templates/js-ai-driven-development-pipeline-template/tests/create-github-release.test.js:112:if (process.env.FAKE_GH_MODE === 'already_exists') {
+/tmp/issue-390-templates/js-ai-driven-development-pipeline-template/tests/create-github-release.test.js:113:  console.error('gh: Validation Failed (HTTP 422)');
+/tmp/issue-390-templates/js-ai-driven-development-pipeline-template/tests/create-github-release.test.js:114:  console.error('already_exists');
+/tmp/issue-390-templates/js-ai-driven-development-pipeline-template/tests/create-github-release.test.js:188:describe('create-github-release release title formatting', () => {
+/tmp/issue-390-templates/js-ai-driven-development-pipeline-template/tests/create-github-release.test.js:241:describe('create-github-release.mjs', () => {
+/tmp/issue-390-templates/js-ai-driven-development-pipeline-template/tests/create-github-release.test.js:296:  it('treats already_exists as an idempotent gh api result', () => {
+/tmp/issue-390-templates/js-ai-driven-development-pipeline-template/tests/create-github-release.test.js:299:      stderr: 'already_exists',
+/tmp/issue-390-templates/js-ai-driven-development-pipeline-template/tests/create-github-release.test.js:384:    it('treats already_exists as an explicit idempotent skip', () => {
+/tmp/issue-390-templates/js-ai-driven-development-pipeline-template/tests/create-github-release.test.js:388:        const { result } = runCreateRelease(root, 'already_exists');
+/tmp/issue-390-templates/js-ai-driven-development-pipeline-template/tests/tag-prefix.test.js:2: * Tests for --tag-prefix support in create-github-release.mjs and format-github-release.mjs
+/tmp/issue-390-templates/js-ai-driven-development-pipeline-template/scripts/create-github-release.mjs:5: * Usage: node scripts/create-github-release.mjs --release-version <version> --repository <repository> [--tag-prefix <prefix>] [--language <language>]
+/tmp/issue-390-templates/js-ai-driven-development-pipeline-template/scripts/create-github-release.mjs:18:  'Usage: node scripts/create-github-release.mjs --release-version <version> --repository <repository> [--tag-prefix <prefix>] [--language <language>]';
+/tmp/issue-390-templates/js-ai-driven-development-pipeline-template/scripts/create-github-release.mjs:154:  if (/already_exists/i.test(output)) {
+/tmp/issue-390-templates/rust-ai-driven-development-pipeline-template/scripts/publish-crate.rs:20://!       'already_exists' - the version is already on crates.io (version-bump bug)
+/tmp/issue-390-templates/rust-ai-driven-development-pipeline-template/scripts/publish-crate.rs:81:            FailureKind::AlreadyExists => "already_exists",
+/tmp/issue-390-templates/rust-ai-driven-development-pipeline-template/scripts/publish-crate.rs:282:    fn classifies_already_exists_response() {
+/tmp/issue-390-templates/rust-ai-driven-development-pipeline-template/scripts/publish-crate.rs:285:        assert_eq!(FailureKind::AlreadyExists.output_value(), "already_exists");
+/tmp/issue-390-templates/rust-ai-driven-development-pipeline-template/scripts/create-github-release.rs:7://! Usage: rust-script scripts/create-github-release.rs --release-version <version> --repository <repository> [--tag-prefix <prefix>] [--language <name>] [--release-label <label>] [--docker-hub-url <url>]
+/tmp/issue-390-templates/rust-ai-driven-development-pipeline-template/scripts/create-github-release.rs:31:const USAGE: &str = "Usage: rust-script scripts/create-github-release.rs --release-version <version> --repository <repository> [--tag-prefix <prefix>] [--language <name>] [--release-label <label>] [--docker-hub-url <url>]";
+/tmp/issue-390-templates/rust-ai-driven-development-pipeline-template/scripts/create-github-release.rs:332:            || combined.contains("already_exists")
+/tmp/issue-390-templates/rust-ai-driven-development-pipeline-template/scripts/create-github-release.rs:333:            || combined.contains("Validation Failed")
+/tmp/issue-390-templates/rust-ai-driven-development-pipeline-template/README.md:125:│   ├── create-github-release.rs    # GitHub release creation
+/tmp/issue-390-templates/rust-ai-driven-development-pipeline-template/README.md:219:- `create-github-release.rs` skips GitHub release creation
+/tmp/issue-390-templates/rust-ai-driven-development-pipeline-template/changelog.d/20260413_fix_lookahead_regex.md:6:- Fixed unsupported look-ahead regex in `create-github-release.rs` that caused a panic when parsing CHANGELOG.md. Replaced with a two-step approach using only features supported by Rust's `regex` crate.
+/tmp/issue-390-templates/rust-ai-driven-development-pipeline-template/changelog.d/20260107_apply_best_practices.md:9:- Added `--tag-prefix` and `--crates-io-url` options to create-github-release.mjs script
+/tmp/issue-390-templates/rust-ai-driven-development-pipeline-template/changelog.d/20260413-ci-cd-best-practices.md:24:- Improved `create-github-release.rs` to check combined stdout+stderr and detect "Validation Failed"
+/tmp/issue-390-templates/rust-ai-driven-development-pipeline-template/changelog.d/20260509_031015_human_readable_release_titles.md:2:- Made `create-github-release.rs` build GitHub release titles as `[Language] X.Y.Z` instead of reusing the tag prefix.
+/tmp/issue-390-templates/csharp-ai-driven-development-pipeline-template/scripts/create-github-release.mjs:5: * Usage: bun run scripts/create-github-release.mjs --release-version <version> --repository <repository> [--tag-prefix <prefix>] [--language <language>] [--package-id <id>] [--assets-glob <glob>]
+/tmp/issue-390-templates/csharp-ai-driven-development-pipeline-template/scripts/create-github-release.mjs:19:  'Usage: bun run scripts/create-github-release.mjs --release-version <version> --repository <repository> [--tag-prefix <prefix>] [--language <language>] [--package-id <id>] [--assets-glob <glob>]';
+/tmp/issue-390-templates/csharp-ai-driven-development-pipeline-template/scripts/create-github-release.mjs:321:  if (/already_exists|already exists/i.test(output)) {
+/tmp/issue-390-templates/rust-ai-driven-development-pipeline-template/tests/unit/ci-cd/mod.rs:6:#[path = "../../../scripts/create-github-release.rs"]
+/tmp/issue-390-templates/rust-ai-driven-development-pipeline-template/tests/unit/ci-cd/workflow_release.rs:277:        "{}/scripts/create-github-release.rs",

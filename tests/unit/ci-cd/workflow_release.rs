@@ -10,6 +10,15 @@ fn release_workflow() -> String {
     .replace("\r\n", "\n")
 }
 
+fn desktop_release_workflow() -> String {
+    fs::read_to_string(format!(
+        "{}/.github/workflows/desktop-release.yml",
+        env!("CARGO_MANIFEST_DIR")
+    ))
+    .unwrap()
+    .replace("\r\n", "\n")
+}
+
 fn job_block<'a>(workflow: &'a str, job_name: &str) -> &'a str {
     let marker = format!("  {job_name}:\n");
     let start = workflow.find(&marker).unwrap();
@@ -610,6 +619,62 @@ fn release_workflow_defers_rate_limited_crates_publish_without_downstream_artifa
             "manual-release {step_name} should not run solely because a version step completed"
         );
     }
+}
+
+#[test]
+fn desktop_release_workflow_run_targets_completed_release_tag() {
+    let workflow = desktop_release_workflow();
+    let resolve = job_block(&workflow, "resolve");
+    let pick = workflow_step_block(resolve, "Resolve tag and whether desktop assets are needed");
+
+    assert!(
+        pick.contains("WORKFLOW_RUN_HEAD_SHA: ${{ github.event.workflow_run.head_sha }}"),
+        "workflow_run desktop builds should use the completed CI run head SHA"
+    );
+    assert!(
+        pick.contains("repos/$REPO/tags?per_page=100"),
+        "workflow_run desktop builds should inspect repository tags instead of only the latest release"
+    );
+    assert!(
+        pick.contains(r#"select(.commit.sha == \"$WORKFLOW_RUN_HEAD_SHA\")"#),
+        "workflow_run desktop builds should find the tag that points at the completed CI SHA"
+    );
+    assert!(
+        pick.contains("No GitHub release exists for workflow_run tag"),
+        "workflow_run desktop builds should skip when the matching release is missing instead of building a stale latest release"
+    );
+}
+
+#[test]
+fn desktop_release_lets_electron_builder_read_package_json_build_key() {
+    let workflow = desktop_release_workflow();
+    let package_json = fs::read_to_string(format!(
+        "{}/desktop/package.json",
+        env!("CARGO_MANIFEST_DIR")
+    ))
+    .unwrap();
+    let smoke = fs::read_to_string(format!(
+        "{}/desktop/scripts/smoke.mjs",
+        env!("CARGO_MANIFEST_DIR")
+    ))
+    .unwrap();
+
+    assert!(
+        workflow.contains("npx --no-install electron-builder ${{ matrix.ebflag }} --publish never"),
+        "desktop release workflow should invoke electron-builder without passing package.json as a config file"
+    );
+    assert!(
+        !workflow.contains("--config package.json"),
+        "package.json is an app manifest; passing it as --config makes electron-builder reject its top-level build key"
+    );
+    assert!(
+        !package_json.contains("--config package.json"),
+        "desktop npm build scripts should not pass package.json as an explicit electron-builder config file"
+    );
+    assert!(
+        smoke.contains("--config package.json"),
+        "desktop smoke checks should guard against reintroducing the invalid config flag"
+    );
 }
 
 #[test]
