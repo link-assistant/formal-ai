@@ -599,6 +599,36 @@ pub const ROLE_DEFINITION_COMMAND: &str = "definition_command";
 /// consulted. Carried by `links_notation_format` in
 /// `data/seed/meanings-translation.lino`.
 pub const ROLE_LINKS_NOTATION_FORMAT: &str = "links_notation_format";
+/// Semantic role: a source-language lemma the compositional translator composes.
+///
+/// The ru→en compositional fallback (`compositional_candidates` in
+/// `src/translation/pipeline.rs`) fires only when no Wiktionary/Wikidata entry
+/// resolves a multi-word title. It walks the title word by word, resolving each
+/// Russian surface to its English form through the meaning carrying this role
+/// that lists the surface — so the per-word table lives in
+/// `data/seed/meanings-translation.lino`, never in code. Head-initial English and
+/// Russian are the consulted pair; the Hindi and Chinese forms are carried for
+/// coverage. A form tagged `action "genitive"` is the inflected noun the
+/// genitive-of construction reads (see [`ROLE_COMPOSITIONAL_GENITIVE_HEAD`]).
+pub const ROLE_COMPOSITIONAL_LEMMA: &str = "compositional_lemma";
+/// Semantic role: a fixed source-language phrase with a canned target rendering.
+///
+/// Some short Russian questions translate as wholes, not word by word (`кто ты
+/// такой` → `Who are you?`). The compositional fallback looks the normalized title
+/// up among the meanings carrying this role before attempting word-by-word
+/// composition, returning the meaning's English form verbatim — terminal
+/// punctuation and capitalization included. The phrases live in
+/// `data/seed/meanings-translation.lino`; the code names only the role.
+pub const ROLE_COMPOSITIONAL_PHRASE: &str = "compositional_phrase";
+/// Semantic role: a relation noun that governs a Russian genitive complement.
+///
+/// In a phrase like `примеры согласования` (`examples of agreement`) the head noun
+/// takes a genitive-inflected complement English renders with `of`. The
+/// compositional translator treats a [`ROLE_COMPOSITIONAL_LEMMA`] word also
+/// carrying this role as such a head: when the next word is a lemma form tagged
+/// `action "genitive"`, it emits `head of complement`. The heads live in
+/// `data/seed/meanings-translation.lino`; only the construction rule is code.
+pub const ROLE_COMPOSITIONAL_GENITIVE_HEAD: &str = "compositional_genitive_head";
 /// Semantic role: the single root of the merged ontology — the `link` meaning.
 ///
 /// Every other meaning descends from it through `defined_by` edges, so the whole

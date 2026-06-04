@@ -200,6 +200,30 @@ impl Meaning {
             .flat_map(|lexeme| lexeme.words.iter())
             .any(|word| !word.text.is_empty() && normalized.contains(word.text.as_str()))
     }
+
+    /// Does this meaning lexicalise `surface` as a whole surface form in
+    /// `language` (exact, case-sensitive match)? The compositional translator
+    /// resolves a normalized source word to the concept that lists it through
+    /// this, so the per-word table stays in the data (issue #386).
+    fn lexeme_lists(&self, language: &str, surface: &str) -> bool {
+        self.lexemes
+            .iter()
+            .filter(|lexeme| lexeme.language == language)
+            .flat_map(|lexeme| lexeme.words.iter())
+            .any(|word| word.text == surface)
+    }
+
+    /// Like [`Meaning::lexeme_lists`] but the matched form must also carry
+    /// `action` — the per-form grammatical tag (e.g. a genitive inflection). Lets
+    /// the compositional translator pick a single inflected form out of a meaning
+    /// without naming it in code (issue #386).
+    fn lexeme_lists_action(&self, language: &str, surface: &str, action: &str) -> bool {
+        self.lexemes
+            .iter()
+            .filter(|lexeme| lexeme.language == language)
+            .flat_map(|lexeme| lexeme.words.iter())
+            .any(|word| word.text == surface && word.action == action)
+    }
 }
 
 /// A spelled-surface → value-surface rewrite table: each entry maps a spelled
@@ -241,6 +265,65 @@ impl Lexicon {
             .filter(|meaning| meaning.has_role(role))
             .flat_map(Meaning::word_forms)
             .collect()
+    }
+
+    /// Translate `surface` from `source` to `target` through the meaning carrying
+    /// `role` that lexicalises it.
+    ///
+    /// Finds the first meaning (declaration order) carrying `role` whose `source`
+    /// lexeme lists `surface`, then returns its first `target`-language form. The
+    /// compositional ru→en fallback resolves a lemma or fixed phrase to English
+    /// through this — naming the semantic role and the language codes, never the
+    /// surface words, which live in `data/seed/meanings-translation.lino` (#386).
+    #[must_use]
+    pub fn role_surface_translation<'a>(
+        &'a self,
+        role: &str,
+        source: &str,
+        target: &str,
+        surface: &str,
+    ) -> Option<&'a str> {
+        self.meanings
+            .iter()
+            .filter(|meaning| meaning.has_role(role))
+            .find(|meaning| meaning.lexeme_lists(source, surface))
+            .and_then(|meaning| meaning.word_in(target))
+    }
+
+    /// Does any meaning carrying `role` lexicalise `surface` in `language`?
+    ///
+    /// Lets the compositional translator test a structural property of a source
+    /// word — e.g. whether it is a genitive-governing head — by role rather than
+    /// by naming the word in code (issue #386).
+    #[must_use]
+    pub fn role_lists_surface(&self, role: &str, language: &str, surface: &str) -> bool {
+        self.meanings
+            .iter()
+            .filter(|meaning| meaning.has_role(role))
+            .any(|meaning| meaning.lexeme_lists(language, surface))
+    }
+
+    /// Like [`Lexicon::role_surface_translation`] but the `source` form must also
+    /// carry `action`.
+    ///
+    /// The per-form grammatical tag selects one inflected surface out of a
+    /// meaning's lexeme, so the compositional translator resolves a
+    /// genitive-inflected complement to its English lemma while leaving the single
+    /// tagged form in the data (issue #386).
+    #[must_use]
+    pub fn role_action_surface_translation<'a>(
+        &'a self,
+        role: &str,
+        action: &str,
+        source: &str,
+        target: &str,
+        surface: &str,
+    ) -> Option<&'a str> {
+        self.meanings
+            .iter()
+            .filter(|meaning| meaning.has_role(role))
+            .find(|meaning| meaning.lexeme_lists_action(source, surface, action))
+            .and_then(|meaning| meaning.word_in(target))
     }
 
     /// Distinct surface words contributed by every meaning carrying `role`,

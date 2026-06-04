@@ -31,6 +31,9 @@ use super::http::{HttpClient, HttpError};
 use super::meaning::MeaningId;
 use super::wikidata::Wikidata;
 use super::wiktionary::{Wiktionary, WiktionaryCandidate};
+use crate::seed::{
+    ROLE_COMPOSITIONAL_GENITIVE_HEAD, ROLE_COMPOSITIONAL_LEMMA, ROLE_COMPOSITIONAL_PHRASE,
+};
 
 /// `true` when `FORMAL_AI_TRANSLATION_DEBUG=1` is set in the environment.
 ///
@@ -590,37 +593,30 @@ fn compositional_candidates(
     }]
 }
 
+/// The normalized Russian title rendered as a whole, when it is a fixed phrase.
+///
+/// Looks the title up among the meanings carrying [`ROLE_COMPOSITIONAL_PHRASE`]
+/// and returns the meaning's English form verbatim — capitalization and terminal
+/// punctuation included. The phrases live in
+/// `data/seed/meanings-translation.lino`; this names only the semantic role and
+/// the language pair (issue #386).
 fn russian_phrase_to_english(page_title: &str) -> Option<&'static str> {
-    match page_title {
-        "кто ты" | "кто ты такой" | "кто ты такая" | "кто вы" | "кто вы такой" | "кто вы такая" => {
-            Some("Who are you?")
-        }
-        "что это" | "что это такое" => Some("What is this?"),
-        // Russian small-talk variants → "how are you". `phrasal_variants`
-        // strips the dative-of-possession infix (`у тебя`, `у вас`, …)
-        // so callers may arrive at the bare `как дела` form.
-        "как дела" => Some("how are you"),
-        _ => None,
-    }
+    crate::seed::lexicon().role_surface_translation(
+        ROLE_COMPOSITIONAL_PHRASE,
+        "ru",
+        "en",
+        page_title,
+    )
 }
 
+/// The English form of a single Russian compositional lemma surface.
+///
+/// Resolves `word` through the meaning carrying [`ROLE_COMPOSITIONAL_LEMMA`] that
+/// lexicalises it, returning that meaning's first English form. Every inflection
+/// lives in `data/seed/meanings-translation.lino`; this names only the role and
+/// the language pair (issue #386).
 fn russian_word_to_english(word: &str) -> Option<&'static str> {
-    match word {
-        "найди" | "найдите" | "найти" => Some("find"),
-        "синоним" | "синонимы" | "синонимов" => Some("synonyms"),
-        "или" => Some("or"),
-        "пример" | "примеры" | "примеров" => Some("examples"),
-        "согласование" | "согласования" | "согласованию" | "согласованием" | "согласовании" => {
-            Some("agreement")
-        }
-        "доброе" | "добрый" | "добрая" | "добрые" | "доброго" | "добрую" | "добрым" | "хорошее"
-        | "хороший" | "хорошая" | "хорошие" | "хорошего" | "хорошую" | "хорошим" => {
-            Some("good")
-        }
-        "яблоко" | "яблока" | "яблоку" | "яблоком" | "яблоке" | "яблоки" | "яблок" | "яблокам"
-        | "яблоками" | "яблоках" => Some("apple"),
-        _ => None,
-    }
+    crate::seed::lexicon().role_surface_translation(ROLE_COMPOSITIONAL_LEMMA, "ru", "en", word)
 }
 
 fn translate_russian_word_sequence(words: &[&str]) -> Option<String> {
@@ -643,18 +639,29 @@ fn translate_russian_word_sequence(words: &[&str]) -> Option<String> {
     Some(capitalize_ascii_first(&translated.join(" ")))
 }
 
+/// Whether `word` is a relation noun that governs a Russian genitive complement.
+///
+/// True when some meaning carrying [`ROLE_COMPOSITIONAL_GENITIVE_HEAD`]
+/// lexicalises `word` in Russian. The heads live in
+/// `data/seed/meanings-translation.lino`; only the construction rule is code
+/// (issue #386).
 fn russian_genitive_relation_head(word: &str) -> bool {
-    matches!(
-        word,
-        "пример" | "примеры" | "примеров" | "синоним" | "синонимы" | "синонимов"
-    )
+    crate::seed::lexicon().role_lists_surface(ROLE_COMPOSITIONAL_GENITIVE_HEAD, "ru", word)
 }
 
+/// The English lemma of a Russian genitive-inflected complement, when tagged.
+///
+/// Resolves `word` only if a compositional lemma form lists it in Russian under
+/// `action "genitive"`, returning that meaning's English form. The single tagged
+/// inflection lives in `data/seed/meanings-translation.lino` (issue #386).
 fn russian_genitive_noun(word: &str) -> Option<&'static str> {
-    match word {
-        "согласования" => Some("agreement"),
-        _ => None,
-    }
+    crate::seed::lexicon().role_action_surface_translation(
+        ROLE_COMPOSITIONAL_LEMMA,
+        "genitive",
+        "ru",
+        "en",
+        word,
+    )
 }
 
 fn capitalize_ascii_first(surface: &str) -> String {
