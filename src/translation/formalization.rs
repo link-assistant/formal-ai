@@ -8,6 +8,7 @@
 //! later translation and selection stages can reason about the gap.
 
 use std::fmt::Write as _;
+use std::sync::OnceLock;
 
 use crate::concepts;
 use crate::seed;
@@ -148,202 +149,131 @@ impl FormalizationAnchorKind {
     }
 }
 
-#[derive(Debug, Clone, Copy)]
+/// One Wikidata item (entity or class), projected from the seed lexicon.
+///
+/// Built once from the meanings carrying [`seed::ROLE_WIKIDATA_ENTITY_ANCHOR`]
+/// (`data/seed/meanings-wikidata.lino`): `id` is the language-independent Q-id
+/// recorded in the meaning's `wikidata` field, `label` its canonical English
+/// surface (the first English word), and `aliases` every multilingual surface
+/// that resolves to the item. The hardcoded `ITEM_LABELS` table this replaced is
+/// gone — the formalizer now references the concept by role, not by raw words in
+/// one language (issue #386).
+#[derive(Debug, Clone)]
 struct LabelEntry {
-    id: &'static str,
-    label: &'static str,
-    aliases: &'static [&'static str],
+    id: String,
+    label: String,
+    aliases: Vec<String>,
 }
 
-#[derive(Debug, Clone, Copy)]
+/// One Wikidata binary-relation or translation property, projected from the seed
+/// lexicon.
+///
+/// Built once from the meanings carrying [`seed::ROLE_BINARY_RELATION_PROPERTY`]
+/// or [`seed::ROLE_TRANSLATION_PROPERTY`] (`data/seed/meanings-wikidata.lino`):
+/// `id` is the language-independent P-id, `label` its canonical English surface,
+/// and `surfaces` every multilingual phrase that signals the relation. The
+/// hardcoded `PROPERTY_PATTERNS` table this replaced is gone (issue #386).
+#[derive(Debug, Clone)]
 struct PredicatePattern {
-    id: &'static str,
-    label: &'static str,
-    aliases: &'static [&'static str],
-    phrases: &'static [&'static str],
+    slug: String,
+    id: String,
+    label: String,
+    surfaces: Vec<PredicateSurface>,
+    binary_relation: bool,
+}
+
+/// One surface phrase of a [`PredicatePattern`], paired with the meaning slug of
+/// the ambiguous property the form also admits, if any.
+///
+/// `alternative_slug` is the word form's `action`: when a copular form such as
+/// `is a` can read as either instance-of (P31) or subclass-of (P279), the seed
+/// records the alternative property's slug there. This replaces the hardcoded
+/// `P31`→`P279` special case with a data-driven pointer (issue #386).
+#[derive(Debug, Clone)]
+struct PredicateSurface {
+    text: String,
+    alternative_slug: String,
 }
 
 #[derive(Debug)]
 struct ParsedRelation {
     subject: String,
     predicate_surface: String,
-    predicate: PredicatePattern,
+    predicate: &'static PredicatePattern,
     object: String,
+    alternative_slug: String,
 }
 
-const ITEM_LABELS: &[LabelEntry] = &[
-    LabelEntry {
-        id: "Q89",
-        label: "apple",
-        aliases: &["apple", "apples", "яблоко", "яблоки", "सेब", "苹果", "蘋果"],
-    },
-    LabelEntry {
-        id: "Q3314483",
-        label: "fruit",
-        aliases: &[
-            "fruit",
-            "fruits",
-            "edible fruit",
-            "фрукт",
-            "фрукты",
-            "плод",
-            "फल",
-            "水果",
-            "水果类",
-        ],
-    },
-    LabelEntry {
-        id: "Q181593",
-        label: "sorting algorithm",
-        aliases: &["sorting algorithm", "sorting algorithms", "sort algorithm"],
-    },
-    LabelEntry {
-        id: "Q283",
-        label: "water",
-        aliases: &["water", "вода", "पानी", "水"],
-    },
-    LabelEntry {
-        id: "Q7802",
-        label: "bread",
-        aliases: &["bread", "хлеб", "रोटी", "面包", "麵包"],
-    },
-    LabelEntry {
-        id: "Q81",
-        label: "carrot",
-        aliases: &["carrot", "carrots", "морковь", "गाजर", "胡萝卜", "胡蘿蔔"],
-    },
-    LabelEntry {
-        id: "Q2013",
-        label: "Wikidata",
-        aliases: &["wikidata", "викидата", "विकिडेटा", "维基数据", "維基數據"],
-    },
-    LabelEntry {
-        id: "Q52",
-        label: "Wikipedia",
-        aliases: &[
-            "wikipedia",
-            "википедия",
-            "विकिपीडिया",
-            "维基百科",
-            "維基百科",
-        ],
-    },
-    LabelEntry {
-        id: "Q151",
-        label: "Wiktionary",
-        aliases: &[
-            "wiktionary",
-            "викисловарь",
-            "विक्षनरी",
-            "维基词典",
-            "維基辭典",
-        ],
-    },
-];
+/// The Wikidata items, projected once from the seed lexicon and cached.
+fn item_entries() -> &'static [LabelEntry] {
+    static ITEMS: OnceLock<Vec<LabelEntry>> = OnceLock::new();
+    ITEMS.get_or_init(|| {
+        seed::lexicon()
+            .meanings_with_role(seed::ROLE_WIKIDATA_ENTITY_ANCHOR)
+            .map(|meaning| LabelEntry {
+                id: meaning.wikidata.clone(),
+                label: meaning.word_in("en").unwrap_or_default().to_owned(),
+                aliases: meaning.words().map(str::to_owned).collect(),
+            })
+            .collect()
+    })
+}
 
-const PROPERTY_PATTERNS: &[PredicatePattern] = &[
-    PredicatePattern {
-        id: "P279",
-        label: "subclass of",
-        aliases: &["subclass of", "kind of", "type of", "род", "тип"],
-        phrases: &[
-            "is a kind of",
-            "is a type of",
-            "is subclass of",
-            "subclass of",
-            "kind of",
-            "type of",
-        ],
-    },
-    PredicatePattern {
-        id: "P31",
-        label: "instance of",
-        aliases: &["instance of", "is a", "is an", "является", "это", "是", "है"],
-        phrases: &[
-            "is an",
-            "is a",
-            "is the",
-            "are a",
-            "are an",
-            "является",
-            "это",
-            "是",
-            "है",
-        ],
-    },
-    PredicatePattern {
-        id: "P361",
-        label: "part of",
-        aliases: &["part of", "belongs to", "часть", "का हिस्सा", "属于"],
-        phrases: &[
-            "is part of",
-            "part of",
-            "belongs to",
-            "является частью",
-            "属于",
-        ],
-    },
-    PredicatePattern {
-        id: "P527",
-        label: "has part",
-        aliases: &["has part", "contains", "includes", "содержит", "包含"],
-        phrases: &[
-            "has part",
-            "has a part",
-            "contains",
-            "includes",
-            "содержит",
-            "包含",
-        ],
-    },
-    PredicatePattern {
-        id: "P36",
-        label: "capital",
-        aliases: &["capital", "capital of", "столица", "राजधानी", "首都"],
-        phrases: &[
-            "is the capital of",
-            "is capital of",
-            "capital of",
-            "столица",
-            "首都",
-        ],
-    },
-    PredicatePattern {
-        id: "P138",
-        label: "named after",
-        aliases: &["named after", "назван в честь", "के नाम पर", "命名自"],
-        phrases: &["is named after", "named after", "назван в честь", "命名自"],
-    },
-    PredicatePattern {
-        id: "P5972",
-        label: "translation",
-        aliases: &[
-            "translation",
-            "translate",
-            "translates",
-            "переведи",
-            "перевести",
-            "अनुवाद",
-            "翻译",
-            "翻譯",
-        ],
-        phrases: &[
-            "translate",
-            "translates",
-            "переведи",
-            "перевести",
-            "अनुवाद",
-            "翻译",
-            "翻譯",
-        ],
-    },
-    PredicatePattern {
-        id: "P5137",
-        label: "item for this sense",
-        aliases: &["item for this sense", "meaning item", "sense item"],
-        phrases: &["means", "meaning of", "означает", "अर्थ", "意思"],
-    },
-];
+/// The Wikidata properties, projected once from the seed lexicon and cached.
+/// Binary-relation properties (in declaration order) come first, then the lone
+/// translation property.
+fn predicate_patterns() -> &'static [PredicatePattern] {
+    static PATTERNS: OnceLock<Vec<PredicatePattern>> = OnceLock::new();
+    PATTERNS.get_or_init(|| {
+        let lexicon = seed::lexicon();
+        let mut patterns: Vec<PredicatePattern> = Vec::new();
+        for (role, binary_relation) in [
+            (seed::ROLE_BINARY_RELATION_PROPERTY, true),
+            (seed::ROLE_TRANSLATION_PROPERTY, false),
+        ] {
+            for meaning in lexicon.meanings_with_role(role) {
+                patterns.push(PredicatePattern {
+                    slug: meaning.slug.clone(),
+                    id: meaning.wikidata.clone(),
+                    label: meaning.word_in("en").unwrap_or_default().to_owned(),
+                    surfaces: meaning
+                        .word_forms()
+                        .map(|form| PredicateSurface {
+                            text: form.text.clone(),
+                            alternative_slug: form.action.clone(),
+                        })
+                        .collect(),
+                    binary_relation,
+                });
+            }
+        }
+        patterns
+    })
+}
+
+/// The binary-relation properties in declaration order (the translation property
+/// is matched through its own action branch, not as a relation phrase).
+fn binary_relation_patterns() -> impl Iterator<Item = &'static PredicatePattern> {
+    predicate_patterns()
+        .iter()
+        .filter(|pattern| pattern.binary_relation)
+}
+
+/// The surfaces of a predicate in maximal-munch order: longest phrase first so a
+/// specific form (`is subclass of`) is preferred over the shorter one it
+/// contains (`subclass of`). Ties keep declaration order (a stable sort), which
+/// preserves each language's authored priority.
+fn surfaces_by_munch(predicate: &'static PredicatePattern) -> Vec<&'static PredicateSurface> {
+    let mut surfaces: Vec<&PredicateSurface> = predicate.surfaces.iter().collect();
+    surfaces.sort_by_key(|surface| std::cmp::Reverse(surface.text.chars().count()));
+    surfaces
+}
+
+fn predicate_by_slug(slug: &str) -> Option<&'static PredicatePattern> {
+    predicate_patterns()
+        .iter()
+        .find(|pattern| pattern.slug == slug)
+}
 
 /// Formalize a natural-language prompt into the highest-scored meaning
 /// candidate.
@@ -389,8 +319,8 @@ pub fn formalize_prompt_candidates(prompt: &str, language: &str) -> Vec<Formaliz
         let predicate = translation_predicate();
         slots.push(FormalizationSlot {
             role: FormalizationRole::Predicate,
-            surface: predicate.label.to_owned(),
-            anchor: property_anchor(predicate, predicate.label, "label:property", 980),
+            surface: predicate.label.clone(),
+            anchor: property_anchor(predicate, &predicate.label, "label:property", 980),
         });
         push_item_slot(&mut slots, FormalizationRole::Object, &object, &language);
         return vec![build_candidate(prompt, &language, slots)];
@@ -412,7 +342,7 @@ pub fn formalize_prompt_candidates(prompt: &str, language: &str) -> Vec<Formaliz
                 &language,
                 &relation.subject,
                 predicate,
-                predicate.label,
+                &predicate.label,
                 &relation.object,
                 score,
             ));
@@ -437,7 +367,7 @@ fn build_relation_candidate(
     prompt: &str,
     language: &str,
     subject: &str,
-    predicate: PredicatePattern,
+    predicate: &PredicatePattern,
     predicate_surface: &str,
     object: &str,
     predicate_score: u16,
@@ -449,7 +379,7 @@ fn build_relation_candidate(
         surface: predicate_surface.to_owned(),
         anchor: property_anchor(
             predicate,
-            predicate.label,
+            &predicate.label,
             "label:property",
             predicate_score,
         ),
@@ -458,23 +388,22 @@ fn build_relation_candidate(
     build_candidate(prompt, language, slots)
 }
 
-fn ambiguous_relation_alternatives(relation: &ParsedRelation) -> Vec<(PredicatePattern, u16)> {
-    let surface = normalize_lookup(&relation.predicate_surface);
-    if relation.predicate.id == "P31"
-        && matches!(surface.as_str(), "is a" | "is an" | "are a" | "are an")
-    {
-        if let Some(predicate) = property_pattern_by_id("P279") {
-            return vec![(predicate, 955)];
-        }
+/// The plausible alternative readings of an ambiguous relation surface.
+///
+/// Fully data-driven: the matched word form names its alternative property's
+/// meaning slug in `action` (for example `is a` → `wikidata_property_subclass_of`).
+/// A form with no `action` yields no alternative, so `is the` and `instance of`
+/// stay unambiguous P31 even though `is a` does not — exactly the former
+/// hardcoded surface gate, now read from the seed (issue #386).
+fn ambiguous_relation_alternatives(
+    relation: &ParsedRelation,
+) -> Vec<(&'static PredicatePattern, u16)> {
+    if relation.alternative_slug.is_empty() {
+        return Vec::new();
     }
-    Vec::new()
-}
-
-fn property_pattern_by_id(id: &str) -> Option<PredicatePattern> {
-    PROPERTY_PATTERNS
-        .iter()
-        .find(|predicate| predicate.id == id)
-        .copied()
+    predicate_by_slug(&relation.alternative_slug)
+        .map(|predicate| vec![(predicate, 955)])
+        .unwrap_or_default()
 }
 
 fn sort_candidates(candidates: &mut Vec<FormalizationCandidate>) {
@@ -535,7 +464,7 @@ fn push_item_slot(
 
 fn resolve_item_anchor(surface: &str, language: &str) -> FormalizationAnchor {
     let normalized = normalize_lookup(surface);
-    if let Some(entry) = ITEM_LABELS.iter().find(|entry| {
+    if let Some(entry) = item_entries().iter().find(|entry| {
         entry
             .aliases
             .iter()
@@ -544,7 +473,7 @@ fn resolve_item_anchor(surface: &str, language: &str) -> FormalizationAnchor {
         return FormalizationAnchor {
             kind: FormalizationAnchorKind::WikidataItem,
             id: format!("wikidata:{}", entry.id),
-            label: entry.label.to_owned(),
+            label: entry.label.clone(),
             source: String::from("label:wikidata-item"),
             score: 980,
         };
@@ -617,7 +546,7 @@ fn resolve_seed_concept_anchor(normalized: &str) -> Option<FormalizationAnchor> 
 }
 
 fn property_anchor(
-    predicate: PredicatePattern,
+    predicate: &PredicatePattern,
     surface: &str,
     source: &str,
     score: u16,
@@ -631,51 +560,73 @@ fn property_anchor(
     }
 }
 
-fn translation_predicate() -> PredicatePattern {
-    *PROPERTY_PATTERNS
+fn translation_predicate() -> &'static PredicatePattern {
+    predicate_patterns()
         .iter()
-        .find(|predicate| predicate.id == "P5972")
-        .expect("P5972 translation predicate is present")
+        .find(|pattern| !pattern.binary_relation)
+        .expect("the translation property is present in the seed")
 }
 
 fn parse_translation_object(prompt: &str) -> Option<String> {
+    use crate::seed::ROLE_TRANSLATION_ACTION;
+
     let trimmed = prompt.trim();
     let lower = trimmed.to_lowercase();
+    // Issue #386: the translation command *verbs* are read from the lexicon
+    // (data/seed/meanings-translation.lino, role translation_action) rather than
+    // hardcoded per language. Only the closed-class grammatical particles that
+    // bound the surface — target prepositions and object/disposal markers —
+    // remain as structural delimiters here, the way an extractor's affix anchors
+    // do; they carry no translatable concept of their own.
+    let lexicon = crate::seed::lexicon();
 
-    for prefix in ["translate ", "please translate "] {
-        if lower.starts_with(prefix) {
-            let rest = trimmed.get(prefix.len()..)?.trim();
-            return clean_translation_surface(rest, &[" to ", " into ", " in "]);
+    // Clause-initial English commands, optionally behind a "please" politeness
+    // particle: strip the verb, read the surface up to the first target preposition.
+    for stem in lexicon.words_for_role_in_languages(ROLE_TRANSLATION_ACTION, &["en"]) {
+        for prefix in [format!("{stem} "), format!("please {stem} ")] {
+            if lower.starts_with(&prefix) {
+                let rest = trimmed.get(prefix.len()..)?.trim();
+                return clean_translation_surface(rest, &[" to ", " into ", " in "]);
+            }
         }
     }
 
-    for prefix in ["переведи ", "перевести "] {
-        if lower.starts_with(prefix) {
+    // Clause-initial Russian commands.
+    for stem in lexicon.words_for_role_in_languages(ROLE_TRANSLATION_ACTION, &["ru"]) {
+        let prefix = format!("{stem} ");
+        if lower.starts_with(&prefix) {
             let rest = trimmed.get(prefix.len()..)?.trim();
             return clean_translation_surface(rest, &[" на ", " в "]);
         }
     }
 
+    // Head-final Hindi: the object precedes the का object particle and the verb.
     if let Some(index) = lower.find(" का ") {
-        if lower.contains("अनुवाद") {
+        let has_verb = lexicon
+            .words_for_role_in_languages(ROLE_TRANSLATION_ACTION, &["hi"])
+            .iter()
+            .any(|verb| lower.contains(verb.as_str()));
+        if has_verb {
             return Some(clean_argument(&trimmed[..index]));
         }
     }
 
+    // Head-final Chinese: an optional 把 disposal particle fronts the object and
+    // the verb follows it; otherwise the verb fronts and the object follows.
+    let zh_verbs = lexicon.words_for_role_in_languages(ROLE_TRANSLATION_ACTION, &["zh"]);
     if let Some(rest_lower) = lower.strip_prefix("把 ") {
-        if let Some(index) = rest_lower.find(" 翻译") {
-            let start = trimmed.len() - rest_lower.len();
-            return Some(clean_argument(&trimmed[start..start + index]));
-        }
-        if let Some(index) = rest_lower.find(" 翻譯") {
-            let start = trimmed.len() - rest_lower.len();
-            return Some(clean_argument(&trimmed[start..start + index]));
+        for verb in &zh_verbs {
+            let needle = format!(" {verb}");
+            if let Some(index) = rest_lower.find(&needle) {
+                let start = trimmed.len() - rest_lower.len();
+                return Some(clean_argument(&trimmed[start..start + index]));
+            }
         }
     }
 
-    for marker in ["翻译", "翻譯"] {
-        if let Some(index) = lower.find(marker) {
-            let rest = trimmed[index + marker.len()..].trim();
+    for verb in &zh_verbs {
+        if let Some(index) = lower.find(verb.as_str()) {
+            let rest = trimmed[index + verb.len()..].trim();
             return clean_translation_surface(rest, &["成", "为", "為", " to "]);
         }
     }
@@ -698,12 +649,9 @@ fn clean_translation_surface(rest: &str, delimiters: &[&str]) -> Option<String> 
 fn parse_binary_relation(prompt: &str) -> Option<ParsedRelation> {
     let trimmed = prompt.trim();
     let lower = trimmed.to_lowercase();
-    for predicate in PROPERTY_PATTERNS {
-        if predicate.id == "P5972" {
-            continue;
-        }
-        for phrase in predicate.phrases.iter().chain(predicate.aliases.iter()) {
-            let Some((start, len)) = find_relation_phrase(&lower, phrase) else {
+    for predicate in binary_relation_patterns() {
+        for surface in surfaces_by_munch(predicate) {
+            let Some((start, len)) = find_relation_phrase(&lower, &surface.text) else {
                 continue;
             };
             if start >= trimmed.len() || start + len > trimmed.len() {
@@ -717,8 +665,9 @@ fn parse_binary_relation(prompt: &str) -> Option<ParsedRelation> {
             return Some(ParsedRelation {
                 subject,
                 predicate_surface: trimmed[start..start + len].trim().to_owned(),
-                predicate: *predicate,
+                predicate,
                 object,
+                alternative_slug: surface.alternative_slug.clone(),
             });
         }
     }

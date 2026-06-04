@@ -8,6 +8,7 @@
 use crate::calculation::{evaluate_calculation, CalculationEvaluation};
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
+use crate::seed;
 
 use super::finalize_simple;
 
@@ -233,16 +234,22 @@ fn parse_compound_interest_request(
     prompt: &str,
     normalized: &str,
 ) -> Option<CompoundInterestRequest> {
-    if !(normalized.contains("invest") || normalized.contains("investment"))
-        || !normalized.contains("interest")
-        || !normalized.contains("compound")
+    // The investment / interest / compounding cues are language-independent
+    // meanings carried by the finance lexicon; we test the raw substring of
+    // the already-normalized prompt against every surface form (English
+    // forms reproduce the original `invest`/`interest`/`compound` markers,
+    // while the additional languages broaden coverage for free).
+    let lexicon = seed::lexicon();
+    if !lexicon.mentions_role_raw(seed::ROLE_INVESTMENT_CUE, normalized)
+        || !lexicon.mentions_role_raw(seed::ROLE_INTEREST_CUE, normalized)
+        || !lexicon.mentions_role_raw(seed::ROLE_COMPOUNDING_ACTION_CUE, normalized)
     {
         return None;
     }
     let principal = parse_currency_amount(prompt)?;
     let annual_rate_percent = parse_percent_before_symbol(prompt)?;
     let compounds_per_year = parse_compounds_per_year(normalized)?;
-    let years = parse_number_before_keyword(normalized, "year")?;
+    let years = years_in_prompt(normalized)?;
     Some(CompoundInterestRequest {
         principal,
         annual_rate_percent,
@@ -257,7 +264,12 @@ fn parse_final_amount_conversion_request(
     normalized: &str,
     log: &EventLog,
 ) -> Option<(f64, &'static str, &'static str)> {
-    if !normalized.contains("convert") || !normalized.contains("final amount") {
+    // "convert" and "final amount" are themselves meanings: a conversion
+    // action applied to the final-amount reference produced by a prior turn.
+    let lexicon = seed::lexicon();
+    if !lexicon.mentions_role_raw(seed::ROLE_CONVERSION_ACTION_CUE, normalized)
+        || !lexicon.mentions_role_raw(seed::ROLE_FINAL_AMOUNT_REFERENCE, normalized)
+    {
         return None;
     }
     let target = target_currency(normalized)?;
@@ -287,9 +299,16 @@ fn parse_currency_amount(prompt: &str) -> Option<f64> {
     if let Some(dollar) = prompt.find('$') {
         return parse_number_right(prompt, dollar + '$'.len_utf8());
     }
+    // The `$` glyph is a typographic symbol that stays in code; the spelled-out
+    // US-dollar markers, however, are language data. We reconstruct each as a
+    // space-prefixed token from the currency_usd_reference English surface forms
+    // (usd, dollar, dollars) and scan for the amount immediately to their left.
     let lower = prompt.to_lowercase();
-    for marker in [" usd", " dollar", " dollars"] {
-        if let Some(index) = lower.find(marker) {
+    for word in
+        seed::lexicon().words_for_role_in_languages(seed::ROLE_CURRENCY_USD_REFERENCE, &["en"])
+    {
+        let marker = format!(" {word}");
+        if let Some(index) = lower.find(&marker) {
             if let Some(amount) = parse_number_left(&lower, index) {
                 return Some(amount);
             }
@@ -304,32 +323,45 @@ fn parse_percent_before_symbol(prompt: &str) -> Option<f64> {
         .and_then(|index| parse_number_left(prompt, index))
 }
 
-fn parse_number_before_keyword(text: &str, keyword: &str) -> Option<f64> {
-    text.find(keyword)
-        .and_then(|index| parse_number_left(text, index))
+fn years_in_prompt(normalized: &str) -> Option<f64> {
+    // The duration unit is a meaning (year_unit_cue); we locate the earliest
+    // of its surface forms (English `year`, plus the other languages) and read
+    // the number to its left, reproducing the original `find("year")` scan.
+    let earliest = seed::lexicon()
+        .words_for_role(seed::ROLE_YEAR_UNIT_CUE)
+        .into_iter()
+        .filter_map(|word| normalized.find(&word))
+        .min()?;
+    parse_number_left(normalized, earliest)
 }
 
 fn parse_compounds_per_year(normalized: &str) -> Option<u32> {
-    if normalized.contains("monthly") {
-        Some(12)
-    } else if normalized.contains("quarterly") {
-        Some(4)
-    } else if normalized.contains("weekly") {
-        Some(52)
-    } else if normalized.contains("daily") {
-        Some(365)
-    } else if normalized.contains("annually") || normalized.contains("yearly") {
-        Some(1)
-    } else {
-        None
+    // The compounding frequency is a cluster of meanings (monthly, quarterly,
+    // weekly, daily, annual), each carrying its surface forms and listed in
+    // priority order in the finance lexicon. We pick the first whose surface
+    // appears in the prompt and map its slug to the periods-per-year count.
+    seed::lexicon()
+        .meanings_with_role(seed::ROLE_COMPOUNDING_FREQUENCY_CUE)
+        .find(|meaning| meaning.words().any(|word| normalized.contains(word)))
+        .and_then(|meaning| compounds_per_year_for_slug(&meaning.slug))
+}
+
+fn compounds_per_year_for_slug(slug: &str) -> Option<u32> {
+    match slug {
+        "compounding_monthly" => Some(12),
+        "compounding_quarterly" => Some(4),
+        "compounding_weekly" => Some(52),
+        "compounding_daily" => Some(365),
+        "compounding_annual" => Some(1),
+        _ => None,
     }
 }
 
 fn target_currency(normalized: &str) -> Option<&'static str> {
-    let padded = format!(" {normalized} ");
-    if padded.contains(" eur ")
-        || padded.contains(" euro ")
-        || padded.contains(" euros ")
+    // The euro target is a meaning (currency_eur_reference) matched as a
+    // token-bounded word, reproducing the original padded " eur "/" euro "/
+    // " euros " test; the `€` glyph is a typographic symbol that stays in code.
+    if seed::lexicon().mentions_role(seed::ROLE_CURRENCY_EUR_REFERENCE, normalized)
         || normalized.contains('€')
     {
         Some("EUR")
@@ -339,10 +371,10 @@ fn target_currency(normalized: &str) -> Option<&'static str> {
 }
 
 fn asks_for_web_rate(normalized: &str) -> bool {
-    normalized.contains("web")
-        || normalized.contains("current exchange")
-        || normalized.contains("current rate")
-        || normalized.contains("exchange rate")
+    // "fetch a live rate" is a meaning (live_rate_freshness_cue) whose surface
+    // forms (web, current exchange, current rate, exchange rate) are matched as
+    // raw substrings, exactly as the original recognizer did.
+    seed::lexicon().mentions_role_raw(seed::ROLE_LIVE_RATE_FRESHNESS_CUE, normalized)
 }
 
 fn currency_rate(
@@ -468,10 +500,22 @@ fn parse_number_slice(value: &str) -> Option<f64> {
 }
 
 fn currency_after(text: &str) -> Option<&'static str> {
+    // The currency word that follows a parsed amount is recognised from the
+    // currency_usd_reference / currency_eur_reference English surface forms
+    // (usd|dollar|dollars, eur|euro|euros); the returned ISO codes stay in code.
     let lower = text.trim_start().to_lowercase();
-    if lower.starts_with("usd") || lower.starts_with("dollar") {
+    let lexicon = seed::lexicon();
+    if lexicon
+        .words_for_role_in_languages(seed::ROLE_CURRENCY_USD_REFERENCE, &["en"])
+        .iter()
+        .any(|word| lower.starts_with(word.as_str()))
+    {
         Some("USD")
-    } else if lower.starts_with("eur") || lower.starts_with("euro") {
+    } else if lexicon
+        .words_for_role_in_languages(seed::ROLE_CURRENCY_EUR_REFERENCE, &["en"])
+        .iter()
+        .any(|word| lower.starts_with(word.as_str()))
+    {
         Some("EUR")
     } else {
         None

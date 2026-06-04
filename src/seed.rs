@@ -23,11 +23,14 @@
 
 mod brainstorm;
 mod coreference;
+mod embedded;
 mod facts;
+mod meanings;
 mod operation_vocabulary;
 pub(crate) mod parser;
 mod personas;
 mod projects;
+mod roles;
 mod summary_topics;
 
 use std::collections::BTreeMap;
@@ -39,7 +42,17 @@ use parser::{
 
 pub use brainstorm::{brainstorm_seeds, BrainstormCategory, BrainstormSeeds};
 pub use coreference::{coreference_seeds, Antecedent, CoreferenceSeeds, Pronoun};
+pub use embedded::{
+    seed_files, AGENT_INFO_LINO, BRAINSTORM_SEEDS_LINO, CONCEPTS_LINO, CONCEPT_CONTEXTS_LINO,
+    COREFERENCE_LINO, DEMO_DIALOGS_LINO, ENVIRONMENTS_LINO, FACTS_LINO, GREETINGS_LINO,
+    HELLO_WORLD_PROGRAMS_LINO, IDENTITY_LINO, INTENT_ROUTING_LINO, LANGUAGE_DETECTION_LINO,
+    MEANINGS_CALENDAR_LINO, MEANINGS_FACTS_LINO, MEANINGS_LINO, MEANINGS_SOFTWARE_PROJECT_LINO,
+    MEANINGS_UNITS_LINO, MEANING_FILES, MULTILINGUAL_RESPONSES_LINO, OPERATION_VOCABULARY_LINO,
+    PERSONAS_LINO, PROGRAM_PLAN_RULES_LINO, PROJECTS_LINO, PROMPT_PATTERNS_LINO,
+    SELF_IMPROVEMENT_LOOP_LINO, SUMMARY_TOPICS_LINO, TOOLS_LINO,
+};
 pub use facts::{facts, FactRecord, LocalizedFact};
+pub use meanings::{lexicon, Lexeme, Lexicon, Meaning, Slot, WordForm};
 pub use operation_vocabulary::{
     operation_vocabulary, OperationLanguageForms, OperationTrigger, OperationVocabulary,
 };
@@ -47,49 +60,69 @@ pub use personas::{persona_seeds, Persona, PersonaSeeds, PersonaTopic};
 pub use projects::{
     projects_registry, LocalizedProject, ProjectRecord, ProjectStatement, ProjectsRegistry,
 };
+pub use roles::{
+    ROLE_ANSWER_RATIONALE_LEAD, ROLE_ARCHITECTURE_CONCEPT, ROLE_ARITHMETIC_OPERATOR_WORD,
+    ROLE_ASSISTANT_MECHANISM_INQUIRY, ROLE_ASSISTANT_SELF_REFERENCE,
+    ROLE_BEHAVIOR_RULE_EDIT_DIRECTIVE, ROLE_BINARY_RELATION_PROPERTY,
+    ROLE_CALCULATION_BASIS_REFERENCE, ROLE_CALCULATION_DOMAIN_TERM, ROLE_CALCULATION_REQUEST_CUE,
+    ROLE_CALCULATION_RESULT_QUERY_CUE, ROLE_CALCULATOR_TOOL_NAME, ROLE_CALENDAR_DAY_REFERENCE,
+    ROLE_CALENDAR_DIRECTION_NEXT, ROLE_CALENDAR_DIRECTION_PREVIOUS, ROLE_CALENDAR_QUESTION,
+    ROLE_CALENDAR_TODAY, ROLE_CALENDAR_WEEKDAY, ROLE_CAPABILITY_QUERY, ROLE_CAPABILITY_QUERY_MORE,
+    ROLE_CARDINAL_NUMBER_WORD, ROLE_CAUSAL_INTERROGATIVE, ROLE_CIRCULAR_JOKE_PHRASE,
+    ROLE_CLARIFICATION_REQUEST, ROLE_CLAUSE_CONTINUATION_MARKER, ROLE_CODE_METHOD_NOUN,
+    ROLE_COMMON_TYPO, ROLE_COMPARISON_DIFFERENCE_CUE, ROLE_COMPARISON_TABLE_NOUN,
+    ROLE_COMPARISON_TABLE_TRIGGER, ROLE_COMPOSITIONAL_GENITIVE_HEAD, ROLE_COMPOSITIONAL_LEMMA,
+    ROLE_COMPOSITIONAL_PHRASE, ROLE_COMPOUNDING_ACTION_CUE, ROLE_COMPOUNDING_FREQUENCY_CUE,
+    ROLE_CONVERSATION_REFERENCE, ROLE_CONVERSATION_SUMMARY_COURTESY,
+    ROLE_CONVERSATION_SUMMARY_DIRECTIVE, ROLE_CONVERSATION_SUMMARY_PHRASE,
+    ROLE_CONVERSATION_TOPIC_OPENER, ROLE_CONVERSION_ACTION_CUE, ROLE_CURRENCY_EUR_REFERENCE,
+    ROLE_CURRENCY_RUB_REFERENCE, ROLE_CURRENCY_USD_REFERENCE, ROLE_DEFINITION_ARTIFACT_REQUEST,
+    ROLE_DEFINITION_COMMAND, ROLE_DEFINITION_MERGE_ACTION, ROLE_DEFINITION_MERGE_MARKER,
+    ROLE_DEFINITION_MERGE_TAIL_BOUNDARY, ROLE_DETAIL_MODIFIER, ROLE_ENUMERATION_CONSTRAINT,
+    ROLE_ENUMERATION_REQUEST_OPENER, ROLE_EXCHANGE_RATE_REFERENCE, ROLE_EXPLANATION_REQUEST_LEAD,
+    ROLE_FACT_RELATION, ROLE_FEATURE_ACTION_ARITHMETIC, ROLE_FEATURE_ACTION_PLANNING,
+    ROLE_FEATURE_CAPABILITY_ALIAS, ROLE_FEATURE_CAPABILITY_QUESTION, ROLE_FINAL_AMOUNT_REFERENCE,
+    ROLE_FOLLOWUP_INSTRUCTION_VERB, ROLE_GAME_TRACKER_DOMAIN, ROLE_GAME_TRACKER_MECHANIC,
+    ROLE_HELLO_WORLD_REFERENCE, ROLE_HTTP_FETCH, ROLE_IMPLEMENTATION_LANGUAGE_NOUN,
+    ROLE_IMPLEMENTATION_LANGUAGE_PREPOSITION, ROLE_INTEREST_CUE, ROLE_INTERROGATIVE_OPENER,
+    ROLE_INVESTMENT_CUE, ROLE_KNOWLEDGE_INVENTORY_INTERROGATIVE, ROLE_KNOWLEDGE_INVENTORY_NOUN,
+    ROLE_KNOWLEDGE_INVENTORY_PHRASE, ROLE_KNOWLEDGE_POSSESSION, ROLE_LINKS_NOTATION_FORMAT,
+    ROLE_LIVE_RATE_FRESHNESS_CUE, ROLE_LOCAL_SHELL_REQUEST_CUE, ROLE_MATH_FUNCTION_NAME,
+    ROLE_MEASUREMENT_UNIT, ROLE_MECHANISM_INQUIRY, ROLE_MECHANISM_PREDICATE,
+    ROLE_NETWORK_CAPABILITY_CUE, ROLE_NONDETERMINISTIC_MARKER, ROLE_NON_REFERENTIAL_SUBJECT,
+    ROLE_OPERATING_PRINCIPLE, ROLE_OUTPUT_DISPLAY_REQUEST, ROLE_PHYSICAL_ACTION_TRIGGER,
+    ROLE_PHYSICAL_DIMENSION, ROLE_PLAYWRIGHT_SCRIPT_CUE, ROLE_PLAYWRIGHT_TOOL_NAME,
+    ROLE_POLITENESS_CUE, ROLE_PRIOR_ANSWER_REFERENCE, ROLE_PROCEDURAL_REQUEST,
+    ROLE_PROCEDURAL_TASK_MODIFIER, ROLE_PROGRAM_ARTIFACT, ROLE_PROGRAM_GENUS, ROLE_PROGRAM_KIND,
+    ROLE_PROGRAM_LANGUAGE_ALIAS, ROLE_PROGRAM_MODIFICATION, ROLE_PROGRAM_REQUEST,
+    ROLE_PROGRAM_SYNTHESIS_ACTION, ROLE_PROGRAM_SYNTHESIS_DOMAIN, ROLE_PROGRAM_SYNTHESIS_SIGNAL,
+    ROLE_PROGRAM_SYNTHESIS_SUBJECT, ROLE_PROGRAM_SYNTHESIS_TASK, ROLE_PROGRAM_TASK_ALIAS,
+    ROLE_PROOF_CLAIM_SCAFFOLD, ROLE_PROOF_CONCEPT_DETERMINISM, ROLE_PROOF_CONCEPT_GODEL,
+    ROLE_PROOF_DIRECTIVE, ROLE_PROOF_MARKER, ROLE_PROOF_REQUEST_LEAD, ROLE_QUANTITY_CONVERSION_CUE,
+    ROLE_RESEARCH_CRITERION, ROLE_RESEARCH_EVALUATION_DOMAIN, ROLE_RESEARCH_EVIDENCE_DOMAIN,
+    ROLE_RESEARCH_PROMPT_SIGNAL, ROLE_RESEARCH_QUESTION_OPENER, ROLE_RESEARCH_SUPERLATIVE_MODIFIER,
+    ROLE_RULE_LISTING_PHRASE, ROLE_RULE_LISTING_REQUEST, ROLE_RULE_LISTING_SCOPE,
+    ROLE_RULE_LISTING_SUBJECT, ROLE_SCRIPT_AUTHORING_VERB, ROLE_SCRIPT_OR_CODE_ARTIFACT,
+    ROLE_SELF_FACT_QUERY, ROLE_SELF_INTRODUCTION_REQUEST, ROLE_SHELL_CAPABILITY_CUE,
+    ROLE_SKILL_TEACHING_RESPONSE_VERB, ROLE_SKILL_TEACHING_TRIGGER_LEAD, ROLE_SKILL_WHEN_THEN_PAIR,
+    ROLE_SOFTWARE_APPROVAL_TRIGGER, ROLE_SOFTWARE_ARTIFACT_KIND, ROLE_SOFTWARE_AUTHORING_ACTION,
+    ROLE_SOFTWARE_BASH_COMMAND, ROLE_SOFTWARE_DELIVERY_MODE, ROLE_SOFTWARE_FEATURE,
+    ROLE_SOFTWARE_FOLLOWUP_DEMONSTRATION, ROLE_SOFTWARE_FOLLOWUP_EXECUTION,
+    ROLE_SOFTWARE_FOLLOWUP_VERIFICATION, ROLE_SOFTWARE_IMPLEMENTATION_LANGUAGE,
+    ROLE_SOFTWARE_REQUIREMENT_CATEGORY, ROLE_SOFTWARE_STEP_GRANULARITY,
+    ROLE_SUMMARY_CLASSIFICATION_CUE, ROLE_TOOL_ARGUMENT_MARKER, ROLE_TOOL_INVOCATION_CUE,
+    ROLE_TOPIC_SCAN_STOP_WORD, ROLE_TRANSLATION_ACTION, ROLE_TRANSLATION_INTO_MARKER,
+    ROLE_TRANSLATION_OBJECT_MARKER, ROLE_TRANSLATION_PROPERTY, ROLE_TRANSLATION_SOURCE_MARKER,
+    ROLE_TRANSLATION_TARGET_DIRECTION, ROLE_TRANSLATION_TARGET_MARKER,
+    ROLE_TRANSLATION_UNQUOTED_FRAME, ROLE_URL_NAVIGATE, ROLE_VULGAR_CONTENT_MARKER,
+    ROLE_WEB_MEDIUM, ROLE_WEB_SEARCH_ACTION, ROLE_WEB_SEARCH_EXPLICIT_PREFIX,
+    ROLE_WEB_SEARCH_HISTORY_SIGNAL, ROLE_WEB_SEARCH_IMPERATIVE_LEAD,
+    ROLE_WEB_SEARCH_QUERY_LEADING_NOISE, ROLE_WEB_SEARCH_QUERY_TRAILING_NOISE,
+    ROLE_WEB_SEARCH_SIGNAL, ROLE_WEB_SEARCH_SOURCE_ONLY, ROLE_WEB_SEARCH_STRONG_ACTION,
+    ROLE_WEB_SEARCH_TOOL_NAME, ROLE_WEB_SEARCH_TOPIC_MARKER, ROLE_WHO_QUESTION_LEAD,
+    ROLE_WHO_QUESTION_TAIL, ROLE_WIKIDATA_ENTITY_ANCHOR, ROLE_YEAR_UNIT_CUE,
+};
 pub use summary_topics::{summary_topic_seeds, SummaryTopic, SummaryTopicSeeds};
-
-/// Embedded copy of every Links Notation seed file. Returned in declaration
-/// order so callers can render the merged bundle deterministically.
-#[must_use]
-pub fn seed_files() -> Vec<(&'static str, &'static str)> {
-    vec![
-        ("data/seed/agent-info.lino", AGENT_INFO_LINO),
-        (
-            "data/seed/multilingual-responses.lino",
-            MULTILINGUAL_RESPONSES_LINO,
-        ),
-        ("data/seed/concepts.lino", CONCEPTS_LINO),
-        ("data/seed/concept-contexts.lino", CONCEPT_CONTEXTS_LINO),
-        ("data/seed/facts.lino", FACTS_LINO),
-        ("data/seed/brainstorm-seeds.lino", BRAINSTORM_SEEDS_LINO),
-        ("data/seed/personas.lino", PERSONAS_LINO),
-        ("data/seed/summary-topics.lino", SUMMARY_TOPICS_LINO),
-        ("data/seed/coreference.lino", COREFERENCE_LINO),
-        ("data/seed/tools.lino", TOOLS_LINO),
-        ("data/seed/language-detection.lino", LANGUAGE_DETECTION_LINO),
-        ("data/seed/prompt-patterns.lino", PROMPT_PATTERNS_LINO),
-        ("data/seed/intent-routing.lino", INTENT_ROUTING_LINO),
-        (
-            "data/seed/operation-vocabulary.lino",
-            OPERATION_VOCABULARY_LINO,
-        ),
-        ("data/seed/greetings.lino", GREETINGS_LINO),
-        ("data/seed/identity.lino", IDENTITY_LINO),
-        (
-            "data/seed/hello-world-programs.lino",
-            HELLO_WORLD_PROGRAMS_LINO,
-        ),
-        ("data/seed/program-plan-rules.lino", PROGRAM_PLAN_RULES_LINO),
-        (
-            "data/seed/self-improvement-loop.lino",
-            SELF_IMPROVEMENT_LOOP_LINO,
-        ),
-        ("data/seed/demo-dialogs.lino", DEMO_DIALOGS_LINO),
-        ("data/seed/environments.lino", ENVIRONMENTS_LINO),
-        ("data/seed/projects.lino", PROJECTS_LINO),
-    ]
-}
 
 /// Merge every embedded seed file into a single Links Notation document.
 ///
@@ -724,32 +757,6 @@ pub fn environment_directory() -> EnvironmentDirectory {
 pub fn environment_records() -> Vec<EnvironmentRecord> {
     environment_directory().environments
 }
-
-/// Raw embedded contents (used by `merged_bundle` and by tests).
-pub const AGENT_INFO_LINO: &str = include_str!("../data/seed/agent-info.lino");
-pub const MULTILINGUAL_RESPONSES_LINO: &str =
-    include_str!("../data/seed/multilingual-responses.lino");
-pub const CONCEPTS_LINO: &str = include_str!("../data/seed/concepts.lino");
-pub const CONCEPT_CONTEXTS_LINO: &str = include_str!("../data/seed/concept-contexts.lino");
-pub const FACTS_LINO: &str = include_str!("../data/seed/facts.lino");
-pub const BRAINSTORM_SEEDS_LINO: &str = include_str!("../data/seed/brainstorm-seeds.lino");
-pub const PERSONAS_LINO: &str = include_str!("../data/seed/personas.lino");
-pub const SUMMARY_TOPICS_LINO: &str = include_str!("../data/seed/summary-topics.lino");
-pub const COREFERENCE_LINO: &str = include_str!("../data/seed/coreference.lino");
-pub const TOOLS_LINO: &str = include_str!("../data/seed/tools.lino");
-pub const LANGUAGE_DETECTION_LINO: &str = include_str!("../data/seed/language-detection.lino");
-pub const PROMPT_PATTERNS_LINO: &str = include_str!("../data/seed/prompt-patterns.lino");
-pub const INTENT_ROUTING_LINO: &str = include_str!("../data/seed/intent-routing.lino");
-pub const OPERATION_VOCABULARY_LINO: &str = include_str!("../data/seed/operation-vocabulary.lino");
-pub const GREETINGS_LINO: &str = include_str!("../data/seed/greetings.lino");
-pub const IDENTITY_LINO: &str = include_str!("../data/seed/identity.lino");
-pub const HELLO_WORLD_PROGRAMS_LINO: &str = include_str!("../data/seed/hello-world-programs.lino");
-pub const PROGRAM_PLAN_RULES_LINO: &str = include_str!("../data/seed/program-plan-rules.lino");
-pub const SELF_IMPROVEMENT_LOOP_LINO: &str =
-    include_str!("../data/seed/self-improvement-loop.lino");
-pub const DEMO_DIALOGS_LINO: &str = include_str!("../data/seed/demo-dialogs.lino");
-pub const ENVIRONMENTS_LINO: &str = include_str!("../data/seed/environments.lino");
-pub const PROJECTS_LINO: &str = include_str!("../data/seed/projects.lino");
 
 #[cfg(test)]
 mod tests {

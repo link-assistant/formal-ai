@@ -6,7 +6,7 @@ use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
 use crate::seed::{
-    self, BrainstormSeeds, CoreferenceSeeds, FactRecord, PersonaSeeds, SummaryTopicSeeds,
+    self, BrainstormSeeds, CoreferenceSeeds, FactRecord, Meaning, PersonaSeeds, SummaryTopicSeeds,
 };
 use crate::solver_helpers::last_user_turn;
 
@@ -119,33 +119,32 @@ pub fn try_conversation_topic_request(
     ))
 }
 
+/// Extract the topic the user proposed to discuss from a conversational opener.
+///
+/// The recognized surfaces — the let-us-talk-about-X phrasings in every
+/// supported language — carry the [`seed::ROLE_CONVERSATION_TOPIC_OPENER`] role;
+/// each is a prefix whose text before the `…` slot is the matchable opener, in
+/// declaration order. A form whose `action` field is `scan` is also matched
+/// anywhere in the prompt, not only at the start, so an opener that follows a
+/// greeting is still found. No per-language opener list lives here — only the
+/// concept; the surfaces come from `data/seed/meanings-conversation.lino`.
 fn conversation_topic(prompt: &str, normalized: &str) -> Option<String> {
-    for prefix in [
-        "let's talk about ",
-        "lets talk about ",
-        "can we talk about ",
-        "talk about ",
-        "давай поговорим о ",
-        "давай поговорим об ",
-        "давайте поговорим о ",
-        "давайте поговорим об ",
-        "поговорим о ",
-        "поговорим об ",
-        "обсудим ",
-        "चलो बात करें ",
-        "बात करें ",
-        "聊聊",
-        "谈谈",
-    ] {
-        if let Some(topic) = normalized.strip_prefix(prefix) {
+    let forms = seed::lexicon().role_word_forms(seed::ROLE_CONVERSATION_TOPIC_OPENER);
+    for form in &forms {
+        if let Some(topic) = normalized.strip_prefix(form.before_slot()) {
             return clean_conversation_topic(topic);
         }
     }
 
     let lower = prompt.to_lowercase();
-    lower
-        .split_once("поговорим о ")
-        .and_then(|(_, topic)| clean_conversation_topic(topic))
+    for form in &forms {
+        if form.action == "scan" {
+            if let Some((_, topic)) = lower.split_once(form.before_slot()) {
+                return clean_conversation_topic(topic);
+            }
+        }
+    }
+    None
 }
 
 fn clean_conversation_topic(raw: &str) -> Option<String> {
@@ -162,30 +161,35 @@ fn clean_conversation_topic(raw: &str) -> Option<String> {
     (!topic.is_empty()).then_some(topic)
 }
 
-/// Parse the number of items the user asked for. Defaults to 5 when no
-/// explicit count is present. Recognises numeric and word forms in every
-/// supported language so the algorithm doesn't depend on English-only
-/// spelling.
+/// The number of brainstorm items returned when the prompt names no count.
+const DEFAULT_BRAINSTORM_COUNT: usize = 5;
+
+/// Parse the number of items the user asked for, defaulting to
+/// [`DEFAULT_BRAINSTORM_COUNT`] when no explicit count is present.
+///
+/// The only non-default count the brainstorm prompts exercise is ten, so the
+/// recogniser asks the seed whether the `ten` cardinal is evidenced in the
+/// prompt — in any supported language — and reads the integer value from that
+/// cardinal's own numeral surface rather than a hardcoded literal. Recognising
+/// the concept this way keeps the count language-independent and self-describing.
 fn requested_brainstorm_count(normalized: &str) -> usize {
-    const TEN_HINTS: &[&str] = &[
-        " 10 ",
-        "10.",
-        "10 ",
-        " 10",
-        "ten ",
-        "десять",
-        "10 идей",
-        "10 имён",
-        "दस ",
-        "10 ",
-        "十个",
-        "10 个",
-    ];
-    if TEN_HINTS.iter().any(|hint| normalized.contains(hint)) {
-        10
-    } else {
-        5
-    }
+    seed::lexicon()
+        .meaning("ten")
+        .filter(|ten| ten.evidenced_in(normalized))
+        .and_then(cardinal_value)
+        .unwrap_or(DEFAULT_BRAINSTORM_COUNT)
+}
+
+/// Read the integer value of a cardinal-number meaning from its own data.
+///
+/// Each cardinal carries a numeral word form (e.g. `"10"`) — the
+/// script-independent surface that spells the value — so the count is derived
+/// from the seed rather than restated as a literal in code.
+fn cardinal_value(meaning: &Meaning) -> Option<usize> {
+    meaning
+        .words()
+        .find(|word| !word.is_empty() && word.bytes().all(|byte| byte.is_ascii_digit()))
+        .and_then(|numeral| numeral.parse().ok())
 }
 
 fn numbered(items: &[String], count: usize) -> String {
@@ -203,126 +207,31 @@ fn fact_records() -> &'static [FactRecord] {
     CELL.get_or_init(seed::facts).as_slice()
 }
 
-/// Multilingual relation patterns. Each pattern (`relation_slug`, keywords) is
-/// matched against the normalized prompt. The relation slugs match the JS
-/// worker's `FACT_RELATIONS` table so the two stacks emit identical
-/// `fact_query:relation:*` evidence and route to the same Wikidata property
-/// (e.g. P36 for `capital`).
-const RELATION_PATTERNS: &[(&str, &[&str])] = &[
-    (
-        "capital",
-        &[
-            "capital",
-            "столица",
-            "столицы",
-            "столицей",
-            "राजधानी",
-            "首都",
-        ],
-    ),
-    (
-        "population",
-        &[
-            "population",
-            "how many people",
-            "население",
-            "जनसंख्या",
-            "आबादी",
-            "人口",
-        ],
-    ),
-    ("currency", &["currency", "валюта", "मुद्रा", "货币", "貨幣"]),
-    (
-        "official_language",
-        &[
-            "official language",
-            "what language",
-            "государственный язык",
-            "официальный язык",
-            "राजभाषा",
-            "आधिकारिक भाषा",
-            "官方语言",
-            "官方語言",
-        ],
-    ),
-    ("continent", &["continent", "континент", "महाद्वीप", "大洲"]),
-    (
-        "author_of_book",
-        &[
-            "who wrote",
-            "author",
-            "written by",
-            "кто написал",
-            "написал",
-            "автор",
-            "किसने लिखी",
-            "किसने लिखा",
-            "लेखक",
-            "是谁写的",
-            "作者",
-        ],
-    ),
-    (
-        "painter_of_painting",
-        &[
-            "who painted",
-            "painted",
-            "painter",
-            "artist",
-            "кто написал",
-            "написал",
-            "художник",
-            "किसने बनाई",
-            "चित्रकार",
-            "कलाकार",
-            "谁画的",
-            "画家",
-        ],
-    ),
-    (
-        "built_year",
-        &[
-            "when",
-            "built",
-            "construction",
-            "когда",
-            "построена",
-            "построили",
-            "बनी",
-            "बनाई",
-            "कब",
-            "何时",
-            "建于",
-            "建造",
-        ],
-    ),
-    (
-        "physical_constant",
-        &[
-            "speed of light",
-            "what is",
-            "how fast",
-            "скорость света",
-            "какова",
-            "чему равна",
-            "प्रकाश की गति",
-            "कितनी",
-            "光速",
-            "是多少",
-        ],
-    ),
-];
-
-/// Match a relation slug against a normalized prompt by substring keyword.
+/// Detect which knowledge-base relation a prompt asks about.
+///
+/// Issue #386: the relations are no longer a hardcoded per-language keyword
+/// table. They are self-describing `fact_relation` meanings in
+/// `data/seed/meanings-facts.lino` — each `defined_by` the `knowledge_relation`
+/// concept and lexicalised in every supported language. We walk every meaning
+/// carrying [`seed::ROLE_FACT_RELATION`] in declaration order and return the
+/// first whose surface words appear in the prompt. Declaration order is
+/// load-bearing: "написал"/"кто написал" evidence both `author_of_book` and
+/// `painter_of_painting`, and `author_of_book` is declared first so it wins —
+/// exactly as the former pattern table did. Matching is raw substring (not a
+/// whitespace-token test) because several relations carry multi-word phrases
+/// ("how many people", "official language", "who wrote", "speed of light", …).
+/// The slugs match the JS worker's `FACT_RELATIONS` table so the two stacks
+/// emit identical `fact_query:relation:*` evidence and route to the same
+/// Wikidata property (e.g. P36 for `capital`).
 fn detect_relation(normalized: &str) -> Option<&'static str> {
-    RELATION_PATTERNS
-        .iter()
-        .find(|(_slug, keywords)| {
-            keywords
-                .iter()
-                .any(|keyword| !keyword.is_empty() && normalized.contains(keyword))
+    seed::lexicon()
+        .meanings_with_role(seed::ROLE_FACT_RELATION)
+        .find(|meaning| {
+            meaning
+                .words()
+                .any(|word| !word.is_empty() && normalized.contains(word))
         })
-        .map(|(slug, _)| *slug)
+        .map(|meaning| meaning.slug.as_str())
 }
 
 /// Find the subject alias the prompt mentions, if any. Returns the alias
@@ -467,4 +376,133 @@ pub fn try_roleplay_request(
         &body,
         0.8,
     ))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::detect_relation;
+
+    /// Issue #386: `detect_relation` no longer reads a hardcoded keyword table —
+    /// it queries the `fact_relation` meanings in `data/seed/meanings-facts.lino`.
+    /// This pins that every relation is still recognised from a representative
+    /// prompt in each supported language (the words now live in the lexicon), so
+    /// the data-driven rewrite cannot silently drop a relation or a language.
+    #[test]
+    fn every_relation_is_detected_in_every_language() {
+        for (slug, prompts) in [
+            (
+                "capital",
+                [
+                    "what is the capital of france",
+                    "столица россии",
+                    "भारत की राजधानी क्या है",
+                    "法国的首都是什么",
+                ],
+            ),
+            (
+                "population",
+                [
+                    "what is the population of india",
+                    "какое население москвы",
+                    "जापान की जनसंख्या कितनी है",
+                    "中国的人口是多少",
+                ],
+            ),
+            (
+                "currency",
+                [
+                    "what is the currency of japan",
+                    "какая валюта в индии",
+                    "ब्राज़ील की मुद्रा क्या है",
+                    "美国的货币是什么",
+                ],
+            ),
+            (
+                "official_language",
+                [
+                    "what is the official language of brazil",
+                    "государственный язык швейцарии",
+                    "स्विट्ज़रलैंड की राजभाषा क्या है",
+                    "瑞士的官方语言是什么",
+                ],
+            ),
+            (
+                "continent",
+                [
+                    "which continent is egypt in",
+                    "на каком континенте египет",
+                    "मिस्र किस महाद्वीप में है",
+                    "埃及在哪个大洲",
+                ],
+            ),
+            (
+                "author_of_book",
+                [
+                    "who wrote war and peace",
+                    "кто автор войны и мира",
+                    "महाभारत के लेखक कौन हैं",
+                    "战争与和平的作者是谁",
+                ],
+            ),
+            (
+                "painter_of_painting",
+                [
+                    "who painted the mona lisa",
+                    "кто художник этой картины",
+                    "इस चित्र का चित्रकार कौन है",
+                    "蒙娜丽莎是谁画的",
+                ],
+            ),
+            (
+                "built_year",
+                [
+                    "when was the eiffel tower built",
+                    "когда построена эйфелева башня",
+                    "ताज महल कब बनी थी",
+                    "长城建于何时",
+                ],
+            ),
+            (
+                "physical_constant",
+                [
+                    "what is the speed of light",
+                    "чему равна скорость света",
+                    "प्रकाश की गति कितनी है",
+                    "光速是多少",
+                ],
+            ),
+        ] {
+            for prompt in prompts {
+                assert_eq!(
+                    detect_relation(prompt),
+                    Some(slug),
+                    "prompt `{prompt}` should resolve to relation `{slug}`",
+                );
+            }
+        }
+    }
+
+    /// The bare Russian verb "написал" (and "кто написал") lexicalises *both*
+    /// `author_of_book` and `painter_of_painting`. Declaration order in
+    /// `meanings-facts.lino` is load-bearing: `author_of_book` is declared first,
+    /// so it must win — exactly as the former first-match-wins pattern table did.
+    #[test]
+    fn ambiguous_napisal_prefers_author_over_painter() {
+        assert_eq!(
+            detect_relation("кто написал войну и мир"),
+            Some("author_of_book")
+        );
+        assert_eq!(
+            detect_relation("кто написал эту картину"),
+            Some("author_of_book")
+        );
+    }
+
+    /// A prompt that mentions no relation surface word resolves to nothing, so
+    /// the caller falls back to the matched record's declared relation.
+    #[test]
+    fn unrelated_prompt_detects_no_relation() {
+        assert_eq!(detect_relation("hello there how are you"), None);
+        assert_eq!(detect_relation("привет как дела"), None);
+    }
 }

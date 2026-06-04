@@ -1046,6 +1046,31 @@ const PREFERENCE_DEFAULTS = {
   composerAction: "attach",
 };
 
+// Issue #386: precompute the formatted default values so the issue report can
+// omit any User Context field that matches its shipped default. Keeping these
+// derived from PREFERENCE_DEFAULTS means they stay in sync if a default moves.
+const DEFAULT_GUESS_PROBABILITY_PERCENT = formatSliderValue(
+  PREFERENCE_DEFAULTS.guessProbability,
+);
+const DEFAULT_TEMPERATURE_TEXT = String(
+  normalizeSliderPreference(PREFERENCE_DEFAULTS.temperature, 0),
+);
+const DEFAULT_FOLLOW_UP_PROBABILITY_PERCENT = formatSliderValue(
+  PREFERENCE_DEFAULTS.followUpProbability,
+);
+
+// Issue #386: the settings panel lets the user reset each setting (or all of
+// them) back to the shipped default. A setting is "modified" when its current
+// value differs from PREFERENCE_DEFAULTS; numeric sliders are compared
+// numerically so 0.8 and "0.8" are treated as equal.
+function settingIsDefault(key, value) {
+  const fallback = PREFERENCE_DEFAULTS[key];
+  if (typeof fallback === "number") {
+    return Number(value) === fallback;
+  }
+  return value === fallback;
+}
+
 const UI_SKINS = ["flat", "glass", "contrast"];
 const CHAT_STYLES = ["cards", "compact", "bubbles"];
 const COMPOSER_STYLES = ["flat", "glass-soft", "glass-clear", "bubble"];
@@ -1527,22 +1552,29 @@ function appendUserContextBlock(lines, context) {
   };
 
   push("UI languages", formatUiLanguagesField(safe.uiLanguage, safe.browserLanguages));
-  push("Theme", formatThemeField(safe));
+  // Issue #386: omit settings that are set exactly to their default so the
+  // report keeps space for the dialog itself. A field is reported only when it
+  // differs from the shipped default (or carries an explicit user value).
+  const themePreference = safe.themePreference || PREFERENCE_DEFAULTS.theme;
+  if (themePreference !== PREFERENCE_DEFAULTS.theme) {
+    push("Theme", formatThemeField(safe));
+  }
   push("UI", formatUiField(safe));
   push("Locale", formatLocaleField(safe));
   if (safe.preferredLocation) {
     push("Preferred location", safe.preferredLocation);
   }
-  push("Guess probability", `${safe.guessProbability || "unknown"}%`);
-  push("Temperature", safe.temperature);
-  push("Follow-up probability", `${safe.followUpProbability || "unknown"}%`);
-  if (safe.locationInference && !safe.preferredLocation) {
-    // Per issue #140 feedback: "We should just write to what it inferred to,
-    // and from which source. So it can be shorter." Reuse the inference
-    // sentence verbatim when there is no explicit preference; the original
-    // wording ("time zone / locale only; …") doubles as the source.
-    push("Location", `inferred from ${safe.locationInference.replace(/;.*$/, "").trim()}`);
+  if (safe.guessProbability !== DEFAULT_GUESS_PROBABILITY_PERCENT) {
+    push("Guess probability", `${safe.guessProbability || "unknown"}%`);
   }
+  if (safe.temperature !== DEFAULT_TEMPERATURE_TEXT) {
+    push("Temperature", safe.temperature);
+  }
+  if (safe.followUpProbability !== DEFAULT_FOLLOW_UP_PROBABILITY_PERCENT) {
+    push("Follow-up probability", `${safe.followUpProbability || "unknown"}%`);
+  }
+  // Issue #386: the inference-only location ("time zone / locale only") is the
+  // default, so it is omitted. An explicit preference is reported above.
 
   if (entries.length === 0) return;
   lines.push("## User Context");
@@ -1820,6 +1852,51 @@ function messagesForConversation(events, conversationId) {
     );
   }
   return out;
+}
+
+// Issue #386: serialize a whole stored conversation to Markdown so it can be
+// copied from the conversations list. Each turn becomes a `### <author>`
+// section followed by the message body. When `includeReasoning` is set (the
+// diagnostics surface is on) the per-turn reasoning steps — persisted as
+// separate `reasoning` events recorded just before each assistant message —
+// are appended after that AI message as a Markdown ordered list, so the export
+// mirrors what the diagnostics panel shows on screen.
+function conversationToMarkdown(events, conversationId, options = {}) {
+  if (!conversationId) return "";
+  const includeReasoning = options.includeReasoning === true;
+  const userLabel = options.userLabel || "You";
+  const assistantLabel = options.assistantLabel || "formal-ai";
+  const reasoningLabel = options.reasoningLabel || "Reasoning";
+  const safe = Array.isArray(events) ? events : [];
+  const blocks = [];
+  const title = (options.title || "").trim();
+  if (title) {
+    blocks.push(`# ${title}`);
+  }
+  let pendingReasoning = [];
+  for (const event of safe) {
+    if (!event) continue;
+    if ((event.conversationId || "legacy") !== conversationId) continue;
+    const kind = event.kind || "message";
+    if (kind === "reasoning") {
+      const detail = String(event.content || "").trim();
+      if (detail) pendingReasoning.push(detail);
+      continue;
+    }
+    if (kind !== "message") continue;
+    const role = event.role || "assistant";
+    const label = role === "user" ? userLabel : assistantLabel;
+    const lines = [`### ${label}`, "", String(event.content || "")];
+    if (role === "assistant" && includeReasoning && pendingReasoning.length > 0) {
+      lines.push("", `#### ${reasoningLabel}`, "");
+      pendingReasoning.forEach((step, index) => {
+        lines.push(`${index + 1}. ${step}`);
+      });
+    }
+    blocks.push(lines.join("\n"));
+    pendingReasoning = [];
+  }
+  return blocks.join("\n\n");
 }
 
 function randomInt(min, max) {
@@ -3898,6 +3975,16 @@ function createIssueTitle(messages, focusMessage) {
   return "formal-ai demo issue report";
 }
 
+// Issue #386: the worker kind (`wasm worker`) used to occupy its own
+// Environment line. Folding it into the version (`0.174.0 (wasm)`) keeps the
+// header compact. The trailing " worker" word is redundant inside the parens.
+function formatVersionWithWorker(version, workerState) {
+  const worker = String(workerState || "").trim();
+  if (!worker) return version;
+  const short = worker.replace(/\s*workers?$/i, "").trim() || worker;
+  return `${version} (${short})`;
+}
+
 function createIssueReportBody({
   messages,
   focusMessage,
@@ -3909,18 +3996,25 @@ function createIssueReportBody({
   earlierOmitted = 0,
 }) {
   const effectiveFocus = focusMessage ?? lastUnknownAssistantMessage(messages);
+  // Issue #386: fold the worker into the version (`0.174.0 (wasm)`) and drop
+  // settings that sit at their default. Manual mode is the interactive default,
+  // so Mode/Status are only worth reporting while a demo is playing, and
+  // Diagnostics is only reported when it has been turned on.
   const lines = [
     "## Environment",
     "",
-    `- **Version**: ${APP_VERSION}`,
+    `- **Version**: ${formatVersionWithWorker(APP_VERSION, workerState)}`,
     `- **URL**: ${window.location.href}`,
-    `- **Worker**: ${workerState}`,
-    `- **Mode**: ${demoMode ? "demo" : "manual"}`,
-    `- **Status**: ${demoStatus}`,
-    `- **Diagnostics**: ${diagnosticsMode ? "on" : "off"}`,
-    `- **Timestamp**: ${new Date().toISOString()}`,
-    "",
   ];
+  if (demoMode) {
+    lines.push("- **Mode**: demo");
+    lines.push(`- **Status**: ${demoStatus}`);
+  }
+  if (diagnosticsMode) {
+    lines.push("- **Diagnostics**: on");
+  }
+  lines.push(`- **Timestamp**: ${new Date().toISOString()}`);
+  lines.push("");
 
   appendUserContextBlock(lines, userContext);
   lines.push("## Reproduction of dialog");
@@ -3928,7 +4022,12 @@ function createIssueReportBody({
 
   appendDialogBlock(lines, messages, effectiveFocus, { earlierOmitted });
 
-  appendReasoningTraceBlock(lines, effectiveFocus);
+  // Issue #386: the reasoning trace is only meaningful next to the full dialog.
+  // When earlier turns had to be dropped to fit GitHub's URL cap the dialog is
+  // no longer complete, so the trace is omitted to avoid misleading context.
+  if (earlierOmitted === 0) {
+    appendReasoningTraceBlock(lines, effectiveFocus);
+  }
 
   lines.push("");
   lines.push("## Description");
@@ -3938,7 +4037,7 @@ function createIssueReportBody({
   lines.push("## Attach full memory (optional)");
   lines.push("");
   lines.push(
-    "Click **Export memory** in the topbar to save `formal-ai-memory.lino`, then attach it as a [GitHub Gist](https://gist.github.com) or wrap it in a `.zip` first. Redact sensitive content before uploading. See the [upload-memory guide](https://github.com/link-assistant/formal-ai/blob/main/docs/upload-memory.md) for the full walkthrough.",
+    "Click **Export memory** to save `formal-ai-memory.lino`, redact it, and attach it (as a `.zip` if needed). See the [upload-memory guide](https://github.com/link-assistant/formal-ai/blob/main/docs/upload-memory.md).",
   );
   lines.push("");
 
@@ -4722,6 +4821,9 @@ function App() {
     initialPreferences.current.currentConversationId || "",
   );
   const [conversations, setConversations] = useState([]);
+  // Issue #386: id of the conversation whose "copy as Markdown" button last
+  // succeeded, so the entry can flash a short confirmation label.
+  const [copiedConversationId, setCopiedConversationId] = useState("");
   const currentConversationRef = useRef(currentConversationId);
   const conversationTitlesRef = useRef(new Map());
 
@@ -5366,6 +5468,39 @@ function App() {
     setShowDeletedConversations(false);
     await refreshConversations(false);
   }, [refreshConversations]);
+
+  // Issue #386: copy a whole conversation to the clipboard as Markdown. When
+  // diagnostics mode is on, the persisted reasoning steps are folded in after
+  // each AI message so the copy matches the on-screen diagnostics surface.
+  const handleCopyConversation = useCallback(
+    async (entry) => {
+      if (!entry || !entry.id) return;
+      let events = [];
+      try {
+        events = await window.FormalAiMemory.listEvents();
+      } catch (_error) {
+        events = [];
+      }
+      const markdown = conversationToMarkdown(events, entry.id, {
+        title: entry.title || "",
+        userLabel: t("message.author.user"),
+        assistantLabel:
+          normalizeAssistantName(assistantNameRef.current) || "formal-ai",
+        reasoningLabel: t("message.diagnosticsSteps"),
+        includeReasoning: diagnosticsModeRef.current,
+      });
+      const ok = await copyTextToClipboard(markdown);
+      if (ok) {
+        setCopiedConversationId(entry.id);
+        setTimeout(() => {
+          setCopiedConversationId((current) =>
+            current === entry.id ? "" : current,
+          );
+        }, 1600);
+      }
+    },
+    [t],
+  );
 
   useEffect(() => {
     persistPreferences({
@@ -6214,6 +6349,42 @@ function App() {
     userContext,
   };
   const currentReportUrl = createIssueUrl(reportContext);
+
+  // Issue #386: registry of user-facing settings so the panel can reset each
+  // one (or all of them) to its shipped default. Each entry pairs a
+  // PREFERENCE_DEFAULTS key with the live value, its setter, and the i18n key
+  // used as its label in the reset list.
+  const settingDescriptors = [
+    { key: "guessProbability", value: guessProbability, set: setGuessProbability, label: "settings.ambiguity" },
+    { key: "followUpProbability", value: followUpProbability, set: setFollowUpProbability, label: "settings.followUpInitiative" },
+    { key: "temperature", value: temperature, set: setTemperature, label: "settings.temperature" },
+    { key: "greetingVariations", value: greetingVariations, set: setGreetingVariations, label: "settings.variations" },
+    { key: "definitionFusion", value: definitionFusion, set: setDefinitionFusion, label: "settings.definitionFusion" },
+    { key: "blueprintComposition", value: blueprintComposition, set: setBlueprintComposition, label: "settings.blueprintComposition" },
+    { key: "experimentalOcr", value: experimentalOcr, set: setExperimentalOcr, label: "settings.experimentalOcr" },
+    { key: "uiLanguage", value: uiLanguagePreference, set: setUiLanguagePreference, label: "settings.language" },
+    { key: "responseLanguage", value: responseLanguage, set: setResponseLanguage, label: "settings.responseLanguage" },
+    { key: "preferredLanguage", value: preferredLanguage, set: setPreferredLanguage, label: "settings.preferredLanguage" },
+    { key: "theme", value: themePreference, set: setThemePreference, label: "settings.theme" },
+    { key: "uiSkin", value: uiSkin, set: setUiSkin, label: "settings.uiSkin" },
+    { key: "chatStyle", value: chatStyle, set: setChatStyle, label: "settings.chatStyle" },
+    { key: "composerStyle", value: composerStyle, set: setComposerStyle, label: "settings.composerStyle" },
+    { key: "composerAction", value: composerAction, set: setComposerAction, label: "settings.composerAction" },
+    { key: "assistantName", value: assistantName, set: setAssistantName, label: "settings.assistantName" },
+    { key: "location", value: locationPreference, set: setLocationPreference, label: "settings.location" },
+  ];
+  const modifiedSettings = settingDescriptors.filter(
+    (descriptor) => !settingIsDefault(descriptor.key, descriptor.value),
+  );
+  const resetSetting = (descriptor) => {
+    descriptor.set(PREFERENCE_DEFAULTS[descriptor.key]);
+  };
+  const resetAllSettings = () => {
+    for (const descriptor of modifiedSettings) {
+      resetSetting(descriptor);
+    }
+  };
+
   const composerActionIcon = composerAction === "plus" ? "+" : "📎";
   const attachmentStatus =
     attachments.length > 0
@@ -6827,6 +6998,27 @@ function App() {
                             }),
                           ),
                         ),
+                        h(
+                          "button",
+                          {
+                            type: "button",
+                            className: `conversation-copy${
+                              copiedConversationId === entry.id
+                                ? " is-copied"
+                                : ""
+                            }`,
+                            "data-testid": "conversation-copy",
+                            "data-conversation-id": entry.id,
+                            "data-copied":
+                              copiedConversationId === entry.id ? "true" : null,
+                            "aria-label": t("conversation.copyMarkdownTitle"),
+                            title: t("conversation.copyMarkdownTitle"),
+                            onClick: () => handleCopyConversation(entry),
+                          },
+                          copiedConversationId === entry.id
+                            ? t("conversation.copyMarkdownDone")
+                            : t("conversation.copyMarkdown"),
+                        ),
                         entry.deleted
                           ? h(
                               "button",
@@ -6866,6 +7058,71 @@ function App() {
           children: h(
             "div",
             { className: "settings-panel" },
+            // Issue #386: reset bar — reset every modified setting individually
+            // or all at once back to the shipped defaults.
+            h(
+              "div",
+              { className: "settings-reset", "data-testid": "settings-reset" },
+              h(
+                "div",
+                { className: "settings-reset-header" },
+                h(
+                  "span",
+                  { className: "settings-reset-title" },
+                  t("settings.resetHeading"),
+                ),
+                h(
+                  "button",
+                  {
+                    type: "button",
+                    className: "settings-reset-all",
+                    "data-testid": "settings-reset-all",
+                    disabled: modifiedSettings.length === 0,
+                    onClick: resetAllSettings,
+                    title: t("settings.resetAll"),
+                  },
+                  t("settings.resetAll"),
+                ),
+              ),
+              modifiedSettings.length === 0
+                ? h(
+                    "p",
+                    {
+                      className: "settings-reset-empty",
+                      "data-testid": "settings-reset-empty",
+                    },
+                    t("settings.resetNone"),
+                  )
+                : h(
+                    "ul",
+                    { className: "settings-reset-list" },
+                    modifiedSettings.map((descriptor) =>
+                      h(
+                        "li",
+                        {
+                          key: descriptor.key,
+                          className: "settings-reset-item",
+                        },
+                        h(
+                          "span",
+                          { className: "settings-reset-label" },
+                          t(descriptor.label),
+                        ),
+                        h(
+                          "button",
+                          {
+                            type: "button",
+                            className: "settings-reset-one",
+                            "data-testid": `settings-reset-${descriptor.key}`,
+                            onClick: () => resetSetting(descriptor),
+                            title: t("settings.resetOne"),
+                          },
+                          t("settings.resetOne"),
+                        ),
+                      ),
+                    ),
+                  ),
+            ),
             h(
               "div",
               { className: "setting-row setting-row-slider" },

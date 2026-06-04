@@ -7,6 +7,7 @@
 use crate::arithmetic::{evaluate_fallback_formatted, ArithmeticError};
 use crate::calculation_word_problem::normalize_word_problem_detailed;
 use crate::fuzzy::is_close_token_typo;
+use crate::seed;
 
 /// Engine that produced a calculation result.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -386,25 +387,22 @@ fn evaluate_linear_equation(expression: &str) -> Result<CalculationEvaluation, A
 }
 
 fn contains_word_operator(expression: &str) -> bool {
-    let lower = format!(" {} ", expression.to_lowercase());
-    [
-        " plus ",
-        " minus ",
-        " times ",
-        " multiplied by ",
-        " divided by ",
-        " modulo ",
-        " mod ",
-        " плюс ",
-        " минус ",
-        " умножить ",
-        " умножь ",
-        " умножить на ",
-        " разделить на ",
-        " делить на ",
-    ]
-    .iter()
-    .any(|operator| lower.contains(operator))
+    // Issue #386: the spelled operator vocabulary lives in the
+    // `arithmetic_operation` meanings (addition, subtraction, multiplication,
+    // division, modulo), not a literal array. Each operator surface is matched
+    // as a whole token — CJK surfaces as a substring, since those scripts have
+    // no inter-word spaces — the same boundary contract the original
+    // space-padded `.contains` check enforced for the English and Russian
+    // operators, now extended to every language the meanings lexicalise.
+    //
+    // `mentions_role_spelled` skips each operator's script-independent value
+    // surface (the symbol "+", "-", "*", "/", "%" the normalizer reads): those
+    // are matched by the operator-*symbol* scan in `has_calculation_signal`, so
+    // counting them here as a spelled "word operator" would double-count them.
+    seed::lexicon().mentions_role_spelled(
+        seed::ROLE_ARITHMETIC_OPERATOR_WORD,
+        &expression.to_lowercase(),
+    )
 }
 
 /// Evaluate an expression, delegating calculator-supported syntax to
@@ -538,52 +536,63 @@ pub fn interpretation_statements(interpretations: &[PromptInterpretation]) -> St
         .join("\n")
 }
 
+/// Build the trailing strip suffixes for [`strip_calculation_wrappers`] from the
+/// seed.
+///
+/// Issue #386: the trailing cues a calculation prompt may carry — a result query
+/// ("equals", "=", "是多少", "की गणना करें") and a politeness marker ("please",
+/// "пожалуйста", "请") — live in the `calculation_result_query` and `politeness`
+/// meanings, not a literal array. Each surface is rebuilt into a strip suffix
+/// following its script: CJK surfaces strip as-is because those scripts have no
+/// inter-word spaces; a pure-symbol surface like the equals sign strips both bare
+/// and on a word boundary (so a compact `2*2+2=` is recognised); every other
+/// surface gains a leading space so the cue strips only on a word boundary. The
+/// suffix loop in [`strip_calculation_wrappers`] runs to a fixpoint, so the set —
+/// not its order — determines the result.
+fn calculation_wrapper_suffixes() -> Vec<String> {
+    let lexicon = seed::lexicon();
+    let mut suffixes = Vec::new();
+    for role in [
+        seed::ROLE_CALCULATION_RESULT_QUERY_CUE,
+        seed::ROLE_POLITENESS_CUE,
+    ] {
+        for surface in lexicon.words_for_role(role) {
+            if crate::coding::contains_cjk(&surface) {
+                suffixes.push(surface);
+            } else if !surface.chars().any(char::is_alphabetic) {
+                suffixes.push(format!(" {surface}"));
+                suffixes.push(surface);
+            } else {
+                suffixes.push(format!(" {surface}"));
+            }
+        }
+    }
+    suffixes
+}
+
 fn strip_calculation_wrappers(prompt: &str) -> (String, bool, Vec<PromptInterpretation>) {
-    let prefixes = [
-        "please calculate ",
-        "please compute ",
-        "can you calculate ",
-        "can you compute ",
-        "could you calculate ",
-        "could you compute ",
-        "what is ",
-        "what's ",
-        "what does ",
-        "calculate ",
-        "compute ",
-        "evaluate ",
-        "how much is ",
-        "solve ",
-        "сколько будет ",
-        "посчитай ",
-        "посчитайте ",
-        "вычисли ",
-        "вычислите ",
-        "рассчитай ",
-        "рассчитайте ",
-        "请计算",
-        "请算一下",
-        "计算一下",
-        "算一下",
-        "计算",
-        "कृपया गणना करें ",
-        "गणना करें ",
-    ];
-    let suffixes = [
-        " equal",
-        " equals",
-        " =",
-        "=",
-        " please",
-        " for me",
-        " пожалуйста",
-        "是多少",
-        "等于多少",
-        "等于几",
-        "कितना है",
-        "क्या है",
-        "की गणना करें",
-    ];
+    // Issue #386: the calculation request cues (imperatives like "calculate" /
+    // "посчитай" and question openers like "what is" / "сколько будет") live in
+    // the `calculation_request` meaning, not a literal array. Each surface is
+    // rebuilt into a strip prefix following its script: space-delimited scripts
+    // gain a trailing space so the cue strips only on a word boundary
+    // ("calculate " never eats the start of "calculated"), while CJK surfaces
+    // strip as-is because those scripts have no inter-word spaces. The seed
+    // lists the Chinese cues longest first, and `words_for_role` preserves that
+    // order, so a more specific cue strips before a shorter one it contains.
+    let cue_prefixes: Vec<String> = seed::lexicon()
+        .words_for_role(seed::ROLE_CALCULATION_REQUEST_CUE)
+        .into_iter()
+        .map(|surface| {
+            if crate::coding::contains_cjk(&surface) {
+                surface
+            } else {
+                format!("{surface} ")
+            }
+        })
+        .collect();
+    let prefixes: Vec<&str> = cue_prefixes.iter().map(String::as_str).collect();
+    let suffixes = calculation_wrapper_suffixes();
 
     let mut working = trim_prompt_punctuation(prompt).to_owned();
     let mut explicit = false;
@@ -630,6 +639,55 @@ fn strip_calculation_wrappers(prompt: &str) -> (String, bool, Vec<PromptInterpre
     (working.trim().to_owned(), explicit, interpretations)
 }
 
+/// Surfaces whose presence beside a number marks a prompt as a calculation.
+///
+/// Issue #386: the former 62-entry signal array is rebuilt from three seed
+/// roles, so the calculator router reasons over the same self-describing
+/// lexicon every other handler reads instead of a private word list. Each
+/// surface is shaped into a match pattern by its script and role:
+///
+/// - `math_function_name` ("sqrt", "sin", "логарифм", "对数", …) — an ASCII name
+///   gains only a leading space so it still fires when glued to its argument's
+///   parenthesis ("sqrt(16)"); a non-ASCII name matches as a raw substring
+///   because those scripts have no inter-word spaces.
+/// - `calculation_domain_term` (currencies and measurement units: "usd", "kg",
+///   "ms", "доллар", "公斤", "месяцев", …) — an ASCII surface matches as a whole
+///   token (leading and trailing space) so a short code like "ms" never fires
+///   inside "items" nor "mb" inside "number"; a non-ASCII surface matches as a
+///   raw substring.
+/// - `quantity_conversion_cue`, CJK members only ("转换", "兑换", "换成") — the
+///   Chinese conversion verbs match as raw substrings, reproducing the former
+///   "换成"/"兑换成"/"转换为" entries (the seed's shorter "转换"/"兑换" are faithful
+///   substrings of those). The Latin cues ("to", "into") are deliberately
+///   excluded here: they are far too common to mark a calculation on their own.
+///
+/// The caller pads the lowercased expression with surrounding spaces and tests
+/// `contains` against each signal, so the set — not its order — decides.
+fn calculator_domain_signals() -> Vec<String> {
+    let lexicon = seed::lexicon();
+    let mut signals = Vec::new();
+    for surface in lexicon.words_for_role(seed::ROLE_MATH_FUNCTION_NAME) {
+        if surface.is_ascii() {
+            signals.push(format!(" {surface}"));
+        } else {
+            signals.push(surface);
+        }
+    }
+    for surface in lexicon.words_for_role(seed::ROLE_CALCULATION_DOMAIN_TERM) {
+        if surface.is_ascii() {
+            signals.push(format!(" {surface} "));
+        } else {
+            signals.push(surface);
+        }
+    }
+    for surface in lexicon.words_for_role(seed::ROLE_QUANTITY_CONVERSION_CUE) {
+        if crate::coding::contains_cjk(&surface) {
+            signals.push(surface);
+        }
+    }
+    signals
+}
+
 fn has_calculation_signal(expression: &str, explicit: bool) -> bool {
     let lower = format!(" {} ", expression.to_lowercase());
     let has_digit = expression.chars().any(|c| c.is_ascii_digit());
@@ -646,79 +704,21 @@ fn has_calculation_signal(expression: &str, explicit: bool) -> bool {
         return true;
     }
     let has_currency_symbol = expression.contains(['$', '€', '¥', '₹', '₽']);
-    let looks_like_conversion = lower.contains(" to ")
-        || lower.contains(" into ")
-        || lower.contains(" convert ")
-        || lower.contains(" exchange ");
+    // A quantity_conversion_cue (currency/unit conversion marker or verb) exempts
+    // a currency-plus-letters prompt from the prose-rejection guard below, because
+    // a conversion is itself a calculation. Matched whole-token through the
+    // lexicon, so the bare target markers "to"/"into" only count on a word
+    // boundary — exactly what the former hardcoded `lower.contains(" to ")` did.
+    let looks_like_conversion = seed::lexicon().mentions_role(
+        seed::ROLE_QUANTITY_CONVERSION_CUE,
+        &expression.to_lowercase(),
+    );
     if has_currency_symbol && has_letter && !explicit && !looks_like_conversion {
         return false;
     }
-    let has_known_calculator_word = [
-        " sqrt",
-        " sin",
-        " cos",
-        " tan",
-        " log",
-        " ln",
-        " usd ",
-        " eur ",
-        " rub ",
-        " dollars",
-        " dollar",
-        " euros",
-        " euro",
-        " rubles",
-        " ruble",
-        " kg ",
-        " kb ",
-        " mb ",
-        " ms ",
-        " seconds",
-        " second",
-        " minutes",
-        " minute",
-        " hours",
-        " hour",
-        " days",
-        " day",
-        " grams",
-        " gram",
-        " months",
-        " month",
-        " tons",
-        " ton",
-        "руб",
-        "доллар",
-        "евро",
-        "тонн",
-        "кг",
-        "феврал",
-        "январ",
-        "месяц",
-        "месяцев",
-        "день",
-        "дней",
-        "换成",
-        "兑换成",
-        "转换为",
-        "美元",
-        "欧元",
-        "公斤",
-        "二月",
-        "一月",
-        "个月",
-        "天",
-        "ग्राम",
-        "किलोग्राम",
-        "डॉलर",
-        "यूरो",
-        "फरवरी",
-        "जनवरी",
-        "महीने",
-        "दिन",
-    ]
-    .iter()
-    .any(|signal| lower.contains(signal));
+    let has_known_calculator_word = calculator_domain_signals()
+        .iter()
+        .any(|signal| lower.contains(signal.as_str()));
     if has_known_calculator_word {
         return true;
     }
@@ -727,36 +727,17 @@ fn has_calculation_signal(expression: &str, explicit: bool) -> bool {
 
 fn contains_spelled_arithmetic(expression: &str) -> bool {
     let lower = format!(" {} ", expression.to_lowercase());
-    let has_number_word = [
-        " zero ",
-        " one ",
-        " two ",
-        " three ",
-        " four ",
-        " five ",
-        " six ",
-        " seven ",
-        " eight ",
-        " nine ",
-        " ten ",
-        " ноль ",
-        " нуль ",
-        " один ",
-        " одна ",
-        " одно ",
-        " два ",
-        " две ",
-        " три ",
-        " четыре ",
-        " пять ",
-        " шесть ",
-        " семь ",
-        " восемь ",
-        " девять ",
-        " десять ",
-    ]
-    .iter()
-    .any(|number| lower.contains(number));
+    let forms = seed::lexicon().role_word_forms(seed::ROLE_CARDINAL_NUMBER_WORD);
+    let has_number_word = forms.iter().any(|form| {
+        // Skip pure-numeral surfaces (e.g. "10"): a bare digit run is handled by
+        // the numeric parser, so the spelled-arithmetic path only cares about
+        // word forms like "two", "два", or "三".
+        !form
+            .text
+            .chars()
+            .all(|character| character.is_ascii_digit())
+            && lower.contains(&format!(" {} ", form.text))
+    });
     has_number_word && contains_word_operator(expression)
 }
 
@@ -846,5 +827,32 @@ mod tests {
         // Real decimals still reach the upstream calculator and evaluate.
         let evaluation = evaluate_with_link_calculator("3.14 + 2.5").expect("decimal evaluates");
         assert_eq!(evaluation.engine, CalculationEngine::LinkCalculator);
+    }
+
+    #[test]
+    fn arithmetic_word_tables_match_seed() {
+        // src/arithmetic.rs is compiled into the wasm worker (no_std, no build.rs),
+        // so its spelled-word→value tables are materialized at author time into
+        // src/arithmetic_word_tables.rs by the issue_386_gen_arith_table example.
+        // This guard fails CI whenever that static drifts from the live seed.
+        let own = |table: &[(&'static str, &'static str)]| {
+            table
+                .iter()
+                .map(|(surface, value)| ((*surface).to_string(), (*value).to_string()))
+                .collect::<Vec<_>>()
+        };
+        let (seed_tokens, seed_phrases) = crate::seed::lexicon().arithmetic_normalization_tables();
+        assert_eq!(
+            own(crate::arithmetic::WORD_VALUE_TOKENS),
+            seed_tokens,
+            "src/arithmetic_word_tables.rs WORD_VALUE_TOKENS is stale; regenerate with \
+             `cargo run -p formal-ai --example issue_386_gen_arith_table`"
+        );
+        assert_eq!(
+            own(crate::arithmetic::WORD_VALUE_PHRASES),
+            seed_phrases,
+            "src/arithmetic_word_tables.rs WORD_VALUE_PHRASES is stale; regenerate with \
+             `cargo run -p formal-ai --example issue_386_gen_arith_table`"
+        );
     }
 }

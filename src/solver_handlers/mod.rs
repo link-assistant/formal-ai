@@ -60,12 +60,13 @@ use crate::calculation::{
     calculation_expression_candidates, evaluate_calculation, interpretation_statements,
     PromptInterpretation,
 };
+use crate::coding::contains_cjk;
 use crate::concepts::{
     extract_concept_query, lookup_concept_query, resolve_context_label, ConceptRecord,
 };
 use crate::engine::{
-    answer_links_notation, hello_world_program_by_alias, knowledge_links_notation, stable_id,
-    ExecutionStatus, SymbolicAnswer,
+    answer_links_notation, hello_world_program_by_alias, knowledge_links_notation,
+    normalize_prompt, stable_id, ExecutionStatus, SymbolicAnswer,
 };
 use crate::event_log::{build_evidence_links, EventLog};
 use crate::language::detect as detect_language;
@@ -148,30 +149,55 @@ fn try_recall_last_question(
     ))
 }
 
+/// Recognise a request to summarize the running conversation by composing
+/// meaning roles rather than matching raw per-language phrases (issue #386).
+///
+/// The universal algorithm is identical for every language: the prompt either
+/// (a) carries a complete standalone conversation-summary phrasing, (b) carries
+/// an objectless courtesy frame asking for a summary, (c) names a summary
+/// directive *together with* a conversation reference, or (d) leads with a bare
+/// summary directive (`summarize`, `резюме`, `总结`, …). The prompt is
+/// re-normalised first so the boundary-aware matcher sees punctuation collapsed
+/// to spaces. Mirror of `asksForConversationSummary` in the browser worker.
+fn asks_for_conversation_summary(normalized: &str) -> bool {
+    let cleaned = normalize_prompt(normalized);
+    let lexicon = crate::seed::lexicon();
+    lexicon.mentions_role(crate::seed::ROLE_CONVERSATION_SUMMARY_PHRASE, &cleaned)
+        || lexicon.mentions_role(crate::seed::ROLE_CONVERSATION_SUMMARY_COURTESY, &cleaned)
+        || (lexicon.mentions_role(crate::seed::ROLE_CONVERSATION_SUMMARY_DIRECTIVE, &cleaned)
+            && lexicon.mentions_role(crate::seed::ROLE_CONVERSATION_REFERENCE, &cleaned))
+        || summary_directive_leads(&cleaned)
+}
+
+/// A bare summary directive standing alone is itself a request to summarize the
+/// running conversation ("summarize", "резюме", "总结", …).
+///
+/// For whitespace-delimited scripts the directive must be the *whole* prompt, so
+/// "summarize the article" is left for other handlers (a conversation object is
+/// required via the directive∧reference arm instead). For CJK (no word spaces) a
+/// leading substring suffices — mirroring the worker's historical `^总结` anchor
+/// — which also keeps compounds like "工作总结" (a *work* summary) from being
+/// mis-claimed. Surface words come from the `conversation_summary_directive`
+/// role in the seed lexicon.
+fn summary_directive_leads(cleaned: &str) -> bool {
+    crate::seed::lexicon()
+        .words_for_role(crate::seed::ROLE_CONVERSATION_SUMMARY_DIRECTIVE)
+        .iter()
+        .any(|word| {
+            if contains_cjk(word) {
+                cleaned.starts_with(word.as_str())
+            } else {
+                cleaned == word.as_str()
+            }
+        })
+}
+
 fn try_summarize_conversation(
     prompt: &str,
     normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
-    let asks = normalized.contains("summarize the conversation")
-        || normalized.contains("summarize our conversation")
-        || normalized.contains("summarize this conversation")
-        || normalized.contains("summary of our chat")
-        || normalized.contains("what have we talked about")
-        || normalized == "summarize"
-        // Russian
-        || normalized.contains("о чём мы разговаривали")
-        || normalized.contains("о чем мы разговаривали")
-        || normalized.contains("о чём мы говорили")
-        || normalized.contains("о чем мы говорили")
-        || normalized.contains("резюме беседы")
-        || normalized.contains("резюме разговора")
-        || normalized.contains("резюмируй разговор")
-        || normalized.contains("резюмируй беседу")
-        || normalized == "резюме"
-        // Chinese
-        || normalized.contains("总结");
-    if !asks {
+    if !asks_for_conversation_summary(normalized) {
         return None;
     }
     let turns: Vec<DialogTurn> = log
@@ -587,16 +613,43 @@ pub fn try_translation(
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
     let target = detect_target_language(normalized);
-    let is_translation_request = normalized.starts_with("translate")
-        || normalized.starts_with("переведи")
-        || normalized.starts_with("опиши")
-        || (target.is_some()
-            && (normalized.contains("अनुवाद")
-                || normalized.contains("翻译")
-                || normalized.contains("翻譯")))
-        || (normalized.starts_with("define ")
+    // Issue #386: recognise a translation command by *meaning*, not by hardcoded
+    // verbs. The translation-action stems live once in
+    // data/seed/meanings-translation.lino; this code knows the concept and the
+    // head-initial/head-final typology the `translate` gloss documents.
+    // Clause-initial English/Russian commands are matched as a prefix; head-final
+    // Hindi/Chinese place the verb later, so they are matched anywhere but gated
+    // by a target marker (as before) to avoid firing on an incidental verb noun.
+    let lexicon = crate::seed::lexicon();
+    let head_initial_command = lexicon
+        .words_for_role_in_languages(crate::seed::ROLE_TRANSLATION_ACTION, &["en", "ru"])
+        .iter()
+        .any(|stem| normalized.starts_with(stem.as_str()));
+    let head_final_command = target.is_some()
+        && lexicon
+            .words_for_role_in_languages(crate::seed::ROLE_TRANSLATION_ACTION, &["hi", "zh"])
+            .iter()
+            .any(|stem| normalized.contains(stem.as_str()));
+    // Issue #386: the define-in-Links-Notation request is recognised by *meaning*
+    // too, not by literal verbs and format strings. The imperative verb lives once
+    // as the `definition_command` meaning and the target-format phrases as
+    // `links_notation_format`, both in data/seed/meanings-translation.lino. Exactly
+    // as the original recogniser, only the English verb is scanned (a clause-initial
+    // prefix with a trailing space, so `defined`/`definition` never trigger it) and
+    // the English and Russian format markers are scanned as space-prefixed
+    // substrings; the Hindi and Chinese surfaces are carried for coverage only.
+    let is_define_in_links = || {
+        lexicon
+            .words_for_role_in_languages(crate::seed::ROLE_DEFINITION_COMMAND, &["en"])
+            .iter()
+            .any(|verb| normalized.starts_with(format!("{verb} ").as_str()))
             && (extract_quoted_phrase(prompt).is_some() || extract_backticked(prompt).is_some())
-            && (normalized.contains(" links notation") || normalized.contains(" в links")));
+            && lexicon
+                .words_for_role_in_languages(crate::seed::ROLE_LINKS_NOTATION_FORMAT, &["en", "ru"])
+                .iter()
+                .any(|marker| normalized.contains(format!(" {marker}").as_str()))
+    };
+    let is_translation_request = head_initial_command || head_final_command || is_define_in_links();
     if !is_translation_request {
         return None;
     }

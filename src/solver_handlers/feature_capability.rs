@@ -3,6 +3,7 @@
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
+use crate::seed;
 use crate::solver_handlers::finalize_simple;
 use crate::web_search_core::{WEB_SEARCH_PROVIDERS, WEB_SEARCH_RRF_K};
 
@@ -89,7 +90,6 @@ struct FeatureCapability {
     slug: &'static str,
     state: FeatureState,
     labels: LocalizedText,
-    aliases: LocalizedText,
     examples: LocalizedText,
 }
 
@@ -146,10 +146,6 @@ impl FeatureCapability {
         localized(self.examples, language)
     }
 
-    fn aliases(self, language: &str) -> &'static str {
-        localized(self.aliases, language)
-    }
-
     const fn availability(self, runtime: CapabilityRuntime) -> FeatureAvailability {
         match self.state {
             FeatureState::Always => FeatureAvailability {
@@ -201,31 +197,49 @@ fn localized(text: LocalizedText, language: &str) -> &'static str {
     }
 }
 
+// Walk the `feature_capability_alias` meanings in their seed declaration order —
+// which mirrors the historical hand-ordered priority of `FEATURE_CAPABILITIES` —
+// and return the first whose multilingual forms occur as a raw substring of the
+// normalized prompt, checked in the prompt's own language plus English. The
+// matched meaning's slug, minus its `feature_capability_` prefix, keys the
+// runtime table below, so no surface alias is named in the code.
 fn detect_feature_capability(normalized: &str, language: &str) -> Option<FeatureCapability> {
-    FEATURE_CAPABILITIES.iter().copied().find(|feature| {
-        contains_alias(normalized, feature.aliases(language))
-            || (language != "en" && contains_alias(normalized, feature.aliases("en")))
-    })
+    let lexicon = seed::lexicon();
+    let languages: Vec<&str> = if language == "en" {
+        vec!["en"]
+    } else {
+        vec![language, "en"]
+    };
+    let meaning = lexicon.first_role_match_in_languages_raw(
+        seed::ROLE_FEATURE_CAPABILITY_ALIAS,
+        normalized,
+        &languages,
+    )?;
+    let slug = meaning.slug.strip_prefix("feature_capability_")?;
+    FEATURE_CAPABILITIES
+        .iter()
+        .copied()
+        .find(|feature| feature.slug == slug)
 }
 
-fn contains_alias(normalized: &str, aliases: &str) -> bool {
-    aliases.split('|').any(|alias| normalized.contains(alias))
-}
-
+// A prompt is a capability question when one of the `feature_capability_question`
+// interrogative cues occurs as a raw substring, checked in the prompt's own
+// detected language only. English prompts additionally accept a grammatical
+// "is/are ... enabled/available" frame computed in code.
 fn is_feature_capability_question(normalized: &str, language: &str) -> bool {
-    match language {
-        "ru" => contains_alias(
+    let lexicon = seed::lexicon();
+    let mentions = |lang: &str| {
+        lexicon.mentions_role_in_languages_raw(
+            seed::ROLE_FEATURE_CAPABILITY_QUESTION,
             normalized,
-            "можешь|умеешь|поддерживаешь|у тебя есть|есть ли|доступен|доступна|включен|включена|подключен|подключена|можно ли",
-        ),
-        "zh" => contains_alias(normalized, "能|可以|支持|你有|您有|有没有|是否有|启用|可用"),
-        "hi" => contains_alias(normalized, "क्या|सकते|सकती|समर्थन|उपलब्ध"),
-        _ => {
-            contains_alias(
-                normalized,
-                "can you|can formal-ai|are you able|are you connected|do you support|do you have|can i",
-            ) || is_english_availability_question(normalized)
-        }
+            &[lang],
+        )
+    };
+    match language {
+        "ru" => mentions("ru"),
+        "zh" => mentions("zh"),
+        "hi" => mentions("hi"),
+        _ => mentions("en") || is_english_availability_question(normalized),
     }
 }
 
@@ -240,21 +254,25 @@ fn is_english_availability_question(normalized: &str) -> bool {
         || trimmed.contains(" are ")
 }
 
+// Some capability questions are really action requests ("can you calculate 2 +
+// 2?"): the user wants the task done, not a yes/no about the capability. Those
+// English action frames live in the seed as `feature_action_arithmetic` /
+// `feature_action_planning` forms; each is reconstructed with a trailing space
+// so it matches as a word boundary. Only the English frames drive the gate; the
+// other-language forms are kept in the seed purely for self-description.
 fn is_feature_action_request(normalized: &str, feature: FeatureCapability) -> bool {
+    let lexicon = seed::lexicon();
     match feature.slug {
-        "arithmetic" => starts_with_alias(normalized, "can you calculate |can you compute "),
-        "planning" => contains_alias(
-            normalized,
-            "can you summarize |can you brainstorm |can you roleplay ",
-        ),
+        "arithmetic" => lexicon
+            .words_for_role_in_languages(seed::ROLE_FEATURE_ACTION_ARITHMETIC, &["en"])
+            .iter()
+            .any(|frame| normalized.starts_with(format!("{frame} ").as_str())),
+        "planning" => lexicon
+            .words_for_role_in_languages(seed::ROLE_FEATURE_ACTION_PLANNING, &["en"])
+            .iter()
+            .any(|frame| normalized.contains(format!("{frame} ").as_str())),
         _ => false,
     }
-}
-
-fn starts_with_alias(normalized: &str, aliases: &str) -> bool {
-    aliases
-        .split('|')
-        .any(|alias| normalized.starts_with(alias))
 }
 
 fn feature_capability_body(
@@ -354,12 +372,6 @@ const FEATURE_CAPABILITIES: &[FeatureCapability] = &[
         slug: "web_search",
         state: FeatureState::WebSearch,
         labels: text("web search", "веб-поиск", "web search", "web search"),
-        aliases: text(
-            "web search|internet search|search engines|can you search the internet|can you search internet|can you search the web|can you search web|can you search online|do you have internet search|do you have web search|do you have internet access|are you connected to search engines|can you use search engines|can you browse the web",
-            "веб-поиск|веб поиск|поиск в интернете|поисковик|поисковые системы|можешь искать в интернете|можешь искать интернет|умеешь искать в интернете|умеешь искать интернет|можешь искать онлайн|умеешь искать онлайн|у тебя есть веб-поиск|у тебя есть веб поиск|у тебя есть поиск в интернете|есть доступ к интернету|подключен к поисковикам|подключена к поисковикам|подключен к поисковым системам|можешь пользоваться интернетом",
-            "web search|internet search|search engine|इंटरनेट पर खोज सकते|ऑनलाइन खोज सकते|इंटरनेट खोज है|वेब खोज है|सर्च इंजन से जुड़े|खोज इंजन से जुड़े",
-            "web search|搜索引擎|上网搜索|搜索互联网|搜索网络|联网搜索|用搜索引擎|使用搜索引擎|网络搜索",
-        ),
         examples: text(
             "Search the web for Nikola Tesla",
             "Найди в интернете Никола Тесла",
@@ -370,112 +382,212 @@ const FEATURE_CAPABILITIES: &[FeatureCapability] = &[
     FeatureCapability {
         slug: "diagnostics",
         state: FeatureState::DiagnosticMode,
-        labels: text("diagnostic trace", "диагностика", "diagnostic trace", "诊断 trace"),
-        aliases: text(
-            "diagnostics|diagnostic|trace|reasoning trace|show diagnostics",
-            "диагностика|диагност|трассировка|trace",
-            "diagnostics|निदान|trace",
-            "诊断|trace|推理跟踪",
+        labels: text(
+            "diagnostic trace",
+            "диагностика",
+            "diagnostic trace",
+            "诊断 trace",
         ),
-        examples: text("Turn on diagnostics", "Включи диагностику", "Turn on diagnostics", "Turn on diagnostics"),
+        examples: text(
+            "Turn on diagnostics",
+            "Включи диагностику",
+            "Turn on diagnostics",
+            "Turn on diagnostics",
+        ),
     },
     FeatureCapability {
         slug: "agent_mode",
         state: FeatureState::AgentMode,
         labels: text("agent mode", "agent mode", "agent mode", "agent mode"),
-        aliases: text("agent mode|agent|multi-step|autonomous", "agent mode|агент|многошаг|автоном", "agent mode|एजेंट|multi-step", "agent mode|代理|多步骤"),
-        examples: text("Turn on agent mode", "Включи agent mode", "Turn on agent mode", "Turn on agent mode"),
+        examples: text(
+            "Turn on agent mode",
+            "Включи agent mode",
+            "Turn on agent mode",
+            "Turn on agent mode",
+        ),
     },
     FeatureCapability {
         slug: "definition_fusion",
         state: FeatureState::DefinitionFusion,
-        labels: text("automatic definition fusion", "автоматическое слияние определений", "automatic definition fusion", "自动 definition fusion"),
-        aliases: text("definition fusion|merge definitions|automatic definition", "слияние определений|объединение определений", "definition fusion|merge definitions|परिभाषा विलय", "definition fusion|合并定义"),
-        examples: text("Turn on definition fusion", "Включи слияние определений", "Turn on definition fusion", "Turn on definition fusion"),
+        labels: text(
+            "automatic definition fusion",
+            "автоматическое слияние определений",
+            "automatic definition fusion",
+            "自动 definition fusion",
+        ),
+        examples: text(
+            "Turn on definition fusion",
+            "Включи слияние определений",
+            "Turn on definition fusion",
+            "Turn on definition fusion",
+        ),
     },
     FeatureCapability {
         slug: "configuration",
         state: FeatureState::Always,
-        labels: text("message-driven configuration", "настройка через сообщения", "message-driven configuration", "消息配置"),
-        aliases: text("settings|configuration|configure settings|theme|language|chat style", "настройки|настройка|конфигурация|тема|язык|стиль чата|оформление", "settings|configuration|theme|language|सेटिंग", "设置|配置|主题|语言|聊天样式"),
-        examples: text("Switch to dark theme", "Включи темную тему", "Switch to dark theme", "Switch to dark theme"),
+        labels: text(
+            "message-driven configuration",
+            "настройка через сообщения",
+            "message-driven configuration",
+            "消息配置",
+        ),
+        examples: text(
+            "Switch to dark theme",
+            "Включи темную тему",
+            "Switch to dark theme",
+            "Switch to dark theme",
+        ),
     },
     FeatureCapability {
         slug: "memory_actions",
         state: FeatureState::Always,
-        labels: text("memory import/export", "импорт и экспорт памяти", "memory import/export", "记忆导入/导出"),
-        aliases: text("export memory|import memory|memory export|memory import", "экспорт памяти|импорт памяти|память экспорт|память импорт", "memory export|memory import|स्मृति निर्यात|स्मृति आयात", "导出记忆|导入记忆|memory export|memory import"),
-        examples: text("Export memory", "Экспортируй память", "Export memory", "Export memory"),
+        labels: text(
+            "memory import/export",
+            "импорт и экспорт памяти",
+            "memory import/export",
+            "记忆导入/导出",
+        ),
+        examples: text(
+            "Export memory",
+            "Экспортируй память",
+            "Export memory",
+            "Export memory",
+        ),
     },
     FeatureCapability {
         slug: "greeting",
         state: FeatureState::Always,
         labels: text("greetings", "приветствия", "अभिवादन", "问候"),
-        aliases: text("greeting|greetings|say hello|respond to hello", "приветствие|приветствия|здороваться|привет", "अभिवादन|नमस्ते|hello", "问候|打招呼|你好"),
         examples: text("Hi", "Привет", "नमस्ते", "你好"),
     },
     FeatureCapability {
         slug: "write_program",
         state: FeatureState::Always,
-        labels: text("program template generation", "генерация программ", "program template generation", "程序生成"),
-        aliases: text("hello world|write code|generate code|write program|program", "hello world|код|программу|программа", "hello world|code|program|प्रोग्राम", "hello world|代码|程序"),
-        examples: text("Write a Python program that counts to three", "Напиши hello world на Rust", "Write a Python program that counts to three", "Write a Python program that counts to three"),
+        labels: text(
+            "program template generation",
+            "генерация программ",
+            "program template generation",
+            "程序生成",
+        ),
+        examples: text(
+            "Write a Python program that counts to three",
+            "Напиши hello world на Rust",
+            "Write a Python program that counts to three",
+            "Write a Python program that counts to three",
+        ),
     },
     FeatureCapability {
         slug: "concept_lookup",
         state: FeatureState::Always,
-        labels: text("concept lookup", "поиск понятий", "concept lookup", "概念查找"),
-        aliases: text("concept lookup|concept|wikipedia lookup", "поиск понятий|понятие", "concept|अवधारणा", "概念"),
-        examples: text("What is Wikipedia?", "Что такое Википедия?", "विकिपीडिया क्या है?", "维基百科是什么?"),
+        labels: text(
+            "concept lookup",
+            "поиск понятий",
+            "concept lookup",
+            "概念查找",
+        ),
+        examples: text(
+            "What is Wikipedia?",
+            "Что такое Википедия?",
+            "विकिपीडिया क्या है?",
+            "维基百科是什么?",
+        ),
     },
     FeatureCapability {
         slug: "arithmetic",
         state: FeatureState::Always,
         labels: text("arithmetic", "арифметика", "अंकगणित", "算术"),
-        aliases: text("arithmetic|calculate|math|2 + 2", "арифмет|считать|посчитать|2 + 2", "अंकगणित|गणना|math|2 + 2", "算术|计算|数学|2 + 2"),
-        examples: text("What is 2 + 2?", "Сколько будет 2 + 2?", "2 + 2 क्या है?", "2 + 2 等于多少?"),
+        examples: text(
+            "What is 2 + 2?",
+            "Сколько будет 2 + 2?",
+            "2 + 2 क्या है?",
+            "2 + 2 等于多少?",
+        ),
     },
     FeatureCapability {
         slug: "translation",
         state: FeatureState::Always,
         labels: text("translation", "перевод", "अनुवाद", "翻译"),
-        aliases: text("translation|translate|language translation", "перевод|переводить|перевести", "अनुवाद|translate|translation", "翻译|translation|translate"),
-        examples: text("Translate hello to Russian", "Переведи hello на русский", "Translate hello to Russian", "Translate hello to Russian"),
+        examples: text(
+            "Translate hello to Russian",
+            "Переведи hello на русский",
+            "Translate hello to Russian",
+            "Translate hello to Russian",
+        ),
     },
     FeatureCapability {
         slug: "memory",
         state: FeatureState::Always,
-        labels: text("conversation memory", "память разговора", "conversation memory", "会话记忆"),
-        aliases: text("memory|remember|recall|conversation context", "память|помнить|запомнить|контекст", "स्मृति|याद|memory|context", "记忆|记住|回忆|上下文"),
-        examples: text("Remember my name is Ada", "Запомни, меня зовут Ада", "Remember my name is Ada", "Remember my name is Ada"),
+        labels: text(
+            "conversation memory",
+            "память разговора",
+            "conversation memory",
+            "会话记忆",
+        ),
+        examples: text(
+            "Remember my name is Ada",
+            "Запомни, меня зовут Ада",
+            "Remember my name is Ada",
+            "Remember my name is Ada",
+        ),
     },
     FeatureCapability {
         slug: "demo_mode",
         state: FeatureState::Always,
         labels: text("demo mode", "демо-режим", "demo mode", "演示模式"),
-        aliases: text("demo mode|demo|scripted demo", "демо|демо-режим|сценарный демо", "demo|डेमो", "demo|演示"),
-        examples: text("Turn off demo mode", "Выключи демо", "Turn off demo mode", "Turn off demo mode"),
+        examples: text(
+            "Turn off demo mode",
+            "Выключи демо",
+            "Turn off demo mode",
+            "Turn off demo mode",
+        ),
     },
     FeatureCapability {
         slug: "http_url",
         state: FeatureState::Always,
-        labels: text("URL navigation and HTTP fetch", "URL-навигация и HTTP-запросы", "URL navigation and HTTP fetch", "URL 导航和 HTTP 请求"),
-        aliases: text("http fetch|fetch url|open url|navigate to url|visit url|url navigation", "http запрос|открыть url|перейти на|сделать запрос|url-навигация|url навигация", "http fetch|url|navigate|लिंक|यूआरएल", "http fetch|url|打开链接|访问链接"),
-        examples: text("Navigate to github.com", "Сделай запрос к google.com", "Navigate to github.com", "Navigate to github.com"),
+        labels: text(
+            "URL navigation and HTTP fetch",
+            "URL-навигация и HTTP-запросы",
+            "URL navigation and HTTP fetch",
+            "URL 导航和 HTTP 请求",
+        ),
+        examples: text(
+            "Navigate to github.com",
+            "Сделай запрос к google.com",
+            "Navigate to github.com",
+            "Navigate to github.com",
+        ),
     },
     FeatureCapability {
         slug: "javascript_execution",
         state: FeatureState::Always,
-        labels: text("JavaScript execution", "выполнение JavaScript", "JavaScript execution", "JavaScript 执行"),
-        aliases: text("javascript|run javascript|execute javascript|js", "javascript|js", "javascript|js|स्क्रिप्ट", "javascript|js|脚本执行|执行脚本"),
-        examples: text("Run JavaScript: 1 + 1", "Выполни JavaScript: 1 + 1", "Run JavaScript: 1 + 1", "Run JavaScript: 1 + 1"),
+        labels: text(
+            "JavaScript execution",
+            "выполнение JavaScript",
+            "JavaScript execution",
+            "JavaScript 执行",
+        ),
+        examples: text(
+            "Run JavaScript: 1 + 1",
+            "Выполни JavaScript: 1 + 1",
+            "Run JavaScript: 1 + 1",
+            "Run JavaScript: 1 + 1",
+        ),
     },
     FeatureCapability {
         slug: "planning",
         state: FeatureState::Always,
-        labels: text("summaries, brainstorming, roleplay, and project planning", "резюме, брейншторминг, роли и планирование проектов", "summaries, brainstorming, roleplay, and project planning", "总结、头脑风暴、角色扮演和项目计划"),
-        aliases: text("summarize|brainstorm|roleplay|software project|project plan", "резюмировать|брейншторм|роль|проект|план проекта", "summary|brainstorm|roleplay|project plan|परियोजना योजना", "总结|头脑风暴|角色扮演|项目计划"),
-        examples: text("Brainstorm 5 project ideas", "Предложи 5 идей проекта", "Brainstorm 5 project ideas", "Brainstorm 5 project ideas"),
+        labels: text(
+            "summaries, brainstorming, roleplay, and project planning",
+            "резюме, брейншторминг, роли и планирование проектов",
+            "summaries, brainstorming, roleplay, and project planning",
+            "总结、头脑风暴、角色扮演和项目计划",
+        ),
+        examples: text(
+            "Brainstorm 5 project ideas",
+            "Предложи 5 идей проекта",
+            "Brainstorm 5 project ideas",
+            "Brainstorm 5 project ideas",
+        ),
     },
 ];
 

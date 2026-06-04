@@ -142,7 +142,16 @@ check("data-driven custom rule reports modification", sandbox.programPlanWasModi
 // rule data: path_argument and reverse_sort can both lower list_files.
 const embedded = sandbox.programPlanRules();
 check("embedded rules id", embedded.id === "program_plan_rules", embedded.id);
-check("embedded rules count", embedded.rules.length === 4, String(embedded.rules.length));
+// Issue #386: 4 additive base rules + 2 subtractive rules derived at runtime
+// from the cancel_reverse_sort↔reverse_sort inverse declaration.
+check("embedded rules count", embedded.rules.length === 6, String(embedded.rules.length));
+const embeddedIds = embedded.rules.map((rule) => rule.id);
+check(
+  "derived cancel rules present",
+  embeddedIds.includes("cancel_reverse_sort__reverse_sort_list_files") &&
+    embeddedIds.includes("cancel_reverse_sort__reverse_sort_list_files_arg"),
+  JSON.stringify(embeddedIds),
+);
 const upgraded = sandbox.lowerProgramPlan("list_files", ["path_argument"]);
 check("path_argument upgrades list_files", upgraded.resolvedTask === "list_files_arg", upgraded.resolvedTask);
 check("plan trace records one application", upgraded.traces.length === 1, String(upgraded.traces.length));
@@ -186,14 +195,31 @@ check(
 // 4f. The worker's parser reads the canonical seed file to the *same* ruleset
 // as its embedded copy — so the two cannot drift semantically. (The embedded
 // `const` is not reachable as a sandbox global, but its parsed form is via
-// `programPlanRules()`.)
+// `programPlanRules()`.) Issue #386: `programPlanRules()` now adds runtime-derived
+// inverse rules on top of the seed's additive base, so the drift check parses the
+// seed and applies the *same* derivation before comparing — proving the embedded
+// const and the seed file agree on the base AND that derivation is deterministic.
 const seedLino = fs.readFileSync(
   new URL("../data/seed/program-plan-rules.lino", import.meta.url),
   "utf8",
 );
 const seedRules = sandbox.parseSubstitutionRules(seedLino);
 check(
-  "embedded rules match parsed data/seed/program-plan-rules.lino",
+  "seed file holds the 4 additive base rules",
+  seedRules.rules.length === 4,
+  String(seedRules.rules.length),
+);
+const seedDerived = sandbox.deriveInverseRules(
+  seedRules.rules,
+  sandbox.inversePairsFromOperations(),
+);
+seedRules.rules = seedRules.rules.concat(seedDerived);
+seedRules.rules.sort((left, right) =>
+  left.order - right.order ||
+  (left.id < right.id ? -1 : left.id > right.id ? 1 : 0),
+);
+check(
+  "embedded rules match parsed+derived data/seed/program-plan-rules.lino",
   JSON.stringify(seedRules) === JSON.stringify(sandbox.programPlanRules()),
   JSON.stringify({ seed: seedRules, embedded: sandbox.programPlanRules() }),
 );

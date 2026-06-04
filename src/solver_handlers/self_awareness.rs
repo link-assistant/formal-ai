@@ -463,63 +463,40 @@ fn known_facts_links(runtime: SelfAwarenessRuntime) -> String {
     )
 }
 
+// Issue #386: recognise a request to list the assistant's own facts by
+// *meaning*, not a hardcoded per-language phrase list. The self_fact_query
+// role gathers every surface ("facts about yourself" / "факты о себе" /
+// "अपने बारे में तथ्य" / "自我事实" …) from data/seed/meanings-intent.lino;
+// this code only knows the concept. The prompt is re-normalized first because
+// some solver paths pass a merely-lowercased string (trailing "?" intact), and
+// the boundary-aware matcher expects punctuation already collapsed to spaces.
 fn is_self_fact_query(normalized: &str) -> bool {
-    normalized.contains("facts you know about yourself")
-        || normalized.contains("facts about yourself")
-        || normalized.contains("self facts")
-        || normalized.contains("list all facts you know about yourself")
-        || normalized.contains("какие факты ты знаешь о себе")
-        || normalized.contains("факты о себе")
-        || normalized.contains("अपने बारे में तथ्य")
-        || normalized.contains("स्वयं के बारे में तथ्य")
-        || normalized.contains("关于你自己的事实")
-        || normalized.contains("自我事实")
+    let cleaned = normalize_prompt(normalized);
+    seed::lexicon().mentions_role(seed::ROLE_SELF_FACT_QUERY, &cleaned)
 }
 
+// Issue #386: recognise "introduce yourself" / "расскажи о себе" /
+// "अपना परिचय दो" / "介绍一下你自己" by the self_introduction_request meaning
+// role. The pre-check is preserved verbatim: an empty prompt, or one that is
+// really a self-fact query, must NOT be treated as an introduction request so
+// "list all facts you know about yourself" still routes to the self-fact
+// branch rather than the identity reply.
 fn is_self_introduction_query(normalized: &str) -> bool {
     let cleaned = normalize_prompt(normalized);
     if cleaned.is_empty() || is_self_fact_query(&cleaned) {
         return false;
     }
 
-    cleaned == "tell me about yourself"
-        || cleaned == "introduce yourself"
-        || cleaned.contains("tell me about yourself")
-        || cleaned.contains("introduce yourself")
-        || cleaned.contains("let s get acquainted")
-        || cleaned.contains("lets get acquainted")
-        || cleaned.contains("let us get acquainted")
-        || cleaned.contains("let s get to know each other")
-        || cleaned.contains("расскажи о себе")
-        || cleaned.contains("расскажи мне о себе")
-        || cleaned.contains("расскажи про себя")
-        || cleaned.contains("опиши себя")
-        || cleaned.contains("представься")
-        || cleaned.contains("давай знакомиться")
-        || cleaned.contains("давай познакомимся")
-        || cleaned.contains("давайте познакомимся")
-        || cleaned.contains("अपने बारे में बताओ")
-        || cleaned.contains("अपना परिचय दो")
-        || cleaned.contains("चलो परिचय करते हैं")
-        || cleaned.contains("आइए परिचय करें")
-        || cleaned.contains("चलो एक दूसरे को जानें")
-        || cleaned.contains("介绍一下你自己")
-        || cleaned.contains("告诉我你自己")
-        || cleaned.contains("介紹一下你自己")
-        || cleaned.contains("告訴我你自己")
-        || cleaned.contains("我们认识一下")
-        || cleaned.contains("认识一下吧")
-        || cleaned.contains("让我们认识一下")
+    seed::lexicon().mentions_role(seed::ROLE_SELF_INTRODUCTION_REQUEST, &cleaned)
 }
 
 fn self_awareness_language(prompt: &str, normalized: &str) -> &'static str {
+    // Issue #386: language is detected purely by Unicode script ranges. The
+    // Cyrillic range below already subsumes the former second-person pronoun
+    // list (ty/tebya/tvoy/vy/...), every member of which is Cyrillic, so no raw
+    // word list is needed -- the script range is the universal signal.
     let lower = format!("{} {}", prompt.to_lowercase(), normalized);
-    if has_char_in_range(&lower, '\u{0400}', '\u{04ff}')
-        || contains_any(
-            &lower,
-            &["ты", "теб", "твоя", "твой", "вы", "вас", "у тебя"],
-        )
-    {
+    if has_char_in_range(&lower, '\u{0400}', '\u{04ff}') {
         return "ru";
     }
     if has_char_in_range(&lower, '\u{0900}', '\u{097f}') {
@@ -541,83 +518,26 @@ fn identity_body(language: &str) -> String {
         .unwrap_or_else(|| identity_answer().to_owned())
 }
 
-fn contains_any(normalized: &str, needles: &[&str]) -> bool {
-    needles.iter().any(|needle| normalized.contains(needle))
-}
-
 fn is_known_fact_query(normalized: &str) -> bool {
     if is_self_fact_query(normalized) {
         return false;
     }
 
-    let english = (normalized.contains("facts")
-        && contains_any(normalized, &["what", "which", "list", "show"])
-        && contains_any(
-            normalized,
-            &[
-                "you know",
-                "do you know",
-                "you have",
-                "available to you",
-                "in your knowledge",
-                "known to you",
-            ],
-        ))
-        || contains_any(
-            normalized,
-            &[
-                "what do you know in general",
-                "what do you know about the world",
-                "what is known to you",
-                "what knowledge do you have",
-            ],
-        );
-    let russian = (normalized.contains("факт")
-        && contains_any(
-            normalized,
-            &["какие", "что", "перечисли", "покажи", "назови"],
-        )
-        && contains_any(
-            normalized,
-            &[
-                "ты знаешь",
-                "знаешь",
-                "тебе извест",
-                "у тебя есть",
-                "твои знания",
-                "что ты знаешь",
-            ],
-        ))
-        || contains_any(
-            normalized,
-            &[
-                "что тебе вообще известно",
-                "что тебе известно",
-                "что ты вообще знаешь",
-                "что ты знаешь об окружающем мире",
-                "известно об окружающем мире",
-                "знаешь про окружающий мир",
-                "знаешь об окружающем мире",
-            ],
-        );
-    let hindi = (normalized.contains("तथ्य")
-        && contains_any(
-            normalized,
-            &["कौन", "क्या", "सूची", "सूचीबद्ध", "बताओ", "दिखाओ"],
-        )
-        && contains_any(normalized, &["तुम", "आप", "जानते", "जानती", "आपके", "तुम्हारे"]))
-        || contains_any(
-            normalized,
-            &["आप क्या जानते हैं", "तुम क्या जानते हो", "आपको क्या पता है"],
-        );
-    let chinese = ((normalized.contains("事实") || normalized.contains("事實"))
-        && contains_any(
-            normalized,
-            &["你知道", "您知道", "你有", "您有", "哪些", "什么", "什麼"],
-        ))
-        || contains_any(normalized, &["你知道什么", "您知道什么", "你知道哪些"]);
+    // Issue #386: a known-facts inventory query is recognised by composing
+    // meaning roles, not by matching raw words per language. The universal
+    // algorithm is identical for every language: the prompt either names the
+    // knowledge `fact` noun together with an enumerating interrogative and a
+    // second-person attribution of knowing, or it matches one of the complete
+    // standalone phrasings that ask what the assistant knows even without the
+    // noun. The prompt is re-normalised first so the boundary-aware matcher
+    // sees punctuation collapsed to spaces.
+    let cleaned = normalize_prompt(normalized);
+    let lexicon = seed::lexicon();
+    let composed = lexicon.mentions_role(seed::ROLE_KNOWLEDGE_INVENTORY_NOUN, &cleaned)
+        && lexicon.mentions_role(seed::ROLE_KNOWLEDGE_INVENTORY_INTERROGATIVE, &cleaned)
+        && lexicon.mentions_role(seed::ROLE_KNOWLEDGE_POSSESSION, &cleaned);
 
-    english || russian || hindi || chinese
+    composed || lexicon.mentions_role(seed::ROLE_KNOWLEDGE_INVENTORY_PHRASE, &cleaned)
 }
 
 fn stable_variant_index(tag: &str, prompt: &str, count: usize) -> usize {

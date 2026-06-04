@@ -3,12 +3,18 @@
 //! `Copy` records describing static data; the catalog tables in [`super`]
 //! supply the values and the lookup helpers resolve a prompt onto a
 //! [`ProgramSpec`].
+//!
+//! Neither record carries its alias surfaces inline: the words a prompt must
+//! contain to resolve a language or a task live in the language-independent
+//! meaning lexicon — the `program_language_<slug>` / `program_task_<slug>`
+//! meanings (issue #386) — and [`super::program_language_by_alias`] /
+//! [`super::program_task_by_alias`] read them by slug. A record names only the
+//! concept (its `slug`); the translatable words stay self-describing seed data.
 
 #[derive(Clone, Copy)]
 pub struct ProgramLanguage {
     pub slug: &'static str,
     pub name: &'static str,
-    pub aliases: &'static [&'static str],
     pub code_fence: &'static str,
     pub execution: ProgramExecution,
     pub source: &'static str,
@@ -25,7 +31,6 @@ pub struct ProgramLanguage {
 pub struct ProgramTask {
     pub slug: &'static str,
     pub label: &'static str,
-    pub aliases: &'static [&'static str],
     pub output: &'static str,
 }
 

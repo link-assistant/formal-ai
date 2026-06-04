@@ -7,6 +7,11 @@
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
+use crate::seed::{
+    lexicon, ROLE_CALENDAR_DAY_REFERENCE, ROLE_CALENDAR_DIRECTION_NEXT,
+    ROLE_CALENDAR_DIRECTION_PREVIOUS, ROLE_CALENDAR_QUESTION, ROLE_CALENDAR_TODAY,
+    ROLE_CALENDAR_WEEKDAY,
+};
 use crate::solver_handlers::finalize_simple;
 use std::time::{SystemTime, UNIX_EPOCH};
 
@@ -62,6 +67,22 @@ impl Weekday {
             Self::Friday => "friday",
             Self::Saturday => "saturday",
             Self::Sunday => "sunday",
+        }
+    }
+
+    /// Resolve a `calendar_weekday` meaning slug (its English name) back to a
+    /// position in the cycle. The lexicon owns the surface words; this only maps
+    /// the stable slug, so adding a language never touches this code.
+    fn from_slug(slug: &str) -> Option<Self> {
+        match slug {
+            "monday" => Some(Self::Monday),
+            "tuesday" => Some(Self::Tuesday),
+            "wednesday" => Some(Self::Wednesday),
+            "thursday" => Some(Self::Thursday),
+            "friday" => Some(Self::Friday),
+            "saturday" => Some(Self::Saturday),
+            "sunday" => Some(Self::Sunday),
+            _ => None,
         }
     }
 
@@ -160,130 +181,13 @@ impl WeekdayOperation {
     }
 }
 
-const WEEKDAY_ALIASES: &[(&str, Weekday)] = &[
-    ("monday", Weekday::Monday),
-    ("mon", Weekday::Monday),
-    ("понедельника", Weekday::Monday),
-    ("понедельником", Weekday::Monday),
-    ("понедельнику", Weekday::Monday),
-    ("понедельнике", Weekday::Monday),
-    ("понедельник", Weekday::Monday),
-    ("tuesday", Weekday::Tuesday),
-    ("tue", Weekday::Tuesday),
-    ("tues", Weekday::Tuesday),
-    ("вторника", Weekday::Tuesday),
-    ("вторником", Weekday::Tuesday),
-    ("вторнику", Weekday::Tuesday),
-    ("вторнике", Weekday::Tuesday),
-    ("вторник", Weekday::Tuesday),
-    ("wednesday", Weekday::Wednesday),
-    ("wed", Weekday::Wednesday),
-    ("средой", Weekday::Wednesday),
-    ("среде", Weekday::Wednesday),
-    ("среду", Weekday::Wednesday),
-    ("среды", Weekday::Wednesday),
-    ("среда", Weekday::Wednesday),
-    ("thursday", Weekday::Thursday),
-    ("thu", Weekday::Thursday),
-    ("thur", Weekday::Thursday),
-    ("thurs", Weekday::Thursday),
-    ("четверга", Weekday::Thursday),
-    ("четвергом", Weekday::Thursday),
-    ("четвергу", Weekday::Thursday),
-    ("четверге", Weekday::Thursday),
-    ("четверг", Weekday::Thursday),
-    ("friday", Weekday::Friday),
-    ("fri", Weekday::Friday),
-    ("пятницей", Weekday::Friday),
-    ("пятнице", Weekday::Friday),
-    ("пятницу", Weekday::Friday),
-    ("пятницы", Weekday::Friday),
-    ("пятница", Weekday::Friday),
-    ("saturday", Weekday::Saturday),
-    ("sat", Weekday::Saturday),
-    ("субботой", Weekday::Saturday),
-    ("субботе", Weekday::Saturday),
-    ("субботу", Weekday::Saturday),
-    ("субботы", Weekday::Saturday),
-    ("суббота", Weekday::Saturday),
-    ("sunday", Weekday::Sunday),
-    ("sun", Weekday::Sunday),
-    ("воскресеньем", Weekday::Sunday),
-    ("воскресенью", Weekday::Sunday),
-    ("воскресенья", Weekday::Sunday),
-    ("воскресенье", Weekday::Sunday),
-];
-
-const NEXT_MARKERS: &[&str] = &[
-    "after",
-    "comes after",
-    "day after",
-    "next day",
-    "following day",
-    "following weekday",
-    "follows",
-    "после",
-    "наступает после",
-    "следующий день",
-    "следующая",
-    "следом за",
-];
-
-const PREVIOUS_MARKERS: &[&str] = &[
-    "before",
-    "comes before",
-    "day before",
-    "previous day",
-    "previous weekday",
-    "precedes",
-    "перед",
-    "предыдущий день",
-    "предыдущая",
-    "предшествует",
-];
-
-const TODAY_MARKERS: &[&str] = &["today", "сегодня", "आज", "今天"];
-
-const CURRENT_DAY_MARKERS: &[&str] = &[
-    "day",
-    "weekday",
-    "week day",
-    "date",
-    "день",
-    "дня",
-    "дату",
-    "дата",
-    "число",
-    "दिन",
-    "तारीख",
-    "दिनांक",
-    "星期",
-    "星期几",
-    "日期",
-    "几号",
-    "日子",
-];
-
-const CURRENT_DAY_QUESTION_MARKERS: &[&str] = &[
-    "?",
-    "what",
-    "which",
-    "tell me",
-    "show",
-    "какой",
-    "какая",
-    "какое",
-    "скажи",
-    "покажи",
-    "कौन",
-    "क्या",
-    "बताओ",
-    "दिखाओ",
-    "什么",
-    "几",
-    "告诉",
-    "显示",
-];
+// Issue #386: the calendar recognition vocabulary is no longer hardcoded here.
+// The weekday names, the next/previous direction relations, the today marker,
+// day/date/week references, and interrogatives all live as self-describing
+// meanings in `data/seed/meanings-calendar.lino`, tagged with the
+// `calendar_*` semantic roles. The matching functions below ask the lexicon
+// which surface words evidence each role, so the words live once, in the data,
+// and translate to every supported language; this code knows only the concepts.
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 struct CalendarDate {
@@ -358,37 +262,51 @@ fn try_current_day_reasoning(prompt: &str, log: &mut EventLog) -> Option<Symboli
 }
 
 fn mentions_current_day_question(normalized: &str) -> bool {
-    let mentions_today = TODAY_MARKERS
+    let lex = lexicon();
+    // A today marker must be present as a standalone word (CJK substring).
+    let mentions_today = lex
+        .words_for_role(ROLE_CALENDAR_TODAY)
         .iter()
-        .any(|marker| contains_term(normalized, marker));
+        .any(|word| contains_term(normalized, word));
     if !mentions_today {
         return false;
     }
 
-    let asks_for_day = CURRENT_DAY_MARKERS
+    // …referring to a day/date/week…
+    let asks_for_day = lex
+        .words_for_role(ROLE_CALENDAR_DAY_REFERENCE)
         .iter()
-        .any(|marker| contains_term(normalized, marker))
-        || normalized.contains("недел");
-    let question_like = CURRENT_DAY_QUESTION_MARKERS
+        .any(|word| contains_term(normalized, word));
+    // …phrased as a question. Interrogatives match as a raw substring (so a
+    // trailing "?" or "что" inside a longer word still counts), matching the
+    // original behaviour.
+    let question_like = lex
+        .words_for_role(ROLE_CALENDAR_QUESTION)
         .iter()
-        .any(|marker| normalized.contains(marker));
+        .any(|word| normalized.contains(word.as_str()));
     asks_for_day && question_like
 }
 
 fn mentions_weekday_context(normalized: &str) -> bool {
-    ["day", "weekday", "week day", "день", "дня", "дни", "дней"]
+    lexicon()
+        .words_for_role(ROLE_CALENDAR_DAY_REFERENCE)
         .iter()
-        .any(|marker| contains_term(normalized, marker))
-        || normalized.contains("недел")
+        .any(|word| contains_term(normalized, word))
 }
 
 fn detect_operation(normalized: &str) -> Option<WeekdayOperation> {
-    let has_next = NEXT_MARKERS
+    let lex = lexicon();
+    // Direction markers match as raw substrings: many are multi-word phrases
+    // ("comes after", "наступает после") and inflected forms that should match
+    // inside a larger run, exactly as the previous hardcoded lists did.
+    let has_next = lex
+        .words_for_role(ROLE_CALENDAR_DIRECTION_NEXT)
         .iter()
-        .any(|marker| normalized.contains(marker));
-    let has_previous = PREVIOUS_MARKERS
+        .any(|marker| normalized.contains(marker.as_str()));
+    let has_previous = lex
+        .words_for_role(ROLE_CALENDAR_DIRECTION_PREVIOUS)
         .iter()
-        .any(|marker| normalized.contains(marker));
+        .any(|marker| normalized.contains(marker.as_str()));
     match (has_next, has_previous) {
         (true, false) => Some(WeekdayOperation::Next),
         (false, true) => Some(WeekdayOperation::Previous),
@@ -397,9 +315,13 @@ fn detect_operation(normalized: &str) -> Option<WeekdayOperation> {
 }
 
 fn detect_weekday(normalized: &str) -> Option<Weekday> {
-    WEEKDAY_ALIASES
-        .iter()
-        .find_map(|(alias, weekday)| contains_term(normalized, alias).then_some(*weekday))
+    // Walk the `calendar_weekday` meanings in cycle order (Monday … Sunday) and
+    // return the first whose surface words appear as a standalone term, mapping
+    // its slug back to a position. The words live in the lexicon, per language.
+    lexicon()
+        .meanings_with_role(ROLE_CALENDAR_WEEKDAY)
+        .filter(|meaning| meaning.words().any(|word| contains_term(normalized, word)))
+        .find_map(|meaning| Weekday::from_slug(&meaning.slug))
 }
 
 fn contains_term(haystack: &str, needle: &str) -> bool {
@@ -503,6 +425,38 @@ fn render_answer(
                 source.ru_instrumental(),
                 result.ru(),
                 source.ru(),
+                operation.delta(),
+            ),
+        },
+        "hi" => match operation {
+            WeekdayOperation::Next => format!(
+                "{} के बाद {} आता है। मैं सात दिनों के कैलेंडर चक्र में {} को {} दिन सरकाता हूँ।",
+                source.hi(),
+                result.hi(),
+                source.hi(),
+                operation.delta(),
+            ),
+            WeekdayOperation::Previous => format!(
+                "{} से पहले {} आता है। मैं सात दिनों के कैलेंडर चक्र में {} को {} दिन सरकाता हूँ।",
+                source.hi(),
+                result.hi(),
+                source.hi(),
+                operation.delta(),
+            ),
+        },
+        "zh" => match operation {
+            WeekdayOperation::Next => format!(
+                "{}之后是{}。我在七天的日历循环中将{}移动{}天。",
+                source.zh(),
+                result.zh(),
+                source.zh(),
+                operation.delta(),
+            ),
+            WeekdayOperation::Previous => format!(
+                "{}之前是{}。我在七天的日历循环中将{}移动{}天。",
+                source.zh(),
+                result.zh(),
+                source.zh(),
                 operation.delta(),
             ),
         },

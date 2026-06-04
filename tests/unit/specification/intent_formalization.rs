@@ -196,6 +196,30 @@ fn supported_language_greetings_route_through_intent_formalization() {
 }
 
 #[test]
+fn fronted_interrogative_opener_classifies_prompt_as_question() {
+    // Issue #386: the question/statement split reads the fronted wh-word from the
+    // seed `interrogative_opener` role rather than a hardcoded prefix list. These
+    // prompts carry no `?`, so only `starts_with_question_word` (the role query)
+    // can mark them as questions — proving the seed-driven path works in both
+    // head-initial languages.
+    let english = formalize_intent("why is the sky blue", "en", None);
+    assert_eq!(english.kind, IntentKind::Question, "{english:?}");
+
+    let russian = formalize_intent("почему трава зелёная", "ru", None);
+    assert_eq!(russian.kind, IntentKind::Question, "{russian:?}");
+
+    // The opener must be a whole fronted word: "whatever" begins with "what" but
+    // not "what " (trailing space), so the trailing-space guard must reject it and
+    // the prompt must not be read as a question.
+    let not_a_question = formalize_intent("whatever happens happens", "en", None);
+    assert_ne!(
+        not_a_question.kind,
+        IntentKind::Question,
+        "{not_a_question:?}"
+    );
+}
+
+#[test]
 fn intent_formalization_cache_exports_to_durable_links_store() {
     let mut cache = IntentFormalizationCache::new();
     let candidate = formalize_prompt("translate apple to Russian", "en");

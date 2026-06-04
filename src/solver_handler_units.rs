@@ -3,6 +3,7 @@
 
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
+use crate::seed::{lexicon, Lexicon, Meaning, ROLE_MEASUREMENT_UNIT, ROLE_PHYSICAL_DIMENSION};
 use crate::solver_handlers::finalize_simple;
 
 /// Detect queries that ask to convert between dimensionally incompatible units.
@@ -12,14 +13,18 @@ use crate::solver_handlers::finalize_simple;
 /// the symbolic answer must say so explicitly rather than falling through to
 /// `intent:unknown`.
 ///
-/// Supports English and Russian surface forms (the reported prompt was Russian).
+/// The units, the physical dimensions they measure, and their surface words in
+/// every supported language are **not** hardcoded here — they are read from the
+/// meaning lexicon (`data/seed/meanings-units.lino`), where each unit meaning is
+/// `defined_by` the dimension it measures (issue #386). This code knows only the
+/// *concepts* "measurement unit" and "physical dimension"; the words live once,
+/// in the data, and translate to any supported language.
 pub fn try_incompatible_units(
     prompt: &str,
     normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
-    let (unit_a, unit_b) = detect_incompatible_unit_pair(normalized)?;
-    let (dim_a, dim_b) = (dimension_of(unit_a), dimension_of(unit_b));
+    let (unit_a, dim_a, unit_b, dim_b) = detect_incompatible_unit_pair(normalized)?;
     log.append(
         "unit_incompatibility",
         format!("{unit_a}:{dim_a} vs {unit_b}:{dim_b}"),
@@ -39,115 +44,19 @@ pub fn try_incompatible_units(
     ))
 }
 
-/// Length units (metre family).
-const LENGTH_UNITS: &[&str] = &[
-    "meter",
-    "metre",
-    "meters",
-    "metres",
-    "km",
-    "kilometer",
-    "kilometre",
-    "cm",
-    "centimeter",
-    "centimetre",
-    "mm",
-    "millimeter",
-    "millimetre",
-    "метр",
-    "метра",
-    "метров",
-    "километр",
-    "сантиметр",
-    "миллиметр",
-];
-
-/// Data-storage units (byte family).
-const DATA_UNITS: &[&str] = &[
-    "byte",
-    "bytes",
-    "kilobyte",
-    "kilobytes",
-    "kb",
-    "megabyte",
-    "megabytes",
-    "mb",
-    "gigabyte",
-    "gigabytes",
-    "gb",
-    "terabyte",
-    "terabytes",
-    "tb",
-    "bit",
-    "bits",
-    "байт",
-    "байта",
-    "байтов",
-    "килобайт",
-    "мегабайт",
-    "гигабайт",
-    "терабайт",
-];
-
-/// Mass units.
-const MASS_UNITS: &[&str] = &[
-    "kilogram",
-    "kilograms",
-    "kg",
-    "gram",
-    "grams",
-    "pound",
-    "pounds",
-    "килограмм",
-    "грамм",
-];
-
-/// Time units.
-const TIME_UNITS: &[&str] = &[
-    "second",
-    "seconds",
-    "minute",
-    "minutes",
-    "hour",
-    "hours",
-    "секунда",
-    "секунды",
-    "секунд",
-    "минута",
-    "минуты",
-    "минут",
-    "час",
-    "часа",
-    "часов",
-];
-
-/// Temperature units.
-const TEMPERATURE_UNITS: &[&str] = &[
-    "celsius",
-    "fahrenheit",
-    "kelvin",
-    "цельсий",
-    "фаренгейт",
-    "кельвин",
-];
-
-fn dimension_of(unit: &str) -> &'static str {
-    if LENGTH_UNITS.contains(&unit) {
-        return "length";
-    }
-    if DATA_UNITS.contains(&unit) {
-        return "data storage";
-    }
-    if MASS_UNITS.contains(&unit) {
-        return "mass";
-    }
-    if TIME_UNITS.contains(&unit) {
-        return "time";
-    }
-    if TEMPERATURE_UNITS.contains(&unit) {
-        return "temperature";
-    }
-    "unknown"
+/// The English label of the physical dimension a `unit` measures.
+///
+/// Resolved through the unit meaning's `defined_by` graph: the dimension is the
+/// `defined_by` target that itself plays the [`ROLE_PHYSICAL_DIMENSION`] role
+/// (e.g. `meter` is `defined_by "length"` and `defined_by "unit"`, and `length`
+/// carries the dimension role). The label is the dimension's English lexeme so
+/// the rendered explanation reads naturally — it lives in the data, not here.
+fn dimension_label<'a>(lex: &'a Lexicon, unit: &'a Meaning) -> Option<&'a str> {
+    unit.defined_by
+        .iter()
+        .filter_map(|slug| lex.meaning(slug))
+        .find(|m| m.has_role(ROLE_PHYSICAL_DIMENSION))
+        .and_then(|dim| dim.word_in("en"))
 }
 
 /// Whether `unit` appears in `normalized` as a standalone word rather than as a
@@ -162,13 +71,20 @@ fn dimension_of(unit: &str) -> &'static str {
 /// "500" in "500mb"), so genuine units still match while embedded fragments do
 /// not.
 fn contains_unit_word(normalized: &str, unit: &str) -> bool {
-    // Inflected languages (Russian "килобайт" -> "килобайте") and space-less
-    // scripts (CJK) attach suffixes directly to the unit, so a strict word
-    // boundary would reject legitimate forms. The substring false positives
-    // that motivated this guard ("mb" in "number", "gram" in "program") are all
-    // ASCII, so the boundary check only applies to ASCII units; non-ASCII units
-    // keep the original permissive substring match.
-    if !unit.is_ascii() {
+    // Inflected alphabetic scripts (Russian "килобайт" -> "килобайте", Hindi
+    // "किलोबाइट") attach suffixes directly to the unit, so a strict word boundary
+    // would reject legitimate forms — those keep the permissive substring match.
+    //
+    // CJK is different: it has no inter-word spaces, so its ideographs glue into
+    // unrelated compounds. A bare-substring match read the day unit "天" inside
+    // "天气" (weather) and the gram unit "克" inside the transliteration "弗拉克斯",
+    // turning a units-free prompt into a phantom time-vs-mass incompatibility
+    // (issue #386). Ideographs are alphabetic to `char::is_alphabetic`, so the
+    // same boundary rule used for ASCII rejects a unit glued inside a larger
+    // compound while still matching one next to a digit ("7天", "5千克") or at a
+    // token edge. The boundary check therefore applies to ASCII and CJK units;
+    // only the inflected alphabetic scripts take the permissive path above.
+    if !unit.is_ascii() && !crate::coding::contains_cjk(unit) {
         return normalized.contains(unit);
     }
     let boundary_ok = |ch: Option<char>| ch.map_or(true, |c| !c.is_alphabetic());
@@ -189,23 +105,39 @@ fn contains_unit_word(normalized: &str, unit: &str) -> bool {
     false
 }
 
-/// Return two unit tokens from `normalized` that belong to different dimensions,
-/// or `None` if no incompatible pair is found.
-fn detect_incompatible_unit_pair(normalized: &str) -> Option<(&'static str, &'static str)> {
-    let all_units: &[(&[&str], &'static str)] = &[
-        (LENGTH_UNITS, "length"),
-        (DATA_UNITS, "data storage"),
-        (MASS_UNITS, "mass"),
-        (TIME_UNITS, "time"),
-        (TEMPERATURE_UNITS, "temperature"),
-    ];
-
+/// Return the first matched unit token for each of two distinct physical
+/// dimensions, together with their dimension labels, or `None` if `normalized`
+/// does not mention units from at least two different dimensions.
+///
+/// Walks every meaning that plays the [`ROLE_MEASUREMENT_UNIT`] role in lexicon
+/// declaration order, keeping the first matched unit per dimension. Two units
+/// that measure different dimensions cannot be converted into one another —
+/// that is the incompatibility the caller reports. The result tuple is
+/// `(unit_a, dim_a, unit_b, dim_b)`.
+#[allow(clippy::type_complexity)]
+fn detect_incompatible_unit_pair(
+    normalized: &str,
+) -> Option<(&'static str, &'static str, &'static str, &'static str)> {
+    let lex = lexicon();
+    // (matched surface word, dimension label) — one entry per distinct
+    // dimension, in lexicon order, so the rendered message is deterministic.
     let mut found: Vec<(&'static str, &'static str)> = Vec::new();
-    for (units, dim) in all_units {
-        for unit in *units {
-            if contains_unit_word(normalized, unit) && !found.iter().any(|(_, d)| d == dim) {
-                found.push((unit, dim));
+    for unit in lex.meanings_with_role(ROLE_MEASUREMENT_UNIT) {
+        let Some(dim) = dimension_label(lex, unit) else {
+            continue;
+        };
+        if found.iter().any(|(_, seen)| *seen == dim) {
+            continue; // already have a unit witnessing this dimension
+        }
+        let mut matched: Option<&'static str> = None;
+        for word in unit.words() {
+            if contains_unit_word(normalized, word) {
+                matched = Some(word);
+                break;
             }
+        }
+        if let Some(word) = matched {
+            found.push((word, dim));
         }
     }
 
@@ -214,8 +146,5 @@ fn detect_incompatible_unit_pair(normalized: &str) -> Option<(&'static str, &'st
     }
     let (unit_a, dim_a) = found[0];
     let (unit_b, dim_b) = found[1];
-    if dim_a == dim_b {
-        return None;
-    }
-    Some((unit_a, unit_b))
+    Some((unit_a, dim_a, unit_b, dim_b))
 }

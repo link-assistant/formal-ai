@@ -588,90 +588,18 @@ pub(crate) fn detected_program_modifiers(normalized: &str) -> Vec<String> {
         .collect()
 }
 
-/// Words that name the artefact the user wants generated ("program", "script",
-/// "code") across the supported prompt languages.
-const PROGRAM_NOUNS: &[&str] = &[
-    "program",
-    "programme",
-    "script",
-    "code",
-    // Issue #334: "Write a Python function that ..." — a requested function is a
-    // program artefact too, so it pairs with a program verb to ask for code.
-    "function",
-    "func",
-    // Russian: программа / программу / программе / программы, скрипт, код.
-    "программа",
-    "программу",
-    "программе",
-    "программы",
-    "программку",
-    "скрипт",
-    "код",
-    // Russian: функция / функцию (function).
-    "функция",
-    "функцию",
-    // Hindi: प्रोग्राम (program), स्क्रिप्ट (script), कोड (code),
-    // फ़ंक्शन / फंक्शन (function).
-    "प्रोग्राम",
-    "स्क्रिप्ट",
-    "कोड",
-    "फ़ंक्शन",
-    "फंक्शन",
-    // Chinese: 程序 (program), 脚本 (script), 代码 (code), 函数 (function).
-    "程序",
-    "脚本",
-    "代码",
-    "函数",
-];
-
-/// Verbs that request the artefact be produced ("write", "create", "show", …)
-/// across the supported prompt languages.
-const PROGRAM_VERBS: &[&str] = &[
-    "write",
-    "create",
-    "show",
-    "generate",
-    "make",
-    "build",
-    // Russian imperative forms of написать / создать / сделать / показать /
-    // выдать / сгенерировать / написать.
-    "напиши",
-    "напишите",
-    "создай",
-    "создайте",
-    "сделай",
-    "сделайте",
-    "покажи",
-    "покажите",
-    "сгенерируй",
-    "сгенерируйте",
-    // Hindi imperatives: लिखो / लिखें (write), बनाओ / बनाएं (make/create),
-    // दिखाओ / दिखाएं (show).
-    "लिखो",
-    "लिखें",
-    "बनाओ",
-    "बनाएं",
-    "दिखाओ",
-    "दिखाएं",
-    // Chinese verbs: 编写 / 写 (write), 创建 (create), 生成 (generate),
-    // 制作 (make), 显示 (show).
-    "编写",
-    "写",
-    "创建",
-    "生成",
-    "制作",
-    "显示",
-];
-
 fn write_program_parameters(normalized: &str) -> Option<BTreeMap<String, String>> {
     let task = crate::coding::program_task_by_alias(normalized);
     let language = requested_program_language(normalized);
-    let asks_for_program = PROGRAM_NOUNS
-        .iter()
-        .any(|noun| contains_token(normalized, noun))
-        && PROGRAM_VERBS
-            .iter()
-            .any(|verb| contains_token(normalized, verb));
+    // Issue #386: "write a <program>" is recognised by *meaning*, not a hardcoded
+    // per-language word list. The prompt asks for a program when it evidences a
+    // `program_kind` meaning (the artefact: program / script / code / function)
+    // *and* a `program_request` meaning (the verb: write / create / show /
+    // generate / make / build). The surface words for every language live once,
+    // in `data/seed/meanings.lino`; this code understands the concepts.
+    let lexicon = crate::seed::lexicon();
+    let asks_for_program = lexicon.mentions_role(crate::seed::ROLE_PROGRAM_KIND, normalized)
+        && lexicon.mentions_role(crate::seed::ROLE_PROGRAM_REQUEST, normalized);
     if task.is_none() && !asks_for_program {
         return None;
     }
@@ -694,15 +622,41 @@ fn requested_program_language(normalized: &str) -> Option<String> {
     if let Some(language) = program_language_by_alias(normalized) {
         return Some(String::from(language.slug));
     }
+    // Issue #386: the function words that introduce an *unknown* implementation
+    // language ("write a program in <name>", "на языке <name>") are seed data,
+    // not literals baked into the parser. Source the head-initial English/Russian
+    // surfaces of the target-preposition and "language" noun roles from the
+    // lexicon so this positional extractor reasons over the ontology instead of a
+    // hardcoded `matches!` list. The catalog-driven `program_language_by_alias`
+    // above already resolves every *known* language across all four supported
+    // languages; this fallback only reads the bare name trailing the marker, so
+    // it consults the two head-initial languages whose name follows the marker
+    // (the head-final Hindi/Chinese forms are carried in the seed for coverage
+    // but place the name before the marker, which this scan does not chase).
+    let lexicon = crate::seed::lexicon();
+    let preposition_surfaces = lexicon.words_for_role_in_languages(
+        crate::seed::ROLE_IMPLEMENTATION_LANGUAGE_PREPOSITION,
+        &["en", "ru"],
+    );
+    let language_noun_surfaces = lexicon.words_for_role_in_languages(
+        crate::seed::ROLE_IMPLEMENTATION_LANGUAGE_NOUN,
+        &["en", "ru"],
+    );
     let tokens = normalized.split_whitespace().collect::<Vec<_>>();
     for (index, token) in tokens.iter().enumerate() {
-        if !matches!(*token, "in" | "на") {
+        if !preposition_surfaces
+            .iter()
+            .any(|surface| surface.as_str() == *token)
+        {
             continue;
         }
         let Some(next) = tokens.get(index + 1) else {
             continue;
         };
-        if matches!(*next, "language" | "языке") {
+        if language_noun_surfaces
+            .iter()
+            .any(|surface| surface.as_str() == *next)
+        {
             if let Some(after_language_word) = tokens.get(index + 2) {
                 return Some((*after_language_word).to_owned());
             }
@@ -804,7 +758,7 @@ fn append_prompt_relevants(prompt: &str, normalized: &str, relevants: &mut Vec<S
         ),
         (
             "handler:meta_explanation",
-            normalized.contains("how you work") || normalized.contains("как ты работаешь"),
+            seed::lexicon().mentions_role_raw(seed::ROLE_ASSISTANT_MECHANISM_INQUIRY, normalized),
         ),
         (
             "handler:concept_lookup",
@@ -827,10 +781,18 @@ fn looks_arithmetic(prompt: &str, normalized: &str) -> bool {
 }
 
 fn looks_like_program_synthesis(normalized: &str) -> bool {
-    contains_token(normalized, "function")
-        && (has_any_token(normalized, &["python", "tuple", "numbers", "vowels"])
-            || normalized.contains("similar elements"))
-        && has_any_token(normalized, &["implement", "write", "return"])
+    // Routing mirror of `crate::solver_handlers::program_synthesis`'s gate, over
+    // the canonicalized view: a function *subject*, a *domain* signal (Python or
+    // a data kind) or the similar-elements task signal, and a request *action*
+    // verb. Every surface word comes from the meaning lexicon, not from literals.
+    let lexicon = crate::seed::lexicon();
+    let similar_elements = lexicon
+        .meaning("signal_similar_elements")
+        .is_some_and(|signal| signal.evidenced_in(normalized));
+    lexicon.mentions_role(crate::seed::ROLE_PROGRAM_SYNTHESIS_SUBJECT, normalized)
+        && (lexicon.mentions_role(crate::seed::ROLE_PROGRAM_SYNTHESIS_DOMAIN, normalized)
+            || similar_elements)
+        && lexicon.mentions_role(crate::seed::ROLE_PROGRAM_SYNTHESIS_ACTION, normalized)
 }
 
 fn looks_like_text_manipulation(normalized: &str) -> bool {
@@ -924,23 +886,20 @@ fn infer_kind(
 }
 
 fn starts_with_question_word(normalized: &str) -> bool {
-    [
-        "what ",
-        "who ",
-        "why ",
-        "where ",
-        "when ",
-        "how ",
-        "which ",
-        "что ",
-        "кто ",
-        "как ",
-        "где ",
-        "когда ",
-        "почему ",
-    ]
-    .iter()
-    .any(|prefix| normalized.starts_with(prefix))
+    // The interrogative openers (the wh-words) are carried by the
+    // `interrogative_opener` meaning in the seed, not hardcoded here. English and
+    // Russian are head-initial, so the opener fronts the prompt and a prefix match
+    // — the bare word followed immediately by a space — detects it; the head-final
+    // Hindi and Chinese surfaces are carried for coverage but place the question
+    // word later, which this front scan does not chase.
+    crate::seed::lexicon()
+        .words_for_role_in_languages(crate::seed::ROLE_INTERROGATIVE_OPENER, &["en", "ru"])
+        .iter()
+        .any(|word| {
+            normalized
+                .strip_prefix(word.as_str())
+                .is_some_and(|rest| rest.starts_with(' '))
+        })
 }
 
 fn push_unique(values: &mut Vec<String>, value: String) {

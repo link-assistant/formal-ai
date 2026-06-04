@@ -5,6 +5,7 @@ use crate::concepts::{extract_concept_query, lookup_concept_query};
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::language::{detect as detect_language, Language};
+use crate::seed;
 use crate::solver_handlers::{finalize_simple, try_concept_lookup};
 use crate::solver_helpers::last_assistant_turn;
 use crate::web_search_core::{WEB_SEARCH_PROVIDERS, WEB_SEARCH_RRF_K};
@@ -20,10 +21,10 @@ struct ProceduralHowToTask {
     corrections: Vec<SpellingCorrection>,
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone)]
 struct SpellingCorrection {
-    from: &'static str,
-    to: &'static str,
+    from: String,
+    to: String,
 }
 
 /// Handles source-backed procedural requests such as "How to make tea?" and
@@ -199,80 +200,63 @@ fn extract_how_it_works_query(prompt: &str, _normalized: &str) -> Option<HowItWo
     })
 }
 
+/// Is `lower` a bare "how it works" form — a fixed phrase carrying no subject?
+///
+/// The bare phrases are the [`seed::Slot::Bare`] word forms of the
+/// `mechanism_inquiry` meaning (issue #386): no hardcoded per-language list
+/// lives here, only the language-independent concept. A prompt is the bare form
+/// when it equals such a phrase or is that phrase followed by a space.
 fn is_bare_how_it_works(lower: &str) -> bool {
-    const BARE_PHRASES: &[&str] = &[
-        "how it works",
-        "how does it work",
-        "как это работает",
-        "как оно работает",
-        "यह कैसे काम करता है",
-        "यह कैसे काम करती है",
-        "यह कैसे काम करता",
-        "这是如何工作的",
-        "这是怎么工作的",
-        "这个如何工作",
-        "它如何工作",
-        "它是如何工作的",
-        "它怎么工作",
-    ];
-    BARE_PHRASES.iter().any(|phrase| {
-        lower == *phrase
-            || lower
-                .strip_prefix(*phrase)
-                .is_some_and(|rest| rest.starts_with(' '))
-    })
+    seed::lexicon()
+        .role_word_forms(seed::ROLE_MECHANISM_INQUIRY)
+        .into_iter()
+        .filter(|form| form.slot() == seed::Slot::Bare)
+        .any(|form| {
+            let phrase = form.text.as_str();
+            lower == phrase
+                || lower
+                    .strip_prefix(phrase)
+                    .is_some_and(|rest| rest.starts_with(' '))
+        })
 }
 
 /// Extract the explicit subject from multilingual "how X works?" prompts.
 /// Returns `None` when the prompt is the bare "how it works?" form.
+///
+/// The affixes are the slot-marked surface forms of the `mechanism_inquiry`
+/// meaning (issue #386): the position of the `…` (U+2026) marker classifies
+/// each form, so the matching strategy is derived from the data, not from a
+/// hardcoded per-language list. The mechanism order — prefix surfaces, then
+/// circumfix, then suffix — and the within-bucket declaration order are
+/// preserved so behaviour is identical to the prior inline arrays:
+/// * [`seed::Slot::Prefix`] (`how does …`): the literal precedes the subject;
+///   `strip_mechanism_tail` then trims a trailing verb, and we return its
+///   result even when it is `None` (an early commit, as before).
+/// * [`seed::Slot::Circumfix`] (`how … works`): the subject sits between the
+///   two literals.
+/// * [`seed::Slot::Suffix`] (`… как работает`): the subject precedes the
+///   literal. Suffix surfaces are end-anchored and script-disjoint across
+///   languages, so their relative order across languages does not change which
+///   one matches a given prompt.
 fn extract_how_it_works_subject(original: &str, lower: &str) -> Option<String> {
-    for prefix in [
-        "how does ",
-        "how do ",
-        "how did ",
-        "how is ",
-        "как устроен ",
-        "как устроена ",
-        "как устроено ",
-        "как устроены ",
-        "как работает ",
-        "как работают ",
-    ] {
-        if let Some(subject) = subject_after_prefix(original, lower, prefix) {
+    let forms = seed::lexicon().role_word_forms(seed::ROLE_MECHANISM_INQUIRY);
+
+    for form in forms.iter().filter(|f| f.slot() == seed::Slot::Prefix) {
+        if let Some(subject) = subject_after_prefix(original, lower, form.before_slot()) {
             return strip_mechanism_tail(&subject);
         }
     }
 
-    for (prefix, suffixes) in [
-        ("how ", &[" works", " work"] as &[_]),
-        ("как ", &[" работает", " работают"]),
-    ] {
-        if let Some(subject) = subject_between(original, lower, prefix, suffixes) {
+    for form in forms.iter().filter(|f| f.slot() == seed::Slot::Circumfix) {
+        if let Some(subject) =
+            subject_between(original, lower, form.before_slot(), &[form.after_slot()])
+        {
             return Some(subject);
         }
     }
 
-    for suffix in [
-        " कैसे काम करता है",
-        " कैसे काम करती है",
-        " कैसे काम करते हैं",
-        " कैसे काम करता",
-        " कैसे काम करती",
-        " कैसे काम करते",
-        " 是如何工作的",
-        "是如何工作的",
-        " 是怎么工作的",
-        "是怎么工作的",
-        " 如何工作",
-        "如何工作",
-        " 怎么工作",
-        "怎么工作",
-        " 的工作原理是什么",
-        "的工作原理是什么",
-        " как работает",
-        " как работают",
-    ] {
-        if let Some(subject) = subject_before_suffix(original, lower, suffix) {
+    for form in forms.iter().filter(|f| f.slot() == seed::Slot::Suffix) {
+        if let Some(subject) = subject_before_suffix(original, lower, form.after_slot()) {
             return Some(subject);
         }
     }
@@ -308,17 +292,18 @@ fn subject_between(original: &str, lower: &str, prefix: &str, suffixes: &[&str])
     None
 }
 
+/// Strip a trailing mechanism predicate ("work", "works", "structured", …) so a
+/// prefix match such as "how does X work" yields the bare subject "X".
+///
+/// The predicate tails carry the [`seed::ROLE_MECHANISM_PREDICATE`] role; each
+/// is a [`seed::Slot::Suffix`] whose text after the `…` slot is the literal to
+/// trim. They are tried in declaration order and the first match wins, mirroring
+/// the original return-on-first-match loop. No per-language tail list lives here.
 fn strip_mechanism_tail(subject: &str) -> Option<String> {
     let mut clean = clean_mechanism_subject(subject)?;
     let lower = clean.to_lowercase();
-    for suffix in [
-        " work",
-        " works",
-        " structured",
-        " organized",
-        " organised",
-        " built",
-    ] {
+    for form in &seed::lexicon().role_word_forms(seed::ROLE_MECHANISM_PREDICATE) {
+        let suffix = form.after_slot();
         if lower.ends_with(suffix) {
             let end = clean.len().checked_sub(suffix.len())?;
             clean.truncate(end);
@@ -342,22 +327,21 @@ fn clean_mechanism_fragment(value: &str) -> String {
         .to_owned()
 }
 
+/// Trim optional detail/politeness modifiers from a candidate subject and reject
+/// it outright when it is a non-referential subject (a pronoun or bare function
+/// word that names no real topic).
+///
+/// The modifier tails carry the [`seed::ROLE_DETAIL_MODIFIER`] role; each is a
+/// [`seed::Slot::Suffix`] stripped in declaration order, re-trimming after each,
+/// so several modifiers can fall away in one pass. The rejection set carries the
+/// [`seed::ROLE_NON_REFERENTIAL_SUBJECT`] role: [`seed::Slot::Bare`] surfaces
+/// match the whole candidate exactly and [`seed::Slot::Prefix`] surfaces match a
+/// candidate that begins with the literal before the `…` slot. No per-language
+/// modifier or pronoun list lives here.
 fn clean_mechanism_subject(value: &str) -> Option<String> {
-    const PRONOUN_SUBJECTS: &[&str] = &[
-        "it", "this", "that", "you", "yourself", "does", "do", "это", "оно", "он", "она", "они",
-        "ты", "вы", "यह", "ये", "这", "这个", "它",
-    ];
-
     let mut clean = clean_mechanism_fragment(value);
-    for suffix in [
-        " in detail",
-        " internally",
-        " exactly",
-        " please",
-        " подробнее",
-        " подробно",
-        " пожалуйста",
-    ] {
+    for form in &seed::lexicon().role_word_forms(seed::ROLE_DETAIL_MODIFIER) {
+        let suffix = form.after_slot();
         let lower = clean.to_lowercase();
         if lower.ends_with(suffix) {
             let end = clean.len().checked_sub(suffix.len())?;
@@ -366,13 +350,15 @@ fn clean_mechanism_subject(value: &str) -> Option<String> {
         }
     }
     let lower = clean.to_lowercase();
-    if clean.is_empty()
-        || PRONOUN_SUBJECTS.contains(&lower.as_str())
-        || lower.starts_with("does ")
-        || lower.starts_with("do ")
-        || lower.starts_with("to ")
-        || lower.starts_with("you ")
-    {
+    let non_referential = seed::lexicon()
+        .role_word_forms(seed::ROLE_NON_REFERENTIAL_SUBJECT)
+        .iter()
+        .any(|form| match form.slot() {
+            seed::Slot::Bare => lower == form.text,
+            seed::Slot::Prefix => lower.starts_with(form.before_slot()),
+            _ => false,
+        });
+    if clean.is_empty() || non_referential {
         return None;
     }
     Some(clean)
@@ -434,53 +420,21 @@ fn render_mechanism_discovery_answer(subject: &str, language: Language) -> Strin
     }
 }
 
+/// Detect a procedural "how to X" request and split it into task/action/object.
+///
+/// The prefixes are the slot-marked surface forms of the `procedural_request`
+/// meaning (issue #386): every form is a [`seed::Slot::Prefix`] whose literal
+/// (the text before the `…` marker) is the matchable prefix, in declaration
+/// order so "how to do " still precedes "how to ". A form may name the
+/// canonical operation in its `action` field (do, perform, implement, create,
+/// write); an empty action means the operation is taken from the task's first
+/// word. No per-language prefix list lives here — only the concept.
 fn extract_procedural_how_to_task(normalized: &str) -> Option<ProceduralHowToTask> {
-    const PREFIXES: &[(&str, Option<&str>)] = &[
-        ("please tell me how to ", None),
-        ("please show me how to ", None),
-        ("tell me how to ", None),
-        ("show me how to ", None),
-        ("what are the steps to ", None),
-        ("what steps do i need to ", None),
-        ("what steps do we need to ", None),
-        ("how should i ", None),
-        ("how should we ", None),
-        ("how could i ", None),
-        ("how could we ", None),
-        ("how would i ", None),
-        ("how would we ", None),
-        ("how can i ", None),
-        ("how can we ", None),
-        ("how do i ", None),
-        ("how do we ", None),
-        ("how to do ", Some("do")),
-        ("how to ", None),
-        ("как сделать ", Some("do")),
-        ("как делать ", Some("do")),
-        ("как выполнить ", Some("perform")),
-        ("как реализовать ", Some("implement")),
-        ("как создать ", Some("create")),
-        ("как написать ", Some("write")),
-        ("कैसे करें ", Some("do")),
-        ("कैसे करे ", Some("do")),
-        ("कैसे लागू करें ", Some("implement")),
-        ("कैसे बनाएं ", Some("create")),
-        ("कैसे बनाएँ ", Some("create")),
-        ("कैसे लिखें ", Some("write")),
-        ("如何做 ", Some("do")),
-        ("怎么做 ", Some("do")),
-        ("如何实现 ", Some("implement")),
-        ("怎么实现 ", Some("implement")),
-        ("如何创建 ", Some("create")),
-        ("怎么创建 ", Some("create")),
-        ("如何写 ", Some("write")),
-        ("怎么写 ", Some("write")),
-    ];
-
     let clean_prompt = clean_procedural_fragment(normalized);
-    for (prefix, action_override) in PREFIXES {
-        if let Some(rest) = clean_prompt.strip_prefix(prefix) {
-            return build_procedural_task(rest, *action_override);
+    for form in seed::lexicon().role_word_forms(seed::ROLE_PROCEDURAL_REQUEST) {
+        if let Some(rest) = clean_prompt.strip_prefix(form.before_slot()) {
+            let action_override = (!form.action.is_empty()).then_some(form.action.as_str());
+            return build_procedural_task(rest, action_override);
         }
     }
     None
@@ -488,7 +442,7 @@ fn extract_procedural_how_to_task(normalized: &str) -> Option<ProceduralHowToTas
 
 fn build_procedural_task(
     raw_task: &str,
-    action_override: Option<&'static str>,
+    action_override: Option<&str>,
 ) -> Option<ProceduralHowToTask> {
     let task = clean_procedural_fragment(raw_task);
     if task.is_empty() {
@@ -524,26 +478,14 @@ fn clean_procedural_fragment(value: &str) -> String {
         .trim()
         .to_owned();
 
-    for suffix in [
-        " step by step",
-        " in steps",
-        " with steps",
-        " for me",
-        " please",
-        " напиши по шагам",
-        " по шагам",
-        " пошагово",
-        " пожалуйста",
-        " चरणों में लिखो",
-        " चरणों में बताओ",
-        " कदम दर कदम",
-        " कृपया",
-        " 按步骤写",
-        " 按步骤说明",
-        " 一步一步写",
-        " 请",
-    ] {
-        if let Some(stripped) = clean.strip_suffix(suffix) {
+    // The trailing "step by step" / politeness modifiers are the slot-marked
+    // surface forms of the `procedural_task_modifier` meaning
+    // (data/seed/meanings-how.lino): every form is a suffix whose text after the
+    // … marker (`after_slot`) is the tail to strip, scanned in declaration order
+    // so the longer Russian "напиши по шагам" still precedes its "по шагам" tail.
+    // No per-language modifier list lives here — only the concept.
+    for form in &seed::lexicon().role_word_forms(seed::ROLE_PROCEDURAL_TASK_MODIFIER) {
+        if let Some(stripped) = clean.strip_suffix(form.after_slot()) {
             clean = stripped.trim().to_owned();
             break;
         }
@@ -552,30 +494,29 @@ fn clean_procedural_fragment(value: &str) -> String {
 }
 
 fn correct_common_procedural_typos(task: &str) -> (String, Vec<SpellingCorrection>) {
-    const COMMON_TYPOS: &[SpellingCorrection] = &[SpellingCorrection {
-        from: "dirven",
-        to: "driven",
-    }];
+    // The misspelling -> correction pairs are the `common_typo` meaning's bare
+    // surface forms (data/seed/meanings-how.lino): each form's text is the
+    // misspelled token and its `action` child names the correct spelling. No
+    // per-language typo table lives here — only the concept.
+    let lexicon = seed::lexicon();
+    let typos = lexicon.role_word_forms(seed::ROLE_COMMON_TYPO);
 
-    let mut corrections = Vec::new();
+    let mut corrections: Vec<SpellingCorrection> = Vec::new();
     let corrected = task
         .split_whitespace()
         .map(|token| {
-            COMMON_TYPOS
-                .iter()
-                .find(|correction| token == correction.from)
-                .map_or_else(
-                    || token.to_owned(),
-                    |correction| {
-                        if !corrections
-                            .iter()
-                            .any(|seen: &SpellingCorrection| seen.from == correction.from)
-                        {
-                            corrections.push(*correction);
-                        }
-                        correction.to.to_owned()
-                    },
-                )
+            for form in &typos {
+                if token == form.text {
+                    if !corrections.iter().any(|seen| seen.from == form.text) {
+                        corrections.push(SpellingCorrection {
+                            from: form.text.clone(),
+                            to: form.action.clone(),
+                        });
+                    }
+                    return form.action.clone();
+                }
+            }
+            token.to_owned()
         })
         .collect::<Vec<_>>()
         .join(" ");
@@ -663,17 +604,20 @@ fn extract_topic_from_prior_reply(reply: &str) -> Option<String> {
             return Some(candidate.to_lowercase());
         }
     }
-    // Fallback: first capitalised word that is not a stop word.
-    let stop_words = [
-        "I", "The", "A", "An", "In", "To", "For", "Of", "And", "Or", "Source",
-    ];
+    // Fallback: first capitalised token that is not a function word. The skip
+    // list is the `topic_scan_stop_word` meaning's bare surface forms
+    // (data/seed/meanings-how.lino): closed-class words (articles, prepositions,
+    // conjunctions, pronouns) and the 'source' citation heading that name no
+    // subject, compared case-insensitively. No per-language word list lives here
+    // — only the concept "a function word that names no topic".
+    let stop_words = seed::lexicon().role_word_forms(seed::ROLE_TOPIC_SCAN_STOP_WORD);
     for word in reply.split_whitespace() {
         let clean = word.trim_matches(|c: char| !c.is_alphanumeric());
-        if clean.len() >= 2
-            && clean.chars().next().is_some_and(char::is_uppercase)
-            && !stop_words.contains(&clean)
-        {
-            return Some(clean.to_lowercase());
+        if clean.len() >= 2 && clean.chars().next().is_some_and(char::is_uppercase) {
+            let lowered = clean.to_lowercase();
+            if !stop_words.iter().any(|form| form.text == lowered) {
+                return Some(lowered);
+            }
         }
     }
     None

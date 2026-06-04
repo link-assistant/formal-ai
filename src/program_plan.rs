@@ -6,7 +6,7 @@
 //! execute*. This module implements the first runtime increment of that
 //! pipeline: instead of hard-coding "a path-argument follow-up upgrades
 //! `list_files` to `list_files_arg`" as a `match` arm, the upgrade is expressed
-//! as a [`crate::substitution`] rule in [`data/seed/program-plan-rules.lino`].
+//! as a [`crate::substitution`] rule in `data/seed/program-plan-rules.lino`.
 //!
 //! The flow is:
 //!
@@ -33,7 +33,8 @@ use std::fmt::Write as _;
 use std::sync::OnceLock;
 
 use crate::substitution::{
-    CrudEvent, SubstitutionGraph, SubstitutionRuleSet, SubstitutionTraceReport,
+    CrudEvent, LinkPattern, SubstitutionAction, SubstitutionGraph, SubstitutionRule,
+    SubstitutionRuleSet, SubstitutionTraceReport,
 };
 
 /// Graph node naming the task currently planned.
@@ -52,9 +53,79 @@ pub const PROGRAM_PLAN_RULES_LINO: &str = crate::seed::PROGRAM_PLAN_RULES_LINO;
 pub fn rules() -> &'static SubstitutionRuleSet {
     static RULES: OnceLock<SubstitutionRuleSet> = OnceLock::new();
     RULES.get_or_init(|| {
-        SubstitutionRuleSet::from_links_notation(PROGRAM_PLAN_RULES_LINO)
-            .expect("embedded program-plan rules must parse")
+        let mut set = SubstitutionRuleSet::from_links_notation(PROGRAM_PLAN_RULES_LINO)
+            .expect("embedded program-plan rules must parse");
+        let derived = derive_inverse_rules(
+            &set.rules,
+            &crate::seed::operation_vocabulary().inverse_pairs(),
+        );
+        set.rules.extend(derived);
+        set.rules
+            .sort_by(|left, right| left.order.cmp(&right.order).then(left.id.cmp(&right.id)));
+        set
     })
+}
+
+/// Derive subtractive ("cancel") substitution rules from the additive base rules
+/// plus the declared `(cancel_op, base_op)` inverse pairs.
+///
+/// This is the structural heart of the issue #386 architecture rethink: rather
+/// than hand-writing a `request:task -> list_files_reverse_sort` ⇒ `list_files`
+/// downgrade rule for every sorted variant, we *mirror* each additive rule. For
+/// every base rule that fires on `request:modifier -> base_op` with a single-link
+/// task rewrite, emit its inverse — fire on `request:modifier -> cancel_op` and
+/// swap the rewrite's removed and added task links. "Cancel the sort" therefore
+/// becomes the exact, automatically-maintained inverse of "sort", expressed as
+/// data: a new cancellable operation needs only an `inverse` declaration in
+/// `operation-vocabulary.lino`, never new control flow here.
+fn derive_inverse_rules(
+    base_rules: &[SubstitutionRule],
+    inverse_pairs: &[(String, String)],
+) -> Vec<SubstitutionRule> {
+    let mut derived = Vec::new();
+    for (cancel_op, base_op) in inverse_pairs {
+        for rule in base_rules {
+            // Only mirror a rule that fires on `request:modifier -> base_op`.
+            let Some(condition_index) = rule.conditions.iter().position(|condition| {
+                condition.literal_pair() == Some((MODIFIER_NODE, base_op.as_str()))
+            }) else {
+                continue;
+            };
+            // A well-defined inverse exists only for a single-link additive
+            // rewrite (`remove one task link, add one task link`).
+            let [action] = rule.actions.as_slice() else {
+                continue;
+            };
+            let [added] = action.add.as_slice() else {
+                continue;
+            };
+            // Keep every other condition; swap the cancelled modifier into place.
+            let conditions = rule
+                .conditions
+                .iter()
+                .enumerate()
+                .map(|(index, condition)| {
+                    if index == condition_index {
+                        LinkPattern::parse(&format!("{MODIFIER_NODE} -> {cancel_op}"))
+                            .expect("modifier condition pattern is well-formed")
+                    } else {
+                        condition.clone()
+                    }
+                })
+                .collect();
+            derived.push(SubstitutionRule {
+                id: format!("{cancel_op}__{}", rule.id),
+                order: rule.order,
+                events: rule.events.clone(),
+                conditions,
+                actions: vec![SubstitutionAction {
+                    remove: added.clone(),
+                    add: vec![action.remove.clone()],
+                }],
+            });
+        }
+    }
+    derived
 }
 
 /// Program-modifier slugs declared by the rule data.
@@ -185,8 +256,13 @@ mod tests {
     fn embedded_rules_parse() {
         let parsed = rules();
         assert_eq!(parsed.id, "program_plan_rules");
-        assert_eq!(parsed.rules.len(), 4);
+        // 4 additive base rules + 2 subtractive rules derived from the
+        // cancel_reverse_sort↔reverse_sort inverse declaration (issue #386).
+        assert_eq!(parsed.rules.len(), 6);
         assert_eq!(parsed.rules[0].id, "path_argument_list_files");
+        let ids: BTreeSet<&str> = parsed.rules.iter().map(|rule| rule.id.as_str()).collect();
+        assert!(ids.contains("cancel_reverse_sort__reverse_sort_list_files"));
+        assert!(ids.contains("cancel_reverse_sort__reverse_sort_list_files_arg"));
     }
 
     #[test]
@@ -194,6 +270,98 @@ mod tests {
         let slugs = modifier_slugs();
         assert!(slugs.contains("path_argument"));
         assert!(slugs.contains("reverse_sort"));
+        // The derived subtractive rules contribute the cancel modifier, so intent
+        // recognition treats "cancel sort" as a first-class program modifier.
+        assert!(slugs.contains("cancel_reverse_sort"));
+    }
+
+    #[test]
+    fn cancel_reverse_sort_downgrades_sorted_path_argument_variant() {
+        // Issue #386: turn 7 context task is `list_files_arg_reverse_sort`; the
+        // cancel follow-up must remove the sort and fall back to `list_files_arg`.
+        let plan = lower(
+            "list_files_arg_reverse_sort",
+            &modifiers(&["cancel_reverse_sort"]),
+        );
+        assert_eq!(plan.resolved_task, "list_files_arg");
+        assert!(plan.was_modified());
+        assert_eq!(plan.report.applied_count(), 1);
+        assert!(plan.graph.contains_link(TASK_NODE, "list_files_arg"));
+        assert!(!plan
+            .graph
+            .contains_link(TASK_NODE, "list_files_arg_reverse_sort"));
+    }
+
+    #[test]
+    fn cancel_reverse_sort_downgrades_plain_sorted_variant() {
+        let plan = lower(
+            "list_files_reverse_sort",
+            &modifiers(&["cancel_reverse_sort"]),
+        );
+        assert_eq!(plan.resolved_task, "list_files");
+        assert!(plan.was_modified());
+        assert_eq!(plan.report.applied_count(), 1);
+    }
+
+    #[test]
+    fn cancel_reverse_sort_on_unsorted_task_is_noop() {
+        // Cancelling a sort that was never applied leaves the task untouched.
+        let plan = lower("list_files_arg", &modifiers(&["cancel_reverse_sort"]));
+        assert_eq!(plan.resolved_task, "list_files_arg");
+        assert!(!plan.was_modified());
+        assert_eq!(plan.report.applied_count(), 0);
+    }
+
+    #[test]
+    fn cancel_reverse_sort_is_the_exact_inverse_of_reverse_sort() {
+        // Applying reverse_sort then cancel_reverse_sort round-trips back to the
+        // original task — the derived rules are genuine inverses, not approximations.
+        for base in ["list_files", "list_files_arg"] {
+            let sorted = lower(base, &modifiers(&["reverse_sort"])).resolved_task;
+            let restored = lower(&sorted, &modifiers(&["cancel_reverse_sort"])).resolved_task;
+            assert_eq!(
+                restored, base,
+                "round-trip through {sorted} must restore {base}"
+            );
+        }
+    }
+
+    #[test]
+    fn derived_inverse_rules_are_pure_data_from_declarations() {
+        // Proves R-h/R-m: a brand-new cancellable operation produces working
+        // subtractive rules with no code change here — only an `inverse`
+        // declaration plus the additive rule it mirrors.
+        let base = SubstitutionRuleSet::from_links_notation(concat!(
+            "substitution_rules\n",
+            "  id \"demo\"\n",
+            "  rule \"shout_greeting\"\n",
+            "    order \"5\"\n",
+            "    event \"manual\"\n",
+            "    when \"request:modifier -> shout\"\n",
+            "    replace \"request:task -> greeting\"\n",
+            "      with \"request:task -> greeting_shout\"",
+        ))
+        .expect("demo rules parse");
+        let derived = derive_inverse_rules(
+            &base.rules,
+            &[(String::from("calm"), String::from("shout"))],
+        );
+        assert_eq!(derived.len(), 1);
+        let rule = &derived[0];
+        assert_eq!(rule.id, "calm__shout_greeting");
+        assert_eq!(rule.order, 5);
+        assert_eq!(
+            rule.conditions[0].literal_pair(),
+            Some(("request:modifier", "calm"))
+        );
+        assert_eq!(
+            rule.actions[0].remove.literal_pair(),
+            Some(("request:task", "greeting_shout"))
+        );
+        assert_eq!(
+            rule.actions[0].add[0].literal_pair(),
+            Some(("request:task", "greeting"))
+        );
     }
 
     #[test]

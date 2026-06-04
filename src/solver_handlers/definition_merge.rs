@@ -3,6 +3,7 @@ use std::fmt::Write as _;
 use crate::concepts::{extract_concept_query, lookup_concept_query, ConceptQuery, ConceptRecord};
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
+use crate::seed;
 
 use super::{finalize_simple, render_source_link};
 
@@ -79,38 +80,30 @@ fn definition_merge_for_term(
 }
 
 fn extract_definition_merge_term(prompt: &str, normalized: &str) -> Option<String> {
-    let asks_merge = normalized.contains("merge")
-        || normalized.contains("merged")
-        || normalized.contains("combine")
-        || normalized.contains("combined")
-        || normalized.contains("fuse")
-        || normalized.contains("fusion");
-    let asks_definition = normalized.contains("definition")
-        || normalized.contains("definitions")
-        || normalized.contains("translation")
-        || normalized.contains("translations")
-        || normalized.contains("translated")
-        || normalized.contains("wikipedia");
+    // The intent is two meanings together: a definition_merge_action ("merge",
+    // "combine", "fuse", …) applied to a definition_artifact_request
+    // ("definition", "translation", "wikipedia", …). Both are matched as raw
+    // substrings of the already-normalized prompt, so inflected forms in every
+    // supported language are caught with no per-word list in code.
+    let lexicon = seed::lexicon();
+    let asks_merge = lexicon.mentions_role_raw(seed::ROLE_DEFINITION_MERGE_ACTION, normalized);
+    let asks_definition =
+        lexicon.mentions_role_raw(seed::ROLE_DEFINITION_ARTIFACT_REQUEST, normalized);
     if !asks_merge || !asks_definition {
         return None;
     }
 
+    // The introducing phrases ("definitions of", "translation for", …) are
+    // definition_merge_marker prefix word forms; the text before each slot
+    // marker is the phrase to locate. They are declared in the lexicon in the
+    // original priority order, so the first prefix that appears in the prompt
+    // wins and the text after it becomes the term.
     let lower = prompt.to_lowercase();
-    let markers = [
-        "translated definitions for ",
-        "translated definitions of ",
-        "wikipedia definitions for ",
-        "wikipedia definitions of ",
-        "definitions for ",
-        "definitions of ",
-        "definition for ",
-        "definition of ",
-        "translations for ",
-        "translations of ",
-        "translation for ",
-        "translation of ",
-    ];
-    for marker in markers {
+    for form in lexicon.role_word_forms(seed::ROLE_DEFINITION_MERGE_MARKER) {
+        if form.slot() != seed::Slot::Prefix {
+            continue;
+        }
+        let marker = form.before_slot();
         if let Some(index) = lower.find(marker) {
             let start = index + marker.len();
             let candidate = trim_definition_merge_tail(&prompt[start..]);
@@ -123,10 +116,21 @@ fn extract_definition_merge_term(prompt: &str, normalized: &str) -> Option<Strin
 }
 
 fn trim_definition_merge_tail(value: &str) -> String {
+    // The boundary words that end the term ("from", "using", "with", …) are
+    // definition_merge_tail_boundary meanings; we reconstruct each as a
+    // space-padded token and cut at the earliest one we find. Only the English
+    // surface forms are consulted here: this is an English-frame heuristic, and
+    // the term itself may be in any language (e.g. the Russian preposition "в"
+    // is part of the term "реклама в Telegram", not a boundary). The other
+    // languages remain in the seed so the meaning stays fully self-describing.
+    // The quote and punctuation trim sets are typographic and stay in code.
     let mut end = value.len();
     let lower = value.to_lowercase();
-    for delimiter in [" from ", " using ", " with ", " by ", " into ", " across "] {
-        if let Some(index) = lower.find(delimiter) {
+    for word in seed::lexicon()
+        .words_for_role_in_languages(seed::ROLE_DEFINITION_MERGE_TAIL_BOUNDARY, &["en"])
+    {
+        let delimiter = format!(" {word} ");
+        if let Some(index) = lower.find(&delimiter) {
             end = end.min(index);
         }
     }

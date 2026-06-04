@@ -75,12 +75,26 @@ pub fn program_spec(task_slug: &str, language_slug: &str) -> Option<ProgramSpec>
     })
 }
 
+/// Surface forms (across every supported language) carried by the meaning whose
+/// slug is `<prefix>_<slug>`, or an empty iterator when no such meaning exists.
+///
+/// The coding catalog keeps each language's and task's alias surfaces in the
+/// language-independent meaning lexicon — the `program_language_<slug>` and
+/// `program_task_<slug>` meanings (roles [`crate::seed::ROLE_PROGRAM_LANGUAGE_ALIAS`]
+/// and [`crate::seed::ROLE_PROGRAM_TASK_ALIAS`]) — instead of an inline list, so the
+/// matchers below name only the concept by slug while the words stay self-describing
+/// seed data shared byte-for-byte with the JS worker (issue #386).
+fn alias_surfaces(prefix: &str, slug: &str) -> impl Iterator<Item = &'static str> {
+    crate::seed::lexicon()
+        .meaning(&format!("{prefix}_{slug}"))
+        .into_iter()
+        .flat_map(crate::seed::Meaning::words)
+}
+
 #[must_use]
 pub fn program_language_by_alias(normalized: &str) -> Option<&'static ProgramLanguage> {
     PROGRAM_LANGUAGES.iter().find(|language| {
-        language
-            .aliases
-            .iter()
+        alias_surfaces("program_language", language.slug)
             .any(|alias| contains_token(normalized, alias))
     })
 }
@@ -88,9 +102,7 @@ pub fn program_language_by_alias(normalized: &str) -> Option<&'static ProgramLan
 #[must_use]
 pub fn program_task_by_alias(normalized: &str) -> Option<&'static ProgramTask> {
     PROGRAM_TASKS.iter().find(|task| {
-        task.aliases
-            .iter()
-            .any(|alias| contains_phrase(normalized, alias))
+        alias_surfaces("program_task", task.slug).any(|alias| contains_phrase(normalized, alias))
     })
 }
 
@@ -127,6 +139,17 @@ pub fn contains_cjk(text: &str) -> bool {
             || (0x3040..=0x30FF).contains(&cp)
             || (0x3100..=0x312F).contains(&cp)
     })
+}
+
+/// Devanagari text (Hindi, …) is written without spaces between words, so the
+/// whitespace-based matchers never isolate a single word — exactly as for CJK.
+/// When a surface form carries a Devanagari sign we fall back to a substring
+/// test. This mirrors [`contains_cjk`] and lets a handler partition a role's
+/// word forms by script (Devanagari vs. Han) straight from the seed, so the
+/// head-final Hindi and Chinese extraction strategies never name a raw word.
+pub fn contains_devanagari(text: &str) -> bool {
+    text.chars()
+        .any(|ch| (0x0900..=0x097F).contains(&(ch as u32)))
 }
 
 fn contains_token(normalized: &str, expected: &str) -> bool {
@@ -211,5 +234,118 @@ mod lino_parity {
             "lino seed template count ({seed_templates}) must equal the catalog count ({})",
             program_template_count()
         );
+    }
+}
+
+#[cfg(test)]
+mod seed_alias_coverage {
+    //! The matchers ([`program_language_by_alias`] / [`program_task_by_alias`])
+    //! read their surface words from the meaning lexicon — the
+    //! `program_language_<slug>` / `program_task_<slug>` meanings (issue #386) —
+    //! so the catalog tables name only the concept by slug. These guards lock the
+    //! two sides together: every catalog slug must own its alias meaning (else
+    //! that language or task would silently never match), and every alias meaning
+    //! must name a real catalog slug (else it is dead seed data).
+    use super::*;
+    use crate::seed::{lexicon, ROLE_PROGRAM_LANGUAGE_ALIAS, ROLE_PROGRAM_TASK_ALIAS};
+
+    #[test]
+    fn every_language_slug_owns_an_alias_meaning() {
+        for language in PROGRAM_LANGUAGES {
+            let slug = format!("program_language_{}", language.slug);
+            let meaning = lexicon()
+                .meaning(&slug)
+                .unwrap_or_else(|| panic!("language `{}` has no `{slug}` meaning", language.slug));
+            assert!(
+                meaning.has_role(ROLE_PROGRAM_LANGUAGE_ALIAS),
+                "`{slug}` must carry the `{ROLE_PROGRAM_LANGUAGE_ALIAS}` role"
+            );
+            assert!(
+                meaning.words().next().is_some(),
+                "`{slug}` must lexicalise at least one alias surface"
+            );
+        }
+    }
+
+    #[test]
+    fn every_task_slug_owns_an_alias_meaning() {
+        for task in PROGRAM_TASKS {
+            let slug = format!("program_task_{}", task.slug);
+            let meaning = lexicon()
+                .meaning(&slug)
+                .unwrap_or_else(|| panic!("task `{}` has no `{slug}` meaning", task.slug));
+            assert!(
+                meaning.has_role(ROLE_PROGRAM_TASK_ALIAS),
+                "`{slug}` must carry the `{ROLE_PROGRAM_TASK_ALIAS}` role"
+            );
+            assert!(
+                meaning.words().next().is_some(),
+                "`{slug}` must lexicalise at least one alias surface"
+            );
+        }
+    }
+
+    #[test]
+    fn every_language_alias_meaning_names_a_catalog_slug() {
+        for meaning in lexicon().meanings_with_role(ROLE_PROGRAM_LANGUAGE_ALIAS) {
+            let slug = meaning.slug.strip_prefix("program_language_").unwrap_or_else(|| {
+                panic!("`{}` carries the language-alias role but is not a `program_language_<slug>` meaning", meaning.slug)
+            });
+            assert!(
+                program_language_by_slug(slug).is_some(),
+                "alias meaning `{}` names language slug `{slug}`, absent from PROGRAM_LANGUAGES",
+                meaning.slug
+            );
+        }
+    }
+
+    #[test]
+    fn every_task_alias_meaning_names_a_catalog_slug() {
+        for meaning in lexicon().meanings_with_role(ROLE_PROGRAM_TASK_ALIAS) {
+            let slug = meaning.slug.strip_prefix("program_task_").unwrap_or_else(|| {
+                panic!("`{}` carries the task-alias role but is not a `program_task_<slug>` meaning", meaning.slug)
+            });
+            assert!(
+                program_task_by_slug(slug).is_some(),
+                "alias meaning `{}` names task slug `{slug}`, absent from PROGRAM_TASKS",
+                meaning.slug
+            );
+        }
+    }
+
+    #[test]
+    fn every_language_resolves_from_its_seed_surfaces() {
+        // End-to-end: each language's canonical slug spelling is a unique token
+        // (no other language lexicalises it), so feeding it must resolve back to
+        // that language through the seed — proving the `alias_surfaces` read and
+        // the matcher wiring are live, not just structurally present.
+        for language in PROGRAM_LANGUAGES {
+            assert_eq!(
+                program_language_by_alias(language.slug).map(|l| l.slug),
+                Some(language.slug),
+                "`{}` must resolve to itself through its seed surfaces",
+                language.slug
+            );
+        }
+    }
+
+    #[test]
+    fn every_task_resolves_through_the_seed() {
+        // End-to-end wiring smoke for the `program_task_` branch: feeding each
+        // task meaning's first surface must resolve to *some* task. (Priority and
+        // substring matching mean a longer phrase can legitimately resolve to a
+        // shorter-prefix task — e.g. a list_files_arg phrase to list_files — so we
+        // assert reachability, not self-identity; tests/unit locks the exact map.)
+        for task in PROGRAM_TASKS {
+            let slug = format!("program_task_{}", task.slug);
+            let first = lexicon()
+                .meaning(&slug)
+                .and_then(|m| m.words().next())
+                .unwrap_or_else(|| panic!("`{slug}` must lexicalise at least one surface"));
+            assert!(
+                program_task_by_alias(first).is_some(),
+                "task surface `{first}` (from `{slug}`) must resolve to a catalog task"
+            );
+        }
     }
 }

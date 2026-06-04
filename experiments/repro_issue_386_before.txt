@@ -1,0 +1,138 @@
+================================================================
+TURN 1 (initial list-files program)
+PROMPT : Напиши мне программу на Rust, которая выдаёт список файлов в текущей директории
+INTENT : write_program
+CONF   : 1.00
+ANSWER : Вот минимальная программа на языке Rust (list files in the current directory):
+         
+         ```rust
+         use std::fs;
+         
+         fn main() -> std::io::Result<()> {
+             let mut names: Vec<String> = fs::read_dir(".")?
+                 .filter_map(Result::ok)
+                 .filter(|entry| entry.path().is_file())
+                 .map(|entry| entry.file_name().to_string_lossy().into_owned())
+                 .collect();
+             names.sort();
+             for name in names {
+                 println!("{name}");
+             }
+             Ok(())
+         }
+         ```
+         
+         Статус выполнения: скомпилировано и запущено в среде «issue-8 local verification harness (isolated sandbox)».
+         Check command: `rustc main.rs -o main`
+         Run command: `./main`
+         Вывод:
+         ```text
+         Cargo.toml
+         README.md
+         main.rs
+         ```
+         1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.
+         
+         Как это работает:
+         Программа читает содержимое текущего каталога, оставляет только обычные файлы, собирает их имена в список, сортирует список по алфавиту и печатает каждое имя на отдельной строке.
+         
+         Как проверить это самостоятельно:
+         1. Установите инструментарий: the Rust toolchain from https://rustup.rs.
+         2. Сохраните приведённый выше код в файл `main.rs`.
+         3. Проверьте, что код компилируется: `rustc main.rs -o main`.
+         4. Запустите программу: `./main`.
+         5. Сравните вывод с разделом ожидаемого вывода выше.
+
+================================================================
+TURN 3 (path-argument modifier)
+PROMPT : Сделай так, чтобы программа принимала путь как аргумент
+INTENT : write_program
+CONF   : 1.00
+ANSWER : Вот минимальная программа на языке Rust (list files in the directory given as a path argument):
+         
+         ```rust
+         use std::env;
+         use std::fs;
+         
+         fn main() {
+             let path = env::args().nth(1).unwrap_or_else(|| String::from("."));
+             let mut names: Vec<String> = fs::read_dir(&path)
+                 .expect("failed to read directory")
+                 .filter_map(|entry| entry.ok())
+                 .filter(|entry| entry.path().is_file())
+                 .map(|entry| entry.file_name().to_string_lossy().into_owned())
+                 .collect();
+             names.sort();
+             for name in names {
+                 println!("{name}");
+             }
+         }
+         ```
+         
+         Статус выполнения: скомпилировано и запущено в среде «issue-8 local verification harness (isolated sandbox)».
+         Check command: `rustc main.rs -o main`
+         Run command: `./main`
+         Вывод:
+         ```text
+         Cargo.toml
+         README.md
+         main.rs
+         ```
+         1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.
+         
+         Как это работает:
+         Программа берёт путь к каталогу из первого аргумента командной строки (если аргумент не задан, используется текущий каталог), читает содержимое этого каталога, оставляет только обычные файлы, сортирует их имена по алфавиту и печатает каждое имя на отдельной строке.
+         
+         Проверьте обновлённую программу так же, как и раньше: сохраните код в файл `main.rs` и снова выполните `./main`.
+
+================================================================
+TURN 5 (reverse-sort modifier - issue #349)
+PROMPT : Сделай сортировку результатов в обратном порядке
+INTENT : write_program
+CONF   : 1.00
+ANSWER : Вот минимальная программа на языке Rust (list files from a path argument in reverse-sorted order):
+         
+         ```rust
+         use std::env;
+         use std::fs;
+         
+         fn main() {
+             let path = env::args().nth(1).unwrap_or_else(|| String::from("."));
+             let mut names: Vec<String> = fs::read_dir(&path)
+                 .expect("failed to read directory")
+                 .filter_map(|entry| entry.ok())
+                 .filter(|entry| entry.path().is_file())
+                 .map(|entry| entry.file_name().to_string_lossy().into_owned())
+                 .collect();
+             names.sort_by(|a, b| b.cmp(a));
+             for name in names {
+                 println!("{name}");
+             }
+         }
+         ```
+         
+         Статус выполнения: скомпилировано и запущено в среде «issue-8 local verification harness (isolated sandbox)».
+         Check command: `rustc main.rs -o main`
+         Run command: `./main`
+         Вывод:
+         ```text
+         main.rs
+         README.md
+         Cargo.toml
+         ```
+         1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.
+         
+         Как это работает:
+         Программа берёт путь к каталогу из первого аргумента командной строки (если аргумент не задан, используется текущий каталог), читает содержимое этого каталога, оставляет только обычные файлы, сортирует их имена в обратном алфавитном порядке и печатает каждое имя на отдельной строке.
+         
+         Проверьте обновлённую программу так же, как и раньше: сохраните код в файл `main.rs` и снова выполните `./main`.
+
+================================================================
+TURN 7 (cancel-sort modifier - issue #386)
+PROMPT : Отмени сортировку
+INTENT : unknown
+CONF   : 0.00
+ANSWER : Я не смог определить `Отмени сортировку` по локальной памяти Links Notation, кэшу публичных знаний или доступным источникам. I recorded the failed gather attempts in the trace.
+         
+         Если после reasoning всё ещё нужен общий факт или правило Links Notation, используйте Report issue с trace. Для этого диалога можно экспортировать память или обучить правило: `List behavior rules`, `Show behavior rule unknown`, `When I say ... answer ...`.
+

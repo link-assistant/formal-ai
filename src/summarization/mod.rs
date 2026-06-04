@@ -92,6 +92,25 @@ impl StatementKind {
         }
     }
 
+    /// Map the slug of a `summary_classification_cue` meaning to its kind. The
+    /// seven `summary_kind_*` leaves in `data/seed/meanings-summary.lino` carry
+    /// the cue surfaces that [`classify_sentence`] scans; this resolves the
+    /// meaning that matched back into a [`StatementKind`]. Unknown slugs fall
+    /// back to [`StatementKind::Misc`] so the seed stays forward-compatible.
+    #[must_use]
+    pub fn from_slug(slug: &str) -> Self {
+        match slug {
+            "summary_kind_install" => Self::Install,
+            "summary_kind_example" => Self::Example,
+            "summary_kind_language" => Self::Language,
+            "summary_kind_stars" => Self::Stars,
+            "summary_kind_purpose" => Self::Purpose,
+            "summary_kind_use_case" => Self::UseCase,
+            "summary_kind_feature" => Self::Feature,
+            _ => Self::Misc,
+        }
+    }
+
     /// `true` when the statement carries information that survives the
     /// tightest "what is X?" responses (identity, purpose, language, stars).
     #[must_use]
@@ -292,109 +311,35 @@ fn push_sentence(buffer: &mut String, out: &mut Vec<Statement>) {
     out.push(Statement::new(sentence, kind, weight));
 }
 
-/// Heuristic classifier for prose sentences. Looks for cue words that signal
-/// each kind. The cue lists are intentionally short — the seed registry is
-/// the long-term source of truth.
+/// Heuristic classifier for prose sentences.
+///
+/// Reasons over the seed registry rather than any hardcoded cue list: it walks
+/// the meanings carrying [`crate::seed::ROLE_SUMMARY_CLASSIFICATION_CUE`] in
+/// declaration order and returns the kind of the first meaning whose surface
+/// fragments occur in the lowercased sentence as a raw substring. The `language`
+/// kind is additionally length-guarded — a sentence that merely contains a
+/// language cue but runs past twelve whitespace words is not a language line, so
+/// it falls through to the later kinds. Every cue fragment, in every supported
+/// language, lives in `data/seed/meanings-summary.lino`; nothing is hardcoded here.
 #[must_use]
 pub fn classify_sentence(sentence: &str) -> StatementKind {
     let lower = sentence.to_lowercase();
-    if contains_any(
-        &lower,
-        &[
-            "to install",
-            "install with",
-            "installation",
-            "npm install",
-            "cargo install",
-            "pip install",
-        ],
-    ) {
-        return StatementKind::Install;
-    }
-    if contains_any(
-        &lower,
-        &[
-            "for example",
-            "example:",
-            "e.g.",
-            "run --",
-            "$ ",
-            "```",
-            "выполни",
-        ],
-    ) {
-        return StatementKind::Example;
-    }
-    if contains_any(
-        &lower,
-        &[
-            "written in ",
-            "language:",
-            "is a ",
-            "написан на ",
-            "на языке ",
-            "build with ",
-        ],
-    ) && lower.split_whitespace().count() <= 12
+    let word_count = lower.split_whitespace().count();
+    for meaning in
+        crate::seed::lexicon().meanings_with_role(crate::seed::ROLE_SUMMARY_CLASSIFICATION_CUE)
     {
-        return StatementKind::Language;
-    }
-    if contains_any(
-        &lower,
-        &[
-            " stars",
-            "github stars",
-            "★",
-            "stargazers",
-            "звёзды",
-            "звезд",
-        ],
-    ) {
-        return StatementKind::Stars;
-    }
-    if contains_any(
-        &lower,
-        &[
-            "is for ",
-            "is the ai",
-            "is an ai",
-            "is used to",
-            "is meant to",
-            "is designed to",
-            "helps you",
-            "lets you",
-            "это ии",
-            "предназнач",
-        ],
-    ) {
-        return StatementKind::Purpose;
-    }
-    if contains_any(
-        &lower,
-        &[
-            "use it when",
-            "use this when",
-            "when you need",
-            "ideal for",
-            "useful when",
-        ],
-    ) {
-        return StatementKind::UseCase;
-    }
-    if contains_any(
-        &lower,
-        &[
-            " supports ",
-            " provides ",
-            " offers ",
-            " exposes ",
-            " ships ",
-            " предоставляет ",
-            " поддерживает ",
-            " orchestrates ",
-        ],
-    ) {
-        return StatementKind::Feature;
+        if !meaning.words().any(|cue| lower.contains(cue)) {
+            continue;
+        }
+        let kind = StatementKind::from_slug(&meaning.slug);
+        // The `language` kind only applies to short identity-style sentences; a
+        // long sentence that merely contains `is a …` keeps scanning so a later
+        // feature/purpose cue can claim it (preserving the original
+        // `&& word_count <= 12` guard that sat on the language arm).
+        if kind == StatementKind::Language && word_count > 12 {
+            continue;
+        }
+        return kind;
     }
     StatementKind::Misc
 }
@@ -411,12 +356,6 @@ const fn weight_for_kind(kind: StatementKind) -> u8 {
         StatementKind::Example => 15,
         StatementKind::Misc => 30,
     }
-}
-
-fn contains_any(haystack: &str, needles: &[&str]) -> bool {
-    needles
-        .iter()
-        .any(|needle| !needle.is_empty() && haystack.contains(needle))
 }
 
 /// Apply [`SummarizationConfig`] to a slice of statements.
@@ -640,6 +579,82 @@ mod tests {
             classify_sentence("Install foo with npm install foo."),
             StatementKind::Install
         );
+    }
+
+    #[test]
+    fn classify_scans_summary_cue_meanings_in_declaration_order() {
+        // The classifier no longer hardcodes cue arrays: it walks the seven
+        // `summary_kind_*` leaves carrying ROLE_SUMMARY_CLASSIFICATION_CUE in
+        // declaration order, which must equal the original priority order.
+        let slugs: Vec<&str> = crate::seed::lexicon()
+            .meanings_with_role(crate::seed::ROLE_SUMMARY_CLASSIFICATION_CUE)
+            .map(|m| m.slug.as_str())
+            .collect();
+        assert_eq!(
+            slugs,
+            vec![
+                "summary_kind_install",
+                "summary_kind_example",
+                "summary_kind_language",
+                "summary_kind_stars",
+                "summary_kind_purpose",
+                "summary_kind_use_case",
+                "summary_kind_feature",
+            ],
+            "summary cue meanings must scan in the original classify priority order"
+        );
+        // from_slug resolves every leaf back to its kind (and is forward-safe).
+        for (slug, kind) in [
+            ("summary_kind_install", StatementKind::Install),
+            ("summary_kind_example", StatementKind::Example),
+            ("summary_kind_language", StatementKind::Language),
+            ("summary_kind_stars", StatementKind::Stars),
+            ("summary_kind_purpose", StatementKind::Purpose),
+            ("summary_kind_use_case", StatementKind::UseCase),
+            ("summary_kind_feature", StatementKind::Feature),
+        ] {
+            assert_eq!(StatementKind::from_slug(slug), kind, "from_slug({slug})");
+        }
+        assert_eq!(
+            StatementKind::from_slug("not_a_summary_slug"),
+            StatementKind::Misc
+        );
+    }
+
+    #[test]
+    fn classify_recognizes_each_kind_through_seed_surfaces() {
+        // Each kind is locked to a surface fragment carried by the seed, so an
+        // accidental edit to data/seed/meanings-summary.lino fails this test.
+        for (sentence, kind) in [
+            ("To install, run the setup script.", StatementKind::Install),
+            (
+                "For example, see the snippet below.",
+                StatementKind::Example,
+            ),
+            ("Written in Rust.", StatementKind::Language),
+            ("It has 5000 github stars.", StatementKind::Stars),
+            ("It helps you ship faster.", StatementKind::Purpose),
+            (
+                "Use it when you deploy to production.",
+                StatementKind::UseCase,
+            ),
+            ("It supports plugins.", StatementKind::Feature),
+            ("Just a plain sentence about nothing.", StatementKind::Misc),
+        ] {
+            assert_eq!(classify_sentence(sentence), kind, "classify({sentence})");
+        }
+    }
+
+    #[test]
+    fn classify_language_guard_falls_through_on_long_sentences() {
+        // A short `is a …` sentence is a language line; a long one that merely
+        // contains the same cue keeps scanning so a later feature cue claims it
+        // (the original `&& word_count <= 12` guard, now applied structurally).
+        assert_eq!(classify_sentence("X is a tool."), StatementKind::Language);
+        let long = "This project is a comprehensive toolkit that supports plugins \
+                    and provides many helpful features for everyone.";
+        assert!(long.split_whitespace().count() > 12);
+        assert_eq!(classify_sentence(long), StatementKind::Feature);
     }
 
     #[test]

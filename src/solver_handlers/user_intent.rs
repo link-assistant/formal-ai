@@ -3,44 +3,58 @@
 //! `solver_handlers/mod.rs` to keep individual files under 1000 lines.
 
 use crate::concepts::extract_concept_query;
-use crate::engine::SymbolicAnswer;
+use crate::engine::{normalize_prompt, SymbolicAnswer};
 use crate::event_log::EventLog;
 use crate::fuzzy::typo_distance;
 use crate::language::detect as detect_language;
 use crate::proof_engine::{
     attempt_proof_with_config, render_outcome_with_config, ProofOutcome, ProofRenderConfig,
 };
-use crate::seed::response_for;
+use crate::seed::{self, response_for, Slot, WordForm};
 use crate::solver_handlers::finalize_simple;
+
+/// The literal lead-in (text before the `…` slot) of every prefix-slot form of
+/// a role, in lexicon declaration order. Lets the proof and who-is recognisers
+/// reason about a role's opening surfaces without baking the words into code.
+fn prefix_literals(role: &str) -> Vec<&'static str> {
+    seed::lexicon()
+        .role_word_forms(role)
+        .into_iter()
+        .filter(|form| form.slot() == Slot::Prefix)
+        .map(WordForm::before_slot)
+        .collect()
+}
+
+/// The literal tail (text after the `…` slot) of every suffix-slot form of a
+/// role, in lexicon declaration order. Used for languages whose question marker
+/// trails the topic (Hindi `… कौन है`, Chinese `…是谁`).
+fn suffix_literals(role: &str) -> Vec<&'static str> {
+    seed::lexicon()
+        .role_word_forms(role)
+        .into_iter()
+        .filter(|form| form.slot() == Slot::Suffix)
+        .map(WordForm::after_slot)
+        .collect()
+}
+
+/// The surface text of every bare-slot form of a role, in lexicon declaration
+/// order. A meaning's roles apply to all its forms, so we keep only the bare
+/// detection tokens and drop any prefix/suffix surfaces the meaning also owns.
+fn bare_literals(role: &str) -> Vec<&'static str> {
+    seed::lexicon()
+        .role_word_forms(role)
+        .into_iter()
+        .filter(|form| form.slot() == Slot::Bare)
+        .map(|form| form.text.as_str())
+        .collect()
+}
 
 pub fn try_clarification(
     prompt: &str,
     normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
-    let is_clarification = normalized == "не понял"
-        || normalized == "не понимаю"
-        || normalized == "не поняла"
-        || normalized == "не понятно"
-        || normalized == "непонятно"
-        || normalized.contains("i don't understand")
-        || normalized.contains("i dont understand")
-        || normalized.contains("i didn't understand")
-        || normalized.contains("i didnt understand")
-        || normalized.contains("don't understand")
-        || normalized.contains("dont understand")
-        || normalized.contains("didn't understand")
-        || normalized.contains("didnt understand")
-        || normalized.contains("what do you mean")
-        || normalized.contains("i'm confused")
-        || normalized.contains("im confused")
-        || normalized.contains("i am confused")
-        || normalized.contains("समझ नहीं आया")
-        || normalized.contains("समझ नहीं आई")
-        || normalized.contains("我不明白")
-        || normalized.contains("我不懂")
-        || normalized.contains("听不懂");
-    if !is_clarification {
+    if !is_clarification_request(normalized) {
         return None;
     }
     let language = detect_language(prompt);
@@ -61,6 +75,22 @@ pub fn try_clarification(
         &body,
         0.9,
     ))
+}
+
+/// Does `normalized` signal the user did not understand and wants the prior
+/// answer made clear?
+///
+/// Issue #386: recognised by the `clarification_request` meaning role rather
+/// than a hardcoded per-language phrase list — the surface words ("i don t
+/// understand", "не понял", "समझ नहीं आया", "我不明白", …) live once in
+/// `data/seed/meanings-intent.lino`. The prompt is re-normalised so trailing
+/// punctuation ("what do you mean?") and apostrophes ("i don't understand")
+/// collapse to the same canonical spacing the seed stores.
+fn is_clarification_request(normalized: &str) -> bool {
+    seed::lexicon().mentions_role(
+        seed::ROLE_CLARIFICATION_REQUEST,
+        &normalize_prompt(normalized),
+    )
 }
 
 pub fn try_punctuation_only_prompt(
@@ -113,22 +143,37 @@ pub fn try_ill_formed(
     ))
 }
 
-fn is_more_capabilities_prompt(normalized: &str, language: &str) -> bool {
-    match language {
-        "ru" => {
-            normalized.contains("что ещё ты умеешь")
-                || normalized.contains("что еще ты умеешь")
-                || normalized.contains("что ещё можешь")
-                || normalized.contains("что еще можешь")
-                || normalized.contains("что ты ещё умеешь")
-                || normalized.contains("что ты еще умеешь")
-        }
-        _ => {
-            normalized.contains("what else can you do")
-                || normalized.contains("what else do you do")
-                || normalized.contains("what other things can you do")
-        }
-    }
+/// Is `normalized` a follow-up asking what *else* the assistant can do?
+///
+/// Issue #386: recognised by the `capability_query_more` meaning role rather
+/// than a hardcoded per-language phrase list — the surface words ("what else
+/// can you do", "что ещё ты умеешь", "और क्या कर सकते", "你还能做什么", …) live
+/// once in `data/seed/meanings-intent.lino`. Recognition is language-agnostic
+/// because the surface words are script-specific; the response body is still
+/// chosen by the caller from `detect_language`. The prompt is re-normalised so
+/// trailing punctuation collapses to the canonical spacing the seed stores.
+fn is_more_capabilities_prompt(normalized: &str) -> bool {
+    seed::lexicon().mentions_role(
+        seed::ROLE_CAPABILITY_QUERY_MORE,
+        &normalize_prompt(normalized),
+    )
+}
+
+/// Is `normalized` asking what the assistant is able to do?
+///
+/// Issue #386: recognised by the `capability_query` meaning role — plus its
+/// follow-up [`is_more_capabilities_prompt`], so "what else can you do" still
+/// counts as a capability query — rather than a hardcoded per-language phrase
+/// list. The surface words ("what can you do", "что ты умеешь", "что за дичь",
+/// "आप क्या कर सकते", "你能做什么", …) live once in
+/// `data/seed/meanings-intent.lino`. The prompt is re-normalised so trailing
+/// punctuation ("what can you do?", "你能做什么？") collapses to the canonical
+/// spacing the seed stores.
+fn is_capability_query(normalized: &str) -> bool {
+    let cleaned = normalize_prompt(normalized);
+    let lexicon = seed::lexicon();
+    lexicon.mentions_role(seed::ROLE_CAPABILITY_QUERY, &cleaned)
+        || lexicon.mentions_role(seed::ROLE_CAPABILITY_QUERY_MORE, &cleaned)
 }
 
 fn prior_history_mentions_web_search(log: &EventLog) -> bool {
@@ -137,12 +182,7 @@ fn prior_history_mentions_web_search(log: &EventLog) -> bool {
         .filter(|event| event.kind == "prior_turn:user" || event.kind == "prior_turn:assistant")
         .any(|event| {
             let payload = event.payload.to_lowercase();
-            payload.contains("duckduckgo")
-                || payload.contains("web search")
-                || payload.contains("search the internet")
-                || payload.contains("веб-поиск")
-                || payload.contains("веб поиск")
-                || payload.contains("интернет")
+            seed::lexicon().mentions_role_raw(seed::ROLE_WEB_SEARCH_HISTORY_SIGNAL, &payload)
         })
 }
 
@@ -180,49 +220,8 @@ pub fn try_capabilities(
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
     let language = detect_language(prompt);
-    let more_capabilities = is_more_capabilities_prompt(normalized, language.slug());
-    let is_capabilities = match language.slug() {
-        "ru" => {
-            more_capabilities
-                || normalized.contains("что ты умеешь")
-                || normalized.contains("чем ты можешь")
-                || normalized.contains("чём ты можешь")
-                || normalized.contains("что ты можешь")
-                || normalized.contains("что умеет")
-                || normalized.contains("что можешь")
-                || normalized.contains("в чем ты можешь быть полезен")
-                || normalized.contains("в чём ты можешь быть полезен")
-                || normalized.contains("твои возможности")
-                || normalized.contains("что за дичь")
-                || normalized.contains("что это такое")
-                || normalized.contains("что происходит")
-                || normalized.contains("что ты делаешь")
-        }
-        "zh" => {
-            normalized.contains("你能做什么")
-                || normalized.contains("你会做什么")
-                || normalized.contains("你有什么功能")
-                || normalized.contains("你能干什么")
-        }
-        "hi" => {
-            normalized.contains("आप क्या कर सकते")
-                || normalized.contains("तुम क्या कर सकते")
-                || normalized.contains("क्या क्या कर सकते")
-        }
-        _ => {
-            more_capabilities
-                || normalized.contains("what can you do")
-                || normalized.contains("what you can do")
-                || normalized.contains("what are your capabilities")
-                || normalized.contains("what are you capable of")
-                || normalized.contains("what do you do")
-                || normalized.contains("show me what you can do")
-                || normalized.contains("what features do you have")
-                || normalized.contains("how can you help")
-                || normalized.contains("what are your features")
-        }
-    };
-    if !is_capabilities {
+    let more_capabilities = is_more_capabilities_prompt(normalized);
+    if !is_capability_query(normalized) {
         return None;
     }
     if more_capabilities {
@@ -445,34 +444,18 @@ pub fn try_proof_request_with_config(
             .strip_prefix(verb)
             .is_some_and(|tail| !tail.chars().next().unwrap_or(' ').is_alphabetic())
     };
-    let is_proof_request = starts_with_verb("prove")
-        || starts_with_verb("proof")
-        || normalized.starts_with("can you prove")
-        || normalized.starts_with("could you prove")
-        || normalized.starts_with("please prove")
-        || normalized.starts_with("give me a proof")
-        || normalized.starts_with("give a proof")
-        || normalized.starts_with("show that ")
-        || normalized.starts_with("demonstrate that ")
-        || normalized.contains(" prove that ")
-        || normalized.contains(" proof of ")
-        // Russian
-        || starts_with_verb("докажи")
-        || starts_with_verb("докажите")
-        || starts_with_verb("доказать")
-        || starts_with_verb("доказательство")
-        || normalized.contains(" докажи ")
-        // Hindi
-        || normalized.contains("साबित कर")
-        || normalized.contains("साबित कीजिए")
-        || normalized.contains("साबित कीजिये")
-        || normalized.contains("सिद्ध कर")
-        || normalized.contains("सिद्ध कीजिए")
-        || normalized.contains("सिद्ध कीजिये")
-        || normalized.contains("प्रमाण")
-        // Chinese
-        || normalized.contains("证明")
-        || normalized.contains("證明");
+    // A proof request is recognised structurally from the meaning lexicon, not
+    // from words baked into this file: a clause-initial bare directive verb
+    // (`proof_directive`, with the verb-boundary check above), a request-frame
+    // lead in any language that needs no `that` clause (`proof_request_lead`),
+    // or a mid-prompt proof assertion marker in any language (`proof_marker`).
+    let is_proof_request = bare_literals(seed::ROLE_PROOF_DIRECTIVE)
+        .iter()
+        .any(|&verb| starts_with_verb(verb))
+        || prefix_literals(seed::ROLE_PROOF_REQUEST_LEAD)
+            .iter()
+            .any(|&lead| normalized.starts_with(lead))
+        || seed::lexicon().mentions_role_raw(seed::ROLE_PROOF_MARKER, normalized);
     if !is_proof_request {
         return None;
     }
@@ -480,18 +463,10 @@ pub fn try_proof_request_with_config(
         return None;
     }
     let language = detect_language(prompt).slug();
-    let mentions_godel = normalized.contains("godel")
-        || normalized.contains("gödel")
-        || normalized.contains("гёдел")
-        || normalized.contains("гёделя")
-        || normalized.contains("гедел")
-        || normalized.contains("哥德尔")
-        || normalized.contains("गोडेल");
-    let mentions_determinism = normalized.contains("determinism")
-        || normalized.contains("deterministic")
-        || normalized.contains("детерминизм")
-        || normalized.contains("决定论")
-        || normalized.contains("निर्धारणवाद");
+    let mentions_godel =
+        seed::lexicon().mentions_role_raw(seed::ROLE_PROOF_CONCEPT_GODEL, normalized);
+    let mentions_determinism =
+        seed::lexicon().mentions_role_raw(seed::ROLE_PROOF_CONCEPT_DETERMINISM, normalized);
     log.append("policy:proof_request", prompt.to_owned());
     log.append(
         "policy:proof_guess_probability",
@@ -564,48 +539,19 @@ fn is_known_unsolved_bounded_proof_request(normalized: &str) -> bool {
 /// tolerates extra text in its keyword search and arithmetic split.
 fn extract_claim_from_prompt(normalized: &str) -> String {
     let trimmed = normalized.trim();
-    let prefixes: &[&str] = &[
-        "prove that ",
-        "prove ",
-        "proof of ",
-        "proof that ",
-        "show that ",
-        "demonstrate that ",
-        "demonstrate ",
-        "can you prove that ",
-        "can you prove ",
-        "could you prove that ",
-        "could you prove ",
-        "please prove that ",
-        "please prove ",
-        "give me a proof of ",
-        "give me a proof that ",
-        "give a proof of ",
-        "give a proof that ",
-        "докажи, что ",
-        "докажи что ",
-        "докажите, что ",
-        "докажите что ",
-        "доказать, что ",
-        "доказать что ",
-        "докажите ",
-        "докажи ",
-        "доказать ",
-        "доказательство ",
-        "साबित करो कि ",
-        "साबित कीजिए कि ",
-        "साबित कर ",
-        "सिद्ध कीजिए कि ",
-        "सिद्ध करो कि ",
-        "证明",
-        "證明",
-    ];
-    for prefix in prefixes {
+    // The claim scaffolds (each ending in the `…` slot) are sourced from the
+    // `proof_claim_scaffold` role in declaration order, so the first matching
+    // prefix wins exactly as before — every `that`/`что`/`कि` variant is listed
+    // ahead of its shorter sibling in the lexicon. Comma variants such as
+    // `докажи, что` are intentionally absent: `normalize_prompt` rewrites the
+    // comma to a space, so they are unreachable here.
+    let prefixes = prefix_literals(seed::ROLE_PROOF_CLAIM_SCAFFOLD);
+    for prefix in &prefixes {
         if let Some(rest) = trimmed.strip_prefix(prefix) {
             return strip_claim_prefix_noise(rest).to_owned();
         }
     }
-    for prefix in prefixes {
+    for prefix in &prefixes {
         if let Some(index) = trimmed.find(prefix) {
             let before = &trimmed[..index];
             if before.chars().last().is_some_and(is_claim_intro_boundary) {
@@ -661,17 +607,17 @@ pub fn try_who_is_question(
     normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
-    let is_who_question = normalized.starts_with("who is ")
-        || normalized.starts_with("who was ")
-        || normalized.starts_with("who are ")
-        || normalized.starts_with("кто такой ")
-        || normalized.starts_with("кто такая ")
-        || normalized.starts_with("кто это ")
-        || normalized.starts_with("кто ")
-        || normalized.ends_with(" कौन है")
-        || normalized.ends_with(" कौन हैं")
-        || normalized.ends_with("是谁")
-        || normalized.ends_with("是誰");
+    // "who is …" detection reasons over the `who_question` meaning: a
+    // language whose marker leads the name occupies the `who_question_lead`
+    // prefix slot (English `who is …`, Russian `кто такой …`), while one whose
+    // marker trails it occupies the `who_question_tail` suffix slot (Hindi
+    // `… कौन है`, Chinese `…是谁`). No question word is baked into this file.
+    let is_who_question = prefix_literals(seed::ROLE_WHO_QUESTION_LEAD)
+        .iter()
+        .any(|&lead| normalized.starts_with(lead))
+        || suffix_literals(seed::ROLE_WHO_QUESTION_TAIL)
+            .iter()
+            .any(|&tail| normalized.ends_with(tail));
     if !is_who_question {
         return None;
     }

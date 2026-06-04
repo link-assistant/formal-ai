@@ -840,10 +840,13 @@ test.describe('Issue #94: theme, localization, and report context', () => {
     // 8192-byte cap. Browser languages appear inside **UI languages**, and
     // the user agent / viewport / screen / platform inside **UI**.
     expect(body).toMatch(/\*\*UI languages\*\*: \*?[^*]+\*?(?:, [^,\n]+)*/);
-    expect(body).toMatch(/\*\*Theme\*\*: .*dark/);
     expect(body).toMatch(/\*\*UI\*\*: .*viewport, .*screen, .* browser/);
     expect(body).toMatch(/\*\*Locale\*\*: .* \([^)]+\)/);
-    expect(body).toMatch(/\*\*Location\*\*: inferred from /);
+    // Issue #386: settings that sit at their default are omitted to save room
+    // for the dialog. The default theme ("auto") and the inference-only
+    // location are therefore no longer emitted in a fresh-default report.
+    expect(body).not.toContain('**Theme**');
+    expect(body).not.toContain('**Location**');
     // The verbose per-field labels from the old layout must be gone so the
     // prefilled URL stays below GitHub's 8192-byte cap.
     expect(body).not.toContain('**UI Language**');

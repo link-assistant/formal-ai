@@ -72,6 +72,9 @@ en
     deletePermanent "Delete permanently"
     purgeDeleted "Purge deleted"
     purgeDeletedTitle "Permanently delete every event from deleted conversations."
+    copyMarkdown "Copy"
+    copyMarkdownDone "Copied"
+    copyMarkdownTitle "Copy the whole conversation as Markdown"
   message
     author
       user "You"
@@ -189,6 +192,10 @@ en
     location
       label "Location"
       placeholder "City or region"
+    resetHeading "Reset settings"
+    resetAll "Reset all"
+    resetOne "Reset"
+    resetNone "All settings are at their defaults."
   status
     demoPlaying "Demo playing"
     manual "Manual mode"
@@ -288,6 +295,9 @@ ru
     deletePermanent "Удалить навсегда"
     purgeDeleted "Очистить удаленные"
     purgeDeletedTitle "Навсегда удалить все события из удаленных разговоров."
+    copyMarkdown "Копировать"
+    copyMarkdownDone "Скопировано"
+    copyMarkdownTitle "Копировать весь разговор в формате Markdown"
   message
     author
       user "Вы"
@@ -407,6 +417,10 @@ ru
     location
       label "Местоположение"
       placeholder "Город или регион"
+    resetHeading "Сбросить настройки"
+    resetAll "Сбросить все"
+    resetOne "Сбросить"
+    resetNone "Все настройки имеют значения по умолчанию."
   status
     demoPlaying "Демо выполняется"
     manual "Ручной режим"
@@ -498,6 +512,9 @@ zh
     deletePermanent "永久删除"
     purgeDeleted "清除已删除"
     purgeDeletedTitle "永久删除已删除对话中的所有事件。"
+    copyMarkdown "复制"
+    copyMarkdownDone "已复制"
+    copyMarkdownTitle "将整个对话复制为 Markdown"
   message
     author
       user "你"
@@ -615,6 +632,10 @@ zh
     location
       label "位置"
       placeholder "城市或地区"
+    resetHeading "重置设置"
+    resetAll "全部重置"
+    resetOne "重置"
+    resetNone "所有设置均为默认值。"
   status
     demoPlaying "演示播放中"
     manual "手动模式"
@@ -712,6 +733,9 @@ hi
     deletePermanent "स्थायी रूप से हटाएं"
     purgeDeleted "Deleted हटाएं"
     purgeDeletedTitle "Deleted बातचीत के सभी events स्थायी रूप से हटाएं।"
+    copyMarkdown "कॉपी"
+    copyMarkdownDone "कॉपी हो गया"
+    copyMarkdownTitle "पूरी बातचीत को Markdown के रूप में कॉपी करें"
   message
     author
       user "आप"
@@ -829,6 +853,10 @@ hi
     location
       label "स्थान"
       placeholder "शहर या क्षेत्र"
+    resetHeading "सेटिंग्स रीसेट करें"
+    resetAll "सभी रीसेट करें"
+    resetOne "रीसेट"
+    resetNone "सभी सेटिंग्स अपने डिफ़ॉल्ट पर हैं।"
   status
     demoPlaying "डेमो चल रहा है"
     manual "मैनुअल मोड"

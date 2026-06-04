@@ -1,6 +1,7 @@
 use std::{collections::BTreeSet, fmt::Write as _};
 
 use crate::engine::normalize_prompt;
+use crate::seed;
 
 use super::{
     code_spans, extract_trigger_response, looks_like_skill_description, CompiledSkillInput,
@@ -314,13 +315,19 @@ fn looks_like_structured_skill_line(line: &str) -> bool {
     .any(|label| line_after_label(line, label).is_some())
 }
 
+/// Reject an instruction whose surface marks it as nondeterministic.
+///
+/// The cues are not named here: they are the surfaces of the
+/// [`nondeterministic_marker`](seed::ROLE_NONDETERMINISTIC_MARKER) meaning,
+/// matched as raw substrings through
+/// [`Lexicon::mentions_role_raw`](seed::Lexicon::mentions_role_raw). The
+/// instruction is lower-cased with [`str::to_lowercase`] (full Unicode folding,
+/// so non-ASCII surfaces fold too) before matching against the lower-cased
+/// stored surfaces. A structured skill must be deterministic and reviewable, so
+/// any such cue is a hard error.
 fn unsupported_instruction_reason(instruction: &str) -> Option<String> {
-    let lower = instruction.to_ascii_lowercase();
-    if lower.contains("random")
-        || lower.contains("nondeterministic")
-        || lower.contains("non-deterministic")
-        || lower.contains("arbitrary code")
-    {
+    let lower = instruction.to_lowercase();
+    if seed::lexicon().mentions_role_raw(seed::ROLE_NONDETERMINISTIC_MARKER, &lower) {
         return Some(String::from(
             "structured skills must be deterministic and reviewable",
         ));
@@ -328,24 +335,26 @@ fn unsupported_instruction_reason(instruction: &str) -> Option<String> {
     None
 }
 
+/// Infer the package capability an instruction silently requires from its surface.
+///
+/// The cues are read from the lexicon by meaning, never named here. A
+/// [`shell_capability_need`](seed::ROLE_SHELL_CAPABILITY_CUE) surface implies
+/// `tool:local_shell`; a [`network_capability_need`](seed::ROLE_NETWORK_CAPABILITY_CUE)
+/// surface implies `tool:web_fetch`. The roles are checked in that order — shell
+/// before network — so an instruction that mentions both resolves to the shell
+/// grant, preserving the original precedence. Each role is matched as a raw
+/// substring through [`Lexicon::mentions_role_raw`](seed::Lexicon::mentions_role_raw)
+/// against the [`str::to_lowercase`]-folded instruction.
 fn inferred_permissioned_capability(instruction: &str) -> Option<String> {
-    let lower = instruction.to_ascii_lowercase();
-    if lower.contains("local_shell")
-        || lower.contains("shell")
-        || lower.contains("filesystem")
-        || lower.contains("file system")
-        || lower.contains("list files")
-        || lower.contains("write file")
-        || lower.contains("delete file")
-    {
-        return Some(String::from("tool:local_shell"));
-    }
-    if lower.contains("http")
-        || lower.contains("network")
-        || lower.contains("fetch")
-        || lower.contains("web request")
-    {
-        return Some(String::from("tool:web_fetch"));
+    let lower = instruction.to_lowercase();
+    let lexicon = seed::lexicon();
+    for (role, capability) in [
+        (seed::ROLE_SHELL_CAPABILITY_CUE, "tool:local_shell"),
+        (seed::ROLE_NETWORK_CAPABILITY_CUE, "tool:web_fetch"),
+    ] {
+        if lexicon.mentions_role_raw(role, &lower) {
+            return Some(String::from(capability));
+        }
     }
     None
 }

@@ -7,91 +7,21 @@
 
 use std::fmt::Write as _;
 
-use nom::{branch::alt, bytes::complete::tag, combinator::value, IResult, Parser};
-
 use crate::engine::{normalize_prompt, stable_id, SymbolicAnswer};
 use crate::event_log::EventLog;
+use crate::seed;
 use crate::solver_handlers::finalize_simple;
 use crate::solver_helpers::{last_assistant_turn, last_user_turn};
 
 use super::software_project_code::implementation_code;
 
-const FEATURE_MARKERS: &[&str] = &[
-    "add",
-    "admin",
-    "audit",
-    "backup",
-    "calendar",
-    "chart",
-    "check",
-    "conflict",
-    "cooldown",
-    "csv",
-    "customer",
-    "damage",
-    "date",
-    "email",
-    "expense",
-    "export",
-    "file",
-    "filter",
-    "history",
-    "hp",
-    "import",
-    "invoice",
-    "log",
-    "maintenance",
-    "notification",
-    "payment",
-    "progress",
-    "protection",
-    "record",
-    "reminder",
-    "rename",
-    "report",
-    "resistance",
-    "retry",
-    "schedule",
-    "scrape",
-    "stack",
-    "status",
-    "sync",
-    "track",
-    "tracking",
-    "upload",
-    "validate",
-];
-
+/// A matched software-artifact phrase: the surface word it was recognised by
+/// (used to locate the target text after it) and the canonical English label.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 struct ArtifactMatch {
     surface: &'static str,
     label: &'static str,
 }
-
-const ARTIFACT_MATCHES: &[(&str, &str)] = &[
-    ("browser extension", "browser extension"),
-    ("command line tool", "command-line tool"),
-    ("github action", "action"),
-    ("mobile app", "mobile app"),
-    ("cli tool", "command-line tool"),
-    ("web app", "web app"),
-    ("application", "application"),
-    ("extension", "extension"),
-    ("dashboard", "dashboard"),
-    ("scraper", "scraper"),
-    ("library", "library"),
-    ("website", "website"),
-    ("plugin", "plugin"),
-    ("add on", "extension"),
-    ("addon", "extension"),
-    ("service", "service"),
-    ("bot", "bot"),
-    ("app", "app"),
-    ("api", "API"),
-    ("sdk", "SDK"),
-    ("tool", "tool"),
-    ("mod", "mod"),
-];
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(super) struct SoftwareProjectMeaning {
@@ -131,6 +61,18 @@ impl DeliveryMode {
             Self::ImmediateExecution => "immediate_execution",
         }
     }
+
+    /// Map a `software_delivery_mode` meaning slug to its delivery mode. The
+    /// default (code generation) has no slug — it is the fallback when no mode
+    /// meaning is evidenced — so this returns `None` for any other slug.
+    fn from_slug(slug: &str) -> Option<Self> {
+        match slug {
+            "delivery_manual_instructions" => Some(Self::ManualInstructions),
+            "delivery_immediate_execution" => Some(Self::ImmediateExecution),
+            "delivery_script_generation" => Some(Self::ScriptGeneration),
+            _ => None,
+        }
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -154,8 +96,10 @@ impl SoftwareProjectMeaning {
             return None;
         }
 
-        let action = scan_parse(normalized, parse_action_word)?;
-        let artifact = scan_parse(normalized, parse_artifact_phrase)?;
+        let actions = action_surface_table();
+        let artifacts = artifact_surface_table();
+        let action = scan_match(normalized, |input| match_action(input, &actions))?;
+        let artifact = scan_match(normalized, |input| match_artifact(input, &artifacts))?;
         let target = extract_target(prompt, artifact);
         let requirements = extract_requirements(prompt);
         let game_tracker = is_game_unit_tracker(normalized);
@@ -380,41 +324,114 @@ fn record_meaning(
     }
 }
 
-fn parse_action_word(input: &str) -> IResult<&str, &'static str> {
-    alt((
-        value("write", tag("write")),
-        value("build", tag("build")),
-        value("create", tag("create")),
-        value("implement", tag("implement")),
-        value("make", tag("make")),
-        value("develop", tag("develop")),
-        value("generate", tag("generate")),
-        value("design", tag("design")),
-        value("scaffold", tag("scaffold")),
-    ))
-    .parse(input)
+/// Map a software-artifact-kind meaning slug to its canonical English label.
+///
+/// The lexicon owns the surface words a prompt is matched against (in every
+/// supported language); this resolver owns only the stable slug→label mapping,
+/// so adding a language never touches this code — exactly like
+/// [`crate::solver_handlers::calendar`]'s `Weekday::from_slug`. Recognition
+/// vocabulary lives in the data; the canonical output label lives in code.
+/// Returns `None` for a slug this handler does not render, so a future artifact
+/// kind in the lexicon is skipped here rather than silently mislabelled.
+fn artifact_label(slug: &str) -> Option<&'static str> {
+    let label = match slug {
+        "artifact_browser_extension" => "browser extension",
+        "artifact_command_line_tool" => "command-line tool",
+        "artifact_github_action" => "action",
+        "artifact_mobile_app" => "mobile app",
+        "artifact_web_app" => "web app",
+        "artifact_application" => "application",
+        "artifact_extension" => "extension",
+        "artifact_dashboard" => "dashboard",
+        "artifact_scraper" => "scraper",
+        "artifact_library" => "library",
+        "artifact_website" => "website",
+        "artifact_plugin" => "plugin",
+        "artifact_service" => "service",
+        "artifact_bot" => "bot",
+        "artifact_app" => "app",
+        "artifact_api" => "API",
+        "artifact_sdk" => "SDK",
+        "artifact_tool" => "tool",
+        "artifact_mod" => "mod",
+        _ => return None,
+    };
+    Some(label)
 }
 
-fn parse_artifact_phrase(input: &str) -> IResult<&str, ArtifactMatch> {
-    for &(surface, label) in ARTIFACT_MATCHES {
-        if let Some(remaining) = input.strip_prefix(surface) {
-            return Ok((remaining, ArtifactMatch { surface, label }));
+/// The (surface, label) recognition table for software artifacts, sourced from
+/// the lexicon: every `software_artifact_kind` meaning, in declaration order,
+/// flat-mapped over its surface words in every supported language. Declaration
+/// order preserves the specific-before-generic constraint [`scan_match`] relies
+/// on (e.g. `application` precedes `app`, so the longer phrase is taken first).
+fn artifact_surface_table() -> Vec<(&'static str, &'static str)> {
+    let mut table = Vec::new();
+    for meaning in seed::lexicon().meanings_with_role(seed::ROLE_SOFTWARE_ARTIFACT_KIND) {
+        let Some(label) = artifact_label(&meaning.slug) else {
+            continue;
+        };
+        for surface in meaning.words() {
+            table.push((surface, label));
         }
     }
-    Err(nom::Err::Error(nom::error::Error::new(
-        input,
-        nom::error::ErrorKind::Tag,
-    )))
+    table
 }
 
-fn scan_parse<T: Copy>(normalized: &str, parser: fn(&str) -> IResult<&str, T>) -> Option<T> {
+/// The (surface, action-slug) recognition table for software-authoring verbs,
+/// sourced from the lexicon: every `software_authoring_action` meaning, flat-
+/// mapped over its surface words. The matched slug is stored verbatim as the
+/// request's `action`, so the verb is recognised in every language it is
+/// lexicalised in without this code naming a single word.
+fn action_surface_table() -> Vec<(&'static str, &'static str)> {
+    let mut table = Vec::new();
+    for meaning in seed::lexicon().meanings_with_role(seed::ROLE_SOFTWARE_AUTHORING_ACTION) {
+        let slug = meaning.slug.as_str();
+        for surface in meaning.words() {
+            table.push((surface, slug));
+        }
+    }
+    table
+}
+
+/// Match a software-authoring verb at the start of `input`, returning the
+/// consumed byte length and the matched meaning's slug.
+fn match_action(
+    input: &str,
+    table: &[(&'static str, &'static str)],
+) -> Option<(usize, &'static str)> {
+    for &(surface, slug) in table {
+        if input.starts_with(surface) {
+            return Some((surface.len(), slug));
+        }
+    }
+    None
+}
+
+/// Match a software-artifact phrase at the start of `input`, returning the
+/// consumed byte length and the resolved [`ArtifactMatch`].
+fn match_artifact(
+    input: &str,
+    table: &[(&'static str, &'static str)],
+) -> Option<(usize, ArtifactMatch)> {
+    for &(surface, label) in table {
+        if input.starts_with(surface) {
+            return Some((surface.len(), ArtifactMatch { surface, label }));
+        }
+    }
+    None
+}
+
+/// Walk every word-boundary-aligned position in `normalized` left to right and
+/// return the first match the `matcher` accepts that also ends on a word
+/// boundary. Position-major: the surface appearing earliest in the prompt wins,
+/// independent of table order (ties at one position fall to the matcher's own
+/// first-match rule).
+fn scan_match<T>(normalized: &str, matcher: impl Fn(&str) -> Option<(usize, T)>) -> Option<T> {
     for (index, _) in normalized.char_indices() {
         if !is_start_boundary(normalized, index) {
             continue;
         }
-        let input = &normalized[index..];
-        if let Ok((remaining, value)) = parser(input) {
-            let consumed = input.len().saturating_sub(remaining.len());
+        if let Some((consumed, value)) = matcher(&normalized[index..]) {
             if consumed > 0 && is_end_boundary(normalized, index + consumed) {
                 return Some(value);
             }
@@ -443,8 +460,27 @@ fn is_end_boundary(value: &str, index: usize) -> bool {
         .is_some_and(|character| !is_word_character(character))
 }
 
-const fn is_word_character(character: char) -> bool {
-    character.is_ascii_alphanumeric()
+/// A "word character" for the recognition scan: an alphanumeric that is *not*
+/// CJK.
+///
+/// CJK scripts write without inter-word spaces, so a CJK surface must match as a
+/// substring (every CJK codepoint is its own boundary). Latin, Cyrillic, and
+/// Devanagari keep strict whole-token boundaries so a short surface like `апи`
+/// never matches inside `напиши`. This mirrors the substring-vs-token contract
+/// in [`crate::coding::contains_cjk`].
+fn is_word_character(character: char) -> bool {
+    character.is_alphanumeric() && !is_cjk_character(character)
+}
+
+/// Whether `character` belongs to a CJK script (per the codepoint ranges in
+/// [`crate::coding::contains_cjk`]), and so matches as a substring not a token.
+fn is_cjk_character(character: char) -> bool {
+    let codepoint = character as u32;
+    (0x3400..=0x4DBF).contains(&codepoint)
+        || (0x4E00..=0x9FFF).contains(&codepoint)
+        || (0xF900..=0xFAFF).contains(&codepoint)
+        || (0x3040..=0x30FF).contains(&codepoint)
+        || (0x3100..=0x312F).contains(&codepoint)
 }
 
 fn extract_target(prompt: &str, artifact: ArtifactMatch) -> String {
@@ -499,7 +535,21 @@ fn capitalize_short_target(raw: &str) -> String {
     format!("{}{}", first.to_uppercase(), chars.collect::<String>())
 }
 
+/// Every requirement-marker word — the union of all `software_requirement_category`
+/// meanings' surface words, in every supported language, lowercased. A clause
+/// containing any of these states a feature requirement. The words live once in
+/// the lexicon; this code knows only the concept "a feature requirement".
+fn requirement_marker_words() -> Vec<String> {
+    seed::lexicon()
+        .words_for_role(seed::ROLE_SOFTWARE_REQUIREMENT_CATEGORY)
+        .into_iter()
+        .filter(|word| !word.is_empty())
+        .map(|word| word.to_lowercase())
+        .collect()
+}
+
 fn extract_requirements(prompt: &str) -> Vec<String> {
+    let markers = requirement_marker_words();
     let mut requirements = Vec::new();
     for segment in prompt.split(['.', ';', '\n']) {
         for clause in segment.split(',') {
@@ -508,7 +558,7 @@ fn extract_requirements(prompt: &str) -> Vec<String> {
                 continue;
             }
             let lower = cleaned.to_lowercase();
-            if contains_any(&lower, FEATURE_MARKERS) {
+            if markers.iter().any(|marker| lower.contains(marker.as_str())) {
                 push_unique(&mut requirements, sentence_case(cleaned));
             }
         }
@@ -536,26 +586,47 @@ fn derive_subtasks(requirements: &[String], game_tracker: bool) -> Vec<SoftwareS
         .collect()
 }
 
+/// Map a `software_requirement_category` meaning slug to its canonical category
+/// label — the slug `subtask_title` matches on and the meaning record emits.
+/// Recognition words live in the lexicon; the canonical label lives in code (the
+/// calendar `from_slug` precedent). Returns `None` for a slug this handler does
+/// not classify, so a future category is skipped rather than mislabelled.
+fn requirement_category_label(slug: &str) -> Option<&'static str> {
+    let label = match slug {
+        "requirement_state_tracking" => "state_tracking",
+        "requirement_data_exchange" => "data_exchange",
+        "requirement_automation" => "automation",
+        "requirement_validation" => "validation",
+        "requirement_integration" => "integration",
+        "requirement_user_interface" => "user_interface",
+        "requirement_project_behavior" => "project_behavior",
+        _ => return None,
+    };
+    Some(label)
+}
+
+/// Classify a requirement clause into its canonical category by walking the
+/// `software_requirement_category` meanings in declaration order and taking the
+/// first whose surface word appears in the clause. A game-unit tracker forces
+/// `state_tracking` (the first category, so the order is consistent). Falls back
+/// to `project_behavior` when no category matches.
 fn classify_requirement(requirement: &str, game_tracker: bool) -> &'static str {
     let lower = requirement.to_lowercase();
-    if game_tracker || contains_any(&lower, &["track", "hp", "status", "damage", "cooldown"]) {
-        "state_tracking"
-    } else if contains_any(
-        &lower,
-        &["import", "export", "csv", "backup", "report", "calendar"],
-    ) {
-        "data_exchange"
-    } else if contains_any(&lower, &["reminder", "notification", "schedule", "weekly"]) {
-        "automation"
-    } else if contains_any(&lower, &["validate", "check", "conflict", "audit"]) {
-        "validation"
-    } else if contains_any(&lower, &["api", "discord", "telegram", "github", "browser"]) {
-        "integration"
-    } else if contains_any(&lower, &["dashboard", "chart", "filter", "progress"]) {
-        "user_interface"
-    } else {
-        "project_behavior"
+    if game_tracker {
+        return "state_tracking";
     }
+    for meaning in seed::lexicon().meanings_with_role(seed::ROLE_SOFTWARE_REQUIREMENT_CATEGORY) {
+        let Some(label) = requirement_category_label(&meaning.slug) else {
+            continue;
+        };
+        if meaning
+            .words()
+            .any(|word| lower.contains(word.to_lowercase().as_str()))
+        {
+            return label;
+        }
+    }
+    "project_behavior"
 }
 
 fn subtask_title(category: &str, requirement: &str) -> String {
@@ -574,41 +645,48 @@ fn subtask_title(category: &str, requirement: &str) -> String {
     }
 }
 
+/// Pick the delivery mode by walking the `software_delivery_mode` meanings in
+/// declaration order (manual instructions → immediate execution → script
+/// generation — the order encodes priority) and taking the first one evidenced
+/// in the request. When none is, the default is generated code. The surface
+/// words live in the lexicon, so the code knows only the concept "a request can
+/// ask for a particular delivery mode".
 fn detect_delivery_mode(normalized: &str) -> DeliveryMode {
-    if contains_any(
-        normalized,
-        &["manual instruction", "instructions", "no code"],
-    ) {
-        DeliveryMode::ManualInstructions
-    } else if contains_any(normalized, &["execute", "run command", "run it", "webvm"]) {
-        DeliveryMode::ImmediateExecution
-    } else if contains_any(normalized, &["bash", "shell"])
-        || contains_word(normalized, &["script", "scripts", "commands"])
-    {
-        DeliveryMode::ScriptGeneration
-    } else {
-        DeliveryMode::CodeGeneration
-    }
+    seed::lexicon()
+        .first_role_match(seed::ROLE_SOFTWARE_DELIVERY_MODE, normalized)
+        .and_then(|meaning| DeliveryMode::from_slug(&meaning.slug))
+        .unwrap_or(DeliveryMode::CodeGeneration)
 }
 
+/// Resolve the target language by walking the `software_implementation_language`
+/// meanings in declaration order (python → rust → javascript) and taking the
+/// first one named in the request. The default is TypeScript.
 fn detect_implementation_language(normalized: &str) -> &'static str {
-    if contains_any(normalized, &["python", "django", "fastapi"]) {
-        "python"
-    } else if contains_any(normalized, &["rust", "cargo"]) {
-        "rust"
-    } else if contains_any(normalized, &["javascript", "node.js", "node "]) {
-        "javascript"
-    } else {
-        "typescript"
+    seed::lexicon()
+        .first_role_match(seed::ROLE_SOFTWARE_IMPLEMENTATION_LANGUAGE, normalized)
+        .and_then(|meaning| implementation_language_from_slug(&meaning.slug))
+        .unwrap_or("typescript")
+}
+
+/// Map a `software_implementation_language` meaning slug to its canonical target
+/// label. The recognition vocabulary lives in data while the rendered output
+/// label stays stable in code (the calendar `from_slug` precedent).
+fn implementation_language_from_slug(slug: &str) -> Option<&'static str> {
+    match slug {
+        "language_python" => Some("python"),
+        "language_rust" => Some("rust"),
+        "language_javascript" => Some("javascript"),
+        _ => None,
     }
 }
 
 fn approval_gates(normalized: &str, delivery_mode: DeliveryMode) -> Vec<&'static str> {
+    let lexicon = seed::lexicon();
     let mut gates = vec!["task_formalization", "implementation_plan"];
-    if normalized.contains("requirement") {
+    if lexicon.mentions_role(seed::ROLE_SOFTWARE_FEATURE, normalized) {
         gates.push("requirements");
     }
-    if contains_any(normalized, &["each step", "step by step"]) {
+    if lexicon.mentions_role(seed::ROLE_SOFTWARE_STEP_GRANULARITY, normalized) {
         gates.push("each_step");
     }
     match delivery_mode {
@@ -619,22 +697,12 @@ fn approval_gates(normalized: &str, delivery_mode: DeliveryMode) -> Vec<&'static
             gates.push("bash_command");
         }
     }
-    if contains_any(normalized, &["shell", "bash", "command", "docker", "webvm"]) {
+    if lexicon.mentions_role(seed::ROLE_SOFTWARE_BASH_COMMAND, normalized) {
         gates.push("bash_command");
     }
     gates.sort_unstable();
     gates.dedup();
     gates
-}
-
-fn contains_any(haystack: &str, needles: &[&str]) -> bool {
-    needles.iter().any(|needle| haystack.contains(needle))
-}
-
-fn contains_word(haystack: &str, words: &[&str]) -> bool {
-    haystack
-        .split_whitespace()
-        .any(|token| words.contains(&token))
 }
 
 fn push_unique(items: &mut Vec<String>, value: String) {
@@ -652,42 +720,31 @@ fn sentence_case(raw: &str) -> String {
     format!("{}{}", first.to_uppercase(), chars.collect::<String>())
 }
 
+/// A request is a game-unit tracker only when it pairs a game domain with a
+/// combat mechanic — both the `game_tracker_domain` and `game_tracker_mechanic`
+/// roles must be evidenced. The decomposition lives in the lexicon, so the code
+/// knows only the concept "a tracker needs both a domain and a mechanic".
 fn is_game_unit_tracker(normalized: &str) -> bool {
-    let domain = normalized.contains("dnd")
-        || normalized.contains("d&d")
-        || normalized.contains("wargame")
-        || normalized.contains("tabletop")
-        || normalized.contains("unit")
-        || normalized.contains("token")
-        || normalized.contains("owlbear");
-    let mechanics = normalized.contains("hp")
-        || normalized.contains("damage")
-        || normalized.contains("protection")
-        || normalized.contains("resistance")
-        || normalized.contains("cooldown");
-    domain && mechanics
+    let lexicon = seed::lexicon();
+    lexicon.mentions_role(seed::ROLE_GAME_TRACKER_DOMAIN, normalized)
+        && lexicon.mentions_role(seed::ROLE_GAME_TRACKER_MECHANIC, normalized)
 }
 
+/// Is the whole prompt a go-ahead that moves the dialogue from plan to
+/// implementation? Unlike the passing-mention roles, an approval trigger must
+/// match the *entire* compacted prompt (so "approve the validation step" is not
+/// an approval), so this compares the compacted prompt against each
+/// `software_approval_trigger` surface word. Compaction keeps Unicode letters
+/// and digits, so a non-Latin go-ahead works the same way as an English one.
 pub(super) fn is_approval_prompt(normalized: &str) -> bool {
     let compact = normalized
         .trim()
-        .trim_matches(|character: char| !character.is_ascii_alphanumeric())
+        .trim_matches(|character: char| !character.is_alphanumeric())
         .replace(['.', '!', ','], "");
-    matches!(
-        compact.as_str(),
-        "approve"
-            | "approved"
-            | "approve plan"
-            | "yes"
-            | "yes proceed"
-            | "proceed"
-            | "go ahead"
-            | "looks good"
-            | "do it"
-            | "start implementation"
-            | "generate code"
-            | "convert to code"
-    )
+    seed::lexicon()
+        .meanings_with_role(seed::ROLE_SOFTWARE_APPROVAL_TRIGGER)
+        .flat_map(seed::Meaning::words)
+        .any(|word| compact == word)
 }
 
 fn reasoning_steps(meaning: &SoftwareProjectMeaning) -> Vec<String> {

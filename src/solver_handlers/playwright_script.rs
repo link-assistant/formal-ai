@@ -3,6 +3,7 @@ use std::fmt::Write as _;
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::language::{detect as detect_language, Language};
+use crate::seed;
 use crate::solver_handlers::finalize_simple;
 
 const PLAYWRIGHT_DOCS_URL: &str = "https://playwright.dev/docs/writing-tests";
@@ -29,7 +30,7 @@ pub fn try_playwright_script(
 
     log.append("script_framework", "playwright".to_owned());
     log.append("source", PLAYWRIGHT_DOCS_URL.to_owned());
-    let corrected_spelling = normalized.contains("playright");
+    let corrected_spelling = mentions_playwright_misspelling(normalized);
     if corrected_spelling {
         log.append("spelling_correction", "Playright -> Playwright".to_owned());
     }
@@ -62,46 +63,26 @@ pub fn try_playwright_script(
     ))
 }
 
+/// True when the prompt both names the Playwright tool and carries a
+/// script-authoring cue, each recognized as a raw substring across every
+/// supported language via the `playwright_tool_name` and
+/// `playwright_script_cue` roles in the seed lexicon.
 fn is_playwright_script_request(normalized: &str) -> bool {
-    if !mentions_playwright(normalized) {
-        return false;
-    }
-    contains_any(
-        normalized,
-        &[
-            "script",
-            "test",
-            "spec",
-            "code",
-            "скрипт",
-            "сценар",
-            "тест",
-            "код",
-            "write",
-            "create",
-            "generate",
-            "make",
-            "build",
-            "can you",
-            "could you",
-            "напиши",
-            "написать",
-            "можешь",
-            "сделай",
-            "создай",
-        ],
-    )
+    let lexicon = seed::lexicon();
+    lexicon.mentions_role_raw(seed::ROLE_PLAYWRIGHT_TOOL_NAME, normalized)
+        && lexicon.mentions_role_raw(seed::ROLE_PLAYWRIGHT_SCRIPT_CUE, normalized)
 }
 
-fn mentions_playwright(normalized: &str) -> bool {
-    contains_any(
-        normalized,
-        &["playwright", "playright", "плейврайт", "плейрайт"],
-    )
-}
-
-fn contains_any(value: &str, needles: &[&str]) -> bool {
-    needles.iter().any(|needle| value.contains(needle))
+/// True when the prompt contains a misspelled form of the Playwright name —
+/// any `playwright_tool_name` word form whose `action` names the canonical
+/// spelling. The misspelling and its correction live in the seed data, so the
+/// handler reports the fix without naming either form in the code.
+fn mentions_playwright_misspelling(normalized: &str) -> bool {
+    seed::lexicon()
+        .role_word_forms(seed::ROLE_PLAYWRIGHT_TOOL_NAME)
+        .iter()
+        .filter(|form| !form.action.is_empty())
+        .any(|form| normalized.contains(form.text.as_str()))
 }
 
 fn render_clarification(language: Language) -> String {

@@ -201,6 +201,34 @@ fn calendar_reasoning_answers_weekday_predecessor_and_successor_variations() {
     }
 }
 
+#[test]
+fn calendar_reasoning_answers_weekday_relations_in_hindi_and_chinese() {
+    // Issue #386: the weekday names, directions, and day references now live as
+    // self-describing meanings in every supported language, so calendar
+    // reasoning works in Hindi and Chinese too — not just English and Russian.
+    // Each answer must also be localized in the asking language.
+    let cases = [
+        ("सोमवार के बाद कौन सा दिन आता है", "मंगलवार"), // after Monday → Tuesday
+        ("सोमवार से पहले कौन सा दिन आता है", "रविवार"), // before Monday → Sunday
+        ("星期一之后是星期几", "星期二"),            // after Monday → Tuesday
+        ("星期三之前是星期几", "星期二"),            // before Wednesday → Tuesday
+    ];
+
+    for (prompt, expected) in cases {
+        let response = answer(prompt);
+        assert_eq!(
+            response.intent, "calendar_weekday_relation",
+            "prompt {prompt:?} should route to calendar reasoning, got {}",
+            response.intent,
+        );
+        assert!(
+            response.answer.contains(expected),
+            "prompt {prompt:?} should mention {expected:?} (localized), got: {}",
+            response.answer,
+        );
+    }
+}
+
 // ---------------------------------------------------------------------------
 // R86: concept lookup against the offline seed.
 // ---------------------------------------------------------------------------
@@ -489,6 +517,38 @@ fn how_it_works_followup_records_followup_event_in_evidence() {
             .any(|link| link.starts_with("followup:")),
         "\"how it works?\" handler must emit a followup: evidence event: {:?}",
         response.evidence_links,
+    );
+}
+
+#[test]
+fn how_it_works_prior_reply_fallback_skips_function_words_case_insensitively() {
+    // When the prior reply has no "Term (category):" header, topic extraction
+    // falls back to the first capitalised token that is not a
+    // `topic_scan_stop_word` (data/seed/meanings-how.lino). The skip list is
+    // matched case-insensitively, so the all-caps leading "THE" is skipped and
+    // the real subject "Widgetronics" is taken. A hardcoded title-case array
+    // (the pre-conversion behaviour) would have failed to match "THE" and
+    // mis-read the function word itself as the topic — this test guards that
+    // generalization.
+    let history = [
+        ConversationTurn::user("tell me about the gadget"),
+        ConversationTurn::assistant(
+            "THE Widgetronics core spins quietly without a category header.",
+        ),
+    ];
+    let response = solve_with_history("how it works?", &history);
+    assert!(
+        response.answer.to_lowercase().contains("widgetronics"),
+        "fallback topic scan must skip the all-caps function word and name \
+         'Widgetronics'; got intent={}, answer={}",
+        response.intent,
+        response.answer,
+    );
+    assert!(
+        !response.answer.to_lowercase().contains("how the works"),
+        "fallback topic scan must not treat the function word 'the' as the \
+         topic; got answer={}",
+        response.answer,
     );
 }
 

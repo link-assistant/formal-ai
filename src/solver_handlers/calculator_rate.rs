@@ -4,6 +4,7 @@ use crate::calculation::{evaluate_calculation, CalculationEvaluation};
 use crate::engine::{normalize_prompt, SymbolicAnswer};
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
+use crate::seed;
 
 use super::finalize_simple;
 
@@ -103,47 +104,23 @@ fn rate_source_step(evaluation: &CalculationEvaluation) -> Option<&str> {
         .find(|step| step.contains("Exchange rate:") || step.contains("exchange rate:"))
 }
 
+/// Does the prompt ask which exchange rate the assistant uses for currency
+/// calculations? Recognition is data-driven: the three concepts each live in
+/// `data/seed/meanings-calculator.lino` and are queried by semantic *role*, not
+/// by a hardcoded per-language word list.
+///
+/// The prompt must reference all three concepts at once — an
+/// [`exchange_rate`](seed::ROLE_EXCHANGE_RATE_REFERENCE) between currencies, the
+/// [`us_dollar`](seed::ROLE_CURRENCY_USD_REFERENCE) currency, and a
+/// [`calculation_basis`](seed::ROLE_CALCULATION_BASIS_REFERENCE) phrase asking
+/// what the assistant uses. Each role's surface forms are inflectable stems and
+/// fixed phrases, so they are matched as raw substrings via
+/// [`Lexicon::mentions_role_raw`](seed::Lexicon::mentions_role_raw), byte-for-byte
+/// reproducing the original three `contains` disjunctions while keeping every
+/// surface word in the seed rather than in code.
 fn asks_for_usd_rate_basis(normalized: &str) -> bool {
-    mentions_rate(normalized) && mentions_usd(normalized) && mentions_calculation_basis(normalized)
-}
-
-fn mentions_rate(normalized: &str) -> bool {
-    normalized.contains("курс")
-        || normalized.contains("exchange rate")
-        || normalized.contains("currency rate")
-        || normalized.contains("विनिमय दर")
-        || normalized.contains("汇率")
-}
-
-fn mentions_usd(normalized: &str) -> bool {
-    normalized.contains("usd")
-        || normalized.contains("dollar")
-        || normalized.contains("доллар")
-        || normalized.contains("долар")
-        || normalized.contains("долор")
-        || normalized.contains("डॉलर")
-        || normalized.contains("美元")
-}
-
-fn mentions_calculation_basis(normalized: &str) -> bool {
-    normalized.contains("при расчет")
-        || normalized.contains("при расчёт")
-        || normalized.contains("в расчет")
-        || normalized.contains("в расчёт")
-        || normalized.contains("для расчет")
-        || normalized.contains("для расчёт")
-        || normalized.contains("у тебя")
-        || normalized.contains("использ")
-        || normalized.contains("берешь")
-        || normalized.contains("берёшь")
-        || normalized.contains("примен")
-        || normalized.contains("calculation")
-        || normalized.contains("calculations")
-        || normalized.contains("do you use")
-        || normalized.contains("used for")
-        || normalized.contains("your rate")
-        || normalized.contains("गणना")
-        || normalized.contains("उपयोग")
-        || normalized.contains("计算")
-        || normalized.contains("使用")
+    let lexicon = seed::lexicon();
+    lexicon.mentions_role_raw(seed::ROLE_EXCHANGE_RATE_REFERENCE, normalized)
+        && lexicon.mentions_role_raw(seed::ROLE_CURRENCY_USD_REFERENCE, normalized)
+        && lexicon.mentions_role_raw(seed::ROLE_CALCULATION_BASIS_REFERENCE, normalized)
 }

@@ -4,7 +4,7 @@ use crate::concepts::extract_concept_query;
 use crate::engine::{normalize_prompt, SymbolicAnswer};
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
-use crate::seed::{projects_registry, ProjectRecord};
+use crate::seed::{self, projects_registry, ProjectRecord};
 use crate::summarization::{describe_project, SummarizationConfig, SummarizationMode};
 use crate::web_search_core::{
     WEB_SEARCH_PROVIDERS as CORE_WEB_SEARCH_PROVIDERS, WEB_SEARCH_RRF_K as CORE_WEB_SEARCH_RRF_K,
@@ -691,142 +691,69 @@ fn looks_like_hostname(value: &str) -> bool {
     })
 }
 
-/// Prefixes that mean "perform an HTTP request" — the browser worker will
-/// attempt a real `fetch()` for these prompts before falling back to iframe.
-const HTTP_FETCH_PREFIXES: &[&str] = &[
-    "fetch ",
-    "fetch url ",
-    "http fetch ",
-    "request ",
-    "make request to ",
-    "send request to ",
-    "сделай запрос ",
-    "сделай http запрос ",
-    "выполни запрос ",
-    "выполни http запрос ",
-    "запроси ",
-    "получи ",
-    "http запрос к ",
-    "http запрос на ",
-    "сделать запрос к ",
-    "выполнить запрос к ",
-];
+/// Does a meaning carrying `role` evidence one of the prompt's lowercased forms?
+///
+/// The surface words for the web intents are no longer a hardcoded per-language
+/// list — they live once in `data/seed/meanings-web-navigation.lino` as the
+/// `http_fetch` and `url_navigate` meanings, and this code names only the
+/// language-independent role plus the `…` (U+2026) slot shape (issue #386). Each
+/// surface form is bucketed by [`seed::Slot`] exactly as the how-cluster handler
+/// does ([`crate::solver_handler_how`]):
+/// * [`seed::Slot::Prefix`] — the literal before `…` must *begin* a form (so
+///   "fetch …" matches "fetch google.com"); [`WordForm::before_slot`] keeps the
+///   trailing space, reproducing the prior `"fetch "` prefix exactly.
+/// * [`seed::Slot::Bare`] — the whole text must appear *anywhere* in a form (so
+///   "запрос к" matches "сделать запрос к google.com").
+///
+/// `forms` are the lowercased views a web prompt is matched against (the
+/// word-normalized prompt, the engine-normalized prompt, and the raw lowercased
+/// prompt — see [`is_http_fetch_prompt`]). The result is a pure OR over every
+/// (form, surface) pair, so the bucket order only affects short-circuiting, not
+/// the outcome — behaviour is identical to the prior inline arrays.
+fn role_evidences_web_intent(role: &str, forms: &[&str]) -> bool {
+    let word_forms = seed::lexicon().role_word_forms(role);
+    if word_forms
+        .iter()
+        .filter(|form| form.slot() == seed::Slot::Prefix)
+        .any(|form| {
+            let prefix = form.before_slot();
+            forms.iter().any(|form_text| form_text.starts_with(prefix))
+        })
+    {
+        return true;
+    }
+    word_forms
+        .iter()
+        .filter(|form| form.slot() == seed::Slot::Bare)
+        .any(|form| {
+            let marker = form.text.as_str();
+            forms.iter().any(|form_text| form_text.contains(marker))
+        })
+}
 
-/// Markers that mean "perform an HTTP request" even when they appear after
-/// other words in the prompt.
-const HTTP_FETCH_MARKERS: &[&str] = &[
-    "make a request to",
-    "make an http request to",
-    "send a request to",
-    "send an http request to",
-    "http request to",
-    "http get to",
-    "fetch the url",
-    "fetch this url",
-    "fetch the page",
-    "сделай запрос к",
-    "сделай запрос на",
-    "сделай http запрос к",
-    "сделай http запрос на",
-    "выполни запрос к",
-    "выполни запрос на",
-    "выполни http запрос к",
-    "выполни http запрос на",
-    "запрос к",
-    "запрос на",
-    "http запрос к",
-    "http запрос на",
-];
-
+/// Does the prompt ask the engine to perform an HTTP request?
+///
+/// Recognised by the `http_fetch` meaning's surface forms (see
+/// [`role_evidences_web_intent`]): the browser worker will attempt a real
+/// `fetch()` for these prompts before falling back to iframe. The match runs
+/// over three lowercased views — the word-normalized prompt, the
+/// engine-normalized prompt, and the raw lowercased prompt — so both
+/// punctuation-stripped and verbatim phrasings are covered.
 fn is_http_fetch_prompt(prompt: &str, normalized: &str, _raw_candidate: &str) -> bool {
     let normalized_words = normalize_prompt(prompt);
     let raw = prompt.trim_start().to_lowercase();
-    if HTTP_FETCH_PREFIXES.iter().any(|prefix| {
-        normalized_words.starts_with(prefix)
-            || normalized.starts_with(prefix)
-            || raw.starts_with(prefix)
-    }) {
-        return true;
-    }
-    HTTP_FETCH_MARKERS.iter().any(|marker| {
-        normalized_words.contains(marker) || normalized.contains(marker) || raw.contains(marker)
-    })
+    role_evidences_web_intent(
+        seed::ROLE_HTTP_FETCH,
+        &[normalized_words.as_str(), normalized, raw.as_str()],
+    )
 }
 
-/// Prefixes that mean "navigate to / show this page" — the browser worker
-/// must NOT attempt `fetch()` for these prompts; it returns a direct external
-/// link that the user can open in a new tab.
-const URL_NAVIGATE_PREFIXES: &[&str] = &[
-    "navigate to ",
-    "navigate ",
-    "go to ",
-    "goto ",
-    "visit ",
-    "browse to ",
-    "browse ",
-    "show ",
-    "show me ",
-    "display ",
-    "load ",
-    "open ",
-    "open url ",
-    "open the url ",
-    "open site ",
-    "open website ",
-    "open page ",
-    "open the page ",
-    "open the website ",
-    "take me to ",
-    "preview ",
-    "view ",
-    "see ",
-    "перейди ",
-    "перейди на ",
-    "переходи на ",
-    "переходи ",
-    "перейдите на ",
-    "открой ",
-    "открой сайт ",
-    "открой страницу ",
-    "открой ссылку ",
-    "открой урл ",
-    "покажи ",
-    "покажи сайт ",
-    "покажи страницу ",
-    "покажи мне ",
-    "загрузи ",
-    "загрузи страницу ",
-    "посети ",
-    "зайди на ",
-    "зайди ",
-    "просмотри ",
-    "отобрази ",
-];
-
-/// Markers (anywhere in the prompt) that route to the URL navigation intent.
-const URL_NAVIGATE_MARKERS: &[&str] = &[
-    "navigate to",
-    "go to",
-    "goto",
-    "browse to",
-    "take me to",
-    "open the page",
-    "open the site",
-    "open the website",
-    "open the url",
-    "open url",
-    "перейди на",
-    "переходи на",
-    "перейдите на",
-    "открой сайт",
-    "открой страницу",
-    "открой ссылку",
-    "открой урл",
-    "покажи сайт",
-    "покажи страницу",
-    "зайди на",
-];
-
+/// Does the prompt ask the engine to open / show a page (not fetch its bytes)?
+///
+/// A bare URL is navigation by itself; otherwise recognised by the
+/// `url_navigate` meaning's surface forms (see [`role_evidences_web_intent`]).
+/// For these prompts the browser worker must NOT attempt `fetch()` — it returns
+/// a direct external link the user can open in a new tab.
 fn is_url_navigate_prompt(prompt: &str, normalized: &str, raw_candidate: &str) -> bool {
     let normalized_words = normalize_prompt(prompt);
     let prompt_trimmed = prompt.trim_start();
@@ -835,14 +762,8 @@ fn is_url_navigate_prompt(prompt: &str, normalized: &str, raw_candidate: &str) -
         return true;
     }
     let raw = prompt_trimmed.to_lowercase();
-    if URL_NAVIGATE_PREFIXES.iter().any(|prefix| {
-        normalized_words.starts_with(prefix)
-            || normalized.starts_with(prefix)
-            || raw.starts_with(prefix)
-    }) {
-        return true;
-    }
-    URL_NAVIGATE_MARKERS.iter().any(|marker| {
-        normalized_words.contains(marker) || normalized.contains(marker) || raw.contains(marker)
-    })
+    role_evidences_web_intent(
+        seed::ROLE_URL_NAVIGATE,
+        &[normalized_words.as_str(), normalized, raw.as_str()],
+    )
 }
