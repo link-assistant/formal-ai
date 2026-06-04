@@ -6705,6 +6705,276 @@ function synthesizePythonCandidate(prompt, normalized, functionName) {
   });
 }
 
+// Issue #395: does the prompt evidence the operation with this canonical slug,
+// in any supported language? Mirrors OperationVocabulary::matches in
+// src/seed/operation_vocabulary.rs (substring match per phrase/combo).
+function operationMatchesSlug(slug, normalized) {
+  for (const operation of operationVocabulary()) {
+    if (operation.slug === slug && operationFormMatches(normalized, operation)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+// Issue #395: lift every number token (signed / decimal) from the prompt, in
+// order. Mirrors parse_numbers in src/solver_handlers/sort_numbers.rs: a leading
+// sign only starts a literal when it is not glued to a preceding letter or digit,
+// and the surface text is preserved verbatim for echoing and code generation.
+function parseSortNumbers(prompt) {
+  const chars = Array.from(String(prompt || ""));
+  const isDigit = (ch) => ch >= "0" && ch <= "9";
+  const isAlnum = (ch) => /[\p{L}\p{N}]/u.test(ch);
+  const numbers = [];
+  let index = 0;
+  while (index < chars.length) {
+    const ch = chars[index];
+    let sign = "";
+    if (
+      (ch === "-" || ch === "+") &&
+      index + 1 < chars.length &&
+      isDigit(chars[index + 1]) &&
+      !(index > 0 && isAlnum(chars[index - 1]))
+    ) {
+      sign = ch;
+      index += 1;
+    } else if (!isDigit(ch)) {
+      index += 1;
+      continue;
+    }
+    const start = index;
+    while (index < chars.length && isDigit(chars[index])) index += 1;
+    if (
+      index < chars.length &&
+      chars[index] === "." &&
+      index + 1 < chars.length &&
+      isDigit(chars[index + 1])
+    ) {
+      index += 1;
+      while (index < chars.length && isDigit(chars[index])) index += 1;
+    }
+    if (start === index) continue;
+    const text = sign + chars.slice(start, index).join("");
+    const value = Number(text);
+    if (!Number.isNaN(value)) numbers.push({ text, value });
+  }
+  return numbers;
+}
+
+// Issue #395: render the array literal — each number's surface, comma-joined.
+// When the list mixes integers and decimals, integer surfaces gain a `.0` suffix
+// so statically-typed targets keep a single element type. Mirrors number_literals.
+function sortNumberLiterals(numbers, isFloat) {
+  return numbers
+    .map((n) => (isFloat && !n.text.includes(".") ? `${n.text}.0` : n.text))
+    .join(", ");
+}
+
+const SORT_NUMBERS_LOCALIZATION = {
+  ru: {
+    resultLabel: "Результат:",
+    ascending: "по возрастанию",
+    descending: "по убыванию",
+    intro: (lang, given, order) =>
+      `Вот код на ${lang}, который сортирует числа ${given} ${order}:`,
+  },
+  hi: {
+    resultLabel: "परिणाम:",
+    ascending: "आरोही क्रम में",
+    descending: "अवरोही क्रम में",
+    intro: (lang, given, order) =>
+      `यह ${lang} कोड है जो संख्याओं ${given} को ${order} क्रमबद्ध करता है:`,
+  },
+  zh: {
+    resultLabel: "结果:",
+    ascending: "升序",
+    descending: "降序",
+    intro: (lang, given, order) =>
+      `这是用 ${lang} 编写的将数字 ${given} 按${order}排序的代码:`,
+  },
+  en: {
+    resultLabel: "Result:",
+    ascending: "in ascending order",
+    descending: "in descending order",
+    intro: (lang, given, order) =>
+      `Here is ${lang} code that sorts the numbers ${given} ${order}:`,
+  },
+};
+
+// Issue #395: per-language code generators. Each prints the sorted numbers as a
+// comma-separated line, matching the deterministically-computed result. Byte-for-
+// byte mirrors of the Rust generators in src/solver_handlers/sort_numbers.rs.
+function sortNumbersCode(slug, numbers, descending, isFloat) {
+  const literal = sortNumberLiterals(numbers, isFloat);
+  switch (slug) {
+    case "javascript":
+      return sortNumbersJsCode(literal, descending, false);
+    case "typescript":
+      return sortNumbersJsCode(literal, descending, true);
+    case "rust":
+      return sortNumbersRustCode(literal, descending, isFloat);
+    case "go":
+      return sortNumbersGoCode(literal, descending, isFloat);
+    case "ruby":
+      return sortNumbersRubyCode(literal, descending);
+    case "java":
+      return sortNumbersJavaCode(literal, descending, isFloat);
+    case "csharp":
+      return sortNumbersCsharpCode(literal, descending, isFloat);
+    case "c":
+      return sortNumbersCCode(numbers, descending, isFloat);
+    case "cpp":
+      return sortNumbersCppCode(literal, descending, isFloat);
+    default:
+      return sortNumbersPythonCode(literal, descending);
+  }
+}
+
+function sortNumbersJsCode(literal, descending, typed) {
+  const cmp = descending ? "b - a" : "a - b";
+  const decl = typed
+    ? `const numbers: number[] = [${literal}];`
+    : `const numbers = [${literal}];`;
+  return `${decl}\nconst sorted = [...numbers].sort((a, b) => ${cmp});\nconsole.log(sorted.join(", "));`;
+}
+
+function sortNumbersPythonCode(literal, descending) {
+  const reverse = descending ? ", reverse=True" : "";
+  return `numbers = [${literal}]\nsorted_numbers = sorted(numbers${reverse})\nprint(", ".join(str(n) for n in sorted_numbers))`;
+}
+
+function sortNumbersRustCode(literal, descending, isFloat) {
+  let sortCall;
+  if (!isFloat) {
+    sortCall = descending ? "numbers.sort_by(|a, b| b.cmp(a));" : "numbers.sort();";
+  } else {
+    sortCall = descending
+      ? "numbers.sort_by(|a, b| b.partial_cmp(a).unwrap());"
+      : "numbers.sort_by(|a, b| a.partial_cmp(b).unwrap());";
+  }
+  const ty = isFloat ? "f64" : "i64";
+  return `fn main() {\n    let mut numbers: Vec<${ty}> = vec![${literal}];\n    ${sortCall}\n    let rendered: Vec<String> = numbers.iter().map(|n| n.to_string()).collect();\n    println!("{}", rendered.join(", "));\n}`;
+}
+
+function sortNumbersGoCode(literal, descending, isFloat) {
+  const cmp = descending ? "numbers[i] > numbers[j]" : "numbers[i] < numbers[j]";
+  const ty = isFloat ? "float64" : "int";
+  const formatItem = isFloat
+    ? "strconv.FormatFloat(n, 'g', -1, 64)"
+    : "strconv.Itoa(n)";
+  return `package main\n\nimport (\n\t"fmt"\n\t"sort"\n\t"strconv"\n\t"strings"\n)\n\nfunc main() {\n\tnumbers := []${ty}{${literal}}\n\tsort.Slice(numbers, func(i, j int) bool { return ${cmp} })\n\tparts := make([]string, len(numbers))\n\tfor i, n := range numbers {\n\t\tparts[i] = ${formatItem}\n\t}\n\tfmt.Println(strings.Join(parts, ", "))\n}`;
+}
+
+function sortNumbersRubyCode(literal, descending) {
+  const sortCall = descending ? "numbers.sort.reverse" : "numbers.sort";
+  return `numbers = [${literal}]\nsorted = ${sortCall}\nputs sorted.join(", ")`;
+}
+
+function sortNumbersJavaCode(literal, descending, isFloat) {
+  const ty = isFloat ? "double" : "int";
+  const boxed = isFloat ? "Double" : "Integer";
+  const sortLine = descending
+    ? `${boxed}[] boxed = Arrays.stream(numbers).boxed().toArray(${boxed}[]::new);\n        Arrays.sort(boxed, Collections.reverseOrder());\n        for (int i = 0; i < numbers.length; i++) numbers[i] = boxed[i];`
+    : "Arrays.sort(numbers);";
+  return `import java.util.Arrays;\nimport java.util.Collections;\nimport java.util.StringJoiner;\n\npublic class Main {\n    public static void main(String[] args) {\n        ${ty}[] numbers = {${literal}};\n        ${sortLine}\n        StringJoiner joiner = new StringJoiner(", ");\n        for (${ty} n : numbers) joiner.add(String.valueOf(n));\n        System.out.println(joiner.toString());\n    }\n}`;
+}
+
+function sortNumbersCsharpCode(literal, descending, isFloat) {
+  const ty = isFloat ? "double" : "int";
+  const orderCall = descending ? "OrderByDescending(n => n)" : "OrderBy(n => n)";
+  return `using System;\nusing System.Linq;\n\nclass Program {\n    static void Main() {\n        ${ty}[] numbers = {${literal}};\n        var sorted = numbers.${orderCall};\n        Console.WriteLine(string.Join(", ", sorted));\n    }\n}`;
+}
+
+function sortNumbersCppCode(literal, descending, isFloat) {
+  const ty = isFloat ? "double" : "int";
+  const comparator = descending
+    ? "std::sort(numbers.begin(), numbers.end(), std::greater<>());"
+    : "std::sort(numbers.begin(), numbers.end());";
+  return `#include <algorithm>\n#include <iostream>\n#include <vector>\n\nint main() {\n    std::vector<${ty}> numbers = {${literal}};\n    ${comparator}\n    for (size_t i = 0; i < numbers.size(); ++i) {\n        if (i) std::cout << ", ";\n        std::cout << numbers[i];\n    }\n    std::cout << std::endl;\n    return 0;\n}`;
+}
+
+function sortNumbersCCode(numbers, descending, isFloat) {
+  const literal = sortNumberLiterals(numbers, isFloat);
+  const count = numbers.length;
+  let ty;
+  let fmt;
+  let cmpBody;
+  if (isFloat) {
+    ty = "double";
+    fmt = "%g";
+    cmpBody = descending
+      ? "    double diff = *(const double *)b - *(const double *)a;\n    return (diff > 0) - (diff < 0);"
+      : "    double diff = *(const double *)a - *(const double *)b;\n    return (diff > 0) - (diff < 0);";
+  } else {
+    ty = "int";
+    fmt = "%d";
+    cmpBody = descending
+      ? "    return (*(const int *)b - *(const int *)a);"
+      : "    return (*(const int *)a - *(const int *)b);";
+  }
+  return `#include <stdio.h>\n#include <stdlib.h>\n\nstatic int compare(const void *a, const void *b) {\n${cmpBody}\n}\n\nint main(void) {\n    ${ty} numbers[] = {${literal}};\n    size_t count = ${count};\n    qsort(numbers, count, sizeof(${ty}), compare);\n    for (size_t i = 0; i < count; ++i) {\n        if (i) printf(", ");\n        printf("${fmt}", numbers[i]);\n    }\n    printf("\\n");\n    return 0;\n}`;
+}
+
+// Issue #395: "sort these numbers in <language>, give me the code and the
+// result". Mirrors try_sort_numbers in src/solver_handlers/sort_numbers.rs. The
+// prompt is re-normalized so a language word glued to punctuation (`JavaScript,`)
+// still resolves. The result is computed deterministically (sorting is a pure,
+// decidable function) — no runtime is embedded.
+function trySortNumbers(prompt) {
+  const normalized = normalizePrompt(prompt);
+  const wantsSort =
+    operationMatchesSlug("sort", normalized) ||
+    operationMatchesSlug("reverse_sort", normalized);
+  if (!wantsSort) return null;
+
+  const slug = programLanguageFromPrompt(normalized);
+  if (!slug) return null;
+  const languageInfo = WRITE_PROGRAM_LANGUAGES[slug];
+  if (!languageInfo) return null;
+
+  const numbers = parseSortNumbers(prompt);
+  if (numbers.length < 2) return null;
+
+  const descending = operationMatchesSlug("reverse_sort", normalized);
+  const ordered = numbers.slice().sort((a, b) => {
+    const cmp = a.value < b.value ? -1 : a.value > b.value ? 1 : 0;
+    return descending ? -cmp : cmp;
+  });
+  const isFloat = numbers.some((n) => !Number.isInteger(n.value));
+  const given = numbers.map((n) => n.text);
+  const sorted = ordered.map((n) => n.text);
+  const code = sortNumbersCode(slug, numbers, descending, isFloat);
+
+  const responseLanguage = detectLanguage(prompt);
+  const parts =
+    SORT_NUMBERS_LOCALIZATION[responseLanguage] || SORT_NUMBERS_LOCALIZATION.en;
+  const orderWord = descending ? parts.descending : parts.ascending;
+  const givenText = given.join(", ");
+  const sortedText = sorted.join(", ");
+  const body = `${parts.intro(languageInfo.name, givenText, orderWord)}\n\n\`\`\`${languageInfo.fence}\n${code}\n\`\`\`\n\n${parts.resultLabel} ${sortedText}`;
+
+  const orderSlug = descending ? "descending" : "ascending";
+  return {
+    intent: "write_program",
+    content: body,
+    confidence: 1.0,
+    evidence: [
+      `response:write_program:sort_numbers:${slug}`,
+      `formalize:(@USER OP:sort numbers:[${given.join(" ")}] language:${slug} order:${orderSlug} request:[code result])`,
+      `synthesis:spec:language=${slug} task=sort_numbers order=${orderSlug}`,
+      `synthesis:given:${givenText}`,
+      `composition:code_fragment:${code}`,
+      "execution_status:computed deterministically",
+      "execution_environment:pure in-solver evaluation of a decidable comparison sort",
+      `execution_result:${sortedText}`,
+    ],
+    trace: [
+      `synthesis:spec:language=${slug} task=sort_numbers order=${orderSlug}`,
+      `execution_result:${sortedText}`,
+    ],
+  };
+}
+
 function tryProgramSynthesis(prompt, normalized) {
   // Issue #386: canonicalize first so native operation verbs (write / implement /
   // return …) in any supported language are recognised, exactly like
@@ -11665,6 +11935,19 @@ const OPERATION_VOCABULARY_LINO = [
   '      phrase "去重行"',
   '      phrase "行去重"',
   '      phrase "删除重复行"',
+  '  operation "sort"',
+  '    language "en"',
+  '      phrase "sort"',
+  '    language "ru"',
+  '      phrase "сортир"',
+  '      phrase "упорядоч"',
+  '    language "hi"',
+  '      phrase "क्रमबद्ध"',
+  '      phrase "क्रमित"',
+  '      phrase "सॉर्ट"',
+  '    language "zh"',
+  '      phrase "排序"',
+  '      phrase "排列"',
   '  operation "sort_lines"',
   '    language "en"',
   '      phrase "sort lines"',
@@ -31530,6 +31813,12 @@ async function solve(prompt, history, prefs, userContext = {}) {
       },
     },
     { name: "tryTextManipulation", run: () => tryTextManipulation(prompt, normalized) },
+    // Issue #395: a concrete "sort these numbers in <language>, give me the code
+    // and the result" must produce generated code plus the deterministically-
+    // computed sorted output. It runs before program synthesis and arithmetic
+    // (either of which would otherwise claim the numeric prompt), mirroring the
+    // Rust dispatch where sort_numbers precedes arithmetic and program_synthesis.
+    { name: "trySortNumbers", run: () => trySortNumbers(prompt) },
     { name: "tryProgramSynthesis", run: () => tryProgramSynthesis(prompt, normalized) },
     {
       name: "tryCompoundInterest",
