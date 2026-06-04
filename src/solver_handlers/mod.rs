@@ -14,6 +14,7 @@ mod definition_merge;
 mod feature_capability;
 mod meta_explanation;
 mod natural_language_tools;
+mod numeric_list;
 mod playwright_script;
 mod program_blueprint;
 mod program_synthesis;
@@ -22,7 +23,6 @@ mod self_awareness;
 mod software_project;
 mod software_project_code;
 mod software_project_followup;
-mod sort_numbers;
 mod text_manipulation;
 mod user_intent;
 mod web_requests;
@@ -40,6 +40,7 @@ pub use definition_merge::{try_definition_merge, try_definition_merge_by_default
 pub use feature_capability::{try_feature_capability, CapabilityRuntime};
 pub use meta_explanation::{try_meta_explanation, try_meta_explanation_with_runtime};
 pub use natural_language_tools::try_natural_language_tool_request;
+pub use numeric_list::try_numeric_list;
 pub use playwright_script::try_playwright_script;
 pub use program_blueprint::try_program_blueprint;
 pub use program_synthesis::try_program_synthesis;
@@ -47,7 +48,6 @@ pub use research_table::try_research_comparison_table;
 pub use self_awareness::SelfAwarenessRuntime;
 pub use software_project::try_software_project_request;
 pub use software_project_followup::try_software_project_followup;
-pub use sort_numbers::try_sort_numbers;
 pub use text_manipulation::try_text_manipulation;
 pub use user_intent::{
     try_capabilities, try_clarification, try_ill_formed, try_opinion_question, try_proof_request,

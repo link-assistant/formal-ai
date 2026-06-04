@@ -212,6 +212,12 @@ mod tests {
             "distinct_numbers",
             "differ",
             "threshold",
+            "reverse",
+            "sum",
+            "product",
+            "minimum",
+            "maximum",
+            "code_request",
         ] {
             assert!(
                 canonicals.contains(expected),

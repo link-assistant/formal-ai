@@ -1,0 +1,648 @@
+//! Universal *numeric-list* coding algorithm (issue #395).
+//!
+//! Issue #395 reported one symptom — "sort these numbers in JavaScript, give me
+//! the code and the result" answered `unknown`. Rather than bolt on a single
+//! sorting handler, this module reasons about a whole *family* of tasks over a
+//! list of given numbers and, because every member is a pure, decidable function,
+//! computes the result deterministically while emitting runnable code in the
+//! requested language.
+//!
+//! Nothing here is hardcoded per reported prompt:
+//!
+//! * **Recognition is seed data.** The operation verbs come from
+//!   `data/seed/operation-vocabulary.lino` (`sort`, `reverse_sort`, `reverse`,
+//!   `sum`, `product`, `minimum`, `maximum`) in every supported UI language, and
+//!   the target language from the `program_language_<slug>` alias meanings.
+//! * **Classification is seed data.** `data/seed/meanings-numeric-list.lino` is a
+//!   small type ontology that maps each operation to a *family*
+//!   (`list_transformation` / `list_reduction`) and a *result kind*
+//!   (`list` / `scalar`). The solver reads that ontology to decide whether the
+//!   answer is a reordered list or a single value — it does not branch on the
+//!   operation name in prose.
+//! * **Computation is generic.** A single reducer/transformer folds the parsed
+//!   values; adding an operation is seed data plus one arithmetic clause, not a
+//!   new handler.
+//!
+//! The handler only fires when three independent signals coincide — an operation
+//! verb, a known programming language, and at least two numbers — so it never
+//! steals plain prose, and it defers function-synthesis prompts to the dedicated
+//! `program_synthesis` handler.
+
+mod codegen;
+
+use std::fmt::Write as _;
+
+use crate::engine::SymbolicAnswer;
+use crate::event_log::EventLog;
+use crate::language::{detect as detect_language, Language};
+use crate::seed::parser::{parse_lino, LinoNode};
+use crate::seed::NUMERIC_LIST_OPERATIONS_LINO;
+
+use super::finalize_simple;
+
+/// Whether a list transformation orders the numbers up, down, or simply flips
+/// their given order.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Transform {
+    /// `sort` — ascending order.
+    SortAscending,
+    /// `reverse_sort` — descending order.
+    SortDescending,
+    /// `reverse` — the given order, reversed (no comparison).
+    Reverse,
+}
+
+/// Which scalar a list reduction collapses the numbers into.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Reduce {
+    Sum,
+    Product,
+    Minimum,
+    Maximum,
+}
+
+/// One recognized numeric-list operation: either a transformation that yields
+/// another list, or a reduction that yields a scalar.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Operation {
+    Transform(Transform),
+    Reduce(Reduce),
+}
+
+impl Operation {
+    /// The canonical operation token, matching both the
+    /// `operation-vocabulary.lino` entry and the `meanings-numeric-list.lino`
+    /// ontology key.
+    #[must_use]
+    pub const fn canonical(self) -> &'static str {
+        match self {
+            Self::Transform(Transform::SortAscending) => "sort",
+            Self::Transform(Transform::SortDescending) => "reverse_sort",
+            Self::Transform(Transform::Reverse) => "reverse",
+            Self::Reduce(Reduce::Sum) => "sum",
+            Self::Reduce(Reduce::Product) => "product",
+            Self::Reduce(Reduce::Minimum) => "minimum",
+            Self::Reduce(Reduce::Maximum) => "maximum",
+        }
+    }
+}
+
+/// A single number lifted from the prompt: the surface text the user typed
+/// (preserved verbatim for echoing back and for code generation) plus the
+/// numeric value used to compute over it.
+#[derive(Debug, Clone)]
+pub struct ParsedNumber {
+    pub text: String,
+    pub value: f64,
+}
+
+/// The fully-reasoned solution: the given numbers, the operation, the resolved
+/// language, the generated code, and the deterministically-computed result.
+#[derive(Debug, Clone)]
+pub struct NumericListSolution {
+    pub language_slug: &'static str,
+    pub language_name: &'static str,
+    pub code_fence: &'static str,
+    pub operation: Operation,
+    /// `"list"` or `"scalar"`, read from the seed ontology.
+    pub result_kind: String,
+    pub given: Vec<String>,
+    /// For a transformation: the reordered surface tokens. For a reduction: a
+    /// single-element vector holding the computed scalar.
+    pub result: Vec<String>,
+    pub code: String,
+}
+
+/// Specialized-handler entry point. Returns `Some` only when the prompt is a
+/// concrete "<operation> these numbers in <language>" request.
+pub fn try_numeric_list(
+    prompt: &str,
+    _normalized: &str,
+    log: &mut EventLog,
+) -> Option<SymbolicAnswer> {
+    let solution = solve_numeric_list(prompt)?;
+
+    log.append("formalize", solution.formalization());
+    log.append(
+        "synthesis:spec",
+        format!(
+            "language={} task=numeric_list operation={} family={} result_kind={}",
+            solution.language_slug,
+            solution.operation.canonical(),
+            solution.family(),
+            solution.result_kind,
+        ),
+    );
+    log.append("synthesis:given", solution.given.join(", "));
+    log.append("composition:code_fragment", solution.code.clone());
+    // The result is computed by the solver, not a sandbox: every operation is a
+    // pure, total function over the parsed values, so the answer is verified by
+    // construction rather than by running untrusted code.
+    log.append("execution_status", "computed deterministically".to_owned());
+    log.append(
+        "execution_environment",
+        "pure in-solver evaluation of a decidable numeric-list operation".to_owned(),
+    );
+    log.append("execution_result", solution.result.join(", "));
+
+    let language = detect_language(prompt);
+    let body = solution.render(language);
+    Some(finalize_simple(
+        prompt,
+        log,
+        "write_program",
+        &format!(
+            "response:write_program:numeric_list:{}:{}",
+            solution.operation.canonical(),
+            solution.language_slug
+        ),
+        &body,
+        1.0,
+    ))
+}
+
+/// Pure core: parse the request and produce a [`NumericListSolution`], or `None`
+/// when the prompt is not a numeric-list coding task.
+///
+/// The prompt is re-normalized here with [`crate::web_engine_core::normalize_prompt`]
+/// rather than trusting the dispatch's plain `to_lowercase()`: punctuation must
+/// fold to whitespace so a language word glued to a comma (`JavaScript,`) still
+/// resolves through the token-boundary alias matcher.
+#[must_use]
+pub fn solve_numeric_list(prompt: &str) -> Option<NumericListSolution> {
+    let normalized = crate::web_engine_core::normalize_prompt(prompt);
+    let normalized = normalized.as_str();
+    let vocabulary = crate::seed::operation_vocabulary();
+
+    // Defer genuine function-synthesis prompts ("write a function that returns
+    // the sum of 3 and 5") to the dedicated program-synthesis handler: those
+    // ask for a reusable function, not a one-shot computation over given values.
+    if vocabulary.matches("function", normalized) || prompt.contains("def ") {
+        return None;
+    }
+
+    let operation = detect_operation(&vocabulary, normalized)?;
+
+    // Reductions (`sum`, `product`, `minimum`, `maximum`) phrase-overlap with
+    // ordinary prose — "in total", "the largest building" — far more than the
+    // imperative transform verbs do. They only fire when the prompt explicitly
+    // asks for code (the `code_request` operation), which is exactly the issue
+    // #395 contract: "give me the code and the result". Transformations keep
+    // their unambiguous-verb behavior.
+    if matches!(operation, Operation::Reduce(_)) && !vocabulary.matches("code_request", normalized)
+    {
+        return None;
+    }
+
+    let language = crate::coding::program_language_by_alias(normalized)?;
+    let numbers = parse_numbers(prompt);
+    if numbers.len() < 2 {
+        return None;
+    }
+
+    let is_float = numbers.iter().any(|n| n.value.fract() != 0.0);
+    let given: Vec<String> = numbers.iter().map(|n| n.text.clone()).collect();
+    let result = compute(operation, &numbers, is_float);
+    let code = codegen::generate(language, &numbers, operation, is_float);
+    let result_kind = result_kind_for(operation.canonical()).to_owned();
+
+    Some(NumericListSolution {
+        language_slug: language.slug,
+        language_name: language.name,
+        code_fence: language.code_fence,
+        operation,
+        result_kind,
+        given,
+        result,
+        code,
+    })
+}
+
+/// Recognize which numeric-list operation the prompt asks for, in priority
+/// order. Sort phrasings are checked first because "sort in reverse order"
+/// legitimately contains the bare `reverse` verb; the descending variant wins
+/// whenever the `reverse_sort` phrasing is present.
+fn detect_operation(
+    vocabulary: &crate::seed::OperationVocabulary,
+    normalized: &str,
+) -> Option<Operation> {
+    if vocabulary.matches("sort", normalized) || vocabulary.matches("reverse_sort", normalized) {
+        let transform = if vocabulary.matches("reverse_sort", normalized) {
+            Transform::SortDescending
+        } else {
+            Transform::SortAscending
+        };
+        return Some(Operation::Transform(transform));
+    }
+    if vocabulary.matches("reverse", normalized) {
+        return Some(Operation::Transform(Transform::Reverse));
+    }
+    for (canonical, reduce) in [
+        ("sum", Reduce::Sum),
+        ("product", Reduce::Product),
+        ("minimum", Reduce::Minimum),
+        ("maximum", Reduce::Maximum),
+    ] {
+        if vocabulary.matches(canonical, normalized) {
+            return Some(Operation::Reduce(reduce));
+        }
+    }
+    None
+}
+
+/// Apply the operation to the parsed numbers and return the surface tokens to
+/// display: the reordered list for a transformation, or a single computed scalar
+/// for a reduction.
+fn compute(operation: Operation, numbers: &[ParsedNumber], is_float: bool) -> Vec<String> {
+    match operation {
+        Operation::Transform(transform) => {
+            let mut ordered: Vec<ParsedNumber> = numbers.to_vec();
+            match transform {
+                Transform::SortAscending => ordered.sort_by(|a, b| {
+                    a.value
+                        .partial_cmp(&b.value)
+                        .unwrap_or(std::cmp::Ordering::Equal)
+                }),
+                Transform::SortDescending => ordered.sort_by(|a, b| {
+                    b.value
+                        .partial_cmp(&a.value)
+                        .unwrap_or(std::cmp::Ordering::Equal)
+                }),
+                Transform::Reverse => ordered.reverse(),
+            }
+            ordered.into_iter().map(|n| n.text).collect()
+        }
+        Operation::Reduce(reduce) => {
+            let value = match reduce {
+                Reduce::Sum => numbers.iter().map(|n| n.value).sum::<f64>(),
+                Reduce::Product => numbers.iter().map(|n| n.value).product::<f64>(),
+                Reduce::Minimum => numbers
+                    .iter()
+                    .map(|n| n.value)
+                    .fold(f64::INFINITY, f64::min),
+                Reduce::Maximum => numbers
+                    .iter()
+                    .map(|n| n.value)
+                    .fold(f64::NEG_INFINITY, f64::max),
+            };
+            vec![format_scalar(value, is_float)]
+        }
+    }
+}
+
+/// Format a computed scalar so its textual form matches the runnable code's
+/// stdout: an integer with no decimal point when every input was an integer.
+fn format_scalar(value: f64, is_float: bool) -> String {
+    if is_float {
+        format!("{value}")
+    } else {
+        // Integer inputs fold to an integer-valued `f64`; rendering it without a
+        // decimal point keeps the textual form identical to the generated code's
+        // integer stdout. The value is exact (sum/product/min/max of i64-range
+        // inputs), so the cast cannot truncate meaningfully.
+        #[allow(clippy::cast_possible_truncation)]
+        let rounded = value.round() as i64;
+        format!("{rounded}")
+    }
+}
+
+impl NumericListSolution {
+    /// The seed ontology family this operation belongs to.
+    #[must_use]
+    pub fn family(&self) -> &'static str {
+        family_for(self.operation.canonical())
+    }
+
+    fn formalization(&self) -> String {
+        format!(
+            "(@USER OP:{} numbers:[{}] language:{} result_kind:{} request:[code result])",
+            self.operation.canonical(),
+            self.given.join(" "),
+            self.language_slug,
+            self.result_kind,
+        )
+    }
+
+    /// Render the localized answer: a sentence naming the language, the given
+    /// numbers, and the operation; the generated code; and the computed result.
+    #[must_use]
+    pub fn render(&self, language: Language) -> String {
+        let given = self.given.join(", ");
+        let parts = Localization::for_language(language);
+        let intro = parts.intro(self.operation, self.language_name, &given);
+        // The seed ontology decides how the result reads: a transformation lists
+        // the reordered numbers, a reduction shows a single value.
+        let shown = if self.result_kind == "scalar" {
+            self.result.first().cloned().unwrap_or_default()
+        } else {
+            self.result.join(", ")
+        };
+        let mut body = String::new();
+        let _ = write!(
+            body,
+            "{}\n\n```{}\n{}\n```\n\n{} {}",
+            intro, self.code_fence, self.code, parts.result_label, shown
+        );
+        body
+    }
+}
+
+/// Localized phrasing for the four supported UI languages. The numbers, code,
+/// and result are language-independent; only the surrounding prose differs.
+///
+/// The `sort` / `reverse_sort` sentences are kept byte-identical to the original
+/// issue #395 handler so existing golden assertions stay green.
+struct Localization {
+    result_label: &'static str,
+    language: Language,
+}
+
+impl Localization {
+    const fn for_language(language: Language) -> Self {
+        let result_label = match language {
+            Language::Russian => "Результат:",
+            Language::Hindi => "परिणाम:",
+            Language::Chinese => "结果:",
+            _ => "Result:",
+        };
+        Self {
+            result_label,
+            language,
+        }
+    }
+
+    fn intro(&self, operation: Operation, lang: &str, given: &str) -> String {
+        match self.language {
+            Language::Russian => Self::intro_ru(operation, lang, given),
+            Language::Hindi => Self::intro_hi(operation, lang, given),
+            Language::Chinese => Self::intro_zh(operation, lang, given),
+            _ => Self::intro_en(operation, lang, given),
+        }
+    }
+
+    fn intro_en(operation: Operation, lang: &str, given: &str) -> String {
+        match operation {
+            Operation::Transform(Transform::SortAscending) => {
+                format!("Here is {lang} code that sorts the numbers {given} in ascending order:")
+            }
+            Operation::Transform(Transform::SortDescending) => {
+                format!("Here is {lang} code that sorts the numbers {given} in descending order:")
+            }
+            Operation::Transform(Transform::Reverse) => {
+                format!("Here is {lang} code that reverses the numbers {given}:")
+            }
+            Operation::Reduce(Reduce::Sum) => {
+                format!("Here is {lang} code that sums the numbers {given}:")
+            }
+            Operation::Reduce(Reduce::Product) => {
+                format!("Here is {lang} code that multiplies the numbers {given}:")
+            }
+            Operation::Reduce(Reduce::Minimum) => {
+                format!("Here is {lang} code that finds the smallest of the numbers {given}:")
+            }
+            Operation::Reduce(Reduce::Maximum) => {
+                format!("Here is {lang} code that finds the largest of the numbers {given}:")
+            }
+        }
+    }
+
+    fn intro_ru(operation: Operation, lang: &str, given: &str) -> String {
+        match operation {
+            Operation::Transform(Transform::SortAscending) => {
+                format!("Вот код на {lang}, который сортирует числа {given} по возрастанию:")
+            }
+            Operation::Transform(Transform::SortDescending) => {
+                format!("Вот код на {lang}, который сортирует числа {given} по убыванию:")
+            }
+            Operation::Transform(Transform::Reverse) => {
+                format!("Вот код на {lang}, который переворачивает числа {given}:")
+            }
+            Operation::Reduce(Reduce::Sum) => {
+                format!("Вот код на {lang}, который суммирует числа {given}:")
+            }
+            Operation::Reduce(Reduce::Product) => {
+                format!("Вот код на {lang}, который перемножает числа {given}:")
+            }
+            Operation::Reduce(Reduce::Minimum) => {
+                format!("Вот код на {lang}, который находит наименьшее из чисел {given}:")
+            }
+            Operation::Reduce(Reduce::Maximum) => {
+                format!("Вот код на {lang}, который находит наибольшее из чисел {given}:")
+            }
+        }
+    }
+
+    fn intro_hi(operation: Operation, lang: &str, given: &str) -> String {
+        match operation {
+            Operation::Transform(Transform::SortAscending) => {
+                format!("यह {lang} कोड है जो संख्याओं {given} को आरोही क्रम में क्रमबद्ध करता है:")
+            }
+            Operation::Transform(Transform::SortDescending) => {
+                format!("यह {lang} कोड है जो संख्याओं {given} को अवरोही क्रम में क्रमबद्ध करता है:")
+            }
+            Operation::Transform(Transform::Reverse) => {
+                format!("यह {lang} कोड है जो संख्याओं {given} को उलट देता है:")
+            }
+            Operation::Reduce(Reduce::Sum) => {
+                format!("यह {lang} कोड है जो संख्याओं {given} का योग करता है:")
+            }
+            Operation::Reduce(Reduce::Product) => {
+                format!("यह {lang} कोड है जो संख्याओं {given} का गुणनफल निकालता है:")
+            }
+            Operation::Reduce(Reduce::Minimum) => {
+                format!("यह {lang} कोड है जो संख्याओं {given} में से सबसे छोटी ढूँढता है:")
+            }
+            Operation::Reduce(Reduce::Maximum) => {
+                format!("यह {lang} कोड है जो संख्याओं {given} में से सबसे बड़ी ढूँढता है:")
+            }
+        }
+    }
+
+    fn intro_zh(operation: Operation, lang: &str, given: &str) -> String {
+        match operation {
+            Operation::Transform(Transform::SortAscending) => {
+                format!("这是用 {lang} 编写的将数字 {given} 按升序排序的代码:")
+            }
+            Operation::Transform(Transform::SortDescending) => {
+                format!("这是用 {lang} 编写的将数字 {given} 按降序排序的代码:")
+            }
+            Operation::Transform(Transform::Reverse) => {
+                format!("这是用 {lang} 编写的将数字 {given} 反转的代码:")
+            }
+            Operation::Reduce(Reduce::Sum) => {
+                format!("这是用 {lang} 编写的对数字 {given} 求和的代码:")
+            }
+            Operation::Reduce(Reduce::Product) => {
+                format!("这是用 {lang} 编写的计算数字 {given} 乘积的代码:")
+            }
+            Operation::Reduce(Reduce::Minimum) => {
+                format!("这是用 {lang} 编写的求数字 {given} 最小值的代码:")
+            }
+            Operation::Reduce(Reduce::Maximum) => {
+                format!("这是用 {lang} 编写的求数字 {given} 最大值的代码:")
+            }
+        }
+    }
+}
+
+/// Parsed root of the numeric-list type ontology, loaded once per lookup.
+fn ontology() -> LinoNode {
+    parse_lino(NUMERIC_LIST_OPERATIONS_LINO)
+}
+
+/// Look up an operation's declared `result_kind` (`"list"` / `"scalar"`) from
+/// the seed ontology, falling back to `"list"` for an unknown token.
+fn result_kind_for(canonical: &str) -> &'static str {
+    let tree = ontology();
+    if let Some(root) = tree.children.first() {
+        for op in root.children.iter().filter(|c| c.name == "operation") {
+            if op.id == canonical {
+                return match op.find_child_value("result_kind") {
+                    "scalar" => "scalar",
+                    _ => "list",
+                };
+            }
+        }
+    }
+    "list"
+}
+
+/// Look up an operation's declared `family` from the seed ontology.
+fn family_for(canonical: &str) -> &'static str {
+    let tree = ontology();
+    if let Some(root) = tree.children.first() {
+        for op in root.children.iter().filter(|c| c.name == "operation") {
+            if op.id == canonical {
+                return match op.find_child_value("family") {
+                    "list_reduction" => "list_reduction",
+                    _ => "list_transformation",
+                };
+            }
+        }
+    }
+    "list_transformation"
+}
+
+/// Extract every number token from the raw prompt, in order of appearance.
+///
+/// Recognizes optionally-signed integers and decimals (e.g. `-3`, `5`, `7.5`).
+/// The surface text is preserved so the echo and the generated code use exactly
+/// what the user typed; the parsed `f64` value drives the computation.
+pub fn parse_numbers(prompt: &str) -> Vec<ParsedNumber> {
+    let chars: Vec<char> = prompt.chars().collect();
+    let mut numbers = Vec::new();
+    let mut index = 0;
+    while index < chars.len() {
+        let ch = chars[index];
+        let sign = if (ch == '-' || ch == '+')
+            && chars.get(index + 1).is_some_and(char::is_ascii_digit)
+            && !preceded_by_digit_or_word(&chars, index)
+        {
+            let s = ch;
+            index += 1;
+            Some(s)
+        } else if ch.is_ascii_digit() {
+            None
+        } else {
+            index += 1;
+            continue;
+        };
+
+        let start = index;
+        while index < chars.len() && chars[index].is_ascii_digit() {
+            index += 1;
+        }
+        // Optional single decimal point followed by digits.
+        if index < chars.len()
+            && chars[index] == '.'
+            && chars.get(index + 1).is_some_and(char::is_ascii_digit)
+        {
+            index += 1;
+            while index < chars.len() && chars[index].is_ascii_digit() {
+                index += 1;
+            }
+        }
+
+        if start == index {
+            continue;
+        }
+        let mut text = String::new();
+        if let Some(s) = sign {
+            text.push(s);
+        }
+        text.extend(&chars[start..index]);
+        if let Ok(value) = text.parse::<f64>() {
+            numbers.push(ParsedNumber { text, value });
+        }
+    }
+    numbers
+}
+
+/// A leading sign only introduces a negative/positive literal when it is not
+/// glued to a preceding digit or letter (so `main2` or `a-b` do not spawn a
+/// bogus number, but a standalone `-3` does).
+fn preceded_by_digit_or_word(chars: &[char], index: usize) -> bool {
+    index
+        .checked_sub(1)
+        .and_then(|prev| chars.get(prev))
+        .is_some_and(|prev| prev.is_alphanumeric())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn ontology_classifies_every_operation() {
+        for (canonical, family, kind) in [
+            ("sort", "list_transformation", "list"),
+            ("reverse_sort", "list_transformation", "list"),
+            ("reverse", "list_transformation", "list"),
+            ("sum", "list_reduction", "scalar"),
+            ("product", "list_reduction", "scalar"),
+            ("minimum", "list_reduction", "scalar"),
+            ("maximum", "list_reduction", "scalar"),
+        ] {
+            assert_eq!(family_for(canonical), family, "family for {canonical}");
+            assert_eq!(
+                result_kind_for(canonical),
+                kind,
+                "result_kind for {canonical}"
+            );
+        }
+    }
+
+    #[test]
+    fn reduction_results_are_computed() {
+        let sum = solve_numeric_list("sum the numbers 3, 5, 6, 7, 8 in Python, give me the code")
+            .unwrap();
+        assert_eq!(sum.result, vec!["29".to_owned()]);
+        assert_eq!(sum.result_kind, "scalar");
+
+        let product =
+            solve_numeric_list("multiply the numbers 2, 3, 4 in Python, show me the code").unwrap();
+        assert_eq!(product.result, vec!["24".to_owned()]);
+
+        let min = solve_numeric_list("find the minimum of 5, 3, 8, 1, 9 in Python code").unwrap();
+        assert_eq!(min.result, vec!["1".to_owned()]);
+
+        let max = solve_numeric_list("find the maximum of 5, 3, 8, 1, 9 in Python code").unwrap();
+        assert_eq!(max.result, vec!["9".to_owned()]);
+    }
+
+    #[test]
+    fn reverse_keeps_surface_tokens() {
+        let reversed = solve_numeric_list("reverse the numbers 1, 2, 3 in JavaScript").unwrap();
+        assert_eq!(reversed.result, vec!["3", "2", "1"]);
+        assert_eq!(reversed.result_kind, "list");
+    }
+
+    #[test]
+    fn function_synthesis_prompts_are_deferred() {
+        assert!(
+            solve_numeric_list("write a function that returns the sum of 3 and 5 in Python")
+                .is_none(),
+            "a function-synthesis prompt must defer to program_synthesis"
+        );
+    }
+}
