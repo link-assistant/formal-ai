@@ -17,8 +17,8 @@
 #                              (recursion guard). The workflow_run trigger below
 #                              covers that case automatically.
 #   * workflow_run           - after the "CI/CD Pipeline" completes successfully
-#                              on main, build desktop assets for the latest
-#                              release if it does not already have them
+#                              on main, build desktop assets for the release tag
+#                              that points at the completed CI run head SHA
 #                              (idempotent: skips when assets already exist).
 #   * workflow_dispatch      - manual rebuild for a specific (or latest) tag.
 name: Desktop Release
@@ -66,26 +66,59 @@ jobs:
           INPUT_TAG: ${{ github.event.inputs.tag }}
           RELEASE_TAG: ${{ github.event.release.tag_name }}
           REPO: ${{ github.repository }}
+          WORKFLOW_RUN_HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
         run: |
           set -euo pipefail
           tag=""
+          should_build=true
+          emit_outputs() {
+            echo "tag=$tag" >> "$GITHUB_OUTPUT"
+            echo "should_build=$should_build" >> "$GITHUB_OUTPUT"
+          }
           case "$EVENT" in
             release) tag="$RELEASE_TAG" ;;
             workflow_dispatch) tag="${INPUT_TAG:-}" ;;
           esac
+
+          if [ "$EVENT" = "workflow_run" ]; then
+            if [ -z "${WORKFLOW_RUN_HEAD_SHA:-}" ]; then
+              should_build=false
+              echo "workflow_run payload did not include a head SHA; skipping desktop build."
+              emit_outputs
+              exit 0
+            fi
+
+            tag_candidates="$(mktemp)"
+            gh api "repos/$REPO/tags?per_page=100" --paginate \
+              --jq ".[] | select(.commit.sha == \"$WORKFLOW_RUN_HEAD_SHA\") | .name" > "$tag_candidates"
+            tag="$(grep -E '^v[0-9]+\.[0-9]+\.[0-9]+' "$tag_candidates" | head -n 1 || true)"
+
+            if [ -z "$tag" ]; then
+              should_build=false
+              echo "No release tag points at workflow_run head SHA $WORKFLOW_RUN_HEAD_SHA; skipping desktop build."
+              emit_outputs
+              exit 0
+            fi
+
+            if ! gh release view "$tag" --repo "$REPO" --json tagName >/dev/null; then
+              should_build=false
+              echo "No GitHub release exists for workflow_run tag $tag; skipping desktop build."
+              emit_outputs
+              exit 0
+            fi
+          fi
+
           if [ -z "$tag" ]; then
             tag="$(gh release view --repo "$REPO" --json tagName --jq .tagName)"
           fi
           echo "Resolved release tag: $tag"
           existing="$(gh release view "$tag" --repo "$REPO" --json assets \
             --jq '[.assets[].name | select(startswith("formal-ai-desktop-"))] | length' || echo 0)"
-          should_build=true
           if [ "$EVENT" = "workflow_run" ] && [ "${existing:-0}" -gt 0 ]; then
             should_build=false
             echo "Release $tag already has $existing desktop assets; skipping automatic build."
           fi
-          echo "tag=$tag" >> "$GITHUB_OUTPUT"
-          echo "should_build=$should_build" >> "$GITHUB_OUTPUT"
+          emit_outputs
 
   build:
     name: Build ${{ matrix.label }}
@@ -144,7 +177,7 @@ jobs:
           # Ad-hoc signing only (no Apple Developer ID); matches the /download
           # page guidance about the first-launch Gatekeeper prompt on macOS.
           CSC_IDENTITY_AUTO_DISCOVERY: "false"
-        run: npx --no-install electron-builder ${{ matrix.ebflag }} --config package.json --publish never
+        run: npx --no-install electron-builder ${{ matrix.ebflag }} --publish never
 
       - name: Collect artifacts and checksums
         id: collect

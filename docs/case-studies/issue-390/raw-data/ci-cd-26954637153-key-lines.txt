@@ -1,0 +1,116 @@
+ 14190	Auto Release	UNKNOWN STEP	2026-06-04T13:34:59.4906572Z   CARGO_TOKEN: ***
+ 14191	Auto Release	UNKNOWN STEP	2026-06-04T13:34:59.4906784Z   DOCKERHUB_IMAGE:
+ 14192	Auto Release	UNKNOWN STEP	2026-06-04T13:34:59.4906992Z   DOCKERHUB_USERNAME:
+ 14193	Auto Release	UNKNOWN STEP	2026-06-04T13:34:59.4907274Z   DOCKERHUB_TOKEN: ***
+ 14194	Auto Release	UNKNOWN STEP	2026-06-04T13:34:59.4907504Z   CARGO_HOME: /home/runner/.cargo
+ 14195	Auto Release	UNKNOWN STEP	2026-06-04T13:34:59.4907763Z   CARGO_INCREMENTAL: 0
+ 14196	Auto Release	UNKNOWN STEP	2026-06-04T13:34:59.4907977Z ##[endgroup]
+ 14197	Auto Release	UNKNOWN STEP	2026-06-04T13:35:00.0772045Z Detected single-language repository (Cargo.toml in root)
+ 14198	Auto Release	UNKNOWN STEP	2026-06-04T13:35:00.0778882Z Package: formal-ai@0.177.0
+ 14199	Auto Release	UNKNOWN STEP	2026-06-04T13:35:00.0779183Z
+ 14200	Auto Release	UNKNOWN STEP	2026-06-04T13:35:00.0779381Z === Attempting to publish to crates.io ===
+ 14201	Auto Release	UNKNOWN STEP	2026-06-04T13:35:00.0779902Z Using provided authentication token
+ 14202	Auto Release	UNKNOWN STEP	2026-06-04T13:35:32.9758516Z Successfully published formal-ai@0.177.0 to crates.io
+ 14203	Auto Release	UNKNOWN STEP	2026-06-04T13:35:32.9759219Z Output: publish_result=success
+ 14204	Auto Release	UNKNOWN STEP	2026-06-04T13:35:32.9799364Z ##[group]Run rust-script scripts/wait-for-crate.rs --release-version "0.177.0"
+ 14205	Auto Release	UNKNOWN STEP	2026-06-04T13:35:32.9800044Z ^[[36;1mrust-script scripts/wait-for-crate.rs --release-version "0.177.0"^[[0m
+ 14206	Auto Release	UNKNOWN STEP	2026-06-04T13:35:32.9825662Z shell: /usr/bin/bash -e {0}
+ 14207	Auto Release	UNKNOWN STEP	2026-06-04T13:35:32.9825919Z env:
+ 14208	Auto Release	UNKNOWN STEP	2026-06-04T13:35:32.9826115Z   CARGO_TERM_COLOR: always
+ 14209	Auto Release	UNKNOWN STEP	2026-06-04T13:35:32.9826367Z   RUSTFLAGS: -Dwarnings
+ 14210	Auto Release	UNKNOWN STEP	2026-06-04T13:35:32.9826711Z   CARGO_REGISTRY_TOKEN: ***
+ 14211	Auto Release	UNKNOWN STEP	2026-06-04T13:35:32.9827004Z   CARGO_TOKEN: ***
+ 14212	Auto Release	UNKNOWN STEP	2026-06-04T13:35:32.9827207Z   DOCKERHUB_IMAGE:
+ 14213	Auto Release	UNKNOWN STEP	2026-06-04T13:35:32.9827601Z   DOCKERHUB_USERNAME:
+ 14214	Auto Release	UNKNOWN STEP	2026-06-04T13:35:32.9827884Z   DOCKERHUB_TOKEN: ***
+ 14215	Auto Release	UNKNOWN STEP	2026-06-04T13:35:32.9828110Z   CARGO_HOME: /home/runner/.cargo
+ 14216	Auto Release	UNKNOWN STEP	2026-06-04T13:35:32.9828365Z   CARGO_INCREMENTAL: 0
+ 14217	Auto Release	UNKNOWN STEP	2026-06-04T13:35:32.9828577Z ##[endgroup]
+ 14218	Auto Release	UNKNOWN STEP	2026-06-04T13:35:33.7256289Z Detected single-language repository (Cargo.toml in root)
+ 14219	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0306781Z formal-ai@0.177.0 is visible on crates.io after attempt 1
+ 14220	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0307492Z Output: crate_available=true
+ 14221	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0346265Z ##[group]Run disable_dockerhub() {
+ 14222	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0346602Z ^[[36;1mdisable_dockerhub() {^[[0m
+ 14223	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0346904Z ^[[36;1m  echo "enabled=false" >> "$GITHUB_OUTPUT"^[[0m
+ 14224	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0347214Z ^[[36;1m  echo "$1"^[[0m
+ 14225	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0347417Z ^[[36;1m}^[[0m
+ 14226	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0347597Z ^[[36;1m^[[0m
+ 14227	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0347804Z ^[[36;1mif [ -z "$DOCKERHUB_IMAGE" ]; then^[[0m
+ 14228	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0348355Z ^[[36;1m  disable_dockerhub "Docker Hub publishing disabled: DOCKERHUB_IMAGE repository variable is not set"^[[0m
+ 14229	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0348900Z ^[[36;1m  exit 0^[[0m
+ 14230	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0349094Z ^[[36;1mfi^[[0m
+ 14231	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0349274Z ^[[36;1m^[[0m
+ 14232	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0349467Z ^[[36;1mif [ ! -f Dockerfile ]; then^[[0m
+ 14233	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0349979Z ^[[36;1m  disable_dockerhub "Docker Hub publishing disabled: Dockerfile was not found at repository root"^[[0m
+ 14234	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0350536Z ^[[36;1m  exit 0^[[0m
+ 14235	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0350727Z ^[[36;1mfi^[[0m
+ 14236	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0350935Z ^[[36;1m^[[0m
+ 14237	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0351230Z ^[[36;1mif [ -z "$DOCKERHUB_USERNAME" ] || [ -z "$DOCKERHUB_TOKEN" ]; then^[[0m
+ 14238	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0351796Z ^[[36;1m  echo "::error::Docker Hub publishing requires DOCKERHUB_USERNAME and DOCKERHUB_TOKEN"^[[0m
+ 14239	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0352494Z ^[[36;1m  echo "Set DOCKERHUB_USERNAME as a repository variable or secret, and DOCKERHUB_TOKEN as a secret."^[[0m
+ 14240	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0353010Z ^[[36;1m  exit 1^[[0m
+ 14241	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0353201Z ^[[36;1mfi^[[0m
+ 14242	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0353380Z ^[[36;1m^[[0m
+ 14243	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0353922Z ^[[36;1mecho "enabled=true" >> "$GITHUB_OUTPUT"^[[0m
+ 14244	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0354510Z ^[[36;1mecho "docker_hub_url=https://hub.docker.com/r/${DOCKERHUB_IMAGE}" >> "$GITHUB_OUTPUT"^[[0m
+ 14245	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0379941Z shell: /usr/bin/bash -e {0}
+ 14246	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0380197Z env:
+ 14247	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0381090Z   CARGO_TERM_COLOR: always
+ 14248	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0381553Z   RUSTFLAGS: -Dwarnings
+ 14249	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0381920Z   CARGO_REGISTRY_TOKEN: ***
+ 14250	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0382236Z   CARGO_TOKEN: ***
+ 14251	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0382444Z   DOCKERHUB_IMAGE:
+ 14252	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0382656Z   DOCKERHUB_USERNAME:
+ 14253	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0382935Z   DOCKERHUB_TOKEN: ***
+ 14254	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0383172Z   CARGO_HOME: /home/runner/.cargo
+ 14255	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0383432Z   CARGO_INCREMENTAL: 0
+ 14256	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0383929Z ##[endgroup]
+ 14257	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0429614Z Docker Hub publishing disabled: DOCKERHUB_IMAGE repository variable is not set
+ 14258	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0492640Z ##[group]Run # Use new_version from version-and-commit when available (tag-checked), else fall back to Cargo.toml version
+ 14259	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0494051Z ^[[36;1m# Use new_version from version-and-commit when available (tag-checked), else fall back to Cargo.toml version^[[0m
+ 14260	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0494712Z ^[[36;1mRELEASE_VERSION="0.177.0"^[[0m
+ 14261	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0494998Z ^[[36;1mif [ -z "$RELEASE_VERSION" ]; then^[[0m
+ 14262	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0495300Z ^[[36;1m  RELEASE_VERSION="0.177.0"^[[0m
+ 14263	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0495563Z ^[[36;1mfi^[[0m
+ 14264	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0495752Z ^[[36;1m^[[0m
+ 14265	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0495938Z ^[[36;1mrelease_args=(^[[0m
+ 14266	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0496205Z ^[[36;1m  --release-version "$RELEASE_VERSION"^[[0m
+ 14267	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0496569Z ^[[36;1m  --repository "link-assistant/formal-ai"^[[0m
+ 14268	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0496881Z ^[[36;1m)^[[0m
+ 14269	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0497087Z ^[[36;1mif [ -n "$DOCKER_HUB_URL" ]; then^[[0m
+ 14270	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0497444Z ^[[36;1m  release_args+=(--docker-hub-url "$DOCKER_HUB_URL")^[[0m
+ 14271	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0497815Z ^[[36;1mfi^[[0m
+ 14272	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0498137Z ^[[36;1mrust-script scripts/create-github-release.rs "${release_args[@]}"^[[0m
+ 14273	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0522365Z shell: /usr/bin/bash -e {0}
+ 14274	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0522614Z env:
+ 14275	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0522807Z   CARGO_TERM_COLOR: always
+ 14276	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0523057Z   RUSTFLAGS: -Dwarnings
+ 14277	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0523396Z   CARGO_REGISTRY_TOKEN: ***
+ 14278	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0523951Z   CARGO_TOKEN: ***
+ 14279	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0524160Z   DOCKERHUB_IMAGE:
+ 14280	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0524381Z   DOCKERHUB_USERNAME:
+ 14281	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0524668Z   DOCKERHUB_TOKEN: ***
+ 14282	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0524893Z   CARGO_HOME: /home/runner/.cargo
+ 14283	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0525143Z   CARGO_INCREMENTAL: 0
+ 14284	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0528337Z   GH_TOKEN: ***
+ 14285	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0528543Z   DOCKER_HUB_URL:
+ 14286	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0528747Z ##[endgroup]
+ 14287	Auto Release	UNKNOWN STEP	2026-06-04T13:35:38.3040463Z Creating GitHub release for v0.177.0 ([Rust] 0.177.0)...
+ 14288	Auto Release	UNKNOWN STEP	2026-06-04T13:35:39.1152608Z Release v0.177.0 already exists, skipping
+ 14289	Auto Release	UNKNOWN STEP	2026-06-04T13:35:39.1251194Z Post job cleanup.
+ 14290	Auto Release	UNKNOWN STEP	2026-06-04T13:35:39.2107604Z [command]/usr/bin/git version
+ 14291	Auto Release	UNKNOWN STEP	2026-06-04T13:35:39.2146865Z git version 2.54.0
+ 14292	Auto Release	UNKNOWN STEP	2026-06-04T13:35:39.2187816Z Temporarily overriding HOME='/home/runner/work/_temp/d4db7395-e76e-4c91-b4b1-ad25901ceeb3' before making global git config changes
+ 14293	Auto Release	UNKNOWN STEP	2026-06-04T13:35:39.2189425Z Adding repository directory to the temporary git global config as a safe directory
+ 14294	Auto Release	UNKNOWN STEP	2026-06-04T13:35:39.2194523Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai
+ 14295	Auto Release	UNKNOWN STEP	2026-06-04T13:35:39.2225027Z Removing SSH command configuration
+ 14296	Auto Release	UNKNOWN STEP	2026-06-04T13:35:39.2232723Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+ 14297	Auto Release	UNKNOWN STEP	2026-06-04T13:35:39.2265847Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+ 14298	Auto Release	UNKNOWN STEP	2026-06-04T13:35:39.2489949Z Removing HTTP extra header
+ 14299	Auto Release	UNKNOWN STEP	2026-06-04T13:35:39.2495490Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+ 14300	Auto Release	UNKNOWN STEP	2026-06-04T13:35:39.2531482Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+ 14301	Auto Release	UNKNOWN STEP	2026-06-04T13:35:39.2751903Z Removing includeIf entries pointing to credentials config files
+ 14302	Auto Release	UNKNOWN STEP	2026-06-04T13:35:39.2759100Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+ 14303	Auto Release	UNKNOWN STEP	2026-06-04T13:35:39.2787813Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path
+ 14304	Auto Release	UNKNOWN STEP	2026-06-04T13:35:39.2788980Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+ 14305	Auto Release	UNKNOWN STEP	2026-06-04T13:35:39.2790117Z includeif.gitdir:/github/workspace/.git.path

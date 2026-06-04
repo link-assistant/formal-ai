@@ -14,6 +14,7 @@
 //! ```
 
 use regex::Regex;
+use serde::Deserialize;
 #[cfg(not(test))]
 use serde::Serialize;
 #[cfg(not(test))]
@@ -162,6 +163,133 @@ fn docker_hub_badge(url: &str, version: &str) -> String {
     )
 }
 
+const GITHUB_RELEASE_BODY_MAX_BYTES: usize = 120_000;
+
+fn truncate_at_char_boundary(value: &str, max_bytes: usize) -> &str {
+    if value.len() <= max_bytes {
+        return value;
+    }
+
+    let mut end = 0;
+    for (idx, ch) in value.char_indices() {
+        let next = idx + ch.len_utf8();
+        if next > max_bytes {
+            break;
+        }
+        end = next;
+    }
+    &value[..end]
+}
+
+fn limit_release_body(body: String, full_changelog_url: &str) -> String {
+    if body.len() <= GITHUB_RELEASE_BODY_MAX_BYTES {
+        return body;
+    }
+
+    let notice = format!(
+        "\n\n---\n\nRelease notes were shortened to fit GitHub Releases API validation. See the full changelog: {full_changelog_url}\n"
+    );
+    if notice.len() >= GITHUB_RELEASE_BODY_MAX_BYTES {
+        return truncate_at_char_boundary(&notice, GITHUB_RELEASE_BODY_MAX_BYTES).to_string();
+    }
+
+    let max_body_bytes = GITHUB_RELEASE_BODY_MAX_BYTES - notice.len();
+    let shortened = truncate_at_char_boundary(&body, max_body_bytes).trim_end();
+    format!("{shortened}{notice}")
+}
+
+#[derive(Debug, Deserialize)]
+struct GitHubApiError {
+    errors: Option<Vec<GitHubValidationError>>,
+}
+
+#[derive(Debug, Deserialize)]
+struct GitHubValidationError {
+    resource: Option<String>,
+    code: Option<String>,
+    field: Option<String>,
+}
+
+fn first_json_object(input: &str) -> Option<&str> {
+    let start = input.find('{')?;
+    let mut depth = 0usize;
+    let mut in_string = false;
+    let mut escaped = false;
+
+    for (idx, ch) in input[start..].char_indices() {
+        if in_string {
+            if escaped {
+                escaped = false;
+            } else if ch == '\\' {
+                escaped = true;
+            } else if ch == '"' {
+                in_string = false;
+            }
+            continue;
+        }
+
+        match ch {
+            '"' => in_string = true,
+            '{' => depth += 1,
+            '}' => {
+                depth = depth.saturating_sub(1);
+                if depth == 0 {
+                    return Some(&input[start..start + idx + ch.len_utf8()]);
+                }
+            }
+            _ => {}
+        }
+    }
+
+    None
+}
+
+fn validation_error_is_duplicate_release(error: &GitHubApiError) -> bool {
+    error.errors.as_ref().is_some_and(|errors| {
+        errors.iter().any(|entry| {
+            entry
+                .resource
+                .as_deref()
+                .is_some_and(|value| value.eq_ignore_ascii_case("Release"))
+                && entry
+                    .code
+                    .as_deref()
+                    .is_some_and(|value| value.eq_ignore_ascii_case("already_exists"))
+                && entry
+                    .field
+                    .as_deref()
+                    .is_some_and(|value| value.eq_ignore_ascii_case("tag_name"))
+        })
+    })
+}
+
+fn line_reports_duplicate_release(line: &str) -> bool {
+    let lowered = line.trim().to_ascii_lowercase();
+    lowered == "already_exists"
+        || lowered.contains("release already exists")
+        || lowered.contains("github release already exists")
+        || lowered.contains("release with this tag already exists")
+        || lowered.contains("release with the same tag_name already exists")
+}
+
+fn is_duplicate_release_error(output: &str) -> bool {
+    if output.lines().any(line_reports_duplicate_release) {
+        return true;
+    }
+
+    let lowered = output.to_ascii_lowercase();
+
+    if let Some(json) = first_json_object(output) {
+        if let Ok(error) = serde_json::from_str::<GitHubApiError>(json) {
+            return validation_error_is_duplicate_release(&error);
+        }
+    }
+
+    lowered.contains("\"resource\":\"release\"")
+        && lowered.contains("\"code\":\"already_exists\"")
+        && lowered.contains("\"field\":\"tag_name\"")
+}
+
 #[cfg(not(test))]
 fn get_changelog_for_version(version: &str) -> String {
     let changelog_path = "CHANGELOG.md";
@@ -285,6 +413,18 @@ fn main() {
         release_notes = format!("{url}\n\n{release_notes}");
     }
 
+    let tag = build_release_tag(&tag_prefix, &normalized_version);
+    let full_changelog_url = format!("https://github.com/{repository}/blob/{tag}/CHANGELOG.md");
+    let release_notes_bytes = release_notes.len();
+    release_notes = limit_release_body(release_notes, &full_changelog_url);
+    if release_notes.len() != release_notes_bytes {
+        println!(
+            "Shortened GitHub release notes from {} to {} bytes",
+            release_notes_bytes,
+            release_notes.len()
+        );
+    }
+
     let payload = build_release_payload(
         &tag_prefix,
         &normalized_version,
@@ -328,13 +468,10 @@ fn main() {
         let stderr = String::from_utf8_lossy(&output.stderr);
         let stdout = String::from_utf8_lossy(&output.stdout);
         let combined = format!("{stderr}{stdout}");
-        if combined.contains("already exists")
-            || combined.contains("already_exists")
-            || combined.contains("Validation Failed")
-        {
+        if is_duplicate_release_error(&combined) {
             println!("Release {tag} already exists, skipping");
         } else {
-            eprintln!("Error creating release: {stderr}");
+            eprintln!("Error creating release: {combined}");
             exit(1);
         }
     }
@@ -409,5 +546,61 @@ mod tests {
 
         assert!(badge.contains("1.2.3%2Bbuild.4"));
         assert!(badge.contains("tags?name=1.2.3%2Bbuild.4"));
+    }
+
+    #[test]
+    fn release_body_under_limit_is_unchanged() {
+        let body = "short release notes".to_string();
+
+        assert_eq!(
+            limit_release_body(
+                body.clone(),
+                "https://github.com/owner/repo/blob/v1.2.3/CHANGELOG.md"
+            ),
+            body
+        );
+    }
+
+    #[test]
+    fn oversized_release_body_is_shortened_with_full_changelog_link() {
+        let mut body = "Release heading\n\n".to_string();
+        body.push_str(&"a".repeat(GITHUB_RELEASE_BODY_MAX_BYTES + 50_000));
+
+        let shortened = limit_release_body(
+            body,
+            "https://github.com/owner/repo/blob/v1.2.3/CHANGELOG.md",
+        );
+
+        assert!(
+            shortened.len() <= GITHUB_RELEASE_BODY_MAX_BYTES,
+            "release body should fit under the configured API guard"
+        );
+        assert!(shortened.starts_with("Release heading"));
+        assert!(shortened.contains("Release notes were shortened"));
+        assert!(shortened.contains("https://github.com/owner/repo/blob/v1.2.3/CHANGELOG.md"));
+    }
+
+    #[test]
+    fn duplicate_release_validation_is_idempotent() {
+        let output = r#"{"message":"Validation Failed","errors":[{"resource":"Release","code":"already_exists","field":"tag_name"}],"documentation_url":"https://docs.github.com/rest/releases/releases#create-a-release","status":"422"}
+gh: Validation Failed (HTTP 422)"#;
+
+        assert!(is_duplicate_release_error(output));
+    }
+
+    #[test]
+    fn generic_validation_failure_is_not_duplicate_release() {
+        let output = r#"{"message":"Validation Failed","errors":[{"resource":"Release","code":"custom","field":"body"}],"documentation_url":"https://docs.github.com/rest/releases/releases#create-a-release","status":"422"}
+gh: Validation Failed (HTTP 422)"#;
+
+        assert!(!is_duplicate_release_error(output));
+    }
+
+    #[test]
+    fn validation_failure_that_mentions_release_notes_is_not_duplicate_release() {
+        let output = r#"{"message":"Validation Failed","errors":[{"resource":"Release","code":"custom","field":"body"}]}
+release notes already exists in generated changelog text"#;
+
+        assert!(!is_duplicate_release_error(output));
     }
 }
