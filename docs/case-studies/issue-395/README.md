@@ -109,44 +109,61 @@ passes handlers `prompt.to_lowercase()` (which **keeps punctuation**), so a
 language word glued to a comma — `JavaScript,` → `javascript,` — fails the
 token-boundary alias matcher. Any new handler that resolves a language must
 re-normalize the prompt the same way the worker does. (Fixed by re-normalizing
-inside `solve_sort_numbers` via `crate::web_engine_core::normalize_prompt`.)
+inside the numeric-list engine via `crate::web_engine_core::normalize_prompt`.)
 
 ## 5. Why the result can be computed deterministically
 
 The issue asks the system to "actually give the result". For a general program
-that would require sandboxed execution (vision V5). **Sorting a list of literal
-numbers is a pure, total, decidable function** — there are no inputs, no I/O, no
-nontermination. So the solver computes the result *by construction*: it performs
-the very same comparison the generated code performs and shows the output. The
-generated code and the shown result are guaranteed consistent because they derive
-from one ordering. No untrusted code is executed; the answer is verified by
-construction. This is the safe, correct first slice of V5.
+that would require sandboxed execution (vision V5). But the whole family this
+engine targets — **every numeric-list operation (sort, reverse, sum, product,
+minimum, maximum, …) is a pure, total, decidable function** of the literal input
+list — there are no free inputs, no I/O, no nontermination. So the solver computes
+the result *by construction*: it performs the very same computation the generated
+code performs and shows the output. The generated code and the shown result are
+guaranteed consistent because they derive from one operation definition. No
+untrusted code is executed; the answer is verified by construction. This is the
+safe, correct first slice of V5. The
+[`examples/numeric_list_execution.rs`](../../../examples/numeric_list_execution.rs)
+harness then closes the loop empirically: it compiles and runs every generated
+program across the installed toolchains and asserts the program's stdout matches
+the solver's computed result.
 
 ## 6. Solution implemented
 
-A new seed-driven specialized handler, `sort_numbers`, mirrored across both
-runtimes:
+Rather than a narrow sorting handler (the maintainer feedback was explicit: "we
+need a universal coding algorithm, that will cover all our specific handlers and
+much more… use meaning manipulation, not specific constants"), this PR ships a
+**universal, data-oriented numeric-list coding engine**, mirrored byte-for-byte
+across both runtimes:
 
 | Concern | Rust | JS worker |
 | --- | --- | --- |
-| Handler | `src/solver_handlers/sort_numbers.rs` | `trySortNumbers` in `src/web/formal_ai_worker.js` |
-| Sort verb | `sort` / `reverse_sort` ops in `data/seed/operation-vocabulary.lino` | inline `OPERATION_VOCABULARY_LINO` (byte-identical copy) |
+| Engine | `src/solver_handlers/numeric_list/{mod,codegen}.rs` | `tryNumericList` in `src/web/formal_ai_worker.js` |
+| Operation ontology | `data/seed/meanings-numeric-list.lino` (family + result_kind per op) | inline copy used by `numericListFamily` / `numericListResultKind` |
+| Verb recognition | `OperationVocabulary` over the seed glosses (en/ru/hi/zh) | `operationMatchesSlug` over the inline LINO |
 | Language | `crate::coding::program_language_by_alias` | `programLanguageFromPrompt` → `WRITE_PROGRAM_LANGUAGES` |
 | Dispatch slot | `SPECIALIZED_HANDLERS`, before `arithmetic` & `program_synthesis` | `syncHandlers`, before `tryProgramSynthesis` & `tryArithmetic` |
 
-The handler fires only when **all three** signals are present (a sort verb, ≥2
-numbers, and a known programming language), so it never steals plain prose. It:
+The operations, the language aliases, and the localized answer text are all
+**data** read from the seed — not constants branched on in code. Adding an
+operation or a language extends the ontology, not the algorithm. The engine fires
+only when the signals are present (a recognized operation verb, ≥2 numbers, and a
+known programming language), so it never steals plain prose; reductions
+(sum/product/min/max) additionally require a `code_request` signal to avoid
+over-matching arithmetic discussion. For a recognized prompt it:
 
 1. Re-normalizes the prompt (punctuation → space) so `JavaScript,` resolves.
-2. Confirms the `sort` (or `reverse_sort`, for descending) operation via the seed
-   vocabulary — in any of en/ru/hi/zh.
+2. Detects the operation via the seed vocabulary — in any of en/ru/hi/zh — and
+   reads its family (list_transformation / list_reduction) and result_kind
+   (list / scalar) from `meanings-numeric-list.lino`.
 3. Resolves the target programming language from its alias meanings.
 4. Parses every signed/decimal number, preserving the user's surface text.
-5. Sorts ascending (or descending if `reverse_sort` matched).
+5. Computes the operation deterministically over the parsed list.
 6. Generates idiomatic code for the resolved language (10 supported: JavaScript,
-   TypeScript, Python, Rust, Go, Ruby, Java, C#, C, C++).
+   TypeScript, Python, Rust, Go, Ruby, Java, C#, C, C++) from one transform /
+   reduce code-gen path parameterized by the operation.
 7. Renders a localized answer (en/ru/hi/zh): an intro sentence, the code fence,
-   and `Result: …` with the computed order.
+   and `Result: …` with the computed value(s).
 
 ### Example (the exact issue prompt)
 
@@ -166,7 +183,7 @@ console.log(sorted.join(", "));
 
 | Need | Existing component reused |
 | --- | --- |
-| Multilingual verb recognition | `OperationVocabulary` (`src/seed/operation_vocabulary.rs`) — added a `sort` op; reused `reverse_sort` for descending. |
+| Multilingual verb recognition | `OperationVocabulary` (`src/seed/operation_vocabulary.rs`) — drives all seven numeric-list operations from their seed glosses. |
 | Programming-language detection | `crate::coding::program_language_by_alias` + `program_language_<slug>` alias meanings (#386). |
 | Prompt normalization parity | `crate::web_engine_core::normalize_prompt` / `normalizePrompt`. |
 | Response-language localization | `crate::language::detect` / `detectLanguage` (en/ru/hi/zh). |
@@ -181,12 +198,18 @@ top of the existing seed-driven architecture.
 - **Rust** — `tests/integration/issue_395_sort_numbers.rs`: the exact Russian
   prompt is no longer `unknown`; English/JS computes the sorted result;
   Python descending uses `reverse=True`; Hindi/Chinese verbs are recognized;
-  guard rails reject no-language / single-number prompts. Plus
-  `examples/repro_issue_395.rs`.
-- **JS worker** — `experiments/issue-395-js-sort-numbers.mjs`: replays the five
-  reproduction prompts through the worker and asserts byte-identical code and
-  results to the Rust path.
-- Full suite: 767 unit + 25 integration tests pass; `cargo fmt`, `clippy
+  reductions (sum/product/min/max) compute their scalar; guard rails reject
+  no-language / single-number prompts. Plus the engine unit tests in
+  `src/solver_handlers/numeric_list/mod.rs` and `examples/repro_issue_395.rs`.
+- **JS worker** — `experiments/issue-395-js-numeric-list.mjs`: replays the
+  reproduction prompts (sort/reverse/sum/product/min/max across languages)
+  through the worker in a node VM and asserts byte-identical code and results to
+  the Rust path.
+- **Execution** — `examples/numeric_list_execution.rs`: compiles and runs every
+  generated program across the installed toolchains and asserts each program's
+  stdout equals the solver's computed result (toolchains that are absent are
+  reported as skipped, not failed).
+- Full suite: 767 unit + integration tests pass; `cargo fmt`, `clippy
   -D warnings`, and the file-size guard are clean.
 
 ## 9. Scope and honesty note

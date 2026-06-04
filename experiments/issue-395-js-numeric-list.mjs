@@ -1,12 +1,13 @@
-// Issue #395 — web-runtime parity for the sort-numbers coding task.
+// Issue #395 — web-runtime parity for the universal numeric-list coding task.
 //
 // Loads `src/web/formal_ai_worker.js` in a node VM sandbox (the same harness as
-// the other parity experiments) and replays the five reproduction prompts from
-// `examples/repro_issue_395.rs`, asserting that `trySortNumbers` routes them to
-// `write_program` with the same generated code and the same deterministically-
-// computed result the Rust solver produces.
+// the other parity experiments) and replays the reproduction prompts, asserting
+// that `tryNumericList` routes them to `write_program` with the same generated
+// code and the same deterministically-computed result the Rust solver produces.
+// Beyond the original sort cases it exercises the generalized family — reverse,
+// sum, product, minimum, maximum — across several target languages.
 //
-// Run: `node experiments/issue-395-js-sort-numbers.mjs`
+// Run: `node experiments/issue-395-js-numeric-list.mjs`
 
 import fs from "node:fs";
 import vm from "node:vm";
@@ -46,7 +47,7 @@ function check(name, cond, extra) {
 
 const cases = [
   {
-    label: "Russian / JavaScript",
+    label: "Russian / JavaScript (sort)",
     prompt:
       "У меня есть числа 3, 5, 6, 7, 8 отсортируй их в JavaScript, дай мне код и результат",
     fence: "javascript",
@@ -56,7 +57,7 @@ const cases = [
     codeIncludes: "const sorted = [...numbers].sort((a, b) => a - b);",
   },
   {
-    label: "English / JavaScript",
+    label: "English / JavaScript (sort)",
     prompt:
       "I have numbers 5, 3, 8, 1, 9 — sort them in JavaScript, give me the code and the result",
     fence: "javascript",
@@ -76,7 +77,7 @@ const cases = [
     codeIncludes: "sorted(numbers, reverse=True)",
   },
   {
-    label: "Hindi / JavaScript",
+    label: "Hindi / JavaScript (sort)",
     prompt:
       "मेरे पास संख्याएं 3, 5, 6, 7, 8 हैं, उन्हें JavaScript में क्रमबद्ध करो और मुझे कोड और परिणाम दो",
     fence: "javascript",
@@ -85,17 +86,67 @@ const cases = [
     codeIncludes: "const sorted = [...numbers].sort((a, b) => a - b);",
   },
   {
-    label: "Chinese / Python",
+    label: "Chinese / Python (sort)",
     prompt: "我有数字 3, 5, 6, 7, 8，用 Python 排序，给我代码和结果",
     fence: "python",
     result: "3, 5, 6, 7, 8",
     resultLabel: "结果:",
     codeIncludes: "sorted_numbers = sorted(numbers)",
   },
+  {
+    label: "English / JavaScript (reverse)",
+    prompt:
+      "Reverse the numbers 1, 2, 3, 4 in JavaScript, give me the code and the result",
+    fence: "javascript",
+    result: "4, 3, 2, 1",
+    intro: "Here is JavaScript code that reverses",
+    resultLabel: "Result:",
+    codeIncludes: "const sorted = [...numbers].reverse();",
+  },
+  {
+    label: "English / Python (sum)",
+    prompt:
+      "Sum the numbers 3, 5, 6, 7, 8 in Python, give me the code and the result",
+    fence: "python",
+    result: "29",
+    intro: "Here is Python code that sums",
+    resultLabel: "Result:",
+    codeIncludes: "result = sum(numbers)",
+  },
+  {
+    label: "English / Python (product)",
+    prompt:
+      "Multiply the numbers 2, 3, 4 in Python, give me the code and the result",
+    fence: "python",
+    result: "24",
+    intro: "Here is Python code that multiplies",
+    resultLabel: "Result:",
+    codeIncludes: "result = math.prod(numbers)",
+  },
+  {
+    label: "English / JavaScript (minimum)",
+    prompt:
+      "Find the minimum of 5, 3, 8, 1, 9 in JavaScript, give me the code and the result",
+    fence: "javascript",
+    result: "1",
+    intro: "Here is JavaScript code that finds the smallest",
+    resultLabel: "Result:",
+    codeIncludes: "Math.min(...numbers)",
+  },
+  {
+    label: "English / JavaScript (maximum)",
+    prompt:
+      "Find the maximum of 5, 3, 8, 1, 9 in JavaScript, give me the code and the result",
+    fence: "javascript",
+    result: "9",
+    intro: "Here is JavaScript code that finds the largest",
+    resultLabel: "Result:",
+    codeIncludes: "Math.max(...numbers)",
+  },
 ];
 
 for (const c of cases) {
-  const hit = sandbox.trySortNumbers(c.prompt);
+  const hit = sandbox.tryNumericList(c.prompt);
   check(`${c.label}: routes to write_program`, hit && hit.intent === "write_program", hit && hit.intent);
   if (!hit) continue;
   check(`${c.label}: code fence ${c.fence}`, hit.content.includes("```" + c.fence), "fence");
@@ -109,13 +160,19 @@ for (const c of cases) {
 // Negative: a plain arithmetic prompt with no language must NOT be claimed.
 check(
   "no language → not claimed",
-  sandbox.trySortNumbers("sort 3, 1, 2") === null,
+  sandbox.tryNumericList("sort 3, 1, 2") === null,
   "should defer",
 );
-// Negative: a single number is not a sort task.
+// Negative: a single number is not a numeric-list task.
 check(
   "single number → not claimed",
-  sandbox.trySortNumbers("sort 3 in JavaScript") === null,
+  sandbox.tryNumericList("sort 3 in JavaScript") === null,
+  "should defer",
+);
+// Negative: a function-synthesis prompt belongs to program_synthesis.
+check(
+  "function synthesis → not claimed",
+  sandbox.tryNumericList("write a function that returns the sum of 3 and 5 in Python") === null,
   "should defer",
 );
 

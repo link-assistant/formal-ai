@@ -6717,11 +6717,83 @@ function operationMatchesSlug(slug, normalized) {
   return false;
 }
 
+// Issue #395: type ontology for the universal numeric-list coding algorithm.
+// Byte mirror of data/seed/meanings-numeric-list.lino — each operation maps to a
+// family (list_transformation / list_reduction) and a result kind
+// (list / scalar), so the worker reasons about the task from data instead of a
+// per-case handler.
+const NUMERIC_LIST_OPERATIONS_LINO = [
+  "numeric_list_operations",
+  '  operation "sort"',
+  '    family "list_transformation"',
+  '    result_kind "list"',
+  '    direction "ascending"',
+  '  operation "reverse_sort"',
+  '    family "list_transformation"',
+  '    result_kind "list"',
+  '    direction "descending"',
+  '  operation "reverse"',
+  '    family "list_transformation"',
+  '    result_kind "list"',
+  '  operation "sum"',
+  '    family "list_reduction"',
+  '    result_kind "scalar"',
+  '    identity "0"',
+  '  operation "product"',
+  '    family "list_reduction"',
+  '    result_kind "scalar"',
+  '    identity "1"',
+  '  operation "minimum"',
+  '    family "list_reduction"',
+  '    result_kind "scalar"',
+  '    selects "extreme"',
+  '  operation "maximum"',
+  '    family "list_reduction"',
+  '    result_kind "scalar"',
+  '    selects "extreme"',
+].join("\n");
+
+let cachedNumericListOntology = null;
+// Parse the numeric-list ontology into { canonical: { family, resultKind } }.
+// Mirrors result_kind_for / family_for in
+// src/solver_handlers/numeric_list/mod.rs.
+function numericListOntology() {
+  if (cachedNumericListOntology) return cachedNumericListOntology;
+  const root = parseLinoTree(NUMERIC_LIST_OPERATIONS_LINO);
+  const container =
+    root.children.find((child) => child.name === "numeric_list_operations") ||
+    root;
+  const map = {};
+  for (const node of container.children) {
+    if (node.name !== "operation") continue;
+    const familyNode = node.children.find((c) => c.name === "family");
+    const kindNode = node.children.find((c) => c.name === "result_kind");
+    map[node.value] = {
+      family: familyNode ? familyNode.value : "list_transformation",
+      resultKind: kindNode ? kindNode.value : "list",
+    };
+  }
+  cachedNumericListOntology = map;
+  return cachedNumericListOntology;
+}
+
+function numericListResultKind(canonical) {
+  const entry = numericListOntology()[canonical];
+  return entry && entry.resultKind === "scalar" ? "scalar" : "list";
+}
+
+function numericListFamily(canonical) {
+  const entry = numericListOntology()[canonical];
+  return entry && entry.family === "list_reduction"
+    ? "list_reduction"
+    : "list_transformation";
+}
+
 // Issue #395: lift every number token (signed / decimal) from the prompt, in
-// order. Mirrors parse_numbers in src/solver_handlers/sort_numbers.rs: a leading
-// sign only starts a literal when it is not glued to a preceding letter or digit,
-// and the surface text is preserved verbatim for echoing and code generation.
-function parseSortNumbers(prompt) {
+// order. Mirrors parse_numbers in src/solver_handlers/numeric_list/mod.rs: a
+// leading sign only starts a literal when it is not glued to a preceding letter
+// or digit, and the surface text is preserved verbatim for echoing and codegen.
+function parseNumericListNumbers(prompt) {
   const chars = Array.from(String(prompt || ""));
   const isDigit = (ch) => ch >= "0" && ch <= "9";
   const isAlnum = (ch) => /[\p{L}\p{N}]/u.test(ch);
@@ -6764,213 +6836,521 @@ function parseSortNumbers(prompt) {
 // Issue #395: render the array literal — each number's surface, comma-joined.
 // When the list mixes integers and decimals, integer surfaces gain a `.0` suffix
 // so statically-typed targets keep a single element type. Mirrors number_literals.
-function sortNumberLiterals(numbers, isFloat) {
+function numericListLiterals(numbers, isFloat) {
   return numbers
     .map((n) => (isFloat && !n.text.includes(".") ? `${n.text}.0` : n.text))
     .join(", ");
 }
 
-const SORT_NUMBERS_LOCALIZATION = {
+// Issue #395: localized phrasing for the four supported UI languages. The
+// numbers, code, and result are language-independent; only the surrounding prose
+// differs. Mirrors Localization in src/solver_handlers/numeric_list/mod.rs; the
+// `sort` / `reverse_sort` sentences are byte-identical to the original handler so
+// existing golden assertions stay green.
+const NUMERIC_LIST_LOCALIZATION = {
   ru: {
     resultLabel: "Результат:",
-    ascending: "по возрастанию",
-    descending: "по убыванию",
-    intro: (lang, given, order) =>
-      `Вот код на ${lang}, который сортирует числа ${given} ${order}:`,
+    intro: (canonical, lang, given) =>
+      ({
+        sort: `Вот код на ${lang}, который сортирует числа ${given} по возрастанию:`,
+        reverse_sort: `Вот код на ${lang}, который сортирует числа ${given} по убыванию:`,
+        reverse: `Вот код на ${lang}, который переворачивает числа ${given}:`,
+        sum: `Вот код на ${lang}, который суммирует числа ${given}:`,
+        product: `Вот код на ${lang}, который перемножает числа ${given}:`,
+        minimum: `Вот код на ${lang}, который находит наименьшее из чисел ${given}:`,
+        maximum: `Вот код на ${lang}, который находит наибольшее из чисел ${given}:`,
+      })[canonical],
   },
   hi: {
     resultLabel: "परिणाम:",
-    ascending: "आरोही क्रम में",
-    descending: "अवरोही क्रम में",
-    intro: (lang, given, order) =>
-      `यह ${lang} कोड है जो संख्याओं ${given} को ${order} क्रमबद्ध करता है:`,
+    intro: (canonical, lang, given) =>
+      ({
+        sort: `यह ${lang} कोड है जो संख्याओं ${given} को आरोही क्रम में क्रमबद्ध करता है:`,
+        reverse_sort: `यह ${lang} कोड है जो संख्याओं ${given} को अवरोही क्रम में क्रमबद्ध करता है:`,
+        reverse: `यह ${lang} कोड है जो संख्याओं ${given} को उलट देता है:`,
+        sum: `यह ${lang} कोड है जो संख्याओं ${given} का योग करता है:`,
+        product: `यह ${lang} कोड है जो संख्याओं ${given} का गुणनफल निकालता है:`,
+        minimum: `यह ${lang} कोड है जो संख्याओं ${given} में से सबसे छोटी ढूँढता है:`,
+        maximum: `यह ${lang} कोड है जो संख्याओं ${given} में से सबसे बड़ी ढूँढता है:`,
+      })[canonical],
   },
   zh: {
     resultLabel: "结果:",
-    ascending: "升序",
-    descending: "降序",
-    intro: (lang, given, order) =>
-      `这是用 ${lang} 编写的将数字 ${given} 按${order}排序的代码:`,
+    intro: (canonical, lang, given) =>
+      ({
+        sort: `这是用 ${lang} 编写的将数字 ${given} 按升序排序的代码:`,
+        reverse_sort: `这是用 ${lang} 编写的将数字 ${given} 按降序排序的代码:`,
+        reverse: `这是用 ${lang} 编写的将数字 ${given} 反转的代码:`,
+        sum: `这是用 ${lang} 编写的对数字 ${given} 求和的代码:`,
+        product: `这是用 ${lang} 编写的计算数字 ${given} 乘积的代码:`,
+        minimum: `这是用 ${lang} 编写的求数字 ${given} 最小值的代码:`,
+        maximum: `这是用 ${lang} 编写的求数字 ${given} 最大值的代码:`,
+      })[canonical],
   },
   en: {
     resultLabel: "Result:",
-    ascending: "in ascending order",
-    descending: "in descending order",
-    intro: (lang, given, order) =>
-      `Here is ${lang} code that sorts the numbers ${given} ${order}:`,
+    intro: (canonical, lang, given) =>
+      ({
+        sort: `Here is ${lang} code that sorts the numbers ${given} in ascending order:`,
+        reverse_sort: `Here is ${lang} code that sorts the numbers ${given} in descending order:`,
+        reverse: `Here is ${lang} code that reverses the numbers ${given}:`,
+        sum: `Here is ${lang} code that sums the numbers ${given}:`,
+        product: `Here is ${lang} code that multiplies the numbers ${given}:`,
+        minimum: `Here is ${lang} code that finds the smallest of the numbers ${given}:`,
+        maximum: `Here is ${lang} code that finds the largest of the numbers ${given}:`,
+      })[canonical],
   },
 };
 
-// Issue #395: per-language code generators. Each prints the sorted numbers as a
-// comma-separated line, matching the deterministically-computed result. Byte-for-
-// byte mirrors of the Rust generators in src/solver_handlers/sort_numbers.rs.
-function sortNumbersCode(slug, numbers, descending, isFloat) {
-  const literal = sortNumberLiterals(numbers, isFloat);
+// Issue #395: recognize which numeric-list operation the prompt asks for, in
+// priority order. Sort phrasings are checked first because "sort in reverse
+// order" legitimately contains the bare `reverse` verb; the descending variant
+// wins whenever the `reverse_sort` phrasing is present. Mirrors detect_operation.
+function detectNumericListOperation(normalized) {
+  if (
+    operationMatchesSlug("sort", normalized) ||
+    operationMatchesSlug("reverse_sort", normalized)
+  ) {
+    return operationMatchesSlug("reverse_sort", normalized) ? "reverse_sort" : "sort";
+  }
+  if (operationMatchesSlug("reverse", normalized)) return "reverse";
+  for (const canonical of ["sum", "product", "minimum", "maximum"]) {
+    if (operationMatchesSlug(canonical, normalized)) return canonical;
+  }
+  return null;
+}
+
+// Issue #395: format a computed scalar so its textual form matches the runnable
+// code's stdout: an integer with no decimal point when every input was an
+// integer. Mirrors format_scalar.
+function numericListFormatScalar(value, isFloat) {
+  return isFloat ? String(value) : String(Math.round(value));
+}
+
+// Issue #395: apply the operation to the parsed numbers and return the surface
+// tokens to display — the reordered list for a transformation, or a single
+// computed scalar for a reduction. Mirrors compute.
+function computeNumericList(canonical, numbers, isFloat) {
+  if (numericListFamily(canonical) === "list_transformation") {
+    const ordered = numbers.slice();
+    if (canonical === "sort") {
+      ordered.sort((a, b) => (a.value < b.value ? -1 : a.value > b.value ? 1 : 0));
+    } else if (canonical === "reverse_sort") {
+      ordered.sort((a, b) => (a.value < b.value ? 1 : a.value > b.value ? -1 : 0));
+    } else {
+      ordered.reverse();
+    }
+    return ordered.map((n) => n.text);
+  }
+  let value;
+  if (canonical === "sum") value = numbers.reduce((acc, n) => acc + n.value, 0);
+  else if (canonical === "product") value = numbers.reduce((acc, n) => acc * n.value, 1);
+  else if (canonical === "minimum") value = numbers.reduce((acc, n) => Math.min(acc, n.value), Infinity);
+  else value = numbers.reduce((acc, n) => Math.max(acc, n.value), -Infinity);
+  return [numericListFormatScalar(value, isFloat)];
+}
+
+// Issue #395: per-language code generation. List transformations build the
+// array, transform it, and print the elements comma-separated; scalar reductions
+// build the array, fold it, and print the single value. Byte-for-byte mirrors of
+// the Rust generators in src/solver_handlers/numeric_list/codegen.rs.
+function numericListCode(slug, numbers, canonical, isFloat) {
+  if (numericListFamily(canonical) === "list_reduction") {
+    return numericListReduceCode(slug, numbers, canonical, isFloat);
+  }
+  return numericListTransformCode(slug, numbers, canonical, isFloat);
+}
+
+// --- list transformations --------------------------------------------------
+
+function numericListTransformCode(slug, numbers, canonical, isFloat) {
+  const literal = numericListLiterals(numbers, isFloat);
   switch (slug) {
     case "javascript":
-      return sortNumbersJsCode(literal, descending, false);
+      return nlJsTransform(literal, canonical, false);
     case "typescript":
-      return sortNumbersJsCode(literal, descending, true);
+      return nlJsTransform(literal, canonical, true);
     case "rust":
-      return sortNumbersRustCode(literal, descending, isFloat);
+      return nlRustTransform(literal, canonical, isFloat);
     case "go":
-      return sortNumbersGoCode(literal, descending, isFloat);
+      return nlGoTransform(literal, canonical, isFloat);
     case "ruby":
-      return sortNumbersRubyCode(literal, descending);
+      return nlRubyTransform(literal, canonical);
     case "java":
-      return sortNumbersJavaCode(literal, descending, isFloat);
+      return nlJavaTransform(literal, canonical, isFloat);
     case "csharp":
-      return sortNumbersCsharpCode(literal, descending, isFloat);
+      return nlCsharpTransform(literal, canonical, isFloat);
     case "c":
-      return sortNumbersCCode(numbers, descending, isFloat);
+      return nlCTransform(numbers, canonical, isFloat);
     case "cpp":
-      return sortNumbersCppCode(literal, descending, isFloat);
+      return nlCppTransform(literal, canonical, isFloat);
     default:
-      return sortNumbersPythonCode(literal, descending);
+      return nlPythonTransform(literal, canonical);
   }
 }
 
-function sortNumbersJsCode(literal, descending, typed) {
-  const cmp = descending ? "b - a" : "a - b";
+function nlJsTransform(literal, canonical, typed) {
+  const expr =
+    canonical === "sort"
+      ? "[...numbers].sort((a, b) => a - b)"
+      : canonical === "reverse_sort"
+        ? "[...numbers].sort((a, b) => b - a)"
+        : "[...numbers].reverse()";
   const decl = typed
     ? `const numbers: number[] = [${literal}];`
     : `const numbers = [${literal}];`;
-  return `${decl}\nconst sorted = [...numbers].sort((a, b) => ${cmp});\nconsole.log(sorted.join(", "));`;
+  return `${decl}\nconst sorted = ${expr};\nconsole.log(sorted.join(", "));`;
 }
 
-function sortNumbersPythonCode(literal, descending) {
-  const reverse = descending ? ", reverse=True" : "";
-  return `numbers = [${literal}]\nsorted_numbers = sorted(numbers${reverse})\nprint(", ".join(str(n) for n in sorted_numbers))`;
+function nlPythonTransform(literal, canonical) {
+  const action =
+    canonical === "sort"
+      ? "sorted(numbers)"
+      : canonical === "reverse_sort"
+        ? "sorted(numbers, reverse=True)"
+        : "list(reversed(numbers))";
+  return `numbers = [${literal}]\nsorted_numbers = ${action}\nprint(", ".join(str(n) for n in sorted_numbers))`;
 }
 
-function sortNumbersRustCode(literal, descending, isFloat) {
-  let sortCall;
-  if (!isFloat) {
-    sortCall = descending ? "numbers.sort_by(|a, b| b.cmp(a));" : "numbers.sort();";
+function nlRustTransform(literal, canonical, isFloat) {
+  let action;
+  if (canonical === "reverse") {
+    action = "numbers.reverse();";
+  } else if (!isFloat) {
+    action = canonical === "reverse_sort" ? "numbers.sort_by(|a, b| b.cmp(a));" : "numbers.sort();";
   } else {
-    sortCall = descending
-      ? "numbers.sort_by(|a, b| b.partial_cmp(a).unwrap());"
-      : "numbers.sort_by(|a, b| a.partial_cmp(b).unwrap());";
+    action =
+      canonical === "reverse_sort"
+        ? "numbers.sort_by(|a, b| b.partial_cmp(a).unwrap());"
+        : "numbers.sort_by(|a, b| a.partial_cmp(b).unwrap());";
   }
   const ty = isFloat ? "f64" : "i64";
-  return `fn main() {\n    let mut numbers: Vec<${ty}> = vec![${literal}];\n    ${sortCall}\n    let rendered: Vec<String> = numbers.iter().map(|n| n.to_string()).collect();\n    println!("{}", rendered.join(", "));\n}`;
+  return `fn main() {\n    let mut numbers: Vec<${ty}> = vec![${literal}];\n    ${action}\n    let rendered: Vec<String> = numbers.iter().map(|n| n.to_string()).collect();\n    println!("{}", rendered.join(", "));\n}`;
 }
 
-function sortNumbersGoCode(literal, descending, isFloat) {
-  const cmp = descending ? "numbers[i] > numbers[j]" : "numbers[i] < numbers[j]";
+function nlGoTransform(literal, canonical, isFloat) {
   const ty = isFloat ? "float64" : "int";
   const formatItem = isFloat
     ? "strconv.FormatFloat(n, 'g', -1, 64)"
     : "strconv.Itoa(n)";
-  return `package main\n\nimport (\n\t"fmt"\n\t"sort"\n\t"strconv"\n\t"strings"\n)\n\nfunc main() {\n\tnumbers := []${ty}{${literal}}\n\tsort.Slice(numbers, func(i, j int) bool { return ${cmp} })\n\tparts := make([]string, len(numbers))\n\tfor i, n := range numbers {\n\t\tparts[i] = ${formatItem}\n\t}\n\tfmt.Println(strings.Join(parts, ", "))\n}`;
+  // `reverse` swaps in place and never touches the `sort` package; importing it
+  // unconditionally would make the generated program fail to compile with
+  // "imported and not used". Only the comparison sorts pull `sort` in.
+  let imports;
+  let action;
+  if (canonical === "sort") {
+    imports = '\t"fmt"\n\t"sort"\n\t"strconv"\n\t"strings"';
+    action = "sort.Slice(numbers, func(i, j int) bool { return numbers[i] < numbers[j] })";
+  } else if (canonical === "reverse_sort") {
+    imports = '\t"fmt"\n\t"sort"\n\t"strconv"\n\t"strings"';
+    action = "sort.Slice(numbers, func(i, j int) bool { return numbers[i] > numbers[j] })";
+  } else {
+    imports = '\t"fmt"\n\t"strconv"\n\t"strings"';
+    action =
+      "for i, j := 0, len(numbers)-1; i < j; i, j = i+1, j-1 {\n\t\tnumbers[i], numbers[j] = numbers[j], numbers[i]\n\t}";
+  }
+  return `package main\n\nimport (\n${imports}\n)\n\nfunc main() {\n\tnumbers := []${ty}{${literal}}\n\t${action}\n\tparts := make([]string, len(numbers))\n\tfor i, n := range numbers {\n\t\tparts[i] = ${formatItem}\n\t}\n\tfmt.Println(strings.Join(parts, ", "))\n}`;
 }
 
-function sortNumbersRubyCode(literal, descending) {
-  const sortCall = descending ? "numbers.sort.reverse" : "numbers.sort";
-  return `numbers = [${literal}]\nsorted = ${sortCall}\nputs sorted.join(", ")`;
+function nlRubyTransform(literal, canonical) {
+  const action =
+    canonical === "sort"
+      ? "numbers.sort"
+      : canonical === "reverse_sort"
+        ? "numbers.sort.reverse"
+        : "numbers.reverse";
+  return `numbers = [${literal}]\nsorted = ${action}\nputs sorted.join(", ")`;
 }
 
-function sortNumbersJavaCode(literal, descending, isFloat) {
+function nlJavaTransform(literal, canonical, isFloat) {
   const ty = isFloat ? "double" : "int";
   const boxed = isFloat ? "Double" : "Integer";
-  const sortLine = descending
-    ? `${boxed}[] boxed = Arrays.stream(numbers).boxed().toArray(${boxed}[]::new);\n        Arrays.sort(boxed, Collections.reverseOrder());\n        for (int i = 0; i < numbers.length; i++) numbers[i] = boxed[i];`
-    : "Arrays.sort(numbers);";
-  return `import java.util.Arrays;\nimport java.util.Collections;\nimport java.util.StringJoiner;\n\npublic class Main {\n    public static void main(String[] args) {\n        ${ty}[] numbers = {${literal}};\n        ${sortLine}\n        StringJoiner joiner = new StringJoiner(", ");\n        for (${ty} n : numbers) joiner.add(String.valueOf(n));\n        System.out.println(joiner.toString());\n    }\n}`;
-}
-
-function sortNumbersCsharpCode(literal, descending, isFloat) {
-  const ty = isFloat ? "double" : "int";
-  const orderCall = descending ? "OrderByDescending(n => n)" : "OrderBy(n => n)";
-  return `using System;\nusing System.Linq;\n\nclass Program {\n    static void Main() {\n        ${ty}[] numbers = {${literal}};\n        var sorted = numbers.${orderCall};\n        Console.WriteLine(string.Join(", ", sorted));\n    }\n}`;
-}
-
-function sortNumbersCppCode(literal, descending, isFloat) {
-  const ty = isFloat ? "double" : "int";
-  const comparator = descending
-    ? "std::sort(numbers.begin(), numbers.end(), std::greater<>());"
-    : "std::sort(numbers.begin(), numbers.end());";
-  return `#include <algorithm>\n#include <iostream>\n#include <vector>\n\nint main() {\n    std::vector<${ty}> numbers = {${literal}};\n    ${comparator}\n    for (size_t i = 0; i < numbers.size(); ++i) {\n        if (i) std::cout << ", ";\n        std::cout << numbers[i];\n    }\n    std::cout << std::endl;\n    return 0;\n}`;
-}
-
-function sortNumbersCCode(numbers, descending, isFloat) {
-  const literal = sortNumberLiterals(numbers, isFloat);
-  const count = numbers.length;
-  let ty;
-  let fmt;
-  let cmpBody;
-  if (isFloat) {
-    ty = "double";
-    fmt = "%g";
-    cmpBody = descending
-      ? "    double diff = *(const double *)b - *(const double *)a;\n    return (diff > 0) - (diff < 0);"
-      : "    double diff = *(const double *)a - *(const double *)b;\n    return (diff > 0) - (diff < 0);";
+  let action;
+  if (canonical === "sort") {
+    action = "Arrays.sort(numbers);";
+  } else if (canonical === "reverse_sort") {
+    action = `${boxed}[] boxed = Arrays.stream(numbers).boxed().toArray(${boxed}[]::new);\n        Arrays.sort(boxed, Collections.reverseOrder());\n        for (int i = 0; i < numbers.length; i++) numbers[i] = boxed[i];`;
   } else {
-    ty = "int";
-    fmt = "%d";
-    cmpBody = descending
-      ? "    return (*(const int *)b - *(const int *)a);"
-      : "    return (*(const int *)a - *(const int *)b);";
+    action = `for (int i = 0, j = numbers.length - 1; i < j; i++, j--) {\n            ${ty} tmp = numbers[i];\n            numbers[i] = numbers[j];\n            numbers[j] = tmp;\n        }`;
   }
-  return `#include <stdio.h>\n#include <stdlib.h>\n\nstatic int compare(const void *a, const void *b) {\n${cmpBody}\n}\n\nint main(void) {\n    ${ty} numbers[] = {${literal}};\n    size_t count = ${count};\n    qsort(numbers, count, sizeof(${ty}), compare);\n    for (size_t i = 0; i < count; ++i) {\n        if (i) printf(", ");\n        printf("${fmt}", numbers[i]);\n    }\n    printf("\\n");\n    return 0;\n}`;
+  return `import java.util.Arrays;\nimport java.util.Collections;\nimport java.util.StringJoiner;\n\npublic class Main {\n    public static void main(String[] args) {\n        ${ty}[] numbers = {${literal}};\n        ${action}\n        StringJoiner joiner = new StringJoiner(", ");\n        for (${ty} n : numbers) joiner.add(String.valueOf(n));\n        System.out.println(joiner.toString());\n    }\n}`;
 }
 
-// Issue #395: "sort these numbers in <language>, give me the code and the
-// result". Mirrors try_sort_numbers in src/solver_handlers/sort_numbers.rs. The
-// prompt is re-normalized so a language word glued to punctuation (`JavaScript,`)
-// still resolves. The result is computed deterministically (sorting is a pure,
-// decidable function) — no runtime is embedded.
-function trySortNumbers(prompt) {
+function nlCsharpTransform(literal, canonical, isFloat) {
+  const ty = isFloat ? "double" : "int";
+  const action =
+    canonical === "sort"
+      ? "numbers.OrderBy(n => n)"
+      : canonical === "reverse_sort"
+        ? "numbers.OrderByDescending(n => n)"
+        : "numbers.Reverse()";
+  return `using System;\nusing System.Linq;\n\nclass Program {\n    static void Main() {\n        ${ty}[] numbers = {${literal}};\n        var sorted = ${action};\n        Console.WriteLine(string.Join(", ", sorted));\n    }\n}`;
+}
+
+function nlCppTransform(literal, canonical, isFloat) {
+  const ty = isFloat ? "double" : "int";
+  const action =
+    canonical === "sort"
+      ? "std::sort(numbers.begin(), numbers.end());"
+      : canonical === "reverse_sort"
+        ? "std::sort(numbers.begin(), numbers.end(), std::greater<>());"
+        : "std::reverse(numbers.begin(), numbers.end());";
+  return `#include <algorithm>\n#include <iostream>\n#include <vector>\n\nint main() {\n    std::vector<${ty}> numbers = {${literal}};\n    ${action}\n    for (size_t i = 0; i < numbers.size(); ++i) {\n        if (i) std::cout << ", ";\n        std::cout << numbers[i];\n    }\n    std::cout << std::endl;\n    return 0;\n}`;
+}
+
+function nlCTransform(numbers, canonical, isFloat) {
+  const literal = numericListLiterals(numbers, isFloat);
+  const count = numbers.length;
+  const ty = isFloat ? "double" : "int";
+  const fmt = isFloat ? "%g" : "%d";
+  let body;
+  let comparator;
+  if (canonical === "reverse") {
+    body = `    ${ty} numbers[] = {${literal}};\n    size_t count = ${count};\n    for (size_t i = 0, j = count - 1; i < j; ++i, --j) {\n        ${ty} tmp = numbers[i];\n        numbers[i] = numbers[j];\n        numbers[j] = tmp;\n    }`;
+    comparator = "";
+  } else {
+    body = `    ${ty} numbers[] = {${literal}};\n    size_t count = ${count};\n    qsort(numbers, count, sizeof(${ty}), compare);`;
+    let cmpBody;
+    if (isFloat) {
+      cmpBody =
+        canonical === "reverse_sort"
+          ? "    double diff = *(const double *)b - *(const double *)a;\n    return (diff > 0) - (diff < 0);"
+          : "    double diff = *(const double *)a - *(const double *)b;\n    return (diff > 0) - (diff < 0);";
+    } else {
+      cmpBody =
+        canonical === "reverse_sort"
+          ? "    return (*(const int *)b - *(const int *)a);"
+          : "    return (*(const int *)a - *(const int *)b);";
+    }
+    comparator = `static int compare(const void *a, const void *b) {\n${cmpBody}\n}\n\n`;
+  }
+  return `#include <stdio.h>\n#include <stdlib.h>\n\n${comparator}int main(void) {\n${body}\n    for (size_t i = 0; i < count; ++i) {\n        if (i) printf(", ");\n        printf("${fmt}", numbers[i]);\n    }\n    printf("\\n");\n    return 0;\n}`;
+}
+
+// --- scalar reductions -----------------------------------------------------
+
+function numericListReduceCode(slug, numbers, canonical, isFloat) {
+  const literal = numericListLiterals(numbers, isFloat);
+  switch (slug) {
+    case "javascript":
+      return nlJsReduce(literal, canonical, false);
+    case "typescript":
+      return nlJsReduce(literal, canonical, true);
+    case "rust":
+      return nlRustReduce(literal, canonical, isFloat);
+    case "go":
+      return nlGoReduce(literal, canonical, isFloat);
+    case "ruby":
+      return nlRubyReduce(literal, canonical);
+    case "java":
+      return nlJavaReduce(literal, canonical, isFloat);
+    case "csharp":
+      return nlCsharpReduce(literal, canonical, isFloat);
+    case "c":
+      return nlCReduce(numbers, canonical, isFloat);
+    case "cpp":
+      return nlCppReduce(literal, canonical, isFloat);
+    default:
+      return nlPythonReduce(literal, canonical);
+  }
+}
+
+function nlJsReduce(literal, canonical, typed) {
+  const expr =
+    canonical === "sum"
+      ? "numbers.reduce((a, b) => a + b, 0)"
+      : canonical === "product"
+        ? "numbers.reduce((a, b) => a * b, 1)"
+        : canonical === "minimum"
+          ? "Math.min(...numbers)"
+          : "Math.max(...numbers)";
+  const decl = typed
+    ? `const numbers: number[] = [${literal}];`
+    : `const numbers = [${literal}];`;
+  return `${decl}\nconst result = ${expr};\nconsole.log(result);`;
+}
+
+function nlPythonReduce(literal, canonical) {
+  if (canonical === "sum") {
+    return `numbers = [${literal}]\nresult = sum(numbers)\nprint(result)`;
+  }
+  if (canonical === "product") {
+    return `import math\n\nnumbers = [${literal}]\nresult = math.prod(numbers)\nprint(result)`;
+  }
+  if (canonical === "minimum") {
+    return `numbers = [${literal}]\nresult = min(numbers)\nprint(result)`;
+  }
+  return `numbers = [${literal}]\nresult = max(numbers)\nprint(result)`;
+}
+
+function nlRustReduce(literal, canonical, isFloat) {
+  const ty = isFloat ? "f64" : "i64";
+  let compute;
+  if (canonical === "sum") compute = `numbers.iter().copied().sum::<${ty}>()`;
+  else if (canonical === "product") compute = `numbers.iter().copied().product::<${ty}>()`;
+  else if (canonical === "minimum") {
+    compute = isFloat
+      ? "numbers.iter().copied().fold(f64::INFINITY, f64::min)"
+      : "*numbers.iter().min().unwrap()";
+  } else {
+    compute = isFloat
+      ? "numbers.iter().copied().fold(f64::NEG_INFINITY, f64::max)"
+      : "*numbers.iter().max().unwrap()";
+  }
+  return `fn main() {\n    let numbers: Vec<${ty}> = vec![${literal}];\n    let result = ${compute};\n    println!("{}", result);\n}`;
+}
+
+function nlGoReduce(literal, canonical, isFloat) {
+  const ty = isFloat ? "float64" : "int";
+  let body;
+  if (canonical === "sum") {
+    body = `var result ${ty} = 0\n\tfor _, n := range numbers {\n\t\tresult += n\n\t}`;
+  } else if (canonical === "product") {
+    body = `var result ${ty} = 1\n\tfor _, n := range numbers {\n\t\tresult *= n\n\t}`;
+  } else if (canonical === "minimum") {
+    body = "result := numbers[0]\n\tfor _, n := range numbers[1:] {\n\t\tif n < result {\n\t\t\tresult = n\n\t\t}\n\t}";
+  } else {
+    body = "result := numbers[0]\n\tfor _, n := range numbers[1:] {\n\t\tif n > result {\n\t\t\tresult = n\n\t\t}\n\t}";
+  }
+  return `package main\n\nimport "fmt"\n\nfunc main() {\n\tnumbers := []${ty}{${literal}}\n\t${body}\n\tfmt.Println(result)\n}`;
+}
+
+function nlRubyReduce(literal, canonical) {
+  const expr =
+    canonical === "sum"
+      ? "numbers.sum"
+      : canonical === "product"
+        ? "numbers.inject(1, :*)"
+        : canonical === "minimum"
+          ? "numbers.min"
+          : "numbers.max";
+  return `numbers = [${literal}]\nresult = ${expr}\nputs result`;
+}
+
+function nlJavaReduce(literal, canonical, isFloat) {
+  const ty = isFloat ? "double" : "int";
+  let body;
+  if (canonical === "sum") {
+    body = `${ty} result = 0;\n        for (${ty} n : numbers) result += n;`;
+  } else if (canonical === "product") {
+    body = `${ty} result = 1;\n        for (${ty} n : numbers) result *= n;`;
+  } else if (canonical === "minimum") {
+    body = `${ty} result = numbers[0];\n        for (${ty} n : numbers) result = Math.min(result, n);`;
+  } else {
+    body = `${ty} result = numbers[0];\n        for (${ty} n : numbers) result = Math.max(result, n);`;
+  }
+  return `public class Main {\n    public static void main(String[] args) {\n        ${ty}[] numbers = {${literal}};\n        ${body}\n        System.out.println(result);\n    }\n}`;
+}
+
+function nlCsharpReduce(literal, canonical, isFloat) {
+  const ty = isFloat ? "double" : "int";
+  const expr =
+    canonical === "sum"
+      ? "numbers.Sum()"
+      : canonical === "product"
+        ? `numbers.Aggregate((${ty})1, (a, b) => a * b)`
+        : canonical === "minimum"
+          ? "numbers.Min()"
+          : "numbers.Max()";
+  return `using System;\nusing System.Linq;\n\nclass Program {\n    static void Main() {\n        ${ty}[] numbers = {${literal}};\n        var result = ${expr};\n        Console.WriteLine(result);\n    }\n}`;
+}
+
+function nlCppReduce(literal, canonical, isFloat) {
+  const ty = isFloat ? "double" : "int";
+  const expr =
+    canonical === "sum"
+      ? `std::accumulate(numbers.begin(), numbers.end(), (${ty})0)`
+      : canonical === "product"
+        ? `std::accumulate(numbers.begin(), numbers.end(), (${ty})1, std::multiplies<${ty}>())`
+        : canonical === "minimum"
+          ? "*std::min_element(numbers.begin(), numbers.end())"
+          : "*std::max_element(numbers.begin(), numbers.end())";
+  return `#include <algorithm>\n#include <iostream>\n#include <numeric>\n#include <vector>\n\nint main() {\n    std::vector<${ty}> numbers = {${literal}};\n    ${ty} result = ${expr};\n    std::cout << result << std::endl;\n    return 0;\n}`;
+}
+
+function nlCReduce(numbers, canonical, isFloat) {
+  const literal = numericListLiterals(numbers, isFloat);
+  const count = numbers.length;
+  const ty = isFloat ? "double" : "int";
+  const fmt = isFloat ? "%g" : "%d";
+  const init =
+    canonical === "sum" ? "0" : canonical === "product" ? "1" : "numbers[0]";
+  let step;
+  if (canonical === "sum") step = "        result += numbers[i];";
+  else if (canonical === "product") step = "        result *= numbers[i];";
+  else if (canonical === "minimum") step = "        if (numbers[i] < result) result = numbers[i];";
+  else step = "        if (numbers[i] > result) result = numbers[i];";
+  return `#include <stdio.h>\n\nint main(void) {\n    ${ty} numbers[] = {${literal}};\n    size_t count = ${count};\n    ${ty} result = ${init};\n    for (size_t i = 0; i < count; ++i) {\n${step}\n    }\n    printf("${fmt}\\n", result);\n    return 0;\n}`;
+}
+
+// Issue #395: universal numeric-list coding algorithm. "<operation> these
+// numbers in <language>, give me the code and the result" produces generated
+// code plus the deterministically-computed result. Mirrors try_numeric_list /
+// solve_numeric_list in src/solver_handlers/numeric_list/mod.rs. The result is
+// computed in-solver (every operation is a pure, total function over the parsed
+// values) — no runtime is embedded.
+function tryNumericList(prompt) {
   const normalized = normalizePrompt(prompt);
-  const wantsSort =
-    operationMatchesSlug("sort", normalized) ||
-    operationMatchesSlug("reverse_sort", normalized);
-  if (!wantsSort) return null;
+
+  // Defer genuine function-synthesis prompts ("write a function that returns the
+  // sum of 3 and 5") to the dedicated program-synthesis handler.
+  if (operationMatchesSlug("function", normalized) || prompt.includes("def ")) {
+    return null;
+  }
+
+  const canonical = detectNumericListOperation(normalized);
+  if (!canonical) return null;
+
+  // Reductions phrase-overlap with ordinary prose far more than the imperative
+  // transform verbs do, so they only fire when the prompt explicitly asks for
+  // code (the `code_request` operation) — exactly the issue #395 contract.
+  if (
+    numericListFamily(canonical) === "list_reduction" &&
+    !operationMatchesSlug("code_request", normalized)
+  ) {
+    return null;
+  }
 
   const slug = programLanguageFromPrompt(normalized);
   if (!slug) return null;
   const languageInfo = WRITE_PROGRAM_LANGUAGES[slug];
   if (!languageInfo) return null;
 
-  const numbers = parseSortNumbers(prompt);
+  const numbers = parseNumericListNumbers(prompt);
   if (numbers.length < 2) return null;
 
-  const descending = operationMatchesSlug("reverse_sort", normalized);
-  const ordered = numbers.slice().sort((a, b) => {
-    const cmp = a.value < b.value ? -1 : a.value > b.value ? 1 : 0;
-    return descending ? -cmp : cmp;
-  });
   const isFloat = numbers.some((n) => !Number.isInteger(n.value));
   const given = numbers.map((n) => n.text);
-  const sorted = ordered.map((n) => n.text);
-  const code = sortNumbersCode(slug, numbers, descending, isFloat);
+  const result = computeNumericList(canonical, numbers, isFloat);
+  const code = numericListCode(slug, numbers, canonical, isFloat);
+  const resultKind = numericListResultKind(canonical);
+  const family = numericListFamily(canonical);
 
   const responseLanguage = detectLanguage(prompt);
   const parts =
-    SORT_NUMBERS_LOCALIZATION[responseLanguage] || SORT_NUMBERS_LOCALIZATION.en;
-  const orderWord = descending ? parts.descending : parts.ascending;
+    NUMERIC_LIST_LOCALIZATION[responseLanguage] || NUMERIC_LIST_LOCALIZATION.en;
   const givenText = given.join(", ");
-  const sortedText = sorted.join(", ");
-  const body = `${parts.intro(languageInfo.name, givenText, orderWord)}\n\n\`\`\`${languageInfo.fence}\n${code}\n\`\`\`\n\n${parts.resultLabel} ${sortedText}`;
+  const shown = resultKind === "scalar" ? result[0] : result.join(", ");
+  const resultText = result.join(", ");
+  const body = `${parts.intro(canonical, languageInfo.name, givenText)}\n\n\`\`\`${languageInfo.fence}\n${code}\n\`\`\`\n\n${parts.resultLabel} ${shown}`;
 
-  const orderSlug = descending ? "descending" : "ascending";
   return {
     intent: "write_program",
     content: body,
     confidence: 1.0,
     evidence: [
-      `response:write_program:sort_numbers:${slug}`,
-      `formalize:(@USER OP:sort numbers:[${given.join(" ")}] language:${slug} order:${orderSlug} request:[code result])`,
-      `synthesis:spec:language=${slug} task=sort_numbers order=${orderSlug}`,
+      `response:write_program:numeric_list:${canonical}:${slug}`,
+      `formalize:(@USER OP:${canonical} numbers:[${given.join(" ")}] language:${slug} result_kind:${resultKind} request:[code result])`,
+      `synthesis:spec:language=${slug} task=numeric_list operation=${canonical} family=${family} result_kind=${resultKind}`,
       `synthesis:given:${givenText}`,
       `composition:code_fragment:${code}`,
       "execution_status:computed deterministically",
-      "execution_environment:pure in-solver evaluation of a decidable comparison sort",
-      `execution_result:${sortedText}`,
+      "execution_environment:pure in-solver evaluation of a decidable numeric-list operation",
+      `execution_result:${resultText}`,
     ],
     trace: [
-      `synthesis:spec:language=${slug} task=sort_numbers order=${orderSlug}`,
-      `execution_result:${sortedText}`,
+      `synthesis:spec:language=${slug} task=numeric_list operation=${canonical} family=${family} result_kind=${resultKind}`,
+      `execution_result:${resultText}`,
     ],
   };
 }
@@ -12191,6 +12571,109 @@ const OPERATION_VOCABULARY_LINO = [
   '      phrase "सीमा"',
   '    language "zh"',
   '      phrase "阈值"',
+  '  operation "reverse"',
+  '    language "en"',
+  '      phrase "reverse"',
+  '      phrase "flip"',
+  '    language "ru"',
+  '      phrase "переверни"',
+  '      phrase "перевернуть"',
+  '      phrase "разверни"',
+  '      phrase "развернуть"',
+  '      phrase "задом наперёд"',
+  '    language "hi"',
+  '      phrase "उलट"',
+  '      phrase "पलट"',
+  '    language "zh"',
+  '      phrase "反转"',
+  '      phrase "倒转"',
+  '      phrase "颠倒"',
+  '  operation "sum"',
+  '    language "en"',
+  '      phrase "sum of"',
+  '      phrase "sum the"',
+  '      phrase "sum up"',
+  '      phrase "total of"',
+  '      combo "add+up"',
+  '    language "ru"',
+  '      phrase "сумм"',
+  '      phrase "сложи"',
+  '      phrase "складыва"',
+  '      phrase "суммируй"',
+  '    language "hi"',
+  '      phrase "योग"',
+  '      phrase "जोड़"',
+  '    language "zh"',
+  '      phrase "求和"',
+  '      phrase "总和"',
+  '      phrase "相加"',
+  '      phrase "之和"',
+  '  operation "product"',
+  '    language "en"',
+  '      phrase "product of"',
+  '      phrase "multiply"',
+  '      combo "multiply+together"',
+  '    language "ru"',
+  '      phrase "произведение"',
+  '      phrase "перемнож"',
+  '      phrase "умнож"',
+  '    language "hi"',
+  '      phrase "गुणनफल"',
+  '      phrase "गुणा"',
+  '    language "zh"',
+  '      phrase "乘积"',
+  '      phrase "相乘"',
+  '      phrase "之积"',
+  '  operation "minimum"',
+  '    language "en"',
+  '      phrase "minimum"',
+  '      phrase "smallest"',
+  '      phrase "lowest"',
+  '    language "ru"',
+  '      phrase "минимум"',
+  '      phrase "минимальн"',
+  '      phrase "наименьш"',
+  '    language "hi"',
+  '      phrase "न्यूनतम"',
+  '      phrase "सबसे छोटी"',
+  '      phrase "सबसे छोटा"',
+  '    language "zh"',
+  '      phrase "最小"',
+  '  operation "maximum"',
+  '    language "en"',
+  '      phrase "maximum"',
+  '      phrase "largest"',
+  '      phrase "biggest"',
+  '      phrase "highest"',
+  '    language "ru"',
+  '      phrase "максимум"',
+  '      phrase "максимальн"',
+  '      phrase "наибольш"',
+  '    language "hi"',
+  '      phrase "अधिकतम"',
+  '      phrase "सबसे बड़ी"',
+  '      phrase "सबसे बड़ा"',
+  '    language "zh"',
+  '      phrase "最大"',
+  '  operation "code_request"',
+  '    language "en"',
+  '      phrase "code"',
+  '      phrase "program"',
+  '      phrase "script"',
+  '      phrase "snippet"',
+  '    language "ru"',
+  '      phrase "код"',
+  '      phrase "программ"',
+  '      phrase "скрипт"',
+  '    language "hi"',
+  '      phrase "कोड"',
+  '      phrase "प्रोग्राम"',
+  '      phrase "स्क्रिप्ट"',
+  '    language "zh"',
+  '      phrase "代码"',
+  '      phrase "代碼"',
+  '      phrase "程序"',
+  '      phrase "程式"',
 ].join("\n");
 
 let cachedOperationVocabulary = null;
@@ -31813,12 +32296,13 @@ async function solve(prompt, history, prefs, userContext = {}) {
       },
     },
     { name: "tryTextManipulation", run: () => tryTextManipulation(prompt, normalized) },
-    // Issue #395: a concrete "sort these numbers in <language>, give me the code
-    // and the result" must produce generated code plus the deterministically-
-    // computed sorted output. It runs before program synthesis and arithmetic
-    // (either of which would otherwise claim the numeric prompt), mirroring the
-    // Rust dispatch where sort_numbers precedes arithmetic and program_synthesis.
-    { name: "trySortNumbers", run: () => trySortNumbers(prompt) },
+    // Issue #395: a concrete "<operation> these numbers in <language>, give me
+    // the code and the result" must produce generated code plus the
+    // deterministically-computed result. It runs before program synthesis and
+    // arithmetic (either of which would otherwise claim the numeric prompt),
+    // mirroring the Rust dispatch where numeric_list precedes arithmetic and
+    // program_synthesis.
+    { name: "tryNumericList", run: () => tryNumericList(prompt) },
     { name: "tryProgramSynthesis", run: () => tryProgramSynthesis(prompt, normalized) },
     {
       name: "tryCompoundInterest",

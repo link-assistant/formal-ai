@@ -121,19 +121,25 @@ fn go_transform(literal: &str, transform: Transform, is_float: bool) -> String {
     } else {
         ("int", "strconv.Itoa(n)")
     };
-    let action = match transform {
-        Transform::SortAscending => {
-            "sort.Slice(numbers, func(i, j int) bool { return numbers[i] < numbers[j] })".to_owned()
-        }
-        Transform::SortDescending => {
-            "sort.Slice(numbers, func(i, j int) bool { return numbers[i] > numbers[j] })".to_owned()
-        }
-        Transform::Reverse => {
-            "for i, j := 0, len(numbers)-1; i < j; i, j = i+1, j-1 {\n\t\tnumbers[i], numbers[j] = numbers[j], numbers[i]\n\t}".to_owned()
-        }
+    // `reverse` swaps in place and never touches the `sort` package; importing it
+    // unconditionally would make the generated program fail to compile with
+    // "imported and not used". Only the comparison sorts pull `sort` in.
+    let (imports, action) = match transform {
+        Transform::SortAscending => (
+            "\t\"fmt\"\n\t\"sort\"\n\t\"strconv\"\n\t\"strings\"",
+            "sort.Slice(numbers, func(i, j int) bool { return numbers[i] < numbers[j] })".to_owned(),
+        ),
+        Transform::SortDescending => (
+            "\t\"fmt\"\n\t\"sort\"\n\t\"strconv\"\n\t\"strings\"",
+            "sort.Slice(numbers, func(i, j int) bool { return numbers[i] > numbers[j] })".to_owned(),
+        ),
+        Transform::Reverse => (
+            "\t\"fmt\"\n\t\"strconv\"\n\t\"strings\"",
+            "for i, j := 0, len(numbers)-1; i < j; i, j = i+1, j-1 {\n\t\tnumbers[i], numbers[j] = numbers[j], numbers[i]\n\t}".to_owned(),
+        ),
     };
     format!(
-        "package main\n\nimport (\n\t\"fmt\"\n\t\"sort\"\n\t\"strconv\"\n\t\"strings\"\n)\n\nfunc main() {{\n\tnumbers := []{ty}{{{literal}}}\n\t{action}\n\tparts := make([]string, len(numbers))\n\tfor i, n := range numbers {{\n\t\tparts[i] = {format_item}\n\t}}\n\tfmt.Println(strings.Join(parts, \", \"))\n}}"
+        "package main\n\nimport (\n{imports}\n)\n\nfunc main() {{\n\tnumbers := []{ty}{{{literal}}}\n\t{action}\n\tparts := make([]string, len(numbers))\n\tfor i, n := range numbers {{\n\t\tparts[i] = {format_item}\n\t}}\n\tfmt.Println(strings.Join(parts, \", \"))\n}}"
     )
 }
 
