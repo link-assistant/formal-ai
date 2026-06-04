@@ -635,9 +635,9 @@ pub fn lexicon() -> &'static Lexicon {
 mod tests {
     use super::super::roles::{
         ROLE_DEFINITION_COMMAND, ROLE_IMPLEMENTATION_LANGUAGE_NOUN,
-        ROLE_IMPLEMENTATION_LANGUAGE_PREPOSITION, ROLE_LINKS_NOTATION_FORMAT,
-        ROLE_MECHANISM_INQUIRY, ROLE_PROCEDURAL_REQUEST, ROLE_PROGRAM_ARTIFACT,
-        ROLE_PROGRAM_MODIFICATION, ROLE_TRANSLATION_ACTION,
+        ROLE_IMPLEMENTATION_LANGUAGE_PREPOSITION, ROLE_INTERROGATIVE_OPENER,
+        ROLE_LINKS_NOTATION_FORMAT, ROLE_MECHANISM_INQUIRY, ROLE_PROCEDURAL_REQUEST,
+        ROLE_PROGRAM_ARTIFACT, ROLE_PROGRAM_MODIFICATION, ROLE_TRANSLATION_ACTION,
     };
     use super::*;
 
@@ -1048,6 +1048,73 @@ mod tests {
             }
             assert_eq!(count, 1, "exactly one meaning should carry role {role}");
         }
+    }
+
+    #[test]
+    fn interrogative_opener_role_exposes_head_initial_question_words() {
+        // Issue #386: the intent classifier's `starts_with_question_word`
+        // (intent_formalization.rs) tells a question from a statement by matching a
+        // fronted wh-word, reading the surfaces from this role instead of a
+        // hardcoded prefix list. It consults only the head-initial English/Russian
+        // partition (a prefix match: the bare word plus a trailing space). Asserting
+        // the *whole* English and Russian sets — not just membership — locks
+        // behaviour preservation against the original list: silently adding an opener
+        // would broaden question detection, and dropping one would miss questions.
+        let lex = lexicon();
+        let mut english = lex.words_for_role_in_languages(ROLE_INTERROGATIVE_OPENER, &["en"]);
+        english.sort();
+        assert_eq!(
+            english,
+            vec![
+                "how".to_owned(),
+                "what".to_owned(),
+                "when".to_owned(),
+                "where".to_owned(),
+                "which".to_owned(),
+                "who".to_owned(),
+                "why".to_owned(),
+            ],
+            "English interrogative-opener set drifted from the original classifier list"
+        );
+        let mut russian = lex.words_for_role_in_languages(ROLE_INTERROGATIVE_OPENER, &["ru"]);
+        russian.sort();
+        assert_eq!(
+            russian,
+            vec![
+                "где".to_owned(),
+                "как".to_owned(),
+                "когда".to_owned(),
+                "кто".to_owned(),
+                "почему".to_owned(),
+                "что".to_owned(),
+            ],
+            "Russian interrogative-opener set drifted from the original classifier list"
+        );
+        // The head-final Hindi/Chinese forms are carried for coverage but must not
+        // leak into the head-initial partition the front scan reads.
+        let head_initial =
+            lex.words_for_role_in_languages(ROLE_INTERROGATIVE_OPENER, &["en", "ru"]);
+        for cjk in ["क्या", "什么", "कौन", "谁"] {
+            assert!(
+                !head_initial.iter().any(|w| w == cjk),
+                "head-final surface {cjk} leaked into the head-initial partition"
+            );
+        }
+        // The single meaning reduces to the `link` ontology root like every other
+        // meaning, so the data stays self-describing end to end.
+        let mut count = 0;
+        for meaning in lex.meanings_with_role(ROLE_INTERROGATIVE_OPENER) {
+            count += 1;
+            assert!(
+                lex.reaches_root(&meaning.slug),
+                "meaning {} (role interrogative_opener) must reduce to the link root",
+                meaning.slug
+            );
+        }
+        assert_eq!(
+            count, 1,
+            "exactly one meaning should carry role interrogative_opener"
+        );
     }
 
     #[test]

@@ -1001,6 +1001,22 @@ bump: minor
   /Devanagari names the resolver already understands — longest-first and
   regex-escaped. Parity with the resolver is proven by
   `experiments/issue-386-worker-percent-of-currency-parity.mjs` (issue #386).
+- The intent classifier's question/statement split
+  (`starts_with_question_word` in `src/intent_formalization.rs`) no longer
+  hardcodes the fronted wh-words. A new self-describing meaning
+  `interrogative_opener` (`data/seed/meanings-intent.lino`, rooted through
+  `inquiry` to the `link` ontology root) carries the opener surfaces in every
+  supported language, each word form described; the classifier reads the
+  English and Russian openers from the lexicon and prefix-matches them with a
+  trailing space, exactly reproducing the previous recogniser. English and
+  Russian are head-initial so the opener fronts the prompt and is consulted
+  positionally; the head-final Hindi and Chinese surfaces are carried for
+  coverage but not matched at the front. The scanned surface set is locked by
+  the lib test `interrogative_opener_role_exposes_head_initial_question_words`
+  (`src/seed/meanings.rs`) and the behaviour by
+  `fronted_interrogative_opener_classifies_prompt_as_question`
+  (`tests/unit/specification/intent_formalization.rs`); the worker
+  `MEANINGS_LINO` mirror was re-synced byte-identical (issue #386).
 
 ### Fixed
 - The follow-up "Отмени сортировку" ("cancel the sorting") no longer returns

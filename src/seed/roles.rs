@@ -700,6 +700,15 @@ pub const ROLE_WHO_QUESTION_LEAD: &str = "who_question_lead";
 /// interrogative last, detected with a suffix match. Carried by
 /// `who_is_question`; queried as suffix literals.
 pub const ROLE_WHO_QUESTION_TAIL: &str = "who_question_tail";
+/// Semantic role: a fronted question word that opens a content question.
+///
+/// "what ", "who ", "why ", "что ", "кто ", "как ", … — the wh-words. English
+/// and Russian are head-initial, so the opener starts the prompt and is detected
+/// with a prefix match (a trailing space follows the bare word). Hindi and
+/// Chinese are head-final and carried for coverage but not matched positionally.
+/// Carried by `interrogative_opener`; queried as prefix literals by the intent
+/// classifier to tell a question from a statement.
+pub const ROLE_INTERROGATIVE_OPENER: &str = "interrogative_opener";
 /// Semantic role: a crude taunt asking whether the assistant performed a bodily
 /// action it cannot perform.
 ///

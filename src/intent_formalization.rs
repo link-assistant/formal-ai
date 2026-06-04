@@ -886,23 +886,20 @@ fn infer_kind(
 }
 
 fn starts_with_question_word(normalized: &str) -> bool {
-    [
-        "what ",
-        "who ",
-        "why ",
-        "where ",
-        "when ",
-        "how ",
-        "which ",
-        "что ",
-        "кто ",
-        "как ",
-        "где ",
-        "когда ",
-        "почему ",
-    ]
-    .iter()
-    .any(|prefix| normalized.starts_with(prefix))
+    // The interrogative openers (the wh-words) are carried by the
+    // `interrogative_opener` meaning in the seed, not hardcoded here. English and
+    // Russian are head-initial, so the opener fronts the prompt and a prefix match
+    // — the bare word followed immediately by a space — detects it; the head-final
+    // Hindi and Chinese surfaces are carried for coverage but place the question
+    // word later, which this front scan does not chase.
+    crate::seed::lexicon()
+        .words_for_role_in_languages(crate::seed::ROLE_INTERROGATIVE_OPENER, &["en", "ru"])
+        .iter()
+        .any(|word| {
+            normalized
+                .strip_prefix(word.as_str())
+                .is_some_and(|rest| rest.starts_with(' '))
+        })
 }
 
 fn push_unique(values: &mut Vec<String>, value: String) {
