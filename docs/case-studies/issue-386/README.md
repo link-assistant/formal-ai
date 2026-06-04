@@ -292,15 +292,20 @@ cancel flow plus the inverse-rule reasoning chain rendered in the browser).
 
 ### R-g — Case study · **done** (this document + `raw-data/`).
 
-### R-h — Architecture rethink · **first increment delivered; remainder is a staged roadmap (§6)**
+### R-h — Architecture rethink · **core principle delivered as a codebase-wide sweep; infra-blocked subsystems staged (§6)**
 The rethink's governing principle — behavior **derived from self-describing seed
-data** instead of hardcoded control flow — is applied in this PR: the cancel-sort
-fix (§4 R-b-bug) is its first concrete, regression-free instance (operations
-declare an `inverse`; the subtractive rules are *derived*, never written). The
-remaining sub-systems — a fully links-rooted semantic meta-language, tree-sitter
-CST/AST, knowledge-API caches, multiple virtual memory views, adoption of
-`meta-expression` for translation, and zero bare-text processing end to end — are
-an ongoing program rather than a one-commit change. Several need a product /
+data** instead of hardcoded control flow — is applied throughout this PR. The
+cancel-sort fix (§4 R-b-bug) is its first concrete, regression-free instance
+(operations declare an `inverse`; the subtractive rules are *derived*, never
+written); the same principle then drives a codebase-wide sweep that converts the
+hardcoded recognizers — calculation and currency cues, the translation and
+define-in-Links gates, unit and calendar vocabulary, the intent question/statement
+split, and the rest — into seed-defined meanings queried by semantic role, each
+conversion landed as its own commit and ledgered in `changelog.d` (R-m: hardcoded
+text now lives only in tests). The remaining sub-systems — a fully links-rooted
+semantic meta-language, tree-sitter CST/AST, knowledge-API caches, multiple
+virtual memory views, and adoption of `meta-expression` for translation — are an
+ongoing program rather than a one-commit change. Several need a product /
 runtime decision before they can land safely: a native tree-sitter dependency
 cannot load in the wasm worker that serves the web/desktop/VS Code surfaces;
 live knowledge-API access and a web-search provider from the browser require an
@@ -380,7 +385,10 @@ independently shippable and testable:
    evict raw API responses first (restorable on demand) while preserving the
    reasoning steps that formed the request and followed it.
 7. **No bare-text processing in code.** Production code reasons in the
-   meta-language; hardcoded text lives only in tests (R-m).
+   meta-language; hardcoded text lives only in tests (R-m). **Delivered
+   incrementally across this PR** by the seed-role sweep (§4 R-h): the
+   `changelog.d` ledger records each converted recognizer, the intent
+   question/statement split being the most recent.
 
 ## 7. Verification
 
