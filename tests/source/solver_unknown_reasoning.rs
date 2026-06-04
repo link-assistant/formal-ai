@@ -16,6 +16,8 @@ use crate::solver_handlers::finalize_simple;
 use crate::solver_helpers::humanize_url;
 use crate::unknown_opener::language_aware_unknown_answer;
 
+const FOCUS_PLACEHOLDER: &str = concat!("{", "focus", "}");
+
 #[derive(Debug, Clone, Copy)]
 pub struct UnknownReasoningConfig {
     pub questioning_rigor: f32,
@@ -336,7 +338,7 @@ fn render_unresolved_unknown(language: Language, focus: &str, questioning_rigor:
     } else {
         "unknown_reasoning_trace"
     };
-    localized_seed_response(intent, language.slug()).replace("{focus}", focus)
+    localized_seed_response(intent, language.slug()).replace(FOCUS_PLACEHOLDER, focus)
 }
 
 fn localized_seed_response(intent: &str, language: &str) -> String {
