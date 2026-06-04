@@ -728,6 +728,3 @@ pub fn lexicon() -> &'static Lexicon {
     static CACHE: OnceLock<Lexicon> = OnceLock::new();
     CACHE.get_or_init(|| parse_lexicon(&MEANING_FILES.join("\n")))
 }
-
-#[cfg(test)]
-mod tests;

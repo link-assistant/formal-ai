@@ -70,6 +70,10 @@ path = "tests/unit/mod.rs"
 name = "integration"
 path = "tests/integration/mod.rs"
 
+[[test]]
+name = "source"
+path = "tests/source/mod.rs"
+
 [profile.release]
 lto = true
 codegen-units = 1
