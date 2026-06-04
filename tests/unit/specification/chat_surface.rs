@@ -607,70 +607,55 @@ fn unknown_answer_mentions_localized_report_path_in_russian() {
 
 #[test]
 fn unknown_answer_explains_seed_extension_for_supported_languages() {
-    struct Case {
-        label: &'static str,
-        language: &'static str,
-        prompt: &'static str,
-        expected_extension_text: &'static str,
-    }
-
     let cases = [
-        Case {
-            label: "English",
-            language: "en",
-            prompt: "This synthetic zzz123 request has no rule.",
-            expected_extension_text: "shared Links Notation seed fact or links rule",
-        },
-        Case {
-            label: "Russian",
-            language: "ru",
-            prompt: "Какая у тебя модель личности?",
-            expected_extension_text: "общий seed-факт или правило связей в формате Links Notation",
-        },
-        Case {
-            label: "Hindi",
-            language: "hi",
-            prompt: "अदृश्य zzz123 अनुरोध",
-            expected_extension_text: "shared Links Notation seed fact या links rule",
-        },
-        Case {
-            label: "Chinese",
-            language: "zh",
-            prompt: "未知 zzz123 请求",
-            expected_extension_text: "共享的 Links Notation seed 事实或 links rule",
-        },
+        (
+            "English",
+            "en",
+            "This synthetic zzz123 request has no rule.",
+            "shared Links Notation seed fact or links rule",
+            ["Report issue", "trace"],
+        ),
+        (
+            "Russian",
+            "ru",
+            "Какая у тебя модель личности?",
+            "общий seed-факт или правило связей в формате Links Notation",
+            ["сообщите о недостающем правиле", "трассиров"],
+        ),
+        (
+            "Hindi",
+            "hi",
+            "अदृश्य zzz123 अनुरोध",
+            "shared Links Notation seed fact या links rule",
+            ["Report issue", "trace"],
+        ),
+        (
+            "Chinese",
+            "zh",
+            "未知 zzz123 请求",
+            "共享的 Links Notation seed 事实或 links rule",
+            ["Report issue", "trace"],
+        ),
     ];
 
-    for case in cases {
-        let response = answer(case.prompt);
+    for (label, language, prompt, expected_extension_text, report_terms) in cases {
+        let response = answer(prompt);
         assert_eq!(
             response.intent, "unknown",
-            "{} prompt should stay unknown",
-            case.label
+            "{label} prompt should stay unknown"
         );
         assert!(
-            response.answer.contains(case.expected_extension_text)
+            response.answer.contains(expected_extension_text)
                 && response.answer.contains("Links Notation"),
             "{} (language: {}) unknown answer must explain seed extension, got: {}",
-            case.label,
-            case.language,
+            label,
+            language,
             response.answer
         );
-        if case.language == "ru" {
+        for expected in report_terms {
             assert!(
-                response.answer.contains("сообщите о недостающем правиле")
-                    && response.answer.contains("трассиров"),
-                "{} (language: {}) unknown answer must frame reporting as a localized traced last resort, got: {}",
-                case.label,
-                case.language,
-                response.answer
-            );
-        } else {
-            assert!(
-                response.answer.contains("Report issue") && response.answer.contains("trace"),
-                "{} (language: {}) unknown answer must frame reporting as a traced last resort, got: {}",
-                case.label,
-                case.language,
+                response.answer.contains(expected),
+                "{label} (language: {language}) unknown answer must include report text {expected:?}, got: {}",
                 response.answer
             );
         }
