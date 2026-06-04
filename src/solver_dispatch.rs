@@ -18,9 +18,9 @@ use crate::solver_handlers::{
     try_javascript_execution, try_meta_explanation, try_network_query, try_opinion_question,
     try_program_synthesis, try_proof_request, try_punctuation_only_prompt,
     try_research_comparison_table, try_roleplay_request, try_shell_refusal,
-    try_software_project_followup, try_software_project_request, try_source_conflict,
-    try_source_refresh, try_summarization_request, try_text_manipulation, try_translation,
-    try_url_navigate, try_web_search, try_who_is_question, try_write_script,
+    try_software_project_followup, try_software_project_request, try_sort_numbers,
+    try_source_conflict, try_source_refresh, try_summarization_request, try_text_manipulation,
+    try_translation, try_url_navigate, try_web_search, try_who_is_question, try_write_script,
 };
 use crate::solver_handlers_policy::{try_kupi_slona, try_physical_action_question};
 
@@ -87,6 +87,12 @@ pub const SPECIALIZED_HANDLERS: &[(&str, SpecializedHandler)] = &[
     ("capabilities", try_capabilities),
     ("calendar_reasoning", try_calendar_reasoning),
     ("compound_interest", try_compound_interest),
+    // Issue #395: a concrete "sort these numbers in <language>, give me the
+    // code and the result" request must produce generated code plus the
+    // deterministically-computed sorted output. It runs before `arithmetic`
+    // (which would otherwise claim the numeric prompt) and before the generic,
+    // result-less `algorithm` handler.
+    ("sort_numbers", try_sort_numbers),
     ("arithmetic", handle_arithmetic),
     ("javascript_execution", handle_javascript_execution),
     ("definition_merge", try_definition_merge),
