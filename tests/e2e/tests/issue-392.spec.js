@@ -10,8 +10,15 @@ const { test, expect } = require('@playwright/test');
 const RUST_PROMPT =
   'Write me a Rust program that lists files in the current directory';
 
-async function installActivationBoundClipboard(page) {
-  await page.addInitScript(() => {
+const UI_LANGUAGE_CASES = [
+  { language: 'en', name: 'English', userHeading: '### You' },
+  { language: 'ru', name: 'Russian', userHeading: '### Вы' },
+  { language: 'hi', name: 'Hindi', userHeading: '### आप' },
+  { language: 'zh', name: 'Chinese', userHeading: '### 你' },
+];
+
+async function installActivationBoundClipboard(page, uiLanguage) {
+  await page.addInitScript((language) => {
     const state = {
       writes: [],
       events: [],
@@ -75,9 +82,27 @@ async function installActivationBoundClipboard(page) {
 
     window.localStorage.setItem(
       'formal-ai.preferences.v1',
-      'demo_preferences\n  demoMode "off"\n  diagnosticsMode "on"\n  greetingVariations "off"',
+      [
+        'demo_preferences',
+        '  demoMode "off"',
+        '  diagnosticsMode "on"',
+        '  greetingVariations "off"',
+        `  uiLanguage "${language}"`,
+      ].join('\n'),
     );
-  });
+  }, uiLanguage);
+}
+
+async function openApp(page, uiLanguage) {
+  await installActivationBoundClipboard(page, uiLanguage);
+  await page.goto('./');
+  await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
+  await expect(page.locator('[data-testid="demo-status"]')).toBeVisible();
+  await expect(page.locator('[data-testid="setting-ui-language"]')).toHaveValue(
+    uiLanguage,
+  );
+  await expect(page.locator('html')).toHaveAttribute('lang', uiLanguage);
+  await expect(page.locator('.status')).toBeVisible();
 }
 
 async function sendPrompt(page, text = RUST_PROMPT) {
@@ -101,52 +126,48 @@ async function clipboardWrites(page) {
 }
 
 test.describe('Issue #392 - activation-safe copy actions', () => {
-  test.beforeEach(async ({ page }) => {
-    await installActivationBoundClipboard(page);
-    await page.goto('./');
-    await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
-    await expect(page.locator('[data-testid="demo-status"]')).toHaveText(
-      'Manual mode',
-    );
-    await expect(page.locator('.status')).toContainText('wasm worker');
-  });
+  for (const { language, name, userHeading } of UI_LANGUAGE_CASES) {
+    test(`copies code blocks, messages, and conversations in ${name}`, async ({
+      page,
+    }) => {
+      await openApp(page, language);
 
-  test('copies code blocks, messages, and conversations without pre-granted clipboard permission', async ({
-    page,
-  }) => {
-    const message = await sendPrompt(page);
+      const message = await sendPrompt(page);
 
-    const codeCopy = message
-      .locator('.markdown-body .code-block [data-testid="code-copy-button"]')
-      .first();
-    await expect(codeCopy).toBeVisible();
-    await codeCopy.click();
-    await expect(codeCopy).toHaveAttribute('data-copied', 'true');
+      const codeCopy = message
+        .locator('.markdown-body .code-block [data-testid="code-copy-button"]')
+        .first();
+      await expect(codeCopy).toBeVisible();
+      await codeCopy.click();
+      await expect(codeCopy).toHaveAttribute('data-copied', 'true');
 
-    let writes = await clipboardWrites(page);
-    expect(writes.at(-1)).toContain('fn main');
-    expect(writes.at(-1)).not.toContain('```');
+      let writes = await clipboardWrites(page);
+      expect(writes.at(-1)).toContain('fn main');
+      expect(writes.at(-1)).not.toContain('```');
 
-    const messageCopy = message.locator('[data-testid="copy-markdown-button"]');
-    await messageCopy.click();
-    await expect(messageCopy).toHaveAttribute('data-copied', 'true');
+      const messageCopy = message.locator(
+        '[data-testid="copy-markdown-button"]',
+      );
+      await messageCopy.click();
+      await expect(messageCopy).toHaveAttribute('data-copied', 'true');
 
-    writes = await clipboardWrites(page);
-    expect(writes.at(-1)).toContain('```rust');
-    expect(writes.at(-1)).toContain('fn main');
+      writes = await clipboardWrites(page);
+      expect(writes.at(-1)).toContain('```rust');
+      expect(writes.at(-1)).toContain('fn main');
 
-    const conversationCopy = page
-      .locator('[data-testid="conversation-copy"]')
-      .first();
-    await expect(conversationCopy).toBeVisible();
-    await conversationCopy.click();
-    await expect(conversationCopy).toHaveAttribute('data-copied', 'true');
+      const conversationCopy = page
+        .locator('[data-testid="conversation-copy"]')
+        .first();
+      await expect(conversationCopy).toBeVisible();
+      await conversationCopy.click();
+      await expect(conversationCopy).toHaveAttribute('data-copied', 'true');
 
-    writes = await clipboardWrites(page);
-    expect(writes.at(-1)).toContain('# Write me a Rust program');
-    expect(writes.at(-1)).toContain('### You');
-    expect(writes.at(-1)).toContain(RUST_PROMPT);
-    expect(writes.at(-1)).toContain('### formal-ai');
-    expect(writes.at(-1)).toContain('```rust');
-  });
+      writes = await clipboardWrites(page);
+      expect(writes.at(-1)).toContain('# Write me a Rust program');
+      expect(writes.at(-1)).toContain(userHeading);
+      expect(writes.at(-1)).toContain(RUST_PROMPT);
+      expect(writes.at(-1)).toContain('### formal-ai');
+      expect(writes.at(-1)).toContain('```rust');
+    });
+  }
 });
