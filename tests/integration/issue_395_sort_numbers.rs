@@ -69,6 +69,74 @@ fn issue_395_english_javascript_computes_sorted_result() {
         "trace must record semantic AST/CST nodes, got: {}",
         response.links_notation
     );
+    assert!(
+        response
+            .links_notation
+            .contains("synthesis:cst_tree tree_sitter_cst_tree"),
+        "trace must expose the real Tree-sitter CST, got: {}",
+        response.links_notation
+    );
+    assert!(
+        response
+            .links_notation
+            .contains("grammar_crate tree-sitter-javascript"),
+        "CST trace must identify the JavaScript grammar crate, got: {}",
+        response.links_notation
+    );
+    assert!(
+        response.links_notation.contains("has_error false"),
+        "Tree-sitter must parse generated code without errors, got: {}",
+        response.links_notation
+    );
+}
+
+/// The same list coding path must also handle quoted text list data: the
+/// operation remains a semantic list transform, but the value domain is
+/// `string`, the JavaScript renderer must not use a numeric comparator, and the
+/// rendered code must still be validated by the real Tree-sitter Rust binding.
+#[test]
+fn issue_395_string_list_sort_uses_tree_sitter_validated_code_path() {
+    let solver = UniversalSolver::default();
+    let response = solver.solve(
+        "Sort the strings \"pear\", \"apple\", \"banana\" in JavaScript, give me the code and result",
+    );
+
+    assert_eq!(response.intent, "write_program", "got: {}", response.answer);
+    assert!(
+        response
+            .answer
+            .contains(r#"const numbers = ["pear", "apple", "banana"];"#),
+        "code must preserve the user's quoted string list, got: {}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains("[...numbers].sort()"),
+        "string sort must use JavaScript's lexical sort, got: {}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains("Result: apple, banana, pear"),
+        "result must be sorted lexically, got: {}",
+        response.answer
+    );
+    assert!(
+        response.links_notation.contains("value_type=string")
+            && response.links_notation.contains("value_type string"),
+        "trace must record the string value domain, got: {}",
+        response.links_notation
+    );
+    assert!(
+        response
+            .links_notation
+            .contains("binding tree-sitter/lib/binding_rust"),
+        "CST trace must identify the real Tree-sitter Rust binding, got: {}",
+        response.links_notation
+    );
+    assert!(
+        response.links_notation.contains("has_error false"),
+        "Tree-sitter must parse generated code without errors, got: {}",
+        response.links_notation
+    );
 }
 
 /// "descending order" (the `reverse_sort` operation) must flip the ordering and

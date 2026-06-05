@@ -5,7 +5,8 @@
 // that `tryNumericList` routes them to `write_program` with the same generated
 // code and the same deterministically-computed result the Rust solver produces.
 // Beyond the original sort cases it exercises the generalized family — reverse,
-// sum, product, minimum, maximum — across several target languages.
+// sum, product, minimum, maximum — across several target languages, plus quoted
+// text lists for the same transformation path.
 //
 // Run: `node experiments/issue-395-js-numeric-list.mjs`
 
@@ -65,6 +66,18 @@ const cases = [
     intro: "Here is JavaScript code",
     resultLabel: "Result:",
     codeIncludes: "const sorted = [...numbers].sort((a, b) => a - b);",
+    valueType: "integer",
+  },
+  {
+    label: "English / JavaScript (string sort)",
+    prompt:
+      'Sort the strings "pear", "apple", "banana" in JavaScript, give me the code and result',
+    fence: "javascript",
+    result: "apple, banana, pear",
+    intro: "Here is JavaScript code that sorts the strings",
+    resultLabel: "Result:",
+    codeIncludes: 'const sorted = [...numbers].sort();',
+    valueType: "string",
   },
   {
     label: "English / Python (descending)",
@@ -159,6 +172,14 @@ for (const c of cases) {
     ),
     "synthesis:syntax_tree",
   );
+  if (c.valueType) {
+    check(
+      `${c.label}: records ${c.valueType} value type`,
+      hit.evidence.some((line) => line.includes(`value_type=${c.valueType}`)) &&
+        hit.evidence.some((line) => line.includes(`value_type ${c.valueType}`)),
+      `value_type ${c.valueType}`,
+    );
+  }
   if (c.intro) {
     check(`${c.label}: localized intro`, hit.content.includes(c.intro), c.intro);
   }

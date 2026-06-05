@@ -15,11 +15,14 @@ The deployed wasm assistant answered this Russian prompt with `intent: unknown`:
 The prompt asks for a program and for the computed result. The fix now routes
 that request to `write_program`, resolves the operation and target language from
 seed meanings, builds a semantic syntax tree, renders code from that tree, and
-computes the deterministic result in both Rust and the browser worker.
+computes the deterministic result in both Rust and the browser worker. Native
+Rust handlers now also validate the rendered source with real Tree-sitter
+grammars through `tree-sitter/lib/binding_rust` before accepting the program.
 
 This PR also updates the related Python program-synthesis handler so it no
 longer stores a completed Python function as the candidate. It now stores a
-`PythonFunctionTree` with statement nodes and renders source from that tree.
+`PythonFunctionTree` with statement nodes, renders source from that tree, and
+records the Tree-sitter CST for the generated Python source.
 
 ## Requirements
 
@@ -29,20 +32,27 @@ longer stores a completed Python function as the candidate. It now stores a
   web worker.
 - The solution must be broader than one sorting phrase: the same engine covers
   `sort`, descending sort, `reverse`, `sum`, `product`, `minimum`, and `maximum`
-  over numeric lists.
+  over numeric lists, and the transformation path also handles quoted string
+  list data.
 - Code generation must manipulate a CST/AST-like representation, not memorize
   final source strings.
+- Generated code for supported programming languages must be parsed by real
+  Tree-sitter language bindings rather than a hand-built parser.
 - Related code-writing handlers should expose the same structural synthesis
   trace when they build code.
 
 ## Research Anchors
 
-The implementation uses a small project-native syntax tree rather than adding a
-parser dependency, but it follows the same split used by common syntax tooling:
+The implementation now uses the same split as common syntax tooling: semantic
+meaning trees are projected into source, and concrete source is validated by a
+language parser:
 
 - [Tree-sitter basic parsing](https://tree-sitter.github.io/tree-sitter/using-parsers/2-basic-parsing.html):
   concrete syntax trees keep token-level structure, while named-node traversal
   can behave like an AST.
+- Tree-sitter Rust bindings are loaded from grammar crates listed in
+  `data/seed/meanings-program-cst.lino`; the trace records
+  `binding tree-sitter/lib/binding_rust` and the grammar crate used.
 - [ESTree](https://github.com/estree/estree): JavaScript tooling standardizes
   source manipulation around typed `Program` and statement nodes.
 - [Babel parser output](https://babeljs.io/docs/babel-parser): Babel parses to a
@@ -61,14 +71,14 @@ No handler combined the three meanings in the prompt:
 Existing code could recognize pieces of that request, but dispatch had no
 meaning-level numeric-list coding path. The old branch also generated final code
 directly from language-specific strings, which did not satisfy the issue's
-CST/AST requirement.
+CST/AST requirement or prove that generated code parsed as real source.
 
 ## Implementation
 
 ### Numeric-List Programs
 
 `src/solver_handlers/numeric_list/codegen.rs` now lowers the prompt to a
-`NumericProgram` tree:
+`NumericProgram` tree. For the original numeric prompt, the trace looks like:
 
 ```text
 program_syntax_tree
@@ -84,9 +94,42 @@ Renderers for JavaScript, TypeScript, Python, Rust, Go, Ruby, Java, C#, C, and
 C++ project that tree into source code. The same tree is logged as
 `synthesis:syntax_tree` before the rendered `composition:code_fragment`.
 
+The same tree shape is used for quoted text lists:
+
+```text
+program_syntax_tree
+  language javascript
+  value_type string
+  operation sort
+  literal_values pear|apple|banana
+  semantic_node literal_list name=numbers mutable=false
+  semantic_node sort_list source=numbers target=sorted direction=ascending
+  semantic_node print_joined source=sorted separator=", "
+```
+
 `src/web/formal_ai_worker.js` mirrors the same `numericListBuildProgram`,
 `numericListProgramLinks`, and renderer flow so browser evidence and Rust
 evidence describe the same program shape.
+
+### Tree-sitter CST Validation
+
+`src/coding/cst.rs` loads grammar metadata from
+`data/seed/meanings-program-cst.lino` and maps each supported language to its
+real Tree-sitter Rust grammar crate. After a handler renders source, it parses
+that source and only proceeds when the CST root kind matches the expected
+language root and `has_error` is false.
+
+The trace records the concrete parser path:
+
+```text
+synthesis:cst_tree tree_sitter_cst_tree
+  language javascript
+  parser tree_sitter
+  binding tree-sitter/lib/binding_rust
+  grammar_crate tree-sitter-javascript
+  expected_root_kind program
+  has_error false
+```
 
 ### Related Program Synthesis
 
@@ -107,7 +150,8 @@ synthesis:syntax_tree python_function_syntax_tree
 ```
 
 The final Python code is still shown to the user, but it is now a projection of
-the function tree.
+the function tree. Native Rust also logs a `synthesis:cst_tree` entry for the
+rendered Python function.
 
 ### Meaning-Driven Recognition
 
@@ -115,21 +159,23 @@ The numeric-list handler reads operation meanings from
 `data/seed/meanings-numeric-list.lino` and operation surface forms from the seed
 operation vocabulary. Language aliases continue to use the existing
 `program_language_*` meanings. Reductions are gated behind a `code_request`
-meaning so ordinary arithmetic prose is not stolen by code generation.
+meaning so ordinary arithmetic prose is not stolen by code generation. The
+value domain (`integer`, `float`, or `string`) is inferred from parsed list data
+and recorded in both formalization and synthesis evidence.
 
 ## Verification
 
 Focused checks used for this issue:
 
 - `cargo test issue_395 -- --nocapture`
+- `cargo test cst -- --nocapture`
 - `cargo test program_synthesis -- --nocapture`
 - `cargo test --example numeric_list_execution`
 - `node --check src/web/formal_ai_worker.js`
 - `node experiments/issue-395-js-numeric-list.mjs`
-- A node VM check that `tryProgramSynthesis` emits
-  `synthesis:syntax_tree:python_function_syntax_tree`.
 
 The reproducing tests assert that the exact Russian issue prompt routes to
 `write_program`, that an unsorted English JavaScript prompt computes the sorted
-result, and that the Links Notation trace includes `program_syntax_tree` and
-semantic operation nodes.
+result, that a quoted-string JavaScript sort uses `value_type string`, and that
+the Links Notation trace includes both `program_syntax_tree` semantic nodes and
+the real Tree-sitter CST with `has_error false`.

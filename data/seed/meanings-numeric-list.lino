@@ -1,10 +1,10 @@
 numeric_list_operations
-  description "Type ontology for the universal numeric-list coding algorithm (issue #395). Each operation over a list of given numbers is classified into a family and a result kind, so the solver can reason about the task from data instead of a per-case handler. The recognition phrases live in operation-vocabulary.lino; this file connects each recognized operation to the type system that drives reduction and rendering."
+  description "Type ontology for the universal list coding algorithm (issue #395). Each operation over a list of given values is classified into a family and a result kind, so the solver can reason about the task from data instead of a per-case handler. Transformations apply to numeric and quoted text lists; reductions apply to numeric lists. The recognition phrases live in operation-vocabulary.lino; this file connects each recognized operation to the type system that drives reduction and rendering."
   type "numeric_list_operation"
     subtype "list_transformation"
     subtype "list_reduction"
   family "list_transformation"
-    description "Reorders or rearranges the given numbers and yields another list."
+    description "Reorders or rearranges the given values and yields another list."
     result_kind "list"
   family "list_reduction"
     description "Collapses the given numbers into a single scalar value."

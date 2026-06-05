@@ -210,11 +210,13 @@ pub fn try_program_synthesis(
 
     let function_name = extract_function_name(prompt, &canonical)?;
     let candidate = synthesize_python_candidate(prompt, &canonical, &function_name)?;
+    let source_cst = crate::coding::validated_program_cst("python", &candidate.function.render())?;
     log.append(
         "synthesis:spec",
         format!("language=python function={function_name}"),
     );
     log.append("synthesis:syntax_tree", candidate.function.links_notation());
+    log.append("synthesis:cst_tree", source_cst.links_notation());
     for fragment in &candidate.fragments {
         log.append("composition:code_fragment", (*fragment).to_owned());
     }

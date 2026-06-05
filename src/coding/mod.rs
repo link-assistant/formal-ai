@@ -21,6 +21,8 @@
 pub mod blueprint;
 mod blueprint_programs;
 pub mod catalog;
+pub mod cst;
 pub mod guidance;
 
 pub use catalog::*;
+pub use cst::validated_program_cst;

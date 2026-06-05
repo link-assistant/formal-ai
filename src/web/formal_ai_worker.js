@@ -6812,11 +6812,12 @@ function operationMatchesSlug(slug, normalized) {
   return false;
 }
 
-// Issue #395: type ontology for the universal numeric-list coding algorithm.
+// Issue #395: type ontology for the universal list coding algorithm.
 // Byte mirror of data/seed/meanings-numeric-list.lino — each operation maps to a
 // family (list_transformation / list_reduction) and a result kind
 // (list / scalar), so the worker reasons about the task from data instead of a
-// per-case handler.
+// per-case handler. Transformations support numeric lists and quoted text lists;
+// reductions remain numeric.
 const NUMERIC_LIST_OPERATIONS_LINO = [
   "numeric_list_operations",
   '  operation "sort"',
@@ -6923,9 +6924,48 @@ function parseNumericListNumbers(prompt) {
     if (start === index) continue;
     const text = sign + chars.slice(start, index).join("");
     const value = Number(text);
-    if (!Number.isNaN(value)) numbers.push({ text, value });
+    if (!Number.isNaN(value)) numbers.push({ text, value, kind: "number" });
   }
   return numbers;
+}
+
+function parseNumericListQuotedStrings(prompt) {
+  const chars = Array.from(String(prompt || ""));
+  const items = [];
+  let index = 0;
+  while (index < chars.length) {
+    const quote = chars[index];
+    if (quote !== '"' && quote !== "'") {
+      index += 1;
+      continue;
+    }
+    index += 1;
+    let text = "";
+    while (index < chars.length) {
+      const ch = chars[index];
+      if (ch === "\\" && index + 1 < chars.length) {
+        text += chars[index + 1];
+        index += 2;
+        continue;
+      }
+      if (ch === quote) break;
+      text += ch;
+      index += 1;
+    }
+    if (index < chars.length && chars[index] === quote) {
+      index += 1;
+      if (text.length) items.push({ text, value: text, kind: "string" });
+    }
+  }
+  return items;
+}
+
+function parseNumericListItems(prompt, canonical) {
+  const quoted = parseNumericListQuotedStrings(prompt);
+  if (numericListFamily(canonical) === "list_transformation" && quoted.length >= 2) {
+    return quoted;
+  }
+  return parseNumericListNumbers(prompt);
 }
 
 // Issue #395: render the array literal nodes. When projected to source, callers
@@ -6933,10 +6973,22 @@ function parseNumericListNumbers(prompt) {
 // build and trace a CST/AST-like program tree before source rendering.
 // When the list mixes integers and decimals, integer surfaces gain a `.0` suffix
 // so statically-typed targets keep a single element type. Mirrors number_literals.
-function numericListLiterals(numbers, isFloat) {
-  return numbers.map((n) =>
-    isFloat && !n.text.includes(".") ? `${n.text}.0` : n.text,
-  );
+function numericListStringLiteral(value) {
+  return `"${String(value)
+    .replace(/\\/g, "\\\\")
+    .replace(/"/g, '\\"')
+    .replace(/\n/g, "\\n")
+    .replace(/\r/g, "\\r")
+    .replace(/\t/g, "\\t")}"`;
+}
+
+function numericListLiterals(items, valueType) {
+  return items.map((item) => {
+    if (item.kind === "string") return numericListStringLiteral(item.text);
+    return valueType.label === "float" && !item.text.includes(".")
+      ? `${item.text}.0`
+      : item.text;
+  });
 }
 
 // Issue #395: localized phrasing for the four supported UI languages. The
@@ -6986,16 +7038,18 @@ const NUMERIC_LIST_LOCALIZATION = {
   },
   en: {
     resultLabel: "Result:",
-    intro: (canonical, lang, given) =>
-      ({
-        sort: `Here is ${lang} code that sorts the numbers ${given} in ascending order:`,
-        reverse_sort: `Here is ${lang} code that sorts the numbers ${given} in descending order:`,
-        reverse: `Here is ${lang} code that reverses the numbers ${given}:`,
-        sum: `Here is ${lang} code that sums the numbers ${given}:`,
-        product: `Here is ${lang} code that multiplies the numbers ${given}:`,
-        minimum: `Here is ${lang} code that finds the smallest of the numbers ${given}:`,
-        maximum: `Here is ${lang} code that finds the largest of the numbers ${given}:`,
-      })[canonical],
+    intro: (canonical, lang, given, valueTypeLabel) => {
+      const noun = valueTypeLabel === "string" ? "strings" : "numbers";
+      return ({
+        sort: `Here is ${lang} code that sorts the ${noun} ${given} in ascending order:`,
+        reverse_sort: `Here is ${lang} code that sorts the ${noun} ${given} in descending order:`,
+        reverse: `Here is ${lang} code that reverses the ${noun} ${given}:`,
+        sum: `Here is ${lang} code that sums the ${noun} ${given}:`,
+        product: `Here is ${lang} code that multiplies the ${noun} ${given}:`,
+        minimum: `Here is ${lang} code that finds the smallest of the ${noun} ${given}:`,
+        maximum: `Here is ${lang} code that finds the largest of the ${noun} ${given}:`,
+      })[canonical];
+    },
   },
 };
 
@@ -7027,18 +7081,26 @@ function numericListFormatScalar(value, isFloat) {
 // Issue #395: apply the operation to the parsed numbers and return the surface
 // tokens to display — the reordered list for a transformation, or a single
 // computed scalar for a reduction. Mirrors compute.
-function computeNumericList(canonical, numbers, isFloat) {
+function numericListCompare(left, right) {
+  if (left.kind === "number" && right.kind === "number") {
+    return left.value < right.value ? -1 : left.value > right.value ? 1 : 0;
+  }
+  return left.text < right.text ? -1 : left.text > right.text ? 1 : 0;
+}
+
+function computeNumericList(canonical, items, isFloat) {
   if (numericListFamily(canonical) === "list_transformation") {
-    const ordered = numbers.slice();
+    const ordered = items.slice();
     if (canonical === "sort") {
-      ordered.sort((a, b) => (a.value < b.value ? -1 : a.value > b.value ? 1 : 0));
+      ordered.sort(numericListCompare);
     } else if (canonical === "reverse_sort") {
-      ordered.sort((a, b) => (a.value < b.value ? 1 : a.value > b.value ? -1 : 0));
+      ordered.sort((a, b) => numericListCompare(b, a));
     } else {
       ordered.reverse();
     }
     return ordered.map((n) => n.text);
   }
+  const numbers = items.filter((item) => item.kind === "number");
   let value;
   if (canonical === "sum") value = numbers.reduce((acc, n) => acc + n.value, 0);
   else if (canonical === "product") value = numbers.reduce((acc, n) => acc * n.value, 1);
@@ -7055,22 +7117,42 @@ const NL_SORTED = "sorted";
 const NL_SORTED_NUMBERS = "sorted_numbers";
 const NL_RESULT = "result";
 
-function numericListValueType(isFloat) {
+function numericListValueType(items, isFloat) {
+  if (items.some((item) => item.kind === "string")) {
+    return {
+      label: "string",
+      rust: "&str",
+      go: "string",
+      cFamily: "string",
+      java: "String",
+      javaBoxed: "String",
+      cPrintf: "%s",
+      zero: "",
+      one: "",
+      typedArray: "string",
+      cpp: "std::string",
+      cStorage: "char *",
+    };
+  }
   return {
     label: isFloat ? "float" : "integer",
     rust: isFloat ? "f64" : "i64",
     go: isFloat ? "float64" : "int",
     cFamily: isFloat ? "double" : "int",
+    java: isFloat ? "double" : "int",
     javaBoxed: isFloat ? "Double" : "Integer",
     cPrintf: isFloat ? "%g" : "%d",
     zero: isFloat ? "0.0" : "0",
     one: isFloat ? "1.0" : "1",
+    typedArray: "number",
+    cpp: isFloat ? "double" : "int",
+    cStorage: isFloat ? "double" : "int",
   };
 }
 
-function numericListBuildProgram(slug, numbers, canonical, isFloat) {
+function numericListBuildProgram(slug, items, canonical, isFloat) {
   const family = numericListFamily(canonical);
-  const valueType = numericListValueType(isFloat);
+  const valueType = numericListValueType(items, isFloat);
   const statements = [
     {
       kind: "literal_list",
@@ -7104,7 +7186,8 @@ function numericListBuildProgram(slug, numbers, canonical, isFloat) {
     languageSlug: slug,
     canonical,
     valueType,
-    literals: numericListLiterals(numbers, isFloat),
+    literals: numericListLiterals(items, valueType),
+    displayValues: items.map((item) => item.text),
     statements,
   };
 }
@@ -7121,7 +7204,7 @@ function numericListProgramLinks(program) {
     `  language ${program.languageSlug}`,
     `  value_type ${program.valueType.label}`,
     `  operation ${program.canonical}`,
-    `  literal_values ${program.literals.join("|")}`,
+    `  literal_values ${(program.displayValues || program.literals).join("|")}`,
   ];
   for (const statement of program.statements) {
     if (statement.kind === "literal_list") {
@@ -7189,16 +7272,24 @@ function numericListProgramSource(program) {
 function nlJsProgram(program, typed) {
   const literal = numericListLiteral(program);
   const decl = typed
-    ? `const ${NL_NUMBERS}: number[] = [${literal}];`
+    ? `const ${NL_NUMBERS}: ${program.valueType.typedArray}[] = [${literal}];`
     : `const ${NL_NUMBERS} = [${literal}];`;
   const transform = numericListTransform(program);
   if (transform) {
-    const expr =
-      transform.canonical === "sort"
-        ? "[...numbers].sort((a, b) => a - b)"
-        : transform.canonical === "reverse_sort"
+    let expr;
+    if (transform.canonical === "reverse") {
+      expr = "[...numbers].reverse()";
+    } else if (program.valueType.label === "string") {
+      expr =
+        transform.canonical === "reverse_sort"
+          ? "[...numbers].sort().reverse()"
+          : "[...numbers].sort()";
+    } else {
+      expr =
+        transform.canonical === "reverse_sort"
           ? "[...numbers].sort((a, b) => b - a)"
-          : "[...numbers].reverse()";
+          : "[...numbers].sort((a, b) => a - b)";
+    }
     return `${decl}\nconst ${NL_SORTED} = ${expr};\nconsole.log(${NL_SORTED}.join(", "));`;
   }
   const reduce = numericListReduce(program);
@@ -7246,7 +7337,7 @@ function nlRustProgram(program) {
     let action;
     if (transform.canonical === "reverse") {
       action = "numbers.reverse();";
-    } else if (program.valueType.label === "integer") {
+    } else if (program.valueType.label === "integer" || program.valueType.label === "string") {
       action =
         transform.canonical === "reverse_sort"
           ? "numbers.sort_by(|a, b| b.cmp(a));"
@@ -7284,17 +7375,31 @@ function nlGoProgram(program) {
   const transform = numericListTransform(program);
   if (transform) {
     const formatItem =
-      program.valueType.label === "float"
-        ? "strconv.FormatFloat(n, 'g', -1, 64)"
-        : "strconv.Itoa(n)";
+      program.valueType.label === "string"
+        ? "n"
+        : program.valueType.label === "float"
+          ? "strconv.FormatFloat(n, 'g', -1, 64)"
+          : "strconv.Itoa(n)";
     let imports;
     let action;
-    if (transform.canonical === "sort") {
+    if (transform.canonical === "sort" && program.valueType.label === "string") {
+      imports = '\t"fmt"\n\t"sort"\n\t"strings"';
+      action = `sort.Strings(${NL_NUMBERS})`;
+    } else if (
+      transform.canonical === "reverse_sort" &&
+      program.valueType.label === "string"
+    ) {
+      imports = '\t"fmt"\n\t"sort"\n\t"strings"';
+      action = `sort.Sort(sort.Reverse(sort.StringSlice(${NL_NUMBERS})))`;
+    } else if (transform.canonical === "sort") {
       imports = '\t"fmt"\n\t"sort"\n\t"strconv"\n\t"strings"';
       action = `sort.Slice(${NL_NUMBERS}, func(i, j int) bool { return ${NL_NUMBERS}[i] < ${NL_NUMBERS}[j] })`;
     } else if (transform.canonical === "reverse_sort") {
       imports = '\t"fmt"\n\t"sort"\n\t"strconv"\n\t"strings"';
       action = `sort.Slice(${NL_NUMBERS}, func(i, j int) bool { return ${NL_NUMBERS}[i] > ${NL_NUMBERS}[j] })`;
+    } else if (program.valueType.label === "string") {
+      imports = '\t"fmt"\n\t"strings"';
+      action = `for i, j := 0, len(${NL_NUMBERS})-1; i < j; i, j = i+1, j-1 {\n\t\t${NL_NUMBERS}[i], ${NL_NUMBERS}[j] = ${NL_NUMBERS}[j], ${NL_NUMBERS}[i]\n\t}`;
     } else {
       imports = '\t"fmt"\n\t"strconv"\n\t"strings"';
       action = `for i, j := 0, len(${NL_NUMBERS})-1; i < j; i, j = i+1, j-1 {\n\t\t${NL_NUMBERS}[i], ${NL_NUMBERS}[j] = ${NL_NUMBERS}[j], ${NL_NUMBERS}[i]\n\t}`;
@@ -7341,13 +7446,18 @@ function nlRubyProgram(program) {
 
 function nlJavaProgram(program) {
   const literal = numericListLiteral(program);
-  const ty = program.valueType.cFamily;
+  const ty = program.valueType.java;
   const transform = numericListTransform(program);
   if (transform) {
     const boxed = program.valueType.javaBoxed;
     let action;
     if (transform.canonical === "sort") {
       action = "Arrays.sort(numbers);";
+    } else if (
+      transform.canonical === "reverse_sort" &&
+      program.valueType.label === "string"
+    ) {
+      action = "Arrays.sort(numbers, Collections.reverseOrder());";
     } else if (transform.canonical === "reverse_sort") {
       action = `${boxed}[] boxed = Arrays.stream(${NL_NUMBERS}).boxed().toArray(${boxed}[]::new);\n        Arrays.sort(boxed, Collections.reverseOrder());\n        for (int i = 0; i < ${NL_NUMBERS}.length; i++) ${NL_NUMBERS}[i] = boxed[i];`;
     } else {
@@ -7396,7 +7506,8 @@ function nlCsharpProgram(program) {
 
 function nlCppProgram(program) {
   const literal = numericListLiteral(program);
-  const ty = program.valueType.cFamily;
+  const ty = program.valueType.cpp;
+  const stringInclude = program.valueType.label === "string" ? "#include <string>\n" : "";
   const transform = numericListTransform(program);
   if (transform) {
     const action =
@@ -7405,7 +7516,7 @@ function nlCppProgram(program) {
         : transform.canonical === "reverse_sort"
           ? "std::sort(numbers.begin(), numbers.end(), std::greater<>());"
           : "std::reverse(numbers.begin(), numbers.end());";
-    return `#include <algorithm>\n#include <iostream>\n#include <vector>\n\nint main() {\n    std::vector<${ty}> ${NL_NUMBERS} = {${literal}};\n    ${action}\n    for (size_t i = 0; i < ${NL_NUMBERS}.size(); ++i) {\n        if (i) std::cout << ", ";\n        std::cout << ${NL_NUMBERS}[i];\n    }\n    std::cout << std::endl;\n    return 0;\n}`;
+    return `#include <algorithm>\n#include <iostream>\n${stringInclude}#include <vector>\n\nint main() {\n    std::vector<${ty}> ${NL_NUMBERS} = {${literal}};\n    ${action}\n    for (size_t i = 0; i < ${NL_NUMBERS}.size(); ++i) {\n        if (i) std::cout << ", ";\n        std::cout << ${NL_NUMBERS}[i];\n    }\n    std::cout << std::endl;\n    return 0;\n}`;
   }
   const reduce = numericListReduce(program);
   const expr =
@@ -7416,13 +7527,15 @@ function nlCppProgram(program) {
         : reduce.reducer === "minimum"
           ? `*std::min_element(${NL_NUMBERS}.begin(), ${NL_NUMBERS}.end())`
           : `*std::max_element(${NL_NUMBERS}.begin(), ${NL_NUMBERS}.end())`;
-  return `#include <algorithm>\n#include <iostream>\n#include <numeric>\n#include <vector>\n\nint main() {\n    std::vector<${ty}> ${NL_NUMBERS} = {${literal}};\n    ${ty} ${NL_RESULT} = ${expr};\n    std::cout << ${NL_RESULT} << std::endl;\n    return 0;\n}`;
+  return `#include <algorithm>\n#include <iostream>\n#include <numeric>\n${stringInclude}#include <vector>\n\nint main() {\n    std::vector<${ty}> ${NL_NUMBERS} = {${literal}};\n    ${ty} ${NL_RESULT} = ${expr};\n    std::cout << ${NL_RESULT} << std::endl;\n    return 0;\n}`;
 }
 
 function nlCProgram(program) {
   const literal = numericListLiteral(program);
   const count = program.literals.length;
-  const ty = program.valueType.cFamily;
+  const ty = program.valueType.cStorage;
+  const elementSizeTy =
+    program.valueType.label === "string" ? "char *" : program.valueType.cStorage;
   const fmt = program.valueType.cPrintf;
   const transform = numericListTransform(program);
   if (transform) {
@@ -7432,10 +7545,12 @@ function nlCProgram(program) {
       body = `    ${ty} ${NL_NUMBERS}[] = {${literal}};\n    size_t count = ${count};\n    for (size_t i = 0, j = count - 1; i < j; ++i, --j) {\n        ${ty} tmp = ${NL_NUMBERS}[i];\n        ${NL_NUMBERS}[i] = ${NL_NUMBERS}[j];\n        ${NL_NUMBERS}[j] = tmp;\n    }`;
       comparator = "";
     } else {
-      body = `    ${ty} ${NL_NUMBERS}[] = {${literal}};\n    size_t count = ${count};\n    qsort(${NL_NUMBERS}, count, sizeof(${ty}), compare);`;
+      body = `    ${ty} ${NL_NUMBERS}[] = {${literal}};\n    size_t count = ${count};\n    qsort(${NL_NUMBERS}, count, sizeof(${elementSizeTy}), compare);`;
       comparator = nlCComparator(transform.canonical, program.valueType.label);
     }
-    return `#include <stdio.h>\n#include <stdlib.h>\n\n${comparator}int main(void) {\n${body}\n    for (size_t i = 0; i < count; ++i) {\n        if (i) printf(", ");\n        printf("${fmt}", ${NL_NUMBERS}[i]);\n    }\n    printf("\\n");\n    return 0;\n}`;
+    const stringInclude =
+      program.valueType.label === "string" ? "#include <string.h>\n" : "";
+    return `#include <stdio.h>\n#include <stdlib.h>\n${stringInclude}\n${comparator}int main(void) {\n${body}\n    for (size_t i = 0; i < count; ++i) {\n        if (i) printf(", ");\n        printf("${fmt}", ${NL_NUMBERS}[i]);\n    }\n    printf("\\n");\n    return 0;\n}`;
   }
   const reduce = numericListReduce(program);
   const init =
@@ -7462,6 +7577,11 @@ function nlCComparator(canonical, valueTypeLabel) {
       canonical === "reverse_sort"
         ? "    double diff = *(const double *)b - *(const double *)a;\n    return (diff > 0) - (diff < 0);"
         : "    double diff = *(const double *)a - *(const double *)b;\n    return (diff > 0) - (diff < 0);";
+  } else if (valueTypeLabel === "string") {
+    cmpBody =
+      canonical === "reverse_sort"
+        ? "    const char *left = *(const char * const *)a;\n    const char *right = *(const char * const *)b;\n    return strcmp(right, left);"
+        : "    const char *left = *(const char * const *)a;\n    const char *right = *(const char * const *)b;\n    return strcmp(left, right);";
   } else {
     cmpBody =
       canonical === "reverse_sort"
@@ -7504,13 +7624,21 @@ function tryNumericList(prompt) {
   const languageInfo = WRITE_PROGRAM_LANGUAGES[slug];
   if (!languageInfo) return null;
 
-  const numbers = parseNumericListNumbers(prompt);
-  if (numbers.length < 2) return null;
+  const items = parseNumericListItems(prompt, canonical);
+  if (items.length < 2) return null;
+  if (
+    numericListFamily(canonical) === "list_reduction" &&
+    items.some((item) => item.kind === "string")
+  ) {
+    return null;
+  }
 
-  const isFloat = numbers.some((n) => !Number.isInteger(n.value));
-  const given = numbers.map((n) => n.text);
-  const result = computeNumericList(canonical, numbers, isFloat);
-  const program = numericListBuildProgram(slug, numbers, canonical, isFloat);
+  const isFloat = items.some(
+    (item) => item.kind === "number" && !Number.isInteger(item.value),
+  );
+  const given = items.map((n) => n.text);
+  const result = computeNumericList(canonical, items, isFloat);
+  const program = numericListBuildProgram(slug, items, canonical, isFloat);
   const syntaxTree = numericListProgramLinks(program);
   const code = numericListProgramSource(program);
   const resultKind = numericListResultKind(canonical);
@@ -7522,7 +7650,7 @@ function tryNumericList(prompt) {
   const givenText = given.join(", ");
   const shown = resultKind === "scalar" ? result[0] : result.join(", ");
   const resultText = result.join(", ");
-  const body = `${parts.intro(canonical, languageInfo.name, givenText)}\n\n\`\`\`${languageInfo.fence}\n${code}\n\`\`\`\n\n${parts.resultLabel} ${shown}`;
+  const body = `${parts.intro(canonical, languageInfo.name, givenText, program.valueType.label)}\n\n\`\`\`${languageInfo.fence}\n${code}\n\`\`\`\n\n${parts.resultLabel} ${shown}`;
 
   return {
     intent: "write_program",
@@ -7530,8 +7658,8 @@ function tryNumericList(prompt) {
     confidence: 1.0,
     evidence: [
       `response:write_program:numeric_list:${canonical}:${slug}`,
-      `formalize:(@USER OP:${canonical} numbers:[${given.join(" ")}] language:${slug} result_kind:${resultKind} request:[code result])`,
-      `synthesis:spec:language=${slug} task=numeric_list operation=${canonical} family=${family} result_kind=${resultKind}`,
+      `formalize:(@USER OP:${canonical} values:[${given.join(" ")}] value_type:${program.valueType.label} language:${slug} result_kind:${resultKind} request:[code result])`,
+      `synthesis:spec:language=${slug} task=numeric_list operation=${canonical} family=${family} result_kind=${resultKind} value_type=${program.valueType.label}`,
       `synthesis:given:${givenText}`,
       `synthesis:syntax_tree:${syntaxTree}`,
       `composition:code_fragment:${code}`,
@@ -7540,7 +7668,7 @@ function tryNumericList(prompt) {
       `execution_result:${resultText}`,
     ],
     trace: [
-      `synthesis:spec:language=${slug} task=numeric_list operation=${canonical} family=${family} result_kind=${resultKind}`,
+      `synthesis:spec:language=${slug} task=numeric_list operation=${canonical} family=${family} result_kind=${resultKind} value_type=${program.valueType.label}`,
       `synthesis:syntax_tree:${syntaxTree}`,
       `execution_result:${resultText}`,
     ],

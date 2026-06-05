@@ -30,6 +30,7 @@
 
 mod codegen;
 
+use std::cmp::Ordering;
 use std::fmt::Write as _;
 
 use crate::engine::SymbolicAnswer;
@@ -87,13 +88,32 @@ impl Operation {
     }
 }
 
-/// A single number lifted from the prompt: the surface text the user typed
-/// (preserved verbatim for echoing back and for code generation) plus the
-/// numeric value used to compute over it.
+/// The value domain of a list item lifted from the prompt.
+#[derive(Debug, Clone, Copy)]
+pub enum ListValue {
+    Number(f64),
+    Text,
+}
+
+/// A single list item lifted from the prompt. The surface text is preserved for
+/// echoing and code generation; the value domain drives sorting/reduction.
 #[derive(Debug, Clone)]
-pub struct ParsedNumber {
+pub struct ParsedListItem {
     pub text: String,
-    pub value: f64,
+    pub value: ListValue,
+}
+
+impl ParsedListItem {
+    fn numeric_value(&self) -> Option<f64> {
+        match self.value {
+            ListValue::Number(value) => Some(value),
+            ListValue::Text => None,
+        }
+    }
+
+    fn is_text(&self) -> bool {
+        matches!(self.value, ListValue::Text)
+    }
 }
 
 /// The fully-reasoned solution: the given numbers, the operation, the resolved
@@ -106,12 +126,15 @@ pub struct NumericListSolution {
     pub operation: Operation,
     /// `"list"` or `"scalar"`, read from the seed ontology.
     pub result_kind: String,
+    pub value_type: &'static str,
     pub given: Vec<String>,
     /// For a transformation: the reordered surface tokens. For a reduction: a
     /// single-element vector holding the computed scalar.
     pub result: Vec<String>,
     /// Structural program tree used to render `code`.
     pub syntax_tree: String,
+    /// Real Tree-sitter CST parsed from the rendered source.
+    pub cst_tree: String,
     pub code: String,
 }
 
@@ -128,16 +151,18 @@ pub fn try_numeric_list(
     log.append(
         "synthesis:spec",
         format!(
-            "language={} task=numeric_list operation={} family={} result_kind={}",
+            "language={} task=numeric_list operation={} family={} result_kind={} value_type={}",
             solution.language_slug,
             solution.operation.canonical(),
             solution.family(),
             solution.result_kind,
+            solution.value_type,
         ),
     );
     log.append("synthesis:given", solution.given.join(", "));
     log.append("synthesis:syntax_tree", solution.syntax_tree.clone());
     log.append("composition:code_fragment", solution.code.clone());
+    log.append("synthesis:cst_tree", solution.cst_tree.clone());
     // The result is computed by the solver, not a sandbox: every operation is a
     // pure, total function over the parsed values, so the answer is verified by
     // construction rather than by running untrusted code.
@@ -198,17 +223,25 @@ pub fn solve_numeric_list(prompt: &str) -> Option<NumericListSolution> {
     }
 
     let language = crate::coding::program_language_by_alias(normalized)?;
-    let numbers = parse_numbers(prompt);
-    if numbers.len() < 2 {
+    let items = parse_list_items(prompt, operation);
+    if items.len() < 2 {
+        return None;
+    }
+    if matches!(operation, Operation::Reduce(_)) && items.iter().any(ParsedListItem::is_text) {
         return None;
     }
 
-    let is_float = numbers.iter().any(|n| n.value.fract() != 0.0);
-    let given: Vec<String> = numbers.iter().map(|n| n.text.clone()).collect();
-    let result = compute(operation, &numbers, is_float);
-    let program = codegen::build(language, &numbers, operation, is_float);
+    let is_float = items
+        .iter()
+        .filter_map(ParsedListItem::numeric_value)
+        .any(|value| value.fract() != 0.0);
+    let value_type = value_type_label(&items, is_float);
+    let given: Vec<String> = items.iter().map(|n| n.text.clone()).collect();
+    let result = compute(operation, &items, is_float);
+    let program = codegen::build(language, &items, operation, is_float);
     let syntax_tree = program.links_notation();
     let code = program.render();
+    let cst_tree = crate::coding::validated_program_cst(language.slug, &code)?.links_notation();
     let result_kind = result_kind_for(operation.canonical()).to_owned();
 
     Some(NumericListSolution {
@@ -217,9 +250,11 @@ pub fn solve_numeric_list(prompt: &str) -> Option<NumericListSolution> {
         code_fence: language.code_fence,
         operation,
         result_kind,
+        value_type,
         given,
         result,
         syntax_tree,
+        cst_tree,
         code,
     })
 }
@@ -256,43 +291,58 @@ fn detect_operation(
     None
 }
 
-/// Apply the operation to the parsed numbers and return the surface tokens to
+/// Apply the operation to the parsed list and return the surface tokens to
 /// display: the reordered list for a transformation, or a single computed scalar
-/// for a reduction.
-fn compute(operation: Operation, numbers: &[ParsedNumber], is_float: bool) -> Vec<String> {
+/// for a numeric reduction.
+fn compute(operation: Operation, items: &[ParsedListItem], is_float: bool) -> Vec<String> {
     match operation {
         Operation::Transform(transform) => {
-            let mut ordered: Vec<ParsedNumber> = numbers.to_vec();
+            let mut ordered: Vec<ParsedListItem> = items.to_vec();
             match transform {
-                Transform::SortAscending => ordered.sort_by(|a, b| {
-                    a.value
-                        .partial_cmp(&b.value)
-                        .unwrap_or(std::cmp::Ordering::Equal)
-                }),
-                Transform::SortDescending => ordered.sort_by(|a, b| {
-                    b.value
-                        .partial_cmp(&a.value)
-                        .unwrap_or(std::cmp::Ordering::Equal)
-                }),
+                Transform::SortAscending => ordered.sort_by(compare_items),
+                Transform::SortDescending => ordered.sort_by(|a, b| compare_items(b, a)),
                 Transform::Reverse => ordered.reverse(),
             }
             ordered.into_iter().map(|n| n.text).collect()
         }
         Operation::Reduce(reduce) => {
             let value = match reduce {
-                Reduce::Sum => numbers.iter().map(|n| n.value).sum::<f64>(),
-                Reduce::Product => numbers.iter().map(|n| n.value).product::<f64>(),
-                Reduce::Minimum => numbers
+                Reduce::Sum => items
                     .iter()
-                    .map(|n| n.value)
+                    .filter_map(ParsedListItem::numeric_value)
+                    .sum::<f64>(),
+                Reduce::Product => items
+                    .iter()
+                    .filter_map(ParsedListItem::numeric_value)
+                    .product::<f64>(),
+                Reduce::Minimum => items
+                    .iter()
+                    .filter_map(ParsedListItem::numeric_value)
                     .fold(f64::INFINITY, f64::min),
-                Reduce::Maximum => numbers
+                Reduce::Maximum => items
                     .iter()
-                    .map(|n| n.value)
+                    .filter_map(ParsedListItem::numeric_value)
                     .fold(f64::NEG_INFINITY, f64::max),
             };
             vec![format_scalar(value, is_float)]
         }
+    }
+}
+
+fn compare_items(left: &ParsedListItem, right: &ParsedListItem) -> Ordering {
+    match (left.numeric_value(), right.numeric_value()) {
+        (Some(a), Some(b)) => a.partial_cmp(&b).unwrap_or(Ordering::Equal),
+        _ => left.text.cmp(&right.text),
+    }
+}
+
+fn value_type_label(items: &[ParsedListItem], is_float: bool) -> &'static str {
+    if items.iter().any(ParsedListItem::is_text) {
+        "string"
+    } else if is_float {
+        "float"
+    } else {
+        "integer"
     }
 }
 
@@ -321,9 +371,10 @@ impl NumericListSolution {
 
     fn formalization(&self) -> String {
         format!(
-            "(@USER OP:{} numbers:[{}] language:{} result_kind:{} request:[code result])",
+            "(@USER OP:{} values:[{}] value_type:{} language:{} result_kind:{} request:[code result])",
             self.operation.canonical(),
             self.given.join(" "),
+            self.value_type,
             self.language_slug,
             self.result_kind,
         )
@@ -335,7 +386,7 @@ impl NumericListSolution {
     pub fn render(&self, language: Language) -> String {
         let given = self.given.join(", ");
         let parts = Localization::for_language(language);
-        let intro = parts.intro(self.operation, self.language_name, &given);
+        let intro = parts.intro(self.operation, self.language_name, &given, self.value_type);
         // The seed ontology decides how the result reads: a transformation lists
         // the reordered numbers, a reduction shows a single value.
         let shown = if self.result_kind == "scalar" {
@@ -377,37 +428,42 @@ impl Localization {
         }
     }
 
-    fn intro(&self, operation: Operation, lang: &str, given: &str) -> String {
+    fn intro(&self, operation: Operation, lang: &str, given: &str, value_type: &str) -> String {
         match self.language {
             Language::Russian => Self::intro_ru(operation, lang, given),
             Language::Hindi => Self::intro_hi(operation, lang, given),
             Language::Chinese => Self::intro_zh(operation, lang, given),
-            _ => Self::intro_en(operation, lang, given),
+            _ => Self::intro_en(operation, lang, given, value_type),
         }
     }
 
-    fn intro_en(operation: Operation, lang: &str, given: &str) -> String {
+    fn intro_en(operation: Operation, lang: &str, given: &str, value_type: &str) -> String {
+        let noun = if value_type == "string" {
+            "strings"
+        } else {
+            "numbers"
+        };
         match operation {
             Operation::Transform(Transform::SortAscending) => {
-                format!("Here is {lang} code that sorts the numbers {given} in ascending order:")
+                format!("Here is {lang} code that sorts the {noun} {given} in ascending order:")
             }
             Operation::Transform(Transform::SortDescending) => {
-                format!("Here is {lang} code that sorts the numbers {given} in descending order:")
+                format!("Here is {lang} code that sorts the {noun} {given} in descending order:")
             }
             Operation::Transform(Transform::Reverse) => {
-                format!("Here is {lang} code that reverses the numbers {given}:")
+                format!("Here is {lang} code that reverses the {noun} {given}:")
             }
             Operation::Reduce(Reduce::Sum) => {
-                format!("Here is {lang} code that sums the numbers {given}:")
+                format!("Here is {lang} code that sums the {noun} {given}:")
             }
             Operation::Reduce(Reduce::Product) => {
-                format!("Here is {lang} code that multiplies the numbers {given}:")
+                format!("Here is {lang} code that multiplies the {noun} {given}:")
             }
             Operation::Reduce(Reduce::Minimum) => {
-                format!("Here is {lang} code that finds the smallest of the numbers {given}:")
+                format!("Here is {lang} code that finds the smallest of the {noun} {given}:")
             }
             Operation::Reduce(Reduce::Maximum) => {
-                format!("Here is {lang} code that finds the largest of the numbers {given}:")
+                format!("Here is {lang} code that finds the largest of the {noun} {given}:")
             }
         }
     }
@@ -529,12 +585,63 @@ fn family_for(canonical: &str) -> &'static str {
     "list_transformation"
 }
 
+fn parse_list_items(prompt: &str, operation: Operation) -> Vec<ParsedListItem> {
+    let quoted = parse_quoted_strings(prompt);
+    if matches!(operation, Operation::Transform(_)) && quoted.len() >= 2 {
+        return quoted;
+    }
+    parse_numbers(prompt)
+}
+
+/// Extract every quoted string literal from the raw prompt, in order. Quoted
+/// strings let the same list algorithm handle non-numeric values without trying
+/// to infer arbitrary unquoted prose as data.
+fn parse_quoted_strings(prompt: &str) -> Vec<ParsedListItem> {
+    let chars: Vec<char> = prompt.chars().collect();
+    let mut items = Vec::new();
+    let mut index = 0;
+    while index < chars.len() {
+        let quote = chars[index];
+        if quote != '"' && quote != '\'' {
+            index += 1;
+            continue;
+        }
+        index += 1;
+        let mut text = String::new();
+        while index < chars.len() {
+            let ch = chars[index];
+            if ch == '\\' {
+                if let Some(next) = chars.get(index + 1) {
+                    text.push(*next);
+                    index += 2;
+                    continue;
+                }
+            }
+            if ch == quote {
+                break;
+            }
+            text.push(ch);
+            index += 1;
+        }
+        if index < chars.len() && chars[index] == quote {
+            index += 1;
+            if !text.is_empty() {
+                items.push(ParsedListItem {
+                    text,
+                    value: ListValue::Text,
+                });
+            }
+        }
+    }
+    items
+}
+
 /// Extract every number token from the raw prompt, in order of appearance.
 ///
 /// Recognizes optionally-signed integers and decimals (e.g. `-3`, `5`, `7.5`).
 /// The surface text is preserved so the echo and the generated code use exactly
 /// what the user typed; the parsed `f64` value drives the computation.
-pub fn parse_numbers(prompt: &str) -> Vec<ParsedNumber> {
+pub fn parse_numbers(prompt: &str) -> Vec<ParsedListItem> {
     let chars: Vec<char> = prompt.chars().collect();
     let mut numbers = Vec::new();
     let mut index = 0;
@@ -578,7 +685,10 @@ pub fn parse_numbers(prompt: &str) -> Vec<ParsedNumber> {
         }
         text.extend(&chars[start..index]);
         if let Ok(value) = text.parse::<f64>() {
-            numbers.push(ParsedNumber { text, value });
+            numbers.push(ParsedListItem {
+                text,
+                value: ListValue::Number(value),
+            });
         }
     }
     numbers
@@ -643,6 +753,46 @@ mod tests {
         assert_eq!(reversed.result_kind, "list");
         assert!(reversed.syntax_tree.contains("program_syntax_tree"));
         assert!(reversed.syntax_tree.contains("semantic_node reverse_list"));
+        assert!(reversed.cst_tree.contains("tree_sitter_cst_tree"));
+    }
+
+    #[test]
+    fn quoted_string_lists_are_transformed() {
+        let sorted = solve_numeric_list(
+            "Sort the strings \"pear\", \"apple\", \"banana\" in JavaScript, give me code and result",
+        )
+        .unwrap();
+
+        assert_eq!(sorted.value_type, "string");
+        assert_eq!(sorted.result, vec!["apple", "banana", "pear"]);
+        assert!(sorted
+            .code
+            .contains(r#"const numbers = ["pear", "apple", "banana"];"#));
+        assert!(sorted.code.contains("[...numbers].sort()"));
+        assert!(sorted.syntax_tree.contains("value_type string"));
+        assert!(sorted.cst_tree.contains("tree_sitter_cst_tree"));
+    }
+
+    #[test]
+    fn quoted_string_lists_render_valid_cst_for_every_language() {
+        let operation = Operation::Transform(Transform::SortAscending);
+        let items = parse_list_items(
+            "Sort the strings \"pear\", \"apple\", \"banana\" in every supported language",
+            operation,
+        );
+
+        for language in crate::coding::PROGRAM_LANGUAGES {
+            let program = codegen::build(language, &items, operation, false);
+            let code = program.render();
+            let cst =
+                crate::coding::validated_program_cst(language.slug, &code).unwrap_or_else(|| {
+                    panic!(
+                        "{} string-list source must parse as a valid Tree-sitter CST:\n{}",
+                        language.slug, code
+                    )
+                });
+            assert!(!cst.has_error, "{cst:#?}");
+        }
     }
 
     #[test]

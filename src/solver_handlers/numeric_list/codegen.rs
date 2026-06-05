@@ -18,7 +18,7 @@ use std::fmt::Write as _;
 
 use crate::coding::catalog::ProgramLanguage;
 
-use super::{Operation, ParsedNumber, Reduce, Transform};
+use super::{ListValue, Operation, ParsedListItem, Reduce, Transform};
 
 const NUMBERS: &str = "numbers";
 const SORTED: &str = "sorted";
@@ -26,14 +26,20 @@ const SORTED_NUMBERS: &str = "sorted_numbers";
 const RESULT: &str = "result";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-enum NumberType {
+enum ValueType {
     Integer,
     Float,
+    Text,
 }
 
-impl NumberType {
-    const fn from_is_float(is_float: bool) -> Self {
-        if is_float {
+impl ValueType {
+    fn from_items(items: &[ParsedListItem], is_float: bool) -> Self {
+        if items
+            .iter()
+            .any(|item| matches!(item.value, ListValue::Text))
+        {
+            Self::Text
+        } else if is_float {
             Self::Float
         } else {
             Self::Integer
@@ -44,6 +50,7 @@ impl NumberType {
         match self {
             Self::Integer => "i64",
             Self::Float => "f64",
+            Self::Text => "&str",
         }
     }
 
@@ -51,6 +58,7 @@ impl NumberType {
         match self {
             Self::Integer => "int",
             Self::Float => "float64",
+            Self::Text => "string",
         }
     }
 
@@ -58,6 +66,7 @@ impl NumberType {
         match self {
             Self::Integer => "int",
             Self::Float => "double",
+            Self::Text => "string",
         }
     }
 
@@ -65,6 +74,7 @@ impl NumberType {
         match self {
             Self::Integer => "Integer",
             Self::Float => "Double",
+            Self::Text => "String",
         }
     }
 
@@ -72,6 +82,7 @@ impl NumberType {
         match self {
             Self::Integer => "%d",
             Self::Float => "%g",
+            Self::Text => "%s",
         }
     }
 
@@ -79,6 +90,7 @@ impl NumberType {
         match self {
             Self::Integer => "0",
             Self::Float => "0.0",
+            Self::Text => "",
         }
     }
 
@@ -86,6 +98,7 @@ impl NumberType {
         match self {
             Self::Integer => "1",
             Self::Float => "1.0",
+            Self::Text => "",
         }
     }
 
@@ -93,6 +106,28 @@ impl NumberType {
         match self {
             Self::Integer => "integer",
             Self::Float => "float",
+            Self::Text => "string",
+        }
+    }
+
+    const fn typed_array(self) -> &'static str {
+        match self {
+            Self::Text => "string",
+            Self::Integer | Self::Float => "number",
+        }
+    }
+
+    const fn cpp(self) -> &'static str {
+        match self {
+            Self::Text => "std::string",
+            Self::Integer | Self::Float => self.c_family(),
+        }
+    }
+
+    const fn c_storage(self) -> &'static str {
+        match self {
+            Self::Text => "char *",
+            Self::Integer | Self::Float => self.c_family(),
         }
     }
 }
@@ -200,8 +235,9 @@ impl Reduce {
 #[derive(Clone)]
 pub struct NumericProgram {
     language: &'static ProgramLanguage,
-    number_type: NumberType,
+    value_type: ValueType,
     literals: Vec<String>,
+    display_values: Vec<String>,
     operation: Operation,
     statements: Vec<ProgramStatement>,
 }
@@ -229,9 +265,9 @@ impl NumericProgram {
     pub fn links_notation(&self) -> String {
         let mut out = String::from("program_syntax_tree\n");
         let _ = writeln!(out, "  language {}", self.language.slug);
-        let _ = writeln!(out, "  value_type {}", self.number_type.links_label());
+        let _ = writeln!(out, "  value_type {}", self.value_type.links_label());
         let _ = writeln!(out, "  operation {}", self.operation.canonical());
-        let _ = writeln!(out, "  literal_values {}", self.literals.join("|"));
+        let _ = writeln!(out, "  literal_values {}", self.display_values.join("|"));
         for statement in &self.statements {
             statement.links_line(&mut out);
         }
@@ -265,12 +301,13 @@ impl NumericProgram {
 #[must_use]
 pub fn build(
     language: &'static ProgramLanguage,
-    numbers: &[ParsedNumber],
+    items: &[ParsedListItem],
     operation: Operation,
     is_float: bool,
 ) -> NumericProgram {
-    let number_type = NumberType::from_is_float(is_float);
-    let literals = number_literals(numbers, is_float);
+    let value_type = ValueType::from_items(items, is_float);
+    let literals = item_literals(items, value_type);
+    let display_values = items.iter().map(|item| item.text.clone()).collect();
     let mut statements = vec![ProgramStatement::LiteralList {
         name: NUMBERS,
         mutable: matches!(language.slug, "rust" | "go" | "java" | "c" | "cpp"),
@@ -301,41 +338,66 @@ pub fn build(
 
     NumericProgram {
         language,
-        number_type,
+        value_type,
         literals,
+        display_values,
         operation,
         statements,
     }
 }
 
-/// Render the array literal: each number's surface text, comma-separated. When
-/// the list mixes integers and decimals, integer surfaces gain a `.0` suffix so
-/// statically-typed targets keep a single element type.
-fn number_literals(numbers: &[ParsedNumber], is_float: bool) -> Vec<String> {
-    numbers
+/// Render the list literal. Numeric surfaces are preserved, with a `.0` suffix
+/// when needed for homogeneous static float containers; text values become string
+/// literals and are escaped once before each language renderer joins them.
+fn item_literals(items: &[ParsedListItem], value_type: ValueType) -> Vec<String> {
+    items
         .iter()
-        .map(|number| {
-            if is_float && !number.text.contains('.') {
-                format!("{}.0", number.text)
-            } else {
-                number.text.clone()
+        .map(|item| match item.value {
+            ListValue::Text => quoted_string_literal(&item.text),
+            ListValue::Number(_) => {
+                if value_type == ValueType::Float && !item.text.contains('.') {
+                    format!("{}.0", item.text)
+                } else {
+                    item.text.clone()
+                }
             }
         })
         .collect()
 }
 
+fn quoted_string_literal(value: &str) -> String {
+    let mut out = String::from("\"");
+    for ch in value.chars() {
+        match ch {
+            '\\' => out.push_str("\\\\"),
+            '"' => out.push_str("\\\""),
+            '\n' => out.push_str("\\n"),
+            '\r' => out.push_str("\\r"),
+            '\t' => out.push_str("\\t"),
+            _ => out.push(ch),
+        }
+    }
+    out.push('"');
+    out
+}
+
 fn render_js(program: &NumericProgram, typed: bool) -> String {
     let literal = program.literal();
     let decl = if typed {
-        format!("const {NUMBERS}: number[] = [{literal}];")
+        format!(
+            "const {NUMBERS}: {}[] = [{literal}];",
+            program.value_type.typed_array()
+        )
     } else {
         format!("const {NUMBERS} = [{literal}];")
     };
     if let Some(transform) = program.transform() {
-        let expr = match transform {
-            Transform::SortAscending => "[...numbers].sort((a, b) => a - b)",
-            Transform::SortDescending => "[...numbers].sort((a, b) => b - a)",
-            Transform::Reverse => "[...numbers].reverse()",
+        let expr = match (transform, program.value_type) {
+            (Transform::SortAscending, ValueType::Text) => "[...numbers].sort()",
+            (Transform::SortDescending, ValueType::Text) => "[...numbers].sort().reverse()",
+            (Transform::SortAscending, _) => "[...numbers].sort((a, b) => a - b)",
+            (Transform::SortDescending, _) => "[...numbers].sort((a, b) => b - a)",
+            (Transform::Reverse, _) => "[...numbers].reverse()",
         };
         return format!("{decl}\nconst {SORTED} = {expr};\nconsole.log({SORTED}.join(\", \"));");
     }
@@ -379,17 +441,19 @@ fn render_python(program: &NumericProgram) -> String {
 
 fn render_rust(program: &NumericProgram) -> String {
     let literal = program.literal();
-    let ty = program.number_type.rust();
+    let ty = program.value_type.rust();
     if let Some(transform) = program.transform() {
-        let action = match (transform, program.number_type) {
-            (Transform::SortAscending, NumberType::Integer) => "numbers.sort();".to_owned(),
-            (Transform::SortDescending, NumberType::Integer) => {
+        let action = match (transform, program.value_type) {
+            (Transform::SortAscending, ValueType::Integer | ValueType::Text) => {
+                "numbers.sort();".to_owned()
+            }
+            (Transform::SortDescending, ValueType::Integer | ValueType::Text) => {
                 "numbers.sort_by(|a, b| b.cmp(a));".to_owned()
             }
-            (Transform::SortAscending, NumberType::Float) => {
+            (Transform::SortAscending, ValueType::Float) => {
                 "numbers.sort_by(|a, b| a.partial_cmp(b).unwrap());".to_owned()
             }
-            (Transform::SortDescending, NumberType::Float) => {
+            (Transform::SortDescending, ValueType::Float) => {
                 "numbers.sort_by(|a, b| b.partial_cmp(a).unwrap());".to_owned()
             }
             (Transform::Reverse, _) => "numbers.reverse();".to_owned(),
@@ -400,18 +464,19 @@ fn render_rust(program: &NumericProgram) -> String {
     }
     let compute = match (
         program.reduce().expect("reduction program has reducer"),
-        program.number_type,
+        program.value_type,
     ) {
         (Reduce::Sum, _) => format!("{NUMBERS}.iter().copied().sum::<{ty}>()"),
         (Reduce::Product, _) => format!("{NUMBERS}.iter().copied().product::<{ty}>()"),
-        (Reduce::Minimum, NumberType::Integer) => format!("*{NUMBERS}.iter().min().unwrap()"),
-        (Reduce::Maximum, NumberType::Integer) => format!("*{NUMBERS}.iter().max().unwrap()"),
-        (Reduce::Minimum, NumberType::Float) => {
+        (Reduce::Minimum, ValueType::Integer) => format!("*{NUMBERS}.iter().min().unwrap()"),
+        (Reduce::Maximum, ValueType::Integer) => format!("*{NUMBERS}.iter().max().unwrap()"),
+        (Reduce::Minimum, ValueType::Float) => {
             format!("{NUMBERS}.iter().copied().fold(f64::INFINITY, f64::min)")
         }
-        (Reduce::Maximum, NumberType::Float) => {
+        (Reduce::Maximum, ValueType::Float) => {
             format!("{NUMBERS}.iter().copied().fold(f64::NEG_INFINITY, f64::max)")
         }
+        (_, ValueType::Text) => unreachable!("text lists do not support reductions"),
     };
     format!(
         "fn main() {{\n    let {NUMBERS}: Vec<{ty}> = vec![{literal}];\n    let {RESULT} = {compute};\n    println!(\"{{}}\", {RESULT});\n}}"
@@ -420,22 +485,35 @@ fn render_rust(program: &NumericProgram) -> String {
 
 fn render_go(program: &NumericProgram) -> String {
     let literal = program.literal();
-    let ty = program.number_type.go();
+    let ty = program.value_type.go();
     if let Some(transform) = program.transform() {
-        let format_item = match program.number_type {
-            NumberType::Integer => "strconv.Itoa(n)",
-            NumberType::Float => "strconv.FormatFloat(n, 'g', -1, 64)",
+        let format_item = match program.value_type {
+            ValueType::Integer => "strconv.Itoa(n)",
+            ValueType::Float => "strconv.FormatFloat(n, 'g', -1, 64)",
+            ValueType::Text => "n",
         };
-        let (imports, action) = match transform {
-            Transform::SortAscending => (
+        let (imports, action) = match (transform, program.value_type) {
+            (Transform::SortAscending, ValueType::Text) => (
+                "\t\"fmt\"\n\t\"sort\"\n\t\"strings\"",
+                format!("sort.Strings({NUMBERS})"),
+            ),
+            (Transform::SortDescending, ValueType::Text) => (
+                "\t\"fmt\"\n\t\"sort\"\n\t\"strings\"",
+                format!("sort.Sort(sort.Reverse(sort.StringSlice({NUMBERS})))"),
+            ),
+            (Transform::SortAscending, _) => (
                 "\t\"fmt\"\n\t\"sort\"\n\t\"strconv\"\n\t\"strings\"",
                 format!("sort.Slice({NUMBERS}, func(i, j int) bool {{ return {NUMBERS}[i] < {NUMBERS}[j] }})"),
             ),
-            Transform::SortDescending => (
+            (Transform::SortDescending, _) => (
                 "\t\"fmt\"\n\t\"sort\"\n\t\"strconv\"\n\t\"strings\"",
                 format!("sort.Slice({NUMBERS}, func(i, j int) bool {{ return {NUMBERS}[i] > {NUMBERS}[j] }})"),
             ),
-            Transform::Reverse => (
+            (Transform::Reverse, ValueType::Text) => (
+                "\t\"fmt\"\n\t\"strings\"",
+                format!("for i, j := 0, len({NUMBERS})-1; i < j; i, j = i+1, j-1 {{\n\t\t{NUMBERS}[i], {NUMBERS}[j] = {NUMBERS}[j], {NUMBERS}[i]\n\t}}"),
+            ),
+            (Transform::Reverse, _) => (
                 "\t\"fmt\"\n\t\"strconv\"\n\t\"strings\"",
                 format!("for i, j := 0, len({NUMBERS})-1; i < j; i, j = i+1, j-1 {{\n\t\t{NUMBERS}[i], {NUMBERS}[j] = {NUMBERS}[j], {NUMBERS}[i]\n\t}}"),
             ),
@@ -488,14 +566,22 @@ fn render_ruby(program: &NumericProgram) -> String {
 
 fn render_java(program: &NumericProgram) -> String {
     let literal = program.literal();
-    let ty = program.number_type.c_family();
+    let ty = match program.value_type {
+        ValueType::Text => "String",
+        _ => program.value_type.c_family(),
+    };
     if let Some(transform) = program.transform() {
-        let boxed = program.number_type.java_boxed();
+        let boxed = program.value_type.java_boxed();
         let action = match transform {
             Transform::SortAscending => "Arrays.sort(numbers);".to_owned(),
-            Transform::SortDescending => format!(
-                "{boxed}[] boxed = Arrays.stream({NUMBERS}).boxed().toArray({boxed}[]::new);\n        Arrays.sort(boxed, Collections.reverseOrder());\n        for (int i = 0; i < {NUMBERS}.length; i++) {NUMBERS}[i] = boxed[i];"
-            ),
+            Transform::SortDescending if program.value_type == ValueType::Text => {
+                "Arrays.sort(numbers, Collections.reverseOrder());".to_owned()
+            }
+            Transform::SortDescending => {
+                format!(
+                    "{boxed}[] boxed = Arrays.stream({NUMBERS}).boxed().toArray({boxed}[]::new);\n        Arrays.sort(boxed, Collections.reverseOrder());\n        for (int i = 0; i < {NUMBERS}.length; i++) {NUMBERS}[i] = boxed[i];"
+                )
+            }
             Transform::Reverse => format!(
                 "for (int i = 0, j = {NUMBERS}.length - 1; i < j; i++, j--) {{\n            {ty} tmp = {NUMBERS}[i];\n            {NUMBERS}[i] = {NUMBERS}[j];\n            {NUMBERS}[j] = tmp;\n        }}"
             ),
@@ -525,7 +611,7 @@ fn render_java(program: &NumericProgram) -> String {
 
 fn render_csharp(program: &NumericProgram) -> String {
     let literal = program.literal();
-    let ty = program.number_type.c_family();
+    let ty = program.value_type.c_family();
     if let Some(transform) = program.transform() {
         let action = match transform {
             Transform::SortAscending => "numbers.OrderBy(n => n)",
@@ -549,7 +635,12 @@ fn render_csharp(program: &NumericProgram) -> String {
 
 fn render_cpp(program: &NumericProgram) -> String {
     let literal = program.literal();
-    let ty = program.number_type.c_family();
+    let ty = program.value_type.cpp();
+    let string_include = if program.value_type == ValueType::Text {
+        "#include <string>\n"
+    } else {
+        ""
+    };
     if let Some(transform) = program.transform() {
         let action = match transform {
             Transform::SortAscending => "std::sort(numbers.begin(), numbers.end());",
@@ -559,7 +650,7 @@ fn render_cpp(program: &NumericProgram) -> String {
             Transform::Reverse => "std::reverse(numbers.begin(), numbers.end());",
         };
         return format!(
-            "#include <algorithm>\n#include <iostream>\n#include <vector>\n\nint main() {{\n    std::vector<{ty}> {NUMBERS} = {{{literal}}};\n    {action}\n    for (size_t i = 0; i < {NUMBERS}.size(); ++i) {{\n        if (i) std::cout << \", \";\n        std::cout << {NUMBERS}[i];\n    }}\n    std::cout << std::endl;\n    return 0;\n}}"
+            "#include <algorithm>\n#include <iostream>\n{string_include}#include <vector>\n\nint main() {{\n    std::vector<{ty}> {NUMBERS} = {{{literal}}};\n    {action}\n    for (size_t i = 0; i < {NUMBERS}.size(); ++i) {{\n        if (i) std::cout << \", \";\n        std::cout << {NUMBERS}[i];\n    }}\n    std::cout << std::endl;\n    return 0;\n}}"
         );
     }
     let expr = match program.reduce().expect("reduction program has reducer") {
@@ -571,32 +662,42 @@ fn render_cpp(program: &NumericProgram) -> String {
         Reduce::Maximum => format!("*std::max_element({NUMBERS}.begin(), {NUMBERS}.end())"),
     };
     format!(
-        "#include <algorithm>\n#include <iostream>\n#include <numeric>\n#include <vector>\n\nint main() {{\n    std::vector<{ty}> {NUMBERS} = {{{literal}}};\n    {ty} {RESULT} = {expr};\n    std::cout << {RESULT} << std::endl;\n    return 0;\n}}"
+        "#include <algorithm>\n#include <iostream>\n#include <numeric>\n{string_include}#include <vector>\n\nint main() {{\n    std::vector<{ty}> {NUMBERS} = {{{literal}}};\n    {ty} {RESULT} = {expr};\n    std::cout << {RESULT} << std::endl;\n    return 0;\n}}"
     )
 }
 
 fn render_c(program: &NumericProgram) -> String {
     let literal = program.literal();
     let count = program.literals.len();
-    let ty = program.number_type.c_family();
-    let fmt = program.number_type.c_printf();
+    let ty = program.value_type.c_storage();
+    let element_size_ty = if program.value_type == ValueType::Text {
+        "char *"
+    } else {
+        ty
+    };
+    let fmt = program.value_type.c_printf();
     if let Some(transform) = program.transform() {
         let body = match transform {
             Transform::Reverse => format!(
                 "    {ty} {NUMBERS}[] = {{{literal}}};\n    size_t count = {count};\n    for (size_t i = 0, j = count - 1; i < j; ++i, --j) {{\n        {ty} tmp = {NUMBERS}[i];\n        {NUMBERS}[i] = {NUMBERS}[j];\n        {NUMBERS}[j] = tmp;\n    }}"
             ),
             Transform::SortAscending | Transform::SortDescending => format!(
-                "    {ty} {NUMBERS}[] = {{{literal}}};\n    size_t count = {count};\n    qsort({NUMBERS}, count, sizeof({ty}), compare);"
+                "    {ty} {NUMBERS}[] = {{{literal}}};\n    size_t count = {count};\n    qsort({NUMBERS}, count, sizeof({element_size_ty}), compare);"
             ),
         };
-        let comparator = c_comparator(transform, program.number_type);
+        let comparator = c_comparator(transform, program.value_type);
+        let string_include = if program.value_type == ValueType::Text {
+            "#include <string.h>\n"
+        } else {
+            ""
+        };
         return format!(
-            "#include <stdio.h>\n#include <stdlib.h>\n\n{comparator}int main(void) {{\n{body}\n    for (size_t i = 0; i < count; ++i) {{\n        if (i) printf(\", \");\n        printf(\"{fmt}\", {NUMBERS}[i]);\n    }}\n    printf(\"\\n\");\n    return 0;\n}}"
+            "#include <stdio.h>\n#include <stdlib.h>\n{string_include}\n{comparator}int main(void) {{\n{body}\n    for (size_t i = 0; i < count; ++i) {{\n        if (i) printf(\", \");\n        printf(\"{fmt}\", {NUMBERS}[i]);\n    }}\n    printf(\"\\n\");\n    return 0;\n}}"
         );
     }
     let init = match program.reduce().expect("reduction program has reducer") {
-        Reduce::Sum => program.number_type.scalar_zero().to_owned(),
-        Reduce::Product => program.number_type.scalar_one().to_owned(),
+        Reduce::Sum => program.value_type.scalar_zero().to_owned(),
+        Reduce::Product => program.value_type.scalar_one().to_owned(),
         Reduce::Minimum | Reduce::Maximum => format!("{NUMBERS}[0]"),
     };
     let step = match program.reduce().expect("reduction program has reducer") {
@@ -610,21 +711,27 @@ fn render_c(program: &NumericProgram) -> String {
     )
 }
 
-fn c_comparator(transform: Transform, number_type: NumberType) -> String {
+fn c_comparator(transform: Transform, value_type: ValueType) -> String {
     match transform {
         Transform::Reverse => String::new(),
         Transform::SortAscending | Transform::SortDescending => {
-            let cmp_body = match (transform, number_type) {
-                (Transform::SortDescending, NumberType::Float) => {
+            let cmp_body = match (transform, value_type) {
+                (Transform::SortDescending, ValueType::Float) => {
                     "    double diff = *(const double *)b - *(const double *)a;\n    return (diff > 0) - (diff < 0);"
                 }
-                (_, NumberType::Float) => {
+                (_, ValueType::Float) => {
                     "    double diff = *(const double *)a - *(const double *)b;\n    return (diff > 0) - (diff < 0);"
                 }
-                (Transform::SortDescending, NumberType::Integer) => {
+                (Transform::SortDescending, ValueType::Integer) => {
                     "    return (*(const int *)b - *(const int *)a);"
                 }
-                (_, NumberType::Integer) => "    return (*(const int *)a - *(const int *)b);",
+                (_, ValueType::Integer) => "    return (*(const int *)a - *(const int *)b);",
+                (Transform::SortDescending, ValueType::Text) => {
+                    "    const char *left = *(const char * const *)a;\n    const char *right = *(const char * const *)b;\n    return strcmp(right, left);"
+                }
+                (_, ValueType::Text) => {
+                    "    const char *left = *(const char * const *)a;\n    const char *right = *(const char * const *)b;\n    return strcmp(left, right);"
+                }
             };
             format!("static int compare(const void *a, const void *b) {{\n{cmp_body}\n}}\n\n")
         }
