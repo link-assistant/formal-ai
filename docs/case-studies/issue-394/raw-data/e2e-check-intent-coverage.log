@@ -1,0 +1,5 @@
+
+> formal-ai-e2e@1.0.0 check:intent-coverage
+> node scripts/check-multilingual-intent-coverage.mjs
+
+Multilingual intent coverage OK for en, ru, hi, zh (10 localized response intents, 9 localized concept records, 5 concept context records, 19 localized tools, 16 feature capabilities, 14 translation meanings).

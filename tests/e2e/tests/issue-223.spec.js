@@ -1,7 +1,7 @@
 // @ts-check
 const { test, expect } = require('@playwright/test');
 
-const UNKNOWN_ANSWER_MARKER = 'cannot answer that from local Links Notation rules';
+const UNKNOWN_ANSWER_MARKER = 'cannot answer that from local links rules';
 const PANDAS_JOIN_DOCS_URL =
   'https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.join.html';
 

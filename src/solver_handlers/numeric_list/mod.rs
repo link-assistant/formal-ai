@@ -110,6 +110,8 @@ pub struct NumericListSolution {
     /// For a transformation: the reordered surface tokens. For a reduction: a
     /// single-element vector holding the computed scalar.
     pub result: Vec<String>,
+    /// Structural program tree used to render `code`.
+    pub syntax_tree: String,
     pub code: String,
 }
 
@@ -134,6 +136,7 @@ pub fn try_numeric_list(
         ),
     );
     log.append("synthesis:given", solution.given.join(", "));
+    log.append("synthesis:syntax_tree", solution.syntax_tree.clone());
     log.append("composition:code_fragment", solution.code.clone());
     // The result is computed by the solver, not a sandbox: every operation is a
     // pure, total function over the parsed values, so the answer is verified by
@@ -203,7 +206,9 @@ pub fn solve_numeric_list(prompt: &str) -> Option<NumericListSolution> {
     let is_float = numbers.iter().any(|n| n.value.fract() != 0.0);
     let given: Vec<String> = numbers.iter().map(|n| n.text.clone()).collect();
     let result = compute(operation, &numbers, is_float);
-    let code = codegen::generate(language, &numbers, operation, is_float);
+    let program = codegen::build(language, &numbers, operation, is_float);
+    let syntax_tree = program.links_notation();
+    let code = program.render();
     let result_kind = result_kind_for(operation.canonical()).to_owned();
 
     Some(NumericListSolution {
@@ -214,6 +219,7 @@ pub fn solve_numeric_list(prompt: &str) -> Option<NumericListSolution> {
         result_kind,
         given,
         result,
+        syntax_tree,
         code,
     })
 }
@@ -635,6 +641,8 @@ mod tests {
         let reversed = solve_numeric_list("reverse the numbers 1, 2, 3 in JavaScript").unwrap();
         assert_eq!(reversed.result, vec!["3", "2", "1"]);
         assert_eq!(reversed.result_kind, "list");
+        assert!(reversed.syntax_tree.contains("program_syntax_tree"));
+        assert!(reversed.syntax_tree.contains("semantic_node reverse_list"));
     }
 
     #[test]

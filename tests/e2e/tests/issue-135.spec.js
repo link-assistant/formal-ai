@@ -4,7 +4,7 @@
 // unknown fallback in the browser demo.
 const { test, expect } = require('@playwright/test');
 
-const UNKNOWN_ANSWER_MARKER = 'local Links Notation rules';
+const UNKNOWN_ANSWER_MARKER = 'local links rules';
 
 async function switchToManualMode(page) {
   const demoToggle = page.locator('.mode-toggle');

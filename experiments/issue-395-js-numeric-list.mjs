@@ -152,6 +152,13 @@ for (const c of cases) {
   check(`${c.label}: code fence ${c.fence}`, hit.content.includes("```" + c.fence), "fence");
   check(`${c.label}: contains generated code`, hit.content.includes(c.codeIncludes), c.codeIncludes);
   check(`${c.label}: shows result ${c.result}`, hit.content.includes(`${c.resultLabel} ${c.result}`), `${c.resultLabel} ${c.result}`);
+  check(
+    `${c.label}: exposes syntax tree`,
+    hit.evidence.some((line) =>
+      line.includes("synthesis:syntax_tree:program_syntax_tree"),
+    ),
+    "synthesis:syntax_tree",
+  );
   if (c.intro) {
     check(`${c.label}: localized intro`, hit.content.includes(c.intro), c.intro);
   }

@@ -809,7 +809,11 @@ const requiredLocalizedResponseIntents = [
   'identity',
   'assistant_name',
   'clarification',
+  'capabilities',
+  'capabilities_more',
   'unknown',
+  'unknown_reasoning_question',
+  'unknown_reasoning_trace',
   'meta_explanation',
   'inappropriate_content',
 ];

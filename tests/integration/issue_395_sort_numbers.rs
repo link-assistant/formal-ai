@@ -57,6 +57,18 @@ fn issue_395_english_javascript_computes_sorted_result() {
         "result must be sorted ascending, got: {}",
         response.answer
     );
+    assert!(
+        response
+            .links_notation
+            .contains("synthesis:syntax_tree program_syntax_tree"),
+        "trace must expose the structural syntax tree, got: {}",
+        response.links_notation
+    );
+    assert!(
+        response.links_notation.contains("semantic_node sort_list"),
+        "trace must record semantic AST/CST nodes, got: {}",
+        response.links_notation
+    );
 }
 
 /// "descending order" (the `reverse_sort` operation) must flip the ordering and

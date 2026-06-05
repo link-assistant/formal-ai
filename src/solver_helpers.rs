@@ -649,7 +649,3 @@ pub fn format_write_script_execution(program: ProgramSpec) -> String {
         execution.notes
     )
 }
-
-#[cfg(test)]
-#[path = "solver_helpers_tests.rs"]
-mod tests;

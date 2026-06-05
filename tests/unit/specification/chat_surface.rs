@@ -122,9 +122,9 @@ fn unknown_prompt_explains_how_to_teach_a_behavior_rule() {
     let response = answer("Какая у тебя модель личности?");
     assert_eq!(response.intent, "unknown");
     assert!(
-        response.answer.contains("List behavior rules")
-            && response.answer.contains("Show behavior rule")
-            && response.answer.contains("When I say"),
+        response.answer.contains("Покажи правила поведения")
+            && response.answer.contains("Покажи правило unknown")
+            && response.answer.contains("Когда я скажу"),
         "unknown fallback should be a self-contained rule-teaching guide, got: {}",
         response.answer
     );
@@ -166,7 +166,7 @@ fn self_facts_can_be_listed_through_chat() {
     assert_eq!(response.intent, "self_facts");
     assert!(response.answer.contains("self_fact"));
     assert!(response.answer.contains("formal-symbolic-production"));
-    assert!(response.answer.contains("local Links Notation rules"));
+    assert!(response.answer.contains("local links rules"));
 }
 
 #[test]
@@ -303,9 +303,9 @@ fn capabilities_answer_advertises_behavior_rule_commands() {
 fn capabilities_answer_in_russian_advertises_behavior_rule_commands() {
     let response = answer("Что ты умеешь?");
     assert_eq!(response.intent, "capabilities");
-    assert!(response.answer.contains("List behavior rules"));
-    assert!(response.answer.contains("When I say"));
-    assert!(response.answer.contains("Report issue"));
+    assert!(response.answer.contains("Покажи правила поведения"));
+    assert!(response.answer.contains("Когда я скажу"));
+    assert!(response.answer.contains("отчёта об ошибке"));
 }
 
 #[test]
@@ -458,10 +458,10 @@ fn unknown_intent_offers_a_path_to_extend_the_network() {
     assert!(
         response
             .answer
-            .contains("shared Links Notation seed fact or rule")
+            .contains("shared Links Notation seed fact or links rule")
             || response
                 .answer
-                .contains("shared Links Notation fact or rule"),
+                .contains("shared Links Notation fact or links rule"),
         "unknown answers should invite the user to extend the network"
     );
 }
@@ -594,74 +594,71 @@ fn unknown_answer_mentions_report_issue_and_export_memory() {
 }
 
 #[test]
-fn unknown_answer_mentions_report_issue_in_russian() {
+fn unknown_answer_mentions_localized_report_path_in_russian() {
     let response = answer("Какая у тебя модель личности?");
     assert_eq!(response.intent, "unknown");
     assert!(
-        response.answer.contains("Report issue"),
-        "Russian unknown answer must surface Report issue path; got: {}",
+        response.answer.contains("сообщите о недостающем правиле")
+            && response.answer.contains("диагностической трассировкой"),
+        "Russian unknown answer must surface a localized report path; got: {}",
         response.answer
     );
 }
 
 #[test]
 fn unknown_answer_explains_seed_extension_for_supported_languages() {
-    struct Case {
-        label: &'static str,
-        language: &'static str,
-        prompt: &'static str,
-        expected_extension_text: &'static str,
-    }
-
     let cases = [
-        Case {
-            label: "English",
-            language: "en",
-            prompt: "This synthetic zzz123 request has no rule.",
-            expected_extension_text: "shared Links Notation seed fact or rule",
-        },
-        Case {
-            label: "Russian",
-            language: "ru",
-            prompt: "Какая у тебя модель личности?",
-            expected_extension_text: "общий факт или правило Links Notation",
-        },
-        Case {
-            label: "Hindi",
-            language: "hi",
-            prompt: "अदृश्य zzz123 अनुरोध",
-            expected_extension_text: "shared Links Notation seed fact या rule",
-        },
-        Case {
-            label: "Chinese",
-            language: "zh",
-            prompt: "未知 zzz123 请求",
-            expected_extension_text: "共享的 Links Notation seed 事实或规则",
-        },
+        (
+            "English",
+            "en",
+            "This synthetic zzz123 request has no rule.",
+            "shared Links Notation seed fact or links rule",
+            ["Report issue", "trace"],
+        ),
+        (
+            "Russian",
+            "ru",
+            "Какая у тебя модель личности?",
+            "общий seed-факт или правило связей в формате Links Notation",
+            ["сообщите о недостающем правиле", "трассиров"],
+        ),
+        (
+            "Hindi",
+            "hi",
+            "अदृश्य zzz123 अनुरोध",
+            "shared Links Notation seed fact या links rule",
+            ["Report issue", "trace"],
+        ),
+        (
+            "Chinese",
+            "zh",
+            "未知 zzz123 请求",
+            "共享的 Links Notation seed 事实或 links rule",
+            ["Report issue", "trace"],
+        ),
     ];
 
-    for case in cases {
-        let response = answer(case.prompt);
+    for (label, language, prompt, expected_extension_text, report_terms) in cases {
+        let response = answer(prompt);
         assert_eq!(
             response.intent, "unknown",
-            "{} prompt should stay unknown",
-            case.label
+            "{label} prompt should stay unknown"
         );
         assert!(
-            response.answer.contains(case.expected_extension_text)
+            response.answer.contains(expected_extension_text)
                 && response.answer.contains("Links Notation"),
             "{} (language: {}) unknown answer must explain seed extension, got: {}",
-            case.label,
-            case.language,
+            label,
+            language,
             response.answer
         );
-        assert!(
-            response.answer.contains("Report issue") && response.answer.contains("trace"),
-            "{} (language: {}) unknown answer must frame reporting as a traced last resort, got: {}",
-            case.label,
-            case.language,
-            response.answer
-        );
+        for expected in report_terms {
+            assert!(
+                response.answer.contains(expected),
+                "{label} (language: {language}) unknown answer must include report text {expected:?}, got: {}",
+                response.answer
+            );
+        }
     }
 }
 

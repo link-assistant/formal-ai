@@ -1,6 +1,6 @@
 [package]
 name = "formal-ai"
-version = "0.180.0"
+version = "0.181.0"
 edition = "2021"
 description = "Formal symbolic AI implementation with OpenAI-compatible APIs"
 readme = "README.md"
@@ -69,6 +69,10 @@ path = "tests/unit/mod.rs"
 [[test]]
 name = "integration"
 path = "tests/integration/mod.rs"
+
+[[test]]
+name = "source"
+path = "tests/source/mod.rs"
 
 [profile.release]
 lto = true

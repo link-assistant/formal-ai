@@ -825,7 +825,3 @@ pub fn render(blueprint: &Blueprint, language: Language, strategy: BlueprintComp
 
     body
 }
-
-#[cfg(test)]
-#[path = "blueprint_tests.rs"]
-mod tests;

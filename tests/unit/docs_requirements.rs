@@ -561,6 +561,14 @@ fn issue_278_default_native_doublets_store_is_traceable() {
             "default_native_link_store",
             "DefaultNativeLinkStore",
             "from_links_notation",
+        ],
+    );
+
+    let link_store_tests = read(root.join("tests/source/source_tests/link_store/tests.rs"));
+    assert_contains_all(
+        "tests/source/source_tests/link_store/tests.rs",
+        &link_store_tests,
+        &[
             "native_default_build_selects_doublets_rs_backend",
             "native_without_default_features_falls_back_to_lino_projection",
             "doublets_default_imports_full_lino_bundle_and_exports_deterministically",
