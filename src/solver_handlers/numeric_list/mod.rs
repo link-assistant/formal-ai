@@ -104,14 +104,14 @@ pub struct ParsedListItem {
 }
 
 impl ParsedListItem {
-    fn numeric_value(&self) -> Option<f64> {
+    const fn numeric_value(&self) -> Option<f64> {
         match self.value {
             ListValue::Number(value) => Some(value),
             ListValue::Text => None,
         }
     }
 
-    fn is_text(&self) -> bool {
+    const fn is_text(&self) -> bool {
         matches!(self.value, ListValue::Text)
     }
 }

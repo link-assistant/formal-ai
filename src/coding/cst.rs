@@ -75,9 +75,9 @@ pub fn grammar_metadata(language_slug: &str) -> Option<CstGrammar> {
 }
 
 #[cfg(test)]
-pub fn grammar_languages() -> impl Iterator<Item = CstGrammar> {
+pub fn grammar_languages() -> Vec<CstGrammar> {
     let tree = parse_lino(PROGRAM_CST_GRAMMARS_LINO);
-    let grammars: Vec<CstGrammar> = grammar_nodes(&tree)
+    grammar_nodes(&tree)
         .map(|node| CstGrammar {
             language_slug: node.find_child_value("program_language").to_owned(),
             grammar_crate: node.find_child_value("grammar_crate").to_owned(),
@@ -85,8 +85,7 @@ pub fn grammar_languages() -> impl Iterator<Item = CstGrammar> {
             expected_root_kind: node.find_child_value("root_kind").to_owned(),
             source_repository: node.find_child_value("source_repository").to_owned(),
         })
-        .collect();
-    grammars.into_iter()
+        .collect()
 }
 
 pub fn parse_program_cst(language_slug: &str, source: &str) -> Option<ProgramCst> {
