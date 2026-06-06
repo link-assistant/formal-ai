@@ -12,6 +12,7 @@ mod multilingual_variations;
 mod playwright_script;
 mod proof_request;
 mod proof_request_config;
+mod semantic_facets;
 mod software_project;
 mod specification;
 mod test_status;
