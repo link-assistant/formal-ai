@@ -17,6 +17,7 @@ download.
 | [SKOS Reference](https://www.w3.org/TR/skos-reference/) | SKOS models concepts, concept schemes, preferred/alternate labels, and broader/narrower/related semantic relations. | SKOS can provide a comparison vocabulary for taxonomy/thesaurus imports and for broad/narrow/related source alignment facets. |
 | [OntoLex-Lemon](https://www.w3.org/2016/04/ontolex/) | OntoLex models lexical entries, forms, lexical senses, lexical concepts, and ontology references. | OntoLex is a strong guide for extending `WordForm` into richer lexical-entry and sense records without hardcoding one language. |
 | [OntoLex lexicography module](https://www.w3.org/2019/09/lexicog/) | The lexicography module groups lexical entries into lexicographic records and supports usage examples and translations. | Useful for future dictionary-style imports where one human dictionary entry contains several formal senses. |
+| [RDF 1.2 Concepts](https://www.w3.org/TR/rdf12-concepts/) | RDF 1.2 includes triple terms and reification so assertions can themselves be described. | Useful as a reference point for later statement records where a source fact, qualifier, or override must itself become a meaning-linked object. |
 
 ## Findings
 
@@ -28,9 +29,11 @@ qualifiers, references, ranks, and local overrides remain inspectable.
 
 Wikidata lexicographical data, OntoLex-Lemon, and WordNet all separate surface
 forms from senses. That supports the issue's request to give words, senses, and
-parts of speech the same semantic treatment as meanings. This PR does not
-redesign `WordForm`; it adds the generic facet mechanism at the `Meaning` level
-first, because existing tests and seed data already enforce meaning closure.
+parts of speech the same semantic treatment as meanings. The review follow-up
+added this bridge to `WordForm`: word forms now expose derived notation and
+denotation facets from seed structure and can carry authored facets for
+part-of-speech or richer lexical metadata, while a future importer can still
+migrate them to full lexical-entry and lexical-sense records.
 
 Wikipedia and Wiktionary dumps are too large for startup seed embedding. They
 should be treated as external source corpora with raw response snapshots,

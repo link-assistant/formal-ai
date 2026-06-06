@@ -64,11 +64,18 @@ pub enum Slot {
 /// operation it names when it stands in for a verb (e.g. the procedural surface
 /// "как сделать …" names the `do` action). Empty when the form does not fix an
 /// action (the operation is then read from the matched subject instead).
+///
+/// Issue #398 adds the recursive bridge away from English-only descriptions:
+/// a word form exposes generic semantic facets, just like a meaning. The parser
+/// derives notation and denotation facets from the seed structure, while
+/// authored facets can add part of speech or richer lexical metadata. The
+/// current `description` remains a transitional annotation for people.
 #[derive(Debug, Clone)]
 pub struct WordForm {
     pub text: String,
     pub description: String,
     pub action: String,
+    pub semantic_facets: Vec<SemanticFacet>,
 }
 
 impl WordForm {
@@ -106,6 +113,18 @@ impl WordForm {
             Some((_, after)) => after,
             None => "",
         }
+    }
+
+    /// Meaning slugs linked through the word-form semantic facet `kind`.
+    ///
+    /// The form itself is still the literal notation seen in text, but its
+    /// denotation, part of speech, and other lexical annotations can now point
+    /// at seed meanings rather than only at English prose.
+    pub fn semantic_facet_targets<'a>(&'a self, kind: &'a str) -> impl Iterator<Item = &'a str> {
+        self.semantic_facets
+            .iter()
+            .filter(move |facet| facet.kind == kind)
+            .flat_map(|facet| facet.meanings.iter().map(String::as_str))
     }
 }
 
@@ -724,34 +743,18 @@ fn parse_lexicon(text: &str) -> Lexicon {
 fn parse_meaning(node: &LinoNode) -> Meaning {
     let mut defined_by = Vec::new();
     let mut roles = Vec::new();
-    let mut semantic_facets = Vec::new();
+    let semantic_facets = parse_semantic_facets(node);
     let mut lexemes = Vec::new();
     for child in &node.children {
         match child.name.as_str() {
             "defined_by" => defined_by.push(child.id.clone()),
             "role" => roles.push(child.id.clone()),
-            "facet" => {
-                let meanings = child
-                    .children
-                    .iter()
-                    .filter(|m| m.name == "meaning")
-                    .map(|m| m.id.clone())
-                    .collect();
-                semantic_facets.push(SemanticFacet {
-                    kind: child.id.clone(),
-                    meanings,
-                });
-            }
             "lexeme" => {
                 let words = child
                     .children
                     .iter()
                     .filter(|w| w.name == "word")
-                    .map(|w| WordForm {
-                        text: w.id.clone(),
-                        description: w.find_child_value("description").to_string(),
-                        action: w.find_child_value("action").to_string(),
-                    })
+                    .map(|w| parse_word_form(&node.id, w))
                     .collect();
                 lexemes.push(Lexeme {
                     language: child.id.clone(),
@@ -771,6 +774,55 @@ fn parse_meaning(node: &LinoNode) -> Meaning {
         semantic_facets,
         lexemes,
     }
+}
+
+fn parse_word_form(parent_meaning: &str, node: &LinoNode) -> WordForm {
+    let mut semantic_facets = parse_semantic_facets(node);
+    // The seed nesting itself asserts that this literal surface denotes the
+    // parent meaning. Expose that as data so consumers do not have to read an
+    // English `description` field to understand the word form.
+    ensure_semantic_facet_target(&mut semantic_facets, "notation", "word_surface");
+    ensure_semantic_facet_target(&mut semantic_facets, "denotation", parent_meaning);
+
+    WordForm {
+        text: node.id.clone(),
+        description: node.find_child_value("description").to_string(),
+        action: node.find_child_value("action").to_string(),
+        semantic_facets,
+    }
+}
+
+fn ensure_semantic_facet_target(facets: &mut Vec<SemanticFacet>, kind: &str, target: &str) {
+    if let Some(facet) = facets.iter_mut().find(|facet| facet.kind == kind) {
+        if !facet.meanings.iter().any(|meaning| meaning == target) {
+            facet.meanings.push(target.to_string());
+        }
+        return;
+    }
+
+    facets.push(SemanticFacet {
+        kind: kind.to_string(),
+        meanings: vec![target.to_string()],
+    });
+}
+
+fn parse_semantic_facets(node: &LinoNode) -> Vec<SemanticFacet> {
+    node.children
+        .iter()
+        .filter(|child| child.name == "facet")
+        .map(|child| {
+            let meanings = child
+                .children
+                .iter()
+                .filter(|m| m.name == "meaning")
+                .map(|m| m.id.clone())
+                .collect();
+            SemanticFacet {
+                kind: child.id.clone(),
+                meanings,
+            }
+        })
+        .collect()
 }
 
 /// The parsed meaning lexicon. Cached — the embedded data is immutable at

@@ -71,3 +71,52 @@ fn root_link_semantic_facets_resolve_through_public_seed_api() {
         );
     }
 }
+
+#[test]
+fn semantic_meta_word_forms_expose_meaning_linked_facets() {
+    let lex = lexicon();
+    let meaning = lex
+        .meaning("semantic_facet")
+        .expect("semantic_facet meaning must exist");
+    let form = meaning
+        .word_forms()
+        .find(|form| form.text == "semantic facet")
+        .expect("semantic facet English surface must exist");
+
+    assert!(
+        form.semantic_facet_targets("notation")
+            .any(|target| target == "word_surface"),
+        "word form should link notation to the word_surface meaning"
+    );
+    assert!(
+        form.semantic_facet_targets("denotation")
+            .any(|target| target == "semantic_facet"),
+        "word form should link denotation back to the semantic_facet meaning"
+    );
+    assert!(
+        form.semantic_facet_targets("part_of_speech")
+            .any(|target| target == "noun_phrase"),
+        "word form should expose a meaning-backed part of speech"
+    );
+}
+
+#[test]
+fn ordinary_word_forms_expose_structural_notation_and_denotation() {
+    let lex = lexicon();
+    let meaning = lex.meaning("link").expect("link meaning must exist");
+    let form = meaning
+        .word_forms()
+        .find(|form| form.text == "link")
+        .expect("link English surface must exist");
+
+    assert!(
+        form.semantic_facet_targets("notation")
+            .any(|target| target == "word_surface"),
+        "word form should expose its literal surface as a word_surface notation"
+    );
+    assert!(
+        form.semantic_facet_targets("denotation")
+            .any(|target| target == "link"),
+        "word form should expose its parent meaning as the denotation"
+    );
+}

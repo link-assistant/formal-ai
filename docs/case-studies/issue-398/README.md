@@ -32,6 +32,8 @@ batches.
 - `raw-data/pr-399-reviews.json` - PR review records.
 - `raw-data/online-research.md` - external source survey for Wikidata,
   Wiktionary/Wikipedia dumps, WordNet, SKOS, and OntoLex-Lemon.
+- `meaning-data-model-alternatives.md` - five alternative meaning data models
+  requested during PR review, plus the hardcoded-English seed audit.
 
 ## Timeline
 
@@ -41,6 +43,7 @@ batches.
 | 2026-06-06T19:28:04Z | Issue updated before PR work began. No issue comments were present when archived. |
 | 2026-06-06T19:42:54Z | Draft PR #399 opened from `issue-398-b349f91c312f`. |
 | 2026-06-06 | Repository and online research collected under this case-study directory. |
+| 2026-06-06T20:37:50Z | PR review feedback rejected the first pass as too shallow, requested five alternative data-model variants, and called out remaining hardcoded English seed descriptions. |
 
 ## Existing implementation
 
@@ -65,6 +68,14 @@ The gap was that semantic metadata lived partly as scalar fields (`gloss`,
 `wiktionary`, `wikidata`) and partly in code assumptions. There was no recursive
 field where a meaning could say "my notation is this meaning" or "my annotation
 is this meaning" while keeping the facet kind itself in the seed.
+
+The review follow-up made the remaining gap explicit: the seed still has 416
+meaning glosses and 4,416 word descriptions as scalar text. This PR now treats
+those fields as transitional human annotations. The parser derives
+meaning-linked notation and denotation facets for every parsed word surface, and
+explicit word-form facets add part-of-speech data for the semantic and lexical
+meta-language clusters. The five evaluated model variants are documented in
+`meaning-data-model-alternatives.md`.
 
 ## Requirements and solution plan
 
@@ -95,6 +106,10 @@ editing Rust.
 
 - Added `SemanticFacet` and `Meaning::semantic_facet_targets` to the seed
   parser.
+- Added word-form semantic facets so lexical surfaces can link their notation,
+  denotation, and part of speech to seed meanings.
+- Derived `notation -> word_surface` and `denotation -> parent meaning` facets
+  for every parsed word form from the existing seed structure.
 - Added `Lexicon::semantic_facet_meanings` so callers can resolve facet targets
   back to `Meaning` records.
 - Added generic parsing for nested seed blocks of this form:
@@ -106,12 +121,16 @@ facet "notation"
 
 - Added `data/seed/meanings-semantic-meta.lino` with the semantic-facet
   vocabulary and multilingual lexemes.
+- Added `data/seed/meanings-lexical-meta.lino` with `word_surface`,
+  `lexical_form`, `lexical_sense`, `part_of_speech`, `noun`, and `noun_phrase`.
 - Updated `data/seed/meanings-ontology.lino` so the root `link` meaning declares
   `notation`, `annotation`, `denotation`, and `connotation` facets.
 - Embedded the new seed file in both the runtime seed module and mirrored source
   tests.
 - Added source tests proving facet blocks parse as meaning references and the
   root `link` declares all four required facet kinds.
+- Added tests proving word-form facet blocks parse and the semantic-meta seed
+  no longer relies only on English descriptions for its word surfaces.
 
 ## Validation strategy
 
