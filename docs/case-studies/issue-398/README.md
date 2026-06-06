@@ -15,10 +15,14 @@ facet kind is itself a meaning, and facet targets are meaning references. The
 seed adds the first semantic-facet vocabulary (`semantic_facet`, `notation`,
 `annotation`, `denotation`, `connotation`, `semantic_gloss`,
 `external_knowledge_source`, and `cached_source_response`) and attaches all four
-required facets to the `link` root. The deeper import and backfill work remains
-data migration work over the same shape: source responses should be cached as
-`.lino`, converted into meanings, then linked through facets in small reviewable
-batches.
+required facets to the `link` root. A later PR review comment supplied a
+Links-Theory root draft; this PR now seeds that draft as
+`data/seed/meanings-links-root.lino`, including `reference`, `link_action`,
+defined connectives, self-equations, quantity primitives, and the
+one-symbol-one-meaning `bank_river`/`bank_money` split. The deeper import and
+backfill work remains data migration work over the same shape: source responses
+should be cached as `.lino`, converted into meanings, then linked through facets
+in small reviewable batches.
 
 ## Archived data
 
@@ -33,7 +37,8 @@ batches.
 - `raw-data/online-research.md` - external source survey for Wikidata,
   Wiktionary/Wikipedia dumps, WordNet, SKOS, and OntoLex-Lemon.
 - `meaning-data-model-alternatives.md` - five alternative meaning data models
-  requested during PR review, plus the hardcoded-English seed audit.
+  requested during PR review, plus the hardcoded-English seed audit and the
+  follow-up root-seed note.
 
 ## Timeline
 
@@ -44,6 +49,9 @@ batches.
 | 2026-06-06T19:42:54Z | Draft PR #399 opened from `issue-398-b349f91c312f`. |
 | 2026-06-06 | Repository and online research collected under this case-study directory. |
 | 2026-06-06T20:37:50Z | PR review feedback rejected the first pass as too shallow, requested five alternative data-model variants, and called out remaining hardcoded English seed descriptions. |
+| 2026-06-06T20:59:26Z | First review follow-up added word-form facets and documented the five variants. |
+| 2026-06-06T23:03:09Z | New PR feedback supplied a concrete self-defining Links Notation root and one-symbol-one-meaning construction rules. |
+| 2026-06-06 | This follow-up converted that draft into a seed cluster, root/self-equation tests, and refreshed PR metadata archives. |
 
 ## Existing implementation
 
@@ -77,6 +85,15 @@ explicit word-form facets add part-of-speech data for the semantic and lexical
 meta-language clusters. The five evaluated model variants are documented in
 `meaning-data-model-alternatives.md`.
 
+The second review follow-up made the root-shape requirement concrete. The seed
+now has a compact Links-Theory root cluster with 48 multilingual meanings:
+`reference`, `reference_action`, `link_action`, `any_of_reference`,
+`repeatable_from_zero`, defined connectives (`of`, `from`, `to`, `and`), the
+split senses of `is`, quantity primitives (`amount`, `size`, `count`, `extent`),
+and `self_equation` as a semantic facet kind. The existing `link`, `type`,
+`quantity`, `zero`, and `one` meanings point into that cluster, so the new root
+does not sit beside the ontology; it is part of the same closed graph.
+
 ## Requirements and solution plan
 
 | ID | Requirement from issue #398 | Existing components checked | Solution in this PR | Follow-up plan |
@@ -91,6 +108,9 @@ meta-language clusters. The five evaluated model variants are documented in
 | R398-08 | Route every data item to external sources and clearly mark overrides. | Source-cache events include source URL, fetch time, hash, refresh, cache-hit, and conflict evidence. | Added `external_knowledge_source` and `cached_source_response` meanings so this provenance can become first-class semantic data. | Convert existing cache records into `.lino` source-response meanings and add override/conflict facet meanings. |
 | R398-09 | Keep startup small while supporting on-demand expansion. | `data/seed/` is intentionally reviewable and line-limited; live/cache lookups expand knowledge lazily. | Seeded only the compact meta-language foundation, not a bulk import of external corpora. | Import large corpora through chunked generated files and cache/migration scripts, with each file under the repository line-size limit. |
 | R398-10 | Update vision, requirements, and review evidence. | `VISION.md`, `REQUIREMENTS.md`, changelog fragments, source tests. | Updated docs and added reproducing semantic-facet tests. | Future child issues should add requirement rows that point to each importer/backfill batch. |
+| R398-11 | Represent the concrete Links-Theory root draft from PR feedback as seed data. | Existing `Meaning` records, `defined_by` closure tests, and semantic facets. | Added `data/seed/meanings-links-root.lino` and embedded it in runtime/source-test seed registries. | Expand the cluster toward typed holon/reified-statement records after compatibility APIs exist. |
+| R398-12 | Keep self-referential primitives as structured self-equations, not prose synonyms. | The facet parser can attach arbitrary meaning-backed facet kinds. | Added `self_equation` as a facet kind and tests for `type`, `not`, and `same`. | Later proof work can check these fixed points with relative-meta-logic instead of only asserting seed shape. |
+| R398-13 | Enforce one-symbol-one-meaning sense splitting for ambiguous words. | Existing multilingual lexical forms and word-form facets. | Seeded `one_symbol_one_meaning`, `sense_split`, `bank_river`, and `bank_money`; tests assert there is no ambiguous bare `bank` meaning. | Add migration scripts that detect ambiguous surfaces and propose split symbols with source evidence. |
 
 ## Root cause
 
@@ -123,14 +143,22 @@ facet "notation"
   vocabulary and multilingual lexemes.
 - Added `data/seed/meanings-lexical-meta.lino` with `word_surface`,
   `lexical_form`, `lexical_sense`, `part_of_speech`, `noun`, and `noun_phrase`.
+- Added `data/seed/meanings-links-root.lino` with the self-defining root draft:
+  references/actions, defined connectives, self-equations, quantity primitives,
+  and sense-splitting examples.
 - Updated `data/seed/meanings-ontology.lino` so the root `link` meaning declares
   `notation`, `annotation`, `denotation`, and `connotation` facets.
+- Updated `link`, `type`, `quantity`, `zero`, and `one` so existing ontology and
+  numeric roots point into the Links-Theory root cluster.
 - Embedded the new seed file in both the runtime seed module and mirrored source
   tests.
 - Added source tests proving facet blocks parse as meaning references and the
   root `link` declares all four required facet kinds.
 - Added tests proving word-form facet blocks parse and the semantic-meta seed
   no longer relies only on English descriptions for its word surfaces.
+- Added public unit tests proving the self-defining root terms exist, connectives
+  and `is` senses are meaning-defined, self-equations are facet links, and the
+  `bank` example is split into distinct symbols.
 
 ## Validation strategy
 
@@ -139,6 +167,12 @@ run failed at compile time because `semantic_facet_targets` and
 `semantic_facet_meanings` did not exist. After the implementation, the focused
 semantic-facet test passed and the broader seed checks are part of the final
 local verification for PR #399.
+
+The second reproducing test was added from the 23:03 UTC PR feedback. Before the
+new seed cluster existed, `cargo test semantic_root -- --nocapture` failed
+because meanings such as `reference`, `link_action`, `self_equation`,
+`bank_river`, and `bank_money` were absent. The final focused run passes those
+tests and the whole seed-meaning invariant suite.
 
 ## Follow-up issues worth opening
 

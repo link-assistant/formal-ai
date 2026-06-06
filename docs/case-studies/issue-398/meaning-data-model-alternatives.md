@@ -49,7 +49,8 @@ Cons:
 
 Best use:
 This is the best incremental shape for the current repository. PR #399 now uses
-it for meaning-level facets and word-form facets.
+it for meaning-level facets, word-form facets, and the compact Links-Theory
+root cluster.
 
 ## Variant 2: Reified Statement Model
 
@@ -175,6 +176,12 @@ Best use:
 Use this as the long-term normalization target after direct facets and
 statement provenance are in place.
 
+PR #399 now seeds the first small typed-link-style root: `reference`,
+`reference_action`, `link_action`, defined connectives, self-equations,
+quantity primitives, and one-symbol-one-meaning sense splits. It is not the full
+holon normalization, but it makes the review draft executable under the current
+meaning schema.
+
 ## Recommendation
 
 Use a hybrid:
@@ -195,12 +202,12 @@ Current seed audit after this review iteration:
 
 | Item | Count |
 | --- | ---: |
-| Meaning records in `data/seed/meanings*.lino` | 416 |
-| Meaning `gloss` strings | 416 |
-| Word forms | 4,416 |
-| Word `description` strings | 4,416 |
+| Meaning records in `data/seed/meanings*.lino` | 464 |
+| Meaning `gloss` strings | 464 |
+| Word forms | 4,608 |
+| Word `description` strings | 4,608 |
 | Word-form `facet` blocks | 168 |
-| Runtime word-form facet links exposed by parser | 8,888 |
+| Runtime word-form facet links exposed by parser | 9,272 |
 
 The English `gloss` and `description` fields are still present and should be
 treated as transitional human annotations, not as the final semantic model. This
@@ -210,6 +217,12 @@ facets derived from the seed's existing `lexeme`/`word` nesting. Authored
 word-form facets can add more links, and the new semantic-meta and lexical-meta
 seed clusters use that shape for explicit `part_of_speech` data. Tests require
 all exposed word-form facets to resolve as meanings.
+
+The new `meanings-links-root.lino` cluster adds 48 of those meanings. Its
+surfaces still carry human descriptions for review and translation coverage, but
+the tests do not read those descriptions to understand the root: they assert the
+`defined_by` links, `self_equation` facets, and explicit `bank_river` /
+`bank_money` split.
 
 ## Source Model References
 

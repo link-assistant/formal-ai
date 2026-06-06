@@ -150,6 +150,11 @@ and semantic facets for notation, annotation, denotation, and connotation. The
 facet kinds themselves are meanings in the seed, so adding a new semantic view
 is data growth rather than a new hardcoded language constant.
 
+The semantic root should also stay compatible with Links Theory: `reference`,
+`link_action`, defined connectives, quantity primitives, and self-equations are
+seed meanings, and ambiguous symbols are split into distinct meanings such as
+`bank_river` and `bank_money` instead of one overloaded surface.
+
 Natural languages and programming languages should be translated through link-native meanings rather than through one-off text rewrites. Once a phrase has been fully formalized — verbs mapped to Wikidata P-IDs, nouns mapped to Q-IDs, fallbacks documented to Wikipedia or Wiktionary entries — translating it to another language reduces to looking up the destination-language label on the same P/Q anchor. The same mechanism translates between natural language and programming languages: formalized statements can be rendered into Rust, JavaScript, or any other target whose syntactic forms have been linked into the doublet store. Links Notation acts as the intermediate language of meaning for explanations, code generation, data imports, cross-language translation, and on-demand compilation of natural-language skills into executable code.
 
 Cross-language translation should also preserve the source's surface signal: the leading capitalization and the terminal punctuation a user typed are part of the meaning, not noise. A lowercase `как у тебя дела?` should round-trip to lowercase `how are you?`, and a source fragment with no terminal mark should not gain one in the target language. The pipeline is `formalize → meaning → deformalize → match_source_formatting`, and the meaning ID, source language, and target language remain in the Links Notation trace so the translation stays inspectable.
