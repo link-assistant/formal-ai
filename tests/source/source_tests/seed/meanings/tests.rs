@@ -65,6 +65,132 @@ fn every_meaning_is_self_describing() {
 }
 
 #[test]
+fn semantic_facet_blocks_are_parsed_as_meaning_references() {
+    let lex = parse_lexicon(
+        r#"
+meanings
+  meaning "alpha"
+    gloss "alpha meaning"
+    wiktionary "alpha"
+    defined_by "alpha"
+    role "ontology_root"
+    facet "notation"
+      meaning "beta"
+    lexeme "en"
+      word "alpha"
+        description "English alpha."
+    lexeme "ru"
+      word "альфа"
+        description "Russian alpha."
+    lexeme "hi"
+      word "अल्फा"
+        description "Hindi alpha."
+    lexeme "zh"
+      word "阿尔法"
+        description "Chinese alpha."
+  meaning "beta"
+    gloss "beta meaning"
+    wiktionary "beta"
+    defined_by "alpha"
+    role "ontology_category"
+    lexeme "en"
+      word "beta"
+        description "English beta."
+    lexeme "ru"
+      word "бета"
+        description "Russian beta."
+    lexeme "hi"
+      word "बीटा"
+        description "Hindi beta."
+    lexeme "zh"
+      word "贝塔"
+        description "Chinese beta."
+"#,
+    );
+
+    let alpha = lex.meaning("alpha").expect("alpha fixture meaning");
+    let notation_targets: Vec<&str> = alpha.semantic_facet_targets("notation").collect();
+    assert_eq!(
+        notation_targets,
+        vec!["beta"],
+        "facet blocks must parse as meaning references"
+    );
+    let resolved = lex.semantic_facet_meanings("alpha", "notation");
+    assert_eq!(
+        resolved.iter().map(|m| m.slug.as_str()).collect::<Vec<_>>(),
+        vec!["beta"],
+        "facet targets must resolve through the lexicon"
+    );
+}
+
+#[test]
+fn root_link_declares_the_required_semantic_facets() {
+    // Issue #398: notation, annotation, denotation, and connotation are
+    // meaning links in the lexicon, not English-only prose fields. The root
+    // link meaning carries all four so future domain meanings can backfill the
+    // same schema without changing parser code.
+    let lex = lexicon();
+    let root = lex
+        .meaning("link")
+        .expect("the ontology root meaning must exist");
+    let facet_kinds = ["notation", "annotation", "denotation", "connotation"];
+    for kind in facet_kinds {
+        let kind_meaning = lex
+            .meaning(kind)
+            .unwrap_or_else(|| panic!("{kind} must itself be a meaning"));
+        assert!(
+            kind_meaning.has_role("semantic_facet_kind"),
+            "{kind} must be identifiable as a semantic facet kind"
+        );
+        assert!(
+            lex.reaches_root(kind),
+            "{kind} must reduce to the link ontology root"
+        );
+        let targets: Vec<&str> = root.semantic_facet_targets(kind).collect();
+        assert!(
+            !targets.is_empty(),
+            "the root link meaning must declare a {kind} facet"
+        );
+        for target in targets {
+            assert!(
+                lex.meaning(target).is_some(),
+                "link facet {kind} references undefined meaning {target}"
+            );
+        }
+    }
+}
+
+#[test]
+fn every_semantic_facet_resolves_to_seed_meanings() {
+    let lex = lexicon();
+    for meaning in &lex.meanings {
+        for facet in &meaning.semantic_facets {
+            assert!(
+                lex.meaning(&facet.kind).is_some(),
+                "{} declares undefined semantic facet kind {}",
+                meaning.slug,
+                facet.kind
+            );
+            assert!(
+                !facet.meanings.is_empty(),
+                "{} declares empty semantic facet {}",
+                meaning.slug,
+                facet.kind
+            );
+            for target in &facet.meanings {
+                assert!(
+                    lex.meaning(target).is_some(),
+                    "{} semantic facet {} references undefined meaning {}",
+                    meaning.slug,
+                    facet.kind,
+                    target
+                );
+            }
+        }
+    }
+}
+
+#[test]
 fn every_meaning_covers_all_supported_languages() {
     let lex = lexicon();
     for meaning in &lex.meanings {

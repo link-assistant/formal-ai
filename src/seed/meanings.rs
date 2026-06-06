@@ -116,6 +116,18 @@ pub struct Lexeme {
     pub words: Vec<WordForm>,
 }
 
+/// A semantic facet attached to a meaning.
+///
+/// The facet `kind` is itself a meaning slug (`notation`, `annotation`,
+/// `denotation`, `connotation`, or a future facet), and every target is another
+/// meaning slug. This keeps the meta-language recursive: code only knows the
+/// generic `facet` container, while the vocabulary of facets lives in the seed.
+#[derive(Debug, Clone)]
+pub struct SemanticFacet {
+    pub kind: String,
+    pub meanings: Vec<String>,
+}
+
 /// A language-independent meaning grounded in real lexical data.
 #[derive(Debug, Clone)]
 pub struct Meaning {
@@ -129,6 +141,7 @@ pub struct Meaning {
     pub wikidata: String,
     pub defined_by: Vec<String>,
     pub roles: Vec<String>,
+    pub semantic_facets: Vec<SemanticFacet>,
     pub lexemes: Vec<Lexeme>,
 }
 
@@ -136,6 +149,19 @@ impl Meaning {
     #[must_use]
     pub fn has_role(&self, role: &str) -> bool {
         self.roles.iter().any(|r| r == role)
+    }
+
+    /// Meaning slugs linked through the semantic facet `kind`.
+    ///
+    /// Both `kind` and the returned targets are meaning identifiers from the
+    /// seed. For example, the `link` root can declare a `notation` facet that
+    /// points at `links_notation_format`, and callers can resolve that slug
+    /// through [`Lexicon::semantic_facet_meanings`].
+    pub fn semantic_facet_targets<'a>(&'a self, kind: &'a str) -> impl Iterator<Item = &'a str> {
+        self.semantic_facets
+            .iter()
+            .filter(move |facet| facet.kind == kind)
+            .flat_map(|facet| facet.meanings.iter().map(String::as_str))
     }
 
     /// Every surface word across every language this meaning lexicalises.
@@ -248,6 +274,18 @@ impl Lexicon {
     #[must_use]
     pub fn meaning(&self, slug: &str) -> Option<&Meaning> {
         self.meanings.iter().find(|m| m.slug == slug)
+    }
+
+    /// Resolved meanings attached to `slug` through the semantic facet `kind`.
+    #[must_use]
+    pub fn semantic_facet_meanings(&self, slug: &str, kind: &str) -> Vec<&Meaning> {
+        let Some(meaning) = self.meaning(slug) else {
+            return Vec::new();
+        };
+        meaning
+            .semantic_facet_targets(kind)
+            .filter_map(|target| self.meaning(target))
+            .collect()
     }
 
     /// The meaning rooted in the Wikidata entity or property `id` (e.g. `Q89`,
@@ -686,11 +724,24 @@ fn parse_lexicon(text: &str) -> Lexicon {
 fn parse_meaning(node: &LinoNode) -> Meaning {
     let mut defined_by = Vec::new();
     let mut roles = Vec::new();
+    let mut semantic_facets = Vec::new();
     let mut lexemes = Vec::new();
     for child in &node.children {
         match child.name.as_str() {
             "defined_by" => defined_by.push(child.id.clone()),
             "role" => roles.push(child.id.clone()),
+            "facet" => {
+                let meanings = child
+                    .children
+                    .iter()
+                    .filter(|m| m.name == "meaning")
+                    .map(|m| m.id.clone())
+                    .collect();
+                semantic_facets.push(SemanticFacet {
+                    kind: child.id.clone(),
+                    meanings,
+                });
+            }
             "lexeme" => {
                 let words = child
                     .children
@@ -717,6 +768,7 @@ fn parse_meaning(node: &LinoNode) -> Meaning {
         wikidata: node.find_child_value("wikidata").to_string(),
         defined_by,
         roles,
+        semantic_facets,
         lexemes,
     }
 }
