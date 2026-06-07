@@ -235,9 +235,7 @@ fn source_root_id(id: &str) -> Option<String> {
     if !matches!(prefix, 'L' | 'P' | 'Q') {
         return None;
     }
-    let numeric: String = chars
-        .take_while(|character| character.is_ascii_digit())
-        .collect();
+    let numeric: String = chars.take_while(char::is_ascii_digit).collect();
     if numeric.is_empty() {
         return None;
     }
