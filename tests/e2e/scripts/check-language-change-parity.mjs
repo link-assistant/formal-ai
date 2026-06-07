@@ -9,6 +9,10 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import {
+  parseLinoEntry,
+  parseSupportedLanguagesFromAgentInfo,
+} from './lino-seed-parser.mjs';
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(scriptDir, '../../..');
@@ -60,11 +64,7 @@ function readFileAtRef(ref, relativePath) {
 
 function parseSupportedLanguages() {
   const text = readCurrentFile('data/seed/agent-info.lino');
-  const match = text.match(/field "supported_languages"\s*\n\s+value "([^"]+)"/);
-  if (!match) {
-    throw new Error('data/seed/agent-info.lino is missing supported_languages');
-  }
-  return match[1].split('|').filter(Boolean);
+  return parseSupportedLanguagesFromAgentInfo(text);
 }
 
 function appendSignature(map, language, lines) {
@@ -98,7 +98,7 @@ function collectTopLevelLocaleBlocks(text, supportedLanguages) {
   return signatures;
 }
 
-function collectRecordsByLanguage(text, recordStart, languageField) {
+function collectRecordsByLanguage(text, recordKeyword) {
   const signatures = new Map();
   let currentLanguage = '';
   let currentLines = [];
@@ -110,7 +110,7 @@ function collectRecordsByLanguage(text, recordStart, languageField) {
   }
 
   for (const line of text.split(/\r?\n/)) {
-    if (recordStart.test(line)) {
+    if (parseLinoEntry(line, 2, recordKeyword) !== null) {
       commit();
       currentLines = [line];
       continue;
@@ -119,15 +119,15 @@ function collectRecordsByLanguage(text, recordStart, languageField) {
     if (currentLines.length === 0) continue;
 
     currentLines.push(line);
-    const language = line.match(languageField);
-    if (language) currentLanguage = language[1];
+    const language = parseLinoEntry(line, 4, 'language');
+    if (language !== null) currentLanguage = language;
   }
 
   commit();
   return signatures;
 }
 
-function collectIndentedLanguageBlocks(text, headerPattern) {
+function collectIndentedLanguageBlocks(text, indent, keyword) {
   const signatures = new Map();
   let currentLanguage = '';
   let currentIndent = 0;
@@ -149,10 +149,10 @@ function collectIndentedLanguageBlocks(text, headerPattern) {
       commit();
     }
 
-    const header = line.match(headerPattern);
-    if (header) {
+    const language = parseLinoEntry(line, indent, keyword);
+    if (language !== null) {
       commit();
-      currentLanguage = header[1];
+      currentLanguage = language;
       currentIndent = leadingSpaces(line);
       currentLines = [line];
       continue;
@@ -166,11 +166,11 @@ function collectIndentedLanguageBlocks(text, headerPattern) {
 }
 
 function collectToolSignatures(text) {
-  const signatures = collectIndentedLanguageBlocks(text, /^\s+localized "([^"]+)"/);
+  const signatures = collectIndentedLanguageBlocks(text, 4, 'localized');
   const englishLines = [];
 
   for (const line of text.split(/\r?\n/)) {
-    if (/^    (name|description) "/.test(line)) {
+    if (/^    (name|description|note)(?:\s+|$)/.test(line)) {
       englishLines.push(line.trim());
     }
   }
@@ -184,23 +184,15 @@ function signaturesForFile(relativePath, text, supportedLanguages) {
     case 'src/web/i18n-catalog.lino':
       return collectTopLevelLocaleBlocks(text, supportedLanguages);
     case 'data/seed/prompt-patterns.lino':
-      return collectRecordsByLanguage(
-        text,
-        /^  pattern "/,
-        /^    language "([^"]+)"/,
-      );
+      return collectRecordsByLanguage(text, 'pattern');
     case 'data/seed/multilingual-responses.lino':
-      return collectRecordsByLanguage(
-        text,
-        /^  response "/,
-        /^    language "([^"]+)"/,
-      );
+      return collectRecordsByLanguage(text, 'response');
     case 'data/seed/concepts.lino':
-      return collectIndentedLanguageBlocks(text, /^  localized "([^"]+)"/);
+      return collectIndentedLanguageBlocks(text, 2, 'localized');
     case 'data/seed/tools.lino':
       return collectToolSignatures(text);
     case 'data/seed/concept-contexts.lino':
-      return collectIndentedLanguageBlocks(text, /^    label "([^"]+)"/);
+      return collectIndentedLanguageBlocks(text, 4, 'label');
     default:
       return new Map();
   }
