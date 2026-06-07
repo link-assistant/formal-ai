@@ -1,624 +1,285 @@
-L3744 # cached json source L3744
-  json-object
-    member u-65-6E-74-69-74-69-65-73
-      json-object
-        member u-4C-33-37-34-34
-          json-object
-            member u-63-6C-61-69-6D-73
-              json-object
-                member u-50-31-32-35-37-33
-                  json-array
-                    item 0
-                      json-object
-                        member u-69-64
-                          json-string u-4C-33-37-34-34-24-35-43-41-43-45-36-43-46-2D-45-35-34-32-2D-34-43-36-39-2D-39-45-30-32-2D-44-39-32-36-35-35-46-37-44-38-32-45
-                        member u-6D-61-69-6E-73-6E-61-6B
-                          json-object
-                            member u-64-61-74-61-74-79-70-65
-                              json-string u-65-78-74-65-72-6E-61-6C-2D-69-64
-                            member u-64-61-74-61-76-61-6C-75-65
-                              json-object
-                                member u-74-79-70-65
-                                  json-string u-73-74-72-69-6E-67
-                                member u-76-61-6C-75-65
-                                  json-string u-31-31-34-37-36
-                            member u-68-61-73-68
-                              json-string u-63-37-31-31-65-64-30-61-33-63-33-63-33-65-34-35-34-61-31-39-39-30-61-66-37-30-61-34-31-36-33-64-62-64-38-35-66-35-63-32
-                            member u-70-72-6F-70-65-72-74-79
-                              json-string u-50-31-32-35-37-33
-                            member u-73-6E-61-6B-74-79-70-65
-                              json-string u-76-61-6C-75-65
-                        member u-72-61-6E-6B
-                          json-string u-6E-6F-72-6D-61-6C
-                        member u-74-79-70-65
-                          json-string u-73-74-61-74-65-6D-65-6E-74
-                    item 1
-                      json-object
-                        member u-69-64
-                          json-string u-4C-33-37-34-34-24-45-39-42-33-36-33-43-42-2D-32-38-33-33-2D-34-32-33-34-2D-39-43-30-34-2D-39-39-35-45-32-43-43-33-46-44-35-37
-                        member u-6D-61-69-6E-73-6E-61-6B
-                          json-object
-                            member u-64-61-74-61-74-79-70-65
-                              json-string u-65-78-74-65-72-6E-61-6C-2D-69-64
-                            member u-64-61-74-61-76-61-6C-75-65
-                              json-object
-                                member u-74-79-70-65
-                                  json-string u-73-74-72-69-6E-67
-                                member u-76-61-6C-75-65
-                                  json-string u-32-36-39-32-37
-                            member u-68-61-73-68
-                              json-string u-64-62-66-34-34-66-62-38-36-38-64-31-36-30-31-63-62-63-62-34-36-31-36-31-30-30-61-39-65-66-31-62-61-62-63-39-32-32-33-37
-                            member u-70-72-6F-70-65-72-74-79
-                              json-string u-50-31-32-35-37-33
-                            member u-73-6E-61-6B-74-79-70-65
-                              json-string u-76-61-6C-75-65
-                        member u-72-61-6E-6B
-                          json-string u-6E-6F-72-6D-61-6C
-                        member u-74-79-70-65
-                          json-string u-73-74-61-74-65-6D-65-6E-74
-                member u-50-31-32-36-39-30
-                  json-array
-                    item 0
-                      json-object
-                        member u-69-64
-                          json-string u-4C-33-37-34-34-24-46-44-46-45-30-35-44-33-2D-41-39-41-41-2D-34-33-41-35-2D-42-42-42-37-2D-35-45-30-46-31-45-32-44-46-35-42-46
-                        member u-6D-61-69-6E-73-6E-61-6B
-                          json-object
-                            member u-64-61-74-61-74-79-70-65
-                              json-string u-65-78-74-65-72-6E-61-6C-2D-69-64
-                            member u-64-61-74-61-76-61-6C-75-65
-                              json-object
-                                member u-74-79-70-65
-                                  json-string u-73-74-72-69-6E-67
-                                member u-76-61-6C-75-65
-                                  json-string u-31-32-38-34-30-36-34
-                            member u-68-61-73-68
-                              json-string u-36-64-39-64-37-62-66-66-34-32-31-30-39-35-38-34-64-66-63-63-39-33-35-66-37-33-63-33-31-62-36-62-36-34-34-33-38-31-66-66
-                            member u-70-72-6F-70-65-72-74-79
-                              json-string u-50-31-32-36-39-30
-                            member u-73-6E-61-6B-74-79-70-65
-                              json-string u-76-61-6C-75-65
-                        member u-72-61-6E-6B
-                          json-string u-6E-6F-72-6D-61-6C
-                        member u-74-79-70-65
-                          json-string u-73-74-61-74-65-6D-65-6E-74
-                member u-50-31-32-37-31-38
-                  json-array
-                    item 0
-                      json-object
-                        member u-69-64
-                          json-string u-4C-33-37-34-34-24-42-38-44-39-36-35-39-35-2D-36-39-34-34-2D-34-42-43-31-2D-38-45-31-39-2D-45-41-37-30-30-42-35-32-32-35-42-37
-                        member u-6D-61-69-6E-73-6E-61-6B
-                          json-object
-                            member u-64-61-74-61-74-79-70-65
-                              json-string u-65-78-74-65-72-6E-61-6C-2D-69-64
-                            member u-64-61-74-61-76-61-6C-75-65
-                              json-object
-                                member u-74-79-70-65
-                                  json-string u-73-74-72-69-6E-67
-                                member u-76-61-6C-75-65
-                                  json-string u-30-30-34-36-32-34-33
-                            member u-68-61-73-68
-                              json-string u-34-38-33-38-33-32-33-33-36-32-66-34-35-33-33-30-62-38-35-63-35-62-62-66-36-33-38-65-34-65-30-62-33-36-30-62-61-36-30-37
-                            member u-70-72-6F-70-65-72-74-79
-                              json-string u-50-31-32-37-31-38
-                            member u-73-6E-61-6B-74-79-70-65
-                              json-string u-76-61-6C-75-65
-                        member u-72-61-6E-6B
-                          json-string u-6E-6F-72-6D-61-6C
-                        member u-74-79-70-65
-                          json-string u-73-74-61-74-65-6D-65-6E-74
-                member u-50-31-32-37-32-34
-                  json-array
-                    item 0
-                      json-object
-                        member u-69-64
-                          json-string u-4C-33-37-34-34-24-39-36-39-34-41-44-32-44-2D-38-39-46-38-2D-34-39-45-37-2D-39-45-45-46-2D-37-44-46-45-38-36-33-38-37-36-38-31
-                        member u-6D-61-69-6E-73-6E-61-6B
-                          json-object
-                            member u-64-61-74-61-74-79-70-65
-                              json-string u-65-78-74-65-72-6E-61-6C-2D-69-64
-                            member u-64-61-74-61-76-61-6C-75-65
-                              json-object
-                                member u-74-79-70-65
-                                  json-string u-73-74-72-69-6E-67
-                                member u-76-61-6C-75-65
-                                  json-string u-30-30-34-34-39-32-36
-                            member u-68-61-73-68
-                              json-string u-64-32-62-32-37-64-61-37-30-62-63-35-64-39-38-61-64-66-36-31-36-39-65-36-65-30-64-32-31-38-30-38-35-33-63-32-63-66-62-39
-                            member u-70-72-6F-70-65-72-74-79
-                              json-string u-50-31-32-37-32-34
-                            member u-73-6E-61-6B-74-79-70-65
-                              json-string u-76-61-6C-75-65
-                        member u-72-61-6E-6B
-                          json-string u-6E-6F-72-6D-61-6C
-                        member u-74-79-70-65
-                          json-string u-73-74-61-74-65-6D-65-6E-74
-                member u-50-31-32-37-32-36
-                  json-array
-                    item 0
-                      json-object
-                        member u-69-64
-                          json-string u-4C-33-37-34-34-24-31-37-30-45-34-36-35-31-2D-45-46-36-31-2D-34-41-36-37-2D-42-39-37-31-2D-41-34-43-42-31-32-42-38-36-32-38-45
-                        member u-6D-61-69-6E-73-6E-61-6B
-                          json-object
-                            member u-64-61-74-61-74-79-70-65
-                              json-string u-65-78-74-65-72-6E-61-6C-2D-69-64
-                            member u-64-61-74-61-76-61-6C-75-65
-                              json-object
-                                member u-74-79-70-65
-                                  json-string u-73-74-72-69-6E-67
-                                member u-76-61-6C-75-65
-                                  json-string u-30-30-35-37-39-38-33
-                            member u-68-61-73-68
-                              json-string u-39-32-61-39-32-62-63-65-31-34-34-33-32-64-64-32-31-62-61-34-66-34-36-62-63-35-35-34-33-33-63-66-61-31-38-36-33-39-32-32
-                            member u-70-72-6F-70-65-72-74-79
-                              json-string u-50-31-32-37-32-36
-                            member u-73-6E-61-6B-74-79-70-65
-                              json-string u-76-61-6C-75-65
-                        member u-72-61-6E-6B
-                          json-string u-6E-6F-72-6D-61-6C
-                        member u-74-79-70-65
-                          json-string u-73-74-61-74-65-6D-65-6E-74
-                member u-50-31-32-37-33-39
-                  json-array
-                    item 0
-                      json-object
-                        member u-69-64
-                          json-string u-4C-33-37-34-34-24-32-38-34-36-31-30-43-45-2D-38-32-45-36-2D-34-46-45-33-2D-42-45-44-38-2D-42-39-32-37-39-39-44-32-33-31-39-37
-                        member u-6D-61-69-6E-73-6E-61-6B
-                          json-object
-                            member u-64-61-74-61-74-79-70-65
-                              json-string u-65-78-74-65-72-6E-61-6C-2D-69-64
-                            member u-64-61-74-61-76-61-6C-75-65
-                              json-object
-                                member u-74-79-70-65
-                                  json-string u-73-74-72-69-6E-67
-                                member u-76-61-6C-75-65
-                                  json-string u-30-36-39-38-39-35-30
-                            member u-68-61-73-68
-                              json-string u-31-37-34-65-37-30-34-32-38-62-31-61-36-63-66-64-63-65-31-66-38-35-66-36-65-35-31-37-31-36-34-61-32-36-38-66-30-66-34-33
-                            member u-70-72-6F-70-65-72-74-79
-                              json-string u-50-31-32-37-33-39
-                            member u-73-6E-61-6B-74-79-70-65
-                              json-string u-76-61-6C-75-65
-                        member u-72-61-6E-6B
-                          json-string u-6E-6F-72-6D-61-6C
-                        member u-74-79-70-65
-                          json-string u-73-74-61-74-65-6D-65-6E-74
-                member u-50-31-32-38-36-38
-                  json-array
-                    item 0
-                      json-object
-                        member u-69-64
-                          json-string u-4C-33-37-34-34-24-44-35-31-43-36-39-30-36-2D-46-30-39-37-2D-34-33-36-37-2D-42-45-33-45-2D-32-41-32-42-38-31-37-42-36-45-33-44
-                        member u-6D-61-69-6E-73-6E-61-6B
-                          json-object
-                            member u-64-61-74-61-74-79-70-65
-                              json-string u-65-78-74-65-72-6E-61-6C-2D-69-64
-                            member u-64-61-74-61-76-61-6C-75-65
-                              json-object
-                                member u-74-79-70-65
-                                  json-string u-73-74-72-69-6E-67
-                                member u-76-61-6C-75-65
-                                  json-string u-33-31-32-31-32-5F-32
-                            member u-68-61-73-68
-                              json-string u-35-30-34-61-65-39-34-37-65-63-33-35-66-37-30-66-37-63-61-35-65-35-35-37-34-38-37-38-64-38-64-37-64-63-63-63-36-34-62-66
-                            member u-70-72-6F-70-65-72-74-79
-                              json-string u-50-31-32-38-36-38
-                            member u-73-6E-61-6B-74-79-70-65
-                              json-string u-76-61-6C-75-65
-                        member u-72-61-6E-6B
-                          json-string u-6E-6F-72-6D-61-6C
-                        member u-74-79-70-65
-                          json-string u-73-74-61-74-65-6D-65-6E-74
-                member u-50-31-33-32-35-38
-                  json-array
-                    item 0
-                      json-object
-                        member u-69-64
-                          json-string u-4C-33-37-34-34-24-41-35-34-38-41-31-46-35-2D-46-36-34-44-2D-34-37-45-30-2D-42-32-38-45-2D-38-37-34-45-35-43-42-33-41-42-36-32
-                        member u-6D-61-69-6E-73-6E-61-6B
-                          json-object
-                            member u-64-61-74-61-74-79-70-65
-                              json-string u-65-78-74-65-72-6E-61-6C-2D-69-64
-                            member u-64-61-74-61-76-61-6C-75-65
-                              json-object
-                                member u-74-79-70-65
-                                  json-string u-73-74-72-69-6E-67
-                                member u-76-61-6C-75-65
-                                  json-string u-38-31-30-30-38-35-38
-                            member u-68-61-73-68
-                              json-string u-65-32-64-63-32-39-35-66-34-37-65-63-63-32-66-64-30-36-31-33-38-33-31-38-38-35-37-31-38-62-38-64-32-36-33-31-32-38-64-31
-                            member u-70-72-6F-70-65-72-74-79
-                              json-string u-50-31-33-32-35-38
-                            member u-73-6E-61-6B-74-79-70-65
-                              json-string u-76-61-6C-75-65
-                        member u-72-61-6E-6B
-                          json-string u-6E-6F-72-6D-61-6C
-                        member u-74-79-70-65
-                          json-string u-73-74-61-74-65-6D-65-6E-74
-                member u-50-35-32-33-38
-                  json-array
-                    item 0
-                      json-object
-                        member u-69-64
-                          json-string u-4C-33-37-34-34-24-35-44-30-43-43-31-39-46-2D-45-31-32-33-2D-34-33-43-36-2D-38-38-36-34-2D-33-35-34-43-34-41-46-31-37-46-42-37
-                        member u-6D-61-69-6E-73-6E-61-6B
-                          json-object
-                            member u-64-61-74-61-74-79-70-65
-                              json-string u-77-69-6B-69-62-61-73-65-2D-6C-65-78-65-6D-65
-                            member u-64-61-74-61-76-61-6C-75-65
-                              json-object
-                                member u-74-79-70-65
-                                  json-string u-77-69-6B-69-62-61-73-65-2D-65-6E-74-69-74-79-69-64
-                                member u-76-61-6C-75-65
-                                  json-object
-                                    member u-65-6E-74-69-74-79-2D-74-79-70-65
-                                      json-string u-6C-65-78-65-6D-65
-                                    member u-69-64
-                                      json-string u-4C-33-37-34-33
-                                    member u-6E-75-6D-65-72-69-63-2D-69-64
-                                      json-number 3743
-                            member u-68-61-73-68
-                              json-string u-37-38-66-65-31-38-66-34-35-36-34-64-39-63-66-37-32-38-65-66-35-35-37-38-37-38-63-61-30-61-31-65-34-64-31-36-39-34-64-30
-                            member u-70-72-6F-70-65-72-74-79
-                              json-string u-50-35-32-33-38
-                            member u-73-6E-61-6B-74-79-70-65
-                              json-string u-76-61-6C-75-65
-                        member u-71-75-61-6C-69-66-69-65-72-73
-                          json-object
-                            member u-50-31-35-34-35
-                              json-array
-                                item 0
-                                  json-object
-                                    member u-64-61-74-61-74-79-70-65
-                                      json-string u-73-74-72-69-6E-67
-                                    member u-64-61-74-61-76-61-6C-75-65
-                                      json-object
-                                        member u-74-79-70-65
-                                          json-string u-73-74-72-69-6E-67
-                                        member u-76-61-6C-75-65
-                                          json-string u-31
-                                    member u-68-61-73-68
-                                      json-string u-32-61-31-63-65-64-31-64-63-61-39-30-36-34-38-65-61-37-65-33-30-36-61-63-62-61-64-64-37-34-66-63-38-31-61-31-30-37-32-32
-                                    member u-70-72-6F-70-65-72-74-79
-                                      json-string u-50-31-35-34-35
-                                    member u-73-6E-61-6B-74-79-70-65
-                                      json-string u-76-61-6C-75-65
-                        member u-71-75-61-6C-69-66-69-65-72-73-2D-6F-72-64-65-72
-                          json-array
-                            item 0
-                              json-string u-50-31-35-34-35
-                        member u-72-61-6E-6B
-                          json-string u-6E-6F-72-6D-61-6C
-                        member u-74-79-70-65
-                          json-string u-73-74-61-74-65-6D-65-6E-74
-                    item 1
-                      json-object
-                        member u-69-64
-                          json-string u-4C-33-37-34-34-24-34-39-44-36-39-43-38-42-2D-36-43-45-36-2D-34-42-44-30-2D-41-43-30-37-2D-44-32-33-32-45-30-37-30-34-42-37-44
-                        member u-6D-61-69-6E-73-6E-61-6B
-                          json-object
-                            member u-64-61-74-61-74-79-70-65
-                              json-string u-77-69-6B-69-62-61-73-65-2D-6C-65-78-65-6D-65
-                            member u-64-61-74-61-76-61-6C-75-65
-                              json-object
-                                member u-74-79-70-65
-                                  json-string u-77-69-6B-69-62-61-73-65-2D-65-6E-74-69-74-79-69-64
-                                member u-76-61-6C-75-65
-                                  json-object
-                                    member u-65-6E-74-69-74-79-2D-74-79-70-65
-                                      json-string u-6C-65-78-65-6D-65
-                                    member u-69-64
-                                      json-string u-4C-33-34-38-30-32-31
-                                    member u-6E-75-6D-65-72-69-63-2D-69-64
-                                      json-number 348021
-                            member u-68-61-73-68
-                              json-string u-33-33-37-32-30-62-66-35-36-36-37-30-66-64-61-32-64-64-31-38-62-38-36-35-62-33-37-65-66-38-32-34-36-61-34-37-62-30-64-66
-                            member u-70-72-6F-70-65-72-74-79
-                              json-string u-50-35-32-33-38
-                            member u-73-6E-61-6B-74-79-70-65
-                              json-string u-76-61-6C-75-65
-                        member u-71-75-61-6C-69-66-69-65-72-73
-                          json-object
-                            member u-50-31-35-34-35
-                              json-array
-                                item 0
-                                  json-object
-                                    member u-64-61-74-61-74-79-70-65
-                                      json-string u-73-74-72-69-6E-67
-                                    member u-64-61-74-61-76-61-6C-75-65
-                                      json-object
-                                        member u-74-79-70-65
-                                          json-string u-73-74-72-69-6E-67
-                                        member u-76-61-6C-75-65
-                                          json-string u-32
-                                    member u-68-61-73-68
-                                      json-string u-37-32-34-31-37-35-33-63-36-32-61-33-31-30-63-66-38-34-38-39-35-36-32-30-65-61-38-32-32-35-30-64-63-65-61-36-35-38-33-35
-                                    member u-70-72-6F-70-65-72-74-79
-                                      json-string u-50-31-35-34-35
-                                    member u-73-6E-61-6B-74-79-70-65
-                                      json-string u-76-61-6C-75-65
-                        member u-71-75-61-6C-69-66-69-65-72-73-2D-6F-72-64-65-72
-                          json-array
-                            item 0
-                              json-string u-50-31-35-34-35
-                        member u-72-61-6E-6B
-                          json-string u-6E-6F-72-6D-61-6C
-                        member u-74-79-70-65
-                          json-string u-73-74-61-74-65-6D-65-6E-74
-                member u-50-35-32-37-35
-                  json-array
-                    item 0
-                      json-object
-                        member u-69-64
-                          json-string u-4C-33-37-34-34-24-44-43-35-38-30-35-38-36-2D-32-31-35-45-2D-34-45-44-33-2D-39-34-45-36-2D-34-43-37-46-38-35-36-37-33-45-34-38
-                        member u-6D-61-69-6E-73-6E-61-6B
-                          json-object
-                            member u-64-61-74-61-74-79-70-65
-                              json-string u-65-78-74-65-72-6E-61-6C-2D-69-64
-                            member u-64-61-74-61-76-61-6C-75-65
-                              json-object
-                                member u-74-79-70-65
-                                  json-string u-73-74-72-69-6E-67
-                                member u-76-61-6C-75-65
-                                  json-string u-31-36-31-38-31-36
-                            member u-68-61-73-68
-                              json-string u-63-30-66-36-36-35-39-38-39-65-66-66-32-63-39-66-65-38-33-34-34-63-39-61-39-33-64-32-30-36-32-61-61-33-64-39-66-33-34-64
-                            member u-70-72-6F-70-65-72-74-79
-                              json-string u-50-35-32-37-35
-                            member u-73-6E-61-6B-74-79-70-65
-                              json-string u-76-61-6C-75-65
-                        member u-72-61-6E-6B
-                          json-string u-6E-6F-72-6D-61-6C
-                        member u-74-79-70-65
-                          json-string u-73-74-61-74-65-6D-65-6E-74
-            member u-66-6F-72-6D-73
-              json-array
-                item 0
-                  json-object
-                    member u-63-6C-61-69-6D-73
-                      json-object
-                        member u-50-34-34-33
-                          json-array
-                            item 0
-                              json-object
-                                member u-69-64
-                                  json-string u-4C-33-37-34-34-2D-46-31-24-30-44-42-39-32-43-34-32-2D-33-43-44-31-2D-34-42-41-39-2D-39-36-33-32-2D-31-45-34-33-41-45-42-43-39-44-35-31
-                                member u-6D-61-69-6E-73-6E-61-6B
-                                  json-object
-                                    member u-64-61-74-61-74-79-70-65
-                                      json-string u-63-6F-6D-6D-6F-6E-73-4D-65-64-69-61
-                                    member u-64-61-74-61-76-61-6C-75-65
-                                      json-object
-                                        member u-74-79-70-65
-                                          json-string u-73-74-72-69-6E-67
-                                        member u-76-61-6C-75-65
-                                          json-string u-45-6E-2D-75-73-2D-72-65-6C-61-74-69-6F-6E-73-68-69-70-2E-6F-67-67
-                                    member u-68-61-73-68
-                                      json-string u-65-30-63-36-39-37-31-64-33-39-30-66-33-30-30-30-63-66-65-64-32-31-64-35-61-33-66-39-39-30-32-38-35-32-39-63-64-61-32-30
-                                    member u-70-72-6F-70-65-72-74-79
-                                      json-string u-50-34-34-33
-                                    member u-73-6E-61-6B-74-79-70-65
-                                      json-string u-76-61-6C-75-65
-                                member u-71-75-61-6C-69-66-69-65-72-73
-                                  json-object
-                                    member u-50-35-32-33-37
-                                      json-array
-                                        item 0
-                                          json-object
-                                            member u-64-61-74-61-74-79-70-65
-                                              json-string u-77-69-6B-69-62-61-73-65-2D-69-74-65-6D
-                                            member u-64-61-74-61-76-61-6C-75-65
-                                              json-object
-                                                member u-74-79-70-65
-                                                  json-string u-77-69-6B-69-62-61-73-65-2D-65-6E-74-69-74-79-69-64
-                                                member u-76-61-6C-75-65
-                                                  json-object
-                                                    member u-65-6E-74-69-74-79-2D-74-79-70-65
-                                                      json-string u-69-74-65-6D
-                                                    member u-69-64
-                                                      json-string u-51-37-39-37-36
-                                                    member u-6E-75-6D-65-72-69-63-2D-69-64
-                                                      json-number 7976
-                                            member u-68-61-73-68
-                                              json-string u-36-63-35-34-66-66-36-34-33-61-32-39-30-61-65-35-66-39-62-33-38-34-62-33-64-32-35-35-62-66-33-37-30-38-34-38-31-64-65-33
-                                            member u-70-72-6F-70-65-72-74-79
-                                              json-string u-50-35-32-33-37
-                                            member u-73-6E-61-6B-74-79-70-65
-                                              json-string u-76-61-6C-75-65
-                                member u-71-75-61-6C-69-66-69-65-72-73-2D-6F-72-64-65-72
-                                  json-array
-                                    item 0
-                                      json-string u-50-35-32-33-37
-                                member u-72-61-6E-6B
-                                  json-string u-6E-6F-72-6D-61-6C
-                                member u-74-79-70-65
-                                  json-string u-73-74-61-74-65-6D-65-6E-74
-                    member u-67-72-61-6D-6D-61-74-69-63-61-6C-46-65-61-74-75-72-65-73
-                      json-array
-                        item 0
-                          json-string u-51-31-31-30-37-38-36
-                    member u-69-64
-                      json-string u-4C-33-37-34-34-2D-46-31
-                    member u-72-65-70-72-65-73-65-6E-74-61-74-69-6F-6E-73
-                      json-object
-                        member u-65-6E
-                          json-object
-                            member u-6C-61-6E-67-75-61-67-65
-                              json-string u-65-6E
-                            member u-76-61-6C-75-65
-                              json-string u-72-65-6C-61-74-69-6F-6E-73-68-69-70
-                item 1
-                  json-object
-                    member u-63-6C-61-69-6D-73
-                      json-object
-                    member u-67-72-61-6D-6D-61-74-69-63-61-6C-46-65-61-74-75-72-65-73
-                      json-array
-                        item 0
-                          json-string u-51-31-34-36-37-38-36
-                    member u-69-64
-                      json-string u-4C-33-37-34-34-2D-46-32
-                    member u-72-65-70-72-65-73-65-6E-74-61-74-69-6F-6E-73
-                      json-object
-                        member u-65-6E
-                          json-object
-                            member u-6C-61-6E-67-75-61-67-65
-                              json-string u-65-6E
-                            member u-76-61-6C-75-65
-                              json-string u-72-65-6C-61-74-69-6F-6E-73-68-69-70-73
-            member u-69-64
-              json-string u-4C-33-37-34-34
-            member u-6C-61-6E-67-75-61-67-65
-              json-string u-51-31-38-36-30
-            member u-6C-61-73-74-72-65-76-69-64
-              json-number 2440198419
-            member u-6C-65-6D-6D-61-73
-              json-object
-                member u-65-6E
-                  json-object
-                    member u-6C-61-6E-67-75-61-67-65
-                      json-string u-65-6E
-                    member u-76-61-6C-75-65
-                      json-string u-72-65-6C-61-74-69-6F-6E-73-68-69-70
-            member u-6C-65-78-69-63-61-6C-43-61-74-65-67-6F-72-79
-              json-string u-51-31-30-38-34
-            member u-6D-6F-64-69-66-69-65-64
-              json-string u-32-30-32-35-2D-31-32-2D-30-39-54-31-39-3A-31-39-3A-31-31-5A
-            member u-6E-73
-              json-number 146
-            member u-70-61-67-65-69-64
-              json-number 55188383
-            member u-73-65-6E-73-65-73
-              json-array
-                item 0
-                  json-object
-                    member u-63-6C-61-69-6D-73
-                      json-object
-                        member u-50-32-38-38-38
-                          json-array
-                            item 0
-                              json-object
-                                member u-69-64
-                                  json-string u-4C-33-37-34-34-2D-53-31-24-35-31-42-36-34-44-41-41-2D-39-33-41-42-2D-34-43-32-44-2D-39-44-41-44-2D-38-32-37-34-34-39-37-44-36-46-35-38
-                                member u-6D-61-69-6E-73-6E-61-6B
-                                  json-object
-                                    member u-64-61-74-61-74-79-70-65
-                                      json-string u-75-72-6C
-                                    member u-64-61-74-61-76-61-6C-75-65
-                                      json-object
-                                        member u-74-79-70-65
-                                          json-string u-73-74-72-69-6E-67
-                                        member u-76-61-6C-75-65
-                                          json-string u-68-74-74-70-3A-2F-2F-70-72-65-6D-6F-6E-2E-66-62-6B-2E-65-75-2F-72-65-73-6F-75-72-63-65-2F-70-62-33-31-2D-72-65-6C-61-74-65-2E-30-31
-                                    member u-68-61-73-68
-                                      json-string u-35-39-31-64-32-64-31-32-31-38-64-39-32-37-36-62-65-36-36-32-63-34-61-64-62-65-64-63-63-34-33-30-30-32-38-31-34-30-33-65
-                                    member u-70-72-6F-70-65-72-74-79
-                                      json-string u-50-32-38-38-38
-                                    member u-73-6E-61-6B-74-79-70-65
-                                      json-string u-76-61-6C-75-65
-                                member u-72-61-6E-6B
-                                  json-string u-6E-6F-72-6D-61-6C
-                                member u-74-79-70-65
-                                  json-string u-73-74-61-74-65-6D-65-6E-74
-                            item 1
-                              json-object
-                                member u-69-64
-                                  json-string u-4C-33-37-34-34-2D-53-31-24-41-45-33-32-31-34-34-30-2D-41-32-33-30-2D-34-37-44-38-2D-41-38-38-30-2D-35-37-31-35-38-36-44-44-39-33-37-38
-                                member u-6D-61-69-6E-73-6E-61-6B
-                                  json-object
-                                    member u-64-61-74-61-74-79-70-65
-                                      json-string u-75-72-6C
-                                    member u-64-61-74-61-76-61-6C-75-65
-                                      json-object
-                                        member u-74-79-70-65
-                                          json-string u-73-74-72-69-6E-67
-                                        member u-76-61-6C-75-65
-                                          json-string u-68-74-74-70-73-3A-2F-2F-77-33-69-64-2E-6F-72-67-2F-66-72-61-6D-65-73-74-65-72-2F-64-61-74-61-2F-70-72-6F-70-62-61-6E-6B-2D-33-2E-34-2E-30-2F-52-6F-6C-65-53-65-74-2F-72-65-6C-61-74-65-2D-30-31
-                                    member u-68-61-73-68
-                                      json-string u-30-30-31-65-66-38-34-31-33-63-36-30-38-61-30-65-31-31-32-33-39-36-37-34-65-63-37-64-66-34-63-61-65-38-63-34-64-30-61-37
-                                    member u-70-72-6F-70-65-72-74-79
-                                      json-string u-50-32-38-38-38
-                                    member u-73-6E-61-6B-74-79-70-65
-                                      json-string u-76-61-6C-75-65
-                                member u-72-61-6E-6B
-                                  json-string u-6E-6F-72-6D-61-6C
-                                member u-74-79-70-65
-                                  json-string u-73-74-61-74-65-6D-65-6E-74
-                        member u-50-35-31-33-37
-                          json-array
-                            item 0
-                              json-object
-                                member u-69-64
-                                  json-string u-4C-33-37-34-34-2D-53-31-24-34-64-66-31-62-32-34-30-2D-34-36-38-62-2D-31-66-37-65-2D-32-62-36-34-2D-32-63-62-31-65-37-63-66-32-33-66-36
-                                member u-6D-61-69-6E-73-6E-61-6B
-                                  json-object
-                                    member u-64-61-74-61-74-79-70-65
-                                      json-string u-77-69-6B-69-62-61-73-65-2D-69-74-65-6D
-                                    member u-64-61-74-61-76-61-6C-75-65
-                                      json-object
-                                        member u-74-79-70-65
-                                          json-string u-77-69-6B-69-62-61-73-65-2D-65-6E-74-69-74-79-69-64
-                                        member u-76-61-6C-75-65
-                                          json-object
-                                            member u-65-6E-74-69-74-79-2D-74-79-70-65
-                                              json-string u-69-74-65-6D
-                                            member u-69-64
-                                              json-string u-51-32-33-30-36-32-39
-                                            member u-6E-75-6D-65-72-69-63-2D-69-64
-                                              json-number 230629
-                                    member u-68-61-73-68
-                                      json-string u-66-37-33-61-36-38-62-35-32-66-38-63-32-35-35-32-65-62-36-62-31-30-39-30-38-32-31-33-33-61-30-64-30-38-62-66-35-63-38-36
-                                    member u-70-72-6F-70-65-72-74-79
-                                      json-string u-50-35-31-33-37
-                                    member u-73-6E-61-6B-74-79-70-65
-                                      json-string u-76-61-6C-75-65
-                                member u-72-61-6E-6B
-                                  json-string u-6E-6F-72-6D-61-6C
-                                member u-74-79-70-65
-                                  json-string u-73-74-61-74-65-6D-65-6E-74
-                            item 1
-                              json-object
-                                member u-69-64
-                                  json-string u-4C-33-37-34-34-2D-53-31-24-38-37-31-38-45-45-31-36-2D-30-33-30-45-2D-34-42-36-33-2D-41-30-42-43-2D-31-46-33-33-37-35-36-44-45-35-42-38
-                                member u-6D-61-69-6E-73-6E-61-6B
-                                  json-object
-                                    member u-64-61-74-61-74-79-70-65
-                                      json-string u-77-69-6B-69-62-61-73-65-2D-69-74-65-6D
-                                    member u-64-61-74-61-76-61-6C-75-65
-                                      json-object
-                                        member u-74-79-70-65
-                                          json-string u-77-69-6B-69-62-61-73-65-2D-65-6E-74-69-74-79-69-64
-                                        member u-76-61-6C-75-65
-                                          json-object
-                                            member u-65-6E-74-69-74-79-2D-74-79-70-65
-                                              json-string u-69-74-65-6D
-                                            member u-69-64
-                                              json-string u-51-39-33-30-39-33-33
-                                            member u-6E-75-6D-65-72-69-63-2D-69-64
-                                              json-number 930933
-                                    member u-68-61-73-68
-                                      json-string u-62-66-38-35-64-39-39-30-62-66-33-63-66-64-64-32-30-36-30-62-63-37-36-65-65-35-35-31-30-32-61-62-32-65-34-30-66-61-61-66
-                                    member u-70-72-6F-70-65-72-74-79
-                                      json-string u-50-35-31-33-37
-                                    member u-73-6E-61-6B-74-79-70-65
-                                      json-string u-76-61-6C-75-65
-                                member u-72-61-6E-6B
-                                  json-string u-6E-6F-72-6D-61-6C
-                                member u-74-79-70-65
-                                  json-string u-73-74-61-74-65-6D-65-6E-74
-                    member u-67-6C-6F-73-73-65-73
-                      json-object
-                        member u-65-6E
-                          json-object
-                            member u-6C-61-6E-67-75-61-67-65
-                              json-string u-65-6E
-                            member u-76-61-6C-75-65
-                              json-string u-63-6F-6E-6E-65-63-74-69-6F-6E-20-6F-72-20-61-73-73-6F-63-69-61-74-69-6F-6E-3B-20-63-6F-6E-64-69-74-69-6F-6E-20-6F-66-20-62-65-69-6E-67-20-72-65-6C-61-74-65-64
-                    member u-69-64
-                      json-string u-4C-33-37-34-34-2D-53-31
-            member u-74-69-74-6C-65
-              json-string u-4C-65-78-65-6D-65-3A-4C-33-37-34-34
-            member u-74-79-70-65
-              json-string u-6C-65-78-65-6D-65
+L3744 # cached wikidata source
+  claims
+    P12573: []
+      L3744$5CACE6CF-E542-4C69-9E02-D92655F7D82E
+        mainsnak
+          datatype: "external-id"
+          datavalue
+            type: "string"
+            value: "11476"
+          hash: "c711ed0a3c3c3e454a1990af70a4163dbd85f5c2"
+          property: "P12573"
+          snaktype: "value"
+        rank: "normal"
+        type: "statement"
+      L3744$E9B363CB-2833-4234-9C04-995E2CC3FD57
+        mainsnak
+          datatype: "external-id"
+          datavalue
+            type: "string"
+            value: "26927"
+          hash: "dbf44fb868d1601cbcb4616100a9ef1babc92237"
+          property: "P12573"
+          snaktype: "value"
+        rank: "normal"
+        type: "statement"
+    P12690: []
+      L3744$FDFE05D3-A9AA-43A5-BBB7-5E0F1E2DF5BF
+        mainsnak
+          datatype: "external-id"
+          datavalue
+            type: "string"
+            value: "1284064"
+          hash: "6d9d7bff42109584dfcc935f73c31b6b644381ff"
+          property: "P12690"
+          snaktype: "value"
+        rank: "normal"
+        type: "statement"
+    P12718: []
+      L3744$B8D96595-6944-4BC1-8E19-EA700B5225B7
+        mainsnak
+          datatype: "external-id"
+          datavalue
+            type: "string"
+            value: "0046243"
+          hash: "4838323362f45330b85c5bbf638e4e0b360ba607"
+          property: "P12718"
+          snaktype: "value"
+        rank: "normal"
+        type: "statement"
+    P12724: []
+      L3744$9694AD2D-89F8-49E7-9EEF-7DFE86387681
+        mainsnak
+          datatype: "external-id"
+          datavalue
+            type: "string"
+            value: "0044926"
+          hash: "d2b27da70bc5d98adf6169e6e0d2180853c2cfb9"
+          property: "P12724"
+          snaktype: "value"
+        rank: "normal"
+        type: "statement"
+    P12726: []
+      L3744$170E4651-EF61-4A67-B971-A4CB12B8628E
+        mainsnak
+          datatype: "external-id"
+          datavalue
+            type: "string"
+            value: "0057983"
+          hash: "92a92bce14432dd21ba4f46bc55433cfa1863922"
+          property: "P12726"
+          snaktype: "value"
+        rank: "normal"
+        type: "statement"
+    P12739: []
+      L3744$284610CE-82E6-4FE3-BED8-B92799D23197
+        mainsnak
+          datatype: "external-id"
+          datavalue
+            type: "string"
+            value: "0698950"
+          hash: "174e70428b1a6cfdce1f85f6e517164a268f0f43"
+          property: "P12739"
+          snaktype: "value"
+        rank: "normal"
+        type: "statement"
+    P12868: []
+      L3744$D51C6906-F097-4367-BE3E-2A2B817B6E3D
+        mainsnak
+          datatype: "external-id"
+          datavalue
+            type: "string"
+            value: "31212_2"
+          hash: "504ae947ec35f70f7ca5e5574878d8d7dccc64bf"
+          property: "P12868"
+          snaktype: "value"
+        rank: "normal"
+        type: "statement"
+    P13258: []
+      L3744$A548A1F5-F64D-47E0-B28E-874E5CB3AB62
+        mainsnak
+          datatype: "external-id"
+          datavalue
+            type: "string"
+            value: "8100858"
+          hash: "e2dc295f47ecc2fd0613831885718b8d263128d1"
+          property: "P13258"
+          snaktype: "value"
+        rank: "normal"
+        type: "statement"
+    P5238: []
+      L3744$5D0CC19F-E123-43C6-8864-354C4AF17FB7
+        mainsnak
+          datatype: "wikibase-lexeme"
+          datavalue
+            type: "wikibase-entityid"
+            value
+              entity-type: "lexeme"
+              id: "L3743"
+              numeric-id: 3743
+          hash: "78fe18f4564d9cf728ef557878ca0a1e4d1694d0"
+          property: "P5238"
+          snaktype: "value"
+        qualifiers
+          P1545: []
+            at-0000
+              datatype: "string"
+              datavalue
+                type: "string"
+                value: "1"
+              hash: "2a1ced1dca90648ea7e306acbadd74fc81a10722"
+              property: "P1545"
+              snaktype: "value"
+        qualifiers-order: ("P1545")
+        rank: "normal"
+        type: "statement"
+      L3744$49D69C8B-6CE6-4BD0-AC07-D232E0704B7D
+        mainsnak
+          datatype: "wikibase-lexeme"
+          datavalue
+            type: "wikibase-entityid"
+            value
+              entity-type: "lexeme"
+              id: "L348021"
+              numeric-id: 348021
+          hash: "33720bf56670fda2dd18b865b37ef8246a47b0df"
+          property: "P5238"
+          snaktype: "value"
+        qualifiers
+          P1545: []
+            at-0000
+              datatype: "string"
+              datavalue
+                type: "string"
+                value: "2"
+              hash: "7241753c62a310cf84895620ea82250dcea65835"
+              property: "P1545"
+              snaktype: "value"
+        qualifiers-order: ("P1545")
+        rank: "normal"
+        type: "statement"
+    P5275: []
+      L3744$DC580586-215E-4ED3-94E6-4C7F85673E48
+        mainsnak
+          datatype: "external-id"
+          datavalue
+            type: "string"
+            value: "161816"
+          hash: "c0f665989eff2c9fe8344c9a93d2062aa3d9f34d"
+          property: "P5275"
+          snaktype: "value"
+        rank: "normal"
+        type: "statement"
+  forms: []
+    L3744-F1
+      claims
+        P443: []
+          L3744-F1$0DB92C42-3CD1-4BA9-9632-1E43AEBC9D51
+            mainsnak
+              datatype: "commonsMedia"
+              datavalue
+                type: "string"
+                value: "En-us-relationship.ogg"
+              hash: "e0c6971d390f3000cfed21d5a3f99028529cda20"
+              property: "P443"
+              snaktype: "value"
+            qualifiers
+              P5237: []
+                at-0000
+                  datatype: "wikibase-item"
+                  datavalue
+                    type: "wikibase-entityid"
+                    value
+                      entity-type: "item"
+                      id: "Q7976"
+                      numeric-id: 7976
+                  hash: "6c54ff643a290ae5f9b384b3d255bf3708481de3"
+                  property: "P5237"
+                  snaktype: "value"
+            qualifiers-order: ("P5237")
+            rank: "normal"
+            type: "statement"
+      grammaticalFeatures: ("Q110786")
+      representations
+        en
+          language: "en"
+          value: "relationship"
+    L3744-F2
+      claims: {}
+      grammaticalFeatures: ("Q146786")
+      representations
+        en
+          language: "en"
+          value: "relationships"
+  id: "L3744"
+  language: "Q1860"
+  lastrevid: 2440198419
+  lemmas
+    en
+      language: "en"
+      value: "relationship"
+  lexicalCategory: "Q1084"
+  modified: "2025-12-09T19:19:11Z"
+  ns: 146
+  pageid: 55188383
+  senses: []
+    L3744-S1
+      claims
+        P2888: []
+          L3744-S1$51B64DAA-93AB-4C2D-9DAD-8274497D6F58
+            mainsnak
+              datatype: "url"
+              datavalue
+                type: "string"
+                value: "http://premon.fbk.eu/resource/pb31-relate.01"
+              hash: "591d2d1218d9276be662c4adbedcc4300281403e"
+              property: "P2888"
+              snaktype: "value"
+            rank: "normal"
+            type: "statement"
+          L3744-S1$AE321440-A230-47D8-A880-571586DD9378
+            mainsnak
+              datatype: "url"
+              datavalue
+                type: "string"
+                value: "https://w3id.org/framester/data/propbank-3.4.0/RoleSet/relate-01"
+              hash: "001ef8413c608a0e11239674ec7df4cae8c4d0a7"
+              property: "P2888"
+              snaktype: "value"
+            rank: "normal"
+            type: "statement"
+        P5137: []
+          L3744-S1$4df1b240-468b-1f7e-2b64-2cb1e7cf23f6
+            mainsnak
+              datatype: "wikibase-item"
+              datavalue
+                type: "wikibase-entityid"
+                value
+                  entity-type: "item"
+                  id: "Q230629"
+                  numeric-id: 230629
+              hash: "f73a68b52f8c2552eb6b109082133a0d08bf5c86"
+              property: "P5137"
+              snaktype: "value"
+            rank: "normal"
+            type: "statement"
+          L3744-S1$8718EE16-030E-4B63-A0BC-1F33756DE5B8
+            mainsnak
+              datatype: "wikibase-item"
+              datavalue
+                type: "wikibase-entityid"
+                value
+                  entity-type: "item"
+                  id: "Q930933"
+                  numeric-id: 930933
+              hash: "bf85d990bf3cfdd2060bc76ee55102ab2e40faaf"
+              property: "P5137"
+              snaktype: "value"
+            rank: "normal"
+            type: "statement"
+      glosses
+        en
+          language: "en"
+          value: "connection or association; condition of being related"
+  title: "Lexeme:L3744"
+  type: "lexeme"

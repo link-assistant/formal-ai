@@ -93,25 +93,35 @@ fn parse_lino_line(content: &str) -> Option<LinoNode> {
 }
 
 fn strip_comment(line: &str) -> &str {
-    let mut in_double_quote = false;
+    let mut quote = None;
     let mut escaped = false;
     let mut previous_was_space = true;
-    for (index, character) in line.char_indices() {
-        if in_double_quote {
+    let mut characters = line.char_indices().peekable();
+    while let Some((index, character)) = characters.next() {
+        if let Some(quote_character) = quote {
             if escaped {
                 escaped = false;
                 continue;
             }
-            match character {
-                '\\' => escaped = true,
-                '"' => in_double_quote = false,
-                _ => {}
+            if quote_character == '"' && character == '\\' {
+                escaped = true;
+                continue;
+            }
+            if quote_character == '\''
+                && character == '\''
+                && characters.peek().is_some_and(|(_, next)| *next == '\'')
+            {
+                characters.next();
+                continue;
+            }
+            if character == quote_character {
+                quote = None;
             }
             continue;
         }
 
-        if character == '"' {
-            in_double_quote = true;
+        if matches!(character, '"' | '\'') {
+            quote = Some(character);
             previous_was_space = false;
             continue;
         }

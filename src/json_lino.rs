@@ -1,90 +1,215 @@
 //! Lossless JSON-to-LiNo cache encoding.
 //!
-//! The cache format stores JSON structure as links and stores string/key text
-//! as Unicode scalar code points encoded into safe references. No quoted JSON
-//! string is embedded in the `.lino` output.
-
-use std::fmt::Write as _;
+//! The cache format maps JSON object keys to native Links Notation ids and keeps
+//! raw source strings as quoted scalar values. Arrays and empty containers use
+//! compact punctuation markers only where the shape would otherwise be
+//! ambiguous.
 
 use serde_json::{Map, Number, Value};
 
 use crate::seed::parser::{parse_lino, LinoNode};
 
-const ROOT_OBJECT: &str = "json-object";
-const ROOT_ARRAY: &str = "json-array";
+const ARRAY_MARKER: &str = "[]";
+const EMPTY_OBJECT_MARKER: &str = "{}";
+const LEGACY_ROOT_OBJECT: &str = "json-object";
+const LEGACY_ROOT_ARRAY: &str = "json-array";
+const ARRAY_ITEM_PREFIX: &str = "at-";
 
 #[must_use]
 pub fn json_to_lino(value: &Value) -> String {
     let mut out = String::new();
-    write_json_value(&mut out, 0, value);
+    match value {
+        Value::Object(object) => write_object_entries(&mut out, 0, object, None),
+        _ => write_named_value(&mut out, 0, "value", value),
+    }
     out
 }
 
 #[must_use]
 pub fn json_cache_file(root_id: &str, value: &Value) -> String {
     let mut out = String::new();
-    out.push_str(root_id);
-    out.push_str(" # cached json source ");
-    out.push_str(root_id);
-    out.push('\n');
-    write_json_value(&mut out, 2, value);
+    if let Some(entity) = single_entity(value, root_id) {
+        write_entity_cache_file(&mut out, root_id, entity);
+    } else {
+        write_line(&mut out, 0, root_id, None, Some("cached json source"));
+        write_named_value(&mut out, 2, "value", value);
+    }
     out
 }
 
 pub fn lino_to_json(text: &str) -> Result<Value, String> {
     let tree = parse_lino(text);
-    let node = find_json_node(&tree).ok_or_else(|| String::from("missing json value node"))?;
-    parse_json_value(node)
+    if let Some(node) = find_legacy_json_node(&tree) {
+        return parse_legacy_json_value(node);
+    }
+    parse_compact_document(&tree)
 }
 
-fn write_json_value(out: &mut String, indent: usize, value: &Value) {
+fn single_entity<'a>(value: &'a Value, root_id: &str) -> Option<&'a Map<String, Value>> {
+    let object = value.as_object()?;
+    if object.len() != 1 {
+        return None;
+    }
+    let entities = object.get("entities")?.as_object()?;
+    if entities.len() != 1 {
+        return None;
+    }
+    entities.get(root_id)?.as_object()
+}
+
+fn write_entity_cache_file(out: &mut String, root_id: &str, entity: &Map<String, Value>) {
+    write_line(out, 0, root_id, None, Some("cached wikidata source"));
+    write_object_entries(out, 2, entity, None);
+}
+
+fn write_object_entries(
+    out: &mut String,
+    indent: usize,
+    object: &Map<String, Value>,
+    skip_key: Option<&str>,
+) {
+    for (key, value) in object {
+        if skip_key.is_some_and(|skip_key| skip_key == key) {
+            continue;
+        }
+        write_named_value(out, indent, key, value);
+    }
+}
+
+fn write_named_value(out: &mut String, indent: usize, name: &str, value: &Value) {
     match value {
-        Value::Null => write_line(out, indent, "json-null", ""),
-        Value::Bool(value) => write_line(out, indent, "json-boolean", &value.to_string()),
-        Value::Number(value) => write_line(out, indent, "json-number", &value.to_string()),
-        Value::String(value) => write_line(out, indent, "json-string", &encode_text(value)),
+        Value::Null | Value::Bool(_) | Value::Number(_) | Value::String(_) => {
+            let token = scalar_token(value);
+            write_line(out, indent, name, Some(&token), None);
+        }
+        Value::Array(values) if values.iter().all(is_scalar) => {
+            let token = scalar_array_token(values);
+            write_line(out, indent, name, Some(&token), None);
+        }
         Value::Array(values) => {
-            write_line(out, indent, ROOT_ARRAY, "");
+            write_line(out, indent, name, Some(ARRAY_MARKER), None);
             for (index, value) in values.iter().enumerate() {
-                write_line(out, indent + 2, "item", &index.to_string());
-                write_json_value(out, indent + 4, value);
+                write_array_item(out, indent + 2, index, value);
             }
         }
-        Value::Object(values) => {
-            write_line(out, indent, ROOT_OBJECT, "");
-            for (key, value) in values {
-                write_line(out, indent + 2, "member", &encode_text(key));
-                write_json_value(out, indent + 4, value);
-            }
+        Value::Object(object) if object.is_empty() => {
+            write_line(out, indent, name, Some(EMPTY_OBJECT_MARKER), None);
+        }
+        Value::Object(object) => {
+            write_line(out, indent, name, None, None);
+            write_object_entries(out, indent + 2, object, None);
         }
     }
 }
 
-fn write_line(out: &mut String, indent: usize, name: &str, id: &str) {
+fn write_array_item(out: &mut String, indent: usize, index: usize, value: &Value) {
+    if let Value::Object(object) = value {
+        let (name, skip_key) = array_object_name(index, object);
+        if object.is_empty() || object.len() == usize::from(skip_key.is_some()) {
+            write_line(out, indent, &name, Some(EMPTY_OBJECT_MARKER), None);
+        } else {
+            write_line(out, indent, &name, None, None);
+            write_object_entries(out, indent + 2, object, skip_key);
+        }
+    } else {
+        let name = format!("{ARRAY_ITEM_PREFIX}{index:04}");
+        write_named_value(out, indent, &name, value);
+    }
+}
+
+fn array_object_name(index: usize, object: &Map<String, Value>) -> (String, Option<&'static str>) {
+    object
+        .get("id")
+        .and_then(Value::as_str)
+        .filter(|id| is_lino_reference(id))
+        .map_or_else(
+            || (format!("{ARRAY_ITEM_PREFIX}{index:04}"), None),
+            |id| (id.to_string(), Some("id")),
+        )
+}
+
+fn write_line(
+    out: &mut String,
+    indent: usize,
+    name: &str,
+    value: Option<&str>,
+    comment: Option<&str>,
+) {
     out.extend(std::iter::repeat(' ').take(indent));
     out.push_str(name);
-    if !id.is_empty() {
-        out.push(' ');
-        out.push_str(id);
+    if let Some(value) = value {
+        out.push_str(": ");
+        out.push_str(value);
+    }
+    if let Some(comment) = comment {
+        out.push_str(" # ");
+        out.push_str(comment);
     }
     out.push('\n');
 }
 
-fn find_json_node(node: &LinoNode) -> Option<&LinoNode> {
-    if is_json_node(node) {
-        return Some(node);
-    }
-    node.children.iter().find_map(find_json_node)
-}
-
-fn is_json_node(node: &LinoNode) -> bool {
+const fn is_scalar(value: &Value) -> bool {
     matches!(
-        node.name.as_str(),
-        ROOT_OBJECT | ROOT_ARRAY | "json-null" | "json-boolean" | "json-number" | "json-string"
+        value,
+        Value::Null | Value::Bool(_) | Value::Number(_) | Value::String(_)
     )
 }
 
-fn parse_json_value(node: &LinoNode) -> Result<Value, String> {
+fn scalar_token(value: &Value) -> String {
+    match value {
+        Value::Null => String::from("null"),
+        Value::Bool(value) => value.to_string(),
+        Value::Number(value) => value.to_string(),
+        Value::String(value) => quoted_string(value),
+        Value::Array(_) | Value::Object(_) => String::new(),
+    }
+}
+
+fn scalar_array_token(values: &[Value]) -> String {
+    let mut out = String::from("(");
+    for (index, value) in values.iter().enumerate() {
+        if index > 0 {
+            out.push(' ');
+        }
+        out.push_str(&scalar_token(value));
+    }
+    out.push(')');
+    out
+}
+
+fn quoted_string(value: &str) -> String {
+    if value.contains('"') {
+        let escaped = value
+            .replace('\\', "\\\\")
+            .replace('\n', "\\n")
+            .replace('\r', "\\r")
+            .replace('\t', "\\t")
+            .replace('\'', "''");
+        return format!("'{escaped}'");
+    }
+    serde_json::to_string(value).unwrap_or_else(|_| String::from("\"\""))
+}
+
+fn find_legacy_json_node(node: &LinoNode) -> Option<&LinoNode> {
+    if is_legacy_json_node(node) {
+        return Some(node);
+    }
+    node.children.iter().find_map(find_legacy_json_node)
+}
+
+fn is_legacy_json_node(node: &LinoNode) -> bool {
+    matches!(
+        node.name.as_str(),
+        LEGACY_ROOT_OBJECT
+            | LEGACY_ROOT_ARRAY
+            | "json-null"
+            | "json-boolean"
+            | "json-number"
+            | "json-string"
+    )
+}
+
+fn parse_legacy_json_value(node: &LinoNode) -> Result<Value, String> {
     match node.name.as_str() {
         "json-null" => Ok(Value::Null),
         "json-boolean" => match node.id.as_str() {
@@ -98,13 +223,13 @@ fn parse_json_value(node: &LinoNode) -> Result<Value, String> {
             Ok(Value::Number(number))
         }
         "json-string" => Ok(Value::String(decode_text(&node.id)?)),
-        ROOT_ARRAY => parse_array(node),
-        ROOT_OBJECT => parse_object(node),
+        LEGACY_ROOT_ARRAY => parse_legacy_array(node),
+        LEGACY_ROOT_OBJECT => parse_legacy_object(node),
         other => Err(format!("unknown json node `{other}`")),
     }
 }
 
-fn parse_array(node: &LinoNode) -> Result<Value, String> {
+fn parse_legacy_array(node: &LinoNode) -> Result<Value, String> {
     let mut items = Vec::new();
     for child in &node.children {
         if child.name != "item" {
@@ -113,14 +238,14 @@ fn parse_array(node: &LinoNode) -> Result<Value, String> {
         let value_node = child
             .children
             .iter()
-            .find(|candidate| is_json_node(candidate))
+            .find(|candidate| is_legacy_json_node(candidate))
             .ok_or_else(|| format!("array item `{}` has no json value", child.id))?;
-        items.push(parse_json_value(value_node)?);
+        items.push(parse_legacy_json_value(value_node)?);
     }
     Ok(Value::Array(items))
 }
 
-fn parse_object(node: &LinoNode) -> Result<Value, String> {
+fn parse_legacy_object(node: &LinoNode) -> Result<Value, String> {
     let mut object = Map::new();
     for child in &node.children {
         if child.name != "member" {
@@ -130,19 +255,204 @@ fn parse_object(node: &LinoNode) -> Result<Value, String> {
         let value_node = child
             .children
             .iter()
-            .find(|candidate| is_json_node(candidate))
+            .find(|candidate| is_legacy_json_node(candidate))
             .ok_or_else(|| format!("object member `{key}` has no json value"))?;
-        object.insert(key, parse_json_value(value_node)?);
+        object.insert(key, parse_legacy_json_value(value_node)?);
     }
     Ok(Value::Object(object))
 }
 
-fn encode_text(value: &str) -> String {
-    let mut out = String::from("u");
-    for character in value.chars() {
-        let _ = write!(out, "-{:X}", character as u32);
+fn parse_compact_document(tree: &LinoNode) -> Result<Value, String> {
+    if tree.children.len() == 1 {
+        let node = &tree.children[0];
+        if is_entity_cache_root(node) {
+            let mut entity = parse_object_children(&node.children)?;
+            if !node.id.is_empty() {
+                entity.insert(String::from("type"), parse_scalar_token(&node.id)?);
+            }
+            let mut entities = Map::new();
+            entities.insert(node.name.clone(), Value::Object(entity));
+            let mut root = Map::new();
+            root.insert(String::from("entities"), Value::Object(entities));
+            return Ok(Value::Object(root));
+        }
     }
-    out
+    Ok(Value::Object(parse_object_children(&tree.children)?))
+}
+
+fn is_entity_cache_root(node: &LinoNode) -> bool {
+    let mut characters = node.name.chars();
+    let Some(prefix) = characters.next() else {
+        return false;
+    };
+    matches!(prefix, 'L' | 'P' | 'Q') && characters.all(|character| character.is_ascii_digit())
+}
+
+fn parse_compact_value(node: &LinoNode) -> Result<Value, String> {
+    match node.id.trim() {
+        EMPTY_OBJECT_MARKER if node.children.is_empty() => Ok(Value::Object(Map::new())),
+        ARRAY_MARKER => parse_compact_array(node),
+        id if is_parenthesized(id) => parse_scalar_array(id),
+        "" if !node.children.is_empty() => {
+            Ok(Value::Object(parse_object_children(&node.children)?))
+        }
+        "" => Ok(Value::Object(Map::new())),
+        id => parse_scalar_token(id),
+    }
+}
+
+fn parse_object_children(children: &[LinoNode]) -> Result<Map<String, Value>, String> {
+    let mut object = Map::new();
+    for child in children {
+        object.insert(child.name.clone(), parse_compact_value(child)?);
+    }
+    Ok(object)
+}
+
+fn parse_compact_array(node: &LinoNode) -> Result<Value, String> {
+    let mut values = Vec::new();
+    for child in &node.children {
+        let mut value = parse_compact_value(child)?;
+        if !child.name.starts_with(ARRAY_ITEM_PREFIX) {
+            if let Value::Object(object) = &mut value {
+                object
+                    .entry(String::from("id"))
+                    .or_insert_with(|| Value::String(child.name.clone()));
+            }
+        }
+        values.push(value);
+    }
+    Ok(Value::Array(values))
+}
+
+fn parse_scalar_array(raw: &str) -> Result<Value, String> {
+    let body = raw
+        .trim()
+        .strip_prefix('(')
+        .and_then(|value| value.strip_suffix(')'))
+        .ok_or_else(|| format!("invalid scalar array `{raw}`"))?;
+    let tokens = split_scalar_tokens(body)?;
+    let mut values = Vec::new();
+    for token in tokens {
+        values.push(parse_scalar_token(&token)?);
+    }
+    Ok(Value::Array(values))
+}
+
+fn split_scalar_tokens(raw: &str) -> Result<Vec<String>, String> {
+    let mut tokens = Vec::new();
+    let mut current = String::new();
+    let mut quote = None;
+    let mut escaped = false;
+    let mut characters = raw.chars().peekable();
+    while let Some(character) = characters.next() {
+        if let Some(quote_character) = quote {
+            current.push(character);
+            if escaped {
+                escaped = false;
+                continue;
+            }
+            if quote_character == '"' && character == '\\' {
+                escaped = true;
+                continue;
+            }
+            if quote_character == '\''
+                && character == '\''
+                && characters.peek().is_some_and(|next| *next == '\'')
+            {
+                current.push(characters.next().expect("peeked quote should exist"));
+                continue;
+            }
+            if character == quote_character {
+                quote = None;
+            }
+            continue;
+        }
+        match character {
+            '"' | '\'' => {
+                quote = Some(character);
+                current.push(character);
+            }
+            character if character.is_whitespace() => {
+                if !current.is_empty() {
+                    tokens.push(std::mem::take(&mut current));
+                }
+            }
+            _ => current.push(character),
+        }
+    }
+    if quote.is_some() {
+        return Err(String::from("unterminated quoted scalar in array"));
+    }
+    if !current.is_empty() {
+        tokens.push(current);
+    }
+    Ok(tokens)
+}
+
+fn parse_scalar_token(raw: &str) -> Result<Value, String> {
+    let raw = raw.trim();
+    if raw.starts_with('"') {
+        let value: String = serde_json::from_str(raw)
+            .map_err(|error| format!("invalid quoted string `{raw}`: {error}"))?;
+        return Ok(Value::String(value));
+    }
+    if raw.starts_with('\'') {
+        return parse_single_quoted_string(raw).map(Value::String);
+    }
+    match raw {
+        "null" => Ok(Value::Null),
+        "true" => Ok(Value::Bool(true)),
+        "false" => Ok(Value::Bool(false)),
+        _ => {
+            let number: Number = serde_json::from_str(raw)
+                .map_err(|error| format!("invalid scalar token `{raw}`: {error}"))?;
+            Ok(Value::Number(number))
+        }
+    }
+}
+
+fn parse_single_quoted_string(raw: &str) -> Result<String, String> {
+    let body = raw
+        .strip_prefix('\'')
+        .and_then(|value| value.strip_suffix('\''))
+        .ok_or_else(|| format!("invalid quoted string `{raw}`"))?;
+    let mut out = String::new();
+    let mut characters = body.chars().peekable();
+    while let Some(character) = characters.next() {
+        if character == '\'' && characters.peek().is_some_and(|next| *next == '\'') {
+            out.push('\'');
+            characters.next();
+            continue;
+        }
+        if character == '\\' {
+            match characters.next() {
+                Some('n') => out.push('\n'),
+                Some('r') => out.push('\r'),
+                Some('t') => out.push('\t'),
+                Some('\\') | None => out.push('\\'),
+                Some('\'') => out.push('\''),
+                Some(other) => {
+                    out.push('\\');
+                    out.push(other);
+                }
+            }
+            continue;
+        }
+        out.push(character);
+    }
+    Ok(out)
+}
+
+fn is_parenthesized(raw: &str) -> bool {
+    raw.starts_with('(') && raw.ends_with(')')
+}
+
+fn is_lino_reference(value: &str) -> bool {
+    !value.is_empty()
+        && value
+            .chars()
+            .all(|character| !character.is_whitespace() && !matches!(character, ':' | '"' | '#'))
 }
 
 fn decode_text(value: &str) -> Result<String, String> {

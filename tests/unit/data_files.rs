@@ -3,6 +3,7 @@ use std::path::Path;
 
 use formal_ai::json_lino::{json_to_lino, lino_to_json};
 use lino_objects_codec::format::parse_indented;
+use regex::Regex;
 use walkdir::WalkDir;
 
 const MAX_LINO_LINES: usize = 1_500;
@@ -57,15 +58,61 @@ fn lino_data_files_are_parseable_human_readable_and_bounded() {
 }
 
 #[test]
-fn seed_and_cache_lino_files_have_no_double_quoted_data() {
-    for path in seed_and_cache_lino_paths() {
+fn seed_lino_files_have_no_double_quoted_data() {
+    for path in seed_lino_paths() {
         let content = fs::read_to_string(&path).expect("lino file should be UTF-8 text");
         assert!(
             !content.contains('"'),
-            "{} contains a double quote; source text must be codepoints or ids",
+            "{} contains a double quote; seed text must be codepoints or ids",
             path.display()
         );
     }
+}
+
+#[test]
+fn wikidata_cache_uses_compact_native_lino() {
+    let cache_dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("data/cache/wikidata");
+    let encoded_text = Regex::new(r"\bu-[0-9A-Fa-f]{2}(?:-[0-9A-Fa-f]{2})+\b")
+        .expect("hex reference regex should compile");
+    let forbidden = [
+        "json-object",
+        "json-array",
+        "json-string",
+        "json-number",
+        "json-boolean",
+        "json-null",
+        "member ",
+        "item ",
+    ];
+
+    for path in WalkDir::new(&cache_dir)
+        .into_iter()
+        .filter_map(Result::ok)
+        .filter(|entry| entry.file_type().is_file())
+        .map(walkdir::DirEntry::into_path)
+        .filter(|path| path.extension().and_then(|extension| extension.to_str()) == Some("lino"))
+    {
+        let content = fs::read_to_string(&path).expect("cache file should be UTF-8");
+        for token in forbidden {
+            assert!(
+                !content.contains(token),
+                "{} still contains noisy structural token `{token}`",
+                path.display()
+            );
+        }
+        assert!(
+            !encoded_text.is_match(&content),
+            "{} still stores raw source strings as encoded codepoint atoms",
+            path.display()
+        );
+    }
+
+    let reference_cache =
+        fs::read_to_string(cache_dir.join("L41576.lino")).expect("L41576 cache file should exist");
+    assert!(
+        reference_cache.contains("\"reference\""),
+        "raw cached strings should stay quoted and searchable"
+    );
 }
 
 #[test]
@@ -159,14 +206,13 @@ fn split_records(content: &str) -> Vec<&str> {
         .collect()
 }
 
-fn seed_and_cache_lino_paths() -> Vec<std::path::PathBuf> {
-    let data_dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("data");
-    WalkDir::new(&data_dir)
+fn seed_lino_paths() -> Vec<std::path::PathBuf> {
+    let seed_dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("data/seed");
+    WalkDir::new(seed_dir)
         .into_iter()
         .filter_map(Result::ok)
         .filter(|entry| entry.file_type().is_file())
         .map(walkdir::DirEntry::into_path)
-        .filter(|path| path_has_component(path, "seed") || path_has_component(path, "cache"))
         .filter(|path| path.extension().and_then(|extension| extension.to_str()) == Some("lino"))
         .collect()
 }
@@ -181,24 +227,34 @@ fn strip_lino_comments(content: &str) -> String {
 }
 
 fn strip_lino_comment(line: &str) -> &str {
-    let mut in_double_quote = false;
+    let mut quote = None;
     let mut escaped = false;
     let mut previous_was_space = true;
-    for (index, character) in line.char_indices() {
-        if in_double_quote {
+    let mut characters = line.char_indices().peekable();
+    while let Some((index, character)) = characters.next() {
+        if let Some(quote_character) = quote {
             if escaped {
                 escaped = false;
                 continue;
             }
-            match character {
-                '\\' => escaped = true,
-                '"' => in_double_quote = false,
-                _ => {}
+            if quote_character == '"' && character == '\\' {
+                escaped = true;
+                continue;
+            }
+            if quote_character == '\''
+                && character == '\''
+                && characters.peek().is_some_and(|(_, next)| *next == '\'')
+            {
+                characters.next();
+                continue;
+            }
+            if character == quote_character {
+                quote = None;
             }
             continue;
         }
-        if character == '"' {
-            in_double_quote = true;
+        if matches!(character, '"' | '\'') {
+            quote = Some(character);
             previous_was_space = false;
             continue;
         }
