@@ -1,512 +1,319 @@
 meanings
-  meaning "result"
-    gloss "the value or data a computation produces"
-    wiktionary "result"
-    defined_by "output"
-    role "program_artifact"
-    lexeme "en"
-      word "result"
-        description "English noun for the value or data a computation produces; the lemma surface for the result concept."
-      word "results"
-        description "English noun, the plural form of result, for several values a computation produces."
-    lexeme "ru"
-      word "результат"
-        description "Russian noun (romanized rezultat) in the nominative for a computation result; the lemma surface for the result concept."
-      word "результата"
-        description "Russian noun (romanized rezultata), the genitive singular of result, naming the same computation result."
-      word "результаты"
-        description "Russian noun (romanized rezultaty), the nominative plural of result, for several computation results."
-      word "результатов"
-        description "Russian noun (romanized rezultatov), the genitive plural of result, for several computation results."
-    lexeme "hi"
-      word "परिणाम"
-        description "Hindi noun (romanized parinaam) for the value or data a computation produces; the lemma surface for the result concept."
-      word "परिणामों"
-        description "Hindi noun (romanized parinaamon), an oblique plural of result, for several computation results."
-      word "नतीजा"
-        description "Hindi noun (romanized nateeja) for an outcome or result; an alternative Hindi surface for the result concept."
-      word "नतीजे"
-        description "Hindi noun (romanized nateeje), the plural or oblique of nateeja, for outcomes or results."
-    lexeme "zh"
-      word "结果"
-        description "Chinese noun (pinyin jieguo) for the value or outcome a computation produces; the Chinese surface for the result concept."
-  meaning "output"
-    gloss "what a program emits — prints or returns — when it runs"
-    wiktionary "output"
-    defined_by "result"
-    defined_by "program"
-    role "program_artifact"
-    lexeme "en"
-      word "output"
-        description "English noun for what a program emits or returns when it runs; the lemma surface for the output concept."
-    lexeme "ru"
-      word "вывод"
-        description "Russian noun (romanized vyvod) for the output a program emits; the Russian surface for the output concept."
-    lexeme "hi"
-      word "आउटपुट"
-        description "Hindi noun (romanized aautaput, a loanword from English output) for what a program emits; the Hindi surface for the output concept."
-    lexeme "zh"
-      word "输出"
-        description "Chinese noun and verb (pinyin shuchu) for the output a program emits; the Chinese surface for the output concept."
-  meaning "program"
-    gloss "a set of instructions a computer executes — the broad program genus. Beyond naming a program artifact and a program kind, it carries program_genus: the script-authoring recogniser reads that role to step aside whenever a prompt names a whole program, so a 'write a program' request keeps its richer parametric formalization instead of collapsing into a bare script."
-    wiktionary "program"
-    defined_by "code"
-    defined_by "entity"
-    role "program_artifact"
-    role "program_kind"
-    role "program_genus"
-    lexeme "en"
-      word "program"
-        description "English noun for a set of instructions a computer executes; the lemma surface for the program concept."
-      word "programme"
-        description "English noun, the British spelling of program, for the same set of executable instructions."
-    lexeme "ru"
-      word "программа"
-        description "Russian noun (romanized programma) in the nominative for a computer program; the lemma surface for the program concept."
-      word "программу"
-        description "Russian noun (romanized programmu), the accusative singular of program, naming the same computer program."
-      word "программе"
-        description "Russian noun (romanized programme), the dative or prepositional singular of program, naming the same computer program."
-      word "программы"
-        description "Russian noun (romanized programmy), the genitive singular or nominative plural of program, naming computer programs."
-      word "программку"
-        description "Russian noun (romanized programmku), the accusative of a diminutive of program, for a little program."
-    lexeme "hi"
-      word "प्रोग्राम"
-        description "Hindi noun (romanized program, a loanword) for a set of instructions a computer executes; the Hindi surface for the program concept."
-    lexeme "zh"
-      word "程序"
-        description "Chinese noun (pinyin chengxu) for a computer program or procedure; the Chinese surface for the program concept."
-  meaning "script"
-    gloss "a short program, usually interpreted rather than compiled. It carries program_artifact and program_kind like any authorable artifact, and additionally script_or_code_artifact — the narrow noun side of 'write a script', the role the script-authoring recogniser pairs with an author verb to route a bare script request (as opposed to a whole program)."
-    wiktionary "script"
-    defined_by "program"
-    defined_by "code"
-    role "program_artifact"
-    role "program_kind"
-    role "script_or_code_artifact"
-    lexeme "en"
-      word "script"
-        description "English noun for a short program that is usually interpreted rather than compiled; the lemma surface for the script concept."
-    lexeme "ru"
-      word "скрипт"
-        description "Russian noun (romanized skript) for a script or short program; the Russian surface for the script concept."
-    lexeme "hi"
-      word "स्क्रिप्ट"
-        description "Hindi noun (romanized skript, a loanword) for a short interpreted program; the Hindi surface for the script concept."
-    lexeme "zh"
-      word "脚本"
-        description "Chinese noun (pinyin jiaoben) for a script or short program; the Chinese surface for the script concept."
-  meaning "code"
-    gloss "the text of a program, written in a programming language. Like script it carries program_artifact, program_kind, and script_or_code_artifact — so 'write me some code' pairs the same narrow artifact role with an author verb and routes a bare script request rather than a whole-program formalization."
-    wiktionary "code"
-    defined_by "program"
-    role "program_artifact"
-    role "program_kind"
-    role "script_or_code_artifact"
-    lexeme "en"
-      word "code"
-        description "English noun for the text of a program written in a programming language; the lemma surface for the code concept."
-    lexeme "ru"
-      word "код"
-        description "Russian noun (romanized kod) in the nominative for program code; the lemma surface for the code concept."
-      word "кода"
-        description "Russian noun (romanized koda), the genitive singular of code, naming the same program code."
-      word "коде"
-        description "Russian noun (romanized kode), the prepositional singular of code, naming the same program code."
-    lexeme "hi"
-      word "कोड"
-        description "Hindi noun (romanized kod, a loanword from English code) for the text of a program; the Hindi surface for the code concept."
-    lexeme "zh"
-      word "代码"
-        description "Chinese noun (pinyin daima) for program code; the Chinese surface for the code concept."
-  meaning "hello_world"
-    gloss "the canonical hello-world archetype: the codebase's minimal first program, whose only job is to print the greeting 'hello world'. It is defined_by program (the smallest whole program) and code (its few lines of source), and carries hello_world_reference — the role the script-authoring recogniser reads to step aside, so naming the hello-world example routes through the dedicated program-synthesis path rather than the bare script route. Surface forms are the adjacent two-word greeting in each language, matched as a phrase (substring in CJK) so a stray 'hello' or 'world' alone never fires it."
-    wiktionary "hello world"
-    defined_by "program"
-    defined_by "code"
-    role "hello_world_reference"
-    lexeme "en"
-      word "hello world"
-        description "English two-word phrase naming the archetypal first-program output; matched as a phrase so it fires only on the adjacent greeting, not a stray 'hello' or 'world'."
-    lexeme "ru"
-      word "привет мир"
-        description "Russian phrase (romanized privet mir, hello world) naming the archetypal first-program output."
-      word "хелло ворлд"
-        description "Russian transliteration (romanized khello vorld) of the English 'hello world', as commonly written in programming tutorials."
-    lexeme "hi"
-      word "नमस्ते दुनिया"
-        description "Hindi phrase (romanized namaste duniya, hello world) naming the archetypal first-program output."
-      word "हैलो वर्ल्ड"
-        description "Hindi transliteration (romanized hailo varld) of the English 'hello world', as commonly written in programming tutorials."
-    lexeme "zh"
-      word "你好世界"
-        description "Chinese phrase (pinyin nihao shijie, hello world) naming the archetypal first-program output; matched as a substring."
-      word "你好，世界"
-        description "Chinese phrase (pinyin nihao, shijie) with the conventional comma, the form often shown in programming tutorials."
-  meaning "sort"
-    gloss "to arrange items into an order; the resulting arrangement"
-    wiktionary "sort"
-    defined_by "order"
-    defined_by "action"
-    role "program_artifact"
-    role "program_modification"
-    lexeme "en"
-      word "sort"
-        description "English verb to arrange items into an order, and the noun for the resulting arrangement; the lemma surface for the sort concept."
-      word "sorts"
-        description "English verb, the third-person singular present of sort, for arranging items into an order."
-      word "sorting"
-        description "English gerund or present participle of sort, naming the act of arranging items into an order."
-      word "sorted"
-        description "English verb, the past tense or past participle of sort, for items that have been arranged into an order."
-    lexeme "ru"
-      word "сортировка"
-        description "Russian noun (romanized sortirovka) in the nominative for a sort or sorting; the lemma surface for the sort concept."
-      word "сортировку"
-        description "Russian noun (romanized sortirovku), the accusative singular of sorting, naming the same sort operation."
-      word "сортировки"
-        description "Russian noun (romanized sortirovki), the genitive singular or plural of sorting, naming sort operations."
-      word "сортировке"
-        description "Russian noun (romanized sortirovke), the dative or prepositional singular of sorting, naming the same sort operation."
-      word "сортировкой"
-        description "Russian noun (romanized sortirovkoy), the instrumental singular of sorting, naming the same sort operation."
-      word "сортировать"
-        description "Russian verb (romanized sortirovat), the imperfective infinitive, meaning to sort or arrange items into an order."
-      word "отсортируй"
-        description "Russian verb (romanized otsortiruy), the perfective informal imperative, commanding to sort the items."
-      word "отсортируйте"
-        description "Russian verb (romanized otsortiruyte), the perfective polite or plural imperative, commanding to sort the items."
-      word "отсортировать"
-        description "Russian verb (romanized otsortirovat), the perfective infinitive, meaning to sort or arrange items into an order."
-    lexeme "hi"
-      word "सॉर्ट"
-        description "Hindi verb or noun (romanized sort, a loanword) for sorting or arranging items into an order; the Hindi surface for the sort concept."
-      word "क्रमबद्ध"
-        description "Hindi adjective (romanized kramabaddh) meaning ordered or sorted; the native Hindi surface for arranged into an order."
-    lexeme "zh"
-      word "排序"
-        description "Chinese verb and noun (pinyin paixu) for sorting or arranging items into an order; the Chinese surface for the sort concept."
-  meaning "order"
-    gloss "an arrangement that follows a rule; to arrange so"
-    wiktionary "order"
-    defined_by "sort"
-    role "program_artifact"
-    role "program_modification"
-    lexeme "en"
-      word "order"
-        description "English noun for an arrangement that follows a rule, and the verb to arrange so; the lemma surface for the order concept."
-      word "ordering"
-        description "English gerund or present participle of order, naming the act or result of arranging items."
-      word "reorder"
-        description "English verb meaning to order again or rearrange; a re- prefixed surface for the order concept."
-    lexeme "ru"
-      word "порядок"
-        description "Russian noun (romanized poryadok) for an order or arrangement; the lemma surface for the order concept."
-      word "упорядочи"
-        description "Russian verb (romanized uporyadochi), the informal imperative, commanding to put items into order."
-    lexeme "hi"
-      word "क्रम"
-        description "Hindi noun (romanized kram) for an order, sequence, or arrangement; the Hindi surface for the order concept."
-    lexeme "zh"
-      word "顺序"
-        description "Chinese noun (pinyin shunxu) for order or sequence; the Chinese surface for the order concept."
-  meaning "reverse"
-    gloss "to put into the opposite order"
-    wiktionary "reverse"
-    defined_by "order"
-    role "program_modification"
-    lexeme "en"
-      word "reverse"
-        description "English verb meaning to put into the opposite order; the lemma surface for the reverse concept."
-      word "reversed"
-        description "English verb, the past tense or past participle of reverse, for items put into the opposite order."
-    lexeme "ru"
-      word "обратный"
-        description "Russian adjective (romanized obratny) in the nominative masculine meaning reverse or opposite; the lemma surface for the reverse concept."
-      word "обратном"
-        description "Russian adjective (romanized obratnom), the prepositional masculine or neuter of reverse, meaning opposite (as in reverse order)."
-      word "обратную"
-        description "Russian adjective (romanized obratnuyu), the accusative feminine of reverse, meaning opposite (as in reverse order)."
-      word "обратного"
-        description "Russian adjective (romanized obratnogo), the genitive masculine or neuter of reverse, meaning opposite."
-    lexeme "hi"
-      word "उल्टा"
-        description "Hindi adjective (romanized ulta) meaning reverse, opposite, or inverted; the lemma surface for the reverse concept."
-      word "उल्टे"
-        description "Hindi adjective (romanized ulte), the oblique or plural form of ulta, meaning reverse or inverted."
-    lexeme "zh"
-      word "反向"
-        description "Chinese adjective and verb (pinyin fanxiang) meaning reverse or opposite direction; the Chinese surface for the reverse concept."
-      word "相反"
-        description "Chinese adjective (pinyin xiangfan) meaning opposite or contrary; an alternative Chinese surface for the reverse concept."
-      word "倒序"
-        description "Chinese noun and verb (pinyin daoxu) meaning reverse order; a Chinese surface for putting items into the opposite order."
-  meaning "cancel"
-    gloss "to undo or remove a previously applied modification"
-    wiktionary "cancel"
-    defined_by "reverse"
-    defined_by "modify"
-    role "program_modification"
-    lexeme "en"
-      word "cancel"
-        description "English verb meaning to undo or remove a previously applied modification; the lemma surface for the cancel concept."
-      word "undo"
-        description "English verb meaning to reverse a previous action; a synonym surface for the cancel concept."
-      word "remove"
-        description "English verb meaning to take away or delete; a synonym surface for cancelling a modification."
-      word "revert"
-        description "English verb meaning to return to a previous state; a synonym surface for the cancel concept."
-    lexeme "ru"
-      word "отмени"
-        description "Russian verb (romanized otmeni), the informal imperative, commanding to cancel or undo a modification."
-      word "отмените"
-        description "Russian verb (romanized otmenite), the polite or plural imperative, commanding to cancel or undo a modification."
-      word "отменить"
-        description "Russian verb (romanized otmenit), the perfective infinitive, meaning to cancel or undo a modification."
-      word "убери"
-        description "Russian verb (romanized uberi), the informal imperative, commanding to remove or take away something."
-      word "уберите"
-        description "Russian verb (romanized uberite), the polite or plural imperative, commanding to remove or take away something."
-      word "убрать"
-        description "Russian verb (romanized ubrat), the perfective infinitive, meaning to remove or take away something."
-    lexeme "hi"
-      word "रद्द"
-        description "Hindi adjective and verb stem (romanized radd) meaning cancelled or to cancel; the lemma surface for the cancel concept."
-      word "हटाओ"
-        description "Hindi verb (romanized hatao), the informal imperative, commanding to remove or take away something."
-      word "हटाएं"
-        description "Hindi verb (romanized hataen), the polite imperative, commanding to remove or take away something."
-      word "हटा"
-        description "Hindi verb (romanized hata), a stem or past form of remove, meaning removed or take away."
-    lexeme "zh"
-      word "取消"
-        description "Chinese verb (pinyin quxiao) meaning to cancel or call off; the lemma surface for the cancel concept."
-      word "撤销"
-        description "Chinese verb (pinyin chexiao) meaning to revoke or undo; an alternative Chinese surface for the cancel concept."
-      word "去掉"
-        description "Chinese verb (pinyin qudiao) meaning to remove or get rid of; a Chinese surface for removing a modification."
-      word "去除"
-        description "Chinese verb (pinyin quchu) meaning to remove or eliminate; a Chinese surface for removing a modification."
-  meaning "modify"
-    gloss "to change an existing thing into a different state"
-    wiktionary "modify"
-    defined_by "update"
-    defined_by "action"
-    role "program_modification"
-    lexeme "en"
-      word "change"
-        description "English verb meaning to make something different; a synonym surface for the modify concept."
-      word "modify"
-        description "English verb meaning to change an existing thing into a different state; the lemma surface for the modify concept."
-      word "alter"
-        description "English verb meaning to change or adjust; a synonym surface for the modify concept."
-    lexeme "ru"
-      word "измени"
-        description "Russian verb (romanized izmeni), the informal imperative, commanding to change or modify something."
-      word "изменить"
-        description "Russian verb (romanized izmenit), the perfective infinitive, meaning to change or modify something."
-      word "измените"
-        description "Russian verb (romanized izmenite), the polite or plural imperative, commanding to change or modify something."
-    lexeme "hi"
-      word "बदलें"
-        description "Hindi verb (romanized badlen), the polite imperative, commanding to change or modify something."
-      word "बदलो"
-        description "Hindi verb (romanized badlo), the informal imperative, commanding to change or modify something."
-    lexeme "zh"
-      word "修改"
-        description "Chinese verb (pinyin xiugai) meaning to modify or revise; the lemma surface for the modify concept."
-      word "改"
-        description "Chinese verb (pinyin gai) meaning to change or alter; a shorter Chinese surface for the modify concept."
-  meaning "update"
-    gloss "to bring something to a newer state"
-    wiktionary "update"
-    defined_by "modify"
-    role "program_modification"
-    lexeme "en"
-      word "update"
-        description "English verb meaning to bring something to a newer state; the lemma surface for the update concept."
-    lexeme "ru"
-      word "обнови"
-        description "Russian verb (romanized obnovi), the informal imperative, commanding to update or bring something to a newer state."
-      word "обновить"
-        description "Russian verb (romanized obnovit), the perfective infinitive, meaning to update or bring something to a newer state."
-      word "обновите"
-        description "Russian verb (romanized obnovite), the polite or plural imperative, commanding to update something."
-    lexeme "hi"
-      word "अपडेट"
-        description "Hindi verb or noun (romanized apadet, a loanword from English update) for updating to a newer state; the Hindi surface for the update concept."
-    lexeme "zh"
-      word "更新"
-        description "Chinese verb and noun (pinyin gengxin) meaning to update or renew; the Chinese surface for the update concept."
-  meaning "make"
-    gloss "to produce or build a program or its output"
-    wiktionary "make"
-    defined_by "program"
-    defined_by "output"
-    role "program_modification"
-    role "program_request"
-    role "software_authoring_action"
-    lexeme "en"
-      word "make"
-        description "English verb meaning to produce or build a program or its output; the lemma surface for the make concept."
-    lexeme "ru"
-      word "сделай"
-        description "Russian verb (romanized sdelay), the perfective informal imperative, commanding to make or produce something."
-      word "сделайте"
-        description "Russian verb (romanized sdelayte), the perfective polite or plural imperative, commanding to make or produce something."
-      word "сделать"
-        description "Russian verb (romanized sdelat), the perfective infinitive, meaning to make or produce something."
-    lexeme "hi"
-      word "बनाओ"
-        description "Hindi verb (romanized banao), the informal imperative, commanding to make or build something."
-      word "बनाएं"
-        description "Hindi verb (romanized banaen), the polite imperative, commanding to make or build something."
-    lexeme "zh"
-      word "制作"
-        description "Chinese verb (pinyin zhizuo) meaning to make or produce; the Chinese surface for the make concept."
-  meaning "function"
-    gloss "a named, reusable block of program code that performs a task"
-    wiktionary "function"
-    defined_by "code"
-    defined_by "program"
-    role "program_artifact"
-    role "program_kind"
-    lexeme "en"
-      word "function"
-        description "English noun for a named, reusable block of program code that performs a task; the lemma surface for the function concept."
-      word "func"
-        description "English noun, a common abbreviation of function, for the same reusable block of code."
-    lexeme "ru"
-      word "функция"
-        description "Russian noun (romanized funktsiya) in the nominative for a code function; the lemma surface for the function concept."
-      word "функцию"
-        description "Russian noun (romanized funktsiyu), the accusative singular of function, naming the same code function."
-    lexeme "hi"
-      word "फ़ंक्शन"
-        description "Hindi noun (romanized funkshan, a loanword) for a reusable block of code; the Hindi surface for the function concept."
-      word "फंक्शन"
-        description "Hindi noun (romanized funkshan), a spelling variant without the nuqta, for the same code function."
-    lexeme "zh"
-      word "函数"
-        description "Chinese noun (pinyin hanshu) for a function in code or mathematics; the Chinese surface for the function concept."
-  meaning "write"
-    gloss "to author a program or its code. It carries program_request (the general verb side of 'write a <kind>') and software_authoring_action, and additionally script_authoring_verb — the narrow verb the script-authoring recogniser pairs with a script-or-code artifact noun. That role lives on write alone, not on create/show/generate, so only an explicit author verb can route a bare script request."
-    wiktionary "write"
-    defined_by "code"
-    defined_by "program"
-    role "program_request"
-    role "software_authoring_action"
-    role "script_authoring_verb"
-    lexeme "en"
-      word "write"
-        description "English verb meaning to author a program or its code; the lemma surface for the write concept."
-    lexeme "ru"
-      word "напиши"
-        description "Russian verb (romanized napishi), the perfective informal imperative, commanding to write or author code."
-      word "напишите"
-        description "Russian verb (romanized napishite), the perfective polite or plural imperative, commanding to write or author code."
-      word "написать"
-        description "Russian verb (romanized napisat'), the perfective infinitive, naming the act of writing or authoring code (as in 'написать скрипт', to write a script)."
-    lexeme "hi"
-      word "लिखो"
-        description "Hindi verb (romanized likho), the informal imperative, commanding to write or author something."
-      word "लिखें"
-        description "Hindi verb (romanized likhen), the polite imperative, commanding to write or author something."
-    lexeme "zh"
-      word "编写"
-        description "Chinese verb (pinyin bianxie) meaning to write or compose code; the lemma surface for the write concept."
-      word "写"
-        description "Chinese verb (pinyin xie) meaning to write; a shorter Chinese surface for the write concept."
-  meaning "create"
-    gloss "to bring a program or its artifact into existence"
-    wiktionary "create"
-    defined_by "make"
-    defined_by "program"
-    role "program_request"
-    role "software_authoring_action"
-    lexeme "en"
-      word "create"
-        description "English verb meaning to bring a program or its artifact into existence; the lemma surface for the create concept."
-    lexeme "ru"
-      word "создай"
-        description "Russian verb (romanized sozday), the perfective informal imperative, commanding to create or bring something into existence."
-      word "создайте"
-        description "Russian verb (romanized sozdayte), the perfective polite or plural imperative, commanding to create something."
-    lexeme "hi"
-      word "बनाओ"
-        description "Hindi verb (romanized banao), the informal imperative, commanding to create or make something."
-      word "बनाएं"
-        description "Hindi verb (romanized banaen), the polite imperative, commanding to create or make something."
-    lexeme "zh"
-      word "创建"
-        description "Chinese verb (pinyin chuangjian) meaning to create or establish; the Chinese surface for the create concept."
-  meaning "show"
-    gloss "to display a program's output or result"
-    wiktionary "show"
-    defined_by "output"
-    defined_by "result"
-    role "program_request"
-    lexeme "en"
-      word "show"
-        description "English verb meaning to display a program's output or result; the lemma surface for the show concept."
-    lexeme "ru"
-      word "покажи"
-        description "Russian verb (romanized pokazhi), the perfective informal imperative, commanding to show or display something."
-      word "покажите"
-        description "Russian verb (romanized pokazhite), the perfective polite or plural imperative, commanding to show or display something."
-    lexeme "hi"
-      word "दिखाओ"
-        description "Hindi verb (romanized dikhao), the informal imperative, commanding to show or display something."
-      word "दिखाएं"
-        description "Hindi verb (romanized dikhaen), the polite imperative, commanding to show or display something."
-    lexeme "zh"
-      word "显示"
-        description "Chinese verb (pinyin xianshi) meaning to display or show; the Chinese surface for the show concept."
-  meaning "generate"
-    gloss "to produce a program or output mechanically"
-    wiktionary "generate"
-    defined_by "output"
-    defined_by "program"
-    role "program_request"
-    role "software_authoring_action"
-    lexeme "en"
-      word "generate"
-        description "English verb meaning to produce a program or output mechanically; the lemma surface for the generate concept."
-    lexeme "ru"
-      word "сгенерируй"
-        description "Russian verb (romanized sgeneriruy), the perfective informal imperative, commanding to generate or produce something."
-      word "сгенерируйте"
-        description "Russian verb (romanized sgeneriruyte), the perfective polite or plural imperative, commanding to generate something."
-    lexeme "hi"
-      word "उत्पन्न"
-        description "Hindi verb stem and adjective (romanized utpann) meaning generated or to produce; the native Hindi surface for the generate concept."
-      word "जनरेट"
-        description "Hindi verb (romanized janaret, a loanword from English generate) for generating something; the Hindi surface for the generate concept."
-    lexeme "zh"
-      word "生成"
-        description "Chinese verb (pinyin shengcheng) meaning to generate or produce; the Chinese surface for the generate concept."
-  meaning "build"
-    gloss "to assemble a program from its parts"
-    wiktionary "build"
-    defined_by "make"
-    defined_by "program"
-    role "program_request"
-    role "software_authoring_action"
-    lexeme "en"
-      word "build"
-        description "English verb meaning to assemble a program from its parts; the lemma surface for the build concept."
-    lexeme "ru"
-      word "построй"
-        description "Russian verb (romanized postroy), the perfective informal imperative, commanding to build or construct something."
-      word "собери"
-        description "Russian verb (romanized soberi), the perfective informal imperative, commanding to assemble or build something from parts."
-    lexeme "hi"
-      word "बनाओ"
-        description "Hindi verb (romanized banao), the informal imperative, commanding to build or make something."
-      word "बनाएं"
-        description "Hindi verb (romanized banaen), the polite imperative, commanding to build or make something."
-    lexeme "zh"
-      word "构建"
-        description "Chinese verb (pinyin goujian) meaning to build or construct; the Chinese surface for the build concept."
+  result: # concept result
+    defined-by output # definition-link
+    role program_artifact # semantic-role
+    lexeme en # language
+      surface unformalized-raw 114 101 115 117 108 116 # unresolved-surface
+      surface unformalized-raw 114 101 115 117 108 116 115 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1088 1077 1079 1091 1083 1100 1090 1072 1090 # unresolved-surface
+      surface unformalized-raw 1088 1077 1079 1091 1083 1100 1090 1072 1090 1072 # unresolved-surface
+      surface unformalized-raw 1088 1077 1079 1091 1083 1100 1090 1072 1090 1099 # unresolved-surface
+      surface unformalized-raw 1088 1077 1079 1091 1083 1100 1090 1072 1090 1086 1074 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2346 2352 2367 2339 2366 2350 # unresolved-surface
+      surface unformalized-raw 2346 2352 2367 2339 2366 2350 2379 2306 # unresolved-surface
+      surface unformalized-raw 2344 2340 2368 2332 2366 # unresolved-surface
+      surface unformalized-raw 2344 2340 2368 2332 2375 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 32467 26524 # unresolved-surface
+  output: # concept output
+    defined-by result # definition-link
+    defined-by program # definition-link
+    role program_artifact # semantic-role
+    lexeme en # language
+      surface unformalized-raw 111 117 116 112 117 116 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1074 1099 1074 1086 1076 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2310 2313 2335 2346 2369 2335 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 36755 20986 # unresolved-surface
+  program: # concept program
+    defined-by code # definition-link
+    defined-by entity # definition-link
+    role program_artifact # semantic-role
+    role program_kind # semantic-role
+    role program_genus # semantic-role
+    lexeme en # language
+      surface unformalized-raw 112 114 111 103 114 97 109 # unresolved-surface
+      surface unformalized-raw 112 114 111 103 114 97 109 109 101 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1087 1088 1086 1075 1088 1072 1084 1084 1072 # unresolved-surface
+      surface unformalized-raw 1087 1088 1086 1075 1088 1072 1084 1084 1091 # unresolved-surface
+      surface unformalized-raw 1087 1088 1086 1075 1088 1072 1084 1084 1077 # unresolved-surface
+      surface unformalized-raw 1087 1088 1086 1075 1088 1072 1084 1084 1099 # unresolved-surface
+      surface unformalized-raw 1087 1088 1086 1075 1088 1072 1084 1084 1082 1091 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2346 2381 2352 2379 2327 2381 2352 2366 2350 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 31243 24207 # unresolved-surface
+  script: # concept script
+    defined-by program # definition-link
+    defined-by code # definition-link
+    role program_artifact # semantic-role
+    role program_kind # semantic-role
+    role script_or_code_artifact # semantic-role
+    lexeme en # language
+      surface unformalized-raw 115 99 114 105 112 116 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1089 1082 1088 1080 1087 1090 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2360 2381 2325 2381 2352 2367 2346 2381 2335 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 33050 26412 # unresolved-surface
+  code: # concept code
+    defined-by program # definition-link
+    role program_artifact # semantic-role
+    role program_kind # semantic-role
+    role script_or_code_artifact # semantic-role
+    lexeme en # language
+      surface unformalized-raw 99 111 100 101 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1082 1086 1076 # unresolved-surface
+      surface unformalized-raw 1082 1086 1076 1072 # unresolved-surface
+      surface unformalized-raw 1082 1086 1076 1077 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2325 2379 2337 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 20195 30721 # unresolved-surface
+  hello_world: # concept hello_world
+    defined-by program # definition-link
+    defined-by code # definition-link
+    role hello_world_reference # semantic-role
+    lexeme en # language
+      surface unformalized-raw 104 101 108 108 111 32 119 111 114 108 100 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1087 1088 1080 1074 1077 1090 32 1084 1080 1088 # unresolved-surface
+      surface unformalized-raw 1093 1077 1083 1083 1086 32 1074 1086 1088 1083 1076 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2344 2350 2360 2381 2340 2375 32 2342 2369 2344 2367 2351 2366 # unresolved-surface
+      surface unformalized-raw 2361 2376 2354 2379 32 2357 2352 2381 2354 2381 2337 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 20320 22909 19990 30028 # unresolved-surface
+      surface unformalized-raw 20320 22909 65292 19990 30028 # unresolved-surface
+  sort: # concept sort
+    defined-by order # definition-link
+    defined-by action # definition-link
+    role program_artifact # semantic-role
+    role program_modification # semantic-role
+    lexeme en # language
+      surface unformalized-raw 115 111 114 116 # unresolved-surface
+      surface unformalized-raw 115 111 114 116 115 # unresolved-surface
+      surface unformalized-raw 115 111 114 116 105 110 103 # unresolved-surface
+      surface unformalized-raw 115 111 114 116 101 100 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1089 1086 1088 1090 1080 1088 1086 1074 1082 1072 # unresolved-surface
+      surface unformalized-raw 1089 1086 1088 1090 1080 1088 1086 1074 1082 1091 # unresolved-surface
+      surface unformalized-raw 1089 1086 1088 1090 1080 1088 1086 1074 1082 1080 # unresolved-surface
+      surface unformalized-raw 1089 1086 1088 1090 1080 1088 1086 1074 1082 1077 # unresolved-surface
+      surface unformalized-raw 1089 1086 1088 1090 1080 1088 1086 1074 1082 1086 1081 # unresolved-surface
+      surface unformalized-raw 1089 1086 1088 1090 1080 1088 1086 1074 1072 1090 1100 # unresolved-surface
+      surface unformalized-raw 1086 1090 1089 1086 1088 1090 1080 1088 1091 1081 # unresolved-surface
+      surface unformalized-raw 1086 1090 1089 1086 1088 1090 1080 1088 1091 1081 1090 1077 # unresolved-surface
+      surface unformalized-raw 1086 1090 1089 1086 1088 1090 1080 1088 1086 1074 1072 1090 1100 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2360 2377 2352 2381 2335 # unresolved-surface
+      surface unformalized-raw 2325 2381 2352 2350 2348 2342 2381 2343 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 25490 24207 # unresolved-surface
+  order: # concept order
+    defined-by sort # definition-link
+    role program_artifact # semantic-role
+    role program_modification # semantic-role
+    lexeme en # language
+      surface unformalized-raw 111 114 100 101 114 # unresolved-surface
+      surface unformalized-raw 111 114 100 101 114 105 110 103 # unresolved-surface
+      surface unformalized-raw 114 101 111 114 100 101 114 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1087 1086 1088 1103 1076 1086 1082 # unresolved-surface
+      surface unformalized-raw 1091 1087 1086 1088 1103 1076 1086 1095 1080 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2325 2381 2352 2350 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 39034 24207 # unresolved-surface
+  reverse: # concept reverse
+    defined-by order # definition-link
+    role program_modification # semantic-role
+    lexeme en # language
+      surface unformalized-raw 114 101 118 101 114 115 101 # unresolved-surface
+      surface unformalized-raw 114 101 118 101 114 115 101 100 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1086 1073 1088 1072 1090 1085 1099 1081 # unresolved-surface
+      surface unformalized-raw 1086 1073 1088 1072 1090 1085 1086 1084 # unresolved-surface
+      surface unformalized-raw 1086 1073 1088 1072 1090 1085 1091 1102 # unresolved-surface
+      surface unformalized-raw 1086 1073 1088 1072 1090 1085 1086 1075 1086 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2313 2354 2381 2335 2366 # unresolved-surface
+      surface unformalized-raw 2313 2354 2381 2335 2375 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 21453 21521 # unresolved-surface
+      surface unformalized-raw 30456 21453 # unresolved-surface
+      surface unformalized-raw 20498 24207 # unresolved-surface
+  cancel: # concept cancel
+    defined-by reverse # definition-link
+    defined-by modify # definition-link
+    role program_modification # semantic-role
+    lexeme en # language
+      surface unformalized-raw 99 97 110 99 101 108 # unresolved-surface
+      surface unformalized-raw 117 110 100 111 # unresolved-surface
+      surface unformalized-raw 114 101 109 111 118 101 # unresolved-surface
+      surface unformalized-raw 114 101 118 101 114 116 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1086 1090 1084 1077 1085 1080 # unresolved-surface
+      surface unformalized-raw 1086 1090 1084 1077 1085 1080 1090 1077 # unresolved-surface
+      surface unformalized-raw 1086 1090 1084 1077 1085 1080 1090 1100 # unresolved-surface
+      surface unformalized-raw 1091 1073 1077 1088 1080 # unresolved-surface
+      surface unformalized-raw 1091 1073 1077 1088 1080 1090 1077 # unresolved-surface
+      surface unformalized-raw 1091 1073 1088 1072 1090 1100 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2352 2342 2381 2342 # unresolved-surface
+      surface unformalized-raw 2361 2335 2366 2323 # unresolved-surface
+      surface unformalized-raw 2361 2335 2366 2319 2306 # unresolved-surface
+      surface unformalized-raw 2361 2335 2366 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 21462 28040 # unresolved-surface
+      surface unformalized-raw 25764 38144 # unresolved-surface
+      surface unformalized-raw 21435 25481 # unresolved-surface
+      surface unformalized-raw 21435 38500 # unresolved-surface
+  modify: # concept modify
+    defined-by update # definition-link
+    defined-by action # definition-link
+    role program_modification # semantic-role
+    lexeme en # language
+      surface unformalized-raw 99 104 97 110 103 101 # unresolved-surface
+      surface unformalized-raw 109 111 100 105 102 121 # unresolved-surface
+      surface unformalized-raw 97 108 116 101 114 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1080 1079 1084 1077 1085 1080 # unresolved-surface
+      surface unformalized-raw 1080 1079 1084 1077 1085 1080 1090 1100 # unresolved-surface
+      surface unformalized-raw 1080 1079 1084 1077 1085 1080 1090 1077 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2348 2342 2354 2375 2306 # unresolved-surface
+      surface unformalized-raw 2348 2342 2354 2379 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 20462 25913 # unresolved-surface
+      surface unformalized-raw 25913 # unresolved-surface
+  update: # concept update
+    defined-by modify # definition-link
+    role program_modification # semantic-role
+    lexeme en # language
+      surface unformalized-raw 117 112 100 97 116 101 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1086 1073 1085 1086 1074 1080 # unresolved-surface
+      surface unformalized-raw 1086 1073 1085 1086 1074 1080 1090 1100 # unresolved-surface
+      surface unformalized-raw 1086 1073 1085 1086 1074 1080 1090 1077 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2309 2346 2337 2375 2335 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 26356 26032 # unresolved-surface
+  make: # concept make
+    defined-by program # definition-link
+    defined-by output # definition-link
+    role program_modification # semantic-role
+    role program_request # semantic-role
+    role software_authoring_action # semantic-role
+    lexeme en # language
+      surface unformalized-raw 109 97 107 101 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1089 1076 1077 1083 1072 1081 # unresolved-surface
+      surface unformalized-raw 1089 1076 1077 1083 1072 1081 1090 1077 # unresolved-surface
+      surface unformalized-raw 1089 1076 1077 1083 1072 1090 1100 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2348 2344 2366 2323 # unresolved-surface
+      surface unformalized-raw 2348 2344 2366 2319 2306 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 21046 20316 # unresolved-surface
+  function: # concept function
+    defined-by code # definition-link
+    defined-by program # definition-link
+    role program_artifact # semantic-role
+    role program_kind # semantic-role
+    lexeme en # language
+      surface unformalized-raw 102 117 110 99 116 105 111 110 # unresolved-surface
+      surface unformalized-raw 102 117 110 99 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1092 1091 1085 1082 1094 1080 1103 # unresolved-surface
+      surface unformalized-raw 1092 1091 1085 1082 1094 1080 1102 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2347 2364 2306 2325 2381 2358 2344 # unresolved-surface
+      surface unformalized-raw 2347 2306 2325 2381 2358 2344 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 20989 25968 # unresolved-surface
+  write: # concept write
+    defined-by code # definition-link
+    defined-by program # definition-link
+    role program_request # semantic-role
+    role software_authoring_action # semantic-role
+    role script_authoring_verb # semantic-role
+    lexeme en # language
+      surface unformalized-raw 119 114 105 116 101 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1085 1072 1087 1080 1096 1080 # unresolved-surface
+      surface unformalized-raw 1085 1072 1087 1080 1096 1080 1090 1077 # unresolved-surface
+      surface unformalized-raw 1085 1072 1087 1080 1089 1072 1090 1100 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2354 2367 2326 2379 # unresolved-surface
+      surface unformalized-raw 2354 2367 2326 2375 2306 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 32534 20889 # unresolved-surface
+      surface unformalized-raw 20889 # unresolved-surface
+  create: # concept create
+    defined-by make # definition-link
+    defined-by program # definition-link
+    role program_request # semantic-role
+    role software_authoring_action # semantic-role
+    lexeme en # language
+      surface unformalized-raw 99 114 101 97 116 101 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1089 1086 1079 1076 1072 1081 # unresolved-surface
+      surface unformalized-raw 1089 1086 1079 1076 1072 1081 1090 1077 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2348 2344 2366 2323 # unresolved-surface
+      surface unformalized-raw 2348 2344 2366 2319 2306 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 21019 24314 # unresolved-surface
+  show: # concept show
+    defined-by output # definition-link
+    defined-by result # definition-link
+    role program_request # semantic-role
+    lexeme en # language
+      surface unformalized-raw 115 104 111 119 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1087 1086 1082 1072 1078 1080 # unresolved-surface
+      surface unformalized-raw 1087 1086 1082 1072 1078 1080 1090 1077 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2342 2367 2326 2366 2323 # unresolved-surface
+      surface unformalized-raw 2342 2367 2326 2366 2319 2306 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 26174 31034 # unresolved-surface
+  generate: # concept generate
+    defined-by output # definition-link
+    defined-by program # definition-link
+    role program_request # semantic-role
+    role software_authoring_action # semantic-role
+    lexeme en # language
+      surface unformalized-raw 103 101 110 101 114 97 116 101 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1089 1075 1077 1085 1077 1088 1080 1088 1091 1081 # unresolved-surface
+      surface unformalized-raw 1089 1075 1077 1085 1077 1088 1080 1088 1091 1081 1090 1077 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2313 2340 2381 2346 2344 2381 2344 # unresolved-surface
+      surface unformalized-raw 2332 2344 2352 2375 2335 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 29983 25104 # unresolved-surface
+  build: # concept build
+    defined-by make # definition-link
+    defined-by program # definition-link
+    role program_request # semantic-role
+    role software_authoring_action # semantic-role
+    lexeme en # language
+      surface unformalized-raw 98 117 105 108 100 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1087 1086 1089 1090 1088 1086 1081 # unresolved-surface
+      surface unformalized-raw 1089 1086 1073 1077 1088 1080 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2348 2344 2366 2323 # unresolved-surface
+      surface unformalized-raw 2348 2344 2366 2319 2306 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 26500 24314 # unresolved-surface

@@ -1,574 +1,349 @@
 meanings
-  meaning "money"
-    gloss "money or currency in general — a medium of exchange. This genus groups the currency-related meanings (the us_dollar currency and the exchange_rate between currencies) so they are built from a shared concept rather than listed independently. The monetary_concept role is structural: no handler queries it directly; it exists so the ontology records that these meanings are kinds of money."
-    wiktionary "money"
-    defined_by "concept"
-    role "monetary_concept"
-    lexeme "en"
-      word "money"
-        description "English noun for the medium of exchange; the monetary_concept genus lexicalized in English."
-      word "currency"
-        description "English noun for a system of money in circulation; the monetary_concept genus lexicalized in English."
-    lexeme "ru"
-      word "деньги"
-        description "Russian noun (romanized dengi, money); the monetary_concept genus lexicalized in Russian."
-      word "валюта"
-        description "Russian noun (romanized valyuta, currency); the monetary_concept genus lexicalized in Russian."
-    lexeme "hi"
-      word "पैसा"
-        description "Hindi noun (romanized paisa, money); the monetary_concept genus lexicalized in Hindi."
-      word "मुद्रा"
-        description "Hindi noun (romanized mudra, currency); the monetary_concept genus lexicalized in Hindi."
-    lexeme "zh"
-      word "货币"
-        description "Chinese noun (pinyin huobi, currency); the monetary_concept genus lexicalized in Chinese."
-      word "钱"
-        description "Chinese noun (pinyin qian, money); the monetary_concept genus lexicalized in Chinese."
-  meaning "exchange_rate"
-    gloss "the exchange rate between two currencies — the price of one currency expressed in another, also called a currency rate. The exchange_rate_reference role marks the surface forms that signal a prompt is talking about a currency conversion rate; the calculator rate-basis handler requires this together with a us_dollar reference and a calculation_basis phrase before it answers with the rate the calculator uses for USD to RUB. Matched as raw substrings so inflected and compound forms are caught in every supported language."
-    wiktionary "exchange rate"
-    defined_by "money"
-    defined_by "relation"
-    role "exchange_rate_reference"
-    lexeme "en"
-      word "exchange rate"
-        description "English compound noun for the price of one currency in another; an exchange_rate_reference matched as a raw substring."
-      word "currency rate"
-        description "English synonym for an exchange rate; an exchange_rate_reference matched as a raw substring."
-    lexeme "ru"
-      word "курс"
-        description "Russian noun (romanized kurs, rate or exchange rate); an exchange_rate_reference matched as a raw substring so курс, курса and курсе are all caught."
-    lexeme "hi"
-      word "विनिमय दर"
-        description "Hindi compound (romanized vinimay dar, exchange rate); an exchange_rate_reference matched as a raw substring."
-    lexeme "zh"
-      word "汇率"
-        description "Chinese noun (pinyin huilu, exchange rate); an exchange_rate_reference matched as a raw substring."
-  meaning "us_dollar"
-    gloss "the United States dollar, the currency abbreviated USD. The currency_usd_reference role marks the surface forms — including two common Russian misspellings — that signal a prompt mentions US dollars; the calculator rate-basis handler requires this together with an exchange_rate reference and a calculation_basis phrase before it answers with the rate the calculator uses for USD to RUB. Matched as raw substrings so inflected forms are caught in every supported language. Also a calculation_domain_term, so a dollar reference beside a number signals a calculation to the calculator router (ASCII codes whole-token, other scripts as raw substrings)."
-    wiktionary "dollar"
-    defined_by "money"
-    role "currency_usd_reference"
-    role "calculation_domain_term"
-    lexeme "en"
-      word "usd"
-        description "English ISO 4217 code for the United States dollar; a currency_usd_reference matched as a raw substring."
-      word "dollar"
-        description "English noun for the United States dollar; a currency_usd_reference matched as a raw substring so dollars is also caught."
-      word "dollars"
-        description "English plural of dollar; a currency_usd_reference matched as a raw substring, kept explicitly so the surface list mirrors the original recognizer's USD markers."
-    lexeme "ru"
-      word "доллар"
-        description "Russian noun (romanized dollar); a currency_usd_reference matched as a raw substring so доллара and долларах are caught."
-      word "долар"
-        description "Russian misspelling with one l (romanized dolar) of доллар; a currency_usd_reference matched as a raw substring so the typo is still recognised."
-      word "долор"
-        description "Russian misspelling (romanized dolor) of доллар; a currency_usd_reference matched as a raw substring so the typo is still recognised."
-    lexeme "hi"
-      word "डॉलर"
-        description "Hindi noun (romanized dolar, dollar); a currency_usd_reference matched as a raw substring."
-    lexeme "zh"
-      word "美元"
-        description "Chinese noun (pinyin meiyuan, US dollar); a currency_usd_reference matched as a raw substring."
-  meaning "euro"
-    gloss "the euro, the currency abbreviated EUR. The currency_eur_reference role marks the surface forms that name the euro; the compound-interest handler reads it as a whole token to decide whether to convert a final amount into euros, and the calculation rate handlers read it to recognise a euro currency code. Defined as a kind of money. Also a calculation_domain_term, so a euro reference beside a number signals a calculation to the calculator router (ASCII codes whole-token, other scripts as raw substrings)."
-    wiktionary "euro"
-    defined_by "money"
-    role "currency_eur_reference"
-    role "calculation_domain_term"
-    lexeme "en"
-      word "eur"
-        description "English ISO 4217 code for the euro; a currency_eur_reference matched as a token-bounded word."
-      word "euro"
-        description "English noun for the euro; a currency_eur_reference matched as a token-bounded word."
-      word "euros"
-        description "English plural of euro; a currency_eur_reference matched as a token-bounded word, kept explicitly because token-bounded matching does not derive the plural from the singular."
-    lexeme "ru"
-      word "евро"
-        description "Russian noun (romanized evro, euro), indeclinable; a currency_eur_reference matched as a token-bounded word."
-    lexeme "hi"
-      word "यूरो"
-        description "Hindi noun (romanized yuro, euro); a currency_eur_reference matched as a token-bounded word."
-    lexeme "zh"
-      word "欧元"
-        description "Chinese noun (pinyin ouyuan, euro); a currency_eur_reference matched as a token-bounded word."
-  meaning "ruble"
-    gloss "the Russian ruble, the currency abbreviated RUB. The currency_rub_reference role marks the surface forms that name the ruble; the calculation rate handlers and the compound-interest worker read it as a whole token to recognise a ruble currency code. Defined as a kind of money. Also a calculation_domain_term, so a ruble reference beside a number signals a calculation to the calculator router (ASCII codes whole-token, other scripts as raw substrings)."
-    wiktionary "ruble"
-    defined_by "money"
-    role "currency_rub_reference"
-    role "calculation_domain_term"
-    lexeme "en"
-      word "rub"
-        description "English ISO 4217 code for the Russian ruble; a currency_rub_reference matched as a token-bounded word."
-      word "ruble"
-        description "English noun for the Russian ruble; a currency_rub_reference matched as a token-bounded word."
-      word "rubles"
-        description "English plural of ruble; a currency_rub_reference matched as a token-bounded word, kept explicitly because token-bounded matching does not derive the plural from the singular."
-    lexeme "ru"
-      word "рубль"
-        description "Russian noun (romanized rubl, ruble); a currency_rub_reference matched as a token-bounded word."
-      word "рублей"
-        description "Russian genitive-plural noun (romanized rubley, rubles), the form used after most numbers; a currency_rub_reference matched as a token-bounded word."
-      word "руб"
-        description "Russian abbreviation (romanized rub) of рубль; a currency_rub_reference matched as a token-bounded word."
-    lexeme "hi"
-      word "रूबल"
-        description "Hindi noun (romanized rubal, ruble); a currency_rub_reference matched as a token-bounded word."
-    lexeme "zh"
-      word "卢布"
-        description "Chinese noun (pinyin lubu, ruble); a currency_rub_reference matched as a token-bounded word."
-  meaning "calculation_basis"
-    gloss "a phrase asking which value, rate, or method the assistant uses, applies, or takes as the basis when it calculates — the question side of a prompt like which rate do you use for calculations. The calculation_basis_reference role marks these surface forms; the calculator rate-basis handler requires this together with an exchange_rate reference and a us_dollar reference before it answers with the rate the calculator uses for USD to RUB. The forms are inflectable stems and fixed phrases matched as raw substrings, so they are caught regardless of surrounding inflection in every supported language."
-    wiktionary "calculation"
-    defined_by "action"
-    defined_by "inquiry"
-    role "calculation_basis_reference"
-    lexeme "en"
-      word "calculation"
-        description "English noun for the act of computing; a calculation_basis_reference matched as a raw substring so calculations is also caught."
-      word "calculations"
-        description "English plural of calculation; a calculation_basis_reference matched as a raw substring, kept explicitly so the surface list mirrors the original recognizer."
-      word "do you use"
-        description "English interrogative fragment asking which value the assistant uses; a calculation_basis_reference matched as a raw substring."
-      word "used for"
-        description "English fragment asking what a rate is used for; a calculation_basis_reference matched as a raw substring."
-      word "your rate"
-        description "English fragment asking about the assistant's own rate; a calculation_basis_reference matched as a raw substring."
-    lexeme "ru"
-      word "при расчет"
-        description "Russian fragment (romanized pri raschet, during calculation) without the ё; a calculation_basis_reference matched as a raw substring so при расчете and при расчетах are caught."
-      word "при расчёт"
-        description "Russian fragment (romanized pri raschyot, during calculation) with the ё; a calculation_basis_reference matched as a raw substring so при расчёте and при расчётах are caught."
-      word "в расчет"
-        description "Russian fragment (romanized v raschet, into the calculation) without the ё; a calculation_basis_reference matched as a raw substring."
-      word "в расчёт"
-        description "Russian fragment (romanized v raschyot, into the calculation) with the ё; a calculation_basis_reference matched as a raw substring."
-      word "для расчет"
-        description "Russian fragment (romanized dlya raschet, for the calculation) without the ё; a calculation_basis_reference matched as a raw substring."
-      word "для расчёт"
-        description "Russian fragment (romanized dlya raschyot, for the calculation) with the ё; a calculation_basis_reference matched as a raw substring."
-      word "у тебя"
-        description "Russian fragment (romanized u tebya, that you have or that you use); a calculation_basis_reference matched as a raw substring."
-      word "использ"
-        description "Russian verb stem (romanized ispolz, of использовать, to use); a calculation_basis_reference matched as a raw substring so используешь and используете are caught."
-      word "берешь"
-        description "Russian second-person verb (romanized beresh, you take) without the ё; a calculation_basis_reference matched as a raw substring."
-      word "берёшь"
-        description "Russian second-person verb (romanized beryosh, you take) with the ё; a calculation_basis_reference matched as a raw substring."
-      word "примен"
-        description "Russian verb stem (romanized primen, of применять, to apply); a calculation_basis_reference matched as a raw substring so применяешь and применяете are caught."
-    lexeme "hi"
-      word "गणना"
-        description "Hindi noun (romanized ganana, calculation); a calculation_basis_reference matched as a raw substring."
-      word "उपयोग"
-        description "Hindi noun (romanized upayog, use); a calculation_basis_reference matched as a raw substring."
-    lexeme "zh"
-      word "计算"
-        description "Chinese verb (pinyin jisuan, to calculate); a calculation_basis_reference matched as a raw substring."
-      word "使用"
-        description "Chinese verb (pinyin shiyong, to use); a calculation_basis_reference matched as a raw substring."
-  meaning "arithmetic_operation"
-    gloss "an arithmetic operation that combines numbers into a result: addition, subtraction, multiplication, division, modulo. The genus of the individual spelled operators, each defined as a kind of arithmetic operation rather than listed in code. The numeric_concept role is structural: no handler queries the genus directly; it exists so the ontology records that these operators are kinds of arithmetic operation."
-    wiktionary "arithmetic operation"
-    defined_by "action"
-    role "numeric_concept"
-    lexeme "en"
-      word "arithmetic operation"
-        description "English term for an operation that combines numbers into a result; the genus of the individual spelled operators."
-      word "operator"
-        description "English noun for the symbol or word naming an arithmetic operation; the everyday surface for the operation concept."
-    lexeme "ru"
-      word "арифметическая операция"
-        description "Russian term (romanized arifmeticheskaya operatsiya) for an arithmetic operation; the Russian surface for the arithmetic-operation concept."
-    lexeme "hi"
-      word "अंकगणितीय संक्रिया"
-        description "Hindi term (romanized ankaganitiya sankriya) for an arithmetic operation; the Hindi surface for the arithmetic-operation concept."
-    lexeme "zh"
-      word "算术运算"
-        description "Chinese term (pinyin suanshu yunsuan) for an arithmetic operation; the Chinese surface for the arithmetic-operation concept."
-  meaning "addition"
-    gloss "the arithmetic operation of adding two numbers, written with the plus sign. The arithmetic_operator_word role marks the spelled operator surfaces; contains_word_operator reads them to decide whether a prompt names an arithmetic operator in words rather than symbols. Matched as a token-bounded word, with CJK surfaces matched as a substring because those scripts have no inter-word spaces."
-    wiktionary "addition"
-    defined_by "arithmetic_operation"
-    role "arithmetic_operator_word"
-    lexeme "en"
-      word "plus"
-        description "English spelled form of the addition operator; an arithmetic_operator_word matched as a token-bounded word."
-      word "+"
-        description "ASCII plus sign for the addition operator; the script-independent operator surface the arithmetic evaluator consumes, from which the operation's machine symbol is read."
-    lexeme "ru"
-      word "плюс"
-        description "Russian spelled form (romanized plyus) of the addition operator; an arithmetic_operator_word matched as a token-bounded word."
-    lexeme "hi"
-      word "जोड़"
-        description "Hindi spelled form (romanized jod, add) of the addition operator; an arithmetic_operator_word matched as a token-bounded word."
-    lexeme "zh"
-      word "加上"
-        description "Chinese spelled form (pinyin jiashang, add) of the addition operator; an arithmetic_operator_word matched as a substring."
-  meaning "subtraction"
-    gloss "the arithmetic operation of subtracting one number from another, written with the minus sign. The arithmetic_operator_word role marks the spelled operator surfaces; contains_word_operator reads them to decide whether a prompt names an arithmetic operator in words rather than symbols. Matched as a token-bounded word, with CJK surfaces matched as a substring because those scripts have no inter-word spaces."
-    wiktionary "subtraction"
-    defined_by "arithmetic_operation"
-    role "arithmetic_operator_word"
-    lexeme "en"
-      word "minus"
-        description "English spelled form of the subtraction operator; an arithmetic_operator_word matched as a token-bounded word."
-      word "-"
-        description "ASCII hyphen-minus for the subtraction operator; the script-independent operator surface the arithmetic evaluator consumes, from which the operation's machine symbol is read."
-    lexeme "ru"
-      word "минус"
-        description "Russian spelled form (romanized minus) of the subtraction operator; an arithmetic_operator_word matched as a token-bounded word."
-    lexeme "hi"
-      word "घटा"
-        description "Hindi spelled form (romanized ghata, subtract) of the subtraction operator; an arithmetic_operator_word matched as a token-bounded word."
-    lexeme "zh"
-      word "减去"
-        description "Chinese spelled form (pinyin jianqu, subtract) of the subtraction operator; an arithmetic_operator_word matched as a substring."
-  meaning "multiplication"
-    gloss "the arithmetic operation of multiplying two numbers, written with the times sign. The arithmetic_operator_word role marks the spelled operator surfaces; contains_word_operator reads them to decide whether a prompt names an arithmetic operator in words rather than symbols. Matched as a token-bounded word, with CJK surfaces matched as a substring because those scripts have no inter-word spaces."
-    wiktionary "multiplication"
-    defined_by "arithmetic_operation"
-    role "arithmetic_operator_word"
-    lexeme "en"
-      word "times"
-        description "English spelled form of the multiplication operator; an arithmetic_operator_word matched as a token-bounded word."
-      word "multiplied by"
-        description "English spelled phrase for the multiplication operator; an arithmetic_operator_word matched as a token-bounded phrase."
-      word "*"
-        description "ASCII asterisk for the multiplication operator; the script-independent operator surface the arithmetic evaluator consumes, from which the operation's machine symbol is read."
-    lexeme "ru"
-      word "умножить"
-        description "Russian verb (romanized umnozhit, multiply); an arithmetic_operator_word matched as a token-bounded word."
-      word "умножь"
-        description "Russian imperative (romanized umnozh, multiply); an arithmetic_operator_word matched as a token-bounded word."
-      word "умножить на"
-        description "Russian phrase (romanized umnozhit na, multiply by); an arithmetic_operator_word matched as a token-bounded phrase, kept explicitly to mirror the original recognizer."
-    lexeme "hi"
-      word "गुणा"
-        description "Hindi spelled form (romanized guna, multiply) of the multiplication operator; an arithmetic_operator_word matched as a token-bounded word."
-    lexeme "zh"
-      word "乘以"
-        description "Chinese spelled form (pinyin chengyi, multiply by) of the multiplication operator; an arithmetic_operator_word matched as a substring."
-  meaning "division"
-    gloss "the arithmetic operation of dividing one number by another, written with the division sign. The arithmetic_operator_word role marks the spelled operator surfaces; contains_word_operator reads them to decide whether a prompt names an arithmetic operator in words rather than symbols. Matched as a token-bounded word, with CJK surfaces matched as a substring because those scripts have no inter-word spaces."
-    wiktionary "division"
-    defined_by "arithmetic_operation"
-    role "arithmetic_operator_word"
-    lexeme "en"
-      word "divided by"
-        description "English spelled phrase for the division operator; an arithmetic_operator_word matched as a token-bounded phrase."
-      word "/"
-        description "ASCII slash for the division operator; the script-independent operator surface the arithmetic evaluator consumes, from which the operation's machine symbol is read."
-    lexeme "ru"
-      word "разделить на"
-        description "Russian phrase (romanized razdelit na, divide by); an arithmetic_operator_word matched as a token-bounded phrase."
-      word "делить на"
-        description "Russian phrase (romanized delit na, divide by); an arithmetic_operator_word matched as a token-bounded phrase."
-    lexeme "hi"
-      word "भाग"
-        description "Hindi spelled form (romanized bhag, divide) of the division operator; an arithmetic_operator_word matched as a token-bounded word."
-    lexeme "zh"
-      word "除以"
-        description "Chinese spelled form (pinyin chuyi, divide by) of the division operator; an arithmetic_operator_word matched as a substring."
-  meaning "modulo"
-    gloss "the arithmetic operation that yields the remainder of a division, written with the percent sign in the evaluator. The arithmetic_operator_word role marks the spelled operator surfaces; contains_word_operator reads them to decide whether a prompt names an arithmetic operator in words rather than symbols. Matched as a token-bounded word, with CJK surfaces matched as a substring because those scripts have no inter-word spaces."
-    wiktionary "modulo"
-    defined_by "arithmetic_operation"
-    role "arithmetic_operator_word"
-    lexeme "en"
-      word "modulo"
-        description "English spelled form of the modulo operator; an arithmetic_operator_word matched as a token-bounded word."
-      word "mod"
-        description "English abbreviation of modulo; an arithmetic_operator_word matched as a token-bounded word."
-      word "%"
-        description "ASCII percent sign for the modulo operator; the script-independent operator surface the arithmetic evaluator consumes, from which the operation's machine symbol is read. The evaluator writes modulo as percent, matching rewrite_percent_of which leaves a bare percent not followed by of as the modulo operator."
-    lexeme "ru"
-      word "по модулю"
-        description "Russian phrase (romanized po modulyu, modulo) of the modulo operator; an arithmetic_operator_word matched as a token-bounded phrase."
-    lexeme "hi"
-      word "मॉड्यूलो"
-        description "Hindi spelled form (romanized modyulo) of the modulo operator; an arithmetic_operator_word matched as a token-bounded word."
-    lexeme "zh"
-      word "取模"
-        description "Chinese spelled form (pinyin qumo, take modulo) of the modulo operator; an arithmetic_operator_word matched as a substring."
-  meaning "calculation_request"
-    gloss "a natural-language cue that asks for an arithmetic calculation, whether an imperative ('calculate', 'посчитай') or a question opener ('what is', 'сколько будет'). strip_calculation_wrappers removes these cues from the front of a prompt so the bare expression remains, and the explicit flag it sets lets even a digit-only expression count as a calculation. Each surface is rebuilt into a strip prefix: space-delimited scripts gain a trailing space so the cue strips only on a word boundary (calculate never eats the start of calculated), while CJK surfaces strip as-is because those scripts have no inter-word spaces. The Chinese surfaces are listed longest first so a more specific cue strips before a shorter one it contains."
-    wiktionary "calculation"
-    defined_by "action"
-    defined_by "inquiry"
-    role "calculation_request_cue"
-    lexeme "en"
-      word "please calculate"
-        description "English polite imperative asking for a calculation; a calculation_request_cue stripped from the front of a prompt on a word boundary."
-      word "please compute"
-        description "English polite imperative asking to compute a value; a calculation_request_cue stripped from the front of a prompt on a word boundary."
-      word "can you calculate"
-        description "English polite question asking the assistant to calculate; a calculation_request_cue stripped from the front of a prompt on a word boundary."
-      word "can you compute"
-        description "English polite question asking the assistant to compute; a calculation_request_cue stripped from the front of a prompt on a word boundary."
-      word "could you calculate"
-        description "English deferential question asking the assistant to calculate; a calculation_request_cue stripped from the front of a prompt on a word boundary."
-      word "could you compute"
-        description "English deferential question asking the assistant to compute; a calculation_request_cue stripped from the front of a prompt on a word boundary."
-      word "what is"
-        description "English question opener asking for the value of an expression; a calculation_request_cue stripped from the front of a prompt on a word boundary."
-      word "what's"
-        description "English contracted question opener (what is); a calculation_request_cue stripped from the front of a prompt on a word boundary."
-      word "what does"
-        description "English question opener leading 'what does X equal'; a calculation_request_cue stripped from the front of a prompt on a word boundary."
-      word "calculate"
-        description "English bare imperative to calculate; a calculation_request_cue stripped from the front of a prompt on a word boundary."
-      word "compute"
-        description "English bare imperative to compute; a calculation_request_cue stripped from the front of a prompt on a word boundary."
-      word "evaluate"
-        description "English bare imperative to evaluate an expression; a calculation_request_cue stripped from the front of a prompt on a word boundary."
-      word "how much is"
-        description "English quantity question opener; a calculation_request_cue stripped from the front of a prompt on a word boundary."
-      word "solve"
-        description "English bare imperative to solve an expression or equation; a calculation_request_cue stripped from the front of a prompt on a word boundary."
-    lexeme "ru"
-      word "сколько будет"
-        description "Russian question opener (romanized skolko budet, how much will it be); a calculation_request_cue stripped from the front of a prompt on a word boundary."
-      word "посчитай"
-        description "Russian informal imperative (romanized poschitay, count it up); a calculation_request_cue stripped from the front of a prompt on a word boundary."
-      word "посчитайте"
-        description "Russian polite-plural imperative (romanized poschitayte, count it up); a calculation_request_cue stripped from the front of a prompt on a word boundary."
-      word "вычисли"
-        description "Russian informal imperative (romanized vychisli, compute it); a calculation_request_cue stripped from the front of a prompt on a word boundary."
-      word "вычислите"
-        description "Russian polite-plural imperative (romanized vychislite, compute it); a calculation_request_cue stripped from the front of a prompt on a word boundary."
-      word "рассчитай"
-        description "Russian informal imperative (romanized rasschitay, calculate it); a calculation_request_cue stripped from the front of a prompt on a word boundary."
-      word "рассчитайте"
-        description "Russian polite-plural imperative (romanized rasschitayte, calculate it); a calculation_request_cue stripped from the front of a prompt on a word boundary."
-    lexeme "zh"
-      word "请计算"
-        description "Chinese polite imperative (pinyin qing jisuan, please calculate); a calculation_request_cue stripped from the front as a substring since Chinese has no inter-word spaces."
-      word "请算一下"
-        description "Chinese polite imperative (pinyin qing suan yixia, please do a calculation); a calculation_request_cue stripped from the front as a substring since Chinese has no inter-word spaces."
-      word "计算一下"
-        description "Chinese imperative (pinyin jisuan yixia, do a calculation); a calculation_request_cue stripped from the front as a substring since Chinese has no inter-word spaces."
-      word "算一下"
-        description "Chinese imperative (pinyin suan yixia, work it out); a calculation_request_cue stripped from the front as a substring since Chinese has no inter-word spaces."
-      word "计算"
-        description "Chinese verb (pinyin jisuan, calculate); a calculation_request_cue stripped from the front as a substring since Chinese has no inter-word spaces."
-    lexeme "hi"
-      word "कृपया गणना करें"
-        description "Hindi polite imperative (romanized kripya ganana karen, please calculate); a calculation_request_cue stripped from the front of a prompt on a word boundary."
-      word "गणना करें"
-        description "Hindi imperative (romanized ganana karen, do the calculation); a calculation_request_cue stripped from the front of a prompt on a word boundary."
-  meaning "politeness"
-    gloss "a politeness or courtesy marker that softens a request without adding any task content, such as please, for me, пожалуйста, कृपया, or 请. strip_calculation_wrappers removes these markers from the end of a calculation prompt so the bare expression remains. Each surface is rebuilt into a strip suffix: space-delimited scripts gain a leading space so the cue strips only on a word boundary, while CJK surfaces strip as-is because those scripts have no inter-word spaces. Defined as a property of a request — a quality it carries rather than its content."
-    wiktionary "politeness"
-    defined_by "property"
-    role "politeness_cue"
-    lexeme "en"
-      word "please"
-        description "English courtesy word that softens a request; a politeness_cue stripped from the end of a prompt on a word boundary."
-      word "for me"
-        description "English courtesy phrase (do this for me) that softens a request; a politeness_cue stripped from the end of a prompt on a word boundary."
-    lexeme "ru"
-      word "пожалуйста"
-        description "Russian courtesy word (romanized pozhaluysta, please); a politeness_cue stripped from the end of a prompt on a word boundary."
-    lexeme "hi"
-      word "कृपया"
-        description "Hindi courtesy word (romanized kripya, please); a politeness_cue stripped from the end of a prompt on a word boundary."
-    lexeme "zh"
-      word "请"
-        description "Chinese courtesy word (pinyin qing, please); a politeness_cue stripped from the end as a substring since Chinese has no inter-word spaces."
-  meaning "calculation_result_query"
-    gloss "a trailing cue that asks for the computed result of the preceding arithmetic expression, whether an equals word or sign (equal, equals, =, равно), a how-much-is-it question (是多少, 等于多少, कितना है, क्या है), or a head-final do-the-calculation imperative (की गणना करें). strip_calculation_wrappers removes these cues from the end of a prompt so the bare expression remains. Each surface is rebuilt into a strip suffix: space-delimited scripts gain a leading space so the cue strips only on a word boundary, the bare equals sign also strips with no leading space so a compact 2*2+2= is recognised, and CJK surfaces strip as-is because those scripts have no inter-word spaces. Defined as both an action and an inquiry — it both invokes the calculation and asks for its value."
-    wiktionary "equal"
-    defined_by "action"
-    defined_by "inquiry"
-    role "calculation_result_query_cue"
-    lexeme "en"
-      word "equal"
-        description "English equals word asking for the value of the preceding expression; a calculation_result_query_cue stripped from the end of a prompt on a word boundary."
-      word "equals"
-        description "English equals word (third person) asking for the value of the preceding expression; a calculation_result_query_cue stripped from the end of a prompt on a word boundary."
-      word "="
-        description "The equals sign; the script-independent symbol surface that asks for the value of the preceding expression, a calculation_result_query_cue stripped from the end of a prompt both bare (so a compact 2*2+2= is recognised) and on a word boundary."
-    lexeme "ru"
-      word "равно"
-        description "Russian equals word (romanized ravno, equals); a calculation_result_query_cue stripped from the end of a prompt on a word boundary."
-    lexeme "zh"
-      word "是多少"
-        description "Chinese question tail (pinyin shi duoshao, is how much); a calculation_result_query_cue stripped from the end as a substring since Chinese has no inter-word spaces."
-      word "等于多少"
-        description "Chinese question tail (pinyin dengyu duoshao, equals how much); a calculation_result_query_cue stripped from the end as a substring since Chinese has no inter-word spaces."
-      word "等于几"
-        description "Chinese question tail (pinyin dengyu ji, equals how many); a calculation_result_query_cue stripped from the end as a substring since Chinese has no inter-word spaces."
-    lexeme "hi"
-      word "कितना है"
-        description "Hindi question tail (romanized kitna hai, how much is it); a calculation_result_query_cue stripped from the end of a prompt on a word boundary."
-      word "क्या है"
-        description "Hindi question tail (romanized kya hai, what is it); a calculation_result_query_cue stripped from the end of a prompt on a word boundary."
-      word "की गणना करें"
-        description "Hindi head-final imperative (romanized ki ganana karen, do the calculation of); a calculation_result_query_cue stripped from the end of a prompt on a word boundary."
-  meaning "quantity_conversion"
-    gloss "a cue that a prompt is converting one quantity into another — a currency or unit conversion (convert dollars to euros, 100 km into miles). has_calculation_signal otherwise rejects a prompt that pairs a currency symbol with letters and is not an explicit calculate command, treating it as prose that merely mentions money; a quantity_conversion_cue exempts it, because a conversion is itself a calculation. Each surface is matched whole-token through mentions_role: in space-delimited scripts the cue must stand on a word boundary (so to and into match the marker, never a substring of another word), while Chinese surfaces match as a substring since that script has no inter-word spaces. Distinct from conversion_action, the money-specific verb the compound-interest handler matches as a raw substring: this meaning is the calculator router's general conversion signal and includes the bare target markers to and into, so it must stay whole-token. Defined as an action that establishes a relation between a source and a target quantity."
-    wiktionary "conversion"
-    defined_by "action"
-    defined_by "relation"
-    role "quantity_conversion_cue"
-    lexeme "en"
-      word "to"
-        description "English target marker (convert dollars to euros); a quantity_conversion_cue matched whole-token so it signals a conversion only on a word boundary, never inside another word."
-      word "into"
-        description "English target marker (convert 100 km into miles); a quantity_conversion_cue matched whole-token so it signals a conversion only on a word boundary."
-      word "convert"
-        description "English verb to change one quantity into another; a quantity_conversion_cue matched whole-token."
-      word "exchange"
-        description "English verb to trade one currency for another; a quantity_conversion_cue matched whole-token."
-    lexeme "ru"
-      word "конвертировать"
-        description "Russian verb (romanized konvertirovat, to convert); a quantity_conversion_cue matched whole-token on a word boundary."
-      word "обмен"
-        description "Russian noun (romanized obmen, exchange); a quantity_conversion_cue matched whole-token on a word boundary."
-    lexeme "hi"
-      word "बदलें"
-        description "Hindi verb (romanized badlen, change or convert); a quantity_conversion_cue matched whole-token on a word boundary."
-      word "परिवर्तित"
-        description "Hindi adjective (romanized parivartit, converted); a quantity_conversion_cue matched whole-token on a word boundary."
-    lexeme "zh"
-      word "转换"
-        description "Chinese verb (pinyin zhuanhuan, to convert); a quantity_conversion_cue matched as a substring since Chinese has no inter-word spaces."
-      word "兑换"
-        description "Chinese verb (pinyin duihuan, to exchange currency); a quantity_conversion_cue matched as a substring since Chinese has no inter-word spaces."
-      word "换成"
-        description "Chinese verb phrase (pinyin huancheng, to change into); a quantity_conversion_cue matched as a substring since Chinese has no inter-word spaces."
-  meaning "mathematical_function"
-    gloss "a named mathematical operation that maps one or more input numbers to a result, such as a square root, a trigonometric function, or a logarithm. The genus of the individual function names, each defined as a kind of mathematical function rather than listed in code. The numeric_concept role is structural: no handler queries the genus directly; it records that these names are kinds of mathematical function."
-    wiktionary "function"
-    defined_by "function"
-    role "numeric_concept"
-    lexeme "en"
-      word "mathematical function"
-        description "English term for a named operation that maps input numbers to a result; the genus of the individual function names."
-    lexeme "ru"
-      word "математическая функция"
-        description "Russian term (romanized matematicheskaya funktsiya) for a mathematical function; the Russian surface for the mathematical-function concept."
-    lexeme "hi"
-      word "गणितीय फलन"
-        description "Hindi term (romanized ganitiya phalan) for a mathematical function; the Hindi surface for the mathematical-function concept."
-    lexeme "zh"
-      word "数学函数"
-        description "Chinese term (pinyin shuxue hanshu) for a mathematical function; the Chinese surface for the mathematical-function concept."
-  meaning "square_root"
-    gloss "the square-root function, which returns the non-negative number whose square is the input. A math_function_name: the calculator router treats its name beside a number, as in sqrt(16), as a calculation signal. ASCII names are matched on a leading word boundary so they are recognised even when they abut a parenthesis; other scripts are matched as raw substrings."
-    wiktionary "square root"
-    defined_by "mathematical_function"
-    role "math_function_name"
-    lexeme "en"
-      word "sqrt"
-        description "English abbreviation for the square-root function; a math_function_name matched on a leading word boundary so sqrt(16) is recognised."
-      word "square root"
-        description "English name for the function returning the number whose square is the input; a math_function_name matched on a leading word boundary."
-    lexeme "ru"
-      word "квадратный корень"
-        description "Russian term (romanized kvadratnyy koren, square root); a math_function_name matched as a raw substring."
-      word "корень"
-        description "Russian noun (romanized koren, root), the short name of the square-root function; a math_function_name matched as a raw substring."
-    lexeme "hi"
-      word "वर्गमूल"
-        description "Hindi noun (romanized vargamul, square root); a math_function_name matched as a raw substring."
-    lexeme "zh"
-      word "平方根"
-        description "Chinese noun (pinyin pingfanggen, square root); a math_function_name matched as a raw substring."
-  meaning "sine"
-    gloss "the sine trigonometric function. A math_function_name: the calculator router treats its name beside a number as a calculation signal. ASCII names are matched on a leading word boundary; other scripts as raw substrings."
-    wiktionary "sine"
-    defined_by "mathematical_function"
-    role "math_function_name"
-    lexeme "en"
-      word "sin"
-        description "English abbreviation for the sine function; a math_function_name matched on a leading word boundary."
-      word "sine"
-        description "English name for the sine trigonometric function; a math_function_name matched on a leading word boundary."
-    lexeme "ru"
-      word "синус"
-        description "Russian noun (romanized sinus, sine); a math_function_name matched as a raw substring."
-    lexeme "hi"
-      word "ज्या"
-        description "Hindi noun (romanized jya, sine); a math_function_name matched as a raw substring."
-    lexeme "zh"
-      word "正弦"
-        description "Chinese noun (pinyin zhengxian, sine); a math_function_name matched as a raw substring."
-  meaning "cosine"
-    gloss "the cosine trigonometric function. A math_function_name: the calculator router treats its name beside a number as a calculation signal. ASCII names are matched on a leading word boundary; other scripts as raw substrings."
-    wiktionary "cosine"
-    defined_by "mathematical_function"
-    role "math_function_name"
-    lexeme "en"
-      word "cos"
-        description "English abbreviation for the cosine function; a math_function_name matched on a leading word boundary."
-      word "cosine"
-        description "English name for the cosine trigonometric function; a math_function_name matched on a leading word boundary."
-    lexeme "ru"
-      word "косинус"
-        description "Russian noun (romanized kosinus, cosine); a math_function_name matched as a raw substring."
-    lexeme "hi"
-      word "कोज्या"
-        description "Hindi noun (romanized kojya, cosine); a math_function_name matched as a raw substring."
-    lexeme "zh"
-      word "余弦"
-        description "Chinese noun (pinyin yuxian, cosine); a math_function_name matched as a raw substring."
-  meaning "tangent"
-    gloss "the tangent trigonometric function. A math_function_name: the calculator router treats its name beside a number as a calculation signal. ASCII names are matched on a leading word boundary; other scripts as raw substrings."
-    wiktionary "tangent"
-    defined_by "mathematical_function"
-    role "math_function_name"
-    lexeme "en"
-      word "tan"
-        description "English abbreviation for the tangent function; a math_function_name matched on a leading word boundary."
-      word "tangent"
-        description "English name for the tangent trigonometric function; a math_function_name matched on a leading word boundary."
-    lexeme "ru"
-      word "тангенс"
-        description "Russian noun (romanized tangens, tangent); a math_function_name matched as a raw substring."
-    lexeme "hi"
-      word "स्पर्शज्या"
-        description "Hindi noun (romanized sparshajya, tangent); a math_function_name matched as a raw substring."
-    lexeme "zh"
-      word "正切"
-        description "Chinese noun (pinyin zhengqie, tangent); a math_function_name matched as a raw substring."
-  meaning "logarithm"
-    gloss "the logarithm function, the inverse of exponentiation. A math_function_name: the calculator router treats its name beside a number as a calculation signal. ASCII names are matched on a leading word boundary; other scripts as raw substrings."
-    wiktionary "logarithm"
-    defined_by "mathematical_function"
-    role "math_function_name"
-    lexeme "en"
-      word "log"
-        description "English abbreviation for the logarithm function; a math_function_name matched on a leading word boundary."
-      word "logarithm"
-        description "English name for the logarithm function, the inverse of exponentiation; a math_function_name matched on a leading word boundary."
-    lexeme "ru"
-      word "логарифм"
-        description "Russian noun (romanized logarifm, logarithm); a math_function_name matched as a raw substring."
-    lexeme "hi"
-      word "लघुगणक"
-        description "Hindi noun (romanized laghuganak, logarithm); a math_function_name matched as a raw substring."
-    lexeme "zh"
-      word "对数"
-        description "Chinese noun (pinyin duishu, logarithm); a math_function_name matched as a raw substring."
-  meaning "natural_logarithm"
-    gloss "the natural logarithm function, the logarithm to base e. A math_function_name: the calculator router treats its name beside a number as a calculation signal. ASCII names are matched on a leading word boundary; other scripts as raw substrings."
-    wiktionary "natural logarithm"
-    defined_by "mathematical_function"
-    role "math_function_name"
-    lexeme "en"
-      word "ln"
-        description "English abbreviation for the natural logarithm, the logarithm to base e; a math_function_name matched on a leading word boundary."
-      word "natural logarithm"
-        description "English name for the logarithm to base e; a math_function_name matched on a leading word boundary."
-    lexeme "ru"
-      word "натуральный логарифм"
-        description "Russian term (romanized naturalnyy logarifm, natural logarithm); a math_function_name matched as a raw substring."
-    lexeme "hi"
-      word "प्राकृतिक लघुगणक"
-        description "Hindi term (romanized prakritik laghuganak, natural logarithm); a math_function_name matched as a raw substring."
-    lexeme "zh"
-      word "自然对数"
-        description "Chinese term (pinyin ziran duishu, natural logarithm); a math_function_name matched as a raw substring."
+  money: # concept money
+    defined-by concept # definition-link
+    role monetary_concept # semantic-role
+    lexeme en # language
+      surface unformalized-raw 109 111 110 101 121 # unresolved-surface
+      surface unformalized-raw 99 117 114 114 101 110 99 121 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1076 1077 1085 1100 1075 1080 # unresolved-surface
+      surface unformalized-raw 1074 1072 1083 1102 1090 1072 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2346 2376 2360 2366 # unresolved-surface
+      surface unformalized-raw 2350 2369 2342 2381 2352 2366 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 36135 24065 # unresolved-surface
+      surface unformalized-raw 38065 # unresolved-surface
+  exchange_rate: # concept exchange_rate
+    defined-by money # definition-link
+    defined-by relation # definition-link
+    role exchange_rate_reference # semantic-role
+    lexeme en # language
+      surface unformalized-raw 101 120 99 104 97 110 103 101 32 114 97 116 101 # unresolved-surface
+      surface unformalized-raw 99 117 114 114 101 110 99 121 32 114 97 116 101 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1082 1091 1088 1089 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2357 2367 2344 2367 2350 2351 32 2342 2352 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 27719 29575 # unresolved-surface
+  us_dollar: # concept us_dollar
+    defined-by money # definition-link
+    role currency_usd_reference # semantic-role
+    role calculation_domain_term # semantic-role
+    lexeme en # language
+      surface unformalized-raw 117 115 100 # unresolved-surface
+      surface unformalized-raw 100 111 108 108 97 114 # unresolved-surface
+      surface unformalized-raw 100 111 108 108 97 114 115 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1076 1086 1083 1083 1072 1088 # unresolved-surface
+      surface unformalized-raw 1076 1086 1083 1072 1088 # unresolved-surface
+      surface unformalized-raw 1076 1086 1083 1086 1088 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2337 2377 2354 2352 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 32654 20803 # unresolved-surface
+  euro: # concept euro
+    defined-by money # definition-link
+    role currency_eur_reference # semantic-role
+    role calculation_domain_term # semantic-role
+    lexeme en # language
+      surface unformalized-raw 101 117 114 # unresolved-surface
+      surface unformalized-raw 101 117 114 111 # unresolved-surface
+      surface unformalized-raw 101 117 114 111 115 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1077 1074 1088 1086 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2351 2370 2352 2379 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 27431 20803 # unresolved-surface
+  ruble: # concept ruble
+    defined-by money # definition-link
+    role currency_rub_reference # semantic-role
+    role calculation_domain_term # semantic-role
+    lexeme en # language
+      surface unformalized-raw 114 117 98 # unresolved-surface
+      surface unformalized-raw 114 117 98 108 101 # unresolved-surface
+      surface unformalized-raw 114 117 98 108 101 115 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1088 1091 1073 1083 1100 # unresolved-surface
+      surface unformalized-raw 1088 1091 1073 1083 1077 1081 # unresolved-surface
+      surface unformalized-raw 1088 1091 1073 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2352 2370 2348 2354 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 21346 24067 # unresolved-surface
+  calculation_basis: # concept calculation_basis
+    defined-by action # definition-link
+    defined-by inquiry # definition-link
+    role calculation_basis_reference # semantic-role
+    lexeme en # language
+      surface unformalized-raw 99 97 108 99 117 108 97 116 105 111 110 # unresolved-surface
+      surface unformalized-raw 99 97 108 99 117 108 97 116 105 111 110 115 # unresolved-surface
+      surface unformalized-raw 100 111 32 121 111 117 32 117 115 101 # unresolved-surface
+      surface unformalized-raw 117 115 101 100 32 102 111 114 # unresolved-surface
+      surface unformalized-raw 121 111 117 114 32 114 97 116 101 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1087 1088 1080 32 1088 1072 1089 1095 1077 1090 # unresolved-surface
+      surface unformalized-raw 1087 1088 1080 32 1088 1072 1089 1095 1105 1090 # unresolved-surface
+      surface unformalized-raw 1074 32 1088 1072 1089 1095 1077 1090 # unresolved-surface
+      surface unformalized-raw 1074 32 1088 1072 1089 1095 1105 1090 # unresolved-surface
+      surface unformalized-raw 1076 1083 1103 32 1088 1072 1089 1095 1077 1090 # unresolved-surface
+      surface unformalized-raw 1076 1083 1103 32 1088 1072 1089 1095 1105 1090 # unresolved-surface
+      surface unformalized-raw 1091 32 1090 1077 1073 1103 # unresolved-surface
+      surface unformalized-raw 1080 1089 1087 1086 1083 1100 1079 # unresolved-surface
+      surface unformalized-raw 1073 1077 1088 1077 1096 1100 # unresolved-surface
+      surface unformalized-raw 1073 1077 1088 1105 1096 1100 # unresolved-surface
+      surface unformalized-raw 1087 1088 1080 1084 1077 1085 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2327 2339 2344 2366 # unresolved-surface
+      surface unformalized-raw 2313 2346 2351 2379 2327 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 35745 31639 # unresolved-surface
+      surface unformalized-raw 20351 29992 # unresolved-surface
+  arithmetic_operation: # concept arithmetic_operation
+    defined-by action # definition-link
+    role numeric_concept # semantic-role
+    lexeme en # language
+      surface unformalized-raw 97 114 105 116 104 109 101 116 105 99 32 111 112 101 114 97 116 105 111 110 # unresolved-surface
+      surface unformalized-raw 111 112 101 114 97 116 111 114 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1072 1088 1080 1092 1084 1077 1090 1080 1095 1077 1089 1082 1072 1103 32 1086 1087 1077 1088 1072 1094 1080 1103 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2309 2306 2325 2327 2339 2367 2340 2368 2351 32 2360 2306 2325 2381 2352 2367 2351 2366 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 31639 26415 36816 31639 # unresolved-surface
+  addition: # concept addition
+    defined-by arithmetic_operation # definition-link
+    role arithmetic_operator_word # semantic-role
+    lexeme en # language
+      surface unformalized-raw 112 108 117 115 # unresolved-surface
+      surface unformalized-raw 43 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1087 1083 1102 1089 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2332 2379 2337 2364 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 21152 19978 # unresolved-surface
+  subtraction: # concept subtraction
+    defined-by arithmetic_operation # definition-link
+    role arithmetic_operator_word # semantic-role
+    lexeme en # language
+      surface unformalized-raw 109 105 110 117 115 # unresolved-surface
+      surface unformalized-raw 45 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1084 1080 1085 1091 1089 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2328 2335 2366 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 20943 21435 # unresolved-surface
+  multiplication: # concept multiplication
+    defined-by arithmetic_operation # definition-link
+    role arithmetic_operator_word # semantic-role
+    lexeme en # language
+      surface unformalized-raw 116 105 109 101 115 # unresolved-surface
+      surface unformalized-raw 109 117 108 116 105 112 108 105 101 100 32 98 121 # unresolved-surface
+      surface unformalized-raw 42 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1091 1084 1085 1086 1078 1080 1090 1100 # unresolved-surface
+      surface unformalized-raw 1091 1084 1085 1086 1078 1100 # unresolved-surface
+      surface unformalized-raw 1091 1084 1085 1086 1078 1080 1090 1100 32 1085 1072 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2327 2369 2339 2366 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 20056 20197 # unresolved-surface
+  division: # concept division
+    defined-by arithmetic_operation # definition-link
+    role arithmetic_operator_word # semantic-role
+    lexeme en # language
+      surface unformalized-raw 100 105 118 105 100 101 100 32 98 121 # unresolved-surface
+      surface unformalized-raw 47 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1088 1072 1079 1076 1077 1083 1080 1090 1100 32 1085 1072 # unresolved-surface
+      surface unformalized-raw 1076 1077 1083 1080 1090 1100 32 1085 1072 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2349 2366 2327 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 38500 20197 # unresolved-surface
+  modulo: # concept modulo
+    defined-by arithmetic_operation # definition-link
+    role arithmetic_operator_word # semantic-role
+    lexeme en # language
+      surface unformalized-raw 109 111 100 117 108 111 # unresolved-surface
+      surface unformalized-raw 109 111 100 # unresolved-surface
+      surface unformalized-raw 37 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1087 1086 32 1084 1086 1076 1091 1083 1102 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2350 2377 2337 2381 2351 2370 2354 2379 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 21462 27169 # unresolved-surface
+  calculation_request: # concept calculation_request
+    defined-by action # definition-link
+    defined-by inquiry # definition-link
+    role calculation_request_cue # semantic-role
+    lexeme en # language
+      surface unformalized-raw 112 108 101 97 115 101 32 99 97 108 99 117 108 97 116 101 # unresolved-surface
+      surface unformalized-raw 112 108 101 97 115 101 32 99 111 109 112 117 116 101 # unresolved-surface
+      surface unformalized-raw 99 97 110 32 121 111 117 32 99 97 108 99 117 108 97 116 101 # unresolved-surface
+      surface unformalized-raw 99 97 110 32 121 111 117 32 99 111 109 112 117 116 101 # unresolved-surface
+      surface unformalized-raw 99 111 117 108 100 32 121 111 117 32 99 97 108 99 117 108 97 116 101 # unresolved-surface
+      surface unformalized-raw 99 111 117 108 100 32 121 111 117 32 99 111 109 112 117 116 101 # unresolved-surface
+      surface unformalized-raw 119 104 97 116 32 105 115 # unresolved-surface
+      surface unformalized-raw 119 104 97 116 39 115 # unresolved-surface
+      surface unformalized-raw 119 104 97 116 32 100 111 101 115 # unresolved-surface
+      surface unformalized-raw 99 97 108 99 117 108 97 116 101 # unresolved-surface
+      surface unformalized-raw 99 111 109 112 117 116 101 # unresolved-surface
+      surface unformalized-raw 101 118 97 108 117 97 116 101 # unresolved-surface
+      surface unformalized-raw 104 111 119 32 109 117 99 104 32 105 115 # unresolved-surface
+      surface unformalized-raw 115 111 108 118 101 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1089 1082 1086 1083 1100 1082 1086 32 1073 1091 1076 1077 1090 # unresolved-surface
+      surface unformalized-raw 1087 1086 1089 1095 1080 1090 1072 1081 # unresolved-surface
+      surface unformalized-raw 1087 1086 1089 1095 1080 1090 1072 1081 1090 1077 # unresolved-surface
+      surface unformalized-raw 1074 1099 1095 1080 1089 1083 1080 # unresolved-surface
+      surface unformalized-raw 1074 1099 1095 1080 1089 1083 1080 1090 1077 # unresolved-surface
+      surface unformalized-raw 1088 1072 1089 1089 1095 1080 1090 1072 1081 # unresolved-surface
+      surface unformalized-raw 1088 1072 1089 1089 1095 1080 1090 1072 1081 1090 1077 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 35831 35745 31639 # unresolved-surface
+      surface unformalized-raw 35831 31639 19968 19979 # unresolved-surface
+      surface unformalized-raw 35745 31639 19968 19979 # unresolved-surface
+      surface unformalized-raw 31639 19968 19979 # unresolved-surface
+      surface unformalized-raw 35745 31639 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2325 2371 2346 2351 2366 32 2327 2339 2344 2366 32 2325 2352 2375 2306 # unresolved-surface
+      surface unformalized-raw 2327 2339 2344 2366 32 2325 2352 2375 2306 # unresolved-surface
+  politeness: # concept politeness
+    defined-by property # definition-link
+    role politeness_cue # semantic-role
+    lexeme en # language
+      surface unformalized-raw 112 108 101 97 115 101 # unresolved-surface
+      surface unformalized-raw 102 111 114 32 109 101 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1087 1086 1078 1072 1083 1091 1081 1089 1090 1072 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2325 2371 2346 2351 2366 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 35831 # unresolved-surface
+  calculation_result_query: # concept calculation_result_query
+    defined-by action # definition-link
+    defined-by inquiry # definition-link
+    role calculation_result_query_cue # semantic-role
+    lexeme en # language
+      surface unformalized-raw 101 113 117 97 108 # unresolved-surface
+      surface unformalized-raw 101 113 117 97 108 115 # unresolved-surface
+      surface unformalized-raw 61 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1088 1072 1074 1085 1086 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 26159 22810 23569 # unresolved-surface
+      surface unformalized-raw 31561 20110 22810 23569 # unresolved-surface
+      surface unformalized-raw 31561 20110 20960 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2325 2367 2340 2344 2366 32 2361 2376 # unresolved-surface
+      surface unformalized-raw 2325 2381 2351 2366 32 2361 2376 # unresolved-surface
+      surface unformalized-raw 2325 2368 32 2327 2339 2344 2366 32 2325 2352 2375 2306 # unresolved-surface
+  quantity_conversion: # concept quantity_conversion
+    defined-by action # definition-link
+    defined-by relation # definition-link
+    role quantity_conversion_cue # semantic-role
+    lexeme en # language
+      surface unformalized-raw 116 111 # unresolved-surface
+      surface unformalized-raw 105 110 116 111 # unresolved-surface
+      surface unformalized-raw 99 111 110 118 101 114 116 # unresolved-surface
+      surface unformalized-raw 101 120 99 104 97 110 103 101 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1082 1086 1085 1074 1077 1088 1090 1080 1088 1086 1074 1072 1090 1100 # unresolved-surface
+      surface unformalized-raw 1086 1073 1084 1077 1085 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2348 2342 2354 2375 2306 # unresolved-surface
+      surface unformalized-raw 2346 2352 2367 2357 2352 2381 2340 2367 2340 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 36716 25442 # unresolved-surface
+      surface unformalized-raw 20817 25442 # unresolved-surface
+      surface unformalized-raw 25442 25104 # unresolved-surface
+  mathematical_function: # concept mathematical_function
+    defined-by function # definition-link
+    role numeric_concept # semantic-role
+    lexeme en # language
+      surface unformalized-raw 109 97 116 104 101 109 97 116 105 99 97 108 32 102 117 110 99 116 105 111 110 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1084 1072 1090 1077 1084 1072 1090 1080 1095 1077 1089 1082 1072 1103 32 1092 1091 1085 1082 1094 1080 1103 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2327 2339 2367 2340 2368 2351 32 2347 2354 2344 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 25968 23398 20989 25968 # unresolved-surface
+  square_root: # concept square_root
+    defined-by mathematical_function # definition-link
+    role math_function_name # semantic-role
+    lexeme en # language
+      surface unformalized-raw 115 113 114 116 # unresolved-surface
+      surface unformalized-raw 115 113 117 97 114 101 32 114 111 111 116 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1082 1074 1072 1076 1088 1072 1090 1085 1099 1081 32 1082 1086 1088 1077 1085 1100 # unresolved-surface
+      surface unformalized-raw 1082 1086 1088 1077 1085 1100 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2357 2352 2381 2327 2350 2370 2354 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 24179 26041 26681 # unresolved-surface
+  sine: # concept sine
+    defined-by mathematical_function # definition-link
+    role math_function_name # semantic-role
+    lexeme en # language
+      surface unformalized-raw 115 105 110 # unresolved-surface
+      surface unformalized-raw 115 105 110 101 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1089 1080 1085 1091 1089 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2332 2381 2351 2366 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 27491 24358 # unresolved-surface
+  cosine: # concept cosine
+    defined-by mathematical_function # definition-link
+    role math_function_name # semantic-role
+    lexeme en # language
+      surface unformalized-raw 99 111 115 # unresolved-surface
+      surface unformalized-raw 99 111 115 105 110 101 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1082 1086 1089 1080 1085 1091 1089 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2325 2379 2332 2381 2351 2366 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 20313 24358 # unresolved-surface
+  tangent: # concept tangent
+    defined-by mathematical_function # definition-link
+    role math_function_name # semantic-role
+    lexeme en # language
+      surface unformalized-raw 116 97 110 # unresolved-surface
+      surface unformalized-raw 116 97 110 103 101 110 116 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1090 1072 1085 1075 1077 1085 1089 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2360 2381 2346 2352 2381 2358 2332 2381 2351 2366 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 27491 20999 # unresolved-surface
+  logarithm: # concept logarithm
+    defined-by mathematical_function # definition-link
+    role math_function_name # semantic-role
+    lexeme en # language
+      surface unformalized-raw 108 111 103 # unresolved-surface
+      surface unformalized-raw 108 111 103 97 114 105 116 104 109 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1083 1086 1075 1072 1088 1080 1092 1084 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2354 2328 2369 2327 2339 2325 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 23545 25968 # unresolved-surface
+  natural_logarithm: # concept natural_logarithm
+    defined-by mathematical_function # definition-link
+    role math_function_name # semantic-role
+    lexeme en # language
+      surface unformalized-raw 108 110 # unresolved-surface
+      surface unformalized-raw 110 97 116 117 114 97 108 32 108 111 103 97 114 105 116 104 109 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1085 1072 1090 1091 1088 1072 1083 1100 1085 1099 1081 32 1083 1086 1075 1072 1088 1080 1092 1084 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2346 2381 2352 2366 2325 2371 2340 2367 2325 32 2354 2328 2369 2327 2339 2325 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 33258 28982 23545 25968 # unresolved-surface

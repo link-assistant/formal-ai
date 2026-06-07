@@ -1,739 +1,571 @@
 meanings
-  meaning "human_language"
-    gloss "a natural human language — the kind of system a translation request names as its source or its target. It is the genus the four supported languages specialise: each language meaning is defined_by it, so the recogniser reads a marker's language by walking the marker's defined_by edges down to one of these language meanings. The ISO 639-1 code itself (en, ru, hi, zh) is an identifier fixed in code, not a surface word; what lives here is how each language is named, in every supported language."
-    wiktionary "language"
-    defined_by "concept"
-    role "translation_language_genus"
-    lexeme "en"
-      word "language"
-        description "English noun (language) naming the genus of natural human languages a translation runs between."
-    lexeme "ru"
-      word "язык"
-        description "Russian noun (romanized yazyk, language) naming the genus of natural human languages."
-    lexeme "hi"
-      word "भाषा"
-        description "Hindi noun (romanized bhasha, language) naming the genus of natural human languages."
-    lexeme "zh"
-      word "语言"
-        description "Chinese noun (pinyin yuyan, language) naming the genus of natural human languages."
-  meaning "language_english"
-    gloss "the English language — one of the four supported translation languages, ISO 639-1 code en. The code is fixed in the handler; this meaning records how English is named across the supported languages and is the language building block the from-English and into-English markers are defined_by, so detection resolves their language by reaching this meaning's slug."
-    wiktionary "English"
-    defined_by "human_language"
-    role "translation_language"
-    lexeme "en"
-      word "english"
-        description "English name of the English language (lowercased), code en."
-    lexeme "ru"
-      word "английский"
-        description "Russian name of English (romanized angliyskiy), code en."
-    lexeme "hi"
-      word "अंग्रेज़ी"
-        description "Hindi name of English (romanized angrezi, with nuqta), code en."
-      word "अंग्रेजी"
-        description "Hindi name of English (romanized angrezi, without nuqta), code en."
-    lexeme "zh"
-      word "英语"
-        description "Chinese name of English (pinyin yingyu), code en."
-      word "英文"
-        description "Chinese name of English (pinyin yingwen, the written-language variant), code en."
-  meaning "language_russian"
-    gloss "the Russian language — one of the four supported translation languages, ISO 639-1 code ru. The code is fixed in the handler; this meaning records how Russian is named across the supported languages and is the language building block the from-Russian and into-Russian markers are defined_by."
-    wiktionary "Russian"
-    defined_by "human_language"
-    role "translation_language"
-    lexeme "en"
-      word "russian"
-        description "English name of the Russian language (lowercased), code ru."
-    lexeme "ru"
-      word "русский"
-        description "Russian name of Russian (romanized russkiy), code ru."
-    lexeme "hi"
-      word "रूसी"
-        description "Hindi name of Russian (romanized rusi), code ru."
-    lexeme "zh"
-      word "俄语"
-        description "Chinese name of Russian (pinyin eyu), code ru."
-  meaning "language_hindi"
-    gloss "the Hindi language — one of the four supported translation languages, ISO 639-1 code hi. The code is fixed in the handler; this meaning records how Hindi is named across the supported languages and is the language building block the from-Hindi and into-Hindi markers are defined_by."
-    wiktionary "Hindi"
-    defined_by "human_language"
-    role "translation_language"
-    lexeme "en"
-      word "hindi"
-        description "English name of the Hindi language (lowercased), code hi."
-    lexeme "ru"
-      word "хинди"
-        description "Russian name of Hindi (romanized khindi), code hi."
-    lexeme "hi"
-      word "हिंदी"
-        description "Hindi name of Hindi (romanized hindi, anusvara spelling), code hi."
-      word "हिन्दी"
-        description "Hindi name of Hindi (romanized hindi, conjunct spelling), code hi."
-    lexeme "zh"
-      word "印地语"
-        description "Chinese name of Hindi (pinyin yindiyu), code hi."
-  meaning "language_chinese"
-    gloss "the Chinese language — one of the four supported translation languages, ISO 639-1 code zh. The code is fixed in the handler; this meaning records how Chinese is named across the supported languages and is the language building block the from-Chinese and into-Chinese markers are defined_by."
-    wiktionary "Chinese"
-    defined_by "human_language"
-    role "translation_language"
-    lexeme "en"
-      word "chinese"
-        description "English name of the Chinese language (lowercased), code zh."
-    lexeme "ru"
-      word "китайский"
-        description "Russian name of Chinese (romanized kitayskiy), code zh."
-    lexeme "hi"
-      word "चीनी"
-        description "Hindi name of Chinese (romanized chini), code zh."
-    lexeme "zh"
-      word "中文"
-        description "Chinese name of Chinese (pinyin zhongwen), code zh."
-      word "汉语"
-        description "Chinese name of Chinese (pinyin hanyu, simplified), code zh."
-      word "漢語"
-        description "Chinese name of Chinese (pinyin hanyu, traditional), code zh."
-  meaning "translate"
-    gloss "the action of rendering a surface from one language into another — the verb every translation request realises. It is the genus the unquoted-frame and into-marker meanings specialise: its surfaces are the bare verb stems, used to detect a translation command in head-final Hindi (अनुवाद) and Chinese (翻译) where the verb is not bracketed by a circumfix. The English and Russian stems are clause-initial: the request-gate (try_translation) recognises a command by a head-initial stem, and the source-inferencer (infer_source_from_prompt) reads the stem's language as the language the user issued the command in. The Russian describe-imperative (опиши) is recorded under this genus too — this solver routes a description request through the same translation/description pipeline, so it counts as a clause-initial command stem."
-    wiktionary "translate"
-    defined_by "action"
-    role "translation_action"
-    lexeme "en"
-      word "translate"
-        description "English verb (translate) naming the translation action; clause-initial, so the request-gate matches it as a prefix."
-    lexeme "ru"
-      word "перевести"
-        description "Russian verb (romanized perevesti, to translate), the infinitive stem of the translation action; clause-initial."
-      word "переведи"
-        description "Russian verb (romanized perevedi, translate!), the imperative stem of the translation action; clause-initial."
-      word "опиши"
-        description "Russian verb (romanized opishi, describe!), the imperative the Russian reporter used to request a rendering/description; this solver routes it through the same translation/description pipeline, so it is recorded as a clause-initial command stem of this genus."
-    lexeme "hi"
-      word "अनुवाद"
-        description "Hindi noun (romanized anuvad, translation) used with करो/करें to form the translation command; scanned as the bare verb stem in Hindi prompts."
-    lexeme "zh"
-      word "翻译"
-        description "Chinese verb (pinyin fanyi, translate, simplified), scanned as the bare verb stem in Chinese prompts."
-      word "翻譯"
-        description "Chinese verb (pinyin fanyi, translate, traditional), scanned as the bare verb stem in Chinese prompts."
-  meaning "translation_direction_source"
-    gloss "the source-direction relation in a translation — the from side that names the language a surface is translated out of. Its surfaces are the bare directional prepositions; the from-language markers are constructed from this relation plus a language meaning, so the recogniser never stores a glued from-language phrase as an atom — it is built from its parts."
-    wiktionary "from"
-    defined_by "relation"
-    role "translation_source_direction"
-    lexeme "en"
-      word "from"
-        description "English preposition (from) naming the source direction of a translation."
-    lexeme "ru"
-      word "с"
-        description "Russian preposition (romanized s, from), naming the source direction (governs the genitive)."
-    lexeme "hi"
-      word "से"
-        description "Hindi postposition (romanized se, from), naming the source direction."
-    lexeme "zh"
-      word "从"
-        description "Chinese coverb (pinyin cong, from), naming the source direction."
-  meaning "translation_direction_target"
-    gloss "the target-direction relation in a translation — the into side that names the language a surface is translated toward. Its surfaces are the bare directional markers. In Chinese these bare markers (成, 为, 為, 到) are scanned directly: after a 翻译 verb the recogniser stops the surface at the first of them, so it reads the target boundary from this relation rather than from a hardcoded list. The into-language markers are constructed from this relation plus a language meaning."
-    wiktionary "to"
-    defined_by "relation"
-    role "translation_target_direction"
-    lexeme "en"
-      word "to"
-        description "English preposition (to) naming the target direction of a translation."
-    lexeme "ru"
-      word "на"
-        description "Russian preposition (romanized na, to/onto), naming the target direction (governs the accusative)."
-    lexeme "hi"
-      word "में"
-        description "Hindi postposition (romanized mein, in/into), naming the target direction."
-    lexeme "zh"
-      word "成"
-        description "Chinese resultative (pinyin cheng, into), a bare target-direction marker after the verb."
-      word "为"
-        description "Chinese coverb (pinyin wei, into/as, simplified), a bare target-direction marker after the verb."
-      word "為"
-        description "Chinese coverb (pinyin wei, into/as, traditional), a bare target-direction marker after the verb."
-      word "到"
-        description "Chinese resultative (pinyin dao, to/until), a bare target-direction marker after the verb."
-  meaning "translate_from_english"
-    gloss "the marker that names English as the translation source — translate … from english, с английского, अंग्रेज़ी से, 从英语. It is constructed from language_english and the source-direction relation; when any of its surfaces appears in a prompt the recogniser reports the source language as English (en, read by walking defined_by to language_english). Surfaces are matched as raw substrings, exactly as the previous hardcoded list did."
-    wiktionary "English"
-    defined_by "language_english"
-    defined_by "translation_direction_source"
-    role "translation_source_marker"
-    lexeme "en"
-      word "from english"
-        description "English source phrase (from + english); evidence the source language is English."
-    lexeme "ru"
-      word "с английского"
-        description "Russian source phrase (romanized s angliyskogo, from English, genitive); evidence the source is English."
-    lexeme "hi"
-      word "अंग्रेजी से"
-        description "Hindi source phrase (romanized angrezi se, from English, without nuqta); evidence the source is English."
-      word "अंग्रेज़ी से"
-        description "Hindi source phrase (romanized angrezi se, from English, with nuqta); evidence the source is English."
-    lexeme "zh"
-      word "从英语"
-        description "Chinese source phrase (pinyin cong yingyu, from English); evidence the source is English."
-      word "从英文"
-        description "Chinese source phrase (pinyin cong yingwen, from English, written-language variant); evidence the source is English."
-  meaning "translate_from_russian"
-    gloss "the marker that names Russian as the translation source — translate … from russian, с русского, रूसी से, 从俄语. Constructed from language_russian and the source-direction relation; any surface reports the source language as Russian (ru)."
-    wiktionary "Russian"
-    defined_by "language_russian"
-    defined_by "translation_direction_source"
-    role "translation_source_marker"
-    lexeme "en"
-      word "from russian"
-        description "English source phrase (from + russian); evidence the source language is Russian."
-    lexeme "ru"
-      word "с русского"
-        description "Russian source phrase (romanized s russkogo, from Russian, genitive); evidence the source is Russian."
-    lexeme "hi"
-      word "रूसी से"
-        description "Hindi source phrase (romanized rusi se, from Russian); evidence the source is Russian."
-    lexeme "zh"
-      word "从俄语"
-        description "Chinese source phrase (pinyin cong eyu, from Russian); evidence the source is Russian."
-  meaning "translate_from_hindi"
-    gloss "the marker that names Hindi as the translation source — translate … from hindi, с хинди, हिंदी से, 从印地语. Constructed from language_hindi and the source-direction relation; any surface reports the source language as Hindi (hi). The Russian с хинди surface completes the four-language coverage the relative-meta-logic invariants require."
-    wiktionary "Hindi"
-    defined_by "language_hindi"
-    defined_by "translation_direction_source"
-    role "translation_source_marker"
-    lexeme "en"
-      word "from hindi"
-        description "English source phrase (from + hindi); evidence the source language is Hindi."
-    lexeme "ru"
-      word "с хинди"
-        description "Russian source phrase (romanized s khindi, from Hindi, genitive); evidence the source is Hindi."
-    lexeme "hi"
-      word "हिंदी से"
-        description "Hindi source phrase (romanized hindi se, from Hindi, anusvara spelling); evidence the source is Hindi."
-      word "हिन्दी से"
-        description "Hindi source phrase (romanized hindi se, from Hindi, conjunct spelling); evidence the source is Hindi."
-    lexeme "zh"
-      word "从印地语"
-        description "Chinese source phrase (pinyin cong yindiyu, from Hindi); evidence the source is Hindi."
-      word "从印地文"
-        description "Chinese source phrase (pinyin cong yindiwen, from Hindi, written-language variant); evidence the source is Hindi."
-  meaning "translate_from_chinese"
-    gloss "the marker that names Chinese as the translation source — translate … from chinese, с китайского, चीनी से, 从中文. Constructed from language_chinese and the source-direction relation; any surface reports the source language as Chinese (zh). The Russian с китайского surface completes the four-language coverage the relative-meta-logic invariants require."
-    wiktionary "Chinese"
-    defined_by "language_chinese"
-    defined_by "translation_direction_source"
-    role "translation_source_marker"
-    lexeme "en"
-      word "from chinese"
-        description "English source phrase (from + chinese); evidence the source language is Chinese."
-    lexeme "ru"
-      word "с китайского"
-        description "Russian source phrase (romanized s kitayskogo, from Chinese, genitive); evidence the source is Chinese."
-    lexeme "hi"
-      word "चीनी से"
-        description "Hindi source phrase (romanized chini se, from Chinese); evidence the source is Chinese."
-    lexeme "zh"
-      word "从中文"
-        description "Chinese source phrase (pinyin cong zhongwen, from Chinese); evidence the source is Chinese."
-      word "从汉语"
-        description "Chinese source phrase (pinyin cong hanyu, from Chinese, simplified); evidence the source is Chinese."
-      word "从漢語"
-        description "Chinese source phrase (pinyin cong hanyu, from Chinese, traditional); evidence the source is Chinese."
-  meaning "translate_into_english"
-    gloss "the marker that names English as the translation target — translate … to english, на английский, अंग्रेज़ी में, 成英文. Constructed from language_english and the target-direction relation; any surface reports the target language as English (en). The Chinese forms enumerate every target-direction marker (成/为/為/到) glued to each name of English, matched as raw substrings exactly as the previous hardcoded list did."
-    wiktionary "English"
-    defined_by "language_english"
-    defined_by "translation_direction_target"
-    role "translation_target_marker"
-    lexeme "en"
-      word "to english"
-        description "English target phrase (to + english); evidence the target language is English."
-    lexeme "ru"
-      word "на английский"
-        description "Russian target phrase (romanized na angliyskiy, into English, accusative); evidence the target is English."
-      word "на английском"
-        description "Russian target phrase (romanized na angliyskom, in English, prepositional); evidence the target is English."
-    lexeme "hi"
-      word "अंग्रेजी में"
-        description "Hindi target phrase (romanized angrezi mein, into English, without nuqta); evidence the target is English."
-      word "अंग्रेज़ी में"
-        description "Hindi target phrase (romanized angrezi mein, into English, with nuqta); evidence the target is English."
-    lexeme "zh"
-      word "成英文"
-        description "Chinese target phrase (pinyin cheng yingwen, into English); 成 + 英文."
-      word "成英语"
-        description "Chinese target phrase (pinyin cheng yingyu, into English); 成 + 英语."
-      word "为英文"
-        description "Chinese target phrase (pinyin wei yingwen, into English, simplified); 为 + 英文."
-      word "为英语"
-        description "Chinese target phrase (pinyin wei yingyu, into English, simplified); 为 + 英语."
-      word "為英文"
-        description "Chinese target phrase (pinyin wei yingwen, into English, traditional); 為 + 英文."
-      word "為英语"
-        description "Chinese target phrase (pinyin wei yingyu, into English, traditional 為 + simplified 英语); evidence the target is English."
-      word "到英文"
-        description "Chinese target phrase (pinyin dao yingwen, to English); 到 + 英文."
-      word "到英语"
-        description "Chinese target phrase (pinyin dao yingyu, to English); 到 + 英语."
-  meaning "translate_into_russian"
-    gloss "the marker that names Russian as the translation target — translate … to russian, на русский, रूसी में, 成俄语. Constructed from language_russian and the target-direction relation; any surface reports the target language as Russian (ru). The Chinese forms enumerate every target-direction marker glued to each name of Russian."
-    wiktionary "Russian"
-    defined_by "language_russian"
-    defined_by "translation_direction_target"
-    role "translation_target_marker"
-    lexeme "en"
-      word "to russian"
-        description "English target phrase (to + russian); evidence the target language is Russian."
-    lexeme "ru"
-      word "на русский"
-        description "Russian target phrase (romanized na russkiy, into Russian, accusative); evidence the target is Russian."
-    lexeme "hi"
-      word "रूसी में"
-        description "Hindi target phrase (romanized rusi mein, into Russian); evidence the target is Russian."
-    lexeme "zh"
-      word "成俄语"
-        description "Chinese target phrase (pinyin cheng eyu, into Russian, simplified); 成 + 俄语."
-      word "成俄語"
-        description "Chinese target phrase (pinyin cheng eyu, into Russian, traditional); 成 + 俄語."
-      word "为俄语"
-        description "Chinese target phrase (pinyin wei eyu, into Russian, simplified); 为 + 俄语."
-      word "为俄語"
-        description "Chinese target phrase (pinyin wei eyu, into Russian, simplified 为 + traditional 俄語); evidence the target is Russian."
-      word "為俄语"
-        description "Chinese target phrase (pinyin wei eyu, into Russian, traditional 為 + simplified 俄语); evidence the target is Russian."
-      word "為俄語"
-        description "Chinese target phrase (pinyin wei eyu, into Russian, traditional); 為 + 俄語."
-      word "到俄语"
-        description "Chinese target phrase (pinyin dao eyu, to Russian, simplified); 到 + 俄语."
-      word "到俄語"
-        description "Chinese target phrase (pinyin dao eyu, to Russian, traditional); 到 + 俄語."
-  meaning "translate_into_hindi"
-    gloss "the marker that names Hindi as the translation target — translate … to hindi, на хинди, हिंदी में, 成印地语. Constructed from language_hindi and the target-direction relation; any surface reports the target language as Hindi (hi). The Chinese forms enumerate every target-direction marker glued to each name of Hindi."
-    wiktionary "Hindi"
-    defined_by "language_hindi"
-    defined_by "translation_direction_target"
-    role "translation_target_marker"
-    lexeme "en"
-      word "to hindi"
-        description "English target phrase (to + hindi); evidence the target language is Hindi."
-    lexeme "ru"
-      word "на хинди"
-        description "Russian target phrase (romanized na khindi, into Hindi); evidence the target is Hindi."
-    lexeme "hi"
-      word "हिंदी में"
-        description "Hindi target phrase (romanized hindi mein, into Hindi, anusvara spelling); evidence the target is Hindi."
-      word "हिन्दी में"
-        description "Hindi target phrase (romanized hindi mein, into Hindi, conjunct spelling); evidence the target is Hindi."
-    lexeme "zh"
-      word "成印地语"
-        description "Chinese target phrase (pinyin cheng yindiyu, into Hindi); 成 + 印地语."
-      word "成印地文"
-        description "Chinese target phrase (pinyin cheng yindiwen, into Hindi, written-language variant); 成 + 印地文."
-      word "为印地语"
-        description "Chinese target phrase (pinyin wei yindiyu, into Hindi, simplified); 为 + 印地语."
-      word "为印地文"
-        description "Chinese target phrase (pinyin wei yindiwen, into Hindi, simplified); 为 + 印地文."
-      word "為印地语"
-        description "Chinese target phrase (pinyin wei yindiyu, into Hindi, traditional 為 + simplified 印地语); evidence the target is Hindi."
-      word "為印地文"
-        description "Chinese target phrase (pinyin wei yindiwen, into Hindi, traditional 為 + 印地文); evidence the target is Hindi."
-      word "到印地语"
-        description "Chinese target phrase (pinyin dao yindiyu, to Hindi); 到 + 印地语."
-      word "到印地文"
-        description "Chinese target phrase (pinyin dao yindiwen, to Hindi); 到 + 印地文."
-  meaning "translate_into_chinese"
-    gloss "the marker that names Chinese as the translation target — translate … to chinese, на китайский, चीनी में, 成中文. Constructed from language_chinese and the target-direction relation; any surface reports the target language as Chinese (zh). The Chinese forms enumerate every target-direction marker glued to each name of Chinese."
-    wiktionary "Chinese"
-    defined_by "language_chinese"
-    defined_by "translation_direction_target"
-    role "translation_target_marker"
-    lexeme "en"
-      word "to chinese"
-        description "English target phrase (to + chinese); evidence the target language is Chinese."
-    lexeme "ru"
-      word "на китайский"
-        description "Russian target phrase (romanized na kitayskiy, into Chinese, accusative); evidence the target is Chinese."
-    lexeme "hi"
-      word "चीनी में"
-        description "Hindi target phrase (romanized chini mein, into Chinese); evidence the target is Chinese."
-    lexeme "zh"
-      word "成中文"
-        description "Chinese target phrase (pinyin cheng zhongwen, into Chinese); 成 + 中文."
-      word "成汉语"
-        description "Chinese target phrase (pinyin cheng hanyu, into Chinese, simplified); 成 + 汉语."
-      word "成漢語"
-        description "Chinese target phrase (pinyin cheng hanyu, into Chinese, traditional); 成 + 漢語."
-      word "为中文"
-        description "Chinese target phrase (pinyin wei zhongwen, into Chinese, simplified); 为 + 中文."
-      word "为汉语"
-        description "Chinese target phrase (pinyin wei hanyu, into Chinese, simplified); 为 + 汉语."
-      word "为漢語"
-        description "Chinese target phrase (pinyin wei hanyu, into Chinese, simplified 为 + traditional 漢語); evidence the target is Chinese."
-      word "為中文"
-        description "Chinese target phrase (pinyin wei zhongwen, into Chinese, traditional 為 + 中文); evidence the target is Chinese."
-      word "為汉语"
-        description "Chinese target phrase (pinyin wei hanyu, into Chinese, traditional 為 + simplified 汉语); evidence the target is Chinese."
-      word "為漢語"
-        description "Chinese target phrase (pinyin wei hanyu, into Chinese, traditional); 為 + 漢語."
-      word "到中文"
-        description "Chinese target phrase (pinyin dao zhongwen, to Chinese); 到 + 中文."
-      word "到汉语"
-        description "Chinese target phrase (pinyin dao hanyu, to Chinese, simplified); 到 + 汉语."
-      word "到漢語"
-        description "Chinese target phrase (pinyin dao hanyu, to Chinese, traditional); 到 + 漢語."
-  meaning "translation_unquoted_frame"
-    gloss "the verb frame that brackets the surface to translate in an unquoted command, so an extractor can lift the surface out without quotes. Its forms split by word order, and the slot shape records the shape. In head-initial English and Russian the verb precedes the surface and the target preposition follows it, so the form is a circumfix surface (translate … to , переведи … на ) whose literal before the slot is stripped from the front and whose literal after the slot bounds the surface on the right. In head-final Hindi and Chinese the verb is not a bracket, so the form is a bare verb stem (अनुवाद, 翻译/翻譯) that gates the language-specific extractor. Constructed from the translate action and the target-direction relation."
-    wiktionary "translate"
-    defined_by "translate"
-    defined_by "translation_direction_target"
-    role "translation_unquoted_frame"
-    lexeme "en"
-      word "translate … to "
-        description "English circumfix frame; before the slot the verb prefix translate (trailing space) is stripped, after the slot the target preposition  to  (space-wrapped) bounds the surface on the right."
-    lexeme "ru"
-      word "переведи … на "
-        description "Russian circumfix frame (romanized perevedi … na, translate … to); before the slot the imperative verb is stripped, after the slot the target preposition  на  bounds the surface on the right."
-    lexeme "hi"
-      word "अनुवाद"
-        description "Hindi bare verb stem (romanized anuvad, translation); its presence gates the Hindi unquoted extractor, which reads the surface from the object and into postpositions."
-    lexeme "zh"
-      word "翻译"
-        description "Chinese bare verb stem (pinyin fanyi, translate, simplified); stripped from the front as a translate prefix when no disposal 把/将 opens the command."
-      word "翻譯"
-        description "Chinese bare verb stem (pinyin fanyi, translate, traditional); stripped from the front as a translate prefix when no disposal 把/将 opens the command."
-  meaning "translation_into_marker"
-    gloss "the verb-and-target compound that introduces the target language right after the surface — translate-into. Languages glue the verb and the into-direction in opposite orders: head-final Hindi postposes the target marker onto the verb noun ( में अनुवाद,  मे अनुवाद), so the extractor finds it and takes the text before it; Chinese prefixes the into-direction onto the verb (翻译成, 翻译为, 翻译到 and traditional 翻譯…), so the extractor stops the surface at the first such compound. The English and Russian compounds (translate into, перевести на) are recorded for completeness; those languages are extracted through the unquoted frame's circumfix instead, so these full compounds are not separately scanned. Constructed from the translate action and the target-direction relation."
-    wiktionary "into"
-    defined_by "translate"
-    defined_by "translation_direction_target"
-    role "translation_into_marker"
-    lexeme "en"
-      word "translate into"
-        description "English verb-and-target compound (translate + into); recorded for completeness — English is extracted through the unquoted frame, so this compound is not separately scanned."
-    lexeme "ru"
-      word "перевести на"
-        description "Russian verb-and-target compound (romanized perevesti na, translate into); recorded for completeness — Russian is extracted through the unquoted frame, so this compound is not separately scanned."
-    lexeme "hi"
-      word " में अनुवाद"
-        description "Hindi target-and-verb compound (romanized mein anuvad, into translation), space-led; the extractor finds it and keeps the text before it as the surface."
-      word " मे अनुवाद"
-        description "Hindi target-and-verb compound (romanized me anuvad, into translation, anusvara-dropped variant), space-led; the extractor finds it and keeps the text before it as the surface."
-    lexeme "zh"
-      word "翻译成"
-        description "Chinese verb-and-target compound (pinyin fanyi cheng, translate into, simplified); the extractor stops the surface at it."
-      word "翻译为"
-        description "Chinese verb-and-target compound (pinyin fanyi wei, translate into, simplified); the extractor stops the surface at it."
-      word "翻译到"
-        description "Chinese verb-and-target compound (pinyin fanyi dao, translate to, simplified); the extractor stops the surface at it."
-      word "翻譯成"
-        description "Chinese verb-and-target compound (pinyin fanyi cheng, translate into, traditional); the extractor stops the surface at it."
-      word "翻譯為"
-        description "Chinese verb-and-target compound (pinyin fanyi wei, translate into, traditional); the extractor stops the surface at it."
-      word "翻譯到"
-        description "Chinese verb-and-target compound (pinyin fanyi dao, translate to, traditional); the extractor stops the surface at it."
-  meaning "translation_object_marker"
-    gloss "the particle that flags the noun phrase to be translated as the object, so an extractor can bound it. Word order decides the shape: head-final Hindi postposes the marker after the object (का genitive, को accusative), so the extractor uses it as a right boundary and keeps the text before it; Chinese prefixes a disposal particle before the object (把, 将), so the extractor strips it from the front and keeps the text after it. English and Russian mark the object by position and case rather than a dedicated particle, so their nearest realisations are recorded for completeness and are not scanned — only the Devanagari and Han forms are. Defined as a grammatical relation."
-    wiktionary "of"
-    defined_by "relation"
-    role "translation_object_marker"
-    lexeme "en"
-      word "of"
-        description "English genitive linker (of), as in the translation of X — the nearest realisation of Hindi का; recorded for completeness, not scanned (English marks the object positionally)."
-    lexeme "ru"
-      word "слова"
-        description "Russian genitive noun (romanized slova, of the word), as in перевод слова X — the nearest realisation marking X as the object; recorded for completeness, not scanned (Russian marks the object by case)."
-    lexeme "hi"
-      word " का "
-        description "Hindi genitive postposition (romanized ka, of), space-wrapped; used as a right boundary — the surface is the text before it."
-      word " को "
-        description "Hindi accusative postposition (romanized ko, the object marker), space-wrapped; used as a right boundary after का — the surface is the text before it."
-    lexeme "zh"
-      word "把"
-        description "Chinese disposal particle (pinyin ba) fronting the object; stripped from the front so the surface is the text after it."
-      word "将"
-        description "Chinese disposal particle (pinyin jiang, formal variant of 把) fronting the object; stripped from the front so the surface is the text after it."
-  meaning "definition_command"
-    gloss "an imperative verb asking the assistant to define a phrase — to render its meaning, here as a Links Notation definition. The definition_command role marks the clause-initial command; the translation handler recognises a define request by composing this verb with a quoted or backticked phrase and a links_notation_format marker, then renders the phrase as its formal definition. Only the English surface is scanned, matched as a clause-initial prefix with a trailing space exactly as the original recogniser required; the Russian, Hindi and Chinese imperatives are recorded for completeness so the concept is lexicalised in every supported language, mirroring the original handler which gated on the English verb alone. Defined as an action."
-    wiktionary "define"
-    defined_by "action"
-    role "definition_command"
-    lexeme "en"
-      word "define"
-        description "English imperative verb to define; the only scanned definition_command surface, matched as a clause-initial prefix with a trailing space so that defined and definition do not trigger it."
-    lexeme "ru"
-      word "определи"
-        description "Russian imperative verb (romanized opredeli, of определить, to define); a completeness form for the definition_command concept, recorded but not scanned because the original recogniser gated on the English verb alone."
-    lexeme "hi"
-      word "परिभाषित करें"
-        description "Hindi imperative phrase (romanized paribhashit karen, define); a completeness form for the definition_command concept, recorded but not scanned."
-    lexeme "zh"
-      word "定义"
-        description "Chinese verb (pinyin dingyi, to define); a completeness form for the definition_command concept, recorded but not scanned."
-  meaning "links_notation_format"
-    gloss "a phrase naming Links Notation — the indentation-based serialization format of the Deep Theory project — as the target a define request renders into. The links_notation_format role carries these surfaces; the translation handler reconstructs each as a space-prefixed token and treats a prompt as a define-in-Links request when one appears alongside a definition_command verb and a quoted or backticked phrase. The English phrase links notation and the Russian code-switched form are scanned, exactly the original recogniser's two substrings; the Hindi and Chinese renderings are recorded for completeness so the concept is lexicalised in every supported language. Defined as a concept."
-    wiktionary "notation"
-    defined_by "concept"
-    role "links_notation_format"
-    lexeme "en"
-      word "links notation"
-        description "English name of the Links Notation format; a links_notation_format surface scanned as a space-prefixed substring so it matches in links notation and to links notation without firing mid-word."
-    lexeme "ru"
-      word "в links"
-        description "Russian code-switched phrase (romanized v links, in links) naming Links Notation as the target; a links_notation_format surface scanned as a space-prefixed substring that pairs the Russian preposition v with the format proper noun, exactly as the original recogniser did."
-    lexeme "hi"
-      word "लिंक्स नोटेशन"
-        description "Hindi transliteration (romanized links noteshan) of Links Notation; a completeness form for the links_notation_format concept, recorded but not scanned."
-    lexeme "zh"
-      word "链接表示法"
-        description "Chinese rendering (pinyin lianjie biaoshifa) of Links Notation; a completeness form for the links_notation_format concept, recorded but not scanned."
-  meaning "apple"
-    gloss "the fruit apple, a concrete entity the compositional ru-to-en translator renders when a multi-word title carries the Russian apple lemma in any case. It holds the compositional_lemma role; the per-word fallback resolves any listed Russian inflection to the English surface apple. Head-initial English and Russian are the consulted pair; Hindi and Chinese are carried so the concept is lexicalised in every supported language. Defined as an entity."
-    wiktionary "apple"
-    defined_by "entity"
-    role "compositional_lemma"
-    lexeme "en"
-      word "apple"
-        description "English noun (apple); the surface the compositional translator emits for the Russian apple lemma."
-    lexeme "ru"
-      word "яблоко"
-        description "Russian noun (romanized yabloko, apple), nominative singular; a compositional_lemma form resolving to apple."
-      word "яблока"
-        description "Russian noun (romanized yabloka, apple), genitive singular; a compositional_lemma form resolving to apple."
-      word "яблоку"
-        description "Russian noun (romanized yabloku, apple), dative singular; a compositional_lemma form resolving to apple."
-      word "яблоком"
-        description "Russian noun (romanized yablokom, apple), instrumental singular; a compositional_lemma form resolving to apple."
-      word "яблоке"
-        description "Russian noun (romanized yabloke, apple), prepositional singular; a compositional_lemma form resolving to apple."
-      word "яблоки"
-        description "Russian noun (romanized yabloki, apple), nominative plural; a compositional_lemma form resolving to apple."
-      word "яблок"
-        description "Russian noun (romanized yablok, apple), genitive plural; a compositional_lemma form resolving to apple."
-      word "яблокам"
-        description "Russian noun (romanized yablokam, apple), dative plural; a compositional_lemma form resolving to apple."
-      word "яблоками"
-        description "Russian noun (romanized yablokami, apple), instrumental plural; a compositional_lemma form resolving to apple."
-      word "яблоках"
-        description "Russian noun (romanized yablokakh, apple), prepositional plural; a compositional_lemma form resolving to apple."
-    lexeme "hi"
-      word "सेब"
-        description "Hindi noun (romanized seb, apple); a coverage form, not consulted by the head-initial ru-to-en scan."
-    lexeme "zh"
-      word "苹果"
-        description "Chinese noun (pinyin pingguo, apple); a coverage form, not consulted by the head-initial ru-to-en scan."
-  meaning "good"
-    gloss "the quality good, a property the compositional ru-to-en translator renders when a multi-word title carries a Russian good or kind adjective in any gender, number or case. It holds the compositional_lemma role; the per-word fallback resolves any listed inflection of dobryy or khoroshiy to the English surface good. Head-initial English and Russian are the consulted pair; Hindi and Chinese are carried for coverage. Defined as a property."
-    wiktionary "good"
-    defined_by "property"
-    role "compositional_lemma"
-    lexeme "en"
-      word "good"
-        description "English adjective (good); the surface the compositional translator emits for a Russian good or kind adjective."
-    lexeme "ru"
-      word "доброе"
-        description "Russian adjective (romanized dobroye, good or kind), neuter nominative singular; a compositional_lemma form resolving to good."
-      word "добрый"
-        description "Russian adjective (romanized dobryy, good or kind), masculine nominative singular; a compositional_lemma form resolving to good."
-      word "добрая"
-        description "Russian adjective (romanized dobraya, good or kind), feminine nominative singular; a compositional_lemma form resolving to good."
-      word "добрые"
-        description "Russian adjective (romanized dobryye, good or kind), nominative plural; a compositional_lemma form resolving to good."
-      word "доброго"
-        description "Russian adjective (romanized dobrogo, good or kind), masculine or neuter genitive singular; a compositional_lemma form resolving to good."
-      word "добрую"
-        description "Russian adjective (romanized dobruyu, good or kind), feminine accusative singular; a compositional_lemma form resolving to good."
-      word "добрым"
-        description "Russian adjective (romanized dobrym, good or kind), masculine or neuter instrumental singular; a compositional_lemma form resolving to good."
-      word "хорошее"
-        description "Russian adjective (romanized khorosheye, good), neuter nominative singular; a compositional_lemma form resolving to good."
-      word "хороший"
-        description "Russian adjective (romanized khoroshiy, good), masculine nominative singular; a compositional_lemma form resolving to good."
-      word "хорошая"
-        description "Russian adjective (romanized khoroshaya, good), feminine nominative singular; a compositional_lemma form resolving to good."
-      word "хорошие"
-        description "Russian adjective (romanized khoroshiye, good), nominative plural; a compositional_lemma form resolving to good."
-      word "хорошего"
-        description "Russian adjective (romanized khoroshego, good), masculine or neuter genitive singular; a compositional_lemma form resolving to good."
-      word "хорошую"
-        description "Russian adjective (romanized khoroshuyu, good), feminine accusative singular; a compositional_lemma form resolving to good."
-      word "хорошим"
-        description "Russian adjective (romanized khoroshim, good), masculine or neuter instrumental singular; a compositional_lemma form resolving to good."
-    lexeme "hi"
-      word "अच्छा"
-        description "Hindi adjective (romanized achchha, good); a coverage form, not consulted by the head-initial ru-to-en scan."
-    lexeme "zh"
-      word "好"
-        description "Chinese adjective (pinyin hao, good); a coverage form, not consulted by the head-initial ru-to-en scan."
-  meaning "find"
-    gloss "the action find, locating something; the verb the compositional ru-to-en translator renders when a Russian find imperative or infinitive opens a search request. It holds the compositional_lemma role; the per-word fallback resolves any listed Russian form to the English surface find. Head-initial English and Russian are the consulted pair; Hindi and Chinese are carried for coverage. Defined as an action."
-    wiktionary "find"
-    defined_by "action"
-    role "compositional_lemma"
-    lexeme "en"
-      word "find"
-        description "English verb (find); the surface the compositional translator emits for a Russian find imperative or infinitive."
-    lexeme "ru"
-      word "найди"
-        description "Russian verb (romanized naydi, find), singular imperative; a compositional_lemma form resolving to find."
-      word "найдите"
-        description "Russian verb (romanized naydite, find), plural or polite imperative; a compositional_lemma form resolving to find."
-      word "найти"
-        description "Russian verb (romanized nayti, to find), infinitive; a compositional_lemma form resolving to find."
-    lexeme "hi"
-      word "खोजें"
-        description "Hindi verb (romanized khojen, find or search); a coverage form, not consulted by the head-initial ru-to-en scan."
-    lexeme "zh"
-      word "查找"
-        description "Chinese verb (pinyin chazhao, find or look up); a coverage form, not consulted by the head-initial ru-to-en scan."
-  meaning "synonym"
-    gloss "the concept synonym, a word sharing another word's meaning; rendered by the compositional ru-to-en translator and, as a relation noun, able to govern a genitive complement, as in sinonimy soglasovaniya, synonyms of agreement. It holds compositional_lemma and compositional_genitive_head; the per-word fallback resolves any listed Russian form to the English plural surface synonyms, the form the original search-phrase mapping emits. Head-initial English and Russian are the consulted pair; Hindi and Chinese are carried for coverage. Defined as a concept."
-    wiktionary "synonym"
-    defined_by "concept"
-    role "compositional_lemma"
-    role "compositional_genitive_head"
-    lexeme "en"
-      word "synonyms"
-        description "English noun (synonyms), plural; the surface the compositional translator emits for a Russian synonym form, matching the original search-phrase mapping."
-    lexeme "ru"
-      word "синоним"
-        description "Russian noun (romanized sinonim, synonym), nominative singular; a compositional_lemma and genitive-head form resolving to synonyms."
-      word "синонимы"
-        description "Russian noun (romanized sinonimy, synonyms), nominative plural; a compositional_lemma and genitive-head form resolving to synonyms."
-      word "синонимов"
-        description "Russian noun (romanized sinonimov, synonyms), genitive plural; a compositional_lemma and genitive-head form resolving to synonyms."
-    lexeme "hi"
-      word "पर्यायवाची"
-        description "Hindi noun (romanized paryayvachi, synonym); a coverage form, not consulted by the head-initial ru-to-en scan."
-    lexeme "zh"
-      word "同义词"
-        description "Chinese noun (pinyin tongyici, synonym); a coverage form, not consulted by the head-initial ru-to-en scan."
-  meaning "example"
-    gloss "the concept example, an instance illustrating something; rendered by the compositional ru-to-en translator and, as a relation noun, able to govern a genitive complement, as in primery soglasovaniya, examples of agreement. It holds compositional_lemma and compositional_genitive_head; the per-word fallback resolves any listed Russian form to the English plural surface examples. Head-initial English and Russian are the consulted pair; Hindi and Chinese are carried for coverage. Defined as a concept."
-    wiktionary "example"
-    defined_by "concept"
-    role "compositional_lemma"
-    role "compositional_genitive_head"
-    lexeme "en"
-      word "examples"
-        description "English noun (examples), plural; the surface the compositional translator emits for a Russian example form, matching the original search-phrase mapping."
-    lexeme "ru"
-      word "пример"
-        description "Russian noun (romanized primer, example), nominative singular; a compositional_lemma and genitive-head form resolving to examples."
-      word "примеры"
-        description "Russian noun (romanized primery, examples), nominative plural; a compositional_lemma and genitive-head form resolving to examples."
-      word "примеров"
-        description "Russian noun (romanized primerov, examples), genitive plural; a compositional_lemma and genitive-head form resolving to examples."
-    lexeme "hi"
-      word "उदाहरण"
-        description "Hindi noun (romanized udaharan, example); a coverage form, not consulted by the head-initial ru-to-en scan."
-    lexeme "zh"
-      word "例子"
-        description "Chinese noun (pinyin lizi, example); a coverage form, not consulted by the head-initial ru-to-en scan."
-  meaning "agreement"
-    gloss "the concept agreement, grammatical concord; the genitive complement in the search phrase examples of agreement, rendered by the compositional ru-to-en translator. It holds the compositional_lemma role; the per-word fallback resolves any listed Russian form to the English surface agreement. The genitive-singular form soglasovaniya additionally carries action genitive so the genitive-of construction picks it as the complement of a relation head. Head-initial English and Russian are the consulted pair; Hindi and Chinese are carried for coverage. Defined as a concept."
-    wiktionary "agreement"
-    defined_by "concept"
-    role "compositional_lemma"
-    lexeme "en"
-      word "agreement"
-        description "English noun (agreement); the surface the compositional translator emits for a Russian agreement form, including the genitive complement of a relation head."
-    lexeme "ru"
-      word "согласование"
-        description "Russian noun (romanized soglasovaniye, agreement), nominative singular; a compositional_lemma form resolving to agreement."
-      word "согласования"
-        action "genitive"
-        description "Russian noun (romanized soglasovaniya, agreement), genitive singular; tagged genitive so the genitive-of construction reads it as the complement of a relation head, resolving to agreement."
-      word "согласованию"
-        description "Russian noun (romanized soglasovaniyu, agreement), dative singular; a compositional_lemma form resolving to agreement."
-      word "согласованием"
-        description "Russian noun (romanized soglasovaniyem, agreement), instrumental singular; a compositional_lemma form resolving to agreement."
-      word "согласовании"
-        description "Russian noun (romanized soglasovanii, agreement), prepositional singular; a compositional_lemma form resolving to agreement."
-    lexeme "hi"
-      word "सहमति"
-        description "Hindi noun (romanized sahmati, agreement); a coverage form, not consulted by the head-initial ru-to-en scan."
-    lexeme "zh"
-      word "一致"
-        description "Chinese noun (pinyin yizhi, agreement or concord); a coverage form, not consulted by the head-initial ru-to-en scan."
-  meaning "conjunction_or"
-    gloss "the relation or, the logical connective joining alternatives; rendered by the compositional ru-to-en translator when the Russian connective ili appears between search terms. It holds the compositional_lemma role; the per-word fallback resolves ili to the English surface or. Head-initial English and Russian are the consulted pair; Hindi and Chinese are carried for coverage. Defined as a relation."
-    wiktionary "or"
-    defined_by "relation"
-    role "compositional_lemma"
-    lexeme "en"
-      word "or"
-        description "English conjunction (or); the surface the compositional translator emits for the Russian connective ili."
-    lexeme "ru"
-      word "или"
-        description "Russian conjunction (romanized ili, or); a compositional_lemma form resolving to or."
-    lexeme "hi"
-      word "या"
-        description "Hindi conjunction (romanized ya, or); a coverage form, not consulted by the head-initial ru-to-en scan."
-    lexeme "zh"
-      word "或"
-        description "Chinese conjunction (pinyin huo, or); a coverage form, not consulted by the head-initial ru-to-en scan."
-  meaning "who_are_you"
-    gloss "the fixed question who are you, a short Russian identity question that translates as a whole rather than word by word. It holds the compositional_phrase role; the compositional fallback looks the normalized title up among the phrase meanings before attempting composition and returns the English form verbatim, capitalization and terminal question mark included. Head-initial English and Russian are the consulted pair; Hindi and Chinese are carried for coverage. Defined as a concept."
-    wiktionary "who"
-    defined_by "concept"
-    role "compositional_phrase"
-    lexeme "en"
-      word "Who are you?"
-        description "English question (Who are you?); the verbatim rendering the compositional translator returns for the Russian identity question, capitalization and question mark included."
-    lexeme "ru"
-      word "кто ты"
-        description "Russian question (romanized kto ty, who are you), informal; a compositional_phrase form resolving to Who are you."
-      word "кто ты такой"
-        description "Russian question (romanized kto ty takoy, who are you), informal masculine; a compositional_phrase form resolving to Who are you."
-      word "кто ты такая"
-        description "Russian question (romanized kto ty takaya, who are you), informal feminine; a compositional_phrase form resolving to Who are you."
-      word "кто вы"
-        description "Russian question (romanized kto vy, who are you), polite or plural; a compositional_phrase form resolving to Who are you."
-      word "кто вы такой"
-        description "Russian question (romanized kto vy takoy, who are you), polite masculine; a compositional_phrase form resolving to Who are you."
-      word "кто вы такая"
-        description "Russian question (romanized kto vy takaya, who are you), polite feminine; a compositional_phrase form resolving to Who are you."
-    lexeme "hi"
-      word "आप कौन हैं"
-        description "Hindi question (romanized aap kaun hain, who are you); a coverage form, not consulted by the head-initial ru-to-en scan."
-    lexeme "zh"
-      word "你是谁"
-        description "Chinese question (pinyin ni shi shei, who are you); a coverage form, not consulted by the head-initial ru-to-en scan."
-  meaning "what_is_this"
-    gloss "the fixed question what is this, a short Russian question that translates as a whole rather than word by word. It holds the compositional_phrase role; the compositional fallback looks the normalized title up among the phrase meanings before attempting composition and returns the English form verbatim, capitalization and terminal question mark included. Head-initial English and Russian are the consulted pair; Hindi and Chinese are carried for coverage. Defined as a concept."
-    wiktionary "what"
-    defined_by "concept"
-    role "compositional_phrase"
-    lexeme "en"
-      word "What is this?"
-        description "English question (What is this?); the verbatim rendering the compositional translator returns for the Russian what-is-this question, capitalization and question mark included."
-    lexeme "ru"
-      word "что это"
-        description "Russian question (romanized chto eto, what is this); a compositional_phrase form resolving to What is this."
-      word "что это такое"
-        description "Russian question (romanized chto eto takoye, what is this), emphatic; a compositional_phrase form resolving to What is this."
-    lexeme "hi"
-      word "यह क्या है"
-        description "Hindi question (romanized yah kya hai, what is this); a coverage form, not consulted by the head-initial ru-to-en scan."
-    lexeme "zh"
-      word "这是什么"
-        description "Chinese question (pinyin zhe shi shenme, what is this); a coverage form, not consulted by the head-initial ru-to-en scan."
-  meaning "how_are_you"
-    gloss "the fixed greeting question how are you, a short Russian phrase that translates as a whole rather than word by word. It holds the compositional_phrase role; the compositional fallback returns the English form verbatim, lowercase and without terminal punctuation so a source that carries none keeps none. Head-initial English and Russian are the consulted pair; Hindi and Chinese are carried for coverage. Defined as a concept."
-    wiktionary "how"
-    defined_by "concept"
-    role "compositional_phrase"
-    lexeme "en"
-      word "how are you"
-        description "English greeting question (how are you), lowercase and unpunctuated; the verbatim rendering the compositional translator returns for the Russian greeting."
-    lexeme "ru"
-      word "как дела"
-        description "Russian greeting question (romanized kak dela, how are you); a compositional_phrase form resolving to how are you."
-    lexeme "hi"
-      word "आप कैसे हैं"
-        description "Hindi greeting question (romanized aap kaise hain, how are you); a coverage form, not consulted by the head-initial ru-to-en scan."
-    lexeme "zh"
-      word "你好吗"
-        description "Chinese greeting question (pinyin ni hao ma, how are you); a coverage form, not consulted by the head-initial ru-to-en scan."
+  human_language: # concept human_language
+    defined-by concept # definition-link
+    role translation_language_genus # semantic-role
+    lexeme en # language
+      surface unformalized-raw 108 97 110 103 117 97 103 101 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1103 1079 1099 1082 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2349 2366 2359 2366 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 35821 35328 # unresolved-surface
+  language_english: # concept language_english
+    defined-by human_language # definition-link
+    role translation_language # semantic-role
+    lexeme en # language
+      surface unformalized-raw 101 110 103 108 105 115 104 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1072 1085 1075 1083 1080 1081 1089 1082 1080 1081 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2309 2306 2327 2381 2352 2375 2332 2364 2368 # unresolved-surface
+      surface unformalized-raw 2309 2306 2327 2381 2352 2375 2332 2368 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 33521 35821 # unresolved-surface
+      surface unformalized-raw 33521 25991 # unresolved-surface
+  language_russian: # concept language_russian
+    defined-by human_language # definition-link
+    role translation_language # semantic-role
+    lexeme en # language
+      surface unformalized-raw 114 117 115 115 105 97 110 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1088 1091 1089 1089 1082 1080 1081 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2352 2370 2360 2368 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 20420 35821 # unresolved-surface
+  language_hindi: # concept language_hindi
+    defined-by human_language # definition-link
+    role translation_language # semantic-role
+    lexeme en # language
+      surface unformalized-raw 104 105 110 100 105 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1093 1080 1085 1076 1080 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2361 2367 2306 2342 2368 # unresolved-surface
+      surface unformalized-raw 2361 2367 2344 2381 2342 2368 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 21360 22320 35821 # unresolved-surface
+  language_chinese: # concept language_chinese
+    defined-by human_language # definition-link
+    role translation_language # semantic-role
+    lexeme en # language
+      surface unformalized-raw 99 104 105 110 101 115 101 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1082 1080 1090 1072 1081 1089 1082 1080 1081 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2330 2368 2344 2368 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 20013 25991 # unresolved-surface
+      surface unformalized-raw 27721 35821 # unresolved-surface
+      surface unformalized-raw 28450 35486 # unresolved-surface
+  translate: # concept translate
+    defined-by action # definition-link
+    role translation_action # semantic-role
+    lexeme en # language
+      surface unformalized-raw 116 114 97 110 115 108 97 116 101 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1087 1077 1088 1077 1074 1077 1089 1090 1080 # unresolved-surface
+      surface unformalized-raw 1087 1077 1088 1077 1074 1077 1076 1080 # unresolved-surface
+      surface unformalized-raw 1086 1087 1080 1096 1080 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2309 2344 2369 2357 2366 2342 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 32763 35793 # unresolved-surface
+      surface unformalized-raw 32763 35695 # unresolved-surface
+  translation_direction_source: # concept translation_direction_source
+    defined-by relation # definition-link
+    role translation_source_direction # semantic-role
+    lexeme en # language
+      surface unformalized-raw 102 114 111 109 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1089 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2360 2375 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 20174 # unresolved-surface
+  translation_direction_target: # concept translation_direction_target
+    defined-by relation # definition-link
+    role translation_target_direction # semantic-role
+    lexeme en # language
+      surface unformalized-raw 116 111 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1085 1072 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2350 2375 2306 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 25104 # unresolved-surface
+      surface unformalized-raw 20026 # unresolved-surface
+      surface unformalized-raw 28858 # unresolved-surface
+      surface unformalized-raw 21040 # unresolved-surface
+  translate_from_english: # concept translate_from_english
+    defined-by language_english # definition-link
+    defined-by translation_direction_source # definition-link
+    role translation_source_marker # semantic-role
+    lexeme en # language
+      surface unformalized-raw 102 114 111 109 32 101 110 103 108 105 115 104 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1089 32 1072 1085 1075 1083 1080 1081 1089 1082 1086 1075 1086 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2309 2306 2327 2381 2352 2375 2332 2368 32 2360 2375 # unresolved-surface
+      surface unformalized-raw 2309 2306 2327 2381 2352 2375 2332 2364 2368 32 2360 2375 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 20174 33521 35821 # unresolved-surface
+      surface unformalized-raw 20174 33521 25991 # unresolved-surface
+  translate_from_russian: # concept translate_from_russian
+    defined-by language_russian # definition-link
+    defined-by translation_direction_source # definition-link
+    role translation_source_marker # semantic-role
+    lexeme en # language
+      surface unformalized-raw 102 114 111 109 32 114 117 115 115 105 97 110 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1089 32 1088 1091 1089 1089 1082 1086 1075 1086 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2352 2370 2360 2368 32 2360 2375 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 20174 20420 35821 # unresolved-surface
+  translate_from_hindi: # concept translate_from_hindi
+    defined-by language_hindi # definition-link
+    defined-by translation_direction_source # definition-link
+    role translation_source_marker # semantic-role
+    lexeme en # language
+      surface unformalized-raw 102 114 111 109 32 104 105 110 100 105 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1089 32 1093 1080 1085 1076 1080 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2361 2367 2306 2342 2368 32 2360 2375 # unresolved-surface
+      surface unformalized-raw 2361 2367 2344 2381 2342 2368 32 2360 2375 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 20174 21360 22320 35821 # unresolved-surface
+      surface unformalized-raw 20174 21360 22320 25991 # unresolved-surface
+  translate_from_chinese: # concept translate_from_chinese
+    defined-by language_chinese # definition-link
+    defined-by translation_direction_source # definition-link
+    role translation_source_marker # semantic-role
+    lexeme en # language
+      surface unformalized-raw 102 114 111 109 32 99 104 105 110 101 115 101 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1089 32 1082 1080 1090 1072 1081 1089 1082 1086 1075 1086 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2330 2368 2344 2368 32 2360 2375 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 20174 20013 25991 # unresolved-surface
+      surface unformalized-raw 20174 27721 35821 # unresolved-surface
+      surface unformalized-raw 20174 28450 35486 # unresolved-surface
+  translate_into_english: # concept translate_into_english
+    defined-by language_english # definition-link
+    defined-by translation_direction_target # definition-link
+    role translation_target_marker # semantic-role
+    lexeme en # language
+      surface unformalized-raw 116 111 32 101 110 103 108 105 115 104 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1085 1072 32 1072 1085 1075 1083 1080 1081 1089 1082 1080 1081 # unresolved-surface
+      surface unformalized-raw 1085 1072 32 1072 1085 1075 1083 1080 1081 1089 1082 1086 1084 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2309 2306 2327 2381 2352 2375 2332 2368 32 2350 2375 2306 # unresolved-surface
+      surface unformalized-raw 2309 2306 2327 2381 2352 2375 2332 2364 2368 32 2350 2375 2306 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 25104 33521 25991 # unresolved-surface
+      surface unformalized-raw 25104 33521 35821 # unresolved-surface
+      surface unformalized-raw 20026 33521 25991 # unresolved-surface
+      surface unformalized-raw 20026 33521 35821 # unresolved-surface
+      surface unformalized-raw 28858 33521 25991 # unresolved-surface
+      surface unformalized-raw 28858 33521 35821 # unresolved-surface
+      surface unformalized-raw 21040 33521 25991 # unresolved-surface
+      surface unformalized-raw 21040 33521 35821 # unresolved-surface
+  translate_into_russian: # concept translate_into_russian
+    defined-by language_russian # definition-link
+    defined-by translation_direction_target # definition-link
+    role translation_target_marker # semantic-role
+    lexeme en # language
+      surface unformalized-raw 116 111 32 114 117 115 115 105 97 110 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1085 1072 32 1088 1091 1089 1089 1082 1080 1081 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2352 2370 2360 2368 32 2350 2375 2306 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 25104 20420 35821 # unresolved-surface
+      surface unformalized-raw 25104 20420 35486 # unresolved-surface
+      surface unformalized-raw 20026 20420 35821 # unresolved-surface
+      surface unformalized-raw 20026 20420 35486 # unresolved-surface
+      surface unformalized-raw 28858 20420 35821 # unresolved-surface
+      surface unformalized-raw 28858 20420 35486 # unresolved-surface
+      surface unformalized-raw 21040 20420 35821 # unresolved-surface
+      surface unformalized-raw 21040 20420 35486 # unresolved-surface
+  translate_into_hindi: # concept translate_into_hindi
+    defined-by language_hindi # definition-link
+    defined-by translation_direction_target # definition-link
+    role translation_target_marker # semantic-role
+    lexeme en # language
+      surface unformalized-raw 116 111 32 104 105 110 100 105 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1085 1072 32 1093 1080 1085 1076 1080 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2361 2367 2306 2342 2368 32 2350 2375 2306 # unresolved-surface
+      surface unformalized-raw 2361 2367 2344 2381 2342 2368 32 2350 2375 2306 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 25104 21360 22320 35821 # unresolved-surface
+      surface unformalized-raw 25104 21360 22320 25991 # unresolved-surface
+      surface unformalized-raw 20026 21360 22320 35821 # unresolved-surface
+      surface unformalized-raw 20026 21360 22320 25991 # unresolved-surface
+      surface unformalized-raw 28858 21360 22320 35821 # unresolved-surface
+      surface unformalized-raw 28858 21360 22320 25991 # unresolved-surface
+      surface unformalized-raw 21040 21360 22320 35821 # unresolved-surface
+      surface unformalized-raw 21040 21360 22320 25991 # unresolved-surface
+  translate_into_chinese: # concept translate_into_chinese
+    defined-by language_chinese # definition-link
+    defined-by translation_direction_target # definition-link
+    role translation_target_marker # semantic-role
+    lexeme en # language
+      surface unformalized-raw 116 111 32 99 104 105 110 101 115 101 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1085 1072 32 1082 1080 1090 1072 1081 1089 1082 1080 1081 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2330 2368 2344 2368 32 2350 2375 2306 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 25104 20013 25991 # unresolved-surface
+      surface unformalized-raw 25104 27721 35821 # unresolved-surface
+      surface unformalized-raw 25104 28450 35486 # unresolved-surface
+      surface unformalized-raw 20026 20013 25991 # unresolved-surface
+      surface unformalized-raw 20026 27721 35821 # unresolved-surface
+      surface unformalized-raw 20026 28450 35486 # unresolved-surface
+      surface unformalized-raw 28858 20013 25991 # unresolved-surface
+      surface unformalized-raw 28858 27721 35821 # unresolved-surface
+      surface unformalized-raw 28858 28450 35486 # unresolved-surface
+      surface unformalized-raw 21040 20013 25991 # unresolved-surface
+      surface unformalized-raw 21040 27721 35821 # unresolved-surface
+      surface unformalized-raw 21040 28450 35486 # unresolved-surface
+  translation_unquoted_frame: # concept translation_unquoted_frame
+    defined-by translate # definition-link
+    defined-by translation_direction_target # definition-link
+    role translation_unquoted_frame # semantic-role
+    lexeme en # language
+      surface unformalized-raw 116 114 97 110 115 108 97 116 101 32 8230 32 116 111 32 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1087 1077 1088 1077 1074 1077 1076 1080 32 8230 32 1085 1072 32 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2309 2344 2369 2357 2366 2342 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 32763 35793 # unresolved-surface
+      surface unformalized-raw 32763 35695 # unresolved-surface
+  translation_into_marker: # concept translation_into_marker
+    defined-by translate # definition-link
+    defined-by translation_direction_target # definition-link
+    role translation_into_marker # semantic-role
+    lexeme en # language
+      surface unformalized-raw 116 114 97 110 115 108 97 116 101 32 105 110 116 111 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1087 1077 1088 1077 1074 1077 1089 1090 1080 32 1085 1072 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 32 2350 2375 2306 32 2309 2344 2369 2357 2366 2342 # unresolved-surface
+      surface unformalized-raw 32 2350 2375 32 2309 2344 2369 2357 2366 2342 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 32763 35793 25104 # unresolved-surface
+      surface unformalized-raw 32763 35793 20026 # unresolved-surface
+      surface unformalized-raw 32763 35793 21040 # unresolved-surface
+      surface unformalized-raw 32763 35695 25104 # unresolved-surface
+      surface unformalized-raw 32763 35695 28858 # unresolved-surface
+      surface unformalized-raw 32763 35695 21040 # unresolved-surface
+  translation_object_marker: # concept translation_object_marker
+    defined-by relation # definition-link
+    role translation_object_marker # semantic-role
+    lexeme en # language
+      surface unformalized-raw 111 102 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1089 1083 1086 1074 1072 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 32 2325 2366 32 # unresolved-surface
+      surface unformalized-raw 32 2325 2379 32 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 25226 # unresolved-surface
+      surface unformalized-raw 23558 # unresolved-surface
+  definition_command: # concept definition_command
+    defined-by action # definition-link
+    role definition_command # semantic-role
+    lexeme en # language
+      surface unformalized-raw 100 101 102 105 110 101 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1086 1087 1088 1077 1076 1077 1083 1080 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2346 2352 2367 2349 2366 2359 2367 2340 32 2325 2352 2375 2306 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 23450 20041 # unresolved-surface
+  links_notation_format: # concept links_notation_format
+    defined-by concept # definition-link
+    role links_notation_format # semantic-role
+    lexeme en # language
+      surface unformalized-raw 108 105 110 107 115 32 110 111 116 97 116 105 111 110 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1074 32 108 105 110 107 115 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2354 2367 2306 2325 2381 2360 32 2344 2379 2335 2375 2358 2344 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 38142 25509 34920 31034 27861 # unresolved-surface
+  apple: # concept apple
+    defined-by entity # definition-link
+    role compositional_lemma # semantic-role
+    lexeme en # language
+      surface unformalized-raw 97 112 112 108 101 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1103 1073 1083 1086 1082 1086 # unresolved-surface
+      surface unformalized-raw 1103 1073 1083 1086 1082 1072 # unresolved-surface
+      surface unformalized-raw 1103 1073 1083 1086 1082 1091 # unresolved-surface
+      surface unformalized-raw 1103 1073 1083 1086 1082 1086 1084 # unresolved-surface
+      surface unformalized-raw 1103 1073 1083 1086 1082 1077 # unresolved-surface
+      surface unformalized-raw 1103 1073 1083 1086 1082 1080 # unresolved-surface
+      surface unformalized-raw 1103 1073 1083 1086 1082 # unresolved-surface
+      surface unformalized-raw 1103 1073 1083 1086 1082 1072 1084 # unresolved-surface
+      surface unformalized-raw 1103 1073 1083 1086 1082 1072 1084 1080 # unresolved-surface
+      surface unformalized-raw 1103 1073 1083 1086 1082 1072 1093 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2360 2375 2348 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 33529 26524 # unresolved-surface
+  greeting_hello: # concept greeting_hello
+    defined-by entity # definition-link
+    role compositional_lemma # semantic-role
+    lexeme en # language
+      surface unformalized-raw 104 101 108 108 111 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1087 1088 1080 1074 1077 1090 # unresolved-surface
+      surface unformalized-raw 1079 1076 1088 1072 1074 1089 1090 1074 1091 1081 1090 1077 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2344 2350 2360 2381 2340 2375 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 20320 22909 # unresolved-surface
+  gratitude_thank_you: # concept gratitude_thank_you
+    defined-by entity # definition-link
+    role compositional_lemma # semantic-role
+    lexeme en # language
+      surface unformalized-raw 116 104 97 110 107 32 121 111 117 # unresolved-surface
+      surface unformalized-raw 116 104 97 110 107 115 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1089 1087 1072 1089 1080 1073 1086 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2343 2344 2381 2351 2357 2366 2342 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 35874 35874 # unresolved-surface
+      surface unformalized-raw 35613 35613 # unresolved-surface
+  affirmation_yes: # concept affirmation_yes
+    defined-by entity # definition-link
+    role compositional_lemma # semantic-role
+    lexeme en # language
+      surface unformalized-raw 121 101 115 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1076 1072 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2361 2366 2305 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 26159 # unresolved-surface
+  negation_no: # concept negation_no
+    defined-by entity # definition-link
+    role compositional_lemma # semantic-role
+    lexeme en # language
+      surface unformalized-raw 110 111 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1085 1077 1090 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2344 2361 2368 2306 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 19981 # unresolved-surface
+  tomato: # concept tomato
+    defined-by entity # definition-link
+    role compositional_lemma # semantic-role
+    lexeme en # language
+      surface unformalized-raw 116 111 109 97 116 111 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1087 1086 1084 1080 1076 1086 1088 # unresolved-surface
+      surface unformalized-raw 1090 1086 1084 1072 1090 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2335 2350 2366 2335 2352 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 30058 33540 # unresolved-surface
+      surface unformalized-raw 35199 32418 26623 # unresolved-surface
+  cucumber: # concept cucumber
+    defined-by entity # definition-link
+    role compositional_lemma # semantic-role
+    lexeme en # language
+      surface unformalized-raw 99 117 99 117 109 98 101 114 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1086 1075 1091 1088 1077 1094 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2326 2368 2352 2366 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 40644 29916 # unresolved-surface
+  potato: # concept potato
+    defined-by entity # definition-link
+    role compositional_lemma # semantic-role
+    lexeme en # language
+      surface unformalized-raw 112 111 116 97 116 111 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1082 1072 1088 1090 1086 1092 1077 1083 1100 # unresolved-surface
+      surface unformalized-raw 1082 1072 1088 1090 1086 1096 1082 1072 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2310 2354 2370 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 22303 35910 # unresolved-surface
+      surface unformalized-raw 39532 38083 34223 # unresolved-surface
+  carrot: # concept carrot
+    defined-by entity # definition-link
+    role compositional_lemma # semantic-role
+    lexeme en # language
+      surface unformalized-raw 99 97 114 114 111 116 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1084 1086 1088 1082 1086 1074 1100 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2327 2366 2332 2352 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 32993 33821 21340 # unresolved-surface
+  bread: # concept bread
+    defined-by entity # definition-link
+    role compositional_lemma # semantic-role
+    lexeme en # language
+      surface unformalized-raw 98 114 101 97 100 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1093 1083 1077 1073 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2352 2379 2335 2368 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 38754 21253 # unresolved-surface
+  water: # concept water
+    defined-by entity # definition-link
+    role compositional_lemma # semantic-role
+    lexeme en # language
+      surface unformalized-raw 119 97 116 101 114 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1074 1086 1076 1072 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2346 2366 2344 2368 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 27700 # unresolved-surface
+  good: # concept good
+    defined-by property # definition-link
+    role compositional_lemma # semantic-role
+    lexeme en # language
+      surface unformalized-raw 103 111 111 100 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1076 1086 1073 1088 1086 1077 # unresolved-surface
+      surface unformalized-raw 1076 1086 1073 1088 1099 1081 # unresolved-surface
+      surface unformalized-raw 1076 1086 1073 1088 1072 1103 # unresolved-surface
+      surface unformalized-raw 1076 1086 1073 1088 1099 1077 # unresolved-surface
+      surface unformalized-raw 1076 1086 1073 1088 1086 1075 1086 # unresolved-surface
+      surface unformalized-raw 1076 1086 1073 1088 1091 1102 # unresolved-surface
+      surface unformalized-raw 1076 1086 1073 1088 1099 1084 # unresolved-surface
+      surface unformalized-raw 1093 1086 1088 1086 1096 1077 1077 # unresolved-surface
+      surface unformalized-raw 1093 1086 1088 1086 1096 1080 1081 # unresolved-surface
+      surface unformalized-raw 1093 1086 1088 1086 1096 1072 1103 # unresolved-surface
+      surface unformalized-raw 1093 1086 1088 1086 1096 1080 1077 # unresolved-surface
+      surface unformalized-raw 1093 1086 1088 1086 1096 1077 1075 1086 # unresolved-surface
+      surface unformalized-raw 1093 1086 1088 1086 1096 1091 1102 # unresolved-surface
+      surface unformalized-raw 1093 1086 1088 1086 1096 1080 1084 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2309 2330 2381 2331 2366 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 22909 # unresolved-surface
+  find: # concept find
+    defined-by action # definition-link
+    role compositional_lemma # semantic-role
+    lexeme en # language
+      surface unformalized-raw 102 105 110 100 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1085 1072 1081 1076 1080 # unresolved-surface
+      surface unformalized-raw 1085 1072 1081 1076 1080 1090 1077 # unresolved-surface
+      surface unformalized-raw 1085 1072 1081 1090 1080 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2326 2379 2332 2375 2306 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 26597 25214 # unresolved-surface
+  synonym: # concept synonym
+    defined-by concept # definition-link
+    role compositional_lemma # semantic-role
+    role compositional_genitive_head # semantic-role
+    lexeme en # language
+      surface unformalized-raw 115 121 110 111 110 121 109 115 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1089 1080 1085 1086 1085 1080 1084 # unresolved-surface
+      surface unformalized-raw 1089 1080 1085 1086 1085 1080 1084 1099 # unresolved-surface
+      surface unformalized-raw 1089 1080 1085 1086 1085 1080 1084 1086 1074 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2346 2352 2381 2351 2366 2351 2357 2366 2330 2368 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 21516 20041 35789 # unresolved-surface
+  example: # concept example
+    defined-by concept # definition-link
+    role compositional_lemma # semantic-role
+    role compositional_genitive_head # semantic-role
+    lexeme en # language
+      surface unformalized-raw 101 120 97 109 112 108 101 115 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1087 1088 1080 1084 1077 1088 # unresolved-surface
+      surface unformalized-raw 1087 1088 1080 1084 1077 1088 1099 # unresolved-surface
+      surface unformalized-raw 1087 1088 1080 1084 1077 1088 1086 1074 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2313 2342 2366 2361 2352 2339 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 20363 23376 # unresolved-surface
+  agreement: # concept agreement
+    defined-by concept # definition-link
+    role compositional_lemma # semantic-role
+    lexeme en # language
+      surface unformalized-raw 97 103 114 101 101 109 101 110 116 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1089 1086 1075 1083 1072 1089 1086 1074 1072 1085 1080 1077 # unresolved-surface
+      surface unformalized-raw 1089 1086 1075 1083 1072 1089 1086 1074 1072 1085 1080 1103 # unresolved-surface
+        action genitive # action
+      surface unformalized-raw 1089 1086 1075 1083 1072 1089 1086 1074 1072 1085 1080 1102 # unresolved-surface
+      surface unformalized-raw 1089 1086 1075 1083 1072 1089 1086 1074 1072 1085 1080 1077 1084 # unresolved-surface
+      surface unformalized-raw 1089 1086 1075 1083 1072 1089 1086 1074 1072 1085 1080 1080 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2360 2361 2350 2340 2367 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 19968 33268 # unresolved-surface
+  conjunction_or: # concept conjunction_or
+    defined-by relation # definition-link
+    role compositional_lemma # semantic-role
+    lexeme en # language
+      surface unformalized-raw 111 114 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1080 1083 1080 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2351 2366 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 25110 # unresolved-surface
+  who_are_you: # concept who_are_you
+    defined-by concept # definition-link
+    role compositional_phrase # semantic-role
+    lexeme en # language
+      surface unformalized-raw 87 104 111 32 97 114 101 32 121 111 117 63 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1082 1090 1086 32 1090 1099 # unresolved-surface
+      surface unformalized-raw 1082 1090 1086 32 1090 1099 32 1090 1072 1082 1086 1081 # unresolved-surface
+      surface unformalized-raw 1082 1090 1086 32 1090 1099 32 1090 1072 1082 1072 1103 # unresolved-surface
+      surface unformalized-raw 1082 1090 1086 32 1074 1099 # unresolved-surface
+      surface unformalized-raw 1082 1090 1086 32 1074 1099 32 1090 1072 1082 1086 1081 # unresolved-surface
+      surface unformalized-raw 1082 1090 1086 32 1074 1099 32 1090 1072 1082 1072 1103 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2310 2346 32 2325 2380 2344 32 2361 2376 2306 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 20320 26159 35841 # unresolved-surface
+  what_is_this: # concept what_is_this
+    defined-by concept # definition-link
+    role compositional_phrase # semantic-role
+    lexeme en # language
+      surface unformalized-raw 87 104 97 116 32 105 115 32 116 104 105 115 63 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1095 1090 1086 32 1101 1090 1086 # unresolved-surface
+      surface unformalized-raw 1095 1090 1086 32 1101 1090 1086 32 1090 1072 1082 1086 1077 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2351 2361 32 2325 2381 2351 2366 32 2361 2376 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 36825 26159 20160 20040 # unresolved-surface
+  how_are_you: # concept how_are_you
+    defined-by concept # definition-link
+    role compositional_phrase # semantic-role
+    lexeme en # language
+      surface unformalized-raw 104 111 119 32 97 114 101 32 121 111 117 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1082 1072 1082 32 1076 1077 1083 1072 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2310 2346 32 2325 2376 2360 2375 32 2361 2376 2306 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 20320 22909 21527 # unresolved-surface

@@ -1,1393 +1,840 @@
 meanings
-  meaning "software_followup"
-    gloss "exercising an already-designed software artifact — verifying, executing, or demonstrating it; the genus of the follow-up kinds below"
-    wiktionary "follow-up"
-    defined_by "software_followup_verification"
-    defined_by "software_followup_execution"
-    defined_by "software_followup_demonstration"
-    defined_by "action"
-    role "software_followup"
-    lexeme "en"
-      word "follow-up"
-        description "English noun for exercising an already-designed artifact by verifying, running, or demonstrating it; the genus of the follow-up kinds."
-      word "exercise"
-        description "English verb for putting a finished artifact through its paces; a synonym surface for the follow-up action."
-    lexeme "ru"
-      word "продолжение"
-        description "Russian noun (romanized prodolzheniye) for a continuation or follow-up; the Russian surface for exercising a finished artifact."
-      word "отработка"
-        description "Russian noun (romanized otrabotka) for putting something through its paces; an alternative Russian surface for the follow-up action."
-    lexeme "hi"
-      word "अनुवर्ती"
-        description "Hindi adjective (romanized anuvarti) for follow-up or subsequent; the Hindi surface for exercising a finished artifact."
-      word "अभ्यास"
-        description "Hindi noun (romanized abhyas) for practice or exercise; an alternative Hindi surface for the follow-up action."
-    lexeme "zh"
-      word "后续"
-        description "Chinese noun (pinyin houxu) for a follow-up or subsequent step; the Chinese surface for exercising a finished artifact."
-      word "演练"
-        description "Chinese verb (pinyin yanlian) for rehearsing or drilling; an alternative Chinese surface for the follow-up action."
-  meaning "software_followup_verification"
-    gloss "a follow-up that verifies the just-designed artifact behaves correctly (test it, run the tests, …)"
-    wiktionary "verification"
-    defined_by "software_followup"
-    role "software_followup_verification"
-    lexeme "en"
-      word "test it"
-        description "English imperative phrase asking to verify the just-designed artifact behaves correctly; a verification follow-up surface."
-      word "test the"
-        description "English phrase fragment introducing the artifact to be verified; a verification follow-up surface."
-      word "test this"
-        description "English imperative phrase asking to verify this artifact; a verification follow-up surface."
-      word "verify"
-        description "English verb for confirming the artifact behaves correctly; the base verification follow-up surface."
-      word "check it"
-        description "English imperative phrase asking to inspect the artifact for correctness; a verification follow-up surface."
-      word "check that"
-        description "English phrase fragment introducing what should be checked for correctness; a verification follow-up surface."
-      word "run the tests"
-        description "English imperative phrase asking to execute the artifact's test suite; a verification follow-up surface."
-    lexeme "ru"
-      word "протестируй"
-        description "Russian imperative verb (romanized protestiruy) meaning test it; a verification follow-up surface."
-      word "протестировать"
-        description "Russian infinitive verb (romanized protestirovat) meaning to test; the infinitive form of the verification verb."
-      word "проверь"
-        description "Russian imperative verb (romanized prover) meaning check or verify; a verification follow-up surface."
-      word "тестируй"
-        description "Russian imperative verb (romanized testiruy) meaning test; an imperfective verification follow-up surface."
-    lexeme "hi"
-      word "परीक्षण"
-        description "Hindi noun (romanized parikshan) for testing or examination; a verification follow-up surface."
-      word "जाँच"
-        description "Hindi noun (romanized janch) for a check or inspection; a verification follow-up surface."
-      word "जांच"
-        description "Hindi noun (romanized janch) for a check or inspection; an alternative spelling of the verification surface."
-    lexeme "zh"
-      word "测试"
-        description "Chinese verb (pinyin ceshi) for testing; a verification follow-up surface."
-      word "检验"
-        description "Chinese verb (pinyin jianyan) for inspecting or verifying; a verification follow-up surface."
-      word "检查"
-        description "Chinese verb (pinyin jiancha) for checking or examining; a verification follow-up surface."
-  meaning "software_followup_execution"
-    gloss "a follow-up that runs or executes the just-designed artifact (run it, execute it, …)"
-    wiktionary "execution"
-    defined_by "software_followup"
-    role "software_followup_execution"
-    lexeme "en"
-      word "run it"
-        description "English imperative phrase asking to execute the just-designed artifact; an execution follow-up surface."
-      word "run this"
-        description "English imperative phrase asking to execute this artifact; an execution follow-up surface."
-      word "run the"
-        description "English phrase fragment introducing the artifact to execute; an execution follow-up surface."
-      word "execute it"
-        description "English imperative phrase asking to run the artifact; an execution follow-up surface."
-      word "execute the"
-        description "English phrase fragment introducing the artifact to run; an execution follow-up surface."
-      word "try it"
-        description "English imperative phrase asking to run the artifact to see it work; an execution follow-up surface."
-    lexeme "ru"
-      word "запусти"
-        description "Russian imperative verb (romanized zapusti) meaning run or launch it; an execution follow-up surface."
-      word "выполни"
-        description "Russian imperative verb (romanized vypolni) meaning execute or carry out; an execution follow-up surface."
-    lexeme "hi"
-      word "चलाओ"
-        description "Hindi imperative verb (romanized chalao) meaning run it; an execution follow-up surface."
-      word "निष्पादित"
-        description "Hindi adjective (romanized nishpadit) meaning executed; an execution follow-up surface."
-    lexeme "zh"
-      word "运行"
-        description "Chinese verb (pinyin yunxing) for running an artifact; an execution follow-up surface."
-      word "执行"
-        description "Chinese verb (pinyin zhixing) for executing; an execution follow-up surface."
-  meaning "software_followup_demonstration"
-    gloss "a follow-up that demonstrates the just-designed artifact's output (show me, demo it, …)"
-    wiktionary "demonstration"
-    defined_by "software_followup"
-    role "software_followup_demonstration"
-    lexeme "en"
-      word "demo it"
-        description "English imperative phrase asking to demonstrate the artifact's output; a demonstration follow-up surface."
-      word "show me"
-        description "English imperative phrase asking to display the artifact's output to the user; a demonstration follow-up surface."
-      word "show the"
-        description "English phrase fragment introducing the output to display; a demonstration follow-up surface."
-      word "print the"
-        description "English phrase fragment asking to print the artifact's output; a demonstration follow-up surface."
-    lexeme "ru"
-      word "покажи"
-        description "Russian imperative verb (romanized pokazhi) meaning show me; a demonstration follow-up surface."
-    lexeme "hi"
-      word "दिखाओ"
-        description "Hindi imperative verb (romanized dikhao) meaning show it; a demonstration follow-up surface."
-    lexeme "zh"
-      word "显示"
-        description "Chinese verb (pinyin xianshi) for displaying or showing; a demonstration follow-up surface."
-      word "展示"
-        description "Chinese verb (pinyin zhanshi) for demonstrating or exhibiting; a demonstration follow-up surface."
-  meaning "output_display_request"
-    gloss "a request to display a specific output, naming what the user wants surfaced after a show-me/print/display verb. Each surface is a prefix carrying the … (U+2026) slot at the end; the clause that follows the slot — up to the first sentence-ending punctuation and capped at twelve words — is the expected output. The opener is matched anywhere in the prompt, not only at the start, so 'test it and show me the result' still captures 'the result'."
-    wiktionary "display"
-    defined_by "software_followup"
-    defined_by "action"
-    role "output_display_request"
-    lexeme "en"
-      word "show me …"
-        description "English request to display output; the clause naming what to surface follows the … slot."
-      word "show …"
-        description "English request to display output written without 'me'; the clause follows the … slot. Declared after 'show me …' so the longer opener is tried first."
-      word "print …"
-        description "English request to print output; the clause naming what to surface follows the … slot."
-      word "display …"
-        description "English request to display output; the clause naming what to surface follows the … slot."
-    lexeme "ru"
-      word "покажи мне …"
-        description "Russian request to display output (romanized pokazhi mne) meaning show me; the clause follows the … slot."
-      word "покажи …"
-        description "Russian request to display output (romanized pokazhi) meaning show; the clause follows the … slot."
-      word "выведи …"
-        description "Russian request to print output (romanized vyvedi) meaning output or print; the clause follows the … slot."
-    lexeme "hi"
-      word "मुझे दिखाओ …"
-        description "Hindi request to display output (romanized mujhe dikhao) meaning show me; the clause follows the … slot."
-      word "दिखाओ …"
-        description "Hindi request to display output (romanized dikhao) meaning show; the clause follows the … slot."
-    lexeme "zh"
-      word "给我看…"
-        description "Chinese request to display output (pinyin gei wo kan) meaning show me, with no trailing space; the clause follows the … slot."
-      word "显示…"
-        description "Chinese request to display output (pinyin xianshi) meaning display, with no trailing space; the clause follows the … slot."
-  meaning "implement"
-    gloss "to author a software artifact by implementing it — an authoring action alongside write/build/create"
-    wiktionary "implement"
-    defined_by "code"
-    defined_by "program"
-    role "software_authoring_action"
-    lexeme "en"
-      word "implement"
-        description "English verb for authoring a software artifact by realizing it in code; an authoring-action surface."
-    lexeme "ru"
-      word "реализуй"
-        description "Russian imperative verb (romanized realizuy) meaning implement it; an authoring-action surface."
-      word "реализовать"
-        description "Russian infinitive verb (romanized realizovat) meaning to implement; the infinitive form of the authoring verb."
-    lexeme "hi"
-      word "लागू"
-        description "Hindi adjective (romanized lagu) meaning applied or implemented; an authoring-action surface."
-    lexeme "zh"
-      word "实现"
-        description "Chinese verb (pinyin shixian) for implementing or realizing; an authoring-action surface."
-  meaning "develop"
-    gloss "to author a software artifact by developing it over time — an authoring action"
-    wiktionary "develop"
-    defined_by "program"
-    role "software_authoring_action"
-    lexeme "en"
-      word "develop"
-        description "English verb for authoring a software artifact by building it up over time; an authoring-action surface."
-    lexeme "ru"
-      word "разработай"
-        description "Russian imperative verb (romanized razrabotay) meaning develop it; an authoring-action surface."
-      word "разработать"
-        description "Russian infinitive verb (romanized razrabotat) meaning to develop; the infinitive form of the authoring verb."
-    lexeme "hi"
-      word "विकसित"
-        description "Hindi adjective (romanized vikasit) meaning developed; an authoring-action surface."
-    lexeme "zh"
-      word "开发"
-        description "Chinese verb (pinyin kaifa) for developing software; an authoring-action surface."
-  meaning "design"
-    gloss "to author a software artifact by designing its shape — an authoring action"
-    wiktionary "design"
-    defined_by "program"
-    role "software_authoring_action"
-    lexeme "en"
-      word "design"
-        description "English verb for authoring a software artifact by shaping its design; an authoring-action surface."
-    lexeme "ru"
-      word "спроектируй"
-        description "Russian imperative verb (romanized sproektiruy) meaning design it; an authoring-action surface."
-      word "создай дизайн"
-        description "Russian imperative phrase (romanized sozday dizayn) meaning create a design; an authoring-action surface."
-    lexeme "hi"
-      word "डिज़ाइन"
-        description "Hindi noun (romanized dizain, a loanword) for design; an authoring-action surface."
-    lexeme "zh"
-      word "设计"
-        description "Chinese verb (pinyin sheji) for designing; an authoring-action surface."
-  meaning "scaffold"
-    gloss "to author a software artifact by scaffolding its skeleton — an authoring action"
-    wiktionary "scaffold"
-    defined_by "code"
-    defined_by "program"
-    role "software_authoring_action"
-    lexeme "en"
-      word "scaffold"
-        description "English verb for authoring a software artifact by generating its skeleton; an authoring-action surface."
-    lexeme "ru"
-      word "создай каркас"
-        description "Russian imperative phrase (romanized sozday karkas) meaning create a skeleton; an authoring-action surface."
-      word "сгенерируй каркас"
-        description "Russian imperative phrase (romanized sgeneriruy karkas) meaning generate a skeleton; an authoring-action surface."
-    lexeme "hi"
-      word "ढाँचा बनाओ"
-        description "Hindi imperative phrase (romanized dhancha banao) meaning build a framework; an authoring-action surface."
-    lexeme "zh"
-      word "搭建"
-        description "Chinese verb (pinyin dajian) for setting up or scaffolding a structure; an authoring-action surface."
-  meaning "software_artifact"
-    gloss "a thing software development produces that an authoring request can ask for — the genus of the artifact kinds below"
-    wiktionary "artifact"
-    defined_by "artifact_application"
-    defined_by "artifact_tool"
-    defined_by "entity"
-    role "software_artifact"
-    lexeme "en"
-      word "software artifact"
-        description "English noun phrase for a thing software development produces; the genus of the artifact kinds below."
-      word "deliverable"
-        description "English noun for a produced item to be handed over; a synonym surface for a software artifact."
-    lexeme "ru"
-      word "программный продукт"
-        description "Russian noun phrase (romanized programmnyy produkt) for a software product; the Russian surface for a software artifact."
-      word "артефакт"
-        description "Russian noun (romanized artefakt) for an artifact; an alternative Russian surface for a software artifact."
-    lexeme "hi"
-      word "सॉफ़्टवेयर कलाकृति"
-        description "Hindi noun phrase (romanized software kalakriti) for a software artifact; the Hindi surface for a produced software item."
-    lexeme "zh"
-      word "软件制品"
-        description "Chinese noun (pinyin ruanjian zhipin) for a software artifact; the Chinese surface for a produced software item."
-  meaning "artifact_browser_extension"
-    gloss "a browser extension — software that augments a web browser; canonical label `browser extension`"
-    wiktionary "extension"
-    defined_by "software_artifact"
-    role "software_artifact_kind"
-    lexeme "en"
-      word "browser extension"
-        description "English noun phrase for software that augments a web browser; the canonical label for this artifact kind."
-    lexeme "ru"
-      word "расширение браузера"
-        description "Russian noun phrase (romanized rasshireniye brauzera) for a browser extension; the Russian surface for this artifact kind."
-    lexeme "hi"
-      word "ब्राउज़र एक्सटेंशन"
-        description "Hindi noun phrase (romanized brauzar extension, a loanword) for a browser extension; the Hindi surface for this artifact kind."
-    lexeme "zh"
-      word "浏览器扩展"
-        description "Chinese noun (pinyin liulanqi kuozhan) for a browser extension; the Chinese surface for this artifact kind."
-  meaning "artifact_command_line_tool"
-    gloss "a command-line tool driven from a terminal; canonical label `command-line tool`"
-    wiktionary "command-line"
-    defined_by "software_artifact"
-    role "software_artifact_kind"
-    lexeme "en"
-      word "command line tool"
-        description "English noun phrase for a tool driven from a terminal; the canonical label for this artifact kind."
-      word "cli tool"
-        description "English noun phrase abbreviating command-line tool; a synonym surface for this artifact kind."
-    lexeme "ru"
-      word "консольная утилита"
-        description "Russian noun phrase (romanized konsolnaya utilita) for a console utility; the Russian surface for this artifact kind."
-      word "утилита командной строки"
-        description "Russian noun phrase (romanized utilita komandnoy stroki) for a command-line utility; an alternative Russian surface for this artifact kind."
-    lexeme "hi"
-      word "कमांड लाइन टूल"
-        description "Hindi noun phrase (romanized command line tool, a loanword) for a command-line tool; the Hindi surface for this artifact kind."
-    lexeme "zh"
-      word "命令行工具"
-        description "Chinese noun (pinyin minglinghang gongju) for a command-line tool; the Chinese surface for this artifact kind."
-  meaning "artifact_github_action"
-    gloss "a GitHub Action automation workflow; canonical label `action`"
-    wiktionary "action"
-    defined_by "software_artifact"
-    role "software_artifact_kind"
-    lexeme "en"
-      word "github action"
-        description "English noun phrase for a GitHub Action automation workflow; the canonical surface for this artifact kind."
-    lexeme "ru"
-      word "действие github"
-        description "Russian noun phrase (romanized deystviye github) for a GitHub Action; the Russian surface for this artifact kind."
-    lexeme "hi"
-      word "गिटहब एक्शन"
-        description "Hindi noun phrase (romanized github action, a loanword) for a GitHub Action; the Hindi surface for this artifact kind."
-    lexeme "zh"
-      word "github 操作"
-        description "Chinese noun (pinyin github caozuo) for a GitHub Action; the Chinese surface for this artifact kind."
-  meaning "artifact_mobile_app"
-    gloss "a mobile application for phones or tablets; canonical label `mobile app`"
-    wiktionary "app"
-    defined_by "software_artifact"
-    role "software_artifact_kind"
-    lexeme "en"
-      word "mobile app"
-        description "English noun phrase for an application for phones or tablets; the canonical label for this artifact kind."
-    lexeme "ru"
-      word "мобильное приложение"
-        description "Russian noun phrase (romanized mobilnoye prilozheniye) for a mobile application; the Russian surface for this artifact kind."
-    lexeme "hi"
-      word "मोबाइल ऐप"
-        description "Hindi noun phrase (romanized mobile app, a loanword) for a mobile application; the Hindi surface for this artifact kind."
-    lexeme "zh"
-      word "移动应用"
-        description "Chinese noun (pinyin yidong yingyong) for a mobile application; the Chinese surface for this artifact kind."
-  meaning "artifact_web_app"
-    gloss "a web application served in a browser; canonical label `web app`"
-    wiktionary "web"
-    defined_by "software_artifact"
-    role "software_artifact_kind"
-    lexeme "en"
-      word "web app"
-        description "English noun phrase for an application served in a browser; the canonical label for this artifact kind."
-    lexeme "ru"
-      word "веб приложение"
-        description "Russian noun phrase (romanized veb prilozheniye) for a web application; the Russian surface for this artifact kind."
-    lexeme "hi"
-      word "वेब ऐप"
-        description "Hindi noun phrase (romanized web app, a loanword) for a web application; the Hindi surface for this artifact kind."
-    lexeme "zh"
-      word "网页应用"
-        description "Chinese noun (pinyin wangye yingyong) for a web application; the Chinese surface for this artifact kind."
-  meaning "artifact_application"
-    gloss "a general software application; canonical label `application`"
-    wiktionary "application"
-    defined_by "software_artifact"
-    role "software_artifact_kind"
-    lexeme "en"
-      word "application"
-        description "English noun for a general software application; the canonical label for this artifact kind."
-    lexeme "ru"
-      word "приложение"
-        description "Russian noun (romanized prilozheniye) for an application; the Russian surface for this artifact kind."
-    lexeme "hi"
-      word "एप्लिकेशन"
-        description "Hindi noun (romanized application, a loanword) for an application; the Hindi surface for this artifact kind."
-    lexeme "zh"
-      word "应用程序"
-        description "Chinese noun (pinyin yingyong chengxu) for an application program; the Chinese surface for this artifact kind."
-  meaning "artifact_extension"
-    gloss "an extension or add-on that augments a host program; canonical label `extension`"
-    wiktionary "extension"
-    defined_by "software_artifact"
-    role "software_artifact_kind"
-    lexeme "en"
-      word "extension"
-        description "English noun for an add-on that augments a host program; the canonical label for this artifact kind."
-      word "add on"
-        description "English noun for a component that adds to a host program; a synonym surface for an extension."
-      word "addon"
-        description "English noun (single-word spelling) for an add-on; a synonym surface for an extension."
-    lexeme "ru"
-      word "расширение"
-        description "Russian noun (romanized rasshireniye) for an extension; the Russian surface for this artifact kind."
-      word "дополнение"
-        description "Russian noun (romanized dopolneniye) for an add-on or supplement; an alternative Russian surface for an extension."
-    lexeme "hi"
-      word "एक्सटेंशन"
-        description "Hindi noun (romanized extension, a loanword) for an extension; the Hindi surface for this artifact kind."
-      word "ऐड-ऑन"
-        description "Hindi noun (romanized add-on, a loanword) for an add-on; an alternative Hindi surface for an extension."
-    lexeme "zh"
-      word "扩展"
-        description "Chinese noun (pinyin kuozhan) for an extension; the Chinese surface for this artifact kind."
-      word "扩展程序"
-        description "Chinese noun (pinyin kuozhan chengxu) for an extension program; an alternative Chinese surface for an extension."
-  meaning "artifact_dashboard"
-    gloss "a dashboard that visualises state at a glance; canonical label `dashboard`"
-    wiktionary "dashboard"
-    defined_by "software_artifact"
-    role "software_artifact_kind"
-    lexeme "en"
-      word "dashboard"
-        description "English noun for a screen that visualises state at a glance; the canonical label for this artifact kind."
-    lexeme "ru"
-      word "панель управления"
-        description "Russian noun phrase (romanized panel upravleniya) for a control dashboard; the Russian surface for this artifact kind."
-      word "дашборд"
-        description "Russian noun (romanized dashbord, a loanword) for a dashboard; an alternative Russian surface for this artifact kind."
-    lexeme "hi"
-      word "डैशबोर्ड"
-        description "Hindi noun (romanized dashboard, a loanword) for a dashboard; the Hindi surface for this artifact kind."
-    lexeme "zh"
-      word "仪表板"
-        description "Chinese noun (pinyin yibiaoban) for a dashboard; the Chinese surface for this artifact kind."
-  meaning "artifact_scraper"
-    gloss "a scraper that extracts data from pages or feeds; canonical label `scraper`"
-    wiktionary "scraper"
-    defined_by "software_artifact"
-    role "software_artifact_kind"
-    lexeme "en"
-      word "scraper"
-        description "English noun for a tool that extracts data from pages or feeds; the canonical label for this artifact kind."
-    lexeme "ru"
-      word "скрапер"
-        description "Russian noun (romanized skraper, a loanword) for a scraper; the Russian surface for this artifact kind."
-      word "парсер"
-        description "Russian noun (romanized parser, a loanword) for a parser; an alternative Russian surface for a scraper."
-    lexeme "hi"
-      word "स्क्रैपर"
-        description "Hindi noun (romanized scraper, a loanword) for a scraper; the Hindi surface for this artifact kind."
-    lexeme "zh"
-      word "爬虫"
-        description "Chinese noun (pinyin pachong) for a web crawler or scraper; the Chinese surface for this artifact kind."
-  meaning "artifact_library"
-    gloss "a reusable code library; canonical label `library`"
-    wiktionary "library"
-    defined_by "software_artifact"
-    role "software_artifact_kind"
-    lexeme "en"
-      word "library"
-        description "English noun for a reusable code library; the canonical label for this artifact kind."
-    lexeme "ru"
-      word "библиотека"
-        description "Russian noun (romanized biblioteka) for a library; the nominative Russian surface for this artifact kind."
-      word "библиотеку"
-        description "Russian noun (romanized biblioteku) for a library; the accusative-case form of the library surface."
-    lexeme "hi"
-      word "लाइब्रेरी"
-        description "Hindi noun (romanized library, a loanword) for a code library; the Hindi surface for this artifact kind."
-    lexeme "zh"
-      word "库"
-        description "Chinese noun (pinyin ku) for a code library; the Chinese surface for this artifact kind."
-  meaning "artifact_website"
-    gloss "a website of linked pages; canonical label `website`"
-    wiktionary "website"
-    defined_by "software_artifact"
-    role "software_artifact_kind"
-    lexeme "en"
-      word "website"
-        description "English noun for a site of linked web pages; the canonical label for this artifact kind."
-    lexeme "ru"
-      word "сайт"
-        description "Russian noun (romanized sayt) for a website; the Russian surface for this artifact kind."
-      word "веб сайт"
-        description "Russian noun phrase (romanized veb sayt) for a website; an alternative Russian surface for this artifact kind."
-    lexeme "hi"
-      word "वेबसाइट"
-        description "Hindi noun (romanized website, a loanword) for a website; the Hindi surface for this artifact kind."
-    lexeme "zh"
-      word "网站"
-        description "Chinese noun (pinyin wangzhan) for a website; the Chinese surface for this artifact kind."
-  meaning "artifact_plugin"
-    gloss "a plugin that extends a host application; canonical label `plugin`"
-    wiktionary "plugin"
-    defined_by "software_artifact"
-    role "software_artifact_kind"
-    lexeme "en"
-      word "plugin"
-        description "English noun for a component that extends a host application; the canonical label for this artifact kind."
-    lexeme "ru"
-      word "плагин"
-        description "Russian noun (romanized plagin, a loanword) for a plugin; the Russian surface for this artifact kind."
-    lexeme "hi"
-      word "प्लगइन"
-        description "Hindi noun (romanized plugin, a loanword) for a plugin; the Hindi surface for this artifact kind."
-    lexeme "zh"
-      word "插件"
-        description "Chinese noun (pinyin chajian) for a plugin; the Chinese surface for this artifact kind."
-  meaning "artifact_service"
-    gloss "a long-running service or daemon; canonical label `service`"
-    wiktionary "service"
-    defined_by "software_artifact"
-    role "software_artifact_kind"
-    lexeme "en"
-      word "service"
-        description "English noun for a long-running service or daemon; the canonical label for this artifact kind."
-    lexeme "ru"
-      word "сервис"
-        description "Russian noun (romanized servis, a loanword) for a service; the Russian surface for this artifact kind."
-      word "служба"
-        description "Russian noun (romanized sluzhba) for a service or daemon; the nominative Russian surface for this artifact kind."
-      word "службу"
-        description "Russian noun (romanized sluzhbu) for a service; the accusative-case form of the service surface."
-    lexeme "hi"
-      word "सेवा"
-        description "Hindi noun (romanized seva) for a service; the Hindi surface for this artifact kind."
-    lexeme "zh"
-      word "服务"
-        description "Chinese noun (pinyin fuwu) for a service; the Chinese surface for this artifact kind."
-  meaning "artifact_bot"
-    gloss "a bot that automates a chat or task; canonical label `bot`"
-    wiktionary "bot"
-    defined_by "software_artifact"
-    role "software_artifact_kind"
-    lexeme "en"
-      word "bot"
-        description "English noun for a program that automates a chat or task; the canonical label for this artifact kind."
-    lexeme "ru"
-      word "бот"
-        description "Russian noun (romanized bot, a loanword) for a bot; the Russian surface for this artifact kind."
-    lexeme "hi"
-      word "बॉट"
-        description "Hindi noun (romanized bot, a loanword) for a bot; the Hindi surface for this artifact kind."
-    lexeme "zh"
-      word "机器人"
-        description "Chinese noun (pinyin jiqiren) literally robot, used for a bot; the Chinese surface for this artifact kind."
-  meaning "artifact_app"
-    gloss "an app — a generic application; canonical label `app`"
-    wiktionary "app"
-    defined_by "software_artifact"
-    role "software_artifact_kind"
-    lexeme "en"
-      word "app"
-        description "English noun abbreviating application; the canonical label for this generic artifact kind."
-    lexeme "ru"
-      word "приложение"
-        description "Russian noun (romanized prilozheniye) for an application; the Russian surface for this generic artifact kind."
-    lexeme "hi"
-      word "ऐप"
-        description "Hindi noun (romanized app, a loanword) for an app; the Hindi surface for this generic artifact kind."
-    lexeme "zh"
-      word "应用"
-        description "Chinese noun (pinyin yingyong) for an application; the Chinese surface for this generic artifact kind."
-  meaning "artifact_api"
-    gloss "an API — a programmatic interface; canonical label `API`"
-    wiktionary "API"
-    defined_by "software_artifact"
-    role "software_artifact_kind"
-    lexeme "en"
-      word "api"
-        description "English noun, the initialism API, for a programmatic interface; the canonical label for this artifact kind."
-    lexeme "ru"
-      word "апи"
-        description "Russian noun (romanized api, a loanword) for an API; the Russian surface for this artifact kind."
-    lexeme "hi"
-      word "एपीआई"
-        description "Hindi noun (romanized api, a loanword) for an API; the Hindi surface for this artifact kind."
-    lexeme "zh"
-      word "接口"
-        description "Chinese noun (pinyin jiekou) for an interface or API; the Chinese surface for this artifact kind."
-  meaning "artifact_sdk"
-    gloss "an SDK — a software development kit; canonical label `SDK`"
-    wiktionary "SDK"
-    defined_by "software_artifact"
-    role "software_artifact_kind"
-    lexeme "en"
-      word "sdk"
-        description "English noun, the initialism SDK, for a software development kit; the canonical label for this artifact kind."
-    lexeme "ru"
-      word "сдк"
-        description "Russian noun (romanized sdk, a loanword) for an SDK; the Russian surface for this artifact kind."
-    lexeme "hi"
-      word "एसडीके"
-        description "Hindi noun (romanized sdk, a loanword) for an SDK; the Hindi surface for this artifact kind."
-    lexeme "zh"
-      word "开发包"
-        description "Chinese noun (pinyin kaifabao) for a development kit; the Chinese surface for this artifact kind."
-  meaning "artifact_tool"
-    gloss "a general tool or utility; canonical label `tool`"
-    wiktionary "tool"
-    defined_by "software_artifact"
-    role "software_artifact_kind"
-    lexeme "en"
-      word "tool"
-        description "English noun for a general tool or utility; the canonical label for this artifact kind."
-    lexeme "ru"
-      word "инструмент"
-        description "Russian noun (romanized instrument) for a tool; the Russian surface for this artifact kind."
-    lexeme "hi"
-      word "टूल"
-        description "Hindi noun (romanized tool, a loanword) for a tool; the Hindi surface for this artifact kind."
-      word "उपकरण"
-        description "Hindi noun (romanized upakaran) for an instrument or utility; an alternative Hindi surface for a tool."
-    lexeme "zh"
-      word "工具"
-        description "Chinese noun (pinyin gongju) for a tool; the Chinese surface for this artifact kind."
-  meaning "artifact_mod"
-    gloss "a mod that alters a game or program; canonical label `mod`"
-    wiktionary "mod"
-    defined_by "software_artifact"
-    role "software_artifact_kind"
-    lexeme "en"
-      word "mod"
-        description "English noun for a modification that alters a game or program; the canonical label for this artifact kind."
-    lexeme "ru"
-      word "мод"
-        description "Russian noun (romanized mod, a loanword) for a game modification; the Russian surface for this artifact kind."
-    lexeme "hi"
-      word "मॉड"
-        description "Hindi noun (romanized mod, a loanword) for a game modification; the Hindi surface for this artifact kind."
-    lexeme "zh"
-      word "模组"
-        description "Chinese noun (pinyin mozu) for a game mod; the Chinese surface for this artifact kind."
-  meaning "software_feature"
-    gloss "a capability a software request asks the artifact to have — the genus of the requirement categories below; a clause naming one is a feature requirement, and the category it names classifies the resulting subtask"
-    wiktionary "feature"
-    defined_by "requirement_state_tracking"
-    defined_by "requirement_project_behavior"
-    defined_by "property"
-    role "software_feature"
-    lexeme "en"
-      word "feature"
-        description "English noun for a capability a request asks the artifact to have; the genus of the requirement categories below."
-      word "features"
-        description "English noun, the plural of feature, for capabilities a request asks for; a plural surface of the feature concept."
-      word "requirement"
-        description "English noun for a stated capability the artifact must satisfy; a synonym surface for a feature."
-      word "requirements"
-        description "English noun, the plural of requirement, for stated capabilities; a plural synonym surface for features."
-    lexeme "ru"
-      word "функция"
-        description "Russian noun (romanized funktsiya) for a feature or function; the Russian surface for the feature concept."
-      word "требование"
-        description "Russian noun (romanized trebovaniye) for a requirement; an alternative Russian surface for a feature."
-    lexeme "hi"
-      word "सुविधा"
-        description "Hindi noun (romanized suvidha) for a feature or facility; the Hindi surface for the feature concept."
-      word "आवश्यकता"
-        description "Hindi noun (romanized avashyakta) for a requirement or necessity; an alternative Hindi surface for a feature."
-    lexeme "zh"
-      word "功能"
-        description "Chinese noun (pinyin gongneng) for a feature or function; the Chinese surface for the feature concept."
-      word "需求"
-        description "Chinese noun (pinyin xuqiu) for a requirement or demand; an alternative Chinese surface for a feature."
-  meaning "requirement_state_tracking"
-    gloss "a feature that tracks evolving state — counters, status, damage, cooldowns; canonical category `state_tracking`"
-    wiktionary "state"
-    defined_by "software_feature"
-    role "software_requirement_category"
-    lexeme "en"
-      word "track"
-        description "English verb for following evolving state over time; a state-tracking requirement cue."
-      word "hp"
-        description "English noun, the initialism for hit points, a tracked combat counter; a state-tracking requirement cue."
-      word "status"
-        description "English noun for a tracked condition or state; a state-tracking requirement cue."
-      word "damage"
-        description "English noun for tracked harm applied to a unit; a state-tracking requirement cue."
-      word "cooldown"
-        description "English noun for a tracked recharge timer between uses; a state-tracking requirement cue."
-    lexeme "ru"
-      word "состояние"
-        description "Russian noun (romanized sostoyaniye) for state or condition; a state-tracking requirement cue."
-      word "урон"
-        description "Russian noun (romanized uron) for damage; a state-tracking requirement cue."
-      word "откат"
-        description "Russian noun (romanized otkat) for a cooldown; a state-tracking requirement cue."
-    lexeme "hi"
-      word "स्थिति"
-        description "Hindi noun (romanized sthiti) for state or status; a state-tracking requirement cue."
-      word "क्षति"
-        description "Hindi noun (romanized kshati) for damage or harm; a state-tracking requirement cue."
-    lexeme "zh"
-      word "状态"
-        description "Chinese noun (pinyin zhuangtai) for state or status; a state-tracking requirement cue."
-      word "伤害"
-        description "Chinese noun (pinyin shanghai) for damage; a state-tracking requirement cue."
-      word "冷却"
-        description "Chinese noun (pinyin lengque) for a cooldown; a state-tracking requirement cue."
-  meaning "requirement_data_exchange"
-    gloss "a feature that moves data in or out — import, export, backups, reports; canonical category `data_exchange`"
-    wiktionary "data"
-    defined_by "software_feature"
-    role "software_requirement_category"
-    lexeme "en"
-      word "import"
-        description "English noun or verb for bringing data in; a data-exchange requirement cue."
-      word "export"
-        description "English noun or verb for sending data out; a data-exchange requirement cue."
-      word "csv"
-        description "English noun, the initialism for comma-separated values, a data-exchange file format; a data-exchange requirement cue."
-      word "backup"
-        description "English noun for a saved copy of data; a data-exchange requirement cue."
-      word "report"
-        description "English noun for a generated data summary; a data-exchange requirement cue."
-      word "calendar"
-        description "English noun for exported or imported schedule data; a data-exchange requirement cue."
-    lexeme "ru"
-      word "импорт"
-        description "Russian noun (romanized import) for importing data; a data-exchange requirement cue."
-      word "экспорт"
-        description "Russian noun (romanized eksport) for exporting data; a data-exchange requirement cue."
-      word "резервная копия"
-        description "Russian noun phrase (romanized rezervnaya kopiya) for a backup copy; a data-exchange requirement cue."
-      word "отчёт"
-        description "Russian noun (romanized otchyot) for a report; a data-exchange requirement cue."
-    lexeme "hi"
-      word "आयात"
-        description "Hindi noun (romanized aayat) for import; a data-exchange requirement cue."
-      word "निर्यात"
-        description "Hindi noun (romanized niryat) for export; a data-exchange requirement cue."
-      word "रिपोर्ट"
-        description "Hindi noun (romanized report, a loanword) for a report; a data-exchange requirement cue."
-    lexeme "zh"
-      word "导入"
-        description "Chinese verb (pinyin daoru) for importing data; a data-exchange requirement cue."
-      word "导出"
-        description "Chinese verb (pinyin daochu) for exporting data; a data-exchange requirement cue."
-      word "备份"
-        description "Chinese noun (pinyin beifen) for a backup; a data-exchange requirement cue."
-      word "报告"
-        description "Chinese noun (pinyin baogao) for a report; a data-exchange requirement cue."
-  meaning "requirement_automation"
-    gloss "a feature that runs on a schedule or trigger — reminders, notifications, jobs; canonical category `automation`"
-    wiktionary "automation"
-    defined_by "software_feature"
-    role "software_requirement_category"
-    lexeme "en"
-      word "reminder"
-        description "English noun for a scheduled prompt to the user; an automation requirement cue."
-      word "notification"
-        description "English noun for a triggered alert message; an automation requirement cue."
-      word "schedule"
-        description "English noun or verb for timing recurring work; an automation requirement cue."
-      word "weekly"
-        description "English adjective for a once-a-week recurrence; an automation requirement cue."
-    lexeme "ru"
-      word "напоминание"
-        description "Russian noun (romanized napominaniye) for a reminder; an automation requirement cue."
-      word "уведомление"
-        description "Russian noun (romanized uvedomleniye) for a notification; an automation requirement cue."
-      word "расписание"
-        description "Russian noun (romanized raspisaniye) for a schedule; an automation requirement cue."
-    lexeme "hi"
-      word "अनुस्मारक"
-        description "Hindi noun (romanized anusmarak) for a reminder; an automation requirement cue."
-      word "सूचना"
-        description "Hindi noun (romanized soochna) for a notification; an automation requirement cue."
-    lexeme "zh"
-      word "提醒"
-        description "Chinese noun or verb (pinyin tixing) for a reminder; an automation requirement cue."
-      word "通知"
-        description "Chinese noun (pinyin tongzhi) for a notification; an automation requirement cue."
-      word "计划"
-        description "Chinese noun (pinyin jihua) for a plan or schedule; an automation requirement cue."
-  meaning "requirement_validation"
-    gloss "a feature that validates input or invariants — checks, conflicts, audits; canonical category `validation`"
-    wiktionary "validation"
-    defined_by "software_feature"
-    role "software_requirement_category"
-    lexeme "en"
-      word "validate"
-        description "English verb for checking input or invariants for correctness; a validation requirement cue."
-      word "check"
-        description "English verb for inspecting input against a rule; a validation requirement cue."
-      word "conflict"
-        description "English noun for a clash between values that validation must catch; a validation requirement cue."
-      word "audit"
-        description "English noun for a systematic correctness review; a validation requirement cue."
-    lexeme "ru"
-      word "проверка"
-        description "Russian noun (romanized proverka) for a check or validation; a validation requirement cue."
-      word "проверь"
-        description "Russian imperative verb (romanized prover) meaning check or validate; a validation requirement cue."
-      word "аудит"
-        description "Russian noun (romanized audit, a loanword) for an audit; a validation requirement cue."
-    lexeme "hi"
-      word "सत्यापन"
-        description "Hindi noun (romanized satyapan) for verification or validation; a validation requirement cue."
-      word "जाँच"
-        description "Hindi noun (romanized janch) for a check or inspection; a validation requirement cue."
-    lexeme "zh"
-      word "验证"
-        description "Chinese verb (pinyin yanzheng) for validating or verifying; a validation requirement cue."
-      word "检查"
-        description "Chinese verb (pinyin jiancha) for checking; a validation requirement cue."
-      word "审计"
-        description "Chinese noun (pinyin shenji) for an audit; a validation requirement cue."
-  meaning "requirement_integration"
-    gloss "a feature that integrates with an external host — an API or third-party service; canonical category `integration`"
-    wiktionary "integration"
-    defined_by "software_feature"
-    role "software_requirement_category"
-    lexeme "en"
-      word "api"
-        description "English noun, the initialism API, for a programmatic interface to integrate with; an integration requirement cue."
-      word "discord"
-        description "English proper noun for the Discord chat platform to integrate with; an integration requirement cue."
-      word "telegram"
-        description "English proper noun for the Telegram messaging platform to integrate with; an integration requirement cue."
-      word "github"
-        description "English proper noun for the GitHub platform to integrate with; an integration requirement cue."
-      word "browser"
-        description "English noun for a web browser host to integrate with; an integration requirement cue."
-    lexeme "ru"
-      word "интеграция"
-        description "Russian noun (romanized integratsiya) for integration; an integration requirement cue."
-      word "апи"
-        description "Russian noun (romanized api, a loanword) for an API; an integration requirement cue."
-      word "браузер"
-        description "Russian noun (romanized brauzer, a loanword) for a browser; an integration requirement cue."
-    lexeme "hi"
-      word "एकीकरण"
-        description "Hindi noun (romanized ekikaran) for integration; an integration requirement cue."
-      word "एपीआई"
-        description "Hindi noun (romanized api, a loanword) for an API; an integration requirement cue."
-    lexeme "zh"
-      word "集成"
-        description "Chinese noun (pinyin jicheng) for integration; an integration requirement cue."
-      word "接口"
-        description "Chinese noun (pinyin jiekou) for an interface or API; an integration requirement cue."
-      word "浏览器"
-        description "Chinese noun (pinyin liulanqi) for a browser; an integration requirement cue."
-  meaning "requirement_user_interface"
-    gloss "a feature that presents state to a person — dashboards, charts, filters; canonical category `user_interface`"
-    wiktionary "interface"
-    defined_by "software_feature"
-    role "software_requirement_category"
-    lexeme "en"
-      word "dashboard"
-        description "English noun for a screen presenting state at a glance; a user-interface requirement cue."
-      word "chart"
-        description "English noun for a graphical plot of data; a user-interface requirement cue."
-      word "filter"
-        description "English noun for a control that narrows what is shown; a user-interface requirement cue."
-      word "progress"
-        description "English noun for a visual progress indicator; a user-interface requirement cue."
-    lexeme "ru"
-      word "панель"
-        description "Russian noun (romanized panel) for a panel or dashboard; a user-interface requirement cue."
-      word "график"
-        description "Russian noun (romanized grafik) for a chart or graph; a user-interface requirement cue."
-      word "фильтр"
-        description "Russian noun (romanized filtr) for a filter; a user-interface requirement cue."
-    lexeme "hi"
-      word "डैशबोर्ड"
-        description "Hindi noun (romanized dashboard, a loanword) for a dashboard; a user-interface requirement cue."
-      word "चार्ट"
-        description "Hindi noun (romanized chart, a loanword) for a chart; a user-interface requirement cue."
-    lexeme "zh"
-      word "仪表板"
-        description "Chinese noun (pinyin yibiaoban) for a dashboard; a user-interface requirement cue."
-      word "图表"
-        description "Chinese noun (pinyin tubiao) for a chart or graph; a user-interface requirement cue."
-      word "筛选"
-        description "Chinese verb (pinyin shaixuan) for filtering or screening; a user-interface requirement cue."
-  meaning "requirement_project_behavior"
-    gloss "a feature that adds general project behavior not covered by a more specific category — the catch-all classified last; canonical category `project_behavior`"
-    wiktionary "behavior"
-    defined_by "software_feature"
-    role "software_requirement_category"
-    lexeme "en"
-      word "add"
-        description "English verb for introducing general new behavior; a catch-all project-behavior cue."
-      word "admin"
-        description "English noun for administrative functionality; a catch-all project-behavior cue."
-      word "customer"
-        description "English noun for customer-related functionality; a catch-all project-behavior cue."
-      word "date"
-        description "English noun for date-handling functionality; a catch-all project-behavior cue."
-      word "email"
-        description "English noun for email-related functionality; a catch-all project-behavior cue."
-      word "expense"
-        description "English noun for expense-tracking functionality; a catch-all project-behavior cue."
-      word "file"
-        description "English noun for file-handling functionality; a catch-all project-behavior cue."
-      word "history"
-        description "English noun for history or audit-trail functionality; a catch-all project-behavior cue."
-      word "invoice"
-        description "English noun for invoicing functionality; a catch-all project-behavior cue."
-      word "log"
-        description "English noun for logging functionality; a catch-all project-behavior cue."
-      word "maintenance"
-        description "English noun for maintenance functionality; a catch-all project-behavior cue."
-      word "payment"
-        description "English noun for payment-handling functionality; a catch-all project-behavior cue."
-      word "protection"
-        description "English noun for protective functionality; a catch-all project-behavior cue."
-      word "record"
-        description "English noun for record-keeping functionality; a catch-all project-behavior cue."
-      word "rename"
-        description "English verb for renaming functionality; a catch-all project-behavior cue."
-      word "resistance"
-        description "English noun for resistance-related functionality; a catch-all project-behavior cue."
-      word "retry"
-        description "English verb for retry functionality; a catch-all project-behavior cue."
-      word "scrape"
-        description "English verb for scraping functionality; a catch-all project-behavior cue."
-      word "stack"
-        description "English noun for stack-related functionality; a catch-all project-behavior cue."
-      word "sync"
-        description "English verb for synchronization functionality; a catch-all project-behavior cue."
-      word "tracking"
-        description "English noun for general tracking functionality; a catch-all project-behavior cue."
-      word "upload"
-        description "English verb for upload functionality; a catch-all project-behavior cue."
-    lexeme "ru"
-      word "добавить"
-        description "Russian infinitive verb (romanized dobavit) meaning to add; a catch-all project-behavior cue."
-      word "клиент"
-        description "Russian noun (romanized klient) for a customer or client; a catch-all project-behavior cue."
-      word "файл"
-        description "Russian noun (romanized fayl) for a file; a catch-all project-behavior cue."
-      word "загрузка"
-        description "Russian noun (romanized zagruzka) for an upload or download; a catch-all project-behavior cue."
-    lexeme "hi"
-      word "जोड़ें"
-        description "Hindi imperative verb (romanized joden) meaning add; a catch-all project-behavior cue."
-      word "फ़ाइल"
-        description "Hindi noun (romanized file, a loanword) for a file; a catch-all project-behavior cue."
-    lexeme "zh"
-      word "添加"
-        description "Chinese verb (pinyin tianjia) for adding; a catch-all project-behavior cue."
-      word "文件"
-        description "Chinese noun (pinyin wenjian) for a file; a catch-all project-behavior cue."
-      word "上传"
-        description "Chinese verb (pinyin shangchuan) for uploading; a catch-all project-behavior cue."
-  meaning "software_delivery"
-    gloss "how the assistant should deliver a software solution — the genus of the delivery modes below; the default is generated code, the others are selected only when their mode is evidenced in the request"
-    wiktionary "delivery"
-    defined_by "software_artifact"
-    defined_by "delivery_manual_instructions"
-    role "software_delivery"
-    lexeme "en"
-      word "delivery"
-        description "English noun for how a software solution is handed over; the genus of the delivery modes below."
-    lexeme "ru"
-      word "доставка"
-        description "Russian noun (romanized dostavka) for delivery; the Russian surface for the delivery concept."
-    lexeme "hi"
-      word "वितरण"
-        description "Hindi noun (romanized vitaran) for delivery or distribution; the Hindi surface for the delivery concept."
-    lexeme "zh"
-      word "交付"
-        description "Chinese noun or verb (pinyin jiaofu) for delivery or handover; the Chinese surface for the delivery concept."
-  meaning "delivery_manual_instructions"
-    gloss "deliver step-by-step manual instructions for a person to follow instead of writing code; canonical mode `manual_instructions`"
-    wiktionary "instruction"
-    defined_by "software_delivery"
-    role "software_delivery_mode"
-    lexeme "en"
-      word "manual instruction"
-        description "English noun phrase for a single step-by-step instruction for a person; a manual-instructions delivery cue."
-      word "manual instructions"
-        description "English noun phrase, plural, for step-by-step instructions for a person to follow; the canonical manual-instructions delivery cue."
-      word "instruction"
-        description "English noun for a directive to follow; a manual-instructions delivery cue."
-      word "instructions"
-        description "English noun, the plural of instruction, for a set of directives; a manual-instructions delivery cue."
-      word "no code"
-        description "English phrase signalling delivery without writing source; a manual-instructions delivery cue."
-    lexeme "ru"
-      word "инструкция"
-        description "Russian noun (romanized instruktsiya) for an instruction; a manual-instructions delivery cue."
-      word "инструкции"
-        description "Russian noun (romanized instruktsii) for instructions; the plural form of the instruction surface."
-      word "вручную"
-        description "Russian adverb (romanized vruchnuyu) meaning manually or by hand; a manual-instructions delivery cue."
-    lexeme "hi"
-      word "निर्देश"
-        description "Hindi noun (romanized nirdesh) for an instruction or directive; a manual-instructions delivery cue."
-      word "मैनुअल"
-        description "Hindi adjective (romanized manual, a loanword) meaning manual; a manual-instructions delivery cue."
-    lexeme "zh"
-      word "手动说明"
-        description "Chinese noun phrase (pinyin shoudong shuoming) for manual instructions; the canonical manual-instructions delivery cue."
-      word "说明"
-        description "Chinese noun (pinyin shuoming) for an explanation or instructions; a manual-instructions delivery cue."
-  meaning "delivery_immediate_execution"
-    gloss "build the solution and run it immediately in the sandbox (WebVM) rather than handing back source; canonical mode `immediate_execution`"
-    wiktionary "execute"
-    defined_by "software_delivery"
-    role "software_delivery_mode"
-    lexeme "en"
-      word "execute"
-        description "English verb for running the built solution immediately; an immediate-execution delivery cue."
-      word "run command"
-        description "English noun phrase for a command to run immediately; an immediate-execution delivery cue."
-      word "run commands"
-        description "English noun phrase, plural, for commands to run immediately; an immediate-execution delivery cue."
-      word "run it"
-        description "English imperative phrase asking to run the solution immediately; an immediate-execution delivery cue."
-      word "webvm"
-        description "English proper noun for the WebVM in-browser sandbox where the solution runs; an immediate-execution delivery cue."
-    lexeme "ru"
-      word "выполни"
-        description "Russian imperative verb (romanized vypolni) meaning execute or carry out; an immediate-execution delivery cue."
-      word "запусти команду"
-        description "Russian imperative phrase (romanized zapusti komandu) meaning run a command; an immediate-execution delivery cue."
-    lexeme "hi"
-      word "निष्पादित करें"
-        description "Hindi imperative phrase (romanized nishpadit karen) meaning execute it; an immediate-execution delivery cue."
-      word "चलाएँ"
-        description "Hindi imperative verb (romanized chalaen) meaning run it; an immediate-execution delivery cue."
-    lexeme "zh"
-      word "立即运行"
-        description "Chinese phrase (pinyin liji yunxing) meaning run immediately; an immediate-execution delivery cue."
-      word "执行"
-        description "Chinese verb (pinyin zhixing) for executing; an immediate-execution delivery cue."
-  meaning "delivery_script_generation"
-    gloss "deliver an executable shell script or set of commands rather than application source; canonical mode `script_generation`"
-    wiktionary "script"
-    defined_by "software_delivery"
-    role "software_delivery_mode"
-    lexeme "en"
-      word "bash"
-        description "English proper noun for the Bash shell whose script is delivered; a script-generation delivery cue."
-      word "shell"
-        description "English noun for a command-line shell whose script is delivered; a script-generation delivery cue."
-      word "script"
-        description "English noun for an executable script delivered instead of application source; the canonical script-generation delivery cue."
-      word "scripts"
-        description "English noun, the plural of script, for executable scripts; a script-generation delivery cue."
-      word "commands"
-        description "English noun for a set of shell commands delivered to run; a script-generation delivery cue."
-    lexeme "ru"
-      word "скрипт"
-        description "Russian noun (romanized skript, a loanword) for a script; a script-generation delivery cue."
-      word "оболочка"
-        description "Russian noun (romanized obolochka) for a shell; a script-generation delivery cue."
-      word "команды"
-        description "Russian noun (romanized komandy) for commands; a script-generation delivery cue."
-    lexeme "hi"
-      word "स्क्रिप्ट"
-        description "Hindi noun (romanized script, a loanword) for a script; a script-generation delivery cue."
-      word "शेल"
-        description "Hindi noun (romanized shell, a loanword) for a shell; a script-generation delivery cue."
-    lexeme "zh"
-      word "脚本"
-        description "Chinese noun (pinyin jiaoben) for a script; the canonical script-generation delivery cue."
-      word "外壳脚本"
-        description "Chinese noun phrase (pinyin waike jiaoben) for a shell script; a script-generation delivery cue."
-  meaning "software_language"
-    gloss "the programming language a software implementation targets — the genus of the languages below; the default is TypeScript, the others are selected when the language is named in the request"
-    wiktionary "programming language"
-    defined_by "software_artifact"
-    defined_by "language_python"
-    role "software_language"
-    lexeme "en"
-      word "programming language"
-        description "English noun phrase for the language a software implementation targets; the genus of the languages below."
-    lexeme "ru"
-      word "язык программирования"
-        description "Russian noun phrase (romanized yazyk programmirovaniya) for a programming language; the Russian surface for this genus."
-    lexeme "hi"
-      word "प्रोग्रामिंग भाषा"
-        description "Hindi noun phrase (romanized programming bhasha) for a programming language; the Hindi surface for this genus."
-    lexeme "zh"
-      word "编程语言"
-        description "Chinese noun (pinyin biancheng yuyan) for a programming language; the Chinese surface for this genus."
-  meaning "language_python"
-    gloss "the Python programming language and its web frameworks (Django, FastAPI); canonical target `python`"
-    wiktionary "Python"
-    defined_by "software_language"
-    role "software_implementation_language"
-    lexeme "en"
-      word "python"
-        description "English proper noun for the Python programming language; the canonical target for this implementation language."
-      word "django"
-        description "English proper noun for Django, a Python web framework; a surface evidencing the Python target."
-      word "fastapi"
-        description "English proper noun for FastAPI, a Python web framework; a surface evidencing the Python target."
-    lexeme "ru"
-      word "питон"
-        description "Russian noun (romanized piton) for Python; the Russian surface for the Python target."
-      word "пайтон"
-        description "Russian noun (romanized payton) for Python; an alternative Russian transliteration of the Python target."
-    lexeme "hi"
-      word "पायथन"
-        description "Hindi noun (romanized python, a loanword) for the Python language; the Hindi surface for the Python target."
-    lexeme "zh"
-      word "python"
-        description "The Latin-script name Python used in Chinese text for the Python language; the Chinese surface for the Python target."
-  meaning "language_rust"
-    gloss "the Rust programming language and its Cargo toolchain; canonical target `rust`"
-    wiktionary "Rust"
-    defined_by "software_language"
-    role "software_implementation_language"
-    lexeme "en"
-      word "rust"
-        description "English proper noun for the Rust programming language; the canonical target for this implementation language."
-      word "cargo"
-        description "English proper noun for Cargo, the Rust build tool and package manager; a surface evidencing the Rust target."
-    lexeme "ru"
-      word "раст"
-        description "Russian noun (romanized rast) for the Rust language; the Russian surface for the Rust target."
-    lexeme "hi"
-      word "रस्ट"
-        description "Hindi noun (romanized rust, a loanword) for the Rust language; the Hindi surface for the Rust target."
-    lexeme "zh"
-      word "rust"
-        description "The Latin-script name Rust used in Chinese text for the Rust language; the Chinese surface for the Rust target."
-  meaning "language_javascript"
-    gloss "the JavaScript programming language and its Node.js runtime; canonical target `javascript`"
-    wiktionary "JavaScript"
-    defined_by "software_language"
-    role "software_implementation_language"
-    lexeme "en"
-      word "javascript"
-        description "English proper noun for the JavaScript programming language; the canonical target for this implementation language."
-      word "node"
-        description "English proper noun for Node.js, the JavaScript runtime; a surface evidencing the JavaScript target."
-    lexeme "ru"
-      word "джаваскрипт"
-        description "Russian noun (romanized dzhavaskript) for JavaScript; the Russian surface for the JavaScript target."
-    lexeme "hi"
-      word "जावास्क्रिप्ट"
-        description "Hindi noun (romanized javascript, a loanword) for the JavaScript language; the Hindi surface for the JavaScript target."
-    lexeme "zh"
-      word "javascript"
-        description "The Latin-script name JavaScript used in Chinese text for the JavaScript language; the Chinese surface for the JavaScript target."
-  meaning "implementation_language_preposition"
-    gloss "the function word that marks which programming language an implementation should target — 'write a program in Rust', 'на Python'; the unknown-language extractor reads the language name that follows it. Head-initial English/Russian place the name after the marker (the only direction the positional extractor consults); the head-final Hindi/Chinese forms are described for completeness."
-    wiktionary "in"
-    defined_by "software_language"
-    role "implementation_language_preposition"
-    lexeme "en"
-      word "in"
-        description "English preposition marking the target programming language, as in 'write it in <language>'; the language name follows it."
-    lexeme "ru"
-      word "на"
-        description "Russian preposition (romanized na) marking the target programming language, as in 'на <language>'; the language name follows it."
-    lexeme "hi"
-      word "में"
-        description "Hindi postposition (romanized mein) marking the target programming language; head-final Hindi places the language name before it ('<language> में')."
-    lexeme "zh"
-      word "用"
-        description "Chinese coverb (pinyin yong, 'using') marking the target programming language, as in '用 <language> 写'; the language name follows it."
-  meaning "implementation_language_noun"
-    gloss "the head noun 'language' that may sit between the target preposition and the language name — 'in the language Brainfuck', 'на языке Brainfuck'; when present the unknown-language extractor skips it to read the name that follows."
-    wiktionary "language"
-    defined_by "software_language"
-    role "implementation_language_noun"
-    lexeme "en"
-      word "language"
-        description "English noun naming the programming-language slot; when it follows the target preposition the language name comes after it."
-    lexeme "ru"
-      word "языке"
-        description "Russian noun (romanized yazyke, the prepositional case of yazyk) naming the programming-language slot; the language name follows it."
-    lexeme "hi"
-      word "भाषा"
-        description "Hindi noun (romanized bhasha) naming the programming-language slot; the language name accompanies it."
-    lexeme "zh"
-      word "语言"
-        description "Chinese noun (pinyin yuyan) naming the programming-language slot; the language name accompanies it."
-  meaning "tabletop_game_tracker"
-    gloss "a request to track a tabletop/RPG game piece's combat state — the genus pairing a game domain with a combat mechanic; only when both appear is it a game-unit tracker (which forces state_tracking subtasks and a damage-mitigation surface)"
-    wiktionary "tabletop game"
-    defined_by "game_tracker_domain"
-    defined_by "game_tracker_mechanic"
-    role "tabletop_game_tracker"
-    lexeme "en"
-      word "tabletop game tracker"
-        description "English noun phrase for a request to track a tabletop game piece's combat state; the genus pairing a game domain with a combat mechanic."
-    lexeme "ru"
-      word "трекер настольной игры"
-        description "Russian noun phrase (romanized treker nastolnoy igry) for a tabletop game tracker; the Russian surface for this genus."
-    lexeme "hi"
-      word "टेबलटॉप गेम ट्रैकर"
-        description "Hindi noun phrase (romanized tabletop game tracker, a loanword) for a tabletop game tracker; the Hindi surface for this genus."
-    lexeme "zh"
-      word "桌游追踪器"
-        description "Chinese noun (pinyin zhuoyou zhuizongqi) for a tabletop-game tracker; the Chinese surface for this genus."
-  meaning "game_tracker_domain"
-    gloss "a tabletop/RPG game domain whose pieces carry combat state — a D&D unit, a token, a wargame piece, an Owlbear scene"
-    wiktionary "tabletop game"
-    defined_by "tabletop_game_tracker"
-    role "game_tracker_domain"
-    lexeme "en"
-      word "dnd"
-        description "English proper noun, the abbreviation for Dungeons and Dragons, a tabletop RPG domain; a game-tracker domain cue."
-      word "wargame"
-        description "English noun for a tabletop war game whose pieces carry combat state; a game-tracker domain cue."
-      word "tabletop"
-        description "English noun for a tabletop game domain; a game-tracker domain cue."
-      word "unit"
-        description "English noun for a game piece or unit carrying combat state; a game-tracker domain cue."
-      word "token"
-        description "English noun for a playing token representing a piece; a game-tracker domain cue."
-      word "owlbear"
-        description "English proper noun for Owlbear Rodeo, a virtual tabletop scene tool; a game-tracker domain cue."
-    lexeme "ru"
-      word "настольная игра"
-        description "Russian noun phrase (romanized nastolnaya igra) for a tabletop game; a game-tracker domain cue."
-      word "фишка"
-        description "Russian noun (romanized fishka) for a game token or chip; a game-tracker domain cue."
-      word "жетон"
-        description "Russian noun (romanized zheton) for a token; a game-tracker domain cue."
-    lexeme "hi"
-      word "टेबलटॉप"
-        description "Hindi noun (romanized tabletop, a loanword) for a tabletop game; a game-tracker domain cue."
-      word "मोहरा"
-        description "Hindi noun (romanized mohra) for a game piece or pawn; a game-tracker domain cue."
-    lexeme "zh"
-      word "桌游"
-        description "Chinese noun (pinyin zhuoyou) for a tabletop game; a game-tracker domain cue."
-      word "棋子"
-        description "Chinese noun (pinyin qizi) for a game piece; a game-tracker domain cue."
-      word "战棋"
-        description "Chinese noun (pinyin zhanqi) for a tactical war game; a game-tracker domain cue."
-  meaning "game_tracker_mechanic"
-    gloss "a combat mechanic a tabletop tracker follows — hit points, damage, protection, resistance, cooldowns; shares ground with the state_tracking requirement"
-    wiktionary "hit points"
-    defined_by "tabletop_game_tracker"
-    defined_by "requirement_state_tracking"
-    role "game_tracker_mechanic"
-    lexeme "en"
-      word "hp"
-        description "English noun, the initialism for hit points, a tracked combat health value; a game-tracker mechanic cue."
-      word "damage"
-        description "English noun for harm a tracker subtracts from health; a game-tracker mechanic cue."
-      word "protection"
-        description "English noun for a defensive buffer the tracker accounts for; a game-tracker mechanic cue."
-      word "resistance"
-        description "English noun for damage reduction the tracker applies; a game-tracker mechanic cue."
-      word "cooldown"
-        description "English noun for a recharge timer between ability uses; a game-tracker mechanic cue."
-      word "cooldowns"
-        description "English noun, the plural of cooldown, for recharge timers; a game-tracker mechanic cue."
-    lexeme "ru"
-      word "хп"
-        description "Russian noun (romanized khp) for hit points; a game-tracker mechanic cue."
-      word "урон"
-        description "Russian noun (romanized uron) for damage; a game-tracker mechanic cue."
-      word "защита"
-        description "Russian noun (romanized zashchita) for protection or defence; a game-tracker mechanic cue."
-      word "сопротивление"
-        description "Russian noun (romanized soprotivleniye) for resistance; a game-tracker mechanic cue."
-      word "откат"
-        description "Russian noun (romanized otkat) for a cooldown; a game-tracker mechanic cue."
-    lexeme "hi"
-      word "एचपी"
-        description "Hindi noun (romanized hp, a loanword) for hit points; a game-tracker mechanic cue."
-      word "क्षति"
-        description "Hindi noun (romanized kshati) for damage; a game-tracker mechanic cue."
-      word "रक्षा"
-        description "Hindi noun (romanized raksha) for protection or defence; a game-tracker mechanic cue."
-    lexeme "zh"
-      word "生命值"
-        description "Chinese noun (pinyin shengmingzhi) for hit points or health value; a game-tracker mechanic cue."
-      word "伤害"
-        description "Chinese noun (pinyin shanghai) for damage; a game-tracker mechanic cue."
-      word "防护"
-        description "Chinese noun (pinyin fanghu) for protection; a game-tracker mechanic cue."
-      word "抗性"
-        description "Chinese noun (pinyin kangxing) for resistance; a game-tracker mechanic cue."
-      word "冷却"
-        description "Chinese noun (pinyin lengque) for a cooldown; a game-tracker mechanic cue."
-  meaning "software_approval"
-    gloss "the user's approval interaction in a software dialogue — the genus pairing a whole-prompt go-ahead with the granularity at which approval is requested"
-    wiktionary "approval"
-    defined_by "software_approval_trigger"
-    defined_by "software_step_granularity"
-    defined_by "concept"
-    role "software_approval"
-    lexeme "en"
-      word "approval"
-        description "English noun for the user's go-ahead in a software dialogue; the genus pairing a go-ahead with its granularity."
-    lexeme "ru"
-      word "одобрение"
-        description "Russian noun (romanized odobreniye) for approval; the Russian surface for the approval concept."
-    lexeme "hi"
-      word "अनुमोदन"
-        description "Hindi noun (romanized anumodan) for approval; the Hindi surface for the approval concept."
-    lexeme "zh"
-      word "批准"
-        description "Chinese noun or verb (pinyin pizhun) for approval; the Chinese surface for the approval concept."
-  meaning "software_approval_trigger"
-    gloss "a whole-prompt go-ahead that moves a software dialogue from plan to implementation — approve, yes, proceed, go ahead, do it; matched against the entire compacted prompt, not a passing mention"
-    wiktionary "approve"
-    defined_by "software_approval"
-    role "software_approval_trigger"
-    lexeme "en"
-      word "approve"
-        description "English verb for giving the go-ahead to move from plan to implementation; the base approval-trigger surface."
-      word "approved"
-        description "English adjective or past form of approve confirming the go-ahead; an approval-trigger surface."
-      word "approve plan"
-        description "English phrase explicitly approving the plan; an approval-trigger surface."
-      word "yes"
-        description "English affirmative giving the go-ahead; an approval-trigger surface."
-      word "yes proceed"
-        description "English phrase affirming and asking to proceed; an approval-trigger surface."
-      word "proceed"
-        description "English verb asking to move forward with implementation; an approval-trigger surface."
-      word "go ahead"
-        description "English phrase granting permission to proceed; an approval-trigger surface."
-      word "looks good"
-        description "English phrase signalling approval of the plan; an approval-trigger surface."
-      word "do it"
-        description "English imperative phrase granting the go-ahead; an approval-trigger surface."
-      word "start implementation"
-        description "English phrase asking to begin implementing; an approval-trigger surface."
-      word "generate code"
-        description "English phrase asking to produce the code; an approval-trigger surface."
-      word "convert to code"
-        description "English phrase asking to turn the plan into code; an approval-trigger surface."
-    lexeme "ru"
-      word "одобряю"
-        description "Russian verb (romanized odobryayu) meaning I approve; an approval-trigger surface."
-      word "да"
-        description "Russian affirmative (romanized da) meaning yes; an approval-trigger surface."
-      word "приступай"
-        description "Russian imperative verb (romanized pristupay) meaning get started; an approval-trigger surface."
-      word "поехали"
-        description "Russian phrase (romanized poyekhali) meaning let us go; an approval-trigger surface."
-    lexeme "hi"
-      word "स्वीकृत"
-        description "Hindi adjective (romanized sweekrit) meaning approved; an approval-trigger surface."
-      word "हाँ"
-        description "Hindi affirmative (romanized han) meaning yes; an approval-trigger surface."
-      word "आगे बढ़ो"
-        description "Hindi imperative phrase (romanized aage badho) meaning go ahead; an approval-trigger surface."
-    lexeme "zh"
-      word "批准"
-        description "Chinese verb (pinyin pizhun) for approving; an approval-trigger surface."
-      word "同意"
-        description "Chinese verb (pinyin tongyi) for agreeing or consenting; an approval-trigger surface."
-      word "开始"
-        description "Chinese verb (pinyin kaishi) for starting or beginning; an approval-trigger surface."
-  meaning "software_step_granularity"
-    gloss "a request to approve the work step by step rather than all at once — adds the each_step approval gate"
-    wiktionary "step"
-    defined_by "software_approval"
-    role "software_step_granularity"
-    lexeme "en"
-      word "each step"
-        description "English phrase asking to approve every step individually; an each-step granularity cue."
-      word "step by step"
-        description "English phrase asking to proceed one step at a time; an each-step granularity cue."
-    lexeme "ru"
-      word "каждый шаг"
-        description "Russian phrase (romanized kazhdyy shag) meaning each step; an each-step granularity cue."
-      word "пошагово"
-        description "Russian adverb (romanized poshagovo) meaning step by step; an each-step granularity cue."
-    lexeme "hi"
-      word "हर चरण"
-        description "Hindi phrase (romanized har charan) meaning each step; an each-step granularity cue."
-      word "चरण दर चरण"
-        description "Hindi phrase (romanized charan dar charan) meaning step by step; an each-step granularity cue."
-    lexeme "zh"
-      word "每一步"
-        description "Chinese phrase (pinyin mei yi bu) meaning each step; an each-step granularity cue."
-      word "逐步"
-        description "Chinese adverb (pinyin zhubu) meaning step by step; an each-step granularity cue."
-  meaning "software_bash_command"
-    gloss "a shell or command-line surface the work touches — a shell, bash, a command, Docker, WebVM; adds the bash_command approval gate"
-    wiktionary "shell"
-    defined_by "software_delivery"
-    role "software_bash_command"
-    lexeme "en"
-      word "shell"
-        description "English noun for a command-line shell the work touches; a bash-command surface cue."
-      word "bash"
-        description "English proper noun for the Bash shell the work touches; a bash-command surface cue."
-      word "command"
-        description "English noun for a single shell command the work touches; a bash-command surface cue."
-      word "commands"
-        description "English noun, the plural of command, for shell commands the work touches; a bash-command surface cue."
-      word "docker"
-        description "English proper noun for Docker, a container command-line surface; a bash-command surface cue."
-      word "webvm"
-        description "English proper noun for the WebVM in-browser sandbox with a shell; a bash-command surface cue."
-    lexeme "ru"
-      word "оболочка"
-        description "Russian noun (romanized obolochka) for a shell; a bash-command surface cue."
-      word "команда"
-        description "Russian noun (romanized komanda) for a command; a bash-command surface cue."
-      word "команды"
-        description "Russian noun (romanized komandy) for commands; the plural form of the command surface."
-    lexeme "hi"
-      word "शेल"
-        description "Hindi noun (romanized shell, a loanword) for a shell; a bash-command surface cue."
-      word "कमांड"
-        description "Hindi noun (romanized command, a loanword) for a command; a bash-command surface cue."
-    lexeme "zh"
-      word "外壳"
-        description "Chinese noun (pinyin waike) for a shell; a bash-command surface cue."
-      word "命令"
-        description "Chinese noun (pinyin mingling) for a command; a bash-command surface cue."
-      word "docker"
-        description "The Latin-script name Docker used in Chinese text for the container tool; a bash-command surface cue."
+  software_followup: # concept software_followup
+    defined-by software_followup_verification # definition-link
+    defined-by software_followup_execution # definition-link
+    defined-by software_followup_demonstration # definition-link
+    defined-by action # definition-link
+    role software_followup # semantic-role
+    lexeme en # language
+      surface unformalized-raw 102 111 108 108 111 119 45 117 112 # unresolved-surface
+      surface unformalized-raw 101 120 101 114 99 105 115 101 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1087 1088 1086 1076 1086 1083 1078 1077 1085 1080 1077 # unresolved-surface
+      surface unformalized-raw 1086 1090 1088 1072 1073 1086 1090 1082 1072 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2309 2344 2369 2357 2352 2381 2340 2368 # unresolved-surface
+      surface unformalized-raw 2309 2349 2381 2351 2366 2360 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 21518 32493 # unresolved-surface
+      surface unformalized-raw 28436 32451 # unresolved-surface
+  software_followup_verification: # concept software_followup_verification
+    defined-by software_followup # definition-link
+    role software_followup_verification # semantic-role
+    lexeme en # language
+      surface unformalized-raw 116 101 115 116 32 105 116 # unresolved-surface
+      surface unformalized-raw 116 101 115 116 32 116 104 101 # unresolved-surface
+      surface unformalized-raw 116 101 115 116 32 116 104 105 115 # unresolved-surface
+      surface unformalized-raw 118 101 114 105 102 121 # unresolved-surface
+      surface unformalized-raw 99 104 101 99 107 32 105 116 # unresolved-surface
+      surface unformalized-raw 99 104 101 99 107 32 116 104 97 116 # unresolved-surface
+      surface unformalized-raw 114 117 110 32 116 104 101 32 116 101 115 116 115 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1087 1088 1086 1090 1077 1089 1090 1080 1088 1091 1081 # unresolved-surface
+      surface unformalized-raw 1087 1088 1086 1090 1077 1089 1090 1080 1088 1086 1074 1072 1090 1100 # unresolved-surface
+      surface unformalized-raw 1087 1088 1086 1074 1077 1088 1100 # unresolved-surface
+      surface unformalized-raw 1090 1077 1089 1090 1080 1088 1091 1081 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2346 2352 2368 2325 2381 2359 2339 # unresolved-surface
+      surface unformalized-raw 2332 2366 2305 2330 # unresolved-surface
+      surface unformalized-raw 2332 2366 2306 2330 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 27979 35797 # unresolved-surface
+      surface unformalized-raw 26816 39564 # unresolved-surface
+      surface unformalized-raw 26816 26597 # unresolved-surface
+  software_followup_execution: # concept software_followup_execution
+    defined-by software_followup # definition-link
+    role software_followup_execution # semantic-role
+    lexeme en # language
+      surface unformalized-raw 114 117 110 32 105 116 # unresolved-surface
+      surface unformalized-raw 114 117 110 32 116 104 105 115 # unresolved-surface
+      surface unformalized-raw 114 117 110 32 116 104 101 # unresolved-surface
+      surface unformalized-raw 101 120 101 99 117 116 101 32 105 116 # unresolved-surface
+      surface unformalized-raw 101 120 101 99 117 116 101 32 116 104 101 # unresolved-surface
+      surface unformalized-raw 116 114 121 32 105 116 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1079 1072 1087 1091 1089 1090 1080 # unresolved-surface
+      surface unformalized-raw 1074 1099 1087 1086 1083 1085 1080 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2330 2354 2366 2323 # unresolved-surface
+      surface unformalized-raw 2344 2367 2359 2381 2346 2366 2342 2367 2340 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 36816 34892 # unresolved-surface
+      surface unformalized-raw 25191 34892 # unresolved-surface
+  software_followup_demonstration: # concept software_followup_demonstration
+    defined-by software_followup # definition-link
+    role software_followup_demonstration # semantic-role
+    lexeme en # language
+      surface unformalized-raw 100 101 109 111 32 105 116 # unresolved-surface
+      surface unformalized-raw 115 104 111 119 32 109 101 # unresolved-surface
+      surface unformalized-raw 115 104 111 119 32 116 104 101 # unresolved-surface
+      surface unformalized-raw 112 114 105 110 116 32 116 104 101 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1087 1086 1082 1072 1078 1080 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2342 2367 2326 2366 2323 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 26174 31034 # unresolved-surface
+      surface unformalized-raw 23637 31034 # unresolved-surface
+  output_display_request: # concept output_display_request
+    defined-by software_followup # definition-link
+    defined-by action # definition-link
+    role output_display_request # semantic-role
+    lexeme en # language
+      surface unformalized-raw 115 104 111 119 32 109 101 32 8230 # unresolved-surface
+      surface unformalized-raw 115 104 111 119 32 8230 # unresolved-surface
+      surface unformalized-raw 112 114 105 110 116 32 8230 # unresolved-surface
+      surface unformalized-raw 100 105 115 112 108 97 121 32 8230 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1087 1086 1082 1072 1078 1080 32 1084 1085 1077 32 8230 # unresolved-surface
+      surface unformalized-raw 1087 1086 1082 1072 1078 1080 32 8230 # unresolved-surface
+      surface unformalized-raw 1074 1099 1074 1077 1076 1080 32 8230 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2350 2369 2333 2375 32 2342 2367 2326 2366 2323 32 8230 # unresolved-surface
+      surface unformalized-raw 2342 2367 2326 2366 2323 32 8230 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 32473 25105 30475 8230 # unresolved-surface
+      surface unformalized-raw 26174 31034 8230 # unresolved-surface
+  implement: # concept implement
+    defined-by code # definition-link
+    defined-by program # definition-link
+    role software_authoring_action # semantic-role
+    lexeme en # language
+      surface unformalized-raw 105 109 112 108 101 109 101 110 116 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1088 1077 1072 1083 1080 1079 1091 1081 # unresolved-surface
+      surface unformalized-raw 1088 1077 1072 1083 1080 1079 1086 1074 1072 1090 1100 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2354 2366 2327 2370 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 23454 29616 # unresolved-surface
+  develop: # concept develop
+    defined-by program # definition-link
+    role software_authoring_action # semantic-role
+    lexeme en # language
+      surface unformalized-raw 100 101 118 101 108 111 112 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1088 1072 1079 1088 1072 1073 1086 1090 1072 1081 # unresolved-surface
+      surface unformalized-raw 1088 1072 1079 1088 1072 1073 1086 1090 1072 1090 1100 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2357 2367 2325 2360 2367 2340 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 24320 21457 # unresolved-surface
+  design: # concept design
+    defined-by program # definition-link
+    role software_authoring_action # semantic-role
+    lexeme en # language
+      surface unformalized-raw 100 101 115 105 103 110 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1089 1087 1088 1086 1077 1082 1090 1080 1088 1091 1081 # unresolved-surface
+      surface unformalized-raw 1089 1086 1079 1076 1072 1081 32 1076 1080 1079 1072 1081 1085 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2337 2367 2332 2364 2366 2311 2344 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 35774 35745 # unresolved-surface
+  scaffold: # concept scaffold
+    defined-by code # definition-link
+    defined-by program # definition-link
+    role software_authoring_action # semantic-role
+    lexeme en # language
+      surface unformalized-raw 115 99 97 102 102 111 108 100 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1089 1086 1079 1076 1072 1081 32 1082 1072 1088 1082 1072 1089 # unresolved-surface
+      surface unformalized-raw 1089 1075 1077 1085 1077 1088 1080 1088 1091 1081 32 1082 1072 1088 1082 1072 1089 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2338 2366 2305 2330 2366 32 2348 2344 2366 2323 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 25645 24314 # unresolved-surface
+  software_artifact: # concept software_artifact
+    defined-by artifact_application # definition-link
+    defined-by artifact_tool # definition-link
+    defined-by entity # definition-link
+    role software_artifact # semantic-role
+    lexeme en # language
+      surface unformalized-raw 115 111 102 116 119 97 114 101 32 97 114 116 105 102 97 99 116 # unresolved-surface
+      surface unformalized-raw 100 101 108 105 118 101 114 97 98 108 101 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1087 1088 1086 1075 1088 1072 1084 1084 1085 1099 1081 32 1087 1088 1086 1076 1091 1082 1090 # unresolved-surface
+      surface unformalized-raw 1072 1088 1090 1077 1092 1072 1082 1090 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2360 2377 2347 2364 2381 2335 2357 2375 2351 2352 32 2325 2354 2366 2325 2371 2340 2367 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 36719 20214 21046 21697 # unresolved-surface
+  artifact_browser_extension: # concept artifact_browser_extension
+    defined-by software_artifact # definition-link
+    role software_artifact_kind # semantic-role
+    lexeme en # language
+      surface unformalized-raw 98 114 111 119 115 101 114 32 101 120 116 101 110 115 105 111 110 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1088 1072 1089 1096 1080 1088 1077 1085 1080 1077 32 1073 1088 1072 1091 1079 1077 1088 1072 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2348 2381 2352 2366 2313 2332 2364 2352 32 2319 2325 2381 2360 2335 2375 2306 2358 2344 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 27983 35272 22120 25193 23637 # unresolved-surface
+  artifact_command_line_tool: # concept artifact_command_line_tool
+    defined-by software_artifact # definition-link
+    role software_artifact_kind # semantic-role
+    lexeme en # language
+      surface unformalized-raw 99 111 109 109 97 110 100 32 108 105 110 101 32 116 111 111 108 # unresolved-surface
+      surface unformalized-raw 99 108 105 32 116 111 111 108 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1082 1086 1085 1089 1086 1083 1100 1085 1072 1103 32 1091 1090 1080 1083 1080 1090 1072 # unresolved-surface
+      surface unformalized-raw 1091 1090 1080 1083 1080 1090 1072 32 1082 1086 1084 1072 1085 1076 1085 1086 1081 32 1089 1090 1088 1086 1082 1080 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2325 2350 2366 2306 2337 32 2354 2366 2311 2344 32 2335 2370 2354 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 21629 20196 34892 24037 20855 # unresolved-surface
+  artifact_github_action: # concept artifact_github_action
+    defined-by software_artifact # definition-link
+    role software_artifact_kind # semantic-role
+    lexeme en # language
+      surface unformalized-raw 103 105 116 104 117 98 32 97 99 116 105 111 110 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1076 1077 1081 1089 1090 1074 1080 1077 32 103 105 116 104 117 98 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2327 2367 2335 2361 2348 32 2319 2325 2381 2358 2344 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 103 105 116 104 117 98 32 25805 20316 # unresolved-surface
+  artifact_mobile_app: # concept artifact_mobile_app
+    defined-by software_artifact # definition-link
+    role software_artifact_kind # semantic-role
+    lexeme en # language
+      surface unformalized-raw 109 111 98 105 108 101 32 97 112 112 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1084 1086 1073 1080 1083 1100 1085 1086 1077 32 1087 1088 1080 1083 1086 1078 1077 1085 1080 1077 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2350 2379 2348 2366 2311 2354 32 2320 2346 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 31227 21160 24212 29992 # unresolved-surface
+  artifact_web_app: # concept artifact_web_app
+    defined-by software_artifact # definition-link
+    role software_artifact_kind # semantic-role
+    lexeme en # language
+      surface unformalized-raw 119 101 98 32 97 112 112 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1074 1077 1073 32 1087 1088 1080 1083 1086 1078 1077 1085 1080 1077 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2357 2375 2348 32 2320 2346 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 32593 39029 24212 29992 # unresolved-surface
+  artifact_application: # concept artifact_application
+    defined-by software_artifact # definition-link
+    role software_artifact_kind # semantic-role
+    lexeme en # language
+      surface unformalized-raw 97 112 112 108 105 99 97 116 105 111 110 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1087 1088 1080 1083 1086 1078 1077 1085 1080 1077 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2319 2346 2381 2354 2367 2325 2375 2358 2344 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 24212 29992 31243 24207 # unresolved-surface
+  artifact_extension: # concept artifact_extension
+    defined-by software_artifact # definition-link
+    role software_artifact_kind # semantic-role
+    lexeme en # language
+      surface unformalized-raw 101 120 116 101 110 115 105 111 110 # unresolved-surface
+      surface unformalized-raw 97 100 100 32 111 110 # unresolved-surface
+      surface unformalized-raw 97 100 100 111 110 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1088 1072 1089 1096 1080 1088 1077 1085 1080 1077 # unresolved-surface
+      surface unformalized-raw 1076 1086 1087 1086 1083 1085 1077 1085 1080 1077 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2319 2325 2381 2360 2335 2375 2306 2358 2344 # unresolved-surface
+      surface unformalized-raw 2320 2337 45 2321 2344 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 25193 23637 # unresolved-surface
+      surface unformalized-raw 25193 23637 31243 24207 # unresolved-surface
+  artifact_dashboard: # concept artifact_dashboard
+    defined-by software_artifact # definition-link
+    role software_artifact_kind # semantic-role
+    lexeme en # language
+      surface unformalized-raw 100 97 115 104 98 111 97 114 100 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1087 1072 1085 1077 1083 1100 32 1091 1087 1088 1072 1074 1083 1077 1085 1080 1103 # unresolved-surface
+      surface unformalized-raw 1076 1072 1096 1073 1086 1088 1076 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2337 2376 2358 2348 2379 2352 2381 2337 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 20202 34920 26495 # unresolved-surface
+  artifact_scraper: # concept artifact_scraper
+    defined-by software_artifact # definition-link
+    role software_artifact_kind # semantic-role
+    lexeme en # language
+      surface unformalized-raw 115 99 114 97 112 101 114 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1089 1082 1088 1072 1087 1077 1088 # unresolved-surface
+      surface unformalized-raw 1087 1072 1088 1089 1077 1088 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2360 2381 2325 2381 2352 2376 2346 2352 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 29228 34411 # unresolved-surface
+  artifact_library: # concept artifact_library
+    defined-by software_artifact # definition-link
+    role software_artifact_kind # semantic-role
+    lexeme en # language
+      surface unformalized-raw 108 105 98 114 97 114 121 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1073 1080 1073 1083 1080 1086 1090 1077 1082 1072 # unresolved-surface
+      surface unformalized-raw 1073 1080 1073 1083 1080 1086 1090 1077 1082 1091 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2354 2366 2311 2348 2381 2352 2375 2352 2368 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 24211 # unresolved-surface
+  artifact_website: # concept artifact_website
+    defined-by software_artifact # definition-link
+    role software_artifact_kind # semantic-role
+    lexeme en # language
+      surface unformalized-raw 119 101 98 115 105 116 101 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1089 1072 1081 1090 # unresolved-surface
+      surface unformalized-raw 1074 1077 1073 32 1089 1072 1081 1090 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2357 2375 2348 2360 2366 2311 2335 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 32593 31449 # unresolved-surface
+  artifact_plugin: # concept artifact_plugin
+    defined-by software_artifact # definition-link
+    role software_artifact_kind # semantic-role
+    lexeme en # language
+      surface unformalized-raw 112 108 117 103 105 110 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1087 1083 1072 1075 1080 1085 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2346 2381 2354 2327 2311 2344 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 25554 20214 # unresolved-surface
+  artifact_service: # concept artifact_service
+    defined-by software_artifact # definition-link
+    role software_artifact_kind # semantic-role
+    lexeme en # language
+      surface unformalized-raw 115 101 114 118 105 99 101 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1089 1077 1088 1074 1080 1089 # unresolved-surface
+      surface unformalized-raw 1089 1083 1091 1078 1073 1072 # unresolved-surface
+      surface unformalized-raw 1089 1083 1091 1078 1073 1091 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2360 2375 2357 2366 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 26381 21153 # unresolved-surface
+  artifact_bot: # concept artifact_bot
+    defined-by software_artifact # definition-link
+    role software_artifact_kind # semantic-role
+    lexeme en # language
+      surface unformalized-raw 98 111 116 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1073 1086 1090 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2348 2377 2335 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 26426 22120 20154 # unresolved-surface
+  artifact_app: # concept artifact_app
+    defined-by software_artifact # definition-link
+    role software_artifact_kind # semantic-role
+    lexeme en # language
+      surface unformalized-raw 97 112 112 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1087 1088 1080 1083 1086 1078 1077 1085 1080 1077 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2320 2346 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 24212 29992 # unresolved-surface
+  artifact_api: # concept artifact_api
+    defined-by software_artifact # definition-link
+    role software_artifact_kind # semantic-role
+    lexeme en # language
+      surface unformalized-raw 97 112 105 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1072 1087 1080 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2319 2346 2368 2310 2312 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 25509 21475 # unresolved-surface
+  artifact_sdk: # concept artifact_sdk
+    defined-by software_artifact # definition-link
+    role software_artifact_kind # semantic-role
+    lexeme en # language
+      surface unformalized-raw 115 100 107 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1089 1076 1082 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2319 2360 2337 2368 2325 2375 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 24320 21457 21253 # unresolved-surface
+  artifact_tool: # concept artifact_tool
+    defined-by software_artifact # definition-link
+    role software_artifact_kind # semantic-role
+    lexeme en # language
+      surface unformalized-raw 116 111 111 108 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1080 1085 1089 1090 1088 1091 1084 1077 1085 1090 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2335 2370 2354 # unresolved-surface
+      surface unformalized-raw 2313 2346 2325 2352 2339 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 24037 20855 # unresolved-surface
+  artifact_mod: # concept artifact_mod
+    defined-by software_artifact # definition-link
+    role software_artifact_kind # semantic-role
+    lexeme en # language
+      surface unformalized-raw 109 111 100 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1084 1086 1076 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2350 2377 2337 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 27169 32452 # unresolved-surface
+  software_feature: # concept software_feature
+    defined-by requirement_state_tracking # definition-link
+    defined-by requirement_project_behavior # definition-link
+    defined-by property # definition-link
+    role software_feature # semantic-role
+    lexeme en # language
+      surface unformalized-raw 102 101 97 116 117 114 101 # unresolved-surface
+      surface unformalized-raw 102 101 97 116 117 114 101 115 # unresolved-surface
+      surface unformalized-raw 114 101 113 117 105 114 101 109 101 110 116 # unresolved-surface
+      surface unformalized-raw 114 101 113 117 105 114 101 109 101 110 116 115 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1092 1091 1085 1082 1094 1080 1103 # unresolved-surface
+      surface unformalized-raw 1090 1088 1077 1073 1086 1074 1072 1085 1080 1077 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2360 2369 2357 2367 2343 2366 # unresolved-surface
+      surface unformalized-raw 2310 2357 2358 2381 2351 2325 2340 2366 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 21151 33021 # unresolved-surface
+      surface unformalized-raw 38656 27714 # unresolved-surface
+  requirement_state_tracking: # concept requirement_state_tracking
+    defined-by software_feature # definition-link
+    role software_requirement_category # semantic-role
+    lexeme en # language
+      surface unformalized-raw 116 114 97 99 107 # unresolved-surface
+      surface unformalized-raw 104 112 # unresolved-surface
+      surface unformalized-raw 115 116 97 116 117 115 # unresolved-surface
+      surface unformalized-raw 100 97 109 97 103 101 # unresolved-surface
+      surface unformalized-raw 99 111 111 108 100 111 119 110 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1089 1086 1089 1090 1086 1103 1085 1080 1077 # unresolved-surface
+      surface unformalized-raw 1091 1088 1086 1085 # unresolved-surface
+      surface unformalized-raw 1086 1090 1082 1072 1090 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2360 2381 2341 2367 2340 2367 # unresolved-surface
+      surface unformalized-raw 2325 2381 2359 2340 2367 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 29366 24577 # unresolved-surface
+      surface unformalized-raw 20260 23475 # unresolved-surface
+      surface unformalized-raw 20919 21364 # unresolved-surface
+  requirement_data_exchange: # concept requirement_data_exchange
+    defined-by software_feature # definition-link
+    role software_requirement_category # semantic-role
+    lexeme en # language
+      surface unformalized-raw 105 109 112 111 114 116 # unresolved-surface
+      surface unformalized-raw 101 120 112 111 114 116 # unresolved-surface
+      surface unformalized-raw 99 115 118 # unresolved-surface
+      surface unformalized-raw 98 97 99 107 117 112 # unresolved-surface
+      surface unformalized-raw 114 101 112 111 114 116 # unresolved-surface
+      surface unformalized-raw 99 97 108 101 110 100 97 114 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1080 1084 1087 1086 1088 1090 # unresolved-surface
+      surface unformalized-raw 1101 1082 1089 1087 1086 1088 1090 # unresolved-surface
+      surface unformalized-raw 1088 1077 1079 1077 1088 1074 1085 1072 1103 32 1082 1086 1087 1080 1103 # unresolved-surface
+      surface unformalized-raw 1086 1090 1095 1105 1090 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2310 2351 2366 2340 # unresolved-surface
+      surface unformalized-raw 2344 2367 2352 2381 2351 2366 2340 # unresolved-surface
+      surface unformalized-raw 2352 2367 2346 2379 2352 2381 2335 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 23548 20837 # unresolved-surface
+      surface unformalized-raw 23548 20986 # unresolved-surface
+      surface unformalized-raw 22791 20221 # unresolved-surface
+      surface unformalized-raw 25253 21578 # unresolved-surface
+  requirement_automation: # concept requirement_automation
+    defined-by software_feature # definition-link
+    role software_requirement_category # semantic-role
+    lexeme en # language
+      surface unformalized-raw 114 101 109 105 110 100 101 114 # unresolved-surface
+      surface unformalized-raw 110 111 116 105 102 105 99 97 116 105 111 110 # unresolved-surface
+      surface unformalized-raw 115 99 104 101 100 117 108 101 # unresolved-surface
+      surface unformalized-raw 119 101 101 107 108 121 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1085 1072 1087 1086 1084 1080 1085 1072 1085 1080 1077 # unresolved-surface
+      surface unformalized-raw 1091 1074 1077 1076 1086 1084 1083 1077 1085 1080 1077 # unresolved-surface
+      surface unformalized-raw 1088 1072 1089 1087 1080 1089 1072 1085 1080 1077 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2309 2344 2369 2360 2381 2350 2366 2352 2325 # unresolved-surface
+      surface unformalized-raw 2360 2370 2330 2344 2366 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 25552 37266 # unresolved-surface
+      surface unformalized-raw 36890 30693 # unresolved-surface
+      surface unformalized-raw 35745 21010 # unresolved-surface
+  requirement_validation: # concept requirement_validation
+    defined-by software_feature # definition-link
+    role software_requirement_category # semantic-role
+    lexeme en # language
+      surface unformalized-raw 118 97 108 105 100 97 116 101 # unresolved-surface
+      surface unformalized-raw 99 104 101 99 107 # unresolved-surface
+      surface unformalized-raw 99 111 110 102 108 105 99 116 # unresolved-surface
+      surface unformalized-raw 97 117 100 105 116 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1087 1088 1086 1074 1077 1088 1082 1072 # unresolved-surface
+      surface unformalized-raw 1087 1088 1086 1074 1077 1088 1100 # unresolved-surface
+      surface unformalized-raw 1072 1091 1076 1080 1090 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2360 2340 2381 2351 2366 2346 2344 # unresolved-surface
+      surface unformalized-raw 2332 2366 2305 2330 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 39564 35777 # unresolved-surface
+      surface unformalized-raw 26816 26597 # unresolved-surface
+      surface unformalized-raw 23457 35745 # unresolved-surface
+  requirement_integration: # concept requirement_integration
+    defined-by software_feature # definition-link
+    role software_requirement_category # semantic-role
+    lexeme en # language
+      surface unformalized-raw 97 112 105 # unresolved-surface
+      surface unformalized-raw 100 105 115 99 111 114 100 # unresolved-surface
+      surface unformalized-raw 116 101 108 101 103 114 97 109 # unresolved-surface
+      surface unformalized-raw 103 105 116 104 117 98 # unresolved-surface
+      surface unformalized-raw 98 114 111 119 115 101 114 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1080 1085 1090 1077 1075 1088 1072 1094 1080 1103 # unresolved-surface
+      surface unformalized-raw 1072 1087 1080 # unresolved-surface
+      surface unformalized-raw 1073 1088 1072 1091 1079 1077 1088 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2319 2325 2368 2325 2352 2339 # unresolved-surface
+      surface unformalized-raw 2319 2346 2368 2310 2312 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 38598 25104 # unresolved-surface
+      surface unformalized-raw 25509 21475 # unresolved-surface
+      surface unformalized-raw 27983 35272 22120 # unresolved-surface
+  requirement_user_interface: # concept requirement_user_interface
+    defined-by software_feature # definition-link
+    role software_requirement_category # semantic-role
+    lexeme en # language
+      surface unformalized-raw 100 97 115 104 98 111 97 114 100 # unresolved-surface
+      surface unformalized-raw 99 104 97 114 116 # unresolved-surface
+      surface unformalized-raw 102 105 108 116 101 114 # unresolved-surface
+      surface unformalized-raw 112 114 111 103 114 101 115 115 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1087 1072 1085 1077 1083 1100 # unresolved-surface
+      surface unformalized-raw 1075 1088 1072 1092 1080 1082 # unresolved-surface
+      surface unformalized-raw 1092 1080 1083 1100 1090 1088 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2337 2376 2358 2348 2379 2352 2381 2337 # unresolved-surface
+      surface unformalized-raw 2330 2366 2352 2381 2335 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 20202 34920 26495 # unresolved-surface
+      surface unformalized-raw 22270 34920 # unresolved-surface
+      surface unformalized-raw 31579 36873 # unresolved-surface
+  requirement_project_behavior: # concept requirement_project_behavior
+    defined-by software_feature # definition-link
+    role software_requirement_category # semantic-role
+    lexeme en # language
+      surface unformalized-raw 97 100 100 # unresolved-surface
+      surface unformalized-raw 97 100 109 105 110 # unresolved-surface
+      surface unformalized-raw 99 117 115 116 111 109 101 114 # unresolved-surface
+      surface unformalized-raw 100 97 116 101 # unresolved-surface
+      surface unformalized-raw 101 109 97 105 108 # unresolved-surface
+      surface unformalized-raw 101 120 112 101 110 115 101 # unresolved-surface
+      surface unformalized-raw 102 105 108 101 # unresolved-surface
+      surface unformalized-raw 104 105 115 116 111 114 121 # unresolved-surface
+      surface unformalized-raw 105 110 118 111 105 99 101 # unresolved-surface
+      surface unformalized-raw 108 111 103 # unresolved-surface
+      surface unformalized-raw 109 97 105 110 116 101 110 97 110 99 101 # unresolved-surface
+      surface unformalized-raw 112 97 121 109 101 110 116 # unresolved-surface
+      surface unformalized-raw 112 114 111 116 101 99 116 105 111 110 # unresolved-surface
+      surface unformalized-raw 114 101 99 111 114 100 # unresolved-surface
+      surface unformalized-raw 114 101 110 97 109 101 # unresolved-surface
+      surface unformalized-raw 114 101 115 105 115 116 97 110 99 101 # unresolved-surface
+      surface unformalized-raw 114 101 116 114 121 # unresolved-surface
+      surface unformalized-raw 115 99 114 97 112 101 # unresolved-surface
+      surface unformalized-raw 115 116 97 99 107 # unresolved-surface
+      surface unformalized-raw 115 121 110 99 # unresolved-surface
+      surface unformalized-raw 116 114 97 99 107 105 110 103 # unresolved-surface
+      surface unformalized-raw 117 112 108 111 97 100 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1076 1086 1073 1072 1074 1080 1090 1100 # unresolved-surface
+      surface unformalized-raw 1082 1083 1080 1077 1085 1090 # unresolved-surface
+      surface unformalized-raw 1092 1072 1081 1083 # unresolved-surface
+      surface unformalized-raw 1079 1072 1075 1088 1091 1079 1082 1072 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2332 2379 2337 2364 2375 2306 # unresolved-surface
+      surface unformalized-raw 2347 2364 2366 2311 2354 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 28155 21152 # unresolved-surface
+      surface unformalized-raw 25991 20214 # unresolved-surface
+      surface unformalized-raw 19978 20256 # unresolved-surface
+  software_delivery: # concept software_delivery
+    defined-by software_artifact # definition-link
+    defined-by delivery_manual_instructions # definition-link
+    role software_delivery # semantic-role
+    lexeme en # language
+      surface unformalized-raw 100 101 108 105 118 101 114 121 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1076 1086 1089 1090 1072 1074 1082 1072 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2357 2367 2340 2352 2339 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 20132 20184 # unresolved-surface
+  delivery_manual_instructions: # concept delivery_manual_instructions
+    defined-by software_delivery # definition-link
+    role software_delivery_mode # semantic-role
+    lexeme en # language
+      surface unformalized-raw 109 97 110 117 97 108 32 105 110 115 116 114 117 99 116 105 111 110 # unresolved-surface
+      surface unformalized-raw 109 97 110 117 97 108 32 105 110 115 116 114 117 99 116 105 111 110 115 # unresolved-surface
+      surface unformalized-raw 105 110 115 116 114 117 99 116 105 111 110 # unresolved-surface
+      surface unformalized-raw 105 110 115 116 114 117 99 116 105 111 110 115 # unresolved-surface
+      surface unformalized-raw 110 111 32 99 111 100 101 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1080 1085 1089 1090 1088 1091 1082 1094 1080 1103 # unresolved-surface
+      surface unformalized-raw 1080 1085 1089 1090 1088 1091 1082 1094 1080 1080 # unresolved-surface
+      surface unformalized-raw 1074 1088 1091 1095 1085 1091 1102 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2344 2367 2352 2381 2342 2375 2358 # unresolved-surface
+      surface unformalized-raw 2350 2376 2344 2369 2309 2354 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 25163 21160 35828 26126 # unresolved-surface
+      surface unformalized-raw 35828 26126 # unresolved-surface
+  delivery_immediate_execution: # concept delivery_immediate_execution
+    defined-by software_delivery # definition-link
+    role software_delivery_mode # semantic-role
+    lexeme en # language
+      surface unformalized-raw 101 120 101 99 117 116 101 # unresolved-surface
+      surface unformalized-raw 114 117 110 32 99 111 109 109 97 110 100 # unresolved-surface
+      surface unformalized-raw 114 117 110 32 99 111 109 109 97 110 100 115 # unresolved-surface
+      surface unformalized-raw 114 117 110 32 105 116 # unresolved-surface
+      surface unformalized-raw 119 101 98 118 109 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1074 1099 1087 1086 1083 1085 1080 # unresolved-surface
+      surface unformalized-raw 1079 1072 1087 1091 1089 1090 1080 32 1082 1086 1084 1072 1085 1076 1091 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2344 2367 2359 2381 2346 2366 2342 2367 2340 32 2325 2352 2375 2306 # unresolved-surface
+      surface unformalized-raw 2330 2354 2366 2319 2305 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 31435 21363 36816 34892 # unresolved-surface
+      surface unformalized-raw 25191 34892 # unresolved-surface
+  delivery_script_generation: # concept delivery_script_generation
+    defined-by software_delivery # definition-link
+    role software_delivery_mode # semantic-role
+    lexeme en # language
+      surface unformalized-raw 98 97 115 104 # unresolved-surface
+      surface unformalized-raw 115 104 101 108 108 # unresolved-surface
+      surface unformalized-raw 115 99 114 105 112 116 # unresolved-surface
+      surface unformalized-raw 115 99 114 105 112 116 115 # unresolved-surface
+      surface unformalized-raw 99 111 109 109 97 110 100 115 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1089 1082 1088 1080 1087 1090 # unresolved-surface
+      surface unformalized-raw 1086 1073 1086 1083 1086 1095 1082 1072 # unresolved-surface
+      surface unformalized-raw 1082 1086 1084 1072 1085 1076 1099 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2360 2381 2325 2381 2352 2367 2346 2381 2335 # unresolved-surface
+      surface unformalized-raw 2358 2375 2354 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 33050 26412 # unresolved-surface
+      surface unformalized-raw 22806 22771 33050 26412 # unresolved-surface
+  software_language: # concept software_language
+    defined-by software_artifact # definition-link
+    defined-by language_python # definition-link
+    role software_language # semantic-role
+    lexeme en # language
+      surface unformalized-raw 112 114 111 103 114 97 109 109 105 110 103 32 108 97 110 103 117 97 103 101 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1103 1079 1099 1082 32 1087 1088 1086 1075 1088 1072 1084 1084 1080 1088 1086 1074 1072 1085 1080 1103 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2346 2381 2352 2379 2327 2381 2352 2366 2350 2367 2306 2327 32 2349 2366 2359 2366 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 32534 31243 35821 35328 # unresolved-surface
+  language_python: # concept language_python
+    defined-by software_language # definition-link
+    role software_implementation_language # semantic-role
+    lexeme en # language
+      surface unformalized-raw 112 121 116 104 111 110 # unresolved-surface
+      surface unformalized-raw 100 106 97 110 103 111 # unresolved-surface
+      surface unformalized-raw 102 97 115 116 97 112 105 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1087 1080 1090 1086 1085 # unresolved-surface
+      surface unformalized-raw 1087 1072 1081 1090 1086 1085 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2346 2366 2351 2341 2344 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 112 121 116 104 111 110 # unresolved-surface
+  language_rust: # concept language_rust
+    defined-by software_language # definition-link
+    role software_implementation_language # semantic-role
+    lexeme en # language
+      surface unformalized-raw 114 117 115 116 # unresolved-surface
+      surface unformalized-raw 99 97 114 103 111 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1088 1072 1089 1090 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2352 2360 2381 2335 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 114 117 115 116 # unresolved-surface
+  language_javascript: # concept language_javascript
+    defined-by software_language # definition-link
+    role software_implementation_language # semantic-role
+    lexeme en # language
+      surface unformalized-raw 106 97 118 97 115 99 114 105 112 116 # unresolved-surface
+      surface unformalized-raw 110 111 100 101 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1076 1078 1072 1074 1072 1089 1082 1088 1080 1087 1090 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2332 2366 2357 2366 2360 2381 2325 2381 2352 2367 2346 2381 2335 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 106 97 118 97 115 99 114 105 112 116 # unresolved-surface
+  implementation_language_preposition: # concept implementation_language_preposition
+    defined-by software_language # definition-link
+    role implementation_language_preposition # semantic-role
+    lexeme en # language
+      surface unformalized-raw 105 110 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1085 1072 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2350 2375 2306 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 29992 # unresolved-surface
+  implementation_language_noun: # concept implementation_language_noun
+    defined-by software_language # definition-link
+    role implementation_language_noun # semantic-role
+    lexeme en # language
+      surface unformalized-raw 108 97 110 103 117 97 103 101 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1103 1079 1099 1082 1077 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2349 2366 2359 2366 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 35821 35328 # unresolved-surface
+  tabletop_game_tracker: # concept tabletop_game_tracker
+    defined-by game_tracker_domain # definition-link
+    defined-by game_tracker_mechanic # definition-link
+    role tabletop_game_tracker # semantic-role
+    lexeme en # language
+      surface unformalized-raw 116 97 98 108 101 116 111 112 32 103 97 109 101 32 116 114 97 99 107 101 114 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1090 1088 1077 1082 1077 1088 32 1085 1072 1089 1090 1086 1083 1100 1085 1086 1081 32 1080 1075 1088 1099 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2335 2375 2348 2354 2335 2377 2346 32 2327 2375 2350 32 2335 2381 2352 2376 2325 2352 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 26700 28216 36861 36394 22120 # unresolved-surface
+  game_tracker_domain: # concept game_tracker_domain
+    defined-by tabletop_game_tracker # definition-link
+    role game_tracker_domain # semantic-role
+    lexeme en # language
+      surface unformalized-raw 100 110 100 # unresolved-surface
+      surface unformalized-raw 119 97 114 103 97 109 101 # unresolved-surface
+      surface unformalized-raw 116 97 98 108 101 116 111 112 # unresolved-surface
+      surface unformalized-raw 117 110 105 116 # unresolved-surface
+      surface unformalized-raw 116 111 107 101 110 # unresolved-surface
+      surface unformalized-raw 111 119 108 98 101 97 114 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1085 1072 1089 1090 1086 1083 1100 1085 1072 1103 32 1080 1075 1088 1072 # unresolved-surface
+      surface unformalized-raw 1092 1080 1096 1082 1072 # unresolved-surface
+      surface unformalized-raw 1078 1077 1090 1086 1085 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2335 2375 2348 2354 2335 2377 2346 # unresolved-surface
+      surface unformalized-raw 2350 2379 2361 2352 2366 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 26700 28216 # unresolved-surface
+      surface unformalized-raw 26827 23376 # unresolved-surface
+      surface unformalized-raw 25112 26827 # unresolved-surface
+  game_tracker_mechanic: # concept game_tracker_mechanic
+    defined-by tabletop_game_tracker # definition-link
+    defined-by requirement_state_tracking # definition-link
+    role game_tracker_mechanic # semantic-role
+    lexeme en # language
+      surface unformalized-raw 104 112 # unresolved-surface
+      surface unformalized-raw 100 97 109 97 103 101 # unresolved-surface
+      surface unformalized-raw 112 114 111 116 101 99 116 105 111 110 # unresolved-surface
+      surface unformalized-raw 114 101 115 105 115 116 97 110 99 101 # unresolved-surface
+      surface unformalized-raw 99 111 111 108 100 111 119 110 # unresolved-surface
+      surface unformalized-raw 99 111 111 108 100 111 119 110 115 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1093 1087 # unresolved-surface
+      surface unformalized-raw 1091 1088 1086 1085 # unresolved-surface
+      surface unformalized-raw 1079 1072 1097 1080 1090 1072 # unresolved-surface
+      surface unformalized-raw 1089 1086 1087 1088 1086 1090 1080 1074 1083 1077 1085 1080 1077 # unresolved-surface
+      surface unformalized-raw 1086 1090 1082 1072 1090 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2319 2330 2346 2368 # unresolved-surface
+      surface unformalized-raw 2325 2381 2359 2340 2367 # unresolved-surface
+      surface unformalized-raw 2352 2325 2381 2359 2366 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 29983 21629 20540 # unresolved-surface
+      surface unformalized-raw 20260 23475 # unresolved-surface
+      surface unformalized-raw 38450 25252 # unresolved-surface
+      surface unformalized-raw 25239 24615 # unresolved-surface
+      surface unformalized-raw 20919 21364 # unresolved-surface
+  software_approval: # concept software_approval
+    defined-by software_approval_trigger # definition-link
+    defined-by software_step_granularity # definition-link
+    defined-by concept # definition-link
+    role software_approval # semantic-role
+    lexeme en # language
+      surface unformalized-raw 97 112 112 114 111 118 97 108 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1086 1076 1086 1073 1088 1077 1085 1080 1077 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2309 2344 2369 2350 2379 2342 2344 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 25209 20934 # unresolved-surface
+  software_approval_trigger: # concept software_approval_trigger
+    defined-by software_approval # definition-link
+    role software_approval_trigger # semantic-role
+    lexeme en # language
+      surface unformalized-raw 97 112 112 114 111 118 101 # unresolved-surface
+      surface unformalized-raw 97 112 112 114 111 118 101 100 # unresolved-surface
+      surface unformalized-raw 97 112 112 114 111 118 101 32 112 108 97 110 # unresolved-surface
+      surface unformalized-raw 121 101 115 # unresolved-surface
+      surface unformalized-raw 121 101 115 32 112 114 111 99 101 101 100 # unresolved-surface
+      surface unformalized-raw 112 114 111 99 101 101 100 # unresolved-surface
+      surface unformalized-raw 103 111 32 97 104 101 97 100 # unresolved-surface
+      surface unformalized-raw 108 111 111 107 115 32 103 111 111 100 # unresolved-surface
+      surface unformalized-raw 100 111 32 105 116 # unresolved-surface
+      surface unformalized-raw 115 116 97 114 116 32 105 109 112 108 101 109 101 110 116 97 116 105 111 110 # unresolved-surface
+      surface unformalized-raw 103 101 110 101 114 97 116 101 32 99 111 100 101 # unresolved-surface
+      surface unformalized-raw 99 111 110 118 101 114 116 32 116 111 32 99 111 100 101 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1086 1076 1086 1073 1088 1103 1102 # unresolved-surface
+      surface unformalized-raw 1076 1072 # unresolved-surface
+      surface unformalized-raw 1087 1088 1080 1089 1090 1091 1087 1072 1081 # unresolved-surface
+      surface unformalized-raw 1087 1086 1077 1093 1072 1083 1080 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2360 2381 2357 2368 2325 2371 2340 # unresolved-surface
+      surface unformalized-raw 2361 2366 2305 # unresolved-surface
+      surface unformalized-raw 2310 2327 2375 32 2348 2338 2364 2379 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 25209 20934 # unresolved-surface
+      surface unformalized-raw 21516 24847 # unresolved-surface
+      surface unformalized-raw 24320 22987 # unresolved-surface
+  software_step_granularity: # concept software_step_granularity
+    defined-by software_approval # definition-link
+    role software_step_granularity # semantic-role
+    lexeme en # language
+      surface unformalized-raw 101 97 99 104 32 115 116 101 112 # unresolved-surface
+      surface unformalized-raw 115 116 101 112 32 98 121 32 115 116 101 112 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1082 1072 1078 1076 1099 1081 32 1096 1072 1075 # unresolved-surface
+      surface unformalized-raw 1087 1086 1096 1072 1075 1086 1074 1086 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2361 2352 32 2330 2352 2339 # unresolved-surface
+      surface unformalized-raw 2330 2352 2339 32 2342 2352 32 2330 2352 2339 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 27599 19968 27493 # unresolved-surface
+      surface unformalized-raw 36880 27493 # unresolved-surface
+  software_bash_command: # concept software_bash_command
+    defined-by software_delivery # definition-link
+    role software_bash_command # semantic-role
+    lexeme en # language
+      surface unformalized-raw 115 104 101 108 108 # unresolved-surface
+      surface unformalized-raw 98 97 115 104 # unresolved-surface
+      surface unformalized-raw 99 111 109 109 97 110 100 # unresolved-surface
+      surface unformalized-raw 99 111 109 109 97 110 100 115 # unresolved-surface
+      surface unformalized-raw 100 111 99 107 101 114 # unresolved-surface
+      surface unformalized-raw 119 101 98 118 109 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1086 1073 1086 1083 1086 1095 1082 1072 # unresolved-surface
+      surface unformalized-raw 1082 1086 1084 1072 1085 1076 1072 # unresolved-surface
+      surface unformalized-raw 1082 1086 1084 1072 1085 1076 1099 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2358 2375 2354 # unresolved-surface
+      surface unformalized-raw 2325 2350 2366 2306 2337 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 22806 22771 # unresolved-surface
+      surface unformalized-raw 21629 20196 # unresolved-surface
+      surface unformalized-raw 100 111 99 107 101 114 # unresolved-surface

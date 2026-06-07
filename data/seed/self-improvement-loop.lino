@@ -1,13 +1,13 @@
 self_improvement_loop_issue_364
-  record_type "self_improvement_loop"
-  id "issue_364_unknown_trace_learning"
-  title "White-box learning from accumulated unknown traces"
-  trigger "periodic_or_manual"
-  input "unknown_trace event logs from diagnostics and memory export"
-  synthesis_source "rule_synthesis_candidate events produced by unknown-path construction"
-  verification_gate "rule_verification status passed"
-  benchmark_gate "data/benchmarks/coding-modification-suite.lino minimum_pass_count"
-  adoption_policy "propose human-readable Links Notation seed rules; append to seed only after verification and benchmark gates pass"
-  learned_rule_format "program-plan substitution_rules with event learned"
-  review_surface "self_improvement_run links_notation"
-  default_state "proposal_only"
+  record_type self_improvement_loop
+  id issue_364_unknown_trace_learning
+  title unformalized-raw 87 104 105 116 101 45 98 111 120 32 108 101 97 114 110 105 110 103 32 102 114 111 109 32 97 99 99 117 109 117 108 97 116 101 100 32 117 110 107 110 111 119 110 32 116 114 97 99 101 115
+  trigger periodic_or_manual
+  input unformalized-raw 117 110 107 110 111 119 110 95 116 114 97 99 101 32 101 118 101 110 116 32 108 111 103 115 32 102 114 111 109 32 100 105 97 103 110 111 115 116 105 99 115 32 97 110 100 32 109 101 109 111 114 121 32 101 120 112 111 114 116
+  synthesis_source unformalized-raw 114 117 108 101 95 115 121 110 116 104 101 115 105 115 95 99 97 110 100 105 100 97 116 101 32 101 118 101 110 116 115 32 112 114 111 100 117 99 101 100 32 98 121 32 117 110 107 110 111 119 110 45 112 97 116 104 32 99 111 110 115 116 114 117 99 116 105 111 110
+  verification_gate unformalized-raw 114 117 108 101 95 118 101 114 105 102 105 99 97 116 105 111 110 32 115 116 97 116 117 115 32 112 97 115 115 101 100
+  benchmark_gate unformalized-raw 100 97 116 97 47 98 101 110 99 104 109 97 114 107 115 47 99 111 100 105 110 103 45 109 111 100 105 102 105 99 97 116 105 111 110 45 115 117 105 116 101 46 108 105 110 111 32 109 105 110 105 109 117 109 95 112 97 115 115 95 99 111 117 110 116
+  adoption_policy unformalized-raw 112 114 111 112 111 115 101 32 104 117 109 97 110 45 114 101 97 100 97 98 108 101 32 76 105 110 107 115 32 78 111 116 97 116 105 111 110 32 115 101 101 100 32 114 117 108 101 115 59 32 97 112 112 101 110 100 32 116 111 32 115 101 101 100 32 111 110 108 121 32 97 102 116 101 114 32 118 101 114 105 102 105 99 97 116 105 111 110 32 97 110 100 32 98 101 110 99 104 109 97 114 107 32 103 97 116 101 115 32 112 97 115 115
+  learned_rule_format unformalized-raw 112 114 111 103 114 97 109 45 112 108 97 110 32 115 117 98 115 116 105 116 117 116 105 111 110 95 114 117 108 101 115 32 119 105 116 104 32 101 118 101 110 116 32 108 101 97 114 110 101 100
+  review_surface unformalized-raw 115 101 108 102 95 105 109 112 114 111 118 101 109 101 110 116 95 114 117 110 32 108 105 110 107 115 95 110 111 116 97 116 105 111 110
+  default_state proposal_only

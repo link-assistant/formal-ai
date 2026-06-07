@@ -1,155 +1,88 @@
 meanings
-  meaning "definition_merge_action"
-    gloss "merging two or more definitions, translations, or encyclopedia entries into a single combined answer. The definition_merge_action role marks the surface forms that ask for such a merge; the definition-merge handler requires this together with a definition_artifact_request before it looks the term up and combines its definitions. Matched as raw substrings so inflected forms are caught in every supported language."
-    wiktionary "merge"
-    defined_by "action"
-    role "definition_merge_action"
-    lexeme "en"
-      word "merge"
-        description "English verb for combining things into one; a definition_merge_action matched as a raw substring so merges and merging are also caught."
-      word "merged"
-        description "English past participle of merge; a definition_merge_action matched as a raw substring, kept explicitly so the surface list mirrors the original recognizer's disjunction."
-      word "combine"
-        description "English verb for joining things together; a definition_merge_action matched as a raw substring so combines and combining are also caught."
-      word "combined"
-        description "English past participle of combine; a definition_merge_action matched as a raw substring, kept explicitly so the surface list mirrors the original recognizer's disjunction."
-      word "fuse"
-        description "English verb for blending things into one; a definition_merge_action matched as a raw substring so fuses and fusing are also caught."
-      word "fusion"
-        description "English noun for a blending into one; a definition_merge_action matched as a raw substring, kept explicitly because fuse is not a substring of fusion."
-    lexeme "ru"
-      word "объедин"
-        description "Russian verb stem (romanized obyedin, of объединить, to merge or combine); a definition_merge_action matched as a raw substring so объедини and объединить are caught."
-      word "слия"
-        description "Russian noun stem (romanized sliya, of слияние, fusion); a definition_merge_action matched as a raw substring so слияние and слияния are caught."
-    lexeme "hi"
-      word "विलय"
-        description "Hindi noun (romanized vilay, merger); a definition_merge_action matched as a raw substring."
-      word "संयोजन"
-        description "Hindi noun (romanized sanyojan, combination); a definition_merge_action matched as a raw substring."
-    lexeme "zh"
-      word "合并"
-        description "Chinese verb (pinyin hebing, to merge); a definition_merge_action matched as a raw substring."
-      word "融合"
-        description "Chinese verb (pinyin ronghe, to fuse); a definition_merge_action matched as a raw substring."
-  meaning "definition_artifact_request"
-    gloss "a request for a definition, a translation, or a Wikipedia entry — the artifacts the definition-merge handler combines. The definition_artifact_request role marks these surface forms; the handler requires this together with a definition_merge_action before it merges definitions of a term. Matched as raw substrings so inflected forms are caught in every supported language."
-    wiktionary "definition"
-    defined_by "inquiry"
-    role "definition_artifact_request"
-    lexeme "en"
-      word "definition"
-        description "English noun for a statement of meaning; a definition_artifact_request matched as a raw substring so definitions is also caught."
-      word "definitions"
-        description "English plural of definition; a definition_artifact_request matched as a raw substring, kept explicitly so the surface list mirrors the original recognizer's disjunction."
-      word "translation"
-        description "English noun for a rendering into another language; a definition_artifact_request matched as a raw substring so translations is also caught."
-      word "translations"
-        description "English plural of translation; a definition_artifact_request matched as a raw substring, kept explicitly so the surface list mirrors the original recognizer's disjunction."
-      word "translated"
-        description "English past participle of translate; a definition_artifact_request matched as a raw substring."
-      word "wikipedia"
-        description "English proper noun for the Wikipedia encyclopedia, a source of definitions; a definition_artifact_request matched as a raw substring."
-    lexeme "ru"
-      word "определени"
-        description "Russian noun stem (romanized opredeleni, of определение, definition); a definition_artifact_request matched as a raw substring so определение and определения are caught."
-      word "перевод"
-        description "Russian noun (romanized perevod, translation); a definition_artifact_request matched as a raw substring so перевода and переводы are caught."
-      word "википеди"
-        description "Russian noun stem (romanized vikipedi, of Википедия, Wikipedia); a definition_artifact_request matched as a raw substring so Википедия and Википедии are caught."
-    lexeme "hi"
-      word "परिभाषा"
-        description "Hindi noun (romanized paribhasha, definition); a definition_artifact_request matched as a raw substring."
-      word "अनुवाद"
-        description "Hindi noun (romanized anuvad, translation); a definition_artifact_request matched as a raw substring."
-    lexeme "zh"
-      word "定义"
-        description "Chinese noun (pinyin dingyi, definition); a definition_artifact_request matched as a raw substring."
-      word "翻译"
-        description "Chinese noun (pinyin fanyi, translation); a definition_artifact_request matched as a raw substring."
-  meaning "definition_merge_marker"
-    gloss "a phrase that introduces the term whose definitions are to be merged — for example definitions of or translation for — immediately followed by the term itself. The definition_merge_marker role carries these as prefix word forms whose text before the slot marker is the phrase to locate; the definition-merge handler scans them in declaration order, finds the first whose prefix appears in the prompt, and takes the text after it as the term. The English forms are listed in the original recognizer's priority order so longer, more specific phrases win before shorter ones."
-    wiktionary "definition"
-    defined_by "inquiry"
-    role "definition_merge_marker"
-    lexeme "en"
-      word "translated definitions for …"
-        description "English prefix 'translated definitions for'; a definition_merge_marker whose prefix before the slot is located and stripped to leave the term, tried first as the longest, most specific phrase."
-      word "translated definitions of …"
-        description "English prefix 'translated definitions of'; a definition_merge_marker whose prefix before the slot is located and stripped to leave the term."
-      word "wikipedia definitions for …"
-        description "English prefix 'wikipedia definitions for'; a definition_merge_marker whose prefix before the slot is located and stripped to leave the term."
-      word "wikipedia definitions of …"
-        description "English prefix 'wikipedia definitions of'; a definition_merge_marker whose prefix before the slot is located and stripped to leave the term."
-      word "definitions for …"
-        description "English prefix 'definitions for'; a definition_merge_marker whose prefix before the slot is located and stripped to leave the term."
-      word "definitions of …"
-        description "English prefix 'definitions of'; a definition_merge_marker whose prefix before the slot is located and stripped to leave the term."
-      word "definition for …"
-        description "English prefix 'definition for'; a definition_merge_marker whose prefix before the slot is located and stripped to leave the term."
-      word "definition of …"
-        description "English prefix 'definition of'; a definition_merge_marker whose prefix before the slot is located and stripped to leave the term."
-      word "translations for …"
-        description "English prefix 'translations for'; a definition_merge_marker whose prefix before the slot is located and stripped to leave the term."
-      word "translations of …"
-        description "English prefix 'translations of'; a definition_merge_marker whose prefix before the slot is located and stripped to leave the term."
-      word "translation for …"
-        description "English prefix 'translation for'; a definition_merge_marker whose prefix before the slot is located and stripped to leave the term."
-      word "translation of …"
-        description "English prefix 'translation of'; a definition_merge_marker whose prefix before the slot is located and stripped to leave the term, tried last as the shortest phrase."
-    lexeme "ru"
-      word "переведенные определения для …"
-        description "Russian prefix (romanized perevedennye opredeleniya dlya, translated definitions for); a definition_merge_marker whose prefix before the slot is located and stripped to leave the term."
-      word "определения для …"
-        description "Russian prefix (romanized opredeleniya dlya, definitions for); a definition_merge_marker whose prefix before the slot is located and stripped to leave the term."
-      word "определение …"
-        description "Russian prefix (romanized opredelenie, definition of); a definition_merge_marker whose prefix before the slot is located and stripped to leave the term that follows in the genitive."
-      word "перевод …"
-        description "Russian prefix (romanized perevod, translation of); a definition_merge_marker whose prefix before the slot is located and stripped to leave the term."
-    lexeme "hi"
-      word "की परिभाषाएँ …"
-        description "Hindi best-effort prefix (romanized ki paribhashaen, definitions of); a definition_merge_marker whose prefix before the slot is located and stripped to leave the term."
-      word "का अनुवाद …"
-        description "Hindi best-effort prefix (romanized ka anuvad, translation of); a definition_merge_marker whose prefix before the slot is located and stripped to leave the term."
-    lexeme "zh"
-      word "的定义 …"
-        description "Chinese best-effort prefix (pinyin de dingyi, 's definition); a definition_merge_marker whose prefix before the slot is located and stripped to leave the term."
-      word "的翻译 …"
-        description "Chinese best-effort prefix (pinyin de fanyi, 's translation); a definition_merge_marker whose prefix before the slot is located and stripped to leave the term."
-  meaning "definition_merge_tail_boundary"
-    gloss "a word that ends the term in a definition-merge prompt — once the term has been located, any text from the first such boundary word onward (the source, the method, the destination) is trimmed away. The definition_merge_tail_boundary role marks these forms; the handler reconstructs each as a space-padded token and cuts the extracted term at the earliest one it finds. Defined as a relation between the term and what follows it."
-    wiktionary "from"
-    defined_by "relation"
-    role "definition_merge_tail_boundary"
-    lexeme "en"
-      word "from"
-        description "English preposition introducing a source; a definition_merge_tail_boundary reconstructed as a space-padded token, marking where the term ends."
-      word "using"
-        description "English preposition introducing a method; a definition_merge_tail_boundary reconstructed as a space-padded token, marking where the term ends."
-      word "with"
-        description "English preposition introducing an accompaniment; a definition_merge_tail_boundary reconstructed as a space-padded token, marking where the term ends."
-      word "by"
-        description "English preposition introducing an agent or means; a definition_merge_tail_boundary reconstructed as a space-padded token, marking where the term ends."
-      word "into"
-        description "English preposition introducing a destination; a definition_merge_tail_boundary reconstructed as a space-padded token, marking where the term ends."
-      word "across"
-        description "English preposition introducing a span; a definition_merge_tail_boundary reconstructed as a space-padded token, marking where the term ends."
-    lexeme "ru"
-      word "из"
-        description "Russian preposition (romanized iz, from) introducing a source; a definition_merge_tail_boundary reconstructed as a space-padded token, marking where the term ends."
-      word "с"
-        description "Russian preposition (romanized s, with or from) introducing an accompaniment or source; a definition_merge_tail_boundary reconstructed as a space-padded token, marking where the term ends."
-      word "по"
-        description "Russian preposition (romanized po, by) introducing a means; a definition_merge_tail_boundary reconstructed as a space-padded token, marking where the term ends."
-      word "в"
-        description "Russian preposition (romanized v, into) introducing a destination; a definition_merge_tail_boundary reconstructed as a space-padded token, marking where the term ends."
-    lexeme "hi"
-      word "से"
-        description "Hindi postposition (romanized se, from) introducing a source; a definition_merge_tail_boundary reconstructed as a space-padded token, marking where the term ends."
-      word "के साथ"
-        description "Hindi postposition (romanized ke saath, with) introducing an accompaniment; a definition_merge_tail_boundary reconstructed as a space-padded token, marking where the term ends."
-    lexeme "zh"
-      word "从"
-        description "Chinese preposition (pinyin cong, from) introducing a source; a definition_merge_tail_boundary reconstructed as a space-padded token, marking where the term ends."
-      word "使用"
-        description "Chinese verb (pinyin shiyong, using) introducing a method; a definition_merge_tail_boundary reconstructed as a space-padded token, marking where the term ends."
+  definition_merge_action: # concept definition_merge_action
+    defined-by action # definition-link
+    role definition_merge_action # semantic-role
+    lexeme en # language
+      surface unformalized-raw 109 101 114 103 101 # unresolved-surface
+      surface unformalized-raw 109 101 114 103 101 100 # unresolved-surface
+      surface unformalized-raw 99 111 109 98 105 110 101 # unresolved-surface
+      surface unformalized-raw 99 111 109 98 105 110 101 100 # unresolved-surface
+      surface unformalized-raw 102 117 115 101 # unresolved-surface
+      surface unformalized-raw 102 117 115 105 111 110 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1086 1073 1098 1077 1076 1080 1085 # unresolved-surface
+      surface unformalized-raw 1089 1083 1080 1103 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2357 2367 2354 2351 # unresolved-surface
+      surface unformalized-raw 2360 2306 2351 2379 2332 2344 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 21512 24182 # unresolved-surface
+      surface unformalized-raw 34701 21512 # unresolved-surface
+  definition_artifact_request: # concept definition_artifact_request
+    defined-by inquiry # definition-link
+    role definition_artifact_request # semantic-role
+    lexeme en # language
+      surface unformalized-raw 100 101 102 105 110 105 116 105 111 110 # unresolved-surface
+      surface unformalized-raw 100 101 102 105 110 105 116 105 111 110 115 # unresolved-surface
+      surface unformalized-raw 116 114 97 110 115 108 97 116 105 111 110 # unresolved-surface
+      surface unformalized-raw 116 114 97 110 115 108 97 116 105 111 110 115 # unresolved-surface
+      surface unformalized-raw 116 114 97 110 115 108 97 116 101 100 # unresolved-surface
+      surface unformalized-raw 119 105 107 105 112 101 100 105 97 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1086 1087 1088 1077 1076 1077 1083 1077 1085 1080 # unresolved-surface
+      surface unformalized-raw 1087 1077 1088 1077 1074 1086 1076 # unresolved-surface
+      surface unformalized-raw 1074 1080 1082 1080 1087 1077 1076 1080 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2346 2352 2367 2349 2366 2359 2366 # unresolved-surface
+      surface unformalized-raw 2309 2344 2369 2357 2366 2342 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 23450 20041 # unresolved-surface
+      surface unformalized-raw 32763 35793 # unresolved-surface
+  definition_merge_marker: # concept definition_merge_marker
+    defined-by inquiry # definition-link
+    role definition_merge_marker # semantic-role
+    lexeme en # language
+      surface unformalized-raw 116 114 97 110 115 108 97 116 101 100 32 100 101 102 105 110 105 116 105 111 110 115 32 102 111 114 32 8230 # unresolved-surface
+      surface unformalized-raw 116 114 97 110 115 108 97 116 101 100 32 100 101 102 105 110 105 116 105 111 110 115 32 111 102 32 8230 # unresolved-surface
+      surface unformalized-raw 119 105 107 105 112 101 100 105 97 32 100 101 102 105 110 105 116 105 111 110 115 32 102 111 114 32 8230 # unresolved-surface
+      surface unformalized-raw 119 105 107 105 112 101 100 105 97 32 100 101 102 105 110 105 116 105 111 110 115 32 111 102 32 8230 # unresolved-surface
+      surface unformalized-raw 100 101 102 105 110 105 116 105 111 110 115 32 102 111 114 32 8230 # unresolved-surface
+      surface unformalized-raw 100 101 102 105 110 105 116 105 111 110 115 32 111 102 32 8230 # unresolved-surface
+      surface unformalized-raw 100 101 102 105 110 105 116 105 111 110 32 102 111 114 32 8230 # unresolved-surface
+      surface unformalized-raw 100 101 102 105 110 105 116 105 111 110 32 111 102 32 8230 # unresolved-surface
+      surface unformalized-raw 116 114 97 110 115 108 97 116 105 111 110 115 32 102 111 114 32 8230 # unresolved-surface
+      surface unformalized-raw 116 114 97 110 115 108 97 116 105 111 110 115 32 111 102 32 8230 # unresolved-surface
+      surface unformalized-raw 116 114 97 110 115 108 97 116 105 111 110 32 102 111 114 32 8230 # unresolved-surface
+      surface unformalized-raw 116 114 97 110 115 108 97 116 105 111 110 32 111 102 32 8230 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1087 1077 1088 1077 1074 1077 1076 1077 1085 1085 1099 1077 32 1086 1087 1088 1077 1076 1077 1083 1077 1085 1080 1103 32 1076 1083 1103 32 8230 # unresolved-surface
+      surface unformalized-raw 1086 1087 1088 1077 1076 1077 1083 1077 1085 1080 1103 32 1076 1083 1103 32 8230 # unresolved-surface
+      surface unformalized-raw 1086 1087 1088 1077 1076 1077 1083 1077 1085 1080 1077 32 8230 # unresolved-surface
+      surface unformalized-raw 1087 1077 1088 1077 1074 1086 1076 32 8230 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2325 2368 32 2346 2352 2367 2349 2366 2359 2366 2319 2305 32 8230 # unresolved-surface
+      surface unformalized-raw 2325 2366 32 2309 2344 2369 2357 2366 2342 32 8230 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 30340 23450 20041 32 8230 # unresolved-surface
+      surface unformalized-raw 30340 32763 35793 32 8230 # unresolved-surface
+  definition_merge_tail_boundary: # concept definition_merge_tail_boundary
+    defined-by relation # definition-link
+    role definition_merge_tail_boundary # semantic-role
+    lexeme en # language
+      surface unformalized-raw 102 114 111 109 # unresolved-surface
+      surface unformalized-raw 117 115 105 110 103 # unresolved-surface
+      surface unformalized-raw 119 105 116 104 # unresolved-surface
+      surface unformalized-raw 98 121 # unresolved-surface
+      surface unformalized-raw 105 110 116 111 # unresolved-surface
+      surface unformalized-raw 97 99 114 111 115 115 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1080 1079 # unresolved-surface
+      surface unformalized-raw 1089 # unresolved-surface
+      surface unformalized-raw 1087 1086 # unresolved-surface
+      surface unformalized-raw 1074 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2360 2375 # unresolved-surface
+      surface unformalized-raw 2325 2375 32 2360 2366 2341 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 20174 # unresolved-surface
+      surface unformalized-raw 20351 29992 # unresolved-surface

@@ -1,368 +1,368 @@
 multilingual_responses
-  response "response_greeting_en"
-    intent "greeting"
-    language "en"
-    text "Hi, how may I help you?"
-    variant "Hi, how may I help you?"
-    variant "Hello! How can I assist you today?"
-    variant "Hi there! What can I do for you?"
-    variant "Hey, how can I help?"
-    variant "Hello — what would you like to explore?"
-  response "response_greeting_ru"
-    intent "greeting"
-    language "ru"
-    text "Здравствуйте! Чем могу помочь?"
-    variant "Здравствуйте! Чем могу помочь?"
-    variant "Привет! Чем могу быть полезен?"
-    variant "Здравствуйте! Какой у вас вопрос?"
-    variant "Привет! Что вас интересует?"
-  response "response_greeting_hi"
-    intent "greeting"
-    language "hi"
-    text "नमस्ते! मैं आपकी क्या मदद कर सकता हूँ?"
-    variant "नमस्ते! मैं आपकी क्या मदद कर सकता हूँ?"
-    variant "नमस्कार! मैं आपके लिए क्या कर सकता हूँ?"
-    variant "नमस्ते! कैसे सहायता कर सकता हूँ?"
-  response "response_greeting_zh"
-    intent "greeting"
-    language "zh"
-    text "你好!请问有什么可以帮您的?"
-    variant "你好!请问有什么可以帮您的?"
-    variant "您好!我能为您做些什么?"
-    variant "你好,有什么我可以协助的吗?"
-  response "response_farewell_en"
-    intent "farewell"
-    language "en"
-    text "Goodbye! Feel free to return any time."
-    variant "Goodbye! Feel free to return any time."
-    variant "Bye! Come back whenever you need help."
-    variant "See you later!"
-    variant "Take care!"
-  response "response_farewell_ru"
-    intent "farewell"
-    language "ru"
-    text "До свидания! Возвращайтесь в любое время."
-    variant "До свидания! Возвращайтесь в любое время."
-    variant "Пока! Буду рад помочь снова."
-    variant "До встречи!"
-    variant "Удачи!"
-  response "response_farewell_hi"
-    intent "farewell"
-    language "hi"
-    text "अलविदा! जब भी ज़रूरत हो, वापस आएं।"
-    variant "अलविदा! जब भी ज़रूरत हो, वापस आएं।"
-    variant "फिर मिलेंगे!"
-  response "response_farewell_zh"
-    intent "farewell"
-    language "zh"
-    text "再见!随时欢迎回来。"
-    variant "再见!随时欢迎回来。"
-    variant "拜拜!有需要随时回来。"
-  response "response_test_status_en"
-    intent "test_status"
-    language "en"
-    text "Test passed. I'm here."
-    variant "Test passed. I'm here."
-    variant "I'm here. Test passed."
-  response "response_test_status_ru"
-    intent "test_status"
-    language "ru"
-    text "Тест пройден. Я здесь."
-    variant "Тест пройден. Я здесь."
-    variant "Я здесь. Тест пройден."
-  response "response_test_status_hi"
-    intent "test_status"
-    language "hi"
-    text "परीक्षण सफल रहा। मैं यहाँ हूँ।"
-    variant "परीक्षण सफल रहा। मैं यहाँ हूँ।"
-    variant "मैं यहाँ हूँ। परीक्षण सफल रहा।"
-  response "response_test_status_zh"
-    intent "test_status"
-    language "zh"
-    text "测试通过。我在这里。"
-    variant "测试通过。我在这里。"
-    variant "我在这里。测试通过。"
-  response "response_courtesy_response_en"
-    intent "courtesy_response"
-    language "en"
-    text "Glad to hear it. What would you like to do next?"
-    variant "Glad to hear it. What would you like to do next?"
-    variant "You're welcome. What would you like to do next?"
-    ack_variant "Glad to hear it."
-    ack_variant "You're welcome."
-    ack_variant "Good to hear."
-    ack_variant "Happy to hear that."
-    follow_up_variant "What would you like to do next?"
-    follow_up_variant "Do you want to discuss something else?"
-    follow_up_variant "Is there anything else you want to work on?"
-    follow_up_variant "Would you like to explore another topic?"
-  response "response_courtesy_response_ru"
-    intent "courtesy_response"
-    language "ru"
-    text "Рад это слышать. Что вы хотите сделать дальше?"
-    variant "Рад это слышать. Что вы хотите сделать дальше?"
-    variant "Пожалуйста. Что вы хотите сделать дальше?"
-    ack_variant "Рад это слышать."
-    ack_variant "Пожалуйста."
-    ack_variant "Хорошо, рад слышать."
-    ack_variant "Отлично."
-    follow_up_variant "Что вы хотите сделать дальше?"
-    follow_up_variant "Хотите обсудить что-то еще?"
-    follow_up_variant "Есть ли еще тема, с которой помочь?"
-    follow_up_variant "Продолжим с другим вопросом?"
-  response "response_courtesy_response_hi"
-    intent "courtesy_response"
-    language "hi"
-    text "यह सुनकर अच्छा लगा। अब आप क्या करना चाहेंगे?"
-    variant "यह सुनकर अच्छा लगा। अब आप क्या करना चाहेंगे?"
-    variant "आपका स्वागत है। अब आप क्या करना चाहेंगे?"
-    ack_variant "यह सुनकर अच्छा लगा।"
-    ack_variant "आपका स्वागत है।"
-    ack_variant "अच्छा है।"
-    follow_up_variant "अब आप क्या करना चाहेंगे?"
-    follow_up_variant "क्या आप कुछ और चर्चा करना चाहते हैं?"
-    follow_up_variant "क्या किसी और चीज़ में मदद चाहिए?"
-  response "response_courtesy_response_zh"
-    intent "courtesy_response"
-    language "zh"
-    text "很高兴听到。接下来您想做什么?"
-    variant "很高兴听到。接下来您想做什么?"
-    variant "不客气。接下来您想做什么?"
-    ack_variant "很高兴听到。"
-    ack_variant "不客气。"
-    ack_variant "好的。"
-    follow_up_variant "接下来您想做什么?"
-    follow_up_variant "您想讨论别的事情吗?"
-    follow_up_variant "还有什么需要我帮忙的吗?"
-  response "response_identity_en"
-    intent "identity"
-    language "en"
-    text "I am formal-ai, a deterministic symbolic AI implementation that answers from local Links Notation rules and OpenAI-compatible API shapes. I do not perform neural inference in this demo."
-  response "response_identity_ru"
-    intent "identity"
-    language "ru"
-    text "Я formal-ai — детерминированный символьный ИИ, который отвечает на основе локальных правил Links Notation и совместимых OpenAI-форматов. В этой демонстрации я не выполняю нейросетевой инференс."
-  response "response_identity_hi"
-    intent "identity"
-    language "hi"
-    text "मैं formal-ai हूँ — एक नियतात्मक प्रतीकात्मक AI प्रणाली, जो स्थानीय Links Notation नियमों और OpenAI-संगत API आकारों से उत्तर देती है। इस डेमो में मैं कोई न्यूरल इन्फेरेन्स नहीं करता।"
-  response "response_identity_zh"
-    intent "identity"
-    language "zh"
-    text "我是 formal-ai —— 一个确定性的符号化 AI 系统,根据本地的 Links Notation 规则和兼容 OpenAI 的 API 形式作答。本演示不进行任何神经网络推理。"
-  response "response_assistant_name_en"
-    intent "assistant_name"
-    language "en"
-    text "I'm formal AI, and currently I don't have a name. But you can name me as you like."
-  response "response_assistant_name_ru"
-    intent "assistant_name"
-    language "ru"
-    text "Я formal AI, и сейчас у меня нет имени. Но вы можете назвать меня как хотите."
-  response "response_assistant_name_hi"
-    intent "assistant_name"
-    language "hi"
-    text "मैं formal AI हूँ, और अभी मेरा कोई नाम नहीं है। लेकिन आप मुझे अपनी पसंद का नाम दे सकते हैं।"
-  response "response_assistant_name_zh"
-    intent "assistant_name"
-    language "zh"
-    text "我是 formal AI,目前还没有名字。不过您可以按自己的喜好给我起名。"
-  response "response_meta_explanation_en"
-    intent "meta_explanation"
-    language "en"
-    text "I work by matching your prompt against deterministic Links Notation rules stored in memory. Each rule maps a recognized pattern to a fixed response. When no rule matches, I report intent: unknown. There is no neural inference — every answer is fully traceable to a symbolic rule."
-  response "response_meta_explanation_ru"
-    intent "meta_explanation"
-    language "ru"
-    text "Я работаю так: ваш запрос сопоставляется с детерминированными правилами Links Notation, хранящимися в памяти. Каждое правило связывает распознанный шаблон с фиксированным ответом. Если ни одно правило не подходит, я возвращаю intent: unknown. Нейросетевого инференса нет — каждый ответ полностью отслеживаем по символьному правилу."
-  response "response_meta_explanation_hi"
-    intent "meta_explanation"
-    language "hi"
-    text "मैं इस प्रकार काम करता हूँ: आपके संकेत को मेमोरी में संग्रहीत नियतात्मक Links Notation नियमों से मिलाया जाता है। प्रत्येक नियम एक पहचाने गए पैटर्न को एक निश्चित उत्तर से जोड़ता है। जब कोई नियम मेल नहीं खाता, तो मैं intent: unknown रिपोर्ट करता हूँ। यहाँ कोई न्यूरल इन्फेरेन्स नहीं है — प्रत्येक उत्तर एक प्रतीकात्मक नियम से पूरी तरह पता लगाने योग्य है।"
-  response "response_meta_explanation_zh"
-    intent "meta_explanation"
-    language "zh"
-    text "我的工作方式是：将您的提示与存储在内存中的确定性 Links Notation 规则进行匹配。每条规则将一个已识别的模式映射到一个固定的回复。当没有规则匹配时，我返回 intent: unknown。这里没有神经推理——每个答案都可以完整追溯到某条符号规则。"
-  response "response_inappropriate_content_en"
-    intent "inappropriate_content"
-    language "en"
-    text "That message contains inappropriate content. Please keep the conversation respectful."
-  response "response_inappropriate_content_ru"
-    intent "inappropriate_content"
-    language "ru"
-    text "Сообщение содержит неприемлемый контент. Пожалуйста, соблюдайте уважительный тон."
-  response "response_inappropriate_content_hi"
-    intent "inappropriate_content"
-    language "hi"
-    text "उस संदेश में अनुचित सामग्री है। कृपया बातचीत को सम्मानजनक रखें।"
-  response "response_inappropriate_content_zh"
-    intent "inappropriate_content"
-    language "zh"
-    text "该消息包含不当内容。请保持尊重的交流方式。"
-  response "response_clarification_en"
-    intent "clarification"
-    language "en"
-    text "I'm sorry for the confusion. I am formal-ai, a deterministic symbolic AI. I can answer greetings, identity questions, concept lookups (what is X?), arithmetic, and Hello World programs. If you'd like to ask about something specific, try one of those or add a fact in Links Notation."
-  response "response_clarification_ru"
-    intent "clarification"
-    language "ru"
-    text "Приношу извинения за непонимание. Я formal-ai — детерминированный символьный ИИ. Я могу отвечать на приветствия, вопросы об идентичности, поиск понятий (что такое X?), арифметику и программы Hello World. Попробуйте один из этих запросов или добавьте факт в Links Notation."
-  response "response_clarification_hi"
-    intent "clarification"
-    language "hi"
-    text "भ्रम के लिए क्षमा करें। मैं formal-ai हूँ — एक नियतात्मक प्रतीकात्मक AI। मैं अभिवादन, पहचान के सवाल, अवधारणा खोज (X क्या है?), अंकगणित और Hello World कार्यक्रमों का उत्तर दे सकता हूँ। इनमें से एक आज़माएं या Links Notation में एक तथ्य जोड़ें।"
-  response "response_clarification_zh"
-    intent "clarification"
-    language "zh"
-    text "抱歉造成困惑。我是 formal-ai，一个确定性的符号化 AI。我能回答问候、身份问题、概念查询（什么是X？）、算术以及 Hello World 程序。请尝试上述任一类型的问题，或在 Links Notation 中添加一个事实。"
-  response "response_capabilities_en"
-    intent "capabilities"
-    language "en"
-    text "I am formal-ai, a deterministic symbolic AI. Here is what I can do:\n\n- **Greetings**: respond to «Hi», «Hello», and similar.\n- **Hello World**: generate programs in Rust, Python, JavaScript, Go, C, and more.\n- **Web search**: search the internet through DuckDuckGo, Wikipedia, and Wikidata when available.\n- **Concept lookup**: explain terms — try «What is Wikipedia?»\n- **Arithmetic**: evaluate expressions — try «What is 2 + 2?»\n- **Translation**: translate phrases between languages.\n- **Memory**: recall context within the current session.\n- **Behavior rules**: send `List behavior rules` to see the built-in routing rules, and `Show behavior rule unknown` to read one in Links Notation.\n- **Teach this dialog**: send «When I say `your prompt`, answer `your answer`» to add a dialog-local rule for the current conversation.\n- **Self facts**: send `List all facts you know about yourself` to see what I know about myself.\n- **Report a missing rule**: use the top-bar **Report issue** button; unknown-prompt message links include the diagnostic trace for maintainers.\n- **Settings and actions**: configure diagnostics, demo mode, agent mode, theme, language, chat style, and memory import/export from messages.\n\nI run on local symbolic rules, without any neural network inference."
-  response "response_capabilities_ru"
-    intent "capabilities"
-    language "ru"
-    text "Я formal-ai — детерминированный символьный ИИ. Вот что я умею:\n\n- **Приветствия**: отвечаю на «Привет», «Здравствуйте» и т.п.\n- **Hello World**: генерирую программы на Rust, Python, JavaScript, Go, C и других языках.\n- **Веб-поиск**: ищу в интернете через DuckDuckGo, Wikipedia и Wikidata, когда поиск доступен.\n- **Поиск понятий**: объясняю термины — попробуйте «Что такое Википедия?»\n- **Арифметика**: вычисляю выражения — например, «Сколько будет 2 + 2?»\n- **Перевод**: перевожу фразы между языками.\n- **Память**: помню контекст разговора в рамках сессии.\n- **Правила поведения**: отправьте `Покажи правила поведения`, чтобы увидеть встроенные правила, и `Покажи правило unknown`, чтобы прочитать одно правило.\n- **Обучение в диалоге**: отправьте «Когда я скажу `ваш запрос`, ответь `ваш ответ`», чтобы добавить правило, действующее только в этом диалоге.\n- **Факты о себе**: отправьте `List all facts you know about yourself`, чтобы увидеть, что я знаю о себе.\n- **Сообщение об ошибке**: используйте кнопку отчёта об ошибке сверху; для неизвестных запросов ссылка в сообщении добавит диагностическую трассировку.\n- **Настройки и действия**: через сообщения можно включать диагностику/демо/agent mode, менять тему, язык, стиль чата и экспортировать или импортировать память.\n\nЯ работаю на основе локальных символьных правил, без нейросетевого инференса."
-  response "response_capabilities_hi"
-    intent "capabilities"
-    language "hi"
-    text "मैं formal-ai हूँ — एक नियतात्मक प्रतीकात्मक AI। मैं यह कर सकता हूँ:\n\n- **अभिवादन**: «नमस्ते» आदि का जवाब देना।\n- **Hello World**: Rust, Python, JavaScript, Go, C आदि में प्रोग्राम बनाना।\n- **Web search**: उपलब्ध होने पर DuckDuckGo, Wikipedia, और Wikidata से इंटरनेट में खोजना।\n- **अवधारणा खोज**: शब्दों को समझाना — जैसे «विकिपीडिया क्या है?»\n- **अंकगणित**: गणनाएँ — जैसे «2 + 2 क्या है?»\n- **अनुवाद**: भाषाओं के बीच अनुवाद।\n- **स्मृति**: सत्र में संदर्भ याद रखना।\n- **व्यवहार नियम**: `List behavior rules` भेजकर अंतर्निहित नियम देखें और `Show behavior rule unknown` से कोई नियम पढ़ें।\n- **संवाद-स्तर पर सिखाना**: «When I say `prompt`, answer `answer`» भेजकर इस संवाद के लिए स्थानीय नियम जोड़ें।\n- **स्व-तथ्य**: `List all facts you know about yourself` भेजें ताकि मैं अपने बारे में जो जानता हूँ वह सूचीबद्ध करूँ।\n- **समस्या रिपोर्ट**: ऊपर के «Report issue» बटन का उपयोग करें; unknown prompts के message link में diagnostic trace शामिल होता है।\n- **Settings और actions**: messages से diagnostics/demo/agent mode बदलना, theme/language/chat style बदलना, और memory export/import करना।\n\nमैं स्थानीय प्रतीकात्मक नियमों पर चलता हूँ, कोई न्यूरल इन्फेरेन्स नहीं।"
-  response "response_capabilities_zh"
-    intent "capabilities"
-    language "zh"
-    text "我是 formal-ai —— 一个确定性的符号化 AI。以下是我的功能：\n\n- **问候**：回应「你好」等问候语。\n- **Hello World**：生成 Rust、Python、JavaScript、Go、C 等语言的示例程序。\n- **Web search**：在可用时通过 DuckDuckGo、Wikipedia 和 Wikidata 搜索互联网。\n- **概念查找**：解释术语，例如「什么是维基百科？」\n- **算术**：计算表达式，例如「2 + 2 等于多少？」\n- **翻译**：在语言之间翻译短语。\n- **记忆**：在会话中记住上下文。\n- **行为规则**：发送 `List behavior rules` 查看内置规则，并发送 `Show behavior rule unknown` 阅读某条规则。\n- **对话内教学**：发送「When I say `prompt`, answer `answer`」可以在本轮对话中添加一条本地规则。\n- **自我事实**：发送 `List all facts you know about yourself` 查看我知道的关于自己的事实。\n- **问题反馈**：使用顶部的 「Report issue」按钮；未知请求的消息链接会带上 diagnostic trace。\n- **设置和操作**：可通过消息开启诊断、演示、agent mode，切换主题、语言、聊天样式，并导出或导入记忆。\n\n我基于本地符号规则运行，不进行神经网络推理。"
-  response "response_capabilities_more_en"
-    intent "capabilities_more"
-    language "en"
-    text "Beyond the capability already discussed, I can also:\n\n- **Arithmetic**: evaluate expressions like `2 + 2`.\n- **Translation**: translate short phrases between supported languages.\n- **Concept lookup**: explain terms such as `What is Wikipedia?`.\n- **Hello World**: generate small programs in Rust, Python, JavaScript, Go, C, and more.\n- **Conversation memory**: use earlier messages from the current session.\n- **Behavior rules**: show built-in rules with `List behavior rules` and `Show behavior rule unknown`.\n- **Settings and actions**: configure diagnostics, demo mode, agent mode, theme, language, chat style, and memory import/export."
-  response "response_capabilities_more_ru"
-    intent "capabilities_more"
-    language "ru"
-    text "Кроме уже названных возможностей, могу ещё:\n\n- **Арифметика**: вычислять выражения вроде «Сколько будет 2 + 2?»\n- **Перевод**: переводить короткие фразы между поддерживаемыми языками.\n- **Поиск понятий**: объяснять термины, например «Что такое Википедия?»\n- **Hello World**: генерировать минимальные программы на Rust, Python, JavaScript, Go, C и других языках.\n- **Память диалога**: использовать предыдущие сообщения текущей сессии.\n- **Правила поведения**: показывать встроенные правила через `Покажи правила поведения` и `Покажи правило unknown`.\n- **Настройки и действия**: включать диагностику/демо/agent mode, менять тему, язык, стиль чата, экспортировать и импортировать память."
-  response "response_capabilities_more_hi"
-    intent "capabilities_more"
-    language "hi"
-    text "पहले बताई गई क्षमता के अलावा, मैं यह भी कर सकता हूँ:\n\n- **अंकगणित**: `2 + 2` जैसे expressions निकालना।\n- **अनुवाद**: समर्थित भाषाओं के बीच छोटे वाक्य अनुवाद करना।\n- **अवधारणा खोज**: `What is Wikipedia?` जैसे शब्द समझाना।\n- **Hello World**: Rust, Python, JavaScript, Go, C और अन्य भाषाओं में छोटे programs बनाना।\n- **संवाद स्मृति**: current session के पहले messages उपयोग करना।\n- **व्यवहार नियम**: `List behavior rules` और `Show behavior rule unknown` से built-in rules दिखाना।\n- **Settings और actions**: diagnostics, demo mode, agent mode, theme, language, chat style, और memory import/export configure करना।"
-  response "response_capabilities_more_zh"
-    intent "capabilities_more"
-    language "zh"
-    text "除了已经提到的能力，我还可以：\n\n- **算术**：计算 `2 + 2` 这样的表达式。\n- **翻译**：在支持的语言之间翻译短句。\n- **概念查找**：解释 `What is Wikipedia?` 这样的术语。\n- **Hello World**：生成 Rust、Python、JavaScript、Go、C 等语言的小程序。\n- **会话记忆**：使用当前会话中的早前消息。\n- **行为规则**：通过 `List behavior rules` 和 `Show behavior rule unknown` 显示内置规则。\n- **设置和操作**：配置 diagnostics、demo mode、agent mode、theme、language、chat style，以及 memory import/export。"
-  response "response_unknown_en"
-    intent "unknown"
-    language "en"
-    text "I don't know how to answer that yet. I cannot answer that from local links rules yet. To inspect what I can do, send `List behavior rules`, then `Show behavior rule unknown`. To teach this dialog a response, send: When I say `your prompt`, answer `your answer`. If this still needs a shared Links Notation seed fact or links rule after those checks, use Report issue with the reasoning trace, or export memory to keep a dialog-local rule durable."
-  response "response_unknown_ru"
-    intent "unknown"
-    language "ru"
-    text "Я пока не знаю, как ответить на это. Я пока не могу ответить на это по локальным правилам связей. Чтобы посмотреть текущие правила, отправьте `Покажи правила поведения`, затем `Покажи правило unknown`. Чтобы научить этот диалог ответу, отправьте: Когда я скажу `ваш запрос`, ответь `ваш ответ`. Если после этих проверок всё ещё нужен общий seed-факт или правило связей в формате Links Notation, сообщите о недостающем правиле с диагностической трассировкой или экспортируйте память, чтобы сохранить правило этого диалога."
-  response "response_unknown_hi"
-    intent "unknown"
-    language "hi"
-    text "मुझे अभी इसका उत्तर देना नहीं आता। मैं अभी स्थानीय links rules से इसका उत्तर नहीं दे सकता। नियम देखने के लिए `List behavior rules` भेजें, फिर `Show behavior rule unknown` भेजें। इस संवाद को उत्तर सिखाने के लिए भेजें: जब `आपका प्रश्न` तब `आपका उत्तर`। अगर इन checks के बाद भी shared Links Notation seed fact या links rule चाहिए, तो reasoning trace के साथ Report issue उपयोग करें, या dialog-local rule टिकाऊ रखने के लिए memory export करें।"
-  response "response_unknown_zh"
-    intent "unknown"
-    language "zh"
-    text "我还不知道如何回答这个问题。我目前无法根据本地 links rules 回答这个问题。要查看规则,发送 `List behavior rules`,然后发送 `Show behavior rule unknown`。要在本轮对话中教我回答,发送: 当 `你的提示` 时 `你的回答`。如果这些检查后仍需要共享的 Links Notation seed 事实或 links rule,请带上 reasoning trace 使用 Report issue,或导出 memory 以保留本轮对话规则。"
-  response "response_unknown_reasoning_question_en"
-    intent "unknown_reasoning_question"
-    language "en"
-    text "I could not determine `{focus}` from local Links Notation memory, cached public knowledge, or the source cache, and cannot infer a verified answer. Which one source or missing fact should I use?\n\nIf reasoning still cannot resolve this and a shared Links Notation seed fact or links rule is needed, use Report issue with the trace. To keep a dialog-local rule durable, export memory or teach it with `When I say ... answer ...`; inspect routes with `List behavior rules` and `Show behavior rule unknown`."
-  response "response_unknown_reasoning_question_ru"
-    intent "unknown_reasoning_question"
-    language "ru"
-    text "Я не смог определить `{focus}` по локальной памяти Links Notation, кэшу публичных знаний или доступным источникам. Какой один источник или факт нужно использовать?\n\nЕсли после этих проверок всё ещё нужен общий seed-факт или правило связей в формате Links Notation, сообщите о недостающем правиле с диагностической трассировкой. Для этого диалога можно экспортировать память или обучить правило: `Покажи правила поведения`, `Покажи правило unknown`, `Когда я скажу ... ответь ...`."
-  response "response_unknown_reasoning_question_hi"
-    intent "unknown_reasoning_question"
-    language "hi"
-    text "मैं `{focus}` को local Links Notation memory, public-knowledge cache, या उपलब्ध sources से निर्धारित नहीं कर सका. कौन सा एक source या missing fact इस्तेमाल करूँ?\n\nअगर reasoning के बाद भी shared Links Notation seed fact या links rule चाहिए, तो trace के साथ Report issue उपयोग करें. इस dialog को टिकाऊ बनाने के लिए memory export करें या `When I say ... answer ...` सिखाएँ; routes देखने के लिए `List behavior rules` और `Show behavior rule unknown`."
-  response "response_unknown_reasoning_question_zh"
-    intent "unknown_reasoning_question"
-    language "zh"
-    text "我无法从本地 Links Notation 记忆、公共知识缓存或可用来源确定 `{focus}`。应该使用哪一个来源或缺失事实?\n\n如果 reasoning 之后仍需要共享的 Links Notation seed 事实或 links rule,请带上 trace 使用 Report issue。要让当前对话可持久化,可以 export memory，或用 `When I say ... answer ...` 教一条规则；也可查看 `List behavior rules` 和 `Show behavior rule unknown`。"
-  response "response_unknown_reasoning_question_unknown"
-    intent "unknown_reasoning_question"
-    language "unknown"
-    text "I detected an unsupported language and am falling back to English. I could not determine `{focus}` from local Links Notation memory, cached public knowledge, or the source cache, and cannot infer a verified answer. Which one source or missing fact should I use?\n\nIf reasoning still cannot resolve this and a shared Links Notation seed fact or links rule is needed, use Report issue with the trace. To keep a dialog-local rule durable, export memory or teach it with `When I say ... answer ...`; inspect routes with `List behavior rules` and `Show behavior rule unknown`."
-  response "response_unknown_reasoning_trace_en"
-    intent "unknown_reasoning_trace"
-    language "en"
-    text "I could not determine `{focus}` from local Links Notation memory, cached public knowledge, or the source cache, and cannot infer a verified answer. I recorded the failed gather attempts in the trace.\n\nIf reasoning still cannot resolve this and a shared Links Notation seed fact or links rule is needed, use Report issue with the trace. To keep a dialog-local rule durable, export memory or teach it with `When I say ... answer ...`; inspect routes with `List behavior rules` and `Show behavior rule unknown`."
-  response "response_unknown_reasoning_trace_ru"
-    intent "unknown_reasoning_trace"
-    language "ru"
-    text "Я не смог определить `{focus}` по локальной памяти Links Notation, кэшу публичных знаний или доступным источникам. Я записал неудачные попытки сбора данных в диагностическую трассировку.\n\nЕсли после этих проверок всё ещё нужен общий seed-факт или правило связей в формате Links Notation, сообщите о недостающем правиле с диагностической трассировкой. Для этого диалога можно экспортировать память или обучить правило: `Покажи правила поведения`, `Покажи правило unknown`, `Когда я скажу ... ответь ...`."
-  response "response_unknown_reasoning_trace_hi"
-    intent "unknown_reasoning_trace"
-    language "hi"
-    text "मैं `{focus}` को local Links Notation memory, public-knowledge cache, या उपलब्ध sources से निर्धारित नहीं कर सका. मैंने failed gather attempts को trace में रिकॉर्ड किया है.\n\nअगर reasoning के बाद भी shared Links Notation seed fact या links rule चाहिए, तो trace के साथ Report issue उपयोग करें. इस dialog को टिकाऊ बनाने के लिए memory export करें या `When I say ... answer ...` सिखाएँ; routes देखने के लिए `List behavior rules` और `Show behavior rule unknown`."
-  response "response_unknown_reasoning_trace_zh"
-    intent "unknown_reasoning_trace"
-    language "zh"
-    text "我无法从本地 Links Notation 记忆、公共知识缓存或可用来源确定 `{focus}`。我已在 trace 中记录失败的 gather attempts。\n\n如果 reasoning 之后仍需要共享的 Links Notation seed 事实或 links rule,请带上 trace 使用 Report issue。要让当前对话可持久化,可以 export memory，或用 `When I say ... answer ...` 教一条规则；也可查看 `List behavior rules` 和 `Show behavior rule unknown`。"
-  response "response_unknown_reasoning_trace_unknown"
-    intent "unknown_reasoning_trace"
-    language "unknown"
-    text "I detected an unsupported language and am falling back to English. I could not determine `{focus}` from local Links Notation memory, cached public knowledge, or the source cache, and cannot infer a verified answer. I recorded the failed gather attempts in the trace.\n\nIf reasoning still cannot resolve this and a shared Links Notation seed fact or links rule is needed, use Report issue with the trace. To keep a dialog-local rule durable, export memory or teach it with `When I say ... answer ...`; inspect routes with `List behavior rules` and `Show behavior rule unknown`."
-  response "response_concept_lookup_in_context_en"
-    intent "concept_lookup_in_context"
-    language "en"
-    text "In the context of «{context}» ({context_label}), {term} ({category}) means: {summary}\n\nSource: {source} ({source_kind})."
-  response "response_concept_lookup_in_context_ru"
-    intent "concept_lookup_in_context"
-    language "ru"
-    text "В контексте «{context}» ({context_label}) {term} ({category}) означает: {summary}\n\nИсточник: {source} ({source_kind})."
-  response "response_concept_lookup_in_context_hi"
-    intent "concept_lookup_in_context"
-    language "hi"
-    text "«{context}» ({context_label}) के संदर्भ में, {term} ({category}) का अर्थ है: {summary}\n\nस्रोत: {source} ({source_kind})."
-  response "response_concept_lookup_in_context_zh"
-    intent "concept_lookup_in_context"
-    language "zh"
-    text "在「{context}」({context_label})的语境下,{term}({category})指的是:{summary}\n\n来源:{source}({source_kind})。"
-  response "response_concept_lookup_in_context_no_alias_en"
-    intent "concept_lookup_in_context_no_alias"
-    language "en"
-    text "In the context of {context_label}, {term} ({category}) means: {summary}\n\nSource: {source} ({source_kind})."
-  response "response_concept_lookup_in_context_no_alias_ru"
-    intent "concept_lookup_in_context_no_alias"
-    language "ru"
-    text "В контексте {context_label} {term} ({category}) означает: {summary}\n\nИсточник: {source} ({source_kind})."
-  response "response_concept_lookup_in_context_no_alias_hi"
-    intent "concept_lookup_in_context_no_alias"
-    language "hi"
-    text "{context_label} के संदर्भ में, {term} ({category}) का अर्थ है: {summary}\n\nस्रोत: {source} ({source_kind})."
-  response "response_concept_lookup_in_context_no_alias_zh"
-    intent "concept_lookup_in_context_no_alias"
-    language "zh"
-    text "在{context_label}的语境下,{term}({category})指的是:{summary}\n\n来源:{source}({source_kind})。"
-  response "response_physical_action_question_en"
-    intent "physical_action_question"
-    language "en"
-    text "No. I do not have a physical body."
-  response "response_physical_action_question_ru"
-    intent "physical_action_question"
-    language "ru"
-    text "Нет. У меня нет физического тела."
-  response "response_physical_action_question_hi"
-    intent "physical_action_question"
-    language "hi"
-    text "नहीं। मेरा कोई भौतिक शरीर नहीं है।"
-  response "response_physical_action_question_zh"
-    intent "physical_action_question"
-    language "zh"
-    text "不。我没有实体的身体。"
-  response "response_kupi_slona_en"
-    intent "kupi_slona"
-    language "en"
-    text "Buy an elephant is a well-known Russian children's word game. Whatever you reply, the answer comes back: everyone says that, but you buy an elephant! The traditional winning reply is: everyone has an elephant, but I do not."
-  response "response_kupi_slona_ru"
-    intent "kupi_slona"
-    language "ru"
-    text "«Купи слона» — это известная русская детская фраза-игра. На любой ответ следует продолжение: «Все так говорят, а ты купи слона!» Правильный ответ по правилам игры: «У всех есть слон, а у меня нет»."
-  response "response_kupi_slona_hi"
-    intent "kupi_slona"
-    language "hi"
-    text "«हाथी खरीदो» एक प्रसिद्ध रूसी बच्चों का शब्द-खेल है। आप जो भी उत्तर दें, जवाब आता है: सब यही कहते हैं, पर तुम हाथी खरीदो! परंपरागत विजयी उत्तर है: सबके पास हाथी है, पर मेरे पास नहीं।"
-  response "response_kupi_slona_zh"
-    intent "kupi_slona"
-    language "zh"
-    text "「买大象」是一个著名的俄罗斯儿童文字游戏。无论你怎么回答,对方都会说:大家都这么说,但你去买大象吧!传统的取胜回答是:大家都有大象,而我没有。"
+  response response_greeting_en
+    intent greeting
+    language en
+    text unformalized-raw 72 105 44 32 104 111 119 32 109 97 121 32 73 32 104 101 108 112 32 121 111 117 63
+    variant unformalized-raw 72 105 44 32 104 111 119 32 109 97 121 32 73 32 104 101 108 112 32 121 111 117 63
+    variant unformalized-raw 72 101 108 108 111 33 32 72 111 119 32 99 97 110 32 73 32 97 115 115 105 115 116 32 121 111 117 32 116 111 100 97 121 63
+    variant unformalized-raw 72 105 32 116 104 101 114 101 33 32 87 104 97 116 32 99 97 110 32 73 32 100 111 32 102 111 114 32 121 111 117 63
+    variant unformalized-raw 72 101 121 44 32 104 111 119 32 99 97 110 32 73 32 104 101 108 112 63
+    variant unformalized-raw 72 101 108 108 111 32 8212 32 119 104 97 116 32 119 111 117 108 100 32 121 111 117 32 108 105 107 101 32 116 111 32 101 120 112 108 111 114 101 63
+  response response_greeting_ru
+    intent greeting
+    language ru
+    text unformalized-raw 1047 1076 1088 1072 1074 1089 1090 1074 1091 1081 1090 1077 33 32 1063 1077 1084 32 1084 1086 1075 1091 32 1087 1086 1084 1086 1095 1100 63
+    variant unformalized-raw 1047 1076 1088 1072 1074 1089 1090 1074 1091 1081 1090 1077 33 32 1063 1077 1084 32 1084 1086 1075 1091 32 1087 1086 1084 1086 1095 1100 63
+    variant unformalized-raw 1055 1088 1080 1074 1077 1090 33 32 1063 1077 1084 32 1084 1086 1075 1091 32 1073 1099 1090 1100 32 1087 1086 1083 1077 1079 1077 1085 63
+    variant unformalized-raw 1047 1076 1088 1072 1074 1089 1090 1074 1091 1081 1090 1077 33 32 1050 1072 1082 1086 1081 32 1091 32 1074 1072 1089 32 1074 1086 1087 1088 1086 1089 63
+    variant unformalized-raw 1055 1088 1080 1074 1077 1090 33 32 1063 1090 1086 32 1074 1072 1089 32 1080 1085 1090 1077 1088 1077 1089 1091 1077 1090 63
+  response response_greeting_hi
+    intent greeting
+    language hi
+    text unformalized-raw 2344 2350 2360 2381 2340 2375 33 32 2350 2376 2306 32 2310 2346 2325 2368 32 2325 2381 2351 2366 32 2350 2342 2342 32 2325 2352 32 2360 2325 2340 2366 32 2361 2370 2305 63
+    variant unformalized-raw 2344 2350 2360 2381 2340 2375 33 32 2350 2376 2306 32 2310 2346 2325 2368 32 2325 2381 2351 2366 32 2350 2342 2342 32 2325 2352 32 2360 2325 2340 2366 32 2361 2370 2305 63
+    variant unformalized-raw 2344 2350 2360 2381 2325 2366 2352 33 32 2350 2376 2306 32 2310 2346 2325 2375 32 2354 2367 2319 32 2325 2381 2351 2366 32 2325 2352 32 2360 2325 2340 2366 32 2361 2370 2305 63
+    variant unformalized-raw 2344 2350 2360 2381 2340 2375 33 32 2325 2376 2360 2375 32 2360 2361 2366 2351 2340 2366 32 2325 2352 32 2360 2325 2340 2366 32 2361 2370 2305 63
+  response response_greeting_zh
+    intent greeting
+    language zh
+    text unformalized-raw 20320 22909 33 35831 38382 26377 20160 20040 21487 20197 24110 24744 30340 63
+    variant unformalized-raw 20320 22909 33 35831 38382 26377 20160 20040 21487 20197 24110 24744 30340 63
+    variant unformalized-raw 24744 22909 33 25105 33021 20026 24744 20570 20123 20160 20040 63
+    variant unformalized-raw 20320 22909 44 26377 20160 20040 25105 21487 20197 21327 21161 30340 21527 63
+  response response_farewell_en
+    intent farewell
+    language en
+    text unformalized-raw 71 111 111 100 98 121 101 33 32 70 101 101 108 32 102 114 101 101 32 116 111 32 114 101 116 117 114 110 32 97 110 121 32 116 105 109 101 46
+    variant unformalized-raw 71 111 111 100 98 121 101 33 32 70 101 101 108 32 102 114 101 101 32 116 111 32 114 101 116 117 114 110 32 97 110 121 32 116 105 109 101 46
+    variant unformalized-raw 66 121 101 33 32 67 111 109 101 32 98 97 99 107 32 119 104 101 110 101 118 101 114 32 121 111 117 32 110 101 101 100 32 104 101 108 112 46
+    variant unformalized-raw 83 101 101 32 121 111 117 32 108 97 116 101 114 33
+    variant unformalized-raw 84 97 107 101 32 99 97 114 101 33
+  response response_farewell_ru
+    intent farewell
+    language ru
+    text unformalized-raw 1044 1086 32 1089 1074 1080 1076 1072 1085 1080 1103 33 32 1042 1086 1079 1074 1088 1072 1097 1072 1081 1090 1077 1089 1100 32 1074 32 1083 1102 1073 1086 1077 32 1074 1088 1077 1084 1103 46
+    variant unformalized-raw 1044 1086 32 1089 1074 1080 1076 1072 1085 1080 1103 33 32 1042 1086 1079 1074 1088 1072 1097 1072 1081 1090 1077 1089 1100 32 1074 32 1083 1102 1073 1086 1077 32 1074 1088 1077 1084 1103 46
+    variant unformalized-raw 1055 1086 1082 1072 33 32 1041 1091 1076 1091 32 1088 1072 1076 32 1087 1086 1084 1086 1095 1100 32 1089 1085 1086 1074 1072 46
+    variant unformalized-raw 1044 1086 32 1074 1089 1090 1088 1077 1095 1080 33
+    variant unformalized-raw 1059 1076 1072 1095 1080 33
+  response response_farewell_hi
+    intent farewell
+    language hi
+    text unformalized-raw 2309 2354 2357 2367 2342 2366 33 32 2332 2348 32 2349 2368 32 2332 2364 2352 2370 2352 2340 32 2361 2379 44 32 2357 2366 2346 2360 32 2310 2319 2306 2404
+    variant unformalized-raw 2309 2354 2357 2367 2342 2366 33 32 2332 2348 32 2349 2368 32 2332 2364 2352 2370 2352 2340 32 2361 2379 44 32 2357 2366 2346 2360 32 2310 2319 2306 2404
+    variant unformalized-raw 2347 2367 2352 32 2350 2367 2354 2375 2306 2327 2375 33
+  response response_farewell_zh
+    intent farewell
+    language zh
+    text unformalized-raw 20877 35265 33 38543 26102 27426 36814 22238 26469 12290
+    variant unformalized-raw 20877 35265 33 38543 26102 27426 36814 22238 26469 12290
+    variant unformalized-raw 25308 25308 33 26377 38656 35201 38543 26102 22238 26469 12290
+  response response_test_status_en
+    intent test_status
+    language en
+    text unformalized-raw 84 101 115 116 32 112 97 115 115 101 100 46 32 73 39 109 32 104 101 114 101 46
+    variant unformalized-raw 84 101 115 116 32 112 97 115 115 101 100 46 32 73 39 109 32 104 101 114 101 46
+    variant unformalized-raw 73 39 109 32 104 101 114 101 46 32 84 101 115 116 32 112 97 115 115 101 100 46
+  response response_test_status_ru
+    intent test_status
+    language ru
+    text unformalized-raw 1058 1077 1089 1090 32 1087 1088 1086 1081 1076 1077 1085 46 32 1071 32 1079 1076 1077 1089 1100 46
+    variant unformalized-raw 1058 1077 1089 1090 32 1087 1088 1086 1081 1076 1077 1085 46 32 1071 32 1079 1076 1077 1089 1100 46
+    variant unformalized-raw 1071 32 1079 1076 1077 1089 1100 46 32 1058 1077 1089 1090 32 1087 1088 1086 1081 1076 1077 1085 46
+  response response_test_status_hi
+    intent test_status
+    language hi
+    text unformalized-raw 2346 2352 2368 2325 2381 2359 2339 32 2360 2347 2354 32 2352 2361 2366 2404 32 2350 2376 2306 32 2351 2361 2366 2305 32 2361 2370 2305 2404
+    variant unformalized-raw 2346 2352 2368 2325 2381 2359 2339 32 2360 2347 2354 32 2352 2361 2366 2404 32 2350 2376 2306 32 2351 2361 2366 2305 32 2361 2370 2305 2404
+    variant unformalized-raw 2350 2376 2306 32 2351 2361 2366 2305 32 2361 2370 2305 2404 32 2346 2352 2368 2325 2381 2359 2339 32 2360 2347 2354 32 2352 2361 2366 2404
+  response response_test_status_zh
+    intent test_status
+    language zh
+    text unformalized-raw 27979 35797 36890 36807 12290 25105 22312 36825 37324 12290
+    variant unformalized-raw 27979 35797 36890 36807 12290 25105 22312 36825 37324 12290
+    variant unformalized-raw 25105 22312 36825 37324 12290 27979 35797 36890 36807 12290
+  response response_courtesy_response_en
+    intent courtesy_response
+    language en
+    text unformalized-raw 71 108 97 100 32 116 111 32 104 101 97 114 32 105 116 46 32 87 104 97 116 32 119 111 117 108 100 32 121 111 117 32 108 105 107 101 32 116 111 32 100 111 32 110 101 120 116 63
+    variant unformalized-raw 71 108 97 100 32 116 111 32 104 101 97 114 32 105 116 46 32 87 104 97 116 32 119 111 117 108 100 32 121 111 117 32 108 105 107 101 32 116 111 32 100 111 32 110 101 120 116 63
+    variant unformalized-raw 89 111 117 39 114 101 32 119 101 108 99 111 109 101 46 32 87 104 97 116 32 119 111 117 108 100 32 121 111 117 32 108 105 107 101 32 116 111 32 100 111 32 110 101 120 116 63
+    ack_variant unformalized-raw 71 108 97 100 32 116 111 32 104 101 97 114 32 105 116 46
+    ack_variant unformalized-raw 89 111 117 39 114 101 32 119 101 108 99 111 109 101 46
+    ack_variant unformalized-raw 71 111 111 100 32 116 111 32 104 101 97 114 46
+    ack_variant unformalized-raw 72 97 112 112 121 32 116 111 32 104 101 97 114 32 116 104 97 116 46
+    follow_up_variant unformalized-raw 87 104 97 116 32 119 111 117 108 100 32 121 111 117 32 108 105 107 101 32 116 111 32 100 111 32 110 101 120 116 63
+    follow_up_variant unformalized-raw 68 111 32 121 111 117 32 119 97 110 116 32 116 111 32 100 105 115 99 117 115 115 32 115 111 109 101 116 104 105 110 103 32 101 108 115 101 63
+    follow_up_variant unformalized-raw 73 115 32 116 104 101 114 101 32 97 110 121 116 104 105 110 103 32 101 108 115 101 32 121 111 117 32 119 97 110 116 32 116 111 32 119 111 114 107 32 111 110 63
+    follow_up_variant unformalized-raw 87 111 117 108 100 32 121 111 117 32 108 105 107 101 32 116 111 32 101 120 112 108 111 114 101 32 97 110 111 116 104 101 114 32 116 111 112 105 99 63
+  response response_courtesy_response_ru
+    intent courtesy_response
+    language ru
+    text unformalized-raw 1056 1072 1076 32 1101 1090 1086 32 1089 1083 1099 1096 1072 1090 1100 46 32 1063 1090 1086 32 1074 1099 32 1093 1086 1090 1080 1090 1077 32 1089 1076 1077 1083 1072 1090 1100 32 1076 1072 1083 1100 1096 1077 63
+    variant unformalized-raw 1056 1072 1076 32 1101 1090 1086 32 1089 1083 1099 1096 1072 1090 1100 46 32 1063 1090 1086 32 1074 1099 32 1093 1086 1090 1080 1090 1077 32 1089 1076 1077 1083 1072 1090 1100 32 1076 1072 1083 1100 1096 1077 63
+    variant unformalized-raw 1055 1086 1078 1072 1083 1091 1081 1089 1090 1072 46 32 1063 1090 1086 32 1074 1099 32 1093 1086 1090 1080 1090 1077 32 1089 1076 1077 1083 1072 1090 1100 32 1076 1072 1083 1100 1096 1077 63
+    ack_variant unformalized-raw 1056 1072 1076 32 1101 1090 1086 32 1089 1083 1099 1096 1072 1090 1100 46
+    ack_variant unformalized-raw 1055 1086 1078 1072 1083 1091 1081 1089 1090 1072 46
+    ack_variant unformalized-raw 1061 1086 1088 1086 1096 1086 44 32 1088 1072 1076 32 1089 1083 1099 1096 1072 1090 1100 46
+    ack_variant unformalized-raw 1054 1090 1083 1080 1095 1085 1086 46
+    follow_up_variant unformalized-raw 1063 1090 1086 32 1074 1099 32 1093 1086 1090 1080 1090 1077 32 1089 1076 1077 1083 1072 1090 1100 32 1076 1072 1083 1100 1096 1077 63
+    follow_up_variant unformalized-raw 1061 1086 1090 1080 1090 1077 32 1086 1073 1089 1091 1076 1080 1090 1100 32 1095 1090 1086 45 1090 1086 32 1077 1097 1077 63
+    follow_up_variant unformalized-raw 1045 1089 1090 1100 32 1083 1080 32 1077 1097 1077 32 1090 1077 1084 1072 44 32 1089 32 1082 1086 1090 1086 1088 1086 1081 32 1087 1086 1084 1086 1095 1100 63
+    follow_up_variant unformalized-raw 1055 1088 1086 1076 1086 1083 1078 1080 1084 32 1089 32 1076 1088 1091 1075 1080 1084 32 1074 1086 1087 1088 1086 1089 1086 1084 63
+  response response_courtesy_response_hi
+    intent courtesy_response
+    language hi
+    text unformalized-raw 2351 2361 32 2360 2369 2344 2325 2352 32 2309 2330 2381 2331 2366 32 2354 2327 2366 2404 32 2309 2348 32 2310 2346 32 2325 2381 2351 2366 32 2325 2352 2344 2366 32 2330 2366 2361 2375 2306 2327 2375 63
+    variant unformalized-raw 2351 2361 32 2360 2369 2344 2325 2352 32 2309 2330 2381 2331 2366 32 2354 2327 2366 2404 32 2309 2348 32 2310 2346 32 2325 2381 2351 2366 32 2325 2352 2344 2366 32 2330 2366 2361 2375 2306 2327 2375 63
+    variant unformalized-raw 2310 2346 2325 2366 32 2360 2381 2357 2366 2327 2340 32 2361 2376 2404 32 2309 2348 32 2310 2346 32 2325 2381 2351 2366 32 2325 2352 2344 2366 32 2330 2366 2361 2375 2306 2327 2375 63
+    ack_variant unformalized-raw 2351 2361 32 2360 2369 2344 2325 2352 32 2309 2330 2381 2331 2366 32 2354 2327 2366 2404
+    ack_variant unformalized-raw 2310 2346 2325 2366 32 2360 2381 2357 2366 2327 2340 32 2361 2376 2404
+    ack_variant unformalized-raw 2309 2330 2381 2331 2366 32 2361 2376 2404
+    follow_up_variant unformalized-raw 2309 2348 32 2310 2346 32 2325 2381 2351 2366 32 2325 2352 2344 2366 32 2330 2366 2361 2375 2306 2327 2375 63
+    follow_up_variant unformalized-raw 2325 2381 2351 2366 32 2310 2346 32 2325 2369 2331 32 2324 2352 32 2330 2352 2381 2330 2366 32 2325 2352 2344 2366 32 2330 2366 2361 2340 2375 32 2361 2376 2306 63
+    follow_up_variant unformalized-raw 2325 2381 2351 2366 32 2325 2367 2360 2368 32 2324 2352 32 2330 2368 2332 2364 32 2350 2375 2306 32 2350 2342 2342 32 2330 2366 2361 2367 2319 63
+  response response_courtesy_response_zh
+    intent courtesy_response
+    language zh
+    text unformalized-raw 24456 39640 20852 21548 21040 12290 25509 19979 26469 24744 24819 20570 20160 20040 63
+    variant unformalized-raw 24456 39640 20852 21548 21040 12290 25509 19979 26469 24744 24819 20570 20160 20040 63
+    variant unformalized-raw 19981 23458 27668 12290 25509 19979 26469 24744 24819 20570 20160 20040 63
+    ack_variant unformalized-raw 24456 39640 20852 21548 21040 12290
+    ack_variant unformalized-raw 19981 23458 27668 12290
+    ack_variant unformalized-raw 22909 30340 12290
+    follow_up_variant unformalized-raw 25509 19979 26469 24744 24819 20570 20160 20040 63
+    follow_up_variant unformalized-raw 24744 24819 35752 35770 21035 30340 20107 24773 21527 63
+    follow_up_variant unformalized-raw 36824 26377 20160 20040 38656 35201 25105 24110 24537 30340 21527 63
+  response response_identity_en
+    intent identity
+    language en
+    text unformalized-raw 73 32 97 109 32 102 111 114 109 97 108 45 97 105 44 32 97 32 100 101 116 101 114 109 105 110 105 115 116 105 99 32 115 121 109 98 111 108 105 99 32 65 73 32 105 109 112 108 101 109 101 110 116 97 116 105 111 110 32 116 104 97 116 32 97 110 115 119 101 114 115 32 102 114 111 109 32 108 111 99 97 108 32 76 105 110 107 115 32 78 111 116 97 116 105 111 110 32 114 117 108 101 115 32 97 110 100 32 79 112 101 110 65 73 45 99 111 109 112 97 116 105 98 108 101 32 65 80 73 32 115 104 97 112 101 115 46 32 73 32 100 111 32 110 111 116 32 112 101 114 102 111 114 109 32 110 101 117 114 97 108 32 105 110 102 101 114 101 110 99 101 32 105 110 32 116 104 105 115 32 100 101 109 111 46
+  response response_identity_ru
+    intent identity
+    language ru
+    text unformalized-raw 1071 32 102 111 114 109 97 108 45 97 105 32 8212 32 1076 1077 1090 1077 1088 1084 1080 1085 1080 1088 1086 1074 1072 1085 1085 1099 1081 32 1089 1080 1084 1074 1086 1083 1100 1085 1099 1081 32 1048 1048 44 32 1082 1086 1090 1086 1088 1099 1081 32 1086 1090 1074 1077 1095 1072 1077 1090 32 1085 1072 32 1086 1089 1085 1086 1074 1077 32 1083 1086 1082 1072 1083 1100 1085 1099 1093 32 1087 1088 1072 1074 1080 1083 32 76 105 110 107 115 32 78 111 116 97 116 105 111 110 32 1080 32 1089 1086 1074 1084 1077 1089 1090 1080 1084 1099 1093 32 79 112 101 110 65 73 45 1092 1086 1088 1084 1072 1090 1086 1074 46 32 1042 32 1101 1090 1086 1081 32 1076 1077 1084 1086 1085 1089 1090 1088 1072 1094 1080 1080 32 1103 32 1085 1077 32 1074 1099 1087 1086 1083 1085 1103 1102 32 1085 1077 1081 1088 1086 1089 1077 1090 1077 1074 1086 1081 32 1080 1085 1092 1077 1088 1077 1085 1089 46
+  response response_identity_hi
+    intent identity
+    language hi
+    text unformalized-raw 2350 2376 2306 32 102 111 114 109 97 108 45 97 105 32 2361 2370 2305 32 8212 32 2319 2325 32 2344 2367 2351 2340 2366 2340 2381 2350 2325 32 2346 2381 2352 2340 2368 2325 2366 2340 2381 2350 2325 32 65 73 32 2346 2381 2352 2339 2366 2354 2368 44 32 2332 2379 32 2360 2381 2341 2366 2344 2368 2351 32 76 105 110 107 115 32 78 111 116 97 116 105 111 110 32 2344 2367 2351 2350 2379 2306 32 2324 2352 32 79 112 101 110 65 73 45 2360 2306 2327 2340 32 65 80 73 32 2310 2325 2366 2352 2379 2306 32 2360 2375 32 2313 2340 2381 2340 2352 32 2342 2375 2340 2368 32 2361 2376 2404 32 2311 2360 32 2337 2375 2350 2379 32 2350 2375 2306 32 2350 2376 2306 32 2325 2379 2312 32 2344 2381 2351 2370 2352 2354 32 2311 2344 2381 2347 2375 2352 2375 2344 2381 2360 32 2344 2361 2368 2306 32 2325 2352 2340 2366 2404
+  response response_identity_zh
+    intent identity
+    language zh
+    text unformalized-raw 25105 26159 32 102 111 114 109 97 108 45 97 105 32 8212 8212 32 19968 20010 30830 23450 24615 30340 31526 21495 21270 32 65 73 32 31995 32479 44 26681 25454 26412 22320 30340 32 76 105 110 107 115 32 78 111 116 97 116 105 111 110 32 35268 21017 21644 20860 23481 32 79 112 101 110 65 73 32 30340 32 65 80 73 32 24418 24335 20316 31572 12290 26412 28436 31034 19981 36827 34892 20219 20309 31070 32463 32593 32476 25512 29702 12290
+  response response_assistant_name_en
+    intent assistant_name
+    language en
+    text unformalized-raw 73 39 109 32 102 111 114 109 97 108 32 65 73 44 32 97 110 100 32 99 117 114 114 101 110 116 108 121 32 73 32 100 111 110 39 116 32 104 97 118 101 32 97 32 110 97 109 101 46 32 66 117 116 32 121 111 117 32 99 97 110 32 110 97 109 101 32 109 101 32 97 115 32 121 111 117 32 108 105 107 101 46
+  response response_assistant_name_ru
+    intent assistant_name
+    language ru
+    text unformalized-raw 1071 32 102 111 114 109 97 108 32 65 73 44 32 1080 32 1089 1077 1081 1095 1072 1089 32 1091 32 1084 1077 1085 1103 32 1085 1077 1090 32 1080 1084 1077 1085 1080 46 32 1053 1086 32 1074 1099 32 1084 1086 1078 1077 1090 1077 32 1085 1072 1079 1074 1072 1090 1100 32 1084 1077 1085 1103 32 1082 1072 1082 32 1093 1086 1090 1080 1090 1077 46
+  response response_assistant_name_hi
+    intent assistant_name
+    language hi
+    text unformalized-raw 2350 2376 2306 32 102 111 114 109 97 108 32 65 73 32 2361 2370 2305 44 32 2324 2352 32 2309 2349 2368 32 2350 2375 2352 2366 32 2325 2379 2312 32 2344 2366 2350 32 2344 2361 2368 2306 32 2361 2376 2404 32 2354 2375 2325 2367 2344 32 2310 2346 32 2350 2369 2333 2375 32 2309 2346 2344 2368 32 2346 2360 2306 2342 32 2325 2366 32 2344 2366 2350 32 2342 2375 32 2360 2325 2340 2375 32 2361 2376 2306 2404
+  response response_assistant_name_zh
+    intent assistant_name
+    language zh
+    text unformalized-raw 25105 26159 32 102 111 114 109 97 108 32 65 73 44 30446 21069 36824 27809 26377 21517 23383 12290 19981 36807 24744 21487 20197 25353 33258 24049 30340 21916 22909 32473 25105 36215 21517 12290
+  response response_meta_explanation_en
+    intent meta_explanation
+    language en
+    text unformalized-raw 73 32 119 111 114 107 32 98 121 32 109 97 116 99 104 105 110 103 32 121 111 117 114 32 112 114 111 109 112 116 32 97 103 97 105 110 115 116 32 100 101 116 101 114 109 105 110 105 115 116 105 99 32 76 105 110 107 115 32 78 111 116 97 116 105 111 110 32 114 117 108 101 115 32 115 116 111 114 101 100 32 105 110 32 109 101 109 111 114 121 46 32 69 97 99 104 32 114 117 108 101 32 109 97 112 115 32 97 32 114 101 99 111 103 110 105 122 101 100 32 112 97 116 116 101 114 110 32 116 111 32 97 32 102 105 120 101 100 32 114 101 115 112 111 110 115 101 46 32 87 104 101 110 32 110 111 32 114 117 108 101 32 109 97 116 99 104 101 115 44 32 73 32 114 101 112 111 114 116 32 105 110 116 101 110 116 58 32 117 110 107 110 111 119 110 46 32 84 104 101 114 101 32 105 115 32 110 111 32 110 101 117 114 97 108 32 105 110 102 101 114 101 110 99 101 32 8212 32 101 118 101 114 121 32 97 110 115 119 101 114 32 105 115 32 102 117 108 108 121 32 116 114 97 99 101 97 98 108 101 32 116 111 32 97 32 115 121 109 98 111 108 105 99 32 114 117 108 101 46
+  response response_meta_explanation_ru
+    intent meta_explanation
+    language ru
+    text unformalized-raw 1071 32 1088 1072 1073 1086 1090 1072 1102 32 1090 1072 1082 58 32 1074 1072 1096 32 1079 1072 1087 1088 1086 1089 32 1089 1086 1087 1086 1089 1090 1072 1074 1083 1103 1077 1090 1089 1103 32 1089 32 1076 1077 1090 1077 1088 1084 1080 1085 1080 1088 1086 1074 1072 1085 1085 1099 1084 1080 32 1087 1088 1072 1074 1080 1083 1072 1084 1080 32 76 105 110 107 115 32 78 111 116 97 116 105 111 110 44 32 1093 1088 1072 1085 1103 1097 1080 1084 1080 1089 1103 32 1074 32 1087 1072 1084 1103 1090 1080 46 32 1050 1072 1078 1076 1086 1077 32 1087 1088 1072 1074 1080 1083 1086 32 1089 1074 1103 1079 1099 1074 1072 1077 1090 32 1088 1072 1089 1087 1086 1079 1085 1072 1085 1085 1099 1081 32 1096 1072 1073 1083 1086 1085 32 1089 32 1092 1080 1082 1089 1080 1088 1086 1074 1072 1085 1085 1099 1084 32 1086 1090 1074 1077 1090 1086 1084 46 32 1045 1089 1083 1080 32 1085 1080 32 1086 1076 1085 1086 32 1087 1088 1072 1074 1080 1083 1086 32 1085 1077 32 1087 1086 1076 1093 1086 1076 1080 1090 44 32 1103 32 1074 1086 1079 1074 1088 1072 1097 1072 1102 32 105 110 116 101 110 116 58 32 117 110 107 110 111 119 110 46 32 1053 1077 1081 1088 1086 1089 1077 1090 1077 1074 1086 1075 1086 32 1080 1085 1092 1077 1088 1077 1085 1089 1072 32 1085 1077 1090 32 8212 32 1082 1072 1078 1076 1099 1081 32 1086 1090 1074 1077 1090 32 1087 1086 1083 1085 1086 1089 1090 1100 1102 32 1086 1090 1089 1083 1077 1078 1080 1074 1072 1077 1084 32 1087 1086 32 1089 1080 1084 1074 1086 1083 1100 1085 1086 1084 1091 32 1087 1088 1072 1074 1080 1083 1091 46
+  response response_meta_explanation_hi
+    intent meta_explanation
+    language hi
+    text unformalized-raw 2350 2376 2306 32 2311 2360 32 2346 2381 2352 2325 2366 2352 32 2325 2366 2350 32 2325 2352 2340 2366 32 2361 2370 2305 58 32 2310 2346 2325 2375 32 2360 2306 2325 2375 2340 32 2325 2379 32 2350 2375 2350 2379 2352 2368 32 2350 2375 2306 32 2360 2306 2327 2381 2352 2361 2368 2340 32 2344 2367 2351 2340 2366 2340 2381 2350 2325 32 76 105 110 107 115 32 78 111 116 97 116 105 111 110 32 2344 2367 2351 2350 2379 2306 32 2360 2375 32 2350 2367 2354 2366 2351 2366 32 2332 2366 2340 2366 32 2361 2376 2404 32 2346 2381 2352 2340 2381 2351 2375 2325 32 2344 2367 2351 2350 32 2319 2325 32 2346 2361 2330 2366 2344 2375 32 2327 2319 32 2346 2376 2335 2352 2381 2344 32 2325 2379 32 2319 2325 32 2344 2367 2358 2381 2330 2367 2340 32 2313 2340 2381 2340 2352 32 2360 2375 32 2332 2379 2337 2364 2340 2366 32 2361 2376 2404 32 2332 2348 32 2325 2379 2312 32 2344 2367 2351 2350 32 2350 2375 2354 32 2344 2361 2368 2306 32 2326 2366 2340 2366 44 32 2340 2379 32 2350 2376 2306 32 105 110 116 101 110 116 58 32 117 110 107 110 111 119 110 32 2352 2367 2346 2379 2352 2381 2335 32 2325 2352 2340 2366 32 2361 2370 2305 2404 32 2351 2361 2366 2305 32 2325 2379 2312 32 2344 2381 2351 2370 2352 2354 32 2311 2344 2381 2347 2375 2352 2375 2344 2381 2360 32 2344 2361 2368 2306 32 2361 2376 32 8212 32 2346 2381 2352 2340 2381 2351 2375 2325 32 2313 2340 2381 2340 2352 32 2319 2325 32 2346 2381 2352 2340 2368 2325 2366 2340 2381 2350 2325 32 2344 2367 2351 2350 32 2360 2375 32 2346 2370 2352 2368 32 2340 2352 2361 32 2346 2340 2366 32 2354 2327 2366 2344 2375 32 2351 2379 2327 2381 2351 32 2361 2376 2404
+  response response_meta_explanation_zh
+    intent meta_explanation
+    language zh
+    text unformalized-raw 25105 30340 24037 20316 26041 24335 26159 65306 23558 24744 30340 25552 31034 19982 23384 20648 22312 20869 23384 20013 30340 30830 23450 24615 32 76 105 110 107 115 32 78 111 116 97 116 105 111 110 32 35268 21017 36827 34892 21305 37197 12290 27599 26465 35268 21017 23558 19968 20010 24050 35782 21035 30340 27169 24335 26144 23556 21040 19968 20010 22266 23450 30340 22238 22797 12290 24403 27809 26377 35268 21017 21305 37197 26102 65292 25105 36820 22238 32 105 110 116 101 110 116 58 32 117 110 107 110 111 119 110 12290 36825 37324 27809 26377 31070 32463 25512 29702 8212 8212 27599 20010 31572 26696 37117 21487 20197 23436 25972 36861 28335 21040 26576 26465 31526 21495 35268 21017 12290
+  response response_inappropriate_content_en
+    intent inappropriate_content
+    language en
+    text unformalized-raw 84 104 97 116 32 109 101 115 115 97 103 101 32 99 111 110 116 97 105 110 115 32 105 110 97 112 112 114 111 112 114 105 97 116 101 32 99 111 110 116 101 110 116 46 32 80 108 101 97 115 101 32 107 101 101 112 32 116 104 101 32 99 111 110 118 101 114 115 97 116 105 111 110 32 114 101 115 112 101 99 116 102 117 108 46
+  response response_inappropriate_content_ru
+    intent inappropriate_content
+    language ru
+    text unformalized-raw 1057 1086 1086 1073 1097 1077 1085 1080 1077 32 1089 1086 1076 1077 1088 1078 1080 1090 32 1085 1077 1087 1088 1080 1077 1084 1083 1077 1084 1099 1081 32 1082 1086 1085 1090 1077 1085 1090 46 32 1055 1086 1078 1072 1083 1091 1081 1089 1090 1072 44 32 1089 1086 1073 1083 1102 1076 1072 1081 1090 1077 32 1091 1074 1072 1078 1080 1090 1077 1083 1100 1085 1099 1081 32 1090 1086 1085 46
+  response response_inappropriate_content_hi
+    intent inappropriate_content
+    language hi
+    text unformalized-raw 2313 2360 32 2360 2306 2342 2375 2358 32 2350 2375 2306 32 2309 2344 2369 2330 2367 2340 32 2360 2366 2350 2327 2381 2352 2368 32 2361 2376 2404 32 2325 2371 2346 2351 2366 32 2348 2366 2340 2330 2368 2340 32 2325 2379 32 2360 2350 2381 2350 2366 2344 2332 2344 2325 32 2352 2326 2375 2306 2404
+  response response_inappropriate_content_zh
+    intent inappropriate_content
+    language zh
+    text unformalized-raw 35813 28040 24687 21253 21547 19981 24403 20869 23481 12290 35831 20445 25345 23562 37325 30340 20132 27969 26041 24335 12290
+  response response_clarification_en
+    intent clarification
+    language en
+    text unformalized-raw 73 39 109 32 115 111 114 114 121 32 102 111 114 32 116 104 101 32 99 111 110 102 117 115 105 111 110 46 32 73 32 97 109 32 102 111 114 109 97 108 45 97 105 44 32 97 32 100 101 116 101 114 109 105 110 105 115 116 105 99 32 115 121 109 98 111 108 105 99 32 65 73 46 32 73 32 99 97 110 32 97 110 115 119 101 114 32 103 114 101 101 116 105 110 103 115 44 32 105 100 101 110 116 105 116 121 32 113 117 101 115 116 105 111 110 115 44 32 99 111 110 99 101 112 116 32 108 111 111 107 117 112 115 32 40 119 104 97 116 32 105 115 32 88 63 41 44 32 97 114 105 116 104 109 101 116 105 99 44 32 97 110 100 32 72 101 108 108 111 32 87 111 114 108 100 32 112 114 111 103 114 97 109 115 46 32 73 102 32 121 111 117 39 100 32 108 105 107 101 32 116 111 32 97 115 107 32 97 98 111 117 116 32 115 111 109 101 116 104 105 110 103 32 115 112 101 99 105 102 105 99 44 32 116 114 121 32 111 110 101 32 111 102 32 116 104 111 115 101 32 111 114 32 97 100 100 32 97 32 102 97 99 116 32 105 110 32 76 105 110 107 115 32 78 111 116 97 116 105 111 110 46
+  response response_clarification_ru
+    intent clarification
+    language ru
+    text unformalized-raw 1055 1088 1080 1085 1086 1096 1091 32 1080 1079 1074 1080 1085 1077 1085 1080 1103 32 1079 1072 32 1085 1077 1087 1086 1085 1080 1084 1072 1085 1080 1077 46 32 1071 32 102 111 114 109 97 108 45 97 105 32 8212 32 1076 1077 1090 1077 1088 1084 1080 1085 1080 1088 1086 1074 1072 1085 1085 1099 1081 32 1089 1080 1084 1074 1086 1083 1100 1085 1099 1081 32 1048 1048 46 32 1071 32 1084 1086 1075 1091 32 1086 1090 1074 1077 1095 1072 1090 1100 32 1085 1072 32 1087 1088 1080 1074 1077 1090 1089 1090 1074 1080 1103 44 32 1074 1086 1087 1088 1086 1089 1099 32 1086 1073 32 1080 1076 1077 1085 1090 1080 1095 1085 1086 1089 1090 1080 44 32 1087 1086 1080 1089 1082 32 1087 1086 1085 1103 1090 1080 1081 32 40 1095 1090 1086 32 1090 1072 1082 1086 1077 32 88 63 41 44 32 1072 1088 1080 1092 1084 1077 1090 1080 1082 1091 32 1080 32 1087 1088 1086 1075 1088 1072 1084 1084 1099 32 72 101 108 108 111 32 87 111 114 108 100 46 32 1055 1086 1087 1088 1086 1073 1091 1081 1090 1077 32 1086 1076 1080 1085 32 1080 1079 32 1101 1090 1080 1093 32 1079 1072 1087 1088 1086 1089 1086 1074 32 1080 1083 1080 32 1076 1086 1073 1072 1074 1100 1090 1077 32 1092 1072 1082 1090 32 1074 32 76 105 110 107 115 32 78 111 116 97 116 105 111 110 46
+  response response_clarification_hi
+    intent clarification
+    language hi
+    text unformalized-raw 2349 2381 2352 2350 32 2325 2375 32 2354 2367 2319 32 2325 2381 2359 2350 2366 32 2325 2352 2375 2306 2404 32 2350 2376 2306 32 102 111 114 109 97 108 45 97 105 32 2361 2370 2305 32 8212 32 2319 2325 32 2344 2367 2351 2340 2366 2340 2381 2350 2325 32 2346 2381 2352 2340 2368 2325 2366 2340 2381 2350 2325 32 65 73 2404 32 2350 2376 2306 32 2309 2349 2367 2357 2366 2342 2344 44 32 2346 2361 2330 2366 2344 32 2325 2375 32 2360 2357 2366 2354 44 32 2309 2357 2343 2366 2352 2339 2366 32 2326 2379 2332 32 40 88 32 2325 2381 2351 2366 32 2361 2376 63 41 44 32 2309 2306 2325 2327 2339 2367 2340 32 2324 2352 32 72 101 108 108 111 32 87 111 114 108 100 32 2325 2366 2352 2381 2351 2325 2381 2352 2350 2379 2306 32 2325 2366 32 2313 2340 2381 2340 2352 32 2342 2375 32 2360 2325 2340 2366 32 2361 2370 2305 2404 32 2311 2344 2350 2375 2306 32 2360 2375 32 2319 2325 32 2310 2332 2364 2350 2366 2319 2306 32 2351 2366 32 76 105 110 107 115 32 78 111 116 97 116 105 111 110 32 2350 2375 2306 32 2319 2325 32 2340 2341 2381 2351 32 2332 2379 2337 2364 2375 2306 2404
+  response response_clarification_zh
+    intent clarification
+    language zh
+    text unformalized-raw 25265 27465 36896 25104 22256 24785 12290 25105 26159 32 102 111 114 109 97 108 45 97 105 65292 19968 20010 30830 23450 24615 30340 31526 21495 21270 32 65 73 12290 25105 33021 22238 31572 38382 20505 12289 36523 20221 38382 39064 12289 27010 24565 26597 35810 65288 20160 20040 26159 88 65311 65289 12289 31639 26415 20197 21450 32 72 101 108 108 111 32 87 111 114 108 100 32 31243 24207 12290 35831 23581 35797 19978 36848 20219 19968 31867 22411 30340 38382 39064 65292 25110 22312 32 76 105 110 107 115 32 78 111 116 97 116 105 111 110 32 20013 28155 21152 19968 20010 20107 23454 12290
+  response response_capabilities_en
+    intent capabilities
+    language en
+    text unformalized-raw 73 32 97 109 32 102 111 114 109 97 108 45 97 105 44 32 97 32 100 101 116 101 114 109 105 110 105 115 116 105 99 32 115 121 109 98 111 108 105 99 32 65 73 46 32 72 101 114 101 32 105 115 32 119 104 97 116 32 73 32 99 97 110 32 100 111 58 10 10 45 32 42 42 71 114 101 101 116 105 110 103 115 42 42 58 32 114 101 115 112 111 110 100 32 116 111 32 171 72 105 187 44 32 171 72 101 108 108 111 187 44 32 97 110 100 32 115 105 109 105 108 97 114 46 10 45 32 42 42 72 101 108 108 111 32 87 111 114 108 100 42 42 58 32 103 101 110 101 114 97 116 101 32 112 114 111 103 114 97 109 115 32 105 110 32 82 117 115 116 44 32 80 121 116 104 111 110 44 32 74 97 118 97 83 99 114 105 112 116 44 32 71 111 44 32 67 44 32 97 110 100 32 109 111 114 101 46 10 45 32 42 42 87 101 98 32 115 101 97 114 99 104 42 42 58 32 115 101 97 114 99 104 32 116 104 101 32 105 110 116 101 114 110 101 116 32 116 104 114 111 117 103 104 32 68 117 99 107 68 117 99 107 71 111 44 32 87 105 107 105 112 101 100 105 97 44 32 97 110 100 32 87 105 107 105 100 97 116 97 32 119 104 101 110 32 97 118 97 105 108 97 98 108 101 46 10 45 32 42 42 67 111 110 99 101 112 116 32 108 111 111 107 117 112 42 42 58 32 101 120 112 108 97 105 110 32 116 101 114 109 115 32 8212 32 116 114 121 32 171 87 104 97 116 32 105 115 32 87 105 107 105 112 101 100 105 97 63 187 10 45 32 42 42 65 114 105 116 104 109 101 116 105 99 42 42 58 32 101 118 97 108 117 97 116 101 32 101 120 112 114 101 115 115 105 111 110 115 32 8212 32 116 114 121 32 171 87 104 97 116 32 105 115 32 50 32 43 32 50 63 187 10 45 32 42 42 84 114 97 110 115 108 97 116 105 111 110 42 42 58 32 116 114 97 110 115 108 97 116 101 32 112 104 114 97 115 101 115 32 98 101 116 119 101 101 110 32 108 97 110 103 117 97 103 101 115 46 10 45 32 42 42 77 101 109 111 114 121 42 42 58 32 114 101 99 97 108 108 32 99 111 110 116 101 120 116 32 119 105 116 104 105 110 32 116 104 101 32 99 117 114 114 101 110 116 32 115 101 115 115 105 111 110 46 10 45 32 42 42 66 101 104 97 118 105 111 114 32 114 117 108 101 115 42 42 58 32 115 101 110 100 32 96 76 105 115 116 32 98 101 104 97 118 105 111 114 32 114 117 108 101 115 96 32 116 111 32 115 101 101 32 116 104 101 32 98 117 105 108 116 45 105 110 32 114 111 117 116 105 110 103 32 114 117 108 101 115 44 32 97 110 100 32 96 83 104 111 119 32 98 101 104 97 118 105 111 114 32 114 117 108 101 32 117 110 107 110 111 119 110 96 32 116 111 32 114 101 97 100 32 111 110 101 32 105 110 32 76 105 110 107 115 32 78 111 116 97 116 105 111 110 46 10 45 32 42 42 84 101 97 99 104 32 116 104 105 115 32 100 105 97 108 111 103 42 42 58 32 115 101 110 100 32 171 87 104 101 110 32 73 32 115 97 121 32 96 121 111 117 114 32 112 114 111 109 112 116 96 44 32 97 110 115 119 101 114 32 96 121 111 117 114 32 97 110 115 119 101 114 96 187 32 116 111 32 97 100 100 32 97 32 100 105 97 108 111 103 45 108 111 99 97 108 32 114 117 108 101 32 102 111 114 32 116 104 101 32 99 117 114 114 101 110 116 32 99 111 110 118 101 114 115 97 116 105 111 110 46 10 45 32 42 42 83 101 108 102 32 102 97 99 116 115 42 42 58 32 115 101 110 100 32 96 76 105 115 116 32 97 108 108 32 102 97 99 116 115 32 121 111 117 32 107 110 111 119 32 97 98 111 117 116 32 121 111 117 114 115 101 108 102 96 32 116 111 32 115 101 101 32 119 104 97 116 32 73 32 107 110 111 119 32 97 98 111 117 116 32 109 121 115 101 108 102 46 10 45 32 42 42 82 101 112 111 114 116 32 97 32 109 105 115 115 105 110 103 32 114 117 108 101 42 42 58 32 117 115 101 32 116 104 101 32 116 111 112 45 98 97 114 32 42 42 82 101 112 111 114 116 32 105 115 115 117 101 42 42 32 98 117 116 116 111 110 59 32 117 110 107 110 111 119 110 45 112 114 111 109 112 116 32 109 101 115 115 97 103 101 32 108 105 110 107 115 32 105 110 99 108 117 100 101 32 116 104 101 32 100 105 97 103 110 111 115 116 105 99 32 116 114 97 99 101 32 102 111 114 32 109 97 105 110 116 97 105 110 101 114 115 46 10 45 32 42 42 83 101 116 116 105 110 103 115 32 97 110 100 32 97 99 116 105 111 110 115 42 42 58 32 99 111 110 102 105 103 117 114 101 32 100 105 97 103 110 111 115 116 105 99 115 44 32 100 101 109 111 32 109 111 100 101 44 32 97 103 101 110 116 32 109 111 100 101 44 32 116 104 101 109 101 44 32 108 97 110 103 117 97 103 101 44 32 99 104 97 116 32 115 116 121 108 101 44 32 97 110 100 32 109 101 109 111 114 121 32 105 109 112 111 114 116 47 101 120 112 111 114 116 32 102 114 111 109 32 109 101 115 115 97 103 101 115 46 10 10 73 32 114 117 110 32 111 110 32 108 111 99 97 108 32 115 121 109 98 111 108 105 99 32 114 117 108 101 115 44 32 119 105 116 104 111 117 116 32 97 110 121 32 110 101 117 114 97 108 32 110 101 116 119 111 114 107 32 105 110 102 101 114 101 110 99 101 46
+  response response_capabilities_ru
+    intent capabilities
+    language ru
+    text unformalized-raw 1071 32 102 111 114 109 97 108 45 97 105 32 8212 32 1076 1077 1090 1077 1088 1084 1080 1085 1080 1088 1086 1074 1072 1085 1085 1099 1081 32 1089 1080 1084 1074 1086 1083 1100 1085 1099 1081 32 1048 1048 46 32 1042 1086 1090 32 1095 1090 1086 32 1103 32 1091 1084 1077 1102 58 10 10 45 32 42 42 1055 1088 1080 1074 1077 1090 1089 1090 1074 1080 1103 42 42 58 32 1086 1090 1074 1077 1095 1072 1102 32 1085 1072 32 171 1055 1088 1080 1074 1077 1090 187 44 32 171 1047 1076 1088 1072 1074 1089 1090 1074 1091 1081 1090 1077 187 32 1080 32 1090 46 1087 46 10 45 32 42 42 72 101 108 108 111 32 87 111 114 108 100 42 42 58 32 1075 1077 1085 1077 1088 1080 1088 1091 1102 32 1087 1088 1086 1075 1088 1072 1084 1084 1099 32 1085 1072 32 82 117 115 116 44 32 80 121 116 104 111 110 44 32 74 97 118 97 83 99 114 105 112 116 44 32 71 111 44 32 67 32 1080 32 1076 1088 1091 1075 1080 1093 32 1103 1079 1099 1082 1072 1093 46 10 45 32 42 42 1042 1077 1073 45 1087 1086 1080 1089 1082 42 42 58 32 1080 1097 1091 32 1074 32 1080 1085 1090 1077 1088 1085 1077 1090 1077 32 1095 1077 1088 1077 1079 32 68 117 99 107 68 117 99 107 71 111 44 32 87 105 107 105 112 101 100 105 97 32 1080 32 87 105 107 105 100 97 116 97 44 32 1082 1086 1075 1076 1072 32 1087 1086 1080 1089 1082 32 1076 1086 1089 1090 1091 1087 1077 1085 46 10 45 32 42 42 1055 1086 1080 1089 1082 32 1087 1086 1085 1103 1090 1080 1081 42 42 58 32 1086 1073 1098 1103 1089 1085 1103 1102 32 1090 1077 1088 1084 1080 1085 1099 32 8212 32 1087 1086 1087 1088 1086 1073 1091 1081 1090 1077 32 171 1063 1090 1086 32 1090 1072 1082 1086 1077 32 1042 1080 1082 1080 1087 1077 1076 1080 1103 63 187 10 45 32 42 42 1040 1088 1080 1092 1084 1077 1090 1080 1082 1072 42 42 58 32 1074 1099 1095 1080 1089 1083 1103 1102 32 1074 1099 1088 1072 1078 1077 1085 1080 1103 32 8212 32 1085 1072 1087 1088 1080 1084 1077 1088 44 32 171 1057 1082 1086 1083 1100 1082 1086 32 1073 1091 1076 1077 1090 32 50 32 43 32 50 63 187 10 45 32 42 42 1055 1077 1088 1077 1074 1086 1076 42 42 58 32 1087 1077 1088 1077 1074 1086 1078 1091 32 1092 1088 1072 1079 1099 32 1084 1077 1078 1076 1091 32 1103 1079 1099 1082 1072 1084 1080 46 10 45 32 42 42 1055 1072 1084 1103 1090 1100 42 42 58 32 1087 1086 1084 1085 1102 32 1082 1086 1085 1090 1077 1082 1089 1090 32 1088 1072 1079 1075 1086 1074 1086 1088 1072 32 1074 32 1088 1072 1084 1082 1072 1093 32 1089 1077 1089 1089 1080 1080 46 10 45 32 42 42 1055 1088 1072 1074 1080 1083 1072 32 1087 1086 1074 1077 1076 1077 1085 1080 1103 42 42 58 32 1086 1090 1087 1088 1072 1074 1100 1090 1077 32 96 1055 1086 1082 1072 1078 1080 32 1087 1088 1072 1074 1080 1083 1072 32 1087 1086 1074 1077 1076 1077 1085 1080 1103 96 44 32 1095 1090 1086 1073 1099 32 1091 1074 1080 1076 1077 1090 1100 32 1074 1089 1090 1088 1086 1077 1085 1085 1099 1077 32 1087 1088 1072 1074 1080 1083 1072 44 32 1080 32 96 1055 1086 1082 1072 1078 1080 32 1087 1088 1072 1074 1080 1083 1086 32 117 110 107 110 111 119 110 96 44 32 1095 1090 1086 1073 1099 32 1087 1088 1086 1095 1080 1090 1072 1090 1100 32 1086 1076 1085 1086 32 1087 1088 1072 1074 1080 1083 1086 46 10 45 32 42 42 1054 1073 1091 1095 1077 1085 1080 1077 32 1074 32 1076 1080 1072 1083 1086 1075 1077 42 42 58 32 1086 1090 1087 1088 1072 1074 1100 1090 1077 32 171 1050 1086 1075 1076 1072 32 1103 32 1089 1082 1072 1078 1091 32 96 1074 1072 1096 32 1079 1072 1087 1088 1086 1089 96 44 32 1086 1090 1074 1077 1090 1100 32 96 1074 1072 1096 32 1086 1090 1074 1077 1090 96 187 44 32 1095 1090 1086 1073 1099 32 1076 1086 1073 1072 1074 1080 1090 1100 32 1087 1088 1072 1074 1080 1083 1086 44 32 1076 1077 1081 1089 1090 1074 1091 1102 1097 1077 1077 32 1090 1086 1083 1100 1082 1086 32 1074 32 1101 1090 1086 1084 32 1076 1080 1072 1083 1086 1075 1077 46 10 45 32 42 42 1060 1072 1082 1090 1099 32 1086 32 1089 1077 1073 1077 42 42 58 32 1086 1090 1087 1088 1072 1074 1100 1090 1077 32 96 76 105 115 116 32 97 108 108 32 102 97 99 116 115 32 121 111 117 32 107 110 111 119 32 97 98 111 117 116 32 121 111 117 114 115 101 108 102 96 44 32 1095 1090 1086 1073 1099 32 1091 1074 1080 1076 1077 1090 1100 44 32 1095 1090 1086 32 1103 32 1079 1085 1072 1102 32 1086 32 1089 1077 1073 1077 46 10 45 32 42 42 1057 1086 1086 1073 1097 1077 1085 1080 1077 32 1086 1073 32 1086 1096 1080 1073 1082 1077 42 42 58 32 1080 1089 1087 1086 1083 1100 1079 1091 1081 1090 1077 32 1082 1085 1086 1087 1082 1091 32 1086 1090 1095 1105 1090 1072 32 1086 1073 32 1086 1096 1080 1073 1082 1077 32 1089 1074 1077 1088 1093 1091 59 32 1076 1083 1103 32 1085 1077 1080 1079 1074 1077 1089 1090 1085 1099 1093 32 1079 1072 1087 1088 1086 1089 1086 1074 32 1089 1089 1099 1083 1082 1072 32 1074 32 1089 1086 1086 1073 1097 1077 1085 1080 1080 32 1076 1086 1073 1072 1074 1080 1090 32 1076 1080 1072 1075 1085 1086 1089 1090 1080 1095 1077 1089 1082 1091 1102 32 1090 1088 1072 1089 1089 1080 1088 1086 1074 1082 1091 46 10 45 32 42 42 1053 1072 1089 1090 1088 1086 1081 1082 1080 32 1080 32 1076 1077 1081 1089 1090 1074 1080 1103 42 42 58 32 1095 1077 1088 1077 1079 32 1089 1086 1086 1073 1097 1077 1085 1080 1103 32 1084 1086 1078 1085 1086 32 1074 1082 1083 1102 1095 1072 1090 1100 32 1076 1080 1072 1075 1085 1086 1089 1090 1080 1082 1091 47 1076 1077 1084 1086 47 97 103 101 110 116 32 109 111 100 101 44 32 1084 1077 1085 1103 1090 1100 32 1090 1077 1084 1091 44 32 1103 1079 1099 1082 44 32 1089 1090 1080 1083 1100 32 1095 1072 1090 1072 32 1080 32 1101 1082 1089 1087 1086 1088 1090 1080 1088 1086 1074 1072 1090 1100 32 1080 1083 1080 32 1080 1084 1087 1086 1088 1090 1080 1088 1086 1074 1072 1090 1100 32 1087 1072 1084 1103 1090 1100 46 10 10 1071 32 1088 1072 1073 1086 1090 1072 1102 32 1085 1072 32 1086 1089 1085 1086 1074 1077 32 1083 1086 1082 1072 1083 1100 1085 1099 1093 32 1089 1080 1084 1074 1086 1083 1100 1085 1099 1093 32 1087 1088 1072 1074 1080 1083 44 32 1073 1077 1079 32 1085 1077 1081 1088 1086 1089 1077 1090 1077 1074 1086 1075 1086 32 1080 1085 1092 1077 1088 1077 1085 1089 1072 46
+  response response_capabilities_hi
+    intent capabilities
+    language hi
+    text unformalized-raw 2350 2376 2306 32 102 111 114 109 97 108 45 97 105 32 2361 2370 2305 32 8212 32 2319 2325 32 2344 2367 2351 2340 2366 2340 2381 2350 2325 32 2346 2381 2352 2340 2368 2325 2366 2340 2381 2350 2325 32 65 73 2404 32 2350 2376 2306 32 2351 2361 32 2325 2352 32 2360 2325 2340 2366 32 2361 2370 2305 58 10 10 45 32 42 42 2309 2349 2367 2357 2366 2342 2344 42 42 58 32 171 2344 2350 2360 2381 2340 2375 187 32 2310 2342 2367 32 2325 2366 32 2332 2357 2366 2348 32 2342 2375 2344 2366 2404 10 45 32 42 42 72 101 108 108 111 32 87 111 114 108 100 42 42 58 32 82 117 115 116 44 32 80 121 116 104 111 110 44 32 74 97 118 97 83 99 114 105 112 116 44 32 71 111 44 32 67 32 2310 2342 2367 32 2350 2375 2306 32 2346 2381 2352 2379 2327 2381 2352 2366 2350 32 2348 2344 2366 2344 2366 2404 10 45 32 42 42 87 101 98 32 115 101 97 114 99 104 42 42 58 32 2313 2346 2354 2348 2381 2343 32 2361 2379 2344 2375 32 2346 2352 32 68 117 99 107 68 117 99 107 71 111 44 32 87 105 107 105 112 101 100 105 97 44 32 2324 2352 32 87 105 107 105 100 97 116 97 32 2360 2375 32 2311 2306 2335 2352 2344 2375 2335 32 2350 2375 2306 32 2326 2379 2332 2344 2366 2404 10 45 32 42 42 2309 2357 2343 2366 2352 2339 2366 32 2326 2379 2332 42 42 58 32 2358 2348 2381 2342 2379 2306 32 2325 2379 32 2360 2350 2333 2366 2344 2366 32 8212 32 2332 2376 2360 2375 32 171 2357 2367 2325 2367 2346 2368 2337 2367 2351 2366 32 2325 2381 2351 2366 32 2361 2376 63 187 10 45 32 42 42 2309 2306 2325 2327 2339 2367 2340 42 42 58 32 2327 2339 2344 2366 2319 2305 32 8212 32 2332 2376 2360 2375 32 171 50 32 43 32 50 32 2325 2381 2351 2366 32 2361 2376 63 187 10 45 32 42 42 2309 2344 2369 2357 2366 2342 42 42 58 32 2349 2366 2359 2366 2323 2306 32 2325 2375 32 2348 2368 2330 32 2309 2344 2369 2357 2366 2342 2404 10 45 32 42 42 2360 2381 2350 2371 2340 2367 42 42 58 32 2360 2340 2381 2352 32 2350 2375 2306 32 2360 2306 2342 2352 2381 2349 32 2351 2366 2342 32 2352 2326 2344 2366 2404 10 45 32 42 42 2357 2381 2351 2357 2361 2366 2352 32 2344 2367 2351 2350 42 42 58 32 96 76 105 115 116 32 98 101 104 97 118 105 111 114 32 114 117 108 101 115 96 32 2349 2375 2332 2325 2352 32 2309 2306 2340 2352 2381 2344 2367 2361 2367 2340 32 2344 2367 2351 2350 32 2342 2375 2326 2375 2306 32 2324 2352 32 96 83 104 111 119 32 98 101 104 97 118 105 111 114 32 114 117 108 101 32 117 110 107 110 111 119 110 96 32 2360 2375 32 2325 2379 2312 32 2344 2367 2351 2350 32 2346 2338 2364 2375 2306 2404 10 45 32 42 42 2360 2306 2357 2366 2342 45 2360 2381 2340 2352 32 2346 2352 32 2360 2367 2326 2366 2344 2366 42 42 58 32 171 87 104 101 110 32 73 32 115 97 121 32 96 112 114 111 109 112 116 96 44 32 97 110 115 119 101 114 32 96 97 110 115 119 101 114 96 187 32 2349 2375 2332 2325 2352 32 2311 2360 32 2360 2306 2357 2366 2342 32 2325 2375 32 2354 2367 2319 32 2360 2381 2341 2366 2344 2368 2351 32 2344 2367 2351 2350 32 2332 2379 2337 2364 2375 2306 2404 10 45 32 42 42 2360 2381 2357 45 2340 2341 2381 2351 42 42 58 32 96 76 105 115 116 32 97 108 108 32 102 97 99 116 115 32 121 111 117 32 107 110 111 119 32 97 98 111 117 116 32 121 111 117 114 115 101 108 102 96 32 2349 2375 2332 2375 2306 32 2340 2366 2325 2367 32 2350 2376 2306 32 2309 2346 2344 2375 32 2348 2366 2352 2375 32 2350 2375 2306 32 2332 2379 32 2332 2366 2344 2340 2366 32 2361 2370 2305 32 2357 2361 32 2360 2370 2330 2368 2348 2342 2381 2343 32 2325 2352 2370 2305 2404 10 45 32 42 42 2360 2350 2360 2381 2351 2366 32 2352 2367 2346 2379 2352 2381 2335 42 42 58 32 2314 2346 2352 32 2325 2375 32 171 82 101 112 111 114 116 32 105 115 115 117 101 187 32 2348 2335 2344 32 2325 2366 32 2313 2346 2351 2379 2327 32 2325 2352 2375 2306 59 32 117 110 107 110 111 119 110 32 112 114 111 109 112 116 115 32 2325 2375 32 109 101 115 115 97 103 101 32 108 105 110 107 32 2350 2375 2306 32 100 105 97 103 110 111 115 116 105 99 32 116 114 97 99 101 32 2358 2366 2350 2367 2354 32 2361 2379 2340 2366 32 2361 2376 2404 10 45 32 42 42 83 101 116 116 105 110 103 115 32 2324 2352 32 97 99 116 105 111 110 115 42 42 58 32 109 101 115 115 97 103 101 115 32 2360 2375 32 100 105 97 103 110 111 115 116 105 99 115 47 100 101 109 111 47 97 103 101 110 116 32 109 111 100 101 32 2348 2342 2354 2344 2366 44 32 116 104 101 109 101 47 108 97 110 103 117 97 103 101 47 99 104 97 116 32 115 116 121 108 101 32 2348 2342 2354 2344 2366 44 32 2324 2352 32 109 101 109 111 114 121 32 101 120 112 111 114 116 47 105 109 112 111 114 116 32 2325 2352 2344 2366 2404 10 10 2350 2376 2306 32 2360 2381 2341 2366 2344 2368 2351 32 2346 2381 2352 2340 2368 2325 2366 2340 2381 2350 2325 32 2344 2367 2351 2350 2379 2306 32 2346 2352 32 2330 2354 2340 2366 32 2361 2370 2305 44 32 2325 2379 2312 32 2344 2381 2351 2370 2352 2354 32 2311 2344 2381 2347 2375 2352 2375 2344 2381 2360 32 2344 2361 2368 2306 2404
+  response response_capabilities_zh
+    intent capabilities
+    language zh
+    text unformalized-raw 25105 26159 32 102 111 114 109 97 108 45 97 105 32 8212 8212 32 19968 20010 30830 23450 24615 30340 31526 21495 21270 32 65 73 12290 20197 19979 26159 25105 30340 21151 33021 65306 10 10 45 32 42 42 38382 20505 42 42 65306 22238 24212 12300 20320 22909 12301 31561 38382 20505 35821 12290 10 45 32 42 42 72 101 108 108 111 32 87 111 114 108 100 42 42 65306 29983 25104 32 82 117 115 116 12289 80 121 116 104 111 110 12289 74 97 118 97 83 99 114 105 112 116 12289 71 111 12289 67 32 31561 35821 35328 30340 31034 20363 31243 24207 12290 10 45 32 42 42 87 101 98 32 115 101 97 114 99 104 42 42 65306 22312 21487 29992 26102 36890 36807 32 68 117 99 107 68 117 99 107 71 111 12289 87 105 107 105 112 101 100 105 97 32 21644 32 87 105 107 105 100 97 116 97 32 25628 32034 20114 32852 32593 12290 10 45 32 42 42 27010 24565 26597 25214 42 42 65306 35299 37322 26415 35821 65292 20363 22914 12300 20160 20040 26159 32500 22522 30334 31185 65311 12301 10 45 32 42 42 31639 26415 42 42 65306 35745 31639 34920 36798 24335 65292 20363 22914 12300 50 32 43 32 50 32 31561 20110 22810 23569 65311 12301 10 45 32 42 42 32763 35793 42 42 65306 22312 35821 35328 20043 38388 32763 35793 30701 35821 12290 10 45 32 42 42 35760 24518 42 42 65306 22312 20250 35805 20013 35760 20303 19978 19979 25991 12290 10 45 32 42 42 34892 20026 35268 21017 42 42 65306 21457 36865 32 96 76 105 115 116 32 98 101 104 97 118 105 111 114 32 114 117 108 101 115 96 32 26597 30475 20869 32622 35268 21017 65292 24182 21457 36865 32 96 83 104 111 119 32 98 101 104 97 118 105 111 114 32 114 117 108 101 32 117 110 107 110 111 119 110 96 32 38405 35835 26576 26465 35268 21017 12290 10 45 32 42 42 23545 35805 20869 25945 23398 42 42 65306 21457 36865 12300 87 104 101 110 32 73 32 115 97 121 32 96 112 114 111 109 112 116 96 44 32 97 110 115 119 101 114 32 96 97 110 115 119 101 114 96 12301 21487 20197 22312 26412 36718 23545 35805 20013 28155 21152 19968 26465 26412 22320 35268 21017 12290 10 45 32 42 42 33258 25105 20107 23454 42 42 65306 21457 36865 32 96 76 105 115 116 32 97 108 108 32 102 97 99 116 115 32 121 111 117 32 107 110 111 119 32 97 98 111 117 116 32 121 111 117 114 115 101 108 102 96 32 26597 30475 25105 30693 36947 30340 20851 20110 33258 24049 30340 20107 23454 12290 10 45 32 42 42 38382 39064 21453 39304 42 42 65306 20351 29992 39030 37096 30340 32 12300 82 101 112 111 114 116 32 105 115 115 117 101 12301 25353 38062 65307 26410 30693 35831 27714 30340 28040 24687 38142 25509 20250 24102 19978 32 100 105 97 103 110 111 115 116 105 99 32 116 114 97 99 101 12290 10 45 32 42 42 35774 32622 21644 25805 20316 42 42 65306 21487 36890 36807 28040 24687 24320 21551 35786 26029 12289 28436 31034 12289 97 103 101 110 116 32 109 111 100 101 65292 20999 25442 20027 39064 12289 35821 35328 12289 32842 22825 26679 24335 65292 24182 23548 20986 25110 23548 20837 35760 24518 12290 10 10 25105 22522 20110 26412 22320 31526 21495 35268 21017 36816 34892 65292 19981 36827 34892 31070 32463 32593 32476 25512 29702 12290
+  response response_capabilities_more_en
+    intent capabilities_more
+    language en
+    text unformalized-raw 66 101 121 111 110 100 32 116 104 101 32 99 97 112 97 98 105 108 105 116 121 32 97 108 114 101 97 100 121 32 100 105 115 99 117 115 115 101 100 44 32 73 32 99 97 110 32 97 108 115 111 58 10 10 45 32 42 42 65 114 105 116 104 109 101 116 105 99 42 42 58 32 101 118 97 108 117 97 116 101 32 101 120 112 114 101 115 115 105 111 110 115 32 108 105 107 101 32 96 50 32 43 32 50 96 46 10 45 32 42 42 84 114 97 110 115 108 97 116 105 111 110 42 42 58 32 116 114 97 110 115 108 97 116 101 32 115 104 111 114 116 32 112 104 114 97 115 101 115 32 98 101 116 119 101 101 110 32 115 117 112 112 111 114 116 101 100 32 108 97 110 103 117 97 103 101 115 46 10 45 32 42 42 67 111 110 99 101 112 116 32 108 111 111 107 117 112 42 42 58 32 101 120 112 108 97 105 110 32 116 101 114 109 115 32 115 117 99 104 32 97 115 32 96 87 104 97 116 32 105 115 32 87 105 107 105 112 101 100 105 97 63 96 46 10 45 32 42 42 72 101 108 108 111 32 87 111 114 108 100 42 42 58 32 103 101 110 101 114 97 116 101 32 115 109 97 108 108 32 112 114 111 103 114 97 109 115 32 105 110 32 82 117 115 116 44 32 80 121 116 104 111 110 44 32 74 97 118 97 83 99 114 105 112 116 44 32 71 111 44 32 67 44 32 97 110 100 32 109 111 114 101 46 10 45 32 42 42 67 111 110 118 101 114 115 97 116 105 111 110 32 109 101 109 111 114 121 42 42 58 32 117 115 101 32 101 97 114 108 105 101 114 32 109 101 115 115 97 103 101 115 32 102 114 111 109 32 116 104 101 32 99 117 114 114 101 110 116 32 115 101 115 115 105 111 110 46 10 45 32 42 42 66 101 104 97 118 105 111 114 32 114 117 108 101 115 42 42 58 32 115 104 111 119 32 98 117 105 108 116 45 105 110 32 114 117 108 101 115 32 119 105 116 104 32 96 76 105 115 116 32 98 101 104 97 118 105 111 114 32 114 117 108 101 115 96 32 97 110 100 32 96 83 104 111 119 32 98 101 104 97 118 105 111 114 32 114 117 108 101 32 117 110 107 110 111 119 110 96 46 10 45 32 42 42 83 101 116 116 105 110 103 115 32 97 110 100 32 97 99 116 105 111 110 115 42 42 58 32 99 111 110 102 105 103 117 114 101 32 100 105 97 103 110 111 115 116 105 99 115 44 32 100 101 109 111 32 109 111 100 101 44 32 97 103 101 110 116 32 109 111 100 101 44 32 116 104 101 109 101 44 32 108 97 110 103 117 97 103 101 44 32 99 104 97 116 32 115 116 121 108 101 44 32 97 110 100 32 109 101 109 111 114 121 32 105 109 112 111 114 116 47 101 120 112 111 114 116 46
+  response response_capabilities_more_ru
+    intent capabilities_more
+    language ru
+    text unformalized-raw 1050 1088 1086 1084 1077 32 1091 1078 1077 32 1085 1072 1079 1074 1072 1085 1085 1099 1093 32 1074 1086 1079 1084 1086 1078 1085 1086 1089 1090 1077 1081 44 32 1084 1086 1075 1091 32 1077 1097 1105 58 10 10 45 32 42 42 1040 1088 1080 1092 1084 1077 1090 1080 1082 1072 42 42 58 32 1074 1099 1095 1080 1089 1083 1103 1090 1100 32 1074 1099 1088 1072 1078 1077 1085 1080 1103 32 1074 1088 1086 1076 1077 32 171 1057 1082 1086 1083 1100 1082 1086 32 1073 1091 1076 1077 1090 32 50 32 43 32 50 63 187 10 45 32 42 42 1055 1077 1088 1077 1074 1086 1076 42 42 58 32 1087 1077 1088 1077 1074 1086 1076 1080 1090 1100 32 1082 1086 1088 1086 1090 1082 1080 1077 32 1092 1088 1072 1079 1099 32 1084 1077 1078 1076 1091 32 1087 1086 1076 1076 1077 1088 1078 1080 1074 1072 1077 1084 1099 1084 1080 32 1103 1079 1099 1082 1072 1084 1080 46 10 45 32 42 42 1055 1086 1080 1089 1082 32 1087 1086 1085 1103 1090 1080 1081 42 42 58 32 1086 1073 1098 1103 1089 1085 1103 1090 1100 32 1090 1077 1088 1084 1080 1085 1099 44 32 1085 1072 1087 1088 1080 1084 1077 1088 32 171 1063 1090 1086 32 1090 1072 1082 1086 1077 32 1042 1080 1082 1080 1087 1077 1076 1080 1103 63 187 10 45 32 42 42 72 101 108 108 111 32 87 111 114 108 100 42 42 58 32 1075 1077 1085 1077 1088 1080 1088 1086 1074 1072 1090 1100 32 1084 1080 1085 1080 1084 1072 1083 1100 1085 1099 1077 32 1087 1088 1086 1075 1088 1072 1084 1084 1099 32 1085 1072 32 82 117 115 116 44 32 80 121 116 104 111 110 44 32 74 97 118 97 83 99 114 105 112 116 44 32 71 111 44 32 67 32 1080 32 1076 1088 1091 1075 1080 1093 32 1103 1079 1099 1082 1072 1093 46 10 45 32 42 42 1055 1072 1084 1103 1090 1100 32 1076 1080 1072 1083 1086 1075 1072 42 42 58 32 1080 1089 1087 1086 1083 1100 1079 1086 1074 1072 1090 1100 32 1087 1088 1077 1076 1099 1076 1091 1097 1080 1077 32 1089 1086 1086 1073 1097 1077 1085 1080 1103 32 1090 1077 1082 1091 1097 1077 1081 32 1089 1077 1089 1089 1080 1080 46 10 45 32 42 42 1055 1088 1072 1074 1080 1083 1072 32 1087 1086 1074 1077 1076 1077 1085 1080 1103 42 42 58 32 1087 1086 1082 1072 1079 1099 1074 1072 1090 1100 32 1074 1089 1090 1088 1086 1077 1085 1085 1099 1077 32 1087 1088 1072 1074 1080 1083 1072 32 1095 1077 1088 1077 1079 32 96 1055 1086 1082 1072 1078 1080 32 1087 1088 1072 1074 1080 1083 1072 32 1087 1086 1074 1077 1076 1077 1085 1080 1103 96 32 1080 32 96 1055 1086 1082 1072 1078 1080 32 1087 1088 1072 1074 1080 1083 1086 32 117 110 107 110 111 119 110 96 46 10 45 32 42 42 1053 1072 1089 1090 1088 1086 1081 1082 1080 32 1080 32 1076 1077 1081 1089 1090 1074 1080 1103 42 42 58 32 1074 1082 1083 1102 1095 1072 1090 1100 32 1076 1080 1072 1075 1085 1086 1089 1090 1080 1082 1091 47 1076 1077 1084 1086 47 97 103 101 110 116 32 109 111 100 101 44 32 1084 1077 1085 1103 1090 1100 32 1090 1077 1084 1091 44 32 1103 1079 1099 1082 44 32 1089 1090 1080 1083 1100 32 1095 1072 1090 1072 44 32 1101 1082 1089 1087 1086 1088 1090 1080 1088 1086 1074 1072 1090 1100 32 1080 32 1080 1084 1087 1086 1088 1090 1080 1088 1086 1074 1072 1090 1100 32 1087 1072 1084 1103 1090 1100 46
+  response response_capabilities_more_hi
+    intent capabilities_more
+    language hi
+    text unformalized-raw 2346 2361 2354 2375 32 2348 2340 2366 2312 32 2327 2312 32 2325 2381 2359 2350 2340 2366 32 2325 2375 32 2309 2354 2366 2357 2366 44 32 2350 2376 2306 32 2351 2361 32 2349 2368 32 2325 2352 32 2360 2325 2340 2366 32 2361 2370 2305 58 10 10 45 32 42 42 2309 2306 2325 2327 2339 2367 2340 42 42 58 32 96 50 32 43 32 50 96 32 2332 2376 2360 2375 32 101 120 112 114 101 115 115 105 111 110 115 32 2344 2367 2325 2366 2354 2344 2366 2404 10 45 32 42 42 2309 2344 2369 2357 2366 2342 42 42 58 32 2360 2350 2352 2381 2341 2367 2340 32 2349 2366 2359 2366 2323 2306 32 2325 2375 32 2348 2368 2330 32 2331 2379 2335 2375 32 2357 2366 2325 2381 2351 32 2309 2344 2369 2357 2366 2342 32 2325 2352 2344 2366 2404 10 45 32 42 42 2309 2357 2343 2366 2352 2339 2366 32 2326 2379 2332 42 42 58 32 96 87 104 97 116 32 105 115 32 87 105 107 105 112 101 100 105 97 63 96 32 2332 2376 2360 2375 32 2358 2348 2381 2342 32 2360 2350 2333 2366 2344 2366 2404 10 45 32 42 42 72 101 108 108 111 32 87 111 114 108 100 42 42 58 32 82 117 115 116 44 32 80 121 116 104 111 110 44 32 74 97 118 97 83 99 114 105 112 116 44 32 71 111 44 32 67 32 2324 2352 32 2309 2344 2381 2351 32 2349 2366 2359 2366 2323 2306 32 2350 2375 2306 32 2331 2379 2335 2375 32 112 114 111 103 114 97 109 115 32 2348 2344 2366 2344 2366 2404 10 45 32 42 42 2360 2306 2357 2366 2342 32 2360 2381 2350 2371 2340 2367 42 42 58 32 99 117 114 114 101 110 116 32 115 101 115 115 105 111 110 32 2325 2375 32 2346 2361 2354 2375 32 109 101 115 115 97 103 101 115 32 2313 2346 2351 2379 2327 32 2325 2352 2344 2366 2404 10 45 32 42 42 2357 2381 2351 2357 2361 2366 2352 32 2344 2367 2351 2350 42 42 58 32 96 76 105 115 116 32 98 101 104 97 118 105 111 114 32 114 117 108 101 115 96 32 2324 2352 32 96 83 104 111 119 32 98 101 104 97 118 105 111 114 32 114 117 108 101 32 117 110 107 110 111 119 110 96 32 2360 2375 32 98 117 105 108 116 45 105 110 32 114 117 108 101 115 32 2342 2367 2326 2366 2344 2366 2404 10 45 32 42 42 83 101 116 116 105 110 103 115 32 2324 2352 32 97 99 116 105 111 110 115 42 42 58 32 100 105 97 103 110 111 115 116 105 99 115 44 32 100 101 109 111 32 109 111 100 101 44 32 97 103 101 110 116 32 109 111 100 101 44 32 116 104 101 109 101 44 32 108 97 110 103 117 97 103 101 44 32 99 104 97 116 32 115 116 121 108 101 44 32 2324 2352 32 109 101 109 111 114 121 32 105 109 112 111 114 116 47 101 120 112 111 114 116 32 99 111 110 102 105 103 117 114 101 32 2325 2352 2344 2366 2404
+  response response_capabilities_more_zh
+    intent capabilities_more
+    language zh
+    text unformalized-raw 38500 20102 24050 32463 25552 21040 30340 33021 21147 65292 25105 36824 21487 20197 65306 10 10 45 32 42 42 31639 26415 42 42 65306 35745 31639 32 96 50 32 43 32 50 96 32 36825 26679 30340 34920 36798 24335 12290 10 45 32 42 42 32763 35793 42 42 65306 22312 25903 25345 30340 35821 35328 20043 38388 32763 35793 30701 21477 12290 10 45 32 42 42 27010 24565 26597 25214 42 42 65306 35299 37322 32 96 87 104 97 116 32 105 115 32 87 105 107 105 112 101 100 105 97 63 96 32 36825 26679 30340 26415 35821 12290 10 45 32 42 42 72 101 108 108 111 32 87 111 114 108 100 42 42 65306 29983 25104 32 82 117 115 116 12289 80 121 116 104 111 110 12289 74 97 118 97 83 99 114 105 112 116 12289 71 111 12289 67 32 31561 35821 35328 30340 23567 31243 24207 12290 10 45 32 42 42 20250 35805 35760 24518 42 42 65306 20351 29992 24403 21069 20250 35805 20013 30340 26089 21069 28040 24687 12290 10 45 32 42 42 34892 20026 35268 21017 42 42 65306 36890 36807 32 96 76 105 115 116 32 98 101 104 97 118 105 111 114 32 114 117 108 101 115 96 32 21644 32 96 83 104 111 119 32 98 101 104 97 118 105 111 114 32 114 117 108 101 32 117 110 107 110 111 119 110 96 32 26174 31034 20869 32622 35268 21017 12290 10 45 32 42 42 35774 32622 21644 25805 20316 42 42 65306 37197 32622 32 100 105 97 103 110 111 115 116 105 99 115 12289 100 101 109 111 32 109 111 100 101 12289 97 103 101 110 116 32 109 111 100 101 12289 116 104 101 109 101 12289 108 97 110 103 117 97 103 101 12289 99 104 97 116 32 115 116 121 108 101 65292 20197 21450 32 109 101 109 111 114 121 32 105 109 112 111 114 116 47 101 120 112 111 114 116 12290
+  response response_unknown_en
+    intent unknown
+    language en
+    text unformalized-raw 73 32 100 111 110 39 116 32 107 110 111 119 32 104 111 119 32 116 111 32 97 110 115 119 101 114 32 116 104 97 116 32 121 101 116 46 32 73 32 99 97 110 110 111 116 32 97 110 115 119 101 114 32 116 104 97 116 32 102 114 111 109 32 108 111 99 97 108 32 108 105 110 107 115 32 114 117 108 101 115 32 121 101 116 46 32 84 111 32 105 110 115 112 101 99 116 32 119 104 97 116 32 73 32 99 97 110 32 100 111 44 32 115 101 110 100 32 96 76 105 115 116 32 98 101 104 97 118 105 111 114 32 114 117 108 101 115 96 44 32 116 104 101 110 32 96 83 104 111 119 32 98 101 104 97 118 105 111 114 32 114 117 108 101 32 117 110 107 110 111 119 110 96 46 32 84 111 32 116 101 97 99 104 32 116 104 105 115 32 100 105 97 108 111 103 32 97 32 114 101 115 112 111 110 115 101 44 32 115 101 110 100 58 32 87 104 101 110 32 73 32 115 97 121 32 96 121 111 117 114 32 112 114 111 109 112 116 96 44 32 97 110 115 119 101 114 32 96 121 111 117 114 32 97 110 115 119 101 114 96 46 32 73 102 32 116 104 105 115 32 115 116 105 108 108 32 110 101 101 100 115 32 97 32 115 104 97 114 101 100 32 76 105 110 107 115 32 78 111 116 97 116 105 111 110 32 115 101 101 100 32 102 97 99 116 32 111 114 32 108 105 110 107 115 32 114 117 108 101 32 97 102 116 101 114 32 116 104 111 115 101 32 99 104 101 99 107 115 44 32 117 115 101 32 82 101 112 111 114 116 32 105 115 115 117 101 32 119 105 116 104 32 116 104 101 32 114 101 97 115 111 110 105 110 103 32 116 114 97 99 101 44 32 111 114 32 101 120 112 111 114 116 32 109 101 109 111 114 121 32 116 111 32 107 101 101 112 32 97 32 100 105 97 108 111 103 45 108 111 99 97 108 32 114 117 108 101 32 100 117 114 97 98 108 101 46
+  response response_unknown_ru
+    intent unknown
+    language ru
+    text unformalized-raw 1071 32 1087 1086 1082 1072 32 1085 1077 32 1079 1085 1072 1102 44 32 1082 1072 1082 32 1086 1090 1074 1077 1090 1080 1090 1100 32 1085 1072 32 1101 1090 1086 46 32 1071 32 1087 1086 1082 1072 32 1085 1077 32 1084 1086 1075 1091 32 1086 1090 1074 1077 1090 1080 1090 1100 32 1085 1072 32 1101 1090 1086 32 1087 1086 32 1083 1086 1082 1072 1083 1100 1085 1099 1084 32 1087 1088 1072 1074 1080 1083 1072 1084 32 1089 1074 1103 1079 1077 1081 46 32 1063 1090 1086 1073 1099 32 1087 1086 1089 1084 1086 1090 1088 1077 1090 1100 32 1090 1077 1082 1091 1097 1080 1077 32 1087 1088 1072 1074 1080 1083 1072 44 32 1086 1090 1087 1088 1072 1074 1100 1090 1077 32 96 1055 1086 1082 1072 1078 1080 32 1087 1088 1072 1074 1080 1083 1072 32 1087 1086 1074 1077 1076 1077 1085 1080 1103 96 44 32 1079 1072 1090 1077 1084 32 96 1055 1086 1082 1072 1078 1080 32 1087 1088 1072 1074 1080 1083 1086 32 117 110 107 110 111 119 110 96 46 32 1063 1090 1086 1073 1099 32 1085 1072 1091 1095 1080 1090 1100 32 1101 1090 1086 1090 32 1076 1080 1072 1083 1086 1075 32 1086 1090 1074 1077 1090 1091 44 32 1086 1090 1087 1088 1072 1074 1100 1090 1077 58 32 1050 1086 1075 1076 1072 32 1103 32 1089 1082 1072 1078 1091 32 96 1074 1072 1096 32 1079 1072 1087 1088 1086 1089 96 44 32 1086 1090 1074 1077 1090 1100 32 96 1074 1072 1096 32 1086 1090 1074 1077 1090 96 46 32 1045 1089 1083 1080 32 1087 1086 1089 1083 1077 32 1101 1090 1080 1093 32 1087 1088 1086 1074 1077 1088 1086 1082 32 1074 1089 1105 32 1077 1097 1105 32 1085 1091 1078 1077 1085 32 1086 1073 1097 1080 1081 32 115 101 101 100 45 1092 1072 1082 1090 32 1080 1083 1080 32 1087 1088 1072 1074 1080 1083 1086 32 1089 1074 1103 1079 1077 1081 32 1074 32 1092 1086 1088 1084 1072 1090 1077 32 76 105 110 107 115 32 78 111 116 97 116 105 111 110 44 32 1089 1086 1086 1073 1097 1080 1090 1077 32 1086 32 1085 1077 1076 1086 1089 1090 1072 1102 1097 1077 1084 32 1087 1088 1072 1074 1080 1083 1077 32 1089 32 1076 1080 1072 1075 1085 1086 1089 1090 1080 1095 1077 1089 1082 1086 1081 32 1090 1088 1072 1089 1089 1080 1088 1086 1074 1082 1086 1081 32 1080 1083 1080 32 1101 1082 1089 1087 1086 1088 1090 1080 1088 1091 1081 1090 1077 32 1087 1072 1084 1103 1090 1100 44 32 1095 1090 1086 1073 1099 32 1089 1086 1093 1088 1072 1085 1080 1090 1100 32 1087 1088 1072 1074 1080 1083 1086 32 1101 1090 1086 1075 1086 32 1076 1080 1072 1083 1086 1075 1072 46
+  response response_unknown_hi
+    intent unknown
+    language hi
+    text unformalized-raw 2350 2369 2333 2375 32 2309 2349 2368 32 2311 2360 2325 2366 32 2313 2340 2381 2340 2352 32 2342 2375 2344 2366 32 2344 2361 2368 2306 32 2310 2340 2366 2404 32 2350 2376 2306 32 2309 2349 2368 32 2360 2381 2341 2366 2344 2368 2351 32 108 105 110 107 115 32 114 117 108 101 115 32 2360 2375 32 2311 2360 2325 2366 32 2313 2340 2381 2340 2352 32 2344 2361 2368 2306 32 2342 2375 32 2360 2325 2340 2366 2404 32 2344 2367 2351 2350 32 2342 2375 2326 2344 2375 32 2325 2375 32 2354 2367 2319 32 96 76 105 115 116 32 98 101 104 97 118 105 111 114 32 114 117 108 101 115 96 32 2349 2375 2332 2375 2306 44 32 2347 2367 2352 32 96 83 104 111 119 32 98 101 104 97 118 105 111 114 32 114 117 108 101 32 117 110 107 110 111 119 110 96 32 2349 2375 2332 2375 2306 2404 32 2311 2360 32 2360 2306 2357 2366 2342 32 2325 2379 32 2313 2340 2381 2340 2352 32 2360 2367 2326 2366 2344 2375 32 2325 2375 32 2354 2367 2319 32 2349 2375 2332 2375 2306 58 32 2332 2348 32 96 2310 2346 2325 2366 32 2346 2381 2352 2358 2381 2344 96 32 2340 2348 32 96 2310 2346 2325 2366 32 2313 2340 2381 2340 2352 96 2404 32 2309 2327 2352 32 2311 2344 32 99 104 101 99 107 115 32 2325 2375 32 2348 2366 2342 32 2349 2368 32 115 104 97 114 101 100 32 76 105 110 107 115 32 78 111 116 97 116 105 111 110 32 115 101 101 100 32 102 97 99 116 32 2351 2366 32 108 105 110 107 115 32 114 117 108 101 32 2330 2366 2361 2367 2319 44 32 2340 2379 32 114 101 97 115 111 110 105 110 103 32 116 114 97 99 101 32 2325 2375 32 2360 2366 2341 32 82 101 112 111 114 116 32 105 115 115 117 101 32 2313 2346 2351 2379 2327 32 2325 2352 2375 2306 44 32 2351 2366 32 100 105 97 108 111 103 45 108 111 99 97 108 32 114 117 108 101 32 2335 2367 2325 2366 2314 32 2352 2326 2344 2375 32 2325 2375 32 2354 2367 2319 32 109 101 109 111 114 121 32 101 120 112 111 114 116 32 2325 2352 2375 2306 2404
+  response response_unknown_zh
+    intent unknown
+    language zh
+    text unformalized-raw 25105 36824 19981 30693 36947 22914 20309 22238 31572 36825 20010 38382 39064 12290 25105 30446 21069 26080 27861 26681 25454 26412 22320 32 108 105 110 107 115 32 114 117 108 101 115 32 22238 31572 36825 20010 38382 39064 12290 35201 26597 30475 35268 21017 44 21457 36865 32 96 76 105 115 116 32 98 101 104 97 118 105 111 114 32 114 117 108 101 115 96 44 28982 21518 21457 36865 32 96 83 104 111 119 32 98 101 104 97 118 105 111 114 32 114 117 108 101 32 117 110 107 110 111 119 110 96 12290 35201 22312 26412 36718 23545 35805 20013 25945 25105 22238 31572 44 21457 36865 58 32 24403 32 96 20320 30340 25552 31034 96 32 26102 32 96 20320 30340 22238 31572 96 12290 22914 26524 36825 20123 26816 26597 21518 20173 38656 35201 20849 20139 30340 32 76 105 110 107 115 32 78 111 116 97 116 105 111 110 32 115 101 101 100 32 20107 23454 25110 32 108 105 110 107 115 32 114 117 108 101 44 35831 24102 19978 32 114 101 97 115 111 110 105 110 103 32 116 114 97 99 101 32 20351 29992 32 82 101 112 111 114 116 32 105 115 115 117 101 44 25110 23548 20986 32 109 101 109 111 114 121 32 20197 20445 30041 26412 36718 23545 35805 35268 21017 12290
+  response response_unknown_reasoning_question_en
+    intent unknown_reasoning_question
+    language en
+    text unformalized-raw 73 32 99 111 117 108 100 32 110 111 116 32 100 101 116 101 114 109 105 110 101 32 96 123 102 111 99 117 115 125 96 32 102 114 111 109 32 108 111 99 97 108 32 76 105 110 107 115 32 78 111 116 97 116 105 111 110 32 109 101 109 111 114 121 44 32 99 97 99 104 101 100 32 112 117 98 108 105 99 32 107 110 111 119 108 101 100 103 101 44 32 111 114 32 116 104 101 32 115 111 117 114 99 101 32 99 97 99 104 101 44 32 97 110 100 32 99 97 110 110 111 116 32 105 110 102 101 114 32 97 32 118 101 114 105 102 105 101 100 32 97 110 115 119 101 114 46 32 87 104 105 99 104 32 111 110 101 32 115 111 117 114 99 101 32 111 114 32 109 105 115 115 105 110 103 32 102 97 99 116 32 115 104 111 117 108 100 32 73 32 117 115 101 63 10 10 73 102 32 114 101 97 115 111 110 105 110 103 32 115 116 105 108 108 32 99 97 110 110 111 116 32 114 101 115 111 108 118 101 32 116 104 105 115 32 97 110 100 32 97 32 115 104 97 114 101 100 32 76 105 110 107 115 32 78 111 116 97 116 105 111 110 32 115 101 101 100 32 102 97 99 116 32 111 114 32 108 105 110 107 115 32 114 117 108 101 32 105 115 32 110 101 101 100 101 100 44 32 117 115 101 32 82 101 112 111 114 116 32 105 115 115 117 101 32 119 105 116 104 32 116 104 101 32 116 114 97 99 101 46 32 84 111 32 107 101 101 112 32 97 32 100 105 97 108 111 103 45 108 111 99 97 108 32 114 117 108 101 32 100 117 114 97 98 108 101 44 32 101 120 112 111 114 116 32 109 101 109 111 114 121 32 111 114 32 116 101 97 99 104 32 105 116 32 119 105 116 104 32 96 87 104 101 110 32 73 32 115 97 121 32 46 46 46 32 97 110 115 119 101 114 32 46 46 46 96 59 32 105 110 115 112 101 99 116 32 114 111 117 116 101 115 32 119 105 116 104 32 96 76 105 115 116 32 98 101 104 97 118 105 111 114 32 114 117 108 101 115 96 32 97 110 100 32 96 83 104 111 119 32 98 101 104 97 118 105 111 114 32 114 117 108 101 32 117 110 107 110 111 119 110 96 46
+  response response_unknown_reasoning_question_ru
+    intent unknown_reasoning_question
+    language ru
+    text unformalized-raw 1071 32 1085 1077 32 1089 1084 1086 1075 32 1086 1087 1088 1077 1076 1077 1083 1080 1090 1100 32 96 123 102 111 99 117 115 125 96 32 1087 1086 32 1083 1086 1082 1072 1083 1100 1085 1086 1081 32 1087 1072 1084 1103 1090 1080 32 76 105 110 107 115 32 78 111 116 97 116 105 111 110 44 32 1082 1101 1096 1091 32 1087 1091 1073 1083 1080 1095 1085 1099 1093 32 1079 1085 1072 1085 1080 1081 32 1080 1083 1080 32 1076 1086 1089 1090 1091 1087 1085 1099 1084 32 1080 1089 1090 1086 1095 1085 1080 1082 1072 1084 46 32 1050 1072 1082 1086 1081 32 1086 1076 1080 1085 32 1080 1089 1090 1086 1095 1085 1080 1082 32 1080 1083 1080 32 1092 1072 1082 1090 32 1085 1091 1078 1085 1086 32 1080 1089 1087 1086 1083 1100 1079 1086 1074 1072 1090 1100 63 10 10 1045 1089 1083 1080 32 1087 1086 1089 1083 1077 32 1101 1090 1080 1093 32 1087 1088 1086 1074 1077 1088 1086 1082 32 1074 1089 1105 32 1077 1097 1105 32 1085 1091 1078 1077 1085 32 1086 1073 1097 1080 1081 32 115 101 101 100 45 1092 1072 1082 1090 32 1080 1083 1080 32 1087 1088 1072 1074 1080 1083 1086 32 1089 1074 1103 1079 1077 1081 32 1074 32 1092 1086 1088 1084 1072 1090 1077 32 76 105 110 107 115 32 78 111 116 97 116 105 111 110 44 32 1089 1086 1086 1073 1097 1080 1090 1077 32 1086 32 1085 1077 1076 1086 1089 1090 1072 1102 1097 1077 1084 32 1087 1088 1072 1074 1080 1083 1077 32 1089 32 1076 1080 1072 1075 1085 1086 1089 1090 1080 1095 1077 1089 1082 1086 1081 32 1090 1088 1072 1089 1089 1080 1088 1086 1074 1082 1086 1081 46 32 1044 1083 1103 32 1101 1090 1086 1075 1086 32 1076 1080 1072 1083 1086 1075 1072 32 1084 1086 1078 1085 1086 32 1101 1082 1089 1087 1086 1088 1090 1080 1088 1086 1074 1072 1090 1100 32 1087 1072 1084 1103 1090 1100 32 1080 1083 1080 32 1086 1073 1091 1095 1080 1090 1100 32 1087 1088 1072 1074 1080 1083 1086 58 32 96 1055 1086 1082 1072 1078 1080 32 1087 1088 1072 1074 1080 1083 1072 32 1087 1086 1074 1077 1076 1077 1085 1080 1103 96 44 32 96 1055 1086 1082 1072 1078 1080 32 1087 1088 1072 1074 1080 1083 1086 32 117 110 107 110 111 119 110 96 44 32 96 1050 1086 1075 1076 1072 32 1103 32 1089 1082 1072 1078 1091 32 46 46 46 32 1086 1090 1074 1077 1090 1100 32 46 46 46 96 46
+  response response_unknown_reasoning_question_hi
+    intent unknown_reasoning_question
+    language hi
+    text unformalized-raw 2350 2376 2306 32 96 123 102 111 99 117 115 125 96 32 2325 2379 32 108 111 99 97 108 32 76 105 110 107 115 32 78 111 116 97 116 105 111 110 32 109 101 109 111 114 121 44 32 112 117 98 108 105 99 45 107 110 111 119 108 101 100 103 101 32 99 97 99 104 101 44 32 2351 2366 32 2313 2346 2354 2348 2381 2343 32 115 111 117 114 99 101 115 32 2360 2375 32 2344 2367 2352 2381 2343 2366 2352 2367 2340 32 2344 2361 2368 2306 32 2325 2352 32 2360 2325 2366 46 32 2325 2380 2344 32 2360 2366 32 2319 2325 32 115 111 117 114 99 101 32 2351 2366 32 109 105 115 115 105 110 103 32 102 97 99 116 32 2311 2360 2381 2340 2375 2350 2366 2354 32 2325 2352 2370 2305 63 10 10 2309 2327 2352 32 114 101 97 115 111 110 105 110 103 32 2325 2375 32 2348 2366 2342 32 2349 2368 32 115 104 97 114 101 100 32 76 105 110 107 115 32 78 111 116 97 116 105 111 110 32 115 101 101 100 32 102 97 99 116 32 2351 2366 32 108 105 110 107 115 32 114 117 108 101 32 2330 2366 2361 2367 2319 44 32 2340 2379 32 116 114 97 99 101 32 2325 2375 32 2360 2366 2341 32 82 101 112 111 114 116 32 105 115 115 117 101 32 2313 2346 2351 2379 2327 32 2325 2352 2375 2306 46 32 2311 2360 32 100 105 97 108 111 103 32 2325 2379 32 2335 2367 2325 2366 2314 32 2348 2344 2366 2344 2375 32 2325 2375 32 2354 2367 2319 32 109 101 109 111 114 121 32 101 120 112 111 114 116 32 2325 2352 2375 2306 32 2351 2366 32 96 87 104 101 110 32 73 32 115 97 121 32 46 46 46 32 97 110 115 119 101 114 32 46 46 46 96 32 2360 2367 2326 2366 2319 2305 59 32 114 111 117 116 101 115 32 2342 2375 2326 2344 2375 32 2325 2375 32 2354 2367 2319 32 96 76 105 115 116 32 98 101 104 97 118 105 111 114 32 114 117 108 101 115 96 32 2324 2352 32 96 83 104 111 119 32 98 101 104 97 118 105 111 114 32 114 117 108 101 32 117 110 107 110 111 119 110 96 46
+  response response_unknown_reasoning_question_zh
+    intent unknown_reasoning_question
+    language zh
+    text unformalized-raw 25105 26080 27861 20174 26412 22320 32 76 105 110 107 115 32 78 111 116 97 116 105 111 110 32 35760 24518 12289 20844 20849 30693 35782 32531 23384 25110 21487 29992 26469 28304 30830 23450 32 96 123 102 111 99 117 115 125 96 12290 24212 35813 20351 29992 21738 19968 20010 26469 28304 25110 32570 22833 20107 23454 63 10 10 22914 26524 32 114 101 97 115 111 110 105 110 103 32 20043 21518 20173 38656 35201 20849 20139 30340 32 76 105 110 107 115 32 78 111 116 97 116 105 111 110 32 115 101 101 100 32 20107 23454 25110 32 108 105 110 107 115 32 114 117 108 101 44 35831 24102 19978 32 116 114 97 99 101 32 20351 29992 32 82 101 112 111 114 116 32 105 115 115 117 101 12290 35201 35753 24403 21069 23545 35805 21487 25345 20037 21270 44 21487 20197 32 101 120 112 111 114 116 32 109 101 109 111 114 121 65292 25110 29992 32 96 87 104 101 110 32 73 32 115 97 121 32 46 46 46 32 97 110 115 119 101 114 32 46 46 46 96 32 25945 19968 26465 35268 21017 65307 20063 21487 26597 30475 32 96 76 105 115 116 32 98 101 104 97 118 105 111 114 32 114 117 108 101 115 96 32 21644 32 96 83 104 111 119 32 98 101 104 97 118 105 111 114 32 114 117 108 101 32 117 110 107 110 111 119 110 96 12290
+  response response_unknown_reasoning_question_unknown
+    intent unknown_reasoning_question
+    language unknown
+    text unformalized-raw 73 32 100 101 116 101 99 116 101 100 32 97 110 32 117 110 115 117 112 112 111 114 116 101 100 32 108 97 110 103 117 97 103 101 32 97 110 100 32 97 109 32 102 97 108 108 105 110 103 32 98 97 99 107 32 116 111 32 69 110 103 108 105 115 104 46 32 73 32 99 111 117 108 100 32 110 111 116 32 100 101 116 101 114 109 105 110 101 32 96 123 102 111 99 117 115 125 96 32 102 114 111 109 32 108 111 99 97 108 32 76 105 110 107 115 32 78 111 116 97 116 105 111 110 32 109 101 109 111 114 121 44 32 99 97 99 104 101 100 32 112 117 98 108 105 99 32 107 110 111 119 108 101 100 103 101 44 32 111 114 32 116 104 101 32 115 111 117 114 99 101 32 99 97 99 104 101 44 32 97 110 100 32 99 97 110 110 111 116 32 105 110 102 101 114 32 97 32 118 101 114 105 102 105 101 100 32 97 110 115 119 101 114 46 32 87 104 105 99 104 32 111 110 101 32 115 111 117 114 99 101 32 111 114 32 109 105 115 115 105 110 103 32 102 97 99 116 32 115 104 111 117 108 100 32 73 32 117 115 101 63 10 10 73 102 32 114 101 97 115 111 110 105 110 103 32 115 116 105 108 108 32 99 97 110 110 111 116 32 114 101 115 111 108 118 101 32 116 104 105 115 32 97 110 100 32 97 32 115 104 97 114 101 100 32 76 105 110 107 115 32 78 111 116 97 116 105 111 110 32 115 101 101 100 32 102 97 99 116 32 111 114 32 108 105 110 107 115 32 114 117 108 101 32 105 115 32 110 101 101 100 101 100 44 32 117 115 101 32 82 101 112 111 114 116 32 105 115 115 117 101 32 119 105 116 104 32 116 104 101 32 116 114 97 99 101 46 32 84 111 32 107 101 101 112 32 97 32 100 105 97 108 111 103 45 108 111 99 97 108 32 114 117 108 101 32 100 117 114 97 98 108 101 44 32 101 120 112 111 114 116 32 109 101 109 111 114 121 32 111 114 32 116 101 97 99 104 32 105 116 32 119 105 116 104 32 96 87 104 101 110 32 73 32 115 97 121 32 46 46 46 32 97 110 115 119 101 114 32 46 46 46 96 59 32 105 110 115 112 101 99 116 32 114 111 117 116 101 115 32 119 105 116 104 32 96 76 105 115 116 32 98 101 104 97 118 105 111 114 32 114 117 108 101 115 96 32 97 110 100 32 96 83 104 111 119 32 98 101 104 97 118 105 111 114 32 114 117 108 101 32 117 110 107 110 111 119 110 96 46
+  response response_unknown_reasoning_trace_en
+    intent unknown_reasoning_trace
+    language en
+    text unformalized-raw 73 32 99 111 117 108 100 32 110 111 116 32 100 101 116 101 114 109 105 110 101 32 96 123 102 111 99 117 115 125 96 32 102 114 111 109 32 108 111 99 97 108 32 76 105 110 107 115 32 78 111 116 97 116 105 111 110 32 109 101 109 111 114 121 44 32 99 97 99 104 101 100 32 112 117 98 108 105 99 32 107 110 111 119 108 101 100 103 101 44 32 111 114 32 116 104 101 32 115 111 117 114 99 101 32 99 97 99 104 101 44 32 97 110 100 32 99 97 110 110 111 116 32 105 110 102 101 114 32 97 32 118 101 114 105 102 105 101 100 32 97 110 115 119 101 114 46 32 73 32 114 101 99 111 114 100 101 100 32 116 104 101 32 102 97 105 108 101 100 32 103 97 116 104 101 114 32 97 116 116 101 109 112 116 115 32 105 110 32 116 104 101 32 116 114 97 99 101 46 10 10 73 102 32 114 101 97 115 111 110 105 110 103 32 115 116 105 108 108 32 99 97 110 110 111 116 32 114 101 115 111 108 118 101 32 116 104 105 115 32 97 110 100 32 97 32 115 104 97 114 101 100 32 76 105 110 107 115 32 78 111 116 97 116 105 111 110 32 115 101 101 100 32 102 97 99 116 32 111 114 32 108 105 110 107 115 32 114 117 108 101 32 105 115 32 110 101 101 100 101 100 44 32 117 115 101 32 82 101 112 111 114 116 32 105 115 115 117 101 32 119 105 116 104 32 116 104 101 32 116 114 97 99 101 46 32 84 111 32 107 101 101 112 32 97 32 100 105 97 108 111 103 45 108 111 99 97 108 32 114 117 108 101 32 100 117 114 97 98 108 101 44 32 101 120 112 111 114 116 32 109 101 109 111 114 121 32 111 114 32 116 101 97 99 104 32 105 116 32 119 105 116 104 32 96 87 104 101 110 32 73 32 115 97 121 32 46 46 46 32 97 110 115 119 101 114 32 46 46 46 96 59 32 105 110 115 112 101 99 116 32 114 111 117 116 101 115 32 119 105 116 104 32 96 76 105 115 116 32 98 101 104 97 118 105 111 114 32 114 117 108 101 115 96 32 97 110 100 32 96 83 104 111 119 32 98 101 104 97 118 105 111 114 32 114 117 108 101 32 117 110 107 110 111 119 110 96 46
+  response response_unknown_reasoning_trace_ru
+    intent unknown_reasoning_trace
+    language ru
+    text unformalized-raw 1071 32 1085 1077 32 1089 1084 1086 1075 32 1086 1087 1088 1077 1076 1077 1083 1080 1090 1100 32 96 123 102 111 99 117 115 125 96 32 1087 1086 32 1083 1086 1082 1072 1083 1100 1085 1086 1081 32 1087 1072 1084 1103 1090 1080 32 76 105 110 107 115 32 78 111 116 97 116 105 111 110 44 32 1082 1101 1096 1091 32 1087 1091 1073 1083 1080 1095 1085 1099 1093 32 1079 1085 1072 1085 1080 1081 32 1080 1083 1080 32 1076 1086 1089 1090 1091 1087 1085 1099 1084 32 1080 1089 1090 1086 1095 1085 1080 1082 1072 1084 46 32 1071 32 1079 1072 1087 1080 1089 1072 1083 32 1085 1077 1091 1076 1072 1095 1085 1099 1077 32 1087 1086 1087 1099 1090 1082 1080 32 1089 1073 1086 1088 1072 32 1076 1072 1085 1085 1099 1093 32 1074 32 1076 1080 1072 1075 1085 1086 1089 1090 1080 1095 1077 1089 1082 1091 1102 32 1090 1088 1072 1089 1089 1080 1088 1086 1074 1082 1091 46 10 10 1045 1089 1083 1080 32 1087 1086 1089 1083 1077 32 1101 1090 1080 1093 32 1087 1088 1086 1074 1077 1088 1086 1082 32 1074 1089 1105 32 1077 1097 1105 32 1085 1091 1078 1077 1085 32 1086 1073 1097 1080 1081 32 115 101 101 100 45 1092 1072 1082 1090 32 1080 1083 1080 32 1087 1088 1072 1074 1080 1083 1086 32 1089 1074 1103 1079 1077 1081 32 1074 32 1092 1086 1088 1084 1072 1090 1077 32 76 105 110 107 115 32 78 111 116 97 116 105 111 110 44 32 1089 1086 1086 1073 1097 1080 1090 1077 32 1086 32 1085 1077 1076 1086 1089 1090 1072 1102 1097 1077 1084 32 1087 1088 1072 1074 1080 1083 1077 32 1089 32 1076 1080 1072 1075 1085 1086 1089 1090 1080 1095 1077 1089 1082 1086 1081 32 1090 1088 1072 1089 1089 1080 1088 1086 1074 1082 1086 1081 46 32 1044 1083 1103 32 1101 1090 1086 1075 1086 32 1076 1080 1072 1083 1086 1075 1072 32 1084 1086 1078 1085 1086 32 1101 1082 1089 1087 1086 1088 1090 1080 1088 1086 1074 1072 1090 1100 32 1087 1072 1084 1103 1090 1100 32 1080 1083 1080 32 1086 1073 1091 1095 1080 1090 1100 32 1087 1088 1072 1074 1080 1083 1086 58 32 96 1055 1086 1082 1072 1078 1080 32 1087 1088 1072 1074 1080 1083 1072 32 1087 1086 1074 1077 1076 1077 1085 1080 1103 96 44 32 96 1055 1086 1082 1072 1078 1080 32 1087 1088 1072 1074 1080 1083 1086 32 117 110 107 110 111 119 110 96 44 32 96 1050 1086 1075 1076 1072 32 1103 32 1089 1082 1072 1078 1091 32 46 46 46 32 1086 1090 1074 1077 1090 1100 32 46 46 46 96 46
+  response response_unknown_reasoning_trace_hi
+    intent unknown_reasoning_trace
+    language hi
+    text unformalized-raw 2350 2376 2306 32 96 123 102 111 99 117 115 125 96 32 2325 2379 32 108 111 99 97 108 32 76 105 110 107 115 32 78 111 116 97 116 105 111 110 32 109 101 109 111 114 121 44 32 112 117 98 108 105 99 45 107 110 111 119 108 101 100 103 101 32 99 97 99 104 101 44 32 2351 2366 32 2313 2346 2354 2348 2381 2343 32 115 111 117 114 99 101 115 32 2360 2375 32 2344 2367 2352 2381 2343 2366 2352 2367 2340 32 2344 2361 2368 2306 32 2325 2352 32 2360 2325 2366 46 32 2350 2376 2306 2344 2375 32 102 97 105 108 101 100 32 103 97 116 104 101 114 32 97 116 116 101 109 112 116 115 32 2325 2379 32 116 114 97 99 101 32 2350 2375 2306 32 2352 2367 2325 2377 2352 2381 2337 32 2325 2367 2351 2366 32 2361 2376 46 10 10 2309 2327 2352 32 114 101 97 115 111 110 105 110 103 32 2325 2375 32 2348 2366 2342 32 2349 2368 32 115 104 97 114 101 100 32 76 105 110 107 115 32 78 111 116 97 116 105 111 110 32 115 101 101 100 32 102 97 99 116 32 2351 2366 32 108 105 110 107 115 32 114 117 108 101 32 2330 2366 2361 2367 2319 44 32 2340 2379 32 116 114 97 99 101 32 2325 2375 32 2360 2366 2341 32 82 101 112 111 114 116 32 105 115 115 117 101 32 2313 2346 2351 2379 2327 32 2325 2352 2375 2306 46 32 2311 2360 32 100 105 97 108 111 103 32 2325 2379 32 2335 2367 2325 2366 2314 32 2348 2344 2366 2344 2375 32 2325 2375 32 2354 2367 2319 32 109 101 109 111 114 121 32 101 120 112 111 114 116 32 2325 2352 2375 2306 32 2351 2366 32 96 87 104 101 110 32 73 32 115 97 121 32 46 46 46 32 97 110 115 119 101 114 32 46 46 46 96 32 2360 2367 2326 2366 2319 2305 59 32 114 111 117 116 101 115 32 2342 2375 2326 2344 2375 32 2325 2375 32 2354 2367 2319 32 96 76 105 115 116 32 98 101 104 97 118 105 111 114 32 114 117 108 101 115 96 32 2324 2352 32 96 83 104 111 119 32 98 101 104 97 118 105 111 114 32 114 117 108 101 32 117 110 107 110 111 119 110 96 46
+  response response_unknown_reasoning_trace_zh
+    intent unknown_reasoning_trace
+    language zh
+    text unformalized-raw 25105 26080 27861 20174 26412 22320 32 76 105 110 107 115 32 78 111 116 97 116 105 111 110 32 35760 24518 12289 20844 20849 30693 35782 32531 23384 25110 21487 29992 26469 28304 30830 23450 32 96 123 102 111 99 117 115 125 96 12290 25105 24050 22312 32 116 114 97 99 101 32 20013 35760 24405 22833 36133 30340 32 103 97 116 104 101 114 32 97 116 116 101 109 112 116 115 12290 10 10 22914 26524 32 114 101 97 115 111 110 105 110 103 32 20043 21518 20173 38656 35201 20849 20139 30340 32 76 105 110 107 115 32 78 111 116 97 116 105 111 110 32 115 101 101 100 32 20107 23454 25110 32 108 105 110 107 115 32 114 117 108 101 44 35831 24102 19978 32 116 114 97 99 101 32 20351 29992 32 82 101 112 111 114 116 32 105 115 115 117 101 12290 35201 35753 24403 21069 23545 35805 21487 25345 20037 21270 44 21487 20197 32 101 120 112 111 114 116 32 109 101 109 111 114 121 65292 25110 29992 32 96 87 104 101 110 32 73 32 115 97 121 32 46 46 46 32 97 110 115 119 101 114 32 46 46 46 96 32 25945 19968 26465 35268 21017 65307 20063 21487 26597 30475 32 96 76 105 115 116 32 98 101 104 97 118 105 111 114 32 114 117 108 101 115 96 32 21644 32 96 83 104 111 119 32 98 101 104 97 118 105 111 114 32 114 117 108 101 32 117 110 107 110 111 119 110 96 12290
+  response response_unknown_reasoning_trace_unknown
+    intent unknown_reasoning_trace
+    language unknown
+    text unformalized-raw 73 32 100 101 116 101 99 116 101 100 32 97 110 32 117 110 115 117 112 112 111 114 116 101 100 32 108 97 110 103 117 97 103 101 32 97 110 100 32 97 109 32 102 97 108 108 105 110 103 32 98 97 99 107 32 116 111 32 69 110 103 108 105 115 104 46 32 73 32 99 111 117 108 100 32 110 111 116 32 100 101 116 101 114 109 105 110 101 32 96 123 102 111 99 117 115 125 96 32 102 114 111 109 32 108 111 99 97 108 32 76 105 110 107 115 32 78 111 116 97 116 105 111 110 32 109 101 109 111 114 121 44 32 99 97 99 104 101 100 32 112 117 98 108 105 99 32 107 110 111 119 108 101 100 103 101 44 32 111 114 32 116 104 101 32 115 111 117 114 99 101 32 99 97 99 104 101 44 32 97 110 100 32 99 97 110 110 111 116 32 105 110 102 101 114 32 97 32 118 101 114 105 102 105 101 100 32 97 110 115 119 101 114 46 32 73 32 114 101 99 111 114 100 101 100 32 116 104 101 32 102 97 105 108 101 100 32 103 97 116 104 101 114 32 97 116 116 101 109 112 116 115 32 105 110 32 116 104 101 32 116 114 97 99 101 46 10 10 73 102 32 114 101 97 115 111 110 105 110 103 32 115 116 105 108 108 32 99 97 110 110 111 116 32 114 101 115 111 108 118 101 32 116 104 105 115 32 97 110 100 32 97 32 115 104 97 114 101 100 32 76 105 110 107 115 32 78 111 116 97 116 105 111 110 32 115 101 101 100 32 102 97 99 116 32 111 114 32 108 105 110 107 115 32 114 117 108 101 32 105 115 32 110 101 101 100 101 100 44 32 117 115 101 32 82 101 112 111 114 116 32 105 115 115 117 101 32 119 105 116 104 32 116 104 101 32 116 114 97 99 101 46 32 84 111 32 107 101 101 112 32 97 32 100 105 97 108 111 103 45 108 111 99 97 108 32 114 117 108 101 32 100 117 114 97 98 108 101 44 32 101 120 112 111 114 116 32 109 101 109 111 114 121 32 111 114 32 116 101 97 99 104 32 105 116 32 119 105 116 104 32 96 87 104 101 110 32 73 32 115 97 121 32 46 46 46 32 97 110 115 119 101 114 32 46 46 46 96 59 32 105 110 115 112 101 99 116 32 114 111 117 116 101 115 32 119 105 116 104 32 96 76 105 115 116 32 98 101 104 97 118 105 111 114 32 114 117 108 101 115 96 32 97 110 100 32 96 83 104 111 119 32 98 101 104 97 118 105 111 114 32 114 117 108 101 32 117 110 107 110 111 119 110 96 46
+  response response_concept_lookup_in_context_en
+    intent concept_lookup_in_context
+    language en
+    text unformalized-raw 73 110 32 116 104 101 32 99 111 110 116 101 120 116 32 111 102 32 171 123 99 111 110 116 101 120 116 125 187 32 40 123 99 111 110 116 101 120 116 95 108 97 98 101 108 125 41 44 32 123 116 101 114 109 125 32 40 123 99 97 116 101 103 111 114 121 125 41 32 109 101 97 110 115 58 32 123 115 117 109 109 97 114 121 125 10 10 83 111 117 114 99 101 58 32 123 115 111 117 114 99 101 125 32 40 123 115 111 117 114 99 101 95 107 105 110 100 125 41 46
+  response response_concept_lookup_in_context_ru
+    intent concept_lookup_in_context
+    language ru
+    text unformalized-raw 1042 32 1082 1086 1085 1090 1077 1082 1089 1090 1077 32 171 123 99 111 110 116 101 120 116 125 187 32 40 123 99 111 110 116 101 120 116 95 108 97 98 101 108 125 41 32 123 116 101 114 109 125 32 40 123 99 97 116 101 103 111 114 121 125 41 32 1086 1079 1085 1072 1095 1072 1077 1090 58 32 123 115 117 109 109 97 114 121 125 10 10 1048 1089 1090 1086 1095 1085 1080 1082 58 32 123 115 111 117 114 99 101 125 32 40 123 115 111 117 114 99 101 95 107 105 110 100 125 41 46
+  response response_concept_lookup_in_context_hi
+    intent concept_lookup_in_context
+    language hi
+    text unformalized-raw 171 123 99 111 110 116 101 120 116 125 187 32 40 123 99 111 110 116 101 120 116 95 108 97 98 101 108 125 41 32 2325 2375 32 2360 2306 2342 2352 2381 2349 32 2350 2375 2306 44 32 123 116 101 114 109 125 32 40 123 99 97 116 101 103 111 114 121 125 41 32 2325 2366 32 2309 2352 2381 2341 32 2361 2376 58 32 123 115 117 109 109 97 114 121 125 10 10 2360 2381 2352 2379 2340 58 32 123 115 111 117 114 99 101 125 32 40 123 115 111 117 114 99 101 95 107 105 110 100 125 41 46
+  response response_concept_lookup_in_context_zh
+    intent concept_lookup_in_context
+    language zh
+    text unformalized-raw 22312 12300 123 99 111 110 116 101 120 116 125 12301 40 123 99 111 110 116 101 120 116 95 108 97 98 101 108 125 41 30340 35821 22659 19979 44 123 116 101 114 109 125 40 123 99 97 116 101 103 111 114 121 125 41 25351 30340 26159 58 123 115 117 109 109 97 114 121 125 10 10 26469 28304 58 123 115 111 117 114 99 101 125 40 123 115 111 117 114 99 101 95 107 105 110 100 125 41 12290
+  response response_concept_lookup_in_context_no_alias_en
+    intent concept_lookup_in_context_no_alias
+    language en
+    text unformalized-raw 73 110 32 116 104 101 32 99 111 110 116 101 120 116 32 111 102 32 123 99 111 110 116 101 120 116 95 108 97 98 101 108 125 44 32 123 116 101 114 109 125 32 40 123 99 97 116 101 103 111 114 121 125 41 32 109 101 97 110 115 58 32 123 115 117 109 109 97 114 121 125 10 10 83 111 117 114 99 101 58 32 123 115 111 117 114 99 101 125 32 40 123 115 111 117 114 99 101 95 107 105 110 100 125 41 46
+  response response_concept_lookup_in_context_no_alias_ru
+    intent concept_lookup_in_context_no_alias
+    language ru
+    text unformalized-raw 1042 32 1082 1086 1085 1090 1077 1082 1089 1090 1077 32 123 99 111 110 116 101 120 116 95 108 97 98 101 108 125 32 123 116 101 114 109 125 32 40 123 99 97 116 101 103 111 114 121 125 41 32 1086 1079 1085 1072 1095 1072 1077 1090 58 32 123 115 117 109 109 97 114 121 125 10 10 1048 1089 1090 1086 1095 1085 1080 1082 58 32 123 115 111 117 114 99 101 125 32 40 123 115 111 117 114 99 101 95 107 105 110 100 125 41 46
+  response response_concept_lookup_in_context_no_alias_hi
+    intent concept_lookup_in_context_no_alias
+    language hi
+    text unformalized-raw 123 99 111 110 116 101 120 116 95 108 97 98 101 108 125 32 2325 2375 32 2360 2306 2342 2352 2381 2349 32 2350 2375 2306 44 32 123 116 101 114 109 125 32 40 123 99 97 116 101 103 111 114 121 125 41 32 2325 2366 32 2309 2352 2381 2341 32 2361 2376 58 32 123 115 117 109 109 97 114 121 125 10 10 2360 2381 2352 2379 2340 58 32 123 115 111 117 114 99 101 125 32 40 123 115 111 117 114 99 101 95 107 105 110 100 125 41 46
+  response response_concept_lookup_in_context_no_alias_zh
+    intent concept_lookup_in_context_no_alias
+    language zh
+    text unformalized-raw 22312 123 99 111 110 116 101 120 116 95 108 97 98 101 108 125 30340 35821 22659 19979 44 123 116 101 114 109 125 40 123 99 97 116 101 103 111 114 121 125 41 25351 30340 26159 58 123 115 117 109 109 97 114 121 125 10 10 26469 28304 58 123 115 111 117 114 99 101 125 40 123 115 111 117 114 99 101 95 107 105 110 100 125 41 12290
+  response response_physical_action_question_en
+    intent physical_action_question
+    language en
+    text unformalized-raw 78 111 46 32 73 32 100 111 32 110 111 116 32 104 97 118 101 32 97 32 112 104 121 115 105 99 97 108 32 98 111 100 121 46
+  response response_physical_action_question_ru
+    intent physical_action_question
+    language ru
+    text unformalized-raw 1053 1077 1090 46 32 1059 32 1084 1077 1085 1103 32 1085 1077 1090 32 1092 1080 1079 1080 1095 1077 1089 1082 1086 1075 1086 32 1090 1077 1083 1072 46
+  response response_physical_action_question_hi
+    intent physical_action_question
+    language hi
+    text unformalized-raw 2344 2361 2368 2306 2404 32 2350 2375 2352 2366 32 2325 2379 2312 32 2349 2380 2340 2367 2325 32 2358 2352 2368 2352 32 2344 2361 2368 2306 32 2361 2376 2404
+  response response_physical_action_question_zh
+    intent physical_action_question
+    language zh
+    text unformalized-raw 19981 12290 25105 27809 26377 23454 20307 30340 36523 20307 12290
+  response response_kupi_slona_en
+    intent kupi_slona
+    language en
+    text unformalized-raw 66 117 121 32 97 110 32 101 108 101 112 104 97 110 116 32 105 115 32 97 32 119 101 108 108 45 107 110 111 119 110 32 82 117 115 115 105 97 110 32 99 104 105 108 100 114 101 110 39 115 32 119 111 114 100 32 103 97 109 101 46 32 87 104 97 116 101 118 101 114 32 121 111 117 32 114 101 112 108 121 44 32 116 104 101 32 97 110 115 119 101 114 32 99 111 109 101 115 32 98 97 99 107 58 32 101 118 101 114 121 111 110 101 32 115 97 121 115 32 116 104 97 116 44 32 98 117 116 32 121 111 117 32 98 117 121 32 97 110 32 101 108 101 112 104 97 110 116 33 32 84 104 101 32 116 114 97 100 105 116 105 111 110 97 108 32 119 105 110 110 105 110 103 32 114 101 112 108 121 32 105 115 58 32 101 118 101 114 121 111 110 101 32 104 97 115 32 97 110 32 101 108 101 112 104 97 110 116 44 32 98 117 116 32 73 32 100 111 32 110 111 116 46
+  response response_kupi_slona_ru
+    intent kupi_slona
+    language ru
+    text unformalized-raw 171 1050 1091 1087 1080 32 1089 1083 1086 1085 1072 187 32 8212 32 1101 1090 1086 32 1080 1079 1074 1077 1089 1090 1085 1072 1103 32 1088 1091 1089 1089 1082 1072 1103 32 1076 1077 1090 1089 1082 1072 1103 32 1092 1088 1072 1079 1072 45 1080 1075 1088 1072 46 32 1053 1072 32 1083 1102 1073 1086 1081 32 1086 1090 1074 1077 1090 32 1089 1083 1077 1076 1091 1077 1090 32 1087 1088 1086 1076 1086 1083 1078 1077 1085 1080 1077 58 32 171 1042 1089 1077 32 1090 1072 1082 32 1075 1086 1074 1086 1088 1103 1090 44 32 1072 32 1090 1099 32 1082 1091 1087 1080 32 1089 1083 1086 1085 1072 33 187 32 1055 1088 1072 1074 1080 1083 1100 1085 1099 1081 32 1086 1090 1074 1077 1090 32 1087 1086 32 1087 1088 1072 1074 1080 1083 1072 1084 32 1080 1075 1088 1099 58 32 171 1059 32 1074 1089 1077 1093 32 1077 1089 1090 1100 32 1089 1083 1086 1085 44 32 1072 32 1091 32 1084 1077 1085 1103 32 1085 1077 1090 187 46
+  response response_kupi_slona_hi
+    intent kupi_slona
+    language hi
+    text unformalized-raw 171 2361 2366 2341 2368 32 2326 2352 2368 2342 2379 187 32 2319 2325 32 2346 2381 2352 2360 2367 2342 2381 2343 32 2352 2370 2360 2368 32 2348 2330 2381 2330 2379 2306 32 2325 2366 32 2358 2348 2381 2342 45 2326 2375 2354 32 2361 2376 2404 32 2310 2346 32 2332 2379 32 2349 2368 32 2313 2340 2381 2340 2352 32 2342 2375 2306 44 32 2332 2357 2366 2348 32 2310 2340 2366 32 2361 2376 58 32 2360 2348 32 2351 2361 2368 32 2325 2361 2340 2375 32 2361 2376 2306 44 32 2346 2352 32 2340 2369 2350 32 2361 2366 2341 2368 32 2326 2352 2368 2342 2379 33 32 2346 2352 2306 2346 2352 2366 2327 2340 32 2357 2367 2332 2351 2368 32 2313 2340 2381 2340 2352 32 2361 2376 58 32 2360 2348 2325 2375 32 2346 2366 2360 32 2361 2366 2341 2368 32 2361 2376 44 32 2346 2352 32 2350 2375 2352 2375 32 2346 2366 2360 32 2344 2361 2368 2306 2404
+  response response_kupi_slona_zh
+    intent kupi_slona
+    language zh
+    text unformalized-raw 12300 20080 22823 35937 12301 26159 19968 20010 33879 21517 30340 20420 32599 26031 20799 31461 25991 23383 28216 25103 12290 26080 35770 20320 24590 20040 22238 31572 44 23545 26041 37117 20250 35828 58 22823 23478 37117 36825 20040 35828 44 20294 20320 21435 20080 22823 35937 21543 33 20256 32479 30340 21462 32988 22238 31572 26159 58 22823 23478 37117 26377 22823 35937 44 32780 25105 27809 26377 12290

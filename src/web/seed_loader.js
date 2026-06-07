@@ -87,6 +87,56 @@
       .replace(/\\\\/g, "\\");
   }
 
+  function unescapeSingleValue(value) {
+    return String(value || "")
+      .replace(/\\n/g, "\n")
+      .replace(/\\x27/g, "'")
+      .replace(/\\\\/g, "\\");
+  }
+
+  function decodeRawReference(value) {
+    var raw = String(value || "");
+    if (raw === "unformalized-raw") return "";
+    var prefix = "unformalized-raw ";
+    if (raw.indexOf(prefix) !== 0) return raw;
+    return raw
+      .slice(prefix.length)
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean)
+      .map(function (part) {
+        return String.fromCodePoint(parseInt(part, 10) || 0);
+      })
+      .join("");
+  }
+
+  function stripComment(line) {
+    var inDoubleQuote = false;
+    var escaped = false;
+    var previousWasSpace = true;
+    for (var i = 0; i < line.length; i += 1) {
+      var ch = line[i];
+      if (inDoubleQuote) {
+        if (escaped) {
+          escaped = false;
+        } else if (ch === "\\") {
+          escaped = true;
+        } else if (ch === '"') {
+          inDoubleQuote = false;
+        }
+        continue;
+      }
+      if (ch === '"') {
+        inDoubleQuote = true;
+        previousWasSpace = false;
+        continue;
+      }
+      if (ch === "#" && previousWasSpace) return line.slice(0, i);
+      previousWasSpace = /\s/.test(ch);
+    }
+    return line;
+  }
+
   // Parse an indented Links Notation document into a nested structure:
   //
   //   root_node
@@ -101,10 +151,10 @@
     var stack = [root];
     for (var i = 0; i < lines.length; i += 1) {
       var line = lines[i];
-      if (!line || /^\s*$/.test(line)) continue;
+      if (!line || /^\s*$/.test(stripComment(line))) continue;
       var indentMatch = /^(\s*)/.exec(line);
       var indent = indentMatch ? indentMatch[1].length : 0;
-      var content = line.slice(indent);
+      var content = stripComment(line.slice(indent)).trim();
       // Walk back up to find the parent for this indent.
       while (stack.length > 1 && stack[stack.length - 1].indent >= indent) {
         stack.pop();
@@ -125,9 +175,42 @@
       children: [],
       indent: indent,
     };
+    var colon = content.indexOf(":");
+    var firstSpace = content.search(/\s/);
+    if (colon !== -1 && (firstSpace === -1 || colon < firstSpace)) {
+      node.name = content.slice(0, colon).trim();
+      node.id = decodeRawReference(content.slice(colon + 1).trim());
+      node.value = node.id;
+      return node;
+    }
     var first = content.indexOf(' "');
     if (first === -1) {
-      node.name = content.trim();
+      var singleFirst = content.indexOf(" '");
+      if (singleFirst !== -1) {
+        node.name = content.slice(0, singleFirst).trim();
+        var singleRest = content.slice(singleFirst + 1).trim();
+        if (singleRest.length === 0 || singleRest[0] !== "'") return node;
+        var singleClosing = -1;
+        for (var j = 1; j < singleRest.length; j += 1) {
+          if (singleRest[j] === "\\") {
+            j += 1;
+            continue;
+          }
+          if (singleRest[j] === "'") {
+            singleClosing = j;
+            break;
+          }
+        }
+        if (singleClosing === -1) return node;
+        node.id = unescapeSingleValue(singleRest.slice(1, singleClosing));
+        node.value = node.id;
+        return node;
+      }
+      var parts = /^(\S+)(?:\s+([\s\S]*))?$/.exec(content.trim());
+      if (!parts) return node;
+      node.name = parts[1] || "";
+      node.id = decodeRawReference((parts[2] || "").trim());
+      node.value = node.id;
       return node;
     }
     node.name = content.slice(0, first).trim();
@@ -160,6 +243,11 @@
   function findChildValue(node, name) {
     var match = findChildren(node, name)[0];
     return match ? match.id : "";
+  }
+
+  function findChildValueAlias(node, primary, fallback) {
+    var value = findChildValue(node, primary);
+    return value || findChildValue(node, fallback);
   }
 
   function extractMultilingualResponses(node) {
@@ -455,13 +543,13 @@
         return {
           language: loc.id,
           name: findChildValue(loc, "name"),
-          description: findChildValue(loc, "description"),
+          description: findChildValueAlias(loc, "note", "description"),
         };
       });
       tools.push({
         id: entry.id,
         name: findChildValue(entry, "name"),
-        description: findChildValue(entry, "description"),
+        description: findChildValueAlias(entry, "note", "description"),
         mode: findChildValue(entry, "mode") || "thinking",
         inputs: splitList(findChildValue(entry, "inputs")),
         outputs: splitList(findChildValue(entry, "outputs")),
@@ -544,13 +632,13 @@
           });
         }
       } else if (section.name === "migration") {
-        directory.migrationDescription = findChildValue(section, "description");
+        directory.migrationDescription = findChildValueAlias(section, "note", "description");
         var flowEntries = findChildren(section, "flow");
         for (var k = 0; k < flowEntries.length; k += 1) {
           var flow = flowEntries[k];
           directory.flows.push({
             id: flow.id,
-            description: findChildValue(flow, "description"),
+            description: findChildValueAlias(flow, "note", "description"),
             fileFormat: findChildValue(flow, "file_format"),
           });
         }

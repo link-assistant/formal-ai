@@ -1,0 +1,392 @@
+use std::fs;
+use std::io;
+use std::path::{Path, PathBuf};
+
+const MEANING_SEED_FILES: &[&str] = &[
+    "data/seed/meanings.lino",
+    "data/seed/meanings-units.lino",
+    "data/seed/meanings-calendar.lino",
+    "data/seed/meanings-calculator.lino",
+    "data/seed/meanings-facts.lino",
+    "data/seed/meanings-software-project.lino",
+    "data/seed/meanings-program-synthesis.lino",
+    "data/seed/meanings-intent.lino",
+    "data/seed/meanings-how.lino",
+    "data/seed/meanings-meta.lino",
+    "data/seed/meanings-web-navigation.lino",
+    "data/seed/meanings-web-search.lino",
+    "data/seed/meanings-web-search-query.lino",
+    "data/seed/meanings-web-research.lino",
+    "data/seed/meanings-web-followup.lino",
+    "data/seed/meanings-translation.lino",
+    "data/seed/meanings-ontology.lino",
+    "data/seed/meanings-semantic-meta.lino",
+    "data/seed/meanings-lexical-meta.lino",
+    "data/seed/meanings-links-root.lino",
+    "data/seed/meanings-wikidata.lino",
+    "data/seed/meanings-behavior-rules.lino",
+    "data/seed/meanings-proof.lino",
+    "data/seed/meanings-policy.lino",
+    "data/seed/meanings-docs.lino",
+    "data/seed/meanings-skill-compiler.lino",
+    "data/seed/meanings-finance.lino",
+    "data/seed/meanings-definition-merge.lino",
+    "data/seed/meanings-tool-access.lino",
+    "data/seed/meanings-feature-capability.lino",
+    "data/seed/meanings-playwright.lino",
+    "data/seed/meanings-research-table.lino",
+    "data/seed/meanings-conversation.lino",
+    "data/seed/meanings-summary.lino",
+    "data/seed/meanings-coding-catalog.lino",
+];
+
+fn main() -> io::Result<()> {
+    let seed_dir = Path::new("data/seed");
+    for path in lino_files(seed_dir)? {
+        let original = fs::read_to_string(&path)?;
+        let migrated = if is_meaning_file(&path) {
+            migrate_meaning_file(&original)
+        } else {
+            migrate_scalar_file(&original)
+        };
+        if migrated != original {
+            fs::write(&path, migrated)?;
+        }
+    }
+    refresh_worker_meanings(Path::new("src/web/formal_ai_worker.js"))?;
+    Ok(())
+}
+
+fn refresh_worker_meanings(worker_path: &Path) -> io::Result<()> {
+    if !worker_path.exists() {
+        return Ok(());
+    }
+    let mut seed_lines = Vec::new();
+    for file in MEANING_SEED_FILES {
+        let content = fs::read_to_string(file)?;
+        let content = content.strip_suffix('\n').unwrap_or(&content);
+        seed_lines.extend(content.lines().map(ToOwned::to_owned));
+    }
+
+    let mut replacement = String::from("const MEANINGS_LINO = [\n");
+    for line in seed_lines {
+        replacement.push_str("  ");
+        replacement.push_str(&js_string(&line));
+        replacement.push_str(",\n");
+    }
+    replacement.push_str("].join(\"\\n\");");
+
+    let original = fs::read_to_string(worker_path)?;
+    let start = original
+        .find("const MEANINGS_LINO = [")
+        .ok_or_else(|| io::Error::new(io::ErrorKind::InvalidData, "MEANINGS_LINO start not found"))?;
+    let end_marker = "].join(\"\\n\");";
+    let end = original[start..]
+        .find(end_marker)
+        .map(|offset| start + offset + end_marker.len())
+        .ok_or_else(|| io::Error::new(io::ErrorKind::InvalidData, "MEANINGS_LINO end not found"))?;
+    let mut next = String::new();
+    next.push_str(&original[..start]);
+    next.push_str(&replacement);
+    next.push_str(&original[end..]);
+    if next != original {
+        fs::write(worker_path, next)?;
+    }
+    Ok(())
+}
+
+fn js_string(value: &str) -> String {
+    let mut out = String::from("\"");
+    for character in value.chars() {
+        match character {
+            '"' => out.push_str("\\\""),
+            '\\' => out.push_str("\\\\"),
+            '\n' => out.push_str("\\n"),
+            '\r' => out.push_str("\\r"),
+            '\t' => out.push_str("\\t"),
+            character if character.is_control() => {
+                out.push_str(&format!("\\u{:04x}", character as u32));
+            }
+            character => out.push(character),
+        }
+    }
+    out.push('"');
+    out
+}
+
+fn lino_files(dir: &Path) -> io::Result<Vec<PathBuf>> {
+    let mut out = Vec::new();
+    for entry in fs::read_dir(dir)? {
+        let entry = entry?;
+        let path = entry.path();
+        if path.is_dir() {
+            out.extend(lino_files(&path)?);
+        } else if path.extension().and_then(|extension| extension.to_str()) == Some("lino") {
+            out.push(path);
+        }
+    }
+    out.sort();
+    Ok(out)
+}
+
+fn is_meaning_file(path: &Path) -> bool {
+    path.file_name()
+        .and_then(|name| name.to_str())
+        .is_some_and(|name| name.starts_with("meanings"))
+}
+
+fn migrate_meaning_file(content: &str) -> String {
+    let mut out = String::new();
+    for line in content.lines() {
+        let indent_len = line.chars().take_while(|character| *character == ' ').count();
+        let indent = &line[..indent_len];
+        let trimmed = line[indent_len..].trim_end();
+        if trimmed.is_empty() {
+            out.push('\n');
+            continue;
+        }
+
+        if let Some(value) = quoted_value(trimmed, "meaning") {
+            out.push_str(indent);
+            out.push_str(&value);
+            out.push_str(": # concept ");
+            out.push_str(&comment_text(&value));
+            out.push('\n');
+        } else if quoted_value(trimmed, "gloss").is_some()
+            || quoted_value(trimmed, "description").is_some()
+            || quoted_value(trimmed, "wiktionary").is_some()
+        {
+            continue;
+        } else if let Some(value) = quoted_value(trimmed, "defined_by") {
+            write_safe_value_line(&mut out, indent, "defined-by", &value, Some("definition-link"));
+        } else if let Some(value) = quoted_value(trimmed, "wikidata") {
+            write_safe_value_line(&mut out, indent, "grounded-in", &value, Some("source-id"));
+        } else if let Some(value) = quoted_value(trimmed, "role") {
+            write_safe_value_line(&mut out, indent, "role", &value, Some("semantic-role"));
+        } else if let Some(value) = quoted_value(trimmed, "lexeme") {
+            write_safe_value_line(&mut out, indent, "lexeme", &value, Some("language"));
+        } else if let Some(value) = quoted_value(trimmed, "word") {
+            write_raw_line(&mut out, indent, "surface", &value, Some("unresolved-surface"));
+        } else if let Some(value) = quoted_value(trimmed, "facet") {
+            write_safe_value_line(&mut out, indent, "facet", &value, Some("facet"));
+        } else if let Some(value) = quoted_value(trimmed, "action") {
+            write_safe_value_line(&mut out, indent, "action", &value, Some("action"));
+        } else {
+            out.push_str(&migrate_scalar_line(line));
+            out.push('\n');
+        }
+    }
+    out
+}
+
+fn migrate_scalar_file(content: &str) -> String {
+    let mut out = String::new();
+    for line in content.lines() {
+        out.push_str(&migrate_scalar_line(line));
+        out.push('\n');
+    }
+    out
+}
+
+fn migrate_scalar_line(line: &str) -> String {
+    let indent_len = line.chars().take_while(|character| *character == ' ').count();
+    let indent = &line[..indent_len];
+    let trimmed = line[indent_len..].trim_end();
+    if trimmed.is_empty() {
+        return String::new();
+    }
+    if let Some((name, value)) = split_quoted_scalar(trimmed, '"') {
+        let mut out = String::new();
+        write_scalar_value(&mut out, indent, migrated_scalar_name(name), &unescape_double(&value));
+        return out;
+    }
+    if let Some((name, value)) = split_quoted_scalar(trimmed, '\'') {
+        let mut out = String::new();
+        write_raw_line(
+            &mut out,
+            indent,
+            migrated_scalar_name(name),
+            &unescape_single(&value),
+            None,
+        );
+        return out.trim_end().to_string();
+    }
+    if let Some(rest) = trimmed.strip_prefix("description ") {
+        return format!("{indent}note {rest}");
+    }
+    if trimmed == "description" {
+        return format!("{indent}note");
+    }
+    line.to_string()
+}
+
+fn migrated_scalar_name(name: &str) -> &str {
+    if name == "description" {
+        "note"
+    } else {
+        name
+    }
+}
+
+fn write_scalar_value(out: &mut String, indent: &str, name: &str, value: &str) {
+    if is_safe_reference(value) {
+        write_safe_value_line(out, indent, name, value, None);
+    } else {
+        write_raw_line(out, indent, name, value, None);
+    }
+    if out.ends_with('\n') {
+        out.pop();
+    }
+}
+
+fn write_safe_value_line(
+    out: &mut String,
+    indent: &str,
+    name: &str,
+    value: &str,
+    comment: Option<&str>,
+) {
+    out.push_str(indent);
+    out.push_str(name);
+    if !value.is_empty() {
+        out.push(' ');
+        out.push_str(value);
+    }
+    if let Some(comment) = comment {
+        out.push_str(" # ");
+        out.push_str(comment);
+    }
+    out.push('\n');
+}
+
+fn write_raw_line(out: &mut String, indent: &str, name: &str, value: &str, comment: Option<&str>) {
+    out.push_str(indent);
+    out.push_str(name);
+    out.push_str(" unformalized-raw");
+    for character in value.chars() {
+        out.push(' ');
+        out.push_str(&(character as u32).to_string());
+    }
+    if let Some(comment) = comment {
+        out.push_str(" # ");
+        out.push_str(comment);
+    }
+    out.push('\n');
+}
+
+fn quoted_value(line: &str, name: &str) -> Option<String> {
+    let rest = line.strip_prefix(name)?.trim_start();
+    if !rest.starts_with('"') {
+        return None;
+    }
+    let value = find_double_quote_value(rest)?;
+    Some(unescape_double(value))
+}
+
+fn split_quoted_scalar(line: &str, quote: char) -> Option<(&str, String)> {
+    let first_whitespace = line.find(char::is_whitespace)?;
+    let name = line[..first_whitespace].trim();
+    let rest = line[first_whitespace..].trim_start();
+    if !rest.starts_with(quote) {
+        return None;
+    }
+    let value = find_quoted_value(rest, quote)?;
+    Some((name, value.to_string()))
+}
+
+fn find_double_quote_value(rest: &str) -> Option<&str> {
+    find_quoted_value(rest, '"')
+}
+
+fn find_quoted_value(rest: &str, quote: char) -> Option<&str> {
+    let mut chars = rest.char_indices();
+    let (_, first) = chars.next()?;
+    if first != quote {
+        return None;
+    }
+    let mut escaped = false;
+    for (index, character) in chars {
+        if escaped {
+            escaped = false;
+            continue;
+        }
+        if character == '\\' {
+            escaped = true;
+            continue;
+        }
+        if character == quote {
+            return Some(&rest[1..index]);
+        }
+    }
+    None
+}
+
+fn unescape_double(value: &str) -> String {
+    let mut out = String::with_capacity(value.len());
+    let mut chars = value.chars();
+    while let Some(character) = chars.next() {
+        if character != '\\' {
+            out.push(character);
+            continue;
+        }
+        match chars.next() {
+            Some('n') => out.push('\n'),
+            Some('"') => out.push('"'),
+            Some('\\') | None => out.push('\\'),
+            Some(other) => {
+                out.push('\\');
+                out.push(other);
+            }
+        }
+    }
+    out
+}
+
+fn unescape_single(value: &str) -> String {
+    let mut out = String::with_capacity(value.len());
+    let mut chars = value.chars().peekable();
+    while let Some(character) = chars.next() {
+        if character != '\\' {
+            out.push(character);
+            continue;
+        }
+        match chars.next() {
+            Some('n') => out.push('\n'),
+            Some('\\') | None => out.push('\\'),
+            Some('x') if chars.peek() == Some(&'2') => {
+                chars.next();
+                if chars.peek() == Some(&'7') {
+                    chars.next();
+                    out.push('\'');
+                } else {
+                    out.push_str("\\x2");
+                }
+            }
+            Some(other) => {
+                out.push('\\');
+                out.push(other);
+            }
+        }
+    }
+    out
+}
+
+fn is_safe_reference(value: &str) -> bool {
+    !value.is_empty()
+        && value
+            .chars()
+            .all(|character| character.is_ascii_alphanumeric() || matches!(character, '_' | '-' | '|'))
+}
+
+fn comment_text(value: &str) -> String {
+    value
+        .chars()
+        .map(|character| {
+            if character == '"' || character == '\'' || character == '#' {
+                ' '
+            } else {
+                character
+            }
+        })
+        .collect::<String>()
+}

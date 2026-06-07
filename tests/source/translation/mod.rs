@@ -22,12 +22,10 @@
 //! [`cache::DEFAULT_CACHE_DIR`] keyed by **semantic identity** of the
 //! resource (Wikidata Q-id, Wiktionary `(lang, page)`, SPARQL query hash,
 //! …) so a single fetch can feed translation, fact lookup, attribute
-//! formalization or any other formalization path. The first ~128 most
-//! frequent Wikidata entities and ~128 most frequent properties — plus
-//! the Wiktionary pages they point at — are committed to the repository
-//! under [`cache::SEED_CACHE_DIR`] so unit tests, the browser worker and
-//! a clean CI checkout can all run the full pipeline offline without
-//! hitting the network. Live fetches are gated on
+//! formalization or any other formalization path. Older raw response seed
+//! bundles under [`cache::SEED_CACHE_DIR`] are still replayable when present,
+//! but issue #398 moved reviewed source-id snapshots to lossless `.lino` JSON
+//! files under `data/cache/wikidata/`. Live fetches are gated on
 //! `FORMAL_AI_LIVE_API=1`.
 //!
 //! ## Module layout
@@ -70,6 +68,7 @@ pub use formalization::{
 pub use formatting::match_source_formatting;
 pub use http::{CurlClient, HttpError};
 pub(crate) use language_markers::{detect_source_language, detect_target_language};
+pub(crate) use pipeline::seed_meaning_for_surface;
 pub use pipeline::{Translation, TranslationPipeline};
 pub use prompt::extract_unquoted_translation_surface;
 pub use selection::{

@@ -1,189 +1,147 @@
 meanings
-  meaning "link"
-    gloss "the root of the ontology — a connection between things. In Links Notation every meaning is itself a link, so the root link is defined by itself and every other meaning descends from it (a single merged root in the spirit of relative-meta-logic)."
-    wiktionary "link"
-    defined_by "link"
-    defined_by "link_action"
-    defined_by "any_of_reference"
-    role "ontology_root"
-    facet "notation"
-      meaning "links_notation_format"
-    facet "annotation"
-      meaning "semantic_gloss"
-    facet "denotation"
-      meaning "relation"
-    facet "connotation"
-      meaning "concept"
-    lexeme "en"
-      word "link"
-        description "English noun and verb for a connection between two things; the self-rooted root of the whole ontology."
-      word "connection"
-        description "English noun for the relationship that joins two things; a synonym surface for the link concept."
-    lexeme "ru"
-      word "связь"
-        description "Russian noun (romanized svyaz) for a connection or tie; the Russian surface for the link concept."
-      word "ссылка"
-        description "Russian noun (romanized ssylka) for a reference or hyperlink; the Russian surface for an explicit link."
-    lexeme "hi"
-      word "लिंक"
-        description "Hindi noun (romanized link, a loanword) for a connection or hyperlink; the Hindi surface for the link concept."
-      word "कड़ी"
-        description "Hindi noun (romanized kadi) for a link in a chain; the native Hindi surface for a connection."
-    lexeme "zh"
-      word "链接"
-        description "Chinese noun (pinyin lianjie) for a hyperlink or connection; the Chinese surface for the link concept."
-      word "连接"
-        description "Chinese verb (pinyin lianjie) for joining or connecting; the Chinese surface for forming a connection."
-  meaning "type"
-    gloss "a classification of links — the root of the type-system ontology; a type is itself a link, so it is defined by link. Entities and concepts are the broadest types the assistant reasons with."
-    wiktionary "type"
-    defined_by "link"
-    defined_by "type"
-    role "ontology_type"
-    facet "self_equation"
-      meaning "type"
-    lexeme "en"
-      word "type"
-        description "English noun for a classification or category of links; the root of the type-system sub-ontology."
-      word "kind"
-        description "English noun for a sort or category; a synonym surface for the type concept."
-    lexeme "ru"
-      word "тип"
-        description "Russian noun (romanized tip) for a type or category; the Russian surface for the type concept."
-      word "вид"
-        description "Russian noun (romanized vid) for a kind or sort; an alternative Russian surface for a category."
-    lexeme "hi"
-      word "प्रकार"
-        description "Hindi noun (romanized prakar) for a type or kind; the Hindi surface for the type concept."
-      word "क़िस्म"
-        description "Hindi noun (romanized qism) for a sort or variety; an alternative Hindi surface for a category."
-    lexeme "zh"
-      word "类型"
-        description "Chinese noun (pinyin leixing) for a type or category; the Chinese surface for the type concept."
-      word "种类"
-        description "Chinese noun (pinyin zhonglei) for a kind or sort; an alternative Chinese surface for a category."
-  meaning "entity"
-    gloss "a thing that exists and can be referred to — a link seen as a node; the genus of every concrete subject the assistant reasons about (programs, artifacts, the assistant and user themselves)."
-    wiktionary "entity"
-    defined_by "type"
-    role "ontology_category"
-    lexeme "en"
-      word "entity"
-        description "English noun for a thing that exists and can be referred to; the genus of concrete subjects."
-      word "thing"
-        description "English noun for any object that can be referred to; a plain synonym surface for entity."
-    lexeme "ru"
-      word "сущность"
-        description "Russian noun (romanized sushchnost) for an entity or essence; the Russian surface for the entity concept."
-      word "объект"
-        description "Russian noun (romanized obyekt) for an object; an alternative Russian surface for a concrete entity."
-    lexeme "hi"
-      word "इकाई"
-        description "Hindi noun (romanized ikai) for a unit or entity; the Hindi surface for the entity concept."
-      word "वस्तु"
-        description "Hindi noun (romanized vastu) for a thing or object; an alternative Hindi surface for an entity."
-    lexeme "zh"
-      word "实体"
-        description "Chinese noun (pinyin shiti) for an entity; the Chinese surface for the entity concept."
-      word "事物"
-        description "Chinese noun (pinyin shiwu) for a thing or object; an alternative Chinese surface for an entity."
-  meaning "concept"
-    gloss "an abstract meaning or idea — a type of notion the assistant can name and reason about apart from any concrete instance (calendars, approvals, features)."
-    wiktionary "concept"
-    defined_by "type"
-    role "ontology_category"
-    lexeme "en"
-      word "concept"
-        description "English noun for an abstract meaning or idea; the genus of notions reasoned about apart from instances."
-      word "notion"
-        description "English noun for an idea or concept; a synonym surface for the concept meaning."
-    lexeme "ru"
-      word "понятие"
-        description "Russian noun (romanized ponyatiye) for a concept or notion; the Russian surface for the concept meaning."
-      word "концепция"
-        description "Russian noun (romanized kontseptsiya) for a conception or framework; an alternative Russian surface for a concept."
-    lexeme "hi"
-      word "अवधारणा"
-        description "Hindi noun (romanized avadharana) for a concept or notion; the Hindi surface for the concept meaning."
-      word "संकल्पना"
-        description "Hindi noun (romanized sankalpana) for a conception or idea; an alternative Hindi surface for a concept."
-    lexeme "zh"
-      word "概念"
-        description "Chinese noun (pinyin gainian) for a concept; the Chinese surface for the concept meaning."
-      word "观念"
-        description "Chinese noun (pinyin guannian) for an idea or notion; an alternative Chinese surface for a concept."
-  meaning "relation"
-    gloss "a link that connects entities — it maps one entity or value to another; the genus of every named relationship in the knowledge base."
-    wiktionary "relation"
-    defined_by "link"
-    role "ontology_category"
-    lexeme "en"
-      word "relation"
-        description "English noun for a link that connects entities; the genus of named relationships."
-      word "relationship"
-        description "English noun for how two entities are connected; a synonym surface for relation."
-    lexeme "ru"
-      word "отношение"
-        description "Russian noun (romanized otnosheniye) for a relation; the Russian surface for the relation concept."
-      word "соотношение"
-        description "Russian noun (romanized sootnosheniye) for a correlation or ratio; an alternative Russian surface for a relation."
-    lexeme "hi"
-      word "संबंध"
-        description "Hindi noun (romanized sambandh) for a relation or connection; the Hindi surface for the relation concept."
-      word "रिश्ता"
-        description "Hindi noun (romanized rishta) for a relationship; an alternative Hindi surface for a relation."
-    lexeme "zh"
-      word "关系"
-        description "Chinese noun (pinyin guanxi) for a relation or relationship; the Chinese surface for the relation concept."
-      word "联系"
-        description "Chinese noun (pinyin lianxi) for a connection or link; an alternative Chinese surface for a relation."
-  meaning "action"
-    gloss "something performed — a process or operation that changes or produces state; the genus of every verb the assistant can carry out (sort, modify, follow up)."
-    wiktionary "action"
-    defined_by "concept"
-    role "ontology_category"
-    lexeme "en"
-      word "action"
-        description "English noun for a process or operation that changes or produces state; the genus of verbs the assistant performs."
-      word "act"
-        description "English noun for a single deed or operation; a shorter synonym surface for action."
-    lexeme "ru"
-      word "действие"
-        description "Russian noun (romanized deystviye) for an action; the Russian surface for the action concept."
-      word "операция"
-        description "Russian noun (romanized operatsiya) for an operation; an alternative Russian surface for an action."
-    lexeme "hi"
-      word "क्रिया"
-        description "Hindi noun (romanized kriya) for an action or verb; the Hindi surface for the action concept."
-      word "कार्य"
-        description "Hindi noun (romanized karya) for a task or operation; an alternative Hindi surface for an action."
-    lexeme "zh"
-      word "动作"
-        description "Chinese noun (pinyin dongzuo) for an action or movement; the Chinese surface for the action concept."
-      word "操作"
-        description "Chinese noun (pinyin caozuo) for an operation; an alternative Chinese surface for an action."
-  meaning "property"
-    gloss "a quality or attribute of an entity — what can be measured, classified, or arranged; the genus of measurable dimensions and software features."
-    wiktionary "property"
-    defined_by "concept"
-    role "ontology_category"
-    lexeme "en"
-      word "property"
-        description "English noun for a quality or attribute of an entity; the genus of measurable dimensions and features."
-      word "attribute"
-        description "English noun for a characteristic of an entity; a synonym surface for property."
-    lexeme "ru"
-      word "свойство"
-        description "Russian noun (romanized svoystvo) for a property; the Russian surface for the property concept."
-      word "атрибут"
-        description "Russian noun (romanized atribut) for an attribute; an alternative Russian surface for a property."
-    lexeme "hi"
-      word "गुण"
-        description "Hindi noun (romanized gun) for a quality or property; the Hindi surface for the property concept."
-      word "विशेषता"
-        description "Hindi noun (romanized visheshta) for a characteristic; an alternative Hindi surface for a property."
-    lexeme "zh"
-      word "属性"
-        description "Chinese noun (pinyin shuxing) for an attribute or property; the Chinese surface for the property concept."
-      word "特性"
-        description "Chinese noun (pinyin texing) for a characteristic or trait; an alternative Chinese surface for a property."
+  link: # concept link
+    defined-by link # definition-link
+    defined-by link_action # definition-link
+    defined-by any_of_reference # definition-link
+    role ontology_root # semantic-role
+    facet notation # facet
+      links_notation_format: # concept links_notation_format
+    facet annotation # facet
+      semantic_gloss: # concept semantic_gloss
+    facet denotation # facet
+      relation: # concept relation
+    facet connotation # facet
+      concept: # concept concept
+    lexeme en # language
+      surface unformalized-raw 108 105 110 107 # unresolved-surface
+      surface unformalized-raw 99 111 110 110 101 99 116 105 111 110 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1089 1074 1103 1079 1100 # unresolved-surface
+      surface unformalized-raw 1089 1089 1099 1083 1082 1072 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2354 2367 2306 2325 # unresolved-surface
+      surface unformalized-raw 2325 2337 2364 2368 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 38142 25509 # unresolved-surface
+      surface unformalized-raw 36830 25509 # unresolved-surface
+  type: # concept type
+    defined-by link # definition-link
+    defined-by type # definition-link
+    role ontology_type # semantic-role
+    facet self_equation # facet
+      type: # concept type
+    lexeme en # language
+      surface unformalized-raw 116 121 112 101 # unresolved-surface
+      surface unformalized-raw 107 105 110 100 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1090 1080 1087 # unresolved-surface
+      surface unformalized-raw 1074 1080 1076 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2346 2381 2352 2325 2366 2352 # unresolved-surface
+      surface unformalized-raw 2325 2364 2367 2360 2381 2350 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 31867 22411 # unresolved-surface
+      surface unformalized-raw 31181 31867 # unresolved-surface
+  entity: # concept entity
+    defined-by type # definition-link
+    role ontology_category # semantic-role
+    lexeme en # language
+      surface unformalized-raw 101 110 116 105 116 121 # unresolved-surface
+      surface unformalized-raw 116 104 105 110 103 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1089 1091 1097 1085 1086 1089 1090 1100 # unresolved-surface
+      surface unformalized-raw 1086 1073 1098 1077 1082 1090 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2311 2325 2366 2312 # unresolved-surface
+      surface unformalized-raw 2357 2360 2381 2340 2369 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 23454 20307 # unresolved-surface
+      surface unformalized-raw 20107 29289 # unresolved-surface
+  concept: # concept concept
+    defined-by type # definition-link
+    role ontology_category # semantic-role
+    lexeme en # language
+      surface unformalized-raw 99 111 110 99 101 112 116 # unresolved-surface
+      surface unformalized-raw 110 111 116 105 111 110 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1087 1086 1085 1103 1090 1080 1077 # unresolved-surface
+      surface unformalized-raw 1082 1086 1085 1094 1077 1087 1094 1080 1103 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2309 2357 2343 2366 2352 2339 2366 # unresolved-surface
+      surface unformalized-raw 2360 2306 2325 2354 2381 2346 2344 2366 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 27010 24565 # unresolved-surface
+      surface unformalized-raw 35266 24565 # unresolved-surface
+  relation: # concept relation
+    defined-by link # definition-link
+    source-lexeme L3743 # wikidata english noun relation
+      language Q1860 # wikidata language english
+      lexical-category Q1084 # wikidata category noun
+      form L3743-F1 # wikidata singular form relation
+        feature Q110786 # wikidata singular
+      form L3743-F2 # wikidata plural form relations
+        feature Q146786 # wikidata plural
+      sense L3743-S1 # wikidata relation sense
+    source-lexeme L3744 # wikidata english noun relationship
+      language Q1860 # wikidata language english
+      lexical-category Q1084 # wikidata category noun
+      form L3744-F1 # wikidata singular form relationship
+        feature Q110786 # wikidata singular
+      form L3744-F2 # wikidata plural form relationships
+        feature Q146786 # wikidata plural
+      sense L3744-S1 # wikidata relationship sense
+    related-lexeme L5848 # wikidata english noun object
+      language Q1860 # wikidata language english
+      lexical-category Q1084 # wikidata category noun
+      sense L5848-S1 # wikidata thing sense
+    role ontology_category # semantic-role
+    surface L3743-F1 # wikidata english singular surface
+      codepoints 114 101 108 97 116 105 111 110 # surface text
+      language en # language
+      sense L3743-S1 # wikidata relation sense
+    surface L3744-F1 # wikidata english singular surface
+      codepoints 114 101 108 97 116 105 111 110 115 104 105 112 # surface text
+      language en # language
+      sense L3744-S1 # wikidata relationship sense
+    lexeme en # language
+      surface unformalized-raw 114 101 108 97 116 105 111 110 # unresolved-surface
+      surface unformalized-raw 114 101 108 97 116 105 111 110 115 104 105 112 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1086 1090 1085 1086 1096 1077 1085 1080 1077 # unresolved-surface
+      surface unformalized-raw 1089 1086 1086 1090 1085 1086 1096 1077 1085 1080 1077 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2360 2306 2348 2306 2343 # unresolved-surface
+      surface unformalized-raw 2352 2367 2358 2381 2340 2366 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 20851 31995 # unresolved-surface
+      surface unformalized-raw 32852 31995 # unresolved-surface
+  action: # concept action
+    defined-by concept # definition-link
+    role ontology_category # semantic-role
+    lexeme en # language
+      surface unformalized-raw 97 99 116 105 111 110 # unresolved-surface
+      surface unformalized-raw 97 99 116 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1076 1077 1081 1089 1090 1074 1080 1077 # unresolved-surface
+      surface unformalized-raw 1086 1087 1077 1088 1072 1094 1080 1103 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2325 2381 2352 2367 2351 2366 # unresolved-surface
+      surface unformalized-raw 2325 2366 2352 2381 2351 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 21160 20316 # unresolved-surface
+      surface unformalized-raw 25805 20316 # unresolved-surface
+  property: # concept property
+    defined-by concept # definition-link
+    role ontology_category # semantic-role
+    lexeme en # language
+      surface unformalized-raw 112 114 111 112 101 114 116 121 # unresolved-surface
+      surface unformalized-raw 97 116 116 114 105 98 117 116 101 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1089 1074 1086 1081 1089 1090 1074 1086 # unresolved-surface
+      surface unformalized-raw 1072 1090 1088 1080 1073 1091 1090 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2327 2369 2339 # unresolved-surface
+      surface unformalized-raw 2357 2367 2358 2375 2359 2340 2366 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 23646 24615 # unresolved-surface
+      surface unformalized-raw 29305 24615 # unresolved-surface

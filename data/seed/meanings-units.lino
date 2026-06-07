@@ -1,908 +1,579 @@
 meanings
-  meaning "quantity"
-    gloss "an amount of something that can be measured or counted"
-    wiktionary "quantity"
-    defined_by "unit"
-    defined_by "property"
-    defined_by "amount"
-    defined_by "size"
-    role "measurement_concept"
-    lexeme "en"
-      word "quantity"
-        description "English noun for an amount of something that can be measured or counted; the general measurement concept."
-    lexeme "ru"
-      word "количество"
-        description "Russian noun (romanized kolichestvo) for an amount or quantity; the Russian surface for the quantity concept."
-    lexeme "hi"
-      word "मात्रा"
-        description "Hindi noun (romanized matra) for an amount or quantity; the Hindi surface for the quantity concept."
-    lexeme "zh"
-      word "数量"
-        description "Chinese noun (pinyin shuliang) for an amount or quantity; the Chinese surface for the quantity concept."
-  meaning "unit"
-    gloss "a standard amount used to measure a quantity"
-    wiktionary "unit"
-    defined_by "quantity"
-    role "measurement_concept"
-    lexeme "en"
-      word "unit"
-        description "English noun for a standard amount used to measure a quantity; the general unit concept."
-    lexeme "ru"
-      word "единица"
-        description "Russian noun (romanized edinitsa) for a unit; the Russian surface for the unit concept."
-    lexeme "hi"
-      word "इकाई"
-        description "Hindi noun (romanized ikai) for a unit; the Hindi surface for the unit concept."
-    lexeme "zh"
-      word "单位"
-        description "Chinese noun (pinyin danwei) for a unit; the Chinese surface for the unit concept."
-  meaning "cardinal_number"
-    gloss "a number used to count how many things there are: zero, one, two, three, and so on. The genus of the individual counting numbers, each defined as a kind of cardinal number rather than listed in code."
-    wiktionary "cardinal number"
-    defined_by "quantity"
-    role "numeric_concept"
-    lexeme "en"
-      word "cardinal number"
-        description "English term for a counting number that answers the question 'how many'; the genus of the individual cardinals."
-      word "number"
-        description "English noun for a number used in counting; the everyday surface for the counting-number concept."
-    lexeme "ru"
-      word "количественное число"
-        description "Russian term (romanized kolichestvennoe chislo) for a cardinal counting number; the Russian surface for the cardinal-number concept."
-    lexeme "hi"
-      word "गणन संख्या"
-        description "Hindi term (romanized ganan sankhya) for a cardinal counting number; the Hindi surface for the cardinal-number concept."
-    lexeme "zh"
-      word "基数"
-        description "Chinese term (pinyin jishu) for a cardinal counting number; the Chinese surface for the cardinal-number concept."
-  meaning "zero"
-    gloss "the cardinal number zero (0), the count of an empty collection."
-    wiktionary "zero"
-    defined_by "cardinal_number"
-    defined_by "empty"
-    role "cardinal_number_word"
-    lexeme "en"
-      word "zero"
-        description "English spelled form of the cardinal number zero."
-      word "0"
-        description "Western Arabic numeral for zero; the script-independent numeral surface, from which the cardinal's integer value is read."
-    lexeme "ru"
-      word "ноль"
-        description "Russian spelled form (romanized nol') of the cardinal number zero."
-      word "нуль"
-        description "Russian spelled form (romanized nul'), a variant spelling, of the cardinal number zero."
-    lexeme "hi"
-      word "शून्य"
-        description "Hindi spelled form (romanized shunya) of the cardinal number zero."
-    lexeme "zh"
-      word "零"
-        description "Chinese spelled form (pinyin ling) of the cardinal number zero."
-  meaning "one"
-    gloss "the cardinal number one (1), one more than zero."
-    wiktionary "one"
-    defined_by "cardinal_number"
-    defined_by "single"
-    role "cardinal_number_word"
-    lexeme "en"
-      word "one"
-        description "English spelled form of the cardinal number one."
-      word "1"
-        description "Western Arabic numeral for one; the script-independent numeral surface, from which the cardinal's integer value is read."
-    lexeme "ru"
-      word "один"
-        description "Russian spelled form (romanized odin), masculine, of the cardinal number one."
-      word "одна"
-        description "Russian spelled form (romanized odna), feminine, of the cardinal number one."
-      word "одно"
-        description "Russian spelled form (romanized odno), neuter, of the cardinal number one."
-    lexeme "hi"
-      word "एक"
-        description "Hindi spelled form (romanized ek) of the cardinal number one."
-    lexeme "zh"
-      word "一"
-        description "Chinese spelled form (pinyin yi) of the cardinal number one."
-  meaning "two"
-    gloss "the cardinal number two (2), one more than one."
-    wiktionary "two"
-    defined_by "cardinal_number"
-    role "cardinal_number_word"
-    lexeme "en"
-      word "two"
-        description "English spelled form of the cardinal number two."
-      word "2"
-        description "Western Arabic numeral for two; the script-independent numeral surface, from which the cardinal's integer value is read."
-    lexeme "ru"
-      word "два"
-        description "Russian spelled form (romanized dva), masculine and neuter, of the cardinal number two."
-      word "две"
-        description "Russian spelled form (romanized dve), feminine, of the cardinal number two."
-    lexeme "hi"
-      word "दो"
-        description "Hindi spelled form (romanized do) of the cardinal number two."
-    lexeme "zh"
-      word "二"
-        description "Chinese spelled form (pinyin er) of the cardinal number two."
-  meaning "three"
-    gloss "the cardinal number three (3), one more than two."
-    wiktionary "three"
-    defined_by "cardinal_number"
-    role "cardinal_number_word"
-    lexeme "en"
-      word "three"
-        description "English spelled form of the cardinal number three."
-      word "3"
-        description "Western Arabic numeral for three; the script-independent numeral surface, from which the cardinal's integer value is read."
-    lexeme "ru"
-      word "три"
-        description "Russian spelled form (romanized tri) of the cardinal number three."
-    lexeme "hi"
-      word "तीन"
-        description "Hindi spelled form (romanized teen) of the cardinal number three."
-    lexeme "zh"
-      word "三"
-        description "Chinese spelled form (pinyin san) of the cardinal number three."
-  meaning "four"
-    gloss "the cardinal number four (4), one more than three."
-    wiktionary "four"
-    defined_by "cardinal_number"
-    role "cardinal_number_word"
-    lexeme "en"
-      word "four"
-        description "English spelled form of the cardinal number four."
-      word "4"
-        description "Western Arabic numeral for four; the script-independent numeral surface, from which the cardinal's integer value is read."
-    lexeme "ru"
-      word "четыре"
-        description "Russian spelled form (romanized chetyre) of the cardinal number four."
-    lexeme "hi"
-      word "चार"
-        description "Hindi spelled form (romanized char) of the cardinal number four."
-    lexeme "zh"
-      word "四"
-        description "Chinese spelled form (pinyin si) of the cardinal number four."
-  meaning "five"
-    gloss "the cardinal number five (5), one more than four."
-    wiktionary "five"
-    defined_by "cardinal_number"
-    role "cardinal_number_word"
-    lexeme "en"
-      word "five"
-        description "English spelled form of the cardinal number five."
-      word "5"
-        description "Western Arabic numeral for five; the script-independent numeral surface, from which the cardinal's integer value is read."
-    lexeme "ru"
-      word "пять"
-        description "Russian spelled form (romanized pyat') of the cardinal number five."
-    lexeme "hi"
-      word "पाँच"
-        description "Hindi spelled form (romanized panch) of the cardinal number five."
-    lexeme "zh"
-      word "五"
-        description "Chinese spelled form (pinyin wu) of the cardinal number five."
-  meaning "six"
-    gloss "the cardinal number six (6), one more than five."
-    wiktionary "six"
-    defined_by "cardinal_number"
-    role "cardinal_number_word"
-    lexeme "en"
-      word "six"
-        description "English spelled form of the cardinal number six."
-      word "6"
-        description "Western Arabic numeral for six; the script-independent numeral surface, from which the cardinal's integer value is read."
-    lexeme "ru"
-      word "шесть"
-        description "Russian spelled form (romanized shest') of the cardinal number six."
-    lexeme "hi"
-      word "छह"
-        description "Hindi spelled form (romanized chhah) of the cardinal number six."
-    lexeme "zh"
-      word "六"
-        description "Chinese spelled form (pinyin liu) of the cardinal number six."
-  meaning "seven"
-    gloss "the cardinal number seven (7), one more than six."
-    wiktionary "seven"
-    defined_by "cardinal_number"
-    role "cardinal_number_word"
-    lexeme "en"
-      word "seven"
-        description "English spelled form of the cardinal number seven."
-      word "7"
-        description "Western Arabic numeral for seven; the script-independent numeral surface, from which the cardinal's integer value is read."
-    lexeme "ru"
-      word "семь"
-        description "Russian spelled form (romanized sem') of the cardinal number seven."
-    lexeme "hi"
-      word "सात"
-        description "Hindi spelled form (romanized saat) of the cardinal number seven."
-    lexeme "zh"
-      word "七"
-        description "Chinese spelled form (pinyin qi) of the cardinal number seven."
-  meaning "eight"
-    gloss "the cardinal number eight (8), one more than seven."
-    wiktionary "eight"
-    defined_by "cardinal_number"
-    role "cardinal_number_word"
-    lexeme "en"
-      word "eight"
-        description "English spelled form of the cardinal number eight."
-      word "8"
-        description "Western Arabic numeral for eight; the script-independent numeral surface, from which the cardinal's integer value is read."
-    lexeme "ru"
-      word "восемь"
-        description "Russian spelled form (romanized vosem') of the cardinal number eight."
-    lexeme "hi"
-      word "आठ"
-        description "Hindi spelled form (romanized aath) of the cardinal number eight."
-    lexeme "zh"
-      word "八"
-        description "Chinese spelled form (pinyin ba) of the cardinal number eight."
-  meaning "nine"
-    gloss "the cardinal number nine (9), one more than eight."
-    wiktionary "nine"
-    defined_by "cardinal_number"
-    role "cardinal_number_word"
-    lexeme "en"
-      word "nine"
-        description "English spelled form of the cardinal number nine."
-      word "9"
-        description "Western Arabic numeral for nine; the script-independent numeral surface, from which the cardinal's integer value is read."
-    lexeme "ru"
-      word "девять"
-        description "Russian spelled form (romanized devyat') of the cardinal number nine."
-    lexeme "hi"
-      word "नौ"
-        description "Hindi spelled form (romanized nau) of the cardinal number nine."
-    lexeme "zh"
-      word "九"
-        description "Chinese spelled form (pinyin jiu) of the cardinal number nine."
-  meaning "ten"
-    gloss "the cardinal number ten (10), one more than nine."
-    wiktionary "ten"
-    defined_by "cardinal_number"
-    role "cardinal_number_word"
-    lexeme "en"
-      word "ten"
-        description "English spelled form of the cardinal number ten."
-      word "10"
-        description "Western Arabic numeral for ten; the script-independent numeral surface, from which the cardinal's integer value is read."
-    lexeme "ru"
-      word "десять"
-        description "Russian spelled form (romanized desyat') of the cardinal number ten."
-    lexeme "hi"
-      word "दस"
-        description "Hindi spelled form (romanized das) of the cardinal number ten."
-    lexeme "zh"
-      word "十"
-        description "Chinese spelled form (pinyin shi) of the cardinal number ten."
-  meaning "length"
-    gloss "the physical dimension of distance or extent"
-    wiktionary "length"
-    defined_by "quantity"
-    role "physical_dimension"
-    lexeme "en"
-      word "length"
-        description "English noun for the physical dimension of distance or extent; the length dimension."
-    lexeme "ru"
-      word "длина"
-        description "Russian noun (romanized dlina) for length; the Russian surface for the length dimension."
-    lexeme "hi"
-      word "लंबाई"
-        description "Hindi noun (romanized lambai) for length; the Hindi surface for the length dimension."
-    lexeme "zh"
-      word "长度"
-        description "Chinese noun (pinyin changdu) for length; the Chinese surface for the length dimension."
-  meaning "data_storage"
-    gloss "the physical dimension of how much information is stored"
-    wiktionary "data"
-    defined_by "quantity"
-    role "physical_dimension"
-    lexeme "en"
-      word "data storage"
-        description "English noun phrase for the dimension of how much information is stored; the data-storage dimension."
-    lexeme "ru"
-      word "хранение данных"
-        description "Russian noun phrase (romanized khranenie dannykh) for data storage; the Russian surface for the data-storage dimension."
-    lexeme "hi"
-      word "डेटा भंडारण"
-        description "Hindi noun phrase (romanized deta bhandaran) for data storage; the Hindi surface for the data-storage dimension."
-    lexeme "zh"
-      word "数据存储"
-        description "Chinese noun phrase (pinyin shuju cunchu) for data storage; the Chinese surface for the data-storage dimension."
-  meaning "mass"
-    gloss "the physical dimension of how much matter an object contains"
-    wiktionary "mass"
-    defined_by "quantity"
-    role "physical_dimension"
-    lexeme "en"
-      word "mass"
-        description "English noun for the dimension of how much matter an object contains; the mass dimension."
-    lexeme "ru"
-      word "масса"
-        description "Russian noun (romanized massa) for mass; the Russian surface for the mass dimension."
-    lexeme "hi"
-      word "द्रव्यमान"
-        description "Hindi noun (romanized dravyaman) for mass; the Hindi surface for the mass dimension."
-    lexeme "zh"
-      word "质量"
-        description "Chinese noun (pinyin zhiliang) for mass; the Chinese surface for the mass dimension."
-  meaning "time"
-    gloss "the physical dimension of duration"
-    wiktionary "time"
-    defined_by "quantity"
-    role "physical_dimension"
-    lexeme "en"
-      word "time"
-        description "English noun for the physical dimension of duration; the time dimension."
-    lexeme "ru"
-      word "время"
-        description "Russian noun (romanized vremya) for time; the Russian surface for the time dimension."
-    lexeme "hi"
-      word "समय"
-        description "Hindi noun (romanized samay) for time; the Hindi surface for the time dimension."
-    lexeme "zh"
-      word "时间"
-        description "Chinese noun (pinyin shijian) for time; the Chinese surface for the time dimension."
-  meaning "temperature"
-    gloss "the physical dimension of thermal energy"
-    wiktionary "temperature"
-    defined_by "quantity"
-    role "physical_dimension"
-    lexeme "en"
-      word "temperature"
-        description "English noun for the physical dimension of thermal energy; the temperature dimension."
-    lexeme "ru"
-      word "температура"
-        description "Russian noun (romanized temperatura) for temperature; the Russian surface for the temperature dimension."
-    lexeme "hi"
-      word "तापमान"
-        description "Hindi noun (romanized tapman) for temperature; the Hindi surface for the temperature dimension."
-    lexeme "zh"
-      word "温度"
-        description "Chinese noun (pinyin wendu) for temperature; the Chinese surface for the temperature dimension."
-  meaning "meter"
-    gloss "the base unit of length"
-    wiktionary "metre"
-    defined_by "length"
-    defined_by "unit"
-    role "measurement_unit"
-    lexeme "en"
-      word "meter"
-        description "English noun for the base unit of length (American spelling); a full-word form of the metre."
-      word "metre"
-        description "English noun for the base unit of length (British spelling); a full-word form of the metre."
-      word "meters"
-        description "English noun, the plural of meter; the base unit of length in the length dimension."
-      word "metres"
-        description "English noun, the plural of metre; the base unit of length in the length dimension."
-    lexeme "ru"
-      word "метр"
-        description "Russian noun (romanized metr) for the metre, the base unit of length; the Russian surface for the meter."
-      word "метра"
-        description "Russian noun (romanized metra), an inflected genitive form of metre; a case form of the base unit of length."
-      word "метров"
-        description "Russian noun (romanized metrov), the genitive plural of metre; a case form of the base unit of length."
-    lexeme "hi"
-      word "मीटर"
-        description "Hindi noun (romanized mitar) for the metre, the base unit of length; the Hindi surface for the meter."
-    lexeme "zh"
-      word "米"
-        description "Chinese noun (pinyin mi) for the metre, the base unit of length; the Chinese surface for the meter."
-  meaning "kilometer"
-    gloss "a unit of length equal to one thousand metres"
-    wiktionary "kilometre"
-    defined_by "length"
-    defined_by "unit"
-    role "measurement_unit"
-    lexeme "en"
-      word "km"
-        description "English abbreviation, the symbol for kilometre, a unit of length equal to one thousand metres."
-      word "kilometer"
-        description "English noun for a unit of length of one thousand metres (American spelling); a full-word form."
-      word "kilometre"
-        description "English noun for a unit of length of one thousand metres (British spelling); a full-word form."
-      word "kilometers"
-        description "English noun, the plural of kilometer; a unit of length equal to one thousand metres."
-      word "kilometres"
-        description "English noun, the plural of kilometre; a unit of length equal to one thousand metres."
-    lexeme "ru"
-      word "километр"
-        description "Russian noun (romanized kilometr) for the kilometre, a unit of length of one thousand metres."
-      word "километра"
-        description "Russian noun (romanized kilometra), an inflected genitive form of kilometre; a case form of the unit of length."
-      word "километров"
-        description "Russian noun (romanized kilometrov), the genitive plural of kilometre; a case form of the unit of length."
-    lexeme "hi"
-      word "किलोमीटर"
-        description "Hindi noun (romanized kilomitar) for the kilometre, a unit of length of one thousand metres."
-    lexeme "zh"
-      word "千米"
-        description "Chinese noun (pinyin qianmi) for the kilometre, a unit of length of one thousand metres."
-      word "公里"
-        description "Chinese noun (pinyin gongli) for the kilometre; a common alternative surface for the unit of length."
-  meaning "centimeter"
-    gloss "a unit of length equal to one hundredth of a metre"
-    wiktionary "centimetre"
-    defined_by "length"
-    defined_by "unit"
-    role "measurement_unit"
-    lexeme "en"
-      word "cm"
-        description "English abbreviation, the symbol for centimetre, a unit of length equal to one hundredth of a metre."
-      word "centimeter"
-        description "English noun for a unit of length of one hundredth of a metre (American spelling); a full-word form."
-      word "centimetre"
-        description "English noun for a unit of length of one hundredth of a metre (British spelling); a full-word form."
-    lexeme "ru"
-      word "сантиметр"
-        description "Russian noun (romanized santimetr) for the centimetre, a unit of length of one hundredth of a metre."
-    lexeme "hi"
-      word "सेंटीमीटर"
-        description "Hindi noun (romanized sentimitar) for the centimetre, a unit of length of one hundredth of a metre."
-    lexeme "zh"
-      word "厘米"
-        description "Chinese noun (pinyin limi) for the centimetre, a unit of length of one hundredth of a metre."
-  meaning "millimeter"
-    gloss "a unit of length equal to one thousandth of a metre"
-    wiktionary "millimetre"
-    defined_by "length"
-    defined_by "unit"
-    role "measurement_unit"
-    lexeme "en"
-      word "mm"
-        description "English abbreviation, the symbol for millimetre, a unit of length equal to one thousandth of a metre."
-      word "millimeter"
-        description "English noun for a unit of length of one thousandth of a metre (American spelling); a full-word form."
-      word "millimetre"
-        description "English noun for a unit of length of one thousandth of a metre (British spelling); a full-word form."
-    lexeme "ru"
-      word "миллиметр"
-        description "Russian noun (romanized millimetr) for the millimetre, a unit of length of one thousandth of a metre."
-    lexeme "hi"
-      word "मिलीमीटर"
-        description "Hindi noun (romanized millimitar) for the millimetre, a unit of length of one thousandth of a metre."
-    lexeme "zh"
-      word "毫米"
-        description "Chinese noun (pinyin haomi) for the millimetre, a unit of length of one thousandth of a metre."
-  meaning "byte"
-    gloss "a unit of digital information, eight bits"
-    wiktionary "byte"
-    defined_by "data_storage"
-    defined_by "unit"
-    role "measurement_unit"
-    lexeme "en"
-      word "byte"
-        description "English noun for a unit of digital information of eight bits; the base unit of data storage."
-      word "bytes"
-        description "English noun, the plural of byte; units of digital information of eight bits each."
-    lexeme "ru"
-      word "байт"
-        description "Russian noun (romanized bait) for the byte, a unit of digital information of eight bits."
-      word "байта"
-        description "Russian noun (romanized baita), an inflected genitive form of byte; a case form of the data-storage unit."
-      word "байтов"
-        description "Russian noun (romanized baitov), the genitive plural of byte; a case form of the data-storage unit."
-    lexeme "hi"
-      word "बाइट"
-        description "Hindi noun (romanized bait) for the byte, a unit of digital information of eight bits."
-    lexeme "zh"
-      word "字节"
-        description "Chinese noun (pinyin zijie) for the byte, a unit of digital information of eight bits."
-  meaning "kilobyte"
-    gloss "a unit of digital information of about one thousand bytes. Also a calculation_domain_term, so it signals a calculation when it appears beside a number."
-    wiktionary "kilobyte"
-    defined_by "data_storage"
-    defined_by "unit"
-    role "measurement_unit"
-    role "calculation_domain_term"
-    lexeme "en"
-      word "kb"
-        description "English abbreviation, the symbol for kilobyte, a unit of digital information of about one thousand bytes."
-      word "kilobyte"
-        description "English noun for a unit of digital information of about one thousand bytes; a full-word form."
-      word "kilobytes"
-        description "English noun, the plural of kilobyte; units of digital information of about one thousand bytes each."
-    lexeme "ru"
-      word "килобайт"
-        description "Russian noun (romanized kilobait) for the kilobyte, a unit of digital information of about one thousand bytes."
-    lexeme "hi"
-      word "किलोबाइट"
-        description "Hindi noun (romanized kilobait) for the kilobyte, a unit of digital information of about one thousand bytes."
-    lexeme "zh"
-      word "千字节"
-        description "Chinese noun (pinyin qian zijie) for the kilobyte, a unit of digital information of about one thousand bytes."
-  meaning "megabyte"
-    gloss "a unit of digital information of about one million bytes. Also a calculation_domain_term, so it signals a calculation when it appears beside a number."
-    wiktionary "megabyte"
-    defined_by "data_storage"
-    defined_by "unit"
-    role "measurement_unit"
-    role "calculation_domain_term"
-    lexeme "en"
-      word "mb"
-        description "English abbreviation, the symbol for megabyte, a unit of digital information of about one million bytes."
-      word "megabyte"
-        description "English noun for a unit of digital information of about one million bytes; a full-word form."
-      word "megabytes"
-        description "English noun, the plural of megabyte; units of digital information of about one million bytes each."
-    lexeme "ru"
-      word "мегабайт"
-        description "Russian noun (romanized megabait) for the megabyte, a unit of digital information of about one million bytes."
-    lexeme "hi"
-      word "मेगाबाइट"
-        description "Hindi noun (romanized megabait) for the megabyte, a unit of digital information of about one million bytes."
-    lexeme "zh"
-      word "兆字节"
-        description "Chinese noun (pinyin zhao zijie) for the megabyte, a unit of digital information of about one million bytes."
-  meaning "gigabyte"
-    gloss "a unit of digital information of about one billion bytes"
-    wiktionary "gigabyte"
-    defined_by "data_storage"
-    defined_by "unit"
-    role "measurement_unit"
-    lexeme "en"
-      word "gb"
-        description "English abbreviation, the symbol for gigabyte, a unit of digital information of about one billion bytes."
-      word "gigabyte"
-        description "English noun for a unit of digital information of about one billion bytes; a full-word form."
-      word "gigabytes"
-        description "English noun, the plural of gigabyte; units of digital information of about one billion bytes each."
-    lexeme "ru"
-      word "гигабайт"
-        description "Russian noun (romanized gigabait) for the gigabyte, a unit of digital information of about one billion bytes."
-    lexeme "hi"
-      word "गीगाबाइट"
-        description "Hindi noun (romanized gigabait) for the gigabyte, a unit of digital information of about one billion bytes."
-    lexeme "zh"
-      word "吉字节"
-        description "Chinese noun (pinyin ji zijie) for the gigabyte, a unit of digital information of about one billion bytes."
-  meaning "terabyte"
-    gloss "a unit of digital information of about one trillion bytes"
-    wiktionary "terabyte"
-    defined_by "data_storage"
-    defined_by "unit"
-    role "measurement_unit"
-    lexeme "en"
-      word "tb"
-        description "English abbreviation, the symbol for terabyte, a unit of digital information of about one trillion bytes."
-      word "terabyte"
-        description "English noun for a unit of digital information of about one trillion bytes; a full-word form."
-      word "terabytes"
-        description "English noun, the plural of terabyte; units of digital information of about one trillion bytes each."
-    lexeme "ru"
-      word "терабайт"
-        description "Russian noun (romanized terabait) for the terabyte, a unit of digital information of about one trillion bytes."
-    lexeme "hi"
-      word "टेराबाइट"
-        description "Hindi noun (romanized terabait) for the terabyte, a unit of digital information of about one trillion bytes."
-    lexeme "zh"
-      word "太字节"
-        description "Chinese noun (pinyin tai zijie) for the terabyte, a unit of digital information of about one trillion bytes."
-  meaning "bit"
-    gloss "the smallest unit of digital information"
-    wiktionary "bit"
-    defined_by "data_storage"
-    defined_by "unit"
-    role "measurement_unit"
-    lexeme "en"
-      word "bit"
-        description "English noun for the smallest unit of digital information; the base binary digit of data storage."
-      word "bits"
-        description "English noun, the plural of bit; the smallest units of digital information."
-    lexeme "ru"
-      word "бит"
-        description "Russian noun (romanized bit) for the bit, the smallest unit of digital information."
-      word "бита"
-        description "Russian noun (romanized bita), an inflected genitive form of bit; a case form of the smallest data-storage unit."
-      word "битов"
-        description "Russian noun (romanized bitov), the genitive plural of bit; a case form of the smallest data-storage unit."
-    lexeme "hi"
-      word "बिट"
-        description "Hindi noun (romanized bit) for the bit, the smallest unit of digital information."
-    lexeme "zh"
-      word "比特"
-        description "Chinese noun (pinyin bite) for the bit, the smallest unit of digital information."
-  meaning "kilogram"
-    gloss "the base unit of mass. Also a calculation_domain_term, so it signals a calculation when it appears beside a number."
-    wiktionary "kilogram"
-    defined_by "mass"
-    defined_by "unit"
-    role "measurement_unit"
-    role "calculation_domain_term"
-    lexeme "en"
-      word "kg"
-        description "English abbreviation, the symbol for kilogram, the base unit of mass; a calculation_domain_term matched whole-token."
-      word "kilogram"
-        description "English noun for the base unit of mass (American spelling); a full-word form of the kilogram."
-      word "kilograms"
-        description "English noun, the plural of kilogram; the base unit of mass in the mass dimension."
-    lexeme "ru"
-      word "кг"
-        description "Russian abbreviation (romanized kg), the symbol for kilogram, the base unit of mass; a calculation_domain_term matched as a raw substring."
-      word "килограмм"
-        description "Russian noun (romanized kilogramm) for the kilogram, the base unit of mass."
-    lexeme "hi"
-      word "किलोग्राम"
-        description "Hindi noun (romanized kilogram) for the kilogram, the base unit of mass."
-    lexeme "zh"
-      word "千克"
-        description "Chinese noun (pinyin qianke) for the kilogram, the base unit of mass."
-      word "公斤"
-        description "Chinese noun (pinyin gongjin) for the kilogram; a common alternative surface for the base unit of mass."
-  meaning "gram"
-    gloss "a unit of mass equal to one thousandth of a kilogram. Also a calculation_domain_term, so it signals a calculation when it appears beside a number."
-    wiktionary "gram"
-    defined_by "mass"
-    defined_by "unit"
-    role "measurement_unit"
-    role "calculation_domain_term"
-    lexeme "en"
-      word "gram"
-        description "English noun for a unit of mass equal to one thousandth of a kilogram; a full-word form."
-      word "grams"
-        description "English noun, the plural of gram; units of mass of one thousandth of a kilogram each."
-    lexeme "ru"
-      word "грамм"
-        description "Russian noun (romanized gramm) for the gram, a unit of mass of one thousandth of a kilogram."
-    lexeme "hi"
-      word "ग्राम"
-        description "Hindi noun (romanized gram) for the gram, a unit of mass of one thousandth of a kilogram."
-    lexeme "zh"
-      word "克"
-        description "Chinese noun (pinyin ke) for the gram, a unit of mass of one thousandth of a kilogram."
-  meaning "pound"
-    gloss "a unit of mass used in imperial measure"
-    wiktionary "pound"
-    defined_by "mass"
-    defined_by "unit"
-    role "measurement_unit"
-    lexeme "en"
-      word "pound"
-        description "English noun for a unit of mass used in imperial measure; a mass unit in the mass dimension."
-      word "pounds"
-        description "English noun, the plural of pound; units of mass used in imperial measure."
-    lexeme "ru"
-      word "фунт"
-        description "Russian noun (romanized funt) for the pound, a unit of mass used in imperial measure."
-    lexeme "hi"
-      word "पाउंड"
-        description "Hindi noun (romanized paund) for the pound, a unit of mass used in imperial measure."
-    lexeme "zh"
-      word "磅"
-        description "Chinese noun (pinyin bang) for the pound, a unit of mass used in imperial measure."
-  meaning "ton"
-    gloss "a unit of mass equal to one thousand kilograms. Also a calculation_domain_term, so it signals a calculation when it appears beside a number."
-    wiktionary "tonne"
-    defined_by "mass"
-    defined_by "unit"
-    role "measurement_unit"
-    role "calculation_domain_term"
-    lexeme "en"
-      word "ton"
-        description "English noun for a unit of mass equal to one thousand kilograms; a calculation_domain_term matched whole-token."
-      word "tons"
-        description "English noun, the plural of ton; units of mass of one thousand kilograms each."
-      word "tonne"
-        description "English noun, the metric spelling of ton; a unit of mass of one thousand kilograms."
-    lexeme "ru"
-      word "тонна"
-        description "Russian noun (romanized tonna) for the ton, a unit of mass of one thousand kilograms; a calculation_domain_term matched as a raw substring."
-      word "тонны"
-        description "Russian noun (romanized tonny), an inflected form of ton; a case form of the unit of mass, matched as a raw substring."
-      word "тонн"
-        description "Russian noun (romanized tonn), the genitive plural of ton; a case form of the unit of mass, matched as a raw substring."
-    lexeme "hi"
-      word "टन"
-        description "Hindi noun (romanized tan) for the ton, a unit of mass of one thousand kilograms; a calculation_domain_term matched as a raw substring."
-    lexeme "zh"
-      word "吨"
-        description "Chinese noun (pinyin dun) for the ton, a unit of mass of one thousand kilograms; a calculation_domain_term matched as a raw substring."
-  meaning "second"
-    gloss "the base unit of time. Also a calculation_domain_term, so it signals a calculation when it appears beside a number."
-    wiktionary "second"
-    defined_by "time"
-    defined_by "unit"
-    role "measurement_unit"
-    role "calculation_domain_term"
-    lexeme "en"
-      word "second"
-        description "English noun for the base unit of time; the base unit in the time dimension."
-      word "seconds"
-        description "English noun, the plural of second; the base units of time."
-    lexeme "ru"
-      word "секунда"
-        description "Russian noun (romanized sekunda) for the second, the base unit of time."
-      word "секунды"
-        description "Russian noun (romanized sekundy), an inflected form of second; a case form of the base unit of time."
-      word "секунд"
-        description "Russian noun (romanized sekund), the genitive plural of second; a case form of the base unit of time."
-    lexeme "hi"
-      word "सेकंड"
-        description "Hindi noun (romanized sekand) for the second, the base unit of time."
-    lexeme "zh"
-      word "秒"
-        description "Chinese noun (pinyin miao) for the second, the base unit of time."
-  meaning "minute"
-    gloss "a unit of time equal to sixty seconds. Also a calculation_domain_term, so it signals a calculation when it appears beside a number."
-    wiktionary "minute"
-    defined_by "time"
-    defined_by "unit"
-    role "measurement_unit"
-    role "calculation_domain_term"
-    lexeme "en"
-      word "minute"
-        description "English noun for a unit of time equal to sixty seconds; a time unit in the time dimension."
-      word "minutes"
-        description "English noun, the plural of minute; units of time of sixty seconds each."
-    lexeme "ru"
-      word "минута"
-        description "Russian noun (romanized minuta) for the minute, a unit of time equal to sixty seconds."
-      word "минуты"
-        description "Russian noun (romanized minuty), an inflected form of minute; a case form of the unit of time."
-      word "минут"
-        description "Russian noun (romanized minut), the genitive plural of minute; a case form of the unit of time."
-    lexeme "hi"
-      word "मिनट"
-        description "Hindi noun (romanized minat) for the minute, a unit of time equal to sixty seconds."
-    lexeme "zh"
-      word "分钟"
-        description "Chinese noun (pinyin fenzhong) for the minute, a unit of time equal to sixty seconds."
-  meaning "hour"
-    gloss "a unit of time equal to sixty minutes. Also a calculation_domain_term, so it signals a calculation when it appears beside a number."
-    wiktionary "hour"
-    defined_by "time"
-    defined_by "unit"
-    role "measurement_unit"
-    role "calculation_domain_term"
-    lexeme "en"
-      word "hour"
-        description "English noun for a unit of time equal to sixty minutes; a time unit in the time dimension."
-      word "hours"
-        description "English noun, the plural of hour; units of time of sixty minutes each."
-    lexeme "ru"
-      word "час"
-        description "Russian noun (romanized chas) for the hour, a unit of time equal to sixty minutes."
-      word "часа"
-        description "Russian noun (romanized chasa), an inflected genitive form of hour; a case form of the unit of time."
-      word "часов"
-        description "Russian noun (romanized chasov), the genitive plural of hour; a case form of the unit of time."
-    lexeme "hi"
-      word "घंटा"
-        description "Hindi noun (romanized ghanta) for the hour, a unit of time equal to sixty minutes."
-    lexeme "zh"
-      word "小时"
-        description "Chinese noun (pinyin xiaoshi) for the hour, a unit of time equal to sixty minutes."
-  meaning "millisecond"
-    gloss "a unit of time equal to one thousandth of a second. Also a calculation_domain_term, so it signals a calculation when it appears beside a number."
-    wiktionary "millisecond"
-    defined_by "time"
-    defined_by "unit"
-    role "measurement_unit"
-    role "calculation_domain_term"
-    lexeme "en"
-      word "ms"
-        description "English abbreviation, the symbol for millisecond, a unit of time of one thousandth of a second; a calculation_domain_term matched whole-token."
-      word "millisecond"
-        description "English noun for a unit of time equal to one thousandth of a second; a full-word form."
-      word "milliseconds"
-        description "English noun, the plural of millisecond; units of time of one thousandth of a second each."
-    lexeme "ru"
-      word "миллисекунда"
-        description "Russian noun (romanized millisekunda) for the millisecond, a unit of time of one thousandth of a second; matched as a raw substring."
-      word "миллисекунд"
-        description "Russian noun (romanized millisekund), the genitive plural of millisecond; a case form of the unit of time, matched as a raw substring."
-    lexeme "hi"
-      word "मिलीसेकंड"
-        description "Hindi noun (romanized milisekand) for the millisecond, a unit of time of one thousandth of a second; matched as a raw substring."
-    lexeme "zh"
-      word "毫秒"
-        description "Chinese noun (pinyin haomiao) for the millisecond, a unit of time of one thousandth of a second; matched as a raw substring."
-  meaning "day"
-    gloss "a unit of time equal to twenty-four hours. Also a calculation_domain_term, so it signals a calculation when it appears beside a number."
-    wiktionary "day"
-    defined_by "time"
-    defined_by "unit"
-    role "measurement_unit"
-    role "calculation_domain_term"
-    lexeme "en"
-      word "day"
-        description "English noun for a unit of time equal to twenty-four hours; a calculation_domain_term matched whole-token."
-      word "days"
-        description "English noun, the plural of day; units of time of twenty-four hours each."
-    lexeme "ru"
-      word "день"
-        description "Russian noun (romanized den) for the day, a unit of time of twenty-four hours; matched as a raw substring."
-      word "дня"
-        description "Russian noun (romanized dnya), an inflected genitive form of day; a case form of the unit of time, matched as a raw substring."
-      word "дней"
-        description "Russian noun (romanized dney), the genitive plural of day; a case form of the unit of time, matched as a raw substring."
-    lexeme "hi"
-      word "दिन"
-        description "Hindi noun (romanized din) for the day, a unit of time of twenty-four hours; matched as a raw substring."
-    lexeme "zh"
-      word "天"
-        description "Chinese noun (pinyin tian) for the day, a unit of time of twenty-four hours; matched as a raw substring."
-      word "日"
-        description "Chinese noun (pinyin ri) for the day, a calendar-day unit of time; matched as a raw substring."
-  meaning "month"
-    gloss "a unit of time of about thirty days, one of the twelve divisions of a year. Also a calculation_domain_term, so it signals a calculation when it appears beside a number."
-    wiktionary "month"
-    defined_by "time"
-    defined_by "unit"
-    role "measurement_unit"
-    role "calculation_domain_term"
-    lexeme "en"
-      word "month"
-        description "English noun for a unit of time of about thirty days; a calculation_domain_term matched whole-token."
-      word "months"
-        description "English noun, the plural of month; units of time of about thirty days each."
-    lexeme "ru"
-      word "месяц"
-        description "Russian noun (romanized mesyats) for the month, a unit of time of about thirty days; matched as a raw substring."
-      word "месяца"
-        description "Russian noun (romanized mesyatsa), an inflected genitive form of month; a case form of the unit of time, matched as a raw substring."
-      word "месяцев"
-        description "Russian noun (romanized mesyatsev), the genitive plural of month; a case form of the unit of time, matched as a raw substring."
-    lexeme "hi"
-      word "महीना"
-        description "Hindi noun (romanized mahina) for the month, a unit of time of about thirty days; matched as a raw substring."
-      word "महीने"
-        description "Hindi noun (romanized mahine), an inflected form of month; a case form of the unit of time, matched as a raw substring."
-    lexeme "zh"
-      word "月"
-        description "Chinese noun (pinyin yue) for the month, a unit of time and one of the twelve divisions of a year; matched as a raw substring."
-      word "个月"
-        description "Chinese measure-word phrase (pinyin ge yue) counting months as a duration; matched as a raw substring."
-  meaning "celsius"
-    gloss "a unit of temperature on the Celsius scale"
-    wiktionary "Celsius"
-    defined_by "temperature"
-    defined_by "unit"
-    role "measurement_unit"
-    lexeme "en"
-      word "celsius"
-        description "English noun for a unit of temperature on the Celsius scale; a temperature unit in the temperature dimension."
-    lexeme "ru"
-      word "цельсий"
-        description "Russian noun (romanized tselsiy) for Celsius, a unit of temperature on the Celsius scale."
-    lexeme "hi"
-      word "सेल्सियस"
-        description "Hindi noun (romanized selsiyas) for Celsius, a unit of temperature on the Celsius scale."
-    lexeme "zh"
-      word "摄氏度"
-        description "Chinese noun (pinyin sheshidu) for degrees Celsius, a unit of temperature on the Celsius scale."
-  meaning "fahrenheit"
-    gloss "a unit of temperature on the Fahrenheit scale"
-    wiktionary "Fahrenheit"
-    defined_by "temperature"
-    defined_by "unit"
-    role "measurement_unit"
-    lexeme "en"
-      word "fahrenheit"
-        description "English noun for a unit of temperature on the Fahrenheit scale; a temperature unit in the temperature dimension."
-    lexeme "ru"
-      word "фаренгейт"
-        description "Russian noun (romanized farengeyt) for Fahrenheit, a unit of temperature on the Fahrenheit scale."
-    lexeme "hi"
-      word "फ़ारेनहाइट"
-        description "Hindi noun (romanized farenhait) for Fahrenheit, a unit of temperature on the Fahrenheit scale."
-    lexeme "zh"
-      word "华氏度"
-        description "Chinese noun (pinyin huashidu) for degrees Fahrenheit, a unit of temperature on the Fahrenheit scale."
-  meaning "kelvin"
-    gloss "the base unit of temperature on the Kelvin scale"
-    wiktionary "kelvin"
-    defined_by "temperature"
-    defined_by "unit"
-    role "measurement_unit"
-    lexeme "en"
-      word "kelvin"
-        description "English noun for the base unit of temperature on the Kelvin scale; the base unit in the temperature dimension."
-    lexeme "ru"
-      word "кельвин"
-        description "Russian noun (romanized kelvin) for the kelvin, the base unit of temperature on the Kelvin scale."
-    lexeme "hi"
-      word "केल्विन"
-        description "Hindi noun (romanized kelvin) for the kelvin, the base unit of temperature on the Kelvin scale."
-    lexeme "zh"
-      word "开尔文"
-        description "Chinese noun (pinyin kaierwen) for the kelvin, the base unit of temperature on the Kelvin scale."
+  quantity: # concept quantity
+    defined-by unit # definition-link
+    defined-by property # definition-link
+    defined-by amount # definition-link
+    defined-by size # definition-link
+    role measurement_concept # semantic-role
+    lexeme en # language
+      surface unformalized-raw 113 117 97 110 116 105 116 121 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1082 1086 1083 1080 1095 1077 1089 1090 1074 1086 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2350 2366 2340 2381 2352 2366 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 25968 37327 # unresolved-surface
+  unit: # concept unit
+    defined-by quantity # definition-link
+    role measurement_concept # semantic-role
+    lexeme en # language
+      surface unformalized-raw 117 110 105 116 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1077 1076 1080 1085 1080 1094 1072 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2311 2325 2366 2312 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 21333 20301 # unresolved-surface
+  cardinal_number: # concept cardinal_number
+    defined-by quantity # definition-link
+    role numeric_concept # semantic-role
+    lexeme en # language
+      surface unformalized-raw 99 97 114 100 105 110 97 108 32 110 117 109 98 101 114 # unresolved-surface
+      surface unformalized-raw 110 117 109 98 101 114 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1082 1086 1083 1080 1095 1077 1089 1090 1074 1077 1085 1085 1086 1077 32 1095 1080 1089 1083 1086 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2327 2339 2344 32 2360 2306 2326 2381 2351 2366 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 22522 25968 # unresolved-surface
+  zero: # concept zero
+    defined-by cardinal_number # definition-link
+    defined-by empty # definition-link
+    role cardinal_number_word # semantic-role
+    lexeme en # language
+      surface unformalized-raw 122 101 114 111 # unresolved-surface
+      surface unformalized-raw 48 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1085 1086 1083 1100 # unresolved-surface
+      surface unformalized-raw 1085 1091 1083 1100 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2358 2370 2344 2381 2351 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 38646 # unresolved-surface
+  one: # concept one
+    defined-by cardinal_number # definition-link
+    defined-by single # definition-link
+    role cardinal_number_word # semantic-role
+    lexeme en # language
+      surface unformalized-raw 111 110 101 # unresolved-surface
+      surface unformalized-raw 49 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1086 1076 1080 1085 # unresolved-surface
+      surface unformalized-raw 1086 1076 1085 1072 # unresolved-surface
+      surface unformalized-raw 1086 1076 1085 1086 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2319 2325 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 19968 # unresolved-surface
+  two: # concept two
+    defined-by cardinal_number # definition-link
+    role cardinal_number_word # semantic-role
+    lexeme en # language
+      surface unformalized-raw 116 119 111 # unresolved-surface
+      surface unformalized-raw 50 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1076 1074 1072 # unresolved-surface
+      surface unformalized-raw 1076 1074 1077 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2342 2379 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 20108 # unresolved-surface
+  three: # concept three
+    defined-by cardinal_number # definition-link
+    role cardinal_number_word # semantic-role
+    lexeme en # language
+      surface unformalized-raw 116 104 114 101 101 # unresolved-surface
+      surface unformalized-raw 51 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1090 1088 1080 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2340 2368 2344 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 19977 # unresolved-surface
+  four: # concept four
+    defined-by cardinal_number # definition-link
+    role cardinal_number_word # semantic-role
+    lexeme en # language
+      surface unformalized-raw 102 111 117 114 # unresolved-surface
+      surface unformalized-raw 52 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1095 1077 1090 1099 1088 1077 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2330 2366 2352 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 22235 # unresolved-surface
+  five: # concept five
+    defined-by cardinal_number # definition-link
+    role cardinal_number_word # semantic-role
+    lexeme en # language
+      surface unformalized-raw 102 105 118 101 # unresolved-surface
+      surface unformalized-raw 53 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1087 1103 1090 1100 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2346 2366 2305 2330 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 20116 # unresolved-surface
+  six: # concept six
+    defined-by cardinal_number # definition-link
+    role cardinal_number_word # semantic-role
+    lexeme en # language
+      surface unformalized-raw 115 105 120 # unresolved-surface
+      surface unformalized-raw 54 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1096 1077 1089 1090 1100 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2331 2361 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 20845 # unresolved-surface
+  seven: # concept seven
+    defined-by cardinal_number # definition-link
+    role cardinal_number_word # semantic-role
+    lexeme en # language
+      surface unformalized-raw 115 101 118 101 110 # unresolved-surface
+      surface unformalized-raw 55 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1089 1077 1084 1100 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2360 2366 2340 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 19971 # unresolved-surface
+  eight: # concept eight
+    defined-by cardinal_number # definition-link
+    role cardinal_number_word # semantic-role
+    lexeme en # language
+      surface unformalized-raw 101 105 103 104 116 # unresolved-surface
+      surface unformalized-raw 56 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1074 1086 1089 1077 1084 1100 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2310 2336 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 20843 # unresolved-surface
+  nine: # concept nine
+    defined-by cardinal_number # definition-link
+    role cardinal_number_word # semantic-role
+    lexeme en # language
+      surface unformalized-raw 110 105 110 101 # unresolved-surface
+      surface unformalized-raw 57 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1076 1077 1074 1103 1090 1100 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2344 2380 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 20061 # unresolved-surface
+  ten: # concept ten
+    defined-by cardinal_number # definition-link
+    role cardinal_number_word # semantic-role
+    lexeme en # language
+      surface unformalized-raw 116 101 110 # unresolved-surface
+      surface unformalized-raw 49 48 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1076 1077 1089 1103 1090 1100 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2342 2360 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 21313 # unresolved-surface
+  length: # concept length
+    defined-by quantity # definition-link
+    role physical_dimension # semantic-role
+    lexeme en # language
+      surface unformalized-raw 108 101 110 103 116 104 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1076 1083 1080 1085 1072 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2354 2306 2348 2366 2312 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 38271 24230 # unresolved-surface
+  data_storage: # concept data_storage
+    defined-by quantity # definition-link
+    role physical_dimension # semantic-role
+    lexeme en # language
+      surface unformalized-raw 100 97 116 97 32 115 116 111 114 97 103 101 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1093 1088 1072 1085 1077 1085 1080 1077 32 1076 1072 1085 1085 1099 1093 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2337 2375 2335 2366 32 2349 2306 2337 2366 2352 2339 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 25968 25454 23384 20648 # unresolved-surface
+  mass: # concept mass
+    defined-by quantity # definition-link
+    role physical_dimension # semantic-role
+    lexeme en # language
+      surface unformalized-raw 109 97 115 115 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1084 1072 1089 1089 1072 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2342 2381 2352 2357 2381 2351 2350 2366 2344 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 36136 37327 # unresolved-surface
+  time: # concept time
+    defined-by quantity # definition-link
+    role physical_dimension # semantic-role
+    lexeme en # language
+      surface unformalized-raw 116 105 109 101 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1074 1088 1077 1084 1103 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2360 2350 2351 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 26102 38388 # unresolved-surface
+  temperature: # concept temperature
+    defined-by quantity # definition-link
+    role physical_dimension # semantic-role
+    lexeme en # language
+      surface unformalized-raw 116 101 109 112 101 114 97 116 117 114 101 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1090 1077 1084 1087 1077 1088 1072 1090 1091 1088 1072 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2340 2366 2346 2350 2366 2344 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 28201 24230 # unresolved-surface
+  meter: # concept meter
+    defined-by length # definition-link
+    defined-by unit # definition-link
+    role measurement_unit # semantic-role
+    lexeme en # language
+      surface unformalized-raw 109 101 116 101 114 # unresolved-surface
+      surface unformalized-raw 109 101 116 114 101 # unresolved-surface
+      surface unformalized-raw 109 101 116 101 114 115 # unresolved-surface
+      surface unformalized-raw 109 101 116 114 101 115 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1084 1077 1090 1088 # unresolved-surface
+      surface unformalized-raw 1084 1077 1090 1088 1072 # unresolved-surface
+      surface unformalized-raw 1084 1077 1090 1088 1086 1074 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2350 2368 2335 2352 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 31859 # unresolved-surface
+  kilometer: # concept kilometer
+    defined-by length # definition-link
+    defined-by unit # definition-link
+    role measurement_unit # semantic-role
+    lexeme en # language
+      surface unformalized-raw 107 109 # unresolved-surface
+      surface unformalized-raw 107 105 108 111 109 101 116 101 114 # unresolved-surface
+      surface unformalized-raw 107 105 108 111 109 101 116 114 101 # unresolved-surface
+      surface unformalized-raw 107 105 108 111 109 101 116 101 114 115 # unresolved-surface
+      surface unformalized-raw 107 105 108 111 109 101 116 114 101 115 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1082 1080 1083 1086 1084 1077 1090 1088 # unresolved-surface
+      surface unformalized-raw 1082 1080 1083 1086 1084 1077 1090 1088 1072 # unresolved-surface
+      surface unformalized-raw 1082 1080 1083 1086 1084 1077 1090 1088 1086 1074 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2325 2367 2354 2379 2350 2368 2335 2352 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 21315 31859 # unresolved-surface
+      surface unformalized-raw 20844 37324 # unresolved-surface
+  centimeter: # concept centimeter
+    defined-by length # definition-link
+    defined-by unit # definition-link
+    role measurement_unit # semantic-role
+    lexeme en # language
+      surface unformalized-raw 99 109 # unresolved-surface
+      surface unformalized-raw 99 101 110 116 105 109 101 116 101 114 # unresolved-surface
+      surface unformalized-raw 99 101 110 116 105 109 101 116 114 101 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1089 1072 1085 1090 1080 1084 1077 1090 1088 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2360 2375 2306 2335 2368 2350 2368 2335 2352 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 21400 31859 # unresolved-surface
+  millimeter: # concept millimeter
+    defined-by length # definition-link
+    defined-by unit # definition-link
+    role measurement_unit # semantic-role
+    lexeme en # language
+      surface unformalized-raw 109 109 # unresolved-surface
+      surface unformalized-raw 109 105 108 108 105 109 101 116 101 114 # unresolved-surface
+      surface unformalized-raw 109 105 108 108 105 109 101 116 114 101 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1084 1080 1083 1083 1080 1084 1077 1090 1088 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2350 2367 2354 2368 2350 2368 2335 2352 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 27627 31859 # unresolved-surface
+  byte: # concept byte
+    defined-by data_storage # definition-link
+    defined-by unit # definition-link
+    role measurement_unit # semantic-role
+    lexeme en # language
+      surface unformalized-raw 98 121 116 101 # unresolved-surface
+      surface unformalized-raw 98 121 116 101 115 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1073 1072 1081 1090 # unresolved-surface
+      surface unformalized-raw 1073 1072 1081 1090 1072 # unresolved-surface
+      surface unformalized-raw 1073 1072 1081 1090 1086 1074 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2348 2366 2311 2335 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 23383 33410 # unresolved-surface
+  kilobyte: # concept kilobyte
+    defined-by data_storage # definition-link
+    defined-by unit # definition-link
+    role measurement_unit # semantic-role
+    role calculation_domain_term # semantic-role
+    lexeme en # language
+      surface unformalized-raw 107 98 # unresolved-surface
+      surface unformalized-raw 107 105 108 111 98 121 116 101 # unresolved-surface
+      surface unformalized-raw 107 105 108 111 98 121 116 101 115 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1082 1080 1083 1086 1073 1072 1081 1090 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2325 2367 2354 2379 2348 2366 2311 2335 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 21315 23383 33410 # unresolved-surface
+  megabyte: # concept megabyte
+    defined-by data_storage # definition-link
+    defined-by unit # definition-link
+    role measurement_unit # semantic-role
+    role calculation_domain_term # semantic-role
+    lexeme en # language
+      surface unformalized-raw 109 98 # unresolved-surface
+      surface unformalized-raw 109 101 103 97 98 121 116 101 # unresolved-surface
+      surface unformalized-raw 109 101 103 97 98 121 116 101 115 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1084 1077 1075 1072 1073 1072 1081 1090 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2350 2375 2327 2366 2348 2366 2311 2335 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 20806 23383 33410 # unresolved-surface
+  gigabyte: # concept gigabyte
+    defined-by data_storage # definition-link
+    defined-by unit # definition-link
+    role measurement_unit # semantic-role
+    lexeme en # language
+      surface unformalized-raw 103 98 # unresolved-surface
+      surface unformalized-raw 103 105 103 97 98 121 116 101 # unresolved-surface
+      surface unformalized-raw 103 105 103 97 98 121 116 101 115 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1075 1080 1075 1072 1073 1072 1081 1090 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2327 2368 2327 2366 2348 2366 2311 2335 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 21513 23383 33410 # unresolved-surface
+  terabyte: # concept terabyte
+    defined-by data_storage # definition-link
+    defined-by unit # definition-link
+    role measurement_unit # semantic-role
+    lexeme en # language
+      surface unformalized-raw 116 98 # unresolved-surface
+      surface unformalized-raw 116 101 114 97 98 121 116 101 # unresolved-surface
+      surface unformalized-raw 116 101 114 97 98 121 116 101 115 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1090 1077 1088 1072 1073 1072 1081 1090 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2335 2375 2352 2366 2348 2366 2311 2335 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 22826 23383 33410 # unresolved-surface
+  bit: # concept bit
+    defined-by data_storage # definition-link
+    defined-by unit # definition-link
+    role measurement_unit # semantic-role
+    lexeme en # language
+      surface unformalized-raw 98 105 116 # unresolved-surface
+      surface unformalized-raw 98 105 116 115 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1073 1080 1090 # unresolved-surface
+      surface unformalized-raw 1073 1080 1090 1072 # unresolved-surface
+      surface unformalized-raw 1073 1080 1090 1086 1074 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2348 2367 2335 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 27604 29305 # unresolved-surface
+  kilogram: # concept kilogram
+    defined-by mass # definition-link
+    defined-by unit # definition-link
+    role measurement_unit # semantic-role
+    role calculation_domain_term # semantic-role
+    lexeme en # language
+      surface unformalized-raw 107 103 # unresolved-surface
+      surface unformalized-raw 107 105 108 111 103 114 97 109 # unresolved-surface
+      surface unformalized-raw 107 105 108 111 103 114 97 109 115 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1082 1075 # unresolved-surface
+      surface unformalized-raw 1082 1080 1083 1086 1075 1088 1072 1084 1084 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2325 2367 2354 2379 2327 2381 2352 2366 2350 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 21315 20811 # unresolved-surface
+      surface unformalized-raw 20844 26020 # unresolved-surface
+  gram: # concept gram
+    defined-by mass # definition-link
+    defined-by unit # definition-link
+    role measurement_unit # semantic-role
+    role calculation_domain_term # semantic-role
+    lexeme en # language
+      surface unformalized-raw 103 114 97 109 # unresolved-surface
+      surface unformalized-raw 103 114 97 109 115 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1075 1088 1072 1084 1084 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2327 2381 2352 2366 2350 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 20811 # unresolved-surface
+  pound: # concept pound
+    defined-by mass # definition-link
+    defined-by unit # definition-link
+    role measurement_unit # semantic-role
+    lexeme en # language
+      surface unformalized-raw 112 111 117 110 100 # unresolved-surface
+      surface unformalized-raw 112 111 117 110 100 115 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1092 1091 1085 1090 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2346 2366 2313 2306 2337 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 30917 # unresolved-surface
+  ton: # concept ton
+    defined-by mass # definition-link
+    defined-by unit # definition-link
+    role measurement_unit # semantic-role
+    role calculation_domain_term # semantic-role
+    lexeme en # language
+      surface unformalized-raw 116 111 110 # unresolved-surface
+      surface unformalized-raw 116 111 110 115 # unresolved-surface
+      surface unformalized-raw 116 111 110 110 101 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1090 1086 1085 1085 1072 # unresolved-surface
+      surface unformalized-raw 1090 1086 1085 1085 1099 # unresolved-surface
+      surface unformalized-raw 1090 1086 1085 1085 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2335 2344 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 21544 # unresolved-surface
+  second: # concept second
+    defined-by time # definition-link
+    defined-by unit # definition-link
+    role measurement_unit # semantic-role
+    role calculation_domain_term # semantic-role
+    lexeme en # language
+      surface unformalized-raw 115 101 99 111 110 100 # unresolved-surface
+      surface unformalized-raw 115 101 99 111 110 100 115 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1089 1077 1082 1091 1085 1076 1072 # unresolved-surface
+      surface unformalized-raw 1089 1077 1082 1091 1085 1076 1099 # unresolved-surface
+      surface unformalized-raw 1089 1077 1082 1091 1085 1076 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2360 2375 2325 2306 2337 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 31186 # unresolved-surface
+  minute: # concept minute
+    defined-by time # definition-link
+    defined-by unit # definition-link
+    role measurement_unit # semantic-role
+    role calculation_domain_term # semantic-role
+    lexeme en # language
+      surface unformalized-raw 109 105 110 117 116 101 # unresolved-surface
+      surface unformalized-raw 109 105 110 117 116 101 115 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1084 1080 1085 1091 1090 1072 # unresolved-surface
+      surface unformalized-raw 1084 1080 1085 1091 1090 1099 # unresolved-surface
+      surface unformalized-raw 1084 1080 1085 1091 1090 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2350 2367 2344 2335 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 20998 38047 # unresolved-surface
+  hour: # concept hour
+    defined-by time # definition-link
+    defined-by unit # definition-link
+    role measurement_unit # semantic-role
+    role calculation_domain_term # semantic-role
+    lexeme en # language
+      surface unformalized-raw 104 111 117 114 # unresolved-surface
+      surface unformalized-raw 104 111 117 114 115 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1095 1072 1089 # unresolved-surface
+      surface unformalized-raw 1095 1072 1089 1072 # unresolved-surface
+      surface unformalized-raw 1095 1072 1089 1086 1074 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2328 2306 2335 2366 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 23567 26102 # unresolved-surface
+  millisecond: # concept millisecond
+    defined-by time # definition-link
+    defined-by unit # definition-link
+    role measurement_unit # semantic-role
+    role calculation_domain_term # semantic-role
+    lexeme en # language
+      surface unformalized-raw 109 115 # unresolved-surface
+      surface unformalized-raw 109 105 108 108 105 115 101 99 111 110 100 # unresolved-surface
+      surface unformalized-raw 109 105 108 108 105 115 101 99 111 110 100 115 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1084 1080 1083 1083 1080 1089 1077 1082 1091 1085 1076 1072 # unresolved-surface
+      surface unformalized-raw 1084 1080 1083 1083 1080 1089 1077 1082 1091 1085 1076 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2350 2367 2354 2368 2360 2375 2325 2306 2337 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 27627 31186 # unresolved-surface
+  day: # concept day
+    defined-by time # definition-link
+    defined-by unit # definition-link
+    role measurement_unit # semantic-role
+    role calculation_domain_term # semantic-role
+    lexeme en # language
+      surface unformalized-raw 100 97 121 # unresolved-surface
+      surface unformalized-raw 100 97 121 115 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1076 1077 1085 1100 # unresolved-surface
+      surface unformalized-raw 1076 1085 1103 # unresolved-surface
+      surface unformalized-raw 1076 1085 1077 1081 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2342 2367 2344 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 22825 # unresolved-surface
+      surface unformalized-raw 26085 # unresolved-surface
+  month: # concept month
+    defined-by time # definition-link
+    defined-by unit # definition-link
+    role measurement_unit # semantic-role
+    role calculation_domain_term # semantic-role
+    lexeme en # language
+      surface unformalized-raw 109 111 110 116 104 # unresolved-surface
+      surface unformalized-raw 109 111 110 116 104 115 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1084 1077 1089 1103 1094 # unresolved-surface
+      surface unformalized-raw 1084 1077 1089 1103 1094 1072 # unresolved-surface
+      surface unformalized-raw 1084 1077 1089 1103 1094 1077 1074 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2350 2361 2368 2344 2366 # unresolved-surface
+      surface unformalized-raw 2350 2361 2368 2344 2375 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 26376 # unresolved-surface
+      surface unformalized-raw 20010 26376 # unresolved-surface
+  celsius: # concept celsius
+    defined-by temperature # definition-link
+    defined-by unit # definition-link
+    role measurement_unit # semantic-role
+    lexeme en # language
+      surface unformalized-raw 99 101 108 115 105 117 115 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1094 1077 1083 1100 1089 1080 1081 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2360 2375 2354 2381 2360 2367 2351 2360 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 25668 27663 24230 # unresolved-surface
+  fahrenheit: # concept fahrenheit
+    defined-by temperature # definition-link
+    defined-by unit # definition-link
+    role measurement_unit # semantic-role
+    lexeme en # language
+      surface unformalized-raw 102 97 104 114 101 110 104 101 105 116 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1092 1072 1088 1077 1085 1075 1077 1081 1090 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2347 2364 2366 2352 2375 2344 2361 2366 2311 2335 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 21326 27663 24230 # unresolved-surface
+  kelvin: # concept kelvin
+    defined-by temperature # definition-link
+    defined-by unit # definition-link
+    role measurement_unit # semantic-role
+    lexeme en # language
+      surface unformalized-raw 107 101 108 118 105 110 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1082 1077 1083 1100 1074 1080 1085 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2325 2375 2354 2381 2357 2367 2344 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 24320 23572 25991 # unresolved-surface

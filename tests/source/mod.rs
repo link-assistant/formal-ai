@@ -18,6 +18,7 @@ pub mod event_log;
 pub(crate) mod fuzzy;
 pub mod github_logs;
 pub mod intent_formalization;
+pub mod json_lino;
 pub mod language;
 pub mod link_store;
 pub(crate) mod links_format;

@@ -1,6 +1,7 @@
 use std::fs;
 use std::path::Path;
 
+use formal_ai::{agent_info, environment_records};
 use walkdir::{DirEntry, WalkDir};
 
 #[test]
@@ -598,21 +599,27 @@ fn issue_278_default_native_doublets_store_is_traceable() {
         ],
     );
 
-    let environments = read(root.join("data/seed/environments.lino"));
-    assert_contains_all(
-        "data/seed/environments.lino",
-        &environments,
-        &[
-            "default native doublets-rs link store",
-            "default_native_link_store()?.import_memory_links_notation",
-        ],
+    let rust_library = environment_records()
+        .into_iter()
+        .find(|environment| environment.id == "rust_library")
+        .expect("rust library environment should be declared in seed directory");
+    assert!(
+        rust_library
+            .memory_store
+            .contains("default native doublets-rs link store"),
+        "rust_library environment should describe the native doublets store"
+    );
+    assert!(
+        rust_library
+            .bundle_import_command
+            .contains("default_native_link_store()?.import_memory_links_notation"),
+        "rust_library environment should trace native bundle import"
     );
 
-    let agent_info = read(root.join("data/seed/agent-info.lino"));
-    assert_contains_all(
-        "data/seed/agent-info.lino",
-        &agent_info,
-        &["field \"supported_languages\"", "value \"en|ru|hi|zh\""],
+    let agent_info = agent_info();
+    assert_eq!(
+        agent_info.get("supported_languages").map(String::as_str),
+        Some("en|ru|hi|zh")
     );
     for (language_marker, code) in [
         ("language: \"en\" English", "en"),
@@ -621,7 +628,9 @@ fn issue_278_default_native_doublets_store_is_traceable() {
         ("language: \"zh\" Chinese", "zh"),
     ] {
         assert!(
-            agent_info.contains(code),
+            agent_info
+                .get("supported_languages")
+                .is_some_and(|languages| languages.split('|').any(|language| language == code)),
             "missing issue #278 coverage for {language_marker}"
         );
     }

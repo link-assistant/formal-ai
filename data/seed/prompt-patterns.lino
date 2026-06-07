@@ -1,971 +1,971 @@
 prompt_patterns
-  pattern "pattern_concept_prefix_what_is_a"
-    intent "concept_lookup"
-    language "en"
-    kind "prefix"
-    text "what is a "
-  pattern "pattern_concept_prefix_what_is_an"
-    intent "concept_lookup"
-    language "en"
-    kind "prefix"
-    text "what is an "
-  pattern "pattern_concept_prefix_what_is_the"
-    intent "concept_lookup"
-    language "en"
-    kind "prefix"
-    text "what is the "
-  pattern "pattern_concept_prefix_what_is"
-    intent "concept_lookup"
-    language "en"
-    kind "prefix"
-    text "what is "
-  pattern "pattern_concept_prefix_whats_a"
-    intent "concept_lookup"
-    language "en"
-    kind "prefix"
-    text "what's a "
-  pattern "pattern_concept_prefix_whats_an"
-    intent "concept_lookup"
-    language "en"
-    kind "prefix"
-    text "what's an "
-  pattern "pattern_concept_prefix_whats_the"
-    intent "concept_lookup"
-    language "en"
-    kind "prefix"
-    text "what's the "
-  pattern "pattern_concept_prefix_whats"
-    intent "concept_lookup"
-    language "en"
-    kind "prefix"
-    text "what's "
-  pattern "pattern_concept_prefix_what_does"
-    intent "concept_lookup"
-    language "en"
-    kind "prefix"
-    text "what does "
-  pattern "pattern_concept_prefix_what_do"
-    intent "concept_lookup"
-    language "en"
-    kind "prefix"
-    text "what do "
-  pattern "pattern_concept_prefix_tell_me_about"
-    intent "concept_lookup"
-    language "en"
-    kind "prefix"
-    text "tell me about "
-  pattern "pattern_concept_prefix_tell_me_what"
-    intent "concept_lookup"
-    language "en"
-    kind "prefix"
-    text "tell me what "
-  pattern "pattern_concept_prefix_define"
-    intent "concept_lookup"
-    language "en"
-    kind "prefix"
-    text "define "
-  pattern "pattern_concept_prefix_explain"
-    intent "concept_lookup"
-    language "en"
-    kind "prefix"
-    text "explain "
-  pattern "pattern_concept_prefix_describe"
-    intent "concept_lookup"
-    language "en"
-    kind "prefix"
-    text "describe "
-  pattern "pattern_concept_prefix_who_is"
-    intent "concept_lookup"
-    language "en"
-    kind "prefix"
-    text "who is "
-  pattern "pattern_concept_prefix_who_was"
-    intent "concept_lookup"
-    language "en"
-    kind "prefix"
-    text "who was "
-  pattern "pattern_concept_prefix_chto_takoe"
-    intent "concept_lookup"
-    language "ru"
-    kind "prefix"
-    text "что такое "
-  pattern "pattern_concept_prefix_chto_eto"
-    intent "concept_lookup"
-    language "ru"
-    kind "prefix"
-    text "что это "
-  pattern "pattern_concept_prefix_kto_takoy"
-    intent "concept_lookup"
-    language "ru"
-    kind "prefix"
-    text "кто такой "
-  pattern "pattern_concept_prefix_kto_takaya"
-    intent "concept_lookup"
-    language "ru"
-    kind "prefix"
-    text "кто такая "
-  pattern "pattern_concept_prefix_kto_eto"
-    intent "concept_lookup"
-    language "ru"
-    kind "prefix"
-    text "кто это "
-  pattern "pattern_concept_prefix_rasskazhi_o"
-    intent "concept_lookup"
-    language "ru"
-    kind "prefix"
-    text "расскажи о "
-  pattern "pattern_concept_prefix_rasskazhi_pro"
-    intent "concept_lookup"
-    language "ru"
-    kind "prefix"
-    text "расскажи про "
-  pattern "pattern_concept_prefix_rasskazhi_za"
-    intent "concept_lookup"
-    language "ru"
-    kind "prefix"
-    text "расскажи за "
-  pattern "pattern_concept_prefix_opishi"
-    intent "concept_lookup"
-    language "ru"
-    kind "prefix"
-    text "опиши "
-  pattern "pattern_concept_prefix_obyasni"
-    intent "concept_lookup"
-    language "ru"
-    kind "prefix"
-    text "объясни "
-  pattern "pattern_concept_prefix_shenmeshi_simplified"
-    intent "concept_lookup"
-    language "zh"
-    kind "prefix"
-    text "什么是"
-  pattern "pattern_concept_prefix_shenmeshi_traditional"
-    intent "concept_lookup"
-    language "zh"
-    kind "prefix"
-    text "甚麼是"
-  pattern "pattern_concept_prefix_jieshi"
-    intent "concept_lookup"
-    language "zh"
-    kind "prefix"
-    text "请解释"
-  pattern "pattern_concept_prefix_shuoshuo"
-    intent "concept_lookup"
-    language "zh"
-    kind "prefix"
-    text "请说说"
-  pattern "pattern_concept_prefix_jieshao"
-    intent "concept_lookup"
-    language "zh"
-    kind "prefix"
-    text "介绍一下"
-  pattern "pattern_concept_prefix_shenmejiao"
-    intent "concept_lookup"
-    language "zh"
-    kind "prefix"
-    text "什么叫"
-  pattern "pattern_concept_prefix_jieshi_yixia"
-    intent "concept_lookup"
-    language "zh"
-    kind "prefix"
-    text "解释一下"
-  pattern "pattern_concept_prefix_what_does_mean"
-    intent "concept_lookup"
-    language "en"
-    kind "prefix"
-    text "what does the word "
-  pattern "pattern_concept_prefix_definition_of"
-    intent "concept_lookup"
-    language "en"
-    kind "prefix"
-    text "definition of "
-  pattern "pattern_concept_prefix_meaning_of"
-    intent "concept_lookup"
-    language "en"
-    kind "prefix"
-    text "meaning of "
-  pattern "pattern_concept_prefix_explanation_of"
-    intent "concept_lookup"
-    language "en"
-    kind "prefix"
-    text "explanation of "
-  pattern "pattern_concept_prefix_can_you_explain"
-    intent "concept_lookup"
-    language "en"
-    kind "prefix"
-    text "can you explain "
-  pattern "pattern_concept_prefix_can_you_define"
-    intent "concept_lookup"
-    language "en"
-    kind "prefix"
-    text "can you define "
-  pattern "pattern_concept_prefix_can_you_describe"
-    intent "concept_lookup"
-    language "en"
-    kind "prefix"
-    text "can you describe "
-  pattern "pattern_concept_prefix_chto_znachit"
-    intent "concept_lookup"
-    language "ru"
-    kind "prefix"
-    text "что значит "
-  pattern "pattern_concept_prefix_chto_oboznachaet"
-    intent "concept_lookup"
-    language "ru"
-    kind "prefix"
-    text "что обозначает "
-  pattern "pattern_concept_prefix_chto_oznachaet_slovo"
-    intent "concept_lookup"
-    language "ru"
-    kind "prefix"
-    text "что означает слово "
-  pattern "pattern_concept_prefix_chto_podrazumevaetsya_pod"
-    intent "concept_lookup"
-    language "ru"
-    kind "prefix"
-    text "что подразумевается под "
-  pattern "pattern_concept_prefix_v_chem_smysl"
-    intent "concept_lookup"
-    language "ru"
-    kind "prefix"
-    text "в чём смысл "
-  pattern "pattern_concept_prefix_v_chem_smysl_alt"
-    intent "concept_lookup"
-    language "ru"
-    kind "prefix"
-    text "в чем смысл "
-  pattern "pattern_concept_prefix_smysl"
-    intent "concept_lookup"
-    language "ru"
-    kind "prefix"
-    text "смысл "
-  pattern "pattern_concept_prefix_znachenie"
-    intent "concept_lookup"
-    language "ru"
-    kind "prefix"
-    text "значение "
-  pattern "pattern_concept_prefix_opredelenie"
-    intent "concept_lookup"
-    language "ru"
-    kind "prefix"
-    text "определение "
-  pattern "pattern_concept_prefix_rasskazhi_mne_o"
-    intent "concept_lookup"
-    language "ru"
-    kind "prefix"
-    text "расскажи мне о "
-  pattern "pattern_concept_prefix_rasskazhi_mne_pro"
-    intent "concept_lookup"
-    language "ru"
-    kind "prefix"
-    text "расскажи мне про "
-  pattern "pattern_concept_prefix_rasskazhi_mne_za"
-    intent "concept_lookup"
-    language "ru"
-    kind "prefix"
-    text "расскажи мне за "
-  pattern "pattern_concept_prefix_nazovi"
-    intent "concept_lookup"
-    language "ru"
-    kind "prefix"
-    text "назови "
-  pattern "pattern_concept_suffix_kya_hai"
-    intent "concept_lookup"
-    language "hi"
-    kind "suffix"
-    text " क्या है"
-  pattern "pattern_concept_suffix_kya_hota_hai"
-    intent "concept_lookup"
-    language "hi"
-    kind "suffix"
-    text " क्या होता है"
-  pattern "pattern_concept_suffix_kaun_hai"
-    intent "concept_lookup"
-    language "hi"
-    kind "suffix"
-    text " कौन है"
-  pattern "pattern_concept_suffix_kaun_hain"
-    intent "concept_lookup"
-    language "hi"
-    kind "suffix"
-    text " कौन हैं"
-  pattern "pattern_concept_suffix_shi_shenme_simplified"
-    intent "concept_lookup"
-    language "zh"
-    kind "suffix"
-    text "是什么"
-  pattern "pattern_concept_suffix_shenmeyisi_simplified"
-    intent "concept_lookup"
-    language "zh"
-    kind "suffix"
-    text "是什么意思"
-  pattern "pattern_concept_suffix_de_yisi_shi_shenme_simplified"
-    intent "concept_lookup"
-    language "zh"
-    kind "suffix"
-    text "的意思是什么"
-  pattern "pattern_concept_suffix_shi_shenme_traditional"
-    intent "concept_lookup"
-    language "zh"
-    kind "suffix"
-    text "是甚麼"
-  pattern "pattern_concept_suffix_shi_shei_simplified"
-    intent "concept_lookup"
-    language "zh"
-    kind "suffix"
-    text "是谁"
-  pattern "pattern_concept_suffix_shi_shei_traditional"
-    intent "concept_lookup"
-    language "zh"
-    kind "suffix"
-    text "是誰"
-  pattern "pattern_concept_suffix_ka_arth"
-    intent "concept_lookup"
-    language "hi"
-    kind "suffix"
-    text " का अर्थ क्या है"
-  pattern "pattern_concept_suffix_ka_arth_batao"
-    intent "concept_lookup"
-    language "hi"
-    kind "suffix"
-    text " का अर्थ बताओ"
-  pattern "pattern_concept_suffix_se_kya_matlab"
-    intent "concept_lookup"
-    language "hi"
-    kind "suffix"
-    text " से क्या मतलब है"
-  pattern "pattern_concept_suffix_kya_matlab"
-    intent "concept_lookup"
-    language "hi"
-    kind "suffix"
-    text " का मतलब क्या है"
-  pattern "pattern_concept_context_delimiter_in_en"
-    intent "concept_lookup"
-    language "en"
-    kind "context_delimiter"
-    text " in "
-  pattern "pattern_concept_context_delimiter_for_en"
-    intent "concept_lookup"
-    language "en"
-    kind "context_delimiter"
-    text " for "
-  pattern "pattern_concept_context_delimiter_within_en"
-    intent "concept_lookup"
-    language "en"
-    kind "context_delimiter"
-    text " within "
-  pattern "pattern_concept_context_delimiter_v_ru"
-    intent "concept_lookup"
-    language "ru"
-    kind "context_delimiter"
-    text " в "
-  pattern "pattern_concept_context_delimiter_vo_ru"
-    intent "concept_lookup"
-    language "ru"
-    kind "context_delimiter"
-    text " во "
-  pattern "pattern_concept_context_delimiter_dlya_ru"
-    intent "concept_lookup"
-    language "ru"
-    kind "context_delimiter"
-    text " для "
-  pattern "pattern_concept_context_delimiter_v_oblasti_ru"
-    intent "concept_lookup"
-    language "ru"
-    kind "context_delimiter"
-    text " в области "
-  pattern "pattern_concept_context_delimiter_v_kontekste_ru"
-    intent "concept_lookup"
-    language "ru"
-    kind "context_delimiter"
-    text " в контексте "
-  pattern "pattern_concept_context_delimiter_v_ramkakh_ru"
-    intent "concept_lookup"
-    language "ru"
-    kind "context_delimiter"
-    text " в рамках "
-  pattern "pattern_concept_context_delimiter_primenitelno_k_ru"
-    intent "concept_lookup"
-    language "ru"
-    kind "context_delimiter"
-    text " применительно к "
-  pattern "pattern_concept_context_delimiter_men_hi"
-    intent "concept_lookup"
-    language "hi"
-    kind "context_delimiter"
-    text " में "
-  pattern "pattern_concept_context_delimiter_ke_liye_hi"
-    intent "concept_lookup"
-    language "hi"
-    kind "context_delimiter"
-    text " के लिए "
-  pattern "pattern_concept_context_delimiter_ke_sandarbh_men_hi"
-    intent "concept_lookup"
-    language "hi"
-    kind "context_delimiter"
-    text " के संदर्भ में "
-  pattern "pattern_concept_context_delimiter_zhong_de_zh"
-    intent "concept_lookup"
-    language "zh"
-    kind "context_delimiter"
-    text "中的"
-  pattern "pattern_concept_context_delimiter_zhong_zh"
-    intent "concept_lookup"
-    language "zh"
-    kind "context_delimiter"
-    text "中"
-  pattern "pattern_concept_context_delimiter_lingyu_de_zh"
-    intent "concept_lookup"
-    language "zh"
-    kind "context_delimiter"
-    text "领域的"
-  pattern "pattern_concept_context_delimiter_lingyu_zh"
-    intent "concept_lookup"
-    language "zh"
-    kind "context_delimiter"
-    text "领域"
-  pattern "pattern_concept_context_delimiter_li_de_zh"
-    intent "concept_lookup"
-    language "zh"
-    kind "context_delimiter"
-    text "里的"
-  pattern "pattern_greeting_keyword_hi"
-    intent "greeting"
-    language "en"
-    kind "keyword"
-    text "hi"
-  pattern "pattern_greeting_keyword_hello"
-    intent "greeting"
-    language "en"
-    kind "keyword"
-    text "hello"
-  pattern "pattern_greeting_keyword_hey"
-    intent "greeting"
-    language "en"
-    kind "keyword"
-    text "hey"
-  pattern "pattern_greeting_phrase_how_are_you_en"
-    intent "greeting"
-    language "en"
-    kind "phrase"
-    text "how are you"
-  pattern "pattern_greeting_phrase_how_are_you_doing_en"
-    intent "greeting"
-    language "en"
-    kind "phrase"
-    text "how are you doing"
-  pattern "pattern_greeting_phrase_how_do_you_do_en"
-    intent "greeting"
-    language "en"
-    kind "phrase"
-    text "how do you do"
-  pattern "pattern_greeting_phrase_how_is_it_going_en"
-    intent "greeting"
-    language "en"
-    kind "phrase"
-    text "how is it going"
-  pattern "pattern_greeting_phrase_how_s_it_going_en"
-    intent "greeting"
-    language "en"
-    kind "phrase"
-    text "how s it going"
-  pattern "pattern_greeting_phrase_how_are_things_en"
-    intent "greeting"
-    language "en"
-    kind "phrase"
-    text "how are things"
-  pattern "pattern_greeting_keyword_privet"
-    intent "greeting"
-    language "ru"
-    kind "keyword"
-    text "привет"
-  pattern "pattern_greeting_keyword_zdravstvuyte"
-    intent "greeting"
-    language "ru"
-    kind "keyword"
-    text "здравствуйте"
-  pattern "pattern_greeting_keyword_namaste"
-    intent "greeting"
-    language "hi"
-    kind "keyword"
-    text "नमस्ते"
-  pattern "pattern_greeting_keyword_nihao"
-    intent "greeting"
-    language "zh"
-    kind "keyword"
-    text "你好"
-  pattern "pattern_greeting_keyword_shalom"
-    intent "greeting"
-    language "ru"
-    kind "keyword"
-    text "шалом"
-  pattern "pattern_greeting_phrase_shabbat_shalom"
-    intent "greeting"
-    language "ru"
-    kind "phrase"
-    text "шабат шалом"
-  pattern "pattern_greeting_phrase_kak_dela"
-    intent "greeting"
-    language "ru"
-    kind "phrase"
-    text "как дела"
-  pattern "pattern_greeting_phrase_kak_tvoi_dela"
-    intent "greeting"
-    language "ru"
-    kind "phrase"
-    text "как твои дела"
-  pattern "pattern_greeting_phrase_kak_vashi_dela"
-    intent "greeting"
-    language "ru"
-    kind "phrase"
-    text "как ваши дела"
-  pattern "pattern_greeting_phrase_kak_u_tebya_dela"
-    intent "greeting"
-    language "ru"
-    kind "phrase"
-    text "как у тебя дела"
-  pattern "pattern_greeting_phrase_kak_u_vas_dela"
-    intent "greeting"
-    language "ru"
-    kind "phrase"
-    text "как у вас дела"
-  pattern "pattern_greeting_phrase_privet_kak_dela"
-    intent "greeting"
-    language "ru"
-    kind "phrase"
-    text "привет как дела"
-  pattern "pattern_greeting_phrase_zdravstvuyte_kak_vashi_dela"
-    intent "greeting"
-    language "ru"
-    kind "phrase"
-    text "здравствуйте как ваши дела"
-  pattern "pattern_greeting_phrase_kak_pozhivaesh"
-    intent "greeting"
-    language "ru"
-    kind "phrase"
-    text "как поживаешь"
-  pattern "pattern_greeting_phrase_kak_vy_pozhivaete"
-    intent "greeting"
-    language "ru"
-    kind "phrase"
-    text "как вы поживаете"
-  pattern "pattern_greeting_phrase_kaise_ho_hi"
-    intent "greeting"
-    language "hi"
-    kind "phrase"
-    text "कैसे हो"
-  pattern "pattern_greeting_phrase_aap_kaise_hain_hi"
-    intent "greeting"
-    language "hi"
-    kind "phrase"
-    text "आप कैसे हैं"
-  pattern "pattern_greeting_phrase_tum_kaise_ho_hi"
-    intent "greeting"
-    language "hi"
-    kind "phrase"
-    text "तुम कैसे हो"
-  pattern "pattern_greeting_phrase_kya_haal_hai_hi"
-    intent "greeting"
-    language "hi"
-    kind "phrase"
-    text "क्या हाल है"
-  pattern "pattern_greeting_phrase_aapka_kya_haal_hai_hi"
-    intent "greeting"
-    language "hi"
-    kind "phrase"
-    text "आपका क्या हाल है"
-  pattern "pattern_greeting_phrase_sab_kaisa_chal_raha_hai_hi"
-    intent "greeting"
-    language "hi"
-    kind "phrase"
-    text "सब कैसा चल रहा है"
-  pattern "pattern_greeting_phrase_ni_hao_ma_zh"
-    intent "greeting"
-    language "zh"
-    kind "phrase"
-    text "你好吗"
-  pattern "pattern_greeting_phrase_ni_hai_hao_ma_zh"
-    intent "greeting"
-    language "zh"
-    kind "phrase"
-    text "你还好吗"
-  pattern "pattern_greeting_phrase_ni_zenmeyang_zh"
-    intent "greeting"
-    language "zh"
-    kind "phrase"
-    text "你怎么样"
-  pattern "pattern_greeting_phrase_nin_zenmeyang_zh"
-    intent "greeting"
-    language "zh"
-    kind "phrase"
-    text "您怎么样"
-  pattern "pattern_greeting_phrase_zuijin_zenmeyang_zh"
-    intent "greeting"
-    language "zh"
-    kind "phrase"
-    text "最近怎么样"
-  pattern "pattern_greeting_phrase_guode_zenmeyang_zh"
-    intent "greeting"
-    language "zh"
-    kind "phrase"
-    text "过得怎么样"
-  pattern "pattern_farewell_keyword_bye"
-    intent "farewell"
-    language "en"
-    kind "keyword"
-    text "bye"
-  pattern "pattern_farewell_keyword_goodbye"
-    intent "farewell"
-    language "en"
-    kind "keyword"
-    text "goodbye"
-  pattern "pattern_farewell_keyword_poka"
-    intent "farewell"
-    language "ru"
-    kind "keyword"
-    text "пока"
-  pattern "pattern_farewell_phrase_do_svidaniya"
-    intent "farewell"
-    language "ru"
-    kind "phrase"
-    text "до свидания"
-  pattern "pattern_farewell_keyword_ciao"
-    intent "farewell"
-    language "en"
-    kind "keyword"
-    text "ciao"
-  pattern "pattern_farewell_keyword_zaijian"
-    intent "farewell"
-    language "zh"
-    kind "keyword"
-    text "再见"
-  pattern "pattern_farewell_keyword_alvida"
-    intent "farewell"
-    language "hi"
-    kind "keyword"
-    text "अलविदा"
-  pattern "pattern_test_status_keyword_test_en"
-    intent "test_status"
-    language "en"
-    kind "keyword"
-    text "test"
-  pattern "pattern_test_status_phrase_test_passed_en"
-    intent "test_status"
-    language "en"
-    kind "phrase"
-    text "test passed"
-  pattern "pattern_test_status_phrase_i_am_here_en"
-    intent "test_status"
-    language "en"
-    kind "phrase"
-    text "i am here"
-  pattern "pattern_test_status_phrase_are_you_there_en"
-    intent "test_status"
-    language "en"
-    kind "phrase"
-    text "are you there"
-  pattern "pattern_test_status_keyword_test_ru"
-    intent "test_status"
-    language "ru"
-    kind "keyword"
-    text "тест"
-  pattern "pattern_test_status_phrase_test_proyden_ru"
-    intent "test_status"
-    language "ru"
-    kind "phrase"
-    text "тест пройден"
-  pattern "pattern_test_status_phrase_ya_zdes_ru"
-    intent "test_status"
-    language "ru"
-    kind "phrase"
-    text "я здесь"
-  pattern "pattern_test_status_phrase_vy_zdes_ru"
-    intent "test_status"
-    language "ru"
-    kind "phrase"
-    text "вы здесь"
-  pattern "pattern_test_status_keyword_test_hi"
-    intent "test_status"
-    language "hi"
-    kind "keyword"
-    text "टेस्ट"
-  pattern "pattern_test_status_phrase_success_hi"
-    intent "test_status"
-    language "hi"
-    kind "phrase"
-    text "परीक्षण सफल रहा"
-  pattern "pattern_test_status_phrase_main_yahan_hun_hi"
-    intent "test_status"
-    language "hi"
-    kind "phrase"
-    text "मैं यहाँ हूँ"
-  pattern "pattern_test_status_phrase_kya_aap_vahan_hain_hi"
-    intent "test_status"
-    language "hi"
-    kind "phrase"
-    text "क्या आप वहाँ हैं"
-  pattern "pattern_test_status_keyword_test_zh"
-    intent "test_status"
-    language "zh"
-    kind "keyword"
-    text "测试"
-  pattern "pattern_test_status_phrase_success_zh"
-    intent "test_status"
-    language "zh"
-    kind "phrase"
-    text "测试通过"
-  pattern "pattern_test_status_phrase_wo_zai_zheli_zh"
-    intent "test_status"
-    language "zh"
-    kind "phrase"
-    text "我在这里"
-  pattern "pattern_test_status_phrase_ni_zai_ma_zh"
-    intent "test_status"
-    language "zh"
-    kind "phrase"
-    text "你在吗"
-  pattern "pattern_courtesy_keyword_thanks"
-    intent "courtesy_response"
-    language "en"
-    kind "keyword"
-    text "thanks"
-  pattern "pattern_courtesy_phrase_thank_you"
-    intent "courtesy_response"
-    language "en"
-    kind "phrase"
-    text "thank you"
-  pattern "pattern_courtesy_phrase_fine_thank_you"
-    intent "courtesy_response"
-    language "en"
-    kind "phrase"
-    text "i am fine thank you"
-  pattern "pattern_courtesy_keyword_spasibo"
-    intent "courtesy_response"
-    language "ru"
-    kind "keyword"
-    text "спасибо"
-  pattern "pattern_courtesy_keyword_blagodaryu"
-    intent "courtesy_response"
-    language "ru"
-    kind "keyword"
-    text "благодарю"
-  pattern "pattern_courtesy_phrase_horosho_spasibo"
-    intent "courtesy_response"
-    language "ru"
-    kind "phrase"
-    text "хорошо спасибо"
-  pattern "pattern_courtesy_keyword_dhanyavad"
-    intent "courtesy_response"
-    language "hi"
-    kind "keyword"
-    text "धन्यवाद"
-  pattern "pattern_courtesy_phrase_theek_dhanyavad"
-    intent "courtesy_response"
-    language "hi"
-    kind "phrase"
-    text "ठीक हूँ धन्यवाद"
-  pattern "pattern_courtesy_keyword_xiexie"
-    intent "courtesy_response"
-    language "zh"
-    kind "keyword"
-    text "谢谢"
-  pattern "pattern_courtesy_phrase_wo_hen_hao_xiexie"
-    intent "courtesy_response"
-    language "zh"
-    kind "phrase"
-    text "我很好谢谢"
-  pattern "pattern_behavior_rules_list_show_behavior_rules_en"
-    intent "behavior_rules_list"
-    language "en"
-    kind "phrase"
-    coverage_group "direct"
-    text "show behavior rules"
-  pattern "pattern_behavior_rules_list_show_list_your_rules_en"
-    intent "behavior_rules_list"
-    language "en"
-    kind "phrase"
-    coverage_group "possessive_list"
-    text "show list of your rules"
-  pattern "pattern_behavior_rules_list_list_your_rules_en"
-    intent "behavior_rules_list"
-    language "en"
-    kind "phrase"
-    coverage_group "enumerate_possessive"
-    text "list your rules"
-  pattern "pattern_behavior_rules_list_pokazhi_pravila_povedeniya_ru"
-    intent "behavior_rules_list"
-    language "ru"
-    kind "phrase"
-    coverage_group "direct"
-    text "покажи правила поведения"
-  pattern "pattern_behavior_rules_list_pokazhi_spisok_svoih_pravil_ru"
-    intent "behavior_rules_list"
-    language "ru"
-    kind "phrase"
-    coverage_group "possessive_list"
-    text "покажи список своих правил"
-  pattern "pattern_behavior_rules_list_perechisli_svoi_pravila_ru"
-    intent "behavior_rules_list"
-    language "ru"
-    kind "phrase"
-    coverage_group "enumerate_possessive"
-    text "перечисли свои правила"
-  pattern "pattern_behavior_rules_list_vyavahar_niyam_suchibaddh_hi"
-    intent "behavior_rules_list"
-    language "hi"
-    kind "phrase"
-    coverage_group "direct"
-    text "व्यवहार के नियम सूचीबद्ध करें"
-  pattern "pattern_behavior_rules_list_apne_niyamon_ki_suchi_dikhao_hi"
-    intent "behavior_rules_list"
-    language "hi"
-    kind "phrase"
-    coverage_group "possessive_list"
-    text "अपने नियमों की सूची दिखाओ"
-  pattern "pattern_behavior_rules_list_apne_niyam_ginao_hi"
-    intent "behavior_rules_list"
-    language "hi"
-    kind "phrase"
-    coverage_group "enumerate_possessive"
-    text "अपने नियम गिनाओ"
-  pattern "pattern_behavior_rules_list_liechu_xingwei_guize_zh"
-    intent "behavior_rules_list"
-    language "zh"
-    kind "phrase"
-    coverage_group "direct"
-    text "列出行为规则"
-  pattern "pattern_behavior_rules_list_xianshi_nide_guize_liebiao_zh"
-    intent "behavior_rules_list"
-    language "zh"
-    kind "phrase"
-    coverage_group "possessive_list"
-    text "显示你的规则列表"
-  pattern "pattern_behavior_rules_list_liechu_nide_guize_zh"
-    intent "behavior_rules_list"
-    language "zh"
-    kind "phrase"
-    coverage_group "enumerate_possessive"
-    text "列出你的规则"
-  pattern "pattern_wikipedia_article_question_exact_en"
-    intent "wikipedia_article_question"
-    language "en"
-    kind "phrase"
-    coverage_group "exact_title"
-    text "does wikipedia have an article about Agreement (linguistics)"
-  pattern "pattern_wikipedia_article_question_grammar_context_en"
-    intent "wikipedia_article_question"
-    language "en"
-    kind "phrase"
-    coverage_group "grammar_context"
-    text "agreement in a sentence - is there a wikipedia article"
-  pattern "pattern_wikipedia_article_question_exact_ru"
-    intent "wikipedia_article_question"
-    language "ru"
-    kind "phrase"
-    coverage_group "exact_title"
-    text "есть ли в википедии статья о Согласование (грамматика)"
-  pattern "pattern_wikipedia_article_question_grammar_context_ru"
-    intent "wikipedia_article_question"
-    language "ru"
-    kind "phrase"
-    coverage_group "grammar_context"
-    text "согласованность в предложении - есть такая статья в википедии"
-  pattern "pattern_wikipedia_article_question_exact_hi"
-    intent "wikipedia_article_question"
-    language "hi"
-    kind "phrase"
-    coverage_group "exact_title"
-    text "क्या विकिपीडिया पर व्याकरणिक सहमति लेख है"
-  pattern "pattern_wikipedia_article_question_grammar_context_hi"
-    intent "wikipedia_article_question"
-    language "hi"
-    kind "phrase"
-    coverage_group "grammar_context"
-    text "वाक्य में सहमति - क्या विकिपीडिया पर ऐसा लेख है"
-  pattern "pattern_wikipedia_article_question_exact_zh"
-    intent "wikipedia_article_question"
-    language "zh"
-    kind "phrase"
-    coverage_group "exact_title"
-    text "维基百科有一致 (语言学)条目吗"
-  pattern "pattern_wikipedia_article_question_grammar_context_zh"
-    intent "wikipedia_article_question"
-    language "zh"
-    kind "phrase"
-    coverage_group "grammar_context"
-    text "句子中的一致 - 维基百科有这样的条目吗"
-  pattern "pattern_how_it_works_bare_en"
-    intent "how_it_works"
-    language "en"
-    kind "phrase"
-    text "how it works"
-  pattern "pattern_how_does_it_work_en"
-    intent "how_it_works"
-    language "en"
-    kind "phrase"
-    text "how does it work"
-  pattern "pattern_how_does_x_work_prefix_en"
-    intent "how_it_works"
-    language "en"
-    kind "prefix"
-    text "how does "
-  pattern "pattern_how_do_x_work_prefix_en"
-    intent "how_it_works"
-    language "en"
-    kind "prefix"
-    text "how do "
-  pattern "pattern_how_x_works_prefix_en"
-    intent "how_it_works"
-    language "en"
-    kind "prefix"
-    text "how "
-  pattern "pattern_how_it_works_ru"
-    intent "how_it_works"
-    language "ru"
-    kind "phrase"
-    text "как это работает"
-  pattern "pattern_kak_ono_rabotaet_ru"
-    intent "how_it_works"
-    language "ru"
-    kind "phrase"
-    text "как оно работает"
-  pattern "pattern_kak_ustroen_x_prefix_ru"
-    intent "how_it_works"
-    language "ru"
-    kind "prefix"
-    text "как устроен "
-  pattern "pattern_kak_ustroena_x_prefix_ru"
-    intent "how_it_works"
-    language "ru"
-    kind "prefix"
-    text "как устроена "
-  pattern "pattern_kak_ustroeno_x_prefix_ru"
-    intent "how_it_works"
-    language "ru"
-    kind "prefix"
-    text "как устроено "
-  pattern "pattern_kak_rabotaet_x_prefix_ru"
-    intent "how_it_works"
-    language "ru"
-    kind "prefix"
-    text "как работает "
-  pattern "pattern_x_kaise_kaam_karta_suffix_hi"
-    intent "how_it_works"
-    language "hi"
-    kind "suffix"
-    text " कैसे काम करता है"
-  pattern "pattern_x_kaise_kaam_karti_suffix_hi"
-    intent "how_it_works"
-    language "hi"
-    kind "suffix"
-    text " कैसे काम करती है"
-  pattern "pattern_x_ruhej_gongzuo_suffix_zh"
-    intent "how_it_works"
-    language "zh"
-    kind "suffix"
-    text " 如何工作"
-  pattern "pattern_x_shi_ruhej_gongzuo_de_suffix_zh"
-    intent "how_it_works"
-    language "zh"
-    kind "suffix"
-    text " 是如何工作的"
+  pattern pattern_concept_prefix_what_is_a
+    intent concept_lookup
+    language en
+    kind prefix
+    text unformalized-raw 119 104 97 116 32 105 115 32 97 32
+  pattern pattern_concept_prefix_what_is_an
+    intent concept_lookup
+    language en
+    kind prefix
+    text unformalized-raw 119 104 97 116 32 105 115 32 97 110 32
+  pattern pattern_concept_prefix_what_is_the
+    intent concept_lookup
+    language en
+    kind prefix
+    text unformalized-raw 119 104 97 116 32 105 115 32 116 104 101 32
+  pattern pattern_concept_prefix_what_is
+    intent concept_lookup
+    language en
+    kind prefix
+    text unformalized-raw 119 104 97 116 32 105 115 32
+  pattern pattern_concept_prefix_whats_a
+    intent concept_lookup
+    language en
+    kind prefix
+    text unformalized-raw 119 104 97 116 39 115 32 97 32
+  pattern pattern_concept_prefix_whats_an
+    intent concept_lookup
+    language en
+    kind prefix
+    text unformalized-raw 119 104 97 116 39 115 32 97 110 32
+  pattern pattern_concept_prefix_whats_the
+    intent concept_lookup
+    language en
+    kind prefix
+    text unformalized-raw 119 104 97 116 39 115 32 116 104 101 32
+  pattern pattern_concept_prefix_whats
+    intent concept_lookup
+    language en
+    kind prefix
+    text unformalized-raw 119 104 97 116 39 115 32
+  pattern pattern_concept_prefix_what_does
+    intent concept_lookup
+    language en
+    kind prefix
+    text unformalized-raw 119 104 97 116 32 100 111 101 115 32
+  pattern pattern_concept_prefix_what_do
+    intent concept_lookup
+    language en
+    kind prefix
+    text unformalized-raw 119 104 97 116 32 100 111 32
+  pattern pattern_concept_prefix_tell_me_about
+    intent concept_lookup
+    language en
+    kind prefix
+    text unformalized-raw 116 101 108 108 32 109 101 32 97 98 111 117 116 32
+  pattern pattern_concept_prefix_tell_me_what
+    intent concept_lookup
+    language en
+    kind prefix
+    text unformalized-raw 116 101 108 108 32 109 101 32 119 104 97 116 32
+  pattern pattern_concept_prefix_define
+    intent concept_lookup
+    language en
+    kind prefix
+    text unformalized-raw 100 101 102 105 110 101 32
+  pattern pattern_concept_prefix_explain
+    intent concept_lookup
+    language en
+    kind prefix
+    text unformalized-raw 101 120 112 108 97 105 110 32
+  pattern pattern_concept_prefix_describe
+    intent concept_lookup
+    language en
+    kind prefix
+    text unformalized-raw 100 101 115 99 114 105 98 101 32
+  pattern pattern_concept_prefix_who_is
+    intent concept_lookup
+    language en
+    kind prefix
+    text unformalized-raw 119 104 111 32 105 115 32
+  pattern pattern_concept_prefix_who_was
+    intent concept_lookup
+    language en
+    kind prefix
+    text unformalized-raw 119 104 111 32 119 97 115 32
+  pattern pattern_concept_prefix_chto_takoe
+    intent concept_lookup
+    language ru
+    kind prefix
+    text unformalized-raw 1095 1090 1086 32 1090 1072 1082 1086 1077 32
+  pattern pattern_concept_prefix_chto_eto
+    intent concept_lookup
+    language ru
+    kind prefix
+    text unformalized-raw 1095 1090 1086 32 1101 1090 1086 32
+  pattern pattern_concept_prefix_kto_takoy
+    intent concept_lookup
+    language ru
+    kind prefix
+    text unformalized-raw 1082 1090 1086 32 1090 1072 1082 1086 1081 32
+  pattern pattern_concept_prefix_kto_takaya
+    intent concept_lookup
+    language ru
+    kind prefix
+    text unformalized-raw 1082 1090 1086 32 1090 1072 1082 1072 1103 32
+  pattern pattern_concept_prefix_kto_eto
+    intent concept_lookup
+    language ru
+    kind prefix
+    text unformalized-raw 1082 1090 1086 32 1101 1090 1086 32
+  pattern pattern_concept_prefix_rasskazhi_o
+    intent concept_lookup
+    language ru
+    kind prefix
+    text unformalized-raw 1088 1072 1089 1089 1082 1072 1078 1080 32 1086 32
+  pattern pattern_concept_prefix_rasskazhi_pro
+    intent concept_lookup
+    language ru
+    kind prefix
+    text unformalized-raw 1088 1072 1089 1089 1082 1072 1078 1080 32 1087 1088 1086 32
+  pattern pattern_concept_prefix_rasskazhi_za
+    intent concept_lookup
+    language ru
+    kind prefix
+    text unformalized-raw 1088 1072 1089 1089 1082 1072 1078 1080 32 1079 1072 32
+  pattern pattern_concept_prefix_opishi
+    intent concept_lookup
+    language ru
+    kind prefix
+    text unformalized-raw 1086 1087 1080 1096 1080 32
+  pattern pattern_concept_prefix_obyasni
+    intent concept_lookup
+    language ru
+    kind prefix
+    text unformalized-raw 1086 1073 1098 1103 1089 1085 1080 32
+  pattern pattern_concept_prefix_shenmeshi_simplified
+    intent concept_lookup
+    language zh
+    kind prefix
+    text unformalized-raw 20160 20040 26159
+  pattern pattern_concept_prefix_shenmeshi_traditional
+    intent concept_lookup
+    language zh
+    kind prefix
+    text unformalized-raw 29978 40636 26159
+  pattern pattern_concept_prefix_jieshi
+    intent concept_lookup
+    language zh
+    kind prefix
+    text unformalized-raw 35831 35299 37322
+  pattern pattern_concept_prefix_shuoshuo
+    intent concept_lookup
+    language zh
+    kind prefix
+    text unformalized-raw 35831 35828 35828
+  pattern pattern_concept_prefix_jieshao
+    intent concept_lookup
+    language zh
+    kind prefix
+    text unformalized-raw 20171 32461 19968 19979
+  pattern pattern_concept_prefix_shenmejiao
+    intent concept_lookup
+    language zh
+    kind prefix
+    text unformalized-raw 20160 20040 21483
+  pattern pattern_concept_prefix_jieshi_yixia
+    intent concept_lookup
+    language zh
+    kind prefix
+    text unformalized-raw 35299 37322 19968 19979
+  pattern pattern_concept_prefix_what_does_mean
+    intent concept_lookup
+    language en
+    kind prefix
+    text unformalized-raw 119 104 97 116 32 100 111 101 115 32 116 104 101 32 119 111 114 100 32
+  pattern pattern_concept_prefix_definition_of
+    intent concept_lookup
+    language en
+    kind prefix
+    text unformalized-raw 100 101 102 105 110 105 116 105 111 110 32 111 102 32
+  pattern pattern_concept_prefix_meaning_of
+    intent concept_lookup
+    language en
+    kind prefix
+    text unformalized-raw 109 101 97 110 105 110 103 32 111 102 32
+  pattern pattern_concept_prefix_explanation_of
+    intent concept_lookup
+    language en
+    kind prefix
+    text unformalized-raw 101 120 112 108 97 110 97 116 105 111 110 32 111 102 32
+  pattern pattern_concept_prefix_can_you_explain
+    intent concept_lookup
+    language en
+    kind prefix
+    text unformalized-raw 99 97 110 32 121 111 117 32 101 120 112 108 97 105 110 32
+  pattern pattern_concept_prefix_can_you_define
+    intent concept_lookup
+    language en
+    kind prefix
+    text unformalized-raw 99 97 110 32 121 111 117 32 100 101 102 105 110 101 32
+  pattern pattern_concept_prefix_can_you_describe
+    intent concept_lookup
+    language en
+    kind prefix
+    text unformalized-raw 99 97 110 32 121 111 117 32 100 101 115 99 114 105 98 101 32
+  pattern pattern_concept_prefix_chto_znachit
+    intent concept_lookup
+    language ru
+    kind prefix
+    text unformalized-raw 1095 1090 1086 32 1079 1085 1072 1095 1080 1090 32
+  pattern pattern_concept_prefix_chto_oboznachaet
+    intent concept_lookup
+    language ru
+    kind prefix
+    text unformalized-raw 1095 1090 1086 32 1086 1073 1086 1079 1085 1072 1095 1072 1077 1090 32
+  pattern pattern_concept_prefix_chto_oznachaet_slovo
+    intent concept_lookup
+    language ru
+    kind prefix
+    text unformalized-raw 1095 1090 1086 32 1086 1079 1085 1072 1095 1072 1077 1090 32 1089 1083 1086 1074 1086 32
+  pattern pattern_concept_prefix_chto_podrazumevaetsya_pod
+    intent concept_lookup
+    language ru
+    kind prefix
+    text unformalized-raw 1095 1090 1086 32 1087 1086 1076 1088 1072 1079 1091 1084 1077 1074 1072 1077 1090 1089 1103 32 1087 1086 1076 32
+  pattern pattern_concept_prefix_v_chem_smysl
+    intent concept_lookup
+    language ru
+    kind prefix
+    text unformalized-raw 1074 32 1095 1105 1084 32 1089 1084 1099 1089 1083 32
+  pattern pattern_concept_prefix_v_chem_smysl_alt
+    intent concept_lookup
+    language ru
+    kind prefix
+    text unformalized-raw 1074 32 1095 1077 1084 32 1089 1084 1099 1089 1083 32
+  pattern pattern_concept_prefix_smysl
+    intent concept_lookup
+    language ru
+    kind prefix
+    text unformalized-raw 1089 1084 1099 1089 1083 32
+  pattern pattern_concept_prefix_znachenie
+    intent concept_lookup
+    language ru
+    kind prefix
+    text unformalized-raw 1079 1085 1072 1095 1077 1085 1080 1077 32
+  pattern pattern_concept_prefix_opredelenie
+    intent concept_lookup
+    language ru
+    kind prefix
+    text unformalized-raw 1086 1087 1088 1077 1076 1077 1083 1077 1085 1080 1077 32
+  pattern pattern_concept_prefix_rasskazhi_mne_o
+    intent concept_lookup
+    language ru
+    kind prefix
+    text unformalized-raw 1088 1072 1089 1089 1082 1072 1078 1080 32 1084 1085 1077 32 1086 32
+  pattern pattern_concept_prefix_rasskazhi_mne_pro
+    intent concept_lookup
+    language ru
+    kind prefix
+    text unformalized-raw 1088 1072 1089 1089 1082 1072 1078 1080 32 1084 1085 1077 32 1087 1088 1086 32
+  pattern pattern_concept_prefix_rasskazhi_mne_za
+    intent concept_lookup
+    language ru
+    kind prefix
+    text unformalized-raw 1088 1072 1089 1089 1082 1072 1078 1080 32 1084 1085 1077 32 1079 1072 32
+  pattern pattern_concept_prefix_nazovi
+    intent concept_lookup
+    language ru
+    kind prefix
+    text unformalized-raw 1085 1072 1079 1086 1074 1080 32
+  pattern pattern_concept_suffix_kya_hai
+    intent concept_lookup
+    language hi
+    kind suffix
+    text unformalized-raw 32 2325 2381 2351 2366 32 2361 2376
+  pattern pattern_concept_suffix_kya_hota_hai
+    intent concept_lookup
+    language hi
+    kind suffix
+    text unformalized-raw 32 2325 2381 2351 2366 32 2361 2379 2340 2366 32 2361 2376
+  pattern pattern_concept_suffix_kaun_hai
+    intent concept_lookup
+    language hi
+    kind suffix
+    text unformalized-raw 32 2325 2380 2344 32 2361 2376
+  pattern pattern_concept_suffix_kaun_hain
+    intent concept_lookup
+    language hi
+    kind suffix
+    text unformalized-raw 32 2325 2380 2344 32 2361 2376 2306
+  pattern pattern_concept_suffix_shi_shenme_simplified
+    intent concept_lookup
+    language zh
+    kind suffix
+    text unformalized-raw 26159 20160 20040
+  pattern pattern_concept_suffix_shenmeyisi_simplified
+    intent concept_lookup
+    language zh
+    kind suffix
+    text unformalized-raw 26159 20160 20040 24847 24605
+  pattern pattern_concept_suffix_de_yisi_shi_shenme_simplified
+    intent concept_lookup
+    language zh
+    kind suffix
+    text unformalized-raw 30340 24847 24605 26159 20160 20040
+  pattern pattern_concept_suffix_shi_shenme_traditional
+    intent concept_lookup
+    language zh
+    kind suffix
+    text unformalized-raw 26159 29978 40636
+  pattern pattern_concept_suffix_shi_shei_simplified
+    intent concept_lookup
+    language zh
+    kind suffix
+    text unformalized-raw 26159 35841
+  pattern pattern_concept_suffix_shi_shei_traditional
+    intent concept_lookup
+    language zh
+    kind suffix
+    text unformalized-raw 26159 35504
+  pattern pattern_concept_suffix_ka_arth
+    intent concept_lookup
+    language hi
+    kind suffix
+    text unformalized-raw 32 2325 2366 32 2309 2352 2381 2341 32 2325 2381 2351 2366 32 2361 2376
+  pattern pattern_concept_suffix_ka_arth_batao
+    intent concept_lookup
+    language hi
+    kind suffix
+    text unformalized-raw 32 2325 2366 32 2309 2352 2381 2341 32 2348 2340 2366 2323
+  pattern pattern_concept_suffix_se_kya_matlab
+    intent concept_lookup
+    language hi
+    kind suffix
+    text unformalized-raw 32 2360 2375 32 2325 2381 2351 2366 32 2350 2340 2354 2348 32 2361 2376
+  pattern pattern_concept_suffix_kya_matlab
+    intent concept_lookup
+    language hi
+    kind suffix
+    text unformalized-raw 32 2325 2366 32 2350 2340 2354 2348 32 2325 2381 2351 2366 32 2361 2376
+  pattern pattern_concept_context_delimiter_in_en
+    intent concept_lookup
+    language en
+    kind context_delimiter
+    text unformalized-raw 32 105 110 32
+  pattern pattern_concept_context_delimiter_for_en
+    intent concept_lookup
+    language en
+    kind context_delimiter
+    text unformalized-raw 32 102 111 114 32
+  pattern pattern_concept_context_delimiter_within_en
+    intent concept_lookup
+    language en
+    kind context_delimiter
+    text unformalized-raw 32 119 105 116 104 105 110 32
+  pattern pattern_concept_context_delimiter_v_ru
+    intent concept_lookup
+    language ru
+    kind context_delimiter
+    text unformalized-raw 32 1074 32
+  pattern pattern_concept_context_delimiter_vo_ru
+    intent concept_lookup
+    language ru
+    kind context_delimiter
+    text unformalized-raw 32 1074 1086 32
+  pattern pattern_concept_context_delimiter_dlya_ru
+    intent concept_lookup
+    language ru
+    kind context_delimiter
+    text unformalized-raw 32 1076 1083 1103 32
+  pattern pattern_concept_context_delimiter_v_oblasti_ru
+    intent concept_lookup
+    language ru
+    kind context_delimiter
+    text unformalized-raw 32 1074 32 1086 1073 1083 1072 1089 1090 1080 32
+  pattern pattern_concept_context_delimiter_v_kontekste_ru
+    intent concept_lookup
+    language ru
+    kind context_delimiter
+    text unformalized-raw 32 1074 32 1082 1086 1085 1090 1077 1082 1089 1090 1077 32
+  pattern pattern_concept_context_delimiter_v_ramkakh_ru
+    intent concept_lookup
+    language ru
+    kind context_delimiter
+    text unformalized-raw 32 1074 32 1088 1072 1084 1082 1072 1093 32
+  pattern pattern_concept_context_delimiter_primenitelno_k_ru
+    intent concept_lookup
+    language ru
+    kind context_delimiter
+    text unformalized-raw 32 1087 1088 1080 1084 1077 1085 1080 1090 1077 1083 1100 1085 1086 32 1082 32
+  pattern pattern_concept_context_delimiter_men_hi
+    intent concept_lookup
+    language hi
+    kind context_delimiter
+    text unformalized-raw 32 2350 2375 2306 32
+  pattern pattern_concept_context_delimiter_ke_liye_hi
+    intent concept_lookup
+    language hi
+    kind context_delimiter
+    text unformalized-raw 32 2325 2375 32 2354 2367 2319 32
+  pattern pattern_concept_context_delimiter_ke_sandarbh_men_hi
+    intent concept_lookup
+    language hi
+    kind context_delimiter
+    text unformalized-raw 32 2325 2375 32 2360 2306 2342 2352 2381 2349 32 2350 2375 2306 32
+  pattern pattern_concept_context_delimiter_zhong_de_zh
+    intent concept_lookup
+    language zh
+    kind context_delimiter
+    text unformalized-raw 20013 30340
+  pattern pattern_concept_context_delimiter_zhong_zh
+    intent concept_lookup
+    language zh
+    kind context_delimiter
+    text unformalized-raw 20013
+  pattern pattern_concept_context_delimiter_lingyu_de_zh
+    intent concept_lookup
+    language zh
+    kind context_delimiter
+    text unformalized-raw 39046 22495 30340
+  pattern pattern_concept_context_delimiter_lingyu_zh
+    intent concept_lookup
+    language zh
+    kind context_delimiter
+    text unformalized-raw 39046 22495
+  pattern pattern_concept_context_delimiter_li_de_zh
+    intent concept_lookup
+    language zh
+    kind context_delimiter
+    text unformalized-raw 37324 30340
+  pattern pattern_greeting_keyword_hi
+    intent greeting
+    language en
+    kind keyword
+    text hi
+  pattern pattern_greeting_keyword_hello
+    intent greeting
+    language en
+    kind keyword
+    text hello
+  pattern pattern_greeting_keyword_hey
+    intent greeting
+    language en
+    kind keyword
+    text hey
+  pattern pattern_greeting_phrase_how_are_you_en
+    intent greeting
+    language en
+    kind phrase
+    text unformalized-raw 104 111 119 32 97 114 101 32 121 111 117
+  pattern pattern_greeting_phrase_how_are_you_doing_en
+    intent greeting
+    language en
+    kind phrase
+    text unformalized-raw 104 111 119 32 97 114 101 32 121 111 117 32 100 111 105 110 103
+  pattern pattern_greeting_phrase_how_do_you_do_en
+    intent greeting
+    language en
+    kind phrase
+    text unformalized-raw 104 111 119 32 100 111 32 121 111 117 32 100 111
+  pattern pattern_greeting_phrase_how_is_it_going_en
+    intent greeting
+    language en
+    kind phrase
+    text unformalized-raw 104 111 119 32 105 115 32 105 116 32 103 111 105 110 103
+  pattern pattern_greeting_phrase_how_s_it_going_en
+    intent greeting
+    language en
+    kind phrase
+    text unformalized-raw 104 111 119 32 115 32 105 116 32 103 111 105 110 103
+  pattern pattern_greeting_phrase_how_are_things_en
+    intent greeting
+    language en
+    kind phrase
+    text unformalized-raw 104 111 119 32 97 114 101 32 116 104 105 110 103 115
+  pattern pattern_greeting_keyword_privet
+    intent greeting
+    language ru
+    kind keyword
+    text unformalized-raw 1087 1088 1080 1074 1077 1090
+  pattern pattern_greeting_keyword_zdravstvuyte
+    intent greeting
+    language ru
+    kind keyword
+    text unformalized-raw 1079 1076 1088 1072 1074 1089 1090 1074 1091 1081 1090 1077
+  pattern pattern_greeting_keyword_namaste
+    intent greeting
+    language hi
+    kind keyword
+    text unformalized-raw 2344 2350 2360 2381 2340 2375
+  pattern pattern_greeting_keyword_nihao
+    intent greeting
+    language zh
+    kind keyword
+    text unformalized-raw 20320 22909
+  pattern pattern_greeting_keyword_shalom
+    intent greeting
+    language ru
+    kind keyword
+    text unformalized-raw 1096 1072 1083 1086 1084
+  pattern pattern_greeting_phrase_shabbat_shalom
+    intent greeting
+    language ru
+    kind phrase
+    text unformalized-raw 1096 1072 1073 1072 1090 32 1096 1072 1083 1086 1084
+  pattern pattern_greeting_phrase_kak_dela
+    intent greeting
+    language ru
+    kind phrase
+    text unformalized-raw 1082 1072 1082 32 1076 1077 1083 1072
+  pattern pattern_greeting_phrase_kak_tvoi_dela
+    intent greeting
+    language ru
+    kind phrase
+    text unformalized-raw 1082 1072 1082 32 1090 1074 1086 1080 32 1076 1077 1083 1072
+  pattern pattern_greeting_phrase_kak_vashi_dela
+    intent greeting
+    language ru
+    kind phrase
+    text unformalized-raw 1082 1072 1082 32 1074 1072 1096 1080 32 1076 1077 1083 1072
+  pattern pattern_greeting_phrase_kak_u_tebya_dela
+    intent greeting
+    language ru
+    kind phrase
+    text unformalized-raw 1082 1072 1082 32 1091 32 1090 1077 1073 1103 32 1076 1077 1083 1072
+  pattern pattern_greeting_phrase_kak_u_vas_dela
+    intent greeting
+    language ru
+    kind phrase
+    text unformalized-raw 1082 1072 1082 32 1091 32 1074 1072 1089 32 1076 1077 1083 1072
+  pattern pattern_greeting_phrase_privet_kak_dela
+    intent greeting
+    language ru
+    kind phrase
+    text unformalized-raw 1087 1088 1080 1074 1077 1090 32 1082 1072 1082 32 1076 1077 1083 1072
+  pattern pattern_greeting_phrase_zdravstvuyte_kak_vashi_dela
+    intent greeting
+    language ru
+    kind phrase
+    text unformalized-raw 1079 1076 1088 1072 1074 1089 1090 1074 1091 1081 1090 1077 32 1082 1072 1082 32 1074 1072 1096 1080 32 1076 1077 1083 1072
+  pattern pattern_greeting_phrase_kak_pozhivaesh
+    intent greeting
+    language ru
+    kind phrase
+    text unformalized-raw 1082 1072 1082 32 1087 1086 1078 1080 1074 1072 1077 1096 1100
+  pattern pattern_greeting_phrase_kak_vy_pozhivaete
+    intent greeting
+    language ru
+    kind phrase
+    text unformalized-raw 1082 1072 1082 32 1074 1099 32 1087 1086 1078 1080 1074 1072 1077 1090 1077
+  pattern pattern_greeting_phrase_kaise_ho_hi
+    intent greeting
+    language hi
+    kind phrase
+    text unformalized-raw 2325 2376 2360 2375 32 2361 2379
+  pattern pattern_greeting_phrase_aap_kaise_hain_hi
+    intent greeting
+    language hi
+    kind phrase
+    text unformalized-raw 2310 2346 32 2325 2376 2360 2375 32 2361 2376 2306
+  pattern pattern_greeting_phrase_tum_kaise_ho_hi
+    intent greeting
+    language hi
+    kind phrase
+    text unformalized-raw 2340 2369 2350 32 2325 2376 2360 2375 32 2361 2379
+  pattern pattern_greeting_phrase_kya_haal_hai_hi
+    intent greeting
+    language hi
+    kind phrase
+    text unformalized-raw 2325 2381 2351 2366 32 2361 2366 2354 32 2361 2376
+  pattern pattern_greeting_phrase_aapka_kya_haal_hai_hi
+    intent greeting
+    language hi
+    kind phrase
+    text unformalized-raw 2310 2346 2325 2366 32 2325 2381 2351 2366 32 2361 2366 2354 32 2361 2376
+  pattern pattern_greeting_phrase_sab_kaisa_chal_raha_hai_hi
+    intent greeting
+    language hi
+    kind phrase
+    text unformalized-raw 2360 2348 32 2325 2376 2360 2366 32 2330 2354 32 2352 2361 2366 32 2361 2376
+  pattern pattern_greeting_phrase_ni_hao_ma_zh
+    intent greeting
+    language zh
+    kind phrase
+    text unformalized-raw 20320 22909 21527
+  pattern pattern_greeting_phrase_ni_hai_hao_ma_zh
+    intent greeting
+    language zh
+    kind phrase
+    text unformalized-raw 20320 36824 22909 21527
+  pattern pattern_greeting_phrase_ni_zenmeyang_zh
+    intent greeting
+    language zh
+    kind phrase
+    text unformalized-raw 20320 24590 20040 26679
+  pattern pattern_greeting_phrase_nin_zenmeyang_zh
+    intent greeting
+    language zh
+    kind phrase
+    text unformalized-raw 24744 24590 20040 26679
+  pattern pattern_greeting_phrase_zuijin_zenmeyang_zh
+    intent greeting
+    language zh
+    kind phrase
+    text unformalized-raw 26368 36817 24590 20040 26679
+  pattern pattern_greeting_phrase_guode_zenmeyang_zh
+    intent greeting
+    language zh
+    kind phrase
+    text unformalized-raw 36807 24471 24590 20040 26679
+  pattern pattern_farewell_keyword_bye
+    intent farewell
+    language en
+    kind keyword
+    text bye
+  pattern pattern_farewell_keyword_goodbye
+    intent farewell
+    language en
+    kind keyword
+    text goodbye
+  pattern pattern_farewell_keyword_poka
+    intent farewell
+    language ru
+    kind keyword
+    text unformalized-raw 1087 1086 1082 1072
+  pattern pattern_farewell_phrase_do_svidaniya
+    intent farewell
+    language ru
+    kind phrase
+    text unformalized-raw 1076 1086 32 1089 1074 1080 1076 1072 1085 1080 1103
+  pattern pattern_farewell_keyword_ciao
+    intent farewell
+    language en
+    kind keyword
+    text ciao
+  pattern pattern_farewell_keyword_zaijian
+    intent farewell
+    language zh
+    kind keyword
+    text unformalized-raw 20877 35265
+  pattern pattern_farewell_keyword_alvida
+    intent farewell
+    language hi
+    kind keyword
+    text unformalized-raw 2309 2354 2357 2367 2342 2366
+  pattern pattern_test_status_keyword_test_en
+    intent test_status
+    language en
+    kind keyword
+    text test
+  pattern pattern_test_status_phrase_test_passed_en
+    intent test_status
+    language en
+    kind phrase
+    text unformalized-raw 116 101 115 116 32 112 97 115 115 101 100
+  pattern pattern_test_status_phrase_i_am_here_en
+    intent test_status
+    language en
+    kind phrase
+    text unformalized-raw 105 32 97 109 32 104 101 114 101
+  pattern pattern_test_status_phrase_are_you_there_en
+    intent test_status
+    language en
+    kind phrase
+    text unformalized-raw 97 114 101 32 121 111 117 32 116 104 101 114 101
+  pattern pattern_test_status_keyword_test_ru
+    intent test_status
+    language ru
+    kind keyword
+    text unformalized-raw 1090 1077 1089 1090
+  pattern pattern_test_status_phrase_test_proyden_ru
+    intent test_status
+    language ru
+    kind phrase
+    text unformalized-raw 1090 1077 1089 1090 32 1087 1088 1086 1081 1076 1077 1085
+  pattern pattern_test_status_phrase_ya_zdes_ru
+    intent test_status
+    language ru
+    kind phrase
+    text unformalized-raw 1103 32 1079 1076 1077 1089 1100
+  pattern pattern_test_status_phrase_vy_zdes_ru
+    intent test_status
+    language ru
+    kind phrase
+    text unformalized-raw 1074 1099 32 1079 1076 1077 1089 1100
+  pattern pattern_test_status_keyword_test_hi
+    intent test_status
+    language hi
+    kind keyword
+    text unformalized-raw 2335 2375 2360 2381 2335
+  pattern pattern_test_status_phrase_success_hi
+    intent test_status
+    language hi
+    kind phrase
+    text unformalized-raw 2346 2352 2368 2325 2381 2359 2339 32 2360 2347 2354 32 2352 2361 2366
+  pattern pattern_test_status_phrase_main_yahan_hun_hi
+    intent test_status
+    language hi
+    kind phrase
+    text unformalized-raw 2350 2376 2306 32 2351 2361 2366 2305 32 2361 2370 2305
+  pattern pattern_test_status_phrase_kya_aap_vahan_hain_hi
+    intent test_status
+    language hi
+    kind phrase
+    text unformalized-raw 2325 2381 2351 2366 32 2310 2346 32 2357 2361 2366 2305 32 2361 2376 2306
+  pattern pattern_test_status_keyword_test_zh
+    intent test_status
+    language zh
+    kind keyword
+    text unformalized-raw 27979 35797
+  pattern pattern_test_status_phrase_success_zh
+    intent test_status
+    language zh
+    kind phrase
+    text unformalized-raw 27979 35797 36890 36807
+  pattern pattern_test_status_phrase_wo_zai_zheli_zh
+    intent test_status
+    language zh
+    kind phrase
+    text unformalized-raw 25105 22312 36825 37324
+  pattern pattern_test_status_phrase_ni_zai_ma_zh
+    intent test_status
+    language zh
+    kind phrase
+    text unformalized-raw 20320 22312 21527
+  pattern pattern_courtesy_keyword_thanks
+    intent courtesy_response
+    language en
+    kind keyword
+    text thanks
+  pattern pattern_courtesy_phrase_thank_you
+    intent courtesy_response
+    language en
+    kind phrase
+    text unformalized-raw 116 104 97 110 107 32 121 111 117
+  pattern pattern_courtesy_phrase_fine_thank_you
+    intent courtesy_response
+    language en
+    kind phrase
+    text unformalized-raw 105 32 97 109 32 102 105 110 101 32 116 104 97 110 107 32 121 111 117
+  pattern pattern_courtesy_keyword_spasibo
+    intent courtesy_response
+    language ru
+    kind keyword
+    text unformalized-raw 1089 1087 1072 1089 1080 1073 1086
+  pattern pattern_courtesy_keyword_blagodaryu
+    intent courtesy_response
+    language ru
+    kind keyword
+    text unformalized-raw 1073 1083 1072 1075 1086 1076 1072 1088 1102
+  pattern pattern_courtesy_phrase_horosho_spasibo
+    intent courtesy_response
+    language ru
+    kind phrase
+    text unformalized-raw 1093 1086 1088 1086 1096 1086 32 1089 1087 1072 1089 1080 1073 1086
+  pattern pattern_courtesy_keyword_dhanyavad
+    intent courtesy_response
+    language hi
+    kind keyword
+    text unformalized-raw 2343 2344 2381 2351 2357 2366 2342
+  pattern pattern_courtesy_phrase_theek_dhanyavad
+    intent courtesy_response
+    language hi
+    kind phrase
+    text unformalized-raw 2336 2368 2325 32 2361 2370 2305 32 2343 2344 2381 2351 2357 2366 2342
+  pattern pattern_courtesy_keyword_xiexie
+    intent courtesy_response
+    language zh
+    kind keyword
+    text unformalized-raw 35874 35874
+  pattern pattern_courtesy_phrase_wo_hen_hao_xiexie
+    intent courtesy_response
+    language zh
+    kind phrase
+    text unformalized-raw 25105 24456 22909 35874 35874
+  pattern pattern_behavior_rules_list_show_behavior_rules_en
+    intent behavior_rules_list
+    language en
+    kind phrase
+    coverage_group direct
+    text unformalized-raw 115 104 111 119 32 98 101 104 97 118 105 111 114 32 114 117 108 101 115
+  pattern pattern_behavior_rules_list_show_list_your_rules_en
+    intent behavior_rules_list
+    language en
+    kind phrase
+    coverage_group possessive_list
+    text unformalized-raw 115 104 111 119 32 108 105 115 116 32 111 102 32 121 111 117 114 32 114 117 108 101 115
+  pattern pattern_behavior_rules_list_list_your_rules_en
+    intent behavior_rules_list
+    language en
+    kind phrase
+    coverage_group enumerate_possessive
+    text unformalized-raw 108 105 115 116 32 121 111 117 114 32 114 117 108 101 115
+  pattern pattern_behavior_rules_list_pokazhi_pravila_povedeniya_ru
+    intent behavior_rules_list
+    language ru
+    kind phrase
+    coverage_group direct
+    text unformalized-raw 1087 1086 1082 1072 1078 1080 32 1087 1088 1072 1074 1080 1083 1072 32 1087 1086 1074 1077 1076 1077 1085 1080 1103
+  pattern pattern_behavior_rules_list_pokazhi_spisok_svoih_pravil_ru
+    intent behavior_rules_list
+    language ru
+    kind phrase
+    coverage_group possessive_list
+    text unformalized-raw 1087 1086 1082 1072 1078 1080 32 1089 1087 1080 1089 1086 1082 32 1089 1074 1086 1080 1093 32 1087 1088 1072 1074 1080 1083
+  pattern pattern_behavior_rules_list_perechisli_svoi_pravila_ru
+    intent behavior_rules_list
+    language ru
+    kind phrase
+    coverage_group enumerate_possessive
+    text unformalized-raw 1087 1077 1088 1077 1095 1080 1089 1083 1080 32 1089 1074 1086 1080 32 1087 1088 1072 1074 1080 1083 1072
+  pattern pattern_behavior_rules_list_vyavahar_niyam_suchibaddh_hi
+    intent behavior_rules_list
+    language hi
+    kind phrase
+    coverage_group direct
+    text unformalized-raw 2357 2381 2351 2357 2361 2366 2352 32 2325 2375 32 2344 2367 2351 2350 32 2360 2370 2330 2368 2348 2342 2381 2343 32 2325 2352 2375 2306
+  pattern pattern_behavior_rules_list_apne_niyamon_ki_suchi_dikhao_hi
+    intent behavior_rules_list
+    language hi
+    kind phrase
+    coverage_group possessive_list
+    text unformalized-raw 2309 2346 2344 2375 32 2344 2367 2351 2350 2379 2306 32 2325 2368 32 2360 2370 2330 2368 32 2342 2367 2326 2366 2323
+  pattern pattern_behavior_rules_list_apne_niyam_ginao_hi
+    intent behavior_rules_list
+    language hi
+    kind phrase
+    coverage_group enumerate_possessive
+    text unformalized-raw 2309 2346 2344 2375 32 2344 2367 2351 2350 32 2327 2367 2344 2366 2323
+  pattern pattern_behavior_rules_list_liechu_xingwei_guize_zh
+    intent behavior_rules_list
+    language zh
+    kind phrase
+    coverage_group direct
+    text unformalized-raw 21015 20986 34892 20026 35268 21017
+  pattern pattern_behavior_rules_list_xianshi_nide_guize_liebiao_zh
+    intent behavior_rules_list
+    language zh
+    kind phrase
+    coverage_group possessive_list
+    text unformalized-raw 26174 31034 20320 30340 35268 21017 21015 34920
+  pattern pattern_behavior_rules_list_liechu_nide_guize_zh
+    intent behavior_rules_list
+    language zh
+    kind phrase
+    coverage_group enumerate_possessive
+    text unformalized-raw 21015 20986 20320 30340 35268 21017
+  pattern pattern_wikipedia_article_question_exact_en
+    intent wikipedia_article_question
+    language en
+    kind phrase
+    coverage_group exact_title
+    text unformalized-raw 100 111 101 115 32 119 105 107 105 112 101 100 105 97 32 104 97 118 101 32 97 110 32 97 114 116 105 99 108 101 32 97 98 111 117 116 32 65 103 114 101 101 109 101 110 116 32 40 108 105 110 103 117 105 115 116 105 99 115 41
+  pattern pattern_wikipedia_article_question_grammar_context_en
+    intent wikipedia_article_question
+    language en
+    kind phrase
+    coverage_group grammar_context
+    text unformalized-raw 97 103 114 101 101 109 101 110 116 32 105 110 32 97 32 115 101 110 116 101 110 99 101 32 45 32 105 115 32 116 104 101 114 101 32 97 32 119 105 107 105 112 101 100 105 97 32 97 114 116 105 99 108 101
+  pattern pattern_wikipedia_article_question_exact_ru
+    intent wikipedia_article_question
+    language ru
+    kind phrase
+    coverage_group exact_title
+    text unformalized-raw 1077 1089 1090 1100 32 1083 1080 32 1074 32 1074 1080 1082 1080 1087 1077 1076 1080 1080 32 1089 1090 1072 1090 1100 1103 32 1086 32 1057 1086 1075 1083 1072 1089 1086 1074 1072 1085 1080 1077 32 40 1075 1088 1072 1084 1084 1072 1090 1080 1082 1072 41
+  pattern pattern_wikipedia_article_question_grammar_context_ru
+    intent wikipedia_article_question
+    language ru
+    kind phrase
+    coverage_group grammar_context
+    text unformalized-raw 1089 1086 1075 1083 1072 1089 1086 1074 1072 1085 1085 1086 1089 1090 1100 32 1074 32 1087 1088 1077 1076 1083 1086 1078 1077 1085 1080 1080 32 45 32 1077 1089 1090 1100 32 1090 1072 1082 1072 1103 32 1089 1090 1072 1090 1100 1103 32 1074 32 1074 1080 1082 1080 1087 1077 1076 1080 1080
+  pattern pattern_wikipedia_article_question_exact_hi
+    intent wikipedia_article_question
+    language hi
+    kind phrase
+    coverage_group exact_title
+    text unformalized-raw 2325 2381 2351 2366 32 2357 2367 2325 2367 2346 2368 2337 2367 2351 2366 32 2346 2352 32 2357 2381 2351 2366 2325 2352 2339 2367 2325 32 2360 2361 2350 2340 2367 32 2354 2375 2326 32 2361 2376
+  pattern pattern_wikipedia_article_question_grammar_context_hi
+    intent wikipedia_article_question
+    language hi
+    kind phrase
+    coverage_group grammar_context
+    text unformalized-raw 2357 2366 2325 2381 2351 32 2350 2375 2306 32 2360 2361 2350 2340 2367 32 45 32 2325 2381 2351 2366 32 2357 2367 2325 2367 2346 2368 2337 2367 2351 2366 32 2346 2352 32 2320 2360 2366 32 2354 2375 2326 32 2361 2376
+  pattern pattern_wikipedia_article_question_exact_zh
+    intent wikipedia_article_question
+    language zh
+    kind phrase
+    coverage_group exact_title
+    text unformalized-raw 32500 22522 30334 31185 26377 19968 33268 32 40 35821 35328 23398 41 26465 30446 21527
+  pattern pattern_wikipedia_article_question_grammar_context_zh
+    intent wikipedia_article_question
+    language zh
+    kind phrase
+    coverage_group grammar_context
+    text unformalized-raw 21477 23376 20013 30340 19968 33268 32 45 32 32500 22522 30334 31185 26377 36825 26679 30340 26465 30446 21527
+  pattern pattern_how_it_works_bare_en
+    intent how_it_works
+    language en
+    kind phrase
+    text unformalized-raw 104 111 119 32 105 116 32 119 111 114 107 115
+  pattern pattern_how_does_it_work_en
+    intent how_it_works
+    language en
+    kind phrase
+    text unformalized-raw 104 111 119 32 100 111 101 115 32 105 116 32 119 111 114 107
+  pattern pattern_how_does_x_work_prefix_en
+    intent how_it_works
+    language en
+    kind prefix
+    text unformalized-raw 104 111 119 32 100 111 101 115 32
+  pattern pattern_how_do_x_work_prefix_en
+    intent how_it_works
+    language en
+    kind prefix
+    text unformalized-raw 104 111 119 32 100 111 32
+  pattern pattern_how_x_works_prefix_en
+    intent how_it_works
+    language en
+    kind prefix
+    text unformalized-raw 104 111 119 32
+  pattern pattern_how_it_works_ru
+    intent how_it_works
+    language ru
+    kind phrase
+    text unformalized-raw 1082 1072 1082 32 1101 1090 1086 32 1088 1072 1073 1086 1090 1072 1077 1090
+  pattern pattern_kak_ono_rabotaet_ru
+    intent how_it_works
+    language ru
+    kind phrase
+    text unformalized-raw 1082 1072 1082 32 1086 1085 1086 32 1088 1072 1073 1086 1090 1072 1077 1090
+  pattern pattern_kak_ustroen_x_prefix_ru
+    intent how_it_works
+    language ru
+    kind prefix
+    text unformalized-raw 1082 1072 1082 32 1091 1089 1090 1088 1086 1077 1085 32
+  pattern pattern_kak_ustroena_x_prefix_ru
+    intent how_it_works
+    language ru
+    kind prefix
+    text unformalized-raw 1082 1072 1082 32 1091 1089 1090 1088 1086 1077 1085 1072 32
+  pattern pattern_kak_ustroeno_x_prefix_ru
+    intent how_it_works
+    language ru
+    kind prefix
+    text unformalized-raw 1082 1072 1082 32 1091 1089 1090 1088 1086 1077 1085 1086 32
+  pattern pattern_kak_rabotaet_x_prefix_ru
+    intent how_it_works
+    language ru
+    kind prefix
+    text unformalized-raw 1082 1072 1082 32 1088 1072 1073 1086 1090 1072 1077 1090 32
+  pattern pattern_x_kaise_kaam_karta_suffix_hi
+    intent how_it_works
+    language hi
+    kind suffix
+    text unformalized-raw 32 2325 2376 2360 2375 32 2325 2366 2350 32 2325 2352 2340 2366 32 2361 2376
+  pattern pattern_x_kaise_kaam_karti_suffix_hi
+    intent how_it_works
+    language hi
+    kind suffix
+    text unformalized-raw 32 2325 2376 2360 2375 32 2325 2366 2350 32 2325 2352 2340 2368 32 2361 2376
+  pattern pattern_x_ruhej_gongzuo_suffix_zh
+    intent how_it_works
+    language zh
+    kind suffix
+    text unformalized-raw 32 22914 20309 24037 20316
+  pattern pattern_x_shi_ruhej_gongzuo_de_suffix_zh
+    intent how_it_works
+    language zh
+    kind suffix
+    text unformalized-raw 32 26159 22914 20309 24037 20316 30340

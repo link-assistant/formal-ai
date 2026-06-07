@@ -1,42 +1,25 @@
 meanings
-  meaning "conversation_topic_opener"
-    gloss "a conversational opener that proposes a topic to discuss — the let-us-talk-about-X phrasing that introduces a subject for open conversation, independent of the language used. Each surface is a prefix carrying the … (U+2026) slot at the end, where the topic follows. A surface whose action child is 'scan' is also matched when it occurs anywhere in the prompt, not only at the start, so an opener embedded after a greeting is still recognized."
-    wiktionary "talk"
-    defined_by "inquiry"
-    defined_by "action"
-    role "conversation_topic_opener"
-    lexeme "en"
-      word "let's talk about …"
-        description "English conversational opener; the topic to discuss follows the … slot."
-      word "lets talk about …"
-        description "English conversational opener written without the apostrophe; the topic follows the … slot."
-      word "can we talk about …"
-        description "English conversational opener phrased as a question; the topic follows the … slot."
-      word "talk about …"
-        description "English bare conversational opener; the topic follows the … slot."
-    lexeme "ru"
-      word "давай поговорим о …"
-        description "Russian conversational opener (romanized davaj pogovorim o, let us talk about); the topic follows the … slot."
-      word "давай поговорим об …"
-        description "Russian conversational opener before a vowel (romanized davaj pogovorim ob, let us talk about); the topic follows the … slot."
-      word "давайте поговорим о …"
-        description "Russian polite or plural conversational opener (romanized davajte pogovorim o, let us talk about); the topic follows the … slot."
-      word "давайте поговорим об …"
-        description "Russian polite or plural opener before a vowel (romanized davajte pogovorim ob, let us talk about); the topic follows the … slot."
-      word "поговорим о …"
-        action "scan"
-        description "Russian conversational opener (romanized pogovorim o, let us talk about); the topic follows the … slot, and this surface is also scanned anywhere in the prompt because the bare verb often follows a greeting."
-      word "поговорим об …"
-        description "Russian conversational opener before a vowel (romanized pogovorim ob, let us talk about); the topic follows the … slot."
-      word "обсудим …"
-        description "Russian conversational opener (romanized obsudim, let us discuss); the topic follows the … slot."
-    lexeme "hi"
-      word "चलो बात करें …"
-        description "Hindi conversational opener (romanized chalo baat karen, let us talk); the topic follows the … slot."
-      word "बात करें …"
-        description "Hindi conversational opener (romanized baat karen, let us talk); the topic follows the … slot."
-    lexeme "zh"
-      word "聊聊…"
-        description "Chinese conversational opener (pinyin liaoliao, let us chat) with no trailing space; the topic follows the … slot."
-      word "谈谈…"
-        description "Chinese conversational opener (pinyin tantan, let us discuss) with no trailing space; the topic follows the … slot."
+  conversation_topic_opener: # concept conversation_topic_opener
+    defined-by inquiry # definition-link
+    defined-by action # definition-link
+    role conversation_topic_opener # semantic-role
+    lexeme en # language
+      surface unformalized-raw 108 101 116 39 115 32 116 97 108 107 32 97 98 111 117 116 32 8230 # unresolved-surface
+      surface unformalized-raw 108 101 116 115 32 116 97 108 107 32 97 98 111 117 116 32 8230 # unresolved-surface
+      surface unformalized-raw 99 97 110 32 119 101 32 116 97 108 107 32 97 98 111 117 116 32 8230 # unresolved-surface
+      surface unformalized-raw 116 97 108 107 32 97 98 111 117 116 32 8230 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1076 1072 1074 1072 1081 32 1087 1086 1075 1086 1074 1086 1088 1080 1084 32 1086 32 8230 # unresolved-surface
+      surface unformalized-raw 1076 1072 1074 1072 1081 32 1087 1086 1075 1086 1074 1086 1088 1080 1084 32 1086 1073 32 8230 # unresolved-surface
+      surface unformalized-raw 1076 1072 1074 1072 1081 1090 1077 32 1087 1086 1075 1086 1074 1086 1088 1080 1084 32 1086 32 8230 # unresolved-surface
+      surface unformalized-raw 1076 1072 1074 1072 1081 1090 1077 32 1087 1086 1075 1086 1074 1086 1088 1080 1084 32 1086 1073 32 8230 # unresolved-surface
+      surface unformalized-raw 1087 1086 1075 1086 1074 1086 1088 1080 1084 32 1086 32 8230 # unresolved-surface
+        action scan # action
+      surface unformalized-raw 1087 1086 1075 1086 1074 1086 1088 1080 1084 32 1086 1073 32 8230 # unresolved-surface
+      surface unformalized-raw 1086 1073 1089 1091 1076 1080 1084 32 8230 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2330 2354 2379 32 2348 2366 2340 32 2325 2352 2375 2306 32 8230 # unresolved-surface
+      surface unformalized-raw 2348 2366 2340 32 2325 2352 2375 2306 32 8230 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 32842 32842 8230 # unresolved-surface
+      surface unformalized-raw 35848 35848 8230 # unresolved-surface

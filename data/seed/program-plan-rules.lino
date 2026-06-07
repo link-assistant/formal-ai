@@ -1,26 +1,26 @@
 substitution_rules
-  id "program_plan_rules"
-  rule "path_argument_list_files"
-    order "10"
-    event "manual"
-    when "request:modifier -> path_argument"
-    replace "request:task -> list_files"
-      with "request:task -> list_files_arg"
-  rule "path_argument_list_files_reverse_sort"
-    order "10"
-    event "manual"
-    when "request:modifier -> path_argument"
-    replace "request:task -> list_files_reverse_sort"
-      with "request:task -> list_files_arg_reverse_sort"
-  rule "reverse_sort_list_files"
-    order "20"
-    event "manual"
-    when "request:modifier -> reverse_sort"
-    replace "request:task -> list_files"
-      with "request:task -> list_files_reverse_sort"
-  rule "reverse_sort_list_files_arg"
-    order "20"
-    event "manual"
-    when "request:modifier -> reverse_sort"
-    replace "request:task -> list_files_arg"
-      with "request:task -> list_files_arg_reverse_sort"
+  id program_plan_rules
+  rule path_argument_list_files
+    order 10
+    event manual
+    when unformalized-raw 114 101 113 117 101 115 116 58 109 111 100 105 102 105 101 114 32 45 62 32 112 97 116 104 95 97 114 103 117 109 101 110 116
+    replace unformalized-raw 114 101 113 117 101 115 116 58 116 97 115 107 32 45 62 32 108 105 115 116 95 102 105 108 101 115
+      with unformalized-raw 114 101 113 117 101 115 116 58 116 97 115 107 32 45 62 32 108 105 115 116 95 102 105 108 101 115 95 97 114 103
+  rule path_argument_list_files_reverse_sort
+    order 10
+    event manual
+    when unformalized-raw 114 101 113 117 101 115 116 58 109 111 100 105 102 105 101 114 32 45 62 32 112 97 116 104 95 97 114 103 117 109 101 110 116
+    replace unformalized-raw 114 101 113 117 101 115 116 58 116 97 115 107 32 45 62 32 108 105 115 116 95 102 105 108 101 115 95 114 101 118 101 114 115 101 95 115 111 114 116
+      with unformalized-raw 114 101 113 117 101 115 116 58 116 97 115 107 32 45 62 32 108 105 115 116 95 102 105 108 101 115 95 97 114 103 95 114 101 118 101 114 115 101 95 115 111 114 116
+  rule reverse_sort_list_files
+    order 20
+    event manual
+    when unformalized-raw 114 101 113 117 101 115 116 58 109 111 100 105 102 105 101 114 32 45 62 32 114 101 118 101 114 115 101 95 115 111 114 116
+    replace unformalized-raw 114 101 113 117 101 115 116 58 116 97 115 107 32 45 62 32 108 105 115 116 95 102 105 108 101 115
+      with unformalized-raw 114 101 113 117 101 115 116 58 116 97 115 107 32 45 62 32 108 105 115 116 95 102 105 108 101 115 95 114 101 118 101 114 115 101 95 115 111 114 116
+  rule reverse_sort_list_files_arg
+    order 20
+    event manual
+    when unformalized-raw 114 101 113 117 101 115 116 58 109 111 100 105 102 105 101 114 32 45 62 32 114 101 118 101 114 115 101 95 115 111 114 116
+    replace unformalized-raw 114 101 113 117 101 115 116 58 116 97 115 107 32 45 62 32 108 105 115 116 95 102 105 108 101 115 95 97 114 103
+      with unformalized-raw 114 101 113 117 101 115 116 58 116 97 115 107 32 45 62 32 108 105 115 116 95 102 105 108 101 115 95 97 114 103 95 114 101 118 101 114 115 101 95 115 111 114 116

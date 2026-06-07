@@ -1,311 +1,187 @@
 meanings
-  meaning "knowledge_relation"
-    gloss "a relation in the knowledge base that maps a subject to a value; the genus of every fact-query relation below"
-    wiktionary "relation"
-    defined_by "knowledge_subject"
-    defined_by "knowledge_value"
-    defined_by "relation"
-    role "knowledge_relation"
-    lexeme "en"
-      word "relation"
-        description "English noun for a link in the knowledge base that maps a subject to a value; the genus of the fact-query relations."
-      word "property"
-        description "English noun for an attribute that maps a subject to a value; a synonym surface for the knowledge relation."
-    lexeme "ru"
-      word "отношение"
-        description "Russian noun (romanized otnosheniye) for a relation that maps a subject to a value; the Russian surface for the knowledge relation."
-      word "свойство"
-        description "Russian noun (romanized svoystvo) for a property mapping a subject to a value; an alternative Russian surface for the knowledge relation."
-    lexeme "hi"
-      word "संबंध"
-        description "Hindi noun (romanized sambandh) for a relation that maps a subject to a value; the Hindi surface for the knowledge relation."
-      word "गुण"
-        description "Hindi noun (romanized gun) for a property or attribute; an alternative Hindi surface for the knowledge relation."
-    lexeme "zh"
-      word "关系"
-        description "Chinese noun (pinyin guanxi) for a relation that maps a subject to a value; the Chinese surface for the knowledge relation."
-      word "属性"
-        description "Chinese noun (pinyin shuxing) for an attribute or property; an alternative Chinese surface for the knowledge relation."
-  meaning "knowledge_subject"
-    gloss "the entity a knowledge-base question is about — the subject a fact relation maps to a value"
-    wiktionary "subject"
-    defined_by "knowledge_relation"
-    role "knowledge_subject"
-    lexeme "en"
-      word "subject"
-        description "English noun for the entity a knowledge-base question is about; the subject a fact relation maps to a value."
-      word "entity"
-        description "English noun for the thing being asked about; a synonym surface for the knowledge subject."
-      word "topic"
-        description "English noun for what a question concerns; an alternative surface for the knowledge subject."
-    lexeme "ru"
-      word "субъект"
-        description "Russian noun (romanized subyekt) for the subject of a question; the Russian surface for the knowledge subject."
-      word "сущность"
-        description "Russian noun (romanized sushchnost) for the entity being asked about; an alternative Russian surface for the knowledge subject."
-      word "предмет"
-        description "Russian noun (romanized predmet) for the topic of a question; another Russian surface for the knowledge subject."
-    lexeme "hi"
-      word "विषय"
-        description "Hindi noun (romanized vishay) for the topic or subject of a question; the Hindi surface for the knowledge subject."
-      word "इकाई"
-        description "Hindi noun (romanized ikai) for the entity being asked about; an alternative Hindi surface for the knowledge subject."
-    lexeme "zh"
-      word "主体"
-        description "Chinese noun (pinyin zhuti) for the subject of a question; the Chinese surface for the knowledge subject."
-      word "实体"
-        description "Chinese noun (pinyin shiti) for the entity being asked about; an alternative Chinese surface for the knowledge subject."
-  meaning "knowledge_value"
-    gloss "the value a fact relation yields for its subject — the answer to the question"
-    wiktionary "value"
-    defined_by "knowledge_relation"
-    role "knowledge_value"
-    lexeme "en"
-      word "value"
-        description "English noun for the value a fact relation yields for its subject; the answer to the question."
-      word "answer"
-        description "English noun for the response to a question; a synonym surface for the knowledge value."
-    lexeme "ru"
-      word "значение"
-        description "Russian noun (romanized znacheniye) for the value a relation yields; the Russian surface for the knowledge value."
-      word "ответ"
-        description "Russian noun (romanized otvet) for the answer to a question; an alternative Russian surface for the knowledge value."
-    lexeme "hi"
-      word "मान"
-        description "Hindi noun (romanized maan) for the value a relation yields; the Hindi surface for the knowledge value."
-      word "उत्तर"
-        description "Hindi noun (romanized uttar) for the answer to a question; an alternative Hindi surface for the knowledge value."
-    lexeme "zh"
-      word "值"
-        description "Chinese noun (pinyin zhi) for the value a relation yields; the Chinese surface for the knowledge value."
-      word "答案"
-        description "Chinese noun (pinyin daan) for the answer to a question; an alternative Chinese surface for the knowledge value."
-  meaning "capital"
-    gloss "the relation linking a country to its capital city (Wikidata P36)"
-    wiktionary "capital"
-    defined_by "knowledge_relation"
-    role "fact_relation"
-    lexeme "en"
-      word "capital"
-        description "English noun for the seat-of-government city of a country; the surface for the capital-of relation."
-    lexeme "ru"
-      word "столица"
-        description "Russian noun (romanized stolitsa), nominative singular, for a capital city; the Russian surface for the capital-of relation."
-      word "столицы"
-        description "Russian noun (romanized stolitsy), genitive singular or nominative plural of capital; an inflected surface for the capital-of relation."
-      word "столицей"
-        description "Russian noun (romanized stolitsey), instrumental singular of capital; an inflected surface for the capital-of relation."
-    lexeme "hi"
-      word "राजधानी"
-        description "Hindi noun (romanized rajdhani) for a capital city; the Hindi surface for the capital-of relation."
-    lexeme "zh"
-      word "首都"
-        description "Chinese noun (pinyin shoudu) for a capital city; the Chinese surface for the capital-of relation."
-  meaning "population"
-    gloss "the relation linking a place to how many people live there (Wikidata P1082)"
-    wiktionary "population"
-    defined_by "knowledge_relation"
-    role "fact_relation"
-    lexeme "en"
-      word "population"
-        description "English noun for how many people live in a place; the surface for the population relation."
-      word "how many people"
-        description "English interrogative phrase asking the count of inhabitants; a question surface for the population relation."
-    lexeme "ru"
-      word "население"
-        description "Russian noun (romanized naseleniye) for the population of a place; the Russian surface for the population relation."
-    lexeme "hi"
-      word "जनसंख्या"
-        description "Hindi noun (romanized jansankhya) for population; the Hindi surface for the population relation."
-      word "आबादी"
-        description "Hindi noun (romanized aabaadi) for population or inhabitants; an alternative Hindi surface for the population relation."
-    lexeme "zh"
-      word "人口"
-        description "Chinese noun (pinyin renkou) for population; the Chinese surface for the population relation."
-  meaning "currency"
-    gloss "the relation linking a country to its official currency (Wikidata P38)"
-    wiktionary "currency"
-    defined_by "knowledge_relation"
-    role "fact_relation"
-    lexeme "en"
-      word "currency"
-        description "English noun for the official money of a country; the surface for the currency relation."
-    lexeme "ru"
-      word "валюта"
-        description "Russian noun (romanized valyuta) for currency; the Russian surface for the currency relation."
-    lexeme "hi"
-      word "मुद्रा"
-        description "Hindi noun (romanized mudra) for currency; the Hindi surface for the currency relation."
-    lexeme "zh"
-      word "货币"
-        description "Chinese noun (pinyin huobi) for currency, in simplified characters; the Chinese surface for the currency relation."
-      word "貨幣"
-        description "Chinese noun (pinyin huobi) for currency, in traditional characters; an alternative Chinese surface for the currency relation."
-  meaning "official_language"
-    gloss "the relation linking a country to its official language (Wikidata P37)"
-    wiktionary "language"
-    defined_by "knowledge_relation"
-    role "fact_relation"
-    lexeme "en"
-      word "official language"
-        description "English noun phrase for a country's officially designated language; the surface for the official-language relation."
-      word "what language"
-        description "English interrogative phrase asking which language is official; a question surface for the official-language relation."
-    lexeme "ru"
-      word "государственный язык"
-        description "Russian noun phrase (romanized gosudarstvennyy yazyk) for the state language; the Russian surface for the official-language relation."
-      word "официальный язык"
-        description "Russian noun phrase (romanized ofitsialnyy yazyk) for the official language; an alternative Russian surface for the official-language relation."
-    lexeme "hi"
-      word "राजभाषा"
-        description "Hindi noun (romanized rajbhasha) for the official or state language; the Hindi surface for the official-language relation."
-      word "आधिकारिक भाषा"
-        description "Hindi noun phrase (romanized aadhikaarik bhasha) for the official language; an alternative Hindi surface for the official-language relation."
-    lexeme "zh"
-      word "官方语言"
-        description "Chinese noun phrase (pinyin guanfang yuyan) for the official language, in simplified characters; the Chinese surface for the official-language relation."
-      word "官方語言"
-        description "Chinese noun phrase (pinyin guanfang yuyan) for the official language, in traditional characters; an alternative Chinese surface for the official-language relation."
-  meaning "continent"
-    gloss "the relation linking a place to the continent it lies on (Wikidata P30)"
-    wiktionary "continent"
-    defined_by "knowledge_relation"
-    role "fact_relation"
-    lexeme "en"
-      word "continent"
-        description "English noun for one of the large landmasses a place lies on; the surface for the continent relation."
-    lexeme "ru"
-      word "континент"
-        description "Russian noun (romanized kontinent) for a continent; the Russian surface for the continent relation."
-    lexeme "hi"
-      word "महाद्वीप"
-        description "Hindi noun (romanized mahadweep) for a continent; the Hindi surface for the continent relation."
-    lexeme "zh"
-      word "大洲"
-        description "Chinese noun (pinyin dazhou) for a continent; the Chinese surface for the continent relation."
-  meaning "author_of_book"
-    gloss "the relation linking a book to the author who wrote it (Wikidata P50)"
-    wiktionary "author"
-    defined_by "knowledge_relation"
-    role "fact_relation"
-    lexeme "en"
-      word "who wrote"
-        description "English interrogative phrase asking which person authored a book; a question surface for the author-of-book relation."
-      word "author"
-        description "English noun for the person who wrote a book; the surface for the author-of-book relation."
-      word "written by"
-        description "English passive phrase naming the writer of a book; an alternative surface for the author-of-book relation."
-    lexeme "ru"
-      word "кто написал"
-        description "Russian interrogative phrase (romanized kto napisal) asking who wrote a book; a question surface for the author-of-book relation."
-      word "написал"
-        description "Russian verb (romanized napisal), past tense of to write, for authored a book; a surface for the author-of-book relation."
-      word "автор"
-        description "Russian noun (romanized avtor) for the author of a book; an alternative Russian surface for the author-of-book relation."
-    lexeme "hi"
-      word "किसने लिखी"
-        description "Hindi interrogative phrase (romanized kisne likhi) asking who wrote it, agreeing with a feminine book noun; a question surface for the author-of-book relation."
-      word "किसने लिखा"
-        description "Hindi interrogative phrase (romanized kisne likha) asking who wrote it, masculine agreement; an alternative question surface for the author-of-book relation."
-      word "लेखक"
-        description "Hindi noun (romanized lekhak) for the author or writer; the Hindi surface for the author-of-book relation."
-    lexeme "zh"
-      word "是谁写的"
-        description "Chinese interrogative phrase (pinyin shi shei xie de) asking who wrote it; a question surface for the author-of-book relation."
-      word "作者"
-        description "Chinese noun (pinyin zuozhe) for the author of a book; the Chinese surface for the author-of-book relation."
-  meaning "painter_of_painting"
-    gloss "the relation linking a painting to the painter who created it (Wikidata P170)"
-    wiktionary "painter"
-    defined_by "knowledge_relation"
-    role "fact_relation"
-    lexeme "en"
-      word "who painted"
-        description "English interrogative phrase asking which person created a painting; a question surface for the painter-of-painting relation."
-      word "painted"
-        description "English verb, past tense of to paint, for created a painting; a surface for the painter-of-painting relation."
-      word "painter"
-        description "English noun for the person who painted a painting; the surface for the painter-of-painting relation."
-      word "artist"
-        description "English noun for the creator of a painting; a synonym surface for the painter-of-painting relation."
-    lexeme "ru"
-      word "кто написал"
-        description "Russian interrogative phrase (romanized kto napisal) asking who painted it, since napisal also covers painting a picture; a question surface for the painter-of-painting relation."
-      word "написал"
-        description "Russian verb (romanized napisal), past tense used for painting a picture; a surface for the painter-of-painting relation."
-      word "художник"
-        description "Russian noun (romanized khudozhnik) for the painter or artist; the Russian surface for the painter-of-painting relation."
-    lexeme "hi"
-      word "किसने बनाई"
-        description "Hindi interrogative phrase (romanized kisne banai) asking who made it, agreeing with a feminine painting noun; a question surface for the painter-of-painting relation."
-      word "चित्रकार"
-        description "Hindi noun (romanized chitrakar) for a painter; the Hindi surface for the painter-of-painting relation."
-      word "कलाकार"
-        description "Hindi noun (romanized kalakar) for an artist; an alternative Hindi surface for the painter-of-painting relation."
-    lexeme "zh"
-      word "谁画的"
-        description "Chinese interrogative phrase (pinyin shei hua de) asking who painted it; a question surface for the painter-of-painting relation."
-      word "画家"
-        description "Chinese noun (pinyin huajia) for a painter; the Chinese surface for the painter-of-painting relation."
-  meaning "built_year"
-    gloss "the relation linking a structure to the year it was built (Wikidata P571)"
-    wiktionary "build"
-    defined_by "knowledge_relation"
-    role "fact_relation"
-    lexeme "en"
-      word "when"
-        description "English interrogative adverb asking the year a structure was built; a question surface for the built-year relation."
-      word "built"
-        description "English verb, past participle of to build, for constructed in a given year; a surface for the built-year relation."
-      word "construction"
-        description "English noun for the building of a structure; an alternative surface for the built-year relation."
-    lexeme "ru"
-      word "когда"
-        description "Russian interrogative adverb (romanized kogda) asking when a structure was built; a question surface for the built-year relation."
-      word "построена"
-        description "Russian verb (romanized postroyena), feminine past participle of to build, for was built; a surface for the built-year relation."
-      word "построили"
-        description "Russian verb (romanized postroili), plural past tense of to build, for they built; an alternative surface for the built-year relation."
-    lexeme "hi"
-      word "बनी"
-        description "Hindi verb (romanized bani), feminine past form of to be made, for was built; a surface for the built-year relation."
-      word "बनाई"
-        description "Hindi verb (romanized banai), feminine past form of to make, for was built; an alternative surface for the built-year relation."
-      word "कब"
-        description "Hindi interrogative adverb (romanized kab) asking when something was built; a question surface for the built-year relation."
-    lexeme "zh"
-      word "何时"
-        description "Chinese interrogative phrase (pinyin heshi) asking at what time it was built; a question surface for the built-year relation."
-      word "建于"
-        description "Chinese verb phrase (pinyin jianyu) for built in a given year; a surface for the built-year relation."
-      word "建造"
-        description "Chinese verb (pinyin jianzao) for to build or construct; an alternative surface for the built-year relation."
-  meaning "physical_constant"
-    gloss "the relation linking a named physical constant to its value (e.g. the speed of light)"
-    wiktionary "constant"
-    defined_by "knowledge_relation"
-    role "fact_relation"
-    lexeme "en"
-      word "speed of light"
-        description "English noun phrase naming a physical constant, the speed at which light travels; an example surface for the physical-constant relation."
-      word "what is"
-        description "English interrogative phrase asking the value of a named constant; a question surface for the physical-constant relation."
-      word "how fast"
-        description "English interrogative phrase asking the magnitude of a speed constant; an alternative question surface for the physical-constant relation."
-    lexeme "ru"
-      word "скорость света"
-        description "Russian noun phrase (romanized skorost sveta) for the speed of light; an example surface for the physical-constant relation."
-      word "какова"
-        description "Russian interrogative pronoun (romanized kakova), feminine, asking what a constant's value is; a question surface for the physical-constant relation."
-      word "чему равна"
-        description "Russian interrogative phrase (romanized chemu ravna) asking what a quantity equals; an alternative question surface for the physical-constant relation."
-    lexeme "hi"
-      word "प्रकाश की गति"
-        description "Hindi noun phrase (romanized prakash ki gati) for the speed of light; an example surface for the physical-constant relation."
-      word "कितनी"
-        description "Hindi interrogative adjective (romanized kitni), feminine, asking how much a quantity is; a question surface for the physical-constant relation."
-    lexeme "zh"
-      word "光速"
-        description "Chinese noun (pinyin guangsu) for the speed of light; an example surface for the physical-constant relation."
-      word "是多少"
-        description "Chinese interrogative phrase (pinyin shi duoshao) asking what amount a constant is; a question surface for the physical-constant relation."
+  knowledge_relation: # concept knowledge_relation
+    defined-by knowledge_subject # definition-link
+    defined-by knowledge_value # definition-link
+    defined-by relation # definition-link
+    role knowledge_relation # semantic-role
+    lexeme en # language
+      surface unformalized-raw 114 101 108 97 116 105 111 110 # unresolved-surface
+      surface unformalized-raw 112 114 111 112 101 114 116 121 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1086 1090 1085 1086 1096 1077 1085 1080 1077 # unresolved-surface
+      surface unformalized-raw 1089 1074 1086 1081 1089 1090 1074 1086 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2360 2306 2348 2306 2343 # unresolved-surface
+      surface unformalized-raw 2327 2369 2339 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 20851 31995 # unresolved-surface
+      surface unformalized-raw 23646 24615 # unresolved-surface
+  knowledge_subject: # concept knowledge_subject
+    defined-by knowledge_relation # definition-link
+    role knowledge_subject # semantic-role
+    lexeme en # language
+      surface unformalized-raw 115 117 98 106 101 99 116 # unresolved-surface
+      surface unformalized-raw 101 110 116 105 116 121 # unresolved-surface
+      surface unformalized-raw 116 111 112 105 99 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1089 1091 1073 1098 1077 1082 1090 # unresolved-surface
+      surface unformalized-raw 1089 1091 1097 1085 1086 1089 1090 1100 # unresolved-surface
+      surface unformalized-raw 1087 1088 1077 1076 1084 1077 1090 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2357 2367 2359 2351 # unresolved-surface
+      surface unformalized-raw 2311 2325 2366 2312 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 20027 20307 # unresolved-surface
+      surface unformalized-raw 23454 20307 # unresolved-surface
+  knowledge_value: # concept knowledge_value
+    defined-by knowledge_relation # definition-link
+    role knowledge_value # semantic-role
+    lexeme en # language
+      surface unformalized-raw 118 97 108 117 101 # unresolved-surface
+      surface unformalized-raw 97 110 115 119 101 114 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1079 1085 1072 1095 1077 1085 1080 1077 # unresolved-surface
+      surface unformalized-raw 1086 1090 1074 1077 1090 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2350 2366 2344 # unresolved-surface
+      surface unformalized-raw 2313 2340 2381 2340 2352 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 20540 # unresolved-surface
+      surface unformalized-raw 31572 26696 # unresolved-surface
+  capital: # concept capital
+    defined-by knowledge_relation # definition-link
+    role fact_relation # semantic-role
+    lexeme en # language
+      surface unformalized-raw 99 97 112 105 116 97 108 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1089 1090 1086 1083 1080 1094 1072 # unresolved-surface
+      surface unformalized-raw 1089 1090 1086 1083 1080 1094 1099 # unresolved-surface
+      surface unformalized-raw 1089 1090 1086 1083 1080 1094 1077 1081 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2352 2366 2332 2343 2366 2344 2368 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 39318 37117 # unresolved-surface
+  population: # concept population
+    defined-by knowledge_relation # definition-link
+    role fact_relation # semantic-role
+    lexeme en # language
+      surface unformalized-raw 112 111 112 117 108 97 116 105 111 110 # unresolved-surface
+      surface unformalized-raw 104 111 119 32 109 97 110 121 32 112 101 111 112 108 101 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1085 1072 1089 1077 1083 1077 1085 1080 1077 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2332 2344 2360 2306 2326 2381 2351 2366 # unresolved-surface
+      surface unformalized-raw 2310 2348 2366 2342 2368 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 20154 21475 # unresolved-surface
+  currency: # concept currency
+    defined-by knowledge_relation # definition-link
+    role fact_relation # semantic-role
+    lexeme en # language
+      surface unformalized-raw 99 117 114 114 101 110 99 121 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1074 1072 1083 1102 1090 1072 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2350 2369 2342 2381 2352 2366 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 36135 24065 # unresolved-surface
+      surface unformalized-raw 36008 24163 # unresolved-surface
+  official_language: # concept official_language
+    defined-by knowledge_relation # definition-link
+    role fact_relation # semantic-role
+    lexeme en # language
+      surface unformalized-raw 111 102 102 105 99 105 97 108 32 108 97 110 103 117 97 103 101 # unresolved-surface
+      surface unformalized-raw 119 104 97 116 32 108 97 110 103 117 97 103 101 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1075 1086 1089 1091 1076 1072 1088 1089 1090 1074 1077 1085 1085 1099 1081 32 1103 1079 1099 1082 # unresolved-surface
+      surface unformalized-raw 1086 1092 1080 1094 1080 1072 1083 1100 1085 1099 1081 32 1103 1079 1099 1082 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2352 2366 2332 2349 2366 2359 2366 # unresolved-surface
+      surface unformalized-raw 2310 2343 2367 2325 2366 2352 2367 2325 32 2349 2366 2359 2366 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 23448 26041 35821 35328 # unresolved-surface
+      surface unformalized-raw 23448 26041 35486 35328 # unresolved-surface
+  continent: # concept continent
+    defined-by knowledge_relation # definition-link
+    role fact_relation # semantic-role
+    lexeme en # language
+      surface unformalized-raw 99 111 110 116 105 110 101 110 116 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1082 1086 1085 1090 1080 1085 1077 1085 1090 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2350 2361 2366 2342 2381 2357 2368 2346 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 22823 27954 # unresolved-surface
+  author_of_book: # concept author_of_book
+    defined-by knowledge_relation # definition-link
+    role fact_relation # semantic-role
+    lexeme en # language
+      surface unformalized-raw 119 104 111 32 119 114 111 116 101 # unresolved-surface
+      surface unformalized-raw 97 117 116 104 111 114 # unresolved-surface
+      surface unformalized-raw 119 114 105 116 116 101 110 32 98 121 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1082 1090 1086 32 1085 1072 1087 1080 1089 1072 1083 # unresolved-surface
+      surface unformalized-raw 1085 1072 1087 1080 1089 1072 1083 # unresolved-surface
+      surface unformalized-raw 1072 1074 1090 1086 1088 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2325 2367 2360 2344 2375 32 2354 2367 2326 2368 # unresolved-surface
+      surface unformalized-raw 2325 2367 2360 2344 2375 32 2354 2367 2326 2366 # unresolved-surface
+      surface unformalized-raw 2354 2375 2326 2325 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 26159 35841 20889 30340 # unresolved-surface
+      surface unformalized-raw 20316 32773 # unresolved-surface
+  painter_of_painting: # concept painter_of_painting
+    defined-by knowledge_relation # definition-link
+    role fact_relation # semantic-role
+    lexeme en # language
+      surface unformalized-raw 119 104 111 32 112 97 105 110 116 101 100 # unresolved-surface
+      surface unformalized-raw 112 97 105 110 116 101 100 # unresolved-surface
+      surface unformalized-raw 112 97 105 110 116 101 114 # unresolved-surface
+      surface unformalized-raw 97 114 116 105 115 116 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1082 1090 1086 32 1085 1072 1087 1080 1089 1072 1083 # unresolved-surface
+      surface unformalized-raw 1085 1072 1087 1080 1089 1072 1083 # unresolved-surface
+      surface unformalized-raw 1093 1091 1076 1086 1078 1085 1080 1082 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2325 2367 2360 2344 2375 32 2348 2344 2366 2312 # unresolved-surface
+      surface unformalized-raw 2330 2367 2340 2381 2352 2325 2366 2352 # unresolved-surface
+      surface unformalized-raw 2325 2354 2366 2325 2366 2352 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 35841 30011 30340 # unresolved-surface
+      surface unformalized-raw 30011 23478 # unresolved-surface
+  built_year: # concept built_year
+    defined-by knowledge_relation # definition-link
+    role fact_relation # semantic-role
+    lexeme en # language
+      surface unformalized-raw 119 104 101 110 # unresolved-surface
+      surface unformalized-raw 98 117 105 108 116 # unresolved-surface
+      surface unformalized-raw 99 111 110 115 116 114 117 99 116 105 111 110 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1082 1086 1075 1076 1072 # unresolved-surface
+      surface unformalized-raw 1087 1086 1089 1090 1088 1086 1077 1085 1072 # unresolved-surface
+      surface unformalized-raw 1087 1086 1089 1090 1088 1086 1080 1083 1080 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2348 2344 2368 # unresolved-surface
+      surface unformalized-raw 2348 2344 2366 2312 # unresolved-surface
+      surface unformalized-raw 2325 2348 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 20309 26102 # unresolved-surface
+      surface unformalized-raw 24314 20110 # unresolved-surface
+      surface unformalized-raw 24314 36896 # unresolved-surface
+  physical_constant: # concept physical_constant
+    defined-by knowledge_relation # definition-link
+    role fact_relation # semantic-role
+    lexeme en # language
+      surface unformalized-raw 115 112 101 101 100 32 111 102 32 108 105 103 104 116 # unresolved-surface
+      surface unformalized-raw 119 104 97 116 32 105 115 # unresolved-surface
+      surface unformalized-raw 104 111 119 32 102 97 115 116 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1089 1082 1086 1088 1086 1089 1090 1100 32 1089 1074 1077 1090 1072 # unresolved-surface
+      surface unformalized-raw 1082 1072 1082 1086 1074 1072 # unresolved-surface
+      surface unformalized-raw 1095 1077 1084 1091 32 1088 1072 1074 1085 1072 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2346 2381 2352 2325 2366 2358 32 2325 2368 32 2327 2340 2367 # unresolved-surface
+      surface unformalized-raw 2325 2367 2340 2344 2368 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 20809 36895 # unresolved-surface
+      surface unformalized-raw 26159 22810 23569 # unresolved-surface

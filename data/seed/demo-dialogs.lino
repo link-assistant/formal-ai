@@ -1,69 +1,69 @@
 dialog_rust
-  greeting "Hi"
-  request "Write me hello world program in Rust"
-  language "Rust"
-  expected_intent "write_program"
-  cycle_wait_seconds "10-20"
+  greeting Hi
+  request unformalized-raw 87 114 105 116 101 32 109 101 32 104 101 108 108 111 32 119 111 114 108 100 32 112 114 111 103 114 97 109 32 105 110 32 82 117 115 116
+  language Rust
+  expected_intent write_program
+  cycle_wait_seconds 10-20
 
 dialog_python
-  greeting "Hello"
-  request "Create a hello world example in Python"
-  language "Python"
-  expected_intent "write_program"
-  cycle_wait_seconds "10-20"
+  greeting Hello
+  request unformalized-raw 67 114 101 97 116 101 32 97 32 104 101 108 108 111 32 119 111 114 108 100 32 101 120 97 109 112 108 101 32 105 110 32 80 121 116 104 111 110
+  language Python
+  expected_intent write_program
+  cycle_wait_seconds 10-20
 
 dialog_javascript
-  greeting "Hi"
-  request "Write hello world in JavaScript"
-  language "JavaScript"
-  expected_intent "write_program"
-  cycle_wait_seconds "10-20"
+  greeting Hi
+  request unformalized-raw 87 114 105 116 101 32 104 101 108 108 111 32 119 111 114 108 100 32 105 110 32 74 97 118 97 83 99 114 105 112 116
+  language JavaScript
+  expected_intent write_program
+  cycle_wait_seconds 10-20
 
 dialog_go
-  greeting "Hello"
-  request "Show hello world in Go"
-  language "Go"
-  expected_intent "write_program"
-  cycle_wait_seconds "10-20"
+  greeting Hello
+  request unformalized-raw 83 104 111 119 32 104 101 108 108 111 32 119 111 114 108 100 32 105 110 32 71 111
+  language Go
+  expected_intent write_program
+  cycle_wait_seconds 10-20
 
 dialog_typescript
-  greeting "Hi"
-  request "Write hello world in TypeScript"
-  language "TypeScript"
-  expected_intent "write_program"
-  cycle_wait_seconds "10-20"
+  greeting Hi
+  request unformalized-raw 87 114 105 116 101 32 104 101 108 108 111 32 119 111 114 108 100 32 105 110 32 84 121 112 101 83 99 114 105 112 116
+  language TypeScript
+  expected_intent write_program
+  cycle_wait_seconds 10-20
 
 dialog_c
-  greeting "Hello"
-  request "Show hello world in C"
-  language "C"
-  expected_intent "write_program"
-  cycle_wait_seconds "10-20"
+  greeting Hello
+  request unformalized-raw 83 104 111 119 32 104 101 108 108 111 32 119 111 114 108 100 32 105 110 32 67
+  language C
+  expected_intent write_program
+  cycle_wait_seconds 10-20
 
 dialog_calculator_english
-  greeting "Hi"
-  request "What is 8 * (5 + 3)?"
-  language "English"
-  expected_intent "calculation"
-  cycle_wait_seconds "10-20"
+  greeting Hi
+  request unformalized-raw 87 104 97 116 32 105 115 32 56 32 42 32 40 53 32 43 32 51 41 63
+  language English
+  expected_intent calculation
+  cycle_wait_seconds 10-20
 
 dialog_calculator_russian
-  greeting "Привет"
-  request "Сколько будет 2 + 2?"
-  language "Russian"
-  expected_intent "calculation"
-  cycle_wait_seconds "10-20"
+  greeting unformalized-raw 1055 1088 1080 1074 1077 1090
+  request unformalized-raw 1057 1082 1086 1083 1100 1082 1086 32 1073 1091 1076 1077 1090 32 50 32 43 32 50 63
+  language Russian
+  expected_intent calculation
+  cycle_wait_seconds 10-20
 
 dialog_calculator_chinese
-  greeting "你好"
-  request "计算 2 + 2"
-  language "Chinese"
-  expected_intent "calculation"
-  cycle_wait_seconds "10-20"
+  greeting unformalized-raw 20320 22909
+  request unformalized-raw 35745 31639 32 50 32 43 32 50
+  language Chinese
+  expected_intent calculation
+  cycle_wait_seconds 10-20
 
 dialog_calculator_hindi
-  greeting "नमस्ते"
-  request "2 + 2 कितना है?"
-  language "Hindi"
-  expected_intent "calculation"
-  cycle_wait_seconds "10-20"
+  greeting unformalized-raw 2344 2350 2360 2381 2340 2375
+  request unformalized-raw 50 32 43 32 50 32 2325 2367 2340 2344 2366 32 2361 2376 63
+  language Hindi
+  expected_intent calculation
+  cycle_wait_seconds 10-20

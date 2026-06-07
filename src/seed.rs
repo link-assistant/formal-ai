@@ -736,11 +736,12 @@ pub fn environment_directory() -> EnvironmentDirectory {
                 }
             }
             "migration" => {
-                directory.migration_description = root.find_child_value("description").to_string();
+                directory.migration_description =
+                    child_value_alias(root, "note", "description").to_string();
                 for entry in root.children.iter().filter(|c| c.name == "flow") {
                     directory.flows.push(MigrationFlow {
                         id: entry.id.clone(),
-                        description: entry.find_child_value("description").to_string(),
+                        description: child_value_alias(entry, "note", "description").to_string(),
                         file_format: entry.find_child_value("file_format").to_string(),
                     });
                 }
@@ -749,6 +750,15 @@ pub fn environment_directory() -> EnvironmentDirectory {
         }
     }
     directory
+}
+
+fn child_value_alias<'a>(node: &'a LinoNode, primary: &str, fallback: &str) -> &'a str {
+    let value = node.find_child_value(primary);
+    if value.is_empty() {
+        node.find_child_value(fallback)
+    } else {
+        value
+    }
 }
 
 /// Convenience accessor returning just the environment records (without the

@@ -1,371 +1,323 @@
 meanings
-  meaning "semantic_facet"
-    gloss "a meaning-to-meaning relation that describes one aspect of another meaning: how it is written, explained, denoted, or associated. Facets are themselves meanings, so new semantic axes can be added as data without changing parser code."
-    wiktionary "facet"
-    defined_by "relation"
-    role "ontology_category"
-    facet "notation"
-      meaning "links_notation_format"
-    facet "annotation"
-      meaning "semantic_gloss"
-    facet "denotation"
-      meaning "relation"
-    facet "connotation"
-      meaning "concept"
-    lexeme "en"
-      word "semantic facet"
-        description "English noun phrase for an aspect of meaning represented as another meaning link."
-        facet "notation"
-          meaning "word_surface"
-        facet "denotation"
-          meaning "semantic_facet"
-        facet "part_of_speech"
-          meaning "noun_phrase"
-    lexeme "ru"
-      word "семантический аспект"
-        description "Russian noun phrase (romanized semanticheskiy aspekt) for an aspect of meaning."
-        facet "notation"
-          meaning "word_surface"
-        facet "denotation"
-          meaning "semantic_facet"
-        facet "part_of_speech"
-          meaning "noun_phrase"
-    lexeme "hi"
-      word "अर्थ पक्ष"
-        description "Hindi noun phrase (romanized arth paksh) for a side or facet of meaning."
-        facet "notation"
-          meaning "word_surface"
-        facet "denotation"
-          meaning "semantic_facet"
-        facet "part_of_speech"
-          meaning "noun_phrase"
-    lexeme "zh"
-      word "语义方面"
-        description "Chinese noun phrase (pinyin yuyi fangmian) for a semantic aspect."
-        facet "notation"
-          meaning "word_surface"
-        facet "denotation"
-          meaning "semantic_facet"
-        facet "part_of_speech"
-          meaning "noun_phrase"
-  meaning "notation"
-    gloss "the surface or formal representation used to write a meaning. In the seed it is a semantic_facet_kind, so a meaning can point at the notation meanings that express it rather than embedding an English-only note."
-    wiktionary "notation"
-    defined_by "semantic_facet"
-    role "semantic_facet_kind"
-    facet "notation"
-      meaning "links_notation_format"
-    facet "annotation"
-      meaning "semantic_gloss"
-    facet "denotation"
-      meaning "semantic_facet"
-    facet "connotation"
-      meaning "links_notation_format"
-    lexeme "en"
-      word "notation"
-        description "English noun for a written or formal system of representation."
-        facet "notation"
-          meaning "word_surface"
-        facet "denotation"
-          meaning "notation"
-        facet "part_of_speech"
-          meaning "noun"
-    lexeme "ru"
-      word "нотация"
-        description "Russian noun (romanized notatsiya) for a notation or representational form."
-        facet "notation"
-          meaning "word_surface"
-        facet "denotation"
-          meaning "notation"
-        facet "part_of_speech"
-          meaning "noun"
-    lexeme "hi"
-      word "संकेतन"
-        description "Hindi noun (romanized sanketan) for notation or symbolic representation."
-        facet "notation"
-          meaning "word_surface"
-        facet "denotation"
-          meaning "notation"
-        facet "part_of_speech"
-          meaning "noun"
-    lexeme "zh"
-      word "记法"
-        description "Chinese noun (pinyin jifa) for notation or a written representational method."
-        facet "notation"
-          meaning "word_surface"
-        facet "denotation"
-          meaning "notation"
-        facet "part_of_speech"
-          meaning "noun"
-  meaning "annotation"
-    gloss "an explanatory layer attached to a meaning. In the seed it is a semantic_facet_kind used for glosses, source notes, and other reviewable explanations that are themselves meaning links."
-    wiktionary "annotation"
-    defined_by "semantic_facet"
-    role "semantic_facet_kind"
-    facet "notation"
-      meaning "links_notation_format"
-    facet "annotation"
-      meaning "semantic_gloss"
-    facet "denotation"
-      meaning "semantic_facet"
-    facet "connotation"
-      meaning "semantic_gloss"
-    lexeme "en"
-      word "annotation"
-        description "English noun for an explanatory note attached to something."
-        facet "notation"
-          meaning "word_surface"
-        facet "denotation"
-          meaning "annotation"
-        facet "part_of_speech"
-          meaning "noun"
-    lexeme "ru"
-      word "аннотация"
-        description "Russian noun (romanized annotatsiya) for an annotation or explanatory note."
-        facet "notation"
-          meaning "word_surface"
-        facet "denotation"
-          meaning "annotation"
-        facet "part_of_speech"
-          meaning "noun"
-    lexeme "hi"
-      word "टिप्पणी"
-        description "Hindi noun (romanized tippani) for a note, comment, or annotation."
-        facet "notation"
-          meaning "word_surface"
-        facet "denotation"
-          meaning "annotation"
-        facet "part_of_speech"
-          meaning "noun"
-    lexeme "zh"
-      word "注释"
-        description "Chinese noun and verb (pinyin zhushi) for an annotation or explanatory note."
-        facet "notation"
-          meaning "word_surface"
-        facet "denotation"
-          meaning "annotation"
-        facet "part_of_speech"
-          meaning "noun"
-  meaning "denotation"
-    gloss "what a meaning directly points to or names. In the seed it is a semantic_facet_kind used to link a meaning to the concept, relation, property, action, entity, or source anchor it denotes."
-    wiktionary "denotation"
-    defined_by "semantic_facet"
-    role "semantic_facet_kind"
-    facet "notation"
-      meaning "links_notation_format"
-    facet "annotation"
-      meaning "semantic_gloss"
-    facet "denotation"
-      meaning "semantic_facet"
-    facet "connotation"
-      meaning "relation"
-    lexeme "en"
-      word "denotation"
-        description "English noun for the direct referent or named meaning of an expression."
-        facet "notation"
-          meaning "word_surface"
-        facet "denotation"
-          meaning "denotation"
-        facet "part_of_speech"
-          meaning "noun"
-    lexeme "ru"
-      word "денотация"
-        description "Russian noun (romanized denotatsiya) for denotation or direct reference."
-        facet "notation"
-          meaning "word_surface"
-        facet "denotation"
-          meaning "denotation"
-        facet "part_of_speech"
-          meaning "noun"
-    lexeme "hi"
-      word "निरूपित अर्थ"
-        description "Hindi noun phrase (romanized nirupit arth) for the directly indicated meaning."
-        facet "notation"
-          meaning "word_surface"
-        facet "denotation"
-          meaning "denotation"
-        facet "part_of_speech"
-          meaning "noun_phrase"
-    lexeme "zh"
-      word "外延"
-        description "Chinese noun (pinyin waiyan) for denotation or extension."
-        facet "notation"
-          meaning "word_surface"
-        facet "denotation"
-          meaning "denotation"
-        facet "part_of_speech"
-          meaning "noun"
-  meaning "connotation"
-    gloss "associated or implied meaning around a direct denotation. In the seed it is a semantic_facet_kind used to link a meaning to related concepts and contextual associations without making them the denoted target."
-    wiktionary "connotation"
-    defined_by "semantic_facet"
-    role "semantic_facet_kind"
-    facet "notation"
-      meaning "links_notation_format"
-    facet "annotation"
-      meaning "semantic_gloss"
-    facet "denotation"
-      meaning "semantic_facet"
-    facet "connotation"
-      meaning "concept"
-    lexeme "en"
-      word "connotation"
-        description "English noun for an associated or implied meaning."
-        facet "notation"
-          meaning "word_surface"
-        facet "denotation"
-          meaning "connotation"
-        facet "part_of_speech"
-          meaning "noun"
-    lexeme "ru"
-      word "коннотация"
-        description "Russian noun (romanized konnotatsiya) for connotation or associated meaning."
-        facet "notation"
-          meaning "word_surface"
-        facet "denotation"
-          meaning "connotation"
-        facet "part_of_speech"
-          meaning "noun"
-    lexeme "hi"
-      word "व्यंजना"
-        description "Hindi noun (romanized vyanjana) for suggested or implied meaning."
-        facet "notation"
-          meaning "word_surface"
-        facet "denotation"
-          meaning "connotation"
-        facet "part_of_speech"
-          meaning "noun"
-    lexeme "zh"
-      word "内涵"
-        description "Chinese noun (pinyin neihan) for connotation or intension."
-        facet "notation"
-          meaning "word_surface"
-        facet "denotation"
-          meaning "connotation"
-        facet "part_of_speech"
-          meaning "noun"
-  meaning "semantic_gloss"
-    gloss "a concise annotation meaning that explains another meaning in reviewable language. It names the role currently played by each meaning's gloss field and lets that annotation target be referenced recursively as data."
-    wiktionary "gloss"
-    defined_by "annotation"
-    role "semantic_annotation_artifact"
-    lexeme "en"
-      word "gloss"
-        description "English noun for a brief explanatory note about a word or meaning."
-        facet "notation"
-          meaning "word_surface"
-        facet "denotation"
-          meaning "semantic_gloss"
-        facet "part_of_speech"
-          meaning "noun"
-    lexeme "ru"
-      word "глосса"
-        description "Russian noun (romanized glossa) for a gloss or short explanatory note."
-        facet "notation"
-          meaning "word_surface"
-        facet "denotation"
-          meaning "semantic_gloss"
-        facet "part_of_speech"
-          meaning "noun"
-    lexeme "hi"
-      word "ग्लॉस"
-        description "Hindi loanword (romanized gloss) for a short explanatory gloss."
-        facet "notation"
-          meaning "word_surface"
-        facet "denotation"
-          meaning "semantic_gloss"
-        facet "part_of_speech"
-          meaning "noun"
-    lexeme "zh"
-      word "释义"
-        description "Chinese noun (pinyin shiyi) for an explanation of meaning."
-        facet "notation"
-          meaning "word_surface"
-        facet "denotation"
-          meaning "semantic_gloss"
-        facet "part_of_speech"
-          meaning "noun"
-  meaning "external_knowledge_source"
-    gloss "a source outside the local seed, such as Wikidata, Wiktionary, WordNet, Wikipedia, a thesaurus, or a dictionary. It is a semantic grounding artifact because source responses can be converted to Links Notation and linked back to the meanings they support."
-    wiktionary "source"
-    defined_by "entity"
-    defined_by "annotation"
-    role "semantic_grounding_artifact"
-    lexeme "en"
-      word "external source"
-        description "English noun phrase for a source outside the local seed."
-        facet "notation"
-          meaning "word_surface"
-        facet "denotation"
-          meaning "external_knowledge_source"
-        facet "part_of_speech"
-          meaning "noun_phrase"
-    lexeme "ru"
-      word "внешний источник"
-        description "Russian noun phrase (romanized vneshniy istochnik) for an external source."
-        facet "notation"
-          meaning "word_surface"
-        facet "denotation"
-          meaning "external_knowledge_source"
-        facet "part_of_speech"
-          meaning "noun_phrase"
-    lexeme "hi"
-      word "बाहरी स्रोत"
-        description "Hindi noun phrase (romanized bahari srot) for an external source."
-        facet "notation"
-          meaning "word_surface"
-        facet "denotation"
-          meaning "external_knowledge_source"
-        facet "part_of_speech"
-          meaning "noun_phrase"
-    lexeme "zh"
-      word "外部来源"
-        description "Chinese noun phrase (pinyin waibu laiyuan) for an external source."
-        facet "notation"
-          meaning "word_surface"
-        facet "denotation"
-          meaning "external_knowledge_source"
-        facet "part_of_speech"
-          meaning "noun_phrase"
-  meaning "cached_source_response"
-    gloss "a stored response fetched from an external knowledge source and converted to reviewable Links Notation. It is the semantic cache artifact the source-grounding pipeline should attach to denotation and annotation facets."
-    wiktionary "cache"
-    defined_by "external_knowledge_source"
-    defined_by "annotation"
-    role "semantic_grounding_artifact"
-    lexeme "en"
-      word "cached source response"
-        description "English noun phrase for a stored response from an external source."
-        facet "notation"
-          meaning "word_surface"
-        facet "denotation"
-          meaning "cached_source_response"
-        facet "part_of_speech"
-          meaning "noun_phrase"
-    lexeme "ru"
-      word "кэшированный ответ источника"
-        description "Russian noun phrase (romanized keshirovannyy otvet istochnika) for a cached response from a source."
-        facet "notation"
-          meaning "word_surface"
-        facet "denotation"
-          meaning "cached_source_response"
-        facet "part_of_speech"
-          meaning "noun_phrase"
-    lexeme "hi"
-      word "कैश स्रोत उत्तर"
-        description "Hindi noun phrase (romanized cache srot uttar) for a cached source response."
-        facet "notation"
-          meaning "word_surface"
-        facet "denotation"
-          meaning "cached_source_response"
-        facet "part_of_speech"
-          meaning "noun_phrase"
-    lexeme "zh"
-      word "缓存来源响应"
-        description "Chinese noun phrase (pinyin huancun laiyuan xiangying) for a cached source response."
-        facet "notation"
-          meaning "word_surface"
-        facet "denotation"
-          meaning "cached_source_response"
-        facet "part_of_speech"
-          meaning "noun_phrase"
+  semantic_facet: # concept semantic_facet
+    defined-by relation # definition-link
+    role ontology_category # semantic-role
+    facet notation # facet
+      links_notation_format: # concept links_notation_format
+    facet annotation # facet
+      semantic_gloss: # concept semantic_gloss
+    facet denotation # facet
+      relation: # concept relation
+    facet connotation # facet
+      concept: # concept concept
+    lexeme en # language
+      surface unformalized-raw 115 101 109 97 110 116 105 99 32 102 97 99 101 116 # unresolved-surface
+        facet notation # facet
+          word_surface: # concept word_surface
+        facet denotation # facet
+          semantic_facet: # concept semantic_facet
+        facet part_of_speech # facet
+          noun_phrase: # concept noun_phrase
+    lexeme ru # language
+      surface unformalized-raw 1089 1077 1084 1072 1085 1090 1080 1095 1077 1089 1082 1080 1081 32 1072 1089 1087 1077 1082 1090 # unresolved-surface
+        facet notation # facet
+          word_surface: # concept word_surface
+        facet denotation # facet
+          semantic_facet: # concept semantic_facet
+        facet part_of_speech # facet
+          noun_phrase: # concept noun_phrase
+    lexeme hi # language
+      surface unformalized-raw 2309 2352 2381 2341 32 2346 2325 2381 2359 # unresolved-surface
+        facet notation # facet
+          word_surface: # concept word_surface
+        facet denotation # facet
+          semantic_facet: # concept semantic_facet
+        facet part_of_speech # facet
+          noun_phrase: # concept noun_phrase
+    lexeme zh # language
+      surface unformalized-raw 35821 20041 26041 38754 # unresolved-surface
+        facet notation # facet
+          word_surface: # concept word_surface
+        facet denotation # facet
+          semantic_facet: # concept semantic_facet
+        facet part_of_speech # facet
+          noun_phrase: # concept noun_phrase
+  notation: # concept notation
+    defined-by semantic_facet # definition-link
+    role semantic_facet_kind # semantic-role
+    facet notation # facet
+      links_notation_format: # concept links_notation_format
+    facet annotation # facet
+      semantic_gloss: # concept semantic_gloss
+    facet denotation # facet
+      semantic_facet: # concept semantic_facet
+    facet connotation # facet
+      links_notation_format: # concept links_notation_format
+    lexeme en # language
+      surface unformalized-raw 110 111 116 97 116 105 111 110 # unresolved-surface
+        facet notation # facet
+          word_surface: # concept word_surface
+        facet denotation # facet
+          notation: # concept notation
+        facet part_of_speech # facet
+          noun: # concept noun
+    lexeme ru # language
+      surface unformalized-raw 1085 1086 1090 1072 1094 1080 1103 # unresolved-surface
+        facet notation # facet
+          word_surface: # concept word_surface
+        facet denotation # facet
+          notation: # concept notation
+        facet part_of_speech # facet
+          noun: # concept noun
+    lexeme hi # language
+      surface unformalized-raw 2360 2306 2325 2375 2340 2344 # unresolved-surface
+        facet notation # facet
+          word_surface: # concept word_surface
+        facet denotation # facet
+          notation: # concept notation
+        facet part_of_speech # facet
+          noun: # concept noun
+    lexeme zh # language
+      surface unformalized-raw 35760 27861 # unresolved-surface
+        facet notation # facet
+          word_surface: # concept word_surface
+        facet denotation # facet
+          notation: # concept notation
+        facet part_of_speech # facet
+          noun: # concept noun
+  annotation: # concept annotation
+    defined-by semantic_facet # definition-link
+    role semantic_facet_kind # semantic-role
+    facet notation # facet
+      links_notation_format: # concept links_notation_format
+    facet annotation # facet
+      semantic_gloss: # concept semantic_gloss
+    facet denotation # facet
+      semantic_facet: # concept semantic_facet
+    facet connotation # facet
+      semantic_gloss: # concept semantic_gloss
+    lexeme en # language
+      surface unformalized-raw 97 110 110 111 116 97 116 105 111 110 # unresolved-surface
+        facet notation # facet
+          word_surface: # concept word_surface
+        facet denotation # facet
+          annotation: # concept annotation
+        facet part_of_speech # facet
+          noun: # concept noun
+    lexeme ru # language
+      surface unformalized-raw 1072 1085 1085 1086 1090 1072 1094 1080 1103 # unresolved-surface
+        facet notation # facet
+          word_surface: # concept word_surface
+        facet denotation # facet
+          annotation: # concept annotation
+        facet part_of_speech # facet
+          noun: # concept noun
+    lexeme hi # language
+      surface unformalized-raw 2335 2367 2346 2381 2346 2339 2368 # unresolved-surface
+        facet notation # facet
+          word_surface: # concept word_surface
+        facet denotation # facet
+          annotation: # concept annotation
+        facet part_of_speech # facet
+          noun: # concept noun
+    lexeme zh # language
+      surface unformalized-raw 27880 37322 # unresolved-surface
+        facet notation # facet
+          word_surface: # concept word_surface
+        facet denotation # facet
+          annotation: # concept annotation
+        facet part_of_speech # facet
+          noun: # concept noun
+  denotation: # concept denotation
+    defined-by semantic_facet # definition-link
+    role semantic_facet_kind # semantic-role
+    facet notation # facet
+      links_notation_format: # concept links_notation_format
+    facet annotation # facet
+      semantic_gloss: # concept semantic_gloss
+    facet denotation # facet
+      semantic_facet: # concept semantic_facet
+    facet connotation # facet
+      relation: # concept relation
+    lexeme en # language
+      surface unformalized-raw 100 101 110 111 116 97 116 105 111 110 # unresolved-surface
+        facet notation # facet
+          word_surface: # concept word_surface
+        facet denotation # facet
+          denotation: # concept denotation
+        facet part_of_speech # facet
+          noun: # concept noun
+    lexeme ru # language
+      surface unformalized-raw 1076 1077 1085 1086 1090 1072 1094 1080 1103 # unresolved-surface
+        facet notation # facet
+          word_surface: # concept word_surface
+        facet denotation # facet
+          denotation: # concept denotation
+        facet part_of_speech # facet
+          noun: # concept noun
+    lexeme hi # language
+      surface unformalized-raw 2344 2367 2352 2370 2346 2367 2340 32 2309 2352 2381 2341 # unresolved-surface
+        facet notation # facet
+          word_surface: # concept word_surface
+        facet denotation # facet
+          denotation: # concept denotation
+        facet part_of_speech # facet
+          noun_phrase: # concept noun_phrase
+    lexeme zh # language
+      surface unformalized-raw 22806 24310 # unresolved-surface
+        facet notation # facet
+          word_surface: # concept word_surface
+        facet denotation # facet
+          denotation: # concept denotation
+        facet part_of_speech # facet
+          noun: # concept noun
+  connotation: # concept connotation
+    defined-by semantic_facet # definition-link
+    role semantic_facet_kind # semantic-role
+    facet notation # facet
+      links_notation_format: # concept links_notation_format
+    facet annotation # facet
+      semantic_gloss: # concept semantic_gloss
+    facet denotation # facet
+      semantic_facet: # concept semantic_facet
+    facet connotation # facet
+      concept: # concept concept
+    lexeme en # language
+      surface unformalized-raw 99 111 110 110 111 116 97 116 105 111 110 # unresolved-surface
+        facet notation # facet
+          word_surface: # concept word_surface
+        facet denotation # facet
+          connotation: # concept connotation
+        facet part_of_speech # facet
+          noun: # concept noun
+    lexeme ru # language
+      surface unformalized-raw 1082 1086 1085 1085 1086 1090 1072 1094 1080 1103 # unresolved-surface
+        facet notation # facet
+          word_surface: # concept word_surface
+        facet denotation # facet
+          connotation: # concept connotation
+        facet part_of_speech # facet
+          noun: # concept noun
+    lexeme hi # language
+      surface unformalized-raw 2357 2381 2351 2306 2332 2344 2366 # unresolved-surface
+        facet notation # facet
+          word_surface: # concept word_surface
+        facet denotation # facet
+          connotation: # concept connotation
+        facet part_of_speech # facet
+          noun: # concept noun
+    lexeme zh # language
+      surface unformalized-raw 20869 28085 # unresolved-surface
+        facet notation # facet
+          word_surface: # concept word_surface
+        facet denotation # facet
+          connotation: # concept connotation
+        facet part_of_speech # facet
+          noun: # concept noun
+  semantic_gloss: # concept semantic_gloss
+    defined-by annotation # definition-link
+    role semantic_annotation_artifact # semantic-role
+    lexeme en # language
+      surface unformalized-raw 103 108 111 115 115 # unresolved-surface
+        facet notation # facet
+          word_surface: # concept word_surface
+        facet denotation # facet
+          semantic_gloss: # concept semantic_gloss
+        facet part_of_speech # facet
+          noun: # concept noun
+    lexeme ru # language
+      surface unformalized-raw 1075 1083 1086 1089 1089 1072 # unresolved-surface
+        facet notation # facet
+          word_surface: # concept word_surface
+        facet denotation # facet
+          semantic_gloss: # concept semantic_gloss
+        facet part_of_speech # facet
+          noun: # concept noun
+    lexeme hi # language
+      surface unformalized-raw 2327 2381 2354 2377 2360 # unresolved-surface
+        facet notation # facet
+          word_surface: # concept word_surface
+        facet denotation # facet
+          semantic_gloss: # concept semantic_gloss
+        facet part_of_speech # facet
+          noun: # concept noun
+    lexeme zh # language
+      surface unformalized-raw 37322 20041 # unresolved-surface
+        facet notation # facet
+          word_surface: # concept word_surface
+        facet denotation # facet
+          semantic_gloss: # concept semantic_gloss
+        facet part_of_speech # facet
+          noun: # concept noun
+  external_knowledge_source: # concept external_knowledge_source
+    defined-by entity # definition-link
+    defined-by annotation # definition-link
+    role semantic_grounding_artifact # semantic-role
+    lexeme en # language
+      surface unformalized-raw 101 120 116 101 114 110 97 108 32 115 111 117 114 99 101 # unresolved-surface
+        facet notation # facet
+          word_surface: # concept word_surface
+        facet denotation # facet
+          external_knowledge_source: # concept external_knowledge_source
+        facet part_of_speech # facet
+          noun_phrase: # concept noun_phrase
+    lexeme ru # language
+      surface unformalized-raw 1074 1085 1077 1096 1085 1080 1081 32 1080 1089 1090 1086 1095 1085 1080 1082 # unresolved-surface
+        facet notation # facet
+          word_surface: # concept word_surface
+        facet denotation # facet
+          external_knowledge_source: # concept external_knowledge_source
+        facet part_of_speech # facet
+          noun_phrase: # concept noun_phrase
+    lexeme hi # language
+      surface unformalized-raw 2348 2366 2361 2352 2368 32 2360 2381 2352 2379 2340 # unresolved-surface
+        facet notation # facet
+          word_surface: # concept word_surface
+        facet denotation # facet
+          external_knowledge_source: # concept external_knowledge_source
+        facet part_of_speech # facet
+          noun_phrase: # concept noun_phrase
+    lexeme zh # language
+      surface unformalized-raw 22806 37096 26469 28304 # unresolved-surface
+        facet notation # facet
+          word_surface: # concept word_surface
+        facet denotation # facet
+          external_knowledge_source: # concept external_knowledge_source
+        facet part_of_speech # facet
+          noun_phrase: # concept noun_phrase
+  cached_source_response: # concept cached_source_response
+    defined-by external_knowledge_source # definition-link
+    defined-by annotation # definition-link
+    role semantic_grounding_artifact # semantic-role
+    lexeme en # language
+      surface unformalized-raw 99 97 99 104 101 100 32 115 111 117 114 99 101 32 114 101 115 112 111 110 115 101 # unresolved-surface
+        facet notation # facet
+          word_surface: # concept word_surface
+        facet denotation # facet
+          cached_source_response: # concept cached_source_response
+        facet part_of_speech # facet
+          noun_phrase: # concept noun_phrase
+    lexeme ru # language
+      surface unformalized-raw 1082 1101 1096 1080 1088 1086 1074 1072 1085 1085 1099 1081 32 1086 1090 1074 1077 1090 32 1080 1089 1090 1086 1095 1085 1080 1082 1072 # unresolved-surface
+        facet notation # facet
+          word_surface: # concept word_surface
+        facet denotation # facet
+          cached_source_response: # concept cached_source_response
+        facet part_of_speech # facet
+          noun_phrase: # concept noun_phrase
+    lexeme hi # language
+      surface unformalized-raw 2325 2376 2358 32 2360 2381 2352 2379 2340 32 2313 2340 2381 2340 2352 # unresolved-surface
+        facet notation # facet
+          word_surface: # concept word_surface
+        facet denotation # facet
+          cached_source_response: # concept cached_source_response
+        facet part_of_speech # facet
+          noun_phrase: # concept noun_phrase
+    lexeme zh # language
+      surface unformalized-raw 32531 23384 26469 28304 21709 24212 # unresolved-surface
+        facet notation # facet
+          word_surface: # concept word_surface
+        facet denotation # facet
+          cached_source_response: # concept cached_source_response
+        facet part_of_speech # facet
+          noun_phrase: # concept noun_phrase

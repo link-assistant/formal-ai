@@ -1,284 +1,152 @@
 meanings
-  meaning "web_resource"
-    gloss "a resource identified by a URL — a web page, file, site, or endpoint reachable over the web. It is the object that an http_fetch request retrieves and a url_navigate request opens. Modeled as an entity in the link ontology so the two web intents are defined by the thing they act on, not only by the act itself."
-    wiktionary "URL"
-    defined_by "entity"
-    role "web_navigation_concept"
-    lexeme "en"
-      word "url"
-        description "English noun for the address that identifies a web resource (a uniform resource locator)."
-      word "web page"
-        description "English noun for a single document of a web resource served over HTTP."
-      word "website"
-        description "English noun for a collection of web pages under one host — a kind of web resource."
-    lexeme "ru"
-      word "сайт"
-        description "Russian noun (romanized sait) for a website — a web resource."
-      word "страница"
-        description "Russian noun (romanized stranitsa) for a web page."
-      word "ссылка"
-        description "Russian noun (romanized ssylka) for a hyperlink pointing at a web resource."
-      word "урл"
-        description "Russian borrowing (romanized url) for a URL — the address of a web resource."
-    lexeme "hi"
-      word "वेबसाइट"
-        description "Hindi noun (romanized vebsait) for a website — a web resource."
-      word "वेब पेज"
-        description "Hindi noun (romanized veb pej) for a web page."
-      word "लिंक"
-        description "Hindi noun (romanized link) for a hyperlink to a web resource."
-    lexeme "zh"
-      word "网址"
-        description "Chinese noun (pinyin wangzhi) for a URL — the address of a web resource."
-      word "网页"
-        description "Chinese noun (pinyin wangye) for a web page."
-      word "网站"
-        description "Chinese noun (pinyin wangzhan) for a website — a web resource."
-  meaning "http_fetch"
-    gloss "a request to retrieve a web resource over HTTP — the concept a fetch prompt expresses, independent of language. In the browser worker a real fetch() is attempted first, with an iframe fallback only after the target frame policy is checked. Each surface marks the URL position with the ellipsis … (U+2026): a trailing ellipsis is a prefix surface whose URL follows the literal; a surface with no ellipsis is a bare marker matched anywhere in the prompt. A separate URL gate means a surface only routes here when the prompt also carries a real URL."
-    wiktionary "fetch"
-    defined_by "inquiry"
-    defined_by "action"
-    defined_by "web_resource"
-    role "http_fetch"
-    lexeme "en"
-      word "fetch …"
-        description "English prefix surface; the literal before the … slot asks to fetch the web resource whose URL follows (fetch X)."
-      word "fetch url …"
-        description "English prefix surface naming the url explicitly; the URL follows the … slot (fetch url X)."
-      word "http fetch …"
-        description "English prefix surface naming the HTTP method; the URL follows the … slot (http fetch X)."
-      word "request …"
-        description "English prefix surface; the literal before the … slot asks to request the web resource whose URL follows (request X)."
-      word "make request to …"
-        description "English prefix surface; the URL of the resource to request follows the … slot (make request to X)."
-      word "send request to …"
-        description "English prefix surface; the URL of the resource to send a request to follows the … slot (send request to X)."
-      word "make a request to"
-        description "English bare marker; an HTTP request phrase matched anywhere in the prompt before the URL."
-      word "make an http request to"
-        description "English bare marker naming the HTTP protocol; matched anywhere in the prompt before the URL."
-      word "send a request to"
-        description "English bare marker; a send-a-request phrase matched anywhere in the prompt before the URL."
-      word "send an http request to"
-        description "English bare marker naming the HTTP protocol; matched anywhere in the prompt before the URL."
-      word "http request to"
-        description "English bare marker naming an HTTP request; matched anywhere in the prompt before the URL."
-      word "http get to"
-        description "English bare marker naming the HTTP GET method; matched anywhere in the prompt before the URL."
-      word "fetch the url"
-        description "English bare marker asking to fetch the given url; matched anywhere in the prompt, including after a polite opener."
-      word "fetch this url"
-        description "English bare marker referring to a nearby url; matched anywhere in the prompt."
-      word "fetch the page"
-        description "English bare marker asking to fetch a web page; matched anywhere in the prompt before the URL."
-    lexeme "ru"
-      word "сделай запрос …"
-        description "Russian imperative prefix surface (romanized sdelai zapros) asking to make a request; the URL follows the … slot."
-      word "сделай http запрос …"
-        description "Russian imperative prefix surface (romanized sdelai http zapros) naming the HTTP protocol; the URL follows the … slot."
-      word "выполни запрос …"
-        description "Russian imperative prefix surface (romanized vypolni zapros) asking to perform a request; the URL follows the … slot."
-      word "выполни http запрос …"
-        description "Russian imperative prefix surface (romanized vypolni http zapros) naming the HTTP protocol; the URL follows the … slot."
-      word "запроси …"
-        description "Russian imperative prefix surface (romanized zaprosi) asking to request the resource whose URL follows the … slot."
-      word "получи …"
-        description "Russian imperative prefix surface (romanized poluchi) asking to fetch or obtain the resource whose URL follows the … slot."
-      word "http запрос к …"
-        description "Russian prefix surface (romanized http zapros k) naming an HTTP request to a target; the URL follows the … slot."
-      word "http запрос на …"
-        description "Russian prefix surface (romanized http zapros na) naming an HTTP request to a target; the URL follows the … slot."
-      word "сделать запрос к …"
-        description "Russian infinitive prefix surface (romanized sdelat zapros k) asking to make a request to a target; the URL follows the … slot."
-      word "выполнить запрос к …"
-        description "Russian infinitive prefix surface (romanized vypolnit zapros k) asking to perform a request to a target; the URL follows the … slot."
-      word "сделай запрос к"
-        description "Russian bare marker (romanized sdelai zapros k) for making a request to a target; matched anywhere in the prompt before the URL."
-      word "сделай запрос на"
-        description "Russian bare marker (romanized sdelai zapros na) for making a request to a target; matched anywhere in the prompt before the URL."
-      word "сделай http запрос к"
-        description "Russian bare marker (romanized sdelai http zapros k) naming the HTTP protocol; matched anywhere in the prompt before the URL."
-      word "сделай http запрос на"
-        description "Russian bare marker (romanized sdelai http zapros na) naming the HTTP protocol; matched anywhere in the prompt before the URL."
-      word "выполни запрос к"
-        description "Russian bare marker (romanized vypolni zapros k) for performing a request to a target; matched anywhere in the prompt before the URL."
-      word "выполни запрос на"
-        description "Russian bare marker (romanized vypolni zapros na) for performing a request to a target; matched anywhere in the prompt before the URL."
-      word "выполни http запрос к"
-        description "Russian bare marker (romanized vypolni http zapros k) naming the HTTP protocol; matched anywhere in the prompt before the URL."
-      word "выполни http запрос на"
-        description "Russian bare marker (romanized vypolni http zapros na) naming the HTTP protocol; matched anywhere in the prompt before the URL."
-      word "запрос к"
-        description "Russian bare marker (romanized zapros k) — a request to a target; matched anywhere in the prompt, covering infinitive and other phrasings before the URL."
-      word "запрос на"
-        description "Russian bare marker (romanized zapros na) — a request to a target; matched anywhere in the prompt before the URL."
-      word "http запрос к"
-        description "Russian bare marker (romanized http zapros k) naming an HTTP request to a target; matched anywhere in the prompt before the URL."
-      word "http запрос на"
-        description "Russian bare marker (romanized http zapros na) naming an HTTP request to a target; matched anywhere in the prompt before the URL."
-    lexeme "hi"
-      word "अनुरोध भेजें"
-        description "Hindi bare marker (romanized anurodh bhejen) meaning send a request; matched anywhere in the prompt when a URL is present."
-      word "अनुरोध करें"
-        description "Hindi bare marker (romanized anurodh karen) meaning make a request; matched anywhere in the prompt when a URL is present."
-    lexeme "zh"
-      word "发送请求"
-        description "Chinese bare marker (pinyin fasong qingqiu) meaning send a request; matched anywhere in the prompt when a URL is present."
-      word "获取"
-        description "Chinese bare marker (pinyin huoqu) meaning fetch or obtain; matched anywhere in the prompt when a URL is present."
-  meaning "url_navigate"
-    gloss "a request to open or show a web resource without fetching its contents — the concept a navigation prompt expresses, independent of language. The browser worker returns a direct external link (and, when the target frame policy allows, an iframe preview) rather than attempting fetch(). Each surface marks the URL position with the ellipsis … (U+2026): a trailing ellipsis is a prefix surface whose URL follows the literal; a surface with no ellipsis is a bare marker matched anywhere in the prompt. A bare URL on its own also counts as navigation. A separate URL gate means a surface only routes here when the prompt also carries a real URL."
-    wiktionary "navigate"
-    defined_by "inquiry"
-    defined_by "action"
-    defined_by "web_resource"
-    role "url_navigate"
-    lexeme "en"
-      word "navigate to …"
-        description "English prefix surface; the URL of the resource to navigate to follows the … slot (navigate to X)."
-      word "navigate …"
-        description "English prefix surface; the URL of the resource to navigate to follows the … slot (navigate X)."
-      word "go to …"
-        description "English prefix surface; the URL of the resource to go to follows the … slot (go to X)."
-      word "goto …"
-        description "English prefix surface (one-word spelling of go to); the URL follows the … slot (goto X)."
-      word "visit …"
-        description "English prefix surface; the URL of the resource to visit follows the … slot (visit X)."
-      word "browse to …"
-        description "English prefix surface; the URL of the resource to browse to follows the … slot (browse to X)."
-      word "browse …"
-        description "English prefix surface; the URL of the resource to browse follows the … slot (browse X)."
-      word "show …"
-        description "English prefix surface; the URL of the resource to show follows the … slot (show X)."
-      word "show me …"
-        description "English prefix surface; the URL of the resource to show follows the … slot (show me X)."
-      word "display …"
-        description "English prefix surface; the URL of the resource to display follows the … slot (display X)."
-      word "load …"
-        description "English prefix surface; the URL of the resource to load follows the … slot (load X)."
-      word "open …"
-        description "English prefix surface; the URL of the resource to open follows the … slot (open X)."
-      word "open url …"
-        description "English prefix surface naming the url explicitly; the URL follows the … slot (open url X)."
-      word "open the url …"
-        description "English prefix surface naming the url explicitly; the URL follows the … slot (open the url X)."
-      word "open site …"
-        description "English prefix surface naming a site; the URL follows the … slot (open site X)."
-      word "open website …"
-        description "English prefix surface naming a website; the URL follows the … slot (open website X)."
-      word "open page …"
-        description "English prefix surface naming a page; the URL follows the … slot (open page X)."
-      word "open the page …"
-        description "English prefix surface naming the page; the URL follows the … slot (open the page X)."
-      word "open the website …"
-        description "English prefix surface naming the website; the URL follows the … slot (open the website X)."
-      word "take me to …"
-        description "English prefix surface; the URL of the resource to take the user to follows the … slot (take me to X)."
-      word "preview …"
-        description "English prefix surface; the URL of the resource to preview follows the … slot (preview X)."
-      word "view …"
-        description "English prefix surface; the URL of the resource to view follows the … slot (view X)."
-      word "see …"
-        description "English prefix surface; the URL of the resource to see follows the … slot (see X)."
-      word "get …"
-        description "English prefix surface; the URL of the resource to get follows the … slot (get X). Navigation, not fetch — the http_fetch intent is checked first and never matches a bare get."
-      word "navigate to"
-        description "English bare marker; a navigate-to phrase matched anywhere in the prompt before the URL."
-      word "go to"
-        description "English bare marker; a go-to phrase matched anywhere in the prompt before the URL."
-      word "goto"
-        description "English bare marker (one-word spelling of go to); matched anywhere in the prompt before the URL."
-      word "browse to"
-        description "English bare marker; a browse-to phrase matched anywhere in the prompt before the URL."
-      word "take me to"
-        description "English bare marker; a take-me-to phrase matched anywhere in the prompt before the URL."
-      word "open the page"
-        description "English bare marker naming the page; matched anywhere in the prompt before the URL."
-      word "open the site"
-        description "English bare marker naming the site; matched anywhere in the prompt before the URL."
-      word "open the website"
-        description "English bare marker naming the website; matched anywhere in the prompt before the URL."
-      word "open the url"
-        description "English bare marker naming the url; matched anywhere in the prompt before the URL."
-      word "open url"
-        description "English bare marker naming the url; matched anywhere in the prompt before the URL."
-    lexeme "ru"
-      word "перейди …"
-        description "Russian imperative prefix surface (romanized pereidi) asking to go to the resource whose URL follows the … slot."
-      word "перейди на …"
-        description "Russian imperative prefix surface (romanized pereidi na) asking to go to the resource whose URL follows the … slot."
-      word "переходи на …"
-        description "Russian imperfective imperative prefix surface (romanized perekhodi na) asking to go to the resource whose URL follows the … slot."
-      word "переходи …"
-        description "Russian imperfective imperative prefix surface (romanized perekhodi) asking to go to the resource whose URL follows the … slot."
-      word "перейдите на …"
-        description "Russian polite imperative prefix surface (romanized pereidite na) asking to go to the resource whose URL follows the … slot."
-      word "открой …"
-        description "Russian imperative prefix surface (romanized otkroi) asking to open the resource whose URL follows the … slot."
-      word "открой сайт …"
-        description "Russian imperative prefix surface (romanized otkroi sait) asking to open the site whose URL follows the … slot."
-      word "открой страницу …"
-        description "Russian imperative prefix surface (romanized otkroi stranitsu) asking to open the page whose URL follows the … slot."
-      word "открой ссылку …"
-        description "Russian imperative prefix surface (romanized otkroi ssylku) asking to open the link whose URL follows the … slot."
-      word "открой урл …"
-        description "Russian imperative prefix surface (romanized otkroi url) asking to open the url that follows the … slot."
-      word "покажи …"
-        description "Russian imperative prefix surface (romanized pokazhi) asking to show the resource whose URL follows the … slot."
-      word "покажи сайт …"
-        description "Russian imperative prefix surface (romanized pokazhi sait) asking to show the site whose URL follows the … slot."
-      word "покажи страницу …"
-        description "Russian imperative prefix surface (romanized pokazhi stranitsu) asking to show the page whose URL follows the … slot."
-      word "покажи мне …"
-        description "Russian imperative prefix surface (romanized pokazhi mne) asking to show the user the resource whose URL follows the … slot."
-      word "загрузи …"
-        description "Russian imperative prefix surface (romanized zagruzi) asking to load the resource whose URL follows the … slot."
-      word "загрузи страницу …"
-        description "Russian imperative prefix surface (romanized zagruzi stranitsu) asking to load the page whose URL follows the … slot."
-      word "посети …"
-        description "Russian imperative prefix surface (romanized poseti) asking to visit the resource whose URL follows the … slot."
-      word "зайди на …"
-        description "Russian imperative prefix surface (romanized zaidi na) asking to go onto the resource whose URL follows the … slot."
-      word "зайди …"
-        description "Russian imperative prefix surface (romanized zaidi) asking to go onto the resource whose URL follows the … slot."
-      word "просмотри …"
-        description "Russian imperative prefix surface (romanized prosmotri) asking to view the resource whose URL follows the … slot."
-      word "отобрази …"
-        description "Russian imperative prefix surface (romanized otobrazi) asking to display the resource whose URL follows the … slot."
-      word "перейди на"
-        description "Russian bare marker (romanized pereidi na) for going to a target; matched anywhere in the prompt before the URL."
-      word "переходи на"
-        description "Russian bare marker (romanized perekhodi na) for going to a target; matched anywhere in the prompt before the URL."
-      word "перейдите на"
-        description "Russian polite bare marker (romanized pereidite na) for going to a target; matched anywhere in the prompt before the URL."
-      word "открой сайт"
-        description "Russian bare marker (romanized otkroi sait) for opening a site; matched anywhere in the prompt before the URL."
-      word "открой страницу"
-        description "Russian bare marker (romanized otkroi stranitsu) for opening a page; matched anywhere in the prompt before the URL."
-      word "открой ссылку"
-        description "Russian bare marker (romanized otkroi ssylku) for opening a link; matched anywhere in the prompt before the URL."
-      word "открой урл"
-        description "Russian bare marker (romanized otkroi url) for opening a url; matched anywhere in the prompt before the URL."
-      word "покажи сайт"
-        description "Russian bare marker (romanized pokazhi sait) for showing a site; matched anywhere in the prompt before the URL."
-      word "покажи страницу"
-        description "Russian bare marker (romanized pokazhi stranitsu) for showing a page; matched anywhere in the prompt before the URL."
-      word "зайди на"
-        description "Russian bare marker (romanized zaidi na) for going onto a target; matched anywhere in the prompt before the URL."
-    lexeme "hi"
-      word "पर जाएं"
-        description "Hindi bare marker (romanized par jaen) meaning go to; matched anywhere in the prompt when a URL is present."
-      word "खोलें"
-        description "Hindi bare marker (romanized kholen) meaning open; matched anywhere in the prompt when a URL is present."
-      word "देखें"
-        description "Hindi bare marker (romanized dekhen) meaning view or see; matched anywhere in the prompt when a URL is present."
-    lexeme "zh"
-      word "打开"
-        description "Chinese bare marker (pinyin dakai) meaning open; matched anywhere in the prompt when a URL is present."
-      word "访问"
-        description "Chinese bare marker (pinyin fangwen) meaning visit or access; matched anywhere in the prompt when a URL is present."
-      word "前往"
-        description "Chinese bare marker (pinyin qianwang) meaning go to; matched anywhere in the prompt when a URL is present."
-      word "查看"
-        description "Chinese bare marker (pinyin chakan) meaning view or look at; matched anywhere in the prompt when a URL is present."
+  web_resource: # concept web_resource
+    defined-by entity # definition-link
+    role web_navigation_concept # semantic-role
+    lexeme en # language
+      surface unformalized-raw 117 114 108 # unresolved-surface
+      surface unformalized-raw 119 101 98 32 112 97 103 101 # unresolved-surface
+      surface unformalized-raw 119 101 98 115 105 116 101 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1089 1072 1081 1090 # unresolved-surface
+      surface unformalized-raw 1089 1090 1088 1072 1085 1080 1094 1072 # unresolved-surface
+      surface unformalized-raw 1089 1089 1099 1083 1082 1072 # unresolved-surface
+      surface unformalized-raw 1091 1088 1083 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2357 2375 2348 2360 2366 2311 2335 # unresolved-surface
+      surface unformalized-raw 2357 2375 2348 32 2346 2375 2332 # unresolved-surface
+      surface unformalized-raw 2354 2367 2306 2325 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 32593 22336 # unresolved-surface
+      surface unformalized-raw 32593 39029 # unresolved-surface
+      surface unformalized-raw 32593 31449 # unresolved-surface
+  http_fetch: # concept http_fetch
+    defined-by inquiry # definition-link
+    defined-by action # definition-link
+    defined-by web_resource # definition-link
+    role http_fetch # semantic-role
+    lexeme en # language
+      surface unformalized-raw 102 101 116 99 104 32 8230 # unresolved-surface
+      surface unformalized-raw 102 101 116 99 104 32 117 114 108 32 8230 # unresolved-surface
+      surface unformalized-raw 104 116 116 112 32 102 101 116 99 104 32 8230 # unresolved-surface
+      surface unformalized-raw 114 101 113 117 101 115 116 32 8230 # unresolved-surface
+      surface unformalized-raw 109 97 107 101 32 114 101 113 117 101 115 116 32 116 111 32 8230 # unresolved-surface
+      surface unformalized-raw 115 101 110 100 32 114 101 113 117 101 115 116 32 116 111 32 8230 # unresolved-surface
+      surface unformalized-raw 109 97 107 101 32 97 32 114 101 113 117 101 115 116 32 116 111 # unresolved-surface
+      surface unformalized-raw 109 97 107 101 32 97 110 32 104 116 116 112 32 114 101 113 117 101 115 116 32 116 111 # unresolved-surface
+      surface unformalized-raw 115 101 110 100 32 97 32 114 101 113 117 101 115 116 32 116 111 # unresolved-surface
+      surface unformalized-raw 115 101 110 100 32 97 110 32 104 116 116 112 32 114 101 113 117 101 115 116 32 116 111 # unresolved-surface
+      surface unformalized-raw 104 116 116 112 32 114 101 113 117 101 115 116 32 116 111 # unresolved-surface
+      surface unformalized-raw 104 116 116 112 32 103 101 116 32 116 111 # unresolved-surface
+      surface unformalized-raw 102 101 116 99 104 32 116 104 101 32 117 114 108 # unresolved-surface
+      surface unformalized-raw 102 101 116 99 104 32 116 104 105 115 32 117 114 108 # unresolved-surface
+      surface unformalized-raw 102 101 116 99 104 32 116 104 101 32 112 97 103 101 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1089 1076 1077 1083 1072 1081 32 1079 1072 1087 1088 1086 1089 32 8230 # unresolved-surface
+      surface unformalized-raw 1089 1076 1077 1083 1072 1081 32 104 116 116 112 32 1079 1072 1087 1088 1086 1089 32 8230 # unresolved-surface
+      surface unformalized-raw 1074 1099 1087 1086 1083 1085 1080 32 1079 1072 1087 1088 1086 1089 32 8230 # unresolved-surface
+      surface unformalized-raw 1074 1099 1087 1086 1083 1085 1080 32 104 116 116 112 32 1079 1072 1087 1088 1086 1089 32 8230 # unresolved-surface
+      surface unformalized-raw 1079 1072 1087 1088 1086 1089 1080 32 8230 # unresolved-surface
+      surface unformalized-raw 1087 1086 1083 1091 1095 1080 32 8230 # unresolved-surface
+      surface unformalized-raw 104 116 116 112 32 1079 1072 1087 1088 1086 1089 32 1082 32 8230 # unresolved-surface
+      surface unformalized-raw 104 116 116 112 32 1079 1072 1087 1088 1086 1089 32 1085 1072 32 8230 # unresolved-surface
+      surface unformalized-raw 1089 1076 1077 1083 1072 1090 1100 32 1079 1072 1087 1088 1086 1089 32 1082 32 8230 # unresolved-surface
+      surface unformalized-raw 1074 1099 1087 1086 1083 1085 1080 1090 1100 32 1079 1072 1087 1088 1086 1089 32 1082 32 8230 # unresolved-surface
+      surface unformalized-raw 1089 1076 1077 1083 1072 1081 32 1079 1072 1087 1088 1086 1089 32 1082 # unresolved-surface
+      surface unformalized-raw 1089 1076 1077 1083 1072 1081 32 1079 1072 1087 1088 1086 1089 32 1085 1072 # unresolved-surface
+      surface unformalized-raw 1089 1076 1077 1083 1072 1081 32 104 116 116 112 32 1079 1072 1087 1088 1086 1089 32 1082 # unresolved-surface
+      surface unformalized-raw 1089 1076 1077 1083 1072 1081 32 104 116 116 112 32 1079 1072 1087 1088 1086 1089 32 1085 1072 # unresolved-surface
+      surface unformalized-raw 1074 1099 1087 1086 1083 1085 1080 32 1079 1072 1087 1088 1086 1089 32 1082 # unresolved-surface
+      surface unformalized-raw 1074 1099 1087 1086 1083 1085 1080 32 1079 1072 1087 1088 1086 1089 32 1085 1072 # unresolved-surface
+      surface unformalized-raw 1074 1099 1087 1086 1083 1085 1080 32 104 116 116 112 32 1079 1072 1087 1088 1086 1089 32 1082 # unresolved-surface
+      surface unformalized-raw 1074 1099 1087 1086 1083 1085 1080 32 104 116 116 112 32 1079 1072 1087 1088 1086 1089 32 1085 1072 # unresolved-surface
+      surface unformalized-raw 1079 1072 1087 1088 1086 1089 32 1082 # unresolved-surface
+      surface unformalized-raw 1079 1072 1087 1088 1086 1089 32 1085 1072 # unresolved-surface
+      surface unformalized-raw 104 116 116 112 32 1079 1072 1087 1088 1086 1089 32 1082 # unresolved-surface
+      surface unformalized-raw 104 116 116 112 32 1079 1072 1087 1088 1086 1089 32 1085 1072 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2309 2344 2369 2352 2379 2343 32 2349 2375 2332 2375 2306 # unresolved-surface
+      surface unformalized-raw 2309 2344 2369 2352 2379 2343 32 2325 2352 2375 2306 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 21457 36865 35831 27714 # unresolved-surface
+      surface unformalized-raw 33719 21462 # unresolved-surface
+  url_navigate: # concept url_navigate
+    defined-by inquiry # definition-link
+    defined-by action # definition-link
+    defined-by web_resource # definition-link
+    role url_navigate # semantic-role
+    lexeme en # language
+      surface unformalized-raw 110 97 118 105 103 97 116 101 32 116 111 32 8230 # unresolved-surface
+      surface unformalized-raw 110 97 118 105 103 97 116 101 32 8230 # unresolved-surface
+      surface unformalized-raw 103 111 32 116 111 32 8230 # unresolved-surface
+      surface unformalized-raw 103 111 116 111 32 8230 # unresolved-surface
+      surface unformalized-raw 118 105 115 105 116 32 8230 # unresolved-surface
+      surface unformalized-raw 98 114 111 119 115 101 32 116 111 32 8230 # unresolved-surface
+      surface unformalized-raw 98 114 111 119 115 101 32 8230 # unresolved-surface
+      surface unformalized-raw 115 104 111 119 32 8230 # unresolved-surface
+      surface unformalized-raw 115 104 111 119 32 109 101 32 8230 # unresolved-surface
+      surface unformalized-raw 100 105 115 112 108 97 121 32 8230 # unresolved-surface
+      surface unformalized-raw 108 111 97 100 32 8230 # unresolved-surface
+      surface unformalized-raw 111 112 101 110 32 8230 # unresolved-surface
+      surface unformalized-raw 111 112 101 110 32 117 114 108 32 8230 # unresolved-surface
+      surface unformalized-raw 111 112 101 110 32 116 104 101 32 117 114 108 32 8230 # unresolved-surface
+      surface unformalized-raw 111 112 101 110 32 115 105 116 101 32 8230 # unresolved-surface
+      surface unformalized-raw 111 112 101 110 32 119 101 98 115 105 116 101 32 8230 # unresolved-surface
+      surface unformalized-raw 111 112 101 110 32 112 97 103 101 32 8230 # unresolved-surface
+      surface unformalized-raw 111 112 101 110 32 116 104 101 32 112 97 103 101 32 8230 # unresolved-surface
+      surface unformalized-raw 111 112 101 110 32 116 104 101 32 119 101 98 115 105 116 101 32 8230 # unresolved-surface
+      surface unformalized-raw 116 97 107 101 32 109 101 32 116 111 32 8230 # unresolved-surface
+      surface unformalized-raw 112 114 101 118 105 101 119 32 8230 # unresolved-surface
+      surface unformalized-raw 118 105 101 119 32 8230 # unresolved-surface
+      surface unformalized-raw 115 101 101 32 8230 # unresolved-surface
+      surface unformalized-raw 103 101 116 32 8230 # unresolved-surface
+      surface unformalized-raw 110 97 118 105 103 97 116 101 32 116 111 # unresolved-surface
+      surface unformalized-raw 103 111 32 116 111 # unresolved-surface
+      surface unformalized-raw 103 111 116 111 # unresolved-surface
+      surface unformalized-raw 98 114 111 119 115 101 32 116 111 # unresolved-surface
+      surface unformalized-raw 116 97 107 101 32 109 101 32 116 111 # unresolved-surface
+      surface unformalized-raw 111 112 101 110 32 116 104 101 32 112 97 103 101 # unresolved-surface
+      surface unformalized-raw 111 112 101 110 32 116 104 101 32 115 105 116 101 # unresolved-surface
+      surface unformalized-raw 111 112 101 110 32 116 104 101 32 119 101 98 115 105 116 101 # unresolved-surface
+      surface unformalized-raw 111 112 101 110 32 116 104 101 32 117 114 108 # unresolved-surface
+      surface unformalized-raw 111 112 101 110 32 117 114 108 # unresolved-surface
+    lexeme ru # language
+      surface unformalized-raw 1087 1077 1088 1077 1081 1076 1080 32 8230 # unresolved-surface
+      surface unformalized-raw 1087 1077 1088 1077 1081 1076 1080 32 1085 1072 32 8230 # unresolved-surface
+      surface unformalized-raw 1087 1077 1088 1077 1093 1086 1076 1080 32 1085 1072 32 8230 # unresolved-surface
+      surface unformalized-raw 1087 1077 1088 1077 1093 1086 1076 1080 32 8230 # unresolved-surface
+      surface unformalized-raw 1087 1077 1088 1077 1081 1076 1080 1090 1077 32 1085 1072 32 8230 # unresolved-surface
+      surface unformalized-raw 1086 1090 1082 1088 1086 1081 32 8230 # unresolved-surface
+      surface unformalized-raw 1086 1090 1082 1088 1086 1081 32 1089 1072 1081 1090 32 8230 # unresolved-surface
+      surface unformalized-raw 1086 1090 1082 1088 1086 1081 32 1089 1090 1088 1072 1085 1080 1094 1091 32 8230 # unresolved-surface
+      surface unformalized-raw 1086 1090 1082 1088 1086 1081 32 1089 1089 1099 1083 1082 1091 32 8230 # unresolved-surface
+      surface unformalized-raw 1086 1090 1082 1088 1086 1081 32 1091 1088 1083 32 8230 # unresolved-surface
+      surface unformalized-raw 1087 1086 1082 1072 1078 1080 32 8230 # unresolved-surface
+      surface unformalized-raw 1087 1086 1082 1072 1078 1080 32 1089 1072 1081 1090 32 8230 # unresolved-surface
+      surface unformalized-raw 1087 1086 1082 1072 1078 1080 32 1089 1090 1088 1072 1085 1080 1094 1091 32 8230 # unresolved-surface
+      surface unformalized-raw 1087 1086 1082 1072 1078 1080 32 1084 1085 1077 32 8230 # unresolved-surface
+      surface unformalized-raw 1079 1072 1075 1088 1091 1079 1080 32 8230 # unresolved-surface
+      surface unformalized-raw 1079 1072 1075 1088 1091 1079 1080 32 1089 1090 1088 1072 1085 1080 1094 1091 32 8230 # unresolved-surface
+      surface unformalized-raw 1087 1086 1089 1077 1090 1080 32 8230 # unresolved-surface
+      surface unformalized-raw 1079 1072 1081 1076 1080 32 1085 1072 32 8230 # unresolved-surface
+      surface unformalized-raw 1079 1072 1081 1076 1080 32 8230 # unresolved-surface
+      surface unformalized-raw 1087 1088 1086 1089 1084 1086 1090 1088 1080 32 8230 # unresolved-surface
+      surface unformalized-raw 1086 1090 1086 1073 1088 1072 1079 1080 32 8230 # unresolved-surface
+      surface unformalized-raw 1087 1077 1088 1077 1081 1076 1080 32 1085 1072 # unresolved-surface
+      surface unformalized-raw 1087 1077 1088 1077 1093 1086 1076 1080 32 1085 1072 # unresolved-surface
+      surface unformalized-raw 1087 1077 1088 1077 1081 1076 1080 1090 1077 32 1085 1072 # unresolved-surface
+      surface unformalized-raw 1086 1090 1082 1088 1086 1081 32 1089 1072 1081 1090 # unresolved-surface
+      surface unformalized-raw 1086 1090 1082 1088 1086 1081 32 1089 1090 1088 1072 1085 1080 1094 1091 # unresolved-surface
+      surface unformalized-raw 1086 1090 1082 1088 1086 1081 32 1089 1089 1099 1083 1082 1091 # unresolved-surface
+      surface unformalized-raw 1086 1090 1082 1088 1086 1081 32 1091 1088 1083 # unresolved-surface
+      surface unformalized-raw 1087 1086 1082 1072 1078 1080 32 1089 1072 1081 1090 # unresolved-surface
+      surface unformalized-raw 1087 1086 1082 1072 1078 1080 32 1089 1090 1088 1072 1085 1080 1094 1091 # unresolved-surface
+      surface unformalized-raw 1079 1072 1081 1076 1080 32 1085 1072 # unresolved-surface
+    lexeme hi # language
+      surface unformalized-raw 2346 2352 32 2332 2366 2319 2306 # unresolved-surface
+      surface unformalized-raw 2326 2379 2354 2375 2306 # unresolved-surface
+      surface unformalized-raw 2342 2375 2326 2375 2306 # unresolved-surface
+    lexeme zh # language
+      surface unformalized-raw 25171 24320 # unresolved-surface
+      surface unformalized-raw 35775 38382 # unresolved-surface
+      surface unformalized-raw 21069 24448 # unresolved-surface
+      surface unformalized-raw 26597 30475 # unresolved-surface

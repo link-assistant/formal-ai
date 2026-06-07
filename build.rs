@@ -1,12 +1,16 @@
-//! Compile-time enumeration of seeded API-response `.lino` files.
+//! Compile-time enumeration of legacy seeded API-response `.lino` files.
 //!
-//! The seed bundle under `data/seed/api-cache/` may grow to multiple
-//! `<bucket>-partN.lino` files (issue #221 caps each at 1500 lines).
+//! Issue #398 removed the committed legacy bundle in favor of explicit
+//! source snapshots under `data/cache/wikidata/`. The reader remains so older
+//! or locally generated `data/seed/api-cache/` bundles can still be replayed.
+//! When that directory is absent this script emits an empty registry.
+//!
 //! `include_str!` cannot iterate a directory, so this build script writes
 //! a generated `seed_bundle_files.rs` into `OUT_DIR` that lists every
-//! seed file in deterministic order. `cache.rs` includes that file via
+//! legacy seed file in deterministic order. `cache.rs` includes that file via
 //! `include!(concat!(env!("OUT_DIR"), "/seed_bundle_files.rs"))` so all
-//! parts ship in the binary without per-file edits.
+//! parts ship in the binary without per-file edits when the legacy bundle is
+//! present.
 
 use std::env;
 use std::fs;

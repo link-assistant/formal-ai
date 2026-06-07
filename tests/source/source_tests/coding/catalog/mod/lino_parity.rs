@@ -5,27 +5,18 @@
 //! `list_files_arg` out of the seed). Regenerate the seed blocks with
 //! `experiments/issue-330-coding-tasks/generate_lino.py` when adding tasks.
 use super::*;
-
-/// Escape raw template code the way the `.lino` seed encodes a
-/// single-quoted `code '...'` payload: backslash -> `\\`, single-quote ->
-/// `\x27`, newline -> `\n`. Mirrors `generate_lino.py`.
-fn escape_for_lino(code: &str) -> String {
-    code.replace('\\', "\\\\")
-        .replace('\'', "\\x27")
-        .replace('\n', "\\n")
-}
+use crate::seed::parser::{parse_lino, LinoNode};
 
 #[test]
 fn lino_seed_tasks_line_lists_every_catalog_task() {
-    let lino = crate::seed::HELLO_WORLD_PROGRAMS_LINO;
-    let tasks_line = lino
-        .lines()
-        .find(|l| l.trim_start().starts_with("tasks \""))
+    let root = seed_tree();
+    let write_program = root
+        .children
+        .iter()
+        .find(|node| node.name == WRITE_PROGRAM_INTENT)
         .expect("lino seed declares a tasks line");
-    let listed: Vec<&str> = tasks_line
-        .trim()
-        .trim_start_matches("tasks \"")
-        .trim_end_matches('"')
+    let listed: Vec<&str> = child_value(write_program, "tasks")
+        .expect("write_program seed declares tasks")
         .split('|')
         .collect();
     for task in PROGRAM_TASKS {
@@ -39,11 +30,12 @@ fn lino_seed_tasks_line_lists_every_catalog_task() {
 
 #[test]
 fn lino_seed_mirrors_every_catalog_template() {
-    let lino = crate::seed::HELLO_WORLD_PROGRAMS_LINO;
+    let root = seed_tree();
     for template in program_templates() {
-        let needle = format!("code '{}'", escape_for_lino(template.code));
-        assert!(
-            lino.contains(&needle),
+        let seed_code = template_code(&root, template.task_slug, template.language_slug);
+        assert_eq!(
+            seed_code.as_deref(),
+            Some(template.code),
             "lino seed is missing the {}/{} template (escaped code not found)",
             template.task_slug,
             template.language_slug
@@ -53,12 +45,38 @@ fn lino_seed_mirrors_every_catalog_template() {
 
 #[test]
 fn lino_seed_has_no_extra_templates() {
-    let lino = crate::seed::HELLO_WORLD_PROGRAMS_LINO;
-    let seed_templates = lino.matches("\n  code '").count();
+    let root = seed_tree();
+    let seed_templates = root
+        .children
+        .iter()
+        .filter(|node| child_value(node, "code").is_some())
+        .count();
     assert_eq!(
         seed_templates,
         program_template_count(),
         "lino seed template count ({seed_templates}) must equal the catalog count ({})",
         program_template_count()
     );
+}
+
+fn seed_tree() -> LinoNode {
+    parse_lino(crate::seed::HELLO_WORLD_PROGRAMS_LINO)
+}
+
+fn template_code(root: &LinoNode, task_slug: &str, language_slug: &str) -> Option<String> {
+    root.children
+        .iter()
+        .find(|node| {
+            child_value(node, "task") == Some(task_slug)
+                && child_value(node, "language") == Some(language_slug)
+        })
+        .and_then(|node| child_value(node, "code"))
+        .map(ToOwned::to_owned)
+}
+
+fn child_value<'a>(node: &'a LinoNode, name: &str) -> Option<&'a str> {
+    node.children
+        .iter()
+        .find(|child| child.name == name)
+        .map(|child| child.id.as_str())
 }
