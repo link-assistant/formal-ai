@@ -1,0 +1,75 @@
+WT-en-reference # cached json source
+  value
+    cs: []
+      at-0000
+        definitions: []
+          at-0000
+            definition: '<span class="Latn" lang="en" about="#mwt315" typeof="mw:Transclusion"><a rel="mw:WikiLink" href="/wiki/reference#English" class="mw-selflink-fragment">reference</a></span>'
+          at-0001
+            definition: '<a rel="mw:WikiLink" href="/wiki/recommendation" title="recommendation">recommendation</a>'
+        language: "Czech"
+        partOfSpeech: "Noun"
+    en: []
+      at-0000
+        definitions: []
+          at-0000
+            definition: '<span class="usage-label-sense" about="#mwt22" typeof="mw:Transclusion"></span> A <a rel="mw:WikiLink" href="/wiki/relationship" title="relationship">relationship</a> or <a rel="mw:WikiLink" href="/wiki/relation" title="relation">relation</a> (<i class="Latn mention" lang="en" about="#mwt23" typeof="mw:Transclusion"><a rel="mw:WikiLink" href="/wiki/to#English" title="to">to</a></i> something).'
+          at-0001
+            definition: 'A <a rel="mw:WikiLink" href="/wiki/measurement" title="measurement">measurement</a> one can compare (some other measurement) to.'
+          at-0002
+            definition: '<a rel="mw:WikiLink" href="/wiki/information" title="information">Information</a> about a person, provided by someone (a <a rel="mw:WikiLink" href="/wiki/referee" title="referee">referee</a>) with whom they are well acquainted.'
+          at-0003
+            definition: '<span class="usage-label-sense" about="#mwt26" typeof="mw:Transclusion"></span> A person who provides this information; a <a rel="mw:WikiLink" href="/wiki/referee" title="referee">referee</a>.'
+          at-0004
+            definition: '<span class="usage-label-sense" about="#mwt27" typeof="mw:Transclusion"></span> A <a rel="mw:WikiLink" href="/wiki/reference_work" title="reference work">reference work</a>.'
+            examples: ("<b>reference</b> grammar" "<b>Reference</b> Dictionary of Linguistics")
+            parsedExamples: []
+              at-0000
+                example: "<b>reference</b> grammar"
+                translation: "detailed linguistic description of a particular language's grammar"
+              at-0001
+                example: "<b>Reference</b> Dictionary of Linguistics"
+          at-0005
+            definition: "The act of referring: a submitting for information or decision."
+          at-0006
+            definition: '<span class="usage-label-sense" about="#mwt30" typeof="mw:Transclusion"></span> A <a rel="mw:WikiLink" href="/wiki/relation" title="relation">relation</a> between objects in which one object <a rel="mw:WikiLink" href="/wiki/designate" title="designate">designates</a>, or acts as a means by which to <a rel="mw:WikiLink" href="/wiki/connect" title="connect">connect</a> to or <a rel="mw:WikiLink" href="/wiki/link" title="link">link</a> to, another object.'
+          at-0007
+            definition: '<span class="usage-label-sense" about="#mwt31" typeof="mw:Transclusion"></span> A short written <a rel="mw:WikiLink" href="/wiki/identification" title="identification">identification</a> of a previously published work which is used as a <a rel="mw:WikiLink" href="/wiki/source" title="source">source</a> for a text.'
+          at-0008
+            definition: '<span class="usage-label-sense" about="#mwt32" typeof="mw:Transclusion"></span> A previously published <a rel="mw:WikiLink" href="/wiki/written" title="written">written</a> <a rel="mw:WikiLink" href="/wiki/work" title="work">work</a> thus indicated; a source.'
+          at-0009
+            definition: '<span class="usage-label-sense" about="#mwt33" typeof="mw:Transclusion"></span> An object containing information which refers to data stored elsewhere, as opposed to containing the data itself.'
+          at-0010
+            definition: '<span class="usage-label-sense" about="#mwt34" typeof="mw:Transclusion"></span> A special sequence used to represent complex characters in markup languages, such as <code><span typeof="mw:Entity">&amp;</span>trade;</code> for the <span typeof="mw:Entity">™</span> symbol.'
+          at-0011
+            definition: '<span class="usage-label-sense" about="#mwt35" typeof="mw:Transclusion"></span> <a rel="mw:WikiLink" href="/wiki/appeal" title="appeal">Appeal</a>.'
+        language: "English"
+        partOfSpeech: "Noun"
+      at-0001
+        definitions: []
+          at-0000
+            definition: "To provide a list of references for (a text)."
+            examples: ("You must thoroughly <b>reference</b> your paper before submitting it.")
+            parsedExamples: []
+              at-0000
+                example: "You must thoroughly <b>reference</b> your paper before submitting it."
+          at-0001
+            definition: '<span class="usage-label-sense" about="#mwt239" typeof="mw:Transclusion"></span> To <a rel="mw:WikiLink" href="/wiki/cite" title="cite">cite</a>, to use as a reference.'
+            examples: ("<b>Reference</b> the dictionary for word meanings.")
+            parsedExamples: []
+              at-0000
+                example: "<b>Reference</b> the dictionary for word meanings."
+          at-0002
+            definition: '<span class="usage-label-sense" about="#mwt244" typeof="mw:Transclusion"></span> To <a rel="mw:WikiLink" href="/wiki/mention" title="mention">mention</a>, to <a rel="mw:WikiLink" href="/wiki/refer" title="refer">refer</a> to.'
+            examples: ("In his speech, the candidate obliquely <b>referenced</b> the past failures of his opponent.")
+            parsedExamples: []
+              at-0000
+                example: "In his speech, the candidate obliquely <b>referenced</b> the past failures of his opponent."
+          at-0003
+            definition: '<span class="usage-label-sense" about="#mwt250" typeof="mw:Transclusion"></span> To contain the <a rel="mw:WikiLink" href="/wiki/value" title="value">value</a> that is a <a rel="mw:WikiLink" href="/wiki/memory" title="memory">memory</a> <a rel="mw:WikiLink" href="/wiki/address" title="address">address</a> of some value stored in memory.'
+            examples: ("The given pointer will <b>reference</b> the actual generated data.")
+            parsedExamples: []
+              at-0000
+                example: "The given pointer will <b>reference</b> the actual generated data."
+        language: "English"
+        partOfSpeech: "Verb"

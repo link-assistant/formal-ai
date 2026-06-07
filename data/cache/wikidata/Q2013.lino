@@ -1,0 +1,59 @@
+Q2013 # cached json source
+  value
+    entities
+      Q2013
+        aliases
+          en: []
+            at-0000
+              language: "en"
+              value: "Q2013"
+          hi: []
+            at-0000
+              language: "hi"
+              value: "विकिडाटा"
+          ru: []
+            at-0000
+              language: "ru"
+              value: "Викидата"
+            at-0001
+              language: "ru"
+              value: "ВД"
+          zh: []
+            at-0000
+              language: "zh"
+              value: "維基資料"
+            at-0001
+              language: "zh"
+              value: "維基數據"
+            at-0002
+              language: "zh"
+              value: "维基资料"
+        descriptions
+          en
+            language: "en"
+            value: "free multilingual online knowledge graph"
+          hi
+            language: "hi"
+            value: "विकिमीडिया संस्थान द्वारा होस्ट किया जाने वाला मुक्त ज्ञान आधार"
+          ru
+            language: "ru"
+            value: "проект Фонда Викимедиа; свободная база знаний, которую может редактировать каждый"
+          zh
+            language: "zh"
+            value: "由維基媒體營運的人人可編輯的自由知識資料庫，並且由志工編輯維護"
+        id: "Q2013"
+        labels
+          en
+            language: "en"
+            value: "Wikidata"
+          hi
+            language: "hi"
+            value: "विकिडेटा"
+          ru
+            language: "ru"
+            value: "Викиданные"
+          zh
+            language: "zh"
+            value: "维基数据"
+        type: "item"
+    success: 1

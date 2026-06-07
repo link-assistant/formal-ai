@@ -1,8 +1,8 @@
 meanings
   link: # concept link
     defined-by link # definition-link
-    defined-by link_action # definition-link
-    defined-by any_of_reference # definition-link
+    defined-by link-action # definition-link
+    defined-by any-of-reference # definition-link
     role ontology_root # semantic-role
     facet notation # facet
       links_notation_format: # concept links_notation_format
@@ -28,7 +28,7 @@ meanings
     defined-by link # definition-link
     defined-by type # definition-link
     role ontology_type # semantic-role
-    facet self_equation # facet
+    facet self-equation # facet
       type: # concept type
     lexeme en # language
       surface unformalized-raw 116 121 112 101 # unresolved-surface

@@ -1,6 +1,7 @@
 meanings
-  reference: reference_action link # concept reference
+  reference: reference-action link # concept reference
     grounded-in Q121769 # wikidata concept reference
+    wiktionary WT-en-reference # wiktionary lexical source reference
     source-lexeme L5785 # wikidata english noun reference
       language Q1860 # wikidata language english
       lexical-category Q1084 # wikidata category noun
@@ -27,520 +28,582 @@ meanings
       language ru # language
       source-lexeme L166085 # wikidata russian lexeme
     lexeme hi # language
-      surface unformalized-raw 2360 2306 2342 2352 2381 2349 # unresolved-surface
+      surface seed-surface-reference-hi # seed lexical surface
+        codepoints 2360 2306 2342 2352 2381 2349 # surface text
     lexeme zh # language
-      surface unformalized-raw 24341 29992 # unresolved-surface
-  reference_action: # concept reference_action
+      surface seed-surface-reference-zh # seed lexical surface
+        codepoints 24341 29992 # surface text
+  reference-action: makes reference point-at link # concept reference-action
     source-lexeme L41576 # wikidata english verb reference
       language Q1860 # wikidata language english
       lexical-category Q24905 # wikidata category verb
       form L41576-F1 # wikidata citation form reference
       sense L41576-S1 # wikidata refer to sense
-    defined-by makes # definition-link
-    defined-by reference # definition-link
-    defined-by point_at # definition-link
-    defined-by link # definition-link
     role links_root # semantic-role
     surface L41576-F1 # wikidata english verb surface
       codepoints 114 101 102 101 114 101 110 99 101 # surface text
       language en # language
       sense L41576-S1 # wikidata refer to sense
     lexeme ru # language
-      surface unformalized-raw 1076 1077 1081 1089 1090 1074 1080 1077 32 1089 1089 1099 1083 1082 1080 # unresolved-surface
+      surface seed-surface-reference-action-ru # seed lexical surface
+        codepoints 1076 1077 1081 1089 1090 1074 1080 1077 32 1089 1089 1099 1083 1082 1080 # surface text
     lexeme hi # language
-      surface unformalized-raw 2360 2306 2342 2352 2381 2349 32 2325 2381 2352 2367 2351 2366 # unresolved-surface
+      surface seed-surface-reference-action-hi # seed lexical surface
+        codepoints 2360 2306 2342 2352 2381 2349 32 2325 2381 2352 2367 2351 2366 # surface text
     lexeme zh # language
-      surface unformalized-raw 24341 29992 21160 20316 # unresolved-surface
-  link_action: # concept link_action
-    defined-by makes # definition-link
-    defined-by link # definition-link
-    defined-by from # definition-link
-    defined-by any_of_reference # definition-link
+      surface seed-surface-reference-action-zh # seed lexical surface
+        codepoints 24341 29992 21160 20316 # surface text
+  link-action: makes link from any-of-reference # concept link-action
     role links_root # semantic-role
     lexeme en # language
-      surface unformalized-raw 108 105 110 107 32 97 99 116 105 111 110 # unresolved-surface
+      surface seed-surface-link-action-en # seed lexical surface
+        codepoints 108 105 110 107 32 97 99 116 105 111 110 # surface text
     lexeme ru # language
-      surface unformalized-raw 1076 1077 1081 1089 1090 1074 1080 1077 32 1089 1074 1103 1079 1080 # unresolved-surface
+      surface seed-surface-link-action-ru # seed lexical surface
+        codepoints 1076 1077 1081 1089 1090 1074 1080 1077 32 1089 1074 1103 1079 1080 # surface text
     lexeme hi # language
-      surface unformalized-raw 2354 2367 2306 2325 32 2325 2381 2352 2367 2351 2366 # unresolved-surface
+      surface seed-surface-link-action-hi # seed lexical surface
+        codepoints 2354 2367 2306 2325 32 2325 2381 2352 2367 2351 2366 # surface text
     lexeme zh # language
-      surface unformalized-raw 38142 25509 21160 20316 # unresolved-surface
-  any_of_reference: # concept any_of_reference
-    defined-by reference # definition-link
-    defined-by repeatable_from_zero # definition-link
+      surface seed-surface-link-action-zh # seed lexical surface
+        codepoints 38142 25509 21160 20316 # surface text
+  any-of-reference: reference repeatable-from-zero # concept any-of-reference
     role links_root # semantic-role
     lexeme en # language
-      surface unformalized-raw 97 110 121 32 111 102 32 114 101 102 101 114 101 110 99 101 # unresolved-surface
+      surface seed-surface-any-of-reference-en # seed lexical surface
+        codepoints 97 110 121 32 111 102 32 114 101 102 101 114 101 110 99 101 # surface text
     lexeme ru # language
-      surface unformalized-raw 1083 1102 1073 1099 1077 32 1089 1089 1099 1083 1082 1080 # unresolved-surface
+      surface seed-surface-any-of-reference-ru # seed lexical surface
+        codepoints 1083 1102 1073 1099 1077 32 1089 1089 1099 1083 1082 1080 # surface text
     lexeme hi # language
-      surface unformalized-raw 2325 2379 2312 32 2349 2368 32 2360 2306 2342 2352 2381 2349 # unresolved-surface
+      surface seed-surface-any-of-reference-hi # seed lexical surface
+        codepoints 2325 2379 2312 32 2349 2368 32 2360 2306 2342 2352 2381 2349 # surface text
     lexeme zh # language
-      surface unformalized-raw 20219 24847 24341 29992 # unresolved-surface
-  any_of_link: # concept any_of_link
-    defined-by link # definition-link
-    defined-by repeatable_from_zero # definition-link
+      surface seed-surface-any-of-reference-zh # seed lexical surface
+        codepoints 20219 24847 24341 29992 # surface text
+  any-of-link: link repeatable-from-zero # concept any-of-link
     role links_root # semantic-role
     lexeme en # language
-      surface unformalized-raw 97 110 121 32 111 102 32 108 105 110 107 # unresolved-surface
+      surface seed-surface-any-of-link-en # seed lexical surface
+        codepoints 97 110 121 32 111 102 32 108 105 110 107 # surface text
     lexeme ru # language
-      surface unformalized-raw 1083 1102 1073 1099 1077 32 1089 1074 1103 1079 1080 # unresolved-surface
+      surface seed-surface-any-of-link-ru # seed lexical surface
+        codepoints 1083 1102 1073 1099 1077 32 1089 1074 1103 1079 1080 # surface text
     lexeme hi # language
-      surface unformalized-raw 2325 2379 2312 32 2349 2368 32 2354 2367 2306 2325 # unresolved-surface
+      surface seed-surface-any-of-link-hi # seed lexical surface
+        codepoints 2325 2379 2312 32 2349 2368 32 2354 2367 2306 2325 # surface text
     lexeme zh # language
-      surface unformalized-raw 20219 24847 38142 25509 # unresolved-surface
-  repeatable_from_zero: # concept repeatable_from_zero
-    defined-by same # definition-link
-    defined-by link_action # definition-link
-    defined-by zero # definition-link
-    defined-by more # definition-link
+      surface seed-surface-any-of-link-zh # seed lexical surface
+        codepoints 20219 24847 38142 25509 # surface text
+  repeatable-from-zero: same link-action zero-or-more # concept repeatable-from-zero
     role links_root # semantic-role
     lexeme en # language
-      surface unformalized-raw 114 101 112 101 97 116 97 98 108 101 32 102 114 111 109 32 122 101 114 111 # unresolved-surface
+      surface seed-surface-repeatable-from-zero-en # seed lexical surface
+        codepoints 114 101 112 101 97 116 97 98 108 101 32 102 114 111 109 32 122 101 114 111 # surface text
     lexeme ru # language
-      surface unformalized-raw 1087 1086 1074 1090 1086 1088 1103 1077 1084 1086 1077 32 1089 32 1085 1091 1083 1103 # unresolved-surface
+      surface seed-surface-repeatable-from-zero-ru # seed lexical surface
+        codepoints 1087 1086 1074 1090 1086 1088 1103 1077 1084 1086 1077 32 1089 32 1085 1091 1083 1103 # surface text
     lexeme hi # language
-      surface unformalized-raw 2358 2370 2344 2381 2351 32 2360 2375 32 2342 2379 2361 2352 2344 2368 2351 # unresolved-surface
+      surface seed-surface-repeatable-from-zero-hi # seed lexical surface
+        codepoints 2358 2370 2344 2381 2351 32 2360 2375 32 2342 2379 2361 2352 2344 2368 2351 # surface text
     lexeme zh # language
-      surface unformalized-raw 20174 38646 21487 37325 22797 # unresolved-surface
-  zero_or_more: # concept zero_or_more
-    defined-by zero # definition-link
-    defined-by more # definition-link
+      surface seed-surface-repeatable-from-zero-zh # seed lexical surface
+        codepoints 20174 38646 21487 37325 22797 # surface text
+  zero-or-more: zero or-else more # concept zero-or-more
     role links_root # semantic-role
     lexeme en # language
-      surface unformalized-raw 122 101 114 111 32 111 114 32 109 111 114 101 # unresolved-surface
+      surface seed-surface-zero-or-more-en # seed lexical surface
+        codepoints 122 101 114 111 32 111 114 32 109 111 114 101 # surface text
     lexeme ru # language
-      surface unformalized-raw 1085 1086 1083 1100 32 1080 1083 1080 32 1073 1086 1083 1100 1096 1077 # unresolved-surface
+      surface seed-surface-zero-or-more-ru # seed lexical surface
+        codepoints 1085 1086 1083 1100 32 1080 1083 1080 32 1073 1086 1083 1100 1096 1077 # surface text
     lexeme hi # language
-      surface unformalized-raw 2358 2370 2344 2381 2351 32 2351 2366 32 2309 2343 2367 2325 # unresolved-surface
+      surface seed-surface-zero-or-more-hi # seed lexical surface
+        codepoints 2358 2370 2344 2381 2351 32 2351 2366 32 2309 2343 2367 2325 # surface text
     lexeme zh # language
-      surface unformalized-raw 38646 20010 25110 22810 20010 # unresolved-surface
-  makes: # concept makes
-    defined-by link_action # definition-link
-    defined-by action # definition-link
+      surface seed-surface-zero-or-more-zh # seed lexical surface
+        codepoints 38646 20010 25110 22810 20010 # surface text
+  makes: link-action action # concept makes
     role links_root # semantic-role
     lexeme en # language
-      surface unformalized-raw 109 97 107 101 115 # unresolved-surface
+      surface seed-surface-makes-en # seed lexical surface
+        codepoints 109 97 107 101 115 # surface text
     lexeme ru # language
-      surface unformalized-raw 1089 1086 1079 1076 1072 1077 1090 # unresolved-surface
+      surface seed-surface-makes-ru # seed lexical surface
+        codepoints 1089 1086 1079 1076 1072 1077 1090 # surface text
     lexeme hi # language
-      surface unformalized-raw 2348 2344 2366 2340 2366 32 2361 2376 # unresolved-surface
+      surface seed-surface-makes-hi # seed lexical surface
+        codepoints 2348 2344 2366 2340 2366 32 2361 2376 # surface text
     lexeme zh # language
-      surface unformalized-raw 29983 25104 # unresolved-surface
-  point_at: # concept point_at
-    defined-by reference_action # definition-link
-    defined-by to # definition-link
-    defined-by link # definition-link
+      surface seed-surface-makes-zh # seed lexical surface
+        codepoints 29983 25104 # surface text
+  point-at: reference-action to link # concept point-at
     role links_root # semantic-role
     lexeme en # language
-      surface unformalized-raw 112 111 105 110 116 32 97 116 # unresolved-surface
+      surface seed-surface-point-at-en # seed lexical surface
+        codepoints 112 111 105 110 116 32 97 116 # surface text
     lexeme ru # language
-      surface unformalized-raw 1091 1082 1072 1079 1099 1074 1072 1090 1100 32 1085 1072 # unresolved-surface
+      surface seed-surface-point-at-ru # seed lexical surface
+        codepoints 1091 1082 1072 1079 1099 1074 1072 1090 1100 32 1085 1072 # surface text
     lexeme hi # language
-      surface unformalized-raw 2311 2358 2366 2352 2366 32 2325 2352 2344 2366 # unresolved-surface
+      surface seed-surface-point-at-hi # seed lexical surface
+        codepoints 2311 2358 2366 2352 2366 32 2325 2352 2344 2366 # surface text
     lexeme zh # language
-      surface unformalized-raw 25351 21521 # unresolved-surface
-  of: # concept of
-    defined-by belonging # definition-link
-    defined-by from # definition-link
-    defined-by part # definition-link
-    defined-by to # definition-link
-    defined-by whole # definition-link
+      surface seed-surface-point-at-zh # seed lexical surface
+        codepoints 25351 21521 # surface text
+  of: belonging from part to whole # concept of
     role links_root # semantic-role
     lexeme en # language
-      surface unformalized-raw 111 102 # unresolved-surface
+      surface seed-surface-of-en # seed lexical surface
+        codepoints 111 102 # surface text
     lexeme ru # language
-      surface unformalized-raw 1086 1090 # unresolved-surface
+      surface seed-surface-of-ru # seed lexical surface
+        codepoints 1086 1090 # surface text
     lexeme hi # language
-      surface unformalized-raw 2325 2366 # unresolved-surface
+      surface seed-surface-of-hi # seed lexical surface
+        codepoints 2325 2366 # surface text
     lexeme zh # language
-      surface unformalized-raw 30340 # unresolved-surface
-  from: # concept from
-    defined-by source # definition-link
-    defined-by end # definition-link
-    defined-by direction # definition-link
+      surface seed-surface-of-zh # seed lexical surface
+        codepoints 30340 # surface text
+  from: source end direction # concept from
     role links_root # semantic-role
     lexeme en # language
-      surface unformalized-raw 102 114 111 109 # unresolved-surface
+      surface seed-surface-from-en # seed lexical surface
+        codepoints 102 114 111 109 # surface text
     lexeme ru # language
-      surface unformalized-raw 1080 1079 # unresolved-surface
+      surface seed-surface-from-ru # seed lexical surface
+        codepoints 1080 1079 # surface text
     lexeme hi # language
-      surface unformalized-raw 2360 2375 # unresolved-surface
+      surface seed-surface-from-hi # seed lexical surface
+        codepoints 2360 2375 # surface text
     lexeme zh # language
-      surface unformalized-raw 20174 # unresolved-surface
-  to: # concept to
-    defined-by target # definition-link
-    defined-by end # definition-link
-    defined-by direction # definition-link
+      surface seed-surface-from-zh # seed lexical surface
+        codepoints 20174 # surface text
+  to: target end direction # concept to
     role links_root # semantic-role
     lexeme en # language
-      surface unformalized-raw 116 111 # unresolved-surface
+      surface seed-surface-to-en # seed lexical surface
+        codepoints 116 111 # surface text
     lexeme ru # language
-      surface unformalized-raw 1082 # unresolved-surface
+      surface seed-surface-to-ru # seed lexical surface
+        codepoints 1082 # surface text
     lexeme hi # language
-      surface unformalized-raw 2325 2379 # unresolved-surface
+      surface seed-surface-to-hi # seed lexical surface
+        codepoints 2325 2379 # surface text
     lexeme zh # language
-      surface unformalized-raw 21040 # unresolved-surface
-  and: # concept and
-    defined-by together_with # definition-link
+      surface seed-surface-to-zh # seed lexical surface
+        codepoints 21040 # surface text
+  and: together-with # concept and
     role links_root # semantic-role
     lexeme en # language
-      surface unformalized-raw 97 110 100 # unresolved-surface
+      surface seed-surface-and-en # seed lexical surface
+        codepoints 97 110 100 # surface text
     lexeme ru # language
-      surface unformalized-raw 1080 # unresolved-surface
+      surface seed-surface-and-ru # seed lexical surface
+        codepoints 1080 # surface text
     lexeme hi # language
-      surface unformalized-raw 2324 2352 # unresolved-surface
+      surface seed-surface-and-hi # seed lexical surface
+        codepoints 2324 2352 # surface text
     lexeme zh # language
-      surface unformalized-raw 21644 # unresolved-surface
-  not: # concept not
-    defined-by not # definition-link
-    defined-by link # definition-link
-    facet self_equation # facet
+      surface seed-surface-and-zh # seed lexical surface
+        codepoints 21644 # surface text
+  not: not (not not) # concept not
+    facet self-equation # facet
       not: # concept not
     role links_root # semantic-role
     lexeme en # language
-      surface unformalized-raw 110 111 116 # unresolved-surface
+      surface seed-surface-not-en # seed lexical surface
+        codepoints 110 111 116 # surface text
     lexeme ru # language
-      surface unformalized-raw 1085 1077 # unresolved-surface
+      surface seed-surface-not-ru # seed lexical surface
+        codepoints 1085 1077 # surface text
     lexeme hi # language
-      surface unformalized-raw 2344 2361 2368 2306 # unresolved-surface
+      surface seed-surface-not-hi # seed lexical surface
+        codepoints 2344 2361 2368 2306 # surface text
     lexeme zh # language
-      surface unformalized-raw 38750 # unresolved-surface
-  same: # concept same
-    defined-by not # definition-link
-    defined-by same # definition-link
-    defined-by link # definition-link
-    facet self_equation # facet
+      surface seed-surface-not-zh # seed lexical surface
+        codepoints 38750 # surface text
+  same: not (not same) link # concept same
+    facet self-equation # facet
       same: # concept same
     role links_root # semantic-role
     lexeme en # language
-      surface unformalized-raw 115 97 109 101 # unresolved-surface
+      surface seed-surface-same-en # seed lexical surface
+        codepoints 115 97 109 101 # surface text
     lexeme ru # language
-      surface unformalized-raw 1090 1086 1090 32 1078 1077 # unresolved-surface
+      surface seed-surface-same-ru # seed lexical surface
+        codepoints 1090 1086 1090 32 1078 1077 # surface text
     lexeme hi # language
-      surface unformalized-raw 2360 2350 2366 2344 # unresolved-surface
+      surface seed-surface-same-hi # seed lexical surface
+        codepoints 2360 2350 2366 2344 # surface text
     lexeme zh # language
-      surface unformalized-raw 30456 21516 # unresolved-surface
-  other: # concept other
-    defined-by not # definition-link
-    defined-by same # definition-link
+      surface seed-surface-same-zh # seed lexical surface
+        codepoints 30456 21516 # surface text
+  other: not same # concept other
     role links_root # semantic-role
     lexeme en # language
-      surface unformalized-raw 111 116 104 101 114 # unresolved-surface
+      surface seed-surface-other-en # seed lexical surface
+        codepoints 111 116 104 101 114 # surface text
     lexeme ru # language
-      surface unformalized-raw 1076 1088 1091 1075 1086 1081 # unresolved-surface
+      surface seed-surface-other-ru # seed lexical surface
+        codepoints 1076 1088 1091 1075 1086 1081 # surface text
     lexeme hi # language
-      surface unformalized-raw 2309 2344 2381 2351 # unresolved-surface
+      surface seed-surface-other-hi # seed lexical surface
+        codepoints 2309 2344 2381 2351 # surface text
     lexeme zh # language
-      surface unformalized-raw 20854 20182 # unresolved-surface
-  single: # concept single
-    defined-by not # definition-link
-    defined-by other # definition-link
+      surface seed-surface-other-zh # seed lexical surface
+        codepoints 20854 20182 # surface text
+  single: not other # concept single
     role links_root # semantic-role
     lexeme en # language
-      surface unformalized-raw 115 105 110 103 108 101 # unresolved-surface
+      surface seed-surface-single-en # seed lexical surface
+        codepoints 115 105 110 103 108 101 # surface text
     lexeme ru # language
-      surface unformalized-raw 1086 1076 1080 1085 1086 1095 1085 1099 1081 # unresolved-surface
+      surface seed-surface-single-ru # seed lexical surface
+        codepoints 1086 1076 1080 1085 1086 1095 1085 1099 1081 # surface text
     lexeme hi # language
-      surface unformalized-raw 2319 2325 2354 # unresolved-surface
+      surface seed-surface-single-hi # seed lexical surface
+        codepoints 2319 2325 2354 # surface text
     lexeme zh # language
-      surface unformalized-raw 21333 19968 # unresolved-surface
-  or_else: # concept or_else
-    defined-by choice # definition-link
-    defined-by between # definition-link
-    defined-by other # definition-link
+      surface seed-surface-single-zh # seed lexical surface
+        codepoints 21333 19968 # surface text
+  or-else: choice between other # concept or-else
     role links_root # semantic-role
     lexeme en # language
-      surface unformalized-raw 111 114 32 101 108 115 101 # unresolved-surface
+      surface seed-surface-or-else-en # seed lexical surface
+        codepoints 111 114 32 101 108 115 101 # surface text
     lexeme ru # language
-      surface unformalized-raw 1080 1083 1080 32 1080 1085 1072 1095 1077 # unresolved-surface
+      surface seed-surface-or-else-ru # seed lexical surface
+        codepoints 1080 1083 1080 32 1080 1085 1072 1095 1077 # surface text
     lexeme hi # language
-      surface unformalized-raw 2351 2366 32 2309 2344 2381 2351 # unresolved-surface
+      surface seed-surface-or-else-hi # seed lexical surface
+        codepoints 2351 2366 32 2309 2344 2381 2351 # surface text
     lexeme zh # language
-      surface unformalized-raw 25110 32773 # unresolved-surface
-  more: # concept more
-    defined-by one # definition-link
-    defined-by and # definition-link
+      surface seed-surface-or-else-zh # seed lexical surface
+        codepoints 25110 32773 # surface text
+  more: one and one # concept more
     role links_root # semantic-role
     lexeme en # language
-      surface unformalized-raw 109 111 114 101 # unresolved-surface
+      surface seed-surface-more-en # seed lexical surface
+        codepoints 109 111 114 101 # surface text
     lexeme ru # language
-      surface unformalized-raw 1073 1086 1083 1100 1096 1077 # unresolved-surface
+      surface seed-surface-more-ru # seed lexical surface
+        codepoints 1073 1086 1083 1100 1096 1077 # surface text
     lexeme hi # language
-      surface unformalized-raw 2309 2343 2367 2325 # unresolved-surface
+      surface seed-surface-more-hi # seed lexical surface
+        codepoints 2309 2343 2367 2325 # surface text
     lexeme zh # language
-      surface unformalized-raw 26356 22810 # unresolved-surface
-  is_identity: # concept is_identity
-    defined-by same # definition-link
+      surface seed-surface-more-zh # seed lexical surface
+        codepoints 26356 22810 # surface text
+  is-identity: same # concept is-identity
     role links_root # semantic-role
     lexeme en # language
-      surface unformalized-raw 105 115 32 105 100 101 110 116 105 116 121 # unresolved-surface
+      surface seed-surface-is-identity-en # seed lexical surface
+        codepoints 105 115 32 105 100 101 110 116 105 116 121 # surface text
     lexeme ru # language
-      surface unformalized-raw 1077 1089 1090 1100 32 1090 1086 1078 1076 1077 1089 1090 1074 1086 # unresolved-surface
+      surface seed-surface-is-identity-ru # seed lexical surface
+        codepoints 1077 1089 1090 1100 32 1090 1086 1078 1076 1077 1089 1090 1074 1086 # surface text
     lexeme hi # language
-      surface unformalized-raw 2346 2361 2330 2366 2344 32 2361 2376 # unresolved-surface
+      surface seed-surface-is-identity-hi # seed lexical surface
+        codepoints 2346 2361 2330 2366 2344 32 2361 2376 # surface text
     lexeme zh # language
-      surface unformalized-raw 26159 21516 19968 # unresolved-surface
-  is_a_kind_of: # concept is_a_kind_of
-    defined-by subtype # definition-link
-    defined-by supertype # definition-link
-    defined-by direction # definition-link
+      surface seed-surface-is-identity-zh # seed lexical surface
+        codepoints 26159 21516 19968 # surface text
+  is-a-kind-of: subtype supertype direction # concept is-a-kind-of
     role links_root # semantic-role
     lexeme en # language
-      surface unformalized-raw 105 115 32 97 32 107 105 110 100 32 111 102 # unresolved-surface
+      surface seed-surface-is-a-kind-of-en # seed lexical surface
+        codepoints 105 115 32 97 32 107 105 110 100 32 111 102 # surface text
     lexeme ru # language
-      surface unformalized-raw 1103 1074 1083 1103 1077 1090 1089 1103 32 1074 1080 1076 1086 1084 # unresolved-surface
+      surface seed-surface-is-a-kind-of-ru # seed lexical surface
+        codepoints 1103 1074 1083 1103 1077 1090 1089 1103 32 1074 1080 1076 1086 1084 # surface text
     lexeme hi # language
-      surface unformalized-raw 2325 2366 32 2346 2381 2352 2325 2366 2352 32 2361 2376 # unresolved-surface
+      surface seed-surface-is-a-kind-of-hi # seed lexical surface
+        codepoints 2325 2366 32 2346 2381 2352 2325 2366 2352 32 2361 2376 # surface text
     lexeme zh # language
-      surface unformalized-raw 26159 19968 31181 # unresolved-surface
-  subtype: # concept subtype
-    defined-by is_a_kind_of # definition-link
-    defined-by type # definition-link
+      surface seed-surface-is-a-kind-of-zh # seed lexical surface
+        codepoints 26159 19968 31181 # surface text
+  subtype: is-a-kind-of type # concept subtype
     role links_root # semantic-role
     lexeme en # language
-      surface unformalized-raw 115 117 98 116 121 112 101 # unresolved-surface
+      surface seed-surface-subtype-en # seed lexical surface
+        codepoints 115 117 98 116 121 112 101 # surface text
     lexeme ru # language
-      surface unformalized-raw 1087 1086 1076 1090 1080 1087 # unresolved-surface
+      surface seed-surface-subtype-ru # seed lexical surface
+        codepoints 1087 1086 1076 1090 1080 1087 # surface text
     lexeme hi # language
-      surface unformalized-raw 2313 2346 2346 2381 2352 2325 2366 2352 # unresolved-surface
+      surface seed-surface-subtype-hi # seed lexical surface
+        codepoints 2313 2346 2346 2381 2352 2325 2366 2352 # surface text
     lexeme zh # language
-      surface unformalized-raw 23376 31867 22411 # unresolved-surface
-  supertype: # concept supertype
-    defined-by type # definition-link
+      surface seed-surface-subtype-zh # seed lexical surface
+        codepoints 23376 31867 22411 # surface text
+  supertype: type type # concept supertype
     role links_root # semantic-role
     lexeme en # language
-      surface unformalized-raw 115 117 112 101 114 116 121 112 101 # unresolved-surface
+      surface seed-surface-supertype-en # seed lexical surface
+        codepoints 115 117 112 101 114 116 121 112 101 # surface text
     lexeme ru # language
-      surface unformalized-raw 1089 1091 1087 1077 1088 1090 1080 1087 # unresolved-surface
+      surface seed-surface-supertype-ru # seed lexical surface
+        codepoints 1089 1091 1087 1077 1088 1090 1080 1087 # surface text
     lexeme hi # language
-      surface unformalized-raw 2309 2343 2367 2346 2381 2352 2325 2366 2352 # unresolved-surface
+      surface seed-surface-supertype-hi # seed lexical surface
+        codepoints 2309 2343 2367 2346 2381 2352 2325 2366 2352 # surface text
     lexeme zh # language
-      surface unformalized-raw 36229 31867 22411 # unresolved-surface
-  held_by: # concept held_by
-    defined-by from # definition-link
-    defined-by property # definition-link
-    defined-by to # definition-link
-    defined-by entity # definition-link
+      surface seed-surface-supertype-zh # seed lexical surface
+        codepoints 36229 31867 22411 # surface text
+  held-by: from property to entity # concept held-by
     role links_root # semantic-role
     lexeme en # language
-      surface unformalized-raw 104 101 108 100 32 98 121 # unresolved-surface
+      surface seed-surface-held-by-en # seed lexical surface
+        codepoints 104 101 108 100 32 98 121 # surface text
     lexeme ru # language
-      surface unformalized-raw 1091 1076 1077 1088 1078 1080 1074 1072 1077 1090 1089 1103 # unresolved-surface
+      surface seed-surface-held-by-ru # seed lexical surface
+        codepoints 1091 1076 1077 1088 1078 1080 1074 1072 1077 1090 1089 1103 # surface text
     lexeme hi # language
-      surface unformalized-raw 2342 2381 2357 2366 2352 2366 32 2343 2366 2352 2367 2340 # unresolved-surface
+      surface seed-surface-held-by-hi # seed lexical surface
+        codepoints 2342 2381 2357 2366 2352 2366 32 2343 2366 2352 2367 2340 # surface text
     lexeme zh # language
-      surface unformalized-raw 25345 26377 20110 # unresolved-surface
-  amount: # concept amount
-    defined-by count # definition-link
-    defined-by any_of_link # definition-link
+      surface seed-surface-held-by-zh # seed lexical surface
+        codepoints 25345 26377 20110 # surface text
+  amount: count any-of-link # concept amount
     role links_root # semantic-role
     lexeme en # language
-      surface unformalized-raw 97 109 111 117 110 116 # unresolved-surface
+      surface seed-surface-amount-en # seed lexical surface
+        codepoints 97 109 111 117 110 116 # surface text
     lexeme ru # language
-      surface unformalized-raw 1082 1086 1083 1080 1095 1077 1089 1090 1074 1086 # unresolved-surface
+      surface seed-surface-amount-ru # seed lexical surface
+        codepoints 1082 1086 1083 1080 1095 1077 1089 1090 1074 1086 # surface text
     lexeme hi # language
-      surface unformalized-raw 2346 2352 2367 2350 2366 2339 # unresolved-surface
+      surface seed-surface-amount-hi # seed lexical surface
+        codepoints 2346 2352 2367 2350 2366 2339 # surface text
     lexeme zh # language
-      surface unformalized-raw 25968 39069 # unresolved-surface
-  size: # concept size
-    defined-by extent # definition-link
-    defined-by single # definition-link
-    defined-by link # definition-link
+      surface seed-surface-amount-zh # seed lexical surface
+        codepoints 25968 39069 # surface text
+  size: extent single link # concept size
     role links_root # semantic-role
     lexeme en # language
-      surface unformalized-raw 115 105 122 101 # unresolved-surface
+      surface seed-surface-size-en # seed lexical surface
+        codepoints 115 105 122 101 # surface text
     lexeme ru # language
-      surface unformalized-raw 1088 1072 1079 1084 1077 1088 # unresolved-surface
+      surface seed-surface-size-ru # seed lexical surface
+        codepoints 1088 1072 1079 1084 1077 1088 # surface text
     lexeme hi # language
-      surface unformalized-raw 2310 2325 2366 2352 # unresolved-surface
+      surface seed-surface-size-hi # seed lexical surface
+        codepoints 2310 2325 2366 2352 # surface text
     lexeme zh # language
-      surface unformalized-raw 22823 23567 # unresolved-surface
-  count: # concept count
-    defined-by amount # definition-link
-    defined-by distinct # definition-link
-    defined-by reference # definition-link
+      surface seed-surface-size-zh # seed lexical surface
+        codepoints 22823 23567 # surface text
+  count: amount distinct reference # concept count
     role links_root # semantic-role
     lexeme en # language
-      surface unformalized-raw 99 111 117 110 116 # unresolved-surface
+      surface seed-surface-count-en # seed lexical surface
+        codepoints 99 111 117 110 116 # surface text
     lexeme ru # language
-      surface unformalized-raw 1089 1095 1077 1090 # unresolved-surface
+      surface seed-surface-count-ru # seed lexical surface
+        codepoints 1089 1095 1077 1090 # surface text
     lexeme hi # language
-      surface unformalized-raw 2327 2367 2344 2340 2368 # unresolved-surface
+      surface seed-surface-count-hi # seed lexical surface
+        codepoints 2327 2367 2344 2340 2368 # surface text
     lexeme zh # language
-      surface unformalized-raw 35745 25968 # unresolved-surface
-  extent: # concept extent
-    defined-by size # definition-link
-    defined-by single # definition-link
-    defined-by reference # definition-link
+      surface seed-surface-count-zh # seed lexical surface
+        codepoints 35745 25968 # surface text
+  extent: size single reference # concept extent
     role links_root # semantic-role
     lexeme en # language
-      surface unformalized-raw 101 120 116 101 110 116 # unresolved-surface
+      surface seed-surface-extent-en # seed lexical surface
+        codepoints 101 120 116 101 110 116 # surface text
     lexeme ru # language
-      surface unformalized-raw 1087 1088 1086 1090 1103 1078 1077 1085 1085 1086 1089 1090 1100 # unresolved-surface
+      surface seed-surface-extent-ru # seed lexical surface
+        codepoints 1087 1088 1086 1090 1103 1078 1077 1085 1085 1086 1089 1090 1100 # surface text
     lexeme hi # language
-      surface unformalized-raw 2357 2367 2360 2381 2340 2366 2352 # unresolved-surface
+      surface seed-surface-extent-hi # seed lexical surface
+        codepoints 2357 2367 2360 2381 2340 2366 2352 # surface text
     lexeme zh # language
-      surface unformalized-raw 33539 22260 # unresolved-surface
-  distinct: # concept distinct
-    defined-by other # definition-link
+      surface seed-surface-extent-zh # seed lexical surface
+        codepoints 33539 22260 # surface text
+  distinct: other # concept distinct
     role links_root # semantic-role
     lexeme en # language
-      surface unformalized-raw 100 105 115 116 105 110 99 116 # unresolved-surface
+      surface seed-surface-distinct-en # seed lexical surface
+        codepoints 100 105 115 116 105 110 99 116 # surface text
     lexeme ru # language
-      surface unformalized-raw 1088 1072 1079 1083 1080 1095 1085 1099 1081 # unresolved-surface
+      surface seed-surface-distinct-ru # seed lexical surface
+        codepoints 1088 1072 1079 1083 1080 1095 1085 1099 1081 # surface text
     lexeme hi # language
-      surface unformalized-raw 2349 2367 2344 2381 2344 # unresolved-surface
+      surface seed-surface-distinct-hi # seed lexical surface
+        codepoints 2349 2367 2344 2381 2344 # surface text
     lexeme zh # language
-      surface unformalized-raw 19981 21516 # unresolved-surface
-  any: # concept any
-    defined-by quantity # definition-link
-    defined-by not # definition-link
-    defined-by fixed # definition-link
+      surface seed-surface-distinct-zh # seed lexical surface
+        codepoints 19981 21516 # surface text
+  any: quantity not fixed # concept any
     role links_root # semantic-role
     lexeme en # language
-      surface unformalized-raw 97 110 121 # unresolved-surface
+      surface seed-surface-any-en # seed lexical surface
+        codepoints 97 110 121 # surface text
     lexeme ru # language
-      surface unformalized-raw 1083 1102 1073 1086 1081 # unresolved-surface
+      surface seed-surface-any-ru # seed lexical surface
+        codepoints 1083 1102 1073 1086 1081 # surface text
     lexeme hi # language
-      surface unformalized-raw 2325 2379 2312 32 2349 2368 # unresolved-surface
+      surface seed-surface-any-hi # seed lexical surface
+        codepoints 2325 2379 2312 32 2349 2368 # surface text
     lexeme zh # language
-      surface unformalized-raw 20219 24847 # unresolved-surface
-  fixed: # concept fixed
-    defined-by same # definition-link
-    defined-by repeatable_from_zero # definition-link
+      surface seed-surface-any-zh # seed lexical surface
+        codepoints 20219 24847 # surface text
+  fixed: same repeatable-from-zero # concept fixed
     role links_root # semantic-role
     lexeme en # language
-      surface unformalized-raw 102 105 120 101 100 # unresolved-surface
+      surface seed-surface-fixed-en # seed lexical surface
+        codepoints 102 105 120 101 100 # surface text
     lexeme ru # language
-      surface unformalized-raw 1092 1080 1082 1089 1080 1088 1086 1074 1072 1085 1085 1099 1081 # unresolved-surface
+      surface seed-surface-fixed-ru # seed lexical surface
+        codepoints 1092 1080 1082 1089 1080 1088 1086 1074 1072 1085 1085 1099 1081 # surface text
     lexeme hi # language
-      surface unformalized-raw 2344 2367 2358 2381 2330 2367 2340 # unresolved-surface
+      surface seed-surface-fixed-hi # seed lexical surface
+        codepoints 2344 2367 2358 2381 2330 2367 2340 # surface text
     lexeme zh # language
-      surface unformalized-raw 22266 23450 # unresolved-surface
-  empty: # concept empty
-    defined-by any_of_reference # definition-link
-    defined-by zero # definition-link
+      surface seed-surface-fixed-zh # seed lexical surface
+        codepoints 22266 23450 # surface text
+  empty: any-of-reference zero # concept empty
     role links_root # semantic-role
     lexeme en # language
-      surface unformalized-raw 101 109 112 116 121 # unresolved-surface
+      surface seed-surface-empty-en # seed lexical surface
+        codepoints 101 109 112 116 121 # surface text
     lexeme ru # language
-      surface unformalized-raw 1087 1091 1089 1090 1086 1081 # unresolved-surface
+      surface seed-surface-empty-ru # seed lexical surface
+        codepoints 1087 1091 1089 1090 1086 1081 # surface text
     lexeme hi # language
-      surface unformalized-raw 2326 2366 2354 2368 # unresolved-surface
+      surface seed-surface-empty-hi # seed lexical surface
+        codepoints 2326 2366 2354 2368 # surface text
     lexeme zh # language
-      surface unformalized-raw 31354 # unresolved-surface
-  source: # concept source
-    defined-by relation # definition-link
-    defined-by direction # definition-link
+      surface seed-surface-empty-zh # seed lexical surface
+        codepoints 31354 # surface text
+  source: relation direction # concept source
     role links_root # semantic-role
     lexeme en # language
-      surface unformalized-raw 115 111 117 114 99 101 # unresolved-surface
+      surface seed-surface-source-en # seed lexical surface
+        codepoints 115 111 117 114 99 101 # surface text
     lexeme ru # language
-      surface unformalized-raw 1080 1089 1090 1086 1095 1085 1080 1082 # unresolved-surface
+      surface seed-surface-source-ru # seed lexical surface
+        codepoints 1080 1089 1090 1086 1095 1085 1080 1082 # surface text
     lexeme hi # language
-      surface unformalized-raw 2360 2381 2352 2379 2340 # unresolved-surface
+      surface seed-surface-source-hi # seed lexical surface
+        codepoints 2360 2381 2352 2379 2340 # surface text
     lexeme zh # language
-      surface unformalized-raw 26469 28304 # unresolved-surface
-  target: # concept target
-    defined-by relation # definition-link
-    defined-by direction # definition-link
+      surface seed-surface-source-zh # seed lexical surface
+        codepoints 26469 28304 # surface text
+  target: relation direction # concept target
     role links_root # semantic-role
     lexeme en # language
-      surface unformalized-raw 116 97 114 103 101 116 # unresolved-surface
+      surface seed-surface-target-en # seed lexical surface
+        codepoints 116 97 114 103 101 116 # surface text
     lexeme ru # language
-      surface unformalized-raw 1094 1077 1083 1100 # unresolved-surface
+      surface seed-surface-target-ru # seed lexical surface
+        codepoints 1094 1077 1083 1100 # surface text
     lexeme hi # language
-      surface unformalized-raw 2354 2325 2381 2359 2381 2351 # unresolved-surface
+      surface seed-surface-target-hi # seed lexical surface
+        codepoints 2354 2325 2381 2359 2381 2351 # surface text
     lexeme zh # language
-      surface unformalized-raw 30446 26631 # unresolved-surface
-  end: # concept end
-    defined-by relation # definition-link
-    defined-by direction # definition-link
+      surface seed-surface-target-zh # seed lexical surface
+        codepoints 30446 26631 # surface text
+  end: relation direction # concept end
     role links_root # semantic-role
     lexeme en # language
-      surface unformalized-raw 101 110 100 # unresolved-surface
+      surface seed-surface-end-en # seed lexical surface
+        codepoints 101 110 100 # surface text
     lexeme ru # language
-      surface unformalized-raw 1082 1086 1085 1077 1094 # unresolved-surface
+      surface seed-surface-end-ru # seed lexical surface
+        codepoints 1082 1086 1085 1077 1094 # surface text
     lexeme hi # language
-      surface unformalized-raw 2360 2367 2352 2366 # unresolved-surface
+      surface seed-surface-end-hi # seed lexical surface
+        codepoints 2360 2367 2352 2366 # surface text
     lexeme zh # language
-      surface unformalized-raw 31471 28857 # unresolved-surface
-  direction: # concept direction
-    defined-by relation # definition-link
-    defined-by source # definition-link
-    defined-by target # definition-link
+      surface seed-surface-end-zh # seed lexical surface
+        codepoints 31471 28857 # surface text
+  direction: relation source target # concept direction
     role links_root # semantic-role
     lexeme en # language
-      surface unformalized-raw 100 105 114 101 99 116 105 111 110 # unresolved-surface
+      surface seed-surface-direction-en # seed lexical surface
+        codepoints 100 105 114 101 99 116 105 111 110 # surface text
     lexeme ru # language
-      surface unformalized-raw 1085 1072 1087 1088 1072 1074 1083 1077 1085 1080 1077 # unresolved-surface
+      surface seed-surface-direction-ru # seed lexical surface
+        codepoints 1085 1072 1087 1088 1072 1074 1083 1077 1085 1080 1077 # surface text
     lexeme hi # language
-      surface unformalized-raw 2342 2367 2358 2366 # unresolved-surface
+      surface seed-surface-direction-hi # seed lexical surface
+        codepoints 2342 2367 2358 2366 # surface text
     lexeme zh # language
-      surface unformalized-raw 26041 21521 # unresolved-surface
-  belonging: # concept belonging
-    defined-by relation # definition-link
-    defined-by part # definition-link
-    defined-by whole # definition-link
+      surface seed-surface-direction-zh # seed lexical surface
+        codepoints 26041 21521 # surface text
+  belonging: relation part whole # concept belonging
     role links_root # semantic-role
     lexeme en # language
-      surface unformalized-raw 98 101 108 111 110 103 105 110 103 # unresolved-surface
+      surface seed-surface-belonging-en # seed lexical surface
+        codepoints 98 101 108 111 110 103 105 110 103 # surface text
     lexeme ru # language
-      surface unformalized-raw 1087 1088 1080 1085 1072 1076 1083 1077 1078 1085 1086 1089 1090 1100 # unresolved-surface
+      surface seed-surface-belonging-ru # seed lexical surface
+        codepoints 1087 1088 1080 1085 1072 1076 1083 1077 1078 1085 1086 1089 1090 1100 # surface text
     lexeme hi # language
-      surface unformalized-raw 2360 2306 2348 2342 2381 2343 2340 2366 # unresolved-surface
+      surface seed-surface-belonging-hi # seed lexical surface
+        codepoints 2360 2306 2348 2342 2381 2343 2340 2366 # surface text
     lexeme zh # language
-      surface unformalized-raw 24402 23646 # unresolved-surface
-  part: # concept part
-    defined-by link # definition-link
-    defined-by whole # definition-link
+      surface seed-surface-belonging-zh # seed lexical surface
+        codepoints 24402 23646 # surface text
+  part: link whole # concept part
     role links_root # semantic-role
     lexeme en # language
-      surface unformalized-raw 112 97 114 116 # unresolved-surface
+      surface seed-surface-part-en # seed lexical surface
+        codepoints 112 97 114 116 # surface text
     lexeme ru # language
-      surface unformalized-raw 1095 1072 1089 1090 1100 # unresolved-surface
+      surface seed-surface-part-ru # seed lexical surface
+        codepoints 1095 1072 1089 1090 1100 # surface text
     lexeme hi # language
-      surface unformalized-raw 2349 2366 2327 # unresolved-surface
+      surface seed-surface-part-hi # seed lexical surface
+        codepoints 2349 2366 2327 # surface text
     lexeme zh # language
-      surface unformalized-raw 37096 20998 # unresolved-surface
-  whole: # concept whole
-    defined-by link # definition-link
-    defined-by part # definition-link
+      surface seed-surface-part-zh # seed lexical surface
+        codepoints 37096 20998 # surface text
+  whole: link part # concept whole
     role links_root # semantic-role
     lexeme en # language
-      surface unformalized-raw 119 104 111 108 101 # unresolved-surface
+      surface seed-surface-whole-en # seed lexical surface
+        codepoints 119 104 111 108 101 # surface text
     lexeme ru # language
-      surface unformalized-raw 1094 1077 1083 1086 1077 # unresolved-surface
+      surface seed-surface-whole-ru # seed lexical surface
+        codepoints 1094 1077 1083 1086 1077 # surface text
     lexeme hi # language
-      surface unformalized-raw 2360 2306 2346 2370 2352 2381 2339 # unresolved-surface
+      surface seed-surface-whole-hi # seed lexical surface
+        codepoints 2360 2306 2346 2370 2352 2381 2339 # surface text
     lexeme zh # language
-      surface unformalized-raw 25972 20307 # unresolved-surface
-  together_with: # concept together_with
-    defined-by relation # definition-link
-    defined-by and # definition-link
+      surface seed-surface-whole-zh # seed lexical surface
+        codepoints 25972 20307 # surface text
+  together-with: relation and # concept together-with
     role links_root # semantic-role
     lexeme en # language
-      surface unformalized-raw 116 111 103 101 116 104 101 114 32 119 105 116 104 # unresolved-surface
+      surface seed-surface-together-with-en # seed lexical surface
+        codepoints 116 111 103 101 116 104 101 114 32 119 105 116 104 # surface text
     lexeme ru # language
-      surface unformalized-raw 1074 1084 1077 1089 1090 1077 32 1089 # unresolved-surface
+      surface seed-surface-together-with-ru # seed lexical surface
+        codepoints 1074 1084 1077 1089 1090 1077 32 1089 # surface text
     lexeme hi # language
-      surface unformalized-raw 2360 2366 2341 32 2350 2375 2306 # unresolved-surface
+      surface seed-surface-together-with-hi # seed lexical surface
+        codepoints 2360 2366 2341 32 2350 2375 2306 # surface text
     lexeme zh # language
-      surface unformalized-raw 19968 36215 # unresolved-surface
-  choice: # concept choice
-    defined-by relation # definition-link
+      surface seed-surface-together-with-zh # seed lexical surface
+        codepoints 19968 36215 # surface text
+  choice: relation # concept choice
     role links_root # semantic-role
     lexeme en # language
-      surface unformalized-raw 99 104 111 105 99 101 # unresolved-surface
+      surface seed-surface-choice-en # seed lexical surface
+        codepoints 99 104 111 105 99 101 # surface text
     lexeme ru # language
-      surface unformalized-raw 1074 1099 1073 1086 1088 # unresolved-surface
+      surface seed-surface-choice-ru # seed lexical surface
+        codepoints 1074 1099 1073 1086 1088 # surface text
     lexeme hi # language
-      surface unformalized-raw 2330 2351 2344 # unresolved-surface
+      surface seed-surface-choice-hi # seed lexical surface
+        codepoints 2330 2351 2344 # surface text
     lexeme zh # language
-      surface unformalized-raw 36873 25321 # unresolved-surface
-  between: # concept between
-    defined-by relation # definition-link
+      surface seed-surface-choice-zh # seed lexical surface
+        codepoints 36873 25321 # surface text
+  between: relation # concept between
     source-lexeme L3412 # wikidata english adposition between
       language Q1860 # wikidata language english
       form L3412-F1 # wikidata surface between
@@ -551,85 +614,106 @@ meanings
       language en # language
       sense L3412-S1 # wikidata spatial relation sense
     lexeme ru # language
-      surface unformalized-raw 1084 1077 1078 1076 1091 # unresolved-surface
+      surface seed-surface-between-ru # seed lexical surface
+        codepoints 1084 1077 1078 1076 1091 # surface text
     lexeme hi # language
-      surface unformalized-raw 2348 2368 2330 32 2350 2375 2306 # unresolved-surface
+      surface seed-surface-between-hi # seed lexical surface
+        codepoints 2348 2368 2330 32 2350 2375 2306 # surface text
     lexeme zh # language
-      surface unformalized-raw 20043 38388 # unresolved-surface
-  self_equation: # concept self_equation
-    defined-by semantic_facet # definition-link
-    defined-by same # definition-link
+      surface seed-surface-between-zh # seed lexical surface
+        codepoints 20043 38388 # surface text
+  semantic-facet: relation # concept semantic-facet
+    role links_root # semantic-role
+    lexeme en # language
+      surface seed-surface-semantic-facet-en # seed lexical surface
+        codepoints 115 101 109 97 110 116 105 99 32 102 97 99 101 116 # surface text
+  lexical-sense: denotation concept # concept lexical-sense
+    role links_root # semantic-role
+    lexeme en # language
+      surface seed-surface-lexical-sense-en # seed lexical surface
+        codepoints 108 101 120 105 99 97 108 32 115 101 110 115 101 # surface text
+  self-equation: semantic-facet same # concept self-equation
     role semantic_facet_kind # semantic-role
     role links_root # semantic-role
     lexeme en # language
-      surface unformalized-raw 115 101 108 102 32 101 113 117 97 116 105 111 110 # unresolved-surface
+      surface seed-surface-self-equation-en # seed lexical surface
+        codepoints 115 101 108 102 32 101 113 117 97 116 105 111 110 # surface text
     lexeme ru # language
-      surface unformalized-raw 1089 1072 1084 1086 1091 1088 1072 1074 1085 1077 1085 1080 1077 # unresolved-surface
+      surface seed-surface-self-equation-ru # seed lexical surface
+        codepoints 1089 1072 1084 1086 1091 1088 1072 1074 1085 1077 1085 1080 1077 # surface text
     lexeme hi # language
-      surface unformalized-raw 2360 2381 2357 45 2360 2350 2368 2325 2352 2339 # unresolved-surface
+      surface seed-surface-self-equation-hi # seed lexical surface
+        codepoints 2360 2381 2357 45 2360 2350 2368 2325 2352 2339 # surface text
     lexeme zh # language
-      surface unformalized-raw 33258 26041 31243 # unresolved-surface
-  symbol: # concept symbol
-    defined-by reference # definition-link
-    defined-by notation # definition-link
+      surface seed-surface-self-equation-zh # seed lexical surface
+        codepoints 33258 26041 31243 # surface text
+  symbol: reference notation # concept symbol
     role links_root # semantic-role
     lexeme en # language
-      surface unformalized-raw 115 121 109 98 111 108 # unresolved-surface
+      surface seed-surface-symbol-en # seed lexical surface
+        codepoints 115 121 109 98 111 108 # surface text
     lexeme ru # language
-      surface unformalized-raw 1089 1080 1084 1074 1086 1083 # unresolved-surface
+      surface seed-surface-symbol-ru # seed lexical surface
+        codepoints 1089 1080 1084 1074 1086 1083 # surface text
     lexeme hi # language
-      surface unformalized-raw 2346 2381 2352 2340 2368 2325 # unresolved-surface
+      surface seed-surface-symbol-hi # seed lexical surface
+        codepoints 2346 2381 2352 2340 2368 2325 # surface text
     lexeme zh # language
-      surface unformalized-raw 31526 21495 # unresolved-surface
-  one_symbol_one_meaning: # concept one_symbol_one_meaning
-    defined-by symbol # definition-link
-    defined-by single # definition-link
-    defined-by lexical_sense # definition-link
+      surface seed-surface-symbol-zh # seed lexical surface
+        codepoints 31526 21495 # surface text
+  one-symbol-one-meaning: symbol single lexical-sense # concept one-symbol-one-meaning
     role links_root # semantic-role
     lexeme en # language
-      surface unformalized-raw 111 110 101 32 115 121 109 98 111 108 32 111 110 101 32 109 101 97 110 105 110 103 # unresolved-surface
+      surface seed-surface-one-symbol-one-meaning-en # seed lexical surface
+        codepoints 111 110 101 32 115 121 109 98 111 108 32 111 110 101 32 109 101 97 110 105 110 103 # surface text
     lexeme ru # language
-      surface unformalized-raw 1086 1076 1080 1085 32 1089 1080 1084 1074 1086 1083 32 1086 1076 1085 1086 32 1079 1085 1072 1095 1077 1085 1080 1077 # unresolved-surface
+      surface seed-surface-one-symbol-one-meaning-ru # seed lexical surface
+        codepoints 1086 1076 1080 1085 32 1089 1080 1084 1074 1086 1083 32 1086 1076 1085 1086 32 1079 1085 1072 1095 1077 1085 1080 1077 # surface text
     lexeme hi # language
-      surface unformalized-raw 2319 2325 32 2346 2381 2352 2340 2368 2325 32 2319 2325 32 2309 2352 2381 2341 # unresolved-surface
+      surface seed-surface-one-symbol-one-meaning-hi # seed lexical surface
+        codepoints 2319 2325 32 2346 2381 2352 2340 2368 2325 32 2319 2325 32 2309 2352 2381 2341 # surface text
     lexeme zh # language
-      surface unformalized-raw 19968 31526 19968 20041 # unresolved-surface
-  sense_split: # concept sense_split
-    defined-by lexical_sense # definition-link
-    defined-by other # definition-link
-    defined-by symbol # definition-link
+      surface seed-surface-one-symbol-one-meaning-zh # seed lexical surface
+        codepoints 19968 31526 19968 20041 # surface text
+  sense-split: lexical-sense other symbol # concept sense-split
     role links_root # semantic-role
     lexeme en # language
-      surface unformalized-raw 115 101 110 115 101 32 115 112 108 105 116 # unresolved-surface
+      surface seed-surface-sense-split-en # seed lexical surface
+        codepoints 115 101 110 115 101 32 115 112 108 105 116 # surface text
     lexeme ru # language
-      surface unformalized-raw 1088 1072 1079 1076 1077 1083 1077 1085 1080 1077 32 1079 1085 1072 1095 1077 1085 1080 1081 # unresolved-surface
+      surface seed-surface-sense-split-ru # seed lexical surface
+        codepoints 1088 1072 1079 1076 1077 1083 1077 1085 1080 1077 32 1079 1085 1072 1095 1077 1085 1080 1081 # surface text
     lexeme hi # language
-      surface unformalized-raw 2309 2352 2381 2341 32 2357 2367 2349 2366 2332 2344 # unresolved-surface
+      surface seed-surface-sense-split-hi # seed lexical surface
+        codepoints 2309 2352 2381 2341 32 2357 2367 2349 2366 2332 2344 # surface text
     lexeme zh # language
-      surface unformalized-raw 20041 39033 25286 20998 # unresolved-surface
-  bank_river: # concept bank_river
-    defined-by sense_split # definition-link
-    defined-by part # definition-link
-    defined-by whole # definition-link
+      surface seed-surface-sense-split-zh # seed lexical surface
+        codepoints 20041 39033 25286 20998 # surface text
+  bank-river: sense-split part whole # concept bank-river
     role links_root # semantic-role
     lexeme en # language
-      surface unformalized-raw 114 105 118 101 114 32 98 97 110 107 # unresolved-surface
+      surface seed-surface-bank-river-en # seed lexical surface
+        codepoints 114 105 118 101 114 32 98 97 110 107 # surface text
     lexeme ru # language
-      surface unformalized-raw 1088 1077 1095 1085 1086 1081 32 1073 1077 1088 1077 1075 # unresolved-surface
+      surface seed-surface-bank-river-ru # seed lexical surface
+        codepoints 1088 1077 1095 1085 1086 1081 32 1073 1077 1088 1077 1075 # surface text
     lexeme hi # language
-      surface unformalized-raw 2344 2342 2368 32 2340 2335 # unresolved-surface
+      surface seed-surface-bank-river-hi # seed lexical surface
+        codepoints 2344 2342 2368 32 2340 2335 # surface text
     lexeme zh # language
-      surface unformalized-raw 27827 23736 # unresolved-surface
-  bank_money: # concept bank_money
-    defined-by sense_split # definition-link
-    defined-by entity # definition-link
-    defined-by property # definition-link
+      surface seed-surface-bank-river-zh # seed lexical surface
+        codepoints 27827 23736 # surface text
+  bank-money: sense-split entity property # concept bank-money
     role links_root # semantic-role
     lexeme en # language
-      surface unformalized-raw 102 105 110 97 110 99 105 97 108 32 98 97 110 107 # unresolved-surface
+      surface seed-surface-bank-money-en # seed lexical surface
+        codepoints 102 105 110 97 110 99 105 97 108 32 98 97 110 107 # surface text
     lexeme ru # language
-      surface unformalized-raw 1092 1080 1085 1072 1085 1089 1086 1074 1099 1081 32 1073 1072 1085 1082 # unresolved-surface
+      surface seed-surface-bank-money-ru # seed lexical surface
+        codepoints 1092 1080 1085 1072 1085 1089 1086 1074 1099 1081 32 1073 1072 1085 1082 # surface text
     lexeme hi # language
-      surface unformalized-raw 2357 2367 2340 2381 2340 2368 2351 32 2348 2376 2306 2325 # unresolved-surface
+      surface seed-surface-bank-money-hi # seed lexical surface
+        codepoints 2357 2367 2340 2381 2340 2368 2351 32 2348 2376 2306 2325 # surface text
     lexeme zh # language
-      surface unformalized-raw 38134 34892 # unresolved-surface
+      surface seed-surface-bank-money-zh # seed lexical surface
+        codepoints 38134 34892 # surface text

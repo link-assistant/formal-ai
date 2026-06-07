@@ -15,20 +15,20 @@ fn assert_defined_by(meaning: &Meaning, expected: &[&str]) {
 fn links_theory_root_terms_are_seed_meanings() {
     let lex = lexicon();
     let expected = [
-        ("reference", &["reference_action", "link"][..]),
+        ("reference", &["reference-action", "link"][..]),
         (
-            "reference_action",
-            &["makes", "reference", "point_at", "link"],
+            "reference-action",
+            &["makes", "reference", "point-at", "link"],
         ),
         (
-            "link_action",
-            &["makes", "link", "from", "any_of_reference"],
+            "link-action",
+            &["makes", "link", "from", "any-of-reference"],
         ),
-        ("any_of_reference", &["reference", "repeatable_from_zero"]),
-        ("any_of_link", &["link", "repeatable_from_zero"]),
+        ("any-of-reference", &["reference", "repeatable-from-zero"]),
+        ("any-of-link", &["link", "repeatable-from-zero"]),
         (
-            "repeatable_from_zero",
-            &["same", "link_action", "zero", "more"],
+            "repeatable-from-zero",
+            &["same", "link-action", "zero-or-more"],
         ),
     ];
 
@@ -48,18 +48,18 @@ fn links_theory_root_terms_are_seed_meanings() {
     }
 
     let link = lex.meaning("link").expect("link root meaning");
-    assert_defined_by(link, &["link", "link_action", "any_of_reference"]);
+    assert_defined_by(link, &["link", "link-action", "any-of-reference"]);
 }
 
 #[test]
 fn self_equations_are_explicit_semantic_facets() {
     let lex = lexicon();
     let facet_kind = lex
-        .meaning("self_equation")
-        .expect("self_equation facet kind must exist");
+        .meaning("self-equation")
+        .expect("self-equation facet kind must exist");
     assert!(
         facet_kind.has_role("semantic_facet_kind"),
-        "self_equation must be a meaning-backed facet kind"
+        "self-equation must be a meaning-backed facet kind"
     );
 
     for slug in ["type", "not", "same"] {
@@ -68,7 +68,7 @@ fn self_equations_are_explicit_semantic_facets() {
             .unwrap_or_else(|| panic!("{slug} self-equation meaning must exist"));
         assert!(
             meaning
-                .semantic_facet_targets("self_equation")
+                .semantic_facet_targets("self-equation")
                 .any(|target| target == slug),
             "{slug} must declare its fixed-point self-equation as a meaning link"
         );
@@ -82,10 +82,10 @@ fn defined_connectives_and_is_senses_are_not_opaque_english() {
         ("of", &["belonging", "from", "part", "to", "whole"][..]),
         ("from", &["source", "end", "direction"]),
         ("to", &["target", "end", "direction"]),
-        ("and", &["together_with"]),
-        ("is_identity", &["same"]),
-        ("is_a_kind_of", &["subtype", "supertype", "direction"]),
-        ("held_by", &["from", "property", "to", "entity"]),
+        ("and", &["together-with"]),
+        ("is-identity", &["same"]),
+        ("is-a-kind-of", &["subtype", "supertype", "direction"]),
+        ("held-by", &["from", "property", "to", "entity"]),
     ];
 
     for (slug, defined_by) in expected {
@@ -109,14 +109,14 @@ fn ambiguous_bank_surface_is_split_into_distinct_symbols() {
     );
 
     let river = lex
-        .meaning("bank_river")
-        .expect("bank_river split meaning must exist");
+        .meaning("bank-river")
+        .expect("bank-river split meaning must exist");
     let money = lex
-        .meaning("bank_money")
-        .expect("bank_money split meaning must exist");
+        .meaning("bank-money")
+        .expect("bank-money split meaning must exist");
 
     for meaning in [river, money] {
-        assert_defined_by(meaning, &["sense_split"]);
+        assert_defined_by(meaning, &["sense-split"]);
         assert!(
             meaning.word_forms().all(|form| form.text != "bank"),
             "{} must expose an unambiguous surface instead of bare `bank`",

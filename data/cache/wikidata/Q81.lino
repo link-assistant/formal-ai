@@ -1,0 +1,55 @@
+Q81 # cached json source
+  value
+    entities
+      Q81
+        aliases
+          en: []
+            at-0000
+              language: "en"
+              value: "carrot taproot"
+            at-0001
+              language: "en"
+              value: "domesticated carrot"
+          ru: []
+            at-0000
+              language: "ru"
+              value: "морковь (овощ)"
+          zh: []
+            at-0000
+              language: "zh"
+              value: "红萝卜"
+            at-0001
+              language: "zh"
+              value: "紅蘿蔔"
+            at-0002
+              language: "zh"
+              value: "紅菜頭"
+        descriptions
+          en
+            language: "en"
+            value: "root vegetable, plant of the Apiaceae family"
+          hi
+            language: "hi"
+            value: "जड़ वाली सब्जी, आमतौर पर नारंगी रंग"
+          ru
+            language: "ru"
+            value: "овощ и фрукт"
+          zh
+            language: "zh"
+            value: "伞形目伞形科的植物"
+        id: "Q81"
+        labels
+          en
+            language: "en"
+            value: "carrot"
+          hi
+            language: "hi"
+            value: "गाजर"
+          ru
+            language: "ru"
+            value: "морковь"
+          zh
+            language: "zh"
+            value: "胡萝卜"
+        type: "item"
+    success: 1

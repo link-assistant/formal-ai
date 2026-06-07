@@ -1,0 +1,70 @@
+Q181593 # cached json source
+  value
+    entities
+      Q181593
+        aliases
+          en: []
+            at-0000
+              language: "en"
+              value: "asc"
+            at-0001
+              language: "en"
+              value: "desc"
+            at-0002
+              language: "en"
+              value: "sort"
+          ru: []
+            at-0000
+              language: "ru"
+              value: "алгоритмы сортировки"
+            at-0001
+              language: "ru"
+              value: "сортировка"
+            at-0002
+              language: "ru"
+              value: "сортировка массива"
+          zh: []
+            at-0000
+              language: "zh"
+              value: "排序"
+            at-0001
+              language: "zh"
+              value: "升序"
+            at-0002
+              language: "zh"
+              value: "自然顺序"
+            at-0003
+              language: "zh"
+              value: "降序"
+            at-0004
+              language: "zh"
+              value: "反字典顺序"
+            at-0005
+              language: "zh"
+              value: "排序演算法"
+        descriptions
+          en
+            language: "en"
+            value: "algorithm that puts elements of a list in a certain order"
+          ru
+            language: "ru"
+            value: "алгоритм для упорядочивания элементов в списке"
+          zh
+            language: "zh"
+            value: "算法,按照一定的顺序列表的元素"
+        id: "Q181593"
+        labels
+          en
+            language: "en"
+            value: "sorting algorithm"
+          hi
+            language: "hi"
+            value: "अनुक्रमण की कलनविधि"
+          ru
+            language: "ru"
+            value: "алгоритм сортировки"
+          zh
+            language: "zh"
+            value: "排序算法"
+        type: "item"
+    success: 1

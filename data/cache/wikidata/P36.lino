@@ -1,0 +1,122 @@
+P36 # cached json source
+  value
+    entities
+      P36
+        aliases
+          en: []
+            at-0000
+              language: "en"
+              value: "capital city"
+            at-0001
+              language: "en"
+              value: "capital town"
+            at-0002
+              language: "en"
+              value: "chef-lieu"
+            at-0003
+              language: "en"
+              value: "principal place"
+            at-0004
+              language: "en"
+              value: "county seat"
+            at-0005
+              language: "en"
+              value: "administrative centre"
+            at-0006
+              language: "en"
+              value: "administrative headquarters"
+            at-0007
+              language: "en"
+              value: "has capital"
+            at-0008
+              language: "en"
+              value: "court residence"
+            at-0009
+              language: "en"
+              value: "seat"
+            at-0010
+              language: "en"
+              value: "administrative seat"
+            at-0011
+              language: "en"
+              value: "seat of government"
+            at-0012
+              language: "en"
+              value: "administrative capital"
+            at-0013
+              language: "en"
+              value: "government capital"
+            at-0014
+              language: "en"
+              value: "county town"
+            at-0015
+              language: "en"
+              value: "government seat"
+            at-0016
+              language: "en"
+              value: "administrative center"
+            at-0017
+              language: "en"
+              value: "location of capital"
+          ru: []
+            at-0000
+              language: "ru"
+              value: "главный город"
+            at-0001
+              language: "ru"
+              value: "столица"
+          zh: []
+            at-0000
+              language: "zh"
+              value: "首都"
+            at-0001
+              language: "zh"
+              value: "省会"
+            at-0002
+              language: "zh"
+              value: "首府"
+            at-0003
+              language: "zh"
+              value: "治所"
+            at-0004
+              language: "zh"
+              value: "县治"
+            at-0005
+              language: "zh"
+              value: "縣治"
+            at-0006
+              language: "zh"
+              value: "公所所在地"
+            at-0007
+              language: "zh"
+              value: "役場所在地"
+        datatype: "wikibase-item"
+        descriptions
+          en
+            language: "en"
+            value: "seat of government of a country, province, state or other type of administrative territorial entity"
+          hi
+            language: "hi"
+            value: "देश, राज्य या प्रशासनिक उपखंड की शासकीय सीट की नगर पालिका"
+          ru
+            language: "ru"
+            value: "официальный главный населённый пункт в административной единице"
+          zh
+            language: "zh"
+            value: "国家、省、州或其他类型行政领土实体的政府所在地"
+        id: "P36"
+        labels
+          en
+            language: "en"
+            value: "capital"
+          hi
+            language: "hi"
+            value: "राजधानी"
+          ru
+            language: "ru"
+            value: "административный центр"
+          zh
+            language: "zh"
+            value: "行政中心"
+        type: "property"
+    success: 1

@@ -1,0 +1,111 @@
+P5137 # cached json source
+  value
+    entities
+      P5137
+        aliases
+          en: []
+            at-0000
+              language: "en"
+              value: "denotes"
+            at-0001
+              language: "en"
+              value: "sense"
+            at-0002
+              language: "en"
+              value: "means"
+            at-0003
+              language: "en"
+              value: "sense item"
+            at-0004
+              language: "en"
+              value: "item"
+            at-0005
+              language: "en"
+              value: "item of this sense"
+            at-0006
+              language: "en"
+              value: "sense has this item"
+            at-0007
+              language: "en"
+              value: "sense's main topic"
+          hi: []
+            at-0000
+              language: "hi"
+              value: "आयटम"
+            at-0001
+              language: "hi"
+              value: "अर्थ"
+          ru: []
+            at-0000
+              language: "ru"
+              value: "смысл"
+            at-0001
+              language: "ru"
+              value: "означает"
+            at-0002
+              language: "ru"
+              value: "значение"
+            at-0003
+              language: "ru"
+              value: "значит"
+          zh: []
+            at-0000
+              language: "zh"
+              value: "該義項的項目"
+            at-0001
+              language: "zh"
+              value: "意義項目"
+            at-0002
+              language: "zh"
+              value: "項目"
+            at-0003
+              language: "zh"
+              value: "意义项目"
+            at-0004
+              language: "zh"
+              value: "项目"
+            at-0005
+              language: "zh"
+              value: "義項項目"
+            at-0006
+              language: "zh"
+              value: "义项项目"
+            at-0007
+              language: "zh"
+              value: "该词义专用项目"
+            at-0008
+              language: "zh"
+              value: "义项"
+            at-0009
+              language: "zh"
+              value: "含义"
+            at-0010
+              language: "zh"
+              value: "义项对应项"
+        datatype: "wikibase-item"
+        descriptions
+          en
+            language: "en"
+            value: "concept corresponding to this sense of a lexeme. Use only on lexeme senses; do not use on items or properties"
+          ru
+            language: "ru"
+            value: "связывает смысл лексемы с соответствующим понятием. Не используйте для элементов и свойств"
+          zh
+            language: "zh"
+            value: "与该词位义项相对应的概念： 仅限在“词位义项”上使用；严禁用于普通项（Item）或属性"
+        id: "P5137"
+        labels
+          en
+            language: "en"
+            value: "item for this sense"
+          hi
+            language: "hi"
+            value: "इस अर्थ के लिए आइटम"
+          ru
+            language: "ru"
+            value: "элемент для значения"
+          zh
+            language: "zh"
+            value: "对应此义项的项目"
+        type: "property"
+    success: 1

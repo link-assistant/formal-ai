@@ -1,0 +1,155 @@
+P31 # cached json source
+  value
+    entities
+      P31
+        aliases
+          en: []
+            at-0000
+              language: "en"
+              value: "is a"
+            at-0001
+              language: "en"
+              value: "is an"
+            at-0002
+              language: "en"
+              value: "is a[n]"
+            at-0003
+              language: "en"
+              value: "unique individual of"
+            at-0004
+              language: "en"
+              value: "unitary element of class"
+            at-0005
+              language: "en"
+              value: "type"
+            at-0006
+              language: "en"
+              value: "example of"
+            at-0007
+              language: "en"
+              value: "is of type"
+            at-0008
+              language: "en"
+              value: "has type"
+            at-0009
+              language: "en"
+              value: "item of type"
+            at-0010
+              language: "en"
+              value: "was a[n]"
+            at-0011
+              language: "en"
+              value: "will be a[n] (use 'nature of statement' = 'expected')"
+          ru: []
+            at-0000
+              language: "ru"
+              value: "представляет собой"
+            at-0001
+              language: "ru"
+              value: "частный случай для"
+            at-0002
+              language: "ru"
+              value: "является одним из экземпляров"
+            at-0003
+              language: "ru"
+              value: "принадлежит классу"
+            at-0004
+              language: "ru"
+              value: "является одним из"
+            at-0005
+              language: "ru"
+              value: "экземпляр от"
+            at-0006
+              language: "ru"
+              value: "класс объекта:"
+            at-0007
+              language: "ru"
+              value: "вид сущности"
+            at-0008
+              language: "ru"
+              value: "это"
+            at-0009
+              language: "ru"
+              value: "один из"
+            at-0010
+              language: "ru"
+              value: "это пример"
+            at-0011
+              language: "ru"
+              value: "пример"
+            at-0012
+              language: "ru"
+              value: "является"
+            at-0013
+              language: "ru"
+              value: "есть"
+          zh: []
+            at-0000
+              language: "zh"
+              value: "屬於"
+            at-0001
+              language: "zh"
+              value: "是一个"
+            at-0002
+              language: "zh"
+              value: "性質"
+            at-0003
+              language: "zh"
+              value: "属于"
+            at-0004
+              language: "zh"
+              value: "類別"
+            at-0005
+              language: "zh"
+              value: "所属的类"
+            at-0006
+              language: "zh"
+              value: "隸屬於"
+            at-0007
+              language: "zh"
+              value: "是"
+            at-0008
+              language: "zh"
+              value: "是...的一个实例"
+            at-0009
+              language: "zh"
+              value: "性质"
+            at-0010
+              language: "zh"
+              value: "实例"
+            at-0011
+              language: "zh"
+              value: "示例"
+            at-0012
+              language: "zh"
+              value: "是一個"
+        datatype: "wikibase-item"
+        descriptions
+          en
+            language: "en"
+            value: "type to which this subject corresponds/belongs. Different from P279 (subclass of); for example: K2 is an instance of mountain; volcano is a subclass of mountain"
+          hi
+            language: "hi"
+            value: "एक विषय का दूसरे विषय के उदाहरण के रूप में होना"
+          ru
+            language: "ru"
+            value: 'данный элемент представляет собой конкретный объект (экземпляр / частный случай) класса, категории. Не путать с Property:P279 ("подкласс от")'
+          zh
+            language: "zh"
+            value: "该项目所属的类别；与父类（P279）不同，例：富士山隶属于山、火山父类是山"
+        id: "P31"
+        labels
+          en
+            language: "en"
+            value: "instance of"
+          hi
+            language: "hi"
+            value: "प्रकार"
+          ru
+            language: "ru"
+            value: "это частный случай понятия"
+          zh
+            language: "zh"
+            value: "隶属于"
+        type: "property"
+    success: 1

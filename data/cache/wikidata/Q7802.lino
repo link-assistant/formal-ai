@@ -1,0 +1,51 @@
+Q7802 # cached json source
+  value
+    entities
+      Q7802
+        aliases
+          en: []
+            at-0000
+              language: "en"
+              value: "bun"
+            at-0001
+              language: "en"
+              value: "breads"
+            at-0002
+              language: "en"
+              value: "buns"
+          zh: []
+            at-0000
+              language: "zh"
+              value: "面包"
+            at-0001
+              language: "zh"
+              value: "麭"
+        descriptions
+          en
+            language: "en"
+            value: "baked food made of flour, water and other ingredients"
+          hi
+            language: "hi"
+            value: "आटे से तैयार प्रधान भोजन"
+          ru
+            language: "ru"
+            value: "пищевой продукт"
+          zh
+            language: "zh"
+            value: "由麵粉製作烘烤而成的食物"
+        id: "Q7802"
+        labels
+          en
+            language: "en"
+            value: "bread"
+          hi
+            language: "hi"
+            value: "डबलरोटी"
+          ru
+            language: "ru"
+            value: "хлеб"
+          zh
+            language: "zh"
+            value: "麵包"
+        type: "item"
+    success: 1

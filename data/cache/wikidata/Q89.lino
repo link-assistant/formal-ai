@@ -1,0 +1,58 @@
+Q89 # cached json source
+  value
+    entities
+      Q89
+        aliases
+          en: []
+            at-0000
+              language: "en"
+              value: "apple fruit"
+          hi: []
+            at-0000
+              language: "hi"
+              value: "सेवफलम्"
+            at-0001
+              language: "hi"
+              value: "एप्पल"
+          zh: []
+            at-0000
+              language: "zh"
+              value: "柰"
+            at-0001
+              language: "zh"
+              value: "蘋果"
+            at-0002
+              language: "zh"
+              value: "píngguǒ"
+            at-0003
+              language: "zh"
+              value: "瓜果"
+        descriptions
+          en
+            language: "en"
+            value: "edible fruit of the apple tree"
+          hi
+            language: "hi"
+            value: "सेब वृक्ष का फल"
+          ru
+            language: "ru"
+            value: "плод яблони"
+          zh
+            language: "zh"
+            value: "植物，果实是一种水果"
+        id: "Q89"
+        labels
+          en
+            language: "en"
+            value: "apple"
+          hi
+            language: "hi"
+            value: "सेब"
+          ru
+            language: "ru"
+            value: "яблоко"
+          zh
+            language: "zh"
+            value: "苹果"
+        type: "item"
+    success: 1

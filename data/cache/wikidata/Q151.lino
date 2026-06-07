@@ -1,0 +1,46 @@
+Q151 # cached json source
+  value
+    entities
+      Q151
+        aliases
+          en: []
+            at-0000
+              language: "en"
+              value: "Wiktionary, the free dictionary"
+          hi: []
+            at-0000
+              language: "hi"
+              value: "विक्षनरी"
+          zh: []
+            at-0000
+              language: "zh"
+              value: "WT"
+        descriptions
+          en
+            language: "en"
+            value: "free online multilingual dictionary"
+          hi
+            language: "hi"
+            value: "एक मुक्त शब्दकोश"
+          ru
+            language: "ru"
+            value: "свободно пополняемый многофункциональный многоязычный словарь и тезаурус, основанный на вики-движке"
+          zh
+            language: "zh"
+            value: "自由的多語言詞典"
+        id: "Q151"
+        labels
+          en
+            language: "en"
+            value: "Wiktionary"
+          hi
+            language: "hi"
+            value: "विकिकोश"
+          ru
+            language: "ru"
+            value: "Викисловарь"
+          zh
+            language: "zh"
+            value: "维基词典"
+        type: "item"
+    success: 1

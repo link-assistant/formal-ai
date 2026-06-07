@@ -1,0 +1,92 @@
+Q283 # cached json source
+  value
+    entities
+      Q283
+        aliases
+          en: []
+            at-0000
+              language: "en"
+              value: "dihydrogen monoxide"
+            at-0001
+              language: "en"
+              value: "dihydridooxygen"
+            at-0002
+              language: "en"
+              value: "hydrogen hydroxide"
+            at-0003
+              language: "en"
+              value: "dihydrogen oxide"
+            at-0004
+              language: "en"
+              value: "oxidane"
+            at-0005
+              language: "en"
+              value: "hydrogen oxide"
+            at-0006
+              language: "en"
+              value: "pure water"
+          hi: []
+            at-0000
+              language: "hi"
+              value: "पानी"
+            at-0001
+              language: "hi"
+              value: "पीयूष"
+            at-0002
+              language: "hi"
+              value: "हाइड्रोजन हाइड्रॉक्साइड"
+            at-0003
+              language: "hi"
+              value: "डाईहाइड्रोजन मोनो ऑक्साइड"
+          ru: []
+            at-0000
+              language: "ru"
+              value: "оксид водорода"
+            at-0001
+              language: "ru"
+              value: "гидроксид водорода"
+            at-0002
+              language: "ru"
+              value: "гидроксильная кислота"
+            at-0003
+              language: "ru"
+              value: "монооксид дигидрогена"
+            at-0004
+              language: "ru"
+              value: "дигидромонооксид"
+          zh: []
+            at-0000
+              language: "zh"
+              value: "氢氧化氢"
+            at-0001
+              language: "zh"
+              value: "一氧化二氢"
+        descriptions
+          en
+            language: "en"
+            value: "chemical compound whose molecules are formed by two hydrogen atoms and one oxygen atom"
+          hi
+            language: "hi"
+            value: "रासायनिक यौगिक; जीवन अमृत"
+          ru
+            language: "ru"
+            value: "химическое вещество, оксид водорода"
+          zh
+            language: "zh"
+            value: "無機化合物"
+        id: "Q283"
+        labels
+          en
+            language: "en"
+            value: "water"
+          hi
+            language: "hi"
+            value: "जल"
+          ru
+            language: "ru"
+            value: "вода"
+          zh
+            language: "zh"
+            value: "水"
+        type: "item"
+    success: 1

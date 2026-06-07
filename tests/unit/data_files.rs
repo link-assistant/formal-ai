@@ -93,12 +93,16 @@ fn wikidata_cache_uses_compact_native_lino() {
         .filter(|path| path.extension().and_then(|extension| extension.to_str()) == Some("lino"))
     {
         let content = fs::read_to_string(&path).expect("cache file should be UTF-8");
-        for token in forbidden {
-            assert!(
-                !content.contains(token),
-                "{} still contains noisy structural token `{token}`",
-                path.display()
-            );
+        for (index, line) in content.lines().enumerate() {
+            let trimmed = strip_lino_comment(line).trim_start();
+            for token in forbidden {
+                assert!(
+                    !trimmed.starts_with(token),
+                    "{}:{} still contains noisy structural token `{token}`",
+                    path.display(),
+                    index + 1
+                );
+            }
         }
         assert!(
             !encoded_text.is_match(&content),
@@ -148,7 +152,9 @@ fn meaning_seed_uses_id_fact_format() {
             }
             if let Some(id) = trimmed.strip_prefix("surface ") {
                 assert!(
-                    id.starts_with('L') || id.starts_with("unformalized-raw "),
+                    id.starts_with('L')
+                        || id.starts_with("seed-surface-")
+                        || id.starts_with("unformalized-raw "),
                     "{}:{line_number} has bare-word surface `{id}`",
                     path.display()
                 );

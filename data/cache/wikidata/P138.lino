@@ -1,0 +1,116 @@
+P138 # cached json source
+  value
+    entities
+      P138
+        aliases
+          en: []
+            at-0000
+              language: "en"
+              value: "eponym"
+            at-0001
+              language: "en"
+              value: "named for"
+            at-0002
+              language: "en"
+              value: "namesake"
+            at-0003
+              language: "en"
+              value: "etymology"
+            at-0004
+              language: "en"
+              value: "toponym"
+            at-0005
+              language: "en"
+              value: "name after"
+            at-0006
+              language: "en"
+              value: "named in honor of"
+            at-0007
+              language: "en"
+              value: "name origin"
+          ru: []
+            at-0000
+              language: "ru"
+              value: "назван в честь"
+            at-0001
+              language: "ru"
+              value: "названа в честь"
+            at-0002
+              language: "ru"
+              value: "в честь"
+            at-0003
+              language: "ru"
+              value: "имени"
+            at-0004
+              language: "ru"
+              value: "носит имя"
+            at-0005
+              language: "ru"
+              value: "эпоним"
+            at-0006
+              language: "ru"
+              value: "название в честь"
+            at-0007
+              language: "ru"
+              value: "происходит от"
+          zh: []
+            at-0000
+              language: "zh"
+              value: "命名来源"
+            at-0001
+              language: "zh"
+              value: "词源"
+            at-0002
+              language: "zh"
+              value: "得名"
+            at-0003
+              language: "zh"
+              value: "冠名者"
+            at-0004
+              language: "zh"
+              value: "名称由来"
+            at-0005
+              language: "zh"
+              value: "得名自"
+            at-0006
+              language: "zh"
+              value: "命名自"
+            at-0007
+              language: "zh"
+              value: "命名由来"
+            at-0008
+              language: "zh"
+              value: "同名者"
+            at-0009
+              language: "zh"
+              value: "命名者"
+            at-0010
+              language: "zh"
+              value: "名称来源"
+        datatype: "wikibase-item"
+        descriptions
+          en
+            language: "en"
+            value: 'entity or event that inspired the subject''s name, or namesake (in at least one language). Qualifier "applies to name" (P5168) can be used to indicate which one'
+          ru
+            language: "ru"
+            value: "объект, персона или событие, чьё имя/название послужило основой для данного элемента"
+          zh
+            language: "zh"
+            value: "启发该主体名称的实体或事件，或同名者（至少在一种语言中）。限定词“适用于名称”（P5168）可用于指明具体是哪一个。"
+        id: "P138"
+        labels
+          en
+            language: "en"
+            value: "named after"
+          hi
+            language: "hi"
+            value: "नामकरण का आधार"
+          ru
+            language: "ru"
+            value: "названо в честь"
+          zh
+            language: "zh"
+            value: "得名自"
+        type: "property"
+    success: 1

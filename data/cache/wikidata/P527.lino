@@ -1,0 +1,201 @@
+P527 # cached json source
+  value
+    entities
+      P527
+        aliases
+          en: []
+            at-0000
+              language: "en"
+              value: "formed from"
+            at-0001
+              language: "en"
+              value: "formed out of"
+            at-0002
+              language: "en"
+              value: "assembled from"
+            at-0003
+              language: "en"
+              value: "assembled out of"
+            at-0004
+              language: "en"
+              value: "created from"
+            at-0005
+              language: "en"
+              value: "created out of"
+            at-0006
+              language: "en"
+              value: "amalgamation of"
+            at-0007
+              language: "en"
+              value: "set of"
+            at-0008
+              language: "en"
+              value: "consists of"
+            at-0009
+              language: "en"
+              value: "holonym of"
+            at-0010
+              language: "en"
+              value: "parts"
+            at-0011
+              language: "en"
+              value: "comprised of"
+            at-0012
+              language: "en"
+              value: "includes part"
+            at-0013
+              language: "en"
+              value: "has as part"
+            at-0014
+              language: "en"
+              value: "has component"
+            at-0015
+              language: "en"
+              value: "have part"
+            at-0016
+              language: "en"
+              value: "composed of"
+            at-0017
+              language: "en"
+              value: "has ingredient"
+            at-0018
+              language: "en"
+              value: "has ingredients"
+            at-0019
+              language: "en"
+              value: "ingredients"
+            at-0020
+              language: "en"
+              value: "contain"
+            at-0021
+              language: "en"
+              value: "contains"
+            at-0022
+              language: "en"
+              value: "has member"
+            at-0023
+              language: "en"
+              value: "has branch"
+            at-0024
+              language: "en"
+              value: "divided by"
+            at-0025
+              language: "en"
+              value: "incorporates"
+            at-0026
+              language: "en"
+              value: "had part"
+            at-0027
+              language: "en"
+              value: "has parts"
+            at-0028
+              language: "en"
+              value: "has part"
+            at-0029
+              language: "en"
+              value: "has part or parts"
+            at-0030
+              language: "en"
+              value: "made up of"
+            at-0031
+              language: "en"
+              value: "includes"
+          hi: []
+            at-0000
+              language: "hi"
+              value: "में भाग है"
+          ru: []
+            at-0000
+              language: "ru"
+              value: "имеет частью"
+            at-0001
+              language: "ru"
+              value: "включает в себя"
+            at-0002
+              language: "ru"
+              value: "имеет дополнение"
+            at-0003
+              language: "ru"
+              value: "части"
+            at-0004
+              language: "ru"
+              value: "компоненты"
+            at-0005
+              language: "ru"
+              value: "имеет части"
+            at-0006
+              language: "ru"
+              value: "включает части"
+            at-0007
+              language: "ru"
+              value: "включает компоненты"
+            at-0008
+              language: "ru"
+              value: "включает компонент"
+            at-0009
+              language: "ru"
+              value: "имеет компоненты"
+            at-0010
+              language: "ru"
+              value: "составляющие"
+            at-0011
+              language: "ru"
+              value: "из"
+            at-0012
+              language: "ru"
+              value: "содержит в себе"
+            at-0013
+              language: "ru"
+              value: "содержит внутри себя"
+          zh: []
+            at-0000
+              language: "zh"
+              value: "子类"
+            at-0001
+              language: "zh"
+              value: "子類"
+            at-0002
+              language: "zh"
+              value: "拥有部分"
+            at-0003
+              language: "zh"
+              value: "擁有部分"
+            at-0004
+              language: "zh"
+              value: "可分爲"
+            at-0005
+              language: "zh"
+              value: "子实体"
+            at-0006
+              language: "zh"
+              value: "可分為"
+            at-0007
+              language: "zh"
+              value: "包含"
+        datatype: "wikibase-item"
+        descriptions
+          en
+            language: "en"
+            value: 'part of this subject; inverse property of "part of" (P361). See also "has parts of the class" (P2670).'
+          ru
+            language: "ru"
+            value: "объект, являющийся частью предмета описания"
+          zh
+            language: "zh"
+            value: "此主體的一部分，是所屬實體（P361）的逆屬性，另見“拥有此类别的一部分”（P2670）"
+        id: "P527"
+        labels
+          en
+            language: "en"
+            value: "has part(s)"
+          hi
+            language: "hi"
+            value: "इसके हिस्से हैं"
+          ru
+            language: "ru"
+            value: "состоит из"
+          zh
+            language: "zh"
+            value: "擁有的部分有"
+        type: "property"
+    success: 1

@@ -1,0 +1,161 @@
+P279 # cached json source
+  value
+    entities
+      P279
+        aliases
+          en: []
+            at-0000
+              language: "en"
+              value: "rdfs:subClassOf"
+            at-0001
+              language: "en"
+              value: "has superclass"
+            at-0002
+              language: "en"
+              value: "subtype of"
+            at-0003
+              language: "en"
+              value: "subcategory of"
+            at-0004
+              language: "en"
+              value: "is thereby also a"
+            at-0005
+              language: "en"
+              value: "is necessarily also a"
+            at-0006
+              language: "en"
+              value: "whose instances are among"
+            at-0007
+              language: "en"
+              value: "is a type of"
+            at-0008
+              language: "en"
+              value: "is a class of"
+            at-0009
+              language: "en"
+              value: "type of"
+            at-0010
+              language: "en"
+              value: "form of"
+            at-0011
+              language: "en"
+              value: "way of"
+            at-0012
+              language: "en"
+              value: "all members of this class also belong to"
+            at-0013
+              language: "en"
+              value: "category of"
+            at-0014
+              language: "en"
+              value: "whose instances are a subset of those of"
+            at-0015
+              language: "en"
+              value: "sc (abbreviation)"
+            at-0016
+              language: "en"
+              value: "kind of"
+            at-0017
+              language: "en"
+              value: "sort of"
+            at-0018
+              language: "en"
+              value: "variant of"
+            at-0019
+              language: "en"
+              value: "subgenre of"
+          ru: []
+            at-0000
+              language: "ru"
+              value: "является гипонимом по отношению к"
+            at-0001
+              language: "ru"
+              value: "надмножества этого понятия"
+            at-0002
+              language: "ru"
+              value: "является подклассом для"
+            at-0003
+              language: "ru"
+              value: "гипоним от"
+            at-0004
+              language: "ru"
+              value: "подмножество от"
+            at-0005
+              language: "ru"
+              value: "подкласс в"
+            at-0006
+              language: "ru"
+              value: "подпонятие от"
+            at-0007
+              language: "ru"
+              value: "подпонятие в"
+            at-0008
+              language: "ru"
+              value: "относится как подкласс к"
+            at-0009
+              language: "ru"
+              value: "гипероним"
+            at-0010
+              language: "ru"
+              value: "надмножество"
+            at-0011
+              language: "ru"
+              value: "подкатегория"
+            at-0012
+              language: "ru"
+              value: "является частным по отношению к"
+          zh: []
+            at-0000
+              language: "zh"
+              value: "上一级分类"
+            at-0001
+              language: "zh"
+              value: "父類"
+            at-0002
+              language: "zh"
+              value: "上級分類"
+            at-0003
+              language: "zh"
+              value: "所属分类"
+            at-0004
+              language: "zh"
+              value: "所属上级分类"
+            at-0005
+              language: "zh"
+              value: "包含在"
+            at-0006
+              language: "zh"
+              value: "是一種"
+            at-0007
+              language: "zh"
+              value: "為一種"
+            at-0008
+              language: "zh"
+              value: "包含於"
+        datatype: "wikibase-item"
+        descriptions
+          en
+            language: "en"
+            value: "this item is a subclass (subset) of that item; ALL instances of this item are instances of that item; different from P31 (instance of), e.g.: volcano is a subclass of mountain; Everest is an instance of mountain"
+          ru
+            language: "ru"
+            value: 'каждый экземпляр данного класса является также экземпляром следующего(-их) класса(-ов). Не путать с P31 ("это частный случай понятия")'
+          zh
+            language: "zh"
+            value: "此项目为彼项目的子类（子集），即所有属于此项目的事物皆属于彼项目；与P31（属于）不同，例：火山包含於山、珠穆朗玛峰属于山"
+        id: "P279"
+        labels
+          en
+            language: "en"
+            value: "subclass of"
+          hi
+            language: "hi"
+            value: "का उपवर्ग"
+          ru
+            language: "ru"
+            value: "подкласс от"
+          zh
+            language: "zh"
+            value: "上级分类"
+        type: "property"
+    success: 1

@@ -1,0 +1,55 @@
+P5972 # cached json source
+  value
+    entities
+      P5972
+        aliases
+          en: []
+            at-0000
+              language: "en"
+              value: "translations"
+            at-0001
+              language: "en"
+              value: "foreign language synonym"
+            at-0002
+              language: "en"
+              value: "synonym in foreign language"
+            at-0003
+              language: "en"
+              value: "synonym in another language"
+            at-0004
+              language: "en"
+              value: "synonym in other language"
+            at-0005
+              language: "en"
+              value: "translates as"
+          zh: []
+            at-0000
+              language: "zh"
+              value: "译文"
+            at-0001
+              language: "zh"
+              value: "外语同义词"
+        datatype: "wikibase-sense"
+        descriptions
+          en
+            language: "en"
+            value: "sense (meaning) of a lexeme in another language that corresponds exactly to this sense (meaning) of the lexeme"
+          ru
+            language: "ru"
+            value: "значение лексемы на другом языке, точно соответствующее данному значению лексемы"
+          zh
+            language: "zh"
+            value: "与该词语的意义完全对应的另一种语言中词语的意义"
+        id: "P5972"
+        labels
+          en
+            language: "en"
+            value: "translation"
+          ru
+            language: "ru"
+            value: "перевод"
+          zh
+            language: "zh"
+            value: "翻譯"
+        type: "property"
+    success: 1
