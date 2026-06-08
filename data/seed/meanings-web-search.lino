@@ -180,6 +180,70 @@ meanings
         codepoints 36039 28304
       surface seed-surface-88bb7339ac9b
         codepoints 25991 31456
+  reference_news: # concept reference_news
+    defined-by web_resource # definition-link
+    defined-by concept # definition-link
+    role web_search_signal # semantic-role
+    role web_search_news_subject # semantic-role
+    lexeme en # language
+      surface seed-surface-aa01afe9a2c6
+        codepoints 32 110 101 119 115 32
+      surface seed-surface-6af3619f0a15
+        codepoints 32 104 101 97 100 108 105 110 101 115 32
+    lexeme ru # language
+      surface seed-surface-238e7b6d8201
+        codepoints 32 1085 1086 1074 1086 1089 1090
+    lexeme hi # language
+      surface seed-surface-0abdb25d4336
+        codepoints 2360 2350 2366 2330 2366 2352
+      surface seed-surface-f34d0690d2cd
+        codepoints 2326 2348 2352
+    lexeme zh # language
+      surface seed-surface-ca96e14bf6a1
+        codepoints 26032 38395
+      surface seed-surface-9dabf585bc0e
+        codepoints 26032 32862
+      surface seed-surface-853b3a79fb62
+        codepoints 22836 26465
+      surface seed-surface-ef77f881c94e
+        codepoints 38957 26781
+  news_recency_request: # concept news_recency_request
+    defined-by time # definition-link
+    role web_search_news_recency # semantic-role
+    lexeme en # language
+      surface seed-surface-c15382e0f8a6
+        codepoints 32 108 97 116 101 115 116 32
+      surface seed-surface-614f31af6ef8
+        codepoints 32 99 117 114 114 101 110 116 32
+      surface seed-surface-733f9faa27e6
+        codepoints 32 98 114 101 97 107 105 110 103 32
+      surface seed-surface-6e38f1ee2305
+        codepoints 32 116 111 100 97 121 32
+    lexeme ru # language
+      surface seed-surface-32fe94709b84
+        codepoints 32 1087 1086 1089 1083 1077 1076 1085
+      surface seed-surface-3115374fea8f
+        codepoints 32 1089 1074 1077 1078
+      surface seed-surface-f8f64b85256c
+        codepoints 32 1072 1082 1090 1091 1072 1083 1100 1085
+      surface seed-surface-3a0a0fdf4846
+        codepoints 32 1089 1077 1075 1086 1076 1085 1103
+    lexeme hi # language
+      surface seed-surface-2c1355b9497a
+        codepoints 2344 2357 2368 2344 2340 2350
+      surface seed-surface-78e1d8ddfa18
+        codepoints 2340 2366 2332 2364 2366
+      surface seed-surface-060744ec073d
+        codepoints 2340 2366 2332 2366
+      surface seed-surface-9bf0b0fd83b3
+        codepoints 2310 2332
+    lexeme zh # language
+      surface seed-surface-8e45e7689af6
+        codepoints 26368 26032
+      surface seed-surface-cdd304bfbbe7
+        codepoints 20170 26085
+      surface seed-surface-521e65c053b1
+        codepoints 20170 22825
   act_search_strong: # concept act_search_strong
     defined-by inquiry # definition-link
     defined-by action # definition-link

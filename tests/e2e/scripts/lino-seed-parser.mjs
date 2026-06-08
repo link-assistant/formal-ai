@@ -10,13 +10,19 @@ export function decodeLinoValue(rawValue) {
     return value.slice(1, -1);
   }
 
-  if (value === 'unformalized-raw') {
+  if (value === 'unformalized-raw' || value === 'codepoints') {
     return '';
   }
 
-  if (value.startsWith('unformalized-raw ')) {
+  const codepointPrefix = value.startsWith('unformalized-raw ')
+    ? 'unformalized-raw '
+    : value.startsWith('codepoints ')
+      ? 'codepoints '
+      : '';
+
+  if (codepointPrefix) {
     const codePoints = value
-      .slice('unformalized-raw '.length)
+      .slice(codepointPrefix.length)
       .trim()
       .split(/\s+/)
       .filter(Boolean)

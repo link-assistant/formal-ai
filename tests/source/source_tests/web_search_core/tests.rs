@@ -12,12 +12,14 @@ fn default_plan_lists_duckduckgo_first() {
     assert!(plan.contains(&"wikipedia".to_string()));
     assert!(plan.contains(&"wikidata".to_string()));
     assert!(plan.contains(&"wiktionary".to_string()));
+    assert!(plan.contains(&"wikinews".to_string()));
     assert!(plan.contains(&"internet-archive".to_string()));
 }
 
 /// Issue #180 specifies the strict priority order the JS worker uses
-/// when rendering and deduping fused results. Pin it here so the WASM
-/// evidence prefix stays in lockstep with the JS rendering.
+/// when rendering and deduping fused results; issue #400 appends
+/// Wikinews for freshness-sensitive news prompts. Pin it here so the
+/// WASM evidence prefix stays in lockstep with the JS rendering.
 #[test]
 fn default_plan_preserves_issue_180_priority_order() {
     let plan = default_search_plan_ids();
@@ -29,6 +31,7 @@ fn default_plan_preserves_issue_180_priority_order() {
             "wikipedia".to_string(),
             "wikidata".to_string(),
             "wiktionary".to_string(),
+            "wikinews".to_string(),
         ]
     );
 }
@@ -143,6 +146,7 @@ fn registry_pins_issue_133_explicit_providers() {
         "wikipedia",
         "wikidata",
         "wiktionary",
+        "wikinews",
         "internet-archive",
         // Open-access paper providers (no paywall, as the issue requires).
         "arxiv",
@@ -199,6 +203,7 @@ fn build_request_evidence_lists_providers_in_priority_order() {
             "web_search:provider:wikipedia",
             "web_search:provider:wikidata",
             "web_search:provider:wiktionary",
+            "web_search:provider:wikinews",
         ]
     );
 }
@@ -225,6 +230,20 @@ fn internet_archive_is_cors_readable_in_registry() {
     assert!(
         spec.cors_readable,
         "internet-archive must stay CORS-readable so the demo browser can call it directly"
+    );
+    assert!(matches!(spec.category, ProviderCategory::Knowledge));
+}
+
+/// Issue #400: latest-news prompts use Wikinews as a CORS-readable source.
+#[test]
+fn wikinews_is_cors_readable_in_registry() {
+    let spec = WEB_SEARCH_PROVIDER_REGISTRY
+        .iter()
+        .find(|spec| spec.id == "wikinews")
+        .expect("wikinews must be in registry");
+    assert!(
+        spec.cors_readable,
+        "wikinews must stay CORS-readable so latest-news prompts can call it directly"
     );
     assert!(matches!(spec.category, ProviderCategory::Knowledge));
 }
