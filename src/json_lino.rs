@@ -5,6 +5,8 @@
 //! scalar arrays inline their values, while structured arrays list stable item
 //! ids with indented item bodies.
 
+use std::fmt::Write as _;
+
 use serde_json::{Map, Number, Value};
 
 use crate::seed::parser::{parse_lino, LinoNode};
@@ -107,10 +109,8 @@ fn write_named_value(out: &mut String, indent: usize, name: &str, value: &Value)
 fn write_array_item(out: &mut String, indent: usize, index: usize, value: &Value) {
     let name = format!("{ARRAY_ITEM_PREFIX}{index:04}");
     if let Value::Object(object) = value {
-        if object.is_empty() {
-            write_line(out, indent, &name, None, None);
-        } else {
-            write_line(out, indent, &name, None, None);
+        write_line(out, indent, &name, None, None);
+        if !object.is_empty() {
             write_object_entries(out, indent + 2, object, None);
         }
     } else {
@@ -183,7 +183,7 @@ fn array_item_link_token(len: usize) -> String {
         if index > 0 {
             out.push(' ');
         }
-        out.push_str(&format!("{ARRAY_ITEM_PREFIX}{index:04}"));
+        let _ = write!(out, "{ARRAY_ITEM_PREFIX}{index:04}");
     }
     out.push(')');
     out
