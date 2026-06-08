@@ -8018,6 +8018,12 @@ const WIKTIONARY_SEARCH_HOSTS = {
   zh: "https://zh.wiktionary.org/w/api.php",
 };
 
+const WIKINEWS_SEARCH_HOSTS = {
+  en: "https://en.wikinews.org/w/api.php",
+  ru: "https://ru.wikinews.org/w/api.php",
+  zh: "https://zh.wikinews.org/w/api.php",
+};
+
 function wikipediaHostsFor(language) {
   // Try the detected language first, then fall back to English so a Russian
   // query for an English-only article still returns a definition.
@@ -18666,6 +18672,74 @@ const MEANINGS_LINO = [
   '        description "Chinese noun (pinyin ziyuan, traditional) for a resource; a bare substring signal marker."',
   '      word "文章"',
   '        description "Chinese noun (pinyin wenzhang) for an article; a bare substring signal marker."',
+  '  meaning "reference_news"',
+  '    gloss "news and headlines as a public information subject. The surfaces also carry web_search_signal so a weak find/search verb can target them; paired with a freshness marker they additionally recognise bare latest-news prompts such as последние новости as a web-search request. Space-wrapped Latin forms match whole tokens, while the Russian stem and Han forms match as substrings to fold inflection and compounds."',
+  '    wiktionary "news"',
+  '    defined_by "web_resource"',
+  '    defined_by "concept"',
+  '    role "web_search_signal"',
+  '    role "web_search_news_subject"',
+  '    lexeme "en"',
+  '      word " news "',
+  '        description "English noun (news), space-wrapped for a whole-token news subject match."',
+  '      word " headlines "',
+  '        description "English noun (headlines), space-wrapped for a whole-token news subject match."',
+  '    lexeme "ru"',
+  '      word " новост"',
+  '        description "Russian stem (romanized novost) with a leading boundary only, folding новости, новостей and новостях as a news subject."',
+  '    lexeme "hi"',
+  '      word "समाचार"',
+  '        description "Hindi noun (romanized samachar) for news; a bare substring news subject marker."',
+  '      word "खबर"',
+  '        description "Hindi noun stem (romanized khabar) for news; a bare substring news subject marker."',
+  '    lexeme "zh"',
+  '      word "新闻"',
+  '        description "Chinese noun (pinyin xinwen) for news; a bare substring news subject marker."',
+  '      word "新聞"',
+  '        description "Chinese noun (traditional, pinyin xinwen) for news; a bare substring news subject marker."',
+  '      word "头条"',
+  '        description "Chinese noun (pinyin toutiao) for headlines; a bare substring news subject marker."',
+  '      word "頭條"',
+  '        description "Chinese noun (traditional, pinyin toutiao) for headlines; a bare substring news subject marker."',
+  '  meaning "news_recency_request"',
+  '    gloss "freshness markers that make a news subject require live or recent web results. These forms do not route on their own; the recogniser requires a co-occurring web_search_news_subject marker so ordinary uses of latest/current stay outside web search."',
+  '    wiktionary "latest"',
+  '    defined_by "time"',
+  '    role "web_search_news_recency"',
+  '    lexeme "en"',
+  '      word " latest "',
+  '        description "English adjective (latest), space-wrapped for a whole-token freshness marker."',
+  '      word " current "',
+  '        description "English adjective (current), space-wrapped for a whole-token freshness marker."',
+  '      word " breaking "',
+  '        description "English adjective (breaking), space-wrapped for a whole-token freshness marker."',
+  '      word " today "',
+  '        description "English adverb/noun (today), space-wrapped for a whole-token freshness marker."',
+  '    lexeme "ru"',
+  '      word " последн"',
+  '        description "Russian stem (romanized posledn) with a leading boundary only, folding последний, последние and последних."',
+  '      word " свеж"',
+  '        description "Russian stem (romanized svezh) with a leading boundary only, folding свежие, свежих and свежая."',
+  '      word " актуальн"',
+  '        description "Russian stem (romanized aktualn) with a leading boundary only, folding актуальные and актуальных."',
+  '      word " сегодня"',
+  '        description "Russian adverb (romanized segodnya) with a leading boundary as a freshness marker."',
+  '    lexeme "hi"',
+  '      word "नवीनतम"',
+  '        description "Hindi adjective (romanized navintam) for latest; a bare substring freshness marker."',
+  '      word "ताज़ा"',
+  '        description "Hindi adjective (romanized taza) for fresh/latest news; a bare substring freshness marker."',
+  '      word "ताजा"',
+  '        description "Hindi adjective without nukta (romanized taza) for fresh/latest news; a bare substring freshness marker."',
+  '      word "आज"',
+  '        description "Hindi adverb (romanized aaj) for today; a bare substring freshness marker."',
+  '    lexeme "zh"',
+  '      word "最新"',
+  '        description "Chinese adjective (pinyin zuixin) for latest; a bare substring freshness marker."',
+  '      word "今日"',
+  '        description "Chinese noun/adverb (pinyin jinri) for today; a bare substring freshness marker."',
+  '      word "今天"',
+  '        description "Chinese noun/adverb (pinyin jintian) for today; a bare substring freshness marker."',
   '  meaning "act_search_strong"',
   '    gloss "the decisive search action — to search, look up, research or investigate. It is strong because, on its own, it is enough to route a prompt to web search without any reference-source signal. Each verb appears twice: as a space-wrapped (or, for Devanagari and Han, bare substring) bare marker used to detect that a search is being asked for, and as a prefix surface ending in … used to extract the query that follows the imperative. The longer prefix search for … is listed before the shorter search … so an imperative like search for cats keeps cats rather than for cats."',
   '    wiktionary "search"',
@@ -27744,6 +27818,8 @@ const ROLE_WEB_SEARCH_IMPERATIVE_LEAD = "web_search_imperative_lead";
 const ROLE_WEB_SEARCH_QUERY_LEADING_NOISE = "web_search_query_leading_noise";
 const ROLE_WEB_SEARCH_QUERY_TRAILING_NOISE = "web_search_query_trailing_noise";
 const ROLE_WEB_SEARCH_SOURCE_ONLY = "web_search_source_only";
+const ROLE_WEB_SEARCH_NEWS_SUBJECT = "web_search_news_subject";
+const ROLE_WEB_SEARCH_NEWS_RECENCY = "web_search_news_recency";
 // Mention of web search inside a *prior* conversation turn (raw lowercased
 // substring of the turn text, not the normalised prompt). Mirrors
 // ROLE_WEB_SEARCH_HISTORY_SIGNAL in src/seed/roles.rs.
@@ -27900,6 +27976,8 @@ function webSearchMarkers() {
     leadingNoise: prefixLiterals(ROLE_WEB_SEARCH_QUERY_LEADING_NOISE),
     trailingNoise: suffixLiterals(ROLE_WEB_SEARCH_QUERY_TRAILING_NOISE),
     sourceOnly: sourceLiterals(ROLE_WEB_SEARCH_SOURCE_ONLY),
+    newsSubjectMarkers: bareLiterals(ROLE_WEB_SEARCH_NEWS_SUBJECT),
+    newsRecencyMarkers: bareLiterals(ROLE_WEB_SEARCH_NEWS_RECENCY),
     followupVerbs: bareLiterals(ROLE_FOLLOWUP_INSTRUCTION_VERB),
     continuationMarkers: bareLiterals(ROLE_CLAUSE_CONTINUATION_MARKER),
     researchQuestionPrefixes: prefixLiterals(ROLE_RESEARCH_QUESTION_OPENER),
@@ -28095,6 +28173,15 @@ function cleanSemanticSearchQuery(value) {
 
 function validSearchQuery(value) {
   const query = cleanSemanticSearchQuery(value);
+  return validCleanSearchQuery(query);
+}
+
+function validNewsSearchQuery(value) {
+  const query = cleanSearchQuery(truncateSearchInstructionTail(value));
+  return validCleanSearchQuery(query);
+}
+
+function validCleanSearchQuery(query) {
   const queryKey = query.toLowerCase();
   if (webSearchMarkers().sourceOnly.includes(queryKey)) return "";
   return query && !normalizeUrlCandidate(query) ? query : "";
@@ -28156,6 +28243,18 @@ function extractSemanticWebSearchQuery(prompt, normalized) {
     if (query) return query;
   }
   return "";
+}
+
+function extractLatestNewsSearchRequest(normalized) {
+  const markers = webSearchMarkers();
+  const text = String(normalized || "");
+  if (
+    !containsAnySearchMarker(text, markers.newsSubjectMarkers) ||
+    !containsAnySearchMarker(text, markers.newsRecencyMarkers)
+  ) {
+    return "";
+  }
+  return validNewsSearchQuery(text);
 }
 
 function stripImplicitResearchPrefix(value) {
@@ -28239,6 +28338,10 @@ function extractWebSearchRequest(prompt, normalized) {
   const semanticQuery = extractSemanticWebSearchQuery(prompt, normalized);
   if (semanticQuery) {
     return { query: semanticQuery, kind: "semantic_action" };
+  }
+  const latestNewsQuery = extractLatestNewsSearchRequest(normalized);
+  if (latestNewsQuery) {
+    return { query: latestNewsQuery, kind: "latest_news" };
   }
   const enumerationQuery = extractEnumerationResearchRequest(prompt, normalized);
   if (enumerationQuery) {
@@ -29536,6 +29639,7 @@ const PROVIDER_DISPLAY_LABELS = {
   wikipedia: "Википедия",
   wikidata: "Викидата",
   wiktionary: "Викисловарь",
+  wikinews: "Викиновости",
 };
 
 const PROVIDER_DISPLAY_LABELS_BY_LANG = {
@@ -29545,6 +29649,7 @@ const PROVIDER_DISPLAY_LABELS_BY_LANG = {
     wikipedia: "Wikipedia",
     wikidata: "Wikidata",
     wiktionary: "Wiktionary",
+    wikinews: "Wikinews",
   },
   ru: {
     duckduckgo: "DuckDuckGo",
@@ -29552,6 +29657,7 @@ const PROVIDER_DISPLAY_LABELS_BY_LANG = {
     wikipedia: "Википедия",
     wikidata: "Викидата",
     wiktionary: "Викисловарь",
+    wikinews: "Викиновости",
   },
   zh: {
     duckduckgo: "DuckDuckGo",
@@ -29559,6 +29665,7 @@ const PROVIDER_DISPLAY_LABELS_BY_LANG = {
     wikipedia: "维基百科",
     wikidata: "维基数据",
     wiktionary: "维基词典",
+    wikinews: "维基新闻",
   },
   hi: {
     duckduckgo: "DuckDuckGo",
@@ -29566,6 +29673,7 @@ const PROVIDER_DISPLAY_LABELS_BY_LANG = {
     wikipedia: "विकिपीडिया",
     wikidata: "विकिडेटा",
     wiktionary: "विक्षनरी",
+    wikinews: "Wikinews",
   },
 };
 
@@ -29812,8 +29920,72 @@ async function searchWiktionary(query, language, limit) {
   return { ok: true, results: collected.slice(0, cap), finalUrl: lastFinalUrl };
 }
 
+function wikinewsFallbackDescription(title, language) {
+  if (language === "ru") {
+    return `В Wikinews есть новостная статья «${title}».`;
+  }
+  if (language === "zh") {
+    return `Wikinews 有“${title}”这篇新闻。`;
+  }
+  if (language === "hi") {
+    return `Wikinews में "${title}" के लिए समाचार लेख है।`;
+  }
+  return `Wikinews has a news article titled "${title}".`;
+}
+
+// Issue #400: Wikinews exposes the same CORS-readable MediaWiki opensearch
+// endpoint as Wiktionary, and is the source requested for latest-news prompts.
+async function searchWikinews(query, language, limit) {
+  const cap = typeof limit === "number" && Number.isFinite(limit) && limit > 0
+    ? Math.floor(limit)
+    : 5;
+  const lang = language && /^[a-z]{2,3}$/i.test(language) ? language : "en";
+  const ordered = [lang, "en"].filter(
+    (value, index, array) => value && array.indexOf(value) === index,
+  );
+  const collected = [];
+  let lastFinalUrl = "";
+  let lastError = "";
+  for (const candidate of ordered) {
+    const base = WIKINEWS_SEARCH_HOSTS[candidate] || WIKINEWS_SEARCH_HOSTS.en;
+    const url = `${base}?action=opensearch&search=${encodeURIComponent(query)}&limit=${cap}&format=json&origin=*`;
+    const outcome = await fetchProviderJson("wikinews", url);
+    lastFinalUrl = outcome.finalUrl || lastFinalUrl;
+    if (!outcome.ok || !Array.isArray(outcome.data) || !Array.isArray(outcome.data[1])) {
+      if (outcome.error) lastError = outcome.error;
+      continue;
+    }
+    const titles = outcome.data[1];
+    const descriptions = Array.isArray(outcome.data[2]) ? outcome.data[2] : [];
+    const urls = Array.isArray(outcome.data[3]) ? outcome.data[3] : [];
+    for (let index = 0; index < titles.length && collected.length < cap; index += 1) {
+      const title = titles[index] || query;
+      const description = stripHtml(
+        descriptions[index] || wikinewsFallbackDescription(title, candidate),
+      );
+      const itemUrl = urls[index] ||
+        `https://${candidate}.wikinews.org/wiki/${encodeURIComponent(title)}`;
+      const key = String(title).replace(/\s+/g, "_");
+      collected.push({
+        title,
+        url: itemUrl,
+        excerpt: description,
+        wikinewsKey: key,
+        wikinewsLanguage: candidate,
+        virtualId: `WN:${candidate}:${key}`,
+        sourceKind: "wikinews",
+      });
+    }
+    if (collected.length > 0) break;
+  }
+  if (collected.length === 0) {
+    return { ok: false, results: [], finalUrl: lastFinalUrl, error: lastError || "no_results" };
+  }
+  return { ok: true, results: collected.slice(0, cap), finalUrl: lastFinalUrl };
+}
+
 // Issue #180: The priority order requested in the issue is
-// DuckDuckGo → Internet Archive → Wikipedia → Wikidata → Wiktionary → rest.
+// DuckDuckGo → Internet Archive → Wikipedia → Wikidata → Wiktionary → Wikinews → rest.
 // We also keep the corresponding light-weight probe URL so the per-session
 // availability check at the top of `tryWebSearch` can pre-flight every
 // provider once instead of failing the first user query.
@@ -29859,6 +30031,15 @@ const WEB_SEARCH_PROVIDERS = [
       "https://en.wiktionary.org/w/api.php?action=opensearch&search=ping&limit=1&format=json&origin=*",
     run: (query, language, limit) =>
       searchWiktionary(query, language, limit),
+  },
+  {
+    id: "wikinews",
+    label: "Wikinews opensearch",
+    priority: 6,
+    probeUrl:
+      "https://en.wikinews.org/w/api.php?action=opensearch&search=ping&limit=1&format=json&origin=*",
+    run: (query, language, limit) =>
+      searchWikinews(query, language, limit),
   },
 ];
 
@@ -30011,6 +30192,10 @@ function canonicalEntityKeys(meta) {
     const lang = meta.wiktionaryLanguage || "en";
     keys.push(`WT:${lang}:${meta.wiktionaryKey}`);
   }
+  if (meta.wikinewsKey) {
+    const lang = meta.wikinewsLanguage || "en";
+    keys.push(`WN:${lang}:${meta.wikinewsKey}`);
+  }
   return keys;
 }
 
@@ -30071,6 +30256,8 @@ function dedupeFusedEntries(fused, metaByUrl, evidence) {
       wikipediaLanguage: (meta && meta.wikipediaLanguage) || "",
       wiktionaryKey: (meta && meta.wiktionaryKey) || "",
       wiktionaryLanguage: (meta && meta.wiktionaryLanguage) || "",
+      wikinewsKey: (meta && meta.wikinewsKey) || "",
+      wikinewsLanguage: (meta && meta.wikinewsLanguage) || "",
       sourceKind: (meta && meta.sourceKind) || "",
       virtualId:
         (meta && meta.virtualId) ||
@@ -30125,6 +30312,10 @@ function dedupeFusedEntries(fused, metaByUrl, evidence) {
     if (!head.wiktionaryKey && enriched.wiktionaryKey) {
       head.wiktionaryKey = enriched.wiktionaryKey;
       head.wiktionaryLanguage = enriched.wiktionaryLanguage;
+    }
+    if (!head.wikinewsKey && enriched.wikinewsKey) {
+      head.wikinewsKey = enriched.wikinewsKey;
+      head.wikinewsLanguage = enriched.wikinewsLanguage;
     }
     if (Array.isArray(evidence)) {
       evidence.push(`web_search:dedupe:${keys[0]}:absorbed:${enriched.url}`);

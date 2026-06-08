@@ -220,6 +220,19 @@ pub const ROLE_WEB_SEARCH_STRONG_ACTION: &str = "web_search_strong_action";
 /// reference work (" web ", " internet ", " wikipedia ", " information ",
 /// "信息", …). Pairs with a weak action verb to confirm web-search intent.
 pub const ROLE_WEB_SEARCH_SIGNAL: &str = "web_search_signal";
+/// Semantic role: a news/headlines subject marker for web search.
+///
+/// "news", "headlines", "новост", "新闻", … name news as the information
+/// subject. On its own this is just content; paired with
+/// [`ROLE_WEB_SEARCH_NEWS_RECENCY`] it routes bare latest-news prompts to web
+/// search without requiring an imperative verb.
+pub const ROLE_WEB_SEARCH_NEWS_SUBJECT: &str = "web_search_news_subject";
+/// Semantic role: a freshness marker that turns a news subject into a search.
+///
+/// "latest", "breaking", "последн", "свеж", "最新", … indicate that current
+/// results are needed. The web-search recogniser requires this together with
+/// [`ROLE_WEB_SEARCH_NEWS_SUBJECT`] for bare news prompts.
+pub const ROLE_WEB_SEARCH_NEWS_RECENCY: &str = "web_search_news_recency";
 /// Semantic role: a connective that delimits the search topic.
 ///
 /// Carried by a single meaning whose slot encodes the direction: a

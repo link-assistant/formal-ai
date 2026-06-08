@@ -110,6 +110,16 @@ const SERVICES = [
     note: "MediaWiki opensearch with origin=*",
   },
   {
+    id: "wikinews-api",
+    name: "Wikinews",
+    category: "knowledge",
+    pageUrl: "https://www.wikinews.org/",
+    apiUrl:
+      "https://en.wikinews.org/w/api.php?action=opensearch&search=formal-ai&limit=3&format=json&origin=*",
+    apiLabel: "opensearch",
+    note: "MediaWiki opensearch with origin=*",
+  },
+  {
     id: "cambridge-dictionary",
     name: "Cambridge Dictionary",
     category: "knowledge",

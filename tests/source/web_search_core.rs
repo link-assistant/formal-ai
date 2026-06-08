@@ -173,6 +173,13 @@ pub const WEB_SEARCH_PROVIDER_REGISTRY: &[ProviderSpec] = &[
         default_for_category: false,
     },
     ProviderSpec {
+        id: "wikinews",
+        label: "Wikinews opensearch",
+        category: ProviderCategory::Knowledge,
+        cors_readable: true,
+        default_for_category: false,
+    },
+    ProviderSpec {
         id: "cambridge-dictionary",
         label: "Cambridge Dictionary",
         category: ProviderCategory::Knowledge,
@@ -311,8 +318,10 @@ pub const WEB_SEARCH_PROVIDER_REGISTRY: &[ProviderSpec] = &[
 /// These are the CORS-readable subset of [`WEB_SEARCH_PROVIDER_REGISTRY`].
 ///
 /// Issue #180 expands the default plan to also include Internet Archive and
-/// Wiktionary, in the priority order requested in the issue body
-/// (`DuckDuckGo` → Internet Archive → Wikipedia → Wikidata → Wiktionary).
+/// Wiktionary, in the priority order requested in the issue body. Issue #400
+/// appends Wikinews as a CORS-readable news source:
+/// `DuckDuckGo` → Internet Archive → Wikipedia → Wikidata → Wiktionary →
+/// Wikinews.
 /// The remaining providers in the registry still feed the connectivity
 /// dashboard and the case study.
 pub const WEB_SEARCH_PROVIDERS: &[&str] = &[
@@ -321,6 +330,7 @@ pub const WEB_SEARCH_PROVIDERS: &[&str] = &[
     "wikipedia",
     "wikidata",
     "wiktionary",
+    "wikinews",
 ];
 
 /// Default plan id list returned to JS. JS uses this to seed the planner
