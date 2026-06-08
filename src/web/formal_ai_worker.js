@@ -26060,9 +26060,14 @@ function unescapeSingleLinoValue(value) {
 
 function decodeRawReference(raw) {
   const value = String(raw || "").trim();
-  if (value === "unformalized-raw") return "";
-  if (!value.startsWith("unformalized-raw ")) return value;
-  return decodeCodepoints(value.slice("unformalized-raw ".length));
+  if (value === "unformalized-raw" || value === "codepoints") return "";
+  if (value.startsWith("unformalized-raw ")) {
+    return decodeCodepoints(value.slice("unformalized-raw ".length));
+  }
+  if (value.startsWith("codepoints ")) {
+    return decodeCodepoints(value.slice("codepoints ".length));
+  }
+  return value;
 }
 
 function stripLinoComment(line) {

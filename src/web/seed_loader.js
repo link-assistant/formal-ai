@@ -96,9 +96,17 @@
 
   function decodeRawReference(value) {
     var raw = String(value || "");
-    if (raw === "unformalized-raw") return "";
-    var prefix = "unformalized-raw ";
-    if (raw.indexOf(prefix) !== 0) return raw;
+    if (raw === "unformalized-raw" || raw === "codepoints") return "";
+    var unformalizedPrefix = "unformalized-raw ";
+    var codepointsPrefix = "codepoints ";
+    var prefix = "";
+    if (raw.indexOf(unformalizedPrefix) === 0) {
+      prefix = unformalizedPrefix;
+    } else if (raw.indexOf(codepointsPrefix) === 0) {
+      prefix = codepointsPrefix;
+    } else {
+      return raw;
+    }
     return raw
       .slice(prefix.length)
       .trim()
